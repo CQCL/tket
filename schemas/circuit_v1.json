@@ -1,0 +1,706 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://cambridgequantum.com/schemas/tket/circuit_v1.json",
+  "type": "object",
+  "description": "Serialized form of pytket Circuit v1.",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Optional name field."
+    },
+    "phase": {
+      "$ref": "#/definitions/expression",
+      "description": "Global phase of circuit as expression string."
+    },
+    "qubits": {
+      "type": "array",
+      "description": "Qubits in Circuit.",
+      "items": {
+        "$ref": "#/definitions/unitid"
+      }
+    },
+    "bits": {
+      "type": "array",
+      "description": "Classical Bits in Circuit.",
+      "items": {
+        "$ref": "#/definitions/unitid"
+      }
+    },
+    "implicit_permutation": {
+      "type": "array",
+      "description": "Implicit permutation in circuit, due to wire swaps in DAG. Expressed as array of pairs, of starting qubit to final.",
+      "items": {
+        "type": "array",
+        "items": [
+          {
+            "$ref": "#/definitions/unitid"
+          },
+          {
+            "$ref": "#/definitions/unitid"
+          }
+        ]
+      }
+    },
+    "commands": {
+      "type": "array",
+      "description": "Sequentially ordered Commands, expressed by the operation and qubits it acts on.",
+      "items": {
+        "$ref": "#/definitions/command"
+      }
+    }
+  },
+  "required": [
+    "phase",
+    "qubits",
+    "bits",
+    "implicit_permutation",
+    "commands"
+  ],
+  "definitions": {
+    "unitid": {
+      "type": "array",
+      "description": "UnitID (Bits and Qubits). First element is register name, second is array of indices.",
+      "items": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "array",
+          "items": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      ]
+    },
+    "expression": {
+      "type": "string",
+      "description": "A string representation of a symbolic expression."
+    },
+    "command": {
+      "type": "object",
+      "properties": {
+        "op": {
+          "$ref": "#/definitions/operation",
+          "description": "The operation, e.g. gate, box, conditional."
+        },
+        "args": {
+          "type": "array",
+          "description": "The qubits and bits the command acts on.",
+          "items": {
+            "$ref": "#/definitions/unitid"
+          }
+        },
+        "opgroup": {
+          "type": "string",
+          "description": "Name of the replaceable operation group that the command belongs to."
+        }
+      },
+      "required": [
+        "op",
+        "args"
+      ]
+    },
+    "conditional": {
+      "type": "object",
+      "description": "An operation which expresses how a nested operation is conditional on some bits.",
+      "properties": {
+        "op": {
+          "$ref": "#/definitions/operation"
+        },
+        "width": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of bits that the nested operation is conditional on."
+        },
+        "value": {
+          "type": "integer",
+          "description": "The value the bits must express when interpreted as an unsigned integer bitstring."
+        }
+      },
+      "required": [
+        "op",
+        "width",
+        "value"
+      ]
+    },
+    "classical": {
+      "type": "object",
+      "description": "Operations which only act on Bits classically.",
+      "oneOf": [
+        {
+          "properties": {
+            "op": {
+              "$ref": "#/definitions/operation"
+            },
+            "n": {
+              "type": "integer",
+              "minimum": 1,
+              "description": "Multiplier on underlying op for MultiBitOp."
+            }
+          },
+          "required": [
+            "op",
+            "n"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "n_i": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of pure input wires to the RangePredicate."
+            },
+            "lower": {
+              "type": "integer",
+              "maximum": 4294967295,
+              "description": "The inclusive minimum of the RangePredicate as a uint32."
+            },
+            "upper": {
+              "type": "integer",
+              "maximum": 4294967295,
+              "description": "The inclusive maximum of the RangePredicate as a uint32."
+            }
+          },
+          "required": [
+            "n_i",
+            "lower",
+            "upper"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "n_i": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of input wires to the CopyBitsOp."
+            }
+          },
+          "required": [
+            "n_i"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "values": {
+              "type": "array",
+              "items": {
+                "type": "boolean"
+              },
+              "description": "List of bools that SetBitsOp sets bits to."
+            }
+          },
+          "required": [
+            "values"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "values": {
+              "type": "array",
+              "items": {
+                "type": "boolean"
+              },
+              "description": "Truth table of ExplicitModifierOp/ExplicitPredicateOp."
+            },
+            "n_i": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of pure input wires to the ExplicitModifierOp/ExplicitPredicateOp."
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of classical ExplicitModifierOp/ExplicitPredicateOp (e.g. AND)."
+            }
+          },
+          "required": [
+            "n_i",
+            "name",
+            "values"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "properties": {
+            "values": {
+              "type": "array",
+              "items": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 4294967295
+              },
+              "description": "Truth table of ClassicalTransformOp."
+            },
+            "n_io": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Number of input/output wires to the ClassicalTransformOp."
+            },
+            "name": {
+              "type": "string",
+              "description": "Name of classical ClassicalTransformOp (e.g. ClassicalCX)."
+            }
+          },
+          "required": [
+            "n_io",
+            "name",
+            "values"
+          ],
+          "additionalProperties": false
+        }
+      ]
+    },
+    "signature": {
+      "type": "array",
+      "description": "The sequence of Bits and Qubits expected by the operation.",
+      "items": {
+        "type": "string",
+        "description": "Q means Qubit, B means Bit, C means read-only classical bit.",
+        "enum": [
+          "Q",
+          "B",
+          "C"
+        ]
+      }
+    },
+    "operation": {
+      "type": "object",
+      "description": "A representation of the operation performed.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "A string corresponding to the tket OpType of the operation."
+        },
+        "n_qb": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of qubits acted on. Required of signature not set."
+        },
+        "params": {
+          "type": "array",
+          "description": "Expressions corresponding to parameter values of the operation, if it has parameters.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "box": {
+          "$ref": "#/definitions/box"
+        },
+        "signature": {
+          "$ref": "#/definitions/signature"
+        },
+        "conditional": {
+          "$ref": "#/definitions/conditional"
+        },
+        "classical": {
+          "$ref": "#/definitions/classical"
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Barrier"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "signature"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Condition"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "conditional"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "MultiBit",
+                  "RangePredicate",
+                  "ExplicitModifier",
+                  "ExplicitPredicate",
+                  "ClassicalTransform",
+                  "SetBits",
+                  "CopyBits"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "classical"
+            ]
+          }
+        }
+      ]
+    },
+    "composite_gate": {
+      "type": "object",
+      "description": "An operation defined by another circuit.",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Name of composite gate."
+        },
+        "args": {
+          "type": "array",
+          "description": "Expressions corresponding to parameter values of the composite gate, if it has parameters.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "definition": {
+          "$ref": "#",
+          "description": "The circuit defining the gate."
+        }
+      }
+    },
+    "matrix": {
+      "type": "array",
+      "description": "An arbitrary 2D matrix of values.",
+      "items": {
+        "type": "array"
+      }
+    },
+    "box": {
+      "type": "object",
+      "description": "Boxes allow for alternate representations for operations, that can be synthesised to circuits.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "OpType of Box."
+        },
+        "id": {
+          "type": "string",
+          "description": "Internal UUID used to track boxes.",
+          "format": "uuid"
+        },
+        "circuit": {
+          "$ref": "#",
+          "description": "Definition of sub-circuit contained by CircBox."
+        },
+        "matrix": {
+          "$ref": "#/definitions/matrix",
+          "description": "Matrix represented by certain box types."
+        },
+        "phase": {
+          "type": [
+            "number",
+            "string"
+          ],
+          "description": "Phase parameters required by some box types, either expression or double."
+        },
+        "paulis": {
+          "type": "array",
+          "description": "A Pauli string, representing a tensor of Pauli operators.",
+          "items": {
+            "type": "string",
+            "description": "The four single qubit Pauli operators.",
+            "enum": [
+              "I",
+              "X",
+              "Y",
+              "Z"
+            ]
+          }
+        },
+        "n_qubits": {
+          "type": "integer",
+          "description": "The number of a qubits a PhasePolyBox acts on.",
+          "minimum": 0
+        },
+        "qubit_indices": {
+          "type": "array",
+          "description": "A map from Qubit to the index in a Pauli string it corresponds to.",
+          "items": {
+            "type": "array",
+            "items": [
+              {
+                "$ref": "#/definitions/unitid"
+              },
+              {
+                "type": "integer"
+              }
+            ]
+          }
+        },
+        "phase_polynomial": {
+          "type": "array",
+          "description": "A phase polynomial represented by a map from bitstring to expression of coefficient.",
+          "items": {
+            "type": "array",
+            "items": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "boolean"
+                }
+              },
+              {
+                "$ref": "#/definitions/expression"
+              }
+            ]
+          }
+        },
+        "linear_transformation": {
+          "$ref": "#/definitions/matrix",
+          "description": "PhasePolyBox linear transformation expressed as boolean matrix."
+        },
+        "gate": {
+          "$ref": "#/definitions/composite_gate"
+        },
+        "params": {
+          "type": "array",
+          "description": "Expressions of CompositeGate paramaters.",
+          "items": {
+            "$ref": "#/definitions/expression"
+          }
+        },
+        "op": {
+          "$ref": "#/definitions/operation",
+          "description": "Sub operation of QControlBox."
+        },
+        "n_controls": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of qubits a QControlBox is conditional on."
+        },
+        "n_i": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "n_io": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "n_o": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "exp": {
+          "$ref": "#/definitions/logicexp"
+        }
+      },
+      "required": [
+        "type",
+        "id"
+      ],
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "CircBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "circuit"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Unitary1qBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "matrix"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Unitary2qBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "matrix"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ExpBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "matrix",
+              "phase"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "PauliExpBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "paulis",
+              "phase"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "PhasePolyBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "n_qubits",
+              "qubit_indices",
+              "phase_polynomial",
+              "linear_transformation"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "Composite"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "gate",
+              "params"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "QControlBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "n_controls",
+              "op"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ClassicalExpBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "n_i",
+              "n_io",
+              "n_o",
+              "exp"
+            ]
+          }
+        }
+      ]
+    },
+    "logicexp": {
+      "type": "object",
+      "description": "Logical expression over Bit or BitRegister.",
+      "properties": {
+        "op": {
+          "type": "string",
+          "description": "String representation of classical operation enum. E.g. `BitWiseOp.AND`"
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": [
+                  "integer",
+                  "boolean"
+                ],
+                "description": "Constant values."
+              },
+              {
+                "$ref": "#/definitions/unitid",
+                "description": "Bits."
+              },
+              {
+                "type": "object",
+                "description": "BitRegister",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of register."
+                  },
+                  "size": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Size of register."
+                  }
+                },
+                "required": [
+                  "name",
+                  "size"
+                ]
+              },
+              {
+                "$ref": "#/definitions/logicexp",
+                "description": "Sub expression."
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "op",
+        "args"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

@@ -1,0 +1,4 @@
+Inputs: 0:Qbit
+QGate["H"](0)
+QGate["S"](0)
+Outputs: 0:Qbit

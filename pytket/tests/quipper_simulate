@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+
+# Copyright 2019-2021 Cambridge Quantum Computing
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import argparse
+from subprocess import run, PIPE
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(
+        description="Run the Quipper simulator to generate test files. For each "
+        "file supplied, a new file is created with `.simout' appended to the "
+        "filename, containing the text output by the simulator."
+    )
+    parser.add_argument("--simprog", "-s", help="path to Quipper `Simulate' program")
+    parser.add_argument(
+        "--inputs", "-i", nargs="*", help="list of files in Quipper ASCII format"
+    )
+    args = parser.parse_args()
+    for infile in args.inputs:
+        with open(infile) as f:
+            text = f.read()
+        p = run(args.simprog, stdout=PIPE, input=text, encoding="ascii")
+        with open(infile + ".simout", "w") as f:
+            f.write(p.stdout)

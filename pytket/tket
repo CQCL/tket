@@ -1,0 +1,267 @@
+#!/usr/bin/env python3
+
+# Copyright 2019-2021 Cambridge Quantum Computing
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+import argparse
+from importlib import import_module
+import textwrap
+from pytket.passes import SequencePass
+from pytket.predicates import CompilationUnit
+from pytket.qasm import circuit_from_qasm, circuit_to_qasm
+from pytket.quipper import circuit_from_quipper
+
+all_passes = [
+    "CommuteThroughMultis",
+    "DecomposeArbitrarilyControlledGates",
+    "DecomposeBoxes",
+    "DelayMeasures",
+    "FlattenRegisters",
+    "FullPeepholeOptimise",
+    "KAKDecomposition",
+    "RebaseCirq",
+    "RebaseHQS",
+    "RebaseIBM",
+    "RebaseProjectQ",
+    "RebasePyZX",
+    "RebaseQuil",
+    "RebaseTket",
+    "RebaseUMD",
+    "RemoveRedundancies",
+    "SynthesiseHQS",
+    "SynthesiseIBM",
+    "SynthesiseUMD",
+    "USquashIBM",
+]
+pass_module = import_module("pytket.passes")
+pass_dict = dict((pname, getattr(pass_module, pname)) for pname in all_passes)
+
+backend_providers = {
+    "aqt": [
+        "AQTBackend",
+    ],
+    "pyquil": [
+        "ForestBackend",
+    ],
+    "honeywell": [
+        "HoneywellBackend",
+    ],
+    "qiskit": [
+        "AerBackend",
+        "AerStateBackend",
+        "AerUnitaryBackend",
+        "IBMQBackend",
+    ],
+    "projectq": [
+        "ProjectQBackend",
+    ],
+    "qsharp": [
+        "QsharpEstimatorBackend",
+        "QsharpSimulatorBackend",
+        "QsharpToffoliSimulatorBackend",
+    ],
+    "qulacs": [
+        "QulacsBackend",
+        "QulacsGPUBackend",
+    ],
+    "braket": [
+        "BraketBackend",
+    ],
+}
+installed_providers = set()
+backend_modules = {}
+for provider in backend_providers.keys():
+    try:
+        module = import_module("pytket.extensions.{}".format(provider))
+        installed_providers.add(provider)
+        backend_modules[provider] = module
+    except ModuleNotFoundError:
+        pass
+backend_dict = dict(
+    (bname, getattr(backend_modules[provider], bname))
+    for provider, blist in backend_providers.items()
+    for bname in blist
+    if provider in installed_providers
+)
+
+wrapper = textwrap.TextWrapper(subsequent_indent=" " * 8, width=80)
+
+
+def read_input(infile, fmt):
+    if fmt == "qasm":
+        return circuit_from_qasm(infile)
+    elif fmt == "quipper":
+        return circuit_from_quipper(infile)
+
+
+def write_output(circ, outfile, fmt):
+    if fmt == "qasm":
+        circuit_to_qasm(circ, outfile)
+    elif fmt == "latex":
+        circ.to_latex_file(outfile)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Compile and run quantum circuits.")
+    parser.add_argument("--infile", help="Input circuit file.")
+    parser.add_argument("--outfile", help="Output circuit file.")
+    parser.add_argument(
+        "--informat",
+        default="qasm",
+        choices=["qasm", "quipper"],
+        help="Input file format (default = %(default)s).",
+    )
+    parser.add_argument(
+        "--outformat",
+        default="qasm",
+        choices=["qasm", "latex"],
+        help="Output file format (default = %(default)s).",
+    )
+    parser.add_argument(
+        "-p",
+        "--passname",
+        nargs="*",
+        help="Apply compilation pass or passes (in order provided). If the special name 'default' is provided here, it refers to the default compilation pass for the backend, if a backend is specified (otherwise it is ignored).",
+    )
+    parser.add_argument(
+        "--list-passes",
+        action="store_true",
+        help="List available compilation passes, with brief descriptions.",
+    )
+    parser.add_argument("-b", "--backend", help="Backend on which to run circuit.")
+    parser.add_argument(
+        "--list-backends",
+        action="store_true",
+        help="List available backends, with brief descriptions.",
+    )
+    parser.add_argument(
+        "-r",
+        "--run",
+        action="store_true",
+        help="Run the compiled circuit on the backend.",
+    )
+    parser.add_argument(
+        "-n", "--n-shots", type=int, default=1, help="Number of shots to run."
+    )
+    result_opts = parser.add_mutually_exclusive_group()
+    result_opts.add_argument(
+        "--show-counts",
+        action="store_true",
+        help="Show a summary of counts from the backend.",
+    )
+    result_opts.add_argument(
+        "--show-shots",
+        action="store_true",
+        help="Show a full table of shots from the backend.",
+    )
+    result_opts.add_argument(
+        "--show-state",
+        action="store_true",
+        help="Show the state vector from all-0 input computed by the backend.",
+    )
+    result_opts.add_argument(
+        "--show-unitary",
+        action="store_true",
+        help="Show the unitary matrix computed by the backend.",
+    )
+    parser.add_argument(
+        "-v", "--verbose", action="store_true", help="Print verbose output."
+    )
+    args = parser.parse_args()
+    if args.list_passes:
+        print("Available passes:")
+        for pname, p in pass_dict.items():
+            pdesc = p.__doc__.strip().split("\n")[-1]
+            for line in wrapper.wrap("{}: {}".format(pname, pdesc)):
+                print(line)
+    if args.list_backends:
+        print("Available backends:")
+        for bname, b in backend_dict.items():
+            bdesc = (
+                b.__doc__.strip().split("\n")[0]
+                if b.__doc__
+                else b.__init__.__doc__.strip().split("\n")[0]
+            )
+            for line in wrapper.wrap("{}: {}".format(bname, bdesc)):
+                print(line)
+    if args.infile:
+        circ = read_input(args.infile, args.informat)
+        if args.backend:
+            back = backend_dict[args.backend]()
+            default_pass = back.default_compilation_pass
+            if args.passname:
+                pass_list = [
+                    default_pass if pname == "default" else pass_dict[pname]()
+                    for pname in args.passname
+                ]
+        else:
+            if args.passname:
+                pass_list = [
+                    pass_dict[pname]() for pname in args.passname if pname != "default"
+                ]
+        if args.verbose:
+            print(
+                "Read circuit from {} ({} qubits, {} gates, depth {}).".format(
+                    args.infile, circ.n_qubits, circ.n_gates, circ.depth()
+                )
+            )
+        if args.passname:
+            cu = CompilationUnit(circ)
+            seqpass = SequencePass(pass_list)
+            if args.verbose:
+                print("Compiling circuit...")
+            applied = seqpass.apply(cu)
+            circ1 = cu.circuit
+            if args.verbose:
+                if applied:
+                    print(
+                        "Compiled to new circuit ({} qubits, {} gates, depth {}).".format(
+                            circ.n_qubits, circ.n_gates, circ.depth()
+                        )
+                    )
+                else:
+                    print("Circuit unchanged by compilation.")
+        else:
+            circ1 = circ
+        if args.outfile:
+            write_output(circ1, args.outfile, args.outformat)
+            if args.verbose:
+                print("Written new circuit to {}.".format(args.outfile))
+        if args.run:
+            if not args.backend:
+                raise Exception("Cannot run circuit: no backend provided.")
+            n_shots = args.n_shots if back.supports_shots else None
+            back.process_circuits([circ1], n_shots=n_shots)
+            if args.verbose:
+                print("Submitted circuit to backend.")
+            if args.show_counts:
+                if back.supports_counts:
+                    print(back.get_counts(circ1))
+                else:
+                    print("Backend does not support 'counts'.")
+            elif args.show_shots:
+                if back.supports_shots:
+                    print(back.get_shots(circ1))
+                else:
+                    print("Backend does not support 'shots'.")
+            elif args.show_state:
+                if back.supports_state:
+                    print(back.get_state(circ1))
+                else:
+                    print("Backend does not support 'state'.")
+            elif args.show_unitary:
+                if back.supports_unitary:
+                    print(back.get_unitary(circ1))
+                else:
+                    print("Backend does not support 'unitary'.")

@@ -1,0 +1,13 @@
+
+<svg
+  xmlns='http://www.w3.org/2000/svg'
+  viewBox='-30 0 104 64'
+  width='64' height='64'
+  fill="none"
+  stroke="black"
+  stroke-width="4px"
+>
+  <path fill="darkseagreen" stroke="none" d="M -30 32 A 1 1 90 0 1 74 32 A 1 1 90 0 1 -30 32 Z"/>
+  <path d="M 2 0 L 2 64 Z M 24 1 L 58 32 L 24 63 M 34 34" />
+  <path d="M 32 34 A 1 1 90 0 1 14 34 L 14 30 A 1 1 90 0 1 32 30 Z" />
+</svg>

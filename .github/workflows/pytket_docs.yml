@@ -1,0 +1,80 @@
+name: Pytket Docs
+
+on:
+  push:
+    branches:
+      - 'docs/**'
+
+jobs:
+  docs:
+    name: build docs
+    runs-on: ubuntu-20.04
+    env:
+      PYTKET_SKIP_REGISTRATION: "true"
+    strategy:
+      matrix:
+        python-version: [3.8]
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - name: Get current time
+      uses: srfrnk/current-time@v1.1.0
+      id: current_time
+      with:
+        format: YYYYMMDDHHmmss
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Cache ccache data
+      uses: actions/cache@v2
+      with:
+        path: ~/.ccache
+        key: ${{ runner.os }}-tket-ccache-${{ steps.current_time.outputs.formattedTime }}
+        restore-keys: |
+            ${{ runner.os }}-tket-ccache-
+    - name: Get pip cache
+      id: pip-cache
+      run: |
+       python -c "from pip._internal.locations import USER_CACHE_DIR; print('::set-output name=dir::' + USER_CACHE_DIR)"
+    - name: Cache pip
+      uses: actions/cache@v2
+      with:
+        path: ${{ steps.pip-cache.outputs.dir }}
+        # Look to see if there is a cache hit for the corresponding requirements file
+        key: ${{ runner.os }}-pip-${{ matrix.python-version }}-${{ hashFiles('pytket/**/requirements*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-${{ matrix.python-version }}-
+          ${{ runner.os }}-pip-
+    - name: Install prerequisites
+      run: |
+        sudo apt-get update
+        sudo apt-get install ninja-build ccache graphviz
+    - name: Install conan
+      # urllib3 because of TKET-865 (remove when conan fixes its dependencies)
+      run: |
+        pip install urllib3==1.25.11 conan
+        conan profile new tket --detect
+        conan profile update settings.compiler.libcxx=libstdc++11 tket
+        conan config set general.revisions_enabled=1
+    - name: Build tket
+      run: conan create --profile=tket recipes/tket
+    - name: Build pytket
+      run: |
+        cd pytket
+        pip install -e . -v
+    - name: Install docs dependencies
+      run: |
+        pip install -r pytket/docs/requirements.txt
+    - name: Test building docs
+      timeout-minutes: 20
+      run: |
+        ./.github/workflows/build-docs
+    - name: Upload docs
+      if: github.event_name == 'push'
+      uses: actions/upload-artifact@v2
+      with:
+        name: pytket-docs
+        path: pytket/docs/build/html/

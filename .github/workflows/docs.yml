@@ -1,0 +1,34 @@
+name: Deploy development documentation
+
+on:
+  push:
+    branches:
+      - develop
+    paths:
+      - 'bubble/src/**'
+
+jobs:
+  bubble_docs:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install Doxygen
+      run: sudo apt update && sudo apt install -y doxygen graphviz
+
+    - name: Build Doxygen docs
+      run: cd bubble && doxygen
+
+    # TODO Deploy somewhere public.
+    # E.g. https://github.com/peaceiris/actions-gh-pages
+    # - name: Login via Azure CLI
+    #   uses: azure/login@v1
+    #   with:
+    #     creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # - uses: azure/webapps-deploy@v2
+    #   with:
+    #     app-name: 'BubbleDoxygen'
+    #     package: './bubble/doc/html/'

@@ -1,0 +1,3 @@
+Inputs: 0:Qbit
+QRot["exp(-i%Z)",0.5](0)
+Outputs: 0:Qbit

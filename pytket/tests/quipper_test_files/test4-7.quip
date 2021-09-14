@@ -1,0 +1,3 @@
+Inputs: 0:Qbit
+QRot["R(2pi/%)",3](0)
+Outputs: 0:Qbit

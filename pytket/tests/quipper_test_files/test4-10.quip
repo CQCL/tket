@@ -1,0 +1,4 @@
+Inputs: 0:Qbit, 1:Qbit
+QGate["S"](1) with controls=[+0]
+QGate["T"](0) with controls=[+1]
+Outputs: 0:Qbit, 1:Qbit
