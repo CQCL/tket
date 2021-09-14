@@ -3,7 +3,7 @@ name: Build and test
 on:
   pull_request:
     branches:
-      - master
+      - main
       - develop
   push:
     branches:
