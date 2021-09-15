@@ -128,7 +128,7 @@ jobs:
 
   macos:
     name: Build and test (MacOS)
-    runs-on: macos-10.15
+    runs-on: macos-11
     env:
       PYTKET_SKIP_REGISTRATION: "true"
     steps:

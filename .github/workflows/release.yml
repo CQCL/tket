@@ -38,7 +38,7 @@ jobs:
 
   build_macos_wheels:
     name: Build macos wheels
-    runs-on: macos-10.15
+    runs-on: macos-11
     steps:
     - uses: actions/checkout@v2
       with:
@@ -220,7 +220,7 @@ jobs:
   test_macos_wheels:
     name: Test macos wheels
     needs: build_macos_wheels
-    runs-on: macos-10.15
+    runs-on: macos-11
     env:
       PYTKET_SKIP_REGISTRATION: "true"
     strategy:
