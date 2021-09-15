@@ -186,3 +186,11 @@ First create a `build` folder in the project root. Then proceed as follows.
    ```shell
    conan export-pkg recipes/tket -f --build-folder=build --source-folder=bubble/src
    ```
+
+## API documentation
+
+The `bubble` (C++) API documentation is available
+[here](https://cqcl.github.io/tket/bubble/doc/html/index.html).
+
+The `pytket` (Python) API documentation is available
+[here](https://cqcl.github.io/pytket/build/html/index.html).
