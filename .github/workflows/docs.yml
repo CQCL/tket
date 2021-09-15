@@ -1,4 +1,4 @@
-name: Deploy development documentation
+name: Deploy bubble documentation
 
 on:
   push:
@@ -18,17 +18,18 @@ jobs:
     - name: Install Doxygen
       run: sudo apt update && sudo apt install -y doxygen graphviz
 
+    - name: Create clean gh-pages branch
+      run:  git checkout -b gh-pages
+
     - name: Build Doxygen docs
       run: cd bubble && doxygen
 
-    # TODO Deploy somewhere public.
-    # E.g. https://github.com/peaceiris/actions-gh-pages
-    # - name: Login via Azure CLI
-    #   uses: azure/login@v1
-    #   with:
-    #     creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Add generated docs to repository
+      run: |
+        git config --global user.email "tket-bot@cambridgequantum.com"
+        git config --global user.name  "«$GITHUB_WORKFLOW» github action"
+        git add -f bubble/doc/html
+        git commit -am "Add generated bubble documentation."
 
-    # - uses: azure/webapps-deploy@v2
-    #   with:
-    #     app-name: 'BubbleDoxygen'
-    #     package: './bubble/doc/html/'
+    - name: Publish docs
+      run:  git push -f origin gh-pages:gh-pages
