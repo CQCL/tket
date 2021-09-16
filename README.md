@@ -189,7 +189,8 @@ First create a `build` folder in the project root. Then proceed as follows.
 
 ## API documentation
 
-The `bubble` (C++) API documentation is available
+The `bubble` (C++) API documentation (generated with `doxygen`, and still rather
+patchy) is available
 [here](https://cqcl.github.io/tket/bubble/doc/html/index.html).
 
 The `pytket` (Python) API documentation is available
