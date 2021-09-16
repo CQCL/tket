@@ -14,22 +14,31 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
 
     - name: Install Doxygen
       run: sudo apt update && sudo apt install -y doxygen graphviz
 
-    - name: Create clean gh-pages branch
-      run:  git checkout -b gh-pages
+    - name: Configure git
+      run: |
+        git config --global user.email "tket-bot@cambridgequantum.com"
+        git config --global user.name  "«$GITHUB_WORKFLOW» github action"
+
+    - name: Check out gh-pages branch
+      run:  git checkout gh-pages
+
+    - name: Remove old docs
+      run: git rm -r --ignore-unmatch bubble/doc/html
 
     - name: Build Doxygen docs
       run: cd bubble && doxygen
 
     - name: Add generated docs to repository
       run: |
-        git config --global user.email "tket-bot@cambridgequantum.com"
-        git config --global user.name  "«$GITHUB_WORKFLOW» github action"
         git add -f bubble/doc/html
-        git commit -am "Add generated bubble documentation."
+        git commit --allow-empty -m "Add generated bubble documentation."
 
     - name: Publish docs
-      run:  git push -f origin gh-pages:gh-pages
+      run:  git push origin gh-pages:gh-pages
