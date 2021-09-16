@@ -186,3 +186,9 @@ First create a `build` folder in the project root. Then proceed as follows.
    ```shell
    conan export-pkg recipes/tket -f --build-folder=build --source-folder=bubble/src
    ```
+
+## Test coverage
+
+The code coverage of the `bubble` tests is reported
+[here](https://cqcl.github.io/tket/bubble/test-coverage/index.html). This report
+is generated weekly from the `develop` branch.

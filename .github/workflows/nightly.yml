@@ -1,4 +1,4 @@
-name: nightly test-coverage
+name: Deploy bubble coverage report
 
 on:
   schedule:
@@ -8,10 +8,11 @@ on:
 jobs:
 
   linux:
-    name: Execute coverage test (Linux)
+    name: Generate coverage report
     runs-on: ubuntu-20.04
     env:
-      PYTKET_SKIP_REGISTRATION: "true"
+      CC: gcc-10
+      CXX: g++-10
     steps:
     - uses: actions/checkout@v2
       with:
@@ -32,8 +33,6 @@ jobs:
     - name: Install conan
       id: conan
       # urllib3 because of TKET-865 (remove when conan fixes its dependencies)
-      # install gcovr package for coverage test
-      # conan profile: change to debug mode
       run: |
         pip install urllib3==1.25.11 conan
         conan_cmd=/home/runner/.local/bin/conan
@@ -41,39 +40,45 @@ jobs:
         ${conan_cmd} profile update settings.compiler.libcxx=libstdc++11 tket
         ${conan_cmd} profile update settings.build_type=Debug tket
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
-        pip install gcovr
     - name: Install ninja and ccache
       run: |
         sudo apt-get update
-        sudo apt-get install ninja-build ccache gcovr
+        sudo apt-get install ninja-build ccache
     - name: Build tket
-      run: ${CONAN_CMD} create --profile=tket recipes/tket
+      run: |
+        ${CONAN_CMD} install recipes/tket --install-folder=build/tket --profile=tket -o tket:profile_coverage=True
+        ${CONAN_CMD} build recipes/tket --configure --build-folder=build/tket --source-folder=bubble/src
+        ${CONAN_CMD} build recipes/tket --build --build-folder=build/tket
+        ${CONAN_CMD} export-pkg recipes/tket -f --build-folder=build/tket --source-folder=bubble/src
+    - name: Build tket tests
+      run: |
+        ${CONAN_CMD} install recipes/tket-tests --install-folder=build/tket-tests --profile=tket -o tket-tests:with_coverage=True
+        ${CONAN_CMD} build recipes/tket-tests --configure --build-folder=build/tket-tests --source-folder=bubble/tests
+        ${CONAN_CMD} build recipes/tket-tests --build --build-folder=build/tket-tests
     - name: Install runtime test requirements
       run: |
         sudo apt-get install texlive texlive-latex-extra latexmk
         mkdir -p ~/texmf/tex/latex
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
+    - name: Run tket tests
+      run: ./build/tket-tests/bin/test_tket
+    - name: Configure git
+      run: |
+        git config --global user.email "tket-bot@cambridgequantum.com"
+        git config --global user.name  "«$GITHUB_WORKFLOW» github action"
+    - name: Check out gh-pages branch
+      run:  git checkout gh-pages
+    - name: Remove old report
+      run: git rm -r --ignore-unmatch bubble/test-coverage
     - name: Install gcovr
-      run: pip install gcovr
-    - name: Build tket-coverage
-      run: ${CONAN_CMD} create --profile=tket recipes/tket-coverage
-    # TODO Deploy somewhere public.
-    # E.g. https://github.com/peaceiris/actions-gh-pages
-    # - name: Login via Azure CLI
-    #   uses: azure/login@v1
-    #   with:
-    #    creds: ${{ secrets.AZURE_CREDENTIALS }}
-    # - name: find directory for html files
-    #   run: |
-    #     cd /home/runner/.conan/data/tket-coverage
-    #     cd *
-    #     cd _/_/build
-    #     cd *
-    #     cd coverage
-    #     coverage_html=$(pwd)
-    #     echo "COVERAGE_HTML=${coverage_html}/" >> $GITHUB_ENV
-    #     echo $COVERAGE_HTML
-    # - uses: azure/webapps-deploy@v2
-    #   with:
-    #    app-name: 'BubbleCoverage'
-    #    package: ${{ env.COVERAGE_HTML }}
+      run: sudo apt-get install gcovr
+    - name: Build coverage report
+      run: |
+        mkdir bubble/test-coverage
+        gcovr --html --html-details -r ./bubble/src/ --object-directory `pwd`/build/tket/CMakeFiles/tket.dir -o bubble/test-coverage/index.html
+    - name: Add report to repository
+      run: |
+        git add -f bubble/test-coverage
+        git commit --allow-empty -m "Add generated coverage report."
+    - name: Publish report
+      run: git push origin gh-pages:gh-pages
