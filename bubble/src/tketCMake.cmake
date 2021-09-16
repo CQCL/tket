@@ -12,10 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# this file contains all the basic CMake commands to compile tket
-# it is used in the following conan recipes:
-# - tket
-# - tket-coverage
+# This file contains all the basic CMake commands to compile tket.
 
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
