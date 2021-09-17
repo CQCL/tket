@@ -39,7 +39,6 @@ const PassPtr &DecomposeBoxes();
  * phase poly boxes + H gates (and measure + reset + collapse + barrier)
  */
 const PassPtr &ComposePhasePolyBoxes();
-const PassPtr &USquashIBM();
 
 /** Squash sequences of single-qubit gates to TK1 gates. */
 const PassPtr &SquashTK1();

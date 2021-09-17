@@ -18,7 +18,7 @@ Minor new features:
 API changes:
 
 * The deprecated transform ``RebaseToQiskit`` and the deprecated passes
-  ``DecomposeMultiQubitsIBM`` and ``SynthesiseIBM`` are removed.
+  ``DecomposeMultiQubitsIBM``, ``SynthesiseIBM`` and ``USquashIBM`` are removed.
 * The transform ``OptimisePostRouting`` transforms to TK1 instead of U gates.
 
 0.14.0 (September 2021)

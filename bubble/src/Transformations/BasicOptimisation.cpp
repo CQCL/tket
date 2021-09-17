@@ -185,11 +185,6 @@ static bool remove_redundancy(
   return false;
 }
 
-Transform Transform::u_squash_IBM() {
-  return decompose_ZY() >> squash_1qb_to_pqp(OpType::Ry, OpType::Rz, true) >>
-         decompose_ZYZ_to_U();
-}
-
 Transform Transform::squash_1qb_to_tk1() {
   return decompose_ZY() >> squash_1qb_to_pqp(OpType::Ry, OpType::Rz, true) >>
          decompose_ZYZ_to_TK1();

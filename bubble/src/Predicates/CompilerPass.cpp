@@ -404,8 +404,6 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = SynthesiseOQC();
     } else if (passname == "SynthesiseUMD") {
       pp = SynthesiseUMD();
-    } else if (passname == "USquashIBM") {
-      pp = USquashIBM();
     } else if (passname == "SquashTK1") {
       pp = SquashTK1();
     } else if (passname == "FlattenRegisters") {

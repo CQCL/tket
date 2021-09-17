@@ -40,7 +40,6 @@ using namespace tket;
   DO(DecomposeSingleQubitsTK1)            \
   DO(DecomposeBoxes)                      \
   DO(ComposePhasePolyBoxes)               \
-  DO(USquashIBM)                          \
   DO(SquashTK1)                           \
   DO(RebaseCirq)                          \
   DO(RebaseTket)                          \

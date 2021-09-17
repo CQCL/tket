@@ -25,7 +25,6 @@ from pytket.passes import (  # type: ignore
     CommuteThroughMultis,
     RepeatPass,
     DecomposeMultiQubitsCX,
-    USquashIBM,
     SquashTK1,
     RepeatWithMetricPass,
     RebaseCustom,
@@ -580,7 +579,6 @@ def test_library_pass_config() -> None:
     assert SynthesiseTket().to_dict()["StandardPass"]["name"] == "SynthesiseTket"
     assert SynthesiseOQC().to_dict()["StandardPass"]["name"] == "SynthesiseOQC"
     assert SynthesiseUMD().to_dict()["StandardPass"]["name"] == "SynthesiseUMD"
-    assert USquashIBM().to_dict()["StandardPass"]["name"] == "USquashIBM"
     # Share name with SquashCustom
     assert SquashHQS().to_dict()["StandardPass"]["name"] == "SquashCustom"
     assert set(SquashHQS().to_dict()["StandardPass"]["basis_singleqs"]) == {

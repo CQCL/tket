@@ -531,7 +531,6 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(SynthesiseTket, SynthesiseTket())
   COMPPASSJSONTEST(SynthesiseOQC, SynthesiseOQC())
   COMPPASSJSONTEST(SynthesiseUMD, SynthesiseUMD())
-  COMPPASSJSONTEST(USquashIBM, USquashIBM())
   COMPPASSJSONTEST(SquashTK1, SquashTK1())
   COMPPASSJSONTEST(FlattenRegisters, FlattenRegisters())
   COMPPASSJSONTEST(DelayMeasures, DelayMeasures())

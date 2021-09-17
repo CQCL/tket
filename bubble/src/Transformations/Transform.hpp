@@ -108,10 +108,6 @@ class Transform {
    */
   static Transform decompose_single_qubits_TK1();
 
-  // Expects: Rz, Ry and any multi-qubit gates
-  // Produces: U1, U3 and any multi-qubit gates
-  static Transform decompose_ZYZ_to_U();
-
   /**
    * Starting with Rz, Ry and multi-qubit gates, replace all singles with TK1.
    */
@@ -444,11 +440,6 @@ class Transform {
   // Expects: Rx, Rz, and any multi-qubit gates
   // Produces: Rx, Rz, and any multi-qubit gates
   static Transform reduce_XZ_chains();
-
-  // 1qb squashing for IBM U1/U2/U3 gates by converting to -Rz-Ry_Rz- and back
-  // Expects: Any gates
-  // Produces: U1, U3, and any multi-qubit gates
-  static Transform u_squash_IBM();
 
   /**
    * Squash all single-qubit gates to TK1.
