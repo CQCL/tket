@@ -241,13 +241,4 @@ setup(
     include_package_data=True,
     package_data={"pytket": ["py.typed"]},
     zip_safe=False,
-    use_scm_version={
-        "root": "..",
-        "relative_to": __file__,
-        # Force git describe to abbreviate hashes to 14 characters.
-        # This makes the version numbers more likely to be consistent when building wheels
-        # with access to less git history.
-        "git_describe_command": "git describe --dirty --tags --long --match *[0-9]* --abbrev=14",
-    },
-    setup_requires=["setuptools_scm"],
 )
