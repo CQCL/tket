@@ -225,23 +225,6 @@ Transform Transform::decompose_ZY() { return Transform(convert_to_zyz); }
 
 Transform Transform::decompose_XY() { return Transform(convert_to_xyx); }
 
-Transform Transform::decompose_u_to_tk1() {
-  return Transform([](Circuit &circ) {
-    bool success = false;
-    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-      if (circ.detect_u_op(v)) {
-        success = true;
-        const Op_ptr g = circ.get_Op_ptr_from_Vertex(v);
-        const std::vector<Expr> &angles = as_gate_ptr(g)->get_tk1_angles();
-        circ.dag[v] = {
-            get_op_ptr(OpType::tk1, {angles[0], angles[1], angles[2]})};
-        circ.add_phase(angles[3]);
-      }
-    }
-    return success;
-  });
-}
-
 Transform Transform::decompose_tk1_to_rzrx() {
   return Transform([](Circuit &circ) {
     bool success = false;

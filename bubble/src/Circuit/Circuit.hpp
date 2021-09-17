@@ -677,9 +677,6 @@ class Circuit {
    */
   bool detect_boundary_Op(const Vertex &vertex) const;
 
-  // returns true if given vertex has op type u1,u2 or u3
-  // O(1)
-  bool detect_u_op(const Vertex &vert) const;
   // returns true if given vertex is a single qubit, reversible gate
   // O(1)
   bool detect_singleq_unitary_op(const Vertex &vert) const;

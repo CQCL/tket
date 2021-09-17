@@ -115,21 +115,6 @@ Transform Transform::rebase_tket() {
       {OpType::CX}, CircPool::CX(), {OpType::tk1}, tk1_to_tk1);
 }
 
-Circuit Transform::tk1_to_u(
-    const Expr& alpha, const Expr& beta, const Expr& gamma) {
-  Expr theta = beta;
-  Expr phi = alpha - 0.5;
-  Expr lambda = gamma + 0.5;
-  Circuit c(1);
-  if (!equiv_0(theta, 4)) {
-    c.add_op<unsigned>(OpType::U3, {theta, phi, lambda}, {0});
-  } else if (!equiv_0(phi + lambda)) {
-    c.add_op<unsigned>(OpType::U1, {phi + lambda}, {0});
-  }
-  c.add_phase(-(alpha + gamma) / 2);
-  return c;
-}
-
 Circuit Transform::tk1_to_PhasedXRz(
     const Expr& alpha, const Expr& beta, const Expr& gamma) {
   Circuit c(1);

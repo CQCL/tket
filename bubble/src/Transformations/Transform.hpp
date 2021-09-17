@@ -128,11 +128,6 @@ class Transform {
   // Produces: Rx, Ry and any multi-qubit gates
   static Transform decompose_XY();
 
-  // converts all U-gates into tk1 gates
-  // Expects: U-gates and any multi-qubit gates
-  // Produces: tk1-gates and any multi-qubit gates
-  static Transform decompose_u_to_tk1();
-
   // converts all tk1-gates into rzrx gates
   // Expects: tk1-gates and any multi-qubit gates
   // Produces: Rz, Rx and any multi-qubit gates
@@ -560,9 +555,6 @@ class Transform {
       const Expr& alpha, const Expr& beta, const Expr& gamma);
 
   static Circuit tk1_to_tk1(
-      const Expr& alpha, const Expr& beta, const Expr& gamma);
-
-  static Circuit tk1_to_u(
       const Expr& alpha, const Expr& beta, const Expr& gamma);
 
   static Circuit tk1_to_rzsx(
