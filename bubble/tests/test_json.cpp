@@ -519,7 +519,6 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(RebaseCirq, RebaseCirq())
   COMPPASSJSONTEST(RebaseTket, RebaseTket())
   COMPPASSJSONTEST(RebaseHQS, RebaseHQS())
-  COMPPASSJSONTEST(RebaseIBM, RebaseIBM())
   COMPPASSJSONTEST(RebaseQuil, RebaseQuil())
   COMPPASSJSONTEST(RebaseProjectQ, RebaseProjectQ())
   COMPPASSJSONTEST(RebasePyZX, RebasePyZX())

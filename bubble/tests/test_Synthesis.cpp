@@ -936,7 +936,7 @@ SCENARIO("Decomposition of multi-qubit gates") {
   GIVEN("A single CU1 gate") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CU1, 0.3, {0, 1});
-    bool success = Transform::rebase_IBM().apply(circ);
+    bool success = Transform::rebase_tket().apply(circ);
     REQUIRE(success);
     REQUIRE(circ.n_vertices() > 7);
   }
@@ -959,7 +959,7 @@ SCENARIO("Decomposition of multi-qubit gates") {
     circ.add_op<unsigned>(OpType::Collapse, {1});
     circ.add_op<unsigned>(OpType::Collapse, {2});
     circ.add_op<unsigned>(OpType::Collapse, {3});
-    bool success = Transform::rebase_IBM().apply(circ);
+    bool success = Transform::rebase_tket().apply(circ);
     REQUIRE(success);
     REQUIRE(circ.count_gates(OpType::CU1) == 0);
   }
@@ -1401,12 +1401,11 @@ SCENARIO("Test tk1 gate decomp for some gates") {
     std::vector<unsigned> qbs(n_qbs);
     std::iota(qbs.begin(), qbs.end(), 0);
     circ.add_op<unsigned>(map_pair.first, params, qbs);
-    Transform::rebase_IBM().apply(circ);
+    Transform::rebase_tket().apply(circ);
     Circuit circ2 = circ;
     Transform::decompose_ZX().apply(circ2);
     const StateVector sv2 = tket_sim::get_statevector(circ2);
-    (Transform::decompose_u_to_tk1() >> Transform::decompose_tk1_to_rzrx())
-        .apply(circ);
+    Transform::decompose_tk1_to_rzrx().apply(circ);
     const StateVector sv = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv, sv2));
   }

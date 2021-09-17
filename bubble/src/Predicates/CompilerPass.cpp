@@ -380,8 +380,6 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = RebaseTket();
     } else if (passname == "RebaseHQS") {
       pp = RebaseHQS();
-    } else if (passname == "RebaseIBM") {
-      pp = RebaseIBM();
     } else if (passname == "RebaseQuil") {
       pp = RebaseQuil();
     } else if (passname == "RebaseProjectQ") {

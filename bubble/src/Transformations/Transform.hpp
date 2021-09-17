@@ -257,10 +257,6 @@ class Transform {
   // Singleqs: tk1
   static Transform rebase_tket();
 
-  // Multiqs: CX
-  // Singlqs: U1, U2, U3
-  static Transform rebase_IBM();
-
   // Multiqs: CZ
   // Singleqs: PhasedX, Rz
   static Transform rebase_cirq();

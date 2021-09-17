@@ -293,8 +293,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
   GIVEN("Full compilation sequence") {
     SquareGrid grid(1, 5);
     std::vector<PassPtr> passes = {
-        DecomposeBoxes(), RebaseTket(), gen_default_mapping_pass(grid),
-        RebaseIBM()};
+        DecomposeBoxes(), RebaseTket(), gen_default_mapping_pass(grid)};
     REQUIRE_NOTHROW(SequencePass(passes));
   }
 }

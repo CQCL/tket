@@ -43,7 +43,6 @@ using namespace tket;
   DO(SquashTK1)                           \
   DO(RebaseCirq)                          \
   DO(RebaseTket)                          \
-  DO(RebaseIBM)                           \
   DO(RebaseQuil)                          \
   DO(RebasePyZX)                          \
   DO(RebaseProjectQ)                      \

@@ -47,7 +47,6 @@ from pytket.passes import (  # type: ignore
     FullPeepholeOptimise,
     RebaseCirq,
     RebaseHQS,
-    RebaseIBM,
     RebaseProjectQ,
     RebasePyZX,
     RebaseQuil,
@@ -312,7 +311,7 @@ def test_RebaseOQC_and_SynthesiseOQC() -> None:
     u_with_oqc = circ2.get_unitary()
     assert np.allclose(u, u_with_oqc)
 
-    RebaseIBM().apply(circ2)
+    RebaseTket().apply(circ2)
     u2 = circ2.get_unitary()
     assert np.allclose(u, u2)
 
@@ -323,10 +322,10 @@ def test_RebaseOQC_and_SynthesiseOQC() -> None:
 
     RebaseOQC().apply(circ3)
     assert oqc_gateset_pred.verify(circ3)
-    u_before_rebase_IBM = circ3.get_unitary()
-    assert np.allclose(u, u_before_rebase_IBM)
+    u_before_rebase_tket = circ3.get_unitary()
+    assert np.allclose(u, u_before_rebase_tket)
 
-    RebaseIBM().apply(circ3)
+    RebaseTket().apply(circ3)
     u3 = circ3.get_unitary()
     assert np.allclose(u, u3)
 
@@ -565,7 +564,6 @@ def test_library_pass_config() -> None:
     )
     assert RebaseCirq().to_dict()["StandardPass"]["name"] == "RebaseCirq"
     assert RebaseHQS().to_dict()["StandardPass"]["name"] == "RebaseHQS"
-    assert RebaseIBM().to_dict()["StandardPass"]["name"] == "RebaseIBM"
     assert RebaseProjectQ().to_dict()["StandardPass"]["name"] == "RebaseProjectQ"
     assert RebasePyZX().to_dict()["StandardPass"]["name"] == "RebasePyZX"
     assert RebaseQuil().to_dict()["StandardPass"]["name"] == "RebaseQuil"

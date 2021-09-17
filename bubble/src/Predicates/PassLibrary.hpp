@@ -47,7 +47,6 @@ const PassPtr &SquashHQS();
 
 const PassPtr &RebaseCirq();
 const PassPtr &RebaseTket();
-const PassPtr &RebaseIBM();
 const PassPtr &RebaseQuil();
 const PassPtr &RebasePyZX();
 const PassPtr &RebaseProjectQ();

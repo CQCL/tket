@@ -348,9 +348,6 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "RebaseHQS", &RebaseHQS, "Converts all gates to ZZMax, PhasedX and Rz.");
   m.def(
-      "RebaseIBM", &RebaseIBM,
-      "Converts all gates to CX, U1, U2 and U3 gates. Deprecated.");
-  m.def(
       "RebaseProjectQ", &RebaseProjectQ,
       "Converts all gates to SWAP, CRz, CX, CZ, H, X, Y, Z, S, T, V, Rx, "
       "Ry and Rz.");

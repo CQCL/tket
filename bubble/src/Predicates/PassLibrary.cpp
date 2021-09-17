@@ -87,13 +87,6 @@ const PassPtr &RebaseTket() {
   return pp;
 }
 
-const PassPtr &RebaseIBM() {
-  static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_IBM(), {OpType::CX, OpType::U3, OpType::U2, OpType::U1},
-      true, "RebaseIBM"));
-  return pp;
-}
-
 const PassPtr &RebaseQuil() {
   static const PassPtr pp(gate_translation_pass(
       Transform::rebase_quil(), {OpType::CZ, OpType::Rx, OpType::Rz}, true,

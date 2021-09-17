@@ -516,8 +516,8 @@ SCENARIO("Test clifford reduction") {
     REQUIRE(circ.count_gates(OpType::CY) == 0);
     REQUIRE(circ.count_gates(OpType::CZ) == 0);
     REQUIRE(circ.count_gates(OpType::ZZMax) == 1);
-    Transform::rebase_IBM().apply(circ);
-    Transform::rebase_IBM().apply(copy);
+    Transform::rebase_tket().apply(circ);
+    Transform::rebase_tket().apply(copy);
     REQUIRE(test_unitary_comparison(circ, copy));
   }
   GIVEN("Circuit with no possible reductions from this method") {

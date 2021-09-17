@@ -130,12 +130,6 @@ Circuit Transform::tk1_to_u(
   return c;
 }
 
-Transform Transform::rebase_IBM() {
-  return rebase_factory(
-      {OpType::CX}, CircPool::CX(), {OpType::U1, OpType::U2, OpType::U3},
-      Transform::tk1_to_u);
-}
-
 Circuit Transform::tk1_to_PhasedXRz(
     const Expr& alpha, const Expr& beta, const Expr& gamma) {
   Circuit c(1);
