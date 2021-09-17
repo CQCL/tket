@@ -332,9 +332,6 @@ PYBIND11_MODULE(passes, m) {
       "DecomposeMultiQubitsCX", &DecomposeMultiQubitsCX,
       "Converts all multi-qubit gates into CX and single-qubit gates.");
   m.def(
-      "DecomposeMultiQubitsIBM", &DecomposeMultiQubitsCX,
-      "Same as :py:meth:`DecomposeMultiQubitsCX` (deprecated).");
-  m.def(
       "DecomposeSingleQubitsTK1", &DecomposeSingleQubitsTK1,
       "Converts all single-qubit gates into TK1 gates.");
   m.def(

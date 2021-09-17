@@ -16,6 +16,8 @@ Minor new features:
 
 API changes:
 
+* The deprecated pass `DecomposeMultiQubitsIBM` is removed.
+
 
 
 0.14.0 (September 2021)
