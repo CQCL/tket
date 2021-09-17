@@ -249,5 +249,4 @@ setup(
         # with access to less git history.
         "git_describe_command": "git describe --dirty --tags --long --match *[0-9]* --abbrev=14",
     },
-    setup_requires=["setuptools_scm"],
 )
