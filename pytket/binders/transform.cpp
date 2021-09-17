@@ -114,9 +114,6 @@ PYBIND11_MODULE(transform, m) {
 
       /* REBASE TRANSFORMS */
       .def_static(
-          "RebaseToQiskit", &Transform::rebase_IBM,
-          "Rebase from any gate set into U1, U2, U3, CX. Deprecated.")
-      .def_static(
           "RebaseToRzRx", &Transform::decompose_ZX,
           "Rebase single qubit gates into Rz, Rx.")
       .def_static(

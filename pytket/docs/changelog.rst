@@ -16,7 +16,7 @@ Minor new features:
 
 API changes:
 
-* The deprecated pass `DecomposeMultiQubitsIBM` is removed.
+* The deprecated transform ``RebaseToQiskit`` and the deprecated pass ``DecomposeMultiQubitsIBM`` are removed.
 
 
 
