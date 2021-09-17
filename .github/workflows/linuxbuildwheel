@@ -19,8 +19,7 @@ set -evu
 # Choose a Python to install conan
 export PYBIN=/opt/python/cp39-cp39/bin
 
-# urllib3 because of TKET-865 (remove when conan fixes its dependencies)
-${PYBIN}/pip install urllib3==1.25.11 conan
+${PYBIN}/pip install conan
 
 export CONAN_CMD=${PYBIN}/conan
 

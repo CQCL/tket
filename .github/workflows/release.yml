@@ -49,9 +49,8 @@ jobs:
       with:
         python-version: 3.7
     - name: Build bubble
-      # urllib3 because of TKET-865 (remove when conan fixes its dependencies)
       run: |
-        pip install urllib3==1.25.11 conan
+        pip install conan
         conan profile new tket --detect --force
         conan config set general.revisions_enabled=1
         conan create --profile=tket --build=missing recipes/tket
@@ -129,9 +128,8 @@ jobs:
         echo "::set-output name=bubble_hash::${bubble_hash}"
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Install conan
-      # urllib3 because of TKET-865 (remove when conan fixes its dependencies)
       run: |
-        pip install urllib3==1.25.11 conan
+        pip install conan
         conan profile new tket --detect
         conan config set general.revisions_enabled=1
         $conan_cmd = (gcm conan).Path

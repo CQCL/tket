@@ -32,9 +32,8 @@ jobs:
           ${{ runner.os }}-tket-ccache-
     - name: Install conan
       id: conan
-      # urllib3 because of TKET-865 (remove when conan fixes its dependencies)
       run: |
-        pip install urllib3==1.25.11 conan
+        pip install conan
         conan_cmd=/home/runner/.local/bin/conan
         ${conan_cmd} profile new tket --detect
         ${conan_cmd} profile update settings.compiler.libcxx=libstdc++11 tket
