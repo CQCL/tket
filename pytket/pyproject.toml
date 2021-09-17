@@ -1,3 +1,6 @@
 [build-system]
-requires = ["setuptools", "wheel", "setuptools_scm", "conan"]
+requires = ["setuptools>=45", "wheel", "setuptools_scm>=6.2", "conan"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+root = ".."
