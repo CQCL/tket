@@ -958,7 +958,7 @@ if __name__ == "__main__":
     test_rebase_pass_generation()
     test_routing_and_placement_pass()
     test_default_mapping_pass()
-    test_SynthesiseIBM_creation()
+    test_SynthesiseTket_creation()
     test_directed_cx_pass()
     test_decompose_routing_gates_to_cxs()
     test_user_defined_swap_decomp()
