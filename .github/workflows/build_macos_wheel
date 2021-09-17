@@ -16,8 +16,7 @@
 
 set -evu
 
-# urllib3 because of TKET-865 (remove when conan fixes its dependencies)
-pip install urllib3==1.25.11 conan delocate wheel
+pip install conan delocate wheel
 cd $GITHUB_WORKSPACE/pytket
 export PYVER=`python -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'`
 python setup.py bdist_wheel -d "$GITHUB_WORKSPACE/tmp/tmpwheel_${PYVER}" --plat-name=macosx_10_14_x86_64
