@@ -168,7 +168,7 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     auto circ = get_test_circ();
     Transform::pairwise_pauli_gadgets().apply(circ);
     Transform::singleq_clifford_sweep().apply(circ);
-    Transform::synthesise_IBM().apply(circ);
+    Transform::synthesise_tket().apply(circ);
     Circuit expected(4);
     expected.add_op<unsigned>(OpType::V, {0});
     expected.add_op<unsigned>(OpType::H, {1});
@@ -179,7 +179,7 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     add_1qb_gates(expected, OpType::Vdg, {2, 3});
     Transform::decompose_multi_qubits_CX().apply(expected);
     Transform::singleq_clifford_sweep().apply(expected);
-    Transform::synthesise_IBM().apply(expected);
+    Transform::synthesise_tket().apply(expected);
     const auto m1 = tket_sim::get_unitary(circ);
     const auto m2 = tket_sim::get_unitary(expected);
     Eigen::MatrixXcd m = m1 * m2.conjugate().transpose();

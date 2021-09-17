@@ -37,7 +37,7 @@ from pytket.circuit import (  # type: ignore
 from pytket.circuit.display import render_circuit_as_html
 
 from pytket.pauli import Pauli  # type: ignore
-from pytket.passes import PauliSimp, CliffordSimp, SynthesiseIBM, DecomposeBoxes, RemoveRedundancies  # type: ignore
+from pytket.passes import PauliSimp, CliffordSimp, SynthesiseTket, DecomposeBoxes, RemoveRedundancies  # type: ignore
 from pytket.predicates import CompilationUnit  # type: ignore
 from pytket.transform import Transform, PauliSynthStrat  # type: ignore
 
@@ -119,7 +119,7 @@ def test_circuit_name() -> None:
     c.Measure(3, 3)
     c.Measure(1, 1)
 
-    SynthesiseIBM().apply(c)
+    SynthesiseTket().apply(c)
     assert c.name == name
 
 

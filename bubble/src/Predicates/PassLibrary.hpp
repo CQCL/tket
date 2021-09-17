@@ -19,7 +19,6 @@
 
 namespace tket {
 
-const PassPtr &SynthesiseIBM();
 const PassPtr &SynthesiseTket();
 const PassPtr &SynthesiseHQS();
 const PassPtr &SynthesiseOQC();
@@ -41,6 +40,10 @@ const PassPtr &DecomposeBoxes();
  */
 const PassPtr &ComposePhasePolyBoxes();
 const PassPtr &USquashIBM();
+
+/** Squash sequences of single-qubit gates to TK1 gates. */
+const PassPtr &SquashTK1();
+
 const PassPtr &SquashHQS();
 
 const PassPtr &RebaseCirq();

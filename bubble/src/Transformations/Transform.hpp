@@ -304,13 +304,6 @@ class Transform {
 
   /*Synthesis passes preserve connectivity */
 
-  // synthesis of circuit to IBM
-  // Expects: Any gates
-  // Produces: CX, U1, U2, U3
-  // TODO:: Add Clifford optimisations here, restricting to those that preserve
-  // CX direction/don't add swaps
-  static Transform synthesise_IBM();
-
   /**
    * Synthesise a circuit consisting of CX and TK1 gates only.
    */

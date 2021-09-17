@@ -18,7 +18,7 @@ from pytket.passes import (  # type: ignore
     BasePass,
     SequencePass,
     RemoveRedundancies,
-    SynthesiseIBM,
+    SynthesiseTket,
     SynthesiseHQS,
     SynthesiseUMD,
     RepeatUntilSatisfiedPass,
@@ -26,6 +26,7 @@ from pytket.passes import (  # type: ignore
     RepeatPass,
     DecomposeMultiQubitsCX,
     USquashIBM,
+    SquashTK1,
     RepeatWithMetricPass,
     RebaseCustom,
     EulerAngleReduction,
@@ -119,7 +120,7 @@ def test_compilation_unit_generation() -> None:
 
 
 def test_compilerpass_seq() -> None:
-    passlist = [SynthesiseIBM(), SynthesiseOQC(), SynthesiseUMD(), SynthesiseHQS()]
+    passlist = [SynthesiseTket(), SynthesiseOQC(), SynthesiseUMD(), SynthesiseHQS()]
     seq = SequencePass(passlist)
     circ = Circuit(2)
     circ.X(0).Z(1)
@@ -142,11 +143,11 @@ def test_rebase_pass_generation() -> None:
     coms = cu.circuit.get_commands()
     assert str(coms) == "[PhasedX(1, 0) q[0];, PhasedX(1, 0.5) q[1];]"
 
-    passlist = [pz_rebase, SynthesiseIBM()]
+    passlist = [pz_rebase, SynthesiseTket()]
     seq = SequencePass(passlist)
     assert seq.apply(cu)
     coms = cu.circuit.get_commands()
-    assert str(coms) == "[U3(1, 0, 1) q[0];, U3(1, 0, 0) q[1];]"
+    assert str(coms) == "[tk1(0.5, 1, 0.5) q[0];, tk1(0.5, 1, 3.5) q[1];]"
 
 
 def test_custom_combinator_generation() -> None:
@@ -208,7 +209,7 @@ def test_routing_and_placement_pass() -> None:
     assert cu.initial_map == expected_map
 
     # check composition works ok
-    seq_pass = SequencePass([SynthesiseIBM(), placement, routing, SynthesiseUMD()])
+    seq_pass = SequencePass([SynthesiseTket(), placement, routing, SynthesiseUMD()])
     cu2 = CompilationUnit(circ.copy())
     assert seq_pass.apply(cu2)
     assert cu2.initial_map == expected_map
@@ -331,29 +332,29 @@ def test_RebaseOQC_and_SynthesiseOQC() -> None:
     assert np.allclose(u, u3)
 
 
-def test_SynthesiseIBM_creation() -> None:
-    # my_synthesise_ibm should act on a CompilationUnit the same as SynthesiseIBM
+def test_SynthesiseTket_creation() -> None:
+    # my_synthesise_tket should act on a CompilationUnit the same as SynthesiseTket
     seq_pass = SequencePass([CommuteThroughMultis(), RemoveRedundancies()])
     repeat_pass = RepeatPass(seq_pass)
     synth_pass = SequencePass(
-        [DecomposeMultiQubitsCX(), RemoveRedundancies(), repeat_pass, USquashIBM()]
+        [DecomposeMultiQubitsCX(), RemoveRedundancies(), repeat_pass, SquashTK1()]
     )
-    small_part = SequencePass([RemoveRedundancies(), repeat_pass, USquashIBM()])
+    small_part = SequencePass([RemoveRedundancies(), repeat_pass, SquashTK1()])
     repeat_synth_pass = RepeatWithMetricPass(small_part, gate_count_metric)
-    my_synthesise_ibm = SequencePass([synth_pass, repeat_synth_pass])
+    my_synthesise_tket = SequencePass([synth_pass, repeat_synth_pass])
 
     circ1 = Circuit(3)
     circ1.X(0).Y(1).CX(0, 1).Z(0).Rx(1.3, 1).CX(0, 1).Rz(0.4, 0).Ry(0.53, 0).H(1).H(
         2
     ).Rx(1.5, 2).Rx(0.5, 2).H(2)
     cu1 = CompilationUnit(circ1)
-    my_synthesise_ibm.apply(cu1)
+    my_synthesise_tket.apply(cu1)
     circ2 = cu1.circuit
     assert circ2.n_gates == 2
 
     cu2 = CompilationUnit(circ1)
     # Blue Peter voice: here's one I made earlier
-    SynthesiseIBM().apply(cu2)
+    SynthesiseTket().apply(cu2)
     circ3 = cu2.circuit
     assert circ3.n_gates == 2
     assert circ2 == circ3
@@ -368,8 +369,8 @@ def test_SynthesiseIBM_creation() -> None:
     cu5 = CompilationUnit(circ1)
     assert routing_pass.apply(cu3)
 
-    full_pass = SequencePass([SynthesiseIBM(), routing_pass])
-    full_pass2 = SequencePass([my_synthesise_ibm, routing_pass])
+    full_pass = SequencePass([SynthesiseTket(), routing_pass])
+    full_pass2 = SequencePass([my_synthesise_tket, routing_pass])
     assert full_pass.apply(cu4)
     assert full_pass2.apply(cu5)
     assert cu4.circuit == cu5.circuit
@@ -576,7 +577,7 @@ def test_library_pass_config() -> None:
         RemoveRedundancies().to_dict()["StandardPass"]["name"] == "RemoveRedundancies"
     )
     assert SynthesiseHQS().to_dict()["StandardPass"]["name"] == "SynthesiseHQS"
-    assert SynthesiseIBM().to_dict()["StandardPass"]["name"] == "SynthesiseIBM"
+    assert SynthesiseTket().to_dict()["StandardPass"]["name"] == "SynthesiseTket"
     assert SynthesiseOQC().to_dict()["StandardPass"]["name"] == "SynthesiseOQC"
     assert SynthesiseUMD().to_dict()["StandardPass"]["name"] == "SynthesiseUMD"
     assert USquashIBM().to_dict()["StandardPass"]["name"] == "USquashIBM"

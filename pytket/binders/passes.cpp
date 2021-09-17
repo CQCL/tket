@@ -376,10 +376,6 @@ PYBIND11_MODULE(passes, m) {
       "Optimises and converts a circuit consisting of CX and single-qubit "
       "gates into one containing only ZZMax, PhasedX and Rz.");
   m.def(
-      "SynthesiseIBM", &SynthesiseIBM,
-      "Optimises and converts all gates to CX, U1, U2 and U3 gates. "
-      "Deprecated.");
-  m.def(
       "SynthesiseTket", &SynthesiseTket,
       "Optimises and converts all gates to CX and TK1 gates.");
   m.def(
@@ -393,6 +389,9 @@ PYBIND11_MODULE(passes, m) {
       "Squash U1, U2 and U3 gates by converting to them to Rz-Ry-Rz "
       "sequences and back. The only single-qubit gates in the resulting "
       "circuit are U1 and U3. Deprecated.");
+  m.def(
+      "SquashTK1", &SquashTK1,
+      "Squash sequences of single-qubit gates to TK1 gates.");
   m.def(
       "SquashHQS", &SquashHQS,
       "Squash Rz and PhasedX gate sequences into an optimal form.");

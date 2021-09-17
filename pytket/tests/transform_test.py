@@ -183,7 +183,7 @@ def test_three_qubit_squash() -> None:
 
 def test_basic_rebases() -> None:
     c = get_test_circuit()
-    Transform.RebaseToQiskit().apply(c)
+    Transform.RebaseToTket().apply(c)
     assert c.n_gates_of_type(OpType.Rz) == 0
     assert c.n_gates_of_type(OpType.Rx) == 0
     Transform.RebaseToRzRx().apply(c)
@@ -199,7 +199,7 @@ def test_basic_rebases() -> None:
 def test_post_routing() -> None:
     c = get_test_circuit()
     Transform.OptimisePostRouting().apply(c)
-    assert c.n_gates_of_type(OpType.U3) == 11
+    assert c.n_gates_of_type(OpType.TK1) == 12
     assert c.n_gates_of_type(OpType.CX) == 12
 
 
@@ -260,7 +260,7 @@ def test_list_sequencing() -> None:
     t_list = [
         Transform.OptimisePhaseGadgets(CXConfigType.Star),
         Transform.OptimiseCliffords(),
-        Transform.RebaseToQiskit(),
+        Transform.RebaseToTket(),
     ]
     Transform.sequence(t_list).apply(c)
     assert c.n_gates_of_type(OpType.CX) == 8

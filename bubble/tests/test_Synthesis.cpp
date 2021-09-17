@@ -19,6 +19,7 @@
 #include "Circuit/CircUtils.hpp"
 #include "CircuitsForTesting.hpp"
 #include "Gate/Rotation.hpp"
+#include "OpType/OpType.hpp"
 #include "Ops/MetaOp.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
@@ -215,11 +216,12 @@ SCENARIO(
     test1.add_op<unsigned>(OpType::Y, {3});
 
     WHEN("Synthesis is performed") {
-      Transform::synthesise_IBM().apply(test1);
+      Transform::synthesise_tket().apply(test1);
       BGL_FORALL_VERTICES(v, test1.dag, DAG) {
+        OpType optype = test1.get_OpType_from_Vertex(v);
         bool finished_synth =
-            ((test1.detect_boundary_Op(v)) || (test1.detect_u_op(v)) ||
-             (test1.get_OpType_from_Vertex(v) == OpType::CX));
+            ((test1.detect_boundary_Op(v)) || (optype == OpType::tk1) ||
+             (optype == OpType::CX));
         REQUIRE(finished_synth);
       }
       REQUIRE_NOTHROW(test1.get_slices());
@@ -231,8 +233,8 @@ SCENARIO(
     circ.add_blank_wires(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    WHEN("Circuit is synthesised to IBM") {
-      Transform::synthesise_IBM().apply(circ);
+    WHEN("Circuit is synthesised to TK1") {
+      Transform::synthesise_tket().apply(circ);
       THEN(
           "Resulting circuit is empty (apart from input/output "
           "vertices") {
@@ -253,7 +255,7 @@ SCENARIO(
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     WHEN("Circuit is synthesised") {
-      Transform::synthesise_IBM().apply(circ);
+      Transform::synthesise_tket().apply(circ);
       THEN("Resulting circuit still contains the CXs") {
         REQUIRE(circ.n_vertices() == 6);
         circ.get_slices();
@@ -265,7 +267,7 @@ SCENARIO(
     Circuit circ;
     int width = 6;
     circ.add_blank_wires(width);
-    Transform::synthesise_IBM().apply(circ);
+    Transform::synthesise_tket().apply(circ);
     circ.assert_valid();
     SliceVec slices = circ.get_slices();
     REQUIRE(slices.size() == 0);
@@ -1616,7 +1618,7 @@ SCENARIO("Test synthesise_UMD") {
     StateVector sv1 = tket_sim::get_statevector(circ);
 
     REQUIRE(Transform::synthesise_UMD().apply(circ));
-    REQUIRE(Transform::synthesise_IBM().apply(circ));
+    REQUIRE(Transform::synthesise_tket().apply(circ));
     StateVector sv2 = tket_sim::get_statevector(circ);
 
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv1, sv2));
@@ -1633,7 +1635,7 @@ SCENARIO("Test synthesise_UMD") {
     REQUIRE(circ.count_gates(OpType::Rz) == 1);
     REQUIRE(circ.count_gates(OpType::XXPhase) == 1);
 
-    REQUIRE(Transform::synthesise_IBM().apply(circ));
+    REQUIRE(Transform::synthesise_tket().apply(circ));
     StateVector sv2 = tket_sim::get_statevector(circ);
 
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv1, sv2));
@@ -1646,7 +1648,7 @@ SCENARIO("Test synthesise_UMD") {
     StateVector sv1 = tket_sim::get_statevector(circ);
 
     REQUIRE(Transform::synthesise_UMD().apply(circ));
-    REQUIRE(Transform::synthesise_IBM().apply(circ));
+    REQUIRE(Transform::synthesise_tket().apply(circ));
     StateVector sv2 = tket_sim::get_statevector(circ);
 
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv1, sv2));
@@ -1746,7 +1748,7 @@ SCENARIO("Test barrier blocks transforms successfully") {
     circ.add_op<unsigned>(OpType::Rz, 0.6, {0});
     circ.add_barrier(uvec{0});
     circ.add_op<unsigned>(OpType::Rx, 0.8, {0});
-    REQUIRE(Transform::synthesise_IBM().apply(circ));
+    REQUIRE(Transform::synthesise_tket().apply(circ));
     REQUIRE(circ.depth() == 2);
     REQUIRE(circ.depth_by_type(OpType::Barrier) == 1);
   }

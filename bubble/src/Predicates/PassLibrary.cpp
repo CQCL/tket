@@ -49,12 +49,6 @@ static PassPtr gate_translation_pass(
   return ptr;
 }
 
-const PassPtr &SynthesiseIBM() {
-  static const PassPtr pp(gate_translation_pass(
-      Transform::synthesise_IBM(),
-      {OpType::U1, OpType::U2, OpType::U3, OpType::CX}, true, "SynthesiseIBM"));
-  return pp;
-}
 const PassPtr &SynthesiseTket() {
   static const PassPtr pp(gate_translation_pass(
       Transform::synthesise_tket(), {OpType::tk1, OpType::CX}, true,
@@ -351,6 +345,21 @@ const PassPtr &USquashIBM() {
     // record pass config
     nlohmann::json j;
     j["name"] = "USquashIBM";
+    return std::make_shared<StandardPass>(s_ps, t, postcon, j);
+  }());
+  return pp;
+}
+
+const PassPtr &SquashTK1() {
+  static const PassPtr pp([]() {
+    Transform t = Transform::squash_1qb_to_tk1();
+    PredicatePtrMap s_ps;
+    PredicateClassGuarantees g_postcons{
+        {typeid(GateSetPredicate), Guarantee::Clear}};
+    PostConditions postcon{s_ps, g_postcons, Guarantee::Preserve};
+    // record pass config
+    nlohmann::json j;
+    j["name"] = "SquashTK1";
     return std::make_shared<StandardPass>(s_ps, t, postcon, j);
   }());
   return pp;
