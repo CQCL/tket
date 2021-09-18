@@ -33,6 +33,8 @@ def libfile(name):
 
 class TketTestsTestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
+    options = {"with_coverage": [True, False]}
+    default_options = {"with_coverage": False}
     keep_imports = True
 
     def imports(self):
