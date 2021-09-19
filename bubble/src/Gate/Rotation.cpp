@@ -432,7 +432,8 @@ std::vector<double> tk1_angles_from_unitary(const Eigen::Matrix2cd &U) {
 
     // Assume b=1 and compute a.
     // (b'=3, a'=a+2) is the other possibility but the unitary is the same.
-    b = 1; a = 2 * std::arg(v) / PI;
+    b = 1;
+    a = 2 * std::arg(v) / PI;
   } else if (std::abs(v) < EPS) {  // special case, b = 0 or 2
     // u = e^{i pi (a+c)/2}
 
@@ -441,7 +442,8 @@ std::vector<double> tk1_angles_from_unitary(const Eigen::Matrix2cd &U) {
 
     // Assume b=0 and compute a.
     // (b'=2, a'=a+2) is the other possibility but the unitary is the same.
-    b = 0; a = 2 * std::arg(u) / PI;
+    b = 0;
+    a = 2 * std::arg(u) / PI;
   } else {  // general case
     // s0^2 + z0^2 - x0^2 - y0^2 = cos(pi b)
     double t = s0 * s0 + z0 * z0 - x0 * x0 - y0 * y0;
