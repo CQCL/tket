@@ -30,9 +30,6 @@ find_file(CONANBUILDINFO_FILE conanbuildinfo.cmake HINTS ${CMAKE_BINARY_DIR})
 include(${CONANBUILDINFO_FILE})
 conan_basic_setup()
 
-# BOOST_ALLOW_DEPRECATED_HEADERS: Silence messages about deprecated headers during build.
-set(CMAKE_CXX_FLAGS "-DBOOST_ALLOW_DEPRECATED_HEADERS")
-
 IF (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX /wd4068 /wd4267 /wd4805 /Wv:18 /EHsc")
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS yes)
