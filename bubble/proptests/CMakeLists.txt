@@ -37,8 +37,6 @@ IF (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /Zc:__cplusplus")
 ENDIF()
 
-set(Boost_USE_STATIC_LIBS ON)
-
 set(PROPTEST_EXE proptest)
 
 
