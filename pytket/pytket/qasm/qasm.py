@@ -473,7 +473,12 @@ def circuit_to_qasm_io(
     for command in circ:
         op = command.op
         optype = op.type
+        params = op.params if optype in _tk_to_qasm_params else None
         args = command.args
+        if optype == OpType.TK1:
+            # convert to U3
+            optype = OpType.U3
+            params = [op.params[1], op.params[0] - 0.5, op.params[2] + 0.5]
         if optype == OpType.RangePredicate:
             range_preds[args[-1]] = command
             # attach predicate to bit,
@@ -550,11 +555,9 @@ def circuit_to_qasm_io(
                 f"{args[-1]} = {args[0]} {_classical_gatestr_map[opstr]} {args[1]};\n"
             )
             continue
-        has_params = False
         if optype in _tk_to_qasm_noparams:
             opstr = _tk_to_qasm_noparams[optype]
         elif optype in _tk_to_qasm_params:
-            has_params = True
             opstr = _tk_to_qasm_params[optype]
         else:
             raise QASMUnsupportedError(
@@ -565,8 +568,7 @@ def circuit_to_qasm_io(
                 "Gate of type {} is not defined in header {}.inc".format(opstr, header)
             )
         stream_out.write(opstr)
-        if has_params:
-            params = op.params
+        if params is not None:
             stream_out.write("(")
             for i in range(len(params)):
                 reduced = True

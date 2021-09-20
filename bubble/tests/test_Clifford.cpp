@@ -28,18 +28,15 @@ namespace tket {
 
 SCENARIO("Test decomposition into Clifford gates", "[transform]") {
   GIVEN(
-      "STD FORM: A u3 instance for each set of parameters fitting "
+      "STD FORM: A TK1 instance for each set of parameters fitting "
       "multiples of pi/2") {
-    for (int theta = 0; theta < 4; theta++) {
-      for (int phi = 0; phi < 4; phi++) {
-        for (int lambda = 0; lambda < 4; lambda++) {
+    for (int alpha = 0; alpha < 4; alpha++) {
+      for (int beta = 0; beta < 4; beta++) {
+        for (int gamma = 0; gamma < 4; gamma++) {
           Circuit circ(1);
-          std::vector<Expr> params({theta * 0.5, phi * 0.5, lambda * 0.5});
-          circ.add_op<unsigned>(OpType::U3, params, {0});
-          Transform::decompose_u_to_tk1().apply(circ);
+          std::vector<Expr> params({alpha * 0.5, beta * 0.5, gamma * 0.5});
+          circ.add_op<unsigned>(OpType::tk1, params, {0});
           Eigen::Matrix2cd m_before = get_matrix_from_circ(circ);
-          Transform::decompose_single_qubits_TK1().apply(circ);
-          if (circ.n_gates() == 0) continue;
           REQUIRE(Transform::decompose_cliffords_std().apply(circ));
           Transform::decompose_single_qubits_TK1().apply(circ);
           Eigen::Matrix2cd m_after = get_matrix_from_circ(circ);
@@ -516,8 +513,8 @@ SCENARIO("Test clifford reduction") {
     REQUIRE(circ.count_gates(OpType::CY) == 0);
     REQUIRE(circ.count_gates(OpType::CZ) == 0);
     REQUIRE(circ.count_gates(OpType::ZZMax) == 1);
-    Transform::rebase_IBM().apply(circ);
-    Transform::rebase_IBM().apply(copy);
+    Transform::rebase_tket().apply(circ);
+    Transform::rebase_tket().apply(copy);
     REQUIRE(test_unitary_comparison(circ, copy));
   }
   GIVEN("Circuit with no possible reductions from this method") {

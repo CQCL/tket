@@ -162,7 +162,7 @@ def test_symbolic_write() -> None:
     circ2 = circuit_from_qasm(fname)
     coms2 = circ2.get_commands()
     new_params = coms2[0].op.params
-    assert new_params[0] == 0.5 + a
+    assert new_params[2] == 1.0 + a
 
 
 def test_custom_gate() -> None:

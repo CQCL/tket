@@ -108,10 +108,6 @@ class Transform {
    */
   static Transform decompose_single_qubits_TK1();
 
-  // Expects: Rz, Ry and any multi-qubit gates
-  // Produces: U1, U3 and any multi-qubit gates
-  static Transform decompose_ZYZ_to_U();
-
   /**
    * Starting with Rz, Ry and multi-qubit gates, replace all singles with TK1.
    */
@@ -131,11 +127,6 @@ class Transform {
   // Expects: any gates
   // Produces: Rx, Ry and any multi-qubit gates
   static Transform decompose_XY();
-
-  // converts all U-gates into tk1 gates
-  // Expects: U-gates and any multi-qubit gates
-  // Produces: tk1-gates and any multi-qubit gates
-  static Transform decompose_u_to_tk1();
 
   // converts all tk1-gates into rzrx gates
   // Expects: tk1-gates and any multi-qubit gates
@@ -261,10 +252,6 @@ class Transform {
   // Singleqs: tk1
   static Transform rebase_tket();
 
-  // Multiqs: CX
-  // Singlqs: U1, U2, U3
-  static Transform rebase_IBM();
-
   // Multiqs: CZ
   // Singleqs: PhasedX, Rz
   static Transform rebase_cirq();
@@ -303,13 +290,6 @@ class Transform {
   //////////////////
 
   /*Synthesis passes preserve connectivity */
-
-  // synthesis of circuit to IBM
-  // Expects: Any gates
-  // Produces: CX, U1, U2, U3
-  // TODO:: Add Clifford optimisations here, restricting to those that preserve
-  // CX direction/don't add swaps
-  static Transform synthesise_IBM();
 
   /**
    * Synthesise a circuit consisting of CX and TK1 gates only.
@@ -452,11 +432,6 @@ class Transform {
   // Produces: Rx, Rz, and any multi-qubit gates
   static Transform reduce_XZ_chains();
 
-  // 1qb squashing for IBM U1/U2/U3 gates by converting to -Rz-Ry_Rz- and back
-  // Expects: Any gates
-  // Produces: U1, U3, and any multi-qubit gates
-  static Transform u_squash_IBM();
-
   /**
    * Squash all single-qubit gates to TK1.
    */
@@ -580,9 +555,6 @@ class Transform {
       const Expr& alpha, const Expr& beta, const Expr& gamma);
 
   static Circuit tk1_to_tk1(
-      const Expr& alpha, const Expr& beta, const Expr& gamma);
-
-  static Circuit tk1_to_u(
       const Expr& alpha, const Expr& beta, const Expr& gamma);
 
   static Circuit tk1_to_rzsx(

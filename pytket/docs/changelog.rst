@@ -13,10 +13,14 @@ Minor new features:
   `XXPhase3` gates using the new `CXConfigType.MultiQGate` config type.
 * New method ``compilation_pass_from_script`` to construct a compilation pass
   from a simple textual specification.
+* New transform ``RebaseToTket`` and new pass ``SquashToTK1``.
 
 API changes:
 
-
+* The deprecated transform ``RebaseToQiskit`` and the deprecated passes
+  ``DecomposeMultiQubitsIBM``, ``RebaseIBM``, ``SynthesiseIBM`` and
+  ``USquashIBM`` are removed.
+* The transform ``OptimisePostRouting`` transforms to TK1 instead of U gates.
 
 0.14.0 (September 2021)
 -----------------------

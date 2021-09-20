@@ -19,6 +19,7 @@
 #include "Circuit/CircUtils.hpp"
 #include "CircuitsForTesting.hpp"
 #include "Gate/Rotation.hpp"
+#include "OpType/OpType.hpp"
 #include "Ops/MetaOp.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
@@ -215,11 +216,12 @@ SCENARIO(
     test1.add_op<unsigned>(OpType::Y, {3});
 
     WHEN("Synthesis is performed") {
-      Transform::synthesise_IBM().apply(test1);
+      Transform::synthesise_tket().apply(test1);
       BGL_FORALL_VERTICES(v, test1.dag, DAG) {
+        OpType optype = test1.get_OpType_from_Vertex(v);
         bool finished_synth =
-            ((test1.detect_boundary_Op(v)) || (test1.detect_u_op(v)) ||
-             (test1.get_OpType_from_Vertex(v) == OpType::CX));
+            ((test1.detect_boundary_Op(v)) || (optype == OpType::tk1) ||
+             (optype == OpType::CX));
         REQUIRE(finished_synth);
       }
       REQUIRE_NOTHROW(test1.get_slices());
@@ -231,8 +233,8 @@ SCENARIO(
     circ.add_blank_wires(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    WHEN("Circuit is synthesised to IBM") {
-      Transform::synthesise_IBM().apply(circ);
+    WHEN("Circuit is synthesised to TK1") {
+      Transform::synthesise_tket().apply(circ);
       THEN(
           "Resulting circuit is empty (apart from input/output "
           "vertices") {
@@ -253,7 +255,7 @@ SCENARIO(
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     WHEN("Circuit is synthesised") {
-      Transform::synthesise_IBM().apply(circ);
+      Transform::synthesise_tket().apply(circ);
       THEN("Resulting circuit still contains the CXs") {
         REQUIRE(circ.n_vertices() == 6);
         circ.get_slices();
@@ -265,7 +267,7 @@ SCENARIO(
     Circuit circ;
     int width = 6;
     circ.add_blank_wires(width);
-    Transform::synthesise_IBM().apply(circ);
+    Transform::synthesise_tket().apply(circ);
     circ.assert_valid();
     SliceVec slices = circ.get_slices();
     REQUIRE(slices.size() == 0);
@@ -273,12 +275,10 @@ SCENARIO(
   GIVEN("A UCCSD example") {
     auto circ = CircuitsForTesting::get().uccsd;
     const StateVector s0 = tket_sim::get_statevector(circ);
-    REQUIRE(circ.count_gates(OpType::U3) == 0);
-    REQUIRE(circ.count_gates(OpType::U1) == 0);
+    REQUIRE(circ.count_gates(OpType::tk1) == 0);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
-    Transform::u_squash_IBM().apply(circ);
-    REQUIRE(circ.count_gates(OpType::U3) == 10);
-    REQUIRE(circ.count_gates(OpType::U1) == 2);
+    Transform::squash_1qb_to_tk1().apply(circ);
+    REQUIRE(circ.count_gates(OpType::tk1) == 12);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
     const StateVector s1 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
@@ -803,419 +803,17 @@ SCENARIO("Test commutation through CXsw", "[transform]") {
     REQUIRE(circ.count_gates(OpType::Rx) == 12);
     REQUIRE(circ.count_gates(OpType::Rz) == 2);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
-    REQUIRE(circ.count_gates(OpType::U3) == 0);
-    REQUIRE(circ.count_gates(OpType::U1) == 0);
+    REQUIRE(circ.count_gates(OpType::tk1) == 0);
     Transform::commute_through_multis().apply(circ);
     REQUIRE(circ.count_gates(OpType::Rx) == 12);
     REQUIRE(circ.count_gates(OpType::Rz) == 2);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
-    REQUIRE(circ.count_gates(OpType::U3) == 0);
-    REQUIRE(circ.count_gates(OpType::U1) == 0);
-    Transform::u_squash_IBM().apply(circ);
+    REQUIRE(circ.count_gates(OpType::tk1) == 0);
+    Transform::squash_1qb_to_tk1().apply(circ);
     REQUIRE(circ.count_gates(OpType::Rx) == 0);
     REQUIRE(circ.count_gates(OpType::Rz) == 0);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
-    REQUIRE(circ.count_gates(OpType::U3) == 11);
-    REQUIRE(circ.count_gates(OpType::U1) == 1);
-    const StateVector s1 = tket_sim::get_statevector(circ);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
-  }
-}
-
-SCENARIO("Test for u_squash", "[transform][u_squash]") {
-  GIVEN("A basic 2-gate circuit made of U3s") {
-    Circuit circ(1);
-    std::vector<Expr> params = {0.89, 0.2, 0.1};
-    Vertex v1 = circ.add_op<unsigned>(OpType::tk1, params, {0});
-    params = {0.1309, 1.87, 0.1};
-    Vertex v2 = circ.add_op<unsigned>(OpType::tk1, params, {0});
-    Eigen::Matrix2cd m1 = get_matrix(circ, v1);
-    Eigen::Matrix2cd m2 = get_matrix(circ, v2);
-    Eigen::Matrix2cd m_before = m2 * m1;
-    (Transform::rebase_IBM() >> Transform::u_squash_IBM() >>
-     Transform::decompose_u_to_tk1())
-        .apply(circ);
-    Eigen::Matrix2cd m_after = get_matrix_from_circ(circ);
-    m_before /= m_before(0, 0);
-    m_after /= m_after(0, 0);
-    for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < 2; ++j) {
-        double compare1 = real(m_before(i, j));
-        double compare2 = real(m_after(i, j));
-        double compare3 = imag(m_before(i, j));
-        double compare4 = imag(m_after(i, j));
-        REQUIRE((std::abs(compare1 - compare2) < ERR_EPS));
-        REQUIRE((std::abs(compare3 - compare4) < ERR_EPS));
-      }
-    }
-  }
-  GIVEN("A basic 2-gate circuit made of a U2 and U3") {
-    Circuit circ;
-    circ.add_blank_wires(1);
-    std::vector<Expr> params = {1.52123, 0.5883};
-    Vertex v1 = circ.add_op<unsigned>(OpType::U2, params, {0});
-    params = {0.30903, 0.999, 1.9};
-    Vertex v2 = circ.add_op<unsigned>(OpType::U3, params, {0});
-    Transform::decompose_u_to_tk1().apply(circ);
-    Eigen::Matrix2cd m_before = get_matrix_from_circ(circ);
-    (Transform::u_squash_IBM() >> Transform::decompose_u_to_tk1()).apply(circ);
-    Eigen::Matrix2cd m_after = get_matrix_from_circ(circ);
-    // std::cout << "U2xU3 squashing\n";
-    // std::cout << m_before << std::endl;
-    // std::cout << m_after << std::endl;
-    m_before /= m_before(0, 0);
-    m_after /= m_after(0, 0);
-    for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < 2; ++j) {
-        double compare1 = real(m_before(i, j));
-        double compare2 = real(m_after(i, j));
-        double compare3 = imag(m_before(i, j));
-        double compare4 = imag(m_after(i, j));
-        REQUIRE((std::abs(compare1 - compare2) < ERR_EPS));
-        REQUIRE((std::abs(compare3 - compare4) < ERR_EPS));
-      }
-    }
-  }
-  GIVEN("A basic 2-gate circuit made of a U3 and U2") {
-    Circuit circ;
-    circ.add_blank_wires(1);
-    std::vector<Expr> params = {0.30903, 0.999, 1.9};
-    Vertex v1 = circ.add_op<unsigned>(OpType::U3, params, {0});
-    params = {1.2123, 0.5883};
-    Vertex v2 = circ.add_op<unsigned>(OpType::U2, params, {0});
-    Transform::decompose_u_to_tk1().apply(circ);
-    Eigen::Matrix2cd m_before = get_matrix_from_circ(circ);
-    (Transform::u_squash_IBM() >> Transform::decompose_u_to_tk1()).apply(circ);
-    Eigen::Matrix2cd m_after = get_matrix_from_circ(circ);
-    // std::cout << "U3xU2 squashing\n";
-    // std::cout << m_before << std::endl;
-    // std::cout << m_after << std::endl;
-    m_before /= m_before(0, 0);
-    m_after /= m_after(0, 0);
-    for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < 2; ++j) {
-        double compare1 = real(m_before(i, j));
-        double compare2 = real(m_after(i, j));
-        double compare3 = imag(m_before(i, j));
-        double compare4 = imag(m_after(i, j));
-        REQUIRE((std::abs(compare1 - compare2) < ERR_EPS));
-        REQUIRE((std::abs(compare3 - compare4) < ERR_EPS));
-      }
-    }
-  }
-  GIVEN("A basic 2-gate circuit made of a U2 and U2") {
-    Circuit circ;
-    circ.add_blank_wires(1);
-    std::vector<Expr> params = {0.30903, 1.399};
-    Vertex v1 = circ.add_op<unsigned>(OpType::U2, params, {0});
-    params = {0.2123, 0.5883};
-    Vertex v2 = circ.add_op<unsigned>(OpType::U2, params, {0});
-    Transform::decompose_u_to_tk1().apply(circ);
-    Eigen::Matrix2cd m_before = get_matrix_from_circ(circ);
-    (Transform::u_squash_IBM() >> Transform::decompose_u_to_tk1()).apply(circ);
-    Eigen::Matrix2cd m_after = get_matrix_from_circ(circ);
-    // std::cout << "U2xU2 squashing\n";
-    // std::cout << m_before << std::endl;
-    // std::cout << m_after << std::endl;
-    m_before /= m_before(0, 0);
-    m_after /= m_after(0, 0);
-    for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < 2; ++j) {
-        double compare1 = real(m_before(i, j));
-        double compare2 = real(m_after(i, j));
-        double compare3 = imag(m_before(i, j));
-        double compare4 = imag(m_after(i, j));
-        REQUIRE((std::abs(compare1 - compare2) < ERR_EPS));
-        REQUIRE((std::abs(compare3 - compare4) < ERR_EPS));
-      }
-    }
-  }
-  GIVEN("A basic 2-gate circuit made of a U1 and U3") {
-    Circuit circ;
-    circ.add_blank_wires(1);
-    std::vector<Expr> params = {0.8474};
-    Vertex v1 = circ.add_op<unsigned>(OpType::U1, params, {0});
-    params = {0.30903, 0.45, 1.8};
-    Vertex v2 = circ.add_op<unsigned>(OpType::U3, params, {0});
-    Transform::decompose_u_to_tk1().apply(circ);
-    Eigen::Matrix2cd m_before = get_matrix_from_circ(circ);
-    (Transform::u_squash_IBM() >> Transform::decompose_u_to_tk1()).apply(circ);
-    Eigen::Matrix2cd m_after = get_matrix_from_circ(circ);
-    // std::cout << "U1xU3 squashing\n";
-    // std::cout << m_before << std::endl;
-    // std::cout << m_after << std::endl;
-    m_before /= m_before(0, 0);
-    m_after /= m_after(0, 0);
-    for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < 2; ++j) {
-        double compare1 = real(m_before(i, j));
-        double compare2 = real(m_after(i, j));
-        double compare3 = imag(m_before(i, j));
-        double compare4 = imag(m_after(i, j));
-        REQUIRE((std::abs(compare1 - compare2) < ERR_EPS));
-        REQUIRE((std::abs(compare3 - compare4) < ERR_EPS));
-      }
-    }
-  }
-  GIVEN("A basic 2-gate circuit made of a U3 and U1") {
-    Circuit circ;
-    circ.add_blank_wires(1);
-    std::vector<Expr> params = {1.6474, 0.05, 1.73123};
-    Vertex v1 = circ.add_op<unsigned>(OpType::U3, params, {0});
-    params = {1.30903};
-    Vertex v2 = circ.add_op<unsigned>(OpType::U1, params, {0});
-    Transform::decompose_u_to_tk1().apply(circ);
-    Eigen::Matrix2cd m_before = get_matrix_from_circ(circ);
-    (Transform::u_squash_IBM() >> Transform::decompose_u_to_tk1()).apply(circ);
-    Eigen::Matrix2cd m_after = get_matrix_from_circ(circ);
-    // std::cout << "U3xU1 squashing\n";
-    // std::cout << m_before << std::endl;
-    // std::cout << m_after << std::endl;
-    m_before /= m_before(0, 0);
-    m_after /= m_after(0, 0);
-    for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < 2; ++j) {
-        double compare1 = real(m_before(i, j));
-        double compare2 = real(m_after(i, j));
-        double compare3 = imag(m_before(i, j));
-        double compare4 = imag(m_after(i, j));
-        REQUIRE((std::abs(compare1 - compare2) < ERR_EPS));
-        REQUIRE((std::abs(compare3 - compare4) < ERR_EPS));
-      }
-    }
-  }
-  GIVEN("A basic 2-gate circuit made of a U1 and U2") {
-    Circuit circ;
-    circ.add_blank_wires(1);
-    std::vector<Expr> params = {0.06594};
-    Vertex v1 = circ.add_op<unsigned>(OpType::U1, params, {0});
-    params = {1.7842, 0.1021};
-    Vertex v2 = circ.add_op<unsigned>(OpType::U2, params, {0});
-    Transform::decompose_u_to_tk1().apply(circ);
-    Eigen::Matrix2cd m_before = get_matrix_from_circ(circ);
-    (Transform::u_squash_IBM() >> Transform::decompose_u_to_tk1()).apply(circ);
-    Eigen::Matrix2cd m_after = get_matrix_from_circ(circ);
-    // std::cout << "U1xU2 squashing\n";
-    // std::cout << m_before << std::endl;
-    // std::cout << m_after << std::endl;
-    m_before /= m_before(0, 0);
-    m_after /= m_after(0, 0);
-    for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < 2; ++j) {
-        double compare1 = real(m_before(i, j));
-        double compare2 = real(m_after(i, j));
-        double compare3 = imag(m_before(i, j));
-        double compare4 = imag(m_after(i, j));
-        REQUIRE((std::abs(compare1 - compare2) < ERR_EPS));
-        REQUIRE((std::abs(compare3 - compare4) < ERR_EPS));
-      }
-    }
-  }
-  GIVEN("A basic 2-gate circuit made of a U2 and U1") {
-    Circuit circ;
-    circ.add_blank_wires(1);
-    std::vector<Expr> params = {0.2830, 1.06474};
-    Vertex v1 = circ.add_op<unsigned>(OpType::U2, params, {0});
-    params = {0.81922};
-    Vertex v2 = circ.add_op<unsigned>(OpType::U1, params, {0});
-    Transform::decompose_u_to_tk1().apply(circ);
-    Eigen::Matrix2cd m_before = get_matrix_from_circ(circ);
-    (Transform::u_squash_IBM() >> Transform::decompose_u_to_tk1()).apply(circ);
-    Eigen::Matrix2cd m_after = get_matrix_from_circ(circ);
-    // std::cout << "U2xU1 squashing\n";
-    // std::cout << m_before << std::endl;
-    // std::cout << m_after << std::endl;
-    m_before /= m_before(0, 0);
-    m_after /= m_after(0, 0);
-    for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < 2; ++j) {
-        double compare1 = real(m_before(i, j));
-        double compare2 = real(m_after(i, j));
-        double compare3 = imag(m_before(i, j));
-        double compare4 = imag(m_after(i, j));
-        REQUIRE((std::abs(compare1 - compare2) < ERR_EPS));
-        REQUIRE((std::abs(compare3 - compare4) < ERR_EPS));
-      }
-    }
-  }
-  GIVEN("A basic 2-gate circuit made of a U1 and U1") {
-    Circuit circ;
-    circ.add_blank_wires(1);
-    std::vector<Expr> params = {1.2830};
-    Vertex v1 = circ.add_op<unsigned>(OpType::U1, params, {0});
-    params = {0.81922};
-    Vertex v2 = circ.add_op<unsigned>(OpType::U1, params, {0});
-    Transform::decompose_u_to_tk1().apply(circ);
-    Eigen::Matrix2cd m_before = get_matrix_from_circ(circ);
-    (Transform::u_squash_IBM() >> Transform::decompose_u_to_tk1()).apply(circ);
-    Eigen::Matrix2cd m_after = get_matrix_from_circ(circ);
-    // std::cout << "U1xU1 squashing\n";
-    // std::cout << m_before << std::endl;
-    // std::cout << m_after << std::endl;
-    m_before /= m_before(0, 0);
-    m_after /= m_after(0, 0);
-    for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < 2; ++j) {
-        double compare1 = real(m_before(i, j));
-        double compare2 = real(m_after(i, j));
-        double compare3 = imag(m_before(i, j));
-        double compare4 = imag(m_after(i, j));
-        REQUIRE((std::abs(compare1 - compare2) < ERR_EPS));
-        REQUIRE((std::abs(compare3 - compare4) < ERR_EPS));
-      }
-    }
-  }
-  GIVEN("A 99-gate circuit with angles read in from a file") {
-    Circuit circ(1);
-    VertexVec alL_vs;
-    std::fstream myfile("random_angles.txt", std::ios_base::in);
-    int count = 0;
-    for (unsigned n = 0; n < 99; ++n) {
-      double ang1, ang2, ang3;
-      myfile >> ang1;
-      myfile >> ang2;
-      myfile >> ang3;
-      std::vector<Expr> params = {ang1, ang2, ang3};
-      Vertex v = circ.add_op<unsigned>(OpType::U3, params, {0});
-      ++count;
-    }
-    Transform::decompose_u_to_tk1().apply(circ);
-    Eigen::Matrix2cd m_before = get_matrix_from_circ(circ);
-    (Transform::rebase_IBM() >> Transform::u_squash_IBM() >>
-     Transform::decompose_u_to_tk1())
-        .apply(circ);
-    Eigen::Matrix2cd m_after = get_matrix_from_circ(circ);
-    bool global_phase_accounted = false;
-
-    for (int i = 0; i < 2; ++i) {
-      if (!global_phase_accounted)
-        for (int j = 0; j < 2; ++j) {
-          if (std::abs(m_before(i, j)) > 0.5 && std::abs(m_after(i, j)) > 0.5) {
-            m_before /= m_before(i, j);
-            m_after /= m_after(i, j);
-            global_phase_accounted = true;
-            break;
-          }
-        }
-    }
-    REQUIRE(global_phase_accounted);
-    // std::cout << "99 gate circuit\n";
-    // std::cout << m_before << std::endl;
-    // std::cout << m_after << std::endl;
-    for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < 2; ++j) {
-        double compare1 = real(m_before(i, j));
-        double compare2 = real(m_after(i, j));
-        double compare3 = imag(m_before(i, j));
-        double compare4 = imag(m_after(i, j));
-        REQUIRE((std::abs(compare1 - compare2) < ERR_EPS));
-        REQUIRE((std::abs(compare3 - compare4) < ERR_EPS));
-      }
-    }
-  }
-  GIVEN("A 99-gate circuit with angles generated randomly") {
-    Circuit circ;
-    circ.add_blank_wires(1);
-    VertexVec alL_vs;
-    int count = 0;
-    srand(1234);
-    for (unsigned n = 0; n < 99; ++n) {
-      double ang1, ang2, ang3;
-      ang1 = frand(0., 2.);
-      ang2 = frand(0., 2.);
-      ang3 = frand(0., 3.);
-      std::vector<Expr> params = {ang1, ang2, ang3};
-      Vertex v = circ.add_op<unsigned>(OpType::U3, params, {0});
-      ++count;
-    }
-    Transform::decompose_u_to_tk1().apply(circ);
-    Eigen::Matrix2cd m_before = get_matrix_from_circ(circ);
-    (Transform::rebase_IBM() >> Transform::u_squash_IBM() >>
-     Transform::decompose_u_to_tk1())
-        .apply(circ);
-    Eigen::Matrix2cd m_after = get_matrix_from_circ(circ);
-    m_before /= m_before(0, 0);
-    m_after /= m_after(0, 0);
-    for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < 2; ++j) {
-        double compare1 = real(m_before(i, j));
-        double compare2 = real(m_after(i, j));
-        double compare3 = imag(m_before(i, j));
-        double compare4 = imag(m_after(i, j));
-        REQUIRE((std::abs(compare1 - compare2) < ERR_EPS));
-        REQUIRE((std::abs(compare3 - compare4) < ERR_EPS));
-      }
-    }
-  }
-  GIVEN("A short test case which broke in VQE") {
-    Circuit circ(1);
-    std::vector<Expr> u2_params = {0., 1.};
-    std::vector<Expr> u3_params = {0.5, -0.5, 0.5};
-    const Op_ptr op = get_op_ptr(OpType::U2, u2_params);
-    circ.add_op<unsigned>(op, {0});
-    circ.add_op<unsigned>(op, {0});
-    circ.add_op<unsigned>(OpType::U3, u3_params, {0});
-    circ.add_op<unsigned>(op, {0});
-    Transform::decompose_u_to_tk1().apply(circ);
-    Eigen::Matrix2cd m_before = get_matrix_from_circ(circ);
-    (Transform::rebase_IBM() >> Transform::u_squash_IBM() >>
-     Transform::decompose_u_to_tk1())
-        .apply(circ);
-    m_before /= m_before(0, 0);
-    Eigen::Matrix2cd m_after = get_matrix_from_circ(circ);
-    m_after /= m_after(0, 0);
-    V_iterator it, end;
-    for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < 2; ++j) {
-        double compare1 = real(m_before(i, j));
-        double compare2 = real(m_after(i, j));
-        double compare3 = imag(m_before(i, j));
-        double compare4 = imag(m_after(i, j));
-        REQUIRE((std::abs(compare1 - compare2) < ERR_EPS));
-        REQUIRE((std::abs(compare3 - compare4) < ERR_EPS));
-      }
-    }
-  }
-  GIVEN("Two Hadamards in a row") {
-    Circuit circ(1);
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_op<unsigned>(OpType::H, {0});
-    Transform::decompose_single_qubits_TK1().apply(circ);
-    Eigen::Matrix2cd m_before = get_matrix_from_circ(circ);
-    (Transform::rebase_IBM() >> Transform::u_squash_IBM() >>
-     Transform::decompose_u_to_tk1())
-        .apply(circ);
-    Eigen::Matrix2cd m_after = get_matrix_from_circ(circ);
-    // std::cout << "squishing hadamards\n";
-    // std::cout << circ.n_vertices() << std::endl;
-    m_before /= m_before(0, 0);
-    m_after /= m_after(0, 0);
-    // std::cout << m_before << std::endl;
-    // std::cout << m_after << std::endl;
-    for (int i = 0; i < 2; ++i) {
-      for (int j = 0; j < 2; ++j) {
-        double compare1 = real(m_before(i, j));
-        double compare2 = real(m_after(i, j));
-        double compare3 = imag(m_before(i, j));
-        double compare4 = imag(m_after(i, j));
-        // double arg1 = arg(m_before(i,j));
-        // double arg2 = arg(m_after(i,j));
-        REQUIRE((std::abs(compare1 - compare2) < ERR_EPS));
-        REQUIRE((std::abs(compare3 - compare4) < ERR_EPS));
-        // REQUIRE(((arg1<arg2+ERR_EPS)&&(arg1>arg2-ERR_EPS)));
-      }
-    }
-  }
-  GIVEN("A UCCSD example") {
-    auto circ = CircuitsForTesting::get().uccsd;
-    const StateVector s0 = tket_sim::get_statevector(circ);
-    REQUIRE(circ.count_gates(OpType::U3) == 0);
-    REQUIRE(circ.count_gates(OpType::U1) == 0);
-    REQUIRE(circ.count_gates(OpType::CX) == 12);
-    Transform::u_squash_IBM().apply(circ);
-    REQUIRE(circ.count_gates(OpType::U3) == 10);
-    REQUIRE(circ.count_gates(OpType::U1) == 2);
-    REQUIRE(circ.count_gates(OpType::CX) == 12);
+    REQUIRE(circ.count_gates(OpType::tk1) == 12);
     const StateVector s1 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
   }
@@ -1308,7 +906,7 @@ SCENARIO("Molmer-Sorensen gate converions") {
     REQUIRE(success);
     success = Transform::decompose_MolmerSorensen().apply(circ);
     REQUIRE(success);
-    Transform::u_squash_IBM().apply(circ);
+    Transform::squash_1qb_to_tk1().apply(circ);
     REQUIRE(circ.n_vertices() == 5);
   }
   GIVEN("A single CX gate") {
@@ -1338,7 +936,7 @@ SCENARIO("Decomposition of multi-qubit gates") {
   GIVEN("A single CU1 gate") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CU1, 0.3, {0, 1});
-    bool success = Transform::rebase_IBM().apply(circ);
+    bool success = Transform::rebase_tket().apply(circ);
     REQUIRE(success);
     REQUIRE(circ.n_vertices() > 7);
   }
@@ -1361,7 +959,7 @@ SCENARIO("Decomposition of multi-qubit gates") {
     circ.add_op<unsigned>(OpType::Collapse, {1});
     circ.add_op<unsigned>(OpType::Collapse, {2});
     circ.add_op<unsigned>(OpType::Collapse, {3});
-    bool success = Transform::rebase_IBM().apply(circ);
+    bool success = Transform::rebase_tket().apply(circ);
     REQUIRE(success);
     REQUIRE(circ.count_gates(OpType::CU1) == 0);
   }
@@ -1616,7 +1214,7 @@ SCENARIO("Test synthesise_UMD") {
     StateVector sv1 = tket_sim::get_statevector(circ);
 
     REQUIRE(Transform::synthesise_UMD().apply(circ));
-    REQUIRE(Transform::synthesise_IBM().apply(circ));
+    REQUIRE(Transform::synthesise_tket().apply(circ));
     StateVector sv2 = tket_sim::get_statevector(circ);
 
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv1, sv2));
@@ -1633,7 +1231,7 @@ SCENARIO("Test synthesise_UMD") {
     REQUIRE(circ.count_gates(OpType::Rz) == 1);
     REQUIRE(circ.count_gates(OpType::XXPhase) == 1);
 
-    REQUIRE(Transform::synthesise_IBM().apply(circ));
+    REQUIRE(Transform::synthesise_tket().apply(circ));
     StateVector sv2 = tket_sim::get_statevector(circ);
 
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv1, sv2));
@@ -1646,7 +1244,7 @@ SCENARIO("Test synthesise_UMD") {
     StateVector sv1 = tket_sim::get_statevector(circ);
 
     REQUIRE(Transform::synthesise_UMD().apply(circ));
-    REQUIRE(Transform::synthesise_IBM().apply(circ));
+    REQUIRE(Transform::synthesise_tket().apply(circ));
     StateVector sv2 = tket_sim::get_statevector(circ);
 
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv1, sv2));
@@ -1746,7 +1344,7 @@ SCENARIO("Test barrier blocks transforms successfully") {
     circ.add_op<unsigned>(OpType::Rz, 0.6, {0});
     circ.add_barrier(uvec{0});
     circ.add_op<unsigned>(OpType::Rx, 0.8, {0});
-    REQUIRE(Transform::synthesise_IBM().apply(circ));
+    REQUIRE(Transform::synthesise_tket().apply(circ));
     REQUIRE(circ.depth() == 2);
     REQUIRE(circ.depth_by_type(OpType::Barrier) == 1);
   }
@@ -1803,12 +1401,11 @@ SCENARIO("Test tk1 gate decomp for some gates") {
     std::vector<unsigned> qbs(n_qbs);
     std::iota(qbs.begin(), qbs.end(), 0);
     circ.add_op<unsigned>(map_pair.first, params, qbs);
-    Transform::rebase_IBM().apply(circ);
+    Transform::rebase_tket().apply(circ);
     Circuit circ2 = circ;
     Transform::decompose_ZX().apply(circ2);
     const StateVector sv2 = tket_sim::get_statevector(circ2);
-    (Transform::decompose_u_to_tk1() >> Transform::decompose_tk1_to_rzrx())
-        .apply(circ);
+    Transform::decompose_tk1_to_rzrx().apply(circ);
     const StateVector sv = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv, sv2));
   }

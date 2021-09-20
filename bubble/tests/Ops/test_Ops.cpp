@@ -519,7 +519,7 @@ SCENARIO("Custom Gates") {
 // Where should this test go?
 // It could be argued that it belongs more in
 // Circuit/test_Boxes.cpp, or Simulation/test_TketSim.cpp.
-// Or maybe even test_Synthesis.cpp, since they all use synthesise_IBM
+// Or maybe even test_Synthesis.cpp, since they all use synthesise_tket
 SCENARIO("Two-qubit entangling gates") {
   GIVEN("ESWAP") {
     // ESWAP(a) =exp(-½iπa*SWAP)
@@ -535,7 +535,7 @@ SCENARIO("Two-qubit entangling gates") {
     REQUIRE(test_unitary_comparison(c0, c1));
     // Rebase
     CompilationUnit cu(c1);
-    SynthesiseIBM()->apply(cu);
+    SynthesiseTket()->apply(cu);
     REQUIRE(test_unitary_comparison(c0, cu.get_circ_ref()));
   }
   GIVEN("FSim") {
@@ -557,7 +557,7 @@ SCENARIO("Two-qubit entangling gates") {
     REQUIRE(test_unitary_comparison(c0, c1));
     // Rebase
     CompilationUnit cu(c1);
-    SynthesiseIBM()->apply(cu);
+    SynthesiseTket()->apply(cu);
     REQUIRE(test_unitary_comparison(c0, cu.get_circ_ref()));
   }
   GIVEN("Sycamore") {
@@ -569,7 +569,7 @@ SCENARIO("Two-qubit entangling gates") {
     c0.add_box(ubox, {0, 1});
     Circuit c1(2);
     c1.add_op<unsigned>(OpType::Sycamore, {0, 1});
-    Transform::synthesise_IBM().apply(c1);
+    Transform::synthesise_tket().apply(c1);
     REQUIRE(test_unitary_comparison(c0, c1));
   }
   GIVEN("ISWAPMax") {
@@ -580,7 +580,7 @@ SCENARIO("Two-qubit entangling gates") {
     c0.add_box(ubox, {0, 1});
     Circuit c1(2);
     c1.add_op<unsigned>(OpType::ISWAPMax, {0, 1});
-    Transform::synthesise_IBM().apply(c1);
+    Transform::synthesise_tket().apply(c1);
     REQUIRE(test_unitary_comparison(c0, c1));
   }
   GIVEN("PhasedISWAP") {
@@ -597,7 +597,7 @@ SCENARIO("Two-qubit entangling gates") {
     c0.add_box(ubox, {0, 1});
     Circuit c1(2);
     c1.add_op<unsigned>(OpType::PhasedISWAP, {p, t}, {0, 1});
-    Transform::synthesise_IBM().apply(c1);
+    Transform::synthesise_tket().apply(c1);
     REQUIRE(test_unitary_comparison(c0, c1));
   }
 }

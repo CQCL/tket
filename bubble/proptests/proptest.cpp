@@ -26,7 +26,7 @@
 using namespace tket;
 
 #define ALL_PASSES(DO)                    \
-  DO(SynthesiseIBM)                       \
+  DO(SynthesiseTket)                      \
   DO(SynthesiseHQS)                       \
   DO(SynthesiseUMD)                       \
   DO(PeepholeOptimise2Q)                  \
@@ -40,10 +40,9 @@ using namespace tket;
   DO(DecomposeSingleQubitsTK1)            \
   DO(DecomposeBoxes)                      \
   DO(ComposePhasePolyBoxes)               \
-  DO(USquashIBM)                          \
+  DO(SquashTK1)                           \
   DO(RebaseCirq)                          \
   DO(RebaseTket)                          \
-  DO(RebaseIBM)                           \
   DO(RebaseQuil)                          \
   DO(RebasePyZX)                          \
   DO(RebaseProjectQ)                      \

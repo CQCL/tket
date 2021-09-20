@@ -114,8 +114,8 @@ PYBIND11_MODULE(transform, m) {
 
       /* REBASE TRANSFORMS */
       .def_static(
-          "RebaseToQiskit", &Transform::rebase_IBM,
-          "Rebase from any gate set into U1, U2, U3, CX. Deprecated.")
+          "RebaseToTket", &Transform::rebase_tket,
+          "Rebase from any gate set into TK1, CX.")
       .def_static(
           "RebaseToRzRx", &Transform::decompose_ZX,
           "Rebase single qubit gates into Rz, Rx.")
@@ -181,10 +181,9 @@ PYBIND11_MODULE(transform, m) {
 
       /* OPTIMISATION TRANSFORMS */
       .def_static(
-          "OptimisePostRouting", &Transform::synthesise_IBM,
+          "OptimisePostRouting", &Transform::synthesise_tket,
           "Fast optimisation pass, performing basic simplifications. "
-          "Works on any circuit, giving the result in U1, U2, U3, CX "
-          "gates. "
+          "Works on any circuit, giving the result in TK1 and CX gates. "
           "If all multi-qubit gates are CXs, then this preserves "
           "their placement and orientation, so it is safe to perform "
           "after routing.")

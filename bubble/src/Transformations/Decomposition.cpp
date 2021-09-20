@@ -155,71 +155,6 @@ Transform Transform::decompose_single_qubits_TK1() {
   return Transform(convert_singleqs_TK1);
 }
 
-Transform Transform::decompose_ZYZ_to_U() {
-  return Transform([](Circuit &circ) {
-    bool success = false;
-    const Expr zero(0);
-    VertexList bin;
-    VertexVec inputs = circ.q_inputs();
-    for (VertexVec::iterator i = inputs.begin(); i != inputs.end(); ++i) {
-      Edge e = circ.get_nth_out_edge(*i, 0);
-      Vertex v = circ.target(e);
-      while (!is_final_q_type(circ.get_OpType_from_Vertex(v))) {
-        if (circ.get_OpType_from_Vertex(v) == OpType::Rz) {
-          const Op_ptr v_g = circ.get_Op_ptr_from_Vertex(v);
-          Expr angle_1 = v_g->get_params()[0];
-          Edge e1 = circ.get_next_edge(v, e);
-          Vertex v2 = circ.target(e1);
-          if (circ.get_OpType_from_Vertex(v2) == OpType::Ry) {
-            const Op_ptr v2_g = circ.get_Op_ptr_from_Vertex(v2);
-            Expr angle_2 = v2_g->get_params()[0];
-            Edge e2 = circ.get_next_edge(v2, e1);
-            Vertex v3 = circ.target(e2);
-            bin.push_back(v2);
-            circ.remove_vertex(
-                v2, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-            Expr angle_3 = zero;
-            if (circ.get_OpType_from_Vertex(v3) == OpType::Rz) {
-              const Op_ptr v3_g = circ.get_Op_ptr_from_Vertex(v3);
-              angle_3 = v3_g->get_params()[0];
-              circ.remove_vertex(
-                  v3, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-              bin.push_back(v3);
-            }
-            std::vector<Expr> new_params = {angle_2, angle_3, angle_1};
-            circ.dag[v] = {get_op_ptr(OpType::U3, new_params)};
-            circ.add_phase(-(angle_1 + angle_3) / 2);
-          } else {
-            circ.dag[v] = {get_op_ptr(OpType::U1, angle_1)};
-            circ.add_phase(-angle_1 / 2);
-          }
-        } else if (circ.get_OpType_from_Vertex(v) == OpType::Ry) {
-          const Op_ptr v_g = circ.get_Op_ptr_from_Vertex(v);
-          Expr angle_2 = v_g->get_params()[0];
-          Expr angle_3 = zero;
-          Edge e1 = circ.get_next_edge(v, e);
-          Vertex v2 = circ.target(e1);
-          if (circ.get_OpType_from_Vertex(v2) == OpType::Rz) {
-            const Op_ptr v2_g = circ.get_Op_ptr_from_Vertex(v2);
-            angle_3 = v2_g->get_params()[0];
-            circ.remove_vertex(
-                v2, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-            bin.push_back(v2);
-          }
-          std::vector<Expr> new_params = {angle_2, angle_3, zero};
-          circ.dag[v] = {get_op_ptr(OpType::U3, new_params)};
-          circ.add_phase(-angle_3 / 2);
-        }
-        e = circ.get_next_edge(v, e);
-        v = circ.target(e);
-      }
-    }
-    circ.remove_vertices(
-        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
-    return success;
-  });
-}
-
 Transform Transform::decompose_ZYZ_to_TK1() {
   return Transform([](Circuit &circ) {
     bool success = false;
@@ -289,23 +224,6 @@ Transform Transform::decompose_ZX() { return Transform(convert_to_zxz); }
 Transform Transform::decompose_ZY() { return Transform(convert_to_zyz); }
 
 Transform Transform::decompose_XY() { return Transform(convert_to_xyx); }
-
-Transform Transform::decompose_u_to_tk1() {
-  return Transform([](Circuit &circ) {
-    bool success = false;
-    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-      if (circ.detect_u_op(v)) {
-        success = true;
-        const Op_ptr g = circ.get_Op_ptr_from_Vertex(v);
-        const std::vector<Expr> &angles = as_gate_ptr(g)->get_tk1_angles();
-        circ.dag[v] = {
-            get_op_ptr(OpType::tk1, {angles[0], angles[1], angles[2]})};
-        circ.add_phase(angles[3]);
-      }
-    }
-    return success;
-  });
-}
 
 Transform Transform::decompose_tk1_to_rzrx() {
   return Transform([](Circuit &circ) {

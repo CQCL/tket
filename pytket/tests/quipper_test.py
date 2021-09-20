@@ -98,7 +98,7 @@ def test_quipper_4() -> None:
         circ = circuit_from_quipper(fpath)
         n_qubits = circ.n_qubits
         Transform.DecomposeBoxes().apply(circ)
-        Transform.RebaseToQiskit().apply(circ)
+        Transform.RebaseToTket().apply(circ)
         a = circ.get_unitary()
         with open(fpath + ".simout") as f:
             simout = f.read()

@@ -635,12 +635,6 @@ bool Circuit::detect_boundary_Op(const Vertex &vertex) const {
   return is_boundary_q_type(type) || is_boundary_c_type(type);
 }
 
-// check if the vertex corresponds to an Op of one of the single-qubit IBM U ops
-bool Circuit::detect_u_op(const Vertex &vert) const {
-  OpType type = get_OpType_from_Vertex(vert);
-  return ((type == OpType::U1) || (type == OpType::U2) || (type == OpType::U3));
-}
-
 bool Circuit::detect_singleq_unitary_op(const Vertex &vert) const {
   const OpDesc desc = get_OpDesc_from_Vertex(vert);
   return desc.is_gate() && desc.is_singleq_unitary();

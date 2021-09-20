@@ -244,7 +244,7 @@ SCENARIO("Specific previous failures") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::PhasedISWAP, {0.509675, 1.34623}, {0, 1});
     const auto u1 = tket_sim::get_unitary(circ);
-    Transform::synthesise_IBM().apply(circ);
+    Transform::synthesise_tket().apply(circ);
     const auto u2 = tket_sim::get_unitary(circ);
     CHECK(u1.isApprox(u2));
 

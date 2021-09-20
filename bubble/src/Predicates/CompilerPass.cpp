@@ -380,8 +380,6 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = RebaseTket();
     } else if (passname == "RebaseHQS") {
       pp = RebaseHQS();
-    } else if (passname == "RebaseIBM") {
-      pp = RebaseIBM();
     } else if (passname == "RebaseQuil") {
       pp = RebaseQuil();
     } else if (passname == "RebaseProjectQ") {
@@ -398,14 +396,14 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = RemoveRedundancies();
     } else if (passname == "SynthesiseHQS") {
       pp = SynthesiseHQS();
-    } else if (passname == "SynthesiseIBM") {
-      pp = SynthesiseIBM();
+    } else if (passname == "SynthesiseTket") {
+      pp = SynthesiseTket();
     } else if (passname == "SynthesiseOQC") {
       pp = SynthesiseOQC();
     } else if (passname == "SynthesiseUMD") {
       pp = SynthesiseUMD();
-    } else if (passname == "USquashIBM") {
-      pp = USquashIBM();
+    } else if (passname == "SquashTK1") {
+      pp = SquashTK1();
     } else if (passname == "FlattenRegisters") {
       pp = FlattenRegisters();
     } else if (passname == "SquashCustom") {

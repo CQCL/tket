@@ -33,7 +33,7 @@ from pytket.passes import (  # type: ignore
     BasePass,
     RebasePyZX,
     SequencePass,
-    SynthesiseIBM,
+    SynthesiseTket,
     FullPeepholeOptimise,
     DecomposeBoxes,
     SimplifyInitial,
@@ -78,7 +78,7 @@ class TketSimBackend(Backend):
         if optimisation_level == 0:
             return SequencePass([DecomposeBoxes(), RebasePyZX()])
         elif optimisation_level == 1:
-            return SequencePass([DecomposeBoxes(), SynthesiseIBM(), RebasePyZX()])
+            return SequencePass([DecomposeBoxes(), SynthesiseTket(), RebasePyZX()])
         else:
             return SequencePass(
                 [DecomposeBoxes(), FullPeepholeOptimise(), RebasePyZX()]
@@ -128,7 +128,7 @@ class TketSimShotBackend(TketSimBackend):
             return SequencePass(
                 [
                     DecomposeBoxes(),
-                    SynthesiseIBM(),
+                    SynthesiseTket(),
                     RebasePyZX(),
                     SimplifyInitial(allow_classical=False, create_all_qubits=True),
                 ]

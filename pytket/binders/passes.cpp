@@ -332,9 +332,6 @@ PYBIND11_MODULE(passes, m) {
       "DecomposeMultiQubitsCX", &DecomposeMultiQubitsCX,
       "Converts all multi-qubit gates into CX and single-qubit gates.");
   m.def(
-      "DecomposeMultiQubitsIBM", &DecomposeMultiQubitsCX,
-      "Same as :py:meth:`DecomposeMultiQubitsCX` (deprecated).");
-  m.def(
       "DecomposeSingleQubitsTK1", &DecomposeSingleQubitsTK1,
       "Converts all single-qubit gates into TK1 gates.");
   m.def(
@@ -350,9 +347,6 @@ PYBIND11_MODULE(passes, m) {
   m.def("RebaseCirq", &RebaseCirq, "Converts all gates to CZ, PhasedX and Rz.");
   m.def(
       "RebaseHQS", &RebaseHQS, "Converts all gates to ZZMax, PhasedX and Rz.");
-  m.def(
-      "RebaseIBM", &RebaseIBM,
-      "Converts all gates to CX, U1, U2 and U3 gates. Deprecated.");
   m.def(
       "RebaseProjectQ", &RebaseProjectQ,
       "Converts all gates to SWAP, CRz, CX, CZ, H, X, Y, Z, S, T, V, Rx, "
@@ -379,10 +373,6 @@ PYBIND11_MODULE(passes, m) {
       "Optimises and converts a circuit consisting of CX and single-qubit "
       "gates into one containing only ZZMax, PhasedX and Rz.");
   m.def(
-      "SynthesiseIBM", &SynthesiseIBM,
-      "Optimises and converts all gates to CX, U1, U2 and U3 gates. "
-      "Deprecated.");
-  m.def(
       "SynthesiseTket", &SynthesiseTket,
       "Optimises and converts all gates to CX and TK1 gates.");
   m.def(
@@ -392,10 +382,8 @@ PYBIND11_MODULE(passes, m) {
       "SynthesiseUMD", &SynthesiseUMD,
       "Optimises and converts all gates to XXPhase, PhasedX and Rz.");
   m.def(
-      "USquashIBM", &USquashIBM,
-      "Squash U1, U2 and U3 gates by converting to them to Rz-Ry-Rz "
-      "sequences and back. The only single-qubit gates in the resulting "
-      "circuit are U1 and U3. Deprecated.");
+      "SquashTK1", &SquashTK1,
+      "Squash sequences of single-qubit gates to TK1 gates.");
   m.def(
       "SquashHQS", &SquashHQS,
       "Squash Rz and PhasedX gate sequences into an optimal form.");

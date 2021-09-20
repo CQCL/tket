@@ -47,20 +47,6 @@ Transform Transform::clifford_simp(bool allow_swaps) {
          squash_1qb_to_tk1();
 }
 
-Transform Transform::synthesise_IBM() {
-  Transform seq =
-      Transform::commute_through_multis() >> Transform::remove_redundancies();
-  Transform repeat = Transform::repeat(seq);
-  Transform synth = Transform::decompose_multi_qubits_CX() >>
-                    Transform::remove_redundancies() >> repeat >>
-                    Transform::u_squash_IBM();
-  Transform small_part =
-      Transform::remove_redundancies() >> repeat >> Transform::u_squash_IBM();
-  Transform repeat_synth = Transform::repeat_with_metric(
-      small_part, [](const Circuit &circ) { return circ.n_vertices(); });
-  return synth >> repeat_synth;
-}
-
 Transform Transform::synthesise_tket() {
   Transform seq =
       Transform::commute_through_multis() >> Transform::remove_redundancies();

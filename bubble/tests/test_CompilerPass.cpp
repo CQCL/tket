@@ -162,7 +162,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     PassPtr pz_rebase = gen_rebase_pass(
         {OpType::CX}, cx, {OpType::PhasedX, OpType::Rz},
         Transform::tk1_to_PhasedXRz);
-    PassPtr all_passes = SynthesiseIBM() >> cp_route >> pz_rebase;
+    PassPtr all_passes = SynthesiseTket() >> cp_route >> pz_rebase;
 
     REQUIRE(all_passes->apply(cu));
     REQUIRE(cu.check_all_predicates());
@@ -171,7 +171,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
       REQUIRE(cu.check_all_predicates());
     }
     WHEN("Make incorrect sequence") {
-      PassPtr bad_pass = cp_route >> SynthesiseIBM();
+      PassPtr bad_pass = cp_route >> SynthesiseTket();
       bad_pass->apply(cu);
       REQUIRE(!cu.check_all_predicates());
     }
@@ -183,8 +183,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     circ.add_op<unsigned>(OpType::CH, {0, 2});
     circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3});
     circ.add_op<unsigned>(OpType::CZ, {0, 1});
-    OpTypeSet ots = {
-        OpType::CX, OpType::U1, OpType::U2, OpType::U3, OpType::SWAP};
+    OpTypeSet ots = {OpType::CX, OpType::tk1, OpType::SWAP};
     PredicatePtr gsp = std::make_shared<GateSetPredicate>(ots);
     SquareGrid grid(2, 3);
 
@@ -200,7 +199,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     PassPtr cp_route = gen_full_mapping_pass(grid, pp, {50, 0, 0, 0});
 
     PassPtr all_passes = SynthesiseHQS() >> SynthesiseOQC() >>
-                         SynthesiseUMD() >> SynthesiseIBM() >> cp_route;
+                         SynthesiseUMD() >> SynthesiseTket() >> cp_route;
     REQUIRE(all_passes->apply(cu));
     REQUIRE(cu.check_all_predicates());
   }
@@ -294,8 +293,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
   GIVEN("Full compilation sequence") {
     SquareGrid grid(1, 5);
     std::vector<PassPtr> passes = {
-        DecomposeBoxes(), RebaseTket(), gen_default_mapping_pass(grid),
-        RebaseIBM()};
+        DecomposeBoxes(), RebaseTket(), gen_default_mapping_pass(grid)};
     REQUIRE_NOTHROW(SequencePass(passes));
   }
 }
@@ -322,7 +320,7 @@ SCENARIO("Construct sequence pass") {
 
 SCENARIO("Construct invalid sequence passes from vector") {
   std::vector<PassPtr> invalid_pass_to_combo{
-      SynthesiseHQS(), SynthesiseOQC(), SynthesiseUMD(), SynthesiseIBM()};
+      SynthesiseHQS(), SynthesiseOQC(), SynthesiseUMD(), SynthesiseTket()};
   for (const PassPtr& pass : invalid_pass_to_combo) {
     std::vector<PassPtr> passes = {pass};
     OpTypeSet ots = {OpType::CX};
@@ -376,14 +374,14 @@ SCENARIO("Test RepeatWithMetricPass") {
 }
 
 SCENARIO("Track initial and final maps throughout compilation") {
-  GIVEN("SynthesiseIBM should not affect them") {
+  GIVEN("SynthesiseTket should not affect them") {
     Circuit circ(5);
     add_2qb_gates(circ, OpType::CY, {{0, 3}, {1, 4}, {1, 0}, {2, 1}});
     circ.add_op<unsigned>(OpType::SWAP, {3, 4});
     circ.add_op<unsigned>(OpType::Z, {4});
     circ.replace_SWAPs();
     CompilationUnit cu(circ);
-    SynthesiseIBM()->apply(cu);
+    SynthesiseTket()->apply(cu);
     for (auto pair : cu.get_initial_map_ref().left) {
       REQUIRE(pair.first == pair.second);
     }

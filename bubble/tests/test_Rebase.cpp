@@ -277,21 +277,19 @@ SCENARIO("Building rebases with rebase_factory") {
   GIVEN("A UCCSD example") {
     auto circ = CircuitsForTesting::get().uccsd;
     const StateVector s0 = tket_sim::get_statevector(circ);
-    Transform::rebase_IBM().apply(circ);
+    Transform::rebase_tket().apply(circ);
     REQUIRE(circ.count_gates(OpType::Rz) == 0);
     REQUIRE(circ.count_gates(OpType::Rx) == 0);
     const StateVector s1 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
     Transform::decompose_ZX().apply(circ);
-    REQUIRE(circ.count_gates(OpType::U1) == 0);
-    REQUIRE(circ.count_gates(OpType::U3) == 0);
+    REQUIRE(circ.count_gates(OpType::tk1) == 0);
     const StateVector s2 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s2));
     Transform::decompose_cliffords_std().apply(circ);
     REQUIRE(circ.count_gates(OpType::Rz) == 2);
     REQUIRE(circ.count_gates(OpType::Rx) == 0);
-    REQUIRE(circ.count_gates(OpType::U1) == 0);
-    REQUIRE(circ.count_gates(OpType::U3) == 0);
+    REQUIRE(circ.count_gates(OpType::tk1) == 0);
     const StateVector s3 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s3));
   }

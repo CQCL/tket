@@ -192,7 +192,7 @@ SCENARIO("Test incrementer using n borrowed qubits") {
   }
   GIVEN("A 5qb incrementer") {
     Circuit inc = Transform::incrementer_borrow_n_qubits(5);
-    REQUIRE(Transform::synthesise_IBM().apply(inc));
+    REQUIRE(Transform::synthesise_tket().apply(inc));
     const StateVector sv = tket_sim::get_statevector(inc);
     bool correct = true;
     for (unsigned i = 0; i < sv.size(); ++i) {
@@ -318,7 +318,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
   GIVEN("A 4 qubit incrementer") {
     Circuit inc = Transform::incrementer_borrow_1_qubit(4);
     REQUIRE(inc.n_vertices() - inc.n_gates() == 10);
-    Transform::synthesise_IBM().apply(inc);
+    Transform::synthesise_tket().apply(inc);
     const StateVector sv = tket_sim::get_statevector(inc);
     bool correct = true;
     for (unsigned i = 0; i < sv.size(); ++i) {
@@ -350,7 +350,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
   GIVEN("A 5 qubit incrementer on the |000000> state") {
     Circuit inc = Transform::incrementer_borrow_1_qubit(5);
     REQUIRE(inc.n_vertices() - inc.n_gates() == 12);
-    Transform::synthesise_IBM().apply(inc);
+    Transform::synthesise_tket().apply(inc);
     const StateVector sv = tket_sim::get_statevector(inc);
     bool correct = true;
     for (unsigned i = 0; i < sv.size(); ++i) {
@@ -383,7 +383,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
   GIVEN("A 6 qubit incrementer on the |0000000> state") {
     Circuit inc = Transform::incrementer_borrow_1_qubit(6);
     REQUIRE(inc.n_vertices() - inc.n_gates() == 14);
-    Transform::synthesise_IBM().apply(inc);
+    Transform::synthesise_tket().apply(inc);
     const StateVector sv = tket_sim::get_statevector(inc);
     bool correct = true;
     for (unsigned i = 0; i < sv.size(); ++i) {
