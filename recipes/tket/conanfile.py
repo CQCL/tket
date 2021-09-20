@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from conans import ConanFile, CMake, tools
+from conans.errors import ConanInvalidConfiguration
 import os
 import shutil
 
@@ -26,8 +27,8 @@ class TketConan(ConanFile):
     description = "Quantum SDK"
     topics = ("quantum", "computation", "compiler")
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True]}
-    default_options = {"shared": True}
+    options = {"shared": [True], "profile_coverage": [True, False]}
+    default_options = {"shared": True, "profile_coverage": False}
     generators = "cmake"
     # Putting "patches" in both "exports_sources" and "exports" means that this works
     # in either the CI workflow (`conan create`) or the development workflow
@@ -42,10 +43,22 @@ class TketConan(ConanFile):
         "nlohmann_json/3.10.2",
     )
 
-    def build(self):
-        cmake = CMake(self)
-        cmake.configure()
+    _cmake = None
 
+    def _configure_cmake(self):
+        if self._cmake is None:
+            self._cmake = CMake(self)
+            self._cmake.definitions["PROFILE_COVERAGE"] = self.options.profile_coverage
+            self._cmake.configure()
+        return self._cmake
+
+    def validate(self):
+        if self.options.profile_coverage and self.settings.compiler != "gcc":
+            raise ConanInvalidConfiguration(
+                "`profile_coverage` option only available with gcc"
+            )
+
+    def build(self):
         # Build with boost patches
         boost_include_path = self.deps_cpp_info["boost"].include_paths[0]
         curdir = os.path.dirname(os.path.realpath(__file__))
@@ -67,6 +80,7 @@ class TketConan(ConanFile):
             print("Patching " + filepath)
             shutil.copyfile(filepath, filepath + ".original")
             tools.patch(base_path=boost_include_path, patch_file=patch_file)
+        cmake = self._configure_cmake()
         try:
             print("Building")
             cmake.build()

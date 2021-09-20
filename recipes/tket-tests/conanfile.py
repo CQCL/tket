@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from conans import ConanFile, CMake, tools
+from conans.errors import ConanInvalidConfiguration
 import os, platform
 
 
@@ -25,6 +26,8 @@ class TketTestsConan(ConanFile):
     description = "Unit tests for tket"
     topics = ("quantum", "computation", "compiler")
     settings = "os", "compiler", "build_type", "arch"
+    options = {"with_coverage": [True, False]}
+    default_options = {"with_coverage": False}
     generators = "cmake"
     exports_sources = "../../bubble/tests/*"
     requires = (
@@ -32,6 +35,16 @@ class TketTestsConan(ConanFile):
         "catch2/2.13.7",
         "nlohmann_json/3.10.2",
     )
+
+    def validate(self):
+        if self.options.with_coverage and self.settings.compiler != "gcc":
+            raise ConanInvalidConfiguration(
+                "`with_coverage` option only available with gcc"
+            )
+
+    def configure(self):
+        if self.options.with_coverage:
+            self.options["tket"].profile_coverage = True
 
     def build(self):
         cmake = CMake(self)
