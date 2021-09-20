@@ -412,30 +412,44 @@ std::vector<double> tk1_angles_from_unitary(const Eigen::Matrix2cd &U) {
   // y0 = sin(pi b/2) sin(pi (a-c)/2)
   // z0 = cos(pi b/2) sin(pi (a+c)/2)
 
-  // s0^2 + z0^2 - x0^2 - y0^2 = cos(pi b)
-  double t = s0 * s0 + z0 * z0 - x0 * x0 - y0 * y0;
-
   std::complex u = {s0, z0}, v = {x0, y0};
 
   // u = cos(pi b/2) e^{i pi (a+c)/2}
   // v = sin(pi b/2) e^{i pi (a-c)/2}
   // |u|^2 + |v|^2 = 1
 
-  if (std::abs(u) < EPS) {  // special case, b = +/- 1
+  // Note that (a,b) --> (a+2, b+2) does not change the value of the unitary, so
+  // we are free to choose either solution.
+  //
+  // We treat the two special cases u=0 and v=0 separately, then the general
+  // case.
+
+  if (std::abs(u) < EPS) {  // special case, b = 1 or 3
     // v = +/- e^{i pi (a-c)/2}
-    b = (t > 0) ? 1 : -1;
-    a = 2 * std::arg(v) / PI;
+
+    // We may as well choose c = 0.
     c = 0;
-    p -= a;
-  } else if (std::abs(v) < EPS) {  // special case, b = 0
+
+    // Assume b=1 and compute a.
+    // (b'=3, a'=a+2) is the other possibility but the unitary is the same.
+    b = 1;
+    a = 2 * std::arg(v) / PI;
+  } else if (std::abs(v) < EPS) {  // special case, b = 0 or 2
     // u = e^{i pi (a+c)/2}
+
+    // We may as well choose c = 0.
+    c = 0;
+
+    // Assume b=0 and compute a.
+    // (b'=2, a'=a+2) is the other possibility but the unitary is the same.
     b = 0;
     a = 2 * std::arg(u) / PI;
-    c = 0;
   } else {  // general case
+    // s0^2 + z0^2 - x0^2 - y0^2 = cos(pi b)
+    double t = s0 * s0 + z0 * z0 - x0 * x0 - y0 * y0;
     b = std::acos(t) / PI;
-    // b is in the range (-1,+1). This is w.l.o.g. because
-    // (a,b) --> (a+2, b+2) does not change the value of the unitary.
+
+    // w.l.o.g. b is in the range (-1,+1).
     double ac0 = std::arg(u), ac1 = std::arg(v);
     a = (ac0 + ac1) / PI;
     c = (ac0 - ac1) / PI;

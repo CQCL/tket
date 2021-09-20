@@ -569,6 +569,15 @@ SCENARIO("PeepholeOptimise2Q and FullPeepholeOptimise") {
     REQUIRE(FullPeepholeOptimise()->apply(cu1));
     REQUIRE(test_unitary_comparison(circ, cu.get_circ_ref()));
   }
+  GIVEN("An X + BRIDGE circuit") {
+    // https://github.com/CQCL/tket/issues/9
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::X, {1});
+    circ.add_op<unsigned>(OpType::BRIDGE, {0, 1, 2});
+    CompilationUnit cu(circ);
+    REQUIRE(FullPeepholeOptimise()->apply(cu));
+    REQUIRE(test_unitary_comparison(circ, cu.get_circ_ref()));
+  }
 }
 
 SCENARIO("rebase and decompose PhasePolyBox test") {
