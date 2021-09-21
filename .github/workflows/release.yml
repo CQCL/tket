@@ -22,7 +22,7 @@ jobs:
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up container
       run: |
-        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:latest /bin/bash
+        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:2021-08-01-bce1ff9 /bin/bash
         docker cp . linux_build:/tket/
     - name: Run build
       run: |
