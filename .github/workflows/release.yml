@@ -152,6 +152,7 @@ jobs:
       run: |
         pip install wheel
         cd pytket
+        python -m pip install -U pip setuptools_scm
         python setup.py bdist_wheel -d "${{ github.workspace }}/wheelhouse/3.7"
     - uses: actions/upload-artifact@v2
       with:
@@ -165,6 +166,7 @@ jobs:
       run: |
         pip install wheel
         cd pytket
+        python -m pip install -U pip setuptools_scm
         python setup.py bdist_wheel -d "${{ github.workspace }}/wheelhouse/3.8"
     - uses: actions/upload-artifact@v2
       with:
@@ -178,6 +180,7 @@ jobs:
       run: |
         pip install wheel
         cd pytket
+        python -m pip install -U pip setuptools_scm
         python setup.py bdist_wheel -d "${{ github.workspace }}/wheelhouse/3.9"
     - uses: actions/upload-artifact@v2
       with:
