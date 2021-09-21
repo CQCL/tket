@@ -31,15 +31,11 @@ find_file(CONANBUILDINFO_FILE conanbuildinfo.cmake HINTS ${CMAKE_BINARY_DIR})
 include(${CONANBUILDINFO_FILE})
 conan_basic_setup()
 
-# BOOST_ALLOW_DEPRECATED_HEADERS: Silence messages about deprecated headers during build.
-set(CMAKE_CXX_FLAGS "-DBOOST_ALLOW_DEPRECATED_HEADERS")
 IF (WIN32)
     # /Zc:__cplusplus flag needed for C++20 support: see
     # https://github.com/emil-e/rapidcheck/issues/266
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /Zc:__cplusplus")
 ENDIF()
-
-set(Boost_USE_STATIC_LIBS ON)
 
 set(PROPTEST_EXE proptest)
 

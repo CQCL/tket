@@ -58,6 +58,10 @@ class TketConan(ConanFile):
                 "`profile_coverage` option only available with gcc"
             )
 
+    def configure(self):
+        # Disable features that are still under the LGPL.
+        self.options["eigen"].MPL2_only = True
+
     def build(self):
         # Build with boost patches
         boost_include_path = self.deps_cpp_info["boost"].include_paths[0]

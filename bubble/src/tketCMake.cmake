@@ -27,10 +27,6 @@ conan_basic_setup()
 
 set(TKET "tket")
 
-# EIGEN_MPL2_ONLY: Disable features that are still under the LGPL.
-# BOOST_ALLOW_DEPRECATED_HEADERS: Silence messages about deprecated headers during build.
-set(CMAKE_CXX_FLAGS "-DEIGEN_MPL2_ONLY -DBOOST_ALLOW_DEPRECATED_HEADERS")
-
 IF (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX /EHsc")
 ELSE()
@@ -58,6 +54,3 @@ ELSEIF(APPLE)
     set(CMAKE_INSTALL_NAME_DIR "@loader_path")
     set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
 ENDIF()
-
-
-set(Boost_USE_STATIC_LIBS ON)

@@ -30,9 +30,6 @@ conan_basic_setup(NO_OUTPUT_DIRS)
 
 set(Boost_NO_BOOST_CMAKE ON)
 
-set(Boost_USE_STATIC_LIBS ON)
-
-set(CMAKE_CXX_FLAGS "-DBOOST_ALLOW_DEPRECATED_HEADERS")
 if (WIN32)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /WX")
 else()
