@@ -32,7 +32,6 @@ all_passes = [
     "KAKDecomposition",
     "RebaseCirq",
     "RebaseHQS",
-    "RebaseIBM",
     "RebaseProjectQ",
     "RebasePyZX",
     "RebaseQuil",
@@ -40,9 +39,7 @@ all_passes = [
     "RebaseUMD",
     "RemoveRedundancies",
     "SynthesiseHQS",
-    "SynthesiseIBM",
     "SynthesiseUMD",
-    "USquashIBM",
 ]
 pass_module = import_module("pytket.passes")
 pass_dict = dict((pname, getattr(pass_module, pname)) for pname in all_passes)
