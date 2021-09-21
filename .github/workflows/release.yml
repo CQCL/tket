@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: '0'
-    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - run: git fetch --all --tags
     - name: Set up container
       run: |
         docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:2021-08-01-bce1ff9 /bin/bash
@@ -43,7 +43,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: '0'
-    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - run: git fetch --all --tags
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
       with:
@@ -83,7 +83,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: '0'
-    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - run: git fetch --all --tags
     - name: Build wheels
       run: |
         eval "$(pyenv init -)"
@@ -126,7 +126,7 @@ jobs:
         }
         $bubble_hash = Get-FolderHash bubble
         echo "::set-output name=bubble_hash::${bubble_hash}"
-    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - run: git fetch --all --tags
     - name: Install conan
       run: |
         pip install conan
