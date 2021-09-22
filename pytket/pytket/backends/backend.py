@@ -30,18 +30,16 @@ from typing import (
 from importlib import import_module
 from types import ModuleType
 
-import numpy as np
 from typing_extensions import Literal
 
-from pytket.circuit import BasisOrder, Bit, Circuit, OpType  # type: ignore
+from pytket.circuit import Bit, Circuit, OpType  # type: ignore
 from pytket.passes import BasePass  # type: ignore
 from pytket.predicates import Predicate  # type: ignore
 from pytket.utils.outcomearray import OutcomeArray
-from pytket.utils.results import KwargTypes, counts_from_shot_table
+from pytket.utils.results import KwargTypes
 
 from .backend_exceptions import (
     CircuitNotValidError,
-    InvalidResultType,
     CircuitNotRunError,
 )
 from .backendinfo import BackendInfo
@@ -507,157 +505,34 @@ class Backend(ABC):
 
     @property
     def supports_shots(self) -> bool:
-        """Does this backend support shot result retrieval via `get_shots`."""
-        return self._supports_shots
-
-    def get_shots(
-        self,
-        circuit: Circuit,
-        n_shots: Optional[int] = None,
-        basis: BasisOrder = BasisOrder.ilo,
-        valid_check: bool = True,
-        **kwargs: KwargTypes,
-    ) -> np.ndarray:
-        """Obtain the table of shots from an experiment. Accepts a
-        :py:class:`~pytket.circuit.Circuit` to be run and immediately returned. This
-        will fail if the circuit does not match the device's requirements.
-
-        If the `postprocess` keyword argument is set to True, and the backend supports
-        the feature (see  :py:meth:`supports_contextual_optimisation`), then contextual
-        optimisations are applied before running the circuit and retrieved results will
-        have any necessary classical postprocessing applied. This is not enabled by
-        default.
-
-        :param circuit: The circuit to run
-        :type circuit: Circuit
-        :param n_shots: Number of shots to generate from the circuit. Defaults to None
-        :type n_shots: Optional[int], optional
-        :param basis: Toggle between ILO (increasing lexicographic order of bit ids) and
-            DLO (decreasing lexicographic order) for column ordering. Defaults to
-            BasisOrder.ilo.
-        :type basis: BasisOrder, optional
-        :param valid_check: Explicitly check that the circuit satisfies all of the
-            required predicates before running. Defaults to True
-        :type valid_check: bool, optional
-        :raises NotImplementedError: If backend implementation does not support shot
-            table retrieval
-        :return: Table of shot results. Each row is a single shot, with columns ordered
-            by classical bit order (according to `basis`). Entries are 0 or 1
-            corresponding to qubit basis states.
-        :rtype: np.ndarray
         """
-        result, _ = self._process(
-            circuit, n_shots=n_shots, valid_check=valid_check, **kwargs
-        )
-        c_bits = (
-            sorted(result.c_bits.keys(), reverse=(basis is not BasisOrder.ilo))
-            if result.c_bits
-            else None
-        )
-        return result.get_shots(c_bits)
+        Does this backend support shot result retrieval via
+        :py:meth:`backendresult.BackendResult.get_shots`.
+        """
+        return self._supports_shots
 
     @property
     def supports_counts(self) -> bool:
-        """Does this backend support counts result retrieval via `get_counts`."""
-        return self._supports_counts
-
-    def get_counts(
-        self,
-        circuit: Circuit,
-        n_shots: Optional[int] = None,
-        basis: BasisOrder = BasisOrder.ilo,
-        valid_check: bool = True,
-        **kwargs: KwargTypes,
-    ) -> Dict[Tuple[int, ...], int]:
-        """Obtain a summary of results, accumulating the shots for each result from an
-        experiment. Accepts a
-        :py:class:`~pytket.circuit.Circuit` to be run and immediately returned. This
-        will fail if the circuit does not match the device's requirements.
-
-        If the `postprocess` keyword argument is set to True, and the backend supports
-        the feature (see  :py:meth:`supports_contextual_optimisation`), then contextual
-        optimisatioons are applied before running the circuit and retrieved results will
-        have any necessary classical postprocessing applied. This is not enabled by
-        default.
-
-        :param circuit: The circuit to run
-        :type circuit: Circuit
-        :param n_shots: Number of shots to generate from the circuit. Defaults to None
-        :type n_shots: Optional[int], optional
-        :param basis: Toggle between ILO (increasing lexicographic order of bit ids) and
-            DLO (decreasing lexicographic order) for column ordering. Defaults to
-            BasisOrder.ilo.
-        :type basis: BasisOrder, optional
-        :param valid_check: Explicitly check that the circuit satisfies all of the
-            required predicates before running. Defaults to True
-        :type valid_check: bool, optional
-        :raises NotImplementedError: If backend implementation does not support counts
-            retrieval
-        :return: Dictionary mapping observed readouts to the number of times observed.
-        :rtype: Dict[Tuple[int, ...], int]
         """
-
-        result, _ = self._process(
-            circuit, n_shots=n_shots, valid_check=valid_check, **kwargs
-        )
-        c_bits = (
-            sorted(result.c_bits.keys(), reverse=(basis is not BasisOrder.ilo))
-            if result.c_bits
-            else None
-        )
-        try:
-            return result.get_counts(c_bits)
-        except InvalidResultType:
-            shots = self.get_shots(
-                circuit, n_shots=n_shots, basis=basis, valid_check=valid_check, **kwargs
-            )
-            return counts_from_shot_table(shots)
+        Does this backend support counts result retrieval via
+        :py:meth:`backendresult.BackendResult.get_counts`.
+        """
+        return self._supports_counts
 
     @property
     def supports_state(self) -> bool:
-        """Does this backend support statevector retrieval via `get_state`."""
-        return self._supports_state
-
-    def get_state(
-        self,
-        circuit: Circuit,
-        basis: BasisOrder = BasisOrder.ilo,
-        valid_check: bool = True,
-    ) -> np.ndarray:
-        """Obtain a statevector from a simulation. Accepts a
-        :py:class:`~pytket.circuit.Circuit` to be run and immediately returned. This
-        will fail if the circuit does not match the simulator's requirements.
-
-        :param circuit: The circuit to run
-        :type circuit: Circuit
-        :param basis: Toggle between ILO-BE (increasing lexicographic order of bit ids,
-            big-endian) and DLO-BE (decreasing lexicographic order, big-endian) for
-            ordering the coefficients. Defaults to BasisOrder.ilo.
-        :type basis: BasisOrder, optional
-        :param valid_check: Explicitly check that the circuit satisfies all of the
-            required predicates before running. Defaults to True
-        :type valid_check: bool, optional
-        :raises NotImplementedError: If backend implementation does not support
-            statevector retrieval
-        :return: A big-endian statevector for the circuit in the encoding given by
-            `basis`; e.g. :math:`[a_{00}, a_{01}, a_{10}, a_{11}]` where :math:`a_{01}`
-            is the amplitude of the :math:`\\left|01\\right>` state (in ILO, this means
-            qubit q[0] is in state :math:`\\left|0\\right>` and q[1] is in state
-            :math:`\\left|1\\right>`, and the reverse in DLO)
-        :rtype: np.ndarray
         """
-
-        result, _ = self._process(circuit, valid_check=valid_check)
-        q_bits = (
-            sorted(result.q_bits.keys(), reverse=(basis is not BasisOrder.ilo))
-            if result.q_bits
-            else None
-        )
-        return result.get_state(q_bits)
+        Does this backend support statevector retrieval via
+        :py:meth:`backendresult.BackendResult.get_state`.
+        """
+        return self._supports_state
 
     @property
     def supports_unitary(self) -> bool:
-        """Does this backend support unitary retrieval via `get_unitary`."""
+        """
+        Does this backend support unitary retrieval via
+        :py:meth:`backendresult.BackendResult.get_unitary`.
+        """
         return self._supports_unitary
 
     @property
