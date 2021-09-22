@@ -16,7 +16,18 @@
 # TODO: Figure out nice way to make these class methods of Circuit
 import io
 import os
-from typing import Any, Callable, Dict, List, TextIO, Tuple, Type, TypeVar, Union
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    TextIO,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
 from itertools import groupby
 from sympy import sympify, pi  # type: ignore
 from pytket import Circuit, OpType, Qubit, Bit
@@ -25,6 +36,7 @@ from pytket.circuit import (  # type: ignore
     UnitID,
     BitRegister,
     QubitRegister,
+    Op,
 )
 
 NOPARAM_COMMANDS = {
@@ -437,6 +449,16 @@ def _parse_range(minval: int, maxval: int) -> Tuple[str, int]:
         raise NotImplementedError("Range can only be bounded on one side.")
 
 
+def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
+    optype = op.type
+    params = op.params if optype in _tk_to_qasm_params else None
+    if optype == OpType.TK1:
+        # convert to U3
+        optype = OpType.U3
+        params = [op.params[1], op.params[0] - 0.5, op.params[2] + 0.5]
+    return (optype, params)
+
+
 def circuit_to_qasm_io(
     circ: Circuit, stream_out: TextIO, header: str = "qelib1"
 ) -> None:
@@ -472,13 +494,8 @@ def circuit_to_qasm_io(
     range_preds = dict()
     for command in circ:
         op = command.op
-        optype = op.type
-        params = op.params if optype in _tk_to_qasm_params else None
         args = command.args
-        if optype == OpType.TK1:
-            # convert to U3
-            optype = OpType.U3
-            params = [op.params[1], op.params[0] - 0.5, op.params[2] + 0.5]
+        optype, params = _get_optype_and_params(op)
         if optype == OpType.RangePredicate:
             range_preds[args[-1]] = command
             # attach predicate to bit,
@@ -523,7 +540,7 @@ def circuit_to_qasm_io(
             stream_out.write(f"if({variable}{comparator}{value}) ")
             args = args[op.width :]
             op = op.op
-            optype = op.type
+            optype, params = _get_optype_and_params(op)
         if optype == OpType.SetBits:
             creg_name = args[0].reg_name
             bits, vals = zip(*sorted(zip(args, op.values)))

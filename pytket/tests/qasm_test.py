@@ -240,6 +240,14 @@ def test_hqs_conditional() -> None:
         assert "Range can only be bounded on one side" in str(errorinfo.value)
 
 
+def test_hqs_conditional_params() -> None:
+    # https://github.com/CQCL/tket/issues/17
+    c = Circuit(1, 1)
+    c.add_gate(OpType.PhasedX, [1, 0], [0], condition_bits=[0])
+    s = circuit_to_qasm_str(c, header="hqslib1")
+    assert "U1q(1.0*pi,0.0*pi)" in s
+
+
 def test_input_error_modes() -> None:
     with pytest.raises(Exception) as errorinfo:
         circuit_from_qasm_str('OPENQASM 1.0;\ninclude "qelib1.inc";')
