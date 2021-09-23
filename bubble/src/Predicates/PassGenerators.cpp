@@ -16,6 +16,7 @@
 
 #include "ArchAwareSynth/SteinerForest.hpp"
 #include "Circuit/CircPool.hpp"
+#include "Circuit/Circuit.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/CompilerPass.hpp"
@@ -226,6 +227,10 @@ PassPtr gen_routing_pass(const Architecture& arc, const RoutingConfig& config) {
 
 PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
   Transform::Transformation trans = [=](Circuit& circ) {
+    if (arc.n_uids() != circ.n_qubits()) {
+      throw CircuitInvalidity("Circuit and architecture have different sizes.");
+    }
+
     qubit_vector_t q_vec = circ.all_qubits();
     std::map<Qubit, Node> qubit_to_nodes;
     unsigned counter = 0;
@@ -258,6 +263,10 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
 PassPtr aas_routing_pass(
     const Architecture& arc, const unsigned aas_lookahead) {
   Transform::Transformation trans = [=](Circuit& circ) {
+    if (arc.n_uids() != circ.n_qubits()) {
+      throw CircuitInvalidity("Circuit and architecture have different sizes.");
+    }
+
     qubit_vector_t all_qu = circ.all_qubits();
 
     Circuit input_circ = circ;
