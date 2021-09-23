@@ -1,16 +1,14 @@
 Changelog
 ==================================
 
-0.15.0 (unreleased)
--------------------
-
-Major new features:
-
+0.15.0 (September 2021)
+-----------------------
 
 Minor new features:
 
-* Passes `PauliSimp`, `PauliSquash` and `GuidedPauliSimp` can now decompose to three-qubit
-  `XXPhase3` gates using the new `CXConfigType.MultiQGate` config type.
+* Passes ``PauliSimp``, ``PauliSquash`` and ``GuidedPauliSimp`` can now
+  decompose to three-qubit ``XXPhase3`` gates using the new
+  ``CXConfigType.MultiQGate`` config type.
 * New method ``compilation_pass_from_script`` to construct a compilation pass
   from a simple textual specification.
 * New transform ``RebaseToTket`` and new pass ``SquashToTK1``.
