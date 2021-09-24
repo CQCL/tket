@@ -1,0 +1,240 @@
+# Copyright 2019-2021 Cambridge Quantum Computing
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from typing import Any, Callable, Dict, List, Optional, Tuple, TypeVar
+from collections import Counter
+import hypothesis.strategies as st
+from hypothesis.extra.numpy import arrays
+from hypothesis.strategies import *  # for reexport
+from hypothesis.strategies._internal import SearchStrategy
+from hypothesis.extra.numpy import arrays
+from typing import Any, Callable, Dict, List, Optional, Tuple, TypeVar
+
+import numpy as np
+import re
+
+from pytket import Circuit, Qubit, Bit
+from pytket._tket.circuit import BasisOrder, Node, OpType  # type: ignore
+from pytket._tket.routing import Architecture  # type: ignore
+from pytket.pauli import Pauli, QubitPauliString  # type: ignore
+from pytket.utils import QubitPauliOperator
+from pytket.utils.results import KwargTypes
+from pytket.utils.outcomearray import OutcomeArray
+from pytket.backends.backendresult import BackendResult
+from pytket.backends.backendinfo import BackendInfo
+
+
+binary_digits = st.sampled_from((0, 1))
+uint32 = st.integers(min_value=1, max_value=1 << 32 - 1)
+reg_name_regex = re.compile("[a-z][a-zA-Z0-9_]*")
+
+
+@st.composite
+def qubits(
+    draw: Callable,
+    name: SearchStrategy[str] = st.from_regex(reg_name_regex, fullmatch=True),
+    index: SearchStrategy[int] = uint32,
+) -> Bit:
+    return Qubit(draw(name), draw(index))
+
+
+@st.composite
+def circuits(
+    draw: Callable[[SearchStrategy[Any]], Any],
+    n_qubits: SearchStrategy[int] = st.integers(min_value=0, max_value=4),
+    n_bits: SearchStrategy[int] = st.integers(min_value=0, max_value=4),
+    depth: SearchStrategy[int] = st.integers(min_value=1, max_value=8),
+    name: SearchStrategy[str] = st.text(min_size=0, max_size=6),
+    phase: SearchStrategy[float] = st.floats(min_value=-2.0, max_value=2.0),
+) -> Circuit:
+    total_qubits = draw(n_qubits)
+    total_bits = draw(n_bits)
+    circuit = Circuit(total_qubits, total_bits, name=draw(name))
+    circuit.add_phase(draw(phase))
+    if total_qubits == 0:
+        return circuit
+    for _ in range(draw(depth)):
+        gates = [circuit.Rx, circuit.H]
+        if total_qubits > 1:
+            gates.extend([circuit.CH, circuit.CX])
+        gate = draw(st.sampled_from(gates))
+        control = draw(st.integers(min_value=0, max_value=total_qubits - 1))
+        if gate in (circuit.CH, circuit.CX):
+            target = draw(
+                st.integers(min_value=0, max_value=total_qubits - 1).filter(
+                    lambda x: x != control
+                )
+            )
+            gate(control, target)
+        if gate == circuit.Rx:
+            angle = draw(st.floats(min_value=-2.0, max_value=2.0))
+            gate(angle, control)
+        if gate == circuit.H:
+            gate(control)
+
+    return circuit
+
+
+@st.composite
+def outcomearrays(
+    draw: Callable[[SearchStrategy[Any]], Any],
+    rows: SearchStrategy[int] = st.integers(min_value=1, max_value=100),
+    cols: SearchStrategy[int] = st.integers(min_value=0, max_value=10),
+) -> OutcomeArray:
+    row = draw(rows)
+    col = draw(cols)
+    array = draw(arrays(np.uint8, shape=(row, col)))
+    width = (
+        draw(st.integers(min_value=(col - 1) * 8 + 1, max_value=col * 8)) if col else 0
+    )
+    return OutcomeArray(array, width=width)
+
+
+@st.composite
+def outcome_counts(
+    draw: Callable[[SearchStrategy[Any]], Any],
+) -> Counter:
+    width = draw(st.integers(min_value=0, max_value=20))
+    cols = -(-width // 8)
+    ar_strat = arrays(np.uint8, shape=(1, cols))
+    drawn_arrays = draw(st.lists(ar_strat, min_size=1, max_size=20))
+    outcomes = (OutcomeArray(ar, width) for ar in drawn_arrays)
+    countstrat = st.integers(min_value=1, max_value=100)
+    count_vals = [draw(countstrat) for i in range(len(drawn_arrays))]
+
+    return Counter(dict(zip(outcomes, count_vals)))
+
+
+def _gen_unitid(uidtype, index):  # type: ignore
+    return uidtype(name="uid", index=index)
+
+
+@st.composite
+def architecture(
+    draw: Callable[[SearchStrategy[Any]], Any],
+) -> Architecture:
+    n_nodes = draw(st.integers(min_value=4, max_value=15))
+    n_edges = draw(st.integers(min_value=1, max_value=n_nodes))
+    vertex = st.integers(min_value=0, max_value=n_nodes - 1)
+    edge = st.lists(vertex, min_size=2, max_size=2, unique=True)
+    edges = st.lists(edge)
+    return Architecture(draw(edges))
+
+
+@st.composite
+def backendinfo(
+    draw: Callable[[SearchStrategy[Any]], Any],
+) -> BackendInfo:
+    optypes = [OpType(i) for i in range(6, 54)]
+    name = draw(st.text(min_size=1, max_size=30))
+    device_name = draw(st.text(min_size=1, max_size=30))
+    version = draw(st.text(min_size=1, max_size=5))
+    # hardware constraints
+    arc = draw(architecture())
+    gate_set = draw(st.sets(st.sampled_from(optypes)))
+    supports_fast_feedforward = draw(st.booleans())
+    supports_reset = draw(st.booleans())
+    supports_midcircuit_measurement = draw(st.booleans())
+
+    return BackendInfo(
+        name,
+        device_name,
+        version,
+        arc,
+        gate_set,
+        supports_fast_feedforward,
+        supports_reset,
+        supports_midcircuit_measurement,
+    )
+
+
+@st.composite
+def backendresults(
+    draw: Callable[[SearchStrategy[Any]], Any],
+) -> BackendResult:
+    uid_indexes = st.lists(st.integers(min_value=0, max_value=3))
+    measured = draw(st.booleans())
+    if measured:
+        bit_strat = uid_indexes.map(lambda x: _gen_unitid(Bit, x))  # type: ignore
+        shots = draw(st.booleans())
+        if shots:
+            ar_strat = outcomearrays()
+            shots = draw(ar_strat)
+            cbits = draw(
+                st.lists(
+                    bit_strat, min_size=shots.width, max_size=shots.width, unique=True
+                )
+            )
+            return BackendResult(c_bits=cbits, shots=shots)
+        counts = draw(outcome_counts())
+        width = next(counts.elements()).width
+        cbits = draw(st.lists(bit_strat, unique=True, min_size=width, max_size=width))
+        return BackendResult(c_bits=cbits, counts=counts)
+
+    qbstrat = uid_indexes.map(lambda x: _gen_unitid(Qubit, x))  # type: ignore
+    qubits_list = draw(st.lists(qbstrat, unique=True, min_size=1, max_size=6))
+    n_qb = len(qubits_list)
+    dims = 1 << n_qb
+    state = draw(st.booleans())
+    if state:
+        state_ar = draw(
+            arrays(
+                complex,
+                shape=(dims, 1),
+                elements=st.complex_numbers(allow_nan=False),
+            )
+        )
+        return BackendResult(q_bits=qubits_list, state=state_ar)
+
+    density_matrix = draw(st.booleans())
+    if density_matrix:
+        density_matrix_ar = draw(
+            arrays(
+                complex,
+                shape=(dims, dims),
+                elements=st.complex_numbers(allow_nan=False),
+            )
+        )
+        return BackendResult(q_bits=qubits_list, density_matrix=density_matrix_ar)
+
+    unitary_ar = draw(
+        arrays(
+            complex, shape=(dims, dims), elements=st.complex_numbers(allow_nan=False)
+        )
+    )
+    return BackendResult(q_bits=qubits_list, unitary=unitary_ar)
+
+
+@st.composite
+def qubitpaulistrings(
+    draw: Callable[[SearchStrategy[Any]], Any],
+) -> QubitPauliString:
+    qubit_lists = st.lists(qubits(), unique=True)
+    pauli = st.sampled_from([Pauli.I, Pauli.X, Pauli.Y, Pauli.Z])
+
+    qbs = draw(qubit_lists)
+    pauli_str = draw(st.lists(pauli, min_size=len(qbs), max_size=len(qbs)))
+    return QubitPauliString(qbs, pauli_str)
+
+
+@st.composite
+def qubitpaulioperators(
+    draw: Callable[[SearchStrategy[Any]], Any],
+) -> QubitPauliOperator:
+    ops = st.dictionaries(
+        qubitpaulistrings(),
+        st.complex_numbers(min_magnitude=0.5, max_magnitude=3),
+        max_size=10,
+    )
+    return QubitPauliOperator(draw(ops))

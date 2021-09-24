@@ -1,0 +1,6 @@
+Inputs: 0:Qbit, 1:Qbit
+QGate["W"](0,1)
+QGate["omega"](1)
+QGate["swap"](0,1)
+QGate["W"]*(1,0)
+Outputs: 0:Qbit, 1:Qbit

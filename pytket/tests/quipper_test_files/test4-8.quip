@@ -1,0 +1,23 @@
+Inputs: 0:Qbit, 1:Qbit, 2:Qbit, 3:Qbit
+QGate["not"](0) with controls=[+1] with nocontrol
+QGate["X"](0) with controls=[+1,-2] with nocontrol
+QGate["Y"](0) with controls=[+3]
+QGate["H"](2)
+QGate["iX"](0)
+QGate["Z"](3)
+QGate["Z"](2) with controls=[-0]
+QGate["H"](2) with controls=[+1]
+QGate["S"](2)
+QGate["S"]*(1)
+QGate["T"](1)
+QGate["T"]*(0)
+QRot["exp(-i%Z)",0.5](2)
+QRot["R(2pi/%)",3](2)
+QGate["omega"](1)
+QGate["E"](0)
+QGate["E"]*(2)
+QGate["multinot"](0,1) with controls=[+2,-3]
+QGate["swap"](1,2) with nocontrol
+QGate["swap"](2,3) with controls=[+0]
+QGate["W"](1,2)
+Outputs: 0:Qbit, 1:Qbit, 2:Qbit, 3:Qbit

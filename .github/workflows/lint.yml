@@ -1,0 +1,25 @@
+name: Lint python projects
+
+on: [push]
+
+jobs:
+  lint:
+
+    runs-on: ubuntu-20.04
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.x
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Install black and pylint
+      run: pip install black~=21.6b0 pylint
+    - name: Check files are formatted with black
+      run: |
+        # Paths specified to avoid formatting submodules
+        black --check .
+    - name: pylint check
+      run: |
+        cd pytket
+        pylint pytket/

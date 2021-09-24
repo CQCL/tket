@@ -1,0 +1,7 @@
+Inputs: 0:Qbit, 1:Qbit
+QGate["S"](1)
+QGate["S"]*(0)
+QGate["T"](0)
+QGate["T"]*(1)
+QGate["E"](0)
+Outputs: 0:Qbit, 1:Qbit

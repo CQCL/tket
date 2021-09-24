@@ -1,0 +1,13 @@
+
+<!-- Generated with http://jxnblk.com/paths -->
+<svg
+  xmlns='http://www.w3.org/2000/svg'
+  viewBox='-10 -10 84 84'
+  width='64' height='64'
+  fill='white'
+  stroke="black"
+  stroke-width="4px"
+>
+  <path d='M63,63 C63,32 48,16 32,16 C16,16 1,32 1,63 L63,63' />
+  <path d="M32,63 L56,16" />
+</svg>
