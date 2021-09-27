@@ -155,8 +155,6 @@ SCENARIO(
     tket::Routing router(circ, test_arc);
     std::pair<tket::Circuit, bool> outcirc = router.solve();
     REQUIRE(outcirc.second == true);
-    Circuit testcirc = outcirc.first;
-    CHECK(respects_connectivity_constraints(testcirc, test_arc, false));
     CHECK(respects_connectivity_constraints(outcirc.first, test_arc, false));
   }
   GIVEN("A failing case, undirected") {
