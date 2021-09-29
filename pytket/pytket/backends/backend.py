@@ -318,95 +318,6 @@ class Backend(ABC):
         """
         ...
 
-    @overload
-    @staticmethod
-    def _get_n_shots_as_list(
-        n_shots: Union[None, int, Sequence[Optional[int]]],
-        n_circuits: int,
-        optional: Literal[False],
-    ) -> List[int]:
-        ...
-
-    @overload
-    @staticmethod
-    def _get_n_shots_as_list(
-        n_shots: Union[None, int, Sequence[Optional[int]]],
-        n_circuits: int,
-        optional: Literal[True],
-        set_zero: Literal[True],
-    ) -> List[int]:
-        ...
-
-    @overload
-    @staticmethod
-    def _get_n_shots_as_list(
-        n_shots: Union[None, int, Sequence[Optional[int]]],
-        n_circuits: int,
-        optional: bool = True,
-        set_zero: bool = False,
-    ) -> Union[List[Optional[int]], List[int]]:
-        ...
-
-    @staticmethod
-    def _get_n_shots_as_list(
-        n_shots: Union[None, int, Sequence[Optional[int]]],
-        n_circuits: int,
-        optional: bool = True,
-        set_zero: bool = False,
-    ) -> Union[List[Optional[int]], List[int]]:
-        """
-        Convert any admissible n_shots value into List[Optional[int]] format.
-
-        This validates the n_shots argument for process_circuits. If a single
-        value is passed, this value is broadcast to the number of circuits.
-        Additional boolean flags control how the argument is validated.
-        Raises an exception if n_shots is in an invalid format.
-
-        :param n_shots: The argument to be validated.
-        :type n_shots: Union[None, int, Sequence[Optional[int]]]
-        :param n_circuits: Length of the converted argument returned.
-        :type n_circuits: int
-        :param optional: Whether n_shots can be None (default: True).
-        :type optional: bool
-        :param set_zero: Whether None values should be set to 0 (default: False).
-        :type set_zero: bool
-        :return: a list of length `n_circuits`, the converted argument
-        """
-
-        n_shots_list: List[Optional[int]] = []
-
-        def validate_n_shots(n: Optional[int]) -> bool:
-            return optional or (n is not None and n > 0)
-
-        if set_zero and not optional:
-            ValueError("set_zero cannot be true when optional is false")
-
-        if hasattr(n_shots, "__iter__"):
-            assert not isinstance(n_shots, int)
-            assert n_shots is not None
-
-            if not all(map(validate_n_shots, n_shots)):
-                raise ValueError(
-                    "n_shots values are required for all circuits for this backend"
-                )
-            n_shots_list = list(n_shots)
-        else:
-            assert n_shots is None or isinstance(n_shots, int)
-
-            if not validate_n_shots(n_shots):
-                raise ValueError("Parameter n_shots is required for this backend")
-            # convert n_shots to a list
-            n_shots_list = [n_shots] * n_circuits
-
-        if len(n_shots_list) != n_circuits:
-            raise ValueError("The length of n_shots and circuits must match")
-
-        if set_zero:
-            # replace None with 0
-            n_shots_list = list(map(lambda n: n or 0, n_shots_list))
-
-        return n_shots_list
-
     @abstractmethod
     def circuit_status(self, handle: ResultHandle) -> CircuitStatus:
         """
@@ -598,3 +509,92 @@ class Backend(ABC):
             return self._get_extension_module().__extension_version__  # type: ignore
         except AttributeError:
             return None
+
+    @overload
+    @staticmethod
+    def _get_n_shots_as_list(
+        n_shots: Union[None, int, Sequence[Optional[int]]],
+        n_circuits: int,
+        optional: Literal[False],
+    ) -> List[int]:
+        ...
+
+    @overload
+    @staticmethod
+    def _get_n_shots_as_list(
+        n_shots: Union[None, int, Sequence[Optional[int]]],
+        n_circuits: int,
+        optional: Literal[True],
+        set_zero: Literal[True],
+    ) -> List[int]:
+        ...
+
+    @overload
+    @staticmethod
+    def _get_n_shots_as_list(
+        n_shots: Union[None, int, Sequence[Optional[int]]],
+        n_circuits: int,
+        optional: bool = True,
+        set_zero: bool = False,
+    ) -> Union[List[Optional[int]], List[int]]:
+        ...
+
+    @staticmethod
+    def _get_n_shots_as_list(
+        n_shots: Union[None, int, Sequence[Optional[int]]],
+        n_circuits: int,
+        optional: bool = True,
+        set_zero: bool = False,
+    ) -> Union[List[Optional[int]], List[int]]:
+        """
+        Convert any admissible n_shots value into List[Optional[int]] format.
+
+        This validates the n_shots argument for process_circuits. If a single
+        value is passed, this value is broadcast to the number of circuits.
+        Additional boolean flags control how the argument is validated.
+        Raises an exception if n_shots is in an invalid format.
+
+        :param n_shots: The argument to be validated.
+        :type n_shots: Union[None, int, Sequence[Optional[int]]]
+        :param n_circuits: Length of the converted argument returned.
+        :type n_circuits: int
+        :param optional: Whether n_shots can be None (default: True).
+        :type optional: bool
+        :param set_zero: Whether None values should be set to 0 (default: False).
+        :type set_zero: bool
+        :return: a list of length `n_circuits`, the converted argument
+        """
+
+        n_shots_list: List[Optional[int]] = []
+
+        def validate_n_shots(n: Optional[int]) -> bool:
+            return optional or (n is not None and n > 0)
+
+        if set_zero and not optional:
+            ValueError("set_zero cannot be true when optional is false")
+
+        if hasattr(n_shots, "__iter__"):
+            assert not isinstance(n_shots, int)
+            assert n_shots is not None
+
+            if not all(map(validate_n_shots, n_shots)):
+                raise ValueError(
+                    "n_shots values are required for all circuits for this backend"
+                )
+            n_shots_list = list(n_shots)
+        else:
+            assert n_shots is None or isinstance(n_shots, int)
+
+            if not validate_n_shots(n_shots):
+                raise ValueError("Parameter n_shots is required for this backend")
+            # convert n_shots to a list
+            n_shots_list = [n_shots] * n_circuits
+
+        if len(n_shots_list) != n_circuits:
+            raise ValueError("The length of n_shots and circuits must match")
+
+        if set_zero:
+            # replace None with 0
+            n_shots_list = list(map(lambda n: n or 0, n_shots_list))
+
+        return n_shots_list
