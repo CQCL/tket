@@ -252,14 +252,6 @@ class Backend(ABC):
                 )
             )
 
-    @property
-    def persistent_handles(self) -> bool:
-        """
-        Whether the backend produces `ResultHandle` objects that can be reused with
-        other instances of the backend class.
-        """
-        return self._persistent_handles
-
     def process_circuit(
         self,
         circuit: Circuit,
@@ -340,30 +332,6 @@ class Backend(ABC):
         """
         return self._cache.pop(handle, None)
 
-    @property
-    def characterisation(self) -> Optional[dict]:
-        """Retrieve the characterisation targeted by the backend if it exists.
-
-        :return: The characterisation that this backend targets if it exists. The
-            characterisation object contains device-specific information such as gate
-            error rates.
-        :rtype: Optional[dict]
-        """
-        raise NotImplementedError(
-            "Backend does not support retrieving characterisation."
-        )
-
-    @property
-    def backend_info(self) -> Optional[BackendInfo]:
-        """Retrieve all Backend properties in a BackendInfo object, including
-        device architecture, supported gate set, gate errors and other hardware-specific
-        information.
-
-        :return: The BackendInfo describing this backend if it exists.
-        :rtype: Optional[BackendInfo]
-        """
-        raise NotImplementedError("Backend does not provide any device properties.")
-
     def get_result(self, handle: ResultHandle, **kwargs: KwargTypes) -> BackendResult:
         """Return a BackendResult corresponding to the handle.
 
@@ -413,6 +381,38 @@ class Backend(ABC):
         :raises NotImplementedError: If backend does not support job cancellation
         """
         raise NotImplementedError("Backend does not support job cancellation.")
+
+    @property
+    def characterisation(self) -> Optional[dict]:
+        """Retrieve the characterisation targeted by the backend if it exists.
+
+        :return: The characterisation that this backend targets if it exists. The
+            characterisation object contains device-specific information such as gate
+            error rates.
+        :rtype: Optional[dict]
+        """
+        raise NotImplementedError(
+            "Backend does not support retrieving characterisation."
+        )
+
+    @property
+    def backend_info(self) -> Optional[BackendInfo]:
+        """Retrieve all Backend properties in a BackendInfo object, including
+        device architecture, supported gate set, gate errors and other hardware-specific
+        information.
+
+        :return: The BackendInfo describing this backend if it exists.
+        :rtype: Optional[BackendInfo]
+        """
+        raise NotImplementedError("Backend does not provide any device properties.")
+
+    @property
+    def persistent_handles(self) -> bool:
+        """
+        Whether the backend produces `ResultHandle` objects that can be reused with
+        other instances of the backend class.
+        """
+        return self._persistent_handles
 
     @property
     def supports_shots(self) -> bool:
