@@ -364,13 +364,37 @@ class Backend(ABC):
         """
         return [self.get_result(handle, **kwargs) for handle in handles]
 
-    def _process(
-        self, circuit: Circuit, **kwargs: KwargTypes
-    ) -> Tuple[BackendResult, ResultHandle]:
-        handle = self.process_circuit(circuit, **kwargs)  # type: ignore
-        result = self.get_result(handle, **kwargs)
-        self.pop_result(handle)
-        return result, handle
+    def run_circuit(self, circuit: Circuit, **kwargs: KwargTypes) -> BackendResult:
+        """
+        Submit circuit to Backend `self` and returns results
+
+        :param circuit: Circuit to be executed
+        :return: Result
+
+        This is a conveniance method equivalent to calling
+        `self.process_circuit` followed by `self.get_result`.
+        Any keyword arguments are passed on to `process_circuit` and `get_result`.
+        """
+        return self.run_circuits([circuit], **kwargs)[0]
+
+    def run_circuits(
+        self, circuits: Iterable[Circuit], **kwargs: KwargTypes
+    ) -> List[BackendResult]:
+        """
+        Submit circuits to Backend `self` and returns results
+
+        :param circuits: Iterable of Circuits to be executed
+        :return: List of results
+
+        This is a convenience method equivalent to calling
+        `self.process_circuits` followed by `self.get_results`.
+        Any keyword arguments are passed on to `process_circuits` and `get_results`.
+        """
+        handles = self.process_circuits(circuits, **kwargs)  # type: ignore
+        results = self.get_results(handles, **kwargs)
+        for h in handles:
+            self.pop_result(h)
+        return results
 
     def cancel(self, handle: ResultHandle) -> None:
         """
