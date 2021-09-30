@@ -12,6 +12,7 @@ jobs:
 
   linux:
     name: Generate coverage report
+    if: github.event_name == 'push'
     runs-on: ubuntu-20.04
     env:
       CC: gcc-10
