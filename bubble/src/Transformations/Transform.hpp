@@ -339,9 +339,11 @@ class Transform {
   /**
    * Peephole optimisation including resynthesis of three-qubit gate sequences.
    *
+   * @param allow_swaps whether to allow introduction of implicit wire swaps
+   *
    * Produces: CX, tk1.
    */
-  static Transform full_peephole_optimise();
+  static Transform full_peephole_optimise(bool allow_swaps = true);
 
   //////////////////////
   // Phase Optimisation//

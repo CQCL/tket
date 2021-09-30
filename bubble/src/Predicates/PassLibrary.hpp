@@ -25,7 +25,6 @@ const PassPtr &SynthesiseOQC();
 const PassPtr &SynthesiseUMD();
 
 const PassPtr &PeepholeOptimise2Q();
-const PassPtr &FullPeepholeOptimise();
 const PassPtr &RemoveRedundancies();
 const PassPtr &CommuteThroughMultis();
 const PassPtr &DecomposeArbitrarilyControlledGates();

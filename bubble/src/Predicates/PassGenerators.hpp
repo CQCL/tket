@@ -116,6 +116,14 @@ PassPtr KAKDecomposition(double cx_fidelity = 1.);
  */
 PassPtr ThreeQubitSquash(bool allow_swaps = true);
 
+/**
+ * Performs peephole optimisation including resynthesis of 2- and 3-qubit gate
+ * sequences, and converts to a circuit containing only CX and TK1 gates.
+ *
+ * @param allow_swaps whether to allow introduction of implicit swaps
+ */
+PassPtr FullPeepholeOptimise(bool allow_swaps = true);
+
 /* generates an optimisation pass that converts a circuit into phase
 gadgets and optimises them using techniques from
 https://arxiv.org/abs/1906.01734 */
