@@ -10,8 +10,8 @@ on:
 
 jobs:
 
-  linux:
-    name: Generate coverage report
+  publish_coverage:
+    name: Publish coverage
     if: github.event_name == 'push'
     runs-on: ubuntu-20.04
     env:
@@ -78,10 +78,72 @@ jobs:
     - name: Build coverage report
       run: |
         mkdir bubble/test-coverage
-        gcovr --html --html-details -r ./bubble/src/ --object-directory `pwd`/build/tket/CMakeFiles/tket.dir -o bubble/test-coverage/index.html
+        GCOVR_SUMMARY=`gcovr --print-summary --html --html-details -r ./bubble/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o bubble/test-coverage/index.html`
     - name: Add report to repository
       run: |
         git add -f bubble/test-coverage
         git commit --allow-empty -m "Add generated coverage report."
     - name: Publish report
       run: git push origin gh-pages:gh-pages
+
+  check_coverage:
+    name: Check coverage
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-20.04
+    env:
+      CC: gcc-10
+      CXX: g++-10
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - name: Get current time
+      uses: srfrnk/current-time@v1.1.0
+      id: current_time
+      with:
+        format: YYYYMMDDHHmmss
+    - name: Cache ccache data
+      uses: actions/cache@v2
+      with:
+        path: ~/.ccache
+        key: ${{ runner.os }}-tket-ccache-${{ steps.current_time.outputs.formattedTime }}
+        restore-keys: |
+          ${{ runner.os }}-tket-ccache-
+    - name: Install conan
+      id: conan
+      run: |
+        pip install conan
+        conan_cmd=/home/runner/.local/bin/conan
+        ${conan_cmd} profile new tket --detect
+        ${conan_cmd} profile update settings.compiler.libcxx=libstdc++11 tket
+        ${conan_cmd} profile update settings.build_type=Debug tket
+        echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
+    - name: Install ninja and ccache
+      run: |
+        sudo apt-get update
+        sudo apt-get install ninja-build ccache
+    - name: Build tket
+      run: |
+        ${CONAN_CMD} install recipes/tket --install-folder=build/tket --profile=tket -o tket:profile_coverage=True
+        ${CONAN_CMD} build recipes/tket --configure --build-folder=build/tket --source-folder=bubble/src
+        ${CONAN_CMD} build recipes/tket --build --build-folder=build/tket
+        ${CONAN_CMD} export-pkg recipes/tket -f --build-folder=build/tket --source-folder=bubble/src
+    - name: Build tket tests
+      run: |
+        ${CONAN_CMD} install recipes/tket-tests --install-folder=build/tket-tests --profile=tket -o tket-tests:with_coverage=True
+        ${CONAN_CMD} build recipes/tket-tests --configure --build-folder=build/tket-tests --source-folder=bubble/tests
+        ${CONAN_CMD} build recipes/tket-tests --build --build-folder=build/tket-tests
+    - name: Install runtime test requirements
+      run: |
+        sudo apt-get install texlive texlive-latex-extra latexmk
+        mkdir -p ~/texmf/tex/latex
+        wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
+    - name: Run tket tests
+      run: ./build/tket-tests/bin/test_tket
+    - name: Install gcovr
+      run: sudo apt-get install gcovr
+    - name: Build coverage report
+      run: |
+        mkdir bubble/test-coverage
+        GCOVR_SUMMARY=`gcovr --print-summary --output /dev/null -r ./bubble/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o bubble/test-coverage/index.html`
