@@ -363,33 +363,51 @@ class Backend(ABC):
         """
         return [self.get_result(handle, **kwargs) for handle in handles]
 
-    def run_circuit(self, circuit: Circuit, **kwargs: KwargTypes) -> BackendResult:
+    def run_circuit(
+        self,
+        circuit: Circuit,
+        n_shots: Optional[int] = None,
+        valid_check: bool = True,
+        **kwargs: KwargTypes,
+    ) -> BackendResult:
         """
-        Submit circuit to Backend `self` and returns results
+        Submits a circuit to the backend and returns results
 
         :param circuit: Circuit to be executed
+        :param n_shots: Passed on to :py:meth:`Backend.process_circuit`
+        :param valid_check: Passed on to :py:meth:`Backend.process_circuit`
         :return: Result
 
-        This is a conveniance method equivalent to calling
-        `self.process_circuit` followed by `self.get_result`.
-        Any keyword arguments are passed on to `process_circuit` and `get_result`.
+        This is a convenience method equivalent to calling
+        :py:meth:`Backend.process_circuit` followed by :py:meth:`Backend.get_result`.
+        Any additional keyword arguments are passed on to
+        :py:meth:`Backend.process_circuit` and :py:meth:`Backend.get_result`.
         """
-        return self.run_circuits([circuit], **kwargs)[0]
+        return self.run_circuits(
+            [circuit], n_shots=n_shots, valid_check=valid_check, **kwargs
+        )[0]
 
     def run_circuits(
-        self, circuits: Iterable[Circuit], **kwargs: KwargTypes
+        self,
+        circuits: Sequence[Circuit],
+        n_shots: Optional[Union[int, Sequence[int]]] = None,
+        valid_check: bool = True,
+        **kwargs: KwargTypes,
     ) -> List[BackendResult]:
         """
-        Submit circuits to Backend `self` and returns results
+        Submits circuits to the backend and returns results
 
-        :param circuits: Iterable of Circuits to be executed
+        :param circuits: Sequence of Circuits to be executed
+        :param n_shots: Passed on to :py:meth:`Backend.process_circuits`
+        :param valid_check: Passed on to :py:meth:`Backend.process_circuits`
         :return: List of results
 
         This is a convenience method equivalent to calling
-        `self.process_circuits` followed by `self.get_results`.
-        Any keyword arguments are passed on to `process_circuits` and `get_results`.
+        :py:meth:`Backend.process_circuits` followed by :py:meth:`Backend.get_results`.
+        Any additional keyword arguments are passed on to
+        :py:meth:`Backend.process_circuits` and :py:meth:`Backend.get_results`.
         """
-        handles = self.process_circuits(circuits, **kwargs)  # type: ignore
+        handles = self.process_circuits(circuits, n_shots, valid_check, **kwargs)
         results = self.get_results(handles, **kwargs)
         for h in handles:
             self.pop_result(h)
