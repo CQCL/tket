@@ -8,6 +8,9 @@ Minor new features:
 
 * New :py:meth:``backends.Backend.run_circuit`` and :py:meth:``backends.Backend.run_circuits``
   methods.
+* New ``allow_swaps`` parameter to ``FullPeepholeOptimise`` pass controlling
+  whether to allow introduction of implicit wire swaps (defaulting to ``True``
+  to match existing behaviour).
 
 API changes:
 
