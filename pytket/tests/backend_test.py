@@ -75,7 +75,8 @@ def test_bell() -> None:
     c.CX(0, 1)
     assert np.allclose(c.get_statevector(), sv)
     b = TketSimBackend()
-    assert np.allclose(b.get_state(c), sv)
+    r = b.run_circuit(c)
+    assert np.allclose(r.get_state(), sv)
     # Check that the "get_compiled_circuit" result is still the same.
     # (The circuit could change, due to optimisations).
     c = b.get_compiled_circuit(c)
@@ -90,13 +91,15 @@ def test_basisorder() -> None:
     b = TketSimBackend()
     c = Circuit(2)
     c.X(1)
-    assert (b.get_state(c) == np.asarray([0, 1, 0, 0])).all()
-    assert (b.get_state(c, basis=BasisOrder.dlo) == np.asarray([0, 0, 1, 0])).all()
+    r = b.run_circuit(c)
+    assert (r.get_state() == np.asarray([0, 1, 0, 0])).all()
+    assert (r.get_state(basis=BasisOrder.dlo) == np.asarray([0, 0, 1, 0])).all()
     assert (c.get_statevector() == np.asarray([0, 1, 0, 0])).all()
     b = TketSimShotBackend()
     c.measure_all()
-    assert b.get_shots(c, n_shots=4, seed=4).shape == (4, 2)
-    assert b.get_counts(c, n_shots=4, seed=4) == {(0, 1): 4}
+    r = b.run_circuit(c, n_shots=4, seed=4)
+    assert r.get_shots().shape == (4, 2)
+    assert r.get_counts() == {(0, 1): 4}
 
 
 @pytest.mark.filterwarnings("ignore::PendingDeprecationWarning")
@@ -112,8 +115,9 @@ def test_swaps() -> None:
 
     bs = TketSimBackend()
     c, c1 = bs.get_compiled_circuits((c, c1))
-    s = bs.get_state(c)
-    s1 = bs.get_state(c1)
+    [r, r1] = bs.run_circuits([c, c1])
+    s = r.get_state()
+    s1 = r1.get_state()
     assert np.allclose(s, s1)
     assert np.allclose(s_direct, s)
     assert np.allclose(s1_direct, s)
@@ -160,15 +164,16 @@ def test_swaps_basisorder() -> None:
 
     b = TketSimBackend()
     c, c1 = b.get_compiled_circuits((c, c1))
-    s_ilo = b.get_state(c1, basis=BasisOrder.ilo)
-    correct_ilo = b.get_state(c, basis=BasisOrder.ilo)
+    r, r1 = b.run_circuits((c, c1))
+    s_ilo = r1.get_state(basis=BasisOrder.ilo)
+    correct_ilo = r.get_state(basis=BasisOrder.ilo)
 
     assert np.allclose(s_ilo, correct_ilo)
     assert np.allclose(s_ilo_direct, s_ilo)
     assert np.allclose(correct_ilo_direct, s_ilo)
 
-    s_dlo = b.get_state(c1, basis=BasisOrder.dlo)
-    correct_dlo = b.get_state(c, basis=BasisOrder.dlo)
+    s_dlo = r1.get_state(basis=BasisOrder.dlo)
+    correct_dlo = r.get_state(basis=BasisOrder.dlo)
     assert np.allclose(s_dlo, correct_dlo)
 
     qbs = c.qubits
@@ -440,7 +445,8 @@ def test_tket_sim_backend_equivalence_with_circuit_functions() -> None:
     states = [circ.get_statevector(), compiled_circ.get_statevector()]
     unitaries = [circ.get_unitary(), compiled_circ.get_unitary()]
 
-    states.append(backend.get_state(compiled_circ))
+    result = backend.run_circuit(compiled_circ)
+    states.append(result.get_state())
 
     # paranoia: get_state should not alter the circuit
     states.append(compiled_circ.get_statevector())

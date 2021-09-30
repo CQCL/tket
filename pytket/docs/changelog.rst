@@ -1,6 +1,20 @@
 Changelog
 ==================================
 
+0.16.0 (Unreleased)
+-------------------
+
+Minor new features:
+
+* New :py:meth:``backends.Backend.run_circuit`` and :py:meth:``backends.Backend.run_circuits``
+  methods.
+
+API changes:
+
+* The deprecated ``get_shots``, ``get_counts`` and ``get_state`` methods
+  of the ``Backend`` class are removed. Use ``run_circuits`` and the homonym
+  methods of the :py:class:`backends.backendresult.BackendResult` class instead.
+
 0.15.0 (September 2021)
 -----------------------
 
