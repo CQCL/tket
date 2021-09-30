@@ -76,6 +76,7 @@ basic_pass:
     | euler_angle_reduction
     | flatten_registers
     | full_peephole_optimise
+    | full_peephole_optimise_no_swaps
     | guided_pauli_simp
     | guided_pauli_simp_default
     | kak_decomposition
@@ -125,6 +126,7 @@ delay_measures: "DelayMeasures"
 euler_angle_reduction: "EulerAngleReduction" "(" op_type "," op_type ")"
 flatten_registers: "FlattenRegisters"
 full_peephole_optimise: "FullPeepholeOptimise"
+full_peephole_optimise_no_swaps: "FullPeepholeOptimiseNoSwaps"
 guided_pauli_simp: "GuidedPauliSimp" "(" pauli_synth_strat "," cx_config_type ")"
 guided_pauli_simp_default: "GuidedPauliSimp"
 kak_decomposition: "KAKDecomposition"
@@ -247,6 +249,9 @@ class PassTransformer(Transformer):
 
     def full_peephole_optimise(self, t: List) -> BasePass:
         return FullPeepholeOptimise()
+
+    def full_peephole_optimise_no_swaps(self, t: List) -> BasePass:
+        return FullPeepholeOptimise(allow_swaps=False)
 
     def guided_pauli_simp(self, t: List) -> BasePass:
         return GuidedPauliSimp(strat=t[0], cx_config=t[1])
