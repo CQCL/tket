@@ -82,7 +82,7 @@ jobs:
     - name: Build coverage report
       run: |
         mkdir bubble/test-coverage
-        GCOVR_SUMMARY=`gcovr --print-summary --html --html-details -r ./bubble/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o bubble/test-coverage/index.html`
+        gcovr --print-summary --html --html-details -r ./bubble/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o bubble/test-coverage/index.html > bubble/test-coverage/summary.txt
     - name: Add report to repository
       run: |
         git add -f bubble/test-coverage
@@ -150,4 +150,8 @@ jobs:
     - name: Build coverage report
       run: |
         mkdir bubble/test-coverage
-        GCOVR_SUMMARY=`gcovr --print-summary --output /dev/null -r ./bubble/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o bubble/test-coverage/index.html`
+        gcovr --print-summary --output /dev/null -r ./bubble/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o bubble/test-coverage/index.html > summary1.txt
+    - name: Compare with latest report from develop
+      run: |
+        wget https://cqcl.github.io/tket/bubble/test-coverage/summary.txt
+        ./.github/workflows/compare-coverage summary.txt summary1.txt
