@@ -311,7 +311,7 @@ PYBIND11_MODULE(passes, m) {
       "ThreeQubitSquash", &ThreeQubitSquash,
       "Squash three-qubit subcircuits into subcircuits having fewer CX gates, "
       "when possible, and apply Clifford simplification."
-      "\n\n:param: allow_swaps whether to allow implicit wire swaps",
+      "\n\n:param allow_swaps: whether to allow implicit wire swaps",
       py::arg("allow_swaps") = true);
   m.def(
       "CommuteThroughMultis", &CommuteThroughMultis,
@@ -343,7 +343,9 @@ PYBIND11_MODULE(passes, m) {
       "FullPeepholeOptimise", &FullPeepholeOptimise,
       "Performs peephole optimisation including resynthesis of 2- and 3-qubit "
       "gate sequences, and converts to a circuit containing only CX and TK1 "
-      "gates.");
+      "gates."
+      "\n\n:param allow_swaps: whether to allow implicit wire swaps",
+      py::arg("allow_swaps") = true);
   m.def("RebaseCirq", &RebaseCirq, "Converts all gates to CZ, PhasedX and Rz.");
   m.def(
       "RebaseHQS", &RebaseHQS, "Converts all gates to ZZMax, PhasedX and Rz.");
@@ -643,9 +645,9 @@ PYBIND11_MODULE(passes, m) {
         }
       },
       "Simplify the circuit using knowledge of qubit state."
-      "\n\n:param: allow_classical: allow replacement of measurements on "
+      "\n\n:param allow_classical: allow replacement of measurements on "
       "known state with classical set-bit operations"
-      "\n:param: create_all_qubits: automatically annotate all qubits as "
+      "\n:param create_all_qubits: automatically annotate all qubits as "
       "initialized to the zero state"
       "\n:param remove_redundancies: apply a :py:meth:`RemoveRedundancies` "
       "pass after the initial simplification"
@@ -664,7 +666,7 @@ PYBIND11_MODULE(passes, m) {
       },
       "Applies simplifications enabled by knowledge of qubit state and "
       "discarded qubits."
-      "\n\n:param: allow_classical: allow replacement of measurements on "
+      "\n\n:param allow_classical: allow replacement of measurements on "
       "known state with classical set-bit operations"
       "\n:param xcirc: 1-qubit circuit implementing an X gate in the "
       "transformed circuit (if omitted, an X gate is used)"

@@ -24,12 +24,12 @@ Transform Transform::peephole_optimise_2q() {
       Transform::hyper_clifford_squash() >> Transform::synthesise_tket());
 }
 
-Transform Transform::full_peephole_optimise() {
+Transform Transform::full_peephole_optimise(bool allow_swaps) {
   return (
       Transform::synthesise_tket() >> Transform::two_qubit_squash() >>
-      Transform::clifford_simp() >> Transform::synthesise_tket() >>
-      Transform::three_qubit_squash() >> Transform::clifford_simp() >>
-      Transform::synthesise_tket());
+      Transform::clifford_simp(allow_swaps) >> Transform::synthesise_tket() >>
+      Transform::three_qubit_squash() >>
+      Transform::clifford_simp(allow_swaps) >> Transform::synthesise_tket());
 }
 
 Transform Transform::canonical_hyper_clifford_squash() {

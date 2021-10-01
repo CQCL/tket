@@ -103,6 +103,14 @@ def test_grammar() -> None:
             "ContextSimpNoClassical",
             ContextSimp(allow_classical=False),
         ),
+        (
+            "FullPeepholeOptimise",
+            FullPeepholeOptimise(allow_swaps=True),
+        ),
+        (
+            "FullPeepholeOptimiseNoSwaps",
+            FullPeepholeOptimise(allow_swaps=False),
+        ),
     ],
 )
 def test_script(script: str, comp_pass: BasePass) -> None:

@@ -22,7 +22,7 @@ from pytket.qasm import circuit_from_qasm
 
 from sympy import Symbol  # type: ignore
 import numpy as np
-
+import json
 import pytest
 
 
@@ -697,6 +697,29 @@ def test_determinism() -> None:
     FullPeepholeOptimise().apply(c0)
     FullPeepholeOptimise().apply(c1)
     assert c0 == c1
+
+
+def test_full_peephole_optimise() -> None:
+    with open(
+        Path(__file__).resolve().parent / "json_test_files" / "circuit.json", "r"
+    ) as f:
+        circ = Circuit.from_dict(json.load(f))
+
+    n_cz = circ.n_gates_of_type(OpType.CZ)
+
+    circ0 = circ.copy()
+    FullPeepholeOptimise().apply(circ0)
+    perm0 = circ0.implicit_qubit_permutation()
+    assert any(a != b for a, b in perm0.items())
+    n_cx0 = circ0.n_gates_of_type(OpType.CX)
+    assert n_cx0 < n_cz
+
+    circ1 = circ.copy()
+    FullPeepholeOptimise(allow_swaps=False).apply(circ1)
+    perm1 = circ1.implicit_qubit_permutation()
+    assert all(a == b for a, b in perm1.items())
+    n_cx1 = circ1.n_gates_of_type(OpType.CX)
+    assert n_cx1 < n_cz
 
 
 if __name__ == "__main__":

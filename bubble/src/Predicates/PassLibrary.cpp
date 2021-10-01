@@ -163,28 +163,6 @@ const PassPtr &PeepholeOptimise2Q() {
   return pp;
 }
 
-const PassPtr &FullPeepholeOptimise() {
-  OpTypeSet after_set = {
-      OpType::tk1, OpType::CX, OpType::Measure, OpType::Collapse,
-      OpType::Reset};
-  PredicatePtrMap precons = {};
-  std::type_index ti = typeid(ConnectivityPredicate);
-  PredicatePtr out_gateset = std::make_shared<GateSetPredicate>(after_set);
-  PredicatePtr max2qb = std::make_shared<MaxTwoQubitGatesPredicate>();
-  PredicatePtrMap postcon_spec = {
-      CompilationUnit::make_type_pair(out_gateset),
-      CompilationUnit::make_type_pair(max2qb)};
-  PredicateClassGuarantees g_postcons;
-  g_postcons.insert({ti, Guarantee::Clear});
-  PostConditions postcon{postcon_spec, g_postcons, Guarantee::Preserve};
-  // record pass config
-  nlohmann::json j;
-  j["name"] = "FullPeepholeOptimise";
-  static const PassPtr pp(std::make_shared<StandardPass>(
-      precons, Transform::full_peephole_optimise(), postcon, j));
-  return pp;
-}
-
 const PassPtr &RemoveRedundancies() {
   static const PassPtr pp([]() {
     Transform t = Transform::remove_redundancies();
