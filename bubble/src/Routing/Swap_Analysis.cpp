@@ -202,7 +202,7 @@ std::vector<Swap> Routing::path_to_swaps(const std::vector<Node> &path) {
 // it.
 bool Routing::solve_furthest() {
   bool success = false;
-  std::optional<Node> max_node = std::nullopt;
+  std::optional<Node> max_node;
   unsigned max_dist = 0;
   for (auto [q1, q2] : interaction) {
     unsigned dist = current_arc_.get_distance(q1, q2);
