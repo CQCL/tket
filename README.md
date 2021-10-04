@@ -9,7 +9,6 @@ If you just want to use tket via Python, the easiest way is to install it with
 
 ```shell
 pip install pytket
-
 ```
 
 For full API documentation, as well as a comprehensive user manual and a
@@ -109,7 +108,6 @@ Latex dependencies on (Debian flavours of) Linux you can do:
 sudo apt-get install texlive texlive-latex-extra latexmk
 mkdir -p ~/texmf/tex/latex
 wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
-
 ```
 
 The Python tests require a few more packages. These can be installed with:

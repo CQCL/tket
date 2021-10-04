@@ -281,7 +281,7 @@ jobs:
         pytest --ignore=simulator/ --doctest-modules
 
   test_macos_M1_wheels:
-    name: Test macos wheels
+    name: Test macos (M1) wheels
     needs: build_macos_M1_wheels
     runs-on: [self-hosted, macos, M1]
     defaults:
