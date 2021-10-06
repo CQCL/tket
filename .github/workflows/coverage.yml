@@ -75,6 +75,8 @@ jobs:
         git config --global user.name  "«$GITHUB_WORKFLOW» github action"
     - name: Check out gh-pages branch
       run:  git checkout gh-pages
+    - name: Update it from develop
+      run: git merge develop
     - name: Remove old report
       run: git rm -r --ignore-unmatch bubble/test-coverage
     - name: Install gcovr
