@@ -227,19 +227,31 @@ PassPtr gen_routing_pass(const Architecture& arc, const RoutingConfig& config) {
 
 PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
   Transform::Transformation trans = [=](Circuit& circ) {
-    if (arc.n_uids() != circ.n_qubits()) {
-      throw CircuitInvalidity("Circuit and architecture have different sizes.");
+    if (arc.n_uids() < circ.n_qubits()) {
+      throw CircuitInvalidity(
+          "Circuit has more qubits than the architecture has nodes.");
     }
+
+    while (arc.n_uids() > circ.n_qubits()) {
+      Qubit qb = Qubit();
+      circ.add_qubit(qb);
+    }
+
+    TKET_ASSERT(arc.n_uids() == circ.n_qubits());
 
     qubit_vector_t q_vec = circ.all_qubits();
     std::map<Qubit, Node> qubit_to_nodes;
     unsigned counter = 0;
 
     for (Node x : arc.get_all_uids_set()) {
-      qubit_to_nodes.insert({q_vec[counter], x});
-      ++counter;
+      if (counter < circ.n_qubits()) {
+        qubit_to_nodes.insert({q_vec[counter], x});
+        ++counter;
+      }
     }
+
     circ.rename_units(qubit_to_nodes);
+
     return true;
   };
   Transform t = Transform(trans);
@@ -261,11 +273,18 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
 }
 
 PassPtr aas_routing_pass(
-    const Architecture& arc, const unsigned aas_lookahead) {
+    const Architecture& arc, const unsigned lookahead,
+    const unsigned cnotsynthtype) {
   Transform::Transformation trans = [=](Circuit& circ) {
-    if (arc.n_uids() != circ.n_qubits()) {
-      throw CircuitInvalidity("Circuit and architecture have different sizes.");
+    // check ipput:
+    TKET_ASSERT(lookahead != 0);
+    TKET_ASSERT(cnotsynthtype < 3);
+    if (arc.n_uids() < circ.n_qubits()) {
+      throw CircuitInvalidity(
+          "Circuit has more qubits than the architecture has nodes.");
     }
+
+    // TKET_ASSERT(arc.n_uids() == circ.n_qubits());
 
     qubit_vector_t all_qu = circ.all_qubits();
 
@@ -289,7 +308,9 @@ PassPtr aas_routing_pass(
         case OpType::PhasePolyBox: {
           Op_ptr op = com.get_op_ptr();
           const PhasePolyBox& b = static_cast<const PhasePolyBox&>(*op);
-          Circuit result = aas::phase_poly_synthesis(arc, b, aas_lookahead);
+
+          Circuit result = aas::phase_poly_synthesis(
+              arc, b, lookahead, (aas::CNotSynthType)cnotsynthtype);
 
           for (const Command& res_com : result) {
             OpType ot = res_com.get_op_ptr()->get_type();
@@ -334,6 +355,7 @@ PassPtr aas_routing_pass(
         }
       }
     }
+
     return true;
   };
   Transform t = Transform(trans);
@@ -363,10 +385,11 @@ PassPtr aas_routing_pass(
 }
 
 PassPtr gen_full_mapping_pass_phase_poly(
-    const Architecture& arc, const unsigned aas_lookahead) {
+    const Architecture& arc, const unsigned lookahead,
+    const unsigned cnotsynthtype) {
   return RebaseUFR() >> ComposePhasePolyBoxes() >>
          gen_placement_pass_phase_poly(arc) >>
-         aas_routing_pass(arc, aas_lookahead);
+         aas_routing_pass(arc, lookahead, cnotsynthtype);
 }
 
 PassPtr gen_directed_cx_routing_pass(

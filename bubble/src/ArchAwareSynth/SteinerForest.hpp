@@ -30,6 +30,12 @@ typedef std::vector<CostedTrees> TrialCostedTrees;
 typedef std::list<unsigned> ParityList;
 typedef std::pair<unsigned, OperationList> CostedOperations;
 
+class NoHailtonPath : public std::logic_error {
+ public:
+  explicit NoHailtonPath(const std::string &message)
+      : std::logic_error(message) {}
+};
+
 /**
  * Represents a series of sequential operations on an architecture,
  * each of which are represented by Steiner trees. The prototypical

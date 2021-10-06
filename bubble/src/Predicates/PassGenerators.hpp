@@ -60,21 +60,23 @@ PassPtr gen_directed_cx_routing_pass(
  * execute architecture aware synthesis on a given architecture for an allready
  * place circuit, only for circuit which contains Cx+Rz+H gates
  * @param arc architecture to route on
- * @param aas_lookahead parameter for the recursion depth in the algorithm
+ * @param lookahead parameter for the recursion depth in the algorithm
  * @return passpointer to perform architecture aware synthesis
  */
 PassPtr aas_routing_pass(
-    const Architecture& arc, const unsigned aas_lookahead = 1);
+    const Architecture& arc, const unsigned lookahead = 1,
+    const unsigned cnotsynthtype = 2);
 
 /**
  * execute architecture aware synthesis on a given architecture for any circuit.
  * all unplace qubits will be placed in this pass
  * @param arc architecture to route on
- * @param aas_lookahead parameter for the recursion depth in the algorithm
+ * @param lookahead parameter for the recursion depth in the algorithm
  * @return passpointer to perform architecture aware synthesis
  */
 PassPtr gen_full_mapping_pass_phase_poly(
-    const Architecture& arc, const unsigned aas_lookahead = 1);
+    const Architecture& arc, const unsigned lookahead = 1,
+    const unsigned cnotsynthtype = 2);
 
 /**
  * pass to place all not yet placed qubits of the circuit to the given

@@ -327,9 +327,12 @@ Circuit phase_poly_synthesis(
   unsigned counter_place = 0;
 
   for (Node no_place : arch.get_all_uids_set()) {
-    qubit_to_nodes_place.insert({q_vec_place[counter_place], no_place});
-    ++counter_place;
+    if (counter_place < circuit_ppb_place.n_qubits()) {
+      qubit_to_nodes_place.insert({q_vec_place[counter_place], no_place});
+      ++counter_place;
+    }
   }
+
   circuit_ppb_place.rename_units(qubit_to_nodes_place);
 
   PhasePolyBox placed_ppb(circuit_ppb_place);
@@ -338,6 +341,7 @@ Circuit phase_poly_synthesis(
 
   // create maps from qubits/node to int
   std::map<UnitID, UnitID> forward_contiguous_uids;
+  std::map<UnitID, UnitID> forward_invert_contiguous_uids;
   std::map<UnitID, UnitID> backward_contiguous_uids;
   // extra map with node type needed for the creation of the architecture
   std::map<UnitID, Node> unitid_to_int_nodes;
@@ -347,7 +351,7 @@ Circuit phase_poly_synthesis(
   IterationOrder iter_order(arch);
 
   if ((hampath.empty()) && (cnottype == CNotSynthType::HamPath)) {
-    throw std::logic_error(
+    throw NoHailtonPath(
         "[AAS]: no hamilton path found in the given architecture, cnot "
         "synthesis stoped. Please try an alternative CNotSynthType.");
   }

@@ -60,10 +60,24 @@ static PassPtr gen_default_routing_pass(
 
 static PassPtr gen_default_aas_routing_pass(
     const Architecture &arc, py::kwargs kwargs) {
-  unsigned aas_lookahead = 1;
-  if (kwargs.contains("aas_lookahead"))
-    aas_lookahead = py::cast<unsigned>(kwargs["aas_lookahead"]);
-  return gen_full_mapping_pass_phase_poly(arc, aas_lookahead);
+  unsigned lookahead = 1;
+  unsigned cnotsynthtype = 2;
+
+  if (kwargs.contains("lookahead"))
+    lookahead = py::cast<unsigned>(kwargs["lookahead"]);
+
+  if (kwargs.contains("cnotsynthtype"))
+    cnotsynthtype = py::cast<unsigned>(kwargs["cnotsynthtype"]);
+
+  if (lookahead == 0) {
+    TKET_ASSERT(!"lookahead must be > 0");
+  }
+
+  if (cnotsynthtype > 2) {
+    TKET_ASSERT(!"cnotsynthtype must be < 3");
+  }
+
+  return gen_full_mapping_pass_phase_poly(arc, lookahead, cnotsynthtype);
 }
 
 static PassPtr gen_full_mapping_pass_kwargs(
@@ -527,15 +541,15 @@ PYBIND11_MODULE(passes, m) {
       ":py:class:`Architecture` is used for the routing. "
       "The direction of the edges is ignored. The placement used "
       "is GraphPlacement. This pass can take a few parameters for the "
-      "routing, described below."
-      "\n\nNB: In the current implementation it is assumed that the number of "
-      "nodes in the architecture is equal to the number of qubits in the "
-      "circuit. With smaller circuits may therefore be necessary to add unused "
-      "qubits before applying this pass."
-      "\n\n:param arc: The architecture used for connectivity information."
-      "\n:param \\**kwargs: Parameters for routing: "
-      "(unsigned) lookahead=1: giving parameter for the recursive iteration "
-      "depth in the synthesis method"
+      "routing, described below. \n\n:param arc: The architecture used for "
+      "connectivity information."
+      "\n:param \\**kwargs: Parameters for routing: \n  (unsigned) "
+      "lookahead=1: giving parameter for the recursive iteration \n"
+      "(unsigned) cnotsynthtype=2: giving parameter for type of the cnot "
+      "synth, possible options are\n0: swap based algorithm,\n 1: hamilton "
+      "path based method, this method will fail if there is no Hamilton path "
+      "in the given architecture,\n2: rec steiner gauss method. Values > 2 are "
+      "not allowed"
       "\n:return: a pass to perform the remapping",
       py::arg("arc"));
 
