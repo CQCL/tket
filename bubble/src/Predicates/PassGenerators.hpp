@@ -60,7 +60,12 @@ PassPtr gen_directed_cx_routing_pass(
  * execute architecture aware synthesis on a given architecture for an allready
  * place circuit, only for circuit which contains Cx+Rz+H gates
  * @param arc architecture to route on
- * @param lookahead parameter for the recursion depth in the algorithm
+ * @param lookahead parameter for the recursion depth in the algorithm, the
+ * value should be > 0
+ * @param cnotsynthtype parameter for the type of cnot synth, possible options
+ * are 0: swap based algorithm, 1: hamilton path based method, this method will
+ * fail if there is no Hamilton path in the given architecture, 2: rec steiner
+ * gauss method. Values > 2 are not allowed
  * @return passpointer to perform architecture aware synthesis
  */
 PassPtr aas_routing_pass(
@@ -71,7 +76,12 @@ PassPtr aas_routing_pass(
  * execute architecture aware synthesis on a given architecture for any circuit.
  * all unplace qubits will be placed in this pass
  * @param arc architecture to route on
- * @param lookahead parameter for the recursion depth in the algorithm
+ * @param lookahead parameter for the recursion depth in the algorithm, the
+ * value should be > 0
+ * @param cnotsynthtype parameter for the type of cnot synth, possible options
+ * are 0: swap based algorithm, 1: hamilton path based method, this method will
+ * fail if there is no Hamilton path in the given architecture, 2: rec steiner
+ * gauss method. Values > 2 are not allowed
  * @return passpointer to perform architecture aware synthesis
  */
 PassPtr gen_full_mapping_pass_phase_poly(
