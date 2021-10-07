@@ -21,6 +21,7 @@
 #include "Utils/MatrixAnalysis.hpp"
 
 namespace tket {
+namespace test_CosSinDecomposition {
 
 static bool cs_matrices_ok(const Eigen::MatrixXd &c, const Eigen::MatrixXd &s) {
   unsigned n = c.rows();
@@ -252,4 +253,5 @@ SCENARIO("CosSinDecomposition") {
   }
 }
 
+}  // namespace test_CosSinDecomposition
 }  // namespace tket

@@ -27,6 +27,7 @@ using std::vector;
 namespace tket {
 namespace graphs {
 namespace tests {
+namespace test_GraphFindComponents {
 
 // For testing the connected component function
 struct ComponentsTestData {
@@ -184,6 +185,7 @@ SCENARIO("Correctly calculates graph components") {
   }
 }
 
+}  // namespace test_GraphFindComponents
 }  // namespace tests
 }  // namespace graphs
 }  // namespace tket

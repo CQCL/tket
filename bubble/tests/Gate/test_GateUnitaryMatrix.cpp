@@ -32,6 +32,7 @@
 using Catch::Matchers::Contains;
 
 namespace tket {
+namespace test_GateUnitaryMatrix {
 
 // For easily cycling through parameter values.
 // Might seem a bit naughty to use doubles, but actually perfectly fine.
@@ -583,4 +584,5 @@ SCENARIO("Trivial unitary matrix identities") {
   }
 }
 
+}  // namespace test_GateUnitaryMatrix
 }  // namespace tket

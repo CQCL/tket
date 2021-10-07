@@ -37,6 +37,7 @@
 #include "Utils/PauliStrings.hpp"
 
 namespace tket {
+namespace test_Circ {
 
 static std::pair<Op_ptr, Expr> op_to_tk1(const Op_ptr& op) {
   std::vector<Expr> angles = as_gate_ptr(op)->get_tk1_angles();
@@ -2686,4 +2687,5 @@ SCENARIO("Vertices in order") {
   }
 }
 
+}  // namespace test_Circ
 }  // namespace tket

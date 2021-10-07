@@ -21,7 +21,7 @@
 #include "Graphs/UIDConnectivity.hpp"
 #include "Utils/UnitID.hpp"
 
-namespace tket::graph {
+namespace tket::graphs {
 
 template <typename UID_t>
 using UndirectedConnGraph =
@@ -138,6 +138,6 @@ class BicomponentGraphTester {
 
 }  // namespace detail
 
-}  // namespace tket::graph
+}  // namespace tket::graphs
 
 #endif

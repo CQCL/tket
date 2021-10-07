@@ -22,8 +22,9 @@
 #include "Architecture/Architectures.hpp"
 #include "Graphs/ArticulationPoints.hpp"
 
-using namespace tket;
-using namespace tket::graph;
+namespace tket {
+namespace graphs {
+namespace test_Architectures {
 
 SCENARIO("Testing FullyConnected") {
   using Arch = FullyConnected;
@@ -157,3 +158,7 @@ SCENARIO("connectivity") {
     REQUIRE(archi.get_connectivity() == connectivity);
   }
 }
+
+}  // namespace test_Architectures
+}  // namespace graphs
+}  // namespace tket

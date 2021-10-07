@@ -18,6 +18,8 @@
 #include "testutil.hpp"
 
 namespace tket {
+namespace test_MeasurementSetup {
+
 SCENARIO("verify_measurement_setup") {
   GIVEN("An empty setup") {
     MeasurementSetup ms;
@@ -387,4 +389,5 @@ SCENARIO("verify_measurement_setup") {
   }
 }
 
+}  // namespace test_MeasurementSetup
 }  // namespace tket

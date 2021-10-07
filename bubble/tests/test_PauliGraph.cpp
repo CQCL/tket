@@ -27,6 +27,7 @@
 #include "testutil.hpp"
 
 namespace tket {
+namespace test_PauliGraph {
 
 SCENARIO("Correct creation of PauliGraphs") {
   GIVEN("A Clifford circuit") {
@@ -1005,4 +1006,5 @@ SCENARIO("Error handling with implicit permutations") {
   REQUIRE_THROWS_AS(circuit_to_pauli_graph(circ), NotImplemented);
 }
 
+}  // namespace test_PauliGraph
 }  // namespace tket

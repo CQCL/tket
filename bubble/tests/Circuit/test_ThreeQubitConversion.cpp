@@ -28,6 +28,7 @@
 #include "Utils/UnitID.hpp"
 
 namespace tket {
+namespace test_ThreeQubitConversion {
 
 static void check_three_qubit_synthesis(const Eigen::MatrixXcd &U) {
   static const std::set<OpType> expected_1q_gates = {
@@ -458,4 +459,5 @@ SCENARIO("Special cases") {
   }
 }
 
+}  // namespace test_ThreeQubitConversion
 }  // namespace tket

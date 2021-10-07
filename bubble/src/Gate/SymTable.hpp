@@ -19,6 +19,11 @@
 
 namespace tket {
 
+// Declare test namespace to grant it direct access to the symbol table
+namespace test_Ops {
+void clear_symbol_table();
+}
+
 /**
  * Utility class for accessing the global symbol table
  *
@@ -34,6 +39,10 @@ struct SymTable {
   static void register_symbol(const std::string &symbol);
 
   static void register_symbols(const SymSet &ss);
+
+ private:
+  friend void test_Ops::clear_symbol_table();
+  static std::unordered_set<std::string> &get_registered_symbols();
 };
 
 }  // namespace tket

@@ -30,7 +30,7 @@
 
 // implementation details of `TreeSearch.hpp`
 
-namespace tket::graph {
+namespace tket::graphs {
 
 // ::detail includes all internal implementation-specific details
 namespace detail {
@@ -282,6 +282,6 @@ class DFS : public detail::TreeSearch<Args...> {
   }
 };
 
-}  // namespace tket::graph
+}  // namespace tket::graphs
 
 #endif

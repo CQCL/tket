@@ -25,6 +25,7 @@
 #include "testutil.hpp"
 
 namespace tket {
+namespace test_TwoQubitCanonical {
 
 SCENARIO("Testing two-qubit canonical forms") {
   GIVEN("Decomposing a kronecker product of matrices (0)") {
@@ -686,4 +687,5 @@ SCENARIO("Test decomposition into 2-CX circuit plus diagonal") {
   }
 }
 
+}  // namespace test_TwoQubitCanonical
 }  // namespace tket

@@ -22,7 +22,11 @@
 #include <string>
 #include <vector>
 
-using namespace tket::graph::utils;
+namespace tket {
+namespace graphs {
+namespace tests {
+namespace test_GraphUtils {
+using namespace tket::graphs::utils;
 
 /* Random-ish graph used for testing
  *
@@ -440,3 +444,8 @@ SCENARIO("Test symmetrise") {
   auto [e4, e4_exists] = boost::edge(E, B, g_sym);
   CHECK(!e4_exists);
 }
+
+}  // namespace test_GraphUtils
+}  // namespace tests
+}  // namespace graphs
+}  // namespace tket

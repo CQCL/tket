@@ -18,6 +18,7 @@
 #include "testutil.hpp"
 
 namespace tket {
+namespace test_Partition {
 
 SCENARIO("Small sets of Gadgets are partitioned correctly") {
   const std::list<PauliPartitionStrat> strats{
@@ -95,4 +96,5 @@ SCENARIO("Small sets of Gadgets are partitioned correctly") {
   }
 }
 
+}  // namespace test_Partition
 }  // namespace tket

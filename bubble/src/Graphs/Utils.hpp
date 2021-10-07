@@ -24,7 +24,7 @@
 #include "Utils/BiMapHeaders.hpp"
 #include "Utils/GraphHeaders.hpp"
 
-namespace tket::graph {
+namespace tket::graphs {
 
 using dist_vec = std::vector<std::size_t>;
 
@@ -235,6 +235,6 @@ std::set<vertex<Graph>> min_degree_nodes(const Graph& g) {
 }
 
 }  // namespace utils
-}  // namespace tket::graph
+}  // namespace tket::graphs
 
 #endif

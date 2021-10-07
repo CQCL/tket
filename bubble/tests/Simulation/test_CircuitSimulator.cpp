@@ -28,9 +28,9 @@
 #include "Transformations/Transform.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 
-using Catch::Matchers::Contains;
-
 namespace tket {
+namespace test_CircuitSimulator {
+using Catch::Matchers::Contains;
 
 SCENARIO("Simple circuits produce the correct statevectors") {
   GIVEN("A 1 qubit circ with X-gate") {
@@ -647,4 +647,5 @@ SCENARIO(
   }
 }
 
+}  // namespace test_CircuitSimulator
 }  // namespace tket

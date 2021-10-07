@@ -31,7 +31,7 @@
 #include "Utils/UnitID.hpp"
 namespace tket {
 
-using dist_vec = graph::dist_vec;
+using dist_vec = graphs::dist_vec;
 
 class ArchitectureInvalidity : public std::logic_error {
  public:
@@ -49,9 +49,9 @@ static std::vector<std::pair<Node, Node>> as_nodepairs(
   return nodepairs;
 }
 
-class Architecture : public graph::UIDConnectivity<Node> {
+class Architecture : public graphs::UIDConnectivity<Node> {
  private:
-  using Base = graph::UIDConnectivity<Node>;
+  using Base = graphs::UIDConnectivity<Node>;
 
  public:
   /** inherit constructors */

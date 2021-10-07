@@ -22,6 +22,7 @@
 #include "testutil.hpp"
 
 namespace tket {
+namespace test_PauliString {
 
 SCENARIO("Testing equality of QubitPauliTensor") {
   Qubit q0 = Qubit("q", 0);
@@ -272,4 +273,5 @@ SCENARIO("Test matrix product utilities") {
   }
 }
 
+}  // namespace test_PauliString
 }  // namespace tket

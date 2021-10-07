@@ -27,6 +27,7 @@ using std::vector;
 namespace tket {
 namespace graphs {
 namespace tests {
+namespace test_GraphFindMaxClique {
 
 struct MaxCliqueTestData {
   vector<vector<size_t>> raw_adjacency_data;
@@ -255,6 +256,7 @@ SCENARIO("Correctly calculates max cliques") {
   CHECK(cliques_seen == 160);
 }
 
+}  // namespace test_GraphFindMaxClique
 }  // namespace tests
 }  // namespace graphs
 }  // namespace tket

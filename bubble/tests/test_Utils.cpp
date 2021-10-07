@@ -17,6 +17,7 @@
 #include "Utils/HelperFunctions.hpp"
 
 namespace tket {
+namespace test_Utils {
 
 SCENARIO("Test GrayCode generation") {
   WHEN("Try 2 control graycode") {
@@ -41,4 +42,5 @@ SCENARIO("Test GrayCode generation") {
   }
 }
 
+}  // namespace test_Utils
 }  // namespace tket

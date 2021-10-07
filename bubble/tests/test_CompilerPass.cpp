@@ -28,6 +28,7 @@
 #include "Transformations/ContextualReduction.hpp"
 #include "testutil.hpp"
 namespace tket {
+namespace test_CompilerPass {
 
 SCENARIO("Run some basic Compiler Passes") {
   GIVEN(
@@ -907,4 +908,5 @@ SCENARIO("ThreeQubitSquah") {
   }
 }
 
+}  // namespace test_CompilerPass
 }  // namespace tket

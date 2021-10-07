@@ -30,7 +30,8 @@
 #include "Utils/HelperFunctions.hpp"
 #include "testutil.hpp"
 
-using namespace tket;
+namespace tket {
+
 using Connection = Architecture::Connection;
 
 Interactions RoutingTester::get_interaction(const RoutingFrontier &sf) {
@@ -39,17 +40,17 @@ Interactions RoutingTester::get_interaction(const RoutingFrontier &sf) {
 
 // Wrappers of private methods for testing?
 void RoutingTester::increment_distance(
-    graph::dist_vec &new_dist_vector, const Swap &pair, int increment) const {
+    graphs::dist_vec &new_dist_vector, const Swap &pair, int increment) const {
   router->increment_distance(new_dist_vector, pair, increment);
 }
 
-graph::dist_vec RoutingTester::generate_distance_vector(
+graphs::dist_vec RoutingTester::generate_distance_vector(
     const Interactions &inter) const {
   return router->generate_distance_vector(inter);
 }
 
-graph::dist_vec RoutingTester::update_distance_vector(
-    const Swap &nodes, graph::dist_vec new_dist_vector,
+graphs::dist_vec RoutingTester::update_distance_vector(
+    const Swap &nodes, graphs::dist_vec new_dist_vector,
     const Interactions &inte) const {
   return router->update_distance_vector(nodes, new_dist_vector, inte);
 }
@@ -71,7 +72,7 @@ std::vector<Swap> RoutingTester::candidate_swaps(
 }
 
 std::vector<Swap> RoutingTester::cowtan_et_al_heuristic(
-    std::vector<Swap> &candidate_swaps, const graph::dist_vec &base_dists,
+    std::vector<Swap> &candidate_swaps, const graphs::dist_vec &base_dists,
     const Interactions &interac) const {
   return router->cowtan_et_al_heuristic(candidate_swaps, base_dists, interac);
 }
@@ -138,6 +139,8 @@ void RoutingTester::set_config(const RoutingConfig &_config) {
 }
 void RoutingTester::next_sf(RoutingFrontier &sf) { sf.next_slicefrontier(); }
 Circuit *RoutingTester::get_circ() { return &(router->circ_); }
+
+namespace test_Routing {
 
 SCENARIO(
     "Test validity of circuit against architecture using "
@@ -917,7 +920,7 @@ SCENARIO("Does increment distance work?", "[routing]") {
   RoutingTester routing_tester(&test_router);
   GIVEN("Suitable Distance vector, Swap and increment.") {
     unsigned diameter = test_architecture.get_diameter();
-    graph::dist_vec test_distance(diameter, 2);
+    graphs::dist_vec test_distance(diameter, 2);
     Swap test_swap = {square_nodes[0], square_nodes[1]};
     int increment = 2;
     unsigned distance_index = diameter - test_architecture.get_distance(
@@ -928,7 +931,7 @@ SCENARIO("Does increment distance work?", "[routing]") {
   }
   GIVEN("Realistic Distance Vector, non_adjacent Swap, absurd increment.") {
     unsigned diameter = test_architecture.get_diameter();
-    graph::dist_vec test_distance(diameter, 2);
+    graphs::dist_vec test_distance(diameter, 2);
     Swap test_swap = {square_nodes[0], square_nodes[5]};
     int increment = 30;
     unsigned distance_index = diameter - test_architecture.get_distance(
@@ -962,7 +965,7 @@ SCENARIO("Does generate_distance_vector work suitably?", "[routing]") {
     }
     // no placement invoked, should be 0 at diameter distance, 1 at distance 2,
     // 1 at distance 1. i.e. {0,2}
-    graph::dist_vec out_distances =
+    graphs::dist_vec out_distances =
         routing_tester.generate_distance_vector(test_interaction);
     REQUIRE(
         out_distances[0] ==
@@ -995,10 +998,10 @@ SCENARIO("Does generate_distance_vector work suitably?", "[routing]") {
     // 6-3 -> 3
     // 5-4 -> 5
     // i.e.
-    graph::dist_vec expected_distances = {
+    graphs::dist_vec expected_distances = {
         4, 0, 4, 0};  // 4 qubits at diameter, 0 at diameter-1, 4 qubits at
                       // diameter-2, 0 at diameter-3
-    graph::dist_vec out_distances =
+    graphs::dist_vec out_distances =
         routing_tester.generate_distance_vector(test_interaction);
     REQUIRE(out_distances == expected_distances);
   }
@@ -1020,21 +1023,21 @@ SCENARIO("Does update_distance_vector update as intended?", "[routing]") {
   // update_distance_vector is four indiviudal increment_distances
   GIVEN("Realistic Distance vector, Swap and Interaction vector.") {
     unsigned diameter = test_architecture.get_diameter();
-    graph::dist_vec test_distance = {0, 2};
+    graphs::dist_vec test_distance = {0, 2};
     unsigned ind = 0;
     Interactions test_interaction;
     std::array<unsigned, 6> inte_pattern{1, 0, 5, 3, 4, 2};
     for (unsigned i = 0; i < inte_pattern.size(); ++i) {
       test_interaction.insert({square_nodes[i], square_nodes[inte_pattern[i]]});
     }
-    graph::dist_vec quick_compare_distance =
+    graphs::dist_vec quick_compare_distance =
         routing_tester.generate_distance_vector(test_interaction);
     REQUIRE(quick_compare_distance == test_distance);
 
     Swap test_swap = {square_nodes[2], square_nodes[4]};
 
     // Distances from full method
-    graph::dist_vec out_distance = routing_tester.update_distance_vector(
+    graphs::dist_vec out_distance = routing_tester.update_distance_vector(
         test_swap, test_distance, test_interaction);
     // Forming Distances from individual steps:
     // (1) 2 in test_swap is interacting with qubit 5, a distance of 2 away
@@ -1265,7 +1268,7 @@ SCENARIO(
         {square_nodes[1], square_nodes[3]},
         {square_nodes[2], square_nodes[3]},
         {square_nodes[3], square_nodes[5]}};
-    graph::dist_vec test_distances = {0, 2};
+    graphs::dist_vec test_distances = {0, 2};
     Interactions test_interaction;
     unsigned ind = 0;
     std::array<unsigned, 6> inte_pattern{3, 1, 2, 0, 4, 5};
@@ -1293,7 +1296,7 @@ SCENARIO(
     for (unsigned i = 0; i < inte_pattern.size(); ++i) {
       test_interaction.insert({square_nodes[i], square_nodes[inte_pattern[i]]});
     }
-    graph::dist_vec test_distances = {2, 2};
+    graphs::dist_vec test_distances = {2, 2};
     std::vector<Swap> output_swaps = routing_tester.cowtan_et_al_heuristic(
         test_swaps, test_distances, test_interaction);
     std::vector<Swap> expected_output = {
@@ -2654,3 +2657,6 @@ SCENARIO("Does add_distributed_cx account for incorrect BRIDGE nodes?") {
         rt.add_distributed_cx(Node(0), Node(1), Node(2)), BridgeInvalid);
   }
 }
+
+}  // namespace test_Routing
+}  // namespace tket

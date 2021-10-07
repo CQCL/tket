@@ -18,6 +18,7 @@
 #include "Converters/Converters.hpp"
 
 namespace tket {
+namespace test_CliffTableau {
 
 static void add_ops_list_one_to_circuit(Circuit& circ) {
   circ.add_op<unsigned>(OpType::CX, {0, 1});
@@ -218,4 +219,5 @@ SCENARIO("Synthesis of circuits from Tableaus") {
   }
 }
 
+}  // namespace test_CliffTableau
 }  // namespace tket

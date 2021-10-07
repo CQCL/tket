@@ -25,6 +25,7 @@
 #include "Utils/EigenConfig.hpp"
 
 namespace tket {
+namespace test_ContextOpt {
 
 SCENARIO("Create and Discard operations") {
   GIVEN("An ordinary circuit") {
@@ -334,4 +335,5 @@ SCENARIO("Contextual optimization") {
   }
 }
 
+}  // namespace test_ContextOpt
 }  // namespace tket

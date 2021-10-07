@@ -25,6 +25,7 @@
 #include "testutil.hpp"
 
 namespace tket {
+namespace test_PhasePolynomials {
 
 SCENARIO("Test basic phase polynomial creation") {
   GIVEN("A 2qb CX+Rz phase gadget") {
@@ -713,4 +714,5 @@ SCENARIO("Test conversion of circuit to circuit with phase poly boxes") {
   }
 }
 
+}  // namespace test_PhasePolynomials
 }  // namespace tket

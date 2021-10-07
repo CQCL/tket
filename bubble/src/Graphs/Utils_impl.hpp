@@ -27,7 +27,7 @@
 #include "Utils/GraphHeaders.hpp"
 
 // Implemetation details of `Graphs/Utils.hpp`
-namespace tket::graph::utils {
+namespace tket::graphs::utils {
 
 // ::detail includes all internal implementation-specific details
 namespace detail {
@@ -106,7 +106,7 @@ auto lt_with_key(const Func& key) {
 }
 
 /* This class, along with their inherited classes and template specialisations
- * below implement the graph::utils helper functions, defined further below.
+ * below implement the graphs::utils helper functions, defined further below.
  *
  *                                 CLASS HIERARCHY
  *                                 ---------------
@@ -477,6 +477,6 @@ class graph_utils_impl_with_map
 };
 
 }  // namespace detail
-}  // namespace tket::graph::utils
+}  // namespace tket::graphs::utils
 
 #endif

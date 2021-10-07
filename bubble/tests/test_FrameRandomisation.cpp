@@ -18,7 +18,7 @@
 #include "Transformations/Transform.hpp"
 #include "testutil.hpp"
 
-using namespace tket;
+namespace tket {
 
 std::vector<Cycle> FrameRandomisationTester::get_cycles(const Circuit& circ) {
   return fr->get_cycles(circ);
@@ -28,6 +28,8 @@ OpTypeVector FrameRandomisationTester::get_out_frame(
     const OpTypeVector& in_frame, const Cycle& cycle_ops) {
   return fr->get_out_frame(in_frame, cycle_ops).first;
 }
+
+namespace test_FrameRandomisation {
 
 SCENARIO(
     "Test whether get_cycles returns the expected number of cycles with "
@@ -348,3 +350,6 @@ SCENARIO(
     test_sample_cycles_from_power_cycle(20, circ, 4);
   }
 }
+
+}  // namespace test_FrameRandomisation
+}  // namespace tket

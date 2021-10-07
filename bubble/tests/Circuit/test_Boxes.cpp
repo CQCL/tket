@@ -21,6 +21,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 
 namespace tket {
+namespace test_Boxes {
 
 SCENARIO("Using Boxes", "[boxes]") {
   GIVEN("CircBox manipulation") {
@@ -788,4 +789,5 @@ SCENARIO("Checking equality", "[boxes]") {
   }
 }
 
+}  // namespace test_Boxes
 }  // namespace tket
