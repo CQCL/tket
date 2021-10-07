@@ -828,7 +828,8 @@ class Circuit {
       throw CircuitInvalidity("Cannot add a conditional metaop.");
     }
     Op_ptr cond = std::make_shared<Conditional>(
-        get_op_ptr(type, params, args.size()), bits.size(), value);
+        get_op_ptr(type, params, (unsigned)args.size()), (unsigned)bits.size(),
+        value);
     std::vector<ID> new_args = bits;
     new_args.insert(new_args.end(), args.begin(), args.end());
     return add_op(cond, new_args, opgroup);
