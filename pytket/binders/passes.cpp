@@ -541,10 +541,10 @@ PYBIND11_MODULE(passes, m) {
       ":py:class:`Architecture` is used for the routing. "
       "The direction of the edges is ignored. The placement used "
       "is GraphPlacement. This pass can take a few parameters for the "
-      "routing, described below.\n\nNB: The circuit needs to have equal or "
+      "routing, described below.\nNB: The circuit needs to have equal or "
       "less qubits then the architecture has nodes. The result circuit will "
       "always have the same number of qubits as the architecture has nodes, "
-      "even if the input circuit had less qubits.\n\n:param arc: The "
+      "even if the input circuit had less qubits.\n:param arc: The "
       "architecture used for connectivity information."
       "\n:param \\**kwargs: Parameters for routing:\n(unsigned) "
       "lookahead=1: giving parameter for the recursive iteration \n"
@@ -552,7 +552,7 @@ PYBIND11_MODULE(passes, m) {
       "synth, possible options are\n0: swap based algorithm,\n1: hamilton "
       "path based method, this method will fail if there is no Hamilton path "
       "in the given architecture,\n2: rec steiner gauss method. Values > 2 are "
-      "not allowed\n:return: a pass to perform the remapping",
+      "not allowed.\n:return: a pass to perform the remapping\n",
       py::arg("arc"));
 
   m.def(
