@@ -149,13 +149,7 @@ Op_ptr ClassicalOp::deserialize(const nlohmann::json &j) {
   return classical_from_json(j.at("classical"), j.at("type").get<OpType>());
 }
 
-std::string ClassicalOp::get_name(bool latex) const {
-  std::stringstream name;
-  if (latex) name << "\\text{";
-  name << name_;
-  if (latex) name << "}";
-  return name.str();
-}
+std::string ClassicalOp::get_name(bool) const { return name_; }
 
 bool ClassicalOp::is_equal(const Op &op_other) const {
   const ClassicalOp &other = dynamic_cast<const ClassicalOp &>(op_other);
@@ -195,15 +189,13 @@ std::vector<bool> ClassicalTransformOp::eval(const std::vector<bool> &x) const {
   return y;
 }
 
-std::string SetBitsOp::get_name(bool latex) const {
+std::string SetBitsOp::get_name(bool) const {
   std::stringstream name;
-  if (latex) name << "\\text{";
   name << name_ << "(";
   for (auto v : values_) {
     name << v;  // "0" or "1"
   }
   name << ")";
-  if (latex) name << "}";
   return name.str();
 }
 
@@ -221,11 +213,9 @@ std::vector<bool> CopyBitsOp::eval(const std::vector<bool> &x) const {
   return x;
 }
 
-std::string RangePredicateOp::get_name(bool latex) const {
+std::string RangePredicateOp::get_name(bool) const {
   std::stringstream name;
-  if (latex) name << "\\text{";
   name << name_ << "([" << a << "," << b << "])";
-  if (latex) name << "}";
   return name.str();
 }
 
@@ -296,11 +286,9 @@ MultiBitOp::MultiBitOp(std::shared_ptr<const ClassicalOp> op, unsigned n)
   }
 }
 
-std::string MultiBitOp::get_name(bool latex) const {
+std::string MultiBitOp::get_name(bool) const {
   std::stringstream name;
-  if (latex) name << "\\text{";
   name << name_ << " (*" << n_ << ")";
-  if (latex) name << "}";
   return name.str();
 }
 

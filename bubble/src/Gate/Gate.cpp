@@ -302,7 +302,7 @@ std::string Gate::get_name(bool latex) const {
   if (params_.size() > 0) {
     std::stringstream name;
     if (latex) {
-      name << "\\text{" << desc.latex() << "}(";
+      name << desc.latex() << "(";
     } else {
       name << desc.name() << "(";
     }

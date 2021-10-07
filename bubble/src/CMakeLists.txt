@@ -81,6 +81,7 @@ set(BUBBLE_PAULIGRAPH_DIR ${BUBBLE_SRC_DIR}/PauliGraph)
 set(BUBBLE_CONVERTERS_DIR ${BUBBLE_SRC_DIR}/Converters)
 set(BUBBLE_PROGRAM_DIR ${BUBBLE_SRC_DIR}/Program)
 set(BUBBLE_MEASUREMENT_DIR ${BUBBLE_SRC_DIR}/MeasurementSetup)
+set(BUBBLE_ZX_DIR ${BUBBLE_SRC_DIR}/ZX)
 
 set(TKET_SOURCES
 
@@ -232,6 +233,18 @@ set(TKET_SOURCES
     ${BUBBLE_CHARACTERISATION_DIR}/Cycles.cpp
     ${BUBBLE_CHARACTERISATION_DIR}/FrameRandomisation.cpp
     ${BUBBLE_CHARACTERISATION_DIR}/DeviceCharacterisation.cpp
+
+    # ZX
+    ${BUBBLE_ZX_DIR}/ZXDConstructors.cpp
+    ${BUBBLE_ZX_DIR}/ZXDExpansions.cpp
+    ${BUBBLE_ZX_DIR}/ZXDGettersSetters.cpp
+    ${BUBBLE_ZX_DIR}/ZXDManipulation.cpp
+    ${BUBBLE_ZX_DIR}/ZXGenerator.cpp
+    ${BUBBLE_ZX_DIR}/ZXRWCombinators.cpp
+    ${BUBBLE_ZX_DIR}/ZXRWAxioms.cpp
+    ${BUBBLE_ZX_DIR}/ZXRWDecompositions.cpp
+    ${BUBBLE_ZX_DIR}/ZXRWGraphLikeForm.cpp
+    ${BUBBLE_ZX_DIR}/ZXRWGraphLikeSimplification.cpp
 )
 
 add_library(${TKET} SHARED ${TKET_SOURCES})

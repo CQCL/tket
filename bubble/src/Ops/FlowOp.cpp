@@ -51,7 +51,7 @@ op_signature_t FlowOp::get_signature() const {
 std::string FlowOp::get_name(bool latex) const {
   std::stringstream name;
   if (latex) {
-    name << "\\text{" << get_desc().latex() << "}(";
+    name << get_desc().latex() << "(";
   } else {
     name << get_desc().name();
   }
