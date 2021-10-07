@@ -341,7 +341,6 @@ Circuit phase_poly_synthesis(
 
   // create maps from qubits/node to int
   std::map<UnitID, UnitID> forward_contiguous_uids;
-  std::map<UnitID, UnitID> forward_invert_contiguous_uids;
   std::map<UnitID, UnitID> backward_contiguous_uids;
   // extra map with node type needed for the creation of the architecture
   std::map<UnitID, Node> unitid_to_int_nodes;

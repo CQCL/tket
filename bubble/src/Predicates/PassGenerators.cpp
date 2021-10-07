@@ -232,8 +232,10 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
           "Circuit has more qubits than the architecture has nodes.");
     }
 
+    // fill up the circuit with more qubits until the number of qubits is equal
+    // to the number of nodes in architecture
     while (arc.n_uids() > circ.n_qubits()) {
-      Qubit qb = Qubit();
+      Qubit qb = Qubit(circ.n_qubits());
       circ.add_qubit(qb);
     }
 
