@@ -33,14 +33,14 @@ jobs:
       run: git merge develop
 
     - name: Remove old docs
-      run: git rm -r --ignore-unmatch bubble/doc/html
+      run: git rm -r --ignore-unmatch doc/bubble/api
 
     - name: Build Doxygen docs
       run: cd bubble && doxygen
 
     - name: Add generated docs to repository
       run: |
-        git add -f bubble/doc/html
+        git add -f doc/bubble/api
         git commit --allow-empty -m "Add generated bubble documentation."
 
     - name: Publish docs
