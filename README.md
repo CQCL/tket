@@ -198,4 +198,4 @@ patchy) is available
 [here](https://cqcl.github.io/tket/bubble/doc/html/index.html).
 
 The `pytket` (Python) API documentation is available
-[here](https://cqcl.github.io/pytket/build/html/index.html).
+[here](https://cqcl.github.io/tket/pytket/doc/html/index.html).
