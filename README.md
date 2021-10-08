@@ -188,14 +188,14 @@ First create a `build` folder in the project root. Then proceed as follows.
 ## Test coverage
 
 The code coverage of the `bubble` tests is reported
-[here](https://cqcl.github.io/tket/bubble/test-coverage/index.html). This report
+[here](https://cqcl.github.io/tket/doc/bubble/test-coverage/index.html). This report
 is generated weekly from the `develop` branch.
 
 ## API documentation
 
 The `bubble` (C++) API documentation (generated with `doxygen`, and still rather
 patchy) is available
-[here](https://cqcl.github.io/tket/bubble/doc/html/index.html).
+[here](https://cqcl.github.io/tket/doc/bubble/api/index.html).
 
 The `pytket` (Python) API documentation is available
-[here](https://cqcl.github.io/tket/pytket/doc/html/index.html).
+[here](https://cqcl.github.io/tket/doc/pytket/api/index.html).

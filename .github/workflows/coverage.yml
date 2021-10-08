@@ -78,16 +78,16 @@ jobs:
     - name: Update it from develop
       run: git merge develop
     - name: Remove old report
-      run: git rm -r --ignore-unmatch bubble/test-coverage
+      run: git rm -r --ignore-unmatch doc/bubble/test-coverage
     - name: Install gcovr
       run: sudo apt-get install gcovr
     - name: Build coverage report
       run: |
-        mkdir bubble/test-coverage
-        gcovr --print-summary --html --html-details -r ./bubble/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o bubble/test-coverage/index.html > bubble/test-coverage/summary.txt
+        mkdir -p doc/bubble/test-coverage
+        gcovr --print-summary --html --html-details -r ./bubble/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o doc/bubble/test-coverage/index.html > doc/bubble/test-coverage/summary.txt
     - name: Add report to repository
       run: |
-        git add -f bubble/test-coverage
+        git add -f doc/bubble/test-coverage
         git commit --allow-empty -m "Add generated coverage report."
     - name: Publish report
       run: git push origin gh-pages:gh-pages
@@ -151,9 +151,10 @@ jobs:
       run: sudo apt-get install gcovr
     - name: Build coverage report
       run: |
-        mkdir bubble/test-coverage
-        gcovr --print-summary --output /dev/null -r ./bubble/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o bubble/test-coverage/index.html > summary1.txt
+        rm -rf doc/bubble/test-coverage
+        mkdir -p doc/bubble/test-coverage
+        gcovr --print-summary --output /dev/null -r ./bubble/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o doc/bubble/test-coverage/index.html > summary1.txt
     - name: Compare with latest report from develop
       run: |
-        wget https://cqcl.github.io/tket/bubble/test-coverage/summary.txt
+        wget https://cqcl.github.io/tket/doc/bubble/test-coverage/summary.txt
         ./.github/workflows/compare-coverage summary.txt summary1.txt
