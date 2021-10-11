@@ -156,5 +156,5 @@ jobs:
         gcovr --print-summary --output /dev/null -r ./bubble/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o docs/bubble/test-coverage/index.html > summary1.txt
     - name: Compare with latest report from develop
       run: |
-        wget https://cqcl.github.io/tket/docs/bubble/test-coverage/summary.txt
+        wget https://cqcl.github.io/tket/bubble/test-coverage/summary.txt
         ./.github/workflows/compare-coverage summary.txt summary1.txt

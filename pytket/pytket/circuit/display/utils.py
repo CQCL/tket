@@ -351,7 +351,7 @@ def get_op_display_name(
 
 
 # Controlled operations get special treatment:
-# List obtained from https://cqcl.github.io/tket/docs/pytket/api/optype.html
+# List obtained from https://cqcl.github.io/tket/pytket/api/optype.html
 def get_controlled_ops(op_type: str, command: Command) -> int:
     """Return the number of control bits involved in a given controlled operation"""
     if op_type in {
