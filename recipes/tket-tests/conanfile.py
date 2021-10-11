@@ -33,7 +33,7 @@ class TketTestsConan(ConanFile):
     requires = (
         "tket/1.0.1",
         "catch2/2.13.7",
-        "nlohmann_json/3.10.2",
+        "nlohmann_json/3.10.3",
     )
 
     def validate(self):
