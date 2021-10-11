@@ -148,16 +148,12 @@ void Unitary2qBox::generate_circuit() const {
 
 Unitary3qBox::Unitary3qBox(const Matrix8cd &m, BasisOrder basis)
     : Box(OpType::Unitary3qBox),
-      m_(basis == BasisOrder::ilo ? m : reverse_indexing(m)) {
-  if (!is_unitary(m) || m.rows() != 8) {
-    throw CircuitInvalidity("Matrix for Unitary3qBox must be 8x8 unitary");
-  }
-}
+      m_(basis == BasisOrder::ilo ? m : reverse_indexing(m)) {}
 
 Unitary3qBox::Unitary3qBox(const Unitary3qBox &other)
     : Box(other), m_(other.m_) {}
 
-Unitary3qBox::Unitary3qBox() : Unitary3qBox(Matrix8cd::Identity(8, 8)) {}
+Unitary3qBox::Unitary3qBox() : Unitary3qBox(Matrix8cd::Identity()) {}
 
 Op_ptr Unitary3qBox::dagger() const {
   return std::make_shared<Unitary3qBox>(m_.adjoint());

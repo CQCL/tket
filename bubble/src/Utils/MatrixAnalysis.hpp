@@ -26,6 +26,7 @@ namespace tket {
 typedef Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> MatrixXb;
 typedef Eigen::Matrix<bool, Eigen::Dynamic, 1> VectorXb;
 typedef Eigen::Matrix<bool, 2, 1> Vector2b;
+// Eigen::Matrix8cd doesn't exist.
 typedef Eigen::Matrix<std::complex<double>, 8, 8> Matrix8cd;
 
 /**

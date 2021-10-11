@@ -199,7 +199,7 @@ SCENARIO("Test Circuit serialization") {
     Unitary2qBox mbox2(m2);
     c.add_box(mbox2, {0, 2});
 
-    Matrix8cd U = Matrix8cd::Zero(8, 8);
+    Matrix8cd U = Matrix8cd::Zero();
     U(0, 3) = 1;
     U(1, 1) = 1;
     U(2, 7) = 1;
