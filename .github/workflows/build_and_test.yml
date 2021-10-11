@@ -152,6 +152,8 @@ jobs:
         key: ${{ runner.os }}-tket-ccache-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
           ${{ runner.os }}-tket-ccache-
+    - name: Install ninja and ccache
+      run: brew install ninja ccache
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
