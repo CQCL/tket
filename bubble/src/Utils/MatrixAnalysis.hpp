@@ -26,6 +26,7 @@ namespace tket {
 typedef Eigen::Matrix<bool, Eigen::Dynamic, Eigen::Dynamic> MatrixXb;
 typedef Eigen::Matrix<bool, Eigen::Dynamic, 1> VectorXb;
 typedef Eigen::Matrix<bool, 2, 1> Vector2b;
+typedef Eigen::Matrix<std::complex<double>, 8, 8> Matrix8cd;
 
 /**
  * Test matrix for unitarity.
@@ -59,6 +60,7 @@ Eigen::PermutationMatrix<Eigen::Dynamic> lift_perm(
 
 // Convert between ILO-BE and DLO-BE conventions
 Eigen::Matrix4cd reverse_indexing(const Eigen::Matrix4cd &m);
+Matrix8cd reverse_indexing(const Matrix8cd &m);
 Eigen::MatrixXcd reverse_indexing(const Eigen::MatrixXcd &m);
 Eigen::VectorXcd reverse_indexing(const Eigen::VectorXcd &v);
 

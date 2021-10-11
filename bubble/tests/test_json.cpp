@@ -199,6 +199,19 @@ SCENARIO("Test Circuit serialization") {
     Unitary2qBox mbox2(m2);
     c.add_box(mbox2, {0, 2});
 
+    Matrix8cd U = Matrix8cd::Zero(8, 8);
+    U(0, 3) = 1;
+    U(1, 1) = 1;
+    U(2, 7) = 1;
+    U(3, 5) = 1;
+    U(4, 0) = 1;
+    U(5, 4) = 1;
+    U(6, 2) = 1;
+    U(7, 6) = 1;
+    Unitary3qBox mbox3(U);
+
+    c.add_box(mbox3, {0, 1, 2});
+
     Eigen::Matrix4cd A;
     A << 0., 1., 2., 3., 1., 2., 3. * i_, 4., 2., -3. * i_, 3, 2. - 3. * i_, 3.,
         4., 2. + 3. * i_, 5.;
@@ -216,7 +229,11 @@ SCENARIO("Test Circuit serialization") {
     REQUIRE(matrices_are_equal(mbox2.get_matrix(), m2_b.get_matrix()));
     REQUIRE(mbox2 == m2_b);
 
-    const auto& exp_b = static_cast<const ExpBox&>(*coms[3].get_op_ptr());
+    const auto& m3_b = static_cast<const Unitary3qBox&>(*coms[3].get_op_ptr());
+    REQUIRE(matrices_are_equal(mbox3.get_matrix(), m3_b.get_matrix()));
+    REQUIRE(mbox3 == m3_b);
+
+    const auto& exp_b = static_cast<const ExpBox&>(*coms[4].get_op_ptr());
 
     const auto ebox_m_p = ebox.get_matrix_and_phase();
     const auto exp_b_m_p = exp_b.get_matrix_and_phase();
