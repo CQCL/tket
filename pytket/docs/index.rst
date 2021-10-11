@@ -66,7 +66,7 @@ representations, or some new backends to submit circuits to within ``pytket``.
 
 Extension modules can be installed using ``pip``. The extensions supported by
 CQC are described
-`here <https://cqcl.github.io/pytket-extensions/doc/api/index.html>`_.
+`here <https://cqcl.github.io/pytket-extensions/docs/api/index.html>`_.
 
 .. note::
     The syntax for importing backends from extension modules has changed
@@ -150,7 +150,7 @@ Our telemetry data policy can be viewed in the `Telemetry Data Policy`_ page.
     :maxdepth: 1
     
     Manual <https://cqcl.github.io/pytket/build/html/manual/index.html>
-    Extensions <https://cqcl.github.io/pytket-extensions/doc/api/index.html>
+    Extensions <https://cqcl.github.io/pytket-extensions/docs/api/index.html>
 
 .. toctree::
     :caption: API Reference:
