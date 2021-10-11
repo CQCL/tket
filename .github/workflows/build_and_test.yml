@@ -140,6 +140,18 @@ jobs:
       run: |
         brew install clang-format
         git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
+    - name: Get current time
+      uses: srfrnk/current-time@v1.1.0
+      id: current_time
+      with:
+        format: YYYYMMDDHHmmss
+    - name: Cache ccache data
+      uses: actions/cache@v2
+      with:
+        path: ~/Library/Caches/ccache
+        key: ${{ runner.os }}-tket-ccache-${{ steps.current_time.outputs.formattedTime }}
+        restore-keys: |
+          ${{ runner.os }}-tket-ccache-
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
