@@ -20,9 +20,6 @@
 namespace tket {
 namespace internal {
 
-// Eigen::Matrix8cd doesn't exist.
-using Matrix8cd = Eigen::Matrix<std::complex<double>, 8, 8>;
-
 /** Functions to return the unitary matrix for a standard named gate.
  *  These know nothing about tket, OpTypes, etc.; only Eigen matrices.
  */

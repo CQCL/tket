@@ -24,6 +24,7 @@
 #include "Utils/BiMapHeaders.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/Json.hpp"
+#include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket {
@@ -285,8 +286,7 @@ class Unitary3qBox : public Box {
    * @param m unitary matrix
    * @param basis basis order convention for matrix
    */
-  explicit Unitary3qBox(
-      const Eigen::MatrixXcd &m, BasisOrder basis = BasisOrder::ilo);
+  explicit Unitary3qBox(const Matrix8cd &m, BasisOrder basis = BasisOrder::ilo);
 
   /**
    * Construct from the identity matrix
@@ -316,7 +316,7 @@ class Unitary3qBox : public Box {
   }
 
   /** Get the unitary matrix correspnding to this operation */
-  Eigen::MatrixXcd get_matrix() const { return m_; }
+  Matrix8cd get_matrix() const { return m_; }
 
   Eigen::MatrixXcd get_unitary() const override { return m_; }
 
@@ -332,7 +332,7 @@ class Unitary3qBox : public Box {
   void generate_circuit() const override;
 
  private:
-  const Eigen::MatrixXcd m_;
+  const Matrix8cd m_;
 };
 
 /**

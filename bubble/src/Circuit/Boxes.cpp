@@ -24,7 +24,6 @@
 #include "ThreeQubitConversion.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/Json.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 #include "Utils/PauliStrings.hpp"
 
 namespace tket {
@@ -147,18 +146,14 @@ void Unitary2qBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(two_qubit_canonical(m_));
 }
 
-Unitary3qBox::Unitary3qBox(const Eigen::MatrixXcd &m, BasisOrder basis)
+Unitary3qBox::Unitary3qBox(const Matrix8cd &m, BasisOrder basis)
     : Box(OpType::Unitary3qBox),
-      m_(basis == BasisOrder::ilo ? m : reverse_indexing(m)) {
-  if (!is_unitary(m) || m.rows() != 8) {
-    throw CircuitInvalidity("Matrix for Unitary3qBox must be 8x8 unitary");
-  }
-}
+      m_(basis == BasisOrder::ilo ? m : reverse_indexing(m)) {}
 
 Unitary3qBox::Unitary3qBox(const Unitary3qBox &other)
     : Box(other), m_(other.m_) {}
 
-Unitary3qBox::Unitary3qBox() : Unitary3qBox(Eigen::MatrixXcd::Identity(8, 8)) {}
+Unitary3qBox::Unitary3qBox() : Unitary3qBox(Matrix8cd::Identity()) {}
 
 Op_ptr Unitary3qBox::dagger() const {
   return std::make_shared<Unitary3qBox>(m_.adjoint());
@@ -514,7 +509,7 @@ nlohmann::json Unitary3qBox::to_json(const Op_ptr &op) {
 }
 
 Op_ptr Unitary3qBox::from_json(const nlohmann::json &j) {
-  Unitary3qBox box = Unitary3qBox(j.at("matrix").get<Eigen::MatrixXcd>());
+  Unitary3qBox box = Unitary3qBox(j.at("matrix").get<Matrix8cd>());
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
