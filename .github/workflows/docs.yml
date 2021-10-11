@@ -41,7 +41,7 @@ jobs:
     - name: Add generated docs to repository
       run: |
         mkdir -p docs/bubble
-        mv bubble/docs/html docs/bubble/api
+        mv bubble/doc/html docs/bubble/api
         git add -f docs/bubble/api
         git commit --allow-empty -m "Add generated bubble documentation."
 
