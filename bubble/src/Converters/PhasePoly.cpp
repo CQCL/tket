@@ -397,8 +397,6 @@ void CircToPhasePolyConversion::convert() {
   circ_.remove_vertices(
       bin, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);
 
-  // empty_circ_ = circ_.copy();
-
   /*
 this for loop checks all gates in the circuits and try to
 find the biggest possible sub circuits which contains only
