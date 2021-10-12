@@ -40,7 +40,7 @@ class TketConan(ConanFile):
         "symengine/0.8.1",
         "eigen/3.4.0",
         "spdlog/1.9.2",
-        "nlohmann_json/3.10.2",
+        "nlohmann_json/3.10.3",
     )
 
     _cmake = None

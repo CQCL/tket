@@ -20,9 +20,6 @@
 namespace tket {
 namespace internal {
 
-// Eigen::Matrix8cd doesn't exist.
-using Matrix8cd = Eigen::Matrix<std::complex<double>, 8, 8>;
-
 /** Functions to return the unitary matrix for a standard named gate.
  *  These know nothing about tket, OpTypes, etc.; only Eigen matrices.
  */
@@ -38,7 +35,7 @@ struct GateUnitaryMatrixImplementations {
   // so dense->sparse routines would be needed).
 
   // Roughly follows the order in
-  // https://cqcl.github.io/pytket/build/html/optype.html
+  // https://cqcl.github.io/tket/pytket/api/optype.html
 
   // Note: the below functions do not check double parameter values,
   // the caller must do that.

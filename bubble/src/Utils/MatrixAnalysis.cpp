@@ -261,6 +261,11 @@ Eigen::Matrix4cd reverse_indexing(const Eigen::Matrix4cd &m) {
   return SWAP * m * SWAP;
 }
 
+Matrix8cd reverse_indexing(const Matrix8cd &m) {
+  return static_cast<const Matrix8cd &>(
+      reverse_indexing(static_cast<const Eigen::MatrixXcd &>(m)));
+}
+
 Eigen::MatrixXcd reverse_indexing(const Eigen::MatrixXcd &m) {
   unsigned dim = m.rows();
   unsigned n_qubits = get_number_of_qubits(dim);

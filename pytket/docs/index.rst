@@ -15,6 +15,16 @@ To install, run
 
 ``pip install pytket``
 
+.. note::
+    On M1-based Macs running in native (arm64) mode, this command may fail
+    because of an issue installing ``scipy``. To fix this:
+
+    1. Install `brew <https://brew.sh/>`_ (if you haven't already);
+    2. ``brew install openblas``;
+    3. ``pip install -U pip wheel``;
+    4. ``OPENBLAS="$(brew --prefix openblas)" pip install scipy``;
+    5. ``pip install pytket``.
+
 To use ``pytket``, you can simply import the appropriate modules into your python code or in an interactive Python notebook. We can build circuits directly using the ``pytket`` interface by creating a blank circuit and adding gates in the order we want to apply them.
 
 ::
@@ -56,7 +66,7 @@ representations, or some new backends to submit circuits to within ``pytket``.
 
 Extension modules can be installed using ``pip``. The extensions supported by
 CQC are described
-`here <https://cqcl.github.io/pytket/build/html/extensions/index.html>`_.
+`here <https://cqcl.github.io/pytket-extensions/api/index.html>`_.
 
 .. note::
     The syntax for importing backends from extension modules has changed
@@ -140,7 +150,7 @@ Our telemetry data policy can be viewed in the `Telemetry Data Policy`_ page.
     :maxdepth: 1
     
     Manual <https://cqcl.github.io/pytket/build/html/manual/index.html>
-    Extensions <https://cqcl.github.io/pytket/build/html/extensions/index.html>
+    Extensions <https://cqcl.github.io/pytket-extensions/api/index.html>
 
 .. toctree::
     :caption: API Reference:

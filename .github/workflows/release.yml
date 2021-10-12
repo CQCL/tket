@@ -202,7 +202,7 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - name: Download wheels
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v2
         with:
           name: Linux_wheels
           path: wheelhouse/
@@ -233,7 +233,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Download wheels
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v2
       with:
         name: MacOS_wheels
         path: wheelhouse/
@@ -264,7 +264,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Download wheels
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v2
       with:
         name: MacOS_wheels
         path: wheelhouse/
@@ -281,7 +281,7 @@ jobs:
         pytest --ignore=simulator/ --doctest-modules
 
   test_macos_M1_wheels:
-    name: Test macos wheels
+    name: Test macos (M1) wheels
     needs: build_macos_M1_wheels
     runs-on: [self-hosted, macos, M1]
     defaults:
@@ -295,7 +295,7 @@ jobs:
         python-version: [3.8, 3.9]
     steps:
     - name: Download wheels
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v2
       with:
         name: MacOS_M1_wheels
         path: wheelhouse/
@@ -331,7 +331,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Download wheels
-      uses: actions/download-artifact@v1
+      uses: actions/download-artifact@v2
       with:
         name: Windows_wheels
         path: wheelhouse/
@@ -347,3 +347,68 @@ jobs:
         cd tket/pytket/tests
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
+
+  publish_to_pypi:
+    name: Publish to pypi
+    if: github.event_name == 'release'
+    needs: [test_linux_wheels, test_macos_wheels, test_macos_wheels_10_15, test_macos_M1_wheels, test_Windows_wheels]
+    runs-on: ubuntu-20.04
+    steps:
+    - name: Download all wheels
+      uses: actions/download-artifact@v2
+      with:
+        path: wheelhouse
+    - name: Put them all in the dist folder
+      run: |
+        mkdir dist
+        for w in `find wheelhouse/ -type f -name "*.whl"` ; do cp $w dist/ ; done
+    - name: Publish wheels
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_PYTKET_API_TOKEN }}
+        verbose: true
+
+  docs:
+    name: Build and publish docs
+    if: github.event_name == 'release'
+    needs: publish_to_pypi
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Download wheels
+      uses: actions/download-artifact@v2
+      with:
+        name: Linux_wheels
+        path: wheelhouse/
+    - name: Install pip, wheel
+      run: pip install -U pip wheel
+    - name: Install pytket
+      run: for w in `find wheelhouse/ -type f -name "*-cp39-cp39-*.whl"` ; do pip install $w ; done
+    - name: Install docs dependencies
+      run: pip install -r pytket/docs/requirements.txt
+    - name: Build docs
+      timeout-minutes: 20
+      run: ./.github/workflows/build-docs
+    - name: Configure git
+      run: |
+        git config --global user.email "tket-bot@cambridgequantum.com"
+        git config --global user.name  "«$GITHUB_WORKFLOW» github action"
+    - name: Check out gh-pages branch
+      run: git checkout gh-pages
+    - name: Remove old docs
+      run: git rm -r --ignore-unmatch docs/pytket/api
+    - name: Add generated docs to repository
+      run: |
+        mkdir -p docs/pytket/
+        mv pytket/docs/build/html/ docs/pytket/api
+        git add -f docs/pytket/api/
+        git commit --allow-empty -m "Add generated pytket documentation."
+    - name: Publish docs
+      run:  git push origin gh-pages:gh-pages
