@@ -4,19 +4,30 @@ on:
   pull_request:
     branches:
       - develop
-    paths:
-      - 'bubble/**'
   push:
     branches:
       - develop
-    paths:
-      - 'bubble/**'
 
 jobs:
 
+  changes:
+    runs-on: ubuntu-20.04
+    outputs:
+      manual: ${{ steps.filter.outputs.bubble }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        base: ${{ github.ref }}
+        filters: |
+          bubble:
+            - 'bubble/**'
+
   publish_coverage:
     name: Publish coverage
-    if: github.event_name == 'push'
+    needs: changes
+    if: github.event_name == 'push' && needs.changes.outputs.bubble == 'true'
     runs-on: ubuntu-20.04
     env:
       CC: gcc-10
@@ -94,7 +105,8 @@ jobs:
 
   check_coverage:
     name: Check coverage
-    if: github.event_name == 'pull_request'
+    needs: changes
+    if: github.event_name == 'pull_request' && needs.changes.outputs.bubble == 'true'
     runs-on: ubuntu-20.04
     env:
       CC: gcc-10
