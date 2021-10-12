@@ -645,46 +645,7 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
 
     REQUIRE(test_unitary_comparison(circ, result));
   }
-  GIVEN("NoWireSwapsPredicate for ComposePhasePolyBoxes I") {
-    Circuit circ(5);
-    add_2qb_gates(circ, OpType::CX, {{0, 3}, {1, 4}, {1, 0}, {2, 1}});
-    circ.add_op<unsigned>(OpType::SWAP, {3, 4});
-    circ.add_op<unsigned>(OpType::Z, {3});
-    circ.add_op<unsigned>(OpType::X, {4});
-    REQUIRE(NoWireSwapsPredicate().verify(circ));
-
-    CompilationUnit cu(circ);
-    REQUIRE(ComposePhasePolyBoxes()->apply(cu));
-    Circuit result = cu.get_circ_ref();
-
-    REQUIRE(NoWireSwapsPredicate().verify(circ));
-    REQUIRE(NoWireSwapsPredicate().verify(result));
-
-    REQUIRE(test_unitary_comparison(circ, result));
-
-    circ.replace_SWAPs();
-    REQUIRE(!NoWireSwapsPredicate().verify(circ));
-
-    REQUIRE(test_unitary_comparison(circ, result));
-  }
-  GIVEN("NoWireSwapsPredicate for ComposePhasePolyBoxes II") {
-    Circuit circ(5);
-    add_2qb_gates(circ, OpType::CX, {{0, 3}, {1, 4}});
-    circ.add_op<unsigned>(OpType::SWAP, {3, 4});
-    circ.add_op<unsigned>(OpType::Z, {3});
-
-    Circuit expected_result(5);
-    add_2qb_gates(expected_result, OpType::CX, {{0, 3}, {1, 4}});
-    expected_result.add_op<unsigned>(OpType::SWAP, {3, 4});
-    expected_result.add_op<unsigned>(OpType::Z, {3});
-
-    REQUIRE(test_unitary_comparison(circ, expected_result));
-
-    circ.replace_SWAPs();
-
-    REQUIRE(test_unitary_comparison(circ, expected_result));
-  }
-  GIVEN("NoWireSwapsPredicate for ComposePhasePolyBoxes III") {
+  GIVEN("NoWireSwapsPredicate for ComposePhasePolyBoxes") {
     Circuit circ(5);
     add_2qb_gates(circ, OpType::CX, {{0, 3}, {1, 4}});
     circ.add_op<unsigned>(OpType::SWAP, {3, 4});
@@ -693,32 +654,33 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     REQUIRE(NoWireSwapsPredicate().verify(circ));
     circ.replace_SWAPs();
     REQUIRE(!NoWireSwapsPredicate().verify(circ));
-
-    Circuit expected_result(5);
-    add_2qb_gates(expected_result, OpType::CX, {{0, 3}, {1, 4}});
-    expected_result.add_op<unsigned>(OpType::SWAP, {3, 4});
-    expected_result.add_op<unsigned>(OpType::Z, {3});
-
-    Circuit expected_result_2(5);
-    add_2qb_gates(expected_result_2, OpType::CX, {{0, 3}, {1, 4}});
-    expected_result_2.add_op<unsigned>(OpType::Z, {4});
-    expected_result_2.add_op<unsigned>(OpType::SWAP, {3, 4});
-
-    REQUIRE(test_unitary_comparison(circ, expected_result));
-    REQUIRE(test_unitary_comparison(circ, expected_result_2));
 
     CompilationUnit cu(circ);
     REQUIRE(ComposePhasePolyBoxes()->apply(cu));
     Circuit result = cu.get_circ_ref();
 
     REQUIRE(test_unitary_comparison(result, circ));
-    REQUIRE(test_unitary_comparison(result, expected_result));
-    REQUIRE(test_unitary_comparison(result, expected_result_2));
-
-    REQUIRE(!NoWireSwapsPredicate().verify(circ));
     REQUIRE(!NoWireSwapsPredicate().verify(result));
-    REQUIRE(NoWireSwapsPredicate().verify(expected_result));
-    REQUIRE(NoWireSwapsPredicate().verify(expected_result_2));
+  }
+  GIVEN("NoWireSwapsPredicate for ComposePhasePolyBoxes II") {
+    Circuit circ(5);
+    add_2qb_gates(circ, OpType::CX, {{0, 3}, {1, 4}});
+    circ.add_op<unsigned>(OpType::SWAP, {3, 4});
+    circ.add_op<unsigned>(OpType::Z, {3});
+    circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+    circ.add_op<unsigned>(OpType::Z, {1});
+    circ.add_op<unsigned>(OpType::Z, {4});
+
+    REQUIRE(NoWireSwapsPredicate().verify(circ));
+    circ.replace_SWAPs();
+    REQUIRE(!NoWireSwapsPredicate().verify(circ));
+
+    CompilationUnit cu(circ);
+    REQUIRE(ComposePhasePolyBoxes()->apply(cu));
+    Circuit result = cu.get_circ_ref();
+
+    REQUIRE(test_unitary_comparison(result, circ));
+    REQUIRE(!NoWireSwapsPredicate().verify(result));
   }
 }
 
