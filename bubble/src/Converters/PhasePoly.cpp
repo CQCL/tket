@@ -297,9 +297,22 @@ CircToPhasePolyConversion::CircToPhasePolyConversion(const Circuit& circ) {
     ++i;
   }
 
-  input_circ_ = Circuit(nq_, nb_);
+  empty_circ_ = Circuit(circ_);
+
+  VertexList bin;
+
+  BGL_FORALL_VERTICES(v, empty_circ_.dag, DAG) {
+    if (!empty_circ_.detect_boundary_Op(v)) {
+      bin.push_back(v);
+    }
+  }
+
+  empty_circ_.remove_vertices(
+      bin, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);
+
+  input_circ_ = Circuit(empty_circ_);
   box_circ_ = Circuit(nq_);
-  post_circ_ = Circuit(nq_, nb_);
+  post_circ_ = Circuit(empty_circ_);
 
   all_qu_ = circ_.all_qubits();
 }
@@ -326,7 +339,7 @@ void CircToPhasePolyConversion::add_phase_poly_box() {
     }
   }
 
-  post_circ_ = Circuit(nq_, nb_);
+  post_circ_ = Circuit(empty_circ_);
   box_circ_ = Circuit(nq_);
 }
 
@@ -383,6 +396,8 @@ void CircToPhasePolyConversion::convert() {
 
   circ_.remove_vertices(
       bin, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);
+
+  // empty_circ_ = circ_.copy();
 
   /*
 this for loop checks all gates in the circuits and try to
