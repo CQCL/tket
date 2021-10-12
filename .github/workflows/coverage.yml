@@ -13,7 +13,7 @@ jobs:
   changes:
     runs-on: ubuntu-20.04
     outputs:
-      manual: ${{ steps.filter.outputs.bubble }}
+      bubble: ${{ steps.filter.outputs.bubble }}
     steps:
     - uses: actions/checkout@v2
     - uses: dorny/paths-filter@v2
