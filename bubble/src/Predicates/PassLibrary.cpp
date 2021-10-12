@@ -266,11 +266,9 @@ const PassPtr &ComposePhasePolyBoxes() {
     Transform t =
         (Transform::rebase_UFR() >> Transform::compose_phase_poly_boxes());
     PredicatePtr noclas = std::make_shared<NoClassicalControlPredicate>();
-    PredicatePtr nowire = std::make_shared<NoWireSwapsPredicate>();
 
-    PredicatePtrMap precons{
-        CompilationUnit::make_type_pair(noclas),
-        CompilationUnit::make_type_pair(nowire)};
+    PredicatePtrMap precons{CompilationUnit::make_type_pair(noclas)};
+
     PostConditions postcon = {precons, {}, Guarantee::Clear};
     nlohmann::json j;
     j["name"] = "ComposePhasePolyBoxes";

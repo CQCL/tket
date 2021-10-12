@@ -133,6 +133,7 @@ class CircToPhasePolyConversion {
   Circuit box_circ_;
   Circuit post_circ_;
   Circuit circ_;
+  Circuit empty_circ_;
 };
 
 }  // namespace tket
