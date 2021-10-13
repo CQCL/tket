@@ -33,7 +33,7 @@ class TketConan(ConanFile):
     # Putting "patches" in both "exports_sources" and "exports" means that this works
     # in either the CI workflow (`conan create`) or the development workflow
     # (`conan build`). Maybe there is a better way?
-    exports_sources = ["../../bubble/src/*", "!*/build/*", "patches/*"]
+    exports_sources = ["../../tket/src/*", "!*/build/*", "patches/*"]
     exports = ["patches/*"]
     requires = (
         "boost/1.77.0",

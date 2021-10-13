@@ -1,4 +1,4 @@
-name: Analyse bubble test coverage
+name: Analyse tket C++ test coverage
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ jobs:
   changes:
     runs-on: ubuntu-20.04
     outputs:
-      bubble: ${{ steps.filter.outputs.bubble }}
+      tket: ${{ steps.filter.outputs.tket }}
     steps:
     - uses: actions/checkout@v2
     - uses: dorny/paths-filter@v2
@@ -21,13 +21,13 @@ jobs:
       with:
         base: ${{ github.ref }}
         filters: |
-          bubble:
-            - 'bubble/**'
+          tket:
+            - 'tket/**'
 
   generate_coverage:
     name: Generate coverage report
     needs: changes
-    if: needs.changes.outputs.bubble == 'true'
+    if: needs.changes.outputs.tket == 'true'
     runs-on: ubuntu-20.04
     env:
       CC: gcc-10
@@ -65,13 +65,13 @@ jobs:
     - name: Build tket
       run: |
         ${CONAN_CMD} install recipes/tket --install-folder=build/tket --profile=tket -o tket:profile_coverage=True
-        ${CONAN_CMD} build recipes/tket --configure --build-folder=build/tket --source-folder=bubble/src
+        ${CONAN_CMD} build recipes/tket --configure --build-folder=build/tket --source-folder=tket/src
         ${CONAN_CMD} build recipes/tket --build --build-folder=build/tket
-        ${CONAN_CMD} export-pkg recipes/tket -f --build-folder=build/tket --source-folder=bubble/src
+        ${CONAN_CMD} export-pkg recipes/tket -f --build-folder=build/tket --source-folder=tket/src
     - name: Build tket tests
       run: |
         ${CONAN_CMD} install recipes/tket-tests --install-folder=build/tket-tests --profile=tket -o tket-tests:with_coverage=True
-        ${CONAN_CMD} build recipes/tket-tests --configure --build-folder=build/tket-tests --source-folder=bubble/tests
+        ${CONAN_CMD} build recipes/tket-tests --configure --build-folder=build/tket-tests --source-folder=tket/tests
         ${CONAN_CMD} build recipes/tket-tests --build --build-folder=build/tket-tests
     - name: Install runtime test requirements
       run: |
@@ -85,7 +85,7 @@ jobs:
     - name: Build coverage report
       run: |
         mkdir test-coverage
-        gcovr --print-summary --html --html-details -r ./bubble/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o test-coverage/index.html > test-coverage/summary.txt
+        gcovr --print-summary --html --html-details -r ./tket/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o test-coverage/index.html > test-coverage/summary.txt
     - name: Upload artefact
       uses: actions/upload-artifact@v2
       with:
@@ -96,7 +96,7 @@ jobs:
     name: Publish coverage
     needs: generate_coverage
     concurrency: gh_pages
-    if: github.event_name == 'push' && needs.changes.outputs.bubble == 'true'
+    if: github.event_name == 'push' && needs.changes.outputs.tket == 'true'
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
@@ -112,11 +112,11 @@ jobs:
         git config --global user.email "tket-bot@cambridgequantum.com"
         git config --global user.name  "«$GITHUB_WORKFLOW» github action"
     - name: Remove old report
-      run: git rm -r docs/bubble/test-coverage
+      run: git rm -r docs/tket/test-coverage
     - name: Add report to repository
       run: |
-        mv test-coverage/ docs/bubble/
-        git add -f docs/bubble/test-coverage
+        mv test-coverage/ docs/tket/
+        git add -f docs/tket/test-coverage
         git commit --allow-empty -m "Add generated coverage report."
     - name: Publish report
       run: git push origin gh-pages:gh-pages
@@ -124,9 +124,10 @@ jobs:
   check_coverage:
     name: Check coverage
     needs: generate_coverage
-    if: github.event_name == 'pull_request' && needs.changes.outputs.bubble == 'true'
+    if: github.event_name == 'pull_request' && needs.changes.outputs.tket == 'true'
     runs-on: ubuntu-20.04
     steps:
+    - uses: actions/checkout@v2
     - name: Download artefact
       uses: actions/download-artifact@v2
       with:
@@ -134,5 +135,5 @@ jobs:
         path: test-coverage/
     - name: Compare with latest report from develop
       run: |
-        wget https://cqcl.github.io/tket/bubble/test-coverage/summary.txt
-        ./.github/workflows/compare-coverage summary.txt test_coverage/summary.txt
+        wget https://cqcl.github.io/tket/tket/test-coverage/summary.txt
+        ./.github/workflows/compare-coverage summary.txt test-coverage/summary.txt

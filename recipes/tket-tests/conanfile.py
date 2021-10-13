@@ -29,7 +29,7 @@ class TketTestsConan(ConanFile):
     options = {"with_coverage": [True, False]}
     default_options = {"with_coverage": False}
     generators = "cmake"
-    exports_sources = "../../bubble/tests/*"
+    exports_sources = "../../tket/tests/*"
     requires = ("tket/1.0.1", "catch2/2.13.7")
 
     def validate(self):
