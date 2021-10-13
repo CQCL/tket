@@ -44,7 +44,7 @@ jobs:
       if: github.event_name == 'pull_request'
       run: |
         sudo apt install -y doxygen graphviz
-        cd bubble && doxygen
+        cd tket && doxygen
     - name: Install conan
       id: conan
       run: |
@@ -301,8 +301,8 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: '0'
-    - name: Hash bubble source
-      id: hash_bubble_source
+    - name: Hash tket source
+      id: hash_tket_source
       run: |
         Function Get-FolderHash
         {
@@ -318,8 +318,8 @@ jobs:
             $ret = [string]::Join("",$($hasher.ComputeHash($allBytes.ToArray()) | %{"{0:x2}" -f $_}))
             return $ret
         }
-        $bubble_hash = Get-FolderHash bubble
-        echo "::set-output name=bubble_hash::${bubble_hash}"
+        $tket_hash = Get-FolderHash tket
+        echo "::set-output name=tket_hash::${tket_hash}"
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Install conan
       run: |
@@ -328,14 +328,14 @@ jobs:
         conan config set general.revisions_enabled=1
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
-    - name: Cache bubble build
-      id: cache-bubble
+    - name: Cache tket build
+      id: cache-tket
       uses: actions/cache@v2
       with:
         path: C:\Users\runneradmin\.conan\data\tket
-        key: ${{ runner.os }}-tket-bubble-${{ steps.hash_bubble_source.outputs.bubble_hash }}-11
+        key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-11
     - name: Build tket
-      if: steps.cache-bubble.outputs.cache-hit != 'true'
+      if: steps.cache-tket.outputs.cache-hit != 'true'
       run: conan create --profile=tket recipes/tket
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests

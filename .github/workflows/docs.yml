@@ -1,14 +1,14 @@
-name: Deploy bubble documentation
+name: Deploy tket C++ documentation
 
 on:
   push:
     branches:
       - develop
     paths:
-      - 'bubble/src/**'
+      - 'tket/src/**'
 
 jobs:
-  bubble_docs:
+  tket_docs:
 
     runs-on: ubuntu-20.04
 
@@ -33,17 +33,17 @@ jobs:
       run: git merge develop
 
     - name: Remove old docs
-      run: git rm -r --ignore-unmatch docs/bubble/api
+      run: git rm -r --ignore-unmatch docs/tket/api
 
     - name: Build Doxygen docs
-      run: cd bubble && doxygen
+      run: cd tket && doxygen
 
     - name: Add generated docs to repository
       run: |
-        mkdir -p docs/bubble
-        mv bubble/doc/html docs/bubble/api
-        git add -f docs/bubble/api
-        git commit --allow-empty -m "Add generated bubble documentation."
+        mkdir -p docs/tket
+        mv tket/doc/html docs/tket/api
+        git add -f docs/tket/api
+        git commit --allow-empty -m "Add generated tket C++ documentation."
 
     - name: Publish docs
       run:  git push origin gh-pages:gh-pages
