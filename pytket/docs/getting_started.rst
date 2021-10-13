@@ -64,6 +64,6 @@ Or, if an extension module like ``pytket-qiskit`` is installed:
     c = qiskit_to_tk(qc)
 
 See the
-`Pytket User Manual <https://cqcl.github.io/pytket/build/html/manual/index.html>`_
+`Pytket User Manual <https://cqcl.github.io/pytket/manual/index.html>`_
 for an extensive tutorial on pytket, providing a gentle introduction to its
 features and how to run circuits on backend devices, with worked examples.

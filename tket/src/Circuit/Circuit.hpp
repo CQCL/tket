@@ -1415,7 +1415,7 @@ class Circuit {
 
   void extract_slice_segment(unsigned slice_one, unsigned slice_two);
 
-  /* 'backends' for bubble */
+  /* 'backends' for tket */
 
   /**
    * Get the sequence of commands comprising the circuit

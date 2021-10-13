@@ -38,7 +38,7 @@ ENDIF()
 add_definitions(-DALL_LOGS)
 
 
-set(BUBBLE_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+set(TKET_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(tkettestsfiles.cmake)
 
