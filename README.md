@@ -21,7 +21,7 @@ other software packages and with quantum devices) live in the separate
 
 If you would like to build tket yourself and help to improve it, read on!
 
-The codebase is split into two main projects
+The codebase is split into two main projects:
  - [tket](tket): the core functionality of tket, optimised for execution speed
    and implemented in C++.
  - [pytket](pytket): the Python interface of tket. This consists of
