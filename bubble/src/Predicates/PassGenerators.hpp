@@ -15,8 +15,8 @@
 #ifndef _TKET_PassGenerators_H_
 #define _TKET_PassGenerators_H_
 
+#include "ArchAwareSynth/SteinerForest.hpp"
 #include "CompilerPass.hpp"
-
 namespace tket {
 
 /* a wrapper method for the rebase_factory in Transforms */
@@ -70,7 +70,7 @@ PassPtr gen_directed_cx_routing_pass(
  */
 PassPtr aas_routing_pass(
     const Architecture& arc, const unsigned lookahead = 1,
-    const unsigned cnotsynthtype = 2);
+    const aas::CNotSynthType cnotsynthtype = aas::CNotSynthType::Rec);
 
 /**
  * execute architecture aware synthesis on a given architecture for any circuit.
@@ -86,7 +86,7 @@ PassPtr aas_routing_pass(
  */
 PassPtr gen_full_mapping_pass_phase_poly(
     const Architecture& arc, const unsigned lookahead = 1,
-    const unsigned cnotsynthtype = 2);
+    const aas::CNotSynthType cnotsynthtype = aas::CNotSynthType::Rec);
 
 /**
  * pass to place all not yet placed qubits of the circuit to the given

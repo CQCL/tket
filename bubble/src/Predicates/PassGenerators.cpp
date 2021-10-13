@@ -279,11 +279,11 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
 
 PassPtr aas_routing_pass(
     const Architecture& arc, const unsigned lookahead,
-    const unsigned cnotsynthtype) {
+    const aas::CNotSynthType cnotsynthtype) {
   Transform::Transformation trans = [=](Circuit& circ) {
     // check input:
     TKET_ASSERT(lookahead != 0);
-    TKET_ASSERT(cnotsynthtype < 3);
+    // TKET_ASSERT(cnotsynthtype < 3);
     if (arc.n_uids() < circ.n_qubits()) {
       throw CircuitInvalidity(
           "Circuit has more qubits than the architecture has nodes.");
@@ -312,8 +312,8 @@ PassPtr aas_routing_pass(
           Op_ptr op = com.get_op_ptr();
           const PhasePolyBox& b = static_cast<const PhasePolyBox&>(*op);
 
-          Circuit result = aas::phase_poly_synthesis(
-              arc, b, lookahead, (aas::CNotSynthType)cnotsynthtype);
+          Circuit result =
+              aas::phase_poly_synthesis(arc, b, lookahead, cnotsynthtype);
 
           for (const Command& res_com : result) {
             OpType ot = res_com.get_op_ptr()->get_type();
@@ -389,7 +389,7 @@ PassPtr aas_routing_pass(
 
 PassPtr gen_full_mapping_pass_phase_poly(
     const Architecture& arc, const unsigned lookahead,
-    const unsigned cnotsynthtype) {
+    const aas::CNotSynthType cnotsynthtype) {
   return RebaseUFR() >> ComposePhasePolyBoxes() >>
          gen_placement_pass_phase_poly(arc) >>
          aas_routing_pass(arc, lookahead, cnotsynthtype);

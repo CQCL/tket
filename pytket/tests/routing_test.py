@@ -33,6 +33,7 @@ from pytket.passes import (  # type: ignore
     CXMappingPass,
     AASRouting,
     PauliSimp,
+    CNotSynthType,
 )
 from pytket.qasm import circuit_from_qasm
 from pytket.transform import Transform  # type: ignore
@@ -576,7 +577,7 @@ def test_AAS_11() -> None:
     circ = Circuit(7)
     circ.CX(0, 6).CX(6, 1).CX(1, 5).CX(5, 2).CX(2, 4).CX(4, 3)
     circ.Rz(0.5, 3)
-    pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=0)
+    pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=CNotSynthType.SWAP)
     cu = CompilationUnit(circ)
     assert pass1.apply(cu)
     out_circ = cu.circuit
@@ -589,7 +590,7 @@ def test_AAS_12() -> None:
     circ = Circuit(7)
     circ.CX(0, 6).CX(6, 1).CX(1, 5).CX(5, 2).CX(2, 4).CX(4, 3)
     circ.Rz(0.5, 3)
-    pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=1)
+    pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=CNotSynthType.HamPath)
     cu = CompilationUnit(circ)
     assert pass1.apply(cu)
     out_circ = cu.circuit
@@ -602,7 +603,7 @@ def test_AAS_13() -> None:
     circ = Circuit(7)
     circ.CX(0, 6).CX(6, 1).CX(1, 5).CX(5, 2).CX(2, 4).CX(4, 3)
     circ.Rz(0.5, 3)
-    pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=2)
+    pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=CNotSynthType.Rec)
     cu = CompilationUnit(circ)
     assert pass1.apply(cu)
     out_circ = cu.circuit
@@ -613,7 +614,7 @@ def test_AAS_13() -> None:
 def test_AAS_14() -> None:
     arc = Architecture([[0, 1], [1, 0], [1, 2], [2, 1]])
     circ = Circuit(3).CZ(0, 1)
-    pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=2)
+    pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=CNotSynthType.Rec)
     cu = CompilationUnit(circ)
     assert pass1.apply(cu)
     out_circ = cu.circuit
@@ -624,7 +625,7 @@ def test_AAS_14() -> None:
 def test_AAS_15() -> None:
     arc = Architecture([[0, 1], [1, 0], [1, 2], [2, 1]])
     circ = Circuit(2).CZ(0, 1)
-    pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=2)
+    pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=CNotSynthType.Rec)
     cu = CompilationUnit(circ)
     assert pass1.apply(cu)
     out_circ = cu.circuit

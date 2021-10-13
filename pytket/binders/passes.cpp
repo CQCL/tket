@@ -14,6 +14,7 @@
 
 #include <pybind11/functional.h>
 
+#include "ArchAwareSynth/SteinerForest.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
@@ -61,20 +62,16 @@ static PassPtr gen_default_routing_pass(
 static PassPtr gen_default_aas_routing_pass(
     const Architecture &arc, py::kwargs kwargs) {
   unsigned lookahead = 1;
-  unsigned cnotsynthtype = 2;
+  aas::CNotSynthType cnotsynthtype = aas::CNotSynthType::Rec;
 
   if (kwargs.contains("lookahead"))
     lookahead = py::cast<unsigned>(kwargs["lookahead"]);
 
   if (kwargs.contains("cnotsynthtype"))
-    cnotsynthtype = py::cast<unsigned>(kwargs["cnotsynthtype"]);
+    cnotsynthtype = py::cast<aas::CNotSynthType>(kwargs["cnotsynthtype"]);
 
   if (lookahead == 0) {
     TKET_ASSERT(!"lookahead must be > 0");
-  }
-
-  if (cnotsynthtype > 2) {
-    TKET_ASSERT(!"cnotsynthtype must be < 3");
   }
 
   return gen_full_mapping_pass_phase_poly(arc, lookahead, cnotsynthtype);
@@ -140,6 +137,19 @@ PYBIND11_MODULE(passes, m) {
           "the overall pass at the start and the postconditions at "
           "the end")
       // .value("Off", SafetyMode::Off) // not currently supported
+      .export_values();
+
+  py::enum_<aas::CNotSynthType>(m, "CNotSynthType")
+      .value(
+          "SWAP", aas::CNotSynthType::SWAP,
+          "swap based algorithm for cnot synth")
+      .value(
+          "HamPath", aas::CNotSynthType::HamPath,
+          "hamilton path based method for cnot synth, this method will fail if "
+          "there is no Hamilton path in the given architecture")
+      .value(
+          "Rec", aas::CNotSynthType::Rec,
+          "recursive steiner gauss method for cnot synth")
       .export_values();
 
   /* Compiler passes */
@@ -548,10 +558,13 @@ PYBIND11_MODULE(passes, m) {
       "architecture used for connectivity information."
       "\n:param \\**kwargs: Parameters for routing:\n(unsigned) "
       "lookahead=1: giving parameter for the recursive iteration \n"
-      "(unsigned) cnotsynthtype=2: giving parameter for type of the cnot "
-      "synth, possible options are\n0: swap based algorithm,\n1: hamilton "
+      "(CNotSynthType) cnotsynthtype=CNotSynthType.Rec: giving parameter for "
+      "type of the cnot "
+      "synth, possible options are\nCNotSynthType.SWAP: swap based "
+      "algorithm,\nCNotSynthType.HamPath: hamilton "
       "path based method, this method will fail if there is no Hamilton path "
-      "in the given architecture,\n2: rec steiner gauss method. Values > 2 are "
+      "in the given architecture,\nCNotSynthType.Rec: rec steiner gauss "
+      "method. Other values are "
       "not allowed.\n:return: a pass to perform the remapping\n",
       py::arg("arc"));
 
