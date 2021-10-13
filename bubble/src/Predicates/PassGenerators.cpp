@@ -234,9 +234,12 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
 
     // fill up the circuit with more qubits until the number of qubits is equal
     // to the number of nodes in architecture
+    register_name = "surplus";
+    unsigned qb_counter = 0;
     while (arc.n_uids() > circ.n_qubits()) {
-      Qubit qb = Qubit(circ.n_qubits());
+      Qubit qb = Qubit(register_name, qb_counter);
       circ.add_qubit(qb);
+      ++qb_counter;
     }
 
     TKET_ASSERT(arc.n_uids() == circ.n_qubits());
