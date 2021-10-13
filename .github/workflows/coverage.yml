@@ -136,4 +136,4 @@ jobs:
     - name: Compare with latest report from develop
       run: |
         wget https://cqcl.github.io/tket/tket/test-coverage/summary.txt
-        ./.github/workflows/compare-coverage summary.txt test_coverage/summary.txt
+        ./.github/workflows/compare-coverage summary.txt test-coverage/summary.txt
