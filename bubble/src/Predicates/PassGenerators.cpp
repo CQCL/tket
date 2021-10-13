@@ -234,7 +234,7 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
 
     // fill up the circuit with more qubits until the number of qubits is equal
     // to the number of nodes in architecture
-    register_name = "surplus";
+    std::string register_name = "surplus";
     unsigned qb_counter = 0;
     while (arc.n_uids() > circ.n_qubits()) {
       Qubit qb = Qubit(register_name, qb_counter);
@@ -249,10 +249,10 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
     unsigned counter = 0;
 
     for (Node x : arc.get_all_uids_set()) {
-      if (counter < circ.n_qubits()) {
-        qubit_to_nodes.insert({q_vec[counter], x});
-        ++counter;
-      }
+      // if (counter < circ.n_qubits()) {
+      qubit_to_nodes.insert({q_vec[counter], x});
+      ++counter;
+      //}
     }
 
     circ.rename_units(qubit_to_nodes);
@@ -281,15 +281,13 @@ PassPtr aas_routing_pass(
     const Architecture& arc, const unsigned lookahead,
     const unsigned cnotsynthtype) {
   Transform::Transformation trans = [=](Circuit& circ) {
-    // check ipput:
+    // check input:
     TKET_ASSERT(lookahead != 0);
     TKET_ASSERT(cnotsynthtype < 3);
     if (arc.n_uids() < circ.n_qubits()) {
       throw CircuitInvalidity(
           "Circuit has more qubits than the architecture has nodes.");
     }
-
-    // TKET_ASSERT(arc.n_uids() == circ.n_qubits());
 
     qubit_vector_t all_qu = circ.all_qubits();
 
