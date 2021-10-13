@@ -138,7 +138,7 @@ jobs:
     - name: Check C++ code formatting
       if: github.event_name == 'pull_request'
       run: |
-        brew install clang-format
+        brew install clang-format@13
         git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
     - name: Get current time
       uses: srfrnk/current-time@v1.1.0
