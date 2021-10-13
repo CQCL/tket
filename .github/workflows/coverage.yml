@@ -24,10 +24,10 @@ jobs:
           tket:
             - 'tket/**'
 
-  publish_coverage:
-    name: Publish coverage
+  generate_coverage:
+    name: Generate coverage report
     needs: changes
-    if: github.event_name == 'push' && needs.changes.outputs.tket == 'true'
+    if: needs.changes.outputs.tket == 'true'
     runs-on: ubuntu-20.04
     env:
       CC: gcc-10
@@ -80,24 +80,42 @@ jobs:
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
     - name: Run tket tests
       run: ./build/tket-tests/bin/test_tket
-    - name: Configure git
-      run: |
-        git config --global user.email "tket-bot@cambridgequantum.com"
-        git config --global user.name  "«$GITHUB_WORKFLOW» github action"
-    - name: Check out gh-pages branch
-      run:  git checkout gh-pages
-    - name: Update it from develop
-      run: git merge develop
-    - name: Remove old report
-      run: git rm -r --ignore-unmatch docs/tket/test-coverage
     - name: Install gcovr
       run: sudo apt-get install gcovr
     - name: Build coverage report
       run: |
-        mkdir -p docs/tket/test-coverage
-        gcovr --print-summary --html --html-details -r ./tket/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o docs/tket/test-coverage/index.html > docs/tket/test-coverage/summary.txt
+        mkdir test-coverage
+        gcovr --print-summary --html --html-details -r ./bubble/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o test-coverage/index.html > test-coverage/summary.txt
+    - name: Upload artefact
+      uses: actions/upload-artifact@v2
+      with:
+        name: test_coverage
+        path: test-coverage/
+
+  publish_coverage:
+    name: Publish coverage
+    needs: generate_coverage
+    concurrency: gh_pages
+    if: github.event_name == 'push' && needs.changes.outputs.bubble == 'true'
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: gh-pages
+    - name: Download artefact
+      uses: actions/download-artifact@v2
+      with:
+        name: test_coverage
+        path: test-coverage/
+    - name: Configure git
+      run: |
+        git config --global user.email "tket-bot@cambridgequantum.com"
+        git config --global user.name  "«$GITHUB_WORKFLOW» github action"
+    - name: Remove old report
+      run: git rm -r docs/tket/test-coverage
     - name: Add report to repository
       run: |
+        mv test-coverage/ docs/tket/
         git add -f docs/tket/test-coverage
         git commit --allow-empty -m "Add generated coverage report."
     - name: Publish report
@@ -105,68 +123,16 @@ jobs:
 
   check_coverage:
     name: Check coverage
-    needs: changes
+    needs: generate_coverage
     if: github.event_name == 'pull_request' && needs.changes.outputs.tket == 'true'
     runs-on: ubuntu-20.04
-    env:
-      CC: gcc-10
-      CXX: g++-10
     steps:
-    - uses: actions/checkout@v2
+    - name: Download artefact
+      uses: actions/download-artifact@v2
       with:
-        fetch-depth: '0'
-    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Get current time
-      uses: srfrnk/current-time@v1.1.0
-      id: current_time
-      with:
-        format: YYYYMMDDHHmmss
-    - name: Cache ccache data
-      uses: actions/cache@v2
-      with:
-        path: ~/.ccache
-        key: ${{ runner.os }}-tket-ccache-${{ steps.current_time.outputs.formattedTime }}
-        restore-keys: |
-          ${{ runner.os }}-tket-ccache-
-    - name: Install conan
-      id: conan
-      run: |
-        pip install conan
-        conan_cmd=/home/runner/.local/bin/conan
-        ${conan_cmd} profile new tket --detect
-        ${conan_cmd} profile update settings.compiler.libcxx=libstdc++11 tket
-        ${conan_cmd} profile update settings.build_type=Debug tket
-        echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
-    - name: Install ninja and ccache
-      run: |
-        sudo apt-get update
-        sudo apt-get install ninja-build ccache
-    - name: Build tket
-      run: |
-        ${CONAN_CMD} install recipes/tket --install-folder=build/tket --profile=tket -o tket:profile_coverage=True
-        ${CONAN_CMD} build recipes/tket --configure --build-folder=build/tket --source-folder=tket/src
-        ${CONAN_CMD} build recipes/tket --build --build-folder=build/tket
-        ${CONAN_CMD} export-pkg recipes/tket -f --build-folder=build/tket --source-folder=tket/src
-    - name: Build tket tests
-      run: |
-        ${CONAN_CMD} install recipes/tket-tests --install-folder=build/tket-tests --profile=tket -o tket-tests:with_coverage=True
-        ${CONAN_CMD} build recipes/tket-tests --configure --build-folder=build/tket-tests --source-folder=tket/tests
-        ${CONAN_CMD} build recipes/tket-tests --build --build-folder=build/tket-tests
-    - name: Install runtime test requirements
-      run: |
-        sudo apt-get install texlive texlive-latex-extra latexmk
-        mkdir -p ~/texmf/tex/latex
-        wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
-    - name: Run tket tests
-      run: ./build/tket-tests/bin/test_tket
-    - name: Install gcovr
-      run: sudo apt-get install gcovr
-    - name: Build coverage report
-      run: |
-        rm -rf docs/tket/test-coverage
-        mkdir -p docs/tket/test-coverage
-        gcovr --print-summary --output /dev/null -r ./tket/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o docs/tket/test-coverage/index.html > summary1.txt
+        name: test_coverage
+        path: test-coverage/
     - name: Compare with latest report from develop
       run: |
         wget https://cqcl.github.io/tket/tket/test-coverage/summary.txt
-        ./.github/workflows/compare-coverage summary.txt summary1.txt
+        ./.github/workflows/compare-coverage summary.txt test_coverage/summary.txt
