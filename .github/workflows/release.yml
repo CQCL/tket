@@ -425,6 +425,7 @@ jobs:
       run: git rm -r docs/pytket/api
     - name: Add generated docs to repository
       run: |
+        mkdir -p docs/pytket/
         mv api/ docs/pytket/
         git add -f docs/pytket/api/
         git commit --allow-empty -m "Add generated pytket documentation."
