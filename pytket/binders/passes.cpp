@@ -563,9 +563,9 @@ PYBIND11_MODULE(passes, m) {
       "synth, possible options are\nCNotSynthType.SWAP: swap based "
       "algorithm,\nCNotSynthType.HamPath: hamilton "
       "path based method, this method will fail if there is no Hamilton path "
-      "in the given architecture,\nCNotSynthType.Rec: rec steiner gauss "
-      "method. Other values are "
-      "not allowed.\n:return: a pass to perform the remapping\n",
+      "in the given architecture,\nCNotSynthType.Rec: recursive steiner gauss "
+      "method. Other values are not allowed.\n:return: a pass to perform the "
+      "remapping\n",
       py::arg("arc"));
 
   m.def(
