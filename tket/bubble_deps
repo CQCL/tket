@@ -57,7 +57,7 @@ def generate_graph():
                                         if comp1 + "/" in fline:
                                             deps[comp].add(comp1)
     with open("depgraph.dot", "w") as f:
-        f.write("digraph bubble {\n")
+        f.write("digraph C++ tket {\n")
         for comp, depcomps in deps.items():
             for depcomp in depcomps:
                 f.write("    %s -> %s;\n" % (comp, depcomp))
