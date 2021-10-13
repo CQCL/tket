@@ -405,6 +405,7 @@ jobs:
   publish_docs:
     name: Publish docs
     needs: build_docs
+    concurrency: gh_pages
     if: github.event_name == 'release'
     runs-on: ubuntu-20.04
     steps:

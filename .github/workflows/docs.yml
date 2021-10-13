@@ -26,6 +26,7 @@ jobs:
         path: bubble/doc/html/
   publish_docs:
     needs: build_docs
+    concurrency: gh_pages
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
