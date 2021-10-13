@@ -16,7 +16,7 @@
 
 #include <random>
 
-#include "Ops/ConjugatePauliFunctions.hpp"
+#include "PauliGraph/ConjugatePauliFunctions.hpp"
 #include "Ops/MetaOp.hpp"
 #include "Utils/PauliStrings.hpp"
 
