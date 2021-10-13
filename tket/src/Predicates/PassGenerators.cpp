@@ -249,10 +249,8 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
     unsigned counter = 0;
 
     for (Node x : arc.get_all_uids_set()) {
-      // if (counter < circ.n_qubits()) {
       qubit_to_nodes.insert({q_vec[counter], x});
       ++counter;
-      //}
     }
 
     circ.rename_units(qubit_to_nodes);
