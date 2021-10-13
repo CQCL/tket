@@ -235,7 +235,7 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
     // fill up the circuit with more qubits until the number of qubits is equal
     // to the number of nodes in architecture
     std::string register_name = "surplus";
-    unsigned qb_counter = 0;
+    unsigned qb_counter = circ.n_qubits();
     while (arc.n_uids() > circ.n_qubits()) {
       Qubit qb = Qubit(register_name, qb_counter);
       circ.add_qubit(qb);
@@ -283,7 +283,6 @@ PassPtr aas_routing_pass(
   Transform::Transformation trans = [=](Circuit& circ) {
     // check input:
     TKET_ASSERT(lookahead != 0);
-    // TKET_ASSERT(cnotsynthtype < 3);
     if (arc.n_uids() < circ.n_qubits()) {
       throw CircuitInvalidity(
           "Circuit has more qubits than the architecture has nodes.");
@@ -312,12 +311,25 @@ PassPtr aas_routing_pass(
           Op_ptr op = com.get_op_ptr();
           const PhasePolyBox& b = static_cast<const PhasePolyBox&>(*op);
 
+          Circuit b_circ(*b.to_circuit());
+
+          std::string register_name = "surplus";
+          unsigned qb_counter = b_circ.n_qubits();
+          while (arc.n_uids() > b_circ.n_qubits()) {
+            Qubit qb = Qubit(register_name, qb_counter);
+            b_circ.add_qubit(qb);
+            ++qb_counter;
+          }
+
+          PhasePolyBox ppb(b_circ);
+
           Circuit result =
-              aas::phase_poly_synthesis(arc, b, lookahead, cnotsynthtype);
+              aas::phase_poly_synthesis(arc, ppb, lookahead, cnotsynthtype);
 
           for (const Command& res_com : result) {
             OpType ot = res_com.get_op_ptr()->get_type();
             unit_vector_t res_qbs = res_com.get_args();
+
             switch (ot) {
               case OpType::CX: {
                 circ.add_op<Node>(ot, {Node(res_qbs[0]), Node(res_qbs[1])});

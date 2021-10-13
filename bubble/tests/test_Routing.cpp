@@ -2434,6 +2434,15 @@ SCENARIO("Routing of aas example") {
     CompilationUnit cu(circ);
     REQUIRE(pass->apply(cu));
     Circuit result = cu.get_circ_ref();
+
+    unsigned qb_counter = circ.n_qubits();
+    while (arc.n_uids() > circ.n_qubits()) {
+      Qubit qb = Qubit(qb_counter);
+      circ.add_qubit(qb);
+      ++qb_counter;
+    }
+
+    REQUIRE(test_unitary_comparison(circ, result));
   }
   GIVEN("aas routing - circuit with less qubits then nodes in the arch II") {
     Architecture arc(std::vector<Connection>{
@@ -2458,6 +2467,15 @@ SCENARIO("Routing of aas example") {
     CompilationUnit cu(circ);
     REQUIRE(pass->apply(cu));
     Circuit result = cu.get_circ_ref();
+
+    unsigned qb_counter = circ.n_qubits();
+    while (arc.n_uids() > circ.n_qubits()) {
+      Qubit qb = Qubit(qb_counter);
+      circ.add_qubit(qb);
+      ++qb_counter;
+    }
+
+    REQUIRE(test_unitary_comparison(circ, result));
   }
 }
 
