@@ -15,8 +15,8 @@
 #ifndef _TKET_PassGenerators_H_
 #define _TKET_PassGenerators_H_
 
+#include "ArchAwareSynth/SteinerForest.hpp"
 #include "CompilerPass.hpp"
-
 namespace tket {
 
 /* a wrapper method for the rebase_factory in Transforms */
@@ -60,21 +60,33 @@ PassPtr gen_directed_cx_routing_pass(
  * execute architecture aware synthesis on a given architecture for an allready
  * place circuit, only for circuit which contains Cx+Rz+H gates
  * @param arc architecture to route on
- * @param aas_lookahead parameter for the recursion depth in the algorithm
+ * @param lookahead parameter for the recursion depth in the algorithm, the
+ * value should be > 0
+ * @param cnotsynthtype parameter for the type of cnot synth, possible options
+ * are 0: swap based algorithm, 1: hamilton path based method, this method will
+ * fail if there is no Hamilton path in the given architecture, 2: recursive
+ * steiner gauss method. Values > 2 are not allowed
  * @return passpointer to perform architecture aware synthesis
  */
 PassPtr aas_routing_pass(
-    const Architecture& arc, const unsigned aas_lookahead = 1);
+    const Architecture& arc, const unsigned lookahead = 1,
+    const aas::CNotSynthType cnotsynthtype = aas::CNotSynthType::Rec);
 
 /**
  * execute architecture aware synthesis on a given architecture for any circuit.
- * all unplace qubits will be placed in this pass
+ * all unplaced qubits will be placed in this pass
  * @param arc architecture to route on
- * @param aas_lookahead parameter for the recursion depth in the algorithm
+ * @param lookahead parameter for the recursion depth in the algorithm, the
+ * value should be > 0
+ * @param cnotsynthtype parameter for the type of cnot synth, possible options
+ * are 0: swap based algorithm, 1: hamilton path based method, this method will
+ * fail if there is no Hamilton path in the given architecture, 2: recursive
+ * steiner gauss method. Values > 2 are not allowed
  * @return passpointer to perform architecture aware synthesis
  */
 PassPtr gen_full_mapping_pass_phase_poly(
-    const Architecture& arc, const unsigned aas_lookahead = 1);
+    const Architecture& arc, const unsigned lookahead = 1,
+    const aas::CNotSynthType cnotsynthtype = aas::CNotSynthType::Rec);
 
 /**
  * pass to place all not yet placed qubits of the circuit to the given

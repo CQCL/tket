@@ -269,7 +269,7 @@ def test_default_mapping_pass_phase_poly_aas() -> None:
     n3 = Node("d", 3)
     n4 = Node("e", 4)
     arc = Architecture([[n0, n1], [n1, n2], [n2, n3], [n3, n4]])
-    default = AASRouting(arc, aas_lookahead=1)
+    default = AASRouting(arc, lookahead=1)
     assert default.apply(circ)
 
 
@@ -677,7 +677,7 @@ def test_generated_pass_config() -> None:
     assert check_arc_dict(arc, r_pass.to_dict()["StandardPass"]["architecture"])
     assert p_pass.to_dict()["StandardPass"]["placement"]["type"] == "GraphPlacement"
     # AASRouting
-    aas_pass = AASRouting(arc, aas_lookahead=2)
+    aas_pass = AASRouting(arc, lookahead=2)
     assert aas_pass.to_dict()["pass_class"] == "SequencePass"
     aas_pass_0 = aas_pass.get_sequence()[0]
     assert aas_pass_0.to_dict()["pass_class"] == "SequencePass"

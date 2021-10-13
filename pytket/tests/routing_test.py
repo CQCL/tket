@@ -33,6 +33,7 @@ from pytket.passes import (  # type: ignore
     CXMappingPass,
     AASRouting,
     PauliSimp,
+    CNotSynthType,
 )
 from pytket.qasm import circuit_from_qasm
 from pytket.transform import Transform  # type: ignore
@@ -401,7 +402,7 @@ def test_noncontiguous_arc() -> None:
 def test_noncontiguous_arc_phase_poly() -> None:
     # testing non-contiguous ascending named nodes
     arc = Architecture([[0, 2]])
-    pass1 = AASRouting(arc, aas_lookahead=1)
+    pass1 = AASRouting(arc, lookahead=1)
     c = Circuit(2).H(0).H(1)
     pass1.apply(c)
     assert c.n_gates_of_type(OpType.H) == 2
@@ -465,7 +466,7 @@ def test_AAS() -> None:
     circ.H(0).H(2)
     circ.CX(0, 1).CX(1, 2).CX(3, 4)
     circ.Rz(0, 1)
-    pass1 = AASRouting(arc, aas_lookahead=2)
+    pass1 = AASRouting(arc, lookahead=2)
     assert pass1.apply(circ)
 
 
@@ -485,7 +486,7 @@ def test_AAS_3() -> None:
     circ.H(0).H(2)
     circ.CX(0, 1).CX(1, 2).CX(3, 4)
     circ.Rz(0, 1)
-    pass1 = AASRouting(arc, aas_lookahead=2)
+    pass1 = AASRouting(arc, lookahead=2)
     assert pass1.apply(circ)
 
 
@@ -505,7 +506,7 @@ def test_AAS_5() -> None:
     circ.H(0).H(2)
     circ.CX(0, 1).CX(1, 2).CX(3, 4)
     circ.Rz(0, 1)
-    pass1 = AASRouting(arc, aas_lookahead=2)
+    pass1 = AASRouting(arc, lookahead=2)
     assert pass1.apply(circ)
 
 
@@ -525,7 +526,7 @@ def test_AAS_7() -> None:
     circ.H(0).H(2)
     circ.CX(0, 1).CX(1, 2).CX(3, 4)
     circ.Rz(0, 1)
-    pass1 = AASRouting(arc, aas_lookahead=2)
+    pass1 = AASRouting(arc, lookahead=2)
     assert pass1.apply(circ)
 
 
@@ -541,7 +542,7 @@ def test_AAS_8() -> None:
     circ.X(2)
     circ.CX(1, 4)
     circ.CX(0, 4)
-    pass1 = AASRouting(arc, aas_lookahead=2)
+    pass1 = AASRouting(arc, lookahead=2)
     assert pass1.apply(circ)
 
 
@@ -550,7 +551,7 @@ def test_AAS_9() -> None:
     circ = Circuit(9)
     circ.CX(0, 8).CX(8, 1).CX(1, 7).CX(7, 2).CX(2, 6).CX(6, 3).CX(3, 5).CX(5, 4)
     circ.Rz(0.5, 4)
-    pass1 = AASRouting(arc, aas_lookahead=2)
+    pass1 = AASRouting(arc, lookahead=2)
     cu = CompilationUnit(circ)
     assert pass1.apply(cu)
     out_circ = cu.circuit
@@ -563,12 +564,73 @@ def test_AAS_10() -> None:
     circ = Circuit(7)
     circ.CX(0, 6).CX(6, 1).CX(1, 5).CX(5, 2).CX(2, 4).CX(4, 3)
     circ.Rz(0.5, 3)
-    pass1 = AASRouting(arc, aas_lookahead=2)
+    pass1 = AASRouting(arc, lookahead=2)
     cu = CompilationUnit(circ)
     assert pass1.apply(cu)
     out_circ = cu.circuit
     assert out_circ.valid_connectivity(arc, False, True)
     assert out_circ.depth() < 33
+
+
+def test_AAS_11() -> None:
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]])
+    circ = Circuit(7)
+    circ.CX(0, 6).CX(6, 1).CX(1, 5).CX(5, 2).CX(2, 4).CX(4, 3)
+    circ.Rz(0.5, 3)
+    pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=CNotSynthType.SWAP)
+    cu = CompilationUnit(circ)
+    assert pass1.apply(cu)
+    out_circ = cu.circuit
+    assert out_circ.valid_connectivity(arc, False, True)
+    assert out_circ.depth() == 119
+
+
+def test_AAS_12() -> None:
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]])
+    circ = Circuit(7)
+    circ.CX(0, 6).CX(6, 1).CX(1, 5).CX(5, 2).CX(2, 4).CX(4, 3)
+    circ.Rz(0.5, 3)
+    pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=CNotSynthType.HamPath)
+    cu = CompilationUnit(circ)
+    assert pass1.apply(cu)
+    out_circ = cu.circuit
+    assert out_circ.valid_connectivity(arc, False, True)
+    assert out_circ.depth() == 36
+
+
+def test_AAS_13() -> None:
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]])
+    circ = Circuit(7)
+    circ.CX(0, 6).CX(6, 1).CX(1, 5).CX(5, 2).CX(2, 4).CX(4, 3)
+    circ.Rz(0.5, 3)
+    pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=CNotSynthType.Rec)
+    cu = CompilationUnit(circ)
+    assert pass1.apply(cu)
+    out_circ = cu.circuit
+    assert out_circ.valid_connectivity(arc, False, True)
+    assert out_circ.depth() == 28
+
+
+def test_AAS_14() -> None:
+    arc = Architecture([[0, 1], [1, 0], [1, 2], [2, 1]])
+    circ = Circuit(3).CZ(0, 1)
+    pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=CNotSynthType.Rec)
+    cu = CompilationUnit(circ)
+    assert pass1.apply(cu)
+    out_circ = cu.circuit
+    assert out_circ.valid_connectivity(arc, False, True)
+    assert out_circ.depth() == 3
+
+
+def test_AAS_15() -> None:
+    arc = Architecture([[0, 1], [1, 0], [1, 2], [2, 1]])
+    circ = Circuit(2).CZ(0, 1)
+    pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=CNotSynthType.Rec)
+    cu = CompilationUnit(circ)
+    assert pass1.apply(cu)
+    out_circ = cu.circuit
+    assert out_circ.valid_connectivity(arc, False, True)
+    assert out_circ.depth() == 3
 
 
 def test_CXMappingPass() -> None:
