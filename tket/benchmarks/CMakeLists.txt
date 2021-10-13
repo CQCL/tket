@@ -19,7 +19,7 @@ add_benchmark(circuit
   BENCHMARK			# Already adds benchmark specific includes
     googlebenchmark
   INCLUDES
-  ${TKET_SRC_DIR} ${TKET_INCLUDE_DIR})
+    ${TKET_SRC_DIR} ${TKET_INCLUDE_DIR})
 # INCLUDES are PRIVATE
 add_benchmark(circuit_random
   INPUT_FILES
