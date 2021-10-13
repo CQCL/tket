@@ -18,12 +18,12 @@ jobs:
     - name: Install Doxygen
       run: sudo apt update && sudo apt install -y doxygen graphviz
     - name: Build Doxygen docs
-      run: cd bubble && doxygen
+      run: cd tket && doxygen
     - name: Upload artefact
       uses: actions/upload-artifact@v2
       with:
-        name: bubble_docs
-        path: bubble/doc/html/
+        name: tket_docs
+        path: tket/doc/html/
   publish_docs:
     needs: build_docs
     concurrency: gh_pages
@@ -35,7 +35,7 @@ jobs:
     - name: Download artefact
       uses: actions/download-artifact@v2
       with:
-        name: bubble_docs
+        name: tket_docs
         path: api/
     - name: Configure git
       run: |
