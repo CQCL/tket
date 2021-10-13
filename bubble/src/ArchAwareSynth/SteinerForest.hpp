@@ -30,9 +30,9 @@ typedef std::vector<CostedTrees> TrialCostedTrees;
 typedef std::list<unsigned> ParityList;
 typedef std::pair<unsigned, OperationList> CostedOperations;
 
-class NoHailtonPath : public std::logic_error {
+class NoHamiltonPath : public std::logic_error {
  public:
-  explicit NoHailtonPath(const std::string &message)
+  explicit NoHamiltonPath(const std::string &message)
       : std::logic_error(message) {}
 };
 
