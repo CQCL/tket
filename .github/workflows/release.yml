@@ -369,10 +369,10 @@ jobs:
         password: ${{ secrets.PYPI_PYTKET_API_TOKEN }}
         verbose: true
 
-  docs:
-    name: Build and publish docs
-    if: github.event_name == 'release'
+  build_docs:
+    name: Build docs
     needs: publish_to_pypi
+    if: github.event_name == 'release'
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
@@ -396,18 +396,35 @@ jobs:
     - name: Build docs
       timeout-minutes: 20
       run: ./.github/workflows/build-docs
+    - name: Upload artefact
+      uses: actions/upload-artifact@v2
+      with:
+        name: pytket_docs
+        path: pytket/docs/build/html/
+
+  publish_docs:
+    name: Publish docs
+    needs: build_docs
+    if: github.event_name == 'release'
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: gh-pages
+    - name: Download artefact
+      uses: actions/download-artifact@v2
+      with:
+        name: pytket_docs
+        path: api/
     - name: Configure git
       run: |
         git config --global user.email "tket-bot@cambridgequantum.com"
         git config --global user.name  "«$GITHUB_WORKFLOW» github action"
-    - name: Check out gh-pages branch
-      run: git checkout gh-pages
     - name: Remove old docs
-      run: git rm -r --ignore-unmatch docs/pytket/api
+      run: git rm -r docs/pytket/api
     - name: Add generated docs to repository
       run: |
-        mkdir -p docs/pytket/
-        mv pytket/docs/build/html/ docs/pytket/api
+        mv api/ docs/pytket/
         git add -f docs/pytket/api/
         git commit --allow-empty -m "Add generated pytket documentation."
     - name: Publish docs
