@@ -555,7 +555,7 @@ PYBIND11_MODULE(passes, m) {
       "routing, described below.\nNB: The circuit needs to have at most as "
       "many qubits as the architecture has nodes. The resulting circuit will "
       "always have the same number of qubits as the architecture has nodes, "
-      "even if the input circuit had fewer.\n\n:param arc: The "
+      "even if the input circuit had fewer.\n:param arc: The "
       "architecture used for connectivity information."
       "\n:param \\**kwargs: Parameters for routing:\n(unsigned) "
       "lookahead=1: parameter for the recursive iteration\n"
