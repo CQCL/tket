@@ -72,7 +72,7 @@ static PassPtr gen_default_aas_routing_pass(
 
   if (lookahead == 0) {
     throw std::invalid_argument(
-        "[AAS]: invalid input, the lookahead musst be > 0");
+        "[AAS]: invalid input, the lookahead must be > 0");
   }
 
   return gen_full_mapping_pass_phase_poly(arc, lookahead, cnotsynthtype);
