@@ -81,7 +81,7 @@ set(TKET_PAULIGRAPH_DIR ${TKET_SRC_DIR}/PauliGraph)
 set(TKET_CONVERTERS_DIR ${TKET_SRC_DIR}/Converters)
 set(TKET_PROGRAM_DIR ${TKET_SRC_DIR}/Program)
 set(TKET_MEASUREMENT_DIR ${TKET_SRC_DIR}/MeasurementSetup)
-set(BUBBLE_ZX_DIR ${BUBBLE_SRC_DIR}/ZX)
+set(TKET_ZX_DIR ${TKET_SRC_DIR}/ZX)
 
 set(TKET_SOURCES
 
@@ -235,16 +235,16 @@ set(TKET_SOURCES
     ${TKET_CHARACTERISATION_DIR}/DeviceCharacterisation.cpp
 
     # ZX
-    ${BUBBLE_ZX_DIR}/ZXDConstructors.cpp
-    ${BUBBLE_ZX_DIR}/ZXDExpansions.cpp
-    ${BUBBLE_ZX_DIR}/ZXDGettersSetters.cpp
-    ${BUBBLE_ZX_DIR}/ZXDManipulation.cpp
-    ${BUBBLE_ZX_DIR}/ZXGenerator.cpp
-    ${BUBBLE_ZX_DIR}/ZXRWCombinators.cpp
-    ${BUBBLE_ZX_DIR}/ZXRWAxioms.cpp
-    ${BUBBLE_ZX_DIR}/ZXRWDecompositions.cpp
-    ${BUBBLE_ZX_DIR}/ZXRWGraphLikeForm.cpp
-    ${BUBBLE_ZX_DIR}/ZXRWGraphLikeSimplification.cpp
+    ${TKET_ZX_DIR}/ZXDConstructors.cpp
+    ${TKET_ZX_DIR}/ZXDExpansions.cpp
+    ${TKET_ZX_DIR}/ZXDGettersSetters.cpp
+    ${TKET_ZX_DIR}/ZXDManipulation.cpp
+    ${TKET_ZX_DIR}/ZXGenerator.cpp
+    ${TKET_ZX_DIR}/ZXRWCombinators.cpp
+    ${TKET_ZX_DIR}/ZXRWAxioms.cpp
+    ${TKET_ZX_DIR}/ZXRWDecompositions.cpp
+    ${TKET_ZX_DIR}/ZXRWGraphLikeForm.cpp
+    ${TKET_ZX_DIR}/ZXRWGraphLikeSimplification.cpp
 )
 
 add_library(${TKET} SHARED ${TKET_SOURCES})

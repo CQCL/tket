@@ -80,7 +80,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/test_Path.cpp
     ${TKET_TESTS_DIR}/test_SteinerTree.cpp
     ${TKET_TESTS_DIR}/test_SteinerForest.cpp
-    ${BUBBLE_TESTS_DIR}/ZX/test_ZXDiagram.cpp
-    ${BUBBLE_TESTS_DIR}/ZX/test_ZXAxioms.cpp
-    ${BUBBLE_TESTS_DIR}/ZX/test_ZXSimp.cpp
+    ${TKET_TESTS_DIR}/ZX/test_ZXDiagram.cpp
+    ${TKET_TESTS_DIR}/ZX/test_ZXAxioms.cpp
+    ${TKET_TESTS_DIR}/ZX/test_ZXSimp.cpp
 )
