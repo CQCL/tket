@@ -48,7 +48,7 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: 3.7
-    - name: Build bubble
+    - name: Build tket C++
       run: |
         pip install conan
         conan profile new tket --detect --force
@@ -107,8 +107,8 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: '0'
-    - name: Hash bubble source
-      id: hash_bubble_source
+    - name: Hash tket source
+      id: hash_tket_source
       run: |
         Function Get-FolderHash
         {
@@ -124,8 +124,8 @@ jobs:
             $ret = [string]::Join("",$($hasher.ComputeHash($allBytes.ToArray()) | %{"{0:x2}" -f $_}))
             return $ret
         }
-        $bubble_hash = Get-FolderHash bubble
-        echo "::set-output name=bubble_hash::${bubble_hash}"
+        $tket_hash = Get-FolderHash tket
+        echo "::set-output name=tket_hash::${tket_hash}"
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Install conan
       run: |
@@ -134,14 +134,14 @@ jobs:
         conan config set general.revisions_enabled=1
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
-    - name: Cache bubble build
-      id: cache-bubble
+    - name: Cache tket build
+      id: cache-tket
       uses: actions/cache@v2
       with:
         path: C:\Users\runneradmin\.conan\data\tket
-        key: ${{ runner.os }}-tket-bubble-${{ steps.hash_bubble_source.outputs.bubble_hash }}-5
+        key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-5
     - name: Build tket
-      if: steps.cache-bubble.outputs.cache-hit != 'true'
+      if: steps.cache-tket.outputs.cache-hit != 'true'
       run: |
         conan create --profile=tket recipes/tket
     - name: Set up Python 3.7
@@ -368,3 +368,66 @@ jobs:
         user: __token__
         password: ${{ secrets.PYPI_PYTKET_API_TOKEN }}
         verbose: true
+
+  build_docs:
+    name: Build docs
+    needs: publish_to_pypi
+    if: github.event_name == 'release'
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.9
+    - name: Download wheels
+      uses: actions/download-artifact@v2
+      with:
+        name: Linux_wheels
+        path: wheelhouse/
+    - name: Install pip, wheel
+      run: pip install -U pip wheel
+    - name: Install pytket
+      run: for w in `find wheelhouse/ -type f -name "*-cp39-cp39-*.whl"` ; do pip install $w ; done
+    - name: Install docs dependencies
+      run: pip install -r pytket/docs/requirements.txt
+    - name: Build docs
+      timeout-minutes: 20
+      run: ./.github/workflows/build-docs
+    - name: Upload artefact
+      uses: actions/upload-artifact@v2
+      with:
+        name: pytket_docs
+        path: pytket/docs/build/html/
+
+  publish_docs:
+    name: Publish docs
+    needs: build_docs
+    concurrency: gh_pages
+    if: github.event_name == 'release'
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: gh-pages
+    - name: Download artefact
+      uses: actions/download-artifact@v2
+      with:
+        name: pytket_docs
+        path: api/
+    - name: Configure git
+      run: |
+        git config --global user.email "tket-bot@cambridgequantum.com"
+        git config --global user.name  "«$GITHUB_WORKFLOW» github action"
+    - name: Remove old docs
+      run: git rm -r docs/pytket/api
+    - name: Add generated docs to repository
+      run: |
+        mkdir -p docs/pytket/
+        mv api/ docs/pytket/
+        git add -f docs/pytket/api/
+        git commit --allow-empty -m "Add generated pytket documentation."
+    - name: Publish docs
+      run:  git push origin gh-pages:gh-pages

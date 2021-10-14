@@ -26,7 +26,7 @@ class TketProptestsConan(ConanFile):
     topics = ("quantum", "computation", "compiler")
     settings = "os", "compiler", "build_type", "arch"
     generators = "cmake"
-    exports_sources = "../../bubble/proptests/*"
+    exports_sources = "../../tket/proptests/*"
     requires = (
         "tket/1.0.1",
         "rapidcheck/cci.20210702",
