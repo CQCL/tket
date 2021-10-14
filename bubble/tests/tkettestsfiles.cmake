@@ -80,4 +80,7 @@ set(TEST_SOURCES
     ${BUBBLE_TESTS_DIR}/test_Path.cpp
     ${BUBBLE_TESTS_DIR}/test_SteinerTree.cpp
     ${BUBBLE_TESTS_DIR}/test_SteinerForest.cpp
+    ${BUBBLE_TESTS_DIR}/ZX/test_ZXDiagram.cpp
+    ${BUBBLE_TESTS_DIR}/ZX/test_ZXAxioms.cpp
+    ${BUBBLE_TESTS_DIR}/ZX/test_ZXSimp.cpp
 )

@@ -99,7 +99,7 @@ void ZXDiagram::symbol_substitution(const SymEngine::map_basic_basic& sub_map) {
 }
 
 SymSet ZXDiagram::free_symbols() const {
-  SymSet symbols;
+  SymSet symbols = expr_free_symbols(get_scalar());
   BGL_FORALL_VERTICES(v, *graph, ZXGraph) {
     const SymSet s = get_vertex_ZXGen_ptr(v)->free_symbols();
     symbols.insert(s.begin(), s.end());
