@@ -326,21 +326,7 @@ Circuit phase_poly_synthesis(
 
   Circuit circuit_ppb_place(*phasepolybox.to_circuit());
 
-  std::string register_name = "surplus";
-  std::string register_name_postfix = "0";
-
-  opt_reg_info_t checktregister;
-
-  bool noregisterfound = false;
-
-  while (!noregisterfound) {
-    checktregister = circuit_ppb_place.get_reg_info(register_name);
-    if (checktregister == std::nullopt) {
-      noregisterfound = true;
-    } else {
-      register_name += register_name_postfix;
-    }
-  }
+  const std::string register_name = "surplus";
 
   unsigned qb_counter = circuit_ppb_place.n_qubits();
   while (arch.n_uids() > circuit_ppb_place.n_qubits()) {
