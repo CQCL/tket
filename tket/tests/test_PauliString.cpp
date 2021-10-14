@@ -17,7 +17,7 @@
 
 #include "CircuitsForTesting.hpp"
 #include "Converters/PauliGadget.hpp"
-#include "Ops/ConjugatePauliFunctions.hpp"
+#include "PauliGraph/ConjugatePauliFunctions.hpp"
 #include "Utils/PauliStrings.hpp"
 #include "testutil.hpp"
 

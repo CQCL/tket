@@ -20,7 +20,7 @@
 #include "Converters/PauliGadget.hpp"
 #include "Diagonalisation/Diagonalisation.hpp"
 #include "Gate/SymTable.hpp"
-#include "Ops/ConjugatePauliFunctions.hpp"
+#include "PauliGraph/ConjugatePauliFunctions.hpp"
 #include "PauliGraph/PauliGraph.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Transformations/Transform.hpp"

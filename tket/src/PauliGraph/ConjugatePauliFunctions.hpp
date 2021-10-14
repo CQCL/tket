@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Ops_ConjugatePauliFunctions_H_
-#define _TKET_Ops_ConjugatePauliFunctions_H_
+#ifndef _TKET_PauliGraph_ConjugatePauliFunctions_H_
+#define _TKET_PauliGraph_ConjugatePauliFunctions_H_
 
 #include "OpType/OpType.hpp"
 #include "Utils/PauliStrings.hpp"

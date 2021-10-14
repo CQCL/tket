@@ -14,7 +14,7 @@
 
 #include "CliffordReductionPass.hpp"
 
-#include "Ops/ConjugatePauliFunctions.hpp"
+#include "PauliGraph/ConjugatePauliFunctions.hpp"
 
 namespace tket {
 
