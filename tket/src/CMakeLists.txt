@@ -92,7 +92,6 @@ set(TKET_SOURCES
 
     # Ops
     ${TKET_OPS_DIR}/Conditional.cpp
-    ${TKET_OPS_DIR}/ConjugatePauliFunctions.cpp
     ${TKET_OPS_DIR}/FlowOp.cpp
     ${TKET_OPS_DIR}/MetaOp.cpp
     ${TKET_OPS_DIR}/Op.cpp
@@ -208,6 +207,7 @@ set(TKET_SOURCES
     ${TKET_PREDS_DIR}/PassLibrary.cpp
 
     # PauliGraph
+    ${TKET_PAULIGRAPH_DIR}/ConjugatePauliFunctions.cpp
     ${TKET_PAULIGRAPH_DIR}/PauliGraph.cpp
 
     # Converters
