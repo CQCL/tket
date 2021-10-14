@@ -32,7 +32,6 @@ namespace tket {
 // this method removes them and removes the vertices
 // from boundaries
 void Circuit::remove_blank_wires() {
-  if (!is_simple()) throw SimpleOnly();
   VertexList bin;
   unit_vector_t unused_units;
   const Op_ptr noop = get_op_ptr(OpType::noop);
