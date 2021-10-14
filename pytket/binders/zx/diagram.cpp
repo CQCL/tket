@@ -262,7 +262,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           ":py:class:`QuantumType` s of the ports they attach to.")
       .def(
           "symbol_substitution",
-          (void (ZXDiagram::*)(const symbol_map_t&)) &
+          (void(ZXDiagram::*)(const symbol_map_t&)) &
               ZXDiagram::symbol_substitution,
           "In-place substitution for symbolic expressions; iterated through "
           "each parameterised vertex and performs the substitution. This will "
@@ -271,7 +271,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           py::arg("symbol_map"))
       .def(
           "symbol_substitution",
-          (void (ZXDiagram::*)(
+          (void(ZXDiagram::*)(
               const std::map<Sym, double, SymEngine::RCPBasicKeyLess>&)) &
               ZXDiagram::symbol_substitution,
           "In-place substitution for symbolic expressions; iterated through "
@@ -366,7 +366,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           py::arg("v"))
       .def(
           "remove_wire",
-          (void (ZXDiagram::*)(const Wire&)) & ZXDiagram::remove_wire,
+          (void(ZXDiagram::*)(const Wire&)) & ZXDiagram::remove_wire,
           "Removes the given wire from the diagram.", py::arg("w"))
       .def(
           "to_doubled_diagram", &ZXDiagram::to_doubled_diagram,
