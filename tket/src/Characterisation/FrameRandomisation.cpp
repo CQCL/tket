@@ -16,8 +16,8 @@
 
 #include <random>
 
-#include "PauliGraph/ConjugatePauliFunctions.hpp"
 #include "Ops/MetaOp.hpp"
+#include "PauliGraph/ConjugatePauliFunctions.hpp"
 #include "Utils/PauliStrings.hpp"
 
 namespace tket {

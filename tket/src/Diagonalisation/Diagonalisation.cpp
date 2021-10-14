@@ -14,8 +14,8 @@
 
 #include "Diagonalisation.hpp"
 
-#include "PauliGraph/ConjugatePauliFunctions.hpp"
 #include "Ops/Op.hpp"
+#include "PauliGraph/ConjugatePauliFunctions.hpp"
 #include "Utils/Assert.hpp"
 #include "Utils/UnitID.hpp"
 
