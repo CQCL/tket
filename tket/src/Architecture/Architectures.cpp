@@ -68,7 +68,8 @@ std::vector<node_vector_t> Architecture::get_lines(
   UndirectedConnGraph curr_graph(get_undirected_connectivity());
   std::vector<node_vector_t> found_lines;
   for (unsigned length : required_lengths) {
-    std::vector<Vertex> longest(graph::longest_simple_path(curr_graph, length));
+    std::vector<Vertex> longest(
+        graphs::longest_simple_path(curr_graph, length));
     if (longest.size() >= length) {
       longest.resize(length);
       // convert Vertex to Node
@@ -87,7 +88,7 @@ std::vector<node_vector_t> Architecture::get_lines(
 
 std::set<Node> Architecture::get_articulation_points(
     const Architecture& subarc) const {
-  return graph::get_subgraph_aps<Node>(
+  return graphs::get_subgraph_aps<Node>(
       get_undirected_connectivity(), subarc.get_undirected_connectivity());
 }
 

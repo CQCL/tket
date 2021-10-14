@@ -70,7 +70,7 @@
  * detail::BicomponentGraph is in the file `ArticulationPoints_impl.hpp`
  */
 
-namespace tket::graph {
+namespace tket::graphs {
 
 /** Given a graph and a subgraph, returns the subgraph APs, as defined
  *  in the introduction above
@@ -88,6 +88,6 @@ extern template std::set<Node> get_subgraph_aps(
     const UndirectedConnGraph<Node>& graph,
     const UndirectedConnGraph<Node>& subgraph);
 
-}  // namespace tket::graph
+}  // namespace tket::graphs
 
 #endif

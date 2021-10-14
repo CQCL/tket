@@ -19,7 +19,7 @@
 #include "boost/iterator/transform_iterator.hpp"
 #include "boost/range/adaptor/transformed.hpp"
 
-namespace tket::graph {
+namespace tket::graphs {
 
 namespace detail {
 
@@ -140,7 +140,7 @@ template <typename UID_t, typename OutEdgeListS, typename VertexListS>
 std::set<UID_t>
 UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::max_degree_uids() const {
   std::set<UID_t> out;
-  auto max_vertices = graph::utils::max_degree_nodes(graph);
+  auto max_vertices = graphs::utils::max_degree_nodes(graph);
   std::transform(
       max_vertices.begin(), max_vertices.end(), std::inserter(out, out.begin()),
       [this](Vertex v) { return UID_t(get_uid(v)); });
@@ -151,7 +151,7 @@ template <typename UID_t, typename OutEdgeListS, typename VertexListS>
 std::set<UID_t>
 UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::min_degree_uids() const {
   std::set<UID_t> out;
-  auto min_vertices = graph::utils::min_degree_nodes(graph);
+  auto min_vertices = graphs::utils::min_degree_nodes(graph);
   std::transform(
       min_vertices.begin(), min_vertices.end(), std::inserter(out, out.begin()),
       [this](Vertex v) { return UID_t(get_uid(v)); });
@@ -285,7 +285,7 @@ template <typename UID_t, typename OutEdgeListS, typename VertexListS>
 auto UIDConnectivityBase<
     UID_t, OutEdgeListS, VertexListS>::get_undirected_connectivity() const
     -> UndirectedConnGraph {
-  return graph::utils::symmetrise<UndirectedConnGraph>(graph);
+  return graphs::utils::symmetrise<UndirectedConnGraph>(graph);
 }
 
 template <typename UID_t, typename OutEdgeListS, typename VertexListS>
@@ -441,4 +441,4 @@ template class UIDConnectivity<UnitID>;
 template class UIDConnectivity<Node>;
 template class UIDConnectivity<Qubit>;
 
-}  // namespace tket::graph
+}  // namespace tket::graphs

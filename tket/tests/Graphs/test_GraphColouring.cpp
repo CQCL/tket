@@ -30,6 +30,7 @@ using std::vector;
 namespace tket {
 namespace graphs {
 namespace tests {
+namespace test_GraphColouring {
 
 SCENARIO("Test many colourings: random trees") {
   RNG rng;
@@ -362,6 +363,7 @@ SCENARIO("Test Mycielski graphs") {
   test_Mycielski_graph_sequence(graph, 2, 9);
 }
 
+}  // namespace test_GraphColouring
 }  // namespace tests
 }  // namespace graphs
 }  // namespace tket

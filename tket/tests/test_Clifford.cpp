@@ -25,6 +25,7 @@
 #include "testutil.hpp"
 
 namespace tket {
+namespace test_Clifford {
 
 SCENARIO("Test decomposition into Clifford gates", "[transform]") {
   GIVEN(
@@ -680,4 +681,5 @@ SCENARIO("Testing full clifford_simp") {
   }
 }
 
+}  // namespace test_Clifford
 }  // namespace tket

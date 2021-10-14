@@ -35,6 +35,7 @@ matrices from Circuits etc*/
 // TODO: Split this up more
 
 namespace tket {
+namespace test_Synthesis {
 
 SCENARIO("Check commutation through multiqubit ops") {
   GIVEN("An empty circuit") {
@@ -1411,4 +1412,5 @@ SCENARIO("Test tk1 gate decomp for some gates") {
   }
 }
 
+}  // namespace test_Synthesis
 }  // namespace tket

@@ -75,7 +75,7 @@ bool Routing::swap_decreases(
 // Given swap and distance vector, updates distance vector to reflect increment
 // change due to swaps nodes
 void Routing::increment_distance(
-    graph::dist_vec &new_dist_vector, const Swap &pair, int increment) const {
+    graphs::dist_vec &new_dist_vector, const Swap &pair, int increment) const {
   const unsigned n = current_arc_.get_diameter();
   const unsigned dis_index =
       n - current_arc_.get_distance(pair.first, pair.second);
@@ -90,7 +90,7 @@ void Routing::increment_distance(
 // interaction vector solve furthest only at this point ...
 
 // Updates distance vector from presented interaction vector
-graph::dist_vec Routing::update_distance_vector(
+graphs::dist_vec Routing::update_distance_vector(
     const Swap &nodes, std::vector<std::size_t> new_dist_vector,
     const Interactions &inte) const {
   increment_distance(new_dist_vector, {nodes.first, inte.at(nodes.first)}, -2);

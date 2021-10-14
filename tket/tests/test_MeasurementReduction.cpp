@@ -17,6 +17,7 @@
 #include "MeasurementSetup/MeasurementReduction.hpp"
 
 namespace tket {
+namespace test_MeasurementReduction {
 
 SCENARIO("Some QubitOperators") {
   GIVEN("4 string QubitOperator") {
@@ -97,4 +98,5 @@ SCENARIO("Some QubitOperators") {
   }
 }
 
+}  // namespace test_MeasurementReduction
 }  // namespace tket

@@ -18,6 +18,7 @@
 #include "testutil.hpp"
 
 namespace tket {
+namespace test_Program {
 
 SCENARIO("Basic Program construction") {
   GIVEN("An empty Program") {
@@ -433,4 +434,5 @@ SCENARIO("Command iteration") {
   }
 }
 
+}  // namespace test_Program
 }  // namespace tket

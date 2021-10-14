@@ -104,9 +104,9 @@ JSON_DECL(PlacementConfig)
 
 // Class for storing interaction graph.
 // Interacting qubits have an edge between them.
-class QubitGraph : public graph::UIDConnectivity<Qubit> {
+class QubitGraph : public graphs::UIDConnectivity<Qubit> {
  private:
-  using Base = graph::UIDConnectivity<Qubit>;
+  using Base = graphs::UIDConnectivity<Qubit>;
 
  public:
   QubitGraph() : Base() {}
@@ -183,9 +183,10 @@ struct MapCost {
 
 template <typename GraphP, typename GraphT>
 class vf2_match_add_callback {
-  using qubit_grapht_bimap_t = boost::bimap<Node, graph::utils::vertex<GraphT>>;
+  using qubit_grapht_bimap_t =
+      boost::bimap<Node, graphs::utils::vertex<GraphT>>;
   using qubit_graphp_bimap_t =
-      boost::bimap<Qubit, graph::utils::vertex<GraphP>>;
+      boost::bimap<Qubit, graphs::utils::vertex<GraphP>>;
 
  public:
   vf2_match_add_callback(

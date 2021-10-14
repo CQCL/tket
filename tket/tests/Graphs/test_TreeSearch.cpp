@@ -22,7 +22,10 @@
 #include "Graphs/TreeSearch.hpp"
 #include "Graphs/Utils.hpp"
 
-using namespace tket::graph;
+namespace tket {
+namespace graphs {
+namespace tests {
+namespace test_TreeSearch {
 
 template <typename VertexListT>
 static auto get_graph() {
@@ -288,3 +291,8 @@ SCENARIO("longest simplest path") {
   CHECK(res.size() == 15);
   CHECK(res[0] == 0);
 }
+
+}  // namespace test_TreeSearch
+}  // namespace tests
+}  // namespace graphs
+}  // namespace tket

@@ -31,6 +31,7 @@
 #include "Utils/Json.hpp"
 #include "testutil.hpp"
 namespace tket {
+namespace test_json {
 
 template <class T>
 bool serialize_deserialize(const T& obj) {
@@ -761,4 +762,5 @@ SCENARIO("Test QubitPauliString serialization") {
   REQUIRE(qps == new_qps);
 }
 
+}  // namespace test_json
 }  // namespace tket

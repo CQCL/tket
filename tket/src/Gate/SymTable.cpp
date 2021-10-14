@@ -16,7 +16,7 @@
 
 namespace tket {
 
-static std::unordered_set<std::string>& get_registered_symbols() {
+std::unordered_set<std::string>& SymTable::get_registered_symbols() {
   static std::unordered_set<std::string> symbols;
   return symbols;
 }

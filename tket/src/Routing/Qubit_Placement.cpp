@@ -136,7 +136,7 @@ QubitLineList qubit_lines(const Circuit& circ) {
   unsigned found_line_size = 0;
   QubitGraph::UndirectedConnGraph graph = q_graph.get_undirected_connectivity();
   do {
-    auto u_line = graph::longest_simple_path(graph);
+    auto u_line = graphs::longest_simple_path(graph);
     QubitLine found;
     std::transform(
         u_line.begin(), u_line.end(), std::back_inserter(found),

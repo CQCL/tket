@@ -21,6 +21,7 @@
 #include "testutil.hpp"
 
 namespace tket {
+namespace test_ControlDecomp {
 
 static bool approx_equal(const Complex& c1, const Complex& c2) {
   return (std::abs(c1 - c2) < ERR_EPS);
@@ -431,4 +432,5 @@ SCENARIO("Test a CnX is decomposed correctly when bootstrapped") {
   }
 }
 
+}  // namespace test_ControlDecomp
 }  // namespace tket

@@ -20,6 +20,7 @@
 #include "Transformations/Transform.hpp"
 
 namespace tket {
+namespace test_ClassicalOps {
 
 SCENARIO("Check that classical bundles work as expected") {
   GIVEN("Out bundles on a trivial circuit") {
@@ -494,4 +495,5 @@ SCENARIO("Pure classical operations") {
   }
 }
 
+}  // namespace test_ClassicalOps
 }  // namespace tket

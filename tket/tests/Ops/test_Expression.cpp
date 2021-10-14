@@ -20,6 +20,7 @@
 #include "Utils/Expression.hpp"
 
 namespace tket {
+namespace test_Expression {
 
 SCENARIO("Basic Expr evaluation", "[ops]") {
   GIVEN("A constant") {
@@ -96,4 +97,5 @@ SCENARIO("Expression uniqueness", "[ops]") {
   }
 }
 
+}  // namespace test_Expression
 }  // namespace tket

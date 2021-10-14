@@ -244,7 +244,7 @@ class Routing {
   // interacting qubits
   Interactions interaction;
   // Total distance of a board state for interacting qubits
-  graph::dist_vec dist_vector;
+  graphs::dist_vec dist_vector;
 
   Stats route_stats;
 
@@ -260,10 +260,10 @@ class Routing {
   // Methods used in determining the best Swap for a given board state and
   // implementing it
   void increment_distance(
-      graph::dist_vec &new_dist_vector, const Swap &pair, int increment) const;
-  graph::dist_vec generate_distance_vector(const Interactions &inter) const;
-  graph::dist_vec update_distance_vector(
-      const Swap &nodes, graph::dist_vec new_dist_vector,
+      graphs::dist_vec &new_dist_vector, const Swap &pair, int increment) const;
+  graphs::dist_vec generate_distance_vector(const Interactions &inter) const;
+  graphs::dist_vec update_distance_vector(
+      const Swap &nodes, graphs::dist_vec new_dist_vector,
       const Interactions &inte) const;
   const std::pair<std::size_t, std::size_t> pair_dists(
       const Node &n1, const Node &p1, const Node &n2, const Node &p2) const;
@@ -272,7 +272,7 @@ class Routing {
       const std::vector<Architecture::Connection> &trial_edges,
       const Interactions &inte) const;
   std::vector<Swap> cowtan_et_al_heuristic(
-      std::vector<Swap> &candidate_swaps, const graph::dist_vec &base_dists,
+      std::vector<Swap> &candidate_swaps, const graphs::dist_vec &base_dists,
       const Interactions &interac) const;
   SwapResults try_all_swaps(
       const std::vector<Architecture::Connection> &trial_edges);
@@ -337,10 +337,10 @@ class RoutingTester {
   void set_config(const RoutingConfig &_config);
   // Wrappers of private methods for testing?
   void increment_distance(
-      graph::dist_vec &new_dist_vector, const Swap &pair, int increment) const;
-  graph::dist_vec generate_distance_vector(const Interactions &inter) const;
-  graph::dist_vec update_distance_vector(
-      const Swap &nodes, graph::dist_vec new_dist_vector,
+      graphs::dist_vec &new_dist_vector, const Swap &pair, int increment) const;
+  graphs::dist_vec generate_distance_vector(const Interactions &inter) const;
+  graphs::dist_vec update_distance_vector(
+      const Swap &nodes, graphs::dist_vec new_dist_vector,
       const Interactions &inte) const;
   const std::pair<unsigned, unsigned> pair_dists(
       const Node &n1, const Node &p1, const Node &n2, const Node &p2) const;
@@ -349,7 +349,7 @@ class RoutingTester {
       const std::vector<Architecture::Connection> &trial_edges,
       const Interactions &inte) const;
   std::vector<Swap> cowtan_et_al_heuristic(
-      std::vector<Swap> &candidate_swaps, const graph::dist_vec &base_dists,
+      std::vector<Swap> &candidate_swaps, const graphs::dist_vec &base_dists,
       const Interactions &interac) const;
   void update_qmap(qubit_bimap_t &map, const Swap &swap);
   std::vector<Swap> path_to_swaps(const std::vector<Node> &path) const;

@@ -21,8 +21,10 @@
 #include "Architecture/Architectures.hpp"
 #include "Graphs/ArticulationPoints.hpp"
 
-using namespace tket;
-using namespace tket::graph;
+namespace tket {
+namespace graphs {
+namespace tests {
+namespace test_ArticulationPoints {
 
 using Edge = std::pair<unsigned, unsigned>;
 using Vertex = unsigned;
@@ -163,3 +165,8 @@ SCENARIO("Test APs in Architecture", "[architectures],[routing]") {
   ap = arc2.get_articulation_points();
   REQUIRE(ap.find(Node(0)) == ap.end());
 }
+
+}  // namespace test_ArticulationPoints
+}  // namespace tests
+}  // namespace graphs
+}  // namespace tket

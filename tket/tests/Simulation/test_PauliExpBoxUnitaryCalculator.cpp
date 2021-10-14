@@ -24,7 +24,7 @@
 
 namespace tket {
 
-namespace {
+namespace test_PauliExpBoxUnitaryCalculator {
 struct GroupPropertyPauliTester {
   std::array<double, 3> phases;
 
@@ -125,7 +125,6 @@ struct DirectTensorProductTester {
     CHECK(recalculated_result.isApprox(dense_matrix));
   }
 };
-}  // namespace
 
 SCENARIO("Check all Pauli strings of length <= 4") {
   GroupPropertyPauliTester group_property_tester;
@@ -155,7 +154,6 @@ SCENARIO("Check all Pauli strings of length <= 4") {
   CHECK(count == 1 + 4 + 16 + 64 + 256);
 }
 
-namespace {
 // Use other OpTypes which give equivalent unitaries to some Pauli Exp Boxes.
 struct CompareWithSimulatorPauliTester {
   const std::vector<double> phase;
@@ -189,7 +187,6 @@ struct CompareWithSimulatorPauliTester {
     CHECK(dense_result.isApprox(simulator_result));
   }
 };
-}  // namespace
 
 SCENARIO("Check some length <= 2 Pauli strings using equivalent gates") {
   CompareWithSimulatorPauliTester tester;
@@ -215,4 +212,5 @@ SCENARIO("Check some length <= 2 Pauli strings using equivalent gates") {
   }
 }
 
+}  // namespace test_PauliExpBoxUnitaryCalculator
 }  // namespace tket

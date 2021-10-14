@@ -30,7 +30,7 @@
 #include "Utils/GraphHeaders.hpp"
 #include "Utils/UnitID.hpp"
 
-namespace tket::graph {
+namespace tket::graphs {
 
 namespace detail {
 
@@ -334,6 +334,6 @@ extern template class UIDConnectivity<UnitID>;
 extern template class UIDConnectivity<Node>;
 extern template class UIDConnectivity<Qubit>;
 
-}  // namespace tket::graph
+}  // namespace tket::graphs
 
 #endif

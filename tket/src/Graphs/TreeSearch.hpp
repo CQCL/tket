@@ -34,14 +34,14 @@
  *
  * Examples (pseudo-code):
  *  >   // get distances of each vertex from root as vector
- *  >   auto dists = graph::run_bfs(root, graph).get_dists();
+ *  >   auto dists = graphs::run_bfs(root, graph).get_dists();
  *  >   // get parent of each vertex of depth-first-search (DFS)
- *  >   auto parents = graph::run_dfs(root, graph).get_parents()
+ *  >   auto parents = graphs::run_dfs(root, graph).get_parents()
  *  >
  *  >   // BFS and DFS require an integer vertex index.
  *  >   // This exists by default when the underlying edge type is vecS.
  *  >   // Otherwise, we can also pass a map-like Property Map that is used as
- * vertex index >   auto dfs = graph::run_dfs(root, graph, vertex_index_map)
+ * vertex index >   auto dfs = graphs::run_dfs(root, graph, vertex_index_map)
  *
  * `run_bfs` and `run_dfs` return instances of the BFS and DFS classes
  * defined in the `TreeSearch_impl.hpp` file. These store the result of the tree
@@ -49,7 +49,7 @@
  * examples above.
  */
 
-namespace tket::graph {
+namespace tket::graphs {
 
 /* Tree search: Breadth First Search (BFS) and Depth First Search (DFS)
  *
@@ -114,6 +114,6 @@ std::vector<utils::vertex<Graph>> longest_simple_path(
   return longest;
 }
 
-}  // namespace tket::graph
+}  // namespace tket::graphs
 
 #endif

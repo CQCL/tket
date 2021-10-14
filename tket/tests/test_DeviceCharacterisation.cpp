@@ -18,6 +18,7 @@
 #include "OpType/OpDesc.hpp"
 
 namespace tket {
+namespace test_DeviceCharacterisation {
 
 SCENARIO("Does Device correctly hold and return error information") {
   GIVEN("Errors for only two qubits, CX & X") {
@@ -54,4 +55,5 @@ SCENARIO("Does Device correctly hold and return error information") {
   }
 }
 
+}  // namespace test_DeviceCharacterisation
 }  // namespace tket

@@ -21,6 +21,7 @@
 #include "Transformations/Transform.hpp"
 
 namespace tket {
+namespace test_Combinators {
 
 SCENARIO("Basic >> sequencing") {
   GIVEN("A UCCSD example") {
@@ -58,4 +59,5 @@ SCENARIO("List sequencing") {
   }
 }
 
+}  // namespace test_Combinators
 }  // namespace tket

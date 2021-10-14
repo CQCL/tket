@@ -25,7 +25,7 @@
 #include "Graphs/Utils.hpp"
 #include "Utils/GraphHeaders.hpp"
 
-namespace tket::graph {
+namespace tket::graphs {
 
 namespace detail {
 
@@ -136,7 +136,7 @@ void BicomponentGraph<UID_t>::select_comps(Range uids) {
 template <typename Graph>
 struct TrackUsedEdgesVisitor : public boost::default_dfs_visitor {
   using edge =
-      std::pair<graph::utils::vertex<Graph>, graph::utils::vertex<Graph>>;
+      std::pair<graphs::utils::vertex<Graph>, graphs::utils::vertex<Graph>>;
 
   explicit TrackUsedEdgesVisitor(std::vector<bool>& s) : selected(s) {
     tree_edges = std::make_shared<std::set<edge>>();
@@ -145,7 +145,7 @@ struct TrackUsedEdgesVisitor : public boost::default_dfs_visitor {
   std::shared_ptr<std::set<edge>> tree_edges;
 
   // called as DFS leaves the edge and returns to parent
-  void finish_edge(graph::utils::edge<Graph> e, const Graph& g) {
+  void finish_edge(graphs::utils::edge<Graph> e, const Graph& g) {
     unsigned target = boost::target(e, g);
     unsigned source = boost::source(e, g);
     // only consider tree edges
@@ -157,7 +157,7 @@ struct TrackUsedEdgesVisitor : public boost::default_dfs_visitor {
     }
   }
   // keep track of tree edges
-  void tree_edge(graph::utils::edge<Graph> e, const Graph& g) {
+  void tree_edge(graphs::utils::edge<Graph> e, const Graph& g) {
     unsigned target = boost::target(e, g);
     unsigned source = boost::source(e, g);
     tree_edges->insert({source, target});
@@ -227,4 +227,4 @@ template std::set<Node> get_subgraph_aps(
     const UndirectedConnGraph<Node>& graph,
     const UndirectedConnGraph<Node>& subgraph);
 
-}  // namespace tket::graph
+}  // namespace tket::graphs

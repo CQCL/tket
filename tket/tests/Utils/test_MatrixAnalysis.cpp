@@ -35,6 +35,7 @@ static std::vector<unsigned> get_powers_of_two() {
 }
 
 namespace tket {
+namespace test_MatrixAnalysis {
 
 SCENARIO("Powers of two") {
   const auto powers_of_two = get_powers_of_two();
@@ -82,4 +83,5 @@ SCENARIO("Powers of two") {
   }
 }
 
+}  // namespace test_MatrixAnalysis
 }  // namespace tket

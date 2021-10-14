@@ -19,6 +19,7 @@
 #include "testutil.hpp"
 
 namespace tket {
+namespace test_Predicates {
 
 SCENARIO("Test out basic Predicate useage") {
   GIVEN("GateSetPredicate") {
@@ -357,4 +358,5 @@ SCENARIO("Verifying whether or not circuits have mid-circuit measurements") {
   }
 }
 
+}  // namespace test_Predicates
 }  // namespace tket

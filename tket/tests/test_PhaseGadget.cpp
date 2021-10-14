@@ -24,6 +24,7 @@
 #include "testutil.hpp"
 
 namespace tket {
+namespace test_PhaseGadget {
 
 SCENARIO("Convert into PhaseGadgets", "[transform]") {
   GIVEN("A circuit which should be converted") {
@@ -348,4 +349,5 @@ SCENARIO("Decompose phase gadgets") {
   }
 }
 
+}  // namespace test_PhaseGadget
 }  // namespace tket

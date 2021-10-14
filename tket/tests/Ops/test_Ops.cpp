@@ -32,6 +32,10 @@
 #include "Utils/Constants.hpp"
 
 namespace tket {
+namespace test_Ops {
+
+void clear_symbol_table() { SymTable::get_registered_symbols().clear(); }
+
 SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
   GIVEN("Transposes retrieval at the Op level") {
     const Op_ptr h = (get_op_ptr(OpType::H));
@@ -467,6 +471,7 @@ SCENARIO("Check copying of expressions between circuits", "[ops]") {
 }
 
 SCENARIO("Check that fresh_symbol actually gives a unique symbol") {
+  clear_symbol_table();
   GIVEN("Manually obtained fresh_symbols") {
     Sym alpha = SymTable::fresh_symbol("a");
     Sym alpha2 = SymTable::fresh_symbol("a_2");
@@ -602,4 +607,5 @@ SCENARIO("Two-qubit entangling gates") {
   }
 }
 
+}  // namespace test_Ops
 }  // namespace tket

@@ -20,6 +20,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 
 namespace tket {
+namespace test_Symbolic {
 
 // Check (by substituting a selection of values) equivalence of two single-qubit
 // circuits containing (at most) a single symbol "a".
@@ -132,4 +133,5 @@ SCENARIO("Symbolic squashing, correctness") {
   }
 }
 
+}  // namespace test_Symbolic
 }  // namespace tket

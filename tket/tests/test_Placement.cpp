@@ -18,7 +18,9 @@
 #include "Routing/Placement.hpp"
 #include "testutil.hpp"
 
-using namespace tket;
+namespace tket {
+namespace test_Placement {
+
 using Connection = Architecture::Connection;
 
 // confirm all weight i+1 edges are broken before any weight i edge
@@ -671,3 +673,6 @@ SCENARIO(
     REQUIRE(pre_place == all_qs);
   }
 }
+
+}  // namespace test_Placement
+}  // namespace tket

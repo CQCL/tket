@@ -44,11 +44,12 @@ template <typename Graph>
 class label_writer {
  public:
   explicit label_writer(Graph _g) : g(_g) {}
-  void operator()(std::ostream& out, const graph::utils::edge<Graph>& v) const {
+  void operator()(
+      std::ostream& out, const graphs::utils::edge<Graph>& v) const {
     out << "[label=\"" << g[v].weight << "\"]";
   }
   void operator()(
-      std::ostream& out, const graph::utils::vertex<Graph>& v) const {
+      std::ostream& out, const graphs::utils::vertex<Graph>& v) const {
     out << "[label=\"" << v << "\"]";
   }
 
@@ -107,7 +108,7 @@ std::vector<qubit_bimap_t> monomorphism_edge_break(
     } else if (found_monomorphism) {
       return all_maps;
     } else if (boost::num_edges(undirected_pattern) != 0) {
-      using edge_t = graph::utils::edge<InteractionGraph>;
+      using edge_t = graphs::utils::edge<InteractionGraph>;
       auto e_its = boost::edges(undirected_pattern);
       auto max_e_it = boost::first_max_element(
           e_its.first, e_its.second,
@@ -115,7 +116,7 @@ std::vector<qubit_bimap_t> monomorphism_edge_break(
             return undirected_pattern[lhs].weight <
                    undirected_pattern[rhs].weight;
           });
-      graph::utils::remove_edge(*max_e_it, undirected_pattern, true);
+      graphs::utils::remove_edge(*max_e_it, undirected_pattern, true);
     }
   }
 }

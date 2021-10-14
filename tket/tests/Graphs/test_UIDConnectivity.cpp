@@ -21,8 +21,10 @@
 #include "Utils/UnitID.hpp"
 #include "boost/range/iterator_range_core.hpp"
 
-using namespace tket::graph;
-using namespace tket;
+namespace tket {
+namespace graphs {
+namespace tests {
+namespace test_UIDConnectivity {
 
 SCENARIO("Correct creation of UIDConnectivity graphs") {
   GIVEN("Construct empty graph of nodes") {
@@ -106,3 +108,8 @@ SCENARIO("Disconnected graphs") {
     CHECK_THROWS(uidgraph.get_distance(Node(0), Node(2)));
   }
 }
+
+}  // namespace test_UIDConnectivity
+}  // namespace tests
+}  // namespace graphs
+}  // namespace tket

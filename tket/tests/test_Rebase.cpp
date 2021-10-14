@@ -24,6 +24,7 @@
 #include "testutil.hpp"
 
 namespace tket {
+namespace test_Rebase {
 
 SCENARIO("Building rebases with rebase_factory") {
   GIVEN("A circuit with all gates in basis set") {
@@ -476,4 +477,5 @@ SCENARIO("Check cases for tk1_to_rzsx") {
   }
 }
 
+}  // namespace test_Rebase
 }  // namespace tket
