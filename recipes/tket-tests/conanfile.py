@@ -29,12 +29,8 @@ class TketTestsConan(ConanFile):
     options = {"with_coverage": [True, False]}
     default_options = {"with_coverage": False}
     generators = "cmake"
-    exports_sources = "../../bubble/tests/*"
-    requires = (
-        "tket/1.0.1",
-        "catch2/2.13.7",
-        "nlohmann_json/3.10.2",
-    )
+    exports_sources = "../../tket/tests/*"
+    requires = ("tket/1.0.1", "catch2/2.13.7")
 
     def validate(self):
         if self.options.with_coverage and self.settings.compiler != "gcc":
