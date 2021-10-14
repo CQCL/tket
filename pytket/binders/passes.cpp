@@ -561,7 +561,7 @@ PYBIND11_MODULE(passes, m) {
       "lookahead=1: parameter for the recursive iteration\n"
       "(CNotSynthType) cnotsynthtype=CNotSynthType.Rec: "
       "type of the CNOT synthesis\n:return: a pass to perform the "
-      "remapping",
+      "remapping\n",
       py::arg("arc"));
 
   m.def(
