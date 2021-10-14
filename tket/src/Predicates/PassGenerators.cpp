@@ -234,7 +234,7 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
 
     // fill up the circuit with more qubits until the number of qubits is equal
     // to the number of nodes in architecture
-    std::string register_name = "surplus";
+    const std::string register_name = "surplus";
     unsigned qb_counter = circ.n_qubits();
     while (arc.n_uids() > circ.n_qubits()) {
       Qubit qb = Qubit(register_name, qb_counter);
@@ -311,7 +311,7 @@ PassPtr aas_routing_pass(
 
           Circuit b_circ(*b.to_circuit());
 
-          std::string register_name = "surplus";
+          const std::string register_name = "surplus";
           unsigned qb_counter = b_circ.n_qubits();
           while (arc.n_uids() > b_circ.n_qubits()) {
             Qubit qb = Qubit(register_name, qb_counter);

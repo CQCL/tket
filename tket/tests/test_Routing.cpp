@@ -2414,7 +2414,7 @@ SCENARIO("Routing of aas example") {
     CompilationUnit cu(circ);
     REQUIRE(pass->apply(cu));
   }
-  GIVEN("aas routing - circuit with less qubits then nodes in the arch") {
+  GIVEN("aas routing - circuit with fewer qubits then nodes in the arch") {
     Architecture arc(std::vector<Connection>{
         {Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
     PassPtr pass = gen_full_mapping_pass_phase_poly(arc);
@@ -2444,7 +2444,7 @@ SCENARIO("Routing of aas example") {
 
     REQUIRE(test_unitary_comparison(circ, result));
   }
-  GIVEN("aas routing - circuit with less qubits then nodes in the arch II") {
+  GIVEN("aas routing - circuit with fewer qubits then nodes in the arch II") {
     Architecture arc(std::vector<Connection>{
         {Node(0), Node(1)},
         {Node(1), Node(2)},

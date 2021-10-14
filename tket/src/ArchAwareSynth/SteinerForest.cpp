@@ -355,8 +355,8 @@ Circuit phase_poly_synthesis(
 
   if ((hampath.empty()) && (cnottype == CNotSynthType::HamPath)) {
     throw NoHamiltonPath(
-        "[AAS]: no hamilton path found in the given architecture, cnot "
-        "synthesis stoped. Please try an alternative CNotSynthType.");
+        "[AAS]: no Hamilton path found in the given architecture, CNOT "
+        "synthesis stopped. Please try an alternative CNotSynthType.");
   }
 
   if ((cnottype == CNotSynthType::Rec) || (cnottype == CNotSynthType::SWAP)) {

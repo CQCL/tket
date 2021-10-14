@@ -71,7 +71,8 @@ static PassPtr gen_default_aas_routing_pass(
     cnotsynthtype = py::cast<aas::CNotSynthType>(kwargs["cnotsynthtype"]);
 
   if (lookahead == 0) {
-    TKET_ASSERT(!"lookahead must be > 0");
+    throw std::invalid_argument(
+        "[AAS]: invalid input, the lookahead musst be > 0");
   }
 
   return gen_full_mapping_pass_phase_poly(arc, lookahead, cnotsynthtype);
@@ -142,14 +143,14 @@ PYBIND11_MODULE(passes, m) {
   py::enum_<aas::CNotSynthType>(m, "CNotSynthType")
       .value(
           "SWAP", aas::CNotSynthType::SWAP,
-          "swap based algorithm for cnot synth")
+          "swap-based algorithm for CNOT synthesis")
       .value(
           "HamPath", aas::CNotSynthType::HamPath,
-          "hamilton path based method for cnot synth, this method will fail if "
-          "there is no Hamilton path in the given architecture")
+          "Hamilton-path-based method for CNOT synthesis; this method will "
+          "fail if there is no Hamilton path in the given architecture")
       .value(
           "Rec", aas::CNotSynthType::Rec,
-          "recursive steiner gauss method for cnot synth")
+          "recursive Steiner--Gauss method for CNOT synthesis")
       .export_values();
 
   /* Compiler passes */
@@ -551,21 +552,16 @@ PYBIND11_MODULE(passes, m) {
       ":py:class:`Architecture` is used for the routing. "
       "The direction of the edges is ignored. The placement used "
       "is GraphPlacement. This pass can take a few parameters for the "
-      "routing, described below.\nNB: The circuit needs to have equal or "
-      "less qubits then the architecture has nodes. The result circuit will "
+      "routing, described below.\nNB: The circuit needs to have at most as "
+      "many qubits as the architecture has nodes. The resulting circuit will "
       "always have the same number of qubits as the architecture has nodes, "
-      "even if the input circuit had less qubits.\n:param arc: The "
+      "even if the input circuit had fewer.\n\n:param arc: The "
       "architecture used for connectivity information."
       "\n:param \\**kwargs: Parameters for routing:\n(unsigned) "
-      "lookahead=1: giving parameter for the recursive iteration \n"
-      "(CNotSynthType) cnotsynthtype=CNotSynthType.Rec: giving parameter for "
-      "type of the cnot "
-      "synth, possible options are\nCNotSynthType.SWAP: swap based "
-      "algorithm,\nCNotSynthType.HamPath: hamilton "
-      "path based method, this method will fail if there is no Hamilton path "
-      "in the given architecture,\nCNotSynthType.Rec: recursive steiner gauss "
-      "method. Other values are not allowed.\n:return: a pass to perform the "
-      "remapping\n",
+      "lookahead=1: parameter for the recursive iteration\n"
+      "(CNotSynthType) cnotsynthtype=CNotSynthType.Rec: "
+      "type of the CNOT synthesis\n:return: a pass to perform the "
+      "remapping",
       py::arg("arc"));
 
   m.def(
