@@ -232,25 +232,15 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
           "Circuit has more qubits than the architecture has nodes.");
     }
 
-    // fill up the circuit with more qubits until the number of qubits is equal
-    // to the number of nodes in architecture
-    const std::string register_name = "surplus";
-    unsigned qb_counter = circ.n_qubits();
-    while (arc.n_uids() > circ.n_qubits()) {
-      Qubit qb = Qubit(register_name, qb_counter);
-      circ.add_qubit(qb);
-      ++qb_counter;
-    }
-
-    TKET_ASSERT(arc.n_uids() == circ.n_qubits());
-
     qubit_vector_t q_vec = circ.all_qubits();
     std::map<Qubit, Node> qubit_to_nodes;
     unsigned counter = 0;
 
     for (Node x : arc.get_all_uids_set()) {
-      qubit_to_nodes.insert({q_vec[counter], x});
-      ++counter;
+      if (counter < circ.n_qubits()) {
+        qubit_to_nodes.insert({q_vec[counter], x});
+        ++counter;
+      }
     }
 
     circ.rename_units(qubit_to_nodes);
@@ -310,14 +300,6 @@ PassPtr aas_routing_pass(
           const PhasePolyBox& b = static_cast<const PhasePolyBox&>(*op);
 
           Circuit b_circ(*b.to_circuit());
-
-          const std::string register_name = "surplus";
-          unsigned qb_counter = b_circ.n_qubits();
-          while (arc.n_uids() > b_circ.n_qubits()) {
-            Qubit qb = Qubit(register_name, qb_counter);
-            b_circ.add_qubit(qb);
-            ++qb_counter;
-          }
 
           PhasePolyBox ppb(b_circ);
 

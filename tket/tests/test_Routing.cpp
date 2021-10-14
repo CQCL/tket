@@ -2435,13 +2435,6 @@ SCENARIO("Routing of aas example") {
     REQUIRE(pass->apply(cu));
     Circuit result = cu.get_circ_ref();
 
-    unsigned qb_counter = circ.n_qubits();
-    while (arc.n_uids() > circ.n_qubits()) {
-      Qubit qb = Qubit(qb_counter);
-      circ.add_qubit(qb);
-      ++qb_counter;
-    }
-
     REQUIRE(test_unitary_comparison(circ, result));
   }
   GIVEN("aas routing - circuit with fewer qubits then nodes in the arch II") {
@@ -2468,12 +2461,42 @@ SCENARIO("Routing of aas example") {
     REQUIRE(pass->apply(cu));
     Circuit result = cu.get_circ_ref();
 
+    REQUIRE(test_unitary_comparison(circ, result));
+  }
+  GIVEN("aas routing - circuit with fewer qubits then nodes in the arch III") {
+    Architecture arc(std::vector<Connection>{
+        {Node(0), Node(1)},
+        {Node(1), Node(2)},
+        {Node(2), Node(3)},
+        {Node(3), Node(4)},
+        {Node(4), Node(5)},
+        {Node(5), Node(6)}});
+    PassPtr pass = gen_full_mapping_pass_phase_poly(arc);
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::X, {0});
+    circ.add_op<unsigned>(OpType::X, {1});
+    circ.add_op<unsigned>(OpType::X, {2});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::Rz, 0.1, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.2, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {2});
+    circ.add_op<unsigned>(OpType::X, {0});
+    circ.add_op<unsigned>(OpType::X, {1});
+    circ.add_op<unsigned>(OpType::X, {2});
+
+    const std::string register_name = "surplus";
+
     unsigned qb_counter = circ.n_qubits();
-    while (arc.n_uids() > circ.n_qubits()) {
-      Qubit qb = Qubit(qb_counter);
+    while (arc.n_uids() > circ.n_qubits() + 2) {
+      Qubit qb = Qubit(register_name, qb_counter);
       circ.add_qubit(qb);
       ++qb_counter;
     }
+
+    CompilationUnit cu(circ);
+    REQUIRE(pass->apply(cu));
+    Circuit result = cu.get_circ_ref();
 
     REQUIRE(test_unitary_comparison(circ, result));
   }
