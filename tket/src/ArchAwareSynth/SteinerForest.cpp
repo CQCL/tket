@@ -20,7 +20,9 @@ namespace aas {
 ParityList parity_column_to_list(const std::vector<bool> &parity_column) {
   ParityList parity_list;
   for (unsigned i = 0; i != parity_column.size(); ++i) {
-    if (parity_column[i]) parity_list.push_back(i);
+    if (parity_column[i]) {
+      parity_list.push_back(i);
+    }
   }
   return parity_list;
 }
@@ -261,9 +263,11 @@ CostedOperations recursive_operation_search(
 
 Circuit phase_poly_synthesis_int(
     const Architecture &arch, const PhasePolyBox &phasepolybox,
-    unsigned lookahead = 1, CNotSynthType cnottype = CNotSynthType::Rec) {
+    unsigned lookahead, CNotSynthType cnottype) {
   if (lookahead == 0)
-    TKET_ASSERT(!"[AAS] the lookahead of the phase polynominal synthesis has to be greater than 0");
+    throw std::logic_error(
+        "[AAS] the lookahead of the phase polynominal synthesis has to be "
+        "greater than 0");
 
   CostedOperations best_operations;
 
@@ -272,6 +276,7 @@ Circuit phase_poly_synthesis_int(
   PathHandler acyclic_path = path.construct_acyclic_handler();
 
   SteinerForest forest(acyclic_path, phasepolybox);
+
   while (!forest.current_trees.empty()) {
     best_operations =
         best_operations_lookahead(acyclic_path, forest, lookahead);
@@ -322,14 +327,29 @@ Circuit phase_poly_synthesis(
   // the same name in the input.
 
   Circuit circuit_ppb_place(*phasepolybox.to_circuit());
+
+  const std::string register_name = "surplus";
+
+  unsigned qb_counter = circuit_ppb_place.n_qubits();
+  while (arch.n_uids() > circuit_ppb_place.n_qubits()) {
+    Qubit qb = Qubit(register_name, qb_counter);
+    circuit_ppb_place.add_qubit(qb);
+    ++qb_counter;
+  }
+
+  TKET_ASSERT(circuit_ppb_place.n_qubits() == arch.get_all_uids_set().size());
+
   qubit_vector_t q_vec_place = circuit_ppb_place.all_qubits();
   std::map<Qubit, Node> qubit_to_nodes_place;
   unsigned counter_place = 0;
 
   for (Node no_place : arch.get_all_uids_set()) {
-    qubit_to_nodes_place.insert({q_vec_place[counter_place], no_place});
-    ++counter_place;
+    if (counter_place < circuit_ppb_place.n_qubits()) {
+      qubit_to_nodes_place.insert({q_vec_place[counter_place], no_place});
+      ++counter_place;
+    }
   }
+
   circuit_ppb_place.rename_units(qubit_to_nodes_place);
 
   PhasePolyBox placed_ppb(circuit_ppb_place);
@@ -337,8 +357,8 @@ Circuit phase_poly_synthesis(
   std::vector<Node> hampath = find_hampath(arch);  // using default timeout
 
   // create maps from qubits/node to int
-  std::map<UnitID, UnitID> forward_contiguous_uids;
-  std::map<UnitID, UnitID> backward_contiguous_uids;
+  std::map<UnitID, UnitID> forward_contiguous_uids_q;
+  std::map<UnitID, UnitID> backward_contiguous_uids_n;
   // extra map with node type needed for the creation of the architecture
   std::map<UnitID, Node> unitid_to_int_nodes;
 
@@ -347,9 +367,9 @@ Circuit phase_poly_synthesis(
   IterationOrder iter_order(arch);
 
   if ((hampath.empty()) && (cnottype == CNotSynthType::HamPath)) {
-    throw std::logic_error(
-        "[AAS]: no hamilton path found in the given architecture, cnot "
-        "synthesis stoped. Please try an alternative CNotSynthType.");
+    throw NoHamiltonPath(
+        "[AAS]: no Hamilton path found in the given architecture, CNOT "
+        "synthesis stopped. Please try an alternative CNotSynthType.");
   }
 
   if ((cnottype == CNotSynthType::Rec) || (cnottype == CNotSynthType::SWAP)) {
@@ -362,9 +382,10 @@ Circuit phase_poly_synthesis(
       UnitID qu_no = UnitID(orig_node);
       Qubit q = Qubit(counter);
       Node n = Node(counter);
-      forward_contiguous_uids.insert({q, qu_no});
-      backward_contiguous_uids.insert({qu_no, q});
       unitid_to_int_nodes.insert({qu_no, n});
+      forward_contiguous_uids_q.insert({q, qu_no});
+      backward_contiguous_uids_n.insert({qu_no, n});
+
       ++counter;
     }
   } else {
@@ -373,8 +394,8 @@ Circuit phase_poly_synthesis(
           UnitID(orig_node);  // convert node to superclass type of qubit/node
       Qubit q = Qubit(counter);
       Node n = Node(counter);
-      forward_contiguous_uids.insert({q, qu_no});
-      backward_contiguous_uids.insert({qu_no, q});
+      forward_contiguous_uids_q.insert({q, qu_no});
+      backward_contiguous_uids_n.insert({qu_no, n});
       unitid_to_int_nodes.insert({qu_no, n});
       ++counter;
     }
@@ -402,7 +423,7 @@ Circuit phase_poly_synthesis(
   // define new phase poly box
   Circuit circuit_ppb(*placed_ppb.to_circuit());
 
-  circuit_ppb.rename_units(backward_contiguous_uids);
+  circuit_ppb.rename_units(backward_contiguous_uids_n);
 
   PhasePolyBox new_ppb(circuit_ppb);
 
@@ -410,7 +431,7 @@ Circuit phase_poly_synthesis(
       phase_poly_synthesis_int(con_arch, new_ppb, lookahead, cnottype);
 
   // revert rename of the result
-  result.rename_units(forward_contiguous_uids);
+  result.rename_units(forward_contiguous_uids_q);
 
   return result;
 }

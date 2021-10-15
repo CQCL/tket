@@ -365,6 +365,43 @@ SCENARIO("Build a steiner Forest") {
     REQUIRE(oplist == oplist2);
   }
 }
+SCENARIO("check error in steiner Forest") {
+  GIVEN("lookahead 0 - phase_poly_synthesis_int") {
+    const Architecture archi(
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    PhasePolyBox ppbox(circ);
+    REQUIRE_THROWS_AS(
+        aas::phase_poly_synthesis_int(archi, ppbox, 0, aas::CNotSynthType::Rec),
+        std::logic_error);
+  }
+  GIVEN("lookahead 0 - best_operations_lookahead") {
+    const Architecture archi(
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    PhasePolyBox ppbox(circ);
+    aas::SteinerForest sf = aas::SteinerForest(archi, ppbox);
+    aas::PathHandler ph = aas::PathHandler(archi);
+    REQUIRE_THROWS_AS(
+        aas::best_operations_lookahead(ph, sf, 0), std::logic_error);
+  }
+  GIVEN("empty steinerforest") {
+    const Architecture archi(
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
+    Circuit circ(2);
+    PhasePolyBox ppbox(circ);
+    aas::SteinerForest sf = aas::SteinerForest(archi, ppbox);
+    aas::PathHandler ph = aas::PathHandler(archi);
+    REQUIRE_THROWS_AS(
+        aas::best_operations_lookahead(ph, sf, 1), std::logic_error);
+  }
+}
 SCENARIO("Synthesise a phase polynomial for a given architecture") {
   GIVEN("phase_poly_synthesis 1") {
     const Architecture archi(

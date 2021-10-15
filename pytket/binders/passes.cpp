@@ -14,6 +14,7 @@
 
 #include <pybind11/functional.h>
 
+#include "ArchAwareSynth/SteinerForest.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
@@ -60,10 +61,21 @@ static PassPtr gen_default_routing_pass(
 
 static PassPtr gen_default_aas_routing_pass(
     const Architecture &arc, py::kwargs kwargs) {
-  unsigned aas_lookahead = 1;
-  if (kwargs.contains("aas_lookahead"))
-    aas_lookahead = py::cast<unsigned>(kwargs["aas_lookahead"]);
-  return gen_full_mapping_pass_phase_poly(arc, aas_lookahead);
+  unsigned lookahead = 1;
+  aas::CNotSynthType cnotsynthtype = aas::CNotSynthType::Rec;
+
+  if (kwargs.contains("lookahead"))
+    lookahead = py::cast<unsigned>(kwargs["lookahead"]);
+
+  if (kwargs.contains("cnotsynthtype"))
+    cnotsynthtype = py::cast<aas::CNotSynthType>(kwargs["cnotsynthtype"]);
+
+  if (lookahead == 0) {
+    throw std::invalid_argument(
+        "[AAS]: invalid input, the lookahead must be > 0");
+  }
+
+  return gen_full_mapping_pass_phase_poly(arc, lookahead, cnotsynthtype);
 }
 
 static PassPtr gen_full_mapping_pass_kwargs(
@@ -126,6 +138,19 @@ PYBIND11_MODULE(passes, m) {
           "the overall pass at the start and the postconditions at "
           "the end")
       // .value("Off", SafetyMode::Off) // not currently supported
+      .export_values();
+
+  py::enum_<aas::CNotSynthType>(m, "CNotSynthType")
+      .value(
+          "SWAP", aas::CNotSynthType::SWAP,
+          "swap-based algorithm for CNOT synthesis")
+      .value(
+          "HamPath", aas::CNotSynthType::HamPath,
+          "Hamilton-path-based method for CNOT synthesis; this method will "
+          "fail if there is no Hamilton path in the given architecture")
+      .value(
+          "Rec", aas::CNotSynthType::Rec,
+          "recursive Steiner--Gauss method for CNOT synthesis")
       .export_values();
 
   /* Compiler passes */
@@ -527,16 +552,16 @@ PYBIND11_MODULE(passes, m) {
       ":py:class:`Architecture` is used for the routing. "
       "The direction of the edges is ignored. The placement used "
       "is GraphPlacement. This pass can take a few parameters for the "
-      "routing, described below."
-      "\n\nNB: In the current implementation it is assumed that the number of "
-      "nodes in the architecture is equal to the number of qubits in the "
-      "circuit. With smaller circuits may therefore be necessary to add unused "
-      "qubits before applying this pass."
-      "\n\n:param arc: The architecture used for connectivity information."
-      "\n:param \\**kwargs: Parameters for routing: "
-      "(unsigned) lookahead=1: giving parameter for the recursive iteration "
-      "depth in the synthesis method"
-      "\n:return: a pass to perform the remapping",
+      "routing, described below.\nNB: The circuit needs to have at most as "
+      "many qubits as the architecture has nodes. The resulting circuit will "
+      "always have the same number of qubits as the architecture has nodes, "
+      "even if the input circuit had fewer.\n:param arc: The "
+      "architecture used for connectivity information."
+      "\n:param \\**kwargs: Parameters for routing:\n(unsigned) "
+      "lookahead=1: parameter for the recursive iteration\n"
+      "(CNotSynthType) cnotsynthtype=CNotSynthType.Rec: "
+      "type of the CNOT synthesis\n:return: a pass to perform the "
+      "remapping\n",
       py::arg("arc"));
 
   m.def(
