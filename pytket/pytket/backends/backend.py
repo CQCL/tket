@@ -447,6 +447,19 @@ class Backend(ABC):
         """
         raise NotImplementedError("Backend does not provide any device properties.")
 
+    @classmethod
+    def available_devices(cls, **kwargs: Any) -> List[BackendInfo]:
+        """Retrieve all available devices as a list of BackendInfo objects, including
+        device name, architecture, supported gate set, gate errors,
+        and other hardware-specific information.
+
+        :return: A list of BackendInfo objects describing available devices.
+        :rtype: List[BackendInfo]
+        """
+        raise NotImplementedError(
+            "Backend does not provide information about available devices."
+        )
+
     @property
     def persistent_handles(self) -> bool:
         """
