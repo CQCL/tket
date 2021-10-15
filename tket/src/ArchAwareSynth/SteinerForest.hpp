@@ -132,6 +132,27 @@ CostedOperations recursive_operation_search(
     OperationList row_operations);
 
 /**
+ * function for architecture aware synthesis without the rename of the qubits
+ * and nodes of the architecture. this function is asserting, that all qubits
+ * are placed to nodes and they both are named with increasing integers. This
+ * function will return a routed version of a given phase poly box. The
+ * algorithm used for the cnot synthesis can be given by a parameter. The option
+ * are a recursive algorithm, a swap based algorithm and a iterative algorithm.
+ * The iterative algorithm needs a Hamilton path in the architecture. If there
+ * is no Hamilton path in the architecture the function will throw a
+ * logic_error.
+ * @param arch architecture including all allowed edges for the routing
+ * @param phasepolybox giving the phase poly box
+ * @param lookahead giving the maximum iteration depth for the cnot+rz synthesis
+ * @param cnottype type of cnot synthesis, allowing CNotSynthType::Rec,
+ * CNotSynthType::HamPath or CNotSynthType::SWAP
+ * @return routed circuit
+ */
+Circuit phase_poly_synthesis_int(
+    const Architecture &arch, const PhasePolyBox &phasepolybox,
+    unsigned lookahead = 1, CNotSynthType cnottype = CNotSynthType::Rec);
+
+/**
  * main function for architecture aware synthesis in tket at the moment.
  * This function will return a routed version of a given phase poly box. The
  * algorithm used for the cnot synthesis can be given by a parameter. The option

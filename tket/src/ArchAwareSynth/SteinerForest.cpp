@@ -263,9 +263,11 @@ CostedOperations recursive_operation_search(
 
 Circuit phase_poly_synthesis_int(
     const Architecture &arch, const PhasePolyBox &phasepolybox,
-    unsigned lookahead = 1, CNotSynthType cnottype = CNotSynthType::Rec) {
+    unsigned lookahead, CNotSynthType cnottype) {
   if (lookahead == 0)
-    TKET_ASSERT(!"[AAS] the lookahead of the phase polynominal synthesis has to be greater than 0");
+    throw std::logic_error(
+        "[AAS] the lookahead of the phase polynominal synthesis has to be "
+        "greater than 0");
 
   CostedOperations best_operations;
 
