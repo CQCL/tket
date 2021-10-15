@@ -11,6 +11,8 @@ Minor new features:
 * New ``allow_swaps`` parameter to ``FullPeepholeOptimise`` pass controlling
   whether to allow introduction of implicit wire swaps (defaulting to ``True``
   to match existing behaviour).
+* New ``Backend.available_devices`` method to retrieve available devices
+  as a list of ``BackendInfo`` objects.
 
 API changes:
 
