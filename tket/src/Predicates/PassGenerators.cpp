@@ -270,7 +270,9 @@ PassPtr aas_routing_pass(
     const aas::CNotSynthType cnotsynthtype) {
   Transform::Transformation trans = [=](Circuit& circ) {
     // check input:
-    TKET_ASSERT(lookahead != 0);
+    if (lookahead == 0) {
+      throw std::logic_error("lookahead must be > 0");
+    }
     if (arc.n_uids() < circ.n_qubits()) {
       throw CircuitInvalidity(
           "Circuit has more qubits than the architecture has nodes.");
