@@ -205,7 +205,7 @@ setup(
     python_requires=">=3.7",
     url="https://cqcl.github.io/pytket",
     description="Python module for interfacing with the CQC tket library of quantum software",
-    license="CQC Software Licence",
+    license="Apache License 2.0",
     packages=setuptools.find_packages(),
     install_requires=[
         "sympy ~=1.6",
@@ -230,7 +230,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
-        "License :: Other/Proprietary License",
+        "License :: OSI Approved :: Apache Software License",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX :: Linux",
         "Operating System :: Microsoft :: Windows",
