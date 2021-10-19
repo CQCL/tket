@@ -1,7 +1,7 @@
 [requires]
 tket/1.0.1
 pybind11/2.6.2#66f97eac059bef5b60bd6898ec4869fd
-nlohmann_json/3.10.2
+nlohmann_json/3.10.4
 pybind11_json/0.2.11
 
 [generators]
