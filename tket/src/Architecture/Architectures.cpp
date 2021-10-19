@@ -210,25 +210,32 @@ void to_json(nlohmann::json& j, const Architecture& ar) {
   std::vector<Node> nodes{uid_its.begin(), uid_its.end()};
   j["nodes"] = nodes;
 
-  nlohmann::json links;
-  for (const Architecture::Connection& con : ar.get_connections_vec()) {
-    nlohmann::json entry;
-    entry["link"] = con;
-    entry["weight"] = ar.get_connection_weight(con.first, con.second);
-    links.push_back(entry);
+  j["fully_connected"] = ar.is_fc();
+  if (!ar.is_fc()) {
+    nlohmann::json links;
+    for (const Architecture::Connection& con : ar.get_connections_vec()) {
+      nlohmann::json entry;
+      entry["link"] = con;
+      entry["weight"] = ar.get_connection_weight(con.first, con.second);
+      links.push_back(entry);
+    }
+    j["links"] = links;
   }
-  j["links"] = links;
 }
 
 void from_json(const nlohmann::json& j, Architecture& ar) {
   for (const Node& n : j.at("nodes").get<node_vector_t>()) {
     ar.add_uid(n);
   }
-  for (const auto& j_entry : j.at("links")) {
-    Architecture::Connection l =
-        j_entry.at("link").get<Architecture::Connection>();
-    double w = j_entry.at("weight").get<double>();
-    ar.add_connection(l.first, l.second, w);
+  if (j.at("fully_connected")) {
+    ar.to_fc();
+  } else {
+    for (const auto& j_entry : j.at("links")) {
+      Architecture::Connection l =
+          j_entry.at("link").get<Architecture::Connection>();
+      double w = j_entry.at("weight").get<double>();
+      ar.add_connection(l.first, l.second, w);
+    }
   }
 }
 
@@ -236,7 +243,7 @@ void from_json(const nlohmann::json& j, Architecture& ar) {
 //      Architecture subclasses     //
 //////////////////////////////////////
 FullyConnected::FullyConnected(unsigned numberOfNodes)
-    : Architecture(get_edges(numberOfNodes)) {}
+    : Architecture(numberOfNodes) {}
 
 node_vector_t FullyConnected::get_nodes_canonical_order(
     unsigned numberOfNodes) {

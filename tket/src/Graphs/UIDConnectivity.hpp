@@ -24,6 +24,7 @@
 #include <memory>
 #include <optional>
 #include <type_traits>
+#include <variant>
 
 #include "Graphs/TreeSearch.hpp"
 #include "Graphs/Utils.hpp"
@@ -85,6 +86,7 @@ class UIDConnectivityBase {
   using ConnGraph = boost::adjacency_list<
       OutEdgeListS, VertexListS, boost::bidirectionalS, UIDVertex<UID_t>,
       UIDInteraction>;
+  using FullConnGraph = std::list<UID_t>;
   using UndirectedConnGraph = boost::adjacency_list<
       boost::setS, VertexListS, boost::undirectedS, UIDVertex<UID_t>,
       UIDInteraction>;
@@ -94,7 +96,7 @@ class UIDConnectivityBase {
 
  public:
   /** empty default constructor */
-  UIDConnectivityBase() : graph(), uid_to_vertex() {}
+  UIDConnectivityBase() : graph(ConnGraph()), uid_to_vertex(), fc_(false) {}
 
   /** constructor from list of vertices */
   explicit UIDConnectivityBase(const std::vector<UID_t>& uids);
@@ -102,10 +104,25 @@ class UIDConnectivityBase {
   /** constructor from list of edges */
   explicit UIDConnectivityBase(const std::vector<Connection>& edges);
 
+  /**
+   * Construct a fully-connected connectivity graph.
+   *
+   * A fully-connected graph is constructed with nodes fcNode[0], fcNode[1],
+   * .... In this case the underlying graph is not stored, and edge weights are
+   * not supported.
+   *
+   * @param n number of vertices
+   */
+  explicit UIDConnectivityBase(unsigned n);
+
   /** add vertex to interaction graph */
   void add_uid(const UID_t uid) {
-    Vertex v = boost::add_vertex(UIDVertex(uid), graph);
-    uid_to_vertex.left.insert({uid, v});
+    if (is_fc()) {
+      std::get<FullConnGraph>(graph).push_back(uid);
+    } else {
+      Vertex v = boost::add_vertex(UIDVertex(uid), std::get<ConnGraph>(graph));
+      uid_to_vertex.left.insert({uid, v});
+    }
   }
 
   /** remove vertex from the interaction graph */
@@ -115,9 +132,15 @@ class UIDConnectivityBase {
           "The UID passed to UIDConnectivity::remove_uid must "
           "exist!");
     }
-    Vertex v = to_vertices(uid);
-    boost::clear_vertex(v, graph);
-    utils::remove_vertex_with_map(v, graph, uid_to_vertex.right);
+    if (is_fc()) {
+      std::get<FullConnGraph>(graph).remove_if(
+          [&uid](const UID_t& v) { return v == uid; });
+    } else {
+      Vertex v = to_vertices(uid);
+      boost::clear_vertex(v, std::get<ConnGraph>(graph));
+      utils::remove_vertex_with_map(
+          v, std::get<ConnGraph>(graph), uid_to_vertex.right);
+    }
   }
 
   /** add edge to the interaction graph */
@@ -144,27 +167,53 @@ class UIDConnectivityBase {
   /** return vertex degree of UnitID */
   unsigned get_degree(const UID_t uid) const;
 
-  /** max depth from `root` in grahp */
+  /** max depth from `root` in graph */
   std::size_t get_max_depth(const UID_t root) const;
 
   /** return vertex out degree of UnitID */
   unsigned get_out_degree(const UID_t uid) const;
 
   /** number of vertices */
-  unsigned n_uids() const { return boost::num_vertices(graph); }
+  unsigned n_uids() const {
+    if (is_fc()) {
+      return std::get<FullConnGraph>(graph).size();
+    } else {
+      return boost::num_vertices(std::get<ConnGraph>(graph));
+    }
+  }
 
   /** number of edges in graph */
-  inline unsigned n_connections() const { return boost::num_edges(graph); }
+  inline unsigned n_connections() const {
+    if (is_fc()) {
+      unsigned n = std::get<FullConnGraph>(graph).size();
+      return (n == 0) ? 0 : n * (n - 1) / 2;
+    } else {
+      return boost::num_edges(std::get<ConnGraph>(graph));
+    }
+  }
 
   /** number of vertices with deg > 0 */
   inline unsigned n_connected() const {
-    auto [beg, end] = boost::vertices(graph);
-    auto nonzero_deg = [this](Vertex v) { return boost::degree(v, graph) > 0; };
-    return std::count_if(beg, end, nonzero_deg);
+    if (is_fc()) {
+      unsigned n = std::get<FullConnGraph>(graph).size();
+      return n <= 1 ? 0 : n;
+    } else {
+      auto [beg, end] = boost::vertices(std::get<ConnGraph>(graph));
+      auto nonzero_deg = [this](Vertex v) {
+        return boost::degree(v, std::get<ConnGraph>(graph)) > 0;
+      };
+      return std::count_if(beg, end, nonzero_deg);
+    }
   }
 
-  /** get all connections in a vector */
+  /**
+   * Get all connections as a set.
+   */
   std::set<Connection> get_connections_set() const;
+
+  /**
+   * Get all connections as a vector.
+   */
   std::vector<Connection> get_connections_vec() const;
 
   /** returns an unweighted undirected graph
@@ -177,17 +226,30 @@ class UIDConnectivityBase {
 
   /** remove vertices with deg == 0 */
   inline void remove_stray_uids() {
-    utils::remove_stray_vertices_with_map(graph, uid_to_vertex.right);
+    if (is_fc()) {
+      if (std::get<FullConnGraph>(graph).size() <= 1) {
+        std::get<FullConnGraph>(graph).clear();
+      }
+    } else {
+      utils::remove_stray_vertices_with_map(
+          std::get<ConnGraph>(graph), uid_to_vertex.right);
+    }
   }
 
   /** set of all UnitIDs in interaction graph */
   std::set<UID_t> get_all_uids_set() const;
   std::vector<UID_t> get_all_uids_vec() const;
-  /** iterator of all UnitIDs in interaction graph */
-  auto get_all_uids() const {
-    return get_vertices_it() |
-           boost::adaptors::transformed(
-               [this](const auto& v) { return get_uid(v); });
+
+  /** list of all UnitIDs in interaction graph */
+  std::list<UID_t> get_all_uids() const {
+    if (is_fc()) {
+      return std::get<FullConnGraph>(graph);
+    } else {
+      auto it =
+          get_vertices_it() | boost::adaptors::transformed(
+                                  [this](const auto& v) { return get_uid(v); });
+      return {it.begin(), it.end()};
+    }
   }
 
   /* return UIDs with greatest (undirected) degree in graph */
@@ -202,25 +264,46 @@ class UIDConnectivityBase {
   /** get undirected adjacent UnitIDs */
   std::set<UID_t> get_neighbour_uids(const UID_t uid) const;
 
+  /**
+   * Whether the graph is "fully connected".
+   *
+   * Caution: this does not test the graph for full connectivity: it indicates
+   * that the graph is stored as vertices-only, without weights, and is treated
+   * as fully-connected for all purposes. If false, the underlying graph may or
+   * may not be fully connected.
+   */
+  bool is_fc() const { return fc_; }
+
+  /**
+   * Convert the graph to a "fully connected" one.
+   *
+   * This "forgets" all connection information, including weights. The graph
+   * becomes semantically a fully-connected graph on its vertex set.
+   */
+  void to_fc();
+
   bool operator==(
       const UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>& other) const;
 
  protected:
   /** get edge iterator */
   auto get_edges_it() const {
-    return boost::make_iterator_range(boost::edges(graph));
+    return boost::make_iterator_range(boost::edges(std::get<ConnGraph>(graph)));
   }
 
   /** get vertex iterator */
   auto get_vertices_it() const {
-    return boost::make_iterator_range(boost::vertices(graph));
+    return boost::make_iterator_range(
+        boost::vertices(std::get<ConnGraph>(graph)));
   }
 
   using vertex_bimap = boost::bimap<UID_t, Vertex>;
   using left_map = typename vertex_bimap::left_map;
   using right_map = typename vertex_bimap::right_map;
   /* get UnitID from vertex */
-  const UnitID& get_uid(Vertex v) const { return graph[v].uid; }
+  const UnitID& get_uid(Vertex v) const {
+    return std::get<ConnGraph>(graph)[v].uid;
+  }
 
   left_map& to_vertices() { return uid_to_vertex.left; }
   const left_map& to_vertices() const { return uid_to_vertex.left; }
@@ -230,8 +313,13 @@ class UIDConnectivityBase {
   const right_map& from_vertices() const { return uid_to_vertex.right; }
   UID_t from_vertices(Vertex v) const { return from_vertices().at(v); }
 
-  ConnGraph graph;
+  /** Underlying connectivity graph. */
+  std::variant<ConnGraph, FullConnGraph> graph;
+
   vertex_bimap uid_to_vertex;
+
+ private:
+  bool fc_;  // flag indicating a fully-connected graph
 };
 
 }  // namespace detail
