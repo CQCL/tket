@@ -1339,6 +1339,7 @@ SCENARIO("Test circuit.dagger() method") {
     Eigen::Matrix4cd mat;
     mat << 1, 0, 0, 0, 0, i_, 0, 0, 0, 0, 0, -i_, 0, 0, i_, 0;
     circ.add_box(Unitary2qBox(mat), {1, 2});
+    circ.add_op<unsigned>(OpType::tk1, {0.3, 0.7, 0.8}, {1});
     Circuit daggered = circ.dagger();
     daggered.assert_valid();
 
