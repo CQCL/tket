@@ -129,6 +129,8 @@ jobs:
     name: Build and test (MacOS)
     runs-on: macos-11
     env:
+      CC: clang-12
+      CXX: clang++-12
       PYTKET_SKIP_REGISTRATION: "true"
     steps:
     - uses: actions/checkout@v2

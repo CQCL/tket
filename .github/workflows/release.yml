@@ -39,6 +39,9 @@ jobs:
   build_macos_wheels:
     name: Build macos wheels
     runs-on: macos-11
+    env:
+      CC: clang-12
+      CXX: clang++-12
     steps:
     - uses: actions/checkout@v2
       with:
