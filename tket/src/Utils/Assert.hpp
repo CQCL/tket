@@ -25,8 +25,10 @@
 #define TKET_ASSERT(b)                                                    \
   do {                                                                    \
     if (!(b)) {                                                           \
+      /* GCOVR_EXCL_START */                                              \
       tket::tket_log()->critical("Assertion (" #b ") failed: aborting."); \
       std::abort();                                                       \
+      /* GCOVR_EXCL_STOP */                                               \
     }                                                                     \
   } while (0)
 
