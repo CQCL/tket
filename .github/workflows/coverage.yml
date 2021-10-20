@@ -81,11 +81,11 @@ jobs:
     - name: Run tket tests
       run: ./build/tket-tests/bin/test_tket
     - name: Install gcovr
-      run: sudo apt-get install gcovr
+      run: pip install gcovr
     - name: Build coverage report
       run: |
         mkdir test-coverage
-        gcovr --print-summary --html --html-details -r ./tket/src/ --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o test-coverage/index.html > test-coverage/summary.txt
+        gcovr --print-summary --html --html-details -r ./tket/src/ --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/tket/CMakeFiles/tket.dir -o test-coverage/index.html > test-coverage/summary.txt
     - name: Upload artefact
       uses: actions/upload-artifact@v2
       with:
