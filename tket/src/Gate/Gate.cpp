@@ -125,7 +125,7 @@ Op_ptr Gate::dagger() const {
     case OpType::tk1:
       // tk1(a,b,c).dagger() == tk1(-c,-b,-a)
       {
-        return get_op_ptr(OpType::tk1, {-params_[2], params_[1], -params_[0]});
+        return get_op_ptr(OpType::tk1, {-params_[2], -params_[1], -params_[0]});
       }
     case OpType::PhasedX:
       // PhasedX(a,b).dagger() == PhasedX(-a,b)
