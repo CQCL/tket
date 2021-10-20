@@ -29,6 +29,13 @@ In other matters of style, please try to follow the
 Declarations in header files should have Doxygen-style documentation,
 sufficient to make it clear what each object is and what each method does.
 
+The macro `TKET_ASSERT(...)` is used to check logical correctness of the code
+(_not_ to catch situations that can occur through user error). The condition is
+always checked, even in Release builds, so please avoid using it with
+conditions that incur significant computational overhead. Please place
+`TKET_ASSERT(...);` on a line containing no other code; then the coverage
+checker will ignore it when calculating line and branch coverage statistics.
+
 ### Python
 
 #### Formatting
