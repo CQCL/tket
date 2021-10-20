@@ -219,8 +219,8 @@ void CliffordReductionPass::insert_interaction_point(InteractionPoint ip) {
       // blocked insertion, i.e. had the same source/edge combination.
       // Check that its `p` and `phase` are correct: if not, something has
       // gone wrong.
-      TKET_ASSERT(
-          inserted.first->p == ip.p && inserted.first->phase == ip.phase);
+      auto blocker = inserted.first;
+      TKET_ASSERT(blocker->p == ip.p && blocker->phase == ip.phase);
     }
     next = circ.target(ip.e);
     next_p = circ.get_target_port(ip.e);
