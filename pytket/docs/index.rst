@@ -15,6 +15,16 @@ To install, run
 
 ``pip install pytket``
 
+.. note::
+    On M1-based Macs running in native (arm64) mode, this command may fail
+    because of an issue installing ``scipy``. To fix this:
+
+    1. Install `brew <https://brew.sh/>`_ (if you haven't already);
+    2. ``brew install openblas``;
+    3. ``pip install -U pip wheel``;
+    4. ``OPENBLAS="$(brew --prefix openblas)" pip install scipy``;
+    5. ``pip install pytket``.
+
 To use ``pytket``, you can simply import the appropriate modules into your python code or in an interactive Python notebook. We can build circuits directly using the ``pytket`` interface by creating a blank circuit and adding gates in the order we want to apply them.
 
 ::
@@ -44,7 +54,7 @@ This prints out a summary of readouts (the final values of the classical bits) a
     {(0, 0): 49, (1, 0): 51}
 
 See the `Getting Started`_ page for a basic tutorial on using
-``pytket``. To get more in depth on features, see the `examples`_. See the `Pytket User Manual <https://cqcl.github.io/pytket/build/html/manual/index.html>`_ for an extensive introduction to ``pytket`` functionaliy and how to use it.
+``pytket``. To get more in depth on features, see the `examples`_. See the `Pytket User Manual <https://cqcl.github.io/pytket/manual/index.html>`_ for an extensive introduction to ``pytket`` functionaliy and how to use it.
 
 Extensions
 ~~~~~~~~~~
@@ -56,7 +66,7 @@ representations, or some new backends to submit circuits to within ``pytket``.
 
 Extension modules can be installed using ``pip``. The extensions supported by
 CQC are described
-`here <https://cqcl.github.io/pytket/build/html/extensions/index.html>`_.
+`here <https://cqcl.github.io/pytket-extensions/api/index.html>`_.
 
 .. note::
     The syntax for importing backends from extension modules has changed
@@ -139,8 +149,8 @@ Our telemetry data policy can be viewed in the `Telemetry Data Policy`_ page.
     :caption: More Documentation:
     :maxdepth: 1
     
-    Manual <https://cqcl.github.io/pytket/build/html/manual/index.html>
-    Extensions <https://cqcl.github.io/pytket/build/html/extensions/index.html>
+    Manual <https://cqcl.github.io/pytket/manual/index.html>
+    Extensions <https://cqcl.github.io/pytket-extensions/api/index.html>
 
 .. toctree::
     :caption: API Reference:

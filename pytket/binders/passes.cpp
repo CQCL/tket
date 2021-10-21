@@ -14,6 +14,7 @@
 
 #include <pybind11/functional.h>
 
+#include "ArchAwareSynth/SteinerForest.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
@@ -60,10 +61,21 @@ static PassPtr gen_default_routing_pass(
 
 static PassPtr gen_default_aas_routing_pass(
     const Architecture &arc, py::kwargs kwargs) {
-  unsigned aas_lookahead = 1;
-  if (kwargs.contains("aas_lookahead"))
-    aas_lookahead = py::cast<unsigned>(kwargs["aas_lookahead"]);
-  return gen_full_mapping_pass_phase_poly(arc, aas_lookahead);
+  unsigned lookahead = 1;
+  aas::CNotSynthType cnotsynthtype = aas::CNotSynthType::Rec;
+
+  if (kwargs.contains("lookahead"))
+    lookahead = py::cast<unsigned>(kwargs["lookahead"]);
+
+  if (kwargs.contains("cnotsynthtype"))
+    cnotsynthtype = py::cast<aas::CNotSynthType>(kwargs["cnotsynthtype"]);
+
+  if (lookahead == 0) {
+    throw std::invalid_argument(
+        "[AAS]: invalid input, the lookahead must be > 0");
+  }
+
+  return gen_full_mapping_pass_phase_poly(arc, lookahead, cnotsynthtype);
 }
 
 static PassPtr gen_full_mapping_pass_kwargs(
@@ -126,6 +138,19 @@ PYBIND11_MODULE(passes, m) {
           "the overall pass at the start and the postconditions at "
           "the end")
       // .value("Off", SafetyMode::Off) // not currently supported
+      .export_values();
+
+  py::enum_<aas::CNotSynthType>(m, "CNotSynthType")
+      .value(
+          "SWAP", aas::CNotSynthType::SWAP,
+          "swap-based algorithm for CNOT synthesis")
+      .value(
+          "HamPath", aas::CNotSynthType::HamPath,
+          "Hamilton-path-based method for CNOT synthesis; this method will "
+          "fail if there is no Hamilton path in the given architecture")
+      .value(
+          "Rec", aas::CNotSynthType::Rec,
+          "recursive Steiner--Gauss method for CNOT synthesis")
       .export_values();
 
   /* Compiler passes */
@@ -311,7 +336,7 @@ PYBIND11_MODULE(passes, m) {
       "ThreeQubitSquash", &ThreeQubitSquash,
       "Squash three-qubit subcircuits into subcircuits having fewer CX gates, "
       "when possible, and apply Clifford simplification."
-      "\n\n:param: allow_swaps whether to allow implicit wire swaps",
+      "\n\n:param allow_swaps: whether to allow implicit wire swaps",
       py::arg("allow_swaps") = true);
   m.def(
       "CommuteThroughMultis", &CommuteThroughMultis,
@@ -343,7 +368,9 @@ PYBIND11_MODULE(passes, m) {
       "FullPeepholeOptimise", &FullPeepholeOptimise,
       "Performs peephole optimisation including resynthesis of 2- and 3-qubit "
       "gate sequences, and converts to a circuit containing only CX and TK1 "
-      "gates.");
+      "gates."
+      "\n\n:param allow_swaps: whether to allow implicit wire swaps",
+      py::arg("allow_swaps") = true);
   m.def("RebaseCirq", &RebaseCirq, "Converts all gates to CZ, PhasedX and Rz.");
   m.def(
       "RebaseHQS", &RebaseHQS, "Converts all gates to ZZMax, PhasedX and Rz.");
@@ -525,16 +552,16 @@ PYBIND11_MODULE(passes, m) {
       ":py:class:`Architecture` is used for the routing. "
       "The direction of the edges is ignored. The placement used "
       "is GraphPlacement. This pass can take a few parameters for the "
-      "routing, described below."
-      "\n\nNB: In the current implementation it is assumed that the number of "
-      "nodes in the architecture is equal to the number of qubits in the "
-      "circuit. With smaller circuits may therefore be necessary to add unused "
-      "qubits before applying this pass."
-      "\n\n:param arc: The architecture used for connectivity information."
-      "\n:param \\**kwargs: Parameters for routing: "
-      "(unsigned) lookahead=1: giving parameter for the recursive iteration "
-      "depth in the synthesis method"
-      "\n:return: a pass to perform the remapping",
+      "routing, described below.\nNB: The circuit needs to have at most as "
+      "many qubits as the architecture has nodes. The resulting circuit will "
+      "always have the same number of qubits as the architecture has nodes, "
+      "even if the input circuit had fewer.\n:param arc: The "
+      "architecture used for connectivity information."
+      "\n:param \\**kwargs: Parameters for routing:\n(unsigned) "
+      "lookahead=1: parameter for the recursive iteration\n"
+      "(CNotSynthType) cnotsynthtype=CNotSynthType.Rec: "
+      "type of the CNOT synthesis\n:return: a pass to perform the "
+      "remapping\n",
       py::arg("arc"));
 
   m.def(
@@ -643,9 +670,9 @@ PYBIND11_MODULE(passes, m) {
         }
       },
       "Simplify the circuit using knowledge of qubit state."
-      "\n\n:param: allow_classical: allow replacement of measurements on "
+      "\n\n:param allow_classical: allow replacement of measurements on "
       "known state with classical set-bit operations"
-      "\n:param: create_all_qubits: automatically annotate all qubits as "
+      "\n:param create_all_qubits: automatically annotate all qubits as "
       "initialized to the zero state"
       "\n:param remove_redundancies: apply a :py:meth:`RemoveRedundancies` "
       "pass after the initial simplification"
@@ -664,7 +691,7 @@ PYBIND11_MODULE(passes, m) {
       },
       "Applies simplifications enabled by knowledge of qubit state and "
       "discarded qubits."
-      "\n\n:param: allow_classical: allow replacement of measurements on "
+      "\n\n:param allow_classical: allow replacement of measurements on "
       "known state with classical set-bit operations"
       "\n:param xcirc: 1-qubit circuit implementing an X gate in the "
       "transformed circuit (if omitted, an X gate is used)"

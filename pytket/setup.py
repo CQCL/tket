@@ -127,9 +127,9 @@ class CMakeBuild(build_ext):
             "-DPYTHON_EXECUTABLE=" + sys.executable,
         ]
 
-        bubble_lib_dir = os.environ.get("BUBBLE_LIB_FILES", default=None)
-        if bubble_lib_dir:
-            cmake_args.append("-DBUBBLE_LIB_FILES=" + bubble_lib_dir)
+        tket_lib_dir = os.environ.get("TKET_LIB_FILES", default=None)
+        if tket_lib_dir:
+            cmake_args.append("-DTKET_LIB_FILES=" + tket_lib_dir)
 
         if platform.system() == "Windows":
             cmake_args += [
@@ -205,7 +205,6 @@ setup(
     python_requires=">=3.7",
     url="https://cqcl.github.io/pytket",
     description="Python module for interfacing with the CQC tket library of quantum software",
-    license="CQC Software Licence",
     packages=setuptools.find_packages(),
     install_requires=[
         "sympy ~=1.6",
@@ -230,7 +229,7 @@ setup(
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
-        "License :: Other/Proprietary License",
+        "License :: OSI Approved :: Apache Software License",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX :: Linux",
         "Operating System :: Microsoft :: Windows",

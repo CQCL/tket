@@ -101,19 +101,17 @@ def get_pauli_expectation_value(
             state_circuit = backend.get_compiled_circuit(state_circuit)
         if backend.supports_expectation:
             return backend.get_pauli_expectation_value(state_circuit, pauli)  # type: ignore
-        handle = backend.process_circuit(state_circuit)
-        state = backend.get_state(handle)
-        backend.pop_result(handle)
+        state = backend.run_circuit(state_circuit).get_state()
         return complex(pauli.state_expectation(state))
 
     measured_circ = state_circuit.copy()
     append_pauli_measurement(pauli, measured_circ)
     measured_circ = backend.get_compiled_circuit(measured_circ)
     if backend.supports_counts:
-        counts = backend.get_counts(measured_circ, n_shots=n_shots)
+        counts = backend.run_circuit(measured_circ, n_shots=n_shots).get_counts()
         return expectation_from_counts(counts)
     elif backend.supports_shots:
-        shot_table = backend.get_shots(measured_circ, n_shots=n_shots)
+        shot_table = backend.run_circuit(measured_circ, n_shots=n_shots).get_shots()
         return expectation_from_shots(shot_table)
     else:
         raise ValueError("Backend does not support counts or shots")
@@ -161,7 +159,8 @@ def get_operator_expectation_value(
             backend.expectation_allows_nonhermitian or all(z.imag == 0 for z in coeffs)
         ):
             return backend.get_operator_expectation_value(state_circuit, operator)  # type: ignore
-        state = backend.get_state(state_circuit)
+        result = backend.run_circuit(state_circuit)
+        state = result.get_state()
         return operator.state_expectation(state)
     energy: complex
     id_string = QubitPauliString()

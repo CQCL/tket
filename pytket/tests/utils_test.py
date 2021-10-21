@@ -541,7 +541,7 @@ def unitary_from_states(circ: Circuit, back: Backend) -> np.ndarray:
             if val == "1":
                 basis_circ.X(qb)
         basis_circ.append(circ)
-        outar[:, i] = back.get_state(basis_circ)
+        outar[:, i] = back.run_circuit(basis_circ).get_state()
 
     return outar
 
@@ -582,7 +582,8 @@ def test_symbolic_conversion(circ: Circuit) -> None:
 
     back = TketSimBackend()
     circ = back.get_compiled_circuit(circ, 1)
-    simulated_state = back.get_state(circ)
+    result = back.run_circuit(circ)
+    simulated_state = result.get_state()
     assert np.allclose(numeric_state.T, simulated_state, atol=1e-10)
 
     simulated_unitary = unitary_from_states(circ, back)

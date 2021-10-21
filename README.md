@@ -9,7 +9,6 @@ If you just want to use tket via Python, the easiest way is to install it with
 
 ```shell
 pip install pytket
-
 ```
 
 For full API documentation, as well as a comprehensive user manual and a
@@ -22,14 +21,14 @@ other software packages and with quantum devices) live in the separate
 
 If you would like to build tket yourself and help to improve it, read on!
 
-The core functionality of tket is implemented in C++. The source for this
-resides in the `bubble` directory.
-
-The source code for pytket (which includes the abstract `Backend` interface used
-by the extension modules) resides in the `pytket` directory. This consists of
-binder modules (written in C++ and making use of `pybind11` to link to the tket
-shared library) and pure Python code for the `Backend` interface and various
-utilities.
+The codebase is split into two main projects:
+ - [tket](tket): the core functionality of tket, optimised for execution speed
+   and implemented in C++.
+ - [pytket](pytket): the Python interface of tket. This consists of
+   binder modules to tket (written in C++ and making use of `pybind11` to link to the tket
+   shared library) and pure Python code that defines abstract interfaces 
+   used by the extension modules such as the `Backend` and `BackendResult` classes,
+   as well as various other utilities.
 
 ## How to build tket and pytket
 
@@ -100,7 +99,7 @@ conan config set general.revisions_enabled=1
 
 #### Test dependencies
 
-A few of the bubble tests require a working LaTeX installation, including
+A few of the tket tests require a working LaTeX installation, including
 `latexmk` and the `quantikz` package. By default these are only run on Linux.
 Passing `~[latex]` to the test executable will disable them. To install the
 Latex dependencies on (Debian flavours of) Linux you can do:
@@ -109,7 +108,6 @@ Latex dependencies on (Debian flavours of) Linux you can do:
 sudo apt-get install texlive texlive-latex-extra latexmk
 mkdir -p ~/texmf/tex/latex
 wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
-
 ```
 
 The Python tests require a few more packages. These can be installed with:
@@ -129,7 +127,14 @@ conan create --profile=tket recipes/tket
 
 to build the tket library.
 
-To build and run the bubble tests:
+Note: by default, `tket` uses the header-only version of `spdlog`. This avoids
+an
+[issue](https://github.com/conan-io/conan-docker-tools/issues/303#issuecomment-922492130)
+with an undefined symbol when run in some Linux virtual environments, but makes
+builds slower. For faster local builds you can supply the option
+`-o tket:spdlog_ho=False` to the above `conan create` command.
+
+To build and run the tket tests:
 
 ```shell
 conan create --profile=tket recipes/tket-tests
@@ -174,7 +179,7 @@ First create a `build` folder in the project root. Then proceed as follows.
 2. To configure the build:
 
    ```shell
-   conan build recipes/tket --configure --build-folder=build --source-folder=bubble/src
+   conan build recipes/tket --configure --build-folder=build --source-folder=tket/src
    ```
 3. To build:
 
@@ -184,20 +189,20 @@ First create a `build` folder in the project root. Then proceed as follows.
 4. To export to `conan` cache (necessary to build pytket):
 
    ```shell
-   conan export-pkg recipes/tket -f --build-folder=build --source-folder=bubble/src
+   conan export-pkg recipes/tket -f --build-folder=build --source-folder=tket/src
    ```
 
 ## Test coverage
 
-The code coverage of the `bubble` tests is reported
-[here](https://cqcl.github.io/tket/bubble/test-coverage/index.html). This report
+The code coverage of the `tket` tests is reported
+[here](https://cqcl.github.io/tket/tket/test-coverage/index.html). This report
 is generated weekly from the `develop` branch.
 
 ## API documentation
 
-The `bubble` (C++) API documentation (generated with `doxygen`, and still rather
+The `tket` (C++) API documentation (generated with `doxygen`, and still rather
 patchy) is available
-[here](https://cqcl.github.io/tket/bubble/doc/html/index.html).
+[here](https://cqcl.github.io/tket/tket/api/index.html).
 
 The `pytket` (Python) API documentation is available
-[here](https://cqcl.github.io/pytket/build/html/index.html).
+[here](https://cqcl.github.io/tket/pytket/api/index.html).
