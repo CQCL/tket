@@ -59,7 +59,9 @@ Circuit &Circuit::operator=(const Circuit &other)  // (1)
   return *this;
 }
 
-void Circuit::assert_valid() const { TKET_ASSERT(is_valid(dag)); }
+void Circuit::assert_valid() const {  //
+  TKET_ASSERT(is_valid(dag));
+}
 
 VertexVec Circuit::all_inputs() const {
   VertexVec ins = q_inputs();

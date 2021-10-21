@@ -50,10 +50,10 @@ static std::tuple<VectorXb, Eigen::MatrixXcd, int> projector_diagonalisation(
   Eigen::SelfAdjointEigenSolver<Eigen::MatrixXcd> eigen_solver(P);
   // Make a permutation matrix to reorder D and U_dag
   Eigen::PermutationMatrix<Eigen::Dynamic> perm(P.rows());
-  TKET_ASSERT(
-      (eigen_solver.eigenvectors() * eigen_solver.eigenvalues().asDiagonal() *
-       eigen_solver.eigenvectors().adjoint())
-          .isApprox(P));
+  Eigen::MatrixXcd P1 = eigen_solver.eigenvectors() *
+                        eigen_solver.eigenvalues().asDiagonal() *
+                        eigen_solver.eigenvectors().adjoint();
+  TKET_ASSERT(P1.isApprox(P));
   // Cast eigenvalues to booleans
   VectorXb eigenvalues(eigen_solver.eigenvalues().rows());
   for (unsigned i = 0; i < eigenvalues.rows(); i++) {
