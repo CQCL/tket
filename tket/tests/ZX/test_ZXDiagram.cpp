@@ -138,6 +138,50 @@ SCENARIO("Testing diagram creation & vertex/edge additions") {
   }
 }
 
+SCENARIO("Check that diagram conversions achieve the correct form") {
+  GIVEN("A mixed circuit") {
+    ZXDiagram diag(2, 2, 1, 1);
+    ZXVertVec ins = diag.get_boundary(ZXType::Input);
+    ZXVertVec outs = diag.get_boundary(ZXType::Output);
+    ZXVert qz = diag.add_vertex(ZXType::ZSpider, 0.3);
+    ZXVert qx = diag.add_vertex(ZXType::XSpider);
+    ZXVert cz = diag.add_vertex(ZXType::ZSpider, QuantumType::Classical);
+    diag.add_wire(ins[0], qz);
+    diag.add_wire(qz, outs[0]);
+    diag.add_wire(qx, outs[1], ZXWireType::H);
+    diag.add_wire(ins[1], cz, ZXWireType::Basic, QuantumType::Quantum);
+    diag.add_wire(ins[2], cz, ZXWireType::H, QuantumType::Classical);
+    diag.add_wire(outs[2], cz, ZXWireType::Basic, QuantumType::Classical);
+    THEN("Expand quantum vertices/edges into pairs of classical ones") {
+      ZXDiagram doubled = diag.to_doubled_diagram();
+      REQUIRE_NOTHROW(doubled.check_validity());
+      CHECK(doubled.n_vertices() == 15);
+      CHECK(doubled.n_wires() == 10);
+      for (const ZXVert &b : doubled.get_boundary()) {
+        CHECK(doubled.get_qtype(b) == QuantumType::Classical);
+        CHECK(
+            doubled.get_qtype(doubled.adj_wires(b)[0]) ==
+            QuantumType::Classical);
+        CHECK(
+            doubled.get_qtype(doubled.neighbours(b)[0]) ==
+            QuantumType::Classical);
+      }
+      ZXVertVec ins = doubled.get_boundary(ZXType::Input);
+      CHECK(doubled.get_name(doubled.neighbours(ins[0])[0]) == "C-Z(0.3)");
+      CHECK(doubled.get_name(doubled.neighbours(ins[1])[0]) == "C-Z(-0.3)");
+    }
+    GIVEN("Embedding classical boundaries into quantum states") {
+      ZXDiagram embedded = diag.to_quantum_embedding();
+      REQUIRE_NOTHROW(embedded.check_validity());
+      CHECK(embedded.n_vertices() == 11);
+      CHECK(embedded.n_wires() == 8);
+      for (const ZXVert &b : embedded.get_boundary()) {
+        CHECK(embedded.get_qtype(b) == QuantumType::Quantum);
+      }
+    }
+  }
+}
+
 }  // namespace test_ZXDiagram
 }  // namespace zx
 }  // namespace tket

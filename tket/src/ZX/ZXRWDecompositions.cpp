@@ -78,6 +78,7 @@ bool Rewrite::basic_wires_fun(ZXDiagram& diag) {
     ZXVert h = diag.add_vertex(had);
     ZXVert s = diag.source(w);
     ZXVert t = diag.target(w);
+    wp.type = ZXWireType::Basic;
     WireProperties wp2 = wp;
     wp.target_port = std::nullopt;
     wp2.source_port = std::nullopt;

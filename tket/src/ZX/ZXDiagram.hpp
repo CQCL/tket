@@ -6,9 +6,8 @@ namespace tket {
 
 namespace zx {
 
-// Forward declare Rewrite, ZXTensor, ZXDiagramPybind for friend access
+// Forward declare Rewrite, ZXDiagramPybind for friend access
 class Rewrite;
-class ZXTensor;
 class ZXDiagramPybind;
 
 class ZXDiagram {
@@ -279,7 +278,6 @@ class ZXDiagram {
   };
 
   friend Rewrite;
-  friend ZXTensor;
   friend ZXDiagramPybind;
 
  private:

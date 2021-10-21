@@ -176,6 +176,133 @@ SCENARIO("Testing Spider fusion") {
   }
 }
 
+SCENARIO("ZXBox decomposition") {
+  GIVEN("Nested ZXBoxes") {
+    ZXDiagram innermost(1, 0, 0, 2);
+    ZXVertVec innermost_ins = innermost.get_boundary(ZXType::Input);
+    ZXVertVec innermost_outs = innermost.get_boundary(ZXType::Output);
+    ZXVert innermost_spid =
+        innermost.add_vertex(ZXType::XSpider, QuantumType::Classical);
+    innermost.add_wire(
+        innermost_ins[0], innermost_spid, ZXWireType::Basic,
+        QuantumType::Quantum);
+    innermost.add_wire(
+        innermost_outs[0], innermost_spid, ZXWireType::Basic,
+        QuantumType::Classical);
+    innermost.add_wire(
+        innermost_outs[1], innermost_spid, ZXWireType::Basic,
+        QuantumType::Classical);
+    ZXGen_ptr inner_box_gen = std::make_shared<const ZXBox>(innermost);
+
+    ZXDiagram inner(0, 2, 0, 0);
+    ZXVertVec inner_outs = inner.get_boundary();
+    ZXVert inner_box = inner.add_vertex(inner_box_gen);
+    ZXVert inner_spid =
+        inner.add_vertex(ZXType::ZSpider, QuantumType::Classical);
+    inner.add_wire(
+        inner_box, inner_outs[0], ZXWireType::H, QuantumType::Quantum, 0);
+    inner.add_wire(
+        inner_box, inner_spid, ZXWireType::Basic, QuantumType::Classical, 1);
+    inner.add_wire(
+        inner_box, inner_spid, ZXWireType::Basic, QuantumType::Classical, 2);
+    inner.add_wire(inner_spid, inner_outs[1]);
+    ZXGen_ptr box_gen = std::make_shared<const ZXBox>(inner);
+
+    ZXDiagram diag(1, 1, 0, 0);
+    ZXVertVec b = diag.get_boundary();
+    ZXVert box = diag.add_vertex(box_gen);
+    ZXVert spid = diag.add_vertex(ZXType::ZSpider, 1., QuantumType::Quantum);
+    diag.add_wire(box, b[0], ZXWireType::Basic, QuantumType::Quantum, 0);
+    diag.add_wire(box, spid, ZXWireType::Basic, QuantumType::Quantum, 1);
+    diag.add_wire(spid, b[1]);
+
+    REQUIRE_NOTHROW(diag.check_validity());
+
+    CHECK(Rewrite::decompose_boxes().apply(diag));
+
+    CHECK(diag.count_vertices(ZXType::ZXBox) == 0);
+    CHECK(diag.count_vertices(ZXType::ZSpider) == 2);
+    CHECK(diag.count_vertices(ZXType::XSpider) == 1);
+
+    CHECK(Rewrite::parallel_h_removal().apply(diag));
+    CHECK(Rewrite::spider_fusion().apply(diag));
+
+    REQUIRE_NOTHROW(diag.check_validity());
+  }
+}
+
+SCENARIO("Mapping Hadamard edges to basic edges") {
+  GIVEN("A diagram with a mixture of edge types") {
+    ZXDiagram diag(1, 1, 1, 1);
+    ZXVertVec ins = diag.get_boundary(ZXType::Input);
+    ZXVertVec outs = diag.get_boundary(ZXType::Output);
+    ZXVert z = diag.add_vertex(ZXType::ZSpider, QuantumType::Classical);
+    ZXVert x = diag.add_vertex(ZXType::XSpider);
+    diag.add_wire(ins[0], x, ZXWireType::H);
+    diag.add_wire(ins[1], z, ZXWireType::H, QuantumType::Classical);
+    diag.add_wire(outs[0], z, ZXWireType::Basic);
+    diag.add_wire(outs[1], z, ZXWireType::Basic, QuantumType::Classical);
+
+    REQUIRE_NOTHROW(diag.check_validity());
+
+    CHECK(Rewrite::basic_wires().apply(diag));
+
+    CHECK(diag.count_wires(ZXWireType::H) == 0);
+    CHECK(diag.count_wires(ZXWireType::Basic) == 6);
+    CHECK(diag.count_vertices(ZXType::Hbox) == 2);
+
+    CHECK(diag.get_qtype(diag.neighbours(ins[0])[0]) == QuantumType::Quantum);
+    CHECK(diag.get_qtype(diag.neighbours(ins[1])[0]) == QuantumType::Classical);
+
+    CHECK_FALSE(Rewrite::basic_wires().apply(diag));
+  }
+}
+
+SCENARIO("Check rewrite combinators act the same as individual rewrites") {
+  ZXDiagram diag(1, 1, 0, 0);
+  ZXVertVec ins = diag.get_boundary(ZXType::Input);
+  ZXVertVec outs = diag.get_boundary(ZXType::Output);
+  ZXVert z = diag.add_vertex(ZXType::ZSpider);
+  ZXVert x = diag.add_vertex(ZXType::XSpider);
+  diag.add_wire(ins[0], z);
+  diag.add_wire(z, z);
+  diag.add_wire(z, x, ZXWireType::H);
+  diag.add_wire(z, x, ZXWireType::Basic);
+  diag.add_wire(x, x, ZXWireType::H);
+  diag.add_wire(x, outs[0]);
+  GIVEN("A diagram undergoing a sequence of rewrites") {
+    ZXDiagram copy = diag;
+    Rewrite seq = Rewrite::sequence(
+        {Rewrite::self_loop_removal(), Rewrite::spider_fusion()});
+    CHECK(seq.apply(copy));        // Both should make changes
+    CHECK(seq.apply(copy));        // More self loops created by fusion
+    CHECK_FALSE(seq.apply(copy));  // No more changes
+  }
+  GIVEN("Iterated rewrites on a diagram") {
+    ZXDiagram copy = diag;
+    Rewrite seq = Rewrite::sequence(
+        {Rewrite::self_loop_removal(), Rewrite::spider_fusion()});
+    Rewrite loop = Rewrite::repeat(seq);
+    CHECK(loop.apply(copy));        // Should iterate until completion
+    CHECK_FALSE(loop.apply(copy));  // Check for completion
+  }
+  GIVEN("Iterated (with metric) rewrites on a diagram") {
+    ZXDiagram copy = diag;
+    Rewrite seq = Rewrite::sequence(
+        {Rewrite::self_loop_removal(), Rewrite::spider_fusion()});
+    Rewrite loop = Rewrite::repeat_with_metric(seq, &ZXDiagram::n_vertices);
+    CHECK(loop.apply(copy));        // Should iterate until completion
+    CHECK_FALSE(loop.apply(copy));  // Check for completion
+  }
+  GIVEN("Iterated (while) rewrites on a diagram") {
+    ZXDiagram copy = diag;
+    Rewrite loop = Rewrite::repeat_while(
+        Rewrite::self_loop_removal(), Rewrite::spider_fusion());
+    CHECK(loop.apply(copy));        // Should iterate until completion
+    CHECK_FALSE(loop.apply(copy));  // Check for completion
+  }
+}
+
 }  // namespace test_ZXAxioms
 }  // namespace zx
 }  // namespace tket
