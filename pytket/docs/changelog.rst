@@ -1,24 +1,28 @@
 Changelog
 ==================================
 
-0.16.0 (Unreleased)
--------------------
+0.16.0 (October 2021)
+---------------------
 
 Minor new features:
 
-* New :py:meth:``backends.Backend.run_circuit`` and :py:meth:``backends.Backend.run_circuits``
-  methods.
+* New :py:meth:``backends.Backend.run_circuit`` and
+  :py:meth:``backends.Backend.run_circuits`` methods.
 * New ``allow_swaps`` parameter to ``FullPeepholeOptimise`` pass controlling
   whether to allow introduction of implicit wire swaps (defaulting to ``True``
   to match existing behaviour).
-* New ``Backend.available_devices`` method to retrieve available devices
-  as a list of ``BackendInfo`` objects.
+* New ``Backend.available_devices`` method to retrieve available devices as a
+  list of ``BackendInfo`` objects.
+
+Fixes:
+
+* Fixed bug in daggering of TK1 gates.
 
 API changes:
 
-* The deprecated ``get_shots``, ``get_counts`` and ``get_state`` methods
-  of the ``Backend`` class are removed. Use ``run_circuits`` and the homonym
-  methods of the :py:class:`backends.backendresult.BackendResult` class instead.
+* The deprecated ``get_shots``, ``get_counts`` and ``get_state`` methods of the
+  ``Backend`` class are removed. Use ``run_circuits`` and the homonym methods of
+  the :py:class:`backends.backendresult.BackendResult` class instead.
 
 0.15.0 (September 2021)
 -----------------------
