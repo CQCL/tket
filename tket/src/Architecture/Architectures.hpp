@@ -103,6 +103,8 @@ JSON_DECL(Architecture)
 class FullyConnected : public Architecture {
  public:
   explicit FullyConnected(unsigned numberOfNodes);
+  explicit FullyConnected(const std::list<Node> &nodes);
+
   // get_all_uids() does not guarantee to return nodes in any order
   // this returns the canonical ordering of nodes
   static node_vector_t get_nodes_canonical_order(unsigned numberOfNodes);

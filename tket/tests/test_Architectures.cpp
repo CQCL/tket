@@ -21,35 +21,70 @@
 
 #include "Architecture/Architectures.hpp"
 #include "Graphs/ArticulationPoints.hpp"
+#include "Utils/UnitID.hpp"
 
 namespace tket {
 namespace graphs {
 namespace test_Architectures {
 
 SCENARIO("Testing FullyConnected") {
-  using Arch = FullyConnected;
-  unsigned n_nodes = 10;
-  node_vector_t nodes_vec = Arch::get_nodes_canonical_order(n_nodes);
-  node_set_t nodes(nodes_vec.begin(), nodes_vec.end());
-  Arch arch(n_nodes);
+  GIVEN("A FullyConnected architecture constructed from an integer") {
+    unsigned n_nodes = 10;
+    node_vector_t nodes_vec =
+        FullyConnected::get_nodes_canonical_order(n_nodes);
+    node_set_t nodes(nodes_vec.begin(), nodes_vec.end());
+    FullyConnected arch(n_nodes);
 
-  REQUIRE(arch.n_uids() == nodes.size());
-  for (const UnitID &uid : arch.get_all_uids()) {
-    REQUIRE(nodes.count(Node(uid)));
-  }
-  for (auto [n1, n2] : arch.get_connections_vec()) {
-    REQUIRE(nodes.count(n1));
-    REQUIRE(nodes.count(n2));
-  }
+    REQUIRE(arch.n_uids() == nodes.size());
+    for (const UnitID &uid : arch.get_all_uids()) {
+      REQUIRE(nodes.count(Node(uid)));
+    }
+    for (auto [n1, n2] : arch.get_connections_vec()) {
+      REQUIRE(nodes.count(n1));
+      REQUIRE(nodes.count(n2));
+    }
 
-  for (unsigned i = 0; i < n_nodes; i++) {
-    for (unsigned j = 0; j < n_nodes; j++) {
-      if (i != j) {
-        Node n1("fcNode", i);
-        Node n2("fcNode", j);
-        REQUIRE(arch.connection_exists(n1, n2));
+    for (unsigned i = 0; i < n_nodes; i++) {
+      for (unsigned j = 0; j < n_nodes; j++) {
+        if (i != j) {
+          Node n1("fcNode", i);
+          Node n2("fcNode", j);
+          REQUIRE(arch.connection_exists(n1, n2));
+        }
       }
     }
+  }
+  GIVEN("A FullyConnected architecture constructed from a node list") {
+    Node n0{"a", 2};
+    Node n1{"b", 0};
+    Node n2{"c", 1};
+    std::list<Node> nodes{n0, n1, n2};
+    FullyConnected arch(nodes);
+    REQUIRE(arch.n_uids() == nodes.size());
+    REQUIRE(arch.get_degree(n1) == 2);
+    node_set_t mindegs = arch.min_degree_uids();
+    REQUIRE(mindegs.size() == 3);
+    node_vector_t path1 = arch.get_path(n2, n0);
+    REQUIRE(path1.size() == 2);
+    node_vector_t path0 = arch.get_path(n2, n2);
+    REQUIRE(path0.size() == 1);
+    unsigned maxd = arch.get_max_depth(n1);
+    REQUIRE(maxd == 1);
+    unsigned outd = arch.get_out_degree(n0);
+    REQUIRE(outd == 2);
+    node_set_t neighbours = arch.get_neighbour_uids(n1);
+    REQUIRE(neighbours.size() == 2);
+    REQUIRE(!neighbours.contains(n1));
+    std::set<std::pair<Node, Node>> edges = arch.get_connections_set();
+    REQUIRE(edges.size() == 2 * 3);  // directed
+    std::vector<std::size_t> dists = arch.get_distances(n2);
+    REQUIRE(dists.size() == 2);
+    REQUIRE(dists[0] == 1);
+    REQUIRE(dists[1] == 1);
+    unsigned d1 = arch.get_distance(n1, n2);
+    REQUIRE(d1 == 1);
+    unsigned d0 = arch.get_distance(n1, n1);
+    REQUIRE(d0 == 0);
   }
 }
 

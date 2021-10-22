@@ -395,6 +395,8 @@ class UIDConnectivity
   void remove_connection(
       const UID_t uid1, const UID_t uid2, bool remove_unused_vertices = false);
 
+  bool is_fc() const;
+
  private:
   inline void invalidate_cache() {
     distance_cache.clear();

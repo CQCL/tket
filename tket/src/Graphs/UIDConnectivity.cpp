@@ -15,6 +15,7 @@
 #include "UIDConnectivity.hpp"
 
 #include <stdexcept>
+#include <vector>
 
 #include "boost/iterator/transform_iterator.hpp"
 #include "boost/range/adaptor/transformed.hpp"
@@ -367,10 +368,14 @@ UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_distances(
         "Trying to get distances from non-existent root vertex");
   }
   if (is_fc()) {
-    unsigned n = std::get<FullConnGraph>(graph).size();
-    return {n - 1, 1};
+    unsigned nm1 = std::get<FullConnGraph>(graph).size() - 1;
+    std::vector<std::size_t> dists(nm1);
+    for (unsigned i = 0; i < nm1; i++) dists[i] = 1;
+    return dists;
+  } else {
+    return run_bfs(to_vertices(root), get_undirected_connectivity())
+        .get_dists();
   }
-  return run_bfs(to_vertices(root), get_undirected_connectivity()).get_dists();
 }
 
 template <typename UID_t, typename OutEdgeListS, typename VertexListS>
@@ -483,20 +488,23 @@ std::size_t UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::get_distance(
     const UID_t uid1, const UID_t uid2) const {
   if (uid1 == uid2) {
     return 0;
-  }
-  size_t d;
-  if (distance_cache.find(uid1) != distance_cache.end()) {
-    d = distance_cache[uid1][this->to_vertices(uid2)];
-  } else if (distance_cache.find(uid2) != distance_cache.end()) {
-    d = distance_cache[uid2][this->to_vertices(uid1)];
+  } else if (is_fc()) {
+    return 1;
   } else {
-    distance_cache[uid1] = Base::get_distances(uid1);
-    d = distance_cache[uid1][this->to_vertices(uid2)];
+    size_t d;
+    if (distance_cache.find(uid1) != distance_cache.end()) {
+      d = distance_cache[uid1][this->to_vertices(uid2)];
+    } else if (distance_cache.find(uid2) != distance_cache.end()) {
+      d = distance_cache[uid2][this->to_vertices(uid1)];
+    } else {
+      distance_cache[uid1] = Base::get_distances(uid1);
+      d = distance_cache[uid1][this->to_vertices(uid2)];
+    }
+    if (d == 0) {
+      throw UIDsNotConnected(uid1, uid2);
+    }
+    return d;
   }
-  if (d == 0) {
-    throw UIDsNotConnected(uid1, uid2);
-  }
-  return d;
 }
 
 template <typename UID_t, typename OutEdgeListS, typename VertexListS>
@@ -557,6 +565,11 @@ void UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::remove_connection(
     const UID_t uid1, const UID_t uid2, bool remove_unused_vertices) {
   invalidate_cache();
   Base::remove_connection(uid1, uid2, remove_unused_vertices);
+}
+
+template <typename UID_t, typename OutEdgeListS, typename VertexListS>
+bool UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::is_fc() const {
+  return Base::is_fc();
 }
 
 template struct detail::UIDVertex<UnitID>;

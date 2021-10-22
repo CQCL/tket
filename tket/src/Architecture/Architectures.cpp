@@ -248,6 +248,8 @@ void from_json(const nlohmann::json& j, Architecture& ar) {
 //////////////////////////////////////
 FullyConnected::FullyConnected(unsigned numberOfNodes)
     : Architecture(numberOfNodes) {}
+FullyConnected::FullyConnected(const std::list<Node>& nodes)
+    : Architecture(nodes) {}
 
 node_vector_t FullyConnected::get_nodes_canonical_order(
     unsigned numberOfNodes) {
