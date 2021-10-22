@@ -231,7 +231,6 @@ class UIDConnectivityBase {
 
   /** Run bfs on underlying undirected subgraph */
   std::vector<std::size_t> get_distances(const UID_t root) const;
-  std::size_t get_distance(const UID_t uid1, const UID_t uid2) const;
 
   /** remove vertices with deg == 0 */
   inline void remove_stray_uids() {

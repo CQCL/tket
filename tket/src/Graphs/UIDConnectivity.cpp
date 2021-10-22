@@ -378,22 +378,6 @@ UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_distances(
   }
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-std::size_t UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_distance(
-    const UID_t uid1, const UID_t uid2) const {
-  if (uid1 == uid2) {
-    return 0;
-  } else if (is_fc()) {
-    return 1;
-  } else {
-    size_t d = get_distances(uid1)[to_vertices(uid2)];
-    if (d == 0) {
-      throw UIDsNotConnected(uid1, uid2);
-    }
-    return d;
-  }
-}
-
 // ideally we would like to keep this private..
 template <typename UID_t, typename OutEdgeListS, typename VertexListS>
 auto UIDConnectivityBase<
