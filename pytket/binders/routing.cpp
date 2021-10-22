@@ -15,6 +15,7 @@
 #include "Routing/Routing.hpp"
 
 #include <pybind11/eigen.h>
+#include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
@@ -137,16 +138,7 @@ PYBIND11_MODULE(routing, m) {
             return "<tket::Architecture, nodes=" +
                    std::to_string(arc.n_uids()) + ">";
           })
-      .def(
-          "__eq__",
-          [](const Architecture &arc1, const Architecture &arc2) {
-            return arc1.get_all_uids_set() == arc2.get_all_uids_set() &&
-                   arc1.get_connections_set() == arc2.get_connections_set();
-          },
-          "Checks for architecture equality. Two architecture objects are "
-          "equal "
-          "if they have the same set of nodes and the same connections between "
-          "nodes.");
+      .def(py::self == py::self);
   py::class_<SquareGrid, Architecture>(
       m, "SquareGrid",
       "Architecture class for qubits arranged in a square lattice of "

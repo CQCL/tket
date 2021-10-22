@@ -417,6 +417,7 @@ void UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::to_fc() {
 template <typename UID_t, typename OutEdgeListS, typename VertexListS>
 bool UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::operator==(
     const UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>& other) const {
+  if (is_fc() != other.is_fc()) return false;
   std::set<UID_t> uids = this->get_all_uids_set();
   if (uids != other.get_all_uids_set()) return false;
   if (is_fc()) return true;
