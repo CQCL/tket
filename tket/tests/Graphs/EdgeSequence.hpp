@@ -26,8 +26,6 @@ class AdjacencyData;
 
 namespace tests {
 
-class RNG;
-
 /**
  * For having a whole sequence of checked edges
  * to add to a graph in a specific order,

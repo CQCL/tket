@@ -23,8 +23,6 @@ namespace tket {
 namespace graphs {
 namespace tests {
 
-class RNG;
-
 /**
  * For testing purposes only, not of much independent interest
  * (and definitely an inefficient implementation).
