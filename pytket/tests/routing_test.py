@@ -16,6 +16,7 @@ from pathlib import Path
 from pytket.circuit import OpType, Qubit, Node, Circuit  # type: ignore
 from pytket.routing import (  # type: ignore
     Architecture,
+    FullyConnected,
     LinePlacement,
     GraphPlacement,
     NoiseAwarePlacement,
@@ -815,6 +816,11 @@ def test_CXMappingPass_terminates() -> None:
     placer.modify_config(timeout=10000)
     p = CXMappingPass(arc, placer, directed_cx=False, delay_measures=False)
     assert p.apply(c)
+
+
+def test_fully_connected_arch() -> None:
+    arc10000 = FullyConnected(10000)
+    assert Node("fcNode", 9999) in arc10000.nodes
 
 
 if __name__ == "__main__":
