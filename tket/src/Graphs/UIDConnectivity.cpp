@@ -59,6 +59,13 @@ UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::UIDConnectivityBase(
 }
 
 template <typename UID_t, typename OutEdgeListS, typename VertexListS>
+UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::UIDConnectivityBase(
+    const FullConnGraph& fc)
+    : graph(FullConnGraph()), fc_(true) {
+  std::get<FullConnGraph>(graph) = fc;
+}
+
+template <typename UID_t, typename OutEdgeListS, typename VertexListS>
 void UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::add_connection(
     const UID_t uid1, const UID_t uid2, unsigned weight) {
   if (is_fc()) {

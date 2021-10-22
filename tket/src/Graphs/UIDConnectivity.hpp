@@ -115,6 +115,15 @@ class UIDConnectivityBase {
    */
   explicit UIDConnectivityBase(unsigned n);
 
+  /**
+   * Construct a fully-connected connectivity graph with given vertices.
+   *
+   * Edge weights are not supported.
+   *
+   * @param fc list of vertices
+   */
+  explicit UIDConnectivityBase(const FullConnGraph& fc);
+
   /** add vertex to interaction graph */
   void add_uid(const UID_t uid) {
     if (is_fc()) {
