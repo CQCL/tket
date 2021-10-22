@@ -14,6 +14,9 @@
 
 #include "Predicates.hpp"
 
+#include <algorithm>
+
+#include "Architecture/Architectures.hpp"
 #include "Routing/Verification.hpp"
 
 namespace tket {
@@ -329,10 +332,23 @@ bool ConnectivityPredicate::implies(const Predicate& other) const {
         dynamic_cast<const ConnectivityPredicate&>(other);
     const Architecture& arc1 = arch_;
     const Architecture& arc2 = other_c.arch_;
-    // Collect all edges in arc1
-    for (auto [n1, n2] : arc1.get_connections_vec()) {
-      if (!arc2.connection_exists(n1, n2) && !arc2.connection_exists(n2, n1)) {
-        return false;  // if not in second architecture, return false
+    // First check that all nodes in arc1 are in arc2.
+    std::list<Node> nodelist1 = arc1.get_all_uids();
+    std::list<Node> nodelist2 = arc2.get_all_uids();
+    std::set<Node> nodeset2{nodelist2.begin(), nodelist2.end()};
+    if (std::any_of(
+            nodelist1.begin(), nodelist1.end(),
+            [&nodeset2](const Node& n) { return !nodeset2.contains(n); })) {
+      return false;
+    }
+    // If arc2 is fully connected, we're good.
+    if (!arc2.is_fc()) {
+      // Collect all edges in arc1
+      for (auto [n1, n2] : arc1.get_connections_vec()) {
+        if (!arc2.connection_exists(n1, n2) &&
+            !arc2.connection_exists(n2, n1)) {
+          return false;  // if not in second architecture, return false
+        }
       }
     }
     return true;
@@ -348,17 +364,26 @@ PredicatePtr ConnectivityPredicate::meet(const Predicate& other) const {
         dynamic_cast<const ConnectivityPredicate&>(other);
     const Architecture& arc1 = arch_;
     const Architecture& arc2 = other_c.arch_;
-    std::vector<std::pair<Node, Node>> new_edges;
-    // Collect all edges in arc1 which are also in arc2
-    for (auto [n1, n2] : arc1.get_connections_vec()) {
-      if (arc2.connection_exists(n1, n2)) {
-        new_edges.push_back({n1, n2});
-        new_edges.push_back({n2, n1});
+    if (arc1.is_fc() && arc2.is_fc()) {
+      std::list<Node> nodelist1 = arc1.get_all_uids();
+      std::list<Node> nodelist2 = arc2.get_all_uids();
+      std::set<Node> nodeset2{nodelist2.begin(), nodelist2.end()};
+      nodelist1.remove_if(
+          [&nodeset2](const Node& n) { return !nodeset2.contains(n); });
+      Architecture arc3(nodelist1);
+      return std::make_shared<ConnectivityPredicate>(arc3);
+    } else {
+      std::vector<std::pair<Node, Node>> new_edges;
+      // Collect all edges in arc1 which are also in arc2
+      for (auto [n1, n2] : arc1.get_connections_vec()) {
+        if (arc2.connection_exists(n1, n2)) {
+          new_edges.push_back({n1, n2});
+          new_edges.push_back({n2, n1});
+        }
       }
+      Architecture arc3(new_edges);
+      return std::make_shared<ConnectivityPredicate>(arc3);
     }
-    Architecture arc3(new_edges);
-    PredicatePtr pp = std::make_shared<ConnectivityPredicate>(arc3);
-    return pp;
   } catch (const std::bad_cast&) {
     throw IncorrectPredicate(
         "Cannot compare predicates of different subclasses");
@@ -383,11 +408,23 @@ bool DirectednessPredicate::implies(const Predicate& other) const {
         dynamic_cast<const DirectednessPredicate&>(other);
     const Architecture& arc1 = arch_;
     const Architecture& arc2 = other_c.arch_;
-    // Collect all edges in arc1
-    for (auto [n1, n2] : arc1.get_connections_vec()) {
-      // directedness accounted for
-      if (!arc2.connection_exists(n1, n2)) {
-        return false;  // if not in second architecture, return false
+    // First check that all nodes in arc1 are in arc2.
+    std::list<Node> nodelist1 = arc1.get_all_uids();
+    std::list<Node> nodelist2 = arc2.get_all_uids();
+    std::set<Node> nodeset2{nodelist2.begin(), nodelist2.end()};
+    if (std::any_of(
+            nodelist1.begin(), nodelist1.end(),
+            [&nodeset2](const Node& n) { return !nodeset2.contains(n); })) {
+      return false;
+    }
+    // If arc2 is fully connected, we're good.
+    if (!arc2.is_fc()) {
+      // Collect all edges in arc1
+      for (auto [n1, n2] : arc1.get_connections_vec()) {
+        // directedness accounted for
+        if (!arc2.connection_exists(n1, n2)) {
+          return false;  // if not in second architecture, return false
+        }
       }
     }
     return true;
@@ -403,17 +440,26 @@ PredicatePtr DirectednessPredicate::meet(const Predicate& other) const {
         dynamic_cast<const DirectednessPredicate&>(other);
     const Architecture& arc1 = arch_;
     const Architecture& arc2 = other_c.arch_;
-    std::vector<std::pair<Node, Node>> new_edges;
-    // Collect all edges in arc1 which are also in arc2
-    for (auto [n1, n2] : arc1.get_connections_vec()) {
-      // this also accounts for directedness, do we want that?
-      if (arc2.connection_exists(n1, n2)) {
-        new_edges.push_back({n1, n2});
+    if (arc1.is_fc() && arc2.is_fc()) {
+      std::list<Node> nodelist1 = arc1.get_all_uids();
+      std::list<Node> nodelist2 = arc2.get_all_uids();
+      std::set<Node> nodeset2{nodelist2.begin(), nodelist2.end()};
+      nodelist1.remove_if(
+          [&nodeset2](const Node& n) { return !nodeset2.contains(n); });
+      Architecture arc3(nodelist1);
+      return std::make_shared<DirectednessPredicate>(arc3);
+    } else {
+      std::vector<std::pair<Node, Node>> new_edges;
+      // Collect all edges in arc1 which are also in arc2
+      for (auto [n1, n2] : arc1.get_connections_vec()) {
+        // this also accounts for directedness, do we want that?
+        if (arc2.connection_exists(n1, n2)) {
+          new_edges.push_back({n1, n2});
+        }
       }
+      Architecture arc3(new_edges);
+      return std::make_shared<DirectednessPredicate>(arc3);
     }
-    Architecture arc3(new_edges);
-    PredicatePtr pp = std::make_shared<DirectednessPredicate>(arc3);
-    return pp;
   } catch (const std::bad_cast&) {
     throw IncorrectPredicate(
         "Cannot compare predicates of different subclasses");

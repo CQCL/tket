@@ -27,9 +27,13 @@ namespace tket {
 Architecture Architecture::create_subarch(
     const std::vector<Node>& subarc_nodes) {
   Architecture subarc(subarc_nodes);
-  for (auto [u1, u2] : get_connections_vec()) {
-    if (subarc.uid_exists(u1) && subarc.uid_exists(u2)) {
-      subarc.add_connection(u1, u2);
+  if (is_fc()) {
+    subarc.to_fc();
+  } else {
+    for (auto [u1, u2] : get_connections_vec()) {
+      if (subarc.uid_exists(u1) && subarc.uid_exists(u2)) {
+        subarc.add_connection(u1, u2);
+      }
     }
   }
   return subarc;
