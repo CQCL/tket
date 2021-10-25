@@ -74,6 +74,7 @@ set(TKET_OPS_DIR ${TKET_SRC_DIR}/Ops)
 set(TKET_GATE_DIR ${TKET_SRC_DIR}/Gate)
 set(TKET_SIMULATION_DIR ${TKET_SRC_DIR}/Simulation)
 set(TKET_ROUTING_DIR ${TKET_SRC_DIR}/Routing)
+set(TKET_MAPPING_DIR ${TKET_SRC_DIR}/Mapping)
 set(TKET_TRANSFORM_DIR ${TKET_SRC_DIR}/Transformations)
 set(TKET_CHARACTERISATION_DIR ${TKET_SRC_DIR}/Characterisation)
 set(TKET_PREDS_DIR ${TKET_SRC_DIR}/Predicates)
@@ -184,6 +185,15 @@ set(TKET_SOURCES
 
     # Architecture
     ${TKET_ARCHITECTURE_DIR}/Architectures.cpp
+
+
+    # Mapping
+    ${TKET_MAPPING_DIR}/MappingFrontier.cpp
+    ${TKET_MAPPING_DIR}/RoutingMethodCircuit.cpp
+    ${TKET_MAPPING_DIR}/MappingManager.cpp
+    ${TKET_MAPPING_DIR}/LexicographicalComparison.cpp
+    ${TKET_MAPPING_DIR}/LexiRoute.cpp
+
 
     # Architecture Aware Synthesis
     ${TKET_AAS_DIR}/Path.cpp

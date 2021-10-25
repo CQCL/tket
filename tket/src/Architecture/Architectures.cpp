@@ -24,8 +24,37 @@
 
 namespace tket {
 
+// basic implementation that works off same prior assumptions
+// TODO: Update this for more mature systems of multi-qubit gates
+bool Architecture::valid_operation(
+    /*const OpType& optype, */ const std::vector<Node>& uids) const {
+  if (uids.size() ==
+      1) {  // TODO: for simple case here this should probably not pass if
+            // uid_exists[uids[0]] == FALSE, but should be fine for now?
+    return true;
+  } else if (uids.size() == 2) {
+    if (this->uid_exists(uids[0]) && this->uid_exists(uids[1]) &&
+        (this->connection_exists(uids[0], uids[1]) ||
+         this->connection_exists(uids[1], uids[0]))) {
+      return true;
+    }
+  } else if (uids.size() == 3) {
+    bool con_0_exists =
+        (this->connection_exists(uids[0], uids[1]) ||
+         this->connection_exists(uids[1], uids[0]));
+    bool con_1_exists =
+        (this->connection_exists(uids[2], uids[1]) ||
+         this->connection_exists(uids[1], uids[2]));
+    if (this->uid_exists(uids[0]) && this->uid_exists(uids[1]) &&
+        this->uid_exists(uids[2]) && con_0_exists && con_1_exists) {
+      return true;
+    }
+  }
+  return false;
+}
+
 Architecture Architecture::create_subarch(
-    const std::vector<Node>& subarc_nodes) {
+    const std::vector<Node>& subarc_nodes) const {
   Architecture subarc(subarc_nodes);
   for (auto [u1, u2] : get_connections_vec()) {
     if (subarc.uid_exists(u1) && subarc.uid_exists(u2)) {
@@ -117,15 +146,13 @@ node_set_t Architecture::remove_worst_nodes(unsigned num) {
 }
 
 static bool lexicographical_comparison(
-    const std::vector<std::size_t>& dist1,
-    const std::vector<std::size_t>& dist2) {
+    const std::vector<size_t>& dist1, const std::vector<size_t>& dist2) {
   return std::lexicographical_compare(
       dist1.begin(), dist1.end(), dist2.begin(), dist2.end());
 }
 
 int tri_lexicographical_comparison(
-    const std::vector<std::size_t>& dist1,
-    const std::vector<std::size_t>& dist2) {
+    const std::vector<size_t>& dist1, const std::vector<size_t>& dist2) {
   // add assertion that these are the same size distance vectors
   auto start_dist1 = dist1.cbegin();
   auto start_dist2 = dist2.cbegin();
@@ -168,7 +195,7 @@ std::optional<Node> Architecture::find_worst_node(
     return std::nullopt;
   }
 
-  std::vector<std::size_t> worst_distances, temp_distances;
+  std::vector<size_t> worst_distances, temp_distances;
   Node worst_node = *bad_nodes.begin();
   worst_distances = get_distances(worst_node);
   for (Node temp_node : bad_nodes) {
@@ -180,9 +207,9 @@ std::optional<Node> Architecture::find_worst_node(
       worst_node = temp_node;
       worst_distances = temp_distances;
     } else if (distance_comp == -1) {
-      std::vector<std::size_t> temp_distances_full =
+      std::vector<size_t> temp_distances_full =
           original_arch.get_distances(temp_node);
-      std::vector<std::size_t> worst_distances_full =
+      std::vector<size_t> worst_distances_full =
           original_arch.get_distances(worst_node);
       if (lexicographical_comparison(
               temp_distances_full, worst_distances_full)) {
