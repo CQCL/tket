@@ -4,7 +4,6 @@
 #include "TestUtils/ProblemGeneration.hpp"
 #include "TokenSwapping/HybridTsa00.hpp"
 
-;
 using std::vector;
 
 namespace tket {
