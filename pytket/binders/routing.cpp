@@ -93,7 +93,8 @@ std::pair<Circuit, qubit_mapping_t> route(
 }
 
 PYBIND11_MODULE(routing, m) {
-  py::class_<Architecture>(
+  
+  py::class_<Architecture, ArchitecturePtr>(
       m, "Architecture",
       "The base architecture class, describing the connectivity of "
       "qubits on a device.")
@@ -106,11 +107,26 @@ PYBIND11_MODULE(routing, m) {
           "operations",
           py::arg("connections"))
       .def(
-          py::init<const std::vector<std::pair<Node, Node>>>(),
+          py::init<const std::vector<std::pair<Node, Node>> &>(),
           "The constructor for an architecture with connectivity "
           "between qubits.\n\n:param connections: A list of pairs "
           "representing Nodes that can perform two-qubit operations",
           py::arg("connections"))
+      .def(
+          "__repr__",
+          [](const Architecture &arc) {
+            return "<tket::Architecture, nodes=" +
+                   std::to_string(arc.n_uids()) + ">";
+          })
+      .def(
+          "get_distance", &Architecture::get_distance,
+          "given two nodes in Architecture, "
+          "returns distance between them",
+          py::arg("node_0"), py::arg("node_1"))
+      .def(
+          "get_adjacent_nodes", &Architecture::get_neighbour_uids,
+          "given a node, returns adjacent nodes in Architecture.",
+          py::arg("node"))
       .def_property_readonly(
           "nodes", &Architecture::get_all_uids_vec,
           "Returns all nodes of architecture as UnitID objects. ")
