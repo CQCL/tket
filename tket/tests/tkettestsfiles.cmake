@@ -39,6 +39,33 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Graphs/test_UIDConnectivity.cpp
     ${TKET_TESTS_DIR}/Graphs/test_ArticulationPoints.cpp
     ${TKET_TESTS_DIR}/Graphs/test_TreeSearch.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/Data/FixedCompleteSolutions.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/Data/FixedSwapSequences.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/NeighboursFromEdges.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/PermutationTestUtils.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/SwapSequenceReductionTester.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_CanonicalRelabelling.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_ExactMappingLookup.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_FilteredSwapSequences.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_SwapSequenceReductions.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_SwapSequenceTable.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/BestTsaTester.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/DecodedProblemData.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/FullTsaTesting.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/PartialTsaTesting.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/ProblemGeneration.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/TestStatsStructs.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/test_ArchitectureMappingEndToEnd.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/test_BestTsaFixedSwapSequences.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/test_DistancesFromArchitecture.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/test_FullTsa.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/test_main_entry_functions.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/test_RiverFlowPathFinder.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/test_SwapList.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/test_SwapListOptimiser.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/test_VariousPartialTsa.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/test_VectorListHybrid.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/test_VectorListHybridSkeleton.cpp
     ${TKET_TESTS_DIR}/test_PauliString.cpp
     ${TKET_TESTS_DIR}/Ops/test_ClassicalOps.cpp
     ${TKET_TESTS_DIR}/Ops/test_Expression.cpp

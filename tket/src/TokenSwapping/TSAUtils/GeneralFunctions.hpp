@@ -1,0 +1,87 @@
+#ifndef _TKET_TokenSwapping_TSAUtils_GeneralFunctions_H_
+#define _TKET_TokenSwapping_TSAUtils_GeneralFunctions_H_
+
+// This is for "leftover" functions not specifically linked to token swapping
+// which are candidates for being used and moved elsewhere,
+// e.g. the main src/Utils folder.
+
+#include <map>
+#include <optional>
+#include <set>
+#include <stdexcept>
+
+#include "../RNG.hpp"
+
+namespace tket {
+namespace tsa_internal {
+
+/** Returns the value in a map corresponding to a key, IF it exists,
+ *  or an empty optional object if it does not.
+ *  @param map The std::map object.
+ *  @param key The key.
+ *  @return The value if it exists, or an empty optional value if it doesn't.
+ */
+template <class K, class V>
+std::optional<V> get_optional_value(const std::map<K, V>& map, const K& key) {
+  const auto citer = map.find(key);
+  if (citer == map.cend()) {
+    return {};
+  }
+  return citer->second;
+}
+
+/** The key->value mapping is required to be bijective (reversible).
+ *  @param map The std::map object.
+ *  @return Another std::map, with the key->value mappings reversed.
+ *    Throws if the map is not reversible.
+ */
+template <class K, class V>
+std::map<V, K> get_reversed_map(const std::map<K, V>& map) {
+  std::map<V, K> reversed_map;
+  for (const auto& entry : map) {
+    reversed_map[entry.second] = entry.first;
+  }
+  if (map.size() != reversed_map.size()) {
+    throw std::runtime_error("get_reversed_map called with non-reversible map");
+  }
+  return reversed_map;
+}
+
+/** Finds the rightmost "one" (least significant bit)
+ * occurring in the binary expansion of x, an unsigned integer type.
+ * Returns the bit, whilst also removing it from x.
+ * @param x The original unsigned integer type, which will have one bit removed
+ * (or remain at zero if already at zero).
+ * @return The bit which was removed from x (or 0 if none was removed).
+ */
+template <class UINT>
+static UINT get_rightmost_bit(UINT& x) {
+  // Standard bit hack: decrementing 10000... gives 01111...
+  // E.g., consider:
+  //      x = 001101011010000
+  //    x-1 = 001101011001111
+  // ~(x-1) = 110010100110000
+  // Therefore, AND x with ~(x-1).
+
+  // No "if" statements; unsigned int wraparound is allowed.
+  UINT y = x;
+  --y;
+  y = ~y;
+  const UINT bit = (x & y);
+  x ^= bit;
+  return bit;
+}
+
+/** Return a random subset of given size from the population {0,1,2,...,N}.
+ *  @param rng A random number generator.
+ *  @param sample_size The desired size of the returned set.
+ *  @param population_size The number of elements in the population (an interval
+ *    of nonnegative integers, starting at 0).
+ *  @return A set of numbers. Throws upon invalid parameters.
+ */
+std::set<size_t> get_random_set(
+    RNG& rng, size_t sample_size, size_t population_size);
+
+}  // namespace tsa_internal
+}  // namespace tket
+#endif
