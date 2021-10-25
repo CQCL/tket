@@ -75,6 +75,7 @@ set(TKET_GATE_DIR ${TKET_SRC_DIR}/Gate)
 set(TKET_SIMULATION_DIR ${TKET_SRC_DIR}/Simulation)
 set(TKET_ROUTING_DIR ${TKET_SRC_DIR}/Routing)
 set(TKET_MAPPING_DIR ${TKET_SRC_DIR}/Mapping)
+set(TKET_TOKEN_SWAPPING_DIR ${TKET_SRC_DIR}/TokenSwapping)
 set(TKET_TRANSFORM_DIR ${TKET_SRC_DIR}/Transformations)
 set(TKET_CHARACTERISATION_DIR ${TKET_SRC_DIR}/Characterisation)
 set(TKET_PREDS_DIR ${TKET_SRC_DIR}/Predicates)
@@ -156,6 +157,45 @@ set(TKET_SOURCES
     ${TKET_GRAPH_DIR}/LargeCliquesResult.cpp
     ${TKET_GRAPH_DIR}/ArticulationPoints.cpp
     ${TKET_GRAPH_DIR}/UIDConnectivity.cpp
+
+    # Token swapping
+    ${TKET_TOKEN_SWAPPING_DIR}/TSAUtils/DebugFunctions.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/TSAUtils/DistanceFunctions.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/TSAUtils/GeneralFunctions.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/TSAUtils/SwapFunctions.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/TSAUtils/VertexMappingFunctions.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/TSAUtils/VertexSwapResult.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/ArchitectureMapping.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/BestFullTsa.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/CyclesCandidateManager.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/CyclesGrowthManager.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/CyclesPartialTsa.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/CyclicShiftCostEstimate.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/DistancesFromArchitecture.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/DistancesInterface.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/DynamicTokenTracker.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/HybridTsa00.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/main_entry_functions.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/NeighboursFromArchitecture.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/NeighboursInterface.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/PartialTsaInterface.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/PathFinderInterface.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/RiverFlowPathFinder.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/RNG.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/SwapListOptimiser.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/TrivialTSA.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/VectorListHybridSkeleton.cpp
+
+    # Token swapping table lookup
+    ${TKET_TOKEN_SWAPPING_DIR}/TableLookup/CanonicalRelabelling.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/TableLookup/ExactMappingLookup.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/TableLookup/FilteredSwapSequences.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/TableLookup/PartialMappingLookup.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/TableLookup/SwapConversion.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/TableLookup/SwapListSegmentOptimiser.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/TableLookup/SwapListTableOptimiser.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/TableLookup/SwapSequenceTable.cpp
+    ${TKET_TOKEN_SWAPPING_DIR}/TableLookup/VertexMapResizing.cpp
 
     # Transformations
     ${TKET_TRANSFORM_DIR}/Combinator.cpp

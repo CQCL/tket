@@ -18,16 +18,14 @@
 #include <set>
 #include <sstream>
 
-#include "RNG.hpp"
+#include "TokenSwapping/RNG.hpp"
 
-using std::size_t;
 using std::stringstream;
 using std::vector;
 
 namespace tket {
 namespace graphs {
 namespace tests {
-namespace test_RNG {
 
 // Check that the RNG really is identical across all platforms.
 
@@ -146,7 +144,6 @@ SCENARIO("RNG: permutations") {
       " 69 24 68 71 64 84 36 65 97 98 52 45 ]");
 }
 
-}  // namespace test_RNG
 }  // namespace tests
 }  // namespace graphs
 }  // namespace tket

@@ -1,0 +1,78 @@
+#include "DistancesFromArchitecture.hpp"
+
+#include <sstream>
+#include <stdexcept>
+
+namespace tket {
+namespace tsa_internal {
+
+DistancesFromArchitecture::DistancesFromArchitecture(
+    const ArchitectureMapping& arch_mapping)
+    : m_arch_mapping(arch_mapping) {}
+
+void DistancesFromArchitecture::register_shortest_path(
+    const std::vector<size_t>& path) {
+  // To avoid quadratic growth for really long paths,
+  // just do various slices.
+  if (path.size() <= 5) {
+    register_shortest_path_with_limits(path, 0, path.size());
+    return;
+  }
+  const size_t middle = path.size() / 2;
+  if (path.size() <= 10) {
+    register_shortest_path_with_limits(path, 0, middle);
+    register_shortest_path_with_limits(path, middle, path.size());
+    register_edge(path[middle - 1], path[middle]);
+    return;
+  }
+  register_shortest_path_with_limits(path, 0, 5);
+  register_shortest_path_with_limits(path, path.size() - 5, path.size());
+  if (path.size() >= 15) {
+    register_shortest_path_with_limits(path, middle - 2, middle + 3);
+  }
+}
+
+void DistancesFromArchitecture::register_shortest_path_with_limits(
+    const std::vector<size_t>& path, size_t begin, size_t end) {
+  for (size_t ii = begin; ii < end; ++ii) {
+    for (size_t jj = ii + 1; jj < end; ++jj) {
+      m_cached_distances[get_swap(path[ii], path[jj])] = jj - ii;
+    }
+  }
+}
+
+void DistancesFromArchitecture::register_edge(size_t vertex1, size_t vertex2) {
+  m_cached_distances[get_swap(vertex1, vertex2)] = 1;
+}
+
+size_t DistancesFromArchitecture::operator()(size_t vertex1, size_t vertex2) {
+  if (vertex1 == vertex2) {
+    return 0;
+  }
+  // Automatically set to zero if it doesn't exist yet.
+  auto& distance_entry = m_cached_distances[get_swap(vertex1, vertex2)];
+  if (distance_entry == 0) {
+    const auto& arch = m_arch_mapping.get_architecture();
+    distance_entry = arch.get_distance(
+        m_arch_mapping.get_node(vertex1), m_arch_mapping.get_node(vertex2));
+
+    // This message should no longer be triggered for disconnected
+    // architectures, since get_distance now should throw if v1, v2 are in
+    // different connected components. However, leave the check in, in case some
+    // other bizarre error causes distance zero to be returned.
+    if (distance_entry == 0) {
+      std::stringstream ss;
+      ss << "DistancesFromArchitecture: architecture has " << arch.n_uids()
+         << " vertices, " << arch.n_connections()
+         << " edges; returned diameter " << arch.get_diameter() << ", but d("
+         << vertex1 << "," << vertex2
+         << ")=0. "
+            "Is the graph connected?";
+      throw std::runtime_error(ss.str());
+    }
+  }
+  return distance_entry;
+}
+
+}  // namespace tsa_internal
+}  // namespace tket
