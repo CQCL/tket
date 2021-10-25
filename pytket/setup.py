@@ -195,6 +195,7 @@ binders = [
     "routing",
     "transform",
     "tailoring",
+    "mapping",
 ]
 
 
