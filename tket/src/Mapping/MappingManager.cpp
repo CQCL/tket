@@ -1,6 +1,7 @@
 #include "Mapping/MappingManager.hpp"
 
 #include "OpType/OpTypeFunctions.hpp"
+#include "TokenSwapping/main_entry_functions.hpp"
 
 namespace tket {
 
@@ -59,7 +60,19 @@ bool MappingManager::route_circuit(
       // true => can use held routing method
       if (rm.get().check_method(mapping_frontier, this->architecture_)) {
         valid_methods = true;
-        rm.get().routing_method(mapping_frontier, this->architecture_);
+        unit_map_t partial_permutation =
+            rm.get().routing_method(mapping_frontier, this->architecture_);
+
+        if (partial_permutation.size() > 0) {
+          std::map<Node, Node> node_map;
+          for (const auto& x : partial_permutation) {
+            node_map.insert({Node(x.first), Node(x.second)});
+          }
+          for (const std::pair<Node, Node>& swap :
+               get_swaps(*this->architecture_, node_map)) {
+            mapping_frontier->add_swap(swap.first, swap.second);
+          }
+        }
         break;
       }
     }
