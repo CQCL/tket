@@ -23,7 +23,7 @@ namespace tket {
 
 std::string Op::get_name(bool latex) const {
   if (latex) {
-    return "\\text{" + get_desc().latex() + "}";
+    return get_desc().latex();
   } else {
     return get_desc().name();
   }
