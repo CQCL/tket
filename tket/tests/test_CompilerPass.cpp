@@ -500,6 +500,61 @@ SCENARIO("gen_placement_pass test") {
       REQUIRE(all_res_qbs[nn] == Node(nn));
     }
   }
+
+  GIVEN("A large circuit and a large architecture and GraphPlacement.") {
+    unsigned N = 100;
+    Circuit circ(N);
+    for (unsigned i = 0; i < N - 3; ++i) {
+      circ.add_op<unsigned>(OpType::CX, {i, i + 1});
+      circ.add_op<unsigned>(OpType::CX, {i, i + 2});
+      circ.add_op<unsigned>(OpType::CX, {i, i + 3});
+    }
+    // Generate a line architecture
+    std::vector<std::pair<unsigned, unsigned>> edges;
+    for (unsigned i = 0; i < N - 1; i++) {
+      edges.push_back({i, i + 1});
+    }
+    Architecture line_arc(edges);
+    PlacementConfig config(5, line_arc.n_connections(), 10000, 10, 1);
+    PlacementPtr plptr = std::make_shared<GraphPlacement>(line_arc, config);
+    PassPtr pp_place = gen_placement_pass(plptr);
+    CompilationUnit cu(circ);
+    // The placement pass should fall back to use LinePlacement.
+    pp_place->apply(cu);
+    Circuit res(cu.get_circ_ref());
+    qubit_vector_t all_res_qbs = res.all_qubits();
+    for (unsigned nn = 0; nn < 3; ++nn) {
+      REQUIRE(all_res_qbs[nn].reg_name() == "node");
+    }
+  }
+
+  GIVEN("A large circuit and a large architecture and NoiseAwarePlacement.") {
+    unsigned N = 100;
+    Circuit circ(N);
+    for (unsigned i = 0; i < N - 3; ++i) {
+      circ.add_op<unsigned>(OpType::CX, {i, i + 1});
+      circ.add_op<unsigned>(OpType::CX, {i, i + 2});
+      circ.add_op<unsigned>(OpType::CX, {i, i + 3});
+    }
+    // Generate a line architecture
+    std::vector<std::pair<unsigned, unsigned>> edges;
+    for (unsigned i = 0; i < N - 1; i++) {
+      edges.push_back({i, i + 1});
+    }
+    Architecture line_arc(edges);
+    PlacementConfig config(5, line_arc.n_connections(), 10000, 10, 1);
+    PlacementPtr plptr =
+        std::make_shared<NoiseAwarePlacement>(line_arc, config);
+    PassPtr pp_place = gen_placement_pass(plptr);
+    CompilationUnit cu(circ);
+    // The placement pass should fall back to use LinePlacement.
+    pp_place->apply(cu);
+    Circuit res(cu.get_circ_ref());
+    qubit_vector_t all_res_qbs = res.all_qubits();
+    for (unsigned nn = 0; nn < 3; ++nn) {
+      REQUIRE(all_res_qbs[nn].reg_name() == "node");
+    }
+  }
 }
 
 SCENARIO("gen_rename_qubits_pass test") {
