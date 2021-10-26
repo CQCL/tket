@@ -246,9 +246,9 @@ static std::string graphviz_vertex_props(ZXGen_ptr op) {
     case ZXType::Hbox: {
       const BasicGen& bg = static_cast<const BasicGen&>(*op);
       Expr p = bg.get_param();
-      std::optional<double> ev = eval_expr(p);
+      std::optional<Complex> ev = eval_expr_c(p);
       ss << "fillcolor=\"gold\" shape=square label=\"";
-      if (!ev || (std::abs(*ev + 1) >= EPS)) ss << p;
+      if (!ev || (std::abs(*ev + 1.) >= EPS)) ss << p;
       ss << "\"";
       break;
     }

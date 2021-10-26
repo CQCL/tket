@@ -32,7 +32,7 @@ ZXDiagram ZXDiagram::to_doubled_diagram() const {
       const ZXBox& box = static_cast<const ZXBox&>(*op);
       ZXGen_ptr new_op = std::make_shared<const ZXBox>(
           box.get_diagram()->to_doubled_diagram());
-      ZXVert added = doubled.add_vertex(op);
+      ZXVert added = doubled.add_vertex(new_op);
       iso.insert({{v, CPMDouble::Original}, added});
     } else {
       TKET_ASSERT(qtype.has_value());

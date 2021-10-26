@@ -60,8 +60,8 @@ SCENARIO("Testing diagram creation & vertex/edge additions") {
 
   ZXVert zSpid_v = diag.add_vertex(ZXType::ZSpider, 0.1);
   ZXVert xSpid_v = diag.add_vertex(ZXType::XSpider, 3.4);
-  ZXVert zSpid2_v =
-      diag.add_vertex(ZXType::ZSpider, 6.7, QuantumType::Classical);
+  ZXVert hbox_v = diag.add_vertex(
+      ZXType::Hbox, 6.7 * Expr("b") + 3 * Expr(i_), QuantumType::Classical);
 
   REQUIRE_THROWS_AS(diag.add_vertex(ZXType::ZXBox, 3.), ZXError);
 
@@ -80,7 +80,7 @@ SCENARIO("Testing diagram creation & vertex/edge additions") {
   REQUIRE_NOTHROW(diag.check_validity());
 
   Wire wrong_port = diag.add_wire(
-      zSpid2_v, xSpid_v, ZXWireType::Basic, QuantumType::Quantum, 0);
+      hbox_v, xSpid_v, ZXWireType::Basic, QuantumType::Quantum, 0);
   REQUIRE_THROWS_WITH(
       diag.check_validity(), "Wire at a named port of an undirected vertex");
   diag.remove_wire(wrong_port);
@@ -91,11 +91,13 @@ SCENARIO("Testing diagram creation & vertex/edge additions") {
       diag.check_validity(),
       "Not all ports of a directed vertex have wires connected");
 
-  Wire no_port = diag.add_wire(zSpid_v, tri_v);
+  diag.add_wire(zSpid_v, tri_v);
   REQUIRE_THROWS_WITH(
       diag.check_validity(), "Wire at an unnamed port of a directed vertex");
 
-  diag.remove_wire(no_port);
+  CHECK(diag.remove_wire(
+      tri_v, zSpid_v,
+      {ZXWireType::Basic, QuantumType::Quantum, std::nullopt, std::nullopt}));
   diag.add_wire(
       zSpid_v, tri_v, ZXWireType::Basic, QuantumType::Quantum, std::nullopt, 1);
   REQUIRE_NOTHROW(diag.check_validity());
@@ -118,11 +120,11 @@ SCENARIO("Testing diagram creation & vertex/edge additions") {
   ZXGen_ptr box = std::make_shared<const ZXBox>(inner);
 
   ZXVert box_v = diag.add_vertex(box);
-  diag.add_wire(box_v, zSpid2_v, ZXWireType::Basic, QuantumType::Quantum, 0);
-  diag.add_wire(box_v, zSpid2_v, ZXWireType::Basic, QuantumType::Quantum, 1);
+  diag.add_wire(box_v, hbox_v, ZXWireType::Basic, QuantumType::Quantum, 0);
+  diag.add_wire(box_v, hbox_v, ZXWireType::Basic, QuantumType::Quantum, 1);
   diag.add_wire(box_v, xSpid_v, ZXWireType::Basic, QuantumType::Quantum, 2);
-  Wire wrong_qtype = diag.add_wire(
-      box_v, zSpid2_v, ZXWireType::Basic, QuantumType::Quantum, 3);
+  Wire wrong_qtype =
+      diag.add_wire(box_v, hbox_v, ZXWireType::Basic, QuantumType::Quantum, 3);
   REQUIRE_THROWS_WITH(
       diag.check_validity(),
       "QuantumType of wire is incompatible with the given port");
@@ -130,11 +132,50 @@ SCENARIO("Testing diagram creation & vertex/edge additions") {
   diag.set_wire_qtype(wrong_qtype, QuantumType::Classical);
   REQUIRE_NOTHROW(diag.check_validity());
 
+  CHECK(diag.free_symbols().size() == 2);
+  SymEngine::map_basic_basic sub_map;
+  Sym a = SymEngine::symbol("a");
+  Sym b = SymEngine::symbol("b");
+  sub_map[a] = Expr(0.8);
+  diag.symbol_substitution(sub_map);
+  CHECK(diag.free_symbols().size() == 1);
+  sub_map[b] = Expr(0.4);
+  diag.symbol_substitution(sub_map);
+  CHECK(diag.free_symbols().size() == 0);
+  CHECK(diag.get_name(hbox_v) == "C-H(2.68 + 3.0*I)");
+  REQUIRE_NOTHROW(diag.check_validity());
+
   THEN("Print diagram to file") {
     std::ofstream dot_file("zxdiag.dot");
     dot_file << diag.to_graphviz_str();
     dot_file.close();
     remove("zxdiag.dot");
+  }
+}
+
+SCENARIO("Test move constructors") {
+  GIVEN("A single spider") {
+    ZXDiagram diag(1, 2, 0, 0);
+    ZXVertVec ins = diag.get_boundary(ZXType::Input);
+    ZXVertVec outs = diag.get_boundary(ZXType::Output);
+    ZXVert z = diag.add_vertex(ZXType::ZSpider, 0.3);
+    diag.add_wire(ins[0], z);
+    diag.add_wire(outs[0], z);
+    diag.add_wire(outs[1], z);
+
+    WHEN("Move constructor") {
+      ZXDiagram d2(std::move(diag));
+      REQUIRE_NOTHROW(d2.check_validity());
+      CHECK(d2.n_vertices() == 4);
+      CHECK(d2.n_wires() == 3);
+    }
+    WHEN("Move assignment") {
+      ZXDiagram d2(4, 4, 1, 3);
+      d2 = std::move(diag);
+      REQUIRE_NOTHROW(d2.check_validity());
+      CHECK(d2.n_vertices() == 4);
+      CHECK(d2.n_wires() == 3);
+    }
   }
 }
 
@@ -146,17 +187,25 @@ SCENARIO("Check that diagram conversions achieve the correct form") {
     ZXVert qz = diag.add_vertex(ZXType::ZSpider, 0.3);
     ZXVert qx = diag.add_vertex(ZXType::XSpider);
     ZXVert cz = diag.add_vertex(ZXType::ZSpider, QuantumType::Classical);
+    ZXDiagram inner(1, 1, 0, 0);
+    ZXVert h = inner.add_vertex(ZXType::Hbox, Expr(i_));
+    ZXVert tri = inner.add_vertex(ZXType::Triangle);
+    ZXGen_ptr box = std::make_shared<const ZXBox>(inner);
+    ZXVert b = diag.add_vertex(box);
     diag.add_wire(ins[0], qz);
     diag.add_wire(qz, outs[0]);
     diag.add_wire(qx, outs[1], ZXWireType::H);
     diag.add_wire(ins[1], cz, ZXWireType::Basic, QuantumType::Quantum);
     diag.add_wire(ins[2], cz, ZXWireType::H, QuantumType::Classical);
     diag.add_wire(outs[2], cz, ZXWireType::Basic, QuantumType::Classical);
+    diag.add_wire(b, qz, ZXWireType::Basic, QuantumType::Quantum, 0);
+    diag.add_wire(
+        qx, b, ZXWireType::Basic, QuantumType::Quantum, std::nullopt, 1);
     THEN("Expand quantum vertices/edges into pairs of classical ones") {
       ZXDiagram doubled = diag.to_doubled_diagram();
       REQUIRE_NOTHROW(doubled.check_validity());
-      CHECK(doubled.n_vertices() == 15);
-      CHECK(doubled.n_wires() == 10);
+      CHECK(doubled.n_vertices() == 16);
+      CHECK(doubled.n_wires() == 14);
       for (const ZXVert &b : doubled.get_boundary()) {
         CHECK(doubled.get_qtype(b) == QuantumType::Classical);
         CHECK(
@@ -173,8 +222,8 @@ SCENARIO("Check that diagram conversions achieve the correct form") {
     GIVEN("Embedding classical boundaries into quantum states") {
       ZXDiagram embedded = diag.to_quantum_embedding();
       REQUIRE_NOTHROW(embedded.check_validity());
-      CHECK(embedded.n_vertices() == 11);
-      CHECK(embedded.n_wires() == 8);
+      CHECK(embedded.n_vertices() == 12);
+      CHECK(embedded.n_wires() == 10);
       for (const ZXVert &b : embedded.get_boundary()) {
         CHECK(embedded.get_qtype(b) == QuantumType::Quantum);
       }

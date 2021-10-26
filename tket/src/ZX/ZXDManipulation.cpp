@@ -92,6 +92,7 @@ void ZXDiagram::symbol_substitution(
 }
 
 void ZXDiagram::symbol_substitution(const SymEngine::map_basic_basic& sub_map) {
+  scalar = scalar.subs(sub_map);
   BGL_FORALL_VERTICES(v, *graph, ZXGraph) {
     ZXGen_ptr new_op = get_vertex_ZXGen_ptr(v)->symbol_substitution(sub_map);
     if (new_op) set_vertex_ZXGen_ptr(v, new_op);

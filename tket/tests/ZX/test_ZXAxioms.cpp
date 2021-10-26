@@ -202,7 +202,8 @@ SCENARIO("ZXBox decomposition") {
     inner.add_wire(
         inner_box, inner_outs[0], ZXWireType::H, QuantumType::Quantum, 0);
     inner.add_wire(
-        inner_box, inner_spid, ZXWireType::Basic, QuantumType::Classical, 1);
+        inner_spid, inner_box, ZXWireType::Basic, QuantumType::Classical,
+        std::nullopt, 1);
     inner.add_wire(
         inner_box, inner_spid, ZXWireType::Basic, QuantumType::Classical, 2);
     inner.add_wire(inner_spid, inner_outs[1]);
