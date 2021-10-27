@@ -501,7 +501,7 @@ SCENARIO("gen_placement_pass test") {
     }
   }
 
-  GIVEN("A large circuit and a large architecture and GraphPlacement.") {
+  GIVEN("A large circuit and a large architecture.") {
     unsigned N = 100;
     Circuit circ(N);
     for (unsigned i = 0; i < N - 3; ++i) {
@@ -515,45 +515,39 @@ SCENARIO("gen_placement_pass test") {
       edges.push_back({i, i + 1});
     }
     Architecture line_arc(edges);
+    // Get a graph placement
+    PassPtr graph_place =
+        gen_placement_pass(std::make_shared<GraphPlacement>(line_arc));
+    CompilationUnit graph_cu((Circuit(circ)));
+    graph_place->apply(graph_cu);
+    // Get a noise-aware placement
+    PassPtr noise_place =
+        gen_placement_pass(std::make_shared<NoiseAwarePlacement>(line_arc));
+    CompilationUnit noise_cu((Circuit(circ)));
+    noise_place->apply(noise_cu);
+    // Get a line placement
+    PassPtr line_place =
+        gen_placement_pass(std::make_shared<LinePlacement>(line_arc));
+    CompilationUnit line_cu((Circuit(circ)));
+    line_place->apply(line_cu);
+    // Get a fall back placement from a graph placement
     PlacementConfig config(5, line_arc.n_connections(), 10000, 10, 1);
-    PlacementPtr plptr = std::make_shared<GraphPlacement>(line_arc, config);
-    PassPtr pp_place = gen_placement_pass(plptr);
-    CompilationUnit cu(circ);
-    // The placement pass should fall back to use LinePlacement.
-    pp_place->apply(cu);
-    Circuit res(cu.get_circ_ref());
-    qubit_vector_t all_res_qbs = res.all_qubits();
-    for (unsigned nn = 0; nn < 3; ++nn) {
-      REQUIRE(all_res_qbs[nn].reg_name() == "node");
-    }
-  }
+    PassPtr graph_fall_back_place =
+        gen_placement_pass(std::make_shared<GraphPlacement>(line_arc, config));
+    CompilationUnit graph_fall_back_cu((Circuit(circ)));
+    graph_fall_back_place->apply(graph_fall_back_cu);
+    // Get a fall back placement from a noise-aware placement
+    PassPtr noise_fall_back_place = gen_placement_pass(
+        std::make_shared<NoiseAwarePlacement>(line_arc, config));
+    CompilationUnit noise_fall_back_cu((Circuit(circ)));
+    noise_fall_back_place->apply(noise_fall_back_cu);
 
-  GIVEN("A large circuit and a large architecture and NoiseAwarePlacement.") {
-    unsigned N = 100;
-    Circuit circ(N);
-    for (unsigned i = 0; i < N - 3; ++i) {
-      circ.add_op<unsigned>(OpType::CX, {i, i + 1});
-      circ.add_op<unsigned>(OpType::CX, {i, i + 2});
-      circ.add_op<unsigned>(OpType::CX, {i, i + 3});
-    }
-    // Generate a line architecture
-    std::vector<std::pair<unsigned, unsigned>> edges;
-    for (unsigned i = 0; i < N - 1; i++) {
-      edges.push_back({i, i + 1});
-    }
-    Architecture line_arc(edges);
-    PlacementConfig config(5, line_arc.n_connections(), 10000, 10, 1);
-    PlacementPtr plptr =
-        std::make_shared<NoiseAwarePlacement>(line_arc, config);
-    PassPtr pp_place = gen_placement_pass(plptr);
-    CompilationUnit cu(circ);
-    // The placement pass should fall back to use LinePlacement.
-    pp_place->apply(cu);
-    Circuit res(cu.get_circ_ref());
-    qubit_vector_t all_res_qbs = res.all_qubits();
-    for (unsigned nn = 0; nn < 3; ++nn) {
-      REQUIRE(all_res_qbs[nn].reg_name() == "node");
-    }
+    REQUIRE(graph_cu.get_final_map_ref() == noise_cu.get_final_map_ref());
+    REQUIRE(graph_cu.get_final_map_ref() != line_cu.get_final_map_ref());
+    REQUIRE(
+        graph_fall_back_cu.get_final_map_ref() == line_cu.get_final_map_ref());
+    REQUIRE(
+        noise_fall_back_cu.get_final_map_ref() == line_cu.get_final_map_ref());
   }
 }
 
