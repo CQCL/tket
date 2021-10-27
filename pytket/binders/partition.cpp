@@ -107,7 +107,7 @@ PYBIND11_MODULE(partition, m) {
           py::arg("circ"))
       .def(
           "add_result_for_term",
-          (void (MeasurementSetup::*)(
+          (void(MeasurementSetup::*)(
               const QubitPauliString &,
               const MeasurementSetup::MeasurementBitMap &)) &
               MeasurementSetup::add_result_for_term,
