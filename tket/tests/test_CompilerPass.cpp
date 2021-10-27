@@ -542,8 +542,8 @@ SCENARIO("gen_placement_pass test") {
     CompilationUnit noise_fall_back_cu((Circuit(circ)));
     noise_fall_back_place->apply(noise_fall_back_cu);
 
-    REQUIRE(graph_cu.get_final_map_ref() == noise_cu.get_final_map_ref());
     REQUIRE(graph_cu.get_final_map_ref() != line_cu.get_final_map_ref());
+    REQUIRE(noise_cu.get_final_map_ref() != line_cu.get_final_map_ref());
     REQUIRE(
         graph_fall_back_cu.get_final_map_ref() == line_cu.get_final_map_ref());
     REQUIRE(
