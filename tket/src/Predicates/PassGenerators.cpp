@@ -141,7 +141,7 @@ PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
     try {
       changed = placement_ptr->place(circ);
     } catch (const std::runtime_error& e) {
-      tket_log()->warn(fmt::format(
+      tket_log()->error(fmt::format(
           "PlacementPass failed with message: {} Fall back to LinePlacement.",
           e.what()));
       PlacementPtr line_placement_ptr = std::make_shared<LinePlacement>(
