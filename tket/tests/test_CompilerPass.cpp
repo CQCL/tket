@@ -502,7 +502,7 @@ SCENARIO("gen_placement_pass test") {
   }
 
   GIVEN("A large circuit and a large architecture.") {
-    unsigned N = 100;
+    unsigned N = 150;
     Circuit circ(N);
     for (unsigned i = 0; i < N - 3; ++i) {
       circ.add_op<unsigned>(OpType::CX, {i, i + 1});
@@ -531,7 +531,7 @@ SCENARIO("gen_placement_pass test") {
     CompilationUnit line_cu((Circuit(circ)));
     line_place->apply(line_cu);
     // Get a fall back placement from a graph placement
-    PlacementConfig config(5, line_arc.n_connections(), 10000, 10, 1);
+    PlacementConfig config(5, line_arc.n_connections(), 10000, 10, 0);
     PassPtr graph_fall_back_place =
         gen_placement_pass(std::make_shared<GraphPlacement>(line_arc, config));
     CompilationUnit graph_fall_back_cu((Circuit(circ)));
