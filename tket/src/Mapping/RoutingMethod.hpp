@@ -47,6 +47,9 @@ class RoutingMethod {
     return {};
   }
 };
+
+
+JSON_DECL(RoutingMethod)
 }  // namespace tket
 
 #endif

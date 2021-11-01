@@ -158,7 +158,7 @@ PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
 
 PassPtr gen_full_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
-    const RoutingConfig& config) {
+    const std::vector<std::reference_wrapper<RoutingMethod>>& config) {
   return gen_placement_pass(placement_ptr) >> gen_routing_pass(arc, config);
 }
 
@@ -169,7 +169,8 @@ PassPtr gen_default_mapping_pass(const Architecture& arc) {
 
 PassPtr gen_cx_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
-    const RoutingConfig& config, bool directed_cx, bool delay_measures) {
+    const std::vector<std::reference_wrapper<RoutingMethod>>& config,
+    bool directed_cx, bool delay_measures) {
   PassPtr rebase_pass = gen_rebase_pass(
       {OpType::CX}, CircPool::CX(), all_single_qubit_types(),
       Transform::tk1_to_tk1);
@@ -182,15 +183,13 @@ PassPtr gen_cx_mapping_pass(
   return return_pass;
 }
 
-PassPtr gen_routing_pass(const Architecture& arc, const RoutingConfig& config) {
-  Transform::Transformation trans =
-      [=](Circuit& circ) {  // this doesn't work if capture by ref for some
-                            // reason....
-        Routing route(circ, arc);
-        std::pair<Circuit, bool> circbool = route.solve(config);
-        circ = circbool.first;
-        return circbool.second;
-      };
+PassPtr gen_routing_pass(
+    const Architecture& arc,
+    const std::vector<std::reference_wrapper<RoutingMethod>>& config) {
+  Transform::Transformation trans = [=](Circuit& circ) {
+    MappingManager mm(arc);
+    return mm.route_circuit(circ, config);
+  };
   Transform t = Transform(trans);
 
   PredicatePtr twoqbpred = std::make_shared<MaxTwoQubitGatesPredicate>();
@@ -390,7 +389,8 @@ PassPtr gen_full_mapping_pass_phase_poly(
 }
 
 PassPtr gen_directed_cx_routing_pass(
-    const Architecture& arc, const RoutingConfig& config) {
+    const Architecture& arc,
+    const std::vector<std::reference_wrapper<RoutingMethod>>& config) {
   OpTypeSet multis = {OpType::CX, OpType::BRIDGE, OpType::SWAP};
   return gen_routing_pass(arc, config) >>
          gen_rebase_pass(

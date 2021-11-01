@@ -197,7 +197,8 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     CompilationUnit cu(circ, preds);
 
     PlacementPtr pp = std::make_shared<GraphPlacement>(grid);
-    PassPtr cp_route = gen_full_mapping_pass(grid, pp, {50, 0, 0, 0});
+    PassPtr cp_route =
+        gen_full_mapping_pass(grid, pp, {LexiRouteRoutingMethod(50)});
 
     PassPtr all_passes = SynthesiseHQS() >> SynthesiseOQC() >>
                          SynthesiseUMD() >> SynthesiseTket() >> cp_route;
