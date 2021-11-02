@@ -37,10 +37,10 @@ class Gate : public Op {
 
   /**
    * Return the gate decomposition in terms of Rz(a)Rx(b)Rz(c).
-   * 
+   *
    * This decomposition is in matrix-multiplication order, i.e. the reverse of
    * circuit order.
-   * 
+   *
    * @return a, b, c and a global phase
    */
   std::vector<Expr> get_tk1_angles() const;
