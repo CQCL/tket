@@ -17,6 +17,9 @@
 
 #include "ArchAwareSynth/SteinerForest.hpp"
 #include "CompilerPass.hpp"
+#include "Mapping/LexiRoute.hpp"
+#include "Mapping/RoutingMethod.hpp"
+
 namespace tket {
 
 /* a wrapper method for the rebase_factory in Transforms */

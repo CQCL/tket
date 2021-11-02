@@ -53,6 +53,9 @@ class RoutingMethodCircuit : public RoutingMethod {
       check_subcircuit_;
   unsigned max_size_, max_depth_;
 };
+
+JSON_DECL(RoutingMethod);
+
 }  // namespace tket
 
 #endif

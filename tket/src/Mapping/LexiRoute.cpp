@@ -577,4 +577,20 @@ unit_map_t LexiRouteRoutingMethod::routing_method(
   return {};
 }
 
+unsigned LexiRouteRoutingMethod::get_max_depth() const {
+  return this->max_depth_;
+}
+
+nlohmann::json LexiRouteRoutingMethod::serialize() const {
+  nlohmann::json j;
+  j["depth"] = this->get_max_depth();
+  j["name"] = "LexiRouteRoutingMethod";
+  return j;
+}
+
+RoutingMethod LexiRouteRoutingMethod::deserialize(
+    const nlohmann::json& j) const {
+  return LexiRouteRoutingMethod(j.at("depth"));
+}
+
 }  // namespace tket

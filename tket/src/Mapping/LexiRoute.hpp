@@ -163,14 +163,14 @@ class LexiRouteRoutingMethod : public RoutingMethod {
    *
    * @param _max_depth Number of layers of gates checked inr outed subcircuit.
    */
-  LexiRouteRoutingMethod(unsigned _max_depth);
+  LexiRouteRoutingMethod(unsigned _max_depth = 10);
 
   /**
    * @return true if method can route subcircuit, false if not
    */
   bool check_method(
       const std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
-      const ArchitecturePtr& /*architecture*/) const;
+      const ArchitecturePtr& /*architecture*/) const override;
 
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
@@ -181,12 +181,20 @@ class LexiRouteRoutingMethod : public RoutingMethod {
    */
   unit_map_t routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
-      const ArchitecturePtr& architecture) const;
+      const ArchitecturePtr& architecture) const override;
+
+  /**
+   * @return Max depth used in lookahead
+   */
+  unsigned get_max_depth() const;
+
+  nlohmann::json serialize() const override;
+
+  RoutingMethod deserialize(const nlohmann::json& j) const override;
 
  private:
   unsigned max_depth_;
 };
-
 
 JSON_DECL(LexiRouteRoutingMethod)
 

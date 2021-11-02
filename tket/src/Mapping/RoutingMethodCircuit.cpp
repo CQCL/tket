@@ -65,4 +65,5 @@ unit_map_t RoutingMethodCircuit::routing_method(
   // return initial unit_map_t incase swap network required
   return swap_permutation;
 }
+
 }  // namespace tket

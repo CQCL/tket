@@ -1002,36 +1002,23 @@
         "op_link_errors"
       ]
     },
-    "routing_config": {
+
+    "routingmethod" :{
       "type": "object",
-      "description": "A configuration for the routing procedure.",
+      "description": "A method used during circuit mapping.",
       "properties": {
-        "depth_limit": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "The look ahead limit for SWAP picking."
+        "name": {
+          "type": "string",
+          "description": "String identifying method and whether it can be serialized."
         },
-        "distrib_limit": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "The look ahead limit for Distributed CX gate checking."
-        },
-        "interactions_limit": {
-          "type": "integer",
-          "description": "The number of interactions considered in Distributed CX gate checking."
-        },
-        "distrib_exponent": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "A factor to balance the consideration for later gates when deciding on Distributed CX gates."
-        }
       },
-      "required": [
-        "depth_limit",
-        "distrib_limit",
-        "interactions_limit",
-        "distrib_exponent"
-      ]
-    }
+    },
+    "routing_config":{
+      "type": "array",
+      "description": "A configuration for routing defined by an array of RoutingMethod.",
+      "items": {
+        "$ref": "#/definitions/routingmethod"
+      },
+    },
   }
 }
