@@ -15,8 +15,9 @@
 #ifndef _TKET_UIDConnectivityBase_H
 #define _TKET_UIDConnectivityBase_H
 
-#include <stdexcept>
 #include <boost/range/adaptor/transformed.hpp>
+#include <stdexcept>
+
 #include "Graphs/Utils.hpp"
 #include "Utils/GraphHeaders.hpp"
 #include "Utils/UnitID.hpp"
@@ -237,16 +238,13 @@ class UIDsNotConnected : public std::logic_error {
 };
 
 // template explicit instations, with implementations in cpp file
-extern template class UIDConnectivityBase<
-    UnitID, boost::vecS, boost::vecS>;
-extern template class UIDConnectivityBase<
-    Node, boost::vecS, boost::vecS>;
-extern template class UIDConnectivityBase<
-    Qubit, boost::vecS, boost::vecS>;
+extern template class UIDConnectivityBase<UnitID, boost::vecS, boost::vecS>;
+extern template class UIDConnectivityBase<Node, boost::vecS, boost::vecS>;
+extern template class UIDConnectivityBase<Qubit, boost::vecS, boost::vecS>;
 extern template struct UIDVertex<UnitID>;
 extern template struct UIDVertex<Node>;
 extern template struct UIDVertex<Qubit>;
 
-} // namespace tket::graphs
+}  // namespace tket::graphs
 
-#endif // _TKET_UIDConnectivityBase_H
+#endif  // _TKET_UIDConnectivityBase_H

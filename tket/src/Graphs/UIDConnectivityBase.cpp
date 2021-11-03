@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "UIDConnectivityBase.hpp"
+
 #include "Graphs/TreeSearch.hpp"
 
 namespace tket::graphs {
@@ -310,4 +311,4 @@ template class UIDConnectivityBase<UnitID, boost::vecS, boost::vecS>;
 template class UIDConnectivityBase<Node, boost::vecS, boost::vecS>;
 template class UIDConnectivityBase<Qubit, boost::vecS, boost::vecS>;
 
-} // namespace tket::graphs
+}  // namespace tket::graphs

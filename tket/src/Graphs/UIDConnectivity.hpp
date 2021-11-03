@@ -24,8 +24,8 @@
 #include <optional>
 #include <type_traits>
 
-#include "Graphs/UIDConnectivityBase.hpp"
 #include "Graphs/TreeSearch.hpp"
+#include "Graphs/UIDConnectivityBase.hpp"
 #include "Graphs/Utils.hpp"
 #include "Utils/GraphHeaders.hpp"
 #include "Utils/UnitID.hpp"
