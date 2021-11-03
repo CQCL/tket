@@ -81,7 +81,7 @@ class UIDConnectivityBase : public AbstractGraph<UID_t> {
       UIDInteraction>;
   using Vertex = utils::vertex<ConnGraph>;
   using UndirectedVertex = utils::vertex<UndirectedConnGraph>;
-  using Connection = std::pair<UID_t, UID_t>;
+  using Connection = typename AbstractGraph<UID_t>::Edge;
 
  public:
   /** empty default constructor */

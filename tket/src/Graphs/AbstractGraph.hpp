@@ -15,6 +15,8 @@
 #ifndef _TKET_AbstractGraph_H
 #define _TKET_AbstractGraph_H
 
+#include <utility>
+
 namespace tket::graphs {
 
 /**
@@ -23,7 +25,10 @@ namespace tket::graphs {
  * @tparam T type of nodes in the graph
  */
 template <typename T>
-class AbstractGraph {};
+class AbstractGraph {
+ protected:
+  using Edge = std::pair<T, T>;
+};
 
 }  // namespace tket::graphs
 
