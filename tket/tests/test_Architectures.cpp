@@ -47,8 +47,8 @@ SCENARIO("Testing FullyConnected") {
     for (unsigned i = 0; i < n_nodes; i++) {
       for (unsigned j = 0; j < n_nodes; j++) {
         if (i != j) {
-          Node n1("fcNode", i);
-          Node n2("fcNode", j);
+          Node n1(fcnode_default_reg(), i);
+          Node n2(fcnode_default_reg(), j);
           REQUIRE(arch.connection_exists(n1, n2));
         }
       }

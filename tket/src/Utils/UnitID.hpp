@@ -42,9 +42,26 @@ typedef std::pair<UnitType, unsigned> register_info_t;
 
 typedef std::optional<register_info_t> opt_reg_info_t;
 
+/**
+ * Default @ref Qubit register name
+ */
 const std::string &q_default_reg();
+
+/**
+ * Default @ref Bit register name
+ */
 const std::string &c_default_reg();
+
+/**
+ * Default @ref Node register name
+ */
 const std::string &node_default_reg();
+
+/**
+ * Default @ref Node register name in a @ref FullyConnected architecture
+ */
+const std::string &fcnode_default_reg();
+
 const std::string &c_debug_zero_prefix();
 const std::string &c_debug_one_prefix();
 const std::string &c_debug_default_name();

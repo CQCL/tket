@@ -255,14 +255,11 @@ node_vector_t FullyConnected::get_nodes_canonical_order(
     unsigned numberOfNodes) {
   node_vector_t nodes;
   for (unsigned i = 0; i < numberOfNodes; i++) {
-    Node n("fcNode", i);
+    Node n(fcnode_default_reg(), i);
     nodes.push_back(n);
   }
   return nodes;
 }
-
-// The node names below ("fcNode" etc) must begin with a lowercase letter to
-// match QASM requirements when converting circuits.
 
 std::vector<Architecture::Connection> FullyConnected::get_edges(
     unsigned numberOfNodes) {
@@ -270,8 +267,8 @@ std::vector<Architecture::Connection> FullyConnected::get_edges(
   for (unsigned i = 0; i < numberOfNodes; i++) {
     for (unsigned j = 0; j < numberOfNodes; j++) {
       if (i != j) {
-        Node n1("fcNode", i);
-        Node n2("fcNode", j);
+        Node n1(fcnode_default_reg(), i);
+        Node n2(fcnode_default_reg(), j);
         edges.push_back({n1, n2});
       }
     }

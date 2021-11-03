@@ -64,6 +64,9 @@ void from_json(const nlohmann::json& j, qubit_map_t& qm) {
  * on program termination.
  */
 
+// The node names below ("fcNode" etc) must begin with a lowercase letter to
+// match QASM requirements when converting circuits.
+
 const std::string& q_default_reg() {
   static std::unique_ptr<const std::string> regname =
       std::make_unique<const std::string>("q");
@@ -79,6 +82,12 @@ const std::string& c_default_reg() {
 const std::string& node_default_reg() {
   static std::unique_ptr<const std::string> regname =
       std::make_unique<const std::string>("node");
+  return *regname;
+}
+
+const std::string& fcnode_default_reg() {
+  static std::unique_ptr<const std::string> regname =
+      std::make_unique<const std::string>("fcNode");
   return *regname;
 }
 

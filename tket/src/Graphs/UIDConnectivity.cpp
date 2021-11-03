@@ -54,7 +54,7 @@ UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::UIDConnectivityBase(
     unsigned n)
     : graph(FullConnGraph()), fc_(true) {
   for (unsigned i = 0; i < n; i++) {
-    Node n("fcNode", i);
+    Node n(fcnode_default_reg(), i);
     std::get<FullConnGraph>(graph).push_back(n);
   }
 }
