@@ -158,6 +158,7 @@ set(TKET_SOURCES
     ${TKET_GRAPH_DIR}/AbstractGraph.cpp
     ${TKET_GRAPH_DIR}/UIDConnectivityBase.cpp
     ${TKET_GRAPH_DIR}/UIDConnectivity.cpp
+    ${TKET_GRAPH_DIR}/CompleteGraph.cpp
 
     # Transformations
     ${TKET_TRANSFORM_DIR}/Combinator.cpp
