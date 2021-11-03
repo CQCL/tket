@@ -45,9 +45,9 @@ template <
     typename UID_t, typename OutEdgeListS = boost::vecS,
     typename VertexListS = boost::vecS>
 class UIDConnectivity
-    : public detail::UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS> {
+    : public UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS> {
  private:
-  using Base = detail::UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>;
+  using Base = UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>;
 
  public:
   using Base::Base;

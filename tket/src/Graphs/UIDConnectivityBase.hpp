@@ -23,8 +23,6 @@
 
 namespace tket::graphs {
 
-namespace detail {
-
 class UIDDoesNotExistError : public std::logic_error {
   using std::logic_error::logic_error;
 };
@@ -225,8 +223,6 @@ class UIDConnectivityBase {
   vertex_bimap uid_to_vertex;
 };
 
-} // namespace detail
-
 /**
  * Exception thrown because two nodes are disconnected from one another.
  *
@@ -241,15 +237,15 @@ class UIDsNotConnected : public std::logic_error {
 };
 
 // template explicit instations, with implementations in cpp file
-extern template class detail::UIDConnectivityBase<
+extern template class UIDConnectivityBase<
     UnitID, boost::vecS, boost::vecS>;
-extern template class detail::UIDConnectivityBase<
+extern template class UIDConnectivityBase<
     Node, boost::vecS, boost::vecS>;
-extern template class detail::UIDConnectivityBase<
+extern template class UIDConnectivityBase<
     Qubit, boost::vecS, boost::vecS>;
-extern template struct detail::UIDVertex<UnitID>;
-extern template struct detail::UIDVertex<Node>;
-extern template struct detail::UIDVertex<Qubit>;
+extern template struct UIDVertex<UnitID>;
+extern template struct UIDVertex<Node>;
+extern template struct UIDVertex<Qubit>;
 
 } // namespace tket::graphs
 

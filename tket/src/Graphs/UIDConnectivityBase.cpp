@@ -17,8 +17,6 @@
 
 namespace tket::graphs {
 
-namespace detail {
-
 template <typename UID_t, typename OutEdgeListS, typename VertexListS>
 UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::UIDConnectivityBase(
     const std::vector<UID_t>& uids)
@@ -305,13 +303,11 @@ bool UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::operator==(
   return true;
 }
 
-} // namespace detail
-
-template struct detail::UIDVertex<UnitID>;
-template struct detail::UIDVertex<Node>;
-template struct detail::UIDVertex<Qubit>;
-template class detail::UIDConnectivityBase<UnitID, boost::vecS, boost::vecS>;
-template class detail::UIDConnectivityBase<Node, boost::vecS, boost::vecS>;
-template class detail::UIDConnectivityBase<Qubit, boost::vecS, boost::vecS>;
+template struct UIDVertex<UnitID>;
+template struct UIDVertex<Node>;
+template struct UIDVertex<Qubit>;
+template class UIDConnectivityBase<UnitID, boost::vecS, boost::vecS>;
+template class UIDConnectivityBase<Node, boost::vecS, boost::vecS>;
+template class UIDConnectivityBase<Qubit, boost::vecS, boost::vecS>;
 
 } // namespace tket::graphs
