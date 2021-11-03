@@ -162,6 +162,21 @@ void MappingFrontier::advance_frontier_boundary(
     // TODO: add optional skip function later to skip vertices that don't have
     // physical requirements
     boundary_updated = false;
+
+    // Pseudocode for Yao
+    // std::shared_ptr<unit_frontier_t> frontier_edges = frontier_convert_vertport_to_edge(
+    //         this->circuit_, this->quantum_boundary);
+
+    // VertexSet vs = /*made by iterating through target vertices of edges in frontier_edges */
+    // if(const auto& v : vs){
+    //   // classically controlled CX or CZ etc
+    //   if(this->circuit_.get_n_edges_of_type(v, EdgeType::Classical) > 0){
+    //     /* do some logic that adds these in edges to std::make_shared<b_frontier_t>() blah blah object */ 
+    //     Bit("dummy_bit", i);
+    //     i++
+    //   }
+    // }
+
     CutFrontier next_cut = this->circuit_.next_cut(
         frontier_convert_vertport_to_edge(
             this->circuit_, this->quantum_boundary),
