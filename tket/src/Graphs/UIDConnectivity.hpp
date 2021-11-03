@@ -105,20 +105,14 @@ class UIDConnectivityBase {
   explicit UIDConnectivityBase(const std::vector<Connection>& edges);
 
   /**
-   * Construct a fully-connected connectivity graph.
-   *
-   * A fully-connected graph is constructed with nodes fcNode[0], fcNode[1],
-   * .... In this case the underlying graph is not stored, and edge weights are
-   * not supported.
+   * Construct a fully-connected, unweighted graph.
    *
    * @param n number of vertices
    */
   explicit UIDConnectivityBase(unsigned n);
 
   /**
-   * Construct a fully-connected connectivity graph with given vertices.
-   *
-   * Edge weights are not supported.
+   * Construct a fully-connected, unweighted graph with given vertices.
    *
    * @param fc list of vertices
    */
@@ -283,10 +277,7 @@ class UIDConnectivityBase {
   bool is_fc() const { return fc_; }
 
   /**
-   * Convert the graph to a "fully connected" one.
-   *
-   * This "forgets" all connection information, including weights. The graph
-   * becomes semantically a fully-connected graph on its vertex set.
+   * Convert the graph to a fully connected, unweighted graph on the same nodes.
    */
   void to_fc();
 
@@ -327,7 +318,7 @@ class UIDConnectivityBase {
   vertex_bimap uid_to_vertex;
 
  private:
-  bool fc_;  // flag indicating a fully-connected graph
+  bool fc_;  // indicates that the graph is fully-connected and unweighted
 };
 
 }  // namespace detail
@@ -394,6 +385,14 @@ class UIDConnectivity
   void remove_connection(
       const UID_t uid1, const UID_t uid2, bool remove_unused_vertices = false);
 
+  /**
+   * Whether the graph is "fully connected".
+   *
+   * Caution: this does not test the graph for full connectivity: it indicates
+   * that the graph is stored as vertices-only, without weights, and is treated
+   * as fully-connected for all purposes. If false, the underlying graph may or
+   * may not be fully connected.
+   */
   bool is_fc() const;
 
  private:
