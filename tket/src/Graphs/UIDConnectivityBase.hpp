@@ -235,7 +235,7 @@ class UIDConnectivityBase {
 template <typename UID_t>
 class UIDsNotConnected : public std::logic_error {
  public:
-  UIDsNotConnected(const UID_t& uid1, const UID_t uid2)
+  UIDsNotConnected(const UID_t& uid1, const UID_t& uid2)
       : std::logic_error(
             uid1.repr() + " and " + uid2.repr() + " are not connected") {}
 };
