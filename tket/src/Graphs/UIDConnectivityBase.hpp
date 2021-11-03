@@ -18,6 +18,7 @@
 #include <boost/range/adaptor/transformed.hpp>
 #include <stdexcept>
 
+#include "Graphs/AbstractGraph.hpp"
 #include "Graphs/Utils.hpp"
 #include "Utils/GraphHeaders.hpp"
 #include "Utils/UnitID.hpp"
@@ -70,7 +71,7 @@ struct UIDInteraction {
  * sensible defaults in the UIDConnnectivity class.
  */
 template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-class UIDConnectivityBase {
+class UIDConnectivityBase : public AbstractGraph<UID_t> {
  protected:
   using ConnGraph = boost::adjacency_list<
       OutEdgeListS, VertexListS, boost::bidirectionalS, UIDVertex<UID_t>,
