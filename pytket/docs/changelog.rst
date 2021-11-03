@@ -1,6 +1,12 @@
 Changelog
 ==================================
 
+0.17.0 (unreleased)
+---------------------
+
+Minor new features:
+* New properties: :py:meth:``circuit.Op.dagger`` and :py:meth:``circuit.Op.transpose``.
+
 0.16.0 (October 2021)
 ---------------------
 
