@@ -190,7 +190,7 @@ class LexiRouteRoutingMethod : public RoutingMethod {
 
   nlohmann::json serialize() const override;
 
-  RoutingMethod deserialize(const nlohmann::json& j) const override;
+  static LexiRouteRoutingMethod deserialize(const nlohmann::json& j);
 
  private:
   unsigned max_depth_;

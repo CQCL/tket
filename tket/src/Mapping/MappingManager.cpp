@@ -10,8 +10,7 @@ MappingManager::MappingManager(const ArchitecturePtr& _architecture)
 
 bool MappingManager::route_circuit(
     Circuit& circuit,
-    const std::vector<std::reference_wrapper<RoutingMethod>>& routing_methods)
-    const {
+    const std::vector<RoutingMethodWrapper>& routing_methods) const {
   // Assumption; Routing can not route a circuit
   // with more logical qubits than an Architecture has
   // physical qubits physically permitted

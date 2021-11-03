@@ -588,8 +588,8 @@ nlohmann::json LexiRouteRoutingMethod::serialize() const {
   return j;
 }
 
-RoutingMethod LexiRouteRoutingMethod::deserialize(
-    const nlohmann::json& j) const {
+LexiRouteRoutingMethod LexiRouteRoutingMethod::deserialize(
+    const nlohmann::json& j) {
   return LexiRouteRoutingMethod(j.at("depth"));
 }
 

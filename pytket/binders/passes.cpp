@@ -30,11 +30,9 @@ namespace tket {
 
 static PassPtr gen_cx_mapping_pass_kwargs(
     const Architecture &arc, const PlacementPtr &placer, py::kwargs kwargs) {
-  std::vector<std::reference_wrapper<RoutingMethod>> config = {
-      LexiRouteRoutingMethod(100)};
+  std::vector<RoutingMethodWrapper> config = {LexiRouteRoutingMethod(100)};
   if (kwargs.contains("config")) {
-    config = py::cast<std::vector<std::reference_wrapper<RoutingMethod>>>(
-        kwargs["config"]);
+    config = py::cast<std::vector<RoutingMethodWrapper>>(kwargs["config"]);
   }
   bool directed_cx = false;
   if (kwargs.contains("directed_cx")) {
@@ -49,7 +47,7 @@ static PassPtr gen_cx_mapping_pass_kwargs(
 
 static PassPtr gen_default_routing_pass(const Architecture &arc) {
   LexiRouteRoutingMethod method(100);
-  std::vector<std::reference_wrapper<RoutingMethod>> config = {method};
+  std::vector<RoutingMethodWrapper> config = {method};
   return gen_routing_pass(arc, config);
 }
 

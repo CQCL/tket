@@ -506,8 +506,7 @@ SCENARIO("Test predicate serializations") {
 
 SCENARIO("Test compiler pass serializations") {
   Architecture arc = SquareGrid(2, 4, 2);
-  std::vector<std::reference_wrapper<RoutingMethod>> rcon = {
-      LexiRouteRoutingMethod(80)};
+  std::vector<RoutingMethodWrapper> rcon = {LexiRouteRoutingMethod(80)};
   PlacementConfig plcon(5, 20, 100000, 10, 1000);
   PlacementPtr place = std::make_shared<GraphPlacement>(arc, plcon);
   std::map<Qubit, Qubit> qmap = {{Qubit(0), Node(1)}, {Qubit(3), Node(2)}};

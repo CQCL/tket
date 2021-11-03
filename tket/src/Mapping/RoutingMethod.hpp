@@ -52,43 +52,17 @@ class RoutingMethod {
     throw JsonError(
         "JSON serialization not implemented for given RoutingMethod.");
   }
-  virtual RoutingMethod deserialize(const nlohmann::json& /*j*/) const {
-    throw JsonError(
-        "JSON deserialization not implemented for given RoutingMethod.");
-  }
+
+  // virtual RoutingMethod deserialize(const nlohmann::json& /*j*/) const {
+  //   throw JsonError(
+  //       "JSON deserialization not implemented for given RoutingMethod.");
+  // }
 };
 
-void to_json(nlohmann::json& j, const RoutingMethod& rm) { j = rm.serialize(); }
-
-void from_json(nlohmann::json& j, RoutingMethod& rm) {
-  std::string name = j.at("name").get<std::string>();
-  if (name == "LexiRouteRoutingMethod") {
-    rm = rm.deserialize(j);
-  } else {
-    throw JsonError(
-        "Deserialization not yet implemented for generic RoutingMethod "
-        "objects.");
-  }
-}
-
-// void to_json(nlohmann::json& j, const
-// std::vector<std::reference_wrapper<RoutingMethod>>& r){
-//   for(const auto& routing_method : r){
-//     j.push_back(r->to_json());
-//   }
-// }
-
-// void from_json(nlohmann::json& j,
-// std::vector<std::reference_wrapper<RoutingMethod>>& r){
-//   for (const auto& item : j.items()){
-//     r.push_back(std::make_shared<RoutingMethod>(item.from_json()));
-//   }
-// }
+typedef std::reference_wrapper<RoutingMethod> RoutingMethodWrapper;
 
 JSON_DECL(RoutingMethod);
-
-// JSON_DECL(std::vector<std::reference_wrapper<RoutingMethod>>);
-
+JSON_DECL(std::vector<RoutingMethodWrapper>);
 }  // namespace tket
 
 #endif

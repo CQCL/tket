@@ -397,7 +397,7 @@ SCENARIO("Test MappingManager::route_circuit with lc_route_subcircuit") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(copy_circ);
 
-    std::vector<std::reference_wrapper<RoutingMethod>> vrm = {lrrm};
+    std::vector<RoutingMethodWrapper> vrm = {lrrm};
     REQUIRE(vrm[0].get().check_method(mf, shared_arc));
 
     bool res = mm.route_circuit(circ, vrm);
@@ -426,7 +426,7 @@ SCENARIO("Test MappingManager::route_circuit with lc_route_subcircuit") {
 
     MappingManager mm(shared_arc);
     LexiRouteRoutingMethod lrrm(100);
-    std::vector<std::reference_wrapper<RoutingMethod>> vrm = {lrrm};
+    std::vector<RoutingMethodWrapper> vrm = {lrrm};
     bool res = mm.route_circuit(circ, vrm);
 
     PredicatePtr routed_correctly = std::make_shared<ConnectivityPredicate>(sg);
