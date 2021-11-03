@@ -670,6 +670,13 @@ def test_depth() -> None:
     assert c.depth_by_type(set()) == 0
 
 
+def test_op_dagger_transpose() -> None:
+    sx = Op.create(OpType.SX)
+    sxdg = Op.create(OpType.SXdg)
+    assert sx.dagger == sxdg
+    assert sx.transpose == sx
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
