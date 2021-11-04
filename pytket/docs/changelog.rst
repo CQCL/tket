@@ -6,6 +6,7 @@ Changelog
 
 Minor new features:
 * New properties: :py:meth:``circuit.Op.dagger`` and :py:meth:``circuit.Op.transpose``.
+* New ``NPhasedX`` OpType.
 
 0.16.0 (October 2021)
 ---------------------

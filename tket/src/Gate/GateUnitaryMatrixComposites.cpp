@@ -76,6 +76,19 @@ Eigen::Matrix2cd GateUnitaryMatrixImplementations::PhasedX(
   return rz_beta_matr * Rx(alpha) * rz_beta_matr.conjugate();
 }
 
+Eigen::MatrixXcd GateUnitaryMatrixImplementations::NPhasedX(
+    unsigned number_of_qubits, double alpha, double beta) {
+  const auto phasedx_matr = PhasedX(alpha, beta);
+  if (number_of_qubits == 0) {
+    return Eigen::MatrixXcd::Identity(0, 0);
+  } else if (number_of_qubits == 1) {
+    return phasedx_matr;
+  } else {
+    return Eigen::kroneckerProduct(
+        phasedx_matr, NPhasedX(number_of_qubits - 1, alpha, beta));
+  }
+}
+
 Eigen::MatrixXcd GateUnitaryMatrixImplementations::CnRy(
     unsigned int number_of_qubits, double alpha) {
   return GateUnitaryMatrixUtils::get_multi_controlled_gate_dense_unitary(

@@ -1894,6 +1894,22 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
     Eigen::MatrixXcd correct = exponent.exp();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
   }
+  GIVEN("A NPhasedX gate") {
+    Circuit circ(3);
+    Vertex v = circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 1.5}, {0, 1, 2});
+    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    Circuit rep;
+    WHEN("tket-sim NPhasedX unitary") { rep = circ; }
+    WHEN("Default circuit replacement") { rep = CX_circ_from_multiq(op); }
+
+    const auto u = tket_sim::get_unitary(rep);
+    Circuit phasedx(1);
+    phasedx.add_op<unsigned>(OpType::PhasedX, {0.5, 1.5}, {0});
+    const auto phasedx_u = tket_sim::get_unitary(phasedx);
+    Eigen::MatrixXcd correct = Eigen::kroneckerProduct(
+        phasedx_u, Eigen::kroneckerProduct(phasedx_u, phasedx_u));
+    REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
+  }
   GIVEN("A gate with no defined decomposition") {
     Circuit circ(1);
     Vertex box = circ.add_barrier(uvec{0});
