@@ -20,15 +20,6 @@ namespace tket::graphs {
 
 template <typename UID_t, typename OutEdgeListS, typename VertexListS>
 UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::UIDConnectivityBase(
-    const std::vector<UID_t>& uids)
-    : graph() {
-  for (const UnitID& uid : uids) {
-    add_uid(UID_t(uid));
-  }
-}
-
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::UIDConnectivityBase(
     const std::vector<Connection>& edges)
     : graph() {
   for (auto [uid1, uid2] : edges) {

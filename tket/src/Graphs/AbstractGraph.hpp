@@ -16,6 +16,7 @@
 #define _TKET_AbstractGraph_H
 
 #include <utility>
+#include <vector>
 
 namespace tket::graphs {
 
@@ -26,8 +27,18 @@ namespace tket::graphs {
  */
 template <typename T>
 class AbstractGraph {
+ public:
+  /** Construct an empty graph */
+  AbstractGraph() : nodes_() {}
+
+  /** Construct from list of nodes */
+  explicit AbstractGraph(const std::vector<T>& nodes) : nodes_(nodes) {}
+
  protected:
   using Edge = std::pair<T, T>;
+
+ private:
+  std::vector<T> nodes_;
 };
 
 }  // namespace tket::graphs
