@@ -14,7 +14,7 @@
 
 #ifndef _TKET_Path_H_
 #define _TKET_Path_H_
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Routing/Placement.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"

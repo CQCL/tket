@@ -19,7 +19,7 @@
 #include <iostream>
 #include <vector>
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Graphs/ArticulationPoints.hpp"
 
 namespace tket {

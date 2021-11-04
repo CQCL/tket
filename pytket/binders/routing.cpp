@@ -18,7 +18,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
