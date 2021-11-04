@@ -14,6 +14,7 @@
 
 #include "CompilerPass.hpp"
 
+#include "Mapping/RoutingMethodJson.hpp"
 #include "PassGenerators.hpp"
 #include "PassLibrary.hpp"
 #include "Utils/Json.hpp"
@@ -429,8 +430,14 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = gen_euler_pass(q, p, s);
     } else if (passname == "RoutingPass") {
       Architecture arc = content.at("architecture").get<Architecture>();
-      std::vector<RoutingMethodWrapper> con =
-          content.at("routing_config").get<std::vector<RoutingMethodWrapper>>();
+
+      const nlohmann::json& config_array = content.at("routing_config");
+      std::vector<RoutingMethodWrapper> con;
+      for (const auto& cont : config_array) {
+        RoutingMethod rm = cont.get<RoutingMethod>();
+        con.push_back(std::ref<RoutingMethod>(rm));
+      }
+
       pp = gen_routing_pass(arc, con);
     } else if (passname == "PlacementPass") {
       pp = gen_placement_pass(content.at("placement").get<PlacementPtr>());
@@ -485,8 +492,14 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
       PlacementPtr place = content.at("placement").get<PlacementPtr>();
-      std::vector<RoutingMethodWrapper> config =
-          content.at("routing_config").get<std::vector<RoutingMethodWrapper>>();
+
+      const nlohmann::json& config_array = content.at("routing_config");
+      std::vector<RoutingMethodWrapper> config;
+      for (const auto& cont : config_array) {
+        RoutingMethod rm = cont.get<RoutingMethod>();
+        config.push_back(std::ref<RoutingMethod>(rm));
+      }
+
       pp = gen_full_mapping_pass(arc, place, config);
     } else if (passname == "DefaultMappingPass") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
@@ -496,8 +509,14 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
       PlacementPtr place = content.at("placement").get<PlacementPtr>();
-      std::vector<RoutingMethodWrapper> config =
-          content.at("routing_config").get<std::vector<RoutingMethodWrapper>>();
+
+      const nlohmann::json& config_array = content.at("routing_config");
+      std::vector<RoutingMethodWrapper> config;
+      for (const auto& cont : config_array) {
+        RoutingMethod rm = cont.get<RoutingMethod>();
+        config.push_back(std::ref<RoutingMethod>(rm));
+      }
+
       bool directed_cx = content.at("directed").get<bool>();
       bool delay_measures = content.at("delay_measures").get<bool>();
       pp = gen_cx_mapping_pass(arc, place, config, directed_cx, delay_measures);

@@ -262,8 +262,10 @@ void LexiRoute::set_interacting_uids(bool assigned_only) {
           }
         }
       }
-    } else if (n_edges != 1) {
-      TKET_ASSERT(!"Vertex should only have 1 or 2 edges.");
+    } else if (
+        n_edges > 2 && this->mapping_frontier_->circuit_.get_OpType_from_Vertex(
+                           v0) != OpType::Barrier) {
+      TKET_ASSERT(!"Non-Barrier vertex should only have 1 or 2 edges.");
     }
   }
 }
@@ -591,7 +593,7 @@ nlohmann::json LexiRouteRoutingMethod::serialize() const {
 
 LexiRouteRoutingMethod LexiRouteRoutingMethod::deserialize(
     const nlohmann::json& j) {
-  return LexiRouteRoutingMethod(j.at("depth"));
+  return LexiRouteRoutingMethod(j.at("depth").get<unsigned>());
 }
 
 }  // namespace tket

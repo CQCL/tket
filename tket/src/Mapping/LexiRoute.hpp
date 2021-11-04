@@ -4,6 +4,7 @@
 #include "Mapping/LexicographicalComparison.hpp"
 #include "Mapping/MappingFrontier.hpp"
 #include "Mapping/RoutingMethod.hpp"
+#include "Mapping/RoutingMethodJson.hpp"
 
 namespace tket {
 

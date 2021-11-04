@@ -52,17 +52,9 @@ class RoutingMethod {
     throw JsonError(
         "JSON serialization not implemented for given RoutingMethod.");
   }
-
-  // virtual RoutingMethod deserialize(const nlohmann::json& /*j*/) const {
-  //   throw JsonError(
-  //       "JSON deserialization not implemented for given RoutingMethod.");
-  // }
 };
 
 typedef std::reference_wrapper<RoutingMethod> RoutingMethodWrapper;
-
-JSON_DECL(RoutingMethod);
-JSON_DECL(std::vector<RoutingMethodWrapper>);
 }  // namespace tket
 
 #endif

@@ -219,7 +219,11 @@ PassPtr gen_routing_pass(
   // record pass config
   nlohmann::json j;
   j["name"] = "RoutingPass";
-  j["routing_config"] = config;
+  nlohmann::json config_array;
+  for (const auto& con : config) {
+    config_array.push_back(con.get());
+  }
+  j["routing_config"] = config_array;
   j["architecture"] = arc;
 
   return std::make_shared<StandardPass>(precons, t, pc, j);

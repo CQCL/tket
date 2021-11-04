@@ -91,8 +91,9 @@ void MappingFrontier::advance_next_2qb_slice(unsigned max_advance) {
               immediate_cut_vertices_v.begin(), immediate_cut_vertices_v.end(),
               target_v) != immediate_cut_vertices_v.end();
 
-      if ((!in_slice && in_edges.size() > 1) ||
-          this->circuit_.get_OpType_from_Vertex(target_v) == OpType::Output) {
+      if (((!in_slice && in_edges.size() > 1) ||
+           this->circuit_.get_OpType_from_Vertex(target_v) == OpType::Output) &&
+          this->circuit_.get_OpType_from_Vertex(target_v) != OpType::Barrier) {
         // Vertex either not allowed to pass, or is output vertex => update
         // nothing
         next_frontier->insert({pair.first, pair.second});
@@ -174,8 +175,6 @@ void MappingFrontier::advance_frontier_boundary(
       std::vector<UnitID> uids;
       for (const Edge& e :
            this->circuit_.get_in_edges_of_type(vert, EdgeType::Quantum)) {
-        //  TODO: look at key_extractor in boost instead of this helper
-        //  method...
         uids.push_back(get_unitid_from_unit_frontier(
             this->quantum_boundary,
             {this->circuit_.source(e), this->circuit_.get_source_port(e)}));
@@ -190,7 +189,8 @@ void MappingFrontier::advance_frontier_boundary(
       }
       if (architecture->valid_operation(
               /* this->circuit_.get_OpType_from_Vertex(vert), */
-              nodes)) {
+              nodes) ||
+          this->circuit_.get_OpType_from_Vertex(vert) == OpType::Barrier) {
         // if no valid operation, boundary not updated and while loop terminates
         boundary_updated = true;
         for (const UnitID& uid : uids) {
