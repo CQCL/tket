@@ -20,9 +20,8 @@
 
 namespace tket::graphs {
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-const std::vector<std::size_t>&
-UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::get_distances(
+template <typename UID_t>
+const std::vector<std::size_t>& UIDConnectivity<UID_t>::get_distances(
     const UnitID& root) const& {
   if (distance_cache.find(root) == distance_cache.end()) {
     distance_cache[root] = Base::get_distances(UID_t(root));
@@ -30,9 +29,8 @@ UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::get_distances(
   return distance_cache[root];
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-std::vector<std::size_t>&&
-UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::get_distances(
+template <typename UID_t>
+std::vector<std::size_t>&& UIDConnectivity<UID_t>::get_distances(
     const UnitID& root) const&& {
   if (distance_cache.find(root) == distance_cache.end()) {
     distance_cache[root] = Base::get_distances(UID_t(root));
@@ -42,9 +40,8 @@ UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::get_distances(
 
 // this function uses caching indirectly, since it calls get_distances,
 // so we cannot define it in Base class (unless we made everything virtual)
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-std::vector<UID_t>
-UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::uids_at_distance(
+template <typename UID_t>
+std::vector<UID_t> UIDConnectivity<UID_t>::uids_at_distance(
     const UID_t& root, std::size_t distance) const {
   auto dists = get_distances(root);
   std::vector<UID_t> out;
@@ -56,8 +53,8 @@ UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::uids_at_distance(
   return out;
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-std::size_t UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::get_distance(
+template <typename UID_t>
+std::size_t UIDConnectivity<UID_t>::get_distance(
     const UID_t uid1, const UID_t uid2) const {
   if (uid1 == uid2) {
     return 0;
@@ -77,61 +74,59 @@ std::size_t UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::get_distance(
   return d;
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-auto UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::
-    get_undirected_connectivity() const& -> const UndirectedConnGraph& {
+template <typename UID_t>
+auto UIDConnectivity<UID_t>::get_undirected_connectivity() const& -> const
+    UndirectedConnGraph& {
   if (!undir_graph) {
     undir_graph = Base::get_undirected_connectivity();
   }
   return undir_graph.value();
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-auto UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::
-    get_undirected_connectivity() const&& -> UndirectedConnGraph&& {
+template <typename UID_t>
+auto UIDConnectivity<UID_t>::get_undirected_connectivity()
+    const&& -> UndirectedConnGraph&& {
   if (!undir_graph) {
     undir_graph = Base::get_undirected_connectivity();
   }
   return std::move(undir_graph.value());
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-void UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::add_uid(
-    const UID_t uid) {
+template <typename UID_t>
+void UIDConnectivity<UID_t>::add_uid(const UID_t uid) {
   invalidate_cache();
   Base::add_uid(uid);
 }
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-void UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::remove_uid(
-    const UID_t uid) {
+template <typename UID_t>
+void UIDConnectivity<UID_t>::remove_uid(const UID_t uid) {
   invalidate_cache();
   Base::remove_uid(uid);
 }
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-void UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::remove_stray_uids() {
+template <typename UID_t>
+void UIDConnectivity<UID_t>::remove_stray_uids() {
   invalidate_cache();
   Base::remove_stray_uids();
 }
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-void UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::add_connection(
+template <typename UID_t>
+void UIDConnectivity<UID_t>::add_connection(
     const UID_t uid1, const UID_t uid2, unsigned val) {
   invalidate_cache();
   Base::add_connection(uid1, uid2, val);
 }
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-void UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::remove_connections(
+template <typename UID_t>
+void UIDConnectivity<UID_t>::remove_connections(
     const std::vector<Connection>& edges) {
   invalidate_cache();
   Base::remove_connections(edges);
 }
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-void UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::remove_connection(
+template <typename UID_t>
+void UIDConnectivity<UID_t>::remove_connection(
     const Connection edge, bool remove_unused_vertices) {
   invalidate_cache();
   Base::remove_connection(edge, remove_unused_vertices);
 }
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-void UIDConnectivity<UID_t, OutEdgeListS, VertexListS>::remove_connection(
+template <typename UID_t>
+void UIDConnectivity<UID_t>::remove_connection(
     const UID_t uid1, const UID_t uid2, bool remove_unused_vertices) {
   invalidate_cache();
   Base::remove_connection(uid1, uid2, remove_unused_vertices);

@@ -70,14 +70,14 @@ struct UIDInteraction {
  * underlying boost graph are specified as further template parameters, but have
  * sensible defaults in the UIDConnnectivity class.
  */
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
+template <typename UID_t>
 class UIDConnectivityBase : public AbstractGraph<UID_t> {
  protected:
   using ConnGraph = boost::adjacency_list<
-      OutEdgeListS, VertexListS, boost::bidirectionalS, UIDVertex<UID_t>,
+      boost::vecS, boost::vecS, boost::bidirectionalS, UIDVertex<UID_t>,
       UIDInteraction>;
   using UndirectedConnGraph = boost::adjacency_list<
-      boost::setS, VertexListS, boost::undirectedS, UIDVertex<UID_t>,
+      boost::setS, boost::vecS, boost::undirectedS, UIDVertex<UID_t>,
       UIDInteraction>;
   using Vertex = utils::vertex<ConnGraph>;
   using UndirectedVertex = utils::vertex<UndirectedConnGraph>;
@@ -198,8 +198,7 @@ class UIDConnectivityBase : public AbstractGraph<UID_t> {
   /** get undirected adjacent UnitIDs */
   std::set<UID_t> get_neighbour_uids(const UID_t uid) const;
 
-  bool operator==(
-      const UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>& other) const;
+  bool operator==(const UIDConnectivityBase<UID_t>& other) const;
 
  protected:
   /** get edge iterator */
@@ -244,9 +243,9 @@ class UIDsNotConnected : public std::logic_error {
 };
 
 // template explicit instations, with implementations in cpp file
-extern template class UIDConnectivityBase<UnitID, boost::vecS, boost::vecS>;
-extern template class UIDConnectivityBase<Node, boost::vecS, boost::vecS>;
-extern template class UIDConnectivityBase<Qubit, boost::vecS, boost::vecS>;
+extern template class UIDConnectivityBase<UnitID>;
+extern template class UIDConnectivityBase<Node>;
+extern template class UIDConnectivityBase<Qubit>;
 extern template struct UIDVertex<UnitID>;
 extern template struct UIDVertex<Node>;
 extern template struct UIDVertex<Qubit>;

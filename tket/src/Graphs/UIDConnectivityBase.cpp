@@ -18,8 +18,8 @@
 
 namespace tket::graphs {
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::UIDConnectivityBase(
+template <typename UID_t>
+UIDConnectivityBase<UID_t>::UIDConnectivityBase(
     const std::vector<Connection>& edges)
     : graph() {
   for (auto [uid1, uid2] : edges) {
@@ -33,8 +33,8 @@ UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::UIDConnectivityBase(
   }
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-void UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::add_connection(
+template <typename UID_t>
+void UIDConnectivityBase<UID_t>::add_connection(
     const UID_t uid1, const UID_t uid2, unsigned weight) {
   if (!uid_exists(uid1) || !uid_exists(uid2)) {
     throw UIDDoesNotExistError(
@@ -45,8 +45,8 @@ void UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::add_connection(
       to_vertices(uid1), to_vertices(uid2), UIDInteraction(weight), graph);
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-void UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::remove_connection(
+template <typename UID_t>
+void UIDConnectivityBase<UID_t>::remove_connection(
     const Connection edge, bool remove_unused_vertices) {
   if (!uid_exists(edge.first) || !uid_exists(edge.second)) {
     throw UIDDoesNotExistError(
@@ -64,22 +64,22 @@ void UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::remove_connection(
       e, graph, uid_to_vertex.right, remove_unused_vertices);
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-void UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::remove_connection(
+template <typename UID_t>
+void UIDConnectivityBase<UID_t>::remove_connection(
     const UID_t uid1, const UID_t uid2, bool remove_unused_vertices) {
   remove_connection({uid1, uid2}, remove_unused_vertices);
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-void UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::remove_connections(
+template <typename UID_t>
+void UIDConnectivityBase<UID_t>::remove_connections(
     const std::vector<Connection>& edges, bool remove_unused_vertices) {
   for (const auto& e : edges) {
     remove_connection(e, remove_unused_vertices);
   }
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-bool UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::connection_exists(
+template <typename UID_t>
+bool UIDConnectivityBase<UID_t>::connection_exists(
     const UID_t uid1, const UID_t uid2) const {
   if (!uid_exists(uid1) || !uid_exists(uid2)) {
     throw UIDDoesNotExistError(
@@ -90,15 +90,13 @@ bool UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::connection_exists(
   return exists;
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-bool UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::uid_exists(
-    const UID_t uid) const {
+template <typename UID_t>
+bool UIDConnectivityBase<UID_t>::uid_exists(const UID_t uid) const {
   return to_vertices().find(uid) != to_vertices().end();
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-unsigned
-UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_connection_weight(
+template <typename UID_t>
+unsigned UIDConnectivityBase<UID_t>::get_connection_weight(
     const UID_t uid1, const UID_t uid2) const {
   if (!uid_exists(uid1) || !uid_exists(uid2)) {
     throw UIDDoesNotExistError(
@@ -112,9 +110,8 @@ UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_connection_weight(
   return graph[e].weight;
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-unsigned UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_degree(
-    const UID_t v) const {
+template <typename UID_t>
+unsigned UIDConnectivityBase<UID_t>::get_degree(const UID_t v) const {
   if (!uid_exists(v)) {
     throw UIDDoesNotExistError(
         "Trying to retrieve vertex degree from non-existent vertex");
@@ -122,9 +119,8 @@ unsigned UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_degree(
   return boost::degree(to_vertices(v), graph);
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-std::set<UID_t>
-UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::max_degree_uids() const {
+template <typename UID_t>
+std::set<UID_t> UIDConnectivityBase<UID_t>::max_degree_uids() const {
   std::set<UID_t> out;
   auto max_vertices = graphs::utils::max_degree_nodes(graph);
   std::transform(
@@ -133,9 +129,8 @@ UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::max_degree_uids() const {
   return out;
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-std::set<UID_t>
-UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::min_degree_uids() const {
+template <typename UID_t>
+std::set<UID_t> UIDConnectivityBase<UID_t>::min_degree_uids() const {
   std::set<UID_t> out;
   auto min_vertices = graphs::utils::min_degree_nodes(graph);
   std::transform(
@@ -145,9 +140,8 @@ UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::min_degree_uids() const {
 }
 
 // Returns the path between the nodes |root| and |target|.
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-std::vector<UID_t>
-UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_path(
+template <typename UID_t>
+std::vector<UID_t> UIDConnectivityBase<UID_t>::get_path(
     const UID_t root, const UID_t target) const {
   if (!uid_exists(root) || !uid_exists(target)) {
     throw UIDDoesNotExistError(
@@ -165,19 +159,16 @@ UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_path(
   return converted_path;
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-std::size_t
-UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_max_depth(
-    const UID_t root) const {
+template <typename UID_t>
+std::size_t UIDConnectivityBase<UID_t>::get_max_depth(const UID_t root) const {
   if (!uid_exists(root)) {
     throw UIDDoesNotExistError("Trying to get depth from non-existent vertex");
   }
   return run_bfs(to_vertices(root), get_undirected_connectivity()).max_depth();
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-unsigned UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_out_degree(
-    const UID_t uid) const {
+template <typename UID_t>
+unsigned UIDConnectivityBase<UID_t>::get_out_degree(const UID_t uid) const {
   if (!uid_exists(uid)) {
     throw UIDDoesNotExistError(
         "Trying to get outdegree from non-existent vertex");
@@ -185,26 +176,23 @@ unsigned UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_out_degree(
   return boost::out_degree(to_vertices(uid), graph);
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-std::set<UID_t> UIDConnectivityBase<
-    UID_t, OutEdgeListS, VertexListS>::get_all_uids_set() const {
+template <typename UID_t>
+std::set<UID_t> UIDConnectivityBase<UID_t>::get_all_uids_set() const {
   auto uids = get_all_uids();
   std::set<UID_t> out{uids.begin(), uids.end()};
   return out;
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-std::vector<UID_t> UIDConnectivityBase<
-    UID_t, OutEdgeListS, VertexListS>::get_all_uids_vec() const {
+template <typename UID_t>
+std::vector<UID_t> UIDConnectivityBase<UID_t>::get_all_uids_vec() const {
   // fix UID ordering by first collecting UIDs in a set
   auto uids = get_all_uids_set();
   std::vector<UID_t> out{uids.begin(), uids.end()};
   return out;
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-std::set<UID_t>
-UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_neighbour_uids(
+template <typename UID_t>
+std::set<UID_t> UIDConnectivityBase<UID_t>::get_neighbour_uids(
     const UID_t v) const {
   if (!uid_exists(v)) {
     throw UIDDoesNotExistError(
@@ -222,17 +210,15 @@ UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_neighbour_uids(
   return neighbours;
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-auto UIDConnectivityBase<
-    UID_t, OutEdgeListS, VertexListS>::get_connections_set() const
+template <typename UID_t>
+auto UIDConnectivityBase<UID_t>::get_connections_set() const
     -> std::set<Connection> {
   std::vector<Connection> vec = get_connections_vec();
   return std::set(vec.begin(), vec.end());
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-auto UIDConnectivityBase<
-    UID_t, OutEdgeListS, VertexListS>::get_connections_vec() const
+template <typename UID_t>
+auto UIDConnectivityBase<UID_t>::get_connections_vec() const
     -> std::vector<Connection> {
   std::vector<Connection> out;
   for (auto e : get_edges_it()) {
@@ -243,9 +229,8 @@ auto UIDConnectivityBase<
   return out;
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-std::vector<std::size_t>
-UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_distances(
+template <typename UID_t>
+std::vector<std::size_t> UIDConnectivityBase<UID_t>::get_distances(
     const UID_t root) const {
   if (!uid_exists(root)) {
     throw UIDDoesNotExistError(
@@ -253,8 +238,8 @@ UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_distances(
   }
   return run_bfs(to_vertices(root), get_undirected_connectivity()).get_dists();
 }
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-std::size_t UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_distance(
+template <typename UID_t>
+std::size_t UIDConnectivityBase<UID_t>::get_distance(
     const UID_t uid1, const UID_t uid2) const {
   if (uid1 == uid2) {
     return 0;
@@ -267,16 +252,15 @@ std::size_t UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::get_distance(
 }
 
 // ideally we would like to keep this private..
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-auto UIDConnectivityBase<
-    UID_t, OutEdgeListS, VertexListS>::get_undirected_connectivity() const
+template <typename UID_t>
+auto UIDConnectivityBase<UID_t>::get_undirected_connectivity() const
     -> UndirectedConnGraph {
   return graphs::utils::symmetrise<UndirectedConnGraph>(graph);
 }
 
-template <typename UID_t, typename OutEdgeListS, typename VertexListS>
-bool UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::operator==(
-    const UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>& other) const {
+template <typename UID_t>
+bool UIDConnectivityBase<UID_t>::operator==(
+    const UIDConnectivityBase<UID_t>& other) const {
   std::set<UID_t> uids = this->get_all_uids_set();
   if (uids != other.get_all_uids_set()) return false;
   for (const UID_t& u : uids) {
@@ -298,8 +282,8 @@ bool UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>::operator==(
 template struct UIDVertex<UnitID>;
 template struct UIDVertex<Node>;
 template struct UIDVertex<Qubit>;
-template class UIDConnectivityBase<UnitID, boost::vecS, boost::vecS>;
-template class UIDConnectivityBase<Node, boost::vecS, boost::vecS>;
-template class UIDConnectivityBase<Qubit, boost::vecS, boost::vecS>;
+template class UIDConnectivityBase<UnitID>;
+template class UIDConnectivityBase<Node>;
+template class UIDConnectivityBase<Qubit>;
 
 }  // namespace tket::graphs

@@ -41,13 +41,10 @@ namespace tket::graphs {
  * UIDConnectivityBase. This class only adds caching of some function calls for
  * efficiency, innvalidating cache in case of changes on the underlying graph
  */
-template <
-    typename UID_t, typename OutEdgeListS = boost::vecS,
-    typename VertexListS = boost::vecS>
-class UIDConnectivity
-    : public UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS> {
+template <typename UID_t>
+class UIDConnectivity : public UIDConnectivityBase<UID_t> {
  private:
-  using Base = UIDConnectivityBase<UID_t, OutEdgeListS, VertexListS>;
+  using Base = UIDConnectivityBase<UID_t>;
 
  public:
   using Base::Base;
