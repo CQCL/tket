@@ -91,7 +91,7 @@ jobs:
         conan profile new tket --detect --force
         conan config set general.revisions_enabled=1
         conan install --profile=tket boost/1.77.0@ --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
-        conan create --profile=tket recipes/tket -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+        conan create --profile=tket recipes/tket --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
         .github/workflows/build_macos_m1_wheel
         pyenv shell tket-3.9
         .github/workflows/build_macos_m1_wheel

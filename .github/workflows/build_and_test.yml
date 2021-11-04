@@ -168,11 +168,11 @@ jobs:
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
     - name: Build tket
-      run: conan create --profile=tket recipes/tket
+      run: conan create --profile=tket --build=missing recipes/tket
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
-      run: conan create --profile=tket recipes/tket-proptests
+      run: conan create --profile=tket --build=missing recipes/tket-proptests
     - name: Set up Python 3.7
       if: github.event_name == 'push'
       uses: actions/setup-python@v2
@@ -255,11 +255,11 @@ jobs:
     - name: Install boost
       run: conan install --profile=tket boost/1.77.0@ --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
     - name: Build tket
-      run: conan create --profile=tket recipes/tket -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+      run: conan create --profile=tket recipes/tket --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
     - name: Build and run tket proptests
-      run: conan create --profile=tket recipes/tket-proptests -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+      run: conan create --profile=tket recipes/tket-proptests --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
     - name: Build pytket (3.8)
       if: github.event_name == 'pull_request' || github.event_name == 'push'
       run: |
