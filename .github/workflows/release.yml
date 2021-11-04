@@ -44,6 +44,18 @@ jobs:
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - name: Get current time
+      uses: srfrnk/current-time@v1.1.0
+      id: current_time
+      with:
+        format: YYYYMMDDHHmmss
+    - name: Cache conan data
+      uses: actions/cache@v2
+      with:
+        path: ~/.conan
+        key: ${{ runner.os }}-tket-conan-${{ steps.current_time.outputs.formattedTime }}
+        restore-keys: |
+          ${{ runner.os }}-tket-conan-
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
       with:
