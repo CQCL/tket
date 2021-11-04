@@ -24,6 +24,7 @@
 
 namespace tket {
 
+template <>
 Architecture Architecture::create_subarch(
     const std::vector<Node>& subarc_nodes) {
   Architecture subarc(subarc_nodes);
@@ -35,6 +36,7 @@ Architecture Architecture::create_subarch(
   return subarc;
 }
 
+template <>
 unsigned Architecture::get_diameter() const {
   unsigned N = n_uids();
   if (N == 0) {
@@ -53,6 +55,7 @@ unsigned Architecture::get_diameter() const {
 
 // Given a vector of lengths of lines, returns a vector of lines of these sizes
 // comprised of architecture nodes
+template <>
 std::vector<node_vector_t> Architecture::get_lines(
     std::vector<unsigned> required_lengths) const {
   // check total length doesn't exceed number of nodes
@@ -86,12 +89,14 @@ std::vector<node_vector_t> Architecture::get_lines(
   return found_lines;
 }
 
+template <>
 std::set<Node> Architecture::get_articulation_points(
     const Architecture& subarc) const {
   return graphs::get_subgraph_aps<Node>(
       get_undirected_connectivity(), subarc.get_undirected_connectivity());
 }
 
+template <>
 std::set<Node> Architecture::get_articulation_points() const {
   std::set<Vertex> aps;
   UndirectedConnGraph undir_g = get_undirected_connectivity();
@@ -103,19 +108,6 @@ std::set<Node> Architecture::get_articulation_points() const {
   return ret;
 }
 
-node_set_t Architecture::remove_worst_nodes(unsigned num) {
-  node_set_t out;
-  Architecture original_arch(*this);
-  for (unsigned k = 0; k < num; k++) {
-    std::optional<Node> v = find_worst_node(original_arch);
-    if (v.has_value()) {
-      remove_uid(v.value());
-      out.insert(v.value());
-    }
-  }
-  return out;
-}
-
 static bool lexicographical_comparison(
     const std::vector<std::size_t>& dist1,
     const std::vector<std::size_t>& dist2) {
@@ -123,37 +115,7 @@ static bool lexicographical_comparison(
       dist1.begin(), dist1.end(), dist2.begin(), dist2.end());
 }
 
-int tri_lexicographical_comparison(
-    const std::vector<std::size_t>& dist1,
-    const std::vector<std::size_t>& dist2) {
-  // add assertion that these are the same size distance vectors
-  auto start_dist1 = dist1.cbegin();
-  auto start_dist2 = dist2.cbegin();
-
-  while (start_dist1 != dist1.cend()) {
-    if (start_dist2 == dist2.cend() || *start_dist2 < *start_dist1) {
-      return 0;
-    } else if (*start_dist1 < *start_dist2) {
-      return 1;
-    }
-    ++start_dist1;
-    ++start_dist2;
-  }
-  return -1;
-}
-
-MatrixXb Architecture::get_connectivity() const {
-  unsigned n = n_uids();
-  MatrixXb connectivity = MatrixXb(n, n);
-  for (unsigned i = 0; i != n; ++i) {
-    for (unsigned j = 0; j != n; ++j) {
-      connectivity(i, j) = connection_exists(Node(i), Node(j)) |
-                           connection_exists(Node(j), Node(i));
-    }
-  }
-  return connectivity;
-}
-
+template <>
 std::optional<Node> Architecture::find_worst_node(
     const Architecture& original_arch) {
   node_set_t ap = get_articulation_points();
@@ -192,6 +154,52 @@ std::optional<Node> Architecture::find_worst_node(
     }
   }
   return worst_node;
+}
+
+template <>
+node_set_t Architecture::remove_worst_nodes(unsigned num) {
+  node_set_t out;
+  Architecture original_arch(*this);
+  for (unsigned k = 0; k < num; k++) {
+    std::optional<Node> v = find_worst_node(original_arch);
+    if (v.has_value()) {
+      remove_uid(v.value());
+      out.insert(v.value());
+    }
+  }
+  return out;
+}
+
+int tri_lexicographical_comparison(
+    const std::vector<std::size_t>& dist1,
+    const std::vector<std::size_t>& dist2) {
+  // add assertion that these are the same size distance vectors
+  auto start_dist1 = dist1.cbegin();
+  auto start_dist2 = dist2.cbegin();
+
+  while (start_dist1 != dist1.cend()) {
+    if (start_dist2 == dist2.cend() || *start_dist2 < *start_dist1) {
+      return 0;
+    } else if (*start_dist1 < *start_dist2) {
+      return 1;
+    }
+    ++start_dist1;
+    ++start_dist2;
+  }
+  return -1;
+}
+
+template <>
+MatrixXb Architecture::get_connectivity() const {
+  unsigned n = n_uids();
+  MatrixXb connectivity = MatrixXb(n, n);
+  for (unsigned i = 0; i != n; ++i) {
+    for (unsigned j = 0; j != n; ++j) {
+      connectivity(i, j) = connection_exists(Node(i), Node(j)) |
+                           connection_exists(Node(j), Node(i));
+    }
+  }
+  return connectivity;
 }
 
 void to_json(nlohmann::json& j, const Architecture::Connection& link) {
