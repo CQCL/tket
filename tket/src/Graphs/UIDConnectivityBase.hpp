@@ -16,7 +16,6 @@
 #define _TKET_UIDConnectivityBase_H
 
 #include <boost/range/adaptor/transformed.hpp>
-#include <stdexcept>
 
 #include "Graphs/AbstractGraph.hpp"
 #include "Graphs/Utils.hpp"
@@ -24,13 +23,6 @@
 #include "Utils/UnitID.hpp"
 
 namespace tket::graphs {
-
-class UIDDoesNotExistError : public std::logic_error {
-  using std::logic_error::logic_error;
-};
-class EdgeDoesNotExistError : public std::logic_error {
-  using std::logic_error::logic_error;
-};
 
 /** edges of connectivity graph */
 struct UIDInteraction {
@@ -93,7 +85,7 @@ class UIDConnectivityBase : public AbstractGraph<UID_t> {
   /** remove vertex from the interaction graph */
   void remove_uid(const UID_t uid) {
     if (!uid_exists(uid)) {
-      throw UIDDoesNotExistError(
+      throw NodeDoesNotExistError(
           "The UID passed to UIDConnectivity::remove_uid must "
           "exist!");
     }

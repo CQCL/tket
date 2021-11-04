@@ -15,10 +15,19 @@
 #ifndef _TKET_AbstractGraph_H
 #define _TKET_AbstractGraph_H
 
+#include <stdexcept>
 #include <utility>
 #include <vector>
 
 namespace tket::graphs {
+
+class NodeDoesNotExistError : public std::logic_error {
+  using std::logic_error::logic_error;
+};
+
+class EdgeDoesNotExistError : public std::logic_error {
+  using std::logic_error::logic_error;
+};
 
 /**
  * Abstract class for representing graphs.

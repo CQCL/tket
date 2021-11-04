@@ -37,7 +37,7 @@ template <typename UID_t>
 void UIDConnectivityBase<UID_t>::add_connection(
     const UID_t uid1, const UID_t uid2, unsigned weight) {
   if (!uid_exists(uid1) || !uid_exists(uid2)) {
-    throw UIDDoesNotExistError(
+    throw NodeDoesNotExistError(
         "The UIDs passed to UIDConnectivity::add_connection must "
         "exist");
   }
@@ -49,7 +49,7 @@ template <typename UID_t>
 void UIDConnectivityBase<UID_t>::remove_connection(
     const Connection edge, bool remove_unused_vertices) {
   if (!uid_exists(edge.first) || !uid_exists(edge.second)) {
-    throw UIDDoesNotExistError(
+    throw NodeDoesNotExistError(
         "Trying to remove an edge with non-existent vertices");
   }
   auto [e, exists] =
@@ -82,7 +82,7 @@ template <typename UID_t>
 bool UIDConnectivityBase<UID_t>::connection_exists(
     const UID_t uid1, const UID_t uid2) const {
   if (!uid_exists(uid1) || !uid_exists(uid2)) {
-    throw UIDDoesNotExistError(
+    throw NodeDoesNotExistError(
         "The UIDs passed to UIDConnectivity::connection_exists must "
         "exist");
   }
@@ -99,7 +99,7 @@ template <typename UID_t>
 unsigned UIDConnectivityBase<UID_t>::get_connection_weight(
     const UID_t uid1, const UID_t uid2) const {
   if (!uid_exists(uid1) || !uid_exists(uid2)) {
-    throw UIDDoesNotExistError(
+    throw NodeDoesNotExistError(
         "Trying to retrieve edge weight from non-existent vertices");
   }
   auto [e, exists] = boost::edge(to_vertices(uid1), to_vertices(uid2), graph);
@@ -113,7 +113,7 @@ unsigned UIDConnectivityBase<UID_t>::get_connection_weight(
 template <typename UID_t>
 unsigned UIDConnectivityBase<UID_t>::get_degree(const UID_t v) const {
   if (!uid_exists(v)) {
-    throw UIDDoesNotExistError(
+    throw NodeDoesNotExistError(
         "Trying to retrieve vertex degree from non-existent vertex");
   }
   return boost::degree(to_vertices(v), graph);
@@ -144,7 +144,7 @@ template <typename UID_t>
 std::vector<UID_t> UIDConnectivityBase<UID_t>::get_path(
     const UID_t root, const UID_t target) const {
   if (!uid_exists(root) || !uid_exists(target)) {
-    throw UIDDoesNotExistError(
+    throw NodeDoesNotExistError(
         "Trying to get path between non-existent vertices");
   }
   using parent_vec = typename BFS<UndirectedConnGraph>::parent_vec;
@@ -162,7 +162,7 @@ std::vector<UID_t> UIDConnectivityBase<UID_t>::get_path(
 template <typename UID_t>
 std::size_t UIDConnectivityBase<UID_t>::get_max_depth(const UID_t root) const {
   if (!uid_exists(root)) {
-    throw UIDDoesNotExistError("Trying to get depth from non-existent vertex");
+    throw NodeDoesNotExistError("Trying to get depth from non-existent vertex");
   }
   return run_bfs(to_vertices(root), get_undirected_connectivity()).max_depth();
 }
@@ -170,7 +170,7 @@ std::size_t UIDConnectivityBase<UID_t>::get_max_depth(const UID_t root) const {
 template <typename UID_t>
 unsigned UIDConnectivityBase<UID_t>::get_out_degree(const UID_t uid) const {
   if (!uid_exists(uid)) {
-    throw UIDDoesNotExistError(
+    throw NodeDoesNotExistError(
         "Trying to get outdegree from non-existent vertex");
   }
   return boost::out_degree(to_vertices(uid), graph);
@@ -195,7 +195,7 @@ template <typename UID_t>
 std::set<UID_t> UIDConnectivityBase<UID_t>::get_neighbour_uids(
     const UID_t v) const {
   if (!uid_exists(v)) {
-    throw UIDDoesNotExistError(
+    throw NodeDoesNotExistError(
         "Trying to get neighbours from non-existent vertex");
   }
   std::set<UID_t> neighbours;
@@ -233,7 +233,7 @@ template <typename UID_t>
 std::vector<std::size_t> UIDConnectivityBase<UID_t>::get_distances(
     const UID_t root) const {
   if (!uid_exists(root)) {
-    throw UIDDoesNotExistError(
+    throw NodeDoesNotExistError(
         "Trying to get distances from non-existent root vertex");
   }
   return run_bfs(to_vertices(root), get_undirected_connectivity()).get_dists();
