@@ -24,13 +24,6 @@
 
 namespace tket::graphs {
 
-/** edges of connectivity graph */
-struct UIDInteraction {
-  explicit UIDInteraction(unsigned d = 1) : weight(d) {}
-
-  unsigned weight;
-};
-
 /**
  * Base class of UIDConnectivity, where all the implementation resides
  *
@@ -52,11 +45,9 @@ template <typename UID_t>
 class UIDConnectivityBase : public AbstractGraph<UID_t> {
  protected:
   using ConnGraph = boost::adjacency_list<
-      boost::vecS, boost::vecS, boost::bidirectionalS, UID_t,
-      UIDInteraction>;
+      boost::vecS, boost::vecS, boost::bidirectionalS, UID_t, unsigned>;
   using UndirectedConnGraph = boost::adjacency_list<
-      boost::setS, boost::vecS, boost::undirectedS, UID_t,
-      UIDInteraction>;
+      boost::setS, boost::vecS, boost::undirectedS, UID_t, unsigned>;
   using Vertex = utils::vertex<ConnGraph>;
   using UndirectedVertex = utils::vertex<UndirectedConnGraph>;
   using Connection = typename AbstractGraph<UID_t>::Edge;

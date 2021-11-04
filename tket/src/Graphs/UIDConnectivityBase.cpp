@@ -41,8 +41,7 @@ void UIDConnectivityBase<UID_t>::add_connection(
         "The UIDs passed to UIDConnectivity::add_connection must "
         "exist");
   }
-  boost::add_edge(
-      to_vertices(uid1), to_vertices(uid2), UIDInteraction(weight), graph);
+  boost::add_edge(to_vertices(uid1), to_vertices(uid2), weight, graph);
 }
 
 template <typename UID_t>
@@ -107,7 +106,7 @@ unsigned UIDConnectivityBase<UID_t>::get_connection_weight(
     return 0.;
   }
 
-  return graph[e].weight;
+  return graph[e];
 }
 
 template <typename UID_t>

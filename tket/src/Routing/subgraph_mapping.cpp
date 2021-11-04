@@ -46,7 +46,7 @@ class label_writer {
   explicit label_writer(Graph _g) : g(_g) {}
   void operator()(
       std::ostream& out, const graphs::utils::edge<Graph>& v) const {
-    out << "[label=\"" << g[v].weight << "\"]";
+    out << "[label=\"" << g[v] << "\"]";
   }
   void operator()(
       std::ostream& out, const graphs::utils::vertex<Graph>& v) const {
@@ -113,8 +113,7 @@ std::vector<qubit_bimap_t> monomorphism_edge_break(
       auto max_e_it = boost::first_max_element(
           e_its.first, e_its.second,
           [&undirected_pattern](const edge_t& lhs, const edge_t& rhs) {
-            return undirected_pattern[lhs].weight <
-                   undirected_pattern[rhs].weight;
+            return undirected_pattern[lhs] < undirected_pattern[rhs];
           });
       graphs::utils::remove_edge(*max_e_it, undirected_pattern, true);
     }
