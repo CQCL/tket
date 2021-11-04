@@ -242,6 +242,36 @@ SCENARIO("Test LexiRoute::solve") {
     LexiRoute lr1(shared_arc, mf);
     lr1.solve(20);
   }
+
+  GIVEN("Single best solution, with measurements.") {
+    Circuit circ(6, 1);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[3]});
+    circ.add_op<UnitID>(OpType::Measure, {qubits[1], Bit(0)});
+    circ.add_op<UnitID>(OpType::CX, {qubits[4], qubits[5]});
+    circ.add_op<UnitID>(OpType::Measure, {qubits[3], Bit(0)});
+    // n0 -- n1 -- n2 -- n3 -- n4
+    //             |     |
+    //             n5    n7
+    //             |
+    //             n6
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]}, {qubits[1], nodes[1]}, {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]}, {qubits[4], nodes[6]}, {qubits[5], nodes[5]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    LexiRoute lr(shared_arc, mf);
+
+    lr.solve(4);
+    std::vector<Command> commands = mf->circuit_.get_commands();
+    REQUIRE(commands.size() == 6);
+    Command swap_c = commands[1];
+    unit_vector_t uids = {nodes[1], nodes[2]};
+    REQUIRE(swap_c.get_args() == uids);
+    REQUIRE(*swap_c.get_op_ptr() == *get_op_ptr(OpType::SWAP));
+  }
 }
 SCENARIO("Test LexiRouteRoutingMethod") {
   std::vector<Node> nodes = {
