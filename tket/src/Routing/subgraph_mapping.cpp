@@ -16,7 +16,7 @@
 #include <boost/algorithm/minmax_element.hpp>
 #include <chrono>
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Graphs/Utils.hpp"
 #include "Placement.hpp"
 #include "Routing/Placement.hpp"

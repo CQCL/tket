@@ -18,7 +18,7 @@
 #include <optional>
 #include <queue>
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Graphs/Utils.hpp"
 #include "Placement.hpp"
 #include "Routing.hpp"
