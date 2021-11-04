@@ -19,6 +19,14 @@
 namespace tket::graphs {
 
 template <typename UID_t>
+UIDConnectivityBase<UID_t>::UIDConnectivityBase(const std::vector<UID_t>& uids)
+    : AbstractGraph<UID_t>(uids), graph() {
+  for (const UnitID& uid : uids) {
+    add_uid(UID_t(uid));
+  }
+}
+
+template <typename UID_t>
 UIDConnectivityBase<UID_t>::UIDConnectivityBase(
     const std::vector<Connection>& edges)
     : graph() {

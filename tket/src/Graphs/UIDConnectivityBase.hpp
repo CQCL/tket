@@ -57,12 +57,7 @@ class UIDConnectivityBase : public AbstractGraph<UID_t> {
   UIDConnectivityBase() : AbstractGraph<UID_t>(), graph(), uid_to_vertex() {}
 
   /** constructor from list of vertices */
-  explicit UIDConnectivityBase(const std::vector<UID_t>& uids)
-      : AbstractGraph<UID_t>(uids), graph() {
-    for (const UnitID& uid : uids) {
-      add_uid(UID_t(uid));
-    }
-  }
+  explicit UIDConnectivityBase(const std::vector<UID_t>& uids);
 
   /** constructor from list of edges */
   explicit UIDConnectivityBase(const std::vector<Connection>& edges);
