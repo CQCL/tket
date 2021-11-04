@@ -152,7 +152,7 @@ std::vector<UID_t> UIDConnectivityBase<UID_t>::get_path(
   const UndirectedConnGraph& g = get_undirected_connectivity();
   auto bfs = run_bfs(to_vertices(root), g);
 
-  auto to_uid = [&g](UndirectedVertex v) { return g[v].uid; };
+  auto to_uid = [&g](UndirectedVertex v) { return g[v]; };
   parent_vec path = bfs.path_to_root(to_vertices(target));
   std::vector<UID_t> converted_path(path.size());
   std::transform(path.begin(), path.end(), converted_path.begin(), to_uid);
@@ -222,9 +222,9 @@ auto UIDConnectivityBase<UID_t>::get_connections_vec() const
     -> std::vector<Connection> {
   std::vector<Connection> out;
   for (auto e : get_edges_it()) {
-    UIDVertex<UID_t> source = graph[boost::source(e, graph)];
-    UIDVertex<UID_t> target = graph[boost::target(e, graph)];
-    out.push_back({source.uid, target.uid});
+    UID_t source = graph[boost::source(e, graph)];
+    UID_t target = graph[boost::target(e, graph)];
+    out.push_back({source, target});
   }
   return out;
 }
@@ -279,9 +279,6 @@ bool UIDConnectivityBase<UID_t>::operator==(
   return true;
 }
 
-template struct UIDVertex<UnitID>;
-template struct UIDVertex<Node>;
-template struct UIDVertex<Qubit>;
 template class UIDConnectivityBase<UnitID>;
 template class UIDConnectivityBase<Node>;
 template class UIDConnectivityBase<Qubit>;

@@ -32,20 +32,6 @@ class EdgeDoesNotExistError : public std::logic_error {
   using std::logic_error::logic_error;
 };
 
-/** vertices of connectivity graph */
-template <typename UID_t>
-struct UIDVertex {
-  UIDVertex() : uid() {}
-  explicit UIDVertex(const UID_t _uid) : uid(_uid) {}
-
-  bool operator==(const UIDVertex<UID_t> other) { return uid == other.uid; }
-  bool operator<(const UIDVertex<UID_t>& other) const {
-    return uid < other.uid;
-  }
-
-  UID_t uid;
-};
-
 /** edges of connectivity graph */
 struct UIDInteraction {
   explicit UIDInteraction(unsigned d = 1) : weight(d) {}
@@ -74,10 +60,10 @@ template <typename UID_t>
 class UIDConnectivityBase : public AbstractGraph<UID_t> {
  protected:
   using ConnGraph = boost::adjacency_list<
-      boost::vecS, boost::vecS, boost::bidirectionalS, UIDVertex<UID_t>,
+      boost::vecS, boost::vecS, boost::bidirectionalS, UID_t,
       UIDInteraction>;
   using UndirectedConnGraph = boost::adjacency_list<
-      boost::setS, boost::vecS, boost::undirectedS, UIDVertex<UID_t>,
+      boost::setS, boost::vecS, boost::undirectedS, UID_t,
       UIDInteraction>;
   using Vertex = utils::vertex<ConnGraph>;
   using UndirectedVertex = utils::vertex<UndirectedConnGraph>;
@@ -100,7 +86,7 @@ class UIDConnectivityBase : public AbstractGraph<UID_t> {
 
   /** add vertex to interaction graph */
   void add_uid(const UID_t uid) {
-    Vertex v = boost::add_vertex(UIDVertex(uid), graph);
+    Vertex v = boost::add_vertex(uid, graph);
     uid_to_vertex.left.insert({uid, v});
   }
 
@@ -215,7 +201,7 @@ class UIDConnectivityBase : public AbstractGraph<UID_t> {
   using left_map = typename vertex_bimap::left_map;
   using right_map = typename vertex_bimap::right_map;
   /* get UnitID from vertex */
-  const UnitID& get_uid(Vertex v) const { return graph[v].uid; }
+  const UnitID& get_uid(Vertex v) const { return graph[v]; }
 
   left_map& to_vertices() { return uid_to_vertex.left; }
   const left_map& to_vertices() const { return uid_to_vertex.left; }
@@ -246,9 +232,6 @@ class UIDsNotConnected : public std::logic_error {
 extern template class UIDConnectivityBase<UnitID>;
 extern template class UIDConnectivityBase<Node>;
 extern template class UIDConnectivityBase<Qubit>;
-extern template struct UIDVertex<UnitID>;
-extern template struct UIDVertex<Node>;
-extern template struct UIDVertex<Qubit>;
 
 }  // namespace tket::graphs
 

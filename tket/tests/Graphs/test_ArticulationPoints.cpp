@@ -37,7 +37,7 @@ static UndirectedConnGraph<Node> get_graph(std::vector<Edge> edges) {
   }
   UndirectedConnGraph<Node> graph(n_vertices);
   for (unsigned i = 0; i < n_vertices; ++i) {
-    graph[boost::vertex(i, graph)].uid = Node(i);
+    graph[boost::vertex(i, graph)] = Node(i);
   }
   for (auto [e1, e2] : edges) {
     boost::add_edge(e1, e2, graph);
@@ -135,11 +135,11 @@ SCENARIO("Run get_subgraph_aps") {
 SCENARIO("Find APs of disconnected nodes") {
   UndirectedConnGraph<Node> graph(2);
   for (unsigned i = 0; i < 2; ++i) {
-    graph[boost::vertex(i, graph)].uid = Node(i);
+    graph[boost::vertex(i, graph)] = Node(i);
   }
 
   UndirectedConnGraph<Node> subgraph(1);
-  subgraph[boost::vertex(0, graph)].uid = Node(0);
+  subgraph[boost::vertex(0, graph)] = Node(0);
 
   REQUIRE(get_subgraph_aps<Node>(graph, subgraph).size() == 0);
 }

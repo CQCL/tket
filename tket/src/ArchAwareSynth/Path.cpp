@@ -24,8 +24,8 @@ bool vf2_match_add_callback<GraphP, GraphT>::operator()(
     const CorrespondenceMap1To2 &f, const CorrespondenceMap2To1 &) {
   qubit_bimap_t new_node_map;
   BGL_FORALL_VERTICES_T(v, pattern_graph_, GraphP) {
-    Qubit qb = pattern_graph_[v].uid;
-    Node node = target_graph_[get(f, v)].uid;
+    Qubit qb = pattern_graph_[v];
+    Node node = target_graph_[get(f, v)];
     new_node_map.insert({qb, node});
   }
   n_maps_.push_back(new_node_map);

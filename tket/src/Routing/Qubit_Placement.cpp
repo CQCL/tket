@@ -140,7 +140,7 @@ QubitLineList qubit_lines(const Circuit& circ) {
     QubitLine found;
     std::transform(
         u_line.begin(), u_line.end(), std::back_inserter(found),
-        [&graph](auto v) -> Qubit { return graph[v].uid; });
+        [&graph](auto v) -> Qubit { return graph[v]; });
     found_line_size = found.size();
     if (found_line_size > 1) {
       found_lines.push_back(found);

@@ -78,7 +78,7 @@ std::vector<node_vector_t> Architecture::get_lines(
       // convert Vertex to Node
       node_vector_t to_add;
       for (Vertex v : longest) {
-        to_add.push_back(curr_graph[v].uid);
+        to_add.push_back(curr_graph[v]);
       }
       found_lines.push_back(to_add);
       for (Vertex v : longest) {
@@ -103,7 +103,7 @@ std::set<Node> Architecture::get_articulation_points() const {
   boost::articulation_points(undir_g, std::inserter(aps, aps.begin()));
   std::set<Node> ret;
   for (Vertex ap : aps) {
-    ret.insert(undir_g[ap].uid);
+    ret.insert(undir_g[ap]);
   }
   return ret;
 }

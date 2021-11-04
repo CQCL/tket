@@ -61,13 +61,13 @@ void BicomponentGraph<UID_t>::compute_components_map() {
       underlying_g, boost::make_assoc_property_map(edge_to_comp),
       std::back_inserter(underlying_aps));
   for (auto v_ap : underlying_aps) {
-    aps.push_back(underlying_g[v_ap].uid);
+    aps.push_back(underlying_g[v_ap]);
   }
   unsigned n_components = bgl_res.first;
 
   // Now populate map from vertices to the set of biconnected components of v
   for (auto v : boost::make_iterator_range(boost::vertices(underlying_g))) {
-    UID_t uid = underlying_g[v].uid;
+    UID_t uid = underlying_g[v];
     vertex_to_comps.insert({uid, {}});
     // we get the components `v` belongs to by looking at the components
     // of its incident edges
@@ -212,7 +212,7 @@ std::set<UID_t> get_subgraph_aps(
     const UndirectedConnGraph<UID_t>& subgraph) {
   detail::BicomponentGraph<UID_t> bicomp_graph(graph);
   using funcT = std::function<UID_t(unsigned)>;
-  funcT to_uid = [&subgraph](unsigned v) { return subgraph[v].uid; };
+  funcT to_uid = [&subgraph](unsigned v) { return subgraph[v]; };
   auto selected = boost::make_iterator_range(boost::vertices(subgraph)) |
                   boost::adaptors::transformed(to_uid);
   bicomp_graph.select_comps(selected);
