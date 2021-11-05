@@ -26,7 +26,13 @@ protected:
   using AbstractGraph<T>::node_exists;
   using AbstractGraph<T>::edge_exists;
 
-  bool edge_exists(const T& node1, const T& node2) const override;
+  bool edge_exists(const T& node1, const T& node2) const override {
+    if (!node_exists(node1) || !node_exists(node2)) {
+      throw NodeDoesNotExistError(
+          "The UIDs passed to CompleteGraph::edge_exists must exist.");
+    }
+    return true;
+  }
 };
 
 }  // namespace tket::graphs
