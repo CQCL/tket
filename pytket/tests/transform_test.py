@@ -15,15 +15,7 @@
 from pathlib import Path
 from pytket.circuit import Circuit, OpType, PauliExpBox  # type: ignore
 from pytket.pauli import Pauli  # type: ignore
-from pytket.passes import (
-    RemoveRedundancies,
-    KAKDecomposition,
-    ThreeQubitSquash,
-    CommuteThroughMultis,
-    PauliSquash,
-    FullPeepholeOptimise,
-    GlobalisePhasedX,
-)  # type: ignore
+from pytket.passes import RemoveRedundancies, KAKDecomposition, ThreeQubitSquash, CommuteThroughMultis, PauliSquash, FullPeepholeOptimise, GlobalisePhasedX  # type: ignore
 from pytket.predicates import CompilationUnit  # type: ignore
 from pytket.transform import Transform, CXConfigType, PauliSynthStrat  # type: ignore
 from pytket.qasm import circuit_from_qasm
