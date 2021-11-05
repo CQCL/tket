@@ -180,7 +180,7 @@ class UIDConnectivityBase : public AbstractGraph<UID_t> {
   using left_map = typename vertex_bimap::left_map;
   using right_map = typename vertex_bimap::right_map;
   /* get UnitID from vertex */
-  const UnitID& get_uid(Vertex v) const { return graph[v]; }
+  const UID_t& get_uid(Vertex v) const { return graph[v]; }
 
   left_map& to_vertices() { return uid_to_vertex.left; }
   const left_map& to_vertices() const { return uid_to_vertex.left; }

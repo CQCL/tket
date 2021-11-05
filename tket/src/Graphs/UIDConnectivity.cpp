@@ -22,7 +22,7 @@ namespace tket::graphs {
 
 template <typename UID_t>
 const std::vector<std::size_t>& UIDConnectivity<UID_t>::get_distances(
-    const UnitID& root) const& {
+    const UID_t& root) const& {
   if (distance_cache.find(root) == distance_cache.end()) {
     distance_cache[root] = Base::get_distances(UID_t(root));
   }
@@ -31,7 +31,7 @@ const std::vector<std::size_t>& UIDConnectivity<UID_t>::get_distances(
 
 template <typename UID_t>
 std::vector<std::size_t>&& UIDConnectivity<UID_t>::get_distances(
-    const UnitID& root) const&& {
+    const UID_t& root) const&& {
   if (distance_cache.find(root) == distance_cache.end()) {
     distance_cache[root] = Base::get_distances(UID_t(root));
   }

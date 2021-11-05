@@ -57,8 +57,8 @@ class UIDConnectivity : public UIDConnectivityBase<UID_t> {
 
   // We cache distances. A value of zero in the cache implies that the nodes are
   // disconnected (unless they are equal).
-  const std::vector<std::size_t>& get_distances(const UnitID& root) const&;
-  std::vector<std::size_t>&& get_distances(const UnitID& root) const&&;
+  const std::vector<std::size_t>& get_distances(const UID_t& root) const&;
+  std::vector<std::size_t>&& get_distances(const UID_t& root) const&&;
 
   /**
    * Graph distance between two nodes.
@@ -97,7 +97,7 @@ class UIDConnectivity : public UIDConnectivityBase<UID_t> {
     distance_cache.clear();
     undir_graph = std::nullopt;
   }
-  mutable std::map<UnitID, std::vector<std::size_t>> distance_cache;
+  mutable std::map<UID_t, std::vector<std::size_t>> distance_cache;
   mutable std::optional<UndirectedConnGraph> undir_graph;
 };
 
