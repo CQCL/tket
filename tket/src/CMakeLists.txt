@@ -155,7 +155,6 @@ set(TKET_SOURCES
     ${TKET_GRAPH_DIR}/GraphRoutines.cpp
     ${TKET_GRAPH_DIR}/LargeCliquesResult.cpp
     ${TKET_GRAPH_DIR}/ArticulationPoints.cpp
-    ${TKET_GRAPH_DIR}/AbstractGraph.cpp
     ${TKET_GRAPH_DIR}/CompleteGraph.cpp
 
     # Transformations
