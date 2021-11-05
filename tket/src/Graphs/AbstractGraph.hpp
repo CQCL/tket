@@ -37,11 +37,15 @@ class EdgeDoesNotExistError : public std::logic_error {
  */
 template <typename T>
 class AbstractGraph {
+ protected:
+  using Edge = std::pair<T, T>;
+  std::set<T> nodes_;
+
  public:
   /** Construct an empty graph */
   AbstractGraph() : nodes_() {}
 
-  /** Construct from list of nodes */
+  /** Construct from vector of nodes */
   explicit AbstractGraph(const std::vector<T> &nodes)
       : nodes_({nodes.begin(), nodes.end()}) {}
 
@@ -51,9 +55,18 @@ class AbstractGraph {
   /** Check if a node exists */
   bool node_exists(const T &node) const { return nodes_.contains(node); }
 
- protected:
-  using Edge = std::pair<T, T>;
-  std::set<T> nodes_;
+  const std::set<T> &get_all_nodes() const { return nodes_; }
+
+  std::set<T> get_all_nodes_set() const { return nodes_; }
+
+  std::vector<T> get_all_nodes_vec() const {
+    return {nodes_.begin(), nodes_.end()};
+  }
+
+  /** Number of nodes */
+  unsigned n_nodes() const { return nodes_.size(); }
+
+  virtual std::vector<Edge> get_all_edges_vec() const = 0;
 };
 
 }  // namespace tket::graphs

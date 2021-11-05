@@ -204,7 +204,7 @@ IterationOrder::IterationOrder(const Architecture &arch) {
   unsigned whilecount = 0;
   while ((visited_nodes.size() < arch.n_nodes()) &&
          (whilecount < arch.n_nodes())) {
-    for (auto edge : arch.get_connections_vec()) {
+    for (auto edge : arch.get_all_edges_vec()) {
       if (visited_nodes.count(edge.first) &&
           (!visited_nodes.count(edge.second))) {
         iterationorder.push_back(edge.second);

@@ -115,7 +115,7 @@ PYBIND11_MODULE(routing, m) {
           "nodes", &Architecture::get_all_nodes_vec,
           "Returns all nodes of architecture as UnitID objects. ")
       .def_property_readonly(
-          "coupling", &Architecture::get_connections_vec,
+          "coupling", &Architecture::get_all_edges_vec,
           "Returns the coupling map of the Architecture as "
           "UnitIDs. ")
       .def(

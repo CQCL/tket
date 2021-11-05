@@ -28,7 +28,7 @@ template <>
 Architecture Architecture::create_subarch(
     const std::vector<Node>& subarc_nodes) {
   Architecture subarc(subarc_nodes);
-  for (auto [u1, u2] : get_connections_vec()) {
+  for (auto [u1, u2] : get_all_edges_vec()) {
     if (subarc.node_exists(u1) && subarc.node_exists(u2)) {
       subarc.add_connection(u1, u2);
     }
@@ -219,7 +219,7 @@ void to_json(nlohmann::json& j, const Architecture& ar) {
   j["nodes"] = nodes;
 
   nlohmann::json links;
-  for (const Architecture::Connection& con : ar.get_connections_vec()) {
+  for (const Architecture::Connection& con : ar.get_all_edges_vec()) {
     nlohmann::json entry;
     entry["link"] = con;
     entry["weight"] = ar.get_connection_weight(con.first, con.second);
@@ -240,51 +240,24 @@ void from_json(const nlohmann::json& j, Architecture& ar) {
   }
 }
 
+void to_json(nlohmann::json& j, const FullyConnected& ar) {
+  auto uid_its = ar.get_all_nodes();
+  std::vector<Node> nodes{uid_its.begin(), uid_its.end()};
+  j["nodes"] = nodes;
+}
+
+void from_json(const nlohmann::json& j, FullyConnected& ar) {
+  for (const Node& n : j.at("nodes").get<node_vector_t>()) {
+    ar.add_node(n);
+  }
+}
+
 //////////////////////////////////////
 //      Architecture subclasses     //
 //////////////////////////////////////
-FullyConnected::FullyConnected(unsigned numberOfNodes)
-    : Architecture(get_edges(numberOfNodes)) {}
-
-node_vector_t FullyConnected::get_nodes_canonical_order(
-    unsigned numberOfNodes) {
-  node_vector_t nodes;
-  for (unsigned i = 0; i < numberOfNodes; i++) {
-    Node n("fcNode", i);
-    nodes.push_back(n);
-  }
-  return nodes;
-}
-
-// The node names below ("fcNode" etc) must begin with a lowercase letter to
-// match QASM requirements when converting circuits.
-
-std::vector<Architecture::Connection> FullyConnected::get_edges(
-    unsigned numberOfNodes) {
-  std::vector<Connection> edges;
-  for (unsigned i = 0; i < numberOfNodes; i++) {
-    for (unsigned j = 0; j < numberOfNodes; j++) {
-      if (i != j) {
-        Node n1("fcNode", i);
-        Node n2("fcNode", j);
-        edges.push_back({n1, n2});
-      }
-    }
-  }
-  return edges;
-}
 
 RingArch::RingArch(unsigned numberOfNodes)
     : Architecture(get_edges(numberOfNodes)) {}
-
-node_vector_t RingArch::get_nodes_canonical_order(unsigned numberOfNodes) {
-  node_vector_t nodes;
-  for (unsigned i = 0; i < numberOfNodes; i++) {
-    Node n("ringNode", i);
-    nodes.push_back(n);
-  }
-  return nodes;
-}
 
 std::vector<Architecture::Connection> RingArch::get_edges(
     unsigned numberOfNodes) {
@@ -303,20 +276,6 @@ SquareGrid::SquareGrid(
       dimension_r{dim_r},
       dimension_c{dim_c},
       layers{_layers} {}
-
-node_vector_t SquareGrid::get_nodes_canonical_order(
-    unsigned dim_r, const unsigned dim_c, const unsigned layers) {
-  node_vector_t nodes;
-  for (unsigned l = 0; l < layers; l++) {
-    for (unsigned ver = 0; ver < dim_r; ver++) {
-      for (unsigned hor = 0; hor < dim_c; hor++) {
-        Node n("gridNode", ver, hor, l);
-        nodes.push_back(n);
-      }
-    }
-  }
-  return nodes;
-}
 
 std::vector<Architecture::Connection> SquareGrid::get_edges(
     const unsigned dim_r, const unsigned dim_c, const unsigned layers) {

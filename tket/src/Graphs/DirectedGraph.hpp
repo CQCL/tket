@@ -43,10 +43,13 @@ class DirectedGraphBase : public AbstractGraph<T> {
   using UndirectedVertex = utils::vertex<UndirectedConnGraph>;
   using Connection = typename AbstractGraph<T>::Edge;
   using AbstractGraph<T>::nodes_;
-  using AbstractGraph<T>::node_exists;
-  using AbstractGraph<T>::edge_exists;
 
  public:
+  using AbstractGraph<T>::node_exists;
+  using AbstractGraph<T>::edge_exists;
+  using AbstractGraph<T>::get_all_nodes_set;
+  using AbstractGraph<T>::get_all_edges_vec;
+
   /** empty default constructor */
   DirectedGraphBase() : AbstractGraph<T>(), graph(), node_to_vertex() {}
 
@@ -187,9 +190,6 @@ class DirectedGraphBase : public AbstractGraph<T> {
     return boost::out_degree(to_vertices(node), graph);
   }
 
-  /** number of vertices */
-  unsigned n_nodes() const { return boost::num_vertices(graph); }
-
   /** number of edges in graph */
   inline unsigned n_connections() const { return boost::num_edges(graph); }
 
@@ -202,11 +202,11 @@ class DirectedGraphBase : public AbstractGraph<T> {
 
   /** get all connections in a vector */
   std::set<Connection> get_connections_set() const {
-    std::vector<Connection> vec = get_connections_vec();
+    std::vector<Connection> vec = get_all_edges_vec();
     return std::set(vec.begin(), vec.end());
   }
 
-  std::vector<Connection> get_connections_vec() const {
+  std::vector<Connection> get_all_edges_vec() const override {
     std::vector<Connection> out;
     for (auto e : get_edges_it()) {
       T source = graph[boost::source(e, graph)];
@@ -246,27 +246,6 @@ class DirectedGraphBase : public AbstractGraph<T> {
   /** remove vertices with deg == 0 */
   inline void remove_stray_nodes() {
     utils::remove_stray_vertices_with_map(graph, node_to_vertex.right);
-  }
-
-  /** set of all UnitIDs in interaction graph */
-  std::set<T> get_all_nodes_set() const {
-    auto nodes = get_all_nodes();
-    std::set<T> out{nodes.begin(), nodes.end()};
-    return out;
-  }
-
-  std::vector<T> get_all_nodes_vec() const {
-    // fix UID ordering by first collecting UIDs in a set
-    auto nodes = get_all_nodes_set();
-    std::vector<T> out{nodes.begin(), nodes.end()};
-    return out;
-  }
-
-  /** iterator of all UnitIDs in interaction graph */
-  auto get_all_nodes() const {
-    return get_vertices_it() |
-           boost::adaptors::transformed(
-               [this](const auto& v) { return get_node(v); });
   }
 
   /* return UIDs with greatest (undirected) degree in graph */

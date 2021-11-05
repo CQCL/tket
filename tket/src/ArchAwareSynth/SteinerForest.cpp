@@ -403,7 +403,7 @@ Circuit phase_poly_synthesis(
   // define new arcitecture
   std::vector<Architecture::Connection> new_con;
   if (cnottype == CNotSynthType::HamPath) {
-    for (auto pair : arch.get_connections_vec()) {
+    for (auto pair : arch.get_all_edges_vec()) {
       new_con.push_back(
           {unitid_to_int_nodes[UnitID(pair.first)],
            unitid_to_int_nodes[UnitID(pair.second)]});

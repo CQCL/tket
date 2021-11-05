@@ -22,6 +22,7 @@
 #include <utility>
 #include <vector>
 
+#include "Graphs/CompleteGraph.hpp"
 #include "Graphs/DirectedGraph.hpp"
 #include "Utils/BiMapHeaders.hpp"
 #include "Utils/EigenConfig.hpp"
@@ -59,6 +60,12 @@ static std::vector<std::pair<Node, Node>> as_nodepairs(
 template <typename T>
 class ArchitectureBase : public T {
  public:
+  using T::edge_exists;
+  using T::get_all_edges_vec;
+  using T::get_all_nodes;
+  using T::get_all_nodes_set;
+  using T::get_all_nodes_vec;
+  using T::n_nodes;
   using T::node_exists;
   using T::T;
 
@@ -106,18 +113,9 @@ typedef ArchitectureBase<graphs::DirectedGraph<Node>> Architecture;
 JSON_DECL(Architecture::Connection)
 JSON_DECL(Architecture)
 
-// Subclass, constructor generates adjacency matrix corresponding to a fully
-// connected architecture
-class FullyConnected : public Architecture {
- public:
-  explicit FullyConnected(unsigned numberOfNodes);
-  // get_all_nodes() does not guarantee to return nodes in any order
-  // this returns the canonical ordering of nodes
-  static node_vector_t get_nodes_canonical_order(unsigned numberOfNodes);
+typedef ArchitectureBase<graphs::CompleteGraph<Node>> FullyConnected;
 
- private:
-  static std::vector<Connection> get_edges(unsigned numberOfNodes);
-};
+JSON_DECL(FullyConnected)
 
 // Subclass, constructor generates adjacency matrix corresponding to a ring
 // architecture
@@ -126,7 +124,6 @@ class RingArch : public Architecture {
   explicit RingArch(unsigned numberOfNodes);
   // get_all_nodes() does not guarantee to return nodes in any order
   // this returns the canonical ordering of nodes
-  static node_vector_t get_nodes_canonical_order(unsigned numberOfNodes);
 
  private:
   static std::vector<Connection> get_edges(unsigned numberOfNodes);
@@ -159,10 +156,6 @@ class SquareGrid : public Architecture {
   // dim_c equiv 'x', dim_r equiv 'y'
   SquareGrid(
       const unsigned dim_r, const unsigned dim_c, const unsigned _layers = 1);
-  // get_all_nodes() does not guarantee to return nodes in any order
-  // this returns the canonical ordering of nodes
-  static node_vector_t get_nodes_canonical_order(
-      unsigned dim_r, const unsigned dim_c, const unsigned layers = 1);
 
  private:
   static std::vector<Connection> get_edges(

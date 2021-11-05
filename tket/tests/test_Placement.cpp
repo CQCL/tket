@@ -27,7 +27,7 @@ using Connection = Architecture::Connection;
 bool check_edge_break_order(
     const Architecture& arc, const QubitGraph& qg, const qubit_bimap_t& map) {
   std::vector<unsigned> mapped_edge_weights, unmapped_edge_weights;
-  for (auto [q1, q2] : qg.get_connections_vec()) {
+  for (auto [q1, q2] : qg.get_all_edges_vec()) {
     const unsigned weight = qg.get_connection_weight(q1, q2);
     if (weight >= unmapped_edge_weights.size()) {
       unmapped_edge_weights.resize(weight + 1, 0);

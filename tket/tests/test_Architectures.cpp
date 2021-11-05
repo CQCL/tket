@@ -27,17 +27,16 @@ namespace graphs {
 namespace test_Architectures {
 
 SCENARIO("Testing FullyConnected") {
-  using Arch = FullyConnected;
   unsigned n_nodes = 10;
-  node_vector_t nodes_vec = Arch::get_nodes_canonical_order(n_nodes);
+  FullyConnected arch(n_nodes);
+  node_vector_t nodes_vec = arch.get_all_nodes_vec();
   node_set_t nodes(nodes_vec.begin(), nodes_vec.end());
-  Arch arch(n_nodes);
 
   REQUIRE(arch.n_nodes() == nodes.size());
   for (const UnitID &uid : arch.get_all_nodes()) {
     REQUIRE(nodes.count(Node(uid)));
   }
-  for (auto [n1, n2] : arch.get_connections_vec()) {
+  for (auto [n1, n2] : arch.get_all_edges_vec()) {
     REQUIRE(nodes.count(n1));
     REQUIRE(nodes.count(n2));
   }
@@ -54,17 +53,16 @@ SCENARIO("Testing FullyConnected") {
 }
 
 SCENARIO("Testing RingArch") {
-  using Arch = RingArch;
   unsigned n_nodes = 10;
-  node_vector_t nodes_vec = Arch::get_nodes_canonical_order(n_nodes);
+  RingArch arch(n_nodes);
+  node_vector_t nodes_vec = arch.get_all_nodes_vec();
   node_set_t nodes(nodes_vec.begin(), nodes_vec.end());
-  Arch arch(n_nodes);
 
   REQUIRE(arch.n_nodes() == nodes.size());
   for (const UnitID &uid : arch.get_all_nodes()) {
     REQUIRE(nodes.count(Node(uid)));
   }
-  for (auto [n1, n2] : arch.get_connections_vec()) {
+  for (auto [n1, n2] : arch.get_all_edges_vec()) {
     REQUIRE(nodes.count(n1));
     REQUIRE(nodes.count(n2));
   }
@@ -77,19 +75,18 @@ SCENARIO("Testing RingArch") {
 }
 
 SCENARIO("Testing SquareGrid") {
-  using Arch = SquareGrid;
   unsigned ver = 5;
   unsigned hor = 5;
   unsigned layer = 2;
-  node_vector_t nodes_vec = Arch::get_nodes_canonical_order(ver, hor, layer);
+  SquareGrid arch(ver, hor, layer);
+  node_vector_t nodes_vec = arch.get_all_nodes_vec();
   node_set_t nodes(nodes_vec.begin(), nodes_vec.end());
-  Arch arch(ver, hor, layer);
 
   REQUIRE(nodes.size() == arch.n_nodes());
   for (const UnitID &uid : arch.get_all_nodes()) {
     REQUIRE(nodes.count(Node(uid)));
   }
-  for (auto [n1, n2] : arch.get_connections_vec()) {
+  for (auto [n1, n2] : arch.get_all_edges_vec()) {
     REQUIRE(nodes.count(n1));
     REQUIRE(nodes.count(n2));
   }

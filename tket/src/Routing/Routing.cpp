@@ -276,7 +276,7 @@ qubit_bimap_t Routing::remap(const qubit_bimap_t& init) {
   // distance between them is chosen. Algorithm then repeats 1)->4).
   // for(unsigned count=0;slice_frontier_.slice.size()!=0 && count<2;count++){
   while (!slice_frontier_.slice->empty()) {
-    SwapResults single_swap = try_all_swaps(current_arc_.get_connections_vec());
+    SwapResults single_swap = try_all_swaps(current_arc_.get_all_edges_vec());
     if (single_swap.success) {
       route_stats.n_try_all_swaps++;
       perform_action(single_swap.swap);
