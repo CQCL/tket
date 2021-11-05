@@ -21,7 +21,6 @@
 #include "Graphs/TreeSearch.hpp"
 #include "Graphs/Utils.hpp"
 #include "Utils/GraphHeaders.hpp"
-#include "Utils/UnitID.hpp"
 
 namespace tket::graphs {
 
