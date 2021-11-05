@@ -370,7 +370,7 @@ PredicatePtr ConnectivityPredicate::meet(const Predicate& other) const {
 std::string ConnectivityPredicate::to_string() const {
   std::string str = auto_name(*this) + ":{ ";
   str +=
-      ("Nodes: " + std::to_string(arch_.n_uids()) +
+      ("Nodes: " + std::to_string(arch_.n_nodes()) +
        ", Edges: " + std::to_string(arch_.n_connections())) += " }";
   return str;
 }
@@ -425,7 +425,7 @@ PredicatePtr DirectednessPredicate::meet(const Predicate& other) const {
 std::string DirectednessPredicate::to_string() const {
   std::string str = auto_name(*this) + ":{ ";
   str +=
-      ("Nodes: " + std::to_string(arch_.n_uids()) +
+      ("Nodes: " + std::to_string(arch_.n_nodes()) +
        ", Edges: " + std::to_string(arch_.n_connections())) += " }";
   return str;
 }

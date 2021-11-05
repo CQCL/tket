@@ -30,7 +30,7 @@ SCENARIO("Correct creation of DirectedGraph graphs") {
   GIVEN("Construct empty graph of nodes") {
     std::vector<Node> nodes{Node(3), Node(2), Node(5), Node(1)};
     DirectedGraph<Node> uidgraph(nodes);
-    CHECK(uidgraph.n_uids() == 4);
+    CHECK(uidgraph.n_nodes() == 4);
     CHECK(uidgraph.n_connected() == 0);
     CHECK(uidgraph.node_exists(Node(3)));
     CHECK(uidgraph.node_exists(Node(1)));
@@ -50,7 +50,7 @@ SCENARIO("Correct creation of DirectedGraph graphs") {
         {Qubit(1), Qubit(0)}};
     DirectedGraph<Qubit> uidgraph(edges);
 
-    CHECK(uidgraph.n_uids() == 5);
+    CHECK(uidgraph.n_nodes() == 5);
     CHECK(uidgraph.n_connected() == 5);
 
     CHECK(uidgraph.edge_exists(Qubit(0), Qubit(2)));
@@ -62,7 +62,7 @@ SCENARIO("Correct creation of DirectedGraph graphs") {
   GIVEN("Construct graph using member functions") {
     std::vector<Node> uids = {Node(4), Node(1), Node(0), Node(1231)};
     DirectedGraph<Node> uidgraph;
-    for (auto u : uids) uidgraph.add_uid(u);
+    for (auto u : uids) uidgraph.add_node(u);
 
     uidgraph.add_connection(uids[0], uids[3], 3);
     uidgraph.add_connection(uids[2], uids[3], 0);
@@ -71,12 +71,12 @@ SCENARIO("Correct creation of DirectedGraph graphs") {
     CHECK(uidgraph.edge_exists(uids[2], uids[3]));
     CHECK(uidgraph.n_connections() == 2);
     CHECK(uidgraph.get_connection_weight(uids[0], uids[3]) == 3);
-    CHECK(uidgraph.n_uids() == 4);
+    CHECK(uidgraph.n_nodes() == 4);
 
     uidgraph.remove_connection(uids[0], uids[3]);
-    uidgraph.remove_stray_uids();
+    uidgraph.remove_stray_nodes();
 
-    CHECK(uidgraph.n_uids() == 2);
+    CHECK(uidgraph.n_nodes() == 2);
     CHECK(uidgraph.n_connections() == 1);
   }
 }

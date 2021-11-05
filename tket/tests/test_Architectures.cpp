@@ -33,8 +33,8 @@ SCENARIO("Testing FullyConnected") {
   node_set_t nodes(nodes_vec.begin(), nodes_vec.end());
   Arch arch(n_nodes);
 
-  REQUIRE(arch.n_uids() == nodes.size());
-  for (const UnitID &uid : arch.get_all_uids()) {
+  REQUIRE(arch.n_nodes() == nodes.size());
+  for (const UnitID &uid : arch.get_all_nodes()) {
     REQUIRE(nodes.count(Node(uid)));
   }
   for (auto [n1, n2] : arch.get_connections_vec()) {
@@ -60,8 +60,8 @@ SCENARIO("Testing RingArch") {
   node_set_t nodes(nodes_vec.begin(), nodes_vec.end());
   Arch arch(n_nodes);
 
-  REQUIRE(arch.n_uids() == nodes.size());
-  for (const UnitID &uid : arch.get_all_uids()) {
+  REQUIRE(arch.n_nodes() == nodes.size());
+  for (const UnitID &uid : arch.get_all_nodes()) {
     REQUIRE(nodes.count(Node(uid)));
   }
   for (auto [n1, n2] : arch.get_connections_vec()) {
@@ -85,8 +85,8 @@ SCENARIO("Testing SquareGrid") {
   node_set_t nodes(nodes_vec.begin(), nodes_vec.end());
   Arch arch(ver, hor, layer);
 
-  REQUIRE(nodes.size() == arch.n_uids());
-  for (const UnitID &uid : arch.get_all_uids()) {
+  REQUIRE(nodes.size() == arch.n_nodes());
+  for (const UnitID &uid : arch.get_all_nodes()) {
     REQUIRE(nodes.count(Node(uid)));
   }
   for (auto [n1, n2] : arch.get_connections_vec()) {
@@ -96,7 +96,7 @@ SCENARIO("Testing SquareGrid") {
 
   for (const Node &n : nodes) {
     int row = n.index()[0], col = n.index()[1], l = n.index()[2];
-    for (const Node &neigh : arch.get_neighbour_uids(n)) {
+    for (const Node &neigh : arch.get_neighbour_nodes(n)) {
       int row_neigh = neigh.index()[0], col_neigh = neigh.index()[1],
           l_neigh = neigh.index()[2];
       REQUIRE(
@@ -112,7 +112,7 @@ SCENARIO("Diameters") {
   }
   GIVEN("a singleton architecture") {
     Architecture arc;
-    arc.add_uid(Node(0));
+    arc.add_node(Node(0));
     CHECK(arc.get_diameter() == 0);
   }
   GIVEN("a connected architecture") {

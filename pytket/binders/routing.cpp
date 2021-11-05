@@ -112,7 +112,7 @@ PYBIND11_MODULE(routing, m) {
           "representing Nodes that can perform two-qubit operations",
           py::arg("connections"))
       .def_property_readonly(
-          "nodes", &Architecture::get_all_uids_vec,
+          "nodes", &Architecture::get_all_nodes_vec,
           "Returns all nodes of architecture as UnitID objects. ")
       .def_property_readonly(
           "coupling", &Architecture::get_connections_vec,
@@ -135,12 +135,12 @@ PYBIND11_MODULE(routing, m) {
           "__repr__",
           [](const Architecture &arc) {
             return "<tket::Architecture, nodes=" +
-                   std::to_string(arc.n_uids()) + ">";
+                   std::to_string(arc.n_nodes()) + ">";
           })
       .def(
           "__eq__",
           [](const Architecture &arc1, const Architecture &arc2) {
-            return arc1.get_all_uids_set() == arc2.get_all_uids_set() &&
+            return arc1.get_all_nodes_set() == arc2.get_all_nodes_set() &&
                    arc1.get_connections_set() == arc2.get_connections_set();
           },
           "Checks for architecture equality. Two architecture objects are "
@@ -207,7 +207,7 @@ PYBIND11_MODULE(routing, m) {
           "qubits",
           py::arg("nodes"))
       .def("__repr__", [](const FullyConnected &arc) {
-        return "<tket::FullyConnected, nodes=" + std::to_string(arc.n_uids()) +
+        return "<tket::FullyConnected, nodes=" + std::to_string(arc.n_nodes()) +
                ">";
       });
   py::class_<RingArch, Architecture>(
@@ -219,7 +219,7 @@ PYBIND11_MODULE(routing, m) {
           "connectivity between qubits.\n\n:param number of qubits",
           py::arg("nodes"))
       .def("__repr__", [](const RingArch &arc) {
-        return "<tket::RingArch, nodes=" + std::to_string(arc.n_uids()) + ">";
+        return "<tket::RingArch, nodes=" + std::to_string(arc.n_nodes()) + ">";
       });
 
   py::class_<Placement, std::shared_ptr<Placement>>(

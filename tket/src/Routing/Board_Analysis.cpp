@@ -25,7 +25,7 @@ Node Routing::find_best_inactive_node(
     const Node& target_node, const Architecture& arc) const {
   const unsigned diameter = arc.get_diameter();
   for (unsigned k = 1; k <= diameter; k++) {
-    std::vector<Node> potential_nodes = arc.uids_at_distance(target_node, k);
+    std::vector<Node> potential_nodes = arc.nodes_at_distance(target_node, k);
     for (Node potential : potential_nodes) {
       if (!node_active(qmap, potential)) {
         return potential;
@@ -36,8 +36,8 @@ Node Routing::find_best_inactive_node(
 }
 
 void Routing::activate_node(const Node& node) {
-  current_arc_.add_uid(node);
-  for (Node neigh : original_arc_.get_neighbour_uids(node)) {
+  current_arc_.add_node(node);
+  for (Node neigh : original_arc_.get_neighbour_nodes(node)) {
     if (node_active(qmap, neigh)) {
       if (original_arc_.edge_exists(node, neigh)) {
         current_arc_.add_connection(node, neigh);

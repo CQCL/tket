@@ -107,7 +107,7 @@ SCENARIO("Small monomorphisms. place_qubit") {
     std::vector<qubit_bimap_t> result =
         monomorphism_edge_break(arc, qg, 10, 60000);
     // REQUIRE(result.second==0);
-    REQUIRE(result[0].size() == qg.n_uids());
+    REQUIRE(result[0].size() == qg.n_nodes());
     for (const auto& [qb, n] : result[0].left) {
       REQUIRE(qb == node_to_qubit[n]);
     }
@@ -136,7 +136,7 @@ SCENARIO("Small monomorphisms. place_qubit") {
       std::vector<qubit_bimap_t> result2 =
           monomorphism_edge_break(arc, qg, 10, 60000);
       // REQUIRE(result2.second==0);
-      REQUIRE(result2[0].size() == qg.n_uids());
+      REQUIRE(result2[0].size() == qg.n_nodes());
       for (const qubit_bimap_t& map : result2) {
         REQUIRE(check_edge_break_order(arc, qg, map));
       }

@@ -111,7 +111,7 @@ JSON_DECL(Architecture)
 class FullyConnected : public Architecture {
  public:
   explicit FullyConnected(unsigned numberOfNodes);
-  // get_all_uids() does not guarantee to return nodes in any order
+  // get_all_nodes() does not guarantee to return nodes in any order
   // this returns the canonical ordering of nodes
   static node_vector_t get_nodes_canonical_order(unsigned numberOfNodes);
 
@@ -124,7 +124,7 @@ class FullyConnected : public Architecture {
 class RingArch : public Architecture {
  public:
   explicit RingArch(unsigned numberOfNodes);
-  // get_all_uids() does not guarantee to return nodes in any order
+  // get_all_nodes() does not guarantee to return nodes in any order
   // this returns the canonical ordering of nodes
   static node_vector_t get_nodes_canonical_order(unsigned numberOfNodes);
 
@@ -159,7 +159,7 @@ class SquareGrid : public Architecture {
   // dim_c equiv 'x', dim_r equiv 'y'
   SquareGrid(
       const unsigned dim_r, const unsigned dim_c, const unsigned _layers = 1);
-  // get_all_uids() does not guarantee to return nodes in any order
+  // get_all_nodes() does not guarantee to return nodes in any order
   // this returns the canonical ordering of nodes
   static node_vector_t get_nodes_canonical_order(
       unsigned dim_r, const unsigned dim_c, const unsigned layers = 1);

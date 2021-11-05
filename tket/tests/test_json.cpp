@@ -372,7 +372,7 @@ SCENARIO("Test device serializations") {
     nlohmann::json j_loaded_full = loaded_full;
     CHECK(j_full == j_loaded_full);
     Architecture ring = RingArch(6);
-    node_vector_t nodes = ring.get_all_uids_vec();
+    node_vector_t nodes = ring.get_all_nodes_vec();
     ring.add_connection(nodes.at(0), nodes.at(3), 20);
     nlohmann::json j_ring = ring;
     Architecture loaded_ring = j_ring.get<Architecture>();
@@ -382,7 +382,7 @@ SCENARIO("Test device serializations") {
   }
   GIVEN("DeviceCharacterisation") {
     Architecture ring = RingArch(3);
-    node_vector_t nodes = ring.get_all_uids_vec();
+    node_vector_t nodes = ring.get_all_nodes_vec();
     op_errors_t node_err0{{{OpType::X, 0.3}, {OpType::Y, 0.4}}};
     op_errors_t node_err1{{{OpType::X, 0.2}, {OpType::Y, 0.5}}};
     op_node_errors_t ne{

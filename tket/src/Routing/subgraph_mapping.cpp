@@ -70,7 +70,7 @@ void draw_graph(
 std::vector<qubit_bimap_t> monomorphism_edge_break(
     const Architecture& arc, const QubitGraph& q_graph, unsigned max_matches,
     unsigned timeout) {
-  if (q_graph.n_uids() > arc.n_uids()) {
+  if (q_graph.n_nodes() > arc.n_nodes()) {
     throw ArchitectureInvalidity(
         "Interaction graph too large for architecture");
   }

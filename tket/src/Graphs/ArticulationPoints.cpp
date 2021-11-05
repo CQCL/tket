@@ -67,19 +67,19 @@ void BicomponentGraph<T>::compute_components_map() {
 
   // Now populate map from vertices to the set of biconnected components of v
   for (auto v : boost::make_iterator_range(boost::vertices(underlying_g))) {
-    T uid = underlying_g[v];
-    vertex_to_comps.insert({uid, {}});
+    T node = underlying_g[v];
+    vertex_to_comps.insert({node, {}});
     // we get the components `v` belongs to by looking at the components
     // of its incident edges
     if (boost::degree(v, underlying_g) > 0) {
       for (auto e :
            boost::make_iterator_range(boost::out_edges(v, underlying_g))) {
         // it's a set, we do not need to worry about duplicates
-        vertex_to_comps[uid].insert(edge_to_comp[e]);
+        vertex_to_comps[node].insert(edge_to_comp[e]);
       }
     } else {
       // if vertex is disconnected, create new exclusive component
-      vertex_to_comps[uid].insert(n_components++);
+      vertex_to_comps[node].insert(n_components++);
     }
   }
   selected_comps = std::vector<bool>(n_components, false);
@@ -107,9 +107,9 @@ void BicomponentGraph<T>::build_graph() {
 
 template <typename T>
 template <typename Range>
-void BicomponentGraph<T>::select_comps(Range uids) {
-  for (T uid : uids) {
-    for (unsigned comp : vertex_to_comps[uid]) {
+void BicomponentGraph<T>::select_comps(Range nodes) {
+  for (T node : nodes) {
+    for (unsigned comp : vertex_to_comps[node]) {
       selected_comps[comp] = true;
     }
   }
@@ -212,9 +212,9 @@ std::set<T> get_subgraph_aps(
     const UndirectedConnGraph<T>& subgraph) {
   detail::BicomponentGraph<T> bicomp_graph(graph);
   using funcT = std::function<T(unsigned)>;
-  funcT to_uid = [&subgraph](unsigned v) { return subgraph[v]; };
+  funcT to_node = [&subgraph](unsigned v) { return subgraph[v]; };
   auto selected = boost::make_iterator_range(boost::vertices(subgraph)) |
-                  boost::adaptors::transformed(to_uid);
+                  boost::adaptors::transformed(to_node);
   bicomp_graph.select_comps(selected);
   bicomp_graph.propagate_selected_comps();
   return bicomp_graph.get_inner_edges();

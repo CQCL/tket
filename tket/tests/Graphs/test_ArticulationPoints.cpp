@@ -161,7 +161,7 @@ SCENARIO("Test APs in Architecture", "[architectures],[routing]") {
   ap = arc2.get_articulation_points();
   REQUIRE(ap.find(Node(0)) != ap.end());
 
-  arc2.remove_uid(Node(1));
+  arc2.remove_node(Node(1));
   ap = arc2.get_articulation_points();
   REQUIRE(ap.find(Node(0)) == ap.end());
 }

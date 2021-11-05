@@ -167,7 +167,7 @@ std::list<unsigned> PathHandler::find_path(unsigned i, unsigned j) {
 std::vector<Node> find_hampath(const Architecture &arch, long timeout) {
   using ArchitectureConn = Architecture::UndirectedConnGraph;
   ArchitectureConn undirected_target = arch.get_undirected_connectivity();
-  unsigned n_nodes = arch.n_uids();
+  unsigned n_nodes = arch.n_nodes();
 
   std::vector<std::pair<Node, Node>> line_nodes(n_nodes - 1);
   for (unsigned n = 0; n != n_nodes - 1; ++n) {
@@ -196,14 +196,14 @@ std::vector<Node> find_hampath(const Architecture &arch, long timeout) {
 IterationOrder::IterationOrder(const Architecture &arch) {
   std::set<Node> visited_nodes;
 
-  Node no = *arch.get_all_uids_set().begin();
+  Node no = *arch.get_all_nodes_set().begin();
 
   iterationorder.push_back(no);
   visited_nodes.insert(no);
 
   unsigned whilecount = 0;
-  while ((visited_nodes.size() < arch.n_uids()) &&
-         (whilecount < arch.n_uids())) {
+  while ((visited_nodes.size() < arch.n_nodes()) &&
+         (whilecount < arch.n_nodes())) {
     for (auto edge : arch.get_connections_vec()) {
       if (visited_nodes.count(edge.first) &&
           (!visited_nodes.count(edge.second))) {
@@ -221,7 +221,7 @@ IterationOrder::IterationOrder(const Architecture &arch) {
     ++whilecount;
   }
 
-  if (visited_nodes.size() != arch.n_uids()) {
+  if (visited_nodes.size() != arch.n_nodes()) {
     throw std::logic_error("Unconnected architecture");
   }
 

@@ -64,7 +64,7 @@ class BicomponentGraph {
 
   /** Selects all components that contain vertices in `[begin, end)` */
   template <typename Range>
-  void select_comps(Range uids);
+  void select_comps(Range nodes);
 
   /**
    * minimally expands the list of selected components so that the selected
@@ -127,8 +127,8 @@ class BicomponentGraphTester {
   const std::vector<bool>& get_selected_comps() const {
     return bicomp_g->selected_comps;
   }
-  const std::set<unsigned>& get_comps(T uid) const {
-    return bicomp_g->vertex_to_comps[uid];
+  const std::set<unsigned>& get_comps(T node) const {
+    return bicomp_g->vertex_to_comps[node];
   }
   const detail::BicomponentGraph<Node>::Graph& get_graph() const {
     return bicomp_g->g;

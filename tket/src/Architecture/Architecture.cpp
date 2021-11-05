@@ -38,15 +38,15 @@ Architecture Architecture::create_subarch(
 
 template <>
 unsigned Architecture::get_diameter() const {
-  unsigned N = n_uids();
+  unsigned N = n_nodes();
   if (N == 0) {
     throw ArchitectureInvalidity("No nodes in architecture.");
   }
   unsigned max = 0;
-  const node_vector_t uids = get_all_uids_vec();
+  const node_vector_t nodes = get_all_nodes_vec();
   for (unsigned i = 0; i < N; i++) {
     for (unsigned j = i + 1; j < N; j++) {
-      unsigned d = get_distance(uids[i], uids[j]);
+      unsigned d = get_distance(nodes[i], nodes[j]);
       if (d > max) max = d;
     }
   }
@@ -60,7 +60,7 @@ std::vector<node_vector_t> Architecture::get_lines(
     std::vector<unsigned> required_lengths) const {
   // check total length doesn't exceed number of nodes
   if (std::accumulate(required_lengths.begin(), required_lengths.end(), 0u) >
-      n_uids()) {
+      n_nodes()) {
     throw ArchitectureInvalidity(
         "Not enough nodes to satisfy required lengths.");
   }
@@ -119,7 +119,7 @@ template <>
 std::optional<Node> Architecture::find_worst_node(
     const Architecture& original_arch) {
   node_set_t ap = get_articulation_points();
-  node_set_t min_nodes = min_degree_uids();
+  node_set_t min_nodes = min_degree_nodes();
 
   std::set<Node> bad_nodes;
   std::set_difference(
@@ -163,7 +163,7 @@ node_set_t Architecture::remove_worst_nodes(unsigned num) {
   for (unsigned k = 0; k < num; k++) {
     std::optional<Node> v = find_worst_node(original_arch);
     if (v.has_value()) {
-      remove_uid(v.value());
+      remove_node(v.value());
       out.insert(v.value());
     }
   }
@@ -191,7 +191,7 @@ int tri_lexicographical_comparison(
 
 template <>
 MatrixXb Architecture::get_connectivity() const {
-  unsigned n = n_uids();
+  unsigned n = n_nodes();
   MatrixXb connectivity = MatrixXb(n, n);
   for (unsigned i = 0; i != n; ++i) {
     for (unsigned j = 0; j != n; ++j) {
@@ -214,7 +214,7 @@ void from_json(const nlohmann::json& j, Architecture::Connection& link) {
 
 void to_json(nlohmann::json& j, const Architecture& ar) {
   // Preserve the internal order of ids since Placement depends on this
-  auto uid_its = ar.get_all_uids();
+  auto uid_its = ar.get_all_nodes();
   std::vector<Node> nodes{uid_its.begin(), uid_its.end()};
   j["nodes"] = nodes;
 
@@ -230,7 +230,7 @@ void to_json(nlohmann::json& j, const Architecture& ar) {
 
 void from_json(const nlohmann::json& j, Architecture& ar) {
   for (const Node& n : j.at("nodes").get<node_vector_t>()) {
-    ar.add_uid(n);
+    ar.add_node(n);
   }
   for (const auto& j_entry : j.at("links")) {
     Architecture::Connection l =

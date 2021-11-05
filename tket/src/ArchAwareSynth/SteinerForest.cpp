@@ -330,19 +330,19 @@ Circuit phase_poly_synthesis(
   const std::string register_name = "surplus";
 
   unsigned qb_counter = circuit_ppb_place.n_qubits();
-  while (arch.n_uids() > circuit_ppb_place.n_qubits()) {
+  while (arch.n_nodes() > circuit_ppb_place.n_qubits()) {
     Qubit qb = Qubit(register_name, qb_counter);
     circuit_ppb_place.add_qubit(qb);
     ++qb_counter;
   }
 
-  TKET_ASSERT(circuit_ppb_place.n_qubits() == arch.get_all_uids_set().size());
+  TKET_ASSERT(circuit_ppb_place.n_qubits() == arch.get_all_nodes_set().size());
 
   qubit_vector_t q_vec_place = circuit_ppb_place.all_qubits();
   std::map<Qubit, Node> qubit_to_nodes_place;
   unsigned counter_place = 0;
 
-  for (Node no_place : arch.get_all_uids_set()) {
+  for (Node no_place : arch.get_all_nodes_set()) {
     if (counter_place < circuit_ppb_place.n_qubits()) {
       qubit_to_nodes_place.insert({q_vec_place[counter_place], no_place});
       ++counter_place;

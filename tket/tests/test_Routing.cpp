@@ -1484,9 +1484,9 @@ SCENARIO("Test routing with partial map provided", "[routing]") {
     // |    |
     // 4 -- 5
     // subarc = {0, 1, 3}
-    subarc.remove_uid(square_nodes[5]);
-    subarc.remove_uid(square_nodes[4]);
-    subarc.remove_uid(square_nodes[3]);
+    subarc.remove_node(square_nodes[5]);
+    subarc.remove_node(square_nodes[4]);
+    subarc.remove_node(square_nodes[3]);
     REQUIRE(subgraph_remove_if_connected(
         test_architecture, subarc, square_nodes[3]));
     REQUIRE(!subgraph_remove_if_connected(
@@ -2637,7 +2637,7 @@ SCENARIO("Does add_distributed_cx account for incorrect BRIDGE nodes?") {
 
     Placement placer(a);
     qubit_vector_t c_qubits = c.all_qubits();
-    node_vector_t a_nodes = a.get_all_uids_vec();
+    node_vector_t a_nodes = a.get_all_nodes_vec();
 
     qubit_mapping_t initial_map = {
         {c_qubits[0], a_nodes[0]}, {c_qubits[1], a_nodes[1]},
@@ -2674,7 +2674,7 @@ SCENARIO("Does add_distributed_cx account for incorrect BRIDGE nodes?") {
 
     Placement placer(a);
     qubit_vector_t c_qubits = c.all_qubits();
-    node_vector_t a_nodes = a.get_all_uids_vec();
+    node_vector_t a_nodes = a.get_all_nodes_vec();
 
     qubit_mapping_t initial_map = {
         {c_qubits[0], a_nodes[0]}, {c_qubits[1], a_nodes[1]},

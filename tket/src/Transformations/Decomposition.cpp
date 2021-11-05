@@ -774,7 +774,7 @@ Transform Transform::decompose_SWAP_to_CX(const Architecture &arc) {
   //  => we replace the default empty Architecture with nullptr
   // we need to keep arc as a pointer as there is no such thing as
   // optional references in std
-  const Architecture *arc_ptr = arc.n_uids() ? &arc : nullptr;
+  const Architecture *arc_ptr = arc.n_nodes() ? &arc : nullptr;
   return Transform([arc_ptr](Circuit &circ) {
     bool success = false;
     std::vector<std::pair<Vertex, bool>> bin;

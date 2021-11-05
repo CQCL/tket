@@ -64,7 +64,7 @@ std::vector<Node> Routing::nodes_from_qubits(const qubit_vector_t& qubs) {
   std::vector<Node> nodes;
   unsigned start = 0;
   if (qmap.empty()) {
-    Node node0 = *(original_arc_.max_degree_uids().begin());
+    Node node0 = *(original_arc_.max_degree_nodes().begin());
     activate_node(node0);
     qmap.left.insert({qubs[0], node0});
     init_map.left.insert({qubs[0], node0});
@@ -194,7 +194,7 @@ bool Routing::advance_frontier() {
 Interactions Routing::generate_interaction_frontier(
     const RoutingFrontier& slice_front) {
   Interactions inter;
-  for (const UnitID& uid : current_arc_.get_all_uids()) {
+  for (const UnitID& uid : current_arc_.get_all_nodes()) {
     Node n(uid);
     inter.insert({n, n});
   }

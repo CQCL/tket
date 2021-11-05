@@ -48,66 +48,66 @@ class DirectedGraphBase : public AbstractGraph<T> {
 
  public:
   /** empty default constructor */
-  DirectedGraphBase() : AbstractGraph<T>(), graph(), uid_to_vertex() {}
+  DirectedGraphBase() : AbstractGraph<T>(), graph(), node_to_vertex() {}
 
   /** constructor from list of vertices */
-  explicit DirectedGraphBase(const std::vector<T>& uids) : AbstractGraph<T>(uids), graph() {
-    for (const T& uid : uids) {
-      add_uid(uid);
+  explicit DirectedGraphBase(const std::vector<T>& nodes) : AbstractGraph<T>(nodes), graph() {
+    for (const T& node : nodes) {
+      add_node(node);
     }
   }
 
   /** constructor from list of= edges */
   explicit DirectedGraphBase(const std::vector<Connection>& edges) : graph() {
-    for (auto [uid1, uid2] : edges) {
-      if (!node_exists(uid1)) {
-        add_uid(uid1);
+    for (auto [node1, node2] : edges) {
+      if (!node_exists(node1)) {
+        add_node(node1);
       }
-      if (!node_exists(uid2)) {
-        add_uid(uid2);
+      if (!node_exists(node2)) {
+        add_node(node2);
       }
-      boost::add_edge(to_vertices(uid1), to_vertices(uid2), graph);
+      boost::add_edge(to_vertices(node1), to_vertices(node2), graph);
     }
   }
 
-  bool edge_exists(const T& uid1, const T& uid2) const override {
-    if (!node_exists(uid1) || !node_exists(uid2)) {
+  bool edge_exists(const T& node1, const T& node2) const override {
+    if (!node_exists(node1) || !node_exists(node2)) {
       throw NodeDoesNotExistError(
           "The UIDs passed to DirectedGraph::edge_exists must "
           "exist");
     }
-    auto [_, exists] = boost::edge(to_vertices(uid1), to_vertices(uid2), graph);
+    auto [_, exists] = boost::edge(to_vertices(node1), to_vertices(node2), graph);
     return exists;
   }
 
   /** add vertex to interaction graph */
-  void add_uid(const T uid) {
-    nodes_.insert(uid);
-    Vertex v = boost::add_vertex(uid, graph);
-    uid_to_vertex.left.insert({uid, v});
+  void add_node(const T node) {
+    nodes_.insert(node);
+    Vertex v = boost::add_vertex(node, graph);
+    node_to_vertex.left.insert({node, v});
   }
 
   /** remove vertex from the interaction graph */
-  void remove_uid(const T uid) {
-    if (!node_exists(uid)) {
+  void remove_node(const T node) {
+    if (!node_exists(node)) {
       throw NodeDoesNotExistError(
-          "The UID passed to DirectedGraph::remove_uid must "
+          "The UID passed to DirectedGraph::remove_node must "
           "exist!");
     }
-    nodes_.erase(uid);
-    Vertex v = to_vertices(uid);
+    nodes_.erase(node);
+    Vertex v = to_vertices(node);
     boost::clear_vertex(v, graph);
-    utils::remove_vertex_with_map(v, graph, uid_to_vertex.right);
+    utils::remove_vertex_with_map(v, graph, node_to_vertex.right);
   }
 
   /** add weighted edge to the interaction graph */
-  void add_connection(const T uid1, const T uid2, unsigned weight = 1) {
-    if (!node_exists(uid1) || !node_exists(uid2)) {
+  void add_connection(const T node1, const T node2, unsigned weight = 1) {
+    if (!node_exists(node1) || !node_exists(node2)) {
       throw NodeDoesNotExistError(
           "The UIDs passed to DirectedGraph::add_connection must "
           "exist");
     }
-    boost::add_edge(to_vertices(uid1), to_vertices(uid2), weight, graph);
+    boost::add_edge(to_vertices(node1), to_vertices(node2), weight, graph);
   }
 
   void remove_connection(
@@ -125,12 +125,12 @@ class DirectedGraphBase : public AbstractGraph<T> {
           "cannot be removed as it does not exist");
     }
     utils::remove_edge_with_map(
-        e, graph, uid_to_vertex.right, remove_unused_vertices);
+        e, graph, node_to_vertex.right, remove_unused_vertices);
   }
 
   void remove_connection(
-      const T uid1, const T uid2, bool remove_unused_vertices = false) {
-    remove_connection({uid1, uid2}, remove_unused_vertices);
+      const T node1, const T node2, bool remove_unused_vertices = false) {
+    remove_connection({node1, node2}, remove_unused_vertices);
   }
 
   /** remove edges in the connection graph */
@@ -143,12 +143,12 @@ class DirectedGraphBase : public AbstractGraph<T> {
   }
 
   /** returns connection weight between two UnitID */
-  unsigned get_connection_weight(const T uid1, const T uid2) const {
-    if (!node_exists(uid1) || !node_exists(uid2)) {
+  unsigned get_connection_weight(const T node1, const T node2) const {
+    if (!node_exists(node1) || !node_exists(node2)) {
       throw NodeDoesNotExistError(
           "Trying to retrieve edge weight from non-existent vertices");
     }
-    auto [e, exists] = boost::edge(to_vertices(uid1), to_vertices(uid2), graph);
+    auto [e, exists] = boost::edge(to_vertices(node1), to_vertices(node2), graph);
     if (!exists) {
       return 0.;
     }
@@ -157,12 +157,12 @@ class DirectedGraphBase : public AbstractGraph<T> {
   }
 
   /** return vertex degree of UnitID */
-  unsigned get_degree(const T uid) const {
-    if (!node_exists(uid)) {
+  unsigned get_degree(const T node) const {
+    if (!node_exists(node)) {
       throw NodeDoesNotExistError(
           "Trying to retrieve vertex degree from non-existent vertex");
     }
-    return boost::degree(to_vertices(uid), graph);
+    return boost::degree(to_vertices(node), graph);
   }
 
   /** max depth from `root` in grahp */
@@ -174,16 +174,16 @@ class DirectedGraphBase : public AbstractGraph<T> {
   }
 
   /** return vertex out degree of UnitID */
-  unsigned get_out_degree(const T uid) const {
-    if (!node_exists(uid)) {
+  unsigned get_out_degree(const T node) const {
+    if (!node_exists(node)) {
       throw NodeDoesNotExistError(
           "Trying to get outdegree from non-existent vertex");
     }
-    return boost::out_degree(to_vertices(uid), graph);
+    return boost::out_degree(to_vertices(node), graph);
   }
 
   /** number of vertices */
-  unsigned n_uids() const { return boost::num_vertices(graph); }
+  unsigned n_nodes() const { return boost::num_vertices(graph); }
 
   /** number of edges in graph */
   inline unsigned n_connections() const { return boost::num_edges(graph); }
@@ -226,60 +226,60 @@ class DirectedGraphBase : public AbstractGraph<T> {
     return run_bfs(to_vertices(root), get_undirected_connectivity()).get_dists();
   }
 
-  std::size_t get_distance(const T uid1, const T uid2) const {
-    if (uid1 == uid2) {
+  std::size_t get_distance(const T node1, const T node2) const {
+    if (node1 == node2) {
       return 0;
     }
-    size_t d = get_distances(uid1)[to_vertices(uid2)];
+    size_t d = get_distances(node1)[to_vertices(node2)];
     if (d == 0) {
-      throw UIDsNotConnected(uid1, uid2);
+      throw UIDsNotConnected(node1, node2);
     }
     return d;
   }
 
   /** remove vertices with deg == 0 */
-  inline void remove_stray_uids() {
-    utils::remove_stray_vertices_with_map(graph, uid_to_vertex.right);
+  inline void remove_stray_nodes() {
+    utils::remove_stray_vertices_with_map(graph, node_to_vertex.right);
   }
 
   /** set of all UnitIDs in interaction graph */
-  std::set<T> get_all_uids_set() const {
-    auto uids = get_all_uids();
-    std::set<T> out{uids.begin(), uids.end()};
+  std::set<T> get_all_nodes_set() const {
+    auto nodes = get_all_nodes();
+    std::set<T> out{nodes.begin(), nodes.end()};
     return out;
   }
 
-  std::vector<T> get_all_uids_vec() const {
+  std::vector<T> get_all_nodes_vec() const {
     // fix UID ordering by first collecting UIDs in a set
-    auto uids = get_all_uids_set();
-    std::vector<T> out{uids.begin(), uids.end()};
+    auto nodes = get_all_nodes_set();
+    std::vector<T> out{nodes.begin(), nodes.end()};
     return out;
   }
 
   /** iterator of all UnitIDs in interaction graph */
-  auto get_all_uids() const {
+  auto get_all_nodes() const {
     return get_vertices_it() |
            boost::adaptors::transformed(
-               [this](const auto& v) { return get_uid(v); });
+               [this](const auto& v) { return get_node(v); });
   }
 
   /* return UIDs with greatest (undirected) degree in graph */
-  std::set<T> max_degree_uids() const {
+  std::set<T> max_degree_nodes() const {
     std::set<T> out;
     auto max_vertices = graphs::utils::max_degree_nodes(graph);
     std::transform(
         max_vertices.begin(), max_vertices.end(), std::inserter(out, out.begin()),
-        [this](Vertex v) { return T(get_uid(v)); });
+        [this](Vertex v) { return T(get_node(v)); });
     return out;
   }
 
   /** return UIDs with smallest (undirected) degree */
-  std::set<T> min_degree_uids() const {
+  std::set<T> min_degree_nodes() const {
     std::set<T> out;
     auto min_vertices = graphs::utils::min_degree_nodes(graph);
     std::transform(
         min_vertices.begin(), min_vertices.end(), std::inserter(out, out.begin()),
-        [this](Vertex v) { return T(get_uid(v)); });
+        [this](Vertex v) { return T(get_node(v)); });
     return out;
   }
 
@@ -294,36 +294,36 @@ class DirectedGraphBase : public AbstractGraph<T> {
     const UndirectedConnGraph& g = get_undirected_connectivity();
     auto bfs = run_bfs(to_vertices(root), g);
 
-    auto to_uid = [&g](UndirectedVertex v) { return g[v]; };
+    auto to_node = [&g](UndirectedVertex v) { return g[v]; };
     parent_vec path = bfs.path_to_root(to_vertices(target));
     std::vector<T> converted_path(path.size());
-    std::transform(path.begin(), path.end(), converted_path.begin(), to_uid);
+    std::transform(path.begin(), path.end(), converted_path.begin(), to_node);
     return converted_path;
   }
 
   /** get undirected adjacent UnitIDs */
-  std::set<T> get_neighbour_uids(const T uid) const {
-    if (!node_exists(uid)) {
+  std::set<T> get_neighbour_nodes(const T node) const {
+    if (!node_exists(node)) {
       throw NodeDoesNotExistError(
           "Trying to get neighbours from non-existent vertex");
     }
     std::set<T> neighbours;
-    for (auto [it, end] = boost::out_edges(to_vertices(uid), graph); it != end;
+    for (auto [it, end] = boost::out_edges(to_vertices(node), graph); it != end;
          ++it) {
-      neighbours.insert(T(get_uid(boost::target(*it, graph))));
+      neighbours.insert(T(get_node(boost::target(*it, graph))));
     }
-    for (auto [it, end] = boost::in_edges(to_vertices(uid), graph); it != end;
+    for (auto [it, end] = boost::in_edges(to_vertices(node), graph); it != end;
          ++it) {
-      neighbours.insert(T(get_uid(boost::source(*it, graph))));
+      neighbours.insert(T(get_node(boost::source(*it, graph))));
     }
     return neighbours;
   }
 
   bool operator==(const DirectedGraphBase<T>& other) const {
-    std::set<T> uids = this->get_all_uids_set();
-    if (uids != other.get_all_uids_set()) return false;
-    for (const T& u : uids) {
-      for (const T& v : uids) {
+    std::set<T> nodes = this->get_all_nodes_set();
+    if (nodes != other.get_all_nodes_set()) return false;
+    for (const T& u : nodes) {
+      for (const T& v : nodes) {
         if (this->edge_exists(u, v)) {
           if (!other.edge_exists(u, v))
             return false;
@@ -353,18 +353,18 @@ class DirectedGraphBase : public AbstractGraph<T> {
   using left_map = typename vertex_bimap::left_map;
   using right_map = typename vertex_bimap::right_map;
   /* get UnitID from vertex */
-  const T& get_uid(Vertex v) const { return graph[v]; }
+  const T& get_node(Vertex v) const { return graph[v]; }
 
-  left_map& to_vertices() { return uid_to_vertex.left; }
-  const left_map& to_vertices() const { return uid_to_vertex.left; }
-  Vertex to_vertices(const T& uid) const { return to_vertices().at(uid); }
+  left_map& to_vertices() { return node_to_vertex.left; }
+  const left_map& to_vertices() const { return node_to_vertex.left; }
+  Vertex to_vertices(const T& node) const { return to_vertices().at(node); }
 
-  right_map& from_vertices() { return uid_to_vertex.right; }
-  const right_map& from_vertices() const { return uid_to_vertex.right; }
+  right_map& from_vertices() { return node_to_vertex.right; }
+  const right_map& from_vertices() const { return node_to_vertex.right; }
   T from_vertices(Vertex v) const { return from_vertices().at(v); }
 
   ConnGraph graph;
-  vertex_bimap uid_to_vertex;
+  vertex_bimap node_to_vertex;
 };
 
 /**
@@ -375,9 +375,9 @@ class DirectedGraphBase : public AbstractGraph<T> {
 template <typename T>
 class UIDsNotConnected : public std::logic_error {
  public:
-  UIDsNotConnected(const T& uid1, const T& uid2)
+  UIDsNotConnected(const T& node1, const T& node2)
       : std::logic_error(
-            uid1.repr() + " and " + uid2.repr() + " are not connected") {}
+            node1.repr() + " and " + node2.repr() + " are not connected") {}
 };
 
 /**
@@ -425,39 +425,39 @@ class DirectedGraph : public DirectedGraphBase<T> {
   /**
    * Graph distance between two nodes.
    *
-   * @param uid1 first node
-   * @param uid2 second node
+   * @param node1 first node
+   * @param node2 second node
    *
    * @return length of shortest path between the nodes
    * @throws UIDsNotConnected if there is no path between the nodes
    */
-  std::size_t get_distance(const T uid1, const T uid2) const {
-    if (uid1 == uid2) {
+  std::size_t get_distance(const T node1, const T node2) const {
+    if (node1 == node2) {
       return 0;
     }
     size_t d;
-    if (distance_cache.find(uid1) != distance_cache.end()) {
-      d = distance_cache[uid1][this->to_vertices(uid2)];
-    } else if (distance_cache.find(uid2) != distance_cache.end()) {
-      d = distance_cache[uid2][this->to_vertices(uid1)];
+    if (distance_cache.find(node1) != distance_cache.end()) {
+      d = distance_cache[node1][this->to_vertices(node2)];
+    } else if (distance_cache.find(node2) != distance_cache.end()) {
+      d = distance_cache[node2][this->to_vertices(node1)];
     } else {
-      distance_cache[uid1] = Base::get_distances(uid1);
-      d = distance_cache[uid1][this->to_vertices(uid2)];
+      distance_cache[node1] = Base::get_distances(node1);
+      d = distance_cache[node1][this->to_vertices(node2)];
     }
     if (d == 0) {
-      throw UIDsNotConnected(uid1, uid2);
+      throw UIDsNotConnected(node1, node2);
     }
     return d;
   }
 
   /** Returns all nodes at a given distance from a given 'source' node */
-  std::vector<T> uids_at_distance(
+  std::vector<T> nodes_at_distance(
       const T& root, std::size_t distance) const {
     auto dists = get_distances(root);
     std::vector<T> out;
     for (unsigned i = 0; i < dists.size(); ++i) {
       if (dists[i] == distance) {
-        out.push_back(T(this->get_uid(i)));
+        out.push_back(T(this->get_node(i)));
       }
     }
     return out;
@@ -480,23 +480,23 @@ class DirectedGraph : public DirectedGraphBase<T> {
 
   // these functions invalidate caching: invalidate cache then call Base
   // function
-  void remove_uid(const T uid) {
+  void remove_node(const T node) {
     invalidate_cache();
-    Base::remove_uid(uid);
+    Base::remove_node(node);
   }
-  void add_uid(const T uid) {
+  void add_node(const T node) {
     invalidate_cache();
-    Base::add_uid(uid);
-  }
-
-  void remove_stray_uids() {
-    invalidate_cache();
-    Base::remove_stray_uids();
+    Base::add_node(node);
   }
 
-  void add_connection(const T uid1, const T uid2, unsigned weight = 1) {
+  void remove_stray_nodes() {
     invalidate_cache();
-    Base::add_connection(uid1, uid2, weight);
+    Base::remove_stray_nodes();
+  }
+
+  void add_connection(const T node1, const T node2, unsigned weight = 1) {
+    invalidate_cache();
+    Base::add_connection(node1, node2, weight);
   }
 
   void remove_connections(const std::vector<Connection>& edges) {
@@ -511,9 +511,9 @@ class DirectedGraph : public DirectedGraphBase<T> {
   }
 
   void remove_connection(
-      const T uid1, const T uid2, bool remove_unused_vertices = false) {
+      const T node1, const T node2, bool remove_unused_vertices = false) {
     invalidate_cache();
-    Base::remove_connection(uid1, uid2, remove_unused_vertices);
+    Base::remove_connection(node1, node2, remove_unused_vertices);
   }
 
  private:
