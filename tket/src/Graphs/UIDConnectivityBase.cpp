@@ -281,7 +281,6 @@ bool UIDConnectivityBase<UID_t>::operator==(
   return true;
 }
 
-template class UIDConnectivityBase<UnitID>;
 template class UIDConnectivityBase<Node>;
 template class UIDConnectivityBase<Qubit>;
 

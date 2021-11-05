@@ -208,7 +208,6 @@ class UIDsNotConnected : public std::logic_error {
 };
 
 // template explicit instations, with implementations in cpp file
-extern template class UIDConnectivityBase<UnitID>;
 extern template class UIDConnectivityBase<Node>;
 extern template class UIDConnectivityBase<Qubit>;
 

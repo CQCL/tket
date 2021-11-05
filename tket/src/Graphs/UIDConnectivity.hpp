@@ -102,7 +102,6 @@ class UIDConnectivity : public UIDConnectivityBase<UID_t> {
 };
 
 // template explicit instations, with implementations in cpp file
-extern template class UIDConnectivity<UnitID>;
 extern template class UIDConnectivity<Node>;
 extern template class UIDConnectivity<Qubit>;
 

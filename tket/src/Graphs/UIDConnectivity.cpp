@@ -132,7 +132,6 @@ void UIDConnectivity<UID_t>::remove_connection(
   Base::remove_connection(uid1, uid2, remove_unused_vertices);
 }
 
-template class UIDConnectivity<UnitID>;
 template class UIDConnectivity<Node>;
 template class UIDConnectivity<Qubit>;
 
