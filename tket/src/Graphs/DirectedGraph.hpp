@@ -51,7 +51,8 @@ class DirectedGraphBase : public AbstractGraph<T> {
   DirectedGraphBase() : AbstractGraph<T>(), graph(), node_to_vertex() {}
 
   /** constructor from list of vertices */
-  explicit DirectedGraphBase(const std::vector<T>& nodes) : AbstractGraph<T>(nodes), graph() {
+  explicit DirectedGraphBase(const std::vector<T>& nodes)
+      : AbstractGraph<T>(nodes), graph() {
     for (const T& node : nodes) {
       add_node(node);
     }
@@ -76,7 +77,8 @@ class DirectedGraphBase : public AbstractGraph<T> {
           "The UIDs passed to DirectedGraph::edge_exists must "
           "exist");
     }
-    auto [_, exists] = boost::edge(to_vertices(node1), to_vertices(node2), graph);
+    auto [_, exists] =
+        boost::edge(to_vertices(node1), to_vertices(node2), graph);
     return exists;
   }
 
@@ -148,7 +150,8 @@ class DirectedGraphBase : public AbstractGraph<T> {
       throw NodeDoesNotExistError(
           "Trying to retrieve edge weight from non-existent vertices");
     }
-    auto [e, exists] = boost::edge(to_vertices(node1), to_vertices(node2), graph);
+    auto [e, exists] =
+        boost::edge(to_vertices(node1), to_vertices(node2), graph);
     if (!exists) {
       return 0.;
     }
@@ -168,9 +171,11 @@ class DirectedGraphBase : public AbstractGraph<T> {
   /** max depth from `root` in grahp */
   std::size_t get_max_depth(const T root) const {
     if (!node_exists(root)) {
-      throw NodeDoesNotExistError("Trying to get depth from non-existent vertex");
+      throw NodeDoesNotExistError(
+          "Trying to get depth from non-existent vertex");
     }
-    return run_bfs(to_vertices(root), get_undirected_connectivity()).max_depth();
+    return run_bfs(to_vertices(root), get_undirected_connectivity())
+        .max_depth();
   }
 
   /** return vertex out degree of UnitID */
@@ -223,7 +228,8 @@ class DirectedGraphBase : public AbstractGraph<T> {
       throw NodeDoesNotExistError(
           "Trying to get distances from non-existent root vertex");
     }
-    return run_bfs(to_vertices(root), get_undirected_connectivity()).get_dists();
+    return run_bfs(to_vertices(root), get_undirected_connectivity())
+        .get_dists();
   }
 
   std::size_t get_distance(const T node1, const T node2) const {
@@ -268,7 +274,8 @@ class DirectedGraphBase : public AbstractGraph<T> {
     std::set<T> out;
     auto max_vertices = graphs::utils::max_degree_nodes(graph);
     std::transform(
-        max_vertices.begin(), max_vertices.end(), std::inserter(out, out.begin()),
+        max_vertices.begin(), max_vertices.end(),
+        std::inserter(out, out.begin()),
         [this](Vertex v) { return T(get_node(v)); });
     return out;
   }
@@ -278,7 +285,8 @@ class DirectedGraphBase : public AbstractGraph<T> {
     std::set<T> out;
     auto min_vertices = graphs::utils::min_degree_nodes(graph);
     std::transform(
-        min_vertices.begin(), min_vertices.end(), std::inserter(out, out.begin()),
+        min_vertices.begin(), min_vertices.end(),
+        std::inserter(out, out.begin()),
         [this](Vertex v) { return T(get_node(v)); });
     return out;
   }
@@ -451,8 +459,7 @@ class DirectedGraph : public DirectedGraphBase<T> {
   }
 
   /** Returns all nodes at a given distance from a given 'source' node */
-  std::vector<T> nodes_at_distance(
-      const T& root, std::size_t distance) const {
+  std::vector<T> nodes_at_distance(const T& root, std::size_t distance) const {
     auto dists = get_distances(root);
     std::vector<T> out;
     for (unsigned i = 0; i < dists.size(); ++i) {

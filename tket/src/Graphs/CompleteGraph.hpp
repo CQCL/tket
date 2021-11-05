@@ -21,7 +21,7 @@ namespace tket::graphs {
 
 template <typename T>
 class CompleteGraph : public AbstractGraph<T> {
-protected:
+ protected:
   using AbstractGraph<T>::nodes_;
   using AbstractGraph<T>::node_exists;
   using AbstractGraph<T>::edge_exists;

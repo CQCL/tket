@@ -35,8 +35,7 @@ template <typename T>
 using EdgeToCompT = std::map<utils::edge<UndirectedConnGraph<T>>, unsigned>;
 
 template <typename T>
-BicomponentGraph<T>::BicomponentGraph(
-    const UndirectedConnGraph<T>& graph)
+BicomponentGraph<T>::BicomponentGraph(const UndirectedConnGraph<T>& graph)
     : underlying_g(graph) {
   // get map from APs to their bicomponents (as well as the number of bicomps)
   compute_components_map();

@@ -24,8 +24,7 @@
 namespace tket::graphs {
 
 template <typename T>
-using UndirectedConnGraph =
-    typename DirectedGraph<T>::UndirectedConnGraph;
+using UndirectedConnGraph = typename DirectedGraph<T>::UndirectedConnGraph;
 
 // ::detail includes all internal implementation-specific details
 namespace detail {

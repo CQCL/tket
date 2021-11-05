@@ -59,8 +59,8 @@ static std::vector<std::pair<Node, Node>> as_nodepairs(
 template <typename T>
 class ArchitectureBase : public T {
  public:
-  using T::T;
   using T::node_exists;
+  using T::T;
 
   /**
    * Construct from a vector of pairs of indices in the default register.
