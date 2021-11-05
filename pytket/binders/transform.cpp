@@ -282,6 +282,13 @@ PYBIND11_MODULE(transform, m) {
           "of OpType to single-qubit gate error maps",
           py::arg("op_node_errors"))
       .def_static(
+          "GlobalisePhasedX", &Transform::globalise_phasedx,
+          "Replaces every occurence of PhasedX or NPhasedX gates with NPhasedX "
+          "gates"
+          "acting on all qubits. "
+          "\n\nThis is achieved using the identity "
+          "PhX(α, β) = PhX(-π/2, β + π/2) Rz(α) PhX(π/2, β + π/2). ")
+      .def_static(
           "SynthesisePauliGraph", &Transform::synthesise_pauli_graph,
           "Synthesises Pauli Graphs.",
           py::arg("synth_strat") = PauliSynthStrat::Sets,

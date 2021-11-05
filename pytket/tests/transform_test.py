@@ -15,7 +15,15 @@
 from pathlib import Path
 from pytket.circuit import Circuit, OpType, PauliExpBox  # type: ignore
 from pytket.pauli import Pauli  # type: ignore
-from pytket.passes import RemoveRedundancies, KAKDecomposition, ThreeQubitSquash, CommuteThroughMultis, PauliSquash, FullPeepholeOptimise  # type: ignore
+from pytket.passes import (
+    RemoveRedundancies,
+    KAKDecomposition,
+    ThreeQubitSquash,
+    CommuteThroughMultis,
+    PauliSquash,
+    FullPeepholeOptimise,
+    GlobalisePhasedX,
+)  # type: ignore
 from pytket.predicates import CompilationUnit  # type: ignore
 from pytket.transform import Transform, CXConfigType, PauliSynthStrat  # type: ignore
 from pytket.qasm import circuit_from_qasm
@@ -127,6 +135,13 @@ def test_commute() -> None:
     assert c.n_gates_of_type(OpType.CX) == 12
     Transform.ReduceSingles().apply(c)
     assert c.n_gates_of_type(OpType.TK1) == 12
+
+
+def test_global_phasedx() -> None:
+    c = Circuit(3).add_gate(OpType.NPhasedX, [0.4, 2.3], [0, 1])
+    Transform.GlobalisePhasedX().apply(c)
+    assert c.n_gates_of_type(OpType.NPhasedX) == 2
+    assert c.n_gates_of_type(OpType.Rz) == 2
 
 
 def test_KAK() -> None:
