@@ -24,23 +24,6 @@
 
 namespace tket::graphs {
 
-/**
- * Base class of UIDConnectivity, where all the implementation resides
- *
- * UIDConnectivity instances are directed graphs where vertices are given by
- * `UnitID`s, or one of the subtypes `Qubit` or `Node`. It is a wrapper around a
- * BGL graph that provides a clean class API, taking care of mapping all BGL
- * vertices and edge pointers to UnitIDs, respectively pairs of UnitIDs.
- *
- * This class is used mainly by the Architecture and QubitGraph classes; the
- * former inherits from UIDConnnectivity<Node>, the latter from
- * UIDConnnectivity<Qubit>.
- *
- * The vertices and edges can be given weights of type double if desired, and
- * the underlying undirected graph can be computed. The container types of the
- * underlying boost graph are specified as further template parameters, but have
- * sensible defaults in the UIDConnnectivity class.
- */
 template <typename UID_t>
 class UIDConnectivityBase : public AbstractGraph<UID_t> {
  protected:
