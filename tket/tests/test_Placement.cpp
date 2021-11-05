@@ -37,7 +37,7 @@ bool check_edge_break_order(
       unmapped_edge_weights[weight]++;
     } else {
       const Node n1 = map.left.at(q1), n2 = map.left.at(q2);
-      if (!(arc.connection_exists(n1, n2) || arc.connection_exists(n2, n1))) {
+      if (!(arc.edge_exists(n1, n2) || arc.edge_exists(n2, n1))) {
         unmapped_edge_weights[weight]++;
       }
     }
@@ -246,10 +246,10 @@ SCENARIO("Check Monomorpher satisfies correct placement conditions") {
 
       THEN("The chosen map satisfies directionality") {
         qubit_vector_t qbs = test_circ.all_qubits();
-        REQUIRE(arc.connection_exists(map[qbs[0]], map[qbs[1]]));
-        REQUIRE(!arc.connection_exists(map[qbs[1]], map[qbs[0]]));
-        REQUIRE(arc.connection_exists(map[qbs[1]], map[qbs[3]]));
-        REQUIRE(!arc.connection_exists(map[qbs[3]], map[qbs[1]]));
+        REQUIRE(arc.edge_exists(map[qbs[0]], map[qbs[1]]));
+        REQUIRE(!arc.edge_exists(map[qbs[1]], map[qbs[0]]));
+        REQUIRE(arc.edge_exists(map[qbs[1]], map[qbs[3]]));
+        REQUIRE(!arc.edge_exists(map[qbs[3]], map[qbs[1]]));
       }
     }
 

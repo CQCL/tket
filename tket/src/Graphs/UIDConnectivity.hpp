@@ -48,6 +48,7 @@ class UIDConnectivity : public UIDConnectivityBase<UID_t> {
 
  public:
   using Base::Base;
+  using Base::node_exists;
   /* useful type synonyms */
   using UndirectedConnGraph = typename Base::UndirectedConnGraph;
   using ConnGraph = typename Base::ConnGraph;

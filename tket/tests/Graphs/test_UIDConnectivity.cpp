@@ -32,12 +32,12 @@ SCENARIO("Correct creation of UIDConnectivity graphs") {
     UIDConnectivity<Node> uidgraph(nodes);
     CHECK(uidgraph.n_uids() == 4);
     CHECK(uidgraph.n_connected() == 0);
-    CHECK(uidgraph.uid_exists(Node(3)));
-    CHECK(uidgraph.uid_exists(Node(1)));
-    CHECK(uidgraph.uid_exists(Node(5)));
-    CHECK(uidgraph.uid_exists(Node(2)));
-    CHECK(!uidgraph.uid_exists(Node(4)));
-    CHECK(!uidgraph.uid_exists(Node(0)));
+    CHECK(uidgraph.node_exists(Node(3)));
+    CHECK(uidgraph.node_exists(Node(1)));
+    CHECK(uidgraph.node_exists(Node(5)));
+    CHECK(uidgraph.node_exists(Node(2)));
+    CHECK(!uidgraph.node_exists(Node(4)));
+    CHECK(!uidgraph.node_exists(Node(0)));
   }
   GIVEN("Construct Qubit graph from edges") {
     using Conn = UIDConnectivity<Qubit>::Connection;
@@ -53,11 +53,11 @@ SCENARIO("Correct creation of UIDConnectivity graphs") {
     CHECK(uidgraph.n_uids() == 5);
     CHECK(uidgraph.n_connected() == 5);
 
-    CHECK(uidgraph.connection_exists(Qubit(0), Qubit(2)));
-    CHECK(uidgraph.connection_exists(Qubit(3), Qubit(6)));
-    CHECK(uidgraph.connection_exists(Qubit(6), Qubit(2)));
-    CHECK(uidgraph.connection_exists(Qubit(2), Qubit(1)));
-    CHECK(uidgraph.connection_exists(Qubit(1), Qubit(0)));
+    CHECK(uidgraph.edge_exists(Qubit(0), Qubit(2)));
+    CHECK(uidgraph.edge_exists(Qubit(3), Qubit(6)));
+    CHECK(uidgraph.edge_exists(Qubit(6), Qubit(2)));
+    CHECK(uidgraph.edge_exists(Qubit(2), Qubit(1)));
+    CHECK(uidgraph.edge_exists(Qubit(1), Qubit(0)));
   }
   GIVEN("Construct graph using member functions") {
     std::vector<Node> uids = {Node(4), Node(1), Node(0), Node(1231)};
@@ -67,8 +67,8 @@ SCENARIO("Correct creation of UIDConnectivity graphs") {
     uidgraph.add_connection(uids[0], uids[3], 3);
     uidgraph.add_connection(uids[2], uids[3], 0);
 
-    CHECK(uidgraph.connection_exists(uids[0], uids[3]));
-    CHECK(uidgraph.connection_exists(uids[2], uids[3]));
+    CHECK(uidgraph.edge_exists(uids[0], uids[3]));
+    CHECK(uidgraph.edge_exists(uids[2], uids[3]));
     CHECK(uidgraph.n_connections() == 2);
     CHECK(uidgraph.get_connection_weight(uids[0], uids[3]) == 3);
     CHECK(uidgraph.n_uids() == 4);

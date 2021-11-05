@@ -1389,9 +1389,9 @@ SCENARIO("Test interaction graph and line generation", "[routing]") {
     QubitGraph test_qubit_graph = generate_interaction_graph(test_circuit);
 
     REQUIRE(test_qubit_graph.n_connections() == 3);
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(0), Qubit(1)));
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(2), Qubit(3)));
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(4), Qubit(5)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(0), Qubit(1)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(2), Qubit(3)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(4), Qubit(5)));
 
     QubitLineList qlines = qubit_lines(test_circuit);
     QubitLineList correct_lines = {
@@ -1408,8 +1408,8 @@ SCENARIO("Test interaction graph and line generation", "[routing]") {
     QubitGraph test_qubit_graph = generate_interaction_graph(test_circuit);
 
     REQUIRE(test_qubit_graph.n_connections() == 2);
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(0), Qubit(1)));
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(2), Qubit(4)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(0), Qubit(1)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(2), Qubit(4)));
 
     QubitLineList qlines = qubit_lines(test_circuit);
     QubitLineList correct_lines = {
@@ -1429,11 +1429,11 @@ SCENARIO("Test interaction graph and line generation", "[routing]") {
     QubitGraph test_qubit_graph = generate_interaction_graph(test_circuit);
 
     REQUIRE(test_qubit_graph.n_connections() == 5);
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(0), Qubit(1)));
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(2), Qubit(3)));
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(4), Qubit(5)));
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(2), Qubit(1)));
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(4), Qubit(3)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(0), Qubit(1)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(2), Qubit(3)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(4), Qubit(5)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(2), Qubit(1)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(4), Qubit(3)));
 
     QubitLineList qlines = qubit_lines(test_circuit);
     QubitLineList correct_lines = {
@@ -1505,10 +1505,8 @@ SCENARIO("Test routing with partial map provided", "[routing]") {
 
     remove_unmapped_nodes(test_architecture2, map, circ);
     REQUIRE(test_architecture2.n_connections() == 2);
-    REQUIRE(
-        test_architecture2.connection_exists(square_nodes[0], square_nodes[1]));
-    REQUIRE(
-        test_architecture2.connection_exists(square_nodes[0], square_nodes[2]));
+    REQUIRE(test_architecture2.edge_exists(square_nodes[0], square_nodes[1]));
+    REQUIRE(test_architecture2.edge_exists(square_nodes[0], square_nodes[2]));
 
     // test unmapped nodes which cannot be removed are mapped to a qubit
     map.left.erase(qb0);
@@ -1516,10 +1514,8 @@ SCENARIO("Test routing with partial map provided", "[routing]") {
     remove_unmapped_nodes(test_architecture2, map, circ);
     REQUIRE(map.left.find(qb0)->second == square_nodes[0]);
     REQUIRE(test_architecture2.n_connections() == 2);
-    REQUIRE(
-        test_architecture2.connection_exists(square_nodes[0], square_nodes[1]));
-    REQUIRE(
-        test_architecture2.connection_exists(square_nodes[0], square_nodes[2]));
+    REQUIRE(test_architecture2.edge_exists(square_nodes[0], square_nodes[1]));
+    REQUIRE(test_architecture2.edge_exists(square_nodes[0], square_nodes[2]));
 
     // test when an unmapped node is mapped, the most connected is chosen
     // (i.e. least connected nodes are removed first)

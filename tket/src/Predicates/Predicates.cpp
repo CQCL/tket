@@ -333,7 +333,7 @@ bool ConnectivityPredicate::implies(const Predicate& other) const {
     const Architecture& arc2 = other_c.arch_;
     // Collect all edges in arc1
     for (auto [n1, n2] : arc1.get_connections_vec()) {
-      if (!arc2.connection_exists(n1, n2) && !arc2.connection_exists(n2, n1)) {
+      if (!arc2.edge_exists(n1, n2) && !arc2.edge_exists(n2, n1)) {
         return false;  // if not in second architecture, return false
       }
     }
@@ -353,7 +353,7 @@ PredicatePtr ConnectivityPredicate::meet(const Predicate& other) const {
     std::vector<std::pair<Node, Node>> new_edges;
     // Collect all edges in arc1 which are also in arc2
     for (auto [n1, n2] : arc1.get_connections_vec()) {
-      if (arc2.connection_exists(n1, n2)) {
+      if (arc2.edge_exists(n1, n2)) {
         new_edges.push_back({n1, n2});
         new_edges.push_back({n2, n1});
       }
@@ -388,7 +388,7 @@ bool DirectednessPredicate::implies(const Predicate& other) const {
     // Collect all edges in arc1
     for (auto [n1, n2] : arc1.get_connections_vec()) {
       // directedness accounted for
-      if (!arc2.connection_exists(n1, n2)) {
+      if (!arc2.edge_exists(n1, n2)) {
         return false;  // if not in second architecture, return false
       }
     }
@@ -409,7 +409,7 @@ PredicatePtr DirectednessPredicate::meet(const Predicate& other) const {
     // Collect all edges in arc1 which are also in arc2
     for (auto [n1, n2] : arc1.get_connections_vec()) {
       // this also accounts for directedness, do we want that?
-      if (arc2.connection_exists(n1, n2)) {
+      if (arc2.edge_exists(n1, n2)) {
         new_edges.push_back({n1, n2});
       }
     }

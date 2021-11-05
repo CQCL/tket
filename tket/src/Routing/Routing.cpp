@@ -103,7 +103,7 @@ qubit_mapping_t Routing::return_initial_map() const {
 bool subgraph_remove_if_connected(
     Architecture& arc, const Architecture& subarc, const Node& node) {
   // do not remove if node is in subarc
-  if (subarc.uid_exists(node)) {
+  if (subarc.node_exists(node)) {
     return false;
   }
   if (subarc.n_uids() > 0) {

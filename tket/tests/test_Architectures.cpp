@@ -47,7 +47,7 @@ SCENARIO("Testing FullyConnected") {
       if (i != j) {
         Node n1("fcNode", i);
         Node n2("fcNode", j);
-        REQUIRE(arch.connection_exists(n1, n2));
+        REQUIRE(arch.edge_exists(n1, n2));
       }
     }
   }
@@ -72,7 +72,7 @@ SCENARIO("Testing RingArch") {
   for (unsigned i = 0; i < n_nodes; i++) {
     Node n1("ringNode", i);
     Node n2("ringNode", (i + 1) % n_nodes);
-    REQUIRE(arch.connection_exists(n1, n2));
+    REQUIRE(arch.edge_exists(n1, n2));
   }
 }
 

@@ -39,10 +39,10 @@ void Routing::activate_node(const Node& node) {
   current_arc_.add_uid(node);
   for (Node neigh : original_arc_.get_neighbour_uids(node)) {
     if (node_active(qmap, neigh)) {
-      if (original_arc_.connection_exists(node, neigh)) {
+      if (original_arc_.edge_exists(node, neigh)) {
         current_arc_.add_connection(node, neigh);
       }
-      if (original_arc_.connection_exists(neigh, node)) {
+      if (original_arc_.edge_exists(neigh, node)) {
         current_arc_.add_connection(neigh, node);
       }
     }

@@ -782,9 +782,9 @@ Transform Transform::decompose_SWAP_to_CX(const Architecture &arc) {
       if (it->get_op_ptr()->get_type() == OpType::SWAP) {
         unit_vector_t qbs = it->get_args();
         node_vector_t nodes = {qbs.begin(), qbs.end()};
-        if (arc_ptr != nullptr && arc_ptr->uid_exists(nodes[0]) &&
-            arc_ptr->uid_exists(nodes[1]) &&
-            arc_ptr->connection_exists(nodes[1], nodes[0])) {
+        if (arc_ptr != nullptr && arc_ptr->node_exists(nodes[0]) &&
+            arc_ptr->node_exists(nodes[1]) &&
+            arc_ptr->edge_exists(nodes[1], nodes[0])) {
           bin.push_back({it.get_vertex(), true});
         } else {
           bin.push_back({it.get_vertex(), false});
@@ -924,8 +924,8 @@ Transform Transform::decompose_CX_directed(const Architecture &arc) {
       if (it->get_op_ptr()->get_type() == OpType::CX) {
         unit_vector_t qbs = it->get_args();
         node_vector_t nodes = {qbs.begin(), qbs.end()};
-        if (!arc.connection_exists(nodes[0], nodes[1]) &&
-            arc.connection_exists(nodes[1], nodes[0])) {
+        if (!arc.edge_exists(nodes[0], nodes[1]) &&
+            arc.edge_exists(nodes[1], nodes[0])) {
           // Implies CX gate is valid, and needs flipping to respect
           // Architecture
           bin.push_back({it.get_vertex(), false});
@@ -937,8 +937,8 @@ Transform Transform::decompose_CX_directed(const Architecture &arc) {
         if (b.get_op()->get_type() == OpType::CX) {
           qubit_vector_t qbs = it->get_qubits();
           node_vector_t nodes = {qbs.begin(), qbs.end()};
-          if (!arc.connection_exists(nodes[0], nodes[1]) &&
-              arc.connection_exists(nodes[1], nodes[0])) {
+          if (!arc.edge_exists(nodes[0], nodes[1]) &&
+              arc.edge_exists(nodes[1], nodes[0])) {
             // Implies CX gate is valid, and needs flipping to respect
             // Architecture
             bin.push_back({it.get_vertex(), true});

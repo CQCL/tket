@@ -51,6 +51,9 @@ class UIDConnectivityBase : public AbstractGraph<UID_t> {
   using Vertex = utils::vertex<ConnGraph>;
   using UndirectedVertex = utils::vertex<UndirectedConnGraph>;
   using Connection = typename AbstractGraph<UID_t>::Edge;
+  using AbstractGraph<UID_t>::nodes_;
+  using AbstractGraph<UID_t>::node_exists;
+  using AbstractGraph<UID_t>::edge_exists;
 
  public:
   /** empty default constructor */
@@ -59,28 +62,32 @@ class UIDConnectivityBase : public AbstractGraph<UID_t> {
   /** constructor from list of vertices */
   explicit UIDConnectivityBase(const std::vector<UID_t>& uids);
 
-  /** constructor from list of edges */
+  /** constructor from list of= edges */
   explicit UIDConnectivityBase(const std::vector<Connection>& edges);
+
+  bool edge_exists(const UID_t& uid1, const UID_t& uid2) const override;
 
   /** add vertex to interaction graph */
   void add_uid(const UID_t uid) {
+    nodes_.insert(uid);
     Vertex v = boost::add_vertex(uid, graph);
     uid_to_vertex.left.insert({uid, v});
   }
 
   /** remove vertex from the interaction graph */
   void remove_uid(const UID_t uid) {
-    if (!uid_exists(uid)) {
+    if (!node_exists(uid)) {
       throw NodeDoesNotExistError(
           "The UID passed to UIDConnectivity::remove_uid must "
           "exist!");
     }
+    nodes_.erase(uid);
     Vertex v = to_vertices(uid);
     boost::clear_vertex(v, graph);
     utils::remove_vertex_with_map(v, graph, uid_to_vertex.right);
   }
 
-  /** add edge to the interaction graph */
+  /** add weighted edge to the interaction graph */
   void add_connection(const UID_t uid1, const UID_t uid2, unsigned weight = 1);
 
   /** remove edges in the connection graph */
@@ -91,12 +98,6 @@ class UIDConnectivityBase : public AbstractGraph<UID_t> {
       const Connection edge, bool remove_unused_vertices = false);
   void remove_connection(
       const UID_t uid1, const UID_t uid2, bool remove_unused_vertices = false);
-
-  /** checks if edge exists */
-  bool connection_exists(const UID_t uid1, const UID_t uid2) const;
-
-  /** check if uid is a vertex */
-  bool uid_exists(const UID_t uid) const;
 
   /** returns connection weight between two UnitID */
   unsigned get_connection_weight(const UID_t uid1, const UID_t uid2) const;

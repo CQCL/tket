@@ -61,8 +61,7 @@ QubitGraph monomorph_interaction_graph(
         else if (pair.second == q_out_edges[1])
           qb2 = Qubit(pair.first);
       }
-      if (!q_graph.connection_exists(qb1, qb2) &&
-          !q_graph.connection_exists(qb2, qb1)) {
+      if (!q_graph.edge_exists(qb1, qb2) && !q_graph.edge_exists(qb2, qb1)) {
         q_graph.add_connection(qb1, qb2, slice + 1);
         count_edges++;
       }
@@ -103,7 +102,7 @@ QubitGraph generate_interaction_graph(
           qubits_considered.erase(qb2);
         } else if (!qb2_considered) {
           qubits_considered.erase(qb1);
-        } else if (!q_graph.connection_exists(qb1, qb2)) {
+        } else if (!q_graph.edge_exists(qb1, qb2)) {
           const unsigned out1 = q_graph.get_degree(qb1);
           const unsigned out2 = q_graph.get_degree(qb2);
           q_graph.add_connection(qb1, qb2, slice + 1);

@@ -327,7 +327,7 @@ bool check_mapping() {
         const node_vector_t nodes = a.get_all_uids_vec();
         for (Node node0 : nodes) {
           for (Node node1 : nodes) {
-            if (a.connection_exists(node0, node1)) {
+            if (a.edge_exists(node0, node1)) {
               RC_LOG() << node0.repr() << "-->" << node1.repr() << "; ";
             }
           }

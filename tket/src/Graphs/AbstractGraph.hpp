@@ -15,6 +15,7 @@
 #ifndef _TKET_AbstractGraph_H
 #define _TKET_AbstractGraph_H
 
+#include <set>
 #include <stdexcept>
 #include <utility>
 #include <vector>
@@ -41,13 +42,18 @@ class AbstractGraph {
   AbstractGraph() : nodes_() {}
 
   /** Construct from list of nodes */
-  explicit AbstractGraph(const std::vector<T>& nodes) : nodes_(nodes) {}
+  explicit AbstractGraph(const std::vector<T> &nodes)
+      : nodes_({nodes.begin(), nodes.end()}) {}
+
+  /** Check if an edge exists */
+  virtual bool edge_exists(const T &node1, const T &node2) const = 0;
+
+  /** Check if a node exists */
+  bool node_exists(const T &node) const { return nodes_.contains(node); }
 
  protected:
   using Edge = std::pair<T, T>;
-
- private:
-  std::vector<T> nodes_;
+  std::set<T> nodes_;
 };
 
 }  // namespace tket::graphs

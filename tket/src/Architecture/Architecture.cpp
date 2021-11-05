@@ -29,7 +29,7 @@ Architecture Architecture::create_subarch(
     const std::vector<Node>& subarc_nodes) {
   Architecture subarc(subarc_nodes);
   for (auto [u1, u2] : get_connections_vec()) {
-    if (subarc.uid_exists(u1) && subarc.uid_exists(u2)) {
+    if (subarc.node_exists(u1) && subarc.node_exists(u2)) {
       subarc.add_connection(u1, u2);
     }
   }
@@ -195,8 +195,8 @@ MatrixXb Architecture::get_connectivity() const {
   MatrixXb connectivity = MatrixXb(n, n);
   for (unsigned i = 0; i != n; ++i) {
     for (unsigned j = 0; j != n; ++j) {
-      connectivity(i, j) = connection_exists(Node(i), Node(j)) |
-                           connection_exists(Node(j), Node(i));
+      connectivity(i, j) =
+          edge_exists(Node(i), Node(j)) | edge_exists(Node(j), Node(i));
     }
   }
   return connectivity;
