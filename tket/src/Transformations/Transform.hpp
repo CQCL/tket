@@ -453,6 +453,14 @@ class Transform {
   // Produces: Any gates
   static Transform commute_through_multis();
 
+  // replaces every non-global PhasedX gate with two global PhasedX gates,
+  // using:
+  //
+  //         PhX(α, β) = PhX(-π/2, β + π/2) Rz(α) PhX(π/2, β + π/2)
+  //
+  // Setting α = 0 on non-targetted qubits makes the RHS the identity
+  static Transform globalise_phasedx();
+
   // commutes Rz gates through ZZMax, and combines adjacent ZZMax gates
   // Expects: ZZMax, Rz, Rx
   // Produces: ZZMax, Rz, Rx
