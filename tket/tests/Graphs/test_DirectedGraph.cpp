@@ -17,7 +17,7 @@
 #include <iostream>
 #include <vector>
 
-#include "Graphs/UIDConnectivity.hpp"
+#include "Graphs/DirectedGraph.hpp"
 #include "Utils/UnitID.hpp"
 #include "boost/range/iterator_range_core.hpp"
 

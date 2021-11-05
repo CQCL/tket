@@ -22,7 +22,7 @@
 #include <utility>
 #include <vector>
 
-#include "Graphs/UIDConnectivity.hpp"
+#include "Graphs/DirectedGraph.hpp"
 #include "Utils/BiMapHeaders.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/Json.hpp"

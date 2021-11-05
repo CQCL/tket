@@ -16,7 +16,7 @@
 #define _TKET_SteinerForest_H_
 #include "Circuit/Circuit.hpp"
 #include "Converters/PhasePoly.hpp"
-#include "Graphs/UIDConnectivity.hpp"
+#include "Graphs/DirectedGraph.hpp"
 #include "Graphs/Utils.hpp"
 #include "SteinerTree.hpp"
 #include "Utils/GraphHeaders.hpp"

@@ -18,7 +18,7 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/pending/property.hpp>
 
-#include "Graphs/UIDConnectivity.hpp"
+#include "Graphs/DirectedGraph.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket::graphs {
