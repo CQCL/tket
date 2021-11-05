@@ -101,7 +101,7 @@ class ArchitectureBase : public T {
   std::optional<Node> find_worst_node(const ArchitectureBase &orig_g);
 };
 
-typedef ArchitectureBase<graphs::UIDConnectivity<Node>> Architecture;
+typedef ArchitectureBase<graphs::DirectedGraph<Node>> Architecture;
 
 JSON_DECL(Architecture::Connection)
 JSON_DECL(Architecture)

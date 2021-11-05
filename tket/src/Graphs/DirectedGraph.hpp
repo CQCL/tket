@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_UIDConnectivity_H
-#define _TKET_UIDConnectivity_H
+#ifndef _TKET_DirectedGraph_H
+#define _TKET_DirectedGraph_H
 
 #include <algorithm>
 #include <boost/range/adaptor/transformed.hpp>
@@ -33,7 +33,7 @@
 namespace tket::graphs {
 
 template <typename UID_t>
-class UIDConnectivityBase : public AbstractGraph<UID_t> {
+class DirectedGraphBase : public AbstractGraph<UID_t> {
  protected:
   using ConnGraph = boost::adjacency_list<
       boost::vecS, boost::vecS, boost::bidirectionalS, UID_t, unsigned>;
@@ -48,17 +48,17 @@ class UIDConnectivityBase : public AbstractGraph<UID_t> {
 
  public:
   /** empty default constructor */
-  UIDConnectivityBase() : AbstractGraph<UID_t>(), graph(), uid_to_vertex() {}
+  DirectedGraphBase() : AbstractGraph<UID_t>(), graph(), uid_to_vertex() {}
 
   /** constructor from list of vertices */
-  explicit UIDConnectivityBase(const std::vector<UID_t>& uids) : AbstractGraph<UID_t>(uids), graph() {
+  explicit DirectedGraphBase(const std::vector<UID_t>& uids) : AbstractGraph<UID_t>(uids), graph() {
     for (const UID_t& uid : uids) {
       add_uid(uid);
     }
   }
 
   /** constructor from list of= edges */
-  explicit UIDConnectivityBase(const std::vector<Connection>& edges) : graph() {
+  explicit DirectedGraphBase(const std::vector<Connection>& edges) : graph() {
     for (auto [uid1, uid2] : edges) {
       if (!node_exists(uid1)) {
         add_uid(uid1);
@@ -73,7 +73,7 @@ class UIDConnectivityBase : public AbstractGraph<UID_t> {
   bool edge_exists(const UID_t& uid1, const UID_t& uid2) const override {
     if (!node_exists(uid1) || !node_exists(uid2)) {
       throw NodeDoesNotExistError(
-          "The UIDs passed to UIDConnectivity::edge_exists must "
+          "The UIDs passed to DirectedGraph::edge_exists must "
           "exist");
     }
     auto [_, exists] = boost::edge(to_vertices(uid1), to_vertices(uid2), graph);
@@ -91,7 +91,7 @@ class UIDConnectivityBase : public AbstractGraph<UID_t> {
   void remove_uid(const UID_t uid) {
     if (!node_exists(uid)) {
       throw NodeDoesNotExistError(
-          "The UID passed to UIDConnectivity::remove_uid must "
+          "The UID passed to DirectedGraph::remove_uid must "
           "exist!");
     }
     nodes_.erase(uid);
@@ -104,7 +104,7 @@ class UIDConnectivityBase : public AbstractGraph<UID_t> {
   void add_connection(const UID_t uid1, const UID_t uid2, unsigned weight = 1) {
     if (!node_exists(uid1) || !node_exists(uid2)) {
       throw NodeDoesNotExistError(
-          "The UIDs passed to UIDConnectivity::add_connection must "
+          "The UIDs passed to DirectedGraph::add_connection must "
           "exist");
     }
     boost::add_edge(to_vertices(uid1), to_vertices(uid2), weight, graph);
@@ -319,7 +319,7 @@ class UIDConnectivityBase : public AbstractGraph<UID_t> {
     return neighbours;
   }
 
-  bool operator==(const UIDConnectivityBase<UID_t>& other) const {
+  bool operator==(const DirectedGraphBase<UID_t>& other) const {
     std::set<UID_t> uids = this->get_all_uids_set();
     if (uids != other.get_all_uids_set()) return false;
     for (const UID_t& u : uids) {
@@ -381,7 +381,7 @@ class UIDsNotConnected : public std::logic_error {
 };
 
 /**
- * UIDConnectivity instances are directed graphs. It is a wrapper around a
+ * DirectedGraph instances are directed graphs. It is a wrapper around a
  * BGL graph that provides a clean class API, taking care of mapping all BGL
  * vertices and edge pointers to nodes, respectively pairs of nodes.
  *
@@ -389,13 +389,13 @@ class UIDsNotConnected : public std::logic_error {
  * the underlying undirected graph can be computed.
  *
  * All functionality for this class is implemented in the base class
- * UIDConnectivityBase. This class only adds caching of some function calls for
+ * DirectedGraphBase. This class only adds caching of some function calls for
  * efficiency, invalidating cache in case of changes on the underlying graph.
  */
 template <typename UID_t>
-class UIDConnectivity : public UIDConnectivityBase<UID_t> {
+class DirectedGraph : public DirectedGraphBase<UID_t> {
  private:
-  using Base = UIDConnectivityBase<UID_t>;
+  using Base = DirectedGraphBase<UID_t>;
 
  public:
   using Base::Base;

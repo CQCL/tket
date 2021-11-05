@@ -104,9 +104,9 @@ JSON_DECL(PlacementConfig)
 
 // Class for storing interaction graph.
 // Interacting qubits have an edge between them.
-class QubitGraph : public graphs::UIDConnectivity<Qubit> {
+class QubitGraph : public graphs::DirectedGraph<Qubit> {
  private:
-  using Base = graphs::UIDConnectivity<Qubit>;
+  using Base = graphs::DirectedGraph<Qubit>;
 
  public:
   QubitGraph() : Base() {}

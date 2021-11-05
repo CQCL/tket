@@ -58,7 +58,7 @@
  */
 
 /** These functions only work for the UndirectedConnGraph graph type (typedef in
- * `ArticulationPoints_impl.hpp`) i.e. undirected graphs of UIDConnectivity
+ * `ArticulationPoints_impl.hpp`) i.e. undirected graphs of DirectedGraph
  * objects They are not defined for BGL graphs in general
  *
  *  The reason for this is that we need the vertices to have a UnitID property

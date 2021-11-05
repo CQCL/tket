@@ -25,7 +25,7 @@ namespace tket::graphs {
 
 template <typename UID_t>
 using UndirectedConnGraph =
-    typename UIDConnectivity<UID_t>::UndirectedConnGraph;
+    typename DirectedGraph<UID_t>::UndirectedConnGraph;
 
 // ::detail includes all internal implementation-specific details
 namespace detail {
