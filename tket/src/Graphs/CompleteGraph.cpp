@@ -13,3 +13,17 @@
 // limitations under the License.
 
 #include "CompleteGraph.hpp"
+
+namespace tket::graphs {
+
+template <typename T>
+bool CompleteGraph<T>::edge_exists(
+    const T& node1, const T& node2) const {
+  if (!node_exists(node1) || !node_exists(node2)) {
+    throw NodeDoesNotExistError(
+        "The UIDs passed to CompleteGraph::edge_exists must exist.");
+  }
+  return true;
+}
+
+}  // namespace tket::graphs

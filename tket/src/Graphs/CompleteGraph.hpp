@@ -20,7 +20,14 @@
 namespace tket::graphs {
 
 template <typename T>
-class CompleteGraph : public AbstractGraph<T> {};
+class CompleteGraph : public AbstractGraph<T> {
+protected:
+  using AbstractGraph<T>::nodes_;
+  using AbstractGraph<T>::node_exists;
+  using AbstractGraph<T>::edge_exists;
+
+  bool edge_exists(const T& node1, const T& node2) const override;
+};
 
 }  // namespace tket::graphs
 
