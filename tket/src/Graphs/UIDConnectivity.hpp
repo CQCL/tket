@@ -28,7 +28,6 @@
 #include "Graphs/UIDConnectivityBase.hpp"
 #include "Graphs/Utils.hpp"
 #include "Utils/GraphHeaders.hpp"
-#include "Utils/UnitID.hpp"
 
 namespace tket::graphs {
 
@@ -57,8 +56,19 @@ class UIDConnectivity : public UIDConnectivityBase<UID_t> {
 
   // We cache distances. A value of zero in the cache implies that the nodes are
   // disconnected (unless they are equal).
-  const std::vector<std::size_t>& get_distances(const UID_t& root) const&;
-  std::vector<std::size_t>&& get_distances(const UID_t& root) const&&;
+  const std::vector<std::size_t>& get_distances(const UID_t& root) const& {
+    if (distance_cache.find(root) == distance_cache.end()) {
+      distance_cache[root] = Base::get_distances(UID_t(root));
+    }
+    return distance_cache[root];
+  }
+
+  std::vector<std::size_t>&& get_distances(const UID_t& root) const&& {
+    if (distance_cache.find(root) == distance_cache.end()) {
+      distance_cache[root] = Base::get_distances(UID_t(root));
+    }
+    return std::move(distance_cache[root]);
+  }
 
   /**
    * Graph distance between two nodes.
@@ -69,28 +79,90 @@ class UIDConnectivity : public UIDConnectivityBase<UID_t> {
    * @return length of shortest path between the nodes
    * @throws UIDsNotConnected if there is no path between the nodes
    */
-  std::size_t get_distance(const UID_t uid1, const UID_t uid2) const;
+  std::size_t get_distance(const UID_t uid1, const UID_t uid2) const {
+    if (uid1 == uid2) {
+      return 0;
+    }
+    size_t d;
+    if (distance_cache.find(uid1) != distance_cache.end()) {
+      d = distance_cache[uid1][this->to_vertices(uid2)];
+    } else if (distance_cache.find(uid2) != distance_cache.end()) {
+      d = distance_cache[uid2][this->to_vertices(uid1)];
+    } else {
+      distance_cache[uid1] = Base::get_distances(uid1);
+      d = distance_cache[uid1][this->to_vertices(uid2)];
+    }
+    if (d == 0) {
+      throw UIDsNotConnected(uid1, uid2);
+    }
+    return d;
+  }
 
   /** Returns all nodes at a given distance from a given 'source' node */
   std::vector<UID_t> uids_at_distance(
-      const UID_t& root, std::size_t distance) const;
+      const UID_t& root, std::size_t distance) const {
+    auto dists = get_distances(root);
+    std::vector<UID_t> out;
+    for (unsigned i = 0; i < dists.size(); ++i) {
+      if (dists[i] == distance) {
+        out.push_back(UID_t(this->get_uid(i)));
+      }
+    }
+    return out;
+  }
 
   // we cache the undirected graph
-  const UndirectedConnGraph& get_undirected_connectivity() const&;
-  UndirectedConnGraph&& get_undirected_connectivity() const&&;
+  const UndirectedConnGraph& get_undirected_connectivity() const& {
+    if (!undir_graph) {
+      undir_graph = Base::get_undirected_connectivity();
+    }
+    return undir_graph.value();
+  }
+
+  UndirectedConnGraph&& get_undirected_connectivity() const&& {
+    if (!undir_graph) {
+      undir_graph = Base::get_undirected_connectivity();
+    }
+    return std::move(undir_graph.value());
+  }
 
   // these functions invalidate caching: invalidate cache then call Base
   // function
-  void remove_uid(const UID_t uid);
-  void add_uid(const UID_t uid);
+  void remove_uid(const UID_t uid) {
+    invalidate_cache();
+    Base::remove_uid(uid);
+  }
+  void add_uid(const UID_t uid) {
+    invalidate_cache();
+    Base::add_uid(uid);
+  }
 
-  void remove_stray_uids();
-  void add_connection(const UID_t uid1, const UID_t uid2, unsigned weight = 1);
-  void remove_connections(const std::vector<Connection>& edges);
+  void remove_stray_uids() {
+    invalidate_cache();
+    Base::remove_stray_uids();
+  }
+
+  void add_connection(const UID_t uid1, const UID_t uid2, unsigned weight = 1) {
+    invalidate_cache();
+    Base::add_connection(uid1, uid2, weight);
+  }
+
+  void remove_connections(const std::vector<Connection>& edges) {
+    invalidate_cache();
+    Base::remove_connections(edges);
+  }
+
   void remove_connection(
-      const Connection edge, bool remove_unused_vertices = false);
+      const Connection edge, bool remove_unused_vertices = false) {
+    invalidate_cache();
+    Base::remove_connection(edge, remove_unused_vertices);
+  }
+
   void remove_connection(
-      const UID_t uid1, const UID_t uid2, bool remove_unused_vertices = false);
+      const UID_t uid1, const UID_t uid2, bool remove_unused_vertices = false) {
+    invalidate_cache();
+    Base::remove_connection(uid1, uid2, remove_unused_vertices);
+  }
 
  private:
   inline void invalidate_cache() {
@@ -100,10 +172,6 @@ class UIDConnectivity : public UIDConnectivityBase<UID_t> {
   mutable std::map<UID_t, std::vector<std::size_t>> distance_cache;
   mutable std::optional<UndirectedConnGraph> undir_graph;
 };
-
-// template explicit instations, with implementations in cpp file
-extern template class UIDConnectivity<Node>;
-extern template class UIDConnectivity<Qubit>;
 
 }  // namespace tket::graphs
 
