@@ -31,12 +31,12 @@ namespace detail {
 
 // Types used in `get_ap_to_comp`
 // Maps BGL edges descriptors to their (unique) biconnected component
-template <typename UID_t>
-using EdgeToCompT = std::map<utils::edge<UndirectedConnGraph<UID_t>>, unsigned>;
+template <typename T>
+using EdgeToCompT = std::map<utils::edge<UndirectedConnGraph<T>>, unsigned>;
 
-template <typename UID_t>
-BicomponentGraph<UID_t>::BicomponentGraph(
-    const UndirectedConnGraph<UID_t>& graph)
+template <typename T>
+BicomponentGraph<T>::BicomponentGraph(
+    const UndirectedConnGraph<T>& graph)
     : underlying_g(graph) {
   // get map from APs to their bicomponents (as well as the number of bicomps)
   compute_components_map();
@@ -49,11 +49,11 @@ BicomponentGraph<UID_t>::BicomponentGraph(
  *  biconnected components they belong to.
  *  Returns a pair with the map and the number of components
  */
-template <typename UID_t>
-void BicomponentGraph<UID_t>::compute_components_map() {
+template <typename T>
+void BicomponentGraph<T>::compute_components_map() {
   // Map from edges to their (unique) biconnected component
   // (this is filled out by call to boost::biconnected_components)
-  EdgeToCompT<UID_t> edge_to_comp;
+  EdgeToCompT<T> edge_to_comp;
 
   std::vector<unsigned> underlying_aps;
   // call to BGL
@@ -67,7 +67,7 @@ void BicomponentGraph<UID_t>::compute_components_map() {
 
   // Now populate map from vertices to the set of biconnected components of v
   for (auto v : boost::make_iterator_range(boost::vertices(underlying_g))) {
-    UID_t uid = underlying_g[v];
+    T uid = underlying_g[v];
     vertex_to_comps.insert({uid, {}});
     // we get the components `v` belongs to by looking at the components
     // of its incident edges
@@ -85,8 +85,8 @@ void BicomponentGraph<UID_t>::compute_components_map() {
   selected_comps = std::vector<bool>(n_components, false);
 }
 
-template <typename UID_t>
-void BicomponentGraph<UID_t>::build_graph() {
+template <typename T>
+void BicomponentGraph<T>::build_graph() {
   // initialise bicomponent graph with `n_components` vertices
   unsigned n_components = selected_comps.size();
   g = Graph(n_components);
@@ -105,10 +105,10 @@ void BicomponentGraph<UID_t>::build_graph() {
   }
 }
 
-template <typename UID_t>
+template <typename T>
 template <typename Range>
-void BicomponentGraph<UID_t>::select_comps(Range uids) {
-  for (UID_t uid : uids) {
+void BicomponentGraph<T>::select_comps(Range uids) {
+  for (T uid : uids) {
     for (unsigned comp : vertex_to_comps[uid]) {
       selected_comps[comp] = true;
     }
@@ -164,8 +164,8 @@ struct TrackUsedEdgesVisitor : public boost::default_dfs_visitor {
   }
 };
 
-template <typename UID_t>
-void BicomponentGraph<UID_t>::propagate_selected_comps() {
+template <typename T>
+void BicomponentGraph<T>::propagate_selected_comps() {
   unsigned root = 0;
   unsigned n_components = selected_comps.size();
   while (root < n_components && !selected_comps[root]) {
@@ -184,9 +184,9 @@ void BicomponentGraph<UID_t>::propagate_selected_comps() {
   boost::depth_first_search(g, params);
 }
 
-template <typename UID_t>
-std::set<UID_t> BicomponentGraph<UID_t>::get_inner_edges() {
-  std::set<UID_t> out;
+template <typename T>
+std::set<T> BicomponentGraph<T>::get_inner_edges() {
+  std::set<T> out;
   for (auto e : boost::make_iterator_range(boost::edges(g))) {
     unsigned comp1 = boost::source(e, g);
     unsigned comp2 = boost::target(e, g);
@@ -206,12 +206,12 @@ template void BicomponentGraph<Qubit>::select_comps(std::vector<Qubit>);
 
 }  // namespace detail
 
-template <typename UID_t>
-std::set<UID_t> get_subgraph_aps(
-    const UndirectedConnGraph<UID_t>& graph,
-    const UndirectedConnGraph<UID_t>& subgraph) {
-  detail::BicomponentGraph<UID_t> bicomp_graph(graph);
-  using funcT = std::function<UID_t(unsigned)>;
+template <typename T>
+std::set<T> get_subgraph_aps(
+    const UndirectedConnGraph<T>& graph,
+    const UndirectedConnGraph<T>& subgraph) {
+  detail::BicomponentGraph<T> bicomp_graph(graph);
+  using funcT = std::function<T(unsigned)>;
   funcT to_uid = [&subgraph](unsigned v) { return subgraph[v]; };
   auto selected = boost::make_iterator_range(boost::vertices(subgraph)) |
                   boost::adaptors::transformed(to_uid);

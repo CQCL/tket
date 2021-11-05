@@ -75,10 +75,10 @@ namespace tket::graphs {
 /** Given a graph and a subgraph, returns the subgraph APs, as defined
  *  in the introduction above
  */
-template <typename UID_t>
-std::set<UID_t> get_subgraph_aps(
-    const UndirectedConnGraph<UID_t>& graph,
-    const UndirectedConnGraph<UID_t>& subgraph);
+template <typename T>
+std::set<T> get_subgraph_aps(
+    const UndirectedConnGraph<T>& graph,
+    const UndirectedConnGraph<T>& subgraph);
 
 // template explicit instations, with implementations in cpp file
 extern template std::set<UnitID> get_subgraph_aps(
