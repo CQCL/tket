@@ -605,7 +605,7 @@ SCENARIO(
     const qubit_vector_t all_qs = test_circ.all_qubits();
     REQUIRE(test_m.at(all_qs[4]) == uid0);
     const std::vector<std::pair<unsigned, unsigned>> mapping{
-        {0, 3}, {1, 2}, {2, 1}, {3, 5}, {5, 0}};
+        {0, 0}, {1, 1}, {2, 2}, {3, 3}, {5, 5}};
     for (const auto& pair : mapping) {
       REQUIRE(test_m.at(all_qs[pair.first]) == Node(pair.second));
     }

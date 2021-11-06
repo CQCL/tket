@@ -138,7 +138,7 @@ QubitGraph monomorph_interaction_graph(
  * @param max_matches maximum number of matches to find
  * @param timeout timeout in milliseconds
  *
- * @return vector of matches found
+ * @return vector of matches found, sorted in canonical order
  */
 std::vector<qubit_bimap_t> monomorphism_edge_break(
     const Architecture& arc, const QubitGraph& q_graph, unsigned max_matches,

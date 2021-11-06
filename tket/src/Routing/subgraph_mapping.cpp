@@ -104,8 +104,10 @@ std::vector<qubit_bimap_t> monomorphism_edge_break(
       if (all_maps.empty()) {
         throw std::runtime_error("No mappings found before timeout.");
       }
+      std::sort(all_maps.begin(), all_maps.end());
       return all_maps;
     } else if (found_monomorphism) {
+      std::sort(all_maps.begin(), all_maps.end());
       return all_maps;
     } else if (boost::num_edges(undirected_pattern) != 0) {
       using edge_t = graphs::utils::edge<InteractionGraph>;
