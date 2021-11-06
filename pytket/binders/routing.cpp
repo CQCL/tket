@@ -113,7 +113,7 @@ PYBIND11_MODULE(routing, m) {
           py::arg("connections"))
       .def_property_readonly(
           "nodes", &Architecture::get_all_nodes_vec,
-          "Returns all nodes of architecture as UnitID objects. ")
+          "Returns all nodes of architecture as Node objects.")
       .def_property_readonly(
           "coupling", &Architecture::get_all_edges_vec,
           "Returns the coupling map of the Architecture as "
@@ -209,7 +209,10 @@ PYBIND11_MODULE(routing, m) {
       .def("__repr__", [](const FullyConnected &arc) {
         return "<tket::FullyConnected, nodes=" + std::to_string(arc.n_nodes()) +
                ">";
-      });
+      })
+      .def_property_readonly(
+          "nodes", &FullyConnected::get_all_nodes_vec,
+          "Returns all nodes of architecture as Node objects.");
   py::class_<RingArch, Architecture>(
       m, "RingArch",
       "Architecture class for number of qubits arranged in a ring.")
