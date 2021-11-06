@@ -232,7 +232,15 @@ class DirectedGraphBase : public AbstractGraph<T> {
 
   /** remove vertices with deg == 0 */
   inline void remove_stray_nodes() {
-    utils::remove_stray_vertices_with_map(graph, node_to_vertex.right);
+    std::set<T> strays;
+    for (const T &node : nodes_) {
+      if (get_degree(node) == 0) {
+        strays.insert(node);
+      }
+    }
+    for (const T &node : strays) {
+      remove_node(node);
+    }
   }
 
   /* return UIDs with greatest (undirected) degree in graph */

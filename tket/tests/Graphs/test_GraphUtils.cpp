@@ -257,50 +257,7 @@ SCENARIO("Using remove_vertex") {
     }
   }
 }
-SCENARIO("Using remove_stray_vertices") {
-  GIVEN("A vecS graph") {
-    auto g = get_graph<boost::vecS>();
-    unsigned num_vertices = boost::num_vertices(g);
 
-    boost::clear_vertex(19, g);
-    remove_stray_vertices(g);
-    --num_vertices;
-    REQUIRE(boost::num_vertices(g) == num_vertices);
-
-    boost::clear_vertex(17, g);
-    remove_stray_vertices(g);
-    num_vertices -= 2;
-    REQUIRE(boost::num_vertices(g) == num_vertices);
-  }
-  GIVEN("With a pmap") {
-    auto g = get_graph<boost::listS>();
-    unsigned num_vertices = boost::num_vertices(g);
-    std::map<vertex<decltype(g)>, unsigned> pmap;
-    for (unsigned m = 0; m < num_vertices; ++m) {
-      pmap[boost::vertex(m, g)] = m;
-    }
-
-    auto second_comp = [](auto p1, auto p2) { return p1.second < p2.second; };
-    boost::clear_vertex(boost::vertex(19, g), g);
-    remove_stray_vertices(g, pmap);
-    --num_vertices;
-    CHECK(boost::num_vertices(g) == num_vertices);
-    CHECK(pmap.size() == num_vertices);
-    REQUIRE(
-        std::max_element(pmap.begin(), pmap.end(), second_comp)->second ==
-        num_vertices - 1);
-
-    boost::clear_vertex(boost::vertex(17, g), g);
-    boost::clear_vertex(boost::vertex(3, g), g);
-    remove_stray_vertices(g, pmap);
-    num_vertices -= 3;
-    CHECK(boost::num_vertices(g) == num_vertices);
-    CHECK(pmap.size() == num_vertices);
-    REQUIRE(
-        std::max_element(pmap.begin(), pmap.end(), second_comp)->second ==
-        num_vertices - 1);
-  }
-}
 SCENARIO("Using remove_edge") {
   GIVEN("Removing a few edges with remove_stray_vertices = false") {
     auto g = get_graph<boost::vecS>();
