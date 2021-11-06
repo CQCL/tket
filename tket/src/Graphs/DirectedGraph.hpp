@@ -115,8 +115,7 @@ class DirectedGraphBase : public AbstractGraph<T> {
     boost::add_edge(to_vertices(node1), to_vertices(node2), weight, graph);
   }
 
-  void remove_connection(
-      const Connection edge, bool remove_unused_vertices = false) {
+  void remove_connection(const Connection edge) {
     if (!node_exists(edge.first) || !node_exists(edge.second)) {
       throw NodeDoesNotExistError(
           "Trying to remove an edge with non-existent vertices");
@@ -126,25 +125,13 @@ class DirectedGraphBase : public AbstractGraph<T> {
     if (!exists) {
       throw EdgeDoesNotExistError(
           "The edge (" + edge.first.repr() + ", " + edge.second.repr() +
-          ")"
-          "cannot be removed as it does not exist");
+          ") cannot be removed as it does not exist");
     }
-    utils::remove_edge_with_map(
-        e, graph, node_to_vertex.right, remove_unused_vertices);
+    utils::remove_edge_with_map(e, graph, node_to_vertex.right);
   }
 
-  void remove_connection(
-      const T node1, const T node2, bool remove_unused_vertices = false) {
-    remove_connection({node1, node2}, remove_unused_vertices);
-  }
-
-  /** remove edges in the connection graph */
-  void remove_connections(
-      const std::vector<Connection>& edges,
-      bool remove_unused_vertices = false) {
-    for (const auto& e : edges) {
-      remove_connection(e, remove_unused_vertices);
-    }
+  void remove_connection(const T node1, const T node2) {
+    remove_connection({node1, node2});
   }
 
   /** returns connection weight between two UnitID */
@@ -485,21 +472,14 @@ class DirectedGraph : public DirectedGraphBase<T> {
     Base::add_connection(node1, node2, weight);
   }
 
-  void remove_connections(const std::vector<Connection>& edges) {
+  void remove_connection(const Connection edge) {
     invalidate_cache();
-    Base::remove_connections(edges);
+    Base::remove_connection(edge);
   }
 
-  void remove_connection(
-      const Connection edge, bool remove_unused_vertices = false) {
+  void remove_connection(const T node1, const T node2) {
     invalidate_cache();
-    Base::remove_connection(edge, remove_unused_vertices);
-  }
-
-  void remove_connection(
-      const T node1, const T node2, bool remove_unused_vertices = false) {
-    invalidate_cache();
-    Base::remove_connection(node1, node2, remove_unused_vertices);
+    Base::remove_connection(node1, node2);
   }
 
  private:

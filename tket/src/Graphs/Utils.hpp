@@ -146,18 +146,15 @@ inline void remove_edge(
   impl.remove_edge(e, remove_unused_vertices);
 }
 template <typename Graph, typename Map>
-inline void remove_edge_with_map(
-    edge<Graph> e, Graph& graph, Map& map,
-    bool remove_unused_vertices = false) {
+inline void remove_edge_with_map(edge<Graph> e, Graph& graph, Map& map) {
   detail::graph_utils_impl_with_map<Graph, Map> impl(graph, map);
-  impl.remove_edge(e, remove_unused_vertices);
+  impl.remove_edge(e);
 }
 template <typename Graph, typename Map, typename PMap>
 inline void remove_edge_with_map(
-    edge<Graph> e, Graph& graph, Map& map, PMap& pmap,
-    bool remove_unused_vertices = false) {
+    edge<Graph> e, Graph& graph, Map& map, PMap& pmap) {
   detail::graph_utils_impl_with_map<Graph, Map, PMap> impl(graph, map, pmap);
-  impl.remove_edge(e, remove_unused_vertices);
+  impl.remove_edge(e);
 }
 
 // simple wrapper around boost::copy_graph that serves
