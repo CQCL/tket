@@ -113,7 +113,15 @@ typedef ArchitectureBase<graphs::DirectedGraph<Node>> Architecture;
 JSON_DECL(Architecture::Connection)
 JSON_DECL(Architecture)
 
-typedef ArchitectureBase<graphs::CompleteGraph<Node>> FullyConnected;
+class FullyConnected : public ArchitectureBase<graphs::CompleteGraph<Node>> {
+ public:
+  FullyConnected() : ArchitectureBase<graphs::CompleteGraph<Node>>() {}
+  FullyConnected(unsigned n) {
+    for (unsigned i = 0; i < n; i++) {
+      nodes_.insert(Node("fcNode", i));
+    }
+  }
+};
 
 JSON_DECL(FullyConnected)
 

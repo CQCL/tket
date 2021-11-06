@@ -33,12 +33,6 @@ class CompleteGraph : public AbstractGraph<T> {
 
   CompleteGraph() {}
 
-  CompleteGraph(unsigned n) {
-    for (unsigned i = 0; i < n; i++) {
-      nodes_.insert(T(i));
-    }
-  }
-
   std::vector<Edge> get_all_edges_vec() const override {
     std::vector<Edge> edges;
     std::vector<T> nodes = get_all_nodes_vec();
