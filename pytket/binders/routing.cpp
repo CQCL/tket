@@ -196,6 +196,17 @@ PYBIND11_MODULE(routing, m) {
                ", columns=" + std::to_string(arc.get_columns()) +
                ", layers=" + std::to_string(arc.get_layers()) + ">";
       });
+  py::class_<RingArch, Architecture>(
+      m, "RingArch",
+      "Architecture class for number of qubits arranged in a ring.")
+      .def(
+          py::init<const unsigned>(),
+          "The constructor for a RingArchitecture with some undirected "
+          "connectivity between qubits.\n\n:param number of qubits",
+          py::arg("nodes"))
+      .def("__repr__", [](const RingArch &arc) {
+        return "<tket::RingArch, nodes=" + std::to_string(arc.n_nodes()) + ">";
+      });
   py::class_<FullyConnected>(
       m, "FullyConnected",
       "Architecture class for number of qubits connected to every other "
@@ -213,17 +224,6 @@ PYBIND11_MODULE(routing, m) {
       .def_property_readonly(
           "nodes", &FullyConnected::get_all_nodes_vec,
           "Returns all nodes of architecture as Node objects.");
-  py::class_<RingArch, Architecture>(
-      m, "RingArch",
-      "Architecture class for number of qubits arranged in a ring.")
-      .def(
-          py::init<const unsigned>(),
-          "The constructor for a RingArchitecture with some undirected "
-          "connectivity between qubits.\n\n:param number of qubits",
-          py::arg("nodes"))
-      .def("__repr__", [](const RingArch &arc) {
-        return "<tket::RingArch, nodes=" + std::to_string(arc.n_nodes()) + ">";
-      });
 
   py::class_<Placement, std::shared_ptr<Placement>>(
             m, "Placement",
