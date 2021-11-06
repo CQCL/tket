@@ -196,7 +196,7 @@ PYBIND11_MODULE(routing, m) {
                ", columns=" + std::to_string(arc.get_columns()) +
                ", layers=" + std::to_string(arc.get_layers()) + ">";
       });
-  py::class_<FullyConnected, Architecture>(
+  py::class_<FullyConnected>(
       m, "FullyConnected",
       "Architecture class for number of qubits connected to every other "
       "qubit.")
