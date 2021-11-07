@@ -143,7 +143,7 @@ class DirectedGraphBase : public AbstractGraph<T> {
     auto [e, exists] =
         boost::edge(to_vertices(node1), to_vertices(node2), graph);
     if (!exists) {
-      return 0.;
+      return 0;
     }
 
     return graph[e];

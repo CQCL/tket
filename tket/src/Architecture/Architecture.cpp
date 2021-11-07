@@ -235,7 +235,7 @@ void from_json(const nlohmann::json& j, Architecture& ar) {
   for (const auto& j_entry : j.at("links")) {
     Architecture::Connection l =
         j_entry.at("link").get<Architecture::Connection>();
-    double w = j_entry.at("weight").get<double>();
+    unsigned w = j_entry.at("weight").get<unsigned>();
     ar.add_connection(l.first, l.second, w);
   }
 }
