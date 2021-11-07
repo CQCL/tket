@@ -70,7 +70,7 @@ class DirectedGraphBase : public AbstractGraph<T> {
       if (!node_exists(node2)) {
         add_node(node2);
       }
-      boost::add_edge(to_vertices(node1), to_vertices(node2), graph);
+      add_connection(node1, node2);
     }
   }
 
