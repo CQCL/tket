@@ -62,10 +62,10 @@ class ArchitectureBase : public T {
  public:
   using T::edge_exists;
   using T::get_all_edges_vec;
-  using T::nodes;
   using T::get_all_nodes_vec;
   using T::n_nodes;
   using T::node_exists;
+  using T::nodes;
   using T::T;
 
   /**

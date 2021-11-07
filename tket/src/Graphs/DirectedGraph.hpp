@@ -232,12 +232,12 @@ class DirectedGraphBase : public AbstractGraph<T> {
   /** remove vertices with deg == 0 */
   inline void remove_stray_nodes() {
     std::set<T> strays;
-    for (const T &node : nodes_) {
+    for (const T& node : nodes_) {
       if (get_degree(node) == 0) {
         strays.insert(node);
       }
     }
-    for (const T &node : strays) {
+    for (const T& node : strays) {
       remove_node(node);
     }
   }

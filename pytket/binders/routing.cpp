@@ -217,10 +217,12 @@ PYBIND11_MODULE(routing, m) {
           "undirected connectivity between qubits.\n\n:param number of "
           "qubits",
           py::arg("nodes"))
-      .def("__repr__", [](const FullyConnected &arc) {
-        return "<tket::FullyConnected, nodes=" + std::to_string(arc.n_nodes()) +
-               ">";
-      })
+      .def(
+          "__repr__",
+          [](const FullyConnected &arc) {
+            return "<tket::FullyConnected, nodes=" +
+                   std::to_string(arc.n_nodes()) + ">";
+          })
       .def_property_readonly(
           "nodes", &FullyConnected::get_all_nodes_vec,
           "Returns all nodes of architecture as Node objects.");
