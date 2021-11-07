@@ -250,7 +250,7 @@ class DirectedGraphBase : public AbstractGraph<T> {
     std::transform(
         max_vertices.begin(), max_vertices.end(),
         std::inserter(out, out.begin()),
-        [this](Vertex v) { return T(get_node(v)); });
+        [this](Vertex v) { return get_node(v); });
     return out;
   }
 
@@ -261,7 +261,7 @@ class DirectedGraphBase : public AbstractGraph<T> {
     std::transform(
         min_vertices.begin(), min_vertices.end(),
         std::inserter(out, out.begin()),
-        [this](Vertex v) { return T(get_node(v)); });
+        [this](Vertex v) { return get_node(v); });
     return out;
   }
 
@@ -292,11 +292,11 @@ class DirectedGraphBase : public AbstractGraph<T> {
     std::set<T> neighbours;
     for (auto [it, end] = boost::out_edges(to_vertices(node), graph); it != end;
          ++it) {
-      neighbours.insert(T(get_node(boost::target(*it, graph))));
+      neighbours.insert(get_node(boost::target(*it, graph)));
     }
     for (auto [it, end] = boost::in_edges(to_vertices(node), graph); it != end;
          ++it) {
-      neighbours.insert(T(get_node(boost::source(*it, graph))));
+      neighbours.insert(get_node(boost::source(*it, graph)));
     }
     return neighbours;
   }
@@ -392,14 +392,14 @@ class DirectedGraph : public DirectedGraphBase<T> {
   // disconnected (unless they are equal).
   const std::vector<std::size_t>& get_distances(const T& root) const& {
     if (distance_cache.find(root) == distance_cache.end()) {
-      distance_cache[root] = Base::get_distances(T(root));
+      distance_cache[root] = Base::get_distances(root);
     }
     return distance_cache[root];
   }
 
   std::vector<std::size_t>&& get_distances(const T& root) const&& {
     if (distance_cache.find(root) == distance_cache.end()) {
-      distance_cache[root] = Base::get_distances(T(root));
+      distance_cache[root] = Base::get_distances(root);
     }
     return std::move(distance_cache[root]);
   }
@@ -438,7 +438,7 @@ class DirectedGraph : public DirectedGraphBase<T> {
     std::vector<T> out;
     for (unsigned i = 0; i < dists.size(); ++i) {
       if (dists[i] == distance) {
-        out.push_back(T(this->get_node(i)));
+        out.push_back(this->get_node(i));
       }
     }
     return out;
