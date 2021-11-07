@@ -115,7 +115,15 @@ JSON_DECL(Architecture)
 class FullyConnected : public ArchitectureBase<graphs::CompleteGraph<Node>> {
  public:
   FullyConnected() : ArchitectureBase<graphs::CompleteGraph<Node>>() {}
-  FullyConnected(unsigned n) {
+
+  /**
+   * Construct a fully-connected graph of a given size.
+   *
+   * The nodes are labelled "fcNode" (indexed from 0 to n-1)
+   *
+   * @param n number of nodes
+   */
+  explicit FullyConnected(unsigned n) {
     for (unsigned i = 0; i < n; i++) {
       nodes_.insert(Node("fcNode", i));
     }
