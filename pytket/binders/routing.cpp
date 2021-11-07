@@ -140,7 +140,7 @@ PYBIND11_MODULE(routing, m) {
       .def(
           "__eq__",
           [](const Architecture &arc1, const Architecture &arc2) {
-            return arc1.get_all_nodes_set() == arc2.get_all_nodes_set() &&
+            return arc1.nodes() == arc2.nodes() &&
                    arc1.get_connections_set() == arc2.get_connections_set();
           },
           "Checks for architecture equality. Two architecture objects are "

@@ -196,7 +196,7 @@ std::vector<Node> find_hampath(const Architecture &arch, long timeout) {
 IterationOrder::IterationOrder(const Architecture &arch) {
   std::set<Node> visited_nodes;
 
-  Node no = *arch.get_all_nodes_set().begin();
+  Node no = *arch.nodes().begin();
 
   iterationorder.push_back(no);
   visited_nodes.insert(no);

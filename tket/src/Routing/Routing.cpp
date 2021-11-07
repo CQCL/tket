@@ -63,7 +63,7 @@ Routing::Routing(const Circuit& _circ, const Architecture& _arc)
   // Initial nodes number
 
   // Track which nodes are actually active
-  for (const UnitID& uid : current_arc_.get_all_nodes()) {
+  for (const UnitID& uid : current_arc_.nodes()) {
     Node n(uid);
     interaction.insert({n, n});
   }
@@ -124,7 +124,7 @@ void remove_unmapped_nodes(
   std::vector<Node> mapped_nodes;
 
   r_const_iterator_t iend = map.right.end();
-  for (const UnitID& uid : arc.get_all_nodes()) {
+  for (const UnitID& uid : arc.nodes()) {
     Node n(uid);
     r_const_iterator_t find_node = map.right.find(n);
     if (find_node == iend) {
@@ -165,7 +165,7 @@ void remove_unmapped_nodes(
 
 qubit_mapping_t get_qmap_from_circuit(Architecture& arc, Circuit& circ) {
   qubit_vector_t all_qbs = circ.all_qubits();
-  node_set_t all_nodes = arc.get_all_nodes_set();
+  node_set_t all_nodes = arc.nodes();
 
   qubit_mapping_t qubit_map;
   for (Qubit q : all_qbs) {

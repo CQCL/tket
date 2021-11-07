@@ -33,7 +33,7 @@ SCENARIO("Testing FullyConnected") {
   node_set_t nodes(nodes_vec.begin(), nodes_vec.end());
 
   REQUIRE(arch.n_nodes() == nodes.size());
-  for (const UnitID &uid : arch.get_all_nodes()) {
+  for (const UnitID &uid : arch.nodes()) {
     REQUIRE(nodes.count(Node(uid)));
   }
   for (auto [n1, n2] : arch.get_all_edges_vec()) {
@@ -59,7 +59,7 @@ SCENARIO("Testing RingArch") {
   node_set_t nodes(nodes_vec.begin(), nodes_vec.end());
 
   REQUIRE(arch.n_nodes() == nodes.size());
-  for (const UnitID &uid : arch.get_all_nodes()) {
+  for (const UnitID &uid : arch.nodes()) {
     REQUIRE(nodes.count(Node(uid)));
   }
   for (auto [n1, n2] : arch.get_all_edges_vec()) {
@@ -83,7 +83,7 @@ SCENARIO("Testing SquareGrid") {
   node_set_t nodes(nodes_vec.begin(), nodes_vec.end());
 
   REQUIRE(nodes.size() == arch.n_nodes());
-  for (const UnitID &uid : arch.get_all_nodes()) {
+  for (const UnitID &uid : arch.nodes()) {
     REQUIRE(nodes.count(Node(uid)));
   }
   for (auto [n1, n2] : arch.get_all_edges_vec()) {

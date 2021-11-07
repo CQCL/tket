@@ -336,13 +336,13 @@ Circuit phase_poly_synthesis(
     ++qb_counter;
   }
 
-  TKET_ASSERT(circuit_ppb_place.n_qubits() == arch.get_all_nodes_set().size());
+  TKET_ASSERT(circuit_ppb_place.n_qubits() == arch.n_nodes());
 
   qubit_vector_t q_vec_place = circuit_ppb_place.all_qubits();
   std::map<Qubit, Node> qubit_to_nodes_place;
   unsigned counter_place = 0;
 
-  for (Node no_place : arch.get_all_nodes_set()) {
+  for (Node no_place : arch.nodes()) {
     if (counter_place < circuit_ppb_place.n_qubits()) {
       qubit_to_nodes_place.insert({q_vec_place[counter_place], no_place});
       ++counter_place;

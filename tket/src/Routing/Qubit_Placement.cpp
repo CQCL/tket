@@ -162,7 +162,7 @@ QubitLineList qubit_lines(const Circuit& circ) {
 // remove a given number of nodes from the architecture, return a set of usable
 // nodes (the remainder)
 node_set_t best_nodes(Architecture& arc, unsigned n_remove) {
-  node_set_t all_nodes = arc.get_all_nodes_set();
+  node_set_t all_nodes = arc.nodes();
   node_set_t bad_nodes;
   // if there are nodes 'removed' already count them as bad nodes
   for (Node n : all_nodes) {

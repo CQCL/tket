@@ -62,8 +62,7 @@ class ArchitectureBase : public T {
  public:
   using T::edge_exists;
   using T::get_all_edges_vec;
-  using T::get_all_nodes;
-  using T::get_all_nodes_set;
+  using T::nodes;
   using T::get_all_nodes_vec;
   using T::n_nodes;
   using T::node_exists;
@@ -130,7 +129,7 @@ JSON_DECL(FullyConnected)
 class RingArch : public Architecture {
  public:
   explicit RingArch(unsigned numberOfNodes);
-  // get_all_nodes() does not guarantee to return nodes in any order
+  // nodes() does not guarantee to return nodes in any order
   // this returns the canonical ordering of nodes
 
  private:

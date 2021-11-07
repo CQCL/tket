@@ -49,16 +49,16 @@ class AbstractGraph {
   explicit AbstractGraph(const std::vector<T> &nodes)
       : nodes_({nodes.begin(), nodes.end()}) {}
 
-  /** Check if an edge exists */
+  /** Check if an edge exists between two nodes */
   virtual bool edge_exists(const T &node1, const T &node2) const = 0;
 
   /** Check if a node exists */
   bool node_exists(const T &node) const { return nodes_.contains(node); }
 
-  const std::set<T> &get_all_nodes() const { return nodes_; }
+  /** Reference to the underlying node set */
+  const std::set<T> &nodes() const { return nodes_; }
 
-  std::set<T> get_all_nodes_set() const { return nodes_; }
-
+  /** All nodes as a vector */
   std::vector<T> get_all_nodes_vec() const {
     return {nodes_.begin(), nodes_.end()};
   }
@@ -66,6 +66,7 @@ class AbstractGraph {
   /** Number of nodes */
   unsigned n_nodes() const { return nodes_.size(); }
 
+  /** All edges as a vector */
   virtual std::vector<Edge> get_all_edges_vec() const = 0;
 };
 

@@ -47,7 +47,6 @@ class DirectedGraphBase : public AbstractGraph<T> {
  public:
   using AbstractGraph<T>::node_exists;
   using AbstractGraph<T>::edge_exists;
-  using AbstractGraph<T>::get_all_nodes_set;
   using AbstractGraph<T>::get_all_edges_vec;
 
   /** empty default constructor */
@@ -302,10 +301,9 @@ class DirectedGraphBase : public AbstractGraph<T> {
   }
 
   bool operator==(const DirectedGraphBase<T>& other) const {
-    std::set<T> nodes = this->get_all_nodes_set();
-    if (nodes != other.get_all_nodes_set()) return false;
-    for (const T& u : nodes) {
-      for (const T& v : nodes) {
+    if (nodes_ != other.nodes_) return false;
+    for (const T& u : nodes_) {
+      for (const T& v : nodes_) {
         if (this->edge_exists(u, v)) {
           if (!other.edge_exists(u, v))
             return false;

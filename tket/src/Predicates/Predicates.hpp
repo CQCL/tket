@@ -129,7 +129,7 @@ class MaxTwoQubitGatesPredicate : public Predicate {
 class PlacementPredicate : public Predicate {
  public:
   explicit PlacementPredicate(const Architecture& arch)
-      : nodes_(arch.get_all_nodes_set()) {}
+      : nodes_(arch.nodes()) {}
   explicit PlacementPredicate(const node_set_t& nodes) : nodes_(nodes) {}
   bool verify(const Circuit& circ) const override;
   bool implies(const Predicate& other) const override;

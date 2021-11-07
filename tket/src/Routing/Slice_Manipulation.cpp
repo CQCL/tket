@@ -194,7 +194,7 @@ bool Routing::advance_frontier() {
 Interactions Routing::generate_interaction_frontier(
     const RoutingFrontier& slice_front) {
   Interactions inter;
-  for (const UnitID& uid : current_arc_.get_all_nodes()) {
+  for (const UnitID& uid : current_arc_.nodes()) {
     Node n(uid);
     inter.insert({n, n});
   }

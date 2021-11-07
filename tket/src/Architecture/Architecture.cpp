@@ -214,7 +214,7 @@ void from_json(const nlohmann::json& j, Architecture::Connection& link) {
 
 void to_json(nlohmann::json& j, const Architecture& ar) {
   // Preserve the internal order of ids since Placement depends on this
-  auto uid_its = ar.get_all_nodes();
+  auto uid_its = ar.nodes();
   std::vector<Node> nodes{uid_its.begin(), uid_its.end()};
   j["nodes"] = nodes;
 
@@ -241,7 +241,7 @@ void from_json(const nlohmann::json& j, Architecture& ar) {
 }
 
 void to_json(nlohmann::json& j, const FullyConnected& ar) {
-  auto uid_its = ar.get_all_nodes();
+  auto uid_its = ar.nodes();
   std::vector<Node> nodes{uid_its.begin(), uid_its.end()};
   j["nodes"] = nodes;
 }

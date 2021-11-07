@@ -26,7 +26,6 @@ class CompleteGraph : public AbstractGraph<T> {
  public:
   using AbstractGraph<T>::node_exists;
   using AbstractGraph<T>::edge_exists;
-  using AbstractGraph<T>::get_all_nodes_set;
   using AbstractGraph<T>::get_all_nodes_vec;
   using AbstractGraph<T>::get_all_edges_vec;
   using typename AbstractGraph<T>::Edge;
