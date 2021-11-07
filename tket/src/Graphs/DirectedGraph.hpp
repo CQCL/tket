@@ -61,7 +61,7 @@ class DirectedGraphBase : public AbstractGraph<T> {
     }
   }
 
-  /** constructor from list of= edges */
+  /** constructor from list of edges */
   explicit DirectedGraphBase(const std::vector<Connection>& edges) : graph() {
     for (auto [node1, node2] : edges) {
       if (!node_exists(node1)) {
