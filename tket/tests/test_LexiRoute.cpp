@@ -243,11 +243,14 @@ SCENARIO("Test LexiRoute::solve") {
     lr1.solve(20);
   }
 
-  GIVEN("Single best solution, with measurements.") {
+  GIVEN(
+      "Single best solution, with measurements and classically controlled "
+      "gates.") {
     Circuit circ(6, 1);
     std::vector<Qubit> qubits = circ.all_qubits();
-    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 2}, {0}, 1);
     circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[3]});
+    circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
     circ.add_op<UnitID>(OpType::Measure, {qubits[1], Bit(0)});
     circ.add_op<UnitID>(OpType::CX, {qubits[4], qubits[5]});
     circ.add_op<UnitID>(OpType::Measure, {qubits[3], Bit(0)});
@@ -266,7 +269,7 @@ SCENARIO("Test LexiRoute::solve") {
 
     lr.solve(4);
     std::vector<Command> commands = mf->circuit_.get_commands();
-    REQUIRE(commands.size() == 6);
+    REQUIRE(commands.size() == 7);
     Command swap_c = commands[1];
     unit_vector_t uids = {nodes[1], nodes[2]};
     REQUIRE(swap_c.get_args() == uids);
