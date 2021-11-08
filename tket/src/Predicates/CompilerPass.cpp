@@ -432,13 +432,20 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       Architecture arc = content.at("architecture").get<Architecture>();
 
       const nlohmann::json& config_array = content.at("routing_config");
-      std::vector<RoutingMethodWrapper> con;
+      std::vector<RoutingMethodPtr> con;
       for (const auto& cont : config_array) {
-        RoutingMethod rm = cont.get<RoutingMethod>();
-        con.push_back(std::ref<RoutingMethod>(rm));
+        std::string name = cont.at("name").get<std::string>();
+        if (name == "LexiRouteRoutingMethod") {
+          con.push_back(std::make_shared<LexiRouteRoutingMethod>(
+              LexiRouteRoutingMethod::deserialize(cont)));
+        } else {
+          con.push_back(
+              std::make_shared<RoutingMethod>(cont.get<RoutingMethod>()));
+        }
       }
 
       pp = gen_routing_pass(arc, con);
+
     } else if (passname == "PlacementPass") {
       pp = gen_placement_pass(content.at("placement").get<PlacementPtr>());
     } else if (passname == "RenameQubitsPass") {
@@ -494,10 +501,16 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       PlacementPtr place = content.at("placement").get<PlacementPtr>();
 
       const nlohmann::json& config_array = content.at("routing_config");
-      std::vector<RoutingMethodWrapper> config;
+      std::vector<RoutingMethodPtr> config;
       for (const auto& cont : config_array) {
-        RoutingMethod rm = cont.get<RoutingMethod>();
-        config.push_back(std::ref<RoutingMethod>(rm));
+        std::string name = cont.at("name").get<std::string>();
+        if (name == "LexiRouteRoutingMethod") {
+          config.push_back(std::make_shared<LexiRouteRoutingMethod>(
+              LexiRouteRoutingMethod::deserialize(cont)));
+        } else {
+          config.push_back(
+              std::make_shared<RoutingMethod>(cont.get<RoutingMethod>()));
+        }
       }
 
       pp = gen_full_mapping_pass(arc, place, config);
@@ -511,12 +524,17 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       PlacementPtr place = content.at("placement").get<PlacementPtr>();
 
       const nlohmann::json& config_array = content.at("routing_config");
-      std::vector<RoutingMethodWrapper> config;
+      std::vector<RoutingMethodPtr> config;
       for (const auto& cont : config_array) {
-        RoutingMethod rm = cont.get<RoutingMethod>();
-        config.push_back(std::ref<RoutingMethod>(rm));
+        std::string name = cont.at("name").get<std::string>();
+        if (name == "LexiRouteRoutingMethod") {
+          config.push_back(std::make_shared<LexiRouteRoutingMethod>(
+              LexiRouteRoutingMethod::deserialize(cont)));
+        } else {
+          config.push_back(
+              std::make_shared<RoutingMethod>(cont.get<RoutingMethod>()));
+        }
       }
-
       bool directed_cx = content.at("directed").get<bool>();
       bool delay_measures = content.at("delay_measures").get<bool>();
       pp = gen_cx_mapping_pass(arc, place, config, directed_cx, delay_measures);

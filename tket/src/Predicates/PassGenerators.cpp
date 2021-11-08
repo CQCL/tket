@@ -159,19 +159,19 @@ PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
 
 PassPtr gen_full_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
-    const std::vector<RoutingMethodWrapper>& config) {
+    const std::vector<RoutingMethodPtr>& config) {
   return gen_placement_pass(placement_ptr) >> gen_routing_pass(arc, config);
 }
 
 PassPtr gen_default_mapping_pass(const Architecture& arc) {
   PlacementPtr pp = std::make_shared<GraphPlacement>(arc);
-  LexiRouteRoutingMethod lrrm(100);
-  return gen_full_mapping_pass(arc, pp, {lrrm});
+  RoutingMethodPtr rmw = std::make_shared<LexiRouteRoutingMethod>(100);
+  return gen_full_mapping_pass(arc, pp, {rmw});
 }
 
 PassPtr gen_cx_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
-    const std::vector<RoutingMethodWrapper>& config, bool directed_cx,
+    const std::vector<RoutingMethodPtr>& config, bool directed_cx,
     bool delay_measures) {
   PassPtr rebase_pass = gen_rebase_pass(
       {OpType::CX}, CircPool::CX(), all_single_qubit_types(),
@@ -186,7 +186,7 @@ PassPtr gen_cx_mapping_pass(
 }
 
 PassPtr gen_routing_pass(
-    const Architecture& arc, const std::vector<RoutingMethodWrapper>& config) {
+    const Architecture& arc, const std::vector<RoutingMethodPtr>& config) {
   Transform::Transformation trans = [=](Circuit& circ) {
     MappingManager mm(std::make_shared<Architecture>(arc));
     return mm.route_circuit(circ, config);
@@ -221,7 +221,7 @@ PassPtr gen_routing_pass(
   j["name"] = "RoutingPass";
   nlohmann::json config_array;
   for (const auto& con : config) {
-    config_array.push_back(con.get());
+    config_array.push_back(*con);
   }
   j["routing_config"] = config_array;
   j["architecture"] = arc;
@@ -394,7 +394,7 @@ PassPtr gen_full_mapping_pass_phase_poly(
 }
 
 PassPtr gen_directed_cx_routing_pass(
-    const Architecture& arc, const std::vector<RoutingMethodWrapper>& config) {
+    const Architecture& arc, const std::vector<RoutingMethodPtr>& config) {
   OpTypeSet multis = {OpType::CX, OpType::BRIDGE, OpType::SWAP};
   return gen_routing_pass(arc, config) >>
          gen_rebase_pass(

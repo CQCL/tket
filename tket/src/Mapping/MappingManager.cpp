@@ -10,7 +10,7 @@ MappingManager::MappingManager(const ArchitecturePtr& _architecture)
 
 bool MappingManager::route_circuit(
     Circuit& circuit,
-    const std::vector<RoutingMethodWrapper>& routing_methods) const {
+    const std::vector<RoutingMethodPtr>& routing_methods) const {
   // Assumption; Routing can not route a circuit
   // with more logical qubits than an Architecture has
   // physical qubits physically permitted
@@ -57,10 +57,10 @@ bool MappingManager::route_circuit(
     bool valid_methods = false;
     for (const auto& rm : routing_methods) {
       // true => can use held routing method
-      if (rm.get().check_method(mapping_frontier, this->architecture_)) {
+      if (rm->check_method(mapping_frontier, this->architecture_)) {
         valid_methods = true;
         unit_map_t partial_permutation =
-            rm.get().routing_method(mapping_frontier, this->architecture_);
+            rm->routing_method(mapping_frontier, this->architecture_);
 
         if (partial_permutation.size() > 0) {
           std::map<Node, Node> node_map;

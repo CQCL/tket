@@ -39,7 +39,7 @@ class MappingManager {
    */
   bool route_circuit(
       Circuit& circuit,
-      const std::vector<RoutingMethodWrapper>& routing_methods) const;
+      const std::vector<RoutingMethodPtr>& routing_methods) const;
 
  private:
   ArchitecturePtr architecture_;

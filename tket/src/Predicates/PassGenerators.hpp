@@ -46,22 +46,22 @@ PassPtr gen_rename_qubits_pass(const std::map<Qubit, Qubit>& qm);
 
 PassPtr gen_placement_pass(const PlacementPtr& placement_ptr);
 /* This higher order function generates a Routing pass using the
-std::vector<RoutingMethodWrapper> object */
+std::vector<RoutingMethodPtr> object */
 PassPtr gen_full_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
-    const std::vector<RoutingMethodWrapper>& config);
+    const std::vector<RoutingMethodPtr>& config);
 
 PassPtr gen_full_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr);
 PassPtr gen_default_mapping_pass(const Architecture& arc);
 PassPtr gen_cx_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
-    const std::vector<RoutingMethodWrapper>& config, bool directed_cx,
+    const std::vector<RoutingMethodPtr>& config, bool directed_cx,
     bool delay_measures);
 PassPtr gen_routing_pass(
-    const Architecture& arc, const std::vector<RoutingMethodWrapper>& config);
+    const Architecture& arc, const std::vector<RoutingMethodPtr>& config);
 PassPtr gen_directed_cx_routing_pass(
-    const Architecture& arc, const std::vector<RoutingMethodWrapper>& config);
+    const Architecture& arc, const std::vector<RoutingMethodPtr>& config);
 
 /**
  * execute architecture aware synthesis on a given architecture for an allready

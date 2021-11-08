@@ -506,8 +506,8 @@ SCENARIO("Test predicate serializations") {
 
 SCENARIO("Test compiler pass serializations") {
   Architecture arc = SquareGrid(2, 4, 2);
-  LexiRouteRoutingMethod lrrm(80);
-  std::vector<RoutingMethodWrapper> rcon = {lrrm};
+  RoutingMethodPtr rmp = std::make_shared<LexiRouteRoutingMethod>(80);
+  std::vector<RoutingMethodPtr> rcon = {rmp};
   PlacementConfig plcon(5, 20, 100000, 10, 1000);
   PlacementPtr place = std::make_shared<GraphPlacement>(arc, plcon);
   std::map<Qubit, Qubit> qmap = {{Qubit(0), Node(1)}, {Qubit(3), Node(2)}};
@@ -630,7 +630,13 @@ SCENARIO("Test compiler pass serializations") {
     j_pp["StandardPass"]["name"] = "FullMappingPass";
     j_pp["StandardPass"]["architecture"] = arc;
     j_pp["StandardPass"]["placement"] = place;
-    j_pp["StandardPass"]["routing_config"] = rcon;
+
+    nlohmann::json config_array;
+    for (const auto& con : rcon) {
+      config_array.push_back(*con);
+    }
+
+    j_pp["StandardPass"]["routing_config"] = config_array;
     PassPtr loaded = j_pp.get<PassPtr>();
     pp->apply(cu);
     loaded->apply(copy);
@@ -662,7 +668,11 @@ SCENARIO("Test compiler pass serializations") {
     j_pp["StandardPass"]["name"] = "CXMappingPass";
     j_pp["StandardPass"]["architecture"] = arc;
     j_pp["StandardPass"]["placement"] = place;
-    j_pp["StandardPass"]["routing_config"] = rcon;
+    nlohmann::json config_array;
+    for (const auto& con : rcon) {
+      config_array.push_back(*con);
+    }
+    j_pp["StandardPass"]["routing_config"] = config_array;
     j_pp["StandardPass"]["directed"] = true;
     j_pp["StandardPass"]["delay_measures"] = false;
     PassPtr loaded = j_pp.get<PassPtr>();

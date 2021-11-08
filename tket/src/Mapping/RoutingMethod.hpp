@@ -54,7 +54,7 @@ class RoutingMethod {
   }
 };
 
-typedef std::reference_wrapper<RoutingMethod> RoutingMethodWrapper;
+typedef std::shared_ptr<RoutingMethod> RoutingMethodPtr;
 }  // namespace tket
 
 #endif
