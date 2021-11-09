@@ -37,6 +37,8 @@ class EdgeDoesNotExistError : public std::logic_error {
  */
 template <typename T>
 class AbstractGraph {
+  // TODO Add "requires std::totally_ordered<T>" (and implement spaceship for
+  // UnitID) when apple-clang supports it.
  protected:
   using Edge = std::pair<T, T>;
   std::set<T> nodes_;
