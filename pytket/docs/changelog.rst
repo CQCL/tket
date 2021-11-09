@@ -4,7 +4,12 @@ Changelog
 0.17.0 (unreleased)
 ---------------------
 
+General:
+
+* Python 3.10 support added; 3.7 dropped.
+
 Minor new features:
+
 * New properties: :py:meth:``circuit.Op.dagger`` and :py:meth:``circuit.Op.transpose``.
 * New methods: :py:meth:``routing.Placement.to_dict`` and :py:meth:``routing.Placement.from_dict``.
 
