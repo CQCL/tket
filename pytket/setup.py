@@ -210,9 +210,9 @@ setup(
     packages=setuptools.find_packages(),
     install_requires=[
         "sympy ~=1.6",
-        "numpy ~=1.19",
+        "numpy >=1.21.4, <2.0",
         "lark-parser ~=0.7",
-        "scipy ~=1.2",
+        "scipy >=1.7.2, <2.0",
         "networkx ~= 2.4",
         "graphviz ~= 0.14",
         "jinja2 ~= 2.11",
