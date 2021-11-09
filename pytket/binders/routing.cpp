@@ -140,13 +140,11 @@ PYBIND11_MODULE(routing, m) {
       .def(
           "__eq__",
           [](const Architecture &arc1, const Architecture &arc2) {
-            return arc1.nodes() == arc2.nodes() &&
-                   arc1.get_connections_set() == arc2.get_connections_set();
+            return arc1.nodes() == arc2.nodes() && arc1.edges() == arc2.edges();
           },
           "Checks for architecture equality. Two architecture objects are "
-          "equal "
-          "if they have the same set of nodes and the same connections between "
-          "nodes.");
+          "equal if they have the same set of nodes and the same set of "
+          "connections between nodes.");
   py::class_<SquareGrid, Architecture>(
       m, "SquareGrid",
       "Architecture class for qubits arranged in a square lattice of "
