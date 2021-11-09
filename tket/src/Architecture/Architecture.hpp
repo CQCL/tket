@@ -119,7 +119,7 @@ class FullyConnected : public ArchitectureBase<graphs::CompleteGraph<Node>> {
   /**
    * Construct a fully-connected graph of a given size.
    *
-   * The nodes are labelled "fcNode" (indexed from 0 to n-1)
+   * The nodes are labelled "fcNode" (indexed from 0 to n-1).
    *
    * @param n number of nodes
    */
