@@ -30,8 +30,10 @@ class CompleteGraph : public AbstractGraph<T> {
   using AbstractGraph<T>::get_all_edges_vec;
   using typename AbstractGraph<T>::Edge;
 
+  /** Construct an empty graph. */
   CompleteGraph() {}
 
+  /** All edges as a vector. */
   std::vector<Edge> get_all_edges_vec() const override {
     std::vector<Edge> edges;
     std::vector<T> nodes = get_all_nodes_vec();
@@ -44,15 +46,10 @@ class CompleteGraph : public AbstractGraph<T> {
     return edges;
   }
 
+  /** Add a new node to the graph. */
   void add_node(const T& node) { nodes_.insert(node); }
 
-  bool operator==(const CompleteGraph<T>& other) const {
-    return nodes_ == other.nodes_;
-  }
-
- protected:
-  using AbstractGraph<T>::nodes_;
-
+  /** Test whether two nodes are connected. */
   bool edge_exists(const T& node1, const T& node2) const override {
     if (!node_exists(node1) || !node_exists(node2)) {
       throw NodeDoesNotExistError(
@@ -60,6 +57,13 @@ class CompleteGraph : public AbstractGraph<T> {
     }
     return true;
   }
+
+  bool operator==(const CompleteGraph<T>& other) const {
+    return nodes_ == other.nodes_;
+  }
+
+ protected:
+  using AbstractGraph<T>::nodes_;
 };
 
 }  // namespace tket::graphs
