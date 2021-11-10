@@ -123,6 +123,10 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
       return CircPool::PhasedISWAP_using_CX(
           op->get_params()[0], op->get_params()[1]);
     }
+    case OpType::NPhasedX: {
+      std::vector<Expr> params = op->get_params();
+      return CircPool::NPhasedX_using_CX(n_qubits, params[0], params[1]);
+    }
     default: {
       throw NotImplemented(
           "Cannot find replacement circuit for OpType::" + desc.name());

@@ -100,6 +100,7 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
           {OpType::ECR, {"ECR", "ECR", {}, doubleq}},
           {OpType::ISWAP, {"ISWAPPow", "ISWAP", {4}, doubleq}},
           {OpType::PhasedX, {"PhasedX", "Ph$X$", {4, 2}, singleq}},
+          {OpType::NPhasedX, {"NPhasedX", "n-Ph$X$", {4, 2}, std::nullopt}},
           {OpType::ZZMax, {"ZZMax", "$ZZ(\\frac{\\pi}{4})$", {}, doubleq}},
           {OpType::XXPhase,
            {"M\xC3\xB8lmer-S\xC3\xB8rensen", "$R_{XX}$", {4}, doubleq}},

@@ -12,6 +12,8 @@ Minor new features:
 
 * New properties: :py:meth:``circuit.Op.dagger`` and :py:meth:``circuit.Op.transpose``.
 * New methods: :py:meth:``routing.Placement.to_dict`` and :py:meth:``routing.Placement.from_dict``.
+* New ``NPhasedX`` OpType.
+* New ``GlobalPhasedXPredicate`` and ``GlobalisePhasedX`` (transform and pass).
 
 0.16.0 (October 2021)
 ---------------------

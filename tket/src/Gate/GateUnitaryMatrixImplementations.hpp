@@ -103,6 +103,8 @@ struct GateUnitaryMatrixImplementations {
   static Matrix8cd XXPhase3(double alpha);
 
   static Eigen::Matrix2cd PhasedX(double alpha, double beta);
+  static Eigen::MatrixXcd NPhasedX(
+      unsigned int number_of_qubits, double alpha, double beta);
 
   // Because number_of_qubits is unrestricted, it might also be useful
   // to have a sparse version.

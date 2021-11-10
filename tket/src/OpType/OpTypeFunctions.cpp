@@ -42,23 +42,23 @@ const OpTypeSet& all_gate_types() {
                     OpType::ZZPhase,     OpType::CnRy,     OpType::CnX,
                     OpType::BRIDGE,      OpType::Collapse, OpType::ESWAP,
                     OpType::FSim,        OpType::Sycamore, OpType::ISWAPMax,
-                    OpType::PhasedISWAP, OpType::XXPhase3});
+                    OpType::PhasedISWAP, OpType::XXPhase3, OpType::NPhasedX});
   return *gates;
 }
 
 const OpTypeSet& all_multi_qubit_types() {
-  static std::unique_ptr<const OpTypeSet> multi_qubit_gates(
-      new OpTypeSet{OpType::CX,          OpType::CY,          OpType::CZ,
-                    OpType::CH,          OpType::CV,          OpType::CVdg,
-                    OpType::CSX,         OpType::CSXdg,       OpType::CRz,
-                    OpType::CRx,         OpType::CRy,         OpType::CU1,
-                    OpType::CU3,         OpType::PhaseGadget, OpType::CCX,
-                    OpType::SWAP,        OpType::CSWAP,       OpType::ECR,
-                    OpType::ISWAP,       OpType::ZZMax,       OpType::XXPhase,
-                    OpType::YYPhase,     OpType::ZZPhase,     OpType::CnRy,
-                    OpType::CnX,         OpType::BRIDGE,      OpType::ESWAP,
-                    OpType::FSim,        OpType::Sycamore,    OpType::ISWAPMax,
-                    OpType::PhasedISWAP, OpType::XXPhase3});
+  static std::unique_ptr<const OpTypeSet> multi_qubit_gates(new OpTypeSet{
+      OpType::CX,          OpType::CY,          OpType::CZ,
+      OpType::CH,          OpType::CV,          OpType::CVdg,
+      OpType::CSX,         OpType::CSXdg,       OpType::CRz,
+      OpType::CRx,         OpType::CRy,         OpType::CU1,
+      OpType::CU3,         OpType::PhaseGadget, OpType::CCX,
+      OpType::SWAP,        OpType::CSWAP,       OpType::ECR,
+      OpType::ISWAP,       OpType::ZZMax,       OpType::XXPhase,
+      OpType::YYPhase,     OpType::ZZPhase,     OpType::CnRy,
+      OpType::CnX,         OpType::BRIDGE,      OpType::ESWAP,
+      OpType::FSim,        OpType::Sycamore,    OpType::ISWAPMax,
+      OpType::PhasedISWAP, OpType::XXPhase3,    OpType::NPhasedX});
   return *multi_qubit_gates;
 }
 

@@ -217,6 +217,9 @@ Circuit FSim_using_CX(Expr alpha, Expr beta);
 /** Equivalent to PhasedISWAP, using CX, U3 and Rz gates */
 Circuit PhasedISWAP_using_CX(Expr p, Expr t);
 
+/** Unwrap NPhasedX, into number_of_qubits PhasedX gates */
+Circuit NPhasedX_using_CX(unsigned int number_of_qubits, Expr alpha, Expr beta);
+
 }  // namespace CircPool
 
 }  // namespace tket

@@ -376,6 +376,11 @@ PYBIND11_MODULE(circuit, m) {
           "\\mathrm{Rz}(\\beta)\\mathrm{Rx}(\\alpha)\\mathrm{Rz}(-"
           "\\beta)` (matrix-multiplication order)")
       .value(
+          "NPhasedX", OpType::NPhasedX,
+          ":math:`(\\alpha, \\beta) \\mapsto \\mathrm{PhasedX}(\\alpha, \\beta)"
+          "^{\\otimes n}` (n-qubit gate composed of identical PhasedX in "
+          "parallel.")
+      .value(
           "CnRy", OpType::CnRy,
           ":math:`(\\alpha)` := n-controlled "
           ":math:`\\mathrm{Ry}(\\alpha)` gate.")

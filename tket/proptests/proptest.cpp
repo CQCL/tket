@@ -49,7 +49,8 @@ using namespace tket;
   DO(DecomposeBridges)                    \
   DO(FlattenRegisters)                    \
   DO(RemoveBarriers)                      \
-  DO(DelayMeasures)
+  DO(DelayMeasures)                       \
+  DO(GlobalisePhasedX)
 
 // Map from PassPtr to readable name
 static const std::map<PassPtr, std::string> passes = {

@@ -357,6 +357,11 @@ PYBIND11_MODULE(passes, m) {
       "DecomposeMultiQubitsCX", &DecomposeMultiQubitsCX,
       "Converts all multi-qubit gates into CX and single-qubit gates.");
   m.def(
+      "GlobalisePhasedX", &GlobalisePhasedX,
+      "Replaces every occurence of PhasedX or NPhasedX gates with NPhasedX "
+      "gates acting on all qubits, and correcting rotation gates, so that the "
+      "GlobalPhasedXPredicate is satisfied.");
+  m.def(
       "DecomposeSingleQubitsTK1", &DecomposeSingleQubitsTK1,
       "Converts all single-qubit gates into TK1 gates.");
   m.def(
