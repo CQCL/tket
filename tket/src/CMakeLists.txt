@@ -184,7 +184,7 @@ set(TKET_SOURCES
     ${TKET_ROUTING_DIR}/Verification.cpp
 
     # Architecture
-    ${TKET_ARCHITECTURE_DIR}/Architectures.cpp
+    ${TKET_ARCHITECTURE_DIR}/Architecture.cpp
 
     # Architecture Aware Synthesis
     ${TKET_AAS_DIR}/Path.cpp

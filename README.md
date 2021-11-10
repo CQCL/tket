@@ -40,7 +40,7 @@ The following compiler toolchains are used to build tket on the CI and are
 therefore known to work:
 
 * Linux: gcc-10
-* MacOS: apple-clang 12
+* MacOS: apple-clang 13
 * Windows: MSVC 19
 
 It is recommended that you use these versions to build locally, as code may
@@ -48,7 +48,7 @@ depend on the features they support. The compiler version can be controlled by
 setting `CC` and `CXX` in your environment (e.g. `CC=gcc-10` and `CXX=g++-10`),
 or on Debian-based Linux systems using `update-alternatives`.
 
-You should also have Python (3.7, 3.8 or 3.9) and `pip` installed. We use
+You should also have Python (3.8, 3.9 or 3.10) and `pip` installed. We use
 `cmake` and the package manager `conan` to build tket. Both can be installed
 with `pip`:
 

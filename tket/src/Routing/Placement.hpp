@@ -23,7 +23,7 @@
 #include <utility>
 #include <vector>
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Graphs/Utils.hpp"

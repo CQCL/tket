@@ -18,7 +18,7 @@
 #include <map>
 #include <nlohmann/json.hpp>
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "OpType/OpType.hpp"
 #include "Utils/UnitID.hpp"
 
