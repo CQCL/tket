@@ -248,7 +248,7 @@ static bool commute_singles_to_front(Circuit &circ) {
   return success;
 }
 
-// Any PhasedX or NPhasedX gate is replaced by a NPhasedX that is global
+// Any PhasedX or NPhasedX gate is replaced by an NPhasedX that is global
 static bool replace_non_global_phasedx(Circuit &circ) {
   bool success = false;
   std::vector<unsigned> range_qbs(circ.n_qubits());
@@ -270,7 +270,7 @@ static bool replace_non_global_phasedx(Circuit &circ) {
     hole.verts = {v};
     hole.q_in_hole = frontier;
     // move frontier forward
-    if (optype != OpType::Output) {
+    if (!is_final_q_type(optype)) {
       for (Edge e : circ.get_in_edges_of_type(v, EdgeType::Quantum)) {
         auto it = std::find(frontier.begin(), frontier.end(), e);
         TKET_ASSERT(it != frontier.end());

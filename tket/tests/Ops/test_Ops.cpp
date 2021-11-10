@@ -175,7 +175,6 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     const Op_ptr nphasedx = (get_op_ptr(OpType::NPhasedX, {0.5, -0.5}));
     CHECK(nphasedx->get_name() == "NPhasedX(0.5, 1.5)");
     CHECK(nphasedx->get_params().size() == 2);
-    std::cout << "Transpose Params: ";
     CHECK(
         nphasedx->transpose()->get_params() ==
         std::vector<SymEngine::Expression>{0.5, 0.5});

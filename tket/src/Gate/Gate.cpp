@@ -443,7 +443,7 @@ std::vector<Expr> Gate::get_tk1_angles() const {
     case OpType::NPhasedX: {
       if (n_qubits_ != 1) {
         throw NotValid(
-            "OpType::NPhasedX can only be decomposed into a TK1"
+            "OpType::NPhasedX can only be decomposed into a TK1 "
             "if it acts on a single qubit");
       }
       return {params_.at(1), params_.at(0), -params_.at(1), 0.};

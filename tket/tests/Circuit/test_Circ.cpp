@@ -1894,7 +1894,7 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
     Eigen::MatrixXcd correct = exponent.exp();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
   }
-  GIVEN("A NPhasedX gate") {
+  GIVEN("An NPhasedX gate") {
     Circuit circ(3);
     Vertex v = circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 1.5}, {0, 1, 2});
     const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);

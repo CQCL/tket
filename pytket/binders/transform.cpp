@@ -284,10 +284,10 @@ PYBIND11_MODULE(transform, m) {
       .def_static(
           "GlobalisePhasedX", &Transform::globalise_phasedx,
           "Replaces every occurence of PhasedX or NPhasedX gates with NPhasedX "
-          "gates"
-          "acting on all qubits. "
-          "\n\nThis is achieved using the identity "
-          "PhX(α, β) = PhX(-π/2, β + π/2) Rz(α) PhX(π/2, β + π/2). ")
+          "gates acting on all qubits, and correcting rotation gates."
+          "\n\nThis is achieved using the identity"
+          "\nPhX(α, β) = PhX(-1/2, β + 1/2) Rz(α) PhX(1/2, β + 1/2)"
+          "\n(circuit order).")
       .def_static(
           "SynthesisePauliGraph", &Transform::synthesise_pauli_graph,
           "Synthesises Pauli Graphs.",

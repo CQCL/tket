@@ -124,8 +124,8 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
           op->get_params()[0], op->get_params()[1]);
     }
     case OpType::NPhasedX: {
-      return CircPool::NPhasedX_using_CX(
-          n_qubits, op->get_params()[0], op->get_params()[1]);
+      std::vector<Expr> params = op->get_params();
+      return CircPool::NPhasedX_using_CX(n_qubits, params[0], params[1]);
     }
     default: {
       throw NotImplemented(
