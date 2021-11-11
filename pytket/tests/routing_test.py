@@ -24,7 +24,7 @@ from pytket.routing import (  # type: ignore
     place_with_map,
     route,
 )
-from pytket.mapping import LexiRouteRoutingMethod # type: ignore
+from pytket.mapping import LexiRouteRoutingMethod  # type: ignore
 from pytket.predicates import CompilationUnit, NoMidMeasurePredicate  # type: ignore
 from pytket.passes import (  # type: ignore
     DefaultMappingPass,
@@ -449,10 +449,7 @@ def test_FullMappingPass() -> None:
     gp_placer = GraphPlacement(arc)
     lp_placer = LinePlacement(arc)
 
-
-    m_pass_0 = FullMappingPass(
-        arc, gp_placer, [LexiRouteRoutingMethod(1)]
-    )
+    m_pass_0 = FullMappingPass(arc, gp_placer, [LexiRouteRoutingMethod(1)])
     m_pass_1 = FullMappingPass(arc, lp_placer)
     m_pass_0.apply(cu_0)
     m_pass_1.apply(cu_1)
@@ -648,7 +645,11 @@ def test_CXMappingPass() -> None:
     gp_placer = GraphPlacement(arc)
     lp_placer = LinePlacement(arc)
     m_pass_0 = CXMappingPass(
-        arc, gp_placer, config = [LexiRouteRoutingMethod(20)], bridge_interactions=10, directed_cx=True
+        arc,
+        gp_placer,
+        config=[LexiRouteRoutingMethod(20)],
+        bridge_interactions=10,
+        directed_cx=True,
     )
     m_pass_1 = CXMappingPass(arc, lp_placer, delay_measures=False)
     m_pass_0.apply(cu_0)
