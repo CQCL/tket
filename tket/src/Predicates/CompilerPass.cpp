@@ -430,20 +430,7 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = gen_euler_pass(q, p, s);
     } else if (passname == "RoutingPass") {
       Architecture arc = content.at("architecture").get<Architecture>();
-
-      const nlohmann::json& config_array = content.at("routing_config");
-      std::vector<RoutingMethodPtr> con;
-      for (const auto& cont : config_array) {
-        std::string name = cont.at("name").get<std::string>();
-        if (name == "LexiRouteRoutingMethod") {
-          con.push_back(std::make_shared<LexiRouteRoutingMethod>(
-              LexiRouteRoutingMethod::deserialize(cont)));
-        } else {
-          con.push_back(
-              std::make_shared<RoutingMethod>(cont.get<RoutingMethod>()));
-        }
-      }
-
+      std::vector<RoutingMethodPtr> con = content.at("routing_config");
       pp = gen_routing_pass(arc, con);
 
     } else if (passname == "PlacementPass") {
@@ -499,19 +486,7 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
       PlacementPtr place = content.at("placement").get<PlacementPtr>();
-
-      const nlohmann::json& config_array = content.at("routing_config");
-      std::vector<RoutingMethodPtr> config;
-      for (const auto& cont : config_array) {
-        std::string name = cont.at("name").get<std::string>();
-        if (name == "LexiRouteRoutingMethod") {
-          config.push_back(std::make_shared<LexiRouteRoutingMethod>(
-              LexiRouteRoutingMethod::deserialize(cont)));
-        } else {
-          config.push_back(
-              std::make_shared<RoutingMethod>(cont.get<RoutingMethod>()));
-        }
-      }
+      std::vector<RoutingMethodPtr> config = content.at("routing_config");
 
       pp = gen_full_mapping_pass(arc, place, config);
     } else if (passname == "DefaultMappingPass") {
@@ -522,19 +497,7 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
       PlacementPtr place = content.at("placement").get<PlacementPtr>();
-
-      const nlohmann::json& config_array = content.at("routing_config");
-      std::vector<RoutingMethodPtr> config;
-      for (const auto& cont : config_array) {
-        std::string name = cont.at("name").get<std::string>();
-        if (name == "LexiRouteRoutingMethod") {
-          config.push_back(std::make_shared<LexiRouteRoutingMethod>(
-              LexiRouteRoutingMethod::deserialize(cont)));
-        } else {
-          config.push_back(
-              std::make_shared<RoutingMethod>(cont.get<RoutingMethod>()));
-        }
-      }
+      std::vector<RoutingMethodPtr> config = content.at("routing_config");
       bool directed_cx = content.at("directed").get<bool>();
       bool delay_measures = content.at("delay_measures").get<bool>();
       pp = gen_cx_mapping_pass(arc, place, config, directed_cx, delay_measures);
