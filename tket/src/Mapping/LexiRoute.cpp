@@ -467,6 +467,8 @@ void LexiRoute::solve(unsigned lookahead) {
   }
   swap_set_t candidate_swaps = this->get_candidate_swaps();
   this->remove_swaps_decreasing(candidate_swaps);
+
+  TKET_ASSERT(candidate_swaps.size() != 0);
   // Only want to substitute a single swap
   // check next layer of interacting qubits and remove swaps until only one
   // lexicographically superior swap is left
@@ -491,17 +493,18 @@ void LexiRoute::solve(unsigned lookahead) {
     // architecture
     this->set_interacting_uids(true);
   }
-
+  // find best swap
   auto it = candidate_swaps.end();
   --it;
+
   std::pair<Node, Node> chosen_swap = *it;
   this->mapping_frontier_->set_quantum_boundary(copy);
 
   this->set_interacting_uids();
   std::pair<bool, bool> check = this->check_bridge(chosen_swap, lookahead);
-
   // set for final time, to allow gates to be correctly inserted, but then leave
   // as is
+  // insert gates
   this->mapping_frontier_->set_quantum_boundary(copy);
   if (!check.first && !check.second) {
     // update circuit with new swap
@@ -525,8 +528,10 @@ void LexiRoute::solve(unsigned lookahead) {
       this->mapping_frontier_->add_bridge(chosen_swap.second, central, target);
     }
   }
+
   // TODO: Refactor the following to happen during add_swap and add_bridge
   // methods
+  // add ancilla qubits if necessary
   if (copy.size() < this->mapping_frontier_->quantum_boundary->size()) {
     // implies ancilla qubit is added
     // find ancilla qubit, find swap vertex and port by looking at boundary,
@@ -560,6 +565,7 @@ void LexiRoute::solve(unsigned lookahead) {
       }
     }
   }
+
   return;
 }
 
