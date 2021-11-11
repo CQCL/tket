@@ -21,6 +21,7 @@ from pytket.routing import (  # type: ignore
     NoiseAwarePlacement,
     Placement,
     SquareGrid,
+    FullyConnected,
     place_with_map,
     route,
 )
@@ -86,6 +87,14 @@ def test_architecture_eq() -> None:
     sq_arc = Architecture([(g00, g01), (g01, g11), (g00, g10), (g10, g11)])
     assert sq_arc == SquareGrid(2, 2)
     assert sq_arc != Architecture([(g00, g01), (g01, g11), (g00, g10)])
+
+
+def test_fully_connected() -> None:
+    fc = FullyConnected(3)
+    assert fc.nodes == [Node("fcNode", i) for i in range(3)]
+    d = fc.to_dict()
+    fc1 = FullyConnected.from_dict(d)
+    assert fc == fc1
 
 
 def test_placements() -> None:

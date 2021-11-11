@@ -15,6 +15,7 @@
 #include "Routing/Routing.hpp"
 
 #include <pybind11/eigen.h>
+#include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
@@ -137,14 +138,7 @@ PYBIND11_MODULE(routing, m) {
             return "<tket::Architecture, nodes=" +
                    std::to_string(arc.n_nodes()) + ">";
           })
-      .def(
-          "__eq__",
-          [](const Architecture &arc1, const Architecture &arc2) {
-            return arc1.nodes() == arc2.nodes() && arc1.edges() == arc2.edges();
-          },
-          "Checks for architecture equality. Two architecture objects are "
-          "equal if they have the same set of nodes and the same set of "
-          "connections between nodes.");
+      .def(py::self == py::self);
   py::class_<SquareGrid, Architecture>(
       m, "SquareGrid",
       "Architecture class for qubits arranged in a square lattice of "
@@ -207,23 +201,29 @@ PYBIND11_MODULE(routing, m) {
       });
   py::class_<FullyConnected>(
       m, "FullyConnected",
-      "Architecture class for number of qubits connected to every other "
-      "qubit.")
+      "An architecture with full connectivity between qubits.")
       .def(
-          py::init<const unsigned>(),
-          "The constructor for a FullyConnected Architecture with some "
-          "undirected connectivity between qubits.\n\n:param number of "
-          "qubits",
-          py::arg("nodes"))
+          py::init<unsigned>(),
+          "Construct a fully-connected architecture."
+          "\n\n:param n: number of qubits",
+          py::arg("n"))
       .def(
           "__repr__",
           [](const FullyConnected &arc) {
             return "<tket::FullyConnected, nodes=" +
                    std::to_string(arc.n_nodes()) + ">";
           })
+      .def(py::self == py::self)
       .def_property_readonly(
           "nodes", &FullyConnected::get_all_nodes_vec,
-          "Returns all nodes of architecture as Node objects.");
+          "All nodes of the architecture as :py:class:`Node` objects.")
+      .def(
+          "to_dict", [](const FullyConnected &arch) { return json(arch); },
+          "JSON-serializable dict representation of the architecture."
+          "\n\n:return: dict containing nodes")
+      .def_static(
+          "from_dict", [](const json &j) { return j.get<FullyConnected>(); },
+          "Construct FullyConnected instance from dict representation.");
 
   py::class_<Placement, std::shared_ptr<Placement>>(
             m, "Placement",
