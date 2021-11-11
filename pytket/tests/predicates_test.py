@@ -74,6 +74,7 @@ from pytket.predicates import (  # type: ignore
     CompilationUnit,
     UserDefinedPredicate,
 )
+from pytket.mapping import LexiRouteRoutingMethod  # type: ignore
 from pytket.routing import Architecture, Placement, GraphPlacement  # type: ignore
 from pytket.transform import Transform, PauliSynthStrat, CXConfigType  # type: ignore
 from pytket._tket.passes import SynthesiseOQC  # type: ignore
@@ -212,7 +213,7 @@ def test_routing_and_placement_pass() -> None:
     assert seq_pass.apply(cu2)
     assert cu2.initial_map == expected_map
 
-    full_pass = FullMappingPass(arc, pl)
+    full_pass = FullMappingPass(arc, pl, [LexiRouteRoutingMethod(100)])
     cu3 = CompilationUnit(circ.copy())
     assert full_pass.apply(cu3)
     assert cu3.initial_map == expected_map
@@ -638,12 +639,8 @@ def test_generated_pass_config() -> None:
     assert euler_pass.to_dict()["StandardPass"]["euler_p"] == "Rx"
     # RoutingPass
     arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
-    r_pass = RoutingPass(arc, swap_lookahead=10, bridge_interactions=10)
+    r_pass = RoutingPass(arc)
     assert r_pass.to_dict()["StandardPass"]["name"] == "RoutingPass"
-    assert r_pass.to_dict()["StandardPass"]["routing_config"]["depth_limit"] == 10
-    assert (
-        r_pass.to_dict()["StandardPass"]["routing_config"]["interactions_limit"] == 10
-    )
     assert check_arc_dict(arc, r_pass.to_dict()["StandardPass"]["architecture"])
     # PlacementPass
     placer = GraphPlacement(arc)
@@ -659,7 +656,7 @@ def test_generated_pass_config() -> None:
         [k.to_list(), v.to_list()] for k, v in qm.items()
     ]
     # FullMappingPass
-    fm_pass = FullMappingPass(arc, placer)
+    fm_pass = FullMappingPass(arc, placer, [LexiRouteRoutingMethod(100)])
     assert fm_pass.to_dict()["pass_class"] == "SequencePass"
     p_pass = fm_pass.get_sequence()[0]
     r_pass = fm_pass.get_sequence()[1]

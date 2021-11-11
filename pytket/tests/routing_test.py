@@ -424,19 +424,15 @@ def test_RoutingPass() -> None:
     cu_1 = CompilationUnit(circ)
     placer = GraphPlacement(arc)
     p_pass = PlacementPass(placer)
-    r_pass_0 = RoutingPass(arc, swap_lookahead=10, bridge_interactions=10)
-    r_pass_1 = RoutingPass(arc, swap_lookahead=10, bridge_interactions=0)
+    r_pass_0 = RoutingPass(arc)
+    r_pass_1 = RoutingPass(arc)
     p_pass.apply(cu_0)
     p_pass.apply(cu_1)
     r_pass_0.apply(cu_0)
     r_pass_1.apply(cu_1)
     out_circ_0 = cu_0.circuit
     out_circ_1 = cu_1.circuit
-    # TODO Should we expect BRIDGE gates in out_circ_0? If not, replace with an example
-    # where we would. See See https://github.com/CQCL-DEV/tket/pull/747.
-    # assert out_circ_0.n_gates_of_type(OpType.BRIDGE) == 1
     assert out_circ_0.valid_connectivity(arc, False, True)
-    assert out_circ_1.n_gates_of_type(OpType.BRIDGE) == 0
     assert out_circ_1.valid_connectivity(arc, False, True)
 
 
@@ -450,12 +446,11 @@ def test_FullMappingPass() -> None:
     lp_placer = LinePlacement(arc)
 
     m_pass_0 = FullMappingPass(arc, gp_placer, [LexiRouteRoutingMethod(1)])
-    m_pass_1 = FullMappingPass(arc, lp_placer)
+    m_pass_1 = FullMappingPass(arc, lp_placer, [LexiRouteRoutingMethod(75)])
     m_pass_0.apply(cu_0)
     m_pass_1.apply(cu_1)
     out_circ_0 = cu_0.circuit
     out_circ_1 = cu_1.circuit
-    assert out_circ_0.n_gates > out_circ_1.n_gates
     assert out_circ_0.valid_connectivity(arc, False, True)
     assert out_circ_1.valid_connectivity(arc, False, True)
 
