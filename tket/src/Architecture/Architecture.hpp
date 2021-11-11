@@ -40,7 +40,7 @@ class ArchitectureInvalidity : public std::logic_error {
       : std::logic_error(message) {}
 };
 
-static std::vector<std::pair<Node, Node>> as_nodepairs(
+static inline std::vector<std::pair<Node, Node>> as_nodepairs(
     const std::vector<std::pair<unsigned, unsigned>> &edges) {
   std::vector<std::pair<Node, Node>> nodepairs;
   nodepairs.reserve(edges.size());
