@@ -740,85 +740,85 @@ SCENARIO("Compose Pauli Graph synthesis Passes") {
   }
 }
 
-// SCENARIO("Commute measurements to the end of a circuit") {
-//   PassPtr delay_pass = DelayMeasures();
-//   PredicatePtr mid_meas_pred = std::make_shared<NoMidMeasurePredicate>();
-//   GIVEN("Measurements already at end") {
-//     Circuit c(2, 2);
-//     c.add_op<unsigned>(OpType::Z, {0});
-//     c.add_op<unsigned>(OpType::CX, {1, 0});
-//     c.add_op<unsigned>(OpType::Rx, 0.3, {1});
-//     c.add_op<unsigned>(OpType::Measure, {0, 0});
-//     c.add_op<unsigned>(OpType::Measure, {1, 1});
-//     CompilationUnit cu(c);
-//     REQUIRE_FALSE(delay_pass->apply(cu));
-//     REQUIRE(mid_meas_pred->verify(cu.get_circ_ref()));
-//   }
-//   GIVEN("Gates after measure") {
-//     Circuit c(2, 2);
-//     c.add_op<unsigned>(OpType::Measure, {0, 1});
-//     c.add_op<unsigned>(OpType::Z, {0});
-//     c.add_op<unsigned>(OpType::CX, {0, 1});
-//     c.add_op<unsigned>(OpType::Rx, 0.3, {1});
-//     c.add_op<unsigned>(OpType::SWAP, {0, 1});
-//     c.add_op<unsigned>(OpType::Measure, {0, 0});
-//     CompilationUnit cu(c);
-//     REQUIRE(delay_pass->apply(cu));
-//     REQUIRE(mid_meas_pred->verify(cu.get_circ_ref()));
-//     Circuit expected(2, 2);
-//     expected.add_op<unsigned>(OpType::Z, {0});
-//     expected.add_op<unsigned>(OpType::CX, {0, 1});
-//     expected.add_op<unsigned>(OpType::Rx, 0.3, {1});
-//     expected.add_op<unsigned>(OpType::SWAP, {0, 1});
-//     expected.add_op<unsigned>(OpType::Measure, {0, 0});
-//     expected.add_op<unsigned>(OpType::Measure, {1, 1});
-//     REQUIRE(cu.get_circ_ref() == expected);
-//   }
-//   GIVEN("Measure blocked by quantum gate") {
-//     Circuit c(1, 1);
-//     c.add_op<unsigned>(OpType::Measure, {0, 0});
-//     c.add_op<unsigned>(OpType::Rx, 0.3, {0});
-//     CompilationUnit cu(c);
-//     REQUIRE_THROWS_AS(delay_pass->apply(cu), CircuitInvalidity);
-//   }
-//   GIVEN("Measure blocked by classical operation") {
-//     Circuit c(2, 1);
-//     add_2qb_gates(c, OpType::Measure, {{0, 0}, {1, 0}});
-//     c.add_op<unsigned>(OpType::Measure, {0, 0});
-//     c.add_op<unsigned>(OpType::Measure, {1, 0});
-//     CompilationUnit cu(c);
-//     REQUIRE_THROWS_AS(delay_pass->apply(cu), CircuitInvalidity);
-//   }
-//   GIVEN("Measure blocked by conditional operation") {
-//     Circuit c(2, 2);
-//     c.add_op<unsigned>(OpType::CZ, {0, 1});
-//     c.add_op<unsigned>(OpType::Measure, {0, 0});
-//     c.add_conditional_gate<unsigned>(OpType::Z, {}, {1}, {0}, 1);
-//     CompilationUnit cu(c);
-//     REQUIRE_THROWS_AS(delay_pass->apply(cu), CircuitInvalidity);
-//   }
-//   GIVEN("Combined with routing") {
-//     Circuit test(3, 1);
-//     add_2qb_gates(test, OpType::CX, {{0, 1}, {1, 2}});
-//     add_1qb_gates(test, OpType::X, {0, 0});
-//     test.add_measure(1, 0);
-//     add_1qb_gates(test, OpType::X, {2, 2});
-//     test.add_op<unsigned>(OpType::CX, {0, 2});
+SCENARIO("Commute measurements to the end of a circuit") {
+  PassPtr delay_pass = DelayMeasures();
+  PredicatePtr mid_meas_pred = std::make_shared<NoMidMeasurePredicate>();
+  GIVEN("Measurements already at end") {
+    Circuit c(2, 2);
+    c.add_op<unsigned>(OpType::Z, {0});
+    c.add_op<unsigned>(OpType::CX, {1, 0});
+    c.add_op<unsigned>(OpType::Rx, 0.3, {1});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::Measure, {1, 1});
+    CompilationUnit cu(c);
+    REQUIRE_FALSE(delay_pass->apply(cu));
+    REQUIRE(mid_meas_pred->verify(cu.get_circ_ref()));
+  }
+  GIVEN("Gates after measure") {
+    Circuit c(2, 2);
+    c.add_op<unsigned>(OpType::Measure, {0, 1});
+    c.add_op<unsigned>(OpType::Z, {0});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::Rx, 0.3, {1});
+    c.add_op<unsigned>(OpType::SWAP, {0, 1});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    CompilationUnit cu(c);
+    REQUIRE(delay_pass->apply(cu));
+    REQUIRE(mid_meas_pred->verify(cu.get_circ_ref()));
+    Circuit expected(2, 2);
+    expected.add_op<unsigned>(OpType::Z, {0});
+    expected.add_op<unsigned>(OpType::CX, {0, 1});
+    expected.add_op<unsigned>(OpType::Rx, 0.3, {1});
+    expected.add_op<unsigned>(OpType::SWAP, {0, 1});
+    expected.add_op<unsigned>(OpType::Measure, {0, 0});
+    expected.add_op<unsigned>(OpType::Measure, {1, 1});
+    REQUIRE(cu.get_circ_ref() == expected);
+  }
+  GIVEN("Measure blocked by quantum gate") {
+    Circuit c(1, 1);
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::Rx, 0.3, {0});
+    CompilationUnit cu(c);
+    REQUIRE_THROWS_AS(delay_pass->apply(cu), CircuitInvalidity);
+  }
+  GIVEN("Measure blocked by classical operation") {
+    Circuit c(2, 1);
+    add_2qb_gates(c, OpType::Measure, {{0, 0}, {1, 0}});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::Measure, {1, 0});
+    CompilationUnit cu(c);
+    REQUIRE_THROWS_AS(delay_pass->apply(cu), CircuitInvalidity);
+  }
+  GIVEN("Measure blocked by conditional operation") {
+    Circuit c(2, 2);
+    c.add_op<unsigned>(OpType::CZ, {0, 1});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_conditional_gate<unsigned>(OpType::Z, {}, {1}, {0}, 1);
+    CompilationUnit cu(c);
+    REQUIRE_THROWS_AS(delay_pass->apply(cu), CircuitInvalidity);
+  }
+  GIVEN("Combined with routing") {
+    Circuit test(3, 1);
+    add_2qb_gates(test, OpType::CX, {{0, 1}, {1, 2}});
+    add_1qb_gates(test, OpType::X, {0, 0});
+    test.add_measure(1, 0);
+    add_1qb_gates(test, OpType::X, {2, 2});
+    test.add_op<unsigned>(OpType::CX, {0, 2});
 
-//     Architecture line({{0, 1}, {1, 2}, {2, 3}});
-//     PlacementPtr pp = std::make_shared<LinePlacement>(line);
-//     LexiRouteRoutingMethod lrrm(50);
-//     RoutingMethodPtr rmw = std::make_shared<LexiRouteRoutingMethod>(lrrm);
-//     PassPtr route_pass = gen_full_mapping_pass(line, pp, {rmw});
-//     CompilationUnit cu(test);
-//     route_pass->apply(cu);
-//     REQUIRE(delay_pass->apply(cu));
-//     Command final_command = cu.get_circ_ref().get_commands()[7];
-//     OpType type = final_command.get_op_ptr()->get_type();
-//     REQUIRE(type == OpType::Measure);
-//     REQUIRE(final_command.get_args().front() == Node(1));
-//   }
-// }
+    Architecture line({{0, 1}, {1, 2}, {2, 3}});
+    PlacementPtr pp = std::make_shared<LinePlacement>(line);
+    LexiRouteRoutingMethod lrrm(50);
+    RoutingMethodPtr rmw = std::make_shared<LexiRouteRoutingMethod>(lrrm);
+    PassPtr route_pass = gen_full_mapping_pass(line, pp, {rmw});
+    CompilationUnit cu(test);
+    route_pass->apply(cu);
+    REQUIRE(delay_pass->apply(cu));
+    Command final_command = cu.get_circ_ref().get_commands()[7];
+    OpType type = final_command.get_op_ptr()->get_type();
+    REQUIRE(type == OpType::Measure);
+    REQUIRE(final_command.get_args().front() == Node(3));
+  }
+}
 
 SCENARIO("RemoveRedundancies and phase") {
   GIVEN("A trivial circuit with nonzero phase") {
