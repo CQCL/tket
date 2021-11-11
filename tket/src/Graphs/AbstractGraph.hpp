@@ -70,6 +70,8 @@ class AbstractGraph {
 
   /** All edges as a vector */
   virtual std::vector<Edge> get_all_edges_vec() const = 0;
+
+  virtual ~AbstractGraph() {}
 };
 
 }  // namespace tket::graphs
