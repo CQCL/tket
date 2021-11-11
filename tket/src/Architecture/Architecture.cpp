@@ -24,7 +24,6 @@
 
 namespace tket {
 
-template <>
 Architecture Architecture::create_subarch(
     const std::vector<Node>& subarc_nodes) {
   Architecture subarc(subarc_nodes);
@@ -36,7 +35,6 @@ Architecture Architecture::create_subarch(
   return subarc;
 }
 
-template <>
 unsigned Architecture::get_diameter() const {
   unsigned N = n_nodes();
   if (N == 0) {
@@ -55,7 +53,6 @@ unsigned Architecture::get_diameter() const {
 
 // Given a vector of lengths of lines, returns a vector of lines of these sizes
 // comprised of architecture nodes
-template <>
 std::vector<node_vector_t> Architecture::get_lines(
     std::vector<unsigned> required_lengths) const {
   // check total length doesn't exceed number of nodes
@@ -89,14 +86,12 @@ std::vector<node_vector_t> Architecture::get_lines(
   return found_lines;
 }
 
-template <>
 std::set<Node> Architecture::get_articulation_points(
     const Architecture& subarc) const {
   return graphs::get_subgraph_aps<Node>(
       get_undirected_connectivity(), subarc.get_undirected_connectivity());
 }
 
-template <>
 std::set<Node> Architecture::get_articulation_points() const {
   std::set<Vertex> aps;
   UndirectedConnGraph undir_g = get_undirected_connectivity();
@@ -115,7 +110,6 @@ static bool lexicographical_comparison(
       dist1.begin(), dist1.end(), dist2.begin(), dist2.end());
 }
 
-template <>
 std::optional<Node> Architecture::find_worst_node(
     const Architecture& original_arch) {
   node_set_t ap = get_articulation_points();
@@ -156,7 +150,6 @@ std::optional<Node> Architecture::find_worst_node(
   return worst_node;
 }
 
-template <>
 node_set_t Architecture::remove_worst_nodes(unsigned num) {
   node_set_t out;
   Architecture original_arch(*this);
@@ -189,7 +182,6 @@ int tri_lexicographical_comparison(
   return -1;
 }
 
-template <>
 MatrixXb Architecture::get_connectivity() const {
   unsigned n = n_nodes();
   MatrixXb connectivity = MatrixXb(n, n);
