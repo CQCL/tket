@@ -38,7 +38,6 @@ class DiagMatrix {
   friend std::ostream& operator<<(std::ostream& out, const DiagMatrix& diam);
   bool is_id() const;
   bool is_id_until_columns(unsigned limit) const;
-  bool is_upper() const;
   unsigned n_rows() const;
   unsigned n_cols() const;
 
