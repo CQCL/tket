@@ -986,9 +986,6 @@ class Circuit {
       const VertexSet &surplus, GraphRewiring graph_rewiring,
       VertexDeletion vertex_deletion);
   void remove_vertices(
-      const VertexVec &surplus, GraphRewiring graph_rewiring,
-      VertexDeletion vertex_deletion);
-  void remove_vertices(
       const VertexList &surplus, GraphRewiring graph_rewiring,
       VertexDeletion vertex_deletion);
 
