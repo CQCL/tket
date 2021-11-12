@@ -24,19 +24,6 @@ bool operator<(
   return (pgp1.tensor_.string < pgp2.tensor_.string);
 }
 
-void insert_in_pgp_set(
-    std::set<PauliGadgetProperties> &pgp_set,
-    const PauliGadgetProperties &pgp) {
-  std::set<PauliGadgetProperties>::iterator pgp_iter = pgp_set.find(pgp);
-  if (pgp_iter != pgp_set.end())
-    pgp_set.insert(
-        {QubitPauliTensor(pgp.tensor_.string),
-         pgp.tensor_.coeff * pgp.angle_ +
-             pgp_iter->tensor_.coeff * pgp_iter->angle_});
-  else
-    pgp_set.insert(pgp);
-}
-
 PauliGraph::PauliGraph(unsigned n) : cliff_(n) {}
 
 PauliGraph::PauliGraph(const qubit_vector_t &qbs, const bit_vector_t &bits)
