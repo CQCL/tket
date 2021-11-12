@@ -35,9 +35,6 @@ typedef std::map<QubitPauliTensor, Expr, cmp_tensors> QubitOperator;
 void insert_into_gadget_map(
     QubitOperator &gadget_map, const PauliGadgetProperties &pgp);
 
-void insert_into_gadget_map(
-    QubitOperator &gadget_map, const std::pair<QubitPauliTensor, Expr> &pgp);
-
 }  // namespace tket
 
 #endif  // _TKET_DiagUtils_H_

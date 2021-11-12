@@ -29,10 +29,4 @@ void insert_into_gadget_map(
   }
 }
 
-void insert_into_gadget_map(
-    QubitOperator &gadget_map, const std::pair<QubitPauliTensor, Expr> &pgp) {
-  PauliGadgetProperties actual_pgp{pgp.first, pgp.second};
-  insert_into_gadget_map(gadget_map, actual_pgp);
-}
-
 }  // namespace tket
