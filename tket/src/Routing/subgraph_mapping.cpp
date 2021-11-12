@@ -57,16 +57,6 @@ class label_writer {
   Graph g;
 };
 
-void draw_graph(
-    const QubitGraph::UndirectedConnGraph& gr, std::string filename) {
-  std::fstream fs;
-  fs.open(filename, std::fstream::out);
-
-  label_writer<const QubitGraph::UndirectedConnGraph> writ(gr);
-  boost::write_graphviz(fs, gr, writ, writ);
-  fs.close();
-}
-
 std::vector<qubit_bimap_t> monomorphism_edge_break(
     const Architecture& arc, const QubitGraph& q_graph, unsigned max_matches,
     unsigned timeout) {
