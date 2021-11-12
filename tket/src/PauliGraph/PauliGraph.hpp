@@ -70,17 +70,6 @@ class PauliGraph {
    */
   void apply_gate_at_end(const Gate &gate, const unit_vector_t &args);
 
-  /**
-   * Iterates through the dependency graph to find any gadgets with Clifford
-   * angles. These are pushed through the circuit to the end and the dependency
-   * graph is rebuilt.
-   * This is to be used as a clean-up stage after applying other optimisations.
-   * Since Cliffords are identified on merging during creation, this will be
-   * untestable until we implement new PauliGraph rewrite methods since we
-   * cannot build a PauliGraph that this will simplify.
-   */
-  void collect_cliffords();
-
   /** Visualisation of the dependency graph */
   void to_graphviz_file(const std::string &filename) const;
   void to_graphviz(std::ostream &out) const;
