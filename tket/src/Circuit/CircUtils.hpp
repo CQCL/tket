@@ -17,6 +17,7 @@
 
 #include "Circuit.hpp"
 #include "DAGDefs.hpp"
+#include "Gate/GatePtr.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/PauliStrings.hpp"
 
@@ -134,6 +135,15 @@ Circuit phase_gadget(
 Circuit pauli_gadget(
     const std::vector<Pauli>& paulis, const Expr& t,
     CXConfigType cx_config = CXConfigType::Snake);
+
+/**
+ * Express a gate as a circuit using CX as the only multi-qubit gate.
+ *
+ * @param op operation
+ *
+ * @return circuit representing the operation
+ */
+Circuit with_CX(Gate_ptr op);
 
 /**
  * Construct a controlled version of a given circuit.

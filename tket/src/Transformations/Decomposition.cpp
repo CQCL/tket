@@ -18,6 +18,7 @@
 #include "Converters/PhasePoly.hpp"
 #include "Gate/GatePtr.hpp"
 #include "OpType/OpType.hpp"
+#include "OpType/OpTypeFunctions.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Replacement.hpp"
 #include "Transform.hpp"
@@ -41,7 +42,7 @@ static bool convert_multiqs_CX(Circuit &circ) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     OpType optype = op->get_type();
     if (is_gate_type(optype) && !is_projective_type(optype) &&
-        !is_single_qubit_type(optype) && (optype != OpType::CX)) {
+        op->n_qubits() >= 2 && (optype != OpType::CX)) {
       Circuit in_circ = CX_circ_from_multiq(op);
       Subcircuit sub = {
           {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
@@ -134,8 +135,8 @@ static bool convert_singleqs_TK1(Circuit &circ) {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     OpType optype = op->get_type();
-    if (is_single_qubit_type(optype) && !is_projective_type(optype) &&
-        optype != OpType::tk1) {
+    if (is_gate_type(optype) && !is_projective_type(optype) &&
+        op->n_qubits() == 1 && optype != OpType::tk1) {
       std::vector<Expr> tk1_angs = as_gate_ptr(op)->get_tk1_angles();
       Circuit rep(1);
       rep.add_op<unsigned>(
