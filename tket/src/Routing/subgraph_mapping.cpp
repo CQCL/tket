@@ -40,23 +40,6 @@ bool vf2_match_add_callback<GraphP, GraphT>::operator()(
   return (n_maps_.size() < max);
 }
 
-template <typename Graph>
-class label_writer {
- public:
-  explicit label_writer(Graph _g) : g(_g) {}
-  void operator()(
-      std::ostream& out, const graphs::utils::edge<Graph>& v) const {
-    out << "[label=\"" << g[v] << "\"]";
-  }
-  void operator()(
-      std::ostream& out, const graphs::utils::vertex<Graph>& v) const {
-    out << "[label=\"" << v << "\"]";
-  }
-
- private:
-  Graph g;
-};
-
 std::vector<qubit_bimap_t> monomorphism_edge_break(
     const Architecture& arc, const QubitGraph& q_graph, unsigned max_matches,
     unsigned timeout) {
