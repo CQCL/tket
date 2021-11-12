@@ -41,8 +41,6 @@ class Cycle {
       const std::vector<CycleCom>& _coms)
       : boundary_edges_(_boundary_edges), coms_(_coms) {}
 
-  void print() const;
-
   // Returns size of boundary_edges_
   unsigned size() const;
 
