@@ -23,15 +23,15 @@
 /**
  * If the condition `b` is not satisfied, log a diagnostic message and abort.
  */
-#define TKET_ASSERT(b)                                                    \
-  do {                                                                    \
-    if (!(b)) {                                                           \
-      std::stringstream msg;                                              \
-      msg << "Assertion '" << #b << "' (" << __FILE__ << " : "            \
-          << __func__  << " : " << __LINE__ << ") failed: aborting.";     \
-      tket::tket_log()->critical(msg.str());                              \
-      std::abort();                                                       \
-    }                                                                     \
+#define TKET_ASSERT(b)                                                     \
+  do {                                                                     \
+    if (!(b)) {                                                            \
+      std::stringstream msg;                                               \
+      msg << "Assertion '" << #b << "' (" << __FILE__ << " : " << __func__ \
+          << " : " << __LINE__ << ") failed: aborting.";                   \
+      tket::tket_log()->critical(msg.str());                               \
+      std::abort();                                                        \
+    }                                                                      \
   } while (0)
 
 #endif  // _TKET_Assert_H_
