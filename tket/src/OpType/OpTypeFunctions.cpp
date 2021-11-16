@@ -23,31 +23,33 @@ bool find_in_set(const OpType& val, const OpTypeSet& set) {
 }
 
 const OpTypeSet& all_gate_types() {
-  static std::unique_ptr<const OpTypeSet> gates(
-      new OpTypeSet{OpType::Z,           OpType::X,        OpType::Y,
-                    OpType::S,           OpType::Sdg,      OpType::T,
-                    OpType::Tdg,         OpType::V,        OpType::Vdg,
-                    OpType::SX,          OpType::SXdg,     OpType::H,
-                    OpType::Rx,          OpType::Ry,       OpType::Rz,
-                    OpType::U3,          OpType::U2,       OpType::U1,
-                    OpType::tk1,         OpType::CX,       OpType::CY,
-                    OpType::CZ,          OpType::CH,       OpType::CV,
-                    OpType::CVdg,        OpType::CSX,      OpType::CSXdg,
-                    OpType::CRz,         OpType::CRx,      OpType::CRy,
-                    OpType::CU1,         OpType::CU3,      OpType::PhaseGadget,
-                    OpType::CCX,         OpType::SWAP,     OpType::CSWAP,
-                    OpType::noop,        OpType::Measure,  OpType::Reset,
-                    OpType::ECR,         OpType::ISWAP,    OpType::PhasedX,
-                    OpType::ZZMax,       OpType::XXPhase,  OpType::YYPhase,
-                    OpType::ZZPhase,     OpType::CnRy,     OpType::CnX,
-                    OpType::BRIDGE,      OpType::Collapse, OpType::ESWAP,
-                    OpType::FSim,        OpType::Sycamore, OpType::ISWAPMax,
-                    OpType::PhasedISWAP, OpType::XXPhase3, OpType::NPhasedX});
+  static const OpTypeSet optypes{
+      OpType::Z,           OpType::X,        OpType::Y,
+      OpType::S,           OpType::Sdg,      OpType::T,
+      OpType::Tdg,         OpType::V,        OpType::Vdg,
+      OpType::SX,          OpType::SXdg,     OpType::H,
+      OpType::Rx,          OpType::Ry,       OpType::Rz,
+      OpType::U3,          OpType::U2,       OpType::U1,
+      OpType::tk1,         OpType::CX,       OpType::CY,
+      OpType::CZ,          OpType::CH,       OpType::CV,
+      OpType::CVdg,        OpType::CSX,      OpType::CSXdg,
+      OpType::CRz,         OpType::CRx,      OpType::CRy,
+      OpType::CU1,         OpType::CU3,      OpType::PhaseGadget,
+      OpType::CCX,         OpType::SWAP,     OpType::CSWAP,
+      OpType::noop,        OpType::Measure,  OpType::Reset,
+      OpType::ECR,         OpType::ISWAP,    OpType::PhasedX,
+      OpType::ZZMax,       OpType::XXPhase,  OpType::YYPhase,
+      OpType::ZZPhase,     OpType::CnRy,     OpType::CnX,
+      OpType::BRIDGE,      OpType::Collapse, OpType::ESWAP,
+      OpType::FSim,        OpType::Sycamore, OpType::ISWAPMax,
+      OpType::PhasedISWAP, OpType::XXPhase3, OpType::NPhasedX};
+  static std::unique_ptr<const OpTypeSet> gates =
+      std::make_unique<const OpTypeSet>(optypes);
   return *gates;
 }
 
 const OpTypeSet& all_multi_qubit_types() {
-  static std::unique_ptr<const OpTypeSet> multi_qubit_gates(new OpTypeSet{
+  static const OpTypeSet optypes{
       OpType::CX,          OpType::CY,          OpType::CZ,
       OpType::CH,          OpType::CV,          OpType::CVdg,
       OpType::CSX,         OpType::CSXdg,       OpType::CRz,
@@ -58,25 +60,31 @@ const OpTypeSet& all_multi_qubit_types() {
       OpType::YYPhase,     OpType::ZZPhase,     OpType::CnRy,
       OpType::CnX,         OpType::BRIDGE,      OpType::ESWAP,
       OpType::FSim,        OpType::Sycamore,    OpType::ISWAPMax,
-      OpType::PhasedISWAP, OpType::XXPhase3,    OpType::NPhasedX});
-  return *multi_qubit_gates;
+      OpType::PhasedISWAP, OpType::XXPhase3,    OpType::NPhasedX};
+  static std::unique_ptr<const OpTypeSet> gates =
+      std::make_unique<const OpTypeSet>(optypes);
+  return *gates;
 }
 
 const OpTypeSet& all_single_qubit_types() {
-  static std::unique_ptr<const OpTypeSet> single_qubit_gates(new OpTypeSet{
+  static const OpTypeSet optypes{
       OpType::Z,     OpType::X,        OpType::Y,       OpType::S,
       OpType::Sdg,   OpType::T,        OpType::Tdg,     OpType::V,
       OpType::Vdg,   OpType::SX,       OpType::SXdg,    OpType::H,
       OpType::Rx,    OpType::Ry,       OpType::Rz,      OpType::U3,
       OpType::U2,    OpType::U1,       OpType::tk1,     OpType::Measure,
-      OpType::Reset, OpType::Collapse, OpType::PhasedX, OpType::noop});
-  return *single_qubit_gates;
+      OpType::Reset, OpType::Collapse, OpType::PhasedX, OpType::noop};
+  static std::unique_ptr<const OpTypeSet> gates =
+      std::make_unique<const OpTypeSet>(optypes);
+  return *gates;
 }
 
 const OpTypeSet& all_projective_types() {
-  static std::unique_ptr<const OpTypeSet> projective_gates(
-      new OpTypeSet{OpType::Measure, OpType::Collapse, OpType::Reset});
-  return *projective_gates;
+  static const OpTypeSet optypes{
+      OpType::Measure, OpType::Collapse, OpType::Reset};
+  static std::unique_ptr<const OpTypeSet> gates =
+      std::make_unique<const OpTypeSet>(optypes);
+  return *gates;
 }
 
 bool is_metaop_type(OpType optype) {
