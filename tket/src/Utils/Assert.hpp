@@ -16,6 +16,7 @@
 #define _TKET_Assert_H_
 
 #include <cstdlib>
+#include <sstream>
 
 #include "TketLog.hpp"
 
@@ -25,7 +26,10 @@
 #define TKET_ASSERT(b)                                                    \
   do {                                                                    \
     if (!(b)) {                                                           \
-      tket::tket_log()->critical("Assertion (" #b ") failed: aborting."); \
+      std::stringstream msg;                                              \
+      msg << "Assertion '" << #b << "' (" << __FILE__ << " : "            \
+          << __func__  << " : " << __LINE__ << ") failed: aborting.";     \
+      tket::tket_log()->critical(msg.str());                              \
       std::abort();                                                       \
     }                                                                     \
   } while (0)
