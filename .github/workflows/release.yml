@@ -418,7 +418,7 @@ jobs:
     name: Publish docs
     needs: build_docs
     concurrency: gh_pages
-    if: github.event_name == 'release'
+    if: github.event_name == 'release' && github.event.release.prerelease != true
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
