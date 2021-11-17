@@ -168,6 +168,7 @@ Our telemetry data policy can be viewed in the `Telemetry Data Policy`_ page.
     routing.rst
     transform.rst
     tailoring.rst
+    zx.rst
     utils.rst
     logging.rst
     config.rst
