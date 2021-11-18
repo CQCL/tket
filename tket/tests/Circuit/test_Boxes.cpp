@@ -18,6 +18,7 @@
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Converters/PhasePoly.hpp"
+#include "Eigen/src/Core/Matrix.h"
 #include "Simulation/CircuitSimulator.hpp"
 
 namespace tket {
@@ -607,6 +608,18 @@ SCENARIO("QControlBox", "[boxes]") {
         V(4 + i, 4 + j) = m0(i, j);
       }
     }
+    REQUIRE(U.isApprox(V));
+  }
+  GIVEN("2-controlled Unitary2qBox") {
+    // https://cqc.atlassian.net/browse/TKET-1651
+    Eigen::Matrix4cd M{{1, 0, 0, 0}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, -1}};
+    Unitary2qBox ubox(M);
+    Op_ptr op = std::make_shared<Unitary2qBox>(ubox);
+    QControlBox qcbox(op, 2);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(16, 16);
+    V(15, 15) = -1;
     REQUIRE(U.isApprox(V));
   }
   GIVEN("controlled symbolic operation") {
