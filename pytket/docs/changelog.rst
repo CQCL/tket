@@ -1,8 +1,8 @@
 Changelog
 ==================================
 
-0.17.0 (unreleased)
----------------------
+0.17.0 (November 2021)
+----------------------
 
 Major new features:
 * New ``pytket.zx`` module for manipulating ZX diagrams.
