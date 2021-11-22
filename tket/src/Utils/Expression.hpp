@@ -93,6 +93,8 @@ SymSet expr_free_symbols(const std::vector<Expr>& es);
 
 std::optional<double> eval_expr(const Expr& e);
 
+std::optional<Complex> eval_expr_c(const Expr& e);
+
 /**
  * Evaluate an expression modulo n
  *

@@ -21,7 +21,7 @@
 #include <utility>
 #include <vector>
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Utils/Json.hpp"
@@ -452,6 +452,14 @@ class Transform {
   // Expects: Any gates
   // Produces: Any gates
   static Transform commute_through_multis();
+
+  // replaces every non-global PhasedX gate with two global PhasedX gates,
+  // using:
+  //
+  //         PhX(α, β) = PhX(-1/2, β + 1/2) Rz(α) PhX(1/2, β + 1/2)
+  //
+  // Setting α = 0 on non-targeted qubits makes the RHS the identity
+  static Transform globalise_phasedx();
 
   // commutes Rz gates through ZZMax, and combines adjacent ZZMax gates
   // Expects: ZZMax, Rz, Rx

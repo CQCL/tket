@@ -309,7 +309,6 @@ Circuit phase_poly_synthesis_int(
     }
     default: {
       TKET_ASSERT(!"[AAS]: unknown type of cnot synth");
-      break;
     }
   }
 

@@ -35,6 +35,14 @@ class Gate : public Op {
 
   std::string get_command_str(const unit_vector_t &args) const override;
 
+  /**
+   * Return the gate decomposition in terms of Rz(a)Rx(b)Rz(c).
+   *
+   * This decomposition is in matrix-multiplication order, i.e. the reverse of
+   * circuit order.
+   *
+   * @return a, b, c and a global phase
+   */
   std::vector<Expr> get_tk1_angles() const;
   std::vector<Expr> get_params() const override;
   std::vector<Expr> get_params_reduced() const override;

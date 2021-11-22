@@ -366,7 +366,9 @@ def circuit_to_symbolic_gates(circ: Circuit) -> Mul:
 
 
 def circuit_to_symbolic_unitary(circ: Circuit) -> ImmutableMatrix:
-    """Generate a symbolic from Circuit. Unitary matches pytket default ILO BasisOrder.
+    """Generate a symbolic unitary from Circuit.
+
+    Unitary matches pytket default ILO BasisOrder.
 
     :param circ: Input circuit
     :type circ: Circuit

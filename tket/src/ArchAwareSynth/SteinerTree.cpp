@@ -415,8 +415,8 @@ void SteinerTree::add_row(unsigned i, unsigned j) {
           break;
         }
         default: {
-          TKET_ASSERT(
-              !"Invalid combination of nodes types in add row operation");
+          // Invalid combination of nodes types in add row operation
+          TKET_ASSERT(false);
         }
       }
     }

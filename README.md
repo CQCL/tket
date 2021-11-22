@@ -40,7 +40,7 @@ The following compiler toolchains are used to build tket on the CI and are
 therefore known to work:
 
 * Linux: gcc-10
-* MacOS: apple-clang 12
+* MacOS: apple-clang 13
 * Windows: MSVC 19
 
 It is recommended that you use these versions to build locally, as code may

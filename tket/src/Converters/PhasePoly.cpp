@@ -326,9 +326,9 @@ void CircToPhasePolyConversion::add_phase_poly_box() {
   for (const Command& post_com : post_circ_) {
     OpType post_ot = post_com.get_op_ptr()->get_type();
     // no other type should be in this list
-    TKET_ASSERT(
-        (post_ot == OpType::H) || (post_ot == OpType::Measure) ||
-        (post_ot == OpType::Collapse) || (post_ot == OpType::Reset));
+    bool expected = (post_ot == OpType::H) || (post_ot == OpType::Measure) ||
+                    (post_ot == OpType::Collapse) || (post_ot == OpType::Reset);
+    TKET_ASSERT(expected);
     unit_vector_t qbs = post_com.get_args();
     unsigned qb = qubit_indices_.at(Qubit(qbs[0]));
     if (post_ot == OpType::Measure) {

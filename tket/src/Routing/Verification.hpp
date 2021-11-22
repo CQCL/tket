@@ -15,7 +15,7 @@
 #ifndef _TKET_Verification_H_
 #define _TKET_Verification_H_
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Circuit/Circuit.hpp"
 
 namespace tket {

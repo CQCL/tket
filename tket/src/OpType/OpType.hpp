@@ -428,6 +428,11 @@ enum class OpType {
   PhasedX,
 
   /**
+   * PhasedX gates on multiple qubits
+   */
+  NPhasedX,
+
+  /**
    * \f$ \mathrm{ZZPhase}(\frac12) \f$
    */
   ZZMax,

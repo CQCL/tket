@@ -289,13 +289,9 @@ SymSet CompositeGate::free_symbols() const {
   return to_circuit()->free_symbols();
 }
 
-std::string CompositeGate::get_name(bool latex) const {
+std::string CompositeGate::get_name(bool) const {
   std::stringstream s;
-  if (latex) {
-    s << "\\text{" << gate_->get_name() << "}";
-  } else {
-    s << gate_->get_name();
-  }
+  s << gate_->get_name();
   if (!params_.empty()) {
     s << "(";
     std::string sep = "";

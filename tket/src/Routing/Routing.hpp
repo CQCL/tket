@@ -20,7 +20,7 @@
 #include <utility>
 #include <vector>
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Placement.hpp"
 #include "Utils/BiMapHeaders.hpp"
