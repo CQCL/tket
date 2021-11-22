@@ -13,6 +13,11 @@ Minor new features:
 * New ``NPhasedX`` OpType.
 * New ``GlobalPhasedXPredicate`` and ``GlobalisePhasedX`` (transform and pass).
 
+Fixes:
+
+* Fixed incorrect decomposition of ``QControlBox`` with more than one control
+  acting on operation with global phase.
+
 0.16.0 (October 2021)
 ---------------------
 
