@@ -14,33 +14,10 @@
 
 #include "Op.hpp"
 
-#include <sstream>
-
 #include "Ops/OpPtr.hpp"
 #include "Utils/Json.hpp"
 
 namespace tket {
-
-std::string Op::get_name(bool latex) const {
-  if (latex) {
-    return get_desc().latex();
-  } else {
-    return get_desc().name();
-  }
-}
-
-std::string Op::get_command_str(const unit_vector_t& args) const {
-  std::stringstream out;
-  out << get_name();
-  if (!args.empty()) {
-    out << " " << args[0].repr();
-    for (unsigned i = 1; i < args.size(); i++) {
-      out << ", " << args[i].repr();
-    }
-  }
-  out << ";";
-  return out.str();
-}
 
 std::ostream& operator<<(std::ostream& os, Op const& operation) {
   return os << operation.get_name();
