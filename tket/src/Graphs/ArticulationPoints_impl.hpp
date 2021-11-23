@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_ArticulationPoints_impl_H
-#define _TKET_ArticulationPoints_impl_H
+#pragma once
 
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/pending/property.hpp>
@@ -140,4 +139,3 @@ class BicomponentGraphTester {
 
 }  // namespace tket::graphs
 
-#endif

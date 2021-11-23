@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Assert_H_
-#define _TKET_Assert_H_
+#pragma once
 
 #include <cstdlib>
 #include <sstream>
@@ -34,4 +33,3 @@
     }                                                                      \
   } while (0)
 
-#endif  // _TKET_Assert_H_

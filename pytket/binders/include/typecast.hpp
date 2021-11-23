@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET__typecast_H_
-#define _TKET__typecast_H_
+#pragma once
 
 #include <pybind11/detail/typeid.h>
 #include <pybind11/functional.h>
@@ -328,4 +327,3 @@ struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
 }  // namespace detail
 }  // namespace pybind11
 
-#endif

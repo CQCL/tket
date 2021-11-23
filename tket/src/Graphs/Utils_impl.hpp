@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_GraphUtils_impl_H_
-#define _TKET_GraphUtils_impl_H_
+#pragma once
 
 #include <algorithm>
 #include <boost/iterator/transform_iterator.hpp>
@@ -479,4 +478,3 @@ class graph_utils_impl_with_map
 }  // namespace detail
 }  // namespace tket::graphs::utils
 
-#endif

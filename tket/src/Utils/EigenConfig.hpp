@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_EigenConfig_H_
-#define _TKET_EigenConfig_H_
+#pragma once
 
 /**
  * @file
@@ -66,4 +65,3 @@ void from_json(const nlohmann::json& j, Matrix<_Scalar, _Rows, _Cols>& matrix) {
 
 }  // namespace Eigen
 
-#endif  // _EIGEN_CONFIG_H_

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TESTUTIL_H_
-#define _TESTUTIL_H_
+#pragma once
 
 /**
  * @file
@@ -125,4 +124,3 @@ Eigen::MatrixXcd random_unitary(unsigned n, int seed);
 
 }  // namespace tket
 
-#endif /* _TESTUTIL_H_ */

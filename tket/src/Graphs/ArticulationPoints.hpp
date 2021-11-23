@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_ArticulationPoints_H
-#define _TKET_ArticulationPoints_H
+#pragma once
 
 #include <boost/graph/biconnected_components.hpp>
 #include <set>
@@ -90,4 +89,3 @@ extern template std::set<Node> get_subgraph_aps(
 
 }  // namespace tket::graphs
 
-#endif

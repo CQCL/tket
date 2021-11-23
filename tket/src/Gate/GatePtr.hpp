@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Gate_GatePtr_H_
-#define _TKET_Gate_GatePtr_H_
+#pragma once
 
 #include <memory>
 
@@ -33,4 +32,3 @@ Gate_ptr as_gate_ptr(Op_ptr op);
 
 }  // namespace tket
 
-#endif

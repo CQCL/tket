@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Circuit_DAGDefs_H_
-#define _TKET_Circuit_DAGDefs_H_
+#pragma once
 
 #include <list>
 #include <optional>
@@ -94,4 +93,3 @@ typedef std::pair<Vertex, port_t> VertPort;
 
 }  // namespace tket
 
-#endif

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_PauliGraph_ConjugatePauliFunctions_H_
-#define _TKET_PauliGraph_ConjugatePauliFunctions_H_
+#pragma once
 
 #include "OpType/OpType.hpp"
 #include "Utils/PauliStrings.hpp"
@@ -45,4 +44,3 @@ void conjugate_PauliTensor(
 
 }  // namespace tket
 
-#endif

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_UTILS_GRAPH_H_
-#define _TKET_UTILS_GRAPH_H_
+#pragma once
 
 #if !defined(_MSC_VER)
 #pragma GCC diagnostic push
@@ -45,4 +44,3 @@
 #pragma GCC diagnostic pop
 #endif
 
-#endif

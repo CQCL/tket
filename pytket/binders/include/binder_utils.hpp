@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_BINDER_UTILS_H_
-#define _TKET_BINDER_UTILS_H_
+#pragma once
 
 /** Narrow No-Break Space (U+202F, UTF-8 encoding) */
 #define NNBSP "\xE2\x80\xAF"
@@ -21,4 +20,3 @@
 /** Pluralize a reference to a class object in a docstring */
 #define CLSOBJS(a) ":py:class:`" #a "`" NNBSP "s"
 
-#endif

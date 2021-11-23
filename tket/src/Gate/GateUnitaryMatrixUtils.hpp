@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _CQC_TKET_SIMULATION_GateUnitaryMatrixUtils_HPP_
-#define _CQC_TKET_SIMULATION_GateUnitaryMatrixUtils_HPP_
+#pragma once
 
 #include <string>
 
@@ -67,4 +66,3 @@ struct GateUnitaryMatrixUtils {
 
 }  // namespace internal
 }  // namespace tket
-#endif

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Ops_OpDesc_H_
-#define _TKET_Ops_OpDesc_H_
+#pragma once
 
 #include <optional>
 #include <string>
@@ -124,4 +123,3 @@ class OpDesc {
 
 }  // namespace tket
 
-#endif

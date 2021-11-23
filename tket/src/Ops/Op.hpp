@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Ops_Op_H_
-#define _TKET_Ops_Op_H_
+#pragma once
 
 /**
  * @file
@@ -180,4 +179,3 @@ std::ostream &operator<<(std::ostream &os, Op const &operation);
 
 }  // namespace tket
 
-#endif  // OPS_H_

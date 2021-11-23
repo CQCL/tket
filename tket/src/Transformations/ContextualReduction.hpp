@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_ContextualReduction_H_
-#define _TKET_ContextualReduction_H_
+#pragma once
 
 #include "Circuit/Circuit.hpp"
 #include "Utils/UnitID.hpp"
@@ -39,4 +38,3 @@ std::pair<Circuit, Circuit> separate_classical(const Circuit &circ);
 
 }  // namespace tket
 
-#endif  // _TKET_ContextualReduction_H_

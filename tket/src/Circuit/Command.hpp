@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Command_H_
-#define _TKET_Command_H_
+#pragma once
 
 #include <optional>
 #include <sstream>
@@ -95,4 +94,3 @@ JSON_DECL(Command)
 
 }  // namespace tket
 
-#endif  // _TKET_Command_H_

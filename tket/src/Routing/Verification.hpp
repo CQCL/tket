@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Verification_H_
-#define _TKET_Verification_H_
+#pragma once
 
 #include "Architecture/Architecture.hpp"
 #include "Circuit/Circuit.hpp"
@@ -34,4 +33,3 @@ bool respects_connectivity_constraints(
 
 }  // namespace tket
 
-#endif  //_TKET_Verification_H_

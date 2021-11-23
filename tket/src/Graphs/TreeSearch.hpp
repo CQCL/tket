@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_TreeSearch_H
-#define _TKET_TreeSearch_H
+#pragma once
 
 #include <utility>
 #include <vector>
@@ -116,4 +115,3 @@ std::vector<utils::vertex<Graph>> longest_simple_path(
 
 }  // namespace tket::graphs
 
-#endif

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Boxes_H_
-#define _TKET_Boxes_H_
+#pragma once
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
@@ -705,4 +704,3 @@ class StabiliserAssertionBox : public Box {
 
 }  // namespace tket
 
-#endif  // BOXES_H_

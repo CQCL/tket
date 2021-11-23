@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Exceptions_H_
-#define _TKET_Exceptions_H_
+#pragma once
 
 #include <exception>
 #include <stdexcept>
@@ -44,4 +43,3 @@ class NotUnitary : public std::logic_error {
 
 }  // namespace tket
 
-#endif  // _TKET_Exceptions_H_

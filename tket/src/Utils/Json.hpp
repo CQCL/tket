@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_UTILS_JSON_H_
-#define _TKET_UTILS_JSON_H_
+#pragma once
 
 #include <complex>
 #include <exception>
@@ -53,4 +52,3 @@ void from_json(const nlohmann::json& j, std::complex<T>& p) {
 
 }  // namespace std
 
-#endif

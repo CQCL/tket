@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_CircUtils_H_
-#define _TKET_CircUtils_H_
+#pragma once
 
 #include "Circuit.hpp"
 #include "DAGDefs.hpp"
@@ -154,4 +153,3 @@ Circuit with_controls(const Circuit& c, unsigned n_controls = 1);
 
 }  // namespace tket
 
-#endif

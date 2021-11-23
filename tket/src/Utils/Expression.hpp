@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Expression_H_
-#define _TKET_Expression_H_
+#pragma once
 
 /**
  * @file
@@ -200,4 +199,3 @@ std::optional<unsigned> equiv_Clifford(
 
 }  // namespace tket
 
-#endif  // EXPR_H_

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_UnitID_H_
-#define _TKET_UnitID_H_
+#pragma once
 
 /**
  * @file
@@ -271,4 +270,3 @@ typedef std::map<unsigned, UnitID> register_t;
 
 }  // namespace tket
 
-#endif

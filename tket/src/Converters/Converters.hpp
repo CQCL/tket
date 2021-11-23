@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Converters_H_
-#define _TKET_Converters_H_
+#pragma once
 
 #include "Circuit/Circuit.hpp"
 #include "Clifford/CliffTableau.hpp"
@@ -65,4 +64,3 @@ Circuit pauli_graph_to_circuit_sets(
 
 }  // namespace tket
 
-#endif
