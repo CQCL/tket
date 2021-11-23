@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Simulation_PauliExpBoxUnitaryCalculator_H_
-#define _TKET_Simulation_PauliExpBoxUnitaryCalculator_H_
+#pragma once
 
 #include "Utils/MatrixAnalysis.hpp"
 
@@ -30,4 +29,3 @@ std::vector<TripletCd> get_triplets(const PauliExpBox& box);
 }  // namespace internal
 }  // namespace tket_sim
 }  // namespace tket
-#endif

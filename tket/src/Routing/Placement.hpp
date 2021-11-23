@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Placement_H_
-#define _TKET_Placement_H_
+#pragma once
 
 #include <algorithm>
 #include <iostream>
@@ -360,4 +359,3 @@ class NoiseAwarePlacement : public Placement {
 };
 
 }  // namespace tket
-#endif  // PLACEMENT_H_

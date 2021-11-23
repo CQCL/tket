@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_FrameRandomisation_H_
-#define _TKET_FrameRandomisation_H_
+#pragma once
 
 #include "Characterisation/Cycles.hpp"
 #include "Circuit/Circuit.hpp"
@@ -162,4 +161,3 @@ class FrameRandomisationTester {
 };
 
 }  // namespace tket
-#endif

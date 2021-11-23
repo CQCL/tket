@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_PassLibrary_H_
-#define _TKET_PassLibrary_H_
+#pragma once
 
 #include "CompilerPass.hpp"
 
@@ -78,5 +77,3 @@ const PassPtr &RemoveDiscarded();
 const PassPtr &SimplifyMeasured();
 
 }  // namespace tket
-
-#endif  // PASSLIBRARY_H_

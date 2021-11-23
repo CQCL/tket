@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_CircPool_H_
-#define _TKET_CircPool_H_
+#pragma once
 
 #include "Circuit.hpp"
 #include "Utils/Expression.hpp"
@@ -223,5 +222,3 @@ Circuit NPhasedX_using_CX(unsigned int number_of_qubits, Expr alpha, Expr beta);
 }  // namespace CircPool
 
 }  // namespace tket
-
-#endif  // _TKET_CircPool_H_

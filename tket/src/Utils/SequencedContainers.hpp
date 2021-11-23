@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_SequencedContainers_H_
-#define _TKET_SequencedContainers_H_
+#pragma once
 
 #include <boost/multi_index/mem_fun.hpp>
 #include <boost/multi_index/member.hpp>
@@ -44,5 +43,3 @@ using sequence_set_t = boost::multi_index::multi_index_container<
         boost::multi_index::sequenced<boost::multi_index::tag<TagSeq>>>>;
 
 }  // namespace tket
-
-#endif

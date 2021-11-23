@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _CQC_TKET_SIMULATION_GateUnitarySparseMatrix_HPP_
-#define _CQC_TKET_SIMULATION_GateUnitarySparseMatrix_HPP_
+#pragma once
 
 #include "Utils/MatrixAnalysis.hpp"
 
@@ -45,4 +44,3 @@ struct GateUnitarySparseMatrix {
 
 }  // namespace internal
 }  // namespace tket
-#endif

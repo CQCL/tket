@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Transform_H_
-#define _TKET_Transform_H_
+#pragma once
 
 #include <functional>
 #include <map>
@@ -592,5 +591,3 @@ inline const Transform Transform::id = Transform([](const Circuit&) {
 });  // returns `false` as it does not change the Circuit in any way
 
 }  // namespace tket
-
-#endif
