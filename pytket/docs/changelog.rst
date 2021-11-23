@@ -5,9 +5,11 @@ Changelog
 ----------------------
 
 Major new features:
+
 * New ``pytket.zx`` module for manipulating ZX diagrams.
 
 Minor new features:
+
 * New properties: :py:meth:``circuit.Op.dagger`` and :py:meth:``circuit.Op.transpose``.
 * New methods: :py:meth:``routing.Placement.to_dict`` and :py:meth:``routing.Placement.from_dict``.
 * New ``NPhasedX`` OpType.
