@@ -60,4 +60,3 @@ namespace tket {
 bool is_valid(const DAG &G);
 
 }  // namespace tket
-

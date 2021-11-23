@@ -51,4 +51,3 @@ void from_json(const nlohmann::json& j, std::complex<T>& p) {
 }
 
 }  // namespace std
-

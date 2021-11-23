@@ -92,4 +92,3 @@ class MeasurementSetup {
 };
 
 }  // namespace tket
-

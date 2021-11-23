@@ -63,4 +63,3 @@ Circuit pauli_graph_to_circuit_sets(
     const PauliGraph &pg, CXConfigType cx_config = CXConfigType::Snake);
 
 }  // namespace tket
-

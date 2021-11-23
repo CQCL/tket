@@ -156,4 +156,3 @@ class PauliGraph {
 };
 
 }  // namespace tket
-

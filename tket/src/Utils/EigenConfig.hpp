@@ -64,4 +64,3 @@ void from_json(const nlohmann::json& j, Matrix<_Scalar, _Rows, _Cols>& matrix) {
 }
 
 }  // namespace Eigen
-

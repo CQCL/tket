@@ -206,4 +206,3 @@ class CliffTableau {
 std::ostream &operator<<(std::ostream &os, CliffTableau const &tab);
 
 }  // namespace tket
-

@@ -92,4 +92,3 @@ typedef std::list<Edge> EdgeList;
 typedef std::pair<Vertex, port_t> VertPort;
 
 }  // namespace tket
-

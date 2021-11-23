@@ -198,4 +198,3 @@ std::optional<unsigned> equiv_Clifford(
     const Expr& e, unsigned n = 2, double tol = EPS);
 
 }  // namespace tket
-

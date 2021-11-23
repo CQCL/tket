@@ -37,4 +37,3 @@ namespace tket {
 std::pair<Circuit, Circuit> separate_classical(const Circuit &circ);
 
 }  // namespace tket
-

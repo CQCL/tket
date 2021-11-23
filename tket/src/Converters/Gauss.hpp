@@ -45,4 +45,3 @@ class DiagMatrix {
 };
 
 }  // namespace tket
-

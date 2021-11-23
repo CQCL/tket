@@ -603,4 +603,3 @@ enum class OpType {
 JSON_DECL(OpType)
 
 }  // namespace tket
-

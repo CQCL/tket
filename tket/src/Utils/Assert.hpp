@@ -32,4 +32,3 @@
       std::abort();                                                        \
     }                                                                      \
   } while (0)
-

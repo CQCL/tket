@@ -80,4 +80,3 @@ class Conditional : public Op {
 };
 
 }  // namespace tket
-

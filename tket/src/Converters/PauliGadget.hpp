@@ -53,4 +53,3 @@ void append_pauli_gadget_pair(
     CXConfigType cx_config = CXConfigType::Snake);
 
 }  // namespace tket
-

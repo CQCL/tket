@@ -55,4 +55,3 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
 typedef std::vector<EdgeType> op_signature_t;
 
 }  // namespace tket
-

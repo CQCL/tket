@@ -178,4 +178,3 @@ class Op : public std::enable_shared_from_this<Op> {
 std::ostream &operator<<(std::ostream &os, Op const &operation);
 
 }  // namespace tket
-

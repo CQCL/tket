@@ -150,4 +150,3 @@ std::vector<TripletCd> get_triplets(
     const Eigen::MatrixXcd &matr, double abs_epsilon = EPS);
 
 }  // namespace tket
-

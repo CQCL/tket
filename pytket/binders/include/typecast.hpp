@@ -326,4 +326,3 @@ struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
 };
 }  // namespace detail
 }  // namespace pybind11
-

@@ -77,4 +77,3 @@ const PassPtr &RemoveDiscarded();
 const PassPtr &SimplifyMeasured();
 
 }  // namespace tket
-

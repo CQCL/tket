@@ -41,4 +41,3 @@ struct GatesData {
 
 }  // namespace internal
 }  // namespace tket
-

@@ -703,4 +703,3 @@ class StabiliserAssertionBox : public Box {
 };
 
 }  // namespace tket
-

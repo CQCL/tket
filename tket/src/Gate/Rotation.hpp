@@ -111,4 +111,3 @@ std::vector<double> tk1_angles_from_unitary(const Eigen::Matrix2cd& U);
 Eigen::Matrix2cd get_matrix_from_tk1_angles(std::vector<Expr> params);
 
 }  // namespace tket
-

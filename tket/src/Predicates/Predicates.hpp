@@ -255,4 +255,3 @@ class GlobalPhasedXPredicate : public Predicate {
 };
 
 }  // namespace tket
-

@@ -282,4 +282,3 @@ class DFS : public detail::TreeSearch<Args...> {
 };
 
 }  // namespace tket::graphs
-

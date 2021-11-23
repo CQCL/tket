@@ -34,4 +34,3 @@ MeasurementSetup measurement_reduction(
     CXConfigType cx_config = CXConfigType::Snake);
 
 }  // namespace tket
-

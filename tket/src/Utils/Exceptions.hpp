@@ -42,4 +42,3 @@ class NotUnitary : public std::logic_error {
 };
 
 }  // namespace tket
-

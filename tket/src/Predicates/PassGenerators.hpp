@@ -188,4 +188,3 @@ PassPtr gen_contextual_pass(
 PassPtr PauliSquash(PauliSynthStrat strat, CXConfigType cx_config);
 
 }  // namespace tket
-

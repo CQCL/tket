@@ -93,4 +93,3 @@ class Command {
 JSON_DECL(Command)
 
 }  // namespace tket
-

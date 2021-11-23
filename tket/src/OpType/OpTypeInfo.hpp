@@ -49,4 +49,3 @@ struct OpTypeInfo {
 const std::map<OpType, OpTypeInfo> &optypeinfo();
 
 }  // namespace tket
-

@@ -52,4 +52,3 @@ class MetaOp : public Op {
 };
 
 }  // namespace tket
-

@@ -235,4 +235,3 @@ std::set<vertex<Graph>> min_degree_nodes(const Graph& g) {
 
 }  // namespace utils
 }  // namespace tket::graphs
-

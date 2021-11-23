@@ -43,4 +43,3 @@ void conjugate_PauliTensor(
     const Qubit &qb2);
 
 }  // namespace tket
-

@@ -38,4 +38,3 @@ void insert_into_gadget_map(
     QubitOperator &gadget_map, const std::pair<QubitPauliTensor, Expr> &pgp);
 
 }  // namespace tket
-

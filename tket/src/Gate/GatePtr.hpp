@@ -31,4 +31,3 @@ typedef std::shared_ptr<const Gate> Gate_ptr;
 Gate_ptr as_gate_ptr(Op_ptr op);
 
 }  // namespace tket
-

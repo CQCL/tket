@@ -48,4 +48,3 @@ class FlowOp : public Op {
 };
 
 }  // namespace tket
-

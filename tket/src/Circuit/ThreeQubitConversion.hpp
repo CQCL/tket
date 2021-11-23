@@ -44,4 +44,3 @@ Circuit three_qubit_synthesis(const Eigen::MatrixXcd &U);
 Eigen::MatrixXcd get_3q_unitary(const Circuit &c);
 
 }  // namespace tket
-

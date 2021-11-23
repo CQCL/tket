@@ -114,4 +114,3 @@ std::vector<utils::vertex<Graph>> longest_simple_path(
 }
 
 }  // namespace tket::graphs
-

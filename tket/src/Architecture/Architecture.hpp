@@ -168,4 +168,3 @@ int tri_lexicographical_comparison(
     const dist_vec &dist1, const dist_vec &dist2);
 
 }  // namespace tket
-

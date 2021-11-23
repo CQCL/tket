@@ -122,4 +122,3 @@ class OpDesc {
 };
 
 }  // namespace tket
-

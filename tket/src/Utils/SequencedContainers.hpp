@@ -43,4 +43,3 @@ using sequence_set_t = boost::multi_index::multi_index_container<
         boost::multi_index::sequenced<boost::multi_index::tag<TagSeq>>>>;
 
 }  // namespace tket
-

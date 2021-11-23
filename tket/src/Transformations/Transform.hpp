@@ -591,4 +591,3 @@ inline const Transform Transform::id = Transform([](const Circuit&) {
 });  // returns `false` as it does not change the Circuit in any way
 
 }  // namespace tket
-

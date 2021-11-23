@@ -138,4 +138,3 @@ class BicomponentGraphTester {
 }  // namespace detail
 
 }  // namespace tket::graphs
-

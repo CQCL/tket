@@ -19,4 +19,3 @@
 
 /** Pluralize a reference to a class object in a docstring */
 #define CLSOBJS(a) ":py:class:`" #a "`" NNBSP "s"
-

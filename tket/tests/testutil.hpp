@@ -123,4 +123,3 @@ bool matrices_are_equal(const Matr1& mat1, const Matr2& mat2) {
 Eigen::MatrixXcd random_unitary(unsigned n, int seed);
 
 }  // namespace tket
-

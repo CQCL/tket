@@ -130,4 +130,3 @@ class ClassicalExpBox : public Box {
 };
 
 }  // namespace tket
-

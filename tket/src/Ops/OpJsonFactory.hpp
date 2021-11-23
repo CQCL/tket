@@ -53,4 +53,3 @@ class OpJsonFactory {
 };
 
 }  // namespace tket
-

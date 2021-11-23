@@ -46,4 +46,3 @@ bool compare_statevectors_or_unitaries(
 
 }  // namespace tket_sim
 }  // namespace tket
-

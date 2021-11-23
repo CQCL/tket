@@ -32,4 +32,3 @@ bool respects_connectivity_constraints(
     bool bridge_allowed = false);
 
 }  // namespace tket
-

@@ -361,4 +361,3 @@ std::shared_ptr<ExplicitModifierOp> OrWithOp();
 std::shared_ptr<ExplicitModifierOp> XorWithOp();
 
 }  // namespace tket
-

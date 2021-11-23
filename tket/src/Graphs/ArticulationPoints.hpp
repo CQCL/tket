@@ -88,4 +88,3 @@ extern template std::set<Node> get_subgraph_aps(
     const UndirectedConnGraph<Node>& subgraph);
 
 }  // namespace tket::graphs
-

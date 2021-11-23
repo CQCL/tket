@@ -477,4 +477,3 @@ class graph_utils_impl_with_map
 
 }  // namespace detail
 }  // namespace tket::graphs::utils
-

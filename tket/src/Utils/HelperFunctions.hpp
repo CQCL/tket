@@ -82,4 +82,3 @@ bimap_to_map(MapT& bm) {
 uint32_t reverse_bits(uint32_t v, unsigned w);
 
 }  // namespace tket
-

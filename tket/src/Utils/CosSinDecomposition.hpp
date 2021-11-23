@@ -44,4 +44,3 @@ typedef std::tuple<
 csd_t CS_decomp(const Eigen::MatrixXcd &u);
 
 }  // namespace tket
-

@@ -41,4 +41,3 @@ Circuit CX_circ_from_multiq(const Op_ptr op);
 Circuit CX_ZX_circ_from_op(const Op_ptr op);
 
 }  // namespace tket
-

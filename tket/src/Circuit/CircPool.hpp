@@ -222,4 +222,3 @@ Circuit NPhasedX_using_CX(unsigned int number_of_qubits, Expr alpha, Expr beta);
 }  // namespace CircPool
 
 }  // namespace tket
-

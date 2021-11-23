@@ -32,4 +32,3 @@ typedef std::shared_ptr<spdlog::logger> LogPtr_t;
 LogPtr_t &tket_log();
 
 }  // namespace tket
-

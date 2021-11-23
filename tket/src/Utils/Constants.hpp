@@ -67,4 +67,3 @@ enum class BasisOrder {
 };
 
 }  // namespace tket
-

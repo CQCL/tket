@@ -334,4 +334,3 @@ extern template class UIDConnectivity<Node>;
 extern template class UIDConnectivity<Qubit>;
 
 }  // namespace tket::graphs
-

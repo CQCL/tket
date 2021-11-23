@@ -82,4 +82,3 @@ class Gate : public Op {
 };
 
 }  // namespace tket
-

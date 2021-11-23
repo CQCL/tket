@@ -523,4 +523,3 @@ class QubitPauliTensor {
 QubitPauliTensor operator*(Complex a, const QubitPauliTensor &qpt);
 
 }  // namespace tket
-

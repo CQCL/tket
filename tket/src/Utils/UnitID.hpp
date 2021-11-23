@@ -269,4 +269,3 @@ typedef std::vector<Node> node_vector_t;
 typedef std::map<unsigned, UnitID> register_t;
 
 }  // namespace tket
-

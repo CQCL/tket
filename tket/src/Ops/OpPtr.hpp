@@ -26,4 +26,3 @@ typedef std::shared_ptr<const Op> Op_ptr;
 JSON_DECL(Op_ptr)
 
 }  // namespace tket
-

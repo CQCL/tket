@@ -71,4 +71,3 @@ bool conjugate_with_xxphase3(
     Circuit &cliff_circ);
 
 }  // namespace tket
-

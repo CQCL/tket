@@ -1674,4 +1674,3 @@ Vertex Circuit::add_op(
 }
 
 }  // namespace tket
-

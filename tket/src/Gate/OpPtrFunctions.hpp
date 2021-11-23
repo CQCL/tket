@@ -43,4 +43,3 @@ Op_ptr get_op_ptr(
     unsigned n_qubits = 0);
 
 }  // namespace tket
-

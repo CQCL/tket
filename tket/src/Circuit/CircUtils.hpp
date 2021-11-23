@@ -152,4 +152,3 @@ Circuit pauli_gadget(
 Circuit with_controls(const Circuit& c, unsigned n_controls = 1);
 
 }  // namespace tket
-

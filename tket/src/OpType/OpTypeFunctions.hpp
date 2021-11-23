@@ -91,4 +91,3 @@ bool is_classical_type(OpType optype);
 bool find_in_set(const OpType &val, const OpTypeSet &set);
 
 }  // namespace tket
-

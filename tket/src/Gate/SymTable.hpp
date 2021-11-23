@@ -45,4 +45,3 @@ struct SymTable {
 };
 
 }  // namespace tket
-

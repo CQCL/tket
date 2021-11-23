@@ -267,4 +267,3 @@ class RepeatUntilSatisfiedPass : public BasePass {
 // TODO: Repeat with a metric, repeat until a Predicate is satisfied...
 
 }  // namespace tket
-

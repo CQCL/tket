@@ -104,4 +104,3 @@ std::list<std::list<QubitPauliString>> term_sequence(
     GraphColourMethod method = GraphColourMethod::Lazy);
 
 }  // namespace tket
-
