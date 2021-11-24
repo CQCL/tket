@@ -1,6 +1,14 @@
 Changelog
 ==================================
 
+0.18.0 (Unreleased)
+----------------------
+
+Minor new features:
+
+* Improved CnX gate decomposition.
+
+
 0.17.0 (November 2021)
 ----------------------
 
