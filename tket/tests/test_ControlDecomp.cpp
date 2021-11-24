@@ -15,6 +15,7 @@
 #include <catch2/catch.hpp>
 #include <numeric>
 
+#include "Circuit/CircPool.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/Transform.hpp"
@@ -25,6 +26,23 @@ namespace test_ControlDecomp {
 
 static bool approx_equal(const Complex& c1, const Complex& c2) {
   return (std::abs(c1 - c2) < ERR_EPS);
+}
+
+SCENARIO("Test C3X and C4X decomposition") {
+  GIVEN("A C3X gates") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3});
+    auto u1 = tket_sim::get_unitary(circ);
+    auto u2 = tket_sim::get_unitary(CircPool::C3X_normal_decomp());
+    REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+  }
+  GIVEN("A C4X gates") {
+    Circuit circ(5);
+    circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4});
+    auto u1 = tket_sim::get_unitary(circ);
+    auto u2 = tket_sim::get_unitary(CircPool::C4X_normal_decomp());
+    REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+  }
 }
 
 SCENARIO("Decompose some circuits with CCX gates") {
@@ -151,23 +169,6 @@ SCENARIO("Test incrementer using n borrowed qubits") {
   }
   GIVEN("4 qb incrementer") {
     Circuit inc = Transform::incrementer_borrow_n_qubits(4);
-    std::string com_str;
-    for (auto&& c : inc) com_str += c.to_str();
-    std::string correct_str =
-        "CX q[0], q[1];X q[2];X q[4];X q[6];CX q[0], q[3];CX q[0], "
-        "q[5];CX q[0], q[7];CX q[0], q[1];X q[7];CX q[2], q[0];CCX "
-        "q[0], q[1], q[2];CX q[2], q[3];CX q[4], q[2];CCX q[2], q[3], "
-        "q[4];CX q[4], q[5];CX q[6], q[4];CCX q[4], q[5], q[6];CX "
-        "q[6], q[7];CCX q[4], q[5], q[6];CCX q[2], q[3], q[4];X "
-        "q[6];CCX q[0], q[1], q[2];X q[4];CX q[0], q[1];X q[2];X "
-        "q[0];CCX q[0], q[1], q[2];CX q[2], q[3];X q[2];CCX q[2], "
-        "q[3], q[4];CX q[4], q[5];X q[4];CCX q[4], q[5], q[6];CX q[6], "
-        "q[7];CCX q[4], q[5], q[6];CX q[6], q[4];CCX q[2], q[3], "
-        "q[4];CX q[6], q[5];CX q[4], q[2];CCX q[0], q[1], q[2];CX "
-        "q[4], q[3];CX q[2], q[0];CX q[2], q[1];CX q[0], q[1];CX q[0], "
-        "q[3];CX q[0], q[5];CX q[0], q[7];";
-    REQUIRE(com_str.compare(correct_str) == 0);
-    REQUIRE(Transform::decomp_CCX().apply(inc));
     bool correct = true;
     const StateVector sv = tket_sim::get_statevector(inc);
     for (unsigned i = 0; i < sv.size(); ++i) {
