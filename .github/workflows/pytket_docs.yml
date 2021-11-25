@@ -61,6 +61,8 @@ jobs:
       run: conan create --profile=tket recipes/symengine
     - name: Build tket
       run: conan create --profile=tket recipes/tket
+    - name: Install pybind11
+      run: conan create --profile=tket recipes/pybind11
     - name: Build pytket
       run: |
         cd pytket
