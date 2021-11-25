@@ -217,6 +217,16 @@ SCENARIO("Test incrementer using n borrowed qubits") {
     }
     REQUIRE(correct);
   }
+  GIVEN("A n-qb incrementer, 5<n<10") {
+    // tket_sim doesn't support computing a unitary from a 12 qubits circuit
+    // hence we only test that the incrementer can be constructed as intended.
+    for (unsigned n = 6; n < 10; ++n) {
+      Circuit inc = Transform::incrementer_borrow_n_qubits(n);
+      REQUIRE(inc.n_qubits() == 2 * n);
+      REQUIRE(inc.count_gates(OpType::CCX) == (n - 1) * 4);
+      REQUIRE(Transform::synthesise_tket().apply(inc));
+    }
+  }
 }
 
 SCENARIO("Test incrementer using 1 borrowed qubit") {
