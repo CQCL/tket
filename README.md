@@ -115,6 +115,17 @@ The Python tests require a few more packages. These can be installed with:
 ```shell
 pip install -r pytket/tests/requirements.txt
 ```
+
+### Building symengine
+
+The `symengine` dependency is built from a local conan recipe. Run:
+
+```shell
+conan create --profile=tket recipes/symengine
+```
+
+to build it.
+
 ### Building tket
 
 #### Method 1
