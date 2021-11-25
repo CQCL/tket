@@ -44,10 +44,10 @@ std::vector<std::size_t> Routing::generate_distance_vector(
 
 // Returns the distance between n1 and p1 and the distance between n2 and p2,
 // distance ordered (greatest first)
-const std::pair<std::size_t, std::size_t> Routing::pair_dists(
+const std::pair<unsigned, unsigned> Routing::pair_dists(
     const Node &n1, const Node &p1, const Node &n2, const Node &p2) const {
-  std::size_t curr_dist1 = current_arc_.get_distance(n1, p1);
-  std::size_t curr_dist2 = current_arc_.get_distance(n2, p2);
+  unsigned curr_dist1 = current_arc_.get_distance(n1, p1);
+  unsigned curr_dist2 = current_arc_.get_distance(n2, p2);
   return (curr_dist1 > curr_dist2) ? std::make_pair(curr_dist1, curr_dist2)
                                    : std::make_pair(curr_dist2, curr_dist1);
 }
@@ -64,9 +64,9 @@ bool Routing::swap_decreases(
   if (pair1 == node2 || (node1 == pair1 && node2 == pair2)) {
     return false;
   }
-  const std::pair<std::size_t, std::size_t> &curr_dists =
+  const std::pair<unsigned, unsigned> &curr_dists =
       pair_dists(node1, pair1, node2, pair2);
-  const std::pair<std::size_t, std::size_t> &news_dists =
+  const std::pair<unsigned, unsigned> &news_dists =
       pair_dists(node2, pair1, node1, pair2);
 
   return news_dists < curr_dists;

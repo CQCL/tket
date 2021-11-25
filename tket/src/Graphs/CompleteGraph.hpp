@@ -57,6 +57,15 @@ class CompleteGraph : public AbstractGraph<T> {
     return true;
   }
 
+  unsigned get_distance(const T& node1, const T& node2) const override {
+    if (!node_exists(node1) || !node_exists(node2)) {
+      throw NodeDoesNotExistError(
+          "The UIDs passed to CompleteGraph::edge_exists must exist.");
+    }
+    if (node1 == node2) return 0;
+    return 1;
+  }
+
   bool operator==(const CompleteGraph<T>& other) const {
     return nodes_ == other.nodes_;
   }

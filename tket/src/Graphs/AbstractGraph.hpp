@@ -70,6 +70,9 @@ class AbstractGraph {
   /** All edges as a vector */
   virtual std::vector<Edge> get_all_edges_vec() const = 0;
 
+  /** Graph distance between two nodes. */
+  virtual unsigned get_distance(const T &node1, const T &node2) const = 0;
+
   virtual ~AbstractGraph() {}
 };
 

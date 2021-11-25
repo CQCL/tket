@@ -31,6 +31,19 @@
 
 namespace tket::graphs {
 
+/**
+ * Exception thrown because two nodes are disconnected from one another.
+ *
+ * @tparam T node type
+ */
+template <typename T>
+class NodesNotConnected : public std::logic_error {
+ public:
+  NodesNotConnected(const T& node1, const T& node2)
+      : std::logic_error(
+            node1.repr() + " and " + node2.repr() + " are not connected") {}
+};
+
 template <typename T>
 class DirectedGraphBase : public AbstractGraph<T> {
  protected:
@@ -212,7 +225,7 @@ class DirectedGraphBase : public AbstractGraph<T> {
   }
 
   /** Get the distance between two nodes. */
-  std::size_t get_distance(const T& node1, const T& node2) const {
+  unsigned get_distance(const T& node1, const T& node2) const override {
     if (node1 == node2) {
       return 0;
     }
@@ -342,19 +355,6 @@ class DirectedGraphBase : public AbstractGraph<T> {
 };
 
 /**
- * Exception thrown because two nodes are disconnected from one another.
- *
- * @tparam T node type
- */
-template <typename T>
-class NodesNotConnected : public std::logic_error {
- public:
-  NodesNotConnected(const T& node1, const T& node2)
-      : std::logic_error(
-            node1.repr() + " and " + node2.repr() + " are not connected") {}
-};
-
-/**
  * DirectedGraph instances are directed graphs. It is a wrapper around a
  * BGL graph that provides a clean class API, taking care of mapping all BGL
  * vertices and edge pointers to nodes, respectively pairs of nodes.
@@ -402,16 +402,7 @@ class DirectedGraph : public DirectedGraphBase<T> {
     return std::move(distance_cache[root]);
   }
 
-  /**
-   * Graph distance between two nodes.
-   *
-   * @param node1 first node
-   * @param node2 second node
-   *
-   * @return length of shortest path between the nodes
-   * @throws NodesNotConnected if there is no path between the nodes
-   */
-  std::size_t get_distance(const T& node1, const T& node2) const {
+  unsigned get_distance(const T& node1, const T& node2) const override {
     if (node1 == node2) {
       return 0;
     }
