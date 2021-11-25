@@ -52,7 +52,6 @@ jobs:
         conan_cmd=/home/runner/.local/bin/conan
         ${conan_cmd} profile new tket --detect
         ${conan_cmd} profile update settings.compiler.libcxx=libstdc++11 tket
-        ${conan_cmd} config set general.revisions_enabled=1
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: Install ninja and ccache
       run: sudo apt-get install ninja-build ccache
@@ -173,7 +172,6 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect --force
-        conan config set general.revisions_enabled=1
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
     - name: Build symengine
@@ -260,7 +258,6 @@ jobs:
       id: conan
       run: |
         conan profile new tket --detect --force
-        conan config set general.revisions_enabled=1
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
     - name: Install boost
@@ -339,7 +336,6 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect
-        conan config set general.revisions_enabled=1
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: Cache tket build

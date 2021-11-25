@@ -57,7 +57,6 @@ jobs:
         pip install conan
         conan profile new tket --detect
         conan profile update settings.compiler.libcxx=libstdc++11 tket
-        conan config set general.revisions_enabled=1
     - name: Build symengine
       run: conan create --profile=tket recipes/symengine
     - name: Build tket

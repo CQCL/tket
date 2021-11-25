@@ -64,7 +64,6 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect --force
-        conan config set general.revisions_enabled=1
         conan create --profile=tket recipes/symengine
         conan create --profile=tket recipes/tket
     - name: Build wheel (3.7)
@@ -102,7 +101,6 @@ jobs:
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
         conan profile new tket --detect --force
-        conan config set general.revisions_enabled=1
         conan install --profile=tket boost/1.77.0@ --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
         conan create --profile=tket recipes/symengine -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
         conan create --profile=tket recipes/tket -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
@@ -145,7 +143,6 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect
-        conan config set general.revisions_enabled=1
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: Cache tket build
