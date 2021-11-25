@@ -152,7 +152,13 @@ with:
 conan create --profile=tket recipes/tket-proptests
 ```
 
-Now to build pytket:
+Now to build pytket, first install the `pybind11` headers:
+
+```shell
+conan create --profile=tket recipes/pybind11
+```
+
+Then build the pytket module:
 
 ```shell
 cd pytket
