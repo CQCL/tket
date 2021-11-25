@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_AbstractGraph_H
-#define _TKET_AbstractGraph_H
+#pragma once
 
 #include <set>
 #include <stdexcept>
@@ -75,5 +74,3 @@ class AbstractGraph {
 };
 
 }  // namespace tket::graphs
-
-#endif  // _TKET_AbstractGraph_H

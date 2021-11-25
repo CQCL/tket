@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_CompleteGraph_H
-#define _TKET_CompleteGraph_H
+#pragma once
 
 #include <vector>
 
@@ -67,5 +66,3 @@ class CompleteGraph : public AbstractGraph<T> {
 };
 
 }  // namespace tket::graphs
-
-#endif  // _TKET_CompleteGraph_H

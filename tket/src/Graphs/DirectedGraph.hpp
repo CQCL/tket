@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_DirectedGraph_H
-#define _TKET_DirectedGraph_H
+#pragma once
 
 #include <algorithm>
 #include <boost/range/adaptor/transformed.hpp>
@@ -508,5 +507,3 @@ class DirectedGraph : public DirectedGraphBase<T> {
 };
 
 }  // namespace tket::graphs
-
-#endif
