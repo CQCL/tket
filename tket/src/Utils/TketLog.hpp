@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_TketLog_H_
-#define _TKET_TketLog_H_
+#pragma once
 
 /**
  * @file
@@ -33,5 +32,3 @@ typedef std::shared_ptr<spdlog::logger> LogPtr_t;
 LogPtr_t &tket_log();
 
 }  // namespace tket
-
-#endif

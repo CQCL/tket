@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_CompilerPass_H_
-#define _TKET_CompilerPass_H_
+#pragma once
 
 #include "CompilationUnit.hpp"
 #include "Predicates.hpp"
@@ -268,5 +267,3 @@ class RepeatUntilSatisfiedPass : public BasePass {
 // TODO: Repeat with a metric, repeat until a Predicate is satisfied...
 
 }  // namespace tket
-
-#endif  // PROGRAMTRANSFORM_H_

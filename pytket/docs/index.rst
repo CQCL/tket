@@ -10,8 +10,8 @@ programming tools. We currently support circuits and device architectures from
 `numerous providers <https://github.com/CQCL/pytket-extensions>`_, allowing the
 tket tools to be used in conjunction with projects on their platforms.
 
-``pytket`` is available for Python 3.8, 3.9 and 3.10, on Linux, MacOS and
-Windows. To install, run
+``pytket`` is available for Python 3.7, 3.8 and 3.9, on Linux, MacOS and Windows.
+To install, run
 
 ``pip install pytket``
 
@@ -168,6 +168,7 @@ Our telemetry data policy can be viewed in the `Telemetry Data Policy`_ page.
     routing.rst
     transform.rst
     tailoring.rst
+    zx.rst
     utils.rst
     logging.rst
     config.rst

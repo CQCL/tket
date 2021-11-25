@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_TreeSearch_impl_H
-#define _TKET_TreeSearch_impl_H
+#pragma once
 
 #include <boost/graph/breadth_first_search.hpp>
 #include <boost/graph/depth_first_search.hpp>
@@ -283,5 +282,3 @@ class DFS : public detail::TreeSearch<Args...> {
 };
 
 }  // namespace tket::graphs
-
-#endif

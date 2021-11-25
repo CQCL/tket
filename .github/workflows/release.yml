@@ -14,7 +14,7 @@ jobs:
     name: Build manylinux
     runs-on: ubuntu-20.04
     env:
-      PY_VERS: cp38-cp38 cp39-cp39 cp310-cp310
+      PY_VERS: cp37-cp37m cp38-cp38 cp39-cp39
     steps:
     - uses: actions/checkout@v2
       with:
@@ -56,29 +56,29 @@ jobs:
         key: ${{ runner.os }}-tket-conan-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
           ${{ runner.os }}-tket-conan-
-    - name: Set up Python 3.8
+    - name: Set up Python 3.7
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'
+        python-version: 3.7
     - name: Build tket C++
       run: |
         pip install conan
         conan profile new tket --detect --force
         conan config set general.revisions_enabled=1
         conan create --profile=tket --build=missing recipes/tket
+    - name: Build wheel (3.7)
+      run: .github/workflows/build_macos_wheel
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
     - name: Build wheel (3.8)
       run: .github/workflows/build_macos_wheel
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
-        python-version: '3.9'
+        python-version: 3.9
     - name: Build wheel (3.9)
-      run: .github/workflows/build_macos_wheel
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.10'
-    - name: Build wheel (3.10)
       run: .github/workflows/build_macos_wheel
     - uses: actions/upload-artifact@v2
       with:
@@ -106,8 +106,6 @@ jobs:
         conan create --profile=tket recipes/tket --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
         .github/workflows/build_macos_m1_wheel
         pyenv shell tket-3.9
-        .github/workflows/build_macos_m1_wheel
-        pyenv shell tket-3.10
         .github/workflows/build_macos_m1_wheel
     - uses: actions/upload-artifact@v2
       with:
@@ -158,10 +156,24 @@ jobs:
       if: steps.cache-tket.outputs.cache-hit != 'true'
       run: |
         conan create --profile=tket recipes/tket
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+    - name: Build wheel (3.7)
+      run: |
+        pip install wheel
+        cd pytket
+        python -m pip install -U pip setuptools_scm
+        python setup.py bdist_wheel -d "${{ github.workspace }}/wheelhouse/3.7"
+    - uses: actions/upload-artifact@v2
+      with:
+        name: Windows_wheels
+        path: wheelhouse/
     - name: Set up Python 3.8
       uses: actions/setup-python@v2
       with:
-        python-version: '3.8'
+        python-version: 3.8
     - name: Build wheel (3.8)
       run: |
         pip install wheel
@@ -175,27 +187,13 @@ jobs:
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
-        python-version: '3.9'
+        python-version: 3.9
     - name: Build wheel (3.9)
       run: |
         pip install wheel
         cd pytket
         python -m pip install -U pip setuptools_scm
         python setup.py bdist_wheel -d "${{ github.workspace }}/wheelhouse/3.9"
-    - uses: actions/upload-artifact@v2
-      with:
-        name: Windows_wheels
-        path: wheelhouse/
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.10'
-    - name: Build wheel (3.10)
-      run: |
-        pip install wheel
-        cd pytket
-        python -m pip install -U pip setuptools_scm
-        python setup.py bdist_wheel -d "${{ github.workspace }}/wheelhouse/3.10"
     - uses: actions/upload-artifact@v2
       with:
         name: Windows_wheels
@@ -209,7 +207,7 @@ jobs:
       PYTKET_SKIP_REGISTRATION: "true"
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10']
+        python-version: [3.7, 3.8, 3.9]
     steps:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
@@ -240,7 +238,7 @@ jobs:
       PYTKET_SKIP_REGISTRATION: "true"
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10']
+        python-version: [3.7, 3.8, 3.9]
     steps:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -271,7 +269,7 @@ jobs:
       PYTKET_SKIP_REGISTRATION: "true"
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10']
+        python-version: [3.7, 3.8, 3.9]
     steps:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -306,7 +304,7 @@ jobs:
       PYTKET_SKIP_REGISTRATION: "true"
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10']
+        python-version: [3.8, 3.9]
     steps:
     - name: Download wheels
       uses: actions/download-artifact@v2
@@ -338,7 +336,7 @@ jobs:
       PYTKET_SKIP_REGISTRATION: "true"
     strategy:
       matrix:
-        python-version: ['3.8', '3.9', '3.10']
+        python-version: [3.7, 3.8, 3.9]
     steps:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v2
@@ -395,7 +393,7 @@ jobs:
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:
-        python-version: '3.9'
+        python-version: 3.9
     - name: Download wheels
       uses: actions/download-artifact@v2
       with:
@@ -420,7 +418,7 @@ jobs:
     name: Publish docs
     needs: build_docs
     concurrency: gh_pages
-    if: github.event_name == 'release'
+    if: github.event_name == 'release' && github.event.release.prerelease != true
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2

@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Cycles_H_
-#define _TKET_Cycles_H_
 
 #include "Circuit/Circuit.hpp"
 
@@ -143,4 +141,3 @@ class CycleFinder {
   void order_keys(unsigned& new_key, std::set<unsigned>& old_keys) const;
 };
 }  // namespace tket
-#endif

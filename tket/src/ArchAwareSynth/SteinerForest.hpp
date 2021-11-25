@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_SteinerForest_H_
-#define _TKET_SteinerForest_H_
+#pragma once
 #include "Circuit/Circuit.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Graphs/DirectedGraph.hpp"
@@ -173,4 +172,3 @@ Circuit phase_poly_synthesis(
 
 }  // namespace aas
 }  // namespace tket
-#endif  //_TKET_SteinerForest_H_

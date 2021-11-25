@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Gauss_H_
-#define _TKET_Gauss_H_
 #include "Circuit/Circuit.hpp"
 #include "Converters.hpp"
 
@@ -45,5 +43,3 @@ class DiagMatrix {
 };
 
 }  // namespace tket
-
-#endif  //_TKET_Gauss_H_

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _CQC_TKET_SIMULATION_GateUnitaryMatrixError_HPP_
-#define _CQC_TKET_SIMULATION_GateUnitaryMatrixError_HPP_
+#pragma once
 
 #include <stdexcept>
 #include <string>
@@ -42,4 +41,3 @@ struct GateUnitaryMatrixError : public std::runtime_error {
 };
 
 }  // namespace tket
-#endif

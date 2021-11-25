@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Path_H_
-#define _TKET_Path_H_
+#pragma once
 #include "Architecture/Architecture.hpp"
 #include "Routing/Placement.hpp"
 #include "Utils/MatrixAnalysis.hpp"
@@ -142,4 +141,3 @@ std::ostream &operator<<(std::ostream &out, const PathHandler &path);
 
 }  // namespace aas
 }  // namespace tket
-#endif  //_TKET_Path_H_

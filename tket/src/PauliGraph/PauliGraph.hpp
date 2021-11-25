@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_PauliGraph_H_
-#define _TKET_PauliGraph_H_
+#pragma once
 
 #include <fstream>
 
@@ -146,5 +145,3 @@ class PauliGraph {
 };
 
 }  // namespace tket
-
-#endif  // PAULIGRAPH_H_

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_GraphUtils_H_
-#define _TKET_GraphUtils_H_
+#pragma once
 
 #include <algorithm>
 #include <boost/graph/copy.hpp>
@@ -207,5 +206,3 @@ std::set<vertex<Graph>> min_degree_nodes(const Graph& g) {
 
 }  // namespace utils
 }  // namespace tket::graphs
-
-#endif

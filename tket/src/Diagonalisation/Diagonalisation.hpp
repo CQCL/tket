@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Diagonalisation_H_
-#define _TKET_Diagonalisation_H_
+#pragma once
 
 #include "Circuit/Boxes.hpp"
 #include "Circuit/Circuit.hpp"
@@ -72,5 +71,3 @@ bool conjugate_with_xxphase3(
     Circuit &cliff_circ);
 
 }  // namespace tket
-
-#endif  // _TKET_Diagonalisation_H_

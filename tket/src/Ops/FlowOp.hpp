@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Ops_FlowOp_H_
-#define _TKET_Ops_FlowOp_H_
+#pragma once
 
 #include "Op.hpp"
 
@@ -49,5 +48,3 @@ class FlowOp : public Op {
 };
 
 }  // namespace tket
-
-#endif

@@ -180,22 +180,19 @@ void init_boxes(py::module &m) {
       "Box encapsulating any Circuit made up of CNOT and RZ as a phase "
       "polynomial + linear transformation")
       .def(
-          py::init<
-              unsigned, const boost::bimap<Qubit, unsigned> &,
-              const PhasePolynomial &, const MatrixXb &>(),
+          py::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
+                      const PhasePolynomial &p_p, const MatrixXb &lin_trans) {
+            boost::bimap<Qubit, unsigned> bmap;
+            for (const auto &pair : q_ind) {
+              bmap.insert({pair.first, pair.second});
+            }
+            return PhasePolyBox(n_qb, bmap, p_p, lin_trans);
+          }),
           "Construct from the number of qubits, the mapping from "
           "Qubit to index, the phase polynomial (map from bitstring "
           "to phase) and the linear transformation (boolean matrix)",
           py::arg("n_qubits"), py::arg("qubit_indices"),
           py::arg("phase_polynomial"), py::arg("linear_transformation"))
-      .def(py::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
-                       const PhasePolynomial &p_p, const MatrixXb &lin_trans) {
-        boost::bimap<Qubit, unsigned> bmap;
-        for (const auto &pair : q_ind) {
-          bmap.insert({pair.first, pair.second});
-        }
-        return PhasePolyBox(n_qb, bmap, p_p, lin_trans);
-      }))
       .def_property_readonly(
           "n_qubits", &PhasePolyBox::get_n_qubits,
           "Number of gates the polynomial acts on.")
