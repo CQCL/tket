@@ -28,6 +28,49 @@ static bool approx_equal(const Complex& c1, const Complex& c2) {
   return (std::abs(c1 - c2) < ERR_EPS);
 }
 
+static bool check_incrementer_borrow_n_qubits(const unsigned n) {
+  Circuit inc = Transform::incrementer_borrow_n_qubits(n);
+  bool correct = true;
+  const StateVector sv = tket_sim::get_statevector(inc);
+  for (unsigned i = 0; i < sv.size(); ++i) {
+    // incremented the |0...00> state to be |0...10> incl. garbage qubits
+    // (depending on def. of qubit significance)
+    if (i == pow(2, 2 * n - 2))
+      correct &= (std::abs(sv[i]) > EPS);
+    else
+      correct &= (std::abs(sv[i]) < ERR_EPS);
+  }
+
+  Circuit xcirc = Circuit(2 * n);
+  for (unsigned i = 1; i < 2 * n; i += 2)
+    xcirc.add_op<unsigned>(OpType::X, {i});
+  xcirc.append(inc);
+  const StateVector sv2 = tket_sim::get_statevector(xcirc);
+  for (unsigned i = 0; i < sv2.size(); ++i) {
+    if (i == 0)
+      correct &= (std::abs(sv2[i]) > EPS);
+    else
+      correct &= (std::abs(sv2[i]) < ERR_EPS);
+  }
+  return correct;
+}
+
+static bool check_incrementer_borrow_1_qubit(const unsigned n) {
+  Circuit inc = Transform::incrementer_borrow_1_qubit(n);
+  REQUIRE(inc.n_vertices() - inc.n_gates() == (n + 1) * 2);
+  Transform::synthesise_tket().apply(inc);
+  const StateVector sv = tket_sim::get_statevector(inc);
+  bool correct = true;
+  for (unsigned i = 0; i < sv.size(); ++i) {
+    // |00...0> -> |00...1>
+    if (i == pow(2, n))
+      correct &= (std::abs(sv[i]) > EPS);
+    else
+      correct &= (std::abs(sv[i]) < ERR_EPS);
+  }
+  return correct;
+}
+
 SCENARIO("Test C3X and C4X decomposition") {
   GIVEN("A C3X gates") {
     Circuit circ(4);
@@ -167,56 +210,10 @@ SCENARIO("Test incrementer using n borrowed qubits") {
     REQUIRE(inc.n_gates() == 1);
     REQUIRE(inc.count_gates(OpType::X) == 1);
   }
-  GIVEN("4 qb incrementer") {
-    Circuit inc = Transform::incrementer_borrow_n_qubits(4);
-    bool correct = true;
-    const StateVector sv = tket_sim::get_statevector(inc);
-    for (unsigned i = 0; i < sv.size(); ++i) {
-      // incremented the |0...00> state to be |0...10> incl. garbage qubits
-      // (depending on def. of qubit significance)
-      if (i == 64)
-        correct &= (std::abs(sv[i]) > EPS);
-      else
-        correct &= (std::abs(sv[i]) < ERR_EPS);
-    }
-
-    Circuit xcirc = Circuit(8);
-    for (unsigned i = 1; i < 8; i += 2) xcirc.add_op<unsigned>(OpType::X, {i});
-    xcirc.append(inc);
-    const StateVector sv2 = tket_sim::get_statevector(xcirc);
-    for (unsigned i = 0; i < sv2.size(); ++i) {
-      if (i == 0)
-        correct &= (std::abs(sv2[i]) > EPS);
-      else
-        correct &= (std::abs(sv2[i]) < ERR_EPS);
-    }
-    REQUIRE(correct);
-  }
-  GIVEN("A 5qb incrementer") {
-    Circuit inc = Transform::incrementer_borrow_n_qubits(5);
-    REQUIRE(Transform::synthesise_tket().apply(inc));
-    const StateVector sv = tket_sim::get_statevector(inc);
-    bool correct = true;
-    for (unsigned i = 0; i < sv.size(); ++i) {
-      // incremented the |0...00> state to be |0...10> incl. garbage qubits
-      // (depending on def. of qubit significance)
-      if (i == 256)
-        correct &= (std::abs(sv[i]) > EPS);
-      else
-        correct &= (std::abs(sv[i]) < ERR_EPS);
-    }
-    Circuit xcirc = Circuit(10);
-    for (unsigned i = 1; i < 10; i += 2) xcirc.add_op<unsigned>(OpType::X, {i});
-    xcirc.append(inc);
-    const StateVector sv2 = tket_sim::get_statevector(xcirc);
-    for (unsigned i = 0; i < sv2.size(); ++i) {
-      if (i == 0)
-        correct &= (std::abs(sv2[i]) > EPS);
-      else
-        correct &= (std::abs(sv2[i]) < ERR_EPS);
-    }
-    REQUIRE(correct);
-  }
+  GIVEN("A 2qb incrementer") { REQUIRE(check_incrementer_borrow_n_qubits(2)); }
+  GIVEN("A 3qb incrementer") { REQUIRE(check_incrementer_borrow_n_qubits(3)); }
+  GIVEN("A 4qb incrementer") { REQUIRE(check_incrementer_borrow_n_qubits(4)); }
+  GIVEN("A 5qb incrementer") { REQUIRE(check_incrementer_borrow_n_qubits(5)); }
   GIVEN("A n-qb incrementer, 5<n<10") {
     // tket_sim doesn't support computing a unitary from a 12 qubits circuit
     // hence we only test that the incrementer can be constructed as intended.
@@ -327,20 +324,14 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
     REQUIRE(inc.n_vertices() == 5);
     REQUIRE(inc.n_gates() == 1);
   }
+  GIVEN("A 2 qubit incrementer") {
+    REQUIRE(check_incrementer_borrow_1_qubit(2));
+  }
+  GIVEN("A 3 qubit incrementer") {
+    REQUIRE(check_incrementer_borrow_1_qubit(3));
+  }
   GIVEN("A 4 qubit incrementer") {
-    Circuit inc = Transform::incrementer_borrow_1_qubit(4);
-    REQUIRE(inc.n_vertices() - inc.n_gates() == 10);
-    Transform::synthesise_tket().apply(inc);
-    const StateVector sv = tket_sim::get_statevector(inc);
-    bool correct = true;
-    for (unsigned i = 0; i < sv.size(); ++i) {
-      // |00000> -> |00001>
-      if (i == 16)
-        correct &= (std::abs(sv[i]) > EPS);
-      else
-        correct &= (std::abs(sv[i]) < ERR_EPS);
-    }
-    REQUIRE(correct);
+    REQUIRE(check_incrementer_borrow_1_qubit(4));
   }
   GIVEN("A 4 qubit incrementer on the |01111> state") {
     Circuit inc(5);
@@ -360,19 +351,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
     REQUIRE(correct);
   }
   GIVEN("A 5 qubit incrementer on the |000000> state") {
-    Circuit inc = Transform::incrementer_borrow_1_qubit(5);
-    REQUIRE(inc.n_vertices() - inc.n_gates() == 12);
-    Transform::synthesise_tket().apply(inc);
-    const StateVector sv = tket_sim::get_statevector(inc);
-    bool correct = true;
-    for (unsigned i = 0; i < sv.size(); ++i) {
-      // |000000> -> |000001>
-      if (i == 32)
-        correct &= (std::abs(sv[i]) > EPS);
-      else
-        correct &= (std::abs(sv[i]) < ERR_EPS);
-    }
-    REQUIRE(correct);
+    REQUIRE(check_incrementer_borrow_1_qubit(5));
   }
   GIVEN("A 5 qubit incrementer on the |0111111> state") {
     Circuit inc(6);
@@ -393,19 +372,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
     REQUIRE(correct);
   }
   GIVEN("A 6 qubit incrementer on the |0000000> state") {
-    Circuit inc = Transform::incrementer_borrow_1_qubit(6);
-    REQUIRE(inc.n_vertices() - inc.n_gates() == 14);
-    Transform::synthesise_tket().apply(inc);
-    const StateVector sv = tket_sim::get_statevector(inc);
-    bool correct = true;
-    for (unsigned i = 0; i < sv.size(); ++i) {
-      // |0000000> -> |0000001>
-      if (i == 64)
-        correct &= (std::abs(sv[i]) > EPS);
-      else
-        correct &= (std::abs(sv[i]) < ERR_EPS);
-    }
-    REQUIRE(correct);
+    REQUIRE(check_incrementer_borrow_1_qubit(6));
   }
   GIVEN("A 6 qubit incrementer on the |0111111> state") {
     Circuit inc(7);
