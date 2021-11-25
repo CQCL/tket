@@ -73,6 +73,9 @@ class AbstractGraph {
   /** Graph distance between two nodes. */
   virtual unsigned get_distance(const T &node1, const T &node2) const = 0;
 
+  /** Diameter of graph. */
+  virtual unsigned get_diameter() const = 0;
+
   virtual ~AbstractGraph() {}
 };
 

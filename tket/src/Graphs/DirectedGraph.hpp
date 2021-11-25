@@ -22,6 +22,7 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <stdexcept>
 #include <type_traits>
 
 #include "Graphs/AbstractGraph.hpp"
@@ -59,7 +60,9 @@ class DirectedGraphBase : public AbstractGraph<T> {
  public:
   using AbstractGraph<T>::node_exists;
   using AbstractGraph<T>::edge_exists;
+  using AbstractGraph<T>::get_all_nodes_vec;
   using AbstractGraph<T>::get_all_edges_vec;
+  using AbstractGraph<T>::n_nodes;
 
   /** Construct an empty graph. */
   DirectedGraphBase() : AbstractGraph<T>(), graph(), node_to_vertex() {}
@@ -373,6 +376,8 @@ class DirectedGraph : public DirectedGraphBase<T> {
 
  public:
   using Base::Base;
+  using Base::get_all_nodes_vec;
+  using Base::n_nodes;
   using Base::node_exists;
   /* useful type synonyms */
   using UndirectedConnGraph = typename Base::UndirectedConnGraph;
@@ -419,6 +424,22 @@ class DirectedGraph : public DirectedGraphBase<T> {
       throw NodesNotConnected(node1, node2);
     }
     return d;
+  }
+
+  unsigned get_diameter() const override {
+    unsigned N = n_nodes();
+    if (N == 0) {
+      throw std::logic_error("Graph is empty.");
+    }
+    unsigned max = 0;
+    const std::vector<T> nodes = get_all_nodes_vec();
+    for (unsigned i = 0; i < N; i++) {
+      for (unsigned j = i + 1; j < N; j++) {
+        unsigned d = get_distance(nodes[i], nodes[j]);
+        if (d > max) max = d;
+      }
+    }
+    return max;
   }
 
   /** Returns all nodes at a given distance from a given 'source' node */

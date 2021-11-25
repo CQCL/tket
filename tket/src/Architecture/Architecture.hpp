@@ -110,11 +110,6 @@ class Architecture : public ArchitectureBase<graphs::DirectedGraph<Node>> {
       std::vector<unsigned> required_lengths) const;
 
   /**
-   * Diameter of graph
-   */
-  unsigned get_diameter() const;
-
-  /**
    * Remove a number of nodes according to a heuristic measure of connectivity.
    */
   node_set_t remove_worst_nodes(unsigned num);

@@ -35,22 +35,6 @@ Architecture Architecture::create_subarch(
   return subarc;
 }
 
-unsigned Architecture::get_diameter() const {
-  unsigned N = n_nodes();
-  if (N == 0) {
-    throw ArchitectureInvalidity("No nodes in architecture.");
-  }
-  unsigned max = 0;
-  const node_vector_t nodes = get_all_nodes_vec();
-  for (unsigned i = 0; i < N; i++) {
-    for (unsigned j = i + 1; j < N; j++) {
-      unsigned d = get_distance(nodes[i], nodes[j]);
-      if (d > max) max = d;
-    }
-  }
-  return max;
-}
-
 // Given a vector of lengths of lines, returns a vector of lines of these sizes
 // comprised of architecture nodes
 std::vector<node_vector_t> Architecture::get_lines(

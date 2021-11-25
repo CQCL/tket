@@ -27,6 +27,7 @@ class CompleteGraph : public AbstractGraph<T> {
   using AbstractGraph<T>::edge_exists;
   using AbstractGraph<T>::get_all_nodes_vec;
   using AbstractGraph<T>::get_all_edges_vec;
+  using AbstractGraph<T>::n_nodes;
   using typename AbstractGraph<T>::Edge;
 
   /** Construct an empty graph. */
@@ -64,6 +65,17 @@ class CompleteGraph : public AbstractGraph<T> {
     }
     if (node1 == node2) return 0;
     return 1;
+  }
+
+  unsigned get_diameter() const override {
+    switch (n_nodes()) {
+      case 0:
+        throw std::logic_error("Graph is empty.");
+      case 1:
+        return 0;
+      default:
+        return 1;
+    }
   }
 
   bool operator==(const CompleteGraph<T>& other) const {
