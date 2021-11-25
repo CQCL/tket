@@ -52,7 +52,7 @@ static inline std::vector<std::pair<Node, Node>> as_nodepairs(
 /**
  * Generic architecture class
  *
- * Constraints: T must derive from @ref AbstractGraph, and must have node type
+ * Constraints: T must derive from AbstractGraph, and must have node type
  * @ref Node.
  *
  * @tparam T underlying graph type
