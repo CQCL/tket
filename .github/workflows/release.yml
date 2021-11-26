@@ -98,19 +98,15 @@ jobs:
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Install pybind11
-      run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-3.10
-        conan profile new tket --detect --force
-        conan create --profile=tket recipes/pybind11
     - name: Build wheels
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
+        conan profile new tket --detect --force
         conan install --profile=tket boost/1.77.0@ --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
         conan create --profile=tket recipes/symengine -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
         conan create --profile=tket recipes/tket -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+        conan create --profile=tket recipes/pybind11
         .github/workflows/build_macos_m1_wheel
         pyenv shell tket-3.9
         .github/workflows/build_macos_m1_wheel

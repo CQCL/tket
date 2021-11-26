@@ -275,10 +275,7 @@ jobs:
     - name: Build and run tket proptests
       run: conan create --profile=tket recipes/tket-proptests -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
     - name: Install pybind11
-      run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-3.10
-        conan create --profile=tket recipes/pybind11
+      run: conan create --profile=tket recipes/pybind11
     - name: Build pytket (3.8)
       if: github.event_name == 'pull_request' || github.event_name == 'push'
       run: |
