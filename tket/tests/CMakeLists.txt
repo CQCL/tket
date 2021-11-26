@@ -41,7 +41,5 @@ set(TKET_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(tkettestsfiles.cmake)
 
-set(TEST_EXE test_tket)
-
-add_executable(${TEST_EXE} ${TEST_SOURCES})
-target_link_libraries(${TEST_EXE} ${CONAN_LIBS})
+add_executable(test_tket ${TEST_SOURCES})
+target_link_libraries(test_tket ${CONAN_LIBS})

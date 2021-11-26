@@ -36,12 +36,9 @@ IF (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /Zc:__cplusplus")
 ENDIF()
 
-set(PROPTEST_EXE proptest)
-
-
-add_executable(${PROPTEST_EXE}
+add_executable(proptest
     ComparisonFunctions.cpp
     proptest.cpp
 )
 
-target_link_libraries(${PROPTEST_EXE} ${CONAN_LIBS})
+target_link_libraries(proptest ${CONAN_LIBS})

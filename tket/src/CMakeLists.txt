@@ -31,8 +31,6 @@ find_file(CONANBUILDINFO_FILE conanbuildinfo.cmake HINTS ${CMAKE_BINARY_DIR})
 include(${CONANBUILDINFO_FILE})
 conan_basic_setup()
 
-set(TKET "tket")
-
 IF (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX /EHsc")
 ELSE()
@@ -251,10 +249,10 @@ set(TKET_SOURCES
     ${TKET_ZX_DIR}/ZXRWGraphLikeSimplification.cpp
 )
 
-add_library(${TKET} SHARED ${TKET_SOURCES})
+add_library(tket SHARED ${TKET_SOURCES})
 # ----- Location of header files ----------------------------------------------
-target_include_directories(${TKET} PRIVATE ${TKET_SRC_DIR})
-target_link_libraries(${TKET} ${CONAN_LIBS})
+target_include_directories(tket PRIVATE ${TKET_SRC_DIR})
+target_link_libraries(tket ${CONAN_LIBS})
 if(WIN32)
-    target_link_libraries(${TKET} bcrypt)
+    target_link_libraries(tket bcrypt)
 ENDIF()
