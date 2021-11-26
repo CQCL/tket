@@ -12,14 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+cmake_minimum_required(VERSION 3.16.0)
+project(tket-compiler)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-cmake_minimum_required(VERSION 3.16.0)
-
 set(TKET_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-
-project(tket-compiler)
 
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
