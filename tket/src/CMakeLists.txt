@@ -91,7 +91,6 @@ set(TKET_SOURCES
     ${TKET_OPTYPE_DIR}/OpTypeJson.cpp
 
     # Ops
-    ${TKET_OPS_DIR}/Conditional.cpp
     ${TKET_OPS_DIR}/FlowOp.cpp
     ${TKET_OPS_DIR}/MetaOp.cpp
     ${TKET_OPS_DIR}/Op.cpp
@@ -114,6 +113,7 @@ set(TKET_SOURCES
     ${TKET_GATE_DIR}/GateUnitarySparseMatrix.cpp
 
     # Circuit
+    ${TKET_CIRCUIT_DIR}/Conditional.cpp
     ${TKET_CIRCUIT_DIR}/Boxes.cpp
     ${TKET_CIRCUIT_DIR}/Circuit.cpp
     ${TKET_CIRCUIT_DIR}/CircuitJson.cpp
