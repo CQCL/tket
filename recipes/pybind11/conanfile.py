@@ -14,6 +14,7 @@
 
 from conans import ConanFile, tools, CMake
 import os
+import sys
 
 
 class PyBind11Conan(ConanFile):
@@ -56,7 +57,8 @@ class PyBind11Conan(ConanFile):
         # pybind11::headers target that is required to make full use of all
         # installed cmake files.
         self._cmake.configure(
-            source_dir=os.path.join(self.source_folder, self._source_subfolder)
+            source_dir=os.path.join(self.source_folder, self._source_subfolder),
+            defs={"PYTHON_EXECUTABLE": sys.executable},
         )
         return self._cmake
 
