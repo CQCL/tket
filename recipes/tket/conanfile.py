@@ -22,8 +22,8 @@ class TketConan(ConanFile):
     name = "tket"
     version = "1.0.1"
     license = "CQC Proprietary"
-    author = "Alec Edgington <alec.edgington@cambridgequantum.com>"
-    url = "https://github.com/CQCL-DEV/tket"
+    homepage = "https://github.com/CQCL/tket"
+    url = "https://github.com/conan-io/conan-center-index"
     description = "Quantum SDK"
     topics = ("quantum", "computation", "compiler")
     settings = "os", "compiler", "build_type", "arch"
