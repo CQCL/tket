@@ -56,6 +56,7 @@ jobs:
         conan_cmd=/home/runner/.local/bin/conan
         ${conan_cmd} profile new tket --detect
         ${conan_cmd} profile update settings.compiler.libcxx=libstdc++11 tket
+        ${conan_cmd} profile update options.tket:shared=True tket
         ${conan_cmd} profile update settings.build_type=Debug tket
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: Install ninja and ccache

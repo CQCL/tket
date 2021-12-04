@@ -170,6 +170,8 @@ class CMakeBuild(build_ext):
             "install",
             "--profile=" + conan_tket_profile,
             "--build=missing",
+            "-o",
+            "tket:shared=True",
             extsource,
         ]
         if platform.system() == "Darwin" and platform.processor() == "arm":

@@ -28,11 +28,11 @@ class TketConan(ConanFile):
     topics = ("quantum", "computation", "compiler")
     settings = "os", "compiler", "build_type", "arch"
     options = {
-        "shared": [True],
+        "shared": [True, False],
         "profile_coverage": [True, False],
         "spdlog_ho": [True, False],
     }
-    default_options = {"shared": True, "profile_coverage": False, "spdlog_ho": True}
+    default_options = {"shared": False, "profile_coverage": False, "spdlog_ho": True}
     generators = "cmake"
     # Putting "patches" in both "exports_sources" and "exports" means that this works
     # in either the CI workflow (`conan create`) or the development workflow
