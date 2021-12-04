@@ -127,6 +127,7 @@ class TketConan(ConanFile):
                 shutil.move(filepath + ".original", filepath)
 
     def package(self):
+        self.copy("LICENSE", dst="licenses", src="../..")
         for comp in self.comps:
             self.copy(f"{comp}/include/*.hpp", dst=f"include/{comp}", keep_path=False)
         self.copy("*.dll", dst="lib", keep_path=False)
