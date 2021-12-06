@@ -194,10 +194,12 @@ static Architecture random_architecture() {
  * @param[in] cu compliation pass having been applied to \p c0
  */
 static void check_correctness(const Circuit &c0, const CompilationUnit &cu) {
+  RC_LOG() << "In Check Correctness" << std::endl;
   const Circuit &c1 = cu.get_circ_ref();
   const unit_bimap_t &initial_map = cu.get_initial_map_ref();
   const unit_bimap_t &final_map = cu.get_final_map_ref();
   // Account for reordering in the initial and final maps.
+
   std::map<unsigned, unsigned> ini, inv_fin;
   std::map<UnitID, unsigned> c0_idx, c1_idx;
   unsigned i;
@@ -214,7 +216,7 @@ static void check_correctness(const Circuit &c0, const CompilationUnit &cu) {
   for (const auto &pair : initial_map.left) {
     ini.insert({c0_idx[pair.first], c1_idx[pair.second]});
   }
-  for (const auto &pair : final_map.left) {
+  for (const auto &pair : final_map.left) { 
     inv_fin.insert({c1_idx[pair.second], c0_idx[pair.first]});
   }
   Eigen::PermutationMatrix<Eigen::Dynamic> m_ini = lift_perm(ini),
@@ -332,6 +334,20 @@ bool check_mapping() {
           }
         }
         RC_LOG() << std::endl;
+        RC_LOG() << "Circuit (" << c1.n_qubits() << " qubits, " << c1.n_gates()
+                 << " gates): " << c1;
+
+
+        const unit_bimap_t &initial_map = cu.get_initial_map_ref();
+        const unit_bimap_t &final_map = cu.get_final_map_ref();
+        RC_LOG() << "Initial Map:" << std::endl;
+        for(const auto& x : initial_map.left){
+          RC_LOG() << x.first.repr() << " " << x.second.repr() << std::endl;
+        }
+        RC_LOG() << "Final Map:" << std::endl;
+        for(const auto& x : final_map.left){
+          RC_LOG() << x.first.repr() << " " << x.second.repr() << std::endl;
+        }
         if (applied) {
           check_correctness(c, cu);
         } else {
