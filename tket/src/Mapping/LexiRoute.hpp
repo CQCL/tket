@@ -61,16 +61,6 @@ class LexiRoute {
   void set_interacting_uids(bool assigned_only = false);
 
   /**
-   * Merges the qubit paths of "merge" and "ancilla" in mapping frontier circuit
-   * such that the output of the final ancilla vertex leads into the input of
-   * the first merge vertex.
-   *
-   * @param merge UnitID to which ancilla path is prepended
-   * @param ancilla UnitID of ancilla opeartions
-   */
-  void merge_with_ancilla(const UnitID& merge, const UnitID& ancilla);
-
-  /**
    * If there is some "free" Node in Architecture at distance "distances" on
    * the connectivity graph, assign (relable) UnitID assignee to it. "free"
    * => not in Circuit. If no unassigned node at distances from root, return
