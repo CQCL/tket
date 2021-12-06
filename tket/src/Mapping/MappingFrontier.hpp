@@ -1,7 +1,7 @@
 #ifndef _TKET_MappingFrontier_H_
 #define _TKET_MappingFrontier_H_
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Utils/BiMapHeaders.hpp"
 #include "Utils/UnitID.hpp"
@@ -128,7 +128,6 @@ struct MappingFrontier {
    */
   void add_ancilla(const UnitID& ancilla);
 
-
   /**
    * merge_ancilla
    * Rewires this->circuit_.dag such that in wire to ancilla Output vertex
@@ -137,8 +136,7 @@ struct MappingFrontier {
    * @param merge UnitID to which ancilla path is prepended
    * @param ancilla UnitID of ancilla opeartions
    */
-   void merge_ancilla(const UnitID& merge, const UnitID& ancilla);
-
+  void merge_ancilla(const UnitID& merge, const UnitID& ancilla);
 
   /**
    * Assigns the quantum_boundary_ attribute to that passed to method.

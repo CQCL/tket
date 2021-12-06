@@ -1,7 +1,7 @@
 #ifndef _TKET_TokenSwapping_ArchitectureMapping_H_
 #define _TKET_TokenSwapping_ArchitectureMapping_H_
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "TSAUtils/SwapFunctions.hpp"
 
 namespace tket {

@@ -6,7 +6,7 @@
 #include <utility>
 #include <vector>
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Circuit/Circuit.hpp"
 
 namespace tket {
