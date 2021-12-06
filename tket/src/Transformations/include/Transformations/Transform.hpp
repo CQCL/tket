@@ -24,7 +24,6 @@
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Utils/Json.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 #include "Utils/PauliStrings.hpp"
 
 namespace tket {
