@@ -176,6 +176,8 @@ jobs:
         conan profile new tket --detect --force
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
+    - name: Install boost
+      run: conan install --profile=tket boost/1.77.0@ --build=missing
     - name: Build symengine
       run: conan create --profile=tket recipes/symengine
     - name: Build tket
