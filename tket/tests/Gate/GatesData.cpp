@@ -68,6 +68,9 @@ static GatesData get_data() {
       OpType::PhaseGadget,  // variable number of qubits
       OpType::XXPhase3,
   };
+  data.input_data[3][2] = {
+      OpType::NPhasedX,  // variable number of qubits
+  };
   data.input_data[4][0] = {
       OpType::CnX,  // variable number of qubits
   };
@@ -77,6 +80,7 @@ static GatesData get_data() {
   };
   data.min_number_of_qubits_for_variable_qubit_type[OpType::CnX] = 1;
   data.min_number_of_qubits_for_variable_qubit_type[OpType::CnRy] = 1;
+  data.min_number_of_qubits_for_variable_qubit_type[OpType::NPhasedX] = 0;
   data.min_number_of_qubits_for_variable_qubit_type[OpType::PhaseGadget] = 0;
   return data;
 }

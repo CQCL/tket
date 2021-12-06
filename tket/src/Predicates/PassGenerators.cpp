@@ -23,6 +23,7 @@
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassLibrary.hpp"
 #include "Predicates/Predicates.hpp"
+#include "Routing/Placement.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 
@@ -136,7 +137,19 @@ PassPtr gen_rename_qubits_pass(const std::map<Qubit, Qubit>& qm) {
 
 PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
   Transform::Transformation trans = [=](Circuit& circ) {
-    return placement_ptr->place(circ);
+    // Fall back to line placement if graph placement fails
+    bool changed;
+    try {
+      changed = placement_ptr->place(circ);
+    } catch (const std::runtime_error& e) {
+      tket_log()->warn(fmt::format(
+          "PlacementPass failed with message: {} Fall back to LinePlacement.",
+          e.what()));
+      PlacementPtr line_placement_ptr = std::make_shared<LinePlacement>(
+          placement_ptr->get_architecture_ref());
+      changed = line_placement_ptr->place(circ);
+    }
+    return changed;
   };
   Transform t = Transform(trans);
   PredicatePtr twoqbpred = std::make_shared<MaxTwoQubitGatesPredicate>();

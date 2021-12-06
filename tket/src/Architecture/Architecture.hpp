@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Architecture_H_
-#define _TKET_Architecture_H_
+#pragma once
 
 #include <iostream>
 #include <numeric>
@@ -175,5 +174,3 @@ int tri_lexicographical_comparison(
     const dist_vec &dist1, const dist_vec &dist2);
 
 }  // namespace tket
-
-#endif

@@ -654,6 +654,15 @@ Circuit PhasedISWAP_using_CX(Expr p, Expr t) {
   return c;
 }
 
+Circuit NPhasedX_using_CX(
+    unsigned int number_of_qubits, Expr alpha, Expr beta) {
+  Circuit c(number_of_qubits);
+  for (unsigned int i = 0; i < number_of_qubits; ++i) {
+    c.add_op<unsigned>(OpType::PhasedX, {alpha, beta}, {i});
+  }
+  return c;
+}
+
 }  // namespace CircPool
 
 }  // namespace tket

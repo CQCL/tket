@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_PhasePoly_H_
-#define _TKET_PhasePoly_H_
+#pragma once
 #include "Circuit/Boxes.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
@@ -137,4 +136,3 @@ class CircToPhasePolyConversion {
 };
 
 }  // namespace tket
-#endif  // PhasePoly_H_

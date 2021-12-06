@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _CQC_TKET_SIMULATION_GateUnitaryMatrixVariableQubits_HPP_
-#define _CQC_TKET_SIMULATION_GateUnitaryMatrixVariableQubits_HPP_
+#pragma once
 
 #include "OpType/OpType.hpp"
 #include "Utils/MatrixAnalysis.hpp"
@@ -48,4 +47,3 @@ class GateUnitaryMatrixVariableQubits {
 
 }  // namespace internal
 }  // namespace tket
-#endif

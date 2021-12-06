@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_ThreeQubitConversion_H_
-#define _TKET_ThreeQubitConversion_H_
+#pragma once
 
 #include "Circuit.hpp"
 #include "Utils/EigenConfig.hpp"
@@ -45,5 +44,3 @@ Circuit three_qubit_synthesis(const Eigen::MatrixXcd &U);
 Eigen::MatrixXcd get_3q_unitary(const Circuit &c);
 
 }  // namespace tket
-
-#endif

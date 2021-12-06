@@ -47,9 +47,9 @@ void add_latex_for_command(LatexContext& context, const Command& command) {
       }
       if (op->get_type() == OpType::CnRy) {
         lines.at(target_index).buffer
-            << "\\gate{"
+            << "\\gate{\\text{"
             << get_op_ptr(OpType::Ry, op->get_params())->get_name(true)
-            << "} & ";
+            << "}} & ";
       } else {
         lines.at(target_index).buffer << "\\targ{} & ";
       }
@@ -145,7 +145,8 @@ void add_latex_for_command(LatexContext& context, const Command& command) {
       lines.at(control_index).buffer << "\\ctrl{"
                                      << target_index - control_index << "} & ";
       lines.at(control_index).depth++;
-      lines.at(target_index).buffer << "\\gate{" << gate_name.str() << "} & ";
+      lines.at(target_index).buffer << "\\gate{\\text{" << gate_name.str()
+                                    << "}} & ";
       lines.at(target_index).depth++;
       break;
     }
@@ -240,7 +241,7 @@ void add_latex_for_command(LatexContext& context, const Command& command) {
         if (index > max_index) max_index = index;
       }
       lines.at(min_index).buffer << "\\gate[" << (max_index + 1 - min_index)
-                                 << "]{" + op->get_name(true) + "} & ";
+                                 << "]{\\text{" + op->get_name(true) + "}} & ";
       lines.at(min_index).depth++;
       for (const UnitID& arg : args) {
         unsigned index = line_ids.at(arg);

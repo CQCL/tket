@@ -56,6 +56,14 @@ std::optional<double> eval_expr(const Expr& e) {
   }
 }
 
+std::optional<Complex> eval_expr_c(const Expr& e) {
+  if (!SymEngine::free_symbols(e).empty()) {
+    return std::nullopt;
+  } else {
+    return SymEngine::eval_complex_double(e);
+  }
+}
+
 std::optional<double> eval_expr_mod(const Expr& e, unsigned n) {
   std::optional<double> reduced_val = eval_expr(e);
   if (!reduced_val) return std::nullopt;

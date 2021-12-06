@@ -16,11 +16,13 @@
 
 #include <cmath>
 #include <complex>
+#include <vector>
 
 #include "CircPool.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Gate/Rotation.hpp"
 #include "Utils/EigenConfig.hpp"
+#include "Utils/Expression.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"
 
@@ -374,6 +376,31 @@ Circuit pauli_gadget(
   return circ;
 }
 
+#define CNXTYPE(n) \
+  (((n) == 2) ? OpType::CX : ((n) == 3) ? OpType::CCX : OpType::CnX)
+
+/**
+ * Construct a circuit representing CnU1 using U1, CX, CCX and CnX gates.
+ */
+static Circuit CnU1(unsigned n_controls, Expr lambda) {
+  // CnU1(x) decomposes recursively as:
+  // C{n-1}U1(x/2)[ctrls]; U1(x/2)[tgt]; CnX; U1(-x/2)[tgt]; CnX
+  // We don't actually use recursion; just iterate starting with the first U1:
+  Circuit c(n_controls + 1);
+  Expr x = lambda / (1u << n_controls);
+  c.add_op<unsigned>(OpType::U1, x, {0});
+  std::vector<unsigned> cnx_qbs = {0};
+  for (unsigned i = 0; i < n_controls; i++) {
+    cnx_qbs.push_back(i + 1);
+    c.add_op<unsigned>(OpType::U1, x, {i + 1});
+    c.add_op<unsigned>(CNXTYPE(i + 2), cnx_qbs);
+    c.add_op<unsigned>(OpType::U1, -x, {i + 1});
+    c.add_op<unsigned>(CNXTYPE(i + 2), cnx_qbs);
+    x *= 2;
+  }
+  return c;
+}
+
 Circuit with_controls(const Circuit &c, unsigned n_controls) {
   if (c.n_bits() != 0 || !c.is_simple()) {
     throw CircuitInvalidity("Only default qubit register allowed");
@@ -505,6 +532,9 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
   c1.remove_vertices(
       bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
 
+  // Capture the phase. We may adjust this during replacements below.
+  Expr a = c1.get_phase();
+
   // 2. Replace all gates with controlled versions
   Circuit c2(n_controls + c_n_qubits);
   for (Circuit::CommandIterator cit = c1.begin(); cit != c1.end(); ++cit) {
@@ -522,8 +552,6 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
     OpType optype = op->get_type();
     std::vector<Expr> params = op->get_params();
     switch (optype) {
-#define CNXTYPE(n) \
-  (((n) == 2) ? OpType::CX : ((n) == 3) ? OpType::CCX : OpType::CnX)
       case OpType::noop:
         break;
       case OpType::X:
@@ -543,27 +571,13 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
         Expr lambda = tk1_angles[2] + 0.5;
         Expr t = tk1_angles[3] - 0.5 * (tk1_angles[0] + tk1_angles[2]);
         // Operation is U3(theta, phi, lambda) + phase t.
-        // Construct the controlled version of this, by extending
-        // the standard CU3-to-CX decomposition, merging the phase
-        // into the first U1 and and noting that CnU1(x) decomposes
-        // recursively as:
-        // C{n-1}U1(x/2)[ctrls];
-        // U1(x/2)[tgt]; CnX; U1(-x/2)[tgt]; CnX
-        // We don't actually use recursion; just iterate starting
-        // with the first U1:
-        Expr x = (t + (lambda + phi) / 2) / std::pow(2, n_controls - 1);
-        c2.add_op<Qubit>(OpType::U1, x, {new_args[0]});
-        qubit_vector_t cnx_qbs = {new_args[0]};
-        for (unsigned i = 0; i < n_controls - 1; i++) {
-          cnx_qbs.push_back(new_args[i + 1]);
-          c2.add_op<Qubit>(OpType::U1, x, {new_args[i + 1]});
-          c2.add_op<Qubit>(CNXTYPE(i + 2), cnx_qbs);
-          c2.add_op<Qubit>(OpType::U1, -x, {new_args[i + 1]});
-          c2.add_op<Qubit>(CNXTYPE(i + 2), cnx_qbs);
-          x *= 2;
-        }
-        // Phew. The rest of the CnU3 decomposition is straightforward.
+        // First absorb t in the overall phase.
+        a += t;
+        // Construct a multi-controlled U3, by extending the standard CU3-to-CX
+        // decomposition.
         Qubit target = new_args[n_controls];
+        Circuit cnu1 = CnU1(n_controls - 1, 0.5 * (lambda + phi));
+        c2.append(cnu1);
         c2.add_op<Qubit>(OpType::U1, 0.5 * (lambda - phi), {target});
         c2.add_op<Qubit>(CNXTYPE(n_new_args), new_args);
         c2.add_op<Qubit>(
@@ -571,17 +585,18 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
         c2.add_op<Qubit>(CNXTYPE(n_new_args), new_args);
         c2.add_op<Qubit>(OpType::U3, {0.5 * theta, phi, 0}, {target});
       } break;
-#undef CNXTYPE
     }
   }
 
-  // 3. Account for phase
-  Expr a = c1.get_phase();
+  // 3. Account for phase by appending a CnU1 to the control qubits.
   if (!equiv_0(a)) {
-    c2.add_op<unsigned>(OpType::U1, a, {0});
+    Circuit cnu1 = CnU1(n_controls - 1, a);
+    c2.append(cnu1);
   }
 
   return c2;
 }
+
+#undef CNXTYPE
 
 }  // namespace tket

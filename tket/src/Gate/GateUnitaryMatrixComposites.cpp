@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <utility>
+
 #include "GateUnitaryMatrixImplementations.hpp"
 #include "GateUnitaryMatrixUtils.hpp"
 #include "Utils/Constants.hpp"
@@ -74,6 +76,17 @@ Eigen::Matrix2cd GateUnitaryMatrixImplementations::PhasedX(
     double alpha, double beta) {
   const auto rz_beta_matr = Rz(beta);
   return rz_beta_matr * Rx(alpha) * rz_beta_matr.conjugate();
+}
+
+Eigen::MatrixXcd GateUnitaryMatrixImplementations::NPhasedX(
+    unsigned number_of_qubits, double alpha, double beta) {
+  const auto phasedx_matr = PhasedX(alpha, beta);
+  Eigen::MatrixXcd U = Eigen::MatrixXcd::Identity(1, 1);
+  for (unsigned i = 0; i < number_of_qubits; i++) {
+    Eigen::MatrixXcd V = Eigen::kroneckerProduct(phasedx_matr, U);
+    U = std::move(V);
+  }
+  return U;
 }
 
 Eigen::MatrixXcd GateUnitaryMatrixImplementations::CnRy(

@@ -40,13 +40,22 @@ jobs:
     name: Build macos wheels
     runs-on: macos-11
     steps:
-    - uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: '12.5'
     - uses: actions/checkout@v2
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - name: Get current time
+      uses: srfrnk/current-time@v1.1.0
+      id: current_time
+      with:
+        format: YYYYMMDDHHmmss
+    - name: Cache conan data
+      uses: actions/cache@v2
+      with:
+        path: ~/.conan
+        key: ${{ runner.os }}-tket-conan-${{ steps.current_time.outputs.formattedTime }}
+        restore-keys: |
+          ${{ runner.os }}-tket-conan-
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
       with:
@@ -55,8 +64,10 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect --force
-        conan config set general.revisions_enabled=1
-        conan create --profile=tket --build=missing recipes/tket
+        conan create --profile=tket recipes/symengine
+        conan create --profile=tket recipes/tket
+    - name: Install pybind11
+      run: conan create --profile=tket recipes/pybind11
     - name: Build wheel (3.7)
       run: .github/workflows/build_macos_wheel
     - name: Set up Python 3.8
@@ -92,9 +103,10 @@ jobs:
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
         conan profile new tket --detect --force
-        conan config set general.revisions_enabled=1
         conan install --profile=tket boost/1.77.0@ --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+        conan create --profile=tket recipes/symengine -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
         conan create --profile=tket recipes/tket -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+        conan create --profile=tket recipes/pybind11
         .github/workflows/build_macos_m1_wheel
         pyenv shell tket-3.9
         .github/workflows/build_macos_m1_wheel
@@ -134,7 +146,6 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect
-        conan config set general.revisions_enabled=1
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: Cache tket build
@@ -142,11 +153,14 @@ jobs:
       uses: actions/cache@v2
       with:
         path: C:\Users\runneradmin\.conan\data\tket
-        key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-5
+        key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-7
+    - name: Build symengine
+      run: conan create --profile=tket recipes/symengine
     - name: Build tket
       if: steps.cache-tket.outputs.cache-hit != 'true'
-      run: |
-        conan create --profile=tket recipes/tket
+      run: conan create --profile=tket recipes/tket
+    - name: Install pybind11
+      run: conan create --profile=tket recipes/pybind11
     - name: Set up Python 3.7
       uses: actions/setup-python@v2
       with:
@@ -409,7 +423,7 @@ jobs:
     name: Publish docs
     needs: build_docs
     concurrency: gh_pages
-    if: github.event_name == 'release'
+    if: github.event_name == 'release' && github.event.release.prerelease != true
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2

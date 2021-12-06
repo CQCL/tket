@@ -18,7 +18,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
@@ -275,7 +275,16 @@ PYBIND11_MODULE(routing, m) {
                  "\n\n:param circuit: The circuit the maps are designed for."
                  "\n:return: list of dictionaries mapping " CLSOBJS(Qubit) " "
                  "to " CLSOBJS(Node),
-                 py::arg("circuit"));
+                 py::arg("circuit"))
+            .def(
+                "to_dict", [](const PlacementPtr &placement) { return json(placement); },
+                "Return a JSON serializable dict representation of "
+                "the Placement.\n"
+                ":return: dict representing the Placement.")
+            .def_static(
+                "from_dict", [](const json &j) { return j.get<PlacementPtr>(); },
+                "Construct Placement instance from JSON serializable "
+                "dict representation of the Placement.");
 
   py::class_<LinePlacement, std::shared_ptr<LinePlacement>, Placement>(
       m, "LinePlacement",

@@ -41,6 +41,8 @@ from pytket.transform import Transform  # type: ignore
 import numpy as np
 import pytest  # type: ignore
 
+import json
+
 
 def test_architectures() -> None:
     basic_index_coupling = [(0, 1), (2, 1), (2, 3), (4, 3)]
@@ -136,6 +138,22 @@ def test_placements() -> None:
     assert base_placed.valid_connectivity(test_architecture, False)
     assert line_placed.valid_connectivity(test_architecture, False)
     assert graph_placed.valid_connectivity(test_architecture, False)
+
+
+def test_placements_serialization() -> None:
+    with open(
+        Path(__file__).resolve().parent / "json_test_files" / "placements.json", "r"
+    ) as f:
+        dict = json.load(f)
+        base_pl_serial = dict["base_placement"]
+        line_pl_serial = dict["line_placement"]
+        graph_pl_serial = dict["graph_placement"]
+        noise_pl_serial = dict["noise_placement"]
+
+    assert Placement.from_dict(base_pl_serial).to_dict() == base_pl_serial
+    assert LinePlacement.from_dict(line_pl_serial).to_dict() == line_pl_serial
+    assert GraphPlacement.from_dict(graph_pl_serial).to_dict() == graph_pl_serial
+    assert NoiseAwarePlacement.from_dict(noise_pl_serial).to_dict() == noise_pl_serial
 
 
 def test_placement_config() -> None:

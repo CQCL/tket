@@ -343,6 +343,11 @@ PYBIND11_MODULE(passes, m) {
       "DecomposeMultiQubitsCX", &DecomposeMultiQubitsCX,
       "Converts all multi-qubit gates into CX and single-qubit gates.");
   m.def(
+      "GlobalisePhasedX", &GlobalisePhasedX,
+      "Replaces every occurence of PhasedX or NPhasedX gates with NPhasedX "
+      "gates acting on all qubits, and correcting rotation gates, so that the "
+      "GlobalPhasedXPredicate is satisfied.");
+  m.def(
       "DecomposeSingleQubitsTK1", &DecomposeSingleQubitsTK1,
       "Converts all single-qubit gates into TK1 gates.");
   m.def(
@@ -535,16 +540,16 @@ PYBIND11_MODULE(passes, m) {
       ":py:class:`Architecture` is used for the routing. "
       "The direction of the edges is ignored. The placement used "
       "is GraphPlacement. This pass can take a few parameters for the "
-      "routing, described below.\nNB: The circuit needs to have at most as "
+      "routing, described below:"
+      "\n\n- (unsigned) lookahead=1: parameter for the recursive iteration"
+      "\n- (CNotSynthType) cnotsynthtype=CNotSynthType.Rec: CNOT synthesis type"
+      "\n\nNB: The circuit needs to have at most as "
       "many qubits as the architecture has nodes. The resulting circuit will "
       "always have the same number of qubits as the architecture has nodes, "
-      "even if the input circuit had fewer.\n:param arc: The "
-      "architecture used for connectivity information."
-      "\n:param \\**kwargs: Parameters for routing:\n(unsigned) "
-      "lookahead=1: parameter for the recursive iteration\n"
-      "(CNotSynthType) cnotsynthtype=CNotSynthType.Rec: "
-      "type of the CNOT synthesis\n:return: a pass to perform the "
-      "remapping\n",
+      "even if the input circuit had fewer."
+      "\n\n:param arc: target architecture"
+      "\n:param \\**kwargs: parameters for routing (described above)"
+      "\n:return: a pass to perform the remapping",
       py::arg("arc"));
 
   m.def(
