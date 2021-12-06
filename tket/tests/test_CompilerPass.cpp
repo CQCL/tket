@@ -89,6 +89,58 @@ SCENARIO("Run some basic Compiler Passes") {
   }
 }
 
+SCENARIO("Test that qubits added via add_qubit are tracked.") {
+  GIVEN("Adding qubit via custom Pass.") {
+    Circuit circ(2, 1);
+    Qubit weird_qb("weird_q", 3);
+    Qubit weird_qb2("weird_q", 5);
+    Qubit weird_qb3("weird_qb", 7);
+    Bit weird_cb("weird_c", 3, 1);
+    circ.add_qubit(weird_qb);
+    circ.add_qubit(weird_qb2);
+    circ.add_bit(weird_cb);
+
+    unit_bimap_t* ubmap_initial_missing = circ.unit_bimaps_.initial;
+    REQUIRE(!ubmap_initial_missing);
+
+    CompilationUnit cu(circ);
+    // At initialisation, circuit bimaps are set to nullptr
+    unit_bimap_t* ubmap_initial = circ.unit_bimaps_.initial;
+    REQUIRE(!ubmap_initial);
+
+    // circuit bimaps property wont be changed, nor will compilation unit
+    circ.add_qubit(weird_qb3);
+    unit_bimap_t cu_initial = cu.get_initial_map_ref();
+
+    auto it = cu_initial.left.find(weird_qb3);
+    REQUIRE(it == cu_initial.left.end());
+
+    // Instead add transform for running it
+    Transform t = Transform([](Circuit& circ) {
+      Qubit weird_qb4("weird_qb", 9);
+      circ.add_qubit(weird_qb4);
+      return true;
+    });
+
+    // convert to pass
+    PredicatePtrMap s_ps;
+    PostConditions postcon;
+    auto pass =
+        std::make_shared<StandardPass>(s_ps, t, postcon, nlohmann::json{});
+
+    // Comparison qubit
+    Qubit weird_qb4("weird_qb", 9);
+    pass->apply(cu);
+    cu_initial = cu.get_initial_map_ref();
+    // check all maps to show weird_qb4 is mapped to self in both initial and
+    // final
+    it = cu_initial.left.find(weird_qb4);
+    REQUIRE(it != cu_initial.left.end());
+    auto cu_final = cu.get_final_map_ref();
+    it = cu_final.left.find(weird_qb4);
+    REQUIRE(it != cu_final.left.end());
+  }
+}
 SCENARIO("Test making (mostly routing) passes using PassGenerators") {
   GIVEN("Correct pass for Predicate") {
     SquareGrid grid(1, 5);
