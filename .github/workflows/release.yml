@@ -64,6 +64,7 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect --force
+        conan install --profile=tket boost/1.77.0@ --build=missing
         conan create --profile=tket recipes/symengine
         conan create --profile=tket recipes/tket
     - name: Install pybind11
