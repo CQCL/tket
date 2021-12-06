@@ -131,8 +131,25 @@ class UnitaryTableau {
   static UnitaryTableau compose(
       const UnitaryTableau& first, const UnitaryTableau& second);
 
+  /**
+   * Gives the UnitaryTableau corresponding to the inverse (dagger) or transpose
+   * unitary. This is distinct from simply transposing the binary matrix
+   * representation. Takes time O(N^3) for N qubits.
+   */
+  UnitaryTableau dagger() const;
+  UnitaryTableau transpose() const;
+
+  /**
+   * Gives the UnitaryTableau corresponding to the complex conjugate unitary.
+   * This calls conjugate() on the underlying SymplecticTableau.
+   */
+  UnitaryTableau conjugate() const;
+
   friend UnitaryTableau circuit_to_unitary_tableau(const Circuit& circ);
   friend Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab);
+
+  friend void to_json(nlohmann::json& j, const UnitaryTableau& tab);
+  friend void from_json(const nlohmann::json& j, UnitaryTableau& tab);
 
   friend std::ostream& operator<<(std::ostream& os, const UnitaryTableau& tab);
   bool operator==(const UnitaryTableau& other) const;
@@ -147,6 +164,8 @@ class UnitaryTableau {
   /** Map from qubit IDs to their row/column index in tableau */
   boost::bimap<Qubit, unsigned> qubits_;
 };
+
+JSON_DECL(UnitaryTableau)
 
 std::ostream& operator<<(std::ostream& os, const UnitaryTableau& tab);
 

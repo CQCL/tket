@@ -53,7 +53,7 @@ UnitaryTableau::UnitaryTableau(
   MatrixXb xmat(2 * n_qubits, n_qubits);
   xmat << xx, zx;
   MatrixXb zmat(2 * n_qubits, n_qubits);
-  zmat << zx, zz;
+  zmat << xz, zz;
   VectorXb phase(2 * n_qubits);
   phase << xph, zph;
   tab_ = SymplecticTableau(xmat, zmat, phase);
@@ -449,6 +449,74 @@ UnitaryTableau UnitaryTableau::compose(
   return result;
 }
 
+static const std::map<
+    std::pair<BoolPauli, BoolPauli>, std::pair<BoolPauli, BoolPauli>>&
+invert_cell_map() {
+  static const auto inv_map = []() {
+    const BoolPauli I = {false, false};
+    const BoolPauli X = {true, false};
+    const BoolPauli Y = {true, true};
+    const BoolPauli Z = {false, true};
+    return std::map<
+        std::pair<BoolPauli, BoolPauli>, std::pair<BoolPauli, BoolPauli>>{
+        {{I, I}, {I, I}}, {{I, X}, {I, X}}, {{I, Y}, {X, X}}, {{I, Z}, {X, I}},
+        {{X, I}, {I, Z}}, {{X, X}, {I, Y}}, {{X, Y}, {X, Y}}, {{X, Z}, {X, Z}},
+        {{Y, I}, {Z, Z}}, {{Y, X}, {Z, Y}}, {{Y, Y}, {Y, Y}}, {{Y, Z}, {Y, Z}},
+        {{Z, I}, {Z, I}}, {{Z, X}, {Z, X}}, {{Z, Y}, {Y, X}}, {{Z, Z}, {Y, I}},
+    };
+  }();
+  return inv_map;
+}
+
+UnitaryTableau UnitaryTableau::dagger() const {
+  // This method is following Craig Gidney's tableau inversion method
+  // https://algassert.com/post/2002
+  unsigned nqb = qubits_.size();
+  MatrixXb dxx = MatrixXb::Zero(nqb, nqb);
+  MatrixXb dxz = MatrixXb::Zero(nqb, nqb);
+  VectorXb dxph = VectorXb::Zero(nqb);
+  MatrixXb dzx = MatrixXb::Zero(nqb, nqb);
+  MatrixXb dzz = MatrixXb::Zero(nqb, nqb);
+  VectorXb dzph = VectorXb::Zero(nqb);
+  for (unsigned i = 0; i < nqb; ++i) {
+    for (unsigned j = 0; j < nqb; ++j) {
+      // Take effect of some input on some output and invert
+      auto inv_cell = invert_cell_map().at(
+          {BoolPauli{tab_.xmat_(i, j), tab_.zmat_(i, j)},
+           BoolPauli{tab_.xmat_(i + nqb, j), tab_.zmat_(i + nqb, j)}});
+      // Transpose tableau and fill in cell
+      dxx(j, i) = inv_cell.first.x;
+      dxz(j, i) = inv_cell.first.z;
+      dzx(j, i) = inv_cell.second.x;
+      dzz(j, i) = inv_cell.second.z;
+    }
+  }
+
+  UnitaryTableau dag(dxx, dxz, dxph, dzx, dzz, dzph);
+  dag.qubits_ = qubits_;
+
+  // Correct phases
+  for (unsigned i = 0; i < nqb; ++i) {
+    QubitPauliTensor xr = dag.get_xrow(qubits_.right.at(i));
+    dag.tab_.phase_(i) = get_row_product(xr).coeff == -1.;
+    QubitPauliTensor zr = dag.get_zrow(qubits_.right.at(i));
+    dag.tab_.phase_(i + nqb) = get_row_product(zr).coeff == -1.;
+  }
+
+  return dag;
+}
+
+UnitaryTableau UnitaryTableau::transpose() const {
+  return dagger().conjugate();
+}
+
+UnitaryTableau UnitaryTableau::conjugate() const {
+  UnitaryTableau conj(0);
+  conj.tab_ = tab_.conjugate();
+  conj.qubits_ = qubits_;
+  return conj;
+}
+
 std::ostream& operator<<(std::ostream& os, const UnitaryTableau& tab) {
   unsigned nqs = tab.qubits_.size();
   for (unsigned i = 0; i < nqs; ++i) {
@@ -487,6 +555,30 @@ bool UnitaryTableau::operator==(const UnitaryTableau& other) const {
   }
 
   return true;
+}
+
+void to_json(nlohmann::json& j, const UnitaryTableau& tab) {
+  j["tab"] = tab.tab_;
+  qubit_vector_t qbs;
+  for (unsigned i = 0; i < tab.qubits_.size(); ++i) {
+    qbs.push_back(tab.qubits_.right.at(i));
+  }
+  j["qubits"] = qbs;
+}
+
+void from_json(const nlohmann::json& j, UnitaryTableau& tab) {
+  j.at("tab").get_to(tab.tab_);
+  if (tab.tab_.get_n_rows() != 2 * tab.tab_.get_n_qubits())
+    throw NotValid(
+        "Size of tableau does not match requirements for UnitaryTableau.");
+  qubit_vector_t qbs = j.at("qubits").get<qubit_vector_t>();
+  if (qbs.size() != tab.tab_.get_n_qubits())
+    throw NotValid(
+        "Number of qubits in json UnitaryTableau does not match tableau size.");
+  tab.qubits_.clear();
+  for (unsigned i = 0; i < qbs.size(); ++i) {
+    tab.qubits_.insert({qbs.at(i), i});
+  }
 }
 
 }  // namespace tket

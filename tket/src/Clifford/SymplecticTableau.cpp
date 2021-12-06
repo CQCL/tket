@@ -19,15 +19,14 @@
 
 namespace tket {
 
-bool SymplecticTableau::BoolPauli::operator<(
-    const SymplecticTableau::BoolPauli &other) const {
+bool BoolPauli::operator<(const BoolPauli &other) const {
   if (x == other.x) {
     return z < other.z;
   }
   return x < other.x;
 }
 
-Pauli SymplecticTableau::BoolPauli::to_pauli() const {
+Pauli BoolPauli::to_pauli() const {
   if (x) {
     if (z)
       return Pauli::Y;
@@ -39,10 +38,8 @@ Pauli SymplecticTableau::BoolPauli::to_pauli() const {
     return Pauli::I;
 }
 
-const std::map<
-    std::pair<SymplecticTableau::BoolPauli, SymplecticTableau::BoolPauli>,
-    std::pair<SymplecticTableau::BoolPauli, Complex>>
-    SymplecticTableau::mult_lut = {
+const std::map<std::pair<BoolPauli, BoolPauli>, std::pair<BoolPauli, Complex>>
+    BoolPauli::mult_lut = {
         // {{{x1,z1},{x2,z2}}, {{x,z},ph}}
         {{{false, false}, {false, false}}, {{false, false}, 1.}},
         {{{false, false}, {false, true}}, {{false, true}, 1.}},
@@ -329,6 +326,18 @@ unsigned SymplecticTableau::rank() const {
   return lu.rank();
 }
 
+SymplecticTableau SymplecticTableau::conjugate() const {
+  SymplecticTableau conj(*this);
+  for (unsigned i = 0; i < n_rows_; ++i) {
+    unsigned sum = 0;
+    for (unsigned j = 0; j < n_qubits_; ++j) {
+      if (xmat_(i, j) && zmat_(i, j)) ++sum;
+    }
+    if (sum % 2 == 1) conj.phase_(i) ^= true;
+  }
+  return conj;
+}
+
 void SymplecticTableau::row_mult(
     const MatrixXb::RowXpr &xa, const MatrixXb::RowXpr &za, const bool &pa,
     const MatrixXb::RowXpr &xb, const MatrixXb::RowXpr &zb, const bool &pb,
@@ -337,7 +346,7 @@ void SymplecticTableau::row_mult(
   if (pb) phase *= -1;
   for (unsigned i = 0; i < n_qubits_; i++) {
     std::pair<BoolPauli, Complex> res =
-        mult_lut.at({{xa(i), za(i)}, {xb(i), zb(i)}});
+        BoolPauli::mult_lut.at({{xa(i), za(i)}, {xb(i), zb(i)}});
     xw(i) = res.first.x;
     zw(i) = res.first.z;
     phase *= res.second;
@@ -352,6 +361,18 @@ void SymplecticTableau::col_mult(
     pw(i) = pw(i) ^ (a(i) && (b(i) ^ flip));
     w(i) = a(i) ^ b(i);
   }
+}
+
+void to_json(nlohmann::json &j, const SymplecticTableau &tab) {
+  j["xmat"] = tab.xmat_;
+  j["zmat"] = tab.zmat_;
+  j["phase"] = tab.phase_;
+}
+
+void from_json(const nlohmann::json &j, SymplecticTableau &tab) {
+  tab = SymplecticTableau(
+      j.at("xmat").get<MatrixXb>(), j.at("zmat").get<MatrixXb>(),
+      j.at("phase").get<VectorXb>());
 }
 
 }  // namespace tket

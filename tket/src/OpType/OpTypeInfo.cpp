@@ -146,7 +146,9 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
            {"ExplicitModifier", "ExplicitModifier", {}, std::nullopt}},
           {OpType::ClassicalExpBox,
            {"ClassicalExpBox", "ClassicalExpBox", {}, std::nullopt}},
-          {OpType::MultiBit, {"MultiBit", "MultiBit", {}, std::nullopt}}});
+          {OpType::MultiBit, {"MultiBit", "MultiBit", {}, std::nullopt}},
+          {OpType::UnitaryTableauBox,
+           {"UnitaryTableauBox", "UnitaryTableauBox", {}, std::nullopt}}});
   return *opinfo;
 }
 

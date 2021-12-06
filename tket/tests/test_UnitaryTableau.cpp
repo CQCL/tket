@@ -16,6 +16,8 @@
 
 #include "Clifford/UnitaryTableau.hpp"
 #include "Converters/Converters.hpp"
+#include "Converters/UnitaryTableauBox.hpp"
+#include "testutil.hpp"
 
 namespace tket::test_UnitaryTableau {
 
@@ -183,6 +185,47 @@ SCENARIO("Synthesis of circuits from UnitaryTableau") {
     Circuit res = unitary_tableau_to_circuit(tab);
     UnitaryTableau res_tab = circuit_to_unitary_tableau(res);
     REQUIRE(res_tab == tab);
+  }
+}
+
+SCENARIO("UnitaryTableauBoxes in Circuits") {
+  GIVEN("A tableau from another circuit") {
+    Circuit inner(3);
+    add_ops_list_one_to_circuit(inner);
+    UnitaryTableau tab = circuit_to_unitary_tableau(inner);
+    Circuit circ(4);
+    Op_ptr box = std::make_shared<const UnitaryTableauBox>(tab);
+    circ.add_op<unsigned>(OpType::CZ, uvec({1, 2}));
+    circ.add_op<unsigned>(box, uvec({0, 1, 3}));
+    circ.add_op<unsigned>(OpType::CX, uvec({0, 2}));
+    Circuit correct(4);
+    correct.add_op<unsigned>(OpType::CZ, uvec({1, 2}));
+    correct.add_op<unsigned>(OpType::SWAP, uvec({2, 3}));
+    add_ops_list_one_to_circuit(correct);
+    correct.add_op<unsigned>(OpType::SWAP, uvec({2, 3}));
+    correct.add_op<unsigned>(OpType::CX, uvec({0, 2}));
+    REQUIRE(test_unitary_comparison(circ, correct, true));
+  }
+}
+
+SCENARIO("Unitary inversions") {
+  GIVEN("Some unitary tableau") {
+    Circuit inner(3);
+    add_ops_list_one_to_circuit(inner);
+    UnitaryTableau tab = circuit_to_unitary_tableau(inner);
+    Op_ptr box = std::make_shared<const UnitaryTableauBox>(tab);
+    WHEN("Dagger") {
+      Op_ptr box_dagger = box->dagger();
+      Circuit circ(3);
+      circ.add_op<unsigned>(box_dagger, uvec{0, 1, 2});
+      REQUIRE(test_unitary_comparison(circ, inner.dagger(), true));
+    }
+    WHEN("Transpose") {
+      Op_ptr box_transpose = box->transpose();
+      Circuit circ(3);
+      circ.add_op<unsigned>(box_transpose, uvec{0, 1, 2});
+      REQUIRE(test_unitary_comparison(circ, inner.transpose(), true));
+    }
   }
 }
 

@@ -501,6 +501,9 @@
         },
         "exp": {
           "$ref": "#/definitions/logicexp"
+        },
+        "tab": {
+          "$ref": "#/definitions/unitary_tableau"
         }
       },
       "required": [
@@ -643,6 +646,20 @@
               "exp"
             ]
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "UnitaryTableauBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "tab"
+            ]
+          }
         }
       ]
     },
@@ -699,6 +716,48 @@
       "required": [
         "op",
         "args"
+      ],
+      "additionalProperties": false
+    },
+    "symplectic_tableau": {
+      "type": "object",
+      "description": "Binary matrix form of a collection of Pauli strings.",
+      "properties": {
+        "xmat": {
+          "$ref": "#/definitions/matrix"
+        },
+        "zmat": {
+          "$ref": "#/definitions/matrix"
+        },
+        "phase": {
+          "$ref": "#/definitions/matrix"
+        }
+      },
+      "required": [
+        "xmat",
+        "zmat",
+        "phase"
+      ],
+      "additionalProperties": false
+    },
+    "unitary_tableau": {
+      "type": "object",
+      "description": "Binary matrix form of a stabilizer tableau for unitary Clifford circuits.",
+      "properties": {
+        "tab": {
+          "$ref": "#/definitions/symplectic_tableau"
+        },
+        "qubits": {
+          "type": "array",
+          "description": "Ordered naming of qubits in the tableau.",
+          "items": {
+            "$ref": "#/definitions/unitid"
+          }
+        }
+      },
+      "required": [
+        "tab",
+        "qubits"
       ],
       "additionalProperties": false
     }

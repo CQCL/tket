@@ -24,6 +24,32 @@ namespace tket {
 class UnitaryTableau;
 class Circuit;
 
+/**
+ * Boolean encoding of Pauli
+ * <x, z> = <false, false> ==> I
+ * <x, z> = <false, true>  ==> Z
+ * <x, z> = <true,  false> ==> X
+ * <x, z> = <true,  true>  ==> Y
+ */
+struct BoolPauli {
+  bool x;
+  bool z;
+
+  /**
+   * Lexicographic ordering by <x, z>
+   */
+  bool operator<(const BoolPauli &other) const;
+
+  Pauli to_pauli() const;
+
+  /**
+   * Look-up table for Pauli multiplication with boolean encoding
+   */
+  static const std::map<
+      std::pair<BoolPauli, BoolPauli>, std::pair<BoolPauli, Complex>>
+      mult_lut;
+};
+
 class SymplecticTableau {
   /**
    * Class to represent a tableau of Paulis via the symplectic (binary)
@@ -146,30 +172,9 @@ class SymplecticTableau {
   VectorXb phase_;
 
   /**
-   * Boolean encoding of Pauli
-   * <x, z> = <false, false> ==> I
-   * <x, z> = <false, true>  ==> Z
-   * <x, z> = <true,  false> ==> X
-   * <x, z> = <true,  true>  ==> Y
+   * Complex conjugate of the state by conjugating rows
    */
-  struct BoolPauli {
-    bool x;
-    bool z;
-
-    /**
-     * Lexicographic ordering by <x, z>
-     */
-    bool operator<(const BoolPauli &other) const;
-
-    Pauli to_pauli() const;
-  };
-
-  /**
-   * Look-up table for Pauli multiplication with boolean encoding
-   */
-  static const std::map<
-      std::pair<BoolPauli, BoolPauli>, std::pair<BoolPauli, Complex>>
-      mult_lut;
+  SymplecticTableau conjugate() const;
 
   /**
    * Helper methods for manipulating the tableau when applying gates
@@ -185,7 +190,12 @@ class SymplecticTableau {
   friend class UnitaryTableau;
   friend Circuit unitary_tableau_to_circuit(const UnitaryTableau &tab);
   friend std::ostream &operator<<(std::ostream &os, const UnitaryTableau &tab);
+
+  friend void to_json(nlohmann::json &j, const SymplecticTableau &tab);
+  friend void from_json(const nlohmann::json &j, SymplecticTableau &tab);
 };
+
+JSON_DECL(SymplecticTableau)
 
 std::ostream &operator<<(std::ostream &os, const SymplecticTableau &tab);
 

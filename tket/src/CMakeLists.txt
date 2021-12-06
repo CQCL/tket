@@ -218,6 +218,7 @@ set(TKET_SOURCES
     ${TKET_CONVERTERS_DIR}/PauliGraphConverters.cpp
     ${TKET_CONVERTERS_DIR}/Gauss.cpp
     ${TKET_CONVERTERS_DIR}/PhasePoly.cpp
+    ${TKET_CONVERTERS_DIR}/UnitaryTableauBox.cpp
     ${TKET_CONVERTERS_DIR}/UnitaryTableauConverters.cpp
 
     # Program
