@@ -48,6 +48,9 @@ pytket.circuit
 .. autoclass:: pytket._tket.circuit.Unitary2qBox
     :special-members:
     :members:
+.. autoclass:: pytket._tket.circuit.Unitary3qBox
+    :special-members:
+    :members:
 .. autoclass:: pytket._tket.circuit.ExpBox
     :special-members:
     :members:
@@ -65,7 +68,12 @@ pytket.circuit
     :members:
 .. autoclass:: pytket._tket.circuit.ClassicalExpBox
     :members:
+.. autoclass:: pytket._tket.circuit.PhasePolyBox
+    :special-members:
+    :members:
 .. autoclass:: pytket._tket.circuit.ProjectorAssertionBox
-    :members: __init__
+    :special-members:
+    :members:
 .. autoclass:: pytket._tket.circuit.StabiliserAssertionBox
-    :members: __init__
+    :special-members:
+    :members:

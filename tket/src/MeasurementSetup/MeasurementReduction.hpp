@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_MeasurementReduction_H_
-#define _TKET_MeasurementReduction_H_
+#pragma once
 
 #include "Diagonalisation/Diagonalisation.hpp"
 #include "Diagonalisation/PauliPartition.hpp"
@@ -35,5 +34,3 @@ MeasurementSetup measurement_reduction(
     CXConfigType cx_config = CXConfigType::Snake);
 
 }  // namespace tket
-
-#endif  // _TKET_MeasurementReduction_H_

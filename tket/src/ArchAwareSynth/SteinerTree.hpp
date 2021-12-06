@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_SteinerTree_H_
-#define _TKET_SteinerTree_H_
+#pragma once
 #include "Converters/Gauss.hpp"
 #include "Path.hpp"
 #include "Utils/Exceptions.hpp"
@@ -227,4 +226,3 @@ Circuit aas_CNOT_synth_SWAP(DiagMatrix &CNOT_matrix, const PathHandler &paths);
 
 }  // namespace aas
 }  // namespace tket
-#endif  //_TKET_SteinerTree_H_

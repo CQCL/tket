@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _CQC_TKET_SIMULATION_GateUnitaryMatrixImplementations_HPP_
-#define _CQC_TKET_SIMULATION_GateUnitaryMatrixImplementations_HPP_
+#pragma once
 
 #include "Utils/MatrixAnalysis.hpp"
 
@@ -103,6 +102,8 @@ struct GateUnitaryMatrixImplementations {
   static Matrix8cd XXPhase3(double alpha);
 
   static Eigen::Matrix2cd PhasedX(double alpha, double beta);
+  static Eigen::MatrixXcd NPhasedX(
+      unsigned int number_of_qubits, double alpha, double beta);
 
   // Because number_of_qubits is unrestricted, it might also be useful
   // to have a sparse version.
@@ -138,4 +139,3 @@ struct GateUnitaryMatrixImplementations {
 
 }  // namespace internal
 }  // namespace tket
-#endif

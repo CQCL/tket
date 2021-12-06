@@ -52,12 +52,13 @@ jobs:
         conan_cmd=/home/runner/.local/bin/conan
         ${conan_cmd} profile new tket --detect
         ${conan_cmd} profile update settings.compiler.libcxx=libstdc++11 tket
-        ${conan_cmd} config set general.revisions_enabled=1
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: Install ninja and ccache
       run: sudo apt-get install ninja-build ccache
+    - name: Build symengine
+      run: ${CONAN_CMD} create --profile=tket recipes/symengine
     - name: Build tket
-      run: ${CONAN_CMD} create --profile=tket --build=missing recipes/tket
+      run: ${CONAN_CMD} create --profile=tket recipes/tket
     - name: Install runtime test requirements
       run: |
         sudo apt-get install texlive texlive-latex-extra latexmk
@@ -67,6 +68,8 @@ jobs:
       run: ${CONAN_CMD} create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
       run: ${CONAN_CMD} create --profile=tket recipes/tket-proptests
+    - name: Install pybind11
+      run: ${CONAN_CMD} create --profile=tket recipes/pybind11
     - name: Set up Python 3.7
       if: github.event_name == 'push'
       uses: actions/setup-python@v2
@@ -131,9 +134,6 @@ jobs:
     env:
       PYTKET_SKIP_REGISTRATION: "true"
     steps:
-    - uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: '12.5'
     - uses: actions/checkout@v2
       with:
         fetch-depth: '0'
@@ -156,6 +156,13 @@ jobs:
         key: ${{ runner.os }}-tket-ccache-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
           ${{ runner.os }}-tket-ccache-
+    - name: Cache conan data
+      uses: actions/cache@v2
+      with:
+        path: ~/.conan
+        key: ${{ runner.os }}-tket-conan-${{ steps.current_time.outputs.formattedTime }}
+        restore-keys: |
+          ${{ runner.os }}-tket-conan-
     - name: Install ninja and ccache
       run: brew install ninja ccache
     - name: Set up Python 3.9
@@ -167,15 +174,18 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect --force
-        conan config set general.revisions_enabled=1
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
+    - name: Build symengine
+      run: conan create --profile=tket recipes/symengine
     - name: Build tket
       run: conan create --profile=tket recipes/tket
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
       run: conan create --profile=tket recipes/tket-proptests
+    - name: Install pybind11
+      run: conan create --profile=tket recipes/pybind11
     - name: Set up Python 3.7
       if: github.event_name == 'push'
       uses: actions/setup-python@v2
@@ -252,17 +262,20 @@ jobs:
       id: conan
       run: |
         conan profile new tket --detect --force
-        conan config set general.revisions_enabled=1
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
     - name: Install boost
       run: conan install --profile=tket boost/1.77.0@ --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+    - name: Build symengine
+      run: conan create --profile=tket recipes/symengine -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
     - name: Build tket
       run: conan create --profile=tket recipes/tket -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
     - name: Build and run tket proptests
       run: conan create --profile=tket recipes/tket-proptests -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+    - name: Install pybind11
+      run: conan create --profile=tket recipes/pybind11
     - name: Build pytket (3.8)
       if: github.event_name == 'pull_request' || github.event_name == 'push'
       run: |
@@ -329,7 +342,6 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect
-        conan config set general.revisions_enabled=1
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: Cache tket build
@@ -337,7 +349,9 @@ jobs:
       uses: actions/cache@v2
       with:
         path: C:\Users\runneradmin\.conan\data\tket
-        key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-11
+        key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-13
+    - name: Build symengine
+      run: conan create --profile=tket recipes/symengine
     - name: Build tket
       if: steps.cache-tket.outputs.cache-hit != 'true'
       run: conan create --profile=tket recipes/tket
@@ -345,6 +359,8 @@ jobs:
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
       run: conan create --profile=tket recipes/tket-proptests
+    - name: Install pybind11
+      run: conan create --profile=tket recipes/pybind11
     - name: Set up Python 3.7
       if: github.event_name == 'push'
       uses: actions/setup-python@v2

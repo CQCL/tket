@@ -12,22 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Assert_H_
-#define _TKET_Assert_H_
+#pragma once
 
 #include <cstdlib>
+#include <sstream>
 
 #include "TketLog.hpp"
 
 /**
  * If the condition `b` is not satisfied, log a diagnostic message and abort.
  */
-#define TKET_ASSERT(b)                                                    \
-  do {                                                                    \
-    if (!(b)) {                                                           \
-      tket::tket_log()->critical("Assertion (" #b ") failed: aborting."); \
-      std::abort();                                                       \
-    }                                                                     \
+#define TKET_ASSERT(b)                                                     \
+  do {                                                                     \
+    if (!(b)) {                                                            \
+      std::stringstream msg;                                               \
+      msg << "Assertion '" << #b << "' (" << __FILE__ << " : " << __func__ \
+          << " : " << __LINE__ << ") failed: aborting.";                   \
+      tket::tket_log()->critical(msg.str());                               \
+      std::abort();                                                        \
+    }                                                                      \
   } while (0)
-
-#endif  // _TKET_Assert_H_

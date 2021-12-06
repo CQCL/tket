@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Expression_H_
-#define _TKET_Expression_H_
+#pragma once
 
 /**
  * @file
@@ -92,6 +91,8 @@ SymSet expr_free_symbols(const Expr& e);
 SymSet expr_free_symbols(const std::vector<Expr>& es);
 
 std::optional<double> eval_expr(const Expr& e);
+
+std::optional<Complex> eval_expr_c(const Expr& e);
 
 /**
  * Evaluate an expression modulo n
@@ -197,5 +198,3 @@ std::optional<unsigned> equiv_Clifford(
     const Expr& e, unsigned n = 2, double tol = EPS);
 
 }  // namespace tket
-
-#endif  // EXPR_H_

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Simulation_BitOperations_H_
-#define _TKET_Simulation_BitOperations_H_
+#pragma once
 
 #include <cstdint>
 #include <utility>
@@ -53,4 +52,3 @@ SimUInt get_expanded_bits(const ExpansionData& expansion_data, SimUInt bits);
 }  // namespace internal
 }  // namespace tket_sim
 }  // namespace tket
-#endif

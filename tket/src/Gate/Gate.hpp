@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Ops_Gate_H_
-#define _TKET_Ops_Gate_H_
+#pragma once
 
 #include "Ops/Op.hpp"
 #include "Utils/Json.hpp"
@@ -35,6 +34,14 @@ class Gate : public Op {
 
   std::string get_command_str(const unit_vector_t &args) const override;
 
+  /**
+   * Return the gate decomposition in terms of Rz(a)Rx(b)Rz(c).
+   *
+   * This decomposition is in matrix-multiplication order, i.e. the reverse of
+   * circuit order.
+   *
+   * @return a, b, c and a global phase
+   */
   std::vector<Expr> get_tk1_angles() const;
   std::vector<Expr> get_params() const override;
   std::vector<Expr> get_params_reduced() const override;
@@ -75,5 +82,3 @@ class Gate : public Op {
 };
 
 }  // namespace tket
-
-#endif

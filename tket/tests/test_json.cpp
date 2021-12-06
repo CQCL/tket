@@ -439,6 +439,7 @@ SCENARIO("Test predicate serializations") {
   BASICPREDJSONTEST(NoBarriersPredicate)
   BASICPREDJSONTEST(NoMidMeasurePredicate)
   BASICPREDJSONTEST(NoSymbolsPredicate)
+  BASICPREDJSONTEST(GlobalPhasedXPredicate)
 #undef BASICPREDJSONTEST
   GIVEN("GateSetPredicate") {
     OpTypeSet ops = {OpType::X, OpType::V, OpType::Rz, OpType::ZZMax};

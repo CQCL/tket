@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_DiagUtils_H_
-#define _TKET_DiagUtils_H_
+#pragma once
 
 #include "PauliGraph/PauliGraph.hpp"
 
@@ -39,5 +38,3 @@ void insert_into_gadget_map(
     QubitOperator &gadget_map, const std::pair<QubitPauliTensor, Expr> &pgp);
 
 }  // namespace tket
-
-#endif  // _TKET_DiagUtils_H_

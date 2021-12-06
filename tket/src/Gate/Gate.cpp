@@ -128,8 +128,9 @@ Op_ptr Gate::dagger() const {
         return get_op_ptr(OpType::tk1, {-params_[2], -params_[1], -params_[0]});
       }
     case OpType::PhasedX:
+    case OpType::NPhasedX:
       // PhasedX(a,b).dagger() == PhasedX(-a,b)
-      { return get_op_ptr(OpType::PhasedX, {-params_[0], params_[1]}); }
+      { return get_op_ptr(optype, {-params_[0], params_[1]}, n_qubits_); }
     case OpType::PhasedISWAP:
       // PhasedISWAP(a,b).dagger() == PhasedISWAP(a,-b)
       { return get_op_ptr(OpType::PhasedISWAP, {params_[0], -params_[1]}); }
@@ -203,9 +204,10 @@ Op_ptr Gate::transpose() const {
       // tk1(a,b,c).transpose() == tk1(c,b,a)
       return get_op_ptr(OpType::tk1, {params_[2], params_[1], params_[0]});
     }
-    case OpType::PhasedX: {
+    case OpType::PhasedX:
+    case OpType::NPhasedX: {
       // PhasedX(a,b).transpose() == PhasedX(a,-b)
-      return get_op_ptr(OpType::PhasedX, {params_[0], -params_[1]});
+      return get_op_ptr(optype, {params_[0], -params_[1]}, n_qubits_);
     }
     case OpType::PhasedISWAP: {
       // PhasedISWAP(a,b).transpose() == PhasedISWAP(-a,b)
@@ -236,6 +238,7 @@ std::optional<double> Gate::is_identity() const {
     case OpType::Ry:
     case OpType::Rz:
     case OpType::PhasedX:
+    case OpType::NPhasedX:
     case OpType::XXPhase:
     case OpType::YYPhase:
     case OpType::ZZPhase:
@@ -302,7 +305,7 @@ std::string Gate::get_name(bool latex) const {
   if (params_.size() > 0) {
     std::stringstream name;
     if (latex) {
-      name << "\\text{" << desc.latex() << "}(";
+      name << desc.latex() << "(";
     } else {
       name << desc.name() << "(";
     }
@@ -437,6 +440,14 @@ std::vector<Expr> Gate::get_tk1_angles() const {
           params_.at(1) + 0.5, params_.at(0), params_.at(2) - 0.5,
           (params_.at(1) + params_.at(2)) / 2};
     }
+    case OpType::NPhasedX: {
+      if (n_qubits_ != 1) {
+        throw NotValid(
+            "OpType::NPhasedX can only be decomposed into a TK1 "
+            "if it acts on a single qubit");
+      }
+      return {params_.at(1), params_.at(0), -params_.at(1), 0.};
+    }
     case OpType::PhasedX: {
       return {params_.at(1), params_.at(0), -params_.at(1), 0.};
     }
@@ -487,6 +498,7 @@ std::optional<Pauli> Gate::commuting_basis(port_t port) const {
     case OpType::U3:
     case OpType::U2:
     case OpType::PhasedX:
+    case OpType::NPhasedX:
     case OpType::tk1: {
       return std::nullopt;
     }

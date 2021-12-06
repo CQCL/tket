@@ -40,7 +40,7 @@ The following compiler toolchains are used to build tket on the CI and are
 therefore known to work:
 
 * Linux: gcc-10
-* MacOS: apple-clang 12
+* MacOS: apple-clang 13
 * Windows: MSVC 19
 
 It is recommended that you use these versions to build locally, as code may
@@ -88,15 +88,6 @@ If you wish you can set your profile to Debug mode:
 conan profile update settings.build_type=Debug tket
 ```
 
-#### Enable revisions
-
-In order to pick up the proper revision of the `pybind11` package, it is
-currently necessary to do the following (or equivalent):
-
-```shell
-conan config set general.revisions_enabled=1
-```
-
 #### Test dependencies
 
 A few of the tket tests require a working LaTeX installation, including
@@ -115,6 +106,17 @@ The Python tests require a few more packages. These can be installed with:
 ```shell
 pip install -r pytket/tests/requirements.txt
 ```
+
+### Building symengine
+
+The `symengine` dependency is built from a local conan recipe. Run:
+
+```shell
+conan create --profile=tket recipes/symengine
+```
+
+to build it.
+
 ### Building tket
 
 #### Method 1
@@ -150,7 +152,13 @@ with:
 conan create --profile=tket recipes/tket-proptests
 ```
 
-Now to build pytket:
+Now to build pytket, first install the `pybind11` headers:
+
+```shell
+conan create --profile=tket recipes/pybind11
+```
+
+Then build the pytket module:
 
 ```shell
 cd pytket
