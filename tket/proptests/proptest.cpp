@@ -216,7 +216,7 @@ static void check_correctness(const Circuit &c0, const CompilationUnit &cu) {
     c1_idx.insert({id, i});
     i++;
   }
-
+  TKET_ASSERT(c0_idx.size() <= c1_idx.size());
   Circuit c0_copy(c0);
   for (const auto &pair : initial_map.left) {
     auto it = c0_idx.find(pair.first);
