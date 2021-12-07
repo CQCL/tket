@@ -177,7 +177,7 @@ PhasePolyBox::PhasePolyBox(const Circuit& circ)
     bool foundswap = false;
 
     qubit_map_t perm = newcirc.implicit_qubit_permutation();
-    for (const std::pair<Qubit, Qubit>& pair : perm) {
+    for (const std::pair<const Qubit, Qubit>& pair : perm) {
       if (pair.first != pair.second) {
         if (!foundswap) {
           newcirc.replace_implicit_wire_swap(pair.first, pair.second);
