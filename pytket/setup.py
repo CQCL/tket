@@ -209,7 +209,6 @@ setup(
     license="Apache 2",
     packages=setuptools.find_packages(),
     install_requires=[
-        "dunamai ~=1.7.0",
         "sympy ~=1.6",
         "numpy ~=1.19",
         "lark-parser ~=0.7",
