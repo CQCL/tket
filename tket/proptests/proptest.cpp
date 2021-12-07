@@ -195,8 +195,8 @@ static Architecture random_architecture() {
  * @param[in] cu compliation pass having been applied to \p c0
  */
 static void check_correctness(const Circuit &c0, const CompilationUnit &cu) {
-  std::cout << "\n\nCorrectness" << std::endl;
   RC_LOG() << "In Check Correctness" << std::endl;
+
   const Circuit &c1 = cu.get_circ_ref();
   const unit_bimap_t &initial_map = cu.get_initial_map_ref();
   const unit_bimap_t &final_map = cu.get_final_map_ref();
@@ -208,44 +208,42 @@ static void check_correctness(const Circuit &c0, const CompilationUnit &cu) {
 
   i = 0;
   for (const auto &id : c0.all_units()) {
-    std::cout << id.repr() << " ";
     c0_idx.insert({id, i});
     i++;
   }
-  std::cout << c0_idx.size() << std::endl;
   i = 0;
   for (const auto &id : c1.all_units()) {
-    std::cout << id.repr() << " ";
     c1_idx.insert({id, i});
     i++;
   }
-  std::cout << c1_idx.size() << std::endl;
+
+  Circuit c0_copy(c0);
   for (const auto &pair : initial_map.left) {
-    std::cout << "(" << pair.first.repr() << " " << pair.second.repr() << ") ";
+    auto it = c0_idx.find(pair.first);
+    // qubit not in original circuit => ancilla added
+    if (it == c0_idx.end()) {
+      TKET_ASSERT(c1_idx.find(pair.first) != c1_idx.end());
+      c0_idx.insert({pair.first, c0_idx.size()});
+      c0_copy.add_qubit(Qubit(pair.first));
+    }
+    TKET_ASSERT(c1_idx.find(pair.second) != c1_idx.end());
     ini.insert({c0_idx[pair.first], c1_idx[pair.second]});
   }
-  std::cout << std::endl;
-  for (const auto &pair : final_map.left) { 
-    std::cout << "(" << pair.first.repr() << " " << pair.second.repr() << ") ";
+  // all qubits should have been tracked from initial map
+  for (const auto &pair : final_map.left) {
     inv_fin.insert({c1_idx[pair.second], c0_idx[pair.first]});
   }
-  std::cout << std::endl;
 
   Eigen::PermutationMatrix<Eigen::Dynamic> m_ini = lift_perm(ini),
                                            m_inv_fin = lift_perm(inv_fin);
+
   try {
-    std::cout << "unitary 0" << std::endl;
-    const auto u0 = tket_sim::get_unitary(c0);
-    std::cout << c0 << std::endl;
-    std::cout << "unitary 1" << std::endl;
     const auto u1 = tket_sim::get_unitary(c1);
-    std::cout << c1 << std::endl;
     std::cout << "compare" << std::endl;
     std::cout << initial_map.left.size() << " " << final_map.left.size() << " " << c0_idx.size() << " " << c1_idx.size() << std::endl;
     auto y = m_inv_fin * u1 * m_ini;
-    std::cout << y << std::endl;
+    const auto u0 = tket_sim::get_unitary(c0_copy);
     RC_ASSERT(tket_sim::compare_statevectors_or_unitaries(
-        u0, y));
     std::cout << " done " << std::endl;
   } catch (const Unsupported &) {
   } catch (const NotImplemented &) {
@@ -253,9 +251,7 @@ static void check_correctness(const Circuit &c0, const CompilationUnit &cu) {
   // If tket-sim doesn't recognise a gate, just ignore it.
   // If a gate is unknown, which exception SHOULD it be:
   // "Unsupported" or "NotImplemented" ?
-  std::cout << "SNADSOFeck,.. " << std::endl;
   RC_ASSERT(sanity_check(c1));
-  std::cout << "Sanity check,.. " << std::endl;
 }
 
 namespace rc {
@@ -343,9 +339,7 @@ bool check_mapping() {
         if (!pp3->verify(c)) return;
         PassPtr pass = gen_default_mapping_pass(a);
         CompilationUnit cu(c);
-        std::cout << "Apply Routing Pass!" << std::endl;
         bool applied = pass->apply(cu);
-        std::cout << "End Routing Pass!" << std::endl;
         const Circuit &c1 = cu.get_circ_ref();
         RC_LOG() << "Circuit (" << c.n_qubits() << " qubits, " << c.n_gates()
                  << " gates): " << c;
@@ -362,21 +356,18 @@ bool check_mapping() {
         RC_LOG() << "Circuit (" << c1.n_qubits() << " qubits, " << c1.n_gates()
                  << " gates): " << c1;
 
-        std::cout << "BIMAPS" << std::endl;
         const unit_bimap_t &initial_map = cu.get_initial_map_ref();
         const unit_bimap_t &final_map = cu.get_final_map_ref();
         RC_LOG() << "Initial Map:" << std::endl;
-        for(const auto& x : initial_map.left){
+        for (const auto &x : initial_map.left) {
           RC_LOG() << x.first.repr() << " " << x.second.repr() << std::endl;
         }
         RC_LOG() << "Final Map:" << std::endl;
-        for(const auto& x : final_map.left){
+        for (const auto &x : final_map.left) {
           RC_LOG() << x.first.repr() << " " << x.second.repr() << std::endl;
         }
         if (applied) {
-          std::cout << "CORRECTNESS" << std::endl;
           check_correctness(c, cu);
-          std::cout << "CORRECTENESS done" << std::endl;
         } else {
           RC_ASSERT(c == c1);
         }
