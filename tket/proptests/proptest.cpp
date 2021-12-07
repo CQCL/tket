@@ -239,12 +239,9 @@ static void check_correctness(const Circuit &c0, const CompilationUnit &cu) {
 
   try {
     const auto u1 = tket_sim::get_unitary(c1);
-    std::cout << "compare" << std::endl;
-    std::cout << initial_map.left.size() << " " << final_map.left.size() << " " << c0_idx.size() << " " << c1_idx.size() << std::endl;
-    auto y = m_inv_fin * u1 * m_ini;
     const auto u0 = tket_sim::get_unitary(c0_copy);
     RC_ASSERT(tket_sim::compare_statevectors_or_unitaries(
-    std::cout << " done " << std::endl;
+        u0, m_inv_fin * u1 * m_ini));
   } catch (const Unsupported &) {
   } catch (const NotImplemented &) {
   }
