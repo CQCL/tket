@@ -27,4 +27,3 @@ import pytket.telemetry
 from pytket._version import __version__
 
 __path__ = __import__("pkgutil").extend_path(__path__, __name__)  # type: ignore
-__version__ = ".".join(__version__.split(".")[:3])
