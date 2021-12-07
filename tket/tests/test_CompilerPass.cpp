@@ -136,9 +136,11 @@ SCENARIO("Test that qubits added via add_qubit are tracked.") {
     // final
     it = cu_initial.left.find(weird_qb4);
     REQUIRE(it != cu_initial.left.end());
+    REQUIRE(it->second == weird_qb4);
     auto cu_final = cu.get_final_map_ref();
     it = cu_final.left.find(weird_qb4);
     REQUIRE(it != cu_final.left.end());
+    REQUIRE(it->second == weird_qb4);
   }
 }
 SCENARIO("Test making (mostly routing) passes using PassGenerators") {
