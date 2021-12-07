@@ -1,1 +1,1 @@
-openfermion ~= 1.1
+openfermion ~= 1.3

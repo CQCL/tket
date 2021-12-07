@@ -19,6 +19,7 @@ import pickle
 import pytest  # type: ignore
 
 import numpy as np
+from openfermion import QubitOperator  # type: ignore
 from sympy import Symbol, re, im  # type: ignore
 
 from pytket.utils import QubitPauliOperator
@@ -26,13 +27,6 @@ from pytket.pauli import Pauli, QubitPauliString, pauli_string_mult  # type: ign
 from pytket.circuit import Qubit  # type: ignore
 
 import strategies as st  # type: ignore
-
-try:
-    from openfermion import QubitOperator  # type: ignore
-
-    _of_installed = True
-except ImportError:
-    _of_installed = False
 
 
 def test_QubitPauliOperator_addition() -> None:
@@ -107,7 +101,6 @@ def test_QubitPauliOperator_io() -> None:
     assert np.isclose(complex(op2[qps2]), 3.1)
 
 
-@pytest.mark.skipif(not _of_installed, reason="openfermion not installed")
 def test_QubitPauliOperator_conversion() -> None:
     openf_op = QubitOperator("X0 X1 Y2 Z3", 0.34)
     openf_op += QubitOperator("Z0 X1 Y2 Z3", -0.1j)
