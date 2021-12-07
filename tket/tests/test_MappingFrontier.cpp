@@ -522,7 +522,7 @@ SCENARIO("Test MappingFrontier::add_qubit") {
   circ.rename_units(rename_map);
 
   MappingFrontier mf(circ);
-  mf.add_qubit(nodes[3]);
+  mf.add_ancilla(nodes[3]);
 
   REQUIRE(circ.all_qubits().size() == 4);
   REQUIRE(mf.circuit_.all_qubits().size() == 4);
