@@ -449,7 +449,7 @@ void MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
   this->circuit_.boundary.get<TagID>().insert({uid_0, uid0_in, uid1_out});
   this->circuit_.boundary.get<TagID>().insert({uid_1, uid1_in, uid0_out});
 
-  std::map<Node, Node> final_map = {{n0, n1}, {n1,n0}};
+  std::map<Node, Node> final_map = {{n0, n1}, {n1, n0}};
   this->circuit_.update_final_map(final_map);
 }
 
@@ -503,28 +503,22 @@ void MappingFrontier::add_ancilla(const UnitID& ancilla) {
   this->circuit_.update_final_map(update_map);
 }
 
-
-void MappingFrontier::merge_ancilla(const UnitID& merge, const UnitID& ancilla) {
+void MappingFrontier::merge_ancilla(
+    const UnitID& merge, const UnitID& ancilla) {
   // get output and input vertices
   Vertex merge_v_in = this->circuit_.get_in(merge);
   Vertex merge_v_out = this->circuit_.get_out(merge);
   Vertex ancilla_v_out = this->circuit_.get_out(ancilla);
   // find source vertex & port of merge_v_out
   // output vertex, so can assume single edge
-  Edge merge_out_edge =
-      this->circuit_.get_nth_out_edge(merge_v_in, 0);
-  Edge ancilla_in_edge =
-      this->circuit_.get_nth_in_edge(ancilla_v_out, 0);
+  Edge merge_out_edge = this->circuit_.get_nth_out_edge(merge_v_in, 0);
+  Edge ancilla_in_edge = this->circuit_.get_nth_in_edge(ancilla_v_out, 0);
   // Find port number
-  port_t merge_target_port =
-      this->circuit_.get_target_port(merge_out_edge);
-  port_t ancilla_source_port =
-      this->circuit_.get_source_port(ancilla_in_edge);
+  port_t merge_target_port = this->circuit_.get_target_port(merge_out_edge);
+  port_t ancilla_source_port = this->circuit_.get_source_port(ancilla_in_edge);
   // Find vertices
-  Vertex merge_v_target =
-      this->circuit_.target(merge_out_edge);
-  Vertex ancilla_v_source =
-      this->circuit_.source(ancilla_in_edge);
+  Vertex merge_v_target = this->circuit_.target(merge_out_edge);
+  Vertex ancilla_v_source = this->circuit_.source(ancilla_in_edge);
 
   // remove and replace edges
   this->circuit_.remove_edge(merge_out_edge);
@@ -535,12 +529,9 @@ void MappingFrontier::merge_ancilla(const UnitID& merge, const UnitID& ancilla) 
 
   // instead of manually updating all boundaries, we change which output vertex
   // the qubit paths to
-  Edge merge_in_edge =
-      this->circuit_.get_nth_in_edge(merge_v_out, 0);
-  port_t merge_source_port =
-      this->circuit_.get_source_port(merge_in_edge);
-  Vertex merge_v_source =
-      this->circuit_.source(merge_in_edge);
+  Edge merge_in_edge = this->circuit_.get_nth_in_edge(merge_v_out, 0);
+  port_t merge_source_port = this->circuit_.get_source_port(merge_in_edge);
+  Vertex merge_v_source = this->circuit_.source(merge_in_edge);
 
   this->circuit_.remove_edge(merge_in_edge);
   this->circuit_.add_edge(
@@ -548,10 +539,8 @@ void MappingFrontier::merge_ancilla(const UnitID& merge, const UnitID& ancilla) 
       EdgeType::Quantum);
 
   // remove empty vertex wire, relabel dag vertices
-  this->circuit_.dag[merge_v_in].op =
-      get_op_ptr(OpType::noop);
-  this->circuit_.dag[merge_v_out].op =
-      get_op_ptr(OpType::noop);
+  this->circuit_.dag[merge_v_in].op = get_op_ptr(OpType::noop);
+  this->circuit_.dag[merge_v_out].op = get_op_ptr(OpType::noop);
   this->circuit_.remove_vertex(
       merge_v_in, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
   this->circuit_.remove_vertex(

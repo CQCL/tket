@@ -23,7 +23,6 @@ LexiRoute::LexiRoute(
 
 bool LexiRoute::assign_at_distance(
     const UnitID& assignee, const Node& root, unsigned distances) {
-
   node_set_t valid_nodes;
   for (const Node& neighbour :
        this->architecture_->uids_at_distance(root, distances)) {
@@ -475,10 +474,12 @@ void LexiRoute::solve(unsigned lookahead) {
   //   // store in ancillas type
   //   for (auto it =
   //            this->mapping_frontier_->quantum_boundary->get<TagKey>().begin();
-  //        it != this->mapping_frontier_->quantum_boundary->get<TagKey>().end();
+  //        it !=
+  //        this->mapping_frontier_->quantum_boundary->get<TagKey>().end();
   //        ++it) {
   //     bool match = false;
-  //     for (auto jt = copy.get<TagKey>().begin(); jt != copy.get<TagKey>().end();
+  //     for (auto jt = copy.get<TagKey>().begin(); jt !=
+  //     copy.get<TagKey>().end();
   //          ++jt) {
   //       if (it->first == jt->first) {
   //         match = true;
