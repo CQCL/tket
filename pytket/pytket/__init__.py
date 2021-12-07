@@ -14,7 +14,7 @@
 
 """Python Interface to CQC tket
 """
-
+import dunamai as _dunamai
 from pytket.circuit import (  # type: ignore
     Circuit,
     OpType,
@@ -26,3 +26,4 @@ import pytket.transform
 import pytket.telemetry
 
 __path__ = __import__("pkgutil").extend_path(__path__, __name__)  # type: ignore
+__version__ = _dunamai.Version.from_git().base
