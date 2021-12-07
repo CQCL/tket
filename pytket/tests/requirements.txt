@@ -5,3 +5,4 @@ pytest-benchmark
 hypothesis
 docker
 jsonschema
+openfermion ~= 1.3
