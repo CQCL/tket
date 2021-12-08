@@ -94,9 +94,9 @@ std::pair<Circuit, qubit_mapping_t> route(
 }
 
 PYBIND11_MODULE(routing, m) {
-  py::class_<graphs::AbstractGraph<Node>>(m,
-    "NodeGraph",
-    "Abstract class for describing a device connectivity graph.");
+  py::class_<graphs::AbstractGraph<Node>>(
+      m, "NodeGraph",
+      "Abstract class for describing a device connectivity graph.");
 
   py::class_<Architecture, graphs::AbstractGraph<Node>>(
       m, "Architecture",

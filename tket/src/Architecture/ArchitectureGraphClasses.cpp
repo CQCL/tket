@@ -20,4 +20,4 @@ namespace tket {
 template class graphs::DirectedGraphBase<Node>;
 template class graphs::DirectedGraph<Node>;
 
-}
+}  // namespace tket

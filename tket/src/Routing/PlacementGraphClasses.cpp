@@ -20,4 +20,4 @@ namespace tket {
 template class graphs::DirectedGraphBase<Qubit>;
 template class graphs::DirectedGraph<Qubit>;
 
-}
+}  // namespace tket
