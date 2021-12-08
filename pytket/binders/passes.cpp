@@ -512,7 +512,7 @@ PYBIND11_MODULE(passes, m) {
       "of an :py:class:`Architecture`. Edge direction is ignored."
       "\n\n:param arc: The architecture to use for connectivity information. "
       "\n:param placer: The Placement used for relabelling."
-      "\n:param \\**config: Configuration for Routing, as a vector of "
+      "\n:param config: Configuration for Routing, as a vector of "
       "RoutingMethod. Each RoutingMethod is checked in turn, meaning lower "
       "index "
       "method's are prioritised."
@@ -563,8 +563,6 @@ PYBIND11_MODULE(passes, m) {
       "\n\n:param arc: The Architecture used for connectivity information."
       "\n:param placer: The placement used for relabelling."
       "\n:param \\**kwargs: Parameters for routing: "
-      "(int)swap_lookahead=50, (int)bridge_lookahead=4, "
-      "(int)bridge_interactions=2, (float)bridge_exponent=0, "
       "(bool)directed_cx=false, (bool)delay_measures=true"
       "\n:return: a pass to perform the remapping",
       py::arg("arc"), py::arg("placer"));
