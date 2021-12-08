@@ -1,6 +1,13 @@
 Changelog
 ==================================
 
+0.18.0 (unreleased)
+-------------------
+
+Minor new features:
+
+* Add `NodeGraph` as abstract base class for device connectivity graphs.
+
 0.17.0 (November 2021)
 ----------------------
 

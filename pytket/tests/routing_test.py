@@ -15,6 +15,7 @@
 from pathlib import Path
 from pytket.circuit import OpType, Qubit, Node, Circuit  # type: ignore
 from pytket.routing import (  # type: ignore
+    NodeGraph,
     Architecture,
     LinePlacement,
     GraphPlacement,
@@ -95,6 +96,18 @@ def test_fully_connected() -> None:
     d = fc.to_dict()
     fc1 = FullyConnected.from_dict(d)
     assert fc == fc1
+
+
+def test_arch_types() -> None:
+    arch = Architecture([(0, 1)])
+    assert isinstance(arch, Architecture)
+    assert isinstance(arch, NodeGraph)
+    fc = FullyConnected(2)
+    assert isinstance(fc, FullyConnected)
+    assert isinstance(fc, NodeGraph)
+    sg = SquareGrid(2, 2, 2)
+    assert isinstance(sg, SquareGrid)
+    assert isinstance(sg, NodeGraph)
 
 
 def test_placements() -> None:

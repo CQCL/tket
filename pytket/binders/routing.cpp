@@ -94,10 +94,13 @@ std::pair<Circuit, qubit_mapping_t> route(
 }
 
 PYBIND11_MODULE(routing, m) {
-  py::class_<Architecture>(
+  py::class_<graphs::AbstractGraph<Node>>(m,
+    "NodeGraph",
+    "Abstract class for describing a device connectivity graph.");
+
+  py::class_<Architecture, graphs::AbstractGraph<Node>>(
       m, "Architecture",
-      "The base architecture class, describing the connectivity of "
-      "qubits on a device.")
+      "Class describing the connectivity of qubits on a general device.")
       .def(
           py::init([](const std::vector<std::pair<unsigned, unsigned>>
                           &connections) { return Architecture(connections); }),
@@ -139,7 +142,7 @@ PYBIND11_MODULE(routing, m) {
                    std::to_string(arc.n_nodes()) + ">";
           })
       .def(py::self == py::self);
-  py::class_<SquareGrid, Architecture>(
+  py::class_<SquareGrid, Architecture, graphs::AbstractGraph<Node>>(
       m, "SquareGrid",
       "Architecture class for qubits arranged in a square lattice of "
       "given number of rows and columns. Qubits are arranged with qubits "
@@ -188,7 +191,7 @@ PYBIND11_MODULE(routing, m) {
                ", columns=" + std::to_string(arc.get_columns()) +
                ", layers=" + std::to_string(arc.get_layers()) + ">";
       });
-  py::class_<RingArch, Architecture>(
+  py::class_<RingArch, Architecture, graphs::AbstractGraph<Node>>(
       m, "RingArch",
       "Architecture class for number of qubits arranged in a ring.")
       .def(
@@ -199,7 +202,7 @@ PYBIND11_MODULE(routing, m) {
       .def("__repr__", [](const RingArch &arc) {
         return "<tket::RingArch, nodes=" + std::to_string(arc.n_nodes()) + ">";
       });
-  py::class_<FullyConnected>(
+  py::class_<FullyConnected, graphs::AbstractGraph<Node>>(
       m, "FullyConnected",
       "An architecture with full connectivity between qubits.")
       .def(
