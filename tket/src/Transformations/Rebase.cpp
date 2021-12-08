@@ -118,10 +118,13 @@ Transform Transform::rebase_tket() {
 Circuit Transform::tk1_to_PhasedXRz(
     const Expr& alpha, const Expr& beta, const Expr& gamma) {
   Circuit c(1);
-  std::vector<Expr> px_params = {beta, alpha};
-  c.add_op<unsigned>(OpType::Rz, alpha + gamma, {0});
-  if (!equiv_0(beta, 4)) {
-    c.add_op<unsigned>(OpType::PhasedX, px_params, {0});
+  if (equiv_expr(beta, 1)) {
+    c.add_op<unsigned>(OpType::PhasedX, {beta, (alpha - gamma) / 2.}, {0});
+  } else if (equiv_0(beta, 4)) {
+    c.add_op<unsigned>(OpType::Rz, alpha + gamma, {0});
+  } else {
+    c.add_op<unsigned>(OpType::Rz, alpha + gamma, {0});
+    c.add_op<unsigned>(OpType::PhasedX, {beta, alpha}, {0});
   }
   Transform::remove_redundancies().apply(c);
   return c;
