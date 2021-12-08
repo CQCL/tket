@@ -45,13 +45,19 @@ class NodesNotConnected : public std::logic_error {
             node1.repr() + " and " + node2.repr() + " are not connected") {}
 };
 
+/** Weighted edge */
+struct WeightedEdge {
+  explicit WeightedEdge(unsigned w = 1) : weight(w) {}
+  unsigned weight;
+};
+
 template <typename T>
 class DirectedGraphBase : public AbstractGraph<T> {
  protected:
   using ConnGraph = boost::adjacency_list<
-      boost::vecS, boost::vecS, boost::bidirectionalS, T, unsigned>;
+      boost::vecS, boost::vecS, boost::bidirectionalS, T, WeightedEdge>;
   using UndirectedConnGraph = boost::adjacency_list<
-      boost::setS, boost::vecS, boost::undirectedS, T, unsigned>;
+      boost::setS, boost::vecS, boost::undirectedS, T, WeightedEdge>;
   using Vertex = utils::vertex<ConnGraph>;
   using UndirectedVertex = utils::vertex<UndirectedConnGraph>;
   using Connection = typename AbstractGraph<T>::Edge;
@@ -124,7 +130,8 @@ class DirectedGraphBase : public AbstractGraph<T> {
       throw NodeDoesNotExistError(
           "The nodes passed to DirectedGraph::add_connection must exist");
     }
-    boost::add_edge(to_vertices(node1), to_vertices(node2), weight, graph);
+    boost::add_edge(
+        to_vertices(node1), to_vertices(node2), WeightedEdge(weight), graph);
   }
 
   /** Remove an edge from the graph. */
@@ -164,7 +171,7 @@ class DirectedGraphBase : public AbstractGraph<T> {
       return 0;
     }
 
-    return graph[e];
+    return graph[e].weight;
   }
 
   /** Get the degree of a node. */
