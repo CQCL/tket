@@ -145,7 +145,7 @@ class SteinerTree {
    * gives all nodes of the tree which are leaf, one in or zero in
    * @return ordered list of all nodes
    */
-  std::vector<unsigned> get_all_nodes() const;
+  std::vector<unsigned> nodes() const;
 
   /**
    * function to stream a steiner tree

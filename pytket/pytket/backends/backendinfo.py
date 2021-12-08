@@ -14,7 +14,7 @@
 
 """ BackendInfo class: additional information on Backends """
 from dataclasses import dataclass, field, asdict
-from typing import Any, Dict, List, Optional, Set, cast, Tuple
+from typing import Any, Dict, List, Optional, Set, cast, Tuple, Union
 
 from pytket.routing import Architecture, FullyConnected  # type: ignore
 from pytket.circuit import Node, OpType  # type: ignore
@@ -56,7 +56,7 @@ class BackendInfo:
     device_name: Optional[str]
     version: str
     # hardware constraints
-    architecture: Architecture
+    architecture: Union[Architecture, FullyConnected]
     gate_set: Set[OpType]
     # additional feature support
     supports_fast_feedforward: bool = False
@@ -143,7 +143,11 @@ class BackendInfo:
         :rtype: BackendInfo
         """
         args = dict(**d)
-        args["architecture"] = Architecture.from_dict(args["architecture"])
+        arch = args["architecture"]
+        if "links" in arch:
+            args["architecture"] = Architecture.from_dict(args["architecture"])
+        else:
+            args["architecture"] = FullyConnected.from_dict(args["architecture"])
         args["gate_set"] = {OpType(op) for op in args["gate_set"]}
         return cls(**args)
 

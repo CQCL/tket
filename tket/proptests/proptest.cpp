@@ -329,7 +329,7 @@ bool check_mapping() {
         PredicatePtr pp1 = std::make_shared<NoClassicalControlPredicate>();
         if (!pp1->verify(c)) return;
         // Architecture must be big enough.
-        PredicatePtr pp2 = std::make_shared<MaxNQubitsPredicate>(a.n_uids());
+        PredicatePtr pp2 = std::make_shared<MaxNQubitsPredicate>(a.n_nodes());
         if (!pp2->verify(c)) return;
         // All gates must act on 1 or 2 qubits.
         PredicatePtr pp3 = std::make_shared<MaxTwoQubitGatesPredicate>();
@@ -340,11 +340,11 @@ bool check_mapping() {
         const Circuit &c1 = cu.get_circ_ref();
         RC_LOG() << "Circuit (" << c.n_qubits() << " qubits, " << c.n_gates()
                  << " gates): " << c;
-        RC_LOG() << "Architecture (" << a.n_uids() << " nodes): ";
-        const node_vector_t nodes = a.get_all_uids_vec();
+        RC_LOG() << "Architecture (" << a.n_nodes() << " nodes): ";
+        const node_vector_t nodes = a.get_all_nodes_vec();
         for (Node node0 : nodes) {
           for (Node node1 : nodes) {
-            if (a.connection_exists(node0, node1)) {
+            if (a.edge_exists(node0, node1)) {
               RC_LOG() << node0.repr() << "-->" << node1.repr() << "; ";
             }
           }

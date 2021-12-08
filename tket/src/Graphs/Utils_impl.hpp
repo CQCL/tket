@@ -151,21 +151,6 @@ class graph_utils_base {
     boost::remove_vertex(v, graph);
   }
 
-  void remove_stray_vertices() {
-    bool removed_vertices = true;
-    while (removed_vertices) {
-      removed_vertices = false;
-      for (vertex<Graph> v :
-           boost::make_iterator_range(boost::vertices(graph))) {
-        if (boost::degree(v, graph) == 0) {
-          removed_vertices = true;
-          remove_vertex(v);
-          break;
-        }
-      }
-    }
-  }
-
   void remove_edge(edge<Graph> e, bool remove_unused_vertices = false) {
     auto [u, v] = get_vertex_pair(e);
     boost::remove_edge(e, graph);
