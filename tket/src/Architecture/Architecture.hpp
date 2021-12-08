@@ -31,6 +31,9 @@
 #include "Utils/UnitID.hpp"
 namespace tket {
 
+extern template class graphs::DirectedGraphBase<Node>;
+extern template class graphs::DirectedGraph<Node>;
+
 using dist_vec = graphs::dist_vec;
 
 class ArchitectureInvalidity : public std::logic_error {

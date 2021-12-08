@@ -173,6 +173,7 @@ set(TKET_SOURCES
     ${TKET_TRANSFORM_DIR}/ThreeQubitSquash.cpp
 
     # Routing
+    ${TKET_ROUTING_DIR}/PlacementGraphClasses.cpp
     ${TKET_ROUTING_DIR}/Qubit_Placement.cpp
     ${TKET_ROUTING_DIR}/Swap_Analysis.cpp
     ${TKET_ROUTING_DIR}/Board_Analysis.cpp
@@ -183,6 +184,7 @@ set(TKET_SOURCES
     ${TKET_ROUTING_DIR}/Verification.cpp
 
     # Architecture
+    ${TKET_ARCHITECTURE_DIR}/ArchitectureGraphClasses.cpp
     ${TKET_ARCHITECTURE_DIR}/Architecture.cpp
 
     # Architecture Aware Synthesis

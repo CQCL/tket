@@ -32,6 +32,9 @@
 
 namespace tket {
 
+extern template class graphs::DirectedGraphBase<Qubit>;
+extern template class graphs::DirectedGraph<Qubit>;
+
 struct QubitWeight;
 struct InteractionWeight;
 class Placement;
