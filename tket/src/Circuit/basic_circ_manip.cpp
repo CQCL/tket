@@ -384,6 +384,21 @@ void Circuit::add_qubit(const Qubit& id, bool reject_dups) {
   Vertex out = add_vertex(OpType::Output);
   add_edge({in, 0}, {out, 0}, EdgeType::Quantum);
   boundary.insert({id, in, out});
+
+  unit_bimap_t* ubmap_initial = unit_bimaps_.initial;
+  unit_bimap_t* ubmap_final = unit_bimaps_.final;
+
+  if (ubmap_initial && ubmap_final) {
+    if (ubmap_initial->right.find(id) != ubmap_initial->right.end() ||
+        ubmap_initial->left.find(id) != ubmap_initial->left.end() ||
+        ubmap_final->right.find(id) != ubmap_final->right.end() ||
+        ubmap_final->left.find(id) != ubmap_final->left.end()) {
+      throw CircuitInvalidity(
+          "A unit with ID \"" + id.repr() + "\" already exists");
+    }
+    ubmap_initial->left.insert({id, id});
+    ubmap_final->left.insert({id, id});
+  }
 }
 
 void Circuit::add_bit(const Bit& id, bool reject_dups) {

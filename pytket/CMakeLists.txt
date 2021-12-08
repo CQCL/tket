@@ -28,6 +28,9 @@ find_file(CONANBUILDINFO_FILE conanbuildinfo.cmake HINTS ${CMAKE_BINARY_DIR})
 include(${CONANBUILDINFO_FILE})
 conan_basic_setup(NO_OUTPUT_DIRS)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}")
+find_package(pybind11 REQUIRED)
+
 set(Boost_NO_BOOST_CMAKE ON)
 
 if (WIN32)
@@ -37,7 +40,7 @@ else()
 endif()
 
 function(build_module module)
-    pybind11_add_module(${module} NO_EXTRAS ${ARGN})
+    pybind11_add_module(${module} ${ARGN})
     target_include_directories(${module} PRIVATE binders/include)
     target_link_libraries(${module} PRIVATE ${CONAN_LIBS})
 endfunction(build_module)

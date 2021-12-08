@@ -88,15 +88,6 @@ If you wish you can set your profile to Debug mode:
 conan profile update settings.build_type=Debug tket
 ```
 
-#### Enable revisions
-
-In order to pick up the proper revision of the `pybind11` package, it is
-currently necessary to do the following (or equivalent):
-
-```shell
-conan config set general.revisions_enabled=1
-```
-
 #### Test dependencies
 
 A few of the tket tests require a working LaTeX installation, including
@@ -161,7 +152,13 @@ with:
 conan create --profile=tket recipes/tket-proptests
 ```
 
-Now to build pytket:
+Now to build pytket, first install the `pybind11` headers:
+
+```shell
+conan create --profile=tket recipes/pybind11
+```
+
+Then build the pytket module:
 
 ```shell
 cd pytket

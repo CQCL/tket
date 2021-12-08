@@ -26,9 +26,9 @@ export CONAN_CMD=${PYBIN}/conan
 cd /tket
 
 ${CONAN_CMD} profile new tket --detect
-${CONAN_CMD} config set general.revisions_enabled=1
 ${CONAN_CMD} create --profile=tket recipes/symengine
 ${CONAN_CMD} create --profile=tket --test-folder=None recipes/tket
+${CONAN_CMD} create --profile=tket --test-folder=None recipes/pybind11
 
 cd /tket/pytket
 mkdir wheelhouse
