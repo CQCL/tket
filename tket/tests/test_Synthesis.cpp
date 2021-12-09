@@ -643,6 +643,23 @@ SCENARIO("Testing general 1qb squash") {
                   .apply(circ);
     REQUIRE_FALSE(success);
   }
+  GIVEN("Squashing 2xPhasedX that make a Rz") {
+    Circuit circ(1);
+    circ.add_op<unsigned>(OpType::PhasedX, {0.5, 0.5}, {0});
+    circ.add_op<unsigned>(OpType::PhasedX, {1.5, 0.5}, {0});
+    circ.add_op<unsigned>(OpType::Rz, 1.2, {0});
+    Circuit copy = circ;
+    OpTypeSet singleqs = {OpType::Rz, OpType::PhasedX};
+    bool success =
+        Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+            .apply(circ);
+    REQUIRE(success);
+    check_command_types(circ, {OpType::Rz});
+    REQUIRE(test_unitary_comparison(circ, copy));
+    success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+                  .apply(circ);
+    REQUIRE_FALSE(success);
+  }
   GIVEN("Squashing alongside rebasing") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::Rz, 0.43, {0});

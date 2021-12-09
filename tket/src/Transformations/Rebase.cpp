@@ -119,8 +119,13 @@ Circuit Transform::tk1_to_PhasedXRz(
     const Expr& alpha, const Expr& beta, const Expr& gamma) {
   Circuit c(1);
   if (equiv_expr(beta, 1)) {
+    // Angles β ∈ {π, 3π}
     c.add_op<unsigned>(OpType::PhasedX, {beta, (alpha - gamma) / 2.}, {0});
+  } else if (equiv_expr(beta, 2, 4)) {
+    // Angle β = 2π
+    c.add_op<unsigned>(OpType::Rz, alpha + gamma + 2, {0});
   } else if (equiv_0(beta, 4)) {
+    // Angle β = 0
     c.add_op<unsigned>(OpType::Rz, alpha + gamma, {0});
   } else {
     c.add_op<unsigned>(OpType::Rz, alpha + gamma, {0});
