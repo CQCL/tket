@@ -32,6 +32,9 @@
 
 namespace tket {
 
+extern template class graphs::DirectedGraphBase<Qubit>;
+extern template class graphs::DirectedGraph<Qubit>;
+
 struct QubitWeight;
 struct InteractionWeight;
 class Placement;
@@ -103,9 +106,9 @@ JSON_DECL(PlacementConfig)
 
 // Class for storing interaction graph.
 // Interacting qubits have an edge between them.
-class QubitGraph : public graphs::UIDConnectivity<Qubit> {
+class QubitGraph : public graphs::DirectedGraph<Qubit> {
  private:
-  using Base = graphs::UIDConnectivity<Qubit>;
+  using Base = graphs::DirectedGraph<Qubit>;
 
  public:
   QubitGraph() : Base() {}
@@ -137,7 +140,7 @@ QubitGraph monomorph_interaction_graph(
  * @param max_matches maximum number of matches to find
  * @param timeout timeout in milliseconds
  *
- * @return vector of matches found
+ * @return vector of matches found, sorted in canonical order
  */
 std::vector<qubit_bimap_t> monomorphism_edge_break(
     const Architecture& arc, const QubitGraph& q_graph, unsigned max_matches,

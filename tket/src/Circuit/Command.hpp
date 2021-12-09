@@ -77,7 +77,6 @@ class Command {
     cmd_str << op_ptr->get_command_str(args);
     return cmd_str.str();
   }
-  void print() const { tket_log()->info(to_str()); }
   friend std::ostream &operator<<(std::ostream &out, const Command &c) {
     out << c.to_str();
     return out;

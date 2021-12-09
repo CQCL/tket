@@ -61,8 +61,7 @@ QubitGraph monomorph_interaction_graph(
         else if (pair.second == q_out_edges[1])
           qb2 = Qubit(pair.first);
       }
-      if (!q_graph.connection_exists(qb1, qb2) &&
-          !q_graph.connection_exists(qb2, qb1)) {
+      if (!q_graph.edge_exists(qb1, qb2) && !q_graph.edge_exists(qb2, qb1)) {
         q_graph.add_connection(qb1, qb2, slice + 1);
         count_edges++;
       }
@@ -70,7 +69,7 @@ QubitGraph monomorph_interaction_graph(
 
     current_sf.next_slicefrontier();
   }
-  q_graph.remove_stray_uids();
+  q_graph.remove_stray_nodes();
   return q_graph;
 }
 
@@ -103,7 +102,7 @@ QubitGraph generate_interaction_graph(
           qubits_considered.erase(qb2);
         } else if (!qb2_considered) {
           qubits_considered.erase(qb1);
-        } else if (!q_graph.connection_exists(qb1, qb2)) {
+        } else if (!q_graph.edge_exists(qb1, qb2)) {
           const unsigned out1 = q_graph.get_degree(qb1);
           const unsigned out2 = q_graph.get_degree(qb2);
           q_graph.add_connection(qb1, qb2, slice + 1);
@@ -121,7 +120,7 @@ QubitGraph generate_interaction_graph(
     }
     current_sf.next_slicefrontier();
   }
-  q_graph.remove_stray_uids();
+  q_graph.remove_stray_nodes();
 
   return q_graph;
 }
@@ -140,7 +139,7 @@ QubitLineList qubit_lines(const Circuit& circ) {
     QubitLine found;
     std::transform(
         u_line.begin(), u_line.end(), std::back_inserter(found),
-        [&graph](auto v) -> Qubit { return graph[v].uid; });
+        [&graph](auto v) -> Qubit { return graph[v]; });
     found_line_size = found.size();
     if (found_line_size > 1) {
       found_lines.push_back(found);
@@ -163,7 +162,7 @@ QubitLineList qubit_lines(const Circuit& circ) {
 // remove a given number of nodes from the architecture, return a set of usable
 // nodes (the remainder)
 node_set_t best_nodes(Architecture& arc, unsigned n_remove) {
-  node_set_t all_nodes = arc.get_all_uids_set();
+  node_set_t all_nodes = arc.nodes();
   node_set_t bad_nodes;
   // if there are nodes 'removed' already count them as bad nodes
   for (Node n : all_nodes) {
@@ -219,7 +218,7 @@ qubit_mapping_t place_qubit_lines(
 // lines of qubits on
 qubit_mapping_t lines_on_arc(
     Architecture arc, QubitLineList qb_lines, unsigned n_qubits) {
-  unsigned difference = arc.n_uids() - n_qubits;
+  unsigned difference = arc.n_nodes() - n_qubits;
   // sort from longest to shortest
   std::sort(qb_lines.begin(), qb_lines.end(), [](QubitLine x, QubitLine y) {
     return (x.size() > y.size());
@@ -278,7 +277,7 @@ double Monomorpher::map_cost(const qubit_bimap_t& n_map) {
   for (auto [qb, node] : n_map) {
     // add fidelities of edges from node, weighted by if edge is used by
     // interaction graph
-    node_set_t neighs = arc.get_neighbour_uids(node);
+    node_set_t neighs = arc.get_neighbour_nodes(node);
     double edge_sum = 1.0;
     for (Node nei : neighs) {
       double fwd_edge_weighting = 1.0, bck_edge_weighting = 1.0;
@@ -327,7 +326,7 @@ std::vector<MapCost> Monomorpher::place(unsigned max_return) {
   const unsigned interacting_nodes = q_graph.n_connected();
   if ((circ.n_gates() / circ.n_qubits()) >= config.arc_contraction_ratio &&
       circ.n_qubits() > 3) {
-    best_nodes(arc, arc.n_uids() - interacting_nodes);
+    best_nodes(arc, arc.n_nodes() - interacting_nodes);
   }
 
   std::vector<qubit_bimap_t> potential_maps = monomorphism_edge_break(

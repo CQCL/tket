@@ -1,8 +1,9 @@
 [requires]
 tket/1.0.1
-pybind11/2.6.2#66f97eac059bef5b60bd6898ec4869fd
+pybind11/2.8.1
 nlohmann_json/3.10.4
 pybind11_json/0.2.11
 
 [generators]
 cmake
+cmake_find_package

@@ -32,45 +32,18 @@ bool vf2_match_add_callback<GraphP, GraphT>::operator()(
     const CorrespondenceMap1To2& f, const CorrespondenceMap2To1&) {
   qubit_bimap_t new_node_map;
   BGL_FORALL_VERTICES_T(v, pattern_graph_, GraphP) {
-    Qubit qb = pattern_graph_[v].uid;
-    Node node = target_graph_[get(f, v)].uid;
+    Qubit qb = pattern_graph_[v];
+    Node node = target_graph_[get(f, v)];
     new_node_map.insert({qb, node});
   }
   n_maps_.push_back(new_node_map);
   return (n_maps_.size() < max);
 }
 
-template <typename Graph>
-class label_writer {
- public:
-  explicit label_writer(Graph _g) : g(_g) {}
-  void operator()(
-      std::ostream& out, const graphs::utils::edge<Graph>& v) const {
-    out << "[label=\"" << g[v].weight << "\"]";
-  }
-  void operator()(
-      std::ostream& out, const graphs::utils::vertex<Graph>& v) const {
-    out << "[label=\"" << v << "\"]";
-  }
-
- private:
-  Graph g;
-};
-
-void draw_graph(
-    const QubitGraph::UndirectedConnGraph& gr, std::string filename) {
-  std::fstream fs;
-  fs.open(filename, std::fstream::out);
-
-  label_writer<const QubitGraph::UndirectedConnGraph> writ(gr);
-  boost::write_graphviz(fs, gr, writ, writ);
-  fs.close();
-}
-
 std::vector<qubit_bimap_t> monomorphism_edge_break(
     const Architecture& arc, const QubitGraph& q_graph, unsigned max_matches,
     unsigned timeout) {
-  if (q_graph.n_uids() > arc.n_uids()) {
+  if (q_graph.n_nodes() > arc.n_nodes()) {
     throw ArchitectureInvalidity(
         "Interaction graph too large for architecture");
   }
@@ -104,8 +77,10 @@ std::vector<qubit_bimap_t> monomorphism_edge_break(
       if (all_maps.empty()) {
         throw std::runtime_error("No mappings found before timeout.");
       }
+      std::sort(all_maps.begin(), all_maps.end());
       return all_maps;
     } else if (found_monomorphism) {
+      std::sort(all_maps.begin(), all_maps.end());
       return all_maps;
     } else if (boost::num_edges(undirected_pattern) != 0) {
       using edge_t = graphs::utils::edge<InteractionGraph>;
