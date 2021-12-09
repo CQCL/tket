@@ -77,9 +77,12 @@ Circuit Transform::incrementer_borrow_1_qubit(unsigned n) {
 
   Circuit cnx_top;
   std::vector<unsigned> cnx1_qbs;
-  if (k == 2) {  // code is unreachable if k<2
-    cnx_top = CircPool::CCX_normal_decomp();
-    cnx1_qbs = {0, 1, n};
+  if (k == 3) {  // code is unreachable if k<3
+    cnx_top = CircPool::C3X_normal_decomp();
+    cnx1_qbs = {0, 1, 2, n};
+  } else if (k == 4) {
+    cnx_top = CircPool::C4X_normal_decomp();
+    cnx1_qbs = {0, 1, 2, 3, n};
   } else {
     cnx_top = lemma72(k);  // k controls on cnx
     cnx1_qbs.resize(
@@ -102,12 +105,24 @@ Circuit Transform::incrementer_borrow_1_qubit(unsigned n) {
     }
     bot_qbs[1] = n;  // incremented qubit 0 in incrementer is bottom one
   } else {
-    if (j == 3) {  // code is unreachable if j<3
-      bottom_incrementer.add_blank_wires(3);
+    if (j == 4) {  // code is unreachable if j<4
+      bottom_incrementer.add_blank_wires(4);
+      bottom_incrementer.append_qubits(
+          CircPool::C3X_normal_decomp(), {0, 1, 2, 3});
       bottom_incrementer.add_op<unsigned>(OpType::CCX, {0, 1, 2});
       bottom_incrementer.add_op<unsigned>(OpType::CX, {0, 1});
       bottom_incrementer.add_op<unsigned>(OpType::X, {0});
-      bot_qbs = {n, n - 2, n - 1};
+      bot_qbs = {n, n - 3, n - 2, n - 1};
+    } else if (j == 5) {
+      bottom_incrementer.add_blank_wires(5);
+      bottom_incrementer.append_qubits(
+          CircPool::C4X_normal_decomp(), {0, 1, 2, 3, 4});
+      bottom_incrementer.append_qubits(
+          CircPool::C3X_normal_decomp(), {0, 1, 2, 3});
+      bottom_incrementer.add_op<unsigned>(OpType::CCX, {0, 1, 2});
+      bottom_incrementer.add_op<unsigned>(OpType::CX, {0, 1});
+      bottom_incrementer.add_op<unsigned>(OpType::X, {0});
+      bot_qbs = {n, n - 4, n - 3, n - 2, n - 1};
     } else {
       // insert peeled-out cnx
       Circuit cnx_bot = lemma72(j - 1);
@@ -143,7 +158,7 @@ Circuit Transform::incrementer_borrow_1_qubit(unsigned n) {
       {n});  // to convert controlled-incrementer to larger incrementer
   for (unsigned i = k; i != n; ++i) circ.add_op<unsigned>(OpType::CX, {n, i});
   circ.append_qubits(cnx_top, cnx1_qbs);
-  if (!is_odd && j > 3) {
+  if (!is_odd && j > 5) {
     // insert peeled-out cnx
     Circuit cnx_bot = lemma72(j - 1);
     std::vector<unsigned> cnx2_qbs(2 * j - 3);
