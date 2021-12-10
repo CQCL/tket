@@ -23,6 +23,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/tests_main.cpp
     ${TKET_TESTS_DIR}/testutil.cpp
     ${TKET_TESTS_DIR}/CircuitsForTesting.cpp
+    ${TKET_TESTS_DIR}/test_ReorderingCZ.cpp
     ${TKET_TESTS_DIR}/Utils/test_MatrixAnalysis.cpp
     ${TKET_TESTS_DIR}/Utils/test_CosSinDecomposition.cpp
     ${TKET_TESTS_DIR}/Graphs/EdgeSequence.cpp

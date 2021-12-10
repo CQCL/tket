@@ -542,6 +542,11 @@ class Transform {
    */
   static Transform simplify_measured();
 
+  ///////////////
+  // Reordering CZ//
+  ///////////////
+  static Transform reorder_cz(const ArchitecturePtr& architecture);
+
   ///////////////////////////////////////////////
   // Minor components for other Transform passes//
   ///////////////////////////////////////////////
