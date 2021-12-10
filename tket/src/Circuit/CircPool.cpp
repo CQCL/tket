@@ -335,7 +335,9 @@ const Circuit &C3X_normal_decomp() {
   return *C;
 }
 
-const Circuit &RC3X_normal_decomp() {
+// Implementing C3X up to a relative phase
+// https://arxiv.org/pdf/1508.03273.pdf figure 4
+static const Circuit &RC3X_normal_decomp() {
   static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
     Circuit c(4);
     c.add_op<unsigned>(OpType::U2, {0, 1}, {3});
@@ -361,7 +363,9 @@ const Circuit &RC3X_normal_decomp() {
   return *C;
 }
 
-const Circuit &C3SX_normal_decomp() {
+// Implementing 3-controlled SX gate
+// https://arxiv.org/pdf/quant-ph/9503016.pdf page 17
+static const Circuit &C3SX_normal_decomp() {
   static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
     Circuit c(4);
     c.add_op<unsigned>(OpType::H, {3});
@@ -396,6 +400,7 @@ const Circuit &C3SX_normal_decomp() {
   return *C;
 }
 
+// https://arxiv.org/pdf/quant-ph/9503016.pdf lemma 7.5
 const Circuit &C4X_normal_decomp() {
   static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
     Circuit c(5);
