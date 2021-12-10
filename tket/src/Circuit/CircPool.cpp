@@ -296,6 +296,129 @@ const Circuit &CCX_normal_decomp() {
   return *C;
 }
 
+const Circuit &C3X_normal_decomp() {
+  static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
+    Circuit c(4);
+    c.add_op<unsigned>(OpType::H, {3});
+    c.add_op<unsigned>(OpType::U1, 0.125, {0});
+    c.add_op<unsigned>(OpType::U1, 0.125, {1});
+    c.add_op<unsigned>(OpType::U1, 0.125, {2});
+    c.add_op<unsigned>(OpType::U1, 0.125, {3});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::U1, -0.125, {1});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::CX, {1, 2});
+    c.add_op<unsigned>(OpType::U1, -0.125, {2});
+    c.add_op<unsigned>(OpType::CX, {0, 2});
+    c.add_op<unsigned>(OpType::U1, 0.125, {2});
+    c.add_op<unsigned>(OpType::CX, {1, 2});
+    c.add_op<unsigned>(OpType::U1, -0.125, {2});
+    c.add_op<unsigned>(OpType::CX, {0, 2});
+    c.add_op<unsigned>(OpType::CX, {2, 3});
+    c.add_op<unsigned>(OpType::U1, -0.125, {3});
+    c.add_op<unsigned>(OpType::CX, {1, 3});
+    c.add_op<unsigned>(OpType::U1, 0.125, {3});
+    c.add_op<unsigned>(OpType::CX, {2, 3});
+    c.add_op<unsigned>(OpType::U1, -0.125, {3});
+    c.add_op<unsigned>(OpType::CX, {0, 3});
+    c.add_op<unsigned>(OpType::U1, 0.125, {3});
+    c.add_op<unsigned>(OpType::CX, {2, 3});
+    c.add_op<unsigned>(OpType::U1, -0.125, {3});
+    c.add_op<unsigned>(OpType::CX, {1, 3});
+    c.add_op<unsigned>(OpType::U1, 0.125, {3});
+    c.add_op<unsigned>(OpType::CX, {2, 3});
+    c.add_op<unsigned>(OpType::U1, -0.125, {3});
+    c.add_op<unsigned>(OpType::CX, {0, 3});
+    c.add_op<unsigned>(OpType::H, {3});
+    return c;
+  }());
+  return *C;
+}
+
+// Implementing C3X up to a relative phase
+// https://arxiv.org/pdf/1508.03273.pdf figure 4
+static const Circuit &RC3X_normal_decomp() {
+  static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
+    Circuit c(4);
+    c.add_op<unsigned>(OpType::U2, {0, 1}, {3});
+    c.add_op<unsigned>(OpType::U1, 0.25, {3});
+    c.add_op<unsigned>(OpType::CX, {2, 3});
+    c.add_op<unsigned>(OpType::U1, -0.25, {3});
+    c.add_op<unsigned>(OpType::U2, {0, 1}, {3});
+    c.add_op<unsigned>(OpType::CX, {0, 3});
+    c.add_op<unsigned>(OpType::U1, 0.25, {3});
+    c.add_op<unsigned>(OpType::CX, {1, 3});
+    c.add_op<unsigned>(OpType::U1, -0.25, {3});
+    c.add_op<unsigned>(OpType::CX, {0, 3});
+    c.add_op<unsigned>(OpType::U1, 0.25, {3});
+    c.add_op<unsigned>(OpType::CX, {1, 3});
+    c.add_op<unsigned>(OpType::U1, -0.25, {3});
+    c.add_op<unsigned>(OpType::U2, {0, 1}, {3});
+    c.add_op<unsigned>(OpType::U1, 0.25, {3});
+    c.add_op<unsigned>(OpType::CX, {2, 3});
+    c.add_op<unsigned>(OpType::U1, -0.25, {3});
+    c.add_op<unsigned>(OpType::U2, {0, 1}, {3});
+    return c;
+  }());
+  return *C;
+}
+
+// Implementing 3-controlled SX gate
+// https://arxiv.org/pdf/quant-ph/9503016.pdf page 17
+static const Circuit &C3SX_normal_decomp() {
+  static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
+    Circuit c(4);
+    c.add_op<unsigned>(OpType::H, {3});
+    c.append_qubits(CU1_using_CX(-0.125), {0, 3});
+    c.add_op<unsigned>(OpType::H, {3});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::H, {3});
+    c.append_qubits(CU1_using_CX(0.125), {1, 3});
+    c.add_op<unsigned>(OpType::H, {3});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::H, {3});
+    c.append_qubits(CU1_using_CX(-0.125), {1, 3});
+    c.add_op<unsigned>(OpType::H, {3});
+    c.add_op<unsigned>(OpType::CX, {1, 2});
+    c.add_op<unsigned>(OpType::H, {3});
+    c.append_qubits(CU1_using_CX(0.125), {2, 3});
+    c.add_op<unsigned>(OpType::H, {3});
+    c.add_op<unsigned>(OpType::CX, {0, 2});
+    c.add_op<unsigned>(OpType::H, {3});
+    c.append_qubits(CU1_using_CX(-0.125), {2, 3});
+    c.add_op<unsigned>(OpType::H, {3});
+    c.add_op<unsigned>(OpType::CX, {1, 2});
+    c.add_op<unsigned>(OpType::H, {3});
+    c.append_qubits(CU1_using_CX(0.125), {2, 3});
+    c.add_op<unsigned>(OpType::H, {3});
+    c.add_op<unsigned>(OpType::CX, {0, 2});
+    c.add_op<unsigned>(OpType::H, {3});
+    c.append_qubits(CU1_using_CX(-0.125), {2, 3});
+    c.add_op<unsigned>(OpType::H, {3});
+    return c;
+  }());
+  return *C;
+}
+
+// https://arxiv.org/pdf/quant-ph/9503016.pdf lemma 7.5
+const Circuit &C4X_normal_decomp() {
+  static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
+    Circuit c(5);
+    c.add_op<unsigned>(OpType::H, {4});
+    c.append_qubits(CU1_using_CX(-0.5), {3, 4});
+    c.add_op<unsigned>(OpType::H, {4});
+
+    c.append_qubits(RC3X_normal_decomp(), {0, 1, 2, 3});
+    c.add_op<unsigned>(OpType::H, {4});
+    c.append_qubits(CU1_using_CX(0.5), {3, 4});
+    c.add_op<unsigned>(OpType::H, {4});
+    c.append_qubits(RC3X_normal_decomp().dagger(), {0, 1, 2, 3});
+    c.append_qubits(C3SX_normal_decomp(), {0, 1, 2, 4});
+    return c;
+  }());
+  return *C;
+}
+
 const Circuit &ladder_down() {
   static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
     Circuit c(3);
