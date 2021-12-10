@@ -89,6 +89,8 @@ SCENARIO("Test C3X and C4X decomposition") {
     auto u1 = tket_sim::get_unitary(circ);
     auto u2 = tket_sim::get_unitary(CircPool::C3X_normal_decomp());
     REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+    Transform::synthesise_tket().apply(circ);
+    REQUIRE(circ.count_gates(OpType::CX) == 14);
   }
   GIVEN("A C4X gates") {
     Circuit circ(5);
@@ -96,6 +98,8 @@ SCENARIO("Test C3X and C4X decomposition") {
     auto u1 = tket_sim::get_unitary(circ);
     auto u2 = tket_sim::get_unitary(CircPool::C4X_normal_decomp());
     REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+    Transform::synthesise_tket().apply(circ);
+    REQUIRE(circ.count_gates(OpType::CX) == 36);
   }
 }
 

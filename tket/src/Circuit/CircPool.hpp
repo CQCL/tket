@@ -126,7 +126,7 @@ const Circuit &CCX_normal_decomp();
 /** Equivalent to CCCX, using 14 CX */
 const Circuit &C3X_normal_decomp();
 
-/** Equivalent to CCCCX, using 30 CX */
+/** Equivalent to CCCCX, using 36 CX */
 const Circuit &C4X_normal_decomp();
 
 /** CX[0,1]; CX[2,0]; CCX[0,1,2] */
