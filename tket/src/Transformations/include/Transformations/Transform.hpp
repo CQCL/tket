@@ -40,13 +40,16 @@ class Transform {
 
   explicit Transform(const Transformation& trans) : apply(trans) {}
 
-  static const Transform id;  // identity Transform (does nothing to Circuit)
-
   friend Transform operator>>(const Transform& lhs, const Transform& rhs);
 };
 
-inline const Transform Transform::id = Transform([](const Circuit&) {
+namespace Transforms {
+
+// identity Transform (does nothing to Circuit)
+inline const Transform id = Transform([](const Circuit&) {
   return false;
 });  // returns `false` as it does not change the Circuit in any way
+
+}  // namespace Transforms
 
 }  // namespace tket
