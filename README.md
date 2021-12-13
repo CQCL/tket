@@ -107,6 +107,19 @@ The Python tests require a few more packages. These can be installed with:
 pip install -r pytket/tests/requirements.txt
 ```
 
+### Adding local `pybind11`
+
+There is a known [issue](https://github.com/pybind/pybind11/issues/3081) with using `pybind11`
+from the `conan-center` that leads to a Python error when importing `pytket`. To remedy this, 
+`pybind11` must be linked to a local recipe:
+
+```shell
+conan remove -f pybind11/2.8.1
+conan create --profile=tket recipes/pybind11
+```
+
+where the first line is optional, to remove links from potential previous versions.
+
 ### Building symengine
 
 The `symengine` dependency is built from a local conan recipe. Run:
