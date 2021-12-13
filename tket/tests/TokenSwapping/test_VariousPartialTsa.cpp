@@ -169,61 +169,7 @@ SCENARIO("Partial TSA: Rings") {
   }
 }
 
-SCENARIO("Partial TSA: Fully connected") {
-  const vector<std::string> problem_messages{
-      "[K5: 51644: v5 i1 f100 s1: 100 problems; 224 tokens]",
-      "[K9: 51665: v9 i1 f100 s1: 100 problems; 416 tokens]"};
-
-  Tester tester;
-  tester.messages_full_trivial_tsa = {
-      "[TSA=Trivial FULL PF=RiverFlow\n"
-      "224 tokens; 172 total L; 149 swaps.\n"
-      "L-decr %: min 100, max 100, av 100.\n"
-      "Power %: min 50, max 100, av 64]",
-
-      "[TSA=Trivial FULL PF=RiverFlow\n"
-      "416 tokens; 378 total L; 342 swaps.\n"
-      "L-decr %: min 100, max 100, av 100.\n"
-      "Power %: min 50, max 100, av 56]",
-  };
-
-  tester.messages_partial_trivial_tsa = {
-      "[TSA=Trivial NONZERO PF=RiverFlow\n"
-      "224 tokens; 172 total L; 84 swaps.\n"
-      "L-decr %: min 25, max 100, av 74.\n"
-      "Power %: min 50, max 100, av 63]",
-
-      "[TSA=Trivial NONZERO PF=RiverFlow\n"
-      "416 tokens; 378 total L; 98 swaps.\n"
-      "L-decr %: min 12, max 100, av 46.\n"
-      "Power %: min 50, max 100, av 58]"};
-
-  tester.messages_cycles_tsa_0 = {
-      "[TSA=Cycles PF=RiverFlow\n"
-      "224 tokens; 172 total L; 149 swaps.\n"
-      "L-decr %: min 100, max 100, av 100.\n"
-      "Power %: min 50, max 100, av 64]",
-
-      "[TSA=Cycles PF=RiverFlow\n"
-      "416 tokens; 378 total L; 342 swaps.\n"
-      "L-decr %: min 100, max 100, av 100.\n"
-      "Power %: min 50, max 100, av 56]"};
-
-  std::string arch_name;
-  const ProblemGenerator00 generator;
-
-  for (size_t index = 0; index < problem_messages.size(); ++index) {
-    auto num_vertices = 4 * index + 5;
-    const FullyConnected arch(num_vertices);
-    arch_name = "K" + std::to_string(num_vertices);
-    tester.rng.set_seed();
-    const auto problems = generator.get_problems(
-        arch_name, arch, tester.rng, problem_messages[index]);
-
-    tester.run_test(arch, problems, index);
-  }
-}
-
+ 
 SCENARIO("Partial TSA: Square grid") {
   const vector<std::array<unsigned, 3>> grid_parameters = {
       {2, 3, 3}, {5, 5, 3}};

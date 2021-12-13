@@ -30,23 +30,23 @@ bool Architecture::valid_operation(
     /*const OpType& optype, */ const std::vector<Node>& uids) const {
   if (uids.size() ==
       1) {  // TODO: for simple case here this should probably not pass if
-            // uid_exists[uids[0]] == FALSE, but should be fine for now?
+            // node_exists[uids[0]] == FALSE, but should be fine for now?
     return true;
   } else if (uids.size() == 2) {
-    if (this->uid_exists(uids[0]) && this->uid_exists(uids[1]) &&
-        (this->connection_exists(uids[0], uids[1]) ||
-         this->connection_exists(uids[1], uids[0]))) {
+    if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
+        (this->edge_exists(uids[0], uids[1]) ||
+         this->edge_exists(uids[1], uids[0]))) {
       return true;
     }
   } else if (uids.size() == 3) {
     bool con_0_exists =
-        (this->connection_exists(uids[0], uids[1]) ||
-         this->connection_exists(uids[1], uids[0]));
+        (this->edge_exists(uids[0], uids[1]) ||
+         this->edge_exists(uids[1], uids[0]));
     bool con_1_exists =
-        (this->connection_exists(uids[2], uids[1]) ||
-         this->connection_exists(uids[1], uids[2]));
-    if (this->uid_exists(uids[0]) && this->uid_exists(uids[1]) &&
-        this->uid_exists(uids[2]) && con_0_exists && con_1_exists) {
+        (this->edge_exists(uids[2], uids[1]) ||
+         this->edge_exists(uids[1], uids[2]));
+    if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
+        this->node_exists(uids[2]) && con_0_exists && con_1_exists) {
       return true;
     }
   }

@@ -15,8 +15,8 @@ LexicographicalComparison::LexicographicalComparison(
   lexicographical_distances_t distance_vector(diameter, 0);
   for (const auto& interaction : this->interacting_nodes_) {
     // If Node not in architecture, don't add
-    if (!this->architecture_->uid_exists(interaction.first) ||
-        !this->architecture_->uid_exists(interaction.second)) {
+    if (!this->architecture_->node_exists(interaction.first) ||
+        !this->architecture_->node_exists(interaction.second)) {
       throw LexicographicalComparisonError(
           "Constructor passed some interacting node not in architecture.");
     }

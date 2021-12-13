@@ -35,7 +35,7 @@ std::tuple<Circuit, unit_map_t, unit_map_t> test_routing_method_mf_swap_perm(
     const Circuit& c, const ArchitecturePtr& a) {
   Circuit copy(c);
   std::vector<Qubit> qs = copy.all_qubits();
-  std::vector<Node> ns = a->get_all_uids_vec();
+  std::vector<Node> ns = a->get_all_nodes_vec();
   // enforce in tests that ns >= qs, this is testing purposes only so fine...
   unit_map_t rename_map, final_map;
   for (unsigned i = 0; i < qs.size(); i++) {
@@ -54,7 +54,7 @@ std::tuple<Circuit, unit_map_t, unit_map_t> test_routing_method_mf_swap_no_perm(
     const Circuit& c, const ArchitecturePtr& a) {
   Circuit copy(c);
   std::vector<Qubit> qs = copy.all_qubits();
-  std::vector<Node> ns = a->get_all_uids_vec();
+  std::vector<Node> ns = a->get_all_nodes_vec();
   // enforce in tests that ns >= qs, this is testing purposes only so fine...
   unit_map_t rename_map, final_map;
   for (unsigned i = 0; i < qs.size(); i++) {
@@ -79,7 +79,7 @@ std::tuple<Circuit, unit_map_t, unit_map_t> test_routing_method_circuit_no_perm(
   copy.add_op<unsigned>(OpType::CX, {1, 0});
 
   std::vector<Qubit> qs = copy.all_qubits();
-  std::vector<Node> ns = a->get_all_uids_vec();
+  std::vector<Node> ns = a->get_all_nodes_vec();
   // enforce in tests that ns >= qs, this is testing purposes only so fine...
   unit_map_t rename_map, final_map;
   for (unsigned i = 0; i < qs.size(); i++) {

@@ -50,7 +50,7 @@ unit_map_t RoutingMethodCircuit::routing_method(
   unit_map_t swap_permutation;
   for (const auto& pair : new_labelling) {
     if (pair.first != pair.second &&
-        architecture->uid_exists(Node(pair.first))) {
+        architecture->node_exists(Node(pair.first))) {
       swap_permutation.insert(pair);
     }
   }

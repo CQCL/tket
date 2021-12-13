@@ -15,7 +15,7 @@ LexiRoute::LexiRoute(
     this->labelling_.insert({qb, qb});
     Node n(qb);
     // store which Node have been asigned to Circuit already
-    if (this->architecture_->uid_exists(n)) {
+    if (this->architecture_->node_exists(n)) {
       this->assigned_nodes_.insert(n);
     }
   }
@@ -25,7 +25,7 @@ bool LexiRoute::assign_at_distance(
     const UnitID& assignee, const Node& root, unsigned distances) {
   node_set_t valid_nodes;
   for (const Node& neighbour :
-       this->architecture_->uids_at_distance(root, distances)) {
+       this->architecture_->nodes_at_distance(root, distances)) {
     if (this->assigned_nodes_.find(neighbour) == this->assigned_nodes_.end() ||
         this->mapping_frontier_->ancilla_nodes_.find(neighbour) !=
             this->mapping_frontier_->ancilla_nodes_.end()) {
@@ -84,9 +84,9 @@ bool LexiRoute::update_labelling() {
   bool relabelled = false;
   for (const auto& pair : this->interacting_uids_) {
     bool uid_0_exist =
-        this->architecture_->uid_exists(Node(this->labelling_[pair.first]));
+        this->architecture_->node_exists(Node(this->labelling_[pair.first]));
     bool uid_1_exist =
-        this->architecture_->uid_exists(Node(this->labelling_[pair.second]));
+        this->architecture_->node_exists(Node(this->labelling_[pair.second]));
     if (!uid_0_exist || !uid_1_exist) {
       relabelled = true;
     }
@@ -97,13 +97,14 @@ bool LexiRoute::update_labelling() {
       if (this->assigned_nodes_.size() == 0) {
         // find nodes with best averaged distance to other nodes
         // place it there...
-        std::set<Node> max_degree_uids = this->architecture_->max_degree_uids();
-        auto it = max_degree_uids.begin();
+        std::set<Node> max_degree_nodes =
+            this->architecture_->max_degree_nodes();
+        auto it = max_degree_nodes.begin();
         lexicographical_distances_t winning_distances =
             this->architecture_->get_distances(*it);
         Node preserved_node = Node(*it);
         ++it;
-        for (; it != max_degree_uids.end(); ++it) {
+        for (; it != max_degree_nodes.end(); ++it) {
           lexicographical_distances_t comparison_distances =
               this->architecture_->get_distances(*it);
           if (comparison_distances < winning_distances) {
@@ -191,8 +192,8 @@ void LexiRoute::set_interacting_uids(bool assigned_only) {
           // we can assume from how we iterate through pairs that each qubit
           // will only be found in one match
           if (!assigned_only ||
-              (this->architecture_->uid_exists(Node(it->first)) &&
-               this->architecture_->uid_exists(Node(jt->first)))) {
+              (this->architecture_->node_exists(Node(it->first)) &&
+               this->architecture_->node_exists(Node(jt->first)))) {
             interacting_uids_.insert({it->first, jt->first});
             interacting_uids_.insert({jt->first, it->first});
           }
@@ -211,7 +212,7 @@ swap_set_t LexiRoute::get_candidate_swaps() {
   for (const auto& interaction : this->interacting_uids_) {
     Node assigned_first = Node(this->labelling_[interaction.first]);
     std::vector<Node> adjacent_uids_0 =
-        this->architecture_->uids_at_distance(assigned_first, 1);
+        this->architecture_->nodes_at_distance(assigned_first, 1);
     if (adjacent_uids_0.size() == 0) {
       throw LexiRouteError(
           assigned_first.repr() + " has no adjacent Node in Architecture.");
@@ -224,7 +225,7 @@ swap_set_t LexiRoute::get_candidate_swaps() {
     }
     Node assigned_second = Node(this->labelling_[interaction.second]);
     std::vector<Node> adjacent_uids_1 =
-        this->architecture_->uids_at_distance(assigned_second, 1);
+        this->architecture_->nodes_at_distance(assigned_second, 1);
     if (adjacent_uids_1.size() == 0) {
       throw LexiRouteError(
           assigned_first.repr() + " has no adjacent Node in Architecture.");
@@ -332,10 +333,10 @@ std::pair<bool, bool> LexiRoute::check_bridge(
 const std::pair<size_t, size_t> LexiRoute::pair_distances(
     const Node& p0_first, const Node& p0_second, const Node& p1_first,
     const Node& p1_second) const {
-  if (!this->architecture_->uid_exists(p0_first) ||
-      !this->architecture_->uid_exists(p0_second) ||
-      !this->architecture_->uid_exists(p1_first) ||
-      !this->architecture_->uid_exists(p1_second)) {
+  if (!this->architecture_->node_exists(p0_first) ||
+      !this->architecture_->node_exists(p0_second) ||
+      !this->architecture_->node_exists(p1_first) ||
+      !this->architecture_->node_exists(p1_second)) {
     throw LexiRouteError(
         "Node passed to LexiRoute::pair_distances not in architecture.");
   }
