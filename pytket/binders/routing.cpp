@@ -98,7 +98,7 @@ PYBIND11_MODULE(routing, m) {
       m, "NodeGraph",
       "Abstract class for describing a device connectivity graph.");
 
-  py::class_<Architecture, graphs::AbstractGraph<Node>, ArchitecturePtr>(
+  py::class_<Architecture, ArchitecturePtr, graphs::AbstractGraph<Node>>(
       m, "Architecture",
       "Class describing the connectivity of qubits on a general device.")
       .def(
@@ -158,8 +158,8 @@ PYBIND11_MODULE(routing, m) {
           })
       .def(py::self == py::self);
   py::class_<
-      SquareGrid, Architecture, graphs::AbstractGraph<Node>,
-      std::shared_ptr<SquareGrid>>(
+      SquareGrid, std::shared_ptr<SquareGrid>, Architecture,
+      graphs::AbstractGraph<Node>>(
       m, "SquareGrid",
       "Architecture class for qubits arranged in a square lattice of "
       "given number of rows and columns. Qubits are arranged with qubits "

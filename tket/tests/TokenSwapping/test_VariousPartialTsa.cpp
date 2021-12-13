@@ -169,7 +169,6 @@ SCENARIO("Partial TSA: Rings") {
   }
 }
 
- 
 SCENARIO("Partial TSA: Square grid") {
   const vector<std::array<unsigned, 3>> grid_parameters = {
       {2, 3, 3}, {5, 5, 3}};
