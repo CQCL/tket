@@ -19,8 +19,8 @@ SCENARIO("main entry function for TSA") {
   std::stringstream problem_ss;
 
   const SquareGrid arch(3, 4, 2);
-  const auto nodes = arch.get_all_uids_vec();
-  const auto edges = arch.get_connections_vec();
+  const auto nodes = arch.get_all_nodes_vec();
+  const auto edges = arch.get_all_edges_vec();
   problem_ss << nodes.size() << " nodes; " << edges.size() << " edges.";
 
   // The value is the set of all neighbouring nodes.

@@ -15,11 +15,11 @@ bool MappingManager::route_circuit(
   // with more logical qubits than an Architecture has
   // physical qubits physically permitted
 
-  if (circuit.n_qubits() > this->architecture_->n_uids()) {
+  if (circuit.n_qubits() > this->architecture_->n_nodes()) {
     std::string error_string =
         "Circuit has" + std::to_string(circuit.n_qubits()) +
         " logical qubits. Architecture has " +
-        std::to_string(this->architecture_->n_uids()) +
+        std::to_string(this->architecture_->n_nodes()) +
         " physical qubits. Circuit to be routed can not have more "
         "qubits than the Architecture.";
     throw MappingManagerError(error_string);

@@ -220,7 +220,7 @@ SCENARIO("Full TSA: Random trees") {
 
     const auto edges = tree_generator.get_tree_edges(tester.rng);
     const Architecture arch(edges);
-    REQUIRE(arch.n_uids() == edges.size() + 1);
+    REQUIRE(arch.n_nodes() == edges.size() + 1);
     arch_name = "Tree" + std::to_string(index);
     tester.add_problems(arch, arch_name, problem_messages[index]);
   }

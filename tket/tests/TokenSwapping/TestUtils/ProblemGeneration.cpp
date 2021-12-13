@@ -50,7 +50,7 @@ vector<VertexMapping> ProblemGenerator00::get_problems(
     // leading to different tests.
     const std::string& expected_summary) const {
   REQUIRE(step > 0);
-  const unsigned num_vertices = arch.n_uids();
+  const unsigned num_vertices = arch.n_nodes();
   TSProblemParameters00 params;
   vector<VertexMapping> vertex_mappings;
 

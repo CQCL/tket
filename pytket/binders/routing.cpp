@@ -119,7 +119,7 @@ PYBIND11_MODULE(routing, m) {
           "__repr__",
           [](const Architecture &arc) {
             return "<tket::Architecture, nodes=" +
-                   std::to_string(arc.n_uids()) + ">";
+                   std::to_string(arc.n_nodes()) + ">";
           })
       .def(
           "get_distance", &Architecture::get_distance,
@@ -157,7 +157,9 @@ PYBIND11_MODULE(routing, m) {
                    std::to_string(arc.n_nodes()) + ">";
           })
       .def(py::self == py::self);
-  py::class_<SquareGrid, Architecture, graphs::AbstractGraph<Node>, std::shared_ptr<SquareGrid>>(
+  py::class_<
+      SquareGrid, Architecture, graphs::AbstractGraph<Node>,
+      std::shared_ptr<SquareGrid>>(
       m, "SquareGrid",
       "Architecture class for qubits arranged in a square lattice of "
       "given number of rows and columns. Qubits are arranged with qubits "
@@ -206,7 +208,9 @@ PYBIND11_MODULE(routing, m) {
                ", columns=" + std::to_string(arc.get_columns()) +
                ", layers=" + std::to_string(arc.get_layers()) + ">";
       });
-  py::class_<RingArch, std::shared_ptr<RingArch>, Architecture, graphs::AbstractGraph<Node>>(
+  py::class_<
+      RingArch, std::shared_ptr<RingArch>, Architecture,
+      graphs::AbstractGraph<Node>>(
       m, "RingArch",
       "Architecture class for number of qubits arranged in a ring.")
       .def(

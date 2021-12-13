@@ -24,7 +24,7 @@ SCENARIO("Test RoutingMethod default methods.") {
 // routing Their design is to minimally test the required features of the
 // methods, not to actually succesfully route a circuit
 bool test_check_method(const Circuit& c, const ArchitecturePtr& a) {
-  if (c.n_qubits() > 2 && a->n_uids() > 2) {
+  if (c.n_qubits() > 2 && a->n_nodes() > 2) {
     return true;
   } else {
     return false;
