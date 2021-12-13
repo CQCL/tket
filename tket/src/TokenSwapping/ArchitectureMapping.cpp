@@ -8,7 +8,7 @@ namespace tsa_internal {
 
 ArchitectureMapping::ArchitectureMapping(const Architecture& arch)
     : m_arch(arch) {
-  const auto uids = arch.get_all_nodes();
+  const auto uids = arch.nodes();
   m_vertex_to_node_mapping.reserve(uids.size());
   for (const UnitID& uid : uids) {
     m_vertex_to_node_mapping.emplace_back(Node(uid));
