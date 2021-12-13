@@ -57,6 +57,14 @@ UnitaryTableau::UnitaryTableau(
   VectorXb phase(2 * n_qubits);
   phase << xph, zph;
   tab_ = SymplecticTableau(xmat, zmat, phase);
+  MatrixXb expected_anticommutes(2 * n_qubits, 2 * n_qubits);
+  expected_anticommutes << MatrixXb::Zero(n_qubits, n_qubits),
+      MatrixXb::Identity(n_qubits, n_qubits),
+      MatrixXb::Identity(n_qubits, n_qubits),
+      MatrixXb::Zero(n_qubits, n_qubits);
+  if (tab_.anticommuting_rows() != expected_anticommutes)
+    throw NotValid(
+        "Rows of tableau do not (anti-)commute as expected for UnitaryTableau");
   qubits_ = boost::bimap<Qubit, unsigned>();
   for (unsigned i = 0; i < n_qubits; ++i) {
     qubits_.insert({Qubit(i), i});
@@ -572,11 +580,19 @@ void from_json(const nlohmann::json& j, UnitaryTableau& tab) {
     throw NotValid(
         "Size of tableau does not match requirements for UnitaryTableau.");
   qubit_vector_t qbs = j.at("qubits").get<qubit_vector_t>();
-  if (qbs.size() != tab.tab_.get_n_qubits())
+  unsigned nqbs = qbs.size();
+  if (nqbs != tab.tab_.get_n_qubits())
     throw NotValid(
         "Number of qubits in json UnitaryTableau does not match tableau size.");
+  MatrixXb expected_anticommutes(2 * nqbs, 2 * nqbs);
+  expected_anticommutes << MatrixXb::Zero(nqbs, nqbs),
+      MatrixXb::Identity(nqbs, nqbs), MatrixXb::Identity(nqbs, nqbs),
+      MatrixXb::Zero(nqbs, nqbs);
+  if (tab.tab_.anticommuting_rows() != expected_anticommutes)
+    throw NotValid(
+        "Rows of tableau do not (anti-)commute as expected for UnitaryTableau");
   tab.qubits_.clear();
-  for (unsigned i = 0; i < qbs.size(); ++i) {
+  for (unsigned i = 0; i < nqbs; ++i) {
     tab.qubits_.insert({qbs.at(i), i});
   }
 }

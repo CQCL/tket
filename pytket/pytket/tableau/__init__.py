@@ -8,7 +8,8 @@
 
 """
 Python API module for interfacing with tket c++ implemented functions and modules.
-Exports classes and tools for binary tableau representations of Clifford unitaries/states.
+Exports classes and tools for binary tableau representations of Clifford 
+unitaries/states.
 """
 
 from pytket._tket.tableau import *  # type: ignore

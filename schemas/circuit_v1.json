@@ -723,6 +723,14 @@
       "type": "object",
       "description": "Binary matrix form of a collection of Pauli strings.",
       "properties": {
+        "nrows": {
+          "type": "integer",
+          "description": "Number of rows in the tableau."
+        },
+        "nqubits": {
+          "type": "integer",
+          "description": "Number of qubits (columns) in the tableau."
+        },
         "xmat": {
           "$ref": "#/definitions/matrix"
         },

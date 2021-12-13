@@ -14,6 +14,8 @@
 
 #include "UnitaryTableauBox.hpp"
 
+#include "Ops/OpJsonFactory.hpp"
+
 namespace tket {
 
 UnitaryTableauBox::UnitaryTableauBox(const UnitaryTableau& tab)
@@ -69,6 +71,8 @@ Op_ptr UnitaryTableauBox::from_json(const nlohmann::json& j) {
   j.at("tab").get_to(tab);
   return std::make_shared<const UnitaryTableauBox>(tab);
 }
+
+REGISTER_OPFACTORY(UnitaryTableauBox, UnitaryTableauBox)
 
 op_signature_t UnitaryTableauBox::get_signature() const {
   return op_signature_t(tab_.get_qubits().size(), EdgeType::Quantum);

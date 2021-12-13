@@ -15,6 +15,7 @@
 #include "SymplecticTableau.hpp"
 
 #include "OpType/OpTypeInfo.hpp"
+#include "Utils/EigenConfig.hpp"
 #include "Utils/Exceptions.hpp"
 
 namespace tket {
@@ -303,11 +304,11 @@ void SymplecticTableau::apply_pauli_gadget(
 }
 
 MatrixXb SymplecticTableau::anticommuting_rows() const {
-  MatrixXb res(n_rows_, n_rows_);
+  MatrixXb res = MatrixXb::Zero(n_rows_, n_rows_);
   for (unsigned i = 0; i < n_rows_; ++i) {
-    for (unsigned j = 0; j < i; ++i) {
+    for (unsigned j = 0; j < i; ++j) {
       bool anti = false;
-      for (unsigned q = 0; q < n_qubits_; ++i) {
+      for (unsigned q = 0; q < n_qubits_; ++q) {
         anti ^= (xmat_(i, q) && zmat_(j, q));
         anti ^= (xmat_(j, q) && zmat_(i, q));
       }
@@ -364,15 +365,23 @@ void SymplecticTableau::col_mult(
 }
 
 void to_json(nlohmann::json &j, const SymplecticTableau &tab) {
+  j["nrows"] = tab.n_rows_;
+  j["nqubits"] = tab.n_qubits_;
   j["xmat"] = tab.xmat_;
   j["zmat"] = tab.zmat_;
   j["phase"] = tab.phase_;
 }
 
 void from_json(const nlohmann::json &j, SymplecticTableau &tab) {
-  tab = SymplecticTableau(
-      j.at("xmat").get<MatrixXb>(), j.at("zmat").get<MatrixXb>(),
-      j.at("phase").get<VectorXb>());
+  unsigned n_rows = j.at("nrows").get<unsigned>();
+  unsigned n_qbs = j.at("nqubits").get<unsigned>();
+  MatrixXb xmat(n_rows, n_qbs);
+  MatrixXb zmat(n_rows, n_qbs);
+  VectorXb phase(n_rows);
+  from_json(j.at("xmat"), xmat);
+  from_json(j.at("zmat"), zmat);
+  from_json(j.at("phase"), phase);
+  tab = SymplecticTableau(xmat, zmat, phase);
 }
 
 }  // namespace tket

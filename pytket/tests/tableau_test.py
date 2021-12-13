@@ -13,8 +13,8 @@
 # limitations under the License.
 
 import pytest  # type: ignore
-from pytket.circuit import Circuit, OpType, Qubit
-from pytket.tableau import UnitaryTableau, UnitaryTableauBox
+from pytket.circuit import Circuit, OpType, Qubit  # type: ignore
+from pytket.tableau import UnitaryTableau, UnitaryTableauBox  # type: ignore
 from pytket.utils.results import compare_unitaries
 import numpy as np
 
@@ -38,39 +38,11 @@ def test_tableau_box_from_gates() -> None:
 
 
 def test_tableau_box_from_matrix() -> None:
-    xx = np.asarray(
-        [
-            [1, 1, 0],
-            [0, 1, 0],
-            [0, 0, 1],
-        ],
-        dtype=bool,
-    )
-    xz = np.asarray(
-        [
-            [0, 0, 0],
-            [0, 0, 0],
-            [0, 0, 1],
-        ],
-        dtype=bool,
-    )
+    xx = np.asarray([[1, 1, 0], [0, 1, 0], [0, 0, 1],], dtype=bool,)
+    xz = np.asarray([[0, 0, 0], [0, 0, 0], [0, 0, 1],], dtype=bool,)
     xph = np.asarray([0, 0, 1], dtype=bool)
-    zx = np.asarray(
-        [
-            [0, 0, 0],
-            [0, 1, 0],
-            [0, 0, 0],
-        ],
-        dtype=bool,
-    )
-    zz = np.asarray(
-        [
-            [1, 0, 0],
-            [1, 1, 0],
-            [0, 0, 1],
-        ],
-        dtype=bool,
-    )
+    zx = np.asarray([[0, 0, 0], [0, 1, 0], [0, 0, 0],], dtype=bool,)
+    zz = np.asarray([[1, 0, 0], [1, 1, 0], [0, 0, 1],], dtype=bool,)
     zph = np.asarray([1, 0, 1], dtype=bool)
     box = UnitaryTableauBox(xx, xz, xph, zx, zz, zph)
     circ = Circuit(3)

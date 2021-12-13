@@ -229,4 +229,29 @@ SCENARIO("Unitary inversions") {
   }
 }
 
+SCENARIO("Tableau serialisation") {
+  GIVEN("A circuit containing a tableau") {
+    MatrixXb xx(3, 3);
+    MatrixXb xz(3, 3);
+    VectorXb xph(3);
+    MatrixXb zx(3, 3);
+    MatrixXb zz(3, 3);
+    VectorXb zph(3);
+    xx << 1, 1, 0, 0, 1, 0, 0, 0, 1;
+    xz << 0, 0, 0, 0, 0, 0, 0, 0, 1;
+    xph << 0, 0, 1;
+    zx << 0, 0, 0, 0, 1, 0, 0, 0, 0;
+    zz << 1, 0, 0, 1, 1, 0, 0, 0, 1;
+    zph << 1, 0, 1;
+    Op_ptr box =
+        std::make_shared<const UnitaryTableauBox>(xx, xz, xph, zx, zz, zph);
+    Circuit circ(3);
+    circ.add_op<unsigned>(box, uvec{0, 1, 2});
+
+    nlohmann::json j_circ = circ;
+    Circuit circ2 = j_circ.get<Circuit>();
+    REQUIRE(circ2 == circ);
+  }
+}
+
 }  // namespace tket::test_UnitaryTableau
