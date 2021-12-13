@@ -20,7 +20,7 @@ bool respects_connectivity_constraints(
     bool bridge_allowed) {
   unit_set_t qb_lookup;
   for (const Qubit &qb : circ.all_qubits()) {
-    if (!arch.uid_exists(Node(qb))) return false;
+    if (!arch.node_exists(Node(qb))) return false;
     qb_lookup.insert(qb);
   }
   for (Circuit::CommandIterator it = circ.begin(); it != circ.end(); ++it) {
@@ -62,7 +62,7 @@ bool respects_connectivity_constraints(
         if (directed) {
           OpType ot = op->get_type();
           if ((ot == OpType::CX || ot == OpType::ECR) &&
-              !arch.connection_exists(Node(qbs[0]), Node(qbs[1])))
+              !arch.edge_exists(Node(qbs[0]), Node(qbs[1])))
             return false;
         }
         break;

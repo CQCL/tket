@@ -504,7 +504,7 @@ SCENARIO("Test RoutingFrontiers and interaction vectors", "[routing]") {
 
     // Ring of size 4
     RingArch arc(4);
-    node_vector_t ring_nodes = RingArch::get_nodes_canonical_order(4);
+    node_vector_t ring_nodes = arc.get_all_nodes_vec();
     // Create Routing Object
     Routing router(incirc, arc);
     RoutingTester tester(&router);
@@ -915,7 +915,8 @@ SCENARIO("Does increment distance work?", "[routing]") {
   Circuit test_circuit(6);
   add_2qb_gates(test_circuit, OpType::CX, {{0, 1}, {2, 3}, {4, 5}});
   SquareGrid test_architecture(2, 3);
-  node_vector_t square_nodes = SquareGrid::get_nodes_canonical_order(2, 3);
+  node_vector_t square_nodes = test_architecture.get_all_nodes_vec();
+  ;
   Routing test_router(test_circuit, test_architecture);
   RoutingTester routing_tester(&test_router);
   GIVEN("Suitable Distance vector, Swap and increment.") {
@@ -949,7 +950,7 @@ SCENARIO("Does generate_distance_vector work suitably?", "[routing]") {
     Circuit test_circuit(6);
     add_2qb_gates(test_circuit, OpType::CX, {{0, 1}, {2, 3}, {4, 5}});
     SquareGrid test_architecture(3, 2);
-    node_vector_t square_nodes = SquareGrid::get_nodes_canonical_order(3, 2);
+    node_vector_t square_nodes = test_architecture.get_all_nodes_vec();
     // 0 -- 1
     // |    |
     // 2 -- 3
@@ -978,7 +979,7 @@ SCENARIO("Does generate_distance_vector work suitably?", "[routing]") {
     // Creating larger RoutingTester object
     Circuit test_circuit(10);
     SquareGrid test_architecture(2, 5);
-    node_vector_t square_nodes = SquareGrid::get_nodes_canonical_order(2, 5);
+    node_vector_t square_nodes = test_architecture.get_all_nodes_vec();
     // 0 -- 1 -- 2 -- 3 -- 4
     // |    |    |    |    |
     // 5 -- 6 -- 7 -- 8 -- 9
@@ -1012,7 +1013,7 @@ SCENARIO("Does update_distance_vector update as intended?", "[routing]") {
   // Creating RoutingTester object
   Circuit test_circuit(6);
   SquareGrid test_architecture(3, 2);
-  node_vector_t square_nodes = SquareGrid::get_nodes_canonical_order(3, 2);
+  node_vector_t square_nodes = test_architecture.get_all_nodes_vec();
   // 0 -- 1
   // |    |
   // 2 -- 3
@@ -1076,7 +1077,7 @@ SCENARIO(
   // Creating RoutingTester object
   Circuit test_circuit(6);
   SquareGrid test_architecture(3, 2);
-  node_vector_t square_nodes = SquareGrid::get_nodes_canonical_order(3, 2);
+  node_vector_t square_nodes = test_architecture.get_all_nodes_vec();
   // 0 -- 1
   // |    |
   // 2 -- 3
@@ -1127,7 +1128,7 @@ SCENARIO(
   // Creating RoutingTester object
   Circuit test_circuit(6);
   SquareGrid test_architecture(3, 2);
-  node_vector_t square_nodes = SquareGrid::get_nodes_canonical_order(3, 2);
+  node_vector_t square_nodes = test_architecture.get_all_nodes_vec();
   // 0 -- 1
   // |    |
   // 2 -- 3
@@ -1186,13 +1187,13 @@ SCENARIO("Does candidate swaps return all suitable edges?", "[routing]") {
   // Creating RoutingTester object
   Circuit test_circuit(6);
   SquareGrid test_architecture(3, 2);
-  node_vector_t square_nodes = SquareGrid::get_nodes_canonical_order(3, 2);
+  node_vector_t square_nodes = test_architecture.get_all_nodes_vec();
   // 0 -- 1
   // |    |
   // 2 -- 3
   // |    |
   // 4 -- 5
-  std::vector<Connection> test_arc = test_architecture.get_connections_vec();
+  std::vector<Connection> test_arc = test_architecture.get_all_edges_vec();
   Routing test_router(test_circuit, test_architecture);
   RoutingTester routing_tester(&test_router);
   GIVEN("One pair of interacting qubits, four suitable edges between them.") {
@@ -1253,7 +1254,7 @@ SCENARIO(
   // Creating RoutingTester object
   Circuit test_circuit(6);
   SquareGrid test_architecture(3, 2);
-  node_vector_t square_nodes = SquareGrid::get_nodes_canonical_order(3, 2);
+  node_vector_t square_nodes = test_architecture.get_all_nodes_vec();
   // 0 -- 1
   // |    |
   // 2 -- 3
@@ -1310,7 +1311,7 @@ SCENARIO("Does update qmap correctly update mapping from swap?", "[routing]") {
   // Creating RoutingTester object
   Circuit test_circuit(2);
   RingArch test_architecture(2);
-  node_vector_t ring_nodes = RingArch::get_nodes_canonical_order(2);
+  node_vector_t ring_nodes = test_architecture.get_all_nodes_vec();
   Routing test_router(test_circuit, test_architecture);
   RoutingTester routing_tester(&test_router);
   Qubit qb0(0);
@@ -1333,7 +1334,7 @@ SCENARIO(
   Circuit test_circuit(6);
   add_2qb_gates(test_circuit, OpType::CX, {{0, 1}, {2, 3}, {4, 5}});
   SquareGrid test_architecture(3, 2);
-  node_vector_t square_nodes = SquareGrid::get_nodes_canonical_order(3, 2);
+  node_vector_t square_nodes = test_architecture.get_all_nodes_vec();
   // 0 -- 1
   // |    |
   // 2 -- 3
@@ -1389,9 +1390,9 @@ SCENARIO("Test interaction graph and line generation", "[routing]") {
     QubitGraph test_qubit_graph = generate_interaction_graph(test_circuit);
 
     REQUIRE(test_qubit_graph.n_connections() == 3);
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(0), Qubit(1)));
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(2), Qubit(3)));
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(4), Qubit(5)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(0), Qubit(1)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(2), Qubit(3)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(4), Qubit(5)));
 
     QubitLineList qlines = qubit_lines(test_circuit);
     QubitLineList correct_lines = {
@@ -1408,8 +1409,8 @@ SCENARIO("Test interaction graph and line generation", "[routing]") {
     QubitGraph test_qubit_graph = generate_interaction_graph(test_circuit);
 
     REQUIRE(test_qubit_graph.n_connections() == 2);
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(0), Qubit(1)));
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(2), Qubit(4)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(0), Qubit(1)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(2), Qubit(4)));
 
     QubitLineList qlines = qubit_lines(test_circuit);
     QubitLineList correct_lines = {
@@ -1429,11 +1430,11 @@ SCENARIO("Test interaction graph and line generation", "[routing]") {
     QubitGraph test_qubit_graph = generate_interaction_graph(test_circuit);
 
     REQUIRE(test_qubit_graph.n_connections() == 5);
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(0), Qubit(1)));
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(2), Qubit(3)));
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(4), Qubit(5)));
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(2), Qubit(1)));
-    REQUIRE(test_qubit_graph.connection_exists(Qubit(4), Qubit(3)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(0), Qubit(1)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(2), Qubit(3)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(4), Qubit(5)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(2), Qubit(1)));
+    REQUIRE(test_qubit_graph.edge_exists(Qubit(4), Qubit(3)));
 
     QubitLineList qlines = qubit_lines(test_circuit);
     QubitLineList correct_lines = {
@@ -1477,16 +1478,16 @@ SCENARIO("Test routing with partial map provided", "[routing]") {
     // test removal only happpens if subgraph remains connected
     SquareGrid test_architecture(3, 2);
     Architecture subarc = test_architecture;
-    node_vector_t square_nodes = SquareGrid::get_nodes_canonical_order(3, 2);
+    node_vector_t square_nodes = test_architecture.get_all_nodes_vec();
     // 0 -- 1
     // |    |
     // 2 -- 3
     // |    |
     // 4 -- 5
     // subarc = {0, 1, 3}
-    subarc.remove_uid(square_nodes[5]);
-    subarc.remove_uid(square_nodes[4]);
-    subarc.remove_uid(square_nodes[3]);
+    subarc.remove_node(square_nodes[5]);
+    subarc.remove_node(square_nodes[4]);
+    subarc.remove_node(square_nodes[3]);
     REQUIRE(subgraph_remove_if_connected(
         test_architecture, subarc, square_nodes[3]));
     REQUIRE(!subgraph_remove_if_connected(
@@ -1505,10 +1506,8 @@ SCENARIO("Test routing with partial map provided", "[routing]") {
 
     remove_unmapped_nodes(test_architecture2, map, circ);
     REQUIRE(test_architecture2.n_connections() == 2);
-    REQUIRE(
-        test_architecture2.connection_exists(square_nodes[0], square_nodes[1]));
-    REQUIRE(
-        test_architecture2.connection_exists(square_nodes[0], square_nodes[2]));
+    REQUIRE(test_architecture2.edge_exists(square_nodes[0], square_nodes[1]));
+    REQUIRE(test_architecture2.edge_exists(square_nodes[0], square_nodes[2]));
 
     // test unmapped nodes which cannot be removed are mapped to a qubit
     map.left.erase(qb0);
@@ -1516,10 +1515,8 @@ SCENARIO("Test routing with partial map provided", "[routing]") {
     remove_unmapped_nodes(test_architecture2, map, circ);
     REQUIRE(map.left.find(qb0)->second == square_nodes[0]);
     REQUIRE(test_architecture2.n_connections() == 2);
-    REQUIRE(
-        test_architecture2.connection_exists(square_nodes[0], square_nodes[1]));
-    REQUIRE(
-        test_architecture2.connection_exists(square_nodes[0], square_nodes[2]));
+    REQUIRE(test_architecture2.edge_exists(square_nodes[0], square_nodes[1]));
+    REQUIRE(test_architecture2.edge_exists(square_nodes[0], square_nodes[2]));
 
     // test when an unmapped node is mapped, the most connected is chosen
     // (i.e. least connected nodes are removed first)
@@ -1637,7 +1634,7 @@ SCENARIO(
       }
     }
     SquareGrid arc(3, 3);
-    node_vector_t square_nodes = SquareGrid::get_nodes_canonical_order(3, 3);
+    node_vector_t square_nodes = arc.get_all_nodes_vec();
 
     const std::vector<gate_error_t> gate_errors{
         0.3, 0.2, 0.1, 0.02, 0.22, 0.46, 0.18, 1.0 - 0.907, 1.0 - 0.7241};
@@ -1804,7 +1801,7 @@ SCENARIO(
     add_2qb_gates(circ, OpType::CX, {{0, 4}, {3, 8}, {4, 7}, {3, 6}});
 
     SquareGrid arc(3, 3);
-    node_vector_t square_nodes = SquareGrid::get_nodes_canonical_order(3, 3);
+    node_vector_t square_nodes = arc.get_all_nodes_vec();
     Routing router(circ, arc);
     RoutingTester test_router(&router);
     RoutingConfig new_config(50, 0, 0, 0);
@@ -1828,7 +1825,7 @@ SCENARIO(
     add_2qb_gates(circ, OpType::CX, {{0, 4}, {3, 8}, {4, 7}, {3, 6}});
 
     SquareGrid arc(3, 3);
-    node_vector_t square_nodes = SquareGrid::get_nodes_canonical_order(3, 3);
+    node_vector_t square_nodes = arc.get_all_nodes_vec();
     Routing router(circ, arc);
     RoutingTester test_router(&router);
     qubit_bimap_t qmap = test_router.set_default_initial_map(square_nodes);
@@ -1846,7 +1843,7 @@ SCENARIO(
     Circuit circ(6);
     SquareGrid arc(6, 1);
     add_2qb_gates(circ, OpType::CX, {{0, 2}, {3, 5}, {1, 3}});
-    node_vector_t square_nodes = SquareGrid::get_nodes_canonical_order(6, 1);
+    node_vector_t square_nodes = arc.get_all_nodes_vec();
     Routing router(circ, arc);
     RoutingTester test_router(&router);
     qubit_bimap_t qmap = test_router.set_default_initial_map(square_nodes);
@@ -2640,7 +2637,7 @@ SCENARIO("Does add_distributed_cx account for incorrect BRIDGE nodes?") {
 
     Placement placer(a);
     qubit_vector_t c_qubits = c.all_qubits();
-    node_vector_t a_nodes = a.get_all_uids_vec();
+    node_vector_t a_nodes = a.get_all_nodes_vec();
 
     qubit_mapping_t initial_map = {
         {c_qubits[0], a_nodes[0]}, {c_qubits[1], a_nodes[1]},
@@ -2677,7 +2674,7 @@ SCENARIO("Does add_distributed_cx account for incorrect BRIDGE nodes?") {
 
     Placement placer(a);
     qubit_vector_t c_qubits = c.all_qubits();
-    node_vector_t a_nodes = a.get_all_uids_vec();
+    node_vector_t a_nodes = a.get_all_nodes_vec();
 
     qubit_mapping_t initial_map = {
         {c_qubits[0], a_nodes[0]}, {c_qubits[1], a_nodes[1]},

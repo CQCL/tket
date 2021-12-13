@@ -304,14 +304,6 @@ void Circuit::remove_vertices(
 }
 
 void Circuit::remove_vertices(
-    const VertexVec& surplus, GraphRewiring graph_rewiring,
-    VertexDeletion vertex_deletion) {
-  for (const Vertex& to_remove : surplus) {
-    remove_vertex(to_remove, graph_rewiring, vertex_deletion);
-  }
-}
-
-void Circuit::remove_vertices(
     const VertexList& surplus, GraphRewiring graph_rewiring,
     VertexDeletion vertex_deletion) {
   for (const Vertex& to_remove : surplus) {

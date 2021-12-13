@@ -466,10 +466,10 @@ SCENARIO("Track initial and final maps throughout compilation") {
     cp_route->apply(cu);
     bool ids_updated = true;
     for (auto pair : cu.get_initial_map_ref().left) {
-      ids_updated &= grid.uid_exists(Node(pair.second));
+      ids_updated &= grid.node_exists(Node(pair.second));
     }
     for (auto pair : cu.get_final_map_ref().left) {
-      ids_updated &= grid.uid_exists(Node(pair.second));
+      ids_updated &= grid.node_exists(Node(pair.second));
     }
     REQUIRE(ids_updated);
     Circuit res(cu.get_circ_ref());

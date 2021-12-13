@@ -27,7 +27,7 @@ using Connection = Architecture::Connection;
 bool check_edge_break_order(
     const Architecture& arc, const QubitGraph& qg, const qubit_bimap_t& map) {
   std::vector<unsigned> mapped_edge_weights, unmapped_edge_weights;
-  for (auto [q1, q2] : qg.get_connections_vec()) {
+  for (auto [q1, q2] : qg.get_all_edges_vec()) {
     const unsigned weight = qg.get_connection_weight(q1, q2);
     if (weight >= unmapped_edge_weights.size()) {
       unmapped_edge_weights.resize(weight + 1, 0);
@@ -37,7 +37,7 @@ bool check_edge_break_order(
       unmapped_edge_weights[weight]++;
     } else {
       const Node n1 = map.left.at(q1), n2 = map.left.at(q2);
-      if (!(arc.connection_exists(n1, n2) || arc.connection_exists(n2, n1))) {
+      if (!(arc.edge_exists(n1, n2) || arc.edge_exists(n2, n1))) {
         unmapped_edge_weights[weight]++;
       }
     }
@@ -107,7 +107,7 @@ SCENARIO("Small monomorphisms. place_qubit") {
     std::vector<qubit_bimap_t> result =
         monomorphism_edge_break(arc, qg, 10, 60000);
     // REQUIRE(result.second==0);
-    REQUIRE(result[0].size() == qg.n_uids());
+    REQUIRE(result[0].size() == qg.n_nodes());
     for (const auto& [qb, n] : result[0].left) {
       REQUIRE(qb == node_to_qubit[n]);
     }
@@ -136,7 +136,7 @@ SCENARIO("Small monomorphisms. place_qubit") {
       std::vector<qubit_bimap_t> result2 =
           monomorphism_edge_break(arc, qg, 10, 60000);
       // REQUIRE(result2.second==0);
-      REQUIRE(result2[0].size() == qg.n_uids());
+      REQUIRE(result2[0].size() == qg.n_nodes());
       for (const qubit_bimap_t& map : result2) {
         REQUIRE(check_edge_break_order(arc, qg, map));
       }
@@ -246,10 +246,10 @@ SCENARIO("Check Monomorpher satisfies correct placement conditions") {
 
       THEN("The chosen map satisfies directionality") {
         qubit_vector_t qbs = test_circ.all_qubits();
-        REQUIRE(arc.connection_exists(map[qbs[0]], map[qbs[1]]));
-        REQUIRE(!arc.connection_exists(map[qbs[1]], map[qbs[0]]));
-        REQUIRE(arc.connection_exists(map[qbs[1]], map[qbs[3]]));
-        REQUIRE(!arc.connection_exists(map[qbs[3]], map[qbs[1]]));
+        REQUIRE(arc.edge_exists(map[qbs[0]], map[qbs[1]]));
+        REQUIRE(!arc.edge_exists(map[qbs[1]], map[qbs[0]]));
+        REQUIRE(arc.edge_exists(map[qbs[1]], map[qbs[3]]));
+        REQUIRE(!arc.edge_exists(map[qbs[3]], map[qbs[1]]));
       }
     }
 
@@ -605,7 +605,7 @@ SCENARIO(
     const qubit_vector_t all_qs = test_circ.all_qubits();
     REQUIRE(test_m.at(all_qs[4]) == uid0);
     const std::vector<std::pair<unsigned, unsigned>> mapping{
-        {0, 3}, {1, 2}, {2, 1}, {3, 5}, {5, 0}};
+        {0, 0}, {1, 1}, {2, 2}, {3, 3}, {5, 5}};
     for (const auto& pair : mapping) {
       REQUIRE(test_m.at(all_qs[pair.first]) == Node(pair.second));
     }

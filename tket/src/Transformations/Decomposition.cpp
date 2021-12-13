@@ -18,6 +18,7 @@
 #include "Converters/PhasePoly.hpp"
 #include "Gate/GatePtr.hpp"
 #include "OpType/OpType.hpp"
+#include "OpType/OpTypeFunctions.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Replacement.hpp"
 #include "Transform.hpp"
@@ -41,7 +42,7 @@ static bool convert_multiqs_CX(Circuit &circ) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     OpType optype = op->get_type();
     if (is_gate_type(optype) && !is_projective_type(optype) &&
-        !is_single_qubit_type(optype) && (optype != OpType::CX)) {
+        op->n_qubits() >= 2 && (optype != OpType::CX)) {
       Circuit in_circ = CX_circ_from_multiq(op);
       Subcircuit sub = {
           {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
@@ -134,8 +135,8 @@ static bool convert_singleqs_TK1(Circuit &circ) {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     OpType optype = op->get_type();
-    if (is_single_qubit_type(optype) && !is_projective_type(optype) &&
-        optype != OpType::tk1) {
+    if (is_gate_type(optype) && !is_projective_type(optype) &&
+        op->n_qubits() == 1 && optype != OpType::tk1) {
       std::vector<Expr> tk1_angs = as_gate_ptr(op)->get_tk1_angles();
       Circuit rep(1);
       rep.add_op<unsigned>(
@@ -774,7 +775,7 @@ Transform Transform::decompose_SWAP_to_CX(const Architecture &arc) {
   //  => we replace the default empty Architecture with nullptr
   // we need to keep arc as a pointer as there is no such thing as
   // optional references in std
-  const Architecture *arc_ptr = arc.n_uids() ? &arc : nullptr;
+  const Architecture *arc_ptr = arc.n_nodes() ? &arc : nullptr;
   return Transform([arc_ptr](Circuit &circ) {
     bool success = false;
     std::vector<std::pair<Vertex, bool>> bin;
@@ -782,9 +783,9 @@ Transform Transform::decompose_SWAP_to_CX(const Architecture &arc) {
       if (it->get_op_ptr()->get_type() == OpType::SWAP) {
         unit_vector_t qbs = it->get_args();
         node_vector_t nodes = {qbs.begin(), qbs.end()};
-        if (arc_ptr != nullptr && arc_ptr->uid_exists(nodes[0]) &&
-            arc_ptr->uid_exists(nodes[1]) &&
-            arc_ptr->connection_exists(nodes[1], nodes[0])) {
+        if (arc_ptr != nullptr && arc_ptr->node_exists(nodes[0]) &&
+            arc_ptr->node_exists(nodes[1]) &&
+            arc_ptr->edge_exists(nodes[1], nodes[0])) {
           bin.push_back({it.get_vertex(), true});
         } else {
           bin.push_back({it.get_vertex(), false});
@@ -924,8 +925,8 @@ Transform Transform::decompose_CX_directed(const Architecture &arc) {
       if (it->get_op_ptr()->get_type() == OpType::CX) {
         unit_vector_t qbs = it->get_args();
         node_vector_t nodes = {qbs.begin(), qbs.end()};
-        if (!arc.connection_exists(nodes[0], nodes[1]) &&
-            arc.connection_exists(nodes[1], nodes[0])) {
+        if (!arc.edge_exists(nodes[0], nodes[1]) &&
+            arc.edge_exists(nodes[1], nodes[0])) {
           // Implies CX gate is valid, and needs flipping to respect
           // Architecture
           bin.push_back({it.get_vertex(), false});
@@ -937,8 +938,8 @@ Transform Transform::decompose_CX_directed(const Architecture &arc) {
         if (b.get_op()->get_type() == OpType::CX) {
           qubit_vector_t qbs = it->get_qubits();
           node_vector_t nodes = {qbs.begin(), qbs.end()};
-          if (!arc.connection_exists(nodes[0], nodes[1]) &&
-              arc.connection_exists(nodes[1], nodes[0])) {
+          if (!arc.edge_exists(nodes[0], nodes[1]) &&
+              arc.edge_exists(nodes[1], nodes[0])) {
             // Implies CX gate is valid, and needs flipping to respect
             // Architecture
             bin.push_back({it.get_vertex(), true});

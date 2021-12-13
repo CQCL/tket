@@ -51,9 +51,6 @@ struct GraphColouringResult {
    * vertex i.
    */
   explicit GraphColouringResult(const std::vector<std::size_t>& colours);
-
-  /** Simply reset and remove all data. */
-  void clear();
 };
 
 /**

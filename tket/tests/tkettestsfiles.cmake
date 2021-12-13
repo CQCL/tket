@@ -36,7 +36,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindMaxClique.cpp
     ${TKET_TESTS_DIR}/Graphs/test_RNG.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphUtils.cpp
-    ${TKET_TESTS_DIR}/Graphs/test_UIDConnectivity.cpp
+    ${TKET_TESTS_DIR}/Graphs/test_DirectedGraph.cpp
     ${TKET_TESTS_DIR}/Graphs/test_ArticulationPoints.cpp
     ${TKET_TESTS_DIR}/Graphs/test_TreeSearch.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/Data/FixedCompleteSolutions.cpp

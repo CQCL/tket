@@ -332,8 +332,8 @@ bool ConnectivityPredicate::implies(const Predicate& other) const {
     const Architecture& arc1 = arch_;
     const Architecture& arc2 = other_c.arch_;
     // Collect all edges in arc1
-    for (auto [n1, n2] : arc1.get_connections_vec()) {
-      if (!arc2.connection_exists(n1, n2) && !arc2.connection_exists(n2, n1)) {
+    for (auto [n1, n2] : arc1.get_all_edges_vec()) {
+      if (!arc2.edge_exists(n1, n2) && !arc2.edge_exists(n2, n1)) {
         return false;  // if not in second architecture, return false
       }
     }
@@ -352,8 +352,8 @@ PredicatePtr ConnectivityPredicate::meet(const Predicate& other) const {
     const Architecture& arc2 = other_c.arch_;
     std::vector<std::pair<Node, Node>> new_edges;
     // Collect all edges in arc1 which are also in arc2
-    for (auto [n1, n2] : arc1.get_connections_vec()) {
-      if (arc2.connection_exists(n1, n2)) {
+    for (auto [n1, n2] : arc1.get_all_edges_vec()) {
+      if (arc2.edge_exists(n1, n2)) {
         new_edges.push_back({n1, n2});
         new_edges.push_back({n2, n1});
       }
@@ -370,7 +370,7 @@ PredicatePtr ConnectivityPredicate::meet(const Predicate& other) const {
 std::string ConnectivityPredicate::to_string() const {
   std::string str = auto_name(*this) + ":{ ";
   str +=
-      ("Nodes: " + std::to_string(arch_.n_uids()) +
+      ("Nodes: " + std::to_string(arch_.n_nodes()) +
        ", Edges: " + std::to_string(arch_.n_connections())) += " }";
   return str;
 }
@@ -386,9 +386,9 @@ bool DirectednessPredicate::implies(const Predicate& other) const {
     const Architecture& arc1 = arch_;
     const Architecture& arc2 = other_c.arch_;
     // Collect all edges in arc1
-    for (auto [n1, n2] : arc1.get_connections_vec()) {
+    for (auto [n1, n2] : arc1.get_all_edges_vec()) {
       // directedness accounted for
-      if (!arc2.connection_exists(n1, n2)) {
+      if (!arc2.edge_exists(n1, n2)) {
         return false;  // if not in second architecture, return false
       }
     }
@@ -407,9 +407,9 @@ PredicatePtr DirectednessPredicate::meet(const Predicate& other) const {
     const Architecture& arc2 = other_c.arch_;
     std::vector<std::pair<Node, Node>> new_edges;
     // Collect all edges in arc1 which are also in arc2
-    for (auto [n1, n2] : arc1.get_connections_vec()) {
+    for (auto [n1, n2] : arc1.get_all_edges_vec()) {
       // this also accounts for directedness, do we want that?
-      if (arc2.connection_exists(n1, n2)) {
+      if (arc2.edge_exists(n1, n2)) {
         new_edges.push_back({n1, n2});
       }
     }
@@ -425,7 +425,7 @@ PredicatePtr DirectednessPredicate::meet(const Predicate& other) const {
 std::string DirectednessPredicate::to_string() const {
   std::string str = auto_name(*this) + ":{ ";
   str +=
-      ("Nodes: " + std::to_string(arch_.n_uids()) +
+      ("Nodes: " + std::to_string(arch_.n_nodes()) +
        ", Edges: " + std::to_string(arch_.n_connections())) += " }";
   return str;
 }
