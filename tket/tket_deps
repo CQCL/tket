@@ -17,26 +17,10 @@
 import os
 import subprocess
 
+src = os.path.join(os.curdir, "src")
+lsout = os.listdir(src)
 comps = [
-    "Architecture",
-    "ArchAwareSynth",
-    "Characterisation",
-    "Circuit",
-    "Clifford",
-    "Converters",
-    "Diagonalisation",
-    "Gate",
-    "Graphs",
-    "MeasurementSetup",
-    "Ops",
-    "OpType",
-    "PauliGraph",
-    "Predicates",
-    "Program",
-    "Routing",
-    "Simulation",
-    "Transformations",
-    "Utils",
+    f for f in lsout if not f.startswith(".") and os.path.isdir(os.path.join(src, f))
 ]
 
 
@@ -44,7 +28,7 @@ def generate_graph():
     deps = dict()
     for comp in comps:
         deps[comp] = set()
-        srcdir = os.path.join(os.curdir, "src", comp)
+        srcdir = os.path.join(src, comp)
         for root, dirs, files in os.walk(srcdir):
             for f in files:
                 if f.endswith(".cpp") or f.endswith(".hpp"):

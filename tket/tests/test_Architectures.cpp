@@ -19,7 +19,7 @@
 #include <iostream>
 #include <vector>
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Graphs/ArticulationPoints.hpp"
 
 namespace tket {
@@ -27,17 +27,16 @@ namespace graphs {
 namespace test_Architectures {
 
 SCENARIO("Testing FullyConnected") {
-  using Arch = FullyConnected;
   unsigned n_nodes = 10;
-  node_vector_t nodes_vec = Arch::get_nodes_canonical_order(n_nodes);
+  FullyConnected arch(n_nodes);
+  node_vector_t nodes_vec = arch.get_all_nodes_vec();
   node_set_t nodes(nodes_vec.begin(), nodes_vec.end());
-  Arch arch(n_nodes);
 
-  REQUIRE(arch.n_uids() == nodes.size());
-  for (const UnitID &uid : arch.get_all_uids()) {
+  REQUIRE(arch.n_nodes() == nodes.size());
+  for (const UnitID &uid : arch.nodes()) {
     REQUIRE(nodes.count(Node(uid)));
   }
-  for (auto [n1, n2] : arch.get_connections_vec()) {
+  for (auto [n1, n2] : arch.get_all_edges_vec()) {
     REQUIRE(nodes.count(n1));
     REQUIRE(nodes.count(n2));
   }
@@ -47,24 +46,23 @@ SCENARIO("Testing FullyConnected") {
       if (i != j) {
         Node n1("fcNode", i);
         Node n2("fcNode", j);
-        REQUIRE(arch.connection_exists(n1, n2));
+        REQUIRE(arch.edge_exists(n1, n2));
       }
     }
   }
 }
 
 SCENARIO("Testing RingArch") {
-  using Arch = RingArch;
   unsigned n_nodes = 10;
-  node_vector_t nodes_vec = Arch::get_nodes_canonical_order(n_nodes);
+  RingArch arch(n_nodes);
+  node_vector_t nodes_vec = arch.get_all_nodes_vec();
   node_set_t nodes(nodes_vec.begin(), nodes_vec.end());
-  Arch arch(n_nodes);
 
-  REQUIRE(arch.n_uids() == nodes.size());
-  for (const UnitID &uid : arch.get_all_uids()) {
+  REQUIRE(arch.n_nodes() == nodes.size());
+  for (const UnitID &uid : arch.nodes()) {
     REQUIRE(nodes.count(Node(uid)));
   }
-  for (auto [n1, n2] : arch.get_connections_vec()) {
+  for (auto [n1, n2] : arch.get_all_edges_vec()) {
     REQUIRE(nodes.count(n1));
     REQUIRE(nodes.count(n2));
   }
@@ -72,31 +70,30 @@ SCENARIO("Testing RingArch") {
   for (unsigned i = 0; i < n_nodes; i++) {
     Node n1("ringNode", i);
     Node n2("ringNode", (i + 1) % n_nodes);
-    REQUIRE(arch.connection_exists(n1, n2));
+    REQUIRE(arch.edge_exists(n1, n2));
   }
 }
 
 SCENARIO("Testing SquareGrid") {
-  using Arch = SquareGrid;
   unsigned ver = 5;
   unsigned hor = 5;
   unsigned layer = 2;
-  node_vector_t nodes_vec = Arch::get_nodes_canonical_order(ver, hor, layer);
+  SquareGrid arch(ver, hor, layer);
+  node_vector_t nodes_vec = arch.get_all_nodes_vec();
   node_set_t nodes(nodes_vec.begin(), nodes_vec.end());
-  Arch arch(ver, hor, layer);
 
-  REQUIRE(nodes.size() == arch.n_uids());
-  for (const UnitID &uid : arch.get_all_uids()) {
+  REQUIRE(nodes.size() == arch.n_nodes());
+  for (const UnitID &uid : arch.nodes()) {
     REQUIRE(nodes.count(Node(uid)));
   }
-  for (auto [n1, n2] : arch.get_connections_vec()) {
+  for (auto [n1, n2] : arch.get_all_edges_vec()) {
     REQUIRE(nodes.count(n1));
     REQUIRE(nodes.count(n2));
   }
 
   for (const Node &n : nodes) {
     int row = n.index()[0], col = n.index()[1], l = n.index()[2];
-    for (const Node &neigh : arch.get_neighbour_uids(n)) {
+    for (const Node &neigh : arch.get_neighbour_nodes(n)) {
       int row_neigh = neigh.index()[0], col_neigh = neigh.index()[1],
           l_neigh = neigh.index()[2];
       REQUIRE(
@@ -112,7 +109,7 @@ SCENARIO("Diameters") {
   }
   GIVEN("a singleton architecture") {
     Architecture arc;
-    arc.add_uid(Node(0));
+    arc.add_node(Node(0));
     CHECK(arc.get_diameter() == 0);
   }
   GIVEN("a connected architecture") {

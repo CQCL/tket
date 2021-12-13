@@ -66,7 +66,7 @@ unsigned SteinerTree::get_max_element() const {
   return maxelement;
 }
 
-std::vector<unsigned> SteinerTree::get_all_nodes() const {
+std::vector<unsigned> SteinerTree::nodes() const {
   std::vector<unsigned> tree_nodes;
   for (unsigned i = 0; i < node_types.size(); ++i) {
     if (node_types[i] != SteinerNodeType::OutOfTree) {
@@ -530,7 +530,7 @@ static std::pair<unsigned, std::vector<unsigned>> steiner_reduce(
     }
   }
   result.first = cnot_tree.get_max_element();
-  result.second = cnot_tree.get_all_nodes();
+  result.second = cnot_tree.nodes();
   return result;
 }
 
@@ -583,7 +583,7 @@ static std::pair<unsigned, std::vector<unsigned>> steiner_reduce_rec(
     circ.add_op<unsigned>(OpType::CX, {s0, s1});
   }
   result.first = cnot_tree.get_max_element();
-  result.second = cnot_tree.get_all_nodes();
+  result.second = cnot_tree.nodes();
   return result;
 }
 

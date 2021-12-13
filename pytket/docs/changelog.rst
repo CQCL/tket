@@ -1,6 +1,33 @@
 Changelog
 ==================================
 
+0.18.0 (unreleased)
+-------------------
+
+Minor new features:
+
+* Add `NodeGraph` as abstract base class for device connectivity graphs.
+* Improved CnX gate decomposition.
+
+0.17.0 (November 2021)
+----------------------
+
+Major new features:
+
+* New ``pytket.zx`` module for manipulating ZX diagrams.
+
+Minor new features:
+
+* New properties: :py:meth:``circuit.Op.dagger`` and :py:meth:``circuit.Op.transpose``.
+* New methods: :py:meth:``routing.Placement.to_dict`` and :py:meth:``routing.Placement.from_dict``.
+* New ``NPhasedX`` OpType.
+* New ``GlobalPhasedXPredicate`` and ``GlobalisePhasedX`` (transform and pass).
+
+Fixes:
+
+* Fixed incorrect decomposition of ``QControlBox`` with more than one control
+  acting on operation with global phase.
+
 0.16.0 (October 2021)
 ---------------------
 

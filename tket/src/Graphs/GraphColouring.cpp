@@ -57,11 +57,6 @@ GraphColouringResult::GraphColouringResult(const vector<std::size_t>& _colours)
   }
 }
 
-void GraphColouringResult::clear() {
-  number_of_colours = 0;
-  colours.clear();
-}
-
 // Also updates the number of colours used in "result".
 static void colour_single_component(
     const AdjacencyData& adjacency_data,

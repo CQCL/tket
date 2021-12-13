@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Circuit_H_
-#define _TKET_Circuit_H_
+#pragma once
 
 // NOTE: FOR ALL COMMENTS ON SCALING 'alpha' IS THE MAXIMUM ARITY OF VERTICES IN
 // THE GRAPH CIRCUITS ARE TYPICALLY SPARSE UNLESS THEY CONTAIN LARGE PHASE
@@ -986,9 +985,6 @@ class Circuit {
       const VertexSet &surplus, GraphRewiring graph_rewiring,
       VertexDeletion vertex_deletion);
   void remove_vertices(
-      const VertexVec &surplus, GraphRewiring graph_rewiring,
-      VertexDeletion vertex_deletion);
-  void remove_vertices(
       const VertexList &surplus, GraphRewiring graph_rewiring,
       VertexDeletion vertex_deletion);
 
@@ -1675,5 +1671,3 @@ Vertex Circuit::add_op(
 }
 
 }  // namespace tket
-
-#endif  // CIRCUIT_H_

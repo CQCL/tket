@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_PassLibrary_H_
-#define _TKET_PassLibrary_H_
+#pragma once
 
 #include "CompilerPass.hpp"
 
@@ -27,6 +26,7 @@ const PassPtr &SynthesiseUMD();
 const PassPtr &PeepholeOptimise2Q();
 const PassPtr &RemoveRedundancies();
 const PassPtr &CommuteThroughMultis();
+const PassPtr &GlobalisePhasedX();
 const PassPtr &DecomposeArbitrarilyControlledGates();
 // Expects: CX and any single-qubit gates,
 // but does not break if it encounters others
@@ -77,5 +77,3 @@ const PassPtr &RemoveDiscarded();
 const PassPtr &SimplifyMeasured();
 
 }  // namespace tket
-
-#endif  // PASSLIBRARY_H_

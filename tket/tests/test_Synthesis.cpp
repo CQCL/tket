@@ -627,6 +627,39 @@ SCENARIO("Testing general 1qb squash") {
                   .apply(circ);
     REQUIRE_FALSE(success);
   }
+  GIVEN("Squashing 2xPhasedX") {
+    Circuit circ(1);
+    circ.add_op<unsigned>(OpType::PhasedX, {0.5, 0.5}, {0});
+    circ.add_op<unsigned>(OpType::PhasedX, {0.5, 0.5}, {0});
+    Circuit copy = circ;
+    OpTypeSet singleqs = {OpType::Rz, OpType::PhasedX};
+    bool success =
+        Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+            .apply(circ);
+    REQUIRE(success);
+    check_command_types(circ, {OpType::PhasedX});
+    REQUIRE(test_unitary_comparison(circ, copy));
+    success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+                  .apply(circ);
+    REQUIRE_FALSE(success);
+  }
+  GIVEN("Squashing 2xPhasedX that make a Rz") {
+    Circuit circ(1);
+    circ.add_op<unsigned>(OpType::PhasedX, {0.5, 0.5}, {0});
+    circ.add_op<unsigned>(OpType::PhasedX, {1.5, 0.5}, {0});
+    circ.add_op<unsigned>(OpType::Rz, 1.2, {0});
+    Circuit copy = circ;
+    OpTypeSet singleqs = {OpType::Rz, OpType::PhasedX};
+    bool success =
+        Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+            .apply(circ);
+    REQUIRE(success);
+    check_command_types(circ, {OpType::Rz});
+    REQUIRE(test_unitary_comparison(circ, copy));
+    success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+                  .apply(circ);
+    REQUIRE_FALSE(success);
+  }
   GIVEN("Squashing alongside rebasing") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::Rz, 0.43, {0});
@@ -817,6 +850,99 @@ SCENARIO("Test commutation through CXsw", "[transform]") {
     REQUIRE(circ.count_gates(OpType::tk1) == 12);
     const StateVector s1 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
+  }
+}
+
+SCENARIO("Testing globalise_phasedx") {
+  GIVEN("A simple PhasedX gate in 2qb circuit") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::PhasedX, {0.2, 0.54}, {0});
+    auto orig_u = tket_sim::get_unitary(circ);
+    WHEN("Applying globalise PhasedX transform") {
+      REQUIRE(Transform::globalise_phasedx().apply(circ));
+      THEN("The correct gates are introduced") {
+        REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
+        REQUIRE(circ.count_gates(OpType::NPhasedX) == 2);
+        REQUIRE(circ.count_gates(OpType::Rz) == 1);
+        REQUIRE(circ.n_gates() == 3);
+      }
+      THEN("The unitaries are equal") {
+        auto new_u = tket_sim::get_unitary(circ);
+        REQUIRE(tket_sim::compare_statevectors_or_unitaries(orig_u, new_u));
+      }
+      THEN("Cannot apply transform x2") {
+        REQUIRE_FALSE(Transform::globalise_phasedx().apply(circ));
+      }
+    }
+  }
+  GIVEN("A simple NPhasedX gate in 2qb circuit") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::NPhasedX, {0.2, 0.54}, {0});
+    auto orig_u = tket_sim::get_unitary(circ);
+    WHEN("Applying globalise PhasedX transform") {
+      REQUIRE(Transform::globalise_phasedx().apply(circ));
+      THEN("The correct gates are introduced") {
+        REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
+        REQUIRE(circ.count_gates(OpType::NPhasedX) == 2);
+        REQUIRE(circ.count_gates(OpType::Rz) == 1);
+        REQUIRE(circ.n_gates() == 3);
+      }
+      THEN("The unitaries are equal") {
+        auto new_u = tket_sim::get_unitary(circ);
+        REQUIRE(tket_sim::compare_statevectors_or_unitaries(orig_u, new_u));
+      }
+      THEN("Cannot apply transform x2") {
+        REQUIRE_FALSE(Transform::globalise_phasedx().apply(circ));
+      }
+    }
+  }
+  GIVEN("A simple NPhasedX gate in 3qb circuit") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::NPhasedX, {0.2, 0.54}, {0, 1});
+    auto orig_u = tket_sim::get_unitary(circ);
+    WHEN("Applying globalise PhasedX transform") {
+      REQUIRE(Transform::globalise_phasedx().apply(circ));
+      THEN("The correct gates are introduced") {
+        REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
+        REQUIRE(circ.count_gates(OpType::NPhasedX) == 2);
+        REQUIRE(circ.count_gates(OpType::Rz) == 2);
+        REQUIRE(circ.n_gates() == 4);
+      }
+      THEN("The unitaries are equal") {
+        auto new_u = tket_sim::get_unitary(circ);
+        REQUIRE(tket_sim::compare_statevectors_or_unitaries(orig_u, new_u));
+      }
+      THEN("Cannot apply transform x2") {
+        REQUIRE_FALSE(Transform::globalise_phasedx().apply(circ));
+      }
+    }
+  }
+  GIVEN("A more complex NPhasedX circuit on 4qb circuit") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::NPhasedX, {0.2, 0.54}, {0, 1});
+    circ.add_op<unsigned>(OpType::NPhasedX, {0.53, 0.23}, {0, 1, 3});
+    circ.add_op<unsigned>(OpType::PhasedX, {0.3, 0.2}, {1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {0, 2});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::NPhasedX, {0.53, 0.23}, {0, 1, 2, 3});
+    auto orig_u = tket_sim::get_unitary(circ);
+    WHEN("Applying globalise PhasedX transform") {
+      REQUIRE(Transform::globalise_phasedx().apply(circ));
+      THEN("The correct gates are introduced") {
+        REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
+        REQUIRE(circ.count_gates(OpType::NPhasedX) == 7);
+        REQUIRE(circ.count_gates(OpType::Rz) == 6);
+      }
+      THEN("The unitaries are equal") {
+        auto new_u = tket_sim::get_unitary(circ);
+        REQUIRE(tket_sim::compare_statevectors_or_unitaries(orig_u, new_u));
+      }
+      THEN("Cannot apply transform x2") {
+        REQUIRE_FALSE(Transform::globalise_phasedx().apply(circ));
+      }
+    }
   }
 }
 

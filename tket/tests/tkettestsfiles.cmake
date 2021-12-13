@@ -36,7 +36,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindMaxClique.cpp
     ${TKET_TESTS_DIR}/Graphs/test_RNG.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphUtils.cpp
-    ${TKET_TESTS_DIR}/Graphs/test_UIDConnectivity.cpp
+    ${TKET_TESTS_DIR}/Graphs/test_DirectedGraph.cpp
     ${TKET_TESTS_DIR}/Graphs/test_ArticulationPoints.cpp
     ${TKET_TESTS_DIR}/Graphs/test_TreeSearch.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/Data/FixedCompleteSolutions.cpp
@@ -112,4 +112,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/test_Path.cpp
     ${TKET_TESTS_DIR}/test_SteinerTree.cpp
     ${TKET_TESTS_DIR}/test_SteinerForest.cpp
+    ${TKET_TESTS_DIR}/ZX/test_ZXDiagram.cpp
+    ${TKET_TESTS_DIR}/ZX/test_ZXAxioms.cpp
+    ${TKET_TESTS_DIR}/ZX/test_ZXSimp.cpp
 )

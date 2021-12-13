@@ -15,12 +15,14 @@
 from pathlib import Path
 from pytket.circuit import OpType, Qubit, Node, Circuit  # type: ignore
 from pytket.routing import (  # type: ignore
+    NodeGraph,
     Architecture,
     LinePlacement,
     GraphPlacement,
     NoiseAwarePlacement,
     Placement,
     SquareGrid,
+    FullyConnected,
     place_with_map,
     route,
 )
@@ -39,6 +41,8 @@ from pytket.qasm import circuit_from_qasm
 from pytket.transform import Transform  # type: ignore
 import numpy as np
 import pytest  # type: ignore
+
+import json
 
 
 def test_architectures() -> None:
@@ -84,6 +88,26 @@ def test_architecture_eq() -> None:
     sq_arc = Architecture([(g00, g01), (g01, g11), (g00, g10), (g10, g11)])
     assert sq_arc == SquareGrid(2, 2)
     assert sq_arc != Architecture([(g00, g01), (g01, g11), (g00, g10)])
+
+
+def test_fully_connected() -> None:
+    fc = FullyConnected(3)
+    assert fc.nodes == [Node("fcNode", i) for i in range(3)]
+    d = fc.to_dict()
+    fc1 = FullyConnected.from_dict(d)
+    assert fc == fc1
+
+
+def test_arch_types() -> None:
+    arch = Architecture([(0, 1)])
+    assert isinstance(arch, Architecture)
+    assert isinstance(arch, NodeGraph)
+    fc = FullyConnected(2)
+    assert isinstance(fc, FullyConnected)
+    assert isinstance(fc, NodeGraph)
+    sg = SquareGrid(2, 2, 2)
+    assert isinstance(sg, SquareGrid)
+    assert isinstance(sg, NodeGraph)
 
 
 def test_placements() -> None:
@@ -135,6 +159,22 @@ def test_placements() -> None:
     assert base_placed.valid_connectivity(test_architecture, False)
     assert line_placed.valid_connectivity(test_architecture, False)
     assert graph_placed.valid_connectivity(test_architecture, False)
+
+
+def test_placements_serialization() -> None:
+    with open(
+        Path(__file__).resolve().parent / "json_test_files" / "placements.json", "r"
+    ) as f:
+        dict = json.load(f)
+        base_pl_serial = dict["base_placement"]
+        line_pl_serial = dict["line_placement"]
+        graph_pl_serial = dict["graph_placement"]
+        noise_pl_serial = dict["noise_placement"]
+
+    assert Placement.from_dict(base_pl_serial).to_dict() == base_pl_serial
+    assert LinePlacement.from_dict(line_pl_serial).to_dict() == line_pl_serial
+    assert GraphPlacement.from_dict(graph_pl_serial).to_dict() == graph_pl_serial
+    assert NoiseAwarePlacement.from_dict(noise_pl_serial).to_dict() == noise_pl_serial
 
 
 def test_placement_config() -> None:

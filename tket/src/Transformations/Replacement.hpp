@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Replacement_H_
-#define _TKET_Replacement_H_
+#pragma once
 
 #include "Circuit/Circuit.hpp"
 
@@ -42,5 +41,3 @@ Circuit CX_circ_from_multiq(const Op_ptr op);
 Circuit CX_ZX_circ_from_op(const Op_ptr op);
 
 }  // namespace tket
-
-#endif

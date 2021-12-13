@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Circuit/Circuit.hpp"
 #include "ComparisonFunctions.hpp"
 #include "Predicates/PassGenerators.hpp"
@@ -49,7 +49,8 @@ using namespace tket;
   DO(DecomposeBridges)                    \
   DO(FlattenRegisters)                    \
   DO(RemoveBarriers)                      \
-  DO(DelayMeasures)
+  DO(DelayMeasures)                       \
+  DO(GlobalisePhasedX)
 
 // Map from PassPtr to readable name
 static const std::map<PassPtr, std::string> passes = {
@@ -194,13 +195,17 @@ static Architecture random_architecture() {
  * @param[in] cu compliation pass having been applied to \p c0
  */
 static void check_correctness(const Circuit &c0, const CompilationUnit &cu) {
+  RC_LOG() << "In Check Correctness" << std::endl;
+
   const Circuit &c1 = cu.get_circ_ref();
   const unit_bimap_t &initial_map = cu.get_initial_map_ref();
   const unit_bimap_t &final_map = cu.get_final_map_ref();
   // Account for reordering in the initial and final maps.
+
   std::map<unsigned, unsigned> ini, inv_fin;
   std::map<UnitID, unsigned> c0_idx, c1_idx;
   unsigned i;
+
   i = 0;
   for (const auto &id : c0.all_units()) {
     c0_idx.insert({id, i});
@@ -211,17 +216,30 @@ static void check_correctness(const Circuit &c0, const CompilationUnit &cu) {
     c1_idx.insert({id, i});
     i++;
   }
+  TKET_ASSERT(c0_idx.size() <= c1_idx.size());
+  Circuit c0_copy(c0);
   for (const auto &pair : initial_map.left) {
+    auto it = c0_idx.find(pair.first);
+    // qubit not in original circuit => ancilla added
+    if (it == c0_idx.end()) {
+      TKET_ASSERT(c1_idx.find(pair.first) != c1_idx.end());
+      c0_idx.insert({pair.first, c0_idx.size()});
+      c0_copy.add_qubit(Qubit(pair.first));
+    }
+    TKET_ASSERT(c1_idx.find(pair.second) != c1_idx.end());
     ini.insert({c0_idx[pair.first], c1_idx[pair.second]});
   }
+  // all qubits should have been tracked from initial map
   for (const auto &pair : final_map.left) {
     inv_fin.insert({c1_idx[pair.second], c0_idx[pair.first]});
   }
+
   Eigen::PermutationMatrix<Eigen::Dynamic> m_ini = lift_perm(ini),
                                            m_inv_fin = lift_perm(inv_fin);
+
   try {
-    const auto u0 = tket_sim::get_unitary(c0);
     const auto u1 = tket_sim::get_unitary(c1);
+    const auto u0 = tket_sim::get_unitary(c0_copy);
     RC_ASSERT(tket_sim::compare_statevectors_or_unitaries(
         u0, m_inv_fin * u1 * m_ini));
   } catch (const Unsupported &) {
@@ -311,7 +329,7 @@ bool check_mapping() {
         PredicatePtr pp1 = std::make_shared<NoClassicalControlPredicate>();
         if (!pp1->verify(c)) return;
         // Architecture must be big enough.
-        PredicatePtr pp2 = std::make_shared<MaxNQubitsPredicate>(a.n_uids());
+        PredicatePtr pp2 = std::make_shared<MaxNQubitsPredicate>(a.n_nodes());
         if (!pp2->verify(c)) return;
         // All gates must act on 1 or 2 qubits.
         PredicatePtr pp3 = std::make_shared<MaxTwoQubitGatesPredicate>();
@@ -322,16 +340,29 @@ bool check_mapping() {
         const Circuit &c1 = cu.get_circ_ref();
         RC_LOG() << "Circuit (" << c.n_qubits() << " qubits, " << c.n_gates()
                  << " gates): " << c;
-        RC_LOG() << "Architecture (" << a.n_uids() << " nodes): ";
-        const node_vector_t nodes = a.get_all_uids_vec();
+        RC_LOG() << "Architecture (" << a.n_nodes() << " nodes): ";
+        const node_vector_t nodes = a.get_all_nodes_vec();
         for (Node node0 : nodes) {
           for (Node node1 : nodes) {
-            if (a.connection_exists(node0, node1)) {
+            if (a.edge_exists(node0, node1)) {
               RC_LOG() << node0.repr() << "-->" << node1.repr() << "; ";
             }
           }
         }
         RC_LOG() << std::endl;
+        RC_LOG() << "Circuit (" << c1.n_qubits() << " qubits, " << c1.n_gates()
+                 << " gates): " << c1;
+
+        const unit_bimap_t &initial_map = cu.get_initial_map_ref();
+        const unit_bimap_t &final_map = cu.get_final_map_ref();
+        RC_LOG() << "Initial Map:" << std::endl;
+        for (const auto &x : initial_map.left) {
+          RC_LOG() << x.first.repr() << " " << x.second.repr() << std::endl;
+        }
+        RC_LOG() << "Final Map:" << std::endl;
+        for (const auto &x : final_map.left) {
+          RC_LOG() << x.first.repr() << " " << x.second.repr() << std::endl;
+        }
         if (applied) {
           check_correctness(c, cu);
         } else {

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Transform_H_
-#define _TKET_Transform_H_
+#pragma once
 
 #include <functional>
 #include <map>
@@ -21,7 +20,7 @@
 #include <utility>
 #include <vector>
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Utils/Json.hpp"
@@ -453,6 +452,14 @@ class Transform {
   // Produces: Any gates
   static Transform commute_through_multis();
 
+  // replaces every non-global PhasedX gate with two global PhasedX gates,
+  // using:
+  //
+  //         PhX(α, β) = PhX(-1/2, β + 1/2) Rz(α) PhX(1/2, β + 1/2)
+  //
+  // Setting α = 0 on non-targeted qubits makes the RHS the identity
+  static Transform globalise_phasedx();
+
   // commutes Rz gates through ZZMax, and combines adjacent ZZMax gates
   // Expects: ZZMax, Rz, Rx
   // Produces: ZZMax, Rz, Rx
@@ -584,5 +591,3 @@ inline const Transform Transform::id = Transform([](const Circuit&) {
 });  // returns `false` as it does not change the Circuit in any way
 
 }  // namespace tket
-
-#endif

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_PauliStrings_H_
-#define _TKET_PauliStrings_H_
+#pragma once
 
 #include <map>
 #include <set>
@@ -524,5 +523,3 @@ class QubitPauliTensor {
 QubitPauliTensor operator*(Complex a, const QubitPauliTensor &qpt);
 
 }  // namespace tket
-
-#endif

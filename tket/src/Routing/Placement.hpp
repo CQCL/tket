@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Placement_H_
-#define _TKET_Placement_H_
+#pragma once
 
 #include <algorithm>
 #include <iostream>
@@ -23,7 +22,7 @@
 #include <utility>
 #include <vector>
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Graphs/Utils.hpp"
@@ -32,6 +31,9 @@
 #include "Utils/Json.hpp"
 
 namespace tket {
+
+extern template class graphs::DirectedGraphBase<Qubit>;
+extern template class graphs::DirectedGraph<Qubit>;
 
 struct QubitWeight;
 struct InteractionWeight;
@@ -104,9 +106,9 @@ JSON_DECL(PlacementConfig)
 
 // Class for storing interaction graph.
 // Interacting qubits have an edge between them.
-class QubitGraph : public graphs::UIDConnectivity<Qubit> {
+class QubitGraph : public graphs::DirectedGraph<Qubit> {
  private:
-  using Base = graphs::UIDConnectivity<Qubit>;
+  using Base = graphs::DirectedGraph<Qubit>;
 
  public:
   QubitGraph() : Base() {}
@@ -138,7 +140,7 @@ QubitGraph monomorph_interaction_graph(
  * @param max_matches maximum number of matches to find
  * @param timeout timeout in milliseconds
  *
- * @return vector of matches found
+ * @return vector of matches found, sorted in canonical order
  */
 std::vector<qubit_bimap_t> monomorphism_edge_break(
     const Architecture& arc, const QubitGraph& q_graph, unsigned max_matches,
@@ -360,4 +362,3 @@ class NoiseAwarePlacement : public Placement {
 };
 
 }  // namespace tket
-#endif  // PLACEMENT_H_

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Simulation_DecomposeCircuit_H_
-#define _TKET_Simulation_DecomposeCircuit_H_
+#pragma once
 
 #include "Utils/MatrixAnalysis.hpp"
 
@@ -34,4 +33,3 @@ void decompose_circuit(
 }  // namespace internal
 }  // namespace tket_sim
 }  // namespace tket
-#endif

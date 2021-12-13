@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_ArticulationPoints_H
-#define _TKET_ArticulationPoints_H
+#pragma once
 
 #include <boost/graph/biconnected_components.hpp>
 #include <set>
@@ -58,7 +57,7 @@
  */
 
 /** These functions only work for the UndirectedConnGraph graph type (typedef in
- * `ArticulationPoints_impl.hpp`) i.e. undirected graphs of UIDConnectivity
+ * `ArticulationPoints_impl.hpp`) i.e. undirected graphs of DirectedGraph
  * objects They are not defined for BGL graphs in general
  *
  *  The reason for this is that we need the vertices to have a UnitID property
@@ -75,10 +74,10 @@ namespace tket::graphs {
 /** Given a graph and a subgraph, returns the subgraph APs, as defined
  *  in the introduction above
  */
-template <typename UID_t>
-std::set<UID_t> get_subgraph_aps(
-    const UndirectedConnGraph<UID_t>& graph,
-    const UndirectedConnGraph<UID_t>& subgraph);
+template <typename T>
+std::set<T> get_subgraph_aps(
+    const UndirectedConnGraph<T>& graph,
+    const UndirectedConnGraph<T>& subgraph);
 
 // template explicit instations, with implementations in cpp file
 extern template std::set<UnitID> get_subgraph_aps(
@@ -89,5 +88,3 @@ extern template std::set<Node> get_subgraph_aps(
     const UndirectedConnGraph<Node>& subgraph);
 
 }  // namespace tket::graphs
-
-#endif

@@ -14,6 +14,7 @@
 
 #include "Predicates.hpp"
 
+#include "Gate/Gate.hpp"
 #include "Routing/Verification.hpp"
 
 namespace tket {
@@ -62,6 +63,7 @@ const std::string& predicate_name(std::type_index idx) {
       SET_PRED_NAME(NoFastFeedforwardPredicate),
       SET_PRED_NAME(NoMidMeasurePredicate),
       SET_PRED_NAME(NoSymbolsPredicate),
+      SET_PRED_NAME(GlobalPhasedXPredicate),
       SET_PRED_NAME(NoWireSwapsPredicate),
       SET_PRED_NAME(PlacementPredicate),
       SET_PRED_NAME(UserDefinedPredicate)};
@@ -330,8 +332,8 @@ bool ConnectivityPredicate::implies(const Predicate& other) const {
     const Architecture& arc1 = arch_;
     const Architecture& arc2 = other_c.arch_;
     // Collect all edges in arc1
-    for (auto [n1, n2] : arc1.get_connections_vec()) {
-      if (!arc2.connection_exists(n1, n2) && !arc2.connection_exists(n2, n1)) {
+    for (auto [n1, n2] : arc1.get_all_edges_vec()) {
+      if (!arc2.edge_exists(n1, n2) && !arc2.edge_exists(n2, n1)) {
         return false;  // if not in second architecture, return false
       }
     }
@@ -350,8 +352,8 @@ PredicatePtr ConnectivityPredicate::meet(const Predicate& other) const {
     const Architecture& arc2 = other_c.arch_;
     std::vector<std::pair<Node, Node>> new_edges;
     // Collect all edges in arc1 which are also in arc2
-    for (auto [n1, n2] : arc1.get_connections_vec()) {
-      if (arc2.connection_exists(n1, n2)) {
+    for (auto [n1, n2] : arc1.get_all_edges_vec()) {
+      if (arc2.edge_exists(n1, n2)) {
         new_edges.push_back({n1, n2});
         new_edges.push_back({n2, n1});
       }
@@ -368,7 +370,7 @@ PredicatePtr ConnectivityPredicate::meet(const Predicate& other) const {
 std::string ConnectivityPredicate::to_string() const {
   std::string str = auto_name(*this) + ":{ ";
   str +=
-      ("Nodes: " + std::to_string(arch_.n_uids()) +
+      ("Nodes: " + std::to_string(arch_.n_nodes()) +
        ", Edges: " + std::to_string(arch_.n_connections())) += " }";
   return str;
 }
@@ -384,9 +386,9 @@ bool DirectednessPredicate::implies(const Predicate& other) const {
     const Architecture& arc1 = arch_;
     const Architecture& arc2 = other_c.arch_;
     // Collect all edges in arc1
-    for (auto [n1, n2] : arc1.get_connections_vec()) {
+    for (auto [n1, n2] : arc1.get_all_edges_vec()) {
       // directedness accounted for
-      if (!arc2.connection_exists(n1, n2)) {
+      if (!arc2.edge_exists(n1, n2)) {
         return false;  // if not in second architecture, return false
       }
     }
@@ -405,9 +407,9 @@ PredicatePtr DirectednessPredicate::meet(const Predicate& other) const {
     const Architecture& arc2 = other_c.arch_;
     std::vector<std::pair<Node, Node>> new_edges;
     // Collect all edges in arc1 which are also in arc2
-    for (auto [n1, n2] : arc1.get_connections_vec()) {
+    for (auto [n1, n2] : arc1.get_all_edges_vec()) {
       // this also accounts for directedness, do we want that?
-      if (arc2.connection_exists(n1, n2)) {
+      if (arc2.edge_exists(n1, n2)) {
         new_edges.push_back({n1, n2});
       }
     }
@@ -423,7 +425,7 @@ PredicatePtr DirectednessPredicate::meet(const Predicate& other) const {
 std::string DirectednessPredicate::to_string() const {
   std::string str = auto_name(*this) + ":{ ";
   str +=
-      ("Nodes: " + std::to_string(arch_.n_uids()) +
+      ("Nodes: " + std::to_string(arch_.n_nodes()) +
        ", Edges: " + std::to_string(arch_.n_connections())) += " }";
   return str;
 }
@@ -627,6 +629,29 @@ PredicatePtr NoSymbolsPredicate::meet(const Predicate& other) const {
 
 std::string NoSymbolsPredicate::to_string() const { return auto_name(*this); }
 
+bool GlobalPhasedXPredicate::verify(const Circuit& circ) const {
+  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+    if (circ.get_OpType_from_Vertex(v) == OpType::NPhasedX) {
+      if (circ.n_in_edges_of_type(v, EdgeType::Quantum) != circ.n_qubits()) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+bool GlobalPhasedXPredicate::implies(const Predicate& other) const {
+  return auto_implication(*this, other);
+}
+
+PredicatePtr GlobalPhasedXPredicate::meet(const Predicate& other) const {
+  return auto_meet(*this, other);
+}
+
+std::string GlobalPhasedXPredicate::to_string() const {
+  return auto_name(*this);
+}
+
 void to_json(nlohmann::json& j, const PredicatePtr& pred_ptr) {
   if (std::shared_ptr<GateSetPredicate> cast_pred =
           std::dynamic_pointer_cast<GateSetPredicate>(pred_ptr)) {
@@ -697,6 +722,10 @@ void to_json(nlohmann::json& j, const PredicatePtr& pred_ptr) {
       std::shared_ptr<NoSymbolsPredicate> cast_pred =
           std::dynamic_pointer_cast<NoSymbolsPredicate>(pred_ptr)) {
     j["type"] = "NoSymbolsPredicate";
+  } else if (
+      std::shared_ptr<GlobalPhasedXPredicate> cast_pred =
+          std::dynamic_pointer_cast<GlobalPhasedXPredicate>(pred_ptr)) {
+    j["type"] = "GlobalPhasedXPredicate";
   } else {
     throw JsonError("Cannot serialize PredicatePtr of unknown type.");
   }
@@ -742,6 +771,8 @@ void from_json(const nlohmann::json& j, PredicatePtr& pred_ptr) {
     pred_ptr = std::make_shared<NoMidMeasurePredicate>();
   } else if (classname == "NoSymbolsPredicate") {
     pred_ptr = std::make_shared<NoSymbolsPredicate>();
+  } else if (classname == "GlobalPhasedXPredicate") {
+    pred_ptr = std::make_shared<GlobalPhasedXPredicate>();
   } else {
     throw JsonError("Cannot load PredicatePtr of unknown type.");
   }

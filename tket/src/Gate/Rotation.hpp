@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Rotation_H_
-#define _TKET_Rotation_H_
+#pragma once
 
 #include "OpType/OpType.hpp"
 #include "Utils/Expression.hpp"
@@ -112,5 +111,3 @@ std::vector<double> tk1_angles_from_unitary(const Eigen::Matrix2cd& U);
 Eigen::Matrix2cd get_matrix_from_tk1_angles(std::vector<Expr> params);
 
 }  // namespace tket
-
-#endif

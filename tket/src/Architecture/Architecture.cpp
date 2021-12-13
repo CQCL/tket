@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 
 #include <boost/graph/biconnected_components.hpp>
 #include <unordered_set>
@@ -30,10 +30,10 @@ bool Architecture::valid_operation(
     /*const OpType& optype, */ const std::vector<Node>& uids) const {
   if (uids.size() ==
       1) {  // TODO: for simple case here this should probably not pass if
-            // uid_exists[uids[0]] == FALSE, but should be fine for now?
+            // node_exists[uids[0]] == FALSE, but should be fine for now?
     return true;
   } else if (uids.size() == 2) {
-    if (this->uid_exists(uids[0]) && this->uid_exists(uids[1]) &&
+    if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
         (this->connection_exists(uids[0], uids[1]) ||
          this->connection_exists(uids[1], uids[0]))) {
       return true;
@@ -45,8 +45,8 @@ bool Architecture::valid_operation(
     bool con_1_exists =
         (this->connection_exists(uids[2], uids[1]) ||
          this->connection_exists(uids[1], uids[2]));
-    if (this->uid_exists(uids[0]) && this->uid_exists(uids[1]) &&
-        this->uid_exists(uids[2]) && con_0_exists && con_1_exists) {
+    if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
+        this->node_exists(uids[2]) && con_0_exists && con_1_exists) {
       return true;
     }
   }
@@ -56,28 +56,12 @@ bool Architecture::valid_operation(
 Architecture Architecture::create_subarch(
     const std::vector<Node>& subarc_nodes) const {
   Architecture subarc(subarc_nodes);
-  for (auto [u1, u2] : get_connections_vec()) {
-    if (subarc.uid_exists(u1) && subarc.uid_exists(u2)) {
+  for (auto [u1, u2] : get_all_edges_vec()) {
+    if (subarc.node_exists(u1) && subarc.node_exists(u2)) {
       subarc.add_connection(u1, u2);
     }
   }
   return subarc;
-}
-
-unsigned Architecture::get_diameter() const {
-  unsigned N = n_uids();
-  if (N == 0) {
-    throw ArchitectureInvalidity("No nodes in architecture.");
-  }
-  unsigned max = 0;
-  const node_vector_t uids = get_all_uids_vec();
-  for (unsigned i = 0; i < N; i++) {
-    for (unsigned j = i + 1; j < N; j++) {
-      unsigned d = get_distance(uids[i], uids[j]);
-      if (d > max) max = d;
-    }
-  }
-  return max;
 }
 
 // Given a vector of lengths of lines, returns a vector of lines of these sizes
@@ -86,7 +70,7 @@ std::vector<node_vector_t> Architecture::get_lines(
     std::vector<unsigned> required_lengths) const {
   // check total length doesn't exceed number of nodes
   if (std::accumulate(required_lengths.begin(), required_lengths.end(), 0u) >
-      n_uids()) {
+      n_nodes()) {
     throw ArchitectureInvalidity(
         "Not enough nodes to satisfy required lengths.");
   }
@@ -104,7 +88,7 @@ std::vector<node_vector_t> Architecture::get_lines(
       // convert Vertex to Node
       node_vector_t to_add;
       for (Vertex v : longest) {
-        to_add.push_back(curr_graph[v].uid);
+        to_add.push_back(curr_graph[v]);
       }
       found_lines.push_back(to_add);
       for (Vertex v : longest) {
@@ -127,22 +111,9 @@ std::set<Node> Architecture::get_articulation_points() const {
   boost::articulation_points(undir_g, std::inserter(aps, aps.begin()));
   std::set<Node> ret;
   for (Vertex ap : aps) {
-    ret.insert(undir_g[ap].uid);
+    ret.insert(undir_g[ap]);
   }
   return ret;
-}
-
-node_set_t Architecture::remove_worst_nodes(unsigned num) {
-  node_set_t out;
-  Architecture original_arch(*this);
-  for (unsigned k = 0; k < num; k++) {
-    std::optional<Node> v = find_worst_node(original_arch);
-    if (v.has_value()) {
-      remove_uid(v.value());
-      out.insert(v.value());
-    }
-  }
-  return out;
 }
 
 static bool lexicographical_comparison(
@@ -151,40 +122,10 @@ static bool lexicographical_comparison(
       dist1.begin(), dist1.end(), dist2.begin(), dist2.end());
 }
 
-int tri_lexicographical_comparison(
-    const std::vector<size_t>& dist1, const std::vector<size_t>& dist2) {
-  // add assertion that these are the same size distance vectors
-  auto start_dist1 = dist1.cbegin();
-  auto start_dist2 = dist2.cbegin();
-
-  while (start_dist1 != dist1.cend()) {
-    if (start_dist2 == dist2.cend() || *start_dist2 < *start_dist1) {
-      return 0;
-    } else if (*start_dist1 < *start_dist2) {
-      return 1;
-    }
-    ++start_dist1;
-    ++start_dist2;
-  }
-  return -1;
-}
-
-MatrixXb Architecture::get_connectivity() const {
-  unsigned n = n_uids();
-  MatrixXb connectivity = MatrixXb(n, n);
-  for (unsigned i = 0; i != n; ++i) {
-    for (unsigned j = 0; j != n; ++j) {
-      connectivity(i, j) = connection_exists(Node(i), Node(j)) |
-                           connection_exists(Node(j), Node(i));
-    }
-  }
-  return connectivity;
-}
-
 std::optional<Node> Architecture::find_worst_node(
     const Architecture& original_arch) {
   node_set_t ap = get_articulation_points();
-  node_set_t min_nodes = min_degree_uids();
+  node_set_t min_nodes = min_degree_nodes();
 
   std::set<Node> bad_nodes;
   std::set_difference(
@@ -221,6 +162,50 @@ std::optional<Node> Architecture::find_worst_node(
   return worst_node;
 }
 
+node_set_t Architecture::remove_worst_nodes(unsigned num) {
+  node_set_t out;
+  Architecture original_arch(*this);
+  for (unsigned k = 0; k < num; k++) {
+    std::optional<Node> v = find_worst_node(original_arch);
+    if (v.has_value()) {
+      remove_node(v.value());
+      out.insert(v.value());
+    }
+  }
+  return out;
+}
+
+int tri_lexicographical_comparison(
+    const std::vector<std::size_t>& dist1,
+    const std::vector<std::size_t>& dist2) {
+  // add assertion that these are the same size distance vectors
+  auto start_dist1 = dist1.cbegin();
+  auto start_dist2 = dist2.cbegin();
+
+  while (start_dist1 != dist1.cend()) {
+    if (start_dist2 == dist2.cend() || *start_dist2 < *start_dist1) {
+      return 0;
+    } else if (*start_dist1 < *start_dist2) {
+      return 1;
+    }
+    ++start_dist1;
+    ++start_dist2;
+  }
+  return -1;
+}
+
+MatrixXb Architecture::get_connectivity() const {
+  unsigned n = n_nodes();
+  MatrixXb connectivity = MatrixXb(n, n);
+  for (unsigned i = 0; i != n; ++i) {
+    for (unsigned j = 0; j != n; ++j) {
+      connectivity(i, j) =
+          edge_exists(Node(i), Node(j)) | edge_exists(Node(j), Node(i));
+    }
+  }
+  return connectivity;
+}
+
 void to_json(nlohmann::json& j, const Architecture::Connection& link) {
   j.push_back(link.first);
   j.push_back(link.second);
@@ -233,12 +218,12 @@ void from_json(const nlohmann::json& j, Architecture::Connection& link) {
 
 void to_json(nlohmann::json& j, const Architecture& ar) {
   // Preserve the internal order of ids since Placement depends on this
-  auto uid_its = ar.get_all_uids();
+  auto uid_its = ar.nodes();
   std::vector<Node> nodes{uid_its.begin(), uid_its.end()};
   j["nodes"] = nodes;
 
   nlohmann::json links;
-  for (const Architecture::Connection& con : ar.get_connections_vec()) {
+  for (const Architecture::Connection& con : ar.get_all_edges_vec()) {
     nlohmann::json entry;
     entry["link"] = con;
     entry["weight"] = ar.get_connection_weight(con.first, con.second);
@@ -249,61 +234,34 @@ void to_json(nlohmann::json& j, const Architecture& ar) {
 
 void from_json(const nlohmann::json& j, Architecture& ar) {
   for (const Node& n : j.at("nodes").get<node_vector_t>()) {
-    ar.add_uid(n);
+    ar.add_node(n);
   }
   for (const auto& j_entry : j.at("links")) {
     Architecture::Connection l =
         j_entry.at("link").get<Architecture::Connection>();
-    double w = j_entry.at("weight").get<double>();
+    unsigned w = j_entry.at("weight").get<unsigned>();
     ar.add_connection(l.first, l.second, w);
+  }
+}
+
+void to_json(nlohmann::json& j, const FullyConnected& ar) {
+  auto uid_its = ar.nodes();
+  std::vector<Node> nodes{uid_its.begin(), uid_its.end()};
+  j["nodes"] = nodes;
+}
+
+void from_json(const nlohmann::json& j, FullyConnected& ar) {
+  for (const Node& n : j.at("nodes").get<node_vector_t>()) {
+    ar.add_node(n);
   }
 }
 
 //////////////////////////////////////
 //      Architecture subclasses     //
 //////////////////////////////////////
-FullyConnected::FullyConnected(unsigned numberOfNodes)
-    : Architecture(get_edges(numberOfNodes)) {}
-
-node_vector_t FullyConnected::get_nodes_canonical_order(
-    unsigned numberOfNodes) {
-  node_vector_t nodes;
-  for (unsigned i = 0; i < numberOfNodes; i++) {
-    Node n("fcNode", i);
-    nodes.push_back(n);
-  }
-  return nodes;
-}
-
-// The node names below ("fcNode" etc) must begin with a lowercase letter to
-// match QASM requirements when converting circuits.
-
-std::vector<Architecture::Connection> FullyConnected::get_edges(
-    unsigned numberOfNodes) {
-  std::vector<Connection> edges;
-  for (unsigned i = 0; i < numberOfNodes; i++) {
-    for (unsigned j = 0; j < numberOfNodes; j++) {
-      if (i != j) {
-        Node n1("fcNode", i);
-        Node n2("fcNode", j);
-        edges.push_back({n1, n2});
-      }
-    }
-  }
-  return edges;
-}
 
 RingArch::RingArch(unsigned numberOfNodes)
     : Architecture(get_edges(numberOfNodes)) {}
-
-node_vector_t RingArch::get_nodes_canonical_order(unsigned numberOfNodes) {
-  node_vector_t nodes;
-  for (unsigned i = 0; i < numberOfNodes; i++) {
-    Node n("ringNode", i);
-    nodes.push_back(n);
-  }
-  return nodes;
-}
 
 std::vector<Architecture::Connection> RingArch::get_edges(
     unsigned numberOfNodes) {
@@ -322,20 +280,6 @@ SquareGrid::SquareGrid(
       dimension_r{dim_r},
       dimension_c{dim_c},
       layers{_layers} {}
-
-node_vector_t SquareGrid::get_nodes_canonical_order(
-    unsigned dim_r, const unsigned dim_c, const unsigned layers) {
-  node_vector_t nodes;
-  for (unsigned l = 0; l < layers; l++) {
-    for (unsigned ver = 0; ver < dim_r; ver++) {
-      for (unsigned hor = 0; hor < dim_c; hor++) {
-        Node n("gridNode", ver, hor, l);
-        nodes.push_back(n);
-      }
-    }
-  }
-  return nodes;
-}
 
 std::vector<Architecture::Connection> SquareGrid::get_edges(
     const unsigned dim_r, const unsigned dim_c, const unsigned layers) {

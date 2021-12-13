@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_TESTS_GRAPHS_EdgeSequenceColouringParameters_H_
-#define _TKET_TESTS_GRAPHS_EdgeSequenceColouringParameters_H_
+#pragma once
 
 #include <cstddef>
 #include <limits>
@@ -81,4 +80,3 @@ struct EdgeSequenceColouringParameters {
 }  // namespace tests
 }  // namespace graphs
 }  // namespace tket
-#endif

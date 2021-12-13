@@ -16,6 +16,7 @@ build
 depgraph.png
 dist
 doc
+pytket/pytket/_version.py
 pytket/tests/qasm_test_files/testout.qasm
 pytket/tests/qasm_test_files/testout2.qasm
 pytket/tests/qasm_test_files/testout3.qasm

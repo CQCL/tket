@@ -89,6 +89,60 @@ SCENARIO("Run some basic Compiler Passes") {
   }
 }
 
+SCENARIO("Test that qubits added via add_qubit are tracked.") {
+  GIVEN("Adding qubit via custom Pass.") {
+    Circuit circ(2, 1);
+    Qubit weird_qb("weird_q", 3);
+    Qubit weird_qb2("weird_q", 5);
+    Qubit weird_qb3("weird_qb", 7);
+    Bit weird_cb("weird_c", 3, 1);
+    circ.add_qubit(weird_qb);
+    circ.add_qubit(weird_qb2);
+    circ.add_bit(weird_cb);
+
+    unit_bimap_t* ubmap_initial_missing = circ.unit_bimaps_.initial;
+    REQUIRE(!ubmap_initial_missing);
+
+    CompilationUnit cu(circ);
+    // At initialisation, circuit bimaps are set to nullptr
+    unit_bimap_t* ubmap_initial = circ.unit_bimaps_.initial;
+    REQUIRE(!ubmap_initial);
+
+    // circuit bimaps property wont be changed, nor will compilation unit
+    circ.add_qubit(weird_qb3);
+    unit_bimap_t cu_initial = cu.get_initial_map_ref();
+
+    auto it = cu_initial.left.find(weird_qb3);
+    REQUIRE(it == cu_initial.left.end());
+
+    // Instead add transform for running it
+    Transform t = Transform([](Circuit& circ) {
+      Qubit weird_qb4("weird_qb", 9);
+      circ.add_qubit(weird_qb4);
+      return true;
+    });
+
+    // convert to pass
+    PredicatePtrMap s_ps;
+    PostConditions postcon;
+    auto pass =
+        std::make_shared<StandardPass>(s_ps, t, postcon, nlohmann::json{});
+
+    // Comparison qubit
+    Qubit weird_qb4("weird_qb", 9);
+    pass->apply(cu);
+    cu_initial = cu.get_initial_map_ref();
+    // check all maps to show weird_qb4 is mapped to self in both initial and
+    // final
+    it = cu_initial.left.find(weird_qb4);
+    REQUIRE(it != cu_initial.left.end());
+    REQUIRE(it->second == weird_qb4);
+    auto cu_final = cu.get_final_map_ref();
+    it = cu_final.left.find(weird_qb4);
+    REQUIRE(it != cu_final.left.end());
+    REQUIRE(it->second == weird_qb4);
+  }
+}
 SCENARIO("Test making (mostly routing) passes using PassGenerators") {
   GIVEN("Correct pass for Predicate") {
     SquareGrid grid(1, 5);
@@ -410,10 +464,10 @@ SCENARIO("Track initial and final maps throughout compilation") {
     cp_route->apply(cu);
     bool ids_updated = true;
     for (auto pair : cu.get_initial_map_ref().left) {
-      ids_updated &= grid.uid_exists(Node(pair.second));
+      ids_updated &= grid.node_exists(Node(pair.second));
     }
     for (auto pair : cu.get_final_map_ref().left) {
-      ids_updated &= grid.uid_exists(Node(pair.second));
+      ids_updated &= grid.node_exists(Node(pair.second));
     }
     REQUIRE(ids_updated);
     Circuit res(cu.get_circ_ref());
@@ -499,6 +553,55 @@ SCENARIO("gen_placement_pass test") {
     for (unsigned nn = 0; nn <= 3; ++nn) {
       REQUIRE(all_res_qbs[nn] == Node(nn));
     }
+  }
+
+  GIVEN("A large circuit and a large architecture.") {
+    unsigned N = 150;
+    Circuit circ(N);
+    for (unsigned i = 0; i < N - 3; ++i) {
+      circ.add_op<unsigned>(OpType::CX, {i, i + 1});
+      circ.add_op<unsigned>(OpType::CX, {i, i + 2});
+      circ.add_op<unsigned>(OpType::CX, {i, i + 3});
+    }
+    // Generate a line architecture
+    std::vector<std::pair<unsigned, unsigned>> edges;
+    for (unsigned i = 0; i < N - 1; i++) {
+      edges.push_back({i, i + 1});
+    }
+    Architecture line_arc(edges);
+    // Get a graph placement
+    PassPtr graph_place =
+        gen_placement_pass(std::make_shared<GraphPlacement>(line_arc));
+    CompilationUnit graph_cu((Circuit(circ)));
+    graph_place->apply(graph_cu);
+    // Get a noise-aware placement
+    PassPtr noise_place =
+        gen_placement_pass(std::make_shared<NoiseAwarePlacement>(line_arc));
+    CompilationUnit noise_cu((Circuit(circ)));
+    noise_place->apply(noise_cu);
+    // Get a line placement
+    PassPtr line_place =
+        gen_placement_pass(std::make_shared<LinePlacement>(line_arc));
+    CompilationUnit line_cu((Circuit(circ)));
+    line_place->apply(line_cu);
+    // Get a fall back placement from a graph placement
+    PlacementConfig config(5, line_arc.n_connections(), 10000, 10, 0);
+    PassPtr graph_fall_back_place =
+        gen_placement_pass(std::make_shared<GraphPlacement>(line_arc, config));
+    CompilationUnit graph_fall_back_cu((Circuit(circ)));
+    graph_fall_back_place->apply(graph_fall_back_cu);
+    // Get a fall back placement from a noise-aware placement
+    PassPtr noise_fall_back_place = gen_placement_pass(
+        std::make_shared<NoiseAwarePlacement>(line_arc, config));
+    CompilationUnit noise_fall_back_cu((Circuit(circ)));
+    noise_fall_back_place->apply(noise_fall_back_cu);
+
+    REQUIRE(graph_cu.get_final_map_ref() != line_cu.get_final_map_ref());
+    REQUIRE(noise_cu.get_final_map_ref() != line_cu.get_final_map_ref());
+    REQUIRE(
+        graph_fall_back_cu.get_final_map_ref() == line_cu.get_final_map_ref());
+    REQUIRE(
+        noise_fall_back_cu.get_final_map_ref() == line_cu.get_final_map_ref());
   }
 }
 

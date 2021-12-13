@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Cycles_H_
-#define _TKET_Cycles_H_
+#pragma once
 
 #include "Circuit/Circuit.hpp"
 
@@ -40,8 +39,6 @@ class Cycle {
       const std::vector<edge_pair_t>& _boundary_edges,
       const std::vector<CycleCom>& _coms)
       : boundary_edges_(_boundary_edges), coms_(_coms) {}
-
-  void print() const;
 
   // Returns size of boundary_edges_
   unsigned size() const;
@@ -145,4 +142,3 @@ class CycleFinder {
   void order_keys(unsigned& new_key, std::set<unsigned>& old_keys) const;
 };
 }  // namespace tket
-#endif

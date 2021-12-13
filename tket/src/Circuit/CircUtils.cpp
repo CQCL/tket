@@ -16,11 +16,14 @@
 
 #include <cmath>
 #include <complex>
+#include <vector>
 
 #include "CircPool.hpp"
+#include "Circuit/Circuit.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Gate/Rotation.hpp"
 #include "Utils/EigenConfig.hpp"
+#include "Utils/Expression.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"
 
@@ -374,6 +377,113 @@ Circuit pauli_gadget(
   return circ;
 }
 
+Circuit with_CX(Gate_ptr op) {
+  OpType optype = op->get_type();
+  std::vector<Expr> params = op->get_params();
+  unsigned n = op->n_qubits();
+  if (n == 0) {
+    return Circuit();
+  } else if (n == 1) {
+    Circuit c(1);
+    c.add_op(op, std::vector<unsigned>{0});
+    return c;
+  }
+  switch (optype) {
+    case OpType::CX: {
+      Circuit c(2);
+      c.add_op(op, std::vector<unsigned>{0, 1});
+      return c;
+    }
+    case OpType::CCX:
+      return CircPool::CCX_normal_decomp();
+    case OpType::CY:
+      return CircPool::CY_using_CX();
+    case OpType::CZ:
+      return CircPool::CZ_using_CX();
+    case OpType::CH:
+      return CircPool::CH_using_CX();
+    case OpType::CV:
+      return CircPool::CV_using_CX();
+    case OpType::CVdg:
+      return CircPool::CVdg_using_CX();
+    case OpType::CSX:
+      return CircPool::CSX_using_CX();
+    case OpType::CSXdg:
+      return CircPool::CSXdg_using_CX();
+    case OpType::CRz:
+      return CircPool::CRz_using_CX(params[0]);
+    case OpType::CRx:
+      return CircPool::CRx_using_CX(params[0]);
+    case OpType::CRy:
+      return CircPool::CRy_using_CX(params[0]);
+    case OpType::CU1:
+      return CircPool::CU1_using_CX(params[0]);
+    case OpType::CU3:
+      return CircPool::CU3_using_CX(params[0], params[1], params[2]);
+    case OpType::PhaseGadget:
+      return phase_gadget(n, params[0], CXConfigType::Snake);
+    case OpType::SWAP:
+      return CircPool::SWAP_using_CX_0();
+    case OpType::CSWAP:
+      return CircPool::CSWAP_using_CX();
+    case OpType::BRIDGE:
+      return CircPool::BRIDGE_using_CX_0();
+    case OpType::ECR:
+      return CircPool::ECR_using_CX();
+    case OpType::ISWAP:
+      return CircPool::ISWAP_using_CX(params[0]);
+    case OpType::ZZMax:
+      return CircPool::ZZMax_using_CX();
+    case OpType::XXPhase:
+      return CircPool::XXPhase_using_CX(params[0]);
+    case OpType::YYPhase:
+      return CircPool::YYPhase_using_CX(params[0]);
+    case OpType::ZZPhase:
+      return CircPool::ZZPhase_using_CX(params[0]);
+    case OpType::XXPhase3:
+      return CircPool::XXPhase3_using_CX(params[0]);
+    case OpType::ESWAP:
+      return CircPool::ESWAP_using_CX(params[0]);
+    case OpType::FSim:
+      return CircPool::FSim_using_CX(params[0], params[1]);
+    case OpType::Sycamore:
+      return CircPool::FSim_using_CX(1. / 2., 1. / 6.);
+    case OpType::ISWAPMax:
+      return CircPool::ISWAP_using_CX(1.);
+    case OpType::PhasedISWAP:
+      return CircPool::PhasedISWAP_using_CX(params[0], params[1]);
+    case OpType::NPhasedX:
+      return CircPool::NPhasedX_using_CX(n, params[0], params[1]);
+    default:
+      throw CircuitInvalidity("Cannot decompose " + op->get_name());
+  }
+}
+
+#define CNXTYPE(n) \
+  (((n) == 2) ? OpType::CX : ((n) == 3) ? OpType::CCX : OpType::CnX)
+
+/**
+ * Construct a circuit representing CnU1 using U1, CX, CCX and CnX gates.
+ */
+static Circuit CnU1(unsigned n_controls, Expr lambda) {
+  // CnU1(x) decomposes recursively as:
+  // C{n-1}U1(x/2)[ctrls]; U1(x/2)[tgt]; CnX; U1(-x/2)[tgt]; CnX
+  // We don't actually use recursion; just iterate starting with the first U1:
+  Circuit c(n_controls + 1);
+  Expr x = lambda / (1u << n_controls);
+  c.add_op<unsigned>(OpType::U1, x, {0});
+  std::vector<unsigned> cnx_qbs = {0};
+  for (unsigned i = 0; i < n_controls; i++) {
+    cnx_qbs.push_back(i + 1);
+    c.add_op<unsigned>(OpType::U1, x, {i + 1});
+    c.add_op<unsigned>(CNXTYPE(i + 2), cnx_qbs);
+    c.add_op<unsigned>(OpType::U1, -x, {i + 1});
+    c.add_op<unsigned>(CNXTYPE(i + 2), cnx_qbs);
+    x *= 2;
+  }
+  return c;
+}
+
 Circuit with_controls(const Circuit &c, unsigned n_controls) {
   if (c.n_bits() != 0 || !c.is_simple()) {
     throw CircuitInvalidity("Only default qubit register allowed");
@@ -405,105 +515,20 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
       if (is_single_qubit_type(optype)) {
         continue;
       }
-      std::vector<Expr> params = op->get_params();
-      std::optional<Circuit> replacement;
-      switch (optype) {
-        case OpType::CY:
-          replacement = CircPool::CY_using_CX();
-          break;
-        case OpType::CZ:
-          replacement = CircPool::CZ_using_CX();
-          break;
-        case OpType::CH:
-          replacement = CircPool::CH_using_CX();
-          break;
-        case OpType::CV:
-          replacement = CircPool::CV_using_CX();
-          break;
-        case OpType::CVdg:
-          replacement = CircPool::CVdg_using_CX();
-          break;
-        case OpType::CSX:
-          replacement = CircPool::CSX_using_CX();
-          break;
-        case OpType::CSXdg:
-          replacement = CircPool::CSXdg_using_CX();
-          break;
-        case OpType::CRz:
-          replacement = CircPool::CRz_using_CX(params[0]);
-          break;
-        case OpType::CRx:
-          replacement = CircPool::CRx_using_CX(params[0]);
-          break;
-        case OpType::CRy:
-          replacement = CircPool::CRy_using_CX(params[0]);
-          break;
-        case OpType::CU1:
-          replacement = CircPool::CU1_using_CX(params[0]);
-          break;
-        case OpType::CU3:
-          replacement = CircPool::CU3_using_CX(params[0], params[1], params[2]);
-          break;
-        case OpType::PhaseGadget:
-          replacement =
-              phase_gadget(op->n_qubits(), params[0], CXConfigType::Snake);
-          break;
-        case OpType::SWAP:
-          replacement = CircPool::SWAP_using_CX_0();
-          break;
-        case OpType::CSWAP:
-          replacement = CircPool::CSWAP_using_CX();
-          break;
-        case OpType::BRIDGE:
-          replacement = CircPool::BRIDGE_using_CX_0();
-          break;
-        case OpType::ECR:
-          replacement = CircPool::ECR_using_CX();
-          break;
-        case OpType::ISWAP:
-          replacement = CircPool::ISWAP_using_CX(params[0]);
-          break;
-        case OpType::ZZMax:
-          replacement = CircPool::ZZMax_using_CX();
-          break;
-        case OpType::XXPhase:
-          replacement = CircPool::XXPhase_using_CX(params[0]);
-          break;
-        case OpType::YYPhase:
-          replacement = CircPool::YYPhase_using_CX(params[0]);
-          break;
-        case OpType::ZZPhase:
-          replacement = CircPool::ZZPhase_using_CX(params[0]);
-          break;
-        case OpType::XXPhase3:
-          replacement = CircPool::XXPhase3_using_CX(params[0]);
-          break;
-        case OpType::ESWAP:
-          replacement = CircPool::ESWAP_using_CX(params[0]);
-          break;
-        case OpType::FSim:
-          replacement = CircPool::FSim_using_CX(params[0], params[1]);
-          break;
-        case OpType::Sycamore:
-          replacement = CircPool::FSim_using_CX(1. / 2., 1. / 6.);
-          break;
-        case OpType::ISWAPMax:
-          replacement = CircPool::ISWAP_using_CX(1.);
-          break;
-        case OpType::PhasedISWAP:
-          replacement = CircPool::PhasedISWAP_using_CX(params[0], params[1]);
-          break;
-        default:
-          break;
+      if (optype == OpType::CX || optype == OpType::CCX ||
+          optype == OpType::CnX || optype == OpType::CnRy) {
+        continue;
       }
-      if (replacement) {
-        c1.substitute(replacement.value(), v, Circuit::VertexDeletion::No);
-        bin.push_back(v);
-      }
+      Circuit replacement = with_CX(as_gate_ptr(op));
+      c1.substitute(replacement, v, Circuit::VertexDeletion::No);
+      bin.push_back(v);
     }
   }
   c1.remove_vertices(
       bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+
+  // Capture the phase. We may adjust this during replacements below.
+  Expr a = c1.get_phase();
 
   // 2. Replace all gates with controlled versions
   Circuit c2(n_controls + c_n_qubits);
@@ -522,8 +547,6 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
     OpType optype = op->get_type();
     std::vector<Expr> params = op->get_params();
     switch (optype) {
-#define CNXTYPE(n) \
-  (((n) == 2) ? OpType::CX : ((n) == 3) ? OpType::CCX : OpType::CnX)
       case OpType::noop:
         break;
       case OpType::X:
@@ -543,27 +566,13 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
         Expr lambda = tk1_angles[2] + 0.5;
         Expr t = tk1_angles[3] - 0.5 * (tk1_angles[0] + tk1_angles[2]);
         // Operation is U3(theta, phi, lambda) + phase t.
-        // Construct the controlled version of this, by extending
-        // the standard CU3-to-CX decomposition, merging the phase
-        // into the first U1 and and noting that CnU1(x) decomposes
-        // recursively as:
-        // C{n-1}U1(x/2)[ctrls];
-        // U1(x/2)[tgt]; CnX; U1(-x/2)[tgt]; CnX
-        // We don't actually use recursion; just iterate starting
-        // with the first U1:
-        Expr x = (t + (lambda + phi) / 2) / std::pow(2, n_controls - 1);
-        c2.add_op<Qubit>(OpType::U1, x, {new_args[0]});
-        qubit_vector_t cnx_qbs = {new_args[0]};
-        for (unsigned i = 0; i < n_controls - 1; i++) {
-          cnx_qbs.push_back(new_args[i + 1]);
-          c2.add_op<Qubit>(OpType::U1, x, {new_args[i + 1]});
-          c2.add_op<Qubit>(CNXTYPE(i + 2), cnx_qbs);
-          c2.add_op<Qubit>(OpType::U1, -x, {new_args[i + 1]});
-          c2.add_op<Qubit>(CNXTYPE(i + 2), cnx_qbs);
-          x *= 2;
-        }
-        // Phew. The rest of the CnU3 decomposition is straightforward.
+        // First absorb t in the overall phase.
+        a += t;
+        // Construct a multi-controlled U3, by extending the standard CU3-to-CX
+        // decomposition.
         Qubit target = new_args[n_controls];
+        Circuit cnu1 = CnU1(n_controls - 1, 0.5 * (lambda + phi));
+        c2.append(cnu1);
         c2.add_op<Qubit>(OpType::U1, 0.5 * (lambda - phi), {target});
         c2.add_op<Qubit>(CNXTYPE(n_new_args), new_args);
         c2.add_op<Qubit>(
@@ -571,17 +580,18 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
         c2.add_op<Qubit>(CNXTYPE(n_new_args), new_args);
         c2.add_op<Qubit>(OpType::U3, {0.5 * theta, phi, 0}, {target});
       } break;
-#undef CNXTYPE
     }
   }
 
-  // 3. Account for phase
-  Expr a = c1.get_phase();
+  // 3. Account for phase by appending a CnU1 to the control qubits.
   if (!equiv_0(a)) {
-    c2.add_op<unsigned>(OpType::U1, a, {0});
+    Circuit cnu1 = CnU1(n_controls - 1, a);
+    c2.append(cnu1);
   }
 
   return c2;
 }
+
+#undef CNXTYPE
 
 }  // namespace tket

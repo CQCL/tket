@@ -67,6 +67,8 @@ PYBIND11_MODULE(circuit, m) {
           "for some operations (e.g. Rx, Ry and Rz) is [0,4).")
       .def_property_readonly(
           "n_qubits", &Op::n_qubits, "Number of qubits of op")
+      .def_property_readonly("dagger", &Op::dagger, "Dagger of op")
+      .def_property_readonly("transpose", &Op::transpose, "Transpose of op")
       .def(
           "get_name", &Op::get_name, "String representation of op",
           py::arg("latex") = false)
@@ -373,6 +375,11 @@ PYBIND11_MODULE(circuit, m) {
           ":math:`(\\alpha,\\beta) \\mapsto "
           "\\mathrm{Rz}(\\beta)\\mathrm{Rx}(\\alpha)\\mathrm{Rz}(-"
           "\\beta)` (matrix-multiplication order)")
+      .value(
+          "NPhasedX", OpType::NPhasedX,
+          ":math:`(\\alpha, \\beta) \\mapsto \\mathrm{PhasedX}(\\alpha, \\beta)"
+          "^{\\otimes n}` (n-qubit gate composed of identical PhasedX in "
+          "parallel.")
       .value(
           "CnRy", OpType::CnRy,
           ":math:`(\\alpha)` := n-controlled "

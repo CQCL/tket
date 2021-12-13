@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Ops_SymTable_H_
-#define _TKET_Ops_SymTable_H_
+#pragma once
 
 #include "Utils/Expression.hpp"
 
@@ -46,5 +45,3 @@ struct SymTable {
 };
 
 }  // namespace tket
-
-#endif

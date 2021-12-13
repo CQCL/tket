@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Predicates_H_
-#define _TKET_Predicates_H_
+#pragma once
 #include <typeindex>
 
 #include "Routing/Routing.hpp"
@@ -129,7 +128,7 @@ class MaxTwoQubitGatesPredicate : public Predicate {
 class PlacementPredicate : public Predicate {
  public:
   explicit PlacementPredicate(const Architecture& arch)
-      : nodes_(arch.get_all_uids_set()) {}
+      : nodes_(arch.nodes()) {}
   explicit PlacementPredicate(const node_set_t& nodes) : nodes_(nodes) {}
   bool verify(const Circuit& circ) const override;
   bool implies(const Predicate& other) const override;
@@ -242,6 +241,17 @@ class NoSymbolsPredicate : public Predicate {
   std::string to_string() const override;
 };
 
-}  // namespace tket
+/**
+ * Asserts that all NPhasedX gates act on all qubits
+ * In the future, it might be useful to have a generic GlobalGatePredicate
+ * for other global gates, or flag some gates as global
+ */
+class GlobalPhasedXPredicate : public Predicate {
+ public:
+  bool verify(const Circuit& circ) const override;
+  bool implies(const Predicate& other) const override;
+  PredicatePtr meet(const Predicate& other) const override;
+  std::string to_string() const override;
+};
 
-#endif  // PREDICATES_H_
+}  // namespace tket

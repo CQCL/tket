@@ -172,6 +172,12 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     CHECK(phasedx->get_params().size() == 2);
     std::vector<Expr> phasedx_params = {Expr{0.5}, Expr(0.5)};
     REQUIRE(phasedx->transpose()->get_params() == phasedx_params);
+    const Op_ptr nphasedx = (get_op_ptr(OpType::NPhasedX, {0.5, -0.5}));
+    CHECK(nphasedx->get_name() == "NPhasedX(0.5, 1.5)");
+    CHECK(nphasedx->get_params().size() == 2);
+    CHECK(
+        nphasedx->transpose()->get_params() ==
+        std::vector<SymEngine::Expression>{0.5, 0.5});
   }
 
   GIVEN("Check the transpose at the Box level") {

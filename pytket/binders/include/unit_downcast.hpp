@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET__unit_downcast_H_
-#define _TKET__unit_downcast_H_
+#pragma once
 #include <pybind11/pybind11.h>
 
 #include "Utils/UnitID.hpp"
@@ -39,5 +38,3 @@ struct polymorphic_type_hook<tket::UnitID> {
   }
 };
 }  // namespace pybind11
-
-#endif  //_TKET__unit_downcast_H_

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_GraphUtils_impl_H_
-#define _TKET_GraphUtils_impl_H_
+#pragma once
 
 #include <algorithm>
 #include <boost/iterator/transform_iterator.hpp>
@@ -150,21 +149,6 @@ class graph_utils_base {
   void remove_vertex(vertex<Graph> v) {
     remove_vertex_handler(v);
     boost::remove_vertex(v, graph);
-  }
-
-  void remove_stray_vertices() {
-    bool removed_vertices = true;
-    while (removed_vertices) {
-      removed_vertices = false;
-      for (vertex<Graph> v :
-           boost::make_iterator_range(boost::vertices(graph))) {
-        if (boost::degree(v, graph) == 0) {
-          removed_vertices = true;
-          remove_vertex(v);
-          break;
-        }
-      }
-    }
   }
 
   void remove_edge(edge<Graph> e, bool remove_unused_vertices = false) {
@@ -478,5 +462,3 @@ class graph_utils_impl_with_map
 
 }  // namespace detail
 }  // namespace tket::graphs::utils
-
-#endif

@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Command_H_
-#define _TKET_Command_H_
+#pragma once
 
 #include <optional>
 #include <sstream>
@@ -78,7 +77,6 @@ class Command {
     cmd_str << op_ptr->get_command_str(args);
     return cmd_str.str();
   }
-  void print() const { tket_log()->info(to_str()); }
   friend std::ostream &operator<<(std::ostream &out, const Command &c) {
     out << c.to_str();
     return out;
@@ -94,5 +92,3 @@ class Command {
 JSON_DECL(Command)
 
 }  // namespace tket
-
-#endif  // _TKET_Command_H_

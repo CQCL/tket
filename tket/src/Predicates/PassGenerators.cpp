@@ -22,6 +22,7 @@
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassLibrary.hpp"
 #include "Predicates/Predicates.hpp"
+#include "Routing/Placement.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 
@@ -135,12 +136,24 @@ PassPtr gen_rename_qubits_pass(const std::map<Qubit, Qubit>& qm) {
 
 PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
   Transform::Transformation trans = [=](Circuit& circ) {
-    return placement_ptr->place(circ);
+    // Fall back to line placement if graph placement fails
+    bool changed;
+    try {
+      changed = placement_ptr->place(circ);
+    } catch (const std::runtime_error& e) {
+      tket_log()->warn(fmt::format(
+          "PlacementPass failed with message: {} Fall back to LinePlacement.",
+          e.what()));
+      PlacementPtr line_placement_ptr = std::make_shared<LinePlacement>(
+          placement_ptr->get_architecture_ref());
+      changed = line_placement_ptr->place(circ);
+    }
+    return changed;
   };
   Transform t = Transform(trans);
   PredicatePtr twoqbpred = std::make_shared<MaxTwoQubitGatesPredicate>();
   PredicatePtr n_qubit_pred = std::make_shared<MaxNQubitsPredicate>(
-      placement_ptr->get_architecture_ref().n_uids());
+      placement_ptr->get_architecture_ref().n_nodes());
 
   PredicatePtrMap precons{
       CompilationUnit::make_type_pair(twoqbpred),
@@ -196,7 +209,7 @@ PassPtr gen_routing_pass(const Architecture& arc, const RoutingConfig& config) {
   PredicatePtr twoqbpred = std::make_shared<MaxTwoQubitGatesPredicate>();
   PredicatePtr placedpred = std::make_shared<PlacementPredicate>(arc);
   PredicatePtr n_qubit_pred =
-      std::make_shared<MaxNQubitsPredicate>(arc.n_uids());
+      std::make_shared<MaxNQubitsPredicate>(arc.n_nodes());
   PredicatePtrMap precons{
       CompilationUnit::make_type_pair(placedpred),
       CompilationUnit::make_type_pair(twoqbpred),
@@ -227,7 +240,7 @@ PassPtr gen_routing_pass(const Architecture& arc, const RoutingConfig& config) {
 
 PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
   Transform::Transformation trans = [=](Circuit& circ) {
-    if (arc.n_uids() < circ.n_qubits()) {
+    if (arc.n_nodes() < circ.n_qubits()) {
       throw CircuitInvalidity(
           "Circuit has more qubits than the architecture has nodes.");
     }
@@ -236,7 +249,7 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
     std::map<Qubit, Node> qubit_to_nodes;
     unsigned counter = 0;
 
-    for (Node x : arc.get_all_uids_set()) {
+    for (Node x : arc.nodes()) {
       if (counter < circ.n_qubits()) {
         qubit_to_nodes.insert({q_vec[counter], x});
         ++counter;
@@ -252,7 +265,7 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
   PredicatePtrMap precons{};
   PredicatePtr placement_pred = std::make_shared<PlacementPredicate>(arc);
   PredicatePtr n_qubit_pred =
-      std::make_shared<MaxNQubitsPredicate>(arc.n_uids());
+      std::make_shared<MaxNQubitsPredicate>(arc.n_nodes());
   PredicatePtrMap s_postcons{
       CompilationUnit::make_type_pair(placement_pred),
       CompilationUnit::make_type_pair(n_qubit_pred)};
@@ -273,7 +286,7 @@ PassPtr aas_routing_pass(
     if (lookahead == 0) {
       throw std::logic_error("lookahead must be > 0");
     }
-    if (arc.n_uids() < circ.n_qubits()) {
+    if (arc.n_nodes() < circ.n_qubits()) {
       throw CircuitInvalidity(
           "Circuit has more qubits than the architecture has nodes.");
     }
@@ -359,7 +372,7 @@ PassPtr aas_routing_pass(
 
   PredicatePtr placedpred = std::make_shared<PlacementPredicate>(arc);
   PredicatePtr n_qubit_pred =
-      std::make_shared<MaxNQubitsPredicate>(arc.n_uids());
+      std::make_shared<MaxNQubitsPredicate>(arc.n_nodes());
   PredicatePtrMap precons{
       CompilationUnit::make_type_pair(placedpred),
       CompilationUnit::make_type_pair(n_qubit_pred)};

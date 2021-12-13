@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_HelperFunctions_H_
-#define _TKET_HelperFunctions_H_
+#pragma once
 
 #include <boost/range/adaptor/transformed.hpp>
 #include <cstdint>
@@ -83,5 +82,3 @@ bimap_to_map(MapT& bm) {
 uint32_t reverse_bits(uint32_t v, unsigned w);
 
 }  // namespace tket
-
-#endif  //_TKET_HelperFunctions_H_
