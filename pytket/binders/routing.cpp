@@ -127,7 +127,7 @@ PYBIND11_MODULE(routing, m) {
           "returns distance between them",
           py::arg("node_0"), py::arg("node_1"))
       .def(
-          "get_adjacent_nodes", &Architecture::get_neighbour_uids,
+          "get_adjacent_nodes", &Architecture::get_neighbour_nodes,
           "given a node, returns adjacent nodes in Architecture.",
           py::arg("node"))
       .def_property_readonly(

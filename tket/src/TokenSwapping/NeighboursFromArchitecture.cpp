@@ -33,7 +33,7 @@ const std::vector<size_t>& NeighboursFromArchitecture::operator()(
 
   const auto& source_node = m_arch_mapping.get_node(vertex);
   const auto neighbour_nodes =
-      m_arch_mapping.get_architecture().get_neighbour_uids(source_node);
+      m_arch_mapping.get_architecture().get_neighbour_nodes(source_node);
 
   neighbours.reserve(neighbour_nodes.size());
 

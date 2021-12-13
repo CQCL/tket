@@ -218,14 +218,6 @@ static void test(TestResult& result, const Architecture& arch, RNG& rng) {
       arch_mapping.number_of_vertices(), rng);
 }
 
-SCENARIO("Path generation for complete graph") {
-  RNG rng;
-  TestResult result;
-  const FullyConnected arch(5);
-  test(result, arch, rng);
-  REQUIRE(result.str() == "[ Number of path calls: 250  Extra paths: 0 ]");
-}
-
 SCENARIO("Path generation for ring graph") {
   RNG rng;
   TestResult result;

@@ -1,7 +1,7 @@
 #ifndef _TKET_TokenSwapping_ArchitectureMapping_H_
 #define _TKET_TokenSwapping_ArchitectureMapping_H_
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "TSAUtils/SwapFunctions.hpp"
 
 namespace tket {
@@ -9,7 +9,7 @@ namespace tsa_internal {
 
 /** For mapping between nodes in an architecture and size_t vertex numbers.
  *  The vertex numbers are merely the indices of each Node
- *  within the vector returned by the get_all_uids() function.
+ *  within the vector returned by the get_all_nodes() function.
  *
  *  For now, we don't want to use Node objects as (1) this would make
  *  TokenSwapping dependent on other parts of Tket and hence less modular,

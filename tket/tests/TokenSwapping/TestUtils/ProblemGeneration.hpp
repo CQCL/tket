@@ -1,7 +1,7 @@
 #ifndef _TKET_TESTS_TokenSwapping_TestUtils_ProblemGeneration_H_
 #define _TKET_TESTS_TokenSwapping_TestUtils_ProblemGeneration_H_
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "TokenSwapping/RNG.hpp"
 #include "TokenSwapping/TSAUtils/VertexMappingFunctions.hpp"
 

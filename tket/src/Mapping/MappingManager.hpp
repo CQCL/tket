@@ -1,7 +1,7 @@
 #ifndef _TKET_MappingManager_H_
 #define _TKET_MappingManager_H_
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Mapping/RoutingMethod.hpp"
 #include "Utils/UnitID.hpp"

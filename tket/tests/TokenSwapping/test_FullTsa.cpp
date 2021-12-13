@@ -139,35 +139,6 @@ SCENARIO("Full TSA: Rings") {
       "[Winners: joint: 231 252 394 397 400 394  undisputed: 0 0 0 0 3 0]");
 }
 
-SCENARIO("Full TSA: fully connected") {
-  const vector<std::string> problem_messages{
-      "[K3: 51582: v3 i1 f100 s1: 100 problems; 135 tokens]",
-      "[K5: 51644: v5 i1 f100 s1: 100 problems; 224 tokens]",
-      "[K10: 51634: v10 i1 f100 s1: 100 problems; 469 tokens]",
-      "[K20: 51498: v20 i1 f100 s1: 100 problems; 974 tokens]"};
-
-  const vector<size_t> num_vertices{3, 5, 10, 20};
-  FullTester tester;
-  tester.test_name = "FullyConn";
-  std::string arch_name;
-
-  for (size_t index = 0; index < problem_messages.size(); ++index) {
-    const FullyConnected arch(num_vertices[index]);
-    arch_name = "K" + std::to_string(num_vertices[index]);
-    tester.add_problems(arch, arch_name, problem_messages[index]);
-  }
-  CHECK(
-      tester.results.str() ==
-      "[FullyConn:HybridTSA_00: 400 probs; 1802 toks; 867 tot.lb]\n"
-      "[Total swaps: 1435 1435 1435 1435 1435 1435]\n"
-      "[Winners: joint: 400 400 400 400 400 400  undisputed: 0 0 0 0 0 0]");
-
-  CHECK(
-      tester.trivial_results.str() ==
-      "[FullyConn:Trivial: 400 probs; 1802 toks; 867 tot.lb]\n"
-      "[Total swaps: 1435 1435 1435 1435 1435 1435]\n"
-      "[Winners: joint: 400 400 400 400 400 400  undisputed: 0 0 0 0 0 0]");
-}
 
 SCENARIO("Full TSA: Square Grids") {
   const vector<std::array<unsigned, 3>> grid_parameters = {
@@ -220,7 +191,7 @@ SCENARIO("Full TSA: Random trees") {
 
     const auto edges = tree_generator.get_tree_edges(tester.rng);
     const Architecture arch(edges);
-    REQUIRE(arch.n_uids() == edges.size() + 1);
+    REQUIRE(arch.n_nodes() == edges.size() + 1);
     arch_name = "Tree" + std::to_string(index);
     tester.add_problems(arch, arch_name, problem_messages[index]);
   }

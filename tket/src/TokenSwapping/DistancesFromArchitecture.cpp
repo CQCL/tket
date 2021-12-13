@@ -62,7 +62,7 @@ size_t DistancesFromArchitecture::operator()(size_t vertex1, size_t vertex2) {
     // other bizarre error causes distance zero to be returned.
     if (distance_entry == 0) {
       std::stringstream ss;
-      ss << "DistancesFromArchitecture: architecture has " << arch.n_uids()
+      ss << "DistancesFromArchitecture: architecture has " << arch.n_nodes()
          << " vertices, " << arch.n_connections()
          << " edges; returned diameter " << arch.get_diameter() << ", but d("
          << vertex1 << "," << vertex2

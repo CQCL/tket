@@ -8,7 +8,7 @@ namespace tsa_internal {
 
 ArchitectureMapping::ArchitectureMapping(const Architecture& arch)
     : m_arch(arch) {
-  const auto uids = arch.get_all_uids();
+  const auto uids = arch.get_all_nodes();
   m_vertex_to_node_mapping.reserve(uids.size());
   for (const UnitID& uid : uids) {
     m_vertex_to_node_mapping.emplace_back(Node(uid));
@@ -60,7 +60,7 @@ const Architecture& ArchitectureMapping::get_architecture() const {
 
 std::vector<Swap> ArchitectureMapping::get_edges() const {
   std::vector<Swap> edges;
-  for (auto [node1, node2] : m_arch.get_connections_vec()) {
+  for (auto [node1, node2] : m_arch.get_all_edges_vec()) {
     edges.emplace_back(get_swap(get_vertex(node1), get_vertex(node2)));
   }
   return edges;

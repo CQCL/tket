@@ -34,17 +34,17 @@ bool Architecture::valid_operation(
     return true;
   } else if (uids.size() == 2) {
     if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
-        (this->connection_exists(uids[0], uids[1]) ||
-         this->connection_exists(uids[1], uids[0]))) {
+        (this->edge_exists(uids[0], uids[1]) ||
+         this->edge_exists(uids[1], uids[0]))) {
       return true;
     }
   } else if (uids.size() == 3) {
     bool con_0_exists =
-        (this->connection_exists(uids[0], uids[1]) ||
-         this->connection_exists(uids[1], uids[0]));
+        (this->edge_exists(uids[0], uids[1]) ||
+         this->edge_exists(uids[1], uids[0]));
     bool con_1_exists =
-        (this->connection_exists(uids[2], uids[1]) ||
-         this->connection_exists(uids[1], uids[2]));
+        (this->edge_exists(uids[2], uids[1]) ||
+         this->edge_exists(uids[1], uids[2]));
     if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
         this->node_exists(uids[2]) && con_0_exists && con_1_exists) {
       return true;

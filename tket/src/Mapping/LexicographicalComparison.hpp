@@ -1,7 +1,7 @@
 #ifndef _TKET_LexicographicalComparison_H_
 #define _TKET_LexicographicalComparison_H_
 
-#include "Architecture/Architectures.hpp"
+#include "Architecture/Architecture.hpp"
 #include "Utils/BiMapHeaders.hpp"
 #include "Utils/UnitID.hpp"
 
