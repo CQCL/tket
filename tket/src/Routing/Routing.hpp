@@ -264,7 +264,7 @@ class Routing {
   graphs::dist_vec update_distance_vector(
       const Swap &nodes, graphs::dist_vec new_dist_vector,
       const Interactions &inte) const;
-  const std::pair<std::size_t, std::size_t> pair_dists(
+  const std::pair<unsigned, unsigned> pair_dists(
       const Node &n1, const Node &p1, const Node &n2, const Node &p2) const;
   bool swap_decreases(const Swap &nodes, const Interactions &inte) const;
   std::vector<Swap> candidate_swaps(

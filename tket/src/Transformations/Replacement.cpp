@@ -16,6 +16,7 @@
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
+#include "Gate/GatePtr.hpp"
 #include "Transform.hpp"
 
 namespace tket {
@@ -28,109 +29,12 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
         desc.name());
   unsigned n_qubits = op->n_qubits();
   switch (desc.type()) {
-    case OpType::CZ: {
-      return CircPool::CZ_using_CX();
-    }
-    case OpType::CY: {
-      return CircPool::CY_using_CX();
-    }
-    case OpType::CH: {
-      return CircPool::CH_using_CX();
-    }
-    case OpType::CV: {
-      return CircPool::CV_using_CX();
-    }
-    case OpType::CVdg: {
-      return CircPool::CVdg_using_CX();
-    }
-    case OpType::CSX: {
-      return CircPool::CSX_using_CX();
-    }
-    case OpType::CSXdg: {
-      return CircPool::CSXdg_using_CX();
-    }
-    case OpType::CRz: {
-      return CircPool::CRz_using_CX(op->get_params()[0]);
-    }
-    case OpType::CRx: {
-      return CircPool::CRx_using_CX(op->get_params()[0]);
-    }
-    case OpType::CRy: {
-      return CircPool::CRy_using_CX(op->get_params()[0]);
-    }
-    case OpType::CU1: {
-      return CircPool::CU1_using_CX(op->get_params()[0]);
-    }
-    case OpType::CU3: {
-      std::vector<Expr> params = op->get_params();
-      return CircPool::CU3_using_CX(params[0], params[1], params[2]);
-    }
-    case OpType::SWAP: {
-      return CircPool::SWAP_using_CX_0();
-    }
-    case OpType::CSWAP: {
-      return CircPool::CSWAP_using_CX();
-    }
-    case OpType::PhaseGadget: {
-      return phase_gadget(n_qubits, op->get_params()[0], CXConfigType::Snake);
-    }
-    case OpType::ISWAP: {
-      return CircPool::ISWAP_using_CX(op->get_params()[0]);
-    }
-    case OpType::XXPhase: {
-      return CircPool::XXPhase_using_CX(op->get_params()[0]);
-    }
-    case OpType::ECR: {
-      return CircPool::ECR_using_CX();
-    }
-    case OpType::ZZMax: {
-      return CircPool::ZZMax_using_CX();
-    }
-    case OpType::ZZPhase: {
-      return CircPool::ZZPhase_using_CX(op->get_params()[0]);
-    }
-    case OpType::YYPhase: {
-      return CircPool::YYPhase_using_CX(op->get_params()[0]);
-    }
-    case OpType::XXPhase3: {
-      return CircPool::XXPhase3_using_CX(op->get_params()[0]);
-    }
-    case OpType::BRIDGE: {
-      return CircPool::BRIDGE_using_CX_0();
-    }
-    case OpType::CnRy: {
+    case OpType::CnRy:
       return Transform::decomposed_CnRy(op, n_qubits);
-    }
-    case OpType::CCX: {
-      return CircPool::CCX_normal_decomp();
-    }
-    case OpType::CnX: {
+    case OpType::CnX:
       return Transform::cnx_normal_decomp(n_qubits - 1);
-    }
-    case OpType::ESWAP: {
-      return CircPool::ESWAP_using_CX(op->get_params()[0]);
-    }
-    case OpType::FSim: {
-      return CircPool::FSim_using_CX(op->get_params()[0], op->get_params()[1]);
-    }
-    case OpType::Sycamore: {
-      return CircPool::FSim_using_CX(0.5, 1. / 6.);
-    }
-    case OpType::ISWAPMax: {
-      return CircPool::ISWAP_using_CX(1.);
-    }
-    case OpType::PhasedISWAP: {
-      return CircPool::PhasedISWAP_using_CX(
-          op->get_params()[0], op->get_params()[1]);
-    }
-    case OpType::NPhasedX: {
-      std::vector<Expr> params = op->get_params();
-      return CircPool::NPhasedX_using_CX(n_qubits, params[0], params[1]);
-    }
-    default: {
-      throw NotImplemented(
-          "Cannot find replacement circuit for OpType::" + desc.name());
-    }
+    default:
+      return with_CX(as_gate_ptr(op));
   }
 }
 

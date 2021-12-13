@@ -16,6 +16,7 @@
 #include <catch2/catch.hpp>
 #include <iostream>
 
+#include "Architecture/Architecture.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
@@ -365,14 +366,14 @@ SCENARIO("Test config serializations") {
 
 SCENARIO("Test device serializations") {
   GIVEN("Architecture") {
-    Architecture full = FullyConnected(4);
-    nlohmann::json j_full = full;
-    Architecture loaded_full = j_full.get<Architecture>();
-    CHECK(full == loaded_full);
-    nlohmann::json j_loaded_full = loaded_full;
-    CHECK(j_full == j_loaded_full);
+    Architecture arc({{0, 1}, {1, 2}});
+    nlohmann::json j_arc = arc;
+    Architecture loaded_arc = j_arc.get<Architecture>();
+    CHECK(arc == loaded_arc);
+    nlohmann::json j_loaded_arc = loaded_arc;
+    CHECK(j_arc == j_loaded_arc);
     Architecture ring = RingArch(6);
-    node_vector_t nodes = ring.get_all_uids_vec();
+    node_vector_t nodes = ring.get_all_nodes_vec();
     ring.add_connection(nodes.at(0), nodes.at(3), 20);
     nlohmann::json j_ring = ring;
     Architecture loaded_ring = j_ring.get<Architecture>();
@@ -380,9 +381,17 @@ SCENARIO("Test device serializations") {
     nlohmann::json j_loaded_ring = loaded_ring;
     CHECK(j_ring == j_loaded_ring);
   }
+  GIVEN("FullyConnected") {
+    FullyConnected full(4);
+    nlohmann::json j_full = full;
+    FullyConnected loaded_full = j_full.get<FullyConnected>();
+    CHECK(full == loaded_full);
+    nlohmann::json j_loaded_full = loaded_full;
+    CHECK(j_full == j_loaded_full);
+  }
   GIVEN("DeviceCharacterisation") {
     Architecture ring = RingArch(3);
-    node_vector_t nodes = ring.get_all_uids_vec();
+    node_vector_t nodes = ring.get_all_nodes_vec();
     op_errors_t node_err0{{{OpType::X, 0.3}, {OpType::Y, 0.4}}};
     op_errors_t node_err1{{{OpType::X, 0.2}, {OpType::Y, 0.5}}};
     op_node_errors_t ne{

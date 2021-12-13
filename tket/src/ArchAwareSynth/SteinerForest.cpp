@@ -330,19 +330,19 @@ Circuit phase_poly_synthesis(
   const std::string register_name = "surplus";
 
   unsigned qb_counter = circuit_ppb_place.n_qubits();
-  while (arch.n_uids() > circuit_ppb_place.n_qubits()) {
+  while (arch.n_nodes() > circuit_ppb_place.n_qubits()) {
     Qubit qb = Qubit(register_name, qb_counter);
     circuit_ppb_place.add_qubit(qb);
     ++qb_counter;
   }
 
-  TKET_ASSERT(circuit_ppb_place.n_qubits() == arch.get_all_uids_set().size());
+  TKET_ASSERT(circuit_ppb_place.n_qubits() == arch.n_nodes());
 
   qubit_vector_t q_vec_place = circuit_ppb_place.all_qubits();
   std::map<Qubit, Node> qubit_to_nodes_place;
   unsigned counter_place = 0;
 
-  for (Node no_place : arch.get_all_uids_set()) {
+  for (Node no_place : arch.nodes()) {
     if (counter_place < circuit_ppb_place.n_qubits()) {
       qubit_to_nodes_place.insert({q_vec_place[counter_place], no_place});
       ++counter_place;
@@ -403,7 +403,7 @@ Circuit phase_poly_synthesis(
   // define new arcitecture
   std::vector<Architecture::Connection> new_con;
   if (cnottype == CNotSynthType::HamPath) {
-    for (auto pair : arch.get_connections_vec()) {
+    for (auto pair : arch.get_all_edges_vec()) {
       new_con.push_back(
           {unitid_to_int_nodes[UnitID(pair.first)],
            unitid_to_int_nodes[UnitID(pair.second)]});

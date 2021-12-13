@@ -55,15 +55,15 @@ Routing::Routing(const Circuit& _circ, const Architecture& _arc)
 
   current_arc_ = original_arc_;
   // Checks for circuit and architecture compatibility
-  if (circ_.n_qubits() > current_arc_.n_uids() || current_arc_.n_uids() < 1) {
-    throw ArchitectureMismatch(circ_.n_qubits(), current_arc_.n_uids());
+  if (circ_.n_qubits() > current_arc_.n_nodes() || current_arc_.n_nodes() < 1) {
+    throw ArchitectureMismatch(circ_.n_qubits(), current_arc_.n_nodes());
   }
 
   // Information for placement & running routing with subgraph of architecture
   // Initial nodes number
 
   // Track which nodes are actually active
-  for (const UnitID& uid : current_arc_.get_all_uids()) {
+  for (const UnitID& uid : current_arc_.nodes()) {
     Node n(uid);
     interaction.insert({n, n});
   }
@@ -103,10 +103,10 @@ qubit_mapping_t Routing::return_initial_map() const {
 bool subgraph_remove_if_connected(
     Architecture& arc, const Architecture& subarc, const Node& node) {
   // do not remove if node is in subarc
-  if (subarc.uid_exists(node)) {
+  if (subarc.node_exists(node)) {
     return false;
   }
-  if (subarc.n_uids() > 0) {
+  if (subarc.n_nodes() > 0) {
     node_set_t ap = arc.get_articulation_points(subarc);
 
     if (ap.find(node) != ap.end()) {
@@ -114,7 +114,7 @@ bool subgraph_remove_if_connected(
     }
   }
 
-  arc.remove_uid(node);
+  arc.remove_node(node);
   return true;
 }
 
@@ -124,7 +124,7 @@ void remove_unmapped_nodes(
   std::vector<Node> mapped_nodes;
 
   r_const_iterator_t iend = map.right.end();
-  for (const UnitID& uid : arc.get_all_uids()) {
+  for (const UnitID& uid : arc.nodes()) {
     Node n(uid);
     r_const_iterator_t find_node = map.right.find(n);
     if (find_node == iend) {
@@ -165,7 +165,7 @@ void remove_unmapped_nodes(
 
 qubit_mapping_t get_qmap_from_circuit(Architecture& arc, Circuit& circ) {
   qubit_vector_t all_qbs = circ.all_qubits();
-  node_set_t all_nodes = arc.get_all_uids_set();
+  node_set_t all_nodes = arc.nodes();
 
   qubit_mapping_t qubit_map;
   for (Qubit q : all_qbs) {
@@ -209,7 +209,7 @@ std::pair<Circuit, bool> Routing::solve(const RoutingConfig& config) {
 void Routing::organise_registers_and_maps() {
   // Given all the new empty wires with no home, if a qubit isnt in the initial
   // map, find it an unassigned node and shove it there.
-  auto all_nodes = original_arc_.get_all_uids_vec();
+  auto all_nodes = original_arc_.get_all_nodes_vec();
   unsigned next_ind = 0;
   Node next_node = all_nodes[next_ind];
 
@@ -219,7 +219,7 @@ void Routing::organise_registers_and_maps() {
       while (init_map.right.count(next_node)) {
         next_node = all_nodes[++next_ind];
         if (next_ind == all_nodes.size()) {
-          throw ArchitectureMismatch(circ_.n_qubits(), current_arc_.n_uids());
+          throw ArchitectureMismatch(circ_.n_qubits(), current_arc_.n_nodes());
         }
       }
       init_map.left.insert({qb, next_node});
@@ -276,7 +276,7 @@ qubit_bimap_t Routing::remap(const qubit_bimap_t& init) {
   // distance between them is chosen. Algorithm then repeats 1)->4).
   // for(unsigned count=0;slice_frontier_.slice.size()!=0 && count<2;count++){
   while (!slice_frontier_.slice->empty()) {
-    SwapResults single_swap = try_all_swaps(current_arc_.get_connections_vec());
+    SwapResults single_swap = try_all_swaps(current_arc_.get_all_edges_vec());
     if (single_swap.success) {
       route_stats.n_try_all_swaps++;
       perform_action(single_swap.swap);

@@ -96,32 +96,6 @@ inline void remove_vertex_with_map(vertex<Graph> v, Graph& graph, Map& map) {
   impl.remove_vertex(v);
 }
 
-template <typename Graph>
-inline void remove_stray_vertices(Graph& graph) {
-  detail::graph_utils_impl<Graph> impl(graph);
-  impl.remove_stray_vertices();
-}
-template <typename Graph, typename PMap>
-inline void remove_stray_vertices(Graph& graph, PMap& pmap) {
-  detail::graph_utils_impl<Graph, PMap> impl(graph, pmap);
-  impl.remove_stray_vertices();
-}
-template <typename Graph, typename PMap, typename Map>
-inline void remove_stray_vertices(Graph& graph, PMap& pmap, Map& map) {
-  detail::graph_utils_impl_with_map<Graph, PMap, Map> impl(graph, pmap, map);
-  impl.remove_stray_vertices();
-}
-template <typename Graph, typename Map>
-inline void remove_stray_vertices_with_map(Graph& graph, Map& map) {
-  detail::graph_utils_impl_with_map<Graph, Map> impl(graph, map);
-  impl.remove_stray_vertices();
-}
-template <typename Graph, typename Map, typename PMap>
-inline void remove_stray_vertices_with_map(Graph& graph, Map& map, PMap& pmap) {
-  detail::graph_utils_impl_with_map<Graph, Map, PMap> impl(graph, map, pmap);
-  impl.remove_stray_vertices();
-}
-
 // like boost::remove_edge, but optionally removes disconnected vertices
 // in which case it can also update a map as above in graph_utils::remove_vertex
 template <typename Graph>
@@ -145,18 +119,15 @@ inline void remove_edge(
   impl.remove_edge(e, remove_unused_vertices);
 }
 template <typename Graph, typename Map>
-inline void remove_edge_with_map(
-    edge<Graph> e, Graph& graph, Map& map,
-    bool remove_unused_vertices = false) {
+inline void remove_edge_with_map(edge<Graph> e, Graph& graph, Map& map) {
   detail::graph_utils_impl_with_map<Graph, Map> impl(graph, map);
-  impl.remove_edge(e, remove_unused_vertices);
+  impl.remove_edge(e);
 }
 template <typename Graph, typename Map, typename PMap>
 inline void remove_edge_with_map(
-    edge<Graph> e, Graph& graph, Map& map, PMap& pmap,
-    bool remove_unused_vertices = false) {
+    edge<Graph> e, Graph& graph, Map& map, PMap& pmap) {
   detail::graph_utils_impl_with_map<Graph, Map, PMap> impl(graph, map, pmap);
-  impl.remove_edge(e, remove_unused_vertices);
+  impl.remove_edge(e);
 }
 
 // simple wrapper around boost::copy_graph that serves

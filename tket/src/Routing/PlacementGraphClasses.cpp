@@ -12,26 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
-
-#include "PauliGraph/PauliGraph.hpp"
+#include "Graphs/DirectedGraph.hpp"
+#include "Utils/UnitID.hpp"
 
 namespace tket {
 
-struct cmp_tensors {
-  bool operator()(
-      const QubitPauliTensor &qps1, const QubitPauliTensor &qps2) const {
-    return (qps1.string < qps2.string);
-  }
-};
-
-/**
- * QubitOperator, defined to be useful for diagonalisation and
- * partitioning.
- */
-typedef std::map<QubitPauliTensor, Expr, cmp_tensors> QubitOperator;
-
-void insert_into_gadget_map(
-    QubitOperator &gadget_map, const PauliGadgetProperties &pgp);
+template class graphs::DirectedGraphBase<Qubit>;
+template class graphs::DirectedGraph<Qubit>;
 
 }  // namespace tket

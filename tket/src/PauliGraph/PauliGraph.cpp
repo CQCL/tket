@@ -24,19 +24,6 @@ bool operator<(
   return (pgp1.tensor_.string < pgp2.tensor_.string);
 }
 
-void insert_in_pgp_set(
-    std::set<PauliGadgetProperties> &pgp_set,
-    const PauliGadgetProperties &pgp) {
-  std::set<PauliGadgetProperties>::iterator pgp_iter = pgp_set.find(pgp);
-  if (pgp_iter != pgp_set.end())
-    pgp_set.insert(
-        {QubitPauliTensor(pgp.tensor_.string),
-         pgp.tensor_.coeff * pgp.angle_ +
-             pgp_iter->tensor_.coeff * pgp_iter->angle_});
-  else
-    pgp_set.insert(pgp);
-}
-
 PauliGraph::PauliGraph(unsigned n) : cliff_(n) {}
 
 PauliGraph::PauliGraph(const qubit_vector_t &qbs, const bit_vector_t &bits)
@@ -323,96 +310,6 @@ void PauliGraph::apply_pauli_gadget_at_end(
   }
   end_line_.insert(new_vert);
   if (get_predecessors(new_vert).empty()) start_line_.insert(new_vert);
-}
-
-void PauliGraph::collect_cliffords() {
-  // Sets to control topological sort
-  PauliVertSet to_search = start_line_;
-  PauliVertSet visited;
-
-  // Vertices marked for removal (i.e. Cliffords and their entire subtrees)
-  std::unordered_set<PauliVert> affected;
-
-  // (Non-identity) Cliffords collected so far
-  using cliff_vec_t = std::vector<std::pair<QubitPauliTensor, unsigned>>;
-  cliff_vec_t cliffords;
-  // The gadgets that need reinserting (non-cliffords in affected, in top sort
-  // order, after multiplication by clifford paulis)
-  std::vector<PauliGadgetProperties> reinsert_order;
-
-  // Perform topological sort
-  for (const PauliVert &current : *this) {
-    // Check for cliffords
-    std::optional<unsigned> cliff_angle =
-        equiv_Clifford(graph_[current].angle_);
-    if (cliff_angle) {
-      // Add to cliffords list
-      if (cliff_angle.value() != 0) {
-        cliffords.push_back({graph_[current].tensor_, cliff_angle.value()});
-      }
-      // Add vertex and children to affected
-      affected.insert(current);
-      for (const PauliVert &child : get_successors(current)) {
-        affected.insert(child);
-      }
-    } else if (affected.find(current) != affected.end()) {
-      // If affected, apply clifford list, and add to reinsert_order
-      PauliGadgetProperties props = graph_[current];
-      for (cliff_vec_t::reverse_iterator it = cliffords.rbegin();
-           it != cliffords.rend(); it++) {
-        QubitPauliTensor cliff_pauli = it->first;
-        if (!props.tensor_.commutes_with(cliff_pauli)) {
-          unsigned half_pis = it->second;
-          switch (half_pis) {
-            case 1: {
-              props.tensor_ = i_ * cliff_pauli * props.tensor_;
-              break;
-            }
-            case 2: {
-              props.tensor_.coeff = -1.;
-              break;
-            }
-            case 3: {
-              props.tensor_ = -i_ * cliff_pauli * props.tensor_;
-              break;
-            }
-            default:
-              break;
-          }
-        }
-      }
-      reinsert_order.push_back(props);
-      // Add children to affected
-      for (const PauliVert &child : get_successors(current)) {
-        affected.insert(child);
-      }
-    }
-  }
-
-  // Remove all affected vertices
-  for (const PauliVert &vert : affected) {
-    boost::clear_vertex(vert, graph_);
-    boost::remove_vertex(vert, graph_);
-  }
-
-  // Recalculate end_line_
-  end_line_.clear();
-  BGL_FORALL_VERTICES(v, graph_, PauliDAG) {
-    if (boost::out_degree(v, graph_) == 0) {
-      end_line_.insert(v);
-    }
-  }
-
-  // Apply cliffords to tableau
-  for (cliff_vec_t::reverse_iterator it = cliffords.rbegin();
-       it != cliffords.rend(); it++) {
-    cliff_.apply_pauli_at_front(it->first, it->second);
-  }
-
-  // Reinsert paulis
-  for (const PauliGadgetProperties &props : reinsert_order) {
-    apply_pauli_gadget_at_end(props.tensor_, props.angle_);
-  }
 }
 
 PauliGraph::TopSortIterator::TopSortIterator()
