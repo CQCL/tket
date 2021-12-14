@@ -118,7 +118,7 @@ conan remove -f pybind11/2.8.1
 conan create --profile=tket recipes/pybind11
 ```
 
-where the first line is optional, to remove links from potential previous versions.
+where the first line serves to remove any version already installed.
 
 ### Building symengine
 
