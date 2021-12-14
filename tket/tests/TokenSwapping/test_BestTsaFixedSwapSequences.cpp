@@ -14,7 +14,6 @@
 /// quality too much.
 //
 
-;
 using std::vector;
 
 namespace tket {

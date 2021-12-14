@@ -78,9 +78,20 @@ SCENARIO("main entry function for TSA") {
 
   // Calculate swaps to enact the permutation.
   const auto node_swaps = get_swaps(arch, node_mapping);
+
   // This will hopefully decrease over time
   // as we improve the algorithm.
-  CHECK(node_swaps.size() == 29);
+  // HOWEVER, apart from the underlying token swapping algorithm,
+  // there is ANOTHER possible way for this to change:
+  // Architecture could change the order of nodes returned
+  // in nodes(), which would cause vertex relabelling and hence
+  // an isomorphic but different token swapping problem.
+  // This is UNAVOIDABLE, since get_swaps takes an Architecture
+  // object, NOT an ArchitectureMapping object.
+  // This is not really a problem (unless the number of swaps
+  // changes massively), since the solution is checked
+  // for correctness.
+  CHECK(node_swaps.size() == 27);
 
   // Go back to the original configuration, and perform the swaps.
   nodes_copy = nodes;

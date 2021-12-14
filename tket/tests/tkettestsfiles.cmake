@@ -49,6 +49,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_FilteredSwapSequences.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_SwapSequenceReductions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_SwapSequenceTable.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/ArchitectureEdgesReimplementation.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/BestTsaTester.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/DecodedProblemData.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/FullTsaTesting.cpp
