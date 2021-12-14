@@ -38,11 +38,39 @@ def test_tableau_box_from_gates() -> None:
 
 
 def test_tableau_box_from_matrix() -> None:
-    xx = np.asarray([[1, 1, 0], [0, 1, 0], [0, 0, 1],], dtype=bool,)
-    xz = np.asarray([[0, 0, 0], [0, 0, 0], [0, 0, 1],], dtype=bool,)
+    xx = np.asarray(
+        [
+            [1, 1, 0],
+            [0, 1, 0],
+            [0, 0, 1],
+        ],
+        dtype=bool,
+    )
+    xz = np.asarray(
+        [
+            [0, 0, 0],
+            [0, 0, 0],
+            [0, 0, 1],
+        ],
+        dtype=bool,
+    )
     xph = np.asarray([0, 0, 1], dtype=bool)
-    zx = np.asarray([[0, 0, 0], [0, 1, 0], [0, 0, 0],], dtype=bool,)
-    zz = np.asarray([[1, 0, 0], [1, 1, 0], [0, 0, 1],], dtype=bool,)
+    zx = np.asarray(
+        [
+            [0, 0, 0],
+            [0, 1, 0],
+            [0, 0, 0],
+        ],
+        dtype=bool,
+    )
+    zz = np.asarray(
+        [
+            [1, 0, 0],
+            [1, 1, 0],
+            [0, 0, 1],
+        ],
+        dtype=bool,
+    )
     zph = np.asarray([1, 0, 1], dtype=bool)
     box = UnitaryTableauBox(xx, xz, xph, zx, zz, zph)
     circ = Circuit(3)
