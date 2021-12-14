@@ -205,11 +205,11 @@ void SymplecticTableau::apply_gate(
       break;
     }
     case OpType::CY: {
-      apply_V(qbs.at(1));
-      apply_V(qbs.at(1));
-      apply_V(qbs.at(1));
+      apply_S(qbs.at(1));
+      apply_S(qbs.at(1));
+      apply_S(qbs.at(1));
       apply_CX(qbs.at(0), qbs.at(1));
-      apply_V(qbs.at(1));
+      apply_S(qbs.at(1));
       break;
     }
     case OpType::CZ: {
@@ -229,7 +229,7 @@ void SymplecticTableau::apply_gate(
       break;
     }
     case OpType::BRIDGE: {
-      apply_CX(qbs.at(0), qbs.at(1));
+      apply_CX(qbs.at(0), qbs.at(2));
       break;
     }
     case OpType::noop: {

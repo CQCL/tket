@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <catch2/catch.hpp>
+#include <sstream>
 
 #include "Clifford/UnitaryTableau.hpp"
 #include "Converters/Converters.hpp"
@@ -226,6 +227,52 @@ SCENARIO("Unitary inversions") {
       circ.add_op<unsigned>(box_transpose, uvec{0, 1, 2});
       REQUIRE(test_unitary_comparison(circ, inner.transpose(), true));
     }
+  }
+}
+
+SCENARIO("Compare SymplecticTableau and UnitaryTableau") {
+  GIVEN("The same sequence of gates, compare string representations") {
+    SymplecticTableau stab(PauliStabiliserList{
+        {{Pauli::Z, Pauli::I, Pauli::I}, true},
+        {{Pauli::I, Pauli::Z, Pauli::I}, true},
+        {{Pauli::I, Pauli::I, Pauli::Z}, true}});
+    // Paulis cancel with subsequent gadget
+    stab.apply_gate(OpType::X, uvec{0});
+    stab.apply_gate(OpType::Y, uvec{1});
+    stab.apply_gate(OpType::Z, uvec{2});
+    stab.apply_pauli_gadget({{Pauli::X, Pauli::Y, Pauli::Z}, true}, 2);
+    // CY and CZ combine to Sdg(0), CX(0, 1)
+    stab.apply_gate(OpType::CY, uvec{0, 1});
+    stab.apply_gate(OpType::CZ, uvec{0, 1});
+    // SWAP that will remain
+    stab.apply_gate(OpType::SWAP, uvec{1, 2});
+    // BRIDGE cancels CX from CY+CZ
+    stab.apply_gate(OpType::BRIDGE, uvec{0, 1, 2});
+    std::stringstream stabstr;
+    stabstr << stab;
+    CHECK(stabstr.str() == "0 0 0 1 0 0 0\n0 0 0 0 0 1 0\n0 0 0 0 1 0 0\n");
+    UnitaryTableau utab(3);
+    // Same sequence, but appended to the front instead of the end
+    utab.apply_gate_at_front(OpType::BRIDGE, {Qubit(0), Qubit(1), Qubit(2)});
+    utab.apply_gate_at_front(OpType::SWAP, {Qubit(1), Qubit(2)});
+    utab.apply_gate_at_front(OpType::CZ, {Qubit(0), Qubit(1)});
+    utab.apply_gate_at_front(OpType::CY, {Qubit(0), Qubit(1)});
+    utab.apply_pauli_at_front(
+        QubitPauliTensor{{Pauli::X, Pauli::Y, Pauli::Z}}, 2);
+    utab.apply_gate_at_front(OpType::X, {Qubit(0)});
+    utab.apply_gate_at_front(OpType::Y, {Qubit(1)});
+    utab.apply_gate_at_front(OpType::Z, {Qubit(2)});
+    std::stringstream utabstr;
+    utabstr << utab;
+    CHECK(
+        utabstr.str() ==
+        "X@q[0]\t->\t1 0 0   1 0 0   0\n"
+        "X@q[1]\t->\t0 0 1   0 0 0   0\n"
+        "X@q[2]\t->\t0 1 0   0 0 0   0\n"
+        "--\n"
+        "Z@q[0]\t->\t0 0 0   1 0 0   0\n"
+        "Z@q[1]\t->\t0 0 0   0 0 1   0\n"
+        "Z@q[2]\t->\t0 0 0   0 1 0   0\n");
   }
 }
 

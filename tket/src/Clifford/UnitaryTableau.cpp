@@ -65,6 +65,8 @@ UnitaryTableau::UnitaryTableau(
   if (tab_.anticommuting_rows() != expected_anticommutes)
     throw NotValid(
         "Rows of tableau do not (anti-)commute as expected for UnitaryTableau");
+  if (tab_.rank() != 2 * n_qubits)
+    throw NotValid("Rows of UnitaryTableau are not linearly independent");
   qubits_ = boost::bimap<Qubit, unsigned>();
   for (unsigned i = 0; i < n_qubits; ++i) {
     qubits_.insert({Qubit(i), i});
@@ -227,11 +229,11 @@ void UnitaryTableau::apply_gate_at_front(
       break;
     }
     case OpType::CY: {
-      apply_V_at_front(qbs.at(1));
-      apply_V_at_front(qbs.at(1));
-      apply_V_at_front(qbs.at(1));
+      apply_S_at_front(qbs.at(1));
       apply_CX_at_front(qbs.at(0), qbs.at(1));
-      apply_V_at_front(qbs.at(1));
+      apply_S_at_front(qbs.at(1));
+      apply_S_at_front(qbs.at(1));
+      apply_S_at_front(qbs.at(1));
       break;
     }
     case OpType::CZ: {
@@ -591,6 +593,8 @@ void from_json(const nlohmann::json& j, UnitaryTableau& tab) {
   if (tab.tab_.anticommuting_rows() != expected_anticommutes)
     throw NotValid(
         "Rows of tableau do not (anti-)commute as expected for UnitaryTableau");
+  if (tab.tab_.rank() != 2 * nqbs)
+    throw NotValid("Rows of UnitaryTableau are not linearly independent");
   tab.qubits_.clear();
   for (unsigned i = 0; i < nqbs; ++i) {
     tab.qubits_.insert({qbs.at(i), i});
