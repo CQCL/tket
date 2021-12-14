@@ -110,7 +110,7 @@ pip install -r pytket/tests/requirements.txt
 ### Adding local `pybind11`
 
 There is a known [issue](https://github.com/conan-io/conan-center-index/issues/6605) with using `pybind11`
-from the `conan-center` that leads to a Python error when importing `pytket`. To remedy this, 
+from the `conan-center` that can lead to a Python crash when importing `pytket`. To remedy this, 
 `pybind11` must be linked to a local recipe:
 
 ```shell
