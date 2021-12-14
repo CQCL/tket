@@ -30,6 +30,25 @@ class ArchitectureMapping {
    */
   explicit ArchitectureMapping(const Architecture& arch);
 
+  /** If the architecture object was initialised with explicit edges,
+   * use these edges (rather than the Architecture nodes() function)
+   * to create the Node <-> size_t mapping, in a fixed way not dependent
+   * on Architecture (the reason being that Architecture does not guarantee
+   * the mapping, but if we change the labels then we change to an isomorphic
+   * but different token swapping problem, which messes up testing.
+   * In practice every implementation of token swapping, except for the ultimate
+   * probably exponential-time optimal algorithm, is going to depend
+   * on the labels. Even if we had a fast graph isomorphism routine, the labels
+   * would still not be uniquely determined, as they could be permuted).
+   * @param arch The finished Architecture object, must remain valid
+   *    for the lifetime of this object.
+   * @param edges Edges originally used to construct the Architecture object.
+   *    These will uniquely determine the internal Node <-> size_t mapping.
+   */
+  ArchitectureMapping(
+      const Architecture& arch,
+      const std::vector<std::pair<unsigned, unsigned>>& edges);
+
   /** Convenient reference to the Architecture object we used
    *  to construct this ArchitectureMapping.
    */
