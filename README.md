@@ -114,7 +114,7 @@ from the `conan-center` that can lead to a Python crash when importing `pytket`.
 `pybind11` must be installed from the local recipe:
 
 ```shell
-conan remove -f pybind11/2.8.1
+conan remove -f pybind11/*
 conan create --profile=tket recipes/pybind11
 ```
 
