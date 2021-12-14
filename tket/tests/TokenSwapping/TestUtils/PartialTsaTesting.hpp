@@ -1,7 +1,7 @@
 #ifndef _TKET_TESTS_TokenSwapping_TestUtils_PartialTsaTesting_H_
 #define _TKET_TESTS_TokenSwapping_TestUtils_PartialTsaTesting_H_
 
-#include "Architecture/Architecture.hpp"
+#include "TokenSwapping/ArchitectureMapping.hpp"
 #include "TokenSwapping/PartialTsaInterface.hpp"
 #include "TokenSwapping/RNG.hpp"
 
@@ -17,7 +17,8 @@ enum class TokenOption {
 
 /// Returns a summary string of the results, as well as doing the checks.
 std::string run_tests(
-    const Architecture& arch, const std::vector<VertexMapping>& problems,
+    const ArchitectureMapping& arch_mapping,
+    const std::vector<VertexMapping>& problems,
     PathFinderInterface& path_finder, PartialTsaInterface& partial_tsa,
     RequiredTsaProgress progress,
     TokenOption token_option = TokenOption::DO_NOT_ALLOW_EMPTY_TOKEN_SWAP);
@@ -25,8 +26,9 @@ std::string run_tests(
 /// If no path finder is specified, will use the RiverFlowPathFinder
 /// (which needs an RNG).
 std::string run_tests(
-    const Architecture& arch, const std::vector<VertexMapping>& problems,
-    RNG& rng, PartialTsaInterface& partial_tsa, RequiredTsaProgress progress,
+    const ArchitectureMapping& arch_mapping,
+    const std::vector<VertexMapping>& problems, RNG& rng,
+    PartialTsaInterface& partial_tsa, RequiredTsaProgress progress,
     TokenOption token_option = TokenOption::DO_NOT_ALLOW_EMPTY_TOKEN_SWAP);
 
 }  // namespace tests

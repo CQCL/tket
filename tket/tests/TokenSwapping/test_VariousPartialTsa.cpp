@@ -1,5 +1,6 @@
 #include <catch2/catch.hpp>
 
+#include "TestUtils/ArchitectureEdgesReimplementation.hpp"
 #include "TestUtils/PartialTsaTesting.hpp"
 #include "TestUtils/ProblemGeneration.hpp"
 #include "TokenSwapping/CyclesPartialTsa.hpp"
@@ -8,7 +9,6 @@
 #include "TokenSwapping/TSAUtils/DebugFunctions.hpp"
 #include "TokenSwapping/TrivialTSA.hpp"
 
-;
 using std::vector;
 
 namespace tket {
@@ -25,23 +25,25 @@ struct Tester {
   mutable CyclesPartialTsa cycles_tsa;
 
   void run_test(
-      const Architecture& arch, const vector<VertexMapping>& problems,
-      size_t index) const {
+      const ArchitectureMapping& arch_mapping,
+      const vector<VertexMapping>& problems, size_t index) const {
     trivial_tsa.set(TrivialTSA::Options::FULL_TSA);
     CHECK(
         run_tests(
-            arch, problems, rng, trivial_tsa, RequiredTsaProgress::FULL) ==
-        messages_full_trivial_tsa[index]);
+            arch_mapping, problems, rng, trivial_tsa,
+            RequiredTsaProgress::FULL) == messages_full_trivial_tsa[index]);
 
     trivial_tsa.set(TrivialTSA::Options::BREAK_AFTER_PROGRESS);
     CHECK(
         run_tests(
-            arch, problems, rng, trivial_tsa, RequiredTsaProgress::NONZERO) ==
+            arch_mapping, problems, rng, trivial_tsa,
+            RequiredTsaProgress::NONZERO) ==
         messages_partial_trivial_tsa[index]);
 
     CHECK(
-        run_tests(arch, problems, rng, cycles_tsa, RequiredTsaProgress::NONE) ==
-        messages_cycles_tsa_0[index]);
+        run_tests(
+            arch_mapping, problems, rng, cycles_tsa,
+            RequiredTsaProgress::NONE) == messages_cycles_tsa_0[index]);
   }
 };
 
@@ -163,9 +165,10 @@ SCENARIO("Partial TSA: Rings") {
     // OK to reuse RNG, as it's reset before each problem.
     tester.rng.set_seed();
     const auto problems = generator.get_problems(
-        arch_name, arch, tester.rng, problem_messages[index]);
+        arch_name, num_vertices, tester.rng, problem_messages[index]);
 
-    tester.run_test(arch, problems, index);
+    const ArchitectureMapping arch_mapping(arch);
+    tester.run_test(arch_mapping, problems, index);
   }
 }
 
@@ -214,16 +217,21 @@ SCENARIO("Partial TSA: Square grid") {
 
   for (size_t index = 0; index < grid_parameters.size(); ++index) {
     const auto& parameters = grid_parameters[index];
-    const SquareGrid arch(parameters[0], parameters[1], parameters[2]);
+
+    const auto edges =
+        get_square_grid_edges(parameters[0], parameters[1], parameters[2]);
+    const Architecture arch(edges);
+    const ArchitectureMapping arch_mapping(arch, edges);
+
     std::stringstream ss;
     ss << "Grid(" << parameters[0] << "," << parameters[1] << ","
        << parameters[2] << ")";
 
     tester.rng.set_seed();
     const auto problems = generator.get_problems(
-        ss.str(), arch, tester.rng, problem_messages[index]);
+        ss.str(), arch.n_nodes(), tester.rng, problem_messages[index]);
 
-    tester.run_test(arch, problems, index);
+    tester.run_test(arch_mapping, problems, index);
   }
 }
 

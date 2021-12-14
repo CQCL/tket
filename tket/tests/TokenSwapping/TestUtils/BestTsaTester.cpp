@@ -6,7 +6,6 @@
 #include "TokenSwapping/TSAUtils/VertexMappingFunctions.hpp"
 #include "TokenSwapping/TSAUtils/VertexSwapResult.hpp"
 
-;
 using std::vector;
 
 namespace tket {
@@ -114,7 +113,7 @@ size_t BestTsaTester::get_checked_solution_size(
       problem_data.vertex_mapping.size() == number_of_vertices;
 
   const Architecture arch(m_edges_vect);
-  const ArchitectureMapping arch_mapping(arch);
+  const ArchitectureMapping arch_mapping(arch, m_edges_vect);
   const VertexRelabellingManager relabelling_manager(m_edges_vect);
   m_raw_swap_list.clear();
   m_vertex_mapping_copy =

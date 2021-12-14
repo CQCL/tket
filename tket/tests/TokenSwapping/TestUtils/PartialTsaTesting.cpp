@@ -3,14 +3,12 @@
 #include <catch2/catch.hpp>
 
 #include "TestStatsStructs.hpp"
-#include "TokenSwapping/ArchitectureMapping.hpp"
 #include "TokenSwapping/DistancesFromArchitecture.hpp"
 #include "TokenSwapping/NeighboursFromArchitecture.hpp"
 #include "TokenSwapping/RiverFlowPathFinder.hpp"
 #include "TokenSwapping/TSAUtils/DistanceFunctions.hpp"
 #include "TokenSwapping/TSAUtils/VertexSwapResult.hpp"
 
-;
 using std::vector;
 
 namespace tket {
@@ -108,10 +106,10 @@ static std::string run_tests(
 }
 
 std::string run_tests(
-    const Architecture& arch, const std::vector<VertexMapping>& problems,
+    const ArchitectureMapping& arch_mapping,
+    const std::vector<VertexMapping>& problems,
     PathFinderInterface& path_finder, PartialTsaInterface& partial_tsa,
     RequiredTsaProgress progress, TokenOption token_option) {
-  const ArchitectureMapping arch_mapping(arch);
   DistancesFromArchitecture distances(arch_mapping);
   NeighboursFromArchitecture neighbours(arch_mapping);
   return run_tests(
@@ -120,10 +118,10 @@ std::string run_tests(
 }
 
 std::string run_tests(
-    const Architecture& arch, const std::vector<VertexMapping>& problems,
-    RNG& rng, PartialTsaInterface& partial_tsa, RequiredTsaProgress progress,
+    const ArchitectureMapping& arch_mapping,
+    const std::vector<VertexMapping>& problems, RNG& rng,
+    PartialTsaInterface& partial_tsa, RequiredTsaProgress progress,
     TokenOption token_option) {
-  const ArchitectureMapping arch_mapping(arch);
   DistancesFromArchitecture distances(arch_mapping);
   NeighboursFromArchitecture neighbours(arch_mapping);
   RiverFlowPathFinder path_finder(distances, neighbours, rng);

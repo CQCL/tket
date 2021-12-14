@@ -34,7 +34,7 @@ struct ProblemGenerator00 {
   ProblemGenerator00();
 
   std::vector<VertexMapping> get_problems(
-      const std::string& arch_name, const Architecture& arch, RNG& rng,
+      const std::string& arch_name, unsigned number_of_vertices, RNG& rng,
       // It will calculate a short summary string of the problems
       // and check against this string; this helps to detect
       // accidentally changed parameters/generation algorithms

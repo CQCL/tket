@@ -10,7 +10,6 @@
 #include "TokenSwapping/TSAUtils/DistanceFunctions.hpp"
 #include "TokenSwapping/TSAUtils/VertexSwapResult.hpp"
 
-;
 using std::vector;
 
 namespace tket {
@@ -95,8 +94,9 @@ FullTsaTesting::FullTsaTesting() {
 }
 
 void FullTsaTesting::add_problems(
-    const Architecture& arch, const vector<VertexMapping>& problems,
-    const std::string& new_name, RNG& rng, PartialTsaInterface& full_tsa) {
+    const ArchitectureMapping& arch_mapping,
+    const vector<VertexMapping>& problems, const std::string& new_name,
+    RNG& rng, PartialTsaInterface& full_tsa) {
   m_number_of_problems += problems.size();
   const std::string name_for_this = new_name + ":" + full_tsa.name();
   if (m_name.empty()) {
@@ -106,7 +106,6 @@ void FullTsaTesting::add_problems(
       m_name = m_name + ":" + name_for_this;
     }
   }
-  const ArchitectureMapping arch_mapping(arch);
   DistancesFromArchitecture distances(arch_mapping);
   NeighboursFromArchitecture neighbours(arch_mapping);
   RiverFlowPathFinder path_finder(distances, neighbours, rng);

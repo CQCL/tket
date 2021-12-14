@@ -1,7 +1,7 @@
 #ifndef _TKET_TESTS_TokenSwapping_TestUtils_FullTsaTesting_H_
 #define _TKET_TESTS_TokenSwapping_TestUtils_FullTsaTesting_H_
 
-#include "Architecture/Architecture.hpp"
+#include "TokenSwapping/ArchitectureMapping.hpp"
 #include "TokenSwapping/PartialTsaInterface.hpp"
 #include "TokenSwapping/RNG.hpp"
 #include "TokenSwapping/SwapListOptimiser.hpp"
@@ -18,8 +18,9 @@ class FullTsaTesting {
   /// Will use the RiverFlowPathFinder
   /// (which needs an RNG).
   void add_problems(
-      const Architecture& arch, const std::vector<VertexMapping>& problems,
-      const std::string& name, RNG& rng, PartialTsaInterface& full_tsa);
+      const ArchitectureMapping& arch_mapping,
+      const std::vector<VertexMapping>& problems, const std::string& name,
+      RNG& rng, PartialTsaInterface& full_tsa);
 
   /// A summary of the statistics.
   std::string str() const;

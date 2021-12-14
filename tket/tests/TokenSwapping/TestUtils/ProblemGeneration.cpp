@@ -43,14 +43,14 @@ ProblemGenerator00::ProblemGenerator00()
     : init_token_density_percentage(1), final_percentage(100), step(1) {}
 
 vector<VertexMapping> ProblemGenerator00::get_problems(
-    const std::string& arch_name, const Architecture& arch, RNG& rng,
+    const std::string& arch_name, unsigned number_of_vertices, RNG& rng,
     // It will calculate a short summary string of the problems
     // and check against this string; this helps to detect
     // accidentally changed parameters/generation algorithms
     // leading to different tests.
     const std::string& expected_summary) const {
   REQUIRE(step > 0);
-  const unsigned num_vertices = arch.n_nodes();
+
   TSProblemParameters00 params;
   vector<VertexMapping> vertex_mappings;
 
@@ -60,12 +60,12 @@ vector<VertexMapping> ProblemGenerator00::get_problems(
   for (params.token_density_percentage = init_token_density_percentage;
        params.token_density_percentage <= final_percentage;
        params.token_density_percentage += step) {
-    vertex_mappings.push_back(params.get_problem(rng, num_vertices));
+    vertex_mappings.push_back(params.get_problem(rng, number_of_vertices));
     tokens_count += vertex_mappings.back().size();
   }
   code = (code << 8) + rng.get_size_t(255);
   std::stringstream ss;
-  ss << "[" << arch_name << ": " << code << ": v" << num_vertices << " i"
+  ss << "[" << arch_name << ": " << code << ": v" << number_of_vertices << " i"
      << init_token_density_percentage << " f" << final_percentage << " s"
      << step << ": " << vertex_mappings.size() << " problems; " << tokens_count
      << " tokens]";

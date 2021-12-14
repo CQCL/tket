@@ -5,7 +5,6 @@
 #include "TokenSwapping/DistancesFromArchitecture.hpp"
 
 using Catch::Matchers::Contains;
-;
 using std::vector;
 
 namespace tket {
@@ -21,7 +20,7 @@ SCENARIO("Architecture with disconnected graph") {
   const Architecture arch(edges);
   // Note: it's a "coincidence" that the vertex numbers are unchanged,
   // because 0,1,2,3,4,5 are first seen in this order.
-  const ArchitectureMapping mapping(arch);
+  const ArchitectureMapping mapping(arch, edges);
   REQUIRE(mapping.number_of_vertices() == number_of_vertices);
   DistancesFromArchitecture dist_calculator(mapping);
   std::stringstream summary;

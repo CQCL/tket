@@ -21,7 +21,7 @@ SCENARIO("Simple path") {
     ss << "(" << edge.first << "," << edge.second << ") ";
   }
   const Architecture arch(edges);
-  const ArchitectureMapping arch_mapping(arch);
+  const ArchitectureMapping arch_mapping(arch, edges);
 
   ss << "...\nEdges from arch.mapping:\n";
   for (auto edge : arch_mapping.get_edges()) {
