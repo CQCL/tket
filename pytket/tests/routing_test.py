@@ -106,6 +106,7 @@ def test_arch_types() -> None:
     sg = SquareGrid(2, 2, 2)
     assert isinstance(sg, SquareGrid)
 
+
 def test_placements() -> None:
     test_coupling = [(0, 1), (1, 2), (1, 3), (4, 1), (4, 5)]
     test_architecture = Architecture(test_coupling)
