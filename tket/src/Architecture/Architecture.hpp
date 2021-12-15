@@ -134,8 +134,6 @@ class Architecture : public ArchitectureBase<graphs::DirectedGraph<Node>> {
 JSON_DECL(Architecture::Connection)
 JSON_DECL(Architecture)
 
-
-
 class FullyConnected : public ArchitectureBase<graphs::CompleteGraph<Node>> {
  public:
   FullyConnected() : ArchitectureBase<graphs::CompleteGraph<Node>>() {}
