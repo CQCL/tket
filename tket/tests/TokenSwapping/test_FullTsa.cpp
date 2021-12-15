@@ -139,7 +139,6 @@ SCENARIO("Full TSA: Rings") {
       "[Winners: joint: 231 252 394 397 400 394  undisputed: 0 0 0 0 3 0]");
 }
 
-
 SCENARIO("Full TSA: Square Grids") {
   const vector<std::array<unsigned, 3>> grid_parameters = {
       {2, 2, 2}, {3, 4, 4}};
