@@ -4,6 +4,7 @@
 #include "Mapping/LexicographicalComparison.hpp"
 #include "Mapping/MappingFrontier.hpp"
 #include "Mapping/RoutingMethod.hpp"
+#include "Mapping/RoutingMethodJson.hpp"
 
 namespace tket {
 
@@ -58,16 +59,6 @@ class LexiRoute {
    * are in this->architecture_.
    */
   void set_interacting_uids(bool assigned_only = false);
-
-  /**
-   * Merges the qubit paths of "merge" and "ancilla" in mapping frontier circuit
-   * such that the output of the final ancilla vertex leads into the input of
-   * the first merge vertex.
-   *
-   * @param merge UnitID to which ancilla path is prepended
-   * @param ancilla UnitID of ancilla opeartions
-   */
-  void merge_with_ancilla(const UnitID& merge, const UnitID& ancilla);
 
   /**
    * If there is some "free" Node in Architecture at distance "distances" on
@@ -163,14 +154,14 @@ class LexiRouteRoutingMethod : public RoutingMethod {
    *
    * @param _max_depth Number of layers of gates checked inr outed subcircuit.
    */
-  LexiRouteRoutingMethod(unsigned _max_depth);
+  LexiRouteRoutingMethod(unsigned _max_depth = 10);
 
   /**
    * @return true if method can route subcircuit, false if not
    */
   bool check_method(
       const std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
-      const ArchitecturePtr& /*architecture*/) const;
+      const ArchitecturePtr& /*architecture*/) const override;
 
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
@@ -181,11 +172,22 @@ class LexiRouteRoutingMethod : public RoutingMethod {
    */
   unit_map_t routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
-      const ArchitecturePtr& architecture) const;
+      const ArchitecturePtr& architecture) const override;
+
+  /**
+   * @return Max depth used in lookahead
+   */
+  unsigned get_max_depth() const;
+
+  nlohmann::json serialize() const override;
+
+  static LexiRouteRoutingMethod deserialize(const nlohmann::json& j);
 
  private:
   unsigned max_depth_;
 };
+
+JSON_DECL(LexiRouteRoutingMethod)
 
 }  // namespace tket
 

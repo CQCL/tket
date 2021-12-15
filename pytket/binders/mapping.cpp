@@ -10,13 +10,15 @@ namespace py = pybind11;
 
 namespace tket {
 PYBIND11_MODULE(mapping, m) {
-  py::class_<RoutingMethod>(
+  py::class_<RoutingMethod, std::shared_ptr<RoutingMethod>>(
       m, "RoutingMethod",
       "Parent class for RoutingMethod, for inheritance purposes only, not for "
       "usage.")
       .def(py::init<>());
 
-  py::class_<RoutingMethodCircuit, RoutingMethod>(
+  py::class_<
+      RoutingMethodCircuit, std::shared_ptr<RoutingMethodCircuit>,
+      RoutingMethod>(
       m, "RoutingMethodCircuit",
       "The RoutingMethod class captures a method for partially mapping logical"
       "subcircuits to physical operations as permitted by some architecture. "
@@ -43,7 +45,9 @@ PYBIND11_MODULE(mapping, m) {
           py::arg("route_subcircuit"), py::arg("check_subcircuit"),
           py::arg("max_size"), py::arg("max_depth"));
 
-  py::class_<LexiRouteRoutingMethod, RoutingMethod>(
+  py::class_<
+      LexiRouteRoutingMethod, std::shared_ptr<LexiRouteRoutingMethod>,
+      RoutingMethod>(
       m, "LexiRouteRoutingMethod",
       "Defines a RoutingMethod object for mapping circuits that uses the "
       "Lexicographical Comparison approach outlined in arXiv:1902.08091.")

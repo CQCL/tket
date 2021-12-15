@@ -99,15 +99,6 @@ struct MappingFrontier {
   unit_map_t get_default_to_quantum_boundary_unit_map() const;
 
   /**
-   * add_qubit
-   * Adds given UnitID as Qubit to this->circuit_.
-   * Updates this->quantum_boundary with new Qubit.
-   *
-   * @param uid UnitID to add.
-   */
-  void add_qubit(const UnitID& uid);
-
-  /**
    * add_swap
    * Inserts an OpType::SWAP gate into the uid_0 and uid_1 edges held in
    * quantum_boundary. This directly modifies circuit_.
@@ -128,6 +119,24 @@ struct MappingFrontier {
    */
   void add_bridge(
       const UnitID& control, const UnitID& central, const UnitID& target);
+
+  /**
+   * add_ancilla
+   * Adds an Ancillary UnitID to Circuit and tracked information
+   *
+   * @param ancilla UnitID of added ancilla
+   */
+  void add_ancilla(const UnitID& ancilla);
+
+  /**
+   * merge_ancilla
+   * Rewires this->circuit_.dag such that in wire to ancilla Output vertex
+   * is now mapped to out wire of merge Input vertex.
+   *
+   * @param merge UnitID to which ancilla path is prepended
+   * @param ancilla UnitID of ancilla opeartions
+   */
+  void merge_ancilla(const UnitID& merge, const UnitID& ancilla);
 
   /**
    * Assigns the quantum_boundary_ attribute to that passed to method.

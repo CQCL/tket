@@ -37,8 +37,7 @@ SCENARIO("Test MappingManager::route_circuit") {
   Architecture arc({{node0, node1}, {node1, node2}});
   ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);
   MappingManager test_mm(shared_arc);
-  RoutingMethod test_rm;
-  std::vector<std::reference_wrapper<RoutingMethod>> test_vrm = {test_rm};
+  std::vector<RoutingMethodPtr> test_vrm = {std::make_shared<RoutingMethod>()};
   GIVEN("More qubits than architecture has qubits.") {
     Circuit circ(5);
     REQUIRE_THROWS_AS(
@@ -65,8 +64,8 @@ SCENARIO("Test MappingManager::route_circuit") {
     std::map<UnitID, UnitID> rename_map = {
         {qubits[0], node0}, {qubits[1], node1}, {qubits[2], node2}};
     circ.rename_units(rename_map);
-    TokenSwappingTester tst;
-    std::vector<std::reference_wrapper<RoutingMethod>> test_ts_rm = {tst};
+    std::vector<RoutingMethodPtr> test_ts_rm = {
+        std::make_shared<TokenSwappingTester>()};
     test_mm.route_circuit(circ, test_ts_rm);
 
     std::vector<Command> commands = circ.get_commands();

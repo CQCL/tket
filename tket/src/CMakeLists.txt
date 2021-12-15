@@ -235,6 +235,7 @@ set(TKET_SOURCES
     ${TKET_MAPPING_DIR}/MappingManager.cpp
     ${TKET_MAPPING_DIR}/LexicographicalComparison.cpp
     ${TKET_MAPPING_DIR}/LexiRoute.cpp
+    ${TKET_MAPPING_DIR}/RoutingMethodJson.cpp
 
 
     # Architecture Aware Synthesis

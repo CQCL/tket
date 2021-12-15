@@ -1,6 +1,7 @@
 #include "Mapping/LexiRoute.hpp"
 
 #include "Mapping/MappingFrontier.hpp"
+#include "Utils/Json.hpp"
 
 namespace tket {
 
@@ -20,70 +21,6 @@ LexiRoute::LexiRoute(
   }
 }
 
-void LexiRoute::merge_with_ancilla(const UnitID& merge, const UnitID& ancilla) {
-  // get output and input vertices
-  Vertex merge_v_in = this->mapping_frontier_->circuit_.get_in(merge);
-  Vertex merge_v_out = this->mapping_frontier_->circuit_.get_out(merge);
-  Vertex ancilla_v_out = this->mapping_frontier_->circuit_.get_out(ancilla);
-  // find source vertex & port of merge_v_out
-  // output vertex, so can assume single edge
-  Edge merge_out_edge =
-      this->mapping_frontier_->circuit_.get_nth_out_edge(merge_v_in, 0);
-  Edge ancilla_in_edge =
-      this->mapping_frontier_->circuit_.get_nth_in_edge(ancilla_v_out, 0);
-  // Find port number
-  port_t merge_target_port =
-      this->mapping_frontier_->circuit_.get_target_port(merge_out_edge);
-  port_t ancilla_source_port =
-      this->mapping_frontier_->circuit_.get_source_port(ancilla_in_edge);
-  // Find vertices
-  Vertex merge_v_target =
-      this->mapping_frontier_->circuit_.target(merge_out_edge);
-  Vertex ancilla_v_source =
-      this->mapping_frontier_->circuit_.source(ancilla_in_edge);
-
-  // remove and replace edges
-  this->mapping_frontier_->circuit_.remove_edge(merge_out_edge);
-  this->mapping_frontier_->circuit_.remove_edge(ancilla_in_edge);
-  this->mapping_frontier_->circuit_.add_edge(
-      {ancilla_v_source, ancilla_source_port},
-      {merge_v_target, merge_target_port}, EdgeType::Quantum);
-
-  // instead of manually updating all boundaries, we change which output vertex
-  // the qubit paths to
-  Edge merge_in_edge =
-      this->mapping_frontier_->circuit_.get_nth_in_edge(merge_v_out, 0);
-  port_t merge_source_port =
-      this->mapping_frontier_->circuit_.get_source_port(merge_in_edge);
-  Vertex merge_v_source =
-      this->mapping_frontier_->circuit_.source(merge_in_edge);
-
-  this->mapping_frontier_->circuit_.remove_edge(merge_in_edge);
-  this->mapping_frontier_->circuit_.add_edge(
-      {merge_v_source, merge_source_port}, {ancilla_v_out, 0},
-      EdgeType::Quantum);
-
-  // remove empty vertex wire, relabel dag vertices
-  this->mapping_frontier_->circuit_.dag[merge_v_in].op =
-      get_op_ptr(OpType::noop);
-  this->mapping_frontier_->circuit_.dag[merge_v_out].op =
-      get_op_ptr(OpType::noop);
-  this->mapping_frontier_->circuit_.remove_vertex(
-      merge_v_in, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
-  this->mapping_frontier_->circuit_.remove_vertex(
-      merge_v_out, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
-
-  // Can now just erase "merge" qubit from the circuit
-  this->mapping_frontier_->circuit_.boundary.get<TagID>().erase(merge);
-
-  if (this->mapping_frontier_->circuit_.unit_bimaps_.initial) {
-    this->mapping_frontier_->circuit_.unit_bimaps_.initial->right.erase(merge);
-  }
-  if (this->mapping_frontier_->circuit_.unit_bimaps_.final) {
-    this->mapping_frontier_->circuit_.unit_bimaps_.final->right.erase(merge);
-  }
-}
-
 bool LexiRoute::assign_at_distance(
     const UnitID& assignee, const Node& root, unsigned distances) {
   node_set_t valid_nodes;
@@ -100,7 +37,7 @@ bool LexiRoute::assign_at_distance(
     if (this->mapping_frontier_->ancilla_nodes_.find(*it) !=
         this->mapping_frontier_->ancilla_nodes_.end()) {
       // => node *it is already present in circuit, but as an ancilla
-      this->merge_with_ancilla(assignee, *it);
+      this->mapping_frontier_->merge_ancilla(assignee, *it);
       this->mapping_frontier_->ancilla_nodes_.erase(*it);
       this->labelling_.erase(*it);
       this->labelling_[assignee] = *it;
@@ -127,7 +64,7 @@ bool LexiRoute::assign_at_distance(
     if (this->mapping_frontier_->ancilla_nodes_.find(preserved_node) !=
         this->mapping_frontier_->ancilla_nodes_.end()) {
       // => node *it is already present in circuit, but as an ancilla
-      this->merge_with_ancilla(assignee, preserved_node);
+      this->mapping_frontier_->merge_ancilla(assignee, preserved_node);
       this->mapping_frontier_->ancilla_nodes_.erase(preserved_node);
       this->labelling_.erase(preserved_node);
       this->labelling_[assignee] = preserved_node;
@@ -262,8 +199,10 @@ void LexiRoute::set_interacting_uids(bool assigned_only) {
           }
         }
       }
-    } else if (n_edges != 1) {
-      TKET_ASSERT(!"Vertex should only have 1 or 2 edges.");
+    } else if (
+        n_edges > 2 && this->mapping_frontier_->circuit_.get_OpType_from_Vertex(
+                           v0) != OpType::Barrier) {
+      TKET_ASSERT(!"Non-Barrier vertex should only have 1 or 2 edges.");
     }
   }
 }
@@ -527,42 +466,46 @@ void LexiRoute::solve(unsigned lookahead) {
     }
   }
 
-  // TODO: Refactor the following to happen during add_swap and add_bridge
-  // methods
-  // add ancilla qubits if necessary
-  if (copy.size() < this->mapping_frontier_->quantum_boundary->size()) {
-    // implies ancilla qubit is added
-    // find ancilla qubit, find swap vertex and port by looking at boundary,
-    // store in ancillas type
-    for (auto it =
-             this->mapping_frontier_->quantum_boundary->get<TagKey>().begin();
-         it != this->mapping_frontier_->quantum_boundary->get<TagKey>().end();
-         ++it) {
-      bool match = false;
-      for (auto jt = copy.get<TagKey>().begin(); jt != copy.get<TagKey>().end();
-           ++jt) {
-        if (it->first == jt->first) {
-          match = true;
-          break;
-        }
-      }
-      if (!match) {
-        // extra will be added in it
-        // This is same condition as SWAP case, which means "Ancilla" has
-        // already moved to a new physical node
-        if (!check.first && !check.second) {
-          if (Node(it->first) == chosen_swap.first) {
-            this->mapping_frontier_->ancilla_nodes_.insert(chosen_swap.second);
-          } else {
-            this->mapping_frontier_->ancilla_nodes_.insert(chosen_swap.first);
-          }
-        } else {
-          this->mapping_frontier_->ancilla_nodes_.insert(Node(it->first));
-        }
-        break;
-      }
-    }
-  }
+  // // TODO: Refactor the following to happen during add_swap and add_bridge
+  // // methods
+  // // add ancilla qubits if necessary
+  // if (copy.size() < this->mapping_frontier_->quantum_boundary->size()) {
+  //   // implies ancilla qubit is added
+  //   // find ancilla qubit, find swap vertex and port by looking at boundary,
+  //   // store in ancillas type
+  //   for (auto it =
+  //            this->mapping_frontier_->quantum_boundary->get<TagKey>().begin();
+  //        it !=
+  //        this->mapping_frontier_->quantum_boundary->get<TagKey>().end();
+  //        ++it) {
+  //     bool match = false;
+  //     for (auto jt = copy.get<TagKey>().begin(); jt !=
+  //     copy.get<TagKey>().end();
+  //          ++jt) {
+  //       if (it->first == jt->first) {
+  //         match = true;
+  //         break;
+  //       }
+  //     }
+  //     if (!match) {
+  //       // extra will be added in it
+  //       // This is same condition as SWAP case, which means "Ancilla" has
+  //       // already moved to a new physical node
+  //       if (!check.first && !check.second) {
+  //         if (Node(it->first) == chosen_swap.first) {
+  //           this->mapping_frontier_->add_ancilla(chosen_swap.second);
+
+  //         } else {
+  //           this->mapping_frontier_->add_ancilla(chosen_swap.first);
+  //         }
+  //       } else {
+  //         this->mapping_frontier_->add_ancilla(Node(it->first));
+
+  //       }
+  //       break;
+  //     }
+  //   }
+  // }
 
   return;
 }
@@ -582,6 +525,22 @@ unit_map_t LexiRouteRoutingMethod::routing_method(
   LexiRoute lr(architecture, mapping_frontier);
   lr.solve(this->max_depth_);
   return {};
+}
+
+unsigned LexiRouteRoutingMethod::get_max_depth() const {
+  return this->max_depth_;
+}
+
+nlohmann::json LexiRouteRoutingMethod::serialize() const {
+  nlohmann::json j;
+  j["depth"] = this->get_max_depth();
+  j["name"] = "LexiRouteRoutingMethod";
+  return j;
+}
+
+LexiRouteRoutingMethod LexiRouteRoutingMethod::deserialize(
+    const nlohmann::json& j) {
+  return LexiRouteRoutingMethod(j.at("depth").get<unsigned>());
 }
 
 }  // namespace tket
