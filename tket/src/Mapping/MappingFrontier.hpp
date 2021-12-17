@@ -17,6 +17,23 @@ class MappingFrontierError : public std::logic_error {
       : std::logic_error(message) {}
 };
 
+/**
+ * quantum_boundary stored as vertport so that correct edge can be recovered
+ * after subcircuit substitution method uses Vertex and port_t and
+ * Circuit::get_nth_out_edge to generate unit_frontier_t object
+ */
+std::shared_ptr<unit_frontier_t> frontier_convert_vertport_to_edge(
+    const Circuit& circuit,
+    const std::shared_ptr<unit_vertport_frontier_t>& u_frontier);
+
+/**
+ * convert_u_frontier_to_edges
+ * Subcircuit requires EdgeVec, not unit_frontier_t as boundary information
+ * Helper Functions to convert types
+ * TODO: also probably another way of doing this? EdgeVec required for
+ * subcircuit. Double check with someone who knows better than I...
+ */
+EdgeVec convert_u_frontier_to_edges(const unit_frontier_t& u_frontier);
 struct MappingFrontier {
   /**
    * VertPort instead of Edge as Edge changes in substitution, but Vertex and
@@ -35,6 +52,9 @@ struct MappingFrontier {
   std::set<Node> ancilla_nodes_;
 
   MappingFrontier(Circuit& _circuit);
+
+  // copy constructor
+  MappingFrontier(const MappingFrontier& mapping_frontier);
 
   /**
    * Given some Circuit Cut (or routed/unrouted boundary), advances the cut to
