@@ -49,6 +49,15 @@ void init_boxes(py::module &m);
 
 PYBIND11_MODULE(circuit, m) {
   init_unitid(m);
+  static py::exception<OpException> ex(m, "OpException");
+  py::register_exception_translator([](std::exception_ptr p) {
+      try {
+          if (p) std::rethrow_exception(p);
+      } catch (const OpException &e) {
+          // Set OpException as the active python error
+          ex(e.what());
+      }
+  });
   py::class_<Op, std::shared_ptr<Op>>(
       m, "Op", "Encapsulates operation information")
       .def_static(
