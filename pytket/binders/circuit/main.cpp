@@ -31,6 +31,15 @@
 
 namespace py = pybind11;
 
+// A type that should be raised as an exception in Python
+class OpException : public std::exception {
+public:
+    explicit OpException(const char * m) : message{m} {}
+    const char * what() const noexcept override {return message.c_str();}
+private:
+    std::string message = "";
+};
+
 namespace tket {
 
 void init_unitid(py::module &m);
