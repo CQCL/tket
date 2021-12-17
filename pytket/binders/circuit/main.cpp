@@ -93,6 +93,19 @@ PYBIND11_MODULE(circuit, m) {
       .def("__eq__", &Op::operator==)
       .def("__repr__", [](const Op &op) { return op.get_name(); })
       .def(
+          "free_symbols",
+          [](const Op *op) {
+              SymSet symbols;
+              const auto &gate = static_cast<const Gate &>(*op);
+              try {
+                  symbols = gate.free_symbols();
+              }
+              catch (const std::runtime_error& e) {
+                  throw OpException("Free symbols are not defined for that Op.");
+              }
+              return symbols;
+          })
+      .def(
           "get_unitary",
           [](const Op *op) {
             const auto &gate = static_cast<const Gate &>(*op);
