@@ -31,7 +31,6 @@
 
 namespace py = pybind11;
 
-
 namespace tket {
 
 void init_unitid(py::module &m);
@@ -82,7 +81,8 @@ PYBIND11_MODULE(circuit, m) {
             try {
               symbols = op->free_symbols();
             } catch (const std::runtime_error &e) {
-              throw std::runtime_error("Free symbols are not defined for that Op.");
+              throw std::runtime_error(
+                  "Free symbols are not defined for that Op.");
             }
             return symbols;
           })
