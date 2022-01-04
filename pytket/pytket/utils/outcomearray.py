@@ -15,7 +15,7 @@
 """`OutcomeArray` class and associated methods."""
 import operator
 from functools import reduce
-from typing import Counter, List, Sequence, Dict, Tuple, Any, cast
+from typing import Counter, List, Sequence, Dict, Tuple, Any, Optional, cast
 
 import numpy as np
 
@@ -57,12 +57,13 @@ class OutcomeArray(np.ndarray):
         # see InfoArray.__array_finalize__ for comments
         if obj is None:
             return
-        self._width: int = getattr(obj, "_width", None)
+        self._width: Optional[int] = getattr(obj, "_width", None)
 
     @property
     def width(self) -> int:
         """Number of bit entries stored, less than or equal to the bit capacity of the
         array."""
+        assert type(self._width) is int
         return self._width
 
     @property
