@@ -187,16 +187,18 @@ binders = [
     "logging",
     "utils_serialization",
     "circuit",
-    "mapping",
     "passes",
     "predicates",
     "partition",
     "pauli",
     "program",
     "routing",
+    "mapping",
     "transform",
     "tailoring",
     "zx",
+    "placement",
+    "architecture",
 ]
 
 

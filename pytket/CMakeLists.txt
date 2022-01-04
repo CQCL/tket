@@ -67,3 +67,5 @@ build_module(tailoring binders/tailoring.cpp)
 build_module(zx
     binders/zx/diagram.cpp
     binders/zx/rewrite.cpp)
+build_module(architecture binders/architecture.cpp)
+build_module(placement binders/placement.cpp)

@@ -7,7 +7,7 @@
 #     https://cqcl.github.io/pytket/build/html/licence.html
 
 from pytket.mapping import MappingManager, RoutingMethodCircuit, LexiRouteRoutingMethod  # type: ignore
-from pytket.routing import Architecture  # type: ignore
+from pytket.architecture import Architecture  # type: ignore
 from pytket import Circuit, OpType
 from pytket.circuit import Node  # type: ignore
 from typing import Tuple, Dict

@@ -15,6 +15,7 @@
 #include <pybind11/functional.h>
 
 #include "ArchAwareSynth/SteinerForest.hpp"
+#include "Mapping/RoutingMethod.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
@@ -32,6 +33,7 @@ static PassPtr gen_cx_mapping_pass_kwargs(
     const Architecture &arc, const PlacementPtr &placer, py::kwargs kwargs) {
   RoutingMethodPtr method = std::make_shared<LexiRouteRoutingMethod>(100);
   std::vector<RoutingMethodPtr> config = {method};
+
   if (kwargs.contains("config")) {
     config = py::cast<std::vector<RoutingMethodPtr>>(kwargs["config"]);
   }
@@ -44,6 +46,16 @@ static PassPtr gen_cx_mapping_pass_kwargs(
     delay_measures = py::cast<bool>(kwargs["delay_measures"]);
   }
   return gen_cx_mapping_pass(arc, placer, config, directed_cx, delay_measures);
+}
+
+static PassPtr gen_full_mapping_pass_kwargs(
+    const Architecture &arc, const PlacementPtr &placer, py::kwargs kwargs) {
+  RoutingMethodPtr method = std::make_shared<LexiRouteRoutingMethod>(100);
+  std::vector<RoutingMethodPtr> config = {method};
+  if (kwargs.contains("config")) {
+    config = py::cast<std::vector<RoutingMethodPtr>>(kwargs["config"]);
+  }
+  return gen_full_mapping_pass(arc, placer, config);
 }
 
 static PassPtr gen_default_routing_pass(const Architecture &arc) {
@@ -505,19 +517,19 @@ PYBIND11_MODULE(passes, m) {
       py::arg("qubit_map"));
 
   m.def(
-      "FullMappingPass", &gen_full_mapping_pass,
+      "FullMappingPass", &gen_full_mapping_pass_kwargs,
       "Construct a pass to relabel :py:class:`Circuit` Qubits to "
       ":py:class:`Architecture` Nodes, and then route to the connectivity "
       "graph "
       "of an :py:class:`Architecture`. Edge direction is ignored."
       "\n\n:param arc: The architecture to use for connectivity information. "
       "\n:param placer: The Placement used for relabelling."
-      "\n:param config: Configuration for Routing, as a vector of "
-      "RoutingMethod. Each RoutingMethod is checked in turn, meaning lower "
-      "index "
-      "method's are prioritised."
+      "\n:param \\**kwargs: Parameters for routing: "
+      "(List[RoutingMethod])config, A list of RoutingMethod, each method is "
+      "checked "
+      " and run if applicable in turn."
       "\n:return: a pass to perform the remapping",
-      py::arg("arc"), py::arg("placer"), py::arg("config"));
+      py::arg("arc"), py::arg("placer"));
 
   m.def(
       "DefaultMappingPass", &gen_default_mapping_pass,

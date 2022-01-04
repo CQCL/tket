@@ -15,16 +15,10 @@
 from pathlib import Path
 from pytket.circuit import OpType, Qubit, Node, Circuit  # type: ignore
 from pytket.routing import (  # type: ignore
-    Architecture,
-    LinePlacement,
-    GraphPlacement,
-    NoiseAwarePlacement,
-    Placement,
-    SquareGrid,
-    FullyConnected,
-    place_with_map,
     route,
 )
+from pytket.placement import LinePlacement, GraphPlacement, NoiseAwarePlacement, Placement, place_with_map  # type: ignore
+from pytket.architecture import Architecture, SquareGrid, FullyConnected  # type: ignore
 from pytket.mapping import LexiRouteRoutingMethod  # type: ignore
 from pytket.predicates import CompilationUnit, NoMidMeasurePredicate  # type: ignore
 from pytket.passes import (  # type: ignore
@@ -481,8 +475,8 @@ def test_FullMappingPass() -> None:
     gp_placer = GraphPlacement(arc)
     lp_placer = LinePlacement(arc)
 
-    m_pass_0 = FullMappingPass(arc, gp_placer, [LexiRouteRoutingMethod(1)])
-    m_pass_1 = FullMappingPass(arc, lp_placer, [LexiRouteRoutingMethod(75)])
+    m_pass_0 = FullMappingPass(arc, gp_placer, config=[LexiRouteRoutingMethod(1)])
+    m_pass_1 = FullMappingPass(arc, lp_placer, config=[LexiRouteRoutingMethod(75)])
     m_pass_0.apply(cu_0)
     m_pass_1.apply(cu_1)
     out_circ_0 = cu_0.circuit
