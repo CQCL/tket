@@ -76,16 +76,7 @@ PYBIND11_MODULE(circuit, m) {
       .def("__repr__", [](const Op &op) { return op.get_name(); })
       .def(
           "free_symbols",
-          [](const Op *op) {
-            SymSet symbols;
-            try {
-              symbols = op->free_symbols();
-            } catch (const std::runtime_error &e) {
-              throw std::runtime_error(
-                  "Free symbols are not defined for that Op.");
-            }
-            return symbols;
-          })
+          [](const Op *op) { return op->free_symbols(); })
       .def(
           "get_unitary",
           [](const Op *op) {
