@@ -72,9 +72,7 @@ void place_with_map(Circuit &circ, qubit_mapping_t &qmap) {
   plobj.place_with_map(circ, qmap);
 }
 
-
 PYBIND11_MODULE(placement, m) {
-
   py::class_<Placement, std::shared_ptr<Placement>>(
             m, "Placement",
             "The base Placement class, contains methods for getting maps "

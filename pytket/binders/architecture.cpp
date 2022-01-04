@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "Architecture/Architecture.hpp"
 
 #include <pybind11/eigen.h>
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "Architecture/Architecture.hpp"
 #include "Utils/Json.hpp"
 #include "binder_json.hpp"
 
