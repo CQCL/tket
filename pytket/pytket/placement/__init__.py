@@ -5,7 +5,8 @@
 # these documents or at:
 #
 #     https://cqcl.github.io/pytket/build/html/licence.html
-"""The placement module provides an API to interact with the many 
+
+"""The placement module provides an API to interact with the many
  tket ::py:class:'Placement' options, providing methods for relabelling
  logical circuit qubit identifiers to physical architecture node identifiers,
  for the purpose of compilation. This module is provided in binary form during the
