@@ -18,6 +18,7 @@ from functools import reduce
 from typing import Counter, List, Sequence, Dict, Tuple, Any, Optional, cast
 
 import numpy as np
+from numpy.typing import ArrayLike
 
 
 class OutcomeArray(np.ndarray):
@@ -78,7 +79,7 @@ class OutcomeArray(np.ndarray):
         return bool(np.array_equal(self, other) and self.width == other.width)
 
     @classmethod
-    def from_readouts(cls, readouts: Sequence[Sequence[int]]) -> "OutcomeArray":
+    def from_readouts(cls, readouts: ArrayLike) -> "OutcomeArray":
         """Create OutcomeArray from a 2D array like object of read-out integers,
         e.g. [[1, 1, 0], [0, 1, 1]]"""
         readouts_ar = np.array(readouts, dtype=int)
