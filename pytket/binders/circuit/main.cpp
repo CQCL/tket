@@ -80,8 +80,9 @@ PYBIND11_MODULE(circuit, m) {
           [](const Op *op) {
             SymSet symbols;
             try {
-              symbols = gate.free_symbols();
+              symbols = op->free_symbols();
             } catch (const std::runtime_error &e) {
+              throw std::runtime_error("Free symbols are not defined for that Op.");
             }
             return symbols;
           })
