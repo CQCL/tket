@@ -31,15 +31,6 @@
 
 namespace py = pybind11;
 
-// A type that should be raised as an exception in Python
-class OpException : public std::exception {
- public:
-  explicit OpException(const char *m) : message{m} {}
-  const char *what() const noexcept override { return message.c_str(); }
-
- private:
-  std::string message = "";
-};
 
 namespace tket {
 
@@ -50,15 +41,6 @@ void init_boxes(py::module &m);
 
 PYBIND11_MODULE(circuit, m) {
   init_unitid(m);
-  static py::exception<OpException> ex(m, "OpException");
-  py::register_exception_translator([](std::exception_ptr p) {
-    try {
-      if (p) std::rethrow_exception(p);
-    } catch (const OpException &e) {
-      // Set OpException as the active python error
-      ex(e.what());
-    }
-  });
   py::class_<Op, std::shared_ptr<Op>>(
       m, "Op", "Encapsulates operation information")
       .def_static(
@@ -97,11 +79,9 @@ PYBIND11_MODULE(circuit, m) {
           "free_symbols",
           [](const Op *op) {
             SymSet symbols;
-            const auto &gate = static_cast<const Gate &>(*op);
             try {
               symbols = gate.free_symbols();
             } catch (const std::runtime_error &e) {
-              throw OpException("Free symbols are not defined for that Op.");
             }
             return symbols;
           })
