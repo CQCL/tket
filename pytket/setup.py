@@ -187,6 +187,7 @@ binders = [
     "logging",
     "utils_serialization",
     "circuit",
+    "mapping",
     "passes",
     "predicates",
     "partition",
@@ -195,7 +196,6 @@ binders = [
     "routing",
     "transform",
     "tailoring",
-    "mapping",
     "zx",
 ]
 
