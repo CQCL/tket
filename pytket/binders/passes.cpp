@@ -48,16 +48,6 @@ static PassPtr gen_cx_mapping_pass_kwargs(
   return gen_cx_mapping_pass(arc, placer, config, directed_cx, delay_measures);
 }
 
-static PassPtr gen_full_mapping_pass_kwargs(
-    const Architecture &arc, const PlacementPtr &placer, py::kwargs kwargs) {
-  RoutingMethodPtr method = std::make_shared<LexiRouteRoutingMethod>(100);
-  std::vector<RoutingMethodPtr> config = {method};
-  if (kwargs.contains("config")) {
-    config = py::cast<std::vector<RoutingMethodPtr>>(kwargs["config"]);
-  }
-  return gen_full_mapping_pass(arc, placer, config);
-}
-
 static PassPtr gen_default_routing_pass(const Architecture &arc) {
   RoutingMethodPtr method = std::make_shared<LexiRouteRoutingMethod>(100);
   std::vector<RoutingMethodPtr> config = {method};
@@ -517,19 +507,18 @@ PYBIND11_MODULE(passes, m) {
       py::arg("qubit_map"));
 
   m.def(
-      "FullMappingPass", &gen_full_mapping_pass_kwargs,
+      "FullMappingPass", &gen_full_mapping_pass,
       "Construct a pass to relabel :py:class:`Circuit` Qubits to "
       ":py:class:`Architecture` Nodes, and then route to the connectivity "
       "graph "
       "of an :py:class:`Architecture`. Edge direction is ignored."
       "\n\n:param arc: The architecture to use for connectivity information. "
       "\n:param placer: The Placement used for relabelling."
-      "\n:param \\**kwargs: Parameters for routing: "
-      "(List[RoutingMethod])config, A list of RoutingMethod, each method is "
-      "checked "
+      "\n:param config: Parameters for routing, a "
+      " list of RoutingMethod, each method is checked"
       " and run if applicable in turn."
       "\n:return: a pass to perform the remapping",
-      py::arg("arc"), py::arg("placer"));
+      py::arg("arc"), py::arg("placer"), py::arg("config"));
 
   m.def(
       "DefaultMappingPass", &gen_default_mapping_pass,
