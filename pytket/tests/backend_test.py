@@ -14,7 +14,7 @@
 
 from collections import Counter
 
-from hypothesis import given, strategies
+from hypothesis import given, settings, strategies
 import json
 import pytest  # type: ignore
 from typing import Any, List
@@ -400,6 +400,7 @@ def test_empty_result(n_shots, n_bits) -> None:
     status=strategies.sampled_from(StatusEnum),
     message=strategies.text(),
 )
+@settings(deadline=None)
 def test_status_serialization(status: StatusEnum, message: str) -> None:
     c_stat = CircuitStatus(status, message)
     assert CircuitStatus.from_dict(c_stat.to_dict()) == c_stat
