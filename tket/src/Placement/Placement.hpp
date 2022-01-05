@@ -104,7 +104,6 @@ struct PlacementConfig {
 
 JSON_DECL(PlacementConfig)
 
-
 // stores and tracks the points of the circuit up to which has been solved
 struct PlacementFrontier {
   // set of 2qb vertices which need to be solved for
@@ -118,15 +117,14 @@ struct PlacementFrontier {
   std::shared_ptr<b_frontier_t> classical_in_edges;
 
   // reference to circuit that it acts on
-  const Circuit &circ;
+  const Circuit& circ;
 
-  explicit PlacementFrontier(const Circuit &_circ);
+  explicit PlacementFrontier(const Circuit& _circ);
   // initialise at front of circuit
   void init();
   // move to next slice
   void next_slicefrontier();
 };
-
 
 // Class for storing interaction graph.
 // Interacting qubits have an edge between them.

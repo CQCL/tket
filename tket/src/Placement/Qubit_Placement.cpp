@@ -37,7 +37,9 @@ std::set<Qubit> interacting_qbs(const Circuit& circ) {
   return qbs;
 }
 
-PlacementFrontier::PlacementFrontier(const Circuit& _circ) : circ(_circ) { init(); }
+PlacementFrontier::PlacementFrontier(const Circuit& _circ) : circ(_circ) {
+  init();
+}
 void PlacementFrontier::init() {
   VertexVec input_slice;
   quantum_in_edges = std::make_shared<unit_frontier_t>();
@@ -77,8 +79,6 @@ void PlacementFrontier::next_slicefrontier() {
   slice = next_cut.slice;
   quantum_out_edges = next_cut.u_frontier;
 }
-
-
 
 QubitGraph monomorph_interaction_graph(
     const Circuit& circ, const unsigned max_edges, unsigned depth_limit) {
