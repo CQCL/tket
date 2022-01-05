@@ -17,7 +17,7 @@ import json
 
 from pytket.utils.spam import SpamCorrecter, compress_counts
 from pytket.circuit import Node, Circuit  # type: ignore
-from pytket.routing import route  # type: ignore
+from pytket.mapping import MappingManager, LexiRouteRoutingMethod  # type: ignore
 from pytket.architecture import Architecture  # type: ignore
 from pytket.passes import DelayMeasures  # type: ignore
 from typing import List, Dict, Counter, Tuple
@@ -107,7 +107,9 @@ def test_spam_integration() -> None:
     assert spam.characterisation_matrices[1].shape == (2, 2)
 
     bellcc = Circuit(3, 3).H(0).CX(0, 2).measure_all()
-    rbell = route(bellcc, arc)
+    mm = MappingManager(arc)
+    rbell = bellcc.copy()
+    mm.route_circuit(rbell, [LexiRouteRoutingMethod(50)])
 
     def check_correction(
         counts0: Dict[Tuple[int, ...], int], counts1: Dict[Tuple[int, ...], int]
@@ -502,7 +504,9 @@ def test_spam_routing() -> None:
     arc = Architecture([[qbs[i], qbs[i + 1]] for i in range(8)] + [[qbs[0], qbs[4]]])
 
     testc = Circuit(4, 4).H(0).CX(0, 3).CX(1, 2).CX(0, 1).CX(3, 2).measure_all()
-    routed = route(testc, arc)
+    routed = testc.copy()
+    mm = MappingManager(arc)
+    mm.route_circuit(routed, [LexiRouteRoutingMethod(50)])
     DelayMeasures().apply(routed)
     readout = routed.qubit_readout
 

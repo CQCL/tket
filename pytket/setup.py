@@ -192,7 +192,6 @@ binders = [
     "partition",
     "pauli",
     "program",
-    "routing",
     "mapping",
     "transform",
     "tailoring",
