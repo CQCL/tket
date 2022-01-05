@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_PauliGadget_H_
-#define _TKET_PauliGadget_H_
+#pragma once
 
 #include "Circuit/Circuit.hpp"
 #include "Utils/PauliStrings.hpp"
@@ -54,5 +53,3 @@ void append_pauli_gadget_pair(
     CXConfigType cx_config = CXConfigType::Snake);
 
 }  // namespace tket
-
-#endif  // _PAULI_GADGET_H_

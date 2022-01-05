@@ -197,8 +197,14 @@ SCENARIO("Test that get_all_circuits returns all frames for all cycles.") {
   GIVEN("A two-qubit circuit with one CX gate.") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
+    const std::vector<Circuit> two_circuits =
+        fr.sample_randomisation_circuits(circ, 2);
+    REQUIRE(two_circuits.size() == 2);
     const std::vector<Circuit> all_circuits = fr.get_all_circuits(circ);
     REQUIRE(all_circuits.size() == 4);
+    REQUIRE(
+        std::find(all_circuits.begin(), all_circuits.end(), two_circuits[0]) !=
+        all_circuits.end());
     for (const Circuit& circ : all_circuits) {
       const auto coms = circ.get_commands();
       REQUIRE(coms.size() == 7);

@@ -713,6 +713,40 @@ SCENARIO("Test conversion of circuit to circuit with phase poly boxes") {
     REQUIRE(test_statevector_comparison(circ, result));
   }
 }
+SCENARIO("Phase polynomial synthesis without architecture") {
+  GIVEN("single SWAP circuit") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+    circ.replace_SWAPs();
+    PhasePolyBox ppbox(circ);
+    std::shared_ptr<Circuit> circptr = ppbox.to_circuit();
+    Circuit circ2 = *circptr;
+    REQUIRE(test_unitary_comparison(circ, circ2));
+  }
+  GIVEN("more SWAP circuit") {
+    Circuit circ(5);
+    circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+    circ.add_op<unsigned>(OpType::SWAP, {0, 2});
+    circ.add_op<unsigned>(OpType::SWAP, {0, 3});
+    circ.replace_SWAPs();
+    PhasePolyBox ppbox(circ);
+    std::shared_ptr<Circuit> circptr = ppbox.to_circuit();
+    Circuit circ2 = *circptr;
+    REQUIRE(test_unitary_comparison(circ, circ2));
+  }
+  GIVEN("more SWAP circuit II") {
+    Circuit circ(5);
+    circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+    circ.add_op<unsigned>(OpType::SWAP, {1, 2});
+    circ.add_op<unsigned>(OpType::SWAP, {2, 3});
+    circ.add_op<unsigned>(OpType::SWAP, {3, 4});
+    circ.replace_SWAPs();
+    PhasePolyBox ppbox(circ);
+    std::shared_ptr<Circuit> circptr = ppbox.to_circuit();
+    Circuit circ2 = *circptr;
+    REQUIRE(test_unitary_comparison(circ, circ2));
+  }
+}
 
 }  // namespace test_PhasePolynomials
 }  // namespace tket

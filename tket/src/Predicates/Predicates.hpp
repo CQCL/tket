@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Predicates_H_
-#define _TKET_Predicates_H_
+#pragma once
 #include <typeindex>
 
 #include "Routing/Routing.hpp"
@@ -129,7 +128,7 @@ class MaxTwoQubitGatesPredicate : public Predicate {
 class PlacementPredicate : public Predicate {
  public:
   explicit PlacementPredicate(const Architecture& arch)
-      : nodes_(arch.get_all_uids_set()) {}
+      : nodes_(arch.nodes()) {}
   explicit PlacementPredicate(const node_set_t& nodes) : nodes_(nodes) {}
   bool verify(const Circuit& circ) const override;
   bool implies(const Predicate& other) const override;
@@ -256,5 +255,3 @@ class GlobalPhasedXPredicate : public Predicate {
 };
 
 }  // namespace tket
-
-#endif  // PREDICATES_H_

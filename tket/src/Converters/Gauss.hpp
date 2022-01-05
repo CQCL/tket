@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Gauss_H_
-#define _TKET_Gauss_H_
+#pragma once
+
 #include "Circuit/Circuit.hpp"
 #include "Converters.hpp"
 
@@ -38,7 +38,6 @@ class DiagMatrix {
   friend std::ostream& operator<<(std::ostream& out, const DiagMatrix& diam);
   bool is_id() const;
   bool is_id_until_columns(unsigned limit) const;
-  bool is_upper() const;
   unsigned n_rows() const;
   unsigned n_cols() const;
 
@@ -46,5 +45,3 @@ class DiagMatrix {
 };
 
 }  // namespace tket
-
-#endif  //_TKET_Gauss_H_

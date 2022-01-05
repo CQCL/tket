@@ -70,20 +70,6 @@ bool DiagMatrix::is_id_until_columns(unsigned limit) const {
   return true;
 }
 
-bool DiagMatrix::is_upper() const {
-  for (unsigned i = 0; i < n_rows(); ++i) {
-    if (_matrix(i, i) == 0) return false;
-  }
-
-  for (unsigned i = 0; i < n_rows(); ++i) {
-    for (unsigned j = 0; j < n_cols(); ++j) {
-      if ((i > j) && (_matrix(i, j) == 1)) return false;
-    }
-  }
-
-  return true;
-}
-
 unsigned DiagMatrix::n_rows() const { return _matrix.rows(); }
 
 unsigned DiagMatrix::n_cols() const { return _matrix.cols(); }

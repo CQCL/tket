@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_GRAPHS_GraphColouring_H_
-#define _TKET_GRAPHS_GraphColouring_H_
+#pragma once
 
 #include <cstddef>
 #include <string>
@@ -52,9 +51,6 @@ struct GraphColouringResult {
    * vertex i.
    */
   explicit GraphColouringResult(const std::vector<std::size_t>& colours);
-
-  /** Simply reset and remove all data. */
-  void clear();
 };
 
 /**
@@ -71,4 +67,3 @@ struct GraphColouringRoutines {
 
 }  // namespace graphs
 }  // namespace tket
-#endif

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_CircUtils_H_
-#define _TKET_CircUtils_H_
+#pragma once
 
 #include "Circuit.hpp"
 #include "DAGDefs.hpp"
+#include "Gate/GatePtr.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/PauliStrings.hpp"
 
@@ -136,6 +136,15 @@ Circuit pauli_gadget(
     CXConfigType cx_config = CXConfigType::Snake);
 
 /**
+ * Express a gate as a circuit using CX as the only multi-qubit gate.
+ *
+ * @param op operation
+ *
+ * @return circuit representing the operation
+ */
+Circuit with_CX(Gate_ptr op);
+
+/**
  * Construct a controlled version of a given circuit.
  *
  * @param c circuit
@@ -153,5 +162,3 @@ Circuit pauli_gadget(
 Circuit with_controls(const Circuit& c, unsigned n_controls = 1);
 
 }  // namespace tket
-
-#endif

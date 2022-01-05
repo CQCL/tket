@@ -88,15 +88,6 @@ If you wish you can set your profile to Debug mode:
 conan profile update settings.build_type=Debug tket
 ```
 
-#### Enable revisions
-
-In order to pick up the proper revision of the `pybind11` package, it is
-currently necessary to do the following (or equivalent):
-
-```shell
-conan config set general.revisions_enabled=1
-```
-
 #### Test dependencies
 
 A few of the tket tests require a working LaTeX installation, including
@@ -115,6 +106,30 @@ The Python tests require a few more packages. These can be installed with:
 ```shell
 pip install -r pytket/tests/requirements.txt
 ```
+
+### Adding local `pybind11`
+
+There is a known [issue](https://github.com/conan-io/conan-center-index/issues/6605) with using `pybind11`
+from the `conan-center` that can lead to a Python crash when importing `pytket`. To remedy this, 
+`pybind11` must be installed from the local recipe:
+
+```shell
+conan remove -f pybind11/*
+conan create --profile=tket recipes/pybind11
+```
+
+where the first line serves to remove any version already installed.
+
+### Building symengine
+
+The `symengine` dependency is built from a local conan recipe. Run:
+
+```shell
+conan create --profile=tket recipes/symengine
+```
+
+to build it.
+
 ### Building tket
 
 #### Method 1
@@ -150,7 +165,13 @@ with:
 conan create --profile=tket recipes/tket-proptests
 ```
 
-Now to build pytket:
+Now to build pytket, first install the `pybind11` headers:
+
+```shell
+conan create --profile=tket recipes/pybind11
+```
+
+Then build the pytket module:
 
 ```shell
 cd pytket

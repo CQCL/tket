@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_CircPool_H_
-#define _TKET_CircPool_H_
+#pragma once
 
 #include "Circuit.hpp"
 #include "Utils/Expression.hpp"
@@ -124,6 +123,12 @@ const Circuit &CCX_modulo_phase_shift();
 /** Equivalent to CCX, using five CX */
 const Circuit &CCX_normal_decomp();
 
+/** Equivalent to CCCX, using 14 CX */
+const Circuit &C3X_normal_decomp();
+
+/** Equivalent to CCCCX, using 36 CX */
+const Circuit &C4X_normal_decomp();
+
 /** CX[0,1]; CX[2,0]; CCX[0,1,2] */
 const Circuit &ladder_down();
 
@@ -223,5 +228,3 @@ Circuit NPhasedX_using_CX(unsigned int number_of_qubits, Expr alpha, Expr beta);
 }  // namespace CircPool
 
 }  // namespace tket
-
-#endif  // _TKET_CircPool_H_

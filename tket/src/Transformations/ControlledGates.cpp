@@ -46,7 +46,10 @@ static void lemma73(
 Circuit Transform::incrementer_borrow_1_qubit(unsigned n) {
   bool is_odd = n % 2;
   Circuit circ(n + 1);
-  if (n < 4) {
+  if (n < 6) {
+    if (n > 4)
+      circ.append_qubits(CircPool::C4X_normal_decomp(), {0, 1, 2, 3, 4});
+    if (n > 3) circ.append_qubits(CircPool::C3X_normal_decomp(), {0, 1, 2, 3});
     if (n > 2) circ.add_op<unsigned>(OpType::CCX, {0, 1, 2});
     if (n > 1) circ.add_op<unsigned>(OpType::CX, {0, 1});
     if (n > 0) circ.add_op<unsigned>(OpType::X, {0});
@@ -74,9 +77,12 @@ Circuit Transform::incrementer_borrow_1_qubit(unsigned n) {
 
   Circuit cnx_top;
   std::vector<unsigned> cnx1_qbs;
-  if (k == 2) {  // code is unreachable if k<2
-    cnx_top = CircPool::CCX_normal_decomp();
-    cnx1_qbs = {0, 1, n};
+  if (k == 3) {  // code is unreachable if k<3
+    cnx_top = CircPool::C3X_normal_decomp();
+    cnx1_qbs = {0, 1, 2, n};
+  } else if (k == 4) {
+    cnx_top = CircPool::C4X_normal_decomp();
+    cnx1_qbs = {0, 1, 2, 3, n};
   } else {
     cnx_top = lemma72(k);  // k controls on cnx
     cnx1_qbs.resize(
@@ -99,12 +105,24 @@ Circuit Transform::incrementer_borrow_1_qubit(unsigned n) {
     }
     bot_qbs[1] = n;  // incremented qubit 0 in incrementer is bottom one
   } else {
-    if (j == 3) {  // code is unreachable if j<3
-      bottom_incrementer.add_blank_wires(3);
+    if (j == 4) {  // code is unreachable if j<4
+      bottom_incrementer.add_blank_wires(4);
+      bottom_incrementer.append_qubits(
+          CircPool::C3X_normal_decomp(), {0, 1, 2, 3});
       bottom_incrementer.add_op<unsigned>(OpType::CCX, {0, 1, 2});
       bottom_incrementer.add_op<unsigned>(OpType::CX, {0, 1});
       bottom_incrementer.add_op<unsigned>(OpType::X, {0});
-      bot_qbs = {n, n - 2, n - 1};
+      bot_qbs = {n, n - 3, n - 2, n - 1};
+    } else if (j == 5) {
+      bottom_incrementer.add_blank_wires(5);
+      bottom_incrementer.append_qubits(
+          CircPool::C4X_normal_decomp(), {0, 1, 2, 3, 4});
+      bottom_incrementer.append_qubits(
+          CircPool::C3X_normal_decomp(), {0, 1, 2, 3});
+      bottom_incrementer.add_op<unsigned>(OpType::CCX, {0, 1, 2});
+      bottom_incrementer.add_op<unsigned>(OpType::CX, {0, 1});
+      bottom_incrementer.add_op<unsigned>(OpType::X, {0});
+      bot_qbs = {n, n - 4, n - 3, n - 2, n - 1};
     } else {
       // insert peeled-out cnx
       Circuit cnx_bot = lemma72(j - 1);
@@ -140,7 +158,7 @@ Circuit Transform::incrementer_borrow_1_qubit(unsigned n) {
       {n});  // to convert controlled-incrementer to larger incrementer
   for (unsigned i = k; i != n; ++i) circ.add_op<unsigned>(OpType::CX, {n, i});
   circ.append_qubits(cnx_top, cnx1_qbs);
-  if (!is_odd && j > 3) {
+  if (!is_odd && j > 5) {
     // insert peeled-out cnx
     Circuit cnx_bot = lemma72(j - 1);
     std::vector<unsigned> cnx2_qbs(2 * j - 3);
@@ -169,7 +187,10 @@ Circuit Transform::incrementer_borrow_n_qubits(unsigned n) {
   const unsigned N = 2 * n;
   Circuit circ(N);
   /* deal with small cases where borrowing qubits is unnecessary */
-  if (n < 4) {
+  if (n < 6) {
+    if (n > 4)
+      circ.append_qubits(CircPool::C4X_normal_decomp(), {1, 3, 5, 7, 9});
+    if (n > 3) circ.append_qubits(CircPool::C3X_normal_decomp(), {1, 3, 5, 7});
     if (n > 2) circ.add_op<unsigned>(OpType::CCX, {1, 3, 5});
     if (n > 1) circ.add_op<unsigned>(OpType::CX, {1, 3});
     if (n > 0) circ.add_op<unsigned>(OpType::X, {1});
@@ -214,7 +235,7 @@ Circuit Transform::incrementer_borrow_n_qubits(unsigned n) {
 // `n` = no. of controls
 Circuit Transform::cnx_normal_decomp(unsigned n) {
   /* handle low qb edge cases */
-  bool insert_ccxs;  // dictate whether to add Toffolis or n>3 controlled Xs
+  bool insert_c4xs;  // dictate whether to add C4Xs or n>4 controlled Xs
                      // when bootstrapping
   switch (n) {
     case 0: {
@@ -227,11 +248,17 @@ Circuit Transform::cnx_normal_decomp(unsigned n) {
       return CircPool::CCX_normal_decomp();
     }
     case 3: {
-      insert_ccxs = true;
+      return CircPool::C3X_normal_decomp();
+    }
+    case 4: {
+      return CircPool::C4X_normal_decomp();
+    }
+    case 5: {
+      insert_c4xs = true;
       break;
     }
     default: {
-      insert_ccxs = false;
+      insert_c4xs = false;
       break;
     }
   }
@@ -243,8 +270,8 @@ Circuit Transform::cnx_normal_decomp(unsigned n) {
   // first, bootstrap an ancilla qubit
   circ.add_op<unsigned>(OpType::H, {n});
   Vertex cnx1;
-  if (insert_ccxs)
-    cnx1 = circ.add_op<unsigned>(OpType::CCX, {cnx_qbs});
+  if (insert_c4xs)
+    circ.append_qubits(CircPool::C4X_normal_decomp(), {cnx_qbs});
   else {
     cnx1 = circ.add_op<unsigned>(
         OpType::CnX,
@@ -252,21 +279,21 @@ Circuit Transform::cnx_normal_decomp(unsigned n) {
   }
   circ.add_op<unsigned>(OpType::Tdg, {n});
   Vertex cx = circ.add_op<unsigned>(OpType::CX, {n - 1, n});
-  if (!insert_ccxs) {
+  if (!insert_c4xs) {
     Edge e1 = circ.get_nth_in_edge(cx, 0);
     lemma73(circ, {e1, cnx1});  // replace first CnX using lemma 7.3
   }
   circ.add_op<unsigned>(OpType::T, {n});
   Vertex cnx2;
-  if (insert_ccxs)
-    cnx2 = circ.add_op<unsigned>(OpType::CCX, {cnx_qbs});
+  if (insert_c4xs)
+    circ.append_qubits(CircPool::C4X_normal_decomp(), {cnx_qbs});
   else {
     cnx2 = circ.add_op<unsigned>(OpType::CnX, {cnx_qbs});
   }
   circ.add_op<unsigned>(OpType::Tdg, {n});
   cx = circ.add_op<unsigned>(OpType::CX, {n - 1, n});
   Edge e2 = circ.get_nth_in_edge(cx, 0);
-  if (!insert_ccxs) lemma73(circ, {e2, cnx2});
+  if (!insert_c4xs) lemma73(circ, {e2, cnx2});
   circ.add_op<unsigned>(OpType::T, {n});
   circ.add_op<unsigned>(OpType::H, {n});
 

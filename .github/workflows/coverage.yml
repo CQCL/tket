@@ -62,6 +62,9 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install ninja-build ccache
+    - name: Build symengine
+      run:
+        ${CONAN_CMD} create --profile=tket recipes/symengine
     - name: Build tket
       run: |
         ${CONAN_CMD} install recipes/tket --install-folder=build/tket --profile=tket -o tket:profile_coverage=True

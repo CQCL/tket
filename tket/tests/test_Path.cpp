@@ -828,7 +828,7 @@ SCENARIO("Check Hamiltonian path construction is correct") {
     for (unsigned i = 1; i < 8; ++i) {
       edge = std::pair<Node, Node>(ham[i - 1], ham[i]);
       bool check = false;
-      for (auto e : arch.get_connections_vec()) {
+      for (auto e : arch.get_all_edges_vec()) {
         if (edge.first == e.first && edge.second == e.second) {
           check = true;
         } else if (edge.first == e.second && edge.second == e.first) {
@@ -856,7 +856,7 @@ SCENARIO("Check Hamiltonian path construction is correct") {
     for (unsigned i = 1; i < 20; ++i) {
       edge = std::pair<Node, Node>(ham[i - 1], ham[i]);
       bool check = false;
-      for (auto e : arch.get_connections_vec()) {
+      for (auto e : arch.get_all_edges_vec()) {
         if (edge.first == e.first && edge.second == e.second) {
           check = true;
         } else if (edge.first == e.second && edge.second == e.first) {
@@ -886,7 +886,7 @@ SCENARIO("Check Hamiltonian path construction is correct") {
     for (unsigned i = 1; i < 9; ++i) {
       edge = std::pair<Node, Node>(ham[i - 1], ham[i]);
       bool check = false;
-      for (auto e : arch.get_connections_vec()) {
+      for (auto e : arch.get_all_edges_vec()) {
         if (edge.first == e.first && edge.second == e.second) {
           check = true;
         } else if (edge.first == e.second && edge.second == e.first) {
@@ -916,7 +916,7 @@ SCENARIO("Check Hamiltonian path construction is correct") {
     for (unsigned i = 1; i < 9; ++i) {
       edge = std::pair<Node, Node>(ham[i - 1], ham[i]);
       bool check = false;
-      for (auto e : arch.get_connections_vec()) {
+      for (auto e : arch.get_all_edges_vec()) {
         if (edge.first == e.first && edge.second == e.second) {
           check = true;
         } else if (edge.first == e.second && edge.second == e.first) {

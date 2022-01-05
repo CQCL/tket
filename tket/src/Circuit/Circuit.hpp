@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef _TKET_Circuit_H_
-#define _TKET_Circuit_H_
+#pragma once
 
 // NOTE: FOR ALL COMMENTS ON SCALING 'alpha' IS THE MAXIMUM ARITY OF VERTICES IN
 // THE GRAPH CIRCUITS ARE TYPICALLY SPARSE UNLESS THEY CONTAIN LARGE PHASE
@@ -986,9 +985,6 @@ class Circuit {
       const VertexSet &surplus, GraphRewiring graph_rewiring,
       VertexDeletion vertex_deletion);
   void remove_vertices(
-      const VertexVec &surplus, GraphRewiring graph_rewiring,
-      VertexDeletion vertex_deletion);
-  void remove_vertices(
       const VertexList &surplus, GraphRewiring graph_rewiring,
       VertexDeletion vertex_deletion);
 
@@ -1272,6 +1268,17 @@ class Circuit {
    * O(V)
    */
   void replace_SWAPs();
+
+  /**
+   * this function replaces an implicit wire swap between the two given qubits
+   * with three CX operations
+   *
+   * @param first qubits to add the wireswap on
+   * @param second qubits to add the wireswap on
+   *
+   * O(c)
+   */
+  void replace_implicit_wire_swap(const Qubit first, const Qubit second);
 
   // O(E+V+q)
   Circuit dagger() const;
@@ -1675,5 +1682,3 @@ Vertex Circuit::add_op(
 }
 
 }  // namespace tket
-
-#endif  // CIRCUIT_H_

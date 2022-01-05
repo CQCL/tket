@@ -1,13 +1,29 @@
 Changelog
 ==================================
 
+0.18.0 (January 2022)
+---------------------
+
+Minor new features:
+
+* Add ``NodeGraph`` as abstract base class for device connectivity graphs.
+* Improved ``CnX`` gate decomposition.
+* Squashing of adjacent ``PhasedX`` operations.
+* Add pytket ``__version__`` attribute.
+
+Fixes:
+
+* Fix wire-swap handling in ``PhasePolyBox`` creation.
+
 0.17.0 (November 2021)
 ----------------------
 
 Major new features:
+
 * New ``pytket.zx`` module for manipulating ZX diagrams.
 
 Minor new features:
+
 * New properties: :py:meth:``circuit.Op.dagger`` and :py:meth:``circuit.Op.transpose``.
 * New methods: :py:meth:``routing.Placement.to_dict`` and :py:meth:``routing.Placement.from_dict``.
 * New ``NPhasedX`` OpType.
