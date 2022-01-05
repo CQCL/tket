@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Routing/Placement.hpp"
+#include "Placement/Placement.hpp"
 
 #include <pybind11/eigen.h>
 #include <pybind11/operators.h>

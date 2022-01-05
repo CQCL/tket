@@ -23,11 +23,11 @@
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/Predicates.hpp"
 #include "Routing/Routing.hpp"
-#include "Routing/Verification.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/HelperFunctions.hpp"
+#include "Utils/Verification.hpp"
 #include "testutil.hpp"
 
 namespace tket {

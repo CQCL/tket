@@ -6,7 +6,6 @@
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
-#include "Routing/Routing.hpp"
 
 namespace tket {
 SCENARIO("Test LexiRoute::solve") {

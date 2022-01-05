@@ -346,14 +346,6 @@ SCENARIO("Test Circuit serialization") {
 }
 
 SCENARIO("Test config serializations") {
-  GIVEN("RoutingConfig") {
-    RoutingConfig orig(20, 6, 3, 2.5);
-    nlohmann::json j_config = orig;
-    RoutingConfig loaded = j_config.get<RoutingConfig>();
-    REQUIRE(orig == loaded);
-    nlohmann::json j_loaded = loaded;
-    REQUIRE(j_config == j_loaded);
-  }
   GIVEN("PlacementConfig") {
     PlacementConfig orig(5, 20, 100000, 10, 1);
     nlohmann::json j_config = orig;
