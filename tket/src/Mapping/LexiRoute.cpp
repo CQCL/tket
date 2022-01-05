@@ -450,63 +450,45 @@ void LexiRoute::solve(unsigned lookahead) {
   } else {
     // only need to reset in bridge case
     this->set_interacting_uids();
-    if (check.first) {
-      Node target = Node(this->interacting_uids_[chosen_swap.first]);
-      auto path = this->architecture_->get_path(chosen_swap.first, target);
-      // does path include root and target?
+
+    auto add_ordered_bridge = [&](const Node& n) {
+      auto it0 = this->mapping_frontier_->quantum_boundary->find(n);
+      // this should implicitly be the case if this logic is reached
+      TKET_ASSERT(it0 != this->mapping_frontier_->quantum_boundary->end());
+
+      Node other_node = Node(this->interacting_uids_[n]);
+      auto it1 = this->mapping_frontier_->quantum_boundary->find(other_node);
+      // this should implicitly be the case if this logic is reached
+      TKET_ASSERT(it1 != this->mapping_frontier_->quantum_boundary->end());
+
+      auto path = this->architecture_->get_path(n, other_node);
       Node central = Node(path[1]);
-      this->mapping_frontier_->add_bridge(chosen_swap.first, central, target);
+
+      Edge n_edge = this->mapping_frontier_->circuit_.get_nth_out_edge(
+          it0->second.first, it0->second.second);
+      Edge other_edge = this->mapping_frontier_->circuit_.get_nth_out_edge(
+          it1->second.first, it1->second.second);
+
+      unsigned port0 =
+          this->mapping_frontier_->circuit_.get_target_port(n_edge);
+      unsigned port1 =
+          this->mapping_frontier_->circuit_.get_target_port(other_edge);
+      // compare port ordering to get control vs target
+      TKET_ASSERT(port0 != port1);
+      if (port0 < port1) {
+        this->mapping_frontier_->add_bridge(n, central, other_node);
+      } else {
+        this->mapping_frontier_->add_bridge(other_node, central, n);
+      }
+    };
+
+    if (check.first) {
+      add_ordered_bridge(chosen_swap.first);
     }
     if (check.second) {
-      Node target = Node(this->interacting_uids_[chosen_swap.second]);
-      auto path = this->architecture_->get_path(chosen_swap.second, target);
-      // does path include root and target?
-      Node central = Node(path[1]);
-      this->mapping_frontier_->add_bridge(chosen_swap.second, central, target);
+      add_ordered_bridge(chosen_swap.second);
     }
   }
-
-  // // TODO: Refactor the following to happen during add_swap and add_bridge
-  // // methods
-  // // add ancilla qubits if necessary
-  // if (copy.size() < this->mapping_frontier_->quantum_boundary->size()) {
-  //   // implies ancilla qubit is added
-  //   // find ancilla qubit, find swap vertex and port by looking at boundary,
-  //   // store in ancillas type
-  //   for (auto it =
-  //            this->mapping_frontier_->quantum_boundary->get<TagKey>().begin();
-  //        it !=
-  //        this->mapping_frontier_->quantum_boundary->get<TagKey>().end();
-  //        ++it) {
-  //     bool match = false;
-  //     for (auto jt = copy.get<TagKey>().begin(); jt !=
-  //     copy.get<TagKey>().end();
-  //          ++jt) {
-  //       if (it->first == jt->first) {
-  //         match = true;
-  //         break;
-  //       }
-  //     }
-  //     if (!match) {
-  //       // extra will be added in it
-  //       // This is same condition as SWAP case, which means "Ancilla" has
-  //       // already moved to a new physical node
-  //       if (!check.first && !check.second) {
-  //         if (Node(it->first) == chosen_swap.first) {
-  //           this->mapping_frontier_->add_ancilla(chosen_swap.second);
-
-  //         } else {
-  //           this->mapping_frontier_->add_ancilla(chosen_swap.first);
-  //         }
-  //       } else {
-  //         this->mapping_frontier_->add_ancilla(Node(it->first));
-
-  //       }
-  //       break;
-  //     }
-  //   }
-  // }
-
   return;
 }
 
