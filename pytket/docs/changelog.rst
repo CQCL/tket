@@ -1,13 +1,19 @@
 Changelog
 ==================================
 
-0.18.0 (unreleased)
--------------------
+0.18.0 (January 2022)
+---------------------
 
 Minor new features:
 
-* Add `NodeGraph` as abstract base class for device connectivity graphs.
-* Improved CnX gate decomposition.
+* Add ``NodeGraph`` as abstract base class for device connectivity graphs.
+* Improved ``CnX`` gate decomposition.
+* Squashing of adjacent ``PhasedX`` operations.
+* Add pytket ``__version__`` attribute.
+
+Fixes:
+
+* Fix wire-swap handling in ``PhasePolyBox`` creation.
 
 0.17.0 (November 2021)
 ----------------------
