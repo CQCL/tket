@@ -74,7 +74,7 @@ PYBIND11_MODULE(circuit, m) {
           py::arg("latex") = false)
       .def("__eq__", &Op::operator==)
       .def("__repr__", [](const Op &op) { return op.get_name(); })
-      .def("free_symbols", [](const Op &op) { return op->free_symbols(); })
+      .def("free_symbols", [](const Op &op) { return op.free_symbols(); })
       .def(
           "get_unitary",
           [](const Op *op) {
