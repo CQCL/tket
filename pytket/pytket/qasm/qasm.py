@@ -17,14 +17,28 @@
 import io
 import os
 from itertools import groupby
-from typing import (Any, Callable, Dict, List, Optional, TextIO, Tuple, Type,
-                    TypeVar, Union)
-
-from pytket import Bit, Circuit, OpType, Qubit
-from pytket.circuit import Op  # type: ignore
-from pytket.circuit import BitRegister, CustomGateDef, QubitRegister, UnitID
-from sympy import pi, sympify  # type: ignore
-
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    List,
+    Optional,
+    TextIO,
+    Tuple,
+    Type,
+    TypeVar,
+    Union,
+)
+from itertools import groupby
+from sympy import sympify, pi  # type: ignore
+from pytket import Circuit, OpType, Qubit, Bit
+from pytket.circuit import (  # type: ignore
+    CustomGateDef,
+    UnitID,
+    BitRegister,
+    QubitRegister,
+    Op,
+)
 NOPARAM_COMMANDS = {
     "CX": OpType.CX,  # built-in gate equivalent to "cx"
     "cx": OpType.CX,
