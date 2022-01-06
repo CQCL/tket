@@ -16,28 +16,14 @@
 # TODO: Figure out nice way to make these class methods of Circuit
 import io
 import os
-from typing import (
-    Any,
-    Callable,
-    Dict,
-    List,
-    Optional,
-    TextIO,
-    Tuple,
-    Type,
-    TypeVar,
-    Union,
-)
 from itertools import groupby
-from sympy import sympify, pi  # type: ignore
-from pytket import Circuit, OpType, Qubit, Bit
-from pytket.circuit import (  # type: ignore
-    CustomGateDef,
-    UnitID,
-    BitRegister,
-    QubitRegister,
-    Op,
-)
+from typing import (Any, Callable, Dict, List, Optional, TextIO, Tuple, Type,
+                    TypeVar, Union)
+
+from pytket import Bit, Circuit, OpType, Qubit
+from pytket.circuit import Op  # type: ignore
+from pytket.circuit import BitRegister, CustomGateDef, QubitRegister, UnitID
+from sympy import pi, sympify  # type: ignore
 
 NOPARAM_COMMANDS = {
     "CX": OpType.CX,  # built-in gate equivalent to "cx"
@@ -68,6 +54,8 @@ NOPARAM_COMMANDS = {
 }
 
 PARAM_COMMANDS = {
+    "P": OpType.U1,  # alias. https://github.com/Qiskit/qiskit-terra/pull/4765
+    "u": OpType.U3,  # alias. https://github.com/Qiskit/qiskit-terra/pull/4765
     "U": OpType.U3,  # built-in gate equivalent to "u3"
     "u3": OpType.U3,
     "u2": OpType.U2,
@@ -108,7 +96,9 @@ included_gates = {
             "reset",
             "id",
             "barrier",
+            "P",
             "U",
+            "u",
             "u3",
             "u2",
             "u1",
