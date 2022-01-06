@@ -16,7 +16,6 @@
 # TODO: Figure out nice way to make these class methods of Circuit
 import io
 import os
-from itertools import groupby
 from typing import (
     Any,
     Callable,
@@ -39,6 +38,7 @@ from pytket.circuit import (  # type: ignore
     QubitRegister,
     Op,
 )
+
 NOPARAM_COMMANDS = {
     "CX": OpType.CX,  # built-in gate equivalent to "cx"
     "cx": OpType.CX,
