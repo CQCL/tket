@@ -54,7 +54,7 @@ NOPARAM_COMMANDS = {
 }
 
 PARAM_COMMANDS = {
-    "P": OpType.U1,  # alias. https://github.com/Qiskit/qiskit-terra/pull/4765
+    "p": OpType.U1,  # alias. https://github.com/Qiskit/qiskit-terra/pull/4765
     "u": OpType.U3,  # alias. https://github.com/Qiskit/qiskit-terra/pull/4765
     "U": OpType.U3,  # built-in gate equivalent to "u3"
     "u3": OpType.U3,
