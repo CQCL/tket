@@ -110,7 +110,7 @@ included_gates = {
             "reset",
             "id",
             "barrier",
-            "P",
+            "p",
             "U",
             "u",
             "u3",
