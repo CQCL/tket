@@ -9,10 +9,7 @@ namespace tket {
 MultiGateReorder::MultiGateReorder(
     const ArchitecturePtr &_architecture,
     std::shared_ptr<MappingFrontier> &_mapping_frontier)
-    : architecture_(_architecture) {
-  // Copy the frontier because we will use advance_frontier_boundary.
-  this->mapping_frontier_ =
-      std::make_shared<MappingFrontier>(*_mapping_frontier);
+    : architecture_(_architecture), mapping_frontier_(_mapping_frontier) {
   // This needs to be updated every time the frontier changes
   this->u_frontier_edges_ =
       convert_u_frontier_to_edges(*frontier_convert_vertport_to_edge(
@@ -148,6 +145,14 @@ bool MultiGateReorder::try_commute_multi_to_front(const Vertex &vert) {
 void MultiGateReorder::solve() {
   // Assume the frontier has been advanced
 
+  // store a copy of the original this->mapping_frontier_->quantum_boundray
+  // this object will be updated and reset throughout the procedure
+  // so need to return it to original setting at end
+  unit_vertport_frontier_t copy;
+  for (const std::pair<UnitID, VertPort>& pair :
+       this->mapping_frontier_->quantum_boundary->get<TagKey>()) {
+    copy.insert({pair.first, pair.second});
+  }
   // Get a subcircuit only for iterating vertices
   Subcircuit circ =
       this->mapping_frontier_->get_frontier_subcircuit(UINT_MAX, UINT_MAX);
@@ -183,6 +188,8 @@ void MultiGateReorder::solve() {
       }
     }
   }
+  // Return the quantum boundary to its original setting
+  this->mapping_frontier_->set_quantum_boundary(copy);
 }
 
 bool MultiGateReorderRoutingMethod::check_method(

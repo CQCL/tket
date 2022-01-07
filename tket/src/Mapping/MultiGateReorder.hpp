@@ -29,7 +29,6 @@ class MultiGateReorder {
   bool try_commute_multi_to_front(const Vertex& vert);
   // Architecture all new physical operations must respect
   ArchitecturePtr architecture_;
-  // Contains circuit for finding SWAP from and non-routed/routed boundary
   std::shared_ptr<MappingFrontier> mapping_frontier_;
   EdgeVec u_frontier_edges_;
 };
