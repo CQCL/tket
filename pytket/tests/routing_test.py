@@ -15,17 +15,11 @@
 from pathlib import Path
 from pytket.circuit import OpType, Qubit, Node, Circuit  # type: ignore
 from pytket.routing import (  # type: ignore
-    NodeGraph,
-    Architecture,
-    LinePlacement,
-    GraphPlacement,
-    NoiseAwarePlacement,
-    Placement,
-    SquareGrid,
-    FullyConnected,
-    place_with_map,
     route,
 )
+from pytket.placement import LinePlacement, GraphPlacement, NoiseAwarePlacement, Placement, place_with_map  # type: ignore
+from pytket.architecture import Architecture, SquareGrid, FullyConnected  # type: ignore
+from pytket.mapping import LexiRouteRoutingMethod  # type: ignore
 from pytket.predicates import CompilationUnit, NoMidMeasurePredicate  # type: ignore
 from pytket.passes import (  # type: ignore
     DefaultMappingPass,
@@ -101,13 +95,10 @@ def test_fully_connected() -> None:
 def test_arch_types() -> None:
     arch = Architecture([(0, 1)])
     assert isinstance(arch, Architecture)
-    assert isinstance(arch, NodeGraph)
     fc = FullyConnected(2)
     assert isinstance(fc, FullyConnected)
-    assert isinstance(fc, NodeGraph)
     sg = SquareGrid(2, 2, 2)
     assert isinstance(sg, SquareGrid)
-    assert isinstance(sg, NodeGraph)
 
 
 def test_placements() -> None:
@@ -463,19 +454,15 @@ def test_RoutingPass() -> None:
     cu_1 = CompilationUnit(circ)
     placer = GraphPlacement(arc)
     p_pass = PlacementPass(placer)
-    r_pass_0 = RoutingPass(arc, swap_lookahead=10, bridge_interactions=10)
-    r_pass_1 = RoutingPass(arc, swap_lookahead=10, bridge_interactions=0)
+    r_pass_0 = RoutingPass(arc)
+    r_pass_1 = RoutingPass(arc)
     p_pass.apply(cu_0)
     p_pass.apply(cu_1)
     r_pass_0.apply(cu_0)
     r_pass_1.apply(cu_1)
     out_circ_0 = cu_0.circuit
     out_circ_1 = cu_1.circuit
-    # TODO Should we expect BRIDGE gates in out_circ_0? If not, replace with an example
-    # where we would. See See https://github.com/CQCL-DEV/tket/pull/747.
-    # assert out_circ_0.n_gates_of_type(OpType.BRIDGE) == 1
     assert out_circ_0.valid_connectivity(arc, False, True)
-    assert out_circ_1.n_gates_of_type(OpType.BRIDGE) == 0
     assert out_circ_1.valid_connectivity(arc, False, True)
 
 
@@ -487,15 +474,13 @@ def test_FullMappingPass() -> None:
     cu_1 = CompilationUnit(circ)
     gp_placer = GraphPlacement(arc)
     lp_placer = LinePlacement(arc)
-    m_pass_0 = FullMappingPass(
-        arc, gp_placer, swap_lookahead=10, bridge_interactions=10
-    )
-    m_pass_1 = FullMappingPass(arc, lp_placer)
+
+    m_pass_0 = FullMappingPass(arc, gp_placer, config=[LexiRouteRoutingMethod(1)])
+    m_pass_1 = FullMappingPass(arc, lp_placer, config=[LexiRouteRoutingMethod(75)])
     m_pass_0.apply(cu_0)
     m_pass_1.apply(cu_1)
     out_circ_0 = cu_0.circuit
     out_circ_1 = cu_1.circuit
-    assert out_circ_0.n_gates < out_circ_1.n_gates
     assert out_circ_0.valid_connectivity(arc, False, True)
     assert out_circ_1.valid_connectivity(arc, False, True)
 
@@ -685,7 +670,11 @@ def test_CXMappingPass() -> None:
     gp_placer = GraphPlacement(arc)
     lp_placer = LinePlacement(arc)
     m_pass_0 = CXMappingPass(
-        arc, gp_placer, swap_lookahead=10, bridge_interactions=10, directed_cx=True
+        arc,
+        gp_placer,
+        config=[LexiRouteRoutingMethod(20)],
+        bridge_interactions=10,
+        directed_cx=True,
     )
     m_pass_1 = CXMappingPass(arc, lp_placer, delay_measures=False)
     m_pass_0.apply(cu_0)

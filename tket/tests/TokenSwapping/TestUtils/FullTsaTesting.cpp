@@ -1,3 +1,17 @@
+// Copyright 2019-2021 Cambridge Quantum Computing
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include "FullTsaTesting.hpp"
 
 #include <catch2/catch.hpp>
@@ -10,7 +24,6 @@
 #include "TokenSwapping/TSAUtils/DistanceFunctions.hpp"
 #include "TokenSwapping/TSAUtils/VertexSwapResult.hpp"
 
-;
 using std::vector;
 
 namespace tket {
@@ -95,8 +108,9 @@ FullTsaTesting::FullTsaTesting() {
 }
 
 void FullTsaTesting::add_problems(
-    const Architecture& arch, const vector<VertexMapping>& problems,
-    const std::string& new_name, RNG& rng, PartialTsaInterface& full_tsa) {
+    const ArchitectureMapping& arch_mapping,
+    const vector<VertexMapping>& problems, const std::string& new_name,
+    RNG& rng, PartialTsaInterface& full_tsa) {
   m_number_of_problems += problems.size();
   const std::string name_for_this = new_name + ":" + full_tsa.name();
   if (m_name.empty()) {
@@ -106,7 +120,6 @@ void FullTsaTesting::add_problems(
       m_name = m_name + ":" + name_for_this;
     }
   }
-  const ArchitectureMapping arch_mapping(arch);
   DistancesFromArchitecture distances(arch_mapping);
   NeighboursFromArchitecture neighbours(arch_mapping);
   RiverFlowPathFinder path_finder(distances, neighbours, rng);

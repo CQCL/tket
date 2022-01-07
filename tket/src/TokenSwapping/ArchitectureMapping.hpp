@@ -1,5 +1,18 @@
-#ifndef _TKET_TokenSwapping_ArchitectureMapping_H_
-#define _TKET_TokenSwapping_ArchitectureMapping_H_
+// Copyright 2019-2021 Cambridge Quantum Computing
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#pragma once
 
 #include "Architecture/Architecture.hpp"
 #include "TSAUtils/SwapFunctions.hpp"
@@ -29,6 +42,25 @@ class ArchitectureMapping {
    *    for the lifetime of this object.
    */
   explicit ArchitectureMapping(const Architecture& arch);
+
+  /** If the architecture object was initialised with explicit edges,
+   * use these edges (rather than the Architecture nodes() function)
+   * to create the Node <-> size_t mapping, in a fixed way not dependent
+   * on Architecture (the reason being that Architecture does not guarantee
+   * the mapping, but if we change the labels then we change to an isomorphic
+   * but different token swapping problem, which messes up testing.
+   * In practice every implementation of token swapping, except for the ultimate
+   * probably exponential-time optimal algorithm, is going to depend
+   * on the labels. Even if we had a fast graph isomorphism routine, the labels
+   * would still not be uniquely determined, as they could be permuted).
+   * @param arch The finished Architecture object, must remain valid
+   *    for the lifetime of this object.
+   * @param edges Edges originally used to construct the Architecture object.
+   *    These will uniquely determine the internal Node <-> size_t mapping.
+   */
+  ArchitectureMapping(
+      const Architecture& arch,
+      const std::vector<std::pair<unsigned, unsigned>>& edges);
 
   /** Convenient reference to the Architecture object we used
    *  to construct this ArchitectureMapping.
@@ -75,4 +107,3 @@ class ArchitectureMapping {
 
 }  // namespace tsa_internal
 }  // namespace tket
-#endif

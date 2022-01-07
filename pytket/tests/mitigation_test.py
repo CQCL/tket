@@ -17,7 +17,8 @@ import json
 
 from pytket.utils.spam import SpamCorrecter, compress_counts
 from pytket.circuit import Node, Circuit  # type: ignore
-from pytket.routing import Architecture, route  # type: ignore
+from pytket.routing import route  # type: ignore
+from pytket.architecture import Architecture  # type: ignore
 from pytket.passes import DelayMeasures  # type: ignore
 from typing import List, Dict, Counter, Tuple
 from pytket.utils.outcomearray import OutcomeArray

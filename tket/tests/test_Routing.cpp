@@ -1729,10 +1729,9 @@ SCENARIO("Test barrier is ignored by routing") {
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {1, 2}});
     add_2qb_gates(circ, OpType::CZ, {{1, 2}, {3, 2}, {3, 1}});
     circ.add_barrier({0, 1, 2, 3});
-
-    RoutingConfig config = {};
     PlacementPtr pp = std::make_shared<GraphPlacement>(arc);
-    PassPtr p = gen_full_mapping_pass(arc, pp, config);
+    RoutingMethodPtr rmp = std::make_shared<LexiRouteRoutingMethod>(100);
+    PassPtr p = gen_full_mapping_pass(arc, pp, {rmp});
     CompilationUnit cu(circ);
     p->apply(cu);
     REQUIRE(

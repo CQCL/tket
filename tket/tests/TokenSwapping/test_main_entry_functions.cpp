@@ -1,10 +1,23 @@
+// Copyright 2019-2021 Cambridge Quantum Computing
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include <catch2/catch.hpp>
 #include <sstream>
 
 #include "TokenSwapping/RNG.hpp"
 #include "TokenSwapping/main_entry_functions.hpp"
 
-;
 using std::vector;
 
 // Detailed algorithmic checks with quantitative benchmarks
@@ -78,9 +91,20 @@ SCENARIO("main entry function for TSA") {
 
   // Calculate swaps to enact the permutation.
   const auto node_swaps = get_swaps(arch, node_mapping);
+
   // This will hopefully decrease over time
   // as we improve the algorithm.
-  CHECK(node_swaps.size() == 29);
+  // HOWEVER, apart from the underlying token swapping algorithm,
+  // there is ANOTHER possible way for this to change:
+  // Architecture could change the order of nodes returned
+  // in nodes(), which would cause vertex relabelling and hence
+  // an isomorphic but different token swapping problem.
+  // This is UNAVOIDABLE, since get_swaps takes an Architecture
+  // object, NOT an ArchitectureMapping object.
+  // This is not really a problem (unless the number of swaps
+  // changes massively), since the solution is checked
+  // for correctness.
+  CHECK(node_swaps.size() == 27);
 
   // Go back to the original configuration, and perform the swaps.
   nodes_copy = nodes;

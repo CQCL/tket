@@ -1,5 +1,20 @@
+// Copyright 2019-2021 Cambridge Quantum Computing
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include <catch2/catch.hpp>
 
+#include "TestUtils/ArchitectureEdgesReimplementation.hpp"
 #include "TestUtils/FullTsaTesting.hpp"
 #include "TestUtils/ProblemGeneration.hpp"
 #include "TokenSwapping/HybridTsa00.hpp"
@@ -21,17 +36,30 @@ struct FullTester {
   std::string test_name;
 
   void add_problems(
-      const Architecture& arch, const std::string& arch_name,
+      const ArchitectureMapping& arch_mapping, const std::string& arch_name,
       const std::string& problem_message) {
     rng.set_seed();
-    const auto problems =
-        generator.get_problems(arch_name, arch, rng, problem_message);
+    const auto problems = generator.get_problems(
+        arch_name, arch_mapping.number_of_vertices(), rng, problem_message);
 
     // OK to reuse RNG, as it's reset before each problem.
-    results.add_problems(arch, problems, test_name, rng, full_tsa);
+    results.add_problems(arch_mapping, problems, test_name, rng, full_tsa);
 
     trivial_tsa.set(TrivialTSA::Options::FULL_TSA);
-    trivial_results.add_problems(arch, problems, test_name, rng, trivial_tsa);
+    trivial_results.add_problems(
+        arch_mapping, problems, test_name, rng, trivial_tsa);
+  }
+
+  void add_problems(
+      const vector<std::pair<unsigned, unsigned>>& edges,
+      const std::string& arch_name, const std::string& problem_message,
+      unsigned expected_number_of_vertices = 0) {
+    const Architecture arch(edges);
+    const ArchitectureMapping arch_mapping(arch, edges);
+    if (expected_number_of_vertices != 0) {
+      REQUIRE(arch_mapping.number_of_vertices() == expected_number_of_vertices);
+    }
+    add_problems(arch_mapping, arch_name, problem_message);
   }
 };
 }  // namespace
@@ -54,8 +82,7 @@ SCENARIO("Full TSA: stars") {
     for (unsigned vv = 1; vv <= num_spokes[index]; ++vv) {
       edges.emplace_back(0, vv);
     }
-    const Architecture arch(edges);
-    tester.add_problems(arch, arch_name, problem_messages[index]);
+    tester.add_problems(edges, arch_name, problem_messages[index]);
   }
   CHECK(
       tester.results.str() ==
@@ -94,8 +121,7 @@ SCENARIO("Full TSA: wheels") {
         edges.emplace_back(vv, vv + 1);
       }
     }
-    const Architecture arch(edges);
-    tester.add_problems(arch, arch_name, problem_messages[index]);
+    tester.add_problems(edges, arch_name, problem_messages[index]);
   }
   CHECK(
       tester.results.str() ==
@@ -124,8 +150,14 @@ SCENARIO("Full TSA: Rings") {
   for (size_t index = 0; index < problem_messages.size(); ++index) {
     const RingArch arch(num_vertices[index]);
     arch_name = "Ring" + std::to_string(num_vertices[index]);
-    tester.add_problems(arch, arch_name, problem_messages[index]);
+    const ArchitectureMapping arch_mapping(arch);
+    tester.add_problems(arch_mapping, arch_name, problem_messages[index]);
   }
+  // NOTE: results could change, if RingArch changes vertex labelling
+  // (outside the control of token swapping).
+  // However this seems unlikely, since rings are so simple.
+  // See the comments for "Full TSA: Square Grids" (about
+  // get_square_grid_edges).
   CHECK(
       tester.results.str() ==
       "[Rings:HybridTSA_00: 400 probs; 1802 toks; 3193 tot.lb]\n"
@@ -139,7 +171,6 @@ SCENARIO("Full TSA: Rings") {
       "[Winners: joint: 231 252 394 397 400 394  undisputed: 0 0 0 0 3 0]");
 }
 
-
 SCENARIO("Full TSA: Square Grids") {
   const vector<std::array<unsigned, 3>> grid_parameters = {
       {2, 2, 2}, {3, 4, 4}};
@@ -152,13 +183,29 @@ SCENARIO("Full TSA: Square Grids") {
 
   for (size_t index = 0; index < grid_parameters.size(); ++index) {
     const auto& parameters = grid_parameters[index];
-    const SquareGrid arch(parameters[0], parameters[1], parameters[2]);
+
+    // NOTE: if we used a SquareGrid architecture object, then results
+    // could change if SquareGrid and/or Architecture changed in future
+    // (giving different vertex labels, etc.),
+    // even if the underlying token swapping algorithm is unchanged.
+    //
+    // ArchitectureMapping can resolve these issues IF given the original
+    // vector of EDGES, in the same order as used to construct Architecture.
+    // The edge vector used to construct a SquareGrid architecture object
+    // is not available, so we just construct the edges directly,
+    // to give a fixed test independent of SquareGrid implementation details.
+    const auto edges =
+        get_square_grid_edges(parameters[0], parameters[1], parameters[2]);
+    const Architecture arch(edges);
+    const ArchitectureMapping arch_mapping(arch, edges);
+
     std::stringstream ss;
     ss << "Grid(" << parameters[0] << "," << parameters[1] << ","
        << parameters[2] << ")";
 
-    tester.add_problems(arch, ss.str(), problem_messages[index]);
+    tester.add_problems(arch_mapping, ss.str(), problem_messages[index]);
   }
+
   CHECK(
       tester.results.str() ==
       "[Square grids:HybridTSA_00: 200 probs; 2746 toks; 4323 tot.lb]\n"
@@ -190,10 +237,9 @@ SCENARIO("Full TSA: Random trees") {
         4 * tree_generator.max_number_of_children;
 
     const auto edges = tree_generator.get_tree_edges(tester.rng);
-    const Architecture arch(edges);
-    REQUIRE(arch.n_nodes() == edges.size() + 1);
     arch_name = "Tree" + std::to_string(index);
-    tester.add_problems(arch, arch_name, problem_messages[index]);
+    tester.add_problems(
+        edges, arch_name, problem_messages[index], edges.size() + 1);
   }
   CHECK(
       tester.results.str() ==

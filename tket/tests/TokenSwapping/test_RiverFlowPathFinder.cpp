@@ -1,13 +1,27 @@
+// Copyright 2019-2021 Cambridge Quantum Computing
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include <array>
 #include <catch2/catch.hpp>
 
+#include "TestUtils/ArchitectureEdgesReimplementation.hpp"
 #include "TokenSwapping/ArchitectureMapping.hpp"
 #include "TokenSwapping/DistancesFromArchitecture.hpp"
 #include "TokenSwapping/NeighboursFromArchitecture.hpp"
 #include "TokenSwapping/RNG.hpp"
 #include "TokenSwapping/RiverFlowPathFinder.hpp"
 
-;
 using std::vector;
 
 namespace tket {
@@ -207,8 +221,8 @@ SCENARIO("Test path generation for cycles") {
 
 // Deliberately use the same RNG, so it's all mixed up;
 // but we still expect not so many different paths.
-static void test(TestResult& result, const Architecture& arch, RNG& rng) {
-  const ArchitectureMapping arch_mapping(arch);
+static void test(
+    TestResult& result, const ArchitectureMapping& arch_mapping, RNG& rng) {
   DistancesFromArchitecture distances(arch_mapping);
   NeighboursFromArchitecture neighbours(arch_mapping);
   RiverFlowPathFinder path_finder(distances, neighbours, rng);
@@ -222,7 +236,8 @@ SCENARIO("Path generation for ring graph") {
   RNG rng;
   TestResult result;
   const RingArch arch(7);
-  test(result, arch, rng);
+  const ArchitectureMapping arch_mapping(arch);
+  test(result, arch_mapping, rng);
   REQUIRE(result.str() == "[ Number of path calls: 490  Extra paths: 0 ]");
 }
 
@@ -232,9 +247,10 @@ SCENARIO("Path generation for square grids") {
   for (size_t ver = 2; ver <= 4; ver += 2) {
     for (size_t hor = 1; hor <= 5; hor += 2) {
       for (size_t layer = 1; layer <= 3; layer += 2) {
-        const SquareGrid arch(ver, hor, layer);
-        INFO("Square grid: " << ver << ", " << hor << ", " << layer);
-        test(result, arch, rng);
+        const auto edges = get_square_grid_edges(ver, hor, layer);
+        const Architecture arch(edges);
+        const ArchitectureMapping arch_mapping(arch, edges);
+        test(result, arch_mapping, rng);
       }
     }
   }

@@ -2,6 +2,7 @@
 #define _TKET_RoutingMethod_H_
 
 #include "Mapping/MappingFrontier.hpp"
+#include "Utils/Json.hpp"
 
 namespace tket {
 
@@ -46,7 +47,14 @@ class RoutingMethod {
       const ArchitecturePtr& /*architecture*/) const {
     return {};
   }
+
+  virtual nlohmann::json serialize() const {
+    throw JsonError(
+        "JSON serialization not implemented for given RoutingMethod.");
+  }
 };
+
+typedef std::shared_ptr<RoutingMethod> RoutingMethodPtr;
 }  // namespace tket
 
 #endif

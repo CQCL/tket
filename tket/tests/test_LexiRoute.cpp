@@ -334,7 +334,7 @@ SCENARIO("Test LexiRouteRoutingMethod") {
     std::vector<Command> commands = mf->circuit_.get_commands();
     REQUIRE(commands.size() == 9);
     Command bridge_c = commands[2];
-    unit_vector_t uids = {nodes[5], nodes[2], nodes[8]};
+    unit_vector_t uids = {nodes[8], nodes[2], nodes[5]};
     REQUIRE(bridge_c.get_args() == uids);
     REQUIRE(*bridge_c.get_op_ptr() == *get_op_ptr(OpType::BRIDGE));
   }
@@ -426,12 +426,12 @@ SCENARIO("Test MappingManager::route_circuit with lc_route_subcircuit") {
     PassPtr dec = gen_decompose_routing_gates_to_cxs_pass(architecture, false);
 
     MappingManager mm(shared_arc);
-    LexiRouteRoutingMethod lrrm(100);
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(copy_circ);
 
-    std::vector<std::reference_wrapper<RoutingMethod>> vrm = {lrrm};
-    REQUIRE(vrm[0].get().check_method(mf, shared_arc));
+    std::vector<RoutingMethodPtr> vrm = {
+        std::make_shared<LexiRouteRoutingMethod>(100)};
+    REQUIRE(vrm[0]->check_method(mf, shared_arc));
 
     bool res = mm.route_circuit(circ, vrm);
 
@@ -458,8 +458,8 @@ SCENARIO("Test MappingManager::route_circuit with lc_route_subcircuit") {
     PassPtr dec = gen_decompose_routing_gates_to_cxs_pass(sg, false);
 
     MappingManager mm(shared_arc);
-    LexiRouteRoutingMethod lrrm(100);
-    std::vector<std::reference_wrapper<RoutingMethod>> vrm = {lrrm};
+    std::vector<RoutingMethodPtr> vrm = {
+        std::make_shared<LexiRouteRoutingMethod>(100)};
     bool res = mm.route_circuit(circ, vrm);
 
     PredicatePtr routed_correctly = std::make_shared<ConnectivityPredicate>(sg);

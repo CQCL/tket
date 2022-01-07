@@ -24,7 +24,8 @@ import numpy as np
 from pytket.circuit import Circuit, OpType, BasisOrder, Qubit, Bit, Node  # type: ignore
 from pytket.predicates import CompilationUnit  # type: ignore
 from pytket.passes import PauliSimp, CliffordSimp, ContextSimp  # type: ignore
-from pytket.routing import Architecture, route  # type: ignore
+from pytket.routing import route  # type: ignore
+from pytket.architecture import Architecture  # type: ignore
 from pytket.utils.outcomearray import OutcomeArray, readout_counts
 from pytket.utils.prepare import prepare_circuit
 from pytket.backends import CircuitNotValidError
