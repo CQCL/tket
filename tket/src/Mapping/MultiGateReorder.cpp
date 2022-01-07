@@ -146,12 +146,8 @@ bool MultiGateReorder::try_commute_multi_to_front(const Vertex &vert) {
 }
 
 void MultiGateReorder::solve() {
-  // Try to advance the frontier
-  this->mapping_frontier_->advance_frontier_boundary(this->architecture_);
-  this->u_frontier_edges_ =
-      convert_u_frontier_to_edges(*frontier_convert_vertport_to_edge(
-          this->mapping_frontier_->circuit_,
-          this->mapping_frontier_->quantum_boundary));
+  // Assume the frontier has been advanced
+
   // Get a subcircuit only for iterating vertices
   Subcircuit circ =
       this->mapping_frontier_->get_frontier_subcircuit(UINT_MAX, UINT_MAX);

@@ -33,6 +33,7 @@ SCENARIO("Reorder circuits") {
     Circuit circ_copy(circ);
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
+    mf->advance_frontier_boundary(shared_arc);
     MultiGateReorder mr(shared_arc, mf);
     mr.solve();
     std::vector<Command> commands = circ.get_commands();
@@ -73,6 +74,7 @@ SCENARIO("Reorder circuits") {
     Circuit circ_copy(circ);
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
+    mf->advance_frontier_boundary(shared_arc);
     MultiGateReorder mr(shared_arc, mf);
     mr.solve();
     std::vector<Command> commands = circ.get_commands();
@@ -118,6 +120,7 @@ SCENARIO("Reorder circuits") {
 
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
+    mf->advance_frontier_boundary(shared_arc);
     MultiGateReorder mr(shared_arc, mf);
     mr.solve();
     std::vector<Command> commands = circ.get_commands();
@@ -164,6 +167,7 @@ SCENARIO("Reorder circuits") {
 
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
+    mf->advance_frontier_boundary(shared_arc);
     MultiGateReorder mr(shared_arc, mf);
     mr.solve();
     std::vector<Command> commands = circ.get_commands();
