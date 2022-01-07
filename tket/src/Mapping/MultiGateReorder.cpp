@@ -80,8 +80,19 @@ bool MultiGateReorder::try_commute_multi_to_front(const Vertex &vert) {
     }
     if (success) {
       // move the vertex to the frontier
-      // notice that we need a partial rewire, so we can't do
-      // circuit::remove_vertex and circuit::rewire.
+      // Notice that if one of the vertex's in edge is already a destination
+      // edge then the circuit::remove_vertex will delete the destination edge
+      // hence circuit::rewire would result in an error due to the missing edge.
+      // We need a partial rewire for that reason.
+      // Example:
+      // Moving the second vertex (CX gate) to the front we only need to rewire
+      // the "x" part.
+      // --o-----
+      //   |
+      // --x--x--
+      //      |
+      // -----o--
+
       EdgeVec initial_in_edges =
           this->mapping_frontier_->circuit_.get_in_edges(vert);
       for (unsigned i = 0; i < dest_edges.size(); i++) {
