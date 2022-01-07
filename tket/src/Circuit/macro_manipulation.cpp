@@ -381,6 +381,18 @@ void Circuit::replace_SWAPs() {
   remove_vertices(bin, GraphRewiring::No, VertexDeletion::Yes);
 }
 
+void Circuit::replace_implicit_wire_swap(
+    const Qubit first, const Qubit second) {
+  add_op<UnitID>(OpType::CX, {first, second});
+  add_op<UnitID>(OpType::CX, {second, first});
+  Vertex cxvertex = add_op<UnitID>(OpType::CX, {first, second});
+  EdgeVec outs = get_all_out_edges(cxvertex);
+  Edge out1 = outs[0];
+  dag[out1].ports.first = 1;
+  Edge out2 = outs[1];
+  dag[out2].ports.first = 0;
+}
+
 // helper functions for the dagger and transpose
 void Circuit::_handle_boundaries(Circuit& circ, vertex_map_t& vmap) const {
   // Handle boundaries
