@@ -334,7 +334,7 @@ SCENARIO("Test LexiRouteRoutingMethod") {
     std::vector<Command> commands = mf->circuit_.get_commands();
     REQUIRE(commands.size() == 9);
     Command bridge_c = commands[2];
-    unit_vector_t uids = {nodes[5], nodes[2], nodes[8]};
+    unit_vector_t uids = {nodes[8], nodes[2], nodes[5]};
     REQUIRE(bridge_c.get_args() == uids);
     REQUIRE(*bridge_c.get_op_ptr() == *get_op_ptr(OpType::BRIDGE));
   }

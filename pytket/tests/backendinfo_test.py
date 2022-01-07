@@ -23,7 +23,7 @@ from hypothesis import given
 import pytest  # type: ignore
 
 from pytket.backends.backendinfo import BackendInfo, fully_connected_backendinfo
-from pytket.routing import SquareGrid, FullyConnected  # type: ignore
+from pytket.architecture import SquareGrid, FullyConnected  # type: ignore
 from pytket.circuit import OpType, Node  # type: ignore
 
 import strategies as st  # type: ignore

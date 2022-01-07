@@ -54,6 +54,7 @@ build_module(circuit
     binders/circuit/Circuit/add_op.cpp
     binders/circuit/Circuit/add_classical_op.cpp)
 build_module(routing binders/routing.cpp)
+build_module(mapping binders/mapping.cpp)
 build_module(transform binders/transform.cpp)
 build_module(predicates binders/predicates.cpp)
 build_module(passes binders/passes.cpp)
@@ -63,7 +64,8 @@ build_module(pauli binders/pauli.cpp)
 build_module(logging binders/logging.cpp)
 build_module(utils_serialization binders/utils_serialization.cpp)
 build_module(tailoring binders/tailoring.cpp)
-build_module(mapping binders/mapping.cpp)
 build_module(zx
     binders/zx/diagram.cpp
     binders/zx/rewrite.cpp)
+build_module(architecture binders/architecture.cpp)
+build_module(placement binders/placement.cpp)

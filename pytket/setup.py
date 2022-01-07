@@ -193,10 +193,12 @@ binders = [
     "pauli",
     "program",
     "routing",
+    "mapping",
     "transform",
     "tailoring",
-    "mapping",
     "zx",
+    "placement",
+    "architecture",
 ]
 
 

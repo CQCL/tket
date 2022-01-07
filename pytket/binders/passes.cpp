@@ -15,6 +15,7 @@
 #include <pybind11/functional.h>
 
 #include "ArchAwareSynth/SteinerForest.hpp"
+#include "Mapping/RoutingMethod.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
@@ -512,10 +513,9 @@ PYBIND11_MODULE(passes, m) {
       "of an :py:class:`Architecture`. Edge direction is ignored."
       "\n\n:param arc: The architecture to use for connectivity information. "
       "\n:param placer: The Placement used for relabelling."
-      "\n:param config: Configuration for Routing, as a vector of "
-      "RoutingMethod. Each RoutingMethod is checked in turn, meaning lower "
-      "index "
-      "method's are prioritised."
+      "\n:param config: Parameters for routing, a "
+      " list of RoutingMethod, each method is checked"
+      " and run if applicable in turn."
       "\n:return: a pass to perform the remapping",
       py::arg("arc"), py::arg("placer"), py::arg("config"));
 

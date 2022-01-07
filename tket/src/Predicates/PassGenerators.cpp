@@ -19,6 +19,7 @@
 #include "Circuit/Circuit.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Mapping/MappingManager.hpp"
+#include "Mapping/RoutingMethod.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassLibrary.hpp"
@@ -184,7 +185,7 @@ PassPtr gen_default_mapping_pass(const Architecture& arc) {
 
 PassPtr gen_cx_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
-    const std::vector<RoutingMethodPtr>& config, bool directed_cx,
+    const std::vector<std::shared_ptr<RoutingMethod>>& config, bool directed_cx,
     bool delay_measures) {
   PassPtr rebase_pass = gen_rebase_pass(
       {OpType::CX}, CircPool::CX(), all_single_qubit_types(),

@@ -38,9 +38,9 @@ copyright = "2021, Cambridge Quantum Computing Ltd"
 author = "Cambridge Quantum Computing Ltd"
 
 # The short X.Y version
-version = "0.17"
+version = "0.18"
 # The full version, including alpha/beta/rc tags
-release = "0.17.0"
+release = "0.18.0"
 
 
 # -- General configuration ---------------------------------------------------
@@ -215,7 +215,8 @@ custom_internal_mapping = {
     "pytket.backends.backend.Backend": "pytket.backends.Backend",
     "tket::Predicate": "pytket._tket.predicates.Predicate",
     "tket::Qubit": "pytket._tket.circuit.Qubit",
-    "tket::Architecture": "pytket._tket.routing.Architecture",
+    "tket::Architecture": "pytket._tket.architecture.Architecture",
+    "tket::RoutingMethod": "pytket._tket.mapping.RoutingMethod",
     "tket::CircBox": "pytket._tket.circuit.CircBox",
     "tket::ExpBox": "pytket._tket.circuit.ExpBox",
     "tket::QControlBox": "pytket._tket.circuit.QControlBox",

@@ -21,6 +21,8 @@ from pytket.circuit import (  # type: ignore
     Bit,
 )
 import pytket.routing
+import pytket.architecture
+import pytket.placement
 import pytket.transform
 import pytket.telemetry
 
