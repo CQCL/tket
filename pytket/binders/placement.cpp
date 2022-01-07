@@ -29,7 +29,6 @@ using json = nlohmann::json;
 
 namespace tket {
 
-// definitely a better way of doing this ...
 void amend_config_from_kwargs(NoiseAwarePlacement &pobj, py::kwargs kwargs) {
   PlacementConfig config_ = pobj.get_config();
 
