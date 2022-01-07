@@ -35,7 +35,7 @@ SCENARIO("Reorder circuits") {
         std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     MultiGateReorder mr(shared_arc, mf);
-    mr.solve();
+    mr.solve(20, 20);
     std::vector<Command> commands = circ.get_commands();
     for (unsigned i = 0; i < 2; i++) {
       std::vector<Node> nodes;
@@ -76,7 +76,7 @@ SCENARIO("Reorder circuits") {
         std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     MultiGateReorder mr(shared_arc, mf);
-    mr.solve();
+    mr.solve(20, 20);
     std::vector<Command> commands = circ.get_commands();
     for (unsigned i = 0; i < 4; i++) {
       std::vector<Node> nodes;
@@ -122,7 +122,7 @@ SCENARIO("Reorder circuits") {
         std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     MultiGateReorder mr(shared_arc, mf);
-    mr.solve();
+    mr.solve(20, 20);
     std::vector<Command> commands = circ.get_commands();
     for (unsigned i = 0; i < 2; i++) {
       std::vector<Node> nodes;
@@ -169,7 +169,7 @@ SCENARIO("Reorder circuits") {
         std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     MultiGateReorder mr(shared_arc, mf);
-    mr.solve();
+    mr.solve(20, 20);
     std::vector<Command> commands = circ.get_commands();
     for (unsigned i = 0; i < 6; i++) {
       std::vector<Node> nodes;
@@ -178,6 +178,49 @@ SCENARIO("Reorder circuits") {
       }
       REQUIRE(shared_arc->valid_operation(nodes));
     }
+    const auto u = tket_sim::get_unitary(circ);
+    const auto u1 = tket_sim::get_unitary(circ_copy);
+    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
+        u, u1, tket_sim::MatrixEquivalence::EQUAL));
+  }
+}
+
+SCENARIO("Reorder circuits with limited search space") {
+  std::vector<Node> nodes = {
+      Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
+      Node("node_test", 3)};
+
+  // n0 -- n1 -- n2 -- n3
+  Architecture architecture(
+      {{nodes[0], nodes[1]}, {nodes[1], nodes[2]}, {nodes[2], nodes[3]}});
+  ArchitecturePtr shared_arc = std::make_shared<Architecture>(architecture);
+  GIVEN("Simple CZ circuit.") {
+    Circuit circ(4);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    // Physically invalid operations
+    circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[2]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[3]});
+    // Physically valid operations
+    circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[1]});
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]},
+        {qubits[1], nodes[1]},
+        {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]}};
+    circ.rename_units(rename_map);
+    Circuit circ_copy(circ);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    mf->advance_frontier_boundary(shared_arc);
+    MultiGateReorder mr(shared_arc, mf);
+    mr.solve(3, 3);
+    // Check only the first valid CZ get commuted to the front
+    std::vector<Command> commands = circ.get_commands();
+    REQUIRE(shared_arc->valid_operation(
+        {Node(commands[0].get_args()[0]), Node(commands[0].get_args()[1])}));
+    REQUIRE(!shared_arc->valid_operation(
+        {Node(commands[1].get_args()[0]), Node(commands[1].get_args()[1])}));
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(

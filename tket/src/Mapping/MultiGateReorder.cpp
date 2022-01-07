@@ -1,7 +1,5 @@
 #include "Mapping/MultiGateReorder.hpp"
 
-#include <limits.h>
-
 #include "Mapping/MappingFrontier.hpp"
 
 namespace tket {
@@ -148,7 +146,7 @@ bool MultiGateReorder::try_commute_multi_to_front(const Vertex &vert) {
   }
 }
 
-void MultiGateReorder::solve() {
+void MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
   // Assume the frontier has been advanced
 
   // store a copy of the original this->mapping_frontier_->quantum_boundray
@@ -161,7 +159,7 @@ void MultiGateReorder::solve() {
   }
   // Get a subcircuit only for iterating vertices
   Subcircuit circ =
-      this->mapping_frontier_->get_frontier_subcircuit(UINT_MAX, UINT_MAX);
+      this->mapping_frontier_->get_frontier_subcircuit(max_depth, max_size);
   for (const Vertex &vert : circ.verts) {
     // Check if the vertex is:
     //  1. physically permitted
@@ -198,6 +196,10 @@ void MultiGateReorder::solve() {
   this->mapping_frontier_->set_quantum_boundary(copy);
 }
 
+MultiGateReorderRoutingMethod::MultiGateReorderRoutingMethod(
+    unsigned _max_depth, unsigned _max_size)
+    : max_depth_(_max_depth), max_size_(_max_size){};
+
 bool MultiGateReorderRoutingMethod::check_method(
     const std::shared_ptr<MappingFrontier> & /*mapping_frontier*/,
     const ArchitecturePtr & /*architecture*/) const {
@@ -208,7 +210,7 @@ unit_map_t MultiGateReorderRoutingMethod::routing_method(
     std::shared_ptr<MappingFrontier> &mapping_frontier,
     const ArchitecturePtr &architecture) const {
   MultiGateReorder mr(architecture, mapping_frontier);
-  mr.solve();
+  mr.solve(this->max_depth_, this->max_size_);
   return {};
 }
 

@@ -1,6 +1,8 @@
 #ifndef _TKET_MultiGateReorder_H_
 #define _TKET_MultiGateReorder_H_
 
+#include <limits.h>
+
 #include "Mapping/MappingFrontier.hpp"
 #include "Mapping/RoutingMethod.hpp"
 
@@ -19,8 +21,10 @@ class MultiGateReorder {
 
   /**
    * Try to commute any multi-qubit gates to the quantum frontier
+   * @param max_depth Maximum number of layers of gates checked for commutation.
+   * @param max_size Maximum number of gates checked for commutation.
    */
-  void solve();
+  void solve(unsigned max_depth, unsigned max_size);
 
  private:
   // Try to commute a multiqubit gate to the quantum frontier
@@ -35,9 +39,12 @@ class MultiGateReorderRoutingMethod : public RoutingMethod {
  public:
   /**
    * Checking and Routing methods redefined using MultiGateReorder.
-   *
+   * @param _max_depth Maximum number of layers of gates checked for
+   * commutation.
+   * @param _max_size Maximum number of gates checked for commutation.
    */
-  MultiGateReorderRoutingMethod(){};
+  MultiGateReorderRoutingMethod(
+      unsigned _max_depth = UINT_MAX, unsigned _max_size = UINT_MAX);
 
   /**
    * @return true if method can route subcircuit, false if not
@@ -56,6 +63,10 @@ class MultiGateReorderRoutingMethod : public RoutingMethod {
   unit_map_t routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
       const ArchitecturePtr& architecture) const;
+
+ private:
+  unsigned max_depth_;
+  unsigned max_size_;
 };
 
 }  // namespace tket
