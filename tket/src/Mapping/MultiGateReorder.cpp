@@ -29,13 +29,6 @@ Vertex get_input_from_vertex_edge(
   }
 }
 
-// Check if an edge is in the quantum frontier
-bool MultiGateReorder::edge_in_frontier(const Edge &edge) {
-  return std::find(
-             this->u_frontier_edges_.begin(), this->u_frontier_edges_.end(),
-             edge) != this->u_frontier_edges_.end();
-}
-
 // This method will try to commute a vertex to the quantum frontier
 bool MultiGateReorder::try_commute_multi_to_front(const Vertex &vert) {
   // Initialize to be the in_edges for the given vertex
@@ -47,7 +40,9 @@ bool MultiGateReorder::try_commute_multi_to_front(const Vertex &vert) {
     bool success = true;
     for (const Edge &in_edge : current_edges) {
       // Check if the edge is already in the quantum frontier
-      if (this->edge_in_frontier(in_edge)) {
+      if (std::find(
+              this->u_frontier_edges_.begin(), this->u_frontier_edges_.end(),
+              in_edge) != this->u_frontier_edges_.end()) {
         dest_edges.push_back(in_edge);
         continue;
       }
@@ -149,7 +144,7 @@ void MultiGateReorder::solve() {
   // this object will be updated and reset throughout the procedure
   // so need to return it to original setting at end
   unit_vertport_frontier_t copy;
-  for (const std::pair<UnitID, VertPort>& pair :
+  for (const std::pair<UnitID, VertPort> &pair :
        this->mapping_frontier_->quantum_boundary->get<TagKey>()) {
     copy.insert({pair.first, pair.second});
   }

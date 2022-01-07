@@ -23,8 +23,6 @@ class MultiGateReorder {
   void solve();
 
  private:
-  // Check an edge is in the frontier
-  bool edge_in_frontier(const Edge& edge);
   // Try to commute a multiqubit gate to the quantum frontier
   bool try_commute_multi_to_front(const Vertex& vert);
   // Architecture all new physical operations must respect
