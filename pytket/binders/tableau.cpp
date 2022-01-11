@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -34,7 +34,9 @@ PYBIND11_MODULE(tableau, m) {
           py::init<unsigned>(),
           "Constructs a :py:class:`UnitaryTableau` representing the identity "
           "operation over some number of qubits. Qubits will be indexed "
-          "sequentially in the default register.")
+          "sequentially in the default register."
+          "\n\n:param nqb: The number of qubits in the unitary.",
+          py::arg("nqb"))
       .def(
           py::init<
               const MatrixXb&, const MatrixXb&, const VectorXb&,

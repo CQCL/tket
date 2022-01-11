@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ class Circuit;
 
 class UnitaryTableau {
   /**
-   * An implementation of the stabilizer-destabilizer tablea for unitary
+   * An implementation of the stabilizer-destabilizer tableau for unitary
    * Cliffords in Aaronson & Gottesman, "Improved Simulation of Stabilizer
    * Circuits", https://arxiv.org/pdf/quant-ph/0406196.pdf
    *
