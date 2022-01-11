@@ -230,6 +230,7 @@ set(TKET_SOURCES
     ${TKET_MAPPING_DIR}/LexicographicalComparison.cpp
     ${TKET_MAPPING_DIR}/LexiRoute.cpp
     ${TKET_MAPPING_DIR}/RoutingMethodJson.cpp
+    ${TKET_MAPPING_DIR}/Verification.cpp
 
 
     # Architecture Aware Synthesis
@@ -245,7 +246,6 @@ set(TKET_SOURCES
     ${TKET_UTILS_DIR}/PauliStrings.cpp
     ${TKET_UTILS_DIR}/CosSinDecomposition.cpp
     ${TKET_UTILS_DIR}/Expression.cpp
-    ${TKET_UTILS_DIR}/Verification.cpp
 
 
     # Predicates
