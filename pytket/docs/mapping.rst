@@ -1,5 +1,5 @@
-pytket.routing
+pytket.mapping
 ==================================
-.. automodule:: pytket._tket.routing
+.. automodule:: pytket._tket.mapping
     :members:
     :special-members: __init__

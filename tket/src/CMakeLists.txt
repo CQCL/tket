@@ -73,7 +73,7 @@ set(TKET_OPTYPE_DIR ${TKET_SRC_DIR}/OpType)
 set(TKET_OPS_DIR ${TKET_SRC_DIR}/Ops)
 set(TKET_GATE_DIR ${TKET_SRC_DIR}/Gate)
 set(TKET_SIMULATION_DIR ${TKET_SRC_DIR}/Simulation)
-set(TKET_ROUTING_DIR ${TKET_SRC_DIR}/Routing)
+set(TKET_PLACEMENT_DIR ${TKET_SRC_DIR}/Placement)
 set(TKET_MAPPING_DIR ${TKET_SRC_DIR}/Mapping)
 set(TKET_TOKEN_SWAPPING_DIR ${TKET_SRC_DIR}/TokenSwapping)
 set(TKET_TRANSFORM_DIR ${TKET_SRC_DIR}/Transformations)
@@ -213,17 +213,11 @@ set(TKET_SOURCES
     ${TKET_TRANSFORM_DIR}/ContextualReduction.cpp
     ${TKET_TRANSFORM_DIR}/ThreeQubitSquash.cpp
 
-    # Routing
-    ${TKET_ROUTING_DIR}/PlacementGraphClasses.cpp
-    ${TKET_ROUTING_DIR}/Qubit_Placement.cpp
-    ${TKET_ROUTING_DIR}/Swap_Analysis.cpp
-    ${TKET_ROUTING_DIR}/Board_Analysis.cpp
-    ${TKET_ROUTING_DIR}/Routing.cpp
-    ${TKET_ROUTING_DIR}/Slice_Manipulation.cpp
-    ${TKET_ROUTING_DIR}/subgraph_mapping.cpp
-    ${TKET_ROUTING_DIR}/Placement.cpp
-    ${TKET_ROUTING_DIR}/Verification.cpp
-
+    # Placement
+    ${TKET_PLACEMENT_DIR}/PlacementGraphClasses.cpp
+    ${TKET_PLACEMENT_DIR}/Qubit_Placement.cpp
+    ${TKET_PLACEMENT_DIR}/subgraph_mapping.cpp
+    ${TKET_PLACEMENT_DIR}/Placement.cpp
     # Architecture
     ${TKET_ARCHITECTURE_DIR}/ArchitectureGraphClasses.cpp
     ${TKET_ARCHITECTURE_DIR}/Architecture.cpp
@@ -236,6 +230,7 @@ set(TKET_SOURCES
     ${TKET_MAPPING_DIR}/LexicographicalComparison.cpp
     ${TKET_MAPPING_DIR}/LexiRoute.cpp
     ${TKET_MAPPING_DIR}/RoutingMethodJson.cpp
+    ${TKET_MAPPING_DIR}/Verification.cpp
 
 
     # Architecture Aware Synthesis
@@ -251,6 +246,7 @@ set(TKET_SOURCES
     ${TKET_UTILS_DIR}/PauliStrings.cpp
     ${TKET_UTILS_DIR}/CosSinDecomposition.cpp
     ${TKET_UTILS_DIR}/Expression.cpp
+
 
     # Predicates
     ${TKET_PREDS_DIR}/Predicates.cpp

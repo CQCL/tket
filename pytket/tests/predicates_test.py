@@ -214,7 +214,7 @@ def test_routing_and_placement_pass() -> None:
     assert seq_pass.apply(cu2)
     assert cu2.initial_map == expected_map
 
-    full_pass = FullMappingPass(arc, pl, config=[LexiRouteRoutingMethod(100)])
+    full_pass = FullMappingPass(arc, pl, config=[LexiRouteRoutingMethod()])
     cu3 = CompilationUnit(circ.copy())
     assert full_pass.apply(cu3)
     assert cu3.initial_map == expected_map
@@ -657,7 +657,7 @@ def test_generated_pass_config() -> None:
         [k.to_list(), v.to_list()] for k, v in qm.items()
     ]
     # FullMappingPass
-    fm_pass = FullMappingPass(arc, placer, config=[LexiRouteRoutingMethod(100)])
+    fm_pass = FullMappingPass(arc, placer, config=[LexiRouteRoutingMethod()])
     assert fm_pass.to_dict()["pass_class"] == "SequencePass"
     p_pass = fm_pass.get_sequence()[0]
     r_pass = fm_pass.get_sequence()[1]

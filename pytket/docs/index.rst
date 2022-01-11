@@ -165,7 +165,9 @@ Our telemetry data policy can be viewed in the `Telemetry Data Policy`_ page.
     partition.rst
     qasm.rst
     quipper.rst
-    routing.rst
+    architecture.rst
+    placement.rst
+    mapping.rst
     transform.rst
     tailoring.rst
     zx.rst

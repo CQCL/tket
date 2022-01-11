@@ -183,9 +183,6 @@
         "architecture": {
           "$ref": "#/definitions/architecture"
         },
-        "routing_config": {
-          "$ref": "#/definitions/routing_config"
-        },
         "directed": {
           "type": "boolean",
           "description": "Whether to consider directedness of the architecture for CXs in \"DecomposeSwapsToCXs\"."

@@ -53,7 +53,6 @@ build_module(circuit
     binders/circuit/Circuit/main.cpp
     binders/circuit/Circuit/add_op.cpp
     binders/circuit/Circuit/add_classical_op.cpp)
-build_module(routing binders/routing.cpp)
 build_module(mapping binders/mapping.cpp)
 build_module(transform binders/transform.cpp)
 build_module(predicates binders/predicates.cpp)

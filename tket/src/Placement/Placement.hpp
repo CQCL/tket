@@ -104,6 +104,28 @@ struct PlacementConfig {
 
 JSON_DECL(PlacementConfig)
 
+// stores and tracks the points of the circuit up to which has been solved
+struct PlacementFrontier {
+  // set of 2qb vertices which need to be solved for
+  std::shared_ptr<Slice> slice;
+  // Quantum Edges coming in to vertices in slice, indexed by qubit
+  std::shared_ptr<unit_frontier_t> quantum_in_edges;
+  // Quantum Edges leaving vertices in slice, indexed by qubit
+  std::shared_ptr<unit_frontier_t> quantum_out_edges;
+  // Boolean edges coming in to vertices in slice. Guarantees that all edges
+  // into every vertex in slice is represented in next_cut
+  std::shared_ptr<b_frontier_t> classical_in_edges;
+
+  // reference to circuit that it acts on
+  const Circuit& circ;
+
+  explicit PlacementFrontier(const Circuit& _circ);
+  // initialise at front of circuit
+  void init();
+  // move to next slice
+  void next_slicefrontier();
+};
+
 // Class for storing interaction graph.
 // Interacting qubits have an edge between them.
 class QubitGraph : public graphs::DirectedGraph<Qubit> {
