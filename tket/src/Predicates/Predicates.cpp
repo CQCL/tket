@@ -15,8 +15,8 @@
 #include "Predicates.hpp"
 
 #include "Gate/Gate.hpp"
-#include "Placement/Placement.hpp"
 #include "Mapping/Verification.hpp"
+#include "Placement/Placement.hpp"
 
 namespace tket {
 

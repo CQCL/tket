@@ -56,7 +56,8 @@ PYBIND11_MODULE(mapping, m) {
           "LexiRoute constructor.\n\n:param lookahead: Maximum depth of "
           "lookahead "
           "employed when picking SWAP for purpose of logical to physical "
-          "mapping.", py::arg("lookahead") = 10);
+          "mapping.",
+          py::arg("lookahead") = 10);
 
   py::class_<MappingManager>(
       m, "MappingManager",
