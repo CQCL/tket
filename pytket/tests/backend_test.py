@@ -528,7 +528,7 @@ def test_postprocess_3() -> None:
 
     mm = MappingManager(arc)
     rc = c.copy()
-    mm.route_circuit(rc, [LexiRouteRoutingMethod(50)])
+    mm.route_circuit(rc, [LexiRouteRoutingMethod()])
     n_shots = 100
     h = b.process_circuit(b.get_compiled_circuit(c), n_shots=n_shots, postprocess=True)
     r = b.get_result(h)
