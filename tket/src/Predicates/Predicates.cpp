@@ -16,7 +16,7 @@
 
 #include "Gate/Gate.hpp"
 #include "Placement/Placement.hpp"
-#include "Utils/Verification.hpp"
+#include "Mapping/Verification.hpp"
 
 namespace tket {
 

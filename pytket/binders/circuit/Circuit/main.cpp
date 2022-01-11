@@ -30,7 +30,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "UnitRegister.hpp"
 #include "Utils/Json.hpp"
-#include "Utils/Verification.hpp"
+#include "Mapping/Verification.hpp"
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
 #include "boost/graph/iteration_macros.hpp"
