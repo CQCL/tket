@@ -160,7 +160,6 @@ def format_logic_exp(exp: Union[LogicExp, Bit, BitRegister, int]) -> str:
                 exp.op.value,
                 format_logic_exp(exp.args[1]),
             )
-    return ""
 
 
 def get_gate_colour(op_type: str) -> str:

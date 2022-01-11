@@ -59,6 +59,17 @@ with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
     schema = json.load(f)
 
 
+def test_op_free_symbols() -> None:
+    c = Circuit(2)
+    c.add_barrier([0, 1])
+    op = c.get_commands()[0].op
+    assert op.free_symbols() == set()
+    alpha = Symbol("alpha")
+    c.Rx(alpha, 0)
+    op = c.get_commands()[1].op
+    assert op.free_symbols() == {alpha}
+
+
 def test_circuit_transpose() -> None:
     c = Circuit(2)
     u = np.asarray([[0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0], [1, 0, 0, 0]])
