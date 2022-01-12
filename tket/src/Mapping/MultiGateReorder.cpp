@@ -31,21 +31,33 @@ Vertex get_input_from_vertex_edge(
 bool MultiGateReorder::try_commute_multi_to_front(const Vertex &vert) {
   // Initialize to be the in_edges for the given vertex
   EdgeVec current_edges = this->mapping_frontier_->circuit_.get_in_edges(vert);
+
+  Op_ptr current_op =
+      this->mapping_frontier_->circuit_.get_Op_ptr_from_Vertex(vert);
+  // Record the colour of each port of the vertex.
+  std::vector<std::optional<Pauli>> colours;
+  for (const Edge &edge : current_edges) {
+    port_t target_port =
+        this->mapping_frontier_->circuit_.get_target_port(edge);
+    std::optional<Pauli> colour = current_op->commuting_basis(target_port);
+    colours.push_back(colour);
+  }
   // Stores all edges which the vertex can be commuted to
   EdgeVec dest_edges;
   while (true) {
     // The vertex can be commuted to the front
     bool success = true;
-    for (const Edge &in_edge : current_edges) {
+    for (unsigned i = 0; i < current_edges.size(); ++i) {
       // Check if the edge is already in the quantum frontier
       if (std::find(
               this->u_frontier_edges_.begin(), this->u_frontier_edges_.end(),
-              in_edge) != this->u_frontier_edges_.end()) {
-        dest_edges.push_back(in_edge);
+              current_edges[i]) != this->u_frontier_edges_.end()) {
+        dest_edges.push_back(current_edges[i]);
         continue;
       }
       // Check prev_op is a gate
-      Vertex prev_vert = this->mapping_frontier_->circuit_.source(in_edge);
+      Vertex prev_vert =
+          this->mapping_frontier_->circuit_.source(current_edges[i]);
       Op_ptr prev_op =
           this->mapping_frontier_->circuit_.get_Op_ptr_from_Vertex(prev_vert);
       if (!prev_op->get_desc().is_gate()) {
@@ -55,14 +67,8 @@ bool MultiGateReorder::try_commute_multi_to_front(const Vertex &vert) {
 
       // Check commute
       port_t source_port =
-          this->mapping_frontier_->circuit_.get_source_port(in_edge);
-      port_t target_port =
-          this->mapping_frontier_->circuit_.get_target_port(in_edge);
-      Op_ptr current_op =
-          this->mapping_frontier_->circuit_.get_Op_ptr_from_Vertex(vert);
-      std::optional<Pauli> current_colour =
-          current_op->commuting_basis(target_port);
-      if (!prev_op->commutes_with_basis(current_colour, source_port)) {
+          this->mapping_frontier_->circuit_.get_source_port(current_edges[i]);
+      if (!prev_op->commutes_with_basis(colours[i], source_port)) {
         // not commute
         return false;
       } else {
@@ -70,7 +76,8 @@ bool MultiGateReorder::try_commute_multi_to_front(const Vertex &vert) {
         Vertex prev_prev_v;
         Edge prev_e;
         std::tie(prev_prev_v, prev_e) =
-            this->mapping_frontier_->circuit_.get_prev_pair(prev_vert, in_edge);
+            this->mapping_frontier_->circuit_.get_prev_pair(
+                prev_vert, current_edges[i]);
         dest_edges.push_back(prev_e);
       }
       // Only true if all edges are in frontier
