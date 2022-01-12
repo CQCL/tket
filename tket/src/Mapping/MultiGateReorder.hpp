@@ -1,8 +1,6 @@
 #ifndef _TKET_MultiGateReorder_H_
 #define _TKET_MultiGateReorder_H_
 
-#include <limits.h>
-
 #include "Mapping/MappingFrontier.hpp"
 #include "Mapping/RoutingMethod.hpp"
 
@@ -44,7 +42,7 @@ class MultiGateReorderRoutingMethod : public RoutingMethod {
    * @param _max_size Maximum number of gates checked for commutation.
    */
   MultiGateReorderRoutingMethod(
-      unsigned _max_depth = UINT_MAX, unsigned _max_size = UINT_MAX);
+      unsigned _max_depth = 10, unsigned _max_size = 10);
 
   /**
    * @return true if method can route subcircuit, false if not
