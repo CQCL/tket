@@ -331,6 +331,27 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
       REQUIRE(cmds[i].get_op_ptr()->get_type() == expected_optypes[i]);
     }
   }
+
+  GIVEN("gen_euler_pass commuting conditionals through CX") {
+    PassPtr squash = gen_euler_pass(OpType::Rz, OpType::Rx);
+    Circuit circ(2, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.143}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.528}, {1}, {0}, 0);
+    CompilationUnit cu(circ);
+    squash->apply(cu);
+    const Circuit& c = cu.get_circ_ref();
+    c.assert_valid();
+    REQUIRE(c.n_gates() == 3);
+    auto cmds = c.get_commands();
+    std::vector<OpType> expected_optypes{
+        OpType::Rz,  // qubit 0 before CX
+        OpType::Rx,  // qubit 1 before CX
+        OpType::CX};
+    check_command_types(c, expected_optypes);
+  }
+
   GIVEN("Repeat synthesis passes") {
     OpTypeSet ots = {OpType::H};
     PredicatePtr gsp = std::make_shared<GateSetPredicate>(ots);
