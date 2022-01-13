@@ -44,26 +44,31 @@ class SingleQubitSquash {
   SingleQubitSquash(const Squasher &_squasher, bool _reversed = false)
       : squasher(_squasher), reversed(_reversed), circ_ptr(nullptr) {}
 
-  // squash a circuit
-  // main method to be called by user
+  // squash an entire circuit, one qubit at a time
   bool squash(Circuit &circ) {
     bool success = false;
     circ_ptr = &circ;
 
-    VertexVec starts(reversed ? circ.q_outputs() : circ.q_inputs());
-    for (Vertex v : starts) {
-      Edge e(
-          reversed ? circ.get_nth_in_edge(v, 0) : circ.get_nth_out_edge(v, 0));
-      success |= squash_wire(e);
+    VertexVec inputs = circ.q_inputs();
+    VertexVec outputs = circ.q_outputs();
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      Edge in = circ.get_nth_out_edge(inputs[i], 0);
+      Edge out = circ.get_nth_in_edge(outputs[i], 0);
+      if (reversed) {
+        success |= squash_between(out, in);
+      } else {
+        success |= squash_between(in, out);
+      }
     }
 
     circ_ptr = nullptr;
     return success;
   }
 
-  // squash a single wire, starting at e
-  bool squash_wire(Edge e) {
+  // squash everything between edges in and out
+  bool squash_between(Edge in, Edge out) {
     squasher.clear();
+    Edge e = in;
     Vertex v = next_vertex(e);
     std::vector<Gate_ptr> single_chain;
     VertexVec bin;
@@ -87,7 +92,7 @@ class SingleQubitSquash {
         }
       }
 
-      if (condition == this_condition && is_squashable(v, v_type)) {
+      if (e != out && condition == this_condition && is_squashable(v, v_type)) {
         // => add gate to current squash
         squasher.append(as_gate_ptr(reversed ? v_op->dagger() : v_op));
         move_to_next_vertex = true;
@@ -124,7 +129,8 @@ class SingleQubitSquash {
           }
         }
       }
-      if (is_last_optype(v_type)) {
+      if (e == out || is_last_optype(v_type)) {
+        squasher.clear();
         break;
       }
       if (move_to_next_vertex) {
