@@ -57,7 +57,7 @@ class PQPSquasher {
 
   void clear() { rotation_chain.clear(); }
 
-  bool accepts(OpType type) { return type == p_ || type == q_; }
+  bool accepts(OpType type) const { return type == p_ || type == q_; }
 
   void append(Gate_ptr gp) {
     if (!accepts(gp->get_type())) {
@@ -140,22 +140,28 @@ class PQPSquasher {
 
     Circuit replacement(1);
     Gate_ptr left_over_gate = nullptr;
-    replacement.add_op<unsigned>(p, angle_p1, {0});
-    replacement.add_op<unsigned>(q, angle_q, {0});
-    if (commute_through) {
-      left_over_gate =
-          std::make_shared<Gate>(p, std::vector<Expr>{angle_p2}, 1);
-    } else {
-      replacement.add_op<unsigned>(p, angle_p2, {0});
+    if (!equiv_0(angle_p1, 4)) {
+      replacement.add_op<unsigned>(p, angle_p1, {0});
+    }
+    if (!equiv_0(angle_q, 4)) {
+      replacement.add_op<unsigned>(q, angle_q, {0});
+    }
+    if (!equiv_0(angle_p2, 4)) {
+      if (commute_through) {
+        left_over_gate =
+            std::make_shared<Gate>(p, std::vector<Expr>{angle_p2}, 1);
+      } else {
+        replacement.add_op<unsigned>(p, angle_p2, {0});
+      }
     }
     redundancy_removal(replacement);
     return {replacement, left_over_gate};
   }
 
  private:
-  Rotation merge_rotations(
+  static Rotation merge_rotations(
       OpType r, const std::vector<Gate_ptr> &chain,
-      std::vector<Gate_ptr>::const_iterator &iter) const {
+      std::vector<Gate_ptr>::const_iterator &iter) {
     Expr total_angle(0);
     while (iter != chain.end()) {
       const Gate_ptr rot_op = *iter;
