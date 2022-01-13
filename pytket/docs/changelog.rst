@@ -1,6 +1,13 @@
 Changelog
 ==================================
 
+0.19.0 (unreleased)
+-------------------
+
+General:
+
+* Python 3.10 support added; 3.7 dropped.
+
 0.18.0 (January 2022)
 ---------------------
 
