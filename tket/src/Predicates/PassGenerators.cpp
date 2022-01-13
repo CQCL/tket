@@ -79,8 +79,7 @@ PassPtr gen_squash_pass(
 // converting chains of p, q rotations to minimal triplets of p,q-rotations (p,
 // q in {Rx,Ry,Rz})
 PassPtr gen_euler_pass(const OpType& q, const OpType& p, bool strict) {
-  PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
-  PredicatePtrMap precons{CompilationUnit::make_type_pair(ccontrol_pred)};
+  PredicatePtrMap precons;
 
   Transform t = Transform::squash_1qb_to_pqp(q, p, strict);
   PostConditions pc{{}, {}, Guarantee::Preserve};
