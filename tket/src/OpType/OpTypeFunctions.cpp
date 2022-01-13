@@ -128,7 +128,8 @@ bool is_box_type(OpType optype) {
       OpType::QControlBox,
       OpType::ClassicalExpBox,
       OpType::ProjectorAssertionBox,
-      OpType::StabiliserAssertionBox};
+      OpType::StabiliserAssertionBox,
+      OpType::UnitaryTableauBox};
   return find_in_set(optype, boxes);
 }
 
@@ -174,10 +175,11 @@ bool is_oneway_type(OpType optype) {
 
 bool is_clifford_type(OpType optype) {
   static const OpTypeSet clifford_gates = {
-      OpType::Z,    OpType::X,     OpType::Y,   OpType::S,       OpType::Sdg,
-      OpType::V,    OpType::Vdg,   OpType::SX,  OpType::SXdg,    OpType::H,
-      OpType::CX,   OpType::CY,    OpType::CZ,  OpType::SWAP,    OpType::BRIDGE,
-      OpType::noop, OpType::ZZMax, OpType::ECR, OpType::ISWAPMax};
+      OpType::Z,     OpType::X,    OpType::Y,        OpType::S,
+      OpType::Sdg,   OpType::V,    OpType::Vdg,      OpType::SX,
+      OpType::SXdg,  OpType::H,    OpType::CX,       OpType::CY,
+      OpType::CZ,    OpType::SWAP, OpType::BRIDGE,   OpType::noop,
+      OpType::ZZMax, OpType::ECR,  OpType::ISWAPMax, OpType::UnitaryTableauBox};
   return find_in_set(optype, clifford_gates);
 }
 
