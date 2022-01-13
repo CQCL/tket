@@ -184,7 +184,7 @@ class SingleQubitSquash {
     op_signature_t sigs;
     if (condition) {
       left_over = std::make_shared<Conditional>(
-          left_over, condition->first.size(), condition->second);
+          left_over, (unsigned)condition->first.size(), condition->second);
     }
     Vertex new_v = circ_ptr->add_vertex(left_over);
     if (condition) {
