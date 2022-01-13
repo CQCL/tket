@@ -12,21 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-set (CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_EXTENSIONS OFF)
+project(tket-gate)
 
-cmake_minimum_required(VERSION 3.16.0)
+add_library(tket-gate
+    Gate.cpp
+    GatePtr.cpp
+    OpPtrFunctions.cpp
+    Rotation.cpp
+    SymTable.cpp
+    GateUnitaryMatrix.cpp
+    GateUnitaryMatrixComposites.cpp
+    GateUnitaryMatrixError.cpp
+    GateUnitaryMatrixFixedMatrices.cpp
+    GateUnitaryMatrixPrimitives.cpp
+    GateUnitaryMatrixUtils.cpp
+    GateUnitaryMatrixVariableQubits.cpp
+    GateUnitarySparseMatrix.cpp)
 
-project(PackageTest CXX)
+target_include_directories(tket-gate PRIVATE ${TKET_SRC_DIR})
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
-
-IF (WIN32)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
-ENDIF()
-
-include_directories(${CONAN_INCLUDE_DIRS_TKET})
-
-add_executable(test test.cpp)
-target_link_libraries(test ${CONAN_LIBS})
+target_link_libraries(tket-gate
+    PRIVATE
+    tket-utils
+    tket-optype
+    tket-ops
+    ${CONAN_LIBS})

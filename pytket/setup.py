@@ -105,18 +105,34 @@ class CMakeBuild(build_ext):
                 ]
             )
             reqs = conaninfo["conanfile.txt"]["requires"]
-
-            # tket packages which must be copied over.
-            # (Only one right now, but maybe more in future).
-            # The name of the package might not match the name of the file!
-            copying_data = (("tket/", "tket"),)
-            for entry in copying_data:
-                assert len(entry) == 2
-                tket_reqs = [req for req in reqs if req.startswith(entry[0])]
-                assert len(tket_reqs) == 1
-                versioned_package = tket_reqs[0]
-                directory = conaninfo[versioned_package]["package_folder"]
-                shutil.copy(os.path.join(directory, "lib", libfile(entry[1])), extdir)
+            tket_reqs = [req for req in reqs if req.startswith("tket/")]
+            assert len(tket_reqs) == 1
+            tket_req = tket_reqs[0]
+            directory = conaninfo[tket_req]["package_folder"]
+            tket_libs = [
+                "tket-utils",
+                "tket-zx",
+                "tket-optype",
+                "tket-clifford",
+                "tket-ops",
+                "tket-graphs",
+                "tket-gate",
+                "tket-pauligraph",
+                "tket-circuit",
+                "tket-architecture",
+                "tket-simulation",
+                "tket-diagonalisation",
+                "tket-program",
+                "tket-characterisation",
+                "tket-converters",
+                "tket-routing",
+                "tket-measurement",
+                "tket-transform",
+                "tket-aas",
+                "tket-predicates",
+            ]
+            for tket_lib in tket_libs:
+                shutil.copy(os.path.join(directory, "lib", libfile(tket_lib)), extdir)
 
     def cmake_config(self, extdir, extsource):
 
