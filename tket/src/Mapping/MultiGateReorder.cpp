@@ -14,16 +14,24 @@ MultiGateReorder::MultiGateReorder(
           _mapping_frontier->circuit_, _mapping_frontier->quantum_boundary));
 }
 
-// Traverse the DAG to find the UnitID associated with an edge
-Vertex get_input_from_vertex_edge(
-    Circuit &circ, const Vertex &current_vertex, const Edge &current_outedge) {
-  Edge current_e = current_outedge;
-  Vertex current_v = current_vertex;
+// Traverse the DAG to the quantum frontier encoded in q_boundary_map
+// to find the UnitID associated with an VertPort
+UnitID get_unitid_from_vertex_port(
+    Circuit &circ, const VertPort &vert_port,
+    const std::map<VertPort, UnitID> &q_boundary_map) {
+  VertPort current_vert_port = vert_port;
   while (true) {
-    if (is_initial_q_type(circ.get_OpType_from_Vertex(current_v))) {
-      return current_v;
+    auto it = q_boundary_map.find(current_vert_port);
+    if (it != q_boundary_map.end()) {
+      return it->second;
     }
-    std::tie(current_v, current_e) = circ.get_prev_pair(current_v, current_e);
+    Edge current_e = circ.get_nth_out_edge(
+        current_vert_port.first, current_vert_port.second);
+    Vertex prev_vert;
+    Edge prev_e;
+    std::tie(prev_vert, prev_e) =
+        circ.get_prev_pair(current_vert_port.first, current_e);
+    current_vert_port = {prev_vert, circ.get_source_port(prev_e)};
   }
 }
 
@@ -159,10 +167,13 @@ void MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
   // store a copy of the original this->mapping_frontier_->quantum_boundray
   // this object will be updated and reset throughout the procedure
   // so need to return it to original setting at end
+  // also create a map for getting UnitID from VertPort
+  std::map<VertPort, UnitID> q_boundary_map;
   unit_vertport_frontier_t copy;
   for (const std::pair<UnitID, VertPort> &pair :
        this->mapping_frontier_->quantum_boundary->get<TagKey>()) {
     copy.insert({pair.first, pair.second});
+    q_boundary_map.insert({pair.second, pair.first});
   }
   // Get a subcircuit only for iterating vertices
   Subcircuit circ =
@@ -173,12 +184,10 @@ void MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
     //  2. is a multi qubit quantum operation without classical controls
     Op_ptr op = this->mapping_frontier_->circuit_.get_Op_ptr_from_Vertex(vert);
     std::vector<Node> nodes;
-    for (const Edge &edge :
-         this->mapping_frontier_->circuit_.get_all_out_edges(vert)) {
-      Vertex input = get_input_from_vertex_edge(
-          this->mapping_frontier_->circuit_, vert, edge);
-      nodes.push_back(
-          Node(this->mapping_frontier_->circuit_.get_id_from_in(input)));
+    for (port_t port = 0;
+         port < this->mapping_frontier_->circuit_.n_ports(vert); ++port) {
+      nodes.push_back(Node(get_unitid_from_vertex_port(
+          this->mapping_frontier_->circuit_, {vert, port}, q_boundary_map)));
     }
     if (op->get_desc().is_gate() &&
         this->mapping_frontier_->circuit_.n_in_edges(vert) > 1 &&
@@ -196,6 +205,12 @@ void MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
             convert_u_frontier_to_edges(*frontier_convert_vertport_to_edge(
                 this->mapping_frontier_->circuit_,
                 this->mapping_frontier_->quantum_boundary));
+        // Update the map
+        q_boundary_map.clear();
+        for (const std::pair<UnitID, VertPort> &pair :
+             this->mapping_frontier_->quantum_boundary->get<TagKey>()) {
+          q_boundary_map.insert({pair.second, pair.first});
+        }
       }
     }
   }
