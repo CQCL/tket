@@ -141,7 +141,12 @@ class PQPSquasher {
     Circuit replacement(1);
     Gate_ptr left_over_gate = nullptr;
     if (!equiv_0(angle_p1, 4)) {
-      replacement.add_op<unsigned>(p, angle_p1, {0});
+      if (equiv_0(angle_q, 4) && equiv_0(angle_p2, 4) && commute_through) {
+        left_over_gate =
+            std::make_shared<Gate>(p, std::vector<Expr>{angle_p1}, 1);
+      } else {
+        replacement.add_op<unsigned>(p, angle_p1, {0});
+      }
     }
     if (!equiv_0(angle_q, 4)) {
       replacement.add_op<unsigned>(q, angle_q, {0});

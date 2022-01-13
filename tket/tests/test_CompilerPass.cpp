@@ -346,8 +346,8 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     REQUIRE(c.n_gates() == 3);
     auto cmds = c.get_commands();
     std::vector<OpType> expected_optypes{
-        OpType::Rz,  // qubit 0 before CX
-        OpType::Rx,  // qubit 1 before CX
+        OpType::Conditional,  // qubit 0 before CX
+        OpType::Conditional,  // qubit 1 before CX
         OpType::CX};
     check_command_types(c, expected_optypes);
   }
