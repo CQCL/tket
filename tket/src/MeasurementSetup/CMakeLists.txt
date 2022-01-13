@@ -18,7 +18,20 @@ add_library(tket-measurement
     MeasurementSetup.cpp
     MeasurementReduction.cpp)
 
-target_include_directories(tket-measurement PRIVATE ${TKET_SRC_DIR})
+target_include_directories(tket-measurement
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${TKET_MEASUREMENT_INCLUDE_DIR}
+    ${TKET_MEASUREMENT_INCLUDE_DIR}/MeasurementSetup
+    ${TKET_UTILS_INCLUDE_DIR}
+    ${TKET_OPTYPE_INCLUDE_DIR}
+    ${TKET_OPS_INCLUDE_DIR}
+    ${TKET_GATE_INCLUDE_DIR}
+    ${TKET_PAULIGRAPH_INCLUDE_DIR}
+    ${TKET_CIRCUIT_INCLUDE_DIR}
+    ${TKET_CLIFFORD_INCLUDE_DIR}
+    ${TKET_DIAGONALISATION_INCLUDE_DIR}
+    ${TKET_CONVERTERS_INCLUDE_DIR})
 
 target_link_libraries(tket-measurement
     PRIVATE

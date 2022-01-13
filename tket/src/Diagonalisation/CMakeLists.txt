@@ -19,7 +19,19 @@ add_library(tket-diagonalisation
     Diagonalisation.cpp
     PauliPartition.cpp)
 
-target_include_directories(tket-diagonalisation PRIVATE ${TKET_SRC_DIR})
+target_include_directories(tket-diagonalisation
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${TKET_DIAGONALISATION_INCLUDE_DIR}
+    ${TKET_DIAGONALISATION_INCLUDE_DIR}/Diagonalisation
+    ${TKET_UTILS_INCLUDE_DIR}
+    ${TKET_OPTYPE_INCLUDE_DIR}
+    ${TKET_CLIFFORD_INCLUDE_DIR}
+    ${TKET_OPS_INCLUDE_DIR}
+    ${TKET_GATE_INCLUDE_DIR}
+    ${TKET_GRAPHS_INCLUDE_DIR}
+    ${TKET_PAULIGRAPH_INCLUDE_DIR}
+    ${TKET_CIRCUIT_INCLUDE_DIR})
 
 target_link_libraries(tket-diagonalisation
     PRIVATE

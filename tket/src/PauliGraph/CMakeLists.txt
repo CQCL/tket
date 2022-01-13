@@ -18,7 +18,16 @@ add_library(tket-pauligraph
     ConjugatePauliFunctions.cpp
     PauliGraph.cpp)
 
-target_include_directories(tket-pauligraph PRIVATE ${TKET_SRC_DIR})
+target_include_directories(tket-pauligraph
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${TKET_PAULIGRAPH_INCLUDE_DIR}
+    ${TKET_PAULIGRAPH_INCLUDE_DIR}/PauliGraph
+    ${TKET_UTILS_INCLUDE_DIR}
+    ${TKET_OPTYPE_INCLUDE_DIR}
+    ${TKET_OPS_INCLUDE_DIR}
+    ${TKET_GATE_INCLUDE_DIR}
+    ${TKET_CLIFFORD_INCLUDE_DIR})
 
 target_link_libraries(tket-pauligraph
     PRIVATE

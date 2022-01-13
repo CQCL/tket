@@ -19,7 +19,13 @@ add_library(tket-clifford
     SymplecticTableau.cpp
     UnitaryTableau.cpp)
 
-target_include_directories(tket-clifford PRIVATE ${TKET_SRC_DIR})
+target_include_directories(tket-clifford
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${TKET_CLIFFORD_INCLUDE_DIR}
+    ${TKET_CLIFFORD_INCLUDE_DIR}/Clifford
+    ${TKET_UTILS_INCLUDE_DIR}
+    ${TKET_OPTYPE_INCLUDE_DIR})
 
 target_link_libraries(tket-clifford
     PRIVATE

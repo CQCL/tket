@@ -30,7 +30,22 @@ add_library(tket-transform
     ContextualReduction.cpp
     ThreeQubitSquash.cpp)
 
-target_include_directories(tket-transform PRIVATE ${TKET_SRC_DIR})
+target_include_directories(tket-transform
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${TKET_TRANSFORM_INCLUDE_DIR}
+    ${TKET_TRANSFORM_INCLUDE_DIR}/Transformations
+    ${TKET_UTILS_INCLUDE_DIR}
+    ${TKET_OPTYPE_INCLUDE_DIR}
+    ${TKET_OPS_INCLUDE_DIR}
+    ${TKET_GATE_INCLUDE_DIR}
+    ${TKET_CLIFFORD_INCLUDE_DIR}
+    ${TKET_CIRCUIT_INCLUDE_DIR}
+    ${TKET_GRAPHS_INCLUDE_DIR}
+    ${TKET_PAULIGRAPH_INCLUDE_DIR}
+    ${TKET_CONVERTERS_INCLUDE_DIR}
+    ${TKET_CHARACTERISATION_INCLUDE_DIR}
+    ${TKET_ARCHITECTURE_INCLUDE_DIR})
 
 target_link_libraries(tket-transform
     PRIVATE

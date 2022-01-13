@@ -23,7 +23,11 @@ add_library(tket-utils
     CosSinDecomposition.cpp
     Expression.cpp)
 
-target_include_directories(tket-utils PRIVATE ${TKET_SRC_DIR})
+target_include_directories(tket-utils
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${TKET_UTILS_INCLUDE_DIR}
+    ${TKET_UTILS_INCLUDE_DIR}/Utils)
 
 target_link_libraries(tket-utils
     ${CONAN_LIBS})

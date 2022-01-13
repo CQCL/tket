@@ -23,7 +23,19 @@ add_library(tket-converters
     UnitaryTableauBox.cpp
     UnitaryTableauConverters.cpp)
 
-target_include_directories(tket-converters PRIVATE ${TKET_SRC_DIR})
+target_include_directories(tket-converters
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${TKET_CONVERTERS_INCLUDE_DIR}
+    ${TKET_CONVERTERS_INCLUDE_DIR}/Converters
+    ${TKET_UTILS_INCLUDE_DIR}
+    ${TKET_OPTYPE_INCLUDE_DIR}
+    ${TKET_CLIFFORD_INCLUDE_DIR}
+    ${TKET_OPS_INCLUDE_DIR}
+    ${TKET_GATE_INCLUDE_DIR}
+    ${TKET_PAULIGRAPH_INCLUDE_DIR}
+    ${TKET_CIRCUIT_INCLUDE_DIR}
+    ${TKET_DIAGONALISATION_INCLUDE_DIR})
 
 target_link_libraries(tket-converters
     PRIVATE

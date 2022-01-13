@@ -21,7 +21,16 @@ add_library(tket-program
     Program_manipulation.cpp
     Program_units.cpp)
 
-target_include_directories(tket-program PRIVATE ${TKET_SRC_DIR})
+target_include_directories(tket-program
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${TKET_PROGRAM_INCLUDE_DIR}
+    ${TKET_PROGRAM_INCLUDE_DIR}/Program
+    ${TKET_UTILS_INCLUDE_DIR}
+    ${TKET_OPTYPE_INCLUDE_DIR}
+    ${TKET_OPS_INCLUDE_DIR}
+    ${TKET_GATE_INCLUDE_DIR}
+    ${TKET_CIRCUIT_INCLUDE_DIR})
 
 target_link_libraries(tket-program
     PRIVATE

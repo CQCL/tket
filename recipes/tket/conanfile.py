@@ -104,7 +104,29 @@ class TketConan(ConanFile):
                 shutil.move(filepath + ".original", filepath)
 
     def package(self):
-        self.copy("*.hpp", dst="include")
+        for comp in [
+            "Utils",
+            "ZX",
+            "OpType",
+            "Clifford",
+            "Ops",
+            "Graphs",
+            "Gate",
+            "PauliGraph",
+            "Circuit",
+            "Architecture",
+            "Simulation",
+            "Diagonalisation",
+            "Program",
+            "Characterisation",
+            "Converters",
+            "Routing",
+            "MeasurementSetup",
+            "Transformations",
+            "ArchAwareSynth",
+            "Predicates",
+        ]:
+            self.copy(f"{comp}/include/*.hpp", dst=f"include/{comp}", keep_path=False)
         self.copy("*.dll", dst="lib", keep_path=False)
         self.copy("*.lib", dst="lib", keep_path=False)
         self.copy("*.so", dst="lib", keep_path=False)

@@ -26,7 +26,12 @@ add_library(tket-zx
     ZXRWGraphLikeForm.cpp
     ZXRWGraphLikeSimplification.cpp)
 
-target_include_directories(tket-zx PRIVATE ${TKET_SRC_DIR})
+target_include_directories(tket-zx
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${TKET_ZX_INCLUDE_DIR}
+    ${TKET_ZX_INCLUDE_DIR}/ZX
+    ${TKET_UTILS_INCLUDE_DIR})
 
 target_link_libraries(tket-zx
     PRIVATE

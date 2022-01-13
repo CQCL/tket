@@ -25,7 +25,19 @@ add_library(tket-routing
     PlacementGraphClasses.cpp
     Verification.cpp)
 
-target_include_directories(tket-routing PRIVATE ${TKET_SRC_DIR})
+target_include_directories(tket-routing
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${TKET_ROUTING_INCLUDE_DIR}
+    ${TKET_ROUTING_INCLUDE_DIR}/Routing
+    ${TKET_UTILS_INCLUDE_DIR}
+    ${TKET_OPTYPE_INCLUDE_DIR}
+    ${TKET_OPS_INCLUDE_DIR}
+    ${TKET_GATE_INCLUDE_DIR}
+    ${TKET_GRAPHS_INCLUDE_DIR}
+    ${TKET_CIRCUIT_INCLUDE_DIR}
+    ${TKET_ARCHITECTURE_INCLUDE_DIR}
+    ${TKET_CHARACTERISATION_INCLUDE_DIR})
 
 target_link_libraries(tket-routing
     PRIVATE

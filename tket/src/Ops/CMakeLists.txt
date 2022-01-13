@@ -21,7 +21,13 @@ add_library(tket-ops
     ClassicalOps.cpp
     OpJsonFactory.cpp)
 
-target_include_directories(tket-ops PRIVATE ${TKET_SRC_DIR})
+target_include_directories(tket-ops
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${TKET_OPS_INCLUDE_DIR}
+    ${TKET_OPS_INCLUDE_DIR}/Ops
+    ${TKET_UTILS_INCLUDE_DIR}
+    ${TKET_OPTYPE_INCLUDE_DIR})
 
 target_link_libraries(tket-ops
     PRIVATE

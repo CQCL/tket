@@ -32,7 +32,15 @@ add_library(tket-circuit
     OpJson.cpp
     Conditional.cpp)
 
-target_include_directories(tket-circuit PRIVATE ${TKET_SRC_DIR})
+target_include_directories(tket-circuit
+    PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${TKET_CIRCUIT_INCLUDE_DIR}
+    ${TKET_CIRCUIT_INCLUDE_DIR}/Circuit
+    ${TKET_UTILS_INCLUDE_DIR}
+    ${TKET_OPTYPE_INCLUDE_DIR}
+    ${TKET_OPS_INCLUDE_DIR}
+    ${TKET_GATE_INCLUDE_DIR})
 
 target_link_libraries(tket-circuit
     PRIVATE
