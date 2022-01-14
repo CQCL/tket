@@ -92,12 +92,30 @@ static Expr cos_pi_by_12_times(double x) {
   }
 }
 
+static bool is_simpler(const Expr& e1, const Expr& e2) {
+  nlohmann::json j1 = SymEngine::expand(e1);
+  nlohmann::json j2 = SymEngine::expand(e2);
+  return j1.dump().size() < j2.dump().size();
+}
+
 Expr cos_halfpi_times(const Expr& e) {
   std::optional<double> x = eval_expr_mod(e / 2);  // >= 0
   if (x) {
     return cos_pi_by_12_times(12 * x.value());
   }
-  return SymEngine::cos(e * SymEngine::pi / 2);
+  if (is_simpler(e + 2, e)) {
+    // use cos(x + pi) = -cos(x)
+    return SymEngine::mul(
+        SymEngine::integer(-1),
+        SymEngine::cos(SymEngine::expand((e + 2) * SymEngine::pi / 2)));
+  } else if (is_simpler(e - 2, e)) {
+    // use cos(x - pi) = -cos(x)
+    return SymEngine::mul(
+        SymEngine::integer(-1),
+        SymEngine::cos(SymEngine::expand((e - 2) * SymEngine::pi / 2)));
+  } else {
+    return SymEngine::cos(e * SymEngine::pi / 2);
+  }
 }
 
 Expr sin_halfpi_times(const Expr& e) {
