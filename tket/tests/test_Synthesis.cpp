@@ -517,11 +517,11 @@ SCENARIO("Testing general 1qb squash") {
   }
   GIVEN("Circuit has few rotations and is optimal") {
     Circuit circ(2);
+    circ.add_op<unsigned>(OpType::Ry, 3.5, {0});
     circ.add_op<unsigned>(OpType::Rx, 1, {0});
-    circ.add_op<unsigned>(OpType::Ry, 0.5, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Ry, 1., {0});
     circ.add_op<unsigned>(OpType::Rx, 1., {0});
-    circ.add_op<unsigned>(OpType::Ry, 3., {0});
     bool success =
         Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Ry).apply(circ);
     REQUIRE(!success);
@@ -557,10 +557,10 @@ SCENARIO("Testing general 1qb squash") {
     VertexVec vertices = circ.vertices_in_order();
     Op_ptr op1 = circ.get_Op_ptr_from_Vertex(vertices[1]);
     Op_ptr op2 = circ.get_Op_ptr_from_Vertex(vertices[2]);
-    REQUIRE(op1->get_type() == OpType::Rx);
-    REQUIRE(test_equiv_val(op1->get_params()[0], 1.));
-    REQUIRE(op2->get_type() == OpType::Rz);
-    REQUIRE(test_equiv_val(op2->get_params()[0], -0.142 + 0.694));
+    REQUIRE(op1->get_type() == OpType::Rz);
+    REQUIRE(test_equiv_val(op1->get_params()[0], 0.142 - 0.694));
+    REQUIRE(op2->get_type() == OpType::Rx);
+    REQUIRE(test_equiv_val(op2->get_params()[0], 1.));
   }
 
   GIVEN("Circuit with third angle pi") {
@@ -1245,12 +1245,13 @@ SCENARIO("Test synthesise_HQS") {
     circ.add_op<unsigned>(OpType::Rz, 0.3333, {1});
     REQUIRE(Transform::synthesise_HQS().apply(circ));
     circ.get_slices();
-    REQUIRE(circ.n_vertices() == 9);
+    REQUIRE(circ.n_vertices() == 10);
     auto slices = circ.get_slices();
-    REQUIRE(slices.size() == 4);
-    REQUIRE(circ.get_OpType_from_Vertex(slices[3].front()) == OpType::Rz);
-    REQUIRE(circ.get_OpType_from_Vertex(slices[2].front()) == OpType::PhasedX);
-    REQUIRE(circ.get_OpType_from_Vertex(slices[1].front()) == OpType::ZZMax);
+    REQUIRE(slices.size() == 5);
+    REQUIRE(circ.get_OpType_from_Vertex(slices[4].front()) == OpType::Rz);
+    REQUIRE(circ.get_OpType_from_Vertex(slices[3].front()) == OpType::PhasedX);
+    REQUIRE(circ.get_OpType_from_Vertex(slices[2].front()) == OpType::ZZMax);
+    REQUIRE(circ.get_OpType_from_Vertex(slices[1].front()) == OpType::PhasedX);
     REQUIRE(circ.get_OpType_from_Vertex(slices[0].front()) == OpType::Rz);
   }
   GIVEN("An X-Z-X chain") {

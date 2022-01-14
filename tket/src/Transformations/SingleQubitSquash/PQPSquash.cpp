@@ -17,7 +17,8 @@
 
 namespace tket {
 
-static bool fixup_angles(Expr &angle_p1, Expr &angle_q, Expr &angle_p2);
+static bool fixup_angles(
+    Expr &angle_p1, Expr &angle_q, Expr &angle_p2, bool reversed = false);
 static bool redundancy_removal(Circuit &circ);
 
 /**
@@ -38,11 +39,20 @@ static bool redundancy_removal(Circuit &circ);
  * The squash is made backwards, so that rotations get pushed towards
  * the front, see the design choice notes in confluence
  * https://cqc.atlassian.net/l/c/17xm5hvp
+ *
+ * The PQPSquasher shouldn't have to know if the squash is made forwards
+ * or backwards. Here, it is used only in fixup_angles, because the convention
+ * is different (for consistency to the user)
  */
 class PQPSquasher {
  public:
-  PQPSquasher(OpType p, OpType q, bool smart_squash = true)
-      : p_(p), q_(q), smart_squash_(smart_squash), rotation_chain() {
+  PQPSquasher(
+      OpType p, OpType q, bool smart_squash = true, bool reversed = false)
+      : p_(p),
+        q_(q),
+        smart_squash_(smart_squash),
+        reversed_(reversed),
+        rotation_chain() {
     if (!(p == OpType::Rx || p == OpType::Ry || p == OpType::Rz) ||
         !(q == OpType::Rx || q == OpType::Ry || q == OpType::Rz)) {
       throw std::logic_error(
@@ -136,7 +146,7 @@ class PQPSquasher {
     Expr angle_p1 = std::get<0>(angles) + p1;
     Expr angle_q = std::get<1>(angles);
     Expr angle_p2 = std::get<2>(angles) + p2;
-    fixup_angles(angle_p1, angle_q, angle_p2);
+    fixup_angles(angle_p1, angle_q, angle_p2, reversed_);
 
     Circuit replacement(1);
     Gate_ptr left_over_gate = nullptr;
@@ -182,13 +192,15 @@ class PQPSquasher {
   OpType p_;
   OpType q_;
   bool smart_squash_;
+  bool reversed_;
   std::vector<Gate_ptr> rotation_chain;
 };
 
 static bool squash_to_pqp(
     Circuit &circ, OpType q, OpType p, bool strict = false) {
-  PQPSquasher squasher(p, q, !strict);
-  return SingleQubitSquash(squasher, true).squash(circ);
+  bool reverse = true;
+  PQPSquasher squasher(p, q, !strict, reverse);
+  return SingleQubitSquash(squasher, reverse).squash(circ);
 }
 
 Transform Transform::reduce_XZ_chains() {
@@ -203,44 +215,59 @@ Transform Transform::squash_1qb_to_pqp(
       [=](Circuit &circ) { return squash_to_pqp(circ, q, p, strict); });
 }
 
-static bool fixup_angles(Expr &angle_p1, Expr &angle_q, Expr &angle_p2) {
+static bool fixup_angles(
+    Expr &angle_p1, Expr &angle_q, Expr &angle_p2, bool reversed) {
+  bool success = false;
+  if (reversed) {
+    std::swap(angle_p1, angle_p2);
+    angle_p1 *= -1;
+    angle_q *= -1;
+    angle_p2 *= -1;
+  }
   if (equiv_val(angle_q, 1., 2) && !equiv_0(angle_p2, 4)) {
     // Prefer --P(p1-p2)--Q(...)--P(0)--
     // Only occurs if angle_q is pi or 3pi and angle_p2 is non-zero
     angle_p1 -= angle_p2;
     angle_p2 = 0;
-    return true;
+    success = true;
   } else if (equiv_val(angle_p2, 1., 4)) {
     // Then prefer --P(p1+p2)--Q(-q)--P(0)--
     // Only occurs if angle_p2 is pi
     angle_p1 += 1;
     angle_q *= -1;
     angle_p2 = 0;
-    return true;
+    success = true;
   } else if (equiv_val(angle_p2, 3., 4)) {
     // Then prefer --P(p1+p2)--Q(-q)--P(0)--
     // Only occurs if angle_p2 is 3pi
     angle_p1 += 3;
     angle_q *= -1;
     angle_p2 = 0;
-    return true;
+    success = true;
   } else if (equiv_val(angle_p1, 1., 4) && !equiv_0(angle_p2, 4)) {
     // Then prefer --P(0)--Q(-q)--P(p1+p2)--
     // Only occurs if angle_p1 is pi and angle_p2 is non-zero
     angle_q *= -1;
     angle_p2 += 1;
     angle_p1 = 0;
-    return true;
+    success = true;
   } else if (equiv_val(angle_p1, 3., 4) && !equiv_0(angle_p2, 4)) {
     // Then prefer --P(0)--Q(-q)--P(p1+p2)--
     // Only occurs if angle_p1 is 3pi and angle_p2 is non-zero
     angle_q *= -1;
     angle_p2 += 3;
     angle_p1 = 0;
-    return true;
-  } else
-    return false;
+    success = true;
+  }
+  if (reversed) {
+    std::swap(angle_p1, angle_p2);
+    angle_p1 *= -1;
+    angle_q *= -1;
+    angle_p2 *= -1;
+  }
+  return success;
 }
+
 static bool remove_redundancy(
     Circuit &circ, const Vertex &vert, VertexList &bin,
     std::set<IVertex> &new_affected_verts, IndexMap &im) {
