@@ -385,5 +385,22 @@ SCENARIO("Test a CnX is decomposed correctly when bootstrapped") {
   }
 }
 
+SCENARIO("Test a CnX is decomposed correctly using the Gray code method") {
+  GIVEN("Test CnX unitary for 3 to 8 controls") {
+    for (unsigned n = 3; n < 8; ++n) {
+      Circuit circ = Transform::cnx_gray_decomp(n);
+      const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+      unsigned m_size = pow(2, n + 1);
+      Eigen::MatrixXcd correct_matrix =
+          Eigen::MatrixXcd::Identity(m_size, m_size);
+      correct_matrix(m_size - 2, m_size - 1) = 1;
+      correct_matrix(m_size - 1, m_size - 2) = 1;
+      correct_matrix(m_size - 2, m_size - 2) = 0;
+      correct_matrix(m_size - 1, m_size - 1) = 0;
+      REQUIRE(m.isApprox(correct_matrix, ERR_EPS));
+    }
+  }
+}
+
 }  // namespace test_ControlDecomp
 }  // namespace tket
