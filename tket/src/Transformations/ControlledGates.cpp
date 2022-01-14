@@ -364,9 +364,10 @@ static unsigned find_first_differing_val(
       "Error in `find_first_differing_val`: No change between deques");
 }
 
-// optimal decomposition of CnRy and CnZ for 2 < n < 8 according to 1995 paper... can do
-// better with ZH calculus?
-static Circuit lemma71(unsigned arity, const Expr& angle, const OpType &cr_type) {
+// optimal decomposition of CnRy and CnZ for 2 < n < 8 according to 1995
+// paper... can do better with ZH calculus?
+static Circuit lemma71(
+    unsigned arity, const Expr& angle, const OpType& cr_type) {
   unsigned m_controls = arity - 1;
   if (m_controls < 2)
     throw Unsupported(
@@ -376,7 +377,7 @@ static Circuit lemma71(unsigned arity, const Expr& angle, const OpType &cr_type)
     throw Unsupported(
         "Using Lemma 7.1 to decompose a gate with more than 7 controls "
         "is inefficient");
-  if (cr_type!=OpType::CRy && cr_type!=OpType::CU1)
+  if (cr_type != OpType::CRy && cr_type != OpType::CU1)
     throw Unsupported(
         "The implementation currently only supports CU1 and CRy ");
 
@@ -765,6 +766,35 @@ Transform Transform::decomp_controlled_Rys() {
 
 Transform Transform::decomp_arbitrary_controlled_gates() {
   return Transform::decomp_controlled_Rys() >> Transform::decomp_CCX();
+}
+
+// decompose CnX gate using lemma 7.1
+// `n` = no. of controls
+Circuit Transform::cnx_gray_decomp(unsigned n) {
+  switch (n) {
+    case 0: {
+      return CircPool::X();
+    }
+    case 1: {
+      return CircPool::CX();
+    }
+    case 2: {
+      return CircPool::CCX_normal_decomp();
+    }
+    case 3: {
+      return CircPool::C3X_normal_decomp();
+    }
+    case 4: {
+      return CircPool::C4X_normal_decomp();
+    }
+    default: {
+      Circuit circ(n + 1);
+      circ.add_op<unsigned>(OpType::H, {n});
+      circ.append(lemma71(n + 1, 1.0, OpType::CU1));
+      circ.add_op<unsigned>(OpType::H, {n});
+      return circ;
+    }
+  }
 }
 
 }  // namespace tket

@@ -581,6 +581,8 @@ class Transform {
   };
 
   static Circuit cnx_normal_decomp(unsigned n);
+  static Circuit cnx_gray_decomp(unsigned n);
+
   static Circuit decomposed_CnRy(const Op_ptr op, unsigned arity);
   static Circuit incrementer_borrow_n_qubits(unsigned n);
   static Circuit incrementer_borrow_1_qubit(unsigned n);
