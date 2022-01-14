@@ -1,6 +1,13 @@
 Changelog
 ==================================
 
+0.19.0 (unreleased)
+-------------------
+
+Minor new features:
+
+* Add ``cnx_gray_decomp`` method for C5X, C6X and C7X decomposition.
+
 0.18.0 (January 2022)
 ---------------------
 
