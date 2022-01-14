@@ -195,6 +195,7 @@ binders = [
     "routing",
     "transform",
     "tailoring",
+    "tableau",
     "zx",
 ]
 
@@ -203,16 +204,16 @@ setup(
     name="pytket",
     author="Seyon Sivarajah",
     author_email="seyon.sivarajah@cambridgequantum.com",
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     url="https://cqcl.github.io/pytket",
     description="Python module for interfacing with the CQC tket library of quantum software",
     license="Apache 2",
     packages=setuptools.find_packages(),
     install_requires=[
         "sympy ~=1.6",
-        "numpy ~=1.19",
+        "numpy >=1.21.4, <2.0",
         "lark-parser ~=0.7",
-        "scipy ~=1.2",
+        "scipy >=1.7.2, <2.0",
         "networkx ~= 2.4",
         "graphviz ~= 0.14",
         "jinja2 ~= 2.11",
@@ -228,9 +229,9 @@ setup(
     },
     classifiers=[
         "Environment :: Console",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX :: Linux",

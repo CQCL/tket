@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,17 +14,8 @@
 
 """
 Python API module for interfacing with tket c++ implemented functions and modules.
-Exports class ZXDiagram and associated tools.
+Exports classes and tools for binary tableau representations of Clifford
+unitaries/states.
 """
 
-from pytket._tket.zx import *  # type: ignore
-from .tensor_eval import (
-    tensor_from_quantum_diagram,
-    tensor_from_mixed_diagram,
-    unitary_from_classical_diagram,
-    unitary_from_quantum_diagram,
-    density_matrix_from_cptp_diagram,
-    fix_boundaries_to_binary_states,
-    fix_inputs_to_binary_state,
-    fix_outputs_to_binary_state,
-)
+from pytket._tket.tableau import *  # type: ignore

@@ -154,8 +154,8 @@ class OutcomeArray(np.ndarray):
         """
         ars, count_vals = np.unique(self, axis=0, return_counts=True)  # type: ignore
         width = self.width
-        ars = [OutcomeArray(x[None, :], width) for x in ars]
-        return Counter(dict(zip(ars, count_vals)))
+        oalist = [OutcomeArray(x[None, :], width) for x in ars]
+        return Counter(dict(zip(oalist, count_vals)))
 
     def choose_indices(self, indices: List[int]) -> "OutcomeArray":
         """Permute ordering of bits in outcomes or choose subset of bits.

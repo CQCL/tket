@@ -8,6 +8,10 @@ Minor new features:
 
 * Add ``cnx_gray_decomp`` method for C5X, C6X and C7X decomposition.
 
+General:
+
+* Python 3.10 support added; 3.7 dropped.
+
 0.18.0 (January 2022)
 ---------------------
 
