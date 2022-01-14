@@ -208,7 +208,50 @@ SCENARIO("Test LexiRoute::solve") {
     lr.solve(4);
     REQUIRE(mf->circuit_.get_commands().size() == 4);
   }
-  GIVEN("Ancilla assignment and then merge preferred.") {
+  GIVEN("Bridge preferred, conditional CX.") {
+    Circuit circ(5, 1);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[1]});
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[1]},
+        {qubits[1], nodes[3]},
+        {qubits[2], nodes[0]},
+        {qubits[3], nodes[7]},
+        {qubits[4], nodes[2]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+
+    mf->advance_frontier_boundary(shared_arc);
+    LexiRoute lr(shared_arc, mf);
+    lr.solve(4);
+    REQUIRE(mf->circuit_.get_commands().size() == 4);
+  }
+  GIVEN("Bridge preferred, conditional CZ.") {
+    Circuit circ(5, 1);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_conditional_gate<unsigned>(OpType::CZ, {}, {0, 1}, {0}, 1);
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[1]});
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[1]},
+        {qubits[1], nodes[3]},
+        {qubits[2], nodes[0]},
+        {qubits[3], nodes[7]},
+        {qubits[4], nodes[2]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+
+    mf->advance_frontier_boundary(shared_arc);
+    LexiRoute lr(shared_arc, mf);
+    lr.solve(4);
+    REQUIRE(mf->circuit_.get_commands().size() == 4);
+  }
+
+  GIVEN("Ancilla assignment and then merge preferred, one valid node.") {
     Circuit circ(3);
     std::vector<Qubit> qubits = circ.all_qubits();
     circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[1]});
@@ -237,9 +280,41 @@ SCENARIO("Test LexiRoute::solve") {
     LexiRoute lr0(shared_arc, mf);
     lr0.solve(20);
 
+    REQUIRE(circ.all_qubits()[1] == nodes[4]);
+  }
+
+  GIVEN("Ancilla assignment and then merge preferred, multiple valid Node.") {
+    Circuit circ(3);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[1]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
+
+    std::vector<Node> nodes = {Node("test_node", 0), Node("test_node", 1),
+                               Node("test_node", 2), Node("node_test", 3),
+                               Node("node_test", 4), Node("node_test", 5)};
+    // A ring, but with two identical length paths where ancilla could be
+    // assigned
+    Architecture architecture(
+        {{nodes[0], nodes[1]},
+         {nodes[1], nodes[2]},
+         {nodes[2], nodes[3]},
+         {nodes[2], nodes[5]},
+         {nodes[3], nodes[4]},
+         {nodes[5], nodes[4]},
+         {nodes[4], nodes[0]}});
+    ArchitecturePtr shared_arc = std::make_shared<Architecture>(architecture);
+
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[2]}, {qubits[1], nodes[4]}};
+    circ.rename_units(rename_map);
+
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
-    LexiRoute lr1(shared_arc, mf);
-    lr1.solve(20);
+    LexiRoute lr0(shared_arc, mf);
+    lr0.solve(20);
+
+    REQUIRE(circ.all_qubits()[1] == nodes[5]);
   }
 
   GIVEN(
@@ -274,7 +349,71 @@ SCENARIO("Test LexiRoute::solve") {
     REQUIRE(swap_c.get_args() == uids);
     REQUIRE(*swap_c.get_op_ptr() == *get_op_ptr(OpType::SWAP));
   }
+  GIVEN(
+      "Labelling is required, but there are no free remaining qubits, for one "
+      "updated label, order 0.") {
+    Circuit circ(9);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[8]});
+    // n0 -- n1 -- n2 -- n3 -- n4
+    //             |     |
+    //             n5    n7
+    //             |
+    //             n6
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]}, {qubits[1], nodes[1]}, {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]}, {qubits[4], nodes[4]}, {qubits[5], nodes[5]},
+        {qubits[6], nodes[6]}, {qubits[7], nodes[7]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    LexiRoute lr(shared_arc, mf);
+    REQUIRE_THROWS_AS(lr.solve(1), LexiRouteError);
+  }
+  GIVEN(
+      "Labelling is required, but there are no free remaining qubits, for one "
+      "updated label, order 0.") {
+    Circuit circ(9);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CX, {qubits[8], qubits[1]});
+    // n0 -- n1 -- n2 -- n3 -- n4
+    //             |     |
+    //             n5    n7
+    //             |
+    //             n6
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]}, {qubits[1], nodes[1]}, {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]}, {qubits[4], nodes[4]}, {qubits[5], nodes[5]},
+        {qubits[6], nodes[6]}, {qubits[7], nodes[7]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    LexiRoute lr(shared_arc, mf);
+    REQUIRE_THROWS_AS(lr.solve(1), LexiRouteError);
+  }
+  GIVEN(
+      "Labelling is required, but there are no free remaining qubits, for two "
+      "updated labels.") {
+    Circuit circ(10);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CX, {qubits[9], qubits[8]});
+    // n0 -- n1 -- n2 -- n3 -- n4
+    //             |     |
+    //             n5    n7
+    //             |
+    //             n6
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]}, {qubits[1], nodes[1]}, {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]}, {qubits[4], nodes[4]}, {qubits[5], nodes[5]},
+        {qubits[6], nodes[6]}, {qubits[7], nodes[7]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    LexiRoute lr(shared_arc, mf);
+    REQUIRE_THROWS_AS(lr.solve(1), LexiRouteError);
+  }
 }
+
 SCENARIO("Test LexiRouteRoutingMethod") {
   std::vector<Node> nodes = {
       Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
