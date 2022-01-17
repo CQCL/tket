@@ -6,7 +6,7 @@ Changelog
 
 Minor new features:
 
-* Add ``cnx_gray_decomp`` method for C5X, C6X and C7X decomposition.
+* Improve ``CnX`` gate decomposition for n=5,6,7.
 
 General:
 
