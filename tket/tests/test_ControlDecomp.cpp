@@ -386,8 +386,15 @@ SCENARIO("Test a CnX is decomposed correctly when bootstrapped") {
 }
 
 SCENARIO("Test a CnX is decomposed correctly using the Gray code method") {
-  GIVEN("Test CnX unitary for 3 to 8 controls") {
-    for (unsigned n = 3; n < 8; ++n) {
+  GIVEN("Test CnX unitary for 0 to 8 controls") {
+    Circuit circ_x = Transform::cnx_gray_decomp(0);
+    REQUIRE(circ_x.n_gates() == 1);
+    REQUIRE(circ_x.count_gates(OpType::X) == 1);
+    Circuit circ_cx = Transform::cnx_gray_decomp(1);
+    REQUIRE(circ_cx.n_gates() == 1);
+    REQUIRE(circ_cx.count_gates(OpType::CX) == 1);
+
+    for (unsigned n = 2; n < 8; ++n) {
       Circuit circ = Transform::cnx_gray_decomp(n);
       const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
       unsigned m_size = pow(2, n + 1);
@@ -398,6 +405,26 @@ SCENARIO("Test a CnX is decomposed correctly using the Gray code method") {
       correct_matrix(m_size - 2, m_size - 2) = 0;
       correct_matrix(m_size - 1, m_size - 1) = 0;
       REQUIRE(m.isApprox(correct_matrix, ERR_EPS));
+      switch (n) {
+        case 2: {
+          REQUIRE(circ.count_gates(OpType::CX) <= 6);
+        }
+        case 3: {
+          REQUIRE(circ.count_gates(OpType::CX) <= 14);
+        }
+        case 4: {
+          REQUIRE(circ.count_gates(OpType::CX) <= 36);
+        }
+        case 5: {
+          REQUIRE(circ.count_gates(OpType::CX) <= 92);
+        }
+        case 6: {
+          REQUIRE(circ.count_gates(OpType::CX) <= 188);
+        }
+        case 7: {
+          REQUIRE(circ.count_gates(OpType::CX) <= 380);
+        }
+      }
     }
   }
 }
