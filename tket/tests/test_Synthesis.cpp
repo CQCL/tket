@@ -1515,7 +1515,7 @@ SCENARIO("Test tk1 gate decomp for some gates") {
       OpType::ClOutput,     OpType::noop,         OpType::Reset,
       OpType::BRIDGE,       OpType::Unitary1qBox, OpType::Unitary2qBox,
       OpType::Unitary3qBox, OpType::ExpBox,       OpType::PauliExpBox,
-      OpType::Composite,    OpType::Collapse,     OpType::Measure,
+      OpType::CustomGate,   OpType::Collapse,     OpType::Measure,
       OpType::Label,        OpType::Branch,       OpType::Goto,
       OpType::Stop,         OpType::Create,       OpType::Discard};
   for (const std::pair<const OpType, OpTypeInfo> &map_pair : optypeinfo()) {

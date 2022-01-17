@@ -341,7 +341,7 @@ SCENARIO("Decompose all boxes") {
     REQUIRE(u.is_symbolic());
     composite_def_ptr_t def = CompositeGateDef::define_gate("g", u, {a});
     Circuit v(2);
-    v.add_box(CompositeGate(def, {0.5}), {0, 1});
+    v.add_box(CustomGate(def, {0.5}), {0, 1});
     REQUIRE(!v.is_symbolic());
     symbol_map_t smap = {{a, 0.5}};
     u.symbol_substitution(smap);

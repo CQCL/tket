@@ -258,7 +258,7 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
         optype = op.type
         args = command.args
         kwargs = dict()
-        if optype == OpType.ConditionalGate:
+        if optype == OpType.Conditional:
             bits = args[: op.width]
             # check if conditional on previously decomposed expression
             if len(bits) == 1 and bits[0] in replace_targets:

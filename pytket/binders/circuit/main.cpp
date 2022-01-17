@@ -306,14 +306,14 @@ PYBIND11_MODULE(circuit, m) {
           "QControlBox", OpType::QControlBox,
           "An arbitrary n-controlled operation")
       .value(
-          "Custom", OpType::Composite,
+          "CustomGate", OpType::CustomGate,
           ":math:`(\\alpha, \\beta, \\ldots) \\mapsto` A user-defined "
           "operation, based on a :py:class:`Circuit` :math:`C` with "
           "parameters :math:`\\alpha, \\beta, \\ldots` substituted in "
           "place of bound symbolic variables in :math:`C`, as defined "
           "by the :py:class:`CustomGateDef`.")
       .value(
-          "ConditionalGate", OpType::Conditional,
+          "Conditional", OpType::Conditional,
           "An operation to be applied conditionally on the value of "
           "some classical register")
       .value(

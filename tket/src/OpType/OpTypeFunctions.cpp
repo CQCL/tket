@@ -122,7 +122,7 @@ bool is_box_type(OpType optype) {
       OpType::Unitary3qBox,
       OpType::ExpBox,
       OpType::PauliExpBox,
-      OpType::Composite,
+      OpType::CustomGate,
       OpType::CliffBox,
       OpType::PhasePolyBox,
       OpType::QControlBox,
@@ -168,7 +168,7 @@ bool is_oneway_type(OpType optype) {
   static const OpTypeSet no_defined_inverse = {
       OpType::Input,        OpType::Output,   OpType::Measure,
       OpType::ClInput,      OpType::ClOutput, OpType::Barrier,
-      OpType::Reset,        OpType::Collapse, OpType::Composite,
+      OpType::Reset,        OpType::Collapse, OpType::CustomGate,
       OpType::PhasePolyBox, OpType::Create,   OpType::Discard};
   return find_in_set(optype, no_defined_inverse);
 }

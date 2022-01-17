@@ -138,7 +138,7 @@ bool NoClassicalControlPredicate::verify(const Circuit& circ) const {
     OpType ot = op->get_type();
     if (ot == OpType::Conditional)
       return false;
-    else if (ot == OpType::CircBox || ot == OpType::Composite) {
+    else if (ot == OpType::CircBox || ot == OpType::CustomGate) {
       const Box& box = static_cast<const Box&>(*op);
       if (!verify(*box.to_circuit())) return false;
     }
@@ -178,7 +178,7 @@ static bool fast_feed_forward_helper(
     return fast_feed_forward_helper(new_com, unset_bits);
   } else if (
       com.get_op_ptr()->get_type() == OpType::CircBox ||
-      com.get_op_ptr()->get_type() == OpType::Composite) {
+      com.get_op_ptr()->get_type() == OpType::CustomGate) {
     const Box& box = static_cast<const Box&>(*com.get_op_ptr());
     unit_map_t interface;
     unit_set_t inner_set;
@@ -521,7 +521,7 @@ bool NoBarriersPredicate::verify(const Circuit& circ) const {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     if (op->get_type() == OpType::Barrier) return false;
     if (op->get_type() == OpType::CircBox ||
-        op->get_type() == OpType::Composite) {
+        op->get_type() == OpType::CustomGate) {
       const Box& box = static_cast<const Box&>(*op);
       if (!verify(*box.to_circuit())) return false;
     }
@@ -558,7 +558,7 @@ static bool mid_measure_helper(const Command& com, unit_set_t& measured_units) {
     return mid_measure_helper(new_com, measured_units);
   } else if (
       com.get_op_ptr()->get_type() == OpType::CircBox ||
-      com.get_op_ptr()->get_type() == OpType::Composite) {
+      com.get_op_ptr()->get_type() == OpType::CustomGate) {
     const Box& box = static_cast<const Box&>(*com.get_op_ptr());
     unit_map_t interface;
     unit_set_t inner_set;

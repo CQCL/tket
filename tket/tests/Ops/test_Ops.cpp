@@ -130,7 +130,7 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     CHECK(cnry->get_params().size() == 1);
     REQUIRE(cnry->transpose()->get_params() == rhs);
     const Op_ptr xxphase = (get_op_ptr(OpType::XXPhase, 0.5));
-    CHECK(xxphase->get_name() == "Mølmer-Sørensen(0.5)");
+    CHECK(xxphase->get_name() == "XXPhase(0.5)");
     REQUIRE(*xxphase->transpose() == *xxphase);
     const Op_ptr yyphase = (get_op_ptr(OpType::YYPhase, 0.5));
     CHECK(yyphase->get_name() == "YYPhase(0.5)");
@@ -139,7 +139,7 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     CHECK(zzphase->get_name() == "ZZPhase(0.5)");
     REQUIRE(*zzphase->transpose() == *zzphase);
     const Op_ptr xxphase3 = (get_op_ptr(OpType::XXPhase3, 0.5));
-    CHECK(xxphase3->get_name() == "3-Mølmer-Sørensen(0.5)");
+    CHECK(xxphase3->get_name() == "XXPhase3(0.5)");
     REQUIRE(*xxphase3->transpose() == *xxphase3);
     const Op_ptr eswap = (get_op_ptr(OpType::ESWAP, 0.5));
     CHECK(eswap->get_name() == "ESWAP(0.5)");
@@ -503,7 +503,7 @@ SCENARIO("Custom Gates") {
     Expr ea(a);
     setup.add_op<unsigned>(OpType::tk1, {ea, 1.0353, 0.5372}, {0});
     composite_def_ptr_t def = CompositeGateDef::define_gate("g", setup, {a});
-    CompositeGate g(def, {0.2374});
+    CustomGate g(def, {0.2374});
     Circuit c(1);
     c.add_box(g, qubit_vector_t{Qubit("q", 0)});
     REQUIRE(c.n_gates() == 1);
@@ -520,8 +520,8 @@ SCENARIO("Custom Gates") {
     setup.add_op<unsigned>(OpType::CX, {0, 1});
     setup.add_op<unsigned>(OpType::Ry, {a}, {0});
     composite_def_ptr_t def = CompositeGateDef::define_gate("g", setup, {a});
-    CompositeGate g0(def, {0.2374});
-    CompositeGate g1(def, {b});
+    CustomGate g0(def, {0.2374});
+    CustomGate g1(def, {b});
     REQUIRE(!(g0 == g1));
     REQUIRE(!(*g0.to_circuit() == *g1.to_circuit()));
   }

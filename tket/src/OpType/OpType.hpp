@@ -565,9 +565,9 @@ enum class OpType {
   CliffBox,
 
   /**
-   * See \ref CompositeGate
+   * See \ref CustomGate
    */
-  Composite,
+  CustomGate,
 
   /**
    * See \ref PhasePolyBox
