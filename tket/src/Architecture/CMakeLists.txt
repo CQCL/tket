@@ -21,10 +21,10 @@ add_library(tket-architecture
 target_include_directories(tket-architecture
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_ARCHITECTURE_INCLUDE_DIR}
-    ${TKET_ARCHITECTURE_INCLUDE_DIR}/Architecture
-    ${TKET_UTILS_INCLUDE_DIR}
-    ${TKET_GRAPHS_INCLUDE_DIR})
+    ${TKET_Architecture_INCLUDE_DIR}
+    ${TKET_Architecture_INCLUDE_DIR}/Architecture
+    ${TKET_Utils_INCLUDE_DIR}
+    ${TKET_Graphs_INCLUDE_DIR})
 
 target_link_libraries(tket-architecture
     PRIVATE

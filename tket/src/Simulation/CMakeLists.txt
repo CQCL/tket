@@ -25,13 +25,13 @@ add_library(tket-simulation
 target_include_directories(tket-simulation
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_SIMULATION_INCLUDE_DIR}
-    ${TKET_SIMULATION_INCLUDE_DIR}/Simulation
-    ${TKET_UTILS_INCLUDE_DIR}
-    ${TKET_OPTYPE_INCLUDE_DIR}
-    ${TKET_OPS_INCLUDE_DIR}
-    ${TKET_GATE_INCLUDE_DIR}
-    ${TKET_CIRCUIT_INCLUDE_DIR})
+    ${TKET_Simulation_INCLUDE_DIR}
+    ${TKET_Simulation_INCLUDE_DIR}/Simulation
+    ${TKET_Utils_INCLUDE_DIR}
+    ${TKET_OpType_INCLUDE_DIR}
+    ${TKET_Ops_INCLUDE_DIR}
+    ${TKET_Gate_INCLUDE_DIR}
+    ${TKET_Circuit_INCLUDE_DIR})
 
 target_link_libraries(tket-simulation
     PRIVATE

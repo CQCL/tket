@@ -23,9 +23,9 @@ add_library(tket-optype
 target_include_directories(tket-optype
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_OPTYPE_INCLUDE_DIR}
-    ${TKET_OPTYPE_INCLUDE_DIR}/OpType
-    ${TKET_UTILS_INCLUDE_DIR})
+    ${TKET_OpType_INCLUDE_DIR}
+    ${TKET_OpType_INCLUDE_DIR}/OpType
+    ${TKET_Utils_INCLUDE_DIR})
 
 target_link_libraries(tket-optype
     PRIVATE

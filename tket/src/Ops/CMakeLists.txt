@@ -24,10 +24,10 @@ add_library(tket-ops
 target_include_directories(tket-ops
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_OPS_INCLUDE_DIR}
-    ${TKET_OPS_INCLUDE_DIR}/Ops
-    ${TKET_UTILS_INCLUDE_DIR}
-    ${TKET_OPTYPE_INCLUDE_DIR})
+    ${TKET_Ops_INCLUDE_DIR}
+    ${TKET_Ops_INCLUDE_DIR}/Ops
+    ${TKET_Utils_INCLUDE_DIR}
+    ${TKET_OpType_INCLUDE_DIR})
 
 target_link_libraries(tket-ops
     PRIVATE

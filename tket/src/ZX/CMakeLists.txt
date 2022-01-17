@@ -31,7 +31,7 @@ target_include_directories(tket-zx
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_ZX_INCLUDE_DIR}
     ${TKET_ZX_INCLUDE_DIR}/ZX
-    ${TKET_UTILS_INCLUDE_DIR})
+    ${TKET_Utils_INCLUDE_DIR})
 
 target_link_libraries(tket-zx
     PRIVATE

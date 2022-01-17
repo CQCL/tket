@@ -33,19 +33,19 @@ add_library(tket-transform
 target_include_directories(tket-transform
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_TRANSFORM_INCLUDE_DIR}
-    ${TKET_TRANSFORM_INCLUDE_DIR}/Transformations
-    ${TKET_UTILS_INCLUDE_DIR}
-    ${TKET_OPTYPE_INCLUDE_DIR}
-    ${TKET_OPS_INCLUDE_DIR}
-    ${TKET_GATE_INCLUDE_DIR}
-    ${TKET_CLIFFORD_INCLUDE_DIR}
-    ${TKET_CIRCUIT_INCLUDE_DIR}
-    ${TKET_GRAPHS_INCLUDE_DIR}
-    ${TKET_PAULIGRAPH_INCLUDE_DIR}
-    ${TKET_CONVERTERS_INCLUDE_DIR}
-    ${TKET_CHARACTERISATION_INCLUDE_DIR}
-    ${TKET_ARCHITECTURE_INCLUDE_DIR})
+    ${TKET_Transformations_INCLUDE_DIR}
+    ${TKET_Transformations_INCLUDE_DIR}/Transformations
+    ${TKET_Utils_INCLUDE_DIR}
+    ${TKET_OpType_INCLUDE_DIR}
+    ${TKET_Ops_INCLUDE_DIR}
+    ${TKET_Gate_INCLUDE_DIR}
+    ${TKET_Clifford_INCLUDE_DIR}
+    ${TKET_Circuit_INCLUDE_DIR}
+    ${TKET_Graphs_INCLUDE_DIR}
+    ${TKET_PauliGraph_INCLUDE_DIR}
+    ${TKET_Converters_INCLUDE_DIR}
+    ${TKET_Characterisation_INCLUDE_DIR}
+    ${TKET_Architecture_INCLUDE_DIR})
 
 target_link_libraries(tket-transform
     PRIVATE

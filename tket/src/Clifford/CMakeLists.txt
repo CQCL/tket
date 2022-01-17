@@ -22,10 +22,10 @@ add_library(tket-clifford
 target_include_directories(tket-clifford
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_CLIFFORD_INCLUDE_DIR}
-    ${TKET_CLIFFORD_INCLUDE_DIR}/Clifford
-    ${TKET_UTILS_INCLUDE_DIR}
-    ${TKET_OPTYPE_INCLUDE_DIR})
+    ${TKET_Clifford_INCLUDE_DIR}
+    ${TKET_Clifford_INCLUDE_DIR}/Clifford
+    ${TKET_Utils_INCLUDE_DIR}
+    ${TKET_OpType_INCLUDE_DIR})
 
 target_link_libraries(tket-clifford
     PRIVATE

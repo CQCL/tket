@@ -22,16 +22,16 @@ add_library(tket-diagonalisation
 target_include_directories(tket-diagonalisation
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_DIAGONALISATION_INCLUDE_DIR}
-    ${TKET_DIAGONALISATION_INCLUDE_DIR}/Diagonalisation
-    ${TKET_UTILS_INCLUDE_DIR}
-    ${TKET_OPTYPE_INCLUDE_DIR}
-    ${TKET_CLIFFORD_INCLUDE_DIR}
-    ${TKET_OPS_INCLUDE_DIR}
-    ${TKET_GATE_INCLUDE_DIR}
-    ${TKET_GRAPHS_INCLUDE_DIR}
-    ${TKET_PAULIGRAPH_INCLUDE_DIR}
-    ${TKET_CIRCUIT_INCLUDE_DIR})
+    ${TKET_Diagonalisation_INCLUDE_DIR}
+    ${TKET_Diagonalisation_INCLUDE_DIR}/Diagonalisation
+    ${TKET_Utils_INCLUDE_DIR}
+    ${TKET_OpType_INCLUDE_DIR}
+    ${TKET_Clifford_INCLUDE_DIR}
+    ${TKET_Ops_INCLUDE_DIR}
+    ${TKET_Gate_INCLUDE_DIR}
+    ${TKET_Graphs_INCLUDE_DIR}
+    ${TKET_PauliGraph_INCLUDE_DIR}
+    ${TKET_Circuit_INCLUDE_DIR})
 
 target_link_libraries(tket-diagonalisation
     PRIVATE

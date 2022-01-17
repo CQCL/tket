@@ -32,11 +32,11 @@ add_library(tket-gate
 target_include_directories(tket-gate
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_GATE_INCLUDE_DIR}
-    ${TKET_GATE_INCLUDE_DIR}/Gate
-    ${TKET_UTILS_INCLUDE_DIR}
-    ${TKET_OPTYPE_INCLUDE_DIR}
-    ${TKET_OPS_INCLUDE_DIR})
+    ${TKET_Gate_INCLUDE_DIR}
+    ${TKET_Gate_INCLUDE_DIR}/Gate
+    ${TKET_Utils_INCLUDE_DIR}
+    ${TKET_OpType_INCLUDE_DIR}
+    ${TKET_Ops_INCLUDE_DIR})
 
 target_link_libraries(tket-gate
     PRIVATE

@@ -26,9 +26,9 @@ add_library(tket-graphs
 target_include_directories(tket-graphs
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_GRAPHS_INCLUDE_DIR}
-    ${TKET_GRAPHS_INCLUDE_DIR}/Graphs
-    ${TKET_UTILS_INCLUDE_DIR})
+    ${TKET_Graphs_INCLUDE_DIR}
+    ${TKET_Graphs_INCLUDE_DIR}/Graphs
+    ${TKET_Utils_INCLUDE_DIR})
 
 target_link_libraries(tket-graphs
     PRIVATE

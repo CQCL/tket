@@ -26,8 +26,8 @@ add_library(tket-utils
 target_include_directories(tket-utils
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_UTILS_INCLUDE_DIR}
-    ${TKET_UTILS_INCLUDE_DIR}/Utils)
+    ${TKET_Utils_INCLUDE_DIR}
+    ${TKET_Utils_INCLUDE_DIR}/Utils)
 
 target_link_libraries(tket-utils
     ${CONAN_LIBS})

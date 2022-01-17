@@ -22,20 +22,20 @@ add_library(tket-aas
 target_include_directories(tket-aas
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_AAS_INCLUDE_DIR}
-    ${TKET_AAS_INCLUDE_DIR}/ArchAwareSynth
-    ${TKET_UTILS_INCLUDE_DIR}
-    ${TKET_OPTYPE_INCLUDE_DIR}
-    ${TKET_OPS_INCLUDE_DIR}
-    ${TKET_GATE_INCLUDE_DIR}
-    ${TKET_CLIFFORD_INCLUDE_DIR}
-    ${TKET_PAULIGRAPH_INCLUDE_DIR}
-    ${TKET_CIRCUIT_INCLUDE_DIR}
-    ${TKET_GRAPHS_INCLUDE_DIR}
-    ${TKET_ARCHITECTURE_INCLUDE_DIR}
-    ${TKET_CHARACTERISATION_INCLUDE_DIR}
-    ${TKET_ROUTING_INCLUDE_DIR}
-    ${TKET_CONVERTERS_INCLUDE_DIR})
+    ${TKET_ArchAwareSynth_INCLUDE_DIR}
+    ${TKET_ArchAwareSynth_INCLUDE_DIR}/ArchAwareSynth
+    ${TKET_Utils_INCLUDE_DIR}
+    ${TKET_OpType_INCLUDE_DIR}
+    ${TKET_Ops_INCLUDE_DIR}
+    ${TKET_Gate_INCLUDE_DIR}
+    ${TKET_Clifford_INCLUDE_DIR}
+    ${TKET_PauliGraph_INCLUDE_DIR}
+    ${TKET_Circuit_INCLUDE_DIR}
+    ${TKET_Graphs_INCLUDE_DIR}
+    ${TKET_Architecture_INCLUDE_DIR}
+    ${TKET_Characterisation_INCLUDE_DIR}
+    ${TKET_Routing_INCLUDE_DIR}
+    ${TKET_Converters_INCLUDE_DIR})
 
 target_link_libraries(tket-aas
     PRIVATE
