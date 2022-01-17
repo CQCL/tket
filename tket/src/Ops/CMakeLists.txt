@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-ops)
+project(tket-Ops)
 
-add_library(tket-ops
+add_library(tket-Ops
     FlowOp.cpp
     MetaOp.cpp
     Op.cpp
     ClassicalOps.cpp
     OpJsonFactory.cpp)
 
-target_include_directories(tket-ops
+target_include_directories(tket-Ops
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_Ops_INCLUDE_DIR}
@@ -29,8 +29,8 @@ target_include_directories(tket-ops
     ${TKET_Utils_INCLUDE_DIR}
     ${TKET_OpType_INCLUDE_DIR})
 
-target_link_libraries(tket-ops
+target_link_libraries(tket-Ops
     PRIVATE
-    tket-utils
-    tket-optype
+    tket-Utils
+    tket-OpType
     ${CONAN_LIBS})

@@ -47,6 +47,29 @@ class TketConan(ConanFile):
         "nlohmann_json/3.10.4",
     )
 
+    comps = [
+        "Utils",
+        "ZX",
+        "OpType",
+        "Clifford",
+        "Ops",
+        "Graphs",
+        "Gate",
+        "PauliGraph",
+        "Circuit",
+        "Architecture",
+        "Simulation",
+        "Diagonalisation",
+        "Program",
+        "Characterisation",
+        "Converters",
+        "Routing",
+        "MeasurementSetup",
+        "Transformations",
+        "ArchAwareSynth",
+        "Predicates",
+    ]
+
     _cmake = None
 
     def _configure_cmake(self):
@@ -104,28 +127,7 @@ class TketConan(ConanFile):
                 shutil.move(filepath + ".original", filepath)
 
     def package(self):
-        for comp in [
-            "Utils",
-            "ZX",
-            "OpType",
-            "Clifford",
-            "Ops",
-            "Graphs",
-            "Gate",
-            "PauliGraph",
-            "Circuit",
-            "Architecture",
-            "Simulation",
-            "Diagonalisation",
-            "Program",
-            "Characterisation",
-            "Converters",
-            "Routing",
-            "MeasurementSetup",
-            "Transformations",
-            "ArchAwareSynth",
-            "Predicates",
-        ]:
+        for comp in self.comps:
             self.copy(f"{comp}/include/*.hpp", dst=f"include/{comp}", keep_path=False)
         self.copy("*.dll", dst="lib", keep_path=False)
         self.copy("*.lib", dst="lib", keep_path=False)
@@ -133,25 +135,4 @@ class TketConan(ConanFile):
         self.copy("*.dylib", dst="lib", keep_path=False)
 
     def package_info(self):
-        self.cpp_info.libs = [
-            "tket-utils",
-            "tket-zx",
-            "tket-optype",
-            "tket-clifford",
-            "tket-ops",
-            "tket-graphs",
-            "tket-gate",
-            "tket-pauligraph",
-            "tket-circuit",
-            "tket-architecture",
-            "tket-simulation",
-            "tket-diagonalisation",
-            "tket-program",
-            "tket-characterisation",
-            "tket-converters",
-            "tket-routing",
-            "tket-measurement",
-            "tket-transform",
-            "tket-aas",
-            "tket-predicates",
-        ]
+        self.cpp_info.libs = [f"tket-{comp}" for comp in self.comps]

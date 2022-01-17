@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-measurement)
+project(tket-MeasurementSetup)
 
-add_library(tket-measurement
+add_library(tket-MeasurementSetup
     MeasurementSetup.cpp
     MeasurementReduction.cpp)
 
-target_include_directories(tket-measurement
+target_include_directories(tket-MeasurementSetup
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_MeasurementSetup_INCLUDE_DIR}
@@ -33,13 +33,13 @@ target_include_directories(tket-measurement
     ${TKET_Diagonalisation_INCLUDE_DIR}
     ${TKET_Converters_INCLUDE_DIR})
 
-target_link_libraries(tket-measurement
+target_link_libraries(tket-MeasurementSetup
     PRIVATE
-    tket-utils
-    tket-optype
-    tket-gate
-    tket-circuit
-    tket-clifford
-    tket-diagonalisation
-    tket-converters
+    tket-Utils
+    tket-OpType
+    tket-Gate
+    tket-Circuit
+    tket-Clifford
+    tket-Diagonalisation
+    tket-Converters
     ${CONAN_LIBS})

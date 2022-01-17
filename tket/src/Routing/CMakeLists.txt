@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-routing)
+project(tket-Routing)
 
-add_library(tket-routing
+add_library(tket-Routing
     Qubit_Placement.cpp
     Swap_Analysis.cpp
     Board_Analysis.cpp
@@ -25,7 +25,7 @@ add_library(tket-routing
     PlacementGraphClasses.cpp
     Verification.cpp)
 
-target_include_directories(tket-routing
+target_include_directories(tket-Routing
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_Routing_INCLUDE_DIR}
@@ -39,12 +39,12 @@ target_include_directories(tket-routing
     ${TKET_Architecture_INCLUDE_DIR}
     ${TKET_Characterisation_INCLUDE_DIR})
 
-target_link_libraries(tket-routing
+target_link_libraries(tket-Routing
     PRIVATE
-    tket-utils
-    tket-gate
-    tket-graphs
-    tket-circuit
-    tket-architecture
-    tket-characterisation
+    tket-Utils
+    tket-Gate
+    tket-Graphs
+    tket-Circuit
+    tket-Architecture
+    tket-Characterisation
     ${CONAN_LIBS})

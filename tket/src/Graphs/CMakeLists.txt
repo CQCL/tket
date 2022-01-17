@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-graphs)
+project(tket-Graphs)
 
-add_library(tket-graphs
+add_library(tket-Graphs
     AdjacencyData.cpp
     BruteForceColouring.cpp
     ColouringPriority.cpp
@@ -23,14 +23,14 @@ add_library(tket-graphs
     LargeCliquesResult.cpp
     ArticulationPoints.cpp)
 
-target_include_directories(tket-graphs
+target_include_directories(tket-Graphs
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_Graphs_INCLUDE_DIR}
     ${TKET_Graphs_INCLUDE_DIR}/Graphs
     ${TKET_Utils_INCLUDE_DIR})
 
-target_link_libraries(tket-graphs
+target_link_libraries(tket-Graphs
     PRIVATE
-    tket-utils
+    tket-Utils
     ${CONAN_LIBS})

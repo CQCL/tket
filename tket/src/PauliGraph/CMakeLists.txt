@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-pauligraph)
+project(tket-PauliGraph)
 
-add_library(tket-pauligraph
+add_library(tket-PauliGraph
     ConjugatePauliFunctions.cpp
     PauliGraph.cpp)
 
-target_include_directories(tket-pauligraph
+target_include_directories(tket-PauliGraph
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_PauliGraph_INCLUDE_DIR}
@@ -29,10 +29,10 @@ target_include_directories(tket-pauligraph
     ${TKET_Gate_INCLUDE_DIR}
     ${TKET_Clifford_INCLUDE_DIR})
 
-target_link_libraries(tket-pauligraph
+target_link_libraries(tket-PauliGraph
     PRIVATE
-    tket-utils
-    tket-optype
-    tket-gate
-    tket-clifford
+    tket-Utils
+    tket-OpType
+    tket-Gate
+    tket-Clifford
     ${CONAN_LIBS})

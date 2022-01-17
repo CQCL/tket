@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-characterisation)
+project(tket-Characterisation)
 
-add_library(tket-characterisation
+add_library(tket-Characterisation
     Cycles.cpp
     FrameRandomisation.cpp
     DeviceCharacterisation.cpp)
 
-target_include_directories(tket-characterisation
+target_include_directories(tket-Characterisation
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_Characterisation_INCLUDE_DIR}
@@ -33,13 +33,13 @@ target_include_directories(tket-characterisation
     ${TKET_Circuit_INCLUDE_DIR}
     ${TKET_Architecture_INCLUDE_DIR})
 
-target_link_libraries(tket-characterisation
+target_link_libraries(tket-Characterisation
     PRIVATE
-    tket-utils
-    tket-optype
-    tket-ops
-    tket-gate
-    tket-pauligraph
-    tket-circuit
-    tket-architecture
+    tket-Utils
+    tket-OpType
+    tket-Ops
+    tket-Gate
+    tket-PauliGraph
+    tket-Circuit
+    tket-Architecture
     ${CONAN_LIBS})

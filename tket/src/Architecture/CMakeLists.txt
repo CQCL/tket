@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-architecture)
+project(tket-Architecture)
 
-add_library(tket-architecture
+add_library(tket-Architecture
     Architecture.cpp
     ArchitectureGraphClasses.cpp)
 
-target_include_directories(tket-architecture
+target_include_directories(tket-Architecture
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_Architecture_INCLUDE_DIR}
@@ -26,8 +26,8 @@ target_include_directories(tket-architecture
     ${TKET_Utils_INCLUDE_DIR}
     ${TKET_Graphs_INCLUDE_DIR})
 
-target_link_libraries(tket-architecture
+target_link_libraries(tket-Architecture
     PRIVATE
-    tket-utils
-    tket-graphs
+    tket-Utils
+    tket-Graphs
     ${CONAN_LIBS})

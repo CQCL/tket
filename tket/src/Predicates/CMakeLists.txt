@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-predicates)
+project(tket-Predicates)
 
-add_library(tket-predicates
+add_library(tket-Predicates
     Predicates.cpp
     CompilationUnit.cpp
     CompilerPass.cpp
     PassGenerators.cpp
     PassLibrary.cpp)
 
-target_include_directories(tket-predicates
+target_include_directories(tket-Predicates
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_Predicates_INCLUDE_DIR}
@@ -41,16 +41,16 @@ target_include_directories(tket-predicates
     ${TKET_ArchAwareSynth_INCLUDE_DIR}
     ${TKET_Converters_INCLUDE_DIR})
 
-target_link_libraries(tket-predicates
+target_link_libraries(tket-Predicates
     PRIVATE
-    tket-utils
-    tket-optype
-    tket-gate
-    tket-circuit
-    tket-graphs
-    tket-architecture
-    tket-routing
-    tket-transform
-    tket-aas
-    tket-converters
+    tket-Utils
+    tket-OpType
+    tket-Gate
+    tket-Circuit
+    tket-Graphs
+    tket-Architecture
+    tket-Routing
+    tket-Transformations
+    tket-ArchAwareSynth
+    tket-Converters
     ${CONAN_LIBS})

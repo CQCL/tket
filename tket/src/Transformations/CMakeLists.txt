@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-transform)
+project(tket-Transformations)
 
-add_library(tket-transform
+add_library(tket-Transformations
     Combinator.cpp
     Rebase.cpp
     BasicOptimisation.cpp
@@ -30,7 +30,7 @@ add_library(tket-transform
     ContextualReduction.cpp
     ThreeQubitSquash.cpp)
 
-target_include_directories(tket-transform
+target_include_directories(tket-Transformations
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_Transformations_INCLUDE_DIR}
@@ -47,16 +47,16 @@ target_include_directories(tket-transform
     ${TKET_Characterisation_INCLUDE_DIR}
     ${TKET_Architecture_INCLUDE_DIR})
 
-target_link_libraries(tket-transform
+target_link_libraries(tket-Transformations
     PRIVATE
-    tket-utils
-    tket-optype
-    tket-ops
-    tket-gate
-    tket-circuit
-    tket-graphs
-    tket-pauligraph
-    tket-converters
-    tket-characterisation
-    tket-architecture
+    tket-Utils
+    tket-OpType
+    tket-Ops
+    tket-Gate
+    tket-Circuit
+    tket-Graphs
+    tket-PauliGraph
+    tket-Converters
+    tket-Characterisation
+    tket-Architecture
     ${CONAN_LIBS})

@@ -12,9 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-utils)
+project(tket-Utils)
 
-add_library(tket-utils
+add_library(tket-Utils
     TketLog.cpp
     UnitID.cpp
     HelperFunctions.cpp
@@ -23,11 +23,11 @@ add_library(tket-utils
     CosSinDecomposition.cpp
     Expression.cpp)
 
-target_include_directories(tket-utils
+target_include_directories(tket-Utils
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_Utils_INCLUDE_DIR}
     ${TKET_Utils_INCLUDE_DIR}/Utils)
 
-target_link_libraries(tket-utils
+target_link_libraries(tket-Utils
     ${CONAN_LIBS})

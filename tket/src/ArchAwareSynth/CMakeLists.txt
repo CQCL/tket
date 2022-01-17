@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-aas)
+project(tket-ArchAwareSynth)
 
-add_library(tket-aas
+add_library(tket-ArchAwareSynth
     Path.cpp
     SteinerTree.cpp
     SteinerForest.cpp)
 
-target_include_directories(tket-aas
+target_include_directories(tket-ArchAwareSynth
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_ArchAwareSynth_INCLUDE_DIR}
@@ -37,14 +37,14 @@ target_include_directories(tket-aas
     ${TKET_Routing_INCLUDE_DIR}
     ${TKET_Converters_INCLUDE_DIR})
 
-target_link_libraries(tket-aas
+target_link_libraries(tket-ArchAwareSynth
     PRIVATE
-    tket-utils
-    tket-optype
-    tket-gate
-    tket-circuit
-    tket-graphs
-    tket-architecture
-    tket-routing
-    tket-converters
+    tket-Utils
+    tket-OpType
+    tket-Gate
+    tket-Circuit
+    tket-Graphs
+    tket-Architecture
+    tket-Routing
+    tket-Converters
     ${CONAN_LIBS})

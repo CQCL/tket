@@ -12,16 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-program)
+project(tket-Program)
 
-add_library(tket-program
+add_library(tket-Program
     Program_accessors.cpp
     Program_analysis.cpp
     Program_iteration.cpp
     Program_manipulation.cpp
     Program_units.cpp)
 
-target_include_directories(tket-program
+target_include_directories(tket-Program
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_Program_INCLUDE_DIR}
@@ -32,9 +32,9 @@ target_include_directories(tket-program
     ${TKET_Gate_INCLUDE_DIR}
     ${TKET_Circuit_INCLUDE_DIR})
 
-target_link_libraries(tket-program
+target_link_libraries(tket-Program
     PRIVATE
-    tket-utils
-    tket-ops
-    tket-circuit
+    tket-Utils
+    tket-Ops
+    tket-Circuit
     ${CONAN_LIBS})

@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-diagonalisation)
+project(tket-Diagonalisation)
 
-add_library(tket-diagonalisation
+add_library(tket-Diagonalisation
     DiagUtils.cpp
     Diagonalisation.cpp
     PauliPartition.cpp)
 
-target_include_directories(tket-diagonalisation
+target_include_directories(tket-Diagonalisation
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_Diagonalisation_INCLUDE_DIR}
@@ -33,13 +33,13 @@ target_include_directories(tket-diagonalisation
     ${TKET_PauliGraph_INCLUDE_DIR}
     ${TKET_Circuit_INCLUDE_DIR})
 
-target_link_libraries(tket-diagonalisation
+target_link_libraries(tket-Diagonalisation
     PRIVATE
-    tket-utils
-    tket-optype
-    tket-ops
-    tket-gate
-    tket-graphs
-    tket-pauligraph
-    tket-circuit
+    tket-Utils
+    tket-OpType
+    tket-Ops
+    tket-Gate
+    tket-Graphs
+    tket-PauliGraph
+    tket-Circuit
     ${CONAN_LIBS})
