@@ -31,7 +31,7 @@ SCENARIO("Testing generator creation") {
   CHECK_FALSE(input.valid_edge(0, QuantumType::Quantum));
   CHECK_FALSE(input.valid_edge(std::nullopt, QuantumType::Classical));
 
-  BasicGen zSpider(ZXType::ZSpider, 0.3, QuantumType::Classical);
+  PhasedGen zSpider(ZXType::ZSpider, 0.3, QuantumType::Classical);
   CHECK(zSpider.get_name() == "C-Z(0.3)");
   CHECK(zSpider.get_type() == ZXType::ZSpider);
   CHECK(zSpider.get_qtype() == QuantumType::Classical);
@@ -40,7 +40,7 @@ SCENARIO("Testing generator creation") {
   CHECK(zSpider.valid_edge(std::nullopt, QuantumType::Classical));
   CHECK_FALSE(zSpider.valid_edge(0, QuantumType::Quantum));
 
-  BasicGen xSpider(ZXType::XSpider, Expr("2*a"), QuantumType::Quantum);
+  PhasedGen xSpider(ZXType::XSpider, Expr("2*a"), QuantumType::Quantum);
   CHECK(xSpider.get_name() == "Q-X(2*a)");
   CHECK(xSpider.get_type() == ZXType::XSpider);
   CHECK(xSpider.get_qtype() == QuantumType::Quantum);
@@ -53,7 +53,7 @@ SCENARIO("Testing generator creation") {
   CHECK(xSpider.symbol_substitution(sub_map)->get_name() == "Q-X(1.6)");
 
   // Should throw an error: type Triangle is not a BasicGen type
-  REQUIRE_THROWS_AS(BasicGen(ZXType::Triangle, 0.3), ZXError);
+  REQUIRE_THROWS_AS(PhasedGen(ZXType::Triangle, 0.3), ZXError);
 
   DirectedGen tri(ZXType::Triangle, QuantumType::Classical);
   CHECK(tri.get_name() == "C-Tri");

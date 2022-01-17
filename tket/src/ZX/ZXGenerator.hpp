@@ -41,6 +41,7 @@ enum class ZXType {
    * Symmetric generators
    */
   // Z (green) spider
+  // Equivalently, a (postselected) XY qubit (with negative phase) in MBQC
   ZSpider,
 
   // X (red) spider
@@ -48,6 +49,35 @@ enum class ZXType {
 
   // Hbox
   Hbox,
+
+  // A (postselected) XY qubit in MBQC
+  // Corresponds to a Z spider with negative phase
+  XY,
+
+  // A (postselected) XZ qubit in MBQC
+  // Corresponds to a 0.5-phase (n+1)-ary Z spider connected to a phaseful 1-ary
+  // X spider
+  XZ,
+
+  // A (postselected) YZ qubit in MBQC
+  // Corresponds to a 0-phase (n+1)-ary Z spider connected to a phaseful 1-ary X
+  // spider
+  YZ,
+
+  // A (postselected) Pauli X qubit in MBQC
+  // Corresponds to a Z spider with phase either 0 (param=False) or 1
+  // (param=True)
+  PX,
+
+  // A (postselected) Pauli Y qubit in MBQC
+  // Corresponds to a Z spider with phase either -0.5 (param=False) or +0.5
+  // (param=True)
+  PY,
+
+  // A (postselected) Pauli Z qubit in MBQC
+  // Corresponds to a 0-phase (n+1)-ary Z spider connected to a 1-ary X spider
+  // with phase either 0 (param=False) or 1 (param=True)
+  PZ,
 
   /**
    * Directed (non-commutative) generators
@@ -71,6 +101,9 @@ bool is_boundary_type(ZXType type);
 bool is_basic_gen_type(ZXType type);
 bool is_spider_type(ZXType type);
 bool is_directed_type(ZXType type);
+bool is_MBQC_type(ZXType type);
+bool is_phase_type(ZXType type);
+bool is_Clifford_gen_type(ZXType type);
 
 // Forward declaration so we can use ZXGen_ptr in the interface of ZXGen
 class ZXGen;
@@ -140,6 +173,8 @@ class ZXGen {
       ZXType type, QuantumType qtype = QuantumType::Quantum);
   static ZXGen_ptr create_gen(
       ZXType type, const Expr& param, QuantumType qtype = QuantumType::Quantum);
+  static ZXGen_ptr create_gen(
+      ZXType type, bool param, QuantumType qtype = QuantumType::Quantum);
 
  protected:
   ZXGen(ZXType type);
@@ -172,23 +207,42 @@ class BoundaryGen : public ZXGen {
 };
 
 /**
- * Implementation of ZXGen for undirected (commutative) generators.
+ * Virtual subclass of ZXGen for undirected (commutative) generators.
  * `std::nullopt` is used for ports as there is no need to distinguish.
  * If the generator is Quantum, all adjacent wires must also be Quantum.
  * If the generator is Classical, adjacent wires can be either Quantum or
- * Classical. Each known generator only uses a single parameter.
+ * Classical.
+ * Implementations include PhasedGen for generators with 1 Expr parameter or
+ * CliffordGen for Clifford generators with 1 bool parameter.
  */
 class BasicGen : public ZXGen {
  public:
-  BasicGen(
-      ZXType type, const Expr& param, QuantumType qtype = QuantumType::Quantum);
-
-  Expr get_param() const;
+  BasicGen(ZXType type, QuantumType qtype = QuantumType::Quantum);
 
   // Overrides from ZXGen
   virtual std::optional<QuantumType> get_qtype() const override;
   virtual bool valid_edge(
       std::optional<unsigned> port, QuantumType qtype) const override;
+  virtual bool operator==(const ZXGen& other) const override;
+
+ protected:
+  const QuantumType qtype_;
+};
+
+/**
+ * Implementation of BasicGen for phased generators, e.g. spiders, Hbox.
+ * Each generator has a single Expr parameter which is:
+ * - A complex number for Hbox
+ * - A real-valued phase in half-turns otherwise
+ */
+class PhasedGen : public BasicGen {
+ public:
+  PhasedGen(
+      ZXType type, const Expr& param, QuantumType qtype = QuantumType::Quantum);
+
+  Expr get_param() const;
+
+  // Overrides from ZXGen
   virtual SymSet free_symbols() const override;
   virtual ZXGen_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
@@ -196,8 +250,30 @@ class BasicGen : public ZXGen {
   virtual bool operator==(const ZXGen& other) const override;
 
  protected:
-  const QuantumType qtype_;
   const Expr param_;
+};
+
+/**
+ * Implementation of BasicGen for Clifford generators.
+ * The basis is determined by the ZX type, and the boolean parameter determines
+ * the discrete phase (false = 0 versus true = 1 half-turn).
+ */
+class CliffordGen : public BasicGen {
+ public:
+  CliffordGen(
+      ZXType type, bool param, QuantumType qtype = QuantumType::Quantum);
+
+  bool get_param() const;
+
+  // Overrides from ZXGen
+  virtual SymSet free_symbols() const override;
+  virtual ZXGen_ptr symbol_substitution(
+      const SymEngine::map_basic_basic& sub_map) const override;
+  virtual std::string get_name(bool latex = false) const override;
+  virtual bool operator==(const ZXGen& other) const override;
+
+ protected:
+  const bool param_;
 };
 
 /**

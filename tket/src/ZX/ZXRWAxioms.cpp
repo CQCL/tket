@@ -32,8 +32,8 @@ bool Rewrite::red_to_green_fun(ZXDiagram& diag) {
                                   : ZXWireType::H;
     }
     // Replace X spider with Z spider
-    const BasicGen& x = diag.get_vertex_ZXGen<BasicGen>(v);
-    ZXGen_ptr z = std::make_shared<const BasicGen>(
+    const PhasedGen& x = diag.get_vertex_ZXGen<PhasedGen>(v);
+    ZXGen_ptr z = std::make_shared<const PhasedGen>(
         ZXType::ZSpider, x.get_param(), *x.get_qtype());
     diag.set_vertex_ZXGen_ptr(v, z);
   }
@@ -68,9 +68,9 @@ bool Rewrite::spider_fusion_fun(ZXDiagram& diag) {
       // The spiders `u` and `v` can be fused together
       // We merge into `v` and remove `u` so that we can efficiently continue to
       // search the neighbours
-      const BasicGen& vspid = diag.get_vertex_ZXGen<BasicGen>(v);
-      const BasicGen& uspid = diag.get_vertex_ZXGen<BasicGen>(u);
-      ZXGen_ptr new_spid = std::make_shared<const BasicGen>(
+      const PhasedGen& vspid = diag.get_vertex_ZXGen<PhasedGen>(v);
+      const PhasedGen& uspid = diag.get_vertex_ZXGen<PhasedGen>(u);
+      ZXGen_ptr new_spid = std::make_shared<const PhasedGen>(
           vtype, vspid.get_param() + uspid.get_param(),
           (vspid.get_qtype() == QuantumType::Classical ||
            uspid.get_qtype() == QuantumType::Classical)
@@ -139,8 +139,8 @@ bool Rewrite::self_loop_removal_fun(ZXDiagram& diag) {
       success = true;
     }
     if ((n_pis % 2) == 1) {
-      const BasicGen& spid = diag.get_vertex_ZXGen<BasicGen>(v);
-      ZXGen_ptr new_spid = std::make_shared<const BasicGen>(
+      const PhasedGen& spid = diag.get_vertex_ZXGen<PhasedGen>(v);
+      ZXGen_ptr new_spid = std::make_shared<const PhasedGen>(
           vtype, spid.get_param() + 1., vqtype);
       diag.set_vertex_ZXGen_ptr(v, new_spid);
     }

@@ -62,19 +62,44 @@ ZXDiagram ZXDiagram::to_doubled_diagram() const {
             break;
           }
           case ZXType::ZSpider:
-          case ZXType::XSpider: {
-            const BasicGen& bg = static_cast<const BasicGen&>(*op);
-            orig_op = std::make_shared<const BasicGen>(
+          case ZXType::XSpider:
+          case ZXType::XY:
+          case ZXType::YZ: {
+            const PhasedGen& bg = static_cast<const PhasedGen&>(*op);
+            orig_op = std::make_shared<const PhasedGen>(
                 op->get_type(), bg.get_param(), QuantumType::Classical);
-            conj_op = std::make_shared<const BasicGen>(
+            conj_op = std::make_shared<const PhasedGen>(
                 op->get_type(), -bg.get_param(), QuantumType::Classical);
             break;
           }
-          case ZXType::Hbox: {
-            const BasicGen& bg = static_cast<const BasicGen&>(*op);
-            orig_op = std::make_shared<const BasicGen>(
+          case ZXType::XZ: {
+            const PhasedGen& bg = static_cast<const PhasedGen&>(*op);
+            orig_op = std::make_shared<const PhasedGen>(
                 op->get_type(), bg.get_param(), QuantumType::Classical);
-            conj_op = std::make_shared<const BasicGen>(
+            conj_op = orig_op;
+            break;
+          }
+          case ZXType::PX:
+          case ZXType::PZ: {
+            const CliffordGen& bg = static_cast<const CliffordGen&>(*op);
+            orig_op = std::make_shared<const CliffordGen>(
+                op->get_type(), bg.get_param(), QuantumType::Classical);
+            conj_op = orig_op;
+            break;
+          }
+          case ZXType::PY: {
+            const CliffordGen& bg = static_cast<const CliffordGen&>(*op);
+            orig_op = std::make_shared<const CliffordGen>(
+                op->get_type(), bg.get_param(), QuantumType::Classical);
+            conj_op = std::make_shared<const CliffordGen>(
+                op->get_type(), !bg.get_param(), QuantumType::Classical);
+            break;
+          }
+          case ZXType::Hbox: {
+            const PhasedGen& bg = static_cast<const PhasedGen&>(*op);
+            orig_op = std::make_shared<const PhasedGen>(
+                op->get_type(), bg.get_param(), QuantumType::Classical);
+            conj_op = std::make_shared<const PhasedGen>(
                 op->get_type(), SymEngine::conjugate(bg.get_param()),
                 QuantumType::Classical);
             break;
@@ -174,7 +199,7 @@ ZXDiagram ZXDiagram::to_quantum_embedding() const {
     if (embedding.get_qtype(b) == QuantumType::Classical) {
       ZXVert new_b =
           embedding.add_vertex(embedding.get_zxtype(b), QuantumType::Quantum);
-      ZXGen_ptr id = std::make_shared<const BasicGen>(
+      ZXGen_ptr id = std::make_shared<const PhasedGen>(
           ZXType::ZSpider, 0., QuantumType::Classical);
       embedding.set_vertex_ZXGen_ptr(b, id);
       embedding.add_wire(new_b, b, ZXWireType::Basic, QuantumType::Quantum);
