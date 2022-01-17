@@ -73,12 +73,6 @@ static PassPtr gen_default_aas_routing_pass(
   return gen_full_mapping_pass_phase_poly(arc, lookahead, cnotsynthtype);
 }
 
-static const py::module &decompose_module() {
-  static const py::module decomposer_ =
-      py::module::import("pytket.circuit.decompose_classical");
-  return decomposer_;
-}
-
 const PassPtr &DecomposeClassicalExp() {
   // a special box decomposer for Circuits containing
   // ClassicalExpBox<py::object>
