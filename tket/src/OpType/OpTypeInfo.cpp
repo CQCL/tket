@@ -137,10 +137,11 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
        {"ExplicitModifier", "ExplicitModifier", {}, std::nullopt}},
       {OpType::ClassicalExpBox,
        {"ClassicalExpBox", "ClassicalExpBox", {}, std::nullopt}},
-      {OpType::MultiBit, {"MultiBit", "MultiBit", {}, std::nullopt}}};
+      {OpType::MultiBit, {"MultiBit", "MultiBit", {}, std::nullopt}},
+      {OpType::UnitaryTableauBox,
+       {"UnitaryTableauBox", "UnitaryTableauBox", {}, std::nullopt}}};
   static std::unique_ptr<const std::map<OpType, OpTypeInfo>> opinfo =
       std::make_unique<const std::map<OpType, OpTypeInfo>>(typeinfo);
-
   return *opinfo;
 }
 

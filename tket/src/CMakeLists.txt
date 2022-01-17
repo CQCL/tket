@@ -143,6 +143,8 @@ set(TKET_SOURCES
 
     # Clifford
     ${TKET_CLIFFORD_DIR}/CliffTableau.cpp
+    ${TKET_CLIFFORD_DIR}/SymplecticTableau.cpp
+    ${TKET_CLIFFORD_DIR}/UnitaryTableau.cpp
 
     # Diagonalisation
     ${TKET_DIAGONALISATION_DIR}/DiagUtils.cpp
@@ -265,6 +267,8 @@ set(TKET_SOURCES
     ${TKET_CONVERTERS_DIR}/PauliGraphConverters.cpp
     ${TKET_CONVERTERS_DIR}/Gauss.cpp
     ${TKET_CONVERTERS_DIR}/PhasePoly.cpp
+    ${TKET_CONVERTERS_DIR}/UnitaryTableauBox.cpp
+    ${TKET_CONVERTERS_DIR}/UnitaryTableauConverters.cpp
 
     # Program
     ${TKET_PROGRAM_DIR}/Program_accessors.cpp

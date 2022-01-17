@@ -63,6 +63,7 @@ build_module(pauli binders/pauli.cpp)
 build_module(logging binders/logging.cpp)
 build_module(utils_serialization binders/utils_serialization.cpp)
 build_module(tailoring binders/tailoring.cpp)
+build_module(tableau binders/tableau.cpp)
 build_module(zx
     binders/zx/diagram.cpp
     binders/zx/rewrite.cpp)

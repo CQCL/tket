@@ -16,6 +16,7 @@
 
 #include "Circuit/Circuit.hpp"
 #include "Clifford/CliffTableau.hpp"
+#include "Clifford/UnitaryTableau.hpp"
 #include "PauliGraph/PauliGraph.hpp"
 
 namespace tket {
@@ -25,6 +26,7 @@ namespace tket {
  * Will throw an exception if it contains non-Clifford gates.
  */
 CliffTableau circuit_to_tableau(const Circuit &circ);
+UnitaryTableau circuit_to_unitary_tableau(const Circuit &circ);
 
 /**
  * Constructs a circuit producing the same effect as the tableau.
@@ -33,6 +35,7 @@ CliffTableau circuit_to_tableau(const Circuit &circ);
  * CAUTION: GATE COUNT IS ATROCIOUS IN PRACTICE
  */
 Circuit tableau_to_circuit(const CliffTableau &tab);
+Circuit unitary_tableau_to_circuit(const UnitaryTableau &tab);
 
 PauliGraph circuit_to_pauli_graph(const Circuit &circ);
 

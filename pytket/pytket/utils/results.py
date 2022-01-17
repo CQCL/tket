@@ -229,7 +229,7 @@ def permute_basis_indexing(
     _assert_compatible_state_permutation(matrix, permutation)
     permuter = BitPermuter(permutation)
 
-    return cast(np.ndarray, matrix[permuter.permute_all(), ...])
+    return matrix[permuter.permute_all(), ...]
 
 
 def permute_rows_cols_in_unitary(
@@ -251,7 +251,7 @@ def permute_rows_cols_in_unitary(
     all_perms = permuter.permute_all()
     permat = matrix[:, all_perms]
     permat = permat[all_perms, :]
-    return cast(np.ndarray, permat)
+    return permat
 
 
 def compare_statevectors(first: np.ndarray, second: np.ndarray) -> bool:
