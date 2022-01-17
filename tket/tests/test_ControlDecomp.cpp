@@ -408,21 +408,27 @@ SCENARIO("Test a CnX is decomposed correctly using the Gray code method") {
       switch (n) {
         case 2: {
           REQUIRE(circ.count_gates(OpType::CX) <= 6);
+          break;
         }
         case 3: {
           REQUIRE(circ.count_gates(OpType::CX) <= 14);
+          break;
         }
         case 4: {
           REQUIRE(circ.count_gates(OpType::CX) <= 36);
+          break;
         }
         case 5: {
           REQUIRE(circ.count_gates(OpType::CX) <= 92);
+          break;
         }
         case 6: {
           REQUIRE(circ.count_gates(OpType::CX) <= 188);
+          break;
         }
         case 7: {
           REQUIRE(circ.count_gates(OpType::CX) <= 380);
+          break;
         }
       }
     }
