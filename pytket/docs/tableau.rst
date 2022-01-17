@@ -1,5 +1,5 @@
 pytket.tableau
-=========
+==============
 
 .. automodule:: pytket._tket.tableau
     :members:
