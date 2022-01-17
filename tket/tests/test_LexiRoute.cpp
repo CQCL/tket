@@ -314,6 +314,9 @@ SCENARIO("Test LexiRoute::solve") {
     LexiRoute lr0(shared_arc, mf);
     lr0.solve(20);
 
+    LexiRoute lr1(shared_arc, mf);
+    lr1.solve(20);
+
     REQUIRE(circ.all_qubits()[1] == nodes[5]);
   }
 
