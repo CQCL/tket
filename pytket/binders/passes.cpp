@@ -72,19 +72,14 @@ static PassPtr gen_default_aas_routing_pass(
   return gen_full_mapping_pass_phase_poly(arc, lookahead, cnotsynthtype);
 }
 
-static const py::module &decompose_module() {
-  static const py::module decomposer_ =
-      py::module::import("pytket.circuit.decompose_classical");
-  return decomposer_;
-}
-
 const PassPtr &DecomposeClassicalExp() {
   // a special box decomposer for Circuits containing
   // ClassicalExpBox<py::object>
   static const PassPtr pp([]() {
     Transform t = Transform([](Circuit &circ) {
-      const py::tuple result =
-          decompose_module().attr("_decompose_expressions")(circ);
+      py::module decomposer =
+          py::module::import("pytket.circuit.decompose_classical");
+      const py::tuple result = decomposer.attr("_decompose_expressions")(circ);
       const bool success = result[1].cast<bool>();
       if (success) {
         circ = result[0].cast<Circuit>();

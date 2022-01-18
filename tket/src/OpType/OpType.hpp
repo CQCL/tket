@@ -597,7 +597,12 @@ enum class OpType {
   /**
    * See \ref StabiliserAssertionBox
    */
-  StabiliserAssertionBox
+  StabiliserAssertionBox,
+
+  /**
+   * See \ref UnitaryTableauBox
+   */
+  UnitaryTableauBox
 };
 
 JSON_DECL(OpType)

@@ -14,6 +14,7 @@
 
 #include <catch2/catch.hpp>
 
+#include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/Predicates.hpp"
 #include "testutil.hpp"

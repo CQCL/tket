@@ -15,7 +15,6 @@
 #pragma once
 #include <typeindex>
 
-#include "Routing/Routing.hpp"
 #include "Transformations/Transform.hpp"
 
 namespace tket {

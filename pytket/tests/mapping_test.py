@@ -103,7 +103,7 @@ def test_LexiRouteRoutingMethod() -> None:
     nodes = [Node("test", 0), Node("test", 1), Node("test", 2)]
     test_a = Architecture([[nodes[0], nodes[1]], [nodes[1], nodes[2]]])
     test_mm = MappingManager(test_a)
-    test_mm.route_circuit(test_c, [LexiRouteRoutingMethod(50)])
+    test_mm.route_circuit(test_c, [LexiRouteRoutingMethod()])
     routed_commands = test_c.get_commands()
 
     assert routed_commands[0].op.type == OpType.CX
@@ -152,7 +152,7 @@ def test_RoutingMethodCircuit_custom_list() -> None:
             RoutingMethodCircuit(
                 route_subcircuit_func, check_subcircuit_func_false, 5, 5
             ),
-            LexiRouteRoutingMethod(50),
+            LexiRouteRoutingMethod(),
         ],
     )
     routed_commands = test_c.get_commands()
@@ -173,7 +173,7 @@ def test_RoutingMethodCircuit_custom_list() -> None:
             RoutingMethodCircuit(
                 route_subcircuit_func, check_subcircuit_func_true, 5, 5
             ),
-            LexiRouteRoutingMethod(50),
+            LexiRouteRoutingMethod(),
         ],
     )
     routed_commands = test_c.get_commands()

@@ -213,10 +213,7 @@ swap_set_t LexiRoute::get_candidate_swaps() {
     Node assigned_first = Node(this->labelling_[interaction.first]);
     std::vector<Node> adjacent_uids_0 =
         this->architecture_->nodes_at_distance(assigned_first, 1);
-    if (adjacent_uids_0.size() == 0) {
-      throw LexiRouteError(
-          assigned_first.repr() + " has no adjacent Node in Architecture.");
-    }
+    TKET_ASSERT(adjacent_uids_0.size() != 0);
     for (const Node& neighbour : adjacent_uids_0) {
       if (candidate_swaps.find({neighbour, assigned_first}) ==
           candidate_swaps.end()) {
@@ -226,10 +223,7 @@ swap_set_t LexiRoute::get_candidate_swaps() {
     Node assigned_second = Node(this->labelling_[interaction.second]);
     std::vector<Node> adjacent_uids_1 =
         this->architecture_->nodes_at_distance(assigned_second, 1);
-    if (adjacent_uids_1.size() == 0) {
-      throw LexiRouteError(
-          assigned_first.repr() + " has no adjacent Node in Architecture.");
-    }
+    TKET_ASSERT(adjacent_uids_1.size() != 0);
     for (const Node& neighbour : adjacent_uids_1) {
       if (candidate_swaps.find({neighbour, assigned_second}) ==
           candidate_swaps.end()) {
@@ -333,13 +327,11 @@ std::pair<bool, bool> LexiRoute::check_bridge(
 const std::pair<size_t, size_t> LexiRoute::pair_distances(
     const Node& p0_first, const Node& p0_second, const Node& p1_first,
     const Node& p1_second) const {
-  if (!this->architecture_->node_exists(p0_first) ||
-      !this->architecture_->node_exists(p0_second) ||
-      !this->architecture_->node_exists(p1_first) ||
-      !this->architecture_->node_exists(p1_second)) {
-    throw LexiRouteError(
-        "Node passed to LexiRoute::pair_distances not in architecture.");
-  }
+  TKET_ASSERT(
+      this->architecture_->node_exists(p0_first) &&
+      this->architecture_->node_exists(p0_second) &&
+      this->architecture_->node_exists(p1_first) &&
+      this->architecture_->node_exists(p1_second));
   size_t curr_dist1 = this->architecture_->get_distance(p0_first, p0_second);
   size_t curr_dist2 = this->architecture_->get_distance(p1_first, p1_second);
   return (curr_dist1 > curr_dist2) ? std::make_pair(curr_dist1, curr_dist2)
@@ -351,23 +343,29 @@ void LexiRoute::remove_swaps_decreasing(swap_set_t& swaps) {
   Node pair_first, pair_second;
   for (const auto& swap : swaps) {
     auto it = this->interacting_uids_.find(swap.first);
+    // => swap.first is in interaction
     if (it != this->interacting_uids_.end()) {
+      // find its pair
       pair_first = Node(it->second);
     } else {
+      // => not interacting, assign pair to self (will give lexicographic
+      // distance 0)
       pair_first = swap.first;
     }
+    // => UnitID in SWAP are interacting
     if (pair_first == swap.second) {
       continue;
     }
     auto jt = this->interacting_uids_.find(swap.second);
+    // => swap.second is in interaction
     if (jt != this->interacting_uids_.end()) {
       pair_second = Node(jt->second);
     } else {
       pair_second = swap.second;
     }
-    if (pair_second == swap.first) {
-      continue;
-    }
+    // => UnitID in SWAP are interacting
+    // Check should alrady be done with earlier continue
+    TKET_ASSERT(pair_second != swap.first);
 
     const std::pair<size_t, size_t>& curr_dists =
         this->pair_distances(swap.first, pair_first, swap.second, pair_second);

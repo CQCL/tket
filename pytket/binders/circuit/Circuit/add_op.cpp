@@ -36,12 +36,6 @@ namespace tket {
 
 const bit_vector_t no_bits;
 
-static const py::module &condition_module() {
-  static const py::module module_ =
-      py::module::import("pytket.circuit.add_condition");
-  return module_;
-}
-
 template <typename ID>
 static Circuit *add_gate_method(
     Circuit *circ, const Op_ptr &op, const std::vector<ID> &args,
@@ -76,7 +70,8 @@ static Circuit *add_gate_method(
         "`condition_value` specified without `condition_bits`");
   }
   if (condition_given) {
-    py::object add_condition = condition_module().attr("_add_condition");
+    py::module condition = py::module::import("pytket.circuit.add_condition");
+    py::object add_condition = condition.attr("_add_condition");
     auto conditions =
         add_condition(circ, kwargs["condition"]).cast<std::pair<Bit, bool>>();
     unit_vector_t new_args = {conditions.first};

@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,11 +13,9 @@
 # limitations under the License.
 
 """
-The routing module provides access to the tket :py:class:`Architecture` structure and
-methods for modifying circuits to satisfy the architectural constraints. It also
-provides acess to the :py:class:`Placement` constructors for relabelling Circuit qubits
-and has some methods for routing circuits. This module is provided in binary form during
-the PyPI installation.
+Python API module for interfacing with tket c++ implemented functions and modules.
+Exports classes and tools for binary tableau representations of Clifford
+unitaries/states.
 """
 
-from pytket._tket.routing import *  # type: ignore
+from pytket._tket.tableau import *  # type: ignore

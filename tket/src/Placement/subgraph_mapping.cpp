@@ -19,7 +19,7 @@
 #include "Architecture/Architecture.hpp"
 #include "Graphs/Utils.hpp"
 #include "Placement.hpp"
-#include "Routing/Placement.hpp"
+#include "Placement/Placement.hpp"
 #include "Utils/Assert.hpp"
 #include "Utils/GraphHeaders.hpp"
 #include "Utils/TketLog.hpp"

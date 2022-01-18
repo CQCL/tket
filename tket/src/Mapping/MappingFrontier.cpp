@@ -265,9 +265,7 @@ Subcircuit MappingFrontier::get_frontier_subcircuit(
     subcircuit_vertices.insert(
         current_cut.slice->begin(), current_cut.slice->end());
   }
-  if (subcircuit_vertices.size() == 0) {
-    throw MappingFrontierError("Subcircuit being produced with no gates.");
-  }
+  TKET_ASSERT(subcircuit_vertices.size() != 0);
   return Subcircuit(
       convert_u_frontier_to_edges(*frontier_convert_vertport_to_edge(
           this->circuit_, this->quantum_boundary)),
@@ -275,7 +273,6 @@ Subcircuit MappingFrontier::get_frontier_subcircuit(
       subcircuit_vertices);
 }
 
-// TODO: Update to support ancillas
 void MappingFrontier::update_quantum_boundary_uids(
     const unit_map_t& relabelled_uids) {
   for (const std::pair<const UnitID, UnitID>& label : relabelled_uids) {

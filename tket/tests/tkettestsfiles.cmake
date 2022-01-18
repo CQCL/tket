@@ -83,11 +83,11 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Circuit/test_ThreeQubitConversion.cpp
     ${TKET_TESTS_DIR}/test_Program.cpp
     ${TKET_TESTS_DIR}/test_CliffTableau.cpp
+    ${TKET_TESTS_DIR}/test_UnitaryTableau.cpp
     ${TKET_TESTS_DIR}/test_PhasePolynomials.cpp
     ${TKET_TESTS_DIR}/test_PauliGraph.cpp
     ${TKET_TESTS_DIR}/test_Architectures.cpp
     ${TKET_TESTS_DIR}/test_Placement.cpp
-    ${TKET_TESTS_DIR}/test_Routing.cpp
     ${TKET_TESTS_DIR}/test_MappingFrontier.cpp
     ${TKET_TESTS_DIR}/test_RoutingMethod.cpp
     ${TKET_TESTS_DIR}/test_MappingManager.cpp

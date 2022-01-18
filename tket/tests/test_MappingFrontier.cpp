@@ -243,6 +243,80 @@ SCENARIO("Test update_quantum_boundary_uids.") {
 }
 
 SCENARIO("Test permute_subcircuit_q_out_hole.") {
+  GIVEN("Quantum Boundary and Permutation have size mismatch.") {
+    Circuit circ(0);
+    circ.add_q_register("test_nodes", 4);
+    Qubit q0("test_nodes", 0);
+    Qubit q1("test_nodes", 1);
+    Qubit q2("test_nodes", 2);
+    Qubit q3("test_nodes", 3);
+
+    circ.add_op<UnitID>(OpType::X, {q0});
+    circ.add_op<UnitID>(OpType::CX, {q0, q1});
+    circ.add_op<UnitID>(OpType::CY, {q2, q3});
+    circ.add_op<UnitID>(OpType::CZ, {q0, q2});
+    circ.add_op<UnitID>(OpType::CX, {q3, q1});
+
+    std::vector<Node> nodes = {Node(0), Node(1), Node(2), Node(3)};
+
+    Architecture arc(
+        {{nodes[0], nodes[1]}, {nodes[1], nodes[3]}, {nodes[2], nodes[1]}});
+    ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);
+
+    std::map<UnitID, UnitID> rename_map = {
+        {q0, nodes[0]}, {q1, nodes[1]}, {q2, nodes[2]}, {q3, nodes[3]}};
+    circ.rename_units(rename_map);
+
+    MappingFrontier mf(circ);
+
+    mf.advance_frontier_boundary(shared_arc);
+    Subcircuit sc = mf.get_frontier_subcircuit(2, 5);
+    unit_map_t permutation = {{nodes[0], nodes[1]}};
+
+    REQUIRE_THROWS_AS(
+        mf.permute_subcircuit_q_out_hole(permutation, sc),
+        MappingFrontierError);
+  }
+  GIVEN(
+      "Quantum Boundary and permutation have same size, but UnitID don't "
+      "match.") {
+    Circuit circ(0);
+    circ.add_q_register("test_nodes", 4);
+    Qubit q0("test_nodes", 0);
+    Qubit q1("test_nodes", 1);
+    Qubit q2("test_nodes", 2);
+    Qubit q3("test_nodes", 3);
+
+    circ.add_op<UnitID>(OpType::X, {q0});
+    circ.add_op<UnitID>(OpType::CX, {q0, q1});
+    circ.add_op<UnitID>(OpType::CY, {q2, q3});
+    circ.add_op<UnitID>(OpType::CZ, {q0, q2});
+    circ.add_op<UnitID>(OpType::CX, {q3, q1});
+
+    std::vector<Node> nodes = {Node(0), Node(1), Node(2), Node(3)};
+
+    Architecture arc(
+        {{nodes[0], nodes[1]}, {nodes[1], nodes[3]}, {nodes[2], nodes[1]}});
+    ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);
+
+    std::map<UnitID, UnitID> rename_map = {
+        {q0, nodes[0]}, {q1, nodes[1]}, {q2, nodes[2]}, {q3, nodes[3]}};
+    circ.rename_units(rename_map);
+
+    MappingFrontier mf(circ);
+
+    mf.advance_frontier_boundary(shared_arc);
+    Subcircuit sc = mf.get_frontier_subcircuit(2, 5);
+    unit_map_t permutation = {
+        {nodes[0], nodes[1]},
+        {nodes[1], nodes[2]},
+        {nodes[2], nodes[3]},
+        {Node(4), nodes[0]}};
+
+    REQUIRE_THROWS_AS(
+        mf.permute_subcircuit_q_out_hole(permutation, sc),
+        MappingFrontierError);
+  }
   GIVEN("A four qubit subcircuit where every qubit is permuted by given map.") {
     Circuit circ(0);
     circ.add_q_register("test_nodes", 4);
@@ -251,11 +325,11 @@ SCENARIO("Test permute_subcircuit_q_out_hole.") {
     Qubit q2("test_nodes", 2);
     Qubit q3("test_nodes", 3);
 
-    Vertex v1 = circ.add_op<UnitID>(OpType::X, {q0});
-    Vertex v2 = circ.add_op<UnitID>(OpType::CX, {q0, q1});
-    Vertex v3 = circ.add_op<UnitID>(OpType::CY, {q2, q3});
-    Vertex v5 = circ.add_op<UnitID>(OpType::CZ, {q0, q2});
-    Vertex v7 = circ.add_op<UnitID>(OpType::CX, {q3, q1});
+    circ.add_op<UnitID>(OpType::X, {q0});
+    circ.add_op<UnitID>(OpType::CX, {q0, q1});
+    circ.add_op<UnitID>(OpType::CY, {q2, q3});
+    circ.add_op<UnitID>(OpType::CZ, {q0, q2});
+    circ.add_op<UnitID>(OpType::CX, {q3, q1});
 
     std::vector<Node> nodes = {Node(0), Node(1), Node(2), Node(3)};
 

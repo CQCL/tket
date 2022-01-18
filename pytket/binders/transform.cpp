@@ -21,7 +21,6 @@
 #include <functional>
 
 #include "Circuit/Circuit.hpp"
-#include "Routing/Routing.hpp"
 #include "Transformations/ContextualReduction.hpp"
 #include "typecast.hpp"
 

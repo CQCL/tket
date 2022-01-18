@@ -20,11 +20,11 @@
 #include "Converters/PhasePoly.hpp"
 #include "Mapping/MappingManager.hpp"
 #include "Mapping/RoutingMethod.hpp"
+#include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassLibrary.hpp"
 #include "Predicates/Predicates.hpp"
-#include "Routing/Placement.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 
