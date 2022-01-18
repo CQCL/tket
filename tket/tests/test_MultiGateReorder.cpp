@@ -1,7 +1,9 @@
 #include <catch2/catch.hpp>
 
+#include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
 #include "Mapping/MultiGateReorder.hpp"
+#include "Predicates/Predicates.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 
@@ -305,6 +307,54 @@ SCENARIO("Test MultiGateReorderRoutingMethod") {
     const auto u2 = tket_sim::get_unitary(circ2);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(
         u2, u1, tket_sim::MatrixEquivalence::EQUAL));
+  }
+}
+
+SCENARIO("Test MappingManager with MultiGateReorderRoutingMethod") {
+  std::vector<Node> nodes = {
+      Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
+      Node("node_test", 3)};
+
+  // n0 -- n1 -- n2 -- n3
+  Architecture architecture(
+      {{nodes[0], nodes[1]}, {nodes[1], nodes[2]}, {nodes[2], nodes[3]}});
+  ArchitecturePtr shared_arc = std::make_shared<Architecture>(architecture);
+
+  GIVEN("Simple CZ, CX circuit.") {
+    Circuit circ(4);
+    std::vector<Qubit> qubits = circ.all_qubits();
+
+    // Physically invalid operations
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[3]});
+    // Physically valid operations
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[2]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[1]});
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]},
+        {qubits[1], nodes[1]},
+        {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    MappingManager mm(shared_arc);
+    // MultiGateReorderRoutingMethod should first commute the last two gates
+    // then only one swap is needed.
+    std::vector<RoutingMethodPtr> vrm = {
+        std::make_shared<MultiGateReorderRoutingMethod>(),
+        std::make_shared<LexiRouteRoutingMethod>(10)};
+    bool res = mm.route_circuit(circ, vrm);
+    PredicatePtr routed_correctly =
+        std::make_shared<ConnectivityPredicate>(architecture);
+    REQUIRE(routed_correctly->verify(circ));
+    REQUIRE(circ.count_gates(OpType::SWAP) == 1);
+    std::vector<Command> commands = circ.get_commands();
+    REQUIRE(commands.size() == 5);
+    Command swap_c = commands[2];
+    unit_vector_t uids = {nodes[1], nodes[2]};
+    REQUIRE(swap_c.get_args() == uids);
+    REQUIRE(*swap_c.get_op_ptr() == *get_op_ptr(OpType::SWAP));
   }
 }
 }  // namespace tket
