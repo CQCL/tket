@@ -145,7 +145,7 @@ def test_rebase_pass_generation() -> None:
     seq = SequencePass(passlist)
     assert seq.apply(cu)
     coms = cu.circuit.get_commands()
-    assert str(coms) == "[tk1(0.5, 1, 0.5) q[0];, tk1(0.5, 1, 3.5) q[1];]"
+    assert str(coms) == "[TK1(0.5, 1, 0.5) q[0];, TK1(0.5, 1, 3.5) q[1];]"
 
 
 def test_custom_combinator_generation() -> None:

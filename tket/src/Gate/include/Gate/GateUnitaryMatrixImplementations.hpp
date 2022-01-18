@@ -70,7 +70,7 @@ struct GateUnitaryMatrixImplementations {
 
   static Eigen::Matrix2cd U3(double theta, double phi, double lambda);
 
-  static Eigen::Matrix2cd tk1(double alpha, double beta, double gamma);
+  static Eigen::Matrix2cd TK1(double alpha, double beta, double gamma);
 
   static const Eigen::Matrix4cd& CX();
   static const Eigen::Matrix4cd& CY();

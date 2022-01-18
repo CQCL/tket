@@ -505,7 +505,7 @@ def circuit_to_qasm_io(
             # attach predicate to bit,
             # subsequent conditional will handle it
             continue
-        if optype == OpType.ConditionalGate:
+        if optype == OpType.Conditional:
             bits = args[: op.width]
             control_bit = bits[0]
             if control_bit in range_preds:

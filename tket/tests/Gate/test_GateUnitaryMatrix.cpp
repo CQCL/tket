@@ -263,7 +263,7 @@ SCENARIO("Single fixed size gates") {
   }
 }
 
-SCENARIO("Test 1 qubit gates against tk1 angles") {
+SCENARIO("Test 1 qubit gates against TK1 angles") {
   const auto& gates_data = internal::GatesData::get();
   const auto& one_qubit_data = gates_data.input_data.at(1);
   std::vector<double> current_values;

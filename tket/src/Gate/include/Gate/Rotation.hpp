@@ -92,18 +92,18 @@ class Rotation {
 };
 
 /**
- * Construct tk1 angles and phase from matrix
+ * Construct TK1 angles and phase from matrix
  *
  * @param U 2x2 unitary matrix
  *
- * @return [a,b,c,t] where a,b,c are the tk1 angles and t is the phase
+ * @return [a,b,c,t] where a,b,c are the TK1 angles and t is the phase
  */
 std::vector<double> tk1_angles_from_unitary(const Eigen::Matrix2cd& U);
 
 /**
- * Construct matrix from tk1 angles and phase
+ * Construct matrix from TK1 angles and phase
  *
- * @param params [a,b,c,t] where a,b,c are the tk1 angles and t is the phase
+ * @param params [a,b,c,t] where a,b,c are the TK1 angles and t is the phase
  *
  * @return 2x2 unitary matrix
  * @pre no symbolic parameters

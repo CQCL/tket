@@ -235,10 +235,10 @@ enum class OpType {
   U1,
 
   /**
-   * \f$ \mathrm{tk1}(\alpha, \beta, \gamma) = \mathrm{Rz}(\alpha)
+   * \f$ \mathrm{TK1}(\alpha, \beta, \gamma) = \mathrm{Rz}(\alpha)
    * \mathrm{Rx}(\beta) \mathrm{Rz}(\gamma) \f$
    */
-  tk1,
+  TK1,
 
   /**
    * Controlled \ref OpType::X
@@ -565,9 +565,9 @@ enum class OpType {
   CliffBox,
 
   /**
-   * See \ref CompositeGate
+   * See \ref CustomGate
    */
-  Composite,
+  CustomGate,
 
   /**
    * See \ref PhasePolyBox

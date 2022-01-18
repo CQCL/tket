@@ -42,7 +42,7 @@ namespace test_Circ {
 static std::pair<Op_ptr, Expr> op_to_tk1(const Op_ptr& op) {
   std::vector<Expr> angles = as_gate_ptr(op)->get_tk1_angles();
   return {
-      get_op_ptr(OpType::tk1, {angles[0], angles[1], angles[2]}), angles[3]};
+      get_op_ptr(OpType::TK1, {angles[0], angles[1], angles[2]}), angles[3]};
 }
 
 SCENARIO(
@@ -1339,7 +1339,7 @@ SCENARIO("Test circuit.dagger() method") {
     Eigen::Matrix4cd mat;
     mat << 1, 0, 0, 0, 0, i_, 0, 0, 0, 0, 0, -i_, 0, 0, i_, 0;
     circ.add_box(Unitary2qBox(mat), {1, 2});
-    circ.add_op<unsigned>(OpType::tk1, {0.3, 0.7, 0.8}, {1});
+    circ.add_op<unsigned>(OpType::TK1, {0.3, 0.7, 0.8}, {1});
     Circuit daggered = circ.dagger();
     daggered.assert_valid();
 
