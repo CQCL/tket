@@ -232,6 +232,7 @@ set(TKET_SOURCES
     ${TKET_MAPPING_DIR}/LexicographicalComparison.cpp
     ${TKET_MAPPING_DIR}/LexiRoute.cpp
     ${TKET_MAPPING_DIR}/RoutingMethodJson.cpp
+    ${TKET_MAPPING_DIR}/MultiGateReorder.cpp
     ${TKET_MAPPING_DIR}/Verification.cpp
 
 

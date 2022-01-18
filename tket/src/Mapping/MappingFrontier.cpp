@@ -20,11 +20,6 @@ UnitID get_unitid_from_unit_frontier(
       std::string("Edge provided not in unit_frontier_t object."));
 }
 
-/**
- * quantum_boundary stored as vertport so that correct edge can be recovered
- * after subcircuit substitution method uses Vertex and port_t and
- * Circuit::get_nth_out_edge to generate unit_frontier_t object
- */
 std::shared_ptr<unit_frontier_t> frontier_convert_vertport_to_edge(
     const Circuit& circuit,
     const std::shared_ptr<unit_vertport_frontier_t>& u_frontier) {
@@ -55,6 +50,27 @@ MappingFrontier::MappingFrontier(Circuit& _circuit) : circuit_(_circuit) {
     this->classical_boundary->insert(
         {bit,
          this->circuit_.get_nth_b_out_bundle(this->circuit_.get_in(bit), 0)});
+  }
+}
+
+MappingFrontier::MappingFrontier(const MappingFrontier& mapping_frontier)
+    : circuit_(mapping_frontier.circuit_) {
+  this->quantum_boundary = std::make_shared<unit_vertport_frontier_t>();
+  this->classical_boundary = std::make_shared<b_frontier_t>();
+  for (const std::pair<UnitID, VertPort>& pair :
+       mapping_frontier.quantum_boundary->get<TagKey>()) {
+    this->quantum_boundary->insert({pair.first, pair.second});
+  }
+  for (const std::pair<Bit, EdgeVec>& pair :
+       mapping_frontier.classical_boundary->get<TagKey>()) {
+    EdgeVec edges;
+    for (const Edge& edge : pair.second) {
+      edges.push_back(edge);
+    }
+    this->classical_boundary->insert({pair.first, edges});
+  }
+  for (const Node& node : mapping_frontier.ancilla_nodes_) {
+    this->ancilla_nodes_.insert(node);
   }
 }
 
@@ -221,11 +237,6 @@ void MappingFrontier::advance_frontier_boundary(
   return;
 }
 
-/**
- * convert_u_frontier_to_edges
- * Subcircuit requires EdgeVec, not unit_frontier_t as boundary information
- * Helper Functions to convert types
- */
 EdgeVec convert_u_frontier_to_edges(const unit_frontier_t& u_frontier) {
   EdgeVec edges;
   for (const std::pair<UnitID, Edge>& pair : u_frontier.get<TagKey>()) {
