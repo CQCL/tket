@@ -12,23 +12,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-Clifford)
+project(tket-${COMP})
 
-add_library(tket-Clifford
+if (NOT ${COMP} STREQUAL "Clifford")
+    message(FATAL_ERROR "Unexpected component name.")
+endif()
+
+add_library(tket-${COMP}
     CliffTableau.cpp
     SymplecticTableau.cpp
     UnitaryTableau.cpp)
 
-target_include_directories(tket-Clifford
+list(APPEND DEPS_${COMP}
+    OpType
+    Utils)
+
+foreach(DEP ${DEPS_${COMP}})
+    target_include_directories(
+        tket-${COMP} PRIVATE ${TKET_${DEP}_INCLUDE_DIR})
+    target_link_libraries(
+        tket-${COMP} PRIVATE tket-${DEP})
+endforeach()
+
+target_include_directories(tket-${COMP}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_Clifford_INCLUDE_DIR}
-    ${TKET_Clifford_INCLUDE_DIR}/Clifford
-    ${TKET_Utils_INCLUDE_DIR}
-    ${TKET_OpType_INCLUDE_DIR})
+    ${TKET_${COMP}_INCLUDE_DIR}
+    ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-Clifford
-    PRIVATE
-    tket-Utils
-    tket-OpType
-    ${CONAN_LIBS})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})

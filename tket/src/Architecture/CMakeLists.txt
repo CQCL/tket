@@ -12,22 +12,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-Architecture)
+project(tket-${COMP})
 
-add_library(tket-Architecture
+if (NOT ${COMP} STREQUAL "Architecture")
+    message(FATAL_ERROR "Unexpected component name.")
+endif()
+
+add_library(tket-${COMP}
     Architecture.cpp
     ArchitectureGraphClasses.cpp)
 
-target_include_directories(tket-Architecture
+list(APPEND DEPS_${COMP}
+    Graphs
+    Utils)
+
+foreach(DEP ${DEPS_${COMP}})
+    target_include_directories(
+        tket-${COMP} PRIVATE ${TKET_${DEP}_INCLUDE_DIR})
+    target_link_libraries(
+        tket-${COMP} PRIVATE tket-${DEP})
+endforeach()
+
+target_include_directories(tket-${COMP}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_Architecture_INCLUDE_DIR}
-    ${TKET_Architecture_INCLUDE_DIR}/Architecture
-    ${TKET_Utils_INCLUDE_DIR}
-    ${TKET_Graphs_INCLUDE_DIR})
+    ${TKET_${COMP}_INCLUDE_DIR}
+    ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-Architecture
-    PRIVATE
-    tket-Utils
-    tket-Graphs
-    ${CONAN_LIBS})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})

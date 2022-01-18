@@ -14,6 +14,10 @@
 
 project(tket-Utils)
 
+if (NOT ${COMP} STREQUAL "Utils")
+    message(FATAL_ERROR "Unexpected component name.")
+endif()
+
 add_library(tket-Utils
     TketLog.cpp
     UnitID.cpp
@@ -23,11 +27,19 @@ add_library(tket-Utils
     CosSinDecomposition.cpp
     Expression.cpp)
 
-target_include_directories(tket-Utils
+list(APPEND DEPS_${COMP})
+
+foreach(DEP ${DEPS_${COMP}})
+    target_include_directories(
+        tket-${COMP} PRIVATE ${TKET_${DEP}_INCLUDE_DIR})
+    target_link_libraries(
+        tket-${COMP} PRIVATE tket-${DEP})
+endforeach()
+
+target_include_directories(tket-${COMP}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_Utils_INCLUDE_DIR}
-    ${TKET_Utils_INCLUDE_DIR}/Utils)
+    ${TKET_${COMP}_INCLUDE_DIR}
+    ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-Utils
-    ${CONAN_LIBS})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})

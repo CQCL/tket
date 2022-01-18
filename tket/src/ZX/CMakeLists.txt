@@ -12,9 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-ZX)
+project(tket-${COMP})
 
-add_library(tket-ZX
+if (NOT ${COMP} STREQUAL "ZX")
+    message(FATAL_ERROR "Unexpected component name.")
+endif()
+
+add_library(tket-${COMP}
     ZXDConstructors.cpp
     ZXDExpansions.cpp
     ZXDGettersSetters.cpp
@@ -26,14 +30,20 @@ add_library(tket-ZX
     ZXRWGraphLikeForm.cpp
     ZXRWGraphLikeSimplification.cpp)
 
-target_include_directories(tket-ZX
+list(APPEND DEPS_${COMP}
+    Utils)
+
+foreach(DEP ${DEPS_${COMP}})
+    target_include_directories(
+        tket-${COMP} PRIVATE ${TKET_${DEP}_INCLUDE_DIR})
+    target_link_libraries(
+        tket-${COMP} PRIVATE tket-${DEP})
+endforeach()
+
+target_include_directories(tket-${COMP}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_ZX_INCLUDE_DIR}
-    ${TKET_ZX_INCLUDE_DIR}/ZX
-    ${TKET_Utils_INCLUDE_DIR})
+    ${TKET_${COMP}_INCLUDE_DIR}
+    ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-ZX
-    PRIVATE
-    tket-Utils
-    ${CONAN_LIBS})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})

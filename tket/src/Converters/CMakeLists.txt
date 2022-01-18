@@ -12,9 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-Converters)
+project(tket-${COMP})
 
-add_library(tket-Converters
+if (NOT ${COMP} STREQUAL "Converters")
+    message(FATAL_ERROR "Unexpected component name.")
+endif()
+
+add_library(tket-${COMP}
     CliffTableauConverters.cpp
     PauliGadget.cpp
     PauliGraphConverters.cpp
@@ -23,28 +27,27 @@ add_library(tket-Converters
     UnitaryTableauBox.cpp
     UnitaryTableauConverters.cpp)
 
-target_include_directories(tket-Converters
+list(APPEND DEPS_${COMP}
+    Circuit
+    Clifford
+    Diagonalisation
+    Gate
+    Ops
+    OpType
+    PauliGraph
+    Utils)
+
+foreach(DEP ${DEPS_${COMP}})
+    target_include_directories(
+        tket-${COMP} PRIVATE ${TKET_${DEP}_INCLUDE_DIR})
+    target_link_libraries(
+        tket-${COMP} PRIVATE tket-${DEP})
+endforeach()
+
+target_include_directories(tket-${COMP}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_Converters_INCLUDE_DIR}
-    ${TKET_Converters_INCLUDE_DIR}/Converters
-    ${TKET_Utils_INCLUDE_DIR}
-    ${TKET_OpType_INCLUDE_DIR}
-    ${TKET_Clifford_INCLUDE_DIR}
-    ${TKET_Ops_INCLUDE_DIR}
-    ${TKET_Gate_INCLUDE_DIR}
-    ${TKET_PauliGraph_INCLUDE_DIR}
-    ${TKET_Circuit_INCLUDE_DIR}
-    ${TKET_Diagonalisation_INCLUDE_DIR})
+    ${TKET_${COMP}_INCLUDE_DIR}
+    ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-Converters
-    PRIVATE
-    tket-Utils
-    tket-OpType
-    tket-Clifford
-    tket-Ops
-    tket-Gate
-    tket-PauliGraph
-    tket-Circuit
-    tket-Diagonalisation
-    ${CONAN_LIBS})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})

@@ -12,22 +12,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-OpType)
+project(tket-${COMP})
 
-add_library(tket-OpType
+if (NOT ${COMP} STREQUAL "OpType")
+    message(FATAL_ERROR "Unexpected component name.")
+endif()
+
+add_library(tket-${COMP}
     OpDesc.cpp
     OpTypeInfo.cpp
     OpTypeFunctions.cpp
     OpTypeJson.cpp)
 
-target_include_directories(tket-OpType
+list(APPEND DEPS_${COMP}
+    Utils)
+
+foreach(DEP ${DEPS_${COMP}})
+    target_include_directories(
+        tket-${COMP} PRIVATE ${TKET_${DEP}_INCLUDE_DIR})
+    target_link_libraries(
+        tket-${COMP} PRIVATE tket-${DEP})
+endforeach()
+
+target_include_directories(tket-${COMP}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_OpType_INCLUDE_DIR}
-    ${TKET_OpType_INCLUDE_DIR}/OpType
-    ${TKET_Utils_INCLUDE_DIR})
+    ${TKET_${COMP}_INCLUDE_DIR}
+    ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-OpType
-    PRIVATE
-    tket-Utils
-    ${CONAN_LIBS})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})

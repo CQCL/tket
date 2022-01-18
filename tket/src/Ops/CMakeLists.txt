@@ -12,25 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-Ops)
+project(tket-${COMP})
 
-add_library(tket-Ops
+if (NOT ${COMP} STREQUAL "Ops")
+    message(FATAL_ERROR "Unexpected component name.")
+endif()
+
+add_library(tket-${COMP}
     FlowOp.cpp
     MetaOp.cpp
     Op.cpp
     ClassicalOps.cpp
     OpJsonFactory.cpp)
 
-target_include_directories(tket-Ops
+list(APPEND DEPS_${COMP}
+    OpType
+    Utils)
+
+foreach(DEP ${DEPS_${COMP}})
+    target_include_directories(
+        tket-${COMP} PRIVATE ${TKET_${DEP}_INCLUDE_DIR})
+    target_link_libraries(
+        tket-${COMP} PRIVATE tket-${DEP})
+endforeach()
+
+target_include_directories(tket-${COMP}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_Ops_INCLUDE_DIR}
-    ${TKET_Ops_INCLUDE_DIR}/Ops
-    ${TKET_Utils_INCLUDE_DIR}
-    ${TKET_OpType_INCLUDE_DIR})
+    ${TKET_${COMP}_INCLUDE_DIR}
+    ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-Ops
-    PRIVATE
-    tket-Utils
-    tket-OpType
-    ${CONAN_LIBS})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})

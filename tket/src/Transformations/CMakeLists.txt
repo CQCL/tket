@@ -12,9 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-Transformations)
+project(tket-${COMP})
 
-add_library(tket-Transformations
+if (NOT ${COMP} STREQUAL "Transformations")
+    message(FATAL_ERROR "Unexpected component name.")
+endif()
+
+add_library(tket-${COMP}
     Combinator.cpp
     Rebase.cpp
     BasicOptimisation.cpp
@@ -30,33 +34,30 @@ add_library(tket-Transformations
     ContextualReduction.cpp
     ThreeQubitSquash.cpp)
 
-target_include_directories(tket-Transformations
+list(APPEND DEPS_${COMP}
+    Architecture
+    Characterisation
+    Circuit
+    Clifford
+    Converters
+    Gate
+    Graphs
+    Ops
+    OpType
+    PauliGraph
+    Utils)
+
+foreach(DEP ${DEPS_${COMP}})
+    target_include_directories(
+        tket-${COMP} PRIVATE ${TKET_${DEP}_INCLUDE_DIR})
+    target_link_libraries(
+        tket-${COMP} PRIVATE tket-${DEP})
+endforeach()
+
+target_include_directories(tket-${COMP}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_Transformations_INCLUDE_DIR}
-    ${TKET_Transformations_INCLUDE_DIR}/Transformations
-    ${TKET_Utils_INCLUDE_DIR}
-    ${TKET_OpType_INCLUDE_DIR}
-    ${TKET_Ops_INCLUDE_DIR}
-    ${TKET_Gate_INCLUDE_DIR}
-    ${TKET_Clifford_INCLUDE_DIR}
-    ${TKET_Circuit_INCLUDE_DIR}
-    ${TKET_Graphs_INCLUDE_DIR}
-    ${TKET_PauliGraph_INCLUDE_DIR}
-    ${TKET_Converters_INCLUDE_DIR}
-    ${TKET_Characterisation_INCLUDE_DIR}
-    ${TKET_Architecture_INCLUDE_DIR})
+    ${TKET_${COMP}_INCLUDE_DIR}
+    ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-Transformations
-    PRIVATE
-    tket-Utils
-    tket-OpType
-    tket-Ops
-    tket-Gate
-    tket-Circuit
-    tket-Graphs
-    tket-PauliGraph
-    tket-Converters
-    tket-Characterisation
-    tket-Architecture
-    ${CONAN_LIBS})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})

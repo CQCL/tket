@@ -12,34 +12,38 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-Characterisation)
+project(tket-${COMP})
 
-add_library(tket-Characterisation
+if (NOT ${COMP} STREQUAL "Characterisation")
+    message(FATAL_ERROR "Unexpected component name.")
+endif()
+
+add_library(tket-${COMP}
     Cycles.cpp
     FrameRandomisation.cpp
     DeviceCharacterisation.cpp)
 
-target_include_directories(tket-Characterisation
+list(APPEND DEPS_${COMP}
+    Architecture
+    Circuit
+    Gate
+    Graphs
+    Ops
+    OpType
+    PauliGraph
+    Utils)
+
+foreach(DEP ${DEPS_${COMP}})
+    target_include_directories(
+        tket-${COMP} PRIVATE ${TKET_${DEP}_INCLUDE_DIR})
+    target_link_libraries(
+        tket-${COMP} PRIVATE tket-${DEP})
+endforeach()
+
+target_include_directories(tket-${COMP}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_Characterisation_INCLUDE_DIR}
-    ${TKET_Characterisation_INCLUDE_DIR}/Characterisation
-    ${TKET_Utils_INCLUDE_DIR}
-    ${TKET_OpType_INCLUDE_DIR}
-    ${TKET_Ops_INCLUDE_DIR}
-    ${TKET_Gate_INCLUDE_DIR}
-    ${TKET_Graphs_INCLUDE_DIR}
-    ${TKET_PauliGraph_INCLUDE_DIR}
-    ${TKET_Circuit_INCLUDE_DIR}
-    ${TKET_Architecture_INCLUDE_DIR})
+    ${TKET_${COMP}_INCLUDE_DIR}
+    ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-Characterisation
-    PRIVATE
-    tket-Utils
-    tket-OpType
-    tket-Ops
-    tket-Gate
-    tket-PauliGraph
-    tket-Circuit
-    tket-Architecture
-    ${CONAN_LIBS})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})

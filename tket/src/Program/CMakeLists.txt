@@ -12,29 +12,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-Program)
+project(tket-${COMP})
 
-add_library(tket-Program
+if (NOT ${COMP} STREQUAL "Program")
+    message(FATAL_ERROR "Unexpected component name.")
+endif()
+
+add_library(tket-${COMP}
     Program_accessors.cpp
     Program_analysis.cpp
     Program_iteration.cpp
     Program_manipulation.cpp
     Program_units.cpp)
 
-target_include_directories(tket-Program
+list(APPEND DEPS_${COMP}
+    Circuit
+    Gate
+    Ops
+    OpType
+    Utils)
+
+foreach(DEP ${DEPS_${COMP}})
+    target_include_directories(
+        tket-${COMP} PRIVATE ${TKET_${DEP}_INCLUDE_DIR})
+    target_link_libraries(
+        tket-${COMP} PRIVATE tket-${DEP})
+endforeach()
+
+target_include_directories(tket-${COMP}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_Program_INCLUDE_DIR}
-    ${TKET_Program_INCLUDE_DIR}/Program
-    ${TKET_Utils_INCLUDE_DIR}
-    ${TKET_OpType_INCLUDE_DIR}
-    ${TKET_Ops_INCLUDE_DIR}
-    ${TKET_Gate_INCLUDE_DIR}
-    ${TKET_Circuit_INCLUDE_DIR})
+    ${TKET_${COMP}_INCLUDE_DIR}
+    ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-Program
-    PRIVATE
-    tket-Utils
-    tket-Ops
-    tket-Circuit
-    ${CONAN_LIBS})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})

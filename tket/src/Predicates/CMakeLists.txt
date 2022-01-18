@@ -12,46 +12,46 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-Predicates)
+project(tket-${COMP})
 
-add_library(tket-Predicates
+if (NOT ${COMP} STREQUAL "Predicates")
+    message(FATAL_ERROR "Unexpected component name.")
+endif()
+
+add_library(tket-${COMP}
     Predicates.cpp
     CompilationUnit.cpp
     CompilerPass.cpp
     PassGenerators.cpp
     PassLibrary.cpp)
 
-target_include_directories(tket-Predicates
+list(APPEND DEPS_${COMP}
+    ArchAwareSynth
+    Architecture
+    Characterisation
+    Circuit
+    Clifford
+    Converters
+    Gate
+    Graphs
+    Ops
+    OpType
+    PauliGraph
+    Routing
+    Transformations
+    Utils)
+
+foreach(DEP ${DEPS_${COMP}})
+    target_include_directories(
+        tket-${COMP} PRIVATE ${TKET_${DEP}_INCLUDE_DIR})
+    target_link_libraries(
+        tket-${COMP} PRIVATE tket-${DEP})
+endforeach()
+
+target_include_directories(tket-${COMP}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_Predicates_INCLUDE_DIR}
-    ${TKET_Predicates_INCLUDE_DIR}/Predicates
-    ${TKET_Utils_INCLUDE_DIR}
-    ${TKET_OpType_INCLUDE_DIR}
-    ${TKET_Ops_INCLUDE_DIR}
-    ${TKET_Gate_INCLUDE_DIR}
-    ${TKET_Clifford_INCLUDE_DIR}
-    ${TKET_PauliGraph_INCLUDE_DIR}
-    ${TKET_Circuit_INCLUDE_DIR}
-    ${TKET_Graphs_INCLUDE_DIR}
-    ${TKET_Architecture_INCLUDE_DIR}
-    ${TKET_Characterisation_INCLUDE_DIR}
-    ${TKET_Routing_INCLUDE_DIR}
-    ${TKET_Transformations_INCLUDE_DIR}
-    ${TKET_ArchAwareSynth_INCLUDE_DIR}
-    ${TKET_Converters_INCLUDE_DIR})
+    ${TKET_${COMP}_INCLUDE_DIR}
+    ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-Predicates
-    PRIVATE
-    tket-Utils
-    tket-OpType
-    tket-Ops
-    tket-Gate
-    tket-Circuit
-    tket-Graphs
-    tket-Architecture
-    tket-Routing
-    tket-Transformations
-    tket-ArchAwareSynth
-    tket-Converters
-    ${CONAN_LIBS})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})

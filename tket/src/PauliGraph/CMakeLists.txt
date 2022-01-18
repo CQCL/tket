@@ -12,28 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-project(tket-PauliGraph)
+project(tket-${COMP})
 
-add_library(tket-PauliGraph
+if (NOT ${COMP} STREQUAL "PauliGraph")
+    message(FATAL_ERROR "Unexpected component name.")
+endif()
+
+add_library(tket-${COMP}
     ConjugatePauliFunctions.cpp
     PauliGraph.cpp)
 
-target_include_directories(tket-PauliGraph
+list(APPEND DEPS_${COMP}
+    Clifford
+    Gate
+    Ops
+    OpType
+    Utils)
+
+foreach(DEP ${DEPS_${COMP}})
+    target_include_directories(
+        tket-${COMP} PRIVATE ${TKET_${DEP}_INCLUDE_DIR})
+    target_link_libraries(
+        tket-${COMP} PRIVATE tket-${DEP})
+endforeach()
+
+target_include_directories(tket-${COMP}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${TKET_PauliGraph_INCLUDE_DIR}
-    ${TKET_PauliGraph_INCLUDE_DIR}/PauliGraph
-    ${TKET_Utils_INCLUDE_DIR}
-    ${TKET_OpType_INCLUDE_DIR}
-    ${TKET_Ops_INCLUDE_DIR}
-    ${TKET_Gate_INCLUDE_DIR}
-    ${TKET_Clifford_INCLUDE_DIR})
+    ${TKET_${COMP}_INCLUDE_DIR}
+    ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-PauliGraph
-    PRIVATE
-    tket-Utils
-    tket-OpType
-    tket-Ops
-    tket-Gate
-    tket-Clifford
-    ${CONAN_LIBS})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})
