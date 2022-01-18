@@ -364,9 +364,10 @@ static unsigned find_first_differing_val(
       "Error in `find_first_differing_val`: No change between deques");
 }
 
-// optimal decomposition of CnRy for 2 < n < 8 according to 1995 paper... can do
-// better with ZH calculus?
-static Circuit lemma71(unsigned arity, const Expr& angle) {
+// optimal decomposition of CnRy and CnZ for 2 < n < 8 according to 1995
+// paper... can do better with ZH calculus?
+static Circuit lemma71(
+    unsigned arity, const Expr& angle, const OpType& cr_type) {
   unsigned m_controls = arity - 1;
   if (m_controls < 2)
     throw Unsupported(
@@ -376,6 +377,9 @@ static Circuit lemma71(unsigned arity, const Expr& angle) {
     throw Unsupported(
         "Using Lemma 7.1 to decompose a gate with more than 7 controls "
         "is inefficient");
+  if (cr_type != OpType::CRy && cr_type != OpType::CU1)
+    throw Unsupported(
+        "The implementation currently only supports CU1 and CRy ");
 
   GrayCode gc = gen_graycode(m_controls);
   unsigned n_square_roots = m_controls - 1;
@@ -390,8 +394,8 @@ static Circuit lemma71(unsigned arity, const Expr& angle) {
 
   param = param / (1 << (n_square_roots));
 
-  const Op_ptr V_op = get_op_ptr(OpType::CnRy, param, 2);
-  const Op_ptr V_dg = get_op_ptr(OpType::CnRy, -param, 2);
+  const Op_ptr V_op = get_op_ptr(cr_type, param);
+  const Op_ptr V_dg = get_op_ptr(cr_type, -param);
 
   unsigned control_qb = 0;
   unsigned last = 0;
@@ -427,11 +431,17 @@ static Circuit lemma71(unsigned arity, const Expr& angle) {
   for (auto next = vit; vit != vend; vit = next) {
     ++next;
     Vertex v = *vit;
-    if (rep.get_OpType_from_Vertex(v) == OpType::CnRy) {
+    if (rep.get_OpType_from_Vertex(v) == OpType::CRy) {
       Expr v_angle = rep.get_Op_ptr_from_Vertex(v)->get_params()[0];
-      Circuit cnry_replacement = lemma54(v_angle);
+      Circuit cry_replacement = CircPool::CRy_using_CX(v_angle);
       Subcircuit sub{rep.get_in_edges(v), rep.get_all_out_edges(v), {v}};
-      rep.substitute(cnry_replacement, sub, Circuit::VertexDeletion::Yes);
+      rep.substitute(cry_replacement, sub, Circuit::VertexDeletion::Yes);
+    }
+    if (rep.get_OpType_from_Vertex(v) == OpType::CU1) {
+      Expr v_angle = rep.get_Op_ptr_from_Vertex(v)->get_params()[0];
+      Circuit cu1_replacement = CircPool::CU1_using_CX(v_angle);
+      Subcircuit sub{rep.get_in_edges(v), rep.get_all_out_edges(v), {v}};
+      rep.substitute(cu1_replacement, sub, Circuit::VertexDeletion::Yes);
     }
   }
   return rep;
@@ -706,7 +716,7 @@ Circuit Transform::decomposed_CnRy(const Op_ptr op, unsigned arity) {
     case 6:
     case 7:
     case 8: {
-      rep = lemma71(arity, angle);
+      rep = lemma71(arity, angle, OpType::CRy);
       break;
     }
     default: {
@@ -756,6 +766,35 @@ Transform Transform::decomp_controlled_Rys() {
 
 Transform Transform::decomp_arbitrary_controlled_gates() {
   return Transform::decomp_controlled_Rys() >> Transform::decomp_CCX();
+}
+
+// decompose CnX gate using lemma 7.1
+// `n` = no. of controls
+Circuit Transform::cnx_gray_decomp(unsigned n) {
+  switch (n) {
+    case 0: {
+      return CircPool::X();
+    }
+    case 1: {
+      return CircPool::CX();
+    }
+    case 2: {
+      return CircPool::CCX_normal_decomp();
+    }
+    case 3: {
+      return CircPool::C3X_normal_decomp();
+    }
+    case 4: {
+      return CircPool::C4X_normal_decomp();
+    }
+    default: {
+      Circuit circ(n + 1);
+      circ.add_op<unsigned>(OpType::H, {n});
+      circ.append(lemma71(n + 1, 1.0, OpType::CU1));
+      circ.add_op<unsigned>(OpType::H, {n});
+      return circ;
+    }
+  }
 }
 
 }  // namespace tket
