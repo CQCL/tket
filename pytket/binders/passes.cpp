@@ -382,7 +382,7 @@ PYBIND11_MODULE(passes, m) {
       "RebasePyZX", &RebasePyZX,
       "Converts all gates to SWAP, CX, CZ, H, X, Z, S, T, Rx and Rz.");
   m.def("RebaseQuil", &RebaseQuil, "Converts all gates to CZ, Rx and Rz.");
-  m.def("RebaseTket", &RebaseTket, "Converts all gates to CX and tk1.");
+  m.def("RebaseTket", &RebaseTket, "Converts all gates to CX and TK1.");
   m.def(
       "RebaseUMD", &RebaseUMD,
       "Converts all gates to XXPhase, PhasedX and Rz.");
@@ -587,7 +587,7 @@ PYBIND11_MODULE(passes, m) {
       "simplifying Clifford gate sequences, similar to Duncan & Fagan "
       "(https://arxiv.org/abs/1901.10114). "
       "Given a circuit with CXs and any single-qubit gates, produces a "
-      "circuit with tk1, CX gates."
+      "circuit with TK1, CX gates."
       "\n\n:param allow_swaps: dictates whether the rewriting will "
       "disregard CX placement or orientation and introduce wire swaps."
       "\n:return: a pass to perform the rewriting",

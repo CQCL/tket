@@ -46,7 +46,7 @@ Eigen::Matrix2cd GateUnitaryMatrixImplementations::U3(
          Rz(lambda);
 }
 
-Eigen::Matrix2cd GateUnitaryMatrixImplementations::tk1(
+Eigen::Matrix2cd GateUnitaryMatrixImplementations::TK1(
     double alpha, double beta, double gamma) {
   return Rz(alpha) * Rx(beta) * Rz(gamma);
 }

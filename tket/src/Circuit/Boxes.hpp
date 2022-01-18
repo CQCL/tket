@@ -494,11 +494,10 @@ class CompositeGateDef : public std::enable_shared_from_this<CompositeGateDef> {
   CompositeGateDef() {}
 };
 
-class CompositeGate : public Box {
+class CustomGate : public Box {
  public:
-  CompositeGate(
-      const composite_def_ptr_t &gate, const std::vector<Expr> &params);
-  CompositeGate(const CompositeGate &other);
+  CustomGate(const composite_def_ptr_t &gate, const std::vector<Expr> &params);
+  CustomGate(const CustomGate &other);
 
   SymSet free_symbols() const override;
 
@@ -510,10 +509,10 @@ class CompositeGate : public Box {
       const SymEngine::map_basic_basic &sub_map) const override;
 
   /**
-   * Equality check between two CompositeGate instances
+   * Equality check between two CustomGate instances
    */
   bool is_equal(const Op &op_other) const override {
-    const CompositeGate &other = dynamic_cast<const CompositeGate &>(op_other);
+    const CustomGate &other = dynamic_cast<const CustomGate &>(op_other);
     return this->id_ == other.id_;
   }
 
@@ -523,7 +522,7 @@ class CompositeGate : public Box {
 
  protected:
   void generate_circuit() const override;
-  CompositeGate() : Box(OpType::Composite), gate_(), params_() {}
+  CustomGate() : Box(OpType::CustomGate), gate_(), params_() {}
 
  private:
   composite_def_ptr_t gate_;

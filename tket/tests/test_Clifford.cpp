@@ -36,7 +36,7 @@ SCENARIO("Test decomposition into Clifford gates", "[transform]") {
         for (int gamma = 0; gamma < 4; gamma++) {
           Circuit circ(1);
           std::vector<Expr> params({alpha * 0.5, beta * 0.5, gamma * 0.5});
-          circ.add_op<unsigned>(OpType::tk1, params, {0});
+          circ.add_op<unsigned>(OpType::TK1, params, {0});
           Eigen::Matrix2cd m_before = get_matrix_from_circ(circ);
           REQUIRE(Transform::decompose_cliffords_std().apply(circ));
           Transform::decompose_single_qubits_TK1().apply(circ);
@@ -81,7 +81,7 @@ SCENARIO("Check that singleq_clifford_sweep reduces to standard forms") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::V, {0});
     circ.add_op<unsigned>(OpType::S, {0});
-    circ.add_op<unsigned>(OpType::tk1, {0, 0, 0.31}, {1});
+    circ.add_op<unsigned>(OpType::TK1, {0, 0, 0.31}, {1});
     Circuit circ2(circ);
     Transform::singleq_clifford_sweep().apply(circ);
     REQUIRE(circ2 == circ);

@@ -604,8 +604,7 @@ void init_circuit(py::module &m) {
           py::arg("box"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const CompositeGate &box,
-             const std::string opgroup) {
+          [](Circuit &circ, const CustomGate &box, const std::string opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
