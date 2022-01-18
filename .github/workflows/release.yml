@@ -129,6 +129,8 @@ jobs:
   build_Windows_wheels:
     name: Build Windows wheels
     runs-on: windows-2019
+    env:
+      CMAKE_BUILD_PARALLEL_LEVEL: "2"
     steps:
     - uses: actions/checkout@v2
       with:

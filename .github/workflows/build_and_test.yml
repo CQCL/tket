@@ -335,6 +335,7 @@ jobs:
     runs-on: windows-2019
     env:
       PYTKET_SKIP_REGISTRATION: "true"
+      CMAKE_BUILD_PARALLEL_LEVEL: "2"
     steps:
     - uses: actions/checkout@v2
       with:
