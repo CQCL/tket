@@ -25,8 +25,6 @@ class MultiGateReorder {
   void solve(unsigned max_depth, unsigned max_size);
 
  private:
-  // Try to commute a multiqubit gate to the quantum frontier
-  bool try_commute_multi_to_front(const Vertex& vert);
   // Architecture all new physical operations must respect
   ArchitecturePtr architecture_;
   std::shared_ptr<MappingFrontier> mapping_frontier_;
