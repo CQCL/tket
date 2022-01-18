@@ -365,7 +365,7 @@ std::ostream &operator<<(std::ostream &os, const Rotation &q) {
 std::vector<double> tk1_angles_from_unitary(const Eigen::Matrix2cd &U) {
   // clang-format off
     //
-    // Assume U = e^{i pi p} tk1(a,b,c)
+    // Assume U = e^{i pi p} TK1(a,b,c)
     //          = e^{i pi p} Rz(a) Rx(b) Rz(c)
     //                       |    e^{-i pi (a+c)/2} cos(pi b/2)  -i e^{-i pi (a-c)/2} sin(pi b/2)  |
     //          = e^{i pi p} |                                                                     |

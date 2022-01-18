@@ -199,7 +199,7 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     circ.add_op<unsigned>(OpType::X, {0});
     REQUIRE(Transform::pairwise_pauli_gadgets().apply(circ));
     REQUIRE(circ.n_gates() == 1);
-    Vertex v = *circ.get_gates_of_type(OpType::tk1).begin();
+    Vertex v = *circ.get_gates_of_type(OpType::TK1).begin();
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     std::vector<Expr> angles = op->get_params();
     REQUIRE(test_equiv_0(angles[0]));
@@ -217,7 +217,7 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     circ.add_op<unsigned>(OpType::Z, {0});
     REQUIRE(Transform::pairwise_pauli_gadgets().apply(circ));
     REQUIRE(circ.n_gates() == 1);
-    Vertex v = *circ.get_gates_of_type(OpType::tk1).begin();
+    Vertex v = *circ.get_gates_of_type(OpType::TK1).begin();
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     std::vector<Expr> angles = op->get_params();
     REQUIRE(test_equiv_0(angles[0] - 0.5));

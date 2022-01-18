@@ -212,7 +212,7 @@ Circuit CX_ZX_circ_from_op(const Op_ptr op) {
       Transform::decompose_ZX().apply(replacement);
       return replacement;
     }
-    case OpType::tk1: {
+    case OpType::TK1: {
       Circuit replacement(1);
       std::vector<Expr> params = op->get_params();
       replacement.add_op<unsigned>(OpType::Rz, params[2], {0});

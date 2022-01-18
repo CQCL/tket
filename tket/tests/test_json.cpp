@@ -191,7 +191,7 @@ SCENARIO("Test Circuit serialization") {
     c.add_op<unsigned>(OpType::Rz, 0.2, {0});
 
     Circuit setup(1);
-    setup.add_op<unsigned>(OpType::tk1, {0.2374, 1.0353, 0.5372}, {0});
+    setup.add_op<unsigned>(OpType::TK1, {0.2374, 1.0353, 0.5372}, {0});
     Eigen::Matrix2cd m = get_matrix_from_circ(setup);
     Unitary1qBox mbox(m);
     c.add_box(mbox, {1});

@@ -23,12 +23,12 @@
 namespace tket {
 
 /**
- * Convert a vertex holding a tk1 operation to its corresponding matrix
+ * Convert a vertex holding a TK1 operation to its corresponding matrix
  *
  * @param circ circuit
  * @param vert vertex in circuit
  *
- * @pre \p vert is an operation of \ref OpType::tk1
+ * @pre \p vert is an operation of \ref OpType::TK1
  * @pre operation has no symbolic parameters
  *
  * @return corresponding unitary matrix
@@ -36,11 +36,11 @@ namespace tket {
 Eigen::Matrix2cd get_matrix(const Circuit& circ, const Vertex& vert);
 
 /**
- * Convert a one-qubit circuit of tk1 operations to its corresponding matrix
+ * Convert a one-qubit circuit of TK1 operations to its corresponding matrix
  *
  * @param circ circuit
  *
- * @pre all vertices are operations of \ref OpType::tk1
+ * @pre all vertices are operations of \ref OpType::TK1
  * @pre circuit has no symbolic parameters
  *
  * @return corresponding unitary matrix

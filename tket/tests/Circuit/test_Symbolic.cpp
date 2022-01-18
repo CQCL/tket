@@ -121,7 +121,7 @@ SCENARIO("Symbolic squashing, correctness") {
     circ.add_op<unsigned>(OpType::Vdg, {1});
     circ.add_op<unsigned>(OpType::S, {2});
     circ.add_op<unsigned>(OpType::Sdg, {1});
-    circ.add_op<unsigned>(OpType::tk1, {1, 0.5, 3}, {2});
+    circ.add_op<unsigned>(OpType::TK1, {1, 0.5, 3}, {2});
     circ.add_op<unsigned>(OpType::X, {1});
     circ.add_op<unsigned>(OpType::S, {1});
     circ.add_op<unsigned>(OpType::CX, {1, 0});

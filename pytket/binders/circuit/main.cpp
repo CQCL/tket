@@ -192,7 +192,7 @@ PYBIND11_MODULE(circuit, m) {
           "\\mathrm{Rz}(\\phi) \\mathrm{Ry}(\\theta) "
           "\\mathrm{Rz}(\\lambda)`")
       .value(
-          "TK1", OpType::tk1,
+          "TK1", OpType::TK1,
           ":math:`(\\alpha, \\beta, \\gamma) \\mapsto "
           "\\mathrm{Rz}(\\alpha) \\mathrm{Rx}(\\beta) "
           "\\mathrm{Rz}(\\gamma)`")

@@ -162,11 +162,11 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     CHECK(cu3->get_params().size() == 3);
     std::vector<Expr> cu3_params = {Expr{-0.2}, Expr(-0.5), Expr{0.5}};
     REQUIRE(cu3->transpose()->get_params() == cu3_params);
-    const Op_ptr tk1 = (get_op_ptr(OpType::tk1, {0.2, 0.5, -0.5}));
-    CHECK(tk1->get_name() == "tk1(0.2, 0.5, 3.5)");
-    CHECK(tk1->get_params().size() == 3);
+    const Op_ptr TK1 = (get_op_ptr(OpType::TK1, {0.2, 0.5, -0.5}));
+    CHECK(TK1->get_name() == "TK1(0.2, 0.5, 3.5)");
+    CHECK(TK1->get_params().size() == 3);
     std::vector<Expr> tk1_params = {Expr{-0.5}, Expr(0.5), Expr{0.2}};
-    REQUIRE(tk1->transpose()->get_params() == tk1_params);
+    REQUIRE(TK1->transpose()->get_params() == tk1_params);
     const Op_ptr phasedx = (get_op_ptr(OpType::PhasedX, {0.5, -0.5}));
     CHECK(phasedx->get_name() == "PhasedX(0.5, 1.5)");
     CHECK(phasedx->get_params().size() == 2);
@@ -501,7 +501,7 @@ SCENARIO("Custom Gates") {
     Circuit setup(1);
     Sym a = SymTable::fresh_symbol("a");
     Expr ea(a);
-    setup.add_op<unsigned>(OpType::tk1, {ea, 1.0353, 0.5372}, {0});
+    setup.add_op<unsigned>(OpType::TK1, {ea, 1.0353, 0.5372}, {0});
     composite_def_ptr_t def = CompositeGateDef::define_gate("g", setup, {a});
     CustomGate g(def, {0.2374});
     Circuit c(1);

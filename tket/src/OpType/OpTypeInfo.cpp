@@ -106,7 +106,7 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
        {"XXPhase3", "$R_{X_0X_1}R_{X_0X_2}R_{X_1X_2}$", {4}, tripleq}},
       {OpType::CnRy, {"CnRy", "CnRy", {4}, std::nullopt}},
       {OpType::CnX, {"CnX", "CnX", {}, std::nullopt}},
-      {OpType::tk1, {"tk1", "tk1", {4, 4, 4}, singleq}},
+      {OpType::TK1, {"TK1", "TK1", {4, 4, 4}, singleq}},
       {OpType::ESWAP, {"ESWAP", "$\\mathrm{eSWAP}$", {4}, doubleq}},
       {OpType::FSim, {"FSim", "$\\mathrm{fSim}$", {2, 2}, doubleq}},
       {OpType::Sycamore, {"Sycamore", "\\mathrm{Syc}", {}, doubleq}},

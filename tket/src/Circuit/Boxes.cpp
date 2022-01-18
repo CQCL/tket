@@ -116,7 +116,7 @@ void Unitary1qBox::generate_circuit() const {
   std::vector<double> tk1_params = tk1_angles_from_unitary(m_);
   Circuit temp_circ(1);
   temp_circ.add_op<unsigned>(
-      OpType::tk1, {tk1_params[0], tk1_params[1], tk1_params[2]}, {0});
+      OpType::TK1, {tk1_params[0], tk1_params[1], tk1_params[2]}, {0});
   circ_ = std::make_shared<Circuit>(temp_circ);
   circ_->add_phase(tk1_params[3]);
 }

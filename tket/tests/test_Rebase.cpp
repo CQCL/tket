@@ -168,7 +168,7 @@ SCENARIO("Building rebases with rebase_factory") {
     StateVector s1 = tket_sim::get_statevector(c);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
   }
-  GIVEN("Rebasing a Rx/T sequence to tk1") {
+  GIVEN("Rebasing a Rx/T sequence to TK1") {
     Circuit c(1);
     c.add_op<unsigned>(OpType::T, {0});
     c.add_op<unsigned>(OpType::Rx, 0.34, {0});
@@ -178,19 +178,19 @@ SCENARIO("Building rebases with rebase_factory") {
     auto tk1_map = [](const Expr& theta, const Expr& phi, const Expr& lambda) {
       Circuit u(1);
       std::vector<Expr> params = {theta, phi, lambda};
-      u.add_op<unsigned>(OpType::tk1, params, {0});
+      u.add_op<unsigned>(OpType::TK1, params, {0});
       return u;
     };
     auto blanker = [](const Expr&, const Expr&, const Expr&) {
       return Circuit(1);
     };
     OpTypeSet multiqs = {OpType::CX};
-    OpTypeSet singleqs = {OpType::tk1};
+    OpTypeSet singleqs = {OpType::TK1};
     Transform t = Transform::rebase_factory(multiqs, blank, singleqs, tk1_map);
     REQUIRE(t.apply(c));
     REQUIRE(c.count_gates(OpType::T) == 0);
     REQUIRE(c.count_gates(OpType::Rx) == 0);
-    REQUIRE(c.count_gates(OpType::tk1) == 3);
+    REQUIRE(c.count_gates(OpType::TK1) == 3);
     StateVector s1 = tket_sim::get_statevector(c);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
   }
@@ -284,13 +284,13 @@ SCENARIO("Building rebases with rebase_factory") {
     const StateVector s1 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
     Transform::decompose_ZX().apply(circ);
-    REQUIRE(circ.count_gates(OpType::tk1) == 0);
+    REQUIRE(circ.count_gates(OpType::TK1) == 0);
     const StateVector s2 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s2));
     Transform::decompose_cliffords_std().apply(circ);
     REQUIRE(circ.count_gates(OpType::Rz) == 2);
     REQUIRE(circ.count_gates(OpType::Rx) == 0);
-    REQUIRE(circ.count_gates(OpType::tk1) == 0);
+    REQUIRE(circ.count_gates(OpType::TK1) == 0);
     const StateVector s3 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s3));
   }
@@ -300,9 +300,9 @@ SCENARIO("Building rebases with rebase_factory") {
     circ.add_conditional_gate<unsigned>(OpType::H, {}, {1}, {0}, 1);
     Transform::rebase_tket().apply(circ);
     Circuit correct(2, 1);
-    correct.add_op<unsigned>(OpType::tk1, {0, 0, 0.25}, {0});
+    correct.add_op<unsigned>(OpType::TK1, {0, 0, 0.25}, {0});
     correct.add_conditional_gate<unsigned>(
-        OpType::tk1, {0.5, 0.5, 0.5}, {1}, {0}, 1);
+        OpType::TK1, {0.5, 0.5, 0.5}, {1}, {0}, 1);
     correct.add_phase(0.625);
     REQUIRE(circ == correct);
   }
@@ -406,7 +406,7 @@ SCENARIO("Check each Clifford case for tk1_to_rzh") {
     for (const RzHTestCase& test : cases) {
       Circuit correct(1);
       correct.add_op<unsigned>(
-          OpType::tk1, {test.alpha, test.beta, test.gamma}, {0});
+          OpType::TK1, {test.alpha, test.beta, test.gamma}, {0});
       Circuit result = Transform::tk1_to_rzh(test.alpha, test.beta, test.gamma);
       REQUIRE(result.n_gates() == test.expected_gates);
       REQUIRE(test_unitary_comparison(correct, result));
@@ -459,7 +459,7 @@ SCENARIO("Check cases for tk1_to_rzsx") {
     for (const RzSXTestCase& test : cases) {
       Circuit correct(1);
       correct.add_op<unsigned>(
-          OpType::tk1, {test.alpha, test.beta, test.gamma}, {0});
+          OpType::TK1, {test.alpha, test.beta, test.gamma}, {0});
       Circuit result =
           Transform::tk1_to_rzsx(test.alpha, test.beta, test.gamma);
       REQUIRE(result.n_gates() == test.expected_gates);
@@ -469,7 +469,7 @@ SCENARIO("Check cases for tk1_to_rzsx") {
     for (const RzSXTestCase& test : symbolic_cases) {
       Circuit correct(1);
       correct.add_op<unsigned>(
-          OpType::tk1, {test.alpha, test.beta, test.gamma}, {0});
+          OpType::TK1, {test.alpha, test.beta, test.gamma}, {0});
       Circuit result =
           Transform::tk1_to_rzsx(test.alpha, test.beta, test.gamma);
       REQUIRE(result.n_gates() == test.expected_gates);

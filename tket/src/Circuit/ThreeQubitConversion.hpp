@@ -22,7 +22,7 @@ namespace tket {
 /**
  * Synthesise a 3-qubit circuit from an arbitrary 8x8 unitary.
  *
- * The returned circuit consists of CX, tk1, H, Ry and Rz gates only. It
+ * The returned circuit consists of CX, TK1, H, Ry and Rz gates only. It
  * contains a maximum of 20 CX gates.
  *
  * @param U unitary matrix in \ref BasisOrder::ilo

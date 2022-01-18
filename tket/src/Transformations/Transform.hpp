@@ -127,8 +127,8 @@ class Transform {
   // Produces: Rx, Ry and any multi-qubit gates
   static Transform decompose_XY();
 
-  // converts all tk1-gates into rzrx gates
-  // Expects: tk1-gates and any multi-qubit gates
+  // converts all TK1-gates into rzrx gates
+  // Expects: TK1-gates and any multi-qubit gates
   // Produces: Rz, Rx and any multi-qubit gates
   static Transform decompose_tk1_to_rzrx();
 
@@ -157,10 +157,10 @@ class Transform {
   // into ZZ gates Expects: CX, Rz Produces: ZZ, CX, Rz
   static Transform decompose_ZZPhase();
 
-  // identifies any tk1, Rz,Ry,Rx,u3,u2,u1 gate sequences that can be naively
+  // identifies any TK1, Rz,Ry,Rx,u3,u2,u1 gate sequences that can be naively
   // decomposed into S,Z,X,V returns clifford sequences in a standard form
   // (Z)(X)(S)(V)(S)
-  // Expects: tk1, U3, U2, U1, Rx, Ry, Rz, and any multi-qubit gates
+  // Expects: TK1, U3, U2, U1, Rx, Ry, Rz, and any multi-qubit gates
   // Produces: Z, X, S, V, and any remaining non-clifford single-qubit gates,
   // and any multi-qubit gates
   static Transform decompose_cliffords_std();
@@ -248,7 +248,7 @@ class Transform {
           tk1_replacement);
 
   // Multiqs: CX
-  // Singleqs: tk1
+  // Singleqs: TK1
   static Transform rebase_tket();
 
   // Multiqs: CZ
@@ -317,22 +317,22 @@ class Transform {
 
   // simplifies a circuit using Clifford rules
   // Expects: CX and any single-qubit gates
-  // Produces: CX, tk1
+  // Produces: CX, TK1
   static Transform clifford_simp(bool allow_swaps = true);
 
   // runs clifford_simp
   // Expects: Any gates
-  // Produces: CX, tk1
+  // Produces: CX, TK1
   static Transform hyper_clifford_squash();
 
   // kitchen sink optimisation - phase gadget resynthesis, two-qubit Cartan
-  // forms, Clifford Expects: Any gates Produces: CX, tk1
+  // forms, Clifford Expects: Any gates Produces: CX, TK1
   static Transform canonical_hyper_clifford_squash();
 
   // only peephole optimisation, so no higher structure abstraction.
   // Two qubit Cartan, Clifford, synthesis
   // Expects: Any gates
-  // Produces: CX, tk1
+  // Produces: CX, TK1
   static Transform peephole_optimise_2q();
 
   /**
@@ -340,7 +340,7 @@ class Transform {
    *
    * @param allow_swaps whether to allow introduction of implicit wire swaps
    *
-   * Produces: CX, tk1.
+   * Produces: CX, TK1.
    */
   static Transform full_peephole_optimise(bool allow_swaps = true);
 
@@ -478,7 +478,7 @@ class Transform {
   // is used to produce circuit decompositions that maximise expected circuit
   // fidelity, assuming perfect local operations (i.e. with fidelity 1.).
   // Expects: CX and any single qubit gates
-  // Produces: CX and single tk1 qubit gates
+  // Produces: CX and single TK1 qubit gates
   static Transform two_qubit_squash(double cx_fidelity = 1.);
 
   /**
@@ -553,7 +553,7 @@ class Transform {
   // Minor components for other Transform passes//
   ///////////////////////////////////////////////
 
-  // converts a tk1 gate to a PhasedXRz gate
+  // converts a TK1 gate to a PhasedXRz gate
   static Circuit tk1_to_PhasedXRz(
       const Expr& alpha, const Expr& beta, const Expr& gamma);
 
