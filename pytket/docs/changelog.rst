@@ -7,6 +7,7 @@ Changelog
 Minor new features:
 
 * Improve ``CnX`` gate decomposition for n=5,6,7.
+* Add ``rebase_pass`` method to ``Backend``.
 
 General:
 

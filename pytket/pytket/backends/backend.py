@@ -128,6 +128,18 @@ class Backend(ABC):
         return True
 
     @abstractmethod
+    def rebase_pass(self) -> BasePass:
+        """
+        A single compilation pass that when run converts all gates in a Circuit to
+        an OpType supported by the Backend (ignoring architecture constraints).
+
+        :return: Copmilation pass that converts gates to primitives supported by
+            Backend.
+        :rtype: BasePass
+        """
+        ...
+    
+    @abstractmethod
     def default_compilation_pass(self, optimisation_level: int = 1) -> BasePass:
         """
         A suggested compilation pass that will guarantee the resulting circuit
