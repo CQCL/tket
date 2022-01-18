@@ -227,4 +227,84 @@ SCENARIO("Reorder circuits with limited search space") {
         u, u1, tket_sim::MatrixEquivalence::EQUAL));
   }
 }
+
+SCENARIO("Test MultiGateReorderRoutingMethod") {
+  std::vector<Node> nodes = {
+      Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
+      Node("node_test", 3)};
+
+  // n0 -- n1 -- n2 -- n3
+  Architecture architecture(
+      {{nodes[0], nodes[1]}, {nodes[1], nodes[2]}, {nodes[2], nodes[3]}});
+  ArchitecturePtr shared_arc = std::make_shared<Architecture>(architecture);
+  GIVEN("Simple CZ circuit.") {
+    Circuit circ(4);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    // Physically valid operations
+    circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[3]});
+    // Physically invalid operations
+    circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[2]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[3]});
+    // Physically valid operations
+    circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[3]});
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]},
+        {qubits[1], nodes[1]},
+        {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]}};
+    circ.rename_units(rename_map);
+    Circuit circ_copy(circ);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    mf->advance_frontier_boundary(shared_arc);
+    MultiGateReorderRoutingMethod mrrm;
+    REQUIRE(mrrm.check_method(mf, shared_arc));
+
+    unit_map_t init_map = mrrm.routing_method(mf, shared_arc);
+    REQUIRE(init_map.size() == 0);
+    std::vector<Command> commands = circ.get_commands();
+    for (unsigned i = 0; i < 5; i++) {
+      std::vector<Node> nodes;
+      for (auto arg : commands[i].get_args()) {
+        nodes.push_back(Node(arg));
+      }
+      REQUIRE(shared_arc->valid_operation(nodes));
+    }
+    const auto u = tket_sim::get_unitary(circ);
+    const auto u1 = tket_sim::get_unitary(circ_copy);
+    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
+        u, u1, tket_sim::MatrixEquivalence::EQUAL));
+
+    // Test with limits
+    Circuit circ2(circ_copy);
+
+    std::shared_ptr<MappingFrontier> mf2 =
+        std::make_shared<MappingFrontier>(circ2);
+    mf2->advance_frontier_boundary(shared_arc);
+    MultiGateReorderRoutingMethod mrrm2(4, 4);
+    REQUIRE(mrrm2.check_method(mf2, shared_arc));
+
+    unit_map_t init_map2 = mrrm2.routing_method(mf2, shared_arc);
+    REQUIRE(init_map2.size() == 0);
+    std::vector<Command> commands2 = circ2.get_commands();
+    for (unsigned i = 0; i < 4; i++) {
+      std::vector<Node> nodes;
+      for (auto arg : commands2[i].get_args()) {
+        nodes.push_back(Node(arg));
+      }
+      REQUIRE(shared_arc->valid_operation(nodes));
+    }
+    std::vector<Node> nodes;
+    for (auto arg : commands2[4].get_args()) {
+      nodes.push_back(Node(arg));
+    }
+    REQUIRE(!shared_arc->valid_operation(nodes));
+    const auto u2 = tket_sim::get_unitary(circ2);
+    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
+        u2, u1, tket_sim::MatrixEquivalence::EQUAL));
+  }
+}
 }  // namespace tket
