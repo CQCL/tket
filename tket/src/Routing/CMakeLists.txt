@@ -42,6 +42,7 @@ target_include_directories(tket-Routing
 target_link_libraries(tket-Routing
     PRIVATE
     tket-Utils
+    tket-Ops
     tket-Gate
     tket-Graphs
     tket-Circuit

@@ -33,6 +33,7 @@ target_link_libraries(tket-PauliGraph
     PRIVATE
     tket-Utils
     tket-OpType
+    tket-Ops
     tket-Gate
     tket-Clifford
     ${CONAN_LIBS})

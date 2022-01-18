@@ -45,6 +45,7 @@ target_link_libraries(tket-Predicates
     PRIVATE
     tket-Utils
     tket-OpType
+    tket-Ops
     tket-Gate
     tket-Circuit
     tket-Graphs

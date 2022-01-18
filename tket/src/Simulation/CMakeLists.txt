@@ -37,6 +37,7 @@ target_link_libraries(tket-Simulation
     PRIVATE
     tket-Utils
     tket-OpType
+    tket-Ops
     tket-Gate
     tket-Circuit
     ${CONAN_LIBS})

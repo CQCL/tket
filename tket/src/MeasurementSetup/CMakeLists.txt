@@ -37,6 +37,7 @@ target_link_libraries(tket-MeasurementSetup
     PRIVATE
     tket-Utils
     tket-OpType
+    tket-Ops
     tket-Gate
     tket-Circuit
     tket-Clifford

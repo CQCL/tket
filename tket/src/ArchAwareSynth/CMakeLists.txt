@@ -41,6 +41,7 @@ target_link_libraries(tket-ArchAwareSynth
     PRIVATE
     tket-Utils
     tket-OpType
+    tket-Ops
     tket-Gate
     tket-Circuit
     tket-Graphs
