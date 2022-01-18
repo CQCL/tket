@@ -225,8 +225,6 @@ void MappingFrontier::advance_frontier_boundary(
  * convert_u_frontier_to_edges
  * Subcircuit requires EdgeVec, not unit_frontier_t as boundary information
  * Helper Functions to convert types
- * TODO: also probably another way of doing this? EdgeVec required for
- * subcircuit. Double check with someone who knows better than I...
  */
 EdgeVec convert_u_frontier_to_edges(const unit_frontier_t& u_frontier) {
   EdgeVec edges;
@@ -304,8 +302,6 @@ void MappingFrontier::permute_subcircuit_q_out_hole(
   }
   for (const std::pair<UnitID, VertPort>& pair :
        this->quantum_boundary->get<TagKey>()) {
-    // other iteration avoids this...
-    // TODO: change this when making route different subcircuits
     auto it = final_permutation.find(pair.first);
     if (it == final_permutation.end()) {
       throw MappingFrontierError("Qubit in boundary not in permutation.");
@@ -352,17 +348,6 @@ void MappingFrontier::set_quantum_boundary(
   }
 }
 
-// /**
-//  * add_qubit
-//  * Adds given UnitID as a qubit to held circuit.
-//  * Updates boundary.
-//  */
-// void MappingFrontier::add_qubit(const UnitID& uid) {
-//   Qubit qb(uid);
-//   this->circuit_.add_qubit(qb);
-//   this->quantum_boundary->insert({qb, {this->circuit_.get_in(qb), 0}});
-// }
-
 /**
  * add_swap
  * Inserts an OpType::SWAP gate into the uid_0 and uid_1 edges held in
@@ -375,9 +360,6 @@ void MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
   auto uid1_in_it = this->quantum_boundary->find(uid_1);
 
   // Add Qubit if not in MappingFrontier boundary (i.e. not in circuit)
-  // If it so happens one of these is an ancilla, it works this out later...
-  // TODO: make it do that checking here ^^^^
-  // implies that it is a new "ancilla" qubit
   if (uid0_in_it == this->quantum_boundary->end()) {
     this->add_ancilla(uid_0);
     uid0_in_it = this->quantum_boundary->find(uid_0);
