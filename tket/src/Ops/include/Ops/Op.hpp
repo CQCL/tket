@@ -22,7 +22,6 @@
 #include <memory>
 #include <optional>
 #include <ostream>
-#include <sstream>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -76,10 +75,7 @@ class Op : public std::enable_shared_from_this<Op> {
    *         the operation type does not support symbols.
    */
   virtual Op_ptr symbol_substitution(
-      const SymEngine::map_basic_basic &sub_map) const {
-    (void)sub_map;
-    throw NotValid();
-  }
+      const SymEngine::map_basic_basic &sub_map) const = 0;
 
   /** Sequence of phase parameters, if applicable */
   virtual std::vector<Expr> get_params() const { throw NotValid(); }
@@ -91,27 +87,10 @@ class Op : public std::enable_shared_from_this<Op> {
   virtual unsigned n_qubits() const { throw NotValid(); }
 
   /** String representation */
-  virtual std::string get_name(bool latex = false) const {
-    if (latex) {
-      return get_desc().latex();
-    } else {
-      return get_desc().name();
-    }
-  }
+  virtual std::string get_name(bool latex = false) const;
 
   /** Command representation */
-  virtual std::string get_command_str(const unit_vector_t &args) const {
-    std::stringstream out;
-    out << get_name();
-    if (!args.empty()) {
-      out << " " << args[0].repr();
-      for (unsigned i = 1; i < args.size(); i++) {
-        out << ", " << args[i].repr();
-      }
-    }
-    out << ";";
-    return out.str();
-  }
+  virtual std::string get_command_str(const unit_vector_t &args) const;
 
   /** Get operation descriptor */
   OpDesc get_desc() const { return desc_; }
@@ -120,7 +99,7 @@ class Op : public std::enable_shared_from_this<Op> {
   OpType get_type() const { return type_; }
 
   /** Set of all free symbols occurring in operation parameters. */
-  virtual SymSet free_symbols() const { throw NotValid(); }
+  virtual SymSet free_symbols() const = 0;
 
   /**
    * Which Pauli, if any, commutes with the operation at a given port
@@ -151,7 +130,7 @@ class Op : public std::enable_shared_from_this<Op> {
   }
 
   /** Vector specifying type of data for each port on op */
-  virtual op_signature_t get_signature() const { throw NotValid(); }
+  virtual op_signature_t get_signature() const = 0;
 
   /**
    * Test whether operation is identity up to a phase and return phase if so.
