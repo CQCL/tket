@@ -22,7 +22,6 @@ from pytket._tket.circuit import (  # type: ignore
     Circuit,
     Command,
     Op,
-    QControlBox,
     ExpBox,
     BitRegister,
     QubitRegister,
