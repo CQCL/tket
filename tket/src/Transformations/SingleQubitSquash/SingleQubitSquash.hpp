@@ -24,16 +24,18 @@
 namespace tket {
 
 /**
- * @brief Squashes single qubit gates using given Squasher
+ * @brief Squashes single qubit gates using given Squasher.
  *
+ * @tparam Squasher a class that can squash single-qubit gates.
+ * 
  * The template Squasher must define the following interface:
- *   - bool accepts(OpType): whether the OpType can be added to current squash
- *   - void append(Gate_ptr): add gate to current squash
+ *   - bool accepts(OpType): whether the OpType can be added to current squash.
+ *   - void append(Gate_ptr): add gate to current squash.
  *   - std::pair<Circuit, Gate_ptr> flush(std::optional<Pauli>):
  *     return a squashed circuit, optionally use the commutation colour of the
  *     next gate to return an additional Gate_ptr to be commuted through
- *     (otherwise, set Gate_ptr = nullptr)
- *   - void clear(): reset the current squash
+ *     (otherwise, set Gate_ptr = nullptr).
+ *   - void clear(): reset the current squash.
  */
 template <typename Squasher>
 class SingleQubitSquash {
@@ -41,10 +43,22 @@ class SingleQubitSquash {
   using Condition = std::optional<std::pair<std::list<VertPort>, unsigned>>;
 
  public:
+  /**
+   * @brief Construct a new Single Qubit Squash object.
+   * 
+   * @param squasher The Squasher instance.
+   * @param reversed whether squashing is made back-to-front or front to back.
+   */
   SingleQubitSquash(const Squasher &squasher, bool reversed = false)
       : squasher_(squasher), reversed_(reversed), circ_ptr_(nullptr) {}
 
-  // squash an entire circuit, one qubit at a time
+  /**
+   * @brief Squash an entire circuit, one qubit at a time.
+   * 
+   * @param circ The circuit to be squashed.
+   * @return true The squash succeeded.
+   * @return false The circuit was not changed.
+   */
   bool squash(Circuit &circ) {
     bool success = false;
     circ_ptr_ = &circ;
@@ -65,7 +79,17 @@ class SingleQubitSquash {
     return success;
   }
 
-  // squash everything between edges in and out
+  /**
+   * @brief Squash everything between in-edge and out-edge
+   * 
+   * If `reversed=true`, then the in-edge should come after the out-edge
+   * in the circuit.
+   * 
+   * @param in Starting edge of the squash.
+   * @param out Last edge of the squash.
+   * @return true The squash succeeded.
+   * @return false The circuit was not changed.
+   */
   bool squash_between(const Edge &in, const Edge &out) {
     squasher_.clear();
     Edge e = in;
@@ -213,8 +237,9 @@ class SingleQubitSquash {
   // whether the sub circuit is shorter than chain
   bool sub_is_better(
       const Circuit &sub, const std::vector<Gate_ptr> chain) const {
-    return sub.n_gates() < chain.size() ||
-           (sub.n_gates() == chain.size() && !is_equal(sub, chain, reversed_));
+    const unsigned n_gates = sub.n_gates();
+    return n_gates < chain.size() ||
+           (n_gates == chain.size() && !is_equal(sub, chain, reversed_));
   }
 
   // returns a description of the condition of current vertex
