@@ -24,7 +24,8 @@ namespace tsa_internal {
 
 BestFullTsa::BestFullTsa() { m_name = "BestFullTsa"; }
 
-HybridTsa00& BestFullTsa::get_hybrid_tsa_for_testing() { return m_hybrid_tsa; }
+// HybridTsa00& BestFullTsa::get_hybrid_tsa_for_testing() { return m_hybrid_tsa;
+// }
 
 void BestFullTsa::append_partial_solution(
     SwapList& swaps, VertexMapping& vertex_mapping,

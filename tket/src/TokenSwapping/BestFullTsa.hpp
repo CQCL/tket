@@ -68,7 +68,7 @@ class BestFullTsa : public PartialTsaInterface {
    * function may be deleted later!
    *  @return Reference to the internal stored TSA object.
    */
-  HybridTsa00& get_hybrid_tsa_for_testing();
+  // HybridTsa00& get_hybrid_tsa_for_testing();
 
  private:
   HybridTsa00 m_hybrid_tsa;

@@ -19,6 +19,8 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "Utils/Assert.hpp"
+
 using std::exception;
 using std::map;
 using std::runtime_error;
@@ -63,13 +65,12 @@ string AdjacencyData::to_string() const {
 
 const set<std::size_t>& AdjacencyData::get_neighbours(
     std::size_t vertex) const {
-  if (vertex >= m_cleaned_data.size()) {
-    stringstream ss;
-    ss << "AdjacencyData: get_neighbours called with invalid vertex " << vertex
-       << "; there are only " << m_cleaned_data.size() << " vertices";
-
-    throw runtime_error(ss.str());
-  }
+  TKET_ASSERT(
+      vertex < m_cleaned_data.size() ||
+      AssertMessage()
+          << "AdjacencyData: get_neighbours called with invalid vertex "
+          << vertex << "; there are only " << m_cleaned_data.size()
+          << " vertices");
   return m_cleaned_data[vertex];
 }
 
@@ -90,28 +91,21 @@ std::size_t AdjacencyData::get_number_of_edges() const {
 }
 
 bool AdjacencyData::add_edge(std::size_t i, std::size_t j) {
-  try {
-    const bool exists = edge_exists(i, j);
-    if (exists) {
-      return false;
-    }
-    m_cleaned_data[i].insert(j);
-    m_cleaned_data[j].insert(i);
-    return true;
-  } catch (const exception& e) {
-    stringstream ss;
-    ss << "add_edge : " << e.what();
-    throw runtime_error(ss.str());
+  const bool exists = edge_exists(i, j);
+  if (exists) {
+    return false;
   }
+  m_cleaned_data[i].insert(j);
+  m_cleaned_data[j].insert(i);
+  return true;
 }
 
 bool AdjacencyData::edge_exists(std::size_t i, std::size_t j) const {
-  if (i >= m_cleaned_data.size() || j >= m_cleaned_data.size()) {
-    stringstream ss;
-    ss << "AdjacencyData: edge_exists called with vertices " << i << ", " << j
-       << ", but there are only " << m_cleaned_data.size() << " vertices";
-    throw runtime_error(ss.str());
-  }
+  TKET_ASSERT(
+      (i < m_cleaned_data.size() && j < m_cleaned_data.size()) ||
+      AssertMessage() << "edge_exists called with vertices " << i << ", " << j
+                      << ", but there are only " << m_cleaned_data.size()
+                      << " vertices");
   return m_cleaned_data[i].count(j) != 0;
 }
 
@@ -136,16 +130,10 @@ AdjacencyData::AdjacencyData(
     }
   }
   m_cleaned_data.resize(number_of_vertices);
-  try {
-    for (const auto& entry : raw_data) {
-      for (std::size_t neighbour : entry.second) {
-        add_edge(entry.first, neighbour);
-      }
+  for (const auto& entry : raw_data) {
+    for (std::size_t neighbour : entry.second) {
+      add_edge(entry.first, neighbour);
     }
-  } catch (const exception& e) {
-    stringstream ss;
-    ss << "AdjacencyData: constructing from map:" << e.what();
-    throw runtime_error(ss.str());
   }
 }
 
@@ -153,28 +141,19 @@ AdjacencyData::AdjacencyData(
     const vector<vector<std::size_t>>& raw_data, bool allow_loops) {
   m_cleaned_data.resize(raw_data.size());
 
-  try {
-    for (std::size_t i = 0; i < raw_data.size(); ++i) {
-      for (std::size_t j : raw_data[i]) {
-        if (i == j && !allow_loops) {
-          stringstream ss;
-          ss << "vertex " << i << " has a loop.";
-          throw runtime_error(ss.str());
-        }
-        if (j > raw_data.size()) {
-          stringstream ss;
-          ss << "vertex " << i << " has illegal neighbour vertex " << j;
-          throw runtime_error(ss.str());
-        }
-        m_cleaned_data[i].insert(j);
-        m_cleaned_data[j].insert(i);
-      }
+  for (std::size_t i = 0; i < m_cleaned_data.size(); ++i) {
+    for (std::size_t j : raw_data[i]) {
+      TKET_ASSERT(
+          i != j || allow_loops ||
+          AssertMessage() << "vertex " << i << " out of "
+                          << m_cleaned_data.size() << " has a loop.");
+      TKET_ASSERT(
+          j < m_cleaned_data.size() ||
+          AssertMessage() << "vertex " << i << " has illegal neighbour vertex "
+                          << j << ", the size is " << m_cleaned_data.size());
+      m_cleaned_data[i].insert(j);
+      m_cleaned_data[j].insert(i);
     }
-  } catch (const exception& e) {
-    stringstream ss;
-    ss << "AdjacencyData: we have " << raw_data.size()
-       << " vertices: " << e.what();
-    throw runtime_error(ss.str());
   }
 }
 

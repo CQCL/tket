@@ -17,6 +17,8 @@
 #include <sstream>
 #include <stdexcept>
 
+#include "Utils/Assert.hpp"
+
 namespace tket {
 namespace tsa_internal {
 
@@ -32,12 +34,10 @@ ArchitectureMapping::ArchitectureMapping(const Architecture& arch)
     const auto& node = m_vertex_to_node_mapping[ii];
     {
       const auto citer = m_node_to_vertex_mapping.find(node);
-      if (citer != m_node_to_vertex_mapping.cend()) {
-        std::stringstream ss;
-        ss << "Duplicate node " << node.repr() << " at vertices "
-           << citer->second << ", " << ii;
-        throw std::runtime_error(ss.str());
-      }
+      TKET_ASSERT(
+          citer == m_node_to_vertex_mapping.cend() ||
+          AssertMessage() << "Duplicate node " << node.repr() << " at vertices "
+                          << citer->second << ", " << ii);
     }
     m_node_to_vertex_mapping[node] = ii;
   }
@@ -68,24 +68,22 @@ ArchitectureMapping::ArchitectureMapping(
 
   // Check that the nodes agree with the architecture object.
   const auto uids = arch.nodes();
-  if (uids.size() != m_vertex_to_node_mapping.size()) {
-    std::stringstream ss;
-    ss << "ArchitectureMapping: passed in " << edges.size() << " edges, giving "
-       << m_vertex_to_node_mapping.size()
-       << " vertices; but the architecture object has " << uids.size()
-       << " vertices";
-    throw std::runtime_error(ss.str());
-  }
+  TKET_ASSERT(
+      uids.size() == m_vertex_to_node_mapping.size() ||
+      AssertMessage() << "passed in " << edges.size() << " edges, giving "
+                      << m_vertex_to_node_mapping.size()
+                      << " vertices; but the architecture object has "
+                      << uids.size() << " vertices");
+
   for (const UnitID& uid : uids) {
     const Node node(uid);
-    if (m_node_to_vertex_mapping.count(node) == 0) {
-      std::stringstream ss;
-      ss << "ArchitectureMapping: passed in " << edges.size()
-         << " edges, giving " << m_vertex_to_node_mapping.size()
-         << " vertices; but the architecture object has an unknown node "
-         << node.repr();
-      throw std::runtime_error(ss.str());
-    }
+    TKET_ASSERT(
+        m_node_to_vertex_mapping.count(node) != 0 ||
+        AssertMessage()
+            << "passed in " << edges.size() << " edges, giving "
+            << m_vertex_to_node_mapping.size()
+            << " vertices; but the architecture object has an unknown node "
+            << node.repr());
   }
 }
 
@@ -95,22 +93,21 @@ size_t ArchitectureMapping::number_of_vertices() const {
 
 const Node& ArchitectureMapping::get_node(size_t vertex) const {
   const auto num_vertices = number_of_vertices();
-  if (vertex >= num_vertices) {
-    std::stringstream ss;
-    ss << "get_node: invalid vertex " << vertex << " (architecture only has "
-       << num_vertices << " vertices)";
-    throw std::runtime_error(ss.str());
-  }
+  TKET_ASSERT(
+      vertex < num_vertices || AssertMessage()
+                                   << "get_node: invalid vertex " << vertex
+                                   << " (architecture only has " << num_vertices
+                                   << " vertices)");
+
   return m_vertex_to_node_mapping[vertex];
 }
 
 size_t ArchitectureMapping::get_vertex(const Node& node) const {
   const auto citer = m_node_to_vertex_mapping.find(node);
-  if (citer == m_node_to_vertex_mapping.cend()) {
-    std::stringstream ss;
-    ss << "get_vertex: node " << node.repr() << " has no vertex number";
-    throw std::runtime_error(ss.str());
-  }
+  TKET_ASSERT(
+      citer != m_node_to_vertex_mapping.cend() ||
+      AssertMessage() << "get_vertex: node " << node.repr()
+                      << " has no vertex number");
   return citer->second;
 }
 
