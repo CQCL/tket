@@ -14,7 +14,10 @@
 
 #pragma once
 
-#include "Op.hpp"
+// This file is in the Circuit component because Conditonal::deserialize() may
+// require deserialization of a Box.
+
+#include "Ops/Op.hpp"
 #include "Utils/Json.hpp"
 
 namespace tket {

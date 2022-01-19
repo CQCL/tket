@@ -35,15 +35,12 @@ class TketTestConan(ConanFile):
 
     def test(self):
         if not tools.cross_building(self):
-            libname = {
-                "Linux": "libtket.so",
-                "Darwin": "libtket.dylib",
-                "Windows": "tket.dll",
-            }
-            tket_lib = libname[platform.system()]
-            copyfile(
-                os.path.join(self.install_folder, "lib", tket_lib),
-                os.path.join("bin", tket_lib),
-            )
+            lib_files = os.listdir(os.path.join(self.install_folder, "lib"))
+            for lib_file in lib_files:
+                if "tket" in lib_file:
+                    copyfile(
+                        os.path.join(self.install_folder, "lib", lib_file),
+                        os.path.join("bin", lib_file),
+                    )
             os.chdir("bin")
             self.run(os.path.join(os.curdir, "test"))

@@ -41,9 +41,9 @@
 
 #include "Boxes.hpp"
 #include "Command.hpp"
+#include "Conditional.hpp"
 #include "DAGDefs.hpp"
 #include "Gate/OpPtrFunctions.hpp"
-#include "Ops/Conditional.hpp"
 #include "Utils/Assert.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/GraphHeaders.hpp"

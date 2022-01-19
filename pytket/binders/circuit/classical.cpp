@@ -16,8 +16,8 @@
 #include <pybind11/stl.h>
 
 #include "Circuit/ClassicalExpBox.hpp"
+#include "Circuit/Conditional.hpp"
 #include "Ops/ClassicalOps.hpp"
-#include "Ops/Conditional.hpp"
 #include "Ops/OpJsonFactory.hpp"
 #include "Utils/Json.hpp"
 #include "binder_json.hpp"
