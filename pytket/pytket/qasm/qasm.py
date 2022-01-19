@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -505,7 +505,7 @@ def circuit_to_qasm_io(
             # attach predicate to bit,
             # subsequent conditional will handle it
             continue
-        if optype == OpType.ConditionalGate:
+        if optype == OpType.Conditional:
             bits = args[: op.width]
             control_bit = bits[0]
             if control_bit in range_preds:

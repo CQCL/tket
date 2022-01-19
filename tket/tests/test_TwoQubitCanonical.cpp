@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -67,7 +67,7 @@ SCENARIO("Testing two-qubit canonical forms") {
     REQUIRE(same);
   }
 
-  GIVEN("Identifying tk1 parameters from a matrix (0)") {
+  GIVEN("Identifying TK1 parameters from a matrix (0)") {
     Eigen::Matrix2cd test = get_matrix_from_tk1_angles({0, 2.061, 3.103, 0});
     std::vector<double> res = tk1_angles_from_unitary(test);
     Eigen::Matrix2cd res_mat =
@@ -75,7 +75,7 @@ SCENARIO("Testing two-qubit canonical forms") {
     REQUIRE(test.isApprox(res_mat));
   }
 
-  GIVEN("Identifying tk1 parameters from a matrix (1)") {
+  GIVEN("Identifying TK1 parameters from a matrix (1)") {
     Eigen::Matrix2cd test = get_matrix_from_tk1_angles({1., 1.054, 3.612, 0});
     std::vector<double> res = tk1_angles_from_unitary(test);
     Eigen::Matrix2cd res_mat =
@@ -222,10 +222,10 @@ SCENARIO("Testing two-qubit canonical forms") {
       auto [ga, gb] = *it;
       std::vector<double> angles_q0 = tk1_angles_from_unitary(ga);
       circ_out.add_op<unsigned>(
-          OpType::tk1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
+          OpType::TK1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
       std::vector<double> angles_q1 = tk1_angles_from_unitary(gb);
       circ_out.add_op<unsigned>(
-          OpType::tk1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
+          OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
       phase += angles_q0.back() + angles_q1.back();
       if (it + 1 != gates.end()) {
         circ_out.add_op<unsigned>(OpType::CX, {0, 1});
@@ -254,10 +254,10 @@ SCENARIO("Testing two-qubit canonical forms") {
       auto [ga, gb] = *it;
       std::vector<double> angles_q0 = tk1_angles_from_unitary(ga);
       circ_out.add_op<unsigned>(
-          OpType::tk1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
+          OpType::TK1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
       std::vector<double> angles_q1 = tk1_angles_from_unitary(gb);
       circ_out.add_op<unsigned>(
-          OpType::tk1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
+          OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
       if (it + 1 != gates.end()) {
         circ_out.add_op<unsigned>(OpType::CX, {0, 1});
       }
@@ -286,10 +286,10 @@ SCENARIO("Testing two-qubit canonical forms") {
       auto [ga, gb] = *it;
       std::vector<double> angles_q0 = tk1_angles_from_unitary(ga);
       circ_out.add_op<unsigned>(
-          OpType::tk1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
+          OpType::TK1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
       std::vector<double> angles_q1 = tk1_angles_from_unitary(gb);
       circ_out.add_op<unsigned>(
-          OpType::tk1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
+          OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
       phase += angles_q0.back() + angles_q1.back();
       if (it + 1 != gates.end()) {
         circ_out.add_op<unsigned>(OpType::CX, {0, 1});
@@ -573,7 +573,7 @@ static void check_decompose_2cx_VD(const Eigen::Matrix4cd &U) {
     if (optype == OpType::CX) {
       n_cx++;
     } else {
-      CHECK(optype == OpType::tk1);
+      CHECK(optype == OpType::TK1);
     }
   }
   CHECK(n_cx <= 2);
@@ -596,7 +596,7 @@ static void check_decompose_2cx_DV(const Eigen::Matrix4cd &U) {
     if (optype == OpType::CX) {
       n_cx++;
     } else {
-      CHECK(optype == OpType::tk1);
+      CHECK(optype == OpType::TK1);
     }
   }
   CHECK(n_cx <= 2);

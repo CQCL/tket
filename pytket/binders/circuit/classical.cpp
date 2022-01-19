@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 #include <pybind11/stl.h>
 
 #include "Circuit/ClassicalExpBox.hpp"
+#include "Circuit/Conditional.hpp"
 #include "Ops/ClassicalOps.hpp"
-#include "Ops/Conditional.hpp"
 #include "Ops/OpJsonFactory.hpp"
 #include "Utils/Json.hpp"
 #include "binder_json.hpp"

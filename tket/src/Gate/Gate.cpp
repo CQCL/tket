@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -122,10 +122,10 @@ Op_ptr Gate::dagger() const {
     case OpType::CU3:
       // U3(a,b,c).dagger() == U3(-a,-c.-b)
       { return get_op_ptr(optype, {-params_[0], -params_[2], -params_[1]}); }
-    case OpType::tk1:
-      // tk1(a,b,c).dagger() == tk1(-c,-b,-a)
+    case OpType::TK1:
+      // TK1(a,b,c).dagger() == TK1(-c,-b,-a)
       {
-        return get_op_ptr(OpType::tk1, {-params_[2], -params_[1], -params_[0]});
+        return get_op_ptr(OpType::TK1, {-params_[2], -params_[1], -params_[0]});
       }
     case OpType::PhasedX:
     case OpType::NPhasedX:
@@ -200,9 +200,9 @@ Op_ptr Gate::transpose() const {
       // U3(a,b,c).transpose() == U3(-a,c,b)
       return get_op_ptr(OpType::U3, {-params_[0], params_[2], params_[1]});
     }
-    case OpType::tk1: {
-      // tk1(a,b,c).transpose() == tk1(c,b,a)
-      return get_op_ptr(OpType::tk1, {params_[2], params_[1], params_[0]});
+    case OpType::TK1: {
+      // TK1(a,b,c).transpose() == TK1(c,b,a)
+      return get_op_ptr(OpType::TK1, {params_[2], params_[1], params_[0]});
     }
     case OpType::PhasedX:
     case OpType::NPhasedX: {
@@ -274,7 +274,7 @@ std::optional<double> Gate::is_identity() const {
       } else
         return notid;
     }
-    case OpType::tk1: {
+    case OpType::TK1: {
       Expr s = params[0] + params[2], t = params[1];
       if (equiv_0(s) && equiv_0(t)) {
         return (equiv_0(s, 4) ^ equiv_0(t, 4)) ? 1. : 0.;
@@ -451,12 +451,12 @@ std::vector<Expr> Gate::get_tk1_angles() const {
     case OpType::PhasedX: {
       return {params_.at(1), params_.at(0), -params_.at(1), 0.};
     }
-    case OpType::tk1: {
+    case OpType::TK1: {
       return {params_.at(0), params_.at(1), params_.at(2), 0.};
     }
     default: {
       throw NotImplemented(
-          "Cannot retrieve the tk1 angles of OpType::" + get_desc().name());
+          "Cannot retrieve the TK1 angles of OpType::" + get_desc().name());
     }
   }
 }
@@ -499,7 +499,7 @@ std::optional<Pauli> Gate::commuting_basis(port_t port) const {
     case OpType::U2:
     case OpType::PhasedX:
     case OpType::NPhasedX:
-    case OpType::tk1: {
+    case OpType::TK1: {
       return std::nullopt;
     }
     case OpType::CH:

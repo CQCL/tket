@@ -4,6 +4,11 @@ Changelog
 0.19.0 (unreleased)
 -------------------
 
+Minor new features:
+
+* Improve ``CnX`` gate decomposition for n=5,6,7.
+* Add ``rebase_pass`` method to ``Backend``.
+
 General:
 
 * Python 3.10 support added; 3.7 dropped.

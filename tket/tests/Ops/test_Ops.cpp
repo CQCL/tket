@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -130,7 +130,7 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     CHECK(cnry->get_params().size() == 1);
     REQUIRE(cnry->transpose()->get_params() == rhs);
     const Op_ptr xxphase = (get_op_ptr(OpType::XXPhase, 0.5));
-    CHECK(xxphase->get_name() == "Mølmer-Sørensen(0.5)");
+    CHECK(xxphase->get_name() == "XXPhase(0.5)");
     REQUIRE(*xxphase->transpose() == *xxphase);
     const Op_ptr yyphase = (get_op_ptr(OpType::YYPhase, 0.5));
     CHECK(yyphase->get_name() == "YYPhase(0.5)");
@@ -139,7 +139,7 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     CHECK(zzphase->get_name() == "ZZPhase(0.5)");
     REQUIRE(*zzphase->transpose() == *zzphase);
     const Op_ptr xxphase3 = (get_op_ptr(OpType::XXPhase3, 0.5));
-    CHECK(xxphase3->get_name() == "3-Mølmer-Sørensen(0.5)");
+    CHECK(xxphase3->get_name() == "XXPhase3(0.5)");
     REQUIRE(*xxphase3->transpose() == *xxphase3);
     const Op_ptr eswap = (get_op_ptr(OpType::ESWAP, 0.5));
     CHECK(eswap->get_name() == "ESWAP(0.5)");
@@ -162,11 +162,11 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     CHECK(cu3->get_params().size() == 3);
     std::vector<Expr> cu3_params = {Expr{-0.2}, Expr(-0.5), Expr{0.5}};
     REQUIRE(cu3->transpose()->get_params() == cu3_params);
-    const Op_ptr tk1 = (get_op_ptr(OpType::tk1, {0.2, 0.5, -0.5}));
-    CHECK(tk1->get_name() == "tk1(0.2, 0.5, 3.5)");
-    CHECK(tk1->get_params().size() == 3);
+    const Op_ptr TK1 = (get_op_ptr(OpType::TK1, {0.2, 0.5, -0.5}));
+    CHECK(TK1->get_name() == "TK1(0.2, 0.5, 3.5)");
+    CHECK(TK1->get_params().size() == 3);
     std::vector<Expr> tk1_params = {Expr{-0.5}, Expr(0.5), Expr{0.2}};
-    REQUIRE(tk1->transpose()->get_params() == tk1_params);
+    REQUIRE(TK1->transpose()->get_params() == tk1_params);
     const Op_ptr phasedx = (get_op_ptr(OpType::PhasedX, {0.5, -0.5}));
     CHECK(phasedx->get_name() == "PhasedX(0.5, 1.5)");
     CHECK(phasedx->get_params().size() == 2);
@@ -501,9 +501,9 @@ SCENARIO("Custom Gates") {
     Circuit setup(1);
     Sym a = SymTable::fresh_symbol("a");
     Expr ea(a);
-    setup.add_op<unsigned>(OpType::tk1, {ea, 1.0353, 0.5372}, {0});
+    setup.add_op<unsigned>(OpType::TK1, {ea, 1.0353, 0.5372}, {0});
     composite_def_ptr_t def = CompositeGateDef::define_gate("g", setup, {a});
-    CompositeGate g(def, {0.2374});
+    CustomGate g(def, {0.2374});
     Circuit c(1);
     c.add_box(g, qubit_vector_t{Qubit("q", 0)});
     REQUIRE(c.n_gates() == 1);
@@ -520,8 +520,8 @@ SCENARIO("Custom Gates") {
     setup.add_op<unsigned>(OpType::CX, {0, 1});
     setup.add_op<unsigned>(OpType::Ry, {a}, {0});
     composite_def_ptr_t def = CompositeGateDef::define_gate("g", setup, {a});
-    CompositeGate g0(def, {0.2374});
-    CompositeGate g1(def, {b});
+    CustomGate g0(def, {0.2374});
+    CustomGate g1(def, {b});
     REQUIRE(!(g0 == g1));
     REQUIRE(!(*g0.to_circuit() == *g1.to_circuit()));
   }

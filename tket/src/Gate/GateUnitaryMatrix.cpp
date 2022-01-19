@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -136,7 +136,7 @@ static Eigen::MatrixXcd get_unitary_or_throw(
 #undef CASE_RETURN_2P
     CASE_RETURN_3P(CU3)
     CASE_RETURN_3P(U3)
-    CASE_RETURN_3P(tk1)
+    CASE_RETURN_3P(TK1)
 #undef CASE_RETURN_3P
     default: {
       std::stringstream ss;

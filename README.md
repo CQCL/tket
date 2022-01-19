@@ -82,6 +82,13 @@ recommended in the warning message:
 conan profile update settings.compiler.libcxx=libstdc++11 tket
 ```
 
+We want to build shared rather than static libraries, so set this in the
+profile:
+
+```shell
+conan profile update options.tket:shared=True tket
+```
+
 If you wish you can set your profile to Debug mode:
 
 ```shell

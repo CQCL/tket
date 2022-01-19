@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,17 +22,17 @@ class TketConan(ConanFile):
     name = "tket"
     version = "1.0.1"
     license = "CQC Proprietary"
-    author = "Alec Edgington <alec.edgington@cambridgequantum.com>"
-    url = "https://github.com/CQCL-DEV/tket"
+    homepage = "https://github.com/CQCL/tket"
+    url = "https://github.com/conan-io/conan-center-index"
     description = "Quantum SDK"
     topics = ("quantum", "computation", "compiler")
     settings = "os", "compiler", "build_type", "arch"
     options = {
-        "shared": [True],
+        "shared": [True, False],
         "profile_coverage": [True, False],
         "spdlog_ho": [True, False],
     }
-    default_options = {"shared": True, "profile_coverage": False, "spdlog_ho": True}
+    default_options = {"shared": False, "profile_coverage": False, "spdlog_ho": True}
     generators = "cmake"
     # Putting "patches" in both "exports_sources" and "exports" means that this works
     # in either the CI workflow (`conan create`) or the development workflow
@@ -46,6 +46,29 @@ class TketConan(ConanFile):
         "spdlog/1.9.2",
         "nlohmann_json/3.10.4",
     )
+
+    comps = [
+        "Utils",
+        "ZX",
+        "OpType",
+        "Clifford",
+        "Ops",
+        "Graphs",
+        "Gate",
+        "PauliGraph",
+        "Circuit",
+        "Architecture",
+        "Simulation",
+        "Diagonalisation",
+        "Program",
+        "Characterisation",
+        "Converters",
+        "Routing",
+        "MeasurementSetup",
+        "Transformations",
+        "ArchAwareSynth",
+        "Predicates",
+    ]
 
     _cmake = None
 
@@ -104,11 +127,13 @@ class TketConan(ConanFile):
                 shutil.move(filepath + ".original", filepath)
 
     def package(self):
-        self.copy("*.hpp", dst="include")
+        self.copy("LICENSE", dst="licenses", src="../..")
+        for comp in self.comps:
+            self.copy(f"{comp}/include/*.hpp", dst=f"include/{comp}", keep_path=False)
         self.copy("*.dll", dst="lib", keep_path=False)
         self.copy("*.lib", dst="lib", keep_path=False)
         self.copy("*.so", dst="lib", keep_path=False)
         self.copy("*.dylib", dst="lib", keep_path=False)
 
     def package_info(self):
-        self.cpp_info.libs = ["tket"]
+        self.cpp_info.libs = [f"tket-{comp}" for comp in self.comps]

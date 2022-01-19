@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@ PYBIND11_MODULE(transform, m) {
       .def_static(
           "RebaseToCliffordSingles", &Transform::decompose_cliffords_std,
           "Identify Clifford-angle rotations (from U1, U2, U3, Rx, "
-          "Ry, Rz, tk1, PhasedX), replacing them with Z, X, S, V "
+          "Ry, Rz, TK1, PhasedX), replacing them with Z, X, S, V "
           "gates. Any non-Clifford rotations will stay as they are.")
       .def_static(
           "RebaseToCirq", &Transform::rebase_cirq,
@@ -216,7 +216,7 @@ PYBIND11_MODULE(transform, m) {
           "corresponding to any non-Clifford rotations and "
           "synthesises them pairwise (see Cowtan, Duncan, Dilkes, "
           "Simmons, & Sivarajah https://arxiv.org/abs/1906.01734). "
-          "Results use tk1, CX gates.",
+          "Results use TK1, CX gates.",
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
           "RemoveRedundancies", &Transform::remove_redundancies,

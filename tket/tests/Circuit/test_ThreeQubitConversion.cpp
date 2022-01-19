@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ namespace test_ThreeQubitConversion {
 
 static void check_three_qubit_synthesis(const Eigen::MatrixXcd &U) {
   static const std::set<OpType> expected_1q_gates = {
-      OpType::tk1, OpType::H, OpType::Ry, OpType::Rz};
+      OpType::TK1, OpType::H, OpType::Ry, OpType::Rz};
   Circuit c = three_qubit_synthesis(U);
   unsigned n_cx = 0;
   for (const Command &cmd : c) {

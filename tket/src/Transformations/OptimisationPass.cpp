@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -127,7 +127,7 @@ Transform Transform::synthesise_UMD() {
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
       const Op_ptr op_ptr = circ.get_Op_ptr_from_Vertex(v);
       OpType type = op_ptr->get_type();
-      if (type == OpType::tk1) {
+      if (type == OpType::TK1) {
         std::vector<Expr> tk1_angles = as_gate_ptr(op_ptr)->get_tk1_angles();
         Circuit in_circ = Transform::tk1_to_PhasedXRz(
             tk1_angles[0], tk1_angles[1], tk1_angles[2]);

@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -238,7 +238,7 @@ static std::optional<std::pair<Circuit, Circuit>> separate_0_12(
   if (U.isApprox(Eigen::KroneckerProduct(W, V))) {
     std::vector<double> angs = tk1_angles_from_unitary(W);
     Circuit c_1q(1);
-    c_1q.add_op<unsigned>(OpType::tk1, {angs[0], angs[1], angs[2]}, {0});
+    c_1q.add_op<unsigned>(OpType::TK1, {angs[0], angs[1], angs[2]}, {0});
     c_1q.add_phase(angs[3]);
     Circuit c_2q = two_qubit_canonical(V);
     return std::pair<Circuit, Circuit>(c_1q, c_2q);

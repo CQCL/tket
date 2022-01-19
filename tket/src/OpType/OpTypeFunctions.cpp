@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ const OpTypeSet& all_gate_types() {
       OpType::SX,          OpType::SXdg,     OpType::H,
       OpType::Rx,          OpType::Ry,       OpType::Rz,
       OpType::U3,          OpType::U2,       OpType::U1,
-      OpType::tk1,         OpType::CX,       OpType::CY,
+      OpType::TK1,         OpType::CX,       OpType::CY,
       OpType::CZ,          OpType::CH,       OpType::CV,
       OpType::CVdg,        OpType::CSX,      OpType::CSXdg,
       OpType::CRz,         OpType::CRx,      OpType::CRy,
@@ -72,7 +72,7 @@ const OpTypeSet& all_single_qubit_types() {
       OpType::Sdg,   OpType::T,        OpType::Tdg,     OpType::V,
       OpType::Vdg,   OpType::SX,       OpType::SXdg,    OpType::H,
       OpType::Rx,    OpType::Ry,       OpType::Rz,      OpType::U3,
-      OpType::U2,    OpType::U1,       OpType::tk1,     OpType::Measure,
+      OpType::U2,    OpType::U1,       OpType::TK1,     OpType::Measure,
       OpType::Reset, OpType::Collapse, OpType::PhasedX, OpType::noop};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
@@ -122,7 +122,7 @@ bool is_box_type(OpType optype) {
       OpType::Unitary3qBox,
       OpType::ExpBox,
       OpType::PauliExpBox,
-      OpType::Composite,
+      OpType::CustomGate,
       OpType::CliffBox,
       OpType::PhasePolyBox,
       OpType::QControlBox,
@@ -168,7 +168,7 @@ bool is_oneway_type(OpType optype) {
   static const OpTypeSet no_defined_inverse = {
       OpType::Input,        OpType::Output,   OpType::Measure,
       OpType::ClInput,      OpType::ClOutput, OpType::Barrier,
-      OpType::Reset,        OpType::Collapse, OpType::Composite,
+      OpType::Reset,        OpType::Collapse, OpType::CustomGate,
       OpType::PhasePolyBox, OpType::Create,   OpType::Discard};
   return find_in_set(optype, no_defined_inverse);
 }

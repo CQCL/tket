@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ static PassPtr gate_translation_pass(
 
 const PassPtr &SynthesiseTket() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::synthesise_tket(), {OpType::tk1, OpType::CX}, true,
+      Transform::synthesise_tket(), {OpType::TK1, OpType::CX}, true,
       "SynthesiseTket"));
   return pp;
 }
@@ -83,7 +83,7 @@ const PassPtr &RebaseCirq() {
 
 const PassPtr &RebaseTket() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_tket(), {OpType::CX, OpType::tk1}, true, "RebaseTket"));
+      Transform::rebase_tket(), {OpType::CX, OpType::TK1}, true, "RebaseTket"));
   return pp;
 }
 
@@ -143,7 +143,7 @@ const PassPtr &RebaseOQC() {
 
 const PassPtr &PeepholeOptimise2Q() {
   OpTypeSet after_set = {
-      OpType::tk1, OpType::CX, OpType::Measure, OpType::Collapse,
+      OpType::TK1, OpType::CX, OpType::Measure, OpType::Collapse,
       OpType::Reset};
   PredicatePtrMap precons = {};
   std::type_index ti = typeid(ConnectivityPredicate);
@@ -252,7 +252,7 @@ const PassPtr &DecomposeSingleQubitsTK1() {
   static const PassPtr pp([]() {
     Transform t = Transform::decompose_single_qubits_TK1();
     /* Spits out TK1 + any multi qb gates */
-    OpTypeSet ots = {OpType::tk1};
+    OpTypeSet ots = {OpType::TK1};
     op_signature_t singleq = {EdgeType::Quantum};
     ots.insert(all_projective_types().begin(), all_projective_types().end());
     for (const std::pair<const OpType, OpTypeInfo> &ott : optypeinfo()) {

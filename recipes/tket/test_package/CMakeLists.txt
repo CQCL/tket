@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+cmake_minimum_required(VERSION 3.16.0)
 
 set (CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -29,4 +31,4 @@ ENDIF()
 include_directories(${CONAN_INCLUDE_DIRS_TKET})
 
 add_executable(test test.cpp)
-target_link_libraries(test tket ${CONAN_LIBS})
+target_link_libraries(test ${CONAN_LIBS})

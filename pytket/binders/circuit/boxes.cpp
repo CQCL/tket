@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -162,18 +162,18 @@ void init_boxes(py::module &m) {
       .def_property_readonly(
           "arity", &CompositeGateDef::n_args,
           "The number of real parameters for the gate");
-  py::class_<CompositeGate, std::shared_ptr<CompositeGate>, Op>(
+  py::class_<CustomGate, std::shared_ptr<CustomGate>, Op>(
       m, "CustomGate",
       "A user-defined gate defined by a parametrised :py:class:`Circuit`.")
       .def_property_readonly(
-          "name", &CompositeGate::get_name, "The readable name of the gate.")
+          "name", &CustomGate::get_name, "The readable name of the gate.")
       .def_property_readonly(
-          "params", &CompositeGate::get_params, "The parameters of the gate.")
+          "params", &CustomGate::get_params, "The parameters of the gate.")
       .def_property_readonly(
-          "gate", &CompositeGate::get_gate, "Underlying gate object.")
+          "gate", &CustomGate::get_gate, "Underlying gate object.")
       .def(
           "get_circuit",
-          [](CompositeGate &composite) { return *composite.to_circuit(); },
+          [](CustomGate &composite) { return *composite.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the gate.");
   py::class_<PhasePolyBox, std::shared_ptr<PhasePolyBox>, Op>(
       m, "PhasePolyBox",

@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -238,7 +238,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     circ.add_op<unsigned>(OpType::CH, {0, 2});
     circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3});
     circ.add_op<unsigned>(OpType::CZ, {0, 1});
-    OpTypeSet ots = {OpType::CX, OpType::tk1, OpType::SWAP};
+    OpTypeSet ots = {OpType::CX, OpType::TK1, OpType::SWAP};
     PredicatePtr gsp = std::make_shared<GateSetPredicate>(ots);
     SquareGrid grid(2, 3);
 
@@ -927,7 +927,7 @@ SCENARIO("RemoveRedundancies and phase") {
   GIVEN("A trivial circuit with nonzero phase") {
     // TKET-679
     Circuit c(1);
-    c.add_op<unsigned>(OpType::tk1, {1., 0., 1.}, {0});
+    c.add_op<unsigned>(OpType::TK1, {1., 0., 1.}, {0});
     CompilationUnit cu(c);
     REQUIRE(RemoveRedundancies()->apply(cu));
     const Circuit& c1 = cu.get_circ_ref();

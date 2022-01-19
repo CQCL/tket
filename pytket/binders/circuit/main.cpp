@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -192,7 +192,7 @@ PYBIND11_MODULE(circuit, m) {
           "\\mathrm{Rz}(\\phi) \\mathrm{Ry}(\\theta) "
           "\\mathrm{Rz}(\\lambda)`")
       .value(
-          "TK1", OpType::tk1,
+          "TK1", OpType::TK1,
           ":math:`(\\alpha, \\beta, \\gamma) \\mapsto "
           "\\mathrm{Rz}(\\alpha) \\mathrm{Rx}(\\beta) "
           "\\mathrm{Rz}(\\gamma)`")
@@ -306,14 +306,14 @@ PYBIND11_MODULE(circuit, m) {
           "QControlBox", OpType::QControlBox,
           "An arbitrary n-controlled operation")
       .value(
-          "Custom", OpType::Composite,
+          "CustomGate", OpType::CustomGate,
           ":math:`(\\alpha, \\beta, \\ldots) \\mapsto` A user-defined "
           "operation, based on a :py:class:`Circuit` :math:`C` with "
           "parameters :math:`\\alpha, \\beta, \\ldots` substituted in "
           "place of bound symbolic variables in :math:`C`, as defined "
           "by the :py:class:`CustomGateDef`.")
       .value(
-          "ConditionalGate", OpType::Conditional,
+          "Conditional", OpType::Conditional,
           "An operation to be applied conditionally on the value of "
           "some classical register")
       .value(

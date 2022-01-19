@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -108,11 +108,11 @@ Transform Transform::rebase_tket() {
   std::function<Circuit(const Expr&, const Expr&, const Expr&)> tk1_to_tk1 =
       [](const Expr& alpha, const Expr& beta, const Expr& gamma) {
         Circuit c(1);
-        c.add_op<unsigned>(OpType::tk1, {alpha, beta, gamma}, {0});
+        c.add_op<unsigned>(OpType::TK1, {alpha, beta, gamma}, {0});
         return c;
       };
   return rebase_factory(
-      {OpType::CX}, CircPool::CX(), {OpType::tk1}, tk1_to_tk1);
+      {OpType::CX}, CircPool::CX(), {OpType::TK1}, tk1_to_tk1);
 }
 
 Circuit Transform::tk1_to_PhasedXRz(
@@ -249,7 +249,7 @@ Circuit Transform::tk1_to_rzsx(
 Circuit Transform::tk1_to_tk1(
     const Expr& alpha, const Expr& beta, const Expr& gamma) {
   Circuit c(1);
-  c.add_op<unsigned>(OpType::tk1, {alpha, beta, gamma}, {0});
+  c.add_op<unsigned>(OpType::TK1, {alpha, beta, gamma}, {0});
   return c;
 }
 

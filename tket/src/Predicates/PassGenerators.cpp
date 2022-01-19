@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -108,7 +108,7 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps) {
         {typeid(NoWireSwapsPredicate), Guarantee::Clear},
         {typeid(DirectednessPredicate), Guarantee::Clear}};
   }
-  OpTypeSet ots2 = {OpType::CX, OpType::tk1};
+  OpTypeSet ots2 = {OpType::CX, OpType::TK1};
   PredicatePtr outp_gates = std::make_shared<GateSetPredicate>(ots2);
   PredicatePtrMap spec_postcons = {CompilationUnit::make_type_pair(outp_gates)};
   PostConditions postcon{spec_postcons, g_postcons, Guarantee::Preserve};
@@ -511,7 +511,7 @@ PassPtr ThreeQubitSquash(bool allow_swaps) {
 
 PassPtr FullPeepholeOptimise(bool allow_swaps) {
   OpTypeSet after_set = {
-      OpType::tk1, OpType::CX, OpType::Measure, OpType::Collapse,
+      OpType::TK1, OpType::CX, OpType::Measure, OpType::Collapse,
       OpType::Reset};
   PredicatePtrMap precons = {};
   PredicatePtr out_gateset = std::make_shared<GateSetPredicate>(after_set);
@@ -534,7 +534,7 @@ PassPtr gen_optimise_phase_gadgets(CXConfigType cx_config) {
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtrMap precons{CompilationUnit::make_type_pair(ccontrol_pred)};
   OpTypeSet after_set{
-      OpType::Measure, OpType::Collapse, OpType::Reset, OpType::tk1,
+      OpType::Measure, OpType::Collapse, OpType::Reset, OpType::TK1,
       OpType::CX};
   std::type_index ti = typeid(ConnectivityPredicate);
   PredicatePtr out_gateset = std::make_shared<GateSetPredicate>(after_set);
