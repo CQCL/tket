@@ -32,6 +32,8 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
     case OpType::CnRy:
       return Transform::decomposed_CnRy(op, n_qubits);
     case OpType::CnX:
+      if (n_qubits >= 6 && n_qubits <= 8)
+        return Transform::cnx_gray_decomp(n_qubits - 1);
       return Transform::cnx_normal_decomp(n_qubits - 1);
     default:
       return with_CX(as_gate_ptr(op));
@@ -210,7 +212,7 @@ Circuit CX_ZX_circ_from_op(const Op_ptr op) {
       Transform::decompose_ZX().apply(replacement);
       return replacement;
     }
-    case OpType::tk1: {
+    case OpType::TK1: {
       Circuit replacement(1);
       std::vector<Expr> params = op->get_params();
       replacement.add_op<unsigned>(OpType::Rz, params[2], {0});

@@ -187,7 +187,7 @@ SCENARIO(
     symbol_map[c] = Expr(1.);
     circ.symbol_substitution(symbol_map);
     REQUIRE(circ.get_slices().size() == 23);
-    REQUIRE(circ.count_gates(OpType::tk1) == 3);
+    REQUIRE(circ.count_gates(OpType::TK1) == 3);
   }
   GIVEN("Commute Rz through CX") {
     Circuit circ(2);
@@ -221,7 +221,7 @@ SCENARIO(
       BGL_FORALL_VERTICES(v, test1.dag, DAG) {
         OpType optype = test1.get_OpType_from_Vertex(v);
         bool finished_synth =
-            ((test1.detect_boundary_Op(v)) || (optype == OpType::tk1) ||
+            ((test1.detect_boundary_Op(v)) || (optype == OpType::TK1) ||
              (optype == OpType::CX));
         REQUIRE(finished_synth);
       }
@@ -276,10 +276,10 @@ SCENARIO(
   GIVEN("A UCCSD example") {
     auto circ = CircuitsForTesting::get().uccsd;
     const StateVector s0 = tket_sim::get_statevector(circ);
-    REQUIRE(circ.count_gates(OpType::tk1) == 0);
+    REQUIRE(circ.count_gates(OpType::TK1) == 0);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
     Transform::squash_1qb_to_tk1().apply(circ);
-    REQUIRE(circ.count_gates(OpType::tk1) == 12);
+    REQUIRE(circ.count_gates(OpType::TK1) == 12);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
     const StateVector s1 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
@@ -851,7 +851,7 @@ SCENARIO("Squishing a circuit into U3 and CNOTs") {
       REQUIRE(Transform::decompose_single_qubits_TK1().apply(test1));
       THEN("Nothing happens to the circuit except an op label change") {
         REQUIRE(test1.depth() == 1);
-        REQUIRE(test1.count_gates(OpType::tk1) == 1);
+        REQUIRE(test1.count_gates(OpType::TK1) == 1);
       }
     }
   }
@@ -935,17 +935,17 @@ SCENARIO("Test commutation through CXsw", "[transform]") {
     REQUIRE(circ.count_gates(OpType::Rx) == 12);
     REQUIRE(circ.count_gates(OpType::Rz) == 2);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
-    REQUIRE(circ.count_gates(OpType::tk1) == 0);
+    REQUIRE(circ.count_gates(OpType::TK1) == 0);
     Transform::commute_through_multis().apply(circ);
     REQUIRE(circ.count_gates(OpType::Rx) == 12);
     REQUIRE(circ.count_gates(OpType::Rz) == 2);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
-    REQUIRE(circ.count_gates(OpType::tk1) == 0);
+    REQUIRE(circ.count_gates(OpType::TK1) == 0);
     Transform::squash_1qb_to_tk1().apply(circ);
     REQUIRE(circ.count_gates(OpType::Rx) == 0);
     REQUIRE(circ.count_gates(OpType::Rz) == 0);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
-    REQUIRE(circ.count_gates(OpType::tk1) == 12);
+    REQUIRE(circ.count_gates(OpType::TK1) == 12);
     const StateVector s1 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
   }
@@ -1605,7 +1605,7 @@ SCENARIO("Check the identification of ZZPhase gates works correctly") {
   }
 }
 
-SCENARIO("Test tk1 gate decomp for some gates") {
+SCENARIO("Test TK1 gate decomp for some gates") {
   std::vector<Expr> pars = {
       0.3, 0.7, 0.8};  // no ops required >3 params currently
   std::set<OpType> cant_do = {
@@ -1613,7 +1613,7 @@ SCENARIO("Test tk1 gate decomp for some gates") {
       OpType::ClOutput,     OpType::noop,         OpType::Reset,
       OpType::BRIDGE,       OpType::Unitary1qBox, OpType::Unitary2qBox,
       OpType::Unitary3qBox, OpType::ExpBox,       OpType::PauliExpBox,
-      OpType::Composite,    OpType::Collapse,     OpType::Measure,
+      OpType::CustomGate,   OpType::Collapse,     OpType::Measure,
       OpType::Label,        OpType::Branch,       OpType::Goto,
       OpType::Stop,         OpType::Create,       OpType::Discard};
   for (const std::pair<const OpType, OpTypeInfo> &map_pair : optypeinfo()) {

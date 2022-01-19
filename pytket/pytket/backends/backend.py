@@ -294,6 +294,11 @@ class Backend(ABC):
         * `seed`: RNG seed for simulators
         * `postprocess`: if True, apply contextual optimisations
 
+        Note: If a backend is reused many times, the in-memory results cache grows
+        indefinitely. Therefore, when processing many circuits on a statevector or
+        unitary backend (whose results may occupy significant amounts of memory), it is
+        advisable to run :py:meth:`Backend.empty_cache` after each result is retrieved.
+
         :param circuits: Circuits to process on the backend.
         :type circuits: Sequence[Circuit]
         :param n_shots: Number of shots to run per circuit. Optionally, this can be

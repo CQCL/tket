@@ -62,7 +62,7 @@ SCENARIO("Test Op serialization") {
     const OpTypeSet boxes = {OpType::CircBox,      OpType::Unitary1qBox,
                              OpType::Unitary2qBox, OpType::Unitary3qBox,
                              OpType::ExpBox,       OpType::PauliExpBox,
-                             OpType::Composite,    OpType::CliffBox,
+                             OpType::CustomGate,   OpType::CliffBox,
                              OpType::PhasePolyBox, OpType::QControlBox};
 
     std::set<std::string> type_names;
@@ -191,7 +191,7 @@ SCENARIO("Test Circuit serialization") {
     c.add_op<unsigned>(OpType::Rz, 0.2, {0});
 
     Circuit setup(1);
-    setup.add_op<unsigned>(OpType::tk1, {0.2374, 1.0353, 0.5372}, {0});
+    setup.add_op<unsigned>(OpType::TK1, {0.2374, 1.0353, 0.5372}, {0});
     Eigen::Matrix2cd m = get_matrix_from_circ(setup);
     Unitary1qBox mbox(m);
     c.add_box(mbox, {1});
@@ -259,7 +259,7 @@ SCENARIO("Test Circuit serialization") {
     REQUIRE(p_b == pbox);
   }
 
-  GIVEN("Composite Gate") {
+  GIVEN("CustomGate") {
     Circuit setup(2);
     Sym a = SymTable::fresh_symbol("a");
     Sym c = SymTable::fresh_symbol("c");
@@ -268,8 +268,8 @@ SCENARIO("Test Circuit serialization") {
     setup.add_op<unsigned>(OpType::CX, {0, 1});
     setup.add_op<unsigned>(OpType::Ry, {a}, {0});
     composite_def_ptr_t def = CompositeGateDef::define_gate("g", setup, {a});
-    CompositeGate g0(def, {0.2374});
-    CompositeGate g1(def, {b});
+    CustomGate g0(def, {0.2374});
+    CustomGate g1(def, {b});
 
     Circuit circ(3);
     circ.add_box(g0, {0, 1});
@@ -280,14 +280,12 @@ SCENARIO("Test Circuit serialization") {
 
     const std::vector<Command> coms = new_c.get_commands();
 
-    const auto& g_0_new =
-        static_cast<const CompositeGate&>(*coms[0].get_op_ptr());
+    const auto& g_0_new = static_cast<const CustomGate&>(*coms[0].get_op_ptr());
 
     REQUIRE(g0.get_params() == g_0_new.get_params());
     REQUIRE(*g0.get_gate() == *g_0_new.get_gate());
     REQUIRE(g0 == g_0_new);
-    const auto& g_1_new =
-        static_cast<const CompositeGate&>(*coms[1].get_op_ptr());
+    const auto& g_1_new = static_cast<const CustomGate&>(*coms[1].get_op_ptr());
 
     REQUIRE(g1.get_params() == g_1_new.get_params());
     REQUIRE(*g1.get_gate() == *g_1_new.get_gate());

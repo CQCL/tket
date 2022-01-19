@@ -85,19 +85,14 @@ static PassPtr gen_full_mapping_pass_kwargs(
   return gen_full_mapping_pass(arc, placer, config);
 }
 
-static const py::module &decompose_module() {
-  static const py::module decomposer_ =
-      py::module::import("pytket.circuit.decompose_classical");
-  return decomposer_;
-}
-
 const PassPtr &DecomposeClassicalExp() {
   // a special box decomposer for Circuits containing
   // ClassicalExpBox<py::object>
   static const PassPtr pp([]() {
     Transform t = Transform([](Circuit &circ) {
-      const py::tuple result =
-          decompose_module().attr("_decompose_expressions")(circ);
+      py::module decomposer =
+          py::module::import("pytket.circuit.decompose_classical");
+      const py::tuple result = decomposer.attr("_decompose_expressions")(circ);
       const bool success = result[1].cast<bool>();
       if (success) {
         circ = result[0].cast<Circuit>();
@@ -387,7 +382,7 @@ PYBIND11_MODULE(passes, m) {
       "RebasePyZX", &RebasePyZX,
       "Converts all gates to SWAP, CX, CZ, H, X, Z, S, T, Rx and Rz.");
   m.def("RebaseQuil", &RebaseQuil, "Converts all gates to CZ, Rx and Rz.");
-  m.def("RebaseTket", &RebaseTket, "Converts all gates to CX and tk1.");
+  m.def("RebaseTket", &RebaseTket, "Converts all gates to CX and TK1.");
   m.def(
       "RebaseUMD", &RebaseUMD,
       "Converts all gates to XXPhase, PhasedX and Rz.");
@@ -592,7 +587,7 @@ PYBIND11_MODULE(passes, m) {
       "simplifying Clifford gate sequences, similar to Duncan & Fagan "
       "(https://arxiv.org/abs/1901.10114). "
       "Given a circuit with CXs and any single-qubit gates, produces a "
-      "circuit with tk1, CX gates."
+      "circuit with TK1, CX gates."
       "\n\n:param allow_swaps: dictates whether the rewriting will "
       "disregard CX placement or orientation and introduce wire swaps."
       "\n:return: a pass to perform the rewriting",

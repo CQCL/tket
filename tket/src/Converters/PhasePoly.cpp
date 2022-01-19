@@ -147,18 +147,55 @@ Circuit gray_synth(
 
 PhasePolyBox::PhasePolyBox(const Circuit& circ)
     : Box(OpType::PhasePolyBox), n_qubits_(circ.n_qubits()) {
-  if (circ.n_bits() != 0)
+  Circuit newcirc(circ);
+
+  // check for classical bits
+  if (newcirc.n_bits() != 0)
     throw NotValid(
         "Cannot construct phase polynomial from classical controlled "
         "gates");
+
+  // check the gateset of the circuit
+  for (const Command& com : newcirc) {
+    OpType ot = com.get_op_ptr()->get_type();
+
+    switch (ot) {
+      case OpType::CX: {
+        break;
+      }
+      case OpType::Rz: {
+        break;
+      }
+      default: {
+        throw NotValid("Only CXs and Rzs allowed in Phase Polynomials");
+      }
+    }
+  }
+
+  // replace wireswaps with three CX
+  while (newcirc.has_implicit_wireswaps()) {
+    bool foundswap = false;
+
+    qubit_map_t perm = newcirc.implicit_qubit_permutation();
+    for (const std::pair<const Qubit, Qubit>& pair : perm) {
+      if (pair.first != pair.second) {
+        if (!foundswap) {
+          newcirc.replace_implicit_wire_swap(pair.first, pair.second);
+          foundswap = true;
+        }
+      }
+    }
+  }
+
+  // generate box
   signature_ = op_signature_t(n_qubits_, EdgeType::Quantum);
   unsigned i = 0;
-  for (const Qubit& qb : circ.all_qubits()) {
+  for (const Qubit& qb : newcirc.all_qubits()) {
     qubit_indices_.insert({qb, i});
     ++i;
   }
   linear_transformation_ = MatrixXb::Identity(n_qubits_, n_qubits_);
-  for (const Command& com : circ) {
+  for (const Command& com : newcirc) {
     OpType ot = com.get_op_ptr()->get_type();
     unit_vector_t qbs = com.get_args();
     if (ot == OpType::CX) {
@@ -180,7 +217,7 @@ PhasePolyBox::PhasePolyBox(const Circuit& circ)
       else
         pp_it->second += com.get_op_ptr()->get_params().at(0);
     } else
-      throw NotImplemented("Only CXs and Rzs allowed in Phase Polynomials");
+      TKET_ASSERT(!"Only CXs and Rzs allowed in Phase Polynomials");
   }
 }
 

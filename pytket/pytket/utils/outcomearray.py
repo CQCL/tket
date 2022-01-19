@@ -15,9 +15,10 @@
 """`OutcomeArray` class and associated methods."""
 import operator
 from functools import reduce
-from typing import Counter, List, Sequence, Dict, Tuple, Any, cast
+from typing import Counter, List, Sequence, Dict, Tuple, Any, Optional, cast
 
 import numpy as np
+from numpy.typing import ArrayLike
 
 
 class OutcomeArray(np.ndarray):
@@ -57,12 +58,13 @@ class OutcomeArray(np.ndarray):
         # see InfoArray.__array_finalize__ for comments
         if obj is None:
             return
-        self._width: int = getattr(obj, "_width", None)
+        self._width: Optional[int] = getattr(obj, "_width", None)
 
     @property
     def width(self) -> int:
         """Number of bit entries stored, less than or equal to the bit capacity of the
         array."""
+        assert type(self._width) is int
         return self._width
 
     @property
@@ -77,7 +79,7 @@ class OutcomeArray(np.ndarray):
         return bool(np.array_equal(self, other) and self.width == other.width)
 
     @classmethod
-    def from_readouts(cls, readouts: Sequence[Sequence[int]]) -> "OutcomeArray":
+    def from_readouts(cls, readouts: ArrayLike) -> "OutcomeArray":
         """Create OutcomeArray from a 2D array like object of read-out integers,
         e.g. [[1, 1, 0], [0, 1, 1]]"""
         readouts_ar = np.array(readouts, dtype=int)
@@ -152,8 +154,8 @@ class OutcomeArray(np.ndarray):
         """
         ars, count_vals = np.unique(self, axis=0, return_counts=True)  # type: ignore
         width = self.width
-        ars = [OutcomeArray(x[None, :], width) for x in ars]
-        return Counter(dict(zip(ars, count_vals)))
+        oalist = [OutcomeArray(x[None, :], width) for x in ars]
+        return Counter(dict(zip(oalist, count_vals)))
 
     def choose_indices(self, indices: List[int]) -> "OutcomeArray":
         """Permute ordering of bits in outcomes or choose subset of bits.

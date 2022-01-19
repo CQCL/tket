@@ -116,7 +116,7 @@ void Unitary1qBox::generate_circuit() const {
   std::vector<double> tk1_params = tk1_angles_from_unitary(m_);
   Circuit temp_circ(1);
   temp_circ.add_op<unsigned>(
-      OpType::tk1, {tk1_params[0], tk1_params[1], tk1_params[2]}, {0});
+      OpType::TK1, {tk1_params[0], tk1_params[1], tk1_params[2]}, {0});
   circ_ = std::make_shared<Circuit>(temp_circ);
   circ_->add_phase(tk1_params[3]);
 }
@@ -263,33 +263,31 @@ bool CompositeGateDef::operator==(const CompositeGateDef &other) const {
   return this->get_def()->circuit_equality(*other.get_def(), {}, false);
 }
 
-CompositeGate::CompositeGate(
+CustomGate::CustomGate(
     const composite_def_ptr_t &gate, const std::vector<Expr> &params)
-    : Box(OpType::Composite, gate->signature()), gate_(gate), params_(params) {
+    : Box(OpType::CustomGate, gate->signature()), gate_(gate), params_(params) {
   if (params_.size() != gate_->n_args()) throw InvalidParameterCount();
 }
 
-CompositeGate::CompositeGate(const CompositeGate &other)
+CustomGate::CustomGate(const CustomGate &other)
     : Box(other), gate_(other.gate_), params_(other.params_) {}
 
-Op_ptr CompositeGate::symbol_substitution(
+Op_ptr CustomGate::symbol_substitution(
     const SymEngine::map_basic_basic &sub_map) const {
   std::vector<Expr> new_params;
   for (const Expr &p : this->params_) {
     new_params.push_back(p.subs(sub_map));
   }
-  return std::make_shared<CompositeGate>(this->gate_, new_params);
+  return std::make_shared<CustomGate>(this->gate_, new_params);
 }
 
-void CompositeGate::generate_circuit() const {
+void CustomGate::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(gate_->instance(params_));
 }
 
-SymSet CompositeGate::free_symbols() const {
-  return to_circuit()->free_symbols();
-}
+SymSet CustomGate::free_symbols() const { return to_circuit()->free_symbols(); }
 
-std::string CompositeGate::get_name(bool) const {
+std::string CustomGate::get_name(bool) const {
   std::stringstream s;
   s << gate_->get_name();
   if (!params_.empty()) {
@@ -556,16 +554,16 @@ void from_json(const nlohmann::json &j, composite_def_ptr_t &cdef) {
       j.at("args").get<std::vector<Sym>>());
 }
 
-nlohmann::json CompositeGate::to_json(const Op_ptr &op) {
-  const auto &box = static_cast<const CompositeGate &>(*op);
+nlohmann::json CustomGate::to_json(const Op_ptr &op) {
+  const auto &box = static_cast<const CustomGate &>(*op);
   nlohmann::json j = core_box_json(box);
   j["gate"] = box.get_gate();
   j["params"] = box.get_params();
   return j;
 }
 
-Op_ptr CompositeGate::from_json(const nlohmann::json &j) {
-  CompositeGate box = CompositeGate(
+Op_ptr CustomGate::from_json(const nlohmann::json &j) {
+  CustomGate box = CustomGate(
       j.at("gate").get<composite_def_ptr_t>(),
       j.at("params").get<std::vector<Expr>>());
   return set_box_id(
@@ -626,7 +624,7 @@ REGISTER_OPFACTORY(Unitary2qBox, Unitary2qBox)
 REGISTER_OPFACTORY(Unitary3qBox, Unitary3qBox)
 REGISTER_OPFACTORY(ExpBox, ExpBox)
 REGISTER_OPFACTORY(PauliExpBox, PauliExpBox)
-REGISTER_OPFACTORY(Composite, CompositeGate)
+REGISTER_OPFACTORY(CustomGate, CustomGate)
 REGISTER_OPFACTORY(QControlBox, QControlBox)
 REGISTER_OPFACTORY(ProjectorAssertionBox, ProjectorAssertionBox)
 REGISTER_OPFACTORY(StabiliserAssertionBox, StabiliserAssertionBox)

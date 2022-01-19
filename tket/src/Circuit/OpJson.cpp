@@ -13,11 +13,11 @@
 // limitations under the License.
 
 #include "Boxes.hpp"
+#include "Conditional.hpp"
 #include "Gate/Gate.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
 #include "Ops/ClassicalOps.hpp"
-#include "Ops/Conditional.hpp"
 #include "Ops/MetaOp.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Utils/Json.hpp"

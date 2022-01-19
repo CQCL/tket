@@ -105,18 +105,34 @@ class CMakeBuild(build_ext):
                 ]
             )
             reqs = conaninfo["conanfile.txt"]["requires"]
-
-            # tket packages which must be copied over.
-            # (Only one right now, but maybe more in future).
-            # The name of the package might not match the name of the file!
-            copying_data = (("tket/", "tket"),)
-            for entry in copying_data:
-                assert len(entry) == 2
-                tket_reqs = [req for req in reqs if req.startswith(entry[0])]
-                assert len(tket_reqs) == 1
-                versioned_package = tket_reqs[0]
-                directory = conaninfo[versioned_package]["package_folder"]
-                shutil.copy(os.path.join(directory, "lib", libfile(entry[1])), extdir)
+            tket_reqs = [req for req in reqs if req.startswith("tket/")]
+            assert len(tket_reqs) == 1
+            tket_req = tket_reqs[0]
+            directory = conaninfo[tket_req]["package_folder"]
+            tket_libs = [
+                "tket-Utils",
+                "tket-ZX",
+                "tket-OpType",
+                "tket-Clifford",
+                "tket-Ops",
+                "tket-Graphs",
+                "tket-Gate",
+                "tket-PauliGraph",
+                "tket-Circuit",
+                "tket-Architecture",
+                "tket-Simulation",
+                "tket-Diagonalisation",
+                "tket-Program",
+                "tket-Characterisation",
+                "tket-Converters",
+                "tket-Routing",
+                "tket-MeasurementSetup",
+                "tket-Transformations",
+                "tket-ArchAwareSynth",
+                "tket-Predicates",
+            ]
+            for tket_lib in tket_libs:
+                shutil.copy(os.path.join(directory, "lib", libfile(tket_lib)), extdir)
 
     def cmake_config(self, extdir, extsource):
 
@@ -154,6 +170,8 @@ class CMakeBuild(build_ext):
             "install",
             "--profile=" + conan_tket_profile,
             "--build=missing",
+            "-o",
+            "tket:shared=True",
             extsource,
         ]
         if platform.system() == "Darwin" and platform.processor() == "arm":
@@ -195,6 +213,7 @@ binders = [
     "routing",
     "transform",
     "tailoring",
+    "tableau",
     "zx",
 ]
 
@@ -203,16 +222,16 @@ setup(
     name="pytket",
     author="Seyon Sivarajah",
     author_email="seyon.sivarajah@cambridgequantum.com",
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     url="https://cqcl.github.io/pytket",
     description="Python module for interfacing with the CQC tket library of quantum software",
     license="Apache 2",
     packages=setuptools.find_packages(),
     install_requires=[
         "sympy ~=1.6",
-        "numpy ~=1.19",
+        "numpy >=1.21.4, <2.0",
         "lark-parser ~=0.7",
-        "scipy ~=1.2",
+        "scipy >=1.7.2, <2.0",
         "networkx ~= 2.4",
         "graphviz ~= 0.14",
         "jinja2 ~= 2.11",
@@ -228,9 +247,9 @@ setup(
     },
     classifiers=[
         "Environment :: Console",
-        "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX :: Linux",

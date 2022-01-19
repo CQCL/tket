@@ -12,17 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+cmake_minimum_required(VERSION 3.16.0)
+project(pytket)
+
 set (CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
-cmake_minimum_required(VERSION 3.16.0)
 
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 endif()
-
-project(pytket)
 
 find_file(CONANBUILDINFO_FILE conanbuildinfo.cmake HINTS ${CMAKE_BINARY_DIR})
 include(${CONANBUILDINFO_FILE})
@@ -63,6 +62,7 @@ build_module(pauli binders/pauli.cpp)
 build_module(logging binders/logging.cpp)
 build_module(utils_serialization binders/utils_serialization.cpp)
 build_module(tailoring binders/tailoring.cpp)
+build_module(tableau binders/tableau.cpp)
 build_module(zx
     binders/zx/diagram.cpp
     binders/zx/rewrite.cpp)
