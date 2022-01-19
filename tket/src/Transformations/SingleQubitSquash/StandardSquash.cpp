@@ -36,8 +36,7 @@ class StandardSquasher {
     for (OpType ot : singleqs) {
       if (!is_single_qubit_type(ot))
         throw NotValid(
-            "OpType given to standard_squash is not a single qubit "
-            "gate");
+            "OpType given to standard_squash is not a single qubit gate");
     }
   }
 
