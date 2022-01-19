@@ -36,13 +36,24 @@ static bool redundancy_removal(Circuit &circ);
  * Note that even in strict mode, if a rotation in the PQP decomposition
  * has angle 0, it will be omitted.
  *
- * The squash is made backwards, so that rotations get pushed towards
- * the front, see the design choice notes in confluence
- * https://cqc.atlassian.net/l/c/17xm5hvp
+ * The squash is made backwards, so that rotations get pushed towards the front.
+ * This was chosen to be compatible with the `commute_through_multis` pass,
+ * which also proceeds backwards. There are several reasons to prefer commuting
+ * rotations to the front rather than the back
+ *  - Noise heuristic: CX gate distribute the errors out, so it makes sense to
+ *    delay them as much as possible
+ *  - For contextual optimisation, it also makes sense to move Clifford
+ *    operations (i.e. CX) to the back, as this can be then removed
+ *  - Some initial benchmarking by Seyon seemed to show that commuting to the
+ *    front performed better, but this might be an artefact of the benchmarking
+ *    circuits used.
+ * Note finally there is also an argument for commuting non-Clifford rotations towards
+ * the back, as this makes generating automatic assertions easier (not implemented at the time of writing).
  *
  * The PQPSquasher shouldn't have to know if the squash is made forwards
- * or backwards. Here, it is used only in fixup_angles, because the convention
- * is different (for consistency to the user)
+ * or backwards. Here, however, `reversed` is needed in `fixup_angles` for
+ * consistency, so that forward and backward passes squash to the same normal
+ * form
  */
 class PQPSquasher {
  public:

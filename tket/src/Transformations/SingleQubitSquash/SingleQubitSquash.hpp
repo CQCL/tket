@@ -301,30 +301,9 @@ class SingleQubitSquash {
     while (it1 != circ.end() && it2 != gates.end()) {
       const Gate_ptr op1 = as_gate_ptr(it1->get_op_ptr());
       const Gate_ptr op2 = as_gate_ptr(*it2);
-      const OpType ot1 = op1->get_type();
-      const OpType ot2 = op2->get_type();
-      if (ot1 != ot2) {
+      if (!(*op1 == *op2)) {
         return false;
       }
-      const std::vector<Expr> params1 = op1->get_params();
-      const std::vector<Expr> params2 = op2->get_params();
-      auto p1 = params1.cbegin();
-      auto p2 = params2.cbegin();
-      unsigned i = 0;
-      while (p1 != params1.cend() && p2 != params2.cend()) {
-        unsigned mod = op1->get_desc().param_mod(i);
-        if (!equiv_expr(*p1, *p2, mod)) {
-          return false;
-        }
-        ++p1;
-        ++p2;
-        ++i;
-      }
-      if (p1 != params1.cend() || p2 != params2.cend()) {
-        return false;
-      }
-      ++it1;
-      ++it2;
     }
 
     if (it1 != circ.end() || it2 != gates.cend()) {
