@@ -133,7 +133,7 @@ class Backend(ABC):
         A single compilation pass that when run converts all gates in a Circuit to
         an OpType supported by the Backend (ignoring architecture constraints).
 
-        :return: Copmilation pass that converts gates to primitives supported by
+        :return: Compilation pass that converts gates to primitives supported by
             Backend.
         :rtype: BasePass
         """
