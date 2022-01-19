@@ -138,7 +138,7 @@ class Backend(ABC):
         :rtype: BasePass
         """
         ...
-    
+
     @abstractmethod
     def default_compilation_pass(self, optimisation_level: int = 1) -> BasePass:
         """
