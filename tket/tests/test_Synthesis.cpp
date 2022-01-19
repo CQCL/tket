@@ -655,12 +655,12 @@ SCENARIO("Testing general 1qb squash") {
           static_cast<const Conditional &>(*cmds[i].get_op_ptr());
       Op_ptr op = cond1.get_op();
       REQUIRE(cond1.get_value() == 1);
-      REQUIRE(op == cmds_no_cond[i].get_op_ptr());
+      REQUIRE(*op == *cmds_no_cond[i].get_op_ptr());
       const Conditional &cond2 =
           static_cast<const Conditional &>(*cmds[i + 3].get_op_ptr());
       op = cond2.get_op();
       REQUIRE(cond2.get_value() == 0);
-      REQUIRE(op == cmds_no_cond[i].get_op_ptr());
+      REQUIRE(*op == *cmds_no_cond[i].get_op_ptr());
     }
   }
 
