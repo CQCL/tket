@@ -591,10 +591,8 @@ SCENARIO("Testing general 1qb squash") {
     bool success =
         Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
     REQUIRE(success);
-    success = Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
-    REQUIRE(!success);
 
-    REQUIRE(circ.n_gates() == 3);
+    REQUIRE(circ.n_gates() == 4);
     std::vector<OpType> expected_optypes{
         OpType::Conditional,  // qubit 0 before CX
         OpType::Conditional,  // qubit 1 before CX
@@ -612,6 +610,12 @@ SCENARIO("Testing general 1qb squash") {
       REQUIRE(op->get_type() == expected_optypes[i]);
       REQUIRE(op->get_params() == exp_params[i]);
     }
+
+    // as a bonus: check that you can commute another Rz gate through
+    success = Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+    REQUIRE(success);
+    success = Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+    REQUIRE(!success);
   }
 
   GIVEN("squashing non-compatible conditionals") {
