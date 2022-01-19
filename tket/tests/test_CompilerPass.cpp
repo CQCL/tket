@@ -344,12 +344,20 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     const Circuit& c = cu.get_circ_ref();
     c.assert_valid();
     REQUIRE(c.n_gates() == 3);
-    auto cmds = c.get_commands();
     std::vector<OpType> expected_optypes{
         OpType::Conditional,  // qubit 0 before CX
         OpType::Conditional,  // qubit 1 before CX
         OpType::CX};
     check_command_types(c, expected_optypes);
+
+    auto cmds = c.get_commands();
+    Op_ptr op0 = cmds[0].get_op_ptr()->get_op();
+    Op_ptr op1 = cmds[1].get_op_ptr()->get_op();
+
+    REQUIRE(op0->get_type() == OpType::Rz);
+    REQUIRE(op0->get_params() == {0.285});
+    REQUIRE(op1->get_type() == OpType::Rx);
+    REQUIRE(op1->get_params() == {0.528});
   }
 
   GIVEN("Repeat synthesis passes") {
