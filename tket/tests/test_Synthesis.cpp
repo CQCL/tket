@@ -660,24 +660,6 @@ SCENARIO("Testing general 1qb squash") {
     }
   }
 
-  GIVEN("PQP removes no-op") {
-    Circuit circ(1);
-    circ.add_op<unsigned>(OpType::Rx, 0.2, {0});
-    circ.add_op<unsigned>(OpType::noop, {0});
-    Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
-
-    REQUIRE(circ.n_gates() == 1);
-  }
-
-  GIVEN("PQP removes Z before measurement") {
-    Circuit circ(1);
-    circ.add_op<unsigned>(OpType::Rz, 0.2, {0});
-    circ.add_op<unsigned>(OpType::Measure, {0});
-    Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
-
-    REQUIRE(circ.n_gates() == 1);
-  }
-
   GIVEN("Squashing in a choice of gate set") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Rz, 0.142, {0});
