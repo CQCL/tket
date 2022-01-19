@@ -351,13 +351,15 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     check_command_types(c, expected_optypes);
 
     auto cmds = c.get_commands();
-    Op_ptr op0 = cmds[0].get_op_ptr()->get_op();
-    Op_ptr op1 = cmds[1].get_op_ptr()->get_op();
+    Op_ptr op0 =
+        static_cast<const Conditional&>(*cmds[0].get_op_ptr()).get_op();
+    Op_ptr op1 =
+        static_cast<const Conditional&>(*cmds[1].get_op_ptr()).get_op();
 
     REQUIRE(op0->get_type() == OpType::Rz);
-    REQUIRE(op0->get_params() == {0.285});
+    REQUIRE(op0->get_params() == std::vector<Expr>{0.285});
     REQUIRE(op1->get_type() == OpType::Rx);
-    REQUIRE(op1->get_params() == {0.528});
+    REQUIRE(op1->get_params() == std::vector<Expr>{0.528});
   }
 
   GIVEN("Repeat synthesis passes") {

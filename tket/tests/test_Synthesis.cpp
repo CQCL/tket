@@ -605,7 +605,10 @@ SCENARIO("Testing general 1qb squash") {
     expected_optypes = {OpType::Rz, OpType::Rx, OpType::CX, OpType::Rz};
     std::vector<std::vector<Expr>> exp_params{{0.142}, {0.528}, {}, {0.143}};
     for (unsigned i = 0; i < cmds.size(); ++i) {
-      Op_ptr op = cmds[i].get_op_ptr()->get_op();
+      Op_ptr op = cmds[i].get_op_ptr();
+      if (op->get_type() == OpType::Conditional) {
+        op = static_cast<const Conditional &>(*op).get_op();
+      }
       REQUIRE(op->get_type() == expected_optypes[i]);
       REQUIRE(op->get_params() == exp_params[i]);
     }
@@ -626,11 +629,11 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 0);
 
     Circuit circ_no_cond(1, 1);
-    circ_no_cond.add_op<unsigned>(OpType::Rz, {0.142}, {0});
-    circ_no_cond.add_op<unsigned>(OpType::Rx, {0.143}, {0});
-    circ_no_cond.add_op<unsigned>(OpType::Rz, {0.142}, {0});
-    circ_no_cond.add_op<unsigned>(OpType::Rx, {0.143}, {0});
-    circ_no_cond.add_op<unsigned>(OpType::Rz, {0.142}, {0});
+    circ_no_cond.add_op<unsigned>(OpType::Rz, 0.142, {0});
+    circ_no_cond.add_op<unsigned>(OpType::Rx, 0.143, {0});
+    circ_no_cond.add_op<unsigned>(OpType::Rz, 0.142, {0});
+    circ_no_cond.add_op<unsigned>(OpType::Rx, 0.143, {0});
+    circ_no_cond.add_op<unsigned>(OpType::Rz, 0.142, {0});
 
     bool success =
         Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
@@ -644,29 +647,33 @@ SCENARIO("Testing general 1qb squash") {
     auto cmds = circ.get_commands();
     auto cmds_no_cond = circ_no_cond.get_commands();
     for (unsigned i = 0; i < 3; ++i) {
-      Op_ptr op = cmds[i].get_op_ptr()->get_op();
-      REQUIRE(op == cmds_no_cond[i]->get_op_ptr());
-      REQUIRE(cmds[i].get_value() == 1);
-      op = cmds[i + 3].get_op_ptr()->get_op();
-      REQUIRE(op == cmds_no_cond[i]->get_op_ptr());
-      REQUIRE(cmds[i].get_value() == 0);
+      const Conditional &cond1 =
+          static_cast<const Conditional &>(*cmds[i].get_op_ptr());
+      Op_ptr op = cond1.get_op();
+      REQUIRE(cond1.get_value() == 1);
+      REQUIRE(op == cmds_no_cond[i].get_op_ptr());
+      const Conditional &cond2 =
+          static_cast<const Conditional &>(*cmds[i + 3].get_op_ptr());
+      op = cond2.get_op();
+      REQUIRE(cond2.get_value() == 0);
+      REQUIRE(op == cmds_no_cond[i].get_op_ptr());
     }
   }
 
   GIVEN("PQP removes no-op") {
     Circuit circ(1);
-    circ.add_op<unsigned>(OpType::Rx, {0.2}, {0});
+    circ.add_op<unsigned>(OpType::Rx, 0.2, {0});
     circ.add_op<unsigned>(OpType::noop, {0});
-    Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ_no_cond);
+    Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
 
     REQUIRE(circ.n_gates() == 1);
   }
 
   GIVEN("PQP removes Z before measurement") {
     Circuit circ(1);
-    circ.add_op<unsigned>(OpType::Rz, {0.2}, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.2, {0});
     circ.add_op<unsigned>(OpType::Measure, {0});
-    Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ_no_cond);
+    Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
 
     REQUIRE(circ.n_gates() == 1);
   }
