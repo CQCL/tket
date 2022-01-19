@@ -12,21 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <memory>
+
 #include "Circuit/DAGDefs.hpp"
 #include "Gate/Rotation.hpp"
 #include "SingleQubitSquash.hpp"
+#include "Transformations/Transform.hpp"
+#include "Utils/Expression.hpp"
 
 namespace tket {
 
 /**
- * @brief Implements the Squasher interface for SingleQubitSquash
+ * @brief Implements the AbstractSquasher interface for SingleQubitSquash
  *
  * The StandardSquasher squashes chains of single qubit gates to
  * the circuit given by the tk1_replacment function passed as parameter.
  *
  * At the moment, it does not commute anything through multi-qubit gates.
  */
-class StandardSquasher {
+class StandardSquasher : public AbstractSquasher {
  private:
   using Func = std::function<Circuit(const Expr &, const Expr &, const Expr &)>;
 
@@ -40,13 +44,11 @@ class StandardSquasher {
     }
   }
 
-  bool accepts(OpType type) const {
+  bool accepts(OpType type) const override {
     return (singleqs.find(type) != singleqs.end()) && !is_projective_type(type);
   }
 
-  void clear() { combined = Rotation(); }
-
-  void append(Gate_ptr gate) {
+  void append(Gate_ptr gate) override {
     std::vector<Expr> angs = gate->get_tk1_angles();
     combined.apply(Rotation(OpType::Rz, angs.at(2)));
     combined.apply(Rotation(OpType::Rx, angs.at(1)));
@@ -54,7 +56,7 @@ class StandardSquasher {
   }
 
   std::pair<Circuit, Gate_ptr> flush(
-      std::optional<Pauli> = std::nullopt) const {
+      std::optional<Pauli> = std::nullopt) const override {
     auto [a, b, c] = combined.to_pqp(OpType::Rz, OpType::Rx);
     Circuit replacement = squash_fn(c, b, a);
     BGL_FORALL_VERTICES(rv, replacement.dag, DAG) {
@@ -69,6 +71,8 @@ class StandardSquasher {
     return {replacement, nullptr};
   }
 
+  void clear() override { combined = Rotation(); }
+
  private:
   const OpTypeSet &singleqs;
   const Func &squash_fn;
@@ -79,8 +83,8 @@ static bool standard_squash(
     Circuit &circ, const OpTypeSet &singleqs,
     const std::function<Circuit(const Expr &, const Expr &, const Expr &)>
         &tk1_replacement) {
-  StandardSquasher squasher(singleqs, tk1_replacement);
-  return SingleQubitSquash(squasher, false).squash(circ);
+  auto squasher = std::make_unique<StandardSquasher>(singleqs, tk1_replacement);
+  return SingleQubitSquash(std::move(squasher), false).squash(circ);
 }
 
 Transform Transform::squash_factory(

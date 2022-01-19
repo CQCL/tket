@@ -171,6 +171,7 @@ set(TKET_SOURCES
     ${TKET_TRANSFORM_DIR}/MeasurePass.cpp
     ${TKET_TRANSFORM_DIR}/ContextualReduction.cpp
     ${TKET_TRANSFORM_DIR}/ThreeQubitSquash.cpp
+    ${TKET_TRANSFORM_DIR}/SingleQubitSquash/SingleQubitSquash.cpp
     ${TKET_TRANSFORM_DIR}/SingleQubitSquash/PQPSquash.cpp
     ${TKET_TRANSFORM_DIR}/SingleQubitSquash/StandardSquash.cpp
 

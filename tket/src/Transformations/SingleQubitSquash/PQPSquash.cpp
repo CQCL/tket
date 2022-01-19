@@ -12,8 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <memory>
+
 #include "Gate/Rotation.hpp"
 #include "SingleQubitSquash.hpp"
+#include "Transformations/Transform.hpp"
+#include "Utils/Expression.hpp"
 
 namespace tket {
 
@@ -22,7 +26,7 @@ static bool fixup_angles(
 static bool redundancy_removal(Circuit &circ);
 
 /**
- * @brief Implements the Squasher interface for SingleQubitSquash
+ * @brief Implements the AbstractSquasher interface for SingleQubitSquash
  *
  * The PQP Squasher squashes chains of single qubit gates to minimal sequences
  * of any two type of rotations (Rx, Ry or Rz), using Euler angle
@@ -47,15 +51,16 @@ static bool redundancy_removal(Circuit &circ);
  *  - Some initial benchmarking by Seyon seemed to show that commuting to the
  *    front performed better, but this might be an artefact of the benchmarking
  *    circuits used.
- * Note finally there is also an argument for commuting non-Clifford rotations towards
- * the back, as this makes generating automatic assertions easier (not implemented at the time of writing).
+ * Note finally there is also an argument for commuting non-Clifford rotations
+ * towards the back, as this makes generating automatic assertions easier (not
+ * implemented at the time of writing).
  *
  * The PQPSquasher shouldn't have to know if the squash is made forwards
  * or backwards. Here, however, `reversed` is needed in `fixup_angles` for
  * consistency, so that forward and backward passes squash to the same normal
  * form
  */
-class PQPSquasher {
+class PQPSquasher : public AbstractSquasher {
  public:
   PQPSquasher(
       OpType p, OpType q, bool smart_squash = true, bool reversed = false)
@@ -76,11 +81,9 @@ class PQPSquasher {
     }
   }
 
-  void clear() { rotation_chain.clear(); }
+  bool accepts(OpType type) const override { return type == p_ || type == q_; }
 
-  bool accepts(OpType type) const { return type == p_ || type == q_; }
-
-  void append(Gate_ptr gp) {
+  void append(Gate_ptr gp) override {
     if (!accepts(gp->get_type())) {
       throw NotValid("PQPSquasher: cannot append OpType");
     }
@@ -88,7 +91,7 @@ class PQPSquasher {
   }
 
   std::pair<Circuit, Gate_ptr> flush(
-      std::optional<Pauli> commutation_colour = std::nullopt) const {
+      std::optional<Pauli> commutation_colour = std::nullopt) const override {
     bool commute_through = false;
     OpType p = p_, q = q_;
 
@@ -184,6 +187,8 @@ class PQPSquasher {
     return {replacement, left_over_gate};
   }
 
+  void clear() override { rotation_chain.clear(); }
+
  private:
   static Rotation merge_rotations(
       OpType r, const std::vector<Gate_ptr> &chain,
@@ -210,8 +215,8 @@ class PQPSquasher {
 static bool squash_to_pqp(
     Circuit &circ, OpType q, OpType p, bool strict = false) {
   bool reverse = true;
-  PQPSquasher squasher(p, q, !strict, reverse);
-  return SingleQubitSquash(squasher, reverse).squash(circ);
+  auto squasher = std::make_unique<PQPSquasher>(p, q, !strict, reverse);
+  return SingleQubitSquash(std::move(squasher), reverse).squash(circ);
 }
 
 Transform Transform::reduce_XZ_chains() {
