@@ -215,6 +215,11 @@ Transform Transform::squash_1qb_to_pqp(
       [=](Circuit &circ) { return squash_to_pqp(circ, q, p, strict); });
 }
 
+Transform Transform::squash_1qb_to_tk1() {
+  return decompose_ZY() >> squash_1qb_to_pqp(OpType::Ry, OpType::Rz, true) >>
+         decompose_ZYZ_to_TK1();
+}
+
 static bool fixup_angles(
     Expr &angle_p1, Expr &angle_q, Expr &angle_p2, bool reversed) {
   bool success = false;

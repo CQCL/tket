@@ -184,11 +184,6 @@ static bool remove_redundancy(
   return false;
 }
 
-Transform Transform::squash_1qb_to_tk1() {
-  return decompose_ZY() >> squash_1qb_to_pqp(OpType::Ry, OpType::Rz, true) >>
-         decompose_ZYZ_to_TK1();
-}
-
 Transform Transform::commute_through_multis() {
   return Transform(commute_singles_to_front);
 }
