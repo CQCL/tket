@@ -241,6 +241,8 @@ bool SingleQubitSquash::is_equal(
     if (!(*op1 == *op2)) {
       return false;
     }
+    ++it1;
+    ++it2;
   }
 
   if (it1 != circ.end() || it2 != gates.cend()) {
