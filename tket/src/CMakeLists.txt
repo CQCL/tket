@@ -242,6 +242,7 @@ set(TKET_SOURCES
     ${TKET_AAS_DIR}/SteinerForest.cpp
 
     # Utils
+    ${TKET_UTILS_DIR}/AssertMessage.cpp
     ${TKET_UTILS_DIR}/TketLog.cpp
     ${TKET_UTILS_DIR}/UnitID.cpp
     ${TKET_UTILS_DIR}/HelperFunctions.cpp
