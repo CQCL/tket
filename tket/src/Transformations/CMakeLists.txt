@@ -32,7 +32,10 @@ add_library(tket-${COMP}
     Replacement.cpp
     MeasurePass.cpp
     ContextualReduction.cpp
-    ThreeQubitSquash.cpp)
+    ThreeQubitSquash.cpp
+    SingleQubitSquash.cpp
+    PQPSquash.cpp
+    StandardSquash.cpp)
 
 list(APPEND DEPS_${COMP}
     Architecture
