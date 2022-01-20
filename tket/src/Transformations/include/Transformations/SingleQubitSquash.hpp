@@ -26,6 +26,10 @@ namespace tket {
  *
  * Subclasses must implement these methods to be used as a squasher
  * in SingleQubitSquash
+ *
+ * Squashers should always squash circuits into a "normal form", which is left
+ * invariant under further squashing. This is to avoid infinite loops where
+ * circuits would get squashed in a cycle, never reaching an equilibrium.
  */
 class AbstractSquasher {
  public:
