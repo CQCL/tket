@@ -106,8 +106,8 @@ class SingleQubitSquash {
    *
    * @param in Starting edge of the squash.
    * @param out Last edge of the squash.
-   * @return true The squash succeeded.
-   * @return false The circuit was not changed.
+   * @retval true The circuit was changed.
+   * @retval false The circuit was not changed.
    */
   bool squash_between(const Edge &in, const Edge &out);
 
