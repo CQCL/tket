@@ -48,6 +48,8 @@ foreach(DEP ${DEPS_${COMP}})
         tket-${COMP} PRIVATE tket-${DEP})
 endforeach()
 
+target_link_libraries(tket-${COMP} PRIVATE symengine)
+
 target_include_directories(tket-${COMP}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}

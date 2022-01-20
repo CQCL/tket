@@ -54,3 +54,10 @@ target_include_directories(tket-${COMP}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
+
+target_link_libraries(tket-${COMP} PRIVATE symengine)
+
+if (WIN32)
+    # For boost::uuid:
+    target_link_libraries(tket-${COMP} PRIVATE bcrypt)
+endif()
