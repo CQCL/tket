@@ -76,7 +76,7 @@ void init_circuit(py::module &m) {
           py::init<unsigned, unsigned, std::optional<std::string>>(),
           "Constructs a circuit with a given number of quantum and "
           "classical bits\n\n:param n_qubits: The number of qubits in "
-          "the circuit\n:param c_bits: The number of classical bits in "
+          "the circuit\n:param n_bits: The number of classical bits in "
           "the circuit\n:param name: Optional name for the circuit.",
           py::arg("n_qubits"), py::arg("n_bits"),
           py::arg("name") = std::nullopt)
