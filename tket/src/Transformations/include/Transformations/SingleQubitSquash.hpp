@@ -33,8 +33,8 @@ class AbstractSquasher {
    * @brief Whether the OpType can be added to current squash.
    *
    * @param ot OpType to be accepted.
-   * @return true `ot` can be squashed.
-   * @return false `ot` cannot be squashed.
+   * @retval true `ot` can be squashed.
+   * @retval false `ot` cannot be squashed.
    */
   virtual bool accepts(OpType ot) const = 0;
 
