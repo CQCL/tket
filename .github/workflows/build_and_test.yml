@@ -270,15 +270,15 @@ jobs:
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
     - name: Install boost
-      run: conan install --profile=tket boost/1.78.0@ --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+      run: conan install --profile=tket boost/1.78.0@ --build=missing
     - name: Build symengine
-      run: conan create --profile=tket recipes/symengine -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+      run: conan create --profile=tket recipes/symengine
     - name: Build tket
-      run: conan create --profile=tket recipes/tket -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+      run: conan create --profile=tket recipes/tket
     - name: Build and run tket tests
-      run: conan create --profile=tket recipes/tket-tests -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+      run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
-      run: conan create --profile=tket recipes/tket-proptests -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+      run: conan create --profile=tket recipes/tket-proptests
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
     - name: Build pytket (3.8)
