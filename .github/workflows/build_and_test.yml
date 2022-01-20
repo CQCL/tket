@@ -178,7 +178,7 @@ jobs:
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
     - name: Install boost
-      run: conan install --profile=tket boost/1.77.0@ --build=missing
+      run: conan install --profile=tket boost/1.78.0@ --build=missing
     - name: Build symengine
       run: conan create --profile=tket recipes/symengine
     - name: Build tket
@@ -270,7 +270,7 @@ jobs:
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
     - name: Install boost
-      run: conan install --profile=tket boost/1.77.0@ --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+      run: conan install --profile=tket boost/1.78.0@ --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
     - name: Build symengine
       run: conan create --profile=tket recipes/symengine -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
     - name: Build tket

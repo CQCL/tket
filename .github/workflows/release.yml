@@ -65,7 +65,7 @@ jobs:
         pip install conan
         conan profile new tket --detect --force
         conan profile update options.tket:shared=True tket
-        conan install --profile=tket boost/1.77.0@ --build=missing
+        conan install --profile=tket boost/1.78.0@ --build=missing
         conan create --profile=tket recipes/symengine
         conan create --profile=tket recipes/tket
     - name: Install pybind11
@@ -112,7 +112,7 @@ jobs:
         pyenv shell tket-3.8
         conan profile new tket --detect --force
         conan profile update options.tket:shared=True tket
-        conan install --profile=tket boost/1.77.0@ --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+        conan install --profile=tket boost/1.78.0@ --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
         conan create --profile=tket recipes/symengine -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
         conan create --profile=tket recipes/tket -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
         conan create --profile=tket recipes/pybind11
