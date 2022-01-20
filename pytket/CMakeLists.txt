@@ -38,13 +38,7 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 endif()
 
-function(build_module module)
-    pybind11_add_module(${module} ${ARGN})
-    target_include_directories(${module} PRIVATE binders/include)
-    target_link_libraries(${module} PRIVATE ${CONAN_LIBS})
-endfunction(build_module)
-
-build_module(circuit
+pybind11_add_module(circuit
     binders/circuit/main.cpp
     binders/circuit/unitid.cpp
     binders/circuit/boxes.cpp
@@ -52,17 +46,74 @@ build_module(circuit
     binders/circuit/Circuit/main.cpp
     binders/circuit/Circuit/add_op.cpp
     binders/circuit/Circuit/add_classical_op.cpp)
-build_module(routing binders/routing.cpp)
-build_module(transform binders/transform.cpp)
-build_module(predicates binders/predicates.cpp)
-build_module(passes binders/passes.cpp)
-build_module(program binders/program.cpp)
-build_module(partition binders/partition.cpp)
-build_module(pauli binders/pauli.cpp)
-build_module(logging binders/logging.cpp)
-build_module(utils_serialization binders/utils_serialization.cpp)
-build_module(tailoring binders/tailoring.cpp)
-build_module(tableau binders/tableau.cpp)
-build_module(zx
+target_include_directories(circuit PRIVATE binders/include)
+target_link_libraries(circuit PRIVATE
+    symengine
+    tket-Converters
+    tket-Routing
+    tket-Simulation)
+
+pybind11_add_module(routing binders/routing.cpp)
+target_include_directories(routing PRIVATE binders/include)
+target_link_libraries(routing PRIVATE tket-Routing)
+
+pybind11_add_module(transform binders/transform.cpp)
+target_include_directories(transform PRIVATE binders/include)
+target_link_libraries(transform PRIVATE
+    symengine
+    tket-Transformations)
+
+pybind11_add_module(predicates binders/predicates.cpp)
+target_include_directories(predicates PRIVATE binders/include)
+target_link_libraries(predicates PRIVATE
+    symengine
+    tket-Predicates)
+
+pybind11_add_module(passes binders/passes.cpp)
+target_include_directories(passes PRIVATE binders/include)
+target_link_libraries(passes PRIVATE
+    symengine
+    tket-Predicates)
+
+pybind11_add_module(program binders/program.cpp)
+target_include_directories(program PRIVATE binders/include)
+target_link_libraries(program PRIVATE
+    symengine
+    tket-Program)
+
+pybind11_add_module(partition binders/partition.cpp)
+target_include_directories(partition PRIVATE binders/include)
+target_link_libraries(partition PRIVATE
+    symengine
+    tket-MeasurementSetup)
+
+pybind11_add_module(pauli binders/pauli.cpp)
+target_include_directories(pauli PRIVATE binders/include)
+target_link_libraries(pauli PRIVATE tket-Utils)
+
+pybind11_add_module(logging binders/logging.cpp)
+target_include_directories(logging PRIVATE binders/include)
+target_link_libraries(logging PRIVATE tket-Utils)
+
+pybind11_add_module(utils_serialization binders/utils_serialization.cpp)
+target_include_directories(utils_serialization PRIVATE binders/include)
+target_link_libraries(utils_serialization PRIVATE tket-Utils)
+
+pybind11_add_module(tailoring binders/tailoring.cpp)
+target_include_directories(tailoring PRIVATE binders/include)
+target_link_libraries(tailoring PRIVATE
+    symengine
+    tket-Characterisation
+    tket-Converters)
+
+pybind11_add_module(tableau binders/tableau.cpp)
+target_include_directories(tableau PRIVATE binders/include)
+target_link_libraries(tableau PRIVATE tket-Converters)
+
+pybind11_add_module(zx
     binders/zx/diagram.cpp
     binders/zx/rewrite.cpp)
+target_include_directories(zx PRIVATE binders/include)
+target_link_libraries(zx PRIVATE
+    symengine
+    tket-ZX)
