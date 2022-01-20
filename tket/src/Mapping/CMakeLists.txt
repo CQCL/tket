@@ -14,25 +14,27 @@
 
 project(tket-${COMP})
 
-if (NOT ${COMP} STREQUAL "Placement")
+if (NOT ${COMP} STREQUAL "Mapping")
     message(FATAL_ERROR "Unexpected component name.")
 endif()
 
 add_library(tket-${COMP}
-    Qubit_Placement.cpp
-    subgraph_mapping.cpp
-    Placement.cpp
-    PlacementGraphClasses.cpp)
+    LexicographicalComparison.cpp
+    LexiRoute.cpp
+    MappingFrontier.cpp
+    MappingManager.cpp
+    MultiGateReorder.cpp
+    RoutingMethodCircuit.cpp
+    RoutingMethodJson.cpp
+    Verification.cpp)
 
 list(APPEND DEPS_${COMP}
-    Architecture
-    Characterisation
-    Circuit
     Gate
-    Graphs
     Ops
     OpType
-    Utils)
+    Utils
+    Circuit
+    Architecture)
 
 foreach(DEP ${DEPS_${COMP}})
     target_include_directories(
