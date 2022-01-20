@@ -74,7 +74,11 @@ SCENARIO("Symbolic squashing, correctness") {
   GIVEN("singleq_clifford_sweep (2)") {
     Circuit circ(3);
 
+    circ.add_op<unsigned>(OpType::Vdg, {2});
+    circ.add_op<unsigned>(OpType::S, {2});
     circ.add_op<unsigned>(OpType::U3, {alpha, 0, 0.5}, {2});
+    circ.add_op<unsigned>(OpType::Vdg, {2});
+    circ.add_op<unsigned>(OpType::Sdg, {2});
     circ.add_op<unsigned>(OpType::Vdg, {0});
     circ.add_op<unsigned>(OpType::Sdg, {2});
     circ.add_op<unsigned>(OpType::X, {0});
