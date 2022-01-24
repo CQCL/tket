@@ -580,6 +580,90 @@ SCENARIO("Testing general 1qb squash") {
     REQUIRE(op2->get_type() == OpType::Rx);
     REQUIRE(test_equiv_val(op2->get_params()[0], -0.528));
   }
+
+  GIVEN("commuting non-compatible conditionals") {
+    Circuit circ(2, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.143}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.528}, {1}, {0}, 0);
+
+    bool success =
+        Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+    REQUIRE(success);
+
+    REQUIRE(circ.n_gates() == 4);
+    std::vector<OpType> expected_optypes{
+        OpType::Conditional,  // qubit 0 before CX
+        OpType::Conditional,  // qubit 1 before CX
+        OpType::CX, OpType::Conditional};
+    check_command_types(circ, expected_optypes);
+
+    auto cmds = circ.get_commands();
+    expected_optypes = {OpType::Rz, OpType::Rx, OpType::CX, OpType::Rz};
+    std::vector<std::vector<Expr>> exp_params{{0.142}, {0.528}, {}, {0.143}};
+    for (unsigned i = 0; i < cmds.size(); ++i) {
+      Op_ptr op = cmds[i].get_op_ptr();
+      if (op->get_type() == OpType::Conditional) {
+        op = static_cast<const Conditional &>(*op).get_op();
+      }
+      REQUIRE(op->get_type() == expected_optypes[i]);
+      REQUIRE(op->get_params() == exp_params[i]);
+    }
+
+    // as a bonus: check that you can commute another Rz gate through
+    success = Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+    REQUIRE(success);
+    success = Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+    REQUIRE(!success);
+  }
+
+  GIVEN("squashing non-compatible conditionals") {
+    Circuit circ(1, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.143}, {0}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.143}, {0}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
+
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.143}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.143}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 0);
+
+    Circuit circ_no_cond(1, 1);
+    circ_no_cond.add_op<unsigned>(OpType::Rz, 0.142, {0});
+    circ_no_cond.add_op<unsigned>(OpType::Rx, 0.143, {0});
+    circ_no_cond.add_op<unsigned>(OpType::Rz, 0.142, {0});
+    circ_no_cond.add_op<unsigned>(OpType::Rx, 0.143, {0});
+    circ_no_cond.add_op<unsigned>(OpType::Rz, 0.142, {0});
+
+    bool success =
+        Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+    REQUIRE(success);
+
+    Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ_no_cond);
+
+    REQUIRE(circ.n_gates() == 6);
+    REQUIRE(circ_no_cond.n_gates() == 3);
+
+    auto cmds = circ.get_commands();
+    auto cmds_no_cond = circ_no_cond.get_commands();
+    for (unsigned i = 0; i < 3; ++i) {
+      const Conditional &cond1 =
+          static_cast<const Conditional &>(*cmds[i].get_op_ptr());
+      Op_ptr op = cond1.get_op();
+      REQUIRE(cond1.get_value() == 1);
+      REQUIRE(*op == *cmds_no_cond[i].get_op_ptr());
+      const Conditional &cond2 =
+          static_cast<const Conditional &>(*cmds[i + 3].get_op_ptr());
+      op = cond2.get_op();
+      REQUIRE(cond2.get_value() == 0);
+      REQUIRE(*op == *cmds_no_cond[i].get_op_ptr());
+    }
+  }
+
   GIVEN("Squashing in a choice of gate set") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Rz, 0.142, {0});
@@ -672,8 +756,8 @@ SCENARIO("Testing general 1qb squash") {
                   .apply(circ);
     REQUIRE(success);
     check_command_types(
-        circ, {OpType::Rz, OpType::PhasedX, OpType::ZZMax, OpType::PhasedX,
-               OpType::Rz});
+        circ, {OpType::Rz, OpType::PhasedX, OpType::ZZMax, OpType::Rz,
+               OpType::PhasedX});
     success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE_FALSE(success);

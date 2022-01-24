@@ -56,7 +56,7 @@ static inline bool test_equiv_val(const Expr& e, double x, unsigned n = 2) {
 }
 
 static inline bool test_equiv_0(const Expr& e, unsigned n = 2) {
-  return equiv_0(e, n, ERR_EPS);
+  return equiv_0(SymEngine::expand(e), n, ERR_EPS);
 }
 
 typedef std::vector<unsigned> uvec;
