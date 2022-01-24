@@ -100,15 +100,14 @@ class TketConan(ConanFile):
         boost_include_path = self.deps_cpp_info["boost"].include_paths[0]
         curdir = os.path.dirname(os.path.realpath(__file__))
         patches = {
-            # TKET-1407
-            # If and when the boost package is fixed we will remove this.
+            # Patch pending merge of https://github.com/boostorg/graph/pull/269
+            # and new boost release.
             os.path.join(
                 boost_include_path, "boost", "graph", "detail", "adjacency_list.hpp"
             ): os.path.join(curdir, "patches", "adjacency_list.diff"),
-            # TKET-1376
-            # This will be submitted as a PR to boost. If it is accepted we will remove
-            # the patch here. If not, we should consider switching to another library
-            # for subgraph matching, or writing our own code.
+            # Patch pending merge of https://github.com/boostorg/graph/pull/280
+            # and new boost release. (Note that PR implements a different solution so
+            # code will need updating as well.)
             os.path.join(
                 boost_include_path, "boost", "graph", "vf2_sub_graph_iso.hpp"
             ): os.path.join(curdir, "patches", "vf2_sub_graph_iso.diff"),
