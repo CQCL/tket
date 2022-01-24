@@ -18,7 +18,7 @@ if (NOT ${COMP} STREQUAL "Utils")
     message(FATAL_ERROR "Unexpected component name.")
 endif()
 
-add_library(tket-Utils
+add_library(tket-{COMP}
     TketLog.cpp
     UnitID.cpp
     HelperFunctions.cpp
