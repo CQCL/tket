@@ -48,7 +48,6 @@ pybind11_add_module(circuit
     binders/circuit/Circuit/add_classical_op.cpp)
 target_include_directories(circuit PRIVATE binders/include)
 target_link_libraries(circuit PRIVATE
-    symengine
     tket-Circuit
     tket-Converters
     tket-Gate
@@ -57,6 +56,7 @@ target_link_libraries(circuit PRIVATE
     tket-Routing
     tket-Simulation
     tket-Utils)
+target_link_libraries(circuit PRIVATE ${CONAN_LIBS_SYMENGINE})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(circuit PRIVATE bcrypt)
@@ -65,7 +65,6 @@ endif()
 pybind11_add_module(routing binders/routing.cpp)
 target_include_directories(routing PRIVATE binders/include)
 target_link_libraries(routing PRIVATE
-    symengine
     tket-Architecture
     tket-Characterisation
     tket-Circuit
@@ -75,6 +74,7 @@ target_link_libraries(routing PRIVATE
     tket-OpType
     tket-Routing
     tket-Utils)
+target_link_libraries(routing PRIVATE ${CONAN_LIBS_SYMENGINE})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(routing PRIVATE bcrypt)
@@ -83,7 +83,6 @@ endif()
 pybind11_add_module(transform binders/transform.cpp)
 target_include_directories(transform PRIVATE binders/include)
 target_link_libraries(transform PRIVATE
-    symengine
     tket-Architecture
     tket-Characterisation
     tket-Circuit
@@ -96,6 +95,7 @@ target_link_libraries(transform PRIVATE
     tket-PauliGraph
     tket-Transformations
     tket-Utils)
+target_link_libraries(transform PRIVATE ${CONAN_LIBS_SYMENGINE})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(transform PRIVATE bcrypt)
@@ -104,7 +104,6 @@ endif()
 pybind11_add_module(predicates binders/predicates.cpp)
 target_include_directories(predicates PRIVATE binders/include)
 target_link_libraries(predicates PRIVATE
-    symengine
     tket-ArchAwareSynth
     tket-Architecture
     tket-Characterisation
@@ -120,6 +119,7 @@ target_link_libraries(predicates PRIVATE
     tket-Routing
     tket-Transformations
     tket-Utils)
+target_link_libraries(predicates PRIVATE ${CONAN_LIBS_SYMENGINE})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(predicates PRIVATE bcrypt)
@@ -128,7 +128,6 @@ endif()
 pybind11_add_module(passes binders/passes.cpp)
 target_include_directories(passes PRIVATE binders/include)
 target_link_libraries(passes PRIVATE
-    symengine
     tket-ArchAwareSynth
     tket-Architecture
     tket-Characterisation
@@ -144,6 +143,7 @@ target_link_libraries(passes PRIVATE
     tket-Routing
     tket-Transformations
     tket-Utils)
+target_link_libraries(passes PRIVATE ${CONAN_LIBS_SYMENGINE})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(passes PRIVATE bcrypt)
@@ -152,13 +152,13 @@ endif()
 pybind11_add_module(program binders/program.cpp)
 target_include_directories(program PRIVATE binders/include)
 target_link_libraries(program PRIVATE
-    symengine
     tket-Circuit
     tket-Gate
     tket-Ops
     tket-OpType
     tket-Program
     tket-Utils)
+target_link_libraries(program PRIVATE ${CONAN_LIBS_SYMENGINE})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(program PRIVATE bcrypt)
@@ -167,7 +167,6 @@ endif()
 pybind11_add_module(partition binders/partition.cpp)
 target_include_directories(partition PRIVATE binders/include)
 target_link_libraries(partition PRIVATE
-    symengine
     tket-Circuit
     tket-Clifford
     tket-Converters
@@ -178,6 +177,7 @@ target_link_libraries(partition PRIVATE
     tket-OpType
     tket-PauliGraph
     tket-Utils)
+target_link_libraries(partition PRIVATE ${CONAN_LIBS_SYMENGINE})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(partition PRIVATE bcrypt)
@@ -186,25 +186,24 @@ endif()
 pybind11_add_module(pauli binders/pauli.cpp)
 target_include_directories(pauli PRIVATE binders/include)
 target_link_libraries(pauli PRIVATE
-    symengine
     tket-Utils)
+target_link_libraries(pauli PRIVATE ${CONAN_LIBS_SYMENGINE})
 
 pybind11_add_module(logging binders/logging.cpp)
 target_include_directories(logging PRIVATE binders/include)
 target_link_libraries(logging PRIVATE
-    symengine
     tket-Utils)
+target_link_libraries(logging PRIVATE ${CONAN_LIBS_SYMENGINE})
 
 pybind11_add_module(utils_serialization binders/utils_serialization.cpp)
 target_include_directories(utils_serialization PRIVATE binders/include)
 target_link_libraries(utils_serialization PRIVATE
-    symengine
     tket-Utils)
+target_link_libraries(utils_serialization PRIVATE ${CONAN_LIBS_SYMENGINE})
 
 pybind11_add_module(tailoring binders/tailoring.cpp)
 target_include_directories(tailoring PRIVATE binders/include)
 target_link_libraries(tailoring PRIVATE
-    symengine
     tket-Architecture
     tket-Characterisation
     tket-Circuit
@@ -217,6 +216,7 @@ target_link_libraries(tailoring PRIVATE
     tket-OpType
     tket-PauliGraph
     tket-Utils)
+target_link_libraries(tailoring PRIVATE ${CONAN_LIBS_SYMENGINE})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(tailoring PRIVATE bcrypt)
@@ -225,7 +225,6 @@ endif()
 pybind11_add_module(tableau binders/tableau.cpp)
 target_include_directories(tableau PRIVATE binders/include)
 target_link_libraries(tableau PRIVATE
-    symengine
     tket-Circuit
     tket-Clifford
     tket-Converters
@@ -235,6 +234,7 @@ target_link_libraries(tableau PRIVATE
     tket-OpType
     tket-PauliGraph
     tket-Utils)
+target_link_libraries(tableau PRIVATE ${CONAN_LIBS_SYMENGINE})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(tableau PRIVATE bcrypt)
@@ -245,6 +245,6 @@ pybind11_add_module(zx
     binders/zx/rewrite.cpp)
 target_include_directories(zx PRIVATE binders/include)
 target_link_libraries(zx PRIVATE
-    symengine
     tket-Utils
     tket-ZX)
+target_link_libraries(zx PRIVATE ${CONAN_LIBS_SYMENGINE})

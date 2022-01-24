@@ -43,8 +43,7 @@ include(tkettestsfiles.cmake)
 
 add_executable(test_tket ${TEST_SOURCES})
 
-target_link_libraries(test_tket
-    symengine
+target_link_libraries(test_tket PRIVATE
     tket-ArchAwareSynth
     tket-Architecture
     tket-Characterisation
@@ -65,3 +64,5 @@ target_link_libraries(test_tket
     tket-Transformations
     tket-Utils
     tket-ZX)
+
+target_link_libraries(test_tket PRIVATE ${CONAN_LIBS_SYMENGINE})
