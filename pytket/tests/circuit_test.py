@@ -688,6 +688,23 @@ def test_op_dagger_transpose() -> None:
     assert sx.transpose == sx
 
 
+def test_clifford_checking() -> None:
+    c = Circuit(2, 1)
+    c.H(0).CX(0, 1).T(1).Rz(0.5, 1).Rz(0.3, 1).Measure(1, 0)
+    h = c.get_commands()[0].op
+    assert h.is_clifford()
+    cx = c.get_commands()[1].op
+    assert cx.is_clifford()
+    t = c.get_commands()[2].op
+    assert t.is_clifford() == False
+    rz1 = c.get_commands()[3].op
+    assert rz1.is_clifford()
+    rz2 = c.get_commands()[4].op
+    assert rz2.is_clifford() == False
+    m = c.get_commands()[5].op
+    assert m.is_clifford() == False
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
@@ -697,3 +714,4 @@ if __name__ == "__main__":
     test_errors()
     test_str()
     test_phase()
+    test_clifford_checking()

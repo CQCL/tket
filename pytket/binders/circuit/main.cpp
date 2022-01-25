@@ -81,6 +81,15 @@ PYBIND11_MODULE(circuit, m) {
             const auto &gate = static_cast<const Gate &>(*op);
             return gate.get_unitary();
           })
+      .def(
+          "is_clifford",
+          [](const Op &op) {
+            if (op.get_desc().is_gate() && !op.get_desc().is_clifford_gate() &&
+                (!op.get_desc().is_parameterised_pauli_rotation() ||
+                 !equiv_0(4 * op.get_params().at(0))))
+              return false;
+            return true;
+          })
       .def("is_gate", [](const Op &op) { return op.get_desc().is_gate(); });
 
   // NOTE: Sphinx does not automatically pick up the docstring for OpType
