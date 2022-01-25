@@ -18,7 +18,7 @@ if (NOT ${COMP} STREQUAL "Utils")
     message(FATAL_ERROR "Unexpected component name.")
 endif()
 
-add_library(tket-Utils
+add_library(tket-${COMP}
     TketLog.cpp
     UnitID.cpp
     HelperFunctions.cpp
@@ -42,4 +42,4 @@ target_include_directories(tket-${COMP}
     ${TKET_${COMP}_INCLUDE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS_SYMENGINE})

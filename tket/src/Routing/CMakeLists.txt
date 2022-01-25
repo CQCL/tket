@@ -51,5 +51,3 @@ target_include_directories(tket-${COMP}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
-
-target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})

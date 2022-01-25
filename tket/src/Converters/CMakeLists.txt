@@ -50,4 +50,9 @@ target_include_directories(tket-${COMP}
     ${TKET_${COMP}_INCLUDE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS_SYMENGINE})
+
+if (WIN32)
+    # For boost::uuid:
+    target_link_libraries(tket-${COMP} PRIVATE bcrypt)
+endif()
