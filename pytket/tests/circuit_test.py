@@ -692,17 +692,17 @@ def test_clifford_checking() -> None:
     c = Circuit(2, 1)
     c.H(0).CX(0, 1).T(1).Rz(0.5, 1).Rz(0.3, 1).Measure(1, 0)
     h = c.get_commands()[0].op
-    assert h.is_clifford()
+    assert h.is_clifford_type()
     cx = c.get_commands()[1].op
-    assert cx.is_clifford()
+    assert cx.is_clifford_type()
     t = c.get_commands()[2].op
-    assert t.is_clifford() == False
+    assert t.is_clifford_type() == False
     rz1 = c.get_commands()[3].op
-    assert rz1.is_clifford()
+    assert rz1.is_clifford_type() == False
     rz2 = c.get_commands()[4].op
-    assert rz2.is_clifford() == False
+    assert rz2.is_clifford_type() == False
     m = c.get_commands()[5].op
-    assert m.is_clifford() == False
+    assert m.is_clifford_type() == False
 
 
 if __name__ == "__main__":

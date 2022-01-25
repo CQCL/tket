@@ -8,7 +8,7 @@ Minor new features:
 
 * Improve ``CnX`` gate decomposition for n=5,6,7.
 * Add ``rebase_pass`` method to ``Backend``.
-* Add ``is_clifford`` method to ``Op``.
+* Add ``is_clifford_type`` method to ``Op``.
 
 General:
 
