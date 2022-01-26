@@ -23,6 +23,7 @@
 #include "Gate/GatePtr.hpp"
 #include "PhaseOptimisation.hpp"
 #include "Rebase.hpp"
+#include "ThreeQubitSquash.hpp"
 #include "Transform.hpp"
 
 namespace tket {
@@ -38,8 +39,8 @@ Transform peephole_optimise_2q() {
 Transform full_peephole_optimise(bool allow_swaps) {
   return (
       synthesise_tket() >> two_qubit_squash() >> clifford_simp(allow_swaps) >>
-      synthesise_tket() >> Transform::three_qubit_squash() >>
-      clifford_simp(allow_swaps) >> synthesise_tket());
+      synthesise_tket() >> three_qubit_squash() >> clifford_simp(allow_swaps) >>
+      synthesise_tket());
 }
 
 Transform canonical_hyper_clifford_squash() {

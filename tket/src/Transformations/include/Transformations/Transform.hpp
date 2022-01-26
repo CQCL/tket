@@ -54,17 +54,6 @@ class Transform {
 
   friend Transform operator>>(const Transform& lhs, const Transform& rhs);
 
-  /**
-   * Squash sequences of 3-qubit instructions into their canonical 20-CX form.
-   *
-   * The circuit should comprise only CX and single-qubit gates. The transform
-   * may perform a combination of 2-qubit (KAK) and 3-qubit decompositions of
-   * subcircuits, but only does so if this reduces the CX count.
-   *
-   * @return Transform implementing the squash
-   */
-  static Transform three_qubit_squash();
-
   ////////////////////////
   // Contextual Reduction//
   ////////////////////////

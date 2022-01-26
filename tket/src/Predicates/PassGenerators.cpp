@@ -28,6 +28,7 @@
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
+#include "Transformations/ThreeQubitSquash.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 
@@ -496,7 +497,7 @@ PassPtr KAKDecomposition(double cx_fidelity) {
 
 PassPtr ThreeQubitSquash(bool allow_swaps) {
   Transform t = Transforms::two_qubit_squash() >>
-                Transform::three_qubit_squash() >>
+                Transforms::three_qubit_squash() >>
                 Transforms::clifford_simp(allow_swaps);
   OpTypeSet ots{all_single_qubit_types()};
   ots.insert(OpType::CX);

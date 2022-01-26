@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "ThreeQubitSquash.hpp"
+
 #include <algorithm>
 #include <array>
 #include <iostream>
@@ -34,7 +36,7 @@
 
 namespace tket {
 
-using namespace Transforms;
+namespace Transforms {
 
 // Helper class defining a pure-quantum subcircuit of up to 3 qubits.
 class QInteraction {
@@ -290,7 +292,7 @@ class QISystem {
   int idx_;
 };
 
-Transform Transform::three_qubit_squash() {
+Transform three_qubit_squash() {
   return Transform([](Circuit &circ) {
     bool changed = false;
 
@@ -364,5 +366,7 @@ Transform Transform::three_qubit_squash() {
     return changed;
   });
 }
+
+}  // namespace Transforms
 
 }  // namespace tket

@@ -30,6 +30,7 @@
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
+#include "Transformations/ThreeQubitSquash.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
@@ -259,7 +260,7 @@ PYBIND11_MODULE(transform, m) {
           "\n\n:param cx_fidelity: The estimated CX gate fidelity",
           py::arg("cx_fidelity") = 1.)
       .def_static(
-          "ThreeQubitSquash", &Transform::three_qubit_squash,
+          "ThreeQubitSquash", &Transforms::three_qubit_squash,
           "Squash three-qubit subcircuits into subcircuits having fewer CX "
           "gates, when possible.")
       .def_static(
