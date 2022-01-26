@@ -20,6 +20,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/CliffordReductionPass.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/PauliStrings.hpp"
 #include "testutil.hpp"
@@ -38,8 +39,8 @@ SCENARIO("Test decomposition into Clifford gates", "[transform]") {
           std::vector<Expr> params({alpha * 0.5, beta * 0.5, gamma * 0.5});
           circ.add_op<unsigned>(OpType::TK1, params, {0});
           Eigen::Matrix2cd m_before = get_matrix_from_circ(circ);
-          REQUIRE(Transform::decompose_cliffords_std().apply(circ));
-          Transform::decompose_single_qubits_TK1().apply(circ);
+          REQUIRE(Transforms::decompose_cliffords_std().apply(circ));
+          Transforms::decompose_single_qubits_TK1().apply(circ);
           Eigen::Matrix2cd m_after = get_matrix_from_circ(circ);
           REQUIRE(m_before.isApprox(m_after));
         }
@@ -52,7 +53,7 @@ SCENARIO("Test decomposition into Clifford gates", "[transform]") {
     circ.add_op<unsigned>(OpType::U1, 1e-6, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Z, {1});
-    bool success = Transform::decompose_cliffords_std().apply(circ);
+    bool success = Transforms::decompose_cliffords_std().apply(circ);
     REQUIRE(!success);
   }
 
@@ -60,7 +61,7 @@ SCENARIO("Test decomposition into Clifford gates", "[transform]") {
     Circuit circ(1);
     std::vector<Expr> params = {0.5, -0.5, 0.5};
     circ.add_op<unsigned>(OpType::U3, params, {0});
-    bool success = Transform::decompose_cliffords_std().apply(circ);
+    bool success = Transforms::decompose_cliffords_std().apply(circ);
     REQUIRE(success);
     VertexVec vertices = circ.vertices_in_order();
     REQUIRE(circ.get_OpType_from_Vertex(vertices[1]) == OpType::V);

@@ -19,6 +19,7 @@
 #include "CircuitsForTesting.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 #include "testutil.hpp"
@@ -283,11 +284,11 @@ SCENARIO("Building rebases with rebase_factory") {
     REQUIRE(circ.count_gates(OpType::Rx) == 0);
     const StateVector s1 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
-    Transform::decompose_ZX().apply(circ);
+    Transforms::decompose_ZX().apply(circ);
     REQUIRE(circ.count_gates(OpType::TK1) == 0);
     const StateVector s2 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s2));
-    Transform::decompose_cliffords_std().apply(circ);
+    Transforms::decompose_cliffords_std().apply(circ);
     REQUIRE(circ.count_gates(OpType::Rz) == 2);
     REQUIRE(circ.count_gates(OpType::Rx) == 0);
     REQUIRE(circ.count_gates(OpType::TK1) == 0);
@@ -316,7 +317,7 @@ SCENARIO("Decompose all boxes") {
     CircBox ubox(u);
     Circuit v(2);
     v.add_box(ubox, {0, 1});
-    bool success = Transform::decomp_boxes().apply(v);
+    bool success = Transforms::decomp_boxes().apply(v);
     REQUIRE(success);
     REQUIRE(u == v);
   }
@@ -328,7 +329,7 @@ SCENARIO("Decompose all boxes") {
     CircBox ubox(u);
     Circuit v(2, 1);
     v.add_box(ubox, {/*qubits*/ 0, 1, /*bits*/ 0});
-    bool success = Transform::decomp_boxes().apply(v);
+    bool success = Transforms::decomp_boxes().apply(v);
     REQUIRE(success);
     REQUIRE(u == v);
   }
@@ -346,7 +347,7 @@ SCENARIO("Decompose all boxes") {
     symbol_map_t smap = {{a, 0.5}};
     u.symbol_substitution(smap);
     REQUIRE(!u.is_symbolic());
-    bool success = Transform::decomp_boxes().apply(v);
+    bool success = Transforms::decomp_boxes().apply(v);
     REQUIRE(success);
     REQUIRE(u == v);
   }
@@ -362,7 +363,7 @@ SCENARIO("Decompose all boxes") {
     v.add_op<UnitID>(
         std::make_shared<Conditional>(cond),
         {Bit(0), Bit(1), Qubit(0), Qubit(1), Bit(2)});
-    bool success = Transform::decomp_boxes().apply(v);
+    bool success = Transforms::decomp_boxes().apply(v);
     REQUIRE(success);
     Circuit compare(2, 3);
     compare.add_conditional_gate<unsigned>(OpType::Ry, {-0.75}, {0}, {0, 1}, 1);
@@ -382,7 +383,7 @@ SCENARIO("Decompose all boxes") {
     v.add_op<UnitID>(
         std::make_shared<Conditional>(cond),
         {Bit(0), Bit(1), Qubit(0), Qubit(1), Bit(0)});
-    bool success = Transform::decomp_boxes().apply(v);
+    bool success = Transforms::decomp_boxes().apply(v);
     REQUIRE(success);
     REQUIRE_NOTHROW(v.get_commands());
   }

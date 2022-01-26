@@ -30,6 +30,7 @@
 #include "Ops/Op.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Simulation/CircuitSimulator.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Exceptions.hpp"
@@ -1541,7 +1542,7 @@ SCENARIO("Test substitute_all") {
     REQUIRE(circ.n_gates() == 1);
     Circuit newswap(2);
     add_2qb_gates(newswap, OpType::CX, {{0, 1}, {1, 0}, {0, 1}});
-    REQUIRE(Transform::decompose_SWAP(newswap).apply(circ));
+    REQUIRE(Transforms::decompose_SWAP(newswap).apply(circ));
     REQUIRE(circ.n_gates() == 3);
   }
 }

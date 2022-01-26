@@ -17,9 +17,12 @@
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Gate/GatePtr.hpp"
+#include "Decomposition.hpp"
 #include "Transform.hpp"
 
 namespace tket {
+
+using namespace Transforms;
 
 Circuit CX_circ_from_multiq(const Op_ptr op) {
   OpDesc desc = op->get_desc();
@@ -209,7 +212,7 @@ Circuit CX_ZX_circ_from_op(const Op_ptr op) {
     case OpType::ISWAPMax:
     case OpType::BRIDGE: {
       Circuit replacement = CX_circ_from_multiq(op);
-      Transform::decompose_ZX().apply(replacement);
+      decompose_ZX().apply(replacement);
       return replacement;
     }
     case OpType::TK1: {

@@ -24,6 +24,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/Combinator.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
 #include "testutil.hpp"
@@ -157,7 +158,7 @@ SCENARIO(
     Vertex v1 = circ.add_op<unsigned>(OpType::CCX, {0, 1, 2});
     unsigned N =
         CX_circ_from_multiq(circ.get_Op_ptr_from_Vertex(v1)).n_vertices();
-    Transform::decompose_multi_qubits_CX().apply(circ);
+    Transforms::decompose_multi_qubits_CX().apply(circ);
     REQUIRE(circ.n_vertices() == N);
   }
   GIVEN("Circuits of phase gadgets") {
@@ -165,8 +166,8 @@ SCENARIO(
     circ.add_op<unsigned>(OpType::PhaseGadget, 0.3, {0, 1, 2, 3, 4, 5, 6, 7});
     circ.add_op<unsigned>(OpType::PhaseGadget, 0.5, {0});
     circ.add_op<unsigned>(OpType::PhaseGadget, 1., {1, 2, 3, 4, 5});
-    Transform::decompose_multi_qubits_CX().apply(circ);
-    Transform::decompose_single_qubits_TK1().apply(circ);
+    Transforms::decompose_multi_qubits_CX().apply(circ);
+    Transforms::decompose_single_qubits_TK1().apply(circ);
     REQUIRE(circ.get_slices().size() == 23);
   }
   GIVEN("Circuits of symbolic phase gadgets") {
@@ -180,8 +181,8 @@ SCENARIO(
     circ.add_op<unsigned>(OpType::PhaseGadget, alpha, {0, 1, 2, 3, 4, 5, 6, 7});
     circ.add_op<unsigned>(OpType::PhaseGadget, beta, {0});
     circ.add_op<unsigned>(OpType::PhaseGadget, gamma, {1, 2, 3, 4, 5});
-    Transform::decompose_multi_qubits_CX().apply(circ);
-    Transform::decompose_single_qubits_TK1().apply(circ);
+    Transforms::decompose_multi_qubits_CX().apply(circ);
+    Transforms::decompose_single_qubits_TK1().apply(circ);
     symbol_map_t symbol_map;
     symbol_map[a] = Expr(0.3);
     symbol_map[b] = Expr(0.5);
@@ -823,7 +824,7 @@ SCENARIO("Squishing a circuit into U3 and CNOTs") {
     WHEN("Annihilation,conversion and squashing is done") {
       Transform::remove_redundancies().apply(test1);
       REQUIRE(test1.n_vertices() == num_vertices - 2 * num_of_pairs);
-      Transform::decompose_single_qubits_TK1().apply(test1);
+      Transforms::decompose_single_qubits_TK1().apply(test1);
       Transform::squash_1qb_to_tk1().apply(test1);
       test1.assert_valid();
       THEN("Circuit is shrunk to the correct depth") {
@@ -835,7 +836,7 @@ SCENARIO("Squishing a circuit into U3 and CNOTs") {
     Circuit test1(1);
     test1.add_op<unsigned>(OpType::X, {0});
     WHEN("A squish is attempted") {
-      REQUIRE(Transform::decompose_single_qubits_TK1().apply(test1));
+      REQUIRE(Transforms::decompose_single_qubits_TK1().apply(test1));
       THEN("Nothing happens to the circuit except an op label change") {
         REQUIRE(test1.depth() == 1);
         REQUIRE(test1.count_gates(OpType::TK1) == 1);
@@ -1036,7 +1037,7 @@ SCENARIO(
     "conversion can be done",
     "[transform][multi_qubit]") {
   Circuit circ(3);
-  Transform::decompose_multi_qubits_CX().apply(circ);
+  Transforms::decompose_multi_qubits_CX().apply(circ);
 }
 
 SCENARIO(
@@ -1114,9 +1115,9 @@ SCENARIO("Molmer-Sorensen gate converions") {
   GIVEN("A single MS gate") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::XXPhase, 0.4, {0, 1});
-    bool success = Transform::decompose_multi_qubits_CX().apply(circ);
+    bool success = Transforms::decompose_multi_qubits_CX().apply(circ);
     REQUIRE(success);
-    success = Transform::decompose_MolmerSorensen().apply(circ);
+    success = Transforms::decompose_MolmerSorensen().apply(circ);
     REQUIRE(success);
     Transform::squash_1qb_to_tk1().apply(circ);
     REQUIRE(circ.n_vertices() == 5);
@@ -1124,9 +1125,9 @@ SCENARIO("Molmer-Sorensen gate converions") {
   GIVEN("A single CX gate") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    bool success = Transform::decompose_MolmerSorensen().apply(circ);
+    bool success = Transforms::decompose_MolmerSorensen().apply(circ);
     REQUIRE(success);
-    success = Transform::decompose_multi_qubits_CX().apply(circ);
+    success = Transforms::decompose_multi_qubits_CX().apply(circ);
     REQUIRE(success);
     Transform::clifford_simp().apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 1);
@@ -1135,9 +1136,9 @@ SCENARIO("Molmer-Sorensen gate converions") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Reset, {0});
-    bool success = Transform::decompose_MolmerSorensen().apply(circ);
+    bool success = Transforms::decompose_MolmerSorensen().apply(circ);
     REQUIRE(success);
-    success = Transform::decompose_multi_qubits_CX().apply(circ);
+    success = Transforms::decompose_multi_qubits_CX().apply(circ);
     REQUIRE(success);
     Transform::clifford_simp().apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 1);
@@ -1568,7 +1569,7 @@ SCENARIO("Check the identification of ZZPhase gates works correctly") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(!Transform::decompose_ZZPhase().apply(circ));
+    REQUIRE(!Transforms::decompose_ZZPhase().apply(circ));
   }
   GIVEN("A circuit with 2 ZZPhase gates") {
     Circuit circ(2);
@@ -1578,7 +1579,7 @@ SCENARIO("Check the identification of ZZPhase gates works correctly") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Rx, 0.6, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transform::decompose_ZZPhase().apply(circ));
+    REQUIRE(Transforms::decompose_ZZPhase().apply(circ));
     REQUIRE(circ.count_gates(OpType::ZZPhase) == 2);
   }
   GIVEN("A circuit with a larger PhaseGadget structure but only 1 ZZ") {
@@ -1586,7 +1587,7 @@ SCENARIO("Check the identification of ZZPhase gates works correctly") {
     add_2qb_gates(circ, OpType::CX, {{3, 2}, {2, 0}, {0, 1}});
     circ.add_op<unsigned>(OpType::Rx, 0.3, {0});
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {2, 0}, {3, 2}});
-    REQUIRE(Transform::decompose_ZZPhase().apply(circ));
+    REQUIRE(Transforms::decompose_ZZPhase().apply(circ));
     REQUIRE(circ.count_gates(OpType::ZZPhase) == 1);
     REQUIRE(circ.count_gates(OpType::CX) == 4);
   }
@@ -1615,9 +1616,9 @@ SCENARIO("Test TK1 gate decomp for some gates") {
     circ.add_op<unsigned>(map_pair.first, params, qbs);
     Transform::rebase_tket().apply(circ);
     Circuit circ2 = circ;
-    Transform::decompose_ZX().apply(circ2);
+    Transforms::decompose_ZX().apply(circ2);
     const StateVector sv2 = tket_sim::get_statevector(circ2);
-    Transform::decompose_tk1_to_rzrx().apply(circ);
+    Transforms::decompose_tk1_to_rzrx().apply(circ);
     const StateVector sv = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv, sv2));
   }

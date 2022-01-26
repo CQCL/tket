@@ -18,6 +18,7 @@
 
 #include "PassGenerators.hpp"
 #include "Predicates/CompilerPass.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/MeasurePass.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
@@ -224,7 +225,7 @@ const PassPtr &DecomposeArbitrarilyControlledGates() {
 
 const PassPtr &DecomposeMultiQubitsCX() {
   static const PassPtr pp([]() {
-    Transform t = Transform::decompose_multi_qubits_CX();
+    Transform t = Transforms::decompose_multi_qubits_CX();
     /* Spits out CX + any single qb gates */
     OpTypeSet ots = {OpType::CX};
     op_signature_t singleq = {EdgeType::Quantum};
@@ -251,7 +252,7 @@ const PassPtr &DecomposeMultiQubitsCX() {
 
 const PassPtr &DecomposeSingleQubitsTK1() {
   static const PassPtr pp([]() {
-    Transform t = Transform::decompose_single_qubits_TK1();
+    Transform t = Transforms::decompose_single_qubits_TK1();
     /* Spits out TK1 + any multi qb gates */
     OpTypeSet ots = {OpType::TK1};
     op_signature_t singleq = {EdgeType::Quantum};
@@ -282,7 +283,7 @@ const PassPtr &ComposePhasePolyBoxes() {
    */
   static const PassPtr pp([]() {
     Transform t =
-        (Transform::rebase_UFR() >> Transform::compose_phase_poly_boxes());
+        (Transform::rebase_UFR() >> Transforms::compose_phase_poly_boxes());
     PredicatePtr noclas = std::make_shared<NoClassicalControlPredicate>();
 
     PredicatePtrMap precons{CompilationUnit::make_type_pair(noclas)};
@@ -297,7 +298,7 @@ const PassPtr &ComposePhasePolyBoxes() {
 
 const PassPtr &DecomposeBoxes() {
   static const PassPtr pp([]() {
-    Transform t = Transform::decomp_boxes();
+    Transform t = Transforms::decomp_boxes();
     PredicatePtrMap s_ps;
     /**
      * Preserves Max2QubitGatesPredicate since any box with >2 qubits is
@@ -347,7 +348,7 @@ const PassPtr &SquashHQS() {
 
 const PassPtr &DecomposeBridges() {
   static const PassPtr pp([]() {
-    Transform t = Transform::decompose_BRIDGE_to_CX();
+    Transform t = Transforms::decompose_BRIDGE_to_CX();
     PredicatePtrMap s_ps;
     PredicateClassGuarantees g_postcons{
         {typeid(GateSetPredicate), Guarantee::Clear},

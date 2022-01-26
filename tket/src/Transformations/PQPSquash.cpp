@@ -14,6 +14,7 @@
 
 #include <memory>
 
+#include "Decomposition.hpp"
 #include "Gate/Rotation.hpp"
 #include "SingleQubitSquash.hpp"
 #include "Transform.hpp"
@@ -232,8 +233,9 @@ Transform Transform::squash_1qb_to_pqp(
 }
 
 Transform Transform::squash_1qb_to_tk1() {
-  return decompose_ZY() >> squash_1qb_to_pqp(OpType::Ry, OpType::Rz, true) >>
-         decompose_ZYZ_to_TK1();
+  return Transforms::decompose_ZY() >>
+         squash_1qb_to_pqp(OpType::Ry, OpType::Rz, true) >>
+         Transforms::decompose_ZYZ_to_TK1();
 }
 
 static bool fixup_angles(

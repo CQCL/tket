@@ -19,6 +19,7 @@
 #include "CircuitsForTesting.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "testutil.hpp"
@@ -32,7 +33,7 @@ SCENARIO("Convert into PhaseGadgets", "[transform]") {
     Vertex v1 = circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Rz, 1e-4, {1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    bool success = Transform::decompose_PhaseGadgets().apply(circ);
+    bool success = Transforms::decompose_PhaseGadgets().apply(circ);
     REQUIRE(success);
     REQUIRE(circ.n_vertices() == 5);
     REQUIRE(circ.get_OpType_from_Vertex(v1) == OpType::PhaseGadget);
@@ -42,7 +43,7 @@ SCENARIO("Convert into PhaseGadgets", "[transform]") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Rz, 1e-4, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    bool success = Transform::decompose_PhaseGadgets().apply(circ);
+    bool success = Transforms::decompose_PhaseGadgets().apply(circ);
     REQUIRE(!success);
   }
 }
@@ -56,7 +57,7 @@ SCENARIO("Smash CXs using PhaseGadgets", "[transform]") {
       circ.add_op<unsigned>(OpType::Rz, 1e-4, {1});
       circ.add_op<unsigned>(OpType::CX, {0, 1});
       circ.add_op<unsigned>(OpType::CX, {2, 0});
-      bool success1 = Transform::decompose_PhaseGadgets().apply(circ);
+      bool success1 = Transforms::decompose_PhaseGadgets().apply(circ);
       REQUIRE(success1);
       THEN("The circuit is smashed") {
         bool success2 = Transform::smash_CX_PhaseGadgets().apply(circ);
@@ -73,7 +74,7 @@ SCENARIO("Smash CXs using PhaseGadgets", "[transform]") {
     circ.add_op<unsigned>(OpType::Rz, 1e-3, {0});
     add_2qb_gates(circ, OpType::CX, {{3, 0}, {4, 0}, {2, 0}, {1, 0}});
     REQUIRE(verify_n_qubits_for_ops(circ));
-    REQUIRE(Transform::decompose_PhaseGadgets().apply(circ));
+    REQUIRE(Transforms::decompose_PhaseGadgets().apply(circ));
     REQUIRE(verify_n_qubits_for_ops(circ));
     REQUIRE(Transform::smash_CX_PhaseGadgets().apply(circ));
     REQUIRE(verify_n_qubits_for_ops(circ));
@@ -86,7 +87,7 @@ SCENARIO("Smash CXs using PhaseGadgets", "[transform]") {
     circ.add_op<unsigned>(OpType::Rz, 1e-3, {0});
     add_2qb_gates(circ, OpType::CX, {{3, 0}, {1, 0}, {2, 0}, {4, 0}});
     REQUIRE(verify_n_qubits_for_ops(circ));
-    REQUIRE(Transform::decompose_PhaseGadgets().apply(circ));
+    REQUIRE(Transforms::decompose_PhaseGadgets().apply(circ));
     REQUIRE(verify_n_qubits_for_ops(circ));
     REQUIRE(!Transform::smash_CX_PhaseGadgets().apply(circ));
   }
@@ -178,7 +179,7 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     expected.add_op<unsigned>(OpType::Vdg, {0});
     expected.add_op<unsigned>(OpType::H, {1});
     add_1qb_gates(expected, OpType::Vdg, {2, 3});
-    Transform::decompose_multi_qubits_CX().apply(expected);
+    Transforms::decompose_multi_qubits_CX().apply(expected);
     Transform::singleq_clifford_sweep().apply(expected);
     Transform::synthesise_tket().apply(expected);
     const auto m1 = tket_sim::get_unitary(circ);

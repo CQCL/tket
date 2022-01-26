@@ -22,6 +22,7 @@
 #include "Circuit/Command.hpp"
 #include "Circuit/ThreeQubitConversion.hpp"
 #include "Simulation/CircuitSimulator.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/EigenConfig.hpp"
@@ -322,7 +323,7 @@ SCENARIO("Three-qubit squash") {
     c.add_box(c3qbox, {3, 0, 2});
     c.add_box(c2qbox, {4, 2});
     c.add_box(c3qbox, {4, 3, 0});
-    Transform::decomp_boxes().apply(c);
+    Transforms::decomp_boxes().apply(c);
     CHECK(check_3q_squash(c));
   }
   GIVEN("A circuit with measurements") {

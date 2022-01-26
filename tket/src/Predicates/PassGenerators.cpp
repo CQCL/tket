@@ -23,6 +23,7 @@
 #include "Predicates/PassLibrary.hpp"
 #include "Predicates/Predicates.hpp"
 #include "Routing/Placement.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 
@@ -417,8 +418,8 @@ PassPtr gen_decompose_routing_gates_to_cxs_pass(
       {typeid(GateSetPredicate), Guarantee::Clear}};
   PredicatePtrMap precons;
   PredicatePtrMap s_postcons;
-  Transform t = Transform::decompose_SWAP_to_CX(arc) >>
-                Transform::decompose_BRIDGE_to_CX() >>
+  Transform t = Transforms::decompose_SWAP_to_CX(arc) >>
+                Transforms::decompose_BRIDGE_to_CX() >>
                 Transform::remove_redundancies();
   if (directed) {
     OpTypeSet out_optypes{all_single_qubit_types()};
@@ -440,7 +441,7 @@ PassPtr gen_decompose_routing_gates_to_cxs_pass(
         CompilationUnit::make_type_pair(directedpred),
         CompilationUnit::make_type_pair(outgates),
         CompilationUnit::make_type_pair(twoqbpred)};
-    t = t >> Transform::decompose_CX_directed(arc) >>
+    t = t >> Transforms::decompose_CX_directed(arc) >>
         Transform::remove_redundancies();
   }
   PostConditions pc{s_postcons, g_postcons, Guarantee::Preserve};
@@ -453,7 +454,7 @@ PassPtr gen_decompose_routing_gates_to_cxs_pass(
 }
 
 PassPtr gen_user_defined_swap_decomp_pass(const Circuit& replacement_circ) {
-  Transform t = Transform::decompose_SWAP(replacement_circ);
+  Transform t = Transforms::decompose_SWAP(replacement_circ);
   PredicateClassGuarantees g_postcons{
       {typeid(GateSetPredicate), Guarantee::Clear}};
   PostConditions pc{{}, g_postcons, Guarantee::Preserve};

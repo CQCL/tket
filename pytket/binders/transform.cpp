@@ -24,6 +24,7 @@
 #include "Routing/Routing.hpp"
 #include "Transformations/Combinator.hpp"
 #include "Transformations/ContextualReduction.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
@@ -118,10 +119,10 @@ PYBIND11_MODULE(transform, m) {
           "RebaseToTket", &Transform::rebase_tket,
           "Rebase from any gate set into TK1, CX.")
       .def_static(
-          "RebaseToRzRx", &Transform::decompose_ZX,
+          "RebaseToRzRx", &Transforms::decompose_ZX,
           "Rebase single qubit gates into Rz, Rx.")
       .def_static(
-          "RebaseToCliffordSingles", &Transform::decompose_cliffords_std,
+          "RebaseToCliffordSingles", &Transforms::decompose_cliffords_std,
           "Identify Clifford-angle rotations (from U1, U2, U3, Rx, "
           "Ry, Rz, TK1, PhasedX), replacing them with Z, X, S, V "
           "gates. Any non-Clifford rotations will stay as they are.")
@@ -150,13 +151,13 @@ PYBIND11_MODULE(transform, m) {
           "Decomposes all arbitrarily-quantum-controlled Rys into CX "
           "and Ry gates.")
       .def_static(
-          "DecomposeSWAP", &Transform::decompose_SWAP,
+          "DecomposeSWAP", &Transforms::decompose_SWAP,
           "Decomposes all SWAP gates to provided replacement "
           "circuit.\n\n:param circuit: A circuit that is logically "
           "equivalent to a SWAP operation",
           py::arg("circuit"))
       .def_static(
-          "DecomposeSWAPtoCX", &Transform::decompose_SWAP_to_CX,
+          "DecomposeSWAPtoCX", &Transforms::decompose_SWAP_to_CX,
           "Decomposes all SWAP gates into triples of CX gates. "
           "If the SWAP is adjacent to a CX, it will prefer to insert "
           "in the direction that allows for gate cancellation. "
@@ -166,10 +167,10 @@ PYBIND11_MODULE(transform, m) {
           "preference for CX direction",
           py::arg("arc") = Architecture())
       .def_static(
-          "DecomposeBRIDGE", &Transform::decompose_BRIDGE_to_CX,
+          "DecomposeBRIDGE", &Transforms::decompose_BRIDGE_to_CX,
           "Decomposes all BRIDGE gates into CX gates.")
       .def_static(
-          "DecomposeCXDirected", &Transform::decompose_CX_directed,
+          "DecomposeCXDirected", &Transforms::decompose_CX_directed,
           "Decompose CX gates to H+CX to match the direction of the "
           "CXs to edges of the :py:class:`Architecture` `arc`. "
           "Assumes the circuit already satisfies the connectivity of "
@@ -177,7 +178,7 @@ PYBIND11_MODULE(transform, m) {
           "should be redirected",
           py::arg("arc"))
       .def_static(
-          "DecomposeBoxes", &Transform::decomp_boxes,
+          "DecomposeBoxes", &Transforms::decomp_boxes,
           "Decomposes all Boxed operations into elementary gates.")
 
       /* OPTIMISATION TRANSFORMS */

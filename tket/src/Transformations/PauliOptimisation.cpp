@@ -14,10 +14,13 @@
 
 #include "Converters/Converters.hpp"
 #include "Converters/PauliGadget.hpp"
+#include "Decomposition.hpp"
 #include "PauliGraph/PauliGraph.hpp"
 #include "Transform.hpp"
 
 namespace tket {
+
+using namespace Transforms;
 
 Transform Transform::pairwise_pauli_gadgets(CXConfigType cx_config) {
   return Transform([=](Circuit &circ) {

@@ -14,10 +14,13 @@
 
 #include "Circuit/CircUtils.hpp"
 #include "Combinator.hpp"
+#include "Decomposition.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Transform.hpp"
 
 namespace tket {
+
+using namespace Transforms;
 
 Transform Transform::peephole_optimise_2q() {
   return (
@@ -51,13 +54,13 @@ Transform Transform::clifford_simp(bool allow_swaps) {
 Transform Transform::synthesise_tket() {
   Transform seq =
       Transform::commute_through_multis() >> Transform::remove_redundancies();
-  Transform repeat = Transforms::repeat(seq);
-  Transform synth = Transform::decompose_multi_qubits_CX() >>
-                    Transform::remove_redundancies() >> repeat >>
+  Transform rep = repeat(seq);
+  Transform synth = decompose_multi_qubits_CX() >>
+                    Transform::remove_redundancies() >> rep >>
                     Transform::squash_1qb_to_tk1();
-  Transform small_part = Transform::remove_redundancies() >> repeat >>
-                         Transform::squash_1qb_to_tk1();
-  Transform repeat_synth = Transforms::repeat_with_metric(
+  Transform small_part =
+      Transform::remove_redundancies() >> rep >> Transform::squash_1qb_to_tk1();
+  Transform repeat_synth = repeat_with_metric(
       small_part, [](const Circuit &circ) { return circ.n_vertices(); });
   return synth >> repeat_synth;
 }
@@ -96,9 +99,8 @@ Transform Transform::synthesise_OQC() {
     Transform rep_zx = squash_1qb_to_pqp(OpType::Rx, OpType::Rz) >>
                        commute_through_multis() >> remove_redundancies();
     Transform seq = decompose_multi_qubits_CX() >> decompose_CX_to_ECR() >>
-                    decompose_ZX() >> Transforms::repeat(rep_zx) >>
-                    rebase_OQC() >> commute_through_multis() >>
-                    remove_redundancies();
+                    decompose_ZX() >> repeat(rep_zx) >> rebase_OQC() >>
+                    commute_through_multis() >> remove_redundancies();
     return seq.apply(circ);
   });
 }
@@ -111,9 +113,9 @@ Transform Transform::synthesise_HQS() {
     Transform hqs_loop = remove_redundancies() >> commute_and_combine_HQS2() >>
                          reduce_XZ_chains();
     Transform main_seq = decompose_multi_qubits_CX() >> clifford_simp() >>
-                         decompose_ZX() >> Transforms::repeat(single_loop) >>
-                         decompose_CX_to_HQS2() >>
-                         Transforms::repeat(hqs_loop) >> decompose_ZX_to_HQS1();
+                         decompose_ZX() >> repeat(single_loop) >>
+                         decompose_CX_to_HQS2() >> repeat(hqs_loop) >>
+                         decompose_ZX_to_HQS1();
     return main_seq.apply(circ);
   });
 }
@@ -121,10 +123,10 @@ Transform Transform::synthesise_HQS() {
 // TODO: Make the XXPhase gates combine
 Transform Transform::synthesise_UMD() {
   return Transform([](Circuit &circ) {
-    bool success = (Transform::synthesise_tket() >> Transform::decompose_ZX() >>
-                    Transform::decompose_MolmerSorensen() >>
-                    Transform::squash_1qb_to_tk1())
-                       .apply(circ);
+    bool success =
+        (Transform::synthesise_tket() >> decompose_ZX() >>
+         decompose_MolmerSorensen() >> Transform::squash_1qb_to_tk1())
+            .apply(circ);
     VertexList bin;
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
       const Op_ptr op_ptr = circ.get_Op_ptr_from_Vertex(v);

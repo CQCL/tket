@@ -19,6 +19,7 @@
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Command.hpp"
 #include "Circuit/DAGDefs.hpp"
+#include "Decomposition.hpp"
 #include "Gate/Gate.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Gate/Rotation.hpp"
@@ -27,6 +28,8 @@
 #include "Utils/EigenConfig.hpp"
 
 namespace tket {
+
+using namespace Transforms;
 
 static bool redundancy_removal(Circuit &circ);
 static bool remove_redundancy(

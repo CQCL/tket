@@ -16,9 +16,12 @@
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/DAGDefs.hpp"
+#include "Decomposition.hpp"
 #include "Transform.hpp"
 
 namespace tket {
+
+using namespace Transforms;
 
 static bool multiq_clifford_match(Circuit &circ, bool allow_swaps);
 static bool copy_pi_through_CX_method(Circuit &circ);
@@ -588,10 +591,9 @@ static bool singleq_clifford_from_edge(
   if (cliff_last == 0) {
     Subcircuit s = {{e}, {ei}, single_vs};
     Circuit sub = circ.subcircuit(s);
-    bool reduced =
-        (Transform::decompose_single_qubits_TK1() >>
-         Transform::squash_1qb_to_tk1() >> Transform::decompose_cliffords_std())
-            .apply(sub);
+    bool reduced = (decompose_single_qubits_TK1() >>
+                    Transform::squash_1qb_to_tk1() >> decompose_cliffords_std())
+                       .apply(sub);
     if (reduced) {
       circ.substitute(sub, s, Circuit::VertexDeletion::No);
       bin.insert(bin.end(), single_vs.begin(), single_vs.end());
