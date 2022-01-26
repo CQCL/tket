@@ -71,7 +71,7 @@ Transform remove_discarded_ops();
 Transform simplify_initial(
     AllowClassical allow_classical = AllowClassical::Yes,
     CreateAllQubits create_all_qubits = CreateAllQubits::No,
-    std::shared_ptr<const Circuit> = 0);
+    std::shared_ptr<const Circuit> xcirc = 0);
 
 /**
  * Commute classical maps through measurements.
