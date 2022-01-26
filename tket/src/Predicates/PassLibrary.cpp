@@ -18,6 +18,7 @@
 
 #include "PassGenerators.hpp"
 #include "Predicates/CompilerPass.hpp"
+#include "Transformations/ControlledGates.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/MeasurePass.hpp"
 #include "Transformations/Transform.hpp"
@@ -210,7 +211,7 @@ const PassPtr &GlobalisePhasedX() {
 
 const PassPtr &DecomposeArbitrarilyControlledGates() {
   static const PassPtr pp([]() {
-    Transform t = Transform::decomp_arbitrary_controlled_gates();
+    Transform t = Transforms::decomp_arbitrary_controlled_gates();
     PredicateClassGuarantees g_postcons = {
         {typeid(GateSetPredicate), Guarantee::Clear}};
     PostConditions postcon = {{}, g_postcons, Guarantee::Preserve};

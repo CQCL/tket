@@ -24,6 +24,7 @@
 #include "Routing/Routing.hpp"
 #include "Transformations/Combinator.hpp"
 #include "Transformations/ContextualReduction.hpp"
+#include "Transformations/ControlledGates.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "typecast.hpp"
 
@@ -143,11 +144,11 @@ PYBIND11_MODULE(transform, m) {
           "SWAP).")
       //.def_static("RebaseToMaryland", &Transform::rebase_UMD)
       .def_static(
-          "DecomposeCCX", &Transform::decomp_CCX,
+          "DecomposeCCX", &Transforms::decomp_CCX,
           "Decomposes all 3-qubit Toffoli (CCX) gates into "
           "Clifford+T gates.")
       .def_static(
-          "DecomposeControlledRys", &Transform::decomp_controlled_Rys,
+          "DecomposeControlledRys", &Transforms::decomp_controlled_Rys,
           "Decomposes all arbitrarily-quantum-controlled Rys into CX "
           "and Ry gates.")
       .def_static(

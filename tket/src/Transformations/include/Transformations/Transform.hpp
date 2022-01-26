@@ -28,12 +28,6 @@
 
 namespace tket {
 
-class ControlDecompError : public std::logic_error {
- public:
-  explicit ControlDecompError(const std::string& message)
-      : std::logic_error(message) {}
-};
-
 /* Dictates whether synthesis of a PauliGraph should
     be done on the Paulis individually, making use of the pairwise
     interactions or collecting into mutually commuting sets. */
@@ -59,21 +53,6 @@ class Transform {
   static const Transform id;  // identity Transform (does nothing to Circuit)
 
   friend Transform operator>>(const Transform& lhs, const Transform& rhs);
-
-  // converts arbitrarily controlled Ry gates. It does not use ancillae, so it
-  // is not very depth-efficient Expects: CRys and any other gates returns Ry,
-  // CX, H, T, Tdg + whatever other gates were there before
-  static Transform decomp_controlled_Rys();
-
-  // does not use ancillae
-  // Expects: CCX + any other gates
-  // returns CX, H, T, Tdg + any previous gates
-  static Transform decomp_CCX();
-
-  // does not use ancillae
-  // Expects: any CnRys + CnXs + any other gates
-  // returns Ry, CX, H, T, Tdg + any previous gates
-  static Transform decomp_arbitrary_controlled_gates();
 
   ///////////////
   // Rebase Pass//
@@ -421,13 +400,6 @@ class Transform {
     unsigned count;      // Number of two qubit gates in interaction
     VertexSet vertices;  // Vertices in interaction subcircuit
   };
-
-  static Circuit cnx_normal_decomp(unsigned n);
-  static Circuit cnx_gray_decomp(unsigned n);
-
-  static Circuit decomposed_CnRy(const Op_ptr op, unsigned arity);
-  static Circuit incrementer_borrow_n_qubits(unsigned n);
-  static Circuit incrementer_borrow_1_qubit(unsigned n);
 };
 
 inline const Transform Transform::id = Transform([](const Circuit&) {

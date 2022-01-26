@@ -16,8 +16,9 @@
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
-#include "Gate/GatePtr.hpp"
+#include "ControlledGates.hpp"
 #include "Decomposition.hpp"
+#include "Gate/GatePtr.hpp"
 #include "Transform.hpp"
 
 namespace tket {
@@ -33,11 +34,10 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
   unsigned n_qubits = op->n_qubits();
   switch (desc.type()) {
     case OpType::CnRy:
-      return Transform::decomposed_CnRy(op, n_qubits);
+      return decomposed_CnRy(op, n_qubits);
     case OpType::CnX:
-      if (n_qubits >= 6 && n_qubits <= 8)
-        return Transform::cnx_gray_decomp(n_qubits - 1);
-      return Transform::cnx_normal_decomp(n_qubits - 1);
+      if (n_qubits >= 6 && n_qubits <= 8) return cnx_gray_decomp(n_qubits - 1);
+      return cnx_normal_decomp(n_qubits - 1);
     default:
       return with_CX(as_gate_ptr(op));
   }
