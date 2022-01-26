@@ -22,6 +22,7 @@
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/PauliOptimisation.hpp"
+#include "Transformations/PhaseOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "testutil.hpp"
@@ -62,7 +63,7 @@ SCENARIO("Smash CXs using PhaseGadgets", "[transform]") {
       bool success1 = Transforms::decompose_PhaseGadgets().apply(circ);
       REQUIRE(success1);
       THEN("The circuit is smashed") {
-        bool success2 = Transform::smash_CX_PhaseGadgets().apply(circ);
+        bool success2 = Transforms::smash_CX_PhaseGadgets().apply(circ);
         REQUIRE(success2);
         REQUIRE(test_equiv_val(
             (circ.get_Op_ptr_from_Vertex(v1))->get_params()[0], 1e-4));
@@ -78,7 +79,7 @@ SCENARIO("Smash CXs using PhaseGadgets", "[transform]") {
     REQUIRE(verify_n_qubits_for_ops(circ));
     REQUIRE(Transforms::decompose_PhaseGadgets().apply(circ));
     REQUIRE(verify_n_qubits_for_ops(circ));
-    REQUIRE(Transform::smash_CX_PhaseGadgets().apply(circ));
+    REQUIRE(Transforms::smash_CX_PhaseGadgets().apply(circ));
     REQUIRE(verify_n_qubits_for_ops(circ));
     REQUIRE(circ.n_vertices() == 11);
     REQUIRE(circ.n_edges() == 10);
@@ -91,7 +92,7 @@ SCENARIO("Smash CXs using PhaseGadgets", "[transform]") {
     REQUIRE(verify_n_qubits_for_ops(circ));
     REQUIRE(Transforms::decompose_PhaseGadgets().apply(circ));
     REQUIRE(verify_n_qubits_for_ops(circ));
-    REQUIRE(!Transform::smash_CX_PhaseGadgets().apply(circ));
+    REQUIRE(!Transforms::smash_CX_PhaseGadgets().apply(circ));
   }
 }
 
@@ -103,7 +104,7 @@ SCENARIO("Aligning ports on PhaseGadgets", "[transform]") {
     circ.add_op<unsigned>(OpType::PhaseGadget, 0.25, {3, 2, 1, 0});
     circ.add_op<unsigned>(OpType::X, {1});
     circ.add_op<unsigned>(OpType::PhaseGadget, 0.75, {0, 1, 2});
-    Transform::align_PhaseGadgets().apply(circ);
+    Transforms::align_PhaseGadgets().apply(circ);
     VertexVec vertices = circ.vertices_in_order();
     Vertex first_gadget = vertices[4];
     bool matching_ports = true;

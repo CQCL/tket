@@ -18,6 +18,7 @@
 #include "Combinator.hpp"
 #include "Decomposition.hpp"
 #include "Gate/GatePtr.hpp"
+#include "PhaseOptimisation.hpp"
 #include "Rebase.hpp"
 #include "Transform.hpp"
 
@@ -93,9 +94,8 @@ static Transform CXs_from_phase_gadgets(CXConfigType cx_config) {
 }
 
 Transform optimise_via_PhaseGadget(CXConfigType cx_config) {
-  return rebase_tket() >> decompose_PhaseGadgets() >>
-         Transform::smash_CX_PhaseGadgets() >>
-         Transform::align_PhaseGadgets() >> CXs_from_phase_gadgets(cx_config) >>
+  return rebase_tket() >> decompose_PhaseGadgets() >> smash_CX_PhaseGadgets() >>
+         align_PhaseGadgets() >> CXs_from_phase_gadgets(cx_config) >>
          synthesise_tket();
 }
 

@@ -54,20 +54,6 @@ class Transform {
 
   friend Transform operator>>(const Transform& lhs, const Transform& rhs);
 
-  //////////////////////
-  // Phase Optimisation//
-  //////////////////////
-
-  // extends PhaseGadgets by a qubit on identifying a pair of CXs around it
-  // Expects: CX, PhaseGadget, and any single-qubit gates
-  // Produces: CX, PhaseGadget, and any single-qubit gates
-  static Transform smash_CX_PhaseGadgets();
-
-  // tries to match up ports on adjacent PhaseGadgets to enable maximal
-  // annihilation after synthesis (ignoring any intervening gates) Expects: Any
-  // gates Produces: The same gate set
-  static Transform align_PhaseGadgets();
-
   /////////////////////////
   // Clifford Optimisation//
   /////////////////////////

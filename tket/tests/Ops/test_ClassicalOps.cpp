@@ -18,6 +18,7 @@
 #include "Circuit/Circuit.hpp"
 #include "Ops/ClassicalOps.hpp"
 #include "Transformations/PauliOptimisation.hpp"
+#include "Transformations/PhaseOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 
 namespace tket {
@@ -324,7 +325,7 @@ SCENARIO(
       circ.add_op<unsigned>(OpType::CX, {0, 1});
       circ.add_op<unsigned>(OpType::PhaseGadget, 0.3, {1, 2, 3, 4});
       circ.add_op<unsigned>(OpType::CX, {0, 1});
-      REQUIRE(Transform::smash_CX_PhaseGadgets().apply(circ));
+      REQUIRE(Transforms::smash_CX_PhaseGadgets().apply(circ));
       REQUIRE(circ.n_gates() == 1);
       REQUIRE(circ.count_gates(OpType::PhaseGadget) == 1);
     }
@@ -332,13 +333,13 @@ SCENARIO(
       circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
       circ.add_op<unsigned>(OpType::PhaseGadget, 0.3, {1, 2, 3, 4});
       circ.add_op<unsigned>(OpType::CX, {0, 1});
-      REQUIRE(!Transform::smash_CX_PhaseGadgets().apply(circ));
+      REQUIRE(!Transforms::smash_CX_PhaseGadgets().apply(circ));
     }
     WHEN("Add classical wire to second cx") {
       circ.add_op<unsigned>(OpType::CX, {0, 1});
       circ.add_op<unsigned>(OpType::PhaseGadget, 0.3, {1, 2, 3, 4});
       circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
-      REQUIRE(!Transform::smash_CX_PhaseGadgets().apply(circ));
+      REQUIRE(!Transforms::smash_CX_PhaseGadgets().apply(circ));
       circ.assert_valid();
     }
   }
