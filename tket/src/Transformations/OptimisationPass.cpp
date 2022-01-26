@@ -16,6 +16,7 @@
 #include "Combinator.hpp"
 #include "Decomposition.hpp"
 #include "Gate/GatePtr.hpp"
+#include "Rebase.hpp"
 #include "Transform.hpp"
 
 namespace tket {
@@ -133,8 +134,8 @@ Transform Transform::synthesise_UMD() {
       OpType type = op_ptr->get_type();
       if (type == OpType::TK1) {
         std::vector<Expr> tk1_angles = as_gate_ptr(op_ptr)->get_tk1_angles();
-        Circuit in_circ = Transform::tk1_to_PhasedXRz(
-            tk1_angles[0], tk1_angles[1], tk1_angles[2]);
+        Circuit in_circ =
+            tk1_to_PhasedXRz(tk1_angles[0], tk1_angles[1], tk1_angles[2]);
         Subcircuit sub = {
             {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
         bin.push_back(v);

@@ -54,57 +54,6 @@ class Transform {
 
   friend Transform operator>>(const Transform& lhs, const Transform& rhs);
 
-  ///////////////
-  // Rebase Pass//
-  ///////////////
-
-  // decomposes multiq gates not in the gate set to CXs, then replaces CXs with
-  // the replacement (if CX is not allowed) then converts singleq gates no in
-  // the gate set to U3 and replaces them using provided function Expects: any
-  // gates Produces: gates in multiqs and singleqs
-  static Transform rebase_factory(
-      const OpTypeSet& multiqs, const Circuit& cx_replacement,
-      const OpTypeSet& singleqs,
-      const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
-          tk1_replacement);
-
-  // Multiqs: CX
-  // Singleqs: TK1
-  static Transform rebase_tket();
-
-  // Multiqs: CZ
-  // Singleqs: PhasedX, Rz
-  static Transform rebase_cirq();
-
-  // Multiqs: CZ
-  // Singleqs: Rx, Rz
-  static Transform rebase_quil();
-
-  // Multiqs: SWAP, CX, CZ
-  // Singleqs: H, X, Z, S, T, Rx, Rz
-  static Transform rebase_pyzx();
-
-  // Multiqs: SWAP, CRz, CX, CZ
-  // Singleqs: H, X, Y, Z, S, T, V, Rx, Ry, Rz
-  static Transform rebase_projectq();
-
-  // Multiqs: ZZMax
-  // Singleqs: PhasedX, Rz
-  static Transform rebase_HQS();
-
-  // Multiqs: XXPhase
-  // Singleqs: PhasedX, Rz
-  static Transform rebase_UMD();
-
-  // Used for UniversalFrameRandomisation
-  // Multiqs: CX
-  // Singleqs: Rz, H
-  static Transform rebase_UFR();
-
-  // Multiqs: ECR
-  // Singleqs: Rz, SX
-  static Transform rebase_OQC();
-
   //////////////////
   // Synthesis Pass//
   //////////////////
@@ -369,26 +318,6 @@ class Transform {
    * Global phase is not preserved.
    */
   static Transform simplify_measured();
-
-  ///////////////////////////////////////////////
-  // Minor components for other Transform passes//
-  ///////////////////////////////////////////////
-
-  // converts a TK1 gate to a PhasedXRz gate
-  static Circuit tk1_to_PhasedXRz(
-      const Expr& alpha, const Expr& beta, const Expr& gamma);
-
-  static Circuit tk1_to_rzrx(
-      const Expr& alpha, const Expr& beta, const Expr& gamma);
-
-  static Circuit tk1_to_rzh(
-      const Expr& alpha, const Expr& beta, const Expr& gamma);
-
-  static Circuit tk1_to_tk1(
-      const Expr& alpha, const Expr& beta, const Expr& gamma);
-
-  static Circuit tk1_to_rzsx(
-      const Expr& alpha, const Expr& beta, const Expr& gamma);
 
   // helper class subcircuits representing 2qb interactions
   struct Interaction {

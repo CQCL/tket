@@ -27,6 +27,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/Decomposition.hpp"
+#include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/HelperFunctions.hpp"
 #include "testutil.hpp"
@@ -665,7 +666,7 @@ SCENARIO("Qubit activating edge case", "[routing]") {
     circ.add_op<unsigned>(OpType::CU1, 0.125, {3, 0});
     circ.add_op<unsigned>(OpType::CU1, 0.25, {3, 1});
     circ.add_op<unsigned>(OpType::CU1, 0.5, {3, 2});
-    Transform::rebase_tket().apply(circ);
+    Transforms::rebase_tket().apply(circ);
     Architecture arc({{0, 1}, {1, 2}, {2, 3}});
     Routing router(circ, arc);
     std::pair<Circuit, bool> c = router.solve();
@@ -722,7 +723,7 @@ SCENARIO("Test routing for other multi-qubit ops", "[routing]") {
     for (unsigned nn = 0; nn <= 3; ++nn) {
       circ.add_measure(nn, nn);
     }
-    Transform::rebase_tket().apply(circ);
+    Transforms::rebase_tket().apply(circ);
     Architecture arc({{0, 1}, {1, 2}, {2, 3}});
     Routing router(circ, arc);
     std::pair<Circuit, bool> result = router.solve();

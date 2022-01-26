@@ -20,6 +20,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/Decomposition.hpp"
+#include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 #include "testutil.hpp"
@@ -41,7 +42,7 @@ SCENARIO("Building rebases with rebase_factory") {
     };
     OpTypeSet multiqs = {OpType::CX};
     OpTypeSet singleqs = {OpType::S, OpType::V, OpType::Rx};
-    Transform t = Transform::rebase_factory(multiqs, blank, singleqs, blanker);
+    Transform t = Transforms::rebase_factory(multiqs, blank, singleqs, blanker);
     REQUIRE(!t.apply(c));
     REQUIRE(copy == c);
   }
@@ -57,7 +58,7 @@ SCENARIO("Building rebases with rebase_factory") {
     };
     OpTypeSet multiqs = {OpType::CX};
     OpTypeSet singleqs = {OpType::S, OpType::V, OpType::H};
-    Transform t = Transform::rebase_factory(multiqs, blank, singleqs, blanker);
+    Transform t = Transforms::rebase_factory(multiqs, blank, singleqs, blanker);
     REQUIRE(t.apply(c));
     REQUIRE(c.count_gates(OpType::CZ) == 0);
     REQUIRE(c.count_gates(OpType::CX) == 1);
@@ -79,7 +80,7 @@ SCENARIO("Building rebases with rebase_factory") {
     };
     OpTypeSet multiqs = {OpType::CRz};
     OpTypeSet singleqs = {OpType::S, OpType::V, OpType::H};
-    Transform t = Transform::rebase_factory(multiqs, cx, singleqs, blanker);
+    Transform t = Transforms::rebase_factory(multiqs, cx, singleqs, blanker);
     REQUIRE(t.apply(c));
     REQUIRE(c.count_gates(OpType::CZ) == 1);
     REQUIRE(c.count_gates(OpType::CX) == 0);
@@ -101,7 +102,7 @@ SCENARIO("Building rebases with rebase_factory") {
     };
     OpTypeSet multiqs = {OpType::CZ};
     OpTypeSet singleqs = {OpType::S, OpType::X, OpType::H, OpType::Sdg};
-    Transform t = Transform::rebase_factory(multiqs, cx, singleqs, blanker);
+    Transform t = Transforms::rebase_factory(multiqs, cx, singleqs, blanker);
     REQUIRE(t.apply(c));
     REQUIRE(c.count_gates(OpType::CZ) == 1);
     REQUIRE(c.count_gates(OpType::CX) == 0);
@@ -123,7 +124,7 @@ SCENARIO("Building rebases with rebase_factory") {
     };
     OpTypeSet multiqs = {OpType::CX};
     OpTypeSet singleqs = {OpType::S, OpType::V, OpType::H};
-    Transform t = Transform::rebase_factory(multiqs, blank, singleqs, blanker);
+    Transform t = Transforms::rebase_factory(multiqs, blank, singleqs, blanker);
     REQUIRE(t.apply(c));
     REQUIRE(c.count_gates(OpType::CZ) == 0);
     REQUIRE(c.count_gates(OpType::CX) == 6);
@@ -143,7 +144,7 @@ SCENARIO("Building rebases with rebase_factory") {
     };
     OpTypeSet multiqs = {OpType::CX};
     OpTypeSet singleqs = {OpType::S, OpType::V, OpType::H};
-    Transform t = Transform::rebase_factory(multiqs, blank, singleqs, blanker);
+    Transform t = Transforms::rebase_factory(multiqs, blank, singleqs, blanker);
     REQUIRE(t.apply(c));
     REQUIRE(c.count_gates(OpType::CX) == 4);
     const StateVector s1 = tket_sim::get_statevector(c);
@@ -163,7 +164,7 @@ SCENARIO("Building rebases with rebase_factory") {
     };
     OpTypeSet multiqs = {OpType::CX};
     OpTypeSet singleqs = {OpType::S, OpType::V, OpType::H};
-    Transform t = Transform::rebase_factory(multiqs, blank, singleqs, blanker);
+    Transform t = Transforms::rebase_factory(multiqs, blank, singleqs, blanker);
     REQUIRE(t.apply(c));
     REQUIRE(c.count_gates(OpType::CX) == 4);
     StateVector s1 = tket_sim::get_statevector(c);
@@ -187,7 +188,7 @@ SCENARIO("Building rebases with rebase_factory") {
     };
     OpTypeSet multiqs = {OpType::CX};
     OpTypeSet singleqs = {OpType::TK1};
-    Transform t = Transform::rebase_factory(multiqs, blank, singleqs, tk1_map);
+    Transform t = Transforms::rebase_factory(multiqs, blank, singleqs, tk1_map);
     REQUIRE(t.apply(c));
     REQUIRE(c.count_gates(OpType::T) == 0);
     REQUIRE(c.count_gates(OpType::Rx) == 0);
@@ -212,7 +213,8 @@ SCENARIO("Building rebases with rebase_factory") {
     };
     OpTypeSet multiqs = {OpType::CX};
     OpTypeSet singleqs = {OpType::Rz, OpType::Rx};
-    Transform t = Transform::rebase_factory(multiqs, blank, singleqs, rzrx_map);
+    Transform t =
+        Transforms::rebase_factory(multiqs, blank, singleqs, rzrx_map);
     REQUIRE(t.apply(c));
     REQUIRE(c.count_gates(OpType::U3) == 0);
     REQUIRE(c.count_gates(OpType::Rx) == 2);
@@ -237,7 +239,8 @@ SCENARIO("Building rebases with rebase_factory") {
     };
     OpTypeSet multiqs = {OpType::CX};
     OpTypeSet singleqs = {OpType::Rz, OpType::Rx};
-    Transform t = Transform::rebase_factory(multiqs, blank, singleqs, rzrx_map);
+    Transform t =
+        Transforms::rebase_factory(multiqs, blank, singleqs, rzrx_map);
     REQUIRE(t.apply(c));
     REQUIRE(c.count_gates(OpType::T) == 0);
     REQUIRE(c.count_gates(OpType::U3) == 0);
@@ -254,7 +257,7 @@ SCENARIO("Building rebases with rebase_factory") {
     params = {1., 0., 1.};
     c.add_op<unsigned>(OpType::U3, params, {1});
     const auto s0 = tket_sim::get_statevector(c);
-    REQUIRE(Transform::rebase_projectq().apply(c));
+    REQUIRE(Transforms::rebase_projectq().apply(c));
     REQUIRE(c.count_gates(OpType::U3) == 0);
     StateVector s1 = tket_sim::get_statevector(c);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
@@ -268,7 +271,7 @@ SCENARIO("Building rebases with rebase_factory") {
     c.add_op<unsigned>(OpType::Ry, 0.34, {0});
     c.add_op<unsigned>(OpType::H, {0});
     const auto s0 = tket_sim::get_statevector(c);
-    REQUIRE(Transform::rebase_OQC().apply(c));
+    REQUIRE(Transforms::rebase_OQC().apply(c));
     REQUIRE(
         c.count_gates(OpType::ECR) + c.count_gates(OpType::Rz) +
             c.count_gates(OpType::SX) ==
@@ -279,7 +282,7 @@ SCENARIO("Building rebases with rebase_factory") {
   GIVEN("A UCCSD example") {
     auto circ = CircuitsForTesting::get().uccsd;
     const StateVector s0 = tket_sim::get_statevector(circ);
-    Transform::rebase_tket().apply(circ);
+    Transforms::rebase_tket().apply(circ);
     REQUIRE(circ.count_gates(OpType::Rz) == 0);
     REQUIRE(circ.count_gates(OpType::Rx) == 0);
     const StateVector s1 = tket_sim::get_statevector(circ);
@@ -299,7 +302,7 @@ SCENARIO("Building rebases with rebase_factory") {
     Circuit circ(2, 1);
     circ.add_op<unsigned>(OpType::T, {0});
     circ.add_conditional_gate<unsigned>(OpType::H, {}, {1}, {0}, 1);
-    Transform::rebase_tket().apply(circ);
+    Transforms::rebase_tket().apply(circ);
     Circuit correct(2, 1);
     correct.add_op<unsigned>(OpType::TK1, {0, 0, 0.25}, {0});
     correct.add_conditional_gate<unsigned>(
@@ -408,7 +411,8 @@ SCENARIO("Check each Clifford case for tk1_to_rzh") {
       Circuit correct(1);
       correct.add_op<unsigned>(
           OpType::TK1, {test.alpha, test.beta, test.gamma}, {0});
-      Circuit result = Transform::tk1_to_rzh(test.alpha, test.beta, test.gamma);
+      Circuit result =
+          Transforms::tk1_to_rzh(test.alpha, test.beta, test.gamma);
       REQUIRE(result.n_gates() == test.expected_gates);
       REQUIRE(test_unitary_comparison(correct, result));
     }
@@ -462,7 +466,7 @@ SCENARIO("Check cases for tk1_to_rzsx") {
       correct.add_op<unsigned>(
           OpType::TK1, {test.alpha, test.beta, test.gamma}, {0});
       Circuit result =
-          Transform::tk1_to_rzsx(test.alpha, test.beta, test.gamma);
+          Transforms::tk1_to_rzsx(test.alpha, test.beta, test.gamma);
       REQUIRE(result.n_gates() == test.expected_gates);
       REQUIRE(test_unitary_comparison(correct, result));
     }
@@ -472,7 +476,7 @@ SCENARIO("Check cases for tk1_to_rzsx") {
       correct.add_op<unsigned>(
           OpType::TK1, {test.alpha, test.beta, test.gamma}, {0});
       Circuit result =
-          Transform::tk1_to_rzsx(test.alpha, test.beta, test.gamma);
+          Transforms::tk1_to_rzsx(test.alpha, test.beta, test.gamma);
       REQUIRE(result.n_gates() == test.expected_gates);
     }
   }

@@ -26,6 +26,7 @@
 #include "Transformations/ContextualReduction.hpp"
 #include "Transformations/ControlledGates.hpp"
 #include "Transformations/Decomposition.hpp"
+#include "Transformations/Rebase.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
@@ -117,7 +118,7 @@ PYBIND11_MODULE(transform, m) {
 
       /* REBASE TRANSFORMS */
       .def_static(
-          "RebaseToTket", &Transform::rebase_tket,
+          "RebaseToTket", &Transforms::rebase_tket,
           "Rebase from any gate set into TK1, CX.")
       .def_static(
           "RebaseToRzRx", &Transforms::decompose_ZX,
@@ -128,21 +129,21 @@ PYBIND11_MODULE(transform, m) {
           "Ry, Rz, TK1, PhasedX), replacing them with Z, X, S, V "
           "gates. Any non-Clifford rotations will stay as they are.")
       .def_static(
-          "RebaseToCirq", &Transform::rebase_cirq,
+          "RebaseToCirq", &Transforms::rebase_cirq,
           "Rebase from any gate set into PhasedX, Rz, CZ.")
       .def_static(
-          "RebaseToQuil", &Transform::rebase_quil,
+          "RebaseToQuil", &Transforms::rebase_quil,
           "Rebase from any gate set into Rx, Rz, CZ.")
       .def_static(
-          "RebaseToPyZX", &Transform::rebase_pyzx,
+          "RebaseToPyZX", &Transforms::rebase_pyzx,
           "Rebase from any gate set into the gate set supported by "
           "PyZX (Rx, Rz, X, Z, S, T, H, CX, CZ, SWAP).")
       .def_static(
-          "RebaseToProjectQ", &Transform::rebase_projectq,
+          "RebaseToProjectQ", &Transforms::rebase_projectq,
           "Rebase from any gate set into the gate set supported by "
           "ProjectQ (Rx, Ry, Rz, X, Y, Z, S, T, V, H, CX, CZ, CRz, "
           "SWAP).")
-      //.def_static("RebaseToMaryland", &Transform::rebase_UMD)
+      //.def_static("RebaseToMaryland", &Transforms::rebase_UMD)
       .def_static(
           "DecomposeCCX", &Transforms::decomp_CCX,
           "Decomposes all 3-qubit Toffoli (CCX) gates into "

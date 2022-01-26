@@ -23,6 +23,7 @@
 #include "PauliGraph/ConjugatePauliFunctions.hpp"
 #include "PauliGraph/PauliGraph.hpp"
 #include "Simulation/CircuitSimulator.hpp"
+#include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
 #include "testutil.hpp"
 
@@ -689,7 +690,7 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
 
     add_2qb_gates(circ, OpType::Measure, {{0, 0}, {1, 1}, {2, 2}, {3, 3}});
 
-    Transform::rebase_pyzx().apply(circ);
+    Transforms::rebase_pyzx().apply(circ);
     bool success = Transform::synthesise_pauli_graph().apply(circ);
     REQUIRE(success);
   }

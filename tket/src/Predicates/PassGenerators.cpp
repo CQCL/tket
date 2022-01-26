@@ -24,6 +24,7 @@
 #include "Predicates/Predicates.hpp"
 #include "Routing/Placement.hpp"
 #include "Transformations/Decomposition.hpp"
+#include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 
@@ -34,7 +35,7 @@ PassPtr gen_rebase_pass(
     const OpTypeSet& singleqs,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement) {
-  Transform t = Transform::rebase_factory(
+  Transform t = Transforms::rebase_factory(
       multiqs, cx_replacement, singleqs, tk1_replacement);
 
   PredicatePtrMap precons;
@@ -185,7 +186,7 @@ PassPtr gen_cx_mapping_pass(
     const RoutingConfig& config, bool directed_cx, bool delay_measures) {
   PassPtr rebase_pass = gen_rebase_pass(
       {OpType::CX}, CircPool::CX(), all_single_qubit_types(),
-      Transform::tk1_to_tk1);
+      Transforms::tk1_to_tk1);
 
   PassPtr return_pass =
       rebase_pass >> gen_full_mapping_pass(arc, placement_ptr, config);
@@ -408,7 +409,7 @@ PassPtr gen_directed_cx_routing_pass(
   return gen_routing_pass(arc, config) >>
          gen_rebase_pass(
              multis, CircPool::CX(), all_single_qubit_types(),
-             Transform::tk1_to_tk1) >>
+             Transforms::tk1_to_tk1) >>
          gen_decompose_routing_gates_to_cxs_pass(arc, true);
 }
 

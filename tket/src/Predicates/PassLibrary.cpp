@@ -21,6 +21,7 @@
 #include "Transformations/ControlledGates.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/MeasurePass.hpp"
+#include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 
@@ -79,27 +80,28 @@ const PassPtr &SynthesiseUMD() {
 
 const PassPtr &RebaseCirq() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_cirq(), {OpType::CZ, OpType::PhasedX, OpType::Rz}, true,
-      "RebaseCirq"));
+      Transforms::rebase_cirq(), {OpType::CZ, OpType::PhasedX, OpType::Rz},
+      true, "RebaseCirq"));
   return pp;
 }
 
 const PassPtr &RebaseTket() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_tket(), {OpType::CX, OpType::TK1}, true, "RebaseTket"));
+      Transforms::rebase_tket(), {OpType::CX, OpType::TK1}, true,
+      "RebaseTket"));
   return pp;
 }
 
 const PassPtr &RebaseQuil() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_quil(), {OpType::CZ, OpType::Rx, OpType::Rz}, true,
+      Transforms::rebase_quil(), {OpType::CZ, OpType::Rx, OpType::Rz}, true,
       "RebaseQuil"));
   return pp;
 }
 
 const PassPtr &RebasePyZX() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_pyzx(),
+      Transforms::rebase_pyzx(),
       {OpType::SWAP, OpType::CX, OpType::CZ, OpType::Rz, OpType::Rx, OpType::S,
        OpType::T, OpType::Z, OpType::X, OpType::H},
       true, "RebasePyZX"));
@@ -108,7 +110,7 @@ const PassPtr &RebasePyZX() {
 
 const PassPtr &RebaseProjectQ() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_projectq(),
+      Transforms::rebase_projectq(),
       {OpType::SWAP, OpType::CRz, OpType::CX, OpType::CZ, OpType::H, OpType::X,
        OpType::Y, OpType::Z, OpType::S, OpType::T, OpType::V, OpType::Rx,
        OpType::Ry, OpType::Rz},
@@ -118,28 +120,28 @@ const PassPtr &RebaseProjectQ() {
 
 const PassPtr &RebaseHQS() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_HQS(), {OpType::ZZMax, OpType::PhasedX, OpType::Rz},
+      Transforms::rebase_HQS(), {OpType::ZZMax, OpType::PhasedX, OpType::Rz},
       true, "RebaseHQS"));
   return pp;
 }
 
 const PassPtr &RebaseUMD() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_UMD(), {OpType::XXPhase, OpType::PhasedX, OpType::Rz},
+      Transforms::rebase_UMD(), {OpType::XXPhase, OpType::PhasedX, OpType::Rz},
       true, "RebaseUMD"));
   return pp;
 }
 
 const PassPtr &RebaseUFR() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_UFR(), {OpType::CX, OpType::Rz, OpType::H}, true,
+      Transforms::rebase_UFR(), {OpType::CX, OpType::Rz, OpType::H}, true,
       "RebaseUFR"));
   return pp;
 }
 
 const PassPtr &RebaseOQC() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_OQC(), {OpType::ECR, OpType::Rz, OpType::SX}, true,
+      Transforms::rebase_OQC(), {OpType::ECR, OpType::Rz, OpType::SX}, true,
       "RebaseOQC"));
   return pp;
 }
@@ -284,7 +286,7 @@ const PassPtr &ComposePhasePolyBoxes() {
    */
   static const PassPtr pp([]() {
     Transform t =
-        (Transform::rebase_UFR() >> Transforms::compose_phase_poly_boxes());
+        (Transforms::rebase_UFR() >> Transforms::compose_phase_poly_boxes());
     PredicatePtr noclas = std::make_shared<NoClassicalControlPredicate>();
 
     PredicatePtrMap precons{CompilationUnit::make_type_pair(noclas)};
@@ -342,7 +344,7 @@ const PassPtr &SquashTK1() {
 const PassPtr &SquashHQS() {
   static const PassPtr pp([]() {
     return gen_squash_pass(
-        {OpType::Rz, OpType::PhasedX}, Transform::tk1_to_PhasedXRz);
+        {OpType::Rz, OpType::PhasedX}, Transforms::tk1_to_PhasedXRz);
   }());
   return pp;
 }

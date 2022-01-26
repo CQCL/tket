@@ -25,6 +25,7 @@
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/Combinator.hpp"
 #include "Transformations/Decomposition.hpp"
+#include "Transformations/Rebase.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
 #include "testutil.hpp"
@@ -700,16 +701,16 @@ SCENARIO("Testing general 1qb squash") {
     Circuit copy = circ;
     OpTypeSet singleqs = {OpType::Rz, OpType::PhasedX};
     bool success =
-        Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+        Transform::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
             .apply(circ);
     REQUIRE_FALSE(success);
     singleqs.insert(OpType::Rx);
-    success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+    success = Transform::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE(success);
     check_command_types(circ, {OpType::Rz, OpType::PhasedX});
     REQUIRE(test_unitary_comparison(circ, copy));
-    success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+    success = Transform::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE_FALSE(success);
   }
@@ -751,16 +752,16 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rz, 0.43, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit copy = circ;
-    bool success = Transform::rebase_HQS().apply(circ);
+    bool success = Transforms::rebase_HQS().apply(circ);
     REQUIRE(success);
     OpTypeSet singleqs = {OpType::Rz, OpType::PhasedX};
-    success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+    success = Transform::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE(success);
     check_command_types(
         circ, {OpType::Rz, OpType::PhasedX, OpType::ZZMax, OpType::Rz,
                OpType::PhasedX});
-    success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+    success = Transform::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE_FALSE(success);
   }
@@ -783,7 +784,7 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rz, 1., {0});
     OpTypeSet singleqs = {OpType::Rz, OpType::Rx, OpType::PhasedX};
     bool success =
-        Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+        Transform::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
             .apply(circ);
     REQUIRE(success);
     check_command_types(
@@ -791,7 +792,7 @@ SCENARIO("Testing general 1qb squash") {
         {OpType::Rz, OpType::PhasedX, OpType::Conditional, OpType::Conditional,
          OpType::Conditional, OpType::Conditional, OpType::Conditional,
          OpType::Conditional, OpType::Rz, OpType::PhasedX});
-    success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+    success = Transform::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE_FALSE(success);
   }
@@ -1149,7 +1150,7 @@ SCENARIO("Decomposition of multi-qubit gates") {
   GIVEN("A single CU1 gate") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CU1, 0.3, {0, 1});
-    bool success = Transform::rebase_tket().apply(circ);
+    bool success = Transforms::rebase_tket().apply(circ);
     REQUIRE(success);
     REQUIRE(circ.n_vertices() > 7);
   }
@@ -1172,7 +1173,7 @@ SCENARIO("Decomposition of multi-qubit gates") {
     circ.add_op<unsigned>(OpType::Collapse, {1});
     circ.add_op<unsigned>(OpType::Collapse, {2});
     circ.add_op<unsigned>(OpType::Collapse, {3});
-    bool success = Transform::rebase_tket().apply(circ);
+    bool success = Transforms::rebase_tket().apply(circ);
     REQUIRE(success);
     REQUIRE(circ.count_gates(OpType::CU1) == 0);
   }
@@ -1199,7 +1200,7 @@ SCENARIO("Testing Synthesis OQC") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit circ2(circ);
-    REQUIRE(Transform::rebase_OQC().apply(circ));
+    REQUIRE(Transforms::rebase_OQC().apply(circ));
     REQUIRE(Transform::synthesise_OQC().apply(circ2));
     REQUIRE(circ.n_gates() == 5);
     REQUIRE(circ2.n_gates() == 5);
@@ -1395,14 +1396,14 @@ SCENARIO("Test synthesise_UMD") {
     Expr a = 0.;
     Expr b = 0.;
     Expr c = 0.;
-    Circuit circ = Transform::tk1_to_PhasedXRz(a, b, c);
+    Circuit circ = Transforms::tk1_to_PhasedXRz(a, b, c);
     REQUIRE(circ.n_gates() == 0);
   }
   GIVEN("An Rz in disguise") {
     Expr a = 0.3;
     Expr b = 0.;
     Expr c = 1.3;
-    Circuit circ = Transform::tk1_to_PhasedXRz(a, b, c);
+    Circuit circ = Transforms::tk1_to_PhasedXRz(a, b, c);
     REQUIRE(circ.n_gates() == 1);
   }
   GIVEN("Y-gate") {
@@ -1614,7 +1615,7 @@ SCENARIO("Test TK1 gate decomp for some gates") {
     std::vector<unsigned> qbs(n_qbs);
     std::iota(qbs.begin(), qbs.end(), 0);
     circ.add_op<unsigned>(map_pair.first, params, qbs);
-    Transform::rebase_tket().apply(circ);
+    Transforms::rebase_tket().apply(circ);
     Circuit circ2 = circ;
     Transforms::decompose_ZX().apply(circ2);
     const StateVector sv2 = tket_sim::get_statevector(circ2);
