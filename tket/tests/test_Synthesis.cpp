@@ -23,6 +23,7 @@
 #include "Ops/MetaOp.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "Transformations/Combinator.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
 #include "testutil.hpp"
@@ -880,7 +881,7 @@ SCENARIO("Test commutation through CXsw", "[transform]") {
       THEN("Circuit is replaced with pattern") {
         Transform seq = Transform::commute_through_multis() >>
                         Transform::remove_redundancies();
-        Transform repeat = Transform::repeat_with_metric(
+        Transform repeat = Transforms::repeat_with_metric(
             seq, [](const Circuit &circ) { return circ.depth(); });
         repeat.apply(circ);
         REQUIRE(circ.n_vertices() == 5);

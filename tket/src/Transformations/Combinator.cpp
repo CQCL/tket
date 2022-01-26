@@ -12,16 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "Combinator.hpp"
+
 #include "Transform.hpp"
 
 namespace tket {
 
 Transform operator>>(const Transform &lhs, const Transform &rhs) {
   std::vector<Transform> l = {lhs, rhs};
-  return Transform::sequence(l);
+  return Transforms::sequence(l);
 }
 
-Transform Transform::sequence(std::vector<Transform> &tvec) {
+namespace Transforms {
+
+Transform sequence(std::vector<Transform> &tvec) {
   return Transform([=](Circuit &circ) {
     bool success = false;
     for (std::vector<Transform>::const_iterator it = tvec.begin();
@@ -32,7 +36,7 @@ Transform Transform::sequence(std::vector<Transform> &tvec) {
   });
 }
 
-Transform Transform::repeat(const Transform &trans) {
+Transform repeat(const Transform &trans) {
   return Transform([=](Circuit &circ) {
     bool success = false;
     while (trans.apply(circ)) success = true;
@@ -40,8 +44,8 @@ Transform Transform::repeat(const Transform &trans) {
   });
 }
 
-Transform Transform::repeat_with_metric(
-    const Transform &trans, const Metric &eval) {
+Transform repeat_with_metric(
+    const Transform &trans, const Transform::Metric &eval) {
   return Transform([=](Circuit &circ) {
     bool success = false;
     int currentVal = eval(circ);
@@ -61,8 +65,7 @@ Transform Transform::repeat_with_metric(
   });
 }
 
-Transform Transform::repeat_while(
-    const Transform &cond, const Transform &body) {
+Transform repeat_while(const Transform &cond, const Transform &body) {
   return Transform([=](Circuit &circ) {
     bool success = false;
     while (cond.apply(circ)) {
@@ -72,5 +75,7 @@ Transform Transform::repeat_while(
     return success;
   });
 }
+
+}  // namespace Transforms
 
 }  // namespace tket

@@ -18,6 +18,7 @@
 #include "Predicates/PassGenerators.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "Transformations/Combinator.hpp"
 #include "Transformations/Transform.hpp"
 
 namespace tket {
@@ -48,7 +49,7 @@ SCENARIO("List sequencing") {
     std::vector<Transform> seq = {
         Transform::optimise_via_PhaseGadget(), Transform::clifford_simp(),
         Transform::rebase_tket()};
-    Transform::sequence(seq).apply(circ);
+    Transforms::sequence(seq).apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 8);
     REQUIRE(circ.count_gates(OpType::V) == 0);
     REQUIRE(circ.count_gates(OpType::S) == 0);

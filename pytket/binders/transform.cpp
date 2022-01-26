@@ -22,6 +22,7 @@
 
 #include "Circuit/Circuit.hpp"
 #include "Routing/Routing.hpp"
+#include "Transformations/Combinator.hpp"
 #include "Transformations/ContextualReduction.hpp"
 #include "typecast.hpp"
 
@@ -80,7 +81,7 @@ PYBIND11_MODULE(transform, m) {
           "Composes two Transforms together in sequence.\n\n>>> a >> "
           "b\n\nis equivalent to\n\n>>> sequence([a,b])")
       .def_static(
-          "sequence", &Transform::sequence,
+          "sequence", &Transforms::sequence,
           "Composes a list of Transforms together in sequence. The "
           ":py:meth:`apply` method will return ``True`` if ANY of "
           "the individual Transforms returned ``True``."
@@ -88,7 +89,7 @@ PYBIND11_MODULE(transform, m) {
           "composed\n:return: the combined Transform",
           py::arg("sequence"))
       .def_static(
-          "repeat", &Transform::repeat,
+          "repeat", &Transforms::repeat,
           "Applies a given Transform repeatedly to a circuit until "
           "no further changes are made (i.e. it no longer returns "
           "``True``). "
@@ -99,7 +100,7 @@ PYBIND11_MODULE(transform, m) {
           "iteration",
           py::arg("transform"))
       .def_static(
-          "while_repeat", &Transform::repeat_while,
+          "while_repeat", &Transforms::repeat_while,
           "Repeatedly applies the `condition` Transform until it "
           "returns ``False``, running `body` in between each "
           "`condition` application. "

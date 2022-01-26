@@ -58,24 +58,7 @@ class Transform {
 
   static const Transform id;  // identity Transform (does nothing to Circuit)
 
-  ///////////////
-  // Combinators//
-  ///////////////
-
-  // compose transforms in sequence
-  // sequences return true if any transform made a change, even if it was
-  // overwritten later
   friend Transform operator>>(const Transform& lhs, const Transform& rhs);
-  static Transform sequence(std::vector<Transform>& tvec);
-
-  // repeats a transform until it makes no changes (returns false)
-  static Transform repeat(const Transform& trans);
-
-  // repeats a transform and stops when the metric stops decreasing
-  static Transform repeat_with_metric(
-      const Transform& trans, const Metric& eval);
-
-  static Transform repeat_while(const Transform& cond, const Transform& body);
 
   ///////////////
   // MeasurePass//
