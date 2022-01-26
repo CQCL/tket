@@ -12,11 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "MeasurePass.hpp"
+
 #include "Transform.hpp"
 
 namespace tket {
 
-Transform Transform::delay_measures() {
+namespace Transforms {
+
+Transform delay_measures() {
   return Transform([](Circuit &circ) {
     bool success = false;
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
@@ -77,5 +81,7 @@ Transform Transform::delay_measures() {
     return success;
   });
 }
+
+}  // namespace Transforms
 
 }  // namespace tket

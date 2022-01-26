@@ -60,16 +60,6 @@ class Transform {
 
   friend Transform operator>>(const Transform& lhs, const Transform& rhs);
 
-  ///////////////
-  // MeasurePass//
-  ///////////////
-
-  /**
-   * Commute all measurement gates to the end of the circuit.
-   * Throws a CircuitInvalidity exception if it is not possible to delay.
-   */
-  static Transform delay_measures();
-
   //////////////////
   // Decompositions//
   //////////////////

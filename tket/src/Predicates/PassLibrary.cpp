@@ -18,6 +18,7 @@
 
 #include "PassGenerators.hpp"
 #include "Predicates/CompilerPass.hpp"
+#include "Transformations/MeasurePass.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 
@@ -409,7 +410,7 @@ const PassPtr &RemoveBarriers() {
 
 const PassPtr &DelayMeasures() {
   static const PassPtr pp([]() {
-    Transform t = Transform::delay_measures();
+    Transform t = Transforms::delay_measures();
     PredicatePtr midmeaspred = std::make_shared<NoMidMeasurePredicate>();
     PredicatePtrMap spec_postcons = {
         CompilationUnit::make_type_pair(midmeaspred)};
