@@ -26,6 +26,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/ContextualReduction.hpp"
+#include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
 #include "testutil.hpp"
 namespace tket {
@@ -837,8 +838,8 @@ SCENARIO("Precomposed passes successfully compose") {
 }
 
 SCENARIO("Test Pauli Graph Synthesis Pass") {
-  PassPtr graph_synth =
-      gen_synthesise_pauli_graph(PauliSynthStrat::Sets, CXConfigType::Star);
+  PassPtr graph_synth = gen_synthesise_pauli_graph(
+      Transforms::PauliSynthStrat::Sets, CXConfigType::Star);
   Circuit circ(3);
   PauliExpBox peb({Pauli::Z, Pauli::X, Pauli::Z}, 0.333);
   circ.add_box(peb, {0, 1, 2});
@@ -859,8 +860,8 @@ SCENARIO("Compose Pauli Graph synthesis Passes") {
     REQUIRE_NOTHROW(spec_ucc >> dir_pass);
   }
   GIVEN("Pauli Graph synthesis") {
-    PassPtr graph_synth =
-        gen_synthesise_pauli_graph(PauliSynthStrat::Sets, CXConfigType::Star);
+    PassPtr graph_synth = gen_synthesise_pauli_graph(
+        Transforms::PauliSynthStrat::Sets, CXConfigType::Star);
     REQUIRE_NOTHROW(graph_synth >> dir_pass);
   }
   GIVEN("Pairwise Synthesis") {

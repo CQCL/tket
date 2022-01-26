@@ -442,73 +442,73 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
 
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
-          PauliSynthStrat::Sets, CXConfigType::Star)
+          Transforms::PauliSynthStrat::Sets, CXConfigType::Star)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
-          PauliSynthStrat::Individual, CXConfigType::Star)
+          Transforms::PauliSynthStrat::Individual, CXConfigType::Star)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
-          PauliSynthStrat::Pairwise, CXConfigType::Star)
+          Transforms::PauliSynthStrat::Pairwise, CXConfigType::Star)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
-          PauliSynthStrat::Sets, CXConfigType::Snake)
+          Transforms::PauliSynthStrat::Sets, CXConfigType::Snake)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
-          PauliSynthStrat::Individual, CXConfigType::Snake)
+          Transforms::PauliSynthStrat::Individual, CXConfigType::Snake)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
-          PauliSynthStrat::Pairwise, CXConfigType::Snake)
+          Transforms::PauliSynthStrat::Pairwise, CXConfigType::Snake)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
-          PauliSynthStrat::Sets, CXConfigType::Tree)
+          Transforms::PauliSynthStrat::Sets, CXConfigType::Tree)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
-          PauliSynthStrat::Individual, CXConfigType::Tree)
+          Transforms::PauliSynthStrat::Individual, CXConfigType::Tree)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
-          PauliSynthStrat::Pairwise, CXConfigType::Tree)
+          Transforms::PauliSynthStrat::Pairwise, CXConfigType::Tree)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Pairwise strategy with CXConfigType::MultiQGate") {
       Transforms::synthesise_pauli_graph(
-          PauliSynthStrat::Pairwise, CXConfigType::MultiQGate)
+          Transforms::PauliSynthStrat::Pairwise, CXConfigType::MultiQGate)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Sets strategy with CXConfigType::MultiQGate") {
       Transforms::synthesise_pauli_graph(
-          PauliSynthStrat::Sets, CXConfigType::MultiQGate)
+          Transforms::PauliSynthStrat::Sets, CXConfigType::MultiQGate)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Individual strategy with CXConfigType::MultiQGate") {
       Transforms::synthesise_pauli_graph(
-          PauliSynthStrat::Individual, CXConfigType::MultiQGate)
+          Transforms::PauliSynthStrat::Individual, CXConfigType::MultiQGate)
           .apply(circ);
       REQUIRE(circ.count_gates(OpType::XXPhase3) == 6);
       REQUIRE(test_statevector_comparison(test1, circ));

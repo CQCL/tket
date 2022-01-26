@@ -29,6 +29,7 @@
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
 #include "Transformations/OptimisationPass.hpp"
+#include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 #include "testutil.hpp"
@@ -581,11 +582,12 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(
       OptimisePairwiseGadgets, gen_pairwise_pauli_gadgets(CXConfigType::Tree))
   COMPPASSJSONTEST(
-      PauliSimp,
-      gen_synthesise_pauli_graph(PauliSynthStrat::Sets, CXConfigType::Tree))
+      PauliSimp, gen_synthesise_pauli_graph(
+                     Transforms::PauliSynthStrat::Sets, CXConfigType::Tree))
   COMPPASSJSONTEST(
       GuidedPauliSimp,
-      gen_special_UCC_synthesis(PauliSynthStrat::Pairwise, CXConfigType::Snake))
+      gen_special_UCC_synthesis(
+          Transforms::PauliSynthStrat::Pairwise, CXConfigType::Snake))
   COMPPASSJSONTEST(
       SimplifyInitial,
       gen_simplify_initial(
@@ -683,11 +685,13 @@ SCENARIO("Test compiler pass serializations") {
     Circuit circ = CircuitsForTesting::get().uccsd;
     CompilationUnit cu{circ};
     CompilationUnit copy = cu;
-    PassPtr pp = PauliSquash(PauliSynthStrat::Sets, CXConfigType::Star);
+    PassPtr pp =
+        PauliSquash(Transforms::PauliSynthStrat::Sets, CXConfigType::Star);
     nlohmann::json j_pp;
     j_pp["pass_class"] = "StandardPass";
     j_pp["StandardPass"]["name"] = "PauliSquash";
-    j_pp["StandardPass"]["pauli_synth_strat"] = PauliSynthStrat::Sets;
+    j_pp["StandardPass"]["pauli_synth_strat"] =
+        Transforms::PauliSynthStrat::Sets;
     j_pp["StandardPass"]["cx_config"] = CXConfigType::Star;
     PassPtr loaded = j_pp.get<PassPtr>();
     pp->apply(cu);

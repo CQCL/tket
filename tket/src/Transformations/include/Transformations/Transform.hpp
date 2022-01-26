@@ -28,16 +28,6 @@
 
 namespace tket {
 
-/* Dictates whether synthesis of a PauliGraph should
-    be done on the Paulis individually, making use of the pairwise
-    interactions or collecting into mutually commuting sets. */
-enum class PauliSynthStrat { Individual, Pairwise, Sets };
-
-NLOHMANN_JSON_SERIALIZE_ENUM(
-    PauliSynthStrat, {{PauliSynthStrat::Individual, "Individual"},
-                      {PauliSynthStrat::Pairwise, "Pairwise"},
-                      {PauliSynthStrat::Sets, "Sets"}});
-
 class Transform {
  public:
   typedef std::function<bool(Circuit&)> Transformation;

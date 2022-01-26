@@ -19,6 +19,7 @@
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
 #include "Transformations/ContextualReduction.hpp"
+#include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 #include "binder_json.hpp"
@@ -630,7 +631,7 @@ PYBIND11_MODULE(passes, m) {
       "\n:param cx_config: A configuration of CXs to convert Pauli gadgets "
       "into."
       "\n:return: a pass to perform the simplification",
-      py::arg("strat") = PauliSynthStrat::Sets,
+      py::arg("strat") = Transforms::PauliSynthStrat::Sets,
       py::arg("cx_config") = CXConfigType::Snake);
   m.def(
       "GuidedPauliSimp", &gen_special_UCC_synthesis,
@@ -642,7 +643,7 @@ PYBIND11_MODULE(passes, m) {
       "\n:param cx_config: A configuration of CXs to convert Pauli gadgets "
       "into."
       "\n:return: a pass to perform the simplification",
-      py::arg("strat") = PauliSynthStrat::Sets,
+      py::arg("strat") = Transforms::PauliSynthStrat::Sets,
       py::arg("cx_config") = CXConfigType::Snake);
   m.def(
       "PauliSquash", &PauliSquash,
@@ -651,7 +652,7 @@ PYBIND11_MODULE(passes, m) {
       "\n\n:param strat: a synthesis strategy for the Pauli graph"
       "\n:param cx_config: a configuration of CXs to convert Pauli gadgets into"
       "\n:return: a pass to perform the simplification",
-      py::arg("strat") = PauliSynthStrat::Sets,
+      py::arg("strat") = Transforms::PauliSynthStrat::Sets,
       py::arg("cx_config") = CXConfigType::Snake);
   m.def(
       "SimplifyInitial",

@@ -38,18 +38,18 @@ namespace py = pybind11;
 namespace tket {
 
 PYBIND11_MODULE(transform, m) {
-  py::enum_<PauliSynthStrat>(
+  py::enum_<Transforms::PauliSynthStrat>(
       m, "PauliSynthStrat",
       "Enum for available strategies to synthesise Pauli gadgets")
       .value(
-          "Individual", PauliSynthStrat::Individual,
+          "Individual", Transforms::PauliSynthStrat::Individual,
           "Synthesise gadgets individually")
       .value(
-          "Pairwise", PauliSynthStrat::Pairwise,
+          "Pairwise", Transforms::PauliSynthStrat::Pairwise,
           "Synthesise gadgets using an efficient pairwise strategy "
           "from Cowtan et al (https://arxiv.org/abs/1906.01734)")
       .value(
-          "Sets", PauliSynthStrat::Sets,
+          "Sets", Transforms::PauliSynthStrat::Sets,
           "Synthesise gadgets in commuting sets");
 
   py::enum_<CXConfigType>(
@@ -299,13 +299,13 @@ PYBIND11_MODULE(transform, m) {
       .def_static(
           "SynthesisePauliGraph", &Transforms::synthesise_pauli_graph,
           "Synthesises Pauli Graphs.",
-          py::arg("synth_strat") = PauliSynthStrat::Sets,
+          py::arg("synth_strat") = Transforms::PauliSynthStrat::Sets,
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
           "UCCSynthesis", &Transforms::special_UCC_synthesis,
           "Synthesises UCC circuits in the form that Term Sequencing "
           "provides them.",
-          py::arg("synth_strat") = PauliSynthStrat::Sets,
+          py::arg("synth_strat") = Transforms::PauliSynthStrat::Sets,
           py::arg("cx_config") = CXConfigType::Snake);
   m.def(
       "separate_classical", &Transforms::separate_classical,

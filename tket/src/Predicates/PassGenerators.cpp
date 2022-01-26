@@ -581,7 +581,7 @@ PassPtr gen_pairwise_pauli_gadgets(CXConfigType cx_config) {
 }
 
 PassPtr gen_synthesise_pauli_graph(
-    PauliSynthStrat strat, CXConfigType cx_config) {
+    Transforms::PauliSynthStrat strat, CXConfigType cx_config) {
   Transform t = Transforms::synthesise_pauli_graph(strat, cx_config);
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtr mid_pred = std::make_shared<NoMidMeasurePredicate>();
@@ -615,7 +615,7 @@ PassPtr gen_synthesise_pauli_graph(
 }
 
 PassPtr gen_special_UCC_synthesis(
-    PauliSynthStrat strat, CXConfigType cx_config) {
+    Transforms::PauliSynthStrat strat, CXConfigType cx_config) {
   Transform t = Transforms::special_UCC_synthesis(strat, cx_config);
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtrMap precons{CompilationUnit::make_type_pair(ccontrol_pred)};
@@ -668,7 +668,7 @@ PassPtr gen_contextual_pass(
   return std::make_shared<SequencePass>(seq);
 }
 
-PassPtr PauliSquash(PauliSynthStrat strat, CXConfigType cx_config) {
+PassPtr PauliSquash(Transforms::PauliSynthStrat strat, CXConfigType cx_config) {
   std::vector<PassPtr> seq = {
       gen_synthesise_pauli_graph(strat, cx_config), FullPeepholeOptimise()};
   return std::make_shared<SequencePass>(seq);
