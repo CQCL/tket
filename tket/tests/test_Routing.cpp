@@ -26,6 +26,7 @@
 #include "Routing/Verification.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Rebase.hpp"
@@ -1578,7 +1579,7 @@ SCENARIO(
     add_1qb_gates(circ, OpType::H, {0, 1});
     circ.add_op<unsigned>(OpType::SWAP, {0, 1});
     reassign_boundary(circ);
-    Transform::commute_SQ_gates_through_SWAPS(nec).apply(circ);
+    Transforms::commute_SQ_gates_through_SWAPS(nec).apply(circ);
     require_arguments_for_specified_commands(
         circ, {{OpType::H, circ.all_qubits().at(1)}});
   }
@@ -1589,7 +1590,7 @@ SCENARIO(
     add_1qb_gates(circ, OpType::H, {0, 0, 0, 1});
     circ.add_op<unsigned>(OpType::SWAP, {0, 1});
     reassign_boundary(circ);
-    Transform::commute_SQ_gates_through_SWAPS(nec).apply(circ);
+    Transforms::commute_SQ_gates_through_SWAPS(nec).apply(circ);
     require_arguments_for_specified_commands(
         circ, {{OpType::H, circ.all_qubits().at(1)}});
   }
@@ -1599,7 +1600,7 @@ SCENARIO(
     add_2qb_gates(circ, OpType::SWAP, {{0, 1}, {1, 2}, {0, 1}, {1, 2}, {1, 2}});
 
     reassign_boundary(circ);
-    Transform::commute_SQ_gates_through_SWAPS(nec).apply(circ);
+    Transforms::commute_SQ_gates_through_SWAPS(nec).apply(circ);
     require_arguments_for_specified_commands(
         circ, {{OpType::H, circ.all_qubits().at(2)}});
   }
@@ -1612,7 +1613,7 @@ SCENARIO(
     add_2qb_gates(circ, OpType::SWAP, {{0, 1}, {1, 2}, {0, 1}, {1, 2}, {1, 2}});
 
     reassign_boundary(circ);
-    Transform::commute_SQ_gates_through_SWAPS(nec).apply(circ);
+    Transforms::commute_SQ_gates_through_SWAPS(nec).apply(circ);
     const qubit_vector_t qbs = circ.all_qubits();
     require_arguments_for_specified_commands(
         circ, {{OpType::H, qbs.at(2)}, {OpType::X, qbs.at(1)}});
@@ -1673,7 +1674,7 @@ SCENARIO(
       }
     }
     reassign_boundary(circ, square_nodes);
-    Transform::commute_SQ_gates_through_SWAPS(nec).apply(circ);
+    Transforms::commute_SQ_gates_through_SWAPS(nec).apply(circ);
     Circuit test_1 = circ;
     Transforms::decompose_SWAP_to_CX().apply(test_1);
     const auto sv1 = tket_sim::get_statevector(test_1);

@@ -22,6 +22,7 @@
 
 #include "Circuit/Circuit.hpp"
 #include "Routing/Routing.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/Combinator.hpp"
 #include "Transformations/ContextualReduction.hpp"
 #include "Transformations/ControlledGates.hpp"
@@ -226,22 +227,22 @@ PYBIND11_MODULE(transform, m) {
           "Results use TK1, CX gates.",
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
-          "RemoveRedundancies", &Transform::remove_redundancies,
+          "RemoveRedundancies", &Transforms::remove_redundancies,
           "Applies a collection of simple optimisations, such as "
           "removing gate-inverse pairs, merging similar rotation "
           "gates, and removing identity gates. "
           "Preserves the gate set and any placement/orientation of "
           "multi-qubit gates.")
       .def_static(
-          "ReduceSingles", &Transform::squash_1qb_to_tk1,
+          "ReduceSingles", &Transforms::squash_1qb_to_tk1,
           "Reduces each sequence of single-qubit rotations into a single TK1.")
       .def_static(
-          "CommuteThroughMultis", &Transform::commute_through_multis,
+          "CommuteThroughMultis", &Transforms::commute_through_multis,
           "Applies a collection of commutation rules to move single "
           "qubit operations past multiqubit operations they commute "
           "with, towards the front of the circuit.")
       .def_static(
-          "KAKDecomposition", &Transform::two_qubit_squash,
+          "KAKDecomposition", &Transforms::two_qubit_squash,
           "Identifies two-qubit subcircuits with more than 3 CXs and "
           "reduces them via the KAK/Cartan decomposition, using the "
           "method detailed in "
@@ -264,7 +265,7 @@ PYBIND11_MODULE(transform, m) {
       .def_static(
           "CommuteSQThroughSWAP",
           [](const avg_node_errors_t &avg_node_errors) {
-            return Transform::commute_SQ_gates_through_SWAPS(avg_node_errors);
+            return Transforms::commute_SQ_gates_through_SWAPS(avg_node_errors);
           },
           "Commutes single qubit gates through SWAP gates, leaving "
           "them on the physical qubit with best fidelity for given "
@@ -277,7 +278,7 @@ PYBIND11_MODULE(transform, m) {
       .def_static(
           "CommuteSQThroughSWAP",
           [](const op_node_errors_t &op_node_errors) {
-            return Transform::commute_SQ_gates_through_SWAPS(op_node_errors);
+            return Transforms::commute_SQ_gates_through_SWAPS(op_node_errors);
           },
           "Commutes single qubit gates through SWAP gates, leaving "
           "them on the physical qubit with best fidelity for given "
@@ -288,7 +289,7 @@ PYBIND11_MODULE(transform, m) {
           "of OpType to single-qubit gate error maps",
           py::arg("op_node_errors"))
       .def_static(
-          "GlobalisePhasedX", &Transform::globalise_phasedx,
+          "GlobalisePhasedX", &Transforms::globalise_phasedx,
           "Replaces every occurence of PhasedX or NPhasedX gates with NPhasedX "
           "gates acting on all qubits, and correcting rotation gates."
           "\n\nThis is achieved using the identity"

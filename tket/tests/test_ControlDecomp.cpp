@@ -60,7 +60,7 @@ static bool check_incrementer_borrow_n_qubits(const unsigned n) {
 static bool check_incrementer_borrow_1_qubit(const unsigned n) {
   Circuit inc = Transforms::incrementer_borrow_1_qubit(n);
   REQUIRE(inc.n_vertices() - inc.n_gates() == (n + 1) * 2);
-  Transform::synthesise_tket().apply(inc);
+  Transforms::synthesise_tket().apply(inc);
   const StateVector sv = tket_sim::get_statevector(inc);
   bool correct = true;
   for (unsigned i = 0; i < sv.size(); ++i) {
@@ -91,7 +91,7 @@ SCENARIO("Test C3X and C4X decomposition") {
     auto u1 = tket_sim::get_unitary(circ);
     auto u2 = tket_sim::get_unitary(CircPool::C3X_normal_decomp());
     REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
-    Transform::synthesise_tket().apply(circ);
+    Transforms::synthesise_tket().apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 14);
   }
   GIVEN("A C4X gates") {
@@ -100,7 +100,7 @@ SCENARIO("Test C3X and C4X decomposition") {
     auto u1 = tket_sim::get_unitary(circ);
     auto u2 = tket_sim::get_unitary(CircPool::C4X_normal_decomp());
     REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
-    Transform::synthesise_tket().apply(circ);
+    Transforms::synthesise_tket().apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 36);
   }
 }
@@ -238,7 +238,7 @@ SCENARIO("Test incrementer using n borrowed qubits") {
       Circuit inc = Transforms::incrementer_borrow_n_qubits(n);
       REQUIRE(inc.n_qubits() == 2 * n);
       REQUIRE(inc.count_gates(OpType::CCX) == (n - 1) * 4);
-      REQUIRE(Transform::synthesise_tket().apply(inc));
+      REQUIRE(Transforms::synthesise_tket().apply(inc));
     }
   }
 }

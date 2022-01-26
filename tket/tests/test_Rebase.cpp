@@ -19,6 +19,7 @@
 #include "CircuitsForTesting.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
@@ -234,7 +235,7 @@ SCENARIO("Building rebases with rebase_factory") {
       u.add_op<unsigned>(OpType::Rz, gamma, {0});
       u.add_op<unsigned>(OpType::Rx, beta, {0});
       u.add_op<unsigned>(OpType::Rz, alpha, {0});
-      Transform::remove_redundancies().apply(u);
+      Transforms::remove_redundancies().apply(u);
       return u;
     };
     OpTypeSet multiqs = {OpType::CX};

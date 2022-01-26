@@ -14,6 +14,7 @@
 
 #include "OptimisationPass.hpp"
 
+#include "BasicOptimisation.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "CliffordOptimisation.hpp"
 #include "CliffordReductionPass.hpp"
@@ -30,20 +31,19 @@ namespace Transforms {
 
 Transform peephole_optimise_2q() {
   return (
-      synthesise_tket() >> Transform::two_qubit_squash() >>
-      hyper_clifford_squash() >> synthesise_tket());
+      synthesise_tket() >> two_qubit_squash() >> hyper_clifford_squash() >>
+      synthesise_tket());
 }
 
 Transform full_peephole_optimise(bool allow_swaps) {
   return (
-      synthesise_tket() >> Transform::two_qubit_squash() >>
-      clifford_simp(allow_swaps) >> synthesise_tket() >>
-      Transform::three_qubit_squash() >> clifford_simp(allow_swaps) >>
-      synthesise_tket());
+      synthesise_tket() >> two_qubit_squash() >> clifford_simp(allow_swaps) >>
+      synthesise_tket() >> Transform::three_qubit_squash() >>
+      clifford_simp(allow_swaps) >> synthesise_tket());
 }
 
 Transform canonical_hyper_clifford_squash() {
-  return optimise_via_PhaseGadget() >> Transform::two_qubit_squash() >>
+  return optimise_via_PhaseGadget() >> two_qubit_squash() >>
          hyper_clifford_squash();
 }
 
@@ -54,18 +54,15 @@ Transform hyper_clifford_squash() {
 Transform clifford_simp(bool allow_swaps) {
   return decompose_cliffords_std() >> clifford_reduction(allow_swaps) >>
          decompose_multi_qubits_CX() >> singleq_clifford_sweep() >>
-         Transform::squash_1qb_to_tk1();
+         squash_1qb_to_tk1();
 }
 
 Transform synthesise_tket() {
-  Transform seq =
-      Transform::commute_through_multis() >> Transform::remove_redundancies();
+  Transform seq = commute_through_multis() >> remove_redundancies();
   Transform rep = repeat(seq);
-  Transform synth = decompose_multi_qubits_CX() >>
-                    Transform::remove_redundancies() >> rep >>
-                    Transform::squash_1qb_to_tk1();
-  Transform small_part =
-      Transform::remove_redundancies() >> rep >> Transform::squash_1qb_to_tk1();
+  Transform synth = decompose_multi_qubits_CX() >> remove_redundancies() >>
+                    rep >> squash_1qb_to_tk1();
+  Transform small_part = remove_redundancies() >> rep >> squash_1qb_to_tk1();
   Transform repeat_synth = repeat_with_metric(
       small_part, [](const Circuit &circ) { return circ.n_vertices(); });
   return synth >> repeat_synth;
@@ -102,13 +99,11 @@ Transform optimise_via_PhaseGadget(CXConfigType cx_config) {
 
 Transform synthesise_OQC() {
   return Transform([](Circuit &circ) {
-    Transform rep_zx = Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz) >>
-                       Transform::commute_through_multis() >>
-                       Transform::remove_redundancies();
+    Transform rep_zx = squash_1qb_to_pqp(OpType::Rx, OpType::Rz) >>
+                       commute_through_multis() >> remove_redundancies();
     Transform seq = decompose_multi_qubits_CX() >> decompose_CX_to_ECR() >>
                     decompose_ZX() >> repeat(rep_zx) >> rebase_OQC() >>
-                    Transform::commute_through_multis() >>
-                    Transform::remove_redundancies();
+                    commute_through_multis() >> remove_redundancies();
     return seq.apply(circ);
   });
 }
@@ -116,12 +111,10 @@ Transform synthesise_OQC() {
 /* Returns a Circuit with only HQS allowed Ops (Rz, PhasedX, ZZMax) */
 Transform synthesise_HQS() {
   return Transform([](Circuit &circ) {
-    Transform single_loop = Transform::remove_redundancies() >>
-                            Transform::commute_through_multis() >>
-                            Transform::reduce_XZ_chains();
-    Transform hqs_loop = Transform::remove_redundancies() >>
-                         Transform::commute_and_combine_HQS2() >>
-                         Transform::reduce_XZ_chains();
+    Transform single_loop =
+        remove_redundancies() >> commute_through_multis() >> reduce_XZ_chains();
+    Transform hqs_loop = remove_redundancies() >> commute_and_combine_HQS2() >>
+                         reduce_XZ_chains();
     Transform main_seq = decompose_multi_qubits_CX() >> clifford_simp() >>
                          decompose_ZX() >> repeat(single_loop) >>
                          decompose_CX_to_HQS2() >> repeat(hqs_loop) >>
@@ -133,10 +126,9 @@ Transform synthesise_HQS() {
 // TODO: Make the XXPhase gates combine
 Transform synthesise_UMD() {
   return Transform([](Circuit &circ) {
-    bool success =
-        (synthesise_tket() >> decompose_ZX() >> decompose_MolmerSorensen() >>
-         Transform::squash_1qb_to_tk1())
-            .apply(circ);
+    bool success = (synthesise_tket() >> decompose_ZX() >>
+                    decompose_MolmerSorensen() >> squash_1qb_to_tk1())
+                       .apply(circ);
     VertexList bin;
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
       const Op_ptr op_ptr = circ.get_Op_ptr_from_Vertex(v);

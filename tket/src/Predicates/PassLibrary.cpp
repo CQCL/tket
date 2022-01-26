@@ -18,6 +18,7 @@
 
 #include "PassGenerators.hpp"
 #include "Predicates/CompilerPass.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/ControlledGates.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/MeasurePass.hpp"
@@ -171,7 +172,7 @@ const PassPtr &PeepholeOptimise2Q() {
 
 const PassPtr &RemoveRedundancies() {
   static const PassPtr pp([]() {
-    Transform t = Transform::remove_redundancies();
+    Transform t = Transforms::remove_redundancies();
     PostConditions postcon = {{}, {}, Guarantee::Preserve};
     PredicatePtrMap precons;
     // record pass config
@@ -184,7 +185,7 @@ const PassPtr &RemoveRedundancies() {
 
 const PassPtr &CommuteThroughMultis() {
   static const PassPtr pp([]() {
-    Transform t = Transform::commute_through_multis();
+    Transform t = Transforms::commute_through_multis();
     PostConditions postcon = {{}, {}, Guarantee::Preserve};
     PredicatePtrMap precons;
     // record pass config
@@ -197,7 +198,7 @@ const PassPtr &CommuteThroughMultis() {
 
 const PassPtr &GlobalisePhasedX() {
   static const PassPtr pp([]() {
-    Transform t = Transform::globalise_phasedx();
+    Transform t = Transforms::globalise_phasedx();
     PredicatePtrMap precons;
     PredicatePtr globalphasedx = std::make_shared<GlobalPhasedXPredicate>();
     PredicatePtrMap spec_postcons = {
@@ -329,7 +330,7 @@ const PassPtr &DecomposeBoxes() {
 
 const PassPtr &SquashTK1() {
   static const PassPtr pp([]() {
-    Transform t = Transform::squash_1qb_to_tk1();
+    Transform t = Transforms::squash_1qb_to_tk1();
     PredicatePtrMap s_ps;
     PredicateClassGuarantees g_postcons{
         {typeid(GateSetPredicate), Guarantee::Clear}};

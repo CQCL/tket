@@ -14,6 +14,7 @@
 
 #include "Rebase.hpp"
 
+#include "BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Gate/GatePtr.hpp"
@@ -132,7 +133,7 @@ Circuit tk1_to_PhasedXRz(
     c.add_op<unsigned>(OpType::Rz, alpha + gamma, {0});
     c.add_op<unsigned>(OpType::PhasedX, {beta, alpha}, {0});
   }
-  Transform::remove_redundancies().apply(c);
+  remove_redundancies().apply(c);
   return c;
 }
 
@@ -147,7 +148,7 @@ Circuit tk1_to_rzrx(const Expr& alpha, const Expr& beta, const Expr& gamma) {
   c.add_op<unsigned>(OpType::Rz, gamma, {0});
   c.add_op<unsigned>(OpType::Rx, beta, {0});
   c.add_op<unsigned>(OpType::Rz, alpha, {0});
-  Transform::remove_redundancies().apply(c);
+  remove_redundancies().apply(c);
   return c;
 }
 
@@ -190,7 +191,7 @@ Circuit tk1_to_rzh(const Expr& alpha, const Expr& beta, const Expr& gamma) {
     c.add_op<unsigned>(OpType::H, {0});
     c.add_op<unsigned>(OpType::Rz, alpha, {0});
   }
-  Transform::remove_redundancies().apply(c);
+  remove_redundancies().apply(c);
   return c;
 }
 
@@ -243,7 +244,7 @@ Circuit tk1_to_rzsx(const Expr& alpha, const Expr& beta, const Expr& gamma) {
     correction_phase = -0.5;
   }
   c.add_phase(correction_phase);
-  Transform::remove_redundancies().apply(c);
+  remove_redundancies().apply(c);
   return c;
 }
 

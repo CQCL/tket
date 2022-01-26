@@ -16,6 +16,7 @@
 
 #include <vector>
 
+#include "BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Decomposition.hpp"
@@ -591,8 +592,8 @@ static bool singleq_clifford_from_edge(
   if (cliff_last == 0) {
     Subcircuit s = {{e}, {ei}, single_vs};
     Circuit sub = circ.subcircuit(s);
-    bool reduced = (decompose_single_qubits_TK1() >>
-                    Transform::squash_1qb_to_tk1() >> decompose_cliffords_std())
+    bool reduced = (decompose_single_qubits_TK1() >> squash_1qb_to_tk1() >>
+                    decompose_cliffords_std())
                        .apply(sub);
     if (reduced) {
       circ.substitute(sub, s, Circuit::VertexDeletion::No);

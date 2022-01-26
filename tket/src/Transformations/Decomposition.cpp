@@ -16,6 +16,7 @@
 
 #include <optional>
 
+#include "BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/GatePtr.hpp"
@@ -116,7 +117,7 @@ static bool convert_to_xyx(Circuit &circ) {
       replacement.add_op<unsigned>(OpType::Ry, params[1], {0});
       replacement.add_op<unsigned>(OpType::Rx, params[0] - half, {0});
       replacement.add_op<unsigned>(OpType::Ry, -half, {0});
-      Transform::remove_redundancies().apply(replacement);
+      remove_redundancies().apply(replacement);
       Subcircuit sub = {
           {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
       bin.push_back(v);
@@ -319,7 +320,7 @@ Transform decompose_ZX_to_HQS1() {
     }
     circ.remove_vertices(
         to_bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
-    Transform::remove_redundancies().apply(circ);
+    remove_redundancies().apply(circ);
     return success;
   });
 }

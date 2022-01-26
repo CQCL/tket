@@ -17,6 +17,7 @@
 #include "../testutil.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Ops/ClassicalOps.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/CliffordOptimisation.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/PhaseOptimisation.hpp"
@@ -284,7 +285,7 @@ SCENARIO("Remove redundancies on a circuit with classical controls") {
       "remove_redundancies") {
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
-    REQUIRE(!Transform::remove_redundancies().apply(circ));
+    REQUIRE(!Transforms::remove_redundancies().apply(circ));
     circ.assert_valid();
     REQUIRE(circ.n_gates() == 2);
   }
