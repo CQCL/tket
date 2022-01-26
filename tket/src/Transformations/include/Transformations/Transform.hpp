@@ -54,12 +54,6 @@ class Transform {
 
   friend Transform operator>>(const Transform& lhs, const Transform& rhs);
 
-  /////////////////////////
-  // Clifford Optimisation//
-  /////////////////////////
-
-  static Transform clifford_reduction(bool allow_swaps = false);
-
   //////////////////////
   // Basic Optimisation//
   //////////////////////

@@ -206,4 +206,10 @@ class CliffordReductionPassTester {
   CliffordReductionPass context;
 };
 
+namespace Transforms {
+
+Transform clifford_reduction(bool allow_swaps = false);
+
+}
+
 }  // namespace tket

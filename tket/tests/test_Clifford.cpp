@@ -397,7 +397,7 @@ SCENARIO("Test clifford reduction") {
     circ.add_op<unsigned>(OpType::S, {0});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     Circuit copy(circ);
-    REQUIRE(Transform::clifford_reduction().apply(circ));
+    REQUIRE(Transforms::clifford_reduction().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 0);
     REQUIRE(circ.count_gates(OpType::ZZMax) == 1);
     REQUIRE(test_unitary_comparison(circ, copy));
@@ -409,7 +409,7 @@ SCENARIO("Test clifford reduction") {
     circ.add_op<unsigned>(OpType::V, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit copy(circ);
-    REQUIRE(Transform::clifford_reduction().apply(circ));
+    REQUIRE(Transforms::clifford_reduction().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 0);
     REQUIRE(circ.count_gates(OpType::ZZMax) == 1);
     REQUIRE(test_unitary_comparison(circ, copy));
@@ -423,7 +423,7 @@ SCENARIO("Test clifford reduction") {
     circ.add_op<unsigned>(OpType::V, {1});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     Circuit copy(circ);
-    REQUIRE(Transform::clifford_reduction().apply(circ));
+    REQUIRE(Transforms::clifford_reduction().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 0);
     REQUIRE(circ.count_gates(OpType::ZZMax) == 0);
     REQUIRE(test_unitary_comparison(circ, copy));
@@ -434,7 +434,7 @@ SCENARIO("Test clifford reduction") {
     circ.add_op<unsigned>(OpType::S, {1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit copy(circ);
-    REQUIRE(Transform::clifford_reduction().apply(circ));
+    REQUIRE(Transforms::clifford_reduction().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 0);
     REQUIRE(circ.count_gates(OpType::ZZMax) == 1);
     REQUIRE(test_unitary_comparison(circ, copy));
@@ -451,7 +451,7 @@ SCENARIO("Test clifford reduction") {
     circ.add_op<unsigned>(OpType::U1, 0.4, {1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit copy(circ);
-    REQUIRE(Transform::clifford_reduction().apply(circ));
+    REQUIRE(Transforms::clifford_reduction().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 2);
     REQUIRE(circ.count_gates(OpType::ZZMax) == 0);
     REQUIRE(test_unitary_comparison(circ, copy));
@@ -476,7 +476,7 @@ SCENARIO("Test clifford reduction") {
     circ.add_op<unsigned>(OpType::S, {0});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     Circuit copy(circ);
-    REQUIRE(Transform::clifford_reduction().apply(circ));
+    REQUIRE(Transforms::clifford_reduction().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 0);
     REQUIRE(circ.count_gates(OpType::ZZMax) == 1);
     REQUIRE(test_unitary_comparison(circ, copy));
@@ -486,7 +486,7 @@ SCENARIO("Test clifford reduction") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::V, {0});
     add_2qb_gates(circ, OpType::CX, {{2, 0}, {3, 2}, {2, 1}, {1, 0}});
-    REQUIRE_FALSE(Transform::clifford_reduction(true).apply(circ));
+    REQUIRE_FALSE(Transforms::clifford_reduction(true).apply(circ));
     REQUIRE_NOTHROW(circ.depth_by_type(OpType::CX));
   }
   GIVEN("Circuit with a selection of Clifford gates") {
@@ -496,7 +496,7 @@ SCENARIO("Test clifford reduction") {
     circ.add_op<unsigned>(OpType::CZ, {1, 0});
     circ.add_op<unsigned>(OpType::ZZMax, {0, 1});
     Circuit copy(circ);
-    REQUIRE(Transform::clifford_reduction(true).apply(circ));
+    REQUIRE(Transforms::clifford_reduction(true).apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 0);
     REQUIRE(circ.count_gates(OpType::CY) == 0);
     REQUIRE(circ.count_gates(OpType::CZ) == 0);
@@ -513,7 +513,7 @@ SCENARIO("Test clifford reduction") {
     circ.add_op<unsigned>(OpType::CnRy, 0.2, {1, 0});
     circ.add_op<unsigned>(OpType::CY, {2, 0});
     Circuit copy(circ);
-    REQUIRE(Transform::clifford_reduction(true).apply(circ));
+    REQUIRE(Transforms::clifford_reduction(true).apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 0);
     REQUIRE(circ.count_gates(OpType::CY) == 0);
     REQUIRE(circ.count_gates(OpType::CZ) == 0);
@@ -529,7 +529,7 @@ SCENARIO("Test clifford reduction") {
     add_2qb_gates(circ, OpType::ZZMax, {{0, 1}, {1, 2}, {2, 0}});
     circ.add_op<unsigned>(OpType::Ry, 0.1, {0});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
-    REQUIRE_FALSE(Transform::clifford_reduction(true).apply(circ));
+    REQUIRE_FALSE(Transforms::clifford_reduction(true).apply(circ));
   }
 }
 
@@ -538,8 +538,8 @@ SCENARIO("Test clifford replacements that allow for SWAPs") {
     Circuit circ(2);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {1, 0}});
     Circuit original = circ;
-    REQUIRE_FALSE(Transform::clifford_reduction(false).apply(circ));
-    REQUIRE(Transform::clifford_reduction(true).apply(circ));
+    REQUIRE_FALSE(Transforms::clifford_reduction(false).apply(circ));
+    REQUIRE(Transforms::clifford_reduction(true).apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 0);
     REQUIRE(circ.count_gates(OpType::ZZMax) == 1);
     REQUIRE(test_unitary_comparison(original, circ));
@@ -551,8 +551,8 @@ SCENARIO("Test clifford replacements that allow for SWAPs") {
     circ.add_op<unsigned>(OpType::S, {1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit original = circ;
-    REQUIRE_FALSE(Transform::clifford_reduction(false).apply(circ));
-    REQUIRE(Transform::clifford_reduction(true).apply(circ));
+    REQUIRE_FALSE(Transforms::clifford_reduction(false).apply(circ));
+    REQUIRE(Transforms::clifford_reduction(true).apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 0);
     REQUIRE(circ.count_gates(OpType::ZZMax) == 1);
     REQUIRE(test_unitary_comparison(original, circ));
@@ -568,7 +568,7 @@ SCENARIO("Test clifford replacements that allow for SWAPs") {
     circ.add_op<unsigned>(OpType::S, {2});
     add_2qb_gates(circ, OpType::CX, {{0, 2}, {1, 3}, {3, 1}, {1, 3}});
     Circuit original = circ;
-    REQUIRE(Transform::clifford_reduction(true).apply(circ));
+    REQUIRE(Transforms::clifford_reduction(true).apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 1);
     REQUIRE(circ.count_gates(OpType::ZZMax) == 0);
     REQUIRE(test_unitary_comparison(original, circ));
