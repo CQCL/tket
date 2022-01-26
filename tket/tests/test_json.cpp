@@ -589,7 +589,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(
       SimplifyInitial,
       gen_simplify_initial(
-          Transform::AllowClassical::No, Transform::CreateAllQubits::Yes,
+          Transforms::AllowClassical::No, Transforms::CreateAllQubits::Yes,
           std::make_shared<Circuit>(CircPool::X())))
   COMPPASSJSONTEST(PlacementPass, gen_placement_pass(place))
   // TKET-1419
@@ -701,7 +701,7 @@ SCENARIO("Test compiler pass serializations") {
     CompilationUnit cu{circ};
     CompilationUnit copy = cu;
     PassPtr pp = gen_contextual_pass(
-        Transform::AllowClassical::Yes,
+        Transforms::AllowClassical::Yes,
         std::make_shared<Circuit>(CircPool::X()));
     nlohmann::json j_pp;
     j_pp["pass_class"] = "StandardPass";

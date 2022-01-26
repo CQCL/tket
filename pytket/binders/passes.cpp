@@ -18,6 +18,7 @@
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
+#include "Transformations/ContextualReduction.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 #include "binder_json.hpp"
@@ -657,10 +658,10 @@ PYBIND11_MODULE(passes, m) {
       [](bool allow_classical, bool create_all_qubits, bool remove_redundancies,
          std::shared_ptr<const Circuit> xcirc) -> PassPtr {
         PassPtr simpinit = gen_simplify_initial(
-            allow_classical ? Transform::AllowClassical::Yes
-                            : Transform::AllowClassical::No,
-            create_all_qubits ? Transform::CreateAllQubits::Yes
-                              : Transform::CreateAllQubits::No,
+            allow_classical ? Transforms::AllowClassical::Yes
+                            : Transforms::AllowClassical::No,
+            create_all_qubits ? Transforms::CreateAllQubits::Yes
+                              : Transforms::CreateAllQubits::No,
             xcirc);
         if (remove_redundancies) {
           std::vector<PassPtr> seq = {simpinit, RemoveRedundancies()};
@@ -685,8 +686,8 @@ PYBIND11_MODULE(passes, m) {
       "ContextSimp",
       [](bool allow_classical, std::shared_ptr<const Circuit> xcirc) {
         return gen_contextual_pass(
-            allow_classical ? Transform::AllowClassical::Yes
-                            : Transform::AllowClassical::No,
+            allow_classical ? Transforms::AllowClassical::Yes
+                            : Transforms::AllowClassical::No,
             xcirc);
       },
       "Applies simplifications enabled by knowledge of qubit state and "

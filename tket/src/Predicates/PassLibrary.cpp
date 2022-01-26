@@ -432,7 +432,7 @@ const PassPtr &DelayMeasures() {
 
 const PassPtr &RemoveDiscarded() {
   static const PassPtr pp([]() {
-    Transform t = Transform::remove_discarded_ops();
+    Transform t = Transforms::remove_discarded_ops();
     PredicatePtrMap no_precons;
     PostConditions postcon = {{}, {}, Guarantee::Preserve};
     nlohmann::json j;
@@ -444,7 +444,7 @@ const PassPtr &RemoveDiscarded() {
 
 const PassPtr &SimplifyMeasured() {
   static const PassPtr pp([]() {
-    Transform t = Transform::simplify_measured();
+    Transform t = Transforms::simplify_measured();
     PredicatePtrMap no_precons;
 
     // GateSetPredicate not preserved because classical gates may be

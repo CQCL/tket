@@ -16,6 +16,7 @@
 
 #include "PassGenerators.hpp"
 #include "PassLibrary.hpp"
+#include "Transformations/ContextualReduction.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/TketLog.hpp"
 
@@ -465,12 +466,12 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = gen_special_UCC_synthesis(pss, cxc);
     } else if (passname == "SimplifyInitial") {
       bool acbool = content.at("allow_classical").get<bool>();
-      Transform::AllowClassical ac = (acbool) ? Transform::AllowClassical::Yes
-                                              : Transform::AllowClassical::No;
+      Transforms::AllowClassical ac = (acbool) ? Transforms::AllowClassical::Yes
+                                               : Transforms::AllowClassical::No;
       bool caqbool = content.at("create_all_qubits").get<bool>();
-      Transform::CreateAllQubits caq = (caqbool)
-                                           ? Transform::CreateAllQubits::Yes
-                                           : Transform::CreateAllQubits::No;
+      Transforms::CreateAllQubits caq = (caqbool)
+                                            ? Transforms::CreateAllQubits::Yes
+                                            : Transforms::CreateAllQubits::No;
       std::shared_ptr<const Circuit> xc;
       if (content.contains("x_circuit")) {
         xc = std::make_shared<const Circuit>(
@@ -510,8 +511,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       std::shared_ptr<Circuit> xcirc =
           std::make_shared<Circuit>(content.at("x_circuit").get<Circuit>());
       pp = gen_contextual_pass(
-          allow_classical ? Transform::AllowClassical::Yes
-                          : Transform::AllowClassical::No,
+          allow_classical ? Transforms::AllowClassical::Yes
+                          : Transforms::AllowClassical::No,
           xcirc);
     } else {
       throw JsonError("Cannot load StandardPass of unknown type");

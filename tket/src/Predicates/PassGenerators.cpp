@@ -24,6 +24,7 @@
 #include "Predicates/Predicates.hpp"
 #include "Routing/Placement.hpp"
 #include "Transformations/BasicOptimisation.hpp"
+#include "Transformations/ContextualReduction.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/PauliOptimisation.hpp"
@@ -633,11 +634,11 @@ PassPtr gen_special_UCC_synthesis(
 }
 
 PassPtr gen_simplify_initial(
-    Transform::AllowClassical allow_classical,
-    Transform::CreateAllQubits create_all_qubits,
+    Transforms::AllowClassical allow_classical,
+    Transforms::CreateAllQubits create_all_qubits,
     std::shared_ptr<const Circuit> xcirc) {
   Transform t =
-      Transform::simplify_initial(allow_classical, create_all_qubits, xcirc);
+      Transforms::simplify_initial(allow_classical, create_all_qubits, xcirc);
   PredicatePtrMap no_precons;
   PredicateClassGuarantees g_postcons;
 
@@ -649,20 +650,20 @@ PassPtr gen_simplify_initial(
   PostConditions postcon = {{}, g_postcons, Guarantee::Preserve};
   nlohmann::json j;
   j["name"] = "SimplifyInitial";
-  j["allow_classical"] = (allow_classical == Transform::AllowClassical::Yes);
+  j["allow_classical"] = (allow_classical == Transforms::AllowClassical::Yes);
   j["create_all_qubits"] =
-      (create_all_qubits == Transform::CreateAllQubits::Yes);
+      (create_all_qubits == Transforms::CreateAllQubits::Yes);
   if (xcirc) j["x_circuit"] = *xcirc;
   return std::make_shared<StandardPass>(no_precons, t, postcon, j);
 }
 
 PassPtr gen_contextual_pass(
-    Transform::AllowClassical allow_classical,
+    Transforms::AllowClassical allow_classical,
     std::shared_ptr<const Circuit> xcirc) {
   std::vector<PassPtr> seq = {
       RemoveDiscarded(), SimplifyMeasured(),
       gen_simplify_initial(
-          allow_classical, Transform::CreateAllQubits::No, xcirc),
+          allow_classical, Transforms::CreateAllQubits::No, xcirc),
       RemoveRedundancies()};
   return std::make_shared<SequencePass>(seq);
 }

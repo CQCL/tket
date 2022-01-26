@@ -308,7 +308,7 @@ PYBIND11_MODULE(transform, m) {
           py::arg("synth_strat") = PauliSynthStrat::Sets,
           py::arg("cx_config") = CXConfigType::Snake);
   m.def(
-      "separate_classical", &separate_classical,
+      "separate_classical", &Transforms::separate_classical,
       "Separate the input circuit into a 'main' circuit and a classical "
       "'post-processing' circuit, which are equivalent to the original "
       "when composed."

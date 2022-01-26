@@ -32,7 +32,9 @@
 
 namespace tket {
 
-Transform Transform::remove_discarded_ops() {
+namespace Transforms {
+
+Transform remove_discarded_ops() {
   return Transform([](Circuit &circ) {
     // We want to keep all vertices that have an Output or ClOutput in their
     // causal future. Start by constructing this set, then remove the
@@ -124,7 +126,7 @@ static VertexSet known_inputs_only(
   return v_frontier;
 }
 
-Transform Transform::simplify_initial(
+Transform simplify_initial(
     AllowClassical allow_classical, CreateAllQubits create_all_qubits,
     std::shared_ptr<const Circuit> xcirc) {
   return Transform([allow_classical, create_all_qubits, xcirc](Circuit &circ) {
@@ -307,7 +309,7 @@ std::optional<std::shared_ptr<const ClassicalTransformOp>> classical_transform(
   return std::make_shared<ClassicalTransformOp>(n, values);
 }
 
-Transform Transform::simplify_measured() {
+Transform simplify_measured() {
   return Transform([](Circuit &circ) {
     // First construct the set of all Measure vertices that are followed by
     // Discard vertices (and no Boolean out-edges).
@@ -448,5 +450,7 @@ std::pair<Circuit, Circuit> separate_classical(const Circuit &circ) {
 
   return {c0, c1};
 }
+
+}  // namespace Transforms
 
 }  // namespace tket
