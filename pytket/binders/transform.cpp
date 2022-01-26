@@ -26,6 +26,8 @@
 #include "Transformations/ContextualReduction.hpp"
 #include "Transformations/ControlledGates.hpp"
 #include "Transformations/Decomposition.hpp"
+#include "Transformations/OptimisationPass.hpp"
+#include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
 #include "typecast.hpp"
 
@@ -185,14 +187,14 @@ PYBIND11_MODULE(transform, m) {
 
       /* OPTIMISATION TRANSFORMS */
       .def_static(
-          "OptimisePostRouting", &Transform::synthesise_tket,
+          "OptimisePostRouting", &Transforms::synthesise_tket,
           "Fast optimisation pass, performing basic simplifications. "
           "Works on any circuit, giving the result in TK1 and CX gates. "
           "If all multi-qubit gates are CXs, then this preserves "
           "their placement and orientation, so it is safe to perform "
           "after routing.")
       .def_static(
-          "OptimisePhaseGadgets", &Transform::optimise_via_PhaseGadget,
+          "OptimisePhaseGadgets", &Transforms::optimise_via_PhaseGadget,
           "An optimisation pass that starts by identifying "
           "subcircuits corresponding to phase gadgets (see Cowtan, "
           "Duncan, Dilkes, Simmons, & Sivarajah "
@@ -203,7 +205,7 @@ PYBIND11_MODULE(transform, m) {
           "CX placement or orientation.",
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
-          "OptimiseCliffords", &Transform::clifford_simp,
+          "OptimiseCliffords", &Transforms::clifford_simp,
           "An optimisation pass that performs a number of rewrite "
           "rules for simplifying Clifford gate sequences, similar to "
           "Duncan & Fagan (https://arxiv.org/abs/1901.10114). "
@@ -216,7 +218,7 @@ PYBIND11_MODULE(transform, m) {
           "wire swaps.",
           py::arg("allow_swaps") = true)
       .def_static(
-          "OptimisePauliGadgets", &Transform::pairwise_pauli_gadgets,
+          "OptimisePauliGadgets", &Transforms::pairwise_pauli_gadgets,
           "An optimisation pass that identifies the Pauli gadgets "
           "corresponding to any non-Clifford rotations and "
           "synthesises them pairwise (see Cowtan, Duncan, Dilkes, "
@@ -293,12 +295,12 @@ PYBIND11_MODULE(transform, m) {
           "\nPhX(α, β) = PhX(-1/2, β + 1/2) Rz(α) PhX(1/2, β + 1/2)"
           "\n(circuit order).")
       .def_static(
-          "SynthesisePauliGraph", &Transform::synthesise_pauli_graph,
+          "SynthesisePauliGraph", &Transforms::synthesise_pauli_graph,
           "Synthesises Pauli Graphs.",
           py::arg("synth_strat") = PauliSynthStrat::Sets,
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
-          "UCCSynthesis", &Transform::special_UCC_synthesis,
+          "UCCSynthesis", &Transforms::special_UCC_synthesis,
           "Synthesises UCC circuits in the form that Term Sequencing "
           "provides them.",
           py::arg("synth_strat") = PauliSynthStrat::Sets,

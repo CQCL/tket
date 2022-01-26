@@ -21,6 +21,7 @@
 #include "Transformations/ControlledGates.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/MeasurePass.hpp"
+#include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
@@ -55,25 +56,25 @@ static PassPtr gate_translation_pass(
 
 const PassPtr &SynthesiseTket() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::synthesise_tket(), {OpType::TK1, OpType::CX}, true,
+      Transforms::synthesise_tket(), {OpType::TK1, OpType::CX}, true,
       "SynthesiseTket"));
   return pp;
 }
 const PassPtr &SynthesiseHQS() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::synthesise_HQS(), {OpType::ZZMax, OpType::PhasedX, OpType::Rz},
-      false, "SynthesiseHQS"));
+      Transforms::synthesise_HQS(),
+      {OpType::ZZMax, OpType::PhasedX, OpType::Rz}, false, "SynthesiseHQS"));
   return pp;
 }
 const PassPtr &SynthesiseOQC() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::synthesise_OQC(), {OpType::Rz, OpType::SX, OpType::ECR}, true,
+      Transforms::synthesise_OQC(), {OpType::Rz, OpType::SX, OpType::ECR}, true,
       "SynthesiseOQC"));
   return pp;
 }
 const PassPtr &SynthesiseUMD() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::synthesise_UMD(),
+      Transforms::synthesise_UMD(),
       {OpType::XXPhase, OpType::PhasedX, OpType::Rz}, true, "SynthesiseUMD"));
   return pp;
 }
@@ -164,7 +165,7 @@ const PassPtr &PeepholeOptimise2Q() {
   nlohmann::json j;
   j["name"] = "PeepholeOptimise2Q";
   static const PassPtr pp(std::make_shared<StandardPass>(
-      precons, Transform::peephole_optimise_2q(), postcon, j));
+      precons, Transforms::peephole_optimise_2q(), postcon, j));
   return pp;
 }
 

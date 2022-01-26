@@ -24,6 +24,8 @@
 #include "Predicates/Predicates.hpp"
 #include "Routing/Placement.hpp"
 #include "Transformations/Decomposition.hpp"
+#include "Transformations/OptimisationPass.hpp"
+#include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
@@ -97,7 +99,7 @@ PassPtr gen_euler_pass(const OpType& q, const OpType& p, bool strict) {
 PassPtr gen_clifford_simp_pass(bool allow_swaps) {
   // Expects: CX and any single-qubit gates,
   // but does not break if it encounters others
-  Transform t = Transform::clifford_simp(allow_swaps);
+  Transform t = Transforms::clifford_simp(allow_swaps);
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtrMap precons = {CompilationUnit::make_type_pair(ccontrol_pred)};
   PredicateClassGuarantees g_postcons;
@@ -494,7 +496,7 @@ PassPtr KAKDecomposition(double cx_fidelity) {
 PassPtr ThreeQubitSquash(bool allow_swaps) {
   Transform t = Transform::two_qubit_squash() >>
                 Transform::three_qubit_squash() >>
-                Transform::clifford_simp(allow_swaps);
+                Transforms::clifford_simp(allow_swaps);
   OpTypeSet ots{all_single_qubit_types()};
   ots.insert(OpType::CX);
   PredicatePtr gate_pred = std::make_shared<GateSetPredicate>(ots);
@@ -526,11 +528,11 @@ PassPtr FullPeepholeOptimise(bool allow_swaps) {
   j["name"] = "FullPeepholeOptimise";
   j["allow_swaps"] = allow_swaps;
   return std::make_shared<StandardPass>(
-      precons, Transform::full_peephole_optimise(allow_swaps), postcon, j);
+      precons, Transforms::full_peephole_optimise(allow_swaps), postcon, j);
 }
 
 PassPtr gen_optimise_phase_gadgets(CXConfigType cx_config) {
-  Transform t = Transform::optimise_via_PhaseGadget(cx_config);
+  Transform t = Transforms::optimise_via_PhaseGadget(cx_config);
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtrMap precons{CompilationUnit::make_type_pair(ccontrol_pred)};
   OpTypeSet after_set{
@@ -554,7 +556,7 @@ PassPtr gen_optimise_phase_gadgets(CXConfigType cx_config) {
 }
 
 PassPtr gen_pairwise_pauli_gadgets(CXConfigType cx_config) {
-  Transform t = Transform::pairwise_pauli_gadgets(cx_config);
+  Transform t = Transforms::pairwise_pauli_gadgets(cx_config);
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtr simple = std::make_shared<DefaultRegisterPredicate>();
   PredicatePtrMap precons = {
@@ -577,7 +579,7 @@ PassPtr gen_pairwise_pauli_gadgets(CXConfigType cx_config) {
 
 PassPtr gen_synthesise_pauli_graph(
     PauliSynthStrat strat, CXConfigType cx_config) {
-  Transform t = Transform::synthesise_pauli_graph(strat, cx_config);
+  Transform t = Transforms::synthesise_pauli_graph(strat, cx_config);
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtr mid_pred = std::make_shared<NoMidMeasurePredicate>();
   PredicatePtr wire_pred = std::make_shared<NoWireSwapsPredicate>();
@@ -611,7 +613,7 @@ PassPtr gen_synthesise_pauli_graph(
 
 PassPtr gen_special_UCC_synthesis(
     PauliSynthStrat strat, CXConfigType cx_config) {
-  Transform t = Transform::special_UCC_synthesis(strat, cx_config);
+  Transform t = Transforms::special_UCC_synthesis(strat, cx_config);
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtrMap precons{CompilationUnit::make_type_pair(ccontrol_pred)};
   PredicateClassGuarantees g_postcons = {

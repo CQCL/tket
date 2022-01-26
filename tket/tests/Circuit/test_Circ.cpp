@@ -31,6 +31,7 @@
 #include "Ops/OpPtr.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Transformations/Decomposition.hpp"
+#include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Exceptions.hpp"
@@ -1045,7 +1046,7 @@ SCENARIO("circuit equality ", "[equality]") {
 
     Circuit cliff_simp(test1);
     add_2qb_gates(cliff_simp, OpType::CX, {{0, 1}, {1, 0}});
-    Transform::clifford_simp().apply(cliff_simp);
+    Transforms::clifford_simp().apply(cliff_simp);
 
     test1.add_op<unsigned>(OpType::CX, {1, 0});
 

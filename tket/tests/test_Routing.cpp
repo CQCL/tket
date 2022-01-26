@@ -27,6 +27,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/Decomposition.hpp"
+#include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/HelperFunctions.hpp"
@@ -1948,7 +1949,7 @@ SCENARIO(
     add_2qb_gates(
         circ, OpType::CX,
         {{1, 2}, {0, 3}, {1, 4}, {0, 1}, {2, 0}, {0, 1}, {1, 0}});
-    Transform::clifford_simp().apply(circ);
+    Transforms::clifford_simp().apply(circ);
     Architecture arc({{1, 0}, {0, 2}, {1, 2}, {2, 3}, {2, 4}, {4, 3}});
     RoutingConfig default_config(50, 0, 0, 0);
     QubitGraph q_graph =

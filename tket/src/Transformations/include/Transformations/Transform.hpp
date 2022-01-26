@@ -54,66 +54,6 @@ class Transform {
 
   friend Transform operator>>(const Transform& lhs, const Transform& rhs);
 
-  //////////////////
-  // Synthesis Pass//
-  //////////////////
-
-  /*Synthesis passes preserve connectivity */
-
-  /**
-   * Synthesise a circuit consisting of CX and TK1 gates only.
-   */
-  static Transform synthesise_tket();
-
-  // converts a circuit into the HQS primitives (Rz, PhasedX, ZZMax) whilst
-  // optimising Expects: CX and any single-qubit gates Produces: ZZMax, PhasedX,
-  // Rz
-  static Transform synthesise_HQS();
-
-  // converts a circuit into the OQC primitives (Rz, SX, ECR gates)
-  // Expects: any gates
-  // Produces: Rz, SX, ECR
-  static Transform synthesise_OQC();
-
-  // converts a circuit into the UMD primitives (Rz, PhasedX, XXPhase) whilst
-  // optimising Expects: Any gate set Produces: XXPhase, PhasedX, Rz
-  static Transform synthesise_UMD();
-
-  //////////////////////////
-  // Full Optimisation Pass//
-  //////////////////////////
-
-  /*these Transform passes do not preserve connectivity*/
-
-  // simplifies a circuit using Clifford rules
-  // Expects: CX and any single-qubit gates
-  // Produces: CX, TK1
-  static Transform clifford_simp(bool allow_swaps = true);
-
-  // runs clifford_simp
-  // Expects: Any gates
-  // Produces: CX, TK1
-  static Transform hyper_clifford_squash();
-
-  // kitchen sink optimisation - phase gadget resynthesis, two-qubit Cartan
-  // forms, Clifford Expects: Any gates Produces: CX, TK1
-  static Transform canonical_hyper_clifford_squash();
-
-  // only peephole optimisation, so no higher structure abstraction.
-  // Two qubit Cartan, Clifford, synthesis
-  // Expects: Any gates
-  // Produces: CX, TK1
-  static Transform peephole_optimise_2q();
-
-  /**
-   * Peephole optimisation including resynthesis of three-qubit gate sequences.
-   *
-   * @param allow_swaps whether to allow introduction of implicit wire swaps
-   *
-   * Produces: CX, TK1.
-   */
-  static Transform full_peephole_optimise(bool allow_swaps = true);
-
   //////////////////////
   // Phase Optimisation//
   //////////////////////
@@ -147,32 +87,6 @@ class Transform {
 
   // copies Z through the target of a CX and X through the control
   static Transform copy_pi_through_CX();
-
-  /////////////////////////////
-  // Pauli Gadget Optimisation//
-  /////////////////////////////
-
-  /**
-   * Depth-saving resynthesis of phase gadgets with alignment.
-   *
-   * Produces CX and TK1 gates.
-   */
-  static Transform optimise_via_PhaseGadget(
-      CXConfigType cx_config = CXConfigType::Snake);
-
-  static Transform pairwise_pauli_gadgets(
-      CXConfigType cx_config = CXConfigType::Snake);
-
-  // always returns true, as it leaves Circuit data structure
-  static Transform synthesise_pauli_graph(
-      PauliSynthStrat strat = PauliSynthStrat::Sets,
-      CXConfigType cx_config = CXConfigType::Snake);
-
-  // Assumes incoming circuit is composed of `CircBox`es with
-  // `PauliExpBox`es inside
-  static Transform special_UCC_synthesis(
-      PauliSynthStrat strat = PauliSynthStrat::Sets,
-      CXConfigType cx_config = CXConfigType::Snake);
 
   //////////////////////
   // Basic Optimisation//

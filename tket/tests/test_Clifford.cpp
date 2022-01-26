@@ -21,6 +21,7 @@
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/CliffordReductionPass.hpp"
 #include "Transformations/Decomposition.hpp"
+#include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/PauliStrings.hpp"
@@ -231,9 +232,9 @@ SCENARIO("ham3tc.qasm file was breaking for canonical clifford transform") {
   circ.add_op<unsigned>(OpType::H, {4});
   circ.add_op<unsigned>(OpType::Collapse, {4});
   WHEN("Hyper Clifford Squash") {
-    REQUIRE(Transform::canonical_hyper_clifford_squash().apply(circ));
+    REQUIRE(Transforms::canonical_hyper_clifford_squash().apply(circ));
   }
-  WHEN("Clifford Simp") { REQUIRE(Transform::clifford_simp().apply(circ)); }
+  WHEN("Clifford Simp") { REQUIRE(Transforms::clifford_simp().apply(circ)); }
 }
 
 SCENARIO("Test multiq clifford replacements") {
@@ -674,8 +675,8 @@ SCENARIO("Testing full clifford_simp") {
   GIVEN("A UCCSD example") {
     auto circ = CircuitsForTesting::get().uccsd;
     const StateVector s0 = tket_sim::get_statevector(circ);
-    Transform::optimise_via_PhaseGadget(CXConfigType::Tree).apply(circ);
-    Transform::clifford_simp().apply(circ);
+    Transforms::optimise_via_PhaseGadget(CXConfigType::Tree).apply(circ);
+    Transforms::clifford_simp().apply(circ);
     circ.assert_valid();
     REQUIRE(circ.count_gates(OpType::CX) == 8);
     const StateVector s1 = tket_sim::get_statevector(circ);

@@ -17,6 +17,7 @@
 #include "../testutil.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Ops/ClassicalOps.hpp"
+#include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 
 namespace tket {
@@ -299,20 +300,20 @@ SCENARIO(
     WHEN(
         "Pauli gadget optimisation does not throw on simple unitary "
         "circuit") {
-      REQUIRE_NOTHROW(Transform::pairwise_pauli_gadgets().apply(circ));
+      REQUIRE_NOTHROW(Transforms::pairwise_pauli_gadgets().apply(circ));
     }
     WHEN(
         "Pauli gadget optimisation does throw on classically controlled "
         "circuit") {
       circ.add_conditional_gate<unsigned>(OpType::CX, {}, {3, 2}, {0}, 0);
       REQUIRE_THROWS_AS(
-          Transform::pairwise_pauli_gadgets().apply(circ), CircuitInvalidity);
+          Transforms::pairwise_pauli_gadgets().apply(circ), CircuitInvalidity);
     }
     WHEN(
         "Pauli gadget optimisation does not throw on circuit with "
         "measures at the end") {
       circ.add_measure(0, 0);
-      REQUIRE_NOTHROW(Transform::pairwise_pauli_gadgets().apply(circ));
+      REQUIRE_NOTHROW(Transforms::pairwise_pauli_gadgets().apply(circ));
       circ.assert_valid();
     }
   }

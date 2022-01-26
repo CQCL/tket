@@ -20,6 +20,8 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/Decomposition.hpp"
+#include "Transformations/OptimisationPass.hpp"
+#include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "testutil.hpp"
@@ -126,7 +128,7 @@ SCENARIO("Full optimise_via_PhaseGadget") {
   GIVEN("A UCCSD example") {
     auto circ = CircuitsForTesting::get().uccsd;
     const auto s0 = tket_sim::get_unitary(circ);
-    Transform::optimise_via_PhaseGadget(CXConfigType::Tree).apply(circ);
+    Transforms::optimise_via_PhaseGadget(CXConfigType::Tree).apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
     REQUIRE(circ.depth() == 13);
     const auto s1 = tket_sim::get_unitary(circ);
@@ -168,9 +170,9 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
   };
   GIVEN("A single Pauli gadget") {
     auto circ = get_test_circ();
-    Transform::pairwise_pauli_gadgets().apply(circ);
+    Transforms::pairwise_pauli_gadgets().apply(circ);
     Transform::singleq_clifford_sweep().apply(circ);
-    Transform::synthesise_tket().apply(circ);
+    Transforms::synthesise_tket().apply(circ);
     Circuit expected(4);
     expected.add_op<unsigned>(OpType::V, {0});
     expected.add_op<unsigned>(OpType::H, {1});
@@ -181,7 +183,7 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     add_1qb_gates(expected, OpType::Vdg, {2, 3});
     Transforms::decompose_multi_qubits_CX().apply(expected);
     Transform::singleq_clifford_sweep().apply(expected);
-    Transform::synthesise_tket().apply(expected);
+    Transforms::synthesise_tket().apply(expected);
     const auto m1 = tket_sim::get_unitary(circ);
     const auto m2 = tket_sim::get_unitary(expected);
     Eigen::MatrixXcd m = m1 * m2.conjugate().transpose();
@@ -198,7 +200,7 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     circ.add_op<unsigned>(OpType::X, {0});
     circ.add_op<unsigned>(OpType::Rz, alpha, {0});
     circ.add_op<unsigned>(OpType::X, {0});
-    REQUIRE(Transform::pairwise_pauli_gadgets().apply(circ));
+    REQUIRE(Transforms::pairwise_pauli_gadgets().apply(circ));
     REQUIRE(circ.n_gates() == 1);
     Vertex v = *circ.get_gates_of_type(OpType::TK1).begin();
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
@@ -216,7 +218,7 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     circ.add_op<unsigned>(OpType::Z, {0});
     circ.add_op<unsigned>(OpType::Ry, 0.5, {0});
     circ.add_op<unsigned>(OpType::Z, {0});
-    REQUIRE(Transform::pairwise_pauli_gadgets().apply(circ));
+    REQUIRE(Transforms::pairwise_pauli_gadgets().apply(circ));
     REQUIRE(circ.n_gates() == 1);
     Vertex v = *circ.get_gates_of_type(OpType::TK1).begin();
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
@@ -234,7 +236,7 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     add_2qb_gates(circ, OpType::CX, {{2, 3}, {1, 2}, {0, 1}});
     add_1qb_gates(circ, OpType::Vdg, {0, 1, 2});
     circ.add_op<unsigned>(OpType::H, {3});
-    Transform::pairwise_pauli_gadgets().apply(circ);
+    Transforms::pairwise_pauli_gadgets().apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 6);
   }
   GIVEN("A sequence of 5 Pauli gadgets") {
@@ -262,14 +264,14 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
 
     Circuit copy(circ);
-    Transform::pairwise_pauli_gadgets().apply(circ);
+    Transforms::pairwise_pauli_gadgets().apply(circ);
     REQUIRE(test_statevector_comparison(circ, copy));
     REQUIRE(circ.count_gates(OpType::CX) == 2);
   }
   GIVEN("A UCCSD example") {
     auto circ = CircuitsForTesting::get().uccsd;
     const auto s0 = tket_sim::get_statevector(circ);
-    Transform::pairwise_pauli_gadgets().apply(circ);
+    Transforms::pairwise_pauli_gadgets().apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 6);
     const auto s1 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));

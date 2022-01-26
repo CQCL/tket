@@ -27,11 +27,14 @@
 #include "Circuit/ThreeQubitConversion.hpp"
 #include "OpType/EdgeType.hpp"
 #include "OpType/OpType.hpp"
+#include "OptimisationPass.hpp"
 #include "Transform.hpp"
 #include "Utils/Assert.hpp"
 #include "Utils/GraphHeaders.hpp"
 
 namespace tket {
+
+using namespace Transforms;
 
 // Helper class defining a pure-quantum subcircuit of up to 3 qubits.
 class QInteraction {
@@ -105,12 +108,12 @@ static Circuit candidate_sub(const Circuit &circ) {
   unsigned n_qb = circ.n_qubits();
   if (n_qb == 2) {
     Circuit repl = two_qubit_canonical(get_matrix_from_2qb_circ(circ));
-    Transform::clifford_simp(false).apply(repl);
+    clifford_simp(false).apply(repl);
     return repl;
   } else {
     TKET_ASSERT(n_qb == 3);
     Circuit repl = three_qubit_synthesis(get_3q_unitary(circ));
-    Transform::clifford_simp(false).apply(repl);
+    clifford_simp(false).apply(repl);
     return repl;
   }
 }

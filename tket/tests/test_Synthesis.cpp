@@ -25,6 +25,8 @@
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/Combinator.hpp"
 #include "Transformations/Decomposition.hpp"
+#include "Transformations/OptimisationPass.hpp"
+#include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
@@ -220,7 +222,7 @@ SCENARIO(
     test1.add_op<unsigned>(OpType::Y, {3});
 
     WHEN("Synthesis is performed") {
-      Transform::synthesise_tket().apply(test1);
+      Transforms::synthesise_tket().apply(test1);
       BGL_FORALL_VERTICES(v, test1.dag, DAG) {
         OpType optype = test1.get_OpType_from_Vertex(v);
         bool finished_synth =
@@ -238,7 +240,7 @@ SCENARIO(
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     WHEN("Circuit is synthesised to TK1") {
-      Transform::synthesise_tket().apply(circ);
+      Transforms::synthesise_tket().apply(circ);
       THEN(
           "Resulting circuit is empty (apart from input/output "
           "vertices") {
@@ -259,7 +261,7 @@ SCENARIO(
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     WHEN("Circuit is synthesised") {
-      Transform::synthesise_tket().apply(circ);
+      Transforms::synthesise_tket().apply(circ);
       THEN("Resulting circuit still contains the CXs") {
         REQUIRE(circ.n_vertices() == 6);
         circ.get_slices();
@@ -271,7 +273,7 @@ SCENARIO(
     Circuit circ;
     int width = 6;
     circ.add_blank_wires(width);
-    Transform::synthesise_tket().apply(circ);
+    Transforms::synthesise_tket().apply(circ);
     circ.assert_valid();
     SliceVec slices = circ.get_slices();
     REQUIRE(slices.size() == 0);
@@ -1130,7 +1132,7 @@ SCENARIO("Molmer-Sorensen gate converions") {
     REQUIRE(success);
     success = Transforms::decompose_multi_qubits_CX().apply(circ);
     REQUIRE(success);
-    Transform::clifford_simp().apply(circ);
+    Transforms::clifford_simp().apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 1);
   }
   GIVEN("A CX and reset") {
@@ -1141,7 +1143,7 @@ SCENARIO("Molmer-Sorensen gate converions") {
     REQUIRE(success);
     success = Transforms::decompose_multi_qubits_CX().apply(circ);
     REQUIRE(success);
-    Transform::clifford_simp().apply(circ);
+    Transforms::clifford_simp().apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 1);
   }
 }
@@ -1186,14 +1188,14 @@ SCENARIO("Testing Synthesis OQC") {
     circ.add_op<unsigned>(OpType::Z, {0});
     circ.add_op<unsigned>(OpType::X, {0});
     Circuit circ2(circ);
-    Transform::synthesise_OQC().apply(circ);
+    Transforms::synthesise_OQC().apply(circ);
     REQUIRE(test_unitary_comparison(circ, circ2));
   }
   GIVEN("Single qubit circuit 2") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::H, {0});
     Circuit circ2(circ);
-    Transform::synthesise_OQC().apply(circ);
+    Transforms::synthesise_OQC().apply(circ);
     REQUIRE(test_unitary_comparison(circ, circ2));
   }
   GIVEN("Circuit containing a single CX") {
@@ -1201,7 +1203,7 @@ SCENARIO("Testing Synthesis OQC") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit circ2(circ);
     REQUIRE(Transforms::rebase_OQC().apply(circ));
-    REQUIRE(Transform::synthesise_OQC().apply(circ2));
+    REQUIRE(Transforms::synthesise_OQC().apply(circ2));
     REQUIRE(circ.n_gates() == 5);
     REQUIRE(circ2.n_gates() == 5);
     REQUIRE(test_unitary_comparison(circ, circ2));
@@ -1214,7 +1216,7 @@ SCENARIO("Testing Synthesis OQC") {
     circ.add_op<unsigned>(OpType::ECR, {0, 1});
     circ.add_op<unsigned>(OpType::Z, {0});
     circ.add_op<unsigned>(OpType::X, {1});
-    REQUIRE(Transform::synthesise_OQC().apply(circ));
+    REQUIRE(Transforms::synthesise_OQC().apply(circ));
     // X gates commute with ECR
     REQUIRE(circ.n_gates() == 3);
   }
@@ -1227,7 +1229,7 @@ SCENARIO("Testing Synthesis OQC") {
     circ.add_op<unsigned>(op_z, {0});
     circ.add_op<unsigned>(op_x, {1});
     circ.add_op<unsigned>(OpType::ECR, {0, 1});
-    Transform::synthesise_OQC().apply(circ);
+    Transforms::synthesise_OQC().apply(circ);
     REQUIRE(circ.n_gates() == 8);
     REQUIRE(circ.count_gates(OpType::ECR) == 2);
   }
@@ -1245,13 +1247,13 @@ SCENARIO("Testing Synthesis OQC") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(op_z2, {0});
     circ.add_op<unsigned>(op_x2, {1});
-    REQUIRE(Transform::synthesise_OQC().apply(circ));
+    REQUIRE(Transforms::synthesise_OQC().apply(circ));
     REQUIRE(circ.n_gates() == 5);
   }
 
   GIVEN("An empty circuit") {
     Circuit circ(7);
-    REQUIRE(!Transform::synthesise_OQC().apply(circ));
+    REQUIRE(!Transforms::synthesise_OQC().apply(circ));
   }
   GIVEN("A circuit with params=0") {
     Circuit circ(3);
@@ -1265,7 +1267,7 @@ SCENARIO("Testing Synthesis OQC") {
     circ.add_op<unsigned>(OpType::Rx, param, {1});
     circ.add_op<unsigned>(OpType::Ry, param, {1});
     circ.add_op<unsigned>(OpType::Rx, param, {2});
-    Transform::synthesise_OQC().apply(circ);
+    Transforms::synthesise_OQC().apply(circ);
     REQUIRE(circ.n_gates() == 0);
   }
   GIVEN("A nasty parameterised circuit") {
@@ -1288,7 +1290,7 @@ SCENARIO("Testing Synthesis OQC") {
     std::vector<Expr> params6 = {0.5, 0.145149, 0.};
     std::vector<Expr> params7 = {0.5, 1.145149, 1.};
     Circuit circ2(circ);
-    Transform::synthesise_OQC().apply(circ);
+    Transforms::synthesise_OQC().apply(circ);
     REQUIRE(test_unitary_comparison(circ, circ2));
   }
 }
@@ -1299,7 +1301,7 @@ SCENARIO("Test synthesise_HQS") {
     circ.add_op<unsigned>(OpType::Rz, 0.3333, {0});
     circ.add_op<unsigned>(OpType::Rx, 1.3333, {0});
     circ.add_op<unsigned>(OpType::Rz, 0.3333, {0});
-    REQUIRE(Transform::synthesise_HQS().apply(circ));
+    REQUIRE(Transforms::synthesise_HQS().apply(circ));
     SliceVec slices = circ.get_slices();
     REQUIRE(circ.get_OpType_from_Vertex(*slices[0].begin()) == OpType::Rz);
     REQUIRE(circ.get_OpType_from_Vertex(*slices[1].begin()) == OpType::PhasedX);
@@ -1330,7 +1332,7 @@ SCENARIO("Test synthesise_HQS") {
     circ.add_op<unsigned>(OpType::X, {1});
     circ.add_op<unsigned>(OpType::Z, {1});
     circ.add_op<unsigned>(OpType::Rz, 0.3333, {1});
-    REQUIRE(Transform::synthesise_HQS().apply(circ));
+    REQUIRE(Transforms::synthesise_HQS().apply(circ));
     circ.get_slices();
     REQUIRE(circ.n_vertices() == 10);
     auto slices = circ.get_slices();
@@ -1346,7 +1348,7 @@ SCENARIO("Test synthesise_HQS") {
     circ.add_op<unsigned>(OpType::Rx, 1.3333, {0});
     circ.add_op<unsigned>(OpType::Rz, 0.5, {0});
     circ.add_op<unsigned>(OpType::Rx, 0.6666, {0});
-    REQUIRE(Transform::synthesise_HQS().apply(circ));
+    REQUIRE(Transforms::synthesise_HQS().apply(circ));
     auto slices = circ.get_slices();
     REQUIRE(slices.size() == 2);
     REQUIRE(circ.get_OpType_from_Vertex(*slices[1].begin()) == OpType::PhasedX);
@@ -1357,7 +1359,7 @@ SCENARIO("Test synthesise_HQS") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Rz, 0.5, {1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transform::synthesise_HQS().apply(circ));
+    REQUIRE(Transforms::synthesise_HQS().apply(circ));
     REQUIRE(circ.get_slices().size() == 1);
   }
   GIVEN("Something that isn't quite a phase gadget") {
@@ -1365,14 +1367,14 @@ SCENARIO("Test synthesise_HQS") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Rz, 0.499999, {1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transform::synthesise_HQS().apply(circ));
+    REQUIRE(Transforms::synthesise_HQS().apply(circ));
     REQUIRE(circ.get_slices().size() > 3);
 
     Circuit circ2(2);
     circ2.add_op<unsigned>(OpType::CX, {0, 1});
     circ2.add_op<unsigned>(OpType::Rz, 0.500003, {0});
     circ2.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transform::synthesise_HQS().apply(circ2));
+    REQUIRE(Transforms::synthesise_HQS().apply(circ2));
     REQUIRE(circ2.get_slices().size() == 1);
     REQUIRE(
         circ2.get_OpType_from_Vertex(*circ2.get_slices()[0].begin()) ==
@@ -1381,13 +1383,13 @@ SCENARIO("Test synthesise_HQS") {
   GIVEN("A CRz") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CRz, 1., {0, 1});
-    REQUIRE(Transform::synthesise_HQS().apply(circ));
+    REQUIRE(Transforms::synthesise_HQS().apply(circ));
   }
   GIVEN("A mixed circuit") {
     Circuit circ(2, 1);
     circ.add_op<unsigned>(OpType::H, {0});
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
-    REQUIRE_NOTHROW(Transform::synthesise_HQS().apply(circ));
+    REQUIRE_NOTHROW(Transforms::synthesise_HQS().apply(circ));
   }
 }
 
@@ -1410,7 +1412,7 @@ SCENARIO("Test synthesise_UMD") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Y, {0});
     const StateVector sv1 = tket_sim::get_statevector(circ);
-    REQUIRE(Transform::synthesise_UMD().apply(circ));
+    REQUIRE(Transforms::synthesise_UMD().apply(circ));
     const StateVector sv2 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv1, sv2));
     REQUIRE(circ.n_gates() == 1);
@@ -1427,8 +1429,8 @@ SCENARIO("Test synthesise_UMD") {
     circ.add_op<unsigned>(OpType::Rz, 0.17, {0});
     StateVector sv1 = tket_sim::get_statevector(circ);
 
-    REQUIRE(Transform::synthesise_UMD().apply(circ));
-    REQUIRE(Transform::synthesise_tket().apply(circ));
+    REQUIRE(Transforms::synthesise_UMD().apply(circ));
+    REQUIRE(Transforms::synthesise_tket().apply(circ));
     StateVector sv2 = tket_sim::get_statevector(circ);
 
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv1, sv2));
@@ -1439,13 +1441,13 @@ SCENARIO("Test synthesise_UMD") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     StateVector sv1 = tket_sim::get_statevector(circ);
 
-    REQUIRE(Transform::synthesise_UMD().apply(circ));
+    REQUIRE(Transforms::synthesise_UMD().apply(circ));
     REQUIRE(circ.n_gates() == 5);
     REQUIRE(circ.count_gates(OpType::PhasedX) == 3);
     REQUIRE(circ.count_gates(OpType::Rz) == 1);
     REQUIRE(circ.count_gates(OpType::XXPhase) == 1);
 
-    REQUIRE(Transform::synthesise_tket().apply(circ));
+    REQUIRE(Transforms::synthesise_tket().apply(circ));
     StateVector sv2 = tket_sim::get_statevector(circ);
 
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv1, sv2));
@@ -1457,8 +1459,8 @@ SCENARIO("Test synthesise_UMD") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     StateVector sv1 = tket_sim::get_statevector(circ);
 
-    REQUIRE(Transform::synthesise_UMD().apply(circ));
-    REQUIRE(Transform::synthesise_tket().apply(circ));
+    REQUIRE(Transforms::synthesise_UMD().apply(circ));
+    REQUIRE(Transforms::synthesise_tket().apply(circ));
     StateVector sv2 = tket_sim::get_statevector(circ);
 
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv1, sv2));
@@ -1516,7 +1518,7 @@ SCENARIO("Test barrier blocks transforms successfully") {
     circ.add_op<unsigned>(OpType::U1, 0.5, {0});
     REQUIRE(!Transform::remove_redundancies().apply(circ));
     REQUIRE_THROWS_AS(
-        Transform::pairwise_pauli_gadgets().apply(circ), NotValid);
+        Transforms::pairwise_pauli_gadgets().apply(circ), NotValid);
   }
   GIVEN("Bigger circuit with barrier") {
     Circuit circ(3);
@@ -1558,7 +1560,7 @@ SCENARIO("Test barrier blocks transforms successfully") {
     circ.add_op<unsigned>(OpType::Rz, 0.6, {0});
     circ.add_barrier(uvec{0});
     circ.add_op<unsigned>(OpType::Rx, 0.8, {0});
-    REQUIRE(Transform::synthesise_tket().apply(circ));
+    REQUIRE(Transforms::synthesise_tket().apply(circ));
     REQUIRE(circ.depth() == 2);
     REQUIRE(circ.depth_by_type(OpType::Barrier) == 1);
   }

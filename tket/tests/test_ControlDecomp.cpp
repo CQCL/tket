@@ -19,6 +19,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/ControlledGates.hpp"
+#include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Transform.hpp"
 #include "testutil.hpp"
 

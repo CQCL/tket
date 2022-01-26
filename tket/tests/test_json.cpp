@@ -28,6 +28,7 @@
 #include "Ops/OpPtr.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
+#include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 #include "testutil.hpp"
@@ -142,7 +143,7 @@ SCENARIO("Test Circuit serialization") {
     Circuit circ(3);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {1, 0}, {1, 2}, {2, 1}});
 
-    Transform::clifford_simp().apply(circ);
+    Transforms::clifford_simp().apply(circ);
 
     REQUIRE(check_circuit(circ));
   }
