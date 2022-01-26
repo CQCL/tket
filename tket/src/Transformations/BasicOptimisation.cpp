@@ -14,6 +14,7 @@
 
 #include <optional>
 
+#include "Characterisation/DeviceCharacterisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Command.hpp"

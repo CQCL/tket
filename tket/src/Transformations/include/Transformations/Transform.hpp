@@ -21,7 +21,7 @@
 #include <vector>
 
 #include "Architecture/Architecture.hpp"
-#include "Characterisation/DeviceCharacterisation.hpp"
+#include "Characterisation/ErrorTypes.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/PauliStrings.hpp"
