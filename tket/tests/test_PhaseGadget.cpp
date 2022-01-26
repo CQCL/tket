@@ -19,6 +19,7 @@
 #include "CircuitsForTesting.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "Transformations/CliffordOptimisation.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/PauliOptimisation.hpp"
@@ -172,7 +173,7 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
   GIVEN("A single Pauli gadget") {
     auto circ = get_test_circ();
     Transforms::pairwise_pauli_gadgets().apply(circ);
-    Transform::singleq_clifford_sweep().apply(circ);
+    Transforms::singleq_clifford_sweep().apply(circ);
     Transforms::synthesise_tket().apply(circ);
     Circuit expected(4);
     expected.add_op<unsigned>(OpType::V, {0});
@@ -183,7 +184,7 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     expected.add_op<unsigned>(OpType::H, {1});
     add_1qb_gates(expected, OpType::Vdg, {2, 3});
     Transforms::decompose_multi_qubits_CX().apply(expected);
-    Transform::singleq_clifford_sweep().apply(expected);
+    Transforms::singleq_clifford_sweep().apply(expected);
     Transforms::synthesise_tket().apply(expected);
     const auto m1 = tket_sim::get_unitary(circ);
     const auto m2 = tket_sim::get_unitary(expected);

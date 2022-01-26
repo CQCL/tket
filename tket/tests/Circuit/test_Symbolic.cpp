@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <Circuit/Circuit.hpp>
+#include <Transformations/CliffordOptimisation.hpp>
 #include <Transformations/Transform.hpp>
 #include <catch2/catch.hpp>
 #include <vector>
@@ -67,7 +68,7 @@ SCENARIO("Symbolic squashing, correctness") {
     circ.add_op<unsigned>(OpType::X, {0});
 
     Circuit circ1 = circ;
-    Transform::singleq_clifford_sweep().apply(circ1);
+    Transforms::singleq_clifford_sweep().apply(circ1);
     check_equiv(circ, circ1);
   }
 
@@ -128,7 +129,7 @@ SCENARIO("Symbolic squashing, correctness") {
     circ.add_op<unsigned>(OpType::Z, {0});
 
     Circuit circ1 = circ;
-    Transform::singleq_clifford_sweep().apply(circ1);
+    Transforms::singleq_clifford_sweep().apply(circ1);
     check_equiv(circ, circ1);
   }
 }

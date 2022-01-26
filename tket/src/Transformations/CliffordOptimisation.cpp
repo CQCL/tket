@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "CliffordOptimisation.hpp"
+
 #include <vector>
 
 #include "Circuit/CircPool.hpp"
@@ -21,12 +23,12 @@
 
 namespace tket {
 
-using namespace Transforms;
+namespace Transforms {
 
 static bool multiq_clifford_match(Circuit &circ, bool allow_swaps);
 static bool copy_pi_through_CX_method(Circuit &circ);
 
-Transform Transform::multiq_clifford_replacement(bool allow_swaps) {
+Transform multiq_clifford_replacement(bool allow_swaps) {
   return Transform([allow_swaps](Circuit &circ) {
     return multiq_clifford_match(circ, allow_swaps);
   });
@@ -493,9 +495,7 @@ static bool multiq_clifford_match(Circuit &circ, bool allow_swaps) {
   return success;
 }
 
-Transform Transform::copy_pi_through_CX() {
-  return Transform(copy_pi_through_CX_method);
-}
+Transform copy_pi_through_CX() { return Transform(copy_pi_through_CX_method); }
 
 // TODO:: Copy classical-controls and any controls from CX
 static bool copy_pi_through_CX_method(Circuit &circ) {
@@ -603,7 +603,7 @@ static bool singleq_clifford_from_edge(
   return false;
 }
 
-Transform Transform::singleq_clifford_sweep() {
+Transform singleq_clifford_sweep() {
   return Transform([](Circuit &circ) {
     bool success = false;
     VertexList bin;
@@ -691,5 +691,7 @@ Transform Transform::singleq_clifford_sweep() {
     return success;
   });
 }
+
+}  // namespace Transforms
 
 }  // namespace tket

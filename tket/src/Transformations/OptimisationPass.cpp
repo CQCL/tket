@@ -15,6 +15,7 @@
 #include "OptimisationPass.hpp"
 
 #include "Circuit/CircUtils.hpp"
+#include "CliffordOptimisation.hpp"
 #include "Combinator.hpp"
 #include "Decomposition.hpp"
 #include "Gate/GatePtr.hpp"
@@ -52,7 +53,7 @@ Transform hyper_clifford_squash() {
 Transform clifford_simp(bool allow_swaps) {
   return decompose_cliffords_std() >>
          Transform::clifford_reduction(allow_swaps) >>
-         decompose_multi_qubits_CX() >> Transform::singleq_clifford_sweep() >>
+         decompose_multi_qubits_CX() >> singleq_clifford_sweep() >>
          Transform::squash_1qb_to_tk1();
 }
 

@@ -19,6 +19,7 @@
 #include "CircuitsForTesting.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "Transformations/CliffordOptimisation.hpp"
 #include "Transformations/CliffordReductionPass.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/OptimisationPass.hpp"
@@ -86,7 +87,7 @@ SCENARIO("Check that singleq_clifford_sweep reduces to standard forms") {
     circ.add_op<unsigned>(OpType::S, {0});
     circ.add_op<unsigned>(OpType::TK1, {0, 0, 0.31}, {1});
     Circuit circ2(circ);
-    Transform::singleq_clifford_sweep().apply(circ);
+    Transforms::singleq_clifford_sweep().apply(circ);
     REQUIRE(circ2 == circ);
   }
   GIVEN("Some U3s with only pi/2 angles") {
@@ -96,7 +97,7 @@ SCENARIO("Check that singleq_clifford_sweep reduces to standard forms") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     p = {0.5, 0., 0.5};
     circ.add_op<unsigned>(OpType::U3, p, {0});
-    REQUIRE(Transform::singleq_clifford_sweep().apply(circ));
+    REQUIRE(Transforms::singleq_clifford_sweep().apply(circ));
     Circuit correct(2);
     correct.add_op<unsigned>(OpType::Z, {0});
     correct.add_op<unsigned>(OpType::X, {0});
@@ -115,7 +116,7 @@ SCENARIO("Check that singleq_clifford_sweep reduces to standard forms") {
     circ.add_op<unsigned>(OpType::X, {0});
     circ.add_op<unsigned>(OpType::S, {0});
     circ.add_op<unsigned>(OpType::V, {0});
-    REQUIRE(Transform::singleq_clifford_sweep().apply(circ));
+    REQUIRE(Transforms::singleq_clifford_sweep().apply(circ));
     Circuit correct(2);
     correct.add_op<unsigned>(OpType::Z, {0});
     correct.add_op<unsigned>(OpType::X, {0});
@@ -132,7 +133,7 @@ SCENARIO("Check that singleq_clifford_sweep reduces to standard forms") {
     circ.add_op<unsigned>(OpType::X, {1});
     circ.add_op<unsigned>(OpType::V, {1});
     circ.add_op<unsigned>(OpType::S, {1});
-    REQUIRE(Transform::singleq_clifford_sweep().apply(circ));
+    REQUIRE(Transforms::singleq_clifford_sweep().apply(circ));
     Circuit correct(2);
     correct.add_op<unsigned>(OpType::Z, {0});
     correct.add_op<unsigned>(OpType::Z, {1});
@@ -151,7 +152,7 @@ SCENARIO("Check that singleq_clifford_sweep reduces to standard forms") {
     circ.add_op<unsigned>(OpType::V, {1});
     circ.add_op<unsigned>(OpType::S, {1});
     circ.add_op<unsigned>(OpType::S, {0});
-    REQUIRE(Transform::singleq_clifford_sweep().apply(circ));
+    REQUIRE(Transforms::singleq_clifford_sweep().apply(circ));
     Circuit correct(2);
     correct.add_op<unsigned>(OpType::S, {0});
     correct.add_op<unsigned>(OpType::Z, {1});
@@ -169,7 +170,7 @@ SCENARIO("Rewriting Clifford subcircuits", "[transform]") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::V, {0});
   }
-  REQUIRE(Transform::multiq_clifford_replacement().apply(circ));
+  REQUIRE(Transforms::multiq_clifford_replacement().apply(circ));
 }
 
 SCENARIO("valid_insertion_point returns space-like interaction points") {
@@ -244,7 +245,7 @@ SCENARIO("Test multiq clifford replacements") {
     circ.add_op<unsigned>(OpType::V, {0});
     circ.add_op<unsigned>(OpType::S, {0});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
-    REQUIRE(Transform::multiq_clifford_replacement().apply(circ));
+    REQUIRE(Transforms::multiq_clifford_replacement().apply(circ));
     Circuit replacement1(2);
     replacement1.add_op<unsigned>(OpType::Z, {1});
     replacement1.add_op<unsigned>(OpType::S, {0});
@@ -261,7 +262,7 @@ SCENARIO("Test multiq clifford replacements") {
     circ.add_op<unsigned>(OpType::S, {0});
     circ.add_op<unsigned>(OpType::V, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transform::multiq_clifford_replacement().apply(circ));
+    REQUIRE(Transforms::multiq_clifford_replacement().apply(circ));
     Circuit replacement2(2);
     replacement2.add_op<unsigned>(OpType::X, {1});
     replacement2.add_op<unsigned>(OpType::V, {0});
@@ -281,7 +282,7 @@ SCENARIO("Test multiq clifford replacements") {
     circ.add_op<unsigned>(OpType::S, {1});
     circ.add_op<unsigned>(OpType::V, {1});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
-    REQUIRE(Transform::multiq_clifford_replacement().apply(circ));
+    REQUIRE(Transforms::multiq_clifford_replacement().apply(circ));
     REQUIRE(circ.count_gates(OpType::S) == 2);
     REQUIRE(circ.count_gates(OpType::V) == 2);
     REQUIRE(circ.n_vertices() == 8);
@@ -291,7 +292,7 @@ SCENARIO("Test multiq clifford replacements") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::S, {1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transform::multiq_clifford_replacement().apply(circ));
+    REQUIRE(Transforms::multiq_clifford_replacement().apply(circ));
     Circuit replacement5(2);
     replacement5.add_op<unsigned>(OpType::S, {0});
     replacement5.add_op<unsigned>(OpType::Z, {1});
@@ -315,7 +316,7 @@ SCENARIO("Test multiq clifford replacements") {
     circ.add_op<unsigned>(OpType::U1, 0.4, {1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
 
-    REQUIRE(Transform::multiq_clifford_replacement().apply(circ));
+    REQUIRE(Transforms::multiq_clifford_replacement().apply(circ));
     REQUIRE(circ.count_gates(OpType::V) == 4);
     REQUIRE(circ.count_gates(OpType::X) == 1);
     REQUIRE(circ.count_gates(OpType::S) == 2);
@@ -341,7 +342,7 @@ SCENARIO("Test multiq clifford replacements") {
     circ.add_op<unsigned>(OpType::S, {0});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
 
-    REQUIRE(Transform::multiq_clifford_replacement().apply(circ));
+    REQUIRE(Transforms::multiq_clifford_replacement().apply(circ));
 
     Circuit comp(2);
     comp.add_op<unsigned>(OpType::V, {0});
@@ -383,7 +384,7 @@ SCENARIO("Test multiq clifford replacements") {
     circ.add_op<unsigned>(OpType::CX, {3, 2});
     circ.add_op<unsigned>(OpType::CX, {2, 1});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
-    REQUIRE(!Transform::multiq_clifford_replacement(true).apply(circ));
+    REQUIRE(!Transforms::multiq_clifford_replacement(true).apply(circ));
     REQUIRE_NOTHROW(circ.depth_by_type(OpType::CX));
   }
 }
@@ -582,7 +583,7 @@ SCENARIO("Test Clifford matching plays well with commuting gates") {
     circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
     circ.add_op<unsigned>(OpType::V, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transform::multiq_clifford_replacement().apply(circ));
+    REQUIRE(Transforms::multiq_clifford_replacement().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 2);
   }
   GIVEN("A commuting section at end on first qubit (matching CX direction)") {
@@ -592,7 +593,7 @@ SCENARIO("Test Clifford matching plays well with commuting gates") {
     circ.add_op<unsigned>(OpType::CX, {0, 2});
     circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transform::multiq_clifford_replacement().apply(circ));
+    REQUIRE(Transforms::multiq_clifford_replacement().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 2);
   }
   GIVEN("A commuting section at start on second qubit") {
@@ -602,7 +603,7 @@ SCENARIO("Test Clifford matching plays well with commuting gates") {
     circ.add_op<unsigned>(OpType::Rx, 0.3, {1});
     circ.add_op<unsigned>(OpType::S, {1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transform::multiq_clifford_replacement().apply(circ));
+    REQUIRE(Transforms::multiq_clifford_replacement().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 2);
   }
   GIVEN(
@@ -614,7 +615,7 @@ SCENARIO("Test Clifford matching plays well with commuting gates") {
     circ.add_op<unsigned>(OpType::CX, {2, 1});
     circ.add_op<unsigned>(OpType::Rx, 0.3, {1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transform::multiq_clifford_replacement().apply(circ));
+    REQUIRE(Transforms::multiq_clifford_replacement().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 2);
   }
   GIVEN("A commuting section at end on first qubit (opposite CX direction)") {
@@ -625,7 +626,7 @@ SCENARIO("Test Clifford matching plays well with commuting gates") {
     circ.add_op<unsigned>(OpType::CX, {2, 0});
     circ.add_op<unsigned>(OpType::Rx, 0.3, {0});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
-    REQUIRE(Transform::multiq_clifford_replacement().apply(circ));
+    REQUIRE(Transforms::multiq_clifford_replacement().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 2);
   }
   GIVEN(
@@ -638,7 +639,7 @@ SCENARIO("Test Clifford matching plays well with commuting gates") {
     circ.add_op<unsigned>(OpType::CX, {1, 2});
     circ.add_op<unsigned>(OpType::Rz, 0.3, {1});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
-    REQUIRE(Transform::multiq_clifford_replacement().apply(circ));
+    REQUIRE(Transforms::multiq_clifford_replacement().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 2);
   }
   GIVEN("A mixture of all commuting regions") {
@@ -646,7 +647,7 @@ SCENARIO("Test Clifford matching plays well with commuting gates") {
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {0, 2}, {2, 1}});
     circ.add_op<unsigned>(OpType::X, {2});
     add_2qb_gates(circ, OpType::CX, {{2, 0}, {1, 2}, {1, 0}});
-    REQUIRE(Transform::multiq_clifford_replacement(true).apply(circ));
+    REQUIRE(Transforms::multiq_clifford_replacement(true).apply(circ));
 
     Circuit correct(3);
     add_2qb_gates(correct, OpType::CX, {{0, 2}, {2, 1}, {1, 0}});
@@ -666,7 +667,7 @@ SCENARIO("Test Clifford matching plays well with commuting gates") {
     circ.add_op<unsigned>(OpType::CX, {2, 1});
     circ.add_op<unsigned>(OpType::Rx, 0.3, {1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transform::multiq_clifford_replacement().apply(circ));
+    REQUIRE(Transforms::multiq_clifford_replacement().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 3);
   }
 }

@@ -58,21 +58,7 @@ class Transform {
   // Clifford Optimisation//
   /////////////////////////
 
-  // These apply some of the Clifford rules in the paper "Optimising Clifford
-  // Circuits with Quantomatic" All of these expect and produce CX, Z, X, S, V,
-  // and other single qubit gates
-
-  static Transform singleq_clifford_sweep();
-
-  // mutli-qubit patterns that decrease the CX count
-  // inserting swaps can sometimes cause errors elsewhere (e.g. routing), so
-  // they can be turned off
-  static Transform multiq_clifford_replacement(bool allow_swaps = false);
-
   static Transform clifford_reduction(bool allow_swaps = false);
-
-  // copies Z through the target of a CX and X through the control
-  static Transform copy_pi_through_CX();
 
   //////////////////////
   // Basic Optimisation//

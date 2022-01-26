@@ -23,6 +23,7 @@
 #include "Ops/MetaOp.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "Transformations/CliffordOptimisation.hpp"
 #include "Transformations/Combinator.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/OptimisationPass.hpp"
@@ -1474,7 +1475,7 @@ SCENARIO("Copying Z and X through a CX") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Z, {1});
     circ.add_op<unsigned>(OpType::CZ, {0, 1});
-    REQUIRE(Transform::copy_pi_through_CX().apply(circ));
+    REQUIRE(Transforms::copy_pi_through_CX().apply(circ));
     REQUIRE(circ.count_gates(OpType::Z) == 2);
     REQUIRE(circ.count_gates(OpType::CX) == 1);
   }
@@ -1484,7 +1485,7 @@ SCENARIO("Copying Z and X through a CX") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::X, {0});
     circ.add_op<unsigned>(OpType::CZ, {0, 1});
-    REQUIRE(Transform::copy_pi_through_CX().apply(circ));
+    REQUIRE(Transforms::copy_pi_through_CX().apply(circ));
     REQUIRE(circ.count_gates(OpType::X) == 2);
     REQUIRE(circ.count_gates(OpType::CX) == 1);
   }
@@ -1492,20 +1493,20 @@ SCENARIO("Copying Z and X through a CX") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Z, {0});
-    REQUIRE(!Transform::copy_pi_through_CX().apply(circ));
+    REQUIRE(!Transforms::copy_pi_through_CX().apply(circ));
   }
   GIVEN("A X on the commuting side") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::X, {1});
-    REQUIRE(!Transform::copy_pi_through_CX().apply(circ));
+    REQUIRE(!Transforms::copy_pi_through_CX().apply(circ));
   }
   GIVEN("Two CXs to commute through - previously broke by yielding a cycle") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::X, {0});
-    Transform::copy_pi_through_CX().apply(circ);
+    Transforms::copy_pi_through_CX().apply(circ);
     REQUIRE_NOTHROW(circ.depth_by_type(OpType::CX));
   }
 }

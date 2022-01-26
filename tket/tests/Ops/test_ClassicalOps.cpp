@@ -17,6 +17,7 @@
 #include "../testutil.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Ops/ClassicalOps.hpp"
+#include "Transformations/CliffordOptimisation.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/PhaseOptimisation.hpp"
 #include "Transformations/Transform.hpp"
@@ -351,12 +352,12 @@ SCENARIO("PI-copy rule") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     WHEN("Do pi copy rule") {
       circ.add_op<unsigned>(OpType::X, {0});
-      REQUIRE(Transform::singleq_clifford_sweep().apply(circ));
+      REQUIRE(Transforms::singleq_clifford_sweep().apply(circ));
       REQUIRE(circ.n_gates() == 3);
     }
     WHEN("Add classical wires") {
       circ.add_conditional_gate<unsigned>(OpType::X, {}, uvec{0}, {0}, 1);
-      REQUIRE(!Transform::singleq_clifford_sweep().apply(circ));
+      REQUIRE(!Transforms::singleq_clifford_sweep().apply(circ));
       circ.assert_valid();
     }
   }
