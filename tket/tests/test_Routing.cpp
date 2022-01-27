@@ -26,6 +26,10 @@
 #include "Routing/Verification.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "Transformations/BasicOptimisation.hpp"
+#include "Transformations/Decomposition.hpp"
+#include "Transformations/OptimisationPass.hpp"
+#include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/HelperFunctions.hpp"
 #include "testutil.hpp"
@@ -241,7 +245,7 @@ SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
     circ.add_op<unsigned>(OpType::SWAP, {0, 1});
     int original_vertices = circ.n_vertices();
     reassign_boundary(circ);
-    Transform::decompose_SWAP_to_CX().apply(circ);
+    Transforms::decompose_SWAP_to_CX().apply(circ);
     int decompose_vertices = circ.n_vertices();
     REQUIRE(decompose_vertices - original_vertices == 2);
     REQUIRE(respects_connectivity_constraints(circ, arc, false));
@@ -252,7 +256,7 @@ SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
     // check output boundary
     Vertex boundary_0 = circ.get_out(Qubit(0));
     Vertex boundary_1 = circ.get_out(Qubit(1));
-    Transform::decompose_SWAP_to_CX().apply(circ);
+    Transforms::decompose_SWAP_to_CX().apply(circ);
     REQUIRE(circ.get_out(Qubit(0)) == boundary_0);
     REQUIRE(circ.get_out(Qubit(1)) == boundary_1);
     // check output boundary is the same
@@ -263,7 +267,7 @@ SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::SWAP, {0, 1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    Transform::decompose_SWAP_to_CX().apply(circ);
+    Transforms::decompose_SWAP_to_CX().apply(circ);
     qubit_vector_t all = circ.all_qubits();
     unit_vector_t cor = {all[0], all[1]};
     REQUIRE(circ.get_commands()[2].get_args() == cor);
@@ -274,7 +278,7 @@ SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::SWAP, {0, 1});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
-    Transform::decompose_SWAP_to_CX().apply(circ);
+    Transforms::decompose_SWAP_to_CX().apply(circ);
     qubit_vector_t all = circ.all_qubits();
     unit_vector_t cor = {all[1], all[0]};
     REQUIRE(circ.get_commands()[2].get_args() == cor);
@@ -285,7 +289,7 @@ SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::SWAP, {1, 0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    Transform::decompose_SWAP_to_CX().apply(circ);
+    Transforms::decompose_SWAP_to_CX().apply(circ);
     qubit_vector_t all = circ.all_qubits();
     unit_vector_t cor = {all[0], all[1]};
     REQUIRE(circ.get_commands()[2].get_args() == cor);
@@ -296,7 +300,7 @@ SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::SWAP, {1, 0});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
-    Transform::decompose_SWAP_to_CX().apply(circ);
+    Transforms::decompose_SWAP_to_CX().apply(circ);
     qubit_vector_t all = circ.all_qubits();
     unit_vector_t cor = {all[1], all[0]};
     REQUIRE(circ.get_commands()[2].get_args() == cor);
@@ -307,7 +311,7 @@ SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::SWAP, {1, 0});
-    Transform::decompose_SWAP_to_CX().apply(circ);
+    Transforms::decompose_SWAP_to_CX().apply(circ);
     qubit_vector_t all = circ.all_qubits();
     unit_vector_t cor = {all[0], all[1]};
     REQUIRE(circ.get_commands()[1].get_args() == cor);
@@ -318,7 +322,7 @@ SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     circ.add_op<unsigned>(OpType::SWAP, {1, 0});
-    Transform::decompose_SWAP_to_CX().apply(circ);
+    Transforms::decompose_SWAP_to_CX().apply(circ);
     qubit_vector_t all = circ.all_qubits();
     unit_vector_t cor = {all[1], all[0]};
     REQUIRE(circ.get_commands()[1].get_args() == cor);
@@ -331,7 +335,7 @@ SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     circ.add_op<unsigned>(OpType::SWAP, {1, 0});
     reassign_boundary(circ);
-    Transform::decompose_SWAP_to_CX(arc).apply(circ);
+    Transforms::decompose_SWAP_to_CX(arc).apply(circ);
     qubit_vector_t all = circ.all_qubits();
     unit_vector_t cor = {all[1], all[0]};
     REQUIRE(circ.get_commands()[1].get_args() == cor);
@@ -340,7 +344,7 @@ SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::SWAP, {1, 0});
     reassign_boundary(circ);
-    Transform::decompose_SWAP_to_CX(arc).apply(circ);
+    Transforms::decompose_SWAP_to_CX(arc).apply(circ);
     qubit_vector_t all = circ.all_qubits();
     unit_vector_t cor = {all[0], all[1]};
     REQUIRE(circ.get_commands()[0].get_args() == cor);
@@ -352,7 +356,7 @@ SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::SWAP, {1, 0});
     reassign_boundary(circ);
-    Transform::decompose_SWAP_to_CX(dummy_arc).apply(circ);
+    Transforms::decompose_SWAP_to_CX(dummy_arc).apply(circ);
     qubit_vector_t all = circ.all_qubits();
     unit_vector_t cor = {all[1], all[0]};
     REQUIRE(circ.get_commands()[0].get_args() == cor);
@@ -377,7 +381,7 @@ SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
     for (unsigned i = 0; i < circ.n_qubits(); i++) {
       original_boundary.push_back(circ.get_out(Qubit(i)));
     }
-    Transform::decompose_SWAP_to_CX().apply(circ);
+    Transforms::decompose_SWAP_to_CX().apply(circ);
     int decompose_vertices = circ.n_vertices();
     for (unsigned i = 0; i < circ.n_qubits(); i++) {
       REQUIRE(original_boundary[i] == circ.get_out(Qubit(i)));
@@ -390,12 +394,12 @@ SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
     std::pair<Circuit, bool> output = router.solve();
     REQUIRE(output.second);
     circ = output.first;
-    Transform::decompose_SWAP_to_CX().apply(circ);
+    Transforms::decompose_SWAP_to_CX().apply(circ);
     REQUIRE(respects_connectivity_constraints(circ, grid, false, true));
     GIVEN("Directed CX gates") {
-      Transform::decompose_SWAP_to_CX().apply(output.first);
-      Transform::decompose_BRIDGE_to_CX().apply(output.first);
-      Transform::decompose_CX_directed(grid).apply(output.first);
+      Transforms::decompose_SWAP_to_CX().apply(output.first);
+      Transforms::decompose_BRIDGE_to_CX().apply(output.first);
+      Transforms::decompose_CX_directed(grid).apply(output.first);
       REQUIRE(respects_connectivity_constraints(output.first, grid, true));
     }
   }
@@ -407,14 +411,14 @@ SCENARIO("Test redirect_CX_gates pass", "[routing]") {
     Circuit circ(3);
     add_2qb_gates(circ, OpType::CX, {{1, 0}, {1, 2}});
     reassign_boundary(circ);
-    Transform::decompose_CX_directed(arc).apply(circ);
+    Transforms::decompose_CX_directed(arc).apply(circ);
     REQUIRE(respects_connectivity_constraints(circ, arc, true));
   }
   GIVEN("A circuit that requires redirection.") {
     Circuit circ(3);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {2, 1}});
     reassign_boundary(circ);
-    Transform::decompose_CX_directed(arc).apply(circ);
+    Transforms::decompose_CX_directed(arc).apply(circ);
     REQUIRE(respects_connectivity_constraints(circ, arc, true));
   }
   GIVEN("A circuit that requires no redirection, with SWAP.") {
@@ -434,8 +438,8 @@ SCENARIO("Test redirect_CX_gates pass", "[routing]") {
 
     circ.add_op<unsigned>(OpType::CX, {2, 1});
     reassign_boundary(circ);
-    Transform::decompose_SWAP_to_CX(arc).apply(circ);
-    Transform::decompose_CX_directed(arc).apply(circ);
+    Transforms::decompose_SWAP_to_CX(arc).apply(circ);
+    Transforms::decompose_CX_directed(arc).apply(circ);
     REQUIRE(respects_connectivity_constraints(circ, arc, true));
   }
   GIVEN("A circuit that requires redirection, with SWAP.") {
@@ -456,8 +460,8 @@ SCENARIO("Test redirect_CX_gates pass", "[routing]") {
     circ.add_op<unsigned>(OpType::CX, {1, 2});
 
     reassign_boundary(circ);
-    Transform::decompose_SWAP_to_CX(arc).apply(circ);
-    Transform::decompose_CX_directed(arc).apply(circ);
+    Transforms::decompose_SWAP_to_CX(arc).apply(circ);
+    Transforms::decompose_CX_directed(arc).apply(circ);
     REQUIRE(respects_connectivity_constraints(circ, arc, true));
   }
   GIVEN("A complicated circuit of CX gates, routed.") {
@@ -477,9 +481,9 @@ SCENARIO("Test redirect_CX_gates pass", "[routing]") {
     std::pair<Circuit, bool> outs = route.solve();
     REQUIRE(outs.second == true);
     circ = outs.first;
-    Transform::decompose_BRIDGE_to_CX().apply(circ);
-    Transform::decompose_SWAP_to_CX(arc).apply(circ);
-    Transform::decompose_CX_directed(grid).apply(circ);
+    Transforms::decompose_BRIDGE_to_CX().apply(circ);
+    Transforms::decompose_SWAP_to_CX(arc).apply(circ);
+    Transforms::decompose_CX_directed(grid).apply(circ);
     REQUIRE(respects_connectivity_constraints(circ, grid, true));
   }
 }
@@ -664,7 +668,7 @@ SCENARIO("Qubit activating edge case", "[routing]") {
     circ.add_op<unsigned>(OpType::CU1, 0.125, {3, 0});
     circ.add_op<unsigned>(OpType::CU1, 0.25, {3, 1});
     circ.add_op<unsigned>(OpType::CU1, 0.5, {3, 2});
-    Transform::rebase_tket().apply(circ);
+    Transforms::rebase_tket().apply(circ);
     Architecture arc({{0, 1}, {1, 2}, {2, 3}});
     Routing router(circ, arc);
     std::pair<Circuit, bool> c = router.solve();
@@ -721,7 +725,7 @@ SCENARIO("Test routing for other multi-qubit ops", "[routing]") {
     for (unsigned nn = 0; nn <= 3; ++nn) {
       circ.add_measure(nn, nn);
     }
-    Transform::rebase_tket().apply(circ);
+    Transforms::rebase_tket().apply(circ);
     Architecture arc({{0, 1}, {1, 2}, {2, 3}});
     Routing router(circ, arc);
     std::pair<Circuit, bool> result = router.solve();
@@ -799,9 +803,9 @@ SCENARIO("Dense CX circuits route succesfully", "[routing]") {
     Routing router(circ, arc);
     std::pair<Circuit, bool> result = router.solve();
     REQUIRE(result.second);
-    (Transform::decompose_SWAP_to_CX() >> Transform::decompose_BRIDGE_to_CX())
+    (Transforms::decompose_SWAP_to_CX() >> Transforms::decompose_BRIDGE_to_CX())
         .apply(result.first);
-    Transform::decompose_CX_directed(arc).apply(result.first);
+    Transforms::decompose_CX_directed(arc).apply(result.first);
     REQUIRE(respects_connectivity_constraints(result.first, arc, true));
   }
 }
@@ -825,7 +829,7 @@ SCENARIO(
     Routing router(circ, arc);
     std::pair<Circuit, bool> result = router.solve();
     REQUIRE(result.second);
-    Transform::decompose_SWAP_to_CX().apply(result.first);
+    Transforms::decompose_SWAP_to_CX().apply(result.first);
     REQUIRE(respects_connectivity_constraints(result.first, arc, false, true));
   }
 }
@@ -1575,7 +1579,7 @@ SCENARIO(
     add_1qb_gates(circ, OpType::H, {0, 1});
     circ.add_op<unsigned>(OpType::SWAP, {0, 1});
     reassign_boundary(circ);
-    Transform::commute_SQ_gates_through_SWAPS(nec).apply(circ);
+    Transforms::commute_SQ_gates_through_SWAPS(nec).apply(circ);
     require_arguments_for_specified_commands(
         circ, {{OpType::H, circ.all_qubits().at(1)}});
   }
@@ -1586,7 +1590,7 @@ SCENARIO(
     add_1qb_gates(circ, OpType::H, {0, 0, 0, 1});
     circ.add_op<unsigned>(OpType::SWAP, {0, 1});
     reassign_boundary(circ);
-    Transform::commute_SQ_gates_through_SWAPS(nec).apply(circ);
+    Transforms::commute_SQ_gates_through_SWAPS(nec).apply(circ);
     require_arguments_for_specified_commands(
         circ, {{OpType::H, circ.all_qubits().at(1)}});
   }
@@ -1596,7 +1600,7 @@ SCENARIO(
     add_2qb_gates(circ, OpType::SWAP, {{0, 1}, {1, 2}, {0, 1}, {1, 2}, {1, 2}});
 
     reassign_boundary(circ);
-    Transform::commute_SQ_gates_through_SWAPS(nec).apply(circ);
+    Transforms::commute_SQ_gates_through_SWAPS(nec).apply(circ);
     require_arguments_for_specified_commands(
         circ, {{OpType::H, circ.all_qubits().at(2)}});
   }
@@ -1609,7 +1613,7 @@ SCENARIO(
     add_2qb_gates(circ, OpType::SWAP, {{0, 1}, {1, 2}, {0, 1}, {1, 2}, {1, 2}});
 
     reassign_boundary(circ);
-    Transform::commute_SQ_gates_through_SWAPS(nec).apply(circ);
+    Transforms::commute_SQ_gates_through_SWAPS(nec).apply(circ);
     const qubit_vector_t qbs = circ.all_qubits();
     require_arguments_for_specified_commands(
         circ, {{OpType::H, qbs.at(2)}, {OpType::X, qbs.at(1)}});
@@ -1652,7 +1656,7 @@ SCENARIO(
 
     Circuit test_0 = circ;
     reassign_boundary(test_0, square_nodes);
-    Transform::decompose_SWAP_to_CX().apply(test_0);
+    Transforms::decompose_SWAP_to_CX().apply(test_0);
     const auto sv0 = tket_sim::get_statevector(test_0);
     double pre_aggregate = 0;
 
@@ -1670,9 +1674,9 @@ SCENARIO(
       }
     }
     reassign_boundary(circ, square_nodes);
-    Transform::commute_SQ_gates_through_SWAPS(nec).apply(circ);
+    Transforms::commute_SQ_gates_through_SWAPS(nec).apply(circ);
     Circuit test_1 = circ;
-    Transform::decompose_SWAP_to_CX().apply(test_1);
+    Transforms::decompose_SWAP_to_CX().apply(test_1);
     const auto sv1 = tket_sim::get_statevector(test_1);
     double post_aggregate = 0;
     for (Command com : test_1) {
@@ -1946,7 +1950,7 @@ SCENARIO(
     add_2qb_gates(
         circ, OpType::CX,
         {{1, 2}, {0, 3}, {1, 4}, {0, 1}, {2, 0}, {0, 1}, {1, 0}});
-    Transform::clifford_simp().apply(circ);
+    Transforms::clifford_simp().apply(circ);
     Architecture arc({{1, 0}, {0, 2}, {1, 2}, {2, 3}, {2, 4}, {4, 3}});
     RoutingConfig default_config(50, 0, 0, 0);
     QubitGraph q_graph =
@@ -1992,7 +1996,7 @@ SCENARIO(
     Architecture test_arc({{0, 1}, {1, 2}});
     Circuit test_pc(3);
     test_pc.add_op<unsigned>(OpType::BRIDGE, {0, 1, 2});
-    Transform::decompose_BRIDGE_to_CX().apply(test_pc);
+    Transforms::decompose_BRIDGE_to_CX().apply(test_pc);
     auto it = test_pc.begin();
     unit_vector_t opt1 = {Qubit(0), Qubit(1)};
     unit_vector_t opt2 = {Qubit(1), Qubit(2)};
@@ -2017,7 +2021,7 @@ SCENARIO(
     test_circuit.add_op<unsigned>(OpType::BRIDGE, {2, 3, 4});
     test_circuit.add_op<unsigned>(OpType::BRIDGE, {3, 4, 5});
     Circuit test_pc(test_circuit);
-    Transform::decompose_BRIDGE_to_CX().apply(test_pc);
+    Transforms::decompose_BRIDGE_to_CX().apply(test_pc);
     REQUIRE(test_pc.n_gates() == 20);
   }
 }
@@ -2497,10 +2501,10 @@ SCENARIO(
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 2}, {0, 1}, 0);
     Routing test_router(circ, test_arc);
     std::pair<Circuit, bool> output = test_router.solve({50, 0, 0, 0});
-    Transform::decompose_SWAP_to_CX().apply(output.first);
+    Transforms::decompose_SWAP_to_CX().apply(output.first);
     REQUIRE(respects_connectivity_constraints(
         output.first, test_arc, false, false));
-    Transform::decompose_BRIDGE_to_CX().apply(output.first);
+    Transforms::decompose_BRIDGE_to_CX().apply(output.first);
     REQUIRE(respects_connectivity_constraints(
         output.first, test_arc, false, false));
   }
@@ -2513,9 +2517,9 @@ SCENARIO(
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {1, 2}, {1, 3}, {1, 4}, {0, 1}});
     Routing test_router(circ, sg);
     std::pair<Circuit, bool> output = test_router.solve({50, 0, 0, 0});
-    Transform::decompose_SWAP_to_CX().apply(output.first);
+    Transforms::decompose_SWAP_to_CX().apply(output.first);
     REQUIRE(respects_connectivity_constraints(output.first, sg, false, false));
-    Transform::decompose_BRIDGE_to_CX().apply(output.first);
+    Transforms::decompose_BRIDGE_to_CX().apply(output.first);
     REQUIRE(respects_connectivity_constraints(output.first, sg, false, false));
     Command classical_com = output.first.get_commands()[0];
     REQUIRE(classical_com.get_args()[0] == output.first.all_bits()[0]);
@@ -2527,7 +2531,7 @@ SCENARIO(
         OpType::BRIDGE, {}, {0, 1, 2}, {0, 1, 2}, 1);
     reassign_boundary(circ);
     REQUIRE(respects_connectivity_constraints(circ, arc, false, true));
-    Transform::decompose_BRIDGE_to_CX().apply(circ);
+    Transforms::decompose_BRIDGE_to_CX().apply(circ);
     REQUIRE(respects_connectivity_constraints(circ, arc, false, true));
     for (Command com : circ.get_commands()) {
       REQUIRE(com.get_args()[0] == circ.all_bits()[0]);
@@ -2543,7 +2547,7 @@ SCENARIO(
     reassign_boundary(circ);
     REQUIRE(respects_connectivity_constraints(circ, arc, false, false));
     REQUIRE(!respects_connectivity_constraints(circ, arc, true, false));
-    Transform::decompose_CX_directed(arc).apply(circ);
+    Transforms::decompose_CX_directed(arc).apply(circ);
     REQUIRE(respects_connectivity_constraints(circ, arc, true, false));
     std::vector<Command> all_coms = circ.get_commands();
     REQUIRE(all_coms[0].get_args()[0] == circ.all_bits()[1]);
@@ -2571,9 +2575,9 @@ SCENARIO(
     }
     Routing router(circ, arc);
     std::pair<Circuit, bool> output = router.solve();
-    Transform::decompose_SWAP_to_CX().apply(output.first);
+    Transforms::decompose_SWAP_to_CX().apply(output.first);
     REQUIRE(respects_connectivity_constraints(output.first, arc, false, true));
-    Transform::decompose_BRIDGE_to_CX().apply(output.first);
+    Transforms::decompose_BRIDGE_to_CX().apply(output.first);
     REQUIRE(respects_connectivity_constraints(output.first, arc, false, true));
   }
   GIVEN(
@@ -2596,11 +2600,11 @@ SCENARIO(
     }
     Routing router(circ, arc);
     std::pair<Circuit, bool> output = router.solve();
-    Transform::decompose_SWAP_to_CX().apply(output.first);
+    Transforms::decompose_SWAP_to_CX().apply(output.first);
     REQUIRE(respects_connectivity_constraints(output.first, arc, false, true));
-    Transform::decompose_BRIDGE_to_CX().apply(output.first);
+    Transforms::decompose_BRIDGE_to_CX().apply(output.first);
     REQUIRE(respects_connectivity_constraints(output.first, arc, false, true));
-    Transform::decompose_CX_directed(arc).apply(output.first);
+    Transforms::decompose_CX_directed(arc).apply(output.first);
     REQUIRE(respects_connectivity_constraints(output.first, arc, true, true));
   }
 }
@@ -2623,7 +2627,7 @@ SCENARIO(
     Architecture arc({{1, 0}, {0, 2}, {1, 2}, {2, 3}, {2, 4}, {4, 3}});
     Routing router(circ, arc);
     Circuit c = router.solve().first;
-    Transform T_1 = Transform::decompose_SWAP_to_CX();
+    Transform T_1 = Transforms::decompose_SWAP_to_CX();
     T_1.apply(c);
     REQUIRE(c.count_gates(OpType::SWAP) == 0);
   }

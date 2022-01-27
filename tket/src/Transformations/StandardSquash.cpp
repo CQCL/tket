@@ -14,13 +14,16 @@
 
 #include <memory>
 
+#include "BasicOptimisation.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Gate/Rotation.hpp"
 #include "SingleQubitSquash.hpp"
-#include "Transformations/Transform.hpp"
+#include "Transform.hpp"
 #include "Utils/Expression.hpp"
 
 namespace tket {
+
+namespace Transforms {
 
 /**
  * @brief Implements the AbstractSquasher interface for SingleQubitSquash
@@ -87,7 +90,7 @@ static bool standard_squash(
   return SingleQubitSquash(std::move(squasher), false).squash(circ);
 }
 
-Transform Transform::squash_factory(
+Transform squash_factory(
     const OpTypeSet &singleqs,
     const std::function<Circuit(const Expr &, const Expr &, const Expr &)>
         &tk1_replacement) {
@@ -95,5 +98,7 @@ Transform Transform::squash_factory(
     return standard_squash(circ, singleqs, tk1_replacement);
   });
 }
+
+}  // namespace Transforms
 
 }  // namespace tket

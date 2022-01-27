@@ -18,6 +18,7 @@
 #include <nlohmann/json.hpp>
 
 #include "Architecture/Architecture.hpp"
+#include "ErrorTypes.hpp"
 #include "OpType/OpType.hpp"
 #include "Utils/UnitID.hpp"
 
@@ -34,21 +35,6 @@
  */
 
 namespace tket {
-
-// errors are double precision values given by 1. - fidelity (0. error is
-// perfect gate)
-using gate_error_t = double;
-using readout_error_t = double;
-
-// default errors per Node (average error)
-using avg_node_errors_t = std::map<Node, gate_error_t>;
-using avg_readout_errors_t = std::map<Node, readout_error_t>;
-using avg_link_errors_t = std::map<std::pair<Node, Node>, gate_error_t>;
-
-// OpType-specific errors per Node
-using op_errors_t = std::map<OpType, gate_error_t>;
-using op_node_errors_t = std::map<Node, op_errors_t>;
-using op_link_errors_t = std::map<std::pair<Node, Node>, op_errors_t>;
 
 class DeviceCharacterisation {
  public:

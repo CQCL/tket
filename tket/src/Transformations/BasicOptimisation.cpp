@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "BasicOptimisation.hpp"
+
 #include <optional>
 
+#include "Characterisation/DeviceCharacterisation.hpp"
+#include "Characterisation/ErrorTypes.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Command.hpp"
 #include "Circuit/DAGDefs.hpp"
+#include "Decomposition.hpp"
 #include "Gate/Gate.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Gate/Rotation.hpp"
@@ -27,6 +32,8 @@
 
 namespace tket {
 
+namespace Transforms {
+
 static bool redundancy_removal(Circuit &circ);
 static bool remove_redundancy(
     Circuit &circ, const Vertex &vert, VertexList &bin,
@@ -34,9 +41,7 @@ static bool remove_redundancy(
 static bool commute_singles_to_front(Circuit &circ);
 static bool replace_non_global_phasedx(Circuit &circ);
 
-Transform Transform::remove_redundancies() {
-  return Transform(redundancy_removal);
-}
+Transform remove_redundancies() { return Transform(redundancy_removal); }
 
 // this method annihilates all primitives next to each other (accounting for
 // previous annihilations)
@@ -184,13 +189,11 @@ static bool remove_redundancy(
   return false;
 }
 
-Transform Transform::commute_through_multis() {
+Transform commute_through_multis() {
   return Transform(commute_singles_to_front);
 }
 
-Transform Transform::globalise_phasedx() {
-  return Transform(replace_non_global_phasedx);
-}
+Transform globalise_phasedx() { return Transform(replace_non_global_phasedx); }
 
 // moves single qubit operations past multiqubit operations they commute with,
 // towards front of circuit (hardcoded)
@@ -308,10 +311,20 @@ static bool replace_non_global_phasedx(Circuit &circ) {
   return success;
 }
 
+// helper class subcircuits representing 2qb interactions
+struct Interaction {
+  Interaction(const Qubit &_q0, const Qubit &_q1) : q0(_q0), q1(_q1) {}
+  Qubit q0;  // Qubit numbers
+  Qubit q1;
+  Edge e0;  // In edges starting interaction
+  Edge e1;
+  unsigned count;      // Number of two qubit gates in interaction
+  VertexSet vertices;  // Vertices in interaction subcircuit
+};
+
 static bool replace_two_qubit_interaction(
-    Circuit &circ, Transform::Interaction &i,
-    std::map<Qubit, Edge> &current_edges, VertexList &bin,
-    const double cx_fidelity = 1.) {
+    Circuit &circ, Interaction &i, std::map<Qubit, Edge> &current_edges,
+    VertexList &bin, const double cx_fidelity = 1.) {
   EdgeVec in_edges = {i.e0, i.e1};
   EdgeVec out_edges = {current_edges[i.q0], current_edges[i.q1]};
   Edge next0, next1;
@@ -348,7 +361,7 @@ static bool replace_two_qubit_interaction(
   }
 }
 
-Transform Transform::commute_and_combine_HQS2() {
+Transform commute_and_combine_HQS2() {
   return Transform([](Circuit &circ) {
     bool success = false;
     VertexList bin;
@@ -396,7 +409,7 @@ Transform Transform::commute_and_combine_HQS2() {
 }
 
 // TODO:: Work around classically controlled stuff
-Transform Transform::two_qubit_squash(double cx_fidelity) {
+Transform two_qubit_squash(double cx_fidelity) {
   return Transform([cx_fidelity](Circuit &circ) {
     bool success = false;
     VertexList bin;
@@ -623,15 +636,15 @@ static Transform commute_SQ_gates_through_SWAPS_helper(
     return success;
   });
 }
-Transform Transform::commute_SQ_gates_through_SWAPS(
-    const avg_node_errors_t &node_errors) {
+Transform commute_SQ_gates_through_SWAPS(const avg_node_errors_t &node_errors) {
   return commute_SQ_gates_through_SWAPS_helper(
       DeviceCharacterisation(node_errors));
 }
-Transform Transform::commute_SQ_gates_through_SWAPS(
-    const op_node_errors_t &node_errors) {
+Transform commute_SQ_gates_through_SWAPS(const op_node_errors_t &node_errors) {
   return commute_SQ_gates_through_SWAPS_helper(
       DeviceCharacterisation(node_errors));
 }
+
+}  // namespace Transforms
 
 }  // namespace tket

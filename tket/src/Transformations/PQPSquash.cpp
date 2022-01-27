@@ -14,12 +14,16 @@
 
 #include <memory>
 
+#include "BasicOptimisation.hpp"
+#include "Decomposition.hpp"
 #include "Gate/Rotation.hpp"
 #include "SingleQubitSquash.hpp"
 #include "Transform.hpp"
 #include "Utils/Expression.hpp"
 
 namespace tket {
+
+namespace Transforms {
 
 static bool fixup_angles(
     Expr &angle_p1, Expr &angle_q, Expr &angle_p2, bool reversed = false);
@@ -219,21 +223,21 @@ static bool squash_to_pqp(
   return SingleQubitSquash(std::move(squasher), reverse).squash(circ);
 }
 
-Transform Transform::reduce_XZ_chains() {
+Transform reduce_XZ_chains() {
   return Transform([](Circuit &circ) {
     return squash_to_pqp(circ, OpType::Rx, OpType::Rz);
   });
 }
 
-Transform Transform::squash_1qb_to_pqp(
-    const OpType &q, const OpType &p, bool strict) {
+Transform squash_1qb_to_pqp(const OpType &q, const OpType &p, bool strict) {
   return Transform(
       [=](Circuit &circ) { return squash_to_pqp(circ, q, p, strict); });
 }
 
-Transform Transform::squash_1qb_to_tk1() {
-  return decompose_ZY() >> squash_1qb_to_pqp(OpType::Ry, OpType::Rz, true) >>
-         decompose_ZYZ_to_TK1();
+Transform squash_1qb_to_tk1() {
+  return Transforms::decompose_ZY() >>
+         squash_1qb_to_pqp(OpType::Ry, OpType::Rz, true) >>
+         Transforms::decompose_ZYZ_to_TK1();
 }
 
 static bool fixup_angles(
@@ -428,5 +432,7 @@ static bool redundancy_removal(Circuit &circ) {
       bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
   return success;
 }
+
+}  // namespace Transforms
 
 }  // namespace tket

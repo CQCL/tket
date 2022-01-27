@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "ControlledGates.hpp"
+
 #include <math.h>
 
 #include <numeric>
@@ -24,6 +26,8 @@
 #include "Utils/HelperFunctions.hpp"
 
 namespace tket {
+
+namespace Transforms {
 
 /* all of these methods are from https://arxiv.org/pdf/quant-ph/9503016.pdf
 or
@@ -43,7 +47,7 @@ static void lemma73(
 /* this is slightly less efficient than perhaps it could be -- asymptotically it
    is still good. In an ideal world, this would decompose the incrementers
    smarter for the "even" case */
-Circuit Transform::incrementer_borrow_1_qubit(unsigned n) {
+Circuit incrementer_borrow_1_qubit(unsigned n) {
   bool is_odd = n % 2;
   Circuit circ(n + 1);
   if (n < 6) {
@@ -68,7 +72,7 @@ Circuit Transform::incrementer_borrow_1_qubit(unsigned n) {
     j = n / 2 + 1, k = n / 2;
   }
 
-  Circuit top_incrementer = Transform::incrementer_borrow_n_qubits(k);
+  Circuit top_incrementer = incrementer_borrow_n_qubits(k);
   std::vector<unsigned> top_qbs(2 * k);
   for (unsigned i = 0; i != k; ++i) {
     top_qbs[2 * i] = i + k;  // borrowed qubits
@@ -94,7 +98,7 @@ Circuit Transform::incrementer_borrow_1_qubit(unsigned n) {
   Circuit bottom_incrementer;
   std::vector<unsigned> bot_qbs;
   if (is_odd) {
-    bottom_incrementer = Transform::incrementer_borrow_n_qubits(j);
+    bottom_incrementer = incrementer_borrow_n_qubits(j);
     bot_qbs.resize(2 * j);
     for (unsigned i = 0; i != j; ++i) {
       bot_qbs[2 * i] = i;  // 0,2,4...n-1 //borrowed qubits
@@ -138,7 +142,7 @@ Circuit Transform::incrementer_borrow_1_qubit(unsigned n) {
       cnx2_qbs[2 * j - 4] = n - 1;  // the target of the peeled out cnx
 
       circ.append_qubits(cnx_bot, cnx2_qbs);
-      bottom_incrementer = Transform::incrementer_borrow_n_qubits(
+      bottom_incrementer = incrementer_borrow_n_qubits(
           j - 1);  // insert incrementer over remaining qubits
       bot_qbs.resize(2 * j - 2);
       for (unsigned i = 0; i != j - 1; ++i) {
@@ -183,7 +187,7 @@ Circuit Transform::incrementer_borrow_1_qubit(unsigned n) {
 // an optimised version of
 // https://algassert.com/circuits/2015/06/12/Constructing-Large-Increment-Gates.html
 /* every second qubit (0,2,4...) is a borrowed qubit */
-Circuit Transform::incrementer_borrow_n_qubits(unsigned n) {
+Circuit incrementer_borrow_n_qubits(unsigned n) {
   const unsigned N = 2 * n;
   Circuit circ(N);
   /* deal with small cases where borrowing qubits is unnecessary */
@@ -233,7 +237,7 @@ Circuit Transform::incrementer_borrow_n_qubits(unsigned n) {
 // decompose CnX gate using
 // https://algassert.com/circuits/2015/06/22/Using-Quantum-Gates-instead-of-Ancilla-Bits.html
 // `n` = no. of controls
-Circuit Transform::cnx_normal_decomp(unsigned n) {
+Circuit cnx_normal_decomp(unsigned n) {
   /* handle low qb edge cases */
   bool insert_c4xs;  // dictate whether to add C4Xs or n>4 controlled Xs
                      // when bootstrapping
@@ -329,7 +333,7 @@ Circuit Transform::cnx_normal_decomp(unsigned n) {
   Expr ang = z_rots[n - 2]->get_params()[0];
   circ.add_op<unsigned>(get_op_ptr(OpType::Rz, -ang), {0});
 
-  Transform::decomp_CCX().apply(circ);
+  decomp_CCX().apply(circ);
   circ.add_phase(std::pow(0.5, n + 1));
   return circ;
 }
@@ -683,14 +687,14 @@ static void lemma79(
 
 /* naive decomposition - there are cases we can do better if we can eg. ignore
  * phase */
-Transform Transform::decomp_CCX() {
+Transform decomp_CCX() {
   return Transform([](Circuit& circ) {
     const Op_ptr ccx = get_op_ptr(OpType::CCX);
     return circ.substitute_all(CircPool::CCX_normal_decomp(), ccx);
   });
 }
 
-Circuit Transform::decomposed_CnRy(const Op_ptr op, unsigned arity) {
+Circuit decomposed_CnRy(const Op_ptr op, unsigned arity) {
   if (op->get_type() != OpType::CnRy) {
     throw CircuitInvalidity("Operation not CnRy");
   }
@@ -743,9 +747,9 @@ Circuit Transform::decomposed_CnRy(const Op_ptr op, unsigned arity) {
   return rep;
 }
 
-Transform Transform::decomp_controlled_Rys() {
+Transform decomp_controlled_Rys() {
   return Transform([](Circuit& circ) {
-    bool success = Transform::decomp_CCX().apply(circ);
+    bool success = decomp_CCX().apply(circ);
     auto [vit, vend] = boost::vertices(circ.dag);
     for (auto next = vit; vit != vend; vit = next) {
       ++next;
@@ -754,7 +758,7 @@ Transform Transform::decomp_controlled_Rys() {
       unsigned arity = circ.n_in_edges(v);
       if (op->get_type() == OpType::CnRy) {
         success = true;
-        Circuit rep = Transform::decomposed_CnRy(op, arity);
+        Circuit rep = decomposed_CnRy(op, arity);
         EdgeVec inedges = circ.get_in_edges(v);
         Subcircuit final_sub{inedges, circ.get_all_out_edges(v), {v}};
         circ.substitute(rep, final_sub, Circuit::VertexDeletion::Yes);
@@ -764,13 +768,13 @@ Transform Transform::decomp_controlled_Rys() {
   });
 }
 
-Transform Transform::decomp_arbitrary_controlled_gates() {
-  return Transform::decomp_controlled_Rys() >> Transform::decomp_CCX();
+Transform decomp_arbitrary_controlled_gates() {
+  return decomp_controlled_Rys() >> decomp_CCX();
 }
 
 // decompose CnX gate using lemma 7.1
 // `n` = no. of controls
-Circuit Transform::cnx_gray_decomp(unsigned n) {
+Circuit cnx_gray_decomp(unsigned n) {
   switch (n) {
     case 0: {
       return CircPool::X();
@@ -796,5 +800,7 @@ Circuit Transform::cnx_gray_decomp(unsigned n) {
     }
   }
 }
+
+}  // namespace Transforms
 
 }  // namespace tket

@@ -25,6 +25,7 @@
 #include "Gate/GateUnitaryMatrix.hpp"
 #include "Gate/GateUnitaryMatrixUtils.hpp"
 #include "Simulation/CircuitSimulator.hpp"
+#include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 
@@ -244,7 +245,7 @@ SCENARIO("Specific previous failures") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::PhasedISWAP, {0.509675, 1.34623}, {0, 1});
     const auto u1 = tket_sim::get_unitary(circ);
-    Transform::synthesise_tket().apply(circ);
+    Transforms::synthesise_tket().apply(circ);
     const auto u2 = tket_sim::get_unitary(circ);
     CHECK(u1.isApprox(u2));
 

@@ -29,6 +29,7 @@
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassLibrary.hpp"
 #include "Simulation/CircuitSimulator.hpp"
+#include "Transformations/OptimisationPass.hpp"
 #include "Utils/Constants.hpp"
 
 namespace tket {
@@ -580,7 +581,7 @@ SCENARIO("Two-qubit entangling gates") {
     c0.add_box(ubox, {0, 1});
     Circuit c1(2);
     c1.add_op<unsigned>(OpType::Sycamore, {0, 1});
-    Transform::synthesise_tket().apply(c1);
+    Transforms::synthesise_tket().apply(c1);
     REQUIRE(test_unitary_comparison(c0, c1));
   }
   GIVEN("ISWAPMax") {
@@ -591,7 +592,7 @@ SCENARIO("Two-qubit entangling gates") {
     c0.add_box(ubox, {0, 1});
     Circuit c1(2);
     c1.add_op<unsigned>(OpType::ISWAPMax, {0, 1});
-    Transform::synthesise_tket().apply(c1);
+    Transforms::synthesise_tket().apply(c1);
     REQUIRE(test_unitary_comparison(c0, c1));
   }
   GIVEN("PhasedISWAP") {
@@ -608,7 +609,7 @@ SCENARIO("Two-qubit entangling gates") {
     c0.add_box(ubox, {0, 1});
     Circuit c1(2);
     c1.add_op<unsigned>(OpType::PhasedISWAP, {p, t}, {0, 1});
-    Transform::synthesise_tket().apply(c1);
+    Transforms::synthesise_tket().apply(c1);
     REQUIRE(test_unitary_comparison(c0, c1));
   }
 }

@@ -18,6 +18,8 @@
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
+#include "Transformations/ContextualReduction.hpp"
+#include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 #include "binder_json.hpp"
@@ -629,7 +631,7 @@ PYBIND11_MODULE(passes, m) {
       "\n:param cx_config: A configuration of CXs to convert Pauli gadgets "
       "into."
       "\n:return: a pass to perform the simplification",
-      py::arg("strat") = PauliSynthStrat::Sets,
+      py::arg("strat") = Transforms::PauliSynthStrat::Sets,
       py::arg("cx_config") = CXConfigType::Snake);
   m.def(
       "GuidedPauliSimp", &gen_special_UCC_synthesis,
@@ -641,7 +643,7 @@ PYBIND11_MODULE(passes, m) {
       "\n:param cx_config: A configuration of CXs to convert Pauli gadgets "
       "into."
       "\n:return: a pass to perform the simplification",
-      py::arg("strat") = PauliSynthStrat::Sets,
+      py::arg("strat") = Transforms::PauliSynthStrat::Sets,
       py::arg("cx_config") = CXConfigType::Snake);
   m.def(
       "PauliSquash", &PauliSquash,
@@ -650,17 +652,17 @@ PYBIND11_MODULE(passes, m) {
       "\n\n:param strat: a synthesis strategy for the Pauli graph"
       "\n:param cx_config: a configuration of CXs to convert Pauli gadgets into"
       "\n:return: a pass to perform the simplification",
-      py::arg("strat") = PauliSynthStrat::Sets,
+      py::arg("strat") = Transforms::PauliSynthStrat::Sets,
       py::arg("cx_config") = CXConfigType::Snake);
   m.def(
       "SimplifyInitial",
       [](bool allow_classical, bool create_all_qubits, bool remove_redundancies,
          std::shared_ptr<const Circuit> xcirc) -> PassPtr {
         PassPtr simpinit = gen_simplify_initial(
-            allow_classical ? Transform::AllowClassical::Yes
-                            : Transform::AllowClassical::No,
-            create_all_qubits ? Transform::CreateAllQubits::Yes
-                              : Transform::CreateAllQubits::No,
+            allow_classical ? Transforms::AllowClassical::Yes
+                            : Transforms::AllowClassical::No,
+            create_all_qubits ? Transforms::CreateAllQubits::Yes
+                              : Transforms::CreateAllQubits::No,
             xcirc);
         if (remove_redundancies) {
           std::vector<PassPtr> seq = {simpinit, RemoveRedundancies()};
@@ -685,8 +687,8 @@ PYBIND11_MODULE(passes, m) {
       "ContextSimp",
       [](bool allow_classical, std::shared_ptr<const Circuit> xcirc) {
         return gen_contextual_pass(
-            allow_classical ? Transform::AllowClassical::Yes
-                            : Transform::AllowClassical::No,
+            allow_classical ? Transforms::AllowClassical::Yes
+                            : Transforms::AllowClassical::No,
             xcirc);
       },
       "Applies simplifications enabled by knowledge of qubit state and "

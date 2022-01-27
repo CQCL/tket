@@ -28,6 +28,8 @@
 #include "Ops/OpPtr.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
+#include "Transformations/OptimisationPass.hpp"
+#include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 #include "testutil.hpp"
@@ -142,7 +144,7 @@ SCENARIO("Test Circuit serialization") {
     Circuit circ(3);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {1, 0}, {1, 2}, {2, 1}});
 
-    Transform::clifford_simp().apply(circ);
+    Transforms::clifford_simp().apply(circ);
 
     REQUIRE(check_circuit(circ));
   }
@@ -580,15 +582,16 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(
       OptimisePairwiseGadgets, gen_pairwise_pauli_gadgets(CXConfigType::Tree))
   COMPPASSJSONTEST(
-      PauliSimp,
-      gen_synthesise_pauli_graph(PauliSynthStrat::Sets, CXConfigType::Tree))
+      PauliSimp, gen_synthesise_pauli_graph(
+                     Transforms::PauliSynthStrat::Sets, CXConfigType::Tree))
   COMPPASSJSONTEST(
       GuidedPauliSimp,
-      gen_special_UCC_synthesis(PauliSynthStrat::Pairwise, CXConfigType::Snake))
+      gen_special_UCC_synthesis(
+          Transforms::PauliSynthStrat::Pairwise, CXConfigType::Snake))
   COMPPASSJSONTEST(
       SimplifyInitial,
       gen_simplify_initial(
-          Transform::AllowClassical::No, Transform::CreateAllQubits::Yes,
+          Transforms::AllowClassical::No, Transforms::CreateAllQubits::Yes,
           std::make_shared<Circuit>(CircPool::X())))
   COMPPASSJSONTEST(PlacementPass, gen_placement_pass(place))
   // TKET-1419
@@ -682,11 +685,13 @@ SCENARIO("Test compiler pass serializations") {
     Circuit circ = CircuitsForTesting::get().uccsd;
     CompilationUnit cu{circ};
     CompilationUnit copy = cu;
-    PassPtr pp = PauliSquash(PauliSynthStrat::Sets, CXConfigType::Star);
+    PassPtr pp =
+        PauliSquash(Transforms::PauliSynthStrat::Sets, CXConfigType::Star);
     nlohmann::json j_pp;
     j_pp["pass_class"] = "StandardPass";
     j_pp["StandardPass"]["name"] = "PauliSquash";
-    j_pp["StandardPass"]["pauli_synth_strat"] = PauliSynthStrat::Sets;
+    j_pp["StandardPass"]["pauli_synth_strat"] =
+        Transforms::PauliSynthStrat::Sets;
     j_pp["StandardPass"]["cx_config"] = CXConfigType::Star;
     PassPtr loaded = j_pp.get<PassPtr>();
     pp->apply(cu);
@@ -700,7 +705,7 @@ SCENARIO("Test compiler pass serializations") {
     CompilationUnit cu{circ};
     CompilationUnit copy = cu;
     PassPtr pp = gen_contextual_pass(
-        Transform::AllowClassical::Yes,
+        Transforms::AllowClassical::Yes,
         std::make_shared<Circuit>(CircPool::X()));
     nlohmann::json j_pp;
     j_pp["pass_class"] = "StandardPass";

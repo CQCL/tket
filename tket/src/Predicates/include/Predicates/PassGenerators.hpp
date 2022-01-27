@@ -16,6 +16,9 @@
 
 #include "ArchAwareSynth/SteinerForest.hpp"
 #include "CompilerPass.hpp"
+#include "Transformations/ContextualReduction.hpp"
+#include "Transformations/PauliOptimisation.hpp"
+
 namespace tket {
 
 /* a wrapper method for the rebase_factory in Transforms */
@@ -144,14 +147,14 @@ PassPtr gen_pairwise_pauli_gadgets(
 /* generates an optimisation pass that converts a circuit into a graph
 of Pauli gadgets and optimises them using strategies from <paper to come> */
 PassPtr gen_synthesise_pauli_graph(
-    PauliSynthStrat strat = PauliSynthStrat::Sets,
+    Transforms::PauliSynthStrat strat = Transforms::PauliSynthStrat::Sets,
     CXConfigType cx_config = CXConfigType::Snake);
 
 /* generates an optimisation pass that converts a circuit built using
 term sequencing techniques from <paper to come> into a graph of Pauli
 gadgets and optimises them. */
 PassPtr gen_special_UCC_synthesis(
-    PauliSynthStrat strat = PauliSynthStrat::Sets,
+    Transforms::PauliSynthStrat strat = Transforms::PauliSynthStrat::Sets,
     CXConfigType cx_config = CXConfigType::Snake);
 
 /**
@@ -165,9 +168,10 @@ PassPtr gen_special_UCC_synthesis(
  *      used)
  */
 PassPtr gen_simplify_initial(
-    Transform::AllowClassical allow_classical = Transform::AllowClassical::Yes,
-    Transform::CreateAllQubits create_all_qubits =
-        Transform::CreateAllQubits::No,
+    Transforms::AllowClassical allow_classical =
+        Transforms::AllowClassical::Yes,
+    Transforms::CreateAllQubits create_all_qubits =
+        Transforms::CreateAllQubits::No,
     std::shared_ptr<const Circuit> xcirc = 0);
 
 /**
@@ -178,13 +182,14 @@ PassPtr gen_simplify_initial(
  *      used)
  */
 PassPtr gen_contextual_pass(
-    Transform::AllowClassical allow_classical = Transform::AllowClassical::Yes,
+    Transforms::AllowClassical allow_classical =
+        Transforms::AllowClassical::Yes,
     std::shared_ptr<const Circuit> xcirc = 0);
 
 /**
  * Builds a sequence of PauliSimp (gen_synthesise_pauli_graph) and
  * FullPeepholeOptimise
  */
-PassPtr PauliSquash(PauliSynthStrat strat, CXConfigType cx_config);
+PassPtr PauliSquash(Transforms::PauliSynthStrat strat, CXConfigType cx_config);
 
 }  // namespace tket

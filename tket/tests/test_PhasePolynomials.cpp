@@ -19,6 +19,8 @@
 #include "CircuitsForTesting.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Predicates/CompilerPass.hpp"
+#include "Transformations/Decomposition.hpp"
+#include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/HelperFunctions.hpp"
 #include "Utils/MatrixAnalysis.hpp"
@@ -602,7 +604,7 @@ SCENARIO("Test conversion of circuit to circuit with phase poly boxes") {
     Circuit result = circ;
 
     Transform t =
-        (Transform::rebase_UFR() >> Transform::compose_phase_poly_boxes());
+        (Transforms::rebase_UFR() >> Transforms::compose_phase_poly_boxes());
 
     REQUIRE(t.apply(circ));
     REQUIRE(circ.count_gates(OpType::X) == 0);
@@ -651,7 +653,7 @@ SCENARIO("Test conversion of circuit to circuit with phase poly boxes") {
     Circuit result = circ;
 
     Transform t =
-        (Transform::rebase_UFR() >> Transform::compose_phase_poly_boxes());
+        (Transforms::rebase_UFR() >> Transforms::compose_phase_poly_boxes());
 
     REQUIRE(t.apply(circ));
     REQUIRE(circ.count_gates(OpType::X) == 0);
@@ -700,7 +702,7 @@ SCENARIO("Test conversion of circuit to circuit with phase poly boxes") {
     Circuit result = circ;
 
     Transform t =
-        (Transform::rebase_UFR() >> Transform::compose_phase_poly_boxes());
+        (Transforms::rebase_UFR() >> Transforms::compose_phase_poly_boxes());
 
     REQUIRE(t.apply(circ));
     REQUIRE(circ.count_gates(OpType::X) == 0);
