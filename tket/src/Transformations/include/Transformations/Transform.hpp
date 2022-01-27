@@ -15,22 +15,34 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 
 #include "Circuit/Circuit.hpp"
 
 namespace tket {
 
+typedef struct {
+  unit_bimap_t initial;
+  unit_bimap_t final;
+} unit_bimaps_t;
+
 class Transform {
  public:
-  typedef std::function<bool(Circuit&)> Transformation;
+  typedef std::function<bool(Circuit&, std::shared_ptr<unit_bimaps_t>)>
+      Transformation;
+  typedef std::function<bool(Circuit&)> SimpleTransformation;
   typedef std::function<unsigned(const Circuit&)> Metric;
 
-  // the actual transformation to be applied
-  // performs transformation in place and returns true iff made some change
-  Transformation apply;  // this would ideally be `const`, but that deletes the
-                         // copy assignment operator for Transform.
+  Transformation apply_fn;
 
-  explicit Transform(const Transformation& trans) : apply(trans) {}
+  explicit Transform(const Transformation& trans) : apply_fn(trans) {}
+
+  explicit Transform(const SimpleTransformation& trans)
+      : apply_fn([=](Circuit& circ, std::shared_ptr<unit_bimaps_t>) {
+          return trans(circ);
+        }) {}
+
+  bool apply(Circuit& circ) const { return apply_fn(circ, nullptr); }
 
   friend Transform operator>>(const Transform& lhs, const Transform& rhs);
 };
@@ -38,9 +50,10 @@ class Transform {
 namespace Transforms {
 
 // identity Transform (does nothing to Circuit)
-inline const Transform id = Transform([](const Circuit&) {
-  return false;
-});  // returns `false` as it does not change the Circuit in any way
+inline const Transform id =
+    Transform([](Circuit&, std::shared_ptr<unit_bimaps_t>) {
+      return false;
+    });  // returns `false` as it does not change the Circuit in any way
 
 }  // namespace Transforms
 

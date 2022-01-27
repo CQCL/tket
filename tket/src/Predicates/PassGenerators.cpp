@@ -141,7 +141,7 @@ PassPtr gen_rename_qubits_pass(const std::map<Qubit, Qubit>& qm) {
 }
 
 PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
-  Transform::Transformation trans = [=](Circuit& circ) {
+  Transform::SimpleTransformation trans = [=](Circuit& circ) {
     // Fall back to line placement if graph placement fails
     bool changed;
     try {
@@ -202,7 +202,7 @@ PassPtr gen_cx_mapping_pass(
 }
 
 PassPtr gen_routing_pass(const Architecture& arc, const RoutingConfig& config) {
-  Transform::Transformation trans =
+  Transform::SimpleTransformation trans =
       [=](Circuit& circ) {  // this doesn't work if capture by ref for some
                             // reason....
         Routing route(circ, arc);
@@ -245,7 +245,7 @@ PassPtr gen_routing_pass(const Architecture& arc, const RoutingConfig& config) {
 }
 
 PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
-  Transform::Transformation trans = [=](Circuit& circ) {
+  Transform::SimpleTransformation trans = [=](Circuit& circ) {
     if (arc.n_nodes() < circ.n_qubits()) {
       throw CircuitInvalidity(
           "Circuit has more qubits than the architecture has nodes.");
@@ -287,7 +287,7 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
 PassPtr aas_routing_pass(
     const Architecture& arc, const unsigned lookahead,
     const aas::CNotSynthType cnotsynthtype) {
-  Transform::Transformation trans = [=](Circuit& circ) {
+  Transform::SimpleTransformation trans = [=](Circuit& circ) {
     // check input:
     if (lookahead == 0) {
       throw std::logic_error("lookahead must be > 0");
