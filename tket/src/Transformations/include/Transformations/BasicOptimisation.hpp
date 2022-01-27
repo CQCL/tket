@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include "Characterisation/ErrorTypes.hpp"
 #include "Transform.hpp"
 
 namespace tket {

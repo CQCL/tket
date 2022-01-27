@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include "Architecture/Architecture.hpp"
 #include "Transform.hpp"
 
 namespace tket {

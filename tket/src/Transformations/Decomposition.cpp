@@ -16,6 +16,7 @@
 
 #include <optional>
 
+#include "Architecture/Architecture.hpp"
 #include "BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Converters/PhasePoly.hpp"

@@ -15,16 +15,8 @@
 #pragma once
 
 #include <functional>
-#include <map>
-#include <string>
-#include <utility>
-#include <vector>
 
-#include "Architecture/Architecture.hpp"
-#include "Characterisation/ErrorTypes.hpp"
 #include "Circuit/Circuit.hpp"
-#include "Utils/Json.hpp"
-#include "Utils/PauliStrings.hpp"
 
 namespace tket {
 

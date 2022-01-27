@@ -16,6 +16,7 @@
 
 #include <optional>
 
+#include "Characterisation/ErrorTypes.hpp"
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
