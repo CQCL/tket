@@ -605,6 +605,24 @@ SCENARIO("Test compiler pass serializations") {
     nlohmann::json j_loaded = loaded;
     REQUIRE(j_pp == j_loaded);
   }
+  GIVEN("Routing with MultiGateReorderRoutingMethod") {
+    RoutingMethodPtr mrmp =
+        std::make_shared<MultiGateReorderRoutingMethod>(60, 80);
+    std::vector<RoutingMethodPtr> mrcon = {mrmp, rmp};
+    Circuit circ = CircuitsForTesting::get().uccsd;
+    CompilationUnit cu{circ};
+    PassPtr placement = gen_placement_pass(place);
+    placement->apply(cu);
+    CompilationUnit copy = cu;
+    PassPtr pp = gen_routing_pass(arc, mrcon);
+    nlohmann::json j_pp = pp;
+    PassPtr loaded = j_pp.get<PassPtr>();
+    pp->apply(cu);
+    loaded->apply(copy);
+    REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
+    nlohmann::json j_loaded = loaded;
+    REQUIRE(j_pp == j_loaded);
+  }
 #define COMPPASSDESERIALIZE(passname, pass)            \
   GIVEN(#passname) {                                   \
     Circuit circ = CircuitsForTesting::get().uccsd;    \
