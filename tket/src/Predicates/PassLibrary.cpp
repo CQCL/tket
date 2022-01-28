@@ -368,11 +368,13 @@ const PassPtr &DecomposeBridges() {
 
 const PassPtr &FlattenRegisters() {
   static const PassPtr pp([]() {
-    Transform t = Transform([](Circuit &circ) {
-      if (circ.is_simple()) return false;
-      circ.flatten_registers();
-      return true;
-    });
+    Transform t =
+        Transform([](Circuit &circ, std::shared_ptr<unit_bimaps_t> maps) {
+          if (circ.is_simple()) return false;
+          unit_map_t qmap = circ.flatten_registers();
+          update_maps(maps, qmap, qmap);
+          return true;
+        });
     PredicatePtrMap s_ps;
     PredicatePtr simple = std::make_shared<DefaultRegisterPredicate>();
     PredicatePtrMap spec_postcons{CompilationUnit::make_type_pair(simple)};
