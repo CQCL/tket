@@ -8,6 +8,8 @@ void from_json(const nlohmann::json& j, RoutingMethod& rm) {
   std::string name = j.at("name").get<std::string>();
   if (name == "LexiRouteRoutingMethod") {
     rm = LexiRouteRoutingMethod::deserialize(j);
+  } else if (name == "MultiGateReorderRoutingMethod") {
+    rm = MultiGateReorderRoutingMethod::deserialize(j);
   } else {
     throw JsonError(
         "Deserialization not yet implemented for generic RoutingMethod "
@@ -27,6 +29,9 @@ void from_json(const nlohmann::json& j, std::vector<RoutingMethodPtr>& rmp) {
     if (name == "LexiRouteRoutingMethod") {
       rmp.push_back(std::make_shared<LexiRouteRoutingMethod>(
           LexiRouteRoutingMethod::deserialize(c)));
+    } else if (name == "MultiGateReorderRoutingMethod") {
+      rmp.push_back(std::make_shared<MultiGateReorderRoutingMethod>(
+          MultiGateReorderRoutingMethod::deserialize(c)));
     } else {
       rmp.push_back(std::make_shared<RoutingMethod>(c.get<RoutingMethod>()));
     }

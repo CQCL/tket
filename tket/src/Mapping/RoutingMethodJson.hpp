@@ -2,6 +2,7 @@
 #define _TKET_RoutingMethodJson_H_
 
 #include "Mapping/LexiRoute.hpp"
+#include "Mapping/MultiGateReorder.hpp"
 #include "Mapping/RoutingMethod.hpp"
 #include "Utils/Json.hpp"
 
