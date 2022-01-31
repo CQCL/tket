@@ -1,8 +1,12 @@
 Changelog
-==================================
+=========
 
-0.19.0 (unreleased)
--------------------
+0.19.0 (February 2022)
+----------------------
+
+Major new features:
+
+* New box types for Clifford tableaux.
 
 Minor new features:
 
