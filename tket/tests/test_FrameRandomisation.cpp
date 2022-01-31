@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 #include <catch2/catch.hpp>
 
 #include "Characterisation/FrameRandomisation.hpp"
+#include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
 #include "testutil.hpp"
 
@@ -325,7 +326,7 @@ SCENARIO(
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     std::vector<Circuit> all_circuits = ufr.get_all_circuits(circ);
     REQUIRE(all_circuits.size() == 256);
-    Transform::rebase_UFR().apply(circ);
+    Transforms::rebase_UFR().apply(circ);
     all_circuits = ufr.get_all_circuits(circ);
     REQUIRE(all_circuits.size() == 16);
   }

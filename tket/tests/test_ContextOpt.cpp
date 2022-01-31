@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -96,7 +96,7 @@ SCENARIO("Create and Discard operations") {
     c.qubit_discard(q[1]);
     REQUIRE(c.count_gates(OpType::CX) == 3);
     REQUIRE(c.count_gates(OpType::H) == 2);
-    REQUIRE(Transform::remove_discarded_ops().apply(c));
+    REQUIRE(Transforms::remove_discarded_ops().apply(c));
     REQUIRE(c.count_gates(OpType::CX) == 2);
     // The H on qubit 2 should remain because it hasn't been discarded.
     REQUIRE(c.count_gates(OpType::H) == 1);
@@ -120,7 +120,7 @@ SCENARIO("Create and Discard operations") {
     c.add_op<unsigned>(OpType::X, {1});
     c.add_op<unsigned>(OpType::Y, {2});
     c.add_op<unsigned>(OpType::SWAP, {1, 2});
-    REQUIRE(Transform::simplify_initial().apply(c));
+    REQUIRE(Transforms::simplify_initial().apply(c));
     REQUIRE(c.count_gates(OpType::H) == 3);
     REQUIRE(c.count_gates(OpType::X) == 7);
     REQUIRE(c.count_gates(OpType::Y) == 0);
@@ -148,7 +148,7 @@ SCENARIO("Create and Discard operations") {
     c.add_op<unsigned>(OpType::Y, {2});
     c.add_op<unsigned>(OpType::SWAP, {1, 2});
     const auto s = tket_sim::get_statevector(c);
-    REQUIRE(Transform::simplify_initial().apply(c));
+    REQUIRE(Transforms::simplify_initial().apply(c));
     const auto s1 = tket_sim::get_statevector(c);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(
         s, s1, tket_sim::MatrixEquivalence::EQUAL_UP_TO_GLOBAL_PHASE));
@@ -162,9 +162,10 @@ SCENARIO("Create and Discard operations") {
     c.add_op<unsigned>(OpType::Y, {1});
     c.add_op<unsigned>(OpType::Z, {2});
     const auto s = tket_sim::get_statevector(c);
-    REQUIRE(Transform::simplify_initial(
-                Transform::AllowClassical::Yes, Transform::CreateAllQubits::Yes)
-                .apply(c));
+    REQUIRE(
+        Transforms::simplify_initial(
+            Transforms::AllowClassical::Yes, Transforms::CreateAllQubits::Yes)
+            .apply(c));
     REQUIRE(c.count_gates(OpType::CH) == 0);
     REQUIRE(c.count_gates(OpType::CX) == 0);
     REQUIRE(c.count_gates(OpType::H) == 1);
@@ -184,7 +185,7 @@ SCENARIO("Create and Discard operations") {
     c.add_op<unsigned>(OpType::X, {0});
     c.add_op<unsigned>(OpType::X, {1});
     c.add_op<unsigned>(OpType::ESWAP, 0.25, {0, 1});
-    REQUIRE(Transform::simplify_initial().apply(c));
+    REQUIRE(Transforms::simplify_initial().apply(c));
     REQUIRE(c.count_gates(OpType::H) == 2);
     REQUIRE(c.count_gates(OpType::Reset) == 2);
     REQUIRE(c.count_gates(OpType::X) == 2);
@@ -198,7 +199,7 @@ SCENARIO("Create and Discard operations") {
     c.qubit_create_all();
     c.add_op<unsigned>(OpType::X, {1});
     c.add_box(ubox, {0, 1});
-    REQUIRE(Transform::simplify_initial().apply(c));
+    REQUIRE(Transforms::simplify_initial().apply(c));
     REQUIRE(c.count_gates(OpType::X) == 2);
     REQUIRE(c.count_gates(OpType::Unitary2qBox) == 0);
   }
@@ -226,9 +227,10 @@ SCENARIO("Create and Discard operations") {
     Circuit c(2);
     c.add_op<unsigned>(OpType::X, {1});
     c.add_box(ubox, {0, 1});
-    REQUIRE(Transform::simplify_initial(
-                Transform::AllowClassical::Yes, Transform::CreateAllQubits::Yes)
-                .apply(c));
+    REQUIRE(
+        Transforms::simplify_initial(
+            Transforms::AllowClassical::Yes, Transforms::CreateAllQubits::Yes)
+            .apply(c));
     REQUIRE(c.count_gates(OpType::X) == 2);
     REQUIRE(c.count_gates(OpType::Unitary2qBox) == 0);
   }
@@ -238,7 +240,7 @@ SCENARIO("Create and Discard operations") {
     c.add_op<unsigned>(OpType::X, {0});
     c.add_op<unsigned>(OpType::Measure, {0, 0});
     c.qubit_discard_all();
-    REQUIRE(Transform::simplify_measured().apply(c));
+    REQUIRE(Transforms::simplify_measured().apply(c));
     REQUIRE(c.count_gates(OpType::H) == 1);
     REQUIRE(c.count_gates(OpType::X) == 0);
     REQUIRE(c.count_gates(OpType::Measure) == 1);
@@ -251,7 +253,7 @@ SCENARIO("Create and Discard operations") {
     c.add_op<unsigned>(OpType::Measure, {0, 0});
     c.add_op<unsigned>(OpType::Measure, {1, 1});
     c.qubit_discard_all();
-    REQUIRE(Transform::simplify_measured().apply(c));
+    REQUIRE(Transforms::simplify_measured().apply(c));
     REQUIRE(c.count_gates(OpType::H) == 1);
     REQUIRE(c.count_gates(OpType::CX) == 0);
     REQUIRE(c.count_gates(OpType::Measure) == 2);
@@ -264,7 +266,7 @@ SCENARIO("Create and Discard operations") {
     c.add_op<unsigned>(OpType::Measure, {0, 0});
     c.add_op<unsigned>(OpType::Measure, {1, 1});
     c.qubit_discard(Qubit(0));
-    REQUIRE(!Transform::simplify_measured().apply(c));
+    REQUIRE(!Transforms::simplify_measured().apply(c));
   }
   GIVEN("A circuit with a measurement on a known basis state") {
     Circuit c(2, 1);
@@ -272,7 +274,7 @@ SCENARIO("Create and Discard operations") {
     c.add_op<unsigned>(OpType::X, {0});
     c.add_op<unsigned>(OpType::Measure, {0, 0});
     c.add_conditional_gate<unsigned>(OpType::H, {}, {1}, {0}, 1);
-    REQUIRE(Transform::simplify_initial().apply(c));
+    REQUIRE(Transforms::simplify_initial().apply(c));
     REQUIRE(c.count_gates(OpType::X) == 1);
     REQUIRE(c.count_gates(OpType::Measure) == 0);
     REQUIRE(c.count_gates(OpType::SetBits) == 1);
@@ -306,7 +308,7 @@ SCENARIO("Contextual optimization") {
     REQUIRE(c1.count_gates(OpType::Measure) == 2);
     REQUIRE(c1.count_gates(OpType::SetBits) == 1);
     REQUIRE(c1.count_gates(OpType::ClassicalTransform) == 2);
-    auto [c0, ppc] = separate_classical(c1);
+    auto [c0, ppc] = Transforms::separate_classical(c1);
     REQUIRE(c0.count_gates(OpType::H) == 2);
     REQUIRE(c0.count_gates(OpType::Measure) == 2);
     REQUIRE(ppc.count_gates(OpType::SetBits) == 1);
@@ -322,7 +324,7 @@ SCENARIO("Contextual optimization") {
     c.qubit_discard_all();
     CompilationUnit cu(c);
     REQUIRE(gen_contextual_pass()->apply(cu));
-    auto [c0, ppc] = separate_classical(cu.get_circ_ref());
+    auto [c0, ppc] = Transforms::separate_classical(cu.get_circ_ref());
     // ppc should set Bit(1) to the value of Bit(0)
     std::map<Bit, bool> values;
     for (unsigned n = 0; n < 4; n++) {

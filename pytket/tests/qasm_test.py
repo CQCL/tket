@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -334,6 +334,15 @@ def test_builtin_gates() -> None:
     assert "U3(0, 0, 1.75) q[2];" in str(c.get_commands())
 
 
+def test_new_qelib1_aliases() -> None:
+    # Check that aliases added to qelib1 parse into an equivalent instruction.
+    fname = str(curr_file_path / "qasm_test_files/test16.qasm")
+    c = circuit_from_qasm(fname)
+    commands_str = str(c.get_commands())
+    assert "U1(0) q[0]" in commands_str
+    assert "U3(0, 0, 0) q[0]" in commands_str
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
@@ -348,3 +357,4 @@ if __name__ == "__main__":
     test_input_error_modes()
     test_output_error_modes()
     test_builtin_gates()
+    test_new_qelib1_aliases()

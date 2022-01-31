@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,10 @@
 #include "../testutil.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Ops/ClassicalOps.hpp"
+#include "Transformations/BasicOptimisation.hpp"
+#include "Transformations/CliffordOptimisation.hpp"
+#include "Transformations/PauliOptimisation.hpp"
+#include "Transformations/PhaseOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 
 namespace tket {
@@ -281,7 +285,7 @@ SCENARIO("Remove redundancies on a circuit with classical controls") {
       "remove_redundancies") {
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
-    REQUIRE(!Transform::remove_redundancies().apply(circ));
+    REQUIRE(!Transforms::remove_redundancies().apply(circ));
     circ.assert_valid();
     REQUIRE(circ.n_gates() == 2);
   }
@@ -299,20 +303,20 @@ SCENARIO(
     WHEN(
         "Pauli gadget optimisation does not throw on simple unitary "
         "circuit") {
-      REQUIRE_NOTHROW(Transform::pairwise_pauli_gadgets().apply(circ));
+      REQUIRE_NOTHROW(Transforms::pairwise_pauli_gadgets().apply(circ));
     }
     WHEN(
         "Pauli gadget optimisation does throw on classically controlled "
         "circuit") {
       circ.add_conditional_gate<unsigned>(OpType::CX, {}, {3, 2}, {0}, 0);
       REQUIRE_THROWS_AS(
-          Transform::pairwise_pauli_gadgets().apply(circ), CircuitInvalidity);
+          Transforms::pairwise_pauli_gadgets().apply(circ), CircuitInvalidity);
     }
     WHEN(
         "Pauli gadget optimisation does not throw on circuit with "
         "measures at the end") {
       circ.add_measure(0, 0);
-      REQUIRE_NOTHROW(Transform::pairwise_pauli_gadgets().apply(circ));
+      REQUIRE_NOTHROW(Transforms::pairwise_pauli_gadgets().apply(circ));
       circ.assert_valid();
     }
   }
@@ -323,7 +327,7 @@ SCENARIO(
       circ.add_op<unsigned>(OpType::CX, {0, 1});
       circ.add_op<unsigned>(OpType::PhaseGadget, 0.3, {1, 2, 3, 4});
       circ.add_op<unsigned>(OpType::CX, {0, 1});
-      REQUIRE(Transform::smash_CX_PhaseGadgets().apply(circ));
+      REQUIRE(Transforms::smash_CX_PhaseGadgets().apply(circ));
       REQUIRE(circ.n_gates() == 1);
       REQUIRE(circ.count_gates(OpType::PhaseGadget) == 1);
     }
@@ -331,13 +335,13 @@ SCENARIO(
       circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
       circ.add_op<unsigned>(OpType::PhaseGadget, 0.3, {1, 2, 3, 4});
       circ.add_op<unsigned>(OpType::CX, {0, 1});
-      REQUIRE(!Transform::smash_CX_PhaseGadgets().apply(circ));
+      REQUIRE(!Transforms::smash_CX_PhaseGadgets().apply(circ));
     }
     WHEN("Add classical wire to second cx") {
       circ.add_op<unsigned>(OpType::CX, {0, 1});
       circ.add_op<unsigned>(OpType::PhaseGadget, 0.3, {1, 2, 3, 4});
       circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
-      REQUIRE(!Transform::smash_CX_PhaseGadgets().apply(circ));
+      REQUIRE(!Transforms::smash_CX_PhaseGadgets().apply(circ));
       circ.assert_valid();
     }
   }
@@ -349,12 +353,12 @@ SCENARIO("PI-copy rule") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     WHEN("Do pi copy rule") {
       circ.add_op<unsigned>(OpType::X, {0});
-      REQUIRE(Transform::singleq_clifford_sweep().apply(circ));
+      REQUIRE(Transforms::singleq_clifford_sweep().apply(circ));
       REQUIRE(circ.n_gates() == 3);
     }
     WHEN("Add classical wires") {
       circ.add_conditional_gate<unsigned>(OpType::X, {}, uvec{0}, {0}, 1);
-      REQUIRE(!Transform::singleq_clifford_sweep().apply(circ));
+      REQUIRE(!Transforms::singleq_clifford_sweep().apply(circ));
       circ.assert_valid();
     }
   }

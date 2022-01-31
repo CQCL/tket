@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -76,7 +76,7 @@ void init_circuit(py::module &m) {
           py::init<unsigned, unsigned, std::optional<std::string>>(),
           "Constructs a circuit with a given number of quantum and "
           "classical bits\n\n:param n_qubits: The number of qubits in "
-          "the circuit\n:param c_bits: The number of classical bits in "
+          "the circuit\n:param n_bits: The number of classical bits in "
           "the circuit\n:param name: Optional name for the circuit.",
           py::arg("n_qubits"), py::arg("n_bits"),
           py::arg("name") = std::nullopt)
@@ -604,8 +604,7 @@ void init_circuit(py::module &m) {
           py::arg("box"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const CompositeGate &box,
-             const std::string opgroup) {
+          [](Circuit &circ, const CustomGate &box, const std::string opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."

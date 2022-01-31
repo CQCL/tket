@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -57,6 +57,17 @@ curr_file_path = Path(__file__).resolve().parent
 
 with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
     schema = json.load(f)
+
+
+def test_op_free_symbols() -> None:
+    c = Circuit(2)
+    c.add_barrier([0, 1])
+    op = c.get_commands()[0].op
+    assert op.free_symbols() == set()
+    alpha = Symbol("alpha")
+    c.Rx(alpha, 0)
+    op = c.get_commands()[1].op
+    assert op.free_symbols() == {alpha}
 
 
 def test_circuit_transpose() -> None:
@@ -677,6 +688,23 @@ def test_op_dagger_transpose() -> None:
     assert sx.transpose == sx
 
 
+def test_clifford_checking() -> None:
+    c = Circuit(2, 1)
+    c.H(0).CX(0, 1).T(1).Rz(0.5, 1).Rz(0.3, 1).Measure(1, 0)
+    h = c.get_commands()[0].op
+    assert h.is_clifford_type()
+    cx = c.get_commands()[1].op
+    assert cx.is_clifford_type()
+    t = c.get_commands()[2].op
+    assert t.is_clifford_type() == False
+    rz1 = c.get_commands()[3].op
+    assert rz1.is_clifford_type() == False
+    rz2 = c.get_commands()[4].op
+    assert rz2.is_clifford_type() == False
+    m = c.get_commands()[5].op
+    assert m.is_clifford_type() == False
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
@@ -686,3 +714,4 @@ if __name__ == "__main__":
     test_errors()
     test_str()
     test_phase()
+    test_clifford_checking()

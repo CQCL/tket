@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,7 +36,7 @@ static GatesData get_data() {
   };
   data.input_data[1][3] = {
       OpType::U3,
-      OpType::tk1,
+      OpType::TK1,
   };
   data.input_data[2][0] = {
       OpType::CX,   OpType::CY,    OpType::CZ,       OpType::CH,

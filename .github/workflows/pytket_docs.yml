@@ -13,7 +13,7 @@ jobs:
       PYTKET_SKIP_REGISTRATION: "true"
     strategy:
       matrix:
-        python-version: [3.8]
+        python-version: ['3.9']
     steps:
     - uses: actions/checkout@v2
       with:
@@ -56,6 +56,7 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect
+        conan profile update options.tket:shared=True tket
         conan profile update settings.compiler.libcxx=libstdc++11 tket
     - name: Build symengine
       run: conan create --profile=tket recipes/symengine

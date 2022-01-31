@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -68,6 +68,8 @@ NOPARAM_COMMANDS = {
 }
 
 PARAM_COMMANDS = {
+    "p": OpType.U1,  # alias. https://github.com/Qiskit/qiskit-terra/pull/4765
+    "u": OpType.U3,  # alias. https://github.com/Qiskit/qiskit-terra/pull/4765
     "U": OpType.U3,  # built-in gate equivalent to "u3"
     "u3": OpType.U3,
     "u2": OpType.U2,
@@ -108,7 +110,9 @@ included_gates = {
             "reset",
             "id",
             "barrier",
+            "p",
             "U",
+            "u",
             "u3",
             "u2",
             "u1",
@@ -501,7 +505,7 @@ def circuit_to_qasm_io(
             # attach predicate to bit,
             # subsequent conditional will handle it
             continue
-        if optype == OpType.ConditionalGate:
+        if optype == OpType.Conditional:
             bits = args[: op.width]
             control_bit = bits[0]
             if control_bit in range_preds:

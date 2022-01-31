@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -365,7 +365,7 @@ def reg_const_predicates(
 
 
 @given(condition=strategies.one_of(bit_const_predicates(), reg_const_predicates()))
-@settings(print_blob=True)
+@settings(print_blob=True, deadline=None)
 def test_const_predicate(condition: ConstPredicate) -> None:
     assert isinstance(condition, ConstPredicate)
     # test serialization round trip here

@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -29,11 +29,6 @@ namespace pybind11 {
 
 namespace detail {
 
-static const module& sympy() {
-  static const module sympy_ = module::import("sympy");
-  return sympy_;
-}
-
 template <>
 struct type_caster<SymEngine::Expression> {
  public:
@@ -54,36 +49,37 @@ struct type_caster<SymEngine::Expression> {
     return arg_tuple;
   }
   static tket::Expr sympy_to_expr(handle py_expr) {
-    handle numbers = sympy().attr("core").attr("numbers");
+    pybind11::module sympy = pybind11::module::import("sympy");
+    handle numbers = sympy.attr("core").attr("numbers");
 
-    if (isinstance(py_expr, sympy().attr("Symbol"))) {
+    if (isinstance(py_expr, sympy.attr("Symbol"))) {
       handle name = py_expr.attr("name");
       tket::Sym sym = SymEngine::symbol(name.cast<std::string>());
       return tket::Expr(sym);
-    } else if (isinstance(py_expr, sympy().attr("Mul"))) {
+    } else if (isinstance(py_expr, sympy.attr("Mul"))) {
       tuple arg_tuple = py_expr.attr("args");
       tket::Expr res(1);
       for (handle elem : arg_tuple) {
         res *= sympy_to_expr(elem);
       }
       return res;
-    } else if (isinstance(py_expr, sympy().attr("Add"))) {
+    } else if (isinstance(py_expr, sympy.attr("Add"))) {
       tuple arg_tuple = py_expr.attr("args");
       tket::Expr res(0);
       for (handle elem : arg_tuple) {
         res += sympy_to_expr(elem);
       }
       return res;
-    } else if (isinstance(py_expr, sympy().attr("Pow"))) {
+    } else if (isinstance(py_expr, sympy.attr("Pow"))) {
       tuple arg_tuple = get_checked_args(py_expr, 2);
       return SymEngine::pow(
           sympy_to_expr(arg_tuple[0]), sympy_to_expr(arg_tuple[1]));
-    } else if (isinstance(py_expr, sympy().attr("Integer"))) {
+    } else if (isinstance(py_expr, sympy.attr("Integer"))) {
       return tket::Expr(py_expr.attr("p").cast<long>());
-    } else if (isinstance(py_expr, sympy().attr("Rational"))) {
+    } else if (isinstance(py_expr, sympy.attr("Rational"))) {
       return tket::Expr(py_expr.attr("p").cast<long>()) /
              tket::Expr(py_expr.attr("q").cast<long>());
-    } else if (isinstance(py_expr, sympy().attr("Float"))) {
+    } else if (isinstance(py_expr, sympy.attr("Float"))) {
       return tket::Expr(repr(py_expr));
     } else if (isinstance(py_expr, numbers.attr("ImaginaryUnit"))) {
       return tket::Expr(SymEngine::I);
@@ -101,12 +97,12 @@ struct type_caster<SymEngine::Expression> {
       return tket::Expr(SymEngine::Nan);
     }
 // functions with a single argument that have an equivalent in symengine
-#define SECONVERT(engmeth, pyclass)                       \
-  else if (isinstance(py_expr, sympy().attr(#pyclass))) { \
-    tuple arg_tuple = get_checked_args(py_expr, 1);       \
-    tket::Expr the_arg = sympy_to_expr(arg_tuple[0]);     \
-    tket::ExprPtr res = SymEngine::engmeth(the_arg);      \
-    return tket::Expr(res);                               \
+#define SECONVERT(engmeth, pyclass)                     \
+  else if (isinstance(py_expr, sympy.attr(#pyclass))) { \
+    tuple arg_tuple = get_checked_args(py_expr, 1);     \
+    tket::Expr the_arg = sympy_to_expr(arg_tuple[0]);   \
+    tket::ExprPtr res = SymEngine::engmeth(the_arg);    \
+    return tket::Expr(res);                             \
   }
     SECONVERT(log, log)
     SECONVERT(conjugate, conjugate)
@@ -138,7 +134,7 @@ struct type_caster<SymEngine::Expression> {
     SECONVERT(erfc, erfc)
     SECONVERT(abs, Abs)
 #undef SECONVERT
-    else if (isinstance(py_expr, sympy().attr("atan2"))) {
+    else if (isinstance(py_expr, sympy.attr("atan2"))) {
       tuple arg_tuple = get_checked_args(py_expr, 2);
       return SymEngine::atan2(
           sympy_to_expr(arg_tuple[0]), sympy_to_expr(arg_tuple[1]));
@@ -150,7 +146,8 @@ struct type_caster<SymEngine::Expression> {
     }
   }
   bool load(handle src, bool) {
-    if (isinstance(src, sympy().attr("Expr"))) {
+    pybind11::module sympy = pybind11::module::import("sympy");
+    if (isinstance(src, sympy.attr("Expr"))) {
       value = sympy_to_expr(src);
       return true;
     } else {
@@ -164,11 +161,12 @@ struct type_caster<SymEngine::Expression> {
     return false;
   }
   static object basic_to_sympy(const tket::ExprPtr& e_) {
+    pybind11::module sympy = pybind11::module::import("sympy");
     switch (e_->get_type_code()) {
       case SymEngine::TypeID::SYMENGINE_SYMBOL: {
         const SymEngine::Symbol* s =
             dynamic_cast<const SymEngine::Symbol*>(e_.get());
-        return sympy().attr("Symbol")(s->get_name());
+        return sympy.attr("Symbol")(s->get_name());
       }
       case SymEngine::TypeID::SYMENGINE_MUL: {
         const SymEngine::Mul* m = dynamic_cast<const SymEngine::Mul*>(e_.get());
@@ -176,7 +174,7 @@ struct type_caster<SymEngine::Expression> {
         const SymEngine::map_basic_basic d = m->get_dict();
         for (SymEngine::map_basic_basic::const_iterator i = d.begin();
              i != d.end(); i++) {
-          res = res * sympy().attr("Pow")(
+          res = res * sympy.attr("Pow")(
                           basic_to_sympy(i->first), basic_to_sympy(i->second));
         }
         return res;
@@ -193,7 +191,7 @@ struct type_caster<SymEngine::Expression> {
       }
       case SymEngine::TypeID::SYMENGINE_POW: {
         const SymEngine::Pow* p = dynamic_cast<const SymEngine::Pow*>(e_.get());
-        return sympy().attr("Pow")(
+        return sympy.attr("Pow")(
             basic_to_sympy(p->get_base()), basic_to_sympy(p->get_exp()));
       }
       case SymEngine::TypeID::SYMENGINE_INTEGER: {
@@ -204,7 +202,7 @@ struct type_caster<SymEngine::Expression> {
       case SymEngine::TypeID::SYMENGINE_RATIONAL: {
         const SymEngine::Rational* r =
             dynamic_cast<const SymEngine::Rational*>(e_.get());
-        return sympy().attr("Rational")(
+        return sympy.attr("Rational")(
             basic_to_sympy(r->get_num()), basic_to_sympy(r->get_den()));
       }
       case SymEngine::TypeID::SYMENGINE_REAL_DOUBLE: {
@@ -217,17 +215,16 @@ struct type_caster<SymEngine::Expression> {
         const SymEngine::ComplexBase* c =
             dynamic_cast<const SymEngine::ComplexBase*>(e_.get());
         return basic_to_sympy(c->real_part()) +
-               ((object)sympy().attr("I")) *
-                   basic_to_sympy(c->imaginary_part());
+               ((object)sympy.attr("I")) * basic_to_sympy(c->imaginary_part());
       }
       case SymEngine::TypeID::SYMENGINE_CONSTANT: {
         const SymEngine::Constant* c =
             dynamic_cast<const SymEngine::Constant*>(e_.get());
         std::string name = c->get_name();
         if (name == "E") {
-          return sympy().attr("E");
+          return sympy.attr("E");
         } else if (name == "pi") {
-          return sympy().attr("pi");
+          return sympy.attr("pi");
         } else {
           throw tket::NotImplemented(
               "Unable to convert SymEngine constant " + name);
@@ -237,22 +234,22 @@ struct type_caster<SymEngine::Expression> {
         const SymEngine::Infty* i =
             dynamic_cast<const SymEngine::Infty*>(e_.get());
         if (i->is_positive()) {
-          return sympy().attr("oo");
+          return sympy.attr("oo");
         } else if (i->is_negative()) {
-          return -sympy().attr("oo");
+          return -sympy.attr("oo");
         } else {
-          return sympy().attr("zoo");
+          return sympy.attr("zoo");
         }
       }
       case SymEngine::TypeID::SYMENGINE_NOT_A_NUMBER: {
-        return sympy().attr("nan");
+        return sympy.attr("nan");
       }
 // functions with a single argument that have an equivalent in sympy
-#define SYMCONVERT(symid, symclass, sympyname)                     \
-  case SymEngine::TypeID::SYMENGINE_##symid: {                     \
-    const SymEngine::symclass* x =                                 \
-        dynamic_cast<const SymEngine::symclass*>(e_.get());        \
-    return sympy().attr(#sympyname)(basic_to_sympy(x->get_arg())); \
+#define SYMCONVERT(symid, symclass, sympyname)                   \
+  case SymEngine::TypeID::SYMENGINE_##symid: {                   \
+    const SymEngine::symclass* x =                               \
+        dynamic_cast<const SymEngine::symclass*>(e_.get());      \
+    return sympy.attr(#sympyname)(basic_to_sympy(x->get_arg())); \
   }
         SYMCONVERT(LOG, Log, log)
         SYMCONVERT(CONJUGATE, Conjugate, conjugate)
@@ -287,7 +284,7 @@ struct type_caster<SymEngine::Expression> {
       case SymEngine::TypeID::SYMENGINE_ATAN2: {
         const SymEngine::ATan2* a =
             dynamic_cast<const SymEngine::ATan2*>(e_.get());
-        return sympy().attr("atan2")(
+        return sympy.attr("atan2")(
             basic_to_sympy(a->get_num()), basic_to_sympy(a->get_den()));
       }
       default: {
@@ -314,14 +311,16 @@ struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
  public:
   PYBIND11_TYPE_CASTER(SymEngine::RCP<const SymEngine::Symbol>, _("Symbol"));
   bool load(handle src, bool) {
-    if (!isinstance(src, sympy().attr("Symbol"))) return false;
+    pybind11::module sympy = pybind11::module::import("sympy");
+    if (!isinstance(src, sympy.attr("Symbol"))) return false;
     value = SymEngine::symbol(repr(src));
     return true;
   }
   static handle cast(
       SymEngine::RCP<const SymEngine::Symbol> src,
       return_value_policy /* policy */, handle /* parent */) {
-    return sympy().attr("Symbol")(src->get_name()).release();
+    pybind11::module sympy = pybind11::module::import("sympy");
+    return sympy.attr("Symbol")(src->get_name()).release();
   }
 };
 }  // namespace detail

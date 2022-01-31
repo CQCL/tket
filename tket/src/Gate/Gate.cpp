@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -122,10 +122,10 @@ Op_ptr Gate::dagger() const {
     case OpType::CU3:
       // U3(a,b,c).dagger() == U3(-a,-c.-b)
       { return get_op_ptr(optype, {-params_[0], -params_[2], -params_[1]}); }
-    case OpType::tk1:
-      // tk1(a,b,c).dagger() == tk1(-c,-b,-a)
+    case OpType::TK1:
+      // TK1(a,b,c).dagger() == TK1(-c,-b,-a)
       {
-        return get_op_ptr(OpType::tk1, {-params_[2], -params_[1], -params_[0]});
+        return get_op_ptr(OpType::TK1, {-params_[2], -params_[1], -params_[0]});
       }
     case OpType::PhasedX:
     case OpType::NPhasedX:
@@ -200,9 +200,9 @@ Op_ptr Gate::transpose() const {
       // U3(a,b,c).transpose() == U3(-a,c,b)
       return get_op_ptr(OpType::U3, {-params_[0], params_[2], params_[1]});
     }
-    case OpType::tk1: {
-      // tk1(a,b,c).transpose() == tk1(c,b,a)
-      return get_op_ptr(OpType::tk1, {params_[2], params_[1], params_[0]});
+    case OpType::TK1: {
+      // TK1(a,b,c).transpose() == TK1(c,b,a)
+      return get_op_ptr(OpType::TK1, {params_[2], params_[1], params_[0]});
     }
     case OpType::PhasedX:
     case OpType::NPhasedX: {
@@ -274,7 +274,7 @@ std::optional<double> Gate::is_identity() const {
       } else
         return notid;
     }
-    case OpType::tk1: {
+    case OpType::TK1: {
       Expr s = params[0] + params[2], t = params[1];
       if (equiv_0(s) && equiv_0(t)) {
         return (equiv_0(s, 4) ^ equiv_0(t, 4)) ? 1. : 0.;
@@ -377,67 +377,73 @@ std::vector<Expr> Gate::get_params_reduced() const {
 }
 
 std::vector<Expr> Gate::get_tk1_angles() const {
+  const Expr half =
+      SymEngine::div(SymEngine::integer(1), SymEngine::integer(2));
+  const Expr quarter =
+      SymEngine::div(SymEngine::integer(1), SymEngine::integer(4));
+  const Expr eighth =
+      SymEngine::div(SymEngine::integer(1), SymEngine::integer(8));
   switch (get_type()) {
     case OpType::noop: {
-      return {0., 0., 0., 0.};
+      return {0, 0, 0, 0};
     }
     case OpType::Z: {
-      return {0., 0., 1., 0.5};
+      return {0, 0, 1, half};
     }
     case OpType::X: {
-      return {0., 1., 0., 0.5};
+      return {0, 1, 0, half};
     }
     case OpType::Y: {
-      return {0.5, 1., -0.5, 0.5};
+      return {half, 1, -half, half};
     }
     case OpType::S: {
-      return {0., 0., 0.5, 0.25};
+      return {0, 0, half, quarter};
     }
     case OpType::Sdg: {
-      return {0., 0., -0.5, -0.25};
+      return {0, 0, -half, -quarter};
     }
     case OpType::T: {
-      return {0., 0., 0.25, 0.125};
+      return {0, 0, quarter, eighth};
     }
     case OpType::Tdg: {
-      return {0., 0., -0.25, -0.125};
+      return {0, 0, -quarter, -eighth};
     }
     case OpType::V: {
-      return {0., 0.5, 0., 0.};
+      return {0, half, 0, 0};
     }
     case OpType::Vdg: {
-      return {0., -0.5, -0., 0.};
+      return {0, -half, 0, 0};
     }
     case OpType::SX: {
-      return {0., 0.5, 0., 0.25};
+      return {0, half, 0, quarter};
     }
     case OpType::SXdg: {
-      return {0., -0.5, 0., -0.25};
+      return {0, -half, 0, -quarter};
     }
     case OpType::H: {
-      return {0.5, 0.5, 0.5, 0.5};
+      return {half, half, half, half};
     }
     case OpType::Rx: {
-      return {0., params_.at(0), 0., 0.};
+      return {0, params_.at(0), 0, 0};
     }
     case OpType::Ry: {
-      return {0.5, params_.at(0), -0.5, 0.};
+      return {half, params_.at(0), -half, 0};
     }
     case OpType::Rz:
     case OpType::PhaseGadget: {
-      return {0., 0., params_.at(0), 0.};
+      return {0, 0, params_.at(0), 0};
     }
     case OpType::U1: {
-      return {0., 0., params_.at(0), params_.at(0) / 2};
+      return {0, 0, params_.at(0), params_.at(0) / 2};
     }
     case OpType::U2: {
       return {
-          params_.at(0) + 0.5, 0.5, params_.at(1) - 0.5,
+          params_.at(0) + half, half, params_.at(1) - half,
           (params_.at(0) + params_.at(1)) / 2};
     }
     case OpType::U3: {
       return {
-          params_.at(1) + 0.5, params_.at(0), params_.at(2) - 0.5,
+          params_.at(1) + half, params_.at(0), params_.at(2) - half,
           (params_.at(1) + params_.at(2)) / 2};
     }
     case OpType::NPhasedX: {
@@ -446,17 +452,17 @@ std::vector<Expr> Gate::get_tk1_angles() const {
             "OpType::NPhasedX can only be decomposed into a TK1 "
             "if it acts on a single qubit");
       }
-      return {params_.at(1), params_.at(0), -params_.at(1), 0.};
+      return {params_.at(1), params_.at(0), -params_.at(1), 0};
     }
     case OpType::PhasedX: {
-      return {params_.at(1), params_.at(0), -params_.at(1), 0.};
+      return {params_.at(1), params_.at(0), -params_.at(1), 0};
     }
-    case OpType::tk1: {
-      return {params_.at(0), params_.at(1), params_.at(2), 0.};
+    case OpType::TK1: {
+      return {params_.at(0), params_.at(1), params_.at(2), 0};
     }
     default: {
       throw NotImplemented(
-          "Cannot retrieve the tk1 angles of OpType::" + get_desc().name());
+          "Cannot retrieve the TK1 angles of OpType::" + get_desc().name());
     }
   }
 }
@@ -499,7 +505,7 @@ std::optional<Pauli> Gate::commuting_basis(port_t port) const {
     case OpType::U2:
     case OpType::PhasedX:
     case OpType::NPhasedX:
-    case OpType::tk1: {
+    case OpType::TK1: {
       return std::nullopt;
     }
     case OpType::CH:

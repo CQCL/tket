@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,7 +22,6 @@ from pytket._tket.circuit import (  # type: ignore
     Circuit,
     Command,
     Op,
-    QControlBox,
     ExpBox,
     BitRegister,
     QubitRegister,
@@ -215,7 +214,7 @@ def has_gate_info(op_type: str) -> bool:
         "ClassicalExpBox",
         "Custom",
         "CircBox",
-        "ConditionalGate",
+        "Conditional",
         "QControlBox",
     }
 
@@ -281,7 +280,7 @@ def is_control_gate(op_type: str) -> bool:
         "CCX",
         "Control",
         "QControlBox",
-        "ConditionalGate",
+        "Conditional",
     }
 
 
@@ -323,7 +322,7 @@ def get_op_name(op_type: str, operation: Optional[Op]) -> Tuple[str, Optional[Op
             if control_type == "QControlBox":
                 sub_op = op.get_op()
                 return sub_op.type.name, sub_op
-            elif control_type == "ConditionalGate":
+            elif control_type == "Conditional":
                 return op.op.type.name, op.op
         return "Unknown", None
 
@@ -376,9 +375,7 @@ def get_controlled_ops(op_type: str, command: Command) -> int:
         return 2
     elif op_type == "QControlBox":
         return int(command.op.get_n_controls())
-    elif op_type == "Control" and isinstance(command.op.box, QControlBox):
-        return int(command.op.box.n_controls)
-    elif op_type == "ConditionalGate":
+    elif op_type == "Conditional":
         return int(command.op.width)
 
     return 0

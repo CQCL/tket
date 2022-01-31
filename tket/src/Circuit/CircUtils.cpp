@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ namespace tket {
 
 Eigen::Matrix2cd get_matrix(const Circuit &circ, const Vertex &vert) {
   const Op_ptr op = circ.get_Op_ptr_from_Vertex(vert);
-  if (op->get_type() != OpType::tk1) {
+  if (op->get_type() != OpType::TK1) {
     throw NotImplemented(
         "Cannot obtain matrix from gate: " + op->get_name() +
         ". Try rebasing to tket's internal representation.");
@@ -156,10 +156,10 @@ Circuit two_qubit_canonical(const Eigen::Matrix4cd &U, double cx_fidelity) {
   if (gates.empty()) {
     std::vector<double> angles_q0 = tk1_angles_from_unitary(K1a * K2a);
     result.add_op<unsigned>(
-        OpType::tk1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
+        OpType::TK1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
     std::vector<double> angles_q1 = tk1_angles_from_unitary(K1b * K2b);
     result.add_op<unsigned>(
-        OpType::tk1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
+        OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
   }
   for (auto it = gates.begin(); it != gates.end(); ++it) {
     auto [ga, gb] = *it;
@@ -175,10 +175,10 @@ Circuit two_qubit_canonical(const Eigen::Matrix4cd &U, double cx_fidelity) {
     }
     std::vector<double> angles_q0 = tk1_angles_from_unitary(ga);
     result.add_op<unsigned>(
-        OpType::tk1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
+        OpType::TK1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
     std::vector<double> angles_q1 = tk1_angles_from_unitary(gb);
     result.add_op<unsigned>(
-        OpType::tk1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
+        OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
     if (it + 1 != gates.end()) {
       result.add_op<unsigned>(OpType::CX, {0, 1});
     }

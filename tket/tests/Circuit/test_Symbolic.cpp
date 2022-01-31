@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,6 +13,8 @@
 // limitations under the License.
 
 #include <Circuit/Circuit.hpp>
+#include <Transformations/BasicOptimisation.hpp>
+#include <Transformations/CliffordOptimisation.hpp>
 #include <Transformations/Transform.hpp>
 #include <catch2/catch.hpp>
 #include <vector>
@@ -56,7 +58,7 @@ SCENARIO("Symbolic squashing, correctness") {
     circ.add_op<unsigned>(OpType::Ry, 0.5, {0});
 
     Circuit circ1 = circ;
-    Transform::squash_1qb_to_pqp(OpType::Ry, OpType::Rz, true).apply(circ1);
+    Transforms::squash_1qb_to_pqp(OpType::Ry, OpType::Rz, true).apply(circ1);
     check_equiv(circ, circ1);
   }
 
@@ -67,7 +69,7 @@ SCENARIO("Symbolic squashing, correctness") {
     circ.add_op<unsigned>(OpType::X, {0});
 
     Circuit circ1 = circ;
-    Transform::singleq_clifford_sweep().apply(circ1);
+    Transforms::singleq_clifford_sweep().apply(circ1);
     check_equiv(circ, circ1);
   }
 
@@ -121,14 +123,14 @@ SCENARIO("Symbolic squashing, correctness") {
     circ.add_op<unsigned>(OpType::Vdg, {1});
     circ.add_op<unsigned>(OpType::S, {2});
     circ.add_op<unsigned>(OpType::Sdg, {1});
-    circ.add_op<unsigned>(OpType::tk1, {1, 0.5, 3}, {2});
+    circ.add_op<unsigned>(OpType::TK1, {1, 0.5, 3}, {2});
     circ.add_op<unsigned>(OpType::X, {1});
     circ.add_op<unsigned>(OpType::S, {1});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     circ.add_op<unsigned>(OpType::Z, {0});
 
     Circuit circ1 = circ;
-    Transform::singleq_clifford_sweep().apply(circ1);
+    Transforms::singleq_clifford_sweep().apply(circ1);
     check_equiv(circ, circ1);
   }
 }

@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -126,6 +126,18 @@ class Backend(ABC):
                         "measure operation."
                     )
         return True
+
+    @abstractmethod
+    def rebase_pass(self) -> BasePass:
+        """
+        A single compilation pass that when run converts all gates in a Circuit to
+        an OpType supported by the Backend (ignoring architecture constraints).
+
+        :return: Compilation pass that converts gates to primitives supported by
+            Backend.
+        :rtype: BasePass
+        """
+        ...
 
     @abstractmethod
     def default_compilation_pass(self, optimisation_level: int = 1) -> BasePass:
@@ -293,6 +305,11 @@ class Backend(ABC):
 
         * `seed`: RNG seed for simulators
         * `postprocess`: if True, apply contextual optimisations
+
+        Note: If a backend is reused many times, the in-memory results cache grows
+        indefinitely. Therefore, when processing many circuits on a statevector or
+        unitary backend (whose results may occupy significant amounts of memory), it is
+        advisable to run :py:meth:`Backend.empty_cache` after each result is retrieved.
 
         :param circuits: Circuits to process on the backend.
         :type circuits: Sequence[Circuit]

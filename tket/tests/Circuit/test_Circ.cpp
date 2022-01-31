@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,6 +30,8 @@
 #include "Ops/Op.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Simulation/CircuitSimulator.hpp"
+#include "Transformations/Decomposition.hpp"
+#include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Exceptions.hpp"
@@ -42,7 +44,7 @@ namespace test_Circ {
 static std::pair<Op_ptr, Expr> op_to_tk1(const Op_ptr& op) {
   std::vector<Expr> angles = as_gate_ptr(op)->get_tk1_angles();
   return {
-      get_op_ptr(OpType::tk1, {angles[0], angles[1], angles[2]}), angles[3]};
+      get_op_ptr(OpType::TK1, {angles[0], angles[1], angles[2]}), angles[3]};
 }
 
 SCENARIO(
@@ -1044,7 +1046,7 @@ SCENARIO("circuit equality ", "[equality]") {
 
     Circuit cliff_simp(test1);
     add_2qb_gates(cliff_simp, OpType::CX, {{0, 1}, {1, 0}});
-    Transform::clifford_simp().apply(cliff_simp);
+    Transforms::clifford_simp().apply(cliff_simp);
 
     test1.add_op<unsigned>(OpType::CX, {1, 0});
 
@@ -1339,7 +1341,7 @@ SCENARIO("Test circuit.dagger() method") {
     Eigen::Matrix4cd mat;
     mat << 1, 0, 0, 0, 0, i_, 0, 0, 0, 0, 0, -i_, 0, 0, i_, 0;
     circ.add_box(Unitary2qBox(mat), {1, 2});
-    circ.add_op<unsigned>(OpType::tk1, {0.3, 0.7, 0.8}, {1});
+    circ.add_op<unsigned>(OpType::TK1, {0.3, 0.7, 0.8}, {1});
     Circuit daggered = circ.dagger();
     daggered.assert_valid();
 
@@ -1541,7 +1543,7 @@ SCENARIO("Test substitute_all") {
     REQUIRE(circ.n_gates() == 1);
     Circuit newswap(2);
     add_2qb_gates(newswap, OpType::CX, {{0, 1}, {1, 0}, {0, 1}});
-    REQUIRE(Transform::decompose_SWAP(newswap).apply(circ));
+    REQUIRE(Transforms::decompose_SWAP(newswap).apply(circ));
     REQUIRE(circ.n_gates() == 3);
   }
 }

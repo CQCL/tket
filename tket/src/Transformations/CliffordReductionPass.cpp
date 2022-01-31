@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -738,11 +738,15 @@ bool CliffordReductionPass::reduce_circuit(Circuit &circ, bool allow_swaps) {
   return context.success;
 }
 
-Transform Transform::clifford_reduction(bool allow_swaps) {
+namespace Transforms {
+
+Transform clifford_reduction(bool allow_swaps) {
   return Transform([=](Circuit &circ) {
     return CliffordReductionPass::reduce_circuit(circ, allow_swaps);
   });
 }
+
+}  // namespace Transforms
 
 CliffordReductionPassTester::CliffordReductionPassTester(Circuit &circ)
     : context(circ, true) {
