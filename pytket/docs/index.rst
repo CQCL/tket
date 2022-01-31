@@ -166,6 +166,7 @@ Our telemetry data policy can be viewed in the `Telemetry Data Policy`_ page.
     qasm.rst
     quipper.rst
     routing.rst
+    tableau.rst
     transform.rst
     tailoring.rst
     zx.rst
