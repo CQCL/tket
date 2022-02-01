@@ -61,7 +61,6 @@ list(APPEND DEPS_${COMP}
     Circuit
     Gate
     Graphs
-    Mapping
     Ops
     OpType
     Utils)
