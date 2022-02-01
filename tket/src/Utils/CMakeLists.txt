@@ -19,6 +19,7 @@ if (NOT ${COMP} STREQUAL "Utils")
 endif()
 
 add_library(tket-Utils
+    AssertMessage.cpp
     TketLog.cpp
     UnitID.cpp
     HelperFunctions.cpp
