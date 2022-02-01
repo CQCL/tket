@@ -75,6 +75,7 @@ PARAM_COMMANDS = {
     "u2": OpType.U2,
     "u1": OpType.U1,
     "rx": OpType.Rx,
+    "rxx": OpType.XXPhase,
     "ry": OpType.Ry,
     "rz": OpType.Rz,
     "Rz": OpType.Rz,
