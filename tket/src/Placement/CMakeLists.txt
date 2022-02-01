@@ -30,8 +30,10 @@ list(APPEND DEPS_${COMP}
     Circuit
     Gate
     Graphs
+    Mapping
     Ops
     OpType
+    TokenSwapping
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

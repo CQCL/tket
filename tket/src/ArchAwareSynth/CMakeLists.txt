@@ -33,8 +33,10 @@ list(APPEND DEPS_${COMP}
     Graphs
     Ops
     OpType
+    Mapping
     PauliGraph
-    Routing
+    Placement
+    TokenSwapping
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

@@ -277,6 +277,9 @@ class LinePlacement : public Placement {
       const Circuit& circ_) const override;
 };
 
+
+
+
 class GraphPlacement : public Placement {
  public:
   explicit GraphPlacement(const Architecture& _arc) {

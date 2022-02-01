@@ -42,9 +42,11 @@ list(APPEND DEPS_${COMP}
     Converters
     Gate
     Graphs
+    Mapping
     Ops
     OpType
     PauliGraph
+    TokenSwapping
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

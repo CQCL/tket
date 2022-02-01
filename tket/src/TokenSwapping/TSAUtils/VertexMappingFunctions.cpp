@@ -17,7 +17,7 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "../../Utils/Assert.hpp"
+#include "Utils/Assert.hpp"
 #include "VertexSwapResult.hpp"
 
 namespace tket {

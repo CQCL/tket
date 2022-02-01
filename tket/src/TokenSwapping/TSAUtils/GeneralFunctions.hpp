@@ -23,7 +23,7 @@
 #include <set>
 #include <stdexcept>
 
-#include "../RNG.hpp"
+#include "TokenSwapping/RNG.hpp"
 
 namespace tket {
 namespace tsa_internal {

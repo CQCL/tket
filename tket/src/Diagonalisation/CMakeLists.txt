@@ -28,9 +28,11 @@ list(APPEND DEPS_${COMP}
     Clifford
     Gate
     Graphs
+    Mapping
     Ops
     OpType
     PauliGraph
+    TokenSwapping
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

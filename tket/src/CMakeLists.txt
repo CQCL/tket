@@ -78,7 +78,8 @@ list(APPEND TKET_COMPS
     MeasurementSetup
     Transformations
     ArchAwareSynth
-    Predicates)
+    Predicates
+    TokenSwapping)
 
 foreach(COMP ${TKET_COMPS})
     set(TKET_${COMP}_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${COMP}/include)

@@ -32,9 +32,11 @@ list(APPEND DEPS_${COMP}
     Clifford
     Diagonalisation
     Gate
+    Mapping
     Ops
     OpType
     PauliGraph
+    TokenSwapping
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

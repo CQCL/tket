@@ -21,8 +21,8 @@
 #include <utility>
 #include <vector>
 
-#include "Graphs/CompleteGraph.hpp"
 #include "Graphs/DirectedGraph.hpp"
+#include "Graphs/CompleteGraph.hpp"
 #include "Utils/BiMapHeaders.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/Json.hpp"

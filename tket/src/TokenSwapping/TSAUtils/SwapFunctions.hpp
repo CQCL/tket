@@ -18,7 +18,7 @@
 #include <optional>
 #include <utility>
 
-#include "../VectorListHybrid.hpp"
+#include "TokenSwapping/VectorListHybrid.hpp"
 
 namespace tket {
 namespace tsa_internal {

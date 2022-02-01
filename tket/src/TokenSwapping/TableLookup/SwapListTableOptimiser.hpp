@@ -17,7 +17,7 @@
 
 #include <set>
 
-#include "../SwapListOptimiser.hpp"
+#include "TokenSwapping/SwapListOptimiser.hpp"
 #include "PartialMappingLookup.hpp"
 #include "SwapListSegmentOptimiser.hpp"
 #include "VertexMapResizing.hpp"

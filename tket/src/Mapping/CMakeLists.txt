@@ -29,12 +29,14 @@ add_library(tket-${COMP}
     Verification.cpp)
 
 list(APPEND DEPS_${COMP}
+    Architecture
+    Circuit
     Gate
+    Graphs
     Ops
     OpType
-    Utils
-    Circuit
-    Architecture)
+    TokenSwapping
+    Utils)
 
 foreach(DEP ${DEPS_${COMP}})
     target_include_directories(

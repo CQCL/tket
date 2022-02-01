@@ -1,7 +1,6 @@
 #include "Mapping/MappingManager.hpp"
-
-#include "OpType/OpTypeFunctions.hpp"
 #include "TokenSwapping/main_entry_functions.hpp"
+#include "OpType/OpTypeFunctions.hpp"
 
 namespace tket {
 
