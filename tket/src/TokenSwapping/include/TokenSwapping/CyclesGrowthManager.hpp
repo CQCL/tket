@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include "DistancesInterface.hpp"
-#include "NeighboursInterface.hpp"
-#include "TSAUtils/VertexMappingFunctions.hpp"
+#include "TokenSwapping/DistancesInterface.hpp"
+#include "TokenSwapping/NeighboursInterface.hpp"
+#include "TokenSwapping/VertexMappingFunctions.hpp"
 
 namespace tket {
 namespace tsa_internal {

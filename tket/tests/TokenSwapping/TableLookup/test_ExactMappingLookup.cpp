@@ -15,10 +15,10 @@
 #include <algorithm>
 #include <catch2/catch.hpp>
 
-#include "TokenSwapping/TSAUtils/DebugFunctions.hpp"
-#include "TokenSwapping/TSAUtils/GeneralFunctions.hpp"
-#include "TokenSwapping/TSAUtils/VertexMappingFunctions.hpp"
-#include "TokenSwapping/TableLookup/ExactMappingLookup.hpp"
+#include "TokenSwapping/DebugFunctions.hpp"
+#include "TokenSwapping/ExactMappingLookup.hpp"
+#include "TokenSwapping/GeneralFunctions.hpp"
+#include "TokenSwapping/VertexMappingFunctions.hpp"
 
 using std::vector;
 

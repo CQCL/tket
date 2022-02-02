@@ -16,7 +16,7 @@
 #include <sstream>
 #include <string>
 
-#include "TokenSwapping/TSAUtils/SwapFunctions.hpp"
+#include "TokenSwapping/SwapFunctions.hpp"
 
 namespace tket {
 namespace tsa_internal {

@@ -18,8 +18,8 @@
 #include <set>
 
 #include "PermutationTestUtils.hpp"
+#include "TokenSwapping/CanonicalRelabelling.hpp"
 #include "TokenSwapping/RNG.hpp"
-#include "TokenSwapping/TableLookup/CanonicalRelabelling.hpp"
 
 using std::vector;
 

@@ -16,7 +16,7 @@
 
 #include <stdexcept>
 
-#include "TSAUtils/DistanceFunctions.hpp"
+#include "TokenSwapping/DistanceFunctions.hpp"
 
 using std::vector;
 

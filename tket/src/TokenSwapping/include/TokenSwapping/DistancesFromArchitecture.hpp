@@ -16,7 +16,7 @@
 
 #include "ArchitectureMapping.hpp"
 #include "DistancesInterface.hpp"
-#include "TSAUtils/SwapFunctions.hpp"
+#include "SwapFunctions.hpp"
 
 namespace tket {
 namespace tsa_internal {

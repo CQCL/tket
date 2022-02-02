@@ -14,8 +14,8 @@
 
 #include "SwapListOptimiser.hpp"
 
-#include "TSAUtils/VertexSwapResult.hpp"
 #include "Utils/Assert.hpp"
+#include "VertexSwapResult.hpp"
 
 namespace tket {
 namespace tsa_internal {

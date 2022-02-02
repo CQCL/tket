@@ -18,10 +18,10 @@
 #include <stdexcept>
 
 #include "CyclicShiftCostEstimate.hpp"
-#include "TSAUtils/DebugFunctions.hpp"
-#include "TSAUtils/DistanceFunctions.hpp"
-#include "TSAUtils/GeneralFunctions.hpp"
-#include "TSAUtils/VertexSwapResult.hpp"
+#include "TokenSwapping/DebugFunctions.hpp"
+#include "TokenSwapping/DistanceFunctions.hpp"
+#include "TokenSwapping/GeneralFunctions.hpp"
+#include "TokenSwapping/VertexSwapResult.hpp"
 #include "Utils/Assert.hpp"
 
 using std::vector;

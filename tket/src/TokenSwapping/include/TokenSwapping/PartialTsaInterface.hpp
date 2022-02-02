@@ -17,7 +17,7 @@
 #include "DistancesInterface.hpp"
 #include "NeighboursInterface.hpp"
 #include "PathFinderInterface.hpp"
-#include "TSAUtils/VertexMappingFunctions.hpp"
+#include "VertexMappingFunctions.hpp"
 
 namespace tket {
 namespace tsa_internal {

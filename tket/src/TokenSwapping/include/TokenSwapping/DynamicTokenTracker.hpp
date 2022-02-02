@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "TSAUtils/VertexMappingFunctions.hpp"
+#include "TokenSwapping/VertexMappingFunctions.hpp"
 
 namespace tket {
 namespace tsa_internal {

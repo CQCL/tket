@@ -184,9 +184,7 @@ Circuit Circuit::subcircuit(const Subcircuit& sc) const {
 // returns qubit path via vertices & inhabited port in vertices
 // used to construct a routing grid
 QPathDetailed Circuit::unit_path(const UnitID& unit) const {
-
   Vertex current_v = get_in(unit);
-
 
   QPathDetailed path = {{current_v, 0}};
   Edge betweenEdge = get_nth_out_edge(current_v, 0);

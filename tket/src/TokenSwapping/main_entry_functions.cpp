@@ -18,8 +18,8 @@
 #include <stdexcept>
 
 #include "BestFullTsa.hpp"
-#include "TSAUtils/VertexMappingFunctions.hpp"
 #include "Utils/Assert.hpp"
+#include "VertexMappingFunctions.hpp"
 
 namespace tket {
 

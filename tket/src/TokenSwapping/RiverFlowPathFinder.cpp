@@ -17,7 +17,7 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "TSAUtils/SwapFunctions.hpp"
+#include "SwapFunctions.hpp"
 #include "Utils/Assert.hpp"
 
 using std::vector;

@@ -17,11 +17,11 @@
 #include <catch2/catch.hpp>
 
 #include "TestStatsStructs.hpp"
+#include "TokenSwapping/DistanceFunctions.hpp"
 #include "TokenSwapping/DistancesFromArchitecture.hpp"
 #include "TokenSwapping/NeighboursFromArchitecture.hpp"
 #include "TokenSwapping/RiverFlowPathFinder.hpp"
-#include "TokenSwapping/TSAUtils/DistanceFunctions.hpp"
-#include "TokenSwapping/TSAUtils/VertexSwapResult.hpp"
+#include "TokenSwapping/VertexSwapResult.hpp"
 
 using std::vector;
 

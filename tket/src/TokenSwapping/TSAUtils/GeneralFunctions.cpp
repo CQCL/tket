@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "GeneralFunctions.hpp"
+#include "TokenSwapping/GeneralFunctions.hpp"
 
 #include <numeric>
 #include <stdexcept>

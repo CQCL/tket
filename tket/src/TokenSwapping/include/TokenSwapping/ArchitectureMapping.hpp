@@ -15,7 +15,7 @@
 #pragma once
 
 #include "Architecture/Architecture.hpp"
-#include "TSAUtils/SwapFunctions.hpp"
+#include "TokenSwapping/SwapFunctions.hpp"
 
 namespace tket {
 namespace tsa_internal {

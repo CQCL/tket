@@ -16,7 +16,7 @@
 
 #include <cstdint>
 
-#include "../TSAUtils/SwapFunctions.hpp"
+#include "TokenSwapping/SwapFunctions.hpp"
 
 namespace tket {
 namespace tsa_internal {

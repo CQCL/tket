@@ -16,7 +16,7 @@
 
 #include "Architecture/Architecture.hpp"
 #include "TokenSwapping/RNG.hpp"
-#include "TokenSwapping/TSAUtils/VertexMappingFunctions.hpp"
+#include "TokenSwapping/VertexMappingFunctions.hpp"
 
 namespace tket {
 namespace tsa_internal {

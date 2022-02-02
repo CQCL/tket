@@ -18,7 +18,7 @@
 #include "HybridTsa00.hpp"
 #include "RNG.hpp"
 #include "SwapListOptimiser.hpp"
-#include "TableLookup/SwapListTableOptimiser.hpp"
+#include "TokenSwapping/SwapListTableOptimiser.hpp"
 
 namespace tket {
 namespace tsa_internal {

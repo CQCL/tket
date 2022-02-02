@@ -18,9 +18,9 @@
 #include "TestUtils/PartialTsaTesting.hpp"
 #include "TestUtils/ProblemGeneration.hpp"
 #include "TokenSwapping/CyclesPartialTsa.hpp"
+#include "TokenSwapping/DebugFunctions.hpp"
 #include "TokenSwapping/RNG.hpp"
 #include "TokenSwapping/RiverFlowPathFinder.hpp"
-#include "TokenSwapping/TSAUtils/DebugFunctions.hpp"
 #include "TokenSwapping/TrivialTSA.hpp"
 
 using std::vector;

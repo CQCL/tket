@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SwapConversion.hpp"
+#include "TokenSwapping/SwapConversion.hpp"
 
 #include "Utils/Assert.hpp"
 
