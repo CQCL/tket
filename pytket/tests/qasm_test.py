@@ -49,7 +49,7 @@ def test_qasm_correct() -> None:
     assert c.depth() == 8
     coms = c.get_commands()
     assert len(coms) == 11
-    correct_str = "[Rz(1.5) q[3];, Rx(0.0375) q[3];, XXPhase(0.0375) q[3];, Rz(0.5) q[3];, CX q[0], q[3];, CZ q[0], q[1];, Rz(1.5) q[3];, Rx(1.9625) q[3];, CCX q[3], q[1], q[2];, Barrier q[0], q[3], q[2];, CU1(0.8) q[0], q[1];, U3(1, 0.5, 0.3) q[2];]"
+    correct_str = "[Rz(1.5) q[3];, Rx(0.0375) q[3];, XXPhase(0.0375) q[0], q[1];, Rz(0.5) q[3];, CX q[0], q[3];, CZ q[0], q[1];, Rz(1.5) q[3];, Rx(1.9625) q[3];, CCX q[3], q[1], q[2];, Barrier q[0], q[3], q[2];, CU1(0.8) q[0], q[1];, U3(1, 0.5, 0.3) q[2];]"
     assert str(coms) == correct_str
     # TKET-871
     fname2 = str(curr_file_path / "qasm_test_files/test9.qasm")
