@@ -15,6 +15,7 @@
 #pragma once
 #include <typeindex>
 
+#include "Architecture/Architecture.hpp"
 #include "Transformations/Transform.hpp"
 
 namespace tket {

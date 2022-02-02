@@ -125,12 +125,13 @@ class CMakeBuild(build_ext):
                 "tket-Program",
                 "tket-Characterisation",
                 "tket-Converters",
-                "tket-Routing",
+                "tket-TokenSwapping",
+                "tket-Placement",
+                "tket-Mapping",
                 "tket-MeasurementSetup",
                 "tket-Transformations",
                 "tket-ArchAwareSynth",
                 "tket-Predicates"
-                "tket-TokenSwapping",
             ]
             for tket_lib in tket_libs:
                 shutil.copy(os.path.join(directory, "lib", libfile(tket_lib)), extdir)

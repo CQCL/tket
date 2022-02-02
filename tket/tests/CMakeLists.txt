@@ -59,7 +59,9 @@ target_link_libraries(test_tket PRIVATE
     tket-PauliGraph
     tket-Predicates
     tket-Program
-    tket-Routing
+    tket-Placement
+    tket-TokenSwapping
+    tket-Mapping
     tket-Simulation
     tket-Transformations
     tket-Utils
