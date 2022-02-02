@@ -746,6 +746,21 @@ Transform decomp_boxes() {
 
 Transform compose_phase_poly_boxes() {
   return Transform([](Circuit &circ) {
+    // replace wireswaps with three CX
+    while (circ.has_implicit_wireswaps()) {
+      bool foundswap = false;
+
+      qubit_map_t perm = circ.implicit_qubit_permutation();
+      for (const std::pair<const Qubit, Qubit> &pair : perm) {
+        if (pair.first != pair.second) {
+          if (!foundswap) {
+            circ.replace_implicit_wire_swap(pair.first, pair.second);
+            foundswap = true;
+          }
+        }
+      }
+    }
+
     CircToPhasePolyConversion conv = CircToPhasePolyConversion(circ);
     conv.convert();
     circ = conv.get_circuit();
