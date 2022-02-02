@@ -1,13 +1,18 @@
 Changelog
-==================================
+=========
 
-0.19.0 (unreleased)
--------------------
+0.19.0 (February 2022)
+----------------------
+
+Major new features:
+
+* New box types for Clifford tableaux.
 
 Minor new features:
 
 * Improve ``CnX`` gate decomposition for n=5,6,7.
 * Add ``rebase_pass`` method to ``Backend``.
+* Add ``is_clifford_type`` method to ``Op``.
 
 General:
 

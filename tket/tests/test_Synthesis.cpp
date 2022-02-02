@@ -23,6 +23,13 @@
 #include "Ops/MetaOp.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "Transformations/BasicOptimisation.hpp"
+#include "Transformations/CliffordOptimisation.hpp"
+#include "Transformations/Combinator.hpp"
+#include "Transformations/Decomposition.hpp"
+#include "Transformations/OptimisationPass.hpp"
+#include "Transformations/PauliOptimisation.hpp"
+#include "Transformations/Rebase.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
 #include "testutil.hpp"
@@ -40,14 +47,14 @@ namespace test_Synthesis {
 SCENARIO("Check commutation through multiqubit ops") {
   GIVEN("An empty circuit") {
     Circuit circ(1);
-    REQUIRE(!Transform::commute_through_multis().apply(circ));
+    REQUIRE(!Transforms::commute_through_multis().apply(circ));
     WHEN("A single qubit gate is added") {
       circ.add_op<unsigned>(OpType::Z, {0});
       // circ.add_op<unsigned>(OpType::Y, {1});
       // circ.add_op<unsigned>(OpType::Z, {2});
       Circuit single = circ;
       THEN("No commutation is performed") {
-        REQUIRE(!Transform::commute_through_multis().apply(circ));
+        REQUIRE(!Transforms::commute_through_multis().apply(circ));
         REQUIRE(circ == single);
       }
       AND_WHEN("A two qubit gate is added at the end") {
@@ -55,7 +62,7 @@ SCENARIO("Check commutation through multiqubit ops") {
         circ.add_op<unsigned>(OpType::CZ, {0, 1});
         Circuit two_none = circ;
         THEN("No commutation is performed") {
-          REQUIRE(!Transform::commute_through_multis().apply(circ));
+          REQUIRE(!Transforms::commute_through_multis().apply(circ));
           REQUIRE(circ == two_none);
         }
         AND_WHEN("Single qubit gate is added to the end") {
@@ -75,7 +82,7 @@ SCENARIO("Check commutation through multiqubit ops") {
           correct.add_op<unsigned>(OpType::CZ, {0, 1});
           correct.add_op<unsigned>(op_y, {1});
           THEN("Only the correct single qubit gate is commuted") {
-            REQUIRE(Transform::commute_through_multis().apply(circ));
+            REQUIRE(Transforms::commute_through_multis().apply(circ));
             REQUIRE(correct == circ);
           }
         }
@@ -111,7 +118,7 @@ SCENARIO("Check commutation through multiqubit ops") {
     circ.add_op<unsigned>(OpType::Z, {3});
 
     WHEN("Commutation is performed") {
-      REQUIRE(Transform::commute_through_multis().apply(circ));
+      REQUIRE(Transforms::commute_through_multis().apply(circ));
 
       THEN("The correct final circuit is produced") {
         Circuit correct(4);
@@ -156,7 +163,7 @@ SCENARIO(
     Vertex v1 = circ.add_op<unsigned>(OpType::CCX, {0, 1, 2});
     unsigned N =
         CX_circ_from_multiq(circ.get_Op_ptr_from_Vertex(v1)).n_vertices();
-    Transform::decompose_multi_qubits_CX().apply(circ);
+    Transforms::decompose_multi_qubits_CX().apply(circ);
     REQUIRE(circ.n_vertices() == N);
   }
   GIVEN("Circuits of phase gadgets") {
@@ -164,8 +171,8 @@ SCENARIO(
     circ.add_op<unsigned>(OpType::PhaseGadget, 0.3, {0, 1, 2, 3, 4, 5, 6, 7});
     circ.add_op<unsigned>(OpType::PhaseGadget, 0.5, {0});
     circ.add_op<unsigned>(OpType::PhaseGadget, 1., {1, 2, 3, 4, 5});
-    Transform::decompose_multi_qubits_CX().apply(circ);
-    Transform::decompose_single_qubits_TK1().apply(circ);
+    Transforms::decompose_multi_qubits_CX().apply(circ);
+    Transforms::decompose_single_qubits_TK1().apply(circ);
     REQUIRE(circ.get_slices().size() == 23);
   }
   GIVEN("Circuits of symbolic phase gadgets") {
@@ -179,8 +186,8 @@ SCENARIO(
     circ.add_op<unsigned>(OpType::PhaseGadget, alpha, {0, 1, 2, 3, 4, 5, 6, 7});
     circ.add_op<unsigned>(OpType::PhaseGadget, beta, {0});
     circ.add_op<unsigned>(OpType::PhaseGadget, gamma, {1, 2, 3, 4, 5});
-    Transform::decompose_multi_qubits_CX().apply(circ);
-    Transform::decompose_single_qubits_TK1().apply(circ);
+    Transforms::decompose_multi_qubits_CX().apply(circ);
+    Transforms::decompose_single_qubits_TK1().apply(circ);
     symbol_map_t symbol_map;
     symbol_map[a] = Expr(0.3);
     symbol_map[b] = Expr(0.5);
@@ -193,7 +200,7 @@ SCENARIO(
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Rz, 0.333, {0});
-    Transform::commute_through_multis().apply(circ);
+    Transforms::commute_through_multis().apply(circ);
     SliceVec slices = circ.get_slices();
     REQUIRE(circ.get_OpType_from_Vertex(*slices[0].begin()) == OpType::Rz);
     REQUIRE(circ.get_OpType_from_Vertex(*slices[1].begin()) == OpType::CX);
@@ -217,7 +224,7 @@ SCENARIO(
     test1.add_op<unsigned>(OpType::Y, {3});
 
     WHEN("Synthesis is performed") {
-      Transform::synthesise_tket().apply(test1);
+      Transforms::synthesise_tket().apply(test1);
       BGL_FORALL_VERTICES(v, test1.dag, DAG) {
         OpType optype = test1.get_OpType_from_Vertex(v);
         bool finished_synth =
@@ -235,7 +242,7 @@ SCENARIO(
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     WHEN("Circuit is synthesised to TK1") {
-      Transform::synthesise_tket().apply(circ);
+      Transforms::synthesise_tket().apply(circ);
       THEN(
           "Resulting circuit is empty (apart from input/output "
           "vertices") {
@@ -256,7 +263,7 @@ SCENARIO(
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     WHEN("Circuit is synthesised") {
-      Transform::synthesise_tket().apply(circ);
+      Transforms::synthesise_tket().apply(circ);
       THEN("Resulting circuit still contains the CXs") {
         REQUIRE(circ.n_vertices() == 6);
         circ.get_slices();
@@ -268,7 +275,7 @@ SCENARIO(
     Circuit circ;
     int width = 6;
     circ.add_blank_wires(width);
-    Transform::synthesise_tket().apply(circ);
+    Transforms::synthesise_tket().apply(circ);
     circ.assert_valid();
     SliceVec slices = circ.get_slices();
     REQUIRE(slices.size() == 0);
@@ -278,7 +285,7 @@ SCENARIO(
     const StateVector s0 = tket_sim::get_statevector(circ);
     REQUIRE(circ.count_gates(OpType::TK1) == 0);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
-    Transform::squash_1qb_to_tk1().apply(circ);
+    Transforms::squash_1qb_to_tk1().apply(circ);
     REQUIRE(circ.count_gates(OpType::TK1) == 12);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
     const StateVector s1 = tket_sim::get_statevector(circ);
@@ -295,7 +302,7 @@ SCENARIO(
     add_2qb_gates(test, OpType::CZ, {{0, 1}, {0, 1}});
     add_1qb_gates(test, OpType::H, {0, 1});
     WHEN("Redundancy removal is performed") {
-      Transform::remove_redundancies().apply(test);
+      Transforms::remove_redundancies().apply(test);
       REQUIRE(test.n_vertices() == 4);
       BGL_FORALL_VERTICES(v, test.dag, DAG) {
         bool no_ops = test.detect_boundary_Op(v);
@@ -310,7 +317,7 @@ SCENARIO(
     test.add_op<unsigned>(OpType::CZ, {0, 1});
     test.add_op<unsigned>(OpType::noop, {1});
     test.add_op<unsigned>(OpType::noop, {1});
-    REQUIRE(Transform::remove_redundancies().apply(test));
+    REQUIRE(Transforms::remove_redundancies().apply(test));
     REQUIRE(test.n_gates() == 1);
     REQUIRE(
         test.get_OpType_from_Vertex(*test.get_slices()[0].begin()) ==
@@ -337,7 +344,7 @@ SCENARIO(
     test1.add_op<unsigned>(OpType::Y, {0});
 
     WHEN("Annihilation is performed") {
-      REQUIRE(Transform::remove_redundancies().apply(test1));
+      REQUIRE(Transforms::remove_redundancies().apply(test1));
       REQUIRE(test1.n_vertices() == 9);
       test1.assert_valid();
     }
@@ -356,7 +363,7 @@ SCENARIO(
     test1.add_op<unsigned>(OpType::CX, {2, 1});
     test1.add_op<unsigned>(OpType::Y, {3});
     WHEN("Annihilation Transformation is performed") {
-      REQUIRE(Transform::remove_redundancies().apply(test1));
+      REQUIRE(Transforms::remove_redundancies().apply(test1));
       REQUIRE(test1.n_vertices() == 11);
       test1.assert_valid();
     }
@@ -365,7 +372,7 @@ SCENARIO(
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Rz, 0.4, {0});
     circ.add_op<unsigned>(OpType::Rz, 0., {0});
-    REQUIRE_NOTHROW(Transform::remove_redundancies().apply(circ));
+    REQUIRE_NOTHROW(Transforms::remove_redundancies().apply(circ));
   }
 
   GIVEN("A circuit with Z basis operations at the end") {
@@ -381,13 +388,13 @@ SCENARIO(
     test1.add_op<unsigned>(OpType::CZ, {0, 1});
     test1.add_op<unsigned>(OpType::Z, {0});
 
-    CHECK_FALSE(Transform::remove_redundancies().apply(test1));
+    CHECK_FALSE(Transforms::remove_redundancies().apply(test1));
     WHEN("Measurements are added") {
       Vertex measure0 = test1.add_measure(0, 0);
       test1.add_measure(1, 1);
       test1.add_measure(2, 2);
       THEN("Redundant gates before a measurement are removed.") {
-        REQUIRE(Transform::remove_redundancies().apply(test1));
+        REQUIRE(Transforms::remove_redundancies().apply(test1));
         CHECK(test1.n_gates() == 10);
       }
     }
@@ -396,7 +403,7 @@ SCENARIO(
       test1.add_measure(1, 1);
       test1.add_measure(2, 2);
       THEN("Redundancies are not removed at that measure") {
-        REQUIRE_FALSE(Transform::remove_redundancies().apply(test1));
+        REQUIRE_FALSE(Transforms::remove_redundancies().apply(test1));
         CHECK(test1.n_gates() == 12);
       }
     }
@@ -409,7 +416,7 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rx, 0., {0});
     circ.add_op<unsigned>(OpType::Ry, 0., {0});
     circ.add_op<unsigned>(OpType::Rx, 0., {0});
-    REQUIRE(Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Ry).apply(circ));
+    REQUIRE(Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Ry).apply(circ));
     REQUIRE(circ.n_vertices() == 2);
   }
   GIVEN("Repetitions of a single gate to merge") {
@@ -418,7 +425,7 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rx, 1.2, {0});
     circ.add_op<unsigned>(OpType::Rx, 0.2, {0});
     bool success =
-        Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+        Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
     REQUIRE(success);
     REQUIRE(circ.n_vertices() == 3);
   }
@@ -429,7 +436,7 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rz, 1.2, {0});
     circ.add_op<unsigned>(OpType::Rx, 0.2, {0});
     bool success =
-        Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+        Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
     REQUIRE(success);
     REQUIRE(circ.count_gates(OpType::Rz) == 2);
     REQUIRE(circ.count_gates(OpType::Rx) == 1);
@@ -442,7 +449,7 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rz, 1.2, {0});
     circ.add_op<unsigned>(OpType::Rx, 1.0, {0});
     bool success =
-        Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+        Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
     REQUIRE(success);
     REQUIRE(circ.n_vertices() == 2);
   }
@@ -465,7 +472,7 @@ SCENARIO("Testing general 1qb squash") {
       circ.add_op<unsigned>(OpType::Rz, 0.017, {0});
     }
     bool success =
-        Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+        Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
     REQUIRE(success);
     REQUIRE(circ.count_gates(OpType::Rz) == 2);
     REQUIRE(circ.count_gates(OpType::Rx) == 1);
@@ -481,7 +488,7 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rz, 1.2, {0});
     circ.add_op<unsigned>(OpType::Rx, 0.2, {0});
     bool success =
-        Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+        Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
     REQUIRE(success);
     REQUIRE(circ.count_gates(OpType::Rz) == 3);
     REQUIRE(circ.count_gates(OpType::Rx) == 2);
@@ -499,7 +506,7 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rx, 0.2, {0});
     circ.add_op<unsigned>(OpType::Ry, 0.2, {1});
     bool success =
-        Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Ry, true).apply(circ);
+        Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Ry, true).apply(circ);
     REQUIRE(!success);
     REQUIRE(circ.depth() == 8);
   }
@@ -512,7 +519,7 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rz, 0.5, {0});
     circ.add_op<unsigned>(OpType::Ry, 1., {0});
     bool success =
-        Transform::squash_1qb_to_pqp(OpType::Rz, OpType::Ry).apply(circ);
+        Transforms::squash_1qb_to_pqp(OpType::Rz, OpType::Ry).apply(circ);
     REQUIRE(success);
   }
   GIVEN("Circuit has few rotations and is optimal") {
@@ -523,7 +530,7 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Ry, 1., {0});
     circ.add_op<unsigned>(OpType::Rx, 1., {0});
     bool success =
-        Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Ry).apply(circ);
+        Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Ry).apply(circ);
     REQUIRE(!success);
   }
 
@@ -533,7 +540,7 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rx, 0.528, {0});
     circ.add_op<unsigned>(OpType::Rz, 0.694, {0});
     bool success =
-        Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+        Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
     REQUIRE(success);
     REQUIRE(circ.n_vertices() == 4);
     VertexVec vertices = circ.vertices_in_order();
@@ -551,7 +558,7 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rx, 1., {0});
     circ.add_op<unsigned>(OpType::Rz, 0.694, {0});
     bool success =
-        Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+        Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
     REQUIRE(success);
     REQUIRE(circ.n_vertices() == 4);
     VertexVec vertices = circ.vertices_in_order();
@@ -569,7 +576,7 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rx, 0.528, {0});
     circ.add_op<unsigned>(OpType::Rz, 1., {0});
     bool success =
-        Transform::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+        Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
     REQUIRE(success);
     REQUIRE(circ.n_vertices() == 4);
     VertexVec vertices = circ.vertices_in_order();
@@ -580,6 +587,90 @@ SCENARIO("Testing general 1qb squash") {
     REQUIRE(op2->get_type() == OpType::Rx);
     REQUIRE(test_equiv_val(op2->get_params()[0], -0.528));
   }
+
+  GIVEN("commuting non-compatible conditionals") {
+    Circuit circ(2, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.143}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.528}, {1}, {0}, 0);
+
+    bool success =
+        Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+    REQUIRE(success);
+
+    REQUIRE(circ.n_gates() == 4);
+    std::vector<OpType> expected_optypes{
+        OpType::Conditional,  // qubit 0 before CX
+        OpType::Conditional,  // qubit 1 before CX
+        OpType::CX, OpType::Conditional};
+    check_command_types(circ, expected_optypes);
+
+    auto cmds = circ.get_commands();
+    expected_optypes = {OpType::Rz, OpType::Rx, OpType::CX, OpType::Rz};
+    std::vector<std::vector<Expr>> exp_params{{0.142}, {0.528}, {}, {0.143}};
+    for (unsigned i = 0; i < cmds.size(); ++i) {
+      Op_ptr op = cmds[i].get_op_ptr();
+      if (op->get_type() == OpType::Conditional) {
+        op = static_cast<const Conditional &>(*op).get_op();
+      }
+      REQUIRE(op->get_type() == expected_optypes[i]);
+      REQUIRE(op->get_params() == exp_params[i]);
+    }
+
+    // as a bonus: check that you can commute another Rz gate through
+    success = Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+    REQUIRE(success);
+    success = Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+    REQUIRE(!success);
+  }
+
+  GIVEN("squashing non-compatible conditionals") {
+    Circuit circ(1, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.143}, {0}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.143}, {0}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
+
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.143}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.143}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 0);
+
+    Circuit circ_no_cond(1, 1);
+    circ_no_cond.add_op<unsigned>(OpType::Rz, 0.142, {0});
+    circ_no_cond.add_op<unsigned>(OpType::Rx, 0.143, {0});
+    circ_no_cond.add_op<unsigned>(OpType::Rz, 0.142, {0});
+    circ_no_cond.add_op<unsigned>(OpType::Rx, 0.143, {0});
+    circ_no_cond.add_op<unsigned>(OpType::Rz, 0.142, {0});
+
+    bool success =
+        Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ);
+    REQUIRE(success);
+
+    Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Rz).apply(circ_no_cond);
+
+    REQUIRE(circ.n_gates() == 6);
+    REQUIRE(circ_no_cond.n_gates() == 3);
+
+    auto cmds = circ.get_commands();
+    auto cmds_no_cond = circ_no_cond.get_commands();
+    for (unsigned i = 0; i < 3; ++i) {
+      const Conditional &cond1 =
+          static_cast<const Conditional &>(*cmds[i].get_op_ptr());
+      Op_ptr op = cond1.get_op();
+      REQUIRE(cond1.get_value() == 1);
+      REQUIRE(*op == *cmds_no_cond[i].get_op_ptr());
+      const Conditional &cond2 =
+          static_cast<const Conditional &>(*cmds[i + 3].get_op_ptr());
+      op = cond2.get_op();
+      REQUIRE(cond2.get_value() == 0);
+      REQUIRE(*op == *cmds_no_cond[i].get_op_ptr());
+    }
+  }
+
   GIVEN("Squashing in a choice of gate set") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Rz, 0.142, {0});
@@ -599,11 +690,11 @@ SCENARIO("Testing general 1qb squash") {
       return ci;
     };
     OpTypeSet singleqs = {OpType::Rz, OpType::Rx};
-    bool success = Transform::squash_factory(singleqs, xzx).apply(circ);
+    bool success = Transforms::squash_factory(singleqs, xzx).apply(circ);
     REQUIRE(success);
     check_command_types(circ, {OpType::Rx, OpType::Rz, OpType::Rx});
     REQUIRE(test_unitary_comparison(circ, copy));
-    success = Transform::squash_factory(singleqs, xzx).apply(circ);
+    success = Transforms::squash_factory(singleqs, xzx).apply(circ);
     REQUIRE_FALSE(success);
   }
   GIVEN("Squashing with PhasedX") {
@@ -614,16 +705,16 @@ SCENARIO("Testing general 1qb squash") {
     Circuit copy = circ;
     OpTypeSet singleqs = {OpType::Rz, OpType::PhasedX};
     bool success =
-        Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+        Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
             .apply(circ);
     REQUIRE_FALSE(success);
     singleqs.insert(OpType::Rx);
-    success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+    success = Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE(success);
     check_command_types(circ, {OpType::Rz, OpType::PhasedX});
     REQUIRE(test_unitary_comparison(circ, copy));
-    success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+    success = Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE_FALSE(success);
   }
@@ -634,12 +725,12 @@ SCENARIO("Testing general 1qb squash") {
     Circuit copy = circ;
     OpTypeSet singleqs = {OpType::Rz, OpType::PhasedX};
     bool success =
-        Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+        Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
             .apply(circ);
     REQUIRE(success);
     check_command_types(circ, {OpType::PhasedX});
     REQUIRE(test_unitary_comparison(circ, copy));
-    success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+    success = Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE_FALSE(success);
   }
@@ -651,12 +742,12 @@ SCENARIO("Testing general 1qb squash") {
     Circuit copy = circ;
     OpTypeSet singleqs = {OpType::Rz, OpType::PhasedX};
     bool success =
-        Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+        Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
             .apply(circ);
     REQUIRE(success);
     check_command_types(circ, {OpType::Rz});
     REQUIRE(test_unitary_comparison(circ, copy));
-    success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+    success = Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE_FALSE(success);
   }
@@ -665,16 +756,16 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rz, 0.43, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit copy = circ;
-    bool success = Transform::rebase_HQS().apply(circ);
+    bool success = Transforms::rebase_HQS().apply(circ);
     REQUIRE(success);
     OpTypeSet singleqs = {OpType::Rz, OpType::PhasedX};
-    success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+    success = Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE(success);
     check_command_types(
-        circ, {OpType::Rz, OpType::PhasedX, OpType::ZZMax, OpType::PhasedX,
-               OpType::Rz});
-    success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+        circ, {OpType::Rz, OpType::PhasedX, OpType::ZZMax, OpType::Rz,
+               OpType::PhasedX});
+    success = Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE_FALSE(success);
   }
@@ -697,7 +788,7 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rz, 1., {0});
     OpTypeSet singleqs = {OpType::Rz, OpType::Rx, OpType::PhasedX};
     bool success =
-        Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+        Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
             .apply(circ);
     REQUIRE(success);
     check_command_types(
@@ -705,7 +796,7 @@ SCENARIO("Testing general 1qb squash") {
         {OpType::Rz, OpType::PhasedX, OpType::Conditional, OpType::Conditional,
          OpType::Conditional, OpType::Conditional, OpType::Conditional,
          OpType::Conditional, OpType::Rz, OpType::PhasedX});
-    success = Transform::squash_factory(singleqs, Transform::tk1_to_PhasedXRz)
+    success = Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE_FALSE(success);
   }
@@ -736,10 +827,10 @@ SCENARIO("Squishing a circuit into U3 and CNOTs") {
     unsigned num_vertices = test1.n_vertices();
     unsigned num_of_pairs = 3;
     WHEN("Annihilation,conversion and squashing is done") {
-      Transform::remove_redundancies().apply(test1);
+      Transforms::remove_redundancies().apply(test1);
       REQUIRE(test1.n_vertices() == num_vertices - 2 * num_of_pairs);
-      Transform::decompose_single_qubits_TK1().apply(test1);
-      Transform::squash_1qb_to_tk1().apply(test1);
+      Transforms::decompose_single_qubits_TK1().apply(test1);
+      Transforms::squash_1qb_to_tk1().apply(test1);
       test1.assert_valid();
       THEN("Circuit is shrunk to the correct depth") {
         REQUIRE(test1.depth() == 6);
@@ -750,7 +841,7 @@ SCENARIO("Squishing a circuit into U3 and CNOTs") {
     Circuit test1(1);
     test1.add_op<unsigned>(OpType::X, {0});
     WHEN("A squish is attempted") {
-      REQUIRE(Transform::decompose_single_qubits_TK1().apply(test1));
+      REQUIRE(Transforms::decompose_single_qubits_TK1().apply(test1));
       THEN("Nothing happens to the circuit except an op label change") {
         REQUIRE(test1.depth() == 1);
         REQUIRE(test1.count_gates(OpType::TK1) == 1);
@@ -772,7 +863,7 @@ SCENARIO("Squishing a circuit into U3 and CNOTs") {
     test.add_op<unsigned>(OpType::Z, {0});
     test.add_op<unsigned>(OpType::Z, {0});
 
-    REQUIRE(Transform::remove_redundancies().apply(test));
+    REQUIRE(Transforms::remove_redundancies().apply(test));
     auto slices = test.get_slices();
     REQUIRE(slices.size() == 3);
     REQUIRE(test.get_OpType_from_Vertex(*slices[0].begin()) == OpType::H);
@@ -794,9 +885,9 @@ SCENARIO("Test commutation through CXsw", "[transform]") {
       // std::vector<Subcircuit> patterns = circ.pattern_match_CX_Rz();
       // REQUIRE(patterns.size()==2);
       THEN("Circuit is replaced with pattern") {
-        Transform seq = Transform::commute_through_multis() >>
-                        Transform::remove_redundancies();
-        Transform repeat = Transform::repeat_with_metric(
+        Transform seq = Transforms::commute_through_multis() >>
+                        Transforms::remove_redundancies();
+        Transform repeat = Transforms::repeat_with_metric(
             seq, [](const Circuit &circ) { return circ.depth(); });
         repeat.apply(circ);
         REQUIRE(circ.n_vertices() == 5);
@@ -811,7 +902,7 @@ SCENARIO("Test commutation through CXsw", "[transform]") {
       circ.add_op<unsigned>(OpType::CX, {0, 1});
     }
     Circuit new_circ = circ;
-    Transform::commute_through_multis().apply(circ);
+    Transforms::commute_through_multis().apply(circ);
     REQUIRE(circ.n_vertices() == new_circ.n_vertices());
     REQUIRE(circ.n_edges() == new_circ.n_edges());
 
@@ -838,12 +929,12 @@ SCENARIO("Test commutation through CXsw", "[transform]") {
     REQUIRE(circ.count_gates(OpType::Rz) == 2);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
     REQUIRE(circ.count_gates(OpType::TK1) == 0);
-    Transform::commute_through_multis().apply(circ);
+    Transforms::commute_through_multis().apply(circ);
     REQUIRE(circ.count_gates(OpType::Rx) == 12);
     REQUIRE(circ.count_gates(OpType::Rz) == 2);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
     REQUIRE(circ.count_gates(OpType::TK1) == 0);
-    Transform::squash_1qb_to_tk1().apply(circ);
+    Transforms::squash_1qb_to_tk1().apply(circ);
     REQUIRE(circ.count_gates(OpType::Rx) == 0);
     REQUIRE(circ.count_gates(OpType::Rz) == 0);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
@@ -859,7 +950,7 @@ SCENARIO("Testing globalise_phasedx") {
     circ.add_op<unsigned>(OpType::PhasedX, {0.2, 0.54}, {0});
     auto orig_u = tket_sim::get_unitary(circ);
     WHEN("Applying globalise PhasedX transform") {
-      REQUIRE(Transform::globalise_phasedx().apply(circ));
+      REQUIRE(Transforms::globalise_phasedx().apply(circ));
       THEN("The correct gates are introduced") {
         REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
         REQUIRE(circ.count_gates(OpType::NPhasedX) == 2);
@@ -871,7 +962,7 @@ SCENARIO("Testing globalise_phasedx") {
         REQUIRE(tket_sim::compare_statevectors_or_unitaries(orig_u, new_u));
       }
       THEN("Cannot apply transform x2") {
-        REQUIRE_FALSE(Transform::globalise_phasedx().apply(circ));
+        REQUIRE_FALSE(Transforms::globalise_phasedx().apply(circ));
       }
     }
   }
@@ -880,7 +971,7 @@ SCENARIO("Testing globalise_phasedx") {
     circ.add_op<unsigned>(OpType::NPhasedX, {0.2, 0.54}, {0});
     auto orig_u = tket_sim::get_unitary(circ);
     WHEN("Applying globalise PhasedX transform") {
-      REQUIRE(Transform::globalise_phasedx().apply(circ));
+      REQUIRE(Transforms::globalise_phasedx().apply(circ));
       THEN("The correct gates are introduced") {
         REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
         REQUIRE(circ.count_gates(OpType::NPhasedX) == 2);
@@ -892,7 +983,7 @@ SCENARIO("Testing globalise_phasedx") {
         REQUIRE(tket_sim::compare_statevectors_or_unitaries(orig_u, new_u));
       }
       THEN("Cannot apply transform x2") {
-        REQUIRE_FALSE(Transform::globalise_phasedx().apply(circ));
+        REQUIRE_FALSE(Transforms::globalise_phasedx().apply(circ));
       }
     }
   }
@@ -901,7 +992,7 @@ SCENARIO("Testing globalise_phasedx") {
     circ.add_op<unsigned>(OpType::NPhasedX, {0.2, 0.54}, {0, 1});
     auto orig_u = tket_sim::get_unitary(circ);
     WHEN("Applying globalise PhasedX transform") {
-      REQUIRE(Transform::globalise_phasedx().apply(circ));
+      REQUIRE(Transforms::globalise_phasedx().apply(circ));
       THEN("The correct gates are introduced") {
         REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
         REQUIRE(circ.count_gates(OpType::NPhasedX) == 2);
@@ -913,7 +1004,7 @@ SCENARIO("Testing globalise_phasedx") {
         REQUIRE(tket_sim::compare_statevectors_or_unitaries(orig_u, new_u));
       }
       THEN("Cannot apply transform x2") {
-        REQUIRE_FALSE(Transform::globalise_phasedx().apply(circ));
+        REQUIRE_FALSE(Transforms::globalise_phasedx().apply(circ));
       }
     }
   }
@@ -929,7 +1020,7 @@ SCENARIO("Testing globalise_phasedx") {
     circ.add_op<unsigned>(OpType::NPhasedX, {0.53, 0.23}, {0, 1, 2, 3});
     auto orig_u = tket_sim::get_unitary(circ);
     WHEN("Applying globalise PhasedX transform") {
-      REQUIRE(Transform::globalise_phasedx().apply(circ));
+      REQUIRE(Transforms::globalise_phasedx().apply(circ));
       THEN("The correct gates are introduced") {
         REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
         REQUIRE(circ.count_gates(OpType::NPhasedX) == 7);
@@ -940,7 +1031,7 @@ SCENARIO("Testing globalise_phasedx") {
         REQUIRE(tket_sim::compare_statevectors_or_unitaries(orig_u, new_u));
       }
       THEN("Cannot apply transform x2") {
-        REQUIRE_FALSE(Transform::globalise_phasedx().apply(circ));
+        REQUIRE_FALSE(Transforms::globalise_phasedx().apply(circ));
       }
     }
   }
@@ -951,7 +1042,7 @@ SCENARIO(
     "conversion can be done",
     "[transform][multi_qubit]") {
   Circuit circ(3);
-  Transform::decompose_multi_qubits_CX().apply(circ);
+  Transforms::decompose_multi_qubits_CX().apply(circ);
 }
 
 SCENARIO(
@@ -967,7 +1058,7 @@ SCENARIO(
     circ.add_op<unsigned>(OpType::Rx, 0., {1});
     circ.add_op<unsigned>(OpType::Rz, 0., {0});
     WHEN("Annihilate is performed") {
-      REQUIRE(Transform::remove_redundancies().apply(circ));
+      REQUIRE(Transforms::remove_redundancies().apply(circ));
       REQUIRE(circ.n_vertices() == 5);
     }
   }
@@ -981,7 +1072,7 @@ SCENARIO(
       unsigned a = N - i;
       circ.add_op<unsigned>(OpType::CX, {a - 1, a});
     }
-    REQUIRE(Transform::remove_redundancies().apply(circ));
+    REQUIRE(Transforms::remove_redundancies().apply(circ));
     REQUIRE(circ.n_vertices() == (2 * N + 2));
     REQUIRE(circ.count_gates(OpType::CX) == 0);
   }
@@ -997,7 +1088,7 @@ SCENARIO(
       unsigned a = N - i;
       circ.add_op<unsigned>(OpType::CX, {a, a - 1});
     }
-    REQUIRE(!Transform::remove_redundancies().apply(circ));
+    REQUIRE(!Transforms::remove_redundancies().apply(circ));
     REQUIRE(circ.n_vertices() == (4 * N + 2));
     REQUIRE(circ.count_gates(OpType::CX) == 2 * N);
   }
@@ -1016,7 +1107,7 @@ SCENARIO(
     REQUIRE(circ.count_gates(OpType::Rz) == 3);
     REQUIRE(circ.count_gates(OpType::CX) == 14);
     const StateVector s0 = tket_sim::get_statevector(circ);
-    Transform::remove_redundancies().apply(circ);
+    Transforms::remove_redundancies().apply(circ);
     REQUIRE(circ.count_gates(OpType::Rx) == 8);
     REQUIRE(circ.count_gates(OpType::Rz) == 2);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
@@ -1029,32 +1120,32 @@ SCENARIO("Molmer-Sorensen gate converions") {
   GIVEN("A single MS gate") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::XXPhase, 0.4, {0, 1});
-    bool success = Transform::decompose_multi_qubits_CX().apply(circ);
+    bool success = Transforms::decompose_multi_qubits_CX().apply(circ);
     REQUIRE(success);
-    success = Transform::decompose_MolmerSorensen().apply(circ);
+    success = Transforms::decompose_MolmerSorensen().apply(circ);
     REQUIRE(success);
-    Transform::squash_1qb_to_tk1().apply(circ);
+    Transforms::squash_1qb_to_tk1().apply(circ);
     REQUIRE(circ.n_vertices() == 5);
   }
   GIVEN("A single CX gate") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    bool success = Transform::decompose_MolmerSorensen().apply(circ);
+    bool success = Transforms::decompose_MolmerSorensen().apply(circ);
     REQUIRE(success);
-    success = Transform::decompose_multi_qubits_CX().apply(circ);
+    success = Transforms::decompose_multi_qubits_CX().apply(circ);
     REQUIRE(success);
-    Transform::clifford_simp().apply(circ);
+    Transforms::clifford_simp().apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 1);
   }
   GIVEN("A CX and reset") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Reset, {0});
-    bool success = Transform::decompose_MolmerSorensen().apply(circ);
+    bool success = Transforms::decompose_MolmerSorensen().apply(circ);
     REQUIRE(success);
-    success = Transform::decompose_multi_qubits_CX().apply(circ);
+    success = Transforms::decompose_multi_qubits_CX().apply(circ);
     REQUIRE(success);
-    Transform::clifford_simp().apply(circ);
+    Transforms::clifford_simp().apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 1);
   }
 }
@@ -1063,7 +1154,7 @@ SCENARIO("Decomposition of multi-qubit gates") {
   GIVEN("A single CU1 gate") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CU1, 0.3, {0, 1});
-    bool success = Transform::rebase_tket().apply(circ);
+    bool success = Transforms::rebase_tket().apply(circ);
     REQUIRE(success);
     REQUIRE(circ.n_vertices() > 7);
   }
@@ -1086,7 +1177,7 @@ SCENARIO("Decomposition of multi-qubit gates") {
     circ.add_op<unsigned>(OpType::Collapse, {1});
     circ.add_op<unsigned>(OpType::Collapse, {2});
     circ.add_op<unsigned>(OpType::Collapse, {3});
-    bool success = Transform::rebase_tket().apply(circ);
+    bool success = Transforms::rebase_tket().apply(circ);
     REQUIRE(success);
     REQUIRE(circ.count_gates(OpType::CU1) == 0);
   }
@@ -1099,22 +1190,22 @@ SCENARIO("Testing Synthesis OQC") {
     circ.add_op<unsigned>(OpType::Z, {0});
     circ.add_op<unsigned>(OpType::X, {0});
     Circuit circ2(circ);
-    Transform::synthesise_OQC().apply(circ);
+    Transforms::synthesise_OQC().apply(circ);
     REQUIRE(test_unitary_comparison(circ, circ2));
   }
   GIVEN("Single qubit circuit 2") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::H, {0});
     Circuit circ2(circ);
-    Transform::synthesise_OQC().apply(circ);
+    Transforms::synthesise_OQC().apply(circ);
     REQUIRE(test_unitary_comparison(circ, circ2));
   }
   GIVEN("Circuit containing a single CX") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit circ2(circ);
-    REQUIRE(Transform::rebase_OQC().apply(circ));
-    REQUIRE(Transform::synthesise_OQC().apply(circ2));
+    REQUIRE(Transforms::rebase_OQC().apply(circ));
+    REQUIRE(Transforms::synthesise_OQC().apply(circ2));
     REQUIRE(circ.n_gates() == 5);
     REQUIRE(circ2.n_gates() == 5);
     REQUIRE(test_unitary_comparison(circ, circ2));
@@ -1127,7 +1218,7 @@ SCENARIO("Testing Synthesis OQC") {
     circ.add_op<unsigned>(OpType::ECR, {0, 1});
     circ.add_op<unsigned>(OpType::Z, {0});
     circ.add_op<unsigned>(OpType::X, {1});
-    REQUIRE(Transform::synthesise_OQC().apply(circ));
+    REQUIRE(Transforms::synthesise_OQC().apply(circ));
     // X gates commute with ECR
     REQUIRE(circ.n_gates() == 3);
   }
@@ -1140,7 +1231,7 @@ SCENARIO("Testing Synthesis OQC") {
     circ.add_op<unsigned>(op_z, {0});
     circ.add_op<unsigned>(op_x, {1});
     circ.add_op<unsigned>(OpType::ECR, {0, 1});
-    Transform::synthesise_OQC().apply(circ);
+    Transforms::synthesise_OQC().apply(circ);
     REQUIRE(circ.n_gates() == 8);
     REQUIRE(circ.count_gates(OpType::ECR) == 2);
   }
@@ -1158,13 +1249,13 @@ SCENARIO("Testing Synthesis OQC") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(op_z2, {0});
     circ.add_op<unsigned>(op_x2, {1});
-    REQUIRE(Transform::synthesise_OQC().apply(circ));
+    REQUIRE(Transforms::synthesise_OQC().apply(circ));
     REQUIRE(circ.n_gates() == 5);
   }
 
   GIVEN("An empty circuit") {
     Circuit circ(7);
-    REQUIRE(!Transform::synthesise_OQC().apply(circ));
+    REQUIRE(!Transforms::synthesise_OQC().apply(circ));
   }
   GIVEN("A circuit with params=0") {
     Circuit circ(3);
@@ -1178,7 +1269,7 @@ SCENARIO("Testing Synthesis OQC") {
     circ.add_op<unsigned>(OpType::Rx, param, {1});
     circ.add_op<unsigned>(OpType::Ry, param, {1});
     circ.add_op<unsigned>(OpType::Rx, param, {2});
-    Transform::synthesise_OQC().apply(circ);
+    Transforms::synthesise_OQC().apply(circ);
     REQUIRE(circ.n_gates() == 0);
   }
   GIVEN("A nasty parameterised circuit") {
@@ -1201,7 +1292,7 @@ SCENARIO("Testing Synthesis OQC") {
     std::vector<Expr> params6 = {0.5, 0.145149, 0.};
     std::vector<Expr> params7 = {0.5, 1.145149, 1.};
     Circuit circ2(circ);
-    Transform::synthesise_OQC().apply(circ);
+    Transforms::synthesise_OQC().apply(circ);
     REQUIRE(test_unitary_comparison(circ, circ2));
   }
 }
@@ -1212,7 +1303,7 @@ SCENARIO("Test synthesise_HQS") {
     circ.add_op<unsigned>(OpType::Rz, 0.3333, {0});
     circ.add_op<unsigned>(OpType::Rx, 1.3333, {0});
     circ.add_op<unsigned>(OpType::Rz, 0.3333, {0});
-    REQUIRE(Transform::synthesise_HQS().apply(circ));
+    REQUIRE(Transforms::synthesise_HQS().apply(circ));
     SliceVec slices = circ.get_slices();
     REQUIRE(circ.get_OpType_from_Vertex(*slices[0].begin()) == OpType::Rz);
     REQUIRE(circ.get_OpType_from_Vertex(*slices[1].begin()) == OpType::PhasedX);
@@ -1243,7 +1334,7 @@ SCENARIO("Test synthesise_HQS") {
     circ.add_op<unsigned>(OpType::X, {1});
     circ.add_op<unsigned>(OpType::Z, {1});
     circ.add_op<unsigned>(OpType::Rz, 0.3333, {1});
-    REQUIRE(Transform::synthesise_HQS().apply(circ));
+    REQUIRE(Transforms::synthesise_HQS().apply(circ));
     circ.get_slices();
     REQUIRE(circ.n_vertices() == 10);
     auto slices = circ.get_slices();
@@ -1259,7 +1350,7 @@ SCENARIO("Test synthesise_HQS") {
     circ.add_op<unsigned>(OpType::Rx, 1.3333, {0});
     circ.add_op<unsigned>(OpType::Rz, 0.5, {0});
     circ.add_op<unsigned>(OpType::Rx, 0.6666, {0});
-    REQUIRE(Transform::synthesise_HQS().apply(circ));
+    REQUIRE(Transforms::synthesise_HQS().apply(circ));
     auto slices = circ.get_slices();
     REQUIRE(slices.size() == 2);
     REQUIRE(circ.get_OpType_from_Vertex(*slices[1].begin()) == OpType::PhasedX);
@@ -1270,7 +1361,7 @@ SCENARIO("Test synthesise_HQS") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Rz, 0.5, {1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transform::synthesise_HQS().apply(circ));
+    REQUIRE(Transforms::synthesise_HQS().apply(circ));
     REQUIRE(circ.get_slices().size() == 1);
   }
   GIVEN("Something that isn't quite a phase gadget") {
@@ -1278,14 +1369,14 @@ SCENARIO("Test synthesise_HQS") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Rz, 0.499999, {1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transform::synthesise_HQS().apply(circ));
+    REQUIRE(Transforms::synthesise_HQS().apply(circ));
     REQUIRE(circ.get_slices().size() > 3);
 
     Circuit circ2(2);
     circ2.add_op<unsigned>(OpType::CX, {0, 1});
     circ2.add_op<unsigned>(OpType::Rz, 0.500003, {0});
     circ2.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transform::synthesise_HQS().apply(circ2));
+    REQUIRE(Transforms::synthesise_HQS().apply(circ2));
     REQUIRE(circ2.get_slices().size() == 1);
     REQUIRE(
         circ2.get_OpType_from_Vertex(*circ2.get_slices()[0].begin()) ==
@@ -1294,13 +1385,13 @@ SCENARIO("Test synthesise_HQS") {
   GIVEN("A CRz") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CRz, 1., {0, 1});
-    REQUIRE(Transform::synthesise_HQS().apply(circ));
+    REQUIRE(Transforms::synthesise_HQS().apply(circ));
   }
   GIVEN("A mixed circuit") {
     Circuit circ(2, 1);
     circ.add_op<unsigned>(OpType::H, {0});
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
-    REQUIRE_NOTHROW(Transform::synthesise_HQS().apply(circ));
+    REQUIRE_NOTHROW(Transforms::synthesise_HQS().apply(circ));
   }
 }
 
@@ -1309,21 +1400,21 @@ SCENARIO("Test synthesise_UMD") {
     Expr a = 0.;
     Expr b = 0.;
     Expr c = 0.;
-    Circuit circ = Transform::tk1_to_PhasedXRz(a, b, c);
+    Circuit circ = Transforms::tk1_to_PhasedXRz(a, b, c);
     REQUIRE(circ.n_gates() == 0);
   }
   GIVEN("An Rz in disguise") {
     Expr a = 0.3;
     Expr b = 0.;
     Expr c = 1.3;
-    Circuit circ = Transform::tk1_to_PhasedXRz(a, b, c);
+    Circuit circ = Transforms::tk1_to_PhasedXRz(a, b, c);
     REQUIRE(circ.n_gates() == 1);
   }
   GIVEN("Y-gate") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Y, {0});
     const StateVector sv1 = tket_sim::get_statevector(circ);
-    REQUIRE(Transform::synthesise_UMD().apply(circ));
+    REQUIRE(Transforms::synthesise_UMD().apply(circ));
     const StateVector sv2 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv1, sv2));
     REQUIRE(circ.n_gates() == 1);
@@ -1340,8 +1431,8 @@ SCENARIO("Test synthesise_UMD") {
     circ.add_op<unsigned>(OpType::Rz, 0.17, {0});
     StateVector sv1 = tket_sim::get_statevector(circ);
 
-    REQUIRE(Transform::synthesise_UMD().apply(circ));
-    REQUIRE(Transform::synthesise_tket().apply(circ));
+    REQUIRE(Transforms::synthesise_UMD().apply(circ));
+    REQUIRE(Transforms::synthesise_tket().apply(circ));
     StateVector sv2 = tket_sim::get_statevector(circ);
 
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv1, sv2));
@@ -1352,13 +1443,13 @@ SCENARIO("Test synthesise_UMD") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     StateVector sv1 = tket_sim::get_statevector(circ);
 
-    REQUIRE(Transform::synthesise_UMD().apply(circ));
+    REQUIRE(Transforms::synthesise_UMD().apply(circ));
     REQUIRE(circ.n_gates() == 5);
     REQUIRE(circ.count_gates(OpType::PhasedX) == 3);
     REQUIRE(circ.count_gates(OpType::Rz) == 1);
     REQUIRE(circ.count_gates(OpType::XXPhase) == 1);
 
-    REQUIRE(Transform::synthesise_tket().apply(circ));
+    REQUIRE(Transforms::synthesise_tket().apply(circ));
     StateVector sv2 = tket_sim::get_statevector(circ);
 
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv1, sv2));
@@ -1370,8 +1461,8 @@ SCENARIO("Test synthesise_UMD") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     StateVector sv1 = tket_sim::get_statevector(circ);
 
-    REQUIRE(Transform::synthesise_UMD().apply(circ));
-    REQUIRE(Transform::synthesise_tket().apply(circ));
+    REQUIRE(Transforms::synthesise_UMD().apply(circ));
+    REQUIRE(Transforms::synthesise_tket().apply(circ));
     StateVector sv2 = tket_sim::get_statevector(circ);
 
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv1, sv2));
@@ -1385,7 +1476,7 @@ SCENARIO("Copying Z and X through a CX") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Z, {1});
     circ.add_op<unsigned>(OpType::CZ, {0, 1});
-    REQUIRE(Transform::copy_pi_through_CX().apply(circ));
+    REQUIRE(Transforms::copy_pi_through_CX().apply(circ));
     REQUIRE(circ.count_gates(OpType::Z) == 2);
     REQUIRE(circ.count_gates(OpType::CX) == 1);
   }
@@ -1395,7 +1486,7 @@ SCENARIO("Copying Z and X through a CX") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::X, {0});
     circ.add_op<unsigned>(OpType::CZ, {0, 1});
-    REQUIRE(Transform::copy_pi_through_CX().apply(circ));
+    REQUIRE(Transforms::copy_pi_through_CX().apply(circ));
     REQUIRE(circ.count_gates(OpType::X) == 2);
     REQUIRE(circ.count_gates(OpType::CX) == 1);
   }
@@ -1403,20 +1494,20 @@ SCENARIO("Copying Z and X through a CX") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Z, {0});
-    REQUIRE(!Transform::copy_pi_through_CX().apply(circ));
+    REQUIRE(!Transforms::copy_pi_through_CX().apply(circ));
   }
   GIVEN("A X on the commuting side") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::X, {1});
-    REQUIRE(!Transform::copy_pi_through_CX().apply(circ));
+    REQUIRE(!Transforms::copy_pi_through_CX().apply(circ));
   }
   GIVEN("Two CXs to commute through - previously broke by yielding a cycle") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::X, {0});
-    Transform::copy_pi_through_CX().apply(circ);
+    Transforms::copy_pi_through_CX().apply(circ);
     REQUIRE_NOTHROW(circ.depth_by_type(OpType::CX));
   }
 }
@@ -1427,9 +1518,9 @@ SCENARIO("Test barrier blocks transforms successfully") {
     circ.add_op<unsigned>(OpType::U1, 0.5, {0});
     circ.add_barrier(uvec{0});
     circ.add_op<unsigned>(OpType::U1, 0.5, {0});
-    REQUIRE(!Transform::remove_redundancies().apply(circ));
+    REQUIRE(!Transforms::remove_redundancies().apply(circ));
     REQUIRE_THROWS_AS(
-        Transform::pairwise_pauli_gadgets().apply(circ), NotValid);
+        Transforms::pairwise_pauli_gadgets().apply(circ), NotValid);
   }
   GIVEN("Bigger circuit with barrier") {
     Circuit circ(3);
@@ -1438,7 +1529,7 @@ SCENARIO("Test barrier blocks transforms successfully") {
     circ.add_op<unsigned>(OpType::CZ, {1, 2});
     circ.add_barrier({0, 1, 2});
     REQUIRE(verify_n_qubits_for_ops(circ));
-    REQUIRE(Transform::remove_redundancies().apply(circ));
+    REQUIRE(Transforms::remove_redundancies().apply(circ));
     REQUIRE(verify_n_qubits_for_ops(circ));
     REQUIRE(circ.depth() == 1);
     REQUIRE(circ.depth_by_type(OpType::Barrier) == 1);
@@ -1452,7 +1543,7 @@ SCENARIO("Test barrier blocks transforms successfully") {
     circ.add_op<unsigned>(OpType::CnRy, -0.4, {0, 1, 2, 3, 4, 5, 6, 7});
     REQUIRE(verify_n_qubits_for_ops(circ));
     REQUIRE(circ.n_gates() == 5);
-    REQUIRE(Transform::remove_redundancies().apply(circ));
+    REQUIRE(Transforms::remove_redundancies().apply(circ));
     REQUIRE(verify_n_qubits_for_ops(circ));
     REQUIRE(circ.depth_by_type(OpType::Barrier) == 1);
     REQUIRE(circ.n_gates() == 3);  // both CXs removed
@@ -1460,7 +1551,7 @@ SCENARIO("Test barrier blocks transforms successfully") {
     const Op_ptr bar = std::make_shared<MetaOp>(
         OpType::Barrier, op_signature_t(4, EdgeType::Quantum));
     REQUIRE(circ.substitute_all(rep, bar));
-    REQUIRE(Transform::remove_redundancies().apply(circ));
+    REQUIRE(Transforms::remove_redundancies().apply(circ));
     REQUIRE(verify_n_qubits_for_ops(circ));
     REQUIRE(circ.n_gates() == 0);
   }
@@ -1471,7 +1562,7 @@ SCENARIO("Test barrier blocks transforms successfully") {
     circ.add_op<unsigned>(OpType::Rz, 0.6, {0});
     circ.add_barrier(uvec{0});
     circ.add_op<unsigned>(OpType::Rx, 0.8, {0});
-    REQUIRE(Transform::synthesise_tket().apply(circ));
+    REQUIRE(Transforms::synthesise_tket().apply(circ));
     REQUIRE(circ.depth() == 2);
     REQUIRE(circ.depth_by_type(OpType::Barrier) == 1);
   }
@@ -1483,7 +1574,7 @@ SCENARIO("Check the identification of ZZPhase gates works correctly") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(!Transform::decompose_ZZPhase().apply(circ));
+    REQUIRE(!Transforms::decompose_ZZPhase().apply(circ));
   }
   GIVEN("A circuit with 2 ZZPhase gates") {
     Circuit circ(2);
@@ -1493,7 +1584,7 @@ SCENARIO("Check the identification of ZZPhase gates works correctly") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Rx, 0.6, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    REQUIRE(Transform::decompose_ZZPhase().apply(circ));
+    REQUIRE(Transforms::decompose_ZZPhase().apply(circ));
     REQUIRE(circ.count_gates(OpType::ZZPhase) == 2);
   }
   GIVEN("A circuit with a larger PhaseGadget structure but only 1 ZZ") {
@@ -1501,7 +1592,7 @@ SCENARIO("Check the identification of ZZPhase gates works correctly") {
     add_2qb_gates(circ, OpType::CX, {{3, 2}, {2, 0}, {0, 1}});
     circ.add_op<unsigned>(OpType::Rx, 0.3, {0});
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {2, 0}, {3, 2}});
-    REQUIRE(Transform::decompose_ZZPhase().apply(circ));
+    REQUIRE(Transforms::decompose_ZZPhase().apply(circ));
     REQUIRE(circ.count_gates(OpType::ZZPhase) == 1);
     REQUIRE(circ.count_gates(OpType::CX) == 4);
   }
@@ -1528,11 +1619,11 @@ SCENARIO("Test TK1 gate decomp for some gates") {
     std::vector<unsigned> qbs(n_qbs);
     std::iota(qbs.begin(), qbs.end(), 0);
     circ.add_op<unsigned>(map_pair.first, params, qbs);
-    Transform::rebase_tket().apply(circ);
+    Transforms::rebase_tket().apply(circ);
     Circuit circ2 = circ;
-    Transform::decompose_ZX().apply(circ2);
+    Transforms::decompose_ZX().apply(circ2);
     const StateVector sv2 = tket_sim::get_statevector(circ2);
-    Transform::decompose_tk1_to_rzrx().apply(circ);
+    Transforms::decompose_tk1_to_rzrx().apply(circ);
     const StateVector sv = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv, sv2));
   }

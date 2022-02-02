@@ -19,6 +19,7 @@
 #include "Gate/Rotation.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/MatrixAnalysis.hpp"
@@ -354,7 +355,7 @@ SCENARIO("Testing two-qubit canonical forms") {
     circ.add_op<unsigned>(OpType::Vdg, {0});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     Eigen::Matrix4cd mat = get_matrix_from_2qb_circ(circ);
-    bool success = Transform::two_qubit_squash().apply(circ);
+    bool success = Transforms::two_qubit_squash().apply(circ);
     REQUIRE(success);
     REQUIRE(circ.count_gates(OpType::CX) == 2);
     Eigen::Matrix4cd result = get_matrix_from_2qb_circ(circ);
@@ -379,7 +380,7 @@ SCENARIO("Testing two-qubit canonical forms") {
     circ.add_op<unsigned>(tket::OpType::Rz, 1.2, {0});
     circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
     circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
-    REQUIRE(Transform::two_qubit_squash().apply(circ));
+    REQUIRE(Transforms::two_qubit_squash().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 0);
   }
 
@@ -393,14 +394,14 @@ SCENARIO("Testing two-qubit canonical forms") {
     circ.add_op<unsigned>(tket::OpType::Rx, 1.5, {0});
     circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
     circ.add_op<unsigned>(tket::OpType::Rz, 1.2, {0});
-    REQUIRE(Transform::two_qubit_squash().apply(circ));
+    REQUIRE(Transforms::two_qubit_squash().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 1);
   }
 
   GIVEN("A swap cannot be simplified") {
     Circuit circ(2);
     add_2qb_gates(circ, OpType::CX, {{1, 0}, {0, 1}, {1, 0}});
-    REQUIRE(!Transform::two_qubit_squash().apply(circ));
+    REQUIRE(!Transforms::two_qubit_squash().apply(circ));
   }
 
   GIVEN("A two qubit circuit with measures") {
@@ -413,7 +414,7 @@ SCENARIO("Testing two-qubit canonical forms") {
     add_2qb_gates(circ, OpType::CX, {{2, 3}, {3, 2}});
     circ.add_op<unsigned>(OpType::Collapse, {2});
     add_2qb_gates(circ, OpType::CX, {{2, 3}, {3, 2}, {2, 3}, {3, 2}});
-    REQUIRE(Transform::two_qubit_squash().apply(circ));
+    REQUIRE(Transforms::two_qubit_squash().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 8);
   }
 
@@ -422,7 +423,7 @@ SCENARIO("Testing two-qubit canonical forms") {
     add_2qb_gates(
         circ, OpType::CX,
         {{0, 1}, {1, 0}, {0, 1}, {0, 2}, {0, 1}, {1, 0}, {0, 1}});
-    bool success = Transform::two_qubit_squash().apply(circ);
+    bool success = Transforms::two_qubit_squash().apply(circ);
     REQUIRE(!success);
   }
 
@@ -447,7 +448,7 @@ SCENARIO("Testing two-qubit canonical forms") {
          {1, 3},
          {3, 1}});
     const StateVector s0 = tket_sim::get_statevector(circ);
-    bool success = Transform::two_qubit_squash().apply(circ);
+    bool success = Transforms::two_qubit_squash().apply(circ);
     REQUIRE(success);
     REQUIRE(circ.count_gates(OpType::CX) == 8);
     const StateVector s1 = tket_sim::get_statevector(circ);
@@ -495,7 +496,7 @@ SCENARIO("KAK Decomposition around symbolic gates") {
     add_2qb_gates(circ, OpType::CX, {{2, 3}, {3, 2}});
     circ.add_op<unsigned>(OpType::U2, {0.5, -Expr(b)}, {2});
     add_2qb_gates(circ, OpType::CX, {{2, 3}, {3, 2}, {2, 3}, {3, 2}});
-    REQUIRE(Transform::two_qubit_squash().apply(circ));
+    REQUIRE(Transforms::two_qubit_squash().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 8);
   }
   GIVEN("Efficient two-qubit circuit with symbolic gates") {
@@ -510,7 +511,7 @@ SCENARIO("KAK Decomposition around symbolic gates") {
     circ.add_op<unsigned>(OpType::CX, {2, 3});
     circ.add_op<unsigned>(OpType::U2, {0.5, -Expr(b)}, {2});
     add_2qb_gates(circ, OpType::CX, {{2, 3}, {3, 2}, {2, 3}});
-    REQUIRE_FALSE(Transform::two_qubit_squash().apply(circ));
+    REQUIRE_FALSE(Transforms::two_qubit_squash().apply(circ));
   }
 }
 

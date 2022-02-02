@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 StateTuple = Tuple[int, ...]
 CountsDict = Dict[StateTuple, int]
-KwargTypes = Union[int, float, None]
+KwargTypes = Union[int, float, str, None]
 
 
 class BitPermuter:

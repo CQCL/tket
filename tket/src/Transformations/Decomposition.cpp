@@ -12,19 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "Decomposition.hpp"
+
 #include <optional>
 
+#include "Architecture/Architecture.hpp"
+#include "BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/GatePtr.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
 #include "Ops/OpPtr.hpp"
+#include "Rebase.hpp"
 #include "Replacement.hpp"
 #include "Transform.hpp"
 #include "Utils/Expression.hpp"
 
 namespace tket {
+
+namespace Transforms {
 
 static bool convert_to_zxz(Circuit &circ);
 static bool convert_to_zyz(Circuit &circ);
@@ -57,15 +64,14 @@ static bool convert_multiqs_CX(Circuit &circ) {
 }
 
 static bool convert_to_zxz(Circuit &circ) {
-  bool success = (Transform::decompose_single_qubits_TK1() >>
-                  Transform::decompose_tk1_to_rzrx())
-                     .apply(circ);
+  bool success =
+      (decompose_single_qubits_TK1() >> decompose_tk1_to_rzrx()).apply(circ);
   return success;
 }
 
 static bool convert_to_zyz(Circuit &circ) {
   static const Expr half = SymEngine::div(Expr(1), Expr(2));
-  bool success = Transform::decompose_single_qubits_TK1().apply(circ);
+  bool success = decompose_single_qubits_TK1().apply(circ);
   VertexList bin;
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     if (circ.n_in_edges(v) != 1) continue;
@@ -99,7 +105,7 @@ static bool convert_to_zyz(Circuit &circ) {
 
 static bool convert_to_xyx(Circuit &circ) {
   static const Expr half = SymEngine::div(Expr(1), Expr(2));
-  bool success = Transform::decompose_single_qubits_TK1().apply(circ);
+  bool success = decompose_single_qubits_TK1().apply(circ);
   VertexList bin;
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     if (circ.n_in_edges(v) != 1) continue;
@@ -112,7 +118,7 @@ static bool convert_to_xyx(Circuit &circ) {
       replacement.add_op<unsigned>(OpType::Ry, params[1], {0});
       replacement.add_op<unsigned>(OpType::Rx, params[0] - half, {0});
       replacement.add_op<unsigned>(OpType::Ry, -half, {0});
-      Transform::remove_redundancies().apply(replacement);
+      remove_redundancies().apply(replacement);
       Subcircuit sub = {
           {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
       bin.push_back(v);
@@ -125,9 +131,7 @@ static bool convert_to_xyx(Circuit &circ) {
   return success;
 }
 
-Transform Transform::decompose_multi_qubits_CX() {
-  return Transform(convert_multiqs_CX);
-}
+Transform decompose_multi_qubits_CX() { return Transform(convert_multiqs_CX); }
 
 static bool convert_singleqs_TK1(Circuit &circ) {
   bool success = false;
@@ -152,11 +156,11 @@ static bool convert_singleqs_TK1(Circuit &circ) {
   return success;
 }
 
-Transform Transform::decompose_single_qubits_TK1() {
+Transform decompose_single_qubits_TK1() {
   return Transform(convert_singleqs_TK1);
 }
 
-Transform Transform::decompose_ZYZ_to_TK1() {
+Transform decompose_ZYZ_to_TK1() {
   return Transform([](Circuit &circ) {
     bool success = false;
     static const Expr zero(0);
@@ -220,13 +224,13 @@ Transform Transform::decompose_ZYZ_to_TK1() {
   });
 }
 
-Transform Transform::decompose_ZX() { return Transform(convert_to_zxz); }
+Transform decompose_ZX() { return Transform(convert_to_zxz); }
 
-Transform Transform::decompose_ZY() { return Transform(convert_to_zyz); }
+Transform decompose_ZY() { return Transform(convert_to_zyz); }
 
-Transform Transform::decompose_XY() { return Transform(convert_to_xyx); }
+Transform decompose_XY() { return Transform(convert_to_xyx); }
 
-Transform Transform::decompose_tk1_to_rzrx() {
+Transform decompose_tk1_to_rzrx() {
   return Transform([](Circuit &circ) {
     bool success = false;
     auto [it, end] = boost::vertices(circ.dag);
@@ -236,8 +240,7 @@ Transform Transform::decompose_tk1_to_rzrx() {
         success = true;
         const Op_ptr g = circ.get_Op_ptr_from_Vertex(*it);
         const std::vector<Expr> &params = g->get_params();
-        Circuit newcirc =
-            Transform::tk1_to_rzrx(params[0], params[1], params[2]);
+        Circuit newcirc = tk1_to_rzrx(params[0], params[1], params[2]);
         Subcircuit sc = {
             {circ.get_in_edges(*it)}, {circ.get_all_out_edges(*it)}, {*it}};
         circ.substitute(newcirc, sc, Circuit::VertexDeletion::Yes);
@@ -247,7 +250,7 @@ Transform Transform::decompose_tk1_to_rzrx() {
   });
 }
 
-Transform Transform::decompose_CX_to_ECR() {
+Transform decompose_CX_to_ECR() {
   return Transform([](Circuit &circ) {
     bool success = false;
     auto [i, end] = boost::vertices(circ.dag);
@@ -264,7 +267,7 @@ Transform Transform::decompose_CX_to_ECR() {
   });
 }
 
-Transform Transform::decompose_CX_to_HQS2() {
+Transform decompose_CX_to_HQS2() {
   return Transform([](Circuit &circ) {
     bool success = false;
     VertexList bin;
@@ -284,7 +287,7 @@ Transform Transform::decompose_CX_to_HQS2() {
 }
 
 /* --Rz(a)--Rx(b)--R(c)-- => --Rz(a+c)--PhasedX(b,c)-- */
-Transform Transform::decompose_ZX_to_HQS1() {
+Transform decompose_ZX_to_HQS1() {
   return Transform([](Circuit &circ) {
     bool success = false;
     VertexList to_bin;
@@ -318,7 +321,7 @@ Transform Transform::decompose_ZX_to_HQS1() {
     }
     circ.remove_vertices(
         to_bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
-    Transform::remove_redundancies().apply(circ);
+    remove_redundancies().apply(circ);
     return success;
   });
 }
@@ -327,7 +330,7 @@ Transform Transform::decompose_ZX_to_HQS1() {
 // ---C---         -V-S-|-H-
 //    |      -->    XX(pi/4)
 // ---X---         -----|-Vdg-
-Transform Transform::decompose_MolmerSorensen() {
+Transform decompose_MolmerSorensen() {
   return Transform([](Circuit &circ) {
     bool success = false;
     VertexList bin;
@@ -381,9 +384,9 @@ Transform Transform::decompose_MolmerSorensen() {
   });
 }
 
-Transform Transform::decompose_ZZPhase() {
+Transform decompose_ZZPhase() {
   return Transform([](Circuit &circ) {
-    bool success = Transform::decompose_PhaseGadgets().apply(circ);
+    bool success = decompose_PhaseGadgets().apply(circ);
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
       if (circ.get_OpType_from_Vertex(v) == OpType::PhaseGadget) {
         const Op_ptr g = circ.get_Op_ptr_from_Vertex(v);
@@ -554,7 +557,7 @@ static Circuit clifford_from_tk1(int i, int j, int k) {
   return c;
 }
 
-Transform Transform::decompose_cliffords_std() {
+Transform decompose_cliffords_std() {
   return Transform([](Circuit &circ) {
     bool success = false;
     VertexList bin;
@@ -598,7 +601,7 @@ Transform Transform::decompose_cliffords_std() {
   });
 }
 
-Transform Transform::decompose_ZX_to_cliffords() {
+Transform decompose_ZX_to_cliffords() {
   return Transform([](Circuit &circ) {
     bool success = false;
     VertexList bin;
@@ -665,7 +668,7 @@ Transform Transform::decompose_ZX_to_cliffords() {
   });
 }
 
-Transform Transform::decompose_PhaseGadgets() {
+Transform decompose_PhaseGadgets() {
   return Transform([](Circuit &circ) {
     bool success = false;
     VertexList big_bin;
@@ -737,11 +740,11 @@ Transform Transform::decompose_PhaseGadgets() {
   });
 }
 
-Transform Transform::decomp_boxes() {
+Transform decomp_boxes() {
   return Transform([](Circuit &circ) { return circ.decompose_boxes(); });
 }
 
-Transform Transform::compose_phase_poly_boxes() {
+Transform compose_phase_poly_boxes() {
   return Transform([](Circuit &circ) {
     CircToPhasePolyConversion conv = CircToPhasePolyConversion(circ);
     conv.convert();
@@ -750,7 +753,7 @@ Transform Transform::compose_phase_poly_boxes() {
   });
 }
 
-Transform Transform::decompose_SWAP(const Circuit &replacement_circuit) {
+Transform decompose_SWAP(const Circuit &replacement_circuit) {
   return Transform([=](Circuit &circ) {
     if (!replacement_circuit.is_simple()) throw SimpleOnly();
     return circ.substitute_all(replacement_circuit, get_op_ptr(OpType::SWAP));
@@ -770,7 +773,7 @@ static void swap_sub(
     circ.substitute(swap_circ_2, sub, Circuit::VertexDeletion::Yes);
 }
 
-Transform Transform::decompose_SWAP_to_CX(const Architecture &arc) {
+Transform decompose_SWAP_to_CX(const Architecture &arc) {
   // Note that the default argument will be out of scope at call-time!
   //  => we replace the default empty Architecture with nullptr
   // we need to keep arc as a pointer as there is no such thing as
@@ -837,7 +840,7 @@ Transform Transform::decompose_SWAP_to_CX(const Architecture &arc) {
   });
 }
 
-Transform Transform::decompose_BRIDGE_to_CX() {
+Transform decompose_BRIDGE_to_CX() {
   return Transform([](Circuit &circ) {
     bool success = false;
     // Collect all BRIDGE type vertices
@@ -916,7 +919,7 @@ Transform Transform::decompose_BRIDGE_to_CX() {
   });
 }
 
-Transform Transform::decompose_CX_directed(const Architecture &arc) {
+Transform decompose_CX_directed(const Architecture &arc) {
   return Transform([arc](Circuit &circ) {
     bool success = false;
     // Collect all CX type vertices
@@ -957,7 +960,7 @@ Transform Transform::decompose_CX_directed(const Architecture &arc) {
               {all_qubits[1], qbs[1]},
               {all_qubits[2], qbs[2]}};
           box_ptr->to_circuit()->rename_units(rmap);
-          Transform::decompose_CX_directed(arc).apply(*box_ptr->to_circuit());
+          decompose_CX_directed(arc).apply(*box_ptr->to_circuit());
         }
       }
     }
@@ -980,4 +983,7 @@ Transform Transform::decompose_CX_directed(const Architecture &arc) {
     return success;
   });
 }
+
+}  // namespace Transforms
+
 }  // namespace tket

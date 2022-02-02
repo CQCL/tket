@@ -738,11 +738,15 @@ bool CliffordReductionPass::reduce_circuit(Circuit &circ, bool allow_swaps) {
   return context.success;
 }
 
-Transform Transform::clifford_reduction(bool allow_swaps) {
+namespace Transforms {
+
+Transform clifford_reduction(bool allow_swaps) {
   return Transform([=](Circuit &circ) {
     return CliffordReductionPass::reduce_circuit(circ, allow_swaps);
   });
 }
+
+}  // namespace Transforms
 
 CliffordReductionPassTester::CliffordReductionPassTester(Circuit &circ)
     : context(circ, true) {

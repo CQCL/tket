@@ -32,7 +32,10 @@ add_library(tket-${COMP}
     Replacement.cpp
     MeasurePass.cpp
     ContextualReduction.cpp
-    ThreeQubitSquash.cpp)
+    ThreeQubitSquash.cpp
+    SingleQubitSquash.cpp
+    PQPSquash.cpp
+    StandardSquash.cpp)
 
 list(APPEND DEPS_${COMP}
     Architecture
@@ -62,4 +65,4 @@ target_include_directories(tket-${COMP}
     ${TKET_${COMP}_INCLUDE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS_SYMENGINE})

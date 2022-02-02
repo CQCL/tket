@@ -168,6 +168,7 @@ Our telemetry data policy can be viewed in the `Telemetry Data Policy`_ page.
     architecture.rst
     placement.rst
     mapping.rst
+    tableau.rst
     transform.rst
     tailoring.rst
     zx.rst

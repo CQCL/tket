@@ -31,4 +31,12 @@ ENDIF()
 include_directories(${CONAN_INCLUDE_DIRS_TKET})
 
 add_executable(test test.cpp)
-target_link_libraries(test ${CONAN_LIBS})
+
+target_link_libraries(test PRIVATE
+    tket-Circuit
+    tket-Gate
+    tket-OpType
+    tket-Transformations
+    tket-Utils)
+
+target_link_libraries(test PRIVATE ${CONAN_LIBS_SYMENGINE})

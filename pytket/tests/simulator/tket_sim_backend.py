@@ -188,7 +188,7 @@ class TketSimShotBackend(TketSimBackend):
             sim = TketSimWrapper(c0)
             state = sim.get_state(basis=BasisOrder.dlo)
             choices, probs = zip(*probs_from_state(state).items())
-            np.random.seed(kwargs.get("seed"))
+            np.random.seed(cast(int, kwargs.get("seed")))
             sample_indices = np.random.choice(len(choices), p=probs, size=n_shots_circ)
             q_to_b = circuit.qubit_to_bit_map
             readouts = []

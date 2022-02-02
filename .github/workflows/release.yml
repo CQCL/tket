@@ -65,7 +65,7 @@ jobs:
         pip install conan
         conan profile new tket --detect --force
         conan profile update options.tket:shared=True tket
-        conan install --profile=tket boost/1.77.0@ --build=missing
+        conan install --profile=tket boost/1.78.0@ --build=missing
         conan create --profile=tket recipes/symengine
         conan create --profile=tket recipes/tket
     - name: Install pybind11
@@ -112,9 +112,9 @@ jobs:
         pyenv shell tket-3.8
         conan profile new tket --detect --force
         conan profile update options.tket:shared=True tket
-        conan install --profile=tket boost/1.77.0@ --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
-        conan create --profile=tket recipes/symengine -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
-        conan create --profile=tket recipes/tket -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+        conan install --profile=tket boost/1.78.0@ --build=missing
+        conan create --profile=tket recipes/symengine
+        conan create --profile=tket recipes/tket
         conan create --profile=tket recipes/pybind11
         .github/workflows/build_macos_m1_wheel
         pyenv shell tket-3.9
@@ -129,8 +129,6 @@ jobs:
   build_Windows_wheels:
     name: Build Windows wheels
     runs-on: windows-2019
-    env:
-      CMAKE_BUILD_PARALLEL_LEVEL: "2"
     steps:
     - uses: actions/checkout@v2
       with:
@@ -167,7 +165,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: C:\Users\runneradmin\.conan\data\tket
-        key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-7
+        key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-8
     - name: Build symengine
       run: conan create --profile=tket recipes/symengine
     - name: Build tket

@@ -19,6 +19,11 @@
 #include "CircuitsForTesting.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "Transformations/CliffordOptimisation.hpp"
+#include "Transformations/Decomposition.hpp"
+#include "Transformations/OptimisationPass.hpp"
+#include "Transformations/PauliOptimisation.hpp"
+#include "Transformations/PhaseOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "testutil.hpp"
@@ -32,7 +37,7 @@ SCENARIO("Convert into PhaseGadgets", "[transform]") {
     Vertex v1 = circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Rz, 1e-4, {1});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    bool success = Transform::decompose_PhaseGadgets().apply(circ);
+    bool success = Transforms::decompose_PhaseGadgets().apply(circ);
     REQUIRE(success);
     REQUIRE(circ.n_vertices() == 5);
     REQUIRE(circ.get_OpType_from_Vertex(v1) == OpType::PhaseGadget);
@@ -42,7 +47,7 @@ SCENARIO("Convert into PhaseGadgets", "[transform]") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Rz, 1e-4, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    bool success = Transform::decompose_PhaseGadgets().apply(circ);
+    bool success = Transforms::decompose_PhaseGadgets().apply(circ);
     REQUIRE(!success);
   }
 }
@@ -56,10 +61,10 @@ SCENARIO("Smash CXs using PhaseGadgets", "[transform]") {
       circ.add_op<unsigned>(OpType::Rz, 1e-4, {1});
       circ.add_op<unsigned>(OpType::CX, {0, 1});
       circ.add_op<unsigned>(OpType::CX, {2, 0});
-      bool success1 = Transform::decompose_PhaseGadgets().apply(circ);
+      bool success1 = Transforms::decompose_PhaseGadgets().apply(circ);
       REQUIRE(success1);
       THEN("The circuit is smashed") {
-        bool success2 = Transform::smash_CX_PhaseGadgets().apply(circ);
+        bool success2 = Transforms::smash_CX_PhaseGadgets().apply(circ);
         REQUIRE(success2);
         REQUIRE(test_equiv_val(
             (circ.get_Op_ptr_from_Vertex(v1))->get_params()[0], 1e-4));
@@ -73,9 +78,9 @@ SCENARIO("Smash CXs using PhaseGadgets", "[transform]") {
     circ.add_op<unsigned>(OpType::Rz, 1e-3, {0});
     add_2qb_gates(circ, OpType::CX, {{3, 0}, {4, 0}, {2, 0}, {1, 0}});
     REQUIRE(verify_n_qubits_for_ops(circ));
-    REQUIRE(Transform::decompose_PhaseGadgets().apply(circ));
+    REQUIRE(Transforms::decompose_PhaseGadgets().apply(circ));
     REQUIRE(verify_n_qubits_for_ops(circ));
-    REQUIRE(Transform::smash_CX_PhaseGadgets().apply(circ));
+    REQUIRE(Transforms::smash_CX_PhaseGadgets().apply(circ));
     REQUIRE(verify_n_qubits_for_ops(circ));
     REQUIRE(circ.n_vertices() == 11);
     REQUIRE(circ.n_edges() == 10);
@@ -86,9 +91,9 @@ SCENARIO("Smash CXs using PhaseGadgets", "[transform]") {
     circ.add_op<unsigned>(OpType::Rz, 1e-3, {0});
     add_2qb_gates(circ, OpType::CX, {{3, 0}, {1, 0}, {2, 0}, {4, 0}});
     REQUIRE(verify_n_qubits_for_ops(circ));
-    REQUIRE(Transform::decompose_PhaseGadgets().apply(circ));
+    REQUIRE(Transforms::decompose_PhaseGadgets().apply(circ));
     REQUIRE(verify_n_qubits_for_ops(circ));
-    REQUIRE(!Transform::smash_CX_PhaseGadgets().apply(circ));
+    REQUIRE(!Transforms::smash_CX_PhaseGadgets().apply(circ));
   }
 }
 
@@ -100,7 +105,7 @@ SCENARIO("Aligning ports on PhaseGadgets", "[transform]") {
     circ.add_op<unsigned>(OpType::PhaseGadget, 0.25, {3, 2, 1, 0});
     circ.add_op<unsigned>(OpType::X, {1});
     circ.add_op<unsigned>(OpType::PhaseGadget, 0.75, {0, 1, 2});
-    Transform::align_PhaseGadgets().apply(circ);
+    Transforms::align_PhaseGadgets().apply(circ);
     VertexVec vertices = circ.vertices_in_order();
     Vertex first_gadget = vertices[4];
     bool matching_ports = true;
@@ -125,7 +130,7 @@ SCENARIO("Full optimise_via_PhaseGadget") {
   GIVEN("A UCCSD example") {
     auto circ = CircuitsForTesting::get().uccsd;
     const auto s0 = tket_sim::get_unitary(circ);
-    Transform::optimise_via_PhaseGadget(CXConfigType::Tree).apply(circ);
+    Transforms::optimise_via_PhaseGadget(CXConfigType::Tree).apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
     REQUIRE(circ.depth() == 13);
     const auto s1 = tket_sim::get_unitary(circ);
@@ -167,9 +172,9 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
   };
   GIVEN("A single Pauli gadget") {
     auto circ = get_test_circ();
-    Transform::pairwise_pauli_gadgets().apply(circ);
-    Transform::singleq_clifford_sweep().apply(circ);
-    Transform::synthesise_tket().apply(circ);
+    Transforms::pairwise_pauli_gadgets().apply(circ);
+    Transforms::singleq_clifford_sweep().apply(circ);
+    Transforms::synthesise_tket().apply(circ);
     Circuit expected(4);
     expected.add_op<unsigned>(OpType::V, {0});
     expected.add_op<unsigned>(OpType::H, {1});
@@ -178,9 +183,9 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     expected.add_op<unsigned>(OpType::Vdg, {0});
     expected.add_op<unsigned>(OpType::H, {1});
     add_1qb_gates(expected, OpType::Vdg, {2, 3});
-    Transform::decompose_multi_qubits_CX().apply(expected);
-    Transform::singleq_clifford_sweep().apply(expected);
-    Transform::synthesise_tket().apply(expected);
+    Transforms::decompose_multi_qubits_CX().apply(expected);
+    Transforms::singleq_clifford_sweep().apply(expected);
+    Transforms::synthesise_tket().apply(expected);
     const auto m1 = tket_sim::get_unitary(circ);
     const auto m2 = tket_sim::get_unitary(expected);
     Eigen::MatrixXcd m = m1 * m2.conjugate().transpose();
@@ -197,7 +202,7 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     circ.add_op<unsigned>(OpType::X, {0});
     circ.add_op<unsigned>(OpType::Rz, alpha, {0});
     circ.add_op<unsigned>(OpType::X, {0});
-    REQUIRE(Transform::pairwise_pauli_gadgets().apply(circ));
+    REQUIRE(Transforms::pairwise_pauli_gadgets().apply(circ));
     REQUIRE(circ.n_gates() == 1);
     Vertex v = *circ.get_gates_of_type(OpType::TK1).begin();
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
@@ -215,7 +220,7 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     circ.add_op<unsigned>(OpType::Z, {0});
     circ.add_op<unsigned>(OpType::Ry, 0.5, {0});
     circ.add_op<unsigned>(OpType::Z, {0});
-    REQUIRE(Transform::pairwise_pauli_gadgets().apply(circ));
+    REQUIRE(Transforms::pairwise_pauli_gadgets().apply(circ));
     REQUIRE(circ.n_gates() == 1);
     Vertex v = *circ.get_gates_of_type(OpType::TK1).begin();
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
@@ -233,7 +238,7 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     add_2qb_gates(circ, OpType::CX, {{2, 3}, {1, 2}, {0, 1}});
     add_1qb_gates(circ, OpType::Vdg, {0, 1, 2});
     circ.add_op<unsigned>(OpType::H, {3});
-    Transform::pairwise_pauli_gadgets().apply(circ);
+    Transforms::pairwise_pauli_gadgets().apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 6);
   }
   GIVEN("A sequence of 5 Pauli gadgets") {
@@ -261,14 +266,14 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
 
     Circuit copy(circ);
-    Transform::pairwise_pauli_gadgets().apply(circ);
+    Transforms::pairwise_pauli_gadgets().apply(circ);
     REQUIRE(test_statevector_comparison(circ, copy));
     REQUIRE(circ.count_gates(OpType::CX) == 2);
   }
   GIVEN("A UCCSD example") {
     auto circ = CircuitsForTesting::get().uccsd;
     const auto s0 = tket_sim::get_statevector(circ);
-    Transform::pairwise_pauli_gadgets().apply(circ);
+    Transforms::pairwise_pauli_gadgets().apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 6);
     const auto s1 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));

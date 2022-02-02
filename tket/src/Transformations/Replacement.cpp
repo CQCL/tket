@@ -16,10 +16,14 @@
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
+#include "ControlledGates.hpp"
+#include "Decomposition.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Transform.hpp"
 
 namespace tket {
+
+using namespace Transforms;
 
 Circuit CX_circ_from_multiq(const Op_ptr op) {
   OpDesc desc = op->get_desc();
@@ -30,11 +34,10 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
   unsigned n_qubits = op->n_qubits();
   switch (desc.type()) {
     case OpType::CnRy:
-      return Transform::decomposed_CnRy(op, n_qubits);
+      return decomposed_CnRy(op, n_qubits);
     case OpType::CnX:
-      if (n_qubits >= 6 && n_qubits <= 8)
-        return Transform::cnx_gray_decomp(n_qubits - 1);
-      return Transform::cnx_normal_decomp(n_qubits - 1);
+      if (n_qubits >= 6 && n_qubits <= 8) return cnx_gray_decomp(n_qubits - 1);
+      return cnx_normal_decomp(n_qubits - 1);
     default:
       return with_CX(as_gate_ptr(op));
   }
@@ -209,7 +212,7 @@ Circuit CX_ZX_circ_from_op(const Op_ptr op) {
     case OpType::ISWAPMax:
     case OpType::BRIDGE: {
       Circuit replacement = CX_circ_from_multiq(op);
-      Transform::decompose_ZX().apply(replacement);
+      decompose_ZX().apply(replacement);
       return replacement;
     }
     case OpType::TK1: {

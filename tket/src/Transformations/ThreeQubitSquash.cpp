@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "ThreeQubitSquash.hpp"
+
 #include <algorithm>
 #include <array>
 #include <iostream>
@@ -27,11 +29,14 @@
 #include "Circuit/ThreeQubitConversion.hpp"
 #include "OpType/EdgeType.hpp"
 #include "OpType/OpType.hpp"
+#include "OptimisationPass.hpp"
 #include "Transform.hpp"
 #include "Utils/Assert.hpp"
 #include "Utils/GraphHeaders.hpp"
 
 namespace tket {
+
+namespace Transforms {
 
 // Helper class defining a pure-quantum subcircuit of up to 3 qubits.
 class QInteraction {
@@ -105,12 +110,12 @@ static Circuit candidate_sub(const Circuit &circ) {
   unsigned n_qb = circ.n_qubits();
   if (n_qb == 2) {
     Circuit repl = two_qubit_canonical(get_matrix_from_2qb_circ(circ));
-    Transform::clifford_simp(false).apply(repl);
+    clifford_simp(false).apply(repl);
     return repl;
   } else {
     TKET_ASSERT(n_qb == 3);
     Circuit repl = three_qubit_synthesis(get_3q_unitary(circ));
-    Transform::clifford_simp(false).apply(repl);
+    clifford_simp(false).apply(repl);
     return repl;
   }
 }
@@ -287,7 +292,7 @@ class QISystem {
   int idx_;
 };
 
-Transform Transform::three_qubit_squash() {
+Transform three_qubit_squash() {
   return Transform([](Circuit &circ) {
     bool changed = false;
 
@@ -361,5 +366,7 @@ Transform Transform::three_qubit_squash() {
     return changed;
   });
 }
+
+}  // namespace Transforms
 
 }  // namespace tket

@@ -42,4 +42,27 @@ set(TKET_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 include(tkettestsfiles.cmake)
 
 add_executable(test_tket ${TEST_SOURCES})
-target_link_libraries(test_tket ${CONAN_LIBS})
+
+target_link_libraries(test_tket PRIVATE
+    tket-ArchAwareSynth
+    tket-Architecture
+    tket-Characterisation
+    tket-Circuit
+    tket-Clifford
+    tket-Converters
+    tket-Diagonalisation
+    tket-Gate
+    tket-Graphs
+    tket-MeasurementSetup
+    tket-Ops
+    tket-OpType
+    tket-PauliGraph
+    tket-Predicates
+    tket-Program
+    tket-Routing
+    tket-Simulation
+    tket-Transformations
+    tket-Utils
+    tket-ZX)
+
+target_link_libraries(test_tket PRIVATE ${CONAN_LIBS_SYMENGINE})
