@@ -160,7 +160,7 @@ def test_permute_state_err3() -> None:
 def test_permute_basis_indexing() -> None:
     dimensions = 3
     bases = 1 << dimensions
-    matrix = np.arange(bases**2).reshape((bases, bases))
+    matrix = np.arange(bases ** 2).reshape((bases, bases))
     new_matrix = permute_basis_indexing(matrix, (1, 2, 0))
     assert np.array_equal(new_matrix, matrix[[0, 4, 1, 5, 2, 6, 3, 7], :])
 

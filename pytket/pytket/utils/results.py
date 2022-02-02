@@ -151,7 +151,7 @@ def probs_from_state(
     :rtype: Dict[Tuple[int], float]
     """
     width = get_n_qb_from_statevector(state)
-    probs = state.real**2 + state.imag**2
+    probs = state.real ** 2 + state.imag ** 2
     probs /= sum(probs)
     ignore = probs < min_p
     probs[ignore] = 0
@@ -171,7 +171,7 @@ def get_n_qb_from_statevector(state: np.ndarray) -> int:
     :rtype: int
     """
     n_qb = int(np.log2(state.shape[0]))
-    if 2**n_qb != state.shape[0]:
+    if 2 ** n_qb != state.shape[0]:
         raise ValueError("Size is not a power of 2")
     return n_qb
 
@@ -189,7 +189,7 @@ def _assert_compatible_state_permutation(
     :raises ValueError: [description]
     """
     n_qb = len(permutation)
-    if 2**n_qb != state.shape[0]:
+    if 2 ** n_qb != state.shape[0]:
         raise ValueError("Invalid permutation: length does not match number of qubits")
 
 
