@@ -41,12 +41,14 @@ class AssertMessage {
   /** Throws a MessageData object when called, with the message. */
   operator bool() const;
 
+  // GCOVR_EXCL_START
   /** Every streamable object can be written to the stream. */
   template <class T>
   AssertMessage& operator<<(const T& x) {
     m_ss << x;
     return *this;
   }
+  // GCOVR_EXCL_STOP
 
  private:
   bool m_verbose;
