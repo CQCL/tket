@@ -132,6 +132,13 @@ def test_to_json() -> None:
         supports_fast_feedforward=True,
         supports_reset=True,
         supports_midcircuit_measurement=True,
+        all_node_gate_errors={Node(0): {OpType.Rx: 0.1}},
+        all_edge_gate_errors={(Node(0), Node(1)): {OpType.Rx: 0.1}},
+        all_readout_errors={Node(0): [[0.1]]},
+        averaged_node_gate_errors={Node(0): 0.1},
+        averaged_edge_gate_errors={(Node(0), Node(1)): 0.1},
+        averaged_readout_errors={Node(0): 0.1},
+        misc={"region": "UK"},
     )
     bi_dict = bi.to_dict()
     json_bi = dumps(bi_dict)
