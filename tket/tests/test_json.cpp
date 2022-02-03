@@ -606,10 +606,11 @@ SCENARIO("Test compiler pass serializations") {
     nlohmann::json j_loaded = loaded;
     REQUIRE(j_pp == j_loaded);
   }
-  GIVEN("Routing with MultiGateReorderRoutingMethod") {
+  GIVEN("Routing with multiple routing methods") {
     RoutingMethodPtr mrmp =
         std::make_shared<MultiGateReorderRoutingMethod>(60, 80);
-    std::vector<RoutingMethodPtr> mrcon = {mrmp, rmp};
+    RoutingMethodPtr brmp = std::make_shared<BoxDecompositionRoutingMethod>();
+    std::vector<RoutingMethodPtr> mrcon = {mrmp, rmp, brmp};
     Circuit circ = CircuitsForTesting::get().uccsd;
     CompilationUnit cu{circ};
     PassPtr placement = gen_placement_pass(place);

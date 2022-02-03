@@ -1,5 +1,5 @@
-#ifndef _TKET_MultiGateReorder_H_
-#define _TKET_MultiGateReorder_H_
+#ifndef _TKET_BoxDecomposition_H_
+#define _TKET_BoxDecomposition_H_
 
 #include "Mapping/MappingFrontier.hpp"
 #include "Mapping/RoutingMethod.hpp"
@@ -18,7 +18,7 @@ class BoxDecomposition {
       std::shared_ptr<MappingFrontier>& _mapping_frontier);
 
   /**
-   * Decompose any boxes on the frontier
+   * Decompose any boxes in the next slice after the frontier
    */
   void solve();
 
@@ -40,7 +40,7 @@ class BoxDecompositionRoutingMethod : public RoutingMethod {
    */
   bool check_method(
       const std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
-      const ArchitecturePtr& /*architecture*/) const;
+      const ArchitecturePtr& /*architecture*/) const override;
 
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
@@ -51,7 +51,11 @@ class BoxDecompositionRoutingMethod : public RoutingMethod {
    */
   unit_map_t routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
-      const ArchitecturePtr& architecture) const;
+      const ArchitecturePtr& architecture) const override;
+
+  nlohmann::json serialize() const override;
+
+  static BoxDecompositionRoutingMethod deserialize(const nlohmann::json& j);
 };
 
 }  // namespace tket

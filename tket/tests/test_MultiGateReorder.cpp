@@ -360,7 +360,7 @@ SCENARIO("Test MappingManager with MultiGateReorderRoutingMethod") {
   }
 }
 
-SCENARIO("Test JSON serialisation") {
+SCENARIO("Test JSON serialisation for MultiGateReorderRoutingMethod") {
   GIVEN("MultiGateReorderRoutingMethod") {
     nlohmann::json j_rm;
     j_rm["name"] = "MultiGateReorderRoutingMethod";

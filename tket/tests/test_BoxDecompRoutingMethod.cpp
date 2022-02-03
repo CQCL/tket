@@ -110,4 +110,28 @@ SCENARIO("Decompose boxes") {
   }
 }
 
+SCENARIO("Test JSON serialisation for BoxDecompositionRoutingMethod") {
+  GIVEN("BoxDecompositionRoutingMethod") {
+    nlohmann::json j_rm;
+    j_rm["name"] = "BoxDecompositionRoutingMethod";
+    BoxDecompositionRoutingMethod rm_loaded =
+        BoxDecompositionRoutingMethod::deserialize(j_rm);
+    nlohmann::json j_rm_serialised = rm_loaded.serialize();
+    REQUIRE(j_rm == j_rm_serialised);
+  }
+
+  GIVEN("BoxDecompositionRoutingMethod vector") {
+    nlohmann::json j_rms = {
+        {{"name", "BoxDecompositionRoutingMethod"}},
+        {
+            {"name", "LexiRouteRoutingMethod"},
+            {"depth", 3},
+        }};
+    std::vector<RoutingMethodPtr> rms =
+        j_rms.get<std::vector<RoutingMethodPtr>>();
+    nlohmann::json j_rms_serialised = rms;
+    REQUIRE(j_rms == j_rms_serialised);
+  }
+}
+
 }  // namespace tket

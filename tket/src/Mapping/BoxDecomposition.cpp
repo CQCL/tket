@@ -75,4 +75,16 @@ unit_map_t BoxDecompositionRoutingMethod::routing_method(
   return {};
 }
 
+nlohmann::json BoxDecompositionRoutingMethod::serialize() const {
+  nlohmann::json j;
+  j["name"] = "BoxDecompositionRoutingMethod";
+  return j;
+}
+
+BoxDecompositionRoutingMethod BoxDecompositionRoutingMethod::deserialize(
+    const nlohmann::json &j) {
+  (void)j;
+  return BoxDecompositionRoutingMethod();
+}
+
 }  // namespace tket
