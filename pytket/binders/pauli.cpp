@@ -60,14 +60,6 @@ PYBIND11_MODULE(pauli, m) {
       .def("__lt__", &QubitPauliString::operator<)
       .def("__getitem__", &QubitPauliString::get)
       .def("__setitem__", &QubitPauliString::set)
-      .def(
-          "to_dict",
-          [](const QubitPauliString &qps) {
-            PyErr_WarnEx(
-                PyExc_DeprecationWarning,
-                "to_dict() is deprecated, use the map property instead.", 1);
-            return qps.map;
-          })
       .def_property_readonly(
           "map", [](const QubitPauliString &qps) { return qps.map; },
           ":return: the QubitPauliString's underlying dict mapping "
