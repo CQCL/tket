@@ -79,3 +79,45 @@
       std::abort();                                                            \
     }                                                                          \
   } while (0) /* GCOVR_EXCL_STOP */
+
+/** Like TKET_ASSERT, but throws an exception instead of aborting
+ * if the condition is not satisfied.
+ */
+#define TKET_ASSERT_WITH_THROW(b)                                            \
+  /* GCOVR_EXCL_START */                                                     \
+  do {                                                                       \
+    bool intended_exception_with_message = false;                            \
+    try {                                                                    \
+      if (!(b)) {                                                            \
+        std::stringstream msg;                                               \
+        msg << "Assertion '" << #b << "' (" << __FILE__ << " : " << __func__ \
+            << " : " << __LINE__ << ") failed.";                             \
+        intended_exception_with_message = true;                              \
+        throw std::runtime_error(msg.str());                                 \
+      }                                                                      \
+    } catch (const AssertMessage::MessageData& e1) {                         \
+      std::stringstream msg;                                                 \
+      msg << "Assertion ";                                                   \
+      if (e1.verbose) {                                                      \
+        msg << "'" << #b << "' ";                                            \
+      }                                                                      \
+      msg << "(" << __FILE__ << " : " << __func__ << " : " << __LINE__       \
+          << ") failed: '" << e1.what() << "'";                              \
+      throw std::runtime_error(msg.str());                                   \
+    } catch (const std::exception& e2) {                                     \
+      if (intended_exception_with_message) {                                 \
+        throw std::runtime_error(e2.what());                                 \
+      }                                                                      \
+      std::stringstream msg;                                                 \
+      msg << "Evaluating assertion condition '" << #b << "' (" << __FILE__   \
+          << " : " << __func__ << " : " << __LINE__                          \
+          << ") threw unexpected exception: '" << e2.what() << "'";          \
+      throw std::runtime_error(msg.str());                                   \
+    } catch (...) {                                                          \
+      std::stringstream msg;                                                 \
+      msg << "Evaluating assertion condition '" << #b << "' (" << __FILE__   \
+          << " : " << __func__ << " : " << __LINE__                          \
+          << ") threw unknown exception.";                                   \
+      throw std::runtime_error(msg.str());                                   \
+    }                                                                        \
+  } while (0) /* GCOVR_EXCL_STOP */
