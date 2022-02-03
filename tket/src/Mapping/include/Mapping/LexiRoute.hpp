@@ -187,7 +187,7 @@ class LexiRouteRoutingMethod : public RoutingMethod {
   unsigned max_depth_;
 };
 
-JSON_DECL(LexiRouteRoutingMethod)
+JSON_DECL(LexiRouteRoutingMethod);
 
 }  // namespace tket
 

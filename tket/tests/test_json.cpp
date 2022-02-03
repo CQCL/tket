@@ -24,6 +24,8 @@
 #include "CircuitsForTesting.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/SymTable.hpp"
+#include "Mapping/LexiRoute.hpp"
+#include "Mapping/RoutingMethod.hpp"
 #include "OpType/OpType.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Predicates/PassGenerators.hpp"
@@ -418,6 +420,30 @@ SCENARIO("Test device serializations") {
     nlohmann::json j_loaded_avg_dc = loaded_avg_dc;
     CHECK(j_avg_dc == j_loaded_avg_dc);
   }
+}
+
+SCENARIO("Test RoutingMethod serializations") {
+  RoutingMethod rm;
+  nlohmann::json rm_j = rm;
+  RoutingMethod loaded_rm_j = rm_j.get<RoutingMethod>();
+
+  Circuit c(2, 2);
+  CHECK(!loaded_rm_j.check_method(
+      std::make_shared<MappingFrontier>(c),
+      std::make_shared<SquareGrid>(2, 2)));
+
+  std::vector<RoutingMethodPtr> rmp = {
+      std::make_shared<RoutingMethod>(rm),
+      std::make_shared<LexiRouteRoutingMethod>(5)};
+  nlohmann::json rmp_j = rmp;
+  std::vector<RoutingMethodPtr> loaded_rmp_j =
+      rmp_j.get<std::vector<RoutingMethodPtr>>();
+  CHECK(!loaded_rmp_j[0]->check_method(
+      std::make_shared<MappingFrontier>(c),
+      std::make_shared<SquareGrid>(2, 2)));
+  CHECK(loaded_rmp_j[1]->check_method(
+      std::make_shared<MappingFrontier>(c),
+      std::make_shared<SquareGrid>(2, 2)));
 }
 
 SCENARIO("Test predicate serializations") {
