@@ -1,5 +1,6 @@
 #include <catch2/catch.hpp>
 
+#include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
 #include "Predicates/CompilationUnit.hpp"
@@ -8,7 +9,8 @@
 #include "Predicates/PassLibrary.hpp"
 
 namespace tket {
-SCENARIO("Test LexiRoute::solve") {
+
+SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
   std::vector<Node> nodes = {Node("test_node", 0), Node("test_node", 1),
                              Node("test_node", 2), Node("node_test", 3),
                              Node("node_test", 4), Node("node_test", 5),
@@ -75,8 +77,8 @@ SCENARIO("Test LexiRoute::solve") {
     std::shared_ptr<MappingFrontier> mf0 =
         std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf0);
-
-    lr.solve(4);
+    lr.solve_labelling();
+    // lr.solve(4);
 
     REQUIRE(mf0->circuit_.n_gates() == 3);
 
@@ -86,7 +88,9 @@ SCENARIO("Test LexiRoute::solve") {
     std::shared_ptr<MappingFrontier> mf1 =
         std::make_shared<MappingFrontier>(circ);
     LexiRoute lr1(shared_arc, mf1);
+    // lr1.solve_labelling();
     lr1.solve(4);
+
     std::vector<Command> commands = mf1->circuit_.get_commands();
     Command swap_c = commands[1];
     unit_vector_t uids = {nodes[1], nodes[2]};
@@ -138,6 +142,7 @@ SCENARIO("Test LexiRoute::solve") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     LexiRoute lr0(shared_arc, mf);
+    lr0.solve_labelling();
     lr0.solve(20);
     std::vector<Command> commands = mf->circuit_.get_commands();
     REQUIRE(commands.size() == 4);
@@ -147,18 +152,21 @@ SCENARIO("Test LexiRoute::solve") {
     mf->advance_frontier_boundary(shared_arc);
 
     LexiRoute lr1(shared_arc, mf);
-    lr1.solve(20);
+    lr1.solve_labelling();
+    // lr1.solve(20);
     uids = {nodes[2], nodes[3]};
     REQUIRE(mf->circuit_.get_commands()[1].get_args() == uids);
     mf->advance_frontier_boundary(shared_arc);
 
     LexiRoute lr2(shared_arc, mf);
-    lr2.solve(20);
+    lr2.solve_labelling();
+    // lr2.solve(20);
     uids = {nodes[2], nodes[5]};
     REQUIRE(mf->circuit_.get_commands()[2].get_args() == uids);
     mf->advance_frontier_boundary(shared_arc);
 
     LexiRoute lr3(shared_arc, mf);
+    // lr3.solve_labelling();
     lr3.solve(20);
     uids = {nodes[5], nodes[6]};
     REQUIRE(mf->circuit_.get_commands()[3].get_args() == uids);
@@ -278,7 +286,8 @@ SCENARIO("Test LexiRoute::solve") {
         std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     LexiRoute lr0(shared_arc, mf);
-    lr0.solve(20);
+    lr0.solve_labelling();
+    // lr0.solve(20);
     REQUIRE(circ.all_qubits()[1] == nodes[4]);
 
     mf->advance_frontier_boundary(shared_arc);
@@ -319,7 +328,8 @@ SCENARIO("Test LexiRoute::solve") {
         std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     LexiRoute lr0(shared_arc, mf);
-    lr0.solve(20);
+    lr0.solve_labelling();
+    // lr0.solve(20);
 
     mf->advance_frontier_boundary(shared_arc);
     LexiRoute lr1(shared_arc, mf);
@@ -355,8 +365,10 @@ SCENARIO("Test LexiRoute::solve") {
         std::make_shared<MappingFrontier>(circ);
     mf->ancilla_nodes_.insert(nodes[3]);
     mf->advance_frontier_boundary(shared_arc);
+
     LexiRoute lr0(shared_arc, mf);
-    lr0.solve(20);
+    lr0.solve_labelling();
+    // lr0.solve(20);
 
     REQUIRE(circ.all_qubits()[1] == nodes[4]);
     REQUIRE(circ.all_qubits()[0] == nodes[3]);
@@ -412,7 +424,7 @@ SCENARIO("Test LexiRoute::solve") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf);
-    REQUIRE_THROWS_AS(lr.solve(1), LexiRouteError);
+    REQUIRE_THROWS_AS(lr.solve_labelling(), LexiRouteError);
   }
   GIVEN(
       "Labelling is required, but there are no free remaining qubits, for one "
@@ -433,7 +445,7 @@ SCENARIO("Test LexiRoute::solve") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf);
-    REQUIRE_THROWS_AS(lr.solve(1), LexiRouteError);
+    REQUIRE_THROWS_AS(lr.solve_labelling(), LexiRouteError);
   }
   GIVEN(
       "Labelling is required, but there are no free remaining qubits, for two "
@@ -454,7 +466,7 @@ SCENARIO("Test LexiRoute::solve") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf);
-    REQUIRE_THROWS_AS(lr.solve(1), LexiRouteError);
+    REQUIRE_THROWS_AS(lr.solve_labelling(), LexiRouteError);
   }
 }
 
@@ -560,7 +572,7 @@ SCENARIO("Test LexiRouteRoutingMethod") {
     REQUIRE(*swap_c.get_op_ptr() == *get_op_ptr(OpType::SWAP));
   }
 }
-SCENARIO("Test MappingManager::route_circuit with lc_route_subcircuit") {
+SCENARIO("Test MappingManager with LexiRouteRoutingMethod and LexiLabelling") {
   GIVEN("11 Node Architecture, 11 Qubit circuit, multiple SWAP required.") {
     std::vector<Node> nodes = {
         Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
@@ -611,8 +623,11 @@ SCENARIO("Test MappingManager::route_circuit with lc_route_subcircuit") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(copy_circ);
 
+    LabellingRoutingMethod lrm;
     std::vector<RoutingMethodPtr> vrm = {
+        std::make_shared<LabellingRoutingMethod>(lrm),
         std::make_shared<LexiRouteRoutingMethod>(100)};
+
     REQUIRE(vrm[0]->check_method(mf, shared_arc));
 
     bool res = mm.route_circuit(circ, vrm);
@@ -640,7 +655,9 @@ SCENARIO("Test MappingManager::route_circuit with lc_route_subcircuit") {
     PassPtr dec = gen_decompose_routing_gates_to_cxs_pass(sg, false);
 
     MappingManager mm(shared_arc);
+    LabellingRoutingMethod lrm;
     std::vector<RoutingMethodPtr> vrm = {
+        std::make_shared<LabellingRoutingMethod>(lrm),
         std::make_shared<LexiRouteRoutingMethod>(100)};
     bool res = mm.route_circuit(circ, vrm);
 

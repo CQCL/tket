@@ -378,6 +378,12 @@ void LexiRoute::remove_swaps_decreasing(swap_set_t& swaps) {
   }
 }
 
+void LexiRoute::solve_labelling() {
+  this->update_labelling();
+  this->mapping_frontier_->update_quantum_boundary_uids(this->labelling_);
+  return;
+}
+
 void LexiRoute::solve(unsigned lookahead) {
   // store a copy of the original this->mapping_frontier_->quantum_boundray
   // this object will be updated and reset throughout the swap picking procedure
@@ -385,21 +391,27 @@ void LexiRoute::solve(unsigned lookahead) {
   unit_vertport_frontier_t copy;
   for (const std::pair<UnitID, VertPort>& pair :
        this->mapping_frontier_->quantum_boundary->get<TagKey>()) {
+    if (!this->architecture_->node_exists(Node(pair.first))) {
+      throw LexiRouteError(
+          "UnitID " + pair.first.repr() + " is not in Architecture.");
+    }
     copy.insert({pair.first, pair.second});
   }
-  // some Qubits in boundary of this->mapping_frontier_->circuit_ may not be
-  // this->architecture_ Node If true, assign physical meaning by replacing with
-  // Node from this->architecture_
-  // "candidate_swaps" are connected pairs of Node in this->architecture_ s.t.
-  // at least one is in an "interaction" and both are "assigned" i.e. present in
-  // this->mapping_frontier_->circuit
-
-  bool updated = this->update_labelling();
-  if (updated) {
-    // update unit id at boundary in case of relabelling
-    this->mapping_frontier_->update_quantum_boundary_uids(this->labelling_);
-    return;
-  }
+  // // some Qubits in boundary of this->mapping_frontier_->circuit_ may not be
+  // // this->architecture_ Node If true, assign physical meaning by replacing
+  // with
+  // // Node from this->architecture_
+  // // "candidate_swaps" are connected pairs of Node in this->architecture_
+  // s.t.
+  // // at least one is in an "interaction" and both are "assigned" i.e. present
+  // in
+  // // this->mapping_frontier_->circuit
+  // bool updated = this->update_labelling();
+  // if (updated) {
+  //   // update unit id at boundary in case of relabelling
+  //   this->mapping_frontier_->update_quantum_boundary_uids(this->labelling_);
+  //   return;
+  // }
   swap_set_t candidate_swaps = this->get_candidate_swaps();
   this->remove_swaps_decreasing(candidate_swaps);
 

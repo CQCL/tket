@@ -37,16 +37,21 @@ class LexiRoute {
    * MappingFrontier object passed at class construction. Either a SWAP gate
    * will be inserted at the input boundary of the held Circuit or a CX gate
    * will be transformed into a BRIDGE gate. The added SWAP or BRIDGE gate will
-   * be valid for the Architecture passed at class construction. Additionally,
-   * an "unlabelled" Qubit in the Circuit may be relabelled to a Node in the
-   * Architecture, or an "unlabelled" Qubit may have its path merged with an
-   * ancilla qubit.
+   * be valid for the Architecture passed at class construction.
    * The decision making is based on the heuristic outlined in arXiv:1902.08091.
    *
    * @param lookahead Number of slices to lookahead at when determining best
    * SWAP or BRIDGE
    */
   void solve(unsigned lookahead);
+
+  /**
+   * When called an "unlabelled" Qubit in the Circuit may be relabelled to a
+   * Node in the Architecture, or an "unlabelled" Qubit may have its path merged
+   * with an ancilla qubit. The decision making is based on the heuristic
+   * outlined in arXiv:1902.08091.
+   */
+  void solve_labelling();
 
  private:
   /**

@@ -1,11 +1,11 @@
 #ifndef _TKET_LexiLabelling_H_
 #define _TKET_LexiLabelling_H_
 
-#include "Mapping/RoutingMethod.hpp"
 #include "Mapping/LexiRoute.hpp"
+#include "Mapping/RoutingMethod.hpp"
 
-namespace tket{
-    
+namespace tket {
+
 class LabellingRoutingMethod : public RoutingMethod {
  public:
   /**
@@ -31,9 +31,6 @@ class LabellingRoutingMethod : public RoutingMethod {
   unit_map_t routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
       const ArchitecturePtr& architecture) const override;
- 
- private:
-    std::vector<std::vector<Node>> interacting_nodes;
-}
+};
 }  // namespace tket
 #endif
