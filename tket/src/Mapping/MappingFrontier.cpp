@@ -217,8 +217,7 @@ void MappingFrontier::advance_frontier_boundary(
         nodes.push_back(Node(uid));
       }
       if (architecture->valid_operation(
-              /* this->circuit_.get_OpType_from_Vertex(vert), */
-              nodes) ||
+              this->circuit_.get_Op_ptr_from_Vertex(vert), nodes) ||
           this->circuit_.get_OpType_from_Vertex(vert) == OpType::Barrier) {
         // if no valid operation, boundary not updated and while loop terminates
         boundary_updated = true;

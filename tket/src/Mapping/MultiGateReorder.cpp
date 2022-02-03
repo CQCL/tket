@@ -53,8 +53,9 @@ bool is_physically_permitted(
     nodes.push_back(
         Node(get_unitid_from_vertex_port(circ, {vert, port}, q_boundary_map)));
   }
+  Op_ptr op = circ.get_Op_ptr_from_Vertex(vert);
 
-  return arc_ptr->valid_operation(nodes);
+  return arc_ptr->valid_operation(op, nodes);
 }
 
 // This method will try to commute a vertex to the quantum frontier
