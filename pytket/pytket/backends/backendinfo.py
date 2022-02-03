@@ -138,7 +138,8 @@ class BackendInfo:
         averaged error rate for all two-qubit operations.
     :param averaged_readout_errors: Dictionary between architecture Node and averaged
         readout errors.
-    :param misc: key-value map with further provider-specific information
+    :param misc: key-value map with further provider-specific information (must be
+        JSON-serializable)
     """
 
     # identifying information
