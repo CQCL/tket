@@ -65,4 +65,5 @@ target_link_libraries(test_tket PRIVATE
     tket-Utils
     tket-ZX)
 
-target_link_libraries(test_tket PRIVATE ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(test_tket PRIVATE
+    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
