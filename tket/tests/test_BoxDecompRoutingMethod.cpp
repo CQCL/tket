@@ -1,6 +1,7 @@
 #include <catch2/catch.hpp>
 
 #include "Mapping/BoxDecomposition.hpp"
+#include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
 #include "Predicates/Predicates.hpp"
 #include "Simulation/CircuitSimulator.hpp"
@@ -78,11 +79,12 @@ SCENARIO("Decompose boxes") {
   GIVEN("Test BoxDecompositionRoutingMethod") {
     Circuit circ(4, 1);
     std::vector<Qubit> qubits = circ.all_qubits();
-    // BoxDecompositionRoutingMethod should be able to route the entire circuit
+    circ.add_box(ubox, {0, 3});
     circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[1]});
-    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[2]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[3]});
+    circ.add_box(ubox, {1, 3});
+    circ.add_box(ubox, {0, 1});
     circ.add_op<UnitID>(OpType::X, {qubits[1]});
-    circ.add_box(ubox, {2, 3});
     circ.add_op<unsigned>(OpType::Measure, {0, 0});
     std::map<UnitID, UnitID> rename_map = {
         {qubits[0], nodes[0]},
@@ -90,21 +92,17 @@ SCENARIO("Decompose boxes") {
         {qubits[2], nodes[2]},
         {qubits[3], nodes[3]}};
     circ.rename_units(rename_map);
-    Circuit circ_copy(circ);
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     MappingManager mm(shared_arc);
     std::vector<RoutingMethodPtr> vrm = {
+        std::make_shared<LexiRouteRoutingMethod>(10),
         std::make_shared<BoxDecompositionRoutingMethod>()};
     bool res = mm.route_circuit(circ, vrm);
     REQUIRE(res);
     PredicatePtr routed_correctly =
         std::make_shared<ConnectivityPredicate>(architecture);
     REQUIRE(routed_correctly->verify(circ));
-    const auto u = tket_sim::get_unitary(circ);
-    const auto u1 = tket_sim::get_unitary(circ_copy);
-    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
-        u, u1, tket_sim::MatrixEquivalence::EQUAL));
     std::vector<Command> commands = mf->circuit_.get_commands();
     for (Command c : commands) {
       REQUIRE(!c.get_op_ptr()->get_desc().is_box());
