@@ -494,8 +494,19 @@ LexiRouteRoutingMethod::LexiRouteRoutingMethod(unsigned _max_depth)
     : max_depth_(_max_depth){};
 
 bool LexiRouteRoutingMethod::check_method(
-    const std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
+    const std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& /*architecture*/) const {
+  std::shared_ptr<unit_frontier_t> frontier_edges =
+      frontier_convert_vertport_to_edge(
+          mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
+  CutFrontier next_cut = mapping_frontier->circuit_.next_q_cut(frontier_edges);
+  for (const Vertex& vert : *next_cut.slice) {
+    Op_ptr op = mapping_frontier->circuit_.get_Op_ptr_from_Vertex(vert);
+    if (op->get_desc().is_box() ||
+        (op->get_type() == OpType::Conditional &&
+         static_cast<const Conditional&>(*op).get_op()->get_desc().is_box()))
+      return false;
+  }
   return true;
 }
 
