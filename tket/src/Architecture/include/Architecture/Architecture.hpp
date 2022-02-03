@@ -21,9 +21,9 @@
 #include <utility>
 #include <vector>
 
+#include "Circuit/Conditional.hpp"
 #include "Graphs/CompleteGraph.hpp"
 #include "Graphs/DirectedGraph.hpp"
-#include "Circuit/Conditional.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Utils/BiMapHeaders.hpp"
 #include "Utils/EigenConfig.hpp"
