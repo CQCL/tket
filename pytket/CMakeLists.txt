@@ -79,7 +79,7 @@ target_link_libraries(mapping PRIVATE
     tket-OpType
     tket-TokenSwapping
     tket-Utils)
-target_link_libraries(routing PRIVATE ${TKET_EXTRA_LIBS})
+target_link_libraries(mapping PRIVATE ${TKET_EXTRA_LIBS})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(mapping PRIVATE bcrypt)
