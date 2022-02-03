@@ -218,10 +218,9 @@ SCENARIO("Asserts with throws within calls") {
     const auto& message = checker.get_message(12);
     CHECK_THAT(message, Contains(std::string("CHECK: nn=17 ; ")));
     CHECK_THAT(
-        message,
-        Contains(
-            "Evaluating assertion condition "
-            "'get_number_with_asserts(nn - 15) >= nn - 10 || AssertMessage() << "));
+        message, Contains("Evaluating assertion condition "
+                          "'get_number_with_asserts(nn - 15) >= nn - 10 || "
+                          "AssertMessage() << "));
     CHECK_THAT(message, Contains("threw unexpected exception"));
     CHECK_THAT(message, Contains("Assertion '(nn - 2) * (nn - 5) > 0'"));
   }
