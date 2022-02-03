@@ -268,13 +268,18 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
   };
   Transform t = Transform(trans);
 
-  PredicatePtrMap precons{};
+  PredicatePtr no_wire_swap = std::make_shared<NoWireSwapsPredicate>();
+  PredicatePtrMap precons{CompilationUnit::make_type_pair(no_wire_swap)};
+
   PredicatePtr placement_pred = std::make_shared<PlacementPredicate>(arc);
   PredicatePtr n_qubit_pred =
       std::make_shared<MaxNQubitsPredicate>(arc.n_nodes());
+
   PredicatePtrMap s_postcons{
       CompilationUnit::make_type_pair(placement_pred),
-      CompilationUnit::make_type_pair(n_qubit_pred)};
+      CompilationUnit::make_type_pair(n_qubit_pred),
+      CompilationUnit::make_type_pair(no_wire_swap)};
+
   PostConditions pc{s_postcons, {}, Guarantee::Preserve};
   // record pass config
   nlohmann::json j;
@@ -296,6 +301,10 @@ PassPtr aas_routing_pass(
       throw CircuitInvalidity(
           "Circuit has more qubits than the architecture has nodes.");
     }
+
+    // this pass is not able to handle implicit wire swaps
+    // this is additionally assured by a precondition of this pass
+    TKET_ASSERT(!circ.has_implicit_wireswaps());
 
     qubit_vector_t all_qu = circ.all_qubits();
 
@@ -379,9 +388,12 @@ PassPtr aas_routing_pass(
   PredicatePtr placedpred = std::make_shared<PlacementPredicate>(arc);
   PredicatePtr n_qubit_pred =
       std::make_shared<MaxNQubitsPredicate>(arc.n_nodes());
+  PredicatePtr no_wire_swap = std::make_shared<NoWireSwapsPredicate>();
+
   PredicatePtrMap precons{
       CompilationUnit::make_type_pair(placedpred),
-      CompilationUnit::make_type_pair(n_qubit_pred)};
+      CompilationUnit::make_type_pair(n_qubit_pred),
+      CompilationUnit::make_type_pair(no_wire_swap)};
 
   PredicatePtr postcon1 = std::make_shared<ConnectivityPredicate>(arc);
   std::pair<const std::type_index, PredicatePtr> pair1 =
