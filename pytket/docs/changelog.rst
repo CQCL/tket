@@ -1,6 +1,14 @@
 Changelog
 =========
 
+x.y.z (unreleased)
+------------------
+
+API changes:
+
+* The deprecated ``QubitPauliString.to_dict`` method is removed. (Use the
+  ``map`` property instead.)
+
 0.19.0 (February 2022)
 ----------------------
 
