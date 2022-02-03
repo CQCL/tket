@@ -1066,6 +1066,11 @@ class Circuit {
       std::shared_ptr<const b_frontier_t> b_frontier,
       const std::function<bool(Op_ptr)> &skip_func) const;
 
+  // given current slice of quantum frontier, returns the next slice.
+  // ignore classical and boolean edges
+  CutFrontier next_q_cut(
+      std::shared_ptr<const unit_frontier_t> u_frontier) const;
+
   /**
    * Depth of circuit.
    *
