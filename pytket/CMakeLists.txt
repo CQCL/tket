@@ -38,6 +38,9 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 endif()
 
+list(APPEND TKET_EXTRA_LIBS
+    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+
 pybind11_add_module(circuit
     binders/circuit/main.cpp
     binders/circuit/unitid.cpp
@@ -56,8 +59,7 @@ target_link_libraries(circuit PRIVATE
     tket-Routing
     tket-Simulation
     tket-Utils)
-target_link_libraries(circuit PRIVATE
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(circuit PRIVATE ${TKET_EXTRA_LIBS})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(circuit PRIVATE bcrypt)
@@ -75,8 +77,7 @@ target_link_libraries(routing PRIVATE
     tket-OpType
     tket-Routing
     tket-Utils)
-target_link_libraries(routing PRIVATE
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(routing PRIVATE ${TKET_EXTRA_LIBS})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(routing PRIVATE bcrypt)
@@ -97,8 +98,7 @@ target_link_libraries(transform PRIVATE
     tket-PauliGraph
     tket-Transformations
     tket-Utils)
-target_link_libraries(transform PRIVATE
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(transform PRIVATE ${TKET_EXTRA_LIBS})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(transform PRIVATE bcrypt)
@@ -122,8 +122,7 @@ target_link_libraries(predicates PRIVATE
     tket-Routing
     tket-Transformations
     tket-Utils)
-target_link_libraries(predicates PRIVATE
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(predicates PRIVATE ${TKET_EXTRA_LIBS})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(predicates PRIVATE bcrypt)
@@ -147,8 +146,7 @@ target_link_libraries(passes PRIVATE
     tket-Routing
     tket-Transformations
     tket-Utils)
-target_link_libraries(passes PRIVATE
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(passes PRIVATE ${TKET_EXTRA_LIBS})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(passes PRIVATE bcrypt)
@@ -163,8 +161,7 @@ target_link_libraries(program PRIVATE
     tket-OpType
     tket-Program
     tket-Utils)
-target_link_libraries(program PRIVATE
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(program PRIVATE ${TKET_EXTRA_LIBS})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(program PRIVATE bcrypt)
@@ -183,8 +180,7 @@ target_link_libraries(partition PRIVATE
     tket-OpType
     tket-PauliGraph
     tket-Utils)
-target_link_libraries(partition PRIVATE
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(partition PRIVATE ${TKET_EXTRA_LIBS})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(partition PRIVATE bcrypt)
@@ -194,22 +190,19 @@ pybind11_add_module(pauli binders/pauli.cpp)
 target_include_directories(pauli PRIVATE binders/include)
 target_link_libraries(pauli PRIVATE
     tket-Utils)
-target_link_libraries(pauli PRIVATE
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(pauli PRIVATE ${TKET_EXTRA_LIBS})
 
 pybind11_add_module(logging binders/logging.cpp)
 target_include_directories(logging PRIVATE binders/include)
 target_link_libraries(logging PRIVATE
     tket-Utils)
-target_link_libraries(logging PRIVATE
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(logging PRIVATE ${TKET_EXTRA_LIBS})
 
 pybind11_add_module(utils_serialization binders/utils_serialization.cpp)
 target_include_directories(utils_serialization PRIVATE binders/include)
 target_link_libraries(utils_serialization PRIVATE
     tket-Utils)
-target_link_libraries(utils_serialization PRIVATE
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(utils_serialization PRIVATE ${TKET_EXTRA_LIBS})
 
 pybind11_add_module(tailoring binders/tailoring.cpp)
 target_include_directories(tailoring PRIVATE binders/include)
@@ -226,8 +219,7 @@ target_link_libraries(tailoring PRIVATE
     tket-OpType
     tket-PauliGraph
     tket-Utils)
-target_link_libraries(tailoring PRIVATE
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(tailoring PRIVATE ${TKET_EXTRA_LIBS})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(tailoring PRIVATE bcrypt)
@@ -245,8 +237,7 @@ target_link_libraries(tableau PRIVATE
     tket-OpType
     tket-PauliGraph
     tket-Utils)
-target_link_libraries(tableau PRIVATE
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(tableau PRIVATE ${TKET_EXTRA_LIBS})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(tableau PRIVATE bcrypt)
@@ -259,5 +250,4 @@ target_include_directories(zx PRIVATE binders/include)
 target_link_libraries(zx PRIVATE
     tket-Utils
     tket-ZX)
-target_link_libraries(zx PRIVATE
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(zx PRIVATE ${TKET_EXTRA_LIBS})
