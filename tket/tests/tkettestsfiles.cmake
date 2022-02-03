@@ -25,6 +25,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/CircuitsForTesting.cpp
     ${TKET_TESTS_DIR}/Utils/test_MatrixAnalysis.cpp
     ${TKET_TESTS_DIR}/Utils/test_CosSinDecomposition.cpp
+    ${TKET_TESTS_DIR}/Utils/test_TketAssertWithThrow.cpp
     ${TKET_TESTS_DIR}/Graphs/EdgeSequence.cpp
     ${TKET_TESTS_DIR}/Graphs/EdgeSequenceColouringParameters.cpp
     ${TKET_TESTS_DIR}/Graphs/GraphTestingRoutines.cpp
@@ -56,6 +57,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/PartialTsaTesting.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/ProblemGeneration.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/TestStatsStructs.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TSAUtils/test_SwapFunctions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_ArchitectureMappingEndToEnd.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_BestTsaFixedSwapSequences.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_DistancesFromArchitecture.cpp
