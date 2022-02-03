@@ -29,8 +29,7 @@ list(APPEND DEPS_${COMP}
     Characterisation
     Circuit
     Gate
-    Graphs
-    Mapping
+    Graphs    
     Ops
     OpType
     TokenSwapping

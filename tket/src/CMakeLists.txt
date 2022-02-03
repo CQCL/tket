@@ -74,11 +74,11 @@ list(APPEND TKET_COMPS
     Characterisation
     Converters
     TokenSwapping
-    Mapping
     Placement
-    MeasurementSetup
-    Transformations
     ArchAwareSynth
+    Mapping    
+    MeasurementSetup
+    Transformations    
     Predicates)
 
 foreach(COMP ${TKET_COMPS})

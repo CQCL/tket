@@ -25,7 +25,6 @@ add_library(tket-${COMP}
 list(APPEND DEPS_${COMP}
     Clifford
     Gate
-    Mapping
     Ops
     OpType
     TokenSwapping

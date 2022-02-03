@@ -19,6 +19,7 @@ if (NOT ${COMP} STREQUAL "Mapping")
 endif()
 
 add_library(tket-${COMP}
+    AASRoute.cpp
     LexicographicalComparison.cpp
     LexiRoute.cpp
     MappingFrontier.cpp
@@ -29,12 +30,18 @@ add_library(tket-${COMP}
     Verification.cpp)
 
 list(APPEND DEPS_${COMP}
+    ArchAwareSynth
     Architecture
+    Characterisation
     Circuit
+    Clifford
+    Converters
     Gate
     Graphs
     Ops
     OpType
+    PauliGraph
+    Placement
     TokenSwapping
     Utils)
 
