@@ -19,7 +19,6 @@ if (NOT ${COMP} STREQUAL "Mapping")
 endif()
 
 add_library(tket-${COMP}
-    AASRoute.cpp
     LexicographicalComparison.cpp
     LexiRoute.cpp
     MappingFrontier.cpp
