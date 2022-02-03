@@ -77,7 +77,7 @@ SwapListOptimiser::get_id_of_previous_blocker(SwapList& list, SwapID id) {
       break;
     }
   }
-  TKET_ASSERT(terminated_correctly);
+  TKET_ASSERT_WITH_THROW(terminated_correctly);
   // It's hit a copy of itself
   list.erase(id);
   list.erase(current_id);
@@ -85,7 +85,7 @@ SwapListOptimiser::get_id_of_previous_blocker(SwapList& list, SwapID id) {
 }
 
 bool SwapListOptimiser::move_swap_towards_front(SwapList& list, SwapID id) {
-  TKET_ASSERT(list.front_id());
+  TKET_ASSERT_WITH_THROW(list.front_id());
   if (id == list.front_id().value()) {
     return false;
   }
@@ -166,7 +166,7 @@ void SwapListOptimiser::optimise_pass_with_zero_travel(SwapList& list) {
     }
     current_id = next_id_opt.value();
   }
-  TKET_ASSERT(!"optimise_pass_with_zero_travel termination");
+  TKET_ASSERT_WITH_THROW(!"optimise_pass_with_zero_travel termination");
 }
 
 void SwapListOptimiser::optimise_pass_with_frontward_travel(SwapList& list) {
@@ -186,7 +186,7 @@ void SwapListOptimiser::optimise_pass_with_frontward_travel(SwapList& list) {
     }
     current_id = next_id_opt.value();
   }
-  TKET_ASSERT(!"optimise_pass_with_frontward_travel termination");
+  TKET_ASSERT_WITH_THROW(!"optimise_pass_with_frontward_travel termination");
 }
 
 void SwapListOptimiser::optimise_pass_with_token_tracking(SwapList& list) {
@@ -261,14 +261,14 @@ void SwapListOptimiser::
       }
       current_id = next_id_opt.value();
     }
-    TKET_ASSERT(terminated_correctly);
+    TKET_ASSERT_WITH_THROW(terminated_correctly);
     const auto new_size = list.size();
     if (old_size == new_size) {
       return;
     }
-    TKET_ASSERT(new_size < old_size);
+    TKET_ASSERT_WITH_THROW(new_size < old_size);
   }
-  TKET_ASSERT(!"optimise_pass_with_token_tracking termination");
+  TKET_ASSERT_WITH_THROW(!"optimise_pass_with_token_tracking termination");
 }
 
 void SwapListOptimiser::full_optimise(SwapList& list) {
@@ -288,9 +288,9 @@ void SwapListOptimiser::full_optimise(
     if (old_size == list.size() || list.size() == 0) {
       return;
     }
-    TKET_ASSERT(list.size() < old_size);
+    TKET_ASSERT_WITH_THROW(list.size() < old_size);
   }
-  TKET_ASSERT(!"full_optimise termination");
+  TKET_ASSERT_WITH_THROW(!"full_optimise termination");
 }
 
 }  // namespace tsa_internal

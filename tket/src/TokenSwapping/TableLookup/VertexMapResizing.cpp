@@ -59,9 +59,9 @@ const VertexMapResizing::Result& VertexMapResizing::resize_mapping(
         return m_result;
       }
     }
-    TKET_ASSERT(!"VertexMapResizing::resize_mapping");
+    TKET_ASSERT_WITH_THROW(!"VertexMapResizing::resize_mapping");
   }
-  TKET_ASSERT(mapping.size() <= desired_size);
+  TKET_ASSERT_WITH_THROW(mapping.size() <= desired_size);
   bool terminated_correctly = false;
   for (auto infinite_loop_guard = 1 + desired_size; infinite_loop_guard > 0;
        --infinite_loop_guard) {
@@ -78,9 +78,9 @@ const VertexMapResizing::Result& VertexMapResizing::resize_mapping(
       break;
     }
     // Must have added exactly one vertex.
-    TKET_ASSERT(old_size + 1 == new_size);
+    TKET_ASSERT_WITH_THROW(old_size + 1 == new_size);
   }
-  TKET_ASSERT(terminated_correctly);
+  TKET_ASSERT_WITH_THROW(terminated_correctly);
   // It's acceptable to have too few vertices,
   // it can still be looked up in the table.
   m_result.success = true;
@@ -148,8 +148,8 @@ void VertexMapResizing::remove_vertex(VertexMapping& mapping) {
     }
   }
   if (minimum_edges_removed < invalid_number_of_edges) {
-    TKET_ASSERT(mapping.at(best_vertex) == best_vertex);
-    TKET_ASSERT(mapping.erase(best_vertex) == 1);
+    TKET_ASSERT_WITH_THROW(mapping.at(best_vertex) == best_vertex);
+    TKET_ASSERT_WITH_THROW(mapping.erase(best_vertex) == 1);
   }
 }
 

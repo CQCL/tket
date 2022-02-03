@@ -157,7 +157,7 @@ static Eigen::MatrixXcd get_unitary_for_ordinary_fixed_size_case(
   const Eigen::MatrixXcd matr =
       get_unitary_or_throw(op_type, number_of_qubits, parameters);
 
-  TKET_ASSERT(matr.cols() == matr.rows());
+  TKET_ASSERT_WITH_THROW(matr.cols() == matr.rows());
   const auto expected_number_of_qubits = get_number_of_qubits(matr.cols());
   if (expected_number_of_qubits == number_of_qubits) {
     return matr;

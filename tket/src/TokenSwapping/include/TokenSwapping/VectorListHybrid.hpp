@@ -472,13 +472,13 @@ OverwriteIntervalResult VectorListHybrid<T>::overwrite_interval(
   OverwriteIntervalResult result;
   result.final_overwritten_element_id = id;
   CIter citer = new_elements_cbegin;
-  TKET_ASSERT(citer != new_elements_cend);
+  TKET_ASSERT_WITH_THROW(citer != new_elements_cend);
   const auto max_number_of_elements = m_links_data.size();
   result.number_of_overwritten_elements = 0;
   for (;;) {
     m_data.at(result.final_overwritten_element_id) = *citer;
     ++result.number_of_overwritten_elements;
-    TKET_ASSERT(
+    TKET_ASSERT_WITH_THROW(
         result.number_of_overwritten_elements <= max_number_of_elements);
     ++citer;
     if (citer == new_elements_cend) {
@@ -489,7 +489,7 @@ OverwriteIntervalResult VectorListHybrid<T>::overwrite_interval(
         m_links_data.next(result.final_overwritten_element_id);
   }
   // Should be impossible to reach here
-  TKET_ASSERT(!"VectorListHybrid::overwrite_interval");
+  TKET_ASSERT_WITH_THROW(!"VectorListHybrid::overwrite_interval");
   return result;
 }
 

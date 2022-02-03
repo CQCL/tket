@@ -69,12 +69,12 @@ static bool erase_empty_swaps_interval(
       case EmptySwapCheckResult::TERMINATE_AFTER_ERASURE:
         return false;
       default:
-        TKET_ASSERT(!"unknown EmptySwapCheckResult enum");
+        TKET_ASSERT_WITH_THROW(!"unknown EmptySwapCheckResult enum");
         break;
     }
   }
   // Should never get here!
-  TKET_ASSERT(!"erase_empty_swaps_interval falied to terminate");
+  TKET_ASSERT_WITH_THROW(!"erase_empty_swaps_interval falied to terminate");
   return false;
 }
 
@@ -89,16 +89,16 @@ static bool perform_current_nonempty_swap(
 
   if (vertices_with_tokens.count(swap.first) == 0) {
     // No empty swaps!
-    TKET_ASSERT(vertices_with_tokens.count(swap.second) != 0);
+    TKET_ASSERT_WITH_THROW(vertices_with_tokens.count(swap.second) != 0);
     // Second has a token, first doesn't.
-    TKET_ASSERT(vertices_with_tokens.insert(swap.first).second);
-    TKET_ASSERT(vertices_with_tokens.erase(swap.second) == 1);
+    TKET_ASSERT_WITH_THROW(vertices_with_tokens.insert(swap.first).second);
+    TKET_ASSERT_WITH_THROW(vertices_with_tokens.erase(swap.second) == 1);
   } else {
     // First has a token.
     if (vertices_with_tokens.count(swap.second) == 0) {
       // Second has no token.
-      TKET_ASSERT(vertices_with_tokens.erase(swap.first) == 1);
-      TKET_ASSERT(vertices_with_tokens.insert(swap.second).second);
+      TKET_ASSERT_WITH_THROW(vertices_with_tokens.erase(swap.first) == 1);
+      TKET_ASSERT_WITH_THROW(vertices_with_tokens.insert(swap.second).second);
     }
   }
 
@@ -142,7 +142,7 @@ void SwapListTableOptimiser::optimise(
         break;
       }
     }
-    TKET_ASSERT(terminated_correctly);
+    TKET_ASSERT_WITH_THROW(terminated_correctly);
     if (swap_list.size() <= 1) {
       return;
     }
@@ -163,12 +163,12 @@ void SwapListTableOptimiser::optimise(
     // Must reverse again to get back to start!
     swap_list.reverse();
     const auto new_size = swap_list.size();
-    TKET_ASSERT(new_size <= old_size);
+    TKET_ASSERT_WITH_THROW(new_size <= old_size);
     if (new_size == old_size) {
       return;
     }
   }
-  TKET_ASSERT(!"SwapListTableOptimiser::optimise");
+  TKET_ASSERT_WITH_THROW(!"SwapListTableOptimiser::optimise");
 }
 
 void SwapListTableOptimiser::optimise_in_forward_direction(
