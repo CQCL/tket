@@ -61,7 +61,7 @@ PassPtr gen_directed_cx_routing_pass(
 /**
  * execute architecture aware synthesis on a given architecture for an allready
  * place circuit, only for circuit which contains Cx+Rz+H gates
- * this pass it not able to handle implicit wire swaps
+ * this pass is not able to handle implicit wire swaps
  * @param arc architecture to route on
  * @param lookahead parameter for the recursion depth in the algorithm, the
  * value should be > 0
