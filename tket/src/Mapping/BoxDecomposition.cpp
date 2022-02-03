@@ -50,9 +50,7 @@ BoxDecompositionRoutingMethod::BoxDecompositionRoutingMethod(){};
 
 bool BoxDecompositionRoutingMethod::check_method(
     const std::shared_ptr<MappingFrontier> &mapping_frontier,
-    const ArchitecturePtr &architecture) const {
-  // Not currently in use
-  (void)architecture;
+    const ArchitecturePtr & /*architecture*/) const {
   std::shared_ptr<unit_frontier_t> frontier_edges =
       frontier_convert_vertport_to_edge(
           mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
@@ -82,8 +80,7 @@ nlohmann::json BoxDecompositionRoutingMethod::serialize() const {
 }
 
 BoxDecompositionRoutingMethod BoxDecompositionRoutingMethod::deserialize(
-    const nlohmann::json &j) {
-  (void)j;
+    const nlohmann::json & /*j*/) {
   return BoxDecompositionRoutingMethod();
 }
 

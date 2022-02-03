@@ -39,7 +39,7 @@ class BoxDecompositionRoutingMethod : public RoutingMethod {
    * @return true if method can route subcircuit, false if not
    */
   bool check_method(
-      const std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
+      const std::shared_ptr<MappingFrontier>& mapping_frontier,
       const ArchitecturePtr& /*architecture*/) const override;
 
   /**
@@ -55,7 +55,7 @@ class BoxDecompositionRoutingMethod : public RoutingMethod {
 
   nlohmann::json serialize() const override;
 
-  static BoxDecompositionRoutingMethod deserialize(const nlohmann::json& j);
+  static BoxDecompositionRoutingMethod deserialize(const nlohmann::json& /*j*/);
 };
 
 }  // namespace tket
