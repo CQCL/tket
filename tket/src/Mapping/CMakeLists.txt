@@ -24,6 +24,7 @@ add_library(tket-${COMP}
     MappingFrontier.cpp
     MappingManager.cpp
     MultiGateReorder.cpp
+    BoxDecomposition.cpp
     RoutingMethodCircuit.cpp
     RoutingMethodJson.cpp
     Verification.cpp)
