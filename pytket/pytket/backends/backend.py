@@ -157,40 +157,6 @@ class Backend(ABC):
         """
         ...
 
-    def compile_circuit(self, circuit: Circuit, optimisation_level: int = 1) -> None:
-        """Apply the default_compilation_pass to a circuit in place.
-
-        As well as applying a degree of optimisation (controlled by the
-        `optimisation_level` parameter), this method tries to ensure that the circuit
-        can be run on the backend (i.e. successfully passed to
-        :py:meth:`process_circuits`), for example by rebasing to the supported gate set,
-        or routing to match the connectivity of the device. However, this is not always
-        possible, for example if the circuit contains classical operations that are not
-        supported by the backend. You may use :py:meth:`valid_circuit` to check whether
-        the circuit meets the backend's requirements after compilation. This validity
-        check is included in :py:meth:`process_circuits` by default, before any circuits
-        are submitted to the backend.
-
-        If the validity check fails, you can obtain more information about the failure
-        by iterating through the predicates in the `required_predicates` property of the
-        backend, and running the :py:meth:`verify` method on each in turn with your
-        circuit.
-
-        :param circuit: The circuit to compile.
-        :type circuit: Circuit
-        :param optimisation_level: The level of optimisation to perform during
-            compilation. Level 0 just solves the device constraints without
-            optimising. Level 1 additionally performs some light optimisations.
-            Level 2 adds more intensive optimisations that can increase compilation
-            time for large circuits. Defaults to 1.
-        :type optimisation_level: int, optional
-        """
-        warnings.warn(
-            "compile_circuit is deprecated and will be removed in a future pytket.",
-            DeprecationWarning,
-        )
-        self.default_compilation_pass(optimisation_level).apply(circuit)
-
     def get_compiled_circuit(
         self, circuit: Circuit, optimisation_level: int = 1
     ) -> Circuit:

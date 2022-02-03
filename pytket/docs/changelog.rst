@@ -8,6 +8,8 @@ API changes:
 
 * The deprecated ``QubitPauliString.to_dict`` method is removed. (Use the
   ``map`` property instead.)
+* The deprecated ``Backend.compile_circuit`` method is removed. (Use
+  ``get_compiled_circuit`` instead.)
 
 0.19.0 (February 2022)
 ----------------------
