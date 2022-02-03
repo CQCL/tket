@@ -124,14 +124,14 @@ def test_serialization() -> None:
 
 def test_to_json() -> None:
     bi = BackendInfo(
-        "name",
-        "device_name",
-        "version",
-        SquareGrid(3, 4),
-        {OpType.CX, OpType.Rx},
-        True,
-        True,
-        True,
+        name="name",
+        device_name="device_name",
+        version="version",
+        architecture=SquareGrid(3, 4),
+        gate_set={OpType.CX, OpType.Rx},
+        supports_fast_feedforward=True,
+        supports_reset=True,
+        supports_midcircuit_measurement=True,
     )
     bi_dict = bi.to_dict()
     json_bi = dumps(bi_dict)
