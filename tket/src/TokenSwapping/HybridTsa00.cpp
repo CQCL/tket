@@ -14,7 +14,7 @@
 
 #include "HybridTsa00.hpp"
 
-#include "TSAUtils/DistanceFunctions.hpp"
+#include "TokenSwapping/DistanceFunctions.hpp"
 #include "Utils/Assert.hpp"
 
 using std::vector;

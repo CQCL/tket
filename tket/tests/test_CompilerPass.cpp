@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -26,6 +26,8 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/ContextualReduction.hpp"
+#include "Transformations/PauliOptimisation.hpp"
+#include "Transformations/Rebase.hpp"
 #include "testutil.hpp"
 namespace tket {
 namespace test_CompilerPass {
@@ -48,11 +50,11 @@ SCENARIO("Run some basic Compiler Passes") {
     // safety mode off
     PostConditions pc{ppm2, {}, Guarantee::Preserve};
     PassPtr compass = std::make_shared<StandardPass>(
-        ppm, Transform::id, pc, nlohmann::json{});
+        ppm, Transforms::id, pc, nlohmann::json{});
     WHEN("Run a basic pass") { REQUIRE(!compass->apply(cu)); }
     // switch safety mode on
     PassPtr compass2 = std::make_shared<StandardPass>(
-        ppm, Transform::id, pc, nlohmann::json{});
+        ppm, Transforms::id, pc, nlohmann::json{});
     WHEN("Run something with an unsatisfied predicate") {
       REQUIRE_THROWS_AS(
           compass2->apply(cu, SafetyMode::Audit), UnsatisfiedPredicate);
@@ -60,7 +62,7 @@ SCENARIO("Run some basic Compiler Passes") {
     WHEN("Compose 2 compatible Compiler Passes") {
       PostConditions pc3{ppm2, {}, Guarantee::Preserve};
       PassPtr compass3 = std::make_shared<StandardPass>(
-          ppm2, Transform::id, pc3, nlohmann::json{});
+          ppm2, Transforms::id, pc3, nlohmann::json{});
       PassPtr combination = compass >> compass3;
 
       // safety mode off
@@ -79,7 +81,7 @@ SCENARIO("Run some basic Compiler Passes") {
           {CompilationUnit::make_type_pair(gsp2).first, Guarantee::Clear}};
       PostConditions pc_clear{{}, pcg, Guarantee::Preserve};
       PassPtr compass_clear = std::make_shared<StandardPass>(
-          ppm2, Transform::id, pc_clear, nlohmann::json{});
+          ppm2, Transforms::id, pc_clear, nlohmann::json{});
       Circuit circ2(2);
       circ2.add_op<unsigned>(OpType::CY, {0, 1});
       CompilationUnit cu2(circ2, ppm);
@@ -216,7 +218,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     cx.add_op<unsigned>(OpType::CX, {0, 1});
     PassPtr pz_rebase = gen_rebase_pass(
         {OpType::CX}, cx, {OpType::PhasedX, OpType::Rz},
-        Transform::tk1_to_PhasedXRz);
+        Transforms::tk1_to_PhasedXRz);
     PassPtr all_passes = SynthesiseTket() >> cp_route >> pz_rebase;
 
     REQUIRE(all_passes->apply(cu));
@@ -238,7 +240,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     circ.add_op<unsigned>(OpType::CH, {0, 2});
     circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3});
     circ.add_op<unsigned>(OpType::CZ, {0, 1});
-    OpTypeSet ots = {OpType::CX, OpType::tk1, OpType::SWAP};
+    OpTypeSet ots = {OpType::CX, OpType::TK1, OpType::SWAP};
     PredicatePtr gsp = std::make_shared<GateSetPredicate>(ots);
     SquareGrid grid(2, 3);
 
@@ -333,13 +335,44 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
       REQUIRE(cmds[i].get_op_ptr()->get_type() == expected_optypes[i]);
     }
   }
+
+  GIVEN("gen_euler_pass commuting conditionals through CX") {
+    PassPtr squash = gen_euler_pass(OpType::Rz, OpType::Rx);
+    Circuit circ(2, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.143}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.528}, {1}, {0}, 0);
+    CompilationUnit cu(circ);
+    squash->apply(cu);
+    const Circuit& c = cu.get_circ_ref();
+    c.assert_valid();
+    REQUIRE(c.n_gates() == 3);
+    std::vector<OpType> expected_optypes{
+        OpType::Conditional,  // qubit 0 before CX
+        OpType::Conditional,  // qubit 1 before CX
+        OpType::CX};
+    check_command_types(c, expected_optypes);
+
+    auto cmds = c.get_commands();
+    Op_ptr op0 =
+        static_cast<const Conditional&>(*cmds[0].get_op_ptr()).get_op();
+    Op_ptr op1 =
+        static_cast<const Conditional&>(*cmds[1].get_op_ptr()).get_op();
+
+    REQUIRE(op0->get_type() == OpType::Rz);
+    REQUIRE(op0->get_params() == std::vector<Expr>{0.285});
+    REQUIRE(op1->get_type() == OpType::Rx);
+    REQUIRE(op1->get_params() == std::vector<Expr>{0.528});
+  }
+
   GIVEN("Repeat synthesis passes") {
     OpTypeSet ots = {OpType::H};
     PredicatePtr gsp = std::make_shared<GateSetPredicate>(ots);
     PredicatePtrMap ppm{CompilationUnit::make_type_pair(gsp)};
     PostConditions pc{ppm, {}, Guarantee::Preserve};
     PassPtr compass = std::make_shared<StandardPass>(
-        ppm, Transform::id, pc, nlohmann::json{});
+        ppm, Transforms::id, pc, nlohmann::json{});
     PassPtr rep = std::make_shared<RepeatPass>(compass);
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::H, {0});
@@ -385,7 +418,7 @@ SCENARIO("Construct invalid sequence passes from vector") {
     PredicatePtrMap ppm{CompilationUnit::make_type_pair(gsp)};
     PostConditions pc{{}, {}, Guarantee::Preserve};
     PassPtr compass = std::make_shared<StandardPass>(
-        ppm, Transform::id, pc, nlohmann::json{});
+        ppm, Transforms::id, pc, nlohmann::json{});
     passes.push_back(compass);
     REQUIRE_THROWS_AS((void)SequencePass(passes), IncompatibleCompilerPasses);
   }
@@ -396,12 +429,12 @@ SCENARIO("Construct invalid sequence of loops") {
   PredicatePtrMap ppm{CompilationUnit::make_type_pair(pp1)};
   PostConditions pc{{}, {}, Guarantee::Preserve};
   PassPtr pass1 =
-      std::make_shared<StandardPass>(ppm, Transform::id, pc, nlohmann::json{});
+      std::make_shared<StandardPass>(ppm, Transforms::id, pc, nlohmann::json{});
   PassPtr loop1 = std::make_shared<RepeatPass>(pass1);
   PostConditions pc2{{}, {}, Guarantee::Clear};
   PredicatePtrMap empty_ppm{};
   PassPtr pass2 = std::make_shared<StandardPass>(
-      empty_ppm, Transform::id, pc2, nlohmann::json{});
+      empty_ppm, Transforms::id, pc2, nlohmann::json{});
   PassPtr loop2 = std::make_shared<RepeatPass>(pass2);
   std::vector<PassPtr> good_passes{loop1, loop2};
   std::vector<PassPtr> bad_passes{loop2, loop1};
@@ -809,8 +842,8 @@ SCENARIO("Precomposed passes successfully compose") {
 }
 
 SCENARIO("Test Pauli Graph Synthesis Pass") {
-  PassPtr graph_synth =
-      gen_synthesise_pauli_graph(PauliSynthStrat::Sets, CXConfigType::Star);
+  PassPtr graph_synth = gen_synthesise_pauli_graph(
+      Transforms::PauliSynthStrat::Sets, CXConfigType::Star);
   Circuit circ(3);
   PauliExpBox peb({Pauli::Z, Pauli::X, Pauli::Z}, 0.333);
   circ.add_box(peb, {0, 1, 2});
@@ -833,8 +866,8 @@ SCENARIO("Compose Pauli Graph synthesis Passes") {
     REQUIRE_NOTHROW(spec_ucc >> dir_pass);
   }
   GIVEN("Pauli Graph synthesis") {
-    PassPtr graph_synth =
-        gen_synthesise_pauli_graph(PauliSynthStrat::Sets, CXConfigType::Star);
+    PassPtr graph_synth = gen_synthesise_pauli_graph(
+        Transforms::PauliSynthStrat::Sets, CXConfigType::Star);
     REQUIRE_NOTHROW(graph_synth >> dir_pass);
   }
   GIVEN("Pairwise Synthesis") {
@@ -927,7 +960,7 @@ SCENARIO("RemoveRedundancies and phase") {
   GIVEN("A trivial circuit with nonzero phase") {
     // TKET-679
     Circuit c(1);
-    c.add_op<unsigned>(OpType::tk1, {1., 0., 1.}, {0});
+    c.add_op<unsigned>(OpType::TK1, {1., 0., 1.}, {0});
     CompilationUnit cu(c);
     REQUIRE(RemoveRedundancies()->apply(cu));
     const Circuit& c1 = cu.get_circ_ref();
@@ -957,7 +990,7 @@ SCENARIO("CX mapping pass") {
     Circuit cx(2);
     cx.add_op<unsigned>(OpType::CX, {0, 1});
     PassPtr rebase = gen_rebase_pass(
-        {OpType::CX}, cx, all_single_qubit_types(), Transform::tk1_to_tk1);
+        {OpType::CX}, cx, all_single_qubit_types(), Transforms::tk1_to_tk1);
 
     // Circuit mapping basis states to basis states
     Circuit c(3);

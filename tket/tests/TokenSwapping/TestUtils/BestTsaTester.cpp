@@ -17,8 +17,8 @@
 #include <catch2/catch.hpp>
 
 #include "TokenSwapping/ArchitectureMapping.hpp"
-#include "TokenSwapping/TSAUtils/VertexMappingFunctions.hpp"
-#include "TokenSwapping/TSAUtils/VertexSwapResult.hpp"
+#include "TokenSwapping/VertexMappingFunctions.hpp"
+#include "TokenSwapping/VertexSwapResult.hpp"
 
 using std::vector;
 

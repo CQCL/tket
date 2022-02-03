@@ -18,7 +18,7 @@
 #include <boost/functional/hash.hpp>
 #include <stdexcept>
 
-#include "TSAUtils/VertexSwapResult.hpp"
+#include "VertexSwapResult.hpp"
 
 using std::vector;
 

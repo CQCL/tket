@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,18 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "CliffordOptimisation.hpp"
+
 #include <vector>
 
+#include "BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/DAGDefs.hpp"
+#include "Decomposition.hpp"
 #include "Transform.hpp"
 
 namespace tket {
 
+namespace Transforms {
+
 static bool multiq_clifford_match(Circuit &circ, bool allow_swaps);
 static bool copy_pi_through_CX_method(Circuit &circ);
 
-Transform Transform::multiq_clifford_replacement(bool allow_swaps) {
+Transform multiq_clifford_replacement(bool allow_swaps) {
   return Transform([allow_swaps](Circuit &circ) {
     return multiq_clifford_match(circ, allow_swaps);
   });
@@ -490,9 +496,7 @@ static bool multiq_clifford_match(Circuit &circ, bool allow_swaps) {
   return success;
 }
 
-Transform Transform::copy_pi_through_CX() {
-  return Transform(copy_pi_through_CX_method);
-}
+Transform copy_pi_through_CX() { return Transform(copy_pi_through_CX_method); }
 
 // TODO:: Copy classical-controls and any controls from CX
 static bool copy_pi_through_CX_method(Circuit &circ) {
@@ -588,10 +592,9 @@ static bool singleq_clifford_from_edge(
   if (cliff_last == 0) {
     Subcircuit s = {{e}, {ei}, single_vs};
     Circuit sub = circ.subcircuit(s);
-    bool reduced =
-        (Transform::decompose_single_qubits_TK1() >>
-         Transform::squash_1qb_to_tk1() >> Transform::decompose_cliffords_std())
-            .apply(sub);
+    bool reduced = (decompose_single_qubits_TK1() >> squash_1qb_to_tk1() >>
+                    decompose_cliffords_std())
+                       .apply(sub);
     if (reduced) {
       circ.substitute(sub, s, Circuit::VertexDeletion::No);
       bin.insert(bin.end(), single_vs.begin(), single_vs.end());
@@ -601,7 +604,7 @@ static bool singleq_clifford_from_edge(
   return false;
 }
 
-Transform Transform::singleq_clifford_sweep() {
+Transform singleq_clifford_sweep() {
   return Transform([](Circuit &circ) {
     bool success = false;
     VertexList bin;
@@ -689,5 +692,7 @@ Transform Transform::singleq_clifford_sweep() {
     return success;
   });
 }
+
+}  // namespace Transforms
 
 }  // namespace tket

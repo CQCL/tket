@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,6 +22,8 @@
 #include "Circuit/Command.hpp"
 #include "Circuit/ThreeQubitConversion.hpp"
 #include "Simulation/CircuitSimulator.hpp"
+#include "Transformations/Decomposition.hpp"
+#include "Transformations/ThreeQubitSquash.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/EigenConfig.hpp"
@@ -32,7 +34,7 @@ namespace test_ThreeQubitConversion {
 
 static void check_three_qubit_synthesis(const Eigen::MatrixXcd &U) {
   static const std::set<OpType> expected_1q_gates = {
-      OpType::tk1, OpType::H, OpType::Ry, OpType::Rz};
+      OpType::TK1, OpType::H, OpType::Ry, OpType::Rz};
   Circuit c = three_qubit_synthesis(U);
   unsigned n_cx = 0;
   for (const Command &cmd : c) {
@@ -232,7 +234,7 @@ static bool check_3q_squash(const Circuit &c) {
   unsigned n_cx = c.count_gates(OpType::CX);
   Eigen::MatrixXcd U = tket_sim::get_unitary(c);
   Circuit c1 = c;
-  bool success = Transform::three_qubit_squash().apply(c1);
+  bool success = Transforms::three_qubit_squash().apply(c1);
   unsigned n_cx1 = c1.count_gates(OpType::CX);
   if (success) {
     CHECK(n_cx1 < n_cx);
@@ -322,7 +324,7 @@ SCENARIO("Three-qubit squash") {
     c.add_box(c3qbox, {3, 0, 2});
     c.add_box(c2qbox, {4, 2});
     c.add_box(c3qbox, {4, 3, 0});
-    Transform::decomp_boxes().apply(c);
+    Transforms::decomp_boxes().apply(c);
     CHECK(check_3q_squash(c));
   }
   GIVEN("A circuit with measurements") {
@@ -335,7 +337,7 @@ SCENARIO("Three-qubit squash") {
     for (unsigned q = 0; q < 3; q++) {
       c.add_op<unsigned>(OpType::Measure, {q, q});
     }
-    CHECK(Transform::three_qubit_squash().apply(c));
+    CHECK(Transforms::three_qubit_squash().apply(c));
     CHECK(c.count_gates(OpType::CX) <= 20);
   }
   GIVEN("A circuit with classical control") {
@@ -353,7 +355,7 @@ SCENARIO("Three-qubit squash") {
       c.add_op<unsigned>(OpType::CX, {i % 3, (i + 1) % 3});
       c.add_op<unsigned>(OpType::Rz, 0.25, {(i + 1) % 3});
     }
-    CHECK_FALSE(Transform::three_qubit_squash().apply(c));
+    CHECK_FALSE(Transforms::three_qubit_squash().apply(c));
   }
   GIVEN("A circuit with a barrier") {
     Circuit c(3);
@@ -368,7 +370,7 @@ SCENARIO("Three-qubit squash") {
       c.add_op<unsigned>(OpType::CX, {i % 3, (i + 1) % 3});
       c.add_op<unsigned>(OpType::Rz, 0.25, {(i + 1) % 3});
     }
-    CHECK_FALSE(Transform::three_qubit_squash().apply(c));
+    CHECK_FALSE(Transforms::three_qubit_squash().apply(c));
   }
   GIVEN("A symbolic circuit") {
     Sym a = SymEngine::symbol("alpha");
@@ -380,7 +382,7 @@ SCENARIO("Three-qubit squash") {
     c.add_op<unsigned>(OpType::CX, {1, 0});
     c.add_op<unsigned>(OpType::Ry, 2 * Expr(a), {1});
     c.add_op<unsigned>(OpType::CX, {1, 0});
-    CHECK(Transform::three_qubit_squash().apply(c));
+    CHECK(Transforms::three_qubit_squash().apply(c));
   }
 }
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SwapSequenceTable.hpp"
+#include "TokenSwapping/SwapSequenceTable.hpp"
 
 namespace tket {
 namespace tsa_internal {

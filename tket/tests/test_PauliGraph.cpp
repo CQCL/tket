@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,6 +23,9 @@
 #include "PauliGraph/ConjugatePauliFunctions.hpp"
 #include "PauliGraph/PauliGraph.hpp"
 #include "Simulation/CircuitSimulator.hpp"
+#include "Transformations/OptimisationPass.hpp"
+#include "Transformations/PauliOptimisation.hpp"
+#include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
 #include "testutil.hpp"
 
@@ -438,74 +441,74 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     Circuit test1 = circ;
 
     WHEN("Different strategies and configs") {
-      Transform::synthesise_pauli_graph(
-          PauliSynthStrat::Sets, CXConfigType::Star)
+      Transforms::synthesise_pauli_graph(
+          Transforms::PauliSynthStrat::Sets, CXConfigType::Star)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
-      Transform::synthesise_pauli_graph(
-          PauliSynthStrat::Individual, CXConfigType::Star)
+      Transforms::synthesise_pauli_graph(
+          Transforms::PauliSynthStrat::Individual, CXConfigType::Star)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
-      Transform::synthesise_pauli_graph(
-          PauliSynthStrat::Pairwise, CXConfigType::Star)
+      Transforms::synthesise_pauli_graph(
+          Transforms::PauliSynthStrat::Pairwise, CXConfigType::Star)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
-      Transform::synthesise_pauli_graph(
-          PauliSynthStrat::Sets, CXConfigType::Snake)
+      Transforms::synthesise_pauli_graph(
+          Transforms::PauliSynthStrat::Sets, CXConfigType::Snake)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
-      Transform::synthesise_pauli_graph(
-          PauliSynthStrat::Individual, CXConfigType::Snake)
+      Transforms::synthesise_pauli_graph(
+          Transforms::PauliSynthStrat::Individual, CXConfigType::Snake)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
-      Transform::synthesise_pauli_graph(
-          PauliSynthStrat::Pairwise, CXConfigType::Snake)
+      Transforms::synthesise_pauli_graph(
+          Transforms::PauliSynthStrat::Pairwise, CXConfigType::Snake)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
-      Transform::synthesise_pauli_graph(
-          PauliSynthStrat::Sets, CXConfigType::Tree)
+      Transforms::synthesise_pauli_graph(
+          Transforms::PauliSynthStrat::Sets, CXConfigType::Tree)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
-      Transform::synthesise_pauli_graph(
-          PauliSynthStrat::Individual, CXConfigType::Tree)
+      Transforms::synthesise_pauli_graph(
+          Transforms::PauliSynthStrat::Individual, CXConfigType::Tree)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
-      Transform::synthesise_pauli_graph(
-          PauliSynthStrat::Pairwise, CXConfigType::Tree)
+      Transforms::synthesise_pauli_graph(
+          Transforms::PauliSynthStrat::Pairwise, CXConfigType::Tree)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Pairwise strategy with CXConfigType::MultiQGate") {
-      Transform::synthesise_pauli_graph(
-          PauliSynthStrat::Pairwise, CXConfigType::MultiQGate)
+      Transforms::synthesise_pauli_graph(
+          Transforms::PauliSynthStrat::Pairwise, CXConfigType::MultiQGate)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Sets strategy with CXConfigType::MultiQGate") {
-      Transform::synthesise_pauli_graph(
-          PauliSynthStrat::Sets, CXConfigType::MultiQGate)
+      Transforms::synthesise_pauli_graph(
+          Transforms::PauliSynthStrat::Sets, CXConfigType::MultiQGate)
           .apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Individual strategy with CXConfigType::MultiQGate") {
-      Transform::synthesise_pauli_graph(
-          PauliSynthStrat::Individual, CXConfigType::MultiQGate)
+      Transforms::synthesise_pauli_graph(
+          Transforms::PauliSynthStrat::Individual, CXConfigType::MultiQGate)
           .apply(circ);
       REQUIRE(circ.count_gates(OpType::XXPhase3) == 6);
       REQUIRE(test_statevector_comparison(test1, circ));
@@ -561,7 +564,7 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     CircBox circbox(circ);
     Circuit major_circ(4);
     major_circ.add_box(circbox, {0, 1, 2, 3});
-    Transform::special_UCC_synthesis().apply(major_circ);
+    Transforms::special_UCC_synthesis().apply(major_circ);
     Circuit test2 = prepend >> major_circ;
     test1.symbol_substitution(symbol_map);
     test2.symbol_substitution(symbol_map);
@@ -599,7 +602,7 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     CircBox circbox(circ);
     Circuit major_circ(4);
     major_circ.add_box(circbox, {0, 1, 2, 3});
-    Transform::special_UCC_synthesis().apply(major_circ);
+    Transforms::special_UCC_synthesis().apply(major_circ);
     Circuit test2 = prepend >> major_circ;
     test1.symbol_substitution(symbol_map);
     test2.symbol_substitution(symbol_map);
@@ -653,7 +656,7 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     CircBox circbox(circ);
     Circuit major_circ(5);
     major_circ.add_box(circbox, {0, 1, 2, 3, 4});
-    Transform::special_UCC_synthesis().apply(major_circ);
+    Transforms::special_UCC_synthesis().apply(major_circ);
     Circuit test2 = prepend >> major_circ;
     REQUIRE(test2.count_gates(OpType::CX) == 24);
     test1.symbol_substitution(symbol_map);
@@ -689,8 +692,8 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
 
     add_2qb_gates(circ, OpType::Measure, {{0, 0}, {1, 1}, {2, 2}, {3, 3}});
 
-    Transform::rebase_pyzx().apply(circ);
-    bool success = Transform::synthesise_pauli_graph().apply(circ);
+    Transforms::rebase_pyzx().apply(circ);
+    bool success = Transforms::synthesise_pauli_graph().apply(circ);
     REQUIRE(success);
   }
 }
@@ -1002,7 +1005,7 @@ SCENARIO("Error handling with implicit permutations") {
   Circuit circ(2);
   circ.add_op<unsigned>(OpType::CX, {0, 1});
   circ.add_op<unsigned>(OpType::CX, {1, 0});
-  Transform::clifford_simp().apply(circ);
+  Transforms::clifford_simp().apply(circ);
   REQUIRE_THROWS_AS(circuit_to_pauli_graph(circ), NotImplemented);
 }
 

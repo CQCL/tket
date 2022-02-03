@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,13 +34,13 @@
 # -- Project information -----------------------------------------------------
 
 project = "pytket"
-copyright = "2021, Cambridge Quantum Computing Ltd"
+copyright = "2022, Cambridge Quantum Computing Ltd"
 author = "Cambridge Quantum Computing Ltd"
 
 # The short X.Y version
-version = "0.18"
+version = "0.19"
 # The full version, including alpha/beta/rc tags
-release = "0.18.0"
+release = "0.19.0"
 
 
 # -- General configuration ---------------------------------------------------

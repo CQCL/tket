@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,10 +16,14 @@
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
+#include "ControlledGates.hpp"
+#include "Decomposition.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Transform.hpp"
 
 namespace tket {
+
+using namespace Transforms;
 
 Circuit CX_circ_from_multiq(const Op_ptr op) {
   OpDesc desc = op->get_desc();
@@ -30,9 +34,10 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
   unsigned n_qubits = op->n_qubits();
   switch (desc.type()) {
     case OpType::CnRy:
-      return Transform::decomposed_CnRy(op, n_qubits);
+      return decomposed_CnRy(op, n_qubits);
     case OpType::CnX:
-      return Transform::cnx_normal_decomp(n_qubits - 1);
+      if (n_qubits >= 6 && n_qubits <= 8) return cnx_gray_decomp(n_qubits - 1);
+      return cnx_normal_decomp(n_qubits - 1);
     default:
       return with_CX(as_gate_ptr(op));
   }
@@ -207,10 +212,10 @@ Circuit CX_ZX_circ_from_op(const Op_ptr op) {
     case OpType::ISWAPMax:
     case OpType::BRIDGE: {
       Circuit replacement = CX_circ_from_multiq(op);
-      Transform::decompose_ZX().apply(replacement);
+      decompose_ZX().apply(replacement);
       return replacement;
     }
-    case OpType::tk1: {
+    case OpType::TK1: {
       Circuit replacement(1);
       std::vector<Expr> params = op->get_params();
       replacement.add_op<unsigned>(OpType::Rz, params[2], {0});

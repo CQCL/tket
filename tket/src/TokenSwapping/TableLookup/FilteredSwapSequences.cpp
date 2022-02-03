@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "FilteredSwapSequences.hpp"
+#include "TokenSwapping/FilteredSwapSequences.hpp"
 
 #include <algorithm>
 
-#include "../TSAUtils/GeneralFunctions.hpp"
-#include "SwapSequenceTable.hpp"
+#include "TokenSwapping/GeneralFunctions.hpp"
+#include "TokenSwapping/SwapSequenceTable.hpp"
 #include "Utils/Assert.hpp"
 
 ;

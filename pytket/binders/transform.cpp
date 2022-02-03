@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,15 @@
 #include <functional>
 
 #include "Circuit/Circuit.hpp"
+#include "Transformations/BasicOptimisation.hpp"
+#include "Transformations/Combinator.hpp"
 #include "Transformations/ContextualReduction.hpp"
+#include "Transformations/ControlledGates.hpp"
+#include "Transformations/Decomposition.hpp"
+#include "Transformations/OptimisationPass.hpp"
+#include "Transformations/PauliOptimisation.hpp"
+#include "Transformations/Rebase.hpp"
+#include "Transformations/ThreeQubitSquash.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
@@ -29,18 +37,18 @@ namespace py = pybind11;
 namespace tket {
 
 PYBIND11_MODULE(transform, m) {
-  py::enum_<PauliSynthStrat>(
+  py::enum_<Transforms::PauliSynthStrat>(
       m, "PauliSynthStrat",
       "Enum for available strategies to synthesise Pauli gadgets")
       .value(
-          "Individual", PauliSynthStrat::Individual,
+          "Individual", Transforms::PauliSynthStrat::Individual,
           "Synthesise gadgets individually")
       .value(
-          "Pairwise", PauliSynthStrat::Pairwise,
+          "Pairwise", Transforms::PauliSynthStrat::Pairwise,
           "Synthesise gadgets using an efficient pairwise strategy "
           "from Cowtan et al (https://arxiv.org/abs/1906.01734)")
       .value(
-          "Sets", PauliSynthStrat::Sets,
+          "Sets", Transforms::PauliSynthStrat::Sets,
           "Synthesise gadgets in commuting sets");
 
   py::enum_<CXConfigType>(
@@ -79,7 +87,7 @@ PYBIND11_MODULE(transform, m) {
           "Composes two Transforms together in sequence.\n\n>>> a >> "
           "b\n\nis equivalent to\n\n>>> sequence([a,b])")
       .def_static(
-          "sequence", &Transform::sequence,
+          "sequence", &Transforms::sequence,
           "Composes a list of Transforms together in sequence. The "
           ":py:meth:`apply` method will return ``True`` if ANY of "
           "the individual Transforms returned ``True``."
@@ -87,7 +95,7 @@ PYBIND11_MODULE(transform, m) {
           "composed\n:return: the combined Transform",
           py::arg("sequence"))
       .def_static(
-          "repeat", &Transform::repeat,
+          "repeat", &Transforms::repeat,
           "Applies a given Transform repeatedly to a circuit until "
           "no further changes are made (i.e. it no longer returns "
           "``True``). "
@@ -98,7 +106,7 @@ PYBIND11_MODULE(transform, m) {
           "iteration",
           py::arg("transform"))
       .def_static(
-          "while_repeat", &Transform::repeat_while,
+          "while_repeat", &Transforms::repeat_while,
           "Repeatedly applies the `condition` Transform until it "
           "returns ``False``, running `body` in between each "
           "`condition` application. "
@@ -113,48 +121,48 @@ PYBIND11_MODULE(transform, m) {
 
       /* REBASE TRANSFORMS */
       .def_static(
-          "RebaseToTket", &Transform::rebase_tket,
+          "RebaseToTket", &Transforms::rebase_tket,
           "Rebase from any gate set into TK1, CX.")
       .def_static(
-          "RebaseToRzRx", &Transform::decompose_ZX,
+          "RebaseToRzRx", &Transforms::decompose_ZX,
           "Rebase single qubit gates into Rz, Rx.")
       .def_static(
-          "RebaseToCliffordSingles", &Transform::decompose_cliffords_std,
+          "RebaseToCliffordSingles", &Transforms::decompose_cliffords_std,
           "Identify Clifford-angle rotations (from U1, U2, U3, Rx, "
-          "Ry, Rz, tk1, PhasedX), replacing them with Z, X, S, V "
+          "Ry, Rz, TK1, PhasedX), replacing them with Z, X, S, V "
           "gates. Any non-Clifford rotations will stay as they are.")
       .def_static(
-          "RebaseToCirq", &Transform::rebase_cirq,
+          "RebaseToCirq", &Transforms::rebase_cirq,
           "Rebase from any gate set into PhasedX, Rz, CZ.")
       .def_static(
-          "RebaseToQuil", &Transform::rebase_quil,
+          "RebaseToQuil", &Transforms::rebase_quil,
           "Rebase from any gate set into Rx, Rz, CZ.")
       .def_static(
-          "RebaseToPyZX", &Transform::rebase_pyzx,
+          "RebaseToPyZX", &Transforms::rebase_pyzx,
           "Rebase from any gate set into the gate set supported by "
           "PyZX (Rx, Rz, X, Z, S, T, H, CX, CZ, SWAP).")
       .def_static(
-          "RebaseToProjectQ", &Transform::rebase_projectq,
+          "RebaseToProjectQ", &Transforms::rebase_projectq,
           "Rebase from any gate set into the gate set supported by "
           "ProjectQ (Rx, Ry, Rz, X, Y, Z, S, T, V, H, CX, CZ, CRz, "
           "SWAP).")
-      //.def_static("RebaseToMaryland", &Transform::rebase_UMD)
+      //.def_static("RebaseToMaryland", &Transforms::rebase_UMD)
       .def_static(
-          "DecomposeCCX", &Transform::decomp_CCX,
+          "DecomposeCCX", &Transforms::decomp_CCX,
           "Decomposes all 3-qubit Toffoli (CCX) gates into "
           "Clifford+T gates.")
       .def_static(
-          "DecomposeControlledRys", &Transform::decomp_controlled_Rys,
+          "DecomposeControlledRys", &Transforms::decomp_controlled_Rys,
           "Decomposes all arbitrarily-quantum-controlled Rys into CX "
           "and Ry gates.")
       .def_static(
-          "DecomposeSWAP", &Transform::decompose_SWAP,
+          "DecomposeSWAP", &Transforms::decompose_SWAP,
           "Decomposes all SWAP gates to provided replacement "
           "circuit.\n\n:param circuit: A circuit that is logically "
           "equivalent to a SWAP operation",
           py::arg("circuit"))
       .def_static(
-          "DecomposeSWAPtoCX", &Transform::decompose_SWAP_to_CX,
+          "DecomposeSWAPtoCX", &Transforms::decompose_SWAP_to_CX,
           "Decomposes all SWAP gates into triples of CX gates. "
           "If the SWAP is adjacent to a CX, it will prefer to insert "
           "in the direction that allows for gate cancellation. "
@@ -164,10 +172,10 @@ PYBIND11_MODULE(transform, m) {
           "preference for CX direction",
           py::arg("arc") = Architecture())
       .def_static(
-          "DecomposeBRIDGE", &Transform::decompose_BRIDGE_to_CX,
+          "DecomposeBRIDGE", &Transforms::decompose_BRIDGE_to_CX,
           "Decomposes all BRIDGE gates into CX gates.")
       .def_static(
-          "DecomposeCXDirected", &Transform::decompose_CX_directed,
+          "DecomposeCXDirected", &Transforms::decompose_CX_directed,
           "Decompose CX gates to H+CX to match the direction of the "
           "CXs to edges of the :py:class:`Architecture` `arc`. "
           "Assumes the circuit already satisfies the connectivity of "
@@ -175,19 +183,19 @@ PYBIND11_MODULE(transform, m) {
           "should be redirected",
           py::arg("arc"))
       .def_static(
-          "DecomposeBoxes", &Transform::decomp_boxes,
+          "DecomposeBoxes", &Transforms::decomp_boxes,
           "Decomposes all Boxed operations into elementary gates.")
 
       /* OPTIMISATION TRANSFORMS */
       .def_static(
-          "OptimisePostRouting", &Transform::synthesise_tket,
+          "OptimisePostRouting", &Transforms::synthesise_tket,
           "Fast optimisation pass, performing basic simplifications. "
           "Works on any circuit, giving the result in TK1 and CX gates. "
           "If all multi-qubit gates are CXs, then this preserves "
           "their placement and orientation, so it is safe to perform "
           "after routing.")
       .def_static(
-          "OptimisePhaseGadgets", &Transform::optimise_via_PhaseGadget,
+          "OptimisePhaseGadgets", &Transforms::optimise_via_PhaseGadget,
           "An optimisation pass that starts by identifying "
           "subcircuits corresponding to phase gadgets (see Cowtan, "
           "Duncan, Dilkes, Simmons, & Sivarajah "
@@ -198,7 +206,7 @@ PYBIND11_MODULE(transform, m) {
           "CX placement or orientation.",
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
-          "OptimiseCliffords", &Transform::clifford_simp,
+          "OptimiseCliffords", &Transforms::clifford_simp,
           "An optimisation pass that performs a number of rewrite "
           "rules for simplifying Clifford gate sequences, similar to "
           "Duncan & Fagan (https://arxiv.org/abs/1901.10114). "
@@ -211,30 +219,30 @@ PYBIND11_MODULE(transform, m) {
           "wire swaps.",
           py::arg("allow_swaps") = true)
       .def_static(
-          "OptimisePauliGadgets", &Transform::pairwise_pauli_gadgets,
+          "OptimisePauliGadgets", &Transforms::pairwise_pauli_gadgets,
           "An optimisation pass that identifies the Pauli gadgets "
           "corresponding to any non-Clifford rotations and "
           "synthesises them pairwise (see Cowtan, Duncan, Dilkes, "
           "Simmons, & Sivarajah https://arxiv.org/abs/1906.01734). "
-          "Results use tk1, CX gates.",
+          "Results use TK1, CX gates.",
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
-          "RemoveRedundancies", &Transform::remove_redundancies,
+          "RemoveRedundancies", &Transforms::remove_redundancies,
           "Applies a collection of simple optimisations, such as "
           "removing gate-inverse pairs, merging similar rotation "
           "gates, and removing identity gates. "
           "Preserves the gate set and any placement/orientation of "
           "multi-qubit gates.")
       .def_static(
-          "ReduceSingles", &Transform::squash_1qb_to_tk1,
+          "ReduceSingles", &Transforms::squash_1qb_to_tk1,
           "Reduces each sequence of single-qubit rotations into a single TK1.")
       .def_static(
-          "CommuteThroughMultis", &Transform::commute_through_multis,
+          "CommuteThroughMultis", &Transforms::commute_through_multis,
           "Applies a collection of commutation rules to move single "
           "qubit operations past multiqubit operations they commute "
           "with, towards the front of the circuit.")
       .def_static(
-          "KAKDecomposition", &Transform::two_qubit_squash,
+          "KAKDecomposition", &Transforms::two_qubit_squash,
           "Identifies two-qubit subcircuits with more than 3 CXs and "
           "reduces them via the KAK/Cartan decomposition, using the "
           "method detailed in "
@@ -251,13 +259,13 @@ PYBIND11_MODULE(transform, m) {
           "\n\n:param cx_fidelity: The estimated CX gate fidelity",
           py::arg("cx_fidelity") = 1.)
       .def_static(
-          "ThreeQubitSquash", &Transform::three_qubit_squash,
+          "ThreeQubitSquash", &Transforms::three_qubit_squash,
           "Squash three-qubit subcircuits into subcircuits having fewer CX "
           "gates, when possible.")
       .def_static(
           "CommuteSQThroughSWAP",
           [](const avg_node_errors_t &avg_node_errors) {
-            return Transform::commute_SQ_gates_through_SWAPS(avg_node_errors);
+            return Transforms::commute_SQ_gates_through_SWAPS(avg_node_errors);
           },
           "Commutes single qubit gates through SWAP gates, leaving "
           "them on the physical qubit with best fidelity for given "
@@ -270,7 +278,7 @@ PYBIND11_MODULE(transform, m) {
       .def_static(
           "CommuteSQThroughSWAP",
           [](const op_node_errors_t &op_node_errors) {
-            return Transform::commute_SQ_gates_through_SWAPS(op_node_errors);
+            return Transforms::commute_SQ_gates_through_SWAPS(op_node_errors);
           },
           "Commutes single qubit gates through SWAP gates, leaving "
           "them on the physical qubit with best fidelity for given "
@@ -281,25 +289,25 @@ PYBIND11_MODULE(transform, m) {
           "of OpType to single-qubit gate error maps",
           py::arg("op_node_errors"))
       .def_static(
-          "GlobalisePhasedX", &Transform::globalise_phasedx,
+          "GlobalisePhasedX", &Transforms::globalise_phasedx,
           "Replaces every occurence of PhasedX or NPhasedX gates with NPhasedX "
           "gates acting on all qubits, and correcting rotation gates."
           "\n\nThis is achieved using the identity"
           "\nPhX(α, β) = PhX(-1/2, β + 1/2) Rz(α) PhX(1/2, β + 1/2)"
           "\n(circuit order).")
       .def_static(
-          "SynthesisePauliGraph", &Transform::synthesise_pauli_graph,
+          "SynthesisePauliGraph", &Transforms::synthesise_pauli_graph,
           "Synthesises Pauli Graphs.",
-          py::arg("synth_strat") = PauliSynthStrat::Sets,
+          py::arg("synth_strat") = Transforms::PauliSynthStrat::Sets,
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
-          "UCCSynthesis", &Transform::special_UCC_synthesis,
+          "UCCSynthesis", &Transforms::special_UCC_synthesis,
           "Synthesises UCC circuits in the form that Term Sequencing "
           "provides them.",
-          py::arg("synth_strat") = PauliSynthStrat::Sets,
+          py::arg("synth_strat") = Transforms::PauliSynthStrat::Sets,
           py::arg("cx_config") = CXConfigType::Snake);
   m.def(
-      "separate_classical", &separate_classical,
+      "separate_classical", &Transforms::separate_classical,
       "Separate the input circuit into a 'main' circuit and a classical "
       "'post-processing' circuit, which are equivalent to the original "
       "when composed."

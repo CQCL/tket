@@ -17,10 +17,10 @@
 #include <catch2/catch.hpp>
 
 #include "NeighboursFromEdges.hpp"
-#include "TokenSwapping/TSAUtils/VertexMappingFunctions.hpp"
-#include "TokenSwapping/TSAUtils/VertexSwapResult.hpp"
-#include "TokenSwapping/TableLookup/SwapListSegmentOptimiser.hpp"
-#include "TokenSwapping/TableLookup/VertexMapResizing.hpp"
+#include "TokenSwapping/SwapListSegmentOptimiser.hpp"
+#include "TokenSwapping/VertexMapResizing.hpp"
+#include "TokenSwapping/VertexMappingFunctions.hpp"
+#include "TokenSwapping/VertexSwapResult.hpp"
 
 using std::vector;
 

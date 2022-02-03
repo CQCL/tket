@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ExactMappingLookup.hpp"
+#include "TokenSwapping/ExactMappingLookup.hpp"
 
 #include <algorithm>
 
-#include "../TSAUtils/GeneralFunctions.hpp"
-#include "FilteredSwapSequences.hpp"
-#include "SwapConversion.hpp"
+#include "TokenSwapping/FilteredSwapSequences.hpp"
+#include "TokenSwapping/GeneralFunctions.hpp"
+#include "TokenSwapping/SwapConversion.hpp"
 #include "Utils/Assert.hpp"
 
 using std::vector;

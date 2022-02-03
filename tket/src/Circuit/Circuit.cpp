@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
 #include <string>
 #include <utility>
 
+#include "Utils/Expression.hpp"
 #include "Utils/GraphHeaders.hpp"
 #include "Utils/HelperFunctions.hpp"
 #include "Utils/TketLog.hpp"
@@ -138,7 +139,14 @@ void Circuit::symbol_substitution(const symbol_map_t &symbol_map) {
   for (const std::pair<const Sym, Expr> &p : symbol_map) {
     ExprPtr s = p.first;
     ExprPtr e = p.second;
-    sub_map[s] = e;
+    // This is a workaround for a symengine issue: symengine currently has poor
+    // handling of symbolic evaluations for atan2. However, this may not catch
+    // every such issue, so we should revisit it.
+    if (equiv_0(e, 4)) {
+      sub_map[s] = SymEngine::zero;
+    } else {
+      sub_map[s] = e;
+    }
   }
   symbol_substitution(sub_map);
 }

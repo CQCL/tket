@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "VertexMappingFunctions.hpp"
+#include "TokenSwapping/VertexMappingFunctions.hpp"
 
 #include <sstream>
 #include <stdexcept>
 
-#include "../../Utils/Assert.hpp"
-#include "VertexSwapResult.hpp"
+#include "TokenSwapping/VertexSwapResult.hpp"
+#include "Utils/Assert.hpp"
 
 namespace tket {
 namespace tsa_internal {

@@ -17,9 +17,9 @@
 #include <set>
 #include <sstream>
 
+#include "TokenSwapping/DebugFunctions.hpp"
 #include "TokenSwapping/RNG.hpp"
 #include "TokenSwapping/SwapListOptimiser.hpp"
-#include "TokenSwapping/TSAUtils/DebugFunctions.hpp"
 
 using std::vector;
 

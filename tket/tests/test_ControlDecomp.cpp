@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,8 @@
 #include "Circuit/CircPool.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "Transformations/ControlledGates.hpp"
+#include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Transform.hpp"
 #include "testutil.hpp"
 
@@ -29,7 +31,7 @@ static bool approx_equal(const Complex& c1, const Complex& c2) {
 }
 
 static bool check_incrementer_borrow_n_qubits(const unsigned n) {
-  Circuit inc = Transform::incrementer_borrow_n_qubits(n);
+  Circuit inc = Transforms::incrementer_borrow_n_qubits(n);
   bool correct = true;
   const StateVector sv = tket_sim::get_statevector(inc);
   for (unsigned i = 0; i < sv.size(); ++i) {
@@ -56,9 +58,9 @@ static bool check_incrementer_borrow_n_qubits(const unsigned n) {
 }
 
 static bool check_incrementer_borrow_1_qubit(const unsigned n) {
-  Circuit inc = Transform::incrementer_borrow_1_qubit(n);
+  Circuit inc = Transforms::incrementer_borrow_1_qubit(n);
   REQUIRE(inc.n_vertices() - inc.n_gates() == (n + 1) * 2);
-  Transform::synthesise_tket().apply(inc);
+  Transforms::synthesise_tket().apply(inc);
   const StateVector sv = tket_sim::get_statevector(inc);
   bool correct = true;
   for (unsigned i = 0; i < sv.size(); ++i) {
@@ -89,7 +91,7 @@ SCENARIO("Test C3X and C4X decomposition") {
     auto u1 = tket_sim::get_unitary(circ);
     auto u2 = tket_sim::get_unitary(CircPool::C3X_normal_decomp());
     REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
-    Transform::synthesise_tket().apply(circ);
+    Transforms::synthesise_tket().apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 14);
   }
   GIVEN("A C4X gates") {
@@ -98,7 +100,7 @@ SCENARIO("Test C3X and C4X decomposition") {
     auto u1 = tket_sim::get_unitary(circ);
     auto u2 = tket_sim::get_unitary(CircPool::C4X_normal_decomp());
     REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
-    Transform::synthesise_tket().apply(circ);
+    Transforms::synthesise_tket().apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 36);
   }
 }
@@ -110,14 +112,14 @@ SCENARIO("Decompose some circuits with CCX gates") {
     circ.add_op<unsigned>(OpType::CCX, {0, 1, 2});
     Circuit circ2(3);
     const StateVector sv2 = tket_sim::get_statevector(circ2);
-    Transform::decomp_CCX().apply(circ);
+    Transforms::decomp_CCX().apply(circ);
     const StateVector sv1 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv1, sv2));
 
     WHEN("Check gate numbering") {
       Circuit circ3(3);
       circ3.add_op<unsigned>(OpType::CCX, {0, 1, 2});
-      Transform::decomp_CCX().apply(circ3);
+      Transforms::decomp_CCX().apply(circ3);
       REQUIRE(circ3.n_gates() == 15);
       REQUIRE(circ3.n_vertices() == 21);
       REQUIRE(circ3.n_qubits() == 3);
@@ -135,13 +137,13 @@ SCENARIO("Test switch statement") {
     WHEN("Vertex with no edges") {
       Op_ptr cnry = get_op_ptr(OpType::CnRy, p);
       circ.add_vertex(cnry);
-      REQUIRE_THROWS(Transform::decomp_controlled_Rys().apply(circ));
+      REQUIRE_THROWS(Transforms::decomp_controlled_Rys().apply(circ));
     }
     WHEN("Vertex with 1 edge") {
       circ.add_blank_wires(1);
       circ.add_op<unsigned>(
           OpType::CnRy, p, {0});  // automatically converted to Ry
-      REQUIRE(!Transform::decomp_controlled_Rys().apply(circ));
+      REQUIRE(!Transforms::decomp_controlled_Rys().apply(circ));
       REQUIRE(circ.n_vertices() == 3);  // 1 in, 1 out, 1 Ry
       REQUIRE(circ.n_gates() == 1);
       REQUIRE(circ.count_gates(OpType::Ry) == 1);
@@ -154,7 +156,7 @@ SCENARIO("Test switch statement") {
     WHEN("Vertex with 2 edges") {
       circ.add_blank_wires(2);
       circ.add_op<unsigned>(OpType::CnRy, p, {0, 1});
-      REQUIRE(Transform::decomp_controlled_Rys().apply(circ));
+      REQUIRE(Transforms::decomp_controlled_Rys().apply(circ));
       REQUIRE(circ.n_vertices() == 8);
       REQUIRE(circ.n_gates() == 4);
       REQUIRE(circ.count_gates(OpType::CX) == 2);
@@ -170,7 +172,7 @@ SCENARIO("Test switch statement") {
     WHEN("Vertex with 3 edges") {
       circ.add_blank_wires(3);
       circ.add_op<unsigned>(OpType::CnRy, p, {0, 1, 2});
-      REQUIRE(Transform::decomp_controlled_Rys().apply(circ));
+      REQUIRE(Transforms::decomp_controlled_Rys().apply(circ));
       REQUIRE(circ.n_gates() == 14);
       REQUIRE(circ.count_gates(OpType::CX) == 8);
       REQUIRE(circ.count_gates(OpType::Ry) == 6);
@@ -184,7 +186,7 @@ SCENARIO("Test switch statement") {
           std::iota(qbs.begin(), qbs.end(), 0);
           std::vector<Expr> params1{1.95};
           circ.add_op<unsigned>(OpType::CnRy, params1, qbs);
-          REQUIRE(Transform::decomp_controlled_Rys().apply(circ));
+          REQUIRE(Transforms::decomp_controlled_Rys().apply(circ));
           const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
           const Eigen::Matrix2cd m_block =
               m.block(m.cols() - 2, m.rows() - 2, 2, 2);
@@ -217,11 +219,11 @@ SCENARIO("Test switch statement") {
 
 SCENARIO("Test incrementer using n borrowed qubits") {
   GIVEN("0 qbs") {
-    Circuit inc = Transform::incrementer_borrow_n_qubits(0);
+    Circuit inc = Transforms::incrementer_borrow_n_qubits(0);
     REQUIRE(inc.n_vertices() == 0);
   }
   GIVEN("A 1qb incrementer") {
-    Circuit inc = Transform::incrementer_borrow_n_qubits(1);
+    Circuit inc = Transforms::incrementer_borrow_n_qubits(1);
     REQUIRE(inc.n_gates() == 1);
     REQUIRE(inc.count_gates(OpType::X) == 1);
   }
@@ -233,10 +235,10 @@ SCENARIO("Test incrementer using n borrowed qubits") {
     // tket_sim doesn't support computing a unitary from a 12 qubits circuit
     // hence we only test that the incrementer can be constructed as intended.
     for (unsigned n = 6; n < 10; ++n) {
-      Circuit inc = Transform::incrementer_borrow_n_qubits(n);
+      Circuit inc = Transforms::incrementer_borrow_n_qubits(n);
       REQUIRE(inc.n_qubits() == 2 * n);
       REQUIRE(inc.count_gates(OpType::CCX) == (n - 1) * 4);
-      REQUIRE(Transform::synthesise_tket().apply(inc));
+      REQUIRE(Transforms::synthesise_tket().apply(inc));
     }
   }
 }
@@ -245,7 +247,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
   GIVEN("Check the top incrementer is mapped correctly") {
     const unsigned k = 3;
     Circuit inc(2 * k);
-    Circuit top_incrementer = Transform::incrementer_borrow_n_qubits(k);
+    Circuit top_incrementer = Transforms::incrementer_borrow_n_qubits(k);
     std::vector<unsigned> top_qbs(2 * k);
     for (unsigned i = 0; i != k; ++i) {
       top_qbs[2 * i] = i + k;  // garbage qubits
@@ -253,7 +255,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
       inc.add_op<unsigned>(OpType::X, {i});
     }
     inc.append_qubits(top_incrementer, top_qbs);
-    Transform::decomp_CCX().apply(inc);
+    Transforms::decomp_CCX().apply(inc);
     const StateVector sv = tket_sim::get_statevector(inc);
     bool correct = true;
     for (unsigned i = 0; i < sv.size(); ++i) {
@@ -269,7 +271,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
       "odd qb no") {
     const unsigned j = 3;
     Circuit inc(2 * j);
-    Circuit bottom_incrementer = Transform::incrementer_borrow_n_qubits(j);
+    Circuit bottom_incrementer = Transforms::incrementer_borrow_n_qubits(j);
     std::vector<unsigned> bot_qbs(2 * j);
     for (unsigned i = 0; i != j; ++i) {
       bot_qbs[2 * i] = i;  // 0,2,4...n-1 //garbage qubits
@@ -281,7 +283,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
     bot_qbs[1] = 2 * j - 1;  // incremented qubit 0 in incrementer is bottom one
     inc.add_op<unsigned>(OpType::X, {2 * j - 1});
     inc.append_qubits(bottom_incrementer, bot_qbs);
-    Transform::decomp_CCX().apply(inc);
+    Transforms::decomp_CCX().apply(inc);
     const StateVector sv = tket_sim::get_statevector(inc);
     bool correct = true;
     for (unsigned i = 0; i < sv.size(); ++i) {
@@ -303,7 +305,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
     for (unsigned i = k; i != n; ++i) {
       inc.add_op<unsigned>(OpType::X, {i});
     }
-    Circuit bottom_incrementer = Transform::incrementer_borrow_n_qubits(
+    Circuit bottom_incrementer = Transforms::incrementer_borrow_n_qubits(
         j - 1);  // insert incrementer over remaining qubits
     std::vector<unsigned> bot_qbs(2 * j - 2);
     for (unsigned i = 0; i != j - 1; ++i) {
@@ -315,7 +317,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
     }
     bot_qbs[1] = n;  // incremented qubit 0 in incrementer is bottom one
     inc.append_qubits(bottom_incrementer, bot_qbs);
-    Transform::decomp_CCX().apply(inc);
+    Transforms::decomp_CCX().apply(inc);
     const StateVector sv = tket_sim::get_statevector(inc);
     bool correct = true;
     for (unsigned i = 0; i < sv.size(); ++i) {
@@ -328,13 +330,13 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
     REQUIRE(correct);
   }
   GIVEN("A 0 qubit incrementer") {
-    Circuit inc = Transform::incrementer_borrow_1_qubit(0);
+    Circuit inc = Transforms::incrementer_borrow_1_qubit(0);
     REQUIRE(inc.n_qubits() == 1);
     REQUIRE(inc.n_vertices() == 2);
     REQUIRE(inc.n_gates() == 0);
   }
   GIVEN("A 1 qubit incrementer") {
-    Circuit inc = Transform::incrementer_borrow_1_qubit(1);
+    Circuit inc = Transforms::incrementer_borrow_1_qubit(1);
     REQUIRE(inc.n_qubits() == 2);
     REQUIRE(inc.n_vertices() == 5);
     REQUIRE(inc.n_gates() == 1);
@@ -371,7 +373,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
 SCENARIO("Test a CnX is decomposed correctly when bootstrapped") {
   GIVEN("Test CnX unitary for 3 to 9 controls") {
     for (unsigned n = 3; n < 10; ++n) {
-      Circuit circ = Transform::cnx_normal_decomp(n);
+      Circuit circ = Transforms::cnx_normal_decomp(n);
       const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
       unsigned m_size = pow(2, n + 1);
       Eigen::MatrixXcd correct_matrix =
@@ -381,6 +383,56 @@ SCENARIO("Test a CnX is decomposed correctly when bootstrapped") {
       correct_matrix(m_size - 2, m_size - 2) = 0;
       correct_matrix(m_size - 1, m_size - 1) = 0;
       REQUIRE(m.isApprox(correct_matrix, ERR_EPS));
+    }
+  }
+}
+
+SCENARIO("Test a CnX is decomposed correctly using the Gray code method") {
+  GIVEN("Test CnX unitary for 0 to 8 controls") {
+    Circuit circ_x = Transforms::cnx_gray_decomp(0);
+    REQUIRE(circ_x.n_gates() == 1);
+    REQUIRE(circ_x.count_gates(OpType::X) == 1);
+    Circuit circ_cx = Transforms::cnx_gray_decomp(1);
+    REQUIRE(circ_cx.n_gates() == 1);
+    REQUIRE(circ_cx.count_gates(OpType::CX) == 1);
+
+    for (unsigned n = 2; n < 8; ++n) {
+      Circuit circ = Transforms::cnx_gray_decomp(n);
+      const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+      unsigned m_size = pow(2, n + 1);
+      Eigen::MatrixXcd correct_matrix =
+          Eigen::MatrixXcd::Identity(m_size, m_size);
+      correct_matrix(m_size - 2, m_size - 1) = 1;
+      correct_matrix(m_size - 1, m_size - 2) = 1;
+      correct_matrix(m_size - 2, m_size - 2) = 0;
+      correct_matrix(m_size - 1, m_size - 1) = 0;
+      REQUIRE(m.isApprox(correct_matrix, ERR_EPS));
+      switch (n) {
+        case 2: {
+          REQUIRE(circ.count_gates(OpType::CX) <= 6);
+          break;
+        }
+        case 3: {
+          REQUIRE(circ.count_gates(OpType::CX) <= 14);
+          break;
+        }
+        case 4: {
+          REQUIRE(circ.count_gates(OpType::CX) <= 36);
+          break;
+        }
+        case 5: {
+          REQUIRE(circ.count_gates(OpType::CX) <= 92);
+          break;
+        }
+        case 6: {
+          REQUIRE(circ.count_gates(OpType::CX) <= 188);
+          break;
+        }
+        case 7: {
+          REQUIRE(circ.count_gates(OpType::CX) <= 380);
+          break;
+        }
+      }
     }
   }
 }

@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SwapListTableOptimiser.hpp"
+#include "TokenSwapping/SwapListTableOptimiser.hpp"
 
 #include <algorithm>
 #include <array>
 #include <limits>
 
-#include "../TSAUtils/DebugFunctions.hpp"
+#include "TokenSwapping/DebugFunctions.hpp"
 #include "Utils/Assert.hpp"
 
 namespace tket {
