@@ -20,25 +20,9 @@ void BoxDecomposition::solve() {
   CutFrontier next_cut =
       this->mapping_frontier_->circuit_.next_q_cut(frontier_edges);
   for (Vertex &vert : *next_cut.slice) {
-    Op_ptr op = this->mapping_frontier_->circuit_.get_Op_ptr_from_Vertex(vert);
-    bool conditional = op->get_type() == OpType::Conditional;
-    if (conditional) {
-      const Conditional &cond = static_cast<const Conditional &>(*op);
-      op = cond.get_op();
-    }
-    if (!op->get_desc().is_box()) continue;
-    const Box &b = static_cast<const Box &>(*op);
-    Circuit replacement = *b.to_circuit();
-    if (conditional) {
-      this->mapping_frontier_->circuit_.substitute_conditional(
-          replacement, vert, Circuit::VertexDeletion::No,
-          Circuit::OpGroupTransfer::Merge);
-    } else {
-      this->mapping_frontier_->circuit_.substitute(
-          replacement, vert, Circuit::VertexDeletion::No,
-          Circuit::OpGroupTransfer::Merge);
-    }
-    bin.push_back(vert);
+    if (this->mapping_frontier_->circuit_.substitute_box_vertex(
+            vert, Circuit::VertexDeletion::No))
+      bin.push_back(vert);
   }
 
   // Delete vertices
