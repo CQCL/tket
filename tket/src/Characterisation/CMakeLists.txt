@@ -25,7 +25,7 @@ add_library(tket-${COMP}
 
 list(APPEND DEPS_${COMP}
     Architecture
-    Circuit    
+    Circuit
     Gate
     Graphs
     Ops
