@@ -47,7 +47,7 @@ class MultiGateReorderRoutingMethod : public RoutingMethod {
    */
   bool check_method(
       const std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
-      const ArchitecturePtr& /*architecture*/) const;
+      const ArchitecturePtr& /*architecture*/) const override;
 
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
@@ -58,7 +58,21 @@ class MultiGateReorderRoutingMethod : public RoutingMethod {
    */
   unit_map_t routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
-      const ArchitecturePtr& architecture) const;
+      const ArchitecturePtr& architecture) const override;
+
+  nlohmann::json serialize() const override;
+
+  static MultiGateReorderRoutingMethod deserialize(const nlohmann::json& j);
+
+  /**
+   * @return Maximum number of layers of gates checked for commutation.
+   */
+  unsigned get_max_depth() const;
+
+  /**
+   * @return Maximum number of gates checked for commutation.
+   */
+  unsigned get_max_size() const;
 
  private:
   unsigned max_depth_;
