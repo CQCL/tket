@@ -50,27 +50,27 @@ unsigned GateUnitaryMatrixVariableQubits::get_number_of_parameters() const {
 Eigen::MatrixXcd GateUnitaryMatrixVariableQubits::get_dense_unitary(
     unsigned number_of_qubits, const std::vector<double>& parameters) const {
   // This class is internal only, so an assert is OK.
-  TKET_ASSERT(known_type);
-  TKET_ASSERT(parameters.size() == number_of_parameters);
+  TKET_ASSERT_WITH_THROW(known_type);
+  TKET_ASSERT_WITH_THROW(parameters.size() == number_of_parameters);
   switch (parameters.size()) {
     case 0:
-      TKET_ASSERT(op_type == OpType::CnX);
+      TKET_ASSERT_WITH_THROW(op_type == OpType::CnX);
       return GateUnitaryMatrixImplementations::CnX(number_of_qubits);
     case 1:
       if (op_type == OpType::CnRy) {
         return GateUnitaryMatrixImplementations::CnRy(
             number_of_qubits, parameters[0]);
       } else {
-        TKET_ASSERT(op_type == OpType::PhaseGadget);
+        TKET_ASSERT_WITH_THROW(op_type == OpType::PhaseGadget);
         return GateUnitaryMatrixImplementations::PhaseGadget(
             number_of_qubits, parameters[0]);
       }
     case 2:
-      TKET_ASSERT(op_type == OpType::NPhasedX);
+      TKET_ASSERT_WITH_THROW(op_type == OpType::NPhasedX);
       return GateUnitaryMatrixImplementations::NPhasedX(
           number_of_qubits, parameters[0], parameters[1]);
     default:
-      TKET_ASSERT(false);
+      TKET_ASSERT_WITH_THROW(false);
   }
 }
 

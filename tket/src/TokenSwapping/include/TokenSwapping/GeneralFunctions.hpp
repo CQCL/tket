@@ -50,6 +50,7 @@ std::optional<V> get_optional_value(const std::map<K, V>& map, const K& key) {
  */
 template <class K, class V>
 std::map<V, K> get_reversed_map(const std::map<K, V>& map) {
+  // GCOVR_EXCL_START
   std::map<V, K> reversed_map;
   for (const auto& entry : map) {
     reversed_map[entry.second] = entry.first;
@@ -58,6 +59,7 @@ std::map<V, K> get_reversed_map(const std::map<K, V>& map) {
     throw std::runtime_error("get_reversed_map called with non-reversible map");
   }
   return reversed_map;
+  // GCOVR_EXCL_STOP
 }
 
 /** Finds the rightmost "one" (least significant bit)

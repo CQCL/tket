@@ -285,6 +285,8 @@ const PassPtr &ComposePhasePolyBoxes() {
    * converts a circuit containing all possible gates to a circuit
    * containing only phase poly boxes + H gates (and measure + reset + collapse
    * + barrier)
+   * this pass will replace all wire swaps in the given circuit and they will be
+   * included in the last or an additional phase poly boxes
    */
   static const PassPtr pp([]() {
     Transform t =
@@ -293,7 +295,13 @@ const PassPtr &ComposePhasePolyBoxes() {
 
     PredicatePtrMap precons{CompilationUnit::make_type_pair(noclas)};
 
-    PostConditions postcon = {precons, {}, Guarantee::Clear};
+    PredicatePtr no_wire_swap = std::make_shared<NoWireSwapsPredicate>();
+
+    PredicatePtrMap s_postcons{
+        CompilationUnit::make_type_pair(noclas),
+        CompilationUnit::make_type_pair(no_wire_swap)};
+    PostConditions postcon{s_postcons, {}, Guarantee::Preserve};
+
     nlohmann::json j;
     j["name"] = "ComposePhasePolyBoxes";
     return std::make_shared<StandardPass>(precons, t, postcon, j);

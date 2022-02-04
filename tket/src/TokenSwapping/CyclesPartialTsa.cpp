@@ -23,6 +23,7 @@ namespace tsa_internal {
 
 CyclesPartialTsa::CyclesPartialTsa() { m_name = "Cycles"; }
 
+// GCOVR_EXCL_START
 CyclesGrowthManager::Options& CyclesPartialTsa::growth_options() {
   return m_growth_manager.get_options();
 }
@@ -30,6 +31,7 @@ CyclesGrowthManager::Options& CyclesPartialTsa::growth_options() {
 CyclesCandidateManager::Options& CyclesPartialTsa::candidate_options() {
   return m_candidate_manager.get_options();
 }
+// GCOVR_EXCL_STOP
 
 void CyclesPartialTsa::append_partial_solution(
     SwapList& swaps, VertexMapping& vertex_mapping,
@@ -47,20 +49,20 @@ void CyclesPartialTsa::append_partial_solution(
     single_iteration_partial_solution(
         swaps, vertex_mapping, distances, neighbours);
     const auto swap_size_after = swaps.size();
-    TKET_ASSERT(swap_size_after >= swap_size_before);
+    TKET_ASSERT_WITH_THROW(swap_size_after >= swap_size_before);
     if (swap_size_before == swap_size_after) {
       break;
     }
   }
   const size_t final_swap_size = swaps.size();
-  TKET_ASSERT(initial_swap_size <= final_swap_size);
+  TKET_ASSERT_WITH_THROW(initial_swap_size <= final_swap_size);
   if (initial_swap_size == final_swap_size ||
       !path_finder.edge_registration_has_effect()) {
     return;
   }
   // At least one swap was added.
   const auto current_back_id_opt = swaps.back_id();
-  TKET_ASSERT(current_back_id_opt);
+  TKET_ASSERT_WITH_THROW(current_back_id_opt);
   auto current_id = current_back_id_opt.value();
   for (size_t remaining_swaps = final_swap_size - initial_swap_size;;) {
     const auto& swap = swaps.at(current_id);
@@ -70,7 +72,7 @@ void CyclesPartialTsa::append_partial_solution(
       break;
     }
     const auto prev_id_opt = swaps.previous(current_id);
-    TKET_ASSERT(prev_id_opt);
+    TKET_ASSERT_WITH_THROW(prev_id_opt);
     current_id = prev_id_opt.value();
   }
 }
@@ -98,7 +100,7 @@ void CyclesPartialTsa::single_iteration_partial_solution(
       return;
     }
   }
-  TKET_ASSERT(!"growth_manager termination");
+  TKET_ASSERT_WITH_THROW(!"growth_manager termination");
 }
 
 }  // namespace tsa_internal

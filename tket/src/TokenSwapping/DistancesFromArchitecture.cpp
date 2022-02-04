@@ -74,16 +74,15 @@ size_t DistancesFromArchitecture::operator()(size_t vertex1, size_t vertex2) {
     // architectures, since get_distance now should throw if v1, v2 are in
     // different connected components. However, leave the check in, in case some
     // other bizarre error causes distance zero to be returned.
-    if (distance_entry == 0) {
-      std::stringstream ss;
-      ss << "DistancesFromArchitecture: architecture has " << arch.n_nodes()
-         << " vertices, " << arch.n_connections()
-         << " edges; returned diameter " << arch.get_diameter() << ", but d("
-         << vertex1 << "," << vertex2
-         << ")=0. "
-            "Is the graph connected?";
-      throw std::runtime_error(ss.str());
-    }
+    TKET_ASSERT_WITH_THROW(
+        distance_entry > 0 ||
+        AssertMessage() << "DistancesFromArchitecture: architecture has "
+                        << arch.n_nodes() << " vertices, "
+                        << arch.n_connections() << " edges; returned diameter "
+                        << arch.get_diameter() << ", but d(" << vertex1 << ","
+                        << vertex2
+                        << ")=0. "
+                           "Is the graph connected?");
   }
   return distance_entry;
 }

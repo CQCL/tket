@@ -16,6 +16,7 @@
 
 namespace tket {
 
+// GCOVR_EXCL_START
 AssertMessage::AssertMessage() : m_verbose(false) {}
 
 AssertMessage AssertMessage::verbose() {
@@ -30,5 +31,6 @@ AssertMessage::MessageData::MessageData(const std::string& str, bool vbose)
 AssertMessage::operator bool() const {
   throw MessageData(m_ss.str(), m_verbose);
 }
+// GCOVR_EXCL_STOP
 
 }  // namespace tket
