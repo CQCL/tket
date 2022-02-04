@@ -14,22 +14,32 @@
 
 #include "AssertMessage.hpp"
 
+#include <stdexcept>
+
 namespace tket {
 
 // GCOVR_EXCL_START
-AssertMessage::AssertMessage() : m_verbose(false) {}
+AssertMessage::AssertMessage() {}
 
-AssertMessage AssertMessage::verbose() {
-  AssertMessage message;
-  message.m_verbose = true;
+std::string AssertMessage::get_error_message() {
+  const auto message = get_error_stream().str();
+
+  // Clear the global stream, ready for the next message
+  // (in the assert with throw variants, we may try/catch
+  // multiple times).
+  get_error_stream().str(std::string());
   return message;
 }
 
-AssertMessage::MessageData::MessageData(const std::string& str, bool vbose)
-    : std::runtime_error(str), verbose(vbose) {}
+AssertMessage::operator bool() const { return false; }
 
-AssertMessage::operator bool() const {
-  throw MessageData(m_ss.str(), m_verbose);
+std::stringstream& AssertMessage::get_error_stream() {
+  static std::stringstream ss;
+  return ss;
+}
+
+void AssertMessage::throw_message(const std::string& str) {
+  throw std::runtime_error(str);
 }
 // GCOVR_EXCL_STOP
 

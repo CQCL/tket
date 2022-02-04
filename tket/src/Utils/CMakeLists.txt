@@ -20,7 +20,6 @@ endif()
 
 add_library(tket-${COMP}
     AssertMessage.cpp
-    AssertWithThrowHelper.cpp
     TketLog.cpp
     UnitID.cpp
     HelperFunctions.cpp

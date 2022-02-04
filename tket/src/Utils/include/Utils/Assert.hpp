@@ -18,7 +18,6 @@
 #include <sstream>
 
 #include "AssertMessage.hpp"
-#include "AssertWithThrowHelper.hpp"
 #include "TketLog.hpp"
 
 /**
@@ -31,10 +30,6 @@
  * TKET_ASSERT(x<y ||
  *    AssertMessage() << "x=" << x << ", y=" << y << " and also z=" << z);
  *
- * A verbose version including the actual C++ source code
- * in the TKET_ASSERT statement with "AssertMessage", as well as
- * the constructed error message itself, can be achieved with
- * AssertMessage::verbose() instead of AssertMessage().
  * The message construction will NOT begin if `b` is true,
  * so there is no performance penalty.
  *
@@ -42,6 +37,11 @@
  *
  * This should also work if evaluating the assertion condition
  * itself throws an exception.
+ *
+ * Note: because no exceptions are thrown here (abort() isn't an exception!),
+ * the code coverage DOES listen to the start/stop tags and
+ * ignore all the branching.
+ * So, we're happy to have as many "if" statements and branches as we like!
  */
 #define TKET_ASSERT(b)                                                         \
   /* GCOVR_EXCL_START */                                                       \
@@ -50,20 +50,15 @@
       if (!(b)) {                                                              \
         std::stringstream msg;                                                 \
         msg << "Assertion '" << #b << "' (" << __FILE__ << " : " << __func__   \
-            << " : " << __LINE__ << ") failed: aborting.";                     \
+            << " : " << __LINE__ << ") failed";                                \
+        const auto extra_message = tket::AssertMessage::get_error_message();   \
+        if (!extra_message.empty()) {                                          \
+          msg << " (" << extra_message << ")";                                 \
+        }                                                                      \
+        msg << ": aborting.";                                                  \
         tket::tket_log()->critical(msg.str());                                 \
         std::abort();                                                          \
       }                                                                        \
-    } catch (const AssertMessage::MessageData& e1) {                           \
-      std::stringstream msg;                                                   \
-      msg << "Assertion ";                                                     \
-      if (e1.verbose) {                                                        \
-        msg << "'" << #b << "' ";                                              \
-      }                                                                        \
-      msg << "(" << __FILE__ << " : " << __func__ << " : " << __LINE__         \
-          << ") failed: '" << e1.what() << "': aborting.";                     \
-      tket::tket_log()->critical(msg.str());                                   \
-      std::abort();                                                            \
     } catch (const std::exception& e2) {                                       \
       std::stringstream msg;                                                   \
       msg << "Evaluating assertion condition '" << #b << "' (" << __FILE__     \
@@ -83,34 +78,38 @@
 
 /** Like TKET_ASSERT, but throws an exception instead of aborting
  * if the condition is not satisfied.
+ *
+ * Note: this may seem convoluted. That's because the code coverage
+ * test programme annoyingly adds lots of branches if exceptions are thrown
+ * explicitly, despite the STOP/START tags telling it to ignore the code.
+ * See
+ *
+ * https://stackoverflow.com/questions/42003783/
+ * lcov-gcov-branch-coverage-with-c-producing-branches-all-over-the-place?rq=1
+ *
+ * We tried "hiding" the exceptions from this macro by putting the throws
+ * inside another function defined elsewhere. That did make some
+ * difference, but try/catch blocks also seemed to cause extra
+ * branching problems.
+ * Thus, we remove all explicit exceptions AND try/catch blocks,
+ * in the hope that it will cut down on the undesired extra branches.
+ * Thus, unlike TKET_ASSERT, an exception thrown by the EVALUATION of b
+ * will not be caught. But this should be very rare,
+ * AND we're explicitly trying to throw an exception INSTEAD of aborting,
+ * so this seems not too bad.
  */
-#define TKET_ASSERT_WITH_THROW(b)                                           \
-  /* GCOVR_EXCL_START */                                                    \
-  do {                                                                      \
-    try {                                                                   \
-      if (!(b)) {                                                           \
-        auto& ss = AssertWithThrowHelper::get_error_stream();               \
-        ss << "Assertion '" << #b << "' (" << __FILE__ << " : " << __func__ \
-           << " : " << __LINE__ << ") failed.";                             \
-      }                                                                     \
-    } catch (const AssertMessage::MessageData& e1) {                        \
-      auto& ss = AssertWithThrowHelper::get_error_stream();                 \
-      ss << "Assertion ";                                                   \
-      if (e1.verbose) {                                                     \
-        ss << "'" << #b << "' ";                                            \
-      }                                                                     \
-      ss << "(" << __FILE__ << " : " << __func__ << " : " << __LINE__       \
-         << ") failed: '" << e1.what() << "'";                              \
-    } catch (const std::exception& e2) {                                    \
-      auto& ss = AssertWithThrowHelper::get_error_stream();                 \
-      ss << "Evaluating assertion condition '" << #b << "' (" << __FILE__   \
-         << " : " << __func__ << " : " << __LINE__                          \
-         << ") threw unexpected exception: '" << e2.what() << "'";          \
-    } catch (...) {                                                         \
-      auto& ss = AssertWithThrowHelper::get_error_stream();                 \
-      ss << "Evaluating assertion condition '" << #b << "' (" << __FILE__   \
-         << " : " << __func__ << " : " << __LINE__                          \
-         << ") threw unknown exception.";                                   \
-    }                                                                       \
-    AssertWithThrowHelper::throw_upon_error();                              \
+#define TKET_ASSERT_WITH_THROW(b)                                          \
+  /* GCOVR_EXCL_START */                                                   \
+  do {                                                                     \
+    if (!(b)) {                                                            \
+      std::stringstream msg;                                               \
+      msg << "Assertion '" << #b << "' (" << __FILE__ << " : " << __func__ \
+          << " : " << __LINE__ << ") failed";                              \
+      const auto extra_message = tket::AssertMessage::get_error_message(); \
+      if (!extra_message.empty()) {                                        \
+        msg << ": '" << extra_message << "'";                              \
+      }                                                                    \
+      msg << ".";                                                          \
+      tket::AssertMessage::throw_message(msg.str());                       \
+    }                                                                      \
   } while (0) /* GCOVR_EXCL_STOP */
