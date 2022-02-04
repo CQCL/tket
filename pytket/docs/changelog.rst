@@ -11,6 +11,10 @@ API changes:
 * The deprecated ``Backend.compile_circuit`` method is removed. (Use
   ``get_compiled_circuit`` instead.)
 
+Minor new features:
+
+* Add ``delay_measures`` option to ``DefaultMappingPass``.
+
 0.19.0 (February 2022)
 ----------------------
 
