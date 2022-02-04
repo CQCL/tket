@@ -14,24 +14,25 @@ MultiGateReorder::MultiGateReorder(
           _mapping_frontier->circuit_, _mapping_frontier->quantum_boundary));
 }
 
-// Traverse the DAG to the quantum frontier encoded in q_boundary_map
+// Traverse the DAG to the quantum frontier
 // to find the UnitID associated with an VertPort
 UnitID get_unitid_from_vertex_port(
-    const Circuit &circ, const VertPort &vert_port,
-    const std::map<VertPort, UnitID> &q_boundary_map) {
+    const std::shared_ptr<MappingFrontier> &frontier,
+    const VertPort &vert_port) {
   VertPort current_vert_port = vert_port;
   while (true) {
-    auto it = q_boundary_map.find(current_vert_port);
-    if (it != q_boundary_map.end()) {
-      return it->second;
+    auto it =
+        frontier->quantum_boundary->get<TagValue>().find(current_vert_port);
+    if (it != frontier->quantum_boundary->get<TagValue>().end()) {
+      return it->first;
     }
-    Edge current_e = circ.get_nth_out_edge(
+    Edge current_e = frontier->circuit_.get_nth_out_edge(
         current_vert_port.first, current_vert_port.second);
     Vertex prev_vert;
     Edge prev_e;
     std::tie(prev_vert, prev_e) =
-        circ.get_prev_pair(current_vert_port.first, current_e);
-    current_vert_port = {prev_vert, circ.get_source_port(prev_e)};
+        frontier->circuit_.get_prev_pair(current_vert_port.first, current_e);
+    current_vert_port = {prev_vert, frontier->circuit_.get_source_port(prev_e)};
   }
 }
 
@@ -46,12 +47,11 @@ bool is_multiq_quantum_gate(const Circuit &circ, const Vertex &vert) {
 }
 
 bool is_physically_permitted(
-    const Circuit &circ, const ArchitecturePtr &arc_ptr, const Vertex &vert,
-    const std::map<VertPort, UnitID> &q_boundary_map) {
+    const std::shared_ptr<MappingFrontier> &frontier,
+    const ArchitecturePtr &arc_ptr, const Vertex &vert) {
   std::vector<Node> nodes;
-  for (port_t port = 0; port < circ.n_ports(vert); ++port) {
-    nodes.push_back(
-        Node(get_unitid_from_vertex_port(circ, {vert, port}, q_boundary_map)));
+  for (port_t port = 0; port < frontier->circuit_.n_ports(vert); ++port) {
+    nodes.push_back(Node(get_unitid_from_vertex_port(frontier, {vert, port})));
   }
 
   return arc_ptr->valid_operation(nodes);
@@ -176,14 +176,11 @@ void MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
 
   // store a copy of the original this->mapping_frontier_->quantum_boundray
   // this object will be updated and reset throughout the procedure
-  // so need to return it to original setting at end
-  // also create a map for getting UnitID from VertPort
-  std::map<VertPort, UnitID> q_boundary_map;
+  // so need to return it to original setting at end.
   unit_vertport_frontier_t copy;
   for (const std::pair<UnitID, VertPort> &pair :
        this->mapping_frontier_->quantum_boundary->get<TagKey>()) {
     copy.insert({pair.first, pair.second});
-    q_boundary_map.insert({pair.second, pair.first});
   }
   // Get a subcircuit only for iterating vertices
   Subcircuit circ =
@@ -196,8 +193,7 @@ void MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
     //  2. is a multi qubit quantum operation without classical controls
     if (is_multiq_quantum_gate(this->mapping_frontier_->circuit_, vert) &&
         is_physically_permitted(
-            this->mapping_frontier_->circuit_, this->architecture_, vert,
-            q_boundary_map)) {
+            this->mapping_frontier_, this->architecture_, vert)) {
       std::optional<std::pair<EdgeVec, EdgeVec>> commute_pairs =
           try_find_commute_edges(
               this->mapping_frontier_->circuit_, this->u_frontier_edges_, vert);
@@ -212,12 +208,6 @@ void MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
             convert_u_frontier_to_edges(*frontier_convert_vertport_to_edge(
                 this->mapping_frontier_->circuit_,
                 this->mapping_frontier_->quantum_boundary));
-        // Update the map
-        q_boundary_map.clear();
-        for (const std::pair<UnitID, VertPort> &pair :
-             this->mapping_frontier_->quantum_boundary->get<TagKey>()) {
-          q_boundary_map.insert({pair.second, pair.first});
-        }
       }
     }
   }
@@ -235,11 +225,6 @@ bool MultiGateReorderRoutingMethod::check_method(
   const EdgeVec u_frontier_edges =
       convert_u_frontier_to_edges(*frontier_convert_vertport_to_edge(
           mapping_frontier->circuit_, mapping_frontier->quantum_boundary));
-  std::map<VertPort, UnitID> q_boundary_map;
-  for (const std::pair<UnitID, VertPort> &pair :
-       mapping_frontier->quantum_boundary->get<TagKey>()) {
-    q_boundary_map.insert({pair.second, pair.first});
-  }
 
   Subcircuit circ = mapping_frontier->get_frontier_subcircuit(
       this->max_depth_, this->max_size_);
@@ -247,8 +232,7 @@ bool MultiGateReorderRoutingMethod::check_method(
   // we are certain that any multi-q vert lies after the frontier
   for (const Vertex &vert : circ.verts) {
     if (is_multiq_quantum_gate(mapping_frontier->circuit_, vert) &&
-        is_physically_permitted(
-            mapping_frontier->circuit_, architecture, vert, q_boundary_map)) {
+        is_physically_permitted(mapping_frontier, architecture, vert)) {
       std::optional<std::pair<EdgeVec, EdgeVec>> commute_pairs =
           try_find_commute_edges(
               mapping_frontier->circuit_, u_frontier_edges, vert);
