@@ -22,7 +22,7 @@ from pytket.routing import Architecture, FullyConnected  # type: ignore
 from pytket.circuit import Node, OpType  # type: ignore
 
 
-def serialize_all_node_gate_errors(
+def _serialize_all_node_gate_errors(
     d: Optional[Dict[Node, Dict[OpType, float]]]
 ) -> Optional[Dict[str, Dict[int, float]]]:
     if d is None:
@@ -33,7 +33,7 @@ def serialize_all_node_gate_errors(
     }
 
 
-def deserialize_all_node_gate_errors(
+def _deserialize_all_node_gate_errors(
     d: Optional[Dict[str, Dict[int, float]]]
 ) -> Optional[Dict[Node, Dict[OpType, float]]]:
     if d is None:
@@ -46,7 +46,7 @@ def deserialize_all_node_gate_errors(
     }
 
 
-def serialize_all_edge_gate_errors(
+def _serialize_all_edge_gate_errors(
     d: Optional[Dict[Tuple[Node, Node], Dict[OpType, float]]]
 ) -> Optional[Dict[str, Dict[int, float]]]:
     if d is None:
@@ -57,7 +57,7 @@ def serialize_all_edge_gate_errors(
     }
 
 
-def deserialize_all_edge_gate_errors(
+def _deserialize_all_edge_gate_errors(
     d: Optional[Dict[str, Dict[int, float]]],
 ) -> Optional[Dict[Tuple, Dict[OpType, float]]]:
     if d is None:
@@ -70,7 +70,7 @@ def deserialize_all_edge_gate_errors(
     }
 
 
-def serialize_all_readout_errors(
+def _serialize_all_readout_errors(
     d: Optional[Dict[Node, List[List[float]]]]
 ) -> Optional[Dict[str, List[List[float]]]]:
     if d is None:
@@ -78,7 +78,7 @@ def serialize_all_readout_errors(
     return {str(n.to_list()): errs for n, errs in d.items()}
 
 
-def deserialize_all_readout_errors(
+def _deserialize_all_readout_errors(
     d: Optional[Dict[str, List[List[float]]]]
 ) -> Optional[Dict[Node, List[List[float]]]]:
     if d is None:
@@ -86,7 +86,7 @@ def deserialize_all_readout_errors(
     return {Node.from_list(literal_eval(n)): errs for n, errs in d.items()}
 
 
-def serialize_averaged_node_gate_errors(
+def _serialize_averaged_node_gate_errors(
     d: Optional[Dict[Node, float]]
 ) -> Optional[Dict[str, float]]:
     if d is None:
@@ -94,7 +94,7 @@ def serialize_averaged_node_gate_errors(
     return {str(n.to_list()): err for n, err in d.items()}
 
 
-def deserialize_averaged_node_gate_errors(
+def _deserialize_averaged_node_gate_errors(
     d: Optional[Dict[str, float]]
 ) -> Optional[Dict[Node, float]]:
     if d is None:
@@ -102,7 +102,7 @@ def deserialize_averaged_node_gate_errors(
     return {Node.from_list(literal_eval(n)): err for n, err in d.items()}
 
 
-def serialize_averaged_edge_gate_errors(
+def _serialize_averaged_edge_gate_errors(
     d: Optional[Dict[Tuple[Node, Node], float]]
 ) -> Optional[Dict[str, float]]:
     if d is None:
@@ -110,7 +110,7 @@ def serialize_averaged_edge_gate_errors(
     return {str((n0.to_list(), n1.to_list())): err for (n0, n1), err in d.items()}
 
 
-def deserialize_averaged_edge_gate_errors(
+def _deserialize_averaged_edge_gate_errors(
     d: Optional[Dict[str, float]]
 ) -> Optional[Dict[Tuple, float]]:
     if d is None:
@@ -118,7 +118,7 @@ def deserialize_averaged_edge_gate_errors(
     return {tuple(map(Node.from_list, literal_eval(n))): err for n, err in d.items()}
 
 
-def serialize_averaged_readout_errors(
+def _serialize_averaged_readout_errors(
     d: Optional[Dict[Node, float]]
 ) -> Optional[Dict[str, float]]:
     if d is None:
@@ -126,7 +126,7 @@ def serialize_averaged_readout_errors(
     return {str(n.to_list()): err for n, err in d.items()}
 
 
-def deserialize_averaged_readout_errors(
+def _deserialize_averaged_readout_errors(
     d: Optional[Dict[str, float]]
 ) -> Optional[Dict[Node, float]]:
     if d is None:
@@ -246,22 +246,22 @@ class BackendInfo:
         self_dict = asdict(self)
         self_dict["architecture"] = self_dict["architecture"].to_dict()
         self_dict["gate_set"] = [op.value for op in self_dict["gate_set"]]
-        self_dict["all_node_gate_errors"] = serialize_all_node_gate_errors(
+        self_dict["all_node_gate_errors"] = _serialize_all_node_gate_errors(
             self_dict["all_node_gate_errors"]
         )
-        self_dict["all_edge_gate_errors"] = serialize_all_edge_gate_errors(
+        self_dict["all_edge_gate_errors"] = _serialize_all_edge_gate_errors(
             self_dict["all_edge_gate_errors"]
         )
-        self_dict["all_readout_errors"] = serialize_all_readout_errors(
+        self_dict["all_readout_errors"] = _serialize_all_readout_errors(
             self_dict["all_readout_errors"]
         )
-        self_dict["averaged_node_gate_errors"] = serialize_averaged_node_gate_errors(
+        self_dict["averaged_node_gate_errors"] = _serialize_averaged_node_gate_errors(
             self_dict["averaged_node_gate_errors"]
         )
-        self_dict["averaged_edge_gate_errors"] = serialize_averaged_edge_gate_errors(
+        self_dict["averaged_edge_gate_errors"] = _serialize_averaged_edge_gate_errors(
             self_dict["averaged_edge_gate_errors"]
         )
-        self_dict["averaged_readout_errors"] = serialize_averaged_readout_errors(
+        self_dict["averaged_readout_errors"] = _serialize_averaged_readout_errors(
             self_dict["averaged_readout_errors"]
         )
         return self_dict
@@ -282,22 +282,22 @@ class BackendInfo:
         else:
             args["architecture"] = FullyConnected.from_dict(args["architecture"])
         args["gate_set"] = {OpType(op) for op in args["gate_set"]}
-        args["all_node_gate_errors"] = deserialize_all_node_gate_errors(
+        args["all_node_gate_errors"] = _deserialize_all_node_gate_errors(
             args["all_node_gate_errors"]
         )
-        args["all_edge_gate_errors"] = deserialize_all_edge_gate_errors(
+        args["all_edge_gate_errors"] = _deserialize_all_edge_gate_errors(
             args["all_edge_gate_errors"]
         )
-        args["all_readout_errors"] = deserialize_all_readout_errors(
+        args["all_readout_errors"] = _deserialize_all_readout_errors(
             args["all_readout_errors"]
         )
-        args["averaged_node_gate_errors"] = deserialize_averaged_node_gate_errors(
+        args["averaged_node_gate_errors"] = _deserialize_averaged_node_gate_errors(
             args["averaged_node_gate_errors"]
         )
-        args["averaged_edge_gate_errors"] = deserialize_averaged_edge_gate_errors(
+        args["averaged_edge_gate_errors"] = _deserialize_averaged_edge_gate_errors(
             args["averaged_edge_gate_errors"]
         )
-        args["averaged_readout_errors"] = deserialize_averaged_readout_errors(
+        args["averaged_readout_errors"] = _deserialize_averaged_readout_errors(
             args["averaged_readout_errors"]
         )
         return cls(**args)
