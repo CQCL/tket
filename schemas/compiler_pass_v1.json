@@ -484,7 +484,8 @@
           },
           "then": {
             "required": [
-              "architecture"
+              "architecture",
+              "delay_measures"
             ]
           }
         },

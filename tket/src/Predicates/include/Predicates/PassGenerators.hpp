@@ -49,7 +49,7 @@ RoutingConfig object */
 PassPtr gen_full_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
     const RoutingConfig& config = {});
-PassPtr gen_default_mapping_pass(const Architecture& arc);
+PassPtr gen_default_mapping_pass(const Architecture& arc, bool delay_measures);
 PassPtr gen_cx_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
     const RoutingConfig& config, bool directed_cx, bool delay_measures);
