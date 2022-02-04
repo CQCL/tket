@@ -14,10 +14,10 @@
 
 #include "BestFullTsa.hpp"
 
-#include "DistancesFromArchitecture.hpp"
-#include "NeighboursFromArchitecture.hpp"
-#include "RiverFlowPathFinder.hpp"
-#include "TableLookup/VertexMapResizing.hpp"
+#include "TokenSwapping/DistancesFromArchitecture.hpp"
+#include "TokenSwapping/NeighboursFromArchitecture.hpp"
+#include "TokenSwapping/RiverFlowPathFinder.hpp"
+#include "TokenSwapping/VertexMapResizing.hpp"
 
 namespace tket {
 namespace tsa_internal {

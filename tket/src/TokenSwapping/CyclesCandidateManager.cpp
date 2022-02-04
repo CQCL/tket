@@ -18,7 +18,8 @@
 #include <boost/functional/hash.hpp>
 #include <stdexcept>
 
-#include "TSAUtils/VertexSwapResult.hpp"
+#include "Utils/Assert.hpp"
+#include "VertexSwapResult.hpp"
 
 using std::vector;
 
@@ -40,17 +41,12 @@ size_t CyclesCandidateManager::fill_initial_cycle_ids(const Cycles& cycles) {
 
     if (cycle_length == 0) {
       cycle_length = vertices.size();
-      if (cycle_length < 2) {
-        throw std::runtime_error("Cycles too small");
-      }
+      TKET_ASSERT_WITH_THROW(cycle_length >= 2);
     } else {
-      if (cycle_length != vertices.size()) {
-        throw std::runtime_error("Differing cycle sizes");
-      }
+      TKET_ASSERT_WITH_THROW(cycle_length == vertices.size());
     }
-    if (cycle.decrease <= 0) {
-      throw std::runtime_error("Bad candidates stored");
-    }
+    TKET_ASSERT_WITH_THROW(cycle.decrease > 0);
+
     // We want 50*(decrease)/(num swaps) >=  min_candidate_power_percentage.
     // (We multiply by 50 because a swap can change L by 2, not 1).
     if (50 * static_cast<unsigned>(cycle.decrease) <
@@ -108,9 +104,8 @@ void CyclesCandidateManager::discard_lower_power_solutions(
   for (auto id : m_cycles_to_keep) {
     highest_decrease = std::max(highest_decrease, cycles.at(id).decrease);
   }
-  if (highest_decrease <= 0) {
-    throw std::runtime_error("No good candidate cycles");
-  }
+  TKET_ASSERT_WITH_THROW(highest_decrease > 0);
+
   for (size_t ii = 0; ii < m_cycles_to_keep.size();) {
     if (cycles.at(m_cycles_to_keep[ii]).decrease < highest_decrease) {
       // This cycle is not good enough.

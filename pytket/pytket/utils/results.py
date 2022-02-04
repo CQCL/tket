@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ if TYPE_CHECKING:
 
 StateTuple = Tuple[int, ...]
 CountsDict = Dict[StateTuple, int]
-KwargTypes = Union[int, float, None]
+KwargTypes = Union[int, float, str, None]
 
 
 class BitPermuter:

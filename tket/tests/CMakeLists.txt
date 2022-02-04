@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+cmake_minimum_required(VERSION 3.16.0)
+project(tket-tests)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
-cmake_minimum_required(VERSION 3.16.0)
 
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
@@ -23,8 +24,6 @@ if(CCACHE_PROGRAM)
 endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-project(tket-tests)
 
 find_file(CONANBUILDINFO_FILE conanbuildinfo.cmake HINTS ${CMAKE_BINARY_DIR})
 include(${CONANBUILDINFO_FILE})
@@ -42,7 +41,31 @@ set(TKET_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(tkettestsfiles.cmake)
 
-set(TEST_EXE test_tket)
+add_executable(test_tket ${TEST_SOURCES})
 
-add_executable(${TEST_EXE} ${TEST_SOURCES})
-target_link_libraries(${TEST_EXE} ${CONAN_LIBS})
+target_link_libraries(test_tket PRIVATE
+    tket-ArchAwareSynth
+    tket-Architecture
+    tket-Characterisation
+    tket-Circuit
+    tket-Clifford
+    tket-Converters
+    tket-Diagonalisation
+    tket-Gate
+    tket-Graphs
+    tket-MeasurementSetup
+    tket-Ops
+    tket-OpType
+    tket-PauliGraph
+    tket-Predicates
+    tket-Program
+    tket-Placement
+    tket-TokenSwapping
+    tket-Mapping
+    tket-Simulation
+    tket-Transformations
+    tket-Utils
+    tket-ZX)
+
+target_link_libraries(test_tket PRIVATE
+    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})

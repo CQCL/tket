@@ -16,7 +16,7 @@
 
 #include <catch2/catch.hpp>
 
-#include "TokenSwapping/TSAUtils/GeneralFunctions.hpp"
+#include "TokenSwapping/GeneralFunctions.hpp"
 
 using std::vector;
 

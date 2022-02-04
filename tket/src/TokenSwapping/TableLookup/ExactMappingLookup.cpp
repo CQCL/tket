@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ExactMappingLookup.hpp"
+#include "TokenSwapping/ExactMappingLookup.hpp"
 
 #include <algorithm>
 
-#include "../TSAUtils/GeneralFunctions.hpp"
-#include "FilteredSwapSequences.hpp"
-#include "SwapConversion.hpp"
+#include "TokenSwapping/FilteredSwapSequences.hpp"
+#include "TokenSwapping/GeneralFunctions.hpp"
+#include "TokenSwapping/SwapConversion.hpp"
 #include "Utils/Assert.hpp"
 
 using std::vector;
@@ -62,11 +62,11 @@ ExactMappingLookup::improve_upon_existing_result(
     }
     return m_result;
   }
-  TKET_ASSERT(relabelling.permutation_hash != 0);
-  TKET_ASSERT(
+  TKET_ASSERT_WITH_THROW(relabelling.permutation_hash != 0);
+  TKET_ASSERT_WITH_THROW(
       relabelling.new_to_old_vertices.size() ==
       relabelling.old_to_new_vertices.size());
-  TKET_ASSERT(relabelling.new_to_old_vertices.size() >= 2);
+  TKET_ASSERT_WITH_THROW(relabelling.new_to_old_vertices.size() >= 2);
 
   fill_result_from_table(relabelling, edges, max_number_of_swaps);
   return m_result;
@@ -102,8 +102,8 @@ void ExactMappingLookup::fill_result_from_table(
     }
     const auto new_v1 = new_v1_opt.value();
     const auto new_v2 = new_v2_opt.value();
-    TKET_ASSERT(new_v1 <= 5);
-    TKET_ASSERT(new_v2 <= 5);
+    TKET_ASSERT_WITH_THROW(new_v1 <= 5);
+    TKET_ASSERT_WITH_THROW(new_v2 <= 5);
     new_edges_bitset |= SwapConversion::get_edges_bitset(
         SwapConversion::get_hash_from_swap(get_swap(new_v1, new_v2)));
   }
@@ -112,13 +112,13 @@ void ExactMappingLookup::fill_result_from_table(
       relabelling_result.permutation_hash, new_edges_bitset,
       max_number_of_swaps);
 
-  TKET_ASSERT(table_result.number_of_swaps > 0);
+  TKET_ASSERT_WITH_THROW(table_result.number_of_swaps > 0);
   if (table_result.number_of_swaps > max_number_of_swaps) {
     // No result in the table.
     return;
   }
-  TKET_ASSERT(table_result.edges_bitset != 0);
-  TKET_ASSERT(table_result.swaps_code > 0);
+  TKET_ASSERT_WITH_THROW(table_result.edges_bitset != 0);
+  TKET_ASSERT_WITH_THROW(table_result.swaps_code > 0);
 
   m_result.success = true;
   m_result.swaps.clear();
@@ -131,7 +131,7 @@ void ExactMappingLookup::fill_result_from_table(
         relabelling_result.new_to_old_vertices.at(new_swap.first),
         relabelling_result.new_to_old_vertices.at(new_swap.second)));
   }
-  TKET_ASSERT(m_result.swaps.size() <= 16);
+  TKET_ASSERT_WITH_THROW(m_result.swaps.size() <= 16);
 }
 
 }  // namespace tsa_internal

@@ -253,4 +253,26 @@ unit_map_t MultiGateReorderRoutingMethod::routing_method(
   return {};
 }
 
+unsigned MultiGateReorderRoutingMethod::get_max_depth() const {
+  return this->max_depth_;
+}
+
+unsigned MultiGateReorderRoutingMethod::get_max_size() const {
+  return this->max_size_;
+}
+
+nlohmann::json MultiGateReorderRoutingMethod::serialize() const {
+  nlohmann::json j;
+  j["depth"] = this->max_depth_;
+  j["size"] = this->max_size_;
+  j["name"] = "MultiGateReorderRoutingMethod";
+  return j;
+}
+
+MultiGateReorderRoutingMethod MultiGateReorderRoutingMethod::deserialize(
+    const nlohmann::json &j) {
+  return MultiGateReorderRoutingMethod(
+      j.at("depth").get<unsigned>(), j.at("size").get<unsigned>());
+}
+
 }  // namespace tket

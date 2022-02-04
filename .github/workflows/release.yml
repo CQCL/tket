@@ -64,7 +64,8 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect --force
-        conan install --profile=tket boost/1.77.0@ --build=missing
+        conan profile update options.tket:shared=True tket
+        conan install --profile=tket boost/1.78.0@ --build=missing
         conan create --profile=tket recipes/symengine
         conan create --profile=tket recipes/tket
     - name: Install pybind11
@@ -110,9 +111,10 @@ jobs:
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
         conan profile new tket --detect --force
-        conan install --profile=tket boost/1.77.0@ --build=missing -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
-        conan create --profile=tket recipes/symengine -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
-        conan create --profile=tket recipes/tket -o boost:without_fiber=True -o boost:without_json=True -o boost:without_nowide=True
+        conan profile update options.tket:shared=True tket
+        conan install --profile=tket boost/1.78.0@ --build=missing
+        conan create --profile=tket recipes/symengine
+        conan create --profile=tket recipes/tket
         conan create --profile=tket recipes/pybind11
         .github/workflows/build_macos_m1_wheel
         pyenv shell tket-3.9
@@ -155,6 +157,7 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect
+        conan profile update options.tket:shared=True tket
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: Cache tket build
@@ -162,7 +165,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: C:\Users\runneradmin\.conan\data\tket
-        key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-7
+        key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-8
     - name: Build symengine
       run: conan create --profile=tket recipes/symengine
     - name: Build tket

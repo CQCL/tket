@@ -1,8 +1,28 @@
 Changelog
-==================================
+=========
 
-0.19.0 (unreleased)
--------------------
+x.y.z (unreleased)
+------------------
+
+API changes:
+
+* The deprecated ``QubitPauliString.to_dict`` method is removed. (Use the
+  ``map`` property instead.)
+* The deprecated ``Backend.compile_circuit`` method is removed. (Use
+  ``get_compiled_circuit`` instead.)
+
+0.19.0 (February 2022)
+----------------------
+
+Major new features:
+
+* New box types for Clifford tableaux.
+
+Minor new features:
+
+* Improve ``CnX`` gate decomposition for n=5,6,7.
+* Add ``rebase_pass`` method to ``Backend``.
+* Add ``is_clifford_type`` method to ``Op``.
 
 General:
 

@@ -18,10 +18,10 @@
 #include <stdexcept>
 
 #include "CyclicShiftCostEstimate.hpp"
-#include "TSAUtils/DebugFunctions.hpp"
-#include "TSAUtils/DistanceFunctions.hpp"
-#include "TSAUtils/GeneralFunctions.hpp"
-#include "TSAUtils/VertexSwapResult.hpp"
+#include "TokenSwapping/DebugFunctions.hpp"
+#include "TokenSwapping/DistanceFunctions.hpp"
+#include "TokenSwapping/GeneralFunctions.hpp"
+#include "TokenSwapping/VertexSwapResult.hpp"
 #include "Utils/Assert.hpp"
 
 using std::vector;
@@ -69,9 +69,9 @@ bool TrivialTSA::grow_cycle_forwards(
     current_id = m_abstract_cycles_vertices.insert_after(current_id);
     m_abstract_cycles_vertices.at(current_id) = citer->second;
   }
-  throw std::runtime_error(
-      "TrivialTSA::grow_cycle_forwards: "
+  TKET_ASSERT_WITH_THROW(!"TrivialTSA::grow_cycle_forwards: "
       "hit vertex count limit; invalid vertex mapping");
+  return false;
 }
 
 void TrivialTSA::grow_cycle_backwards(Endpoints& endpoints) {
@@ -93,8 +93,7 @@ void TrivialTSA::grow_cycle_backwards(Endpoints& endpoints) {
     current_id = m_abstract_cycles_vertices.insert_before(current_id);
     m_abstract_cycles_vertices.at(current_id) = citer->second;
   }
-  throw std::runtime_error(
-      "TrivialTSA::grow_cycle_backwards: "
+  TKET_ASSERT_WITH_THROW(!"TrivialTSA::grow_cycle_backwards: "
       "hit vertex count limit; invalid vertex mapping");
 }
 
@@ -104,20 +103,21 @@ void TrivialTSA::do_final_checks() const {
     m_vertices_seen.insert(entry.first);
     m_vertices_seen.insert(entry.second);
   }
-  TKET_ASSERT(m_vertices_seen.size() == m_abstract_cycles_vertices.size());
+  TKET_ASSERT_WITH_THROW(
+      m_vertices_seen.size() == m_abstract_cycles_vertices.size());
 
   // Erase them again...!
   for (const auto& endpoints : m_cycle_endpoints) {
     for (auto id = endpoints.first;;
          id = m_abstract_cycles_vertices.next(id).value()) {
-      TKET_ASSERT(
+      TKET_ASSERT_WITH_THROW(
           m_vertices_seen.erase(m_abstract_cycles_vertices.at(id)) == 1);
       if (id == endpoints.second) {
         break;
       }
     }
   }
-  TKET_ASSERT(m_vertices_seen.empty());
+  TKET_ASSERT_WITH_THROW(m_vertices_seen.empty());
 }
 
 void TrivialTSA::fill_disjoint_abstract_cycles(
@@ -143,7 +143,7 @@ void TrivialTSA::fill_disjoint_abstract_cycles(
     // Now, add the vertices to vertices seen...
     for (auto id = endpoints.first;;
          id = m_abstract_cycles_vertices.next(id).value()) {
-      TKET_ASSERT(
+      TKET_ASSERT_WITH_THROW(
           m_vertices_seen.insert(m_abstract_cycles_vertices.at(id)).second);
       if (id == endpoints.second) {
         break;
@@ -178,7 +178,7 @@ void TrivialTSA::append_partial_solution(
     append_partial_solution_with_all_cycles(swaps, vertex_mapping, path_finder);
     return;
   }
-  TKET_ASSERT(m_options == Options::BREAK_AFTER_PROGRESS);
+  TKET_ASSERT_WITH_THROW(m_options == Options::BREAK_AFTER_PROGRESS);
   // We're only going to do ONE cycle; so find which cycle
   // has the shortest estimated number of swaps
   size_t best_estimated_concrete_swaps = std::numeric_limits<size_t>::max();
@@ -188,27 +188,28 @@ void TrivialTSA::append_partial_solution(
   for (const auto& endpoints : m_cycle_endpoints) {
     copy_vertices_to_work_vector(endpoints);
     if (m_vertices_work_vector.size() < 2) {
-      TKET_ASSERT(m_vertices_work_vector.size() == 1);
+      TKET_ASSERT_WITH_THROW(m_vertices_work_vector.size() == 1);
       continue;
     }
     const CyclicShiftCostEstimate estimate(m_vertices_work_vector, distances);
-    TKET_ASSERT(
+    TKET_ASSERT_WITH_THROW(
         estimate.estimated_concrete_swaps < std::numeric_limits<size_t>::max());
-    TKET_ASSERT(estimate.start_v_index < m_vertices_work_vector.size());
+    TKET_ASSERT_WITH_THROW(
+        estimate.start_v_index < m_vertices_work_vector.size());
     if (estimate.estimated_concrete_swaps < best_estimated_concrete_swaps) {
       best_estimated_concrete_swaps = estimate.estimated_concrete_swaps;
       start_v_index = estimate.start_v_index;
       best_endpoints = endpoints;
     }
   }
-  TKET_ASSERT(
+  TKET_ASSERT_WITH_THROW(
       best_estimated_concrete_swaps < std::numeric_limits<size_t>::max());
   const auto swap_size_before = swaps.size();
   const auto decrease = append_partial_solution_with_single_cycle(
       best_endpoints, start_v_index, swaps, vertex_mapping, distances,
       path_finder);
-  TKET_ASSERT(swap_size_before < swaps.size());
-  TKET_ASSERT(decrease > 0);
+  TKET_ASSERT_WITH_THROW(swap_size_before < swaps.size());
+  TKET_ASSERT_WITH_THROW(decrease > 0);
 }
 
 void TrivialTSA::copy_vertices_to_work_vector(const Endpoints& endpoints) {
@@ -237,9 +238,9 @@ void TrivialTSA::append_partial_solution_with_all_cycles(
       // Abstract swap(v1, v2).
       const auto v1 = m_vertices_work_vector[ii];
       const auto v2 = m_vertices_work_vector[ii - 1];
-      TKET_ASSERT(v1 != v2);
+      TKET_ASSERT_WITH_THROW(v1 != v2);
       const auto& path = path_finder(v1, v2);
-      TKET_ASSERT(path.size() >= 2);
+      TKET_ASSERT_WITH_THROW(path.size() >= 2);
       append_swaps_to_interchange_path_ends(path, vertex_mapping, swaps);
     }
   }
@@ -250,8 +251,8 @@ size_t TrivialTSA::append_partial_solution_with_single_cycle(
     VertexMapping& vertex_mapping, DistancesInterface& distances,
     PathFinderInterface& path_finder) {
   copy_vertices_to_work_vector(endpoints);
-  TKET_ASSERT(m_vertices_work_vector.size() >= 2);
-  TKET_ASSERT(start_v_index < m_vertices_work_vector.size());
+  TKET_ASSERT_WITH_THROW(m_vertices_work_vector.size() >= 2);
+  TKET_ASSERT_WITH_THROW(start_v_index < m_vertices_work_vector.size());
 
   // Can go negative! But MUST be >= 1 at the end
   // (otherwise this cycle was useless and should never have occurred).
@@ -267,9 +268,9 @@ size_t TrivialTSA::append_partial_solution_with_single_cycle(
     const auto v2 = m_vertices_work_vector
         [((ii - 1) + start_v_index) % m_vertices_work_vector.size()];
 
-    TKET_ASSERT(v1 != v2);
+    TKET_ASSERT_WITH_THROW(v1 != v2);
     const auto& path = path_finder(v1, v2);
-    TKET_ASSERT(path.size() >= 2);
+    TKET_ASSERT_WITH_THROW(path.size() >= 2);
 
     // e.g., to swap endpoints:  [x,a,b,c,y] -> [y,a,b,c,x],
     // do concrete swaps xa ab bc cy bc ab xa.
@@ -297,7 +298,8 @@ size_t TrivialTSA::append_partial_solution_with_single_cycle(
   }
   // The cycle MUST have decreased L overall,
   // otherwise we shouldn't have done it.
-  TKET_ASSERT(!"TrivialTSA::append_partial_solution_with_single_cycle");
+  TKET_ASSERT_WITH_THROW(
+      !"TrivialTSA::append_partial_solution_with_single_cycle");
   return 0;
 }
 

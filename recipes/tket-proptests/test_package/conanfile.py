@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -47,11 +47,12 @@ class TketPropestsTestConan(ConanFile):
 
     def test(self):
         if not tools.cross_building(self):
-            for name in ["tket"]:
-                fname = libfile(name)
-                copyfile(
-                    os.path.join(self.install_folder, "lib", fname),
-                    os.path.join("bin", fname),
-                )
+            lib_files = os.listdir(os.path.join(self.install_folder, "lib"))
+            for lib_file in lib_files:
+                if "tket" in lib_file:
+                    copyfile(
+                        os.path.join(self.install_folder, "lib", lib_file),
+                        os.path.join("bin", lib_file),
+                    )
             os.chdir("bin")
             self.run(os.path.join(os.curdir, get_executable_file()))

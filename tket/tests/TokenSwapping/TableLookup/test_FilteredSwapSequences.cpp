@@ -16,8 +16,8 @@
 #include <limits>
 #include <map>
 
+#include "TokenSwapping/FilteredSwapSequences.hpp"
 #include "TokenSwapping/RNG.hpp"
-#include "TokenSwapping/TableLookup/FilteredSwapSequences.hpp"
 
 using std::vector;
 

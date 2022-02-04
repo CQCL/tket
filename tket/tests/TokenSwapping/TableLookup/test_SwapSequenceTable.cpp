@@ -17,9 +17,9 @@
 #include <numeric>
 
 #include "PermutationTestUtils.hpp"
+#include "TokenSwapping/SwapConversion.hpp"
 #include "TokenSwapping/SwapListOptimiser.hpp"
-#include "TokenSwapping/TableLookup/SwapConversion.hpp"
-#include "TokenSwapping/TableLookup/SwapSequenceTable.hpp"
+#include "TokenSwapping/SwapSequenceTable.hpp"
 
 using std::vector;
 

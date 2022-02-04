@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,6 +17,8 @@
 #include "Mapping/RoutingMethodJson.hpp"
 #include "PassGenerators.hpp"
 #include "PassLibrary.hpp"
+#include "Transformations/ContextualReduction.hpp"
+#include "Transformations/PauliOptimisation.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/TketLog.hpp"
 
@@ -456,23 +458,23 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = gen_pairwise_pauli_gadgets(
           content.at("cx_config").get<CXConfigType>());
     } else if (passname == "PauliSimp") {
-      PauliSynthStrat pss =
-          content.at("pauli_synth_strat").get<PauliSynthStrat>();
+      Transforms::PauliSynthStrat pss =
+          content.at("pauli_synth_strat").get<Transforms::PauliSynthStrat>();
       CXConfigType cxc = content.at("cx_config").get<CXConfigType>();
       pp = gen_synthesise_pauli_graph(pss, cxc);
     } else if (passname == "GuidedPauliSimp") {
-      PauliSynthStrat pss =
-          content.at("pauli_synth_strat").get<PauliSynthStrat>();
+      Transforms::PauliSynthStrat pss =
+          content.at("pauli_synth_strat").get<Transforms::PauliSynthStrat>();
       CXConfigType cxc = content.at("cx_config").get<CXConfigType>();
       pp = gen_special_UCC_synthesis(pss, cxc);
     } else if (passname == "SimplifyInitial") {
       bool acbool = content.at("allow_classical").get<bool>();
-      Transform::AllowClassical ac = (acbool) ? Transform::AllowClassical::Yes
-                                              : Transform::AllowClassical::No;
+      Transforms::AllowClassical ac = (acbool) ? Transforms::AllowClassical::Yes
+                                               : Transforms::AllowClassical::No;
       bool caqbool = content.at("create_all_qubits").get<bool>();
-      Transform::CreateAllQubits caq = (caqbool)
-                                           ? Transform::CreateAllQubits::Yes
-                                           : Transform::CreateAllQubits::No;
+      Transforms::CreateAllQubits caq = (caqbool)
+                                            ? Transforms::CreateAllQubits::Yes
+                                            : Transforms::CreateAllQubits::No;
       std::shared_ptr<const Circuit> xc;
       if (content.contains("x_circuit")) {
         xc = std::make_shared<const Circuit>(
@@ -503,8 +505,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = gen_cx_mapping_pass(arc, place, config, directed_cx, delay_measures);
     } else if (passname == "PauliSquash") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
-      PauliSynthStrat strat =
-          content.at("pauli_synth_strat").get<PauliSynthStrat>();
+      Transforms::PauliSynthStrat strat =
+          content.at("pauli_synth_strat").get<Transforms::PauliSynthStrat>();
       CXConfigType cx_config = content.at("cx_config").get<CXConfigType>();
       pp = PauliSquash(strat, cx_config);
     } else if (passname == "ContextSimp") {
@@ -513,8 +515,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       std::shared_ptr<Circuit> xcirc =
           std::make_shared<Circuit>(content.at("x_circuit").get<Circuit>());
       pp = gen_contextual_pass(
-          allow_classical ? Transform::AllowClassical::Yes
-                          : Transform::AllowClassical::No,
+          allow_classical ? Transforms::AllowClassical::Yes
+                          : Transforms::AllowClassical::No,
           xcirc);
     } else {
       throw JsonError("Cannot load StandardPass of unknown type");

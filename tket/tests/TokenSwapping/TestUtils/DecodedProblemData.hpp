@@ -17,7 +17,7 @@
 #include <set>
 #include <string>
 
-#include "TokenSwapping/TSAUtils/VertexMappingFunctions.hpp"
+#include "TokenSwapping/VertexMappingFunctions.hpp"
 
 namespace tket {
 namespace tsa_internal {

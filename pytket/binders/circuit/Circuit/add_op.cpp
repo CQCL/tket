@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -413,7 +413,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
              const std::vector<Expr> &params,
              const std::vector<unsigned> &qubits, const py::kwargs &kwargs) {
             return add_box_method<unsigned>(
-                circ, std::make_shared<CompositeGate>(def, params), qubits,
+                circ, std::make_shared<CustomGate>(def, params), qubits,
                 kwargs);
           },
           "Append an instance of a :py:class:`CustomGateDef` to the "
@@ -542,7 +542,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
              const std::vector<Expr> &params, const qubit_vector_t &qubits,
              const py::kwargs &kwargs) {
             return add_box_method<UnitID>(
-                circ, std::make_shared<CompositeGate>(def, params),
+                circ, std::make_shared<CustomGate>(def, params),
                 {qubits.begin(), qubits.end()}, kwargs);
           },
           "Append an instance of a :py:class:`CustomGateDef` to the "

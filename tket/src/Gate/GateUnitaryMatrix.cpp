@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -136,7 +136,7 @@ static Eigen::MatrixXcd get_unitary_or_throw(
 #undef CASE_RETURN_2P
     CASE_RETURN_3P(CU3)
     CASE_RETURN_3P(U3)
-    CASE_RETURN_3P(tk1)
+    CASE_RETURN_3P(TK1)
 #undef CASE_RETURN_3P
     default: {
       std::stringstream ss;
@@ -157,7 +157,7 @@ static Eigen::MatrixXcd get_unitary_for_ordinary_fixed_size_case(
   const Eigen::MatrixXcd matr =
       get_unitary_or_throw(op_type, number_of_qubits, parameters);
 
-  TKET_ASSERT(matr.cols() == matr.rows());
+  TKET_ASSERT_WITH_THROW(matr.cols() == matr.rows());
   const auto expected_number_of_qubits = get_number_of_qubits(matr.cols());
   if (expected_number_of_qubits == number_of_qubits) {
     return matr;

@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -168,9 +168,9 @@ struct LiftedBitsResult {
 
 void LiftedBitsResult::set(
     const std::vector<unsigned>& qubits, unsigned full_number_of_qubits) {
-  TKET_ASSERT(full_number_of_qubits >= qubits.size());
-  TKET_ASSERT(full_number_of_qubits < 32);
-  TKET_ASSERT(!qubits.empty());
+  TKET_ASSERT_WITH_THROW(full_number_of_qubits >= qubits.size());
+  TKET_ASSERT_WITH_THROW(full_number_of_qubits < 32);
+  TKET_ASSERT_WITH_THROW(!qubits.empty());
 
   translated_bits.assign(get_matrix_size(qubits.size()), 0);
 
@@ -179,7 +179,7 @@ void LiftedBitsResult::set(
   SimUInt k_string_bit = 1;
 
   for (unsigned count = 0; count < qubits.size(); ++count) {
-    TKET_ASSERT(full_number_of_qubits >= qubits[count] + 1);
+    TKET_ASSERT_WITH_THROW(full_number_of_qubits >= qubits[count] + 1);
 
     // This will be a bit within the length n string.
     SimUInt long_string_bit = 1;
@@ -225,9 +225,8 @@ static void set_lifted_triplets(
 
   const SimUInt free_bits_limit =
       get_matrix_size(full_number_of_qubits - qubits.size());
-  if (free_bits_limit == 0) {
-    throw std::runtime_error("Too many bits");
-  }
+  TKET_ASSERT_WITH_THROW(free_bits_limit != 0 || !"Too many bits");
+
   for (SimUInt free_bits = 0; free_bits < free_bits_limit; ++free_bits) {
     const SimUInt expanded_free_bits =
         get_expanded_bits(expansion_data, free_bits);

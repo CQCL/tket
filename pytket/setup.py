@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -105,18 +105,36 @@ class CMakeBuild(build_ext):
                 ]
             )
             reqs = conaninfo["conanfile.txt"]["requires"]
-
-            # tket packages which must be copied over.
-            # (Only one right now, but maybe more in future).
-            # The name of the package might not match the name of the file!
-            copying_data = (("tket/", "tket"),)
-            for entry in copying_data:
-                assert len(entry) == 2
-                tket_reqs = [req for req in reqs if req.startswith(entry[0])]
-                assert len(tket_reqs) == 1
-                versioned_package = tket_reqs[0]
-                directory = conaninfo[versioned_package]["package_folder"]
-                shutil.copy(os.path.join(directory, "lib", libfile(entry[1])), extdir)
+            tket_reqs = [req for req in reqs if req.startswith("tket/")]
+            assert len(tket_reqs) == 1
+            tket_req = tket_reqs[0]
+            directory = conaninfo[tket_req]["package_folder"]
+            tket_libs = [
+                "tket-Utils",
+                "tket-ZX",
+                "tket-OpType",
+                "tket-Clifford",
+                "tket-Ops",
+                "tket-Graphs",
+                "tket-Gate",
+                "tket-PauliGraph",
+                "tket-Circuit",
+                "tket-Architecture",
+                "tket-Simulation",
+                "tket-Diagonalisation",
+                "tket-Program",
+                "tket-Characterisation",
+                "tket-Converters",
+                "tket-TokenSwapping",
+                "tket-Placement",
+                "tket-Mapping",
+                "tket-MeasurementSetup",
+                "tket-Transformations",
+                "tket-ArchAwareSynth",
+                "tket-Predicates",
+            ]
+            for tket_lib in tket_libs:
+                shutil.copy(os.path.join(directory, "lib", libfile(tket_lib)), extdir)
 
     def cmake_config(self, extdir, extsource):
 
@@ -154,6 +172,8 @@ class CMakeBuild(build_ext):
             "install",
             "--profile=" + conan_tket_profile,
             "--build=missing",
+            "-o",
+            "tket:shared=True",
             extsource,
         ]
         if platform.system() == "Darwin" and platform.processor() == "arm":

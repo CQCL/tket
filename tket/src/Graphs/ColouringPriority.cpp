@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -37,12 +37,14 @@ static void fill_initial_node_sequence(
 
   try {
     for (size_t clique_vertex : initial_clique) {
+      // GCOVR_EXCL_START
       if (vertices_in_component.count(clique_vertex) == 0) {
         std::stringstream ss;
         ss << "initial clique vertex " << clique_vertex
            << " is not in this component";
         throw std::runtime_error(ss.str());
       }
+      // GCOVR_EXCL_STOP
       nodes.emplace_back();
       nodes.back().vertex = clique_vertex;
     }
@@ -76,12 +78,15 @@ static void fill_initial_node_sequence(
       vertices_to_add.clear();
       current_nodes_begin = current_nodes_end;
     }
+    // GCOVR_EXCL_START
     if (nodes.size() != vertices_in_component.size()) {
       throw std::runtime_error(
           "Final size check: number of filled "
           "nodes does not match number of vertices in this component");
     }
+    // GCOVR_EXCL_STOP
   } catch (const std::exception& e) {
+    // GCOVR_EXCL_START
     std::stringstream ss;
     ss << "ColouringPriority: fill_initial_node_sequence: initial"
        << " clique size " << initial_clique.size() << ", "
@@ -91,6 +96,7 @@ static void fill_initial_node_sequence(
        << " So far, filled " << nodes.size() << " nodes."
        << " Error: " << e.what();
     throw std::runtime_error(ss.str());
+    // GCOVR_EXCL_STOP
   }
 }
 
@@ -116,6 +122,7 @@ const ColouringPriority::Nodes& ColouringPriority::get_nodes() const {
 }
 
 string ColouringPriority::print_raw_data(bool relabel_to_simplify) const {
+  // GCOVR_EXCL_START
   map<size_t, size_t> old_vertex_to_new_vertex;
   if (relabel_to_simplify) {
     for (size_t i = 0; i < m_nodes.size(); ++i) {
@@ -167,6 +174,7 @@ string ColouringPriority::print_raw_data(bool relabel_to_simplify) const {
   }
   ss << "\n};\n\n";
   return ss.str();
+  // GCOVR_EXCL_STOP
 }
 
 ColouringPriority::ColouringPriority(

@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ ExpansionData get_expansion_data(
     auto test_bit = next_bit;
     for (unsigned left_shift_arg = 0;; ++left_shift_arg) {
       if ((test_bit & forbidden_bits) == 0) {
-        TKET_ASSERT(test_bit != 0);
+        TKET_ASSERT_WITH_THROW(test_bit != 0);
         // A free space has been found.
         push_back(result, next_bit, left_shift_arg);
         forbidden_bits |= test_bit;

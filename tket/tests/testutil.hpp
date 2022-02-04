@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ static inline bool test_equiv_val(const Expr& e, double x, unsigned n = 2) {
 }
 
 static inline bool test_equiv_0(const Expr& e, unsigned n = 2) {
-  return equiv_0(e, n, ERR_EPS);
+  return equiv_0(SymEngine::expand(e), n, ERR_EPS);
 }
 
 typedef std::vector<unsigned> uvec;

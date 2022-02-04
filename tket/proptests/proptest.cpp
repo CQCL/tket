@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 #include "Predicates/PassLibrary.hpp"
 #include "Predicates/Predicates.hpp"
 #include "Simulation/CircuitSimulator.hpp"
+#include "Transformations/ContextualReduction.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Exceptions.hpp"
 #include "rapidcheck.h"
@@ -376,8 +377,8 @@ bool check_initial_simplification() {
       "initial simplification produces equivalent final state",
       [](const Circuit &c) {
         Circuit c1 = c;
-        Transform::simplify_initial(
-            Transform::AllowClassical::No, Transform::CreateAllQubits::Yes)
+        Transforms::simplify_initial(
+            Transforms::AllowClassical::No, Transforms::CreateAllQubits::Yes)
             .apply(c1);
         try {
           const auto s = tket_sim::get_statevector(c);

@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "DebugFunctions.hpp"
+#include "TokenSwapping/DebugFunctions.hpp"
 
 #include <sstream>
 
 namespace tket {
 namespace tsa_internal {
 
+// GCOVR_EXCL_START
 std::string str(const VertexMapping& vertex_mapping) {
   std::stringstream ss;
   ss << "VM:";
@@ -27,6 +28,7 @@ std::string str(const VertexMapping& vertex_mapping) {
   }
   return ss.str();
 }
+// GCOVR_EXCL_STOP
 
 std::string str(const SwapList& swaps) { return str(swaps.to_vector()); }
 

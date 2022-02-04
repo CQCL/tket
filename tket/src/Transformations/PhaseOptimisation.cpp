@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "PhaseOptimisation.hpp"
+
 #include "Transform.hpp"
 
 namespace tket {
 
+namespace Transforms {
+
 static void recursive_smash_CX_PhaseGadgets(
     Circuit &circ, Vertex &vert, VertexList &bin, bool &success);
 
-Transform Transform::smash_CX_PhaseGadgets() {
+Transform smash_CX_PhaseGadgets() {
   return Transform([](Circuit &circ) {
     bool success = false;
     VertexList bin;
@@ -174,8 +178,8 @@ static bool align_phases_all(Circuit &circ) {
   return success;
 }
 
-Transform Transform::align_PhaseGadgets() {
-  return Transform(align_phases_all);
-}
+Transform align_PhaseGadgets() { return Transform(align_phases_all); }
+
+}  // namespace Transforms
 
 }  // namespace tket

@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,10 +24,14 @@
 #include "CircuitsForTesting.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/SymTable.hpp"
+#include "Mapping/LexiRoute.hpp"
+#include "Mapping/RoutingMethod.hpp"
 #include "OpType/OpType.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
+#include "Transformations/OptimisationPass.hpp"
+#include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 #include "testutil.hpp"
@@ -62,7 +66,7 @@ SCENARIO("Test Op serialization") {
     const OpTypeSet boxes = {OpType::CircBox,      OpType::Unitary1qBox,
                              OpType::Unitary2qBox, OpType::Unitary3qBox,
                              OpType::ExpBox,       OpType::PauliExpBox,
-                             OpType::Composite,    OpType::CliffBox,
+                             OpType::CustomGate,   OpType::CliffBox,
                              OpType::PhasePolyBox, OpType::QControlBox};
 
     std::set<std::string> type_names;
@@ -142,7 +146,7 @@ SCENARIO("Test Circuit serialization") {
     Circuit circ(3);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {1, 0}, {1, 2}, {2, 1}});
 
-    Transform::clifford_simp().apply(circ);
+    Transforms::clifford_simp().apply(circ);
 
     REQUIRE(check_circuit(circ));
   }
@@ -191,7 +195,7 @@ SCENARIO("Test Circuit serialization") {
     c.add_op<unsigned>(OpType::Rz, 0.2, {0});
 
     Circuit setup(1);
-    setup.add_op<unsigned>(OpType::tk1, {0.2374, 1.0353, 0.5372}, {0});
+    setup.add_op<unsigned>(OpType::TK1, {0.2374, 1.0353, 0.5372}, {0});
     Eigen::Matrix2cd m = get_matrix_from_circ(setup);
     Unitary1qBox mbox(m);
     c.add_box(mbox, {1});
@@ -259,7 +263,7 @@ SCENARIO("Test Circuit serialization") {
     REQUIRE(p_b == pbox);
   }
 
-  GIVEN("Composite Gate") {
+  GIVEN("CustomGate") {
     Circuit setup(2);
     Sym a = SymTable::fresh_symbol("a");
     Sym c = SymTable::fresh_symbol("c");
@@ -268,8 +272,8 @@ SCENARIO("Test Circuit serialization") {
     setup.add_op<unsigned>(OpType::CX, {0, 1});
     setup.add_op<unsigned>(OpType::Ry, {a}, {0});
     composite_def_ptr_t def = CompositeGateDef::define_gate("g", setup, {a});
-    CompositeGate g0(def, {0.2374});
-    CompositeGate g1(def, {b});
+    CustomGate g0(def, {0.2374});
+    CustomGate g1(def, {b});
 
     Circuit circ(3);
     circ.add_box(g0, {0, 1});
@@ -280,14 +284,12 @@ SCENARIO("Test Circuit serialization") {
 
     const std::vector<Command> coms = new_c.get_commands();
 
-    const auto& g_0_new =
-        static_cast<const CompositeGate&>(*coms[0].get_op_ptr());
+    const auto& g_0_new = static_cast<const CustomGate&>(*coms[0].get_op_ptr());
 
     REQUIRE(g0.get_params() == g_0_new.get_params());
     REQUIRE(*g0.get_gate() == *g_0_new.get_gate());
     REQUIRE(g0 == g_0_new);
-    const auto& g_1_new =
-        static_cast<const CompositeGate&>(*coms[1].get_op_ptr());
+    const auto& g_1_new = static_cast<const CustomGate&>(*coms[1].get_op_ptr());
 
     REQUIRE(g1.get_params() == g_1_new.get_params());
     REQUIRE(*g1.get_gate() == *g_1_new.get_gate());
@@ -418,6 +420,30 @@ SCENARIO("Test device serializations") {
     nlohmann::json j_loaded_avg_dc = loaded_avg_dc;
     CHECK(j_avg_dc == j_loaded_avg_dc);
   }
+}
+
+SCENARIO("Test RoutingMethod serializations") {
+  RoutingMethod rm;
+  nlohmann::json rm_j = rm;
+  RoutingMethod loaded_rm_j = rm_j.get<RoutingMethod>();
+
+  Circuit c(2, 2);
+  CHECK(!loaded_rm_j.check_method(
+      std::make_shared<MappingFrontier>(c),
+      std::make_shared<SquareGrid>(2, 2)));
+
+  std::vector<RoutingMethodPtr> rmp = {
+      std::make_shared<RoutingMethod>(rm),
+      std::make_shared<LexiRouteRoutingMethod>(5)};
+  nlohmann::json rmp_j = rmp;
+  std::vector<RoutingMethodPtr> loaded_rmp_j =
+      rmp_j.get<std::vector<RoutingMethodPtr>>();
+  CHECK(!loaded_rmp_j[0]->check_method(
+      std::make_shared<MappingFrontier>(c),
+      std::make_shared<SquareGrid>(2, 2)));
+  CHECK(loaded_rmp_j[1]->check_method(
+      std::make_shared<MappingFrontier>(c),
+      std::make_shared<SquareGrid>(2, 2)));
 }
 
 SCENARIO("Test predicate serializations") {
@@ -575,15 +601,16 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(
       OptimisePairwiseGadgets, gen_pairwise_pauli_gadgets(CXConfigType::Tree))
   COMPPASSJSONTEST(
-      PauliSimp,
-      gen_synthesise_pauli_graph(PauliSynthStrat::Sets, CXConfigType::Tree))
+      PauliSimp, gen_synthesise_pauli_graph(
+                     Transforms::PauliSynthStrat::Sets, CXConfigType::Tree))
   COMPPASSJSONTEST(
       GuidedPauliSimp,
-      gen_special_UCC_synthesis(PauliSynthStrat::Pairwise, CXConfigType::Snake))
+      gen_special_UCC_synthesis(
+          Transforms::PauliSynthStrat::Pairwise, CXConfigType::Snake))
   COMPPASSJSONTEST(
       SimplifyInitial,
       gen_simplify_initial(
-          Transform::AllowClassical::No, Transform::CreateAllQubits::Yes,
+          Transforms::AllowClassical::No, Transforms::CreateAllQubits::Yes,
           std::make_shared<Circuit>(CircPool::X())))
   COMPPASSJSONTEST(PlacementPass, gen_placement_pass(place))
   // TKET-1419
@@ -597,6 +624,24 @@ SCENARIO("Test compiler pass serializations") {
     placement->apply(cu);
     CompilationUnit copy = cu;
     PassPtr pp = gen_routing_pass(arc, rcon);
+    nlohmann::json j_pp = pp;
+    PassPtr loaded = j_pp.get<PassPtr>();
+    pp->apply(cu);
+    loaded->apply(copy);
+    REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
+    nlohmann::json j_loaded = loaded;
+    REQUIRE(j_pp == j_loaded);
+  }
+  GIVEN("Routing with MultiGateReorderRoutingMethod") {
+    RoutingMethodPtr mrmp =
+        std::make_shared<MultiGateReorderRoutingMethod>(60, 80);
+    std::vector<RoutingMethodPtr> mrcon = {mrmp, rmp};
+    Circuit circ = CircuitsForTesting::get().uccsd;
+    CompilationUnit cu{circ};
+    PassPtr placement = gen_placement_pass(place);
+    placement->apply(cu);
+    CompilationUnit copy = cu;
+    PassPtr pp = gen_routing_pass(arc, mrcon);
     nlohmann::json j_pp = pp;
     PassPtr loaded = j_pp.get<PassPtr>();
     pp->apply(cu);
@@ -687,11 +732,13 @@ SCENARIO("Test compiler pass serializations") {
     Circuit circ = CircuitsForTesting::get().uccsd;
     CompilationUnit cu{circ};
     CompilationUnit copy = cu;
-    PassPtr pp = PauliSquash(PauliSynthStrat::Sets, CXConfigType::Star);
+    PassPtr pp =
+        PauliSquash(Transforms::PauliSynthStrat::Sets, CXConfigType::Star);
     nlohmann::json j_pp;
     j_pp["pass_class"] = "StandardPass";
     j_pp["StandardPass"]["name"] = "PauliSquash";
-    j_pp["StandardPass"]["pauli_synth_strat"] = PauliSynthStrat::Sets;
+    j_pp["StandardPass"]["pauli_synth_strat"] =
+        Transforms::PauliSynthStrat::Sets;
     j_pp["StandardPass"]["cx_config"] = CXConfigType::Star;
     PassPtr loaded = j_pp.get<PassPtr>();
     pp->apply(cu);
@@ -705,7 +752,7 @@ SCENARIO("Test compiler pass serializations") {
     CompilationUnit cu{circ};
     CompilationUnit copy = cu;
     PassPtr pp = gen_contextual_pass(
-        Transform::AllowClassical::Yes,
+        Transforms::AllowClassical::Yes,
         std::make_shared<Circuit>(CircPool::X()));
     nlohmann::json j_pp;
     j_pp["pass_class"] = "StandardPass";

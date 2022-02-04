@@ -357,4 +357,30 @@ SCENARIO("Test MappingManager with MultiGateReorderRoutingMethod") {
     REQUIRE(*swap_c.get_op_ptr() == *get_op_ptr(OpType::SWAP));
   }
 }
+
+SCENARIO("Test JSON serialisation") {
+  GIVEN("MultiGateReorderRoutingMethod") {
+    nlohmann::json j_rm;
+    j_rm["name"] = "MultiGateReorderRoutingMethod";
+    j_rm["depth"] = 3;
+    j_rm["size"] = 4;
+    MultiGateReorderRoutingMethod rm_loaded =
+        MultiGateReorderRoutingMethod::deserialize(j_rm);
+    nlohmann::json j_rm_serialised = rm_loaded.serialize();
+    REQUIRE(j_rm == j_rm_serialised);
+  }
+
+  GIVEN("RoutingMethod vector") {
+    nlohmann::json j_rms = {
+        {{"name", "MultiGateReorderRoutingMethod"}, {"depth", 3}, {"size", 4}},
+        {
+            {"name", "LexiRouteRoutingMethod"},
+            {"depth", 3},
+        }};
+    std::vector<RoutingMethodPtr> rms =
+        j_rms.get<std::vector<RoutingMethodPtr>>();
+    nlohmann::json j_rms_serialised = rms;
+    REQUIRE(j_rms == j_rms_serialised);
+  }
+}
 }  // namespace tket

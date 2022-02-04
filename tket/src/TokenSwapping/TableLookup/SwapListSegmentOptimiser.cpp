@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SwapListSegmentOptimiser.hpp"
+#include "TokenSwapping/SwapListSegmentOptimiser.hpp"
 
 #include <algorithm>
 #include <array>
 #include <limits>
 
-#include "../../Utils/Assert.hpp"
+#include "Utils/Assert.hpp"
 
 using std::vector;
 
@@ -79,11 +79,12 @@ SwapListSegmentOptimiser::optimise_segment(
           bool should_store = m_output.initial_segment_size == 0;
           if (!should_store) {
             // Something IS stored, but is our new solution better?
-            TKET_ASSERT(
+            TKET_ASSERT_WITH_THROW(
                 m_output.initial_segment_size >= m_best_optimised_swaps.size());
             const size_t current_decrease =
                 m_output.initial_segment_size - m_best_optimised_swaps.size();
-            TKET_ASSERT(current_number_of_swaps >= lookup_result.swaps.size());
+            TKET_ASSERT_WITH_THROW(
+                current_number_of_swaps >= lookup_result.swaps.size());
             const size_t new_decrease =
                 current_number_of_swaps - lookup_result.swaps.size();
             should_store = new_decrease > current_decrease;
@@ -139,7 +140,8 @@ void SwapListSegmentOptimiser::fill_final_output_and_swaplist(
     return;
   }
   m_output.final_segment_size = m_best_optimised_swaps.size();
-  TKET_ASSERT(m_output.final_segment_size <= m_output.initial_segment_size);
+  TKET_ASSERT_WITH_THROW(
+      m_output.final_segment_size <= m_output.initial_segment_size);
   const auto initial_size = swap_list.size();
 
   if (m_best_optimised_swaps.empty()) {
@@ -150,7 +152,7 @@ void SwapListSegmentOptimiser::fill_final_output_and_swaplist(
         initial_id, m_best_optimised_swaps.cbegin(),
         m_best_optimised_swaps.cend());
 
-    TKET_ASSERT(
+    TKET_ASSERT_WITH_THROW(
         overwrite_result.number_of_overwritten_elements ==
         m_best_optimised_swaps.size());
     m_output.new_segment_last_id =
@@ -166,7 +168,7 @@ void SwapListSegmentOptimiser::fill_final_output_and_swaplist(
           next_id_opt.value(), remaining_elements_to_erase);
     }
   }
-  TKET_ASSERT(
+  TKET_ASSERT_WITH_THROW(
       swap_list.size() + m_output.initial_segment_size ==
       initial_size + m_output.final_segment_size);
 }

@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ SCENARIO("Using Boxes", "[boxes]") {
   GIVEN("Unitary1qBox manipulation") {
     // random 1qb gate
     Circuit setup(1);
-    setup.add_op<unsigned>(OpType::tk1, {0.2374, 1.0353, 0.5372}, {0});
+    setup.add_op<unsigned>(OpType::TK1, {0.2374, 1.0353, 0.5372}, {0});
     Eigen::Matrix2cd m = get_matrix_from_circ(setup);
     Unitary1qBox mbox(m);
     Circuit c(1);
@@ -572,7 +572,7 @@ SCENARIO("QControlBox", "[boxes]") {
   }
   GIVEN("controlled Unitary1qBox") {
     Circuit c0(1);
-    c0.add_op<unsigned>(OpType::tk1, {0.6, 0.7, 0.8}, {0});
+    c0.add_op<unsigned>(OpType::TK1, {0.6, 0.7, 0.8}, {0});
     c0.add_phase(0.9);
     Eigen::Matrix2cd m0 = get_matrix_from_circ(c0);
     Unitary1qBox mbox(m0);
@@ -714,13 +714,13 @@ SCENARIO("Checking equality", "[boxes]") {
   }
   GIVEN("Unitary1qBox") {
     Circuit setup(1);
-    setup.add_op<unsigned>(OpType::tk1, {0.2374, 1.0353, 0.5372}, {0});
+    setup.add_op<unsigned>(OpType::TK1, {0.2374, 1.0353, 0.5372}, {0});
     Eigen::Matrix2cd m = tket_sim::get_unitary(setup);
     Unitary1qBox mbox(m);
 
     WHEN("both arguments are equal") { REQUIRE(mbox == mbox); }
     WHEN("both arguments are different") {
-      setup.add_op<unsigned>(OpType::tk1, {0.2374, 1.0353, 0.5372}, {0});
+      setup.add_op<unsigned>(OpType::TK1, {0.2374, 1.0353, 0.5372}, {0});
       Eigen::Matrix2cd m2 = tket_sim::get_unitary(setup);
       Unitary1qBox mbox2(m2);
       REQUIRE(mbox != mbox2);
@@ -728,7 +728,7 @@ SCENARIO("Checking equality", "[boxes]") {
   }
   GIVEN("Unitary2qBox") {
     Circuit setup(2);
-    setup.add_op<unsigned>(OpType::tk1, {0.2374, 1.0353, 0.5372}, {0});
+    setup.add_op<unsigned>(OpType::TK1, {0.2374, 1.0353, 0.5372}, {0});
     setup.add_op<unsigned>(OpType::CX, {0, 1});
     Eigen::Matrix4cd m = tket_sim::get_unitary(setup);
     Unitary2qBox mbox(m);
@@ -743,7 +743,7 @@ SCENARIO("Checking equality", "[boxes]") {
   }
   GIVEN("Unitary3qBox") {
     Circuit setup(3);
-    setup.add_op<unsigned>(OpType::tk1, {0.2374, 1.0353, 0.5372}, {0});
+    setup.add_op<unsigned>(OpType::TK1, {0.2374, 1.0353, 0.5372}, {0});
     setup.add_op<unsigned>(OpType::CX, {0, 1});
     setup.add_op<unsigned>(OpType::CX, {1, 2});
     Eigen::MatrixXcd m = tket_sim::get_unitary(setup);

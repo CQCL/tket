@@ -16,8 +16,8 @@
 
 #include <catch2/catch.hpp>
 
-#include "TokenSwapping/TSAUtils/GeneralFunctions.hpp"
-#include "TokenSwapping/TSAUtils/VertexSwapResult.hpp"
+#include "TokenSwapping/GeneralFunctions.hpp"
+#include "TokenSwapping/VertexSwapResult.hpp"
 
 using std::vector;
 

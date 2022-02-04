@@ -23,7 +23,7 @@ namespace tsa_internal {
 
 CyclicShiftCostEstimate::CyclicShiftCostEstimate(
     const std::vector<size_t>& vertices, DistancesInterface& distances) {
-  TKET_ASSERT(vertices.size() >= 2);
+  TKET_ASSERT_WITH_THROW(vertices.size() >= 2);
   // We first work out the total distance v(0)->v(1)-> .. -> v(n) -> v(0).
   // If we snip out v(i)->v(i+1), the remaining path tells us how many swaps
   // we need. So, we must snip out the LARGEST distance(v(i), v(i+1)).
@@ -37,7 +37,7 @@ CyclicShiftCostEstimate::CyclicShiftCostEstimate(
     size_t v_index_with_largest_distance = vertices.size() - 1;
     for (size_t ii = 0; ii + 1 < vertices.size(); ++ii) {
       const auto distance_i = distances(vertices[ii], vertices[ii + 1]);
-      TKET_ASSERT(distance_i > 0);
+      TKET_ASSERT_WITH_THROW(distance_i > 0);
       total_distance += distance_i;
       if (distance_i < largest_distance) {
         largest_distance = distance_i;
@@ -58,7 +58,7 @@ CyclicShiftCostEstimate::CyclicShiftCostEstimate(
   // What we've currently stored is the sum of dist(x,y),
   // and clearly (sum)(-1) = -(Number of terms in the sum).
   estimated_concrete_swaps = 2 * total_distance;
-  TKET_ASSERT(estimated_concrete_swaps > vertices.size() - 1);
+  TKET_ASSERT_WITH_THROW(estimated_concrete_swaps > vertices.size() - 1);
   estimated_concrete_swaps -= vertices.size() - 1;
 }
 

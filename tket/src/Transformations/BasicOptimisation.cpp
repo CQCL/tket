@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,12 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "BasicOptimisation.hpp"
+
 #include <optional>
 
+#include "Characterisation/DeviceCharacterisation.hpp"
+#include "Characterisation/ErrorTypes.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Command.hpp"
 #include "Circuit/DAGDefs.hpp"
+#include "Decomposition.hpp"
 #include "Gate/Gate.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Gate/Rotation.hpp"
@@ -27,18 +32,16 @@
 
 namespace tket {
 
+namespace Transforms {
+
 static bool redundancy_removal(Circuit &circ);
 static bool remove_redundancy(
     Circuit &circ, const Vertex &vert, VertexList &bin,
     std::set<IVertex> &new_affected_verts, IndexMap &im);
 static bool commute_singles_to_front(Circuit &circ);
-static bool squash_to_pqp(
-    Circuit &circ, OpType q, OpType p, bool strict = false);
 static bool replace_non_global_phasedx(Circuit &circ);
 
-Transform Transform::remove_redundancies() {
-  return Transform(redundancy_removal);
-}
+Transform remove_redundancies() { return Transform(redundancy_removal); }
 
 // this method annihilates all primitives next to each other (accounting for
 // previous annihilations)
@@ -186,18 +189,11 @@ static bool remove_redundancy(
   return false;
 }
 
-Transform Transform::squash_1qb_to_tk1() {
-  return decompose_ZY() >> squash_1qb_to_pqp(OpType::Ry, OpType::Rz, true) >>
-         decompose_ZYZ_to_TK1();
-}
-
-Transform Transform::commute_through_multis() {
+Transform commute_through_multis() {
   return Transform(commute_singles_to_front);
 }
 
-Transform Transform::globalise_phasedx() {
-  return Transform(replace_non_global_phasedx);
-}
+Transform globalise_phasedx() { return Transform(replace_non_global_phasedx); }
 
 // moves single qubit operations past multiqubit operations they commute with,
 // towards front of circuit (hardcoded)
@@ -315,10 +311,20 @@ static bool replace_non_global_phasedx(Circuit &circ) {
   return success;
 }
 
+// helper class subcircuits representing 2qb interactions
+struct Interaction {
+  Interaction(const Qubit &_q0, const Qubit &_q1) : q0(_q0), q1(_q1) {}
+  Qubit q0;  // Qubit numbers
+  Qubit q1;
+  Edge e0;  // In edges starting interaction
+  Edge e1;
+  unsigned count;      // Number of two qubit gates in interaction
+  VertexSet vertices;  // Vertices in interaction subcircuit
+};
+
 static bool replace_two_qubit_interaction(
-    Circuit &circ, Transform::Interaction &i,
-    std::map<Qubit, Edge> &current_edges, VertexList &bin,
-    const double cx_fidelity = 1.) {
+    Circuit &circ, Interaction &i, std::map<Qubit, Edge> &current_edges,
+    VertexList &bin, const double cx_fidelity = 1.) {
   EdgeVec in_edges = {i.e0, i.e1};
   EdgeVec out_edges = {current_edges[i.q0], current_edges[i.q1]};
   Edge next0, next1;
@@ -355,7 +361,7 @@ static bool replace_two_qubit_interaction(
   }
 }
 
-Transform Transform::commute_and_combine_HQS2() {
+Transform commute_and_combine_HQS2() {
   return Transform([](Circuit &circ) {
     bool success = false;
     VertexList bin;
@@ -403,7 +409,7 @@ Transform Transform::commute_and_combine_HQS2() {
 }
 
 // TODO:: Work around classically controlled stuff
-Transform Transform::two_qubit_squash(double cx_fidelity) {
+Transform two_qubit_squash(double cx_fidelity) {
   return Transform([cx_fidelity](Circuit &circ) {
     bool success = false;
     VertexList bin;
@@ -525,386 +531,6 @@ Transform Transform::two_qubit_squash(double cx_fidelity) {
   });
 }
 
-Transform Transform::reduce_XZ_chains() {
-  return Transform([](Circuit &circ) {
-    return squash_to_pqp(circ, OpType::Rx, OpType::Rz);
-  });
-}
-
-Transform Transform::squash_1qb_to_pqp(
-    const OpType &q, const OpType &p, bool strict) {
-  return Transform(
-      [=](Circuit &circ) { return squash_to_pqp(circ, q, p, strict); });
-}
-
-class Squasher {
- public:
-  Squasher(Circuit &circ, OpType p, OpType q, bool smart_squash = true)
-      : circ_(circ),
-        p_(p),
-        q_(q),
-        success(false),
-        bin(),
-        smart_squash_(smart_squash) {
-    if (!(p == OpType::Rx || p == OpType::Ry || p == OpType::Rz) ||
-        !(q == OpType::Rx || q == OpType::Ry || q == OpType::Rz)) {
-      throw std::logic_error(
-          "Can only reduce chains of single qubit rotations");
-    }
-    if (p == q) {
-      throw std::logic_error(
-          "Requires two different bases to perform single qubit "
-          "rotations");
-    }
-  }
-
-  // this squashes the circuit backwards, so that rotations get pushed towards
-  // the front, see the design choice notes in confluence
-  // https://cqc.atlassian.net/l/c/17xm5hvp
-  bool squash() {
-    VertexVec outputs = circ_.q_outputs();
-    for (VertexVec::const_iterator i = outputs.begin(); i != outputs.end();
-         ++i) {
-      squash_wire(i);
-    }
-    circ_.remove_vertices(
-        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
-    return success;
-  }
-
- private:
-  Rotation merge_rotations(
-      OpType r, const VertexList &chain,
-      VertexList::const_iterator &iter) const {
-    Expr total_angle(0);
-    while (iter != chain.end()) {
-      const Op_ptr rot_op = circ_.get_Op_ptr_from_Vertex(*iter);
-      if (rot_op->get_type() != r) {
-        break;
-      }
-      total_angle += rot_op->get_params()[0];
-      iter++;
-    }
-    return Rotation(r, total_angle);
-  }
-
-  static bool fixup_angles(Expr &angle_p1, Expr &angle_q, Expr &angle_p2) {
-    if (equiv_val(angle_q, 1., 2) && !equiv_0(angle_p2, 4)) {
-      // Prefer --P(p1-p2)--Q(...)--P(0)--
-      // Only occurs if angle_q is pi or 3pi and angle_p2 is non-zero
-      angle_p1 -= angle_p2;
-      angle_p2 = 0;
-      return true;
-    } else if (equiv_val(angle_p2, 1., 4)) {
-      // Then prefer --P(p1+p2)--Q(-q)--P(0)--
-      // Only occurs if angle_p2 is pi
-      angle_p1 += 1;
-      angle_q *= -1;
-      angle_p2 = 0;
-      return true;
-    } else if (equiv_val(angle_p2, 3., 4)) {
-      // Then prefer --P(p1+p2)--Q(-q)--P(0)--
-      // Only occurs if angle_p2 is 3pi
-      angle_p1 += 3;
-      angle_q *= -1;
-      angle_p2 = 0;
-      return true;
-    } else if (equiv_val(angle_p1, 1., 4) && !equiv_0(angle_p2, 4)) {
-      // Then prefer --P(0)--Q(-q)--P(p1+p2)--
-      // Only occurs if angle_p1 is pi and angle_p2 is non-zero
-      angle_q *= -1;
-      angle_p2 += 1;
-      angle_p1 = 0;
-      return true;
-    } else if (equiv_val(angle_p1, 3., 4) && !equiv_0(angle_p2, 4)) {
-      // Then prefer --P(0)--Q(-q)--P(p1+p2)--
-      // Only occurs if angle_p1 is 3pi and angle_p2 is non-zero
-      angle_q *= -1;
-      angle_p2 += 3;
-      angle_p1 = 0;
-      return true;
-    } else
-      return false;
-  }
-
-  bool is_same_chain(
-      const Circuit &replacement, const VertexList &rotation_chain) const {
-    auto orig_rot = rotation_chain.begin();
-    if (rotation_chain.size() != replacement.n_gates()) {
-      return false;
-    }
-    BGL_FORALL_VERTICES(new_rot, replacement.dag, DAG) {
-      Op_ptr new_rot_op = replacement.get_Op_ptr_from_Vertex(new_rot);
-      if (!is_boundary_q_type(new_rot_op->get_type())) {
-        Op_ptr orig_rot_op = circ_.get_Op_ptr_from_Vertex(*orig_rot);
-        if (!(*new_rot_op == *orig_rot_op)) {
-          return false;
-        }
-        ++orig_rot;
-      }
-    }
-    return true;
-  }
-
-  std::tuple<Expr, Expr, Expr> pqp_from_chain(
-      const VertexList &rotation_chain, bool invert_pqp = false) const {
-    OpType p = (invert_pqp) ? q_ : p_;
-    OpType q = (invert_pqp) ? p_ : q_;
-
-    // Construct list of merged rotations
-    std::list<Rotation> rots;
-    VertexList::const_iterator iter = rotation_chain.begin();
-    while (iter != rotation_chain.end()) {
-      // Merge next q rotations
-      rots.push_back(merge_rotations(q, rotation_chain, iter));
-      // Merge next p rotations
-      rots.push_back(merge_rotations(p, rotation_chain, iter));
-    }
-
-    // Perform any cancellations
-    std::list<Rotation>::iterator r = rots.begin();
-    while (r != rots.end()) {
-      if (r->is_id()) {
-        r = rots.erase(r);
-        if (r != rots.begin() && r != rots.end()) {
-          std::prev(r)->apply(*r);
-          r = rots.erase(r);
-          r--;
-        }
-      } else
-        r++;
-    }
-
-    // Extract any P rotations from the beginning and end of the list
-    Expr p1 = 0, p2 = 0;
-    std::list<Rotation>::iterator i1 = rots.begin();
-    if (i1 != rots.end()) {
-      std::optional<Expr> a = i1->angle(p);
-      if (a) {
-        p1 = a.value();
-        rots.pop_front();
-      }
-    }
-    std::list<Rotation>::reverse_iterator i2 = rots.rbegin();
-    if (i2 != rots.rend()) {
-      std::optional<Expr> a = i2->angle(p);
-      if (a) {
-        p2 = a.value();
-        rots.pop_back();
-      }
-    }
-
-    // Finish up:
-    Rotation R = {};
-    for (auto rot : rots) {
-      R.apply(rot);
-    }
-    std::tuple<Expr, Expr, Expr> pqp = R.to_pqp(p, q);
-    std::get<0>(pqp) += p1;
-    std::get<2>(pqp) += p2;
-    return pqp;
-  }
-
-  void squash_rotations(const VertexList &rotation_chain) {
-    // TODO:: break chain up with classical control
-
-    // smart squashing: choose pqp (default) or qpq depending on next gate
-    bool choose_qpq = false;
-    // smart squashing: flag if last rotation can be commuted through next gate
-    bool commute_through = false;
-
-    const Op_ptr next_op = circ_.get_Op_ptr_from_Vertex(v);
-    const OpType next_op_type = next_op->get_type();
-    if (smart_squash_ && is_gate_type(next_op_type)) {
-      const port_t source_port = circ_.get_source_port(e);
-      const std::optional<Pauli> commutation_colour =
-          next_op->commuting_basis(source_port);
-
-      Gate P(p_, {0}, 1);
-      Gate Q(q_, {0}, 1);
-      if (P.commutes_with_basis(commutation_colour, 0)) {
-        commute_through = true;
-      } else if (Q.commutes_with_basis(commutation_colour, 0)) {
-        choose_qpq = true;
-        commute_through = true;
-      }
-    }
-
-    // swap p, q if required
-    OpType p = choose_qpq ? q_ : p_;
-    OpType q = choose_qpq ? p_ : q_;
-
-    auto angles = pqp_from_chain(rotation_chain, choose_qpq);
-
-    Expr angle_p1 = std::get<0>(angles);
-    Expr angle_q = std::get<1>(angles);
-    Expr angle_p2 = std::get<2>(angles);
-    (void)fixup_angles(angle_p1, angle_q, angle_p2);
-
-    Circuit replacement(1);
-    if (!commute_through) {
-      replacement.add_op<unsigned>(p, angle_p1, {0});
-    }
-    replacement.add_op<unsigned>(q, angle_q, {0});
-    replacement.add_op<unsigned>(p, angle_p2, {0});
-    redundancy_removal(replacement);
-
-    // check if replacement is any different from original chain
-    if (!is_same_chain(replacement, rotation_chain)) {
-      success = true;
-
-      // replace with new rotations in circuit
-      Subcircuit sub = {
-          {e}, {circ_.get_nth_out_edge(rotation_chain.back(), 0)}};
-      port_t port = circ_.get_source_port(e);
-      circ_.substitute(replacement, sub, Circuit::VertexDeletion::No);
-      e = circ_.get_nth_out_edge(v, port);
-      bin.insert(bin.end(), rotation_chain.begin(), rotation_chain.end());
-      // add gate commuted through v
-      if (commute_through) {
-        Edge last_e = circ_.get_last_edge(v, e);
-        Subcircuit before_v{{last_e}, {last_e}};
-        Circuit leftover_p_gate(1);
-        leftover_p_gate.add_op<unsigned>(p, angle_p1, {0});
-        circ_.substitute(
-            leftover_p_gate, before_v, Circuit::VertexDeletion::No);
-      }
-    }
-  }
-
-  void squash_wire(VertexVec::const_iterator i) {
-    e = circ_.get_nth_in_edge(*i, 0);
-    v = circ_.source(e);
-    VertexList rotation_chain;
-    while (true) {
-      OpType v_type = circ_.get_OpType_from_Vertex(v);
-      if (v_type == p_ || v_type == q_) {
-        rotation_chain.push_front(v);
-      } else if (!rotation_chain.empty()) {
-        squash_rotations(rotation_chain);
-        rotation_chain.clear();
-      }
-      if (is_initial_q_type(v_type)) {
-        break;
-      }
-      e = circ_.get_last_edge(v, e);
-      v = circ_.source(e);
-    }
-  }
-
-  Circuit &circ_;
-  OpType p_;
-  OpType q_;
-  bool success;
-  VertexList bin;
-  bool smart_squash_;
-  Edge e;
-  Vertex v;
-};
-
-static bool squash_to_pqp(Circuit &circ, OpType q, OpType p, bool strict) {
-  Squasher s(circ, p, q, !strict);
-  return s.squash();
-}
-
-static bool standard_squash(
-    Circuit &circ, const OpTypeSet &singleqs,
-    const std::function<Circuit(const Expr &, const Expr &, const Expr &)>
-        &tk1_replacement) {
-  bool success = false;
-  for (OpType ot : singleqs) {
-    if (!is_single_qubit_type(ot))
-      throw NotValid(
-          "OpType given to standard_squash is not a single qubit "
-          "gate");
-  }
-  for (const Vertex in : circ.q_inputs()) {
-    Vertex v = in;
-    port_t port = 0;
-    VertexList single_chain;
-    Rotation combined;
-    std::optional<std::pair<std::list<VertPort>, unsigned>> condition;
-    while (true) {
-      Op_ptr v_op = circ.get_Op_ptr_from_Vertex(v);
-      OpType v_type = v_op->get_type();
-      bool squash_chain = false;
-      bool add_to_chain = false;
-      std::optional<std::pair<std::list<VertPort>, unsigned>> this_condition =
-          std::nullopt;
-      if (v_type == OpType::Conditional) {
-        const Conditional &cond_op = static_cast<const Conditional &>(*v_op);
-        EdgeVec ins = circ.get_in_edges(v);
-        this_condition = std::pair<std::list<VertPort>, unsigned>();
-        for (port_t p = 0; p < cond_op.get_width(); ++p) {
-          Edge in_p = ins.at(p);
-          VertPort vp = {circ.source(in_p), circ.get_source_port(in_p)};
-          this_condition->first.push_back(vp);
-        }
-        this_condition->second = cond_op.get_value();
-        v_op = cond_op.get_op();
-        v_type = v_op->get_type();
-      }
-      if (condition != this_condition) squash_chain = true;
-      unsigned q_ins = circ.n_in_edges_of_type(v, EdgeType::Quantum);
-      if ((q_ins != 1) | (singleqs.find(v_type) == singleqs.end()) |
-          is_projective_type(v_type))
-        squash_chain = true;
-      else
-        add_to_chain = true;
-      if (squash_chain && !single_chain.empty()) {
-        auto [a, b, c] = combined.to_pqp(OpType::Rz, OpType::Rx);
-        Circuit replacement = tk1_replacement(c, b, a);
-        if (replacement.n_gates() < single_chain.size()) {
-          BGL_FORALL_VERTICES(rv, replacement.dag, DAG) {
-            OpType v_type = replacement.get_OpType_from_Vertex(rv);
-            if (!is_boundary_q_type(v_type) &&
-                singleqs.find(v_type) == singleqs.end())
-              throw NotValid(
-                  "tk1_replacement given to standard_squash "
-                  "does not preserve gate set");
-          }
-          if (condition) {
-            circ.substitute_conditional(
-                replacement, single_chain.front(), Circuit::VertexDeletion::No);
-          } else {
-            circ.substitute(
-                replacement, single_chain.front(), Circuit::VertexDeletion::No);
-          }
-          circ.remove_vertices(
-              single_chain, Circuit::GraphRewiring::Yes,
-              Circuit::VertexDeletion::Yes);
-          success = true;
-        }
-        single_chain = VertexList();
-        combined = Rotation();
-        condition = std::nullopt;
-      }
-      if (is_final_q_type(v_type)) break;
-      if (add_to_chain) {
-        if (single_chain.empty()) condition = this_condition;
-        single_chain.push_back(v);
-        std::vector<Expr> angs = as_gate_ptr(v_op)->get_tk1_angles();
-        combined.apply(Rotation(OpType::Rz, angs.at(2)));
-        combined.apply(Rotation(OpType::Rx, angs.at(1)));
-        combined.apply(Rotation(OpType::Rz, angs.at(0)));
-      }
-      Edge e = circ.get_nth_out_edge(v, port);
-      v = circ.target(e);
-      port = circ.get_target_port(e);
-    }
-  }
-  return success;
-}
-
-Transform Transform::squash_factory(
-    const OpTypeSet &singleqs,
-    const std::function<Circuit(const Expr &, const Expr &, const Expr &)>
-        &tk1_replacement) {
-  return Transform([=](Circuit &circ) {
-    return standard_squash(circ, singleqs, tk1_replacement);
-  });
-}
-
 // Given a 'SWAP_chain', finds edge in chain (or qubit wire) with best fidelity
 // and rewires the associated single qubit vertex in to it
 static bool find_edge_rewire_vertex(
@@ -1010,15 +636,15 @@ static Transform commute_SQ_gates_through_SWAPS_helper(
     return success;
   });
 }
-Transform Transform::commute_SQ_gates_through_SWAPS(
-    const avg_node_errors_t &node_errors) {
+Transform commute_SQ_gates_through_SWAPS(const avg_node_errors_t &node_errors) {
   return commute_SQ_gates_through_SWAPS_helper(
       DeviceCharacterisation(node_errors));
 }
-Transform Transform::commute_SQ_gates_through_SWAPS(
-    const op_node_errors_t &node_errors) {
+Transform commute_SQ_gates_through_SWAPS(const op_node_errors_t &node_errors) {
   return commute_SQ_gates_through_SWAPS_helper(
       DeviceCharacterisation(node_errors));
 }
+
+}  // namespace Transforms
 
 }  // namespace tket

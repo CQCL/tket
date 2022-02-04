@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "PauliOptimisation.hpp"
+
 #include "Converters/Converters.hpp"
 #include "Converters/PauliGadget.hpp"
+#include "Decomposition.hpp"
+#include "OptimisationPass.hpp"
 #include "PauliGraph/PauliGraph.hpp"
 #include "Transform.hpp"
 
 namespace tket {
 
-Transform Transform::pairwise_pauli_gadgets(CXConfigType cx_config) {
+namespace Transforms {
+
+Transform pairwise_pauli_gadgets(CXConfigType cx_config) {
   return Transform([=](Circuit &circ) {
     Expr t = circ.get_phase();
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
@@ -174,7 +180,7 @@ Transform Transform::pairwise_pauli_gadgets(CXConfigType cx_config) {
   });
 }
 
-Transform Transform::synthesise_pauli_graph(
+Transform synthesise_pauli_graph(
     PauliSynthStrat strat, CXConfigType cx_config) {
   return Transform([=](Circuit &circ) {
     Expr t = circ.get_phase();
@@ -201,10 +207,9 @@ Transform Transform::synthesise_pauli_graph(
   });
 }
 
-Transform Transform::special_UCC_synthesis(
-    PauliSynthStrat strat, CXConfigType cx_config) {
+Transform special_UCC_synthesis(PauliSynthStrat strat, CXConfigType cx_config) {
   return Transform([=](Circuit &circ) {
-    Transform synther = Transform::synthesise_pauli_graph(strat, cx_config);
+    Transform synther = synthesise_pauli_graph(strat, cx_config);
     // make list so we don't run into unboxing vertex issues
     std::list<Vertex> circbox_verts;
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
@@ -224,5 +229,7 @@ Transform Transform::special_UCC_synthesis(
                 .empty();  // always true if we have left Circuit formalism
   });
 }
+
+}  // namespace Transforms
 
 }  // namespace tket

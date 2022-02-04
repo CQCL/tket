@@ -18,7 +18,7 @@
 
 #include "../TestUtils/DecodedProblemData.hpp"
 #include "TokenSwapping/SwapListOptimiser.hpp"
-#include "TokenSwapping/TableLookup/SwapListTableOptimiser.hpp"
+#include "TokenSwapping/SwapListTableOptimiser.hpp"
 
 namespace tket {
 namespace tsa_internal {

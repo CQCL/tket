@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -65,7 +65,7 @@ string AdjacencyData::to_string() const {
 
 const set<std::size_t>& AdjacencyData::get_neighbours(
     std::size_t vertex) const {
-  TKET_ASSERT(
+  TKET_ASSERT_WITH_THROW(
       vertex < m_cleaned_data.size() ||
       AssertMessage()
           << "AdjacencyData: get_neighbours called with invalid vertex "
@@ -101,7 +101,7 @@ bool AdjacencyData::add_edge(std::size_t i, std::size_t j) {
 }
 
 bool AdjacencyData::edge_exists(std::size_t i, std::size_t j) const {
-  TKET_ASSERT(
+  TKET_ASSERT_WITH_THROW(
       (i < m_cleaned_data.size() && j < m_cleaned_data.size()) ||
       AssertMessage() << "edge_exists called with vertices " << i << ", " << j
                       << ", but there are only " << m_cleaned_data.size()
@@ -143,11 +143,11 @@ AdjacencyData::AdjacencyData(
 
   for (std::size_t i = 0; i < m_cleaned_data.size(); ++i) {
     for (std::size_t j : raw_data[i]) {
-      TKET_ASSERT(
+      TKET_ASSERT_WITH_THROW(
           i != j || allow_loops ||
           AssertMessage() << "vertex " << i << " out of "
                           << m_cleaned_data.size() << " has a loop.");
-      TKET_ASSERT(
+      TKET_ASSERT_WITH_THROW(
           j < m_cleaned_data.size() ||
           AssertMessage() << "vertex " << i << " has illegal neighbour vertex "
                           << j << ", the size is " << m_cleaned_data.size());

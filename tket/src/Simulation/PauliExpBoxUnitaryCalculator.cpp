@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -125,7 +125,7 @@ void PauliExpBoxUnitaryCalculator::clear() {
 
 void PauliExpBoxUnitaryCalculator::add_entries(
     unsigned sparse_matrix_index, Pauli pauli) {
-  TKET_ASSERT(sparse_matrix_index < sparse_matrix.size());
+  TKET_ASSERT_WITH_THROW(sparse_matrix_index < sparse_matrix.size());
   const auto& single_pauli = pauli_map.at(pauli);
   sparse_matrix.push_back(
       get_combined_entry(sparse_matrix[sparse_matrix_index], single_pauli[0]));

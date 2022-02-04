@@ -14,7 +14,7 @@
 
 #include "HybridTsa00.hpp"
 
-#include "TSAUtils/DistanceFunctions.hpp"
+#include "TokenSwapping/DistanceFunctions.hpp"
 #include "Utils/Assert.hpp"
 
 using std::vector;
@@ -27,11 +27,13 @@ HybridTsa00::HybridTsa00() {
   m_trivial_tsa.set(TrivialTSA::Options::BREAK_AFTER_PROGRESS);
 }
 
+// GCOVR_EXCL_START
 CyclesPartialTsa& HybridTsa00::get_cycles_tsa_for_testing() {
   return m_cycles_tsa;
 }
 
 TrivialTSA& HybridTsa00::get_trivial_tsa_for_testing() { return m_trivial_tsa; }
+// GCOVR_EXCL_STOP
 
 void HybridTsa00::append_partial_solution(
     SwapList& swaps, VertexMapping& vertex_mapping,
@@ -47,11 +49,11 @@ void HybridTsa00::append_partial_solution(
         swaps, vertex_mapping, distances, neighbours, path_finder);
 
     if (swaps_before == swaps.size()) {
-      TKET_ASSERT(all_tokens_home(vertex_mapping));
+      TKET_ASSERT_WITH_THROW(all_tokens_home(vertex_mapping));
       return;
     }
   }
-  TKET_ASSERT(!"hybrid TSA termination");
+  TKET_ASSERT_WITH_THROW(!"hybrid TSA termination");
 }
 
 }  // namespace tsa_internal

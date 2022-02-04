@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -96,8 +96,9 @@ Expr cos_halfpi_times(const Expr& e) {
   std::optional<double> x = eval_expr_mod(e / 2);  // >= 0
   if (x) {
     return cos_pi_by_12_times(12 * x.value());
+  } else {
+    return SymEngine::cos(SymEngine::expand(e * SymEngine::pi / 2));
   }
-  return SymEngine::cos(e * SymEngine::pi / 2);
 }
 
 Expr sin_halfpi_times(const Expr& e) {

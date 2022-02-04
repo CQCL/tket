@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -128,6 +128,18 @@ class Backend(ABC):
         return True
 
     @abstractmethod
+    def rebase_pass(self) -> BasePass:
+        """
+        A single compilation pass that when run converts all gates in a Circuit to
+        an OpType supported by the Backend (ignoring architecture constraints).
+
+        :return: Compilation pass that converts gates to primitives supported by
+            Backend.
+        :rtype: BasePass
+        """
+        ...
+
+    @abstractmethod
     def default_compilation_pass(self, optimisation_level: int = 1) -> BasePass:
         """
         A suggested compilation pass that will guarantee the resulting circuit
@@ -144,40 +156,6 @@ class Backend(ABC):
         :rtype: BasePass
         """
         ...
-
-    def compile_circuit(self, circuit: Circuit, optimisation_level: int = 1) -> None:
-        """Apply the default_compilation_pass to a circuit in place.
-
-        As well as applying a degree of optimisation (controlled by the
-        `optimisation_level` parameter), this method tries to ensure that the circuit
-        can be run on the backend (i.e. successfully passed to
-        :py:meth:`process_circuits`), for example by rebasing to the supported gate set,
-        or routing to match the connectivity of the device. However, this is not always
-        possible, for example if the circuit contains classical operations that are not
-        supported by the backend. You may use :py:meth:`valid_circuit` to check whether
-        the circuit meets the backend's requirements after compilation. This validity
-        check is included in :py:meth:`process_circuits` by default, before any circuits
-        are submitted to the backend.
-
-        If the validity check fails, you can obtain more information about the failure
-        by iterating through the predicates in the `required_predicates` property of the
-        backend, and running the :py:meth:`verify` method on each in turn with your
-        circuit.
-
-        :param circuit: The circuit to compile.
-        :type circuit: Circuit
-        :param optimisation_level: The level of optimisation to perform during
-            compilation. Level 0 just solves the device constraints without
-            optimising. Level 1 additionally performs some light optimisations.
-            Level 2 adds more intensive optimisations that can increase compilation
-            time for large circuits. Defaults to 1.
-        :type optimisation_level: int, optional
-        """
-        warnings.warn(
-            "compile_circuit is deprecated and will be removed in a future pytket.",
-            DeprecationWarning,
-        )
-        self.default_compilation_pass(optimisation_level).apply(circuit)
 
     def get_compiled_circuit(
         self, circuit: Circuit, optimisation_level: int = 1
@@ -293,6 +271,11 @@ class Backend(ABC):
 
         * `seed`: RNG seed for simulators
         * `postprocess`: if True, apply contextual optimisations
+
+        Note: If a backend is reused many times, the in-memory results cache grows
+        indefinitely. Therefore, when processing many circuits on a statevector or
+        unitary backend (whose results may occupy significant amounts of memory), it is
+        advisable to run :py:meth:`Backend.empty_cache` after each result is retrieved.
 
         :param circuits: Circuits to process on the backend.
         :type circuits: Sequence[Circuit]
