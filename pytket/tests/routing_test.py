@@ -715,12 +715,11 @@ def test_DefaultMappingPass() -> None:
     m_pass_1.apply(cu_1)
     out_circ_0 = cu_0.circuit
     out_circ_1 = cu_1.circuit
-
     measure_pred = NoMidMeasurePredicate()
-    assert measure_pred.verify(cu_0.circuit) == True
-    assert measure_pred.verify(cu_1.circuit) == False
-    assert out_circ_0.valid_connectivity(arc, True)
-    assert out_circ_1.valid_connectivity(arc, True)
+    assert measure_pred.verify(out_circ_0) == True
+    assert measure_pred.verify(out_circ_1) == False
+    assert out_circ_0.valid_connectivity(arc, False, True)
+    assert out_circ_1.valid_connectivity(arc, False, True)
 
 
 def test_CXMappingPass_correctness() -> None:
