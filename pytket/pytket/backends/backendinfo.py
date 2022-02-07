@@ -23,17 +23,17 @@ from pytket.circuit import Node, OpType  # type: ignore
 
 def _serialize_all_node_gate_errors(
     d: Optional[Dict[Node, Dict[OpType, float]]]
-) -> Optional[List[Tuple[List, Dict[str, float]]]]:
+) -> Optional[List[List]]:
     if d is None:
         return None
     return [
-        (n.to_list(), {ot.name: err for ot, err in errs.items()})
+        [n.to_list(), {ot.name: err for ot, err in errs.items()}]
         for n, errs in d.items()
     ]
 
 
 def _deserialize_all_node_gate_errors(
-    l: Optional[List[Tuple[List, Dict[str, float]]]]
+    l: Optional[List[List]],
 ) -> Optional[Dict[Node, Dict[OpType, float]]]:
     if l is None:
         return None
@@ -45,17 +45,17 @@ def _deserialize_all_node_gate_errors(
 
 def _serialize_all_edge_gate_errors(
     d: Optional[Dict[Tuple[Node, Node], Dict[OpType, float]]]
-) -> Optional[List[Tuple[Tuple[List, List], Dict[str, float]]]]:
+) -> Optional[List]:
     if d is None:
         return None
     return [
-        ((n0.to_list(), n1.to_list()), {ot.name: err for ot, err in errs.items()})
+        [[n0.to_list(), n1.to_list()], {ot.name: err for ot, err in errs.items()}]
         for (n0, n1), errs in d.items()
     ]
 
 
 def _deserialize_all_edge_gate_errors(
-    l: Optional[List[Tuple[Tuple[List, List], Dict[str, float]]]],
+    l: Optional[List],
 ) -> Optional[Dict[Tuple, Dict[OpType, float]]]:
     if l is None:
         return None
@@ -69,14 +69,14 @@ def _deserialize_all_edge_gate_errors(
 
 def _serialize_all_readout_errors(
     d: Optional[Dict[Node, List[List[float]]]]
-) -> Optional[List[Tuple[List, List[List[float]]]]]:
+) -> Optional[List[List]]:
     if d is None:
         return None
-    return [(n.to_list(), errs) for n, errs in d.items()]
+    return [[n.to_list(), errs] for n, errs in d.items()]
 
 
 def _deserialize_all_readout_errors(
-    l: Optional[List[Tuple[List, List[List[float]]]]]
+    l: Optional[List[List]],
 ) -> Optional[Dict[Node, List[List[float]]]]:
     if l is None:
         return None
@@ -85,14 +85,14 @@ def _deserialize_all_readout_errors(
 
 def _serialize_averaged_node_gate_errors(
     d: Optional[Dict[Node, float]]
-) -> Optional[List[Tuple[List, float]]]:
+) -> Optional[List[List]]:
     if d is None:
         return None
-    return [(n.to_list(), err) for n, err in d.items()]
+    return [[n.to_list(), err] for n, err in d.items()]
 
 
 def _deserialize_averaged_node_gate_errors(
-    l: Optional[List[Tuple[List, float]]]
+    l: Optional[List[List]],
 ) -> Optional[Dict[Node, float]]:
     if l is None:
         return None
@@ -101,14 +101,14 @@ def _deserialize_averaged_node_gate_errors(
 
 def _serialize_averaged_edge_gate_errors(
     d: Optional[Dict[Tuple[Node, Node], float]]
-) -> Optional[List[Tuple[Tuple[List, List], float]]]:
+) -> Optional[List[List]]:
     if d is None:
         return None
-    return [((n0.to_list(), n1.to_list()), err) for (n0, n1), err in d.items()]
+    return [[[n0.to_list(), n1.to_list()], err] for (n0, n1), err in d.items()]
 
 
 def _deserialize_averaged_edge_gate_errors(
-    l: Optional[List[Tuple[Tuple[List, List], float]]]
+    l: Optional[List[List]],
 ) -> Optional[Dict[Tuple, float]]:
     if l is None:
         return None
@@ -117,14 +117,14 @@ def _deserialize_averaged_edge_gate_errors(
 
 def _serialize_averaged_readout_errors(
     d: Optional[Dict[Node, float]]
-) -> Optional[List[Tuple[List, float]]]:
+) -> Optional[List[List]]:
     if d is None:
         return None
-    return [(n.to_list(), err) for n, err in d.items()]
+    return [[n.to_list(), err] for n, err in d.items()]
 
 
 def _deserialize_averaged_readout_errors(
-    l: Optional[List[Tuple[List, float]]]
+    l: Optional[List[List]],
 ) -> Optional[Dict[Node, float]]:
     if l is None:
         return None
