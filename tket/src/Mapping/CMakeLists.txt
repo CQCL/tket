@@ -30,16 +30,11 @@ add_library(tket-${COMP}
 
 list(APPEND DEPS_${COMP}
     Architecture
-    Characterisation
     Circuit
-    Clifford
-    Converters
     Gate
     Graphs
     Ops
     OpType
-    PauliGraph
-    Placement
     TokenSwapping
     Utils)
 
