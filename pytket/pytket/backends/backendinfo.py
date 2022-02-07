@@ -14,7 +14,6 @@
 
 """ BackendInfo class: additional information on Backends """
 
-from ast import literal_eval
 from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional, Set, cast, Tuple, Union
 
@@ -24,114 +23,112 @@ from pytket.circuit import Node, OpType  # type: ignore
 
 def _serialize_all_node_gate_errors(
     d: Optional[Dict[Node, Dict[OpType, float]]]
-) -> Optional[Dict[str, Dict[int, float]]]:
+) -> Optional[List[Tuple[List, Dict[int, float]]]]:
     if d is None:
         return None
-    return {
-        str(n.to_list()): {ot.value: err for ot, err in errs.items()}
+    return [
+        (n.to_list(), {ot.value: err for ot, err in errs.items()})
         for n, errs in d.items()
-    }
+    ]
 
 
 def _deserialize_all_node_gate_errors(
-    d: Optional[Dict[str, Dict[int, float]]]
+    l: Optional[List[Tuple[List, Dict[int, float]]]]
 ) -> Optional[Dict[Node, Dict[OpType, float]]]:
-    if d is None:
+    if l is None:
         return None
     return {
-        Node.from_list(literal_eval(n)): {
-            OpType(int(ot)): err for ot, err in errs.items()
-        }
-        for n, errs in d.items()
+        Node.from_list(n): {OpType(int(ot)): err for ot, err in errs.items()}
+        for n, errs in l
     }
 
 
 def _serialize_all_edge_gate_errors(
     d: Optional[Dict[Tuple[Node, Node], Dict[OpType, float]]]
-) -> Optional[Dict[str, Dict[int, float]]]:
+) -> Optional[List[Tuple[Tuple[List, List], Dict[int, float]]]]:
     if d is None:
         return None
-    return {
-        str((n0.to_list(), n1.to_list())): {ot.value: err for ot, err in errs.items()}
+    return [
+        ((n0.to_list(), n1.to_list()), {ot.value: err for ot, err in errs.items()})
         for (n0, n1), errs in d.items()
-    }
+    ]
 
 
 def _deserialize_all_edge_gate_errors(
-    d: Optional[Dict[str, Dict[int, float]]],
+    l: Optional[List[Tuple[Tuple[List, List], Dict[int, float]]]],
 ) -> Optional[Dict[Tuple, Dict[OpType, float]]]:
-    if d is None:
+    if l is None:
         return None
     return {
-        tuple(map(Node.from_list, literal_eval(n))): {
+        (Node.from_list(n0), Node.from_list(n1)): {
             OpType(int(ot)): err for ot, err in errs.items()
         }
-        for n, errs in d.items()
+        for (n0, n1), errs in l
     }
 
 
 def _serialize_all_readout_errors(
     d: Optional[Dict[Node, List[List[float]]]]
-) -> Optional[Dict[str, List[List[float]]]]:
+) -> Optional[List[Tuple[List, List[List[float]]]]]:
     if d is None:
         return None
-    return {str(n.to_list()): errs for n, errs in d.items()}
+    return [(n.to_list(), errs) for n, errs in d.items()]
 
 
 def _deserialize_all_readout_errors(
-    d: Optional[Dict[str, List[List[float]]]]
+    l: Optional[List[Tuple[List, List[List[float]]]]]
 ) -> Optional[Dict[Node, List[List[float]]]]:
-    if d is None:
+    if l is None:
         return None
-    return {Node.from_list(literal_eval(n)): errs for n, errs in d.items()}
+    return {Node.from_list(n): errs for n, errs in l}
 
 
 def _serialize_averaged_node_gate_errors(
     d: Optional[Dict[Node, float]]
-) -> Optional[Dict[str, float]]:
+) -> Optional[List[Tuple[List, float]]]:
     if d is None:
         return None
-    return {str(n.to_list()): err for n, err in d.items()}
+    return [(n.to_list(), err) for n, err in d.items()]
 
 
 def _deserialize_averaged_node_gate_errors(
-    d: Optional[Dict[str, float]]
+    l: Optional[List[Tuple[List, float]]]
 ) -> Optional[Dict[Node, float]]:
-    if d is None:
+    if l is None:
         return None
-    return {Node.from_list(literal_eval(n)): err for n, err in d.items()}
+    return {Node.from_list(n): err for n, err in l}
 
 
 def _serialize_averaged_edge_gate_errors(
     d: Optional[Dict[Tuple[Node, Node], float]]
-) -> Optional[Dict[str, float]]:
+) -> Optional[List[Tuple[Tuple[List, List], float]]]:
     if d is None:
         return None
-    return {str((n0.to_list(), n1.to_list())): err for (n0, n1), err in d.items()}
+    return [((n0.to_list(), n1.to_list()), err) for (n0, n1), err in d.items()]
 
 
 def _deserialize_averaged_edge_gate_errors(
-    d: Optional[Dict[str, float]]
+    l: Optional[List[Tuple[Tuple[List, List], float]]]
 ) -> Optional[Dict[Tuple, float]]:
-    if d is None:
+    if l is None:
         return None
-    return {tuple(map(Node.from_list, literal_eval(n))): err for n, err in d.items()}
+    return {(Node.from_list(n0), Node.from_list(n1)): err for (n0, n1), err in l}
 
 
 def _serialize_averaged_readout_errors(
     d: Optional[Dict[Node, float]]
-) -> Optional[Dict[str, float]]:
+) -> Optional[List[Tuple[List, float]]]:
     if d is None:
         return None
-    return {str(n.to_list()): err for n, err in d.items()}
+    return [(n.to_list(), err) for n, err in d.items()]
 
 
 def _deserialize_averaged_readout_errors(
-    d: Optional[Dict[str, float]]
+    l: Optional[List[Tuple[List, float]]]
 ) -> Optional[Dict[Node, float]]:
-    if d is None:
+    if l is None:
         return None
-    return {Node.from_list(literal_eval(n)): err for n, err in d.items()}
+    return {Node.from_list(n): err for n, err in l}
 
 
 @dataclass
