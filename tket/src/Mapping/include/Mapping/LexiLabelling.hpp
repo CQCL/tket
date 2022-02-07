@@ -12,7 +12,7 @@ class LabellingRoutingMethod : public RoutingMethod {
    * Checking and Routing methods redefined for dynamically assigning qubits to
    * some Architecture.
    */
-  LabellingRoutingMethod();
+  LabellingRoutingMethod(){};
 
   /**
    * @return true if method can label unlabelled qubits
