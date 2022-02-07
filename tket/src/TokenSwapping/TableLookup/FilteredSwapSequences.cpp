@@ -85,10 +85,10 @@ through all entries.
 void FilteredSwapSequences::initialise(
     std::vector<SwapConversion::SwapHash> codes) {
   // Can only initialise once.
-  TKET_ASSERT_WITH_THROW(m_internal_data.empty());
+  TKET_ASSERT(m_internal_data.empty());
   std::sort(codes.begin(), codes.end());
-  TKET_ASSERT_WITH_THROW(!codes.empty());
-  TKET_ASSERT_WITH_THROW(codes[0] != 0);
+  TKET_ASSERT(!codes.empty());
+  TKET_ASSERT(codes[0] != 0);
   TrimmedSingleSequenceData datum;
 
   for (size_t ii = 0; ii < codes.size(); ++ii) {
@@ -104,7 +104,7 @@ void FilteredSwapSequences::initialise(
 
 void FilteredSwapSequences::push_back(TrimmedSingleSequenceData datum) {
   auto bitset_copy = datum.edges_bitset;
-  TKET_ASSERT_WITH_THROW(bitset_copy != 0);
+  TKET_ASSERT(bitset_copy != 0);
   SwapConversion::EdgesBitset bit_to_use = 0;
 
   // We want to add to the smallest list, to keep the data balanced.
@@ -135,7 +135,7 @@ void FilteredSwapSequences::push_back(TrimmedSingleSequenceData datum) {
       }
     }
   }
-  TKET_ASSERT_WITH_THROW(bit_to_use != 0);
+  TKET_ASSERT(bit_to_use != 0);
   m_internal_data[bit_to_use].push_back(datum);
 }
 
@@ -230,9 +230,9 @@ construct_and_return_full_table() {
     // The simplest nontrivial permutation arises from a single swap (a,b),
     // which under the canonical relabelling is converted to (01),
     // which has hash 2.
-    TKET_ASSERT_WITH_THROW(entry.first >= 2);
+    TKET_ASSERT(entry.first >= 2);
     // The largest possible hash comes from (01)(23)(45).
-    TKET_ASSERT_WITH_THROW(entry.first <= 222);
+    TKET_ASSERT(entry.first <= 222);
     result[entry.first].initialise(entry.second);
   }
   return result;

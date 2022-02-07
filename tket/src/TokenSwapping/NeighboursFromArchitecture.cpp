@@ -28,7 +28,7 @@ NeighboursFromArchitecture::NeighboursFromArchitecture(
 const std::vector<size_t>& NeighboursFromArchitecture::operator()(
     size_t vertex) {
   const auto num_vertices = m_arch_mapping.number_of_vertices();
-  TKET_ASSERT_WITH_THROW(
+  TKET_ASSERT(
       vertex < num_vertices ||
       AssertMessage() << "get_neighbours: invalid vertex " << vertex
                       << " (only have " << num_vertices << " vertices)");
@@ -50,7 +50,7 @@ const std::vector<size_t>& NeighboursFromArchitecture::operator()(
 
   for (const Node& node : neighbour_nodes) {
     const auto neighbour_vertex = m_arch_mapping.get_vertex(node);
-    TKET_ASSERT_WITH_THROW(
+    TKET_ASSERT(
         neighbour_vertex != vertex ||
         AssertMessage()
             << "get_neighbours: vertex " << vertex << " for node "

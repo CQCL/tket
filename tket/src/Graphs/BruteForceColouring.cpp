@@ -91,7 +91,7 @@ struct BruteForceColouring::Impl {
         // just because CURRENTLY a vertex has only one colour,
         // that it will ALWAYS be that way!
         if (initial_clique.count(nodes[node_index].vertex) != 0) {
-          TKET_ASSERT_WITH_THROW(earlier_colours.size() == 1);
+          TKET_ASSERT(earlier_colours.size() == 1);
           forbidden_colours.insert(earlier_colours[0]);
         }
       }

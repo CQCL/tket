@@ -21,30 +21,27 @@ namespace tket {
 // GCOVR_EXCL_START
 /** This is only for use with TKET_ASSERT, when we want to give a more detailed
  * error message than just the assertion code and location.
- * Also, some code might seem rather strange, but that's because exceptions
+ * Also, some code might seem strange, but that's because exceptions
  * can generate many extra branches in test coverage, see
  *
  * https://stackoverflow.com/questions/42003783/
  * lcov-gcov-branch-coverage-with-c-producing-branches-all-over-the-place?rq=1
  *
- * We want to hide the throws (or at least, have one single throw),
- * and also provide a stringstream to avoid having to construct one
- * every time the assert is checked (asserts must have
- * almost zero performance impact if they are not triggered).
+ * Thus, we avoid exceptions.
  */
 class AssertMessage {
  public:
   /** Construct the object, to begin writing to the stream. */
   AssertMessage();
 
-  /** Always returns false, so that "|| AssertMessage() << a)"
-   * becomes "|| false)".
+  /** Always returns false, so that "... || AssertMessage() << a)"
+   * becomes "... || false)".
    */
   operator bool() const;
 
   /** Every streamable object x can be written to the stream. */
   template <class T>
-  AssertMessage& operator<<(const T& x) {
+  const AssertMessage& operator<<(const T& x) const {
     get_error_stream() << x;
     return *this;
   }
@@ -54,11 +51,6 @@ class AssertMessage {
    * Also, clears the stored message, ready for the next time.
    */
   static std::string get_error_message();
-
-  /** Simply throws a std::runtime_error with the given message;
-   * hopefully this will fool the test coverage programme.
-   */
-  static void throw_message(const std::string& str);
 
  private:
   /** Previously the error message for later use by TKET_ASSERT macros

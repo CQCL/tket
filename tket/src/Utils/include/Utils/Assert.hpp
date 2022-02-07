@@ -42,6 +42,13 @@
  * the code coverage DOES listen to the start/stop tags and
  * ignore all the branching.
  * So, we're happy to have as many "if" statements and branches as we like!
+ *
+ * Note: we previously had some exceptions, but it led to
+ * problems which we could not resolve:
+ * https://stackoverflow.com/questions/42003783/
+ * lcov-gcov-branch-coverage-with-c-producing-branches-all-over-the-place?rq=1
+ * Thus, if you want to throw exceptions rather than abort,
+ * there are unexpected problems like this which need to be overcome somehow.
  */
 #define TKET_ASSERT(b)                                                         \
   /* GCOVR_EXCL_START */                                                       \
@@ -74,42 +81,4 @@
       tket::tket_log()->critical(msg.str());                                   \
       std::abort();                                                            \
     }                                                                          \
-  } while (0) /* GCOVR_EXCL_STOP */
-
-/** Like TKET_ASSERT, but throws an exception instead of aborting
- * if the condition is not satisfied.
- *
- * Note: this may seem convoluted. That's because the code coverage
- * test programme annoyingly adds lots of branches if exceptions are thrown
- * explicitly, despite the STOP/START tags telling it to ignore the code.
- * See
- *
- * https://stackoverflow.com/questions/42003783/
- * lcov-gcov-branch-coverage-with-c-producing-branches-all-over-the-place?rq=1
- *
- * We tried "hiding" the exceptions from this macro by putting the throws
- * inside another function defined elsewhere. That did make some
- * difference, but try/catch blocks also seemed to cause extra
- * branching problems.
- * Thus, we remove all explicit exceptions AND try/catch blocks,
- * in the hope that it will cut down on the undesired extra branches.
- * Thus, unlike TKET_ASSERT, an exception thrown by the EVALUATION of b
- * will not be caught. But this should be very rare,
- * AND we're explicitly trying to throw an exception INSTEAD of aborting,
- * so this seems not too bad.
- */
-#define TKET_ASSERT_WITH_THROW(b)                                          \
-  /* GCOVR_EXCL_START */                                                   \
-  do {                                                                     \
-    if (!(b)) {                                                            \
-      std::stringstream msg;                                               \
-      msg << "Assertion '" << #b << "' (" << __FILE__ << " : " << __func__ \
-          << " : " << __LINE__ << ") failed";                              \
-      const auto extra_message = tket::AssertMessage::get_error_message(); \
-      if (!extra_message.empty()) {                                        \
-        msg << ": '" << extra_message << "'";                              \
-      }                                                                    \
-      msg << ".";                                                          \
-      tket::AssertMessage::throw_message(msg.str());                       \
-    }                                                                      \
   } while (0) /* GCOVR_EXCL_STOP */

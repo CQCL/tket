@@ -81,8 +81,8 @@ void RiverFlowPathFinder::Impl::reset() {
 
 void RiverFlowPathFinder::Impl::grow_path(
     size_t target_vertex, size_t required_path_size) {
-  TKET_ASSERT_WITH_THROW(path.size() < required_path_size);
-  TKET_ASSERT_WITH_THROW(!path.empty());
+  TKET_ASSERT(path.size() < required_path_size);
+  TKET_ASSERT(!path.empty());
 
   // We don't yet know how to move on, so we must choose a neighbour.
   // All candidates will have the same edge count.
@@ -114,7 +114,7 @@ void RiverFlowPathFinder::Impl::grow_path(
       candidate_moves.back().count = edge_count;
       continue;
     }
-    TKET_ASSERT_WITH_THROW(
+    TKET_ASSERT(
         neighbour_distance_to_target == remaining_distance ||
         neighbour_distance_to_target == remaining_distance + 1 ||
         AssertMessage() << "d(v_" << path.back() << ", v_" << target_vertex
@@ -123,7 +123,7 @@ void RiverFlowPathFinder::Impl::grow_path(
                         << ", at distance " << neighbour_distance_to_target
                         << " to the target v_" << target_vertex);
   }
-  TKET_ASSERT_WITH_THROW(
+  TKET_ASSERT(
       !candidate_moves.empty() ||
       AssertMessage() << "No neighbours of v_" << path.back()
                       << " at correct distance " << remaining_distance - 1
@@ -170,7 +170,7 @@ const vector<size_t>& RiverFlowPathFinder::operator()(
        infinite_loop_guard != 0; --infinite_loop_guard) {
     m_pimpl->grow_path(vertex2, final_path_size);
     if (m_pimpl->path.size() == final_path_size) {
-      TKET_ASSERT_WITH_THROW(m_pimpl->path.back() == vertex2);
+      TKET_ASSERT(m_pimpl->path.back() == vertex2);
       m_pimpl->update_data_with_path();
       return m_pimpl->path;
     }

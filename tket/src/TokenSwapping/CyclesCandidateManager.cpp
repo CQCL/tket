@@ -41,11 +41,11 @@ size_t CyclesCandidateManager::fill_initial_cycle_ids(const Cycles& cycles) {
 
     if (cycle_length == 0) {
       cycle_length = vertices.size();
-      TKET_ASSERT_WITH_THROW(cycle_length >= 2);
+      TKET_ASSERT(cycle_length >= 2);
     } else {
-      TKET_ASSERT_WITH_THROW(cycle_length == vertices.size());
+      TKET_ASSERT(cycle_length == vertices.size());
     }
-    TKET_ASSERT_WITH_THROW(cycle.decrease > 0);
+    TKET_ASSERT(cycle.decrease > 0);
 
     // We want 50*(decrease)/(num swaps) >=  min_candidate_power_percentage.
     // (We multiply by 50 because a swap can change L by 2, not 1).
@@ -104,7 +104,7 @@ void CyclesCandidateManager::discard_lower_power_solutions(
   for (auto id : m_cycles_to_keep) {
     highest_decrease = std::max(highest_decrease, cycles.at(id).decrease);
   }
-  TKET_ASSERT_WITH_THROW(highest_decrease > 0);
+  TKET_ASSERT(highest_decrease > 0);
 
   for (size_t ii = 0; ii < m_cycles_to_keep.size();) {
     if (cycles.at(m_cycles_to_keep[ii]).decrease < highest_decrease) {

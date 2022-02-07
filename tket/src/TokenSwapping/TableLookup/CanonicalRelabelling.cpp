@@ -46,8 +46,8 @@ const CanonicalRelabelling::Result& CanonicalRelabelling::operator()(
     return m_result;
   }
   // If not the identity, at least 2 vertices moved.
-  TKET_ASSERT_WITH_THROW(desired_mapping.size() >= 2);
-  TKET_ASSERT_WITH_THROW(desired_mapping.size() <= 6);
+  TKET_ASSERT(desired_mapping.size() >= 2);
+  TKET_ASSERT(desired_mapping.size() <= 6);
 
   m_desired_mapping = desired_mapping;
   unsigned next_cyc_index = 0;
@@ -63,14 +63,14 @@ const CanonicalRelabelling::Result& CanonicalRelabelling::operator()(
          infinite_loop_guard != 0; --infinite_loop_guard) {
       const auto curr_v = this_cycle.back();
       const auto target_v = m_desired_mapping.at(curr_v);
-      TKET_ASSERT_WITH_THROW(m_desired_mapping.erase(curr_v) == 1);
+      TKET_ASSERT(m_desired_mapping.erase(curr_v) == 1);
       if (target_v == this_cycle[0]) {
         terminated_correctly = true;
         break;
       }
       this_cycle.push_back(target_v);
     }
-    TKET_ASSERT_WITH_THROW(terminated_correctly);
+    TKET_ASSERT(terminated_correctly);
   }
   // Sort by cycle length, LONGEST cycles first.
   // But, also want a "stable-like" sort:
@@ -98,18 +98,18 @@ const CanonicalRelabelling::Result& CanonicalRelabelling::operator()(
   m_result.new_to_old_vertices.clear();
   for (auto ii : m_sorted_cycles_indices) {
     const auto& cyc = m_cycles[ii];
-    TKET_ASSERT_WITH_THROW(!cyc.empty());
-    TKET_ASSERT_WITH_THROW(cyc.size() <= 6);
+    TKET_ASSERT(!cyc.empty());
+    TKET_ASSERT(cyc.size() <= 6);
     for (size_t old_v : cyc) {
       m_result.new_to_old_vertices.push_back(old_v);
     }
   }
-  TKET_ASSERT_WITH_THROW(m_result.new_to_old_vertices.size() <= 6);
+  TKET_ASSERT(m_result.new_to_old_vertices.size() <= 6);
   m_result.old_to_new_vertices.clear();
   for (unsigned ii = 0; ii < m_result.new_to_old_vertices.size(); ++ii) {
     m_result.old_to_new_vertices[m_result.new_to_old_vertices[ii]] = ii;
   }
-  TKET_ASSERT_WITH_THROW(
+  TKET_ASSERT(
       m_result.new_to_old_vertices.size() ==
       m_result.old_to_new_vertices.size());
 

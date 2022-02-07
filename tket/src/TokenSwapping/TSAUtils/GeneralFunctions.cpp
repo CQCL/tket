@@ -24,7 +24,7 @@ namespace tsa_internal {
 
 std::set<size_t> get_random_set(
     RNG& rng, size_t sample_size, size_t population_size) {
-  TKET_ASSERT_WITH_THROW(
+  TKET_ASSERT(
       sample_size <= population_size || !"get_random_set: sample too large");
 
   std::set<size_t> result;
@@ -46,7 +46,7 @@ std::set<size_t> get_random_set(
       return result;
     }
   }
-  TKET_ASSERT_WITH_THROW(!"get_random_set: dropped out of loop");
+  TKET_ASSERT(!"get_random_set: dropped out of loop");
   return result;
 }
 

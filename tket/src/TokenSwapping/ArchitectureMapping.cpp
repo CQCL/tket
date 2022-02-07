@@ -34,7 +34,7 @@ ArchitectureMapping::ArchitectureMapping(const Architecture& arch)
     const auto& node = m_vertex_to_node_mapping[ii];
     {
       const auto citer = m_node_to_vertex_mapping.find(node);
-      TKET_ASSERT_WITH_THROW(
+      TKET_ASSERT(
           citer == m_node_to_vertex_mapping.cend() ||
           AssertMessage() << "Duplicate node " << node.repr() << " at vertices "
                           << citer->second << ", " << ii);
@@ -68,7 +68,7 @@ ArchitectureMapping::ArchitectureMapping(
 
   // Check that the nodes agree with the architecture object.
   const auto uids = arch.nodes();
-  TKET_ASSERT_WITH_THROW(
+  TKET_ASSERT(
       uids.size() == m_vertex_to_node_mapping.size() ||
       AssertMessage() << "passed in " << edges.size() << " edges, giving "
                       << m_vertex_to_node_mapping.size()
@@ -77,7 +77,7 @@ ArchitectureMapping::ArchitectureMapping(
 
   for (const UnitID& uid : uids) {
     const Node node(uid);
-    TKET_ASSERT_WITH_THROW(
+    TKET_ASSERT(
         m_node_to_vertex_mapping.count(node) != 0 ||
         AssertMessage()
             << "passed in " << edges.size() << " edges, giving "
@@ -93,7 +93,7 @@ size_t ArchitectureMapping::number_of_vertices() const {
 
 const Node& ArchitectureMapping::get_node(size_t vertex) const {
   const auto num_vertices = number_of_vertices();
-  TKET_ASSERT_WITH_THROW(
+  TKET_ASSERT(
       vertex < num_vertices || AssertMessage()
                                    << "get_node: invalid vertex " << vertex
                                    << " (architecture only has " << num_vertices
@@ -104,7 +104,7 @@ const Node& ArchitectureMapping::get_node(size_t vertex) const {
 
 size_t ArchitectureMapping::get_vertex(const Node& node) const {
   const auto citer = m_node_to_vertex_mapping.find(node);
-  TKET_ASSERT_WITH_THROW(
+  TKET_ASSERT(
       citer != m_node_to_vertex_mapping.cend() ||
       AssertMessage() << "get_vertex: node " << node.repr()
                       << " has no vertex number");

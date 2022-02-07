@@ -107,7 +107,7 @@ const FixedTripletsWithNoParameters& FixedTripletsWithNoParameters::get(
   GateUnitaryMatrixUtils::check_and_throw_upon_wrong_number_of_parameters(
       gate.get_type(), gate.n_qubits(),
       GateUnitaryMatrixUtils::get_checked_parameters(gate), 0);
-  TKET_ASSERT_WITH_THROW(gate.n_qubits() == 3);
+  TKET_ASSERT(gate.n_qubits() == 3);
   return data;
 }
 }  // namespace

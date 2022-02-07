@@ -36,7 +36,7 @@ void check_mapping(
     const VertexMapping& vertex_mapping, VertexMapping& work_mapping) {
   work_mapping.clear();
   for (const auto& entry : vertex_mapping) {
-    TKET_ASSERT_WITH_THROW(
+    TKET_ASSERT(
         work_mapping.count(entry.second) == 0 ||
         AssertMessage() << "Vertices v_" << entry.first << " and v_"
                         << work_mapping[entry.second]
@@ -79,7 +79,7 @@ size_t get_source_vertex(
       return entry.first;
     }
   }
-  TKET_ASSERT_WITH_THROW(!"get_source_vertex");
+  TKET_ASSERT(!"get_source_vertex");
   return target_vertex;
 }
 

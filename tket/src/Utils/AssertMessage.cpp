@@ -14,8 +14,6 @@
 
 #include "AssertMessage.hpp"
 
-#include <stdexcept>
-
 namespace tket {
 
 // GCOVR_EXCL_START
@@ -25,8 +23,9 @@ std::string AssertMessage::get_error_message() {
   const auto message = get_error_stream().str();
 
   // Clear the global stream, ready for the next message
-  // (in the assert with throw variants, we may try/catch
-  // multiple times).
+  // (currently this isn't necessary, because tket assert
+  // immediately aborts; but it may become necessary again in future,
+  // if we have assert variants with throws and multiple try/catch).
   get_error_stream().str(std::string());
   return message;
 }
@@ -36,10 +35,6 @@ AssertMessage::operator bool() const { return false; }
 std::stringstream& AssertMessage::get_error_stream() {
   static std::stringstream ss;
   return ss;
-}
-
-void AssertMessage::throw_message(const std::string& str) {
-  throw std::runtime_error(str);
 }
 // GCOVR_EXCL_STOP
 

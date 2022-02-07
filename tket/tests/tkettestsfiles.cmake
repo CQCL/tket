@@ -25,7 +25,6 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/CircuitsForTesting.cpp
     ${TKET_TESTS_DIR}/Utils/test_MatrixAnalysis.cpp
     ${TKET_TESTS_DIR}/Utils/test_CosSinDecomposition.cpp
-    ${TKET_TESTS_DIR}/Utils/test_TketAssertWithThrow.cpp
     ${TKET_TESTS_DIR}/Graphs/EdgeSequence.cpp
     ${TKET_TESTS_DIR}/Graphs/EdgeSequenceColouringParameters.cpp
     ${TKET_TESTS_DIR}/Graphs/GraphTestingRoutines.cpp
