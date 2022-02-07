@@ -20,9 +20,12 @@ from typing import Any, Dict, List, Optional, Set, cast, Tuple, Union
 from pytket.routing import Architecture, FullyConnected  # type: ignore
 from pytket.circuit import Node, OpType  # type: ignore
 
+_OpTypeErrs = Dict[OpType, float]
+_Edge = Tuple[Node, Node]
+
 
 def _serialize_all_node_gate_errors(
-    d: Optional[Dict[Node, Dict[OpType, float]]]
+    d: Optional[Dict[Node, _OpTypeErrs]]
 ) -> Optional[List[List]]:
     if d is None:
         return None
@@ -34,7 +37,7 @@ def _serialize_all_node_gate_errors(
 
 def _deserialize_all_node_gate_errors(
     l: Optional[List[List]],
-) -> Optional[Dict[Node, Dict[OpType, float]]]:
+) -> Optional[Dict[Node, _OpTypeErrs]]:
     if l is None:
         return None
     return {
@@ -44,7 +47,7 @@ def _deserialize_all_node_gate_errors(
 
 
 def _serialize_all_edge_gate_errors(
-    d: Optional[Dict[Tuple[Node, Node], Dict[OpType, float]]]
+    d: Optional[Dict[_Edge, _OpTypeErrs]]
 ) -> Optional[List]:
     if d is None:
         return None
@@ -56,7 +59,7 @@ def _serialize_all_edge_gate_errors(
 
 def _deserialize_all_edge_gate_errors(
     l: Optional[List],
-) -> Optional[Dict[Tuple, Dict[OpType, float]]]:
+) -> Optional[Dict[_Edge, _OpTypeErrs]]:
     if l is None:
         return None
     return {
@@ -100,7 +103,7 @@ def _deserialize_averaged_node_gate_errors(
 
 
 def _serialize_averaged_edge_gate_errors(
-    d: Optional[Dict[Tuple[Node, Node], float]]
+    d: Optional[Dict[_Edge, float]]
 ) -> Optional[List[List]]:
     if d is None:
         return None
