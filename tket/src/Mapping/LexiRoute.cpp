@@ -494,16 +494,22 @@ LexiRouteRoutingMethod::LexiRouteRoutingMethod(unsigned _max_depth)
 bool LexiRouteRoutingMethod::check_method(
     const std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& architecture) const {
+  std::set<Vertex> unplaced;
   for (const std::pair<UnitID, VertPort>& pair :
        mapping_frontier->quantum_boundary->get<TagKey>()) {
-    // can't support larger than 2 qubit gates
-    // or run on unlabelled qubit
     if ((mapping_frontier->circuit_.n_in_edges_of_type(
              pair.second.first, EdgeType::Quantum) > 2 &&
          mapping_frontier->circuit_.get_OpType_from_Vertex(pair.second.first) !=
-             OpType::BRIDGE) ||
-        !architecture->node_exists(Node(pair.first))) {
+             OpType::BRIDGE)) {
       return false;
+    } else if (!architecture->node_exists(Node(pair.first))) {
+      // if multi-qubit vertex doesn't have all edges in frontier then
+      // won't be check in routing_method anyway
+      if (unplaced.find(pair.second.first) == unplaced.end()) {
+        unplaced.insert(pair.second.first);
+      } else {
+        return false;
+      }
     }
   }
   return true;
