@@ -401,8 +401,8 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
     REQUIRE(*swap_c.get_op_ptr() == *get_op_ptr(OpType::SWAP));
   }
   GIVEN(
-      "Labelling is required, but there are no free remaining qubits, for one"
-      "updated label, order 0.") {
+      "Labelling is required, but there are no free remaining qubits, for"
+      "one updated label, order 0.") {
     Circuit circ(9);
     std::vector<Qubit> qubits = circ.all_qubits();
     circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[8]});
@@ -422,8 +422,8 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
     REQUIRE_THROWS_AS(lr.solve_labelling(), LexiRouteError);
   }
   GIVEN(
-      "Labelling is required, but there are no free remaining qubits, for one"
-      "updated label, order 1.") {
+      "Labelling is required, but there are no free remaining qubits, for "
+      " oneupdated label, order 1.") {
     Circuit circ(9);
     std::vector<Qubit> qubits = circ.all_qubits();
     circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[8]});
@@ -443,8 +443,8 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
     REQUIRE_THROWS_AS(lr.solve_labelling(), LexiRouteError);
   }
   GIVEN(
-      "Labelling is required, but there are no free remaining qubits, for two"
-      "updated labels.") {
+      "Labelling is required, but there are no free remaining qubits, for"
+      "two updated labels.") {
     Circuit circ(10);
     std::vector<Qubit> qubits = circ.all_qubits();
     circ.add_op<UnitID>(OpType::CX, {qubits[9], qubits[8]});
@@ -520,7 +520,7 @@ SCENARIO("Test LabellingRoutingMethod") {
     REQUIRE(!lrm.check_method(mf, shared_arc));
   }
   GIVEN(
-      "Two Qubit to label in future slice, casually restricted, "
+      "Two Qubit to label in future slice, causally restricted, "
       "check_method.") {
     Circuit circ(5);
     std::vector<Qubit> qubits = circ.all_qubits();
@@ -576,8 +576,8 @@ SCENARIO("Test LabellingRoutingMethod") {
     REQUIRE(pre_label == post_label);
   }
   GIVEN(
-      "One unlabelled qubit, two slices, lookahead for better solution, check "
-      "and route.") {
+      "One unlabelled qubit, two slices, lookahead for better solution, check"
+      " and route.") {
     Circuit circ(5);
     std::vector<Qubit> qubits = circ.all_qubits();
     circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[1]});
@@ -830,7 +830,7 @@ SCENARIO("Test MappingManager with LexiRouteRoutingMethod and LexiLabelling") {
     ArchitecturePtr shared_arc = std::make_shared<Architecture>(architecture);
     Circuit circ(11);
     std::vector<Qubit> qubits = circ.all_qubits();
-    for (unsigned i = 0; i < 10; i++) {
+    for (unsigned i = 0; i < 11; i++) {
       circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[4]});
       circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[7]});
       circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[10]});

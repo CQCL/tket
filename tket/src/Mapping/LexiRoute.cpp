@@ -397,10 +397,6 @@ void LexiRoute::solve(unsigned lookahead) {
   unit_vertport_frontier_t copy;
   for (const std::pair<UnitID, VertPort>& pair :
        this->mapping_frontier_->quantum_boundary->get<TagKey>()) {
-    // if (!this->architecture_->node_exists(Node(pair.first))) {
-    //   throw LexiRouteError(
-    //       "UnitID " + pair.first.repr() + " is not in Architecture.");
-    // }
     copy.insert({pair.first, pair.second});
   }
   swap_set_t candidate_swaps = this->get_candidate_swaps();
@@ -496,9 +492,20 @@ LexiRouteRoutingMethod::LexiRouteRoutingMethod(unsigned _max_depth)
     : max_depth_(_max_depth){};
 
 bool LexiRouteRoutingMethod::check_method(
-    const std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
-    const ArchitecturePtr& /*architecture*/) const {
-  // can't support greater than 3 qubit gates...
+    const std::shared_ptr<MappingFrontier>& mapping_frontier,
+    const ArchitecturePtr& architecture) const {
+  for (const std::pair<UnitID, VertPort>& pair :
+       mapping_frontier->quantum_boundary->get<TagKey>()) {
+    // can't support larger than 2 qubit gates
+    // or run on unlabelled qubit
+    if ((mapping_frontier->circuit_.n_in_edges_of_type(
+             pair.second.first, EdgeType::Quantum) > 2 &&
+         mapping_frontier->circuit_.get_OpType_from_Vertex(pair.second.first) !=
+             OpType::BRIDGE) ||
+        !architecture->node_exists(Node(pair.first))) {
+      return false;
+    }
+  }
   return true;
 }
 
