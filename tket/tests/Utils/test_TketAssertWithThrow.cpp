@@ -53,11 +53,16 @@ class MessageChecker {
 
 }  // namespace
 
-static void check_filename_is_included(
+static std::vector<unsigned> get_message_indices_with_filename(
     const std::vector<std::string>& messages) {
-  for (const auto& message : messages) {
-    CHECK_THAT(message, Contains("test_TketAssertWithThrow.cpp"));
+  std::vector<unsigned> indices;
+  for (unsigned ii = 0; ii < messages.size(); ++ii) {
+    if (messages[ii].find("test_TketAssertWithThrow.cpp") !=
+        std::string::npos) {
+      indices.push_back(ii);
+    }
   }
+  return indices;
 }
 
 static int get_number(int nn) {
@@ -91,7 +96,9 @@ SCENARIO("Simple asserts with throws") {
   }
 
   CHECK(calc_messages.size() == 11);
-  check_filename_is_included(calc_messages);
+  CHECK(
+      get_message_indices_with_filename(calc_messages) ==
+      std::vector<unsigned>{0, 1, 2, 3, 4, 5});
 
   MessageChecker checker(calc_messages);
 
@@ -106,18 +113,20 @@ SCENARIO("Simple asserts with throws") {
     const auto& message = checker.get_message(ii);
     const std::string n_value = std::to_string(ii + 5);
     CHECK_THAT(message, Contains(std::string("CHECK: nn=") + n_value + " ; "));
-    CHECK_THAT(message, Contains("Assertion"));
+    CHECK_THAT(
+        message,
+        Contains("Assertion '(nn - 8) * (nn - 10) > 0 || AssertMessage() <<"));
     CHECK_THAT(message, Contains("failed:"));
     CHECK_THAT(message, Contains(std::string("'N=") + n_value + "'"));
   }
   for (int ii = 6; ii <= 10; ++ii) {
     const auto& message = checker.get_message(ii);
     const std::string n_value = std::to_string(ii + 10);
-    CHECK_THAT(message, Contains(std::string("CHECK: nn=") + n_value + " ; "));
     CHECK_THAT(
-        message,
-        Contains("Evaluating assertion condition 'get_number(nn) < 20'"));
-    CHECK_THAT(message, Contains("threw unexpected exception: 'Error!!'"));
+        message, Contains(std::string("CHECK: nn=") + n_value + " ; Error!!"));
+    // The function "get_number" threw, but this was NOT picked up
+    // by the macro. Never mind.
+    CHECK_THAT(message, !Contains("ssertion"));
   }
   CHECK(
       values_of_nn_with_error ==
@@ -168,7 +177,13 @@ SCENARIO("Asserts with throws within calls") {
     }
   }
   CHECK(calc_messages.size() == 24);
-  check_filename_is_included(calc_messages);
+
+  // Every error is thrown by TKET_ASSERT_WITH_THROW,
+  // so should have the filename.
+  CHECK(
+      get_message_indices_with_filename(calc_messages) ==
+      std::vector<unsigned>{0,  1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 11,
+                            12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23});
 
   MessageChecker checker(calc_messages);
 
@@ -179,7 +194,7 @@ SCENARIO("Asserts with throws within calls") {
         Contains(std::string("CHECK: nn=") + std::to_string(ii + 2) + " ; "));
     // comes from "get_number_with_asserts"
     CHECK_THAT(message, Contains("Assertion '(nn - 2) * (nn - 5) > 0'"));
-    // the function name
+    // The function name: the assert macro was inside the function.
     CHECK_THAT(message, Contains("get_number_with_asserts"));
   }
   for (int ii = 4; ii <= 6; ++ii) {
@@ -206,53 +221,38 @@ SCENARIO("Asserts with throws within calls") {
     const auto& message = checker.get_message(ii);
     const auto n_value = std::to_string(ii + 4);
     CHECK_THAT(message, Contains(std::string("CHECK: nn=") + n_value + " ; "));
-    CHECK_THAT(
-        message, Contains("Evaluating assertion condition "
-                          "'get_number_with_asserts(nn - 10) >= nn - 5'"));
-    CHECK_THAT(message, Contains("threw unexpected exception"));
+    CHECK_THAT(message, Contains("get_number_with_asserts"));
     CHECK_THAT(message, Contains("Assertion '(nn - 2) * (nn - 5) > 0'"));
-
+    // The throw within "get_number_with_asserts" was not picked up
+    // by the macro, so the macro code is not present in the error message.
     CHECK_THAT(message, !Contains("AssertMessage()"));
   }
   {
     const auto& message = checker.get_message(12);
-    CHECK_THAT(message, Contains(std::string("CHECK: nn=17 ; ")));
     CHECK_THAT(
-        message, Contains("Evaluating assertion condition "
-                          "'get_number_with_asserts(nn - 15) >= nn - 10 || "
-                          "AssertMessage() << "));
-    CHECK_THAT(message, Contains("threw unexpected exception"));
-    CHECK_THAT(message, Contains("Assertion '(nn - 2) * (nn - 5) > 0'"));
+        message,
+        Contains("CHECK: nn=17 ; Assertion '(nn - 2) * (nn - 5) > 0'"));
   }
   for (int ii = 13; ii <= 15; ++ii) {
     const auto& message = checker.get_message(ii);
     CHECK_THAT(
         message,
-        Contains(std::string("CHECK: nn=") + std::to_string(ii + 5) + " ; "));
-    CHECK_THAT(
-        message, Contains("Evaluating assertion condition "
-                          "'get_number_with_asserts(nn - 10) >= nn - 5'"));
-    CHECK_THAT(message, Contains("threw unexpected exception"));
-    CHECK_THAT(message, Contains("Assertion"));
+        Contains(
+            std::string("CHECK: nn=") + std::to_string(ii + 5) +
+            " ; Assertion '(nn - 8) * (nn - 10) > 0 || AssertMessage() <<"));
     CHECK_THAT(
         message,
         Contains(std::string("'N=") + std::to_string(ii - 5) + ": second"));
 
     CHECK_THAT(message, !Contains("(nn - 2) * (nn - 5)"));
-    CHECK_THAT(message, !Contains("AssertMessage()"));
   }
   for (int ii = 16; ii <= 18; ++ii) {
     const auto& message = checker.get_message(ii);
     CHECK_THAT(
         message,
-        Contains(std::string("CHECK: nn=") + std::to_string(ii + 7) + " ; "));
-    CHECK_THAT(
-        message,
         Contains(
-            "Evaluating assertion condition "
-            "'get_number_with_asserts(nn - 15) >= nn - 10 || AssertMessage()"));
-    CHECK_THAT(message, Contains("threw unexpected exception"));
-    CHECK_THAT(message, Contains("Assertion"));
+            std::string("CHECK: nn=") + std::to_string(ii + 7) +
+            " ; Assertion '(nn - 8) * (nn - 10) > 0 || AssertMessage() <<"));
     CHECK_THAT(
         message,
         Contains(std::string("'N=") + std::to_string(ii - 8) + ": second"));
@@ -262,7 +262,10 @@ SCENARIO("Asserts with throws within calls") {
   for (int ii = 19; ii <= 23; ++ii) {
     const auto& message = checker.get_message(ii);
     const auto n_value = std::to_string(ii + 7);
-    CHECK_THAT(message, Contains(std::string("CHECK: nn=") + n_value + " ; "));
+    CHECK_THAT(
+        message, Contains(
+                     std::string("CHECK: nn=") + n_value +
+                     " ; Assertion 'mm <= 30 || AssertMessage() << "));
     CHECK_THAT(message, Contains("Assertion "));
     CHECK_THAT(message, Contains("failed: "));
     CHECK_THAT(
