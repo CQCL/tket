@@ -49,6 +49,8 @@ class Flow {
   static Flow identify_xy_gflow(const ZXDiagram& diag);
   static Flow identify_pauli_flow(const ZXDiagram& diag);
 
+  static std::set<ZXVertSeqSet> identify_focussed_sets(const ZXDiagram& diag);
+
  private:
   std::map<ZXVert, ZXVertSeqSet> c_;
   std::map<ZXVert, unsigned> d_;

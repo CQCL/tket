@@ -265,6 +265,71 @@ SCENARIO("Testing Pauli flow identification and focussing") {
   REQUIRE_NOTHROW(f.verify(diag));
 }
 
+SCENARIO("Test focussed set identificaiton") {
+  // Diagram combines Ex. 2.43, "There and back again: a circuit extraction
+  // tale", Backens et al. 2021 and Ex. C.13, "Relating measurement patterns to
+  // circuits via Pauli flow", Simmons 2021
+  ZXDiagram diag(1, 3, 0, 0);
+  ZXVertVec ins = diag.get_boundary(ZXType::Input);
+  ZXVertVec outs = diag.get_boundary(ZXType::Output);
+  // Gflow example from Backens et al.
+  ZXVert ga = diag.add_vertex(ZXType::XY, 0.3);
+  ZXVert gb = diag.add_vertex(ZXType::XY, 0.7);
+  ZXVert gc = diag.add_vertex(ZXType::XZ, 1.4);
+  ZXVert gd = diag.add_vertex(ZXType::YZ, 0.9);
+  diag.add_wire(ins.at(0), ga);
+  diag.add_wire(ga, gb, ZXWireType::H);
+  diag.add_wire(gb, gc, ZXWireType::H);
+  diag.add_wire(gb, gd, ZXWireType::H);
+  diag.add_wire(gc, gd, ZXWireType::H);
+  diag.add_wire(gb, outs.at(0), ZXWireType::H);
+  // Pauli flow example from Simmons (angles cut to Paulis)
+  ZXVert pi = diag.add_vertex(ZXType::XY, 0.9);
+  ZXVert pa = diag.add_vertex(ZXType::PZ);
+  ZXVert pb = diag.add_vertex(ZXType::PX);
+  ZXVert pc = diag.add_vertex(ZXType::XY, 0.2);
+  ZXVert pd = diag.add_vertex(ZXGen::create_gen(ZXType::PY, true));
+  diag.add_wire(gc, pi, ZXWireType::H);
+  diag.add_wire(pi, pb, ZXWireType::H);
+  diag.add_wire(pa, pb, ZXWireType::H);
+  diag.add_wire(pa, pc, ZXWireType::H);
+  diag.add_wire(pa, pd, ZXWireType::H);
+  diag.add_wire(pb, pd, ZXWireType::H);
+  diag.add_wire(pc, pd, ZXWireType::H);
+  diag.add_wire(pc, outs.at(1), ZXWireType::H);
+  diag.add_wire(pd, outs.at(2), ZXWireType::H);
+
+  std::set<ZXVertSeqSet> focussed = Flow::identify_focussed_sets(diag);
+
+  REQUIRE(focussed.size() == 2);
+  for (const ZXVertSeqSet& fset : focussed) {
+    std::map<ZXVert, unsigned> parities;
+    for (const ZXVert& v : fset.get<TagSeq>()) {
+      ZXType vtype = diag.get_zxtype(v);
+      REQUIRE(
+          (vtype == ZXType::Output || vtype == ZXType::XY ||
+           vtype == ZXType::PX || vtype == ZXType::PY));
+      for (const ZXVert& n : fset.get<TagSeq>()) {
+        auto inserted = parities.insert({n, 1});
+        if (!inserted.second) {
+          ++(inserted.first->second);
+        }
+      }
+    }
+    for (const std::pair<const ZXVert, unsigned>& p : parities) {
+      if (p.second % 2 == 1) {
+        ZXType vtype = diag.get_zxtype(p.first);
+        REQUIRE((
+            vtype == ZXType::Output || vtype == ZXType::XZ ||
+            vtype == ZXType::YZ || vtype == ZXType::PY || vtype == ZXType::PZ));
+        REQUIRE(
+            (vtype != ZXType::PY ||
+             fset.get<TagKey>().find(p.first) != fset.get<TagKey>().end()));
+      }
+    }
+  }
+}
+
 }  // namespace test_flow
 
 }  // namespace zx

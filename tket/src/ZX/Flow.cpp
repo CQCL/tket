@@ -282,7 +282,9 @@ std::map<ZXVert, ZXVertSeqSet> Flow::gauss_solve_correctors(
   for (boost::bimap<ZXVert, unsigned>::const_iterator it = ys.begin(),
                                                       end = ys.end();
        it != end; ++it) {
-    mat(n_preserve + it->right, correctors.left.at(it->left)) = true;
+    auto found = correctors.left.find(it->left);
+    if (found != correctors.left.end())
+      mat(n_preserve + it->right, found->second) = true;
   }
   // Add rhs
   for (unsigned i = 0; i < n_to_solve; ++i) {
@@ -467,6 +469,134 @@ Flow Flow::identify_pauli_flow(const ZXDiagram& diag) {
     throw ZXError("ZXDiagram does not have pauli flow");
 
   return fl;
+}
+
+std::set<ZXVertSeqSet> Flow::identify_focussed_sets(const ZXDiagram& diag) {
+  // Check diagram has the expected form for pauli flow
+  if (!diag.is_MBQC())
+    throw ZXError("ZXDiagram must be in MBQC form to identify gflow");
+
+  std::set<ZXVert> inputs;
+
+  // Tag input measurements
+  for (const ZXVert& i : diag.get_boundary(ZXType::Input)) {
+    ZXVert ni = diag.neighbours(i).at(0);
+    inputs.insert(ni);
+    ZXType nt = diag.get_zxtype(ni);
+    if (nt == ZXType::XZ || nt == ZXType::YZ || nt == ZXType::PY)
+      throw ZXError(
+          "Inputs measured in XZ, YZ, or Y cannot be corrected with Pauli "
+          "flow");
+  }
+
+  // Build Gaussian elimination problem
+  boost::bimap<ZXVert, unsigned> correctors;
+  boost::bimap<ZXVert, unsigned> preserve;
+  boost::bimap<ZXVert, unsigned> ys;
+  unsigned n_correctors = 0;
+  unsigned n_preserve = 0;
+  unsigned n_ys = 0;
+
+  BGL_FORALL_VERTICES(v, *diag.graph, ZXGraph) {
+    switch (diag.get_zxtype(v)) {
+      case ZXType::Output: {
+        // Cannot use inputs to correct
+        if (inputs.find(v) == inputs.end()) {
+          correctors.insert({v, n_correctors});
+          ++n_correctors;
+        }
+        break;
+      }
+      case ZXType::XY:
+      case ZXType::PX: {
+        preserve.insert({v, n_preserve});
+        ++n_preserve;
+        // Can use non-input Xs and Ys to correct
+        if (inputs.find(v) == inputs.end()) {
+          correctors.insert({v, n_correctors});
+          ++n_correctors;
+        }
+        break;
+      }
+      case ZXType::PY: {
+        ys.insert({v, n_ys});
+        ++n_ys;
+        // Can use non-input Xs and Ys to correct
+        if (inputs.find(v) == inputs.end()) {
+          correctors.insert({v, n_correctors});
+          ++n_correctors;
+        }
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  MatrixXb mat = MatrixXb::Zero(n_preserve + n_ys, n_correctors);
+
+  // Build adjacency matrix
+  for (boost::bimap<ZXVert, unsigned>::const_iterator it = correctors.begin(),
+                                                      end = correctors.end();
+       it != end; ++it) {
+    for (const ZXVert& n : diag.neighbours(it->left)) {
+      auto in_preserve = preserve.left.find(n);
+      if (in_preserve != preserve.left.end()) {
+        mat(in_preserve->second, it->right) = true;
+      } else {
+        auto in_ys = ys.left.find(n);
+        if (in_ys != ys.left.end()) {
+          mat(n_preserve + in_ys->second, it->right) = true;
+        }
+      }
+    }
+  }
+  for (boost::bimap<ZXVert, unsigned>::const_iterator it = ys.begin(),
+                                                      end = ys.end();
+       it != end; ++it) {
+    auto found = correctors.left.find(it->left);
+    if (found != correctors.left.end())
+      mat(n_preserve + it->right, found->second) = true;
+  }
+
+  // Gaussian elimination
+  std::vector<std::pair<unsigned, unsigned>> row_ops =
+      gaussian_elimination_row_ops(mat);
+  for (const std::pair<unsigned, unsigned>& op : row_ops) {
+    for (unsigned j = 0; j < n_correctors; ++j) {
+      mat(op.second, j) ^= mat(op.first, j);
+    }
+  }
+
+  // Back substitution
+  // For each column j, it either a leading column (the first column for which
+  // mat(i,j) == true for a given i, so set row_corrector[i] = j; by Gaussian
+  // Elimination this is the only entry in the column) or it describes the
+  // focussed set generator {j} + {row_corrector[i] | mat(i,j) == true}
+  std::set<ZXVertSeqSet> focussed;
+  std::map<unsigned, ZXVert> row_corrector;
+  for (boost::bimap<ZXVert, unsigned>::const_iterator it = correctors.begin(),
+                                                      end = correctors.end();
+       it != end; ++it) {
+    ZXVertSeqSet fset{it->left};
+    bool new_row_corrector = false;
+    for (unsigned i = 0; i < n_preserve + n_ys; ++i) {
+      if (mat(i, it->right)) {
+        auto inserted = row_corrector.insert({i, it->left});
+        if (inserted.second) {
+          // New row_corrector, so move to next column
+          new_row_corrector = true;
+          break;
+        } else {
+          // Non-correcting column
+          fset.insert(inserted.first->second);
+        }
+      }
+    }
+    if (!new_row_corrector) focussed.insert({fset});
+  }
+
+  return focussed;
 }
 
 }  // namespace zx
