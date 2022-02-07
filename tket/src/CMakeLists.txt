@@ -238,6 +238,7 @@ set(TKET_SOURCES
     # ZX
     ${TKET_ZX_DIR}/ZXDConstructors.cpp
     ${TKET_ZX_DIR}/ZXDExpansions.cpp
+    ${TKET_ZX_DIR}/ZXDFormats.cpp
     ${TKET_ZX_DIR}/ZXDGettersSetters.cpp
     ${TKET_ZX_DIR}/ZXDManipulation.cpp
     ${TKET_ZX_DIR}/ZXGenerator.cpp
@@ -246,6 +247,7 @@ set(TKET_SOURCES
     ${TKET_ZX_DIR}/ZXRWDecompositions.cpp
     ${TKET_ZX_DIR}/ZXRWGraphLikeForm.cpp
     ${TKET_ZX_DIR}/ZXRWGraphLikeSimplification.cpp
+    ${TKET_ZX_DIR}/Flow.cpp
 )
 
 add_library(${TKET} SHARED ${TKET_SOURCES})
