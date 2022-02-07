@@ -45,7 +45,7 @@ def qubits(
     draw: Callable,
     name: SearchStrategy[str] = st.from_regex(reg_name_regex, fullmatch=True),
     index: SearchStrategy[int] = uint32,
-) -> Bit:
+) -> Qubit:
     return Qubit(draw(name), draw(index))
 
 
