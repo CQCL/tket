@@ -29,7 +29,6 @@ add_library(tket-${COMP}
     Verification.cpp)
 
 list(APPEND DEPS_${COMP}
-    ArchAwareSynth
     Architecture
     Characterisation
     Circuit
