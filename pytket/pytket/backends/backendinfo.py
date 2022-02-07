@@ -155,7 +155,7 @@ class BackendInfo:
     :param all_edge_gate_errors: Dictionary between architecture couplings and error
         rate for different two-qubit operations.
     :param all_readout_errors: Dictionary between architecture Node and uncorrelated
-        single qubit readout errors.
+        single qubit readout errors (2x2 readout probability matrix).
     :param averaged_node_gate_errors: Dictionary between architecture Node and averaged
         error rate for all single qubit operations.
     :param averaged_edge_gate_errors: Dictionary between architecture couplings and
