@@ -28,11 +28,12 @@ NeighboursFromArchitecture::NeighboursFromArchitecture(
 const std::vector<size_t>& NeighboursFromArchitecture::operator()(
     size_t vertex) {
   const auto num_vertices = m_arch_mapping.number_of_vertices();
-  TKET_ASSERT_WITH_THROW(
-      vertex < num_vertices ||
-      AssertMessage() << "get_neighbours: invalid vertex " << vertex
-                      << " (only have " << num_vertices << " vertices)");
-
+  // GCOVR_EXCL_START
+  TKET_ASSERT_WITH_MESSAGE(
+      vertex < num_vertices, "get_neighbours: invalid vertex "
+                                 << vertex << " (only have " << num_vertices
+                                 << " vertices)");
+  // GCOVR_EXCL_STOP
   auto& neighbours = m_cached_neighbours[vertex];
   if (!neighbours.empty()) {
     // Already cached.
@@ -50,13 +51,15 @@ const std::vector<size_t>& NeighboursFromArchitecture::operator()(
 
   for (const Node& node : neighbour_nodes) {
     const auto neighbour_vertex = m_arch_mapping.get_vertex(node);
-    TKET_ASSERT_WITH_THROW(
-        neighbour_vertex != vertex ||
-        AssertMessage()
-            << "get_neighbours: vertex " << vertex << " for node "
-            << node.repr() << " has " << neighbour_nodes.size()
+    // GCOVR_EXCL_START
+    TKET_ASSERT_WITH_MESSAGE(
+        neighbour_vertex != vertex,
+        "get_neighbours: vertex "
+            << vertex << " for node " << node.repr() << " has "
+            << neighbour_nodes.size()
             << " neighbours, and lists itself as a neighbour (loops not "
                "allowed)");
+    // GCOVR_EXCL_STOP
     neighbours.push_back(neighbour_vertex);
   }
   std::sort(neighbours.begin(), neighbours.end());

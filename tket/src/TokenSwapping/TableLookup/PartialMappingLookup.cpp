@@ -54,8 +54,11 @@ const ExactMappingLookup::Result& PartialMappingLookup::operator()(
   // For next_permutation, let's permute the empty SOURCE vertices.
   // They are already sorted, thus already at the first permutation
   // in the ordering, because they came from the keys of desired_mapping.
-  TKET_ASSERT_WITH_THROW(std::next_permutation(
-      m_empty_source_vertices.begin(), m_empty_source_vertices.end()));
+  {
+    const bool next_permutation = std::next_permutation(
+        m_empty_source_vertices.begin(), m_empty_source_vertices.end());
+    TKET_ASSERT(next_permutation);
+  }
   m_altered_mapping = desired_mapping;
 
   for (unsigned perm_count = 0;;) {

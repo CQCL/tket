@@ -28,7 +28,7 @@ static vector<Swap> get_swaps_fixed_vector() {
       swaps.push_back(get_swap(ii, jj));
     }
   }
-  TKET_ASSERT_WITH_THROW(swaps.size() == 15);
+  TKET_ASSERT(swaps.size() == 15);
   return swaps;
 }
 
@@ -67,8 +67,8 @@ unsigned SwapConversion::get_number_of_swaps(
     ++num_swaps;
     const auto swap_hash = swaps_code & 0xF;
     swaps_code >>= 4;
-    TKET_ASSERT_WITH_THROW(swap_hash > 0);
-    TKET_ASSERT_WITH_THROW(swap_hash <= 15);
+    TKET_ASSERT(swap_hash > 0);
+    TKET_ASSERT(swap_hash <= 15);
   }
   return num_swaps;
 }
@@ -78,7 +78,7 @@ SwapConversion::EdgesBitset SwapConversion::get_edges_bitset(
   EdgesBitset edges_bitset = 0;
   while (swaps_code != 0) {
     const auto swap_hash = swaps_code & 0xF;
-    TKET_ASSERT_WITH_THROW(swap_hash > 0);
+    TKET_ASSERT(swap_hash > 0);
     edges_bitset |= (1u << (swap_hash - 1));
     swaps_code >>= 4;
   }

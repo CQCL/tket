@@ -37,10 +37,10 @@ VectorListHybridSkeleton::VectorListHybridSkeleton()
 
 void VectorListHybridSkeleton::clear() {
   if (m_links.empty()) {
-    TKET_ASSERT_WITH_THROW(m_size == 0);
-    TKET_ASSERT_WITH_THROW(m_front == INVALID_INDEX);
-    TKET_ASSERT_WITH_THROW(m_back == INVALID_INDEX);
-    TKET_ASSERT_WITH_THROW(m_deleted_front == INVALID_INDEX);
+    TKET_ASSERT(m_size == 0);
+    TKET_ASSERT(m_front == INVALID_INDEX);
+    TKET_ASSERT(m_back == INVALID_INDEX);
+    TKET_ASSERT(m_deleted_front == INVALID_INDEX);
     return;
   }
   m_size = 0;
@@ -61,13 +61,13 @@ void VectorListHybridSkeleton::clear() {
 void VectorListHybridSkeleton::fast_clear() {
   if (m_back == INVALID_INDEX) {
     // No elements stored currently; nothing to do.
-    TKET_ASSERT_WITH_THROW(m_size == 0);
-    TKET_ASSERT_WITH_THROW(m_front == INVALID_INDEX);
+    TKET_ASSERT(m_size == 0);
+    TKET_ASSERT(m_front == INVALID_INDEX);
     return;
   }
-  TKET_ASSERT_WITH_THROW(m_size > 0);
-  TKET_ASSERT_WITH_THROW(m_front != INVALID_INDEX);
-  TKET_ASSERT_WITH_THROW(m_links[m_back].next == INVALID_INDEX);
+  TKET_ASSERT(m_size > 0);
+  TKET_ASSERT(m_front != INVALID_INDEX);
+  TKET_ASSERT(m_links[m_back].next == INVALID_INDEX);
   // There are some existing elements.
   // Recall that deleted elements are ONLY a forward list,
   // so we don't need to update "previous".
@@ -90,9 +90,9 @@ void VectorListHybridSkeleton::reverse() {
     // Nothing to do.
     return;
   }
-  TKET_ASSERT_WITH_THROW(m_front != INVALID_INDEX);
-  TKET_ASSERT_WITH_THROW(m_back != INVALID_INDEX);
-  TKET_ASSERT_WITH_THROW(m_front != m_back);
+  TKET_ASSERT(m_front != INVALID_INDEX);
+  TKET_ASSERT(m_back != INVALID_INDEX);
+  TKET_ASSERT(m_front != m_back);
   // The deleted element links don't need to change.
   {
     auto current_index = m_front;
@@ -103,13 +103,13 @@ void VectorListHybridSkeleton::reverse() {
       const auto next_index = link.next;
       std::swap(link.next, link.previous);
       if (next_index >= m_links.size()) {
-        TKET_ASSERT_WITH_THROW(next_index == INVALID_INDEX);
+        TKET_ASSERT(next_index == INVALID_INDEX);
         terminated_correctly = true;
         break;
       }
       current_index = next_index;
     }
-    TKET_ASSERT_WITH_THROW(terminated_correctly);
+    TKET_ASSERT(terminated_correctly);
   }
   std::swap(m_front, m_back);
 }
@@ -161,15 +161,16 @@ void VectorListHybridSkeleton::erase_interval(
   for (size_t nn = 1; nn < number_of_elements; ++nn) {
     last_element_index = m_links.at(last_element_index).next;
 
-    TKET_ASSERT_WITH_THROW(
-        last_element_index < m_links.size() ||
-        AssertMessage()
-            << "VectorListHybridSkeleton::erase_interval with start index "
+    // GCOVR_EXCL_START
+    TKET_ASSERT_WITH_MESSAGE(
+        last_element_index < m_links.size(),
+        "erase_interval with start index "
             << index << ", number_of_elements=" << number_of_elements
-            << ", size " << m_links.size() << ", run out of elements at N="
+            << ", size " << m_links.size() << ", runs out of elements at N="
             << nn << " (got index " << last_element_index << ")");
+    // GCOVR_EXCL_STOP
   }
-  TKET_ASSERT_WITH_THROW(number_of_elements <= m_size);
+  TKET_ASSERT(number_of_elements <= m_size);
   m_size -= number_of_elements;
 
   // Now, splice the soon-to-be-logically-erased interval into the deleted
@@ -188,14 +189,14 @@ void VectorListHybridSkeleton::erase_interval(
   if (index_of_node_before_interval < m_links.size()) {
     // There IS a previous node to be dealt with.
     auto& next_node_index_ref = m_links[index_of_node_before_interval].next;
-    TKET_ASSERT_WITH_THROW(next_node_index_ref == index);
+    TKET_ASSERT(next_node_index_ref == index);
     // This is correct even if index_of_node_after_interval is INVALID_INDEX.
     next_node_index_ref = index_of_node_after_interval;
-    TKET_ASSERT_WITH_THROW(m_front != index);
+    TKET_ASSERT(m_front != index);
   } else {
     // No previous node, we must have been at the start already.
-    TKET_ASSERT_WITH_THROW(index_of_node_before_interval == INVALID_INDEX);
-    TKET_ASSERT_WITH_THROW(m_front == index);
+    TKET_ASSERT(index_of_node_before_interval == INVALID_INDEX);
+    TKET_ASSERT(m_front == index);
     m_front = index_of_node_after_interval;
   }
   // Link the node AFTER the interval to the new previous node.
@@ -203,24 +204,24 @@ void VectorListHybridSkeleton::erase_interval(
     // There are more unerased elements after the interval,
     // so the first one must be dealt with.
     auto& prev_node_index = m_links[index_of_node_after_interval].previous;
-    TKET_ASSERT_WITH_THROW(prev_node_index == last_element_index);
+    TKET_ASSERT(prev_node_index == last_element_index);
     // Correct even if there IS no node before the interval.
     prev_node_index = index_of_node_before_interval;
-    TKET_ASSERT_WITH_THROW(m_back != last_element_index);
+    TKET_ASSERT(m_back != last_element_index);
   } else {
     // No node after, we have erased up to the back.
-    TKET_ASSERT_WITH_THROW(index_of_node_after_interval == INVALID_INDEX);
-    TKET_ASSERT_WITH_THROW(m_back == last_element_index);
+    TKET_ASSERT(index_of_node_after_interval == INVALID_INDEX);
+    TKET_ASSERT(m_back == last_element_index);
     m_back = index_of_node_before_interval;
   }
   if (m_size == 0) {
-    TKET_ASSERT_WITH_THROW(m_front == INVALID_INDEX);
-    TKET_ASSERT_WITH_THROW(m_back == INVALID_INDEX);
+    TKET_ASSERT(m_front == INVALID_INDEX);
+    TKET_ASSERT(m_back == INVALID_INDEX);
   } else {
-    TKET_ASSERT_WITH_THROW(m_front < m_links.size());
-    TKET_ASSERT_WITH_THROW(m_back < m_links.size());
+    TKET_ASSERT(m_front < m_links.size());
+    TKET_ASSERT(m_back < m_links.size());
     if (m_size == 1) {
-      TKET_ASSERT_WITH_THROW(m_front == m_back);
+      TKET_ASSERT(m_front == m_back);
     }
   }
 }

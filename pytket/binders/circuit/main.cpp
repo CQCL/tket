@@ -26,10 +26,12 @@
 #include "Ops/Op.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/Symbols.hpp"
+#include "binder_json.hpp"
 #include "binder_utils.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
+using json = nlohmann::json;
 
 namespace tket {
 
@@ -443,7 +445,10 @@ PYBIND11_MODULE(circuit, m) {
           "A classical operation applied to multiple bits simultaneously")
       .value(
           "ClassicalExpBox", OpType::ClassicalExpBox,
-          "A box for holding compound classical operations on Bits.");
+          "A box for holding compound classical operations on Bits.")
+      .def_static(
+          "from_name", [](const json &j) { return j.get<OpType>(); },
+          "Construct from name");
   py::enum_<BasisOrder>(
       m, "BasisOrder",
       "Enum for readout basis and ordering.\n"

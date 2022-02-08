@@ -49,11 +49,11 @@ void HybridTsa00::append_partial_solution(
         swaps, vertex_mapping, distances, neighbours, path_finder);
 
     if (swaps_before == swaps.size()) {
-      TKET_ASSERT_WITH_THROW(all_tokens_home(vertex_mapping));
+      TKET_ASSERT(all_tokens_home(vertex_mapping));
       return;
     }
   }
-  TKET_ASSERT_WITH_THROW(!"hybrid TSA termination");
+  TKET_ASSERT(!"hybrid TSA termination");
 }
 
 }  // namespace tsa_internal

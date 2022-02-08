@@ -81,8 +81,8 @@ void RiverFlowPathFinder::Impl::reset() {
 
 void RiverFlowPathFinder::Impl::grow_path(
     size_t target_vertex, size_t required_path_size) {
-  TKET_ASSERT_WITH_THROW(path.size() < required_path_size);
-  TKET_ASSERT_WITH_THROW(!path.empty());
+  TKET_ASSERT(path.size() < required_path_size);
+  TKET_ASSERT(!path.empty());
 
   // We don't yet know how to move on, so we must choose a neighbour.
   // All candidates will have the same edge count.
@@ -114,20 +114,24 @@ void RiverFlowPathFinder::Impl::grow_path(
       candidate_moves.back().count = edge_count;
       continue;
     }
-    TKET_ASSERT_WITH_THROW(
+    // GCOVR_EXCL_START
+    TKET_ASSERT_WITH_MESSAGE(
         neighbour_distance_to_target == remaining_distance ||
-        neighbour_distance_to_target == remaining_distance + 1 ||
-        AssertMessage() << "d(v_" << path.back() << ", v_" << target_vertex
-                        << ")=" << remaining_distance << ". But v_"
-                        << path.back() << " has neighbour v_" << neighbour
-                        << ", at distance " << neighbour_distance_to_target
-                        << " to the target v_" << target_vertex);
+            neighbour_distance_to_target == remaining_distance + 1,
+        "d(v_" << path.back() << ", v_" << target_vertex
+               << ")=" << remaining_distance << ". But v_" << path.back()
+               << " has neighbour v_" << neighbour << ", at distance "
+               << neighbour_distance_to_target << " to the target v_"
+               << target_vertex);
+    // GCOVR_EXCL_STOP
   }
-  TKET_ASSERT_WITH_THROW(
-      !candidate_moves.empty() ||
-      AssertMessage() << "No neighbours of v_" << path.back()
-                      << " at correct distance " << remaining_distance - 1
-                      << " to target vertex v_" << target_vertex);
+  // GCOVR_EXCL_START
+  TKET_ASSERT_WITH_MESSAGE(
+      !candidate_moves.empty(), "No neighbours of v_"
+                                    << path.back() << " at correct distance "
+                                    << remaining_distance - 1
+                                    << " to target vertex v_" << target_vertex);
+  // GCOVR_EXCL_STOP
 
   const auto& choice = rng.get_element(candidate_moves);
   path.push_back(choice.end_vertex);
@@ -170,7 +174,7 @@ const vector<size_t>& RiverFlowPathFinder::operator()(
        infinite_loop_guard != 0; --infinite_loop_guard) {
     m_pimpl->grow_path(vertex2, final_path_size);
     if (m_pimpl->path.size() == final_path_size) {
-      TKET_ASSERT_WITH_THROW(m_pimpl->path.back() == vertex2);
+      TKET_ASSERT(m_pimpl->path.back() == vertex2);
       m_pimpl->update_data_with_path();
       return m_pimpl->path;
     }

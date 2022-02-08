@@ -74,15 +74,16 @@ size_t DistancesFromArchitecture::operator()(size_t vertex1, size_t vertex2) {
     // architectures, since get_distance now should throw if v1, v2 are in
     // different connected components. However, leave the check in, in case some
     // other bizarre error causes distance zero to be returned.
-    TKET_ASSERT_WITH_THROW(
-        distance_entry > 0 ||
-        AssertMessage() << "DistancesFromArchitecture: architecture has "
-                        << arch.n_nodes() << " vertices, "
-                        << arch.n_connections() << " edges; returned diameter "
-                        << arch.get_diameter() << ", but d(" << vertex1 << ","
-                        << vertex2
-                        << ")=0. "
-                           "Is the graph connected?");
+    // GCOVR_EXCL_START
+    TKET_ASSERT_WITH_MESSAGE(
+        distance_entry > 0,
+        "DistancesFromArchitecture: architecture has "
+            << arch.n_nodes() << " vertices, " << arch.n_connections()
+            << " edges; returned diameter " << arch.get_diameter() << " and d("
+            << vertex1 << "," << vertex2
+            << ")=0. "
+               "Is the graph connected?");
+    // GCOVR_EXCL_STOP
   }
   return distance_entry;
 }

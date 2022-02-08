@@ -333,11 +333,13 @@ std::pair<bool, bool> LexiRoute::check_bridge(
 const std::pair<size_t, size_t> LexiRoute::pair_distances(
     const Node& p0_first, const Node& p0_second, const Node& p1_first,
     const Node& p1_second) const {
-  TKET_ASSERT(
-      this->architecture_->node_exists(p0_first) &&
-      this->architecture_->node_exists(p0_second) &&
-      this->architecture_->node_exists(p1_first) &&
-      this->architecture_->node_exists(p1_second));
+  {
+    const bool valid = this->architecture_->node_exists(p0_first) &&
+                       this->architecture_->node_exists(p0_second) &&
+                       this->architecture_->node_exists(p1_first) &&
+                       this->architecture_->node_exists(p1_second);
+    TKET_ASSERT(valid);
+  }
   size_t curr_dist1 = this->architecture_->get_distance(p0_first, p0_second);
   size_t curr_dist2 = this->architecture_->get_distance(p1_first, p1_second);
   return (curr_dist1 > curr_dist2) ? std::make_pair(curr_dist1, curr_dist2)

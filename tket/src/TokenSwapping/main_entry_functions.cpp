@@ -47,7 +47,7 @@ std::vector<std::pair<Node, Node>> get_swaps(
     vertex_mapping[arch_mapping.get_vertex(node_entry.first)] =
         arch_mapping.get_vertex(node_entry.second);
   }
-  TKET_ASSERT_WITH_THROW(vertex_mapping.size() == node_mapping.size());
+  TKET_ASSERT(vertex_mapping.size() == node_mapping.size());
   check_mapping(vertex_mapping);
 
   SwapList raw_swap_list;
