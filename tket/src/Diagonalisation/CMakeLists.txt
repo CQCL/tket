@@ -27,8 +27,7 @@ list(APPEND DEPS_${COMP}
     Circuit
     Clifford
     Gate
-    Graphs
-    Mapping
+    Graphs    
     Ops
     OpType
     PauliGraph

@@ -161,8 +161,9 @@ pybind11_add_module(architecture binders/architecture.cpp)
 target_include_directories(architecture PRIVATE binders/include)
 target_link_libraries(architecture PRIVATE
     tket-Architecture
-    tket-Graphs)
-target_link_libraries(architecture PRIVATE ${CONAN_LIBS_SYMENGINE})
+    tket-Graphs
+    tket-Utils)
+target_link_libraries(architecture PRIVATE ${TKET_EXTRA_LIBS})
 
 
 pybind11_add_module(placement binders/placement.cpp)
@@ -170,8 +171,9 @@ target_include_directories(placement PRIVATE binders/include)
 target_link_libraries(placement PRIVATE
     tket-Placement
     tket-Architecture
-    tket-Circuit)
-target_link_libraries(placement PRIVATE ${CONAN_LIBS_SYMENGINE})
+    tket-Circuit
+    tket-Utils)
+target_link_libraries(placement PRIVATE ${TKET_EXTRA_LIBS})
 
 pybind11_add_module(program binders/program.cpp)
 target_include_directories(program PRIVATE binders/include)
