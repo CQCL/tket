@@ -241,17 +241,23 @@ PYBIND11_MODULE(routing, m) {
                  py::arg("arc"))
             .def("__repr__",
                  [](const Placement &) { return "<tket::Placement>"; })
-            .def("place", &Placement::place,
-                 "Relabels Circuit Qubits to Architecture Nodes and 'unplaced'. For "
-                 "base Placement, all Qubits and labelled 'unplaced'. "
-                 "\n\n:param circuit: The Circuit being relabelled.",
-                 py::arg("circuit"))
+            .def("place",
+              [](const Placement &placement, Circuit &circ) {
+                return placement.place(circ);
+              },
+              "Relabels Circuit Qubits to Architecture Nodes and 'unplaced'. For "
+              "base Placement, all Qubits and labelled 'unplaced'. "
+              "\n\n:param circuit: The Circuit being relabelled.",
+              py::arg("circuit"))
             .def_static(
-                    "place_with_map", &Placement::place_with_map,
-                    "Relabels Circuit Qubits to Architecture Nodes using given map. "
-                    "\n\n:param circuit: The circuit being relabelled\n:param "
-                    "qmap: The map from logical to physical qubits to apply.",
-                    py::arg("circuit"), py::arg("qmap"))
+              "place_with_map",
+              [](Circuit &circ, qubit_mapping_t& qmap) {
+                return Placement::place_with_map(circ, qmap);
+              },
+              "Relabels Circuit Qubits to Architecture Nodes using given map. "
+              "\n\n:param circuit: The circuit being relabelled\n:param "
+              "qmap: The map from logical to physical qubits to apply.",
+              py::arg("circuit"), py::arg("qmap"))
             .def("get_placement_map", &Placement::get_placement_map,
                  "Returns a map from logical to physical qubits that is Architecture "
                  "appropriate for the given Circuit. "

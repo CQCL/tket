@@ -15,6 +15,7 @@
 #pragma once
 
 #include <map>
+#include <memory>
 #include <string>
 #include <utility>
 #include <vector>
@@ -214,9 +215,12 @@ class Routing {
   // specified.
 
   // solve with default mapping and provided config
-  std::pair<Circuit, bool> solve(const RoutingConfig &_config = {});
+  std::pair<Circuit, bool> solve(
+      const RoutingConfig &_config = {},
+      std::shared_ptr<unit_bimaps_t> maps = nullptr);
   qubit_bimap_t remap(const qubit_bimap_t &init);
-  void organise_registers_and_maps();
+  void organise_registers_and_maps(
+      std::shared_ptr<unit_bimaps_t> maps = nullptr);
 
   // TODO:: Make relevant and useful again
   qubit_mapping_t return_final_map() const;

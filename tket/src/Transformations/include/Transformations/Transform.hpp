@@ -15,32 +15,77 @@
 #pragma once
 
 #include <functional>
+#include <memory>
 
 #include "Circuit/Circuit.hpp"
 
 namespace tket {
 
+/**
+ * A transformation of a circuit that preserves its semantics
+ */
 class Transform {
  public:
-  typedef std::function<bool(Circuit&)> Transformation;
+  /**
+   * A function that takes a circuit and (optionally) a relabelling of units.
+   *
+   * The relabelling, if present, maps the original unit IDs at the beginning
+   * and end of the circuit to new names, which may be in a different order at
+   * the beginning and end.
+   *
+   * The function returns false if no changes are made, otherwise true.
+   */
+  typedef std::function<bool(Circuit&, std::shared_ptr<unit_bimaps_t>)>
+      Transformation;
+
+  /**
+   * A function that takes a circuit and does not rename any units.
+   *
+   * The function returns false if no changes are made, otherwise true.
+   */
+  typedef std::function<bool(Circuit&)> SimpleTransformation;
+
   typedef std::function<unsigned(const Circuit&)> Metric;
 
-  // the actual transformation to be applied
-  // performs transformation in place and returns true iff made some change
-  Transformation apply;  // this would ideally be `const`, but that deletes the
-                         // copy assignment operator for Transform.
+  /** The transformation applied. */
+  Transformation apply_fn;
 
-  explicit Transform(const Transformation& trans) : apply(trans) {}
+  /** Construct from a transformation function */
+  explicit Transform(const Transformation& trans) : apply_fn(trans) {}
 
+  /** Construct from a transformation function that preserves unit IDs */
+  explicit Transform(const SimpleTransformation& trans)
+      : apply_fn([=](Circuit& circ, std::shared_ptr<unit_bimaps_t>) {
+          return trans(circ);
+        }) {}
+
+  /**
+   * Apply the transform to a circuit
+   *
+   * @param circ circuit to be transformed
+   *
+   * @return whether any changes were made
+   */
+  bool apply(Circuit& circ) const { return apply_fn(circ, nullptr); }
+
+  /**
+   * Compose two transforms in sequence
+   *
+   * @param[in] lhs first transform
+   * @param[in] rhs second transform
+   *
+   * @return the composite transform
+   */
   friend Transform operator>>(const Transform& lhs, const Transform& rhs);
 };
 
 namespace Transforms {
 
-// identity Transform (does nothing to Circuit)
-inline const Transform id = Transform([](const Circuit&) {
-  return false;
-});  // returns `false` as it does not change the Circuit in any way
+/**
+ * Identity transform (does nothing, returns false)
+ */
+inline const Transform id =
+    Transform([](Circuit&, std::shared_ptr<unit_bimaps_t>) { return false; });
 
 }  // namespace Transforms
 
