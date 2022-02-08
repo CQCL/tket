@@ -31,6 +31,10 @@ class LabellingRoutingMethod : public RoutingMethod {
   unit_map_t routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
       const ArchitecturePtr& architecture) const override;
+
+  nlohmann::json serialize() const override;
+
+  static LabellingRoutingMethod deserialize(const nlohmann::json& j);
 };
 }  // namespace tket
 #endif

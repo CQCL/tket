@@ -51,4 +51,15 @@ unit_map_t LabellingRoutingMethod::routing_method(
   return {};
 }
 
+nlohmann::json LabellingRoutingMethod::serialize() const {
+  nlohmann::json j;
+  j["name"] = "LabellingRoutingMethod";
+  return j;
+}
+
+LabellingRoutingMethod LabellingRoutingMethod::deserialize(
+    const nlohmann::json& /*j*/) {
+  return LabellingRoutingMethod();
+}
+
 }  // namespace tket

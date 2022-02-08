@@ -24,6 +24,7 @@
 #include "CircuitsForTesting.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/SymTable.hpp"
+#include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/RoutingMethod.hpp"
 #include "OpType/OpType.hpp"
@@ -35,6 +36,7 @@
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 #include "testutil.hpp"
+
 namespace tket {
 namespace test_json {
 
@@ -434,14 +436,19 @@ SCENARIO("Test RoutingMethod serializations") {
 
   std::vector<RoutingMethodPtr> rmp = {
       std::make_shared<RoutingMethod>(rm),
+      std::make_shared<LabellingRoutingMethod>(),
       std::make_shared<LexiRouteRoutingMethod>(5)};
+
   nlohmann::json rmp_j = rmp;
   std::vector<RoutingMethodPtr> loaded_rmp_j =
       rmp_j.get<std::vector<RoutingMethodPtr>>();
   CHECK(!loaded_rmp_j[0]->check_method(
       std::make_shared<MappingFrontier>(c),
       std::make_shared<SquareGrid>(2, 2)));
-  CHECK(loaded_rmp_j[1]->check_method(
+  CHECK(!loaded_rmp_j[1]->check_method(
+      std::make_shared<MappingFrontier>(c),
+      std::make_shared<SquareGrid>(2, 2)));
+  CHECK(loaded_rmp_j[2]->check_method(
       std::make_shared<MappingFrontier>(c),
       std::make_shared<SquareGrid>(2, 2)));
 }
