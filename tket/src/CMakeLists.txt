@@ -57,6 +57,8 @@ ELSEIF(APPLE)
     set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
 ENDIF()
 
+# if you add new modules here make sure that it is added at the right position
+# this list corresponds to a topological sorting of the dependency graph of the different modules
 list(APPEND TKET_COMPS
     Utils
     ZX
@@ -74,11 +76,11 @@ list(APPEND TKET_COMPS
     Characterisation
     Converters
     TokenSwapping
-    Mapping
     Placement
-    MeasurementSetup
-    Transformations
     ArchAwareSynth
+    Mapping    
+    MeasurementSetup
+    Transformations    
     Predicates)
 
 foreach(COMP ${TKET_COMPS})
