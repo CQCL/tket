@@ -3,6 +3,7 @@
 #include <pybind11/stl.h>
 
 #include "Mapping/LexiRoute.hpp"
+#include "Mapping/LexiLabelling.hpp"
 #include "Mapping/MappingManager.hpp"
 #include "Mapping/RoutingMethodCircuit.hpp"
 
@@ -53,11 +54,20 @@ PYBIND11_MODULE(mapping, m) {
       "Lexicographical Comparison approach outlined in arXiv:1902.08091.")
       .def(
           py::init<unsigned>(),
-          "LexiRoute constructor.\n\n:param lookahead: Maximum depth of "
+          "LexiRouteRoutingMethod constructor.\n\n:param lookahead: Maximum "
+          "depth of "
           "lookahead "
           "employed when picking SWAP for purpose of logical to physical "
           "mapping.",
           py::arg("lookahead") = 10);
+
+  py::class_<
+      LabellingRoutingMethod, std::shared_ptr<LabellingRoutingMethod>,
+      RoutingMethod>(
+      m, "LabellingRoutingMethod",
+      "Defines a RoutingMethod for labelling Qubits that uses the "
+      "Lexicographical Comparison approach outlined in arXiv:1902.08091.")
+      .def(py::init<>(), "LabellingRoutingMethod constructor.");
 
   py::class_<MappingManager>(
       m, "MappingManager",
