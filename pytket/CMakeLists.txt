@@ -66,6 +66,7 @@ endif()
 pybind11_add_module(mapping binders/mapping.cpp)
 target_include_directories(mapping PRIVATE binders/include)
 target_link_libraries(mapping PRIVATE
+    tket-ArchAwareSynth
     tket-Architecture
     tket-Characterisation
     tket-Circuit
@@ -76,7 +77,7 @@ target_link_libraries(mapping PRIVATE
     tket-OpType
     tket-TokenSwapping
     tket-Utils)
-target_link_libraries(mapping PRIVATE ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(mapping PRIVATE ${TKET_EXTRA_LIBS})
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(mapping PRIVATE bcrypt)
@@ -158,8 +159,9 @@ pybind11_add_module(architecture binders/architecture.cpp)
 target_include_directories(architecture PRIVATE binders/include)
 target_link_libraries(architecture PRIVATE
     tket-Architecture
-    tket-Graphs)
-target_link_libraries(architecture PRIVATE ${CONAN_LIBS_SYMENGINE})
+    tket-Graphs
+    tket-Utils)
+target_link_libraries(architecture PRIVATE ${TKET_EXTRA_LIBS})
 
 
 pybind11_add_module(placement binders/placement.cpp)
@@ -167,8 +169,9 @@ target_include_directories(placement PRIVATE binders/include)
 target_link_libraries(placement PRIVATE
     tket-Placement
     tket-Architecture
-    tket-Circuit)
-target_link_libraries(placement PRIVATE ${CONAN_LIBS_SYMENGINE})
+    tket-Circuit
+    tket-Utils)
+target_link_libraries(placement PRIVATE ${TKET_EXTRA_LIBS})
 
 pybind11_add_module(program binders/program.cpp)
 target_include_directories(program PRIVATE binders/include)
