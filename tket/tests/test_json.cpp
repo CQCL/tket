@@ -24,6 +24,8 @@
 #include "CircuitsForTesting.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/SymTable.hpp"
+#include "Mapping/LexiRoute.hpp"
+#include "Mapping/RoutingMethod.hpp"
 #include "OpType/OpType.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Predicates/PassGenerators.hpp"
@@ -420,6 +422,30 @@ SCENARIO("Test device serializations") {
   }
 }
 
+SCENARIO("Test RoutingMethod serializations") {
+  RoutingMethod rm;
+  nlohmann::json rm_j = rm;
+  RoutingMethod loaded_rm_j = rm_j.get<RoutingMethod>();
+
+  Circuit c(2, 2);
+  CHECK(!loaded_rm_j.check_method(
+      std::make_shared<MappingFrontier>(c),
+      std::make_shared<SquareGrid>(2, 2)));
+
+  std::vector<RoutingMethodPtr> rmp = {
+      std::make_shared<RoutingMethod>(rm),
+      std::make_shared<LexiRouteRoutingMethod>(5)};
+  nlohmann::json rmp_j = rmp;
+  std::vector<RoutingMethodPtr> loaded_rmp_j =
+      rmp_j.get<std::vector<RoutingMethodPtr>>();
+  CHECK(!loaded_rmp_j[0]->check_method(
+      std::make_shared<MappingFrontier>(c),
+      std::make_shared<SquareGrid>(2, 2)));
+  CHECK(loaded_rmp_j[1]->check_method(
+      std::make_shared<MappingFrontier>(c),
+      std::make_shared<SquareGrid>(2, 2)));
+}
+
 SCENARIO("Test predicate serializations") {
 #define BASICPREDJSONTEST(classname)                             \
   GIVEN(#classname) {                                            \
@@ -598,6 +624,24 @@ SCENARIO("Test compiler pass serializations") {
     placement->apply(cu);
     CompilationUnit copy = cu;
     PassPtr pp = gen_routing_pass(arc, rcon);
+    nlohmann::json j_pp = pp;
+    PassPtr loaded = j_pp.get<PassPtr>();
+    pp->apply(cu);
+    loaded->apply(copy);
+    REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
+    nlohmann::json j_loaded = loaded;
+    REQUIRE(j_pp == j_loaded);
+  }
+  GIVEN("Routing with MultiGateReorderRoutingMethod") {
+    RoutingMethodPtr mrmp =
+        std::make_shared<MultiGateReorderRoutingMethod>(60, 80);
+    std::vector<RoutingMethodPtr> mrcon = {mrmp, rmp};
+    Circuit circ = CircuitsForTesting::get().uccsd;
+    CompilationUnit cu{circ};
+    PassPtr placement = gen_placement_pass(place);
+    placement->apply(cu);
+    CompilationUnit copy = cu;
+    PassPtr pp = gen_routing_pass(arc, mrcon);
     nlohmann::json j_pp = pp;
     PassPtr loaded = j_pp.get<PassPtr>();
     pp->apply(cu);

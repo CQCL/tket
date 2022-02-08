@@ -49,12 +49,14 @@ class RoutingMethod {
   }
 
   virtual nlohmann::json serialize() const {
-    throw JsonError(
-        "JSON serialization not implemented for given RoutingMethod.");
+    nlohmann::json j;
+    j["name"] = "RoutingMethod";
+    return j;
   }
 };
 
 typedef std::shared_ptr<RoutingMethod> RoutingMethodPtr;
+
 }  // namespace tket
 
 #endif

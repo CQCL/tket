@@ -17,6 +17,7 @@
 #include <stdexcept>
 
 #include "TokenSwapping/DistanceFunctions.hpp"
+#include "Utils/Assert.hpp"
 
 using std::vector;
 
@@ -38,9 +39,8 @@ CyclesGrowthManager::Options& CyclesGrowthManager::get_options() {
 
 const Cycles& CyclesGrowthManager::get_cycles(
     bool throw_if_cycles_are_not_candidates) const {
-  if (throw_if_cycles_are_not_candidates && !m_cycles_are_candidates) {
-    throw std::runtime_error("get_cycles called with non-candidate cycles");
-  }
+  TKET_ASSERT(
+      !(throw_if_cycles_are_not_candidates && !m_cycles_are_candidates));
   return m_cycles;
 }
 
@@ -85,11 +85,7 @@ bool CyclesGrowthManager::reset(
 
 bool CyclesGrowthManager::attempt_to_close_cycles(
     const VertexMapping& vertex_mapping, DistancesInterface& distances) {
-  if (m_cycles_are_candidates) {
-    throw std::runtime_error(
-        "Calling attempt_to_close_cycles when we already have "
-        "candidates");
-  }
+  TKET_ASSERT(!m_cycles_are_candidates);
   for (auto id_opt = m_cycles.front_id(); id_opt;) {
     const auto id = id_opt.value();
     id_opt = m_cycles.next(id);
@@ -123,9 +119,8 @@ CyclesGrowthManager::GrowthResult CyclesGrowthManager::attempt_to_grow(
     NeighboursInterface& neighbours) {
   GrowthResult result;
 
-  if (m_cycles.empty()) {
-    throw std::runtime_error("Calling attempt_to_grow with no cycles stored");
-  }
+  TKET_ASSERT(!m_cycles.empty());
+
   if (m_cycles.front().vertices.size() >= m_options.max_cycle_size) {
     m_cycles.clear();
     result.hit_cycle_length_limit = true;

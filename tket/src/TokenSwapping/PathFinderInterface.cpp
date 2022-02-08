@@ -23,6 +23,7 @@ PathFinderInterface::PathFinderInterface() : m_name("Empty") {}
 
 PathFinderInterface::~PathFinderInterface() {}
 
+// GCOVR_EXCL_START
 const std::vector<size_t>& PathFinderInterface::operator()(
     size_t /*vertex1*/, size_t /*vertex2*/) {
   throw NotImplemented("PathFinderInterface: get path");
@@ -36,6 +37,7 @@ void PathFinderInterface::register_edge(
     size_t /*vertex1*/, size_t /*vertex2*/) {}
 
 bool PathFinderInterface::edge_registration_has_effect() const { return false; }
+// GCOVR_EXCL_STOP
 
 }  // namespace tsa_internal
 }  // namespace tket

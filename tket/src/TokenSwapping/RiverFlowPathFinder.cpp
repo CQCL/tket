@@ -114,23 +114,21 @@ void RiverFlowPathFinder::Impl::grow_path(
       candidate_moves.back().count = edge_count;
       continue;
     }
-    if (neighbour_distance_to_target != remaining_distance &&
-        neighbour_distance_to_target != remaining_distance + 1) {
-      std::stringstream ss;
-      ss << "d(v_" << path.back() << ", v_" << target_vertex
-         << ")=" << remaining_distance << ". But v_" << path.back()
-         << " has neighbour v_" << neighbour << ", at distance "
-         << neighbour_distance_to_target << " to the target v_"
-         << target_vertex;
-      throw std::runtime_error(ss.str());
-    }
+    TKET_ASSERT_WITH_MESSAGE(
+        neighbour_distance_to_target == remaining_distance ||
+            neighbour_distance_to_target == remaining_distance + 1,
+        "d(v_" << path.back() << ", v_" << target_vertex
+               << ")=" << remaining_distance << ". But v_" << path.back()
+               << " has neighbour v_" << neighbour << ", at distance "
+               << neighbour_distance_to_target << " to the target v_"
+               << target_vertex);
   }
-  if (candidate_moves.empty()) {
-    std::stringstream ss;
-    ss << "No neighbours of v_" << path.back() << " at correct distance "
-       << remaining_distance - 1 << " to target vertex v_" << target_vertex;
-    throw std::runtime_error(ss.str());
-  }
+  TKET_ASSERT_WITH_MESSAGE(
+      !candidate_moves.empty(), "No neighbours of v_"
+                                    << path.back() << " at correct distance "
+                                    << remaining_distance - 1
+                                    << " to target vertex v_" << target_vertex);
+
   const auto& choice = rng.get_element(candidate_moves);
   path.push_back(choice.end_vertex);
 }

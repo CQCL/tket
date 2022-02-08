@@ -8,7 +8,7 @@
 
 namespace tket {
 
-typedef sequenced_map_t<UnitID, VertPort> unit_vertport_frontier_t;
+typedef sequenced_bimap_t<UnitID, VertPort> unit_vertport_frontier_t;
 
 // list of error types to throw out
 class MappingFrontierError : public std::logic_error {

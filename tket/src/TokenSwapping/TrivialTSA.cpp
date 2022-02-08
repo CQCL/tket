@@ -69,9 +69,9 @@ bool TrivialTSA::grow_cycle_forwards(
     current_id = m_abstract_cycles_vertices.insert_after(current_id);
     m_abstract_cycles_vertices.at(current_id) = citer->second;
   }
-  throw std::runtime_error(
-      "TrivialTSA::grow_cycle_forwards: "
+  TKET_ASSERT(!"TrivialTSA::grow_cycle_forwards: "
       "hit vertex count limit; invalid vertex mapping");
+  return false;
 }
 
 void TrivialTSA::grow_cycle_backwards(Endpoints& endpoints) {
@@ -93,8 +93,7 @@ void TrivialTSA::grow_cycle_backwards(Endpoints& endpoints) {
     current_id = m_abstract_cycles_vertices.insert_before(current_id);
     m_abstract_cycles_vertices.at(current_id) = citer->second;
   }
-  throw std::runtime_error(
-      "TrivialTSA::grow_cycle_backwards: "
+  TKET_ASSERT(!"TrivialTSA::grow_cycle_backwards: "
       "hit vertex count limit; invalid vertex mapping");
 }
 

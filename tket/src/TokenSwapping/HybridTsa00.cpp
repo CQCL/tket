@@ -27,11 +27,13 @@ HybridTsa00::HybridTsa00() {
   m_trivial_tsa.set(TrivialTSA::Options::BREAK_AFTER_PROGRESS);
 }
 
+// GCOVR_EXCL_START
 CyclesPartialTsa& HybridTsa00::get_cycles_tsa_for_testing() {
   return m_cycles_tsa;
 }
 
 TrivialTSA& HybridTsa00::get_trivial_tsa_for_testing() { return m_trivial_tsa; }
+// GCOVR_EXCL_STOP
 
 void HybridTsa00::append_partial_solution(
     SwapList& swaps, VertexMapping& vertex_mapping,

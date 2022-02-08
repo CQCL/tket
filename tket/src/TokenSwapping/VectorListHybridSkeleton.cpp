@@ -160,14 +160,13 @@ void VectorListHybridSkeleton::erase_interval(
   Index last_element_index = index;
   for (size_t nn = 1; nn < number_of_elements; ++nn) {
     last_element_index = m_links.at(last_element_index).next;
-    if (last_element_index >= m_links.size()) {
-      std::stringstream ss;
-      ss << "VectorListHybridSkeleton::erase_interval with start index "
-         << index << ", number_of_elements=" << number_of_elements << ", size "
-         << m_links.size() << ", run out of elements at N=" << nn
-         << " (got index " << last_element_index << ")";
-      throw std::runtime_error(ss.str());
-    }
+
+    TKET_ASSERT_WITH_MESSAGE(
+        last_element_index < m_links.size(),
+        "erase_interval with start index "
+            << index << ", number_of_elements=" << number_of_elements
+            << ", size " << m_links.size() << ", runs out of elements at N="
+            << nn << " (got index " << last_element_index << ")");
   }
   TKET_ASSERT(number_of_elements <= m_size);
   m_size -= number_of_elements;
