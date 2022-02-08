@@ -161,7 +161,8 @@ pybind11_add_module(architecture binders/architecture.cpp)
 target_include_directories(architecture PRIVATE binders/include)
 target_link_libraries(architecture PRIVATE
     tket-Architecture
-    tket-Graphs)
+    tket-Graphs
+    tket-Utils)
 target_link_libraries(architecture PRIVATE ${TKET_EXTRA_LIBS})
 
 
