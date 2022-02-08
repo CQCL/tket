@@ -39,8 +39,10 @@ CyclesGrowthManager::Options& CyclesGrowthManager::get_options() {
 
 const Cycles& CyclesGrowthManager::get_cycles(
     bool throw_if_cycles_are_not_candidates) const {
+  // GCOVR_EXCL_START
   TKET_ASSERT(
       !(throw_if_cycles_are_not_candidates && !m_cycles_are_candidates));
+  // GCOVR_EXCL_STOP
   return m_cycles;
 }
 

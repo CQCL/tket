@@ -63,9 +63,11 @@ ExactMappingLookup::improve_upon_existing_result(
     return m_result;
   }
   TKET_ASSERT(relabelling.permutation_hash != 0);
-  TKET_ASSERT(
-      relabelling.new_to_old_vertices.size() ==
-      relabelling.old_to_new_vertices.size());
+  {
+    const bool size_match = relabelling.new_to_old_vertices.size() ==
+                            relabelling.old_to_new_vertices.size();
+    TKET_ASSERT(size_match);
+  }
   TKET_ASSERT(relabelling.new_to_old_vertices.size() >= 2);
 
   fill_result_from_table(relabelling, edges, max_number_of_swaps);

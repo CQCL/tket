@@ -114,6 +114,7 @@ void RiverFlowPathFinder::Impl::grow_path(
       candidate_moves.back().count = edge_count;
       continue;
     }
+    // GCOVR_EXCL_START
     TKET_ASSERT_WITH_MESSAGE(
         neighbour_distance_to_target == remaining_distance ||
             neighbour_distance_to_target == remaining_distance + 1,
@@ -122,12 +123,15 @@ void RiverFlowPathFinder::Impl::grow_path(
                << " has neighbour v_" << neighbour << ", at distance "
                << neighbour_distance_to_target << " to the target v_"
                << target_vertex);
+    // GCOVR_EXCL_STOP
   }
+  // GCOVR_EXCL_START
   TKET_ASSERT_WITH_MESSAGE(
       !candidate_moves.empty(), "No neighbours of v_"
                                     << path.back() << " at correct distance "
                                     << remaining_distance - 1
                                     << " to target vertex v_" << target_vertex);
+  // GCOVR_EXCL_STOP
 
   const auto& choice = rng.get_element(candidate_moves);
   path.push_back(choice.end_vertex);

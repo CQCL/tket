@@ -478,8 +478,10 @@ OverwriteIntervalResult VectorListHybrid<T>::overwrite_interval(
   for (;;) {
     m_data.at(result.final_overwritten_element_id) = *citer;
     ++result.number_of_overwritten_elements;
+    // GCOVR_EXCL_START
     TKET_ASSERT(
         result.number_of_overwritten_elements <= max_number_of_elements);
+    // GCOVR_EXCL_STOP
     ++citer;
     if (citer == new_elements_cend) {
       return result;

@@ -33,7 +33,10 @@
  * to a stringstream) will NOT begin if `condition` is true,
  * so there is no performance penalty.
  *
- * The code should be ignored by test code coverage, even if multiline.
+ * Note: the intention was that the code would be ignored by test code
+ * coverage, even if multiline. However that didn't work, so we may
+ * just manually surround the worst multiline offenders until we come up
+ * with a better solution.
  *
  * This also checks if evaluating `condition` itself throws an exception.
  *
@@ -45,7 +48,6 @@
  * there are additional problems which need to be overcome somehow.
  */
 #define TKET_ASSERT_WITH_MESSAGE(condition, msg)                           \
-  /* GCOVR_EXCL_START */                                                   \
   do {                                                                     \
     try {                                                                  \
       if (!(condition)) {                                                  \
@@ -72,7 +74,7 @@
       tket::tket_log()->critical(ss.str());                                \
       std::abort();                                                        \
     }                                                                      \
-  } while (0) /* GCOVR_EXCL_STOP */
+  } while (0)
 
 #define TKET_ASSERT(condition)               \
   do {                                       \
