@@ -52,6 +52,36 @@ std::shared_ptr<unit_frontier_t> frontier_convert_vertport_to_edge(
 MappingFrontier::MappingFrontier(Circuit& _circuit) : circuit_(_circuit) {
   this->quantum_boundary = std::make_shared<unit_vertport_frontier_t>();
   this->classical_boundary = std::make_shared<b_frontier_t>();
+  this->bimaps_ = std::make_shared<unit_bimaps_t>();
+  // Set up {UnitID, VertPort} objects for quantum and classical boundaries
+  for (const Qubit& qb : this->circuit_.all_qubits()) {
+    this->quantum_boundary->insert({qb, {this->circuit_.get_in(qb), 0}});
+    this->bimaps_->initial.insert({qb, qb});
+    this->bimaps_->final.insert({qb, qb});
+  }
+  for (const Bit& bit : this->circuit_.all_bits()) {
+    this->classical_boundary->insert(
+        {bit,
+         this->circuit_.get_nth_b_out_bundle(this->circuit_.get_in(bit), 0)});
+  }
+}
+
+/**
+ * Initialise quantum_boundary and classical_boundary from
+ * out edges of Input vertices
+ */
+MappingFrontier::MappingFrontier(Circuit& _circuit, std::shared_ptr<unit_bimaps_t> _bimaps) : circuit_(_circuit), bimaps_(_bimaps) {
+  this->quantum_boundary = std::make_shared<unit_vertport_frontier_t>();
+  this->classical_boundary = std::make_shared<b_frontier_t>();
+  // this->bimaps_ = std::make_shared<unit_bimaps_t>();
+  
+  // for(const std::pair<UnitID, UnitID>& pair : mapping_frontier.bimaps_->initial){
+  //   this.bimaps_->initial.insert({pair.first, pair.second});
+  // }
+  // for(const std::pair<UnitID, UnitID>& pair : mapping_frontier.bimaps_->final){
+  //   this.bimaps_->final.insert({pair.first, pair.second});
+  // }
+
   // Set up {UnitID, VertPort} objects for quantum and classical boundaries
   for (const Qubit& qb : this->circuit_.all_qubits()) {
     this->quantum_boundary->insert({qb, {this->circuit_.get_in(qb), 0}});
@@ -64,9 +94,17 @@ MappingFrontier::MappingFrontier(Circuit& _circuit) : circuit_(_circuit) {
 }
 
 MappingFrontier::MappingFrontier(const MappingFrontier& mapping_frontier)
-    : circuit_(mapping_frontier.circuit_) {
+    : circuit_(mapping_frontier.circuit_), bimaps_(mapping_frontier.bimaps_) {
   this->quantum_boundary = std::make_shared<unit_vertport_frontier_t>();
   this->classical_boundary = std::make_shared<b_frontier_t>();
+  // this->bimaps_ = std::make_shared<unit_bimaps_t>();
+  
+  // for(const std::pair<UnitID, UnitID>& pair : mapping_frontier.bimaps_->initial){
+  //   this.bimaps_->initial.insert({pair.first, pair.second});
+  // }
+  // for(const std::pair<UnitID, UnitID>& pair : mapping_frontier.bimaps_->final){
+  //   this.bimaps_->final.insert({pair.first, pair.second});
+  // }
   for (const std::pair<UnitID, VertPort>& pair :
        mapping_frontier.quantum_boundary->get<TagKey>()) {
     this->quantum_boundary->insert({pair.first, pair.second});
@@ -450,6 +488,7 @@ void MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
   this->circuit_.boundary.get<TagID>().insert({uid_1, uid1_in, uid0_out});
 
   std::map<Node, Node> final_map = {{n0, n1}, {n1, n0}};
+  
   this->circuit_.update_final_map(final_map);
 }
 

@@ -64,7 +64,11 @@ struct MappingFrontier {
 
   std::set<Node> ancilla_nodes_;
 
+  std::shared_ptr<unit_bimaps_t> bimaps_;
+
   MappingFrontier(Circuit& _circuit);
+
+  MappingFrontier(Circuit& _circuit, std::shared_ptr<unit_bimaps_t> _bimaps);
 
   // copy constructor
   MappingFrontier(const MappingFrontier& mapping_frontier);
