@@ -24,6 +24,7 @@
 #include "ColouringPriority.hpp"
 #include "GraphRoutines.hpp"
 #include "LargeCliquesResult.hpp"
+#include "Utils/Assert.hpp"
 
 using std::exception;
 using std::map;
@@ -80,6 +81,7 @@ static void colour_single_component(
     const auto& colour = entry.second;
     result.number_of_colours = std::max(result.number_of_colours, colour + 1);
 
+    // GCOVR_EXCL_START
     try {
       if (vertex >= result.colours.size()) {
         throw runtime_error("illegal vertex index");
@@ -98,6 +100,7 @@ static void colour_single_component(
          << e.what();
       throw runtime_error(ss.str());
     }
+    // GCOVR_EXCL_STOP
   }
 }
 
@@ -109,11 +112,13 @@ static void check_final_colouring(GraphColouringResult& result) {
   result.number_of_colours = 0;
   for (std::size_t i = 0; i < result.colours.size(); ++i) {
     const auto colour = result.colours[i];
+    // GCOVR_EXCL_START
     if (colour >= result.colours.size()) {
       stringstream ss;
       ss << "vertex " << i << " has unassigned or illegal colour " << colour;
       throw runtime_error(ss.str());
     }
+    // GCOVR_EXCL_STOP
     result.number_of_colours = std::max(result.number_of_colours, colour + 1);
   }
 }
@@ -130,12 +135,14 @@ GraphColouringResult GraphColouringRoutines::get_colouring(
       const LargeCliquesResult cliques_in_this_component(
           adjacency_data, connected_components[i]);
 
+      // GCOVR_EXCL_START
       if (cliques_in_this_component.cliques.empty()) {
         stringstream ss;
         ss << "component " << i << " has " << connected_components[i].size()
            << " vertices, but couldn't find a clique!";
         throw runtime_error(ss.str());
       }
+      // GCOVR_EXCL_STOP
       cliques[i] = cliques_in_this_component.cliques[0];
       component_indices[i] = i;
     }
@@ -163,12 +170,14 @@ GraphColouringResult GraphColouringRoutines::get_colouring(
     check_final_colouring(result);
     return result;
   } catch (const exception& e) {
+    // GCOVR_EXCL_START
     stringstream ss;
     ss << "GraphColouringRoutines::get_colouring: we had "
        << connected_components.size() << " connected components, "
        << adjacency_data.get_number_of_vertices()
        << " vertices in total: " << e.what();
     throw runtime_error(ss.str());
+    // GCOVR_EXCL_STOP
   }
 }
 

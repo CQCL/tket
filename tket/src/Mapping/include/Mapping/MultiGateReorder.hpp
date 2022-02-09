@@ -1,5 +1,18 @@
-#ifndef _TKET_MultiGateReorder_H_
-#define _TKET_MultiGateReorder_H_
+// Copyright 2019-2022 Cambridge Quantum Computing
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#pragma once
 
 #include "Mapping/MappingFrontier.hpp"
 #include "Mapping/RoutingMethod.hpp"
@@ -47,7 +60,7 @@ class MultiGateReorderRoutingMethod : public RoutingMethod {
    */
   bool check_method(
       const std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
-      const ArchitecturePtr& /*architecture*/) const;
+      const ArchitecturePtr& /*architecture*/) const override;
 
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
@@ -58,7 +71,21 @@ class MultiGateReorderRoutingMethod : public RoutingMethod {
    */
   unit_map_t routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
-      const ArchitecturePtr& architecture) const;
+      const ArchitecturePtr& architecture) const override;
+
+  nlohmann::json serialize() const override;
+
+  static MultiGateReorderRoutingMethod deserialize(const nlohmann::json& j);
+
+  /**
+   * @return Maximum number of layers of gates checked for commutation.
+   */
+  unsigned get_max_depth() const;
+
+  /**
+   * @return Maximum number of gates checked for commutation.
+   */
+  unsigned get_max_size() const;
 
  private:
   unsigned max_depth_;
@@ -66,5 +93,3 @@ class MultiGateReorderRoutingMethod : public RoutingMethod {
 };
 
 }  // namespace tket
-
-#endif

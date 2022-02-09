@@ -37,7 +37,8 @@ SCENARIO("Test MappingFrontier initialisation, advance_frontier_boundary.") {
         {qubits[3], nodes[3]}};
     circ.rename_units(rename_map);
 
-    MappingFrontier mf(circ);
+    MappingFrontier m(circ);
+    MappingFrontier mf(m);
     mf.advance_frontier_boundary(shared_arc);
 
     VertPort vp0 = mf.quantum_boundary->get<TagKey>().find(nodes[0])->second;

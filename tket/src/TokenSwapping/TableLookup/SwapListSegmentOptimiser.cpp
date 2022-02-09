@@ -79,8 +79,10 @@ SwapListSegmentOptimiser::optimise_segment(
           bool should_store = m_output.initial_segment_size == 0;
           if (!should_store) {
             // Something IS stored, but is our new solution better?
+            // GCOVR_EXCL_START
             TKET_ASSERT(
                 m_output.initial_segment_size >= m_best_optimised_swaps.size());
+            // GCOVR_EXCL_STOP
             const size_t current_decrease =
                 m_output.initial_segment_size - m_best_optimised_swaps.size();
             TKET_ASSERT(current_number_of_swaps >= lookup_result.swaps.size());
@@ -150,9 +152,11 @@ void SwapListSegmentOptimiser::fill_final_output_and_swaplist(
         initial_id, m_best_optimised_swaps.cbegin(),
         m_best_optimised_swaps.cend());
 
+    // GCOVR_EXCL_START
     TKET_ASSERT(
         overwrite_result.number_of_overwritten_elements ==
         m_best_optimised_swaps.size());
+    // GCOVR_EXCL_STOP
     m_output.new_segment_last_id =
         overwrite_result.final_overwritten_element_id;
 
@@ -166,9 +170,11 @@ void SwapListSegmentOptimiser::fill_final_output_and_swaplist(
           next_id_opt.value(), remaining_elements_to_erase);
     }
   }
+  // GCOVR_EXCL_START
   TKET_ASSERT(
       swap_list.size() + m_output.initial_segment_size ==
       initial_size + m_output.final_segment_size);
+  // GCOVR_EXCL_STOP
 }
 
 }  // namespace tsa_internal

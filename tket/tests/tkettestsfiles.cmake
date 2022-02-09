@@ -56,6 +56,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/PartialTsaTesting.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/ProblemGeneration.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/TestStatsStructs.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TSAUtils/test_SwapFunctions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_ArchitectureMappingEndToEnd.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_BestTsaFixedSwapSequences.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_DistancesFromArchitecture.cpp

@@ -70,8 +70,10 @@ Eigen::MatrixXcd GateUnitaryMatrixVariableQubits::get_dense_unitary(
       return GateUnitaryMatrixImplementations::NPhasedX(
           number_of_qubits, parameters[0], parameters[1]);
     default:
-      TKET_ASSERT(false);
+      break;
   }
+  TKET_ASSERT(false);
+  return Eigen::MatrixXcd();
 }
 
 }  // namespace internal

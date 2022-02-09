@@ -69,9 +69,9 @@ bool TrivialTSA::grow_cycle_forwards(
     current_id = m_abstract_cycles_vertices.insert_after(current_id);
     m_abstract_cycles_vertices.at(current_id) = citer->second;
   }
-  throw std::runtime_error(
-      "TrivialTSA::grow_cycle_forwards: "
+  TKET_ASSERT(!"TrivialTSA::grow_cycle_forwards: "
       "hit vertex count limit; invalid vertex mapping");
+  return false;
 }
 
 void TrivialTSA::grow_cycle_backwards(Endpoints& endpoints) {
@@ -93,8 +93,7 @@ void TrivialTSA::grow_cycle_backwards(Endpoints& endpoints) {
     current_id = m_abstract_cycles_vertices.insert_before(current_id);
     m_abstract_cycles_vertices.at(current_id) = citer->second;
   }
-  throw std::runtime_error(
-      "TrivialTSA::grow_cycle_backwards: "
+  TKET_ASSERT(!"TrivialTSA::grow_cycle_backwards: "
       "hit vertex count limit; invalid vertex mapping");
 }
 
@@ -110,8 +109,10 @@ void TrivialTSA::do_final_checks() const {
   for (const auto& endpoints : m_cycle_endpoints) {
     for (auto id = endpoints.first;;
          id = m_abstract_cycles_vertices.next(id).value()) {
+      // GCOVR_EXCL_START
       TKET_ASSERT(
           m_vertices_seen.erase(m_abstract_cycles_vertices.at(id)) == 1);
+      // GCOVR_EXCL_STOP
       if (id == endpoints.second) {
         break;
       }
@@ -143,8 +144,10 @@ void TrivialTSA::fill_disjoint_abstract_cycles(
     // Now, add the vertices to vertices seen...
     for (auto id = endpoints.first;;
          id = m_abstract_cycles_vertices.next(id).value()) {
+      // GCOVR_EXCL_START
       TKET_ASSERT(
           m_vertices_seen.insert(m_abstract_cycles_vertices.at(id)).second);
+      // GCOVR_EXCL_STOP
       if (id == endpoints.second) {
         break;
       }
@@ -192,17 +195,21 @@ void TrivialTSA::append_partial_solution(
       continue;
     }
     const CyclicShiftCostEstimate estimate(m_vertices_work_vector, distances);
+    // GCOVR_EXCL_START
     TKET_ASSERT(
         estimate.estimated_concrete_swaps < std::numeric_limits<size_t>::max());
     TKET_ASSERT(estimate.start_v_index < m_vertices_work_vector.size());
+    // GCOVR_EXCL_STOP
     if (estimate.estimated_concrete_swaps < best_estimated_concrete_swaps) {
       best_estimated_concrete_swaps = estimate.estimated_concrete_swaps;
       start_v_index = estimate.start_v_index;
       best_endpoints = endpoints;
     }
   }
+  // GCOVR_EXCL_START
   TKET_ASSERT(
       best_estimated_concrete_swaps < std::numeric_limits<size_t>::max());
+  // GCOVR_EXCL_STOP
   const auto swap_size_before = swaps.size();
   const auto decrease = append_partial_solution_with_single_cycle(
       best_endpoints, start_v_index, swaps, vertex_mapping, distances,
