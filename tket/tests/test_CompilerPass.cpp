@@ -102,13 +102,7 @@ SCENARIO("Test that qubits added via add_qubit are tracked.") {
     circ.add_qubit(weird_qb2);
     circ.add_bit(weird_cb);
 
-    unit_bimap_t* ubmap_initial_missing = circ.unit_bimaps_.initial;
-    REQUIRE(!ubmap_initial_missing);
-
     CompilationUnit cu(circ);
-    // At initialisation, circuit bimaps are set to nullptr
-    unit_bimap_t* ubmap_initial = circ.unit_bimaps_.initial;
-    REQUIRE(!ubmap_initial);
 
     // circuit bimaps property wont be changed, nor will compilation unit
     circ.add_qubit(weird_qb3);
@@ -118,11 +112,16 @@ SCENARIO("Test that qubits added via add_qubit are tracked.") {
     REQUIRE(it == cu_initial.left.end());
 
     // Instead add transform for running it
-    Transform t = Transform([](Circuit& circ) {
-      Qubit weird_qb4("weird_qb", 9);
-      circ.add_qubit(weird_qb4);
-      return true;
-    });
+    Transform t =
+        Transform([](Circuit& circ, std::shared_ptr<unit_bimaps_t> maps) {
+          Qubit weird_qb4("weird_qb", 9);
+          circ.add_qubit(weird_qb4);
+          if (maps) {
+            maps->initial.left.insert({weird_qb4, weird_qb4});
+            maps->final.left.insert({weird_qb4, weird_qb4});
+          }
+          return true;
+        });
 
     // convert to pass
     PredicatePtrMap s_ps;
