@@ -215,19 +215,10 @@ PassPtr gen_cx_mapping_pass(
 
 PassPtr gen_routing_pass(
     const Architecture& arc, const std::vector<RoutingMethodPtr>& config) {
-  Transform::Transformation trans = [=](Circuit& circ) {
-    MappingManager mm(std::make_shared<Architecture>(arc));
-    return mm.route_circuit(circ, config);
-
-    /*
-PassPtr gen_routing_pass(const Architecture& arc, const RoutingConfig& config) {
   Transform::Transformation trans = [=](Circuit& circ,
                                         std::shared_ptr<unit_bimaps_t> maps) {
-    Routing route(circ, arc);
-    std::pair<Circuit, bool> circbool = route.solve(config, maps);
-    circ = circbool.first;
-    return circbool.second;
-    */
+    MappingManager mm(std::make_shared<Architecture>(arc));
+    return mm.route_circuit_with_maps(circ, config, maps);
   };
   Transform t = Transform(trans);
 

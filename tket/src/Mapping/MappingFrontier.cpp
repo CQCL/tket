@@ -70,17 +70,11 @@ MappingFrontier::MappingFrontier(Circuit& _circuit) : circuit_(_circuit) {
  * Initialise quantum_boundary and classical_boundary from
  * out edges of Input vertices
  */
-MappingFrontier::MappingFrontier(Circuit& _circuit, std::shared_ptr<unit_bimaps_t> _bimaps) : circuit_(_circuit), bimaps_(_bimaps) {
+MappingFrontier::MappingFrontier(
+    Circuit& _circuit, std::shared_ptr<unit_bimaps_t> _bimaps)
+    : circuit_(_circuit), bimaps_(_bimaps) {
   this->quantum_boundary = std::make_shared<unit_vertport_frontier_t>();
   this->classical_boundary = std::make_shared<b_frontier_t>();
-  // this->bimaps_ = std::make_shared<unit_bimaps_t>();
-  
-  // for(const std::pair<UnitID, UnitID>& pair : mapping_frontier.bimaps_->initial){
-  //   this.bimaps_->initial.insert({pair.first, pair.second});
-  // }
-  // for(const std::pair<UnitID, UnitID>& pair : mapping_frontier.bimaps_->final){
-  //   this.bimaps_->final.insert({pair.first, pair.second});
-  // }
 
   // Set up {UnitID, VertPort} objects for quantum and classical boundaries
   for (const Qubit& qb : this->circuit_.all_qubits()) {
@@ -97,14 +91,7 @@ MappingFrontier::MappingFrontier(const MappingFrontier& mapping_frontier)
     : circuit_(mapping_frontier.circuit_), bimaps_(mapping_frontier.bimaps_) {
   this->quantum_boundary = std::make_shared<unit_vertport_frontier_t>();
   this->classical_boundary = std::make_shared<b_frontier_t>();
-  // this->bimaps_ = std::make_shared<unit_bimaps_t>();
-  
-  // for(const std::pair<UnitID, UnitID>& pair : mapping_frontier.bimaps_->initial){
-  //   this.bimaps_->initial.insert({pair.first, pair.second});
-  // }
-  // for(const std::pair<UnitID, UnitID>& pair : mapping_frontier.bimaps_->final){
-  //   this.bimaps_->final.insert({pair.first, pair.second});
-  // }
+
   for (const std::pair<UnitID, VertPort>& pair :
        mapping_frontier.quantum_boundary->get<TagKey>()) {
     this->quantum_boundary->insert({pair.first, pair.second});
@@ -342,6 +329,22 @@ void MappingFrontier::update_quantum_boundary_uids(
         unit_map_t relabel = {label};
         this->circuit_.rename_units(relabel);
       }
+
+      // update initial map
+      auto it = this->bimaps_->initial.right.find(label.first);
+      if (it != this->bimaps_->initial.right.end()) {
+        UnitID simple_q_init = it->second;
+        this->bimaps_->initial.left.erase(simple_q_init);
+        this->bimaps_->initial.left.insert({simple_q_init, label.second});
+      }
+
+      // update final map
+      it = this->bimaps_->final.right.find(label.first);
+      if (it != this->bimaps_->final.right.end()) {
+        UnitID simple_q_final = it->second;
+        this->bimaps_->final.left.erase(simple_q_final);
+        this->bimaps_->final.left.insert({simple_q_final, label.second});
+      }
     }
   }
 }
@@ -488,8 +491,8 @@ void MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
   this->circuit_.boundary.get<TagID>().insert({uid_1, uid1_in, uid0_out});
 
   std::map<Node, Node> final_map = {{n0, n1}, {n1, n0}};
-  
-  this->circuit_.update_final_map(final_map);
+
+  this->update_final_map(final_map);
 }
 
 void MappingFrontier::add_bridge(
@@ -533,13 +536,17 @@ void MappingFrontier::add_ancilla(const UnitID& ancilla) {
   Qubit qb(ancilla);
   this->circuit_.add_qubit(qb);
   this->quantum_boundary->insert({qb, {this->circuit_.get_in(qb), 0}});
+
+  this->bimaps_->initial.insert({qb, qb});
+  this->bimaps_->final.insert({qb, qb});
   this->ancilla_nodes_.insert(Node(ancilla));
   UnitID uid_ancilla(ancilla);
 
   unit_map_t update_map;
   update_map.insert({uid_ancilla, uid_ancilla});
-  this->circuit_.update_initial_map(update_map);
-  this->circuit_.update_final_map(update_map);
+
+  this->update_initial_map(update_map);
+  this->update_final_map(update_map);
 }
 
 void MappingFrontier::merge_ancilla(
@@ -588,11 +595,53 @@ void MappingFrontier::merge_ancilla(
   // Can now just erase "merge" qubit from the circuit
   this->circuit_.boundary.get<TagID>().erase(merge);
 
-  if (this->circuit_.unit_bimaps_.initial) {
-    this->circuit_.unit_bimaps_.initial->right.erase(merge);
+  this->bimaps_->initial.right.erase(merge);
+  this->bimaps_->final.left.erase(merge);
+}
+
+template <typename UnitA, typename UnitB>
+void MappingFrontier::update_initial_map(const std::map<UnitA, UnitB>& qm) {
+  // Can only work for Unit classes
+  static_assert(std::is_base_of<UnitID, UnitA>::value);
+  static_assert(std::is_base_of<UnitID, UnitB>::value);
+  // Unit types must be related, so cannot rename e.g. Bits to Qubits
+  static_assert(
+      std::is_base_of<UnitA, UnitB>::value ||
+      std::is_base_of<UnitB, UnitA>::value);
+  unit_map_t new_initial_map;
+  for (const std::pair<const UnitA, UnitB>& pair : qm) {
+    const auto& it = this->bimaps_->initial.right.find(pair.first);
+    if (it == this->bimaps_->initial.right.end()) {
+      continue;
+    }
+    new_initial_map.insert({it->second, pair.second});
+    this->bimaps_->initial.right.erase(pair.first);
   }
-  if (this->circuit_.unit_bimaps_.final) {
-    this->circuit_.unit_bimaps_.final->right.erase(merge);
+  for (const std::pair<const UnitID, UnitID>& pair : new_initial_map) {
+    this->bimaps_->initial.left.insert(pair);
+  }
+}
+
+template <typename UnitA, typename UnitB>
+void MappingFrontier::update_final_map(const std::map<UnitA, UnitB>& qm) {
+  // Can only work for Unit classes
+  static_assert(std::is_base_of<UnitID, UnitA>::value);
+  static_assert(std::is_base_of<UnitID, UnitB>::value);
+  // Unit types must be related, so cannot rename e.g. Bits to Qubits
+  static_assert(
+      std::is_base_of<UnitA, UnitB>::value ||
+      std::is_base_of<UnitB, UnitA>::value);
+  unit_map_t new_final_map;
+  for (const std::pair<const UnitA, UnitB>& pair : qm) {
+    const auto& it = this->bimaps_->final.right.find(pair.first);
+    if (it == this->bimaps_->final.right.end()) {
+      continue;
+    }
+    new_final_map.insert({it->second, pair.second});
+    this->bimaps_->final.right.erase(pair.first);
+  }
+  for (const std::pair<const UnitID, UnitID>& pair : new_final_map) {
+    this->bimaps_->final.left.insert(pair);
   }
 }
 

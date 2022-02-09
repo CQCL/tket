@@ -24,7 +24,13 @@ MappingManager::MappingManager(const ArchitecturePtr& _architecture)
 
 bool MappingManager::route_circuit(
     Circuit& circuit,
-    const std::vector<RoutingMethodPtr>& routing_methods,
+    const std::vector<RoutingMethodPtr>& routing_methods) const {
+  return this->route_circuit_with_maps(
+      circuit, routing_methods, std::make_shared<unit_bimaps_t>());
+}
+
+bool MappingManager::route_circuit_with_maps(
+    Circuit& circuit, const std::vector<RoutingMethodPtr>& routing_methods,
     std::shared_ptr<unit_bimaps_t> maps) const {
   // Assumption; Routing can not route a circuit
   // with more logical qubits than an Architecture has
@@ -41,8 +47,12 @@ bool MappingManager::route_circuit(
 
   // mapping_frontier tracks boundary between routed & un-routed in circuit
   // when initialised, boundary is over output edges of input vertices
-  std::shared_ptr<MappingFrontier> mapping_frontier =
-      std::make_shared<MappingFrontier>(circuit);
+  std::shared_ptr<MappingFrontier> mapping_frontier;
+  if (maps) {
+    mapping_frontier = std::make_shared<MappingFrontier>(circuit, maps);
+  } else {
+    mapping_frontier = std::make_shared<MappingFrontier>(circuit);
+  }
   // updates routed/un-routed boundary
 
   mapping_frontier->advance_frontier_boundary(this->architecture_);

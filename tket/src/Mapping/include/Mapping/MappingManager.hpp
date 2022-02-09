@@ -54,6 +54,25 @@ class MappingManager {
       Circuit& circuit,
       const std::vector<RoutingMethodPtr>& routing_methods) const;
 
+  /**
+   * route_circuit_maps
+   * Referenced Circuit modified such that all multi-qubit gates are permitted
+   * by this->architecture_ RoutingIncompability thrown if Circuit has more
+   * logical qubits than Architecture has physical qubits RoutingIncompability
+   * thrown if Circuit has a gate of OpType not in Architecture's permitted
+   * OpTypes
+   *
+   * @param circuit Circuit to be routed
+   * @param routing_methods Ranked RoutingMethod objects to use for routing
+   * segments.
+   * @param maps For tracking placed and permuted qubits during Compilation
+   *
+   * @return True if circuit is modified
+   */
+  bool route_circuit_with_maps(
+      Circuit& circuit, const std::vector<RoutingMethodPtr>& routing_methods,
+      std::shared_ptr<unit_bimaps_t> maps) const;
+
  private:
   ArchitecturePtr architecture_;
 };

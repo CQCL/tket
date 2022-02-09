@@ -181,6 +181,12 @@ struct MappingFrontier {
    * @param new_boundary Object to reassign with.
    */
   void set_quantum_boundary(const unit_vertport_frontier_t& new_boundary);
+
+  template <typename UnitA, typename UnitB>
+  void update_initial_map(const std::map<UnitA, UnitB>& qm);
+
+  template <typename UnitA, typename UnitB>
+  void update_final_map(const std::map<UnitA, UnitB>& qm);
 };
 
 }  // namespace tket

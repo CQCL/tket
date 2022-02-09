@@ -14,7 +14,6 @@
 
 #include "CompilerPass.hpp"
 
-
 #include <memory>
 
 #include "Mapping/RoutingMethodJson.hpp"
