@@ -13,6 +13,10 @@
 // limitations under the License.
 
 #include "CompilationUnit.hpp"
+
+#include <memory>
+
+#include "Utils/UnitID.hpp"
 namespace tket {
 
 CompilationUnit::CompilationUnit(const Circuit& circ) : circ_(circ) {
@@ -91,13 +95,11 @@ void CompilationUnit::initialize_cache() const {
 }
 
 void CompilationUnit::initialize_maps() {
-  if (!initial_map_.empty())
-    throw std::logic_error("Initial map must be empty to be initialized");
-  if (!final_map_.empty())
-    throw std::logic_error("Final map must be empty to be initialized");
+  if (maps) throw std::logic_error("Maps already initialized");
+  maps = std::make_shared<unit_bimaps_t>();
   for (const UnitID& u : circ_.all_units()) {
-    initial_map_.insert({u, u});
-    final_map_.insert({u, u});
+    maps->initial.insert({u, u});
+    maps->final.insert({u, u});
   }
 }
 

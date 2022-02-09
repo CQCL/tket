@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "Predicates.hpp"
 
 namespace tket {
@@ -42,8 +44,8 @@ class CompilationUnit {
   /* getters to inspect the data members */
   const Circuit& get_circ_ref() const { return circ_; }
   const PredicateCache& get_cache_ref() const { return cache_; }
-  const unit_bimap_t& get_initial_map_ref() const { return initial_map_; }
-  const unit_bimap_t& get_final_map_ref() const { return final_map_; }
+  const unit_bimap_t& get_initial_map_ref() const { return maps->initial; }
+  const unit_bimap_t& get_final_map_ref() const { return maps->final; }
   std::string to_string() const;
 
   friend class Circuit;
@@ -62,12 +64,8 @@ class CompilationUnit {
                      // satisfy by the end of your Compiler Passes
   mutable PredicateCache cache_;  // updated continuously
 
-  /** Map from original logical qubits to corresponding current qubits wtr
-   * inputs */
-  unit_bimap_t initial_map_;
-  /** Map from original logical qubits to corresponding current qubits wtr
-   * outputs */
-  unit_bimap_t final_map_;
+  // Maps from original logical qubits to corresponding current qubits
+  std::shared_ptr<unit_bimaps_t> maps;
 };
 
 }  // namespace tket

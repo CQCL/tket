@@ -14,6 +14,8 @@
 
 #include "PassGenerators.hpp"
 
+#include <memory>
+
 #include "ArchAwareSynth/SteinerForest.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/Circuit.hpp"
@@ -129,7 +131,12 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps) {
 }
 
 PassPtr gen_rename_qubits_pass(const std::map<Qubit, Qubit>& qm) {
-  Transform t = Transform([=](Circuit& circ) { return circ.rename_units(qm); });
+  Transform t =
+      Transform([=](Circuit& circ, std::shared_ptr<unit_bimaps_t> maps) {
+        bool changed = circ.rename_units(qm);
+        changed |= update_maps(maps, qm, qm);
+        return changed;
+      });
   PredicatePtrMap precons = {};
   PostConditions postcons = {
       {},
@@ -144,18 +151,19 @@ PassPtr gen_rename_qubits_pass(const std::map<Qubit, Qubit>& qm) {
 }
 
 PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
-  Transform::Transformation trans = [=](Circuit& circ) {
+  Transform::Transformation trans = [=](Circuit& circ,
+                                        std::shared_ptr<unit_bimaps_t> maps) {
     // Fall back to line placement if graph placement fails
     bool changed;
     try {
-      changed = placement_ptr->place(circ);
+      changed = placement_ptr->place(circ, maps);
     } catch (const std::runtime_error& e) {
       tket_log()->warn(fmt::format(
           "PlacementPass failed with message: {} Fall back to LinePlacement.",
           e.what()));
       PlacementPtr line_placement_ptr = std::make_shared<LinePlacement>(
           placement_ptr->get_architecture_ref());
-      changed = line_placement_ptr->place(circ);
+      changed = line_placement_ptr->place(circ, maps);
     }
     return changed;
   };
@@ -209,9 +217,10 @@ PassPtr gen_cx_mapping_pass(
 
 PassPtr gen_routing_pass(
     const Architecture& arc, const std::vector<RoutingMethodPtr>& config) {
-  Transform::Transformation trans = [=](Circuit& circ) {
+  Transform::Transformation trans = [=](Circuit& circ,
+                                        std::shared_ptr<unit_bimaps_t> maps) {
     MappingManager mm(std::make_shared<Architecture>(arc));
-    return mm.route_circuit(circ, config);
+    return mm.route_circuit_with_maps(circ, config, maps);
   };
   Transform t = Transform(trans);
 
@@ -248,7 +257,8 @@ PassPtr gen_routing_pass(
 }
 
 PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
-  Transform::Transformation trans = [=](Circuit& circ) {
+  Transform::Transformation trans = [=](Circuit& circ,
+                                        std::shared_ptr<unit_bimaps_t> maps) {
     if (arc.n_nodes() < circ.n_qubits()) {
       throw CircuitInvalidity(
           "Circuit has more qubits than the architecture has nodes.");
@@ -266,6 +276,7 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
     }
 
     circ.rename_units(qubit_to_nodes);
+    update_maps(maps, qubit_to_nodes, qubit_to_nodes);
 
     return true;
   };
@@ -295,7 +306,7 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
 PassPtr aas_routing_pass(
     const Architecture& arc, const unsigned lookahead,
     const aas::CNotSynthType cnotsynthtype) {
-  Transform::Transformation trans = [=](Circuit& circ) {
+  Transform::SimpleTransformation trans = [=](Circuit& circ) {
     // check input:
     if (lookahead == 0) {
       throw std::logic_error("lookahead must be > 0");

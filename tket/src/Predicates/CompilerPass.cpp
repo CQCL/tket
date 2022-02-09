@@ -14,6 +14,8 @@
 
 #include "CompilerPass.hpp"
 
+#include <memory>
+
 #include "Mapping/RoutingMethodJson.hpp"
 #include "PassGenerators.hpp"
 #include "PassLibrary.hpp"
@@ -21,6 +23,7 @@
 #include "Transformations/PauliOptimisation.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/TketLog.hpp"
+#include "Utils/UnitID.hpp"
 
 namespace tket {
 
@@ -195,9 +198,7 @@ bool StandardPass::apply(
         unsatisfied_precon.value()
             ->to_string());  // just raise warning in super-unsafe mode
   // Allow trans_ to update the initial and final map
-  c_unit.circ_.unit_bimaps_ = {&c_unit.initial_map_, &c_unit.final_map_};
-  bool changed = trans_.apply(c_unit.circ_);
-  c_unit.circ_.unit_bimaps_ = {nullptr, nullptr};
+  bool changed = trans_.apply_fn(c_unit.circ_, c_unit.maps);
   update_cache(c_unit, safe_mode);
   after_apply(c_unit, this->get_config());
   return changed;
