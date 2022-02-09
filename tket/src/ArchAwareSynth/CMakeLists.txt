@@ -31,11 +31,10 @@ list(APPEND DEPS_${COMP}
     Converters
     Gate
     Graphs
-    Ops
-    OpType
-    Mapping
     PauliGraph
     Placement
+    Ops
+    OpType
     TokenSwapping
     Utils)
 

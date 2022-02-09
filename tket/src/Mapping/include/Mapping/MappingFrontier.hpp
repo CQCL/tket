@@ -1,5 +1,18 @@
-#ifndef _TKET_MappingFrontier_H_
-#define _TKET_MappingFrontier_H_
+// Copyright 2019-2022 Cambridge Quantum Computing
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+#pragma once
 
 #include "Architecture/Architecture.hpp"
 #include "Circuit/Circuit.hpp"
@@ -8,7 +21,7 @@
 
 namespace tket {
 
-typedef sequenced_map_t<UnitID, VertPort> unit_vertport_frontier_t;
+typedef sequenced_bimap_t<UnitID, VertPort> unit_vertport_frontier_t;
 
 // list of error types to throw out
 class MappingFrontierError : public std::logic_error {
@@ -51,7 +64,11 @@ struct MappingFrontier {
 
   std::set<Node> ancilla_nodes_;
 
+  std::shared_ptr<unit_bimaps_t> bimaps_;
+
   MappingFrontier(Circuit& _circuit);
+
+  MappingFrontier(Circuit& _circuit, std::shared_ptr<unit_bimaps_t> _bimaps);
 
   // copy constructor
   MappingFrontier(const MappingFrontier& mapping_frontier);
@@ -164,8 +181,12 @@ struct MappingFrontier {
    * @param new_boundary Object to reassign with.
    */
   void set_quantum_boundary(const unit_vertport_frontier_t& new_boundary);
+
+  template <typename UnitA, typename UnitB>
+  void update_initial_map(const std::map<UnitA, UnitB>& qm);
+
+  template <typename UnitA, typename UnitB>
+  void update_final_map(const std::map<UnitA, UnitB>& qm);
 };
 
 }  // namespace tket
-
-#endif

@@ -102,13 +102,7 @@ SCENARIO("Test that qubits added via add_qubit are tracked.") {
     circ.add_qubit(weird_qb2);
     circ.add_bit(weird_cb);
 
-    unit_bimap_t* ubmap_initial_missing = circ.unit_bimaps_.initial;
-    REQUIRE(!ubmap_initial_missing);
-
     CompilationUnit cu(circ);
-    // At initialisation, circuit bimaps are set to nullptr
-    unit_bimap_t* ubmap_initial = circ.unit_bimaps_.initial;
-    REQUIRE(!ubmap_initial);
 
     // circuit bimaps property wont be changed, nor will compilation unit
     circ.add_qubit(weird_qb3);
@@ -118,11 +112,16 @@ SCENARIO("Test that qubits added via add_qubit are tracked.") {
     REQUIRE(it == cu_initial.left.end());
 
     // Instead add transform for running it
-    Transform t = Transform([](Circuit& circ) {
-      Qubit weird_qb4("weird_qb", 9);
-      circ.add_qubit(weird_qb4);
-      return true;
-    });
+    Transform t =
+        Transform([](Circuit& circ, std::shared_ptr<unit_bimaps_t> maps) {
+          Qubit weird_qb4("weird_qb", 9);
+          circ.add_qubit(weird_qb4);
+          if (maps) {
+            maps->initial.left.insert({weird_qb4, weird_qb4});
+            maps->final.left.insert({weird_qb4, weird_qb4});
+          }
+          return true;
+        });
 
     // convert to pass
     PredicatePtrMap s_ps;
@@ -799,7 +798,7 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     Circuit result = cu.get_circ_ref();
 
     REQUIRE(test_unitary_comparison(result, circ));
-    REQUIRE(!NoWireSwapsPredicate().verify(result));
+    REQUIRE(NoWireSwapsPredicate().verify(result));
   }
   GIVEN("NoWireSwapsPredicate for ComposePhasePolyBoxes II") {
     Circuit circ(5);
@@ -819,7 +818,73 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     Circuit result = cu.get_circ_ref();
 
     REQUIRE(test_unitary_comparison(result, circ));
-    REQUIRE(!NoWireSwapsPredicate().verify(result));
+    REQUIRE(NoWireSwapsPredicate().verify(result));
+  }
+  GIVEN("NoWireSwapsPredicate for ComposePhasePolyBoxes III") {
+    Circuit circ(5);
+    add_2qb_gates(circ, OpType::CX, {{0, 3}, {1, 4}});
+    circ.add_op<unsigned>(OpType::SWAP, {3, 4});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::Z, {3});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 4});
+    circ.add_op<unsigned>(OpType::Z, {4});
+    circ.add_op<unsigned>(OpType::CX, {1, 4});
+    circ.add_op<unsigned>(OpType::SWAP, {1, 2});
+    circ.add_op<unsigned>(OpType::SWAP, {2, 3});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+
+    REQUIRE(NoWireSwapsPredicate().verify(circ));
+    circ.replace_SWAPs();
+    REQUIRE(!NoWireSwapsPredicate().verify(circ));
+
+    CompilationUnit cu(circ);
+    REQUIRE(ComposePhasePolyBoxes()->apply(cu));
+    Circuit result = cu.get_circ_ref();
+
+    REQUIRE(test_unitary_comparison(result, circ));
+    REQUIRE(NoWireSwapsPredicate().verify(result));
+  }
+  GIVEN("NoWireSwapsPredicate for aas I") {
+    std::vector<Node> nodes = {Node(0), Node(1), Node(2), Node(3), Node(4)};
+    Architecture architecture(
+        {{nodes[0], nodes[1]},
+         {nodes[1], nodes[2]},
+         {nodes[2], nodes[3]},
+         {nodes[3], nodes[4]}});
+
+    Circuit circ(5);
+    add_2qb_gates(circ, OpType::CX, {{0, 3}, {1, 4}});
+    circ.add_op<unsigned>(OpType::SWAP, {3, 4});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::Z, {3});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 4});
+    circ.add_op<unsigned>(OpType::Z, {4});
+    circ.add_op<unsigned>(OpType::CX, {1, 4});
+    circ.add_op<unsigned>(OpType::SWAP, {1, 2});
+    circ.add_op<unsigned>(OpType::SWAP, {2, 3});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+
+    REQUIRE(NoWireSwapsPredicate().verify(circ));
+    circ.replace_SWAPs();
+    REQUIRE(!NoWireSwapsPredicate().verify(circ));
+
+    CompilationUnit cu(circ);
+
+    REQUIRE(gen_full_mapping_pass_phase_poly(
+                architecture, 1, aas::CNotSynthType::Rec)
+                ->apply(cu));
+    Circuit result = cu.get_circ_ref();
+
+    REQUIRE(test_unitary_comparison(result, circ));
+    REQUIRE(NoWireSwapsPredicate().verify(result));
   }
 }
 

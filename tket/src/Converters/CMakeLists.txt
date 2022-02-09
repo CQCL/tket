@@ -31,8 +31,7 @@ list(APPEND DEPS_${COMP}
     Circuit
     Clifford
     Diagonalisation
-    Gate
-    Mapping
+    Gate    
     Ops
     OpType
     PauliGraph

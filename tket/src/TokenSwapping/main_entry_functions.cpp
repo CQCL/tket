@@ -66,6 +66,8 @@ std::vector<std::pair<Node, Node>> get_swaps(
   return swaps;
 }
 
+// TODO: we really should add tests for this!
+// GCOVR_EXCL_START
 std::tuple<Circuit, unit_map_t, unit_map_t> get_swaps(
     const Architecture& architecture,
     const unit_map_t& initial_logical_to_physical_map,
@@ -139,5 +141,6 @@ std::tuple<Circuit, unit_map_t, unit_map_t> get_swaps(
   }
   return result;
 }
+// GCOVR_EXCL_STOP
 
 }  // namespace tket

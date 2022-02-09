@@ -109,10 +109,11 @@ const CanonicalRelabelling::Result& CanonicalRelabelling::operator()(
   for (unsigned ii = 0; ii < m_result.new_to_old_vertices.size(); ++ii) {
     m_result.old_to_new_vertices[m_result.new_to_old_vertices[ii]] = ii;
   }
+  // GCOVR_EXCL_START
   TKET_ASSERT(
       m_result.new_to_old_vertices.size() ==
       m_result.old_to_new_vertices.size());
-
+  // GCOVR_EXCL_STOP
   // And finally, the permutation hash.
   m_result.permutation_hash = 0;
   for (auto ii : m_sorted_cycles_indices) {

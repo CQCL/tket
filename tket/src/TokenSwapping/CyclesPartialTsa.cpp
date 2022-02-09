@@ -23,6 +23,7 @@ namespace tsa_internal {
 
 CyclesPartialTsa::CyclesPartialTsa() { m_name = "Cycles"; }
 
+// GCOVR_EXCL_START
 CyclesGrowthManager::Options& CyclesPartialTsa::growth_options() {
   return m_growth_manager.get_options();
 }
@@ -30,6 +31,7 @@ CyclesGrowthManager::Options& CyclesPartialTsa::growth_options() {
 CyclesCandidateManager::Options& CyclesPartialTsa::candidate_options() {
   return m_candidate_manager.get_options();
 }
+// GCOVR_EXCL_STOP
 
 void CyclesPartialTsa::append_partial_solution(
     SwapList& swaps, VertexMapping& vertex_mapping,

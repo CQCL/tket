@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <iostream>
 #include <map>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <utility>
@@ -240,16 +241,19 @@ class Placement {
   /**
    * Modify qubits in place.
    *
-   * @return true iff circuit is modified
+   * @return true iff circuit or maps are modified
    */
-  bool place(Circuit& circ_) const;
+  bool place(
+      Circuit& circ_, std::shared_ptr<unit_bimaps_t> maps = nullptr) const;
 
   /**
    * Relabel circuit qubits to device nodes according to given map.
    *
-   * @return true iff circuit was modified
+   * @return true iff circuit or maps were modified
    */
-  static bool place_with_map(Circuit& circ_, qubit_mapping_t& map_);
+  static bool place_with_map(
+      Circuit& circ, qubit_mapping_t& map_,
+      std::shared_ptr<unit_bimaps_t> maps = nullptr);
 
   virtual qubit_mapping_t get_placement_map(const Circuit& circ_) const;
 

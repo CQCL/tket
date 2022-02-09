@@ -1,44 +1,50 @@
+// Copyright 2019-2022 Cambridge Quantum Computing
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 #include "Mapping/RoutingMethodJson.hpp"
 
 namespace tket {
 
 void to_json(nlohmann::json& j, const RoutingMethod& rm) { j = rm.serialize(); }
 
-void from_json(const nlohmann::json& j, RoutingMethod& rm) {
-  std::string name = j.at("name").get<std::string>();
-  if (name == "LexiRouteRoutingMethod") {
-    rm = LexiRouteRoutingMethod::deserialize(j);
-  } else if (name == "MultiGateReorderRoutingMethod") {
-    rm = MultiGateReorderRoutingMethod::deserialize(j);
-  } else if (name == "BoxDecompositionRoutingMethod") {
-    rm = BoxDecompositionRoutingMethod::deserialize(j);
-  } else {
-    throw JsonError(
-        "Deserialization not yet implemented for generic RoutingMethod "
-        "objects.");
-  }
+void from_json(const nlohmann::json& /*j*/, RoutingMethod& rm) {
+  rm = RoutingMethod();
 }
 
-void to_json(nlohmann::json& j, const std::vector<RoutingMethodPtr>& rmp) {
-  for (const auto& r : rmp) {
+void to_json(nlohmann::json& j, const std::vector<RoutingMethodPtr>& rmp_v) {
+  for (const auto& r : rmp_v) {
     j.push_back(*r);
   }
 }
 
-void from_json(const nlohmann::json& j, std::vector<RoutingMethodPtr>& rmp) {
+void from_json(const nlohmann::json& j, std::vector<RoutingMethodPtr>& rmp_v) {
   for (const auto& c : j) {
     std::string name = c.at("name").get<std::string>();
     if (name == "LexiRouteRoutingMethod") {
-      rmp.push_back(std::make_shared<LexiRouteRoutingMethod>(
+      rmp_v.push_back(std::make_shared<LexiRouteRoutingMethod>(
           LexiRouteRoutingMethod::deserialize(c)));
+    } else if (name == "RoutingMethod") {
+      rmp_v.push_back(std::make_shared<RoutingMethod>());
     } else if (name == "MultiGateReorderRoutingMethod") {
-      rmp.push_back(std::make_shared<MultiGateReorderRoutingMethod>(
+      rmp_v.push_back(std::make_shared<MultiGateReorderRoutingMethod>(
           MultiGateReorderRoutingMethod::deserialize(c)));
     } else if (name == "BoxDecompositionRoutingMethod") {
       rmp.push_back(std::make_shared<BoxDecompositionRoutingMethod>(
           BoxDecompositionRoutingMethod::deserialize(c)));
     } else {
-      rmp.push_back(std::make_shared<RoutingMethod>(c.get<RoutingMethod>()));
+      std::logic_error(
+          "Deserialization for given RoutingMethod not supported.");
     }
   }
 }

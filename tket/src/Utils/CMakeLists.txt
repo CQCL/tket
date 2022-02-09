@@ -19,7 +19,6 @@ if (NOT ${COMP} STREQUAL "Utils")
 endif()
 
 add_library(tket-${COMP}
-    AssertMessage.cpp
     TketLog.cpp
     UnitID.cpp
     HelperFunctions.cpp
@@ -43,4 +42,6 @@ target_include_directories(tket-${COMP}
     ${TKET_${COMP}_INCLUDE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
+target_link_libraries(tket-${COMP} PUBLIC
+    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG})
 target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS_SYMENGINE})

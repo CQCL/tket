@@ -225,9 +225,8 @@ static void set_lifted_triplets(
 
   const SimUInt free_bits_limit =
       get_matrix_size(full_number_of_qubits - qubits.size());
-  if (free_bits_limit == 0) {
-    throw std::runtime_error("Too many bits");
-  }
+  TKET_ASSERT(free_bits_limit != 0 || !"Too many bits");
+
   for (SimUInt free_bits = 0; free_bits < free_bits_limit; ++free_bits) {
     const SimUInt expanded_free_bits =
         get_expanded_bits(expansion_data, free_bits);

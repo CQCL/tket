@@ -36,15 +36,14 @@ void check_mapping(
     const VertexMapping& vertex_mapping, VertexMapping& work_mapping) {
   work_mapping.clear();
   for (const auto& entry : vertex_mapping) {
-    if (work_mapping.count(entry.second) == 0) {
-      work_mapping[entry.second] = entry.first;
-    } else {
-      std::stringstream ss;
-      ss << "Vertices v_" << entry.first << " and v_"
-         << work_mapping[entry.second] << " both have the same target vertex v_"
-         << entry.second;
-      throw std::runtime_error(ss.str());
-    }
+    // GCOVR_EXCL_START
+    TKET_ASSERT_WITH_MESSAGE(
+        work_mapping.count(entry.second) == 0,
+        "Vertices v_" << entry.first << " and v_" << work_mapping[entry.second]
+                      << " both have the same target vertex v_"
+                      << entry.second);
+    // GCOVR_EXCL_STOP
+    work_mapping[entry.second] = entry.first;
   }
 }
 
