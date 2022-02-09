@@ -74,7 +74,7 @@ from pytket.predicates import (  # type: ignore
     CompilationUnit,
     UserDefinedPredicate,
 )
-from pytket.mapping import LabellingRoutingMethod, LexiRouteRoutingMethod  # type: ignore
+from pytket.mapping import LexiLabellingMethod, LexiRouteRoutingMethod  # type: ignore
 from pytket.architecture import Architecture  # type: ignore
 from pytket.placement import Placement, GraphPlacement  # type: ignore
 from pytket.transform import Transform, PauliSynthStrat, CXConfigType  # type: ignore
@@ -215,7 +215,7 @@ def test_routing_and_placement_pass() -> None:
     assert cu2.initial_map == expected_map
 
     full_pass = FullMappingPass(
-        arc, pl, config=[LabellingRoutingMethod(), LexiRouteRoutingMethod()]
+        arc, pl, config=[LexiLabellingMethod(), LexiRouteRoutingMethod()]
     )
     cu3 = CompilationUnit(circ.copy())
     assert full_pass.apply(cu3)
@@ -660,7 +660,7 @@ def test_generated_pass_config() -> None:
     ]
     # FullMappingPass
     fm_pass = FullMappingPass(
-        arc, placer, config=[LabellingRoutingMethod(), LexiRouteRoutingMethod()]
+        arc, placer, config=[LexiLabellingMethod(), LexiRouteRoutingMethod()]
     )
     assert fm_pass.to_dict()["pass_class"] == "SequencePass"
     p_pass = fm_pass.get_sequence()[0]

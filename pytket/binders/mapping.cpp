@@ -65,7 +65,8 @@ PYBIND11_MODULE(mapping, m) {
       RoutingMethod>(
       m, "LexiRouteRoutingMethod",
       "Defines a RoutingMethod object for mapping circuits that uses the "
-      "Lexicographical Comparison approach outlined in arXiv:1902.08091.")
+      "Lexicographical Comparison approach outlined in arXiv:1902.08091."
+      "Only supports 1-qubit, 2-qubit and barrier gates.")
       .def(
           py::init<unsigned>(),
           "LexiRouteRoutingMethod constructor.\n\n:param lookahead: Maximum "
@@ -76,12 +77,11 @@ PYBIND11_MODULE(mapping, m) {
           py::arg("lookahead") = 10);
 
   py::class_<
-      LabellingRoutingMethod, std::shared_ptr<LabellingRoutingMethod>,
-      RoutingMethod>(
-      m, "LabellingRoutingMethod",
+      LexiLabellingMethod, std::shared_ptr<LexiLabellingMethod>, RoutingMethod>(
+      m, "LexiLabellingMethod",
       "Defines a RoutingMethod for labelling Qubits that uses the "
       "Lexicographical Comparison approach outlined in arXiv:1902.08091.")
-      .def(py::init<>(), "LabellingRoutingMethod constructor.");
+      .def(py::init<>(), "LexiLabellingMethod constructor.");
 
   py::class_<MappingManager>(
       m, "MappingManager",

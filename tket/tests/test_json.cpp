@@ -436,7 +436,7 @@ SCENARIO("Test RoutingMethod serializations") {
 
   std::vector<RoutingMethodPtr> rmp = {
       std::make_shared<RoutingMethod>(rm),
-      std::make_shared<LabellingRoutingMethod>(),
+      std::make_shared<LexiLabellingMethod>(),
       std::make_shared<LexiRouteRoutingMethod>(5)};
 
   nlohmann::json rmp_j = rmp;

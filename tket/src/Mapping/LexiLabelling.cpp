@@ -1,8 +1,21 @@
+// Copyright 2019-2022 Cambridge Quantum Computing
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 #include "Mapping/LexiLabelling.hpp"
 
 namespace tket {
 
-bool LabellingRoutingMethod::check_method(
+bool LexiLabellingMethod::check_method(
     const std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& architecture) const {
   std::set<Node> already_checked;
@@ -16,15 +29,14 @@ bool LabellingRoutingMethod::check_method(
     // i.e. skip already checked vertices
     if (already_checked.find(node) == already_checked.end()) {
       already_checked.insert(node);
-      // for coutner<n_edges check, to avoid iterating through many many qubits
+      // for counter<n_edges check, to avoid iterating through many many qubits
       int n_edges =
           mapping_frontier->circuit_.n_in_edges_of_type(v0, EdgeType::Quantum);
       int counter = 1;  // 1 edge
       auto jt = it;
       ++jt;
-      for (; jt != mapping_frontier->quantum_boundary->get<TagKey>().end() &&
-             counter < n_edges;
-           ++jt) {
+      while (jt != mapping_frontier->quantum_boundary->get<TagKey>().end() &&
+             counter < n_edges) {
         Edge e1 = mapping_frontier->circuit_.get_nth_out_edge(
             jt->second.first, jt->second.second);
         Vertex v1 = mapping_frontier->circuit_.target(e1);
@@ -37,13 +49,14 @@ bool LabellingRoutingMethod::check_method(
             return true;
           }
         }
+        ++jt;
       }
     }
   }
   return false;
 }
 
-unit_map_t LabellingRoutingMethod::routing_method(
+unit_map_t LexiLabellingMethod::routing_method(
     std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& architecture) const {
   LexiRoute lr(architecture, mapping_frontier);
@@ -51,15 +64,15 @@ unit_map_t LabellingRoutingMethod::routing_method(
   return {};
 }
 
-nlohmann::json LabellingRoutingMethod::serialize() const {
+nlohmann::json LexiLabellingMethod::serialize() const {
   nlohmann::json j;
-  j["name"] = "LabellingRoutingMethod";
+  j["name"] = "LexiLabellingMethod";
   return j;
 }
 
-LabellingRoutingMethod LabellingRoutingMethod::deserialize(
+LexiLabellingMethod LexiLabellingMethod::deserialize(
     const nlohmann::json& /*j*/) {
-  return LabellingRoutingMethod();
+  return LexiLabellingMethod();
 }
 
 }  // namespace tket

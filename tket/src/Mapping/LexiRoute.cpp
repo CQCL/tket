@@ -197,9 +197,8 @@ void LexiRoute::set_interacting_uids(bool assigned_only) {
       if (n_edges == 2) {
         auto jt = it;
         ++jt;
-        for (; jt !=
-               this->mapping_frontier_->quantum_boundary->get<TagKey>().end();
-             ++jt) {
+        while (jt !=
+               this->mapping_frontier_->quantum_boundary->get<TagKey>().end()) {
           // i.e. if vertices match
           Edge e1 = this->mapping_frontier_->circuit_.get_nth_out_edge(
               jt->second.first, jt->second.second);
@@ -215,6 +214,7 @@ void LexiRoute::set_interacting_uids(bool assigned_only) {
               interacting_uids_.insert({jt->first, it->first});
             }
           }
+          ++jt;
         }
       } else if (
           n_edges > 2 &&
@@ -513,6 +513,8 @@ bool LexiRouteRoutingMethod::check_method(
   std::set<Vertex> unplaced;
   for (const std::pair<UnitID, VertPort>& pair :
        mapping_frontier->quantum_boundary->get<TagKey>()) {
+    //  only supports single qubit, two-qubit gates, barrier gates
+    // and BRIDGE gates added by the routing code
     if ((mapping_frontier->circuit_.n_in_edges_of_type(
              pair.second.first, EdgeType::Quantum) > 2 &&
          mapping_frontier->circuit_.get_OpType_from_Vertex(pair.second.first) !=

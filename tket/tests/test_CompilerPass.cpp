@@ -256,7 +256,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     PlacementPtr pp = std::make_shared<GraphPlacement>(grid);
     PassPtr cp_route = gen_full_mapping_pass(
         grid, pp,
-        {std::make_shared<LabellingRoutingMethod>(),
+        {std::make_shared<LexiLabellingMethod>(),
          std::make_shared<LexiRouteRoutingMethod>(50)});
 
     PassPtr all_passes = SynthesiseHQS() >> SynthesiseOQC() >>
@@ -904,7 +904,7 @@ SCENARIO("Precomposed passes successfully compose") {
   GIVEN("gen_directed_cx_routing_pass") {
     RingArch arc(6);
     REQUIRE_NOTHROW(gen_directed_cx_routing_pass(
-        arc, {std::make_shared<LabellingRoutingMethod>(),
+        arc, {std::make_shared<LexiLabellingMethod>(),
               std::make_shared<LexiRouteRoutingMethod>(50)}));
   }
 }
@@ -927,7 +927,7 @@ SCENARIO("Test Pauli Graph Synthesis Pass") {
 SCENARIO("Compose Pauli Graph synthesis Passes") {
   RingArch arc(10);
   PassPtr dir_pass = gen_directed_cx_routing_pass(
-      arc, {std::make_shared<LabellingRoutingMethod>(),
+      arc, {std::make_shared<LexiLabellingMethod>(),
             std::make_shared<LexiRouteRoutingMethod>(50)});
   GIVEN("Special UCC Synthesis") {
     PassPtr spec_ucc = gen_special_UCC_synthesis();
@@ -1013,7 +1013,7 @@ SCENARIO("Commute measurements to the end of a circuit") {
     PlacementPtr pp = std::make_shared<LinePlacement>(line);
     PassPtr route_pass = gen_full_mapping_pass(
         line, pp,
-        {std::make_shared<LabellingRoutingMethod>(),
+        {std::make_shared<LexiLabellingMethod>(),
          std::make_shared<LexiRouteRoutingMethod>(50)});
     CompilationUnit cu(test);
     route_pass->apply(cu);
@@ -1085,7 +1085,7 @@ SCENARIO("CX mapping pass") {
     // Route
     CompilationUnit cu_route(c_placed);
     gen_routing_pass(
-        line, {std::make_shared<LabellingRoutingMethod>(),
+        line, {std::make_shared<LexiLabellingMethod>(),
                std::make_shared<LexiRouteRoutingMethod>(50)})
         ->apply(cu_route);
     const Circuit& c_routed = cu_route.get_circ_ref();
