@@ -21,6 +21,25 @@ set(TEST_SOURCES
     # the more complicated things that rely on them (e.g. Routing,
     # Transform) to help identify exactly where stuff breaks
     ${TKET_TESTS_DIR}/tests_main.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_BitFunctions.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_DyadicFraction.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_GeneralUtils.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/DomainInitialising/test_DistanceCounts.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/GraphTheoretic/test_NeighboursData.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Searching/test_SolutionWSM.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_CubicLattice.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_FixedSmallGraphs.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_RandomGraphs.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_SnakeIntoSquareGrid.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_SquareGrids.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_UnweightedProblems.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/CheckedSolution.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/FixedArchitectures.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/GraphGeneration.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/ProblemGeneration.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/SquareGridGeneration.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/TestSettings.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/test_SquareGridGeneration.cpp
     ${TKET_TESTS_DIR}/testutil.cpp
     ${TKET_TESTS_DIR}/CircuitsForTesting.cpp
     ${TKET_TESTS_DIR}/Utils/test_MatrixAnalysis.cpp
@@ -53,6 +72,10 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Circuit/test_Circ.cpp
     ${TKET_TESTS_DIR}/Circuit/test_Symbolic.cpp
     ${TKET_TESTS_DIR}/Circuit/test_ThreeQubitConversion.cpp
+    ${TKET_TESTS_DIR}/PlacementWithWSM/test_CalculatedPlacementMap.cpp
+    ${TKET_TESTS_DIR}/PlacementWithWSM/test_FullPlacementResult.cpp
+    ${TKET_TESTS_DIR}/PlacementWithWSM/test_PatternGraphTimeSlices.cpp
+    ${TKET_TESTS_DIR}/PlacementWithWSM/test_TargetGraphData.cpp
     ${TKET_TESTS_DIR}/test_Program.cpp
     ${TKET_TESTS_DIR}/test_CliffTableau.cpp
     ${TKET_TESTS_DIR}/test_UnitaryTableau.cpp

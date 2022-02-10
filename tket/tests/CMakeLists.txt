@@ -57,12 +57,14 @@ target_link_libraries(test_tket PRIVATE
     tket-Ops
     tket-OpType
     tket-PauliGraph
+    tket-PlacementWithWSM
     tket-Predicates
     tket-Program
     tket-Routing
     tket-Simulation
     tket-Transformations
     tket-Utils
+    tket-WeightSubgrMono
     tket-ZX)
 
 target_link_libraries(test_tket PRIVATE
