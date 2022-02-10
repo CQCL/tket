@@ -145,6 +145,8 @@ size_t RNG::get_size_t(size_t min_value, size_t max_value) {
   return min_value + get_size_t(max_value - min_value);
 }
 
+std::uint64_t RNG::operator()() { return m_engine(); }
+
 vector<size_t> RNG::get_permutation(size_t size) {
   vector<size_t> numbers(size);
   for (size_t i = 0; i < size; ++i) {

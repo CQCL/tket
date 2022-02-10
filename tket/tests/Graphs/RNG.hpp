@@ -15,6 +15,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cstdint>
 #include <random>
 #include <stdexcept>
 #include <vector>
@@ -66,6 +67,12 @@ class RNG {
    * @return A size_t from the inclusive range {0,1,2,...,N}.
    */
   std::size_t get_size_t(std::size_t max_value);
+
+  /** Returns the next 64-bit integer; guaranteed by the C++ standard
+   * to be portable.
+   * @return A 64-bit unsigned integer, should be roughly uniform.
+   */
+  std::uint64_t operator()();
 
   /**
    * Returns a number in the inclusive interval, including the endpoints.
