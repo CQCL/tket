@@ -216,7 +216,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     Circuit cx(2);
     cx.add_op<unsigned>(OpType::CX, {0, 1});
     PassPtr pz_rebase = gen_rebase_pass(
-        {OpType::CX}, cx, {OpType::PhasedX, OpType::Rz},
+        {OpType::CX, OpType::PhasedX, OpType::Rz}, cx,
         Transforms::tk1_to_PhasedXRz);
     PassPtr all_passes = SynthesiseTket() >> cp_route >> pz_rebase;
 
@@ -1046,8 +1046,9 @@ SCENARIO("CX mapping pass") {
     PlacementPtr placer = std::make_shared<NoiseAwarePlacement>(line);
     Circuit cx(2);
     cx.add_op<unsigned>(OpType::CX, {0, 1});
-    PassPtr rebase = gen_rebase_pass(
-        {OpType::CX}, cx, all_single_qubit_types(), Transforms::tk1_to_tk1);
+    OpTypeSet gateset = all_single_qubit_types();
+    gateset.insert(OpType::CX);
+    PassPtr rebase = gen_rebase_pass(gateset, cx, Transforms::tk1_to_tk1);
 
     // Circuit mapping basis states to basis states
     Circuit c(3);
