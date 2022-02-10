@@ -141,7 +141,10 @@ PYBIND11_MODULE(routing, m) {
             return "<tket::Architecture, nodes=" +
                    std::to_string(arc.n_nodes()) + ">";
           })
-      .def(py::self == py::self);
+      .def(py::self == py::self)
+      .def("__eq__", [](const py::object, const py::object) -> bool {
+        throw py::type_error("Equality is only defined between Architectures");
+      });
   py::class_<SquareGrid, Architecture, graphs::AbstractGraph<Node>>(
       m, "SquareGrid",
       "Architecture class for qubits arranged in a square lattice of "
@@ -217,6 +220,12 @@ PYBIND11_MODULE(routing, m) {
                    std::to_string(arc.n_nodes()) + ">";
           })
       .def(py::self == py::self)
+      .def(
+          "__eq__",
+          [](const py::object, const py::object) -> bool {
+            throw py::type_error(
+                "Equality is only defined between FullyConnected objects");
+          })
       .def_property_readonly(
           "nodes", &FullyConnected::get_all_nodes_vec,
           "All nodes of the architecture as :py:class:`Node` objects.")

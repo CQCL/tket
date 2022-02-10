@@ -82,6 +82,11 @@ void init_circuit(py::module &m) {
           py::arg("name") = std::nullopt)
       .def("__eq__", &Circuit::operator==)
       .def(
+          "__eq__",
+          [](const py::object, const py::object) -> bool {
+            throw py::type_error("Equality is only defined between Circuits");
+          })
+      .def(
           "__str__",
           [](const Circuit &circ) {
             return "<tket::Circuit, qubits=" + std::to_string(circ.n_qubits()) +

@@ -43,6 +43,12 @@ void declare_register(py::module &m, const std::string &typestr) {
       .def("__getitem__", &UnitRegister<T>::operator[])
       .def("__lt__", &UnitRegister<T>::operator<)
       .def("__eq__", &UnitRegister<T>::operator==)
+      .def(
+          "__eq__",
+          [](const py::object, const py::object) -> bool {
+            throw py::type_error(
+                "Equality is only defined between UnitIRegisters");
+          })
       .def("__contains__", &UnitRegister<T>::contains)
       .def("__len__", &UnitRegister<T>::size)
       .def("__str__", &UnitRegister<T>::name)
@@ -86,6 +92,11 @@ void init_unitid(py::module &m) {
   py::class_<UnitID>(
       m, "UnitID", "A handle to a computational unit (e.g. qubit, bit)")
       .def("__eq__", &UnitID::operator==)
+      .def(
+          "__eq__",
+          [](const py::object, const py::object) -> bool {
+            throw py::type_error("Equality is only defined between UnitIDs");
+          })
       .def("__lt__", &UnitID::operator<)
       .def("__repr__", &UnitID::repr)
       .def("__hash__", [](const UnitID &id) { return hash_value(id); })

@@ -73,6 +73,11 @@ PYBIND11_MODULE(circuit, m) {
           "get_name", &Op::get_name, "String representation of op",
           py::arg("latex") = false)
       .def("__eq__", &Op::operator==)
+      .def(
+          "__eq__",
+          [](const py::object, const py::object) -> bool {
+            throw py::type_error("Equality is only defined between Ops");
+          })
       .def("__repr__", [](const Op &op) { return op.get_name(); })
       .def("free_symbols", [](const Op &op) { return op.free_symbols(); })
       .def(
@@ -474,6 +479,11 @@ PYBIND11_MODULE(circuit, m) {
       "A single quantum command in the circuit, defined by the Op, the "
       "qubits it acts on, and the op group name if any.")
       .def("__eq__", &Command::operator==)
+      .def(
+          "__eq__",
+          [](const py::object, const py::object) -> bool {
+            throw py::type_error("Equality is only defined between Commands");
+          })
       .def("__repr__", &Command::to_str)
       .def_property_readonly(
           "op", &Command::get_op_ptr, "Operation for this command.")
