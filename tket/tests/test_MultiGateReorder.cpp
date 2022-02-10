@@ -44,7 +44,8 @@ SCENARIO("Reorder circuits") {
       for (auto arg : commands[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(nodes));
+      REQUIRE(shared_arc->valid_operation(
+          commands[i].get_op_ptr()->get_type(), nodes));
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -85,7 +86,8 @@ SCENARIO("Reorder circuits") {
       for (auto arg : commands[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(nodes));
+      REQUIRE(shared_arc->valid_operation(
+          commands[i].get_op_ptr()->get_type(), nodes));
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -131,7 +133,8 @@ SCENARIO("Reorder circuits") {
       for (auto arg : commands[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(nodes));
+      REQUIRE(shared_arc->valid_operation(
+          commands[i].get_op_ptr()->get_type(), nodes));
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -178,7 +181,8 @@ SCENARIO("Reorder circuits") {
       for (auto arg : commands[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(nodes));
+      REQUIRE(shared_arc->valid_operation(
+          commands[i].get_op_ptr()->get_type(), nodes));
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -220,8 +224,10 @@ SCENARIO("Reorder circuits with limited search space") {
     // Check only the first valid CZ get commuted to the front
     std::vector<Command> commands = circ.get_commands();
     REQUIRE(shared_arc->valid_operation(
+        commands[0].get_op_ptr()->get_type(),
         {Node(commands[0].get_args()[0]), Node(commands[0].get_args()[1])}));
     REQUIRE(!shared_arc->valid_operation(
+        commands[1].get_op_ptr()->get_type(),
         {Node(commands[1].get_args()[0]), Node(commands[1].get_args()[1])}));
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -273,7 +279,8 @@ SCENARIO("Test MultiGateReorderRoutingMethod") {
       for (auto arg : commands[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(nodes));
+      REQUIRE(shared_arc->valid_operation(
+          commands[i].get_op_ptr()->get_type(), nodes));
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -297,13 +304,15 @@ SCENARIO("Test MultiGateReorderRoutingMethod") {
       for (auto arg : commands2[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(nodes));
+      REQUIRE(shared_arc->valid_operation(
+          commands2[i].get_op_ptr()->get_type(), nodes));
     }
     std::vector<Node> nodes;
     for (auto arg : commands2[4].get_args()) {
       nodes.push_back(Node(arg));
     }
-    REQUIRE(!shared_arc->valid_operation(nodes));
+    REQUIRE(!shared_arc->valid_operation(
+        commands2[4].get_op_ptr()->get_type(), nodes));
     const auto u2 = tket_sim::get_unitary(circ2);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(
         u2, u1, tket_sim::MatrixEquivalence::EQUAL));

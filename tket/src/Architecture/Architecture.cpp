@@ -19,6 +19,7 @@
 #include <vector>
 
 #include "Graphs/ArticulationPoints.hpp"
+#include "Ops/Op.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/UnitID.hpp"
 
@@ -27,29 +28,38 @@ namespace tket {
 // basic implementation that works off same prior assumptions
 // TODO: Update this for more mature systems of multi-qubit gates
 bool Architecture::valid_operation(
-    /*const OpType& optype, */ const std::vector<Node>& uids) const {
-  if (uids.size() ==
-      1) {  // TODO: for simple case here this should probably not pass if
-            // node_exists[uids[0]] == FALSE, but should be fine for now?
-    return true;
-  } else if (uids.size() == 2) {
+    const OpType& optype, const std::vector<Node>& uids) const {
+  if (is_box_type(optype)) {
+    return false;
+  } else if (is_single_qubit_type(optype)) {
+    if (uids.size() == 1) {
+      // TODO: for simple case here this should probably not pass if
+      // node_exists[uids[0]] == FALSE, but should be fine for now?
+      return true;
+    }
+    return false;
+  } else if (is_multi_qubit_type(optype)) {
     if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
         (this->edge_exists(uids[0], uids[1]) ||
          this->edge_exists(uids[1], uids[0]))) {
       return true;
     }
-  } else if (uids.size() == 3) {
-    bool con_0_exists =
-        (this->edge_exists(uids[0], uids[1]) ||
-         this->edge_exists(uids[1], uids[0]));
-    bool con_1_exists =
-        (this->edge_exists(uids[2], uids[1]) ||
-         this->edge_exists(uids[1], uids[2]));
-    if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
-        this->node_exists(uids[2]) && con_0_exists && con_1_exists) {
-      return true;
+  }
+  if (optype == OpType::BRIDGE) {
+    if (uids.size() == 3) {
+      bool con_0_exists =
+          (this->edge_exists(uids[0], uids[1]) ||
+           this->edge_exists(uids[1], uids[0]));
+      bool con_1_exists =
+          (this->edge_exists(uids[2], uids[1]) ||
+           this->edge_exists(uids[1], uids[2]));
+      if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
+          this->node_exists(uids[2]) && con_0_exists && con_1_exists) {
+        return true;
+      }
     }
   }
+
   return false;
 }
 
@@ -64,8 +74,8 @@ Architecture Architecture::create_subarch(
   return subarc;
 }
 
-// Given a vector of lengths of lines, returns a vector of lines of these sizes
-// comprised of architecture nodes
+// Given a vector of lengths of lines, returns a vector of lines of these
+// sizes comprised of architecture nodes
 std::vector<node_vector_t> Architecture::get_lines(
     std::vector<unsigned> required_lengths) const {
   // check total length doesn't exceed number of nodes

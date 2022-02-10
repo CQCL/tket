@@ -24,6 +24,8 @@ add_library(tket-${COMP}
 
 list(APPEND DEPS_${COMP}
     Graphs
+    Ops
+    OpType
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})
