@@ -189,34 +189,40 @@ void LexiRoute::set_interacting_uids(bool assigned_only) {
         it->second.first, it->second.second);
     Vertex v0 = this->mapping_frontier_->circuit_.target(e0);
     // should never be input vertex, so can always use in_edges
-    int n_edges = this->mapping_frontier_->circuit_.n_in_edges_of_type(
-        v0, EdgeType::Quantum);
-    if (n_edges == 2) {
-      auto jt = it;
-      ++jt;
-      for (;
-           jt != this->mapping_frontier_->quantum_boundary->get<TagKey>().end();
-           ++jt) {
-        // i.e. if vertices match
-        Edge e1 = this->mapping_frontier_->circuit_.get_nth_out_edge(
-            jt->second.first, jt->second.second);
-        Vertex v1 = this->mapping_frontier_->circuit_.target(e1);
-        if (v0 == v1) {
-          // we can assume a qubit will only be in one interaction
-          // we can assume from how we iterate through pairs that each qubit
-          // will only be found in one match
-          if (!assigned_only ||
-              (this->architecture_->node_exists(Node(it->first)) &&
-               this->architecture_->node_exists(Node(jt->first)))) {
-            interacting_uids_.insert({it->first, jt->first});
-            interacting_uids_.insert({jt->first, it->first});
+    if (this->mapping_frontier_->circuit_.get_OpType_from_Vertex(v0) !=
+        OpType::Barrier) {
+      int n_edges = this->mapping_frontier_->circuit_.n_in_edges_of_type(
+          v0, EdgeType::Quantum);
+      // make forwards = backwards
+      if (n_edges == 2) {
+        auto jt = it;
+        ++jt;
+        while (jt !=
+               this->mapping_frontier_->quantum_boundary->get<TagKey>().end()) {
+          // i.e. if vertices match
+          Edge e1 = this->mapping_frontier_->circuit_.get_nth_out_edge(
+              jt->second.first, jt->second.second);
+          Vertex v1 = this->mapping_frontier_->circuit_.target(e1);
+          if (v0 == v1) {
+            // we can assume a qubit will only be in one interaction
+            // we can assume from how we iterate through pairs that each qubit
+            // will only be found in one match
+            if (!assigned_only ||
+                (this->architecture_->node_exists(Node(it->first)) &&
+                 this->architecture_->node_exists(Node(jt->first)))) {
+              interacting_uids_.insert({it->first, jt->first});
+              interacting_uids_.insert({jt->first, it->first});
+            }
           }
+          ++jt;
         }
+      } else if (
+          n_edges > 2 &&
+          this->mapping_frontier_->circuit_.get_OpType_from_Vertex(v0) !=
+              OpType::Barrier) {
+        throw LexiRouteError(
+            "LexiRoute only supports non-Barrier vertices with 1 or 2 edges.");
       }
-    } else if (
-        n_edges > 2 && this->mapping_frontier_->circuit_.get_OpType_from_Vertex(
-                           v0) != OpType::Barrier) {
-      TKET_ASSERT(!"Non-Barrier vertex should only have 1 or 2 edges.");
     }
   }
 }
@@ -394,6 +400,12 @@ void LexiRoute::remove_swaps_decreasing(swap_set_t& swaps) {
   }
 }
 
+void LexiRoute::solve_labelling() {
+  this->update_labelling();
+  this->mapping_frontier_->update_quantum_boundary_uids(this->labelling_);
+  return;
+}
+
 void LexiRoute::solve(unsigned lookahead) {
   // store a copy of the original this->mapping_frontier_->quantum_boundray
   // this object will be updated and reset throughout the swap picking procedure
@@ -403,22 +415,8 @@ void LexiRoute::solve(unsigned lookahead) {
        this->mapping_frontier_->quantum_boundary->get<TagKey>()) {
     copy.insert({pair.first, pair.second});
   }
-  // some Qubits in boundary of this->mapping_frontier_->circuit_ may not be
-  // this->architecture_ Node If true, assign physical meaning by replacing with
-  // Node from this->architecture_
-  // "candidate_swaps" are connected pairs of Node in this->architecture_ s.t.
-  // at least one is in an "interaction" and both are "assigned" i.e. present in
-  // this->mapping_frontier_->circuit
-
-  bool updated = this->update_labelling();
-  if (updated) {
-    // update unit id at boundary in case of relabelling
-    this->mapping_frontier_->update_quantum_boundary_uids(this->labelling_);
-    return;
-  }
   swap_set_t candidate_swaps = this->get_candidate_swaps();
   this->remove_swaps_decreasing(candidate_swaps);
-
   TKET_ASSERT(candidate_swaps.size() != 0);
   // Only want to substitute a single swap
   // check next layer of interacting qubits and remove swaps until only one
@@ -510,8 +508,28 @@ LexiRouteRoutingMethod::LexiRouteRoutingMethod(unsigned _max_depth)
     : max_depth_(_max_depth){};
 
 bool LexiRouteRoutingMethod::check_method(
-    const std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
-    const ArchitecturePtr& /*architecture*/) const {
+    const std::shared_ptr<MappingFrontier>& mapping_frontier,
+    const ArchitecturePtr& architecture) const {
+  std::set<Vertex> unplaced;
+  for (const std::pair<UnitID, VertPort>& pair :
+       mapping_frontier->quantum_boundary->get<TagKey>()) {
+    //  only supports single qubit, two-qubit gates, barrier gates
+    // and BRIDGE gates added by the routing code
+    if ((mapping_frontier->circuit_.n_in_edges_of_type(
+             pair.second.first, EdgeType::Quantum) > 2 &&
+         mapping_frontier->circuit_.get_OpType_from_Vertex(pair.second.first) !=
+             OpType::BRIDGE)) {
+      return false;
+    } else if (!architecture->node_exists(Node(pair.first))) {
+      // if multi-qubit vertex doesn't have all edges in frontier then
+      // won't be check in routing_method anyway
+      if (unplaced.find(pair.second.first) == unplaced.end()) {
+        unplaced.insert(pair.second.first);
+      } else {
+        return false;
+      }
+    }
+  }
   return true;
 }
 
