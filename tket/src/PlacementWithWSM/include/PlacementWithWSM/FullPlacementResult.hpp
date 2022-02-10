@@ -101,7 +101,7 @@ struct FullPlacementResult {
           enlarged_target_graph,
       const std::vector<std::set<WeightedSubgraphMonomorphism::VertexWSM>>&
           gates,
-      const Parameters& parameters = {});
+      const Parameters& parameters);
 
   /** For testing, returns a string with the data.
    * @param print_times If true, the timings in milliseconds are included.

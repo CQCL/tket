@@ -38,7 +38,8 @@ static std::string get_qubit_map_str(const QubitMapping& map) {
 static void test_wsm_get_placement_map(
     const Circuit& test_circ, const Architecture& test_arc,
     const std::string& map_encoding) {
-  const CalculatedPlacementMap calc_map(test_circ, test_arc);
+  const CalculatedPlacementMap calc_map(
+      test_circ, test_arc, CalculatedPlacementMap::Parameters());
   const auto& test_m = calc_map.placement_map;
   const auto test_m_str = get_qubit_map_str(test_m);
 

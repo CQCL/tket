@@ -34,7 +34,7 @@ struct CalculatedPlacementMap {
 
   CalculatedPlacementMap(
       const Circuit& circ, const Architecture& arch,
-      const Parameters& parameters = {});
+      const Parameters& parameters);
 };
 
 }  // namespace tket
