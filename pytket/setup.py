@@ -28,6 +28,8 @@ from setuptools.command.build_ext import build_ext  # type: ignore
 from concurrent.futures import ThreadPoolExecutor as Pool
 from shutil import which
 
+from mypy.stubgenc import generate_stub_for_c_module
+
 
 class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=""):
@@ -133,6 +135,13 @@ class CMakeBuild(build_ext):
             ]
             for tket_lib in tket_libs:
                 shutil.copy(os.path.join(directory, "lib", libfile(tket_lib)), extdir)
+
+        # add stub files for mypy
+        for binder in binders:
+            mod = f"pytket._tket.{binder}"
+            target = f"pytket/_tket/{binder}.pyi"
+            generate_stub_for_c_module(mod, target)
+        subprocess.check_call("./cleanup_stubs.sh")
 
     def cmake_config(self, extdir, extsource):
 
