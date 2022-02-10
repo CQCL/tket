@@ -141,12 +141,12 @@ class LogicExp:
         var_type = Bit if isinstance(self, BitLogicExp) else BitRegister
         for arg in self.args:
             if isinstance(arg, var_type):
-                outset.add(arg)
+                outset.add(cast(Union[Bit, BitRegister], arg))
             elif isinstance(arg, LogicExp):
                 outset.update(arg.all_inputs())
         return outset
 
-    def __eq__(self, other: ArgType) -> bool:
+    def __eq__(self, other: Any) -> bool:
         if not isinstance(other, LogicExp):
             return False
         return (self.op == other.op) and (self.args == other.args)

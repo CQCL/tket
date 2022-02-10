@@ -100,6 +100,7 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
         if gen.type in _boundary_types:
             # Boundaries already handled above
             continue
+        assert type(gen) is BasicGen
         v_ind = []
         for w in diag.adj_wires(v):
             v_ind.append(indices[w])
@@ -200,6 +201,7 @@ def fix_boundaries_to_binary_states(
             raise ValueError("Can only fix boundary states to |0> and |1>.")
         new_b = b_lookup[b]
         qtype = diag.get_qtype(b)
+        assert qtype is not None
         fix_b = new_diag.add_vertex(ZXType.XSpider, float(val), qtype)
         bw = new_diag.adj_wires(new_b)[0]
         adj = new_diag.other_end(bw, new_b)

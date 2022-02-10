@@ -15,8 +15,8 @@
 """Enable adding of gates with conditions on Bit or BitRegister expressions."""
 from typing import Tuple, Union, cast
 
-from pytket.circuit import Bit, Circuit, BitRegister  # type: ignore
-from pytket._tket.circuit import (  # type: ignore
+from pytket.circuit import Bit, Circuit, BitRegister
+from pytket._tket.circuit import (
     _TEMP_REG_SIZE,
     _TEMP_BIT_NAME,
     _TEMP_BIT_REG_BASE,
