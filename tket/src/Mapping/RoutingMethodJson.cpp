@@ -40,7 +40,7 @@ void from_json(const nlohmann::json& j, std::vector<RoutingMethodPtr>& rmp_v) {
       rmp_v.push_back(std::make_shared<MultiGateReorderRoutingMethod>(
           MultiGateReorderRoutingMethod::deserialize(c)));
     } else if (name == "BoxDecompositionRoutingMethod") {
-      rmp.push_back(std::make_shared<BoxDecompositionRoutingMethod>(
+      rmp_v.push_back(std::make_shared<BoxDecompositionRoutingMethod>(
           BoxDecompositionRoutingMethod::deserialize(c)));
     } else {
       std::logic_error(
