@@ -57,7 +57,7 @@ class DyadicFraction {
   DyadicFraction& mult(const DyadicFraction& other);
 
   /** Multiply by n/K = n/1024, where K=1024.
-   * @param An integer.
+   * @param n A positive integer.
    * @return this object, for chaining, after multiplying by n/1024.
    */
   DyadicFraction& mult_n_over_k(UInt n);
