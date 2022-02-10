@@ -6,9 +6,10 @@ on:
       - main
       - develop
       - feature/routing-v3
+      - feature/RV3.1
   push:
     branches:
-      - develop
+      - develop      
   schedule:
     # 03:00 every Saturday morning
     - cron: '0 3 * * 6'
