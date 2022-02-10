@@ -10,6 +10,8 @@ API changes:
   ``map`` property instead.)
 * The deprecated ``Backend.compile_circuit`` method is removed. (Use
   ``get_compiled_circuit`` instead.)
+* The keyword parameter and property ``def`` is now called ``definition`` in 
+  ``Circuit.add_custom_gate`` and ``CustomGateDef``.
 
 0.19.0 (February 2022)
 ----------------------
