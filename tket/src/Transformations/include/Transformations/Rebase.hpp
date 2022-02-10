@@ -23,10 +23,9 @@ namespace Transforms {
 // decomposes multiq gates not in the gate set to CXs, then replaces CXs with
 // the replacement (if CX is not allowed) then converts singleq gates no in
 // the gate set to U3 and replaces them using provided function Expects: any
-// gates Produces: gates in multiqs and singleqs
+// gates Produces: gates in allowed_gates
 Transform rebase_factory(
-    const OpTypeSet& multiqs, const Circuit& cx_replacement,
-    const OpTypeSet& singleqs,
+    const OpTypeSet& allowed_gates, const Circuit& cx_replacement,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement);
 

@@ -27,25 +27,23 @@ namespace tket {
 namespace Transforms {
 
 static bool standard_rebase(
-    Circuit& circ, const OpTypeSet& multiqs, const Circuit& cx_replacement,
-    const OpTypeSet& singleqs,
+    Circuit& circ, const OpTypeSet& allowed_gates, const Circuit& cx_replacement,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement);
 
 Transform rebase_factory(
-    const OpTypeSet& multiqs, const Circuit& cx_replacement,
-    const OpTypeSet& singleqs,
+    const OpTypeSet& allowed_gates, const Circuit& cx_replacement,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement) {
   return Transform([=](Circuit& circ) {
     return standard_rebase(
-        circ, multiqs, cx_replacement, singleqs, tk1_replacement);
+        circ, allowed_gates, cx_replacement, tk1_replacement);
   });
 }
 
 static bool standard_rebase(
-    Circuit& circ, const OpTypeSet& multiqs, const Circuit& cx_replacement,
-    const OpTypeSet& singleqs,
+    Circuit& circ, const OpTypeSet& allowed_gates,
+    const Circuit& cx_replacement,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement) {
   bool success = false;
@@ -60,7 +58,7 @@ static bool standard_rebase(
       op = cond.get_op();
     }
     OpType type = op->get_type();
-    if (multiqs.find(type) != multiqs.end() || type == OpType::CX ||
+    if (allowed_gates.find(type) != allowed_gates.end() || type == OpType::CX ||
         type == OpType::Barrier)
       continue;
     // need to convert
@@ -73,7 +71,7 @@ static bool standard_rebase(
     bin.push_back(v);
     success = true;
   }
-  if (multiqs.find(OpType::CX) == multiqs.end()) {
+  if (allowed_gates.find(OpType::CX) == allowed_gates.end()) {
     const Op_ptr cx_op = get_op_ptr(OpType::CX);
     success = circ.substitute_all(cx_replacement, cx_op) | success;
   }
@@ -89,7 +87,7 @@ static bool standard_rebase(
     }
     OpType type = op->get_type();
     if (!is_gate_type(type) || is_projective_type(type) ||
-        singleqs.find(type) != singleqs.end())
+        allowed_gates.find(type) != allowed_gates.end())
       continue;
     // need to convert
     std::vector<Expr> tk1_angles = as_gate_ptr(op)->get_tk1_angles();
@@ -116,8 +114,7 @@ Transform rebase_tket() {
         c.add_op<unsigned>(OpType::TK1, {alpha, beta, gamma}, {0});
         return c;
       };
-  return rebase_factory(
-      {OpType::CX}, CircPool::CX(), {OpType::TK1}, tk1_to_tk1);
+  return rebase_factory({OpType::CX, OpType::TK1}, CircPool::CX(), tk1_to_tk1);
 }
 
 Circuit tk1_to_PhasedXRz(
@@ -139,7 +136,7 @@ Circuit tk1_to_PhasedXRz(
 
 Transform rebase_cirq() {
   return rebase_factory(
-      {OpType::CZ}, CircPool::H_CZ_H(), {OpType::PhasedX, OpType::Rz},
+      {OpType::CZ, OpType::PhasedX, OpType::Rz}, CircPool::H_CZ_H(),
       tk1_to_PhasedXRz);
 }
 
@@ -256,47 +253,44 @@ Circuit tk1_to_tk1(const Expr& alpha, const Expr& beta, const Expr& gamma) {
 
 Transform rebase_HQS() {
   return rebase_factory(
-      {OpType::ZZMax}, CircPool::CX_using_ZZMax(),
-      {OpType::PhasedX, OpType::Rz}, tk1_to_PhasedXRz);
+      {OpType::ZZMax, OpType::PhasedX, OpType::Rz}, CircPool::CX_using_ZZMax(),
+      tk1_to_PhasedXRz);
 }
 
 Transform rebase_UMD() {
   return rebase_factory(
-      {OpType::XXPhase}, CircPool::CX_using_XXPhase_0(),
-      {OpType::PhasedX, OpType::Rz}, tk1_to_PhasedXRz);
+      {OpType::XXPhase, OpType::PhasedX, OpType::Rz},
+      CircPool::CX_using_XXPhase_0(), tk1_to_PhasedXRz);
 }
 
 Transform rebase_quil() {
   return rebase_factory(
-      {OpType::CZ}, CircPool::H_CZ_H(), {OpType::Rx, OpType::Rz}, tk1_to_rzrx);
+      {OpType::CZ, OpType::Rx, OpType::Rz}, CircPool::H_CZ_H(), tk1_to_rzrx);
 }
 
 Transform rebase_pyzx() {
-  OpTypeSet pyzx_multiqs = {OpType::SWAP, OpType::CX, OpType::CZ};
-  OpTypeSet pyzx_singleqs = {OpType::H, OpType::X,  OpType::Z, OpType::S,
-                             OpType::T, OpType::Rx, OpType::Rz};
-  return rebase_factory(
-      pyzx_multiqs, CircPool::CX(), pyzx_singleqs, tk1_to_rzrx);
+  OpTypeSet pyzx_gates = {OpType::SWAP, OpType::CX, OpType::CZ, OpType::H,
+                          OpType::X,    OpType::Z,  OpType::S,  OpType::T,
+                          OpType::Rx,   OpType::Rz};
+  return rebase_factory(pyzx_gates, CircPool::CX(), tk1_to_rzrx);
 }
 
 Transform rebase_projectq() {
-  OpTypeSet projectq_multiqs = {
-      OpType::SWAP, OpType::CRz, OpType::CX, OpType::CZ};
-  OpTypeSet projectq_singleqs = {OpType::H,  OpType::X, OpType::Y, OpType::Z,
-                                 OpType::S,  OpType::T, OpType::V, OpType::Rx,
-                                 OpType::Ry, OpType::Rz};
-  return rebase_factory(
-      projectq_multiqs, CircPool::CX(), projectq_singleqs, tk1_to_rzrx);
+  OpTypeSet projectq_gates = {OpType::SWAP, OpType::CRz, OpType::CX, OpType::CZ,
+                              OpType::H,    OpType::X,   OpType::Y,  OpType::Z,
+                              OpType::S,    OpType::T,   OpType::V,  OpType::Rx,
+                              OpType::Ry,   OpType::Rz};
+  return rebase_factory(projectq_gates, CircPool::CX(), tk1_to_rzrx);
 }
 
 Transform rebase_UFR() {
   return rebase_factory(
-      {OpType::CX}, CircPool::CX(), {OpType::Rz, OpType::H}, tk1_to_rzh);
+      {OpType::CX, OpType::Rz, OpType::H}, CircPool::CX(), tk1_to_rzh);
 }
 
 Transform rebase_OQC() {
   return rebase_factory(
-      {OpType::ECR}, CircPool::CX_using_ECR(), {OpType::Rz, OpType::SX},
+      {OpType::ECR, OpType::Rz, OpType::SX}, CircPool::CX_using_ECR(),
       tk1_to_rzsx);
 }
 
