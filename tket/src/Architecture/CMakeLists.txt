@@ -23,6 +23,9 @@ add_library(tket-${COMP}
     ArchitectureGraphClasses.cpp)
 
 list(APPEND DEPS_${COMP}
+    Circuit
+    OpType
+    Ops
     Graphs
     Utils)
 
