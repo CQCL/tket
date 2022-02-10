@@ -146,6 +146,26 @@ SCENARIO("RNG: permutations") {
       " 69 24 68 71 64 84 36 65 97 98 52 45 ]");
 }
 
+SCENARIO("RNG: default seed") {
+  vector<size_t> numbers;
+  {
+    RNG rng;
+    for (unsigned ii = 0; ii < 10; ++ii) {
+      numbers.emplace_back(rng.get_size_t(100));
+    }
+  }
+  vector<size_t> numbers_again;
+  {
+    RNG rng;
+    rng.set_seed();
+    for (unsigned ii = 0; ii < 10; ++ii) {
+      numbers_again.emplace_back(rng.get_size_t(100));
+    }
+  }
+  CHECK(numbers == numbers_again);
+  CHECK(numbers == vector<size_t>{79, 25, 71, 95, 1, 40, 25, 2, 52, 34});
+}
+
 }  // namespace test_RNG
 }  // namespace tests
 }  // namespace graphs
