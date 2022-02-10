@@ -96,6 +96,7 @@ SCENARIO("Decompose boxes") {
         std::make_shared<MappingFrontier>(circ);
     MappingManager mm(shared_arc);
     std::vector<RoutingMethodPtr> vrm = {
+
         std::make_shared<LexiRouteRoutingMethod>(10),
         std::make_shared<BoxDecompositionRoutingMethod>()};
     bool res = mm.route_circuit(circ, vrm);

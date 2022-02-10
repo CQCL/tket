@@ -510,46 +510,34 @@ LexiRouteRoutingMethod::LexiRouteRoutingMethod(unsigned _max_depth)
 bool LexiRouteRoutingMethod::check_method(
     const std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& architecture) const {
-  // std::shared_ptr<unit_frontier_t> frontier_edges =
-  //       frontier_convert_vertport_to_edge(
-  //           mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
-  //   CutFrontier next_cut =
-  //   mapping_frontier->circuit_.next_q_cut(frontier_edges); for (const Vertex&
-  //   vert : *next_cut.slice) {
-
-  //     Op_ptr op = mapping_frontier->circuit_.get_Op_ptr_from_Vertex(vert);
-  //     if (op->get_desc().is_box() ||
-  //         (op->get_type() == OpType::Conditional &&
-  //          static_cast<const
-  //          Conditional&>(*op).get_op()->get_desc().is_box()))
-  //       return false;
-  //   }
-  //   return true;
-  // }
-
-  std::set<Vertex> unplaced;
-  for (const std::pair<UnitID, VertPort>& pair :
-       mapping_frontier->quantum_boundary->get<TagKey>()) {
-    // check box support
-    Op_ptr op = mapping_frontier->circuit_.get_Op_ptr_from_Vertex(pair.second.first);
-    if (op->get_desc().is_box() ||
-        (op->get_type() == OpType::Conditional &&
-         static_cast<const Conditional&>(*op).get_op()->get_desc().is_box())) {
-      return false;
-    }
-    //  only supports single qubit, two-qubit gates, barrier gates
-    // and BRIDGE gates added by the routing code
+  std::shared_ptr<unit_frontier_t> frontier_edges =
+      frontier_convert_vertport_to_edge(
+          mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
+  CutFrontier next_cut = mapping_frontier->circuit_.next_q_cut(frontier_edges);
+  for (const Vertex& vert : *next_cut.slice) {
+    Op_ptr op = mapping_frontier->circuit_.get_Op_ptr_from_Vertex(vert);
+    // can't work wih box ops, or gates with more than 2 qubits that aren't a BRIDGE
     if ((mapping_frontier->circuit_.n_in_edges_of_type(
-             pair.second.first, EdgeType::Quantum) > 2 &&
-         op->get_type() != OpType::BRIDGE)) {
+             vert, EdgeType::Quantum) > 2 &&
+         op->get_type() != OpType::BRIDGE) ||
+        (op->get_desc().is_box() || (op->get_type() == OpType::Conditional &&
+                                     static_cast<const Conditional&>(*op)
+                                         .get_op()
+                                         ->get_desc()
+                                         .is_box()))) {
       return false;
-    } else if (!architecture->node_exists(Node(pair.first))) {
-      // if multi-qubit vertex doesn't have all edges in frontier then
-      // won't be check in routing_method anyway
-      if (unplaced.find(pair.second.first) == unplaced.end()) {
-        unplaced.insert(pair.second.first);
-      } else {
-        return false;
+    } else {
+      // second check that all input UnitID are actually in architecture
+      for (const Edge& e : mapping_frontier->circuit_.get_in_edges_of_type(
+               vert, EdgeType::Quantum)) {
+        for (const std::pair<UnitID, Edge>& pair :
+             frontier_edges->get<TagKey>()) {
+          if (pair.second == e) {
+            if (!architecture->node_exists(Node(pair.first))) {
+              return false;
+            }
+          }
+        }
       }
     }
   }
