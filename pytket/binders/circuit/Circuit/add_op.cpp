@@ -551,13 +551,13 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "instantiate the gate with, in halfturns\n:param qubits: "
           "The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("def"), py::arg("params"), py::arg("qubits"))
+          py::arg("definition"), py::arg("params"), py::arg("qubits"))
       .def(
           "add_assertion",
           [](Circuit *circ, const ProjectorAssertionBox &box,
              const std::vector<unsigned> &qubits,
              const std::optional<unsigned> &ancilla,
-             const std::optional<std::string> &name) {
+             const std::optional<std::string> &name) -> Circuit * {
             std::vector<Qubit> qubits_;
             for (unsigned i = 0; i < qubits.size(); ++i) {
               qubits_.push_back(Qubit(qubits[i]));
@@ -568,7 +568,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             } else {
               ancilla_ = Qubit(ancilla.value());
             }
-            return circ->add_assertion(box, qubits_, ancilla_, name);
+            circ->add_assertion(box, qubits_, ancilla_, name);
+            return circ;
           },
           "Append a :py:class:`ProjectorAssertionBox` to the circuit."
           "\n\n:param box: ProjectorAssertionBox to append"
@@ -583,8 +584,9 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           [](Circuit *circ, const ProjectorAssertionBox &box,
              const std::vector<Qubit> &qubits,
              const std::optional<Qubit> &ancilla,
-             const std::optional<std::string> &name) {
-            return circ->add_assertion(box, qubits, ancilla, name);
+             const std::optional<std::string> &name) -> Circuit * {
+            circ->add_assertion(box, qubits, ancilla, name);
+            return circ;
           },
           "Append a :py:class:`ProjectorAssertionBox` to the circuit."
           "\n\n:param box: ProjectorAssertionBox to append"
@@ -598,13 +600,14 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "add_assertion",
           [](Circuit *circ, const StabiliserAssertionBox &box,
              const std::vector<unsigned> &qubits, const unsigned &ancilla,
-             const std::optional<std::string> &name) {
+             const std::optional<std::string> &name) -> Circuit * {
             std::vector<Qubit> qubits_;
             for (unsigned i = 0; i < qubits.size(); ++i) {
               qubits_.push_back(Qubit(qubits[i]));
             }
             Qubit ancilla_(ancilla);
-            return circ->add_assertion(box, qubits_, ancilla_, name);
+            circ->add_assertion(box, qubits_, ancilla_, name);
+            return circ;
           },
           "Append a :py:class:`StabiliserAssertionBox` to the circuit."
           "\n\n:param box: StabiliserAssertionBox to append"
@@ -618,8 +621,9 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "add_assertion",
           [](Circuit *circ, const StabiliserAssertionBox &box,
              const std::vector<Qubit> &qubits, const Qubit &ancilla,
-             const std::optional<std::string> &name) {
-            return circ->add_assertion(box, qubits, ancilla, name);
+             const std::optional<std::string> &name) -> Circuit * {
+            circ->add_assertion(box, qubits, ancilla, name);
+            return circ;
           },
           "Append a :py:class:`StabiliserAssertionBox` to the circuit."
           "\n\n:param box: StabiliserAssertionBox to append"
