@@ -409,11 +409,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("expression"), py::arg("target"))
       .def(
           "add_custom_gate",
-          [](Circuit *circ, const composite_def_ptr_t &def,
+          [](Circuit *circ, const composite_def_ptr_t &definition,
              const std::vector<Expr> &params,
              const std::vector<unsigned> &qubits, const py::kwargs &kwargs) {
             return add_box_method<unsigned>(
-                circ, std::make_shared<CustomGate>(def, params), qubits,
+                circ, std::make_shared<CustomGate>(definition, params), qubits,
                 kwargs);
           },
           "Append an instance of a :py:class:`CustomGateDef` to the "
@@ -422,7 +422,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "instantiate the gate with, in halfturns\n:param qubits: "
           "Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("def"), py::arg("params"), py::arg("qubits"))
+          py::arg("definition"), py::arg("params"), py::arg("qubits"))
       .def(
           "add_barrier",
           [](Circuit *circ, const unit_vector_t &units) {
@@ -538,11 +538,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("phasepolybox"), py::arg("qubits"))
       .def(
           "add_custom_gate",
-          [](Circuit *circ, const composite_def_ptr_t &def,
+          [](Circuit *circ, const composite_def_ptr_t &definition,
              const std::vector<Expr> &params, const qubit_vector_t &qubits,
              const py::kwargs &kwargs) {
             return add_box_method<UnitID>(
-                circ, std::make_shared<CustomGate>(def, params),
+                circ, std::make_shared<CustomGate>(definition, params),
                 {qubits.begin(), qubits.end()}, kwargs);
           },
           "Append an instance of a :py:class:`CustomGateDef` to the "

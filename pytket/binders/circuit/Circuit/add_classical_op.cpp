@@ -384,9 +384,8 @@ void init_circuit_add_classical_op(
           "\n:param args_in: input bits"
           "\n:param arg_out: output bit (distinct from input bits)"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("minval") = 0,
-          py::arg("maxval") = std::numeric_limits<uint32_t>::max(),
-          py::arg("args_in"), py::arg("arg_out"))
+          py::arg("minval"), py::arg("maxval"), py::arg("args_in"),
+          py::arg("arg_out"))
       .def(
           "add_c_and_to_registers",
           [](Circuit &circ, const BitRegister &reg0_in,
