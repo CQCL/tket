@@ -40,12 +40,6 @@ GraphGeneration::LimitedSizeGraphGeneral::LimitedSizeGraphGeneral(
   }
 }
 
-GraphGeneration::REngine GraphGeneration::get_r_engine() {
-  REngine r_engine;
-  r_engine.seed(12345);
-  return r_engine;
-}
-
 GraphEdgeWeights GraphGeneration::get_cycle(
     unsigned vertices, bool mix_weights) {
   GraphEdgeWeights data;

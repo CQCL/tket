@@ -28,10 +28,12 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+using tket::graphs::tests::RNG;
+
 static std::vector<SquareGrid> get_test_grids() {
   std::vector<SquareGrid> grids;
   size_t total_edges = 0;
-  auto r_engine = GraphGeneration::get_r_engine();
+  RNG rng;
 
   const std::vector<std::pair<unsigned, unsigned>> grid_sizes{
       {1, 1}, {1, 1}, {2, 1}, {1, 2},   {1, 3},   {3, 1},   {4, 1},
@@ -43,7 +45,7 @@ static std::vector<SquareGrid> get_test_grids() {
       grids.emplace_back();
       grids.back().width = grid_size.first;
       grids.back().height = grid_size.second;
-      grids.back().fill_weights(r_engine);
+      grids.back().fill_weights(rng);
       total_edges += grids.back().horiz_weights.size();
       total_edges += grids.back().vert_weights.size();
     }
@@ -75,8 +77,8 @@ SCENARIO("test searching with square grids") {
   const std::set<std::pair<unsigned, unsigned>> harder_problems{
       {7, 12}, {8, 11},  {8, 12},  {9, 11},
       {9, 12}, {10, 11}, {10, 12}, {11, 12}};
-  // const bool skip_harder_problems = true;
-  const bool skip_harder_problems = false;
+
+  const bool skip_harder_problems = !TestSettings::get().run_slow_tests;
   unsigned skipped_problems_count = 0;
   /*
   // Try different weight pruning factors.

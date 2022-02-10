@@ -89,7 +89,10 @@ static void test_checked_sum_and_product() {
   check_product(x, y, false);
 
   // ~5M/4 will be reduced to ~ M/4 (mod M).
-  const T xy_overflow = x * y;
+  // Compilers might give a warning here; but the overflow is intentional!
+  // e.g., "warning: unsigned conversion from 'int' to 'short unsigned int'
+  // changes value from '80645' to '15109' [-Woverflow]"
+  const T xy_overflow = static_cast<T>(x * y);
 
   // ~((M/4)/3) * 12
   check_product<T>(xy_overflow / 3, 12);

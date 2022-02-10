@@ -21,6 +21,8 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+using tket::graphs::tests::RNG;
+
 // Also test get_graph_edge_weights
 static WeightWSM get_total_weights(const SquareGrid& grid) {
   WeightWSM total = 0;
@@ -43,12 +45,12 @@ static WeightWSM get_total_weights(const SquareGrid& grid) {
 }
 
 SCENARIO("square grid rotate 4 times equals identity") {
-  auto r_engine = GraphGeneration::get_r_engine();
+  RNG rng;
   for (int ii = 0; ii < 5; ++ii) {
     SquareGrid grid;
     grid.width = 4;
     grid.height = 7;
-    grid.fill_weights(r_engine);
+    grid.fill_weights(rng);
     const auto original_copy = grid;
     const auto total_weight = get_total_weights(grid);
     for (int nn = 0; nn < 4; ++nn) {
@@ -61,12 +63,12 @@ SCENARIO("square grid rotate 4 times equals identity") {
 }
 
 SCENARIO("square grid refl/rotate twice equals identity") {
-  auto r_engine = GraphGeneration::get_r_engine();
+  RNG rng;
   for (int ii = 0; ii < 5; ++ii) {
     SquareGrid grid;
     grid.width = 4;
     grid.height = 4;
-    grid.fill_weights(r_engine);
+    grid.fill_weights(rng);
     const auto original_copy = grid;
     const auto total_weight = get_total_weights(grid);
     for (int nn = 0; nn < 2; ++nn) {
@@ -97,12 +99,12 @@ SCENARIO("square grid refl/rotate twice equals identity") {
 //     +-0-+-1-+-2-+
 
 SCENARIO("square grid reflection") {
-  auto r_engine = GraphGeneration::get_r_engine();
+  RNG rng;
   for (int ii = 0; ii < 5; ++ii) {
     SquareGrid grid;
     grid.width = 3;
     grid.height = 2;
-    grid.fill_weights(r_engine);
+    grid.fill_weights(rng);
     REQUIRE(grid.horiz_weights.size() == 9);
     REQUIRE(grid.vert_weights.size() == 8);
 
@@ -167,12 +169,12 @@ SCENARIO("square grid reflection") {
 //
 
 SCENARIO("square grid rotation") {
-  auto r_engine = GraphGeneration::get_r_engine();
+  RNG rng;
   for (int ii = 0; ii < 5; ++ii) {
     SquareGrid grid;
     grid.width = 2;
     grid.height = 4;
-    grid.fill_weights(r_engine);
+    grid.fill_weights(rng);
     REQUIRE(grid.horiz_weights.size() == 10);
     REQUIRE(grid.vert_weights.size() == 12);
 
@@ -211,7 +213,7 @@ SCENARIO("square grid rotation") {
 //  # a #   # a #   # A #
 
 SCENARIO("square grid reflection, rotation on 1x1 square") {
-  auto r_engine = GraphGeneration::get_r_engine();
+  RNG rng;
   std::vector<unsigned> numbers;
   const auto add_numbers = [&numbers](const SquareGrid& gg) {
     numbers.push_back(gg.width);
@@ -231,7 +233,7 @@ SCENARIO("square grid reflection, rotation on 1x1 square") {
     SquareGrid grid;
     grid.width = 1;
     grid.height = 1;
-    grid.fill_weights(r_engine);
+    grid.fill_weights(rng);
     add_numbers(grid);
     const auto reflected_grid = grid.get_reflected_grid();
     add_numbers(reflected_grid);
@@ -240,17 +242,17 @@ SCENARIO("square grid reflection, rotation on 1x1 square") {
   }
   REQUIRE(
       numbers == std::vector<unsigned>{
-                     1, 1, 2, 2, 7, 7, 4, 4, 0, 1, 1, 2, 2, 7, 7, 4, 4, 0, 1, 1,
-                     2, 2, 4, 4, 7, 7, 0, 1, 1, 2, 2, 1, 8, 8, 3, 0, 1, 1, 2, 2,
-                     1, 8, 3, 8, 0, 1, 1, 2, 2, 8, 3, 8, 1, 0, 1, 1, 2, 2, 7, 3,
-                     4, 2, 0, 1, 1, 2, 2, 7, 3, 2, 4, 0, 1, 1, 2, 2, 4, 2, 3, 7,
-                     0, 1, 1, 2, 2, 5, 6, 9, 5, 0, 1, 1, 2, 2, 5, 6, 5, 9, 0, 1,
-                     1, 2, 2, 9, 5, 6, 5, 0, 1, 1, 2, 2, 2, 4, 3, 1, 0, 1, 1, 2,
-                     2, 2, 4, 1, 3, 0, 1, 1, 2, 2, 3, 1, 4, 2, 0});
+                     1, 1, 2, 2, 8, 3, 7, 9, 0, 1, 1, 2, 2, 8, 3, 9, 7, 0, 1, 1,
+                     2, 2, 7, 9, 3, 8, 0, 1, 1, 2, 2, 1, 4, 3, 1, 0, 1, 1, 2, 2,
+                     1, 4, 1, 3, 0, 1, 1, 2, 2, 3, 1, 4, 1, 0, 1, 1, 2, 2, 5, 4,
+                     3, 6, 0, 1, 1, 2, 2, 5, 4, 6, 3, 0, 1, 1, 2, 2, 3, 6, 4, 5,
+                     0, 1, 1, 2, 2, 2, 5, 5, 8, 0, 1, 1, 2, 2, 2, 5, 8, 5, 0, 1,
+                     1, 2, 2, 5, 8, 5, 2, 0, 1, 1, 2, 2, 5, 4, 7, 3, 0, 1, 1, 2,
+                     2, 5, 4, 3, 7, 0, 1, 1, 2, 2, 7, 3, 4, 5, 0});
 }
 
 SCENARIO("square grid: check gdata conversion") {
-  auto r_engine = GraphGeneration::get_r_engine();
+  RNG rng;
   SquareGrid grid;
   grid.width = 2;
   grid.height = 3;
@@ -259,7 +261,7 @@ SCENARIO("square grid: check gdata conversion") {
 
   for (grid.width = 1; grid.width < 10; ++grid.width) {
     for (grid.height = 1; grid.height < 10; ++grid.height) {
-      grid.fill_weights(r_engine);
+      grid.fill_weights(rng);
       sorted_weights.clear();
       for (auto ww : grid.horiz_weights) {
         sorted_weights.push_back(ww);

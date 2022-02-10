@@ -30,14 +30,13 @@ void SquareGrid::resize_weight_vectors() {
   vert_weights.resize((width + 1) * height);
 }
 
-void SquareGrid::fill_weights(GraphGeneration::REngine& r_engine) {
+void SquareGrid::fill_weights(tket::graphs::tests::RNG& rng) {
   resize_weight_vectors();
-  std::uniform_int_distribution<WeightWSM> distrib(1, 9);
   for (auto& ww : horiz_weights) {
-    ww = distrib(r_engine);
+    ww = rng.get_size_t(1, 9);
   }
   for (auto& ww : vert_weights) {
-    ww = distrib(r_engine);
+    ww = rng.get_size_t(1, 9);
   }
 }
 

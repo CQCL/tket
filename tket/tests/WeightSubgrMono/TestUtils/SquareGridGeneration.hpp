@@ -15,6 +15,7 @@
 #pragma once
 #include <string>
 
+#include "../../Graphs/RNG.hpp"
 #include "GraphGeneration.hpp"
 
 namespace tket {
@@ -43,7 +44,7 @@ struct SquareGrid {
 
   // Assumes that width, height have been filled already;
   // then resizes the other vectors appropriately and fills with random weights.
-  void fill_weights(GraphGeneration::REngine& r_engine);
+  void fill_weights(tket::graphs::tests::RNG& rng);
 
   GraphEdgeWeights get_graph_edge_weights() const;
 

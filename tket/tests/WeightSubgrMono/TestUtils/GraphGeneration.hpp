@@ -13,10 +13,6 @@
 // limitations under the License.
 
 #pragma once
-#include <random>
-#include <set>
-#include <string>
-#include <utility>
 
 #include "WeightSubgrMono/GraphTheoretic/GeneralStructs.hpp"
 
@@ -41,10 +37,6 @@ struct GraphGeneration {
   };
 
   static GraphEdgeWeights get_limited_size_graph(LimitedSizeGraphSeed seed);
-
-  typedef std::mt19937 REngine;
-
-  static REngine get_r_engine();
 
   static GraphEdgeWeights get_cycle(unsigned vertices, bool mix_weights = true);
   static GraphEdgeWeights get_line(unsigned vertices, bool mix_weights = true);
