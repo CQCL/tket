@@ -516,7 +516,9 @@ bool LexiRouteRoutingMethod::check_method(
   CutFrontier next_cut = mapping_frontier->circuit_.next_q_cut(frontier_edges);
   for (const Vertex& vert : *next_cut.slice) {
     Op_ptr op = mapping_frontier->circuit_.get_Op_ptr_from_Vertex(vert);
-    // can't work wih box ops, or gates with more than 2 qubits that aren't a BRIDGE
+    // can't work wih box ops, or gates with more than 2 qubits that aren't a
+    // BRIDGE
+
     if ((mapping_frontier->circuit_.n_in_edges_of_type(
              vert, EdgeType::Quantum) > 2 &&
          op->get_type() != OpType::BRIDGE) ||
