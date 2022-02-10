@@ -1,5 +1,6 @@
 #include <catch2/catch.hpp>
 
+#include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
 #include "Predicates/CompilationUnit.hpp"
@@ -8,7 +9,8 @@
 #include "Predicates/PassLibrary.hpp"
 
 namespace tket {
-SCENARIO("Test LexiRoute::solve") {
+
+SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
   std::vector<Node> nodes = {Node("test_node", 0), Node("test_node", 1),
                              Node("test_node", 2), Node("node_test", 3),
                              Node("node_test", 4), Node("node_test", 5),
@@ -75,8 +77,8 @@ SCENARIO("Test LexiRoute::solve") {
     std::shared_ptr<MappingFrontier> mf0 =
         std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf0);
-
-    lr.solve(4);
+    lr.solve_labelling();
+    // lr.solve(4);
 
     REQUIRE(mf0->circuit_.n_gates() == 3);
 
@@ -86,7 +88,9 @@ SCENARIO("Test LexiRoute::solve") {
     std::shared_ptr<MappingFrontier> mf1 =
         std::make_shared<MappingFrontier>(circ);
     LexiRoute lr1(shared_arc, mf1);
+    // lr1.solve_labelling();
     lr1.solve(4);
+
     std::vector<Command> commands = mf1->circuit_.get_commands();
     Command swap_c = commands[1];
     unit_vector_t uids = {nodes[1], nodes[2]};
@@ -138,7 +142,8 @@ SCENARIO("Test LexiRoute::solve") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     LexiRoute lr0(shared_arc, mf);
-    lr0.solve(20);
+    lr0.solve_labelling();
+    // lr0.solve(20);
     std::vector<Command> commands = mf->circuit_.get_commands();
     REQUIRE(commands.size() == 4);
     Command c = commands[0];
@@ -147,19 +152,19 @@ SCENARIO("Test LexiRoute::solve") {
     mf->advance_frontier_boundary(shared_arc);
 
     LexiRoute lr1(shared_arc, mf);
-    lr1.solve(20);
+    lr1.solve_labelling();
     uids = {nodes[2], nodes[3]};
     REQUIRE(mf->circuit_.get_commands()[1].get_args() == uids);
     mf->advance_frontier_boundary(shared_arc);
 
     LexiRoute lr2(shared_arc, mf);
-    lr2.solve(20);
+    lr2.solve_labelling();
     uids = {nodes[2], nodes[5]};
     REQUIRE(mf->circuit_.get_commands()[2].get_args() == uids);
     mf->advance_frontier_boundary(shared_arc);
 
     LexiRoute lr3(shared_arc, mf);
-    lr3.solve(20);
+    lr3.solve_labelling();
     uids = {nodes[5], nodes[6]};
     REQUIRE(mf->circuit_.get_commands()[3].get_args() == uids);
   }
@@ -283,7 +288,7 @@ SCENARIO("Test LexiRoute::solve") {
 
     mf->advance_frontier_boundary(shared_arc);
     LexiRoute lr1(shared_arc, mf);
-    lr1.solve(20);
+    lr1.solve_labelling();
     REQUIRE(circ.all_qubits()[0] == nodes[3]);
   }
 
@@ -319,7 +324,7 @@ SCENARIO("Test LexiRoute::solve") {
         std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     LexiRoute lr0(shared_arc, mf);
-    lr0.solve(20);
+    lr0.solve_labelling();
 
     mf->advance_frontier_boundary(shared_arc);
     LexiRoute lr1(shared_arc, mf);
@@ -355,8 +360,9 @@ SCENARIO("Test LexiRoute::solve") {
         std::make_shared<MappingFrontier>(circ);
     mf->ancilla_nodes_.insert(nodes[3]);
     mf->advance_frontier_boundary(shared_arc);
+
     LexiRoute lr0(shared_arc, mf);
-    lr0.solve(20);
+    lr0.solve_labelling();
 
     REQUIRE(circ.all_qubits()[1] == nodes[4]);
     REQUIRE(circ.all_qubits()[0] == nodes[3]);
@@ -394,8 +400,8 @@ SCENARIO("Test LexiRoute::solve") {
     REQUIRE(*swap_c.get_op_ptr() == *get_op_ptr(OpType::SWAP));
   }
   GIVEN(
-      "Labelling is required, but there are no free remaining qubits, for one "
-      "updated label, order 0.") {
+      "Labelling is required, but there are no free remaining qubits, for"
+      "one updated label, order 0.") {
     Circuit circ(9);
     std::vector<Qubit> qubits = circ.all_qubits();
     circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[8]});
@@ -412,11 +418,11 @@ SCENARIO("Test LexiRoute::solve") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf);
-    REQUIRE_THROWS_AS(lr.solve(1), LexiRouteError);
+    REQUIRE_THROWS_AS(lr.solve_labelling(), LexiRouteError);
   }
   GIVEN(
-      "Labelling is required, but there are no free remaining qubits, for one "
-      "updated label, order 1.") {
+      "Labelling is required, but there are no free remaining qubits, for "
+      " one updated label, order 1.") {
     Circuit circ(9);
     std::vector<Qubit> qubits = circ.all_qubits();
     circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[8]});
@@ -433,11 +439,11 @@ SCENARIO("Test LexiRoute::solve") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf);
-    REQUIRE_THROWS_AS(lr.solve(1), LexiRouteError);
+    REQUIRE_THROWS_AS(lr.solve_labelling(), LexiRouteError);
   }
   GIVEN(
-      "Labelling is required, but there are no free remaining qubits, for two "
-      "updated labels.") {
+      "Labelling is required, but there are no free remaining qubits, for"
+      "two updated labels.") {
     Circuit circ(10);
     std::vector<Qubit> qubits = circ.all_qubits();
     circ.add_op<UnitID>(OpType::CX, {qubits[9], qubits[8]});
@@ -454,10 +460,244 @@ SCENARIO("Test LexiRoute::solve") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf);
-    REQUIRE_THROWS_AS(lr.solve(1), LexiRouteError);
+    REQUIRE_THROWS_AS(lr.solve_labelling(), LexiRouteError);
   }
 }
 
+SCENARIO("Test LexiLabellingMethod") {
+  std::vector<Node> nodes = {
+      Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
+      Node("node_test", 3), Node("node_test", 4)};
+
+  // straight line
+  Architecture architecture(
+      {{nodes[0], nodes[1]},
+       {nodes[1], nodes[2]},
+       {nodes[2], nodes[3]},
+       {nodes[3], nodes[4]}});
+  ArchitecturePtr shared_arc = std::make_shared<Architecture>(architecture);
+  GIVEN("No qubit to label, empty frontier, check_method.") {
+    Circuit circ(5);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    LexiLabellingMethod lrm;
+    REQUIRE(!lrm.check_method(mf, shared_arc));
+  }
+  GIVEN("No qubit to label, partially filled frontier, check_method.") {
+    Circuit circ(5);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[4]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[2]});
+    circ.add_op<UnitID>(OpType::ZZPhase, 0.3, {qubits[3], qubits[0]});
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]},
+        {qubits[1], nodes[1]},
+        {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]},
+        {qubits[4], nodes[4]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    LexiLabellingMethod lrm;
+    REQUIRE(!lrm.check_method(mf, shared_arc));
+  }
+  GIVEN("Qubit to label, but casually restricted, check_method.") {
+    Circuit circ(5);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[4]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[2]});
+    circ.add_op<UnitID>(OpType::ZZPhase, 0.3, {qubits[3], qubits[0]});
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]},
+        {qubits[1], nodes[1]},
+        {qubits[2], nodes[2]},
+        {qubits[4], nodes[4]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    LexiLabellingMethod lrm;
+    REQUIRE(!lrm.check_method(mf, shared_arc));
+  }
+  GIVEN(
+      "Two Qubit to label in future slice, causally restricted, "
+      "check_method.") {
+    Circuit circ(5);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[2]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[3]});
+    circ.add_op<UnitID>(OpType::ZZPhase, 0.3, {qubits[3], qubits[4]});
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]}, {qubits[1], nodes[1]}, {qubits[2], nodes[2]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    LexiLabellingMethod lrm;
+    REQUIRE(!lrm.check_method(mf, shared_arc));
+  }
+  GIVEN("Three Qubit Gate, all labelled, first slice, check_method.") {
+    Circuit circ(5);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[4]});
+    circ.add_op<UnitID>(OpType::CCX, {qubits[1], qubits[2], qubits[3]});
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]},
+        {qubits[1], nodes[1]},
+        {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]},
+        {qubits[4], nodes[4]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    LexiLabellingMethod lrm;
+    REQUIRE(!lrm.check_method(mf, shared_arc));
+  }
+  GIVEN("One unlabelled qubit, one slice, check and route.") {
+    Circuit circ(5);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[1]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[2], qubits[3]});
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]}, {qubits[1], nodes[1]}, {qubits[2], nodes[2]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    VertPort pre_label =
+        mf->quantum_boundary->get<TagKey>().find(qubits[3])->second;
+    LexiLabellingMethod lrm;
+    REQUIRE(lrm.check_method(mf, shared_arc));
+    lrm.routing_method(mf, shared_arc);
+    REQUIRE(
+        mf->quantum_boundary->get<TagKey>().find(qubits[3]) ==
+        mf->quantum_boundary->get<TagKey>().end());
+    VertPort post_label =
+        mf->quantum_boundary->get<TagKey>().find(nodes[3])->second;
+    REQUIRE(pre_label == post_label);
+  }
+  GIVEN(
+      "One unlabelled qubit, two slices, lookahead for better solution, check"
+      " and route.") {
+    Circuit circ(5);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[1]});
+    circ.add_op<UnitID>(OpType::ZZPhase, 0.8, {qubits[2], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]}, {qubits[1], nodes[1]}, {qubits[3], nodes[3]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    VertPort pre_label =
+        mf->quantum_boundary->get<TagKey>().find(qubits[2])->second;
+    LexiLabellingMethod lrm;
+    REQUIRE(lrm.check_method(mf, shared_arc));
+    lrm.routing_method(mf, shared_arc);
+    REQUIRE(
+        mf->quantum_boundary->get<TagKey>().find(qubits[2]) ==
+        mf->quantum_boundary->get<TagKey>().end());
+    VertPort post_label =
+        mf->quantum_boundary->get<TagKey>().find(nodes[2])->second;
+    REQUIRE(pre_label == post_label);
+  }
+  GIVEN("Two unlabelled qubits, one slice, check and route.") {
+    Circuit circ(5);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[1]});
+    circ.add_op<UnitID>(OpType::ZZPhase, 0.8, {qubits[2], qubits[3]});
+
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[2], nodes[2]}, {qubits[1], nodes[1]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    VertPort pre_label_0 =
+        mf->quantum_boundary->get<TagKey>().find(qubits[0])->second;
+    VertPort pre_label_3 =
+        mf->quantum_boundary->get<TagKey>().find(qubits[3])->second;
+    LexiLabellingMethod lrm;
+    REQUIRE(lrm.check_method(mf, shared_arc));
+    lrm.routing_method(mf, shared_arc);
+    REQUIRE(
+        mf->quantum_boundary->get<TagKey>().find(qubits[0]) ==
+        mf->quantum_boundary->get<TagKey>().end());
+    REQUIRE(
+        mf->quantum_boundary->get<TagKey>().find(qubits[3]) ==
+        mf->quantum_boundary->get<TagKey>().end());
+    VertPort post_label_0 =
+        mf->quantum_boundary->get<TagKey>().find(nodes[0])->second;
+    REQUIRE(pre_label_0 == post_label_0);
+    VertPort post_label_3 =
+        mf->quantum_boundary->get<TagKey>().find(nodes[3])->second;
+    REQUIRE(pre_label_3 == post_label_3);
+  }
+  GIVEN("Two unlabelled qubits, two slices, lookahead, check and route.") {
+    Circuit circ(5);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CX, {qubits[2], qubits[1]});
+    circ.add_op<UnitID>(OpType::ZZPhase, 0.8, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[2], qubits[4]});
+
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[4], nodes[4]}, {qubits[1], nodes[1]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    VertPort pre_label_0 =
+        mf->quantum_boundary->get<TagKey>().find(qubits[2])->second;
+    VertPort pre_label_3 =
+        mf->quantum_boundary->get<TagKey>().find(qubits[3])->second;
+    LexiLabellingMethod lrm;
+    REQUIRE(lrm.check_method(mf, shared_arc));
+    lrm.routing_method(mf, shared_arc);
+    REQUIRE(
+        mf->quantum_boundary->get<TagKey>().find(qubits[2]) ==
+        mf->quantum_boundary->get<TagKey>().end());
+    REQUIRE(
+        mf->quantum_boundary->get<TagKey>().find(qubits[3]) ==
+        mf->quantum_boundary->get<TagKey>().end());
+    VertPort post_label_0 =
+        mf->quantum_boundary->get<TagKey>().find(nodes[0])->second;
+    REQUIRE(pre_label_0 == post_label_0);
+    VertPort post_label_3 =
+        mf->quantum_boundary->get<TagKey>().find(nodes[3])->second;
+    REQUIRE(pre_label_3 == post_label_3);
+  }
+  GIVEN(
+      "Two unlabelled qubits, two slices, lookahead unrouted, check and "
+      "route.") {
+    Circuit circ(5);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CX, {qubits[2], qubits[1]});
+    circ.add_op<UnitID>(OpType::ZZPhase, 0.8, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[2], qubits[0]});
+
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[4], nodes[4]}, {qubits[1], nodes[1]}};
+    circ.rename_units(rename_map);
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+    VertPort pre_label_0 =
+        mf->quantum_boundary->get<TagKey>().find(qubits[2])->second;
+    VertPort pre_label_3 =
+        mf->quantum_boundary->get<TagKey>().find(qubits[3])->second;
+    LexiLabellingMethod lrm;
+    REQUIRE(lrm.check_method(mf, shared_arc));
+    lrm.routing_method(mf, shared_arc);
+    REQUIRE(
+        mf->quantum_boundary->get<TagKey>().find(qubits[2]) ==
+        mf->quantum_boundary->get<TagKey>().end());
+    REQUIRE(
+        mf->quantum_boundary->get<TagKey>().find(qubits[3]) ==
+        mf->quantum_boundary->get<TagKey>().end());
+    VertPort post_label_0 =
+        mf->quantum_boundary->get<TagKey>().find(nodes[0])->second;
+    REQUIRE(pre_label_0 == post_label_0);
+    VertPort post_label_3 =
+        mf->quantum_boundary->get<TagKey>().find(nodes[3])->second;
+    REQUIRE(pre_label_3 == post_label_3);
+  }
+}
 SCENARIO("Test LexiRouteRoutingMethod") {
   std::vector<Node> nodes = {
       Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
@@ -560,7 +800,7 @@ SCENARIO("Test LexiRouteRoutingMethod") {
     REQUIRE(*swap_c.get_op_ptr() == *get_op_ptr(OpType::SWAP));
   }
 }
-SCENARIO("Test MappingManager::route_circuit with lc_route_subcircuit") {
+SCENARIO("Test MappingManager with LexiRouteRoutingMethod and LexiLabelling") {
   GIVEN("11 Node Architecture, 11 Qubit circuit, multiple SWAP required.") {
     std::vector<Node> nodes = {
         Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
@@ -589,7 +829,7 @@ SCENARIO("Test MappingManager::route_circuit with lc_route_subcircuit") {
     ArchitecturePtr shared_arc = std::make_shared<Architecture>(architecture);
     Circuit circ(11);
     std::vector<Qubit> qubits = circ.all_qubits();
-    for (unsigned i = 0; i < 10; i++) {
+    for (unsigned i = 0; i < 11; i++) {
       circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[4]});
       circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[7]});
       circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[10]});
@@ -611,8 +851,11 @@ SCENARIO("Test MappingManager::route_circuit with lc_route_subcircuit") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(copy_circ);
 
+    LexiLabellingMethod lrm;
     std::vector<RoutingMethodPtr> vrm = {
+        std::make_shared<LexiLabellingMethod>(lrm),
         std::make_shared<LexiRouteRoutingMethod>(100)};
+
     REQUIRE(vrm[0]->check_method(mf, shared_arc));
 
     bool res = mm.route_circuit(circ, vrm);
@@ -640,7 +883,9 @@ SCENARIO("Test MappingManager::route_circuit with lc_route_subcircuit") {
     PassPtr dec = gen_decompose_routing_gates_to_cxs_pass(sg, false);
 
     MappingManager mm(shared_arc);
+    LexiLabellingMethod lrm;
     std::vector<RoutingMethodPtr> vrm = {
+        std::make_shared<LexiLabellingMethod>(lrm),
         std::make_shared<LexiRouteRoutingMethod>(100)};
     bool res = mm.route_circuit(circ, vrm);
 
