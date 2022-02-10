@@ -24,16 +24,16 @@ namespace WeightedSubgraphMonomorphism {
  * IF no overflows occur. If an overflow does occur,
  * this exception may be thrown.
  */
-struct IntegerOverflow : public std::exception {
-  IntegerOverflow(const std::string& str) : std::exception(str.c_str()) {}
+struct IntegerOverflow : public std::runtime_error {
+  IntegerOverflow(const std::string& str) : std::runtime_error(str) {}
 };
 
 /** Initialisation of the data to start solving should be fast;
  * if it is too slow (e.g., exceeds the WHOLE problem timeout),
  * something is probably wrong; throw.
  */
-struct InitialisationTimeout : public std::exception {
-  InitialisationTimeout(const std::string& str) : std::exception(str.c_str()) {}
+struct InitialisationTimeout : public std::runtime_error {
+  InitialisationTimeout(const std::string& str) : std::runtime_error(str) {}
 };
 
 }  // namespace WeightedSubgraphMonomorphism
