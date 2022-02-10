@@ -48,7 +48,9 @@ class TketConan(ConanFile):
     )
 
     comps = [
+        "WeightSubgrMono",
         "Utils",
+        "PlacementWithWSM",
         "ZX",
         "OpType",
         "Clifford",
@@ -69,6 +71,19 @@ class TketConan(ConanFile):
         "ArchAwareSynth",
         "Predicates",
     ]
+
+    # If a project has extra subdirectories, list them here.
+    extra_subdirectories = {
+        "WeightSubgrMono": [
+            "Common",
+            "DomainInitialising",
+            "EndToEndWrappers",
+            "GraphTheoretic",
+            "Reducing",
+            "Searching",
+            "WeightPruning",
+        ]
+    }
 
     _cmake = None
 
@@ -128,7 +143,18 @@ class TketConan(ConanFile):
     def package(self):
         self.copy("LICENSE", dst="licenses", src="../..")
         for comp in self.comps:
-            self.copy(f"{comp}/include/*.hpp", dst=f"include/{comp}", keep_path=False)
+            if comp in self.extra_subdirectories:
+                for extra_dir in self.extra_subdirectories[comp]:
+                    self.copy(
+                        f"{comp}/include/{comp}/{extra_dir}/*.hpp",
+                        dst=f"include/{comp}/{extra_dir}",
+                        keep_path=False,
+                    )
+            else:
+                self.copy(
+                    f"{comp}/include/*.hpp", dst=f"include/{comp}", keep_path=False
+                )
+
         self.copy("*.dll", dst="lib", keep_path=False)
         self.copy("*.lib", dst="lib", keep_path=False)
         self.copy("*.so", dst="lib", keep_path=False)

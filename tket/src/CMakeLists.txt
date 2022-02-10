@@ -59,6 +59,7 @@ ENDIF()
 
 list(APPEND TKET_COMPS
     Utils
+    WeightSubgrMono
     ZX
     OpType
     Clifford
@@ -74,6 +75,7 @@ list(APPEND TKET_COMPS
     Characterisation
     Converters
     Routing
+    PlacementWithWSM
     MeasurementSetup
     Transformations
     ArchAwareSynth
