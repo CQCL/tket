@@ -167,7 +167,7 @@ class LexiRouteRoutingMethod : public RoutingMethod {
    *
    * @param _max_depth Number of layers of gates checked inr outed subcircuit.
    */
-  LexiRouteRoutingMethod(unsigned _max_depth = 10);
+  LexiRouteRoutingMethod(unsigned _max_depth = 100);
 
   /**
    * @return true if method can route subcircuit, false if not

@@ -102,6 +102,10 @@ class Architecture : public ArchitectureBase<graphs::DirectedGraph<Node>> {
    */
   node_set_t get_articulation_points(const Architecture &subarc) const;
 
+  /**
+   * Returns whether a gate defined by its OpType and the Qubit it acts on
+   * is possible on the architecture.
+   */
   bool valid_operation(
       /*const OpType& optype, */ const std::vector<Node> &uids) const;
 

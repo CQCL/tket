@@ -68,29 +68,27 @@ PYBIND11_MODULE(mapping, m) {
       .def(
           py::init<unsigned>(),
           "LexiRoute constructor.\n\n:param lookahead: Maximum depth of "
-          "lookahead "
-          "employed when picking SWAP for purpose of logical to physical "
-          "mapping.",
+          "lookahead employed when picking SWAP for purpose of logical to "
+          "physical mapping.",
           py::arg("lookahead") = 10);
 
   py::class_<MappingManager>(
       m, "MappingManager",
       "Defined by a pytket Architecture object, maps Circuit logical Qubits "
       "to Physically permitted Architecture qubits. Mapping is completed by "
-      "sequential routing (full or partial) of subcircuits. Custom method for "
-      "routing (full or partial) of subcircuits can be defined in python "
-      "layer.")
+      "sequential routing (full or partial) of subcircuits. A custom method for "
+      "routing (full or partial) of subcircuits can be defined in Python.")
       .def(
           py::init<const ArchitecturePtr&>(),
           "MappingManager constructor.\n\n:param architecture: pytket "
-          "Architecure object MappingManager object defined by.",
+          "Architecture object.",
           py::arg("architecture"))
       .def(
           "route_circuit", &MappingManager::route_circuit,
           "Maps from given logical circuit to physical circuit. Modification "
           "defined by route_subcircuit, but typically this proceeds by "
           "insertion of SWAP gates that permute logical qubits on physical "
-          "qubits. \n\n:param circuit: pytket circuit to be mapped"
+          "qubits.\n\n:param circuit: pytket circuit to be mapped"
           "\n:param routing_methods: Ranked methods to use for routing "
           "subcircuits. In given order, each method is sequentially checked "
           "for viability, with the first viable method being used.",

@@ -75,7 +75,6 @@ list(APPEND TKET_COMPS
     Program
     Characterisation
     Converters
-    TokenSwapping
     Placement
     ArchAwareSynth
     Mapping    
