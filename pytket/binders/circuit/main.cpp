@@ -39,6 +39,7 @@ void init_unitid(py::module &m);
 void init_circuit(py::module &m);
 void init_classical(py::module &m);
 void init_boxes(py::module &m);
+void init_library(py::module &m);
 
 PYBIND11_MODULE(circuit, m) {
   init_unitid(m);
@@ -500,6 +501,7 @@ PYBIND11_MODULE(circuit, m) {
           ":return: set of symbolic parameters for the command");
 
   init_circuit(m);
+  init_library(m);
   init_boxes(m);
   init_classical(m);
 
