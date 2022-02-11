@@ -199,7 +199,7 @@ PassPtr gen_cx_mapping_pass(
   OpTypeSet gate_set = all_single_qubit_types();
   gate_set.insert(OpType::CX);
   PassPtr rebase_pass =
-      gen_rebase_pass(gate_set, CircPool::CX(), Transforms::tk1_to_tk1);
+      gen_rebase_pass(gate_set, CircPool::CX(), CircPool::tk1_to_tk1);
 
   PassPtr return_pass =
       rebase_pass >> gen_full_mapping_pass(arc, placement_ptr, config);
@@ -436,7 +436,7 @@ PassPtr gen_directed_cx_routing_pass(
   gate_set.insert(multis.begin(), multis.end());
 
   return gen_routing_pass(arc, config) >>
-         gen_rebase_pass(gate_set, CircPool::CX(), Transforms::tk1_to_tk1) >>
+         gen_rebase_pass(gate_set, CircPool::CX(), CircPool::tk1_to_tk1) >>
          gen_decompose_routing_gates_to_cxs_pass(arc, true);
 }
 

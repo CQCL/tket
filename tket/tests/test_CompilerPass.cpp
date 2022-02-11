@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <catch2/catch.hpp>
 
+#include "Circuit/CircPool.hpp"
 #include "Circuit/Circuit.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
@@ -217,7 +218,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     cx.add_op<unsigned>(OpType::CX, {0, 1});
     PassPtr pz_rebase = gen_rebase_pass(
         {OpType::CX, OpType::PhasedX, OpType::Rz}, cx,
-        Transforms::tk1_to_PhasedXRz);
+        CircPool::tk1_to_PhasedXRz);
     PassPtr all_passes = SynthesiseTket() >> cp_route >> pz_rebase;
 
     REQUIRE(all_passes->apply(cu));
@@ -1048,7 +1049,7 @@ SCENARIO("CX mapping pass") {
     cx.add_op<unsigned>(OpType::CX, {0, 1});
     OpTypeSet gateset = all_single_qubit_types();
     gateset.insert(OpType::CX);
-    PassPtr rebase = gen_rebase_pass(gateset, cx, Transforms::tk1_to_tk1);
+    PassPtr rebase = gen_rebase_pass(gateset, cx, CircPool::tk1_to_tk1);
 
     // Circuit mapping basis states to basis states
     Circuit c(3);
