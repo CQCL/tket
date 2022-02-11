@@ -27,7 +27,8 @@ namespace tket {
 namespace Transforms {
 
 static bool standard_rebase(
-    Circuit& circ, const OpTypeSet& allowed_gates, const Circuit& cx_replacement,
+    Circuit& circ, const OpTypeSet& allowed_gates,
+    const Circuit& cx_replacement,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement);
 
@@ -117,162 +118,45 @@ Transform rebase_tket() {
   return rebase_factory({OpType::CX, OpType::TK1}, CircPool::CX(), tk1_to_tk1);
 }
 
-Circuit tk1_to_PhasedXRz(
-    const Expr& alpha, const Expr& beta, const Expr& gamma) {
-  Circuit c(1);
-  if (equiv_expr(beta, 1)) {
-    // Angles β ∈ {π, 3π}
-    c.add_op<unsigned>(OpType::PhasedX, {beta, (alpha - gamma) / 2.}, {0});
-  } else if (equiv_expr(beta, 0)) {
-    // Angle β ∈ {0, 2π}
-    c.add_op<unsigned>(OpType::Rz, alpha + beta + gamma, {0});
-  } else {
-    c.add_op<unsigned>(OpType::Rz, alpha + gamma, {0});
-    c.add_op<unsigned>(OpType::PhasedX, {beta, alpha}, {0});
+// apply redundancy removal to circuit returned by function
+#define WRAP_REDUNDANCY(func)                                  \
+  [](const Expr& alpha, const Expr& beta, const Expr& gamma) { \
+    Circuit c = func(alpha, beta, gamma);                      \
+    remove_redundancies().apply(c);                            \
+    return c;                                                  \
   }
-  remove_redundancies().apply(c);
-  return c;
-}
 
 Transform rebase_cirq() {
   return rebase_factory(
       {OpType::CZ, OpType::PhasedX, OpType::Rz}, CircPool::H_CZ_H(),
-      tk1_to_PhasedXRz);
-}
-
-Circuit tk1_to_rzrx(const Expr& alpha, const Expr& beta, const Expr& gamma) {
-  Circuit c(1);
-  c.add_op<unsigned>(OpType::Rz, gamma, {0});
-  c.add_op<unsigned>(OpType::Rx, beta, {0});
-  c.add_op<unsigned>(OpType::Rz, alpha, {0});
-  remove_redundancies().apply(c);
-  return c;
-}
-
-Circuit tk1_to_rzh(const Expr& alpha, const Expr& beta, const Expr& gamma) {
-  Circuit c(1);
-  std::optional<unsigned> cliff = equiv_Clifford(beta, 4);
-  if (cliff) {
-    switch (*cliff % 4) {
-      case 0: {
-        c.add_op<unsigned>(OpType::Rz, gamma + alpha, {0});
-        break;
-      }
-      case 1: {
-        c.add_op<unsigned>(OpType::Rz, gamma - 0.5, {0});
-        c.add_op<unsigned>(OpType::H, {0});
-        c.add_op<unsigned>(OpType::Rz, alpha - 0.5, {0});
-        c.add_phase(-0.5);
-        break;
-      }
-      case 2: {
-        c.add_op<unsigned>(OpType::Rz, gamma - alpha, {0});
-        c.add_op<unsigned>(OpType::H, {0});
-        c.add_op<unsigned>(OpType::Rz, 1., {0});
-        c.add_op<unsigned>(OpType::H, {0});
-        break;
-      }
-      case 3: {
-        c.add_op<unsigned>(OpType::Rz, gamma + 0.5, {0});
-        c.add_op<unsigned>(OpType::H, {0});
-        c.add_op<unsigned>(OpType::Rz, alpha + 0.5, {0});
-        c.add_phase(-0.5);
-        break;
-      }
-    }
-    if (cliff >= 4u) c.add_phase(1.);
-  } else {
-    c.add_op<unsigned>(OpType::Rz, gamma, {0});
-    c.add_op<unsigned>(OpType::H, {0});
-    c.add_op<unsigned>(OpType::Rz, beta, {0});
-    c.add_op<unsigned>(OpType::H, {0});
-    c.add_op<unsigned>(OpType::Rz, alpha, {0});
-  }
-  remove_redundancies().apply(c);
-  return c;
-}
-
-static unsigned int_half(const Expr& angle) {
-  // Assume angle is an even integer
-  double eval = eval_expr(angle).value();
-  return lround(eval / 2);
-}
-
-Circuit tk1_to_rzsx(const Expr& alpha, const Expr& beta, const Expr& gamma) {
-  Circuit c(1);
-  Expr correction_phase = 0;
-  if (equiv_0(beta)) {
-    // b = 2k, if k is odd, then Rx(b) = -I
-    c.add_op<unsigned>(OpType::Rz, alpha + gamma, {0});
-    correction_phase = int_half(beta);
-  } else if (equiv_0(beta + 1)) {
-    // Use Rx(2k-1) = i(-1)^{k}SxSx
-    correction_phase = -0.5 + int_half(beta - 1);
-    if (equiv_0(alpha - gamma)) {
-      // a - c = 2m
-      // overall operation is (-1)^{m}Rx(2k -1)
-      c.add_op<unsigned>(OpType::SX, {0});
-      c.add_op<unsigned>(OpType::SX, {0});
-      correction_phase += int_half(alpha - gamma);
-    } else {
-      c.add_op<unsigned>(OpType::Rz, gamma, {0});
-      c.add_op<unsigned>(OpType::SX, {0});
-      c.add_op<unsigned>(OpType::SX, {0});
-      c.add_op<unsigned>(OpType::Rz, alpha, {0});
-    }
-  } else if (equiv_0(beta - 0.5) && equiv_0(alpha) && equiv_0(gamma)) {
-    // a = 2k, b = 2m+0.5, c = 2n
-    // Rz(2k)Rx(2m + 0.5)Rz(2n) = (-1)^{k+m+n}e^{-i \pi /4} SX
-    c.add_op<unsigned>(OpType::SX, {0});
-    correction_phase =
-        int_half(beta - 0.5) + int_half(alpha) + int_half(gamma) - 0.25;
-  } else if (equiv_0(alpha - 0.5) && equiv_0(gamma - 0.5)) {
-    // Rz(2k + 0.5)Rx(b)Rz(2m + 0.5) = -i(-1)^{k+m}SX.Rz(1-b).SX
-    c.add_op<unsigned>(OpType::SX, {0});
-    c.add_op<unsigned>(OpType::Rz, 1 - beta, {0});
-    c.add_op<unsigned>(OpType::SX, {0});
-    correction_phase = int_half(alpha - 0.5) + int_half(gamma - 0.5) - 0.5;
-  } else {
-    c.add_op<unsigned>(OpType::Rz, gamma + 0.5, {0});
-    c.add_op<unsigned>(OpType::SX, {0});
-    c.add_op<unsigned>(OpType::Rz, beta - 1, {0});
-    c.add_op<unsigned>(OpType::SX, {0});
-    c.add_op<unsigned>(OpType::Rz, alpha + 0.5, {0});
-    correction_phase = -0.5;
-  }
-  c.add_phase(correction_phase);
-  remove_redundancies().apply(c);
-  return c;
-}
-
-Circuit tk1_to_tk1(const Expr& alpha, const Expr& beta, const Expr& gamma) {
-  Circuit c(1);
-  c.add_op<unsigned>(OpType::TK1, {alpha, beta, gamma}, {0});
-  return c;
+      WRAP_REDUNDANCY(CircPool::tk1_to_PhasedXRz));
 }
 
 Transform rebase_HQS() {
   return rebase_factory(
       {OpType::ZZMax, OpType::PhasedX, OpType::Rz}, CircPool::CX_using_ZZMax(),
-      tk1_to_PhasedXRz);
+      WRAP_REDUNDANCY(CircPool::tk1_to_PhasedXRz));
 }
 
 Transform rebase_UMD() {
   return rebase_factory(
       {OpType::XXPhase, OpType::PhasedX, OpType::Rz},
-      CircPool::CX_using_XXPhase_0(), tk1_to_PhasedXRz);
+      CircPool::CX_using_XXPhase_0(),
+      WRAP_REDUNDANCY(CircPool::tk1_to_PhasedXRz));
 }
 
 Transform rebase_quil() {
   return rebase_factory(
-      {OpType::CZ, OpType::Rx, OpType::Rz}, CircPool::H_CZ_H(), tk1_to_rzrx);
+      {OpType::CZ, OpType::Rx, OpType::Rz}, CircPool::H_CZ_H(),
+      WRAP_REDUNDANCY(CircPool::tk1_to_rzrx));
 }
 
 Transform rebase_pyzx() {
   OpTypeSet pyzx_gates = {OpType::SWAP, OpType::CX, OpType::CZ, OpType::H,
                           OpType::X,    OpType::Z,  OpType::S,  OpType::T,
                           OpType::Rx,   OpType::Rz};
-  return rebase_factory(pyzx_gates, CircPool::CX(), tk1_to_rzrx);
+  return rebase_factory(
+      pyzx_gates, CircPool::CX(), WRAP_REDUNDANCY(CircPool::tk1_to_rzrx));
 }
 
 Transform rebase_projectq() {
@@ -280,18 +164,20 @@ Transform rebase_projectq() {
                               OpType::H,    OpType::X,   OpType::Y,  OpType::Z,
                               OpType::S,    OpType::T,   OpType::V,  OpType::Rx,
                               OpType::Ry,   OpType::Rz};
-  return rebase_factory(projectq_gates, CircPool::CX(), tk1_to_rzrx);
+  return rebase_factory(
+      projectq_gates, CircPool::CX(), WRAP_REDUNDANCY(CircPool::tk1_to_rzrx));
 }
 
 Transform rebase_UFR() {
   return rebase_factory(
-      {OpType::CX, OpType::Rz, OpType::H}, CircPool::CX(), tk1_to_rzh);
+      {OpType::CX, OpType::Rz, OpType::H}, CircPool::CX(),
+      WRAP_REDUNDANCY(CircPool::tk1_to_rzh));
 }
 
 Transform rebase_OQC() {
   return rebase_factory(
       {OpType::ECR, OpType::Rz, OpType::SX}, CircPool::CX_using_ECR(),
-      tk1_to_rzsx);
+      WRAP_REDUNDANCY(CircPool::tk1_to_rzsx));
 }
 
 }  // namespace Transforms

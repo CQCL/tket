@@ -16,6 +16,7 @@
 #include <numeric>
 
 #include "Circuit/Boxes.hpp"
+#include "Circuit/CircPool.hpp"
 #include "CircuitsForTesting.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
@@ -401,8 +402,7 @@ SCENARIO("Check each Clifford case for tk1_to_rzh") {
       Circuit correct(1);
       correct.add_op<unsigned>(
           OpType::TK1, {test.alpha, test.beta, test.gamma}, {0});
-      Circuit result =
-          Transforms::tk1_to_rzh(test.alpha, test.beta, test.gamma);
+      Circuit result = CircPool::tk1_to_rzh(test.alpha, test.beta, test.gamma);
       REQUIRE(result.n_gates() == test.expected_gates);
       REQUIRE(test_unitary_comparison(correct, result));
     }
@@ -455,8 +455,8 @@ SCENARIO("Check cases for tk1_to_rzsx") {
       Circuit correct(1);
       correct.add_op<unsigned>(
           OpType::TK1, {test.alpha, test.beta, test.gamma}, {0});
-      Circuit result =
-          Transforms::tk1_to_rzsx(test.alpha, test.beta, test.gamma);
+      Circuit result = CircPool::tk1_to_rzsx(test.alpha, test.beta, test.gamma);
+      Transforms::remove_redundancies().apply(result);
       REQUIRE(result.n_gates() == test.expected_gates);
       REQUIRE(test_unitary_comparison(correct, result));
     }
@@ -465,8 +465,7 @@ SCENARIO("Check cases for tk1_to_rzsx") {
       Circuit correct(1);
       correct.add_op<unsigned>(
           OpType::TK1, {test.alpha, test.beta, test.gamma}, {0});
-      Circuit result =
-          Transforms::tk1_to_rzsx(test.alpha, test.beta, test.gamma);
+      Circuit result = CircPool::tk1_to_rzsx(test.alpha, test.beta, test.gamma);
       REQUIRE(result.n_gates() == test.expected_gates);
     }
   }
