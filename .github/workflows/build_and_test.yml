@@ -5,7 +5,7 @@ on:
     branches:
       - main
       - develop
-      - feature/routing-v3
+      - feature/RV3.1
   push:
     branches:
       - develop
