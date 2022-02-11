@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # You may not use this file except in compliance with the Licence.
 # You may obtain a copy of the Licence in the LICENCE file accompanying
