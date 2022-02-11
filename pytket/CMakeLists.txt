@@ -46,6 +46,7 @@ pybind11_add_module(circuit
     binders/circuit/unitid.cpp
     binders/circuit/boxes.cpp
     binders/circuit/classical.cpp
+    binders/circuit/library.cpp
     binders/circuit/Circuit/main.cpp
     binders/circuit/Circuit/add_op.cpp
     binders/circuit/Circuit/add_classical_op.cpp)
