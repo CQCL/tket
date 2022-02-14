@@ -20,7 +20,7 @@
 
 #include "DistancesInterface.hpp"
 #include "NeighboursInterface.hpp"
-#include "RNG.hpp"
+#include "Utils/RNG.hpp"
 
 namespace tket {
 namespace tsa_internal {

@@ -222,7 +222,7 @@ BruteForceColouring::BruteForceColouring(
        << ", reached suggested_number_of_colours = "
        << suggested_number_of_colours << ", had " << number_of_nodes
        << " nodes. Error: " << e.what() << priority.print_raw_data();
-    throw std::runtime_error(ss.str());
+    TKET_ASSERT_WITH_MESSAGE(false, ss.str());
     // GCOVR_EXCL_STOP
   }
 }
