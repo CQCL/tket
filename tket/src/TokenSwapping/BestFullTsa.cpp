@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "BestFullTsa.hpp"
+#include "TokenSwapping/BestFullTsa.hpp"
 
 #include "TokenSwapping/DistancesFromArchitecture.hpp"
 #include "TokenSwapping/NeighboursFromArchitecture.hpp"
@@ -20,7 +20,8 @@
 #include "TokenSwapping/VertexMapResizing.hpp"
 
 namespace tket {
-namespace tsa_internal {
+
+using namespace tsa_internal;
 
 BestFullTsa::BestFullTsa() { m_name = "BestFullTsa"; }
 
@@ -60,5 +61,4 @@ void BestFullTsa::append_partial_solution(
       m_swap_list_optimiser);
 }
 
-}  // namespace tsa_internal
 }  // namespace tket

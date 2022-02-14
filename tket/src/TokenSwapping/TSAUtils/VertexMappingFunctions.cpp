@@ -21,7 +21,8 @@
 #include "Utils/Assert.hpp"
 
 namespace tket {
-namespace tsa_internal {
+
+using namespace tsa_internal;
 
 bool all_tokens_home(const VertexMapping& vertex_mapping) {
   for (const auto& entry : vertex_mapping) {
@@ -89,5 +90,4 @@ void add_swap(VertexMapping& source_to_target_map, const Swap& swap) {
   std::swap(source_to_target_map[source_v1], source_to_target_map[source_v2]);
 }
 
-}  // namespace tsa_internal
 }  // namespace tket

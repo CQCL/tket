@@ -21,7 +21,6 @@
 #include "TokenSwapping/VectorListHybrid.hpp"
 
 namespace tket {
-namespace tsa_internal {
 
 typedef std::pair<size_t, size_t> Swap;
 typedef VectorListHybrid<Swap> SwapList;
@@ -44,5 +43,4 @@ Swap get_swap(size_t v1, size_t v2);
  */
 bool disjoint(const Swap& swap1, const Swap& swap2);
 
-}  // namespace tsa_internal
 }  // namespace tket

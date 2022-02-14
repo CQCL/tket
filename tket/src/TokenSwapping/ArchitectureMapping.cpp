@@ -20,7 +20,6 @@
 #include "Utils/Assert.hpp"
 
 namespace tket {
-namespace tsa_internal {
 
 ArchitectureMapping::ArchitectureMapping(const Architecture& arch)
     : m_arch(arch) {
@@ -131,5 +130,4 @@ std::vector<Swap> ArchitectureMapping::get_edges() const {
   return edges;
 }
 
-}  // namespace tsa_internal
 }  // namespace tket

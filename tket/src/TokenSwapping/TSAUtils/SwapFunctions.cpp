@@ -18,7 +18,6 @@
 #include <stdexcept>
 
 namespace tket {
-namespace tsa_internal {
 
 Swap get_swap(size_t v1, size_t v2) {
   if (v1 == v2) {
@@ -37,5 +36,4 @@ bool disjoint(const Swap& s1, const Swap& s2) {
          s1.second != s2.first && s1.second != s2.second;
 }
 
-}  // namespace tsa_internal
 }  // namespace tket
