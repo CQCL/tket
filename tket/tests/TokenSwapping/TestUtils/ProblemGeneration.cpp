@@ -16,6 +16,7 @@
 
 #include <catch2/catch.hpp>
 
+#include "GetRandomSet.hpp"
 #include "TokenSwapping/GeneralFunctions.hpp"
 
 using std::vector;

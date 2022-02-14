@@ -12,22 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "TokenSwapping/GeneralFunctions.hpp"
+#include "GetRandomSet.hpp"
 
 #include <numeric>
-#include <stdexcept>
 
 #include "Utils/Assert.hpp"
 
 namespace tket {
 namespace tsa_internal {
+namespace tests {
 
 std::set<size_t> get_random_set(
     RNG& rng, size_t sample_size, size_t population_size) {
-  // GCOVR_EXCL_START
-  TKET_ASSERT(
-      sample_size <= population_size || !"get_random_set: sample too large");
-  // GCOVR_EXCL_STOP
+  TKET_ASSERT(sample_size <= population_size);
+
   std::set<size_t> result;
   if (sample_size == 0 || population_size == 0) {
     return result;
@@ -51,5 +49,6 @@ std::set<size_t> get_random_set(
   return result;
 }
 
+}  // namespace tests
 }  // namespace tsa_internal
 }  // namespace tket
