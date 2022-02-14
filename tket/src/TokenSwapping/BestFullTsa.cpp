@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,9 +24,6 @@ namespace tsa_internal {
 
 BestFullTsa::BestFullTsa() { m_name = "BestFullTsa"; }
 
-// HybridTsa00& BestFullTsa::get_hybrid_tsa_for_testing() { return m_hybrid_tsa;
-// }
-
 void BestFullTsa::append_partial_solution(
     SwapList& swaps, VertexMapping& vertex_mapping,
     const ArchitectureMapping& arch_mapping) {
@@ -41,7 +38,7 @@ void BestFullTsa::append_partial_solution(
 void BestFullTsa::append_partial_solution(
     SwapList& swaps, VertexMapping& vertex_mapping,
     DistancesInterface& distances, NeighboursInterface& neighbours,
-    PathFinderInterface& path_finder) {
+    RiverFlowPathFinder& path_finder) {
   auto vm_copy = vertex_mapping;
 
   m_hybrid_tsa.append_partial_solution(

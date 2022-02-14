@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,24 +20,29 @@
 
 #include "DistancesInterface.hpp"
 #include "NeighboursInterface.hpp"
-#include "PathFinderInterface.hpp"
 #include "RNG.hpp"
 
 namespace tket {
 namespace tsa_internal {
 
-/** Think of flowing water: if it has already flowed through, it creates
- *  channels along which it is more likely to flow next time.
- *  We do a similar idea: the PURPOSE is to try to make paths overlap;
- *  if we move tokens along paths with many edges in common, it is more likely
- *  that some basic swap optimisation will reduce the number of swaps.
- *  (Disjoint swaps are the worst kind to optimise, of course;
- *  no reduction is possible).
+/** Given two vertices in a graph, find a shortest path between them;
+ * of course paths might not be unique.
+ * The aim is to make paths overlap;
+ * if we move tokens along paths with many edges in common, it is more likely
+ * that some basic swap optimisation will reduce the number of swaps.
+ * (Disjoint swaps are the worst kind to optimise, of course;
+ * no reduction is possible).
  *
- *  This is supposed to be reasonably fast. Repeated calls to operator()(v1,v2)
- *  are likely to return the same path, but may change slightly over time.
+ * We think of flowing water: if water has already flowed through,
+ * it creates channels along which it is more likely to flow next time.
+ * We do a similar thing: by remembering which edges have already been used,
+ * whenever we have a choice of edge to continue a path, choose one which
+ * has already been used frequently.
+ *
+ * Repeated calls to operator()(v1,v2)
+ * are likely to return the same path, but may change slightly over time.
  */
-class RiverFlowPathFinder : public PathFinderInterface {
+class RiverFlowPathFinder {
  public:
   /** All the objects should remain valid throughout
    *  the lifetime of this object.
@@ -61,36 +66,31 @@ class RiverFlowPathFinder : public PathFinderInterface {
    *  partially finished problems, even though the end-to-end problem
    *  is the same).
    */
-  virtual void reset() override;
+  void reset();
 
-  /** Get the path from v1 to v2. As always, may change over time;
+  /** Get the path from v1 to v2. May change over time, and
    *  path(v1, v2) is NOT necessarily the reverse of path(v2, v1).
    *  @param vertex1 First vertex v1.
    *  @param vertex2 Second vertex v2.
    *  @return A list of vertices, starting with v1 and ending with v2,
    *    giving a shortest path from v1 to v2.
    */
-  virtual const std::vector<size_t>& operator()(
-      size_t vertex1, size_t vertex2) override;
+  const std::vector<size_t>& operator()(size_t vertex1, size_t vertex2);
 
-  virtual ~RiverFlowPathFinder();
+  ~RiverFlowPathFinder();
 
-  /** We really do want to know which edges have been used in the solution so
-   * far, that's the whole point of this class.
+  /** Whenever an edge is used, i.e. we swap tokens along it, tell this
+   * object; the proper functioning of this class depends on
+   * knowing which edges have been used in the solution so far.
    * @param vertex1 First vertex v1 of an edge v1-v2 that was used in the
    * solution.
    * @param vertex2 Second vertex v2 of the edge.
    */
-  virtual void register_edge(size_t vertex1, size_t vertex2) override;
-
-  /** Returns true for this object, since we definitely do want to remember
-   * previous edges.
-   * @return True, always, for this class.
-   */
-  virtual bool edge_registration_has_effect() const override;
+  void register_edge(size_t vertex1, size_t vertex2);
 
  private:
   struct Impl;
+  /** Pimpl idiom. */
   std::unique_ptr<Impl> m_pimpl;
 };
 
