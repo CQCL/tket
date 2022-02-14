@@ -10,10 +10,12 @@ API changes:
   ``map`` property instead.)
 * The deprecated ``Backend.compile_circuit`` method is removed. (Use
   ``get_compiled_circuit`` instead.)
+* ``RebaseCustom`` takes one allowed gateset parameter rather than separate single qubit and multiqubit gatesets.
 
 Minor new features:
 
 * Add ``delay_measures`` option to ``DefaultMappingPass``.
+* New ``pytket.passes.auto_rebase_pass`` which attempts to construct a rebase pass given a target gate set from known decompositions.
 
 0.19.0 (February 2022)
 ----------------------
