@@ -147,9 +147,9 @@ The `symengine` dependency is built from a local conan recipe. Run:
 conan create --profile=tket recipes/symengine
 ```
 
-to build it. If you are using a conan configuration supported by the CI, this is
-unnecessary as a pre-built package will be downloaded from the `tket-conan`
-repository when you build `tket`.
+to build it. If you are using a conan configuration supported by the CI
+(see above under "Build tools"), this is unnecessary as a pre-built package
+will be downloaded from the `tket-conan` repository when you build `tket`.
 
 ### Building tket
 
