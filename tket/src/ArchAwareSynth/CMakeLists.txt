@@ -35,7 +35,6 @@ list(APPEND DEPS_${COMP}
     Placement
     Ops
     OpType
-    TokenSwapping
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})
