@@ -297,8 +297,8 @@ std::map<ZXVert, ZXVertSeqSet> Flow::gauss_solve_correctors(
       }
       case ZXType::XZ: {
         mat(preserve.left.at(v), n_correctors + i) = true;
-        // FALL THROUGH
       }
+      // fall through
       case ZXType::YZ:
       case ZXType::PZ: {
         for (const ZXVert& n : diag.neighbours(v)) {
