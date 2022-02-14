@@ -86,6 +86,36 @@ SCENARIO("Test MappingFrontier initialisation, advance_frontier_boundary.") {
     REQUIRE(mf.circuit_.source(e3) == v9);
     REQUIRE(mf.circuit_.target(e3) == v3);
   }
+
+  GIVEN("A circuit with measurements and classically controlled operations") {
+    Circuit circ(3, 1);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    // All gates are physically permitted
+    Vertex v0 = circ.add_op<unsigned>(OpType::Measure, {0, 0});
+    Vertex v1 =
+        circ.add_conditional_gate<unsigned>(OpType::Rx, {0.6}, {0}, {0}, 1);
+    Vertex v2 =
+        circ.add_conditional_gate<unsigned>(OpType::Rz, {0.6}, {1}, {0}, 1);
+    Vertex v3 = circ.add_op<unsigned>(OpType::X, {2});
+    std::vector<Node> nodes = {Node(0), Node(1), Node(2)};
+
+    Architecture arc({{nodes[0], nodes[1]}, {nodes[1], nodes[2]}});
+    ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]}, {qubits[1], nodes[1]}, {qubits[2], nodes[2]}};
+    circ.rename_units(rename_map);
+    MappingFrontier mf(circ);
+    mf.advance_frontier_boundary(shared_arc);
+    VertPort vp0 = mf.quantum_boundary->get<TagKey>().find(nodes[0])->second;
+    VertPort vp1 = mf.quantum_boundary->get<TagKey>().find(nodes[1])->second;
+    VertPort vp2 = mf.quantum_boundary->get<TagKey>().find(nodes[2])->second;
+    Op_ptr op = circ.get_Op_ptr_from_Vertex(vp0.first);
+    Op_ptr op2 = circ.get_Op_ptr_from_Vertex(vp1.first);
+    Op_ptr op3 = circ.get_Op_ptr_from_Vertex(vp2.first);
+    REQUIRE(vp0.first == v1);
+    REQUIRE(vp1.first == v2);
+    REQUIRE(vp2.first == v3);
+  }
 }
 
 SCENARIO("Test MappingFrontier get_default_to_quantum_boundary_unit_map") {

@@ -39,6 +39,9 @@ void from_json(const nlohmann::json& j, std::vector<RoutingMethodPtr>& rmp_v) {
     } else if (name == "MultiGateReorderRoutingMethod") {
       rmp_v.push_back(std::make_shared<MultiGateReorderRoutingMethod>(
           MultiGateReorderRoutingMethod::deserialize(c)));
+    } else if (name == "BoxDecompositionRoutingMethod") {
+      rmp_v.push_back(std::make_shared<BoxDecompositionRoutingMethod>(
+          BoxDecompositionRoutingMethod::deserialize(c)));
     } else {
       std::logic_error(
           "Deserialization for given RoutingMethod not supported.");
