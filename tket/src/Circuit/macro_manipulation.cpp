@@ -629,34 +629,27 @@ Circuit Circuit::conditional_circuit(
   return cond_circ;
 }
 
-bool Circuit::substitute_box_vertex(
-    Vertex& vert, VertexDeletion vertex_deletion) {
-  Op_ptr op = get_Op_ptr_from_Vertex(vert);
-  bool conditional = op->get_type() == OpType::Conditional;
-  if (conditional) {
-    const Conditional& cond = static_cast<const Conditional&>(*op);
-    op = cond.get_op();
-  }
-  if (!op->get_desc().is_box()) return false;
-  const Box& b = static_cast<const Box&>(*op);
-  Circuit replacement = *b.to_circuit();
-  if (conditional) {
-    substitute_conditional(
-        replacement, vert, vertex_deletion, OpGroupTransfer::Merge);
-  } else {
-    substitute(replacement, vert, vertex_deletion, OpGroupTransfer::Merge);
-  }
-  return true;
-}
-
 bool Circuit::decompose_boxes() {
   bool success = false;
   VertexList bin;
   BGL_FORALL_VERTICES(v, dag, DAG) {
-    if (substitute_box_vertex(v, VertexDeletion::No)) {
-      bin.push_back(v);
-      success = true;
+    Op_ptr op = get_Op_ptr_from_Vertex(v);
+    bool conditional = op->get_type() == OpType::Conditional;
+    if (conditional) {
+      const Conditional& cond = static_cast<const Conditional&>(*op);
+      op = cond.get_op();
     }
+    if (!op->get_desc().is_box()) continue;
+    const Box& b = static_cast<const Box&>(*op);
+    Circuit replacement = *b.to_circuit();
+    if (conditional) {
+      substitute_conditional(
+          replacement, v, VertexDeletion::No, OpGroupTransfer::Merge);
+    } else {
+      substitute(replacement, v, VertexDeletion::No, OpGroupTransfer::Merge);
+    }
+    bin.push_back(v);
+    success = true;
   }
   remove_vertices(bin, GraphRewiring::No, VertexDeletion::Yes);
   return success;

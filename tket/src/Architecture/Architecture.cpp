@@ -27,12 +27,7 @@ namespace tket {
 // basic implementation that works off same prior assumptions
 // TODO: Update this for more mature systems of multi-qubit gates
 bool Architecture::valid_operation(
-    const Op_ptr& op, const std::vector<Node>& uids) const {
-  if (op->get_desc().is_box() ||
-      (op->get_type() == OpType::Conditional &&
-       static_cast<const Conditional&>(*op).get_op()->get_desc().is_box()))
-    return false;
-
+    /*const OpType& optype, */ const std::vector<Node>& uids) const {
   if (uids.size() ==
       1) {  // TODO: for simple case here this should probably not pass if
             // node_exists[uids[0]] == FALSE, but should be fine for now?

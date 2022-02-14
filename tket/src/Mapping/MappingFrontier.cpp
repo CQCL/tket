@@ -218,8 +218,19 @@ void MappingFrontier::advance_frontier_boundary(
     std::shared_ptr<unit_frontier_t> frontier_edges =
         frontier_convert_vertport_to_edge(
             this->circuit_, this->quantum_boundary);
+    // Add all classical edges that share the same target
+    unsigned dummy_bit_index = 0;
+    for (const std::pair<UnitID, Edge>& pair : frontier_edges->get<TagKey>()) {
+      Vertex vert = this->circuit_.target(pair.second);
+      for (const Edge& e :
+           this->circuit_.get_in_edges_of_type(vert, EdgeType::Classical)) {
+        frontier_edges->insert({Bit(dummy_bit_index), e});
+        dummy_bit_index++;
+      }
+    }
 
-    CutFrontier next_cut = this->circuit_.next_q_cut(frontier_edges);
+    CutFrontier next_cut = this->circuit_.next_cut(
+        frontier_edges, std::make_shared<b_frontier_t>());
 
     // For each vertex in a slice, if its physically permitted, update
     // quantum_boundary with quantum out edges from vertex (i.e.
@@ -241,7 +252,8 @@ void MappingFrontier::advance_frontier_boundary(
         nodes.push_back(Node(uid));
       }
       if (architecture->valid_operation(
-              this->circuit_.get_Op_ptr_from_Vertex(vert), nodes) ||
+              /* this->circuit_.get_OpType_from_Vertex(vert), */
+              nodes) ||
           this->circuit_.get_OpType_from_Vertex(vert) == OpType::Barrier) {
         // if no valid operation, boundary not updated and while loop terminates
         boundary_updated = true;
