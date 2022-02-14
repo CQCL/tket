@@ -19,7 +19,7 @@
 #include "TestUtils/ProblemGeneration.hpp"
 #include "TokenSwapping/CyclesPartialTsa.hpp"
 #include "TestUtils/DebugFunctions.hpp"
-#include "TokenSwapping/RNG.hpp"
+#include "Utils/RNG.hpp"
 #include "TokenSwapping/RiverFlowPathFinder.hpp"
 #include "TokenSwapping/TrivialTSA.hpp"
 

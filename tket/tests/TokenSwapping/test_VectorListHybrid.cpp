@@ -16,7 +16,7 @@
 #include <catch2/catch.hpp>
 #include <sstream>
 
-#include "TokenSwapping/RNG.hpp"
+#include "Utils/RNG.hpp"
 #include "TokenSwapping/VectorListHybrid.hpp"
 
 using std::vector;

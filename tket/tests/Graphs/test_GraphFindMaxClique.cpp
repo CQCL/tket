@@ -18,7 +18,7 @@
 #include "Graphs/AdjacencyData.hpp"
 #include "Graphs/GraphRoutines.hpp"
 #include "Graphs/LargeCliquesResult.hpp"
-#include "TokenSwapping/RNG.hpp"
+#include "Utils/RNG.hpp"
 
 using std::set;
 using std::vector;

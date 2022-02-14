@@ -17,7 +17,7 @@
 
 #include "Graphs/AdjacencyData.hpp"
 #include "Graphs/GraphRoutines.hpp"
-#include "TokenSwapping/RNG.hpp"
+#include "Utils/RNG.hpp"
 
 using std::map;
 using std::set;

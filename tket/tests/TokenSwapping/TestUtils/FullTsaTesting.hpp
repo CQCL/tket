@@ -16,8 +16,8 @@
 
 #include "TokenSwapping/ArchitectureMapping.hpp"
 #include "TokenSwapping/PartialTsaInterface.hpp"
-#include "TokenSwapping/RNG.hpp"
 #include "TokenSwapping/SwapListOptimiser.hpp"
+#include "Utils/RNG.hpp"
 
 namespace tket {
 namespace tsa_internal {

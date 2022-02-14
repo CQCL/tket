@@ -17,7 +17,7 @@
 #include <map>
 
 #include "TokenSwapping/FilteredSwapSequences.hpp"
-#include "TokenSwapping/RNG.hpp"
+#include "Utils/RNG.hpp"
 
 using std::vector;
 

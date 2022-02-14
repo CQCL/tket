@@ -19,7 +19,7 @@
 
 #include "PermutationTestUtils.hpp"
 #include "TokenSwapping/CanonicalRelabelling.hpp"
-#include "TokenSwapping/RNG.hpp"
+#include "Utils/RNG.hpp"
 
 using std::vector;
 

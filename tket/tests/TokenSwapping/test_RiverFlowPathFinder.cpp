@@ -19,7 +19,7 @@
 #include "TokenSwapping/ArchitectureMapping.hpp"
 #include "TokenSwapping/DistancesFromArchitecture.hpp"
 #include "TokenSwapping/NeighboursFromArchitecture.hpp"
-#include "TokenSwapping/RNG.hpp"
+#include "Utils/RNG.hpp"
 #include "TokenSwapping/RiverFlowPathFinder.hpp"
 
 using std::vector;

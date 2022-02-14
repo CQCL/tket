@@ -12,14 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "RNG.hpp"
+#include "Utils/RNG.hpp"
 
-using std::size_t;
 using std::vector;
 
 namespace tket {
-namespace graphs {
-namespace tests {
 
 size_t RNG::get_size_t(size_t max_value) {
   if (max_value == 0) {
@@ -162,6 +159,4 @@ bool RNG::check_percentage(size_t percentage) {
   return get_size_t(99) < percentage;
 }
 
-}  // namespace tests
-}  // namespace graphs
 }  // namespace tket
