@@ -25,7 +25,7 @@ namespace tket {
 void init_library(py::module &m) {
   /* Circuit library */
   py::module_ library_m = m.def_submodule(
-      "library",
+      "_library",
       "Library of reusable circuits and circuit generator functions.");
   library_m.def(
       "_BRIDGE_using_CX_0", &CircPool::BRIDGE_using_CX_0,

@@ -17,3 +17,4 @@
 from pytket._tket.passes import *  # type: ignore
 
 from .script import compilation_pass_from_script, compilation_pass_grammar
+from .auto_rebase import auto_rebase_pass
