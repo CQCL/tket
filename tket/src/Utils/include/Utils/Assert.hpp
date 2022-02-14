@@ -33,19 +33,22 @@
  * to a stringstream) will NOT begin if `condition` is true,
  * so there is no performance penalty.
  *
- * Note: the intention was that the code would be ignored by test code
- * coverage, even if multiline. However that didn't work, so we may
- * just manually surround the worst multiline offenders until we come up
- * with a better solution.
- *
  * This also checks if evaluating `condition` itself throws an exception.
  *
- * Note: we already tried having another version which threw exceptions
- * instead of aborting. However, it led to problems:
+ * Notes: (1) single line code is ignored by test code coverage.
+ * However, multiline code is not. Currently we just manually surround the
+ * worst multiline offenders with start/stop tags.
+ * (2) We tried putting the start/stop tags within the macro, to make test
+ * coverage ignore the code; unfortunately this did NOT work.
+ * We suspect that it's because comments are stripped from the macro before
+ * test coverage sees the code, but we don't know. See TKET-1856.
+ * (3) It is known that exceptions cause problems by generating numerous
+ * extra branches:
  * https://stackoverflow.com/questions/42003783/
  * lcov-gcov-branch-coverage-with-c-producing-branches-all-over-the-place?rq=1
- * Thus, if you want to throw an exception rather than aborting,
- * there are additional problems which need to be overcome somehow.
+ * However, although removing exceptions (or "hiding" them, by tricks)
+ * did cut down the number of extra branches, it did not remove them
+ * completely, so exceptions are not the sole cause of branching problems.
  */
 #define TKET_ASSERT_WITH_MESSAGE(condition, msg)                           \
   do {                                                                     \

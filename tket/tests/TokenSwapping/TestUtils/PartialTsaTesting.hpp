@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ enum class TokenOption {
 std::string run_tests(
     const ArchitectureMapping& arch_mapping,
     const std::vector<VertexMapping>& problems,
-    PathFinderInterface& path_finder, PartialTsaInterface& partial_tsa,
+    RiverFlowPathFinder& path_finder, PartialTsaInterface& partial_tsa,
     RequiredTsaProgress progress,
     TokenOption token_option = TokenOption::DO_NOT_ALLOW_EMPTY_TOKEN_SWAP);
 

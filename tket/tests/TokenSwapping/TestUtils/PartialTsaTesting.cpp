@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ static void check_progress(
 
 static std::string run_tests(
     const std::vector<VertexMapping>& problems, DistancesInterface& distances,
-    NeighboursInterface& neighbours, PathFinderInterface& path_finder,
+    NeighboursInterface& neighbours, RiverFlowPathFinder& path_finder,
     PartialTsaInterface& partial_tsa, RequiredTsaProgress progress,
     TokenOption token_option) {
   REQUIRE(!problems.empty());
@@ -114,15 +114,14 @@ static std::string run_tests(
     default:
       break;
   }
-  ss << " PF=" << path_finder.name() << "\n"
-     << statistics.str(problems.size()) << "]";
+  ss << " PF=RiverFlow\n" << statistics.str(problems.size()) << "]";
   return ss.str();
 }
 
 std::string run_tests(
     const ArchitectureMapping& arch_mapping,
     const std::vector<VertexMapping>& problems,
-    PathFinderInterface& path_finder, PartialTsaInterface& partial_tsa,
+    RiverFlowPathFinder& path_finder, PartialTsaInterface& partial_tsa,
     RequiredTsaProgress progress, TokenOption token_option) {
   DistancesFromArchitecture distances(arch_mapping);
   NeighboursFromArchitecture neighbours(arch_mapping);

@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 #pragma once
 
 #include "ArchitectureMapping.hpp"
-#include "HybridTsa00.hpp"
+#include "HybridTsa.hpp"
 #include "RNG.hpp"
 #include "SwapListOptimiser.hpp"
 #include "TokenSwapping/SwapListTableOptimiser.hpp"
@@ -49,10 +49,10 @@ class BestFullTsa : public PartialTsaInterface {
   virtual void append_partial_solution(
       SwapList& swaps, VertexMapping& vertex_mapping,
       DistancesInterface& distances, NeighboursInterface& neighbours,
-      PathFinderInterface& path_finder) override;
+      RiverFlowPathFinder& path_finder) override;
 
   /** Wrapper around the main append_partial_solution function, but constructing
-   * and using the best known PathFinderInterface object. The DistancesInterface
+   * and using the best known RiverFlowPathFinder object. The DistancesInterface
    * and NeighboursInterface objects will automatically be constructed.
    *  @param swaps The list of swaps to append to.
    *  @param vertex_mapping The current desired mapping. Will be updated with
@@ -64,14 +64,8 @@ class BestFullTsa : public PartialTsaInterface {
       SwapList& swaps, VertexMapping& vertex_mapping,
       const ArchitectureMapping& arch_mapping);
 
-  /** For experiments, provide access to the internal stored TSA object. This
-   * function may be deleted later!
-   *  @return Reference to the internal stored TSA object.
-   */
-  // HybridTsa00& get_hybrid_tsa_for_testing();
-
  private:
-  HybridTsa00 m_hybrid_tsa;
+  HybridTsa m_hybrid_tsa;
   SwapListOptimiser m_swap_list_optimiser;
   SwapListTableOptimiser m_table_optimiser;
   RNG m_rng;
