@@ -38,12 +38,9 @@ std::set<Qubit> interacting_qbs(const Circuit& circ) {
 }
 
 PlacementFrontier::PlacementFrontier(const Circuit& _circ) : circ(_circ) {
-  init();
-}
-void PlacementFrontier::init() {
   VertexVec input_slice;
   quantum_in_edges = std::make_shared<unit_frontier_t>();
-  classical_in_edges = std::make_shared<b_frontier_t>();
+  boolean_in_edges = std::make_shared<b_frontier_t>();
 
   for (const Qubit& qb : circ.all_qubits()) {
     Vertex input = circ.get_in(qb);
@@ -54,28 +51,28 @@ void PlacementFrontier::init() {
   for (const Bit& bit : circ.all_bits()) {
     Vertex input = circ.get_in(bit);
     EdgeVec candidates = circ.get_nth_b_out_bundle(input, 0);
-    classical_in_edges->insert({bit, candidates});
+    boolean_in_edges->insert({bit, candidates});
   }
 
-  CutFrontier next_cut = circ.next_cut(quantum_in_edges, classical_in_edges);
+  CutFrontier next_cut = circ.next_cut(quantum_in_edges, boolean_in_edges);
   slice = next_cut.slice;
   quantum_out_edges = next_cut.u_frontier;
 }
 
 void PlacementFrontier::next_slicefrontier() {
   quantum_in_edges = std::make_shared<unit_frontier_t>();
-  classical_in_edges = std::make_shared<b_frontier_t>();
+  boolean_in_edges = std::make_shared<b_frontier_t>();
   for (const std::pair<UnitID, Edge>& pair : quantum_out_edges->get<TagKey>()) {
     Edge new_e = circ.skip_irrelevant_edges(pair.second);
     quantum_in_edges->insert({pair.first, new_e});
     Vertex targ = circ.target(new_e);
     EdgeVec targ_classical_ins =
         circ.get_in_edges_of_type(targ, EdgeType::Boolean);
-    classical_in_edges->insert(
+    boolean_in_edges->insert(
         {Bit("frontier_bit", pair.first.index()), targ_classical_ins});
   }
 
-  CutFrontier next_cut = circ.next_cut(quantum_in_edges, classical_in_edges);
+  CutFrontier next_cut = circ.next_cut(quantum_in_edges, boolean_in_edges);
   slice = next_cut.slice;
   quantum_out_edges = next_cut.u_frontier;
 }

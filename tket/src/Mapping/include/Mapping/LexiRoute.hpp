@@ -180,7 +180,7 @@ class LexiRouteRoutingMethod : public RoutingMethod {
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
    * modifying
    * @param architecture Architecture providing physical constraints
-   * @return Logical to Physical mapping at boundary due to modification.
+   * @return Map between relabelled Qubit, always empty.
    *
    */
   unit_map_t routing_method(

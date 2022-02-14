@@ -1017,7 +1017,6 @@ SCENARIO("Commute measurements to the end of a circuit") {
     Command final_command = cu.get_circ_ref().get_commands()[7];
     OpType type = final_command.get_op_ptr()->get_type();
     REQUIRE(type == OpType::Measure);
-    std::cout << cu.get_circ_ref() << std::endl;
     REQUIRE(final_command.get_args().front() == Node(3));
   }
 }

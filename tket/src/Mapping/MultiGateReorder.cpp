@@ -30,7 +30,7 @@ MultiGateReorder::MultiGateReorder(
 
 // Traverse the DAG to the quantum frontier
 // to find the UnitID associated with an VertPort
-UnitID get_unitid_from_vertex_port(
+static UnitID get_unitid_from_vertex_port(
     const std::shared_ptr<MappingFrontier> &frontier,
     const VertPort &vert_port) {
   VertPort current_vert_port = vert_port;
@@ -50,7 +50,7 @@ UnitID get_unitid_from_vertex_port(
   }
 }
 
-bool is_multiq_quantum_gate(const Circuit &circ, const Vertex &vert) {
+static bool is_multiq_quantum_gate(const Circuit &circ, const Vertex &vert) {
   Op_ptr op = circ.get_Op_ptr_from_Vertex(vert);
   return (
       op->get_desc().is_gate() && circ.n_in_edges(vert) > 1 &&
@@ -60,19 +60,19 @@ bool is_multiq_quantum_gate(const Circuit &circ, const Vertex &vert) {
           circ.n_out_edges(vert));
 }
 
-bool is_physically_permitted(
+static bool is_physically_permitted(
     const std::shared_ptr<MappingFrontier> &frontier,
     const ArchitecturePtr &arc_ptr, const Vertex &vert) {
   std::vector<Node> nodes;
   for (port_t port = 0; port < frontier->circuit_.n_ports(vert); ++port) {
     nodes.push_back(Node(get_unitid_from_vertex_port(frontier, {vert, port})));
   }
-
-  return arc_ptr->valid_operation(nodes);
+  return arc_ptr->valid_operation(
+      frontier->circuit_.get_OpType_from_Vertex(vert), nodes);
 }
 
 // This method will try to commute a vertex to the quantum frontier
-std::optional<std::pair<EdgeVec, EdgeVec>> try_find_commute_edges(
+static std::optional<std::pair<EdgeVec, EdgeVec>> try_find_commute_edges(
     const Circuit &circ, const EdgeVec &frontier_edges, const Vertex &vert) {
   // Initialize to be the in_edges for the given vertex
   EdgeVec current_edges = circ.get_in_edges(vert);
@@ -133,7 +133,7 @@ std::optional<std::pair<EdgeVec, EdgeVec>> try_find_commute_edges(
   }
 }
 
-void partial_rewire(
+static void partial_rewire(
     const Vertex &vert, Circuit &circ, EdgeVec &src_edges,
     EdgeVec &dest_edges) {
   // move the vertex to the frontier
@@ -231,7 +231,7 @@ void MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
 
 MultiGateReorderRoutingMethod::MultiGateReorderRoutingMethod(
     unsigned _max_depth, unsigned _max_size)
-    : max_depth_(_max_depth), max_size_(_max_size){};
+    : max_depth_(_max_depth), max_size_(_max_size) {}
 
 bool MultiGateReorderRoutingMethod::check_method(
     const std::shared_ptr<MappingFrontier> &mapping_frontier,

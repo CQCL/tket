@@ -15,6 +15,8 @@
 #include "Mapping/MappingFrontier.hpp"
 
 #include "Circuit/Circuit.hpp"
+#include "Utils/UnitID.hpp"
+
 namespace tket {
 
 /**
@@ -252,9 +254,7 @@ void MappingFrontier::advance_frontier_boundary(
         nodes.push_back(Node(uid));
       }
       if (architecture->valid_operation(
-              /* this->circuit_.get_OpType_from_Vertex(vert), */
-              nodes) ||
-          this->circuit_.get_OpType_from_Vertex(vert) == OpType::Barrier) {
+              this->circuit_.get_OpType_from_Vertex(vert), nodes)) {
         // if no valid operation, boundary not updated and while loop terminates
         boundary_updated = true;
         for (const UnitID& uid : uids) {
@@ -349,8 +349,6 @@ void MappingFrontier::update_quantum_boundary_uids(
   }
 }
 
-// TODO: expects every qubit is present in permutation, even if unmoved
-// TODO: should this also permute final map compared to initial map
 void MappingFrontier::permute_subcircuit_q_out_hole(
     const unit_map_t& final_permutation, Subcircuit& subcircuit) {
   EdgeVec new_q_out_hole;
@@ -492,7 +490,7 @@ void MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
 
   std::map<Node, Node> final_map = {{n0, n1}, {n1, n0}};
 
-  this->update_final_map(final_map);
+  update_maps(this->bimaps_, {}, final_map);
 }
 
 void MappingFrontier::add_bridge(
@@ -545,8 +543,7 @@ void MappingFrontier::add_ancilla(const UnitID& ancilla) {
   unit_map_t update_map;
   update_map.insert({uid_ancilla, uid_ancilla});
 
-  this->update_initial_map(update_map);
-  this->update_final_map(update_map);
+  update_maps(this->bimaps_, update_map, update_map);
 }
 
 void MappingFrontier::merge_ancilla(
@@ -597,52 +594,6 @@ void MappingFrontier::merge_ancilla(
 
   this->bimaps_->initial.right.erase(merge);
   this->bimaps_->final.left.erase(merge);
-}
-
-template <typename UnitA, typename UnitB>
-void MappingFrontier::update_initial_map(const std::map<UnitA, UnitB>& qm) {
-  // Can only work for Unit classes
-  static_assert(std::is_base_of<UnitID, UnitA>::value);
-  static_assert(std::is_base_of<UnitID, UnitB>::value);
-  // Unit types must be related, so cannot rename e.g. Bits to Qubits
-  static_assert(
-      std::is_base_of<UnitA, UnitB>::value ||
-      std::is_base_of<UnitB, UnitA>::value);
-  unit_map_t new_initial_map;
-  for (const std::pair<const UnitA, UnitB>& pair : qm) {
-    const auto& it = this->bimaps_->initial.right.find(pair.first);
-    if (it == this->bimaps_->initial.right.end()) {
-      continue;
-    }
-    new_initial_map.insert({it->second, pair.second});
-    this->bimaps_->initial.right.erase(pair.first);
-  }
-  for (const std::pair<const UnitID, UnitID>& pair : new_initial_map) {
-    this->bimaps_->initial.left.insert(pair);
-  }
-}
-
-template <typename UnitA, typename UnitB>
-void MappingFrontier::update_final_map(const std::map<UnitA, UnitB>& qm) {
-  // Can only work for Unit classes
-  static_assert(std::is_base_of<UnitID, UnitA>::value);
-  static_assert(std::is_base_of<UnitID, UnitB>::value);
-  // Unit types must be related, so cannot rename e.g. Bits to Qubits
-  static_assert(
-      std::is_base_of<UnitA, UnitB>::value ||
-      std::is_base_of<UnitB, UnitA>::value);
-  unit_map_t new_final_map;
-  for (const std::pair<const UnitA, UnitB>& pair : qm) {
-    const auto& it = this->bimaps_->final.right.find(pair.first);
-    if (it == this->bimaps_->final.right.end()) {
-      continue;
-    }
-    new_final_map.insert({it->second, pair.second});
-    this->bimaps_->final.right.erase(pair.first);
-  }
-  for (const std::pair<const UnitID, UnitID>& pair : new_final_map) {
-    this->bimaps_->final.left.insert(pair);
-  }
 }
 
 }  // namespace tket

@@ -65,9 +65,14 @@ class LexicographicalComparison {
       const std::pair<Node, Node>& interaction, int increment) const;
 
   /**
-   * Getter for lexicographical_distances_ attribute
+   * Returns a held lexicograhically ordered vector of distances between nodes
+   * and architectuture class object is constructed from, with changes
+   * from increment distances.
+   *
+   * @return Lexicographically ordered distance vector
    */
   lexicographical_distances_t get_lexicographical_distances() const;
+
   /**
    * Takes a copy of Distance vector held in object and modifies it to reflect
    * how distance between pairs of interacting nodes in attribute would change
