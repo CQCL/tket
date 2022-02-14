@@ -681,6 +681,7 @@ def test_generated_pass_config() -> None:
     # DefaultMappingPass with delay_measures=False
     dm_pass = DefaultMappingPass(arc, False)
     assert dm_pass.to_dict()["pass_class"] == "SequencePass"
+    assert len(dm_pass.get_sequence()) == 2
     p_pass = dm_pass.get_sequence()[0]
     r_pass = dm_pass.get_sequence()[1]
     assert p_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"
