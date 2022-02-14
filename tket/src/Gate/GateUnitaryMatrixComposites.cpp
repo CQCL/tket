@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ Eigen::Matrix2cd GateUnitaryMatrixImplementations::U3(
          Rz(lambda);
 }
 
-Eigen::Matrix2cd GateUnitaryMatrixImplementations::tk1(
+Eigen::Matrix2cd GateUnitaryMatrixImplementations::TK1(
     double alpha, double beta, double gamma) {
   return Rz(alpha) * Rx(beta) * Rz(gamma);
 }

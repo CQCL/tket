@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,6 +18,12 @@
 
 #include "PassGenerators.hpp"
 #include "Predicates/CompilerPass.hpp"
+#include "Transformations/BasicOptimisation.hpp"
+#include "Transformations/ControlledGates.hpp"
+#include "Transformations/Decomposition.hpp"
+#include "Transformations/MeasurePass.hpp"
+#include "Transformations/OptimisationPass.hpp"
+#include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 
@@ -51,52 +57,53 @@ static PassPtr gate_translation_pass(
 
 const PassPtr &SynthesiseTket() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::synthesise_tket(), {OpType::tk1, OpType::CX}, true,
+      Transforms::synthesise_tket(), {OpType::TK1, OpType::CX}, true,
       "SynthesiseTket"));
   return pp;
 }
 const PassPtr &SynthesiseHQS() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::synthesise_HQS(), {OpType::ZZMax, OpType::PhasedX, OpType::Rz},
-      false, "SynthesiseHQS"));
+      Transforms::synthesise_HQS(),
+      {OpType::ZZMax, OpType::PhasedX, OpType::Rz}, false, "SynthesiseHQS"));
   return pp;
 }
 const PassPtr &SynthesiseOQC() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::synthesise_OQC(), {OpType::Rz, OpType::SX, OpType::ECR}, true,
+      Transforms::synthesise_OQC(), {OpType::Rz, OpType::SX, OpType::ECR}, true,
       "SynthesiseOQC"));
   return pp;
 }
 const PassPtr &SynthesiseUMD() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::synthesise_UMD(),
+      Transforms::synthesise_UMD(),
       {OpType::XXPhase, OpType::PhasedX, OpType::Rz}, true, "SynthesiseUMD"));
   return pp;
 }
 
 const PassPtr &RebaseCirq() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_cirq(), {OpType::CZ, OpType::PhasedX, OpType::Rz}, true,
-      "RebaseCirq"));
+      Transforms::rebase_cirq(), {OpType::CZ, OpType::PhasedX, OpType::Rz},
+      true, "RebaseCirq"));
   return pp;
 }
 
 const PassPtr &RebaseTket() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_tket(), {OpType::CX, OpType::tk1}, true, "RebaseTket"));
+      Transforms::rebase_tket(), {OpType::CX, OpType::TK1}, true,
+      "RebaseTket"));
   return pp;
 }
 
 const PassPtr &RebaseQuil() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_quil(), {OpType::CZ, OpType::Rx, OpType::Rz}, true,
+      Transforms::rebase_quil(), {OpType::CZ, OpType::Rx, OpType::Rz}, true,
       "RebaseQuil"));
   return pp;
 }
 
 const PassPtr &RebasePyZX() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_pyzx(),
+      Transforms::rebase_pyzx(),
       {OpType::SWAP, OpType::CX, OpType::CZ, OpType::Rz, OpType::Rx, OpType::S,
        OpType::T, OpType::Z, OpType::X, OpType::H},
       true, "RebasePyZX"));
@@ -105,7 +112,7 @@ const PassPtr &RebasePyZX() {
 
 const PassPtr &RebaseProjectQ() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_projectq(),
+      Transforms::rebase_projectq(),
       {OpType::SWAP, OpType::CRz, OpType::CX, OpType::CZ, OpType::H, OpType::X,
        OpType::Y, OpType::Z, OpType::S, OpType::T, OpType::V, OpType::Rx,
        OpType::Ry, OpType::Rz},
@@ -115,35 +122,35 @@ const PassPtr &RebaseProjectQ() {
 
 const PassPtr &RebaseHQS() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_HQS(), {OpType::ZZMax, OpType::PhasedX, OpType::Rz},
+      Transforms::rebase_HQS(), {OpType::ZZMax, OpType::PhasedX, OpType::Rz},
       true, "RebaseHQS"));
   return pp;
 }
 
 const PassPtr &RebaseUMD() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_UMD(), {OpType::XXPhase, OpType::PhasedX, OpType::Rz},
+      Transforms::rebase_UMD(), {OpType::XXPhase, OpType::PhasedX, OpType::Rz},
       true, "RebaseUMD"));
   return pp;
 }
 
 const PassPtr &RebaseUFR() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_UFR(), {OpType::CX, OpType::Rz, OpType::H}, true,
+      Transforms::rebase_UFR(), {OpType::CX, OpType::Rz, OpType::H}, true,
       "RebaseUFR"));
   return pp;
 }
 
 const PassPtr &RebaseOQC() {
   static const PassPtr pp(gate_translation_pass(
-      Transform::rebase_OQC(), {OpType::ECR, OpType::Rz, OpType::SX}, true,
+      Transforms::rebase_OQC(), {OpType::ECR, OpType::Rz, OpType::SX}, true,
       "RebaseOQC"));
   return pp;
 }
 
 const PassPtr &PeepholeOptimise2Q() {
   OpTypeSet after_set = {
-      OpType::tk1, OpType::CX, OpType::Measure, OpType::Collapse,
+      OpType::TK1, OpType::CX, OpType::Measure, OpType::Collapse,
       OpType::Reset};
   PredicatePtrMap precons = {};
   std::type_index ti = typeid(ConnectivityPredicate);
@@ -159,13 +166,13 @@ const PassPtr &PeepholeOptimise2Q() {
   nlohmann::json j;
   j["name"] = "PeepholeOptimise2Q";
   static const PassPtr pp(std::make_shared<StandardPass>(
-      precons, Transform::peephole_optimise_2q(), postcon, j));
+      precons, Transforms::peephole_optimise_2q(), postcon, j));
   return pp;
 }
 
 const PassPtr &RemoveRedundancies() {
   static const PassPtr pp([]() {
-    Transform t = Transform::remove_redundancies();
+    Transform t = Transforms::remove_redundancies();
     PostConditions postcon = {{}, {}, Guarantee::Preserve};
     PredicatePtrMap precons;
     // record pass config
@@ -178,7 +185,7 @@ const PassPtr &RemoveRedundancies() {
 
 const PassPtr &CommuteThroughMultis() {
   static const PassPtr pp([]() {
-    Transform t = Transform::commute_through_multis();
+    Transform t = Transforms::commute_through_multis();
     PostConditions postcon = {{}, {}, Guarantee::Preserve};
     PredicatePtrMap precons;
     // record pass config
@@ -191,7 +198,7 @@ const PassPtr &CommuteThroughMultis() {
 
 const PassPtr &GlobalisePhasedX() {
   static const PassPtr pp([]() {
-    Transform t = Transform::globalise_phasedx();
+    Transform t = Transforms::globalise_phasedx();
     PredicatePtrMap precons;
     PredicatePtr globalphasedx = std::make_shared<GlobalPhasedXPredicate>();
     PredicatePtrMap spec_postcons = {
@@ -208,7 +215,7 @@ const PassPtr &GlobalisePhasedX() {
 
 const PassPtr &DecomposeArbitrarilyControlledGates() {
   static const PassPtr pp([]() {
-    Transform t = Transform::decomp_arbitrary_controlled_gates();
+    Transform t = Transforms::decomp_arbitrary_controlled_gates();
     PredicateClassGuarantees g_postcons = {
         {typeid(GateSetPredicate), Guarantee::Clear}};
     PostConditions postcon = {{}, g_postcons, Guarantee::Preserve};
@@ -223,7 +230,7 @@ const PassPtr &DecomposeArbitrarilyControlledGates() {
 
 const PassPtr &DecomposeMultiQubitsCX() {
   static const PassPtr pp([]() {
-    Transform t = Transform::decompose_multi_qubits_CX();
+    Transform t = Transforms::decompose_multi_qubits_CX();
     /* Spits out CX + any single qb gates */
     OpTypeSet ots = {OpType::CX};
     op_signature_t singleq = {EdgeType::Quantum};
@@ -250,9 +257,9 @@ const PassPtr &DecomposeMultiQubitsCX() {
 
 const PassPtr &DecomposeSingleQubitsTK1() {
   static const PassPtr pp([]() {
-    Transform t = Transform::decompose_single_qubits_TK1();
+    Transform t = Transforms::decompose_single_qubits_TK1();
     /* Spits out TK1 + any multi qb gates */
-    OpTypeSet ots = {OpType::tk1};
+    OpTypeSet ots = {OpType::TK1};
     op_signature_t singleq = {EdgeType::Quantum};
     ots.insert(all_projective_types().begin(), all_projective_types().end());
     for (const std::pair<const OpType, OpTypeInfo> &ott : optypeinfo()) {
@@ -278,15 +285,23 @@ const PassPtr &ComposePhasePolyBoxes() {
    * converts a circuit containing all possible gates to a circuit
    * containing only phase poly boxes + H gates (and measure + reset + collapse
    * + barrier)
+   * this pass will replace all wire swaps in the given circuit and they will be
+   * included in the last or an additional phase poly boxes
    */
   static const PassPtr pp([]() {
     Transform t =
-        (Transform::rebase_UFR() >> Transform::compose_phase_poly_boxes());
+        (Transforms::rebase_UFR() >> Transforms::compose_phase_poly_boxes());
     PredicatePtr noclas = std::make_shared<NoClassicalControlPredicate>();
 
     PredicatePtrMap precons{CompilationUnit::make_type_pair(noclas)};
 
-    PostConditions postcon = {precons, {}, Guarantee::Clear};
+    PredicatePtr no_wire_swap = std::make_shared<NoWireSwapsPredicate>();
+
+    PredicatePtrMap s_postcons{
+        CompilationUnit::make_type_pair(noclas),
+        CompilationUnit::make_type_pair(no_wire_swap)};
+    PostConditions postcon{s_postcons, {}, Guarantee::Preserve};
+
     nlohmann::json j;
     j["name"] = "ComposePhasePolyBoxes";
     return std::make_shared<StandardPass>(precons, t, postcon, j);
@@ -296,7 +311,7 @@ const PassPtr &ComposePhasePolyBoxes() {
 
 const PassPtr &DecomposeBoxes() {
   static const PassPtr pp([]() {
-    Transform t = Transform::decomp_boxes();
+    Transform t = Transforms::decomp_boxes();
     PredicatePtrMap s_ps;
     /**
      * Preserves Max2QubitGatesPredicate since any box with >2 qubits is
@@ -323,7 +338,7 @@ const PassPtr &DecomposeBoxes() {
 
 const PassPtr &SquashTK1() {
   static const PassPtr pp([]() {
-    Transform t = Transform::squash_1qb_to_tk1();
+    Transform t = Transforms::squash_1qb_to_tk1();
     PredicatePtrMap s_ps;
     PredicateClassGuarantees g_postcons{
         {typeid(GateSetPredicate), Guarantee::Clear}};
@@ -339,14 +354,14 @@ const PassPtr &SquashTK1() {
 const PassPtr &SquashHQS() {
   static const PassPtr pp([]() {
     return gen_squash_pass(
-        {OpType::Rz, OpType::PhasedX}, Transform::tk1_to_PhasedXRz);
+        {OpType::Rz, OpType::PhasedX}, Transforms::tk1_to_PhasedXRz);
   }());
   return pp;
 }
 
 const PassPtr &DecomposeBridges() {
   static const PassPtr pp([]() {
-    Transform t = Transform::decompose_BRIDGE_to_CX();
+    Transform t = Transforms::decompose_BRIDGE_to_CX();
     PredicatePtrMap s_ps;
     PredicateClassGuarantees g_postcons{
         {typeid(GateSetPredicate), Guarantee::Clear},
@@ -361,11 +376,13 @@ const PassPtr &DecomposeBridges() {
 
 const PassPtr &FlattenRegisters() {
   static const PassPtr pp([]() {
-    Transform t = Transform([](Circuit &circ) {
-      if (circ.is_simple()) return false;
-      circ.flatten_registers();
-      return true;
-    });
+    Transform t =
+        Transform([](Circuit &circ, std::shared_ptr<unit_bimaps_t> maps) {
+          if (circ.is_simple()) return false;
+          unit_map_t qmap = circ.flatten_registers();
+          update_maps(maps, qmap, qmap);
+          return true;
+        });
     PredicatePtrMap s_ps;
     PredicatePtr simple = std::make_shared<DefaultRegisterPredicate>();
     PredicatePtrMap spec_postcons{CompilationUnit::make_type_pair(simple)};
@@ -409,7 +426,7 @@ const PassPtr &RemoveBarriers() {
 
 const PassPtr &DelayMeasures() {
   static const PassPtr pp([]() {
-    Transform t = Transform::delay_measures();
+    Transform t = Transforms::delay_measures();
     PredicatePtr midmeaspred = std::make_shared<NoMidMeasurePredicate>();
     PredicatePtrMap spec_postcons = {
         CompilationUnit::make_type_pair(midmeaspred)};
@@ -425,7 +442,7 @@ const PassPtr &DelayMeasures() {
 
 const PassPtr &RemoveDiscarded() {
   static const PassPtr pp([]() {
-    Transform t = Transform::remove_discarded_ops();
+    Transform t = Transforms::remove_discarded_ops();
     PredicatePtrMap no_precons;
     PostConditions postcon = {{}, {}, Guarantee::Preserve};
     nlohmann::json j;
@@ -437,7 +454,7 @@ const PassPtr &RemoveDiscarded() {
 
 const PassPtr &SimplifyMeasured() {
   static const PassPtr pp([]() {
-    Transform t = Transform::simplify_measured();
+    Transform t = Transforms::simplify_measured();
     PredicatePtrMap no_precons;
 
     // GateSetPredicate not preserved because classical gates may be

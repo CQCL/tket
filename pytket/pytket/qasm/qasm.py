@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -75,8 +75,10 @@ PARAM_COMMANDS = {
     "u2": OpType.U2,
     "u1": OpType.U1,
     "rx": OpType.Rx,
+    "rxx": OpType.XXPhase,
     "ry": OpType.Ry,
     "rz": OpType.Rz,
+    "rzz": OpType.ZZPhase,
     "Rz": OpType.Rz,
     "U1q": OpType.PhasedX,
     "crz": OpType.CRz,
@@ -117,8 +119,10 @@ included_gates = {
             "u2",
             "u1",
             "rx",
+            "rxx",
             "ry",
             "rz",
+            "rzz",
             "crz",
             "crx",
             "cry",
@@ -505,7 +509,7 @@ def circuit_to_qasm_io(
             # attach predicate to bit,
             # subsequent conditional will handle it
             continue
-        if optype == OpType.ConditionalGate:
+        if optype == OpType.Conditional:
             bits = args[: op.width]
             control_bit = bits[0]
             if control_bit in range_preds:

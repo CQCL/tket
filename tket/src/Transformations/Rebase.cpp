@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "Rebase.hpp"
+
+#include "BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Gate/GatePtr.hpp"
@@ -21,13 +24,15 @@
 
 namespace tket {
 
+namespace Transforms {
+
 static bool standard_rebase(
     Circuit& circ, const OpTypeSet& multiqs, const Circuit& cx_replacement,
     const OpTypeSet& singleqs,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement);
 
-Transform Transform::rebase_factory(
+Transform rebase_factory(
     const OpTypeSet& multiqs, const Circuit& cx_replacement,
     const OpTypeSet& singleqs,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
@@ -104,18 +109,18 @@ static bool standard_rebase(
   return success;
 }
 
-Transform Transform::rebase_tket() {
+Transform rebase_tket() {
   std::function<Circuit(const Expr&, const Expr&, const Expr&)> tk1_to_tk1 =
       [](const Expr& alpha, const Expr& beta, const Expr& gamma) {
         Circuit c(1);
-        c.add_op<unsigned>(OpType::tk1, {alpha, beta, gamma}, {0});
+        c.add_op<unsigned>(OpType::TK1, {alpha, beta, gamma}, {0});
         return c;
       };
   return rebase_factory(
-      {OpType::CX}, CircPool::CX(), {OpType::tk1}, tk1_to_tk1);
+      {OpType::CX}, CircPool::CX(), {OpType::TK1}, tk1_to_tk1);
 }
 
-Circuit Transform::tk1_to_PhasedXRz(
+Circuit tk1_to_PhasedXRz(
     const Expr& alpha, const Expr& beta, const Expr& gamma) {
   Circuit c(1);
   if (equiv_expr(beta, 1)) {
@@ -128,28 +133,26 @@ Circuit Transform::tk1_to_PhasedXRz(
     c.add_op<unsigned>(OpType::Rz, alpha + gamma, {0});
     c.add_op<unsigned>(OpType::PhasedX, {beta, alpha}, {0});
   }
-  Transform::remove_redundancies().apply(c);
+  remove_redundancies().apply(c);
   return c;
 }
 
-Transform Transform::rebase_cirq() {
+Transform rebase_cirq() {
   return rebase_factory(
       {OpType::CZ}, CircPool::H_CZ_H(), {OpType::PhasedX, OpType::Rz},
-      Transform::tk1_to_PhasedXRz);
+      tk1_to_PhasedXRz);
 }
 
-Circuit Transform::tk1_to_rzrx(
-    const Expr& alpha, const Expr& beta, const Expr& gamma) {
+Circuit tk1_to_rzrx(const Expr& alpha, const Expr& beta, const Expr& gamma) {
   Circuit c(1);
   c.add_op<unsigned>(OpType::Rz, gamma, {0});
   c.add_op<unsigned>(OpType::Rx, beta, {0});
   c.add_op<unsigned>(OpType::Rz, alpha, {0});
-  Transform::remove_redundancies().apply(c);
+  remove_redundancies().apply(c);
   return c;
 }
 
-Circuit Transform::tk1_to_rzh(
-    const Expr& alpha, const Expr& beta, const Expr& gamma) {
+Circuit tk1_to_rzh(const Expr& alpha, const Expr& beta, const Expr& gamma) {
   Circuit c(1);
   std::optional<unsigned> cliff = equiv_Clifford(beta, 4);
   if (cliff) {
@@ -188,7 +191,7 @@ Circuit Transform::tk1_to_rzh(
     c.add_op<unsigned>(OpType::H, {0});
     c.add_op<unsigned>(OpType::Rz, alpha, {0});
   }
-  Transform::remove_redundancies().apply(c);
+  remove_redundancies().apply(c);
   return c;
 }
 
@@ -198,8 +201,7 @@ static unsigned int_half(const Expr& angle) {
   return lround(eval / 2);
 }
 
-Circuit Transform::tk1_to_rzsx(
-    const Expr& alpha, const Expr& beta, const Expr& gamma) {
+Circuit tk1_to_rzsx(const Expr& alpha, const Expr& beta, const Expr& gamma) {
   Circuit c(1);
   Expr correction_phase = 0;
   if (equiv_0(beta)) {
@@ -242,35 +244,34 @@ Circuit Transform::tk1_to_rzsx(
     correction_phase = -0.5;
   }
   c.add_phase(correction_phase);
-  Transform::remove_redundancies().apply(c);
+  remove_redundancies().apply(c);
   return c;
 }
 
-Circuit Transform::tk1_to_tk1(
-    const Expr& alpha, const Expr& beta, const Expr& gamma) {
+Circuit tk1_to_tk1(const Expr& alpha, const Expr& beta, const Expr& gamma) {
   Circuit c(1);
-  c.add_op<unsigned>(OpType::tk1, {alpha, beta, gamma}, {0});
+  c.add_op<unsigned>(OpType::TK1, {alpha, beta, gamma}, {0});
   return c;
 }
 
-Transform Transform::rebase_HQS() {
+Transform rebase_HQS() {
   return rebase_factory(
       {OpType::ZZMax}, CircPool::CX_using_ZZMax(),
-      {OpType::PhasedX, OpType::Rz}, Transform::tk1_to_PhasedXRz);
+      {OpType::PhasedX, OpType::Rz}, tk1_to_PhasedXRz);
 }
 
-Transform Transform::rebase_UMD() {
+Transform rebase_UMD() {
   return rebase_factory(
       {OpType::XXPhase}, CircPool::CX_using_XXPhase_0(),
-      {OpType::PhasedX, OpType::Rz}, Transform::tk1_to_PhasedXRz);
+      {OpType::PhasedX, OpType::Rz}, tk1_to_PhasedXRz);
 }
 
-Transform Transform::rebase_quil() {
+Transform rebase_quil() {
   return rebase_factory(
       {OpType::CZ}, CircPool::H_CZ_H(), {OpType::Rx, OpType::Rz}, tk1_to_rzrx);
 }
 
-Transform Transform::rebase_pyzx() {
+Transform rebase_pyzx() {
   OpTypeSet pyzx_multiqs = {OpType::SWAP, OpType::CX, OpType::CZ};
   OpTypeSet pyzx_singleqs = {OpType::H, OpType::X,  OpType::Z, OpType::S,
                              OpType::T, OpType::Rx, OpType::Rz};
@@ -278,7 +279,7 @@ Transform Transform::rebase_pyzx() {
       pyzx_multiqs, CircPool::CX(), pyzx_singleqs, tk1_to_rzrx);
 }
 
-Transform Transform::rebase_projectq() {
+Transform rebase_projectq() {
   OpTypeSet projectq_multiqs = {
       OpType::SWAP, OpType::CRz, OpType::CX, OpType::CZ};
   OpTypeSet projectq_singleqs = {OpType::H,  OpType::X, OpType::Y, OpType::Z,
@@ -288,15 +289,17 @@ Transform Transform::rebase_projectq() {
       projectq_multiqs, CircPool::CX(), projectq_singleqs, tk1_to_rzrx);
 }
 
-Transform Transform::rebase_UFR() {
+Transform rebase_UFR() {
   return rebase_factory(
       {OpType::CX}, CircPool::CX(), {OpType::Rz, OpType::H}, tk1_to_rzh);
 }
 
-Transform Transform::rebase_OQC() {
+Transform rebase_OQC() {
   return rebase_factory(
       {OpType::ECR}, CircPool::CX_using_ECR(), {OpType::Rz, OpType::SX},
-      Transform::tk1_to_rzsx);
+      tk1_to_rzsx);
 }
+
+}  // namespace Transforms
 
 }  // namespace tket

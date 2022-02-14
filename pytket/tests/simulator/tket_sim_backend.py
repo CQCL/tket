@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -73,15 +73,20 @@ class TketSimBackend(Backend):
             NoFastFeedforwardPredicate(),
         ]
 
+    def rebase_pass(self) -> BasePass:
+        return RebasePyZX()
+
     def default_compilation_pass(self, optimisation_level: int = 1) -> BasePass:
         assert optimisation_level in range(3)
         if optimisation_level == 0:
-            return SequencePass([DecomposeBoxes(), RebasePyZX()])
+            return SequencePass([DecomposeBoxes(), self.rebase_pass()])
         elif optimisation_level == 1:
-            return SequencePass([DecomposeBoxes(), SynthesiseTket(), RebasePyZX()])
+            return SequencePass(
+                [DecomposeBoxes(), SynthesiseTket(), self.rebase_pass()]
+            )
         else:
             return SequencePass(
-                [DecomposeBoxes(), FullPeepholeOptimise(), RebasePyZX()]
+                [DecomposeBoxes(), FullPeepholeOptimise(), self.rebase_pass()]
             )
 
     def process_circuits(
@@ -123,13 +128,13 @@ class TketSimShotBackend(TketSimBackend):
     def default_compilation_pass(self, optimisation_level: int = 1) -> BasePass:
         assert optimisation_level in range(3)
         if optimisation_level == 0:
-            return SequencePass([DecomposeBoxes(), RebasePyZX()])
+            return SequencePass([DecomposeBoxes(), self.rebase_pass()])
         elif optimisation_level == 1:
             return SequencePass(
                 [
                     DecomposeBoxes(),
                     SynthesiseTket(),
-                    RebasePyZX(),
+                    self.rebase_pass(),
                     SimplifyInitial(allow_classical=False, create_all_qubits=True),
                 ]
             )
@@ -138,7 +143,7 @@ class TketSimShotBackend(TketSimBackend):
                 [
                     DecomposeBoxes(),
                     FullPeepholeOptimise(),
-                    RebasePyZX(),
+                    self.rebase_pass(),
                     SimplifyInitial(allow_classical=False, create_all_qubits=True),
                 ]
             )
@@ -183,7 +188,7 @@ class TketSimShotBackend(TketSimBackend):
             sim = TketSimWrapper(c0)
             state = sim.get_state(basis=BasisOrder.dlo)
             choices, probs = zip(*probs_from_state(state).items())
-            np.random.seed(kwargs.get("seed"))
+            np.random.seed(cast(int, kwargs.get("seed")))
             sample_indices = np.random.choice(len(choices), p=probs, size=n_shots_circ)
             q_to_b = circuit.qubit_to_bit_map
             readouts = []

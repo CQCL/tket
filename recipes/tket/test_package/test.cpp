@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <Circuit/Circuit.hpp>
-#include <Transformations/Transform.hpp>
+#include <Transformations/OptimisationPass.hpp>
 #include <Utils/Assert.hpp>
 #include <iostream>
 
@@ -47,7 +47,7 @@ int main() {
   circ.add_op<unsigned>(OpType::CZ, {0, 2});
   circ.add_op<unsigned>(OpType::CZ, {2, 1});
 
-  Transform::clifford_simp().apply(circ);
+  Transforms::clifford_simp().apply(circ);
 
   unsigned n = circ.n_qubits();
   TKET_ASSERT(n == 4);

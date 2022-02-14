@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,8 +16,8 @@
 #include <pybind11/stl.h>
 
 #include "Circuit/ClassicalExpBox.hpp"
+#include "Circuit/Conditional.hpp"
 #include "Ops/ClassicalOps.hpp"
-#include "Ops/Conditional.hpp"
 #include "Ops/OpJsonFactory.hpp"
 #include "Utils/Json.hpp"
 #include "binder_json.hpp"
@@ -26,12 +26,6 @@ namespace py = pybind11;
 using json = nlohmann::json;
 
 namespace tket {
-
-static const py::module& logic_exp_module() {
-  static const py::module module_ =
-      py::module::import("pytket.circuit.logic_exp");
-  return module_;
-}
 
 template <>
 json ClassicalExpBox<py::object>::to_json(const Op_ptr& op) {
@@ -46,11 +40,11 @@ json ClassicalExpBox<py::object>::to_json(const Op_ptr& op) {
 
 template <>
 Op_ptr ClassicalExpBox<py::object>::from_json(const json& j) {
+  py::module logic_exp = py::module::import("pytket.circuit.logic_exp");
   ClassicalExpBox<py::object> box = ClassicalExpBox<py::object>(
       j.at("n_i").get<unsigned>(), j.at("n_io").get<unsigned>(),
       j.at("n_o").get<unsigned>(),
-      logic_exp_module()
-          .attr("LogicExp")
+      logic_exp.attr("LogicExp")
           .attr("from_dict")(j.at("exp").get<py::dict>()));
   return set_box_id(
       box,

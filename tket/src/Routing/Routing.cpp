@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -50,7 +50,6 @@ bool Routing::circuit_modified() const {
 /* Class Constructor */
 Routing::Routing(const Circuit& _circ, const Architecture& _arc)
     : circ_(_circ), slice_frontier_(circ_), original_arc_(_arc) {
-  circ_.unit_bimaps_ = _circ.unit_bimaps_;
   original_boundary = circ_.boundary;
 
   current_arc_ = original_arc_;
@@ -177,12 +176,13 @@ qubit_mapping_t get_qmap_from_circuit(Architecture& arc, Circuit& circ) {
   return qubit_map;
 }
 
-std::pair<Circuit, bool> Routing::solve(const RoutingConfig& config) {
+std::pair<Circuit, bool> Routing::solve(
+    const RoutingConfig& config, std::shared_ptr<unit_bimaps_t> maps) {
   config_ = config;
   qubit_mapping_t qubit_map = get_qmap_from_circuit(current_arc_, circ_);
   slice_frontier_.init();
   if (slice_frontier_.slice->empty()) {
-    organise_registers_and_maps();
+    organise_registers_and_maps(maps);
   } else {
     // Some nodes are permanently unused due to difference in architecture nodes
     // and number of used wires in circuit To account for this, place highest
@@ -199,14 +199,14 @@ std::pair<Circuit, bool> Routing::solve(const RoutingConfig& config) {
     }
     remove_unmapped_nodes(current_arc_, init_map, circ_);
     final_map = remap(init_map);
-    organise_registers_and_maps();
+    organise_registers_and_maps(maps);
   }
   bool modified = circuit_modified();
   return {circ_, modified};
 }
 
 // Tidying up of qregisters and initial and final maps after SWAP adding.
-void Routing::organise_registers_and_maps() {
+void Routing::organise_registers_and_maps(std::shared_ptr<unit_bimaps_t> maps) {
   // Given all the new empty wires with no home, if a qubit isnt in the initial
   // map, find it an unassigned node and shove it there.
   auto all_nodes = original_arc_.get_all_nodes_vec();
@@ -248,8 +248,8 @@ void Routing::organise_registers_and_maps() {
   }
 
   circ_.boundary = new_boundary;
-  circ_.update_initial_map(reorder_map);
-  circ_.update_final_map(bimap_to_map(final_map.left));
+
+  update_maps(maps, reorder_map, bimap_to_map(final_map.left));
 }
 
 // Remap completes the routing algorithm

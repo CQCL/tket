@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -451,7 +451,7 @@ class BackendResult:
         if res.state is not None:
             return res.state
         if res.unitary is not None:
-            return cast(np.ndarray, res.unitary[:, 0])
+            return res.unitary[:, 0]
         raise InvalidResultType("state")
 
     def get_unitary(

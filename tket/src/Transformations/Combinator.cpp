@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,48 +12,54 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "Combinator.hpp"
+
+#include <memory>
+
 #include "Transform.hpp"
 
 namespace tket {
 
 Transform operator>>(const Transform &lhs, const Transform &rhs) {
   std::vector<Transform> l = {lhs, rhs};
-  return Transform::sequence(l);
+  return Transforms::sequence(l);
 }
 
-Transform Transform::sequence(std::vector<Transform> &tvec) {
-  return Transform([=](Circuit &circ) {
+namespace Transforms {
+
+Transform sequence(std::vector<Transform> &tvec) {
+  return Transform([=](Circuit &circ, std::shared_ptr<unit_bimaps_t> maps) {
     bool success = false;
     for (std::vector<Transform>::const_iterator it = tvec.begin();
          it != tvec.end(); ++it) {
-      success = it->apply(circ) || success;
+      success = it->apply_fn(circ, maps) || success;
     }
     return success;
   });
 }
 
-Transform Transform::repeat(const Transform &trans) {
-  return Transform([=](Circuit &circ) {
+Transform repeat(const Transform &trans) {
+  return Transform([=](Circuit &circ, std::shared_ptr<unit_bimaps_t> maps) {
     bool success = false;
-    while (trans.apply(circ)) success = true;
+    while (trans.apply_fn(circ, maps)) success = true;
     return success;
   });
 }
 
-Transform Transform::repeat_with_metric(
-    const Transform &trans, const Metric &eval) {
-  return Transform([=](Circuit &circ) {
+Transform repeat_with_metric(
+    const Transform &trans, const Transform::Metric &eval) {
+  return Transform([=](Circuit &circ, std::shared_ptr<unit_bimaps_t> maps) {
     bool success = false;
     int currentVal = eval(circ);
     Circuit *currentCircuit = &circ;
     Circuit newCircuit = circ;
-    trans.apply(newCircuit);
+    trans.apply_fn(newCircuit, maps);
     int newVal = eval(newCircuit);
     while (newVal < currentVal) {
       currentCircuit = &newCircuit;
       currentVal = newVal;
       success = true;
-      trans.apply(newCircuit);
+      trans.apply_fn(newCircuit, maps);
       newVal = eval(newCircuit);
     }
     if (&circ != currentCircuit) circ = *currentCircuit;
@@ -61,16 +67,17 @@ Transform Transform::repeat_with_metric(
   });
 }
 
-Transform Transform::repeat_while(
-    const Transform &cond, const Transform &body) {
-  return Transform([=](Circuit &circ) {
+Transform repeat_while(const Transform &cond, const Transform &body) {
+  return Transform([=](Circuit &circ, std::shared_ptr<unit_bimaps_t> maps) {
     bool success = false;
-    while (cond.apply(circ)) {
+    while (cond.apply_fn(circ, maps)) {
       success = true;
-      body.apply(circ);
+      body.apply_fn(circ, maps);
     }
     return success;
   });
 }
+
+}  // namespace Transforms
 
 }  // namespace tket

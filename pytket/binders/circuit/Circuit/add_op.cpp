@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,12 +36,6 @@ namespace tket {
 
 const bit_vector_t no_bits;
 
-static const py::module &condition_module() {
-  static const py::module module_ =
-      py::module::import("pytket.circuit.add_condition");
-  return module_;
-}
-
 template <typename ID>
 static Circuit *add_gate_method(
     Circuit *circ, const Op_ptr &op, const std::vector<ID> &args,
@@ -76,7 +70,8 @@ static Circuit *add_gate_method(
         "`condition_value` specified without `condition_bits`");
   }
   if (condition_given) {
-    py::object add_condition = condition_module().attr("_add_condition");
+    py::module condition = py::module::import("pytket.circuit.add_condition");
+    py::object add_condition = condition.attr("_add_condition");
     auto conditions =
         add_condition(circ, kwargs["condition"]).cast<std::pair<Bit, bool>>();
     unit_vector_t new_args = {conditions.first};
@@ -418,7 +413,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
              const std::vector<Expr> &params,
              const std::vector<unsigned> &qubits, const py::kwargs &kwargs) {
             return add_box_method<unsigned>(
-                circ, std::make_shared<CompositeGate>(def, params), qubits,
+                circ, std::make_shared<CustomGate>(def, params), qubits,
                 kwargs);
           },
           "Append an instance of a :py:class:`CustomGateDef` to the "
@@ -547,7 +542,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
              const std::vector<Expr> &params, const qubit_vector_t &qubits,
              const py::kwargs &kwargs) {
             return add_box_method<UnitID>(
-                circ, std::make_shared<CompositeGate>(def, params),
+                circ, std::make_shared<CustomGate>(def, params),
                 {qubits.begin(), qubits.end()}, kwargs);
           },
           "Append an instance of a :py:class:`CustomGateDef` to the "

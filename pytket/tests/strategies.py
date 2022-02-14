@@ -1,4 +1,4 @@
-# Copyright 2019-2021 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -45,8 +45,17 @@ def qubits(
     draw: Callable,
     name: SearchStrategy[str] = st.from_regex(reg_name_regex, fullmatch=True),
     index: SearchStrategy[int] = uint32,
-) -> Bit:
+) -> Qubit:
     return Qubit(draw(name), draw(index))
+
+
+@st.composite
+def nodes(
+    draw: Callable,
+    name: SearchStrategy[str] = st.from_regex(reg_name_regex, fullmatch=True),
+    index: SearchStrategy[int] = uint32,
+) -> Node:
+    return Node(draw(name), draw(index))
 
 
 @st.composite
@@ -133,29 +142,62 @@ def architecture(
 
 
 @st.composite
+def optypes(draw: Callable[[SearchStrategy[Any]], Any]) -> OpType:
+    return OpType(draw(st.integers(min_value=6, max_value=49)))
+
+
+@st.composite
+def errors(draw: Callable[[SearchStrategy[Any]], Any]) -> Any:
+    return draw(st.floats(min_value=0.0, max_value=1.0))
+
+
+@st.composite
+def optype_errors(draw: Callable[[SearchStrategy[Any]], Any]) -> Any:
+    return draw(st.dictionaries(optypes(), errors()))
+
+
+@st.composite
+def edges(draw: Callable[[SearchStrategy[Any]], Any]) -> Any:
+    return draw(st.tuples(nodes(), nodes()))
+
+
+@st.composite
 def backendinfo(
     draw: Callable[[SearchStrategy[Any]], Any],
 ) -> BackendInfo:
-    optypes = [OpType(i) for i in range(6, 54)]
     name = draw(st.text(min_size=1, max_size=30))
     device_name = draw(st.text(min_size=1, max_size=30))
     version = draw(st.text(min_size=1, max_size=5))
     # hardware constraints
     arc = draw(architecture())
-    gate_set = draw(st.sets(st.sampled_from(optypes)))
+    gate_set = draw(st.sets(optypes()))
     supports_fast_feedforward = draw(st.booleans())
     supports_reset = draw(st.booleans())
     supports_midcircuit_measurement = draw(st.booleans())
+    all_node_gate_errors = draw(st.dictionaries(nodes(), optype_errors()))
+    all_edge_gate_errors = draw(st.dictionaries(edges(), optype_errors()))
+    all_readout_errors = draw(st.dictionaries(nodes(), st.lists(st.lists(errors()))))
+    averaged_node_gate_errors = draw(st.dictionaries(nodes(), errors()))
+    averaged_edge_gate_errors = draw(st.dictionaries(edges(), errors()))
+    averaged_readout_errors = draw(st.dictionaries(nodes(), errors()))
+    misc = draw(st.dictionaries(st.text(), st.text()))
 
     return BackendInfo(
-        name,
-        device_name,
-        version,
-        arc,
-        gate_set,
-        supports_fast_feedforward,
-        supports_reset,
-        supports_midcircuit_measurement,
+        name=name,
+        device_name=device_name,
+        version=version,
+        architecture=arc,
+        gate_set=gate_set,
+        supports_fast_feedforward=supports_fast_feedforward,
+        supports_reset=supports_reset,
+        supports_midcircuit_measurement=supports_midcircuit_measurement,
+        all_node_gate_errors=all_node_gate_errors,
+        all_edge_gate_errors=all_edge_gate_errors,
+        all_readout_errors=all_readout_errors,
+        averaged_node_gate_errors=averaged_node_gate_errors,
+        averaged_edge_gate_errors=averaged_edge_gate_errors,
+        averaged_readout_errors=averaged_readout_errors,
+        misc=misc,
     )
 
 

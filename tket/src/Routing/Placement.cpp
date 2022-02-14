@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -127,15 +127,20 @@ void fill_partial_mapping(
 }
 
 // Default placement methods
-bool Placement::place(Circuit &circ_) const {
+bool Placement::place(
+    Circuit &circ_, std::shared_ptr<unit_bimaps_t> maps) const {
   qubit_mapping_t map_ = get_placement_map(circ_);
-  return place_with_map(circ_, map_);
+  return place_with_map(circ_, map_, maps);
 }
 
-bool Placement::place_with_map(Circuit &circ_, qubit_mapping_t &map_) {
+bool Placement::place_with_map(
+    Circuit &circ_, qubit_mapping_t &map_,
+    std::shared_ptr<unit_bimaps_t> maps) {
   qubit_vector_t circ_qbs = circ_.all_qubits();
   fill_partial_mapping(circ_qbs, map_);
-  return circ_.rename_units(map_);
+  bool changed = circ_.rename_units(map_);
+  changed |= update_maps(maps, map_, map_);
+  return changed;
 }
 
 qubit_mapping_t Placement::get_placement_map(const Circuit &circ_) const {

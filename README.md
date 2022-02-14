@@ -48,7 +48,7 @@ depend on the features they support. The compiler version can be controlled by
 setting `CC` and `CXX` in your environment (e.g. `CC=gcc-10` and `CXX=g++-10`),
 or on Debian-based Linux systems using `update-alternatives`.
 
-You should also have Python (3.7, 3.8 or 3.9) and `pip` installed. We use
+You should also have Python (3.8, 3.9 or 3.10) and `pip` installed. We use
 `cmake` and the package manager `conan` to build tket. Both can be installed
 with `pip`:
 
@@ -80,6 +80,13 @@ recommended in the warning message:
 
 ```shell
 conan profile update settings.compiler.libcxx=libstdc++11 tket
+```
+
+We want to build shared rather than static libraries, so set this in the
+profile:
+
+```shell
+conan profile update options.tket:shared=True tket
 ```
 
 If you wish you can set your profile to Debug mode:
@@ -141,13 +148,6 @@ conan create --profile=tket recipes/tket
 ```
 
 to build the tket library.
-
-Note: by default, `tket` uses the header-only version of `spdlog`. This avoids
-an
-[issue](https://github.com/conan-io/conan-docker-tools/issues/303#issuecomment-922492130)
-with an undefined symbol when run in some Linux virtual environments, but makes
-builds slower. For faster local builds you can supply the option
-`-o tket:spdlog_ho=False` to the above `conan create` command.
 
 To build and run the tket tests:
 

@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -49,12 +49,6 @@ void Circuit::remove_blank_wires() {
   }
   for (const UnitID& u : unused_units) {
     boundary.get<TagID>().erase(u);
-  }
-  if (unit_bimaps_.initial && unit_bimaps_.final) {
-    for (const UnitID& u : unused_units) {
-      unit_bimaps_.initial->right.erase(u);
-      unit_bimaps_.final->right.erase(u);
-    }
   }
   remove_vertices(bin, GraphRewiring::No, VertexDeletion::Yes);
 }
@@ -315,7 +309,7 @@ void Circuit::remove_edge(const Edge& edge) {
   boost::remove_edge(edge, this->dag);
 }
 
-void Circuit::flatten_registers() {
+unit_map_t Circuit::flatten_registers() {
   unsigned q_index = 0;
   unsigned c_index = 0;
   boundary_t new_map;
@@ -333,8 +327,7 @@ void Circuit::flatten_registers() {
     new_map.insert(new_el);
   }
   boundary = new_map;
-  update_initial_map(qmap);
-  update_final_map(qmap);
+  return qmap;
 }
 
 // this automatically updates the circuit boundaries
@@ -384,21 +377,6 @@ void Circuit::add_qubit(const Qubit& id, bool reject_dups) {
   Vertex out = add_vertex(OpType::Output);
   add_edge({in, 0}, {out, 0}, EdgeType::Quantum);
   boundary.insert({id, in, out});
-
-  unit_bimap_t* ubmap_initial = unit_bimaps_.initial;
-  unit_bimap_t* ubmap_final = unit_bimaps_.final;
-
-  if (ubmap_initial && ubmap_final) {
-    if (ubmap_initial->right.find(id) != ubmap_initial->right.end() ||
-        ubmap_initial->left.find(id) != ubmap_initial->left.end() ||
-        ubmap_final->right.find(id) != ubmap_final->right.end() ||
-        ubmap_final->left.find(id) != ubmap_final->left.end()) {
-      throw CircuitInvalidity(
-          "A unit with ID \"" + id.repr() + "\" already exists");
-    }
-    ubmap_initial->left.insert({id, id});
-    ubmap_final->left.insert({id, id});
-  }
 }
 
 void Circuit::add_bit(const Bit& id, bool reject_dups) {

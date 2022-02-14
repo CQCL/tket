@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -85,7 +85,7 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
       {OpType::Unitary3qBox, {"Unitary3qBox", "Unitary3qBox", {}, tripleq}},
       {OpType::ExpBox, {"ExpBox", "ExpBox", {}, doubleq}},
       {OpType::PauliExpBox, {"PauliExpBox", "PauliExpBox", {}, std::nullopt}},
-      {OpType::Composite, {"CompositeGate", "CompositeGate", {}, std::nullopt}},
+      {OpType::CustomGate, {"CustomGate", "CustomGate", {}, std::nullopt}},
       {OpType::Barrier, {"Barrier", "Barrier", {}, std::nullopt}},
       {OpType::Measure,
        {"Measure",
@@ -95,32 +95,28 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
       {OpType::Collapse, {"Collapse", "Collapse", {}, singleq}},
       {OpType::Reset, {"Reset", "Reset", {}, singleq}},
       {OpType::ECR, {"ECR", "ECR", {}, doubleq}},
-      {OpType::ISWAP, {"ISWAPPow", "ISWAP", {4}, doubleq}},
+      {OpType::ISWAP, {"ISWAP", "ISWAP", {4}, doubleq}},
       {OpType::PhasedX, {"PhasedX", "Ph$X$", {4, 2}, singleq}},
       {OpType::NPhasedX, {"NPhasedX", "n-Ph$X$", {4, 2}, std::nullopt}},
       {OpType::ZZMax, {"ZZMax", "$ZZ(\\frac{\\pi}{4})$", {}, doubleq}},
-      {OpType::XXPhase,
-       {"M\xC3\xB8lmer-S\xC3\xB8rensen", "$R_{XX}$", {4}, doubleq}},
+      {OpType::XXPhase, {"XXPhase", "$R_{XX}$", {4}, doubleq}},
       {OpType::YYPhase, {"YYPhase", "$R_{YY}$", {4}, doubleq}},
       {OpType::ZZPhase, {"ZZPhase", "$R_{ZZ}$", {4}, doubleq}},
       {OpType::XXPhase3,
-       {"3-M\xC3\xB8lmer-S\xC3\xB8rensen",
-        "$R_{X_0X_1}R_{X_0X_2}R_{X_1X_2}$",
-        {4},
-        tripleq}},
+       {"XXPhase3", "$R_{X_0X_1}R_{X_0X_2}R_{X_1X_2}$", {4}, tripleq}},
       {OpType::CnRy, {"CnRy", "CnRy", {4}, std::nullopt}},
       {OpType::CnX, {"CnX", "CnX", {}, std::nullopt}},
-      {OpType::tk1, {"tk1", "tk1", {4, 4, 4}, singleq}},
+      {OpType::TK1, {"TK1", "TK1", {4, 4, 4}, singleq}},
       {OpType::ESWAP, {"ESWAP", "$\\mathrm{eSWAP}$", {4}, doubleq}},
       {OpType::FSim, {"FSim", "$\\mathrm{fSim}$", {2, 2}, doubleq}},
-      {OpType::Sycamore, {"Syc", "\\mathrm{Syc}", {}, doubleq}},
-      {OpType::ISWAPMax, {"ISWAP", "ISWAP", {}, doubleq}},
+      {OpType::Sycamore, {"Sycamore", "\\mathrm{Syc}", {}, doubleq}},
+      {OpType::ISWAPMax, {"ISWAPMax", "ISWAP", {}, doubleq}},
       {OpType::PhasedISWAP, {"PhasedISWAP", "PhasedISWAP", {1, 4}, doubleq}},
-      {OpType::CliffBox, {"Clifford", "Clifford", {}, std::nullopt}},
+      {OpType::CliffBox, {"CliffBox", "Clifford", {}, std::nullopt}},
       {OpType::PhasePolyBox,
        {"PhasePolyBox", "PhasePolyBox", {}, std::nullopt}},
-      {OpType::QControlBox, {"Control", "Ctrl", {}, std::nullopt}},
-      {OpType::Conditional, {"Condition", "If", {}, std::nullopt}},
+      {OpType::QControlBox, {"QControlBox", "Ctrl", {}, std::nullopt}},
+      {OpType::Conditional, {"Conditional", "If", {}, std::nullopt}},
       {OpType::ProjectorAssertionBox,
        {"ProjectorAssertionBox", "ProjectorAssertionBox", {}, std::nullopt}},
       {OpType::StabiliserAssertionBox,
@@ -137,10 +133,11 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
        {"ExplicitModifier", "ExplicitModifier", {}, std::nullopt}},
       {OpType::ClassicalExpBox,
        {"ClassicalExpBox", "ClassicalExpBox", {}, std::nullopt}},
-      {OpType::MultiBit, {"MultiBit", "MultiBit", {}, std::nullopt}}};
+      {OpType::MultiBit, {"MultiBit", "MultiBit", {}, std::nullopt}},
+      {OpType::UnitaryTableauBox,
+       {"UnitaryTableauBox", "UnitaryTableauBox", {}, std::nullopt}}};
   static std::unique_ptr<const std::map<OpType, OpTypeInfo>> opinfo =
       std::make_unique<const std::map<OpType, OpTypeInfo>>(typeinfo);
-
   return *opinfo;
 }
 
