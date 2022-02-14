@@ -77,6 +77,7 @@ list(APPEND TKET_COMPS
     Converters
     Placement
     ArchAwareSynth
+    TokenSwapping
     Mapping    
     MeasurementSetup
     Transformations    
