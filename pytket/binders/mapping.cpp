@@ -34,7 +34,7 @@ PYBIND11_MODULE(mapping, m) {
       RoutingMethodCircuit, std::shared_ptr<RoutingMethodCircuit>,
       RoutingMethod>(
       m, "RoutingMethodCircuit",
-      "The RoutingMethod class captures a method for partially mapping logical"
+      "The RoutingMethod class captures a method for partially mapping logical "
       "subcircuits to physical operations as permitted by some architecture. "
       "Ranked RoutingMethod objects are used by the MappingManager to route "
       "whole circuits.")
@@ -49,7 +49,7 @@ PYBIND11_MODULE(mapping, m) {
           "that given a Circuit and Architecture object, returns a tuple "
           "containing a new modified circuit, the initial logical to physical "
           "qubit mapping of the modified circuit and the permutation of "
-          "'logical to physical qubit mapping given operations in the "
+          "logical to physical qubit mapping given operations in the "
           "modified circuit\n:param check_subcircuit: A function declaration "
           "that given a Circuit and Architecture object, returns a bool "
           "stating whether the given method can modify the "
