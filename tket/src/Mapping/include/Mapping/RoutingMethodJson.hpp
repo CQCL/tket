@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include "Mapping/BoxDecomposition.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MultiGateReorder.hpp"
 #include "Mapping/RoutingMethod.hpp"
