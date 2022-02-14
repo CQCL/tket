@@ -15,7 +15,7 @@
 #include "Mapping/MappingManager.hpp"
 
 #include "OpType/OpTypeFunctions.hpp"
-#include "TokenSwapping/main_entry_functions.hpp"
+#include "TokenSwapping/SwapsFromQubitMapping.hpp"
 
 namespace tket {
 

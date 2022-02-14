@@ -15,8 +15,8 @@
 #include <catch2/catch.hpp>
 #include <sstream>
 
-#include "TokenSwapping/RNG.hpp"
-#include "TokenSwapping/main_entry_functions.hpp"
+#include "Utils/RNG.hpp"
+#include "TokenSwapping/SwapsFromQubitMapping.hpp"
 
 using std::vector;
 
@@ -24,10 +24,9 @@ using std::vector;
 // are done elsewhere, so this is really just checking conversion.
 
 namespace tket {
-namespace tsa_internal {
 namespace tests {
 
-SCENARIO("main entry function for TSA") {
+SCENARIO("get_swaps : swaps returned directly from architecture") {
   // Will summarise relevant data, so that we can see any changes.
   std::stringstream problem_ss;
 
@@ -118,6 +117,6 @@ SCENARIO("main entry function for TSA") {
   REQUIRE(nodes_copy == node_final_positions);
 }
 
+
 }  // namespace tests
-}  // namespace tsa_internal
 }  // namespace tket
