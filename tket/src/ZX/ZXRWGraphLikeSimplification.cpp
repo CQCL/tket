@@ -36,6 +36,7 @@ static bool can_complement_neighbourhood(
 }
 
 bool Rewrite::remove_interior_cliffords_fun(ZXDiagram& diag) {
+  if (!diag.is_graphlike()) return false;
   bool success = false;
   ZXVertSeqSet candidates;
   BGL_FORALL_VERTICES(v, *diag.graph, ZXGraph) { candidates.insert(v); }
@@ -123,6 +124,7 @@ static void bipartite_complementation(
 }
 
 bool Rewrite::remove_interior_paulis_fun(ZXDiagram& diag) {
+  if (!diag.is_graphlike()) return false;
   bool success = false;
   ZXVertSeqSet candidates;  // Need an indirect iterator as BGL_FORALL_VERTICES
                             // breaks when removing the current vertex
@@ -194,6 +196,7 @@ Rewrite Rewrite::remove_interior_paulis() {
 }
 
 bool Rewrite::extend_at_boundary_paulis_fun(ZXDiagram& diag) {
+  if (!diag.is_graphlike()) return false;
   bool success = false;
   for (const ZXVert& b : diag.get_boundary()) {
     // Valid ZX graph requires boundaries to have a unique neighbour
