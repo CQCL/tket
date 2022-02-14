@@ -82,6 +82,18 @@ recommended in the warning message:
 conan profile update settings.compiler.libcxx=libstdc++11 tket
 ```
 
+Add the `tket.conan` repository to your remotes:
+
+```shell
+conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
+```
+
+Enable revisions:
+
+```shell
+conan config set general.revisions_enabled=1
+```
+
 We want to build shared rather than static libraries, so set this in the
 profile:
 
