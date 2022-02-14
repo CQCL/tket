@@ -2505,7 +2505,8 @@ SCENARIO("Default mapping pass delays measurements") {
   CompilationUnit cu(c);
   REQUIRE(pass->apply(cu));
   CompilationUnit cu2(c2);
-  PassPtr pass2 = gen_default_mapping_pass(arc, true);
+  // delay_measures is default to true
+  PassPtr pass2 = gen_default_mapping_pass(arc);
   REQUIRE(pass2->apply(cu2));
   PredicatePtr mid_meas_pred = std::make_shared<NoMidMeasurePredicate>();
   REQUIRE(!mid_meas_pred->verify(cu.get_circ_ref()));
