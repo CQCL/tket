@@ -94,6 +94,7 @@ static bool standard_rebase(
     std::vector<Expr> tk1_angles = as_gate_ptr(op)->get_tk1_angles();
     Circuit replacement =
         tk1_replacement(tk1_angles[0], tk1_angles[1], tk1_angles[2]);
+    remove_redundancies().apply(replacement);
     if (conditional) {
       circ.substitute_conditional(replacement, v, Circuit::VertexDeletion::No);
     } else {
@@ -118,45 +119,35 @@ Transform rebase_tket() {
   return rebase_factory({OpType::CX, OpType::TK1}, CircPool::CX(), tk1_to_tk1);
 }
 
-// apply redundancy removal to circuit returned by function
-#define WRAP_REDUNDANCY(func)                                  \
-  [](const Expr& alpha, const Expr& beta, const Expr& gamma) { \
-    Circuit c = func(alpha, beta, gamma);                      \
-    remove_redundancies().apply(c);                            \
-    return c;                                                  \
-  }
-
 Transform rebase_cirq() {
   return rebase_factory(
       {OpType::CZ, OpType::PhasedX, OpType::Rz}, CircPool::H_CZ_H(),
-      WRAP_REDUNDANCY(CircPool::tk1_to_PhasedXRz));
+      CircPool::tk1_to_PhasedXRz);
 }
 
 Transform rebase_HQS() {
   return rebase_factory(
       {OpType::ZZMax, OpType::PhasedX, OpType::Rz}, CircPool::CX_using_ZZMax(),
-      WRAP_REDUNDANCY(CircPool::tk1_to_PhasedXRz));
+      CircPool::tk1_to_PhasedXRz);
 }
 
 Transform rebase_UMD() {
   return rebase_factory(
       {OpType::XXPhase, OpType::PhasedX, OpType::Rz},
-      CircPool::CX_using_XXPhase_0(),
-      WRAP_REDUNDANCY(CircPool::tk1_to_PhasedXRz));
+      CircPool::CX_using_XXPhase_0(), CircPool::tk1_to_PhasedXRz);
 }
 
 Transform rebase_quil() {
   return rebase_factory(
       {OpType::CZ, OpType::Rx, OpType::Rz}, CircPool::H_CZ_H(),
-      WRAP_REDUNDANCY(CircPool::tk1_to_rzrx));
+      CircPool::tk1_to_rzrx);
 }
 
 Transform rebase_pyzx() {
   OpTypeSet pyzx_gates = {OpType::SWAP, OpType::CX, OpType::CZ, OpType::H,
                           OpType::X,    OpType::Z,  OpType::S,  OpType::T,
                           OpType::Rx,   OpType::Rz};
-  return rebase_factory(
-      pyzx_gates, CircPool::CX(), WRAP_REDUNDANCY(CircPool::tk1_to_rzrx));
+  return rebase_factory(pyzx_gates, CircPool::CX(), CircPool::tk1_to_rzrx);
 }
 
 Transform rebase_projectq() {
@@ -164,20 +155,19 @@ Transform rebase_projectq() {
                               OpType::H,    OpType::X,   OpType::Y,  OpType::Z,
                               OpType::S,    OpType::T,   OpType::V,  OpType::Rx,
                               OpType::Ry,   OpType::Rz};
-  return rebase_factory(
-      projectq_gates, CircPool::CX(), WRAP_REDUNDANCY(CircPool::tk1_to_rzrx));
+  return rebase_factory(projectq_gates, CircPool::CX(), CircPool::tk1_to_rzrx);
 }
 
 Transform rebase_UFR() {
   return rebase_factory(
       {OpType::CX, OpType::Rz, OpType::H}, CircPool::CX(),
-      WRAP_REDUNDANCY(CircPool::tk1_to_rzh));
+      CircPool::tk1_to_rzh);
 }
 
 Transform rebase_OQC() {
   return rebase_factory(
       {OpType::ECR, OpType::Rz, OpType::SX}, CircPool::CX_using_ECR(),
-      WRAP_REDUNDANCY(CircPool::tk1_to_rzsx));
+      CircPool::tk1_to_rzsx);
 }
 
 }  // namespace Transforms
