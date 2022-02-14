@@ -180,7 +180,7 @@ jobs:
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
     - name: add remote
-      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
+      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
     - name: Install boost
       run: conan install --profile=tket boost/1.78.0@ --build=missing
     - name: Build tket
