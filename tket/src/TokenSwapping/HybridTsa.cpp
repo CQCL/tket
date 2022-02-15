@@ -27,7 +27,6 @@ HybridTsa::HybridTsa() {
   m_trivial_tsa.set(TrivialTSA::Options::BREAK_AFTER_PROGRESS);
 }
 
-
 void HybridTsa::append_partial_solution(
     SwapList& swaps, VertexMapping& vertex_mapping,
     DistancesInterface& distances, NeighboursInterface& neighbours,
