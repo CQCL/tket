@@ -191,10 +191,14 @@ PassPtr gen_full_mapping_pass(
   return gen_placement_pass(placement_ptr) >> gen_routing_pass(arc, config);
 }
 
-PassPtr gen_default_mapping_pass(const Architecture& arc) {
+PassPtr gen_default_mapping_pass(const Architecture& arc, bool delay_measures) {
   PlacementPtr pp = std::make_shared<GraphPlacement>(arc);
   RoutingMethodPtr rmw = std::make_shared<LexiRouteRoutingMethod>(100);
-  return gen_full_mapping_pass(arc, pp, {rmw});
+  PassPtr return_pass = gen_full_mapping_pass(arc, pp, {rmw});
+  if (delay_measures) {
+    return_pass = return_pass >> DelayMeasures();
+  }
+  return return_pass;
 }
 
 PassPtr gen_cx_mapping_pass(
