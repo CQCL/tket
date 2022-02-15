@@ -18,6 +18,10 @@ API changes:
 * Methods for mapping logical to physical circuits are now available in the
   ``mapping`` module, with a new API and new functionality.
 
+Minor new features:
+
+* Add ``delay_measures`` option to ``DefaultMappingPass``.
+
 0.19.0 (February 2022)
 ----------------------
 

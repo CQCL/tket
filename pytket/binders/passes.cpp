@@ -524,8 +524,10 @@ PYBIND11_MODULE(passes, m) {
       "Placement used "
       "is GraphPlacement."
       "\n\n:param arc: The Architecture used for connectivity information."
+      "\n:param delay_measures: Whether to commute measurements to the end "
+      "of the circuit, defaulting to true."
       "\n:return: a pass to perform the remapping",
-      py::arg("arc"));
+      py::arg("arc"), py::arg("delay_measures") = true);
 
   m.def(
       "AASRouting", &gen_default_aas_routing_pass,

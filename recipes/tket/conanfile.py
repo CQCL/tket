@@ -41,7 +41,8 @@ class TketConan(ConanFile):
     exports = ["patches/*"]
     requires = (
         "boost/1.78.0",
-        "symengine/0.8.1.1",
+        # symengine from remote: https://tket.jfrog.io/artifactory/api/conan/tket-conan
+        "symengine/0.8.1.1@tket/stable",
         "eigen/3.4.0",
         "spdlog/1.9.2",
         "nlohmann_json/3.10.4",
@@ -132,6 +133,7 @@ class TketConan(ConanFile):
         for comp in self.comps:
             self.copy(f"{comp}/include/*.hpp", dst=f"include/{comp}", keep_path=False)
         self.copy("*.dll", dst="lib", keep_path=False)
+        self.copy("*.dll", dst="bin", keep_path=False)
         self.copy("*.lib", dst="lib", keep_path=False)
         self.copy("*.so", dst="lib", keep_path=False)
         self.copy("*.dylib", dst="lib", keep_path=False)
