@@ -223,6 +223,18 @@ def test_symbolic_ops() -> None:
     assert np.allclose(commands[1].op.params, [2.4], atol=1e-10)
 
 
+def test_subst_4() -> None:
+    # https://github.com/CQCL/tket/issues/219
+    m = fresh_symbol("m")
+    c = Circuit(1)
+    a = m / 4
+    c.add_gate(OpType.Rx, a, [0])
+    c.symbol_substitution({m: 4})
+    angle = c.get_commands()[0].op.params[0]
+    print(angle)
+    assert np.isclose(angle, 1.0)
+
+
 def test_sympy_conversion() -> None:
     def get_type_tree(expr: sympy.Expr) -> str:
         # Format e.g. "<class 'sympy.core.numbers.Pi'>" to "Pi"
