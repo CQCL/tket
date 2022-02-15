@@ -134,6 +134,11 @@ Expr Circuit::get_phase() const {
 
 void Circuit::add_phase(Expr a) { phase += a; }
 
+static bool approx_0(const Expr &e) {
+  std::optional<double> v = eval_expr(e);
+  return v && (std::abs(v.value()) < EPS);
+}
+
 void Circuit::symbol_substitution(const symbol_map_t &symbol_map) {
   SymEngine::map_basic_basic sub_map;
   for (const std::pair<const Sym, Expr> &p : symbol_map) {
@@ -142,7 +147,7 @@ void Circuit::symbol_substitution(const symbol_map_t &symbol_map) {
     // This is a workaround for a symengine issue: symengine currently has poor
     // handling of symbolic evaluations for atan2. However, this may not catch
     // every such issue, so we should revisit it.
-    if (equiv_0(e, 4)) {
+    if (approx_0(e)) {
       sub_map[s] = SymEngine::zero;
     } else {
       sub_map[s] = e;
