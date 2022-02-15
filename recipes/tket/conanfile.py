@@ -41,7 +41,8 @@ class TketConan(ConanFile):
     exports = ["patches/*"]
     requires = (
         "boost/1.78.0",
-        "symengine/0.8.1.1",
+        # symengine from remote: https://tket.jfrog.io/artifactory/api/conan/tket-conan
+        "symengine/0.8.1.1@tket/stable",
         "eigen/3.4.0",
         "spdlog/1.9.2",
         "nlohmann_json/3.10.4",
