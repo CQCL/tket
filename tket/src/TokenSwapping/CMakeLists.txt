@@ -19,22 +19,18 @@ if (NOT ${COMP} STREQUAL "TokenSwapping")
 endif()
 
 add_library(tket-${COMP}
-    ArchitectureMapping.cpp
     BestFullTsa.cpp
     CyclesCandidateManager.cpp
     CyclesGrowthManager.cpp
     CyclesPartialTsa.cpp
     CyclicShiftCostEstimate.cpp
-    DistancesFromArchitecture.cpp
     DistancesInterface.cpp
     DynamicTokenTracker.cpp
     HybridTsa.cpp
-    NeighboursFromArchitecture.cpp
     NeighboursInterface.cpp
     PartialTsaInterface.cpp
     RiverFlowPathFinder.cpp
     SwapListOptimiser.cpp
-    SwapsFromQubitMapping.cpp
     TrivialTSA.cpp
     VectorListHybridSkeleton.cpp
     TSAUtils/DistanceFunctions.cpp
@@ -53,9 +49,6 @@ add_library(tket-${COMP}
     )
 
 list(APPEND DEPS_${COMP}
-    Architecture
-    Graphs
-    OpType
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})
