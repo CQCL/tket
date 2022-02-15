@@ -14,7 +14,7 @@
 
 #include "Mapping/MappingManager.hpp"
 
-#include "TokenSwapping/SwapsFromQubitMapping.hpp"
+#include "TokenSwappingWithArch/BestTsaWithArch.hpp"
 
 namespace tket {
 
@@ -88,7 +88,7 @@ bool MappingManager::route_circuit_with_maps(
             node_map.insert({Node(x.first), Node(x.second)});
           }
           for (const std::pair<Node, Node>& swap :
-               get_swaps(*this->architecture_, node_map)) {
+               BestTsaWithArch::get_swaps(*this->architecture_, node_map)) {
             mapping_frontier->add_swap(swap.first, swap.second);
           }
         }

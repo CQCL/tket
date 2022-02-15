@@ -18,7 +18,6 @@
 #include <stdexcept>
 
 namespace tket {
-namespace tsa_internal {
 
 DistancesFromArchitecture::DistancesFromArchitecture(
     const ArchitectureMapping& arch_mapping)
@@ -88,5 +87,4 @@ size_t DistancesFromArchitecture::operator()(size_t vertex1, size_t vertex2) {
   return distance_entry;
 }
 
-}  // namespace tsa_internal
 }  // namespace tket

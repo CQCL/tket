@@ -14,29 +14,22 @@
 
 project(tket-${COMP})
 
-if (NOT ${COMP} STREQUAL "Mapping")
+if (NOT ${COMP} STREQUAL "TokenSwappingWithArch")
     message(FATAL_ERROR "Unexpected component name.")
 endif()
 
 add_library(tket-${COMP}
-    LexicographicalComparison.cpp
-    LexiRoute.cpp
-    MappingFrontier.cpp
-    MappingManager.cpp
-    MultiGateReorder.cpp
-    RoutingMethodCircuit.cpp
-    RoutingMethodJson.cpp
-    Verification.cpp)
+    ArchitectureMapping.cpp
+    BestTsaWithArch.cpp
+    DistancesFromArchitecture.cpp
+    NeighboursFromArchitecture.cpp
+    )
 
 list(APPEND DEPS_${COMP}
     Architecture
-    Circuit
-    Gate
     Graphs
-    Ops
     OpType
     TokenSwapping
-    TokenSwappingWithArch
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})
@@ -52,9 +45,4 @@ target_include_directories(tket-${COMP}
     ${TKET_${COMP}_INCLUDE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS_SYMENGINE})
-
-if (WIN32)
-    # For boost::uuid:
-    target_link_libraries(tket-${COMP} PRIVATE bcrypt)
-endif()
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})
