@@ -20,8 +20,8 @@
 #include <stdexcept>
 #include <string>
 
-#include "Utils/RNG.hpp"
 #include "TokenSwapping/VectorListHybridSkeleton.hpp"
+#include "Utils/RNG.hpp"
 
 using std::vector;
 

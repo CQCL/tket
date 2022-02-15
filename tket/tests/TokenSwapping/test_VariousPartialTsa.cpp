@@ -15,13 +15,13 @@
 #include <catch2/catch.hpp>
 
 #include "TestUtils/ArchitectureEdgesReimplementation.hpp"
+#include "TestUtils/DebugFunctions.hpp"
 #include "TestUtils/PartialTsaTesting.hpp"
 #include "TestUtils/ProblemGeneration.hpp"
 #include "TokenSwapping/CyclesPartialTsa.hpp"
-#include "TestUtils/DebugFunctions.hpp"
-#include "Utils/RNG.hpp"
 #include "TokenSwapping/RiverFlowPathFinder.hpp"
 #include "TokenSwapping/TrivialTSA.hpp"
+#include "Utils/RNG.hpp"
 
 using std::vector;
 

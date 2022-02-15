@@ -15,8 +15,8 @@
 #include <catch2/catch.hpp>
 #include <sstream>
 
-#include "Utils/RNG.hpp"
 #include "TokenSwapping/SwapsFromQubitMapping.hpp"
+#include "Utils/RNG.hpp"
 
 using std::vector;
 
@@ -116,7 +116,6 @@ SCENARIO("get_swaps : swaps returned directly from architecture") {
   }
   REQUIRE(nodes_copy == node_final_positions);
 }
-
 
 }  // namespace tests
 }  // namespace tket

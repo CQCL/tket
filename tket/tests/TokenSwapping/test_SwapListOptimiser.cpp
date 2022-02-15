@@ -18,8 +18,8 @@
 #include <sstream>
 
 #include "TestUtils/DebugFunctions.hpp"
-#include "Utils/RNG.hpp"
 #include "TokenSwapping/SwapListOptimiser.hpp"
+#include "Utils/RNG.hpp"
 
 using std::vector;
 
