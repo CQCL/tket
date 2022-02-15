@@ -38,6 +38,8 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Graphs/test_DirectedGraph.cpp
     ${TKET_TESTS_DIR}/Graphs/test_ArticulationPoints.cpp
     ${TKET_TESTS_DIR}/Graphs/test_TreeSearch.cpp
+    # NOTE: For testing, it is easier to combine TokenSwapping
+    # and TokenSwappingWithArch tests together.
     ${TKET_TESTS_DIR}/TokenSwapping/Data/FixedCompleteSolutions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/Data/FixedSwapSequences.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/NeighboursFromEdges.cpp
