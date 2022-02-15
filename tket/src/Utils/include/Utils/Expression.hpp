@@ -123,6 +123,16 @@ Expr cos_halfpi_times(const Expr& e);
 Expr sin_halfpi_times(const Expr& e);
 
 /**
+ * Test if an expression is approximately zero
+ *
+ * @param e expression
+ * @param tol tolerance
+ *
+ * @return whether \p e is within \p tol of zero
+ */
+bool approx_0(const Expr &e, double tol=EPS);
+
+/**
  * Evaluate modulo n in the range [0,n)
  *
  * @param x value to be reduced

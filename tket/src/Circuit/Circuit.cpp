@@ -134,11 +134,6 @@ Expr Circuit::get_phase() const {
 
 void Circuit::add_phase(Expr a) { phase += a; }
 
-static bool approx_0(const Expr &e) {
-  std::optional<double> v = eval_expr(e);
-  return v && (std::abs(v.value()) < EPS);
-}
-
 void Circuit::symbol_substitution(const symbol_map_t &symbol_map) {
   SymEngine::map_basic_basic sub_map;
   for (const std::pair<const Sym, Expr> &p : symbol_map) {
