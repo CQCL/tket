@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,9 +21,8 @@
 #include <map>
 #include <optional>
 #include <set>
-#include <stdexcept>
 
-#include "TokenSwapping/RNG.hpp"
+#include "Utils/Assert.hpp"
 
 namespace tket {
 namespace tsa_internal {
@@ -46,20 +45,15 @@ std::optional<V> get_optional_value(const std::map<K, V>& map, const K& key) {
 /** The key->value mapping is required to be bijective (reversible).
  *  @param map The std::map object.
  *  @return Another std::map, with the key->value mappings reversed.
- *    Throws if the map is not reversible.
  */
 template <class K, class V>
 std::map<V, K> get_reversed_map(const std::map<K, V>& map) {
-  // GCOVR_EXCL_START
   std::map<V, K> reversed_map;
   for (const auto& entry : map) {
     reversed_map[entry.second] = entry.first;
   }
-  if (map.size() != reversed_map.size()) {
-    throw std::runtime_error("get_reversed_map called with non-reversible map");
-  }
+  TKET_ASSERT(map.size() == reversed_map.size());
   return reversed_map;
-  // GCOVR_EXCL_STOP
 }
 
 /** Finds the rightmost "one" (least significant bit)
@@ -86,16 +80,6 @@ static UINT get_rightmost_bit(UINT& x) {
   x ^= bit;
   return bit;
 }
-
-/** Return a random subset of given size from the population {0,1,2,...,N}.
- *  @param rng A random number generator.
- *  @param sample_size The desired size of the returned set.
- *  @param population_size The number of elements in the population (an interval
- *    of nonnegative integers, starting at 0).
- *  @return A set of numbers. Throws upon invalid parameters.
- */
-std::set<size_t> get_random_set(
-    RNG& rng, size_t sample_size, size_t population_size);
 
 }  // namespace tsa_internal
 }  // namespace tket

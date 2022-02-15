@@ -27,6 +27,7 @@ list(APPEND DEPS_${COMP}
     OpType
     Ops
     Graphs
+    OpType
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

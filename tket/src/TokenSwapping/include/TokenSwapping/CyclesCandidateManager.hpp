@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -88,9 +88,6 @@ class CyclesCandidateManager {
      */
     unsigned min_candidate_power_percentage = 0;
   };
-
-  /// Provide access to the options used, to change them if desired.
-  Options& get_options();
 
   /** The "CyclesGrowthManager" object stores the candidate cycles internally,
    *  then we select the set of candidates to use, convert them into swaps,

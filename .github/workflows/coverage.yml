@@ -32,6 +32,7 @@ jobs:
     env:
       CC: gcc-10
       CXX: g++-10
+      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v2
       with:
@@ -59,13 +60,12 @@ jobs:
         ${conan_cmd} profile update options.tket:shared=True tket
         ${conan_cmd} profile update settings.build_type=Debug tket
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
+    - name: add remote
+      run: ${CONAN_CMD} remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
     - name: Install ninja and ccache
       run: |
         sudo apt-get update
         sudo apt-get install ninja-build ccache
-    - name: Build symengine
-      run:
-        ${CONAN_CMD} create --profile=tket recipes/symengine
     - name: Build tket
       run: |
         ${CONAN_CMD} install recipes/tket --install-folder=build/tket --profile=tket -o tket:profile_coverage=True

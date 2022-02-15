@@ -147,7 +147,7 @@ SCENARIO("Reorder circuits") {
     // Physically invalid operations
     circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[2]});
     // Physically valid operations
-    circ.add_op<UnitID>(OpType::CCX, {qubits[1], qubits[2], qubits[3]});
+    circ.add_op<UnitID>(OpType::BRIDGE, {qubits[1], qubits[2], qubits[3]});
     circ.add_op<UnitID>(OpType::Rx, 0.5, {qubits[3]});
     circ.add_op<UnitID>(OpType::CX, {qubits[2], qubits[3]});
     circ.add_op<UnitID>(OpType::Rz, 0.5, {qubits[0]});

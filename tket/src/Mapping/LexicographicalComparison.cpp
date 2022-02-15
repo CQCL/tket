@@ -16,10 +16,6 @@
 
 namespace tket {
 
-/**
- * Assumes all node in interacting_nodes in architecture, and ignores if they
- * aren't maybe throw error instead?
- */
 LexicographicalComparison::LexicographicalComparison(
     const ArchitecturePtr& _architecture,
     const interacting_nodes_t& _interacting_nodes)
@@ -54,8 +50,7 @@ void LexicographicalComparison::increment_distances(
   if (distances[distances_index] == 0 && increment < 0) {
     throw LexicographicalComparisonError(
         "Negative increment value is larger than value held at index, "
-        "modification not "
-        "allowed.");
+        "modification not allowed.");
   }
   distances[distances_index] += increment;
 }

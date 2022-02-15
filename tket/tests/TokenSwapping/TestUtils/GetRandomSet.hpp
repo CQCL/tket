@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,33 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "TokenSwapping/DebugFunctions.hpp"
+#pragma once
 
-#include <sstream>
+#include <set>
+
+#include "Utils/RNG.hpp"
 
 namespace tket {
 namespace tsa_internal {
+namespace tests {
 
-// GCOVR_EXCL_START
-std::string str(const VertexMapping& vertex_mapping) {
-  std::stringstream ss;
-  ss << "VM:";
-  for (const auto& entry : vertex_mapping) {
-    ss << " " << entry.first << "->" << entry.second << " ";
-  }
-  return ss.str();
-}
-// GCOVR_EXCL_STOP
+/** Return a random subset of given size from the population {0,1,2,...,N}.
+ *  @param rng A random number generator.
+ *  @param sample_size The desired size of the returned set.
+ *  @param population_size The number of elements in the population (an interval
+ *    of nonnegative integers, starting at 0).
+ *  @return A set of numbers. Throws upon invalid parameters.
+ */
+std::set<size_t> get_random_set(
+    RNG& rng, size_t sample_size, size_t population_size);
 
-std::string str(const SwapList& swaps) { return str(swaps.to_vector()); }
-
-std::string str(const std::vector<Swap>& swaps) {
-  std::stringstream ss;
-  for (auto swap : swaps) {
-    ss << " (" << swap.first << "," << swap.second << ") ";
-  }
-  return ss.str();
-}
-
+}  // namespace tests
 }  // namespace tsa_internal
 }  // namespace tket

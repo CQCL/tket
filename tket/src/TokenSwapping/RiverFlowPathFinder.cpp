@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -149,9 +149,7 @@ RiverFlowPathFinder::RiverFlowPathFinder(
     DistancesInterface& distances_interface,
     NeighboursInterface& neighbours_interface, RNG& rng)
     : m_pimpl(std::make_unique<Impl>(
-          distances_interface, neighbours_interface, rng)) {
-  m_name = "RiverFlow";
-}
+          distances_interface, neighbours_interface, rng)) {}
 
 RiverFlowPathFinder::~RiverFlowPathFinder() {}
 
@@ -187,8 +185,6 @@ void RiverFlowPathFinder::register_edge(size_t vertex1, size_t vertex2) {
   auto& edge_count = m_pimpl->edge_counts[get_swap(vertex1, vertex2)];
   ++edge_count;
 }
-
-bool RiverFlowPathFinder::edge_registration_has_effect() const { return true; }
 
 }  // namespace tsa_internal
 }  // namespace tket

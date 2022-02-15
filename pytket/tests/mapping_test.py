@@ -35,12 +35,10 @@ def route_subcircuit_func(
     relabelling_map = dict()
 
     for qb in circuit.qubits:
-        for n in unused_nodes:
-            if n == qb:
-                unused_nodes.remove(n)
+        unused_nodes.remove(qb)
 
     for qb in circuit.qubits:
-        if qb not in set(architecture.nodes):
+        if qb not in architecture.nodes:
             relabelling_map[qb] = unused_nodes.pop()
         else:
             #           this is so later architecture.get_distance works
@@ -65,9 +63,6 @@ def route_subcircuit_func(
             replacement_circuit.add_gate(com.op.type, rp_qubits)
         if len(com.qubits) == 2:
             if swaps_added < max_swaps:
-                #               get node references for some stupid reason...
-                #               theres some stupid casting issue
-                #               just passing qubits didnt work.. whatever
                 for n in architecture.nodes:
                     if n == rp_qubits[0]:
                         n0 = n
@@ -88,7 +83,7 @@ def route_subcircuit_func(
                             rp_qubits = [
                                 permutation_map[relabelling_map[q]] for q in com.qubits
                             ]
-                            swaps_added = swaps_added + 1
+                            swaps_added += 1
                             break
 
             replacement_circuit.add_gate(com.op.type, rp_qubits)

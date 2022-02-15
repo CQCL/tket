@@ -28,20 +28,16 @@ add_library(tket-${COMP}
     DistancesFromArchitecture.cpp
     DistancesInterface.cpp
     DynamicTokenTracker.cpp
-    HybridTsa00.cpp
-    main_entry_functions.cpp
+    HybridTsa.cpp
     NeighboursFromArchitecture.cpp
     NeighboursInterface.cpp
     PartialTsaInterface.cpp
-    PathFinderInterface.cpp
     RiverFlowPathFinder.cpp
-    RNG.cpp
     SwapListOptimiser.cpp
+    SwapsFromQubitMapping.cpp
     TrivialTSA.cpp
     VectorListHybridSkeleton.cpp
-    TSAUtils/DebugFunctions.cpp
     TSAUtils/DistanceFunctions.cpp
-    TSAUtils/GeneralFunctions.cpp
     TSAUtils/SwapFunctions.cpp
     TSAUtils/VertexMappingFunctions.cpp
     TSAUtils/VertexSwapResult.cpp
@@ -58,10 +54,7 @@ add_library(tket-${COMP}
 
 list(APPEND DEPS_${COMP}
     Architecture
-    Circuit
-    Gate
     Graphs
-    Ops
     OpType
     Utils)
 

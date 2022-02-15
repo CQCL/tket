@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,20 +23,10 @@ namespace tsa_internal {
 
 CyclesPartialTsa::CyclesPartialTsa() { m_name = "Cycles"; }
 
-// GCOVR_EXCL_START
-CyclesGrowthManager::Options& CyclesPartialTsa::growth_options() {
-  return m_growth_manager.get_options();
-}
-
-CyclesCandidateManager::Options& CyclesPartialTsa::candidate_options() {
-  return m_candidate_manager.get_options();
-}
-// GCOVR_EXCL_STOP
-
 void CyclesPartialTsa::append_partial_solution(
     SwapList& swaps, VertexMapping& vertex_mapping,
     DistancesInterface& distances, NeighboursInterface& neighbours,
-    PathFinderInterface& path_finder) {
+    RiverFlowPathFinder& path_finder) {
   // We'll add the calculated swaps to the path finder at the end.
   // THIS is the right place to do it, not the caller, because
   // (as far as the caller knows) it's possible that PartialTSA objects
@@ -56,8 +46,7 @@ void CyclesPartialTsa::append_partial_solution(
   }
   const size_t final_swap_size = swaps.size();
   TKET_ASSERT(initial_swap_size <= final_swap_size);
-  if (initial_swap_size == final_swap_size ||
-      !path_finder.edge_registration_has_effect()) {
+  if (initial_swap_size == final_swap_size) {
     return;
   }
   // At least one swap was added.

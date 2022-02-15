@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,8 @@
 #include "Utils/Assert.hpp"
 
 namespace tket {
-namespace tsa_internal {
+
+using namespace tsa_internal;
 
 bool all_tokens_home(const VertexMapping& vertex_mapping) {
   for (const auto& entry : vertex_mapping) {
@@ -89,5 +90,4 @@ void add_swap(VertexMapping& source_to_target_map, const Swap& swap) {
   std::swap(source_to_target_map[source_v1], source_to_target_map[source_v2]);
 }
 
-}  // namespace tsa_internal
 }  // namespace tket

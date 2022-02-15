@@ -43,8 +43,6 @@ std::shared_ptr<unit_frontier_t> frontier_convert_vertport_to_edge(
  * convert_u_frontier_to_edges
  * Subcircuit requires EdgeVec, not unit_frontier_t as boundary information
  * Helper Functions to convert types
- * TODO: also probably another way of doing this? EdgeVec required for
- * subcircuit. Double check with someone who knows better than I...
  */
 EdgeVec convert_u_frontier_to_edges(const unit_frontier_t& u_frontier);
 struct MappingFrontier {
@@ -181,12 +179,6 @@ struct MappingFrontier {
    * @param new_boundary Object to reassign with.
    */
   void set_quantum_boundary(const unit_vertport_frontier_t& new_boundary);
-
-  template <typename UnitA, typename UnitB>
-  void update_initial_map(const std::map<UnitA, UnitB>& qm);
-
-  template <typename UnitA, typename UnitB>
-  void update_final_map(const std::map<UnitA, UnitB>& qm);
 };
 
 }  // namespace tket

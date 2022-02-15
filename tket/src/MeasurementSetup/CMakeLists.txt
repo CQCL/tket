@@ -28,11 +28,9 @@ list(APPEND DEPS_${COMP}
     Converters
     Diagonalisation
     Gate
-    Mapping
     Ops
     OpType
     PauliGraph
-    TokenSwapping
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

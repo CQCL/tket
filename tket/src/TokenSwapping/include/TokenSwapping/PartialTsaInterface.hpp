@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 
 #include "DistancesInterface.hpp"
 #include "NeighboursInterface.hpp"
-#include "PathFinderInterface.hpp"
+#include "RiverFlowPathFinder.hpp"
 #include "VertexMappingFunctions.hpp"
 
 namespace tket {
@@ -53,7 +53,7 @@ class PartialTsaInterface {
   virtual void append_partial_solution(
       SwapList& swaps, VertexMapping& vertex_mapping,
       DistancesInterface& distances, NeighboursInterface& neighbours,
-      PathFinderInterface& path_finder) = 0;
+      RiverFlowPathFinder& path_finder) = 0;
 
   /** For debugging purposes, every TSA object has a name.
    *  @return The name of this object (not necessarily unique).

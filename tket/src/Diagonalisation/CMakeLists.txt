@@ -27,11 +27,10 @@ list(APPEND DEPS_${COMP}
     Circuit
     Clifford
     Gate
-    Graphs    
+    Graphs
     Ops
     OpType
     PauliGraph
-    TokenSwapping
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

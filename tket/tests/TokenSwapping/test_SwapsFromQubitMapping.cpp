@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
 #include <catch2/catch.hpp>
 #include <sstream>
 
-#include "TokenSwapping/RNG.hpp"
-#include "TokenSwapping/main_entry_functions.hpp"
+#include "TokenSwapping/SwapsFromQubitMapping.hpp"
+#include "Utils/RNG.hpp"
 
 using std::vector;
 
@@ -24,10 +24,9 @@ using std::vector;
 // are done elsewhere, so this is really just checking conversion.
 
 namespace tket {
-namespace tsa_internal {
 namespace tests {
 
-SCENARIO("main entry function for TSA") {
+SCENARIO("get_swaps : swaps returned directly from architecture") {
   // Will summarise relevant data, so that we can see any changes.
   std::stringstream problem_ss;
 
@@ -119,5 +118,4 @@ SCENARIO("main entry function for TSA") {
 }
 
 }  // namespace tests
-}  // namespace tsa_internal
 }  // namespace tket

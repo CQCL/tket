@@ -22,12 +22,13 @@ export PYBIN=/opt/python/cp39-cp39/bin
 ${PYBIN}/pip install conan
 
 export CONAN_CMD=${PYBIN}/conan
+export CONAN_REVISIONS_ENABLED=1
 
 cd /tket
 
 ${CONAN_CMD} profile new tket --detect
 ${CONAN_CMD} profile update options.tket:shared=True tket
-${CONAN_CMD} create --profile=tket recipes/symengine
+${CONAN_CMD} remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
 # Use header-only version of spdlog:
 # https://github.com/conan-io/conan-docker-tools/issues/303#issuecomment-922492130
 ${CONAN_CMD} create --profile=tket --test-folder=None -o tket:spdlog_ho=True recipes/tket

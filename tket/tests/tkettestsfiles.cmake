@@ -25,16 +25,15 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/CircuitsForTesting.cpp
     ${TKET_TESTS_DIR}/Utils/test_MatrixAnalysis.cpp
     ${TKET_TESTS_DIR}/Utils/test_CosSinDecomposition.cpp
+    ${TKET_TESTS_DIR}/Utils/test_RNG.cpp
     ${TKET_TESTS_DIR}/Graphs/EdgeSequence.cpp
     ${TKET_TESTS_DIR}/Graphs/EdgeSequenceColouringParameters.cpp
     ${TKET_TESTS_DIR}/Graphs/GraphTestingRoutines.cpp
     ${TKET_TESTS_DIR}/Graphs/RandomGraphGeneration.cpp
     ${TKET_TESTS_DIR}/Graphs/RandomPlanarGraphs.cpp
-    ${TKET_TESTS_DIR}/Graphs/RNG.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphColouring.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindComponents.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindMaxClique.cpp
-    ${TKET_TESTS_DIR}/Graphs/test_RNG.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphUtils.cpp
     ${TKET_TESTS_DIR}/Graphs/test_DirectedGraph.cpp
     ${TKET_TESTS_DIR}/Graphs/test_ArticulationPoints.cpp
@@ -51,8 +50,10 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_SwapSequenceTable.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/ArchitectureEdgesReimplementation.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/BestTsaTester.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/DebugFunctions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/DecodedProblemData.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/FullTsaTesting.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/GetRandomSet.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/PartialTsaTesting.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/ProblemGeneration.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/TestStatsStructs.cpp
@@ -61,8 +62,8 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/TokenSwapping/test_BestTsaFixedSwapSequences.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_DistancesFromArchitecture.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_FullTsa.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/test_main_entry_functions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_RiverFlowPathFinder.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/test_SwapsFromQubitMapping.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_SwapList.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_SwapListOptimiser.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_VariousPartialTsa.cpp

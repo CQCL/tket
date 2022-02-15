@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -71,7 +71,7 @@ class TrivialTSA : public PartialTsaInterface {
   virtual void append_partial_solution(
       SwapList& swaps, VertexMapping& vertex_mapping,
       DistancesInterface& distances, NeighboursInterface& /*not_needed*/,
-      PathFinderInterface& path_finder) override;
+      RiverFlowPathFinder& path_finder) override;
 
   /** The same as the standard append_partial_solution interface,
    *  but without needing to pass in a NeighboursInterface.
@@ -83,7 +83,7 @@ class TrivialTSA : public PartialTsaInterface {
    */
   void append_partial_solution(
       SwapList& swaps, VertexMapping& vertex_mapping,
-      DistancesInterface& distances, PathFinderInterface& path_finder);
+      DistancesInterface& distances, RiverFlowPathFinder& path_finder);
 
  private:
   //  NOTE: the reason this is all a bit more complicated (and so, the word
@@ -181,7 +181,7 @@ class TrivialTSA : public PartialTsaInterface {
    */
   void append_partial_solution_with_all_cycles(
       SwapList& swaps, VertexMapping& vertex_mapping,
-      PathFinderInterface& path_finder);
+      RiverFlowPathFinder& path_finder);
 
   /** Perform the single abstract cycle, but breaking off as soon as
    *  the overall total home distance (L) decreases.
@@ -214,7 +214,7 @@ class TrivialTSA : public PartialTsaInterface {
       // L (the sum of the distances to home) must decrease
       // by at least this amount, to break off early.
       SwapList& swaps, VertexMapping& vertex_mapping,
-      DistancesInterface& distances, PathFinderInterface& path_finder);
+      DistancesInterface& distances, RiverFlowPathFinder& path_finder);
 };
 
 }  // namespace tsa_internal

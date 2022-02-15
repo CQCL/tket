@@ -672,6 +672,18 @@ def test_generated_pass_config() -> None:
     # DefaultMappingPass
     dm_pass = DefaultMappingPass(arc)
     assert dm_pass.to_dict()["pass_class"] == "SequencePass"
+    p_pass = dm_pass.get_sequence()[0].get_sequence()[0]
+    r_pass = dm_pass.get_sequence()[0].get_sequence()[1]
+    d_pass = dm_pass.get_sequence()[1]
+    assert d_pass.to_dict()["StandardPass"]["name"] == "DelayMeasures"
+    assert p_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"
+    assert r_pass.to_dict()["StandardPass"]["name"] == "RoutingPass"
+    assert check_arc_dict(arc, r_pass.to_dict()["StandardPass"]["architecture"])
+    assert p_pass.to_dict()["StandardPass"]["placement"]["type"] == "GraphPlacement"
+    # DefaultMappingPass with delay_measures=False
+    dm_pass = DefaultMappingPass(arc, False)
+    assert dm_pass.to_dict()["pass_class"] == "SequencePass"
+    assert len(dm_pass.get_sequence()) == 2
     p_pass = dm_pass.get_sequence()[0]
     r_pass = dm_pass.get_sequence()[1]
     assert p_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"

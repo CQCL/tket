@@ -204,7 +204,7 @@ class SquareGrid : public Architecture {
   unsigned layers;
 };
 
-typedef std::shared_ptr<Architecture> ArchitecturePtr;
+typedef std::shared_ptr<const Architecture> ArchitecturePtr;
 
 int tri_lexicographical_comparison(
     const dist_vec &dist1, const dist_vec &dist2);
