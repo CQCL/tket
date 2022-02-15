@@ -18,10 +18,10 @@
 
 #include "TestStatsStructs.hpp"
 #include "TokenSwapping/DistanceFunctions.hpp"
-#include "TokenSwapping/DistancesFromArchitecture.hpp"
-#include "TokenSwapping/NeighboursFromArchitecture.hpp"
 #include "TokenSwapping/RiverFlowPathFinder.hpp"
 #include "TokenSwapping/VertexSwapResult.hpp"
+#include "TokenSwappingWithArch/DistancesFromArchitecture.hpp"
+#include "TokenSwappingWithArch/NeighboursFromArchitecture.hpp"
 
 using std::vector;
 
