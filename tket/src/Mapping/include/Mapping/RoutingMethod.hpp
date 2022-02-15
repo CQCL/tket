@@ -68,6 +68,6 @@ class RoutingMethod {
   }
 };
 
-typedef std::shared_ptr<RoutingMethod> RoutingMethodPtr;
+typedef std::shared_ptr<const RoutingMethod> RoutingMethodPtr;
 
 }  // namespace tket

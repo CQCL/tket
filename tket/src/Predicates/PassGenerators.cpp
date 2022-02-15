@@ -199,7 +199,7 @@ PassPtr gen_default_mapping_pass(const Architecture& arc) {
 
 PassPtr gen_cx_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
-    const std::vector<std::shared_ptr<RoutingMethod>>& config, bool directed_cx,
+    const std::vector<RoutingMethodPtr>& config, bool directed_cx,
     bool delay_measures) {
   PassPtr rebase_pass = gen_rebase_pass(
       {OpType::CX}, CircPool::CX(), all_single_qubit_types(),

@@ -14,7 +14,6 @@
 
 #include "Mapping/MappingManager.hpp"
 
-#include "OpType/OpTypeFunctions.hpp"
 #include "TokenSwapping/SwapsFromQubitMapping.hpp"
 
 namespace tket {
@@ -32,9 +31,6 @@ bool MappingManager::route_circuit(
 bool MappingManager::route_circuit_with_maps(
     Circuit& circuit, const std::vector<RoutingMethodPtr>& routing_methods,
     std::shared_ptr<unit_bimaps_t> maps) const {
-  // Assumption; Routing can not route a circuit
-  // with more logical qubits than an Architecture has
-  // physical qubits physically permitted
   if (circuit.n_qubits() > this->architecture_->n_nodes()) {
     std::string error_string =
         "Circuit has" + std::to_string(circuit.n_qubits()) +

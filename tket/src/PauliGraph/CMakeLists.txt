@@ -27,7 +27,6 @@ list(APPEND DEPS_${COMP}
     Gate
     Ops
     OpType
-    TokenSwapping
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

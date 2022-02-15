@@ -28,8 +28,6 @@ class MappingManagerError : public std::logic_error {
       : std::logic_error(message) {}
 };
 
-typedef ArchitecturePtr ArchitecturePtr;
-
 class MappingManager {
  public:
   /* Mapping Manager Constructor */
