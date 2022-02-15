@@ -148,7 +148,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
   GIVEN("Correct pass for Predicate") {
     SquareGrid grid(1, 5);
 
-    PassPtr cp_route = gen_default_mapping_pass(grid);
+    PassPtr cp_route = gen_default_mapping_pass(grid, false);
     Circuit circ(5);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {0, 2}, {0, 3}, {1, 2}, {3, 4}});
 
@@ -169,7 +169,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
   GIVEN("Incorrect pass for Predicate logs a warning") {
     SquareGrid grid(2, 3);
 
-    PassPtr cp_route = gen_default_mapping_pass(grid);
+    PassPtr cp_route = gen_default_mapping_pass(grid, false);
     Circuit circ(6);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {0, 5}, {0, 3}, {1, 2}, {3, 4}});
 
@@ -211,7 +211,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
         CompilationUnit::make_type_pair(gsp)};
     CompilationUnit cu(circ, preds);
 
-    PassPtr cp_route = gen_default_mapping_pass(grid);
+    PassPtr cp_route = gen_default_mapping_pass(grid, false);
 
     Circuit cx(2);
     cx.add_op<unsigned>(OpType::CX, {0, 1});
@@ -380,7 +380,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
   GIVEN("Full compilation sequence") {
     SquareGrid grid(1, 5);
     std::vector<PassPtr> passes = {
-        DecomposeBoxes(), RebaseTket(), gen_default_mapping_pass(grid)};
+        DecomposeBoxes(), RebaseTket(), gen_default_mapping_pass(grid, true)};
     REQUIRE_NOTHROW(SequencePass(passes));
   }
 }
@@ -492,7 +492,7 @@ SCENARIO("Track initial and final maps throughout compilation") {
     CompilationUnit cu(circ);
 
     SquareGrid grid(2, 3);
-    PassPtr cp_route = gen_default_mapping_pass(grid);
+    PassPtr cp_route = gen_default_mapping_pass(grid, false);
     cp_route->apply(cu);
     bool ids_updated = true;
     for (auto pair : cu.get_initial_map_ref().left) {

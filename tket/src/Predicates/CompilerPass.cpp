@@ -492,7 +492,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "DefaultMappingPass") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
-      pp = gen_default_mapping_pass(arc);
+      bool delay_measures = content.at("delay_measures").get<bool>();
+      pp = gen_default_mapping_pass(arc, delay_measures);
     } else if (passname == "CXMappingPass") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
