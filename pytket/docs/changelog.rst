@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.19.1 (February 2022)
+----------------------
+
+Fixes:
+
+* Fix regression in ``Circuit.symbol_substitution`` causing incorrect values to
+  be substituted in some cases.
+
 0.19.0 (February 2022)
 ----------------------
 

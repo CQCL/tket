@@ -21,11 +21,6 @@
 
 namespace tket {
 
-static bool approx_0(const Expr &e) {
-  std::optional<double> v = eval_expr(e);
-  return v && (std::abs(v.value()) < EPS);
-}
-
 static Expr atan2_bypi(const Expr &a, const Expr &b) {
   std::optional<double> va = eval_expr(a);
   std::optional<double> vb = eval_expr(b);
