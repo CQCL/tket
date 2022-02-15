@@ -19,7 +19,7 @@
 
 namespace tket {
 
-bool approx_0(const Expr &e, double tol) {
+bool approx_0(const Expr& e, double tol) {
   std::optional<double> v = eval_expr(e);
   return v && (std::abs(v.value()) < tol);
 }

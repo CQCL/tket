@@ -130,7 +130,7 @@ Expr sin_halfpi_times(const Expr& e);
  *
  * @return whether \p e is within \p tol of zero
  */
-bool approx_0(const Expr &e, double tol=EPS);
+bool approx_0(const Expr& e, double tol = EPS);
 
 /**
  * Evaluate modulo n in the range [0,n)
