@@ -223,6 +223,18 @@ def test_symbolic_ops() -> None:
     assert np.allclose(commands[1].op.params, [2.4], atol=1e-10)
 
 
+def test_subst_4() -> None:
+    # https://github.com/CQCL/tket/issues/219
+    m = fresh_symbol("m")
+    c = Circuit(1)
+    a = m / 4
+    c.add_gate(OpType.Rx, a, [0])
+    c.symbol_substitution({m: 4})
+    angle = c.get_commands()[0].op.params[0]
+    print(angle)
+    assert np.isclose(angle, 1.0)
+
+
 def test_sympy_conversion() -> None:
     def get_type_tree(expr: sympy.Expr) -> str:
         # Format e.g. "<class 'sympy.core.numbers.Pi'>" to "Pi"
@@ -386,6 +398,29 @@ def test_boxes() -> None:
     boxes = (cbox, mbox, u2qbox, u3qbox, ebox, pbox, qcbox)
     assert all(box == box for box in boxes)
     assert all(isinstance(box, Op) for box in boxes)
+
+
+def test_u1q_stability() -> None:
+    # https://github.com/CQCL/tket/issues/222
+    u = np.array(
+        [
+            [
+                -1.0000000000000000e00 + 0.0000000000000000e00j,
+                -4.7624091282918654e-10 + 2.0295010872500105e-16j,
+            ],
+            [
+                4.5447577055178555e-10 - 1.4232772405184710e-10j,
+                -9.5429791447115209e-01 + 2.9885697320961047e-01j,
+            ],
+        ]
+    )
+    ubox = Unitary1qBox(u)
+    op = ubox.get_circuit().get_commands()[0].op
+    assert op.type == OpType.TK1
+    a, b, c = op.params
+    assert np.isfinite(a)
+    assert np.isfinite(b)
+    assert np.isfinite(c)
 
 
 def test_custom_gates() -> None:

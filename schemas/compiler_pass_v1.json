@@ -114,24 +114,18 @@
           "type": "string",
           "description": "The name of the compiler pass. Matches the name of the pytket method used to generate it."
         },
-        "basis_multiqs": {
+        "basis_allowed": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "OpTypes of supported multi-qubit gates. Used in \"RebaseCustom\"."
+          "description": "OpTypes of supported gates. Used in \"RebaseCustom\"."
         },
         "basis_cx_replacement": {
           "$ref": "file:///circuit_v1.json#",
           "description": "A circuit implementing a CX gate in a target gate set. Used in \"RebaseCustom\"."
         },
-        "basis_singleqs": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "OpTypes of supported single-qubit gates. Used in \"RebaseCustom\" and \"SquashCustom\"."
-        },
+
         "basis_tk1_replacement": {
           "type": "string",
           "description": "A method for generating optimised single-qubit unitary circuits in a target gate set. This string should be interpreted by Python \"dill\" into a function. Used in \"RebaseCustom\" and \"SquashCustom\"."
@@ -244,9 +238,8 @@
           },
           "then": {
             "required": [
-              "basis_multiqs",
+              "basis_allowed",
               "basis_cx_replacement",
-              "basis_singleqs",
               "basis_tk1_replacement"
             ]
           }

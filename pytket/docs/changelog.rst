@@ -17,10 +17,12 @@ API changes:
   imported from the ``architecture`` module.
 * Methods for mapping logical to physical circuits are now available in the
   ``mapping`` module, with a new API and new functionality.
+* ``RebaseCustom`` takes one allowed gateset parameter rather than separate single qubit and multiqubit gatesets.
 
 Minor new features:
 
 * Add ``delay_measures`` option to ``DefaultMappingPass``.
+* New ``pytket.passes.auto_rebase_pass`` which attempts to construct a rebase pass given a target gate set from known decompositions.
 
 0.19.0 (February 2022)
 ----------------------

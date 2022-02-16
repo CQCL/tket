@@ -16,6 +16,7 @@
 
 #include <memory>
 
+#include "Circuit/CircPool.hpp"
 #include "PassGenerators.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Transformations/BasicOptimisation.hpp"
@@ -354,7 +355,7 @@ const PassPtr &SquashTK1() {
 const PassPtr &SquashHQS() {
   static const PassPtr pp([]() {
     return gen_squash_pass(
-        {OpType::Rz, OpType::PhasedX}, Transforms::tk1_to_PhasedXRz);
+        {OpType::Rz, OpType::PhasedX}, CircPool::tk1_to_PhasedXRz);
   }());
   return pp;
 }
