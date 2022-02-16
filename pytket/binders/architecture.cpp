@@ -28,11 +28,7 @@ using json = nlohmann::json;
 namespace tket {
 
 PYBIND11_MODULE(architecture, m) {
-  py::class_<graphs::AbstractGraph<Node>>(
-      m, "NodeGraph",
-      "Abstract class for describing a device connectivity graph.");
-
-  py::class_<Architecture, ArchitecturePtr, graphs::AbstractGraph<Node>>(
+  py::class_<Architecture, ArchitecturePtr>(
       m, "Architecture",
       "Class describing the connectivity of qubits on a general device.")
       .def(
@@ -44,11 +40,26 @@ PYBIND11_MODULE(architecture, m) {
           "operations",
           py::arg("connections"))
       .def(
-          py::init<const std::vector<std::pair<Node, Node>>>(),
+          py::init<const std::vector<std::pair<Node, Node>> &>(),
           "The constructor for an architecture with connectivity "
           "between qubits.\n\n:param connections: A list of pairs "
           "representing Nodes that can perform two-qubit operations",
           py::arg("connections"))
+      .def(
+          "__repr__",
+          [](const Architecture &arc) {
+            return "<tket::Architecture, nodes=" +
+                   std::to_string(arc.n_nodes()) + ">";
+          })
+      .def(
+          "get_distance", &Architecture::get_distance,
+          "given two nodes in Architecture, "
+          "returns distance between them",
+          py::arg("node_0"), py::arg("node_1"))
+      .def(
+          "get_adjacent_nodes", &Architecture::get_neighbour_nodes,
+          "given a node, returns adjacent nodes in Architecture.",
+          py::arg("node"))
       .def_property_readonly(
           "nodes", &Architecture::get_all_nodes_vec,
           "Returns all nodes of architecture as Node objects.")
@@ -75,18 +86,8 @@ PYBIND11_MODULE(architecture, m) {
             return "<tket::Architecture, nodes=" +
                    std::to_string(arc.n_nodes()) + ">";
           })
-      .def(
-          "get_distance", &Architecture::get_distance,
-          "given two nodes in Architecture, "
-          "returns distance between them",
-          py::arg("node_0"), py::arg("node_1"))
-      .def(
-          "get_adjacent_nodes", &Architecture::get_neighbour_nodes,
-          "given a node, returns adjacent nodes in Architecture.",
-          py::arg("node"))
       .def(py::self == py::self);
-
-  py::class_<SquareGrid, std::shared_ptr<SquareGrid>, Architecture, graphs::AbstractGraph<Node>>(
+  py::class_<SquareGrid, std::shared_ptr<SquareGrid>, Architecture>(
       m, "SquareGrid",
       "Architecture class for qubits arranged in a square lattice of "
       "given number of rows and columns. Qubits are arranged with qubits "
@@ -135,7 +136,7 @@ PYBIND11_MODULE(architecture, m) {
                ", columns=" + std::to_string(arc.get_columns()) +
                ", layers=" + std::to_string(arc.get_layers()) + ">";
       });
-  py::class_<RingArch, std::shared_ptr<RingArch>, Architecture, graphs::AbstractGraph<Node>>(
+  py::class_<RingArch, std::shared_ptr<RingArch>, Architecture>(
       m, "RingArch",
       "Architecture class for number of qubits arranged in a ring.")
       .def(
@@ -146,7 +147,7 @@ PYBIND11_MODULE(architecture, m) {
       .def("__repr__", [](const RingArch &arc) {
         return "<tket::RingArch, nodes=" + std::to_string(arc.n_nodes()) + ">";
       });
-  py::class_<FullyConnected, std::shared_ptr<FullyConnected>, graphs::AbstractGraph<Node>>(
+  py::class_<FullyConnected>(
       m, "FullyConnected",
       "An architecture with full connectivity between qubits.")
       .def(
