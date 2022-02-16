@@ -400,7 +400,7 @@ def test_boxes() -> None:
     assert all(isinstance(box, Op) for box in boxes)
 
 
-def test_u1q_stability():
+def test_u1q_stability() -> None:
     # https://github.com/CQCL/tket/issues/222
     u = np.array(
         [
