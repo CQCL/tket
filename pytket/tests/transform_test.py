@@ -31,7 +31,7 @@ from pytket.passes import (  # type: ignore
     CXMappingPass,
 )
 from pytket.predicates import CompilationUnit, NoMidMeasurePredicate  # type: ignore
-from pytket.passes.auto_rebase import _CX_CIRCS, NoAutoRebase 
+from pytket.passes.auto_rebase import _CX_CIRCS, NoAutoRebase
 from pytket.transform import Transform, CXConfigType, PauliSynthStrat  # type: ignore
 from pytket.qasm import circuit_from_qasm
 from pytket.architecture import Architecture  # type: ignore
@@ -952,6 +952,8 @@ def test_CXMappingPass_terminates() -> None:
     p = CXMappingPass(arc, placer, directed_cx=False, delay_measures=False)
     res = p.apply(c)
     assert res
+
+
 def test_auto_rebase() -> None:
     pass_params = [
         ({OpType.CX, OpType.Rz, OpType.Rx}, _library._CX(), _library._TK1_to_RzRx),
