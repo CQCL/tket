@@ -54,7 +54,9 @@ add_library(tket-${COMP}
 
 list(APPEND DEPS_${COMP}
     Architecture
+    Circuit
     Graphs
+    Ops
     OpType
     Utils)
 
