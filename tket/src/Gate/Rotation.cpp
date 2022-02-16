@@ -442,6 +442,9 @@ std::vector<double> tk1_angles_from_unitary(const Eigen::Matrix2cd &U) {
   } else {  // general case
     // s0^2 + z0^2 - x0^2 - y0^2 = cos(pi b)
     double t = s0 * s0 + z0 * z0 - x0 * x0 - y0 * y0;
+    // Rounding errors may mean t is outside the domain of acos. Fix this.
+    if (t > +1.) t = +1.;
+    if (t < -1.) t = -1.;
     b = std::acos(t) / PI;
 
     // w.l.o.g. b is in the range (-1,+1).
