@@ -229,7 +229,7 @@ PassPtr gen_routing_pass(
   Transform t = Transform(trans);
 
   PredicatePtr twoqbpred = std::make_shared<MaxTwoQubitGatesPredicate>();
-  // PredicatePtr placedpred = std::make_shared<PlacementPredicate>(arc);
+  PredicatePtr placedpred = std::make_shared<PlacementPredicate>(arc);
   PredicatePtr n_qubit_pred =
       std::make_shared<MaxNQubitsPredicate>(arc.n_nodes());
   PredicatePtrMap precons{
