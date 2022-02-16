@@ -13,8 +13,9 @@
 # limitations under the License.
 
 """
-The `tailoring` module provides an API to interact with tket's charcterisation suite,
-with methods for noise shaping, characterisation and mitigation.
+The circuit module provides an API to interact with the tket
+:py:class:`Characterisation` suite, with methods for noise shaping, characterisation and
+mitigation. This module is provided in binary form during the PyPI installation.
 """
 
 from pytket._tket.tailoring import *  # type: ignore
