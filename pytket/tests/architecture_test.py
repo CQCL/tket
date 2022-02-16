@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from pytket.circuit import Node
-from pytket.architecture import NodeGraph, Architecture, SquareGrid, FullyConnected
+from pytket.architecture import Architecture, SquareGrid, FullyConnected
 
 
 def test_architectures() -> None:
@@ -72,13 +72,10 @@ def test_fully_connected() -> None:
 def test_arch_types() -> None:
     arch = Architecture([(0, 1)])
     assert isinstance(arch, Architecture)
-    assert isinstance(arch, NodeGraph)
     fc = FullyConnected(2)
     assert isinstance(fc, FullyConnected)
-    assert isinstance(fc, NodeGraph)
     sg = SquareGrid(2, 2, 2)
     assert isinstance(sg, SquareGrid)
-    assert isinstance(sg, NodeGraph)
 
 if __name__ == "__main__":
     test_architectures()
