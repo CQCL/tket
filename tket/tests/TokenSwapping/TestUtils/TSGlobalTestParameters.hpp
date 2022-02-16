@@ -14,26 +14,24 @@
 
 #pragma once
 
-#include <map>
-#include <tuple>
-#include <utility>
-#include <vector>
-
-#include "Architecture/Architecture.hpp"
-
 namespace tket {
+namespace tsa_internal {
+namespace tests {
 
-/** This specifies desired source->target vertex mappings.
- *  Any nodes not occurring as a key might be moved by the algorithm.
+/** If we want to use the same adjustable parameters across all
+ * TokenSwapping tests simultaneously, put them here.
  */
-typedef std::map<Node, Node> NodeMapping;
+struct TSGlobalTestParameters {
+  /** Running all the token swapping tests can take ~30 seconds
+   * on an ordinary laptop. Set this to false in order to test
+   * a smaller set.
+   */
+  bool run_long_tests;
 
-/** Version 1.1, not too bad.
- *  @param architecture The raw object containing the graph.
- *  @param node_mapping The desired source->target node mapping.
- *  @return The required list of node pairs to swap.
- */
-std::vector<std::pair<Node, Node>> get_swaps(
-    const Architecture& architecture, const NodeMapping& node_mapping);
+  // TSGlobalTestParameters() : run_long_tests(true) {}
+  TSGlobalTestParameters() : run_long_tests(false) {}
+};
 
+}  // namespace tests
+}  // namespace tsa_internal
 }  // namespace tket

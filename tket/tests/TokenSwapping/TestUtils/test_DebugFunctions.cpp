@@ -12,25 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "DistancesInterface.hpp"
+#include <catch2/catch.hpp>
+
+#include "DebugFunctions.hpp"
 
 using std::vector;
 
 namespace tket {
+namespace tsa_internal {
+namespace tests {
 
-void DistancesInterface::register_shortest_path(
-    const vector<size_t>& /*path*/) {}
+SCENARIO("debug functions - string functions") {
+  const VertexMapping vm{{0, 1}, {1, 2}, {3, 5}};
+  CHECK(str(vm) == "VM: 0->1  1->2  3->5 ");
 
-void DistancesInterface::register_neighbours(
-    size_t vertex, const vector<size_t>& neighbours) {
-  for (size_t nv : neighbours) {
-    register_edge(vertex, nv);
+  vector<Swap> swaps_vect;
+  swaps_vect.push_back(get_swap(111, 222));
+  swaps_vect.push_back(get_swap(5555, 4444));
+  const auto swaps_vect_str = str(swaps_vect);
+  CHECK(swaps_vect_str == " (111,222)  (4444,5555) ");
+
+  SwapList swaps;
+  for (const auto& swap : swaps_vect) {
+    swaps.push_back(swap);
   }
+  CHECK(swaps_vect_str == str(swaps));
 }
 
-void DistancesInterface::register_edge(size_t /*vertex1*/, size_t /*vertex2*/) {
-}
-
-DistancesInterface::~DistancesInterface() {}
-
+}  // namespace tests
+}  // namespace tsa_internal
 }  // namespace tket

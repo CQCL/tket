@@ -490,8 +490,7 @@ OverwriteIntervalResult VectorListHybrid<T>::overwrite_interval(
         m_links_data.next(result.final_overwritten_element_id);
   }
   // Should be impossible to reach here
-  TKET_ASSERT(!"VectorListHybrid::overwrite_interval");
-  return result;
+  TKET_ASSERT(false);
 }
 
 template <class T>

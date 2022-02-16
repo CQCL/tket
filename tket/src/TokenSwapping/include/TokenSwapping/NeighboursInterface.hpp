@@ -18,7 +18,6 @@
 #include <vector>
 
 namespace tket {
-namespace tsa_internal {
 
 /** What are the adjacent vertices to a given vertex on a graph?
  *  For larger, sparse graphs, it might
@@ -42,5 +41,4 @@ class NeighboursInterface {
   virtual ~NeighboursInterface();
 };
 
-}  // namespace tsa_internal
 }  // namespace tket

@@ -14,8 +14,6 @@
 
 #include "TokenSwapping/BestFullTsa.hpp"
 
-#include "TokenSwapping/DistancesFromArchitecture.hpp"
-#include "TokenSwapping/NeighboursFromArchitecture.hpp"
 #include "TokenSwapping/RiverFlowPathFinder.hpp"
 #include "TokenSwapping/VertexMapResizing.hpp"
 
@@ -24,17 +22,6 @@ namespace tket {
 using namespace tsa_internal;
 
 BestFullTsa::BestFullTsa() { m_name = "BestFullTsa"; }
-
-void BestFullTsa::append_partial_solution(
-    SwapList& swaps, VertexMapping& vertex_mapping,
-    const ArchitectureMapping& arch_mapping) {
-  DistancesFromArchitecture distances(arch_mapping);
-  NeighboursFromArchitecture neighbours(arch_mapping);
-  RiverFlowPathFinder path_finder(distances, neighbours, m_rng);
-  m_rng.set_seed();
-  append_partial_solution(
-      swaps, vertex_mapping, distances, neighbours, path_finder);
-}
 
 void BestFullTsa::append_partial_solution(
     SwapList& swaps, VertexMapping& vertex_mapping,

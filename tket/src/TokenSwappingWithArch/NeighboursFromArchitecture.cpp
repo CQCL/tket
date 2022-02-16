@@ -19,7 +19,6 @@
 #include <stdexcept>
 
 namespace tket {
-namespace tsa_internal {
 
 NeighboursFromArchitecture::NeighboursFromArchitecture(
     const ArchitectureMapping& arch_mapping)
@@ -66,5 +65,4 @@ const std::vector<size_t>& NeighboursFromArchitecture::operator()(
   return neighbours;
 }
 
-}  // namespace tsa_internal
 }  // namespace tket
