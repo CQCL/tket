@@ -14,41 +14,22 @@
 
 project(tket-${COMP})
 
-if (NOT ${COMP} STREQUAL "TokenSwapping")
+if (NOT ${COMP} STREQUAL "TokenSwappingWithArch")
     message(FATAL_ERROR "Unexpected component name.")
 endif()
 
 add_library(tket-${COMP}
-    BestFullTsa.cpp
-    CyclesCandidateManager.cpp
-    CyclesGrowthManager.cpp
-    CyclesPartialTsa.cpp
-    CyclicShiftCostEstimate.cpp
-    DistancesInterface.cpp
-    DynamicTokenTracker.cpp
-    HybridTsa.cpp
-    NeighboursInterface.cpp
-    PartialTsaInterface.cpp
-    RiverFlowPathFinder.cpp
-    SwapListOptimiser.cpp
-    TrivialTSA.cpp
-    VectorListHybridSkeleton.cpp
-    TSAUtils/DistanceFunctions.cpp
-    TSAUtils/SwapFunctions.cpp
-    TSAUtils/VertexMappingFunctions.cpp
-    TSAUtils/VertexSwapResult.cpp
-    TableLookup/CanonicalRelabelling.cpp
-    TableLookup/ExactMappingLookup.cpp
-    TableLookup/FilteredSwapSequences.cpp
-    TableLookup/PartialMappingLookup.cpp
-    TableLookup/SwapConversion.cpp
-    TableLookup/SwapListSegmentOptimiser.cpp
-    TableLookup/SwapListTableOptimiser.cpp
-    TableLookup/SwapSequenceTable.cpp
-    TableLookup/VertexMapResizing.cpp
+    ArchitectureMapping.cpp
+    BestTsaWithArch.cpp
+    DistancesFromArchitecture.cpp
+    NeighboursFromArchitecture.cpp
     )
 
 list(APPEND DEPS_${COMP}
+    Architecture
+    Graphs
+    OpType
+    TokenSwapping
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

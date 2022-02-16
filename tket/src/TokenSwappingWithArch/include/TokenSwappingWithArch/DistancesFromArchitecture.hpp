@@ -15,11 +15,10 @@
 #pragma once
 
 #include "ArchitectureMapping.hpp"
-#include "DistancesInterface.hpp"
-#include "SwapFunctions.hpp"
+#include "TokenSwapping/DistancesInterface.hpp"
+#include "TokenSwapping/SwapFunctions.hpp"
 
 namespace tket {
-namespace tsa_internal {
 
 /** Directly get distances from an architecture object,
  *  but evaluated lazily.
@@ -84,5 +83,4 @@ class DistancesFromArchitecture : public DistancesInterface {
       const std::vector<size_t>& path, size_t begin, size_t end);
 };
 
-}  // namespace tsa_internal
 }  // namespace tket

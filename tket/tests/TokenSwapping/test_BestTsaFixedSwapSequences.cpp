@@ -17,11 +17,8 @@
 #include "Data/FixedCompleteSolutions.hpp"
 #include "Data/FixedSwapSequences.hpp"
 #include "TestUtils/BestTsaTester.hpp"
+#include "TestUtils/TSGlobalTestParameters.hpp"
 
-// NOTE: currently, the tests in this file (solving ~2300 complete problems
-// with the BestTSA, which includes full table lookup)
-// take ~25 seconds on an ordinary Windows laptop.
-//
 /// TODO: The swap table optimiser currently tries to optimise many segments;
 /// certainly it could be cut down, experimentation is needed
 /// to find how much to cut it down, without degrading solution
@@ -154,28 +151,56 @@ struct Summary {
 }  // namespace
 
 SCENARIO("Best TSA : solve problems from fixed swap sequences") {
-  const FixedSwapSequences sequences;
-  BestTsaTester tester;
+  FixedSwapSequences sequences;
 
-  const Summary full_seqs_summary(sequences.full, tester);
-  CHECK(full_seqs_summary.total_number_of_problems == 453);
-  CHECK(
-      full_seqs_summary.str ==
+  CHECK(sequences.full.size() == 453);
+  std::string full_seq_str =
       "[248 equal (6088); 104 BETTER (4645 vs 4979): av 7% decr\n"
-      "101 WORSE (5893 vs 5451): av 8% incr]");
+      "101 WORSE (5893 vs 5451): av 8% incr]";
 
   // The fixed swap sequences have been optimised quite a lot already,
-  // so are probably quite close to optimal.
-  full_seqs_summary.check_overall_improvement(-0.653832);
+  // so are probably quite close to optimal (although we cannot know
+  // for sure without an exhaustive search; there is probably no known
+  // non-exponential time algorithm to find the optimal solution).
+  // So, (probably) getting within 1% of the optimal answer seems pretty good.
+  double full_seq_improvement = -0.653832;
+
+  CHECK(sequences.partial.size() == 755);
+  std::string partial_seq_str =
+      "[455 equal (6487); 165 BETTER (7044 vs 7457): av 7% decr\n"
+      "135 WORSE (9124 vs 8604): av 6% incr]";
+  double partial_seq_improvement = -0.474543;
+
+  BestTsaTester tester;
+
+  if (!TSGlobalTestParameters().run_long_tests) {
+    // The "long" tests take ~6 seconds on an ordinary 2021 Windows laptop.
+    // The reduced tests take ~50 milliseconds
+    // (and are also biased towards smaller problems,
+    // as the problem strings are sorted by length).
+    sequences.full.resize(40);
+    full_seq_str =
+        "[40 equal (231); 0 BETTER (0 vs 0): av 0% decr\n"
+        "0 WORSE (0 vs 0): av 0% incr]";
+    full_seq_improvement = 0;
+
+    sequences.partial.resize(40);
+    partial_seq_str =
+        "[40 equal (166); 0 BETTER (0 vs 0): av 0% decr\n"
+        "0 WORSE (0 vs 0): av 0% incr]";
+    partial_seq_improvement = 0;
+  }
+  const Summary full_seqs_summary(sequences.full, tester);
+  CHECK(full_seqs_summary.total_number_of_problems == sequences.full.size());
+  CHECK(full_seqs_summary.str == full_seq_str);
+  full_seqs_summary.check_overall_improvement(full_seq_improvement);
 
   const Summary partial_seqs_summary(sequences.partial, tester);
-  CHECK(partial_seqs_summary.total_number_of_problems == 755);
   CHECK(
-      partial_seqs_summary.str ==
-      "[455 equal (6487); 165 BETTER (7044 vs 7457): av 7% decr\n"
-      "135 WORSE (9124 vs 8604): av 6% incr]");
-
-  partial_seqs_summary.check_overall_improvement(-0.474543);
+      partial_seqs_summary.total_number_of_problems ==
+      sequences.partial.size());
+  CHECK(partial_seqs_summary.str == partial_seq_str);
+  partial_seqs_summary.check_overall_improvement(partial_seq_improvement);
 }
 
 // Now we want to solve complete problems; this is one of
@@ -261,13 +286,23 @@ class StatisticsGrouper {
 }  // namespace
 
 SCENARIO("Best TSA : solve complete problems") {
-  const FixedCompleteSolutions complete_solutions;
+  FixedCompleteSolutions complete_solutions;
+
+  // It's a map, with key the architecture name; this is the number
+  // of architectures, not problems.
+  CHECK(complete_solutions.solutions.size() == 21);
+  vector<unsigned> sizes;
+  for (const auto& entry : complete_solutions.solutions) {
+    sizes.push_back(entry.second.size());
+  }
+  CHECK(sizes == vector<unsigned>{49, 97, 49,  49, 97, 93, 45, 45, 45, 39, 41,
+                                  49, 39, 100, 48, 28, 22, 27, 49, 49, 38});
 
   // For a good test, very different problems should not be amalgamated
   // in the statistics. Thus we determine the different categories using length
   // of encoding string, which presumably roughly corresponds to "problem size"
   // and problem hardness.
-  const vector<std::string> expected_messages{
+  vector<std::string> expected_messages{
       "[210 equal (1018); 19 BETTER (84 vs 111): av 24% decr\n"
       "2 WORSE (19 vs 15): av 26% incr]",
 
@@ -282,6 +317,38 @@ SCENARIO("Best TSA : solve complete problems") {
 
       "[8 equal (1470); 164 BETTER (25183 vs 27141): av 6% decr\n"
       "44 WORSE (8722 vs 8384): av 3% incr]"};
+
+  double expected_improvement = 3.25087;
+
+  if (!TSGlobalTestParameters().run_long_tests) {
+    // The "long" tests take ~12 seconds on an ordinary 2021 Windows laptop.
+    // The reduced tests take ~700 milliseconds.
+    for (auto& entry : complete_solutions.solutions) {
+      auto reduced_size = entry.second.size() / 10;
+      if (reduced_size < 4) {
+        reduced_size = 4;
+      }
+      if (reduced_size < entry.second.size()) {
+        entry.second.resize(reduced_size);
+      }
+    }
+    expected_messages = vector<std::string>{
+        "[18 equal (62); 0 BETTER (0 vs 0): av 0% decr\n"
+        "0 WORSE (0 vs 0): av 0% incr]",
+
+        "[17 equal (82); 0 BETTER (0 vs 0): av 0% decr\n"
+        "0 WORSE (0 vs 0): av 0% incr]",
+
+        "[12 equal (119); 2 BETTER (15 vs 18): av 16% decr\n"
+        "0 WORSE (0 vs 0): av 0% incr]",
+
+        "[6 equal (149); 6 BETTER (164 vs 173): av 5% decr\n"
+        "4 WORSE (115 vs 110): av 5% incr]",
+
+        "[4 equal (163); 10 BETTER (535 vs 571): av 5% decr\n"
+        "5 WORSE (288 vs 273): av 5% incr]"};
+    expected_improvement = 1.62791;
+  }
 
   vector<unsigned> problem_sizes;
   for (const auto& entry : complete_solutions.solutions) {
@@ -311,7 +378,7 @@ SCENARIO("Best TSA : solve complete problems") {
   }
   // A positive result is good; the fixed complete problems are DIRECTLY
   // comparing our TSA with the solver used to generate them.
-  grouper.check_overall_improvement(3.25087);
+  grouper.check_overall_improvement(expected_improvement);
 }
 
 }  // namespace tests
