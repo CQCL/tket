@@ -14,13 +14,13 @@
 
 #include <catch2/catch.hpp>
 
-#include "Mapping/MappingManager.hpp"
 #include "Mapping/LexiRoute.hpp"
+#include "Mapping/MappingManager.hpp"
 #include "Mapping/Verification.hpp"
 #include "Placement/Placement.hpp"
 #include "testutil.hpp"
 
-namespace tket{
+namespace tket {
 SCENARIO(
     "Test validity of circuit against architecture using "
     "respects_connectivity_constraints method.",
@@ -34,7 +34,8 @@ SCENARIO(
     LinePlacement lp_obj(test_arc);
     lp_obj.place(circ);
     MappingManager mm(std::make_shared<Architecture>(test_arc));
-    REQUIRE(mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(
+        mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
     CHECK(respects_connectivity_constraints(circ, test_arc, false));
   }
   GIVEN("A failing case, undirected") {
@@ -110,4 +111,4 @@ SCENARIO(
     REQUIRE(respects_connectivity_constraints(circ, arc, false));
   }
 }
-} // namespace tket
+}  // namespace tket

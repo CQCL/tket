@@ -1005,7 +1005,7 @@
       "type": "object",
       "description": "A method used during circuit mapping.",
       "properties": {
-        "name": {
+        "name_of_method": {
           "type": "string",
           "description": "String identifying method and whether it can be serialized."
         },

@@ -18,13 +18,13 @@
 
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Circuit/Circuit.hpp"
+#include "Mapping/LexiRoute.hpp"
+#include "Mapping/MappingManager.hpp"
+#include "Mapping/Verification.hpp"
 #include "OpType/OpType.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/Predicates.hpp"
-#include "Mapping/MappingManager.hpp"
-#include "Mapping/LexiRoute.hpp"
-#include "Mapping/Verification.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/BasicOptimisation.hpp"
@@ -192,7 +192,8 @@ SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
   GIVEN("A routed network of SWAP gates.") {
     SquareGrid grid(2, 5);
     MappingManager mm(std::make_shared<Architecture>(grid));
-    REQUIRE(mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(
+        mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
     Transforms::decompose_SWAP_to_CX().apply(circ);
     REQUIRE(respects_connectivity_constraints(circ, grid, false, true));
     GIVEN("Directed CX gates") {
@@ -277,15 +278,14 @@ SCENARIO("Test redirect_CX_gates pass", "[routing]") {
       }
     }
     MappingManager mm(std::make_shared<Architecture>(grid));
-    REQUIRE(mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(
+        mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
     Transforms::decompose_BRIDGE_to_CX().apply(circ);
     Transforms::decompose_SWAP_to_CX(arc).apply(circ);
     Transforms::decompose_CX_directed(grid).apply(circ);
     REQUIRE(respects_connectivity_constraints(circ, grid, true));
   }
 }
-
-
 
 SCENARIO("Routing preserves the number of qubits") {
   std::vector<std::pair<Node, Node>> cons;
@@ -348,8 +348,9 @@ SCENARIO(
          {0, 3}});
     Architecture arc({{1, 0}, {0, 2}, {1, 2}, {2, 3}, {2, 4}, {4, 3}});
     MappingManager mm(std::make_shared<Architecture>(arc));
-    REQUIRE(mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
-    
+    REQUIRE(
+        mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+
     Transform T_1 = Transforms::decompose_SWAP_to_CX();
     T_1.apply(circ);
     REQUIRE(circ.count_gates(OpType::SWAP) == 0);
