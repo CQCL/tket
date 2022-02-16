@@ -18,8 +18,8 @@
 #include <pybind11/stl.h>
 #include <pybind11/stl_bind.h>
 
-#include "Mapping/LexiLabelling.hpp"
 #include "Circuit/Circuit.hpp"
+#include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
 #include "Mapping/RoutingMethodCircuit.hpp"

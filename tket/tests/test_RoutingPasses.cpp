@@ -18,8 +18,8 @@
 
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Circuit/Circuit.hpp"
-#include "Mapping/LexiRoute.hpp"
 #include "Mapping/LexiLabelling.hpp"
+#include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
 #include "Mapping/Verification.hpp"
 #include "OpType/OpType.hpp"
@@ -360,20 +360,20 @@ SCENARIO(
   GIVEN(
       "A circuit that requires modification to satisfy architecture "
       "constraints.") {
-    Architecture sg({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
+    Architecture arc({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
     Circuit circ(5, 1);
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {1, 2}, {1, 3}, {1, 4}, {0, 1}});
 
-    MappingManager mm(std::make_shared<Architecture>(sg));
+    MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
         circ, {std::make_shared<LexiLabellingMethod>(),
                std::make_shared<LexiRouteRoutingMethod>()}));
 
     Transforms::decompose_SWAP_to_CX().apply(circ);
-    REQUIRE(respects_connectivity_constraints(circ, sg, false, false));
+    REQUIRE(respects_connectivity_constraints(circ, arc, false, true));
     Transforms::decompose_BRIDGE_to_CX().apply(circ);
-    REQUIRE(respects_connectivity_constraints(circ, sg, false, false));
+    REQUIRE(respects_connectivity_constraints(circ, arc, false, false));
     Command classical_com = circ.get_commands()[0];
     REQUIRE(classical_com.get_args()[0] == circ.all_bits()[0]);
   }
