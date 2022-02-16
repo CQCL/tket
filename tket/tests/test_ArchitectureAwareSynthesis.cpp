@@ -17,11 +17,11 @@
 #include "Architecture/Architecture.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
-#include "testutil.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "testutil.hpp"
 
-namespace tket{
+namespace tket {
 using Connection = Architecture::Connection;
 SCENARIO("Routing of aas example") {
   GIVEN("aas routing - simple example") {
@@ -369,4 +369,4 @@ SCENARIO("Routing of aas example") {
     REQUIRE(test_unitary_comparison(circ, result));
   }
 }
-} //namespace tket
+}  // namespace tket
