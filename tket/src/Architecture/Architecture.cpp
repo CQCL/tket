@@ -18,6 +18,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "Circuit/Conditional.hpp"
 #include "Graphs/ArticulationPoints.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/UnitID.hpp"
@@ -27,14 +28,12 @@ namespace tket {
 // basic implementation that works off same prior assumptions
 // TODO: Update this for more mature systems of multi-qubit gates
 bool Architecture::valid_operation(
-
-
     const Op_ptr& op, const std::vector<Node>& uids) const {
   if (op->get_desc().is_box() ||
       (op->get_type() == OpType::Conditional &&
-       static_cast<const Conditional&>(*op).get_op()->get_desc().is_box()))
+       static_cast<const Conditional&>(*op).get_op()->get_desc().is_box())) {
     return false;
-    }
+  }
   if (uids.size() == 1) {
     // with current Architecture can assume all single qubit gates valid
     return true;
@@ -45,7 +44,7 @@ bool Architecture::valid_operation(
         this->bidirectional_edge_exists(uids[0], uids[1])) {
       return true;
     }
-  } else if (uids.size() == 3 && optype == OpType::BRIDGE) {
+  } else if (uids.size() == 3 && op->get_type() == OpType::BRIDGE) {
     bool con_0_exists = this->bidirectional_edge_exists(uids[0], uids[1]);
     bool con_1_exists = this->bidirectional_edge_exists(uids[2], uids[1]);
     if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&

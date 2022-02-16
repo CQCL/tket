@@ -26,8 +26,10 @@ add_library(tket-${COMP}
     )
 
 list(APPEND DEPS_${COMP}
+    Circuit
     Architecture
     Graphs
+    Ops
     OpType
     TokenSwapping
     Utils)
