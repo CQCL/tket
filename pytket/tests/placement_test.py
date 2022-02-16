@@ -13,17 +13,20 @@
 # limitations under the License.
 
 from pathlib import Path
-from pytket import Circuit
-from pytket.circuit import Node, Qubit
-from pytket.architecture import Architecture
-from pytket.placement import (
+from pytket import Circuit  # type: ignore
+from pytket.circuit import Node, Qubit  # type: ignore
+from pytket.architecture import Architecture  # type: ignore
+from pytket.placement import (  # type: ignore
     Placement,
     LinePlacement,
     GraphPlacement,
     NoiseAwarePlacement,
     place_with_map,
 )
-from pytket.mapping import MappingManager, LexiRouteRoutingMethod
+from pytket.passes import PauliSimp, DefaultMappingPass  # type: ignore
+from pytket.mapping import MappingManager, LexiRouteRoutingMethod  # type: ignore
+from pytket.qasm import circuit_from_qasm  # type: ignore
+
 import json
 
 
@@ -166,8 +169,83 @@ def test_convert_index_mapping() -> None:
     assert c0 != c1
 
 
+def test_place_with_map_twice() -> None:
+    # TKET-671
+    c = Circuit(6).CX(0, 1).CX(2, 3).CX(4, 3).CX(2, 4).CX(3, 5).CX(0, 5)
+
+    index_map = {0: 1, 1: 2, 2: 0, 3: 4, 4: 3}
+    uid_map = {Qubit(i): Node(j) for i, j in index_map.items()}
+    c_qbs = c.qubits
+    assert uid_map[c_qbs[0]] == Node(1)
+    assert uid_map[c_qbs[1]] == Node(2)
+    assert uid_map[c_qbs[2]] == Node(0)
+    assert uid_map[c_qbs[3]] == Node(4)
+    assert uid_map[c_qbs[4]] == Node(3)
+
+    assert all(qb.reg_name == "q" for qb in c.qubits)
+    place_with_map(c, uid_map)
+    assert all(qb.reg_name in ["node", "unplaced"] for qb in c.qubits)
+    place_with_map(c, uid_map)
+    assert all(qb.reg_name == "unplaced" for qb in c.qubits)
+
+
+def test_big_placement() -> None:
+    # TKET-1275
+    c = circuit_from_qasm(
+        Path(__file__).resolve().parent / "qasm_test_files" / "test14.qasm"
+    )
+    arc = Architecture(
+        [
+            [0, 1],
+            [0, 14],
+            [1, 0],
+            [1, 2],
+            [1, 13],
+            [2, 1],
+            [2, 3],
+            [2, 12],
+            [3, 2],
+            [3, 4],
+            [3, 11],
+            [4, 3],
+            [4, 5],
+            [4, 10],
+            [5, 4],
+            [5, 6],
+            [5, 9],
+            [6, 5],
+            [6, 8],
+            [7, 8],
+            [8, 6],
+            [8, 7],
+            [8, 9],
+            [9, 5],
+            [9, 8],
+            [9, 10],
+            [10, 4],
+            [10, 9],
+            [10, 11],
+            [11, 3],
+            [11, 10],
+            [11, 12],
+            [12, 2],
+            [12, 11],
+            [12, 13],
+            [13, 1],
+            [13, 12],
+            [13, 14],
+            [14, 0],
+            [14, 13],
+        ]
+    )
+    assert PauliSimp().apply(c)
+    assert DefaultMappingPass(arc).apply(c)
+
+
 if __name__ == "__main__":
     test_placements()
     test_placements_serialization()
     test_placement_config()
     test_convert_index_mapping()
+    test_place_with_map_twice()
+    test_big_placement()

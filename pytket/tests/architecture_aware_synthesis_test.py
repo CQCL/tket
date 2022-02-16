@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket.circuit import Circuit  # type: ignore
+from pytket.circuit import Circuit, OpType  # type: ignore
 from pytket.architecture import Architecture  # type: ignore
 from pytket.passes import AASRouting, CNotSynthType  # type: ignore
 from pytket.predicates import CompilationUnit  # type: ignore
@@ -191,6 +191,17 @@ def test_AAS_15() -> None:
     assert out_circ.depth() == 3
 
 
+def test_noncontiguous_arc_phase_poly() -> None:
+    # testing non-contiguous ascending named nodes
+    arc = Architecture([[0, 2]])
+    pass1 = AASRouting(arc, lookahead=1)
+    c = Circuit(2).H(0).H(1)
+    pass1.apply(c)
+    assert c.n_gates_of_type(OpType.H) == 2
+    assert c.n_gates_of_type(OpType.CX) == 0
+    assert c.n_gates_of_type(OpType.CX) == 0
+
+
 if __name__ == "__main__":
     test_AAS()
     test_AAS_2()
@@ -207,3 +218,4 @@ if __name__ == "__main__":
     test_AAS_13()
     test_AAS_14()
     test_AAS_15()
+    test_noncontiguous_arc_phase_poly()
