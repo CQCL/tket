@@ -14,11 +14,9 @@
 
 #pragma once
 
-#include "ArchitectureMapping.hpp"
 #include "HybridTsa.hpp"
 #include "SwapListOptimiser.hpp"
 #include "SwapListTableOptimiser.hpp"
-#include "Utils/RNG.hpp"
 
 namespace tket {
 
@@ -30,20 +28,6 @@ namespace tket {
 class BestFullTsa : public tsa_internal::PartialTsaInterface {
  public:
   BestFullTsa();
-
-  /** The main entry function. Given the desired vertex mapping, a list
-   * of swaps (which may or may not be empty), and information about
-   * the architecture (the underlying graph), append extra swaps to it
-   * to produce the desired mapping.
-   *  @param swaps The list of swaps to append to.
-   *  @param vertex_mapping The current desired mapping. Will be updated with
-   * the new added swaps.
-   *  @param arch_mapping An ArchitectureMapping object, which knows the graph,
-   * and how to do Node <-> vertex size_t conversions.
-   */
-  void append_partial_solution(
-      SwapList& swaps, VertexMapping& vertex_mapping,
-      const ArchitectureMapping& arch_mapping);
 
   /** We emphasise that, unlike the general PartialTsaInterface, the solution
    * returned is complete, AND includes all known swap list optimisations.
@@ -61,15 +45,13 @@ class BestFullTsa : public tsa_internal::PartialTsaInterface {
    */
   virtual void append_partial_solution(
       SwapList& swaps, VertexMapping& vertex_mapping,
-      tsa_internal::DistancesInterface& distances,
-      tsa_internal::NeighboursInterface& neighbours,
+      DistancesInterface& distances, NeighboursInterface& neighbours,
       tsa_internal::RiverFlowPathFinder& path_finder) override;
 
  private:
   tsa_internal::HybridTsa m_hybrid_tsa;
   tsa_internal::SwapListOptimiser m_swap_list_optimiser;
   tsa_internal::SwapListTableOptimiser m_table_optimiser;
-  RNG m_rng;
 };
 
 }  // namespace tket

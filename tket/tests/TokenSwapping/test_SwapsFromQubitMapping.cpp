@@ -15,7 +15,7 @@
 #include <catch2/catch.hpp>
 #include <sstream>
 
-#include "TokenSwapping/SwapsFromQubitMapping.hpp"
+#include "TokenSwappingWithArch/BestTsaWithArch.hpp"
 #include "Utils/RNG.hpp"
 
 using std::vector;
@@ -54,7 +54,7 @@ SCENARIO("get_swaps : swaps returned directly from architecture") {
   const auto node_final_positions = nodes_copy;
 
   problem_ss << " Node mapping:";
-  NodeMapping node_mapping;
+  BestTsaWithArch::NodeMapping node_mapping;
   for (size_t ii = 0; ii < nodes.size(); ++ii) {
     problem_ss << "\ni=" << ii << " : " << node_final_positions[ii].repr()
                << " -> " << nodes[ii].repr();
@@ -89,7 +89,7 @@ SCENARIO("get_swaps : swaps returned directly from architecture") {
       "i=23 : gridNode[2, 3, 1] -> gridNode[2, 3, 1]");
 
   // Calculate swaps to enact the permutation.
-  const auto node_swaps = get_swaps(arch, node_mapping);
+  const auto node_swaps = BestTsaWithArch::get_swaps(arch, node_mapping);
 
   // This will hopefully decrease over time
   // as we improve the algorithm.

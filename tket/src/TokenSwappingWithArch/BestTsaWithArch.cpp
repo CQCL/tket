@@ -12,20 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "TokenSwapping/SwapsFromQubitMapping.hpp"
+#include "BestTsaWithArch.hpp"
 
-#include <sstream>
-#include <stdexcept>
-
+#include "DistancesFromArchitecture.hpp"
+#include "NeighboursFromArchitecture.hpp"
 #include "TokenSwapping/BestFullTsa.hpp"
-#include "TokenSwapping/VertexMappingFunctions.hpp"
 #include "Utils/Assert.hpp"
+#include "Utils/RNG.hpp"
 
 namespace tket {
 
 using namespace tsa_internal;
 
-std::vector<std::pair<Node, Node>> get_swaps(
+void BestTsaWithArch::append_solution(
+    SwapList& swaps, VertexMapping& vertex_mapping,
+    const ArchitectureMapping& arch_mapping) {
+  DistancesFromArchitecture distances(arch_mapping);
+  NeighboursFromArchitecture neighbours(arch_mapping);
+  RNG rng;
+  RiverFlowPathFinder path_finder(distances, neighbours, rng);
+  BestFullTsa().append_partial_solution(
+      swaps, vertex_mapping, distances, neighbours, path_finder);
+}
+
+std::vector<std::pair<Node, Node>> BestTsaWithArch::get_swaps(
     const Architecture& architecture, const NodeMapping& node_mapping) {
   std::vector<std::pair<Node, Node>> swaps;
   // Before all the conversion and object construction,
@@ -51,8 +61,7 @@ std::vector<std::pair<Node, Node>> get_swaps(
   check_mapping(vertex_mapping);
 
   SwapList raw_swap_list;
-  BestFullTsa().append_partial_solution(
-      raw_swap_list, vertex_mapping, arch_mapping);
+  BestTsaWithArch::append_solution(raw_swap_list, vertex_mapping, arch_mapping);
 
   // Finally, convert the raw swaps back to nodes.
   swaps.reserve(raw_swap_list.size());

@@ -16,9 +16,9 @@
 
 #include <catch2/catch.hpp>
 
-#include "TokenSwapping/ArchitectureMapping.hpp"
 #include "TokenSwapping/VertexMappingFunctions.hpp"
 #include "TokenSwapping/VertexSwapResult.hpp"
+#include "TokenSwappingWithArch/BestTsaWithArch.hpp"
 
 using std::vector;
 
@@ -80,8 +80,6 @@ struct VertexRelabellingManager {
 };
 }  // namespace
 
-BestFullTsa& BestTsaTester::get_best_full_tsa() { return m_best_full_tsa; }
-
 size_t BestTsaTester::get_checked_solution_size(
     const DecodedProblemData& problem_data) {
   m_architecture_work_data.edges.clear();
@@ -133,7 +131,8 @@ size_t BestTsaTester::get_checked_solution_size(
   m_vertex_mapping_copy =
       relabelling_manager.get_internal_mapping_for_tsa_input(
           problem_data.vertex_mapping);
-  m_best_full_tsa.append_partial_solution(
+
+  BestTsaWithArch::append_solution(
       m_raw_swap_list, m_vertex_mapping_copy, arch_mapping);
 
   // Now check the calculated solution.

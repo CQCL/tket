@@ -15,9 +15,9 @@
 #include <catch2/catch.hpp>
 #include <sstream>
 
-#include "TokenSwapping/ArchitectureMapping.hpp"
-#include "TokenSwapping/DistancesFromArchitecture.hpp"
-#include "TokenSwapping/NeighboursFromArchitecture.hpp"
+#include "TokenSwappingWithArch/ArchitectureMapping.hpp"
+#include "TokenSwappingWithArch/DistancesFromArchitecture.hpp"
+#include "TokenSwappingWithArch/NeighboursFromArchitecture.hpp"
 
 using std::vector;
 
