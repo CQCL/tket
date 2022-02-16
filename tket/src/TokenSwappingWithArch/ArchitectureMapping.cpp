@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@
 #include "Utils/Assert.hpp"
 
 namespace tket {
-namespace tsa_internal {
 
 ArchitectureMapping::ArchitectureMapping(const Architecture& arch)
     : m_arch(arch) {
@@ -131,5 +130,4 @@ std::vector<Swap> ArchitectureMapping::get_edges() const {
   return edges;
 }
 
-}  // namespace tsa_internal
 }  // namespace tket

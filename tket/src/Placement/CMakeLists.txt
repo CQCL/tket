@@ -29,10 +29,9 @@ list(APPEND DEPS_${COMP}
     Characterisation
     Circuit
     Gate
-    Graphs    
+    Graphs
     Ops
     OpType
-    TokenSwapping
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

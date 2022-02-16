@@ -31,11 +31,10 @@ list(APPEND DEPS_${COMP}
     Circuit
     Clifford
     Diagonalisation
-    Gate    
+    Gate
     Ops
     OpType
     PauliGraph
-    TokenSwapping
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

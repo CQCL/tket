@@ -1,3 +1,16 @@
+// Copyright 2019-2022 Cambridge Quantum Computing
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 #include <catch2/catch.hpp>
 
 #include "Mapping/LexiRoute.hpp"
@@ -147,7 +160,7 @@ SCENARIO("Reorder circuits") {
     // Physically invalid operations
     circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[2]});
     // Physically valid operations
-    circ.add_op<UnitID>(OpType::CCX, {qubits[1], qubits[2], qubits[3]});
+    circ.add_op<UnitID>(OpType::BRIDGE, {qubits[1], qubits[2], qubits[3]});
     circ.add_op<UnitID>(OpType::Rx, 0.5, {qubits[3]});
     circ.add_op<UnitID>(OpType::CX, {qubits[2], qubits[3]});
     circ.add_op<UnitID>(OpType::Rz, 0.5, {qubits[0]});

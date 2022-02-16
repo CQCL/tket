@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 using std::vector;
 
 namespace tket {
-namespace tsa_internal {
 
 void DistancesInterface::register_shortest_path(
     const vector<size_t>& /*path*/) {}
@@ -34,5 +33,4 @@ void DistancesInterface::register_edge(size_t /*vertex1*/, size_t /*vertex2*/) {
 
 DistancesInterface::~DistancesInterface() {}
 
-}  // namespace tsa_internal
 }  // namespace tket

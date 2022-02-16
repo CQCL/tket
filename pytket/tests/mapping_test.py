@@ -15,7 +15,8 @@
 from pytket.mapping import MappingManager, RoutingMethodCircuit, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
 from pytket.architecture import Architecture  # type: ignore
 from pytket import Circuit, OpType
-from pytket.circuit import Node  # type: ignore
+from pytket.circuit import Node, Qubit  # type: ignore
+from pytket.placement import Placement
 from typing import Tuple, Dict
 
 
@@ -35,12 +36,11 @@ def route_subcircuit_func(
     relabelling_map = dict()
 
     for qb in circuit.qubits:
-        for n in unused_nodes:
-            if n == qb:
-                unused_nodes.remove(n)
+        if qb in unused_nodes:
+            unused_nodes.remove(qb)
 
     for qb in circuit.qubits:
-        if qb not in set(architecture.nodes):
+        if qb not in architecture.nodes:
             relabelling_map[qb] = unused_nodes.pop()
         else:
             #           this is so later architecture.get_distance works
@@ -65,9 +65,6 @@ def route_subcircuit_func(
             replacement_circuit.add_gate(com.op.type, rp_qubits)
         if len(com.qubits) == 2:
             if swaps_added < max_swaps:
-                #               get node references for some stupid reason...
-                #               theres some stupid casting issue
-                #               just passing qubits didnt work.. whatever
                 for n in architecture.nodes:
                     if n == rp_qubits[0]:
                         n0 = n
@@ -88,7 +85,7 @@ def route_subcircuit_func(
                             rp_qubits = [
                                 permutation_map[relabelling_map[q]] for q in com.qubits
                             ]
-                            swaps_added = swaps_added + 1
+                            swaps_added += 1
                             break
 
             replacement_circuit.add_gate(com.op.type, rp_qubits)
@@ -197,7 +194,30 @@ def test_RoutingMethodCircuit_custom_list() -> None:
     assert routed_commands[4].qubits == [nodes[1], nodes[2]]
 
 
+def test_basic_mapping() -> None:
+    circ = Circuit(5)
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
+    circ.CX(0, 1)
+    circ.CX(0, 3)
+    circ.CX(2, 4)
+    circ.CX(1, 4)
+    circ.CX(0, 4)
+
+    init_map = dict()
+    init_map[Qubit(0)] = Node(0)
+    init_map[Qubit(1)] = Node(1)
+    init_map[Qubit(2)] = Node(2)
+    init_map[Qubit(3)] = Node(3)
+    init_map[Qubit(4)] = Node(4)
+    pl = Placement(arc)
+    pl.place_with_map(circ, init_map)
+    MappingManager(arc).route_circuit(circ, [LexiRouteRoutingMethod(50)])
+    assert circ.valid_connectivity(arc, False)
+    assert len(circ.get_commands()) == 10
+
+
 if __name__ == "__main__":
     test_LexiRouteRoutingMethod()
     test_RoutingMethodCircuit_custom()
     test_RoutingMethodCircuit_custom_list()
+    test_basic_mapping()

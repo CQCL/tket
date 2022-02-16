@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -53,20 +53,6 @@ class CyclesPartialTsa : public PartialTsaInterface {
  public:
   CyclesPartialTsa();
 
-  /** Access the options of the inner stored object, to change behaviour.
-   *  TODO: do many experiments, to find the best possible parameters.
-   *  Then, set them as defaults and possibly remove this function.
-   *  @return Options controlling behaviour of cycle growing.
-   */
-  CyclesGrowthManager::Options& growth_options();
-
-  /** Access the options of the inner stored object, to change behaviour.
-   *  TODO: do many experiments, to find the best possible parameters.
-   *  @return Options controlling the filtering and selection of candidate
-   *    cycles to convert to swaps.
-   */
-  CyclesCandidateManager::Options& candidate_options();
-
   /** Calculate a solution to improve the current token configuarion,
    *  add the swaps to the list, and carry out the swaps on "vertex_mapping".
    *  We don't need a path finder because the cycles are built up one vertex
@@ -87,7 +73,7 @@ class CyclesPartialTsa : public PartialTsaInterface {
   virtual void append_partial_solution(
       SwapList& swaps, VertexMapping& vertex_mapping,
       DistancesInterface& distances, NeighboursInterface& neighbours,
-      PathFinderInterface& path_finder) override;
+      RiverFlowPathFinder& path_finder) override;
 
  private:
   /** Stores cycles, and controls the growth and discarding of cycles.

@@ -51,7 +51,8 @@ std::vector<RoutingMethodPtr> object */
 PassPtr gen_full_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
     const std::vector<RoutingMethodPtr>& config);
-PassPtr gen_default_mapping_pass(const Architecture& arc);
+PassPtr gen_default_mapping_pass(
+    const Architecture& arc, bool delay_measures = true);
 PassPtr gen_cx_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
     const std::vector<RoutingMethodPtr>& config, bool directed_cx,

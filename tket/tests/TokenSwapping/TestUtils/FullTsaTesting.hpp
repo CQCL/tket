@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include "TokenSwapping/ArchitectureMapping.hpp"
 #include "TokenSwapping/PartialTsaInterface.hpp"
-#include "TokenSwapping/RNG.hpp"
 #include "TokenSwapping/SwapListOptimiser.hpp"
+#include "TokenSwappingWithArch/ArchitectureMapping.hpp"
+#include "Utils/RNG.hpp"
 
 namespace tket {
 namespace tsa_internal {

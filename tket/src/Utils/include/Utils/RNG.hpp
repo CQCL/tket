@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,9 +38,7 @@ namespace tket {
 // even for something as simple as a uniform distribution.
 // The same applies to, e.g., std::random_shuffle.
 
-/**
- * TODO: move this, once decided where (I would prefer Utils).
- * A random number generator class.
+/** A random number generator class.
  * Of course, this is only for random test data generation,
  * definitely NOT suitable for any kind of cryptography!
  * Note that there are no functions involving doubles anywhere!
@@ -74,12 +72,9 @@ class RNG {
   size_t get_size_t(size_t min_value, size_t max_value);
 
   /**
-   * I believe that the behaviour on the Mersenne twister random engine
-   * is guaranteed by the C++ standard, although I'm not 100% sure
-   * (but it seems to work in tests).
-   * The standard specifies 5489u as the default initial seed, so it would
-   * be rather pointless to do that if the bits generated
-   * were still implementation-dependent.
+   * The behaviour of the RAW BITS of the Mersenne twister random engine
+   * is guaranteed by the C++ standard.
+   * The standard specifies 5489u as the default initial seed.
    * @param seed A seed value, to alter the RNG state.
    *    By default, uses the value specified by the standard.
    */

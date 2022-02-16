@@ -514,9 +514,8 @@ PYBIND11_MODULE(passes, m) {
       "of an :py:class:`Architecture`. Edge direction is ignored."
       "\n\n:param arc: The architecture to use for connectivity information. "
       "\n:param placer: The Placement used for relabelling."
-      "\n:param config: Parameters for routing, a "
-      " list of RoutingMethod, each method is checked"
-      " and run if applicable in turn."
+      "\n:param config: Parameters for routing, a list of RoutingMethod, each "
+      "method is checked and run if applicable in turn."
       "\n:return: a pass to perform the remapping",
       py::arg("arc"), py::arg("placer"), py::arg("config"));
 
@@ -529,8 +528,10 @@ PYBIND11_MODULE(passes, m) {
       "Placement used "
       "is GraphPlacement."
       "\n\n:param arc: The Architecture used for connectivity information."
+      "\n:param delay_measures: Whether to commute measurements to the end "
+      "of the circuit, defaulting to true."
       "\n:return: a pass to perform the remapping",
-      py::arg("arc"));
+      py::arg("arc"), py::arg("delay_measures") = true);
 
   m.def(
       "AASRouting", &gen_default_aas_routing_pass,

@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 #include <stdexcept>
 
 namespace tket {
-namespace tsa_internal {
 
 DistancesFromArchitecture::DistancesFromArchitecture(
     const ArchitectureMapping& arch_mapping)
@@ -88,5 +87,4 @@ size_t DistancesFromArchitecture::operator()(size_t vertex1, size_t vertex2) {
   return distance_entry;
 }
 
-}  // namespace tsa_internal
 }  // namespace tket

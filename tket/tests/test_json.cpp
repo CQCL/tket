@@ -702,11 +702,12 @@ SCENARIO("Test compiler pass serializations") {
     Circuit circ = CircuitsForTesting::get().uccsd;
     CompilationUnit cu{circ};
     CompilationUnit copy = cu;
-    PassPtr pp = gen_default_mapping_pass(arc);
+    PassPtr pp = gen_default_mapping_pass(arc, true);
     nlohmann::json j_pp;
     j_pp["pass_class"] = "StandardPass";
     j_pp["StandardPass"]["name"] = "DefaultMappingPass";
     j_pp["StandardPass"]["architecture"] = arc;
+    j_pp["StandardPass"]["delay_measures"] = true;
     PassPtr loaded = j_pp.get<PassPtr>();
     pp->apply(cu);
     loaded->apply(copy);

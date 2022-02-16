@@ -18,6 +18,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "Circuit/Conditional.hpp"
 #include "Graphs/ArticulationPoints.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/UnitID.hpp"
@@ -30,26 +31,22 @@ bool Architecture::valid_operation(
     const Op_ptr& op, const std::vector<Node>& uids) const {
   if (op->get_desc().is_box() ||
       (op->get_type() == OpType::Conditional &&
-       static_cast<const Conditional&>(*op).get_op()->get_desc().is_box()))
+       static_cast<const Conditional&>(*op).get_op()->get_desc().is_box())) {
     return false;
-
-  if (uids.size() ==
-      1) {  // TODO: for simple case here this should probably not pass if
-            // node_exists[uids[0]] == FALSE, but should be fine for now?
+  }
+  if (uids.size() == 1) {
+    // with current Architecture can assume all single qubit gates valid
+    return true;
+  } else if (op->get_type() == OpType::Barrier) {
     return true;
   } else if (uids.size() == 2) {
     if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
-        (this->edge_exists(uids[0], uids[1]) ||
-         this->edge_exists(uids[1], uids[0]))) {
+        this->bidirectional_edge_exists(uids[0], uids[1])) {
       return true;
     }
-  } else if (uids.size() == 3) {
-    bool con_0_exists =
-        (this->edge_exists(uids[0], uids[1]) ||
-         this->edge_exists(uids[1], uids[0]));
-    bool con_1_exists =
-        (this->edge_exists(uids[2], uids[1]) ||
-         this->edge_exists(uids[1], uids[2]));
+  } else if (uids.size() == 3 && op->get_type() == OpType::BRIDGE) {
+    bool con_0_exists = this->bidirectional_edge_exists(uids[0], uids[1]);
+    bool con_1_exists = this->bidirectional_edge_exists(uids[2], uids[1]);
     if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
         this->node_exists(uids[2]) && con_0_exists && con_1_exists) {
       return true;

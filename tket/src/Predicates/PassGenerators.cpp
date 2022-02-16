@@ -192,16 +192,20 @@ PassPtr gen_full_mapping_pass(
   return gen_placement_pass(placement_ptr) >> gen_routing_pass(arc, config);
 }
 
-PassPtr gen_default_mapping_pass(const Architecture& arc) {
-  return gen_full_mapping_pass(
+PassPtr gen_default_mapping_pass(const Architecture& arc, bool delay_measures) {
+  PassPtr return_pass = gen_full_mapping_pass(
       arc, std::make_shared<GraphPlacement>(arc),
       {std::make_shared<LexiLabellingMethod>(),
        std::make_shared<LexiRouteRoutingMethod>(100)});
+  if (delay_measures) {
+    return_pass = return_pass >> DelayMeasures();
+  }
+  return return_pass;
 }
 
 PassPtr gen_cx_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
-    const std::vector<std::shared_ptr<RoutingMethod>>& config, bool directed_cx,
+    const std::vector<RoutingMethodPtr>& config, bool directed_cx,
     bool delay_measures) {
   PassPtr rebase_pass = gen_rebase_pass(
       {OpType::CX}, CircPool::CX(), all_single_qubit_types(),

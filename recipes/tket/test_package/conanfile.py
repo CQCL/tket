@@ -13,9 +13,6 @@
 # limitations under the License.
 
 import os
-from shutil import copyfile
-import platform
-
 from conans import ConanFile, CMake, tools
 
 
@@ -29,18 +26,7 @@ class TketTestConan(ConanFile):
         cmake.configure()
         cmake.build()
 
-    def imports(self):
-        self.copy("*", src="@bindirs", dst="bin")
-        self.copy("*", src="@libdirs", dst="lib")
-
     def test(self):
         if not tools.cross_building(self):
-            lib_files = os.listdir(os.path.join(self.install_folder, "lib"))
-            for lib_file in lib_files:
-                if "tket" in lib_file:
-                    copyfile(
-                        os.path.join(self.install_folder, "lib", lib_file),
-                        os.path.join("bin", lib_file),
-                    )
-            os.chdir("bin")
-            self.run(os.path.join(os.curdir, "test"))
+            bin_path = os.path.join("bin", "test")
+            self.run(bin_path, run_environment=True)

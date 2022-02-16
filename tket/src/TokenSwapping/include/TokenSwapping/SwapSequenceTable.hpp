@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -32,21 +32,26 @@ namespace tsa_internal {
  * with <= 6 vertices. Due to time/space limitations some non-complete graphs
  * were searched as well as complete graphs K4, K5, K6.
  *
- * Of course, ideally we'd search K6 up to depth 16, but searching up to depth 9
+ * Note that, by token tracking, any swap sequence of n vertices of length
+ * > n(n-1)/2 can be reduced in length, so in fact any optimal swap sequence
+ * on n vertices has length <= n(n-1)/2, the number of edges in
+ * the complete graph K(n).
+ *
+ * Of course, ideally we'd search K6 up to depth 15, but searching up to depth 9
  * already consumed ~30 mins of CPU time and most of the memory capacity of an
  * ordinary laptop. More efficient exhaustive search algorithms with clever
  * pruning might cut it down a bit, but (since each added depth increases the
  * difficulty roughly by a factor of 14) it would require significant
- * computational effort to reach even depth 12 for K6, and depth 16 probably
- * requires a supercomputer, or a very large distributed computation).
+ * computational effort to reach even depth 12 for K6, and depth 15 probably
+ * requires a supercomputer, or a very large distributed computation,
+ * or significantly more intelligent methods).
  *
  * The table size is far smaller than the precomputation needed to create it.
  * The creation considered millions of sequences, but the table has only a few
  * thousand entries.
  *
- * The table currently contains all swap sequences of length:
- *     <= 12 on 4 vertices (K4, depth 12);
- *     <= 10 on 5 vertices (K5, depth 10);
+ * The table currently contains ALL optimal swap sequences on <= 5 vertices,
+ * and also all swap sequences of length:
  *     <= 9 on 6 vertices (K6, depth 9);
  *     <= 12 on cycles with <= 6 vertices (C5, C6);
  *     <= 12 on a few other special graphs with 6 vertices.
@@ -81,7 +86,7 @@ namespace tsa_internal {
  * and the third has the form [ab cb ab] == [ca].) It seems like we'd need a
  * scheme involving integer hashing of graphs, with few isomorphic collisions,
  * but such algoritms need to be pretty simple and fast or they're not worth
- * doing except for much larger table sizes).
+ * doing except for much larger table sizes.
  */
 struct SwapSequenceTable {
   /** The integer type used to encode a swap sequence on vertices {0,1,2,3,4,5}.

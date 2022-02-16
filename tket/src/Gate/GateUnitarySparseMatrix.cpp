@@ -159,7 +159,7 @@ std::vector<TripletCd> GateUnitarySparseMatrix::get_unitary_triplets(
       ss << "Converting " << gate.get_name()
          << " to sparse unitary, via adding controls to gate type "
          << desc.name() << ": " << e.what();
-      throw GateUnitaryMatrixError(ss.str(), e.cause);
+      TKET_ASSERT_WITH_MESSAGE(false, ss.str());
       // GCOVR_EXCL_STOP
     }
   }

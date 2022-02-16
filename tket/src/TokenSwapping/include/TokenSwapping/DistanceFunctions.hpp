@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -65,24 +65,6 @@ int get_move_decrease(
 int get_swap_decrease(
     const VertexMapping& vertex_mapping, size_t v1, size_t v2,
     DistancesInterface& distances);
-
-/** A simple theoretical lower bound on the number of swaps necessary
- *  to achieve a given vertex mapping. (Of course it is not always possible
- *  to achieve this bound. But the algorithm in the 2016 paper
- *  "Approximation and Hardness of Token Swapping", for example, guarantees
- *  to find a solution within a factor of 4, or a factor of 2 for trees,
- *  in the case where every vertex has a token).
- *  TODO: What happens if some vertices are empty? Not considered in the 2016
- *  paper! Need to think about it. This is still a lower bound, but how close?
- *  @param vertex_mapping current source->target mapping.
- *  @param distances An object to calculate distances between vertices.
- *  @return A number S such that every possible solution has >= S swaps.
- *    However, note that the true minimum value might be larger, but finding
- *    the value seems about as hard as finding an actual solution, and thus
- *    is possibly exponentially hard (seems to be unknown, even for trees).
- */
-size_t get_swaps_lower_bound(
-    const VertexMapping& vertex_mapping, DistancesInterface& distances);
 
 }  // namespace tsa_internal
 }  // namespace tket

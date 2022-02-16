@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 #include <stdexcept>
 
 #include "CyclicShiftCostEstimate.hpp"
-#include "TokenSwapping/DebugFunctions.hpp"
 #include "TokenSwapping/DistanceFunctions.hpp"
 #include "TokenSwapping/GeneralFunctions.hpp"
 #include "TokenSwapping/VertexSwapResult.hpp"
@@ -158,13 +157,13 @@ void TrivialTSA::fill_disjoint_abstract_cycles(
 void TrivialTSA::append_partial_solution(
     SwapList& swaps, VertexMapping& vertex_mapping,
     DistancesInterface& distances, NeighboursInterface& /*not needed*/,
-    PathFinderInterface& path_finder) {
+    RiverFlowPathFinder& path_finder) {
   append_partial_solution(swaps, vertex_mapping, distances, path_finder);
 }
 
 void TrivialTSA::append_partial_solution(
     SwapList& swaps, VertexMapping& vertex_mapping,
-    DistancesInterface& distances, PathFinderInterface& path_finder) {
+    DistancesInterface& distances, RiverFlowPathFinder& path_finder) {
   if (all_tokens_home(vertex_mapping)) {
     return;
   }
@@ -231,7 +230,7 @@ void TrivialTSA::copy_vertices_to_work_vector(const Endpoints& endpoints) {
 
 void TrivialTSA::append_partial_solution_with_all_cycles(
     SwapList& swaps, VertexMapping& vertex_mapping,
-    PathFinderInterface& path_finder) {
+    RiverFlowPathFinder& path_finder) {
   for (const auto& endpoints : m_cycle_endpoints) {
     copy_vertices_to_work_vector(endpoints);
     if (m_vertices_work_vector.size() < 2) {
@@ -255,7 +254,7 @@ void TrivialTSA::append_partial_solution_with_all_cycles(
 size_t TrivialTSA::append_partial_solution_with_single_cycle(
     const Endpoints& endpoints, size_t start_v_index, SwapList& swaps,
     VertexMapping& vertex_mapping, DistancesInterface& distances,
-    PathFinderInterface& path_finder) {
+    RiverFlowPathFinder& path_finder) {
   copy_vertices_to_work_vector(endpoints);
   TKET_ASSERT(m_vertices_work_vector.size() >= 2);
   TKET_ASSERT(start_v_index < m_vertices_work_vector.size());

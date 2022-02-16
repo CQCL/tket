@@ -39,6 +39,8 @@ jobs:
   build_macos_wheels:
     name: Build macos wheels
     runs-on: macos-11
+    env:
+      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v2
       with:
@@ -65,8 +67,8 @@ jobs:
         pip install conan
         conan profile new tket --detect --force
         conan profile update options.tket:shared=True tket
+        conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
         conan install --profile=tket boost/1.78.0@ --build=missing
-        conan create --profile=tket recipes/symengine
         conan create --profile=tket recipes/tket
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
@@ -98,6 +100,8 @@ jobs:
   build_macos_M1_wheels:
     name: Build macos (M1) wheels
     runs-on: [self-hosted, macos, M1]
+    env:
+      CONAN_REVISIONS_ENABLED: 1
     defaults:
       run:
         shell: "/usr/bin/arch -arch arm64e /bin/bash {0}"
@@ -112,8 +116,8 @@ jobs:
         pyenv shell tket-3.8
         conan profile new tket --detect --force
         conan profile update options.tket:shared=True tket
+        conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
         conan install --profile=tket boost/1.78.0@ --build=missing
-        conan create --profile=tket recipes/symengine
         conan create --profile=tket recipes/tket
         conan create --profile=tket recipes/pybind11
         .github/workflows/build_macos_m1_wheel
@@ -129,6 +133,8 @@ jobs:
   build_Windows_wheels:
     name: Build Windows wheels
     runs-on: windows-2019
+    env:
+      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v2
       with:
@@ -160,14 +166,14 @@ jobs:
         conan profile update options.tket:shared=True tket
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
+    - name: add remote
+      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
     - name: Cache tket build
       id: cache-tket
       uses: actions/cache@v2
       with:
         path: C:\Users\runneradmin\.conan\data\tket
         key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-8
-    - name: Build symengine
-      run: conan create --profile=tket recipes/symengine
     - name: Build tket
       if: steps.cache-tket.outputs.cache-hit != 'true'
       run: conan create --profile=tket recipes/tket

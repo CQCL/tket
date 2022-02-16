@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -48,16 +48,6 @@ int get_swap_decrease(
     DistancesInterface& distances) {
   return get_move_decrease(vertex_mapping, v1, v2, distances) +
          get_move_decrease(vertex_mapping, v2, v1, distances);
-}
-
-size_t get_swaps_lower_bound(
-    const VertexMapping& vertex_mapping,
-    DistancesInterface& distances_calculator) {
-  // Each swap decreases the sum by at most 2 (and more likely 1 in many cases,
-  // if the mapping is sparse), so we need  >= sum/2. But it's an integer of
-  // course.
-  return (get_total_home_distances(vertex_mapping, distances_calculator) + 1) /
-         2;
 }
 
 }  // namespace tsa_internal

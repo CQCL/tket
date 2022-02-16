@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@
 #include <stdexcept>
 
 namespace tket {
-namespace tsa_internal {
 
 NeighboursFromArchitecture::NeighboursFromArchitecture(
     const ArchitectureMapping& arch_mapping)
@@ -66,5 +65,4 @@ const std::vector<size_t>& NeighboursFromArchitecture::operator()(
   return neighbours;
 }
 
-}  // namespace tsa_internal
 }  // namespace tket

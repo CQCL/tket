@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 #include <array>
 #include <limits>
 
-#include "TokenSwapping/DebugFunctions.hpp"
 #include "Utils/Assert.hpp"
 
 namespace tket {
@@ -74,7 +73,7 @@ static bool erase_empty_swaps_interval(
     }
   }
   // Should never get here!
-  TKET_ASSERT(!"erase_empty_swaps_interval falied to terminate");
+  TKET_ASSERT(!"erase_empty_swaps_interval failed to terminate");
   return false;
 }
 

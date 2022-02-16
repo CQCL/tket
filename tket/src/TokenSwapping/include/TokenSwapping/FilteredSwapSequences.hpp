@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,6 +24,29 @@ namespace tsa_internal {
 
 /** Takes a raw list of integers, where each integer represents a swap sequence
  * on the vertices {0,1,2,...,5} giving the same vertex permutation.
+ *
+ * NOTE: the magic number 5 (or 6) arises because we originally constructed
+ * the table by exhaustively constructing swap sequences on graphs with up to
+ * 6 vertices, up to a certain length. [Results were also merged together,
+ * e.g. the cycle C_6, or with a few extra edges added, can be searched
+ * in reasonable time to a longer length than K_6].
+ * This was chosen because the complete graph K_6 has 15 edges,
+ * so conveniently each edge (or swap) can be represented by a number 1-15,
+ * and thus by a single hexadecimal digit.
+ * Thus, 4 bits are needed for each swap, so a 64-bit integer can represent
+ * swap sequences of length <= 16 (with 0 denoting the end of sequence).
+ * [Although, the table currently has entries only of length <= 12].
+ * [Actually, it is not hard to prove - by considering "token tracking" -
+ * that optimal swap sequences on <= N vertices have
+ * length <= N(N-1)/2, the same as the number of edges of K_N. Thus length
+ * <= 15 already suffices to represent all possible optimal sequences
+ * on <= 6 vertices].
+ * If we used 5 bits, we'd be able to represent sequences of length <= 12
+ * (because 5*12 = 60 < 64) on graphs with <= 8 vertices (since
+ * 8*7/2 = 28 < 31).
+ * If we expand the table in future, we will probably design a whole new
+ * format, so we don't attempt to make it more generic at this stage.
+ *
  * Given such data, FilteredSwapSequences knows how to index and store it
  * somehow (exactly how is an implementation detail - it can be thought of
  * as a "database of swap sequences"),
@@ -47,7 +70,7 @@ class FilteredSwapSequences {
   struct SingleSequenceData {
     /** The edges (i.e., swaps) actually used (or 0 if none are used). [This
      * could be computed from swaps_code but there is no need to recompute each
-     * time. */
+     * time]. */
     SwapConversion::EdgesBitset edges_bitset;
 
     /** An integer encoding a sequence of swaps. 0 means no swaps. */

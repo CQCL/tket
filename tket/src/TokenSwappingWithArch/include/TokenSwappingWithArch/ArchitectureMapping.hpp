@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 #include "TokenSwapping/SwapFunctions.hpp"
 
 namespace tket {
-namespace tsa_internal {
 
 /** For mapping between nodes in an architecture and size_t vertex numbers.
  *  The vertex numbers are merely the indices of each Node
@@ -105,5 +104,4 @@ class ArchitectureMapping {
   std::map<Node, size_t> m_node_to_vertex_mapping;
 };
 
-}  // namespace tsa_internal
 }  // namespace tket

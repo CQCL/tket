@@ -10,6 +10,17 @@ API changes:
   ``map`` property instead.)
 * The deprecated ``Backend.compile_circuit`` method is removed. (Use
   ``get_compiled_circuit`` instead.)
+* The ``routing`` module is removed.
+* ``Placement``, ``LinePlacement``, ``GraphPlacement`` and ``NoiseAwarePlacement`` 
+  are now imported from the ``placement`` module.
+* ``Architecture``, ``SquareGrid``, ``RingArch`` and ``FullyConnected`` are now 
+  imported from the ``architecture`` module.
+* Methods for mapping logical to physical circuits are now available in the
+  ``mapping`` module, with a new API and new functionality.
+
+Minor new features:
+
+* Add ``delay_measures`` option to ``DefaultMappingPass``.
 
 0.19.0 (February 2022)
 ----------------------
