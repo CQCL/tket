@@ -63,7 +63,7 @@ class RoutingMethod {
 
   virtual nlohmann::json serialize() const {
     nlohmann::json j;
-    j["name"] = "RoutingMethod";
+    j["name_of_method"] = "RoutingMethod";
     return j;
   }
 };
