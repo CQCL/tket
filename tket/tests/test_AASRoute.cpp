@@ -62,7 +62,7 @@ SCENARIO("Test aas route in RV3") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
 
-    AASRouteRoutingMethod aasrm(aas::CNotSynthType::Rec, 1);
+    AASRouteRoutingMethod aasrm(1, aas::CNotSynthType::Rec);
 
     REQUIRE(!aasrm.check_method(mf, shared_arc));
   }
@@ -92,7 +92,7 @@ SCENARIO("Test aas route in RV3") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
 
-    AASRouteRoutingMethod aasrm(aas::CNotSynthType::Rec, 1);
+    AASRouteRoutingMethod aasrm(1, aas::CNotSynthType::Rec);
 
     REQUIRE(aasrm.check_method(mf, shared_arc));
   }
@@ -120,7 +120,7 @@ SCENARIO("Test aas route in RV3") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
 
-    AASRouteRoutingMethod aasrm(aas::CNotSynthType::Rec, 1);
+    AASRouteRoutingMethod aasrm(1, aas::CNotSynthType::Rec);
 
     REQUIRE(!aasrm.check_method(mf, shared_arc));
   }
@@ -189,7 +189,7 @@ SCENARIO("Test aas route in RV3") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
 
-    AASRouteRoutingMethod aasrm(aas::CNotSynthType::Rec, 1);
+    AASRouteRoutingMethod aasrm(1, aas::CNotSynthType::Rec);
 
     REQUIRE(aasrm.check_method(mf, shared_arc_mixed));
     aasrm.routing_method(mf, shared_arc_mixed);
@@ -271,7 +271,7 @@ SCENARIO("Test aas route in RV3") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
 
-    AASRouteRoutingMethod aasrm(aas::CNotSynthType::Rec, 1);
+    AASRouteRoutingMethod aasrm(1, aas::CNotSynthType::Rec);
 
     REQUIRE(aasrm.check_method(mf, shared_arc_mixed));
     aasrm.routing_method(mf, shared_arc_mixed);
@@ -312,7 +312,7 @@ SCENARIO("Test aas route in RV3") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
 
-    AASRouteRoutingMethod aasrm(aas::CNotSynthType::Rec, 1);
+    AASRouteRoutingMethod aasrm(1, aas::CNotSynthType::Rec);
 
     REQUIRE(aasrm.check_method(mf, shared_arc));
 
@@ -358,7 +358,7 @@ SCENARIO("Test aas route in RV3") {
     MappingManager mm(shared_arc_mixed);
 
     std::vector<RoutingMethodPtr> vrm = {
-        std::make_shared<AASRouteRoutingMethod>(aas::CNotSynthType::Rec, 1),
+        std::make_shared<AASRouteRoutingMethod>(1, aas::CNotSynthType::Rec),
         std::make_shared<LexiRouteRoutingMethod>(100),
     };
 
@@ -416,10 +416,10 @@ SCENARIO("Test aas route in RV3") {
 
     MappingManager mm(shared_arc_mixed);
 
-    // AASRouteRoutingMethod aasrm(aas::CNotSynthType::Rec, 1);
+    // AASRouteRoutingMethod aasrm(1);
 
     std::vector<RoutingMethodPtr> vrm = {
-        std::make_shared<AASRouteRoutingMethod>(aas::CNotSynthType::Rec, 1),
+        std::make_shared<AASRouteRoutingMethod>(1),
         std::make_shared<LexiRouteRoutingMethod>(100),
     };
 

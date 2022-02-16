@@ -74,6 +74,20 @@ PYBIND11_MODULE(mapping, m) {
           "mapping.",
           py::arg("lookahead") = 10);
 
+  py::class_<
+      AASRouteRoutingMethod, std::shared_ptr<AASRouteRoutingMethod>,
+      RoutingMethod>(
+      m, "AASRouteRoutingMethod",
+      "Defines a RoutingMethod object for mapping circuits that uses the "
+      "Lexicographical Comparison approach outlined in arXiv:1902.08091.")
+      .def(
+          py::init<unsigned>(),
+          "TODO LexiRoute constructor.\n\n:param lookahead: Maximum depth of "
+          "lookahead "
+          "employed when picking SWAP for purpose of logical to physical "
+          "mapping.",
+          py::arg("aaslookahead"));  // TODO MELF
+
   py::class_<MappingManager>(
       m, "MappingManager",
       "Defined by a pytket Architecture object, maps Circuit logical Qubits "

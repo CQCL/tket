@@ -382,5 +382,23 @@ SCENARIO("Test JSON serialisation") {
     nlohmann::json j_rms_serialised = rms;
     REQUIRE(j_rms == j_rms_serialised);
   }
+
+  GIVEN("RoutingMethod vector II, Lexi and AAS") {
+    nlohmann::json j_rms = {
+        {{"name", "MultiGateReorderRoutingMethod"}, {"depth", 3}, {"size", 4}},
+        {
+            {"name", "LexiRouteRoutingMethod"},
+            {"depth", 3},
+        },
+        {
+            {"name", "AASRouteRoutingMethod"},
+            {"cnotsynthtype", 2},
+            {"aaslookahead", 1},
+        }};
+    std::vector<RoutingMethodPtr> rms =
+        j_rms.get<std::vector<RoutingMethodPtr>>();
+    nlohmann::json j_rms_serialised = rms;
+    REQUIRE(j_rms == j_rms_serialised);
+  }
 }
 }  // namespace tket

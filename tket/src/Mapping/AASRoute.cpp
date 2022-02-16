@@ -3,15 +3,16 @@
 
 namespace tket {
 
+// TODO MELF
+
 AASRouteRoutingMethod::AASRouteRoutingMethod(
-    aas::CNotSynthType cnotsynthtype, unsigned aaslookahead) {
-  cnotsynthtype_ = cnotsynthtype;
-  aaslookahead_ = aaslookahead;
-}
+    unsigned aaslookahead, aas::CNotSynthType cnotsynthtype)
+    : cnotsynthtype_(cnotsynthtype), aaslookahead_(aaslookahead) {}
 
 bool AASRouteRoutingMethod::check_method(
     const std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& architecture) const {
+  std::cout << "start aas route check\n";
   std::shared_ptr<unit_frontier_t> next_frontier =
       frontier_convert_vertport_to_edge(
           mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
@@ -52,6 +53,7 @@ bool AASRouteRoutingMethod::check_method(
 unit_map_t AASRouteRoutingMethod::routing_method(
     std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& architecture) const {
+  std::cout << "start aas route routing\n";
   const Architecture arc(*architecture);
 
   std::shared_ptr<unit_frontier_t> next_frontier =
@@ -149,6 +151,30 @@ unit_map_t AASRouteRoutingMethod::routing_method(
   }
 
   return {};
+}
+
+aas::CNotSynthType AASRouteRoutingMethod::get_cnotsynthtype() const {
+  return this->cnotsynthtype_;
+}
+
+unsigned AASRouteRoutingMethod::get_aaslookahead() const {
+  return this->aaslookahead_;
+}
+
+nlohmann::json AASRouteRoutingMethod::serialize() const {
+  nlohmann::json j;
+  j["aaslookahead"] = this->get_aaslookahead();
+  j["cnotsynthtype"] = (unsigned)this->get_cnotsynthtype();
+  j["name"] = "AASRouteRoutingMethod";
+  return j;
+}
+
+AASRouteRoutingMethod AASRouteRoutingMethod::deserialize(
+    const nlohmann::json& j) {
+  unsigned aaslookahead = j.at("aaslookahead").get<unsigned>();
+  aas::CNotSynthType cnotsynthtype =
+      (aas::CNotSynthType)j.at("cnotsynthtype").get<unsigned>();
+  return AASRouteRoutingMethod(aaslookahead, cnotsynthtype);
 }
 
 }  // namespace tket

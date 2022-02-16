@@ -22,11 +22,12 @@ class AASRouteRoutingMethod : public RoutingMethod {
    * Checking and Routing methods redefined using LexiRoute. Only circuit depth,
    * corresponding to lookahead, is a required parameter.
    *
-   * @param cnotsynthtype type of cnot synthesis that should be used
    * @param aaslookahead lookahead that should be used in the aas routing
+   * @param cnotsynthtype type of cnot synthesis that should be used
    */
   AASRouteRoutingMethod(
-      aas::CNotSynthType cnotsynthtype, unsigned aaslookahead);
+      unsigned aaslookahead,
+      aas::CNotSynthType cnotsynthtype = aas::CNotSynthType::Rec);
 
   /**
    * @return true if this method can route subcircuit, false if not
@@ -48,6 +49,20 @@ class AASRouteRoutingMethod : public RoutingMethod {
   unit_map_t routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
       const ArchitecturePtr& architecture) const;
+
+  /**
+   * @return cnot synth type of this routing method
+   */
+  aas::CNotSynthType get_cnotsynthtype() const;
+
+  /**
+   * @return aaslookahead of this routing method
+   */
+  unsigned get_aaslookahead() const;
+
+  nlohmann::json serialize() const override;
+
+  static AASRouteRoutingMethod deserialize(const nlohmann::json& j);
 
  private:
   // type of cnot synthesis that should be used

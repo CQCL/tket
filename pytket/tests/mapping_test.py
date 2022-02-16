@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket.mapping import MappingManager, RoutingMethodCircuit, LexiRouteRoutingMethod  # type: ignore
+from pytket.mapping import MappingManager, RoutingMethodCircuit, LexiRouteRoutingMethod, AASRouteRoutingMethod  # type: ignore
 from pytket.architecture import Architecture  # type: ignore
 from pytket import Circuit, OpType
-from pytket.circuit import Node  # type: ignore
+from pytket.circuit import Node, PhasePolyBox, Qubit # type: ignore
 from typing import Tuple, Dict
-
+import numpy as np
 
 # simple deterministic heuristic used for testing purposes
 def route_subcircuit_func(
@@ -110,6 +110,60 @@ def test_LexiRouteRoutingMethod() -> None:
     test_a = Architecture([[nodes[0], nodes[1]], [nodes[1], nodes[2]]])
     test_mm = MappingManager(test_a)
     test_mm.route_circuit(test_c, [LexiRouteRoutingMethod()])
+    routed_commands = test_c.get_commands()
+
+    assert routed_commands[0].op.type == OpType.CX
+    assert routed_commands[0].qubits == [nodes[1], nodes[0]]
+    assert routed_commands[1].op.type == OpType.CX
+    assert routed_commands[1].qubits == [nodes[1], nodes[2]]
+    assert routed_commands[2].op.type == OpType.SWAP
+    assert routed_commands[2].qubits == [nodes[2], nodes[1]]
+    assert routed_commands[3].op.type == OpType.CX
+    assert routed_commands[3].qubits == [nodes[0], nodes[1]]
+
+
+def test_AASRouteRoutingMethod() -> None:
+    test_c = Circuit(1, 1)
+    n_qb = 1
+    qubit_indices = {Qubit(0): 1}
+    phase_polynomial = {(True,): 0.1, (False,): 0.1}
+    linear_transformation = np.array([[1, 0], [0, 1]])
+    p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
+
+    test_c.add_phasepolybox(p_box, [0])
+
+    # = Circuit(3).CX(0, 1).CX(0, 2).CX(1, 2)
+    nodes = [Node("test", 0), Node("test", 1), Node("test", 2)]
+    test_a = Architecture([[nodes[0], nodes[1]], [nodes[1], nodes[2]]])
+    test_mm = MappingManager(test_a)
+    test_mm.route_circuit(test_c, [AASRouteRoutingMethod(1)])
+    routed_commands = test_c.get_commands()
+
+    assert routed_commands[0].op.type == OpType.CX
+    assert routed_commands[0].qubits == [nodes[1], nodes[0]]
+    assert routed_commands[1].op.type == OpType.CX
+    assert routed_commands[1].qubits == [nodes[1], nodes[2]]
+    assert routed_commands[2].op.type == OpType.SWAP
+    assert routed_commands[2].qubits == [nodes[2], nodes[1]]
+    assert routed_commands[3].op.type == OpType.CX
+    assert routed_commands[3].qubits == [nodes[0], nodes[1]]
+
+
+def test_AASRouteRoutingMethod_2() -> None:
+    test_c = Circuit(3, 3)
+    n_qb = 3
+    qubit_indices = {Qubit(0): 1, Qubit(1): 2, Qubit(2): 3}
+    phase_polynomial = {(True,): 0.1, (False,): 0.1}
+    linear_transformation = np.array([[1, 0], [0, 1]])
+    p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
+
+    test_c.add_phasepolybox(p_box, [0, 1, 2])
+
+    # = Circuit(3).CX(0, 1).CX(0, 2).CX(1, 2)
+    nodes = [Node("test", 0), Node("test", 1), Node("test", 2)]
+    test_a = Architecture([[nodes[0], nodes[1]], [nodes[1], nodes[2]]])
+    test_mm = MappingManager(test_a)
+    test_mm.route_circuit(test_c, [AASRouteRoutingMethod(1)])
     routed_commands = test_c.get_commands()
 
     assert routed_commands[0].op.type == OpType.CX
