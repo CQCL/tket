@@ -242,7 +242,8 @@ void MappingFrontier::advance_frontier_boundary(
       for (const UnitID& uid : uids) {
         nodes.push_back(Node(uid));
       }
-      if (architecture->valid_operation(this->circuit_.get_Op_ptr_from_Vertex(vert), nodes)) {
+      if (architecture->valid_operation(
+              this->circuit_.get_Op_ptr_from_Vertex(vert), nodes)) {
         // if no valid operation, boundary not updated and while loop terminates
         boundary_updated = true;
         for (const UnitID& uid : uids) {
