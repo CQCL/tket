@@ -28,7 +28,7 @@ using json = nlohmann::json;
 namespace tket {
 
 PYBIND11_MODULE(architecture, m) {
-  py::class_<Architecture, ArchitecturePtr>(
+  py::class_<Architecture, std::shared_ptr<Architecture>>(
       m, "Architecture",
       "Class describing the connectivity of qubits on a general device.")
       .def(
