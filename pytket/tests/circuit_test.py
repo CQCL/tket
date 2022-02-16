@@ -400,6 +400,29 @@ def test_boxes() -> None:
     assert all(isinstance(box, Op) for box in boxes)
 
 
+def test_u1q_stability() -> None:
+    # https://github.com/CQCL/tket/issues/222
+    u = np.array(
+        [
+            [
+                -1.0000000000000000e00 + 0.0000000000000000e00j,
+                -4.7624091282918654e-10 + 2.0295010872500105e-16j,
+            ],
+            [
+                4.5447577055178555e-10 - 1.4232772405184710e-10j,
+                -9.5429791447115209e-01 + 2.9885697320961047e-01j,
+            ],
+        ]
+    )
+    ubox = Unitary1qBox(u)
+    op = ubox.get_circuit().get_commands()[0].op
+    assert op.type == OpType.TK1
+    a, b, c = op.params
+    assert np.isfinite(a)
+    assert np.isfinite(b)
+    assert np.isfinite(c)
+
+
 def test_custom_gates() -> None:
     a = Symbol("a")
     b = Symbol("b")
