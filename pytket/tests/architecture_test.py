@@ -77,6 +77,7 @@ def test_arch_types() -> None:
     sg = SquareGrid(2, 2, 2)
     assert isinstance(sg, SquareGrid)
 
+
 if __name__ == "__main__":
     test_architectures()
     test_architecture_eq()

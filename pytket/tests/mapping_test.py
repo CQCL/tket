@@ -35,7 +35,8 @@ def route_subcircuit_func(
     relabelling_map = dict()
 
     for qb in circuit.qubits:
-        unused_nodes.remove(qb)
+        if qb in unused_nodes:
+            unused_nodes.remove(qb)
 
     for qb in circuit.qubits:
         if qb not in architecture.nodes:
