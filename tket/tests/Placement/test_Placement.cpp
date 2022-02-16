@@ -16,7 +16,7 @@
 #include <random>
 
 #include "Placement/Placement.hpp"
-#include "testutil.hpp"
+#include "../testutil.hpp"
 
 namespace tket {
 namespace test_Placement {

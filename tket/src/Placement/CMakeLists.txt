@@ -22,7 +22,8 @@ add_library(tket-${COMP}
     Qubit_Placement.cpp
     subgraph_mapping.cpp
     Placement.cpp
-    PlacementGraphClasses.cpp)
+    PlacementGraphClasses.cpp
+    NeighbourPlacements.cpp)
 
 list(APPEND DEPS_${COMP}
     Architecture
