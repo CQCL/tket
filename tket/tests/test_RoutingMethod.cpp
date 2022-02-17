@@ -133,7 +133,8 @@ SCENARIO("Test RoutingMethodCircuit::routing_method") {
   comp.add_op<unsigned>(OpType::CX, {1, 0});
   comp.add_op<unsigned>(OpType::CX, {1, 0});
   auto qbs = comp.all_qubits();
-  unit_map_t rename_map = {{qbs[0], Node("t", 0)}, {qbs[1], Node("t", 1)}};
+  unit_map_t rename_map = {
+      {qbs[0], Node("t", 0)}, {qbs[1], Node("t", 1)}, {qbs[2], Node("t", 2)}};
   comp.rename_units(rename_map);
   qubit_map_t permutation = {
       {Node("t", 0), Node("t", 1)}, {Node("t", 1), Node("t", 0)}};
@@ -199,7 +200,8 @@ SCENARIO("Test RoutingMethodCircuit::routing_method") {
     comp1.add_op<unsigned>(OpType::CX, {0, 1});
     comp1.add_op<unsigned>(OpType::CX, {0, 1});
     qbs = comp1.all_qubits();
-    rename_map = {{qbs[0], Node("t", 0)}, {qbs[1], Node("t", 1)}};
+    rename_map = {
+        {qbs[0], Node("t", 0)}, {qbs[1], Node("t", 1)}, {qbs[2], Node("t", 2)}};
     comp1.rename_units(rename_map);
 
     REQUIRE(c == comp1);
