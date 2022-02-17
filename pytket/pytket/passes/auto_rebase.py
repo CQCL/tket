@@ -12,13 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Set, Union, Callable, Dict, FrozenSet, TYPE_CHECKING
+from typing import Set, Callable, Dict, FrozenSet
 from pytket.circuit import Circuit, OpType  # type: ignore
 from pytket._tket.circuit import _library  # type: ignore
-from pytket.passes import RebaseCustom  # type: ignore
+from pytket.passes import RebaseCustom, SquashCustom  # type: ignore
 
-if TYPE_CHECKING:
-    from sympy import Expr  # type: ignore
+from ._decompositions import Param, _TK1_to_X_SX_Rz, _TK1_to_RxRy, _TK1_to_U
 
 
 class NoAutoRebase(Exception):
@@ -30,7 +29,7 @@ _CX_CIRCS: Dict[OpType, Callable[[], "Circuit"]] = {
     OpType.ZZMax: _library._CX_using_ZZMax,
     OpType.XXPhase: _library._CX_using_XXPhase_0,
     OpType.ECR: _library._CX_using_ECR,
-    OpType.CZ: lambda: Circuit(2).H(1).CZ(0, 1).H(1),
+    OpType.CZ: _library._H_CZ_H,
 }
 
 
@@ -49,14 +48,16 @@ def get_cx_decomposition(gateset: Set[OpType]) -> Circuit:
     raise NoAutoRebase("No known decomposition from CX to available gateset.")
 
 
-Param = Union[str, "Expr"]
-
 _TK1_circs: Dict[FrozenSet[OpType], Callable[[Param, Param, Param], "Circuit"]] = {
     frozenset({OpType.TK1}): _library._TK1_to_TK1,
     frozenset({OpType.PhasedX, OpType.Rz}): _library._TK1_to_PhasedXRz,
     frozenset({OpType.Rx, OpType.Rz}): _library._TK1_to_RzRx,
+    frozenset({OpType.Ry, OpType.Rx}): _TK1_to_RxRy,
     frozenset({OpType.Rz, OpType.H}): _library._TK1_to_RzH,
+    frozenset({OpType.Rz, OpType.SX, OpType.X}): _TK1_to_X_SX_Rz,
+    frozenset({OpType.Rz, OpType.SX}): _TK1_to_X_SX_Rz,
     frozenset({OpType.Rz, OpType.SX}): _library._TK1_to_RzSX,
+    frozenset({OpType.U3}): _TK1_to_U,
 }
 
 
@@ -71,7 +72,11 @@ def get_TK1_decomposition_function(
     :return: TK1 decomposition function.
     :rtype: Callable[[Param, Param, Param], "Circuit"]
     """
-    if any((matching := k).issubset(gateset) for k in _TK1_circs):
+    subsets = [k for k in _TK1_circs if k.issubset(gateset)]
+    if subsets:
+        # find the largest available subset
+        # as in general more available gates leads to smaller circuits
+        matching = max(subsets, key=len)
         return _TK1_circs[matching]
     raise NoAutoRebase("No known decomposition from TK1 to available gateset.")
 
