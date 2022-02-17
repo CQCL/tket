@@ -23,8 +23,7 @@ namespace tket {
 
 /* a wrapper method for the rebase_factory in Transforms */
 PassPtr gen_rebase_pass(
-    const OpTypeSet& multiqs, const Circuit& cx_replacement,
-    const OpTypeSet& singleqs,
+    const OpTypeSet& allowed_gates, const Circuit& cx_replacement,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement);
 
@@ -49,7 +48,8 @@ RoutingConfig object */
 PassPtr gen_full_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
     const RoutingConfig& config = {});
-PassPtr gen_default_mapping_pass(const Architecture& arc);
+PassPtr gen_default_mapping_pass(
+    const Architecture& arc, bool delay_measures = true);
 PassPtr gen_cx_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
     const RoutingConfig& config, bool directed_cx, bool delay_measures);

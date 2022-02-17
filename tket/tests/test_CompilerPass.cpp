@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <catch2/catch.hpp>
 
+#include "Circuit/CircPool.hpp"
 #include "Circuit/Circuit.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
@@ -148,7 +149,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
   GIVEN("Correct pass for Predicate") {
     SquareGrid grid(1, 5);
 
-    PassPtr cp_route = gen_default_mapping_pass(grid);
+    PassPtr cp_route = gen_default_mapping_pass(grid, false);
     Circuit circ(5);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {0, 2}, {0, 3}, {1, 2}, {3, 4}});
 
@@ -169,7 +170,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
   GIVEN("Incorrect pass for Predicate logs a warning") {
     SquareGrid grid(2, 3);
 
-    PassPtr cp_route = gen_default_mapping_pass(grid);
+    PassPtr cp_route = gen_default_mapping_pass(grid, false);
     Circuit circ(6);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {0, 5}, {0, 3}, {1, 2}, {3, 4}});
 
@@ -211,13 +212,13 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
         CompilationUnit::make_type_pair(gsp)};
     CompilationUnit cu(circ, preds);
 
-    PassPtr cp_route = gen_default_mapping_pass(grid);
+    PassPtr cp_route = gen_default_mapping_pass(grid, false);
 
     Circuit cx(2);
     cx.add_op<unsigned>(OpType::CX, {0, 1});
     PassPtr pz_rebase = gen_rebase_pass(
-        {OpType::CX}, cx, {OpType::PhasedX, OpType::Rz},
-        Transforms::tk1_to_PhasedXRz);
+        {OpType::CX, OpType::PhasedX, OpType::Rz}, cx,
+        CircPool::tk1_to_PhasedXRz);
     PassPtr all_passes = SynthesiseTket() >> cp_route >> pz_rebase;
 
     REQUIRE(all_passes->apply(cu));
@@ -380,7 +381,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
   GIVEN("Full compilation sequence") {
     SquareGrid grid(1, 5);
     std::vector<PassPtr> passes = {
-        DecomposeBoxes(), RebaseTket(), gen_default_mapping_pass(grid)};
+        DecomposeBoxes(), RebaseTket(), gen_default_mapping_pass(grid, true)};
     REQUIRE_NOTHROW(SequencePass(passes));
   }
 }
@@ -492,7 +493,7 @@ SCENARIO("Track initial and final maps throughout compilation") {
     CompilationUnit cu(circ);
 
     SquareGrid grid(2, 3);
-    PassPtr cp_route = gen_default_mapping_pass(grid);
+    PassPtr cp_route = gen_default_mapping_pass(grid, false);
     cp_route->apply(cu);
     bool ids_updated = true;
     for (auto pair : cu.get_initial_map_ref().left) {
@@ -1046,8 +1047,9 @@ SCENARIO("CX mapping pass") {
     PlacementPtr placer = std::make_shared<NoiseAwarePlacement>(line);
     Circuit cx(2);
     cx.add_op<unsigned>(OpType::CX, {0, 1});
-    PassPtr rebase = gen_rebase_pass(
-        {OpType::CX}, cx, all_single_qubit_types(), Transforms::tk1_to_tk1);
+    OpTypeSet gateset = all_single_qubit_types();
+    gateset.insert(OpType::CX);
+    PassPtr rebase = gen_rebase_pass(gateset, cx, CircPool::tk1_to_tk1);
 
     // Circuit mapping basis states to basis states
     Circuit c(3);

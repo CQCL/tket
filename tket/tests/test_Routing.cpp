@@ -2105,14 +2105,14 @@ SCENARIO("Does the rerouting of a solved circuit return 'false'?") {
 SCENARIO("Routing on architecture with non-contiguous qubit labels") {
   GIVEN("A 2-qubit architecture with a gap") {
     Architecture arc(std::vector<std::pair<unsigned, unsigned>>{{0, 2}});
-    PassPtr pass = gen_default_mapping_pass(arc);
+    PassPtr pass = gen_default_mapping_pass(arc, false);
     Circuit circ(2);
     CompilationUnit cu(circ);
     pass->apply(cu);
   }
   GIVEN("A 2-qubit architecture with a gap and some two-qubit gates") {
     Architecture arc(std::vector<std::pair<unsigned, unsigned>>{{0, 2}});
-    PassPtr pass = gen_default_mapping_pass(arc);
+    PassPtr pass = gen_default_mapping_pass(arc, false);
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::CZ, {1, 0});
@@ -2475,13 +2475,42 @@ SCENARIO("Routing preserves the number of qubits") {
   cons.push_back({Node("x", 2), Node("x", 1)});
   Architecture arc(
       std::vector<std::pair<Node, Node>>(cons.begin(), cons.end()));
-  PassPtr pass = gen_default_mapping_pass(arc);
+  PassPtr pass = gen_default_mapping_pass(arc, false);
   Circuit c(3);
   c.add_op<unsigned>(OpType::CnX, {2, 1});
   CompilationUnit cu(c);
   bool applied = pass->apply(cu);
   const Circuit &c1 = cu.get_circ_ref();
   REQUIRE(c.n_qubits() == c1.n_qubits());
+}
+
+SCENARIO("Default mapping pass delays measurements") {
+  std::vector<std::pair<Node, Node>> cons;
+  cons.push_back({Node("x", 0), Node("x", 2)});
+  cons.push_back({Node("x", 1), Node("x", 2)});
+  cons.push_back({Node("x", 2), Node("x", 3)});
+  cons.push_back({Node("x", 3), Node("x", 0)});
+  Architecture arc(
+      std::vector<std::pair<Node, Node>>(cons.begin(), cons.end()));
+  PassPtr pass = gen_default_mapping_pass(arc, false);
+  Circuit c(4, 4);
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::CX, {1, 2});
+  c.add_op<unsigned>(OpType::CX, {2, 3});
+  c.add_op<unsigned>(OpType::CX, {3, 0});
+  for (unsigned nn = 0; nn <= 3; ++nn) {
+    c.add_measure(nn, nn);
+  }
+  Circuit c2(c);
+  CompilationUnit cu(c);
+  REQUIRE(pass->apply(cu));
+  CompilationUnit cu2(c2);
+  // delay_measures is default to true
+  PassPtr pass2 = gen_default_mapping_pass(arc);
+  REQUIRE(pass2->apply(cu2));
+  PredicatePtr mid_meas_pred = std::make_shared<NoMidMeasurePredicate>();
+  REQUIRE(!mid_meas_pred->verify(cu.get_circ_ref()));
+  REQUIRE(mid_meas_pred->verify(cu2.get_circ_ref()));
 }
 
 SCENARIO(

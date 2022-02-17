@@ -700,6 +700,28 @@ def test_CXMappingPass() -> None:
     assert out_circ_1.valid_connectivity(arc, False)
 
 
+def test_DefaultMappingPass() -> None:
+    arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
+    circ = Circuit(5)
+    circ.Y(4).CX(0, 1).S(3).CX(0, 3).H(0).CX(2, 4).CX(1, 4).Y(1).CX(0, 4).CX(2, 1).Z(
+        2
+    ).CX(3, 0).CX(2, 0).CX(1, 3)
+    circ.measure_all()
+    cu_0 = CompilationUnit(circ)
+    cu_1 = CompilationUnit(circ)
+    m_pass_0 = DefaultMappingPass(arc)
+    m_pass_1 = DefaultMappingPass(arc, delay_measures=False)
+    m_pass_0.apply(cu_0)
+    m_pass_1.apply(cu_1)
+    out_circ_0 = cu_0.circuit
+    out_circ_1 = cu_1.circuit
+    measure_pred = NoMidMeasurePredicate()
+    assert measure_pred.verify(out_circ_0) == True
+    assert measure_pred.verify(out_circ_1) == False
+    assert out_circ_0.valid_connectivity(arc, False, True)
+    assert out_circ_1.valid_connectivity(arc, False, True)
+
+
 def test_CXMappingPass_correctness() -> None:
     # TKET-1045
     arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
