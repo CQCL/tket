@@ -19,7 +19,9 @@ API changes:
 Minor new features:
 
 * Add ``delay_measures`` option to ``DefaultMappingPass``.
-* New ``pytket.passes.auto_rebase_pass`` which attempts to construct a rebase pass given a target gate set from known decompositions.
+* New ``pytket.passes.auto_rebase_pass`` and ``pytket.passes.auto_squash_pass``
+  which attempt to construct rebase and squash passess given a target gate set from known
+  decompositions.
 
 0.19.1 (February 2022)
 ----------------------

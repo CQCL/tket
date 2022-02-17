@@ -100,3 +100,15 @@ def auto_rebase_pass(gateset: Set[OpType]) -> RebaseCustom:
     return RebaseCustom(
         gateset, get_cx_decomposition(gateset), get_TK1_decomposition_function(gateset)
     )
+
+
+def auto_squash_pass(gateset: Set[OpType]) -> SquashCustom:
+    """Attempt to generate a squash pass automatically for the given target
+    single qubit gateset.
+
+    :param gateset: Available single qubit gateset
+    :type gateset: Set[OpType]
+    :return: Squash to target gateset
+    :rtype: SquashCustom
+    """
+    return SquashCustom(gateset, get_TK1_decomposition_function(gateset))
