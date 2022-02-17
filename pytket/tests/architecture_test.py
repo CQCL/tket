@@ -13,7 +13,11 @@
 # limitations under the License.
 
 from pytket.circuit import Node
-from pytket.architecture import Architecture, SquareGrid, FullyConnected
+from pytket.architecture import (
+    Architecture,
+    SquareGrid,
+    FullyConnected,
+)  # type : ignore
 
 
 def test_architectures() -> None:
