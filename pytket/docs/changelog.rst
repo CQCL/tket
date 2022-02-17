@@ -15,6 +15,8 @@ API changes:
 * ``RebaseCustom`` takes one allowed gateset parameter rather than separate single qubit and multiqubit gatesets.
 * The ``Backend.characterisation`` property is removed. (Use
   ``Backend.backend_info`` instead.)
+* The ``QubitPauliOperator.from_OpenFermion`` and
+  ``QubitPauliOperator.to_OpenFermion`` methods are removed.
 
 Minor new features:
 
