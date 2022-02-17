@@ -11,6 +11,8 @@ API changes:
 * The deprecated ``Backend.compile_circuit`` method is removed. (Use
   ``get_compiled_circuit`` instead.)
 * ``RebaseCustom`` takes one allowed gateset parameter rather than separate single qubit and multiqubit gatesets.
+* The ``Backend.characterisation`` property is removed. (Use
+  ``Backend.backend_info`` instead.)
 
 Minor new features:
 
