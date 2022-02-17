@@ -34,8 +34,10 @@ class MultiGateReorder {
    * Try to commute any multi-qubit gates to the quantum frontier
    * @param max_depth Maximum number of layers of gates checked for commutation.
    * @param max_size Maximum number of gates checked for commutation.
+   *
+   * @return true if modification made
    */
-  void solve(unsigned max_depth, unsigned max_size);
+  bool solve(unsigned max_depth, unsigned max_size);
 
  private:
   // Architecture all new physical operations must respect
@@ -55,21 +57,22 @@ class MultiGateReorderRoutingMethod : public RoutingMethod {
   MultiGateReorderRoutingMethod(
       unsigned _max_depth = 10, unsigned _max_size = 10);
 
-  /**
-   * @return true if method can route subcircuit, false if not
-   */
-  bool check_method(
-      const std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
-      const ArchitecturePtr& /*architecture*/) const override;
+  //   /**
+  //    * @return true if method can route subcircuit, false if not
+  //    */
+  //   bool check_method(
+  //       const std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
+  //       const ArchitecturePtr& /*architecture*/) const override;
 
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
    * modifying
    * @param architecture Architecture providing physical constraints
-   * @return Logical to Physical mapping at boundary due to modification.
+   * @return Whether circuit is modified and Logical to Physical mapping at
+   * boundary due to modification (always empty)
    *
    */
-  unit_map_t routing_method(
+  std::pair<bool, unit_map_t> routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
       const ArchitecturePtr& architecture) const override;
 
