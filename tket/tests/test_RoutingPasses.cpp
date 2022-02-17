@@ -18,6 +18,7 @@
 
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Circuit/Circuit.hpp"
+#include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
 #include "Mapping/Verification.hpp"
@@ -192,8 +193,9 @@ SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
   GIVEN("A routed network of SWAP gates.") {
     SquareGrid grid(2, 5);
     MappingManager mm(std::make_shared<Architecture>(grid));
-    REQUIRE(
-        mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
     Transforms::decompose_SWAP_to_CX().apply(circ);
     REQUIRE(respects_connectivity_constraints(circ, grid, false, true));
     GIVEN("Directed CX gates") {
@@ -278,8 +280,9 @@ SCENARIO("Test redirect_CX_gates pass", "[routing]") {
       }
     }
     MappingManager mm(std::make_shared<Architecture>(grid));
-    REQUIRE(
-        mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
     Transforms::decompose_BRIDGE_to_CX().apply(circ);
     Transforms::decompose_SWAP_to_CX(arc).apply(circ);
     Transforms::decompose_CX_directed(grid).apply(circ);
@@ -330,6 +333,141 @@ SCENARIO("Default mapping pass delays measurements") {
   REQUIRE(!mid_meas_pred->verify(cu.get_circ_ref()));
   REQUIRE(mid_meas_pred->verify(cu2.get_circ_ref()));
 }
+
+SCENARIO(
+    "Methods related to correct routing and decomposition of circuits with "
+    "classical wires.") {
+  GIVEN("A circuit with classical wires on CX gates.") {
+    Architecture test_arc({{0, 1}, {1, 2}});
+    Circuit circ(3, 2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0, 1}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {2, 1}, {0, 1}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0, 1}, 2);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {2, 1}, {1, 0}, 3);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 2}, {0, 1}, 0);
+    MappingManager mm(std::make_shared<Architecture>(test_arc));
+    REQUIRE(mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
+
+    Transforms::decompose_SWAP_to_CX().apply(circ);
+    REQUIRE(respects_connectivity_constraints(circ, test_arc, false, false));
+    Transforms::decompose_BRIDGE_to_CX().apply(circ);
+    REQUIRE(respects_connectivity_constraints(circ, test_arc, false, false));
+  }
+  GIVEN(
+      "A circuit that requires modification to satisfy architecture "
+      "constraints.") {
+    Architecture arc({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
+    Circuit circ(5, 1);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    add_2qb_gates(circ, OpType::CX, {{0, 1}, {1, 2}, {1, 3}, {1, 4}, {0, 1}});
+
+    MappingManager mm(std::make_shared<Architecture>(arc));
+    REQUIRE(mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
+
+    Transforms::decompose_SWAP_to_CX().apply(circ);
+    REQUIRE(respects_connectivity_constraints(circ, arc, false, true));
+    Transforms::decompose_BRIDGE_to_CX().apply(circ);
+    REQUIRE(respects_connectivity_constraints(circ, arc, false, false));
+    Command classical_com = circ.get_commands()[0];
+    REQUIRE(classical_com.get_args()[0] == circ.all_bits()[0]);
+  }
+  GIVEN("A single Bridge gate with multiple classical wires, decomposed.") {
+    Architecture arc({{0, 1}, {1, 2}});
+    Circuit circ(3, 3);
+    circ.add_conditional_gate<unsigned>(
+        OpType::BRIDGE, {}, {0, 1, 2}, {0, 1, 2}, 1);
+    reassign_boundary(circ);
+    REQUIRE(respects_connectivity_constraints(circ, arc, false, true));
+    Transforms::decompose_BRIDGE_to_CX().apply(circ);
+    REQUIRE(respects_connectivity_constraints(circ, arc, false, true));
+    for (Command com : circ.get_commands()) {
+      REQUIRE(com.get_args()[0] == circ.all_bits()[0]);
+      REQUIRE(com.get_args()[1] == circ.all_bits()[1]);
+      REQUIRE(com.get_args()[2] == circ.all_bits()[2]);
+    }
+  }
+  GIVEN("A directed architecture, a single CX gate that requires flipping.") {
+    Architecture arc(std::vector<std::pair<unsigned, unsigned>>{{0, 1}});
+    Circuit circ(2, 2);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {1, 0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0, 1}, 1);
+    reassign_boundary(circ);
+    REQUIRE(respects_connectivity_constraints(circ, arc, false, false));
+    REQUIRE(!respects_connectivity_constraints(circ, arc, true, false));
+    Transforms::decompose_CX_directed(arc).apply(circ);
+    REQUIRE(respects_connectivity_constraints(circ, arc, true, false));
+    std::vector<Command> all_coms = circ.get_commands();
+    REQUIRE(all_coms[0].get_args()[0] == circ.all_bits()[1]);
+    REQUIRE(all_coms[0].get_args()[1] == circ.all_bits()[0]);
+    REQUIRE(all_coms[1].get_args()[0] == circ.all_bits()[0]);
+    REQUIRE(all_coms[1].get_args()[1] == circ.all_bits()[1]);
+  }
+  GIVEN(
+      "A large circuit, with a mixture of conditional CX and CZ with "
+      "multiple classical wires, non conditional CX and CZ, and single "
+      "qubit gates.") {
+    SquareGrid arc(5, 10);
+    Circuit circ(50, 10);
+    for (unsigned i = 0; i < 48; i++) {
+      circ.add_op<unsigned>(OpType::CX, {i, i + 1});
+      circ.add_conditional_gate<unsigned>(
+          OpType::CX, {}, {i + 2, i}, {0, 2, 3, 5}, 1);
+      circ.add_conditional_gate<unsigned>(OpType::H, {}, {i}, {0, 7}, 1);
+      circ.add_conditional_gate<unsigned>(
+          OpType::CX, {}, {i + 2, i + 1}, {1, 2, 3, 5, 9}, 0);
+      circ.add_conditional_gate<unsigned>(OpType::S, {}, {i + 1}, {1, 2, 7}, 1);
+      circ.add_conditional_gate<unsigned>(
+          OpType::CZ, {}, {i, i + 1}, {4, 6, 8, 7, 9}, 0);
+      circ.add_conditional_gate<unsigned>(OpType::X, {}, {i + 2}, {0, 3}, 0);
+    }
+    MappingManager mm(std::make_shared<Architecture>(arc));
+    REQUIRE(mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
+
+    Transforms::decompose_SWAP_to_CX().apply(circ);
+    REQUIRE(respects_connectivity_constraints(circ, arc, false, true));
+    Transforms::decompose_BRIDGE_to_CX().apply(circ);
+    REQUIRE(respects_connectivity_constraints(circ, arc, false, true));
+  }
+  GIVEN(
+      "A large circuit, with a mixture of conditional CX and CX gates with "
+      "multiple classical wires, non conditional CX and, single qubit "
+      "gates, and a directed architecture.") {
+    SquareGrid arc(10, 4, 2);
+    Circuit circ(60, 10);
+    for (unsigned i = 0; i < 58; i++) {
+      circ.add_op<unsigned>(OpType::CX, {i, i + 1});
+      circ.add_conditional_gate<unsigned>(
+          OpType::CX, {}, {i + 2, i}, {0, 2, 3, 5}, 1);
+      circ.add_conditional_gate<unsigned>(OpType::H, {}, {i}, {0, 7}, 1);
+      circ.add_conditional_gate<unsigned>(
+          OpType::CX, {}, {i + 2, i + 1}, {1, 2, 3, 5, 9}, 0);
+      circ.add_conditional_gate<unsigned>(OpType::S, {}, {i + 1}, {1, 2, 7}, 1);
+      circ.add_conditional_gate<unsigned>(
+          OpType::CX, {}, {i, i + 1}, {4, 6, 8, 7, 9}, 0);
+      circ.add_conditional_gate<unsigned>(OpType::X, {}, {i + 2}, {0, 3}, 0);
+    }
+    MappingManager mm(std::make_shared<Architecture>(arc));
+    REQUIRE(mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
+
+    Transforms::decompose_SWAP_to_CX().apply(circ);
+    REQUIRE(respects_connectivity_constraints(circ, arc, false, true));
+    Transforms::decompose_BRIDGE_to_CX().apply(circ);
+    REQUIRE(respects_connectivity_constraints(circ, arc, false, true));
+    Transforms::decompose_CX_directed(arc).apply(circ);
+    REQUIRE(respects_connectivity_constraints(circ, arc, true, true));
+  }
+}
+
 SCENARIO(
     "Does copying decompose_SWAP_to_CX pass and applying it to a routed "
     "Circuit work correctly?") {
@@ -348,8 +486,9 @@ SCENARIO(
          {0, 3}});
     Architecture arc({{1, 0}, {0, 2}, {1, 2}, {2, 3}, {2, 4}, {4, 3}});
     MappingManager mm(std::make_shared<Architecture>(arc));
-    REQUIRE(
-        mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
 
     Transform T_1 = Transforms::decompose_SWAP_to_CX();
     T_1.apply(circ);

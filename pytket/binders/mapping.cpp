@@ -13,17 +13,22 @@
 // limitations under the License.
 
 #include <pybind11/functional.h>
+#include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <pybind11/stl_bind.h>
 
+#include "Circuit/Circuit.hpp"
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
 #include "Mapping/RoutingMethodCircuit.hpp"
+#include "binder_utils.hpp"
 
 namespace py = pybind11;
 
 namespace tket {
+
 PYBIND11_MODULE(mapping, m) {
   py::class_<RoutingMethod, std::shared_ptr<RoutingMethod>>(
       m, "RoutingMethod",

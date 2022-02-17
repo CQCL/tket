@@ -22,9 +22,9 @@
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
-// #include "Transformations/Transform.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "testutil.hpp"
+
 namespace tket {
 
 SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
@@ -928,7 +928,8 @@ SCENARIO(
     RingArch arc(4);
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
-        test_circuit, {std::make_shared<LexiRouteRoutingMethod>()}));
+        test_circuit, {std::make_shared<LexiLabellingMethod>(),
+                       std::make_shared<LexiRouteRoutingMethod>()}));
     REQUIRE(test_circuit.n_gates() == 4);
   }
   GIVEN("A solved problem supplied with map and custom architecture") {
@@ -948,7 +949,8 @@ SCENARIO(
 
     MappingManager mm(std::make_shared<Architecture>(test_arc));
     REQUIRE(!mm.route_circuit(
-        test_circuit, {std::make_shared<LexiRouteRoutingMethod>()}));
+        test_circuit, {std::make_shared<LexiLabellingMethod>(),
+                       std::make_shared<LexiRouteRoutingMethod>()}));
 
     qubit_vector_t all_qs_post_solve = test_circuit.all_qubits();
     REQUIRE(all_qs_post_place == all_qs_post_solve);
@@ -962,8 +964,9 @@ SCENARIO("Empty Circuit test") {
     circ.add_blank_wires(4);
     Architecture arc({{0, 1}, {1, 2}, {2, 3}});
     MappingManager mm(std::make_shared<Architecture>(arc));
-    REQUIRE(
-        !mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(!mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
     REQUIRE(circ.n_gates() == 0);
   }
 }
@@ -979,8 +982,9 @@ SCENARIO("Routing on circuit with no multi-qubit gates") {
     unsigned orig_vertices = circ.n_vertices();
     Architecture arc({{0, 1}, {1, 2}, {2, 3}});
     MappingManager mm(std::make_shared<Architecture>(arc));
-    REQUIRE(
-        !mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(!mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
     REQUIRE(orig_vertices - 8 == circ.n_gates());
   }
 }
@@ -995,8 +999,9 @@ SCENARIO("Test routing on a directed architecture with bidirectional edges") {
 
     // routing ignored bi directional edge and solves correctly
     MappingManager mm(std::make_shared<Architecture>(arc));
-    REQUIRE(
-        mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
     REQUIRE(circ.n_gates() == 2);
     CHECK(respects_connectivity_constraints(circ, arc, false));
   }
@@ -1020,8 +1025,9 @@ SCENARIO(
 
     Architecture arc(std::vector<std::pair<unsigned, unsigned>>{{0, 1}});
     MappingManager mm(std::make_shared<Architecture>(arc));
-    REQUIRE(
-        mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
     REQUIRE(circ.n_gates() == 8);
   }
 }
@@ -1048,8 +1054,9 @@ SCENARIO("Dense CX circuits route succesfully") {
          {11, 12}, {12, 16}, {12, 17}, {12, 13}, {13, 18}, {13, 19}, {13, 14},
          {14, 18}, {14, 19}, {15, 16}, {16, 17}, {17, 18}, {18, 19}});
     MappingManager mm(std::make_shared<Architecture>(arc));
-    REQUIRE(
-        mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
     (Transforms::decompose_SWAP_to_CX() >> Transforms::decompose_BRIDGE_to_CX())
         .apply(circ);
 
@@ -1074,8 +1081,9 @@ SCENARIO(
     }
     RingArch arc(29);
     MappingManager mm(std::make_shared<Architecture>(arc));
-    REQUIRE(
-        mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
     Transforms::decompose_SWAP_to_CX().apply(circ);
     REQUIRE(respects_connectivity_constraints(circ, arc, false, true));
   }
@@ -1112,8 +1120,9 @@ SCENARIO(
          {12, 13},
          {6, 7}});
     MappingManager mm(std::make_shared<Architecture>(arc));
-    REQUIRE(
-        mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
     REQUIRE(respects_connectivity_constraints(circ, arc, false, true));
   }
 }
@@ -1123,8 +1132,9 @@ SCENARIO("Empty circuits, with and without blank wires") {
     Circuit circ(6);
     RingArch arc(6);
     MappingManager mm(std::make_shared<Architecture>(arc));
-    REQUIRE(
-        !mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(!mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
     REQUIRE(circ.depth() == 0);
     REQUIRE(circ.n_gates() == 0);
     REQUIRE(circ.n_qubits() == 6);
@@ -1134,8 +1144,9 @@ SCENARIO("Empty circuits, with and without blank wires") {
     Circuit circ(0);
     RingArch arc(6);
     MappingManager mm(std::make_shared<Architecture>(arc));
-    REQUIRE(
-        !mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(!mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
     REQUIRE(circ.depth() == 0);
     REQUIRE(circ.n_gates() == 0);
     REQUIRE(circ.n_qubits() == 0);
