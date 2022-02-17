@@ -187,11 +187,6 @@ SCENARIO("Reorder circuits") {
     mr.solve(20, 20);
     std::vector<Command> commands = circ.get_commands();
 
-    std::cout << "circ:\n";  // TODO, remove this after discussion
-    for (auto g : circ) {
-      std::cout << g << std::endl;
-    }
-
     for (unsigned i = 0; i < 6; i++) {
       std::vector<Node> nodes;
       for (auto arg : commands[i].get_args()) {
@@ -204,7 +199,7 @@ SCENARIO("Reorder circuits") {
       // qubit gate
       if (i == 4 || i == 5) {  //
         // std::cout << "this will fail becaus of the CCX gate at this place\n";
-        REQUIRE(!shared_arc->valid_operation(commands[i].get_op_ptr(), nodes));
+        REQUIRE(shared_arc->valid_operation(commands[i].get_op_ptr(), nodes));
       } else {
         REQUIRE(shared_arc->valid_operation(commands[i].get_op_ptr(), nodes));
       }
