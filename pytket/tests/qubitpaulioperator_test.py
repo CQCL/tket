@@ -160,7 +160,6 @@ if __name__ == "__main__":
     test_QubitPauliOperator_opmult()
     test_QubitPauliOperator_substitution()
     test_QubitPauliOperator_io()
-    test_QubitPauliOperator_conversion()
     test_QubitPauliOperator_matrices()
     test_QubitPauliOperator_compression()
 
