@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@
 #include "SwapFunctions.hpp"
 
 namespace tket {
-namespace tsa_internal {
 
 /// The desired result of swapping is to move a token on each "key"
 /// vertex to the "value" vertex.
@@ -82,5 +81,4 @@ size_t get_source_vertex(
  */
 void add_swap(VertexMapping& source_to_target_map, const Swap& swap);
 
-}  // namespace tsa_internal
 }  // namespace tket

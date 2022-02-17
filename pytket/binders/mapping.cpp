@@ -13,17 +13,22 @@
 // limitations under the License.
 
 #include <pybind11/functional.h>
+#include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <pybind11/stl_bind.h>
 
+#include "Circuit/Circuit.hpp"
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
 #include "Mapping/RoutingMethodCircuit.hpp"
+#include "binder_utils.hpp"
 
 namespace py = pybind11;
 
 namespace tket {
+
 PYBIND11_MODULE(mapping, m) {
   py::class_<RoutingMethod, std::shared_ptr<RoutingMethod>>(
       m, "RoutingMethod",
@@ -35,7 +40,7 @@ PYBIND11_MODULE(mapping, m) {
       RoutingMethodCircuit, std::shared_ptr<RoutingMethodCircuit>,
       RoutingMethod>(
       m, "RoutingMethodCircuit",
-      "The RoutingMethod class captures a method for partially mapping logical"
+      "The RoutingMethod class captures a method for partially mapping logical "
       "subcircuits to physical operations as permitted by some architecture. "
       "Ranked RoutingMethod objects are used by the MappingManager to route "
       "whole circuits.")
@@ -50,7 +55,7 @@ PYBIND11_MODULE(mapping, m) {
           "that given a Circuit and Architecture object, returns a tuple "
           "containing a new modified circuit, the initial logical to physical "
           "qubit mapping of the modified circuit and the permutation of "
-          "'logical to physical qubit mapping given operations in the "
+          "logical to physical qubit mapping given operations in the "
           "modified circuit\n:param check_subcircuit: A function declaration "
           "that given a Circuit and Architecture object, returns a bool "
           "stating whether the given method can modify the "
@@ -69,11 +74,9 @@ PYBIND11_MODULE(mapping, m) {
       "Only supports 1-qubit, 2-qubit and barrier gates.")
       .def(
           py::init<unsigned>(),
-          "LexiRouteRoutingMethod constructor.\n\n:param lookahead: Maximum "
-          "depth of "
-          "lookahead "
-          "employed when picking SWAP for purpose of logical to physical "
-          "mapping.",
+          "LexiRoute constructor.\n\n:param lookahead: Maximum depth of "
+          "lookahead employed when picking SWAP for purpose of logical to "
+          "physical mapping.",
           py::arg("lookahead") = 10);
 
   py::class_<
@@ -87,20 +90,20 @@ PYBIND11_MODULE(mapping, m) {
       m, "MappingManager",
       "Defined by a pytket Architecture object, maps Circuit logical Qubits "
       "to Physically permitted Architecture qubits. Mapping is completed by "
-      "sequential routing (full or partial) of subcircuits. Custom method for "
-      "routing (full or partial) of subcircuits can be defined in python "
-      "layer.")
+      "sequential routing (full or partial) of subcircuits. A custom method "
+      "for "
+      "routing (full or partial) of subcircuits can be defined in Python.")
       .def(
           py::init<const ArchitecturePtr&>(),
           "MappingManager constructor.\n\n:param architecture: pytket "
-          "Architecure object MappingManager object defined by.",
+          "Architecture object.",
           py::arg("architecture"))
       .def(
           "route_circuit", &MappingManager::route_circuit,
           "Maps from given logical circuit to physical circuit. Modification "
           "defined by route_subcircuit, but typically this proceeds by "
           "insertion of SWAP gates that permute logical qubits on physical "
-          "qubits. \n\n:param circuit: pytket circuit to be mapped"
+          "qubits.\n\n:param circuit: pytket circuit to be mapped"
           "\n:param routing_methods: Ranked methods to use for routing "
           "subcircuits. In given order, each method is sequentially checked "
           "for viability, with the first viable method being used.",

@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 #include "Utils/Exceptions.hpp"
 
 namespace tket {
-namespace tsa_internal {
 
 const std::vector<size_t>& NeighboursInterface::operator()(size_t) {
   throw NotImplemented("NeighboursInterface::get_neighbours: not implemented");
@@ -25,5 +24,4 @@ const std::vector<size_t>& NeighboursInterface::operator()(size_t) {
 
 NeighboursInterface::~NeighboursInterface() {}
 
-}  // namespace tsa_internal
 }  // namespace tket

@@ -115,14 +115,13 @@ struct PlacementFrontier {
   std::shared_ptr<unit_frontier_t> quantum_out_edges;
   // Boolean edges coming in to vertices in slice. Guarantees that all edges
   // into every vertex in slice is represented in next_cut
-  std::shared_ptr<b_frontier_t> classical_in_edges;
+  std::shared_ptr<b_frontier_t> boolean_in_edges;
 
   // reference to circuit that it acts on
   const Circuit& circ;
 
-  explicit PlacementFrontier(const Circuit& _circ);
   // initialise at front of circuit
-  void init();
+  explicit PlacementFrontier(const Circuit& _circ);
   // move to next slice
   void next_slicefrontier();
 };

@@ -24,6 +24,7 @@ add_library(tket-${COMP}
     HelperFunctions.cpp
     MatrixAnalysis.cpp
     PauliStrings.cpp
+    RNG.cpp
     CosSinDecomposition.cpp
     Expression.cpp)
 

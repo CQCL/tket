@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 #pragma once
 
 #include "DecodedProblemData.hpp"
-#include "TokenSwapping/BestFullTsa.hpp"
+#include "TokenSwapping/VertexMappingFunctions.hpp"
 
 namespace tket {
 namespace tsa_internal {
@@ -48,13 +48,7 @@ class BestTsaTester {
       const DecodedProblemData& problem_data,
       const DecodedArchitectureData& architecture_data);
 
-  /** For convenience in testing/experiments, allow access to the TSA,
-   *  to change parameters etc. etc. from their defaults.
-   */
-  BestFullTsa& get_best_full_tsa();
-
  private:
-  BestFullTsa m_best_full_tsa;
   SwapList m_raw_swap_list;
   DecodedArchitectureData m_architecture_work_data;
   std::vector<std::pair<unsigned, unsigned>> m_edges_vect;

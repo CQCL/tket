@@ -21,7 +21,7 @@
 #include "Graphs/GraphColouring.hpp"
 #include "RandomGraphGeneration.hpp"
 #include "RandomPlanarGraphs.hpp"
-#include "TokenSwapping/RNG.hpp"
+#include "Utils/RNG.hpp"
 
 using std::map;
 using std::vector;

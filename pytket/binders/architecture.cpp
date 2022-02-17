@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ using json = nlohmann::json;
 namespace tket {
 
 PYBIND11_MODULE(architecture, m) {
-  py::class_<Architecture, ArchitecturePtr>(
+  py::class_<Architecture, std::shared_ptr<Architecture>>(
       m, "Architecture",
       "Class describing the connectivity of qubits on a general device.")
       .def(

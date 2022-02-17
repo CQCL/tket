@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 
 #include <catch2/catch.hpp>
 
-#include "TokenSwapping/ArchitectureMapping.hpp"
-#include "TokenSwapping/DebugFunctions.hpp"
+#include "DebugFunctions.hpp"
 #include "TokenSwapping/DistanceFunctions.hpp"
-#include "TokenSwapping/DistancesFromArchitecture.hpp"
-#include "TokenSwapping/NeighboursFromArchitecture.hpp"
 #include "TokenSwapping/RiverFlowPathFinder.hpp"
 #include "TokenSwapping/VertexSwapResult.hpp"
+#include "TokenSwappingWithArch/ArchitectureMapping.hpp"
+#include "TokenSwappingWithArch/DistancesFromArchitecture.hpp"
+#include "TokenSwappingWithArch/NeighboursFromArchitecture.hpp"
 
 using std::vector;
 

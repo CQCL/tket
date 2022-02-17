@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,10 +15,9 @@
 #pragma once
 
 #include "ArchitectureMapping.hpp"
-#include "NeighboursInterface.hpp"
+#include "TokenSwapping/NeighboursInterface.hpp"
 
 namespace tket {
-namespace tsa_internal {
 
 /** Stores and returns upon request the adjacent vertices to a given vertex
  *  on a graph, using an underlying Architecture object.
@@ -47,5 +46,4 @@ class NeighboursFromArchitecture : public NeighboursInterface {
   std::map<size_t, std::vector<size_t>> m_cached_neighbours;
 };
 
-}  // namespace tsa_internal
 }  // namespace tket

@@ -18,6 +18,7 @@
 #include <stdexcept>
 
 #include "AdjacencyData.hpp"
+#include "Utils/Assert.hpp"
 
 using std::map;
 using std::set;
@@ -95,7 +96,7 @@ static void fill_initial_node_sequence(
        << adjacency_data.get_number_of_vertices() << " vertices)."
        << " So far, filled " << nodes.size() << " nodes."
        << " Error: " << e.what();
-    throw std::runtime_error(ss.str());
+    TKET_ASSERT_WITH_MESSAGE(false, ss.str());
     // GCOVR_EXCL_STOP
   }
 }
@@ -121,8 +122,9 @@ const ColouringPriority::Nodes& ColouringPriority::get_nodes() const {
   return m_nodes;
 }
 
+// GCOVR_EXCL_START
+// currently used only within a tket assert macro
 string ColouringPriority::print_raw_data(bool relabel_to_simplify) const {
-  // GCOVR_EXCL_START
   map<size_t, size_t> old_vertex_to_new_vertex;
   if (relabel_to_simplify) {
     for (size_t i = 0; i < m_nodes.size(); ++i) {
@@ -174,8 +176,8 @@ string ColouringPriority::print_raw_data(bool relabel_to_simplify) const {
   }
   ss << "\n};\n\n";
   return ss.str();
-  // GCOVR_EXCL_STOP
 }
+// GCOVR_EXCL_STOP
 
 ColouringPriority::ColouringPriority(
     const AdjacencyData& adjacency_data,

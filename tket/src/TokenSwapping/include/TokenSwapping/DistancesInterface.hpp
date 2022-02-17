@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 #include <vector>
 
 namespace tket {
-namespace tsa_internal {
 
 /** What is the distance between any two vertices on a graph?
  *  To save time and cope with larger, sparse graphs, it may
@@ -64,5 +63,4 @@ class DistancesInterface {
   virtual ~DistancesInterface();
 };
 
-}  // namespace tsa_internal
 }  // namespace tket

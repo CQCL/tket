@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,9 +23,9 @@ namespace tsa_internal {
 /** A full end-to-end TSA, combining the partial cycles TSA
  *  (hopefully good) with the full "trivial" TSA (not so good).
  */
-class HybridTsa00 : public PartialTsaInterface {
+class HybridTsa : public PartialTsaInterface {
  public:
-  HybridTsa00();
+  HybridTsa();
 
   /** For the current token configuration, calculate a sequence of swaps
    *  to move all tokens home, and append them to the given list.
@@ -41,18 +41,7 @@ class HybridTsa00 : public PartialTsaInterface {
   virtual void append_partial_solution(
       SwapList& swaps, VertexMapping& vertex_mapping,
       DistancesInterface& distances, NeighboursInterface& neighbours,
-      PathFinderInterface& path_finder) override;
-
-  /** Only for experiments; will be removed again
-   *  once the best parameter combinations are found!
-   *  @return A reference to the internal TSA object, to change parameters.
-   */
-  CyclesPartialTsa& get_cycles_tsa_for_testing();
-
-  /** Temporary; only for experiments!
-   *  @return A reference to the internal TSA object, to change parameters.
-   */
-  TrivialTSA& get_trivial_tsa_for_testing();
+      RiverFlowPathFinder& path_finder) override;
 
  private:
   CyclesPartialTsa m_cycles_tsa;

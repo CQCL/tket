@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,21 +14,18 @@
 
 #pragma once
 
-#include "ArchitectureMapping.hpp"
-#include "HybridTsa00.hpp"
-#include "RNG.hpp"
+#include "HybridTsa.hpp"
 #include "SwapListOptimiser.hpp"
-#include "TokenSwapping/SwapListTableOptimiser.hpp"
+#include "SwapListTableOptimiser.hpp"
 
 namespace tket {
-namespace tsa_internal {
 
-/** To enable easier experimentation, keep this up-to-date with the best
- *  end-to-end known default options, but also make it possible to change
- *  the options.
- *  Also include the best known postprocessing swap list optimisations.
+/** This class combines all the different token swapping components together
+ * in the best known way to get the best overall end-to-end routine
+ * (including different heuristics, parameters etc. whose optimal values
+ * are unknown, and require experimentation).
  */
-class BestFullTsa : public PartialTsaInterface {
+class BestFullTsa : public tsa_internal::PartialTsaInterface {
  public:
   BestFullTsa();
 
@@ -49,33 +46,12 @@ class BestFullTsa : public PartialTsaInterface {
   virtual void append_partial_solution(
       SwapList& swaps, VertexMapping& vertex_mapping,
       DistancesInterface& distances, NeighboursInterface& neighbours,
-      PathFinderInterface& path_finder) override;
-
-  /** Wrapper around the main append_partial_solution function, but constructing
-   * and using the best known PathFinderInterface object. The DistancesInterface
-   * and NeighboursInterface objects will automatically be constructed.
-   *  @param swaps The list of swaps to append to.
-   *  @param vertex_mapping The current desired mapping. Will be updated with
-   * the new added swaps.
-   *  @param arch_mapping An ArchitectureMapping object, which knows the graph,
-   * how to do Node <-> vertex size_t conversions, etc.
-   */
-  void append_partial_solution(
-      SwapList& swaps, VertexMapping& vertex_mapping,
-      const ArchitectureMapping& arch_mapping);
-
-  /** For experiments, provide access to the internal stored TSA object. This
-   * function may be deleted later!
-   *  @return Reference to the internal stored TSA object.
-   */
-  // HybridTsa00& get_hybrid_tsa_for_testing();
+      tsa_internal::RiverFlowPathFinder& path_finder) override;
 
  private:
-  HybridTsa00 m_hybrid_tsa;
-  SwapListOptimiser m_swap_list_optimiser;
-  SwapListTableOptimiser m_table_optimiser;
-  RNG m_rng;
+  tsa_internal::HybridTsa m_hybrid_tsa;
+  tsa_internal::SwapListOptimiser m_swap_list_optimiser;
+  tsa_internal::SwapListTableOptimiser m_table_optimiser;
 };
 
-}  // namespace tsa_internal
 }  // namespace tket

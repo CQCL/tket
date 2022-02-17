@@ -61,6 +61,7 @@ ENDIF()
 # this list corresponds to a topological sorting of the dependency graph of the different modules
 list(APPEND TKET_COMPS
     Utils
+    TokenSwapping
     ZX
     OpType
     Clifford
@@ -70,12 +71,12 @@ list(APPEND TKET_COMPS
     PauliGraph
     Circuit
     Architecture
+    TokenSwappingWithArch
     Simulation
     Diagonalisation
     Program
     Characterisation
     Converters
-    TokenSwapping
     Placement
     ArchAwareSynth
     Mapping    

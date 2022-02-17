@@ -25,20 +25,21 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/CircuitsForTesting.cpp
     ${TKET_TESTS_DIR}/Utils/test_MatrixAnalysis.cpp
     ${TKET_TESTS_DIR}/Utils/test_CosSinDecomposition.cpp
+    ${TKET_TESTS_DIR}/Utils/test_RNG.cpp
     ${TKET_TESTS_DIR}/Graphs/EdgeSequence.cpp
     ${TKET_TESTS_DIR}/Graphs/EdgeSequenceColouringParameters.cpp
     ${TKET_TESTS_DIR}/Graphs/GraphTestingRoutines.cpp
     ${TKET_TESTS_DIR}/Graphs/RandomGraphGeneration.cpp
     ${TKET_TESTS_DIR}/Graphs/RandomPlanarGraphs.cpp
-    ${TKET_TESTS_DIR}/Graphs/RNG.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphColouring.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindComponents.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindMaxClique.cpp
-    ${TKET_TESTS_DIR}/Graphs/test_RNG.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphUtils.cpp
     ${TKET_TESTS_DIR}/Graphs/test_DirectedGraph.cpp
     ${TKET_TESTS_DIR}/Graphs/test_ArticulationPoints.cpp
     ${TKET_TESTS_DIR}/Graphs/test_TreeSearch.cpp
+    # NOTE: For testing, it is easier to combine TokenSwapping
+    # and TokenSwappingWithArch tests together.
     ${TKET_TESTS_DIR}/TokenSwapping/Data/FixedCompleteSolutions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/Data/FixedSwapSequences.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/NeighboursFromEdges.cpp
@@ -51,18 +52,21 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_SwapSequenceTable.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/ArchitectureEdgesReimplementation.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/BestTsaTester.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/DebugFunctions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/DecodedProblemData.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/FullTsaTesting.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/GetRandomSet.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/PartialTsaTesting.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/ProblemGeneration.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/TestStatsStructs.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/test_DebugFunctions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TSAUtils/test_SwapFunctions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_ArchitectureMappingEndToEnd.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_BestTsaFixedSwapSequences.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_DistancesFromArchitecture.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_FullTsa.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/test_main_entry_functions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_RiverFlowPathFinder.cpp
+    ${TKET_TESTS_DIR}/TokenSwapping/test_SwapsFromQubitMapping.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_SwapList.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_SwapListOptimiser.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_VariousPartialTsa.cpp
@@ -88,7 +92,9 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/test_PhasePolynomials.cpp
     ${TKET_TESTS_DIR}/test_PauliGraph.cpp
     ${TKET_TESTS_DIR}/test_Architectures.cpp
+    ${TKET_TESTS_DIR}/test_ArchitectureAwareSynthesis.cpp
     ${TKET_TESTS_DIR}/test_Placement.cpp
+    ${TKET_TESTS_DIR}/test_MappingVerification.cpp
     ${TKET_TESTS_DIR}/test_MappingFrontier.cpp
     ${TKET_TESTS_DIR}/test_RoutingMethod.cpp
     ${TKET_TESTS_DIR}/test_MappingManager.cpp
@@ -96,6 +102,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/test_LexiRoute.cpp
     ${TKET_TESTS_DIR}/test_MultiGateReorder.cpp
     ${TKET_TESTS_DIR}/test_BoxDecompRoutingMethod.cpp
+    ${TKET_TESTS_DIR}/test_RoutingPasses.cpp
     ${TKET_TESTS_DIR}/test_DeviceCharacterisation.cpp
     ${TKET_TESTS_DIR}/test_Clifford.cpp
     ${TKET_TESTS_DIR}/test_MeasurementSetup.cpp

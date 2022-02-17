@@ -9,6 +9,7 @@ on:
   push:
     branches:
       - develop
+      - feature/RV3.1
   schedule:
     # 03:00 every Saturday morning
     - cron: '0 3 * * 6'
@@ -21,6 +22,7 @@ jobs:
     env:
       CC: gcc-10
       CXX: g++-10
+      CONAN_REVISIONS_ENABLED: 1
       PYTKET_SKIP_REGISTRATION: "true"
     steps:
     - uses: actions/checkout@v2
@@ -55,10 +57,10 @@ jobs:
         ${conan_cmd} profile update settings.compiler.libcxx=libstdc++11 tket
         ${conan_cmd} profile update options.tket:shared=True tket
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
+    - name: add remote
+      run: ${CONAN_CMD} remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
     - name: Install ninja and ccache
       run: sudo apt-get install ninja-build ccache
-    - name: Build symengine
-      run: ${CONAN_CMD} create --profile=tket recipes/symengine
     - name: Build tket
       run: ${CONAN_CMD} create --profile=tket recipes/tket
     - name: Install runtime test requirements
@@ -133,6 +135,7 @@ jobs:
     name: Build and test (MacOS)
     runs-on: macos-11
     env:
+      CONAN_REVISIONS_ENABLED: 1
       PYTKET_SKIP_REGISTRATION: "true"
     steps:
     - uses: actions/checkout@v2
@@ -178,10 +181,10 @@ jobs:
         conan profile update options.tket:shared=True tket
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
+    - name: add remote
+      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
     - name: Install boost
       run: conan install --profile=tket boost/1.78.0@ --build=missing
-    - name: Build symengine
-      run: conan create --profile=tket recipes/symengine
     - name: Build tket
       run: conan create --profile=tket recipes/tket --build=spdlog --build=tket
     - name: Build and run tket tests
@@ -257,6 +260,7 @@ jobs:
       run:
         shell: "/usr/bin/arch -arch arm64e /bin/bash {0}"
     env:
+      CONAN_REVISIONS_ENABLED: 1
       PYTKET_SKIP_REGISTRATION: "true"
     steps:
     - uses: actions/checkout@v2
@@ -270,10 +274,10 @@ jobs:
         conan profile update options.tket:shared=True tket
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
+    - name: add remote
+      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
     - name: Install boost
       run: conan install --profile=tket boost/1.78.0@ --build=missing
-    - name: Build symengine
-      run: conan create --profile=tket recipes/symengine
     - name: Build tket
       run: conan create --profile=tket recipes/tket --build=spdlog --build=tket
     - name: Build and run tket tests
@@ -335,6 +339,7 @@ jobs:
     name: Build and test (Windows)
     runs-on: windows-2019
     env:
+      CONAN_REVISIONS_ENABLED: 1
       PYTKET_SKIP_REGISTRATION: "true"
     steps:
     - uses: actions/checkout@v2
@@ -367,14 +372,14 @@ jobs:
         conan profile update options.tket:shared=True tket
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
+    - name: add remote
+      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
     - name: Cache tket build
       id: cache-tket
       uses: actions/cache@v2
       with:
         path: C:\Users\runneradmin\.conan\data\tket
         key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-14
-    - name: Build symengine
-      run: conan create --profile=tket recipes/symengine
     - name: Build tket
       if: steps.cache-tket.outputs.cache-hit != 'true'
       run: conan create --profile=tket recipes/tket

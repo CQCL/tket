@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -38,6 +38,7 @@ static const vector<Swap>& get_swaps_global() {
 }
 
 const Swap& SwapConversion::get_swap_from_hash(SwapHash x) {
+  TKET_ASSERT(x >= 1 && x <= 15);
   return get_swaps_global().at(x - 1);
 }
 

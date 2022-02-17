@@ -21,7 +21,6 @@
 #include <utility>
 #include <vector>
 
-#include "Circuit/Conditional.hpp"
 #include "Graphs/CompleteGraph.hpp"
 #include "Graphs/DirectedGraph.hpp"
 #include "Ops/OpPtr.hpp"
@@ -204,7 +203,7 @@ class SquareGrid : public Architecture {
   unsigned layers;
 };
 
-typedef std::shared_ptr<Architecture> ArchitecturePtr;
+typedef std::shared_ptr<const Architecture> ArchitecturePtr;
 
 int tri_lexicographical_comparison(
     const dist_vec &dist1, const dist_vec &dist2);

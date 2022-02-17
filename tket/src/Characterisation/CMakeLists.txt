@@ -31,7 +31,6 @@ list(APPEND DEPS_${COMP}
     Ops
     OpType
     PauliGraph
-    TokenSwapping
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

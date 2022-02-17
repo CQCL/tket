@@ -1,4 +1,4 @@
-// Copyright 2019-2021 Cambridge Quantum Computing
+// Copyright 2019-2022 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -21,11 +21,10 @@
 #include "VectorListHybridSkeleton.hpp"
 
 namespace tket {
-namespace tsa_internal {
 
 struct OverwriteIntervalResult {
   size_t number_of_overwritten_elements;
-  VectorListHybridSkeleton::Index final_overwritten_element_id;
+  tsa_internal::VectorListHybridSkeleton::Index final_overwritten_element_id;
 };
 
 /** VectorListHybrid<T> combines some functionality of std::vector<T>
@@ -77,7 +76,7 @@ class VectorListHybrid {
   /** NOTE: the ID is NOT necessarily an actual vector index;
    *      that's an implementation detail.
    */
-  typedef VectorListHybridSkeleton::Index ID;
+  typedef tsa_internal::VectorListHybridSkeleton::Index ID;
 
   VectorListHybrid();
 
@@ -272,7 +271,7 @@ class VectorListHybrid {
   std::string debug_str() const;
 
  private:
-  VectorListHybridSkeleton m_links_data;
+  tsa_internal::VectorListHybridSkeleton m_links_data;
 
   /// The actual stored elements.
   std::vector<T> m_data;
@@ -303,13 +302,13 @@ VectorListHybrid<T>::VectorListHybrid() {}
 
 template <class T>
 typename VectorListHybrid<T>::ID VectorListHybrid<T>::get_invalid_id() {
-  return VectorListHybridSkeleton::get_invalid_index();
+  return tsa_internal::VectorListHybridSkeleton::get_invalid_index();
 }
 
 template <class T>
 std::optional<typename VectorListHybrid<T>::ID>
 VectorListHybrid<T>::optional_id(ID id) {
-  if (id == VectorListHybridSkeleton::get_invalid_index()) {
+  if (id == tsa_internal::VectorListHybridSkeleton::get_invalid_index()) {
     return {};
   }
   return id;
@@ -491,8 +490,7 @@ OverwriteIntervalResult VectorListHybrid<T>::overwrite_interval(
         m_links_data.next(result.final_overwritten_element_id);
   }
   // Should be impossible to reach here
-  TKET_ASSERT(!"VectorListHybrid::overwrite_interval");
-  return result;
+  TKET_ASSERT(false);
 }
 
 template <class T>
@@ -532,5 +530,4 @@ std::string VectorListHybrid<T>::debug_str() const {
   return ss.str();
 }
 
-}  // namespace tsa_internal
 }  // namespace tket

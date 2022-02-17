@@ -19,6 +19,7 @@
 #include <unordered_set>
 #include <vector>
 
+#include "Circuit/Conditional.hpp"
 #include "Graphs/ArticulationPoints.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/UnitID.hpp"
@@ -49,10 +50,7 @@ bool Architecture::valid_operation(
       if (this->node_exists(uids[0])) {
         return true;
       } else {
-        std::cout << "found unplaced single qubit gate\n";
-        std::cout << uids[0].repr() << std::endl;
-        throw std::logic_error("STOP Single qubit unplaced");
-
+        // with current Architecture can assume all single qubit gates valid
         return true;
       }
     }
