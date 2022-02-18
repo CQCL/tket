@@ -407,19 +407,6 @@ class Backend(ABC):
         raise NotImplementedError("Backend does not support job cancellation.")
 
     @property
-    def characterisation(self) -> Optional[dict]:
-        """Retrieve the characterisation targeted by the backend if it exists.
-
-        :return: The characterisation that this backend targets if it exists. The
-            characterisation object contains device-specific information such as gate
-            error rates.
-        :rtype: Optional[dict]
-        """
-        raise NotImplementedError(
-            "Backend does not support retrieving characterisation."
-        )
-
-    @property
     def backend_info(self) -> Optional[BackendInfo]:
         """Retrieve all Backend properties in a BackendInfo object, including
         device architecture, supported gate set, gate errors and other hardware-specific

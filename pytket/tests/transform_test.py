@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import itertools
 from pathlib import Path
 from pytket.circuit import Circuit, OpType, PauliExpBox, Node, Qubit  # type: ignore
 from pytket._tket.circuit import _library  # type: ignore
@@ -21,7 +22,6 @@ from pytket.passes import (  # type: ignore
     KAKDecomposition,
     CommuteThroughMultis,
     RebaseCustom,
-    auto_rebase_pass,
     PauliSquash,
     FullPeepholeOptimise,
     DefaultMappingPass,
@@ -29,6 +29,8 @@ from pytket.passes import (  # type: ignore
     RoutingPass,
     PlacementPass,
     CXMappingPass,
+    auto_rebase_pass,
+    auto_squash_pass,
 )
 from pytket.predicates import CompilationUnit, NoMidMeasurePredicate  # type: ignore
 from pytket.passes.auto_rebase import _CX_CIRCS, NoAutoRebase
@@ -1006,6 +1008,53 @@ def test_auto_rebase() -> None:
     with pytest.raises(NoAutoRebase) as cx_err:
         _ = auto_rebase_pass({OpType.CX, OpType.H, OpType.T})
     assert "TK1" in str(cx_err.value)
+
+
+def test_auto_squash() -> None:
+    pass_params = [
+        ({OpType.Rz, OpType.Rx}, _library._TK1_to_RzRx),
+        (
+            {OpType.Rz, OpType.SX},
+            _library._TK1_to_RzSX,
+        ),
+        (
+            {OpType.T, OpType.Rz, OpType.H},
+            _library._TK1_to_RzH,
+        ),
+        (
+            {OpType.T, OpType.Rz, OpType.H},
+            _library._TK1_to_RzH,
+        ),
+        (
+            {OpType.PhasedX, OpType.Rz},
+            _library._TK1_to_PhasedXRz,
+        ),
+        (
+            {OpType.TK1, OpType.U3},
+            _library._TK1_to_TK1,
+        ),
+    ]
+
+    for gateset, TK1_func in pass_params:
+        circ = Circuit(1)
+        for gate in itertools.islice(itertools.cycle(gateset), 5):
+            # make a sequence of 5 gates from gateset to make sure squash does
+            # something
+            params: List[float] = []
+            while True:
+                try:
+                    circ.add_gate(gate, params, [0])
+                    break
+                except (RuntimeError, TypeError):
+                    params.append(0.1)
+        squash = auto_squash_pass(gateset)
+        assert squash.to_dict() == SquashCustom(gateset, TK1_func).to_dict()
+
+        assert squash.apply(circ)
+
+    with pytest.raises(NoAutoRebase) as tk_err:
+        _ = auto_squash_pass({OpType.H, OpType.T})
+    assert "TK1" in str(tk_err.value)
 
 
 if __name__ == "__main__":
