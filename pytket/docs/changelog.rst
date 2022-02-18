@@ -1,6 +1,15 @@
 Changelog
 =========
 
+
+0.19.2 (February 2022)
+----------------------
+
+Fixes:
+
+* Fix issue with jinja2 by updating dependency.
+
+
 0.19.1 (February 2022)
 ----------------------
 
