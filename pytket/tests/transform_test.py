@@ -22,7 +22,6 @@ from pytket.passes import (  # type: ignore
     KAKDecomposition,
     CommuteThroughMultis,
     RebaseCustom,
-    auto_rebase_pass,
     PauliSquash,
     FullPeepholeOptimise,
     DefaultMappingPass,
