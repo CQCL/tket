@@ -126,7 +126,6 @@ class CMakeBuild(build_ext):
                 "tket-Characterisation",
                 "tket-Converters",
                 "tket-TokenSwapping",
-                "tket-TokenSwappingWithArch",
                 "tket-Placement",
                 "tket-Mapping",
                 "tket-MeasurementSetup",
