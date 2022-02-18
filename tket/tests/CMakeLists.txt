@@ -61,7 +61,6 @@ target_link_libraries(test_tket PRIVATE
     tket-Program
     tket-Placement
     tket-TokenSwapping
-    tket-TokenSwappingWithArch
     tket-Mapping
     tket-Simulation
     tket-Transformations
