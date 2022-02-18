@@ -94,11 +94,10 @@ static void colour_single_component(
       }
       colour_to_assign = colour;
     } catch (const exception& e) {
-      TKET_ASSERT_WITH_MESSAGE(
-          false, stringstream()
-                     << "colouring single component " << component_index
-                     << " returned vertex " << vertex << " with colour "
-                     << colour << " : " << e.what());
+      TKET_ASSERT(
+          AssertMessage() << "colouring single component " << component_index
+                          << " returned vertex " << vertex << " with colour "
+                          << colour << " : " << e.what());
     }
     // GCOVR_EXCL_STOP
   }
@@ -171,11 +170,11 @@ GraphColouringResult GraphColouringRoutines::get_colouring(
     return result;
   } catch (const exception& e) {
     // GCOVR_EXCL_START
-    stringstream ss;
-    ss << "We had " << connected_components.size() << " connected components, "
-       << adjacency_data.get_number_of_vertices()
-       << " vertices in total: " << e.what();
-    TKET_ASSERT_WITH_MESSAGE(false, ss.str());
+    TKET_ASSERT(
+        AssertMessage() << "We had " << connected_components.size()
+                        << " connected components, "
+                        << adjacency_data.get_number_of_vertices()
+                        << " vertices in total: " << e.what());
     // GCOVR_EXCL_STOP
   }
 }

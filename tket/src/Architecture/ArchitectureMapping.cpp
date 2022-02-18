@@ -34,11 +34,10 @@ ArchitectureMapping::ArchitectureMapping(const Architecture& arch)
     {
       const auto citer = m_node_to_vertex_mapping.find(node);
       // GCOVR_EXCL_START
-      TKET_ASSERT_WITH_MESSAGE(
-          citer == m_node_to_vertex_mapping.cend(),
-          std::stringstream()
-              << "Duplicate node " << node.repr() << " at vertices "
-              << citer->second << ", " << ii);
+      TKET_ASSERT(
+          citer == m_node_to_vertex_mapping.cend() ||
+          AssertMessage() << "Duplicate node " << node.repr() << " at vertices "
+                          << citer->second << ", " << ii);
       // GCOVR_EXCL_STOP
     }
     m_node_to_vertex_mapping[node] = ii;
@@ -71,20 +70,20 @@ ArchitectureMapping::ArchitectureMapping(
   // Check that the nodes agree with the architecture object.
   const auto uids = arch.nodes();
   // GCOVR_EXCL_START
-  TKET_ASSERT_WITH_MESSAGE(
-      uids.size() == m_vertex_to_node_mapping.size(),
-      std::stringstream() << "passed in " << edges.size() << " edges, giving "
-                          << m_vertex_to_node_mapping.size()
-                          << " vertices; but the architecture object has "
-                          << uids.size() << " vertices");
+  TKET_ASSERT(
+      uids.size() == m_vertex_to_node_mapping.size() ||
+      AssertMessage() << "passed in " << edges.size() << " edges, giving "
+                      << m_vertex_to_node_mapping.size()
+                      << " vertices; but the architecture object has "
+                      << uids.size() << " vertices");
   // GCOVR_EXCL_STOP
 
   for (const UnitID& uid : uids) {
     const Node node(uid);
     // GCOVR_EXCL_START
-    TKET_ASSERT_WITH_MESSAGE(
-        m_node_to_vertex_mapping.count(node) != 0,
-        std::stringstream()
+    TKET_ASSERT(
+        m_node_to_vertex_mapping.count(node) != 0 ||
+        AssertMessage()
             << "passed in " << edges.size() << " edges, giving "
             << m_vertex_to_node_mapping.size()
             << " vertices; but the architecture object has an unknown node "
@@ -100,11 +99,10 @@ size_t ArchitectureMapping::number_of_vertices() const {
 const Node& ArchitectureMapping::get_node(size_t vertex) const {
   const auto num_vertices = number_of_vertices();
   // GCOVR_EXCL_START
-  TKET_ASSERT_WITH_MESSAGE(
-      vertex < num_vertices, std::stringstream()
-                                 << "invalid vertex " << vertex
-                                 << " (architecture only has " << num_vertices
-                                 << " vertices)");
+  TKET_ASSERT(
+      vertex < num_vertices || AssertMessage() << "invalid vertex " << vertex
+                                               << " (architecture only has "
+                                               << num_vertices << " vertices)");
   // GCOVR_EXCL_STOP
 
   return m_vertex_to_node_mapping[vertex];
@@ -113,9 +111,9 @@ const Node& ArchitectureMapping::get_node(size_t vertex) const {
 size_t ArchitectureMapping::get_vertex(const Node& node) const {
   const auto citer = m_node_to_vertex_mapping.find(node);
   // GCOVR_EXCL_START
-  TKET_ASSERT_WITH_MESSAGE(
-      citer != m_node_to_vertex_mapping.cend(),
-      std::stringstream() << "node " << node.repr() << " has no vertex number");
+  TKET_ASSERT(
+      citer != m_node_to_vertex_mapping.cend() ||
+      AssertMessage() << "node " << node.repr() << " has no vertex number");
   // GCOVR_EXCL_STOP
   return citer->second;
 }
