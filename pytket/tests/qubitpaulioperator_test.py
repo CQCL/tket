@@ -27,13 +27,6 @@ from pytket.circuit import Qubit  # type: ignore
 
 import strategies as st  # type: ignore
 
-try:
-    from openfermion import QubitOperator  # type: ignore
-
-    _of_installed = True
-except ImportError:
-    _of_installed = False
-
 
 def test_QubitPauliOperator_addition() -> None:
     x = Symbol("x")
@@ -107,29 +100,6 @@ def test_QubitPauliOperator_io() -> None:
     assert np.isclose(complex(op2[qps2]), 3.1)
 
 
-@pytest.mark.skipif(not _of_installed, reason="openfermion not installed")
-def test_QubitPauliOperator_conversion() -> None:
-    openf_op = QubitOperator("X0 X1 Y2 Z3", 0.34)
-    openf_op += QubitOperator("Z0 X1 Y2 Z3", -0.1j)
-
-    tk_op = QubitPauliOperator.from_OpenFermion(openf_op)
-    assert len(tk_op._dict) == 2
-
-    qbs = [Qubit(i) for i in range(4)]
-    qps1 = QubitPauliString(qbs, [Pauli.X, Pauli.X, Pauli.Y, Pauli.Z])
-    qps2 = QubitPauliString(qbs, [Pauli.Z, Pauli.X, Pauli.Y, Pauli.Z])
-    assert np.isclose(complex(tk_op[qps1]), 0.34)
-    assert np.isclose(complex(tk_op[qps2]), -0.1j)
-
-    openf_op2 = tk_op.to_OpenFermion()
-    assert openf_op == openf_op2
-
-    tk_op[QubitPauliString(Qubit(0), Pauli.Z)] = Symbol("x")
-    with pytest.raises(ValueError) as errorinfo:
-        fail_openf_op = tk_op.to_OpenFermion()
-    assert "QubitPauliOperator contains unevaluated symbols." in str(errorinfo.value)
-
-
 def test_QubitPauliOperator_matrices() -> None:
     qbs = [Qubit(i) for i in range(2)]
     qpsXY = QubitPauliString(qbs, [Pauli.X, Pauli.Y])
@@ -190,7 +160,6 @@ if __name__ == "__main__":
     test_QubitPauliOperator_opmult()
     test_QubitPauliOperator_substitution()
     test_QubitPauliOperator_io()
-    test_QubitPauliOperator_conversion()
     test_QubitPauliOperator_matrices()
     test_QubitPauliOperator_compression()
 
