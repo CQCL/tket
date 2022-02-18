@@ -1,4 +1,4 @@
- had # Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2022 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ from pytket.passes import (  # type: ignore
     RoutingPass,
     PlacementPass,
     CXMappingPass,
-    auto_rebase_pass, 
+    auto_rebase_pass,
     auto_squash_pass,
 )
 from pytket.predicates import CompilationUnit, NoMidMeasurePredicate  # type: ignore
