@@ -164,10 +164,11 @@ void VectorListHybridSkeleton::erase_interval(
     // GCOVR_EXCL_START
     TKET_ASSERT_WITH_MESSAGE(
         last_element_index < m_links.size(),
-        "erase_interval with start index "
-            << index << ", number_of_elements=" << number_of_elements
-            << ", size " << m_links.size() << ", runs out of elements at N="
-            << nn << " (got index " << last_element_index << ")");
+        std::stringstream()
+            << "erase_interval with start index " << index
+            << ", number_of_elements=" << number_of_elements << ", size "
+            << m_links.size() << ", runs out of elements at N=" << nn
+            << " (got index " << last_element_index << ")");
     // GCOVR_EXCL_STOP
   }
   TKET_ASSERT(number_of_elements <= m_size);

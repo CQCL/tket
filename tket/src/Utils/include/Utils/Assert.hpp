@@ -15,23 +15,28 @@
 #pragma once
 
 #include <cstdlib>
-#include <sstream>
 
+#include "GetTketAssertMessage.hpp"
 #include "TketLog.hpp"
 
 /**
  * If `condition` is not satisfied, log a diagnostic message and abort,
  * including the extra message "msg".
- * "msg" is passed directly to a stringstream, so you can write:
+ * "msg" could be an object, directly writable to a stringstream,
+ * so you could write:
  *
- *  TKET_ASSERT_WITH_MESSAGE(x<y, "The values are x=" << x << ", y=" << y);
+ *  TKET_ASSERT_WITH_MESSAGE(x<y, x);
  *
- * Note that the macro would automatically generate the message "x<y",
+ * ...or "msg" could itself be a stringstream, so you could write:
+ *
+ * TKET_ASSERT_WITH_MESSAGE(x<y,
+ *    std::stringstream() << "The values are x=" << x << ", y=" << y);
+ *
+ * Note that the macro would automatically include the string "x<y",
  * i.e. the raw C++ code defining the condition.
  *
- * Note that the message construction (including streaming the second argument
- * to a stringstream) will NOT begin if `condition` is true,
- * so there is no performance penalty.
+ * The message construction (streaming the second argument) will NOT begin
+ * if `condition` is true, so there is no performance penalty.
  *
  * This also checks if evaluating `condition` itself throws an exception.
  *
@@ -41,7 +46,7 @@
  * (2) We tried putting the start/stop tags within the macro, to make test
  * coverage ignore the code; unfortunately this did NOT work.
  * We suspect that it's because comments are stripped from the macro before
- * test coverage sees the code, but we don't know. See TKET-1856.
+ * test coverage sees the code, but we don't know.
  * (3) It is known that exceptions cause problems by generating numerous
  * extra branches:
  * https://stackoverflow.com/questions/42003783/
@@ -50,33 +55,34 @@
  * did cut down the number of extra branches, it did not remove them
  * completely, so exceptions are not the sole cause of branching problems.
  */
-#define TKET_ASSERT_WITH_MESSAGE(condition, msg)                           \
-  do {                                                                     \
-    try {                                                                  \
-      if (!(condition)) {                                                  \
-        std::stringstream ss;                                              \
-        ss << "Assertion '" << #condition << "' (" << __FILE__ << " : "    \
-           << __func__ << " : " << __LINE__ << ") failed. " << msg         \
-           << " Aborting.";                                                \
-        tket::tket_log()->critical(ss.str());                              \
-        std::abort();                                                      \
-      }                                                                    \
-    } catch (const std::exception& ex) {                                   \
-      std::stringstream ss;                                                \
-      ss << "Evaluating assertion condition '" << #condition << "' ("      \
-         << __FILE__ << " : " << __func__ << " : " << __LINE__             \
-         << ") threw unexpected exception: '" << ex.what() << "'. " << msg \
-         << " Aborting.";                                                  \
-      tket::tket_log()->critical(ss.str());                                \
-      std::abort();                                                        \
-    } catch (...) {                                                        \
-      std::stringstream ss;                                                \
-      ss << "Evaluating assertion condition '" << #condition << "' ("      \
-         << __FILE__ << " : " << __func__ << " : " << __LINE__             \
-         << ") Threw unknown exception. " << msg << " Aborting.";          \
-      tket::tket_log()->critical(ss.str());                                \
-      std::abort();                                                        \
-    }                                                                      \
+#define TKET_ASSERT_WITH_MESSAGE(condition, msg)                            \
+  do {                                                                      \
+    try {                                                                   \
+      if (!(condition)) {                                                   \
+        std::stringstream ss;                                               \
+        ss << "Assertion '" << #condition << "' (" << __FILE__ << " : "     \
+           << __func__ << " : " << __LINE__ << ") failed. "                 \
+           << get_tket_assert_message((msg)) << " Aborting.";               \
+        tket::tket_log()->critical(ss.str());                               \
+        std::abort();                                                       \
+      }                                                                     \
+    } catch (const std::exception& ex) {                                    \
+      std::stringstream ss;                                                 \
+      ss << "Evaluating assertion condition '" << #condition << "' ("       \
+         << __FILE__ << " : " << __func__ << " : " << __LINE__              \
+         << ") threw unexpected exception: '" << ex.what() << "'. "         \
+         << get_tket_assert_message((msg)) << " Aborting.";                 \
+      tket::tket_log()->critical(ss.str());                                 \
+      std::abort();                                                         \
+    } catch (...) {                                                         \
+      std::stringstream ss;                                                 \
+      ss << "Evaluating assertion condition '" << #condition << "' ("       \
+         << __FILE__ << " : " << __func__ << " : " << __LINE__              \
+         << ") Threw unknown exception. " << get_tket_assert_message((msg)) \
+         << " Aborting.";                                                   \
+      tket::tket_log()->critical(ss.str());                                 \
+      std::abort();                                                         \
+    }                                                                       \
   } while (0)
 
 #define TKET_ASSERT(condition)               \

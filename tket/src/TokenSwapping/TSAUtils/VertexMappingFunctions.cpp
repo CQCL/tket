@@ -40,7 +40,7 @@ void check_mapping(
     // GCOVR_EXCL_START
     TKET_ASSERT_WITH_MESSAGE(
         work_mapping.count(entry.second) == 0,
-        "Vertices v_" << entry.first << " and v_" << work_mapping[entry.second]
+        std::stringstream() << "Vertices v_" << entry.first << " and v_" << work_mapping[entry.second]
                       << " both have the same target vertex v_"
                       << entry.second);
     // GCOVR_EXCL_STOP

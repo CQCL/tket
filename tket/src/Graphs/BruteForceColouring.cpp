@@ -216,13 +216,13 @@ BruteForceColouring::BruteForceColouring(
     throw std::runtime_error("suggested_number_of_colours hit number_of_nodes");
   } catch (const std::exception& e) {
     // GCOVR_EXCL_START
-    std::stringstream ss;
-    ss << "initial_suggested_number_of_colours = "
-       << initial_suggested_number_of_colours
-       << ", reached suggested_number_of_colours = "
-       << suggested_number_of_colours << ", had " << number_of_nodes
-       << " nodes. Error: " << e.what() << priority.print_raw_data();
-    TKET_ASSERT_WITH_MESSAGE(false, ss.str());
+    TKET_ASSERT_WITH_MESSAGE(
+        false, std::stringstream() << "initial_suggested_number_of_colours = "
+                                   << initial_suggested_number_of_colours
+                                   << ", reached suggested_number_of_colours = "
+                                   << suggested_number_of_colours << ", had "
+                                   << number_of_nodes << " nodes. Error: "
+                                   << e.what() << priority.print_raw_data());
     // GCOVR_EXCL_STOP
   }
 }

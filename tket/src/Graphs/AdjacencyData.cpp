@@ -68,7 +68,8 @@ const set<std::size_t>& AdjacencyData::get_neighbours(
   // GCOVR_EXCL_START
   TKET_ASSERT_WITH_MESSAGE(
       vertex < m_cleaned_data.size(),
-      "AdjacencyData: get_neighbours called with invalid vertex "
+      std::stringstream()
+          << "AdjacencyData: get_neighbours called with invalid vertex "
           << vertex << "; there are only " << m_cleaned_data.size()
           << " vertices");
   // GCOVR_EXCL_STOP
@@ -105,9 +106,9 @@ bool AdjacencyData::edge_exists(std::size_t i, std::size_t j) const {
   // GCOVR_EXCL_START
   TKET_ASSERT_WITH_MESSAGE(
       (i < m_cleaned_data.size() && j < m_cleaned_data.size()),
-      "edge_exists called with vertices "
-          << i << ", " << j << ", but there are only " << m_cleaned_data.size()
-          << " vertices");
+      std::stringstream() << "edge_exists called with vertices " << i << ", "
+                          << j << ", but there are only "
+                          << m_cleaned_data.size() << " vertices");
   // GCOVR_EXCL_STOP
   return m_cleaned_data[i].count(j) != 0;
 }
@@ -148,13 +149,14 @@ AdjacencyData::AdjacencyData(
     for (std::size_t j : raw_data[i]) {
       // GCOVR_EXCL_START
       TKET_ASSERT_WITH_MESSAGE(
-          i != j || allow_loops, "Vertex " << i << " out of "
-                                           << m_cleaned_data.size()
-                                           << " has a loop.");
+          i != j || allow_loops,
+          std::stringstream() << "Vertex " << i << " out of "
+                              << m_cleaned_data.size() << " has a loop.");
       TKET_ASSERT_WITH_MESSAGE(
           j < m_cleaned_data.size(),
-          "Vertex " << i << " has illegal neighbour vertex " << j
-                    << ", the size is " << m_cleaned_data.size());
+          std::stringstream()
+              << "Vertex " << i << " has illegal neighbour vertex " << j
+              << ", the size is " << m_cleaned_data.size());
       // GCOVR_EXCL_STOP
       m_cleaned_data[i].insert(j);
       m_cleaned_data[j].insert(i);
