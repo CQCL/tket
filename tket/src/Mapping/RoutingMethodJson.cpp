@@ -32,7 +32,7 @@ void to_json(nlohmann::json& j, const std::vector<RoutingMethodPtr>& rmp_v) {
 
 void from_json(const nlohmann::json& j, std::vector<RoutingMethodPtr>& rmp_v) {
   for (const auto& c : j) {
-    std::string name = c.at("name").get<std::string>();
+    std::string name = c.at("name_of_method").get<std::string>();
     if (name == "LexiLabellingMethod") {
       rmp_v.push_back(std::make_shared<LexiLabellingMethod>(
           LexiLabellingMethod::deserialize(c)));
