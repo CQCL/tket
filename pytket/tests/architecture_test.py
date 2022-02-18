@@ -17,7 +17,7 @@ from pytket.architecture import (
     Architecture,
     SquareGrid,
     FullyConnected,
-)  # type : ignore
+)  # type: ignore
 
 
 def test_architectures() -> None:
