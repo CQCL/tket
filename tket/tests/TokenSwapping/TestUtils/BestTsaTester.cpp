@@ -16,9 +16,9 @@
 
 #include <catch2/catch.hpp>
 
+#include "Architecture/BestTsaWithArch.hpp"
 #include "TokenSwapping/VertexMappingFunctions.hpp"
 #include "TokenSwapping/VertexSwapResult.hpp"
-#include "Architecture/BestTsaWithArch.hpp"
 
 using std::vector;
 

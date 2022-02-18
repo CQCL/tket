@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "TokenSwapping/PartialTsaInterface.hpp"
 #include "Architecture/ArchitectureMapping.hpp"
+#include "TokenSwapping/PartialTsaInterface.hpp"
 #include "Utils/RNG.hpp"
 
 namespace tket {

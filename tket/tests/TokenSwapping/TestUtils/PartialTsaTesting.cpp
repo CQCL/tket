@@ -16,12 +16,12 @@
 
 #include <catch2/catch.hpp>
 
+#include "Architecture/DistancesFromArchitecture.hpp"
+#include "Architecture/NeighboursFromArchitecture.hpp"
 #include "TestStatsStructs.hpp"
 #include "TokenSwapping/DistanceFunctions.hpp"
 #include "TokenSwapping/RiverFlowPathFinder.hpp"
 #include "TokenSwapping/VertexSwapResult.hpp"
-#include "Architecture/DistancesFromArchitecture.hpp"
-#include "Architecture/NeighboursFromArchitecture.hpp"
 
 using std::vector;
 
