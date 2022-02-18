@@ -19,6 +19,7 @@ from pytket.architecture import (
     FullyConnected,
 )  # type: ignore
 
+
 def test_architectures() -> None:
     basic_index_coupling = [(0, 1), (2, 1), (2, 3), (4, 3)]
     basic_index_architecture = Architecture(basic_index_coupling)
