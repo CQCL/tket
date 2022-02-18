@@ -76,8 +76,9 @@ size_t DistancesFromArchitecture::operator()(size_t vertex1, size_t vertex2) {
     // GCOVR_EXCL_START
     TKET_ASSERT_WITH_MESSAGE(
         distance_entry > 0,
-        "DistancesFromArchitecture: architecture has "
-            << arch.n_nodes() << " vertices, " << arch.n_connections()
+        std::stringstream()
+            << "DistancesFromArchitecture: architecture has " << arch.n_nodes()
+            << " vertices, " << arch.n_connections()
             << " edges; returned diameter " << arch.get_diameter() << " and d("
             << vertex1 << "," << vertex2
             << ")=0. "

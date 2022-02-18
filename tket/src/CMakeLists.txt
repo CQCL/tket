@@ -71,7 +71,6 @@ list(APPEND TKET_COMPS
     PauliGraph
     Circuit
     Architecture
-    TokenSwappingWithArch
     Simulation
     Diagonalisation
     Program

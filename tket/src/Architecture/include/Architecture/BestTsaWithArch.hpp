@@ -45,13 +45,13 @@ struct BestTsaWithArch {
   /** Given an architecture and desired source->target node mapping,
    * compute a sequence of swaps (attempts to be as short as possible)
    * which will perform that mapping.
-   * Note that it may use ALL th enodes in the architecture,
+   * Note that it may use ALL the nodes in the architecture,
    * not just the ones occurring in the node_mapping.
    * If you wish certain nodes to be fixed, specify them in the mapping
    * (with equal source and target).
    * (However, note that they might STILL be moved, as long as by the end
    * they are back at the start. If you really don't to involve a particular
-   * node, you mustremove it completely from the architecture).
+   * node, you must remove it completely from the architecture).
    * KNOWN BUG: it may give an error with disconnected architectures.
    *  @param architecture The raw object containing the graph.
    *  @param node_mapping The desired source->target node mapping.

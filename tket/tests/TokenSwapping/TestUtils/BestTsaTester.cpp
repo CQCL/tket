@@ -18,7 +18,7 @@
 
 #include "TokenSwapping/VertexMappingFunctions.hpp"
 #include "TokenSwapping/VertexSwapResult.hpp"
-#include "TokenSwappingWithArch/BestTsaWithArch.hpp"
+#include "Architecture/BestTsaWithArch.hpp"
 
 using std::vector;
 

@@ -16,7 +16,7 @@
 
 #include "TokenSwapping/PartialTsaInterface.hpp"
 #include "TokenSwapping/SwapListOptimiser.hpp"
-#include "TokenSwappingWithArch/ArchitectureMapping.hpp"
+#include "Architecture/ArchitectureMapping.hpp"
 #include "Utils/RNG.hpp"
 
 namespace tket {
