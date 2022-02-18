@@ -25,8 +25,7 @@ namespace tket {
 
 /* a wrapper method for the rebase_factory in Transforms */
 PassPtr gen_rebase_pass(
-    const OpTypeSet& multiqs, const Circuit& cx_replacement,
-    const OpTypeSet& singleqs,
+    const OpTypeSet& allowed_gates, const Circuit& cx_replacement,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement);
 

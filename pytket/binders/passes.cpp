@@ -450,25 +450,24 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "RebaseCustom", &gen_rebase_pass,
       "Construct a custom rebase pass. This pass:\n(1) decomposes "
-      "multi-qubit gates not in the set of gate types `multiqs` to CX "
-      "gates;\n(2) if CX is not in `multiqs`, replaces CX gates with "
+      "multi-qubit gates not in the set of gate types `gateset` to CX "
+      "gates;\n(2) if CX is not in `gateset`, replaces CX gates with "
       "`cx_replacement`;\n(3) converts any single-qubit gates not in the "
-      "gate type set `singleqs` to the form "
+      "gate type set to the form "
       ":math:`\\mathrm{Rz}(a)\\mathrm{Rx}(b)\\mathrm{Rz}(c)` (in "
       "matrix-multiplication order, i.e. reverse order in the "
       "circuit);\n(4) applies the `tk1_replacement` function to each of "
       "these triples :math:`(a,b,c)` to generate replacement circuits."
-      "\n\n:param multiqs: The allowed multi-qubit operations in the "
+      "\n\n:param gateset: The allowed multi-qubit operations in the "
       "rebased circuit."
       "\n:param cx_replacement: The equivalent circuit to replace a CX "
-      "gate in the desired basis."
-      "\n:param singleqs: The allowed single-qubit operations in the "
-      "rebased circuit."
+      "gate using two qubit gates from the desired basis (can use any single "
+      "qubit OpTypes)."
       "\n:param tk1_replacement: A function which, given the parameters of "
       "an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
       "desired basis."
       "\n:return: a pass that rebases to the given gate set",
-      py::arg("multiqs"), py::arg("cx_replacement"), py::arg("singleqs"),
+      py::arg("gateset"), py::arg("cx_replacement"),
       py::arg("tk1_replacement"));
 
   m.def(

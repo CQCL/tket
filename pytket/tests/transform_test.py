@@ -14,11 +14,14 @@
 
 from pathlib import Path
 from pytket.circuit import Circuit, OpType, PauliExpBox, Node, Qubit  # type: ignore
+from pytket._tket.circuit import _library  # type: ignore
 from pytket.pauli import Pauli  # type: ignore
 from pytket.passes import (  # type: ignore
     RemoveRedundancies,
     KAKDecomposition,
     CommuteThroughMultis,
+    RebaseCustom,
+    auto_rebase_pass,
     PauliSquash,
     FullPeepholeOptimise,
     DefaultMappingPass,
@@ -28,6 +31,7 @@ from pytket.passes import (  # type: ignore
     CXMappingPass,
 )
 from pytket.predicates import CompilationUnit, NoMidMeasurePredicate  # type: ignore
+from pytket.passes.auto_rebase import _CX_CIRCS, NoAutoRebase
 from pytket.transform import Transform, CXConfigType, PauliSynthStrat  # type: ignore
 from pytket.qasm import circuit_from_qasm
 from pytket.architecture import Architecture  # type: ignore
@@ -954,6 +958,54 @@ def test_CXMappingPass_terminates() -> None:
     p = CXMappingPass(arc, placer, directed_cx=False, delay_measures=False)
     res = p.apply(c)
     assert res
+
+
+def test_auto_rebase() -> None:
+    pass_params = [
+        ({OpType.CX, OpType.Rz, OpType.Rx}, _library._CX(), _library._TK1_to_RzRx),
+        (
+            {OpType.CZ, OpType.Rz, OpType.SX, OpType.ZZPhase},
+            _CX_CIRCS[OpType.CZ](),
+            _library._TK1_to_RzSX,
+        ),
+        (
+            {OpType.ZZMax, OpType.T, OpType.Rz, OpType.H},
+            _library._CX_using_ZZMax(),
+            _library._TK1_to_RzH,
+        ),
+        (
+            {OpType.XXPhase, OpType.T, OpType.Rz, OpType.H},
+            _library._CX_using_XXPhase_0(),
+            _library._TK1_to_RzH,
+        ),
+        (
+            {OpType.ECR, OpType.PhasedX, OpType.Rz, OpType.CnX},
+            _library._CX_using_ECR(),
+            _library._TK1_to_PhasedXRz,
+        ),
+        (
+            {OpType.CX, OpType.TK1, OpType.U3, OpType.CnX},
+            _library._CX(),
+            _library._TK1_to_TK1,
+        ),
+    ]
+
+    circ = get_test_circuit()
+
+    for gateset, cx_circ, TK1_func in pass_params:
+        rebase = auto_rebase_pass(gateset)
+        assert rebase.to_dict() == RebaseCustom(gateset, cx_circ, TK1_func).to_dict()
+
+        c2 = circ.copy()
+        assert rebase.apply(c2)
+
+    with pytest.raises(NoAutoRebase) as cx_err:
+        _ = auto_rebase_pass({OpType.ZZPhase, OpType.TK1})
+    assert "CX" in str(cx_err.value)
+
+    with pytest.raises(NoAutoRebase) as cx_err:
+        _ = auto_rebase_pass({OpType.CX, OpType.H, OpType.T})
+    assert "TK1" in str(cx_err.value)
 
 
 if __name__ == "__main__":

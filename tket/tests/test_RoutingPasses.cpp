@@ -489,7 +489,6 @@ SCENARIO(
     REQUIRE(mm.route_circuit(
         circ, {std::make_shared<LexiLabellingMethod>(),
                std::make_shared<LexiRouteRoutingMethod>()}));
-
     Transform T_1 = Transforms::decompose_SWAP_to_CX();
     T_1.apply(circ);
     REQUIRE(circ.count_gates(OpType::SWAP) == 0);
