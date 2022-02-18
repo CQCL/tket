@@ -23,8 +23,9 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/tests_main.cpp
     ${TKET_TESTS_DIR}/testutil.cpp
     ${TKET_TESTS_DIR}/CircuitsForTesting.cpp
-    ${TKET_TESTS_DIR}/Utils/test_MatrixAnalysis.cpp
     ${TKET_TESTS_DIR}/Utils/test_CosSinDecomposition.cpp
+    ${TKET_TESTS_DIR}/Utils/test_HelperFunctions.cpp
+    ${TKET_TESTS_DIR}/Utils/test_MatrixAnalysis.cpp
     ${TKET_TESTS_DIR}/Utils/test_RNG.cpp
     ${TKET_TESTS_DIR}/Graphs/EdgeSequence.cpp
     ${TKET_TESTS_DIR}/Graphs/EdgeSequenceColouringParameters.cpp
@@ -82,7 +83,6 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Simulation/ComparisonFunctions.cpp
     ${TKET_TESTS_DIR}/Simulation/test_CircuitSimulator.cpp
     ${TKET_TESTS_DIR}/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
-    ${TKET_TESTS_DIR}/test_Utils.cpp
     ${TKET_TESTS_DIR}/Circuit/test_Boxes.cpp
     ${TKET_TESTS_DIR}/Circuit/test_Circ.cpp
     ${TKET_TESTS_DIR}/Circuit/test_Symbolic.cpp
