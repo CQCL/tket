@@ -170,11 +170,13 @@ GraphColouringResult GraphColouringRoutines::get_colouring(
     return result;
   } catch (const exception& e) {
     // GCOVR_EXCL_START
+    // "false" to prevent error "non-void function does not return a value
+    //  in all control paths"
     TKET_ASSERT(
-        AssertMessage() << "We had " << connected_components.size()
-                        << " connected components, "
-                        << adjacency_data.get_number_of_vertices()
-                        << " vertices in total: " << e.what());
+        false || AssertMessage() << "We had " << connected_components.size()
+                                 << " connected components, "
+                                 << adjacency_data.get_number_of_vertices()
+                                 << " vertices in total: " << e.what());
     // GCOVR_EXCL_STOP
   }
 }
