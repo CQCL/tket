@@ -89,7 +89,6 @@ jobs:
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-        pip install -r requirements-openfermion.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Set up Python 3.9
       if: github.event_name == 'pull_request'
@@ -112,7 +111,6 @@ jobs:
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-        pip install -r requirements-openfermion.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Set up Python 3.10
       if: github.event_name == 'schedule'
@@ -210,7 +208,6 @@ jobs:
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-        pip install -r requirements-openfermion.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Set up Python 3.9
       if: github.event_name == 'pull_request'
@@ -227,7 +224,6 @@ jobs:
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-        pip install -r requirements-openfermion.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Run mypy
       if: github.event_name == 'pull_request'
@@ -401,7 +397,6 @@ jobs:
         pip install -e . -v
         cd tests
         pip install -r requirements.txt
-        pip install -r requirements-openfermion.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Set up Python 3.9
       if: github.event_name == 'pull_request'
@@ -415,7 +410,6 @@ jobs:
         pip install -e . -v
         cd tests
         pip install -r requirements.txt
-        pip install -r requirements-openfermion.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Set up Python 3.10
       if: github.event_name == 'schedule'
