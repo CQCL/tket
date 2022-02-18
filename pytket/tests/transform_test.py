@@ -20,6 +20,7 @@ from pytket.pauli import Pauli  # type: ignore
 from pytket.passes import (  # type: ignore
     RemoveRedundancies,
     KAKDecomposition,
+    SquashCustom,
     CommuteThroughMultis,
     RebaseCustom,
     PauliSquash,
