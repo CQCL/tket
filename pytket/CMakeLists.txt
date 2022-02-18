@@ -80,11 +80,6 @@ target_link_libraries(mapping PRIVATE
     tket-OpType
     tket-TokenSwapping
     tket-Utils)
-target_link_libraries(mapping PRIVATE ${TKET_EXTRA_LIBS})
-if (WIN32)
-    # For boost::uuid:
-    target_link_libraries(mapping PRIVATE bcrypt)
-endif()
 
 pybind11_add_module(transform binders/transform.cpp)
 target_include_directories(transform PRIVATE binders/include)
