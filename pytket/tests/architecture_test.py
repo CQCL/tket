@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket.circuit import Node
+from pytket.circuit import Node  # type: ignore
 from pytket.architecture import Architecture, SquareGrid, FullyConnected  # type: ignore
 
 
