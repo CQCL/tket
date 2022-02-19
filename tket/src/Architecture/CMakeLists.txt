@@ -20,7 +20,11 @@ endif()
 
 add_library(tket-${COMP}
     Architecture.cpp
-    ArchitectureGraphClasses.cpp)
+    ArchitectureGraphClasses.cpp
+    ArchitectureMapping.cpp
+    BestTsaWithArch.cpp
+    DistancesFromArchitecture.cpp
+    NeighboursFromArchitecture.cpp)
 
 list(APPEND DEPS_${COMP}
     Circuit
@@ -28,6 +32,7 @@ list(APPEND DEPS_${COMP}
     Ops
     Graphs
     OpType
+    TokenSwapping
     Utils)
 
 

@@ -65,7 +65,6 @@ class TketConan(ConanFile):
         "Characterisation",
         "Converters",
         "TokenSwapping",
-        "TokenSwappingWithArch",
         "Mapping",
         "Placement",
         "MeasurementSetup",

@@ -15,7 +15,7 @@
 #include <catch2/catch.hpp>
 #include <sstream>
 
-#include "TokenSwappingWithArch/BestTsaWithArch.hpp"
+#include "Architecture/BestTsaWithArch.hpp"
 #include "Utils/RNG.hpp"
 
 using std::vector;

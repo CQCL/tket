@@ -86,7 +86,7 @@ SCENARIO("Full TSA: stars") {
   }
   CHECK(
       tester.results.str() ==
-      "[Stars:HybridTSA_00: 400 probs; 1978 toks; 1623 tot.lb]\n"
+      "[Stars:HybridTsa: 400 probs; 1978 toks; 1623 tot.lb]\n"
       "[Total swaps: 2632 2588 2550 2539 2539 2550]\n"
       "[Winners: joint: 360 381 392 400 400 392  undisputed: 0 0 0 0 0 0]");
 
@@ -125,7 +125,7 @@ SCENARIO("Full TSA: wheels") {
   }
   CHECK(
       tester.results.str() ==
-      "[Wheels:HybridTSA_00: 400 probs; 1978 toks; 1533 tot.lb]\n"
+      "[Wheels:HybridTsa: 400 probs; 1978 toks; 1533 tot.lb]\n"
       "[Total swaps: 2482 2462 2430 2422 2422 2430]\n"
       "[Winners: joint: 374 384 395 400 400 395  undisputed: 0 0 0 0 0 0]");
 
@@ -160,7 +160,7 @@ SCENARIO("Full TSA: Rings") {
   // get_square_grid_edges).
   CHECK(
       tester.results.str() ==
-      "[Rings:HybridTSA_00: 400 probs; 1802 toks; 3193 tot.lb]\n"
+      "[Rings:HybridTsa: 400 probs; 1802 toks; 3193 tot.lb]\n"
       "[Total swaps: 6302 5942 5118 5115 5113 5118]\n"
       "[Winners: joint: 292 328 399 399 400 399  undisputed: 0 0 0 0 1 0]");
 
@@ -208,7 +208,7 @@ SCENARIO("Full TSA: Square Grids") {
 
   CHECK(
       tester.results.str() ==
-      "[Square grids:HybridTSA_00: 200 probs; 2746 toks; 4323 tot.lb]\n"
+      "[Square grids:HybridTsa: 200 probs; 2746 toks; 4323 tot.lb]\n"
       "[Total swaps: 7083 7015 6863 6846 6842 6863]\n"
       "[Winners: joint: 148 163 188 198 200 188  undisputed: 0 0 0 0 2 0]");
 
@@ -243,7 +243,7 @@ SCENARIO("Full TSA: Random trees") {
   }
   CHECK(
       tester.results.str() ==
-      "[Trees:HybridTSA_00: 300 probs; 2158 toks; 2963 tot.lb]\n"
+      "[Trees:HybridTsa: 300 probs; 2158 toks; 2963 tot.lb]\n"
       "[Total swaps: 5216 5132 4844 4828 4817 4844]\n"
       "[Winners: joint: 227 251 286 296 300 286  undisputed: 0 0 0 0 4 0]");
 
