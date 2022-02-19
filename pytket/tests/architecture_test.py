@@ -14,10 +14,10 @@
 
 from pytket.circuit import Node
 from pytket.architecture import (
-    Architecture,
-    SquareGrid,
-    FullyConnected,
-)  # type: ignore
+    Architecture,  # type: ignore
+    SquareGrid,  # type: ignore
+    FullyConnected,  # type: ignore
+)
 
 
 def test_architectures() -> None:
