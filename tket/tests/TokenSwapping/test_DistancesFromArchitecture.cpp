@@ -16,7 +16,7 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "TokenSwappingWithArch/DistancesFromArchitecture.hpp"
+#include "Architecture/DistancesFromArchitecture.hpp"
 
 using Catch::Matchers::Contains;
 using std::vector;
