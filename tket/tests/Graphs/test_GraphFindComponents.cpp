@@ -17,17 +17,15 @@
 
 #include "Graphs/AdjacencyData.hpp"
 #include "Graphs/GraphRoutines.hpp"
-#include "RNG.hpp"
+#include "Utils/RNG.hpp"
 
 using std::map;
 using std::set;
-using std::size_t;
 using std::vector;
 
 namespace tket {
 namespace graphs {
 namespace tests {
-namespace test_GraphFindComponents {
 
 // For testing the connected component function
 struct ComponentsTestData {
@@ -185,7 +183,6 @@ SCENARIO("Correctly calculates graph components") {
   }
 }
 
-}  // namespace test_GraphFindComponents
 }  // namespace tests
 }  // namespace graphs
 }  // namespace tket

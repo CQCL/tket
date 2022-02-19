@@ -20,11 +20,13 @@
 #include "Circuit/CircPool.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Converters/PhasePoly.hpp"
+#include "Mapping/MappingManager.hpp"
+#include "Mapping/RoutingMethod.hpp"
+#include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassLibrary.hpp"
 #include "Predicates/Predicates.hpp"
-#include "Routing/Placement.hpp"
 #include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/ContextualReduction.hpp"
 #include "Transformations/Decomposition.hpp"
@@ -182,25 +184,28 @@ PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
 
 PassPtr gen_full_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
-    const RoutingConfig& config) {
+    const std::vector<RoutingMethodPtr>& config) {
   return gen_placement_pass(placement_ptr) >> gen_routing_pass(arc, config);
 }
 
 PassPtr gen_default_mapping_pass(const Architecture& arc, bool delay_measures) {
   PlacementPtr pp = std::make_shared<GraphPlacement>(arc);
-  PassPtr return_pass = gen_full_mapping_pass(arc, pp);
-  if (delay_measures) return_pass = return_pass >> DelayMeasures();
+  RoutingMethodPtr rmw = std::make_shared<LexiRouteRoutingMethod>(100);
+  PassPtr return_pass = gen_full_mapping_pass(arc, pp, {rmw});
+  if (delay_measures) {
+    return_pass = return_pass >> DelayMeasures();
+  }
   return return_pass;
 }
 
 PassPtr gen_cx_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
-    const RoutingConfig& config, bool directed_cx, bool delay_measures) {
+    const std::vector<RoutingMethodPtr>& config, bool directed_cx,
+    bool delay_measures) {
   OpTypeSet gate_set = all_single_qubit_types();
   gate_set.insert(OpType::CX);
   PassPtr rebase_pass =
       gen_rebase_pass(gate_set, CircPool::CX(), CircPool::tk1_to_tk1);
-
   PassPtr return_pass =
       rebase_pass >> gen_full_mapping_pass(arc, placement_ptr, config);
   if (delay_measures) return_pass = return_pass >> DelayMeasures();
@@ -209,13 +214,12 @@ PassPtr gen_cx_mapping_pass(
   return return_pass;
 }
 
-PassPtr gen_routing_pass(const Architecture& arc, const RoutingConfig& config) {
+PassPtr gen_routing_pass(
+    const Architecture& arc, const std::vector<RoutingMethodPtr>& config) {
   Transform::Transformation trans = [=](Circuit& circ,
                                         std::shared_ptr<unit_bimaps_t> maps) {
-    Routing route(circ, arc);
-    std::pair<Circuit, bool> circbool = route.solve(config, maps);
-    circ = circbool.first;
-    return circbool.second;
+    MappingManager mm(std::make_shared<Architecture>(arc));
+    return mm.route_circuit_with_maps(circ, config, maps);
   };
   Transform t = Transform(trans);
 
@@ -430,7 +434,7 @@ PassPtr gen_full_mapping_pass_phase_poly(
 }
 
 PassPtr gen_directed_cx_routing_pass(
-    const Architecture& arc, const RoutingConfig& config) {
+    const Architecture& arc, const std::vector<RoutingMethodPtr>& config) {
   OpTypeSet multis = {OpType::CX, OpType::BRIDGE, OpType::SWAP};
   OpTypeSet gate_set = all_single_qubit_types();
   gate_set.insert(multis.begin(), multis.end());

@@ -24,7 +24,8 @@ import numpy as np
 from pytket.circuit import Circuit, OpType, BasisOrder, Qubit, Bit, Node  # type: ignore
 from pytket.predicates import CompilationUnit  # type: ignore
 from pytket.passes import PauliSimp, CliffordSimp, ContextSimp  # type: ignore
-from pytket.routing import Architecture, route  # type: ignore
+from pytket.mapping import MappingManager, LexiRouteRoutingMethod  # type: ignore
+from pytket.architecture import Architecture  # type: ignore
 from pytket.utils.outcomearray import OutcomeArray, readout_counts
 from pytket.utils.prepare import prepare_circuit
 from pytket.backends import CircuitNotValidError
@@ -524,7 +525,10 @@ def test_postprocess_3() -> None:
     qbs = [Node("qn", i) for i in range(4)]
     arc = Architecture([[qbs[i], qbs[i + 1]] for i in range(3)])
     c = Circuit(3, 3).H(0).CX(0, 2).measure_all()
-    rc = route(c, arc)
+
+    mm = MappingManager(arc)
+    rc = c.copy()
+    mm.route_circuit(rc, [LexiRouteRoutingMethod()])
     n_shots = 100
     h = b.process_circuit(b.get_compiled_circuit(c), n_shots=n_shots, postprocess=True)
     r = b.get_result(h)

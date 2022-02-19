@@ -53,6 +53,11 @@ class AbstractGraph {
   /** Check if an edge exists between two nodes */
   virtual bool edge_exists(const T &node1, const T &node2) const = 0;
 
+  /** Check if an edge exists between two nodes */
+  bool bidirectional_edge_exists(const T &node1, const T &node2) const {
+    return (edge_exists(node1, node2) || edge_exists(node2, node1));
+  }
+
   /** Check if a node exists */
   bool node_exists(const T &node) const { return nodes_.contains(node); }
 

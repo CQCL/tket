@@ -10,6 +10,13 @@ API changes:
   ``map`` property instead.)
 * The deprecated ``Backend.compile_circuit`` method is removed. (Use
   ``get_compiled_circuit`` instead.)
+* The ``routing`` module is removed.
+* ``Placement``, ``LinePlacement``, ``GraphPlacement`` and ``NoiseAwarePlacement`` 
+  are now imported from the ``placement`` module.
+* ``Architecture``, ``SquareGrid``, ``RingArch`` and ``FullyConnected`` are now 
+  imported from the ``architecture`` module.
+* Methods for mapping logical to physical circuits are now available in the
+  ``mapping`` module, with a new API and new functionality.
 * The keyword parameter and property ``def`` is now called ``definition`` in 
   ``Circuit.add_custom_gate`` and ``CustomGateDef``.
 * ``RebaseCustom`` takes one allowed gateset parameter rather than separate single qubit and multiqubit gatesets.

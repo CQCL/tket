@@ -20,10 +20,16 @@ endif()
 
 add_library(tket-${COMP}
     Architecture.cpp
-    ArchitectureGraphClasses.cpp)
+    ArchitectureGraphClasses.cpp
+    ArchitectureMapping.cpp
+    BestTsaWithArch.cpp
+    DistancesFromArchitecture.cpp
+    NeighboursFromArchitecture.cpp)
 
 list(APPEND DEPS_${COMP}
     Graphs
+    OpType
+    TokenSwapping
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

@@ -125,7 +125,9 @@ class CMakeBuild(build_ext):
                 "tket-Program",
                 "tket-Characterisation",
                 "tket-Converters",
-                "tket-Routing",
+                "tket-TokenSwapping",
+                "tket-Placement",
+                "tket-Mapping",
                 "tket-MeasurementSetup",
                 "tket-Transformations",
                 "tket-ArchAwareSynth",
@@ -210,11 +212,13 @@ binders = [
     "partition",
     "pauli",
     "program",
-    "routing",
+    "mapping",
     "transform",
     "tailoring",
     "tableau",
     "zx",
+    "placement",
+    "architecture",
 ]
 
 

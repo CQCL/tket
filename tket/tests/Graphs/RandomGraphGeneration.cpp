@@ -19,9 +19,8 @@
 
 #include "EdgeSequence.hpp"
 #include "Graphs/AdjacencyData.hpp"
-#include "RNG.hpp"
+#include "Utils/RNG.hpp"
 
-using std::size_t;
 using std::vector;
 
 namespace tket {

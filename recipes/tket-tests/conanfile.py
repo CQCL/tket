@@ -26,11 +26,13 @@ class TketTestsConan(ConanFile):
     description = "Unit tests for tket"
     topics = ("quantum", "computation", "compiler")
     settings = "os", "compiler", "build_type", "arch"
-    options = {"with_coverage": [True, False]}
-    default_options = {"with_coverage": False}
+    options = {"with_coverage": [True, False], "full": [True, False]}
+    default_options = {"with_coverage": False, "full": False}
     generators = "cmake"
     exports_sources = "../../tket/tests/*"
     requires = ("tket/1.0.1", "catch2/2.13.8")
+
+    _cmake = None
 
     def validate(self):
         if self.options.with_coverage and self.settings.compiler != "gcc":
@@ -38,13 +40,19 @@ class TketTestsConan(ConanFile):
                 "`with_coverage` option only available with gcc"
             )
 
+    def _configure_cmake(self):
+        if self._cmake is None:
+            self._cmake = CMake(self)
+            self._cmake.definitions["TESTS_FULL"] = self.options.full
+            self._cmake.configure()
+        return self._cmake
+
     def configure(self):
         if self.options.with_coverage:
             self.options["tket"].profile_coverage = True
 
     def build(self):
-        cmake = CMake(self)
-        cmake.configure()
+        cmake = self._configure_cmake()
         cmake.build()
 
     def package(self):

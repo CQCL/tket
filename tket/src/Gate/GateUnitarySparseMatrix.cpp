@@ -153,12 +153,13 @@ std::vector<TripletCd> GateUnitarySparseMatrix::get_unitary_triplets(
       return convert_1qb_type_to_controlled_type_and_get_triplets(
           gate, primitive_type, abs_epsilon);
     } catch (const GateUnitaryMatrixError& e) {
-      std::stringstream ss;
-      OpDesc desc(primitive_type);
-      ss << "Converting " << gate.get_name()
-         << " to sparse unitary, via adding controls to gate type "
-         << desc.name() << ": " << e.what();
-      throw GateUnitaryMatrixError(ss.str(), e.cause);
+      // GCOVR_EXCL_START
+      TKET_ASSERT(
+          AssertMessage()
+          << "Converting " << gate.get_name()
+          << " to sparse unitary, via adding controls to gate type "
+          << OpDesc(primitive_type).name() << ": " << e.what());
+      // GCOVR_EXCL_STOP
     }
   }
   return get_triplets_for_noncontrolled_gate(gate);

@@ -57,7 +57,8 @@ target_link_libraries(circuit PRIVATE
     tket-Gate
     tket-Ops
     tket-OpType
-    tket-Routing
+    tket-Mapping
+    tket-TokenSwapping
     tket-Simulation
     tket-Utils)
 target_link_libraries(circuit PRIVATE ${TKET_EXTRA_LIBS})
@@ -66,23 +67,19 @@ if (WIN32)
     target_link_libraries(circuit PRIVATE bcrypt)
 endif()
 
-pybind11_add_module(routing binders/routing.cpp)
-target_include_directories(routing PRIVATE binders/include)
-target_link_libraries(routing PRIVATE
+pybind11_add_module(mapping binders/mapping.cpp)
+target_include_directories(mapping PRIVATE binders/include)
+target_link_libraries(mapping PRIVATE
     tket-Architecture
     tket-Characterisation
     tket-Circuit
     tket-Gate
     tket-Graphs
+    tket-Mapping
     tket-Ops
     tket-OpType
-    tket-Routing
+    tket-TokenSwapping
     tket-Utils)
-target_link_libraries(routing PRIVATE ${TKET_EXTRA_LIBS})
-if (WIN32)
-    # For boost::uuid:
-    target_link_libraries(routing PRIVATE bcrypt)
-endif()
 
 pybind11_add_module(transform binders/transform.cpp)
 target_include_directories(transform PRIVATE binders/include)
@@ -116,11 +113,12 @@ target_link_libraries(predicates PRIVATE
     tket-Converters
     tket-Gate
     tket-Graphs
+    tket-Mapping
     tket-Ops
     tket-OpType
     tket-PauliGraph
     tket-Predicates
-    tket-Routing
+    tket-TokenSwapping
     tket-Transformations
     tket-Utils)
 target_link_libraries(predicates PRIVATE ${TKET_EXTRA_LIBS})
@@ -140,11 +138,12 @@ target_link_libraries(passes PRIVATE
     tket-Converters
     tket-Gate
     tket-Graphs
+    tket-Mapping
     tket-Ops
     tket-OpType
     tket-PauliGraph
     tket-Predicates
-    tket-Routing
+    tket-TokenSwapping
     tket-Transformations
     tket-Utils)
 target_link_libraries(passes PRIVATE ${TKET_EXTRA_LIBS})
@@ -152,6 +151,25 @@ if (WIN32)
     # For boost::uuid:
     target_link_libraries(passes PRIVATE bcrypt)
 endif()
+
+
+pybind11_add_module(architecture binders/architecture.cpp)
+target_include_directories(architecture PRIVATE binders/include)
+target_link_libraries(architecture PRIVATE
+    tket-Architecture
+    tket-Graphs
+    tket-Utils)
+target_link_libraries(architecture PRIVATE ${TKET_EXTRA_LIBS})
+
+
+pybind11_add_module(placement binders/placement.cpp)
+target_include_directories(placement PRIVATE binders/include)
+target_link_libraries(placement PRIVATE
+    tket-Placement
+    tket-Architecture
+    tket-Circuit
+    tket-Utils)
+target_link_libraries(placement PRIVATE ${TKET_EXTRA_LIBS})
 
 pybind11_add_module(program binders/program.cpp)
 target_include_directories(program PRIVATE binders/include)
