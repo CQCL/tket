@@ -183,13 +183,22 @@ Flow Flow::identify_causal_flow(const ZXDiagram& diag) {
       throw ZXError("Causal flow is only defined when all vertices are XY");
   }
 
+  // solved contains all vertices for which we have found corrections
   ZXVertSeqSet solved;
+  // correctors are those vertices that have been solved but are not yet
+  // fl.c(u) for some u
   ZXVertSeqSet correctors;
+  // past[v] is undefined if v is not yet solved
+  // past[v] is the number of neighbours of v that are still unsolved
+  // When past[v] drops to 1, we can correct the unsolved vertex using an X on
+  // v and Z on all of its other neighbours
   std::map<ZXVert, unsigned> past;
   Flow fl{{}, {}};
 
   // Outputs are trivially solved
   for (const ZXVert& o : diag.get_boundary(ZXType::Output)) {
+    // MBQC form of ZX Diagrams requires each output to have a unique Hadamard
+    // edge to another vertex
     past[o] = 1;
     solved.insert(o);
     fl.c_.insert({o, {}});
@@ -201,9 +210,8 @@ Flow Flow::identify_causal_flow(const ZXDiagram& diag) {
 
   unsigned depth = 1;
 
-  ZXVertSeqSet new_correctors;
   do {
-    new_correctors.clear();
+    ZXVertSeqSet new_correctors;
     for (const ZXVert& v : correctors.get<TagSeq>()) {
       // Determine whether |N(v) cap unsolved| == 1 to find u
       ZXVert u;
@@ -242,13 +250,14 @@ Flow Flow::identify_causal_flow(const ZXDiagram& diag) {
         }
       }
       // u is a new corrector if u notin I and |N(u) cap unsolved| == 1
-      if (!in && n_found == 1) new_correctors.insert(u);
+      if (!in) {
+        past.insert({u, n_found});
+        if (n_found == 1) new_correctors.insert(u);
+      }
     }
-    for (const ZXVert& c : new_correctors.get<TagSeq>()) {
-      correctors.insert(c);
-    }
+    correctors = new_correctors;
     ++depth;
-  } while (!new_correctors.empty());
+  } while (!correctors.empty());
   if (solved.size() != diag.n_vertices())
     throw ZXError("ZXDiagram does not have causal flow");
   return fl;
@@ -377,7 +386,7 @@ std::map<ZXVert, ZXVertSeqSet> Flow::gauss_solve_correctors(
 Flow Flow::identify_pauli_flow(const ZXDiagram& diag) {
   // Check diagram has the expected form for pauli flow
   if (!diag.is_MBQC())
-    throw ZXError("ZXDiagram must be in MBQC form to identify gflow");
+    throw ZXError("ZXDiagram must be in MBQC form to identify Pauli flow");
 
   ZXVertSeqSet solved;
   std::set<ZXVert> inputs;
@@ -429,10 +438,8 @@ Flow Flow::identify_pauli_flow(const ZXDiagram& diag) {
 
   unsigned depth = 1;
 
-  unsigned n_solved;
+  unsigned n_solved = 0;
   do {
-    n_solved = 0;
-
     // Construct Gaussian elimination problem
     boost::bimap<ZXVert, unsigned> preserve;
     boost::bimap<ZXVert, unsigned> unsolved_ys;

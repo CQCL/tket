@@ -243,7 +243,11 @@ bool BasicGen::operator==(const ZXGen& other) const {
  * PhasedGen implementation
  */
 PhasedGen::PhasedGen(ZXType type, const Expr& param, QuantumType qtype)
-    : BasicGen(type, qtype), param_(param) {}
+    : BasicGen(type, qtype), param_(param) {
+  if (!is_phase_type(type)) {
+    throw ZXError("Unsupported ZXType for PhasedGen");
+  }
+}
 
 Expr PhasedGen::get_param() const { return param_; }
 
@@ -288,17 +292,20 @@ std::string PhasedGen::get_name(bool) const {
 }
 
 bool PhasedGen::operator==(const ZXGen& other) const {
-  if (!ZXGen::operator==(other)) return false;
+  if (!BasicGen::operator==(other)) return false;
   const PhasedGen& other_basic = static_cast<const PhasedGen&>(other);
-  return (
-      this->qtype_ == other_basic.qtype_ && this->param_ == other_basic.param_);
+  return this->param_ == other_basic.param_;
 }
 
 /**
  * CliffordGen implementation
  */
 CliffordGen::CliffordGen(ZXType type, bool param, QuantumType qtype)
-    : BasicGen(type, qtype), param_(param) {}
+    : BasicGen(type, qtype), param_(param) {
+  if (!is_Clifford_gen_type(type)) {
+    throw ZXError("Unsupported ZXType for CliffordGen");
+  }
+}
 
 bool CliffordGen::get_param() const { return param_; }
 
@@ -334,10 +341,9 @@ std::string CliffordGen::get_name(bool) const {
 }
 
 bool CliffordGen::operator==(const ZXGen& other) const {
-  if (!ZXGen::operator==(other)) return false;
+  if (!BasicGen::operator==(other)) return false;
   const CliffordGen& other_basic = static_cast<const CliffordGen&>(other);
-  return (
-      this->qtype_ == other_basic.qtype_ && this->param_ == other_basic.param_);
+  return this->param_ == other_basic.param_;
 }
 
 /**

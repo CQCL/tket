@@ -51,6 +51,17 @@ SCENARIO("Testing generator creation") {
   Sym a = SymEngine::symbol("a");
   sub_map[a] = Expr(0.8);
   CHECK(xSpider.symbol_substitution(sub_map)->get_name() == "Q-X(1.6)");
+  CHECK(
+      *xSpider.symbol_substitution(sub_map) ==
+      PhasedGen(ZXType::XSpider, 1.6, QuantumType::Quantum));
+
+  CliffordGen px(ZXType::PX, true, QuantumType::Classical);
+  CHECK(px.get_name() == "C-X(1)");
+  CHECK(px.get_type() == ZXType::PX);
+  CHECK(px.get_param() == true);
+  CHECK(px.free_symbols().empty());
+  CHECK(px != CliffordGen(ZXType::PX, false, QuantumType::Quantum));
+  CHECK(px == CliffordGen(ZXType::PX, true, QuantumType::Classical));
 
   // Should throw an error: type Triangle is not a BasicGen type
   REQUIRE_THROWS_AS(PhasedGen(ZXType::Triangle, 0.3), ZXError);
