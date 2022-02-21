@@ -500,10 +500,10 @@ PYBIND11_MODULE(circuit, m) {
           [](const Command &com) { return com.get_op_ptr()->free_symbols(); },
           ":return: set of symbolic parameters for the command");
 
-  init_circuit(m);
   init_library(m);
   init_boxes(m);
   init_classical(m);
+  init_circuit(m);
 
   m.def(
       "fresh_symbol", &SymTable::fresh_symbol,

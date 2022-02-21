@@ -283,7 +283,7 @@ nlohmann::json MultiGateReorderRoutingMethod::serialize() const {
   nlohmann::json j;
   j["depth"] = this->max_depth_;
   j["size"] = this->max_size_;
-  j["name_of_method"] = "MultiGateReorderRoutingMethod";
+  j["name"] = "MultiGateReorderRoutingMethod";
   return j;
 }
 

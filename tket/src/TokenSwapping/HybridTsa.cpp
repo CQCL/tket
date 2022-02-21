@@ -23,7 +23,7 @@ namespace tket {
 namespace tsa_internal {
 
 HybridTsa::HybridTsa() {
-  m_name = "HybridTSA_00";
+  m_name = "HybridTsa";
   m_trivial_tsa.set(TrivialTSA::Options::BREAK_AFTER_PROGRESS);
 }
 

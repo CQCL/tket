@@ -21,6 +21,7 @@ endif()
 add_library(tket-${COMP}
     TketLog.cpp
     UnitID.cpp
+    AssertMessage.cpp
     HelperFunctions.cpp
     MatrixAnalysis.cpp
     PauliStrings.cpp

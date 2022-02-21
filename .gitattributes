@@ -1,4 +1,0 @@
-# Standardize line endings across platforms.
-# This ensures that conan recipe hashes match.
-*	text eol=lf
-

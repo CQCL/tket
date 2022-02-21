@@ -74,12 +74,6 @@ jobs:
       run: conan create --profile=tket recipes/pybind11
     - name: Build wheel (3.8)
       run: .github/workflows/build_macos_wheel
-    - name: Set up Python 3.8
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.9'
-    - name: Build wheel (3.8)
-      run: .github/workflows/build_macos_wheel
     - name: Set up Python 3.9
       uses: actions/setup-python@v2
       with:

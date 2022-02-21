@@ -19,7 +19,8 @@
 
 namespace tket {
 
-/** For mapping between nodes in an architecture and size_t vertex numbers.
+/** Intended for use with TokenSwapping.
+ *  For mapping between nodes in an architecture and size_t vertex numbers.
  *  The vertex numbers are merely the indices of each Node
  *  within the vector returned by the get_all_nodes() function.
  *

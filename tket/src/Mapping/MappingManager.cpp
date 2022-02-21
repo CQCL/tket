@@ -14,7 +14,7 @@
 
 #include "Mapping/MappingManager.hpp"
 
-#include "TokenSwappingWithArch/BestTsaWithArch.hpp"
+#include "Architecture/BestTsaWithArch.hpp"
 
 namespace tket {
 

@@ -343,6 +343,13 @@ def test_new_qelib1_aliases() -> None:
     assert "U3(0, 0, 0) q[0]" in commands_str
 
 
+def test_h1_rzz() -> None:
+    c = Circuit(2)
+    c.add_gate(OpType.ZZPhase, [0.1], [0, 1])
+    assert "rzz" in circuit_to_qasm_str(c, header="qelib1")
+    assert "RZZ" in circuit_to_qasm_str(c, header="hqslib1")
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()

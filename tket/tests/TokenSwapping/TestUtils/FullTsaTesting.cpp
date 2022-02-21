@@ -16,13 +16,13 @@
 
 #include <catch2/catch.hpp>
 
+#include "Architecture/ArchitectureMapping.hpp"
+#include "Architecture/DistancesFromArchitecture.hpp"
+#include "Architecture/NeighboursFromArchitecture.hpp"
 #include "DebugFunctions.hpp"
 #include "TokenSwapping/DistanceFunctions.hpp"
 #include "TokenSwapping/RiverFlowPathFinder.hpp"
 #include "TokenSwapping/VertexSwapResult.hpp"
-#include "TokenSwappingWithArch/ArchitectureMapping.hpp"
-#include "TokenSwappingWithArch/DistancesFromArchitecture.hpp"
-#include "TokenSwappingWithArch/NeighboursFromArchitecture.hpp"
 
 using std::vector;
 
