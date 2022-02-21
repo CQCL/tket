@@ -25,12 +25,6 @@ class TokenSwappingTester : public RoutingMethod {
  public:
   TokenSwappingTester(){};
 
-  bool check_method(
-      const std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
-      const ArchitecturePtr& /*architecture*/) const {
-    return true;
-  }
-
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
    * modifying
@@ -38,11 +32,11 @@ class TokenSwappingTester : public RoutingMethod {
    * @return Logical to Physical mapping at boundary due to modification.
    *
    */
-  unit_map_t routing_method(
+  std::pair<bool, unit_map_t> routing_method(
       std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
       const ArchitecturePtr& /*architecture*/) const {
     Node node0("test_node", 0), node1("test_node", 1), node2("test_node", 2);
-    return {{node0, node1}, {node1, node2}, {node2, node0}};
+    return {true, {{node0, node1}, {node1, node2}, {node2, node0}}};
   }
 };
 

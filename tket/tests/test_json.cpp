@@ -428,9 +428,13 @@ SCENARIO("Test RoutingMethod serializations") {
   RoutingMethod loaded_rm_j = rm_j.get<RoutingMethod>();
 
   Circuit c(2, 2);
-  CHECK(!loaded_rm_j.check_method(
-      std::make_shared<MappingFrontier>(c),
-      std::make_shared<SquareGrid>(2, 2)));
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+
+  MappingFrontier mf(c);
+  std::shared_ptr<MappingFrontier> mf_sp =
+      std::make_shared<MappingFrontier>(mf);
+  CHECK(!loaded_rm_j.routing_method(mf_sp, std::make_shared<SquareGrid>(2, 2))
+             .first);
 
   std::vector<RoutingMethodPtr> rmp = {
       std::make_shared<RoutingMethod>(rm),
@@ -438,12 +442,12 @@ SCENARIO("Test RoutingMethod serializations") {
   nlohmann::json rmp_j = rmp;
   std::vector<RoutingMethodPtr> loaded_rmp_j =
       rmp_j.get<std::vector<RoutingMethodPtr>>();
-  CHECK(!loaded_rmp_j[0]->check_method(
-      std::make_shared<MappingFrontier>(c),
-      std::make_shared<SquareGrid>(2, 2)));
-  CHECK(loaded_rmp_j[1]->check_method(
-      std::make_shared<MappingFrontier>(c),
-      std::make_shared<SquareGrid>(2, 2)));
+  CHECK(!loaded_rmp_j[0]
+             ->routing_method(mf_sp, std::make_shared<SquareGrid>(2, 2))
+             .first);
+  CHECK(loaded_rmp_j[1]
+            ->routing_method(mf_sp, std::make_shared<SquareGrid>(2, 2))
+            .first);
 }
 
 SCENARIO("Test predicate serializations") {
