@@ -25,33 +25,78 @@
 
 namespace tket {
 
-// basic implementation that works off same prior assumptions
-// TODO: Update this for more mature systems of multi-qubit gates
 bool Architecture::valid_operation(
     const Op_ptr& op, const std::vector<Node>& uids) const {
-  if (op->get_desc().is_box() ||
-      (op->get_type() == OpType::Conditional &&
-       static_cast<const Conditional&>(*op).get_op()->get_desc().is_box())) {
+  // boxes are never allowed
+  if (is_box_type(op->get_type())) {
     return false;
   }
-  if (uids.size() == 1) {
-    // with current Architecture can assume all single qubit gates valid
+
+  // TODO
+  // this currently allows unplaced single qubits gates
+  // this should be changes in the future
+  if (is_single_qubit_type(op->get_type())) {
     return true;
-  } else if (op->get_type() == OpType::Barrier) {
-    return true;
-  } else if (uids.size() == 2) {
-    if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
-        this->bidirectional_edge_exists(uids[0], uids[1])) {
+  }
+
+  if (op->get_type() == OpType::Conditional) {
+    auto ot = static_cast<const Conditional&>(*op).get_op()->get_type();
+    // conditional boxes are never allowed, too
+    if (is_box_type(ot)) {
+      return false;
+    }
+
+    // TODO
+    // this currently allows unplaced single qubits gates
+    // this should be changes in the future
+    if (is_single_qubit_type(ot)) {
       return true;
     }
-  } else if (uids.size() == 3 && op->get_type() == OpType::BRIDGE) {
-    bool con_0_exists = this->bidirectional_edge_exists(uids[0], uids[1]);
-    bool con_1_exists = this->bidirectional_edge_exists(uids[2], uids[1]);
-    if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
-        this->node_exists(uids[2]) && con_0_exists && con_1_exists) {
-      return true;
+    if (is_multi_qubit_type(ot)) {
+      if (uids.size() == 2) {
+        if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
+            this->bidirectional_edge_exists(uids[0], uids[1])) {
+          return true;
+        }
+      } else if (uids.size() == 3 && ot == OpType::BRIDGE) {
+        bool con_0_exists = this->bidirectional_edge_exists(uids[0], uids[1]);
+        bool con_1_exists = this->bidirectional_edge_exists(uids[2], uids[1]);
+        if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
+            this->node_exists(uids[2]) && con_0_exists && con_1_exists) {
+          return true;
+        }
+      }
     }
   }
+
+  // Barriers are allways allowed
+  if (op->get_type() == OpType::Barrier) {
+    return true;
+  }
+
+  // allow two qubit gates only for placed and connected nodes
+  if (is_multi_qubit_type(op->get_type())) {
+    if (uids.size() == 1) {
+      if (op->get_type() == OpType::NPhasedX ||
+          op->get_type() == OpType::PhaseGadget) {
+        return true;
+        // TODO add a check in the single qubit case for placed qubit
+      }
+    } else if (uids.size() == 2) {
+      if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
+          this->bidirectional_edge_exists(uids[0], uids[1])) {
+        return true;
+      }
+    } else if (uids.size() == 3 && op->get_type() == OpType::BRIDGE) {
+      bool con_0_exists = this->bidirectional_edge_exists(uids[0], uids[1]);
+      bool con_1_exists = this->bidirectional_edge_exists(uids[2], uids[1]);
+      if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
+          this->node_exists(uids[2]) && con_0_exists && con_1_exists) {
+        return true;
+      }
+    }
+  }
+
   return false;
 }
 
