@@ -21,7 +21,6 @@
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
-// #include "Transformations/Transform.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "testutil.hpp"
 namespace tket {
@@ -525,8 +524,6 @@ SCENARIO("Test LexiRouteRoutingMethod") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     LexiRouteRoutingMethod lrrm(100);
-    // REQUIRE(lrrm.check_method(mf, shared_arc));
-
     std::pair<bool, unit_map_t> bool_init_map =
         lrrm.routing_method(mf, shared_arc);
     REQUIRE(bool_init_map.first);

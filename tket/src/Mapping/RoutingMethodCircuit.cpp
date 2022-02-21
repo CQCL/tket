@@ -17,27 +17,13 @@
 namespace tket {
 
 RoutingMethodCircuit::RoutingMethodCircuit(
-    const std::function<
-        std::tuple<bool, Circuit, unit_map_t, unit_map_t>(const Circuit&, const ArchitecturePtr&)>
+    const std::function<std::tuple<bool, Circuit, unit_map_t, unit_map_t>(
+        const Circuit&, const ArchitecturePtr&)>
         _route_subcircuit,
     unsigned _max_size, unsigned _max_depth)
     : route_subcircuit_(_route_subcircuit),
       max_size_(_max_size),
       max_depth_(_max_depth){};
-
-// bool RoutingMethodCircuit::check_method(
-//     const std::shared_ptr<MappingFrontier>& mapping_frontier,
-//     const ArchitecturePtr& architecture) const {
-//   // Get circuit, pass to held check method
-//   Subcircuit frontier_subcircuit = mapping_frontier->get_frontier_subcircuit(
-//       this->max_depth_, this->max_size_);
-//   Circuit frontier_circuit =
-//       mapping_frontier->circuit_.subcircuit(frontier_subcircuit);
-//   frontier_circuit.rename_units(
-//       mapping_frontier->get_default_to_quantum_boundary_unit_map());
-
-//   return this->check_subcircuit_(frontier_circuit, architecture);
-// }
 
 std::pair<bool, unit_map_t> RoutingMethodCircuit::routing_method(
     std::shared_ptr<MappingFrontier>& mapping_frontier,
@@ -59,8 +45,7 @@ std::pair<bool, unit_map_t> RoutingMethodCircuit::routing_method(
   }
 
   // update unit id at boundary in case of relabelling
-  mapping_frontier->update_quantum_boundary_uids(
-      get<2>(routed_subcircuit));
+  mapping_frontier->update_quantum_boundary_uids(get<2>(routed_subcircuit));
 
   unit_map_t swap_permutation;
   for (const auto& pair : get<2>(routed_subcircuit)) {

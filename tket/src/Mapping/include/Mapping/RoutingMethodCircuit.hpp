@@ -18,13 +18,6 @@
 
 namespace tket {
 
-// typedef struct {
-//   bool substitute;
-//   Circuit circuit;
-//   unit_map_t input_relabelling;
-//   unit_map_t permutation;
-// } routing_method_info;
-
 class RoutingMethodCircuit : public RoutingMethod {
  public:
   virtual ~RoutingMethodCircuit() {}
@@ -37,20 +30,10 @@ class RoutingMethodCircuit : public RoutingMethod {
    * @param _max_depth Max depth of partial routing circuit
    */
   RoutingMethodCircuit(
-      const std::function<
-          std::tuple<bool, Circuit, unit_map_t, unit_map_t>(const Circuit&, const ArchitecturePtr&)>
+      const std::function<std::tuple<bool, Circuit, unit_map_t, unit_map_t>(
+          const Circuit&, const ArchitecturePtr&)>
           _route_subcircuit,
       unsigned _max_size, unsigned _max_depth);
-
-  //   /**
-  //    * @param mapping_frontier Contains boundary of gates to be checked for
-  //    method
-  //    * @param architecture Architecture method would work with if permitted
-  //    * @return true if method can route subcircuit, false if not
-  //    */
-  //   bool check_method(
-  //       const std::shared_ptr<MappingFrontier>& mapping_frontier,
-  //       const ArchitecturePtr& architecture) const;
 
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
@@ -67,8 +50,6 @@ class RoutingMethodCircuit : public RoutingMethod {
   const std::function<std::tuple<bool, Circuit, unit_map_t, unit_map_t>(
       const Circuit&, const ArchitecturePtr&)>
       route_subcircuit_;
-  //   const std::function<bool(const Circuit&, const ArchitecturePtr&)>
-  //       check_subcircuit_;
   unsigned max_size_, max_depth_;
 };
 

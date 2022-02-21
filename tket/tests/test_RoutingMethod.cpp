@@ -32,8 +32,8 @@ bool test_check_method(const Circuit& c, const ArchitecturePtr& a) {
   }
 }
 
-std::tuple<bool, Circuit, unit_map_t, unit_map_t> test_routing_method_mf_swap_perm(
-    const Circuit& c, const ArchitecturePtr& a) {
+std::tuple<bool, Circuit, unit_map_t, unit_map_t>
+test_routing_method_mf_swap_perm(const Circuit& c, const ArchitecturePtr& a) {
   if (c.n_qubits() > 2 && a->n_nodes() > 2) {
     Circuit copy(c);
     std::vector<Qubit> qs = copy.all_qubits();
@@ -55,7 +55,8 @@ std::tuple<bool, Circuit, unit_map_t, unit_map_t> test_routing_method_mf_swap_pe
   }
 }
 
-std::tuple<bool, Circuit, unit_map_t, unit_map_t> test_routing_method_mf_swap_no_perm(
+std::tuple<bool, Circuit, unit_map_t, unit_map_t>
+test_routing_method_mf_swap_no_perm(
     const Circuit& c, const ArchitecturePtr& a) {
   if (c.n_qubits() > 2 && a->n_nodes() > 2) {
     Circuit copy(c);
@@ -80,7 +81,8 @@ std::tuple<bool, Circuit, unit_map_t, unit_map_t> test_routing_method_mf_swap_no
   }
 }
 
-std::tuple<bool, Circuit, unit_map_t, unit_map_t> test_routing_method_circuit_no_perm(
+std::tuple<bool, Circuit, unit_map_t, unit_map_t>
+test_routing_method_circuit_no_perm(
     const Circuit& c, const ArchitecturePtr& a) {
   if (c.n_qubits() > 2 && a->n_nodes() > 2) {
     Circuit copy(c.n_qubits());

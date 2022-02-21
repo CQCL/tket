@@ -25,12 +25,6 @@ class TokenSwappingTester : public RoutingMethod {
  public:
   TokenSwappingTester(){};
 
-  // bool check_method(
-  //     const std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
-  //     const ArchitecturePtr& /*architecture*/) const {
-  //   return true;
-  // }
-
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
    * modifying
