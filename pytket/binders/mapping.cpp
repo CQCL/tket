@@ -40,9 +40,8 @@ PYBIND11_MODULE(mapping, m) {
       "whole circuits.")
       .def(
           py::init<
-              const std::function<std::tuple<Circuit, unit_map_t, unit_map_t>(
+              const std::function<std::tuple<bool, Circuit, unit_map_t, unit_map_t>(
                   const Circuit&, const ArchitecturePtr&)>&,
-              const std::function<bool(const Circuit&, const ArchitecturePtr&)>,
               unsigned, unsigned>(),
           "Constructor for a routing method defined by partially routing "
           "subcircuits.\n\n:param route_subcircuit: A function declaration "
@@ -56,7 +55,7 @@ PYBIND11_MODULE(mapping, m) {
           "given circuit\n:param max_size: The maximum number of gates "
           "permitted in a subcircuit\n:param max_depth: The maximum permitted "
           "depth of a subcircuit.",
-          py::arg("route_subcircuit"), py::arg("check_subcircuit"),
+          py::arg("route_subcircuit"),
           py::arg("max_size"), py::arg("max_depth"));
 
   py::class_<

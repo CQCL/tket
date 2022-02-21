@@ -18,12 +18,12 @@
 
 namespace tket {
 
-typedef struct {
-  bool substitute;
-  Circuit circuit;
-  unit_map_t input_relabelling;
-  unit_map_t permutation;
-} routing_method_info;
+// typedef struct {
+//   bool substitute;
+//   Circuit circuit;
+//   unit_map_t input_relabelling;
+//   unit_map_t permutation;
+// } routing_method_info;
 
 class RoutingMethodCircuit : public RoutingMethod {
  public:
@@ -38,7 +38,7 @@ class RoutingMethodCircuit : public RoutingMethod {
    */
   RoutingMethodCircuit(
       const std::function<
-          routing_method_info(const Circuit&, const ArchitecturePtr&)>
+          std::tuple<bool, Circuit, unit_map_t, unit_map_t>(const Circuit&, const ArchitecturePtr&)>
           _route_subcircuit,
       unsigned _max_size, unsigned _max_depth);
 
@@ -64,7 +64,7 @@ class RoutingMethodCircuit : public RoutingMethod {
       const ArchitecturePtr& architecture) const;
 
  private:
-  const std::function<routing_method_info(
+  const std::function<std::tuple<bool, Circuit, unit_map_t, unit_map_t>(
       const Circuit&, const ArchitecturePtr&)>
       route_subcircuit_;
   //   const std::function<bool(const Circuit&, const ArchitecturePtr&)>
