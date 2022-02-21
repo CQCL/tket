@@ -93,7 +93,9 @@ def route_subcircuit_func(
     return (True, replacement_circuit, relabelling_map, permutation_map)
 
 
-def route_subcircuit_func_false(circuit: Circuit, architecture: Architecture) -> bool:
+def route_subcircuit_func_false(
+    circuit: Circuit, architecture: Architecture
+) -> Tuple[bool, Circuit, Dict[Node, Node], Dict[Node, Node]]:
     return (False, Circuit(), {}, {})
 
 
