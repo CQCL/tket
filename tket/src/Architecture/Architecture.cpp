@@ -44,11 +44,21 @@ bool Architecture::valid_operation(
         // with current Architecture can assume all single qubit gates valid
         return true;
       }
-    }
-    if (uids.size() == 2) {
+    } else if (uids.size() == 2) {
       if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
           (this->edge_exists(uids[0], uids[1]) ||
            this->edge_exists(uids[1], uids[0]))) {
+        return true;
+      }
+    } else if (uids.size() == 3) {
+      bool con_0_exists =
+          (this->edge_exists(uids[0], uids[1]) ||
+           this->edge_exists(uids[1], uids[0]));
+      bool con_1_exists =
+          (this->edge_exists(uids[2], uids[1]) ||
+           this->edge_exists(uids[1], uids[2]));
+      if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
+          this->node_exists(uids[2]) && con_0_exists && con_1_exists) {
         return true;
       }
     }
@@ -62,29 +72,30 @@ bool Architecture::valid_operation(
         return true;
       }
     }
+  }  // todo
 
-  } else if (is_multi_qubit_type(op->get_type())) {
-    if (uids.size() == 2) {
-      if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
+  //} else if (is_multi_qubit_type(op->get_type())) {
+  if (uids.size() == 2) {
+    if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
+        (this->edge_exists(uids[0], uids[1]) ||
+         this->edge_exists(uids[1], uids[0]))) {
+      return true;
+    }
+  }
+  if (op->get_type() == OpType::BRIDGE) {
+    if (uids.size() == 3) {
+      bool con_0_exists =
           (this->edge_exists(uids[0], uids[1]) ||
-           this->edge_exists(uids[1], uids[0]))) {
+           this->edge_exists(uids[1], uids[0]));
+      bool con_1_exists =
+          (this->edge_exists(uids[2], uids[1]) ||
+           this->edge_exists(uids[1], uids[2]));
+      if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
+          this->node_exists(uids[2]) && con_0_exists && con_1_exists) {
         return true;
       }
     }
-    if (op->get_type() == OpType::BRIDGE) {
-      if (uids.size() == 3) {
-        bool con_0_exists =
-            (this->edge_exists(uids[0], uids[1]) ||
-             this->edge_exists(uids[1], uids[0]));
-        bool con_1_exists =
-            (this->edge_exists(uids[2], uids[1]) ||
-             this->edge_exists(uids[1], uids[2]));
-        if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
-            this->node_exists(uids[2]) && con_0_exists && con_1_exists) {
-          return true;
-        }
-      }
-    }
+    //}
   }
 
   return false;
