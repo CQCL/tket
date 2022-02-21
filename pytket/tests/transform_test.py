@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import itertools
+from typing import List
 from pathlib import Path
 from pytket.circuit import Circuit, OpType, PauliExpBox, Node, Qubit  # type: ignore
 from pytket._tket.circuit import _library  # type: ignore
