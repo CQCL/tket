@@ -94,24 +94,6 @@ bool MappingManager::route_circuit_with_maps(
         break;
       }
     }
-    //   if (rm->check_method(mapping_frontier, this->architecture_)) {
-    //     valid_methods = true;
-    //     unit_map_t partial_permutation =
-    //         rm->routing_method(mapping_frontier, this->architecture_);
-
-    //     if (partial_permutation.size() > 0) {
-    //       std::map<Node, Node> node_map;
-    //       for (const auto& x : partial_permutation) {
-    //         node_map.insert({Node(x.first), Node(x.second)});
-    //       }
-    //       for (const std::pair<Node, Node>& swap :
-    //            BestTsaWithArch::get_swaps(*this->architecture_, node_map)) {
-    //         mapping_frontier->add_swap(swap.first, swap.second);
-    //       }
-    //     }
-    //     break;
-    //   }
-    // }
     if (!valid_methods) {
       throw MappingManagerError(
           "No RoutingMethod suitable to map given subcircuit.");

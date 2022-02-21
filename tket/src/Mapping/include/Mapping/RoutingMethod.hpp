@@ -28,9 +28,9 @@ class RoutingMethod {
    * routing_method modifies circuit held in mapping_frontier with gates for the
    * purpose of moving circuit closer to one physically permitted by given
    * architecture. Returns a pair with a bool returning whether any modification
-   * was made and a new initial mapping of qubits incase permutation via swap
+   * was made and a new initial mapping of qubits in case permutation via swap
    * network is then required, or new ancilla qubits are added. This is
-   * completed by converting boundaty subcircuit in mapping frontier to a
+   * completed by converting boundary subcircuit in mapping frontier to a
    * Circuit object which is then passed to route_subcircuit_ as defined in the
    * constructor.
    *
