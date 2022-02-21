@@ -313,7 +313,8 @@ void PauliGraph::apply_pauli_gadget_at_end(
 }
 
 PauliGraph::TopSortIterator::TopSortIterator()
-    : current_vert_(boost::graph_traits<PauliDAG>::null_vertex()) {}
+    : pg_(nullptr),
+      current_vert_(boost::graph_traits<PauliDAG>::null_vertex()) {}
 
 PauliGraph::TopSortIterator::TopSortIterator(const PauliGraph &pg) {
   if (pg.start_line_.empty()) {
