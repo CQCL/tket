@@ -40,15 +40,16 @@ std::pair<bool, unit_map_t> RoutingMethodCircuit::routing_method(
   std::tuple<bool, Circuit, unit_map_t, unit_map_t> routed_subcircuit =
       this->route_subcircuit_(frontier_circuit, architecture);
 
-  if (!get<0>(routed_subcircuit)) {
+  if (!std::get<0>(routed_subcircuit)) {
     return {false, {}};
   }
 
   // update unit id at boundary in case of relabelling
-  mapping_frontier->update_quantum_boundary_uids(get<2>(routed_subcircuit));
+  mapping_frontier->update_quantum_boundary_uids(
+      std::get<2>(routed_subcircuit));
 
   unit_map_t swap_permutation;
-  for (const auto& pair : get<2>(routed_subcircuit)) {
+  for (const auto& pair : std::get<2>(routed_subcircuit)) {
     if (pair.first != pair.second &&
         architecture->node_exists(Node(pair.first))) {
       swap_permutation.insert(pair);
@@ -56,12 +57,12 @@ std::pair<bool, unit_map_t> RoutingMethodCircuit::routing_method(
   }
   // permute edges held by unitid at out boundary due to swaps
   mapping_frontier->permute_subcircuit_q_out_hole(
-      get<3>(routed_subcircuit), frontier_subcircuit);
+      std::get<3>(routed_subcircuit), frontier_subcircuit);
 
   // substitute old boundary with new cirucit
-  get<1>(routed_subcircuit).flatten_registers();
+  std::get<1>(routed_subcircuit).flatten_registers();
   mapping_frontier->circuit_.substitute(
-      get<1>(routed_subcircuit), frontier_subcircuit);
+      std::get<1>(routed_subcircuit), frontier_subcircuit);
   // return initial unit_map_t incase swap network required
   return {true, swap_permutation};
 }
