@@ -404,6 +404,7 @@ void MappingFrontier::set_quantum_boundary(
  * reflect new edges
  */
 void MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
+  std::cout << "Adding Swap between: " << uid_0.repr() << " " << uid_1.repr() << std::endl;
   // get iterators to quantum_boundary uids
   auto uid0_in_it = this->quantum_boundary->find(uid_0);
   auto uid1_in_it = this->quantum_boundary->find(uid_1);
@@ -422,7 +423,6 @@ void MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
   // the location/id of the "ancilla node" changes when a SWAP occurs
   Node n0 = Node(uid_0);
   Node n1 = Node(uid_1);
-
   bool uid0_ancilla =
       this->ancilla_nodes_.find(n0) != this->ancilla_nodes_.end();
   bool uid1_ancilla =
@@ -444,11 +444,22 @@ void MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
       this->circuit_.get_nth_out_edge(vp0.first, vp0.second),
       this->circuit_.get_nth_out_edge(vp1.first, vp1.second)};
 
+  std::cout << uid_0.repr() << " operation, vertex, port, n_in_edges, n_out_edges" << std::endl;
+  std::cout << this->circuit_.get_OpDesc_from_Vertex(vp0.first).name() << " " << vp0.first << " " << vp0.second <<  " " << this->circuit_.n_in_edges(vp0.first) << " " << this->circuit_.n_out_edges(vp0.first) << std::endl;
+  std::cout << "Successors Vertex: " << this->circuit_.get_OpDesc_from_Vertex(this->circuit_.target(predecessors[0])).name() << std::endl;
+
+  std::cout << uid_1.repr() << " operation, vertex, port, n_in_edges, n_out_edges" << std::endl;
+  std::cout << this->circuit_.get_OpDesc_from_Vertex(vp1.first).name() << " " << vp1.first << " " << vp1.second <<  " " << this->circuit_.n_in_edges(vp1.first) << " " << this->circuit_.n_out_edges(vp1.first) << std::endl;
+  std::cout << "Successors Vertex: " << this->circuit_.get_OpDesc_from_Vertex(this->circuit_.target(predecessors[1])).name() << std::endl;
+  
   // add SWAP vertex to circuit_ and rewire into predecessor
   Vertex swap_v = this->circuit_.add_vertex(OpType::SWAP);
+  std::cout << "\nCircuit pre rewire: \n" << this->circuit_ << std::endl;
   this->circuit_.rewire(
       swap_v, predecessors, {EdgeType::Quantum, EdgeType::Quantum});
 
+
+  std::cout << "\nCircuit post rewire: \n" << this->circuit_ << std::endl;
   // Update boundary to reflect new edges
   EdgeVec successors = this->circuit_.get_all_out_edges(swap_v);
   this->circuit_.dag[successors[0]].ports.first = 1;

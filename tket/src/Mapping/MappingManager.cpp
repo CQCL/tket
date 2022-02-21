@@ -69,7 +69,10 @@ bool MappingManager::route_circuit_with_maps(
   };
 
   bool circuit_modified = !check_finish();
+  unsigned counter = 0;
   while (!check_finish()) {
+  std::cout << "\nNew Local Decision, number " << counter << std::endl;
+  counter++;
     // The order methods are passed in std::vector<RoutingMethod> is
     // the order they are iterated through to call "check_method"
     // If a method performs better but only on specific subcircuits,
@@ -81,6 +84,8 @@ bool MappingManager::route_circuit_with_maps(
         valid_methods = true;
         unit_map_t partial_permutation =
             rm->routing_method(mapping_frontier, this->architecture_);
+
+        // std::cout << mapping_frontier->circuit_ << std::endl;
 
         if (partial_permutation.size() > 0) {
           std::map<Node, Node> node_map;
