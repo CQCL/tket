@@ -15,6 +15,7 @@
 #include "OptimisationPass.hpp"
 
 #include "BasicOptimisation.hpp"
+#include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "CliffordOptimisation.hpp"
 #include "CliffordReductionPass.hpp"
@@ -136,8 +137,9 @@ Transform synthesise_UMD() {
       OpType type = op_ptr->get_type();
       if (type == OpType::TK1) {
         std::vector<Expr> tk1_angles = as_gate_ptr(op_ptr)->get_tk1_angles();
-        Circuit in_circ =
-            tk1_to_PhasedXRz(tk1_angles[0], tk1_angles[1], tk1_angles[2]);
+        Circuit in_circ = CircPool::tk1_to_PhasedXRz(
+            tk1_angles[0], tk1_angles[1], tk1_angles[2]);
+        remove_redundancies().apply(in_circ);
         Subcircuit sub = {
             {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
         bin.push_back(v);

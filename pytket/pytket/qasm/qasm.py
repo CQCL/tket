@@ -144,9 +144,9 @@ included_gates = {
     ),
 }
 included_gates["hqslib1"] = included_gates["qelib1"].copy()
-included_gates["hqslib1"].update(("U1q", "rz", "ZZ"))
+included_gates["hqslib1"].update(("U1q", "rz", "ZZ", "RZZ"))
 included_gates["hqslib1"].difference_update(
-    ("crx", "cry", "sx", "sxdg", "csx", "swap", "cswap")
+    ("crx", "cry", "sx", "sxdg", "csx", "swap", "cswap", "rzz")
 )
 _tk_to_qasm_noparams = dict(((item[1], item[0]) for item in NOPARAM_COMMANDS.items()))
 _tk_to_qasm_noparams[OpType.CX] = "cx"  # prefer "cx" to "CX"
@@ -580,7 +580,11 @@ def circuit_to_qasm_io(
                 f"{args[-1]} = {args[0]} {_classical_gatestr_map[opstr]} {args[1]};\n"
             )
             continue
-        if optype in _tk_to_qasm_noparams:
+        if header == "hqslib1" and optype == OpType.ZZPhase:
+            # special handling for zzphase
+            opstr = "RZZ"
+            params = op.params
+        elif optype in _tk_to_qasm_noparams:
             opstr = _tk_to_qasm_noparams[optype]
         elif optype in _tk_to_qasm_params:
             opstr = _tk_to_qasm_params[optype]

@@ -95,7 +95,6 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf0);
     lr.solve_labelling();
-    // lr.solve(4);
 
     REQUIRE(mf0->circuit_.n_gates() == 3);
 
@@ -105,7 +104,6 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
     std::shared_ptr<MappingFrontier> mf1 =
         std::make_shared<MappingFrontier>(circ);
     LexiRoute lr1(shared_arc, mf1);
-    // lr1.solve_labelling();
     lr1.solve(4);
 
     std::vector<Command> commands = mf1->circuit_.get_commands();
@@ -160,7 +158,6 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         std::make_shared<MappingFrontier>(circ);
     LexiRoute lr0(shared_arc, mf);
     lr0.solve_labelling();
-    // lr0.solve(20);
     std::vector<Command> commands = mf->circuit_.get_commands();
     REQUIRE(commands.size() == 4);
     Command c = commands[0];
@@ -871,7 +868,7 @@ SCENARIO("Test MappingManager with LexiRouteRoutingMethod and LexiLabelling") {
     LexiLabellingMethod lrm;
     std::vector<RoutingMethodPtr> vrm = {
         std::make_shared<LexiLabellingMethod>(lrm),
-        std::make_shared<LexiRouteRoutingMethod>(100)};
+        std::make_shared<LexiRouteRoutingMethod>()};
 
     REQUIRE(vrm[0]->check_method(mf, shared_arc));
 
@@ -903,7 +900,7 @@ SCENARIO("Test MappingManager with LexiRouteRoutingMethod and LexiLabelling") {
     LexiLabellingMethod lrm;
     std::vector<RoutingMethodPtr> vrm = {
         std::make_shared<LexiLabellingMethod>(lrm),
-        std::make_shared<LexiRouteRoutingMethod>(100)};
+        std::make_shared<LexiRouteRoutingMethod>()};
     bool res = mm.route_circuit(circ, vrm);
 
     PredicatePtr routed_correctly = std::make_shared<ConnectivityPredicate>(sg);

@@ -1381,7 +1381,7 @@ class Circuit {
   Circuit conditional_circuit(const bit_vector_t &bits, unsigned value) const;
 
   /**
-   * Replaces one \ref vertex by applying \ref Box::to_circuit
+   * Replaces one vertex by applying \ref Box::to_circuit
    *
    * @return whether the vertex holds a box or a conditional box
    */

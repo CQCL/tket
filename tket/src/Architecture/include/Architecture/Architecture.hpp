@@ -103,6 +103,10 @@ class Architecture : public ArchitectureBase<graphs::DirectedGraph<Node>> {
    */
   node_set_t get_articulation_points(const Architecture &subarc) const;
 
+  /**
+   * Returns true if the given operation acting on the given nodes
+   * can be executed on the Architecture connectivity graph.
+   */
   bool valid_operation(const Op_ptr &op, const std::vector<Node> &uids) const;
 
   /**

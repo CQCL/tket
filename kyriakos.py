@@ -1,5 +1,3 @@
-
-
 from pytket import Circuit
 from pytket.predicates import CompilationUnit
 

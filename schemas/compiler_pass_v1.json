@@ -114,23 +114,16 @@
           "type": "string",
           "description": "The name of the compiler pass. Matches the name of the pytket method used to generate it."
         },
-        "basis_multiqs": {
+        "basis_allowed": {
           "type": "array",
           "items": {
             "type": "string"
           },
-          "description": "OpTypes of supported multi-qubit gates. Used in \"RebaseCustom\"."
+          "description": "OpTypes of supported gates. Used in \"RebaseCustom\"."
         },
         "basis_cx_replacement": {
           "$ref": "file:///circuit_v1.json#",
           "description": "A circuit implementing a CX gate in a target gate set. Used in \"RebaseCustom\"."
-        },
-        "basis_singleqs": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "OpTypes of supported single-qubit gates. Used in \"RebaseCustom\" and \"SquashCustom\"."
         },
         "basis_tk1_replacement": {
           "type": "string",
@@ -244,9 +237,8 @@
           },
           "then": {
             "required": [
-              "basis_multiqs",
+              "basis_allowed",
               "basis_cx_replacement",
-              "basis_singleqs",
               "basis_tk1_replacement"
             ]
           }
@@ -1000,18 +992,17 @@
         "op_link_errors"
       ]
     },
-
-    "routingmethod" :{
+    "routingmethod": {
       "type": "object",
       "description": "A method used during circuit mapping.",
       "properties": {
         "name": {
           "type": "string",
-          "description": "String identifying method and whether it can be serialized."
+          "description": "Name of method."
         },
       },
     },
-    "routing_config":{
+    "routing_config": {
       "type": "array",
       "description": "A configuration for routing defined by an array of RoutingMethod.",
       "items": {

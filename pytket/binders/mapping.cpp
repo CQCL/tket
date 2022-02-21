@@ -28,7 +28,6 @@
 namespace py = pybind11;
 
 namespace tket {
-
 PYBIND11_MODULE(mapping, m) {
   py::class_<RoutingMethod, std::shared_ptr<RoutingMethod>>(
       m, "RoutingMethod",
@@ -88,11 +87,10 @@ PYBIND11_MODULE(mapping, m) {
 
   py::class_<MappingManager>(
       m, "MappingManager",
-      "Defined by a pytket Architecture object, maps Circuit logical Qubits "
-      "to Physically permitted Architecture qubits. Mapping is completed by "
+      "Defined by a pytket Architecture object, maps Circuit logical qubits "
+      "to physically permitted Architecture qubits. Mapping is completed by "
       "sequential routing (full or partial) of subcircuits. A custom method "
-      "for "
-      "routing (full or partial) of subcircuits can be defined in Python.")
+      "for routing (full or partial) of subcircuits can be defined in Python.")
       .def(
           py::init<const ArchitecturePtr&>(),
           "MappingManager constructor.\n\n:param architecture: pytket "

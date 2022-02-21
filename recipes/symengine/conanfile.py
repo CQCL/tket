@@ -20,7 +20,7 @@ required_conan_version = ">=1.33.0"
 
 class SymengineConan(ConanFile):
     name = "symengine"
-    version = "0.8.1.1"
+    version = "0.9.0"
     description = "A fast symbolic manipulation library, written in C++"
     license = "MIT"
     topics = ("symbolic", "algebra")
@@ -49,12 +49,10 @@ class SymengineConan(ConanFile):
             self.requires("gmp/6.2.1")
 
     def source(self):
-        git = tools.Git()
-        git.clone(
-            "https://github.com/symengine/symengine",
-            branch="2eb109a0e554b62683662cc5559fccf2ea0c0348",
-            shallow=True,
+        tools.get(
+            f"https://github.com/symengine/symengine/releases/download/v{self.version}/symengine-{self.version}.tar.gz"
         )
+        os.rename(f"symengine-{self.version}", "symengine")
 
     def _configure_cmake(self):
         if self._cmake is None:
@@ -63,7 +61,9 @@ class SymengineConan(ConanFile):
             self._cmake.definitions["BUILD_BENCHMARKS"] = False
             self._cmake.definitions["INTEGER_CLASS"] = self.options.integer_class
             self._cmake.definitions["MSVC_USE_MT"] = False
-            self._cmake.configure()
+            self._cmake.configure(
+                source_dir=os.path.join(self.source_folder, "symengine")
+            )
         return self._cmake
 
     def config_options(self):
@@ -76,7 +76,7 @@ class SymengineConan(ConanFile):
 
     def build(self):
         tools.replace_in_file(
-            os.path.join(self.source_folder, "CMakeLists.txt"),
+            os.path.join(self.source_folder, "symengine", "CMakeLists.txt"),
             "project(symengine)",
             """project(symengine)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
@@ -86,7 +86,9 @@ conan_basic_setup()""",
         cmake.build()
 
     def package(self):
-        self.copy("LICENSE", dst="licenses", src=self.source_folder)
+        self.copy(
+            "LICENSE", dst="licenses", src=os.path.join(self.source_folder, "symengine")
+        )
         cmake = self._configure_cmake()
         cmake.install()
         cmake.patch_config_paths()
