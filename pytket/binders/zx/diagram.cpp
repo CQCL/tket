@@ -74,8 +74,8 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           ":param out: Number of quantum outputs.\n"
           ":param classical_in: Number of classical inputs.\n"
           ":param classical_out: Number of classical outputs.",
-          py::arg("in"), py::arg("out"), py::arg("classical_in"),
-          py::arg("classical_out"))
+          py::arg("inputs"), py::arg("outputs"), py::arg("classical_inputs"),
+          py::arg("classical_outputs"))
       .def(
           py::init<const ZXDiagram&>(),
           "Constructs a copy of an existing ZX diagram.\n\n"

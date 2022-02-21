@@ -16,6 +16,7 @@
 
 #include <memory>
 
+#include "Mapping/RoutingMethodJson.hpp"
 #include "PassGenerators.hpp"
 #include "PassLibrary.hpp"
 #include "Transformations/ContextualReduction.hpp"
@@ -432,8 +433,9 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = gen_euler_pass(q, p, s);
     } else if (passname == "RoutingPass") {
       Architecture arc = content.at("architecture").get<Architecture>();
-      RoutingConfig con = content.at("routing_config").get<RoutingConfig>();
+      std::vector<RoutingMethodPtr> con = content.at("routing_config");
       pp = gen_routing_pass(arc, con);
+
     } else if (passname == "PlacementPass") {
       pp = gen_placement_pass(content.at("placement").get<PlacementPtr>());
     } else if (passname == "RenameQubitsPass") {
@@ -487,17 +489,19 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
       PlacementPtr place = content.at("placement").get<PlacementPtr>();
-      RoutingConfig config = content.at("routing_config").get<RoutingConfig>();
+      std::vector<RoutingMethodPtr> config = content.at("routing_config");
+
       pp = gen_full_mapping_pass(arc, place, config);
     } else if (passname == "DefaultMappingPass") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
-      pp = gen_default_mapping_pass(arc);
+      bool delay_measures = content.at("delay_measures").get<bool>();
+      pp = gen_default_mapping_pass(arc, delay_measures);
     } else if (passname == "CXMappingPass") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
       PlacementPtr place = content.at("placement").get<PlacementPtr>();
-      RoutingConfig config = content.at("routing_config").get<RoutingConfig>();
+      std::vector<RoutingMethodPtr> config = content.at("routing_config");
       bool directed_cx = content.at("directed").get<bool>();
       bool delay_measures = content.at("delay_measures").get<bool>();
       pp = gen_cx_mapping_pass(arc, place, config, directed_cx, delay_measures);

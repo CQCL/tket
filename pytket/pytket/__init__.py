@@ -20,7 +20,9 @@ from pytket.circuit import (  # type: ignore
     Qubit,
     Bit,
 )
-import pytket.routing
+import pytket.mapping
+import pytket.architecture
+import pytket.placement
 import pytket.transform
 import pytket.telemetry
 

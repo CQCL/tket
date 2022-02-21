@@ -158,7 +158,8 @@ void init_boxes(py::module &m) {
       .def_property_readonly(
           "name", &CompositeGateDef::get_name, "The readable name of the gate")
       .def_property_readonly(
-          "def", &CompositeGateDef::get_def, "Return definition as a circuit.")
+          "definition", &CompositeGateDef::get_def,
+          "Return definition as a circuit.")
       .def_property_readonly(
           "arity", &CompositeGateDef::n_args,
           "The number of real parameters for the gate");

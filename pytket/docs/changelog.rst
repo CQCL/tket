@@ -10,6 +10,42 @@ API changes:
   ``map`` property instead.)
 * The deprecated ``Backend.compile_circuit`` method is removed. (Use
   ``get_compiled_circuit`` instead.)
+* The ``routing`` module is removed.
+* ``Placement``, ``LinePlacement``, ``GraphPlacement`` and ``NoiseAwarePlacement`` 
+  are now imported from the ``placement`` module.
+* ``Architecture``, ``SquareGrid``, ``RingArch`` and ``FullyConnected`` are now 
+  imported from the ``architecture`` module.
+* Methods for mapping logical to physical circuits are now available in the
+  ``mapping`` module, with a new API and new functionality.
+* The keyword parameter and property ``def`` is now called ``definition`` in 
+  ``Circuit.add_custom_gate`` and ``CustomGateDef``.
+* ``RebaseCustom`` takes one allowed gateset parameter rather than separate single qubit and multiqubit gatesets.
+* The ``Backend.characterisation`` property is removed. (Use
+  ``Backend.backend_info`` instead.)
+* The ``QubitPauliOperator.from_OpenFermion`` and
+  ``QubitPauliOperator.to_OpenFermion`` methods are removed.
+
+Minor new features:
+
+* Add ``delay_measures`` option to ``DefaultMappingPass``.
+* New ``pytket.passes.auto_rebase_pass`` and ``pytket.passes.auto_squash_pass``
+  which attempt to construct rebase and squash passess given a target gate set from known
+  decompositions.
+
+0.19.2 (February 2022)
+----------------------
+
+Fixes:
+
+* Fix issue with jinja2 by updating dependency.
+
+0.19.1 (February 2022)
+----------------------
+
+Fixes:
+
+* Fix regression in ``Circuit.symbol_substitution`` causing incorrect values to
+  be substituted in some cases.
 
 0.19.0 (February 2022)
 ----------------------

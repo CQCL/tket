@@ -74,7 +74,9 @@ from pytket.predicates import (  # type: ignore
     CompilationUnit,
     UserDefinedPredicate,
 )
-from pytket.routing import Architecture, Placement, GraphPlacement  # type: ignore
+from pytket.mapping import LexiRouteRoutingMethod  # type: ignore
+from pytket.architecture import Architecture  # type: ignore
+from pytket.placement import Placement, GraphPlacement  # type: ignore
 from pytket.transform import Transform, PauliSynthStrat, CXConfigType  # type: ignore
 from pytket._tket.passes import SynthesiseOQC  # type: ignore
 import numpy as np
@@ -132,7 +134,7 @@ def test_rebase_pass_generation() -> None:
     cx = Circuit(2)
     cx.CX(0, 1)
     pz_rebase = RebaseCustom(
-        {OpType.CX}, cx, {OpType.PhasedX, OpType.Rz}, tk1_to_phasedxrz
+        {OpType.CX, OpType.PhasedX, OpType.Rz}, cx, tk1_to_phasedxrz
     )
     circ = Circuit(2)
     circ.X(0).Y(1)
@@ -212,7 +214,7 @@ def test_routing_and_placement_pass() -> None:
     assert seq_pass.apply(cu2)
     assert cu2.initial_map == expected_map
 
-    full_pass = FullMappingPass(arc, pl)
+    full_pass = FullMappingPass(arc, pl, config=[LexiRouteRoutingMethod()])
     cu3 = CompilationUnit(circ.copy())
     assert full_pass.apply(cu3)
     assert cu3.initial_map == expected_map
@@ -622,14 +624,15 @@ def test_generated_pass_config() -> None:
     cx = Circuit(2)
     cx.CX(0, 1)
     pz_rebase = RebaseCustom(
-        {OpType.CX}, cx, {OpType.PhasedX, OpType.Rz}, tk1_to_phasedxrz
+        {OpType.CX, OpType.PhasedX, OpType.Rz}, cx, tk1_to_phasedxrz
     )
     assert pz_rebase.to_dict()["StandardPass"]["name"] == "RebaseCustom"
-    assert pz_rebase.to_dict()["StandardPass"]["basis_multiqs"] == ["CX"]
-    assert set(pz_rebase.to_dict()["StandardPass"]["basis_singleqs"]) == {
+    assert set(pz_rebase.to_dict()["StandardPass"]["basis_allowed"]) == {
+        "CX",
         "PhasedX",
         "Rz",
     }
+
     assert cx.to_dict() == pz_rebase.to_dict()["StandardPass"]["basis_cx_replacement"]
     # EulerAngleReduction
     euler_pass = EulerAngleReduction(OpType.Ry, OpType.Rx)
@@ -638,12 +641,8 @@ def test_generated_pass_config() -> None:
     assert euler_pass.to_dict()["StandardPass"]["euler_p"] == "Rx"
     # RoutingPass
     arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
-    r_pass = RoutingPass(arc, swap_lookahead=10, bridge_interactions=10)
+    r_pass = RoutingPass(arc)
     assert r_pass.to_dict()["StandardPass"]["name"] == "RoutingPass"
-    assert r_pass.to_dict()["StandardPass"]["routing_config"]["depth_limit"] == 10
-    assert (
-        r_pass.to_dict()["StandardPass"]["routing_config"]["interactions_limit"] == 10
-    )
     assert check_arc_dict(arc, r_pass.to_dict()["StandardPass"]["architecture"])
     # PlacementPass
     placer = GraphPlacement(arc)
@@ -659,7 +658,7 @@ def test_generated_pass_config() -> None:
         [k.to_list(), v.to_list()] for k, v in qm.items()
     ]
     # FullMappingPass
-    fm_pass = FullMappingPass(arc, placer)
+    fm_pass = FullMappingPass(arc, placer, config=[LexiRouteRoutingMethod()])
     assert fm_pass.to_dict()["pass_class"] == "SequencePass"
     p_pass = fm_pass.get_sequence()[0]
     r_pass = fm_pass.get_sequence()[1]
@@ -670,6 +669,18 @@ def test_generated_pass_config() -> None:
     # DefaultMappingPass
     dm_pass = DefaultMappingPass(arc)
     assert dm_pass.to_dict()["pass_class"] == "SequencePass"
+    p_pass = dm_pass.get_sequence()[0].get_sequence()[0]
+    r_pass = dm_pass.get_sequence()[0].get_sequence()[1]
+    d_pass = dm_pass.get_sequence()[1]
+    assert d_pass.to_dict()["StandardPass"]["name"] == "DelayMeasures"
+    assert p_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"
+    assert r_pass.to_dict()["StandardPass"]["name"] == "RoutingPass"
+    assert check_arc_dict(arc, r_pass.to_dict()["StandardPass"]["architecture"])
+    assert p_pass.to_dict()["StandardPass"]["placement"]["type"] == "GraphPlacement"
+    # DefaultMappingPass with delay_measures=False
+    dm_pass = DefaultMappingPass(arc, False)
+    assert dm_pass.to_dict()["pass_class"] == "SequencePass"
+    assert len(dm_pass.get_sequence()) == 2
     p_pass = dm_pass.get_sequence()[0]
     r_pass = dm_pass.get_sequence()[1]
     assert p_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"

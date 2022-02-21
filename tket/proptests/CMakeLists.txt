@@ -49,7 +49,8 @@ target_link_libraries(proptest PRIVATE
     tket-Ops
     tket-OpType
     tket-Predicates
-    tket-Routing
+    tket-TokenSwapping
+    tket-Mapping
     tket-Simulation
     tket-Transformations
     tket-Utils)

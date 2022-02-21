@@ -185,9 +185,11 @@ Circuit Circuit::subcircuit(const Subcircuit& sc) const {
 // used to construct a routing grid
 QPathDetailed Circuit::unit_path(const UnitID& unit) const {
   Vertex current_v = get_in(unit);
+
   QPathDetailed path = {{current_v, 0}};
   Edge betweenEdge = get_nth_out_edge(current_v, 0);
   current_v = target(betweenEdge);
+
   while (detect_final_Op(current_v) == false) {
     if (n_out_edges(current_v) == 0) {
       throw CircuitInvalidity("A path ends before reaching an output vertex.");

@@ -12,13 +12,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import itertools
+from typing import List
 from pathlib import Path
-from pytket.circuit import Circuit, OpType, PauliExpBox  # type: ignore
+from pytket.circuit import Circuit, OpType, PauliExpBox, Node, Qubit  # type: ignore
+from pytket._tket.circuit import _library  # type: ignore
 from pytket.pauli import Pauli  # type: ignore
-from pytket.passes import RemoveRedundancies, KAKDecomposition, ThreeQubitSquash, CommuteThroughMultis, PauliSquash, FullPeepholeOptimise, GlobalisePhasedX  # type: ignore
-from pytket.predicates import CompilationUnit  # type: ignore
+from pytket.passes import (  # type: ignore
+    RemoveRedundancies,
+    KAKDecomposition,
+    SquashCustom,
+    CommuteThroughMultis,
+    RebaseCustom,
+    PauliSquash,
+    FullPeepholeOptimise,
+    DefaultMappingPass,
+    FullMappingPass,
+    RoutingPass,
+    PlacementPass,
+    CXMappingPass,
+    auto_rebase_pass,
+    auto_squash_pass,
+)
+from pytket.predicates import CompilationUnit, NoMidMeasurePredicate  # type: ignore
+from pytket.passes.auto_rebase import _CX_CIRCS, NoAutoRebase
 from pytket.transform import Transform, CXConfigType, PauliSynthStrat  # type: ignore
 from pytket.qasm import circuit_from_qasm
+from pytket.architecture import Architecture  # type: ignore
+from pytket.mapping import MappingManager, LexiRouteRoutingMethod  # type: ignore
+from pytket.placement import Placement, GraphPlacement, LinePlacement, NoiseAwarePlacement  # type: ignore
 
 from sympy import Symbol  # type: ignore
 import numpy as np
@@ -729,6 +751,308 @@ def test_full_peephole_optimise() -> None:
     assert n_cx1 < n_cz
 
 
+def test_decompose_swap_to_cx() -> None:
+    circ = Circuit(5)
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
+    circ.CX(0, 1)
+    circ.CX(0, 3)
+    circ.CX(2, 4)
+    circ.CX(1, 4)
+    circ.CX(0, 4)
+
+    init_map = dict()
+    init_map[Qubit(0)] = Node(0)
+    init_map[Qubit(1)] = Node(1)
+    init_map[Qubit(2)] = Node(2)
+    init_map[Qubit(3)] = Node(3)
+    init_map[Qubit(4)] = Node(4)
+
+    pl = Placement(arc)
+    pl.place_with_map(circ, init_map)
+
+    MappingManager(arc).route_circuit(circ, [LexiRouteRoutingMethod()])
+    assert circ.valid_connectivity(arc, False)
+    Transform.DecomposeSWAPtoCX(arc).apply(circ)
+    assert len(circ.get_commands()) == 20
+    Transform.DecomposeCXDirected(arc).apply(circ)
+    assert circ.valid_connectivity(arc, True)
+    assert len(circ.get_commands()) == 40
+
+
+def test_noncontiguous_DefaultMappingPass_arc() -> None:
+    arc = Architecture([[0, 2]])
+    pass1 = DefaultMappingPass(arc)
+    c = Circuit(2)
+    pass1.apply(c)
+
+
+def test_RoutingPass() -> None:
+    arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
+    circ = Circuit(5)
+    circ.CX(0, 1)
+    circ.CX(0, 3)
+    circ.CX(2, 4)
+    circ.CX(1, 4)
+    circ.CX(1, 3)
+    circ.CX(1, 2)
+    cu_0 = CompilationUnit(circ)
+    placer = GraphPlacement(arc)
+    p_pass = PlacementPass(placer)
+    r_pass_0 = RoutingPass(arc)
+    p_pass.apply(cu_0)
+    r_pass_0.apply(cu_0)
+    out_circ_0 = cu_0.circuit
+    assert out_circ_0.valid_connectivity(arc, False, True)
+
+
+def test_FullMappingPass() -> None:
+    arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
+    circ = Circuit(5)
+    circ.CX(0, 1).CX(0, 3).CX(2, 4).CX(1, 4).CX(0, 4).CX(2, 1).CX(3, 0)
+    cu_0 = CompilationUnit(circ)
+    cu_1 = CompilationUnit(circ)
+    gp_placer = GraphPlacement(arc)
+    lp_placer = LinePlacement(arc)
+    m_pass_0 = FullMappingPass(arc, gp_placer, [LexiRouteRoutingMethod()])
+    m_pass_1 = FullMappingPass(arc, lp_placer, [LexiRouteRoutingMethod()])
+    m_pass_0.apply(cu_0)
+    m_pass_1.apply(cu_1)
+    out_circ_0 = cu_0.circuit
+    out_circ_1 = cu_1.circuit
+    assert out_circ_0.n_gates < out_circ_1.n_gates
+    assert out_circ_0.valid_connectivity(arc, False, True)
+    assert out_circ_1.valid_connectivity(arc, False, True)
+
+
+def test_CXMappingPass() -> None:
+    arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
+    circ = Circuit(5)
+    circ.Y(4).CX(0, 1).S(3).CX(0, 3).H(0).CX(2, 4).CX(1, 4).Y(1).CX(0, 4).CX(2, 1).Z(
+        2
+    ).CX(3, 0).CX(2, 0).CX(1, 3)
+    circ.measure_all()
+    cu_0 = CompilationUnit(circ)
+    cu_1 = CompilationUnit(circ)
+    gp_placer = GraphPlacement(arc)
+    lp_placer = LinePlacement(arc)
+    m_pass_0 = CXMappingPass(
+        arc, gp_placer, swap_lookahead=10, bridge_interactions=10, directed_cx=True
+    )
+    m_pass_1 = CXMappingPass(arc, lp_placer, delay_measures=False)
+    m_pass_0.apply(cu_0)
+    m_pass_1.apply(cu_1)
+    out_circ_0 = cu_0.circuit
+    out_circ_1 = cu_1.circuit
+
+    measure_pred = NoMidMeasurePredicate()
+    assert measure_pred.verify(cu_0.circuit) == True
+    assert measure_pred.verify(cu_1.circuit) == False
+    assert out_circ_0.valid_connectivity(arc, True)
+    assert out_circ_1.valid_connectivity(arc, False)
+
+
+def test_DefaultMappingPass() -> None:
+    arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
+    circ = Circuit(5)
+    circ.Y(4).CX(0, 1).S(3).CX(0, 3).H(0).CX(2, 4).CX(1, 4).Y(1).CX(0, 4).CX(2, 1).Z(
+        2
+    ).CX(3, 0).CX(2, 0).CX(1, 3).CX(1, 2)
+    circ.measure_all()
+    cu_0 = CompilationUnit(circ)
+    cu_1 = CompilationUnit(circ)
+    m_pass_0 = DefaultMappingPass(arc, delay_measures=True)
+    m_pass_1 = DefaultMappingPass(arc, delay_measures=False)
+    m_pass_0.apply(cu_0)
+    m_pass_1.apply(cu_1)
+    out_circ_0 = cu_0.circuit
+    out_circ_1 = cu_1.circuit
+    measure_pred = NoMidMeasurePredicate()
+    assert measure_pred.verify(out_circ_0) == True
+    assert measure_pred.verify(out_circ_1) == False
+    assert out_circ_0.valid_connectivity(arc, False, True)
+    assert out_circ_1.valid_connectivity(arc, False, True)
+
+
+def test_CXMappingPass_correctness() -> None:
+    # TKET-1045
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
+    placer = NoiseAwarePlacement(arc)
+    p = CXMappingPass(arc, placer, directed_cx=True, delay_measures=True)
+    c = Circuit(3).CX(0, 1).CX(1, 2).CCX(2, 1, 0).CY(1, 0).CY(2, 1)
+    cu = CompilationUnit(c)
+    p.apply(cu)
+    c1 = cu.circuit
+    u1 = c1.get_unitary()
+    assert all(np.isclose(abs(x), 0) or np.isclose(abs(x), 1) for x in u1.flatten())
+
+
+def test_CXMappingPass_terminates() -> None:
+    # TKET-1376
+    c = circuit_from_qasm(
+        Path(__file__).resolve().parent / "qasm_test_files" / "test13.qasm"
+    )
+    arc = Architecture(
+        [
+            [0, 1],
+            [1, 0],
+            [1, 2],
+            [1, 4],
+            [2, 1],
+            [2, 3],
+            [3, 2],
+            [3, 5],
+            [4, 1],
+            [4, 7],
+            [5, 3],
+            [5, 8],
+            [6, 7],
+            [7, 4],
+            [7, 6],
+            [7, 10],
+            [8, 5],
+            [8, 9],
+            [8, 11],
+            [9, 8],
+            [10, 7],
+            [10, 12],
+            [11, 8],
+            [11, 14],
+            [12, 10],
+            [12, 13],
+            [12, 15],
+            [13, 12],
+            [13, 14],
+            [14, 11],
+            [14, 13],
+            [14, 16],
+            [15, 12],
+            [15, 18],
+            [16, 14],
+            [16, 19],
+            [17, 18],
+            [18, 15],
+            [18, 17],
+            [18, 21],
+            [19, 16],
+            [19, 20],
+            [19, 22],
+            [20, 19],
+            [21, 18],
+            [21, 23],
+            [22, 19],
+            [22, 25],
+            [23, 21],
+            [23, 24],
+            [24, 23],
+            [24, 25],
+            [25, 22],
+            [25, 24],
+            [25, 26],
+            [26, 25],
+        ]
+    )
+    placer = NoiseAwarePlacement(arc)
+    placer.modify_config(timeout=10000)
+    p = CXMappingPass(arc, placer, directed_cx=False, delay_measures=False)
+    res = p.apply(c)
+    assert res
+
+
+def test_auto_rebase() -> None:
+    pass_params = [
+        ({OpType.CX, OpType.Rz, OpType.Rx}, _library._CX(), _library._TK1_to_RzRx),
+        (
+            {OpType.CZ, OpType.Rz, OpType.SX, OpType.ZZPhase},
+            _CX_CIRCS[OpType.CZ](),
+            _library._TK1_to_RzSX,
+        ),
+        (
+            {OpType.ZZMax, OpType.T, OpType.Rz, OpType.H},
+            _library._CX_using_ZZMax(),
+            _library._TK1_to_RzH,
+        ),
+        (
+            {OpType.XXPhase, OpType.T, OpType.Rz, OpType.H},
+            _library._CX_using_XXPhase_0(),
+            _library._TK1_to_RzH,
+        ),
+        (
+            {OpType.ECR, OpType.PhasedX, OpType.Rz, OpType.CnX},
+            _library._CX_using_ECR(),
+            _library._TK1_to_PhasedXRz,
+        ),
+        (
+            {OpType.CX, OpType.TK1, OpType.U3, OpType.CnX},
+            _library._CX(),
+            _library._TK1_to_TK1,
+        ),
+    ]
+
+    circ = get_test_circuit()
+
+    for gateset, cx_circ, TK1_func in pass_params:
+        rebase = auto_rebase_pass(gateset)
+        assert rebase.to_dict() == RebaseCustom(gateset, cx_circ, TK1_func).to_dict()
+
+        c2 = circ.copy()
+        assert rebase.apply(c2)
+
+    with pytest.raises(NoAutoRebase) as cx_err:
+        _ = auto_rebase_pass({OpType.ZZPhase, OpType.TK1})
+    assert "CX" in str(cx_err.value)
+
+    with pytest.raises(NoAutoRebase) as cx_err:
+        _ = auto_rebase_pass({OpType.CX, OpType.H, OpType.T})
+    assert "TK1" in str(cx_err.value)
+
+
+def test_auto_squash() -> None:
+    pass_params = [
+        ({OpType.Rz, OpType.Rx}, _library._TK1_to_RzRx),
+        (
+            {OpType.Rz, OpType.SX},
+            _library._TK1_to_RzSX,
+        ),
+        (
+            {OpType.T, OpType.Rz, OpType.H},
+            _library._TK1_to_RzH,
+        ),
+        (
+            {OpType.T, OpType.Rz, OpType.H},
+            _library._TK1_to_RzH,
+        ),
+        (
+            {OpType.PhasedX, OpType.Rz},
+            _library._TK1_to_PhasedXRz,
+        ),
+        (
+            {OpType.TK1, OpType.U3},
+            _library._TK1_to_TK1,
+        ),
+    ]
+
+    for gateset, TK1_func in pass_params:
+        circ = Circuit(1)
+        for gate in itertools.islice(itertools.cycle(gateset), 5):
+            # make a sequence of 5 gates from gateset to make sure squash does
+            # something
+            params: List[float] = []
+            while True:
+                try:
+                    circ.add_gate(gate, params, [0])
+                    break
+                except (RuntimeError, TypeError):
+                    params.append(0.1)
+        squash = auto_squash_pass(gateset)
+        assert squash.to_dict() == SquashCustom(gateset, TK1_func).to_dict()
+
+        assert squash.apply(circ)
+
+    with pytest.raises(NoAutoRebase) as tk_err:
+        _ = auto_squash_pass({OpType.H, OpType.T})
+    assert "TK1" in str(tk_err.value)
+
+
 if __name__ == "__main__":
     test_remove_redundancies()
     test_reduce_singles()
@@ -746,3 +1070,11 @@ if __name__ == "__main__":
     test_implicit_swaps_1()
     test_implicit_swaps_2()
     test_implicit_swaps_3()
+    test_decompose_swap_to_cx()
+    test_noncontiguous_DefaultMappingPass_arc()
+    test_RoutingPass()
+    test_DefaultMappingPass()
+    test_CXMappingPass()
+    test_CXMappingPass_correctness()
+    test_CXMappingPass_terminates()
+    test_FullMappingPass()

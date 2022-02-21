@@ -23,7 +23,23 @@
 namespace tket {
 
 struct TagKey {};
+struct TagValue {};
 struct TagSeq {};
+
+template <typename A, typename B>
+using sequenced_bimap_t = boost::multi_index::multi_index_container<
+    std::pair<A, B>,
+    boost::multi_index::indexed_by<
+        boost::multi_index::ordered_unique<
+            boost::multi_index::tag<TagKey>,
+            boost::multi_index::member<
+                std::pair<A, B>, A, &std::pair<A, B>::first>>,
+        boost::multi_index::ordered_unique<
+            boost::multi_index::tag<TagValue>,
+            boost::multi_index::member<
+                std::pair<A, B>, B, &std::pair<A, B>::second>>,
+        boost::multi_index::sequenced<boost::multi_index::tag<TagSeq>>>>;
+
 template <typename A, typename B>
 using sequenced_map_t = boost::multi_index::multi_index_container<
     std::pair<A, B>,
