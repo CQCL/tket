@@ -54,7 +54,7 @@ unit_map_t LexiLabellingMethod::routing_method(
 
 nlohmann::json LexiLabellingMethod::serialize() const {
   nlohmann::json j;
-  j["name_of_method"] = "LexiLabellingMethod";
+  j["name"] = "LexiLabellingMethod";
   return j;
 }
 

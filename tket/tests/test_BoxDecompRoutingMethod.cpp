@@ -114,7 +114,7 @@ SCENARIO("Decompose boxes") {
 SCENARIO("Test JSON serialisation for BoxDecompositionRoutingMethod") {
   GIVEN("BoxDecompositionRoutingMethod") {
     nlohmann::json j_rm;
-    j_rm["name_of_method"] = "BoxDecompositionRoutingMethod";
+    j_rm["name"] = "BoxDecompositionRoutingMethod";
     BoxDecompositionRoutingMethod rm_loaded =
         BoxDecompositionRoutingMethod::deserialize(j_rm);
     nlohmann::json j_rm_serialised = rm_loaded.serialize();
@@ -123,9 +123,9 @@ SCENARIO("Test JSON serialisation for BoxDecompositionRoutingMethod") {
 
   GIVEN("BoxDecompositionRoutingMethod vector") {
     nlohmann::json j_rms = {
-        {{"name_of_method", "BoxDecompositionRoutingMethod"}},
+        {{"name", "BoxDecompositionRoutingMethod"}},
         {
-            {"name_of_method", "LexiRouteRoutingMethod"},
+            {"name", "LexiRouteRoutingMethod"},
             {"depth", 3},
         }};
     std::vector<RoutingMethodPtr> rms =
