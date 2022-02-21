@@ -60,7 +60,7 @@ SCENARIO("Testing generator creation") {
   CHECK(px.get_type() == ZXType::PX);
   CHECK(px.get_param() == true);
   CHECK(px.free_symbols().empty());
-  CHECK(px != CliffordGen(ZXType::PX, false, QuantumType::Quantum));
+  CHECK(!(px == CliffordGen(ZXType::PX, false, QuantumType::Quantum)));
   CHECK(px == CliffordGen(ZXType::PX, true, QuantumType::Classical));
 
   // Should throw an error: type Triangle is not a BasicGen type
