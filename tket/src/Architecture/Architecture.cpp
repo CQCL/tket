@@ -36,7 +36,13 @@ bool Architecture::valid_operation(
       return false;
     }
     if (uids.size() == 1) {
-      return this->node_exists(uids[0]);
+      if (this->node_exists(uids[0])) {
+        return true;
+      } else {
+        // found unplaced single qubit gate
+        // with current Architecture can assume all single qubit gates valid
+        return true;
+      }
     }
     if (uids.size() == 2) {
       if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
