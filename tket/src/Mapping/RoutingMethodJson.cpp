@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include "Mapping/RoutingMethodJson.hpp"
-
 #include "Mapping/LexiLabelling.hpp"
 
 namespace tket {
@@ -32,12 +31,11 @@ void to_json(nlohmann::json& j, const std::vector<RoutingMethodPtr>& rmp_v) {
 
 void from_json(const nlohmann::json& j, std::vector<RoutingMethodPtr>& rmp_v) {
   for (const auto& c : j) {
-    std::string name = c.at("name_of_method").get<std::string>();
+    std::string name = c.at("name").get<std::string>();
     if (name == "LexiLabellingMethod") {
       rmp_v.push_back(std::make_shared<LexiLabellingMethod>(
           LexiLabellingMethod::deserialize(c)));
-    }
-    if (name == "LexiRouteRoutingMethod") {
+    } else if (name == "LexiRouteRoutingMethod") {
       rmp_v.push_back(std::make_shared<LexiRouteRoutingMethod>(
           LexiRouteRoutingMethod::deserialize(c)));
     } else if (name == "RoutingMethod") {

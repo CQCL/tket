@@ -561,7 +561,7 @@ unsigned LexiRouteRoutingMethod::get_max_depth() const {
 nlohmann::json LexiRouteRoutingMethod::serialize() const {
   nlohmann::json j;
   j["depth"] = this->get_max_depth();
-  j["name_of_method"] = "LexiRouteRoutingMethod";
+  j["name"] = "LexiRouteRoutingMethod";
   return j;
 }
 

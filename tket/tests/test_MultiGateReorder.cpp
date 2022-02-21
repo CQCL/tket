@@ -376,7 +376,7 @@ SCENARIO("Test MappingManager with MultiGateReorderRoutingMethod") {
 SCENARIO("Test JSON serialisation for MultiGateReorderRoutingMethod") {
   GIVEN("MultiGateReorderRoutingMethod") {
     nlohmann::json j_rm;
-    j_rm["name_of_method"] = "MultiGateReorderRoutingMethod";
+    j_rm["name"] = "MultiGateReorderRoutingMethod";
     j_rm["depth"] = 3;
     j_rm["size"] = 4;
     MultiGateReorderRoutingMethod rm_loaded =
@@ -387,11 +387,11 @@ SCENARIO("Test JSON serialisation for MultiGateReorderRoutingMethod") {
 
   GIVEN("RoutingMethod vector") {
     nlohmann::json j_rms = {
-        {{"name_of_method", "MultiGateReorderRoutingMethod"},
+        {{"name", "MultiGateReorderRoutingMethod"},
          {"depth", 3},
          {"size", 4}},
         {
-            {"name_of_method", "LexiRouteRoutingMethod"},
+            {"name", "LexiRouteRoutingMethod"},
             {"depth", 3},
         }};
     std::vector<RoutingMethodPtr> rms =

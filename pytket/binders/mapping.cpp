@@ -28,7 +28,6 @@
 namespace py = pybind11;
 
 namespace tket {
-
 PYBIND11_MODULE(mapping, m) {
   py::class_<RoutingMethod, std::shared_ptr<RoutingMethod>>(
       m, "RoutingMethod",
