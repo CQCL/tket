@@ -212,6 +212,36 @@ void init_circuit(py::module &m) {
           "\n\n:param register: BitRegister ",
           py::arg("register"))
       .def(
+          "get_c_register",
+          [](Circuit &circ, const std::string &name) {
+            register_t reg = circ.get_reg(name);
+            if (reg.size() == 0 ||
+                reg.begin()->second.type() != UnitType::Bit) {
+              throw CircuitInvalidity(
+                  "Cannot find classical register with name \"" + name + "\".");
+            }
+            return BitRegister(name, reg.size());
+          },
+          "Get the classical register with the given name.\n\n:param name: "
+          "name for the register\n:return: the retrieved "
+          ":py:class:`BitRegister`",
+          py::arg("name"))
+      .def(
+          "get_q_register",
+          [](Circuit &circ, const std::string &name) {
+            register_t reg = circ.get_reg(name);
+            if (reg.size() == 0 ||
+                reg.begin()->second.type() != UnitType::Qubit) {
+              throw CircuitInvalidity(
+                  "Cannot find quantum register with name \"" + name + "\".");
+            }
+            return QubitRegister(name, reg.size());
+          },
+          "Get the quantum register with the given name.\n\n:param name: "
+          "name for the register\n:return: the retrieved "
+          ":py:class:`QubitRegister`",
+          py::arg("name"))
+      .def(
           "add_qubit", &Circuit::add_qubit,
           "Constructs a single qubit with the given id.\n\n:param id: "
           "Unique id for the qubit\n:param reject_dups: Fail if there "
