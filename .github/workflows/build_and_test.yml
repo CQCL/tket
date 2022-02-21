@@ -57,6 +57,9 @@ jobs:
         ${conan_cmd} profile update settings.compiler.libcxx=libstdc++11 tket
         ${conan_cmd} profile update options.tket:shared=True tket
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
+    - name: set option to run full test suite
+      if: github.event_name == 'schedule'
+      run: ${CONAN_CMD} profile update options.tket-tests:full=True tket
     - name: add remote
       run: ${CONAN_CMD} remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
     - name: Install ninja and ccache
@@ -89,7 +92,6 @@ jobs:
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-        pip install -r requirements-openfermion.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Set up Python 3.9
       if: github.event_name == 'pull_request'
@@ -112,7 +114,6 @@ jobs:
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-        pip install -r requirements-openfermion.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Set up Python 3.10
       if: github.event_name == 'schedule'
@@ -181,6 +182,9 @@ jobs:
         conan profile update options.tket:shared=True tket
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
+    - name: set option to run full test suite
+      if: github.event_name == 'schedule'
+      run: conan profile update options.tket-tests:full=True tket
     - name: add remote
       run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
     - name: Install boost
@@ -210,7 +214,6 @@ jobs:
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-        pip install -r requirements-openfermion.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Set up Python 3.9
       if: github.event_name == 'pull_request'
@@ -227,7 +230,6 @@ jobs:
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-        pip install -r requirements-openfermion.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Run mypy
       if: github.event_name == 'pull_request'
@@ -274,6 +276,9 @@ jobs:
         conan profile update options.tket:shared=True tket
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
+    - name: set option to run full test suite
+      if: github.event_name == 'schedule'
+      run: conan profile update options.tket-tests:full=True tket
     - name: add remote
       run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
     - name: Install boost
@@ -372,6 +377,9 @@ jobs:
         conan profile update options.tket:shared=True tket
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
+    - name: set option to run full test suite
+      if: github.event_name == 'schedule'
+      run: conan profile update options.tket-tests:full=True tket
     - name: add remote
       run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
     - name: Cache tket build
@@ -401,7 +409,6 @@ jobs:
         pip install -e . -v
         cd tests
         pip install -r requirements.txt
-        pip install -r requirements-openfermion.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Set up Python 3.9
       if: github.event_name == 'pull_request'
@@ -415,7 +422,6 @@ jobs:
         pip install -e . -v
         cd tests
         pip install -r requirements.txt
-        pip install -r requirements-openfermion.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Set up Python 3.10
       if: github.event_name == 'schedule'

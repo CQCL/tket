@@ -16,6 +16,7 @@
 #include <numeric>
 #include <optional>
 
+#include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "CircuitsForTesting.hpp"
 #include "Gate/Rotation.hpp"
@@ -705,16 +706,16 @@ SCENARIO("Testing general 1qb squash") {
     Circuit copy = circ;
     OpTypeSet singleqs = {OpType::Rz, OpType::PhasedX};
     bool success =
-        Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
+        Transforms::squash_factory(singleqs, CircPool::tk1_to_PhasedXRz)
             .apply(circ);
     REQUIRE_FALSE(success);
     singleqs.insert(OpType::Rx);
-    success = Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
+    success = Transforms::squash_factory(singleqs, CircPool::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE(success);
     check_command_types(circ, {OpType::Rz, OpType::PhasedX});
     REQUIRE(test_unitary_comparison(circ, copy));
-    success = Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
+    success = Transforms::squash_factory(singleqs, CircPool::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE_FALSE(success);
   }
@@ -725,12 +726,12 @@ SCENARIO("Testing general 1qb squash") {
     Circuit copy = circ;
     OpTypeSet singleqs = {OpType::Rz, OpType::PhasedX};
     bool success =
-        Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
+        Transforms::squash_factory(singleqs, CircPool::tk1_to_PhasedXRz)
             .apply(circ);
     REQUIRE(success);
     check_command_types(circ, {OpType::PhasedX});
     REQUIRE(test_unitary_comparison(circ, copy));
-    success = Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
+    success = Transforms::squash_factory(singleqs, CircPool::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE_FALSE(success);
   }
@@ -742,12 +743,12 @@ SCENARIO("Testing general 1qb squash") {
     Circuit copy = circ;
     OpTypeSet singleqs = {OpType::Rz, OpType::PhasedX};
     bool success =
-        Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
+        Transforms::squash_factory(singleqs, CircPool::tk1_to_PhasedXRz)
             .apply(circ);
     REQUIRE(success);
     check_command_types(circ, {OpType::Rz});
     REQUIRE(test_unitary_comparison(circ, copy));
-    success = Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
+    success = Transforms::squash_factory(singleqs, CircPool::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE_FALSE(success);
   }
@@ -759,13 +760,15 @@ SCENARIO("Testing general 1qb squash") {
     bool success = Transforms::rebase_HQS().apply(circ);
     REQUIRE(success);
     OpTypeSet singleqs = {OpType::Rz, OpType::PhasedX};
-    success = Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
+    success = Transforms::squash_factory(singleqs, CircPool::tk1_to_PhasedXRz)
                   .apply(circ);
+    REQUIRE(success);
+    success = Transforms::remove_redundancies().apply(circ);
     REQUIRE(success);
     check_command_types(
         circ, {OpType::Rz, OpType::PhasedX, OpType::ZZMax, OpType::Rz,
                OpType::PhasedX});
-    success = Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
+    success = Transforms::squash_factory(singleqs, CircPool::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE_FALSE(success);
   }
@@ -788,7 +791,7 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rz, 1., {0});
     OpTypeSet singleqs = {OpType::Rz, OpType::Rx, OpType::PhasedX};
     bool success =
-        Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
+        Transforms::squash_factory(singleqs, CircPool::tk1_to_PhasedXRz)
             .apply(circ);
     REQUIRE(success);
     check_command_types(
@@ -796,7 +799,7 @@ SCENARIO("Testing general 1qb squash") {
         {OpType::Rz, OpType::PhasedX, OpType::Conditional, OpType::Conditional,
          OpType::Conditional, OpType::Conditional, OpType::Conditional,
          OpType::Conditional, OpType::Rz, OpType::PhasedX});
-    success = Transforms::squash_factory(singleqs, Transforms::tk1_to_PhasedXRz)
+    success = Transforms::squash_factory(singleqs, CircPool::tk1_to_PhasedXRz)
                   .apply(circ);
     REQUIRE_FALSE(success);
   }
@@ -1400,14 +1403,15 @@ SCENARIO("Test synthesise_UMD") {
     Expr a = 0.;
     Expr b = 0.;
     Expr c = 0.;
-    Circuit circ = Transforms::tk1_to_PhasedXRz(a, b, c);
+    Circuit circ = CircPool::tk1_to_PhasedXRz(a, b, c);
+    Transforms::remove_redundancies().apply(circ);
     REQUIRE(circ.n_gates() == 0);
   }
   GIVEN("An Rz in disguise") {
     Expr a = 0.3;
     Expr b = 0.;
     Expr c = 1.3;
-    Circuit circ = Transforms::tk1_to_PhasedXRz(a, b, c);
+    Circuit circ = CircPool::tk1_to_PhasedXRz(a, b, c);
     REQUIRE(circ.n_gates() == 1);
   }
   GIVEN("Y-gate") {

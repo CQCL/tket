@@ -88,15 +88,15 @@ static void fill_initial_node_sequence(
     // GCOVR_EXCL_STOP
   } catch (const std::exception& e) {
     // GCOVR_EXCL_START
-    std::stringstream ss;
-    ss << "ColouringPriority: fill_initial_node_sequence: initial"
-       << " clique size " << initial_clique.size() << ", "
-       << vertices_in_component.size() << " vertices in"
-       << " this component (full graph has "
-       << adjacency_data.get_number_of_vertices() << " vertices)."
-       << " So far, filled " << nodes.size() << " nodes."
-       << " Error: " << e.what();
-    TKET_ASSERT_WITH_MESSAGE(false, ss.str());
+    TKET_ASSERT(
+        AssertMessage()
+        << "ColouringPriority: fill_initial_node_sequence: initial"
+        << " clique size " << initial_clique.size() << ", "
+        << vertices_in_component.size() << " vertices in"
+        << " this component (full graph has "
+        << adjacency_data.get_number_of_vertices() << " vertices)."
+        << " So far, filled " << nodes.size() << " nodes."
+        << " Error: " << e.what());
     // GCOVR_EXCL_STOP
   }
 }

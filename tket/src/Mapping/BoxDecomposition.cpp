@@ -59,7 +59,7 @@ unit_map_t BoxDecompositionRoutingMethod::routing_method(
 
 nlohmann::json BoxDecompositionRoutingMethod::serialize() const {
   nlohmann::json j;
-  j["name"] = "BoxDecompositionRoutingMethod";
+  j["name_of_method"] = "BoxDecompositionRoutingMethod";
   return j;
 }
 

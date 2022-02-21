@@ -45,7 +45,7 @@ class TketConan(ConanFile):
         "symengine/0.8.1.1@tket/stable",
         "eigen/3.4.0",
         "spdlog/1.9.2",
-        "nlohmann_json/3.10.4",
+        "nlohmann_json/3.10.5",
     )
 
     comps = [
@@ -65,7 +65,6 @@ class TketConan(ConanFile):
         "Characterisation",
         "Converters",
         "TokenSwapping",
-        "TokenSwappingWithArch",
         "Mapping",
         "Placement",
         "MeasurementSetup",

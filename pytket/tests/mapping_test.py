@@ -16,7 +16,7 @@ from pytket.mapping import MappingManager, RoutingMethodCircuit, LexiRouteRoutin
 from pytket.architecture import Architecture  # type: ignore
 from pytket import Circuit, OpType
 from pytket.circuit import Node, Qubit  # type: ignore
-from pytket.placement import Placement
+from pytket.placement import Placement  # type: ignore
 from typing import Tuple, Dict
 
 

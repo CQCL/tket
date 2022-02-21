@@ -38,7 +38,6 @@ list(APPEND DEPS_${COMP}
     Ops
     OpType
     TokenSwapping
-    TokenSwappingWithArch
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

@@ -15,11 +15,11 @@
 #include <array>
 #include <catch2/catch.hpp>
 
+#include "Architecture/ArchitectureMapping.hpp"
+#include "Architecture/DistancesFromArchitecture.hpp"
+#include "Architecture/NeighboursFromArchitecture.hpp"
 #include "TestUtils/ArchitectureEdgesReimplementation.hpp"
 #include "TokenSwapping/RiverFlowPathFinder.hpp"
-#include "TokenSwappingWithArch/ArchitectureMapping.hpp"
-#include "TokenSwappingWithArch/DistancesFromArchitecture.hpp"
-#include "TokenSwappingWithArch/NeighboursFromArchitecture.hpp"
 #include "Utils/RNG.hpp"
 
 using std::vector;

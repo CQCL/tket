@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <catch2/catch.hpp>
 
+#include "Circuit/CircPool.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
@@ -218,8 +219,8 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     Circuit cx(2);
     cx.add_op<unsigned>(OpType::CX, {0, 1});
     PassPtr pz_rebase = gen_rebase_pass(
-        {OpType::CX}, cx, {OpType::PhasedX, OpType::Rz},
-        Transforms::tk1_to_PhasedXRz);
+        {OpType::CX, OpType::PhasedX, OpType::Rz}, cx,
+        CircPool::tk1_to_PhasedXRz);
     PassPtr all_passes = SynthesiseTket() >> cp_route >> pz_rebase;
 
     REQUIRE(all_passes->apply(cu));
@@ -1060,8 +1061,9 @@ SCENARIO("CX mapping pass") {
     PlacementPtr placer = std::make_shared<NoiseAwarePlacement>(line);
     Circuit cx(2);
     cx.add_op<unsigned>(OpType::CX, {0, 1});
-    PassPtr rebase = gen_rebase_pass(
-        {OpType::CX}, cx, all_single_qubit_types(), Transforms::tk1_to_tk1);
+    OpTypeSet gateset = all_single_qubit_types();
+    gateset.insert(OpType::CX);
+    PassPtr rebase = gen_rebase_pass(gateset, cx, CircPool::tk1_to_tk1);
 
     // Circuit mapping basis states to basis states
     Circuit c(3);

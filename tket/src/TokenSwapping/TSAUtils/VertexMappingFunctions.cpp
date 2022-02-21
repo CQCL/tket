@@ -38,11 +38,12 @@ void check_mapping(
   work_mapping.clear();
   for (const auto& entry : vertex_mapping) {
     // GCOVR_EXCL_START
-    TKET_ASSERT_WITH_MESSAGE(
-        work_mapping.count(entry.second) == 0,
-        "Vertices v_" << entry.first << " and v_" << work_mapping[entry.second]
-                      << " both have the same target vertex v_"
-                      << entry.second);
+    TKET_ASSERT(
+        work_mapping.count(entry.second) == 0 ||
+        AssertMessage() << "Vertices v_" << entry.first << " and v_"
+                        << work_mapping[entry.second]
+                        << " both have the same target vertex v_"
+                        << entry.second);
     // GCOVR_EXCL_STOP
     work_mapping[entry.second] = entry.first;
   }

@@ -134,7 +134,7 @@ def test_rebase_pass_generation() -> None:
     cx = Circuit(2)
     cx.CX(0, 1)
     pz_rebase = RebaseCustom(
-        {OpType.CX}, cx, {OpType.PhasedX, OpType.Rz}, tk1_to_phasedxrz
+        {OpType.CX, OpType.PhasedX, OpType.Rz}, cx, tk1_to_phasedxrz
     )
     circ = Circuit(2)
     circ.X(0).Y(1)
@@ -626,14 +626,15 @@ def test_generated_pass_config() -> None:
     cx = Circuit(2)
     cx.CX(0, 1)
     pz_rebase = RebaseCustom(
-        {OpType.CX}, cx, {OpType.PhasedX, OpType.Rz}, tk1_to_phasedxrz
+        {OpType.CX, OpType.PhasedX, OpType.Rz}, cx, tk1_to_phasedxrz
     )
     assert pz_rebase.to_dict()["StandardPass"]["name"] == "RebaseCustom"
-    assert pz_rebase.to_dict()["StandardPass"]["basis_multiqs"] == ["CX"]
-    assert set(pz_rebase.to_dict()["StandardPass"]["basis_singleqs"]) == {
+    assert set(pz_rebase.to_dict()["StandardPass"]["basis_allowed"]) == {
+        "CX",
         "PhasedX",
         "Rz",
     }
+
     assert cx.to_dict() == pz_rebase.to_dict()["StandardPass"]["basis_cx_replacement"]
     # EulerAngleReduction
     euler_pass = EulerAngleReduction(OpType.Ry, OpType.Rx)

@@ -172,6 +172,10 @@ conan create --profile=tket recipes/tket-tests
 If you want to build them without running them, pass `--test-folder None` to the
 `conan` command. (You can still run them manually afterwards.)
 
+Some tests (those that add significantly to the runtime) are not built by
+default. To build all tests, add `-o tket-tests:full=True` to the above
+`conan create` command.
+
 There is also a small set of property-based tests which you can build and run
 with:
 

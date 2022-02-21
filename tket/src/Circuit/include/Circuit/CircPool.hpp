@@ -225,6 +225,18 @@ Circuit PhasedISWAP_using_CX(Expr p, Expr t);
 /** Unwrap NPhasedX, into number_of_qubits PhasedX gates */
 Circuit NPhasedX_using_CX(unsigned int number_of_qubits, Expr alpha, Expr beta);
 
+// converts a TK1 gate to a PhasedXRz gate
+Circuit tk1_to_PhasedXRz(
+    const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+Circuit tk1_to_rzrx(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+Circuit tk1_to_rzh(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+Circuit tk1_to_tk1(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
 }  // namespace CircPool
 
 }  // namespace tket
