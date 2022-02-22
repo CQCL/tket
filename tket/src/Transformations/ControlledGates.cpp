@@ -21,6 +21,7 @@
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/DAGDefs.hpp"
+#include "OpType/OpType.hpp"
 #include "Transform.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/HelperFunctions.hpp"
@@ -432,22 +433,25 @@ static Circuit lemma71(
   if (rep.n_gates() != correct_gate_count)
     throw ControlDecompError("Error in Lemma 7.1: Gate count is incorrect");
   auto [vit, vend] = boost::vertices(rep.dag);
+  VertexSet bin;
   for (auto next = vit; vit != vend; vit = next) {
     ++next;
     Vertex v = *vit;
-    if (rep.get_OpType_from_Vertex(v) == OpType::CRy) {
-      Expr v_angle = rep.get_Op_ptr_from_Vertex(v)->get_params()[0];
-      Circuit cry_replacement = CircPool::CRy_using_CX(v_angle);
-      Subcircuit sub{rep.get_in_edges(v), rep.get_all_out_edges(v), {v}};
-      rep.substitute(cry_replacement, sub, Circuit::VertexDeletion::Yes);
-    }
-    if (rep.get_OpType_from_Vertex(v) == OpType::CU1) {
-      Expr v_angle = rep.get_Op_ptr_from_Vertex(v)->get_params()[0];
-      Circuit cu1_replacement = CircPool::CU1_using_CX(v_angle);
-      Subcircuit sub{rep.get_in_edges(v), rep.get_all_out_edges(v), {v}};
-      rep.substitute(cu1_replacement, sub, Circuit::VertexDeletion::Yes);
+    if (!bin.contains(v)) {
+      OpType optype = rep.get_OpType_from_Vertex(v);
+      if (optype == OpType::CRy || optype == OpType::CU1) {
+        Expr v_angle = rep.get_Op_ptr_from_Vertex(v)->get_params()[0];
+        Circuit replacement = (optype == OpType::CRy)
+                                  ? CircPool::CRy_using_CX(v_angle)
+                                  : CircPool::CU1_using_CX(v_angle);
+        Subcircuit sub{rep.get_in_edges(v), rep.get_all_out_edges(v), {v}};
+        rep.substitute(replacement, sub, Circuit::VertexDeletion::No);
+        bin.insert(v);
+      }
     }
   }
+  rep.remove_vertices(
+      bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
   return rep;
 }
 

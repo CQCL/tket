@@ -14,6 +14,7 @@
 
 #include "Utils/GraphHeaders.hpp"
 #include "ZX/Rewrite.hpp"
+#include "ZXDiagramImpl.hpp"
 
 namespace tket {
 
@@ -44,7 +45,9 @@ Rewrite Rewrite::red_to_green() { return Rewrite(red_to_green_fun); }
 
 bool Rewrite::spider_fusion_fun(ZXDiagram& diag) {
   bool success = false;
+  std::set<ZXVert> bin;
   BGL_FORALL_VERTICES(v, *diag.graph, ZXGraph) {
+    if (bin.contains(v)) continue;
     ZXType vtype = diag.get_zxtype(v);
     if (!is_spider_type(vtype)) continue;
     /**
@@ -60,6 +63,7 @@ bool Rewrite::spider_fusion_fun(ZXDiagram& diag) {
       adj_list.pop_front();
       ZXWireType wtype = diag.get_wire_type(w);
       ZXVert u = diag.other_end(w, v);
+      if (bin.contains(u)) continue;
       ZXType utype = diag.get_zxtype(u);
       bool same_colour = vtype == utype;
       if (!is_spider_type(utype) || u == v ||
@@ -102,9 +106,12 @@ bool Rewrite::spider_fusion_fun(ZXDiagram& diag) {
         adj_list.push_back(new_w);
       }
       // Remove `u`
-      diag.remove_vertex(u);
+      bin.insert(u);
       success = true;
     }
+  }
+  for (ZXVert u : bin) {
+    diag.remove_vertex(u);
   }
   return success;
 }
