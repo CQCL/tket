@@ -439,7 +439,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "PlacementPass") {
       pp = gen_placement_pass(content.at("placement").get<PlacementPtr>());
     } else if (passname == "NaivePlacementPass") {
-      pp = gen_naive_placement_pass(content.at("architecture").get<Architecture>());
+      pp = gen_naive_placement_pass(
+          content.at("architecture").get<Architecture>());
     } else if (passname == "RenameQubitsPass") {
       pp = gen_rename_qubits_pass(
           content.at("qubit_map").get<std::map<Qubit, Qubit>>());

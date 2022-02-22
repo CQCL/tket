@@ -189,10 +189,10 @@ PassPtr gen_naive_placement_pass(const Architecture& arc) {
     return np.place(circ, maps);
   };
   Transform t = Transform(trans);
-  PredicatePtr n_qubit_pred = std::make_shared<MaxNQubitsPredicate>(arc.n_nodes());
+  PredicatePtr n_qubit_pred =
+      std::make_shared<MaxNQubitsPredicate>(arc.n_nodes());
 
-  PredicatePtrMap precons{
-      CompilationUnit::make_type_pair(n_qubit_pred)};
+  PredicatePtrMap precons{CompilationUnit::make_type_pair(n_qubit_pred)};
   PredicatePtr placement_pred = std::make_shared<PlacementPredicate>(arc);
   PredicatePtrMap s_postcons{CompilationUnit::make_type_pair(placement_pred)};
   PostConditions pc{s_postcons, {}, Guarantee::Preserve};
@@ -206,9 +206,9 @@ PassPtr gen_naive_placement_pass(const Architecture& arc) {
 PassPtr gen_full_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
     const std::vector<RoutingMethodPtr>& config) {
-    
-    std::vector<PassPtr> vpp = {gen_placement_pass(placement_ptr), gen_routing_pass(arc, config),
-         gen_naive_placement_pass(arc)};
+  std::vector<PassPtr> vpp = {
+      gen_placement_pass(placement_ptr), gen_routing_pass(arc, config),
+      gen_naive_placement_pass(arc)};
   return std::make_shared<SequencePass>(vpp);
 }
 
