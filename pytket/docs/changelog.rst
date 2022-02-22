@@ -31,6 +31,8 @@ Minor new features:
 * New ``pytket.passes.auto_rebase_pass`` and ``pytket.passes.auto_squash_pass``
   which attempt to construct rebase and squash passess given a target gate set from known
   decompositions.
+* New ``pytket.passes.NaivePlacementPass`` which completes a basic relabelling of all Circuit Qubit
+  not labelled as some Architecture Node to any available Architecture Node
 
 0.19.2 (February 2022)
 ----------------------

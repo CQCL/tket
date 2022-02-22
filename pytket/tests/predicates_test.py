@@ -684,13 +684,6 @@ def test_generated_pass_config() -> None:
     # FullMappingPass
     fm_pass = FullMappingPass(arc, placer, config=[LexiRouteRoutingMethod()])
     assert fm_pass.to_dict()["pass_class"] == "SequencePass"
-    # # for x in fm_pass.get_sequence():
-    # #     print(x)
-    # fm_pass_seq = fm_pass.get_sequence()
-    # for x in fm_pass_seq[0].get_sequence():
-    #     print(x.to_dict())
-    # print(fm_pass_seq[1].to_dict())
-
     p_pass = fm_pass.get_sequence()[0]
     r_pass = fm_pass.get_sequence()[1]
     np_pass = fm_pass.get_sequence()[2]

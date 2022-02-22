@@ -169,23 +169,23 @@ std::vector<qubit_mapping_t> NaivePlacement::get_all_placement_maps(
     Node n(q);
     if (!this->arc_.node_exists(n)) {
       to_place.push_back(n);
-    }
-    if (this->arc_.node_exists(n)) {
+    } else {
       placed.push_back(n);
       // if already placed, make sure qubit retains placement
       placement.insert({n, n});
     }
   }
   // avoid doing std::set_difference unless qubits need to be placed
-  if (to_place.size() > 0) {
+  unsigned n_placed = to_place.size();
+  if (n_placed > 0) {
     std::vector<Node> difference,
         architecture_nodes = this->arc_.get_all_nodes_vec();
     std::set_difference(
         architecture_nodes.begin(), architecture_nodes.end(), placed.begin(),
         placed.end(), std::inserter(difference, difference.begin()));
     // should always be enough remaining qubits to assign unplaced qubits to
-    TKET_ASSERT(difference.size() >= to_place.size());
-    for (unsigned i = 0; i < to_place.size(); i++) {
+    TKET_ASSERT(difference.size() >= n_placed);
+    for (unsigned i = 0; i < n_placed; i++) {
       // naively assign each qubit to some free node
       placement.insert({to_place[i], difference[i]});
     }

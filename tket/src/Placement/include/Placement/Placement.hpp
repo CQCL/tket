@@ -269,12 +269,38 @@ class Placement {
   Architecture arc_;
 };
 
+/**
+ * NaivePlacement class provides methods for relabelling any
+ * Qubit objects in some Circuit to Node objects in some Architecture
+ * given the constraint that only Qubit that are not already labelled
+ * as some Node can be relabelled, and only to Architecture Node
+ * that are not already in the Circuit.
+ */
 class NaivePlacement : public Placement {
  public:
+  /**
+   * @param _arc Architecture object later relabellings are produced for
+   */
   explicit NaivePlacement(const Architecture& _arc) { arc_ = _arc; }
-
+  /**
+   * Given some circuit, returns a map between Qubit which defines some
+   * relabelling of some Circuit qubits to Architecture qubits
+   *
+   * @param circ_ Circuit map relabelling is defined for
+   *
+   * @return Map defining relabelling for circuit Qubit objects
+   */
   qubit_mapping_t get_placement_map(const Circuit& circ_) const override;
 
+  /**
+   * Given some circuit, returns a single map for relabelling
+   * in a vector.
+   *
+   * @param circ_ Circuit map relabelling is defined for
+   *
+   * @return Vector of a single Map defining relabelling for Circuit
+   * Qubit objects.
+   */
   std::vector<qubit_mapping_t> get_all_placement_maps(
       const Circuit& circ_) const override;
 };
