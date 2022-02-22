@@ -619,6 +619,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(PlacementPass, gen_placement_pass(place))
   // TKET-1419
   COMPPASSJSONTEST(NoiseAwarePlacement, gen_placement_pass(na_place))
+  COMPPASSJSONTEST(NaivePlacementPass, gen_naive_placement_pass(arc))
 #undef COMPPASSJSONTEST
   GIVEN("RoutingPass") {
     // Can only be applied to placed circuits

@@ -434,16 +434,6 @@ SCENARIO("Check Monomorpher satisfies correct placement conditions") {
       }
 
       Monomorpher morph(test_circ, arc, {}, {10, arc.n_connections()});
-      /*std::vector<MapCost> results = morph.place(1);
-      THEN("The circuit is placed in the highly connected region.") {
-          std::set<Vertex> middle_nodes = {5, 6, 9, 10};
-          for (auto map : results) {
-              for (auto mapping : map.map) {
-                  REQUIRE(middle_nodes.find(arc.map_node(
-                                  mapping.second)) != middle_nodes.end());
-              }
-          }
-      }*/
     }
   }
 }
@@ -497,9 +487,68 @@ SCENARIO(
     REQUIRE(potential_maps.size() > 0);
   }
 }
+SCENARIO("Test NaivePlacement class") {
+  Architecture test_arc({{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}});
+  GIVEN(
+      "No Qubits placed in Circuit, same number of qubits and architecture "
+      "nodes.") {
+    Circuit test_circ(7);
+    NaivePlacement np(test_arc);
+    qubit_mapping_t p = np.get_placement_map(test_circ);
+    REQUIRE(p[Qubit(0)] == Node(0));
+    REQUIRE(p[Qubit(1)] == Node(1));
+    REQUIRE(p[Qubit(2)] == Node(2));
+    REQUIRE(p[Qubit(3)] == Node(3));
+    REQUIRE(p[Qubit(4)] == Node(4));
+    REQUIRE(p[Qubit(5)] == Node(5));
+    REQUIRE(p[Qubit(6)] == Node(6));
+  }
+  GIVEN("No Qubits placed in Circuit, less qubits than architecture nodes.") {
+    Circuit test_circ(6);
+    NaivePlacement np(test_arc);
+    qubit_mapping_t p = np.get_placement_map(test_circ);
+    REQUIRE(p[Qubit(0)] == Node(0));
+    REQUIRE(p[Qubit(1)] == Node(1));
+    REQUIRE(p[Qubit(2)] == Node(2));
+    REQUIRE(p[Qubit(3)] == Node(3));
+    REQUIRE(p[Qubit(4)] == Node(4));
+    REQUIRE(p[Qubit(5)] == Node(5));
+  }
+  GIVEN(
+      "Some Qubits placed in Circuit, same number of qubits and architecture "
+      "nodes.") {
+    Circuit test_circ(4);
+    test_circ.add_qubit(Node(0));
+    test_circ.add_qubit(Node(1));
+    test_circ.add_qubit(Node(2));
+    NaivePlacement np(test_arc);
+    qubit_mapping_t p = np.get_placement_map(test_circ);
+
+    REQUIRE(p[Qubit(0)] == Node(3));
+    REQUIRE(p[Qubit(1)] == Node(4));
+    REQUIRE(p[Qubit(2)] == Node(5));
+    REQUIRE(p[Qubit(3)] == Node(6));
+    REQUIRE(p[Node(0)] == Node(0));
+    REQUIRE(p[Node(1)] == Node(1));
+    REQUIRE(p[Node(2)] == Node(2));
+  }
+  GIVEN("Some Qubits placed in Circuit, less qubits than architecture nodes.") {
+    Circuit test_circ(2);
+    test_circ.add_qubit(Node(0));
+    test_circ.add_qubit(Node(1));
+    test_circ.add_qubit(Node(2));
+    NaivePlacement np(test_arc);
+    qubit_mapping_t p = np.get_placement_map(test_circ);
+
+    REQUIRE(p[Qubit(0)] == Node(3));
+    REQUIRE(p[Qubit(1)] == Node(4));
+    REQUIRE(p[Node(0)] == Node(0));
+    REQUIRE(p[Node(1)] == Node(1));
+    REQUIRE(p[Node(2)] == Node(2));
+  }
+}
 
 // Tests for new placement method wrappers
-
 SCENARIO(
     "Does the base Placement class correctly modify Circuits and return "
     "maps?") {

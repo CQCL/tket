@@ -182,10 +182,34 @@ PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
+PassPtr gen_naive_placement_pass(const Architecture& arc) {
+  Transform::Transformation trans = [=](Circuit& circ,
+                                        std::shared_ptr<unit_bimaps_t> maps) {
+    NaivePlacement np(arc);
+    return np.place(circ, maps);
+  };
+  Transform t = Transform(trans);
+  PredicatePtr n_qubit_pred =
+      std::make_shared<MaxNQubitsPredicate>(arc.n_nodes());
+
+  PredicatePtrMap precons{CompilationUnit::make_type_pair(n_qubit_pred)};
+  PredicatePtr placement_pred = std::make_shared<PlacementPredicate>(arc);
+  PredicatePtrMap s_postcons{CompilationUnit::make_type_pair(placement_pred)};
+  PostConditions pc{s_postcons, {}, Guarantee::Preserve};
+  // record pass config
+  nlohmann::json j;
+  j["name"] = "NaivePlacementPass";
+  j["architecture"] = arc;
+  return std::make_shared<StandardPass>(precons, t, pc, j);
+}
+
 PassPtr gen_full_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
     const std::vector<RoutingMethodPtr>& config) {
-  return gen_placement_pass(placement_ptr) >> gen_routing_pass(arc, config);
+  std::vector<PassPtr> vpp = {
+      gen_placement_pass(placement_ptr), gen_routing_pass(arc, config),
+      gen_naive_placement_pass(arc)};
+  return std::make_shared<SequencePass>(vpp);
 }
 
 PassPtr gen_default_mapping_pass(const Architecture& arc, bool delay_measures) {
