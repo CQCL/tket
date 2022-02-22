@@ -226,6 +226,27 @@ void init_circuit(py::module &m) {
           "name for the register\n:return: the retrieved "
           ":py:class:`BitRegister`",
           py::arg("name"))
+      .def_property_readonly(
+          "c_registers",
+          [](Circuit &circ) {
+            bit_vector_t all_bits = circ.all_bits();
+            std::map<std::string, unsigned> bits_map;
+            std::vector<BitRegister> b_regs;
+            for (Bit bit : all_bits) {
+              auto it = bits_map.find(bit.reg_name());
+              if (it == bits_map.end()) {
+                bits_map.insert({bit.reg_name(), 1});
+              } else {
+                it->second++;
+              }
+            }
+            for (auto const &it : bits_map) {
+              b_regs.push_back(BitRegister(it.first, it.second));
+            }
+            return b_regs;
+          },
+          "Get all classical registers.\n\n:return: List of "
+          ":py:class:`BitRegister`")
       .def(
           "get_q_register",
           [](Circuit &circ, const std::string &name) {
@@ -241,6 +262,27 @@ void init_circuit(py::module &m) {
           "name for the register\n:return: the retrieved "
           ":py:class:`QubitRegister`",
           py::arg("name"))
+      .def_property_readonly(
+          "q_registers",
+          [](Circuit &circ) {
+            qubit_vector_t all_qbs = circ.all_qubits();
+            std::map<std::string, unsigned> qbs_map;
+            std::vector<QubitRegister> q_regs;
+            for (Qubit qb : all_qbs) {
+              auto it = qbs_map.find(qb.reg_name());
+              if (it == qbs_map.end()) {
+                qbs_map.insert({qb.reg_name(), 1});
+              } else {
+                it->second++;
+              }
+            }
+            for (auto const &it : qbs_map) {
+              q_regs.push_back(QubitRegister(it.first, it.second));
+            }
+            return q_regs;
+          },
+          "Get all quantum registers.\n\n:return: List of "
+          ":py:class:`QubitRegister`")
       .def(
           "add_qubit", &Circuit::add_qubit,
           "Constructs a single qubit with the given id.\n\n:param id: "

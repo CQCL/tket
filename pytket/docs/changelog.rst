@@ -31,7 +31,7 @@ Minor new features:
 * New ``pytket.passes.auto_rebase_pass`` and ``pytket.passes.auto_squash_pass``
   which attempt to construct rebase and squash passess given a target gate set from known
   decompositions.
-* Add ``get_c_register`` and ``get_q_register`` methods to ``Circuit``.
+* Add ``get_c_register``, ``get_q_register``, ``c_registers`` and ``q_registers`` methods to ``Circuit``.
 
 0.19.2 (February 2022)
 ----------------------
