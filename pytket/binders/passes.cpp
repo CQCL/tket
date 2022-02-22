@@ -497,6 +497,13 @@ PYBIND11_MODULE(passes, m) {
       py::arg("placer"));
 
   m.def(
+      "NaivePlacementPass", &gen_naive_placement_pass,
+      ":param architecture: The Architecture used for relabelling."
+      "\n:return: a pass to relabel :py:class:`Circuit` Qubits to "
+      ":py:class:`Architecture` Nodes",
+      py::arg("arc"));
+
+  m.def(
       "RenameQubitsPass", &gen_rename_qubits_pass, "Rename some or all qubits.",
       "\n\n:param qubit_map: map from old to new qubit names",
       py::arg("qubit_map"));

@@ -234,12 +234,13 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     }
   }
   GIVEN("Synthesise Passes in a row then routing") {
-    Circuit circ(4);
+    Circuit circ(5);
     circ.add_op<unsigned>(OpType::H, {0});
     circ.add_op<unsigned>(OpType::CZ, {0, 1});
     circ.add_op<unsigned>(OpType::CH, {0, 2});
     circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3});
     circ.add_op<unsigned>(OpType::CZ, {0, 1});
+    circ.add_op<unsigned>(OpType::X, {4});
     OpTypeSet ots = {OpType::CX, OpType::TK1, OpType::SWAP};
     PredicatePtr gsp = std::make_shared<GateSetPredicate>(ots);
     SquareGrid grid(2, 3);
