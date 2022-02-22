@@ -154,6 +154,45 @@ std::vector<qubit_mapping_t> Placement::get_all_placement_maps(
   return {get_placement_map(circ_)};
 }
 
+qubit_mapping_t NaivePlacement::get_placement_map(const Circuit &circ_) const {
+  return get_all_placement_maps(circ_).at(0);
+}
+
+std::vector<qubit_mapping_t> NaivePlacement::get_all_placement_maps(
+    const Circuit &circ_) const {
+  qubit_mapping_t placement;
+  qubit_vector_t to_place;
+  std::vector<Node> placed;
+
+  // Find which/if any qubits need placing
+  for (const Qubit &q : circ_.all_qubits()) {
+    Node n(q);
+    if (!this->arc_.node_exists(n)) {
+      to_place.push_back(n);
+    }
+    if (this->arc_.node_exists(n)) {
+      placed.push_back(n);
+      // if already placed, make sure qubit retains placement
+      placement.insert({n, n});
+    }
+  }
+  // avoid doing std::set_difference unless qubits need to be placed
+  if (to_place.size() > 0) {
+    std::vector<Node> difference,
+        architecture_nodes = this->arc_.get_all_nodes_vec();
+    std::set_difference(
+        architecture_nodes.begin(), architecture_nodes.end(), placed.begin(),
+        placed.end(), std::inserter(difference, difference.begin()));
+    // should always be enough remaining qubits to assign unplaced qubits to
+    TKET_ASSERT(difference.size() >= to_place.size());
+    for (unsigned i = 0; i < to_place.size(); i++) {
+      // naively assign each qubit to some free node
+      placement.insert({to_place[i], difference[i]});
+    }
+  }
+  return {placement};
+}
+
 qubit_mapping_t LinePlacement::get_placement_map(const Circuit &circ_) const {
   return get_all_placement_maps(circ_).at(0);
 }

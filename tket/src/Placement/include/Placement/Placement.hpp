@@ -269,6 +269,16 @@ class Placement {
   Architecture arc_;
 };
 
+class NaivePlacement : public Placement {
+ public:
+  explicit NaivePlacement(const Architecture& _arc) { arc_ = _arc; }
+
+  qubit_mapping_t get_placement_map(const Circuit& circ_) const override;
+
+  std::vector<qubit_mapping_t> get_all_placement_maps(
+      const Circuit& circ_) const override;
+};
+
 class LinePlacement : public Placement {
  public:
   explicit LinePlacement(const Architecture& _arc) { arc_ = _arc; }
