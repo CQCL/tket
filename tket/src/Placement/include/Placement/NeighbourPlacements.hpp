@@ -50,6 +50,7 @@ class NeighbourPlacements {
    */
   ResultVec get(
       unsigned dist, unsigned n = 1, bool optimise = true, unsigned seed = 0);
+
  private:
   // generate a single Result
   Result gen_result(unsigned dist, bool optimise = true);
