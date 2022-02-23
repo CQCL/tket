@@ -33,6 +33,7 @@ list(APPEND DEPS_${COMP}
     Graphs
     Ops
     OpType
+    TokenSwapping
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

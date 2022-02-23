@@ -20,9 +20,7 @@ namespace tket {
  */
 class NeighbourPlacements {
  public:
-  using Swap = tsa_internal::Swap;
   using SwapVec = std::vector<Swap>;
-  using SwapList = tsa_internal::SwapList;
   using NodeSwap = std::pair<Node, Node>;
   using NodeSwapVec = std::vector<NodeSwap>;
   struct Result {
