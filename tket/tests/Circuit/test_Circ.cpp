@@ -2625,6 +2625,7 @@ SCENARIO("Named operation groups") {
     Circuit c1 = c;
     REQUIRE(c == c1);
     REQUIRE(c.get_opgroups() == opgroups2);
+    REQUIRE(c1.get_opgroups() == opgroups2);
   }
   GIVEN("Negative tests for operation groups") {
     Circuit c(2);
