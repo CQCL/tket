@@ -66,8 +66,7 @@ NeighbourPlacements::Result NeighbourPlacements::gen_result(
   return convert_to_res(swaps.to_vector());
 }
 
-SwapList NeighbourPlacements::gen_swap_list(
-    unsigned dist) {
+SwapList NeighbourPlacements::gen_swap_list(unsigned dist) {
   SwapList swaps;
   auto edges = arc_.get_all_edges_vec();
   unsigned m = edges.size();
