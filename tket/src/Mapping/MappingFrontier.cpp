@@ -585,4 +585,49 @@ void MappingFrontier::merge_ancilla(
   this->bimaps_->final.left.erase(merge);
 }
 
+bool MappingFrontier::valid_boundary_operation(
+    const ArchitecturePtr& architecture, const Op_ptr& op,
+    const std::vector<Node>& uids) const {
+  // boxes are never allowed
+  if (is_box_type(op->get_type())) {
+    return false;
+  }
+
+  if (op->get_type() == OpType::Conditional) {
+    auto ot = static_cast<const Conditional&>(*op).get_op()->get_type();
+    // conditional boxes are never allowed, too
+    if (is_box_type(ot)) {
+      return false;
+    }
+  }
+
+  // Barriers are allways allowed
+  if (op->get_type() == OpType::Barrier) {
+    return true;
+  }
+
+  // this currently allows unplaced single qubits gates
+  // this should be changes in the future
+  if (uids.size() == 1) {
+    return true;
+  }
+
+  // allow two qubit gates only for placed and connected nodes
+  if (uids.size() == 2) {
+    if (architecture->node_exists(uids[0]) && architecture->node_exists(uids[1]) &&
+        architecture->bidirectional_edge_exists(uids[0], uids[1])) {
+      return true;
+    }
+  } else if (uids.size() == 3 && op->get_type() == OpType::BRIDGE) {
+    bool con_0_exists = architecture->bidirectional_edge_exists(uids[0], uids[1]);
+    bool con_1_exists = architecture->bidirectional_edge_exists(uids[2], uids[1]);
+    if (architecture->node_exists(uids[0]) && architecture->node_exists(uids[1]) &&
+        architecture->node_exists(uids[2]) && con_0_exists && con_1_exists) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 }  // namespace tket

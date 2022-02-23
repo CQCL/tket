@@ -19,8 +19,11 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include "Circuit/Circuit.hpp"
 #include "Utils/Json.hpp"
 #include "binder_json.hpp"
+#include "binder_utils.hpp"
+#include "typecast.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -56,6 +59,11 @@ PYBIND11_MODULE(architecture, m) {
           "given two nodes in Architecture, "
           "returns distance between them",
           py::arg("node_0"), py::arg("node_1"))
+      .def(
+          "valid_operation", &Architecture::valid_operation,
+          "Returns true if the given operation acting on the given ",
+          " nodes can be executed on the Architecture connectivity graph.",
+          py::arg("op"), py::arg("uids"))
       .def(
           "get_adjacent_nodes", &Architecture::get_neighbour_nodes,
           "given a node, returns adjacent nodes in Architecture.",
