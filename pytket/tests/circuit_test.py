@@ -33,6 +33,8 @@ from pytket.circuit import (  # type: ignore
     CustomGateDef,
     Qubit,
     Bit,
+    BitRegister,
+    QubitRegister,
 )
 from pytket.circuit.display import render_circuit_as_html
 
@@ -738,6 +740,45 @@ def test_clifford_checking() -> None:
     assert rz2.is_clifford_type() == False
     m = c.get_commands()[5].op
     assert m.is_clifford_type() == False
+
+
+def test_getting_registers() -> None:
+    c = Circuit(2, 1)
+    c_regs = c.c_registers
+    assert len(c_regs) == 1
+    assert c_regs[0] == BitRegister("c", 1)
+    q_regs = c.q_registers
+    assert len(q_regs) == 1
+    assert q_regs[0] == QubitRegister("q", 2)
+    q_err_msg = "Cannot find quantum register with name"
+    c_err_msg = "Cannot find classical register with name"
+    with pytest.raises(RuntimeError) as e:
+        c.get_c_register("q")
+    assert c_err_msg in str(e.value)
+    with pytest.raises(RuntimeError) as e:
+        c.get_q_register("c")
+    assert q_err_msg in str(e.value)
+    assert c.get_c_register("c").name == "c"
+    assert c.get_c_register("c").size == 1
+    assert c.get_q_register("q").name == "q"
+    assert c.get_q_register("q").size == 2
+    c.add_q_register("test_qr", 10)
+    c.add_c_register("test_cr", 8)
+    assert c.get_c_register("test_cr").name == "test_cr"
+    assert c.get_c_register("test_cr").size == 8
+    assert c.get_q_register("test_qr").name == "test_qr"
+    assert c.get_q_register("test_qr").size == 10
+
+    c_regs = c.c_registers
+    c_regs.sort()
+    assert len(c_regs) == 2
+    assert c_regs[0] == BitRegister("c", 1)
+    assert c_regs[1] == BitRegister("test_cr", 8)
+    q_regs = c.q_registers
+    q_regs.sort()
+    assert len(q_regs) == 2
+    assert q_regs[0] == QubitRegister("q", 2)
+    assert q_regs[1] == QubitRegister("test_qr", 10)
 
 
 if __name__ == "__main__":
