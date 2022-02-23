@@ -25,6 +25,7 @@ from distutils.version import LooseVersion
 import setuptools  # type: ignore
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext  # type: ignore
+from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
 from concurrent.futures import ThreadPoolExecutor as Pool
 from shutil import which
 
@@ -221,6 +222,18 @@ binders = [
     "architecture",
 ]
 
+setup_dir = os.path.abspath(os.path.dirname(__file__))
+plat_name = os.getenv("WHEEL_PLAT_NAME")
+
+
+class bdist_wheel(_bdist_wheel):
+    def finalize_options(self):
+        _bdist_wheel.finalize_options(self)
+        if plat_name is not None:
+            print(f"Overriding plat_name to {plat_name}")
+            self.plat_name = plat_name
+            self.plat_name_supplied = True
+
 
 setup(
     name="pytket",
@@ -245,9 +258,7 @@ setup(
     ext_modules=[
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders
     ],
-    cmdclass={
-        "build_ext": CMakeBuild,
-    },
+    cmdclass={"build_ext": CMakeBuild, "bdist_wheel": bdist_wheel},
     classifiers=[
         "Environment :: Console",
         "Programming Language :: Python :: 3.8",
@@ -264,4 +275,9 @@ setup(
     include_package_data=True,
     package_data={"pytket": ["py.typed"]},
     zip_safe=False,
+    use_scm_version={
+        "root": os.path.dirname(setup_dir),
+        "write_to": os.path.join(setup_dir, "pytket", "_version.py"),
+        "write_to_template": "__version__ = '{version}'",
+    },
 )
