@@ -57,7 +57,8 @@ SCENARIO("Reorder circuits") {
       for (auto arg : commands[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(commands[i].get_op_ptr(), nodes));
+      REQUIRE(mf->valid_boundary_operation(
+          shared_arc, commands[i].get_op_ptr(), nodes));
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -98,7 +99,8 @@ SCENARIO("Reorder circuits") {
       for (auto arg : commands[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(commands[i].get_op_ptr(), nodes));
+      REQUIRE(mf->valid_boundary_operation(
+          shared_arc, commands[i].get_op_ptr(), nodes));
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -144,7 +146,8 @@ SCENARIO("Reorder circuits") {
       for (auto arg : commands[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(commands[i].get_op_ptr(), nodes));
+      REQUIRE(mf->valid_boundary_operation(
+          shared_arc, commands[i].get_op_ptr(), nodes));
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -191,7 +194,8 @@ SCENARIO("Reorder circuits") {
       for (auto arg : commands[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(commands[i].get_op_ptr(), nodes));
+      REQUIRE(mf->valid_boundary_operation(
+          shared_arc, commands[i].get_op_ptr(), nodes));
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -232,11 +236,11 @@ SCENARIO("Reorder circuits with limited search space") {
     mr.solve(3, 3);
     // Check only the first valid CZ get commuted to the front
     std::vector<Command> commands = circ.get_commands();
-    REQUIRE(shared_arc->valid_operation(
-        commands[0].get_op_ptr(),
+    REQUIRE(mf->valid_boundary_operation(
+        shared_arc, commands[0].get_op_ptr(),
         {Node(commands[0].get_args()[0]), Node(commands[0].get_args()[1])}));
-    REQUIRE(!shared_arc->valid_operation(
-        commands[0].get_op_ptr(),
+    REQUIRE(!mf->valid_boundary_operation(
+        shared_arc, commands[0].get_op_ptr(),
         {Node(commands[1].get_args()[0]), Node(commands[1].get_args()[1])}));
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -288,7 +292,8 @@ SCENARIO("Test MultiGateReorderRoutingMethod") {
       for (auto arg : commands[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(commands[i].get_op_ptr(), nodes));
+      REQUIRE(mf->valid_boundary_operation(
+          shared_arc, commands[i].get_op_ptr(), nodes));
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -312,13 +317,15 @@ SCENARIO("Test MultiGateReorderRoutingMethod") {
       for (auto arg : commands2[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(commands2[i].get_op_ptr(), nodes));
+      REQUIRE(mf2->valid_boundary_operation(
+          shared_arc, commands2[i].get_op_ptr(), nodes));
     }
     std::vector<Node> nodes;
     for (auto arg : commands2[4].get_args()) {
       nodes.push_back(Node(arg));
     }
-    REQUIRE(!shared_arc->valid_operation(commands2[4].get_op_ptr(), nodes));
+    REQUIRE(!mf2->valid_boundary_operation(
+        shared_arc, commands2[4].get_op_ptr(), nodes));
     const auto u2 = tket_sim::get_unitary(circ2);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(
         u2, u1, tket_sim::MatrixEquivalence::EQUAL));
@@ -387,9 +394,7 @@ SCENARIO("Test JSON serialisation for MultiGateReorderRoutingMethod") {
 
   GIVEN("RoutingMethod vector") {
     nlohmann::json j_rms = {
-        {{"name", "MultiGateReorderRoutingMethod"},
-         {"depth", 3},
-         {"size", 4}},
+        {{"name", "MultiGateReorderRoutingMethod"}, {"depth", 3}, {"size", 4}},
         {
             {"name", "LexiRouteRoutingMethod"},
             {"depth", 3},

@@ -242,8 +242,9 @@ void MappingFrontier::advance_frontier_boundary(
       for (const UnitID& uid : uids) {
         nodes.push_back(Node(uid));
       }
-      if (architecture->valid_operation(
-              this->circuit_.get_Op_ptr_from_Vertex(vert), nodes)) {
+      if (this->valid_boundary_operation(
+              architecture, this->circuit_.get_Op_ptr_from_Vertex(vert),
+              nodes)) {
         // if no valid operation, boundary not updated and while loop terminates
         boundary_updated = true;
         for (const UnitID& uid : uids) {
@@ -614,14 +615,18 @@ bool MappingFrontier::valid_boundary_operation(
 
   // allow two qubit gates only for placed and connected nodes
   if (uids.size() == 2) {
-    if (architecture->node_exists(uids[0]) && architecture->node_exists(uids[1]) &&
+    if (architecture->node_exists(uids[0]) &&
+        architecture->node_exists(uids[1]) &&
         architecture->bidirectional_edge_exists(uids[0], uids[1])) {
       return true;
     }
   } else if (uids.size() == 3 && op->get_type() == OpType::BRIDGE) {
-    bool con_0_exists = architecture->bidirectional_edge_exists(uids[0], uids[1]);
-    bool con_1_exists = architecture->bidirectional_edge_exists(uids[2], uids[1]);
-    if (architecture->node_exists(uids[0]) && architecture->node_exists(uids[1]) &&
+    bool con_0_exists =
+        architecture->bidirectional_edge_exists(uids[0], uids[1]);
+    bool con_1_exists =
+        architecture->bidirectional_edge_exists(uids[2], uids[1]);
+    if (architecture->node_exists(uids[0]) &&
+        architecture->node_exists(uids[1]) &&
         architecture->node_exists(uids[2]) && con_0_exists && con_1_exists) {
       return true;
     }

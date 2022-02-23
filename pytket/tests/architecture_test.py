@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket.circuit import Node  # type: ignore
+from pytket.circuit import Node, Op, OpType, Circuit, Qubit, PhasePolyBox  # type: ignore
 from pytket.architecture import Architecture, SquareGrid, FullyConnected  # type: ignore
+import numpy as np
 
 
 def test_architectures() -> None:
@@ -78,8 +79,41 @@ def test_arch_types() -> None:
     assert isinstance(sg, SquareGrid)
 
 
+def test_valid_operation() -> None:
+    edges = [(0, 1), (1, 2), (2, 0), (0, 3), (3, 4), (4, 5), (5, 6)]
+    arc = Architecture(edges)
+
+    assert arc.valid_operation(Op.create(OpType.CX), [Node(0), Node(1)])
+    assert not arc.valid_operation(Op.create(OpType.CX), [Node(1), Node(3)])
+    assert arc.valid_operation(Op.create(OpType.CX), [Node(0)])
+
+    c = Circuit(1, 1)
+    n_qb = 1
+    qubit_indices = {Qubit(0): 1}
+    phase_polynomial = {(True,): 0.1, (False,): 0.1}
+    linear_transformation = np.array([[1, 0], [0, 1]])
+    p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
+
+    c.add_phasepolybox(p_box, [0])
+
+    for b in c:
+        assert not arc.valid_operation(b.op, [Node(0)])
+        assert not arc.valid_operation(b.op, [Node(0), Node(1)])
+        assert not arc.valid_operation(b.op, [Node(0), Node(1), Node(2)])
+
+    assert arc.valid_operation(Op.create(OpType.CX), [Node(0)])
+    assert not arc.valid_operation(Op.create(OpType.CX), [Node(0), Node(4)])
+    assert not arc.valid_operation(Op.create(OpType.CX), [Node(0), Node(1), Node(2)])
+    assert arc.valid_operation(Op.create(OpType.BRIDGE), [Node(0), Node(1)])
+    assert arc.valid_operation(Op.create(OpType.BRIDGE), [Node(0), Node(1), Node(2)])
+    assert not arc.valid_operation(
+        Op.create(OpType.BRIDGE), [Node(0), Node(1), Node(4)]
+    )
+
+
 if __name__ == "__main__":
     test_architectures()
     test_architecture_eq()
     test_fully_connected()
     test_arch_types()
+    test_valid_operation()
