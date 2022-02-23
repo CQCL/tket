@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "Mapping/RoutingMethodJson.hpp"
+
 #include "Mapping/LexiLabelling.hpp"
 
 namespace tket {
