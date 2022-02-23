@@ -8,7 +8,7 @@ namespace tket {
 
 NeighbourPlacements::NeighbourPlacements(
     const Architecture& arc, const qubit_mapping_t& init_map)
-    : arc_(arc), init_map_(init_map), u_to_node_() {
+    : arc_(arc), init_map_(init_map), u_to_node_(), rng_() {
   auto nodes = arc_.get_all_nodes_vec();
   for (unsigned i = 0; i < nodes.size(); ++i) {
     u_to_node_.left.insert({i, nodes[i]});
@@ -17,8 +17,8 @@ NeighbourPlacements::NeighbourPlacements(
 
 NeighbourPlacements::ResultVec NeighbourPlacements::get(
     unsigned dist, unsigned n, bool optimise, unsigned seed) {
+  rng_.set_seed(seed);
   ResultVec res;
-  srand(seed);
   for (unsigned i = 0; i < n; ++i) {
     res.push_back(gen_result(dist, optimise));
   }
@@ -71,7 +71,7 @@ SwapList NeighbourPlacements::gen_swap_list(unsigned dist) {
   auto edges = arc_.get_all_edges_vec();
   unsigned m = edges.size();
   for (unsigned i = 0; i < dist; ++i) {
-    auto [n1, n2] = edges[rand() % m];
+    auto [n1, n2] = edges[rng_.get_size_t(m - 1)];
     Swap new_swap{u_to_node_.right.at(n1), u_to_node_.right.at(n2)};
     swaps.push_back(new_swap);
   }

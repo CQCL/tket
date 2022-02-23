@@ -68,8 +68,8 @@ SCENARIO("class NeighbourPlacments") {
         REQUIRE(new_map[Qubit(3)] == Node(6));
       }
       THEN("The swaps are correct") {
-        REQUIRE(swaps[0] == std::pair<Node, Node>{Node(6), Node(7)});
-        REQUIRE(swaps[1] == std::pair<Node, Node>{Node(5), Node(7)});
+        REQUIRE(swaps[0] == std::pair<Node, Node>{Node(5), Node(7)});
+        REQUIRE(swaps[1] == std::pair<Node, Node>{Node(5), Node(6)});
       }
     }
   }
@@ -95,8 +95,22 @@ SCENARIO("class NeighbourPlacments") {
     qubit_mapping_t map(
         {{Qubit(0), Node(0)}, {Qubit(1), Node(1)}, {Qubit(2), Node(2)}});
     NeighbourPlacements np(arc, map);
+
+    // find unlucky seed
+    unsigned seed;
+    for (seed = 0; seed < 10; ++seed) {
+      auto res = np.get(2, 1, false, seed);
+      THEN("There is a single result") { REQUIRE(res.size() == 1); }
+      auto [new_map, swaps] = res.front();
+      REQUIRE(swaps.size() == 2);
+      if (swaps[0] == swaps[1]) {
+        break;
+      }
+    }
+    THEN("There is an unlucky seed") { REQUIRE(seed < 10u); }
+
     WHEN("Getting a placement dist=2, optimise=false and fixed seed") {
-      auto res = np.get(2, 1, false, 1);
+      auto res = np.get(2, 1, false, seed);
       THEN("There is a single result") { REQUIRE(res.size() == 1); }
       auto [new_map, swaps] = res.front();
       THEN("Both swaps are identical") {
@@ -105,7 +119,7 @@ SCENARIO("class NeighbourPlacments") {
       }
     }
     WHEN("Getting a placement dist=2, optimise=true and fixed seed") {
-      auto res = np.get(2, 1, true, 1);
+      auto res = np.get(2, 1, true, seed);
       THEN("There is a single result") { REQUIRE(res.size() == 1); }
       auto [new_map, swaps] = res.front();
       THEN("Both swaps are now different") {

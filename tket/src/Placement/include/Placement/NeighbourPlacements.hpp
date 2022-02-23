@@ -5,6 +5,7 @@
 #include "Placement.hpp"
 #include "TokenSwapping/SwapFunctions.hpp"
 #include "Utils/BiMapHeaders.hpp"
+#include "Utils/RNG.hpp"
 
 namespace tket {
 
@@ -43,11 +44,12 @@ class NeighbourPlacements {
    * @param dist The number of swaps allowed on the architecture.
    * @param n The number of placement maps to generate (default n=1).
    * @param optimise Simplify the generated swap sequences (default true).
-   * @param seed Seed for random number generator (default seed=0).
+   * @param seed Seed for random number generator (default seed=5489).
    * @return ResultVec A vector of the generated maps and swaps
    */
   ResultVec get(
-      unsigned dist, unsigned n = 1, bool optimise = true, unsigned seed = 0);
+      unsigned dist, unsigned n = 1, bool optimise = true,
+      unsigned seed = 5489);
 
  private:
   // generate a single Result
@@ -60,6 +62,7 @@ class NeighbourPlacements {
   Architecture arc_;
   qubit_mapping_t init_map_;
   boost::bimap<unsigned, Node> u_to_node_;
+  RNG rng_;
 };
 
 }  // namespace tket
