@@ -636,6 +636,11 @@ class Circuit {
   const std::optional<std::string> &get_opgroup_from_Vertex(
       const Vertex &vert) const;
 
+  /**
+   * Get the set of all opgroup names.
+   */
+  const std::unordered_set<std::string> get_opgroups() const;
+
   // O(1) (lookup in hashtable)
   OpDesc get_OpDesc_from_Vertex(const Vertex &vert) const;
   OpType get_OpType_from_Vertex(const Vertex &vert) const;

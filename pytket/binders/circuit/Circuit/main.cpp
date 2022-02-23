@@ -319,6 +319,9 @@ void init_circuit(py::module &m) {
           "A qubit will feature in this map if it is "
           "measured and neither it nor the bit containing the "
           "measurement result is subsequently acted on")
+      .def_property_readonly(
+          "opgroups", &Circuit::get_opgroups,
+          "A set of all opgroup names in the circuit")
       .def(
           "flatten_registers", &Circuit::flatten_registers,
           "Combines all qubits into a single register namespace with "
