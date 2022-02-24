@@ -723,36 +723,6 @@ SCENARIO("Test MappingFrontier::add_swap") {
   REQUIRE(*cx_c.get_op_ptr() == *get_op_ptr(OpType::CZ));
 }
 
-SCENARIO("Test MappingFrontier::add_swap, classical wires edge case") {
-  std::vector<Node> nodes = {
-      Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
-      Node("node_test", 3)};
-  Circuit circ(4, 3);
-  std::vector<Qubit> qubits = circ.all_qubits();
-  std::vector<Bit> bits = circ.all_bits();
-  circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
-  circ.add_op<UnitID>(OpType::CX, {qubits[2], qubits[3]});
-  circ.add_measure(3, 0);
-  circ.add_conditional_gate<UnitID>(
-      OpType::Y, {}, {qubits[2]}, {bits[0], bits[1], bits[2]}, 3);
-  circ.add_conditional_gate<UnitID>(OpType::X, {}, {qubits[1]}, {bits[2]}, 1);
-  circ.add_op<UnitID>(OpType::CX, {qubits[2], qubits[0]});
-  circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[0]});
-  std::cout << circ << std::endl;
-
-  Architecture architecture(
-      {{nodes[0], nodes[1]}, {nodes[0], nodes[2]}, {nodes[0], nodes[3]}});
-  ArchitecturePtr shared_arc = std::make_shared<Architecture>(architecture);
-  MappingFrontier mf(circ);
-  mf.advance_frontier_boundary(shared_arc);
-  mf.add_swap(qubits[0], qubits[2]);
-  std::cout << circ << std::endl;
-
-  // ClassicalExpBox cepbox(0,3,0,{});
-  // MEASURE 3
-  // USE CLASSICAL OUTPUT FOR CLASSICAL EXP BOX
-  // USE DIFFERENT BIT IN CLASSCIAL EXP BOX TO CONDITIONAL ON 1
-}
 SCENARIO("Test MappingFrontier::add_bridge") {
   std::vector<Node> nodes = {
       Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
