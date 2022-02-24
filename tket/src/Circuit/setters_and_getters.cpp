@@ -472,6 +472,21 @@ std::vector<EdgeVec> Circuit::get_b_out_bundles(const Vertex &vert) const {
   return bundles;
 }
 
+std::vector<EdgeVec> Circuit::get_b_in_bundles(const Vertex &vert) const {
+  unsigned n = n_ports(vert);
+  std::vector<EdgeVec> bundles(n);
+  BGL_FORALL_INEDGES(vert, e, dag, DAG) {
+    if (get_edgetype(e) == EdgeType::Boolean) {
+      port_t port = get_target_port(e);
+      if (port > n) {
+        throw CircuitInvalidity("Vertex has an output on an unexpected port");
+      }
+      bundles.at(port).push_back(e);
+    }
+  }
+  return bundles;
+}
+
 // n represents the port of the edge at vert_from
 // there are no checks to ensure the vertex exists in the graph
 // will only return Quantum or Classical edges

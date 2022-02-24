@@ -31,7 +31,7 @@ class MappingFrontierError : public std::logic_error {
 };
 
 /**
- * quantum_boundary stored as vertport so that correct edge can be recovered
+ * linear_boundary stored as vertport so that correct edge can be recovered
  * after subcircuit substitution method uses Vertex and port_t and
  * Circuit::get_nth_out_edge to generate unit_frontier_t object
  */
@@ -50,9 +50,9 @@ struct MappingFrontier {
    * VertPort instead of Edge as Edge changes in substitution, but Vertex and
    * Port key information
    */
-  std::shared_ptr<unit_vertport_frontier_t> quantum_boundary;
+  std::shared_ptr<unit_vertport_frontier_t> linear_boundary;
 
-  std::shared_ptr<b_frontier_t> classical_boundary;
+  std::shared_ptr<b_frontier_t> boolean_boundary;
 
   /**
    * Circuit held by reference and directly modified with SWAP (or other
@@ -99,18 +99,18 @@ struct MappingFrontier {
       unsigned _max_subcircuit_depth, unsigned _max_subcircuit_size) const;
 
   /**
-   * update_quantum_boundary_uids
+   * update_linear_boundary_uids
    * route_circuit has no constraint that passed circuits must have qubits
    * relabelled to architecture nodes route_subcircuit is allowed to either
    * permute labelled physical qubits, or label logical qubits if logical qubits
-   * are labelled physical, update_quantum_boundary updates UnitID in
-   * this->quantum_boundary to reflect this change Also updates this->circuit_
+   * are labelled physical, update_linear_boundary updates UnitID in
+   * this->linear_boundary to reflect this change Also updates this->circuit_
    * to reflect this relabelling
    *
-   * @param relabel_map map between current UnitID's in quantum_boundary and new
+   * @param relabel_map map between current UnitID's in linear_boundary and new
    * UnitID's.
    */
-  void update_quantum_boundary_uids(const unit_map_t& relabel_map);
+  void update_linear_boundary_uids(const unit_map_t& relabel_map);
 
   /**
    * permute_subcircuit_q_out_hole
@@ -126,18 +126,18 @@ struct MappingFrontier {
       const unit_map_t& final_permutation, Subcircuit& subcircuit);
 
   /**
-   * get_default_to_quantum_boundary_unit_map
+   * get_default_to_linear_boundary_unit_map
    * subcircuit circuits created with default q register
    * method returns map between default q register and physical qubit
    * permutation at frontier used for circuit.rename_units
    */
-  unit_map_t get_default_to_quantum_boundary_unit_map() const;
+  unit_map_t get_default_to_linear_boundary_unit_map() const;
 
   /**
    * add_swap
    * Inserts an OpType::SWAP gate into the uid_0 and uid_1 edges held in
-   * quantum_boundary. This directly modifies circuit_.
-   * Updates quantum_boundary to reflect new edges.
+   * linear_boundary. This directly modifies circuit_.
+   * Updates linear_boundary to reflect new edges.
    *
    * @param uid_0 First Node in SWAP
    * @param uid_1 Second Node in SWAP
@@ -174,11 +174,11 @@ struct MappingFrontier {
   void merge_ancilla(const UnitID& merge, const UnitID& ancilla);
 
   /**
-   * Assigns the quantum_boundary_ attribute to that passed to method.
+   * Assigns the linear_boundary_ attribute to that passed to method.
    *
    * @param new_boundary Object to reassign with.
    */
-  void set_quantum_boundary(const unit_vertport_frontier_t& new_boundary);
+  void set_linear_boundary(const unit_vertport_frontier_t& new_boundary);
 };
 
 }  // namespace tket

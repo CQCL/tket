@@ -34,17 +34,21 @@ bool Architecture::valid_operation(
        static_cast<const Conditional&>(*op).get_op()->get_desc().is_box())) {
     return false;
   }
-  if (uids.size() == 1) {
+  unsigned n_uids = uids.size();
+  if (n_uids == 0) {
+    throw std::invalid_argument("valid_operation passed no Node with Op_ptr.");
+  }
+  if (n_uids == 1) {
     // with current Architecture can assume all single qubit gates valid
     return true;
   } else if (op->get_type() == OpType::Barrier) {
     return true;
-  } else if (uids.size() == 2) {
+  } else if (n_uids == 2) {
     if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
         this->bidirectional_edge_exists(uids[0], uids[1])) {
       return true;
     }
-  } else if (uids.size() == 3 && op->get_type() == OpType::BRIDGE) {
+  } else if (n_uids == 3 && op->get_type() == OpType::BRIDGE) {
     bool con_0_exists = this->bidirectional_edge_exists(uids[0], uids[1]);
     bool con_1_exists = this->bidirectional_edge_exists(uids[2], uids[1]);
     if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&

@@ -577,15 +577,15 @@ SCENARIO("Test LexiLabellingMethod") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     VertPort pre_label =
-        mf->quantum_boundary->get<TagKey>().find(qubits[3])->second;
+        mf->linear_boundary->get<TagKey>().find(qubits[3])->second;
     LexiLabellingMethod lrm;
     REQUIRE(lrm.check_method(mf, shared_arc));
     lrm.routing_method(mf, shared_arc);
     REQUIRE(
-        mf->quantum_boundary->get<TagKey>().find(qubits[3]) ==
-        mf->quantum_boundary->get<TagKey>().end());
+        mf->linear_boundary->get<TagKey>().find(qubits[3]) ==
+        mf->linear_boundary->get<TagKey>().end());
     VertPort post_label =
-        mf->quantum_boundary->get<TagKey>().find(nodes[3])->second;
+        mf->linear_boundary->get<TagKey>().find(nodes[3])->second;
     REQUIRE(pre_label == post_label);
   }
   GIVEN(
@@ -603,15 +603,15 @@ SCENARIO("Test LexiLabellingMethod") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     VertPort pre_label =
-        mf->quantum_boundary->get<TagKey>().find(qubits[2])->second;
+        mf->linear_boundary->get<TagKey>().find(qubits[2])->second;
     LexiLabellingMethod lrm;
     REQUIRE(lrm.check_method(mf, shared_arc));
     lrm.routing_method(mf, shared_arc);
     REQUIRE(
-        mf->quantum_boundary->get<TagKey>().find(qubits[2]) ==
-        mf->quantum_boundary->get<TagKey>().end());
+        mf->linear_boundary->get<TagKey>().find(qubits[2]) ==
+        mf->linear_boundary->get<TagKey>().end());
     VertPort post_label =
-        mf->quantum_boundary->get<TagKey>().find(nodes[2])->second;
+        mf->linear_boundary->get<TagKey>().find(nodes[2])->second;
     REQUIRE(pre_label == post_label);
   }
   GIVEN("Two unlabelled qubits, one slice, check and route.") {
@@ -626,23 +626,23 @@ SCENARIO("Test LexiLabellingMethod") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     VertPort pre_label_0 =
-        mf->quantum_boundary->get<TagKey>().find(qubits[0])->second;
+        mf->linear_boundary->get<TagKey>().find(qubits[0])->second;
     VertPort pre_label_3 =
-        mf->quantum_boundary->get<TagKey>().find(qubits[3])->second;
+        mf->linear_boundary->get<TagKey>().find(qubits[3])->second;
     LexiLabellingMethod lrm;
     REQUIRE(lrm.check_method(mf, shared_arc));
     lrm.routing_method(mf, shared_arc);
     REQUIRE(
-        mf->quantum_boundary->get<TagKey>().find(qubits[0]) ==
-        mf->quantum_boundary->get<TagKey>().end());
+        mf->linear_boundary->get<TagKey>().find(qubits[0]) ==
+        mf->linear_boundary->get<TagKey>().end());
     REQUIRE(
-        mf->quantum_boundary->get<TagKey>().find(qubits[3]) ==
-        mf->quantum_boundary->get<TagKey>().end());
+        mf->linear_boundary->get<TagKey>().find(qubits[3]) ==
+        mf->linear_boundary->get<TagKey>().end());
     VertPort post_label_0 =
-        mf->quantum_boundary->get<TagKey>().find(nodes[0])->second;
+        mf->linear_boundary->get<TagKey>().find(nodes[0])->second;
     REQUIRE(pre_label_0 == post_label_0);
     VertPort post_label_3 =
-        mf->quantum_boundary->get<TagKey>().find(nodes[3])->second;
+        mf->linear_boundary->get<TagKey>().find(nodes[3])->second;
     REQUIRE(pre_label_3 == post_label_3);
   }
   GIVEN("Two unlabelled qubits, two slices, lookahead, check and route.") {
@@ -658,23 +658,23 @@ SCENARIO("Test LexiLabellingMethod") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     VertPort pre_label_0 =
-        mf->quantum_boundary->get<TagKey>().find(qubits[2])->second;
+        mf->linear_boundary->get<TagKey>().find(qubits[2])->second;
     VertPort pre_label_3 =
-        mf->quantum_boundary->get<TagKey>().find(qubits[3])->second;
+        mf->linear_boundary->get<TagKey>().find(qubits[3])->second;
     LexiLabellingMethod lrm;
     REQUIRE(lrm.check_method(mf, shared_arc));
     lrm.routing_method(mf, shared_arc);
     REQUIRE(
-        mf->quantum_boundary->get<TagKey>().find(qubits[2]) ==
-        mf->quantum_boundary->get<TagKey>().end());
+        mf->linear_boundary->get<TagKey>().find(qubits[2]) ==
+        mf->linear_boundary->get<TagKey>().end());
     REQUIRE(
-        mf->quantum_boundary->get<TagKey>().find(qubits[3]) ==
-        mf->quantum_boundary->get<TagKey>().end());
+        mf->linear_boundary->get<TagKey>().find(qubits[3]) ==
+        mf->linear_boundary->get<TagKey>().end());
     VertPort post_label_0 =
-        mf->quantum_boundary->get<TagKey>().find(nodes[0])->second;
+        mf->linear_boundary->get<TagKey>().find(nodes[0])->second;
     REQUIRE(pre_label_0 == post_label_0);
     VertPort post_label_3 =
-        mf->quantum_boundary->get<TagKey>().find(nodes[3])->second;
+        mf->linear_boundary->get<TagKey>().find(nodes[3])->second;
     REQUIRE(pre_label_3 == post_label_3);
   }
   GIVEN(
@@ -692,23 +692,23 @@ SCENARIO("Test LexiLabellingMethod") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     VertPort pre_label_0 =
-        mf->quantum_boundary->get<TagKey>().find(qubits[2])->second;
+        mf->linear_boundary->get<TagKey>().find(qubits[2])->second;
     VertPort pre_label_3 =
-        mf->quantum_boundary->get<TagKey>().find(qubits[3])->second;
+        mf->linear_boundary->get<TagKey>().find(qubits[3])->second;
     LexiLabellingMethod lrm;
     REQUIRE(lrm.check_method(mf, shared_arc));
     lrm.routing_method(mf, shared_arc);
     REQUIRE(
-        mf->quantum_boundary->get<TagKey>().find(qubits[2]) ==
-        mf->quantum_boundary->get<TagKey>().end());
+        mf->linear_boundary->get<TagKey>().find(qubits[2]) ==
+        mf->linear_boundary->get<TagKey>().end());
     REQUIRE(
-        mf->quantum_boundary->get<TagKey>().find(qubits[3]) ==
-        mf->quantum_boundary->get<TagKey>().end());
+        mf->linear_boundary->get<TagKey>().find(qubits[3]) ==
+        mf->linear_boundary->get<TagKey>().end());
     VertPort post_label_0 =
-        mf->quantum_boundary->get<TagKey>().find(nodes[0])->second;
+        mf->linear_boundary->get<TagKey>().find(nodes[0])->second;
     REQUIRE(pre_label_0 == post_label_0);
     VertPort post_label_3 =
-        mf->quantum_boundary->get<TagKey>().find(nodes[3])->second;
+        mf->linear_boundary->get<TagKey>().find(nodes[3])->second;
     REQUIRE(pre_label_3 == post_label_3);
   }
 }

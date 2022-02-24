@@ -16,7 +16,7 @@ void BoxDecomposition::solve() {
   std::shared_ptr<unit_frontier_t> frontier_edges =
       frontier_convert_vertport_to_edge(
           this->mapping_frontier_->circuit_,
-          this->mapping_frontier_->quantum_boundary);
+          this->mapping_frontier_->linear_boundary);
   CutFrontier next_cut =
       this->mapping_frontier_->circuit_.next_q_cut(frontier_edges);
   for (Vertex &vert : *next_cut.slice) {
@@ -37,7 +37,7 @@ bool BoxDecompositionRoutingMethod::check_method(
     const ArchitecturePtr & /*architecture*/) const {
   std::shared_ptr<unit_frontier_t> frontier_edges =
       frontier_convert_vertport_to_edge(
-          mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
+          mapping_frontier->circuit_, mapping_frontier->linear_boundary);
   CutFrontier next_cut = mapping_frontier->circuit_.next_q_cut(frontier_edges);
   for (const Vertex &vert : *next_cut.slice) {
     Op_ptr op = mapping_frontier->circuit_.get_Op_ptr_from_Vertex(vert);

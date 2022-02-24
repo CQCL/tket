@@ -25,7 +25,7 @@ MultiGateReorder::MultiGateReorder(
   // This needs to be updated every time the frontier changes
   this->u_frontier_edges_ =
       convert_u_frontier_to_edges(*frontier_convert_vertport_to_edge(
-          _mapping_frontier->circuit_, _mapping_frontier->quantum_boundary));
+          _mapping_frontier->circuit_, _mapping_frontier->linear_boundary));
 }
 
 // Traverse the DAG to the quantum frontier
@@ -36,8 +36,8 @@ static UnitID get_unitid_from_vertex_port(
   VertPort current_vert_port = vert_port;
   while (true) {
     auto it =
-        frontier->quantum_boundary->get<TagValue>().find(current_vert_port);
-    if (it != frontier->quantum_boundary->get<TagValue>().end()) {
+        frontier->linear_boundary->get<TagValue>().find(current_vert_port);
+    if (it != frontier->linear_boundary->get<TagValue>().end()) {
       return it->first;
     }
     Edge current_e = frontier->circuit_.get_nth_out_edge(
@@ -193,7 +193,7 @@ void MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
   // so need to return it to original setting at end.
   unit_vertport_frontier_t copy;
   for (const std::pair<UnitID, VertPort> &pair :
-       this->mapping_frontier_->quantum_boundary->get<TagKey>()) {
+       this->mapping_frontier_->linear_boundary->get<TagKey>()) {
     copy.insert({pair.first, pair.second});
   }
   // Get a subcircuit only for iterating vertices
@@ -221,12 +221,12 @@ void MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
         this->u_frontier_edges_ =
             convert_u_frontier_to_edges(*frontier_convert_vertport_to_edge(
                 this->mapping_frontier_->circuit_,
-                this->mapping_frontier_->quantum_boundary));
+                this->mapping_frontier_->linear_boundary));
       }
     }
   }
   // Return the quantum boundary to its original setting
-  this->mapping_frontier_->set_quantum_boundary(copy);
+  this->mapping_frontier_->set_linear_boundary(copy);
 }
 
 MultiGateReorderRoutingMethod::MultiGateReorderRoutingMethod(
@@ -238,7 +238,7 @@ bool MultiGateReorderRoutingMethod::check_method(
     const ArchitecturePtr &architecture) const {
   const EdgeVec u_frontier_edges =
       convert_u_frontier_to_edges(*frontier_convert_vertport_to_edge(
-          mapping_frontier->circuit_, mapping_frontier->quantum_boundary));
+          mapping_frontier->circuit_, mapping_frontier->linear_boundary));
 
   Subcircuit circ = mapping_frontier->get_frontier_subcircuit(
       this->max_depth_, this->max_size_);

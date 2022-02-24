@@ -181,9 +181,10 @@ bool LexiRoute::update_labelling() {
 void LexiRoute::set_interacting_uids(bool assigned_only) {
   // return types
   this->interacting_uids_.clear();
+
   for (auto it =
-           this->mapping_frontier_->quantum_boundary->get<TagKey>().begin();
-       it != this->mapping_frontier_->quantum_boundary->get<TagKey>().end();
+           this->mapping_frontier_->linear_boundary->get<TagKey>().begin();
+       it != this->mapping_frontier_->linear_boundary->get<TagKey>().end();
        ++it) {
     Edge e0 = this->mapping_frontier_->circuit_.get_nth_out_edge(
         it->second.first, it->second.second);
@@ -198,7 +199,7 @@ void LexiRoute::set_interacting_uids(bool assigned_only) {
         auto jt = it;
         ++jt;
         while (jt !=
-               this->mapping_frontier_->quantum_boundary->get<TagKey>().end()) {
+               this->mapping_frontier_->linear_boundary->get<TagKey>().end()) {
           // i.e. if vertices match
           Edge e1 = this->mapping_frontier_->circuit_.get_nth_out_edge(
               jt->second.first, jt->second.second);
@@ -280,7 +281,7 @@ std::pair<bool, bool> LexiRoute::check_bridge(
         2) {  // => could be bridge
       // below should always return correct object given prior checks
       VertPort vp =
-          (*this->mapping_frontier_->quantum_boundary->find(swap.first)).second;
+          (*this->mapping_frontier_->linear_boundary->find(swap.first)).second;
       Edge out_edge = this->mapping_frontier_->circuit_.get_nth_out_edge(
           vp.first, vp.second);
       output.first = is_vertex_CX(
@@ -293,8 +294,7 @@ std::pair<bool, bool> LexiRoute::check_bridge(
   if (it != this->interacting_uids_.end()) {
     if (this->architecture_->get_distance(swap.second, Node(it->second)) == 2) {
       VertPort vp =
-          (*this->mapping_frontier_->quantum_boundary->find(swap.second))
-              .second;
+          (*this->mapping_frontier_->linear_boundary->find(swap.second)).second;
       Edge out_edge = this->mapping_frontier_->circuit_.get_nth_out_edge(
           vp.first, vp.second);
       output.second = is_vertex_CX(
@@ -402,7 +402,7 @@ void LexiRoute::remove_swaps_decreasing(swap_set_t& swaps) {
 
 void LexiRoute::solve_labelling() {
   this->update_labelling();
-  this->mapping_frontier_->update_quantum_boundary_uids(this->labelling_);
+  this->mapping_frontier_->update_linear_boundary_uids(this->labelling_);
   return;
 }
 
@@ -412,10 +412,12 @@ void LexiRoute::solve(unsigned lookahead) {
   // so need to return it to original setting at end
   unit_vertport_frontier_t copy;
   for (const std::pair<UnitID, VertPort>& pair :
-       this->mapping_frontier_->quantum_boundary->get<TagKey>()) {
+       this->mapping_frontier_->linear_boundary->get<TagKey>()) {
     copy.insert({pair.first, pair.second});
   }
+
   swap_set_t candidate_swaps = this->get_candidate_swaps();
+  std::cout << candidate_swaps.size() << std::endl;
   this->remove_swaps_decreasing(candidate_swaps);
   TKET_ASSERT(candidate_swaps.size() != 0);
   // Only want to substitute a single swap
@@ -447,14 +449,14 @@ void LexiRoute::solve(unsigned lookahead) {
   --it;
 
   std::pair<Node, Node> chosen_swap = *it;
-  this->mapping_frontier_->set_quantum_boundary(copy);
+  this->mapping_frontier_->set_linear_boundary(copy);
 
   this->set_interacting_uids();
   std::pair<bool, bool> check = this->check_bridge(chosen_swap, lookahead);
   // set for final time, to allow gates to be correctly inserted, but then leave
   // as is
   // insert gates
-  this->mapping_frontier_->set_quantum_boundary(copy);
+  this->mapping_frontier_->set_linear_boundary(copy);
   if (!check.first && !check.second) {
     // update circuit with new swap
     // final_labelling is initial labelling permuted by single swap
@@ -464,14 +466,14 @@ void LexiRoute::solve(unsigned lookahead) {
     this->set_interacting_uids();
 
     auto add_ordered_bridge = [&](const Node& n) {
-      auto it0 = this->mapping_frontier_->quantum_boundary->find(n);
+      auto it0 = this->mapping_frontier_->linear_boundary->find(n);
       // this should implicitly be the case if this logic is reached
-      TKET_ASSERT(it0 != this->mapping_frontier_->quantum_boundary->end());
+      TKET_ASSERT(it0 != this->mapping_frontier_->linear_boundary->end());
 
       Node other_node = Node(this->interacting_uids_[n]);
-      auto it1 = this->mapping_frontier_->quantum_boundary->find(other_node);
+      auto it1 = this->mapping_frontier_->linear_boundary->find(other_node);
       // this should implicitly be the case if this logic is reached
-      TKET_ASSERT(it1 != this->mapping_frontier_->quantum_boundary->end());
+      TKET_ASSERT(it1 != this->mapping_frontier_->linear_boundary->end());
 
       auto path = this->architecture_->get_path(n, other_node);
       Node central = Node(path[1]);
@@ -512,8 +514,10 @@ bool LexiRouteRoutingMethod::check_method(
     const ArchitecturePtr& architecture) const {
   std::shared_ptr<unit_frontier_t> frontier_edges =
       frontier_convert_vertport_to_edge(
-          mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
-  CutFrontier next_cut = mapping_frontier->circuit_.next_q_cut(frontier_edges);
+          mapping_frontier->circuit_, mapping_frontier->linear_boundary);
+  CutFrontier next_cut = mapping_frontier->circuit_.next_cut(
+      frontier_edges, mapping_frontier->boolean_boundary);
+
   for (const Vertex& vert : *next_cut.slice) {
     Op_ptr op = mapping_frontier->circuit_.get_Op_ptr_from_Vertex(vert);
     // can't work wih box ops, or gates with more than 2 qubits that aren't a

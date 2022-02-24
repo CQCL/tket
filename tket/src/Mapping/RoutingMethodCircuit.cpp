@@ -37,7 +37,7 @@ bool RoutingMethodCircuit::check_method(
   Circuit frontier_circuit =
       mapping_frontier->circuit_.subcircuit(frontier_subcircuit);
   frontier_circuit.rename_units(
-      mapping_frontier->get_default_to_quantum_boundary_unit_map());
+      mapping_frontier->get_default_to_linear_boundary_unit_map());
 
   return this->check_subcircuit_(frontier_circuit, architecture);
 }
@@ -51,7 +51,7 @@ unit_map_t RoutingMethodCircuit::routing_method(
   Circuit frontier_circuit =
       mapping_frontier->circuit_.subcircuit(frontier_subcircuit);
   frontier_circuit.rename_units(
-      mapping_frontier->get_default_to_quantum_boundary_unit_map());
+      mapping_frontier->get_default_to_linear_boundary_unit_map());
 
   // get routed subcircuit
   std::tuple<Circuit, unit_map_t, unit_map_t> routed_subcircuit =
@@ -59,7 +59,7 @@ unit_map_t RoutingMethodCircuit::routing_method(
   unit_map_t new_labelling = std::get<1>(routed_subcircuit);
 
   // update unit id at boundary in case of relabelling
-  mapping_frontier->update_quantum_boundary_uids(new_labelling);
+  mapping_frontier->update_linear_boundary_uids(new_labelling);
 
   unit_map_t swap_permutation;
   for (const auto& pair : new_labelling) {

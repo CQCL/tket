@@ -81,7 +81,6 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Simulation/ComparisonFunctions.cpp
     # ${TKET_TESTS_DIR}/Simulation/test_CircuitSimulator.cpp
     # ${TKET_TESTS_DIR}/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
-    ${TKET_TESTS_DIR}/test_Utils.cpp
     # ${TKET_TESTS_DIR}/Circuit/test_Boxes.cpp
     # ${TKET_TESTS_DIR}/Circuit/test_Circ.cpp
     # ${TKET_TESTS_DIR}/Circuit/test_Symbolic.cpp
@@ -95,14 +94,14 @@ set(TEST_SOURCES
     # ${TKET_TESTS_DIR}/test_ArchitectureAwareSynthesis.cpp
     # ${TKET_TESTS_DIR}/test_Placement.cpp
     # ${TKET_TESTS_DIR}/test_MappingVerification.cpp
-    ${TKET_TESTS_DIR}/test_MappingFrontier.cpp
+    # ${TKET_TESTS_DIR}/test_MappingFrontier.cpp
     # ${TKET_TESTS_DIR}/test_RoutingMethod.cpp
     # ${TKET_TESTS_DIR}/test_MappingManager.cpp
     # ${TKET_TESTS_DIR}/test_LexicographicalComparison.cpp
     # ${TKET_TESTS_DIR}/test_LexiRoute.cpp
     # ${TKET_TESTS_DIR}/test_MultiGateReorder.cpp
     # ${TKET_TESTS_DIR}/test_BoxDecompRoutingMethod.cpp
-    # ${TKET_TESTS_DIR}/test_RoutingPasses.cpp
+    ${TKET_TESTS_DIR}/test_RoutingPasses.cpp
     # ${TKET_TESTS_DIR}/test_DeviceCharacterisation.cpp
     # ${TKET_TESTS_DIR}/test_Clifford.cpp
     # ${TKET_TESTS_DIR}/test_MeasurementSetup.cpp

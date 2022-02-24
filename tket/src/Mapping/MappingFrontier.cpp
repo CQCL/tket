@@ -20,8 +20,8 @@
 namespace tket {
 
 /**
- * unit_vertport_frontier_t is <UnitID, VertPort>, helper function returned
- * UnitID given Edge
+ * unit_vertport_frontier_t is <UnitID, VertPort>, helper function returns
+ * UnitID corresponding to given VertPort
  */
 UnitID get_unitid_from_unit_frontier(
     const std::shared_ptr<unit_vertport_frontier_t>& u_frontier,
@@ -30,6 +30,45 @@ UnitID get_unitid_from_unit_frontier(
   if (it != u_frontier->get<TagValue>().end()) return it->first;
   throw MappingFrontierError(
       std::string("Edge provided not in unit_frontier_t object."));
+}
+
+/**
+ * bit_frontier_t is <Bit, EdgeVec>, helper function returns
+ * Bit corresponding to given Edge
+ */
+Bit get_bit_from_bool_frontier(
+    const std::shared_ptr<b_frontier_t>& b_frontier, const EdgeVec& ev) {
+  std::cout << "GBFBF" << std::endl;
+  TKET_ASSERT(ev.size() > 0);
+  for (auto e : ev) {
+    std::cout << e << std::endl;
+  }
+
+  // condition is that if one Edge in EdgeVector ev is in a
+  // held bundle, then all are so return true
+  for (auto it = b_frontier->get<TagKey>().begin();
+       it != b_frontier->get<TagKey>().end(); ++it) {
+    std::cout << it->first.repr() << std::endl;
+    // for(auto e : it->second){
+    //   std::cout << e << std::endl;
+    // }
+    // can we assume an in bundle isn't a thing?
+    for (const Edge& e0 : ev) {
+      for (const Edge& e1 : it->second) {
+        std::cout << e1 << " " << e0 << std::endl;
+        if (e0 == e1) {
+          std::cout << "Return: " << it->first.repr() << std::endl;
+          return it->first;
+        }
+      }
+      // if(std::find(it->second.begin(), it->second.end(), e) !=
+      // it->second.end()) {
+      //   return it->first;
+      // }
+    }
+  }
+  throw MappingFrontierError(
+      std::string("EdgeVec provided not in b_frontier_t object."));
 }
 
 std::shared_ptr<unit_frontier_t> frontier_convert_vertport_to_edge(
@@ -48,63 +87,72 @@ std::shared_ptr<unit_frontier_t> frontier_convert_vertport_to_edge(
 }
 
 /**
- * Initialise quantum_boundary and classical_boundary from
+ * Initialise linear_boundary and boolean_boundary from
  * out edges of Input vertices
  */
 MappingFrontier::MappingFrontier(Circuit& _circuit) : circuit_(_circuit) {
-  this->quantum_boundary = std::make_shared<unit_vertport_frontier_t>();
-  this->classical_boundary = std::make_shared<b_frontier_t>();
+  this->linear_boundary = std::make_shared<unit_vertport_frontier_t>();
+  this->boolean_boundary = std::make_shared<b_frontier_t>();
   this->bimaps_ = std::make_shared<unit_bimaps_t>();
+
   // Set up {UnitID, VertPort} objects for quantum and classical boundaries
   for (const Qubit& qb : this->circuit_.all_qubits()) {
-    this->quantum_boundary->insert({qb, {this->circuit_.get_in(qb), 0}});
+    this->linear_boundary->insert({qb, {this->circuit_.get_in(qb), 0}});
     this->bimaps_->initial.insert({qb, qb});
     this->bimaps_->final.insert({qb, qb});
   }
   for (const Bit& bit : this->circuit_.all_bits()) {
-    this->classical_boundary->insert(
-        {bit,
-         this->circuit_.get_nth_b_out_bundle(this->circuit_.get_in(bit), 0)});
+    Vertex bit_input = this->circuit_.get_in(bit);
+    EdgeVec bool_bundle = this->circuit_.get_nth_b_out_bundle(bit_input, 0);
+    if (bool_bundle.size() != 0) {
+      this->boolean_boundary->insert({bit, bool_bundle});
+    } else {
+      this->linear_boundary->insert({bit, {bit_input, 0}});
+    }
   }
 }
 
 /**
- * Initialise quantum_boundary and classical_boundary from
+ * Initialise linear_boundary and boolean_boundary from
  * out edges of Input vertices
  */
 MappingFrontier::MappingFrontier(
     Circuit& _circuit, std::shared_ptr<unit_bimaps_t> _bimaps)
     : circuit_(_circuit), bimaps_(_bimaps) {
-  this->quantum_boundary = std::make_shared<unit_vertport_frontier_t>();
-  this->classical_boundary = std::make_shared<b_frontier_t>();
+  this->linear_boundary = std::make_shared<unit_vertport_frontier_t>();
+  this->boolean_boundary = std::make_shared<b_frontier_t>();
 
   // Set up {UnitID, VertPort} objects for quantum and classical boundaries
   for (const Qubit& qb : this->circuit_.all_qubits()) {
-    this->quantum_boundary->insert({qb, {this->circuit_.get_in(qb), 0}});
+    this->linear_boundary->insert({qb, {this->circuit_.get_in(qb), 0}});
   }
   for (const Bit& bit : this->circuit_.all_bits()) {
-    this->classical_boundary->insert(
-        {bit,
-         this->circuit_.get_nth_b_out_bundle(this->circuit_.get_in(bit), 0)});
+    Vertex bit_input = this->circuit_.get_in(bit);
+    EdgeVec bool_bundle = this->circuit_.get_nth_b_out_bundle(bit_input, 0);
+    if (bool_bundle.size() != 0) {
+      this->boolean_boundary->insert({bit, bool_bundle});
+    } else {
+      this->linear_boundary->insert({bit, {bit_input, 0}});
+    }
   }
 }
 
 MappingFrontier::MappingFrontier(const MappingFrontier& mapping_frontier)
     : circuit_(mapping_frontier.circuit_), bimaps_(mapping_frontier.bimaps_) {
-  this->quantum_boundary = std::make_shared<unit_vertport_frontier_t>();
-  this->classical_boundary = std::make_shared<b_frontier_t>();
+  this->linear_boundary = std::make_shared<unit_vertport_frontier_t>();
+  this->boolean_boundary = std::make_shared<b_frontier_t>();
 
   for (const std::pair<UnitID, VertPort>& pair :
-       mapping_frontier.quantum_boundary->get<TagKey>()) {
-    this->quantum_boundary->insert({pair.first, pair.second});
+       mapping_frontier.linear_boundary->get<TagKey>()) {
+    this->linear_boundary->insert({pair.first, pair.second});
   }
   for (const std::pair<Bit, EdgeVec>& pair :
-       mapping_frontier.classical_boundary->get<TagKey>()) {
+       mapping_frontier.boolean_boundary->get<TagKey>()) {
     EdgeVec edges;
     for (const Edge& edge : pair.second) {
       edges.push_back(edge);
     }
-    this->classical_boundary->insert({pair.first, edges});
+    this->boolean_boundary->insert({pair.first, edges});
   }
   for (const Node& node : mapping_frontier.ancilla_nodes_) {
     this->ancilla_nodes_.insert(node);
@@ -115,12 +163,14 @@ void MappingFrontier::advance_next_2qb_slice(unsigned max_advance) {
   bool boundary_updated = false;
   unsigned loop = 0;
   std::shared_ptr<unit_frontier_t> current_frontier =
-      frontier_convert_vertport_to_edge(this->circuit_, this->quantum_boundary);
+      frontier_convert_vertport_to_edge(this->circuit_, this->linear_boundary);
+
   // Get all vertices in first cut
   VertexVec immediate_cut_vertices_v =
       *(this->circuit_
             .next_cut(current_frontier, std::make_shared<b_frontier_t>())
             .slice);
+
   do {
     // each do section first finds the next set of edges after the held set
     // for edges with target vertices with all their edges presented in the
@@ -135,7 +185,6 @@ void MappingFrontier::advance_next_2qb_slice(unsigned max_advance) {
          current_frontier->get<TagKey>()) {
       // if target_v not in immediate_cut_vertices, then do not pass it
       Vertex target_v = this->circuit_.target(pair.second);
-
       EdgeVec in_edges =
           this->circuit_.get_in_edges_of_type(target_v, EdgeType::Quantum);
 
@@ -143,19 +192,19 @@ void MappingFrontier::advance_next_2qb_slice(unsigned max_advance) {
           std::find(
               immediate_cut_vertices_v.begin(), immediate_cut_vertices_v.end(),
               target_v) != immediate_cut_vertices_v.end();
-
-      if (((!in_slice && in_edges.size() > 1) ||
-           this->circuit_.get_OpType_from_Vertex(target_v) == OpType::Output) &&
+      OpType ot = this->circuit_.get_OpType_from_Vertex(target_v);
+      if (((!in_slice && in_edges.size() > 1) || ot == OpType::Output ||
+           ot == OpType::ClOutput) &&
           this->circuit_.get_OpType_from_Vertex(target_v) != OpType::Barrier) {
         // Vertex either not allowed to pass, or is output vertex => update
         // nothing
         next_frontier->insert({pair.first, pair.second});
       } else {
-        // vertex can be surpassed, so update quantum_boundary and next_frontier
-        // with next edge
+        // vertex can be surpassed, so update linear_boundary and
+        // next_frontier with next edge
         Edge next_edge = this->circuit_.get_next_edge(target_v, pair.second);
-        this->quantum_boundary->replace(
-            this->quantum_boundary->get<TagKey>().find(pair.first),
+        this->linear_boundary->replace(
+            this->linear_boundary->get<TagKey>().find(pair.first),
             {pair.first,
              {target_v, this->circuit_.get_source_port(next_edge)}});
         next_frontier->insert({pair.first, next_edge});
@@ -165,11 +214,12 @@ void MappingFrontier::advance_next_2qb_slice(unsigned max_advance) {
     CutFrontier next_cut = this->circuit_.next_cut(
         next_frontier, std::make_shared<b_frontier_t>());
     // For each vertex in a slice, if its physically permitted, update
-    // quantum_boundary with quantum out edges from vertex (i.e.
+    // linear_boundary with quantum out edges from vertex (i.e.
     // next_cut.u_frontier)
     for (const Vertex& vert : *next_cut.slice) {
       // Output means we don't want to pass, so just leave
-      if (this->circuit_.get_OpType_from_Vertex(vert) == OpType::Output) {
+      OpType ot = this->circuit_.get_OpType_from_Vertex(vert);
+      if (ot == OpType::Output || ot == OpType::ClOutput) {
         continue;
       }
       EdgeVec in_edges =
@@ -183,9 +233,8 @@ void MappingFrontier::advance_next_2qb_slice(unsigned max_advance) {
       boundary_updated = true;
       // push edge past single qubit vertex, repeat
       UnitID uid = get_unitid_from_unit_frontier(
-          this->quantum_boundary,
-          {this->circuit_.source(in_edges[0]),
-           this->circuit_.get_source_port(in_edges[0])});
+          this->linear_boundary, {this->circuit_.source(in_edges[0]),
+                                  this->circuit_.get_source_port(in_edges[0])});
 
       Edge replacement_edge =
           next_cut.u_frontier->get<TagKey>().find(uid)->second;
@@ -193,8 +242,8 @@ void MappingFrontier::advance_next_2qb_slice(unsigned max_advance) {
       Vertex source_vertex = this->circuit_.source(replacement_edge);
       port_t source_port = this->circuit_.get_source_port(replacement_edge);
 
-      this->quantum_boundary->replace(
-          this->quantum_boundary->get<TagKey>().find(uid),
+      this->linear_boundary->replace(
+          this->linear_boundary->get<TagKey>().find(uid),
           {uid, {source_vertex, source_port}});
     }
     current_frontier = next_frontier;
@@ -206,58 +255,333 @@ void MappingFrontier::advance_next_2qb_slice(unsigned max_advance) {
  * advance_frontier_boundary
  * terminates when next_cut returns a "slice" where
  * no vertices are physically permitted by the architecture
- * quantum_boundary and classical_boundary updated to reflect this
+ * linear_boundary and boolean_boundary updated to reflect this
  */
 void MappingFrontier::advance_frontier_boundary(
     const ArchitecturePtr& architecture) {
   bool boundary_updated = false;
+  std::cout << "\n\nADVANCE FRONTIER BOUNDARY" << std::endl;
   do {
-    // next_cut.slice vertices in_edges from this->quantum_boundary
-    // TODO: add optional skip function later to skip vertices that don't have
-    // physical requirements
+    std::cout << "\n\n\n\nNEW DO" << std::endl;
+    // next_cut.slice vertices in_edges from this->linear_boundary
     boundary_updated = false;
-
-    std::shared_ptr<unit_frontier_t> frontier_edges =
+    std::shared_ptr<unit_frontier_t> l_frontier_edges =
         frontier_convert_vertport_to_edge(
-            this->circuit_, this->quantum_boundary);
+            this->circuit_, this->linear_boundary);
 
-    CutFrontier next_cut = this->circuit_.next_q_cut(frontier_edges);
+    // for (const std::pair<UnitID, Edge>& pair :
+    // l_frontier_edges->get<TagKey>()) {
+    //   std::cout << pair.first.repr() << " " << circuit_.target(pair.second)
+    //   << " " <<
+    //   circuit_.get_OpDesc_from_Vertex(circuit_.target(pair.second)).name() <<
+    //   std::endl;
+    // }
+    for (auto x : boolean_boundary->get<TagKey>()) {
+      std::cout << x.first.repr() << std::endl;
+      for (auto e : x.second) {
+        std::cout << e << " " << circuit_.target(e) << " "
+                  << circuit_.get_OpDesc_from_Vertex(circuit_.target(e)).name()
+                  << " " << std::endl;
+      }
+      std::cout << std::endl;
+    }
 
+    CutFrontier next_cut =
+        this->circuit_.next_cut(l_frontier_edges, this->boolean_boundary);
+
+    for (auto x : next_cut.b_frontier->get<TagKey>()) {
+      std::cout << x.first.repr() << std::endl;
+      for (auto e : x.second) {
+        std::cout << e << " " << circuit_.target(e) << " "
+                  << circuit_.get_OpDesc_from_Vertex(circuit_.target(e)).name()
+                  << " " << std::endl;
+      }
+      std::cout << std::endl;
+    }
+    std::cout << "BOOLEAN BOUNDARY SIZE: " << this->boolean_boundary->size()
+              << std::endl;
     // For each vertex in a slice, if its physically permitted, update
-    // quantum_boundary with quantum out edges from vertex (i.e.
+    // linear_boundary with quantum out edges from vertex (i.e.
     // next_cut.u_frontier)
+    std::cout << "N vertices: " << next_cut.slice->size() << std::endl;
+
+    // std::cout << "\nPRE CHECK BEFORE SECOND CHECK" << std::endl;
+    // for (const Vertex& vert : *next_cut.slice) {
+    //   std::cout << "Vert: " << vert << " "
+    //             << this->circuit_.get_b_in_bundles(vert).size() << " "
+    //             << this->circuit_.get_OpDesc_from_Vertex(vert).name()
+    //             << std::endl;
+    //   std::set<Bit> bool_uids;
+    //   for (const EdgeVec& ev : this->circuit_.get_b_in_bundles(vert)) {
+    //     std::cout << ev.size() << std::endl;
+    //     if (ev.size() > 0) {
+    //       bool_uids.insert(
+    //           get_bit_from_bool_frontier(this->boolean_boundary, ev));
+    //     }
+    //   }
+    // }
+    // std::cout << "PRE CHECK DONE\n" << std::endl;
+
+    // boolean replacements need to be completed at the end
+    // due to various wires
+    // std::map<Bit, EdgeVec> boolean_replacements;
+
     for (const Vertex& vert : *next_cut.slice) {
-      std::vector<UnitID> uids;
+      // std::cout << "\n"
+      //           << this->circuit_.get_OpDesc_from_Vertex(vert).name()
+      //           << std::endl;
+
+      // std::cout << "Vert: " << vert << " "
+      //           << this->circuit_.get_b_in_bundles(vert).size() << " " <<
+      //           this->circuit_.get_in_edges_of_type(vert,
+      //           EdgeType::Quantum).size() << std::endl;
+
+      // for each boolean edge into vertex, collect associated Bit and port
+      // number n.b. a single Bit may have multiple "in bundles" to different
+      // vertices in the same cut
+      std::map<Bit, port_t> bool_uid_port_set;
+      std::vector<EdgeVec> b_in_bundles = this->circuit_.get_b_in_bundles(vert);
+      for (unsigned i = 0; i < b_in_bundles.size(); i++) {
+        EdgeVec ev = b_in_bundles[i];
+        if (ev.size() > 0) {
+          bool_uid_port_set.insert(
+              {get_bit_from_bool_frontier(this->boolean_boundary, ev), i});
+        }
+      }
+
+      // for (const EdgeVec& ev : this->circuit_.get_b_in_bundles(vert)) {
+      //   if (ev.size() > 0) {
+      //     bool_uids.insert(get_bit_from_bool_frontier(this->boolean_boundary,
+      //     ev));
+      //     // auto it = next_cut.b_frontier->get<TagKey>().find(bit);
+      //     // if (it != next_cut.b_frontier->get<TagKey>().end()) {
+      //     //   auto jt = boolean_replacements.find(bit);
+      //     //   if (jt != boolean_replacements.end()) {
+      //     //     jt->second.insert(jt->second.end(), ev.begin(), ev.end());
+      //     //   } else {
+      //     //     boolean_replacements.insert({bit, ev});
+      //     //   }
+      //     // }
+      //   }
+      // }
+
+      // for each quantum edge into vertex, collect associated Qubit/Node
+      // don't collect port as this->quantum_boundary holds this
+      // each UnitID will only have one quantum edge active
+      std::vector<UnitID> l_uids;  // linear unit id
+      std::vector<Node> nodes;     // quantum/node only
       for (const Edge& e :
            this->circuit_.get_in_edges_of_type(vert, EdgeType::Quantum)) {
-        uids.push_back(get_unitid_from_unit_frontier(
-            this->quantum_boundary,
-            {this->circuit_.source(e), this->circuit_.get_source_port(e)}));
-      }
-
-      // TODO: update architecture valid operation to reflect devices supporting
-      // different multi qubit operations also, like, think about how best that
-      // should actually be done?
-      std::vector<Node> nodes;
-      for (const UnitID& uid : uids) {
+        UnitID uid = get_unitid_from_unit_frontier(
+            this->linear_boundary,
+            {this->circuit_.source(e), this->circuit_.get_source_port(e)});
+        l_uids.push_back(uid);
         nodes.push_back(Node(uid));
       }
-      if (architecture->valid_operation(
+
+      std::cout << "Classical Edges" << std::endl;
+
+      // for each classical edge store related UnitID in l_uids
+      // each Bit will only have one classical edge active
+      // n.b. some vertices may introduce new Bit to the boolean_boundary
+      // e.g. A Measurement result may be passed to a conditional as
+      // therefore, all Bit not in the Boolean boundary are also stored
+      // in case the operation does this and the this->boolean_boundary
+      // needs to be updated
+      std::map<Bit, port_t> extra_bool_uid_port_set;
+      for (const Edge& e :
+           this->circuit_.get_in_edges_of_type(vert, EdgeType::Classical)) {
+        // for updating linear boundary
+        port_t port_source = this->circuit_.get_source_port(e);
+        UnitID uid = get_unitid_from_unit_frontier(
+            this->linear_boundary, {this->circuit_.source(e), port_source});
+        l_uids.push_back(uid);
+
+        // for potentially adding new Bit to boolean boundary
+        // port_target makes it possible to track which "out bundle" corresponds
+        // to this Bit
+        port_t port_target = this->circuit_.get_target_port(e);
+        Bit bit = Bit(uid);
+        if (bool_uid_port_set.find(bit) == bool_uid_port_set.end()) {
+          extra_bool_uid_port_set.insert({bit, port_target});
+        }
+      }
+      // nodes.size() == 0 => completely classical operation
+      // a vertex is only in a cut if its causally been reached
+      // i.e. if a quantum operation (held up by a valid operation check)
+      // blocks a classical operation that blocks a quantum operation, neither
+      // of the latter will be in the cut even if they have no overlapping
+      // UnitID
+      if (nodes.size() == 0 ||
+          architecture->valid_operation(
               this->circuit_.get_Op_ptr_from_Vertex(vert), nodes)) {
-        // if no valid operation, boundary not updated and while loop terminates
+        std::cout << "Past valid operation " << std::endl;
+        // if no valid operation, boundary not updated and while loop
+        // terminates
         boundary_updated = true;
-        for (const UnitID& uid : uids) {
+        // update linear UnitID (Qubits&Quantum edges, Bits&Classical edges)
+        for (const UnitID& uid : l_uids) {
           Edge replacement_edge =
               next_cut.u_frontier->get<TagKey>().find(uid)->second;
           Vertex source_vertex = this->circuit_.source(replacement_edge);
           port_t source_port = this->circuit_.get_source_port(replacement_edge);
-          this->quantum_boundary->replace(
-              this->quantum_boundary->get<TagKey>().find(uid),
+          this->linear_boundary->replace(
+              this->linear_boundary->get<TagKey>().find(uid),
               {uid, {source_vertex, source_port}});
         }
+        std::cout << "Post Linear updates" << std::endl;
+
+        // update booleans
+        // n.b. its possible a boolean path terminates with an operation
+        // however, the port should be preserved so we can track the correct Bit
+        // {Bit, port_t}
+        for (auto it = bool_uid_port_set.begin(); it != bool_uid_port_set.end();
+             ++it) {
+          std::vector<EdgeVec> out_bundles =
+              this->circuit_.get_b_out_bundles(vert);
+          port_t port = it->second;
+          TKET_ASSERT(out_bundles.size() > port);  // safe port indexing
+          // However, this Bit may have boolean values in other Vertices in
+          // slice therefore, we remove every edge from the vertex in_bundle for
+          // this port from the boolean_boundary and then insert these new edges
+          std::vector<EdgeVec> in_bundles =
+              this->circuit_.get_b_in_bundles(vert);
+          TKET_ASSERT(in_bundles.size() > port);  // safe port indexing
+          EdgeVec in_bundle = in_bundles[port];
+          // Bit should be in boolean_boundary
+          Bit bit = it->first;
+          auto jt = this->boolean_boundary->get<TagKey>().find(bit);
+          TKET_ASSERT(jt != this->boolean_boundary->get<TagKey>().end());
+          // construct a new EdgeVec object with replaced Edge and persisting
+          // Edge
+          EdgeVec new_boolean_edges;
+          for (const Edge& e : jt->second) {
+            // => edge isn't being replaced
+            if (std::find(in_bundle.begin(), in_bundle.end(), e) ==
+                in_bundle.end()) {
+              new_boolean_edges.push_back(e);
+            }
+          }
+          // add all new edges from out bundle to the boundary
+          for (const Edge& e : out_bundles[port]) {
+            new_boolean_edges.push_back(e);
+          }
+          // replace boolean boundary
+          this->boolean_boundary->replace(jt, {bit, new_boolean_edges});
+        }
+
+        // for(const Bit& bit : bool_uids){
+        //   // find bit in next cut
+        //   auto it = next_cut.b_frontier->get<TagKey>().find(bit);
+
+        //   if (it != next_cut.b_frontier->get<TagKey>().end()) {
+        //     auto jt = boolean_replacements.find(bit);
+        //     if (jt != boolean_replacements.end()) {
+        //       jt->second.insert(jt->second.end(), ev.begin(), ev.end());
+        //     } else {
+        //       boolean_replacements.insert({bit, ev});
+        //     }
+        //   }
+        // }
+
+        // for (const Bit& bit : bool_uids) {
+        //   std::cout << bit.repr() << std::endl;
+        //   auto it = next_cut.b_frontier->get<TagKey>().find(bit);
+        //   if (it != next_cut.b_frontier->get<TagKey>().end()) {
+        //     this->boolean_boundary->replace(
+        //         this->boolean_boundary->get<TagKey>().find(bit),
+        //         {bit, it->second});
+        //   }
+        // }
+        // std::cout << "Post Boolean updates" << std::endl;
+
+        // add new booleans
+        // some operations (such as Measure) may add a new boolean wire
+        // Bit in l_uids and bool_uids already confirmed, so check all Bit
+        // l_uids not in bool_uids
+
+        // Some operations may spawn a Boolean wire not held in boolean_boundary
+        // this checks for any new wires and if true, adds to boolean_boundary
+        // {Bit, port_t}
+        for (auto it = extra_bool_uid_port_set.begin();
+             it != extra_bool_uid_port_set.end(); ++it) {
+          Bit bit = it->first;
+          // get in edge to new vertex, to get source vertex, to get out bundles
+          Edge in_edge =
+              next_cut.u_frontier->get<TagKey>().find(UnitID(bit))->second;
+          Vertex source_vertex = this->circuit_.source(in_edge);
+
+          // TODO check these aren't the same
+          std::cout << "Source and held: " << source_vertex << " " << vert
+                    << std::endl;
+          std::vector<EdgeVec> source_out =
+              this->circuit_.get_b_out_bundles(source_vertex);
+
+          // Vertex target_vertex = this->circuit_.target(replacement_edge);
+          // std::cout << "Source: " << source_vertex << " "
+          //           << circuit_.get_OpDesc_from_Vertex(source_vertex).name()
+          //           << std::endl;
+          // std::cout << "Target: " << target_vertex << " "
+          //           << circuit_.get_OpDesc_from_Vertex(target_vertex).name()
+          //           << std::endl;
+
+          // std::vector<EdgeVec> source_in =
+
+          // std::vector<EdgeVec> target_in =
+          // this->circuit_.get_b_in_bundles(target_vertex);
+          // std::vector<EdgeVec> target_out =
+          // this->circuit_.get_b_out_bundles(target_vertex);
+
+          // std::cout << "Source in: " << source_in.size() << ":" << std::endl;
+          // for(auto x :source_in){
+          //   std::cout << x.size() << " ";
+          // }
+          // std::cout << std::endl;
+          std::cout << "Source out: " << source_out.size() << ":" << std::endl;
+          // for(auto x :source_out){
+          //   std::cout << x.size() << " ";
+          // }
+          // std::cout << std::endl;
+          // std::cout << "Target in: " << target_in.size() << ":" << std::endl;
+          // for(auto x :target_in){
+          //   std::cout << x.size() << " ";
+          // }
+          // std::cout << std::endl;
+          // std::cout << "Target out: " << target_out.size() << ":" <<
+          // std::endl; for(auto x :target_out){
+          //   std::cout << x.size() << " ";
+          // }
+
+          // std::vector<EdgeVec new_boolean_wire =
+          //     this->circuit_.get_b_out_bundles(source_vertex)[0];
+
+          // If source_out has more bundles than port value, then we know
+          // it's been spawned (multiple could be spawned at same vertex)
+          port_t port = it->second;
+          if (source_out.size() > port) {
+            EdgeVec new_boolean_wire = source_out[port];
+            TKET_ASSERT(new_boolean_wire.size() > 0);
+            // add new edges to boolean_boundary
+            // note that if a boolean cannot be spawned in multiple vertices
+            // as the incoming Bit wire is linear
+            this->boolean_boundary->insert({bit, new_boolean_wire});
+          }
+        }
+        std::cout << "Post adding new wires to boolean boundary" << std::endl;
       }
     }
+    //     this->boolean_boundary->replace(
+    //         this->boolean_boundary->get<TagKey>().find(bit),
+    //         {bit, it->second});
+    //   }
+    // for (const auto& bit_vev : boolean_replacements) {
+    //   Bit bit = bit_vev.first;
+    //   this->boolean_boundary->replace(
+    //       this->boolean_boundary->get<TagKey>().find(bit),
+    //       {bit, bit_vev.second});
+    // }
   } while (boundary_updated);
+  std::cout << "END ADVANCE FRNOTIER BOUNDARY\n\n" << std::endl;
   return;
 }
 
@@ -272,8 +596,8 @@ EdgeVec convert_u_frontier_to_edges(const unit_frontier_t& u_frontier) {
 Subcircuit MappingFrontier::get_frontier_subcircuit(
     unsigned _max_subcircuit_depth, unsigned _max_subcircuit_size) const {
   CutFrontier current_cut = this->circuit_.next_cut(
-      frontier_convert_vertport_to_edge(this->circuit_, this->quantum_boundary),
-      this->classical_boundary);
+      frontier_convert_vertport_to_edge(this->circuit_, this->linear_boundary),
+      this->boolean_boundary);
 
   unsigned subcircuit_depth = 1;
   VertexSet subcircuit_vertices(
@@ -292,12 +616,12 @@ Subcircuit MappingFrontier::get_frontier_subcircuit(
   TKET_ASSERT(subcircuit_vertices.size() != 0);
   return Subcircuit(
       convert_u_frontier_to_edges(*frontier_convert_vertport_to_edge(
-          this->circuit_, this->quantum_boundary)),
+          this->circuit_, this->linear_boundary)),
       convert_u_frontier_to_edges(*current_cut.u_frontier),
       subcircuit_vertices);
 }
 
-void MappingFrontier::update_quantum_boundary_uids(
+void MappingFrontier::update_linear_boundary_uids(
     const unit_map_t& relabelled_uids) {
   for (const std::pair<const UnitID, UnitID>& label : relabelled_uids) {
     // implies new labelling
@@ -305,15 +629,15 @@ void MappingFrontier::update_quantum_boundary_uids(
       // by type, label.first already assumed in circuit
       // this condition means label.second also in circuit
       // implies that a merging is done -> remove first qubit
-      if (this->quantum_boundary->get<TagKey>().find(label.second) !=
-          this->quantum_boundary->get<TagKey>().end()) {
+      if (this->linear_boundary->get<TagKey>().find(label.second) !=
+          this->linear_boundary->get<TagKey>().end()) {
         // erase, assume updated already
-        this->quantum_boundary->erase(label.first);
+        this->linear_boundary->erase(label.first);
       } else {
         auto current_label_it =
-            this->quantum_boundary->get<TagKey>().find(label.first);
+            this->linear_boundary->get<TagKey>().find(label.first);
         // relabel "label.first" with "label.second"
-        this->quantum_boundary->replace(
+        this->linear_boundary->replace(
             current_label_it, {label.second, current_label_it->second});
         unit_map_t relabel = {label};
         this->circuit_.rename_units(relabel);
@@ -343,14 +667,14 @@ void MappingFrontier::permute_subcircuit_q_out_hole(
   EdgeVec new_q_out_hole;
   int i = 0;
   // Change to iterate through final permutation first?
-  if (this->quantum_boundary->size() != final_permutation.size()) {
+  if (this->linear_boundary->size() != final_permutation.size()) {
     throw MappingFrontierError(
         "Number of Qubits in mapping permutation does not match number of "
         "Qubits in MappingFrontier boundary, for permuting Qubits as with "
         "routed Subcircuit.");
   }
   for (const std::pair<UnitID, VertPort>& pair :
-       this->quantum_boundary->get<TagKey>()) {
+       this->linear_boundary->get<TagKey>()) {
     auto it = final_permutation.find(pair.first);
     if (it == final_permutation.end()) {
       throw MappingFrontierError("Qubit in boundary not in permutation.");
@@ -360,8 +684,8 @@ void MappingFrontier::permute_subcircuit_q_out_hole(
       new_q_out_hole.push_back(subcircuit.q_out_hole[i]);
     } else {
       int j = 0;
-      for (auto it = this->quantum_boundary->get<TagKey>().begin();
-           it != this->quantum_boundary->get<TagKey>().end(); ++it) {
+      for (auto it = this->linear_boundary->get<TagKey>().begin();
+           it != this->linear_boundary->get<TagKey>().end(); ++it) {
         if (it->first == uid_pair.second) {
           new_q_out_hole.push_back(subcircuit.q_out_hole[j]);
           break;
@@ -376,47 +700,48 @@ void MappingFrontier::permute_subcircuit_q_out_hole(
 
 /**
  * MappingFrontier::get_u_frontier_default_unit_map
- * Map from default qubit register qubits to UnitIDs in quantum_boundary
+ * Map from default qubit register qubits to UnitIDs in linear_boundary
  */
-unit_map_t MappingFrontier::get_default_to_quantum_boundary_unit_map() const {
+unit_map_t MappingFrontier::get_default_to_linear_boundary_unit_map() const {
   unsigned i = 0;
   unit_map_t default_to_u_frontier_map;
   for (const std::pair<UnitID, VertPort>& pair :
-       this->quantum_boundary->get<TagKey>()) {
+       this->linear_boundary->get<TagKey>()) {
     default_to_u_frontier_map.insert({Qubit(i), pair.first});
     i++;
   }
   return default_to_u_frontier_map;
 }
 
-void MappingFrontier::set_quantum_boundary(
+void MappingFrontier::set_linear_boundary(
     const unit_vertport_frontier_t& new_boundary) {
-  this->quantum_boundary = std::make_shared<unit_vertport_frontier_t>();
+  this->linear_boundary = std::make_shared<unit_vertport_frontier_t>();
   for (const std::pair<UnitID, VertPort>& pair : new_boundary.get<TagKey>()) {
-    this->quantum_boundary->insert(pair);
+    this->linear_boundary->insert(pair);
   }
 }
 
 /**
  * add_swap
  * Inserts an OpType::SWAP gate into the uid_0 and uid_1 edges held in
- * quantum_boundary This directly modifies circuit_ Updates quantum_boundary to
+ * linear_boundary This directly modifies circuit_ Updates linear_boundary to
  * reflect new edges
  */
 void MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
-  std::cout << "Adding Swap between: " << uid_0.repr() << " " << uid_1.repr() << std::endl;
-  // get iterators to quantum_boundary uids
-  auto uid0_in_it = this->quantum_boundary->find(uid_0);
-  auto uid1_in_it = this->quantum_boundary->find(uid_1);
+  std::cout << "Adding Swap between: " << uid_0.repr() << " " << uid_1.repr()
+            << std::endl;
+  // get iterators to linear_boundary uids
+  auto uid0_in_it = this->linear_boundary->find(uid_0);
+  auto uid1_in_it = this->linear_boundary->find(uid_1);
 
   // Add Qubit if not in MappingFrontier boundary (i.e. not in circuit)
-  if (uid0_in_it == this->quantum_boundary->end()) {
+  if (uid0_in_it == this->linear_boundary->end()) {
     this->add_ancilla(uid_0);
-    uid0_in_it = this->quantum_boundary->find(uid_0);
+    uid0_in_it = this->linear_boundary->find(uid_0);
   }
-  if (uid1_in_it == this->quantum_boundary->end()) {
+  if (uid1_in_it == this->linear_boundary->end()) {
     this->add_ancilla(uid_1);
-    uid1_in_it = this->quantum_boundary->find(uid_1);
+    uid1_in_it = this->linear_boundary->find(uid_1);
   }
 
   // update held ancillas
@@ -444,30 +769,49 @@ void MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
       this->circuit_.get_nth_out_edge(vp0.first, vp0.second),
       this->circuit_.get_nth_out_edge(vp1.first, vp1.second)};
 
-  std::cout << uid_0.repr() << " operation, vertex, port, n_in_edges, n_out_edges" << std::endl;
-  std::cout << this->circuit_.get_OpDesc_from_Vertex(vp0.first).name() << " " << vp0.first << " " << vp0.second <<  " " << this->circuit_.n_in_edges(vp0.first) << " " << this->circuit_.n_out_edges(vp0.first) << std::endl;
-  std::cout << "Successors Vertex: " << this->circuit_.get_OpDesc_from_Vertex(this->circuit_.target(predecessors[0])).name() << std::endl;
+  // std::cout << uid_0.repr()
+  //           << " operation, vertex, port, n_in_edges, n_out_edges" <<
+  //           std::endl;
+  // std::cout << this->circuit_.get_OpDesc_from_Vertex(vp0.first).name() << " "
+  //           << vp0.first << " " << vp0.second << " "
+  //           << this->circuit_.n_in_edges(vp0.first) << " "
+  //           << this->circuit_.n_out_edges(vp0.first) << std::endl;
+  // std::cout << "Successors Vertex: "
+  //           << this->circuit_
+  //                  .get_OpDesc_from_Vertex(
+  //                      this->circuit_.target(predecessors[0]))
+  //                  .name()
+  //           << std::endl;
 
-  std::cout << uid_1.repr() << " operation, vertex, port, n_in_edges, n_out_edges" << std::endl;
-  std::cout << this->circuit_.get_OpDesc_from_Vertex(vp1.first).name() << " " << vp1.first << " " << vp1.second <<  " " << this->circuit_.n_in_edges(vp1.first) << " " << this->circuit_.n_out_edges(vp1.first) << std::endl;
-  std::cout << "Successors Vertex: " << this->circuit_.get_OpDesc_from_Vertex(this->circuit_.target(predecessors[1])).name() << std::endl;
-  
+  // std::cout << uid_1.repr()
+  //           << " operation, vertex, port, n_in_edges, n_out_edges" <<
+  //           std::endl;
+  // std::cout << this->circuit_.get_OpDesc_from_Vertex(vp1.first).name() << " "
+  //           << vp1.first << " " << vp1.second << " "
+  //           << this->circuit_.n_in_edges(vp1.first) << " "
+  //           << this->circuit_.n_out_edges(vp1.first) << std::endl;
+  // std::cout << "Successors Vertex: "
+  //           << this->circuit_
+  //                  .get_OpDesc_from_Vertex(
+  //                      this->circuit_.target(predecessors[1]))
+  //                  .name()
+  //           << std::endl;
+
   // add SWAP vertex to circuit_ and rewire into predecessor
   Vertex swap_v = this->circuit_.add_vertex(OpType::SWAP);
-  std::cout << "\nCircuit pre rewire: \n" << this->circuit_ << std::endl;
+  // std::cout << "\nCircuit pre rewire: \n" << this->circuit_ << std::endl;
   this->circuit_.rewire(
       swap_v, predecessors, {EdgeType::Quantum, EdgeType::Quantum});
 
-
-  std::cout << "\nCircuit post rewire: \n" << this->circuit_ << std::endl;
+  // std::cout << "\nCircuit post rewire: \n" << this->circuit_ << std::endl;
   // Update boundary to reflect new edges
   EdgeVec successors = this->circuit_.get_all_out_edges(swap_v);
   this->circuit_.dag[successors[0]].ports.first = 1;
   this->circuit_.dag[successors[1]].ports.first = 0;
 
-  this->quantum_boundary->replace(
+  this->linear_boundary->replace(
       uid0_in_it, {uid_0, {this->circuit_.source(successors[1]), 0}});
-  this->quantum_boundary->replace(
+  this->linear_boundary->replace(
       uid1_in_it, {uid_1, {this->circuit_.source(successors[0]), 1}});
 
   // update output vertices of quantum boundary of circuit to reflect changing
@@ -496,16 +840,16 @@ void MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
 void MappingFrontier::add_bridge(
     const UnitID& control, const UnitID& central, const UnitID& target) {
   // get predecessors
-  auto control_in_it = this->quantum_boundary->find(control);
-  auto central_in_it = this->quantum_boundary->find(central);
-  auto target_in_it = this->quantum_boundary->find(target);
+  auto control_in_it = this->linear_boundary->find(control);
+  auto central_in_it = this->linear_boundary->find(central);
+  auto target_in_it = this->linear_boundary->find(target);
 
   // by virtue of method, control and target qubit will always be in BRIDGE.
   // However, distances used to check BRIDGE and find PATH may use
   // central qubit that is unallocated, in which add it.
-  if (central_in_it == this->quantum_boundary->end()) {
+  if (central_in_it == this->linear_boundary->end()) {
     this->add_ancilla(central);
-    central_in_it = this->quantum_boundary->find(central);
+    central_in_it = this->linear_boundary->find(central);
   }
 
   VertPort vp_control = control_in_it->second;
@@ -533,7 +877,7 @@ void MappingFrontier::add_bridge(
 void MappingFrontier::add_ancilla(const UnitID& ancilla) {
   Qubit qb(ancilla);
   this->circuit_.add_qubit(qb);
-  this->quantum_boundary->insert({qb, {this->circuit_.get_in(qb), 0}});
+  this->linear_boundary->insert({qb, {this->circuit_.get_in(qb), 0}});
 
   this->bimaps_->initial.insert({qb, qb});
   this->bimaps_->final.insert({qb, qb});
@@ -570,8 +914,8 @@ void MappingFrontier::merge_ancilla(
       {ancilla_v_source, ancilla_source_port},
       {merge_v_target, merge_target_port}, EdgeType::Quantum);
 
-  // instead of manually updating all boundaries, we change which output vertex
-  // the qubit paths to
+  // instead of manually updating all boundaries, we change which output
+  // vertex the qubit paths to
   Edge merge_in_edge = this->circuit_.get_nth_in_edge(merge_v_out, 0);
   port_t merge_source_port = this->circuit_.get_source_port(merge_in_edge);
   Vertex merge_v_source = this->circuit_.source(merge_in_edge);

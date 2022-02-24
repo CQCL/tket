@@ -20,7 +20,7 @@ bool LexiLabellingMethod::check_method(
     const ArchitecturePtr& architecture) const {
   std::shared_ptr<unit_frontier_t> frontier_edges =
       frontier_convert_vertport_to_edge(
-          mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
+          mapping_frontier->circuit_, mapping_frontier->linear_boundary);
   CutFrontier next_cut = mapping_frontier->circuit_.next_q_cut(frontier_edges);
 
   for (const Vertex& vert : *next_cut.slice) {

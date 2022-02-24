@@ -387,9 +387,7 @@ SCENARIO("Test JSON serialisation for MultiGateReorderRoutingMethod") {
 
   GIVEN("RoutingMethod vector") {
     nlohmann::json j_rms = {
-        {{"name", "MultiGateReorderRoutingMethod"},
-         {"depth", 3},
-         {"size", 4}},
+        {{"name", "MultiGateReorderRoutingMethod"}, {"depth", 3}, {"size", 4}},
         {
             {"name", "LexiRouteRoutingMethod"},
             {"depth", 3},
