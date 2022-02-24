@@ -72,6 +72,10 @@ SCENARIO("class NeighbourPlacments") {
         REQUIRE(swaps[1] == std::pair<Node, Node>{Node(5), Node(6)});
       }
     }
+    WHEN("Getting 10 placement dist=3, optimise=true") {
+      auto res = np.get(3, 10);
+      THEN("There are 10 resulting placements") { REQUIRE(res.size() == 10); }
+    }
   }
   GIVEN("the simplest possible instance") {
     Architecture arc(std::vector<std::pair<Node, Node>>{{Node(0), Node(1)}});
