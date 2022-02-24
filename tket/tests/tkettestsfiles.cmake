@@ -20,18 +20,10 @@ set(TEST_SOURCES
     # We should test simpler modules (e.g. Op, Circuit) before
     # the more complicated things that rely on them (e.g. Routing,
     # Transform) to help identify exactly where stuff breaks
-    ${TKET_TESTS_DIR}/tests_main.cpp
-    ${TKET_TESTS_DIR}/testutil.cpp
-    ${TKET_TESTS_DIR}/CircuitsForTesting.cpp
     ${TKET_TESTS_DIR}/Utils/test_CosSinDecomposition.cpp
     ${TKET_TESTS_DIR}/Utils/test_HelperFunctions.cpp
     ${TKET_TESTS_DIR}/Utils/test_MatrixAnalysis.cpp
     ${TKET_TESTS_DIR}/Utils/test_RNG.cpp
-    ${TKET_TESTS_DIR}/Graphs/EdgeSequence.cpp
-    ${TKET_TESTS_DIR}/Graphs/EdgeSequenceColouringParameters.cpp
-    ${TKET_TESTS_DIR}/Graphs/GraphTestingRoutines.cpp
-    ${TKET_TESTS_DIR}/Graphs/RandomGraphGeneration.cpp
-    ${TKET_TESTS_DIR}/Graphs/RandomPlanarGraphs.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphColouring.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindComponents.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindMaxClique.cpp
@@ -42,25 +34,11 @@ set(TEST_SOURCES
     # NOTE: For testing TokenSwapping, it is easier to make use of
     # Architecture to set up test problems, rather than trying
     # to separate TokenSwapping-without-Architecture tests.
-    ${TKET_TESTS_DIR}/TokenSwapping/Data/FixedCompleteSolutions.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/Data/FixedSwapSequences.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/NeighboursFromEdges.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/PermutationTestUtils.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/SwapSequenceReductionTester.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_CanonicalRelabelling.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_ExactMappingLookup.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_FilteredSwapSequences.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_SwapSequenceReductions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_SwapSequenceTable.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/ArchitectureEdgesReimplementation.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/BestTsaTester.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/DebugFunctions.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/DecodedProblemData.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/FullTsaTesting.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/GetRandomSet.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/PartialTsaTesting.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/ProblemGeneration.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/TestStatsStructs.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/test_DebugFunctions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TSAUtils/test_SwapFunctions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_ArchitectureMappingEndToEnd.cpp
@@ -78,9 +56,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Ops/test_ClassicalOps.cpp
     ${TKET_TESTS_DIR}/Ops/test_Expression.cpp
     ${TKET_TESTS_DIR}/Ops/test_Ops.cpp
-    ${TKET_TESTS_DIR}/Gate/GatesData.cpp
     ${TKET_TESTS_DIR}/Gate/test_GateUnitaryMatrix.cpp
-    ${TKET_TESTS_DIR}/Simulation/ComparisonFunctions.cpp
     ${TKET_TESTS_DIR}/Simulation/test_CircuitSimulator.cpp
     ${TKET_TESTS_DIR}/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
     ${TKET_TESTS_DIR}/Circuit/test_Boxes.cpp
