@@ -17,10 +17,10 @@ numpy tensor features, in particular the einsum evaluation and optimisations."""
 from typing import Dict, List, Any
 from math import floor, pi, sqrt
 import numpy as np
-from pytket.zx import ZXDiagram, ZXType, ZXVert, BasicGen, QuantumType, Rewrite  # type: ignore
+from pytket.zx import ZXDiagram, ZXType, ZXVert, PhasedGen, QuantumType, Rewrite  # type: ignore
 
 
-def _spider_to_tensor(gen: BasicGen, rank: int) -> np.ndarray:
+def _spider_to_tensor(gen: PhasedGen, rank: int) -> np.ndarray:
     try:
         if gen.type == ZXType.Hbox:
             param_c = complex(gen.param)

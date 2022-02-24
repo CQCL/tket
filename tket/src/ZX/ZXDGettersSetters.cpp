@@ -213,7 +213,7 @@ void ZXDiagram::set_wire_type(const Wire& w, ZXWireType type) {
 bool ZXDiagram::is_pauli_spider(const ZXVert& v) const {
   ZXGen_ptr op = get_vertex_ZXGen_ptr(v);
   if (!is_spider_type(op->get_type())) return false;
-  const BasicGen& bg = static_cast<const BasicGen&>(*op);
+  const PhasedGen& bg = static_cast<const PhasedGen&>(*op);
   std::optional<unsigned> pi2_mult = equiv_Clifford(bg.get_param());
   return (pi2_mult && ((*pi2_mult % 2) == 0));
 }
@@ -221,7 +221,7 @@ bool ZXDiagram::is_pauli_spider(const ZXVert& v) const {
 bool ZXDiagram::is_proper_clifford_spider(const ZXVert& v) const {
   ZXGen_ptr op = get_vertex_ZXGen_ptr(v);
   if (!is_spider_type(op->get_type())) return false;
-  const BasicGen& bg = static_cast<const BasicGen&>(*op);
+  const PhasedGen& bg = static_cast<const PhasedGen&>(*op);
   std::optional<unsigned> pi2_mult = equiv_Clifford(bg.get_param());
   return (pi2_mult && ((*pi2_mult % 2) == 1));
 }
@@ -249,7 +249,7 @@ static std::string graphviz_vertex_props(ZXGen_ptr op) {
     }
     case ZXType::ZSpider:
     case ZXType::XSpider: {
-      const BasicGen& bg = static_cast<const BasicGen&>(*op);
+      const PhasedGen& bg = static_cast<const PhasedGen&>(*op);
       Expr p = bg.get_param();
       std::string colour = (type == ZXType::ZSpider) ? "green" : "red";
       ss << "fillcolor=\"" << colour << "\" shape=circle label=\"";
@@ -258,12 +258,21 @@ static std::string graphviz_vertex_props(ZXGen_ptr op) {
       break;
     }
     case ZXType::Hbox: {
-      const BasicGen& bg = static_cast<const BasicGen&>(*op);
+      const PhasedGen& bg = static_cast<const PhasedGen&>(*op);
       Expr p = bg.get_param();
       std::optional<Complex> ev = eval_expr_c(p);
       ss << "fillcolor=\"gold\" shape=square label=\"";
       if (!ev || (std::abs(*ev + 1.) >= EPS)) ss << p;
       ss << "\"";
+      break;
+    }
+    case ZXType::XY:
+    case ZXType::XZ:
+    case ZXType::YZ:
+    case ZXType::PX:
+    case ZXType::PY:
+    case ZXType::PZ: {
+      ss << "shape=point label=\"" << op->get_name() << "\"";
       break;
     }
     case ZXType::Triangle: {
