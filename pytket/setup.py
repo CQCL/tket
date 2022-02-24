@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import io
 import os
 import platform
 import re
@@ -22,12 +21,12 @@ import json
 import shutil
 from multiprocessing import cpu_count
 from distutils.version import LooseVersion
+from concurrent.futures import ThreadPoolExecutor as Pool
+from shutil import which
 import setuptools  # type: ignore
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext  # type: ignore
 from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
-from concurrent.futures import ThreadPoolExecutor as Pool
-from shutil import which
 
 
 class CMakeExtension(Extension):
@@ -241,7 +240,8 @@ setup(
     author_email="seyon.sivarajah@cambridgequantum.com",
     python_requires=">=3.8",
     url="https://cqcl.github.io/pytket",
-    description="Python module for interfacing with the CQC tket library of quantum software",
+    description="Python module for interfacing with the CQC tket library of quantum "
+    "software",
     license="Apache 2",
     packages=setuptools.find_packages(),
     install_requires=[
