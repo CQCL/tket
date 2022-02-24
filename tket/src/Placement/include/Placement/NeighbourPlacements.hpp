@@ -53,21 +53,34 @@ class NeighbourPlacements {
   NeighbourPlacements(const Architecture& arc, const qubit_mapping_t& init_map);
 
   /**
-   * @brief Generate `n` placement maps using up to `dist` swaps for each map
+   * @brief Generate `n` placement maps using `dist` swaps for each map
+   *
+   * The sequences of swaps are generated randomly. Note that it cannot be
+   * guaranteed that the generated placement cannot be obtained in less than
+   * `dist` swaps. When optimise=true (default), we attempt to simplify
+   * chains of swaps to make it more likely that `dist` swaps are indeed
+   * necessary for the generated placement maps.
+   *
+   * If optimise=true, it is also possible that placements `dist` swaps away
+   * do not exist. `max_tries` controls the number of attempts to generate
+   * placements before aborting.
    *
    * @param dist The number of swaps allowed on the architecture.
    * @param n The number of placement maps to generate (default n=1).
    * @param optimise Simplify the generated swap sequences (default true).
    * @param seed Seed for random number generator (default seed=5489).
+   * @param max_tries Number of tries before aborting placement map generation
+   *                  (default max_tries=10).
    * @return ResultVec A vector of the generated maps and swaps
    */
   ResultVec get(
-      unsigned dist, unsigned n = 1, bool optimise = true,
-      unsigned seed = 5489);
+      unsigned dist, unsigned n = 1, bool optimise = true, unsigned seed = 5489,
+      unsigned max_tries = 10);
 
  private:
   // generate a single Result
-  Result gen_result(unsigned dist, bool optimise = true);
+  Result gen_result(
+      unsigned dist, bool optimise = true, unsigned max_tries = 10);
   // generate a swap list with `dist` swaps
   SwapList gen_swap_list(unsigned dist);
   // apply swap list to init_map and return new placement map

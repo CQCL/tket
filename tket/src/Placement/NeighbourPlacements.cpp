@@ -30,25 +30,25 @@ NeighbourPlacements::NeighbourPlacements(
 }
 
 NeighbourPlacements::ResultVec NeighbourPlacements::get(
-    unsigned dist, unsigned n, bool optimise, unsigned seed) {
+    unsigned dist, unsigned n, bool optimise, unsigned seed,
+    unsigned max_tries) {
   rng_.set_seed(seed);
   ResultVec res;
   for (unsigned i = 0; i < n; ++i) {
-    res.push_back(gen_result(dist, optimise));
+    res.push_back(gen_result(dist, optimise, max_tries));
   }
   return res;
 }
 
 NeighbourPlacements::Result NeighbourPlacements::gen_result(
-    unsigned dist, bool optimise) {
+    unsigned dist, bool optimise, unsigned max_tries) {
   SwapList swaps;
   tsa_internal::SwapListOptimiser optimiser;
 
   // it might be impossible to find `dist` non-trivial swaps
   unsigned n_unsuccessful = 0;
-  const unsigned N_TRIES = 10;
 
-  while (swaps.size() < dist && n_unsuccessful < N_TRIES) {
+  while (swaps.size() < dist && n_unsuccessful < max_tries) {
     unsigned d = dist - swaps.size();
     SwapList new_swaps = gen_swap_list(d);
 
@@ -71,7 +71,7 @@ NeighbourPlacements::Result NeighbourPlacements::gen_result(
     }
   }
 
-  if (n_unsuccessful == N_TRIES) {
+  if (n_unsuccessful == max_tries) {
     throw NotValid(
         "Unable to generate " + std::to_string(dist) +
         " swaps for given architecture");
