@@ -63,7 +63,11 @@ class NeighbourPlacements {
    *
    * If optimise=true, it is also possible that placements `dist` swaps away
    * do not exist. `max_tries` controls the number of attempts to generate
-   * placements before aborting.
+   * placements.
+   *
+   * If it is impossible (or very hard) to generate `n` distinct placement maps
+   * of distance `dist` swaps away, then this method will raise a warning
+   * and return fewer results and/or results with less than `dist` swaps.
    *
    * @param dist The number of swaps allowed on the architecture.
    * @param n The number of placement maps to generate (default n=1).
@@ -81,8 +85,8 @@ class NeighbourPlacements {
   // generate a single Result
   Result gen_result(
       unsigned dist, bool optimise = true, unsigned max_tries = 10);
-  // generate a swap list with `dist` swaps
-  SwapList gen_swap_list(unsigned dist);
+  // generate a single swap
+  Swap gen_swap();
   // apply swap list to init_map and return new placement map
   Result convert_to_res(const SwapVec& swaps);
 

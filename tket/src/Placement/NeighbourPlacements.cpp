@@ -18,6 +18,7 @@
 #include <string>
 
 #include "TokenSwapping/SwapListOptimiser.hpp"
+#include "Utils/TketLog.hpp"
 
 namespace tket {
 
@@ -67,7 +68,7 @@ NeighbourPlacements::ResultVec NeighbourPlacements::get(
       ++n_unsuccessful;
     }
     if (n_unsuccessful == max_tries) {
-      throw NotValid(
+      tket_log()->warn(
           "Could not generate " + std::to_string(n) + " distinct placements");
     }
   }
@@ -83,14 +84,11 @@ NeighbourPlacements::Result NeighbourPlacements::gen_result(
   unsigned n_unsuccessful = 0;
 
   while (swaps.size() < dist && n_unsuccessful < max_tries) {
-    unsigned d = dist - swaps.size();
-    SwapList new_swaps = gen_swap_list(d);
+    Swap new_swap = gen_swap();
 
     if (optimise) {
       SwapList swaps_candidate = swaps;
-      for (auto swap : new_swaps.to_vector()) {
-        swaps_candidate.push_back(swap);
-      }
+      swaps_candidate.push_back(new_swap);
       optimiser.full_optimise(swaps_candidate);
       if (swaps_candidate.size() > swaps.size()) {
         swaps = std::move(swaps_candidate);
@@ -99,14 +97,12 @@ NeighbourPlacements::Result NeighbourPlacements::gen_result(
         ++n_unsuccessful;
       }
     } else {
-      for (auto swap : new_swaps.to_vector()) {
-        swaps.push_back(swap);
-      }
+      swaps.push_back(new_swap);
     }
   }
 
   if (n_unsuccessful == max_tries) {
-    throw NotValid(
+    tket_log()->warn(
         "Unable to generate " + std::to_string(dist) +
         " swaps for given architecture");
   }
@@ -114,16 +110,12 @@ NeighbourPlacements::Result NeighbourPlacements::gen_result(
   return convert_to_res(swaps.to_vector());
 }
 
-SwapList NeighbourPlacements::gen_swap_list(unsigned dist) {
-  SwapList swaps;
+Swap NeighbourPlacements::gen_swap() {
   auto edges = arc_.get_all_edges_vec();
   unsigned m = edges.size();
-  for (unsigned i = 0; i < dist; ++i) {
-    auto [n1, n2] = edges[rng_.get_size_t(m - 1)];
-    Swap new_swap{u_to_node_.right.at(n1), u_to_node_.right.at(n2)};
-    swaps.push_back(new_swap);
-  }
-  return swaps;
+  auto [n1, n2] = edges[rng_.get_size_t(m - 1)];
+  Swap new_swap{u_to_node_.right.at(n1), u_to_node_.right.at(n2)};
+  return new_swap;
 }
 
 NeighbourPlacements::Result NeighbourPlacements::convert_to_res(

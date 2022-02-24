@@ -91,11 +91,15 @@ SCENARIO("class NeighbourPlacments") {
       }
     }
     WHEN("Getting a placement dist=2, optimise=true") {
-      THEN("Impossible to get a result") { REQUIRE_THROWS(np.get(2, 1, true)); }
+      THEN("Con only find a solution with dist=1") {
+        auto res = np.get(2, 1, true);
+        REQUIRE(res.size() == 1);
+        REQUIRE(res.front().swaps.size() == 1);
+      }
     }
     WHEN("Getting two placements of dist=1") {
-      THEN("Impossible to get a result") {
-        REQUIRE_THROWS(np.get(1, 2, false, 100));
+      THEN("Can only find one result") {
+        REQUIRE(np.get(1, 2, false, 100).size() == 1);
       }
     }
   }
