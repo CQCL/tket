@@ -678,13 +678,16 @@ def test_opgroups() -> None:
 
     # Remove a redundant gate
     c = Circuit(3).H(0)
+    assert len(c.opgroups) == 0
     c.CX(0, 1, opgroup="cx0")
     c.CX(1, 2, opgroup="cx1")
     c.CX(2, 0, opgroup="cx2")
     c.CX(0, 1, opgroup="cx3")
+    assert c.opgroups == {"cx0", "cx1", "cx2", "cx3"}
     c.substitute_named(Circuit(2), "cx3")
     assert c.n_gates == 4
     assert c.n_gates_of_type(OpType.CX) == 3
+    assert c.opgroups == {"cx0", "cx1", "cx2"}
 
 
 def test_phase_polybox() -> None:

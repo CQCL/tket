@@ -34,6 +34,7 @@ Minor new features:
 * Add ``get_c_register``, ``get_q_register``, ``c_registers`` and ``q_registers`` methods to ``Circuit``.
 * New ``pytket.passes.NaivePlacementPass`` which completes a basic relabelling of all Circuit Qubit
   not labelled as some Architecture Node to any available Architecture Node
+* Add ``opgroups`` property to ``Circuit``.
 
 0.19.2 (February 2022)
 ----------------------

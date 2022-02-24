@@ -2580,10 +2580,16 @@ SCENARIO("Named operation groups") {
     Op_ptr x_op = get_op_ptr(OpType::X);
     REQUIRE(c.substitute_named(x_op, "group1"));
 
+    std::unordered_set<std::string> opgroups({"group1", "group2"});
+    REQUIRE(c.get_opgroups() == opgroups);
+
     Circuit c2(2);
     c2.add_op<unsigned>(OpType::T, {0});
     c2.add_op<unsigned>(OpType::CRx, 0.1, {0, 1}, "group2a");
     REQUIRE(c.substitute_named(c2, "group2"));
+
+    std::unordered_set<std::string> opgroups2({"group1", "group2a"});
+    REQUIRE(c.get_opgroups() == opgroups2);
 
     REQUIRE(c.count_gates(OpType::H) == 1);
     REQUIRE(c.count_gates(OpType::S) == 0);
@@ -2618,6 +2624,8 @@ SCENARIO("Named operation groups") {
 
     Circuit c1 = c;
     REQUIRE(c == c1);
+    REQUIRE(c.get_opgroups() == opgroups2);
+    REQUIRE(c1.get_opgroups() == opgroups2);
   }
   GIVEN("Negative tests for operation groups") {
     Circuit c(2);
