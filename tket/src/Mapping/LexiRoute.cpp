@@ -417,7 +417,6 @@ void LexiRoute::solve(unsigned lookahead) {
   }
 
   swap_set_t candidate_swaps = this->get_candidate_swaps();
-  std::cout << candidate_swaps.size() << std::endl;
   this->remove_swaps_decreasing(candidate_swaps);
   TKET_ASSERT(candidate_swaps.size() != 0);
   // Only want to substitute a single swap
