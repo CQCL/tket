@@ -53,7 +53,7 @@ class NeighbourPlacements {
   NeighbourPlacements(const Architecture& arc, const qubit_mapping_t& init_map);
 
   /**
-   * @brief Generate `n` placement maps using `dist` swaps for each map
+   * @brief Generate `n` distinct placement maps using `dist` swaps for each map
    *
    * The sequences of swaps are generated randomly. Note that it cannot be
    * guaranteed that the generated placement cannot be obtained in less than

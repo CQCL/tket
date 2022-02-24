@@ -15,6 +15,7 @@
 #include "NeighbourPlacements.hpp"
 
 #include <cstdlib>
+#include <string>
 
 #include "TokenSwapping/SwapListOptimiser.hpp"
 
@@ -33,11 +34,44 @@ NeighbourPlacements::ResultVec NeighbourPlacements::get(
     unsigned dist, unsigned n, bool optimise, unsigned seed,
     unsigned max_tries) {
   rng_.set_seed(seed);
-  ResultVec res;
-  for (unsigned i = 0; i < n; ++i) {
-    res.push_back(gen_result(dist, optimise, max_tries));
+
+  // define a comparison function for placements
+  std::vector<Qubit> keys;
+  for (auto [k, v] : init_map_) {
+    keys.push_back(k);
   }
-  return res;
+  auto map_compare = [&keys](
+                         const qubit_mapping_t& a, const qubit_mapping_t& b) {
+    for (auto k : keys) {
+      if (a.at(k) < b.at(k)) {
+        return true;
+      } else if (a.at(k) > b.at(k)) {
+        return false;
+      }
+    }
+    return false;
+  };
+  // set of all generated placement maps
+  std::set<qubit_mapping_t, decltype(map_compare)> placements(map_compare);
+
+  ResultVec resvec;
+  for (unsigned i = 0; i < n; ++i) {
+    unsigned n_unsuccessful = 0;
+    while (n_unsuccessful < max_tries) {
+      Result res = gen_result(dist, optimise, max_tries);
+      if (!placements.contains(res.map)) {
+        resvec.push_back(res);
+        placements.insert(res.map);
+        break;
+      }
+      ++n_unsuccessful;
+    }
+    if (n_unsuccessful == max_tries) {
+      throw NotValid(
+          "Could not generate " + std::to_string(n) + " distinct placements");
+    }
+  }
+  return resvec;
 }
 
 NeighbourPlacements::Result NeighbourPlacements::gen_result(

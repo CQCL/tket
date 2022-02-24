@@ -73,7 +73,7 @@ SCENARIO("class NeighbourPlacments") {
       }
     }
   }
-  GIVEN("an impossible instance") {
+  GIVEN("the simplest possible instance") {
     Architecture arc(std::vector<std::pair<Node, Node>>{{Node(0), Node(1)}});
     qubit_mapping_t map({{Qubit(0), Node(0)}, {Qubit(1), Node(1)}});
     NeighbourPlacements np(arc, map);
@@ -88,6 +88,11 @@ SCENARIO("class NeighbourPlacments") {
     }
     WHEN("Getting a placement dist=2, optimise=true") {
       THEN("Impossible to get a result") { REQUIRE_THROWS(np.get(2, 1, true)); }
+    }
+    WHEN("Getting two placements of dist=1") {
+      THEN("Impossible to get a result") {
+        REQUIRE_THROWS(np.get(1, 2, false, 100));
+      }
     }
   }
   GIVEN("an instance with unlucky seed") {
