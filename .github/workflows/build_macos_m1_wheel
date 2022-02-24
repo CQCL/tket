@@ -16,9 +16,8 @@
 
 set -evu
 
-pip install conan delocate wheel
 cd $GITHUB_WORKSPACE/pytket
 export PYVER=`python -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'`
-python -m pip install -U pip setuptools_scm
-python setup.py bdist_wheel -d "$GITHUB_WORKSPACE/tmp/tmpwheel_${PYVER}"
+python -m pip install -U pip build delocate
+python -m build --outdir "$GITHUB_WORKSPACE/tmp/tmpwheel_${PYVER}"
 delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/${PYVER}/" "$GITHUB_WORKSPACE/tmp/tmpwheel_${PYVER}/pytket-"*".whl"
