@@ -590,20 +590,21 @@ bool MappingFrontier::valid_boundary_operation(
     const ArchitecturePtr& architecture, const Op_ptr& op,
     const std::vector<Node>& uids) const {
   // boxes are never allowed
-  if (is_box_type(op->get_type())) {
+  OpType ot = op->get_type();
+  if (is_box_type(ot)) {
     return false;
   }
 
-  if (op->get_type() == OpType::Conditional) {
-    auto ot = static_cast<const Conditional&>(*op).get_op()->get_type();
+  if (ot == OpType::Conditional) {
+    OpType cond_ot = static_cast<const Conditional&>(*op).get_op()->get_type();
     // conditional boxes are never allowed, too
-    if (is_box_type(ot)) {
+    if (is_box_type(cond_ot)) {
       return false;
     }
   }
 
   // Barriers are allways allowed
-  if (op->get_type() == OpType::Barrier) {
+  if (ot == OpType::Barrier) {
     return true;
   }
 
@@ -620,7 +621,7 @@ bool MappingFrontier::valid_boundary_operation(
         architecture->bidirectional_edge_exists(uids[0], uids[1])) {
       return true;
     }
-  } else if (uids.size() == 3 && op->get_type() == OpType::BRIDGE) {
+  } else if (uids.size() == 3 && ot == OpType::BRIDGE) {
     bool con_0_exists =
         architecture->bidirectional_edge_exists(uids[0], uids[1]);
     bool con_1_exists =
