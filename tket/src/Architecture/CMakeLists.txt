@@ -27,11 +27,7 @@ add_library(tket-${COMP}
     NeighboursFromArchitecture.cpp)
 
 list(APPEND DEPS_${COMP}
-    Circuit
-    OpType
-    Ops
     Graphs
-    OpType
     TokenSwapping
     Utils)
 
