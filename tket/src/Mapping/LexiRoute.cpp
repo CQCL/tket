@@ -178,7 +178,7 @@ bool LexiRoute::update_labelling() {
  * Updates this->interacting_uids_ with all "interacting" pairs
  * of UnitID in this->mapping_frontier_
  */
-void LexiRoute::set_interacting_uids(bool assigned_only) {
+bool LexiRoute::set_interacting_uids(bool assigned_only, bool all_labelled) {
   // return types
   this->interacting_uids_.clear();
   for (auto it =
@@ -207,9 +207,15 @@ void LexiRoute::set_interacting_uids(bool assigned_only) {
             // we can assume a qubit will only be in one interaction
             // we can assume from how we iterate through pairs that each qubit
             // will only be found in one match
-            if (!assigned_only ||
-                (this->architecture_->node_exists(Node(it->first)) &&
-                 this->architecture_->node_exists(Node(jt->first)))) {
+            bool node0_exists =
+                this->architeture_->node_exists(Node(it->first));
+            bool node1_exists =
+                this->architeture_->node_exists(Node(jt->first));
+            if (all_labelled && (!node0_exists || !node1_exists)) {
+              return false;
+            }
+
+            if (!assigned_only || (node0_exists && node1_exists)) {
               interacting_uids_.insert({it->first, jt->first});
               interacting_uids_.insert({jt->first, it->first});
             }
@@ -225,6 +231,7 @@ void LexiRoute::set_interacting_uids(bool assigned_only) {
       }
     }
   }
+  return true;
 }
 
 swap_set_t LexiRoute::get_candidate_swaps() {
@@ -400,13 +407,24 @@ void LexiRoute::remove_swaps_decreasing(swap_set_t& swaps) {
   }
 }
 
-void LexiRoute::solve_labelling() {
-  this->update_labelling();
-  this->mapping_frontier_->update_quantum_boundary_uids(this->labelling_);
-  return;
+bool LexiRoute::solve_labelling() {
+  bool all_labelled = this->set_interacting_uids(false, false);
+  if (!all_labelled) {
+    this->update_labelling();
+    this->mapping_frontier_->update_quantum_boundary_uids(this->labelling_);
+    return true;
+  }
+  reutrn false;
 }
 
-void LexiRoute::solve(unsigned lookahead) {
+bool LexiRoute::solve(unsigned lookahead) {
+  // work out if valid
+
+  bool all_labelled = this->set_interacting_uids(false, true);
+  if (!all_labelled) {
+    return false;
+  }
+
   // store a copy of the original this->mapping_frontier_->quantum_boundray
   // this object will be updated and reset throughout the swap picking procedure
   // so need to return it to original setting at end
@@ -501,73 +519,7 @@ void LexiRoute::solve(unsigned lookahead) {
       add_ordered_bridge(chosen_swap.second);
     }
   }
-  return;
-}
-
-LexiRouteRoutingMethod::LexiRouteRoutingMethod(unsigned _max_depth)
-    : max_depth_(_max_depth){};
-
-// bool LexiRouteRoutingMethod::check_method(
-//     const std::shared_ptr<MappingFrontier>& mapping_frontier,
-//     const ArchitecturePtr& architecture) const {
-//   std::shared_ptr<unit_frontier_t> frontier_edges =
-//       frontier_convert_vertport_to_edge(
-//           mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
-//   CutFrontier next_cut = mapping_frontier->circuit_.next_q_cut(frontier_edges);
-//   for (const Vertex& vert : *next_cut.slice) {
-//     Op_ptr op = mapping_frontier->circuit_.get_Op_ptr_from_Vertex(vert);
-//     // can't work wih box ops, or gates with more than 2 qubits that aren't a
-//     // BRIDGE
-
-//     if ((mapping_frontier->circuit_.n_in_edges_of_type(
-//              vert, EdgeType::Quantum) > 2 &&
-//          op->get_type() != OpType::BRIDGE) ||
-//         (op->get_desc().is_box() || (op->get_type() == OpType::Conditional &&
-//                                      static_cast<const Conditional&>(*op)
-//                                          .get_op()
-//                                          ->get_desc()
-//                                          .is_box()))) {
-//       return false;
-//     } else {
-//       // second check that all input UnitID are actually in architecture
-//       for (const Edge& e : mapping_frontier->circuit_.get_in_edges_of_type(
-//                vert, EdgeType::Quantum)) {
-//         for (const std::pair<UnitID, Edge>& pair :
-//              frontier_edges->get<TagKey>()) {
-//           if (pair.second == e) {
-//             if (!architecture->node_exists(Node(pair.first))) {
-//               return false;
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-//   return true;
-// }
-
-std::pair<bool, unit_map_t> LexiRouteRoutingMethod::routing_method(
-    std::shared_ptr<MappingFrontier>& mapping_frontier,
-    const ArchitecturePtr& architecture) const {
-  LexiRoute lr(architecture, mapping_frontier);
-  lr.solve(this->max_depth_);
-  return {true, {}};
-}
-
-unsigned LexiRouteRoutingMethod::get_max_depth() const {
-  return this->max_depth_;
-}
-
-nlohmann::json LexiRouteRoutingMethod::serialize() const {
-  nlohmann::json j;
-  j["depth"] = this->get_max_depth();
-  j["name"] = "LexiRouteRoutingMethod";
-  return j;
-}
-
-LexiRouteRoutingMethod LexiRouteRoutingMethod::deserialize(
-    const nlohmann::json& j) {
-  return LexiRouteRoutingMethod(j.at("depth").get<unsigned>());
+  return true;
 }
 
 }  // namespace tket
