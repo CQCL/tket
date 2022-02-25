@@ -34,12 +34,6 @@ bool Architecture::valid_operation(const std::vector<Node>& uids) const {
     if (this->bidirectional_edge_exists(uids[0], uids[1])) {
       return true;
     }
-  } else if (uids.size() == 3) {
-    bool con_0_exists = this->bidirectional_edge_exists(uids[0], uids[1]);
-    bool con_1_exists = this->bidirectional_edge_exists(uids[2], uids[1]);
-    if (con_0_exists && con_1_exists) {
-      return true;
-    }
   }
   return false;
 }
