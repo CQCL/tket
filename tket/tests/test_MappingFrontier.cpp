@@ -131,6 +131,87 @@ SCENARIO("Test MappingFrontier initialisation, advance_frontier_boundary.") {
     REQUIRE(vp1.first == v2);
     REQUIRE(vp2.first == v3);
   }
+  GIVEN(
+      "A circuit with multi edge bundles of booleans, conditional gates with "
+      "multiple inputs, conditional 2-qubit gates.") {
+    Circuit circ(4, 4);
+
+    Vertex v0 =
+        circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0, 1}, 1);
+    Vertex v1 = circ.add_conditional_gate<unsigned>(OpType::Y, {}, {1}, {1}, 0);
+    Vertex v2 = circ.add_op<unsigned>(OpType::CX, {1, 2});
+    Vertex v3 = circ.add_measure(2, 2);
+    Vertex v4 = circ.add_op<unsigned>(OpType::CX, {3, 2});
+    Vertex v5 = circ.add_measure(3, 3);
+    Vertex v6 =
+        circ.add_conditional_gate<unsigned>(OpType::Z, {}, {3}, {1, 2}, 0);
+
+    std::vector<Node> nodes = {Node(0), Node(1), Node(2), Node(3)};
+    Architecture arc(
+        {{nodes[0], nodes[1]}, {nodes[1], nodes[2]}, {nodes[2], nodes[3]}});
+    ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]},
+        {qubits[1], nodes[1]},
+        {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]}};
+
+    circ.rename_units(rename_map);
+    std::vector<Bit> bits = circ.all_bits();
+    MappingFrontier mf(circ);
+
+    REQUIRE(
+        mf.boolean_boundary->get<TagKey>().find(bits[0]) !=
+        mf.boolean_boundary->get<TagKey>().end());
+    REQUIRE(
+        mf.boolean_boundary->get<TagKey>().find(bits[1]) !=
+        mf.boolean_boundary->get<TagKey>().end());
+    REQUIRE(
+        mf.boolean_boundary->get<TagKey>().find(bits[2]) ==
+        mf.boolean_boundary->get<TagKey>().end());
+    REQUIRE(
+        mf.boolean_boundary->get<TagKey>().find(bits[3]) ==
+        mf.boolean_boundary->get<TagKey>().end());
+
+    mf.advance_frontier_boundary(shared_arc);
+
+    VertPort vp_q_0 = mf.linear_boundary->get<TagKey>().find(nodes[0])->second;
+    VertPort vp_q_1 = mf.linear_boundary->get<TagKey>().find(nodes[1])->second;
+    VertPort vp_q_2 = mf.linear_boundary->get<TagKey>().find(nodes[2])->second;
+    VertPort vp_q_3 = mf.linear_boundary->get<TagKey>().find(nodes[3])->second;
+    // note c[0] and c[1] not linear_boundary as they are immediately boolean
+    VertPort vp_b_2 = mf.linear_boundary->get<TagKey>().find(bits[2])->second;
+    VertPort vp_b_3 = mf.linear_boundary->get<TagKey>().find(bits[3])->second;
+
+    REQUIRE(
+        circ.get_OpType_from_Vertex(circ.target(circ.get_nth_out_edge(
+            vp_q_0.first, vp_q_0.second))) == OpType::Output);
+    REQUIRE(
+        circ.get_OpType_from_Vertex(circ.target(circ.get_nth_out_edge(
+            vp_q_1.first, vp_q_1.second))) == OpType::Output);
+    REQUIRE(
+        circ.get_OpType_from_Vertex(circ.target(circ.get_nth_out_edge(
+            vp_q_2.first, vp_q_2.second))) == OpType::Output);
+    REQUIRE(
+        circ.get_OpType_from_Vertex(circ.target(circ.get_nth_out_edge(
+            vp_q_3.first, vp_q_3.second))) == OpType::Output);
+    REQUIRE(
+        circ.get_OpType_from_Vertex(circ.target(circ.get_nth_out_edge(
+            vp_b_2.first, vp_b_2.second))) == OpType::ClOutput);
+    REQUIRE(
+        circ.get_OpType_from_Vertex(circ.target(circ.get_nth_out_edge(
+            vp_b_3.first, vp_b_3.second))) == OpType::ClOutput);
+
+    // now in boolean boundray as bool used in condition
+    REQUIRE(
+        mf.boolean_boundary->get<TagKey>().find(bits[2]) !=
+        mf.boolean_boundary->get<TagKey>().end());
+    // not in boolean boundary because bool not used in condition
+    REQUIRE(
+        mf.boolean_boundary->get<TagKey>().find(bits[3]) ==
+        mf.boolean_boundary->get<TagKey>().end());
+  }
 }
 
 SCENARIO("Test MappingFrontier get_default_to_linear_boundary_unit_map") {
@@ -738,7 +819,6 @@ SCENARIO("Test MappingFrontier::add_swap, classical wires edge case") {
   circ.add_conditional_gate<UnitID>(OpType::X, {}, {qubits[1]}, {bits[2]}, 1);
   circ.add_op<UnitID>(OpType::CX, {qubits[2], qubits[0]});
   circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[0]});
-  std::cout << circ << std::endl;
 
   Architecture architecture(
       {{nodes[0], nodes[1]}, {nodes[0], nodes[2]}, {nodes[0], nodes[3]}});
@@ -746,12 +826,6 @@ SCENARIO("Test MappingFrontier::add_swap, classical wires edge case") {
   MappingFrontier mf(circ);
   mf.advance_frontier_boundary(shared_arc);
   mf.add_swap(qubits[0], qubits[2]);
-  std::cout << circ << std::endl;
-
-  // ClassicalExpBox cepbox(0,3,0,{});
-  // MEASURE 3
-  // USE CLASSICAL OUTPUT FOR CLASSICAL EXP BOX
-  // USE DIFFERENT BIT IN CLASSCIAL EXP BOX TO CONDITIONAL ON 1
 }
 SCENARIO("Test MappingFrontier::add_bridge") {
   std::vector<Node> nodes = {

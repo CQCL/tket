@@ -44,9 +44,13 @@ bool Architecture::valid_operation(
   } else if (op->get_type() == OpType::Barrier) {
     return true;
   } else if (n_uids == 2) {
-    if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
-        this->bidirectional_edge_exists(uids[0], uids[1])) {
-      return true;
+    bool n0 = this->node_exists(uids[0]);
+    bool n1 = this->node_exists(uids[1]);
+    if (n0 && n1) {
+      bool bde = this->bidirectional_edge_exists(uids[0], uids[1]);
+      if (bde) {
+        return true;
+      }
     }
   } else if (n_uids == 3 && op->get_type() == OpType::BRIDGE) {
     bool con_0_exists = this->bidirectional_edge_exists(uids[0], uids[1]);
