@@ -15,8 +15,8 @@
 #include <catch2/catch.hpp>
 #include <random>
 
+#include "../testutil.hpp"
 #include "Placement/Placement.hpp"
-#include "testutil.hpp"
 
 namespace tket {
 namespace test_Placement {
