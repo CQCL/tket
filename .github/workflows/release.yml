@@ -179,10 +179,9 @@ jobs:
         python-version: '3.8'
     - name: Build wheel (3.8)
       run: |
-        pip install wheel
         cd pytket
-        python -m pip install -U pip setuptools_scm
-        python setup.py bdist_wheel -d "${{ github.workspace }}/wheelhouse/3.8"
+        python -m pip install -U pip build
+        python -m build --outdir "${{ github.workspace }}/wheelhouse/3.8"
     - uses: actions/upload-artifact@v2
       with:
         name: Windows_wheels
@@ -193,10 +192,9 @@ jobs:
         python-version: '3.9'
     - name: Build wheel (3.9)
       run: |
-        pip install wheel
         cd pytket
-        python -m pip install -U pip setuptools_scm
-        python setup.py bdist_wheel -d "${{ github.workspace }}/wheelhouse/3.9"
+        python -m pip install -U pip build
+        python -m build --outdir "${{ github.workspace }}/wheelhouse/3.9"
     - uses: actions/upload-artifact@v2
       with:
         name: Windows_wheels
@@ -207,10 +205,9 @@ jobs:
         python-version: '3.10'
     - name: Build wheel (3.10)
       run: |
-        pip install wheel
         cd pytket
-        python -m pip install -U pip setuptools_scm
-        python setup.py bdist_wheel -d "${{ github.workspace }}/wheelhouse/3.10"
+        python -m pip install -U pip build
+        python -m build --outdir "${{ github.workspace }}/wheelhouse/3.10"
     - uses: actions/upload-artifact@v2
       with:
         name: Windows_wheels

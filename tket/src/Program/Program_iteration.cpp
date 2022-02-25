@@ -18,7 +18,8 @@
 namespace tket {
 
 Program::BlockIterator::BlockIterator()
-    : current_vert_(boost::graph_traits<FlowGraph>::null_vertex()) {}
+    : prog_(nullptr),
+      current_vert_(boost::graph_traits<FlowGraph>::null_vertex()) {}
 
 Program::BlockIterator::BlockIterator(const Program &p) {
   FGVert first = p.get_successors(p.entry_).front();

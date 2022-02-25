@@ -21,6 +21,7 @@ endif()
 add_library(tket-${COMP}
     ZXDConstructors.cpp
     ZXDExpansions.cpp
+    ZXDFormats.cpp
     ZXDGettersSetters.cpp
     ZXDManipulation.cpp
     ZXGenerator.cpp
@@ -28,7 +29,8 @@ add_library(tket-${COMP}
     ZXRWAxioms.cpp
     ZXRWDecompositions.cpp
     ZXRWGraphLikeForm.cpp
-    ZXRWGraphLikeSimplification.cpp)
+    ZXRWGraphLikeSimplification.cpp
+    Flow.cpp)
 
 list(APPEND DEPS_${COMP}
     Utils)

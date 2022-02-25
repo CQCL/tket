@@ -20,9 +20,10 @@ namespace tket {
 
 namespace zx {
 
-// Forward declare Rewrite, ZXDiagramPybind for friend access
+// Forward declare Rewrite, ZXDiagramPybind, Flow for friend access
 class Rewrite;
 class ZXDiagramPybind;
+class Flow;
 
 class ZXDiagram {
  private:
@@ -166,6 +167,14 @@ class ZXDiagram {
   // Whether the diagram contains any symbolic parameters
   bool is_symbolic() const;
 
+  // Whether the diagram is graphlike (ZSpiders and H edges, Basics to
+  // boundaries)
+  bool is_graphlike() const;
+
+  // Whether the diagram is MBQC (MBQC, Inputs, and Outputs, Basic from Input, H
+  // otherwise)
+  bool is_MBQC() const;
+
   /**
    * Produces graphviz string, applying `highlights` to some vertices.
    * Inputs:
@@ -293,6 +302,7 @@ class ZXDiagram {
 
   friend Rewrite;
   friend ZXDiagramPybind;
+  friend Flow;
 
  private:
   /**

@@ -449,8 +449,8 @@ SCENARIO(
   //     circ.add_conditional_gate<unsigned>(OpType::H, {}, {i}, {0, 7}, 1);
   //     circ.add_conditional_gate<unsigned>(
   //         OpType::CX, {}, {i + 2, i + 1}, {1, 2, 3, 5, 9}, 0);
-  //     circ.add_conditional_gate<unsigned>(OpType::S, {}, {i + 1}, {1, 2, 7}, 1);
-  //     circ.add_conditional_gate<unsigned>(
+  //     circ.add_conditional_gate<unsigned>(OpType::S, {}, {i + 1}, {1, 2, 7},
+  //     1); circ.add_conditional_gate<unsigned>(
   //         OpType::CX, {}, {i, i + 1}, {4, 6, 8, 7, 9}, 0);
   //     circ.add_conditional_gate<unsigned>(OpType::X, {}, {i + 2}, {0, 3}, 0);
   //   }
