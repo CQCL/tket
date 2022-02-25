@@ -23,7 +23,6 @@ LexiRoute::LexiRoute(
     const ArchitecturePtr& _architecture,
     std::shared_ptr<MappingFrontier>& _mapping_frontier)
     : architecture_(_architecture), mapping_frontier_(_mapping_frontier) {
-  this->set_interacting_uids();
   // set initial logical->physical labelling
   for (const Qubit& qb : this->mapping_frontier_->circuit_.all_qubits()) {
     this->labelling_.insert({qb, qb});
@@ -178,9 +177,11 @@ bool LexiRoute::update_labelling() {
  * Updates this->interacting_uids_ with all "interacting" pairs
  * of UnitID in this->mapping_frontier_
  */
-bool LexiRoute::set_interacting_uids(bool assigned_only, bool all_labelled) {
+bool LexiRoute::set_interacting_uids(
+    bool assigned_only, bool route_check, bool label_check) {
   // return types
   this->interacting_uids_.clear();
+  bool all_placed = true;
   for (auto it =
            this->mapping_frontier_->quantum_boundary->get<TagKey>().begin();
        it != this->mapping_frontier_->quantum_boundary->get<TagKey>().end();
@@ -189,8 +190,8 @@ bool LexiRoute::set_interacting_uids(bool assigned_only, bool all_labelled) {
         it->second.first, it->second.second);
     Vertex v0 = this->mapping_frontier_->circuit_.target(e0);
     // should never be input vertex, so can always use in_edges
-    if (this->mapping_frontier_->circuit_.get_OpType_from_Vertex(v0) !=
-        OpType::Barrier) {
+    Op_ptr op = this->mapping_frontier_->circuit_.get_Op_ptr_from_Vertex(v0);
+    if (op->get_type() != OpType::Barrier) {
       int n_edges = this->mapping_frontier_->circuit_.n_in_edges_of_type(
           v0, EdgeType::Quantum);
       // make forwards = backwards
@@ -208,11 +209,12 @@ bool LexiRoute::set_interacting_uids(bool assigned_only, bool all_labelled) {
             // we can assume from how we iterate through pairs that each qubit
             // will only be found in one match
             bool node0_exists =
-                this->architeture_->node_exists(Node(it->first));
+                this->architecture_->node_exists(Node(it->first));
             bool node1_exists =
-                this->architeture_->node_exists(Node(jt->first));
-            if (all_labelled && (!node0_exists || !node1_exists)) {
-              return false;
+                this->architecture_->node_exists(Node(jt->first));
+            if (!node0_exists || !node1_exists || op->get_desc().is_box()) {
+              all_placed = false;
+              if (route_check) return false;
             }
 
             if (!assigned_only || (node0_exists && node1_exists)) {
@@ -226,11 +228,32 @@ bool LexiRoute::set_interacting_uids(bool assigned_only, bool all_labelled) {
           n_edges > 2 &&
           this->mapping_frontier_->circuit_.get_OpType_from_Vertex(v0) !=
               OpType::Barrier) {
+        if (label_check) return true;
+        if (route_check) return false;
         throw LexiRouteError(
             "LexiRoute only supports non-Barrier vertices with 1 or 2 edges.");
       }
     }
   }
+
+  // conditions for proceeding with labelling
+  if (label_check) {
+    if (all_placed) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  // this should have left early when first found
+  if (route_check) {
+    if (all_placed) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  // => either route_check true and all_placed so valid
+  // or !route_check and !label_check so return true and discard
   return true;
 }
 
@@ -408,19 +431,19 @@ void LexiRoute::remove_swaps_decreasing(swap_set_t& swaps) {
 }
 
 bool LexiRoute::solve_labelling() {
-  bool all_labelled = this->set_interacting_uids(false, false);
+  bool all_labelled = this->set_interacting_uids(false, false, true);
   if (!all_labelled) {
     this->update_labelling();
     this->mapping_frontier_->update_quantum_boundary_uids(this->labelling_);
     return true;
   }
-  reutrn false;
+  return false;
 }
 
 bool LexiRoute::solve(unsigned lookahead) {
   // work out if valid
 
-  bool all_labelled = this->set_interacting_uids(false, true);
+  bool all_labelled = this->set_interacting_uids(false, true, false);
   if (!all_labelled) {
     return false;
   }

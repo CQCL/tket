@@ -55,16 +55,20 @@ class LexiRoute {
    *
    * @param lookahead Number of slices to lookahead at when determining best
    * SWAP or BRIDGE
+   *
+   * @return True if solve has modified circuit for mapping purposes
    */
-  void solve(unsigned lookahead);
+  bool solve(unsigned lookahead);
 
   /**
    * When called an "unlabelled" Qubit in the Circuit may be relabelled to a
    * Node in the Architecture, or an "unlabelled" Qubit may have its path merged
    * with an ancilla qubit. The decision making is based on the heuristic
    * outlined in arXiv:1902.08091.
+   *
+   * @return True if solve_labelling has modified circuit for mapping purposes
    */
-  void solve_labelling();
+  bool solve_labelling();
 
  private:
   /**
@@ -76,7 +80,9 @@ class LexiRoute {
    * @param assigned_only If true, only include interactions where both UnitID
    * are in this->architecture_.
    */
-  bool set_interacting_uids(bool assigned_only = false, all_labelled = false);
+  bool set_interacting_uids(
+      bool assigned_only = false, bool route_check = false,
+      bool label_check = false);
 
   /**
    * If there is some "free" Node in Architecture at distance "distances" on

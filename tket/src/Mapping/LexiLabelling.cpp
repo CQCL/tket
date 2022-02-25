@@ -15,41 +15,11 @@
 
 namespace tket {
 
-bool LexiLabellingMethod::check_method(
-    const std::shared_ptr<MappingFrontier>& mapping_frontier,
-    const ArchitecturePtr& architecture) const {
-  std::shared_ptr<unit_frontier_t> frontier_edges =
-      frontier_convert_vertport_to_edge(
-          mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
-  CutFrontier next_cut = mapping_frontier->circuit_.next_q_cut(frontier_edges);
-
-  for (const Vertex& vert : *next_cut.slice) {
-    EdgeVec ev = mapping_frontier->circuit_.get_in_edges_of_type(
-        vert, EdgeType::Quantum);
-    // lexilabelling can't support dynamic labelling of >2 qubit gates
-    if (ev.size() > 2) {
-      return false;
-    }
-    for (const Edge& e : ev) {
-      for (const std::pair<UnitID, Edge>& pair :
-           frontier_edges->get<TagKey>()) {
-        if (pair.second == e) {
-          if (!architecture->node_exists(Node(pair.first))) {
-            return true;
-          }
-        }
-      }
-    }
-  }
-  return false;
-}
-
-unit_map_t LexiLabellingMethod::routing_method(
+std::pair<bool, unit_map_t> LexiLabellingMethod::routing_method(
     std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& architecture) const {
   LexiRoute lr(architecture, mapping_frontier);
-  lr.solve_labelling();
-  return {};
+  return {lr.solve_labelling(), {}};
 }
 
 nlohmann::json LexiLabellingMethod::serialize() const {

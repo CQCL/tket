@@ -14,12 +14,11 @@
 
 #include "Mapping/LexiRouteRoutingMethod.hpp"
 
-namespace tket{
+namespace tket {
 
 LexiRouteRoutingMethod::LexiRouteRoutingMethod(unsigned _max_depth)
-: max_depth_(_max_depth){};
+    : max_depth_(_max_depth){};
 
-    
 std::pair<bool, unit_map_t> LexiRouteRoutingMethod::routing_method(
     std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& architecture) const {
@@ -42,45 +41,5 @@ LexiRouteRoutingMethod LexiRouteRoutingMethod::deserialize(
     const nlohmann::json& j) {
   return LexiRouteRoutingMethod(j.at("depth").get<unsigned>());
 }
-    
+
 }  // namespace tket
-
-
-// bool LexiRouteRoutingMethod::check_method(
-//     const std::shared_ptr<MappingFrontier>& mapping_frontier,
-//     const ArchitecturePtr& architecture) const {
-//   std::shared_ptr<unit_frontier_t> frontier_edges =
-//       frontier_convert_vertport_to_edge(
-//           mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
-//   CutFrontier next_cut = mapping_frontier->circuit_.next_q_cut(frontier_edges);
-//   for (const Vertex& vert : *next_cut.slice) {
-//     Op_ptr op = mapping_frontier->circuit_.get_Op_ptr_from_Vertex(vert);
-//     // can't work wih box ops, or gates with more than 2 qubits that aren't a
-//     // BRIDGE
-
-//     if ((mapping_frontier->circuit_.n_in_edges_of_type(
-//              vert, EdgeType::Quantum) > 2 &&
-//          op->get_type() != OpType::BRIDGE) ||
-//         (op->get_desc().is_box() || (op->get_type() == OpType::Conditional &&
-//                                      static_cast<const Conditional&>(*op)
-//                                          .get_op()
-//                                          ->get_desc()
-//                                          .is_box()))) {
-//       return false;
-//     } else {
-//       // second check that all input UnitID are actually in architecture
-//       for (const Edge& e : mapping_frontier->circuit_.get_in_edges_of_type(
-//                vert, EdgeType::Quantum)) {
-//         for (const std::pair<UnitID, Edge>& pair :
-//              frontier_edges->get<TagKey>()) {
-//           if (pair.second == e) {
-//             if (!architecture->node_exists(Node(pair.first))) {
-//               return false;
-//             }
-//           }
-//         }
-//       }
-//     }
-//   }
-//   return true;
-// }

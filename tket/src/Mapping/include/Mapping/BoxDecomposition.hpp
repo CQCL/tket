@@ -19,8 +19,10 @@ class BoxDecomposition {
 
   /**
    * Decompose any boxes in the next slice after the frontier
+   *
+   * @return True if Box is decomposed
    */
-  void solve();
+  bool solve();
 
  private:
   // Architecture all new physical operations must respect
@@ -36,20 +38,13 @@ class BoxDecompositionRoutingMethod : public RoutingMethod {
   BoxDecompositionRoutingMethod();
 
   /**
-   * @return true if method can route subcircuit, false if not
-   */
-  bool check_method(
-      const std::shared_ptr<MappingFrontier>& mapping_frontier,
-      const ArchitecturePtr& /*architecture*/) const override;
-
-  /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
    * modifying
    * @param architecture Architecture providing physical constraints
    * @return Logical to Physical mapping at boundary due to modification.
    *
    */
-  unit_map_t routing_method(
+  std::pair<bool, unit_map_t> routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
       const ArchitecturePtr& architecture) const override;
 

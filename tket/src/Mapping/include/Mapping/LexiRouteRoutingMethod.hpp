@@ -27,14 +27,15 @@ class LexiRouteRoutingMethod : public RoutingMethod {
    *
    * @param _max_depth Number of layers of gates checked inr outed subcircuit.
    */
-  LexiRouteRoutingMethod(unsigned _max_depth = 100){};
-
+  LexiRouteRoutingMethod(unsigned _max_depth = 100);
 
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
    * modifying
    * @param architecture Architecture providing physical constraints
-   * @return Logical to Physical mapping at boundary due to modification.
+   *
+   * @return True if modification made, map between relabelled Qubit, always
+   * empty.
    *
    */
   std::pair<bool, unit_map_t> routing_method(
@@ -53,7 +54,6 @@ class LexiRouteRoutingMethod : public RoutingMethod {
  private:
   unsigned max_depth_;
 };
-
 
 JSON_DECL(LexiRouteRoutingMethod);
 

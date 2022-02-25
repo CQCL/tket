@@ -15,7 +15,8 @@
 #pragma once
 
 #include "Mapping/BoxDecomposition.hpp"
-#include "Mapping/LexiRoute.hpp"
+#include "Mapping/LexiLabelling.hpp"
+#include "Mapping/LexiRouteRoutingMethod.hpp"
 #include "Mapping/MultiGateReorder.hpp"
 #include "Mapping/RoutingMethod.hpp"
 #include "Utils/Json.hpp"

@@ -21,17 +21,6 @@ SCENARIO("Test RoutingMethod default methods.") {
   REQUIRE(rm_return.second == empty);
 }
 
-// These two method are not completely reflective of what is necessary for
-// routing Their design is to minimally test the required features of the
-// methods, not to actually succesfully route a circuit
-bool test_check_method(const Circuit& c, const ArchitecturePtr& a) {
-  if (c.n_qubits() > 2 && a->n_nodes() > 2) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
 std::tuple<bool, Circuit, unit_map_t, unit_map_t>
 test_routing_method_mf_swap_perm(const Circuit& c, const ArchitecturePtr& a) {
   if (c.n_qubits() > 2 && a->n_nodes() > 2) {
