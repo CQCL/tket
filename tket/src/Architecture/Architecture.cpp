@@ -25,30 +25,20 @@
 
 namespace tket {
 
-// basic implementation that works off same prior assumptions
-// TODO: Update this for more mature systems of multi-qubit gates
-bool Architecture::valid_operation(
-    const Op_ptr& op, const std::vector<Node>& uids) const {
-  if (op->get_desc().is_box() ||
-      (op->get_type() == OpType::Conditional &&
-       static_cast<const Conditional&>(*op).get_op()->get_desc().is_box())) {
-    return false;
+bool Architecture::valid_operation(const std::vector<Node>& uids) const {
+  for (Node n : uids) {
+    if (!this->node_exists(Node(n))) return false;
   }
   if (uids.size() == 1) {
-    // with current Architecture can assume all single qubit gates valid
-    return true;
-  } else if (op->get_type() == OpType::Barrier) {
     return true;
   } else if (uids.size() == 2) {
-    if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
-        this->bidirectional_edge_exists(uids[0], uids[1])) {
+    if (this->bidirectional_edge_exists(uids[0], uids[1])) {
       return true;
     }
-  } else if (uids.size() == 3 && op->get_type() == OpType::BRIDGE) {
+  } else if (uids.size() == 3) {
     bool con_0_exists = this->bidirectional_edge_exists(uids[0], uids[1]);
     bool con_1_exists = this->bidirectional_edge_exists(uids[2], uids[1]);
-    if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
-        this->node_exists(uids[2]) && con_0_exists && con_1_exists) {
+    if (con_0_exists && con_1_exists) {
       return true;
     }
   }
