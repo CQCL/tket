@@ -57,7 +57,7 @@ def test_QubitPauliOperator_scalarmult() -> None:
     assert qpo2 == qpo3
     assert qpo2[QubitPauliString(Qubit("q"), Pauli.X)] == x * y
     qpo2 *= x
-    assert qpo2[QubitPauliString(Qubit("q"), Pauli.X)] == x ** 2 * y
+    assert qpo2[QubitPauliString(Qubit("q"), Pauli.X)] == x**2 * y
 
 
 def test_QubitPauliOperator_opmult() -> None:
