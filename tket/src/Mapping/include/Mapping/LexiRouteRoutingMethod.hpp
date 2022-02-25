@@ -19,28 +19,42 @@
 
 namespace tket {
 
-class LexiLabellingMethod : public RoutingMethod {
+class LexiRouteRoutingMethod : public RoutingMethod {
  public:
   /**
-   * Checking and Routing methods redefined for dynamically assigning qubits to
-   * some Architecture.
+   * Checking and Routing methods redefined using LexiRoute. Only circuit depth,
+   * corresponding to lookahead, is a required parameter.
+   *
+   * @param _max_depth Number of layers of gates checked inr outed subcircuit.
    */
-  LexiLabellingMethod(){};
+  LexiRouteRoutingMethod(unsigned _max_depth = 100);
 
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
    * modifying
    * @param architecture Architecture providing physical constraints
-   * @return True if transformation made, Logical to Physical mapping at
-   * boundary due to modification.
+   *
+   * @return True if modification made, map between relabelled Qubit, always
+   * empty.
    *
    */
   std::pair<bool, unit_map_t> routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
       const ArchitecturePtr& architecture) const override;
 
+  /**
+   * @return Max depth used in lookahead
+   */
+  unsigned get_max_depth() const;
+
   nlohmann::json serialize() const override;
 
-  static LexiLabellingMethod deserialize(const nlohmann::json& j);
+  static LexiRouteRoutingMethod deserialize(const nlohmann::json& j);
+
+ private:
+  unsigned max_depth_;
 };
+
+JSON_DECL(LexiRouteRoutingMethod);
+
 }  // namespace tket

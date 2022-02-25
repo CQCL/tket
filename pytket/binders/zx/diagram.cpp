@@ -431,6 +431,31 @@ PYBIND11_MODULE(zx, m) {
           "only have Quantum wires, Quantum wires on Classical spiders act as "
           "two wires. Can have arbitrary degree. No ports.")
       .value(
+          "XY", ZXType::XY,
+          "A (postselected) XY qubit in MBQC. Corresponds to a Z spider with "
+          "negative phase.")
+      .value(
+          "XZ", ZXType::XZ,
+          "A (postselected) XZ qubit in MBQC. Corresponds to a 0.5-phase "
+          "(n+1)-ary Z spider connected to a phaseful 1-ary X spider.")
+      .value(
+          "YZ", ZXType::YZ,
+          "A (postselected) YZ qubit in MBQC. Corresponds to a 0-phase "
+          "(n+1)-ary Z spider connected to a phaseful 1-ary X spider.")
+      .value(
+          "PX", ZXType::PX,
+          "A (postselected) Pauli X qubit in MBQC. Corresponds to a Z spider "
+          "with phase either 0 (param=False) or 1 (param=True).")
+      .value(
+          "PY", ZXType::PY,
+          "A (postselected) Pauli Y qubit in MBQC. Corresponds to a Z spider "
+          "with phase either -0.5 (param=False) or +0.5 (param=True).")
+      .value(
+          "PZ", ZXType::PZ,
+          "A (postselected) Pauli Z qubit in MBQC. Corresponds to a 0-phase "
+          "(n+1)-ary Z spider connected to a 1-ary X spider with phase either "
+          "0 (param=False) or 1 (param=True).")
+      .value(
           "Triangle", ZXType::Triangle,
           "A Triangle operator, [[1, 1], [0, 1]]. Can either be Quantum or "
           "Classical, only admitting wires of the same type. Port 0 for the "
@@ -508,12 +533,18 @@ PYBIND11_MODULE(zx, m) {
           "The :py:class:`QuantumType` of the generator (if applicable).")
       .def("__eq__", &ZXGen::operator==)
       .def("__repr__", [](const ZXGen& gen) { return gen.get_name(); });
-  py::class_<BasicGen, std::shared_ptr<BasicGen>, ZXGen>(
-      m, "BasicGen",
+  py::class_<PhasedGen, std::shared_ptr<PhasedGen>, ZXGen>(
+      m, "PhasedGen",
       "Specialisation of :py:class:`ZXGen` for arbitrary-arity, symmetric "
-      "generators.")
+      "generators with a single continuous parameter.")
       .def_property_readonly(
-          "param", &BasicGen::get_param, "The parameter of the generator.");
+          "param", &PhasedGen::get_param, "The parameter of the generator.");
+  py::class_<CliffordGen, std::shared_ptr<CliffordGen>, ZXGen>(
+      m, "CliffordGen",
+      "Specialisation of :py:class:`ZXGen` for arbitrary-arity, symmetric "
+      "Clifford generators with a single boolean parameter.")
+      .def_property_readonly(
+          "param", &CliffordGen::get_param, "The parameter of the generator.");
   py::class_<DirectedGen, std::shared_ptr<DirectedGen>, ZXGen>(
       m, "DirectedGen",
       "Specialisation of :py:class:`ZXGen` for asymmetric ZX generators which "

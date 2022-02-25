@@ -65,6 +65,13 @@ struct PostConditions {
   PredicatePtrMap specific_postcons_;
   PredicateClassGuarantees generic_postcons_;
   Guarantee default_postcon_;
+  PostConditions(
+      const PredicatePtrMap& specific_postcons = {},
+      const PredicateClassGuarantees& generic_postcons = {},
+      Guarantee default_postcon = Guarantee::Clear)
+      : specific_postcons_(specific_postcons),
+        generic_postcons_(generic_postcons),
+        default_postcon_(default_postcon) {}
 };
 
 /**

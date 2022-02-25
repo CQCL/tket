@@ -212,6 +212,78 @@ void init_circuit(py::module &m) {
           "\n\n:param register: BitRegister ",
           py::arg("register"))
       .def(
+          "get_c_register",
+          [](Circuit &circ, const std::string &name) {
+            register_t reg = circ.get_reg(name);
+            if (reg.size() == 0 ||
+                reg.begin()->second.type() != UnitType::Bit) {
+              throw CircuitInvalidity(
+                  "Cannot find classical register with name \"" + name + "\".");
+            }
+            return BitRegister(name, reg.size());
+          },
+          "Get the classical register with the given name.\n\n:param name: "
+          "name for the register\n:return: the retrieved "
+          ":py:class:`BitRegister`",
+          py::arg("name"))
+      .def_property_readonly(
+          "c_registers",
+          [](Circuit &circ) {
+            bit_vector_t all_bits = circ.all_bits();
+            std::map<std::string, unsigned> bits_map;
+            std::vector<BitRegister> b_regs;
+            for (Bit bit : all_bits) {
+              auto it = bits_map.find(bit.reg_name());
+              if (it == bits_map.end()) {
+                bits_map.insert({bit.reg_name(), 1});
+              } else {
+                it->second++;
+              }
+            }
+            for (auto const &it : bits_map) {
+              b_regs.push_back(BitRegister(it.first, it.second));
+            }
+            return b_regs;
+          },
+          "Get all classical registers.\n\n:return: List of "
+          ":py:class:`BitRegister`")
+      .def(
+          "get_q_register",
+          [](Circuit &circ, const std::string &name) {
+            register_t reg = circ.get_reg(name);
+            if (reg.size() == 0 ||
+                reg.begin()->second.type() != UnitType::Qubit) {
+              throw CircuitInvalidity(
+                  "Cannot find quantum register with name \"" + name + "\".");
+            }
+            return QubitRegister(name, reg.size());
+          },
+          "Get the quantum register with the given name.\n\n:param name: "
+          "name for the register\n:return: the retrieved "
+          ":py:class:`QubitRegister`",
+          py::arg("name"))
+      .def_property_readonly(
+          "q_registers",
+          [](Circuit &circ) {
+            qubit_vector_t all_qbs = circ.all_qubits();
+            std::map<std::string, unsigned> qbs_map;
+            std::vector<QubitRegister> q_regs;
+            for (Qubit qb : all_qbs) {
+              auto it = qbs_map.find(qb.reg_name());
+              if (it == qbs_map.end()) {
+                qbs_map.insert({qb.reg_name(), 1});
+              } else {
+                it->second++;
+              }
+            }
+            for (auto const &it : qbs_map) {
+              q_regs.push_back(QubitRegister(it.first, it.second));
+            }
+            return q_regs;
+          },
+          "Get all quantum registers.\n\n:return: List of "
+          ":py:class:`QubitRegister`")
+      .def(
           "add_qubit", &Circuit::add_qubit,
           "Constructs a single qubit with the given id.\n\n:param id: "
           "Unique id for the qubit\n:param reject_dups: Fail if there "
@@ -247,6 +319,9 @@ void init_circuit(py::module &m) {
           "A qubit will feature in this map if it is "
           "measured and neither it nor the bit containing the "
           "measurement result is subsequently acted on")
+      .def_property_readonly(
+          "opgroups", &Circuit::get_opgroups,
+          "A set of all opgroup names in the circuit")
       .def(
           "flatten_registers", &Circuit::flatten_registers,
           "Combines all qubits into a single register namespace with "

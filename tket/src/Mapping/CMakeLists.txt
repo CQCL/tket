@@ -23,6 +23,7 @@ add_library(tket-${COMP}
     AASLabelling.cpp
     LexicographicalComparison.cpp
     LexiRoute.cpp
+    LexiRouteRoutingMethod.cpp
     LexiLabelling.cpp
     MappingFrontier.cpp
     MappingManager.cpp

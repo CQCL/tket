@@ -278,10 +278,11 @@ SCENARIO("Test MultiGateReorderRoutingMethod") {
         std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     MultiGateReorderRoutingMethod mrrm;
-    REQUIRE(mrrm.check_method(mf, shared_arc));
 
-    unit_map_t init_map = mrrm.routing_method(mf, shared_arc);
-    REQUIRE(init_map.size() == 0);
+    std::pair<bool, unit_map_t> bool_init_map =
+        mrrm.routing_method(mf, shared_arc);
+    REQUIRE(bool_init_map.first);
+    REQUIRE(bool_init_map.second.size() == 0);
     std::vector<Command> commands = circ.get_commands();
     for (unsigned i = 0; i < 5; i++) {
       std::vector<Node> nodes;
@@ -302,10 +303,11 @@ SCENARIO("Test MultiGateReorderRoutingMethod") {
         std::make_shared<MappingFrontier>(circ2);
     mf2->advance_frontier_boundary(shared_arc);
     MultiGateReorderRoutingMethod mrrm2(4, 4);
-    REQUIRE(mrrm2.check_method(mf2, shared_arc));
 
-    unit_map_t init_map2 = mrrm2.routing_method(mf2, shared_arc);
-    REQUIRE(init_map2.size() == 0);
+    std::pair<bool, unit_map_t> bool_init_map2 =
+        mrrm2.routing_method(mf2, shared_arc);
+    REQUIRE(bool_init_map2.first);
+    REQUIRE(bool_init_map2.second.size() == 0);
     std::vector<Command> commands2 = circ2.get_commands();
     for (unsigned i = 0; i < 4; i++) {
       std::vector<Node> nodes;

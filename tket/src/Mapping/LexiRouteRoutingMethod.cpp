@@ -11,26 +11,35 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#include "Mapping/LexiLabelling.hpp"
+
+#include "Mapping/LexiRouteRoutingMethod.hpp"
 
 namespace tket {
 
-std::pair<bool, unit_map_t> LexiLabellingMethod::routing_method(
+LexiRouteRoutingMethod::LexiRouteRoutingMethod(unsigned _max_depth)
+    : max_depth_(_max_depth){};
+
+std::pair<bool, unit_map_t> LexiRouteRoutingMethod::routing_method(
     std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& architecture) const {
   LexiRoute lr(architecture, mapping_frontier);
-  return {lr.solve_labelling(), {}};
+  return {lr.solve(this->max_depth_), {}};
 }
 
-nlohmann::json LexiLabellingMethod::serialize() const {
+unsigned LexiRouteRoutingMethod::get_max_depth() const {
+  return this->max_depth_;
+}
+
+nlohmann::json LexiRouteRoutingMethod::serialize() const {
   nlohmann::json j;
-  j["name"] = "LexiLabellingMethod";
+  j["depth"] = this->get_max_depth();
+  j["name"] = "LexiRouteRoutingMethod";
   return j;
 }
 
-LexiLabellingMethod LexiLabellingMethod::deserialize(
-    const nlohmann::json& /*j*/) {
-  return LexiLabellingMethod();
+LexiRouteRoutingMethod LexiRouteRoutingMethod::deserialize(
+    const nlohmann::json& j) {
+  return LexiRouteRoutingMethod(j.at("depth").get<unsigned>());
 }
 
 }  // namespace tket
