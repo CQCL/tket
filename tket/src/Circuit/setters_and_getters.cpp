@@ -558,6 +558,17 @@ const std::optional<std::string> &Circuit::get_opgroup_from_Vertex(
   return this->dag[vert].opgroup;
 }
 
+const std::unordered_set<std::string> Circuit::get_opgroups() const {
+  std::unordered_set<std::string> opgroups;
+  BGL_FORALL_VERTICES(v, dag, DAG) {
+    std::optional<std::string> v_opgroup = get_opgroup_from_Vertex(v);
+    if (v_opgroup) {
+      opgroups.insert(v_opgroup.value());
+    }
+  }
+  return opgroups;
+}
+
 void Circuit::set_vertex_Op_ptr(const Vertex &vert, const Op_ptr &op) {
   this->dag[vert].op = op;
 }

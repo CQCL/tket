@@ -175,20 +175,14 @@ class LexiRouteRoutingMethod : public RoutingMethod {
   LexiRouteRoutingMethod(unsigned _max_depth = 100);
 
   /**
-   * @return true if method can route subcircuit, false if not
-   */
-  bool check_method(
-      const std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
-      const ArchitecturePtr& /*architecture*/) const override;
-
-  /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
    * modifying
    * @param architecture Architecture providing physical constraints
-   * @return Map between relabelled Qubit, always empty.
+   *
+   * @return true bool, map between relabelled Qubit, always empty.
    *
    */
-  unit_map_t routing_method(
+  std::pair<bool, unit_map_t> routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
       const ArchitecturePtr& architecture) const override;
 

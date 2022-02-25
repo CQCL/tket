@@ -762,10 +762,10 @@ SCENARIO("Test LexiRouteRoutingMethod") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     LexiRouteRoutingMethod lrrm(100);
-    REQUIRE(lrrm.check_method(mf, shared_arc));
-
-    unit_map_t init_map = lrrm.routing_method(mf, shared_arc);
-    REQUIRE(init_map.size() == 0);
+    std::pair<bool, unit_map_t> bool_init_map =
+        lrrm.routing_method(mf, shared_arc);
+    REQUIRE(bool_init_map.first);
+    REQUIRE(bool_init_map.second.size() == 0);
 
     std::vector<Command> commands = mf->circuit_.get_commands();
     REQUIRE(commands.size() == 9);
@@ -804,8 +804,10 @@ SCENARIO("Test LexiRouteRoutingMethod") {
     std::shared_ptr<MappingFrontier> mf =
         std::make_shared<MappingFrontier>(circ);
     LexiRouteRoutingMethod lrrm(100);
-    unit_map_t init_map = lrrm.routing_method(mf, shared_arc);
-    REQUIRE(init_map.size() == 0);
+    std::pair<bool, unit_map_t> bool_init_map =
+        lrrm.routing_method(mf, shared_arc);
+    REQUIRE(bool_init_map.first);
+    REQUIRE(bool_init_map.second.size() == 0);
     std::vector<Command> commands = mf->circuit_.get_commands();
     REQUIRE(commands.size() == 10);
     Command swap_c = commands[0];
@@ -869,8 +871,6 @@ SCENARIO("Test MappingManager with LexiRouteRoutingMethod and LexiLabelling") {
     std::vector<RoutingMethodPtr> vrm = {
         std::make_shared<LexiLabellingMethod>(lrm),
         std::make_shared<LexiRouteRoutingMethod>()};
-
-    REQUIRE(vrm[0]->check_method(mf, shared_arc));
 
     bool res = mm.route_circuit(circ, vrm);
 

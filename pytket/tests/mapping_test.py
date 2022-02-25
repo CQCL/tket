@@ -23,7 +23,7 @@ from typing import Tuple, Dict
 # simple deterministic heuristic used for testing purposes
 def route_subcircuit_func(
     circuit: Circuit, architecture: Architecture
-) -> Tuple[Circuit, Dict[Node, Node], Dict[Node, Node]]:
+) -> Tuple[bool, Circuit, Dict[Node, Node], Dict[Node, Node]]:
     #     make a replacement circuit with identical unitds
     replacement_circuit = Circuit()
     for qb in circuit.qubits:
@@ -60,7 +60,7 @@ def route_subcircuit_func(
     for com in circuit.get_commands():
         rp_qubits = [permutation_map[relabelling_map[q]] for q in com.qubits]
         if len(com.qubits) > 2:
-            raise ValueError("Command must have maximum two qubits")
+            return (False, Circuit(), {}, {})
         if len(com.qubits) == 1:
             replacement_circuit.add_gate(com.op.type, rp_qubits)
         if len(com.qubits) == 2:
@@ -90,15 +90,13 @@ def route_subcircuit_func(
 
             replacement_circuit.add_gate(com.op.type, rp_qubits)
 
-    return (replacement_circuit, relabelling_map, permutation_map)
+    return (True, replacement_circuit, relabelling_map, permutation_map)
 
 
-def check_subcircuit_func_true(circuit: Circuit, architecture: Architecture) -> bool:
-    return True
-
-
-def check_subcircuit_func_false(circuit: Circuit, architecture: Architecture) -> bool:
-    return False
+def route_subcircuit_func_false(
+    circuit: Circuit, architecture: Architecture
+) -> Tuple[bool, Circuit, Dict[Node, Node], Dict[Node, Node]]:
+    return (False, Circuit(), {}, {})
 
 
 def test_LexiRouteRoutingMethod() -> None:
@@ -127,7 +125,7 @@ def test_RoutingMethodCircuit_custom() -> None:
     test_mm = MappingManager(test_a)
     test_mm.route_circuit(
         test_c,
-        [RoutingMethodCircuit(route_subcircuit_func, check_subcircuit_func_true, 5, 5)],
+        [RoutingMethodCircuit(route_subcircuit_func, 5, 5)],
     )
     routed_commands = test_c.get_commands()
 
@@ -153,7 +151,7 @@ def test_RoutingMethodCircuit_custom_list() -> None:
         test_c,
         [
             RoutingMethodCircuit(
-                route_subcircuit_func, check_subcircuit_func_false, 5, 5
+                route_subcircuit_func, 5, 5
             ),
             LexiLabellingMethod(),
             LexiRouteRoutingMethod(),
@@ -175,7 +173,7 @@ def test_RoutingMethodCircuit_custom_list() -> None:
         test_c,
         [
             RoutingMethodCircuit(
-                route_subcircuit_func, check_subcircuit_func_true, 5, 5
+                route_subcircuit_func, 5, 5
             ),
             LexiLabellingMethod(),
             LexiRouteRoutingMethod(),

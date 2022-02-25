@@ -45,24 +45,23 @@ PYBIND11_MODULE(mapping, m) {
       "whole circuits.")
       .def(
           py::init<
-              const std::function<std::tuple<Circuit, unit_map_t, unit_map_t>(
-                  const Circuit&, const ArchitecturePtr&)>&,
-              const std::function<bool(const Circuit&, const ArchitecturePtr&)>,
+              const std::function<
+                  std::tuple<bool, Circuit, unit_map_t, unit_map_t>(
+                      const Circuit&, const ArchitecturePtr&)>&,
               unsigned, unsigned>(),
           "Constructor for a routing method defined by partially routing "
           "subcircuits.\n\n:param route_subcircuit: A function declaration "
           "that given a Circuit and Architecture object, returns a tuple "
-          "containing a new modified circuit, the initial logical to physical "
+          "containing a bool informing MappingManager whether to substitute "
+          "the returned circuit into the circuit being routed, "
+          "a new modified circuit, the initial logical to physical "
           "qubit mapping of the modified circuit and the permutation of "
           "logical to physical qubit mapping given operations in the "
-          "modified circuit\n:param check_subcircuit: A function declaration "
-          "that given a Circuit and Architecture object, returns a bool "
-          "stating whether the given method can modify the "
-          "given circuit\n:param max_size: The maximum number of gates "
+          "modified circuit\n:param max_size: The maximum number of gates "
           "permitted in a subcircuit\n:param max_depth: The maximum permitted "
           "depth of a subcircuit.",
-          py::arg("route_subcircuit"), py::arg("check_subcircuit"),
-          py::arg("max_size"), py::arg("max_depth"));
+          py::arg("route_subcircuit"), py::arg("max_size"),
+          py::arg("max_depth"));
 
   py::class_<
       LexiRouteRoutingMethod, std::shared_ptr<LexiRouteRoutingMethod>,

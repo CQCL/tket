@@ -407,6 +407,20 @@
           "if": {
             "properties": {
               "name": {
+                "const": "NaivePlacementPass"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "architecture"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
                 "const": "RoutingPass"
               }
             }
