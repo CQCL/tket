@@ -49,7 +49,7 @@ class AASRouteRoutingMethod : public RoutingMethod {
    */
   bool check_method(
       const std::shared_ptr<MappingFrontier>& mapping_frontier,
-      const ArchitecturePtr& architecture) const;
+      const ArchitecturePtr& architecture) const override;
 
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
@@ -60,7 +60,7 @@ class AASRouteRoutingMethod : public RoutingMethod {
    */
   unit_map_t routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
-      const ArchitecturePtr& architecture) const;
+      const ArchitecturePtr& architecture) const override;
 
   /**
    * @return cnot synth type of this routing method
