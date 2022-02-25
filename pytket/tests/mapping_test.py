@@ -141,7 +141,7 @@ def test_AASRouteRoutingMethod() -> None:
             LexiRouteRoutingMethod(),
             AASLabellingMethod(),
         ],
-    )    
+    )
 
 
 def test_AASRouteRoutingMethod_2() -> None:
