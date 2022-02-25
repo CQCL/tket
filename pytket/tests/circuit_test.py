@@ -690,7 +690,7 @@ def test_phase_polybox() -> None:
     n_qb = 1
     qubit_indices = {Qubit(0): 1}
     phase_polynomial = {(True,): 0.1, (False,): 0.1}
-    linear_transformation = np.array([[1, 0], [0, 1]])  # TODO, this is wrong
+    linear_transformation = np.array([[1, 0], [0, 1]])
     p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
 
     c.add_phasepolybox(p_box, [0])
