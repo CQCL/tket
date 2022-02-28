@@ -231,7 +231,7 @@ bool LexiRoute::set_interacting_uids(
   }
 
   // conditions for proceeding with labelling
-  if (label_check) {
+  if (label_check == CheckLabellingValidity::Yes) {
     if (all_placed) {
       return true;
     } else {
@@ -239,7 +239,7 @@ bool LexiRoute::set_interacting_uids(
     }
   }
   // this should have left early when first found
-  if (route_check) {
+  if (route_check == CheckRoutingValidity::Yes) {
     if (all_placed) {
       if (interacting_uids_.size() > 0) {
         return true;
