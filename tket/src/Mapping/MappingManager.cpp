@@ -68,9 +68,7 @@ bool MappingManager::route_circuit_with_maps(
   };
 
   bool circuit_modified = !check_finish();
-  unsigned counter = 0;
   while (!check_finish()) {
-    counter++;
     // The order methods are passed in std::vector<RoutingMethod> is
     // the order they are run
     // If a method performs better but only on specific subcircuits,
