@@ -39,7 +39,7 @@ from pytket.passes.auto_rebase import _CX_CIRCS, NoAutoRebase
 from pytket.transform import Transform, CXConfigType, PauliSynthStrat  # type: ignore
 from pytket.qasm import circuit_from_qasm
 from pytket.architecture import Architecture  # type: ignore
-from pytket.mapping import MappingManager, LexiRouteRoutingMethod  # type: ignore
+from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
 from pytket.placement import Placement, GraphPlacement, LinePlacement, NoiseAwarePlacement  # type: ignore
 
 from sympy import Symbol  # type: ignore
@@ -770,7 +770,9 @@ def test_decompose_swap_to_cx() -> None:
     pl = Placement(arc)
     pl.place_with_map(circ, init_map)
 
-    MappingManager(arc).route_circuit(circ, [LexiRouteRoutingMethod()])
+    MappingManager(arc).route_circuit(
+        circ, [LexiLabellingMethod(), LexiRouteRoutingMethod()]
+    )
     assert circ.valid_connectivity(arc, False)
     Transform.DecomposeSWAPtoCX(arc).apply(circ)
     assert len(circ.get_commands()) == 20
@@ -813,8 +815,12 @@ def test_FullMappingPass() -> None:
     cu_1 = CompilationUnit(circ)
     gp_placer = GraphPlacement(arc)
     lp_placer = LinePlacement(arc)
-    m_pass_0 = FullMappingPass(arc, gp_placer, [LexiRouteRoutingMethod()])
-    m_pass_1 = FullMappingPass(arc, lp_placer, [LexiRouteRoutingMethod()])
+    m_pass_0 = FullMappingPass(
+        arc, gp_placer, [LexiLabellingMethod(), LexiRouteRoutingMethod()]
+    )
+    m_pass_1 = FullMappingPass(
+        arc, lp_placer, [LexiLabellingMethod(), LexiRouteRoutingMethod()]
+    )
     m_pass_0.apply(cu_0)
     m_pass_1.apply(cu_1)
     out_circ_0 = cu_0.circuit

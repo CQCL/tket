@@ -20,7 +20,7 @@ namespace tket {
 
 MultiGateReorder::MultiGateReorder(
     const ArchitecturePtr &_architecture,
-    std::shared_ptr<MappingFrontier> &_mapping_frontier)
+    MappingFrontier_ptr &_mapping_frontier)
     : architecture_(_architecture), mapping_frontier_(_mapping_frontier) {
   // This needs to be updated every time the frontier changes
   this->u_frontier_edges_ =
@@ -31,8 +31,7 @@ MultiGateReorder::MultiGateReorder(
 // Traverse the DAG to the quantum frontier
 // to find the UnitID associated with an VertPort
 static UnitID get_unitid_from_vertex_port(
-    const std::shared_ptr<MappingFrontier> &frontier,
-    const VertPort &vert_port) {
+    const MappingFrontier_ptr &frontier, const VertPort &vert_port) {
   VertPort current_vert_port = vert_port;
   while (true) {
     auto it =
@@ -61,14 +60,14 @@ static bool is_multiq_quantum_gate(const Circuit &circ, const Vertex &vert) {
 }
 
 static bool is_physically_permitted(
-    const std::shared_ptr<MappingFrontier> &frontier,
-    const ArchitecturePtr &arc_ptr, const Vertex &vert) {
+    const MappingFrontier_ptr &frontier, const ArchitecturePtr &arc_ptr,
+    const Vertex &vert) {
   std::vector<Node> nodes;
   for (port_t port = 0; port < frontier->circuit_.n_ports(vert); ++port) {
     nodes.push_back(Node(get_unitid_from_vertex_port(frontier, {vert, port})));
   }
-  return arc_ptr->valid_operation(
-      frontier->circuit_.get_OpType_from_Vertex(vert), nodes);
+  return frontier->valid_boundary_operation(
+      arc_ptr, frontier->circuit_.get_Op_ptr_from_Vertex(vert), nodes);
 }
 
 // This method will try to commute a vertex to the quantum frontier
@@ -239,7 +238,7 @@ MultiGateReorderRoutingMethod::MultiGateReorderRoutingMethod(
     : max_depth_(_max_depth), max_size_(_max_size) {}
 
 std::pair<bool, unit_map_t> MultiGateReorderRoutingMethod::routing_method(
-    std::shared_ptr<MappingFrontier> &mapping_frontier,
+    MappingFrontier_ptr &mapping_frontier,
     const ArchitecturePtr &architecture) const {
   MultiGateReorder mr(architecture, mapping_frontier);
   return {mr.solve(this->max_depth_, this->max_size_), {}};

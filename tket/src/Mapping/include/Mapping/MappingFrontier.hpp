@@ -179,6 +179,19 @@ struct MappingFrontier {
    * @param new_boundary Object to reassign with.
    */
   void set_quantum_boundary(const unit_vertport_frontier_t& new_boundary);
+
+  /**
+   * Returns true if the given operation acting on the given nodes
+   * can be executed on the Architecture connectivity graph.
+   * @param architecture given architecture to check the operation on
+   * @param op operation to check
+   * @param uids vector of nodes which is included in the operation
+   */
+  bool valid_boundary_operation(
+      const ArchitecturePtr& architecture, const Op_ptr& op,
+      const std::vector<Node>& uids) const;
 };
+
+typedef std::shared_ptr<MappingFrontier> MappingFrontier_ptr;
 
 }  // namespace tket

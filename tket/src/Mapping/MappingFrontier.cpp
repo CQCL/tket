@@ -220,19 +220,8 @@ void MappingFrontier::advance_frontier_boundary(
     std::shared_ptr<unit_frontier_t> frontier_edges =
         frontier_convert_vertport_to_edge(
             this->circuit_, this->quantum_boundary);
-    // Add all classical edges that share the same target
-    unsigned dummy_bit_index = 0;
-    for (const std::pair<UnitID, Edge>& pair : frontier_edges->get<TagKey>()) {
-      Vertex vert = this->circuit_.target(pair.second);
-      for (const Edge& e :
-           this->circuit_.get_in_edges_of_type(vert, EdgeType::Classical)) {
-        frontier_edges->insert({Bit(dummy_bit_index), e});
-        dummy_bit_index++;
-      }
-    }
 
-    CutFrontier next_cut = this->circuit_.next_cut(
-        frontier_edges, std::make_shared<b_frontier_t>());
+    CutFrontier next_cut = this->circuit_.next_q_cut(frontier_edges);
 
     // For each vertex in a slice, if its physically permitted, update
     // quantum_boundary with quantum out edges from vertex (i.e.
@@ -253,8 +242,9 @@ void MappingFrontier::advance_frontier_boundary(
       for (const UnitID& uid : uids) {
         nodes.push_back(Node(uid));
       }
-      if (architecture->valid_operation(
-              this->circuit_.get_OpType_from_Vertex(vert), nodes)) {
+      if (this->valid_boundary_operation(
+              architecture, this->circuit_.get_Op_ptr_from_Vertex(vert),
+              nodes)) {
         // if no valid operation, boundary not updated and while loop terminates
         boundary_updated = true;
         for (const UnitID& uid : uids) {
@@ -594,6 +584,61 @@ void MappingFrontier::merge_ancilla(
 
   this->bimaps_->initial.right.erase(merge);
   this->bimaps_->final.left.erase(merge);
+}
+
+bool MappingFrontier::valid_boundary_operation(
+    const ArchitecturePtr& architecture, const Op_ptr& op,
+    const std::vector<Node>& uids) const {
+  // boxes are never allowed
+  OpType ot = op->get_type();
+  if (is_box_type(ot)) {
+    return false;
+  }
+
+  if (ot == OpType::Conditional) {
+    Op_ptr cond_op_ptr = static_cast<const Conditional&>(*op).get_op();
+    // conditional boxes are never allowed, too
+    OpType ot = cond_op_ptr->get_type();
+    while (ot == OpType::Conditional) {
+      cond_op_ptr = static_cast<const Conditional&>(*op).get_op();
+      ot = cond_op_ptr->get_type();
+      if (is_box_type(ot)) {
+        return false;
+      }
+    }
+  }
+
+  // Barriers are allways allowed
+  if (ot == OpType::Barrier) {
+    return true;
+  }
+
+  // this currently allows unplaced single qubits gates
+  // this should be changes in the future
+  if (uids.size() == 1) {
+    return true;
+  }
+
+  // allow two qubit gates only for placed and connected nodes
+  if (uids.size() == 2) {
+    if (architecture->node_exists(uids[0]) &&
+        architecture->node_exists(uids[1]) &&
+        architecture->bidirectional_edge_exists(uids[0], uids[1])) {
+      return true;
+    }
+  } else if (uids.size() == 3 && ot == OpType::BRIDGE) {
+    bool con_0_exists =
+        architecture->bidirectional_edge_exists(uids[0], uids[1]);
+    bool con_1_exists =
+        architecture->bidirectional_edge_exists(uids[2], uids[1]);
+    if (architecture->node_exists(uids[0]) &&
+        architecture->node_exists(uids[1]) &&
+        architecture->node_exists(uids[2]) && con_0_exists && con_1_exists) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 }  // namespace tket

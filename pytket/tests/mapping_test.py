@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket.mapping import MappingManager, RoutingMethodCircuit, LexiRouteRoutingMethod  # type: ignore
+from pytket.mapping import MappingManager, RoutingMethodCircuit, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
 from pytket.architecture import Architecture  # type: ignore
 from pytket import Circuit, OpType
 from pytket.circuit import Node, Qubit  # type: ignore
@@ -104,7 +104,7 @@ def test_LexiRouteRoutingMethod() -> None:
     nodes = [Node("test", 0), Node("test", 1), Node("test", 2)]
     test_a = Architecture([[nodes[0], nodes[1]], [nodes[1], nodes[2]]])
     test_mm = MappingManager(test_a)
-    test_mm.route_circuit(test_c, [LexiRouteRoutingMethod()])
+    test_mm.route_circuit(test_c, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
     routed_commands = test_c.get_commands()
 
     assert routed_commands[0].op.type == OpType.CX
@@ -151,11 +151,11 @@ def test_RoutingMethodCircuit_custom_list() -> None:
         test_c,
         [
             RoutingMethodCircuit(route_subcircuit_func_false, 5, 5),
+            LexiLabellingMethod(),
             LexiRouteRoutingMethod(),
         ],
     )
     routed_commands = test_c.get_commands()
-
     assert routed_commands[0].op.type == OpType.CX
     assert routed_commands[0].qubits == [nodes[1], nodes[0]]
     assert routed_commands[1].op.type == OpType.CX
@@ -170,6 +170,7 @@ def test_RoutingMethodCircuit_custom_list() -> None:
         test_c,
         [
             RoutingMethodCircuit(route_subcircuit_func, 5, 5),
+            LexiLabellingMethod(),
             LexiRouteRoutingMethod(),
         ],
     )

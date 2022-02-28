@@ -19,50 +19,42 @@
 
 namespace tket {
 
-class MultiGateReorder {
+class BoxDecomposition {
  public:
   /**
    * Class Constructor
    * @param _architecture Architecture object added operations must respect
    * @param _mapping_frontier Contains Circuit object to be modified
    */
-  MultiGateReorder(
+  BoxDecomposition(
       const ArchitecturePtr& _architecture,
       MappingFrontier_ptr& _mapping_frontier);
 
   /**
-   * Try to commute any multi-qubit gates to the quantum frontier
-   * @param max_depth Maximum number of layers of gates checked for commutation.
-   * @param max_size Maximum number of gates checked for commutation.
+   * Decompose any boxes in the next slice after the frontier
    *
-   * @return true if modification made
+   * @return True if Box is decomposed
    */
-  bool solve(unsigned max_depth, unsigned max_size);
+  bool solve();
 
  private:
   // Architecture all new physical operations must respect
   ArchitecturePtr architecture_;
   MappingFrontier_ptr mapping_frontier_;
-  EdgeVec u_frontier_edges_;
 };
 
-class MultiGateReorderRoutingMethod : public RoutingMethod {
+class BoxDecompositionRoutingMethod : public RoutingMethod {
  public:
   /**
-   * Checking and Routing methods redefined using MultiGateReorder.
-   * @param _max_depth Maximum number of layers of gates checked for
-   * commutation.
-   * @param _max_size Maximum number of gates checked for commutation.
+   * Decompose any boxes on the frontier
    */
-  MultiGateReorderRoutingMethod(
-      unsigned _max_depth = 10, unsigned _max_size = 10);
+  BoxDecompositionRoutingMethod();
 
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
    * modifying
    * @param architecture Architecture providing physical constraints
-   * @return Whether circuit is modified and Logical to Physical mapping at
-   * boundary due to modification (always empty)
+   * @return Logical to Physical mapping at boundary due to modification.
    *
    */
   std::pair<bool, unit_map_t> routing_method(
@@ -71,21 +63,7 @@ class MultiGateReorderRoutingMethod : public RoutingMethod {
 
   nlohmann::json serialize() const override;
 
-  static MultiGateReorderRoutingMethod deserialize(const nlohmann::json& j);
-
-  /**
-   * @return Maximum number of layers of gates checked for commutation.
-   */
-  unsigned get_max_depth() const;
-
-  /**
-   * @return Maximum number of gates checked for commutation.
-   */
-  unsigned get_max_size() const;
-
- private:
-  unsigned max_depth_;
-  unsigned max_size_;
+  static BoxDecompositionRoutingMethod deserialize(const nlohmann::json& /*j*/);
 };
 
 }  // namespace tket

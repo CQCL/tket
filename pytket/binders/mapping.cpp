@@ -13,12 +13,17 @@
 // limitations under the License.
 
 #include <pybind11/functional.h>
+#include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <pybind11/stl_bind.h>
 
+#include "Circuit/Circuit.hpp"
+#include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
 #include "Mapping/RoutingMethodCircuit.hpp"
+#include "binder_utils.hpp"
 
 namespace py = pybind11;
 
@@ -63,13 +68,21 @@ PYBIND11_MODULE(mapping, m) {
       RoutingMethod>(
       m, "LexiRouteRoutingMethod",
       "Defines a RoutingMethod object for mapping circuits that uses the "
-      "Lexicographical Comparison approach outlined in arXiv:1902.08091.")
+      "Lexicographical Comparison approach outlined in arXiv:1902.08091."
+      "Only supports 1-qubit, 2-qubit and barrier gates.")
       .def(
           py::init<unsigned>(),
           "LexiRoute constructor.\n\n:param lookahead: Maximum depth of "
           "lookahead employed when picking SWAP for purpose of logical to "
           "physical mapping.",
           py::arg("lookahead") = 10);
+
+  py::class_<
+      LexiLabellingMethod, std::shared_ptr<LexiLabellingMethod>, RoutingMethod>(
+      m, "LexiLabellingMethod",
+      "Defines a RoutingMethod for labelling Qubits that uses the "
+      "Lexicographical Comparison approach outlined in arXiv:1902.08091.")
+      .def(py::init<>(), "LexiLabellingMethod constructor.");
 
   py::class_<MappingManager>(
       m, "MappingManager",

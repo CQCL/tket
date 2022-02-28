@@ -21,9 +21,12 @@ endif()
 add_library(tket-${COMP}
     LexicographicalComparison.cpp
     LexiRoute.cpp
+    LexiRouteRoutingMethod.cpp
+    LexiLabelling.cpp
     MappingFrontier.cpp
     MappingManager.cpp
     MultiGateReorder.cpp
+    BoxDecomposition.cpp
     RoutingMethodCircuit.cpp
     RoutingMethodJson.cpp
     Verification.cpp)
