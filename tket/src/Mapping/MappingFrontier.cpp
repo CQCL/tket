@@ -90,9 +90,12 @@ MappingFrontier::MappingFrontier(Circuit& _circuit) : circuit_(_circuit) {
     EdgeVec bool_bundle = this->circuit_.get_nth_b_out_bundle(bit_input, 0);
     if (bool_bundle.size() != 0) {
       this->boolean_boundary->insert({bit, bool_bundle});
-    } else {
+    }
+    if (this->circuit_.n_out_edges_of_type(bit_input, EdgeType::Classical) >
+        0) {
       this->linear_boundary->insert({bit, {bit_input, 0}});
     }
+  }
   }
 }
 
