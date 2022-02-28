@@ -32,7 +32,7 @@ std::pair<bool, unit_map_t> AASLabellingMethod::routing_method(
   if (found_unplaced_qubit) {
     std::shared_ptr<unit_frontier_t> next_frontier =
         frontier_convert_vertport_to_edge(
-            mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
+            mapping_frontier->circuit_, mapping_frontier->linear_boundary);
 
     CutFrontier next_cut = mapping_frontier->circuit_.next_cut(
         next_frontier, std::make_shared<b_frontier_t>());
@@ -93,7 +93,7 @@ std::pair<bool, unit_map_t> AASLabellingMethod::routing_method(
       }
     }
 
-    mapping_frontier->update_quantum_boundary_uids(qubit_to_nodes_place);
+    mapping_frontier->update_linear_boundary_uids(qubit_to_nodes_place);
     mapping_frontier->circuit_.rename_units(qubit_to_nodes_place);
 
     return {true, {}};
