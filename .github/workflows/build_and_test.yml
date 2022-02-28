@@ -5,11 +5,9 @@ on:
     branches:
       - main
       - develop
-      - feature/RV3.1  
   push:
     branches:
       - develop
-      - feature/RV3.1
   schedule:
     # 03:00 every Saturday morning
     - cron: '0 3 * * 6'
