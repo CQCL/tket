@@ -12,7 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket.mapping import MappingManager, RoutingMethodCircuit, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
+from pytket.mapping import (  # type: ignore
+    MappingManager,
+    RoutingMethodCircuit,
+    LexiRouteRoutingMethod,
+    LexiLabellingMethod,
+    MultiGateReorderRoutingMethod,
+)
 from pytket.architecture import Architecture  # type: ignore
 from pytket import Circuit, OpType
 from pytket.circuit import Node, Qubit  # type: ignore
@@ -209,8 +215,36 @@ def test_basic_mapping() -> None:
     assert len(circ.get_commands()) == 10
 
 
+def test_MultiGateReorderRoutingMethod() -> None:
+    circ = Circuit(5)
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
+    # Invalid opration
+    circ.CZ(0, 2)
+    # Valid operations that can all be commuted to the front
+    circ.CZ(0, 1)
+    circ.CZ(1, 2)
+    circ.CZ(3, 2)
+    circ.CX(3, 4)
+
+    init_map = dict()
+    init_map[Qubit(0)] = Node(0)
+    init_map[Qubit(1)] = Node(1)
+    init_map[Qubit(2)] = Node(2)
+    init_map[Qubit(3)] = Node(3)
+    init_map[Qubit(4)] = Node(4)
+    pl = Placement(arc)
+    pl.place_with_map(circ, init_map)
+    # LexiRouteRoutingMethod should insert exactly one SWAP to route the final CZ gate
+    MappingManager(arc).route_circuit(
+        circ, [MultiGateReorderRoutingMethod(10, 10), LexiRouteRoutingMethod(50)]
+    )
+    assert circ.valid_connectivity(arc, False)
+    assert len(circ.get_commands()) == 6
+
+
 if __name__ == "__main__":
     test_LexiRouteRoutingMethod()
     test_RoutingMethodCircuit_custom()
     test_RoutingMethodCircuit_custom_list()
     test_basic_mapping()
+    test_MultiGateReorderRoutingMethod()
