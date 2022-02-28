@@ -28,7 +28,7 @@ class MultiGateReorder {
    */
   MultiGateReorder(
       const ArchitecturePtr& _architecture,
-      std::shared_ptr<MappingFrontier>& _mapping_frontier);
+      MappingFrontier_ptr& _mapping_frontier);
 
   /**
    * Try to commute any multi-qubit gates to the quantum frontier
@@ -42,7 +42,7 @@ class MultiGateReorder {
  private:
   // Architecture all new physical operations must respect
   ArchitecturePtr architecture_;
-  std::shared_ptr<MappingFrontier> mapping_frontier_;
+  MappingFrontier_ptr mapping_frontier_;
   EdgeVec u_frontier_edges_;
 };
 
@@ -66,7 +66,7 @@ class MultiGateReorderRoutingMethod : public RoutingMethod {
    *
    */
   std::pair<bool, unit_map_t> routing_method(
-      std::shared_ptr<MappingFrontier>& mapping_frontier,
+      MappingFrontier_ptr& mapping_frontier,
       const ArchitecturePtr& architecture) const override;
 
   nlohmann::json serialize() const override;

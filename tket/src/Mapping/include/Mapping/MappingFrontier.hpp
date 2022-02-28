@@ -192,4 +192,6 @@ struct MappingFrontier {
       const std::vector<Node>& uids) const;
 };
 
+typedef std::shared_ptr<MappingFrontier> MappingFrontier_ptr;
+
 }  // namespace tket

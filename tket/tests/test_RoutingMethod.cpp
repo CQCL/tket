@@ -14,7 +14,7 @@ SCENARIO("Test RoutingMethod default methods.") {
       {{Node("t", 1), Node("t", 0)}, {Node("t", 2), Node("t", 1)}});
   ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);
   Circuit circ(3);
-  std::shared_ptr<MappingFrontier> mf = std::make_shared<MappingFrontier>(circ);
+  MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
   unit_map_t empty;
   std::pair<bool, unit_map_t> rm_return = rm.routing_method(mf, shared_arc);
   REQUIRE(!rm_return.first);
@@ -103,9 +103,8 @@ SCENARIO("Test RoutingMethodCircuit checking criteria") {
   c.add_op<unsigned>(OpType::CX, {0, 1});
   circ3.add_op<unsigned>(OpType::CX, {0, 2});
   circ3.add_op<unsigned>(OpType::CX, {2, 1});
-  std::shared_ptr<MappingFrontier> mf2 = std::make_shared<MappingFrontier>(c);
-  std::shared_ptr<MappingFrontier> mf3 =
-      std::make_shared<MappingFrontier>(circ3);
+  MappingFrontier_ptr mf2 = std::make_shared<MappingFrontier>(c);
+  MappingFrontier_ptr mf3 = std::make_shared<MappingFrontier>(circ3);
 
   Architecture arc(
       {{Node("t", 1), Node("t", 0)}, {Node("t", 2), Node("t", 1)}});
@@ -139,7 +138,7 @@ SCENARIO("Test RoutingMethodCircuit::routing_method") {
     c.add_op<unsigned>(OpType::CX, {0, 1});
     c.add_op<unsigned>(OpType::CX, {0, 1});
 
-    std::shared_ptr<MappingFrontier> mf = std::make_shared<MappingFrontier>(c);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(c);
     Architecture arc(
         {{Node("t", 1), Node("t", 0)}, {Node("t", 2), Node("t", 1)}});
     ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);
@@ -157,7 +156,7 @@ SCENARIO("Test RoutingMethodCircuit::routing_method") {
     c.add_op<unsigned>(OpType::CX, {0, 1});
     c.add_op<unsigned>(OpType::CX, {0, 1});
 
-    std::shared_ptr<MappingFrontier> mf = std::make_shared<MappingFrontier>(c);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(c);
     Architecture arc(
         {{Node("t", 1), Node("t", 0)}, {Node("t", 2), Node("t", 1)}});
     ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);
@@ -175,7 +174,7 @@ SCENARIO("Test RoutingMethodCircuit::routing_method") {
     c.add_op<unsigned>(OpType::CX, {0, 1});
     c.add_op<unsigned>(OpType::CX, {0, 1});
 
-    std::shared_ptr<MappingFrontier> mf = std::make_shared<MappingFrontier>(c);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(c);
     Architecture arc(
         {{Node("t", 1), Node("t", 0)}, {Node("t", 2), Node("t", 1)}});
     ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);

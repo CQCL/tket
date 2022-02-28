@@ -21,7 +21,7 @@ namespace tket {
 
 LexiRoute::LexiRoute(
     const ArchitecturePtr& _architecture,
-    std::shared_ptr<MappingFrontier>& _mapping_frontier)
+    MappingFrontier_ptr& _mapping_frontier)
     : architecture_(_architecture), mapping_frontier_(_mapping_frontier) {
   // set initial logical->physical labelling
   for (const Qubit& qb : this->mapping_frontier_->circuit_.all_qubits()) {
@@ -178,7 +178,8 @@ bool LexiRoute::update_labelling() {
  * of UnitID in this->mapping_frontier_
  */
 bool LexiRoute::set_interacting_uids(
-    bool assigned_only, bool route_check, bool label_check) {
+    AssignedOnly assigned_only, CheckRoutingValidity route_check,
+    CheckLabellingValidity label_check) {
   // return types
   this->interacting_uids_.clear();
   bool all_placed = true;
@@ -214,25 +215,18 @@ bool LexiRoute::set_interacting_uids(
                 this->architecture_->node_exists(Node(jt->first));
             if (!node0_exists || !node1_exists || op->get_desc().is_box()) {
               all_placed = false;
-              if (route_check) return false;
+              if (route_check == CheckRoutingValidity::Yes) return false;
             }
 
-            if (!assigned_only || (node0_exists && node1_exists)) {
+            if (assigned_only == AssignedOnly::No ||
+                (node0_exists && node1_exists)) {
               interacting_uids_.insert({it->first, jt->first});
               interacting_uids_.insert({jt->first, it->first});
             }
           }
           ++jt;
         }
-      } /* else if (
-           n_edges > 2 &&
-           this->mapping_frontier_->circuit_.get_OpType_from_Vertex(v0) !=
-               OpType::Barrier) {
-         if (label_check) return true;
-         if (route_check) return false;
-         throw LexiRouteError(
-             "LexiRoute only supports non-Barrier vertices with 1 or 2 edges.");
-       }*/
+      }
     }
   }
 
@@ -350,7 +344,9 @@ std::pair<bool, bool> LexiRoute::check_bridge(
     this->mapping_frontier_->advance_next_2qb_slice(lookahead);
     // true bool means it only sets interacting uids if both uids are in
     // architecture
-    this->set_interacting_uids(true);
+    this->set_interacting_uids(
+        AssignedOnly::Yes, CheckRoutingValidity::No,
+        CheckLabellingValidity::No);
     // if 0, just take first swap rather than place
     if (this->interacting_uids_.size() == 0) {
       candidate_swaps = {*candidate_swaps.begin()};
@@ -434,7 +430,8 @@ void LexiRoute::remove_swaps_decreasing(swap_set_t& swaps) {
 }
 
 bool LexiRoute::solve_labelling() {
-  bool all_labelled = this->set_interacting_uids(false, false, true);
+  bool all_labelled = this->set_interacting_uids(
+      AssignedOnly::No, CheckRoutingValidity::No, CheckLabellingValidity::Yes);
   if (!all_labelled) {
     this->update_labelling();
     this->mapping_frontier_->update_quantum_boundary_uids(this->labelling_);
@@ -446,7 +443,8 @@ bool LexiRoute::solve_labelling() {
 bool LexiRoute::solve(unsigned lookahead) {
   // work out if valid
 
-  bool all_labelled = this->set_interacting_uids(false, true, false);
+  bool all_labelled = this->set_interacting_uids(
+      AssignedOnly::No, CheckRoutingValidity::Yes, CheckLabellingValidity::No);
   if (!all_labelled) {
     return false;
   }
@@ -484,7 +482,9 @@ bool LexiRoute::solve(unsigned lookahead) {
     this->mapping_frontier_->advance_next_2qb_slice(lookahead);
     // true bool means it only sets interacting uids if both uids are in
     // architecture
-    this->set_interacting_uids(true);
+    this->set_interacting_uids(
+        AssignedOnly::Yes, CheckRoutingValidity::No,
+        CheckLabellingValidity::No);
   }
   // find best swap
   auto it = candidate_swaps.end();
@@ -493,7 +493,8 @@ bool LexiRoute::solve(unsigned lookahead) {
   std::pair<Node, Node> chosen_swap = *it;
   this->mapping_frontier_->set_quantum_boundary(copy);
 
-  this->set_interacting_uids();
+  this->set_interacting_uids(
+      AssignedOnly::No, CheckRoutingValidity::No, CheckLabellingValidity::No);
   std::pair<bool, bool> check = this->check_bridge(chosen_swap, lookahead);
   // set for final time, to allow gates to be correctly inserted, but then leave
   // as is
@@ -505,7 +506,8 @@ bool LexiRoute::solve(unsigned lookahead) {
     this->mapping_frontier_->add_swap(chosen_swap.first, chosen_swap.second);
   } else {
     // only need to reset in bridge case
-    this->set_interacting_uids();
+    this->set_interacting_uids(
+        AssignedOnly::No, CheckRoutingValidity::No, CheckLabellingValidity::No);
 
     auto add_ordered_bridge = [&](const Node& n) {
       auto it0 = this->mapping_frontier_->quantum_boundary->find(n);

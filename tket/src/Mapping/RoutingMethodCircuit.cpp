@@ -26,7 +26,7 @@ RoutingMethodCircuit::RoutingMethodCircuit(
       max_depth_(_max_depth){};
 
 std::pair<bool, unit_map_t> RoutingMethodCircuit::routing_method(
-    std::shared_ptr<MappingFrontier>& mapping_frontier,
+    MappingFrontier_ptr& mapping_frontier,
     const ArchitecturePtr& architecture) const {
   // Produce subcircuit and circuit
   Subcircuit frontier_subcircuit = mapping_frontier->get_frontier_subcircuit(
