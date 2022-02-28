@@ -45,7 +45,6 @@ from pytket.passes import (  # type: ignore
     SynthesiseTket,
     SynthesiseOQC,
     SynthesiseUMD,
-    SquashHQS,
     ThreeQubitSquash,
 )
 from pytket.transform import CXConfigType, PauliSynthStrat  # type: ignore

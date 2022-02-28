@@ -385,9 +385,6 @@ PYBIND11_MODULE(passes, m) {
       "SquashTK1", &SquashTK1,
       "Squash sequences of single-qubit gates to TK1 gates.");
   m.def(
-      "SquashHQS", &SquashHQS,
-      "Squash Rz and PhasedX gate sequences into an optimal form.");
-  m.def(
       "FlattenRegisters", &FlattenRegisters,
       "Merges all quantum and classical registers into their "
       "respective "

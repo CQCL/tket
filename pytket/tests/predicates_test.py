@@ -47,7 +47,6 @@ from pytket.passes import (  # type: ignore
     PeepholeOptimise2Q,
     FullPeepholeOptimise,
     RebaseTket,
-    SquashHQS,
     FlattenRegisters,
     SquashCustom,
     DelayMeasures,
@@ -586,11 +585,6 @@ def test_library_pass_config() -> None:
     assert SynthesiseOQC().to_dict()["StandardPass"]["name"] == "SynthesiseOQC"
     assert SynthesiseUMD().to_dict()["StandardPass"]["name"] == "SynthesiseUMD"
     # Share name with SquashCustom
-    assert SquashHQS().to_dict()["StandardPass"]["name"] == "SquashCustom"
-    assert set(SquashHQS().to_dict()["StandardPass"]["basis_singleqs"]) == {
-        "Rz",
-        "PhasedX",
-    }
     assert FlattenRegisters().to_dict()["StandardPass"]["name"] == "FlattenRegisters"
     assert DelayMeasures().to_dict()["StandardPass"]["name"] == "DelayMeasures"
 
