@@ -79,15 +79,7 @@ basic_pass:
     | pauli_squash
     | pauli_squash_default
     | peephole_optimise_2q
-    | rebase_cirq
-    | rebase_hqs
-    | rebase_oqc
-    | rebase_projectq
-    | rebase_pyzx
-    | rebase_quil
     | rebase_tket
-    | rebase_ufr
-    | rebase_umd
     | remove_barriers
     | remove_discarded
     | remove_redundancies
@@ -129,15 +121,7 @@ pauli_simp_default: "PauliSimp"
 pauli_squash: "PauliSquash" "(" pauli_synth_strat "," cx_config_type ")"
 pauli_squash_default: "PauliSquash"
 peephole_optimise_2q: "PeepholeOptimise2Q"
-rebase_cirq: "RebaseCirq"
-rebase_hqs: "RebaseHQS"
-rebase_oqc: "RebaseOQC"
-rebase_projectq: "RebaseProjectQ"
-rebase_pyzx: "RebasePyZX"
-rebase_quil: "RebaseQuil"
 rebase_tket: "RebaseTket"
-rebase_ufr: "RebaseUFR"
-rebase_umd: "RebaseUMD"
 remove_barriers: "RemoveBarriers"
 remove_discarded: "RemoveDiscarded"
 remove_redundancies: "RemoveRedundancies"
@@ -275,32 +259,8 @@ class PassTransformer(Transformer):
     def peephole_optimise_2q(self, t: List) -> BasePass:
         return PeepholeOptimise2Q()
 
-    def rebase_cirq(self, t: List) -> BasePass:
-        return RebaseCirq()
-
-    def rebase_hqs(self, t: List) -> BasePass:
-        return RebaseHQS()
-
-    def rebase_oqc(self, t: List) -> BasePass:
-        return RebaseOQC()
-
-    def rebase_projectq(self, t: List) -> BasePass:
-        return RebaseProjectQ()
-
-    def rebase_pyzx(self, t: List) -> BasePass:
-        return RebasePyZX()
-
-    def rebase_quil(self, t: List) -> BasePass:
-        return RebaseQuil()
-
     def rebase_tket(self, t: List) -> BasePass:
         return RebaseTket()
-
-    def rebase_ufr(self, t: List) -> BasePass:
-        return RebaseUFR()
-
-    def rebase_umd(self, t: List) -> BasePass:
-        return RebaseUMD()
 
     def remove_barriers(self, t: List) -> BasePass:
         return RemoveBarriers()
