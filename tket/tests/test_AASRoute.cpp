@@ -39,7 +39,8 @@ SCENARIO("Test aas route in RV3") {
        {nodes[9], nodes[10]}});
   ArchitecturePtr shared_arc = std::make_shared<Architecture>(architecture);
 
-  GIVEN("AASRoute - test AASRouteRoutingMethod check_method placed and gates") {
+  GIVEN(
+      "AASRoute - test AASRouteRoutingMethod routing_method placed and gates") {
     Circuit circ(11);
     std::vector<Qubit> qubits = circ.all_qubits();
 
@@ -68,9 +69,9 @@ SCENARIO("Test aas route in RV3") {
     AASRouteRoutingMethod aasrm(1, aas::CNotSynthType::Rec);
 
     // this will fail because the cx ae in fron of the ppb
-    REQUIRE(!aasrm.check_method(mf, shared_arc));
+    REQUIRE(!aasrm.routing_method(mf, shared_arc).first);
   }
-  GIVEN("AASRoute - test AASRouteRoutingMethod check_method placed") {
+  GIVEN("AASRoute - test AASRouteRoutingMethod routing_method placed") {
     Circuit circ(11);
     std::vector<Qubit> qubits = circ.all_qubits();
 
@@ -98,9 +99,9 @@ SCENARIO("Test aas route in RV3") {
 
     AASRouteRoutingMethod aasrm(1, aas::CNotSynthType::Rec);
 
-    REQUIRE(aasrm.check_method(mf, shared_arc));
+    REQUIRE(aasrm.routing_method(mf, shared_arc).first);
   }
-  GIVEN("AASRoute - test AASRouteRoutingMethod check_method unplaced") {
+  GIVEN("AASRoute - test AASRouteRoutingMethod routing_method unplaced") {
     Circuit circ(11);
     std::vector<Qubit> qubits = circ.all_qubits();
 
@@ -127,7 +128,7 @@ SCENARIO("Test aas route in RV3") {
     AASRouteRoutingMethod aasrm(1, aas::CNotSynthType::Rec);
 
     // this will fail because of the unplaced qubits
-    REQUIRE(!aasrm.check_method(mf, shared_arc));
+    REQUIRE(!aasrm.routing_method(mf, shared_arc).first);
   }
   GIVEN("AASRouteRoutingMethod - test routing_method I") {
     std::vector<Node> nodes_mixed = {
@@ -197,8 +198,8 @@ SCENARIO("Test aas route in RV3") {
 
     AASRouteRoutingMethod aasrm(1, aas::CNotSynthType::Rec);
 
-    REQUIRE(aasrm.check_method(mf, shared_arc_mixed));
-    aasrm.routing_method(mf, shared_arc_mixed);
+    REQUIRE(aasrm.routing_method(mf, shared_arc_mixed).first);
+    // aasrm.routing_method(mf, shared_arc_mixed);
 
     REQUIRE(test_unitary_comparison(mf->circuit_, circ_copy));
 
@@ -279,8 +280,8 @@ SCENARIO("Test aas route in RV3") {
 
     AASRouteRoutingMethod aasrm(1, aas::CNotSynthType::Rec);
 
-    REQUIRE(aasrm.check_method(mf, shared_arc_mixed));
-    aasrm.routing_method(mf, shared_arc_mixed);
+    REQUIRE(aasrm.routing_method(mf, shared_arc_mixed).first);
+    // aasrm.routing_method(mf, shared_arc_mixed);
 
     REQUIRE(test_unitary_comparison(mf->circuit_, circ_copy));
 
@@ -320,9 +321,9 @@ SCENARIO("Test aas route in RV3") {
 
     AASRouteRoutingMethod aasrm(1, aas::CNotSynthType::Rec);
 
-    REQUIRE(aasrm.check_method(mf, shared_arc));
+    REQUIRE(aasrm.routing_method(mf, shared_arc).first);
 
-    aasrm.routing_method(mf, shared_arc);
+    // aasrm.routing_method(mf, shared_arc);
 
     REQUIRE(test_unitary_comparison(mf->circuit_, circ_copy));
 
@@ -651,9 +652,9 @@ SCENARIO("Test aas route in RV3") {
     REQUIRE(circ.count_gates(OpType::SWAP) == 3);
   }
   GIVEN("AASRouteRoutingMethod  and LexiRouteRoutingMethod VIII") {
-    // std::cout << "#####################################\n";
-    // std::cout << "####### START TESTCASE ##############\n";
-    // std::cout << "#####################################\n";
+    std::cout << "#####################################\n";
+    std::cout << "####### START TESTCASE ##############\n";
+    std::cout << "#####################################\n";
 
     Circuit circ(11);
     std::vector<Qubit> qubits = circ.all_qubits();
@@ -697,13 +698,13 @@ SCENARIO("Test aas route in RV3") {
 
     circ.rename_units(rename_map);
 
-    /*
+    //*
     // for debug
     std::cout << "give initial circuit:\n";
 
     for (auto g : circ) {
       std::cout << g << std::endl;
-    }*/
+    }  //*/
 
     Circuit circ_copy(circ);
 
@@ -717,7 +718,7 @@ SCENARIO("Test aas route in RV3") {
     };
 
     // this will fail, because of things
-    /*mm.route_circuit(circ, vrm);
+    mm.route_circuit(circ, vrm);
 
     PredicatePtr routed_correctly =
         std::make_shared<ConnectivityPredicate>(architecture);

@@ -31,9 +31,9 @@ class AASLabellingMethod : public RoutingMethod {
    * @return true if qubits of a phase poly box in the given circuit are
    * unplaced
    */
-  bool check_method(
+  /*bool check_method(
       const std::shared_ptr<MappingFrontier>& mapping_frontier,
-      const ArchitecturePtr& architecture) const override;
+      const ArchitecturePtr& architecture) const;*/
 
   /**
    * will place all the qubits of the given circuit that are not placed at the
@@ -44,7 +44,7 @@ class AASLabellingMethod : public RoutingMethod {
    * @return Logical to Physical mapping at boundary due to modification.
    *
    */
-  unit_map_t routing_method(
+  std::pair<bool, unit_map_t> routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
       const ArchitecturePtr& architecture) const override;
 

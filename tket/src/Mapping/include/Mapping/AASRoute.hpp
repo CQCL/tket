@@ -47,9 +47,9 @@ class AASRouteRoutingMethod : public RoutingMethod {
    * be checked for routing
    * @param architecture architecture that is used for the routing check
    */
-  bool check_method(
+  /*bool check_method(
       const std::shared_ptr<MappingFrontier>& mapping_frontier,
-      const ArchitecturePtr& architecture) const override;
+      const ArchitecturePtr& architecture) const;*/
 
   /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
@@ -58,7 +58,7 @@ class AASRouteRoutingMethod : public RoutingMethod {
    * @return Logical to Physical mapping at boundary due to modification.
    *
    */
-  unit_map_t routing_method(
+  std::pair<bool, unit_map_t> routing_method(
       std::shared_ptr<MappingFrontier>& mapping_frontier,
       const ArchitecturePtr& architecture) const override;
 

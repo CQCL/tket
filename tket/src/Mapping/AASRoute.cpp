@@ -20,7 +20,7 @@ AASRouteRoutingMethod::AASRouteRoutingMethod(
     unsigned _aaslookahead, aas::CNotSynthType _cnotsynthtype)
     : cnotsynthtype_(_cnotsynthtype), aaslookahead_(_aaslookahead) {}
 
-bool AASRouteRoutingMethod::check_method(
+/*bool AASRouteRoutingMethod::check_method(
     const std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& architecture) const {
   std::shared_ptr<unit_frontier_t> next_frontier =
@@ -55,9 +55,9 @@ bool AASRouteRoutingMethod::check_method(
     }
   }
   return false;
-}
+}*/
 
-unit_map_t AASRouteRoutingMethod::routing_method(
+std::pair<bool, unit_map_t> AASRouteRoutingMethod::routing_method(
     std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& architecture) const {
   std::shared_ptr<unit_frontier_t> next_frontier =
@@ -154,11 +154,12 @@ unit_map_t AASRouteRoutingMethod::routing_method(
         // substitute the ppb vertex in the initial circuit with the routed
         // result
         mapping_frontier->circuit_.substitute(result, v);
+        return {true, {}};
       }
     }
   }
-
-  return {};
+  std::cout << "aas routing check failed\n";
+  return {false, {}};
 }
 
 aas::CNotSynthType AASRouteRoutingMethod::get_cnotsynthtype() const {

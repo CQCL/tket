@@ -16,17 +16,17 @@
 
 namespace tket {
 
-bool AASLabellingMethod::check_method(
+/*bool AASLabellingMethod::check_method(
     const std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& architecture) const {
-  bool found_unplaced = false;
+  bool found_unplaced_qubit = false;
   for (Qubit q : mapping_frontier->circuit_.all_qubits()) {
     if (!architecture->node_exists(Node(q))) {
-      found_unplaced = true;
+      found_unplaced_qubit = true;
       break;
     }
   }
-  if (found_unplaced) {
+  if (found_unplaced_qubit) {
     std::shared_ptr<unit_frontier_t> next_frontier =
         frontier_convert_vertport_to_edge(
             mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
@@ -56,46 +56,91 @@ bool AASLabellingMethod::check_method(
     }
   }
   return false;
-}
+}*/
 
-unit_map_t AASLabellingMethod::routing_method(
+std::pair<bool, unit_map_t> AASLabellingMethod::routing_method(
     std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& architecture) const {
-  qubit_vector_t q_vec = mapping_frontier->circuit_.all_qubits();
-  unit_map_t qubit_to_nodes_place;
-  node_set_t node_set_placed;
+  bool found_unplaced_qubit = false;
+  bool found_unplaced_ppb = false;
 
-  for (Qubit q : q_vec) {
-    if (architecture->node_exists(Node(q))) {
-      qubit_to_nodes_place.insert({q, Node(q)});
-      node_set_placed.insert(Node(q));
-    }
-  }
-
-  node_vector_t nodes_vec = architecture->get_all_nodes_vec();
-
-  // place all unplaced qubits
-
-  for (Qubit q : q_vec) {
+  // search for unplaced qubitto speed up the runtime
+  for (Qubit q : mapping_frontier->circuit_.all_qubits()) {
     if (!architecture->node_exists(Node(q))) {
-      // found unplaced qubit
-      // other checks could be added here to avoid placing unused qubits or
-      // qubits that are not in an ppb
+      found_unplaced_qubit = true;
+      break;
+    }
+  }
+  if (found_unplaced_qubit) {
+    std::shared_ptr<unit_frontier_t> next_frontier =
+        frontier_convert_vertport_to_edge(
+            mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
 
-      unsigned index_to_use = 0;
-      while (node_set_placed.find(nodes_vec[index_to_use]) !=
-             node_set_placed.end()) {
-        ++index_to_use;
+    CutFrontier next_cut = mapping_frontier->circuit_.next_cut(
+        next_frontier, std::make_shared<b_frontier_t>());
+
+    for (const Vertex& v : *next_cut.slice) {
+      if (mapping_frontier->circuit_.get_OpType_from_Vertex(v) ==
+          OpType::PhasePolyBox) {
+        TKET_ASSERT(mapping_frontier->circuit_.is_quantum_node(v));
+        Op_ptr op_ptr_ppb =
+            mapping_frontier->circuit_.get_Op_ptr_from_Vertex(v);
+
+        for (const Edge& e : mapping_frontier->circuit_.get_in_edges_of_type(
+                 v, EdgeType::Quantum)) {
+          for (const std::pair<UnitID, Edge>& pair :
+               next_frontier->get<TagKey>()) {
+            if (pair.second == e) {
+              if (!architecture->node_exists(Node(pair.first))) {
+                found_unplaced_ppb = true;
+              }
+            }
+          }
+        }
       }
-      qubit_to_nodes_place.insert({q, nodes_vec[index_to_use]});
-      node_set_placed.insert(nodes_vec[index_to_use]);
     }
   }
 
-  mapping_frontier->update_quantum_boundary_uids(qubit_to_nodes_place);
-  mapping_frontier->circuit_.rename_units(qubit_to_nodes_place);
+  if (!found_unplaced_ppb) {
+    std::cout << "aas labelling chekc failed\n";
+    return {false, {}};
+  } else {
+    qubit_vector_t q_vec = mapping_frontier->circuit_.all_qubits();
+    unit_map_t qubit_to_nodes_place;
+    node_set_t node_set_placed;
 
-  return {};
+    for (Qubit q : q_vec) {
+      if (architecture->node_exists(Node(q))) {
+        qubit_to_nodes_place.insert({q, Node(q)});
+        node_set_placed.insert(Node(q));
+      }
+    }
+
+    node_vector_t nodes_vec = architecture->get_all_nodes_vec();
+
+    // place all unplaced qubits
+
+    for (Qubit q : q_vec) {
+      if (!architecture->node_exists(Node(q))) {
+        // found unplaced qubit
+        // other checks could be added here to avoid placing unused qubits or
+        // qubits that are not in an ppb
+
+        unsigned index_to_use = 0;
+        while (node_set_placed.find(nodes_vec[index_to_use]) !=
+               node_set_placed.end()) {
+          ++index_to_use;
+        }
+        qubit_to_nodes_place.insert({q, nodes_vec[index_to_use]});
+        node_set_placed.insert(nodes_vec[index_to_use]);
+      }
+    }
+
+    mapping_frontier->update_quantum_boundary_uids(qubit_to_nodes_place);
+    mapping_frontier->circuit_.rename_units(qubit_to_nodes_place);
+
+    return {true, {}};
+  }
 }
 
 nlohmann::json AASLabellingMethod::serialize() const {
