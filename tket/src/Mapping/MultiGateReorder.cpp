@@ -67,8 +67,8 @@ static bool is_physically_permitted(
   for (port_t port = 0; port < frontier->circuit_.n_ports(vert); ++port) {
     nodes.push_back(Node(get_unitid_from_vertex_port(frontier, {vert, port})));
   }
-  return arc_ptr->valid_operation(
-      frontier->circuit_.get_Op_ptr_from_Vertex(vert), nodes);
+  return frontier->valid_boundary_operation(
+      arc_ptr, frontier->circuit_.get_Op_ptr_from_Vertex(vert), nodes);
 }
 
 // This method will try to commute a vertex to the quantum frontier
@@ -185,7 +185,7 @@ static void partial_rewire(
   }
 }
 
-void MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
+bool MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
   // Assume the frontier has been advanced
 
   // store a copy of the original this->mapping_frontier_->quantum_boundray
@@ -199,6 +199,9 @@ void MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
   // Get a subcircuit only for iterating vertices
   Subcircuit circ =
       this->mapping_frontier_->get_frontier_subcircuit(max_depth, max_size);
+
+  // for return value
+  bool modification_made = false;
   // since we assume that the frontier has been advanced
   // we are certain that any multi-q vert lies after the frontier
   for (const Vertex &vert : circ.verts) {
@@ -213,6 +216,7 @@ void MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
               this->mapping_frontier_->circuit_, this->u_frontier_edges_, vert);
 
       if (commute_pairs != std::nullopt) {
+        modification_made = true;
         partial_rewire(
             vert, this->mapping_frontier_->circuit_, (*commute_pairs).first,
             (*commute_pairs).second);
@@ -227,44 +231,18 @@ void MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
   }
   // Return the quantum boundary to its original setting
   this->mapping_frontier_->set_linear_boundary(copy);
+  return modification_made;
 }
 
 MultiGateReorderRoutingMethod::MultiGateReorderRoutingMethod(
     unsigned _max_depth, unsigned _max_size)
     : max_depth_(_max_depth), max_size_(_max_size) {}
 
-bool MultiGateReorderRoutingMethod::check_method(
-    const std::shared_ptr<MappingFrontier> &mapping_frontier,
-    const ArchitecturePtr &architecture) const {
-  const EdgeVec u_frontier_edges =
-      convert_u_frontier_to_edges(*frontier_convert_vertport_to_edge(
-          mapping_frontier->circuit_, mapping_frontier->linear_boundary));
-
-  Subcircuit circ = mapping_frontier->get_frontier_subcircuit(
-      this->max_depth_, this->max_size_);
-  // since we assume that the frontier has been advanced
-  // we are certain that any multi-q vert lies after the frontier
-  for (const Vertex &vert : circ.verts) {
-    if (is_multiq_quantum_gate(mapping_frontier->circuit_, vert) &&
-        is_physically_permitted(mapping_frontier, architecture, vert)) {
-      std::optional<std::pair<EdgeVec, EdgeVec>> commute_pairs =
-          try_find_commute_edges(
-              mapping_frontier->circuit_, u_frontier_edges, vert);
-
-      if (commute_pairs != std::nullopt) {
-        return true;
-      }
-    }
-  }
-  return false;
-}
-
-unit_map_t MultiGateReorderRoutingMethod::routing_method(
+std::pair<bool, unit_map_t> MultiGateReorderRoutingMethod::routing_method(
     std::shared_ptr<MappingFrontier> &mapping_frontier,
     const ArchitecturePtr &architecture) const {
   MultiGateReorder mr(architecture, mapping_frontier);
-  mr.solve(this->max_depth_, this->max_size_);
-  return {};
+  return {mr.solve(this->max_depth_, this->max_size_), {}};
 }
 
 unsigned MultiGateReorderRoutingMethod::get_max_depth() const {

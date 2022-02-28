@@ -55,16 +55,20 @@ class LexiRoute {
    *
    * @param lookahead Number of slices to lookahead at when determining best
    * SWAP or BRIDGE
+   *
+   * @return True if solve has modified circuit for mapping purposes
    */
-  void solve(unsigned lookahead);
+  bool solve(unsigned lookahead);
 
   /**
    * When called an "unlabelled" Qubit in the Circuit may be relabelled to a
    * Node in the Architecture, or an "unlabelled" Qubit may have its path merged
    * with an ancilla qubit. The decision making is based on the heuristic
    * outlined in arXiv:1902.08091.
+   *
+   * @return True if solve_labelling has modified circuit for mapping purposes
    */
-  void solve_labelling();
+  bool solve_labelling();
 
  private:
   /**
@@ -76,7 +80,9 @@ class LexiRoute {
    * @param assigned_only If true, only include interactions where both UnitID
    * are in this->architecture_.
    */
-  void set_interacting_uids(bool assigned_only = false);
+  bool set_interacting_uids(
+      bool assigned_only = false, bool route_check = false,
+      bool label_check = false);
 
   /**
    * If there is some "free" Node in Architecture at distance "distances" on
@@ -161,50 +167,5 @@ class LexiRoute {
   //   Set tracking which Architecture Node are present in Circuit
   std::set<Node> assigned_nodes_;
 };
-
-// Child class of RoutingMethod, with overloaded methods for routing
-// MappingFrontier objects
-class LexiRouteRoutingMethod : public RoutingMethod {
- public:
-  /**
-   * Checking and Routing methods redefined using LexiRoute. Only circuit depth,
-   * corresponding to lookahead, is a required parameter.
-   *
-   * @param _max_depth Number of layers of gates checked inr outed subcircuit.
-   */
-  LexiRouteRoutingMethod(unsigned _max_depth = 100);
-
-  /**
-   * @return true if method can route subcircuit, false if not
-   */
-  bool check_method(
-      const std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
-      const ArchitecturePtr& /*architecture*/) const override;
-
-  /**
-   * @param mapping_frontier Contains boundary of routed/unrouted circuit for
-   * modifying
-   * @param architecture Architecture providing physical constraints
-   * @return Map between relabelled Qubit, always empty.
-   *
-   */
-  unit_map_t routing_method(
-      std::shared_ptr<MappingFrontier>& mapping_frontier,
-      const ArchitecturePtr& architecture) const override;
-
-  /**
-   * @return Max depth used in lookahead
-   */
-  unsigned get_max_depth() const;
-
-  nlohmann::json serialize() const override;
-
-  static LexiRouteRoutingMethod deserialize(const nlohmann::json& j);
-
- private:
-  unsigned max_depth_;
-};
-
-JSON_DECL(LexiRouteRoutingMethod);
 
 }  // namespace tket

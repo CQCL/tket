@@ -310,17 +310,10 @@ void MappingFrontier::advance_frontier_boundary(
           extra_bool_uid_port_set.insert({bit, port_target});
         }
       }
-      // nodes.size() == 0 => completely classical operation
-      // a vertex is only in a cut if its causally been reached
-      // i.e. if a quantum operation (held up by a valid operation check)
-      // blocks a classical operation that blocks a quantum operation, neither
-      // of the latter will be in the cut even if they have no overlapping
-      // UnitID
-      if (nodes.size() == 0 ||
-          architecture->valid_operation(
-              this->circuit_.get_Op_ptr_from_Vertex(vert), nodes)) {
-        // if no valid operation, boundary not updated and while loop
-        // terminates
+      if (nodes.size() == 0 || this->valid_boundary_operation(
+              architecture, this->circuit_.get_Op_ptr_from_Vertex(vert),
+              nodes)) {
+        // if no valid operation, boundary not updated and while loop terminates
         boundary_updated = true;
         // update linear UnitID (Qubits&Quantum edges, Bits&Classical edges)
         for (const UnitID& uid : l_uids) {
@@ -719,6 +712,59 @@ void MappingFrontier::merge_ancilla(
 
   this->bimaps_->initial.right.erase(merge);
   this->bimaps_->final.left.erase(merge);
+}
+
+bool MappingFrontier::valid_boundary_operation(
+    const ArchitecturePtr& architecture, const Op_ptr& op,
+    const std::vector<Node>& uids) const {
+  // boxes are never allowed
+  OpType ot = op->get_type();
+  if (is_box_type(ot)) {
+    return false;
+  }
+
+  if (ot == OpType::Conditional) {
+    OpType cond_ot = static_cast<const Conditional&>(*op).get_op()->get_type();
+    // conditional boxes are never allowed, too
+    if (is_box_type(cond_ot)) {
+      return false;
+    }
+  }
+
+  // Barriers are allways allowed
+  if (ot == OpType::Barrier) {
+    return true;
+  }
+
+  // this currently allows unplaced single qubits gates
+  // this should be changes in the future
+  if (uids.size() == 1) {
+    return true;
+  }
+
+  // allow two qubit gates only for placed and connected nodes
+  if (uids.size() == 2) {
+    bool n0 = this->node_exists(uids[0]);
+    bool n1 = this->node_exists(uids[1]);
+    if (n0 && n1) {
+      bool bde = this->bidirectional_edge_exists(uids[0], uids[1]);
+      if (bde) {
+        return true;
+      }
+    }
+  } else if (uids.size() == 3 && ot == OpType::BRIDGE) {
+    bool con_0_exists =
+        architecture->bidirectional_edge_exists(uids[0], uids[1]);
+    bool con_1_exists =
+        architecture->bidirectional_edge_exists(uids[2], uids[1]);
+    if (architecture->node_exists(uids[0]) &&
+        architecture->node_exists(uids[1]) &&
+        architecture->node_exists(uids[2]) && con_0_exists && con_1_exists) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 }  // namespace tket

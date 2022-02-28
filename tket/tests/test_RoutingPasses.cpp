@@ -460,7 +460,6 @@ SCENARIO(
         circ, {std::make_shared<LexiLabellingMethod>(),
                std::make_shared<LexiRouteRoutingMethod>()}));
 
-    std::cout << "route " << std::endl;
     Transforms::decompose_SWAP_to_CX().apply(circ);
     REQUIRE(respects_connectivity_constraints(circ, arc, false, true));
     Transforms::decompose_BRIDGE_to_CX().apply(circ);

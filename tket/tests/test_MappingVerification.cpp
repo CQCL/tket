@@ -34,6 +34,7 @@ SCENARIO(
     LinePlacement lp_obj(test_arc);
     lp_obj.place(circ);
     MappingManager mm(std::make_shared<Architecture>(test_arc));
+
     REQUIRE(
         mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
     CHECK(respects_connectivity_constraints(circ, test_arc, false));

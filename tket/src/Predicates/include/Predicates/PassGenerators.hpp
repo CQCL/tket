@@ -45,6 +45,8 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps = true);
 PassPtr gen_rename_qubits_pass(const std::map<Qubit, Qubit>& qm);
 
 PassPtr gen_placement_pass(const PlacementPtr& placement_ptr);
+
+PassPtr gen_naive_placement_pass(const Architecture& arc);
 /* This higher order function generates a Routing pass using the
 std::vector<RoutingMethodPtr> object */
 PassPtr gen_full_mapping_pass(

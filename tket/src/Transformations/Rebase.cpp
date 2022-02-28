@@ -77,9 +77,7 @@ static bool standard_rebase(
     success = circ.substitute_all(cx_replacement, cx_op) | success;
   }
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-    if (circ.n_in_edges_of_type(v, EdgeType::Quantum) != 1 ||
-        circ.n_in_edges_of_type(v, EdgeType::Quantum) != 1)
-      continue;
+    if (circ.n_in_edges_of_type(v, EdgeType::Quantum) != 1) continue;
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     bool conditional = op->get_type() == OpType::Conditional;
     if (conditional) {

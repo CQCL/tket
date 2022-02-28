@@ -44,9 +44,10 @@ endif()
 
 set(TKET_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
+include(tkettestutilsfiles.cmake)
 include(tkettestsfiles.cmake)
 
-add_executable(test_tket ${TEST_SOURCES})
+add_executable(test_tket ${TESTUTILS_SOURCES} ${TEST_SOURCES})
 
 target_link_libraries(test_tket PRIVATE
     tket-ArchAwareSynth

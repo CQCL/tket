@@ -90,6 +90,7 @@ class UnitID {
     if (n < 0) return true;
     return data_->index_ < other.data_->index_;
   }
+  bool operator>(const UnitID &other) const { return other < *this; }
   bool operator==(const UnitID &other) const {
     return (this->data_->name_ == other.data_->name_) &&
            (this->data_->index_ == other.data_->index_);

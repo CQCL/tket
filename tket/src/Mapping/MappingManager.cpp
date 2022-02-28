@@ -72,19 +72,19 @@ bool MappingManager::route_circuit_with_maps(
   while (!check_finish()) {
     counter++;
     // The order methods are passed in std::vector<RoutingMethod> is
-    // the order they are iterated through to call "check_method"
+    // the order they are run
     // If a method performs better but only on specific subcircuits,
     // rank it earlier in the passed vector
     bool valid_methods = false;
     for (const auto& rm : routing_methods) {
       // true => can use held routing method
-      if (rm->check_method(mapping_frontier, this->architecture_)) {
+      std::pair<bool, unit_map_t> bool_map =
+          rm->routing_method(mapping_frontier, this->architecture_);
+      if (bool_map.first) {
         valid_methods = true;
-        unit_map_t partial_permutation =
-            rm->routing_method(mapping_frontier, this->architecture_);
-        if (partial_permutation.size() > 0) {
+        if (bool_map.second.size() > 0) {
           std::map<Node, Node> node_map;
-          for (const auto& x : partial_permutation) {
+          for (const auto& x : bool_map.second) {
             node_map.insert({Node(x.first), Node(x.second)});
           }
           for (const std::pair<Node, Node>& swap :

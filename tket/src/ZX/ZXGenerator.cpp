@@ -39,7 +39,8 @@ bool is_boundary_type(ZXType type) {
 
 bool is_basic_gen_type(ZXType type) {
   static const ZXTypeSet basics = {
-      ZXType::ZSpider, ZXType::XSpider, ZXType::Hbox};
+      ZXType::ZSpider, ZXType::XSpider, ZXType::Hbox, ZXType::XY, ZXType::XZ,
+      ZXType::YZ,      ZXType::PX,      ZXType::PY,   ZXType::PZ};
   return find_in_set(type, basics);
 }
 
@@ -51,6 +52,24 @@ bool is_spider_type(ZXType type) {
 bool is_directed_type(ZXType type) {
   static const ZXTypeSet directed = {ZXType::Triangle, ZXType::ZXBox};
   return find_in_set(type, directed);
+}
+
+bool is_MBQC_type(ZXType type) {
+  static const ZXTypeSet MBQC = {ZXType::XY, ZXType::XZ, ZXType::YZ,
+                                 ZXType::PX, ZXType::PY, ZXType::PZ};
+  return find_in_set(type, MBQC);
+}
+
+bool is_phase_type(ZXType type) {
+  static const ZXTypeSet phases = {ZXType::ZSpider, ZXType::XSpider,
+                                   ZXType::Hbox,    ZXType::XY,
+                                   ZXType::XZ,      ZXType::YZ};
+  return find_in_set(type, phases);
+}
+
+bool is_Clifford_gen_type(ZXType type) {
+  static const ZXTypeSet cliffords = {ZXType::PX, ZXType::PY, ZXType::PZ};
+  return find_in_set(type, cliffords);
 }
 
 /**
@@ -77,12 +96,21 @@ ZXGen_ptr ZXGen::create_gen(ZXType type, QuantumType qtype) {
       break;
     }
     case ZXType::ZSpider:
-    case ZXType::XSpider: {
-      op = std::make_shared<const BasicGen>(type, 0., qtype);
+    case ZXType::XSpider:
+    case ZXType::XY:
+    case ZXType::XZ:
+    case ZXType::YZ: {
+      op = std::make_shared<const PhasedGen>(type, 0., qtype);
       break;
     }
     case ZXType::Hbox: {
-      op = std::make_shared<const BasicGen>(type, -1., qtype);
+      op = std::make_shared<const PhasedGen>(type, -1., qtype);
+      break;
+    }
+    case ZXType::PX:
+    case ZXType::PY:
+    case ZXType::PZ: {
+      op = std::make_shared<const CliffordGen>(type, false, qtype);
       break;
     }
     case ZXType::Triangle: {
@@ -99,12 +127,29 @@ ZXGen_ptr ZXGen::create_gen(ZXType type, const Expr& param, QuantumType qtype) {
   ZXGen_ptr op;
   switch (type) {
     case ZXType::ZSpider:
-    case ZXType::XSpider: {
-      op = std::make_shared<const BasicGen>(type, param, qtype);
+    case ZXType::XSpider:
+    case ZXType::XY:
+    case ZXType::XZ:
+    case ZXType::YZ:
+    case ZXType::Hbox: {
+      op = std::make_shared<const PhasedGen>(type, param, qtype);
       break;
     }
-    case ZXType::Hbox: {
-      op = std::make_shared<const BasicGen>(type, param, qtype);
+    default:
+      throw ZXError(
+          "Cannot instantiate a parameterised ZXGen of the required "
+          "type");
+  }
+  return op;
+}
+
+ZXGen_ptr ZXGen::create_gen(ZXType type, bool param, QuantumType qtype) {
+  ZXGen_ptr op;
+  switch (type) {
+    case ZXType::PX:
+    case ZXType::PY:
+    case ZXType::PZ: {
+      op = std::make_shared<const CliffordGen>(type, param, qtype);
       break;
     }
     default:
@@ -173,8 +218,8 @@ bool BoundaryGen::operator==(const ZXGen& other) const {
  * BasicGen implementation
  */
 
-BasicGen::BasicGen(ZXType type, const Expr& param, QuantumType qtype)
-    : ZXGen(type), qtype_(qtype), param_(param) {
+BasicGen::BasicGen(ZXType type, QuantumType qtype)
+    : ZXGen(type), qtype_(qtype) {
   if (!is_basic_gen_type(type)) {
     throw ZXError("Unsupported ZXType for BasicGen");
   }
@@ -188,16 +233,32 @@ bool BasicGen::valid_edge(
                    this->qtype_ == QuantumType::Classical);
 }
 
-Expr BasicGen::get_param() const { return param_; }
-
-SymSet BasicGen::free_symbols() const { return expr_free_symbols(param_); }
-
-ZXGen_ptr BasicGen::symbol_substitution(
-    const SymEngine::map_basic_basic& sub_map) const {
-  return std::make_shared<const BasicGen>(type_, param_.subs(sub_map), qtype_);
+bool BasicGen::operator==(const ZXGen& other) const {
+  if (!ZXGen::operator==(other)) return false;
+  const BasicGen& other_basic = static_cast<const BasicGen&>(other);
+  return this->qtype_ == other_basic.qtype_;
 }
 
-std::string BasicGen::get_name(bool) const {
+/**
+ * PhasedGen implementation
+ */
+PhasedGen::PhasedGen(ZXType type, const Expr& param, QuantumType qtype)
+    : BasicGen(type, qtype), param_(param) {
+  if (!is_phase_type(type)) {
+    throw ZXError("Unsupported ZXType for PhasedGen");
+  }
+}
+
+Expr PhasedGen::get_param() const { return param_; }
+
+SymSet PhasedGen::free_symbols() const { return expr_free_symbols(param_); }
+
+ZXGen_ptr PhasedGen::symbol_substitution(
+    const SymEngine::map_basic_basic& sub_map) const {
+  return std::make_shared<const PhasedGen>(type_, param_.subs(sub_map), qtype_);
+}
+
+std::string PhasedGen::get_name(bool) const {
   std::stringstream st;
   if (qtype_ == QuantumType::Quantum) {
     st << "Q-";
@@ -214,18 +275,75 @@ std::string BasicGen::get_name(bool) const {
     case ZXType::Hbox:
       st << "H";
       break;
+    case ZXType::XY:
+      st << "XY";
+      break;
+    case ZXType::XZ:
+      st << "XZ";
+      break;
+    case ZXType::YZ:
+      st << "YZ";
+      break;
     default:
-      throw ZXError("BasicGen with invalid ZXType");
+      throw ZXError("PhasedGen with invalid ZXType");
   }
   st << "(" << param_ << ")";
   return st.str();
 }
 
-bool BasicGen::operator==(const ZXGen& other) const {
-  if (!ZXGen::operator==(other)) return false;
-  const BasicGen& other_basic = static_cast<const BasicGen&>(other);
-  return (
-      this->qtype_ == other_basic.qtype_ && this->param_ == other_basic.param_);
+bool PhasedGen::operator==(const ZXGen& other) const {
+  if (!BasicGen::operator==(other)) return false;
+  const PhasedGen& other_basic = static_cast<const PhasedGen&>(other);
+  return this->param_ == other_basic.param_;
+}
+
+/**
+ * CliffordGen implementation
+ */
+CliffordGen::CliffordGen(ZXType type, bool param, QuantumType qtype)
+    : BasicGen(type, qtype), param_(param) {
+  if (!is_Clifford_gen_type(type)) {
+    throw ZXError("Unsupported ZXType for CliffordGen");
+  }
+}
+
+bool CliffordGen::get_param() const { return param_; }
+
+SymSet CliffordGen::free_symbols() const { return {}; }
+
+ZXGen_ptr CliffordGen::symbol_substitution(
+    const SymEngine::map_basic_basic&) const {
+  return ZXGen_ptr();
+}
+
+std::string CliffordGen::get_name(bool) const {
+  std::stringstream st;
+  if (qtype_ == QuantumType::Quantum) {
+    st << "Q-";
+  } else {
+    st << "C-";
+  }
+  switch (type_) {
+    case ZXType::PX:
+      st << "X";
+      break;
+    case ZXType::PY:
+      st << "Y";
+      break;
+    case ZXType::PZ:
+      st << "Z";
+      break;
+    default:
+      throw ZXError("CliffordGen with invalid ZXType");
+  }
+  st << "(" << param_ << ")";
+  return st.str();
+}
+
+bool CliffordGen::operator==(const ZXGen& other) const {
+  if (!BasicGen::operator==(other)) return false;
+  const CliffordGen& other_basic = static_cast<const CliffordGen&>(other);
+  return this->param_ == other_basic.param_;
 }
 
 /**
