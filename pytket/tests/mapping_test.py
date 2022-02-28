@@ -212,7 +212,7 @@ def test_basic_mapping() -> None:
     pl = Placement(arc)
     pl.place_with_map(circ, init_map)
     MappingManager(arc).route_circuit(circ, [LexiRouteRoutingMethod(50)])
-    assert circ.valid_connectivity(arc, False)
+    assert circ.valid_connectivity(arc, directed=False)
     assert len(circ.get_commands()) == 10
 
 
@@ -239,8 +239,40 @@ def test_MultiGateReorderRoutingMethod() -> None:
     MappingManager(arc).route_circuit(
         circ, [MultiGateReorderRoutingMethod(10, 10), LexiRouteRoutingMethod(50)]
     )
-    assert circ.valid_connectivity(arc, False)
+    assert circ.valid_connectivity(arc, directed=False)
     assert len(circ.get_commands()) == 6
+
+
+def test_MultiGateReorderRoutingMethod_with_LexiLabelling() -> None:
+    circ = Circuit(4)
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [0, 3]])
+
+    # LexiLabellingMethod should label the circuit such that the following 4 ops are valid
+    circ.CX(0, 1)
+    circ.CX(1, 2)
+    circ.CX(2, 3)
+    circ.CX(0, 3)
+
+    # Invalid CV
+    circ.CV(0, 2)
+
+    # The next op should be commuted to the front of the previous CV
+    circ.CZ(0, 1)
+
+    # LexiRouteRoutingMethod should insert exactly one SWAP to route the CV gate
+    MappingManager(arc).route_circuit(
+        circ,
+        [
+            LexiLabellingMethod(),
+            MultiGateReorderRoutingMethod(10, 10),
+            LexiRouteRoutingMethod(50),
+        ],
+    )
+    assert circ.valid_connectivity(arc, directed=False)
+    commands = circ.get_commands()
+    assert len(commands) == 7
+    assert commands[4].op.type == OpType.CZ
+    assert commands[5].op.type == OpType.SWAP
 
 
 def test_BoxDecompositionRoutingMethod() -> None:
@@ -266,7 +298,7 @@ def test_BoxDecompositionRoutingMethod() -> None:
     MappingManager(arc).route_circuit(
         circ, [BoxDecompositionRoutingMethod(), LexiRouteRoutingMethod(50)]
     )
-    assert circ.valid_connectivity(arc, False)
+    assert circ.valid_connectivity(arc, directed=False)
     assert len(circ.get_commands()) == 4
 
 
