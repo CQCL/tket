@@ -42,16 +42,6 @@ class AASRouteRoutingMethod : public RoutingMethod {
       aas::CNotSynthType _cnotsynthtype = aas::CNotSynthType::Rec);
 
   /**
-   * @return true if this method can route subcircuit, false if not
-   * @param mapping_frontier mapping frontier contaning the circuit that should
-   * be checked for routing
-   * @param architecture architecture that is used for the routing check
-   */
-  /*bool check_method(
-      const std::shared_ptr<MappingFrontier>& mapping_frontier,
-      const ArchitecturePtr& architecture) const;*/
-
-  /**
    * @param mapping_frontier Contains boundary of routed/unrouted circuit for
    * modifying
    * @param architecture Architecture providing physical constraints
