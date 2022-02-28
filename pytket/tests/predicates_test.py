@@ -59,6 +59,7 @@ from pytket.passes import (  # type: ignore
     SimplifyInitial,
     RemoveBarriers,
     PauliSquash,
+    auto_rebase_pass,
 )
 from pytket.predicates import (  # type: ignore
     GateSetPredicate,
@@ -334,7 +335,7 @@ def test_RebaseOQC_and_SynthesiseOQC() -> None:
     u_before_oqc = circ3.get_unitary()
     assert np.allclose(u, u_before_oqc)
 
-    RebaseOQC().apply(circ3)
+    auto_rebase_pass(oqc_gateset).apply(circ3)
     assert oqc_gateset_pred.verify(circ3)
     u_before_rebase_tket = circ3.get_unitary()
     assert np.allclose(u, u_before_rebase_tket)
