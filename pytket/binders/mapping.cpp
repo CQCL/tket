@@ -19,6 +19,7 @@
 #include <pybind11/stl_bind.h>
 
 #include "Circuit/Circuit.hpp"
+#include "Mapping/BoxDecomposition.hpp"
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
@@ -97,6 +98,13 @@ PYBIND11_MODULE(mapping, m) {
           "Maximum number of layers of gates checked for commutation, "
           "\n:param max_size: Maximum number of gates checked for commutation.",
           py::arg("max_depth") = 10, py::arg("max_size") = 10);
+
+  py::class_<
+      BoxDecompositionRoutingMethod,
+      std::shared_ptr<BoxDecompositionRoutingMethod>, RoutingMethod>(
+      m, "BoxDecompositionRoutingMethod",
+      "Defines a RoutingMethod object for decomposing boxes.")
+      .def(py::init<>(), "BoxDecompositionRoutingMethod constructor.");
 
   py::class_<MappingManager>(
       m, "MappingManager",
