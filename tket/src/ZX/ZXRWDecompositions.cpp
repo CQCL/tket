@@ -105,6 +105,9 @@ bool Rewrite::basic_wires_fun(ZXDiagram& diag) {
 
 Rewrite Rewrite::basic_wires() { return Rewrite(basic_wires_fun); }
 
+bool Rewrite::rebase_to_zx(ZXDiagram& diag) {
+}
+
 }  // namespace zx
 
 }  // namespace tket

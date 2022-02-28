@@ -188,6 +188,11 @@ ZXVert ZXDiagram::other_end(const Wire& w, const ZXVert& u) const {
   }
 }
 
+ZXVert ZXDiagram::vertex_at_end(const Wire& w, WireEnd we) const {
+  if (we == WireEnd::Source) return source(w);
+  else return target(w);
+}
+
 WireEnd ZXDiagram::end_of(const Wire& w, const ZXVert& u) const {
   if (source(w) == u) {
     return WireEnd::Source;
