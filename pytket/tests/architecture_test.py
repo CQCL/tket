@@ -83,21 +83,14 @@ def test_valid_operation() -> None:
     edges = [(0, 1), (1, 2), (2, 0), (0, 3), (3, 4), (4, 5), (5, 6)]
     arc = Architecture(edges)
 
-    assert arc.valid_operation([Node(0), Node(1)])
     assert not arc.valid_operation([Node(1), Node(3)])
-    assert arc.valid_operation([Node(0)])
-
     assert arc.valid_operation([Node(0)])
     assert arc.valid_operation([Node(0), Node(1)])
     assert not arc.valid_operation([Node(0), Node(1), Node(2)])
-
-    assert arc.valid_operation([Node(0)])
     assert not arc.valid_operation([Node(10)])
     assert not arc.valid_operation([Node(10), Node(11), Node(15)])
     assert not arc.valid_operation([Node(0), Node(1), Node(2), Node(3)])
     assert not arc.valid_operation([Node(0), Node(4)])
-    assert not arc.valid_operation([Node(0), Node(1), Node(2)])
-    assert arc.valid_operation([Node(0), Node(1)])
     assert not arc.valid_operation([Node(0), Node(1), Node(2)])
     assert not arc.valid_operation([Node(0), Node(1), Node(4)])
 

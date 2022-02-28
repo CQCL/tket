@@ -62,7 +62,8 @@ PYBIND11_MODULE(architecture, m) {
       .def(
           "valid_operation", &Architecture::valid_operation,
           "Returns true if the given operation acting on the given ",
-          " nodes can be executed on the Architecture connectivity graph.",
+          "nodes can be executed on the Architecture connectivity graph."
+          "\n\n:param uids: UnitID validity is being checked for",
           py::arg("uids"))
       .def(
           "get_adjacent_nodes", &Architecture::get_neighbour_nodes,

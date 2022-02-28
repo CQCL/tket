@@ -28,7 +28,7 @@ class BoxDecomposition {
    */
   BoxDecomposition(
       const ArchitecturePtr& _architecture,
-      std::shared_ptr<MappingFrontier>& _mapping_frontier);
+      MappingFrontier_ptr& _mapping_frontier);
 
   /**
    * Decompose any boxes in the next slice after the frontier
@@ -40,7 +40,7 @@ class BoxDecomposition {
  private:
   // Architecture all new physical operations must respect
   ArchitecturePtr architecture_;
-  std::shared_ptr<MappingFrontier> mapping_frontier_;
+  MappingFrontier_ptr mapping_frontier_;
 };
 
 class BoxDecompositionRoutingMethod : public RoutingMethod {
@@ -58,7 +58,7 @@ class BoxDecompositionRoutingMethod : public RoutingMethod {
    *
    */
   std::pair<bool, unit_map_t> routing_method(
-      std::shared_ptr<MappingFrontier>& mapping_frontier,
+      MappingFrontier_ptr& mapping_frontier,
       const ArchitecturePtr& architecture) const override;
 
   nlohmann::json serialize() const override;
