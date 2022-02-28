@@ -46,15 +46,7 @@ from pytket.passes import (  # type: ignore
     DecomposeBoxes,
     PeepholeOptimise2Q,
     FullPeepholeOptimise,
-    RebaseCirq,
-    RebaseHQS,
-    RebaseProjectQ,
-    RebasePyZX,
-    RebaseQuil,
     RebaseTket,
-    RebaseUMD,
-    RebaseUFR,
-    RebaseOQC,
     SquashHQS,
     FlattenRegisters,
     SquashCustom,
@@ -584,14 +576,7 @@ def test_library_pass_config() -> None:
         FullPeepholeOptimise().to_dict()["StandardPass"]["name"]
         == "FullPeepholeOptimise"
     )
-    assert RebaseCirq().to_dict()["StandardPass"]["name"] == "RebaseCirq"
-    assert RebaseHQS().to_dict()["StandardPass"]["name"] == "RebaseHQS"
-    assert RebaseProjectQ().to_dict()["StandardPass"]["name"] == "RebaseProjectQ"
-    assert RebasePyZX().to_dict()["StandardPass"]["name"] == "RebasePyZX"
-    assert RebaseQuil().to_dict()["StandardPass"]["name"] == "RebaseQuil"
     assert RebaseTket().to_dict()["StandardPass"]["name"] == "RebaseTket"
-    assert RebaseUMD().to_dict()["StandardPass"]["name"] == "RebaseUMD"
-    assert RebaseUFR().to_dict()["StandardPass"]["name"] == "RebaseUFR"
     assert (
         RemoveRedundancies().to_dict()["StandardPass"]["name"] == "RemoveRedundancies"
     )

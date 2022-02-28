@@ -31,12 +31,12 @@ from pytket.backends.resulthandle import ResultHandle, _ResultIdTuple
 from pytket.backends.status import CircuitStatus, StatusEnum
 from pytket.passes import (  # type: ignore
     BasePass,
-    RebasePyZX,
     SequencePass,
     SynthesiseTket,
     FullPeepholeOptimise,
     DecomposeBoxes,
     SimplifyInitial,
+    auto_rebase_pass,
 )
 from pytket.predicates import (  # type: ignore
     GateSetPredicate,
