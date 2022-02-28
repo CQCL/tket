@@ -145,6 +145,11 @@ SCENARIO("Test MappingFrontier initialisation, advance_frontier_boundary.") {
     Vertex v5 = circ.add_measure(3, 3);
     Vertex v6 =
         circ.add_conditional_gate<unsigned>(OpType::Z, {}, {3}, {1, 2}, 0);
+    Vertex v7 = circ.add_measure(3, 3);
+    Vertex v8 = circ.add_barrier(
+        {Qubit(0), Qubit(1), Qubit(2), Qubit(3), Bit(1), Bit(2), Bit(3)});
+    Vertex v9 =
+        circ.add_conditional_gate<unsigned>(OpType::Z, {}, {3}, {1, 2}, 0);
 
     std::vector<Node> nodes = {Node(0), Node(1), Node(2), Node(3)};
     Architecture arc(
@@ -203,9 +208,9 @@ SCENARIO("Test MappingFrontier initialisation, advance_frontier_boundary.") {
         circ.get_OpType_from_Vertex(circ.target(circ.get_nth_out_edge(
             vp_b_3.first, vp_b_3.second))) == OpType::ClOutput);
 
-    // now in boolean boundray as bool used in condition
+    // in and then removed from boolean boundary
     REQUIRE(
-        mf.boolean_boundary->get<TagKey>().find(bits[2]) !=
+        mf.boolean_boundary->get<TagKey>().find(bits[2]) ==
         mf.boolean_boundary->get<TagKey>().end());
     // not in boolean boundary because bool not used in condition
     REQUIRE(

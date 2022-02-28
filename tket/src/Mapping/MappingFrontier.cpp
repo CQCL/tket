@@ -96,7 +96,6 @@ MappingFrontier::MappingFrontier(Circuit& _circuit) : circuit_(_circuit) {
       this->linear_boundary->insert({bit, {bit_input, 0}});
     }
   }
-  }
 }
 
 /**
