@@ -531,14 +531,13 @@ CutFrontier Circuit::next_q_cut(
   for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
     Vertex try_v = target(pair.second);
     if (detect_final_Op(try_v)) continue;
-    if (next_slice_lookup.find(try_v) != next_slice_lookup.end())
+    if (next_slice_lookup.contains(try_v))
       continue;  // already going to be in next slice
-    bool good_vertex = bad_vertices.find(try_v) == bad_vertices.end();
+    bool good_vertex = !bad_vertices.contains(try_v);
     if (!good_vertex) continue;
     EdgeVec ins = get_in_edges(try_v);
     for (const Edge& in : ins) {
-      if (edge_lookup.find(in) == edge_lookup.end() &&
-          get_edgetype(in) == EdgeType::Quantum) {
+      if (!edge_lookup.contains(in) && get_edgetype(in) == EdgeType::Quantum) {
         good_vertex = false;
         bad_vertices.insert(try_v);
         break;

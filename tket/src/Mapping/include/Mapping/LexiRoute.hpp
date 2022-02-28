@@ -43,7 +43,7 @@ class LexiRoute {
    */
   LexiRoute(
       const ArchitecturePtr& _architecture,
-      std::shared_ptr<MappingFrontier>& _mapping_frontier);
+      MappingFrontier_ptr& _mapping_frontier);
 
   /**
    * When called, LexiRoute::solve will modify the Circuit held in
@@ -71,18 +71,31 @@ class LexiRoute {
   bool solve_labelling();
 
  private:
+  /** Only considers two-qubit vertices if both qubits are labelled to
+   * Architecture */
+  enum class AssignedOnly { Yes, No };
+  /** Returns a bool confirming if vertices are valid for LexiRoute::solve */
+  enum class CheckRoutingValidity { Yes, No };
+  /** Returns a bool confirming if vertices are valid for
+   * LexiRoute::solve_labelling */
+  enum class CheckLabellingValidity { Yes, No };
+
   /**
    * this->interacting_uids_ attribute is a map where key is one UnitID
    * and value is the UnitID it needs to be adjacent to.
    * This map is implicitly updated whenever a logical SWAP is inserted.
    * set_interacting_uids determines this map for the first parallel set of
    * interacting UnitID in the Circuit held in this->mapping_frontier_
-   * @param assigned_only If true, only include interactions where both UnitID
+   * @param assigned_only If Yes, only include interactions where both UnitID
    * are in this->architecture_.
+   * @param route_check If Yes, return false if solve not possible
+   * @param label_check If Yes, return false if solve_labelling not possible
+   *
+   * @return bool depending on ENUM conditions
    */
   bool set_interacting_uids(
-      bool assigned_only = false, bool route_check = false,
-      bool label_check = false);
+      AssignedOnly assigned_only, CheckRoutingValidity route_check,
+      CheckLabellingValidity label_check);
 
   /**
    * If there is some "free" Node in Architecture at distance "distances" on
@@ -158,7 +171,7 @@ class LexiRoute {
   // Architecture all new physical operations must respect
   ArchitecturePtr architecture_;
   //   Contains circuit for finding SWAP from and non-routed/routed boundary
-  std::shared_ptr<MappingFrontier>& mapping_frontier_;
+  MappingFrontier_ptr& mapping_frontier_;
   //   Map between UnitID and UnitID they interact with at boundary
   unit_map_t interacting_uids_;
   //   Map between original circuit UnitID and new UnitID due to dynamic

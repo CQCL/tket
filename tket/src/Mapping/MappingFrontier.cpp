@@ -596,10 +596,15 @@ bool MappingFrontier::valid_boundary_operation(
   }
 
   if (ot == OpType::Conditional) {
-    OpType cond_ot = static_cast<const Conditional&>(*op).get_op()->get_type();
+    Op_ptr cond_op_ptr = static_cast<const Conditional&>(*op).get_op();
     // conditional boxes are never allowed, too
-    if (is_box_type(cond_ot)) {
-      return false;
+    OpType ot = cond_op_ptr->get_type();
+    while (ot == OpType::Conditional) {
+      cond_op_ptr = static_cast<const Conditional&>(*op).get_op();
+      ot = cond_op_ptr->get_type();
+      if (is_box_type(ot)) {
+        return false;
+      }
     }
   }
 

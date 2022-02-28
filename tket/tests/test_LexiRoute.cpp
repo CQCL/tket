@@ -61,8 +61,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         {qubits[0], nodes[0]}, {qubits[1], nodes[1]}, {qubits[2], nodes[2]},
         {qubits[3], nodes[3]}, {qubits[4], nodes[6]}, {qubits[5], nodes[5]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf);
 
     lr.solve(4);
@@ -91,8 +90,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         {qubits[3], nodes[3]},
         {qubits[5], nodes[5]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf0 =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf0 = std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf0);
     lr.solve_labelling();
 
@@ -101,8 +99,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
     rename_map = {{qubits[4], nodes[6]}};
     mf0->circuit_.rename_units(rename_map);
 
-    std::shared_ptr<MappingFrontier> mf1 =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf1 = std::make_shared<MappingFrontier>(circ);
     LexiRoute lr1(shared_arc, mf1);
     lr1.solve(4);
 
@@ -130,8 +127,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         {qubits[3], nodes[3]}, {qubits[4], nodes[4]}, {qubits[5], nodes[5]},
         {qubits[6], nodes[6]}, {qubits[7], nodes[7]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf);
 
     lr.solve(4);
@@ -154,8 +150,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
     circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[3]});
     circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[4]});
 
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     LexiRoute lr0(shared_arc, mf);
     lr0.solve_labelling();
     std::vector<Command> commands = mf->circuit_.get_commands();
@@ -195,8 +190,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         {qubits[3], nodes[7]},
         {qubits[4], nodes[2]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
 
     mf->advance_frontier_boundary(shared_arc);
     LexiRoute lr(shared_arc, mf);
@@ -219,8 +213,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         {qubits[3], nodes[7]},
         {qubits[4], nodes[2]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
 
     mf->advance_frontier_boundary(shared_arc);
     LexiRoute lr(shared_arc, mf);
@@ -240,8 +233,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         {qubits[3], nodes[7]},
         {qubits[4], nodes[2]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
 
     mf->advance_frontier_boundary(shared_arc);
     LexiRoute lr(shared_arc, mf);
@@ -261,8 +253,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         {qubits[3], nodes[7]},
         {qubits[4], nodes[2]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
 
     mf->advance_frontier_boundary(shared_arc);
     LexiRoute lr(shared_arc, mf);
@@ -293,8 +284,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         {qubits[0], nodes[2]}, {qubits[1], nodes[4]}};
     circ.rename_units(rename_map);
 
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     LexiRoute lr0(shared_arc, mf);
     lr0.solve(20);
@@ -334,8 +324,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         {qubits[0], nodes[2]}, {qubits[1], nodes[4]}};
     circ.rename_units(rename_map);
 
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     LexiRoute lr0(shared_arc, mf);
     lr0.solve_labelling();
@@ -370,8 +359,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         {qubits[0], nodes[2]}, {qubits[1], nodes[4]}, {qubits[3], nodes[3]}};
     circ.rename_units(rename_map);
 
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     mf->ancilla_nodes_.insert(nodes[3]);
     mf->advance_frontier_boundary(shared_arc);
 
@@ -401,8 +389,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         {qubits[0], nodes[0]}, {qubits[1], nodes[1]}, {qubits[2], nodes[2]},
         {qubits[3], nodes[3]}, {qubits[4], nodes[6]}, {qubits[5], nodes[5]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf);
 
     lr.solve(4);
@@ -429,15 +416,14 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         {qubits[3], nodes[3]}, {qubits[4], nodes[4]}, {qubits[5], nodes[5]},
         {qubits[6], nodes[6]}, {qubits[7], nodes[7]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf);
 
     REQUIRE_THROWS_AS(lr.solve_labelling(), LexiRouteError);
   }
   GIVEN(
       "Labelling is required, but there are no free remaining qubits, for "
-      " one updated label, order 1.") {
+      "one updated label, order 1.") {
     Circuit circ(9);
     std::vector<Qubit> qubits = circ.all_qubits();
     circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[8]});
@@ -451,8 +437,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         {qubits[3], nodes[3]}, {qubits[4], nodes[4]}, {qubits[5], nodes[5]},
         {qubits[6], nodes[6]}, {qubits[7], nodes[7]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf);
     REQUIRE_THROWS_AS(lr.solve_labelling(), LexiRouteError);
   }
@@ -472,8 +457,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
         {qubits[3], nodes[3]}, {qubits[4], nodes[4]}, {qubits[5], nodes[5]},
         {qubits[6], nodes[6]}, {qubits[7], nodes[7]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     LexiRoute lr(shared_arc, mf);
     REQUIRE_THROWS_AS(lr.solve_labelling(), LexiRouteError);
   }
@@ -493,8 +477,7 @@ SCENARIO("Test LexiLabellingMethod") {
   ArchitecturePtr shared_arc = std::make_shared<Architecture>(architecture);
   GIVEN("No qubit to label, empty frontier, routing_method false.") {
     Circuit circ(5);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     LexiLabellingMethod lrm;
     REQUIRE(!lrm.routing_method(mf, shared_arc).first);
   }
@@ -511,8 +494,7 @@ SCENARIO("Test LexiLabellingMethod") {
         {qubits[3], nodes[3]},
         {qubits[4], nodes[4]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     LexiLabellingMethod lrm;
     REQUIRE(!lrm.routing_method(mf, shared_arc).first);
   }
@@ -528,8 +510,7 @@ SCENARIO("Test LexiLabellingMethod") {
         {qubits[2], nodes[2]},
         {qubits[4], nodes[4]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     LexiLabellingMethod lrm;
     REQUIRE(!lrm.routing_method(mf, shared_arc).first);
   }
@@ -545,8 +526,7 @@ SCENARIO("Test LexiLabellingMethod") {
     std::map<UnitID, UnitID> rename_map = {
         {qubits[0], nodes[0]}, {qubits[1], nodes[1]}, {qubits[2], nodes[2]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     LexiLabellingMethod lrm;
     REQUIRE(!lrm.routing_method(mf, shared_arc).first);
   }
@@ -562,8 +542,7 @@ SCENARIO("Test LexiLabellingMethod") {
         {qubits[3], nodes[3]},
         {qubits[4], nodes[4]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     LexiLabellingMethod lrm;
     REQUIRE(!lrm.routing_method(mf, shared_arc).first);
   }
@@ -575,8 +554,7 @@ SCENARIO("Test LexiLabellingMethod") {
     std::map<UnitID, UnitID> rename_map = {
         {qubits[0], nodes[0]}, {qubits[1], nodes[1]}, {qubits[2], nodes[2]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     VertPort pre_label =
         mf->quantum_boundary->get<TagKey>().find(qubits[3])->second;
     LexiLabellingMethod lrm;
@@ -601,8 +579,7 @@ SCENARIO("Test LexiLabellingMethod") {
     std::map<UnitID, UnitID> rename_map = {
         {qubits[0], nodes[0]}, {qubits[1], nodes[1]}, {qubits[3], nodes[3]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     VertPort pre_label =
         mf->quantum_boundary->get<TagKey>().find(qubits[2])->second;
     LexiLabellingMethod lrm;
@@ -625,8 +602,7 @@ SCENARIO("Test LexiLabellingMethod") {
     std::map<UnitID, UnitID> rename_map = {
         {qubits[2], nodes[2]}, {qubits[1], nodes[1]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     VertPort pre_label_0 =
         mf->quantum_boundary->get<TagKey>().find(qubits[0])->second;
     VertPort pre_label_3 =
@@ -657,8 +633,7 @@ SCENARIO("Test LexiLabellingMethod") {
     std::map<UnitID, UnitID> rename_map = {
         {qubits[4], nodes[4]}, {qubits[1], nodes[1]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     VertPort pre_label_0 =
         mf->quantum_boundary->get<TagKey>().find(qubits[2])->second;
     VertPort pre_label_3 =
@@ -691,8 +666,7 @@ SCENARIO("Test LexiLabellingMethod") {
     std::map<UnitID, UnitID> rename_map = {
         {qubits[4], nodes[4]}, {qubits[1], nodes[1]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     VertPort pre_label_0 =
         mf->quantum_boundary->get<TagKey>().find(qubits[2])->second;
     VertPort pre_label_3 =
@@ -761,8 +735,7 @@ SCENARIO("Test LexiRouteRoutingMethod") {
         {qubits[9], nodes[9]}, {qubits[10], nodes[10]}};
     circ.rename_units(rename_map);
 
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     LexiRouteRoutingMethod lrrm(100);
     std::pair<bool, unit_map_t> bool_init_map =
         lrrm.routing_method(mf, shared_arc);
@@ -803,8 +776,7 @@ SCENARIO("Test LexiRouteRoutingMethod") {
         {qubits[9], nodes[9]}, {qubits[10], nodes[10]}};
     circ.rename_units(rename_map);
 
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     LexiRouteRoutingMethod lrrm(100);
     std::pair<bool, unit_map_t> bool_init_map =
         lrrm.routing_method(mf, shared_arc);
@@ -866,8 +838,7 @@ SCENARIO("Test MappingManager with LexiRouteRoutingMethod and LexiLabelling") {
     PassPtr dec = gen_decompose_routing_gates_to_cxs_pass(architecture, false);
 
     MappingManager mm(shared_arc);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(copy_circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(copy_circ);
 
     LexiLabellingMethod lrm;
     std::vector<RoutingMethodPtr> vrm = {

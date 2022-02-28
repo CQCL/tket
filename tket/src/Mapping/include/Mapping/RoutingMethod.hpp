@@ -43,7 +43,7 @@ class RoutingMethod {
    *
    */
   virtual std::pair<bool, unit_map_t> routing_method(
-      std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
+      MappingFrontier_ptr& /*mapping_frontier*/,
       const ArchitecturePtr& /*architecture*/) const {
     return {false, {}};
   }
