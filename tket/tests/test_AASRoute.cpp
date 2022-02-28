@@ -651,7 +651,7 @@ SCENARIO("Test aas route in RV3") {
     REQUIRE(circ.count_gates(OpType::CX) == 15);
     REQUIRE(circ.count_gates(OpType::SWAP) == 3);
   }
-  GIVEN("AASRouteRoutingMethod  and LexiRouteRoutingMethod VIII") {
+  GIVEN("AASRouteRoutingMethod  and LexiRouteRoutingMethod, only route") {
     Circuit circ(11);
     std::vector<Qubit> qubits = circ.all_qubits();
 
@@ -717,7 +717,7 @@ SCENARIO("Test aas route in RV3") {
     REQUIRE(circ.count_gates(OpType::CX) == 37);
     REQUIRE(circ.count_gates(OpType::SWAP) == 21);
   }
-  GIVEN("AASRouteRoutingMethod  and LexiRouteRoutingMethod only route") {
+  GIVEN("AASRouteRoutingMethod  and LexiRouteRoutingMethod only route two boxes") {
     Circuit circ(11);
     std::vector<Qubit> qubits = circ.all_qubits();
 
