@@ -50,6 +50,20 @@ from pytket.utils.outcomearray import OutcomeArray
 from pytket.utils.results import probs_from_state
 
 
+_GATE_SET = {
+    OpType.SWAP,
+    OpType.CX,
+    OpType.CZ,
+    OpType.Rz,
+    OpType.Rx,
+    OpType.S,
+    OpType.T,
+    OpType.S,
+    OpType.X,
+    OpType.H,
+}
+
+
 class TketSimBackend(Backend):
     """Backend for running simulations with tket_sim."""
 
