@@ -433,7 +433,7 @@ bool LexiRoute::solve_labelling() {
   bool all_labelled = this->set_interacting_uids(false, false, true);
   if (!all_labelled) {
     this->update_labelling();
-    this->mapping_frontier_->update_quantum_boundary_uids(this->labelling_);
+    this->mapping_frontier_->update_linear_boundary_uids(this->labelling_);
     return true;
   }
   return false;

@@ -45,8 +45,7 @@ std::pair<bool, unit_map_t> RoutingMethodCircuit::routing_method(
   }
 
   // update unit id at boundary in case of relabelling
-  mapping_frontier->update_linear_boundary_uids(
-      std::get<2>(routed_subcircuit));
+  mapping_frontier->update_linear_boundary_uids(std::get<2>(routed_subcircuit));
 
   unit_map_t swap_permutation;
   for (const auto& pair : std::get<2>(routed_subcircuit)) {

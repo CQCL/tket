@@ -28,29 +28,11 @@ bool Architecture::valid_operation(const std::vector<Node>& uids) const {
   for (Node n : uids) {
     if (!this->node_exists(Node(n))) return false;
   }
-  unsigned n_uids = uids.size();
-  if (n_uids == 0) {
-    throw std::invalid_argument("valid_operation passed no Node with Op_ptr.");
-  }
-  if (n_uids == 1) {
-    // with current Architecture can assume all single qubit gates valid
+  if (uids.size() == 1) {
     return true;
-  } else if (op->get_type() == OpType::Barrier) {
-    return true;
-  } else if (n_uids == 2) {
-    bool n0 = this->node_exists(uids[0]);
-    bool n1 = this->node_exists(uids[1]);
-    if (n0 && n1) {
-      bool bde = this->bidirectional_edge_exists(uids[0], uids[1]);
-      if (bde) {
-        return true;
-      }
-    }
-  } else if (n_uids == 3 && op->get_type() == OpType::BRIDGE) {
-    bool con_0_exists = this->bidirectional_edge_exists(uids[0], uids[1]);
-    bool con_1_exists = this->bidirectional_edge_exists(uids[2], uids[1]);
+  } else if (uids.size() == 2) {
     if (this->node_exists(uids[0]) && this->node_exists(uids[1]) &&
-        this->node_exists(uids[2]) && con_0_exists && con_1_exists) {
+        this->bidirectional_edge_exists(uids[0], uids[1])) {
       return true;
     }
   }

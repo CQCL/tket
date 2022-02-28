@@ -310,7 +310,8 @@ void MappingFrontier::advance_frontier_boundary(
           extra_bool_uid_port_set.insert({bit, port_target});
         }
       }
-      if (nodes.size() == 0 || this->valid_boundary_operation(
+      if (nodes.size() == 0 ||
+          this->valid_boundary_operation(
               architecture, this->circuit_.get_Op_ptr_from_Vertex(vert),
               nodes)) {
         // if no valid operation, boundary not updated and while loop terminates
@@ -744,10 +745,10 @@ bool MappingFrontier::valid_boundary_operation(
 
   // allow two qubit gates only for placed and connected nodes
   if (uids.size() == 2) {
-    bool n0 = this->node_exists(uids[0]);
-    bool n1 = this->node_exists(uids[1]);
+    bool n0 = architecture->node_exists(uids[0]);
+    bool n1 = architecture->node_exists(uids[1]);
     if (n0 && n1) {
-      bool bde = this->bidirectional_edge_exists(uids[0], uids[1]);
+      bool bde = architecture->bidirectional_edge_exists(uids[0], uids[1]);
       if (bde) {
         return true;
       }
