@@ -29,7 +29,7 @@ bool BoxDecomposition::solve() {
   std::shared_ptr<unit_frontier_t> frontier_edges =
       frontier_convert_vertport_to_edge(
           this->mapping_frontier_->circuit_,
-          this->mapping_frontier_->quantum_boundary);
+          this->mapping_frontier_->linear_boundary);
   CutFrontier next_cut =
       this->mapping_frontier_->circuit_.next_q_cut(frontier_edges);
   for (Vertex &vert : *next_cut.slice) {

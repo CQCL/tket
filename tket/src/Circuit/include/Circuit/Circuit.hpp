@@ -565,6 +565,16 @@ class Circuit {
       const Vertex &vert) const;  // returned by port no.
 
   /**
+   * All bundles of in Boolean edges, ordered by port number
+   *
+   * Each member of the list is a list of edges sharing the same port
+   *
+   * @param vert vertex
+   */
+  std::vector<EdgeVec> get_b_in_bundles(
+      const Vertex &vert) const;  // returned by port no.
+
+  /**
    * Total number of inward edges
    *
    * @param vert vertex

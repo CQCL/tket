@@ -40,7 +40,7 @@ namespace tket {
 
 using Connection = Architecture::Connection;
 
-SCENARIO("Test decompose_SWAP_to_CX pass", "[routing]") {
+SCENARIO("Test decompose_SWAP_to_CX pass", ) {
   Architecture arc({{0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 0}});
   GIVEN("A single SWAP gate. Finding if correct number of vertices added") {
     Circuit circ(5);
@@ -290,7 +290,7 @@ SCENARIO("Test redirect_CX_gates pass", "[routing]") {
   }
 }
 
-SCENARIO("Routing preserves the number of qubits") {
+SCENARIO("Routing preserves the number of qubits in given instance of CnX op") {
   std::vector<std::pair<Node, Node>> cons;
   cons.push_back({Node("x", 1), Node("x", 0)});
   cons.push_back({Node("x", 2), Node("x", 1)});
