@@ -23,12 +23,7 @@ std::pair<bool, unit_map_t> LexiRouteRoutingMethod::routing_method(
     std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& architecture) const {
   LexiRoute lr(architecture, mapping_frontier);
-  bool res = lr.solve(this->max_depth_);
-  if (!res) {
-    std::cout << "lexi routing check failed\n";
-  }
-
-  return {res, {}};
+  return {lr.solve(this->max_depth_), {}};
 }
 
 unsigned LexiRouteRoutingMethod::get_max_depth() const {

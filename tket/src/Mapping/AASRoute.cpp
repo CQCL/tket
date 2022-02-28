@@ -158,7 +158,6 @@ std::pair<bool, unit_map_t> AASRouteRoutingMethod::routing_method(
       }
     }
   }
-  std::cout << "aas routing check failed\n";
   return {false, {}};
 }
 

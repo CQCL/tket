@@ -102,7 +102,6 @@ std::pair<bool, unit_map_t> AASLabellingMethod::routing_method(
   }
 
   if (!found_unplaced_ppb) {
-    std::cout << "aas labelling chekc failed\n";
     return {false, {}};
   } else {
     qubit_vector_t q_vec = mapping_frontier->circuit_.all_qubits();
