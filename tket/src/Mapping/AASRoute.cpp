@@ -20,43 +20,6 @@ AASRouteRoutingMethod::AASRouteRoutingMethod(
     unsigned _aaslookahead, aas::CNotSynthType _cnotsynthtype)
     : cnotsynthtype_(_cnotsynthtype), aaslookahead_(_aaslookahead) {}
 
-/*bool AASRouteRoutingMethod::check_method(
-    const std::shared_ptr<MappingFrontier>& mapping_frontier,
-    const ArchitecturePtr& architecture) const {
-  std::shared_ptr<unit_frontier_t> next_frontier =
-      frontier_convert_vertport_to_edge(
-          mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
-
-  CutFrontier next_cut = mapping_frontier->circuit_.next_cut(
-      next_frontier, std::make_shared<b_frontier_t>());
-
-  for (const Vertex& v : *next_cut.slice) {
-    if (mapping_frontier->circuit_.get_OpType_from_Vertex(v) ==
-        OpType::PhasePolyBox) {
-      TKET_ASSERT(mapping_frontier->circuit_.is_quantum_node(v));
-
-      // check all qubits of the ppb if they are placed
-      bool box_placed = true;
-      for (const Edge& e : mapping_frontier->circuit_.get_in_edges_of_type(
-               v, EdgeType::Quantum)) {
-        for (const std::pair<UnitID, Edge>& pair :
-             next_frontier->get<TagKey>()) {
-          if (pair.second == e) {
-            if (!architecture->node_exists(Node(pair.first))) {
-              box_placed = false;
-            }
-          }
-        }
-      }
-
-      if (box_placed) {
-        return true;
-      }
-    }
-  }
-  return false;
-}*/
-
 std::pair<bool, unit_map_t> AASRouteRoutingMethod::routing_method(
     std::shared_ptr<MappingFrontier>& mapping_frontier,
     const ArchitecturePtr& architecture) const {
