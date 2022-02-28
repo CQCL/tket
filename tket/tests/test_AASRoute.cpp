@@ -651,5 +651,225 @@ SCENARIO("Test aas route in RV3") {
     REQUIRE(circ.count_gates(OpType::CX) == 15);
     REQUIRE(circ.count_gates(OpType::SWAP) == 3);
   }
+  GIVEN("AASRouteRoutingMethod  and LexiRouteRoutingMethod, only route") {
+    Circuit circ(11);
+    std::vector<Qubit> qubits = circ.all_qubits();
+
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[7]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[10]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[8], qubits[5]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[9]});
+
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[9]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[10], qubits[0]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[0]});
+
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]}, {qubits[1], nodes[1]},  {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]}, {qubits[4], nodes[4]},  {qubits[5], nodes[5]},
+        {qubits[6], nodes[6]}, {qubits[7], nodes[7]},  {qubits[8], nodes[8]},
+        {qubits[9], nodes[9]}, {qubits[10], nodes[10]}};
+
+    Circuit ppb_circ(11);
+
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[2], qubits[5]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[5], qubits[4]});
+
+    PhasePolyBox ppbox(ppb_circ);
+    circ.add_box(ppbox, qubits);
+
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[4]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[7]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[10]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[8], qubits[5]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[9]});
+
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[9]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[10], qubits[0]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[0]});
+
+    circ.rename_units(rename_map);
+
+    Circuit circ_copy(circ);
+
+    MappingManager mm(shared_arc);
+
+    std::vector<RoutingMethodPtr> vrm = {
+        std::make_shared<AASLabellingMethod>(),
+        std::make_shared<AASRouteRoutingMethod>(1, aas::CNotSynthType::Rec),
+        std::make_shared<LexiLabellingMethod>(),
+        std::make_shared<LexiRouteRoutingMethod>(100),
+    };
+
+    mm.route_circuit(circ, vrm);
+
+    PredicatePtr routed_correctly =
+        std::make_shared<ConnectivityPredicate>(architecture);
+    PredicatePtrMap preds{CompilationUnit::make_type_pair(routed_correctly)};
+    CompilationUnit cu(circ, preds);
+    REQUIRE(cu.check_all_predicates());
+
+    REQUIRE(circ.n_gates() == 61);
+    REQUIRE(circ.count_gates(OpType::CX) == 37);
+    REQUIRE(circ.count_gates(OpType::SWAP) == 21);
+  }
+  GIVEN("AASRouteRoutingMethod  and LexiRouteRoutingMethod only route two boxes") {
+    Circuit circ(11);
+    std::vector<Qubit> qubits = circ.all_qubits();
+
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[7]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[10]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[8], qubits[5]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[9]});
+
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[9]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[10], qubits[0]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[0]});
+
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]}, {qubits[1], nodes[1]},  {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]}, {qubits[4], nodes[4]},  {qubits[5], nodes[5]},
+        {qubits[6], nodes[6]}, {qubits[7], nodes[7]},  {qubits[8], nodes[8]},
+        {qubits[9], nodes[9]}, {qubits[10], nodes[10]}};
+
+    Circuit ppb_circ(11);
+
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[2], qubits[5]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[7], qubits[4]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[8], qubits[4]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[9], qubits[4]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[4]});
+
+    PhasePolyBox ppbox(ppb_circ);
+    circ.add_box(ppbox, qubits);
+
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[4]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[7]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[10]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[8], qubits[5]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[9]});
+
+    Circuit ppb_circ_2(11);
+
+    ppb_circ_2.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
+    ppb_circ_2.add_op<UnitID>(OpType::CX, {qubits[2], qubits[5]});
+    ppb_circ_2.add_op<UnitID>(OpType::CX, {qubits[5], qubits[4]});
+
+    PhasePolyBox ppbox2(ppb_circ_2);
+    circ.add_box(ppbox2, qubits);
+
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[9]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[10], qubits[0]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[0]});
+
+    circ.rename_units(rename_map);
+
+    Circuit circ_copy(circ);
+
+    MappingManager mm(shared_arc);
+
+    std::vector<RoutingMethodPtr> vrm = {
+        std::make_shared<AASLabellingMethod>(),
+        std::make_shared<AASRouteRoutingMethod>(1, aas::CNotSynthType::Rec),
+        std::make_shared<LexiLabellingMethod>(),
+        std::make_shared<LexiRouteRoutingMethod>(100),
+    };
+
+    mm.route_circuit(circ, vrm);
+
+    PredicatePtr routed_correctly =
+        std::make_shared<ConnectivityPredicate>(architecture);
+    PredicatePtrMap preds{CompilationUnit::make_type_pair(routed_correctly)};
+    CompilationUnit cu(circ, preds);
+    REQUIRE(cu.check_all_predicates());
+
+    REQUIRE(circ.n_gates() == 115);
+    REQUIRE(circ.count_gates(OpType::CX) == 89);
+    REQUIRE(circ.count_gates(OpType::SWAP) == 24);
+  }
+  GIVEN("AAS + Lexi, Label and Route") {
+    Circuit circ(11);
+    std::vector<Qubit> qubits = circ.all_qubits();
+
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[7]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[10]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[8], qubits[5]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[9]});
+
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[9]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[10], qubits[0]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[0]});
+
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]}, {qubits[1], nodes[1]},  {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]}, {qubits[4], nodes[4]},  {qubits[5], nodes[5]},
+        {qubits[6], nodes[6]}, {qubits[7], nodes[7]},  {qubits[8], nodes[8]},
+        {qubits[9], nodes[9]}, {qubits[10], nodes[10]}};
+
+    Circuit ppb_circ(11);
+
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[2], qubits[5]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[7], qubits[4]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[8], qubits[4]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[9], qubits[4]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[4]});
+
+    PhasePolyBox ppbox(ppb_circ);
+    circ.add_box(ppbox, qubits);
+
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[4]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[7]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[10]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[8], qubits[5]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[9]});
+
+    Circuit ppb_circ_2(11);
+
+    ppb_circ_2.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
+    ppb_circ_2.add_op<UnitID>(OpType::CX, {qubits[2], qubits[5]});
+    ppb_circ_2.add_op<UnitID>(OpType::CX, {qubits[5], qubits[4]});
+
+    PhasePolyBox ppbox2(ppb_circ_2);
+    circ.add_box(ppbox2, qubits);
+
+    circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[9]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[10], qubits[0]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[0]});
+
+    Circuit circ_copy(circ);
+
+    MappingManager mm(shared_arc);
+
+    std::vector<RoutingMethodPtr> vrm = {
+        std::make_shared<AASLabellingMethod>(),
+        std::make_shared<AASRouteRoutingMethod>(1, aas::CNotSynthType::Rec),
+        std::make_shared<LexiLabellingMethod>(),
+        std::make_shared<LexiRouteRoutingMethod>(100),
+    };
+
+    mm.route_circuit(circ, vrm);
+
+    PredicatePtr routed_correctly =
+        std::make_shared<ConnectivityPredicate>(architecture);
+    PredicatePtrMap preds{CompilationUnit::make_type_pair(routed_correctly)};
+    CompilationUnit cu(circ, preds);
+    REQUIRE(cu.check_all_predicates());
+
+    REQUIRE(circ.n_gates() == 275);
+    REQUIRE(circ.count_gates(OpType::CX) == 244);
+    REQUIRE(circ.count_gates(OpType::SWAP) == 28);
+  }
 }
 }  // namespace tket
