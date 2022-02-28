@@ -448,7 +448,6 @@ bool LexiRoute::solve(unsigned lookahead) {
        this->mapping_frontier_->linear_boundary->get<TagKey>()) {
     copy.insert({pair.first, pair.second});
   }
-
   swap_set_t candidate_swaps = this->get_candidate_swaps();
   this->remove_swaps_decreasing(candidate_swaps);
   TKET_ASSERT(candidate_swaps.size() != 0);
