@@ -41,6 +41,12 @@ void from_json(const nlohmann::json& j, std::vector<RoutingMethodPtr>& rmp_v) {
           LexiRouteRoutingMethod::deserialize(c)));
     } else if (name == "RoutingMethod") {
       rmp_v.push_back(std::make_shared<RoutingMethod>());
+    } else if (name == "AASRouteRoutingMethod") {
+      rmp_v.push_back(std::make_shared<AASRouteRoutingMethod>(
+          AASRouteRoutingMethod::deserialize(c)));
+    } else if (name == "AASLabellingMethod") {
+      rmp_v.push_back(std::make_shared<AASLabellingMethod>(
+          AASLabellingMethod::deserialize(c)));
     } else if (name == "MultiGateReorderRoutingMethod") {
       rmp_v.push_back(std::make_shared<MultiGateReorderRoutingMethod>(
           MultiGateReorderRoutingMethod::deserialize(c)));

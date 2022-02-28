@@ -226,20 +226,28 @@ bool LexiRoute::set_interacting_uids(
           }
           ++jt;
         }
-      } else if (
-          n_edges > 2 &&
-          this->mapping_frontier_->circuit_.get_OpType_from_Vertex(v0) !=
-              OpType::Barrier) {
-        if (label_check == CheckLabellingValidity::Yes) return true;
-        if (route_check == CheckRoutingValidity::Yes) return false;
-        throw LexiRouteError(
-            "LexiRoute only supports non-Barrier vertices with 1 or 2 edges.");
       }
     }
   }
-  if (label_check == CheckLabellingValidity::Yes ||
-      route_check == CheckRoutingValidity::Yes) {
-    return all_placed;
+
+  // conditions for proceeding with labelling
+  if (label_check == CheckLabellingValidity::Yes) {
+    if (all_placed) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  // this should have left early when first found
+  if (route_check == CheckRoutingValidity::Yes) {
+    if (all_placed) {
+      if (interacting_uids_.size() > 0) {
+        return true;
+      }
+      return false;
+    } else {
+      return false;
+    }
   }
   // => either route_check true and all_placed so valid
   // or !route_check and !label_check so return true and discard

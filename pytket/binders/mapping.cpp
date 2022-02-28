@@ -19,6 +19,8 @@
 #include <pybind11/stl_bind.h>
 
 #include "Circuit/Circuit.hpp"
+#include "Mapping/AASLabelling.hpp"
+#include "Mapping/AASRoute.hpp"
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
@@ -76,6 +78,26 @@ PYBIND11_MODULE(mapping, m) {
           "lookahead employed when picking SWAP for purpose of logical to "
           "physical mapping.",
           py::arg("lookahead") = 10);
+
+  py::class_<
+      AASRouteRoutingMethod, std::shared_ptr<AASRouteRoutingMethod>,
+      RoutingMethod>(
+      m, "AASRouteRoutingMethod",
+      "Defines a RoutingMethod object for mapping circuits that uses the "
+      "architecture aware synthesis method implemented in tket.")
+      .def(
+          py::init<unsigned>(),
+          "AASRouteRoutingMethod constructor.\n\n:param aaslookahead: "
+          "recursive interation depth of the architecture aware synthesis."
+          "method.",
+          py::arg("aaslookahead"));
+
+  py::class_<
+      AASLabellingMethod, std::shared_ptr<AASLabellingMethod>, RoutingMethod>(
+      m, "AASLabellingMethod",
+      "Defines a Labeling Method for aas for labelling all unplaced qubits in "
+      "a circuit")
+      .def(py::init<>(), "AASLabellingMethod constructor.");
 
   py::class_<
       LexiLabellingMethod, std::shared_ptr<LexiLabellingMethod>, RoutingMethod>(

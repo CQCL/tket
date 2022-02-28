@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include "Mapping/AASLabelling.hpp"
+#include "Mapping/AASRoute.hpp"
 #include "Mapping/BoxDecomposition.hpp"
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRouteRoutingMethod.hpp"
