@@ -35,7 +35,7 @@ Minor new features:
 * New ``pytket.passes.NaivePlacementPass`` which completes a basic relabelling of all Circuit Qubit
   not labelled as some Architecture Node to any available Architecture Node
 * Add ``opgroups`` property to ``Circuit``.
-* ``Architecture`` has new ``valid_operations`` method which returns true if passed UnitID respect 
+* ``Architecture`` has new ``valid_operation`` method which returns true if passed UnitIDs that respect 
   architecture constraints.
 * New methods for mapping logical to physical circuits for some ``Architecture``: ``LexiRouteRoutingMethod``
   ``LexiLabellingMethod``, ``MultiGateReorderRoutingMethod``.
