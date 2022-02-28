@@ -254,9 +254,9 @@ void MappingFrontier::advance_frontier_boundary(
             this->circuit_, this->linear_boundary);
     std::cout << "Boolean boundary: " << std::endl;
     for (auto it = boolean_boundary->get<TagKey>().begin();
-       it != boolean_boundary->get<TagKey>().end(); ++it) {
-        std::cout << it->first.repr() << " " << it->second.size() << std::endl;
-       }
+         it != boolean_boundary->get<TagKey>().end(); ++it) {
+      std::cout << it->first.repr() << " " << it->second.size() << std::endl;
+    }
 
     CutFrontier next_cut =
         this->circuit_.next_cut(l_frontier_edges, this->boolean_boundary);
@@ -265,7 +265,8 @@ void MappingFrontier::advance_frontier_boundary(
     // next_cut.u_frontier)
     // update boolean_boundary in line
     for (const Vertex& vert : *next_cut.slice) {
-      std::cout << "\nVertex: " << vert << " " << circuit_.get_OpDesc_from_Vertex(vert).name() << std::endl;
+      std::cout << "\nVertex: " << vert << " "
+                << circuit_.get_OpDesc_from_Vertex(vert).name() << std::endl;
       // for each boolean edge into vertex, collect associated Bit and port
       // number n.b. a single Bit may have multiple "in bundles" to different
       // vertices in the same cut
@@ -279,7 +280,7 @@ void MappingFrontier::advance_frontier_boundary(
         }
       }
       std::cout << "boolean bits: ";
-      for(auto x : bool_uid_port_set){
+      for (auto x : bool_uid_port_set) {
         std::cout << x.first.repr() << " ";
       }
       std::cout << std::endl;
@@ -298,7 +299,7 @@ void MappingFrontier::advance_frontier_boundary(
         nodes.push_back(Node(uid));
       }
       std::cout << "unit ids: ";
-      for(auto x : l_uids){
+      for (auto x : l_uids) {
         std::cout << x.repr() << " ";
       }
       std::cout << std::endl;
@@ -329,7 +330,7 @@ void MappingFrontier::advance_frontier_boundary(
         }
       }
       std::cout << "potential extra bool: ";
-      for(auto x : extra_bool_uid_port_set){
+      for (auto x : extra_bool_uid_port_set) {
         std::cout << x.first.repr() << " ";
       }
       std::cout << std::endl;
@@ -360,9 +361,9 @@ void MappingFrontier::advance_frontier_boundary(
               this->circuit_.get_b_out_bundles(vert);
           std::cout << "\n\nBit: " << it->first.repr() << std::endl;
           std::cout << "Out bundle: " << std::endl;
-          for(auto e : out_bundles){
+          for (auto e : out_bundles) {
             std::cout << e.size() << " ";
-            for(auto ev : e ){
+            for (auto ev : e) {
               std::cout << ev << " ";
             }
             std::cout << std::endl;
@@ -377,9 +378,9 @@ void MappingFrontier::advance_frontier_boundary(
           std::vector<EdgeVec> in_bundles =
               this->circuit_.get_b_in_bundles(vert);
           std::cout << "In bundle: " << std::endl;
-          for(auto e : in_bundles){
+          for (auto e : in_bundles) {
             std::cout << e.size() << " ";
-            for(auto ev : e ){
+            for (auto ev : e) {
               std::cout << ev << " ";
             }
             std::cout << std::endl;
@@ -395,7 +396,7 @@ void MappingFrontier::advance_frontier_boundary(
           // Edge
           std::cout << "Boolean boundary: " << jt->second.size() << std::endl;
           EdgeVec new_boolean_edges;
-          for(auto e : jt->second){
+          for (auto e : jt->second) {
             std::cout << e << " ";
           }
           std::cout << std::endl;
@@ -412,10 +413,9 @@ void MappingFrontier::advance_frontier_boundary(
           }
 
           // boolean no longer needed
-          if(new_boolean_edges.size() == 0){
+          if (new_boolean_edges.size() == 0) {
             this->boolean_boundary->erase(jt);
-          }
-          else{
+          } else {
             // replace boolean boundary
             this->boolean_boundary->replace(jt, {bit, new_boolean_edges});
           }
@@ -438,8 +438,9 @@ void MappingFrontier::advance_frontier_boundary(
             // Measure always create a boolean, even if empty of edges
             // => check size before adding
             if (new_boolean_wire.size() > 0) {
-              std::cout << "New boolean wire: " << it->first.repr() << std::endl;
-              for(auto e : new_boolean_wire){
+              std::cout << "New boolean wire: " << it->first.repr()
+                        << std::endl;
+              for (auto e : new_boolean_wire) {
                 std::cout << e << " ";
               }
               std::cout << std::endl;
