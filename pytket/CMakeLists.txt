@@ -70,6 +70,7 @@ endif()
 pybind11_add_module(mapping binders/mapping.cpp)
 target_include_directories(mapping PRIVATE binders/include)
 target_link_libraries(mapping PRIVATE
+    tket-ArchAwareSynth
     tket-Architecture
     tket-Characterisation
     tket-Circuit
@@ -78,6 +79,9 @@ target_link_libraries(mapping PRIVATE
     tket-Mapping
     tket-Ops
     tket-OpType
+    tket-PauliGraph
+    tket-Placement    
+    tket-Transformations
     tket-TokenSwapping
     tket-Utils)
 

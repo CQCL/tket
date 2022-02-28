@@ -78,7 +78,9 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/test_MappingManager.cpp
     ${TKET_TESTS_DIR}/test_LexicographicalComparison.cpp
     ${TKET_TESTS_DIR}/test_LexiRoute.cpp
+    ${TKET_TESTS_DIR}/test_AASRoute.cpp
     ${TKET_TESTS_DIR}/test_MultiGateReorder.cpp
+    ${TKET_TESTS_DIR}/test_BoxDecompRoutingMethod.cpp
     ${TKET_TESTS_DIR}/test_RoutingPasses.cpp
     ${TKET_TESTS_DIR}/test_DeviceCharacterisation.cpp
     ${TKET_TESTS_DIR}/test_Clifford.cpp

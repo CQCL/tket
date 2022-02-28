@@ -12,8 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket.circuit import Node  # type: ignore
+from pytket.circuit import Node, Op, OpType, Circuit, Qubit, PhasePolyBox  # type: ignore
 from pytket.architecture import Architecture, SquareGrid, FullyConnected  # type: ignore
+import numpy as np
 
 
 def test_architectures() -> None:
@@ -78,8 +79,25 @@ def test_arch_types() -> None:
     assert isinstance(sg, SquareGrid)
 
 
+def test_valid_operation() -> None:
+    edges = [(0, 1), (1, 2), (2, 0), (0, 3), (3, 4), (4, 5), (5, 6)]
+    arc = Architecture(edges)
+
+    assert not arc.valid_operation([Node(1), Node(3)])
+    assert arc.valid_operation([Node(0)])
+    assert arc.valid_operation([Node(0), Node(1)])
+    assert not arc.valid_operation([Node(0), Node(1), Node(2)])
+    assert not arc.valid_operation([Node(10)])
+    assert not arc.valid_operation([Node(10), Node(11), Node(15)])
+    assert not arc.valid_operation([Node(0), Node(1), Node(2), Node(3)])
+    assert not arc.valid_operation([Node(0), Node(4)])
+    assert not arc.valid_operation([Node(0), Node(1), Node(2)])
+    assert not arc.valid_operation([Node(0), Node(1), Node(4)])
+
+
 if __name__ == "__main__":
     test_architectures()
     test_architecture_eq()
     test_fully_connected()
     test_arch_types()
+    test_valid_operation()

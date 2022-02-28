@@ -517,6 +517,43 @@ CutFrontier Circuit::next_cut(
       get_next_b_frontier(*this, b_frontier, u_frontier, next_slice_lookup)};
 }
 
+CutFrontier Circuit::next_q_cut(
+    std::shared_ptr<const unit_frontier_t> u_frontier) const {
+  auto next_slice = std::make_shared<Slice>();
+  VertexSet next_slice_lookup;
+  VertexSet bad_vertices;
+  EdgeSet edge_lookup;
+  for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
+    edge_lookup.insert(pair.second);
+  }
+
+  // find the next slice first
+  for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
+    Vertex try_v = target(pair.second);
+    if (detect_final_Op(try_v)) continue;
+    if (next_slice_lookup.contains(try_v))
+      continue;  // already going to be in next slice
+    bool good_vertex = !bad_vertices.contains(try_v);
+    if (!good_vertex) continue;
+    EdgeVec ins = get_in_edges(try_v);
+    for (const Edge& in : ins) {
+      if (!edge_lookup.contains(in) && get_edgetype(in) == EdgeType::Quantum) {
+        good_vertex = false;
+        bad_vertices.insert(try_v);
+        break;
+      }
+    }
+    if (good_vertex) {
+      next_slice_lookup.insert(try_v);
+      next_slice->push_back(try_v);
+    }
+  }
+
+  return {
+      next_slice, get_next_u_frontier(*this, u_frontier, next_slice_lookup),
+      std::make_shared<b_frontier_t>()};
+}
+
 SliceVec Circuit::get_reverse_slices() const {
   vertex_map_t mapping;
   vertex_map_t rev_mapping;

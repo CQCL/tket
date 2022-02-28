@@ -43,7 +43,7 @@ bool MappingManager::route_circuit_with_maps(
 
   // mapping_frontier tracks boundary between routed & un-routed in circuit
   // when initialised, boundary is over output edges of input vertices
-  std::shared_ptr<MappingFrontier> mapping_frontier;
+  MappingFrontier_ptr mapping_frontier;
   if (maps) {
     mapping_frontier = std::make_shared<MappingFrontier>(circuit, maps);
   } else {
@@ -55,13 +55,12 @@ bool MappingManager::route_circuit_with_maps(
 
   auto check_finish = [&mapping_frontier]() {
     for (const std::pair<UnitID, VertPort>& pair :
-         mapping_frontier->quantum_boundary->get<TagKey>()) {
+         mapping_frontier->linear_boundary->get<TagKey>()) {
       Edge e = mapping_frontier->circuit_.get_nth_out_edge(
           pair.second.first, pair.second.second);
       Vertex v = mapping_frontier->circuit_.target(e);
-
-      if (!is_final_q_type(
-              mapping_frontier->circuit_.get_OpType_from_Vertex(v))) {
+      OpType ot = mapping_frontier->circuit_.get_OpType_from_Vertex(v);
+      if (!is_final_q_type(ot) && ot != OpType::ClOutput) {
         return false;
       }
     }

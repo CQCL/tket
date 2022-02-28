@@ -1288,6 +1288,35 @@ SCENARIO("Test next slice") {
   }
 }
 
+SCENARIO("Test next quantum slice") {
+  GIVEN("A simple circuit") {
+    Circuit circ(3, 1);
+    Vertex v1 = circ.add_op<unsigned>(OpType::X, {0});
+    Vertex v2 =
+        circ.add_conditional_gate<unsigned>(OpType::Rx, {0.6}, {1}, {0}, 1);
+    Vertex v3 =
+        circ.add_conditional_gate<unsigned>(OpType::Ry, {0.6}, {2}, {0}, 1);
+    Vertex v4 = circ.add_op<unsigned>(OpType::S, {2});
+    Vertex v5 = circ.add_op<unsigned>(OpType::T, {1});
+
+    auto frontier = std::make_shared<unit_frontier_t>();
+    for (const Qubit& q : circ.all_qubits()) {
+      Vertex in = circ.get_in(q);
+      frontier->insert({q, circ.get_nth_out_edge(in, 0)});
+    }
+    CutFrontier slice_front = circ.next_q_cut(frontier);
+    Slice sl = *slice_front.slice;
+    WHEN("The frontier is calculated from inputs") {
+      THEN("The first slice is recovered accurately.") {
+        REQUIRE(sl.size() == 3);
+        REQUIRE(sl[0] == v1);
+        REQUIRE(sl[1] == v2);
+        REQUIRE(sl[2] == v3);
+      }
+    }
+  }
+}
+
 SCENARIO("Test circuit.transpose() method") {
   GIVEN("Simple circuit") {
     Circuit circ(2);

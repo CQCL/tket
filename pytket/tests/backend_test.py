@@ -24,7 +24,7 @@ import numpy as np
 from pytket.circuit import Circuit, OpType, BasisOrder, Qubit, Bit, Node  # type: ignore
 from pytket.predicates import CompilationUnit  # type: ignore
 from pytket.passes import PauliSimp, CliffordSimp, ContextSimp  # type: ignore
-from pytket.mapping import MappingManager, LexiRouteRoutingMethod  # type: ignore
+from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
 from pytket.architecture import Architecture  # type: ignore
 from pytket.utils.outcomearray import OutcomeArray, readout_counts
 from pytket.utils.prepare import prepare_circuit
@@ -528,7 +528,7 @@ def test_postprocess_3() -> None:
 
     mm = MappingManager(arc)
     rc = c.copy()
-    mm.route_circuit(rc, [LexiRouteRoutingMethod()])
+    mm.route_circuit(rc, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
     n_shots = 100
     h = b.process_circuit(b.get_compiled_circuit(c), n_shots=n_shots, postprocess=True)
     r = b.get_result(h)

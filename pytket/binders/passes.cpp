@@ -15,6 +15,8 @@
 #include <pybind11/functional.h>
 
 #include "ArchAwareSynth/SteinerForest.hpp"
+#include "Mapping/LexiLabelling.hpp"
+#include "Mapping/LexiRoute.hpp"
 #include "Mapping/RoutingMethod.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
@@ -33,8 +35,9 @@ namespace tket {
 
 static PassPtr gen_cx_mapping_pass_kwargs(
     const Architecture &arc, const PlacementPtr &placer, py::kwargs kwargs) {
-  RoutingMethodPtr method = std::make_shared<LexiRouteRoutingMethod>();
-  std::vector<RoutingMethodPtr> config = {method};
+  std::vector<RoutingMethodPtr> config = {
+      std::make_shared<LexiLabellingMethod>(),
+      std::make_shared<LexiRouteRoutingMethod>()};
   if (kwargs.contains("config")) {
     config = py::cast<std::vector<RoutingMethodPtr>>(kwargs["config"]);
   }
@@ -50,8 +53,9 @@ static PassPtr gen_cx_mapping_pass_kwargs(
 }
 
 static PassPtr gen_default_routing_pass(const Architecture &arc) {
-  RoutingMethodPtr method = std::make_shared<LexiRouteRoutingMethod>();
-  std::vector<RoutingMethodPtr> config = {method};
+  std::vector<RoutingMethodPtr> config = {
+      std::make_shared<LexiLabellingMethod>(),
+      std::make_shared<LexiRouteRoutingMethod>()};
   return gen_routing_pass(arc, config);
 }
 

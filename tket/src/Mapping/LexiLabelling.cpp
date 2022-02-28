@@ -11,30 +11,26 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-#pragma once
-
-#include "Mapping/AASLabelling.hpp"
-#include "Mapping/AASRoute.hpp"
-#include "Mapping/BoxDecomposition.hpp"
 #include "Mapping/LexiLabelling.hpp"
-#include "Mapping/LexiRouteRoutingMethod.hpp"
-#include "Mapping/MultiGateReorder.hpp"
-#include "Mapping/RoutingMethod.hpp"
-#include "Utils/Json.hpp"
 
 namespace tket {
 
-void to_json(nlohmann::json& j, const RoutingMethod& rm);
+std::pair<bool, unit_map_t> LexiLabellingMethod::routing_method(
+    MappingFrontier_ptr& mapping_frontier,
+    const ArchitecturePtr& architecture) const {
+  LexiRoute lr(architecture, mapping_frontier);
+  return {lr.solve_labelling(), {}};
+}
 
-void from_json(const nlohmann::json& /*j*/, RoutingMethod& rm);
+nlohmann::json LexiLabellingMethod::serialize() const {
+  nlohmann::json j;
+  j["name"] = "LexiLabellingMethod";
+  return j;
+}
 
-JSON_DECL(RoutingMethod);
-
-void to_json(nlohmann::json& j, const std::vector<RoutingMethodPtr>& rmp_v);
-
-void from_json(const nlohmann::json& j, std::vector<RoutingMethodPtr>& rmp_v);
-
-JSON_DECL(std::vector<RoutingMethodPtr>);
+LexiLabellingMethod LexiLabellingMethod::deserialize(
+    const nlohmann::json& /*j*/) {
+  return LexiLabellingMethod();
+}
 
 }  // namespace tket
