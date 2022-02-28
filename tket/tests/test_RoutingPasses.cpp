@@ -337,7 +337,6 @@ SCENARIO("Default mapping pass delays measurements") {
 SCENARIO(
     "Methods related to correct routing and decomposition of circuits with "
     "classical wires.") {
-  std::cout << "Classical Wires" << std::endl;
   GIVEN("A circuit with classical wires on CX gates.") {
     Architecture test_arc({{0, 1}, {1, 2}});
     Circuit circ(3, 2);
