@@ -37,7 +37,7 @@ Minor new features:
 * Add ``opgroups`` property to ``Circuit``.
 * ``Architecture`` has new ``valid_operation`` method which returns true if passed UnitIDs that respect 
   architecture constraints.
-* New methods for mapping logical to physical circuits for some ``Architecture``: ``LexiRouteRoutingMethod``
+* New methods for mapping logical to physical circuits for some ``Architecture``: ``LexiRouteRoutingMethod``,
   ``LexiLabellingMethod``, ``MultiGateReorderRoutingMethod``.
   
 0.19.2 (February 2022)
