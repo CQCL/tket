@@ -224,15 +224,15 @@ bool LexiRoute::set_interacting_uids(
           }
           ++jt;
         }
-      } else if (
-          n_edges > 2 &&
-          this->mapping_frontier_->circuit_.get_OpType_from_Vertex(v0) !=
-              OpType::Barrier) {
-        if (label_check) return true;
-        if (route_check) return false;
-        throw LexiRouteError(
-            "LexiRoute only supports non-Barrier vertices with 1 or 2 edges.");
-      }
+      } /* else if (
+           n_edges > 2 &&
+           this->mapping_frontier_->circuit_.get_OpType_from_Vertex(v0) !=
+               OpType::Barrier) {
+         if (label_check) return true;
+         if (route_check) return false;
+         throw LexiRouteError(
+             "LexiRoute only supports non-Barrier vertices with 1 or 2 edges.");
+       }*/
     }
   }
 
@@ -247,7 +247,10 @@ bool LexiRoute::set_interacting_uids(
   // this should have left early when first found
   if (route_check) {
     if (all_placed) {
-      return true;
+      if (interacting_uids_.size() > 0) {
+        return true;
+      }
+      return false;
     } else {
       return false;
     }
