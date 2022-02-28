@@ -35,7 +35,6 @@ Minor new features:
 * New ``pytket.passes.NaivePlacementPass`` which completes a basic relabelling of all Circuit Qubit
   not labelled as some Architecture Node to any available Architecture Node
 * Add ``opgroups`` property to ``Circuit``.
-* Add ``MultiGateReorderRoutingMethod`` and ``BoxDecompositionRoutingMethod`` routing methods.
 
 0.19.2 (February 2022)
 ----------------------
