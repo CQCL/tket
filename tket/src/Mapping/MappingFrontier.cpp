@@ -36,7 +36,7 @@ UnitID get_unitid_from_unit_frontier(
  * bit_frontier_t is <Bit, EdgeVec>, helper function returns
  * Bit corresponding to given Edge
  */
-Bit get_bit_from_bool_frontier(
+static Bit get_bit_from_bool_frontier(
     const std::shared_ptr<b_frontier_t>& b_frontier, const EdgeVec& ev) {
   TKET_ASSERT(ev.size() > 0);
   // condition is that if one Edge in EdgeVector ev is in a
