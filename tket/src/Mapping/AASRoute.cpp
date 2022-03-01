@@ -25,7 +25,7 @@ std::pair<bool, unit_map_t> AASRouteRoutingMethod::routing_method(
     const ArchitecturePtr& architecture) const {
   std::shared_ptr<unit_frontier_t> next_frontier =
       frontier_convert_vertport_to_edge(
-          mapping_frontier->circuit_, mapping_frontier->quantum_boundary);
+          mapping_frontier->circuit_, mapping_frontier->linear_boundary);
 
   CutFrontier next_cut = mapping_frontier->circuit_.next_cut(
       next_frontier, std::make_shared<b_frontier_t>());
