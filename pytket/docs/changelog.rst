@@ -6,6 +6,14 @@ x.y.z (unreleased)
 
 API changes:
 
+* ``Rebase<Target>`` and ``SquahsHQS`` methods are removed. Specifically:
+  * ``RebaseHQS``
+  * ``RebaseProjectQ``
+  * ``RebasePyZX``
+  * ``RebaseQuil``
+  * ``RebaseUMD``
+  * ``RebaseUFR``
+  * ``RebaseOQC``
 * The deprecated ``QubitPauliString.to_dict`` method is removed. (Use the
   ``map`` property instead.)
 * The deprecated ``Backend.compile_circuit`` method is removed. (Use
