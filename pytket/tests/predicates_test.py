@@ -46,16 +46,7 @@ from pytket.passes import (  # type: ignore
     DecomposeBoxes,
     PeepholeOptimise2Q,
     FullPeepholeOptimise,
-    RebaseCirq,
-    RebaseHQS,
-    RebaseProjectQ,
-    RebasePyZX,
-    RebaseQuil,
     RebaseTket,
-    RebaseUMD,
-    RebaseUFR,
-    RebaseOQC,
-    SquashHQS,
     FlattenRegisters,
     SquashCustom,
     DelayMeasures,
@@ -67,6 +58,7 @@ from pytket.passes import (  # type: ignore
     SimplifyInitial,
     RemoveBarriers,
     PauliSquash,
+    auto_rebase_pass,
 )
 from pytket.predicates import (  # type: ignore
     GateSetPredicate,
@@ -344,7 +336,7 @@ def test_RebaseOQC_and_SynthesiseOQC() -> None:
     u_before_oqc = circ3.get_unitary()
     assert np.allclose(u, u_before_oqc)
 
-    RebaseOQC().apply(circ3)
+    auto_rebase_pass(oqc_gateset).apply(circ3)
     assert oqc_gateset_pred.verify(circ3)
     u_before_rebase_tket = circ3.get_unitary()
     assert np.allclose(u, u_before_rebase_tket)
@@ -586,14 +578,7 @@ def test_library_pass_config() -> None:
         FullPeepholeOptimise().to_dict()["StandardPass"]["name"]
         == "FullPeepholeOptimise"
     )
-    assert RebaseCirq().to_dict()["StandardPass"]["name"] == "RebaseCirq"
-    assert RebaseHQS().to_dict()["StandardPass"]["name"] == "RebaseHQS"
-    assert RebaseProjectQ().to_dict()["StandardPass"]["name"] == "RebaseProjectQ"
-    assert RebasePyZX().to_dict()["StandardPass"]["name"] == "RebasePyZX"
-    assert RebaseQuil().to_dict()["StandardPass"]["name"] == "RebaseQuil"
     assert RebaseTket().to_dict()["StandardPass"]["name"] == "RebaseTket"
-    assert RebaseUMD().to_dict()["StandardPass"]["name"] == "RebaseUMD"
-    assert RebaseUFR().to_dict()["StandardPass"]["name"] == "RebaseUFR"
     assert (
         RemoveRedundancies().to_dict()["StandardPass"]["name"] == "RemoveRedundancies"
     )
@@ -601,12 +586,6 @@ def test_library_pass_config() -> None:
     assert SynthesiseTket().to_dict()["StandardPass"]["name"] == "SynthesiseTket"
     assert SynthesiseOQC().to_dict()["StandardPass"]["name"] == "SynthesiseOQC"
     assert SynthesiseUMD().to_dict()["StandardPass"]["name"] == "SynthesiseUMD"
-    # Share name with SquashCustom
-    assert SquashHQS().to_dict()["StandardPass"]["name"] == "SquashCustom"
-    assert set(SquashHQS().to_dict()["StandardPass"]["basis_singleqs"]) == {
-        "Rz",
-        "PhasedX",
-    }
     assert FlattenRegisters().to_dict()["StandardPass"]["name"] == "FlattenRegisters"
     assert DelayMeasures().to_dict()["StandardPass"]["name"] == "DelayMeasures"
 
