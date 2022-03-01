@@ -1,0 +1,22 @@
+name: create pull-request for tket v2 
+
+on:
+  pull_request:
+    branches:
+      - develop
+    types: [closed]
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: pull-request
+        uses: repo-sync/pull-request@v2
+        with:
+          source_branch: "${{github.head_ref}}"
+          destination_branch: "develop_v2"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pr_label: "tketv2, automated pr"
+          pr_title: '[V2] ${{ github.event.pull_request.title }}'
