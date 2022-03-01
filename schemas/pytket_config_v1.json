@@ -4,21 +4,12 @@
     "type": "object",
     "description": "Configuration file for pytket. Stored at ~/.config/pytket/config.json",
     "properties": {
-        "enable_telemetry": {
-            "type": "boolean",
-            "description": "Whether pytket telemetry is enabled."
-        },
-        "telemetry_id": {
-            "type": ["string", "null"],
-            "description": "Unique identifier for system if telemetry is enabled."
-        },
         "extensions": {
             "type": "object",
             "description": "Configuration parameters for pytket extension packages."
         }
     },
     "required": [
-        "enable_telemetry",
         "extensions"
     ]
 }
