@@ -25,13 +25,12 @@ import pytket.architecture
 import pytket.placement
 import pytket.transform
 from pytket.config import PytketConfig, get_config_file_path
+from pytket._version import __version__
 
 # Create pytket config file if it does not exist:
 pytket_config_file = get_config_file_path()
 if not pytket_config_file.exists():
     config = PytketConfig.default()
     config.write_file(pytket_config_file)
-
-from pytket._version import __version__
 
 __path__ = __import__("pkgutil").extend_path(__path__, __name__)  # type: ignore
