@@ -32,6 +32,7 @@ API changes:
   ``Backend.backend_info`` instead.)
 * The ``QubitPauliOperator.from_OpenFermion`` and
   ``QubitPauliOperator.to_OpenFermion`` methods are removed.
+* The ``pytket.program`` module is removed.
 
 Major new features:
 
