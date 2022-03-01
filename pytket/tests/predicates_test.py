@@ -67,7 +67,12 @@ from pytket.predicates import (  # type: ignore
     CompilationUnit,
     UserDefinedPredicate,
 )
-from pytket.mapping import LexiLabellingMethod, LexiRouteRoutingMethod  # type: ignore
+from pytket.mapping import (  # type: ignore
+    LexiLabellingMethod,
+    LexiRouteRoutingMethod,
+    MultiGateReorderRoutingMethod,
+    BoxDecompositionRoutingMethod,
+)
 from pytket.architecture import Architecture  # type: ignore
 from pytket.placement import Placement, GraphPlacement  # type: ignore
 from pytket.transform import Transform, PauliSynthStrat, CXConfigType  # type: ignore
@@ -664,7 +669,14 @@ def test_generated_pass_config() -> None:
     ]
     # FullMappingPass
     fm_pass = FullMappingPass(
-        arc, placer, config=[LexiLabellingMethod(), LexiRouteRoutingMethod()]
+        arc,
+        placer,
+        config=[
+            LexiLabellingMethod(),
+            LexiRouteRoutingMethod(),
+            MultiGateReorderRoutingMethod(),
+            BoxDecompositionRoutingMethod(),
+        ],
     )
     assert fm_pass.to_dict()["pass_class"] == "SequencePass"
     p_pass = fm_pass.get_sequence()[0]
@@ -675,6 +687,22 @@ def test_generated_pass_config() -> None:
     assert p_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"
     assert check_arc_dict(arc, r_pass.to_dict()["StandardPass"]["architecture"])
     assert p_pass.to_dict()["StandardPass"]["placement"]["type"] == "GraphPlacement"
+    assert r_pass.to_dict()["StandardPass"]["routing_config"] == [
+        {"name": "LexiLabellingMethod"},
+        {
+            "name": "LexiRouteRoutingMethod",
+            "depth": 10,
+        },
+        {
+            "name": "MultiGateReorderRoutingMethod",
+            "depth": 10,
+            "size": 10,
+        },
+        {"name": "BoxDecompositionRoutingMethod"},
+    ]
+    assert r_pass.to_dict()["StandardPass"]["routing_config"][3] == {
+        "name": "BoxDecompositionRoutingMethod"
+    }
     # DefaultMappingPass
     dm_pass = DefaultMappingPass(arc)
     assert dm_pass.to_dict()["pass_class"] == "SequencePass"
