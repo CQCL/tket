@@ -37,7 +37,7 @@ Major new features:
 
 * New methods for mapping logical to physical circuits for some ``Architecture``.
   The new method will use a list of user given method, each of them suitable only 
-  for a specific set of sub circuits. Users can add there own methods if they want to.
+  for a specific set of subcircuits. Users can add their own methods if they want to.
   Take a look on the `mapping_example <https://github.com/CQCL/pytket/blob/main/examples/mapping_example.ipynb>`_
   notebook to find out more. All compiler passes in pytket are updated to use the new methods.
   The methods already given by pytket are ``LexiRouteRoutingMethod``,
