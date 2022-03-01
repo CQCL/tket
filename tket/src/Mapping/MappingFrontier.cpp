@@ -274,7 +274,7 @@ void MappingFrontier::advance_frontier_boundary(
       }
 
       // for each quantum edge into vertex, collect associated Qubit/Node
-      // don't collect port as this->quantum_boundary holds this
+      // don't collect port as this->linear_boundary holds this
       // each UnitID will only have one quantum edge active
       std::vector<UnitID> l_uids;  // linear unit id
       std::vector<Node> nodes;     // quantum/node only
