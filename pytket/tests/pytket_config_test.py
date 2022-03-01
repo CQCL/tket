@@ -58,11 +58,6 @@ def test_pytket_config() -> None:
 
     config = load_config_file()
 
-    assert isinstance(config.enable_telemetry, bool)
-    if config.enable_telemetry:
-        assert isinstance(config.telemetry_id, str)
-    else:
-        assert config.telemetry_id is None
     assert isinstance(config.extensions, dict)
 
 

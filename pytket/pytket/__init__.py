@@ -24,7 +24,6 @@ import pytket.mapping
 import pytket.architecture
 import pytket.placement
 import pytket.transform
-import pytket.telemetry
 
 from pytket._version import __version__
 
