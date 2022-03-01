@@ -85,7 +85,6 @@ basic_pass:
     | simplify_initial
     | simplify_initial_no_classical
     | simplify_measured
-    | squash_hqs
     | synthesise_hqs
     | synthesise_tket
     | synthesise_oqc
