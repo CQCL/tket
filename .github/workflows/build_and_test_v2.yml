@@ -1,13 +1,12 @@
-name: Build and test
+name: Build and test v2
 
 on:
   pull_request:
     branches:
-      - main
-      - develop
+      - develop_v2
   push:
     branches:
-      - develop
+      - develop_v2
   schedule:
     # 03:00 every Saturday morning
     - cron: '0 3 * * 6'
@@ -385,7 +384,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: C:\Users\runneradmin\.conan\data\tket
-        key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-15
+        key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-v2-1
     - name: Build tket
       if: steps.cache-tket.outputs.cache-hit != 'true'
       run: conan create --profile=tket recipes/tket

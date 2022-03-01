@@ -1,12 +1,12 @@
-name: Analyse tket C++ test coverage
+name: Analyse tket C++ test coverage v2
 
 on:
   pull_request:
     branches:
-      - develop
+      - develop_v2
   push:
     branches:
-      - develop
+      - develop_v2
 
 jobs:
 
@@ -116,11 +116,11 @@ jobs:
         git config --global user.email "tket-bot@cambridgequantum.com"
         git config --global user.name  "«$GITHUB_WORKFLOW» github action"
     - name: Remove old report
-      run: git rm -r docs/tket/test-coverage
+      run: git rm -r docs/tket-v2/test-coverage
     - name: Add report to repository
       run: |
-        mv test-coverage/ docs/tket/
-        git add -f docs/tket/test-coverage
+        mv test-coverage/ docs/tket-v2/
+        git add -f docs/tket-v2/test-coverage
         git commit --allow-empty -m "Add generated coverage report."
     - name: Publish report
       run: git push origin gh-pages:gh-pages
@@ -139,5 +139,5 @@ jobs:
         path: test-coverage/
     - name: Compare with latest report from develop
       run: |
-        wget https://cqcl.github.io/tket/tket/test-coverage/summary.txt
+        wget https://cqcl.github.io/tket/tket-v2/test-coverage/summary.txt
         ./.github/workflows/compare-coverage summary.txt test-coverage/summary.txt
