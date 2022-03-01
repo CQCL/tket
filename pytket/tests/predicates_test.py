@@ -586,7 +586,6 @@ def test_library_pass_config() -> None:
     assert SynthesiseTket().to_dict()["StandardPass"]["name"] == "SynthesiseTket"
     assert SynthesiseOQC().to_dict()["StandardPass"]["name"] == "SynthesiseOQC"
     assert SynthesiseUMD().to_dict()["StandardPass"]["name"] == "SynthesiseUMD"
-    # Share name with SquashCustom
     assert FlattenRegisters().to_dict()["StandardPass"]["name"] == "FlattenRegisters"
     assert DelayMeasures().to_dict()["StandardPass"]["name"] == "DelayMeasures"
 
