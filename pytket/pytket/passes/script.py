@@ -127,7 +127,6 @@ remove_redundancies: "RemoveRedundancies"
 simplify_initial: "SimplifyInitial"
 simplify_initial_no_classical: "SimplifyInitialNoClassical"
 simplify_measured: "SimplifyMeasured"
-squash_hqs: "SquashHQS"
 synthesise_hqs: "SynthesiseHQS"
 synthesise_tket: "SynthesiseTket"
 synthesise_oqc: "SynthesiseOQC"
@@ -278,9 +277,6 @@ class PassTransformer(Transformer):
 
     def simplify_measured(self, t: List) -> BasePass:
         return SimplifyMeasured()
-
-    def squash_hqs(self, t: List) -> BasePass:
-        return SquashHQS()
 
     def synthesise_hqs(self, t: List) -> BasePass:
         return SynthesiseHQS()
