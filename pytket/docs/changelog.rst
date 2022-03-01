@@ -25,6 +25,17 @@ API changes:
 * The ``QubitPauliOperator.from_OpenFermion`` and
   ``QubitPauliOperator.to_OpenFermion`` methods are removed.
 
+Major new features:
+
+* New methods for mapping logical to physical circuits for some ``Architecture``.
+  The new method will use a list of user given method, each of them suitable only 
+  for a specific set of sub circuits. Users can add there own methods if they want to.
+  Take a look on the `mapping_example <https://github.com/CQCL/pytket/blob/main/examples/mapping_example.ipynb>`_
+  notebook to find out more. All compiler passes in pytket are updated to use the new method.
+  The methods already given by pytket are ``LexiRouteRoutingMethod``,
+  ``LexiLabellingMethod``, ``MultiGateReorderRoutingMethod``,
+  ``BoxDecompositionRoutingMethod``, ``AASRouteRoutingMethod`` and ``AASLabellingMethod``.
+
 Minor new features:
 
 * Add ``delay_measures`` option to ``DefaultMappingPass``.
@@ -37,8 +48,6 @@ Minor new features:
 * Add ``opgroups`` property to ``Circuit``.
 * ``Architecture`` has new ``valid_operation`` method which returns true if passed UnitIDs that respect 
   architecture constraints.
-* New methods for mapping logical to physical circuits for some ``Architecture``: ``LexiRouteRoutingMethod``,
-  ``LexiLabellingMethod``, ``MultiGateReorderRoutingMethod``.
   
 0.19.2 (February 2022)
 ----------------------
