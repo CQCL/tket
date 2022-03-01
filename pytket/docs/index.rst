@@ -161,7 +161,6 @@ Our telemetry data policy can be viewed in the `Telemetry Data Policy`_ page.
     pauli.rst
     passes.rst
     predicates.rst
-    program.rst
     partition.rst
     qasm.rst
     quipper.rst

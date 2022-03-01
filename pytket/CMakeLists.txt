@@ -175,20 +175,6 @@ target_link_libraries(placement PRIVATE
     tket-Utils)
 target_link_libraries(placement PRIVATE ${TKET_EXTRA_LIBS})
 
-pybind11_add_module(program binders/program.cpp)
-target_include_directories(program PRIVATE binders/include)
-target_link_libraries(program PRIVATE
-    tket-Circuit
-    tket-Gate
-    tket-Ops
-    tket-OpType
-    tket-Program
-    tket-Utils)
-target_link_libraries(program PRIVATE ${TKET_EXTRA_LIBS})
-if (WIN32)
-    # For boost::uuid:
-    target_link_libraries(program PRIVATE bcrypt)
-endif()
 
 pybind11_add_module(partition binders/partition.cpp)
 target_include_directories(partition PRIVATE binders/include)
