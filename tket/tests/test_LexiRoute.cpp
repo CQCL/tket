@@ -1123,4 +1123,37 @@ SCENARIO("Empty circuits, with and without blank wires") {
   }
 }
 
+SCENARIO("Initial map should contain all data qubits") {
+  GIVEN("An example circuit") {
+    Circuit circ(10);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[4]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[2]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[7], qubits[6]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[8], qubits[7]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[9], qubits[4]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[6], qubits[5]});
+    SquareGrid sg(4, 4);
+    // Contains initial and final map
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    // Initialise the maps by the same way it's done with CompilationUnit
+    for (const UnitID& u : circ.all_units()) {
+      maps->initial.insert({u, u});
+      maps->final.insert({u, u});
+    }
+    MappingManager mm(std::make_shared<Architecture>(sg));
+    mm.route_circuit_with_maps(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}, maps);
+    auto it = maps->initial.left.find(qubits[0]);
+    REQUIRE(it != maps->initial.left.end());
+    it = maps->initial.left.find(qubits[9]);
+    REQUIRE(it != maps->initial.left.end());
+  }
+}
+
 }  // namespace tket
