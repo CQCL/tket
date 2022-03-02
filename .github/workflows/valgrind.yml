@@ -6,6 +6,9 @@ on:
   schedule:
     # 03:00 every Monday morning
     - cron: '0 3 * * 1'
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   changes:
     runs-on: ubuntu-20.04
