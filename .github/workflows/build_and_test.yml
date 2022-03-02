@@ -12,6 +12,10 @@ on:
     # 03:00 every Saturday morning
     - cron: '0 3 * * 6'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
 
   linux:
