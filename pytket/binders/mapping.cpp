@@ -21,9 +21,11 @@
 #include "Circuit/Circuit.hpp"
 #include "Mapping/AASLabelling.hpp"
 #include "Mapping/AASRoute.hpp"
+#include "Mapping/BoxDecomposition.hpp"
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
+#include "Mapping/MultiGateReorder.hpp"
 #include "Mapping/RoutingMethodCircuit.hpp"
 #include "binder_utils.hpp"
 
@@ -105,6 +107,28 @@ PYBIND11_MODULE(mapping, m) {
       "Defines a RoutingMethod for labelling Qubits that uses the "
       "Lexicographical Comparison approach outlined in arXiv:1902.08091.")
       .def(py::init<>(), "LexiLabellingMethod constructor.");
+
+  py::class_<
+      MultiGateReorderRoutingMethod,
+      std::shared_ptr<MultiGateReorderRoutingMethod>, RoutingMethod>(
+      m, "MultiGateReorderRoutingMethod",
+      "Defines a RoutingMethod object for commuting physically permitted "
+      "multi-qubit gates to the front of the subcircuit.")
+      .def(
+          py::init<unsigned, unsigned>(),
+          "MultiGateReorderRoutingMethod constructor.\n\n:param max_depth: "
+          "Maximum number of layers of gates checked for simultaneous "
+          "commutation. "
+          "\n:param max_size: Maximum number of gates checked for simultaneous "
+          "commutation.",
+          py::arg("max_depth") = 10, py::arg("max_size") = 10);
+
+  py::class_<
+      BoxDecompositionRoutingMethod,
+      std::shared_ptr<BoxDecompositionRoutingMethod>, RoutingMethod>(
+      m, "BoxDecompositionRoutingMethod",
+      "Defines a RoutingMethod object for decomposing boxes.")
+      .def(py::init<>(), "BoxDecompositionRoutingMethod constructor.");
 
   py::class_<MappingManager>(
       m, "MappingManager",
