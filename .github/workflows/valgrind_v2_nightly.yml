@@ -34,6 +34,9 @@ jobs:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+        ref: develop2
     - name: cache ccache data
       uses: actions/cache@v2
       with:
