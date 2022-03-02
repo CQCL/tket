@@ -43,7 +43,7 @@ Major new features:
   All compiler passes in pytket are updated to use the new methods.
   The methods already given by pytket are ``LexiRouteRoutingMethod``,
   ``LexiLabellingMethod``, ``MultiGateReorderRoutingMethod``,
-  ``AASRouteRoutingMethod`` and ``AASLabellingMethod``.
+  ``AASRouteRoutingMethod``, ``BoxDecompositionRoutingMethod``, and ``AASLabellingMethod``.
 
 Minor new features:
 
