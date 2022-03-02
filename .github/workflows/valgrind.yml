@@ -3,6 +3,7 @@ on:
   pull_request:
     branches:
       - develop
+      - develop2
   schedule:
     # 03:00 every Monday morning
     - cron: '0 3 * * 1'
