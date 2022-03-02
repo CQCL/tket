@@ -33,6 +33,7 @@ API changes:
 * The ``QubitPauliOperator.from_OpenFermion`` and
   ``QubitPauliOperator.to_OpenFermion`` methods are removed.
 * The ``pytket.program`` module is removed.
+* The ``pytket.telemetry`` module is removed.
 
 Major new features:
 
