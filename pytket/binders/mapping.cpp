@@ -117,8 +117,10 @@ PYBIND11_MODULE(mapping, m) {
       .def(
           py::init<unsigned, unsigned>(),
           "MultiGateReorderRoutingMethod constructor.\n\n:param max_depth: "
-          "Maximum number of layers of gates checked for commutation, "
-          "\n:param max_size: Maximum number of gates checked for commutation.",
+          "Maximum number of layers of gates checked for simultaneous "
+          "commutation. "
+          "\n:param max_size: Maximum number of gates checked for simultaneous "
+          "commutation.",
           py::arg("max_depth") = 10, py::arg("max_size") = 10);
 
   py::class_<
