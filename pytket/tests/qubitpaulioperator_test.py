@@ -165,12 +165,15 @@ if __name__ == "__main__":
 
 
 def test_QubitPauliString_serialization() -> None:
-    qps = QubitPauliString(
+    qps0 = QubitPauliString()
+    qps1 = QubitPauliString(
         [Qubit(i) for i in range(4)], [Pauli.Y, Pauli.I, Pauli.X, Pauli.Z]
     )
-    serializable = qps.to_list()
-    assert QubitPauliString.from_list(serializable) == qps
-    assert json.loads(json.dumps(serializable)) == serializable
+    assert qps0.to_list() == []
+    for qps in [qps0, qps1]:
+        serializable = qps.to_list()
+        assert QubitPauliString.from_list(serializable) == qps
+        assert json.loads(json.dumps(serializable)) == serializable
 
 
 def test_QubitPauliOperator_serialization() -> None:

@@ -387,6 +387,7 @@ std::size_t hash_value(const QubitPauliString &qps) {
 }
 
 void to_json(nlohmann::json &j, const QubitPauliString &paulistr) {
+  j = nlohmann::json::array();
   for (const auto &[qb, pauli] : paulistr.map) {
     j.push_back({qb, pauli});
   }
