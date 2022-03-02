@@ -3,7 +3,7 @@ name: Build tket C++ documentation v2
 on:
   push:
     branches:
-      - develop_v2
+      - develop2
     paths:
       - 'tket/src/**'
 

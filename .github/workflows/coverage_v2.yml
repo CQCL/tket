@@ -3,10 +3,10 @@ name: Analyse tket C++ test coverage v2
 on:
   pull_request:
     branches:
-      - develop_v2
+      - develop2
   push:
     branches:
-      - develop_v2
+      - develop2
 
 jobs:
 

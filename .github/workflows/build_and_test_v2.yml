@@ -3,10 +3,10 @@ name: Build and test v2
 on:
   pull_request:
     branches:
-      - develop_v2
+      - develop2
   push:
     branches:
-      - develop_v2
+      - develop2
   schedule:
     # 03:00 every Saturday morning
     - cron: '0 3 * * 6'
