@@ -381,7 +381,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
   }
   GIVEN("complex coefficient") {
-    Expr ei {SymEngine::I};
+    Expr ei{SymEngine::I};
     PauliExpBox pebox({Pauli::Z}, ei);
     Expr p = pebox.get_phase();
     REQUIRE(p == ei);
