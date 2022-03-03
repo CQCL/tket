@@ -27,6 +27,41 @@
 
 namespace tket {
 
+// Checks if the initial/final maps are correct by walking through the circuit
+bool check_permutation(
+    const Circuit& circ, const std::shared_ptr<unit_bimaps_t>& bimaps) {
+  // qubits |-> nodes
+  // qubits get moved with swap gates
+  unit_bimap_t qubit_map;
+  for (auto q : circ.all_qubits()) {
+    qubit_map.left.insert({bimaps->initial.right.find(q)->second, q});
+  }
+  for (const Command& cmd : circ.get_commands()) {
+    Op_ptr op = cmd.get_op_ptr();
+    if (op->get_type() == OpType::SWAP) {
+      unit_vector_t units = cmd.get_args();
+      // swap qubits in qubit_map
+      auto it0 = qubit_map.right.find(units[0]);
+      auto it1 = qubit_map.right.find(units[1]);
+      UnitID q0 = it0->second;
+      UnitID q1 = it1->second;
+      qubit_map.right.erase(it1);
+      qubit_map.right.erase(it0);
+      qubit_map.left.insert({q1, units[0]});
+      qubit_map.left.insert({q0, units[1]});
+    }
+  }
+  // Check this agrees with the final map
+  for (auto it = qubit_map.left.begin(); it != qubit_map.left.end(); ++it) {
+    auto final_it = bimaps->final.left.find(it->first);
+    if (final_it == bimaps->final.left.end() ||
+        final_it->second != it->second) {
+      return false;
+    }
+  }
+  return true;
+}
+
 SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
   std::vector<Node> nodes = {Node("test_node", 0), Node("test_node", 1),
                              Node("test_node", 2), Node("node_test", 3),
@@ -844,8 +879,15 @@ SCENARIO("Test MappingManager with LexiRouteRoutingMethod and LexiLabelling") {
     std::vector<RoutingMethodPtr> vrm = {
         std::make_shared<LexiLabellingMethod>(lrm),
         std::make_shared<LexiRouteRoutingMethod>()};
+    // Contains initial and final map
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    // Initialise the maps by the same way it's done with CompilationUnit
+    for (const UnitID& u : circ.all_units()) {
+      maps->initial.insert({u, u});
+      maps->final.insert({u, u});
+    }
 
-    bool res = mm.route_circuit(circ, vrm);
+    bool res = mm.route_circuit_with_maps(circ, vrm, maps);
 
     PredicatePtr routed_correctly =
         std::make_shared<ConnectivityPredicate>(architecture);
@@ -854,6 +896,7 @@ SCENARIO("Test MappingManager with LexiRouteRoutingMethod and LexiLabelling") {
     dec->apply(cu0);
     REQUIRE(res);
     REQUIRE(cu0.check_all_predicates());
+    REQUIRE(check_permutation(circ, maps));
   }
   GIVEN("Square Grid Architecture, large number of gates.") {
     SquareGrid sg(5, 10);
@@ -1147,14 +1190,17 @@ SCENARIO("Initial map should contain all data qubits") {
     }
     MappingManager mm(std::make_shared<Architecture>(sg));
     mm.route_circuit_with_maps(
-        circ, {std::make_shared<LexiLabellingMethod>(),
-               std::make_shared<LexiRouteRoutingMethod>()}, maps);
-    for(auto q : qubits) {
+        circ,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        maps);
+    for (auto q : qubits) {
       REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
       REQUIRE(maps->final.left.find(q) != maps->final.left.end());
     }
+    REQUIRE(check_permutation(circ, maps));
   }
-  GIVEN("An example circuit II") {
+  GIVEN("An example circuit with remap") {
     Circuit circ(10);
     SquareGrid sg(4, 4);
     std::vector<Node> nodes = sg.get_all_nodes_vec();
@@ -1199,10 +1245,11 @@ SCENARIO("Initial map should contain all data qubits") {
     for (auto g : circ) {
       std::cout << g << std::endl;
     }
-    for(auto q : qubits) {
+    for (auto q : circ.all_qubits()) {
       REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
       REQUIRE(maps->final.left.find(q) != maps->final.left.end());
     }
+    REQUIRE(check_permutation(circ, maps));
   }
 }
 
