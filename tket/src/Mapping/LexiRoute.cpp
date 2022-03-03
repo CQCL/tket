@@ -100,6 +100,7 @@ bool LexiRoute::update_labelling() {
         this->architecture_->node_exists(Node(this->labelling_[pair.first]));
     bool uid_1_exist =
         this->architecture_->node_exists(Node(this->labelling_[pair.second]));
+    // std::cout<<"\n Interacting things: "<< pair.first.repr() << ", " << pair.second.repr() << "\n";
     if (!uid_0_exist || !uid_1_exist) {
       relabelled = true;
     }
@@ -130,6 +131,7 @@ bool LexiRoute::update_labelling() {
         uid_0_exist = true;
         // given best node, do something
       } else {
+        // Find a free or ancilla node that connects to the graph of assigned nodes
         auto root_it = this->assigned_nodes_.begin();
         while (!uid_0_exist && root_it != this->assigned_nodes_.end()) {
           Node root = *root_it;

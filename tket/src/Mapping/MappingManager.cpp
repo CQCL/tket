@@ -76,8 +76,18 @@ bool MappingManager::route_circuit_with_maps(
     bool valid_methods = false;
     for (const auto& rm : routing_methods) {
       // true => can use held routing method
+      nlohmann::json j_rm = rm->serialize();
+      std::cout << "Try method: "<< j_rm["name"] <<"\n";
+      std::cout<<"\nInitial Map before route\n";
+      for (auto mit = mapping_frontier->bimaps_->initial.left.begin(); mit != mapping_frontier->bimaps_->initial.left.end(); ++mit) {
+        std::cout<<"("<< mit->first.repr()<< ", " <<mit->second.repr() <<")\n";
+      }
       std::pair<bool, unit_map_t> bool_map =
           rm->routing_method(mapping_frontier, this->architecture_);
+      std::cout<<"\nInitial Map after route\n";
+      for (auto mit = mapping_frontier->bimaps_->initial.left.begin(); mit != mapping_frontier->bimaps_->initial.left.end(); ++mit) {
+        std::cout<<"("<< mit->first.repr()<< ", " <<mit->second.repr() <<")\n";
+      }
       if (bool_map.first) {
         valid_methods = true;
         if (bool_map.second.size() > 0) {
