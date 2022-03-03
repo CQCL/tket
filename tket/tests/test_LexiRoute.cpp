@@ -1153,7 +1153,56 @@ SCENARIO("Initial map should contain all data qubits") {
       REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
       REQUIRE(maps->final.left.find(q) != maps->final.left.end());
     }
+  }
+  GIVEN("An example circuit II") {
+    Circuit circ(10);
+    SquareGrid sg(4, 4);
+    std::vector<Node> nodes = sg.get_all_nodes_vec();
+    std::vector<Qubit> qubits = circ.all_qubits();
 
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[4]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[2]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[7], qubits[6]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[8], qubits[7]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[9], qubits[4]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[6], qubits[5]});
+
+    std::map<UnitID, UnitID> rename_map;
+
+    for (unsigned i = 0; i < 10; ++i) {
+      rename_map.insert({qubits[i], nodes[i]});
+    }
+
+    for (auto x : rename_map) {
+      std::cout << x.first.repr() << " - " << x.second.repr() << std::endl;
+    }
+
+    circ.rename_units(rename_map);
+
+    // Contains initial and final map
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    // Initialise the maps by the same way it's done with CompilationUnit
+    for (const UnitID& u : circ.all_units()) {
+      maps->initial.insert({u, u});
+      maps->final.insert({u, u});
+    }
+    MappingManager mm(std::make_shared<Architecture>(sg));
+    mm.route_circuit_with_maps(
+        circ,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        maps);
+    for (auto g : circ) {
+      std::cout << g << std::endl;
+    }
+    for(auto q : qubits) {
+      REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
+      REQUIRE(maps->final.left.find(q) != maps->final.left.end());
+    }
   }
 }
 

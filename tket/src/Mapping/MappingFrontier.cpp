@@ -471,15 +471,14 @@ void MappingFrontier::update_linear_boundary_uids(
         UnitID simple_q_init = it->second;
         this->bimaps_->initial.left.erase(simple_q_init);
         this->bimaps_->initial.left.insert({simple_q_init, label.second});
-      }
-      else{
-        // If the label.second is a node N holding an ancilla Q (before the ancilla merge),
-        // suppose Q was originally assigned to N',
-        // then we assign label.first to N' instead (notice that Q and N' have the same name).
-        // The node N could be assigned to some other qubits before the ancilla got swapped in.
-        // ancilla_it = {N, Q}
+      } else {
+        // If the label.second is a node N holding an ancilla Q (before the
+        // ancilla merge), suppose Q was originally assigned to N', then we
+        // assign label.first to N' instead (notice that Q and N' have the same
+        // name). The node N could be assigned to some other qubits before the
+        // ancilla got swapped in. ancilla_it = {N, Q}
         auto ancilla_it = this->ancilla_map_.right.find(label.second);
-        if(ancilla_it != this->ancilla_map_.right.end()){
+        if (ancilla_it != this->ancilla_map_.right.end()) {
           // Q->N' |-> label.first->N'
           this->bimaps_->initial.right.erase(ancilla_it->second);
           this->bimaps_->initial.left.insert({label.first, ancilla_it->second});
@@ -492,10 +491,9 @@ void MappingFrontier::update_linear_boundary_uids(
         UnitID simple_q_final = it->second;
         this->bimaps_->final.left.erase(simple_q_final);
         this->bimaps_->final.left.insert({simple_q_final, label.second});
-      }
-      else{
+      } else {
         auto ancilla_it = this->ancilla_map_.right.find(label.second);
-        if(ancilla_it != this->ancilla_map_.right.end()){
+        if (ancilla_it != this->ancilla_map_.right.end()) {
           this->bimaps_->final.left.erase(ancilla_it->second);
           this->bimaps_->final.left.insert({label.first, ancilla_it->first});
         }
