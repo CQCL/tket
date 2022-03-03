@@ -451,19 +451,6 @@ void MappingFrontier::update_linear_boundary_uids(
       // this condition means label.second also in circuit
       // implies that a merging is done -> remove first qubit
 
-      std::cout<<"\n Try label: "<< label.first.repr() << ", " << label.second.repr() << "\n";
-      std::cout<<"\n MAP 1\n";
-      for (auto mit = this->bimaps_->initial.left.begin(); mit != this->bimaps_->initial.left.end(); ++mit) {
-        std::cout<<"("<< mit->first.repr()<< ", " <<mit->second.repr() <<")\n";
-      }
-      // std::cout<<"\n Ancilla map\n";
-      // for (auto mit = this->ancilla_map_.left.begin(); mit != this->ancilla_map_.left.end(); ++mit) {
-      //   std::cout<<"("<< mit->first.repr()<< ", " <<mit->second.repr() <<")\n";
-      // }
-      // std::cout<<"\n Ancilla nodes\n";
-      // for (const Node &node : this->ancilla_nodes_) {
-      //   std::cout<< node.repr()<<"\n";
-      // }
       if (this->linear_boundary->get<TagKey>().find(label.second) !=
           this->linear_boundary->get<TagKey>().end()) {
         // erase, assume updated already
@@ -478,51 +465,40 @@ void MappingFrontier::update_linear_boundary_uids(
         this->circuit_.rename_units(relabel);
       }
 
-      // std::cout<< "\n Labels (" << label.first.repr() << "," << label.second.repr() << ")\n";
-
-
       // update initial map
       auto it = this->bimaps_->initial.right.find(label.first);
       if (it != this->bimaps_->initial.right.end()) {
         UnitID simple_q_init = it->second;
         this->bimaps_->initial.left.erase(simple_q_init);
+        this->bimaps_->initial.left.insert({simple_q_init, label.second});
+      }
+      else{
         // If the label.second is a node N holding an ancilla Q (before the ancilla merge),
         // suppose Q was originally assigned to N',
-        // then we assign label.first to N' instead (i.e. the name of the ancilla qubit).
-        // The node N could have been assigned to some other qubit before the ancilla got swapped in.
+        // then we assign label.first to N' instead (notice that Q and N' have the same name).
+        // The node N could be assigned to some other qubits before the ancilla got swapped in.
+        // ancilla_it = {N, Q}
         auto ancilla_it = this->ancilla_map_.right.find(label.second);
         if(ancilla_it != this->ancilla_map_.right.end()){
-          this->bimaps_->initial.left.insert({simple_q_init, ancilla_it->second});
-        }
-        else {
-          this->bimaps_->initial.left.insert({simple_q_init, label.second});
+          // Q->N' |-> label.first->N'
+          this->bimaps_->initial.right.erase(ancilla_it->second);
+          this->bimaps_->initial.left.insert({label.first, ancilla_it->second});
         }
       }
-      // else{
-      //   auto ancilla_it = this->ancilla_map_.right.find(label.second);
-      //   if(ancilla_it != this->ancilla_map_.right.end()){
-
-      //     this->bimaps_->initial.right.erase(ancilla_it->second);
-      //     this->bimaps_->initial.left.insert({label.first, ancilla_it->second});
-      //   }
-      // }
 
       // update final map
       it = this->bimaps_->final.right.find(label.first);
       if (it != this->bimaps_->final.right.end()) {
         UnitID simple_q_final = it->second;
         this->bimaps_->final.left.erase(simple_q_final);
+        this->bimaps_->final.left.insert({simple_q_final, label.second});
+      }
+      else{
         auto ancilla_it = this->ancilla_map_.right.find(label.second);
         if(ancilla_it != this->ancilla_map_.right.end()){
-          this->bimaps_->final.left.insert({simple_q_final, ancilla_it->second});
+          this->bimaps_->final.left.erase(ancilla_it->second);
+          this->bimaps_->final.left.insert({label.first, ancilla_it->first});
         }
-        else {
-          this->bimaps_->final.left.insert({simple_q_final, label.second});
-        }
-      }
-      std::cout<<"\n MAP 2\n";
-      for (auto mit = this->bimaps_->initial.left.begin(); mit != this->bimaps_->initial.left.end(); ++mit) {
-        std::cout<<"("<< mit->first.repr()<< ", " <<mit->second.repr() <<")\n";
       }
     }
   }
@@ -777,15 +753,10 @@ void MappingFrontier::merge_ancilla(
       merge_v_out, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
 
   // Can now just erase "merge" qubit from the circuit
-  // If "merge" is a data qubit, the path is now "returned" to the data qubit
-  // We should erase "ancilla" instead
   this->circuit_.boundary.get<TagID>().erase(merge);
-  this->circuit_.boundary.get<TagID>().erase(ancilla);
-  Vertex ancilla_v_in = this->circuit_.get_in(ancilla);
-  this->circuit_.boundary.get<TagID>().insert({merge, ancilla_v_in, ancilla_v_out});
 
-  this->bimaps_->initial.right.erase(ancilla);
-  this->bimaps_->final.left.erase(ancilla);
+  this->bimaps_->initial.right.erase(merge);
+  this->bimaps_->final.left.erase(merge);
 }
 
 bool MappingFrontier::valid_boundary_operation(
