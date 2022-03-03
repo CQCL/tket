@@ -1,4 +1,4 @@
-name: valgrind check nightly
+name: valgrind check v2 nightly
 on:
   schedule:
     # 03:00 every Monday morning

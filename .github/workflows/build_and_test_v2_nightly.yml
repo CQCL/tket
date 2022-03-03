@@ -138,7 +138,8 @@ jobs:
     - uses: actions/checkout@v2
       with:
         fetch-depth: '0'
-        ref: develop2    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+        ref: develop2
+    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Check C++ code formatting
       if: github.event_name == 'pull_request'
       run: |
