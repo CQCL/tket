@@ -62,6 +62,46 @@ bool check_permutation(
   return true;
 }
 
+// Checks if the results matches the initial circ after resolving the
+// permutations
+bool check_permutation_unitary(
+    Circuit& initial_circ, Circuit& circ,
+    const std::shared_ptr<unit_bimaps_t>& maps) {
+  for (auto me : maps->initial) {
+    if (me.left != me.right) return false;
+  }
+
+  // bool found_permutations = true;
+  while (true) {
+    bool found_permutations = false;
+    for (auto me : maps->final) {
+      if (me.left != me.right) found_permutations = true;
+    }
+    if (found_permutations) {
+      for (auto me : maps->final) {
+        if (me.left != me.right) {
+          circ.add_op<UnitID>(OpType::SWAP, {Qubit(me.left), Qubit(me.right)});
+          break;
+        }
+      }
+    } else {
+      return test_unitary_comparison(initial_circ, circ);
+    }
+  }
+
+  return true;
+}
+
+void add_swap_tests(
+    Circuit& circ, std::vector<Node>& node_vec, unsigned u0, unsigned u1) {
+  std::vector<Qubit> qubits_renamed = circ.all_qubits();
+  circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[u0], qubits_renamed[u1]});
+
+  Node no = node_vec[u0];
+  node_vec[u0] = node_vec[u1];
+  node_vec[u1] = no;
+}
+
 SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
   std::vector<Node> nodes = {Node("test_node", 0), Node("test_node", 1),
                              Node("test_node", 2), Node("node_test", 3),
@@ -1168,6 +1208,7 @@ SCENARIO("Empty circuits, with and without blank wires") {
 
 SCENARIO("Initial map should contain all data qubits") {
   GIVEN("An example circuit") {
+    std::cout << "\n\nexample with map:\n\n";
     Circuit circ(10);
     std::vector<Qubit> qubits = circ.all_qubits();
     circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[4]});
@@ -1188,6 +1229,17 @@ SCENARIO("Initial map should contain all data qubits") {
       maps->initial.insert({u, u});
       maps->final.insert({u, u});
     }
+
+    std::cout << "give initial map:\n";
+    for (auto me : maps->initial) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    std::cout << "give final map:\n";
+    for (auto me : maps->final) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
     MappingManager mm(std::make_shared<Architecture>(sg));
     mm.route_circuit_with_maps(
         circ,
@@ -1198,9 +1250,25 @@ SCENARIO("Initial map should contain all data qubits") {
       REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
       REQUIRE(maps->final.left.find(q) != maps->final.left.end());
     }
+
+    std::cout << "give initial map:\n";
+    for (auto me : maps->initial) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    std::cout << "give final map:\n";
+    for (auto me : maps->final) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
     REQUIRE(check_permutation(circ, maps));
   }
   GIVEN("An example circuit with remap") {
+    std::cout << "########################################\n";
+    std::cout << "########################################\n";
+    std::cout << "########################################\n";
+    std::cout << "########################################\n";
+    std::cout << "\n\nexample with map:\n\n";
     Circuit circ(10);
     SquareGrid sg(4, 4);
     std::vector<Node> nodes = sg.get_all_nodes_vec();
@@ -1219,15 +1287,23 @@ SCENARIO("Initial map should contain all data qubits") {
 
     std::map<UnitID, UnitID> rename_map;
 
+    std::cout << "initial circuit:\n";
+    for (auto g : circ) {
+      std::cout << g << std::endl;
+    }
+
     for (unsigned i = 0; i < 10; ++i) {
       rename_map.insert({qubits[i], nodes[i]});
     }
 
+    std::cout << "rename map:\n";
     for (auto x : rename_map) {
       std::cout << x.first.repr() << " - " << x.second.repr() << std::endl;
     }
 
     circ.rename_units(rename_map);
+
+    Circuit initial_circ = Circuit(circ);
 
     // Contains initial and final map
     std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
@@ -1236,6 +1312,17 @@ SCENARIO("Initial map should contain all data qubits") {
       maps->initial.insert({u, u});
       maps->final.insert({u, u});
     }
+
+    std::cout << "give initial map:\n";
+    for (auto me : maps->initial) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    std::cout << "give final map:\n";
+    for (auto me : maps->final) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
     MappingManager mm(std::make_shared<Architecture>(sg));
     mm.route_circuit_with_maps(
         circ,
@@ -1250,6 +1337,438 @@ SCENARIO("Initial map should contain all data qubits") {
       REQUIRE(maps->final.left.find(q) != maps->final.left.end());
     }
     REQUIRE(check_permutation(circ, maps));
+
+    std::cout << "give initial map:\n";
+    for (auto me : maps->initial) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    std::cout << "give final map:\n";
+    for (auto me : maps->final) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    // REQUIRE(check_permutation_unitary(initial_circ, circ, maps));
+  }
+  GIVEN("An example circuit with remap II") {
+    std::cout << "########################################\n";
+    std::cout << "########################################\n";
+    std::cout << "########################################\n";
+    std::cout << "########################################\n";
+    std::cout << "\n\nexample with map:\n\n";
+    Circuit circ(6);
+    SquareGrid sg(3, 3);
+    std::vector<Node> nodes = sg.get_all_nodes_vec();
+    std::vector<Qubit> qubits = circ.all_qubits();
+
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    // circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+    // circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+    // circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[5]});
+
+    std::map<UnitID, UnitID> rename_map;
+
+    std::cout << "initial circuit:\n";
+    for (auto g : circ) {
+      std::cout << g << std::endl;
+    }
+
+    for (unsigned i = 0; i < 6; ++i) {
+      rename_map.insert({qubits[i], nodes[i]});
+    }
+
+    std::cout << "rename map:\n";
+    for (auto x : rename_map) {
+      std::cout << x.first.repr() << " - " << x.second.repr() << std::endl;
+    }
+
+    circ.rename_units(rename_map);
+
+    Circuit initial_circ = Circuit(circ);
+
+    // Contains initial and final map
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    // Initialise the maps by the same way it's done with CompilationUnit
+    for (const UnitID& u : circ.all_units()) {
+      maps->initial.insert({u, u});
+      maps->final.insert({u, u});
+    }
+
+    std::cout << "give initial map:\n";
+    for (auto me : maps->initial) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    std::cout << "give final map:\n";
+    for (auto me : maps->final) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    MappingManager mm(std::make_shared<Architecture>(sg));
+    mm.route_circuit_with_maps(
+        circ,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        maps);
+    for (auto g : circ) {
+      std::cout << g << std::endl;
+    }
+    for (auto q : circ.all_qubits()) {
+      REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
+      REQUIRE(maps->final.left.find(q) != maps->final.left.end());
+    }
+    REQUIRE(check_permutation(circ, maps));
+
+    std::cout << "give initial map:\n";
+    for (auto me : maps->initial) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    std::cout << "give final map:\n";
+    for (auto me : maps->final) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    std::cout << "list of nodes\n";
+    for (auto n : nodes) {
+      std::cout << n.repr() << std::endl;
+    }
+
+    std::cout << "result circ:\n";
+
+    for (auto g : circ) {
+      std::cout << g << std::endl;
+    }
+
+    std::vector<Qubit> qubits_renamed = circ.all_qubits();
+
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[1], qubits_renamed[4]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[3], qubits_renamed[4]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[1], qubits_renamed[2]});
+    // circ.add_op<UnitID>(OpType::SWAP, {nodes[3], nodes[4]});
+    // circ.add_op<UnitID>(OpType::SWAP, {nodes[4], nodes[5]});
+
+    std::cout << "result circ:\n";
+
+    for (auto g : circ) {
+      std::cout << g << std::endl;
+    }
+
+    std::cout << "initial_circ:\n";
+
+    for (auto g : initial_circ) {
+      std::cout << g << std::endl;
+    }
+
+    REQUIRE(test_unitary_comparison(initial_circ, circ));
+  }
+  GIVEN("An example circuit with remap III") {
+    std::cout << "########################################\n";
+    std::cout << "########################################\n";
+    std::cout << "########################################\n";
+    std::cout << "########################################\n";
+    std::cout << "\n\nexample with map:\n\n";
+    Circuit circ(6);
+    SquareGrid sg(3, 3);
+    std::vector<Node> nodes = sg.get_all_nodes_vec();
+    std::vector<Qubit> qubits = circ.all_qubits();
+
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[5]});
+
+    std::map<UnitID, UnitID> rename_map;
+
+    std::cout << "initial circuit:\n";
+    for (auto g : circ) {
+      std::cout << g << std::endl;
+    }
+
+    for (unsigned i = 0; i < 6; ++i) {
+      rename_map.insert({qubits[i], nodes[i]});
+    }
+
+    std::cout << "rename map:\n";
+    for (auto x : rename_map) {
+      std::cout << x.first.repr() << " - " << x.second.repr() << std::endl;
+    }
+
+    circ.rename_units(rename_map);
+
+    Circuit initial_circ = Circuit(circ);
+
+    // Contains initial and final map
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    // Initialise the maps by the same way it's done with CompilationUnit
+    for (const UnitID& u : circ.all_units()) {
+      maps->initial.insert({u, u});
+      maps->final.insert({u, u});
+    }
+
+    std::cout << "give initial map:\n";
+    for (auto me : maps->initial) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    std::cout << "give final map:\n";
+    for (auto me : maps->final) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    MappingManager mm(std::make_shared<Architecture>(sg));
+    mm.route_circuit_with_maps(
+        circ,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        maps);
+    for (auto g : circ) {
+      std::cout << g << std::endl;
+    }
+    for (auto q : circ.all_qubits()) {
+      REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
+      REQUIRE(maps->final.left.find(q) != maps->final.left.end());
+    }
+    REQUIRE(check_permutation(circ, maps));
+
+    std::cout << "give initial map:\n";
+    for (auto me : maps->initial) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    std::cout << "give final map:\n";
+    for (auto me : maps->final) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    std::cout << "list of nodes\n";
+    for (auto n : nodes) {
+      std::cout << n.repr() << std::endl;
+    }
+
+    std::cout << "result circ:\n";
+
+    for (auto g : circ) {
+      std::cout << g << std::endl;
+    }
+
+    std::vector<Qubit> qubits_renamed = circ.all_qubits();
+
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[2], qubits_renamed[5]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[3], qubits_renamed[4]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[1], qubits_renamed[2]});
+
+    std::cout << "result circ:\n";
+
+    for (auto g : circ) {
+      std::cout << g << std::endl;
+    }
+
+    std::cout << "initial_circ:\n";
+
+    for (auto g : initial_circ) {
+      std::cout << g << std::endl;
+    }
+
+    REQUIRE(test_unitary_comparison(initial_circ, circ));
+  }
+  GIVEN("An example circuit with remap IV") {
+    std::cout << "########################################\n";
+    std::cout << "########################################\n";
+    std::cout << "########################################\n";
+    std::cout << "########################################\n";
+    std::cout << "\n\nexample with map:\n\n";
+    Circuit circ(6);
+    SquareGrid sg(3, 3);
+    std::vector<Node> nodes = sg.get_all_nodes_vec();
+    std::vector<Qubit> qubits = circ.all_qubits();
+
+    circ.add_op<UnitID>(OpType::H, {qubits[0]});
+    circ.add_op<UnitID>(OpType::H, {qubits[1]});
+    circ.add_op<UnitID>(OpType::H, {qubits[2]});
+    circ.add_op<UnitID>(OpType::H, {qubits[3]});
+    circ.add_op<UnitID>(OpType::H, {qubits[4]});
+    circ.add_op<UnitID>(OpType::H, {qubits[5]});
+
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+
+    circ.add_op<UnitID>(OpType::Y, {qubits[0]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[1]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[2]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[3]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[4]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[5]});
+
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+
+    circ.add_op<UnitID>(OpType::Y, {qubits[0]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[1]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[2]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[3]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[4]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[5]});
+
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[5]});
+
+    std::map<UnitID, UnitID> rename_map;
+
+    std::cout << "initial circuit:\n";
+    for (auto g : circ) {
+      std::cout << g << std::endl;
+    }
+
+    for (unsigned i = 0; i < 6; ++i) {
+      rename_map.insert({qubits[i], nodes[i]});
+    }
+
+    std::cout << "rename map:\n";
+    for (auto x : rename_map) {
+      std::cout << x.first.repr() << " - " << x.second.repr() << std::endl;
+    }
+
+    circ.rename_units(rename_map);
+
+    Circuit initial_circ = Circuit(circ);
+
+    // Contains initial and final map
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    // Initialise the maps by the same way it's done with CompilationUnit
+    for (const UnitID& u : circ.all_units()) {
+      maps->initial.insert({u, u});
+      maps->final.insert({u, u});
+    }
+
+    std::cout << "give initial map:\n";
+    for (auto me : maps->initial) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    std::cout << "give final map:\n";
+    for (auto me : maps->final) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    MappingManager mm(std::make_shared<Architecture>(sg));
+    mm.route_circuit_with_maps(
+        circ,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        maps);
+    for (auto g : circ) {
+      std::cout << g << std::endl;
+    }
+    for (auto q : circ.all_qubits()) {
+      REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
+      REQUIRE(maps->final.left.find(q) != maps->final.left.end());
+    }
+    REQUIRE(check_permutation(circ, maps));
+
+    std::cout << "give initial map:\n";
+    for (auto me : maps->initial) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+    }
+
+    std::vector<Node> final_map = sg.get_all_nodes_vec();
+    unsigned in = 0;
+    std::cout << "############################ give final map:\n";
+    for (auto me : maps->final) {
+      std::cout << me.left.repr() << " - > " << me.right.repr() << std::endl;
+      // final_map[in] = Node(me.right);
+      ++in;
+    }
+    std::cout << "give list of all nodes final:\n";
+
+    for (auto n : final_map) {
+      std::cout << n.repr() << std::endl;
+    }
+
+    add_swap_tests(circ, final_map, 1, 2);
+    add_swap_tests(circ, final_map, 4, 5);
+    add_swap_tests(circ, final_map, 1, 4);
+    add_swap_tests(circ, final_map, 1, 3);
+    add_swap_tests(circ, final_map, 2, 5);
+    add_swap_tests(circ, final_map, 1, 2);
+    add_swap_tests(circ, final_map, 3, 4);
+
+    std::cout << "give list of all nodes final:\n";
+
+    for (auto n : final_map) {
+      std::cout << n.repr() << std::endl;
+    }
+
+    std::cout << "list of nodes\n";
+    for (auto n : nodes) {
+      std::cout << n.repr() << std::endl;
+    }
+
+    std::cout << "result circ:\n";
+
+    for (auto g : circ) {
+      std::cout << g << std::endl;
+    }
+
+    // std::vector<Qubit> qubits_renamed = circ.all_qubits();
+
+    // add swaps to resolve permutation
+    /*circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[1], qubits_renamed[2]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[4], qubits_renamed[5]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[1], qubits_renamed[4]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[1], qubits_renamed[3]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[2], qubits_renamed[5]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[1], qubits_renamed[2]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[3], qubits_renamed[4]});*/
+
+    std::cout << "result circ:\n";
+
+    for (auto g : circ) {
+      std::cout << g << std::endl;
+    }
+
+    std::cout << "initial_circ:\n";
+
+    for (auto g : initial_circ) {
+      std::cout << g << std::endl;
+    }
+
+    REQUIRE(test_unitary_comparison(initial_circ, circ));
   }
 }
 
