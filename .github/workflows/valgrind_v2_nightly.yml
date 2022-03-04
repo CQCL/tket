@@ -1,12 +1,9 @@
-name: valgrind check
+name: valgrind check v2 nightly
 on:
-  pull_request:
-    branches:
-      - develop
-
   schedule:
     # 03:00 every Monday morning
     - cron: '0 3 * * 1'
+    
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -17,6 +14,9 @@ jobs:
       tket: ${{ steps.filter.outputs.tket }}
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+        ref: develop2
     - uses: dorny/paths-filter@v2
       id: filter
       with:
@@ -34,6 +34,9 @@ jobs:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+        ref: develop2
     - name: cache ccache data
       uses: actions/cache@v2
       with:
