@@ -254,7 +254,6 @@ PassPtr gen_routing_pass(
   PredicatePtr n_qubit_pred =
       std::make_shared<MaxNQubitsPredicate>(arc.n_nodes());
   PredicatePtrMap precons{
-      CompilationUnit::make_type_pair(placedpred),
       CompilationUnit::make_type_pair(twoqbpred),
       CompilationUnit::make_type_pair(n_qubit_pred)};
 
