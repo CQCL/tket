@@ -187,6 +187,11 @@ class ZXDiagram {
   /**
    * Diagram manipulation
    */
+  /**
+   * Adds a vertex with a given generator to the diagram.
+   * It is initially disconnected from any other vertex.
+   * Automatically adds boundary generators to the boundary.
+   */
   ZXVert add_vertex(ZXGen_ptr op);
   ZXVert add_vertex(ZXType type, QuantumType qtype = QuantumType::Quantum);
   ZXVert add_vertex(
@@ -277,7 +282,9 @@ class ZXDiagram {
    * - Boundary edges are all Basic (i.e. the Hadamard from Hadamard
    *      wires in the `boundary` list are treated as outside of the
    *      Subdiagram).
-   * Each wire in the boundary is tagged with the WireEnd facing the interior of the subdiagram. If a wire appears with both ends, they are treated as two separate boundary wires split by an identity (Basic) or Hadamard.
+   * Each wire in the boundary is tagged with the WireEnd facing the interior of
+   * the subdiagram. If a wire appears with both ends, they are treated as two
+   * separate boundary wires split by an identity (Basic) or Hadamard.
    */
   struct Subdiagram {
     // Ordered boundary edges of the subdiagram
@@ -286,7 +293,9 @@ class ZXDiagram {
     ZXVertSeqSet verts_;
 
     Subdiagram();
-    Subdiagram(const std::vector<std::pair<Wire, WireEnd>>& cut, const ZXVertSeqSet& verts);
+    Subdiagram(
+        const std::vector<std::pair<Wire, WireEnd>>& cut,
+        const ZXVertSeqSet& verts);
 
     /**
      * Checks for well-formedness of a subdiagram.
@@ -301,6 +310,8 @@ class ZXDiagram {
     // Copy the Subdiagram into a new ZXDiagram object.
     ZXDiagram to_diagram(const ZXDiagram& orig) const;
   };
+
+  void substitute(const ZXDiagram& to_insert, const Subdiagram& to_replace);
 
   friend Rewrite;
   friend ZXDiagramPybind;
