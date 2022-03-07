@@ -243,7 +243,7 @@ setup(
     license="Apache 2",
     packages=setuptools.find_packages(),
     install_requires=[
-        "sympy ~=1.6",
+        "sympy ~=1.6, <1.10",
         "numpy >=1.21.4, <2.0",
         "lark-parser ~=0.7",
         "scipy >=1.7.2, <2.0",
