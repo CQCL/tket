@@ -54,6 +54,14 @@ unsigned ZXDiagram::count_vertices(ZXType type) const {
   return count;
 }
 
+unsigned ZXDiagram::count_vertices(ZXType zxtype, QuantumType qtype) const {
+  unsigned count = 0;
+  BGL_FORALL_VERTICES(v, *graph, ZXGraph) {
+    if (get_zxtype(v) == zxtype && get_qtype(v) == qtype) ++count;
+  }
+  return count;
+}
+
 unsigned ZXDiagram::count_wires(ZXWireType type) const {
   unsigned count = 0;
   BGL_FORALL_EDGES(w, *graph, ZXGraph) {

@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include "Circuit/Circuit.hpp"
 #include "ZX/ZXDiagramImpl.hpp"
 
 namespace tket {
@@ -58,6 +59,7 @@ class ZXDiagram {
       unsigned in, unsigned out, unsigned classical_in, unsigned classical_out);
   ZXDiagram(const ZXDiagram& other);
   ZXDiagram(ZXDiagram&& other);
+  ZXDiagram(const Circuit& circuit);
   ZXDiagram& operator=(const ZXDiagram& other);
   ZXDiagram& operator=(ZXDiagram&& other);
 
@@ -79,6 +81,7 @@ class ZXDiagram {
 
   // Count number of vertices with certain types & properties
   unsigned count_vertices(ZXType type) const;
+  unsigned count_vertices(ZXType zxtype, QuantumType qtype) const;
   unsigned count_wires(ZXWireType type) const;
 
   // Local properties on vertices and edges

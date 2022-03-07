@@ -15,7 +15,7 @@
 from math import pow
 import numpy as np
 import pytest  # type: ignore
-from pytket import Qubit
+from pytket import Qubit, Circuit, OpType
 from pytket.pauli import Pauli, QubitPauliString  # type: ignore
 from pytket.zx import (  # type: ignore
     ZXDiagram,
@@ -630,6 +630,14 @@ def test_simplification() -> None:
     final = final * 0.5 * 1j
     assert np.allclose(original, final)
 
+def test_converting_to_circuit() -> None:
+    c = Circuit(2)
+    c.CX(0,1)
+    diag = ZXDiagram(c)
+    print(c.get_unitary())
+    print(unitary_from_quantum_diagram(diag))
+    assert np.allclose(c.get_unitary(), unitary_from_quantum_diagram(diag))
+    
 
 if __name__ == "__main__":
     test_generator_creation()
@@ -639,3 +647,4 @@ if __name__ == "__main__":
     test_graph_like_reduction()
     test_spider_fusion()
     test_simplification()
+    test_converting_to_circuit()

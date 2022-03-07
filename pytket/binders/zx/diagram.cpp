@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "Circuit/Circuit.hpp"
 #include "Utils/GraphHeaders.hpp"
 #include "ZX/ZXDiagram.hpp"
 #include "typecast.hpp"
@@ -82,6 +83,11 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           ":param other: ZX diagram to copy.",
           py::arg("other"))
       .def(
+          py::init<const Circuit&>(),
+          "Constructs a ZX diagram from a circuit.\n\n"
+          ":param circ: circuit to be converted.",
+          py::arg("circ"))
+      .def(
           "get_boundary",
           [](const ZXDiagram& diag, std::optional<ZXType> type,
              std::optional<QuantumType> qtype) {
@@ -132,7 +138,10 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "n_wires", &ZXDiagram::n_wires,
           "Counts the number of edges in the diagram.")
       .def(
-          "count_vertices", &ZXDiagram::count_vertices,
+          "count_vertices", 
+          [](const ZXDiagram& diag, const ZXType& type) {
+            return diag.count_vertices(type);
+          },
           "Counts the number of vertices of a given :py:class:`ZXType` in the "
           "diagram.",
           py::arg("type"))
@@ -392,7 +401,11 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "  + quantum boundaries are mapped to a pair with original and "
           "conjugated phases\n"
           "  + unconjugated copies are listed first\n",
-          "  + classical boundaries only have the unconjugated version");
+          "  + classical boundaries only have the unconjugated version")
+      .def(
+          "to_graphviz_str",
+          [](ZXDiagram& diag) { return diag.to_graphviz_str(); },
+          "Returns a graphviz source string");
 }
 
 PYBIND11_MODULE(zx, m) {

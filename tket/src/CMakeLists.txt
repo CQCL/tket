@@ -62,7 +62,6 @@ ENDIF()
 list(APPEND TKET_COMPS
     Utils
     TokenSwapping
-    ZX
     OpType
     Clifford
     Ops
@@ -81,7 +80,8 @@ list(APPEND TKET_COMPS
     Mapping    
     MeasurementSetup
     Transformations    
-    Predicates)
+    Predicates
+    ZX)
 
 foreach(COMP ${TKET_COMPS})
     set(TKET_${COMP}_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${COMP}/include)
