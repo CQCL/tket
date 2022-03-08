@@ -45,7 +45,8 @@ class MappingManager {
    * @param circuit Circuit to be routed
    * @param routing_methods Ranked RoutingMethod objects to use for routing
    * segments.
-   *
+   * @param label_single_qubits will not label qubits without gates or only
+   * single qubit gates on them if this is set false
    * @return True if circuit is modified
    */
   bool route_circuit(
@@ -64,6 +65,8 @@ class MappingManager {
    * @param routing_methods Ranked RoutingMethod objects to use for routing
    * segments.
    * @param maps For tracking placed and permuted qubits during Compilation
+   * @param label_single_qubits will not label qubits without gates or only
+   * single qubit gates on them if this is set false
    *
    * @return True if circuit is modified
    */
