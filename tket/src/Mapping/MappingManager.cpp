@@ -23,15 +23,15 @@ MappingManager::MappingManager(const ArchitecturePtr& _architecture)
 
 bool MappingManager::route_circuit(
     Circuit& circuit, const std::vector<RoutingMethodPtr>& routing_methods,
-    bool label_single_qubits) const {
+    bool label_isolated_qubits) const {
   return this->route_circuit_with_maps(
       circuit, routing_methods, std::make_shared<unit_bimaps_t>(),
-      label_single_qubits);
+      label_isolated_qubits);
 }
 
 bool MappingManager::route_circuit_with_maps(
     Circuit& circuit, const std::vector<RoutingMethodPtr>& routing_methods,
-    std::shared_ptr<unit_bimaps_t> maps, bool label_single_qubits) const {
+    std::shared_ptr<unit_bimaps_t> maps, bool label_isolated_qubits) const {
   if (circuit.n_qubits() > this->architecture_->n_nodes()) {
     std::string error_string =
         "Circuit has" + std::to_string(circuit.n_qubits()) +
@@ -114,7 +114,7 @@ bool MappingManager::route_circuit_with_maps(
     }
   }
 
-  if (found_unplaced_qubit && label_single_qubits) {
+  if (found_unplaced_qubit && label_isolated_qubits) {
     circuit_modified = true;
     qubit_vector_t q_vec = mapping_frontier->circuit_.all_qubits();
     unit_map_t qubit_to_nodes_place;
@@ -134,8 +134,6 @@ bool MappingManager::route_circuit_with_maps(
     for (Qubit q : q_vec) {
       if (!this->architecture_->node_exists(Node(q))) {
         // found unplaced qubit
-        // other checks could be added here to avoid placing unused qubits or
-        // qubits that are not in an ppb
 
         unsigned index_to_use = 0;
         while (node_set_placed.find(nodes_vec[index_to_use]) !=

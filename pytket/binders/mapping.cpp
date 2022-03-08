@@ -150,9 +150,9 @@ PYBIND11_MODULE(mapping, m) {
           "\n:param routing_methods: Ranked methods to use for routing "
           "subcircuits. In given order, each method is sequentially checked "
           "for viability, with the first viable method being used."
-          "\n:param label_single_qubits: will not label qubits without gates "
+          "\n:param label_isolated_qubits: will not label qubits without gates "
           "or only single qubit gates on them if this is set false",
           py::arg("circuit"), py::arg("routing_methods"),
-          py::arg("label_single_qubits") = true);
+          py::arg("label_isolated_qubits") = true);
 }
 }  // namespace tket
