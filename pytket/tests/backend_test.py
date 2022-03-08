@@ -401,12 +401,20 @@ def test_empty_result(n_shots, n_bits) -> None:
     message=strategies.text(),
 )
 @settings(deadline=None)
-def test_status_serialization(status: StatusEnum, message: str) -> None:
+def test_status_serialization_basic(status: StatusEnum, message: str) -> None:
     c_stat = CircuitStatus(status, message)
     assert CircuitStatus.from_dict(c_stat.to_dict()) == c_stat
     with pytest.raises(ValueError) as errorinfo:
         c_stat = CircuitStatus.from_dict({"message": "asf", "status": "COMPETED"})
         assert "invalid format" in str(errorinfo.value)
+
+
+@given(
+    c_stat=strategies.builds(CircuitStatus),
+)
+@settings(deadline=None)
+def test_status_serialization(c_stat: CircuitStatus) -> None:
+    assert CircuitStatus.from_dict(c_stat.to_dict()) == c_stat
 
 
 def test_shots_with_unmeasured() -> None:

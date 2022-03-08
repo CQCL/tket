@@ -57,6 +57,8 @@ Minor new features:
 * Add ``opgroups`` property to ``Circuit``.
 * ``Architecture`` has new ``valid_operation`` method which returns true if passed UnitIDs that respect 
   architecture constraints.
+* ``CircuitStatus`` has several new optional properties such as time-stamps associated with status changes,
+  queue position or detailed error information.
   
 0.19.2 (February 2022)
 ----------------------
