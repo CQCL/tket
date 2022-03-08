@@ -150,8 +150,8 @@ def test_QubitPauliOperator_compression() -> None:
     assert op[qpsXY] == 2
     assert re(op[qpsYY]) == 0
     assert im(op[qpsYY])
-    assert op[qpsYY].subs({x: 0.001}) == 1j
-    assert op[qpsYY].subs({x: 10}) == 1j
+    assert op[qpsYY].subs({x: 0.001}).equals(1.0j)
+    assert op[qpsYY].subs({x: 10}).equals(1.0j)
 
 
 if __name__ == "__main__":
