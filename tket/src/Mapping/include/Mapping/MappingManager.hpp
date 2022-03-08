@@ -49,8 +49,8 @@ class MappingManager {
    * @return True if circuit is modified
    */
   bool route_circuit(
-      Circuit& circuit,
-      const std::vector<RoutingMethodPtr>& routing_methods) const;
+      Circuit& circuit, const std::vector<RoutingMethodPtr>& routing_methods,
+      bool label_single_qubits = true) const;
 
   /**
    * route_circuit_maps
@@ -69,7 +69,8 @@ class MappingManager {
    */
   bool route_circuit_with_maps(
       Circuit& circuit, const std::vector<RoutingMethodPtr>& routing_methods,
-      std::shared_ptr<unit_bimaps_t> maps) const;
+      std::shared_ptr<unit_bimaps_t> maps,
+      bool label_single_qubits = true) const;
 
  private:
   ArchitecturePtr architecture_;

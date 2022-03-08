@@ -22,15 +22,17 @@ MappingManager::MappingManager(const ArchitecturePtr& _architecture)
     : architecture_(_architecture) {}
 
 bool MappingManager::route_circuit(
-    Circuit& circuit,
-    const std::vector<RoutingMethodPtr>& routing_methods) const {
+    Circuit& circuit, const std::vector<RoutingMethodPtr>& routing_methods,
+    bool label_single_qubits) const {
   return this->route_circuit_with_maps(
-      circuit, routing_methods, std::make_shared<unit_bimaps_t>());
+      circuit, routing_methods, std::make_shared<unit_bimaps_t>(),
+      label_single_qubits);
 }
 
 bool MappingManager::route_circuit_with_maps(
     Circuit& circuit, const std::vector<RoutingMethodPtr>& routing_methods,
-    std::shared_ptr<unit_bimaps_t> maps) const {
+    std::shared_ptr<unit_bimaps_t> maps,
+    bool label_single_qubits) const {
   if (circuit.n_qubits() > this->architecture_->n_nodes()) {
     std::string error_string =
         "Circuit has" + std::to_string(circuit.n_qubits()) +
@@ -100,6 +102,56 @@ bool MappingManager::route_circuit_with_maps(
     // find next routed/unrouted boundary given updates
     mapping_frontier->advance_frontier_boundary(this->architecture_);
   }
+
+  // check all nodes placed
+
+  bool found_unplaced_qubit = false;
+
+  // search for unplaced qubitto speed up the runtime
+  for (Qubit q : mapping_frontier->circuit_.all_qubits()) {
+    if (!this->architecture_->node_exists(Node(q))) {
+      found_unplaced_qubit = true;
+      break;
+    }
+  }
+
+  if (found_unplaced_qubit && label_single_qubits) {
+    circuit_modified = true;
+    qubit_vector_t q_vec = mapping_frontier->circuit_.all_qubits();
+    unit_map_t qubit_to_nodes_place;
+    node_set_t node_set_placed;
+
+    for (Qubit q : q_vec) {
+      if (this->architecture_->node_exists(Node(q))) {
+        qubit_to_nodes_place.insert({q, Node(q)});
+        node_set_placed.insert(Node(q));
+      }
+    }
+
+    node_vector_t nodes_vec = this->architecture_->get_all_nodes_vec();
+
+    // place all unplaced qubits
+
+    for (Qubit q : q_vec) {
+      if (!this->architecture_->node_exists(Node(q))) {
+        // found unplaced qubit
+        // other checks could be added here to avoid placing unused qubits or
+        // qubits that are not in an ppb
+
+        unsigned index_to_use = 0;
+        while (node_set_placed.find(nodes_vec[index_to_use]) !=
+               node_set_placed.end()) {
+          ++index_to_use;
+        }
+        qubit_to_nodes_place.insert({q, nodes_vec[index_to_use]});
+        node_set_placed.insert(nodes_vec[index_to_use]);
+      }
+    }
+
+    mapping_frontier->update_linear_boundary_uids(qubit_to_nodes_place);
+    mapping_frontier->circuit_.rename_units(qubit_to_nodes_place);
+  }
+
   return circuit_modified;
 }
 }  // namespace tket

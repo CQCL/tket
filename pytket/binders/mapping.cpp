@@ -150,6 +150,6 @@ PYBIND11_MODULE(mapping, m) {
           "\n:param routing_methods: Ranked methods to use for routing "
           "subcircuits. In given order, each method is sequentially checked "
           "for viability, with the first viable method being used.",
-          py::arg("circuit"), py::arg("routing_methods"));
+          py::arg("circuit"), py::arg("routing_methods"), py::arg("label_single_qubits") = true);
 }
 }  // namespace tket
