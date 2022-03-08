@@ -105,10 +105,7 @@ PYBIND11_MODULE(mapping, m) {
       LexiLabellingMethod, std::shared_ptr<LexiLabellingMethod>, RoutingMethod>(
       m, "LexiLabellingMethod",
       "Defines a RoutingMethod for labelling Qubits that uses the "
-      "Lexicographical Comparison approach outlined in arXiv:1902.08091.\n"
-      "This method is only labelling interacting qubits that have multi qubit "
-      "gates on them. To get qubits with only single qubits gates or no gates "
-      "at all labelled, too, please use a placer in addition")
+      "Lexicographical Comparison approach outlined in arXiv:1902.08091.")
       .def(py::init<>(), "LexiLabellingMethod constructor.");
 
   py::class_<
