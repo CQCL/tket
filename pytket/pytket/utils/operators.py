@@ -58,7 +58,7 @@ class QubitPauliOperator:
         self._dict = dict()
         if dictionary:
             self._dict = dict(
-                (key, sympify(value)) for key, value in dictionary.items()
+                (key, sympify(value)) for key, value in dictionary.items()  # type: ignore
             )
         self._collect_qubits()
 
@@ -80,7 +80,7 @@ class QubitPauliOperator:
         :param value: Associated coefficient
         :type value: Union[int, float, complex, Expr]
         """
-        self._dict[key] = sympify(value)
+        self._dict[key] = sympify(value)  # type: ignore
 
     def __getstate__(self) -> dict:
         return self._dict
