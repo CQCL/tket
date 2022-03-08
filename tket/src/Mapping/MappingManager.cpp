@@ -31,8 +31,7 @@ bool MappingManager::route_circuit(
 
 bool MappingManager::route_circuit_with_maps(
     Circuit& circuit, const std::vector<RoutingMethodPtr>& routing_methods,
-    std::shared_ptr<unit_bimaps_t> maps,
-    bool label_single_qubits) const {
+    std::shared_ptr<unit_bimaps_t> maps, bool label_single_qubits) const {
   if (circuit.n_qubits() > this->architecture_->n_nodes()) {
     std::string error_string =
         "Circuit has" + std::to_string(circuit.n_qubits()) +
