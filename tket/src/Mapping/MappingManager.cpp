@@ -44,7 +44,7 @@ bool MappingManager::route_circuit_with_maps(
   // mapping_frontier tracks boundary between routed & un-routed in circuit
   // when initialised, boundary is over output edges of input vertices
   MappingFrontier_ptr mapping_frontier;
-  if (maps) {
+  if (!maps->initial.empty() && !maps->final.empty()) {
     mapping_frontier = std::make_shared<MappingFrontier>(circuit, maps);
   } else {
     mapping_frontier = std::make_shared<MappingFrontier>(circuit);
