@@ -64,10 +64,6 @@ struct MappingFrontier {
 
   std::shared_ptr<unit_bimaps_t> bimaps_;
 
-  /**
-   * Maps ancilla qubits to nodes
-   */
-  unit_bimap_t ancilla_map_;
 
   MappingFrontier(Circuit& _circuit);
 

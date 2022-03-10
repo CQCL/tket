@@ -161,7 +161,6 @@ MappingFrontier::MappingFrontier(const MappingFrontier& mapping_frontier)
   for (const Node& node : mapping_frontier.ancilla_nodes_) {
     this->ancilla_nodes_.insert(node);
   }
-  this->ancilla_map_ = mapping_frontier.ancilla_map_;
 }
 
 void MappingFrontier::advance_next_2qb_slice(unsigned max_advance) {
@@ -601,18 +600,10 @@ void MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
   if (uid0_ancilla && !uid1_ancilla) {
     this->ancilla_nodes_.erase(n0);
     this->ancilla_nodes_.insert(n1);
-    auto it = this->ancilla_map_.right.find(n0);
-    UnitID ancilla_q = it->second;
-    this->ancilla_map_.left.erase(ancilla_q);
-    this->ancilla_map_.left.insert({ancilla_q, n1});
   }
   if (!uid0_ancilla && uid1_ancilla) {
     this->ancilla_nodes_.erase(n1);
     this->ancilla_nodes_.insert(n0);
-    auto it = this->ancilla_map_.right.find(n1);
-    UnitID ancilla_q = it->second;
-    this->ancilla_map_.left.erase(ancilla_q);
-    this->ancilla_map_.left.insert({ancilla_q, n0});
   }
 
   // Get predecessor edges to SWAP insert location
@@ -705,7 +696,6 @@ void MappingFrontier::add_ancilla(const UnitID& ancilla) {
   this->bimaps_->initial.insert({qb, qb});
   this->bimaps_->final.insert({qb, qb});
   this->ancilla_nodes_.insert(Node(ancilla));
-  this->ancilla_map_.left.insert({ancilla, ancilla});
   UnitID uid_ancilla(ancilla);
 
   unit_map_t update_map;
