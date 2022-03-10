@@ -142,6 +142,9 @@ bool MappingManager::route_circuit_with_maps(
         }
         qubit_to_nodes_place.insert({q, nodes_vec[index_to_use]});
         node_set_placed.insert(nodes_vec[index_to_use]);
+        mapping_frontier->update_bimaps(
+            mapping_frontier->get_qubit_from_circuit_uid(q),
+            nodes_vec[index_to_use]);
       }
     }
 
