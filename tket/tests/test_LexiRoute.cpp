@@ -1019,8 +1019,12 @@ SCENARIO("Empty Circuit test") {
     Architecture arc({{0, 1}, {1, 2}, {2, 3}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(!mm.route_circuit(
-        circ, {std::make_shared<LexiLabellingMethod>(),
-               std::make_shared<LexiRouteRoutingMethod>()}));
+        circ,
+        {
+            std::make_shared<LexiLabellingMethod>(),
+            std::make_shared<LexiRouteRoutingMethod>(),
+        },
+        false));
     REQUIRE(circ.n_gates() == 0);
   }
 }
@@ -1037,8 +1041,12 @@ SCENARIO("Routing on circuit with no multi-qubit gates") {
     Architecture arc({{0, 1}, {1, 2}, {2, 3}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(!mm.route_circuit(
-        circ, {std::make_shared<LexiLabellingMethod>(),
-               std::make_shared<LexiRouteRoutingMethod>()}));
+        circ,
+        {
+            std::make_shared<LexiLabellingMethod>(),
+            std::make_shared<LexiRouteRoutingMethod>(),
+        },
+        false));
     REQUIRE(orig_vertices - 8 == circ.n_gates());
   }
 }
@@ -1187,12 +1195,28 @@ SCENARIO("Empty circuits, with and without blank wires") {
     RingArch arc(6);
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(!mm.route_circuit(
+        circ,
+        {
+            std::make_shared<LexiLabellingMethod>(),
+            std::make_shared<LexiRouteRoutingMethod>(),
+        },
+        false));
+    REQUIRE(circ.depth() == 0);
+    REQUIRE(circ.n_gates() == 0);
+    REQUIRE(circ.n_qubits() == 6);
+    REQUIRE(!respects_connectivity_constraints(circ, arc, true));
+  }
+  GIVEN("An empty circuit with some qubits with labelling") {
+    Circuit circ(6);
+    RingArch arc(6);
+    MappingManager mm(std::make_shared<Architecture>(arc));
+    REQUIRE(mm.route_circuit(
         circ, {std::make_shared<LexiLabellingMethod>(),
                std::make_shared<LexiRouteRoutingMethod>()}));
     REQUIRE(circ.depth() == 0);
     REQUIRE(circ.n_gates() == 0);
     REQUIRE(circ.n_qubits() == 6);
-    REQUIRE(!respects_connectivity_constraints(circ, arc, true));
+    REQUIRE(respects_connectivity_constraints(circ, arc, true));
   }
   GIVEN("An empty circuit with no qubits") {
     Circuit circ(0);
