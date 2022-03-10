@@ -64,7 +64,6 @@ struct MappingFrontier {
 
   std::shared_ptr<unit_bimaps_t> bimaps_;
 
-
   MappingFrontier(Circuit& _circuit);
 
   MappingFrontier(Circuit& _circuit, std::shared_ptr<unit_bimaps_t> _bimaps);

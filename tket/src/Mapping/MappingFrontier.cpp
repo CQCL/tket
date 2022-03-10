@@ -106,12 +106,6 @@ MappingFrontier::MappingFrontier(
     Circuit& _circuit, std::shared_ptr<unit_bimaps_t> _bimaps)
     : circuit_(_circuit), bimaps_(_bimaps) {
   // Check that the maps are valid
-  if (_bimaps->initial.size() != _circuit.n_qubits()) {
-    throw MappingFrontierError("Invalid initial map.");
-  }
-  if (_bimaps->final.size() != _circuit.n_qubits()) {
-    throw MappingFrontierError("Invalid final map.");
-  }
   for (const Qubit& q : _circuit.all_qubits()) {
     if (_bimaps->initial.right.find(q) == _bimaps->initial.right.end()) {
       throw MappingFrontierError(
