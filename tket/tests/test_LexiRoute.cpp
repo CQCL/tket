@@ -18,6 +18,7 @@
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
 #include "Mapping/Verification.hpp"
+#include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
@@ -1498,6 +1499,62 @@ SCENARIO("Initial map should contain all data qubits") {
     circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[3], qubits_renamed[4]});
 
     REQUIRE(test_unitary_comparison(initial_circ, circ));
+  }
+}
+
+SCENARIO("Lexi relabel with partially mapped circuit") {
+  GIVEN("With an unplaced qubit") {
+    Architecture arc({{0, 1}, {1, 2}});
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::CZ, {0, 1}, "cz0,1");
+    c.add_op<unsigned>(OpType::CZ, {1, 2}, "cz1,2");
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    // Initialise the maps by the same way it's done with CompilationUnit
+    for (const UnitID& u : c.all_units()) {
+      maps->initial.insert({u, u});
+      maps->final.insert({u, u});
+    }
+    Placement pl(arc);
+    qubit_mapping_t partial_map;
+    partial_map.insert({Qubit(0), Node(0)});
+    partial_map.insert({Qubit(1), Node(1)});
+    pl.place_with_map(c, partial_map, maps);
+
+    MappingManager mm(std::make_shared<Architecture>(arc));
+    mm.route_circuit_with_maps(
+        c,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        maps);
+    REQUIRE(check_permutation(c, maps));
+  }
+  GIVEN("With an unplaced qubit merged to an ancilla") {
+    Circuit c(4);
+    c.add_op<unsigned>(OpType::CZ, {3, 0}, "cz3,0");
+    c.add_op<unsigned>(OpType::CZ, {1, 0}, "cz1,0");
+    c.add_op<unsigned>(OpType::CZ, {1, 3}, "cz1,3");
+    c.add_op<unsigned>(OpType::CZ, {3, 2}, "cz3,2");
+
+    Architecture arc({{0, 1}, {0, 2}, {0, 3}, {4, 1}, {4, 2}});
+    PassPtr plac_p = gen_placement_pass(std::make_shared<GraphPlacement>(arc));
+    CompilationUnit cu(c);
+    REQUIRE(plac_p->apply(cu));
+    const unit_bimap_t& initial_map = cu.get_initial_map_ref();
+    const unit_bimap_t& final_map = cu.get_final_map_ref();
+
+    PassPtr r_p = gen_routing_pass(
+        arc, {std::make_shared<LexiLabellingMethod>(),
+              std::make_shared<LexiRouteRoutingMethod>()});
+    REQUIRE(r_p->apply(cu));
+
+    for (const Qubit& q : c.all_qubits()) {
+      REQUIRE(initial_map.left.find(q) != initial_map.left.end());
+      REQUIRE(final_map.left.find(q) != final_map.left.end());
+    }
+    for (const Qubit& q : cu.get_circ_ref().all_qubits()) {
+      REQUIRE(initial_map.right.find(q) != initial_map.right.end());
+      REQUIRE(final_map.right.find(q) != final_map.right.end());
+    }
   }
 }
 
