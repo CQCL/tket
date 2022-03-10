@@ -195,6 +195,19 @@ struct MappingFrontier {
   bool valid_boundary_operation(
       const ArchitecturePtr& architecture, const Op_ptr& op,
       const std::vector<Node>& uids) const;
+
+  /**
+   * Update a qubit mapping in both the initial map and the final map
+   * @param qubit the qubit mapping to be updated
+   * @param node the new node to be mapped
+   */
+  void update_bimaps(UnitID qubit, UnitID node);
+
+  /**
+   * Get the qubit in the initial map given it's mapped uid.
+   * @param uid UnitID in the circuit
+   */
+  UnitID get_qubit_from_circuit_uid(const UnitID& uid);
 };
 
 typedef std::shared_ptr<MappingFrontier> MappingFrontier_ptr;
