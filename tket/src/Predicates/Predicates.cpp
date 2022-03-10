@@ -334,7 +334,7 @@ bool ConnectivityPredicate::implies(const Predicate& other) const {
     const Architecture& arc1 = arch_;
     const Architecture& arc2 = other_c.arch_;
     // Check that all nodes in arc1 are in arc2:
-    for (const Node &n : arc1.get_all_nodes_vec()) {
+    for (const Node& n : arc1.get_all_nodes_vec()) {
       if (!arc2.node_exists(n)) {
         return false;
       }
