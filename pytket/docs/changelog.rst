@@ -59,6 +59,11 @@ Minor new features:
   architecture constraints.
 * ``CircuitStatus`` has several new optional properties such as time-stamps associated with status changes,
   queue position or detailed error information.
+
+Fixes:
+
+* ``ConnectivityPredicate.implies()`` checks for existence of isolated nodes as
+  well as edges in second architecture.
   
 0.19.2 (February 2022)
 ----------------------
