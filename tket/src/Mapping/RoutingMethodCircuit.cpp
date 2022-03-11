@@ -45,7 +45,16 @@ std::pair<bool, unit_map_t> RoutingMethodCircuit::routing_method(
   }
 
   // update unit id at boundary in case of relabelling
+  // The route_subcircuit_ method populates its initial map
+  // with unit ids from the circuit. e.g. Initial map from frontier ==
+  // q[0]:unplaced[0], circuit.all_qubits() == unplaced[0]. Then the produced
+  // initial map == unplaced[0]:node[0] We have to update the initial map to
+  // q[0]:node[0]
   mapping_frontier->update_linear_boundary_uids(std::get<2>(routed_subcircuit));
+  for (const auto& pair : std::get<2>(routed_subcircuit)) {
+    mapping_frontier->update_bimaps(
+        mapping_frontier->get_qubit_from_circuit_uid(pair.first), pair.second);
+  }
 
   unit_map_t swap_permutation;
   for (const auto& pair : std::get<2>(routed_subcircuit)) {

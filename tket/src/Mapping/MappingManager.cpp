@@ -45,7 +45,7 @@ bool MappingManager::route_circuit_with_maps(
   // mapping_frontier tracks boundary between routed & un-routed in circuit
   // when initialised, boundary is over output edges of input vertices
   MappingFrontier_ptr mapping_frontier;
-  if (maps) {
+  if (!maps->initial.empty() && !maps->final.empty()) {
     mapping_frontier = std::make_shared<MappingFrontier>(circuit, maps);
   } else {
     mapping_frontier = std::make_shared<MappingFrontier>(circuit);
@@ -142,6 +142,9 @@ bool MappingManager::route_circuit_with_maps(
         }
         qubit_to_nodes_place.insert({q, nodes_vec[index_to_use]});
         node_set_placed.insert(nodes_vec[index_to_use]);
+        mapping_frontier->update_bimaps(
+            mapping_frontier->get_qubit_from_circuit_uid(q),
+            nodes_vec[index_to_use]);
       }
     }
 

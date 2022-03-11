@@ -39,6 +39,7 @@ bool LexiRoute::assign_at_distance(
   node_set_t valid_nodes;
   for (const Node& neighbour :
        this->architecture_->nodes_at_distance(root, distances)) {
+    // A node is unassigned if it's empty or holding an ancilla
     if (this->assigned_nodes_.find(neighbour) == this->assigned_nodes_.end() ||
         this->mapping_frontier_->ancilla_nodes_.find(neighbour) !=
             this->mapping_frontier_->ancilla_nodes_.end()) {
@@ -47,9 +48,12 @@ bool LexiRoute::assign_at_distance(
   }
   if (valid_nodes.size() == 1) {
     auto it = valid_nodes.begin();
+    // If the node to be assigned holds an ancilla
     if (this->mapping_frontier_->ancilla_nodes_.find(*it) !=
         this->mapping_frontier_->ancilla_nodes_.end()) {
       // => node *it is already present in circuit, but as an ancilla
+      // Merge the logical qubit to the end of the ancilla.
+      // notice that the merge_ancilla updates the qubit maps.
       this->mapping_frontier_->merge_ancilla(assignee, *it);
       this->mapping_frontier_->ancilla_nodes_.erase(*it);
       this->labelling_.erase(*it);
@@ -57,6 +61,10 @@ bool LexiRoute::assign_at_distance(
     } else {
       this->labelling_[assignee] = *it;
       this->assigned_nodes_.insert(*it);
+      // Assignee is a UnitID obtained from the circuit
+      // so we need to use the initial map to find the associated qubit.
+      this->mapping_frontier_->update_bimaps(
+          this->mapping_frontier_->get_qubit_from_circuit_uid(assignee), *it);
     }
     return true;
   }
@@ -77,6 +85,7 @@ bool LexiRoute::assign_at_distance(
     if (this->mapping_frontier_->ancilla_nodes_.find(preserved_node) !=
         this->mapping_frontier_->ancilla_nodes_.end()) {
       // => node *it is already present in circuit, but as an ancilla
+      // Merge the logical qubit to the end of the ancilla.
       this->mapping_frontier_->merge_ancilla(assignee, preserved_node);
       this->mapping_frontier_->ancilla_nodes_.erase(preserved_node);
       this->labelling_.erase(preserved_node);
@@ -85,6 +94,9 @@ bool LexiRoute::assign_at_distance(
       // add ancilla case
       this->labelling_[assignee] = preserved_node;
       this->assigned_nodes_.insert(preserved_node);
+      this->mapping_frontier_->update_bimaps(
+          this->mapping_frontier_->get_qubit_from_circuit_uid(assignee),
+          preserved_node);
     }
     return true;
   }
@@ -106,7 +118,7 @@ bool LexiRoute::update_labelling() {
     if (!uid_0_exist && !uid_1_exist) {
       // Place one on free unassigned qubit
       // Then place second later
-      // condition => No ancilla qubits assigned, so don't checl
+      // condition => No ancilla qubits assigned, so don't check
       if (this->assigned_nodes_.size() == 0) {
         // find nodes with best averaged distance to other nodes
         // place it there...
@@ -127,9 +139,16 @@ bool LexiRoute::update_labelling() {
         }
         this->labelling_[pair.first] = preserved_node;
         this->assigned_nodes_.insert(preserved_node);
+        // Update bimaps
+        this->mapping_frontier_->update_bimaps(
+            this->mapping_frontier_->get_qubit_from_circuit_uid(pair.first),
+            preserved_node);
         uid_0_exist = true;
         // given best node, do something
       } else {
+        // Assign uid_0 to an unassigned node that is
+        // 1. adjacent to the already assigned nodes
+        // 2. has an unassigned neighbour
         auto root_it = this->assigned_nodes_.begin();
         while (!uid_0_exist && root_it != this->assigned_nodes_.end()) {
           Node root = *root_it;
