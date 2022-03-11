@@ -18,6 +18,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/stl_bind.h>
 
+#include "Architecture/BestTsaWithArch.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Mapping/AASLabelling.hpp"
 #include "Mapping/AASRoute.hpp"
@@ -32,12 +33,27 @@
 namespace py = pybind11;
 
 namespace tket {
+std::vector<std::pair<Node, Node>> get_ts_swaps(
+    const Architecture& architecture,
+    const BestTsaWithArch::NodeMapping& node_mapping) {
+  return BestTsaWithArch::get_swaps(architecture, node_mapping);
+}
 PYBIND11_MODULE(mapping, m) {
   py::class_<RoutingMethod, std::shared_ptr<RoutingMethod>>(
       m, "RoutingMethod",
       "Parent class for RoutingMethod, for inheritance purposes only, not for "
       "usage.")
       .def(py::init<>());
+
+  m.def(
+      "get_token_swapping_network", &get_ts_swaps,
+      "For a given architecture and map from Node to Node, returns a list of "
+      "tuple of Node corresponding to a sequence of SWAP gates that would map"
+      "a state from the first node to second node. \n\n:param architecture: "
+      "Architecture SWAP network respects. \n:param node_mapping: Node from "
+      "and to "
+      "some logical state must travel.",
+      py::arg("architecture"), py::arg("node_mapping"));
 
   py::class_<
       RoutingMethodCircuit, std::shared_ptr<RoutingMethodCircuit>,
