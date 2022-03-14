@@ -1,14 +1,78 @@
 Changelog
 =========
 
+1.0.0 (March 2022)
+------------------
 
+API changes:
+
+* ``Rebase<Target>`` and ``SquashHQS`` methods are removed. Specifically:
+
+  * ``RebaseHQS``
+  * ``RebaseProjectQ``
+  * ``RebasePyZX``
+  * ``RebaseQuil``
+  * ``RebaseUMD``
+  * ``RebaseUFR``
+  * ``RebaseOQC``
+
+* The deprecated ``QubitPauliString.to_dict`` method is removed. (Use the
+  ``map`` property instead.)
+* The deprecated ``Backend.compile_circuit`` method is removed. (Use
+  ``get_compiled_circuit`` instead.)
+* The ``routing`` module is removed.
+* ``Placement``, ``LinePlacement``, ``GraphPlacement`` and ``NoiseAwarePlacement`` 
+  are now imported from the ``placement`` module.
+* ``Architecture``, ``SquareGrid``, ``RingArch`` and ``FullyConnected`` are now 
+  imported from the ``architecture`` module.
+* Methods for mapping logical to physical circuits are now available in the
+  ``mapping`` module, with a new API and new functionality.
+* The keyword parameter and property ``def`` is now called ``definition`` in 
+  ``Circuit.add_custom_gate`` and ``CustomGateDef``.
+* ``RebaseCustom`` takes one allowed gateset parameter rather than separate single qubit and multiqubit gatesets.
+* The ``Backend.characterisation`` property is removed. (Use
+  ``Backend.backend_info`` instead.)
+* The ``QubitPauliOperator.from_OpenFermion`` and
+  ``QubitPauliOperator.to_OpenFermion`` methods are removed.
+* The ``pytket.program`` module is removed.
+* The ``pytket.telemetry`` module is removed.
+
+Major new features:
+
+* New methods for mapping logical to physical circuits for some ``Architecture``.
+  The new method will use a list of user-given methods, each of them suitable only 
+  for a specific set of subcircuits. Users can add their own methods if they want to.
+  All compiler passes in pytket are updated to use the new methods.
+  The methods already given by pytket are ``LexiRouteRoutingMethod``,
+  ``LexiLabellingMethod``, ``MultiGateReorderRoutingMethod``,
+  ``AASRouteRoutingMethod``, ``BoxDecompositionRoutingMethod``, and ``AASLabellingMethod``.
+
+Minor new features:
+
+* Add ``delay_measures`` option to ``DefaultMappingPass``.
+* New ``pytket.passes.auto_rebase_pass`` and ``pytket.passes.auto_squash_pass``
+  which attempt to construct rebase and squash passess given a target gate set from known
+  decompositions.
+* Add ``get_c_register``, ``get_q_register``, ``c_registers`` and ``q_registers`` methods to ``Circuit``.
+* New ``pytket.passes.NaivePlacementPass`` which completes a basic relabelling of all Circuit Qubit
+  not labelled as some Architecture Node to any available Architecture Node
+* Add ``opgroups`` property to ``Circuit``.
+* ``Architecture`` has new ``valid_operation`` method which returns true if passed UnitIDs that respect 
+  architecture constraints.
+* ``CircuitStatus`` has several new optional properties such as time-stamps associated with status changes,
+  queue position or detailed error information.
+
+Fixes:
+
+* ``ConnectivityPredicate.implies()`` checks for existence of isolated nodes as
+  well as edges in second architecture.
+  
 0.19.2 (February 2022)
 ----------------------
 
 Fixes:
 
 * Fix issue with jinja2 by updating dependency.
-
 
 0.19.1 (February 2022)
 ----------------------

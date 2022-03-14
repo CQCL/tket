@@ -16,6 +16,7 @@
 
 #include <memory>
 
+#include "Circuit/CircPool.hpp"
 #include "PassGenerators.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Transformations/BasicOptimisation.hpp"
@@ -285,6 +286,8 @@ const PassPtr &ComposePhasePolyBoxes() {
    * converts a circuit containing all possible gates to a circuit
    * containing only phase poly boxes + H gates (and measure + reset + collapse
    * + barrier)
+   * this pass will replace all wire swaps in the given circuit and they will be
+   * included in the last or an additional phase poly boxes
    */
   static const PassPtr pp([]() {
     Transform t =
@@ -293,7 +296,13 @@ const PassPtr &ComposePhasePolyBoxes() {
 
     PredicatePtrMap precons{CompilationUnit::make_type_pair(noclas)};
 
-    PostConditions postcon = {precons, {}, Guarantee::Clear};
+    PredicatePtr no_wire_swap = std::make_shared<NoWireSwapsPredicate>();
+
+    PredicatePtrMap s_postcons{
+        CompilationUnit::make_type_pair(noclas),
+        CompilationUnit::make_type_pair(no_wire_swap)};
+    PostConditions postcon{s_postcons, {}, Guarantee::Preserve};
+
     nlohmann::json j;
     j["name"] = "ComposePhasePolyBoxes";
     return std::make_shared<StandardPass>(precons, t, postcon, j);
@@ -346,7 +355,7 @@ const PassPtr &SquashTK1() {
 const PassPtr &SquashHQS() {
   static const PassPtr pp([]() {
     return gen_squash_pass(
-        {OpType::Rz, OpType::PhasedX}, Transforms::tk1_to_PhasedXRz);
+        {OpType::Rz, OpType::PhasedX}, CircPool::tk1_to_PhasedXRz);
   }());
   return pp;
 }
@@ -368,11 +377,13 @@ const PassPtr &DecomposeBridges() {
 
 const PassPtr &FlattenRegisters() {
   static const PassPtr pp([]() {
-    Transform t = Transform([](Circuit &circ) {
-      if (circ.is_simple()) return false;
-      circ.flatten_registers();
-      return true;
-    });
+    Transform t =
+        Transform([](Circuit &circ, std::shared_ptr<unit_bimaps_t> maps) {
+          if (circ.is_simple()) return false;
+          unit_map_t qmap = circ.flatten_registers();
+          update_maps(maps, qmap, qmap);
+          return true;
+        });
     PredicatePtrMap s_ps;
     PredicatePtr simple = std::make_shared<DefaultRegisterPredicate>();
     PredicatePtrMap spec_postcons{CompilationUnit::make_type_pair(simple)};

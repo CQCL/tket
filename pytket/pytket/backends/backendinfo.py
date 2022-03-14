@@ -13,11 +13,125 @@
 # limitations under the License.
 
 """ BackendInfo class: additional information on Backends """
+
 from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional, Set, cast, Tuple, Union
 
-from pytket.routing import Architecture, FullyConnected  # type: ignore
+from pytket.architecture import Architecture, FullyConnected  # type: ignore
 from pytket.circuit import Node, OpType  # type: ignore
+
+_OpTypeErrs = Dict[OpType, float]
+_Edge = Tuple[Node, Node]
+
+
+def _serialize_all_node_gate_errors(
+    d: Optional[Dict[Node, _OpTypeErrs]]
+) -> Optional[List[List]]:
+    if d is None:
+        return None
+    return [
+        [n.to_list(), {ot.name: err for ot, err in errs.items()}]
+        for n, errs in d.items()
+    ]
+
+
+def _deserialize_all_node_gate_errors(
+    l: Optional[List[List]],
+) -> Optional[Dict[Node, _OpTypeErrs]]:
+    if l is None:
+        return None
+    return {
+        Node.from_list(n): {OpType.from_name(ot): err for ot, err in errs.items()}
+        for n, errs in l
+    }
+
+
+def _serialize_all_edge_gate_errors(
+    d: Optional[Dict[_Edge, _OpTypeErrs]]
+) -> Optional[List]:
+    if d is None:
+        return None
+    return [
+        [[n0.to_list(), n1.to_list()], {ot.name: err for ot, err in errs.items()}]
+        for (n0, n1), errs in d.items()
+    ]
+
+
+def _deserialize_all_edge_gate_errors(
+    l: Optional[List],
+) -> Optional[Dict[_Edge, _OpTypeErrs]]:
+    if l is None:
+        return None
+    return {
+        (Node.from_list(n0), Node.from_list(n1)): {
+            OpType.from_name(ot): err for ot, err in errs.items()
+        }
+        for (n0, n1), errs in l
+    }
+
+
+def _serialize_all_readout_errors(
+    d: Optional[Dict[Node, List[List[float]]]]
+) -> Optional[List[List]]:
+    if d is None:
+        return None
+    return [[n.to_list(), errs] for n, errs in d.items()]
+
+
+def _deserialize_all_readout_errors(
+    l: Optional[List[List]],
+) -> Optional[Dict[Node, List[List[float]]]]:
+    if l is None:
+        return None
+    return {Node.from_list(n): errs for n, errs in l}
+
+
+def _serialize_averaged_node_gate_errors(
+    d: Optional[Dict[Node, float]]
+) -> Optional[List[List]]:
+    if d is None:
+        return None
+    return [[n.to_list(), err] for n, err in d.items()]
+
+
+def _deserialize_averaged_node_gate_errors(
+    l: Optional[List[List]],
+) -> Optional[Dict[Node, float]]:
+    if l is None:
+        return None
+    return {Node.from_list(n): err for n, err in l}
+
+
+def _serialize_averaged_edge_gate_errors(
+    d: Optional[Dict[_Edge, float]]
+) -> Optional[List[List]]:
+    if d is None:
+        return None
+    return [[[n0.to_list(), n1.to_list()], err] for (n0, n1), err in d.items()]
+
+
+def _deserialize_averaged_edge_gate_errors(
+    l: Optional[List[List]],
+) -> Optional[Dict[Tuple, float]]:
+    if l is None:
+        return None
+    return {(Node.from_list(n0), Node.from_list(n1)): err for (n0, n1), err in l}
+
+
+def _serialize_averaged_readout_errors(
+    d: Optional[Dict[Node, float]]
+) -> Optional[List[List]]:
+    if d is None:
+        return None
+    return [[n.to_list(), err] for n, err in d.items()]
+
+
+def _deserialize_averaged_readout_errors(
+    l: Optional[List[List]],
+) -> Optional[Dict[Node, float]]:
+    if l is None:
+        return None
+    return {Node.from_list(n): err for n, err in l}
 
 
 @dataclass
@@ -41,14 +155,15 @@ class BackendInfo:
     :param all_edge_gate_errors: Dictionary between architecture couplings and error
         rate for different two-qubit operations.
     :param all_readout_errors: Dictionary between architecture Node and uncorrelated
-        single qubit readout errors.
+        single qubit readout errors (2x2 readout probability matrix).
     :param averaged_node_gate_errors: Dictionary between architecture Node and averaged
         error rate for all single qubit operations.
     :param averaged_edge_gate_errors: Dictionary between architecture couplings and
         averaged error rate for all two-qubit operations.
     :param averaged_readout_errors: Dictionary between architecture Node and averaged
         readout errors.
-    :param misc: key-value map with further provider-specific information
+    :param misc: key-value map with further provider-specific information (must be
+        JSON-serializable)
     """
 
     # identifying information
@@ -131,6 +246,24 @@ class BackendInfo:
         self_dict = asdict(self)
         self_dict["architecture"] = self_dict["architecture"].to_dict()
         self_dict["gate_set"] = [op.value for op in self_dict["gate_set"]]
+        self_dict["all_node_gate_errors"] = _serialize_all_node_gate_errors(
+            self_dict["all_node_gate_errors"]
+        )
+        self_dict["all_edge_gate_errors"] = _serialize_all_edge_gate_errors(
+            self_dict["all_edge_gate_errors"]
+        )
+        self_dict["all_readout_errors"] = _serialize_all_readout_errors(
+            self_dict["all_readout_errors"]
+        )
+        self_dict["averaged_node_gate_errors"] = _serialize_averaged_node_gate_errors(
+            self_dict["averaged_node_gate_errors"]
+        )
+        self_dict["averaged_edge_gate_errors"] = _serialize_averaged_edge_gate_errors(
+            self_dict["averaged_edge_gate_errors"]
+        )
+        self_dict["averaged_readout_errors"] = _serialize_averaged_readout_errors(
+            self_dict["averaged_readout_errors"]
+        )
         return self_dict
 
     @classmethod
@@ -149,6 +282,24 @@ class BackendInfo:
         else:
             args["architecture"] = FullyConnected.from_dict(args["architecture"])
         args["gate_set"] = {OpType(op) for op in args["gate_set"]}
+        args["all_node_gate_errors"] = _deserialize_all_node_gate_errors(
+            args["all_node_gate_errors"]
+        )
+        args["all_edge_gate_errors"] = _deserialize_all_edge_gate_errors(
+            args["all_edge_gate_errors"]
+        )
+        args["all_readout_errors"] = _deserialize_all_readout_errors(
+            args["all_readout_errors"]
+        )
+        args["averaged_node_gate_errors"] = _deserialize_averaged_node_gate_errors(
+            args["averaged_node_gate_errors"]
+        )
+        args["averaged_edge_gate_errors"] = _deserialize_averaged_edge_gate_errors(
+            args["averaged_edge_gate_errors"]
+        )
+        args["averaged_readout_errors"] = _deserialize_averaged_readout_errors(
+            args["averaged_readout_errors"]
+        )
         return cls(**args)
 
 

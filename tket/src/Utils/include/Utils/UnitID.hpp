@@ -21,6 +21,7 @@
 
 #include <boost/functional/hash.hpp>
 #include <map>
+#include <memory>
 #include <optional>
 #include <regex>
 #include <set>
@@ -89,6 +90,7 @@ class UnitID {
     if (n < 0) return true;
     return data_->index_ < other.data_->index_;
   }
+  bool operator>(const UnitID &other) const { return other < *this; }
   bool operator==(const UnitID &other) const {
     return (this->data_->name_ == other.data_->name_) &&
            (this->data_->index_ == other.data_->index_);
@@ -248,8 +250,14 @@ class Node : public Qubit {
 
 JSON_DECL(Node)
 
-/** A correspondence between two sets of node IDs */
+/** A correspondence between two sets of unit IDs */
 typedef boost::bimap<UnitID, UnitID> unit_bimap_t;
+
+/** A pair of ("initial" and "final") correspondences between unit IDs */
+typedef struct {
+  unit_bimap_t initial;
+  unit_bimap_t final;
+} unit_bimaps_t;
 
 typedef std::vector<UnitID> unit_vector_t;
 typedef std::map<UnitID, UnitID> unit_map_t;
@@ -267,5 +275,57 @@ typedef std::vector<Node> node_vector_t;
 
 /** A register of locations sharing the same name */
 typedef std::map<unsigned, UnitID> register_t;
+
+template <typename UnitA, typename UnitB>
+static bool update_map(unit_bimap_t &m, const std::map<UnitA, UnitB> &um) {
+  unit_map_t new_m;
+  bool changed = false;
+  for (const std::pair<const UnitA, UnitB> &pair : um) {
+    const auto &it = m.right.find(pair.first);
+    if (it == m.right.end()) {
+      continue;
+    }
+    new_m.insert({it->second, pair.second});
+    changed |= (m.right.erase(pair.first) > 0);
+  }
+  for (const std::pair<const UnitID, UnitID> &pair : new_m) {
+    changed |= m.left.insert(pair).second;
+  }
+  return changed;
+}
+
+/**
+ * Update a pair of "initial" and "final" correspondences.
+ *
+ * If \p maps is null then the function does nothing and returns false.
+ *
+ * @param[in,out] maps maps to be updated
+ * @param[in] um_initial new correspondences added to initial map
+ * @param[in] um_final new correspondences added to final map
+ *
+ * @tparam UnitA first unit type
+ * @tparam UnitB second unit type
+ *
+ * @return whether any changes were made to the maps
+ */
+template <typename UnitA, typename UnitB>
+bool update_maps(
+    std::shared_ptr<unit_bimaps_t> maps,
+    const std::map<UnitA, UnitB> &um_initial,
+    const std::map<UnitA, UnitB> &um_final) {
+  if (!maps) return false;
+  // Can only work for Unit classes
+  static_assert(std::is_base_of<UnitID, UnitA>::value);
+  static_assert(std::is_base_of<UnitID, UnitB>::value);
+  // Unit types must be related, so cannot rename e.g. Bits to Qubits
+  static_assert(
+      std::is_base_of<UnitA, UnitB>::value ||
+      std::is_base_of<UnitB, UnitA>::value);
+
+  bool changed = false;
+  changed |= update_map(maps->initial, um_initial);
+  changed |= update_map(maps->final, um_final);
+  return changed;
+}
 
 }  // namespace tket

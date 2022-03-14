@@ -15,6 +15,9 @@
 #include <pybind11/functional.h>
 
 #include "ArchAwareSynth/SteinerForest.hpp"
+#include "Mapping/LexiLabelling.hpp"
+#include "Mapping/LexiRoute.hpp"
+#include "Mapping/RoutingMethod.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
@@ -30,34 +33,29 @@ using json = nlohmann::json;
 
 namespace tket {
 
-void update_routing_config(RoutingConfig &config, py::kwargs kwargs) {
-  if (kwargs.contains("swap_lookahead"))
-    config.depth_limit = py::cast<unsigned>(kwargs["swap_lookahead"]);
-  if (kwargs.contains("bridge_lookahead"))
-    config.distrib_limit = py::cast<unsigned>(kwargs["bridge_lookahead"]);
-  if (kwargs.contains("bridge_interactions"))
-    config.interactions_limit =
-        py::cast<unsigned>(kwargs["bridge_interactions"]);
-  if (kwargs.contains("bridge_exponent"))
-    config.distrib_exponent = py::cast<unsigned>(kwargs["bridge_exponent"]);
-}
 static PassPtr gen_cx_mapping_pass_kwargs(
     const Architecture &arc, const PlacementPtr &placer, py::kwargs kwargs) {
-  RoutingConfig config = {};
-  update_routing_config(config, kwargs);
+  std::vector<RoutingMethodPtr> config = {
+      std::make_shared<LexiLabellingMethod>(),
+      std::make_shared<LexiRouteRoutingMethod>()};
+  if (kwargs.contains("config")) {
+    config = py::cast<std::vector<RoutingMethodPtr>>(kwargs["config"]);
+  }
   bool directed_cx = false;
-  if (kwargs.contains("directed_cx"))
+  if (kwargs.contains("directed_cx")) {
     directed_cx = py::cast<bool>(kwargs["directed_cx"]);
+  }
   bool delay_measures = true;
-  if (kwargs.contains("delay_measures"))
+  if (kwargs.contains("delay_measures")) {
     delay_measures = py::cast<bool>(kwargs["delay_measures"]);
+  }
   return gen_cx_mapping_pass(arc, placer, config, directed_cx, delay_measures);
 }
 
-static PassPtr gen_default_routing_pass(
-    const Architecture &arc, py::kwargs kwargs) {
-  RoutingConfig config = {};
-  update_routing_config(config, kwargs);
+static PassPtr gen_default_routing_pass(const Architecture &arc) {
+  std::vector<RoutingMethodPtr> config = {
+      std::make_shared<LexiLabellingMethod>(),
+      std::make_shared<LexiRouteRoutingMethod>()};
   return gen_routing_pass(arc, config);
 }
 
@@ -78,13 +76,6 @@ static PassPtr gen_default_aas_routing_pass(
   }
 
   return gen_full_mapping_pass_phase_poly(arc, lookahead, cnotsynthtype);
-}
-
-static PassPtr gen_full_mapping_pass_kwargs(
-    const Architecture &arc, const PlacementPtr &placer, py::kwargs kwargs) {
-  RoutingConfig config = {};
-  update_routing_config(config, kwargs);
-  return gen_full_mapping_pass(arc, placer, config);
 }
 
 const PassPtr &DecomposeClassicalExp() {
@@ -373,23 +364,7 @@ PYBIND11_MODULE(passes, m) {
       "gates."
       "\n\n:param allow_swaps: whether to allow implicit wire swaps",
       py::arg("allow_swaps") = true);
-  m.def("RebaseCirq", &RebaseCirq, "Converts all gates to CZ, PhasedX and Rz.");
-  m.def(
-      "RebaseHQS", &RebaseHQS, "Converts all gates to ZZMax, PhasedX and Rz.");
-  m.def(
-      "RebaseProjectQ", &RebaseProjectQ,
-      "Converts all gates to SWAP, CRz, CX, CZ, H, X, Y, Z, S, T, V, Rx, "
-      "Ry and Rz.");
-  m.def(
-      "RebasePyZX", &RebasePyZX,
-      "Converts all gates to SWAP, CX, CZ, H, X, Z, S, T, Rx and Rz.");
-  m.def("RebaseQuil", &RebaseQuil, "Converts all gates to CZ, Rx and Rz.");
   m.def("RebaseTket", &RebaseTket, "Converts all gates to CX and TK1.");
-  m.def(
-      "RebaseUMD", &RebaseUMD,
-      "Converts all gates to XXPhase, PhasedX and Rz.");
-  m.def("RebaseUFR", &RebaseUFR, "Converts all gates to CX, Rz and H.");
-  m.def("RebaseOQC", &RebaseOQC, "Converts all gates to ECR, Rz and SX.");
   m.def(
       "RemoveRedundancies", &RemoveRedundancies,
       "Removes gate-inverse pairs, merges rotations, removes identity "
@@ -413,9 +388,6 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "SquashTK1", &SquashTK1,
       "Squash sequences of single-qubit gates to TK1 gates.");
-  m.def(
-      "SquashHQS", &SquashHQS,
-      "Squash Rz and PhasedX gate sequences into an optimal form.");
   m.def(
       "FlattenRegisters", &FlattenRegisters,
       "Merges all quantum and classical registers into their "
@@ -459,25 +431,24 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "RebaseCustom", &gen_rebase_pass,
       "Construct a custom rebase pass. This pass:\n(1) decomposes "
-      "multi-qubit gates not in the set of gate types `multiqs` to CX "
-      "gates;\n(2) if CX is not in `multiqs`, replaces CX gates with "
+      "multi-qubit gates not in the set of gate types `gateset` to CX "
+      "gates;\n(2) if CX is not in `gateset`, replaces CX gates with "
       "`cx_replacement`;\n(3) converts any single-qubit gates not in the "
-      "gate type set `singleqs` to the form "
+      "gate type set to the form "
       ":math:`\\mathrm{Rz}(a)\\mathrm{Rx}(b)\\mathrm{Rz}(c)` (in "
       "matrix-multiplication order, i.e. reverse order in the "
       "circuit);\n(4) applies the `tk1_replacement` function to each of "
       "these triples :math:`(a,b,c)` to generate replacement circuits."
-      "\n\n:param multiqs: The allowed multi-qubit operations in the "
+      "\n\n:param gateset: The allowed multi-qubit operations in the "
       "rebased circuit."
       "\n:param cx_replacement: The equivalent circuit to replace a CX "
-      "gate in the desired basis."
-      "\n:param singleqs: The allowed single-qubit operations in the "
-      "rebased circuit."
+      "gate using two qubit gates from the desired basis (can use any single "
+      "qubit OpTypes)."
       "\n:param tk1_replacement: A function which, given the parameters of "
       "an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
       "desired basis."
       "\n:return: a pass that rebases to the given gate set",
-      py::arg("multiqs"), py::arg("cx_replacement"), py::arg("singleqs"),
+      py::arg("gateset"), py::arg("cx_replacement"),
       py::arg("tk1_replacement"));
 
   m.def(
@@ -500,10 +471,6 @@ PYBIND11_MODULE(passes, m) {
       "RoutingPass", &gen_default_routing_pass,
       "Construct a pass to route to the connectivity graph of an "
       ":py:class:`Architecture`. Edge direction is ignored."
-      "\n\n:param arc: The architecture to use for connectivity information."
-      "\n:param \\**kwargs: Parameters for routing: "
-      "(int)swap_lookahead=50, (int)bridge_lookahead=4, "
-      "(int)bridge_interactions=2, (float)bridge_exponent=0."
       "\n:return: a pass that routes to the given device architecture",
       py::arg("arc"));
 
@@ -515,23 +482,29 @@ PYBIND11_MODULE(passes, m) {
       py::arg("placer"));
 
   m.def(
+      "NaivePlacementPass", &gen_naive_placement_pass,
+      ":param architecture: The Architecture used for relabelling."
+      "\n:return: a pass to relabel :py:class:`Circuit` Qubits to "
+      ":py:class:`Architecture` Nodes",
+      py::arg("arc"));
+
+  m.def(
       "RenameQubitsPass", &gen_rename_qubits_pass, "Rename some or all qubits.",
       "\n\n:param qubit_map: map from old to new qubit names",
       py::arg("qubit_map"));
 
   m.def(
-      "FullMappingPass", &gen_full_mapping_pass_kwargs,
+      "FullMappingPass", &gen_full_mapping_pass,
       "Construct a pass to relabel :py:class:`Circuit` Qubits to "
       ":py:class:`Architecture` Nodes, and then route to the connectivity "
       "graph "
       "of an :py:class:`Architecture`. Edge direction is ignored."
       "\n\n:param arc: The architecture to use for connectivity information. "
       "\n:param placer: The Placement used for relabelling."
-      "\n:param \\**kwargs: Parameters for routing: "
-      "(int)swap_lookahead=50, (int)bridge_lookahead=4, "
-      "(int)bridge_interactions=2, (float)bridge_exponent=0."
+      "\n:param config: Parameters for routing, a list of RoutingMethod, each "
+      "method is checked and run if applicable in turn."
       "\n:return: a pass to perform the remapping",
-      py::arg("arc"), py::arg("placer"));
+      py::arg("arc"), py::arg("placer"), py::arg("config"));
 
   m.def(
       "DefaultMappingPass", &gen_default_mapping_pass,
@@ -542,8 +515,10 @@ PYBIND11_MODULE(passes, m) {
       "Placement used "
       "is GraphPlacement."
       "\n\n:param arc: The Architecture used for connectivity information."
+      "\n:param delay_measures: Whether to commute measurements to the end "
+      "of the circuit, defaulting to true."
       "\n:return: a pass to perform the remapping",
-      py::arg("arc"));
+      py::arg("arc"), py::arg("delay_measures") = true);
 
   m.def(
       "AASRouting", &gen_default_aas_routing_pass,
@@ -577,8 +552,6 @@ PYBIND11_MODULE(passes, m) {
       "\n\n:param arc: The Architecture used for connectivity information."
       "\n:param placer: The placement used for relabelling."
       "\n:param \\**kwargs: Parameters for routing: "
-      "(int)swap_lookahead=50, (int)bridge_lookahead=4, "
-      "(int)bridge_interactions=2, (float)bridge_exponent=0, "
       "(bool)directed_cx=false, (bool)delay_measures=true"
       "\n:return: a pass to perform the remapping",
       py::arg("arc"), py::arg("placer"));

@@ -14,8 +14,11 @@
 
 #include "Expression.hpp"
 
+#include <optional>
+
 #include "Constants.hpp"
 #include "Symbols.hpp"
+#include "symengine/symengine_exception.h"
 
 namespace tket {
 
@@ -57,7 +60,11 @@ std::optional<double> eval_expr(const Expr& e) {
   if (!SymEngine::free_symbols(e).empty()) {
     return std::nullopt;
   } else {
-    return SymEngine::eval_double(e);
+    try {
+      return SymEngine::eval_double(e);
+    } catch (SymEngine::NotImplementedError&) {
+      return std::nullopt;
+    }
   }
 }
 

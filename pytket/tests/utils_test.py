@@ -444,7 +444,7 @@ def unitary_circuits(draw: Callable[[SearchStrategy[Any]], Any]) -> Circuit:
     # available qubits as integers
     qb_strat = strategies.integers(min_value=0, max_value=n_qb - 1)
     # some symbols to sample from
-    syms = symbols("a b c d e")
+    syms = symbols("a b c d e")  # type: ignore
     c = Circuit(n_qb)
 
     optype_dict = {
@@ -564,8 +564,8 @@ def test_symbolic_conversion(circ: Circuit) -> None:
 
     substitutions = [(sym, val) for sym, val in zip(free_symbs, bind_vals)]
     circ.symbol_substitution(dict(substitutions))
-    sym_unitary = sym_unitary.subs(substitutions)
-    sym_state = sym_state.subs(substitutions)
+    sym_unitary = sym_unitary.subs(substitutions)  # type: ignore
+    sym_state = sym_state.subs(substitutions)  # type: ignore
 
     numeric_unitary = np.array(sym_unitary).astype(np.complex128)
     numeric_state = np.array(sym_state).astype(np.complex128)

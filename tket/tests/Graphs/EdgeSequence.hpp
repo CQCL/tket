@@ -18,14 +18,14 @@
 #include <utility>
 #include <vector>
 
+#include "Utils/RNG.hpp"
+
 namespace tket {
 namespace graphs {
 
 class AdjacencyData;
 
 namespace tests {
-
-class RNG;
 
 /**
  * For having a whole sequence of checked edges

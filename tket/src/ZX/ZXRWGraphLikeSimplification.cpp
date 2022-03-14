@@ -36,6 +36,7 @@ static bool can_complement_neighbourhood(
 }
 
 bool Rewrite::remove_interior_cliffords_fun(ZXDiagram& diag) {
+  if (!diag.is_graphlike()) return false;
   bool success = false;
   ZXVertSeqSet candidates;
   BGL_FORALL_VERTICES(v, *diag.graph, ZXGraph) { candidates.insert(v); }
@@ -45,7 +46,7 @@ bool Rewrite::remove_interior_cliffords_fun(ZXDiagram& diag) {
     ZXVert v = *it;
     view.erase(it);
     if (!diag.is_proper_clifford_spider(v)) continue;
-    const BasicGen& spid = diag.get_vertex_ZXGen<BasicGen>(v);
+    const PhasedGen& spid = diag.get_vertex_ZXGen<PhasedGen>(v);
     QuantumType vqtype = *spid.get_qtype();
     ZXVertVec neighbours = diag.neighbours(v);
     if (!can_complement_neighbourhood(diag, vqtype, neighbours)) continue;
@@ -69,14 +70,14 @@ bool Rewrite::remove_interior_cliffords_fun(ZXDiagram& diag) {
             diag.add_wire(*xi, *yi, ZXWireType::H, vqtype);
         }
       }
-      const BasicGen& xi_op = diag.get_vertex_ZXGen<BasicGen>(*xi);
+      const PhasedGen& xi_op = diag.get_vertex_ZXGen<PhasedGen>(*xi);
       // If `v` is Quantum, Classical neighbours will pick up both the +theta
       // and -theta phases, cancelling out
       if (vqtype == QuantumType::Quantum &&
           *xi_op.get_qtype() == QuantumType::Classical)
         continue;
       // Update phase information
-      ZXGen_ptr xi_new_op = std::make_shared<const BasicGen>(
+      ZXGen_ptr xi_new_op = std::make_shared<const PhasedGen>(
           ZXType::ZSpider, xi_op.get_param() - spid.get_param(),
           *xi_op.get_qtype());
       diag.set_vertex_ZXGen_ptr(*xi, xi_new_op);
@@ -96,8 +97,8 @@ Rewrite Rewrite::remove_interior_cliffords() {
 static void add_phase_to_vertices(
     ZXDiagram& diag, const ZXVertSeqSet& verts, const Expr& phase) {
   for (const ZXVert& v : verts) {
-    const BasicGen& old_spid = diag.get_vertex_ZXGen<BasicGen>(v);
-    ZXGen_ptr new_spid = std::make_shared<const BasicGen>(
+    const PhasedGen& old_spid = diag.get_vertex_ZXGen<PhasedGen>(v);
+    ZXGen_ptr new_spid = std::make_shared<const PhasedGen>(
         ZXType::ZSpider, old_spid.get_param() + phase, *old_spid.get_qtype());
     diag.set_vertex_ZXGen_ptr(v, new_spid);
   }
@@ -123,6 +124,7 @@ static void bipartite_complementation(
 }
 
 bool Rewrite::remove_interior_paulis_fun(ZXDiagram& diag) {
+  if (!diag.is_graphlike()) return false;
   bool success = false;
   ZXVertSeqSet candidates;  // Need an indirect iterator as BGL_FORALL_VERTICES
                             // breaks when removing the current vertex
@@ -167,8 +169,8 @@ bool Rewrite::remove_interior_paulis_fun(ZXDiagram& diag) {
     }
     excl_u.erase(v);
     excl_v.erase(joint.begin(), joint.end());
-    const BasicGen& v_spid = diag.get_vertex_ZXGen<BasicGen>(v);
-    const BasicGen& u_spid = diag.get_vertex_ZXGen<BasicGen>(u);
+    const PhasedGen& v_spid = diag.get_vertex_ZXGen<PhasedGen>(v);
+    const PhasedGen& u_spid = diag.get_vertex_ZXGen<PhasedGen>(u);
 
     add_phase_to_vertices(
         diag, joint, v_spid.get_param() + u_spid.get_param() + 1.);
@@ -194,6 +196,7 @@ Rewrite Rewrite::remove_interior_paulis() {
 }
 
 bool Rewrite::extend_at_boundary_paulis_fun(ZXDiagram& diag) {
+  if (!diag.is_graphlike()) return false;
   bool success = false;
   for (const ZXVert& b : diag.get_boundary()) {
     // Valid ZX graph requires boundaries to have a unique neighbour
@@ -220,7 +223,8 @@ bool Rewrite::extend_at_boundary_paulis_fun(ZXDiagram& diag) {
     // extend it
     ZXGen_ptr u_op = diag.get_vertex_ZXGen_ptr(u);
     QuantumType qtype = *u_op->get_qtype();
-    ZXGen_ptr id = std::make_shared<const BasicGen>(ZXType::ZSpider, 0., qtype);
+    ZXGen_ptr id =
+        std::make_shared<const PhasedGen>(ZXType::ZSpider, 0., qtype);
     ZXVert z1 = diag.add_vertex(id);
     ZXVert z2 = diag.add_vertex(u_op);
     diag.add_wire(u, z1, ZXWireType::H, qtype);

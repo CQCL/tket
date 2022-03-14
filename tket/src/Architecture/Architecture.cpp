@@ -24,8 +24,22 @@
 
 namespace tket {
 
+bool Architecture::valid_operation(const std::vector<Node>& uids) const {
+  for (Node n : uids) {
+    if (!this->node_exists(Node(n))) return false;
+  }
+  if (uids.size() == 1) {
+    return true;
+  } else if (uids.size() == 2) {
+    if (this->bidirectional_edge_exists(uids[0], uids[1])) {
+      return true;
+    }
+  }
+  return false;
+}
+
 Architecture Architecture::create_subarch(
-    const std::vector<Node>& subarc_nodes) {
+    const std::vector<Node>& subarc_nodes) const {
   Architecture subarc(subarc_nodes);
   for (auto [u1, u2] : get_all_edges_vec()) {
     if (subarc.node_exists(u1) && subarc.node_exists(u2)) {
@@ -88,8 +102,7 @@ std::set<Node> Architecture::get_articulation_points() const {
 }
 
 static bool lexicographical_comparison(
-    const std::vector<std::size_t>& dist1,
-    const std::vector<std::size_t>& dist2) {
+    const std::vector<size_t>& dist1, const std::vector<size_t>& dist2) {
   return std::lexicographical_compare(
       dist1.begin(), dist1.end(), dist2.begin(), dist2.end());
 }
@@ -108,7 +121,7 @@ std::optional<Node> Architecture::find_worst_node(
     return std::nullopt;
   }
 
-  std::vector<std::size_t> worst_distances, temp_distances;
+  std::vector<size_t> worst_distances, temp_distances;
   Node worst_node = *bad_nodes.begin();
   worst_distances = get_distances(worst_node);
   for (Node temp_node : bad_nodes) {
@@ -120,9 +133,9 @@ std::optional<Node> Architecture::find_worst_node(
       worst_node = temp_node;
       worst_distances = temp_distances;
     } else if (distance_comp == -1) {
-      std::vector<std::size_t> temp_distances_full =
+      std::vector<size_t> temp_distances_full =
           original_arch.get_distances(temp_node);
-      std::vector<std::size_t> worst_distances_full =
+      std::vector<size_t> worst_distances_full =
           original_arch.get_distances(worst_node);
       if (lexicographical_comparison(
               temp_distances_full, worst_distances_full)) {

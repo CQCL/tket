@@ -82,6 +82,18 @@ recommended in the warning message:
 conan profile update settings.compiler.libcxx=libstdc++11 tket
 ```
 
+Add the `tket.conan` repository to your remotes:
+
+```shell
+conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
+```
+
+Enable revisions:
+
+```shell
+conan config set general.revisions_enabled=1
+```
+
 We want to build shared rather than static libraries, so set this in the
 profile:
 
@@ -135,7 +147,9 @@ The `symengine` dependency is built from a local conan recipe. Run:
 conan create --profile=tket recipes/symengine
 ```
 
-to build it.
+to build it. If you are using a conan configuration supported by the CI
+(see above under "Build tools"), this is unnecessary as a pre-built package
+will be downloaded from the `tket-conan` repository when you build `tket`.
 
 ### Building tket
 
@@ -149,13 +163,6 @@ conan create --profile=tket recipes/tket
 
 to build the tket library.
 
-Note: by default, `tket` uses the header-only version of `spdlog`. This avoids
-an
-[issue](https://github.com/conan-io/conan-docker-tools/issues/303#issuecomment-922492130)
-with an undefined symbol when run in some Linux virtual environments, but makes
-builds slower. For faster local builds you can supply the option
-`-o tket:spdlog_ho=False` to the above `conan create` command.
-
 To build and run the tket tests:
 
 ```shell
@@ -164,6 +171,10 @@ conan create --profile=tket recipes/tket-tests
 
 If you want to build them without running them, pass `--test-folder None` to the
 `conan` command. (You can still run them manually afterwards.)
+
+Some tests (those that add significantly to the runtime) are not built by
+default. To build all tests, add `-o tket-tests:full=True` to the above
+`conan create` command.
 
 There is also a small set of property-based tests which you can build and run
 with:

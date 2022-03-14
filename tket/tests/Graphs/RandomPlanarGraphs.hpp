@@ -18,11 +18,11 @@
 #include <map>
 #include <vector>
 
+#include "Utils/RNG.hpp"
+
 namespace tket {
 namespace graphs {
 namespace tests {
-
-class RNG;
 
 /**
  * For testing purposes only, not of much independent interest

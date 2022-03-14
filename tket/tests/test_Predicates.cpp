@@ -13,7 +13,9 @@
 // limitations under the License.
 
 #include <catch2/catch.hpp>
+#include <memory>
 
+#include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/Predicates.hpp"
 #include "testutil.hpp"
@@ -185,10 +187,14 @@ SCENARIO("Test routing-related predicates' meet and implication") {
   Node n0("test", 0);
   Node n1("test", 1);
   Node n2("test", 2);
+  Node n3("test", 3);
   Architecture arc1({{n0, n1}, {n1, n2}});
   Architecture arc2({{n0, n1}, {n1, n2}, {n0, n2}});
   Architecture arc3({{n0, n2}, {n0, n1}});
   Architecture arc4({{n2, n0}, {n0, n1}});
+  Architecture arc5({n0, n1, n2, n3});
+  arc5.add_connection(n0, n1);
+  arc5.add_connection(n1, n2);
 
   Circuit circ(3);
   circ.add_op<unsigned>(OpType::CX, {0, 1});
@@ -204,10 +210,16 @@ SCENARIO("Test routing-related predicates' meet and implication") {
     PredicatePtr con2 = std::make_shared<ConnectivityPredicate>(arc2);
     PredicatePtr con3 = std::make_shared<ConnectivityPredicate>(arc3);
     PredicatePtr con4 = std::make_shared<ConnectivityPredicate>(arc4);
+    PredicatePtr con5 = std::make_shared<ConnectivityPredicate>(arc5);
     WHEN("Test implies") {
       REQUIRE(con1->implies(*con2));
       REQUIRE(con4->implies(*con3));  // directedness doesn't matter
       REQUIRE_FALSE(con1->implies(*con3));
+    }
+    WHEN("Test implies (isolated nodes)") {
+      // https://github.com/CQCL/tket/issues/88
+      REQUIRE(con1->implies(*con5));
+      REQUIRE_FALSE(con5->implies(*con1));
     }
     WHEN("Test meet") {
       PredicatePtr meet_a = con1->meet(*con2);

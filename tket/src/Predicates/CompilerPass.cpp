@@ -14,12 +14,16 @@
 
 #include "CompilerPass.hpp"
 
+#include <memory>
+
+#include "Mapping/RoutingMethodJson.hpp"
 #include "PassGenerators.hpp"
 #include "PassLibrary.hpp"
 #include "Transformations/ContextualReduction.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/TketLog.hpp"
+#include "Utils/UnitID.hpp"
 
 namespace tket {
 
@@ -194,9 +198,7 @@ bool StandardPass::apply(
         unsatisfied_precon.value()
             ->to_string());  // just raise warning in super-unsafe mode
   // Allow trans_ to update the initial and final map
-  c_unit.circ_.unit_bimaps_ = {&c_unit.initial_map_, &c_unit.final_map_};
-  bool changed = trans_.apply(c_unit.circ_);
-  c_unit.circ_.unit_bimaps_ = {nullptr, nullptr};
+  bool changed = trans_.apply_fn(c_unit.circ_, c_unit.maps);
   update_cache(c_unit, safe_mode);
   after_apply(c_unit, this->get_config());
   return changed;
@@ -431,10 +433,14 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = gen_euler_pass(q, p, s);
     } else if (passname == "RoutingPass") {
       Architecture arc = content.at("architecture").get<Architecture>();
-      RoutingConfig con = content.at("routing_config").get<RoutingConfig>();
+      std::vector<RoutingMethodPtr> con = content.at("routing_config");
       pp = gen_routing_pass(arc, con);
+
     } else if (passname == "PlacementPass") {
       pp = gen_placement_pass(content.at("placement").get<PlacementPtr>());
+    } else if (passname == "NaivePlacementPass") {
+      pp = gen_naive_placement_pass(
+          content.at("architecture").get<Architecture>());
     } else if (passname == "RenameQubitsPass") {
       pp = gen_rename_qubits_pass(
           content.at("qubit_map").get<std::map<Qubit, Qubit>>());
@@ -486,17 +492,19 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
       PlacementPtr place = content.at("placement").get<PlacementPtr>();
-      RoutingConfig config = content.at("routing_config").get<RoutingConfig>();
+      std::vector<RoutingMethodPtr> config = content.at("routing_config");
+
       pp = gen_full_mapping_pass(arc, place, config);
     } else if (passname == "DefaultMappingPass") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
-      pp = gen_default_mapping_pass(arc);
+      bool delay_measures = content.at("delay_measures").get<bool>();
+      pp = gen_default_mapping_pass(arc, delay_measures);
     } else if (passname == "CXMappingPass") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
       PlacementPtr place = content.at("placement").get<PlacementPtr>();
-      RoutingConfig config = content.at("routing_config").get<RoutingConfig>();
+      std::vector<RoutingMethodPtr> config = content.at("routing_config");
       bool directed_cx = content.at("directed").get<bool>();
       bool delay_measures = content.at("delay_measures").get<bool>();
       pp = gen_cx_mapping_pass(arc, place, config, directed_cx, delay_measures);

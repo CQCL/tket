@@ -16,6 +16,8 @@
 
 #include <stdexcept>
 
+#include "Utils/Assert.hpp"
+
 namespace tket {
 namespace tket_sim {
 namespace internal {
@@ -44,9 +46,7 @@ ExpansionData get_expansion_data(
     auto test_bit = next_bit;
     for (unsigned left_shift_arg = 0;; ++left_shift_arg) {
       if ((test_bit & forbidden_bits) == 0) {
-        if (test_bit == 0) {
-          throw std::runtime_error("Ran out of bits");
-        }
+        TKET_ASSERT(test_bit != 0);
         // A free space has been found.
         push_back(result, next_bit, left_shift_arg);
         forbidden_bits |= test_bit;

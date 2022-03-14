@@ -240,7 +240,8 @@ Transform decompose_tk1_to_rzrx() {
         success = true;
         const Op_ptr g = circ.get_Op_ptr_from_Vertex(*it);
         const std::vector<Expr> &params = g->get_params();
-        Circuit newcirc = tk1_to_rzrx(params[0], params[1], params[2]);
+        Circuit newcirc =
+            CircPool::tk1_to_rzrx(params[0], params[1], params[2]);
         Subcircuit sc = {
             {circ.get_in_edges(*it)}, {circ.get_all_out_edges(*it)}, {*it}};
         circ.substitute(newcirc, sc, Circuit::VertexDeletion::Yes);
@@ -746,6 +747,17 @@ Transform decomp_boxes() {
 
 Transform compose_phase_poly_boxes() {
   return Transform([](Circuit &circ) {
+    // replace wireswaps with three CX
+    while (circ.has_implicit_wireswaps()) {
+      qubit_map_t perm = circ.implicit_qubit_permutation();
+      for (const std::pair<const Qubit, Qubit> &pair : perm) {
+        if (pair.first != pair.second) {
+          circ.replace_implicit_wire_swap(pair.first, pair.second);
+          break;
+        }
+      }
+    }
+
     CircToPhasePolyConversion conv = CircToPhasePolyConversion(circ);
     conv.convert();
     circ = conv.get_circuit();

@@ -365,7 +365,7 @@ class Circuit {
   /**
    * Construct an empty circuit.
    */
-  Circuit() : unit_bimaps_{nullptr, nullptr}, phase(0) {}
+  Circuit() : phase(0) {}
 
   /**
    * Construct an empty named circuit.
@@ -565,6 +565,16 @@ class Circuit {
       const Vertex &vert) const;  // returned by port no.
 
   /**
+   * All bundles of in Boolean edges, ordered by port number
+   *
+   * Each member of the list is a list of edges sharing the same port
+   *
+   * @param vert vertex
+   */
+  std::vector<EdgeVec> get_b_in_bundles(
+      const Vertex &vert) const;  // returned by port no.
+
+  /**
    * Total number of inward edges
    *
    * @param vert vertex
@@ -636,6 +646,11 @@ class Circuit {
   const std::optional<std::string> &get_opgroup_from_Vertex(
       const Vertex &vert) const;
 
+  /**
+   * Get the set of all opgroup names.
+   */
+  const std::unordered_set<std::string> get_opgroups() const;
+
   // O(1) (lookup in hashtable)
   OpDesc get_OpDesc_from_Vertex(const Vertex &vert) const;
   OpType get_OpType_from_Vertex(const Vertex &vert) const;
@@ -680,7 +695,12 @@ class Circuit {
   // O(1)
   bool detect_singleq_unitary_op(const Vertex &vert) const;
 
-  void flatten_registers();
+  /**
+   * Convert all quantum and classical bits to use default registers.
+   *
+   * @return mapping from old to new unit IDs
+   */
+  unit_map_t flatten_registers();
 
   //_________________________________________________
 
@@ -946,18 +966,6 @@ class Circuit {
   template <typename UnitA, typename UnitB>
   bool rename_units(const std::map<UnitA, UnitB> &qm);
 
-  /**
-   * When either inputs or outputs are relabelled, this method can be called
-   * to update the parent CompilationUnit's initial/final map (if such a
-   * parent exists).
-   *
-   * @param qm partial relabelling map from current ids to new ids
-   */
-  template <typename UnitA, typename UnitB>
-  void update_initial_map(const std::map<UnitA, UnitB> &qm);
-  template <typename UnitA, typename UnitB>
-  void update_final_map(const std::map<UnitA, UnitB> &qm);
-
   /** Automatically rewire holes when removing vertices from the circuit? */
   enum class GraphRewiring { Yes, No };
 
@@ -1065,6 +1073,11 @@ class Circuit {
       std::shared_ptr<const unit_frontier_t> u_frontier,
       std::shared_ptr<const b_frontier_t> b_frontier,
       const std::function<bool(Op_ptr)> &skip_func) const;
+
+  // given current slice of quantum frontier, returns the next slice.
+  // ignore classical and boolean edges
+  CutFrontier next_q_cut(
+      std::shared_ptr<const unit_frontier_t> u_frontier) const;
 
   /**
    * Depth of circuit.
@@ -1383,6 +1396,13 @@ class Circuit {
   Circuit conditional_circuit(const bit_vector_t &bits, unsigned value) const;
 
   /**
+   * Replaces one vertex by applying \ref Box::to_circuit
+   *
+   * @return whether the vertex holds a box or a conditional box
+   */
+  bool substitute_box_vertex(Vertex &vert, VertexDeletion vertex_deletion);
+
+  /**
    * Replaces each \ref Box operation by applying \ref Box::to_circuit
    *
    * @return whether any replacements were made
@@ -1509,16 +1529,6 @@ class Circuit {
   DAG dag; /** Representation as directed graph */
   boundary_t boundary;
 
-  /**
-   * Pointers to unit maps
-   *
-   * These are used by compilation units.
-   */
-  struct {
-    unit_bimap_t *initial;
-    unit_bimap_t *final;
-  } unit_bimaps_;
-
  private:
   std::optional<std::string>
       name;   /** optional string name descriptor for human identification*/
@@ -1576,61 +1586,7 @@ bool Circuit::rename_units(const std::map<UnitA, UnitB> &qm) {
           "Unit already exists in circuit: " + pair.first.repr());
     TKET_ASSERT(modified);
   }
-  update_initial_map(qm);
-  update_final_map(qm);
   return modified;
-}
-
-template <typename UnitA, typename UnitB>
-void Circuit::update_initial_map(const std::map<UnitA, UnitB> &qm) {
-  // Can only work for Unit classes
-  static_assert(std::is_base_of<UnitID, UnitA>::value);
-  static_assert(std::is_base_of<UnitID, UnitB>::value);
-  // Unit types must be related, so cannot rename e.g. Bits to Qubits
-  static_assert(
-      std::is_base_of<UnitA, UnitB>::value ||
-      std::is_base_of<UnitB, UnitA>::value);
-  unit_bimap_t *ubmap = unit_bimaps_.initial;
-  if (ubmap) {
-    unit_map_t new_initial_map;
-    for (const std::pair<const UnitA, UnitB> &pair : qm) {
-      const auto &it = ubmap->right.find(pair.first);
-      if (it == ubmap->right.end()) {
-        continue;
-      }
-      new_initial_map.insert({it->second, pair.second});
-      ubmap->right.erase(pair.first);
-    }
-    for (const std::pair<const UnitID, UnitID> &pair : new_initial_map) {
-      ubmap->left.insert(pair);
-    }
-  }
-}
-
-template <typename UnitA, typename UnitB>
-void Circuit::update_final_map(const std::map<UnitA, UnitB> &qm) {
-  // Can only work for Unit classes
-  static_assert(std::is_base_of<UnitID, UnitA>::value);
-  static_assert(std::is_base_of<UnitID, UnitB>::value);
-  // Unit types must be related, so cannot rename e.g. Bits to Qubits
-  static_assert(
-      std::is_base_of<UnitA, UnitB>::value ||
-      std::is_base_of<UnitB, UnitA>::value);
-  unit_bimap_t *ubmap = unit_bimaps_.final;
-  if (ubmap) {
-    unit_map_t new_final_map;
-    for (const std::pair<const UnitA, UnitB> &pair : qm) {
-      const auto &it = ubmap->right.find(pair.first);
-      if (it == ubmap->right.end()) {
-        continue;
-      }
-      new_final_map.insert({it->second, pair.second});
-      ubmap->right.erase(pair.first);
-    }
-    for (const std::pair<const UnitID, UnitID> &pair : new_final_map) {
-      ubmap->left.insert(pair);
-    }
-  }
 }
 
 template <>

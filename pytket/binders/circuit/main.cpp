@@ -26,10 +26,12 @@
 #include "Ops/Op.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/Symbols.hpp"
+#include "binder_json.hpp"
 #include "binder_utils.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
+using json = nlohmann::json;
 
 namespace tket {
 
@@ -37,6 +39,7 @@ void init_unitid(py::module &m);
 void init_circuit(py::module &m);
 void init_classical(py::module &m);
 void init_boxes(py::module &m);
+void init_library(py::module &m);
 
 PYBIND11_MODULE(circuit, m) {
   init_unitid(m);
@@ -443,7 +446,10 @@ PYBIND11_MODULE(circuit, m) {
           "A classical operation applied to multiple bits simultaneously")
       .value(
           "ClassicalExpBox", OpType::ClassicalExpBox,
-          "A box for holding compound classical operations on Bits.");
+          "A box for holding compound classical operations on Bits.")
+      .def_static(
+          "from_name", [](const json &j) { return j.get<OpType>(); },
+          "Construct from name");
   py::enum_<BasisOrder>(
       m, "BasisOrder",
       "Enum for readout basis and ordering.\n"
@@ -494,9 +500,10 @@ PYBIND11_MODULE(circuit, m) {
           [](const Command &com) { return com.get_op_ptr()->free_symbols(); },
           ":return: set of symbolic parameters for the command");
 
-  init_circuit(m);
+  init_library(m);
   init_boxes(m);
   init_classical(m);
+  init_circuit(m);
 
   m.def(
       "fresh_symbol", &SymTable::fresh_symbol,

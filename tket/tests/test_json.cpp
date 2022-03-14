@@ -24,6 +24,9 @@
 #include "CircuitsForTesting.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/SymTable.hpp"
+#include "Mapping/LexiLabelling.hpp"
+#include "Mapping/LexiRoute.hpp"
+#include "Mapping/RoutingMethod.hpp"
 #include "OpType/OpType.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Predicates/PassGenerators.hpp"
@@ -33,6 +36,7 @@
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 #include "testutil.hpp"
+
 namespace tket {
 namespace test_json {
 
@@ -346,14 +350,6 @@ SCENARIO("Test Circuit serialization") {
 }
 
 SCENARIO("Test config serializations") {
-  GIVEN("RoutingConfig") {
-    RoutingConfig orig(20, 6, 3, 2.5);
-    nlohmann::json j_config = orig;
-    RoutingConfig loaded = j_config.get<RoutingConfig>();
-    REQUIRE(orig == loaded);
-    nlohmann::json j_loaded = loaded;
-    REQUIRE(j_config == j_loaded);
-  }
   GIVEN("PlacementConfig") {
     PlacementConfig orig(5, 20, 100000, 10, 1);
     nlohmann::json j_config = orig;
@@ -426,6 +422,35 @@ SCENARIO("Test device serializations") {
     nlohmann::json j_loaded_avg_dc = loaded_avg_dc;
     CHECK(j_avg_dc == j_loaded_avg_dc);
   }
+}
+
+SCENARIO("Test RoutingMethod serializations") {
+  RoutingMethod rm;
+  nlohmann::json rm_j = rm;
+  RoutingMethod loaded_rm_j = rm_j.get<RoutingMethod>();
+
+  Circuit c(2, 2);
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+
+  MappingFrontier mf(c);
+  MappingFrontier_ptr mf_sp = std::make_shared<MappingFrontier>(mf);
+  CHECK(!loaded_rm_j.routing_method(mf_sp, std::make_shared<SquareGrid>(2, 2))
+             .first);
+
+  std::vector<RoutingMethodPtr> rmp = {
+      std::make_shared<RoutingMethod>(rm),
+      std::make_shared<LexiLabellingMethod>(),
+      std::make_shared<LexiRouteRoutingMethod>(5)};
+
+  nlohmann::json rmp_j = rmp;
+  std::vector<RoutingMethodPtr> loaded_rmp_j =
+      rmp_j.get<std::vector<RoutingMethodPtr>>();
+  CHECK(!loaded_rmp_j[0]
+             ->routing_method(mf_sp, std::make_shared<SquareGrid>(2, 2))
+             .first);
+  CHECK(loaded_rmp_j[1]
+            ->routing_method(mf_sp, std::make_shared<SquareGrid>(2, 2))
+            .first);
 }
 
 SCENARIO("Test predicate serializations") {
@@ -516,7 +541,8 @@ SCENARIO("Test predicate serializations") {
 
 SCENARIO("Test compiler pass serializations") {
   Architecture arc = SquareGrid(2, 4, 2);
-  RoutingConfig rcon(20, 6, 3, 2.5);
+  RoutingMethodPtr rmp = std::make_shared<LexiRouteRoutingMethod>(80);
+  std::vector<RoutingMethodPtr> rcon = {rmp};
   PlacementConfig plcon(5, 20, 100000, 10, 1000);
   PlacementPtr place = std::make_shared<GraphPlacement>(arc, plcon);
   std::map<Qubit, Qubit> qmap = {{Qubit(0), Node(1)}, {Qubit(3), Node(2)}};
@@ -596,6 +622,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(PlacementPass, gen_placement_pass(place))
   // TKET-1419
   COMPPASSJSONTEST(NoiseAwarePlacement, gen_placement_pass(na_place))
+  COMPPASSJSONTEST(NaivePlacementPass, gen_naive_placement_pass(arc))
 #undef COMPPASSJSONTEST
   GIVEN("RoutingPass") {
     // Can only be applied to placed circuits
@@ -605,6 +632,25 @@ SCENARIO("Test compiler pass serializations") {
     placement->apply(cu);
     CompilationUnit copy = cu;
     PassPtr pp = gen_routing_pass(arc, rcon);
+    nlohmann::json j_pp = pp;
+    PassPtr loaded = j_pp.get<PassPtr>();
+    pp->apply(cu);
+    loaded->apply(copy);
+    REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
+    nlohmann::json j_loaded = loaded;
+    REQUIRE(j_pp == j_loaded);
+  }
+  GIVEN("Routing with multiple routing methods") {
+    RoutingMethodPtr mrmp =
+        std::make_shared<MultiGateReorderRoutingMethod>(60, 80);
+    RoutingMethodPtr brmp = std::make_shared<BoxDecompositionRoutingMethod>();
+    std::vector<RoutingMethodPtr> mrcon = {mrmp, rmp, brmp};
+    Circuit circ = CircuitsForTesting::get().uccsd;
+    CompilationUnit cu{circ};
+    PassPtr placement = gen_placement_pass(place);
+    placement->apply(cu);
+    CompilationUnit copy = cu;
+    PassPtr pp = gen_routing_pass(arc, mrcon);
     nlohmann::json j_pp = pp;
     PassPtr loaded = j_pp.get<PassPtr>();
     pp->apply(cu);
@@ -640,7 +686,13 @@ SCENARIO("Test compiler pass serializations") {
     j_pp["StandardPass"]["name"] = "FullMappingPass";
     j_pp["StandardPass"]["architecture"] = arc;
     j_pp["StandardPass"]["placement"] = place;
-    j_pp["StandardPass"]["routing_config"] = rcon;
+
+    nlohmann::json config_array;
+    for (const auto& con : rcon) {
+      config_array.push_back(*con);
+    }
+
+    j_pp["StandardPass"]["routing_config"] = config_array;
     PassPtr loaded = j_pp.get<PassPtr>();
     pp->apply(cu);
     loaded->apply(copy);
@@ -651,11 +703,12 @@ SCENARIO("Test compiler pass serializations") {
     Circuit circ = CircuitsForTesting::get().uccsd;
     CompilationUnit cu{circ};
     CompilationUnit copy = cu;
-    PassPtr pp = gen_default_mapping_pass(arc);
+    PassPtr pp = gen_default_mapping_pass(arc, true);
     nlohmann::json j_pp;
     j_pp["pass_class"] = "StandardPass";
     j_pp["StandardPass"]["name"] = "DefaultMappingPass";
     j_pp["StandardPass"]["architecture"] = arc;
+    j_pp["StandardPass"]["delay_measures"] = true;
     PassPtr loaded = j_pp.get<PassPtr>();
     pp->apply(cu);
     loaded->apply(copy);
@@ -672,7 +725,11 @@ SCENARIO("Test compiler pass serializations") {
     j_pp["StandardPass"]["name"] = "CXMappingPass";
     j_pp["StandardPass"]["architecture"] = arc;
     j_pp["StandardPass"]["placement"] = place;
-    j_pp["StandardPass"]["routing_config"] = rcon;
+    nlohmann::json config_array;
+    for (const auto& con : rcon) {
+      config_array.push_back(*con);
+    }
+    j_pp["StandardPass"]["routing_config"] = config_array;
     j_pp["StandardPass"]["directed"] = true;
     j_pp["StandardPass"]["delay_measures"] = false;
     PassPtr loaded = j_pp.get<PassPtr>();

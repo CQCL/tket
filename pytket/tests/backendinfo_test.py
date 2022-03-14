@@ -23,7 +23,7 @@ from hypothesis import given
 import pytest  # type: ignore
 
 from pytket.backends.backendinfo import BackendInfo, fully_connected_backendinfo
-from pytket.routing import SquareGrid, FullyConnected  # type: ignore
+from pytket.architecture import SquareGrid, FullyConnected  # type: ignore
 from pytket.circuit import OpType, Node  # type: ignore
 
 import strategies as st  # type: ignore
@@ -124,14 +124,21 @@ def test_serialization() -> None:
 
 def test_to_json() -> None:
     bi = BackendInfo(
-        "name",
-        "device_name",
-        "version",
-        SquareGrid(3, 4),
-        {OpType.CX, OpType.Rx},
-        True,
-        True,
-        True,
+        name="name",
+        device_name="device_name",
+        version="version",
+        architecture=SquareGrid(3, 4),
+        gate_set={OpType.CX, OpType.Rx},
+        supports_fast_feedforward=True,
+        supports_reset=True,
+        supports_midcircuit_measurement=True,
+        all_node_gate_errors={Node(0): {OpType.Rx: 0.1}},
+        all_edge_gate_errors={(Node(0), Node(1)): {OpType.Rx: 0.1}},
+        all_readout_errors={Node(0): [[0.1]]},
+        averaged_node_gate_errors={Node(0): 0.1},
+        averaged_edge_gate_errors={(Node(0), Node(1)): 0.1},
+        averaged_readout_errors={Node(0): 0.1},
+        misc={"region": "UK"},
     )
     bi_dict = bi.to_dict()
     json_bi = dumps(bi_dict)

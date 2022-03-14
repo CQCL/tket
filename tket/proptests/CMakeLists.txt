@@ -49,9 +49,11 @@ target_link_libraries(proptest PRIVATE
     tket-Ops
     tket-OpType
     tket-Predicates
-    tket-Routing
+    tket-TokenSwapping
+    tket-Mapping
     tket-Simulation
     tket-Transformations
     tket-Utils)
 
-target_link_libraries(proptest PRIVATE ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(proptest PRIVATE
+    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})

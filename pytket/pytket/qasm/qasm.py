@@ -75,8 +75,10 @@ PARAM_COMMANDS = {
     "u2": OpType.U2,
     "u1": OpType.U1,
     "rx": OpType.Rx,
+    "rxx": OpType.XXPhase,
     "ry": OpType.Ry,
     "rz": OpType.Rz,
+    "rzz": OpType.ZZPhase,
     "Rz": OpType.Rz,
     "U1q": OpType.PhasedX,
     "crz": OpType.CRz,
@@ -117,8 +119,10 @@ included_gates = {
             "u2",
             "u1",
             "rx",
+            "rxx",
             "ry",
             "rz",
+            "rzz",
             "crz",
             "crx",
             "cry",
@@ -140,9 +144,9 @@ included_gates = {
     ),
 }
 included_gates["hqslib1"] = included_gates["qelib1"].copy()
-included_gates["hqslib1"].update(("U1q", "rz", "ZZ"))
+included_gates["hqslib1"].update(("U1q", "rz", "ZZ", "RZZ"))
 included_gates["hqslib1"].difference_update(
-    ("crx", "cry", "sx", "sxdg", "csx", "swap", "cswap")
+    ("crx", "cry", "sx", "sxdg", "csx", "swap", "cswap", "rzz")
 )
 _tk_to_qasm_noparams = dict(((item[1], item[0]) for item in NOPARAM_COMMANDS.items()))
 _tk_to_qasm_noparams[OpType.CX] = "cx"  # prefer "cx" to "CX"
@@ -223,7 +227,7 @@ class QASMParser(object):
             gatename, arg_list = signature.split(" ", 1)
             symbol_list = ""
         gatename = gatename.strip()
-        symbols = [sympify(s.strip()) for s in symbol_list.split(",")]
+        symbols = [sympify(s.strip()) for s in symbol_list.split(",")]  # type: ignore
         args = [a.strip() for a in arg_list.split(",")]
         rename_map = {}
         qb_map = {}
@@ -334,7 +338,7 @@ class QASMParser(object):
             halfturn_angles = []
             for ang in angles:
                 try:
-                    halfturns = sympify(ang) / pi
+                    halfturns = sympify(ang) / pi  # type: ignore
                     halfturn_angles.append(halfturns)
                 except:
                     raise QASMParseError("Cannot parse angle: {}".format(ang))
@@ -576,7 +580,11 @@ def circuit_to_qasm_io(
                 f"{args[-1]} = {args[0]} {_classical_gatestr_map[opstr]} {args[1]};\n"
             )
             continue
-        if optype in _tk_to_qasm_noparams:
+        if header == "hqslib1" and optype == OpType.ZZPhase:
+            # special handling for zzphase
+            opstr = "RZZ"
+            params = op.params
+        elif optype in _tk_to_qasm_noparams:
             opstr = _tk_to_qasm_noparams[optype]
         elif optype in _tk_to_qasm_params:
             opstr = _tk_to_qasm_params[optype]

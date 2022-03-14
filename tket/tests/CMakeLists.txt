@@ -36,12 +36,18 @@ ENDIF()
 
 add_definitions(-DALL_LOGS)
 
+set(TESTS_FULL no CACHE BOOL "Run full set of tests")
+
+if (TESTS_FULL)
+    add_definitions(-DTKET_TESTS_FULL)
+endif()
 
 set(TKET_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
+include(tkettestutilsfiles.cmake)
 include(tkettestsfiles.cmake)
 
-add_executable(test_tket ${TEST_SOURCES})
+add_executable(test_tket ${TESTUTILS_SOURCES} ${TEST_SOURCES})
 
 target_link_libraries(test_tket PRIVATE
     tket-ArchAwareSynth
@@ -59,10 +65,13 @@ target_link_libraries(test_tket PRIVATE
     tket-PauliGraph
     tket-Predicates
     tket-Program
-    tket-Routing
+    tket-Placement
+    tket-TokenSwapping
+    tket-Mapping
     tket-Simulation
     tket-Transformations
     tket-Utils
     tket-ZX)
 
-target_link_libraries(test_tket PRIVATE ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(test_tket PRIVATE
+    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})

@@ -48,8 +48,8 @@ def test_qasm_correct() -> None:
     assert c.n_qubits == 4
     assert c.depth() == 8
     coms = c.get_commands()
-    assert len(coms) == 11
-    correct_str = "[Rz(1.5) q[3];, Rx(0.0375) q[3];, Rz(0.5) q[3];, CX q[0], q[3];, CZ q[0], q[1];, Rz(1.5) q[3];, Rx(1.9625) q[3];, CCX q[3], q[1], q[2];, Barrier q[0], q[3], q[2];, CU1(0.8) q[0], q[1];, U3(1, 0.5, 0.3) q[2];]"
+    assert len(coms) == 13
+    correct_str = "[XXPhase(0.0375) q[0], q[1];, Rz(1.5) q[3];, ZZPhase(0.0375) q[0], q[1];, Rx(0.0375) q[3];, Rz(0.5) q[3];, CX q[0], q[3];, CZ q[0], q[1];, Rz(1.5) q[3];, Rx(1.9625) q[3];, CCX q[3], q[1], q[2];, Barrier q[0], q[3], q[2];, CU1(0.8) q[0], q[1];, U3(1, 0.5, 0.3) q[2];]"
     assert str(coms) == correct_str
     # TKET-871
     fname2 = str(curr_file_path / "qasm_test_files/test9.qasm")
@@ -341,6 +341,13 @@ def test_new_qelib1_aliases() -> None:
     commands_str = str(c.get_commands())
     assert "U1(0) q[0]" in commands_str
     assert "U3(0, 0, 0) q[0]" in commands_str
+
+
+def test_h1_rzz() -> None:
+    c = Circuit(2)
+    c.add_gate(OpType.ZZPhase, [0.1], [0, 1])
+    assert "rzz" in circuit_to_qasm_str(c, header="qelib1")
+    assert "RZZ" in circuit_to_qasm_str(c, header="hqslib1")
 
 
 if __name__ == "__main__":
