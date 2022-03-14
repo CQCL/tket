@@ -6,7 +6,7 @@ Changelog
 
 API changes:
 
-* ``Rebase<Target>`` and ``SquahsHQS`` methods are removed. Specifically:
+* ``Rebase<Target>`` and ``SquashHQS`` methods are removed. Specifically:
 
   * ``RebaseHQS``
   * ``RebaseProjectQ``
