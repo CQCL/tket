@@ -83,6 +83,8 @@ enum class ZXType {
    * Directed (non-commutative) generators
    */
   // Triangle [[1, 1], [0, 1]]
+  // Port 0 is the apex/input of the triangle, port 1 is the flat/output of the
+  // triangle
   Triangle,
 
   /**
