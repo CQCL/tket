@@ -1,7 +1,7 @@
 Changelog
 =========
 
-x.y.z (unreleased)
+1.0.0 (March 2022)
 ------------------
 
 API changes:
