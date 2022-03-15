@@ -64,7 +64,6 @@ target_link_libraries(test_tket PRIVATE
     tket-OpType
     tket-PauliGraph
     tket-Predicates
-    tket-Program
     tket-Placement
     tket-TokenSwapping
     tket-Mapping
