@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.0.1 (March 2022)
+------------------
+
+Fixes:
+
+* Fix problem with unassigned ancilla qubits during mapping.
+
 1.0.0 (March 2022)
 ------------------
 
