@@ -24,10 +24,14 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-NeighboursData::NeighboursData() {}
+NeighboursData::NeighboursData() : m_number_of_edges(0) {}
 
 NeighboursData::NeighboursData(const GraphEdgeWeights& edges_and_weights) {
   initialise(edges_and_weights);
+}
+
+std::size_t NeighboursData::get_number_of_edges() const {
+  return m_number_of_edges;
 }
 
 std::vector<VertexWSM> NeighboursData::get_neighbours_expensive(
@@ -56,6 +60,7 @@ std::vector<VertexWSM> NeighboursData::get_nonisolated_vertices_expensive()
 }
 
 void NeighboursData::initialise(const GraphEdgeWeights& edges_and_weights) {
+  m_number_of_edges = edges_and_weights.size();
   m_neighbours_and_weights_map.clear();
 
   for (const auto& entry : edges_and_weights) {

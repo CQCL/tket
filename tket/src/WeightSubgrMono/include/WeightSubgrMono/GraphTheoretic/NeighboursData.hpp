@@ -35,6 +35,8 @@ class NeighboursData {
   /** Initialise with a given graph with edge weights. */
   void initialise(const GraphEdgeWeights& edges_and_weights);
 
+  std::size_t get_number_of_edges() const;
+
   /** Isolated vertices are ignored (actually, not even ignored; they are
    * simply invisible to this class, since the class only sees edges).
    */
@@ -95,6 +97,8 @@ class NeighboursData {
       m_neighbours_and_weights_map;
 
   std::vector<std::pair<VertexWSM, WeightWSM>> m_empty_data;
+
+  std::size_t m_number_of_edges;
 };
 
 }  // namespace WeightedSubgraphMonomorphism
