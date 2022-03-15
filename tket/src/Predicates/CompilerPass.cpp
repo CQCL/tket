@@ -378,24 +378,10 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = PeepholeOptimise2Q();
     } else if (passname == "FullPeepholeOptimise") {
       pp = FullPeepholeOptimise();
-    } else if (passname == "RebaseCirq") {
-      pp = RebaseCirq();
     } else if (passname == "RebaseTket") {
       pp = RebaseTket();
-    } else if (passname == "RebaseHQS") {
-      pp = RebaseHQS();
-    } else if (passname == "RebaseQuil") {
-      pp = RebaseQuil();
-    } else if (passname == "RebaseProjectQ") {
-      pp = RebaseProjectQ();
-    } else if (passname == "RebasePyZX") {
-      pp = RebasePyZX();
-    } else if (passname == "RebaseUMD") {
-      pp = RebaseUMD();
     } else if (passname == "RebaseUFR") {
       pp = RebaseUFR();
-    } else if (passname == "RebaseOQC") {
-      pp = RebaseOQC();
     } else if (passname == "RemoveRedundancies") {
       pp = RemoveRedundancies();
     } else if (passname == "SynthesiseHQS") {
@@ -485,9 +471,6 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
             content.at("x_circuit").get<Circuit>());
       }
       pp = gen_simplify_initial(ac, caq, xc);
-    } else if (passname == "SquashHQS") {
-      // SEQUENCE PASS - DESERIALIZABLE ONLY
-      pp = SquashHQS();
     } else if (passname == "FullMappingPass") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
