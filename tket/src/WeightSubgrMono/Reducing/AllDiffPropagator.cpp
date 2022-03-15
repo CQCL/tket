@@ -68,6 +68,7 @@ bool AllDiffPropagator::reduce(
   TKET_ASSERT(
       number_of_assignments_previously_processed_in_this_node ==
       node.chosen_assignments.size());
+
   for (const auto& entry : pv_to_domains_map) {
     TKET_ASSERT(entry.second.size() > 1);
   }

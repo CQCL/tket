@@ -22,6 +22,9 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+
+SearchBranch::SearchBranch() : m_level(0) {}
+
 ReductionResult SearchBranch::initialise(SharedData& shared_data) {
   m_level = 0;
   m_move_down_has_been_called = false;
@@ -44,8 +47,31 @@ const Assignments& SearchBranch::get_assignments() const {
 
 Assignments& SearchBranch::get_assignments_mutable() { return m_assignments; }
 
+
+bool SearchBranch::erase_assignment(VertexWSM pv, VertexWSM tv) {
+  for(std::size_t level=0; level <= m_level; ++level) {
+    auto& domains = m_enriched_nodes[level].node_wrapper.get_mutable().pattern_v_to_possible_target_v;
+    auto iter = domains.find(pv);
+    if(iter == domains.end()) {
+      return false;
+    }
+    auto& domain = iter->second;
+    if(domain.size() <= 2) {
+      return false;
+    }
+    auto tv_iter = domain.find(tv);
+    if(tv_iter == domain.end()) {
+      return false;
+    }
+    domain.erase(tv_iter);
+  }
+  return true;
+}
+
+
 ReductionResult SearchBranch::reduce_current_node(
     SharedData& shared_data, WeightWSM max_weight) {
+
   // E.g., we might have variable domains
   //  Dom(u) = Dom(v) = {a,b},
   // and later filters/reductions might reduce them to Dom(u) = Dom(v) = {a}.
@@ -60,6 +86,7 @@ ReductionResult SearchBranch::reduce_current_node(
     auto& enriched_node = m_enriched_nodes[m_level];
     const auto assignments_processed_in_this_node =
         enriched_node.n_assignments_processed_by_all_diff_propagator;
+
     {
       const auto& chosen_assignments =
           enriched_node.node_wrapper.get().chosen_assignments;
@@ -70,6 +97,14 @@ ReductionResult SearchBranch::reduce_current_node(
           // A duplicate TV.
           return ReductionResult::FAILURE;
         }
+
+        const auto& pv = chosen_assignments[assignment_index].first;
+        if(!shared_data.fixed_data.target_is_complete) {
+          if(!shared_data.derived_graphs_filter.is_compatible(pv, new_tv, shared_data.fixed_data)) {
+            erase_assignment(pv, new_tv);
+            return ReductionResult::FAILURE;
+          }
+        }
       }
     }
     if (!shared_data.fixed_data.alldiff_propagator.reduce(
@@ -78,7 +113,12 @@ ReductionResult SearchBranch::reduce_current_node(
       return ReductionResult::FAILURE;
     }
 
-    if (!shared_data.fixed_data.weight_updater(
+    // We tried putting an extra derived_graphs_filter check here,
+    // but it only slowed things down slightly;
+    // this is not completely stupid, as m_assignments was smaller
+    // when we checked above.
+
+    if(!shared_data.fixed_data.weight_updater(
             shared_data.fixed_data, m_assignments, enriched_node.node_wrapper,
             assignments_processed_in_this_node, max_weight)) {
       return ReductionResult::FAILURE;
@@ -105,13 +145,14 @@ ReductionResult SearchBranch::reduce_current_node(
     // and power would be helpful,
     // but even then, a bit unclear.
 
-    // NOTE: these filters/reducers may intersect current domains,
-    // and thus reduce them; if reduced to empty, it's a nogood;
+    // NOTE: the reducers may intersect current domains,
+    // and thus reduce them. If reduced to empty, it's a nogood;
     // but if reduced to size 1, it's a new assignment.
-    // HOWEVER, the assignments are not checked for all diff;
+    // HOWEVER, the assignments are not checked for all diff propagation;
     // that must be done above, at the start of this containing loop.
     const auto current_n_chosen_assignments =
         enriched_node.node_wrapper.get().chosen_assignments.size();
+
     {
       const auto current_number_of_assignments = m_assignments.size();
 
@@ -133,6 +174,22 @@ ReductionResult SearchBranch::reduce_current_node(
       const auto current_number_of_assignments = m_assignments.size();
       if (!shared_data.fixed_data.hall_set_reducer.reduce(
               enriched_node.node_wrapper, *this)) {
+        return ReductionResult::FAILURE;
+      }
+      if (current_number_of_assignments != m_assignments.size()) {
+        TKET_ASSERT(current_number_of_assignments < m_assignments.size());
+        continue;
+      }
+      TKET_ASSERT(
+          current_n_chosen_assignments ==
+          enriched_node.node_wrapper.get().chosen_assignments.size());
+    }
+    {
+      const auto current_number_of_assignments = m_assignments.size();
+      if (!shared_data.derived_graphs_reducer.reduce_domains(
+              shared_data.fixed_data, m_assignments,
+              assignments_processed_in_this_node, enriched_node.node_wrapper,
+              shared_data.derived_graphs_filter.get_container())) {
         return ReductionResult::FAILURE;
       }
       if (current_number_of_assignments != m_assignments.size()) {
@@ -171,9 +228,16 @@ ReductionResult SearchBranch::reduce_current_node(
           node.current_scalar_product, max_weight, extra_weight_lower_bound);
     }
 
+    // If we've reached here, then all the reducers/filters reduced
+    // the domain sizes and searched for inconsistencies, but didn't find any;
+    // thus this node is now fully reduced, ready for more searching.
     return ReductionResult::SUCCESS;
   }
 
+  // If we reach here, we've broken out of the loop;
+  // this can only happen if all vertices have been assigned,
+  // AND they are all valid (all edges are assigned also);
+  // this has been checked.
   TKET_ASSERT(
       m_assignments.size() == shared_data.fixed_data.pattern_neighbours_data
                                   .get_number_of_nonisolated_vertices());
@@ -181,12 +245,13 @@ ReductionResult SearchBranch::reduce_current_node(
   return ReductionResult::FINISHED;
 }
 
-bool SearchBranch::move_up() {
+
+bool SearchBranch::backtrack() {
   if (m_level == 0) {
     return false;
   }
   for (const auto& entry :
-       m_enriched_nodes[m_level].node_wrapper.get().chosen_assignments) {
+      m_enriched_nodes[m_level].node_wrapper.get().chosen_assignments) {
     if (m_assignments.count(entry.first) != 0) {
       TKET_ASSERT(m_assignments.at(entry.first) == entry.second);
     }
@@ -216,19 +281,8 @@ void SearchBranch::move_down(VertexWSM p_vertex, VertexWSM t_vertex) {
     auto& node = m_enriched_nodes.at(m_level).node_wrapper.get_mutable();
     auto& domain_data = node.pattern_v_to_possible_target_v.at(p_vertex);
     TKET_ASSERT(domain_data.erase(t_vertex) == 1);
-    TKET_ASSERT(!domain_data.empty());
-    if (domain_data.size() == 1) {
-      // This awaits processing and reduction, LATER...
-      node.chosen_assignments.emplace_back(p_vertex, *domain_data.cbegin());
-      node.pattern_v_to_possible_target_v.erase(p_vertex);
-      // We've removed our value from this node,
-      // so when we next hit it going up, and then try to move dwon again,
-      // we'll make a different choice.
-      // Note that it's NOT the same as erasing a value from the domain
-      // in the usual way, because we DON'T add this new assignment
-      // to "m_assignments".
-    }
-    // Now we can move down.
+    // Now we can move down; our current choice has been erased,
+    // so will not be repeated in future.
   }
 
   ++m_level;

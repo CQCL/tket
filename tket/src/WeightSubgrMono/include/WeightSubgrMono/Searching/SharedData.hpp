@@ -17,8 +17,11 @@
 #include <optional>
 #include <set>
 
+#include "../Common/RNG.hpp"
 #include "../Reducing/CloseVerticesFilter.hpp"
+#include "../GraphTheoretic/DerivedGraphsFilter.hpp"
 #include "SolutionStorage.hpp"
+#include "WeightSubgrMono/Reducing/DerivedGraphsReducer.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
@@ -38,6 +41,9 @@ struct SharedData {
   const FixedData& fixed_data;
   SolutionStorage solution_storage;
   CloseVerticesFilter close_vertices_filter;
+  DerivedGraphsFilter derived_graphs_filter;
+  DerivedGraphsReducer derived_graphs_reducer;
+  RNG rng;
 
   explicit SharedData(const FixedData& fixed_data);
 
@@ -65,7 +71,7 @@ struct SharedData {
    * @return FALSE if finished, i.e. no more searching to do anywhere: across
    * ALL search branches, it is complete.
    */
-  bool search(
+  ReductionResult search(
       SearchBranch& branch, VariableOrdering& var_ordering,
       ValueOrdering& val_ordering);
 };

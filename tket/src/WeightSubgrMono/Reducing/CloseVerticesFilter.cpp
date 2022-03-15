@@ -23,7 +23,9 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-CloseVerticesFilter::CloseVerticesFilter() : m_num_levels(5) {}
+// In experiments, this appeared to be the best value
+// (in combination with all other reductions).
+CloseVerticesFilter::CloseVerticesFilter() : m_num_levels(2) {}
 
 bool CloseVerticesFilter::reduce(
     const FixedData& fixed_data, Assignments& assignments,
