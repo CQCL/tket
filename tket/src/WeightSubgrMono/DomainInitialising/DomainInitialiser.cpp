@@ -40,14 +40,6 @@ bool DomainInitialiser::full_initialisation(
              possible_assignments, pattern_neighbours_data,
              target_neighbours_data, params) &&
 
-         triangle_counts_reduction(
-             possible_assignments, pattern_neighbours_data,
-             target_neighbours_data) &&
-
-         square_counts_reduction(
-             possible_assignments, pattern_neighbours_data,
-             target_neighbours_data) &&
-
          alldiff_reduction(possible_assignments);
 }
 

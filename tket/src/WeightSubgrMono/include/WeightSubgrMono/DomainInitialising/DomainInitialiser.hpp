@@ -127,26 +127,6 @@ class DomainInitialiser {
       const NeighboursData& pattern_neighbours_data,
       const NeighboursData& target_neighbours_data, const Parameters& params);
 
-  /** Count the number of squares and unique length-2 paths
-   * starting from a vertex.
-   * Any valid PV->TV embedding cannot decrease this number.
-   * Of course, we'd like to count unique length-n paths
-   * for all n, but this is NP hard.
-   */
-  bool square_counts_reduction(
-      PossibleAssignments& possible_assignments,
-      const NeighboursData& pattern_neighbours_data,
-      const NeighboursData& target_neighbours_data);
-
-  /** Returns false if impossible.
-   * Count the number of triangles containing a vertex.
-   * Any valid PV->TV embedding cannot decrease this number.
-   */
-  bool triangle_counts_reduction(
-      PossibleAssignments& possible_assignments,
-      const NeighboursData& pattern_neighbours_data,
-      const NeighboursData& target_neighbours_data);
-
   /** If any PV have domains reduced to size 1,
    * remove their targets from the other domains.
    */
