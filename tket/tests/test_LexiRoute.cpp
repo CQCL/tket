@@ -1003,8 +1003,10 @@ SCENARIO(
 
     MappingManager mm(std::make_shared<Architecture>(test_arc));
     REQUIRE(!mm.route_circuit(
-        test_circuit, {std::make_shared<LexiLabellingMethod>(),
-                       std::make_shared<LexiRouteRoutingMethod>()}));
+        test_circuit,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        false));
 
     qubit_vector_t all_qs_post_solve = test_circuit.all_qubits();
     REQUIRE(all_qs_post_place == all_qs_post_solve);
@@ -1223,8 +1225,10 @@ SCENARIO("Empty circuits, with and without blank wires") {
     RingArch arc(6);
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(!mm.route_circuit(
-        circ, {std::make_shared<LexiLabellingMethod>(),
-               std::make_shared<LexiRouteRoutingMethod>()}));
+        circ,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        false));
     REQUIRE(circ.depth() == 0);
     REQUIRE(circ.n_gates() == 0);
     REQUIRE(circ.n_qubits() == 0);
@@ -1525,7 +1529,36 @@ SCENARIO("Initial map should contain all data qubits") {
     REQUIRE(test_unitary_comparison(initial_circ, circ));
   }
 }
+SCENARIO("Unlabelled qubits should be assigned to ancilla qubits.") {
+  Architecture arc({{0, 1}, {1, 2}, {2, 3}, {3, 0}});
+  Circuit c(4);
+  c.add_op<unsigned>(OpType::CZ, {0, 3});
+  c.add_op<unsigned>(OpType::CZ, {1, 0});
+  c.add_op<unsigned>(OpType::CZ, {3, 1});
+  c.add_op<unsigned>(OpType::H, {2});
 
+  std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+  // Initialise the maps by the same way it's done with CompilationUnit
+  for (const UnitID& u : c.all_units()) {
+    maps->initial.insert({u, u});
+    maps->final.insert({u, u});
+  }
+
+  MappingManager mm(std::make_shared<Architecture>(arc));
+  mm.route_circuit_with_maps(
+      c,
+      {std::make_shared<LexiLabellingMethod>(),
+       std::make_shared<LexiRouteRoutingMethod>()},
+      maps, true);
+  REQUIRE(maps->initial.left.find(Qubit(0))->second == Node(0));
+  REQUIRE(maps->initial.left.find(Qubit(1))->second == Node(3));
+  REQUIRE(maps->initial.left.find(Qubit(2))->second == Node(2));
+  REQUIRE(maps->initial.left.find(Qubit(3))->second == Node(1));
+  REQUIRE(maps->final.left.find(Qubit(0))->second == Node(0));
+  REQUIRE(maps->final.left.find(Qubit(1))->second == Node(2));
+  REQUIRE(maps->final.left.find(Qubit(2))->second == Node(3));
+  REQUIRE(maps->final.left.find(Qubit(3))->second == Node(1));
+}
 SCENARIO("Lexi relabel with partially mapped circuit") {
   GIVEN("With an unplaced qubit") {
     Architecture arc({{0, 1}, {1, 2}});
