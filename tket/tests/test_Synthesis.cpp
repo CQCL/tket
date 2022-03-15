@@ -757,7 +757,10 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::Rz, 0.43, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit copy = circ;
-    bool success = Transforms::rebase_HQS().apply(circ);
+    bool success = Transforms::rebase_factory(
+                       {OpType::ZZMax, OpType::PhasedX, OpType::Rz},
+                       CircPool::CX_using_ZZMax(), CircPool::tk1_to_PhasedXRz)
+                       .apply(circ);
     REQUIRE(success);
     OpTypeSet singleqs = {OpType::Rz, OpType::PhasedX};
     success = Transforms::squash_factory(singleqs, CircPool::tk1_to_PhasedXRz)

@@ -134,10 +134,5 @@ class IterationOrder {
  */
 std::vector<Node> find_hampath(const Architecture &arch, long timeout = 10000);
 
-/**
- * print out a given Pathhandler
- */
-std::ostream &operator<<(std::ostream &out, const PathHandler &path);
-
 }  // namespace aas
 }  // namespace tket

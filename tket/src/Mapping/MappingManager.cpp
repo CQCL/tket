@@ -101,55 +101,60 @@ bool MappingManager::route_circuit_with_maps(
     // find next routed/unrouted boundary given updates
     mapping_frontier->advance_frontier_boundary(this->architecture_);
   }
-
-  // check all nodes placed
-
-  bool found_unplaced_qubit = false;
-
-  // search for unplaced qubitto speed up the runtime
-  for (Qubit q : mapping_frontier->circuit_.all_qubits()) {
-    if (!this->architecture_->node_exists(Node(q))) {
-      found_unplaced_qubit = true;
-      break;
-    }
-  }
-
-  if (found_unplaced_qubit && label_isolated_qubits) {
+  // there may still be some unlabelled qubits
+  if (label_isolated_qubits) {
     circuit_modified = true;
-    qubit_vector_t q_vec = mapping_frontier->circuit_.all_qubits();
-    unit_map_t qubit_to_nodes_place;
-    node_set_t node_set_placed;
 
-    for (Qubit q : q_vec) {
-      if (this->architecture_->node_exists(Node(q))) {
-        qubit_to_nodes_place.insert({q, Node(q)});
-        node_set_placed.insert(Node(q));
-      }
-    }
+    unit_map_t placement;
+    qubit_vector_t to_place;
+    std::vector<Node> placed;
 
-    node_vector_t nodes_vec = this->architecture_->get_all_nodes_vec();
-
-    // place all unplaced qubits
-
-    for (Qubit q : q_vec) {
-      if (!this->architecture_->node_exists(Node(q))) {
-        // found unplaced qubit
-
-        unsigned index_to_use = 0;
-        while (node_set_placed.find(nodes_vec[index_to_use]) !=
-               node_set_placed.end()) {
-          ++index_to_use;
+    // Find which/if any qubits need placing
+    for (const Qubit& q : mapping_frontier->circuit_.all_qubits()) {
+      Node n(q);
+      if (!this->architecture_->node_exists(n)) {
+        // Ancilla qubits can be assigned during routing
+        // If some qubits are unplaced then its possible the returned circuit
+        // has more qubits than the architecture has nodes, which is bad instead
+        // at least assign any unlabelled qubits to any ancilla nodes to prevent
+        // this
+        if (mapping_frontier->ancilla_nodes_.size() > 0) {
+          circuit_modified = true;
+          Node ancilla = *mapping_frontier->ancilla_nodes_.begin();
+          mapping_frontier->merge_ancilla(q, ancilla);
+          mapping_frontier->ancilla_nodes_.erase(
+              mapping_frontier->ancilla_nodes_.begin());
+          placed.push_back(n);
+        } else {
+          to_place.push_back(n);
         }
-        qubit_to_nodes_place.insert({q, nodes_vec[index_to_use]});
-        node_set_placed.insert(nodes_vec[index_to_use]);
-        mapping_frontier->update_bimaps(
-            mapping_frontier->get_qubit_from_circuit_uid(q),
-            nodes_vec[index_to_use]);
+      } else {
+        placed.push_back(n);
+        // if already placed, make sure qubit retains placement
+        placement.insert({n, n});
       }
     }
+    // avoid doing std::set_difference unless qubits need to be placed
+    unsigned n_placed = to_place.size();
+    if (n_placed > 0) {
+      std::vector<Node> difference,
+          architecture_nodes = this->architecture_->get_all_nodes_vec();
+      std::set_difference(
+          architecture_nodes.begin(), architecture_nodes.end(), placed.begin(),
+          placed.end(), std::inserter(difference, difference.begin()));
+      // should always be enough remaining qubits to assign unplaced qubits to
+      TKET_ASSERT(difference.size() >= n_placed);
+      for (unsigned i = 0; i < n_placed; i++) {
+        // naively assign each qubit to some free node
+        placement.insert({to_place[i], difference[i]});
+        mapping_frontier->update_bimaps(
+            mapping_frontier->get_qubit_from_circuit_uid(to_place[i]),
+            difference[i]);
+      }
 
-    mapping_frontier->update_linear_boundary_uids(qubit_to_nodes_place);
-    mapping_frontier->circuit_.rename_units(qubit_to_nodes_place);
+      mapping_frontier->update_linear_boundary_uids(placement);
+      mapping_frontier->circuit_.rename_units(placement);
+    }
   }
 
   return circuit_modified;
