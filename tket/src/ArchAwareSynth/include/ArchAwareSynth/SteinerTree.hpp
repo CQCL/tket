@@ -147,11 +147,6 @@ class SteinerTree {
    */
   std::vector<unsigned> nodes() const;
 
-  /**
-   * function to stream a steiner tree
-   */
-  friend std::ostream &operator<<(std::ostream &out, const SteinerTree &st);
-
   unsigned tree_cost;  // the cost to reduce the Steiner tree alone
   int last_operation_cost;
   unsigned root;
@@ -184,11 +179,6 @@ class CNotSwapSynth {
    * @return true if matrix is id
    */
   bool valid_result();
-
-  /**
-   * function to stream a CNotSwapSynth
-   */
-  friend std::ostream &operator<<(std::ostream &out, const CNotSwapSynth &cnot);
 
  private:
   void add_swap(unsigned first, unsigned second);

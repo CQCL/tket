@@ -228,41 +228,6 @@ IterationOrder::IterationOrder(const Architecture &arch) {
   std::reverse(iterationorder.begin(), iterationorder.end());
 }
 
-std::ostream &operator<<(std::ostream &out, const PathHandler &path) {
-  out << "\nprint the details of a pathhandler: \n";
-  out << "size: " << path.get_size() << "\n";
-  out << "connectivity_matrix_:\n ";
-
-  for (unsigned i = 0; i != path.get_size(); ++i) {
-    for (unsigned j = 0; j != path.get_size(); ++j) {
-      out << path.get_connectivity_matrix()(i, j) << ", ";
-    }
-    out << std::endl;
-  }
-  out << std::endl;
-
-  out << "distance_matrix_:\n ";
-
-  for (unsigned i = 0; i != path.get_size(); ++i) {
-    for (unsigned j = 0; j != path.get_size(); ++j) {
-      out << path.get_distance_matrix()(i, j) << ", ";
-    }
-    out << std::endl;
-  }
-  out << std::endl;
-
-  out << "path_matrix_:\n ";
-
-  for (unsigned i = 0; i != path.get_size(); ++i) {
-    for (unsigned j = 0; j != path.get_size(); ++j) {
-      out << path.get_path_matrix()(i, j) << ", ";
-    }
-    out << std::endl;
-  }
-  out << std::endl;
-  return out;
-}
-
 MatrixXb PathHandler::get_connectivity_matrix() const {
   return connectivity_matrix_;
 }
