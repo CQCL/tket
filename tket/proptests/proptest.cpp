@@ -42,11 +42,7 @@ using namespace tket;
   DO(DecomposeBoxes)                      \
   DO(ComposePhasePolyBoxes)               \
   DO(SquashTK1)                           \
-  DO(RebaseCirq)                          \
   DO(RebaseTket)                          \
-  DO(RebaseQuil)                          \
-  DO(RebasePyZX)                          \
-  DO(RebaseProjectQ)                      \
   DO(DecomposeBridges)                    \
   DO(FlattenRegisters)                    \
   DO(RemoveBarriers)                      \
