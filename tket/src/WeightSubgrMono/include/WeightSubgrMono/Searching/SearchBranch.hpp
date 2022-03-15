@@ -35,6 +35,9 @@ struct SharedData;
  */
 class SearchBranch {
  public:
+
+  SearchBranch();
+
   /** Fills in the top node, but might not FULLY reduce.
    * @param shared_data Contains data shared across ALL search branches (we may
    * be running several "in parallel", i.e. interleaved), which may include
@@ -52,7 +55,7 @@ class SearchBranch {
   /** Move up one level, but do NOT reduce the node.
    * Returns false if finished, i.e. the search is OVER!
    */
-  bool move_up();
+  bool backtrack();
 
   /** ASSUMING that the current node has been fully reduced,
    * make the given assignment [which must be valid; hence this cannot fail]
@@ -107,8 +110,22 @@ class SearchBranch {
    */
   Assignments& get_assignments_mutable();
 
+  /** If we've decided that PV->TV is an impossible assignment,
+   * try to erase TV from every Dom(PV). However, for simplicity,
+   * do not introduce extra assignments, i.e. if Dom(PV) = { TV, u }
+   * at some level, leave Dom(PV) unchanged, as otherwise we'd need
+   * more complicated code to force PV=u; it will naturally take care
+   * of itself in time. Returns true if all trace of PV->TV is removed
+   * from all domains.
+   * @param pv A pattern vertex.
+   * @param tv A target vertex.
+   * @return True if tv has been successfully erased from every Dom(pv), at every level.
+   */
+  bool erase_assignment(VertexWSM pv, VertexWSM tv);
+
+
  private:
-  std::size_t m_level = 0;
+  std::size_t m_level;
   EnrichedNodes m_enriched_nodes;
 
   // KEY: PV, VALUE: TV
