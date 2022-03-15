@@ -26,7 +26,7 @@ namespace WeightedSubgraphMonomorphism {
 
 void VariableOrdering::fill_pattern_vertices_with_smallest_domain(
     const SearchNode& node, const Assignments& assignments,
-    const SharedData& shared_data) {
+    SharedData& shared_data) {
   m_pattern_vertices_with_smallest_domain.clear();
   std::size_t min_domain_size;
   set_maximum(min_domain_size);
@@ -95,10 +95,10 @@ void VariableOrdering::fill_pattern_vertices_with_smallest_domain(
 
 VertexWSM VariableOrdering::choose_next_variable(
     const SearchNode& node, const Assignments& assignments,
-    const SharedData& shared_data) {
+    SharedData& shared_data) {
   fill_pattern_vertices_with_smallest_domain(node, assignments, shared_data);
   TKET_ASSERT(!m_pattern_vertices_with_smallest_domain.empty());
-  return m_pattern_vertices_with_smallest_domain[0];
+  return shared_data.rng.get_element(m_pattern_vertices_with_smallest_domain);
 }
 
 }  // namespace WeightedSubgraphMonomorphism

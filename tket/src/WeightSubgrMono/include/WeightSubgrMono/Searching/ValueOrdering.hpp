@@ -25,22 +25,43 @@ struct SharedData;
 /** Given an unassigned PV, choose a possible target vertex TV from Dom(PV)
  * so that the search can proceed with trying pv->tv.
  * Different heuristics may give better performance.
- * It's interesting that there are multiple competing heuristics, even in the
- * unweighted case, so the idea is to try different ones
- * (or even run several in parallel) to improve performance.
  */
 class ValueOrdering {
  public:
-  /** By default, just choose a TV with maximum degree.
-   * Override with better heuristics for better performance.
+
+  ValueOrdering();
+
+  /** Choose TV with larger degrees, with some randomness ("Solution-Biased Search").
    * @param possible_values The domain of the pattern vertex PV.
-   * @param shared_data Data about graphs, etc. etc. to assist with the
+   * @param shared_data Data about graphs, etc. etc. (and also RNG) to assist with the
    * decision.
    * @return The chosen TV from Dom(PV).
    */
-  virtual VertexWSM get_target_value(
+  VertexWSM get_target_value(
       const std::set<VertexWSM>& possible_values,
-      const SharedData& shared_data);
+      SharedData& shared_data);
+
+private:
+
+  struct HighDegreeVerticesData {
+    std::vector<VertexWSM> vertices;
+
+    // Vertices with higher degree have higher "mass",
+    // with the probability of being chosen proportional
+    // to the mass.
+    unsigned mass;
+  };
+
+  // Element [i] is for vertices of degree D-i.
+  std::vector<HighDegreeVerticesData> m_data;
+
+  // Fills m_data.
+  void fill_data(const std::set<VertexWSM>& possible_values, SharedData& shared_data);
+
+  // Once fill_data has been called, select a vertex
+  // at random, biased so that the probability is proportional
+  // to the mass.
+  VertexWSM get_random_choice_from_data(SharedData& shared_data) const;
 };
 
 }  // namespace WeightedSubgraphMonomorphism

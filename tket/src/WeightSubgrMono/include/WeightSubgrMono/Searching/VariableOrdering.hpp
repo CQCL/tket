@@ -26,10 +26,8 @@ struct SharedData;
  */
 class VariableOrdering {
  public:
-  /** By default, simply choose the lowest numbered p-vertex with
-   * smallest domain. In future, will try other heuristics: introduce some
-   * randomness, tiebreaking, etc.
-   * Different heuristics may give better performance.
+
+  /** 
    * @param node The node containing data on the current domains.
    * @param assignments All current assignments, not just those in the current
    * node.
@@ -38,11 +36,12 @@ class VariableOrdering {
    * @return The pattern vertex PV which we should assign next (choosing the
    * associated TV is a separate task).
    */
-  virtual VertexWSM choose_next_variable(
+  VertexWSM choose_next_variable(
       const SearchNode& node, const Assignments& assignments,
-      const SharedData& shared_data);
+      SharedData& shared_data);
 
- protected:
+ private:
+
   std::vector<VertexWSM> m_pattern_vertices_with_smallest_domain;
 
   // Fills m_pattern_vertices_with_smallest_domain,
@@ -50,7 +49,7 @@ class VariableOrdering {
   // to an assigned p-vertex if possible.
   void fill_pattern_vertices_with_smallest_domain(
       const SearchNode& node, const Assignments& assignments,
-      const SharedData& shared_data);
+      SharedData& shared_data);
 };
 
 }  // namespace WeightedSubgraphMonomorphism
