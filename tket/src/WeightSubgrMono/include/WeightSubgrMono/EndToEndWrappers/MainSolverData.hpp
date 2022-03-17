@@ -60,6 +60,9 @@ struct MainSolverData {
   
   /** The main searching loop to be called, after it has been initialised. */
   void solve_loop_after_initialisation(const MainSolverParameters& parameters);
+
+  void do_one_solve_iteration_with_suggestion(
+      const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments);
 };
 
 }  // namespace WeightedSubgraphMonomorphism

@@ -54,6 +54,12 @@ const SolutionStatistics& MainSolver::solve(
   return solve(parameters);
 }
 
+
+const SolutionStatistics& MainSolver::get_solution_statistics() const {
+  return m_data.statistics;
+}
+
+
 const SolutionStatistics& MainSolver::initialise(
     const GraphEdgeWeights& pattern_edges,
     const GraphEdgeWeights& target_edges) {
@@ -116,6 +122,14 @@ const SolutionStatistics& MainSolver::initialise(
           .count();
 
   return m_data.statistics;
+}
+
+void MainSolver::do_one_solve_iteration_with_suggestion(
+      const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments) {
+  if (m_data.statistics.finished) {
+    return;
+  }
+  m_data.do_one_solve_iteration_with_suggestion(suggested_assignments);
 }
 
 const SolutionStatistics& MainSolver::solve(

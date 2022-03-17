@@ -26,6 +26,9 @@ class MainSolver {
   // to a single internally stored object, so the same reference
   // remains valid and can be reused throughout the lifetime of this object.
 
+  const SolutionStatistics& get_solution_statistics() const;
+
+
   /** Do not actually solve, just set up the initial data etc. READY to solve.
    * Note that the GraphEdgeWeights objects are not needed after this,
    * as the data has been processed and converted.
@@ -40,6 +43,15 @@ class MainSolver {
   const SolutionStatistics& initialise(
       const GraphEdgeWeights& pattern_edges,
       const GraphEdgeWeights& target_edges);
+
+  /** Immediately after "initialise", before calling any "solve" function:
+   * Take the suggested assignments and move down the search branch once,
+   * trying to set as many assignments as possible.
+   * Solve will behave in future as though this initial move
+   * had arisen normally from the variable and value ordering heuristics.
+   */
+  void do_one_solve_iteration_with_suggestion(
+      const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments);
 
   /** After "initialise" has been called, actually run the solver.
    * This can be done repeatedly. The statistics are updated

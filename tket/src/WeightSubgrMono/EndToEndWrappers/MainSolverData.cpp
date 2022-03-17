@@ -43,6 +43,18 @@ ReductionResult MainSolverData::initialise(
 }
 
 
+void MainSolverData::do_one_solve_iteration_with_suggestion(
+      const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments) {
+  TKET_ASSERT(initialised);
+  TKET_ASSERT(shared_data_ptr);
+  const auto reduction_result = shared_data_ptr->search_with_suggestion(
+        branch, var_ordering, val_ordering, suggested_assignments);
+  if (reduction_result == ReductionResult::FINISHED) {
+    statistics.finished = true;
+  }
+}
+
+
 void MainSolverData::solve_loop_after_initialisation(const MainSolverParameters& parameters) {
   TKET_ASSERT(initialised);
   TKET_ASSERT(shared_data_ptr);
