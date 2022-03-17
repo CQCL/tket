@@ -42,13 +42,13 @@ SearchNodeWrapper& SearchNodeWrapper::add_scalar_product(WeightWSM dw) {
 
 std::size_t SearchNodeWrapper::remove_element_from_domain(
     VertexWSM pv, VertexWSM target_vertex, Assignments& assignments) {
-  const auto citer = m_node.pattern_v_to_possible_target_v.find(pv);
-  if (citer == m_node.pattern_v_to_possible_target_v.cend() ||
-      citer->second.empty()) {
+  const auto iter = m_node.pattern_v_to_possible_target_v.find(pv);
+  if (iter == m_node.pattern_v_to_possible_target_v.end() ||
+      iter->second.empty()) {
     return 0;
   }
   return remove_element_from_domain(
-      pv, target_vertex, citer->second, assignments);
+      pv, target_vertex, iter->second, assignments);
 }
 
 std::size_t SearchNodeWrapper::remove_element_from_domain(

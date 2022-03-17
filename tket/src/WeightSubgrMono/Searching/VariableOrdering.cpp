@@ -32,22 +32,6 @@ void VariableOrdering::fill_pattern_vertices_with_smallest_domain(
   set_maximum(min_domain_size);
   bool vertices_adjacent_to_assigned = false;
 
-  const auto adjacent_to_existing_vertex = [&assignments,
-                                            &shared_data](VertexWSM pv) {
-    if (assignments.empty()) {
-      return false;
-    }
-    const auto& neighbours_and_weights =
-        shared_data.fixed_data.pattern_neighbours_data
-            .get_neighbours_and_weights(pv);
-    for (const auto& entry : neighbours_and_weights) {
-      if (assignments.count(entry.first) != 0) {
-        return true;
-      }
-    }
-    return false;
-  };
-
   for (const auto& entry : node.pattern_v_to_possible_target_v) {
     const auto& p_vertex = entry.first;
     TKET_ASSERT(assignments.count(p_vertex) == 0);
@@ -59,7 +43,7 @@ void VariableOrdering::fill_pattern_vertices_with_smallest_domain(
       if (domain_size > min_domain_size) {
         continue;
       }
-      if (!adjacent_to_existing_vertex(p_vertex)) {
+      if (!shared_data.fixed_data.pattern_neighbours_data.is_adjacent_to_assigned_pv(p_vertex, assignments)) {
         continue;
       }
       if (domain_size < min_domain_size) {
@@ -71,7 +55,7 @@ void VariableOrdering::fill_pattern_vertices_with_smallest_domain(
       continue;
     }
     // We currently have NO vertices adjacent to an assigned one.
-    if (adjacent_to_existing_vertex(p_vertex)) {
+    if (shared_data.fixed_data.pattern_neighbours_data.is_adjacent_to_assigned_pv(p_vertex, assignments)) {
       // It's strictly better than anything so far.
       m_pattern_vertices_with_smallest_domain.clear();
       min_domain_size = domain_size;
