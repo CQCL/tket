@@ -634,8 +634,6 @@ def test_converting_to_circuit() -> None:
     c = Circuit(2)
     c.CX(0,1)
     diag = ZXDiagram(c)
-    print(c.get_unitary())
-    print(unitary_from_quantum_diagram(diag))
     assert np.allclose(c.get_unitary(), unitary_from_quantum_diagram(diag))
     
 

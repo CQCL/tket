@@ -18,6 +18,7 @@
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
 #include "Mapping/Verification.hpp"
+#include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
@@ -26,6 +27,81 @@
 #include "testutil.hpp"
 
 namespace tket {
+
+// Checks if the initial/final maps are correct by walking through the circuit
+bool check_permutation(
+    const Circuit& circ, const std::shared_ptr<unit_bimaps_t>& bimaps) {
+  // qubits |-> nodes
+  // qubits get moved with swap gates
+  unit_bimap_t qubit_map;
+  for (auto q : circ.all_qubits()) {
+    qubit_map.left.insert({bimaps->initial.right.find(q)->second, q});
+  }
+  for (const Command& cmd : circ.get_commands()) {
+    Op_ptr op = cmd.get_op_ptr();
+    if (op->get_type() == OpType::SWAP) {
+      unit_vector_t units = cmd.get_args();
+      // swap qubits in qubit_map
+      auto it0 = qubit_map.right.find(units[0]);
+      auto it1 = qubit_map.right.find(units[1]);
+      UnitID q0 = it0->second;
+      UnitID q1 = it1->second;
+      qubit_map.right.erase(it1);
+      qubit_map.right.erase(it0);
+      qubit_map.left.insert({q1, units[0]});
+      qubit_map.left.insert({q0, units[1]});
+    }
+  }
+  // Check this agrees with the final map
+  for (auto it = qubit_map.left.begin(); it != qubit_map.left.end(); ++it) {
+    auto final_it = bimaps->final.left.find(it->first);
+    if (final_it == bimaps->final.left.end() ||
+        final_it->second != it->second) {
+      return false;
+    }
+  }
+  return true;
+}
+
+// Checks if the results matches the initial circ after resolving the
+// permutations
+bool check_permutation_unitary(
+    Circuit& initial_circ, Circuit& circ,
+    const std::shared_ptr<unit_bimaps_t>& maps) {
+  for (auto me : maps->initial) {
+    if (me.left != me.right) return false;
+  }
+
+  // bool found_permutations = true;
+  while (true) {
+    bool found_permutations = false;
+    for (auto me : maps->final) {
+      if (me.left != me.right) found_permutations = true;
+    }
+    if (found_permutations) {
+      for (auto me : maps->final) {
+        if (me.left != me.right) {
+          circ.add_op<UnitID>(OpType::SWAP, {Qubit(me.left), Qubit(me.right)});
+          break;
+        }
+      }
+    } else {
+      return test_unitary_comparison(initial_circ, circ);
+    }
+  }
+
+  return true;
+}
+
+void add_swap_tests(
+    Circuit& circ, std::vector<Node>& node_vec, unsigned u0, unsigned u1) {
+  std::vector<Qubit> qubits_renamed = circ.all_qubits();
+  circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[u0], qubits_renamed[u1]});
+
+  Node no = node_vec[u0];
+  node_vec[u0] = node_vec[u1];
+  node_vec[u1] = no;
+}
 
 SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
   std::vector<Node> nodes = {Node("test_node", 0), Node("test_node", 1),
@@ -844,8 +920,15 @@ SCENARIO("Test MappingManager with LexiRouteRoutingMethod and LexiLabelling") {
     std::vector<RoutingMethodPtr> vrm = {
         std::make_shared<LexiLabellingMethod>(lrm),
         std::make_shared<LexiRouteRoutingMethod>()};
+    // Contains initial and final map
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    // Initialise the maps by the same way it's done with CompilationUnit
+    for (const UnitID& u : circ.all_units()) {
+      maps->initial.insert({u, u});
+      maps->final.insert({u, u});
+    }
 
-    bool res = mm.route_circuit(circ, vrm);
+    bool res = mm.route_circuit_with_maps(circ, vrm, maps);
 
     PredicatePtr routed_correctly =
         std::make_shared<ConnectivityPredicate>(architecture);
@@ -854,6 +937,7 @@ SCENARIO("Test MappingManager with LexiRouteRoutingMethod and LexiLabelling") {
     dec->apply(cu0);
     REQUIRE(res);
     REQUIRE(cu0.check_all_predicates());
+    REQUIRE(check_permutation(circ, maps));
   }
   GIVEN("Square Grid Architecture, large number of gates.") {
     SquareGrid sg(5, 10);
@@ -919,8 +1003,10 @@ SCENARIO(
 
     MappingManager mm(std::make_shared<Architecture>(test_arc));
     REQUIRE(!mm.route_circuit(
-        test_circuit, {std::make_shared<LexiLabellingMethod>(),
-                       std::make_shared<LexiRouteRoutingMethod>()}));
+        test_circuit,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        false));
 
     qubit_vector_t all_qs_post_solve = test_circuit.all_qubits();
     REQUIRE(all_qs_post_place == all_qs_post_solve);
@@ -935,8 +1021,12 @@ SCENARIO("Empty Circuit test") {
     Architecture arc({{0, 1}, {1, 2}, {2, 3}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(!mm.route_circuit(
-        circ, {std::make_shared<LexiLabellingMethod>(),
-               std::make_shared<LexiRouteRoutingMethod>()}));
+        circ,
+        {
+            std::make_shared<LexiLabellingMethod>(),
+            std::make_shared<LexiRouteRoutingMethod>(),
+        },
+        false));
     REQUIRE(circ.n_gates() == 0);
   }
 }
@@ -953,8 +1043,12 @@ SCENARIO("Routing on circuit with no multi-qubit gates") {
     Architecture arc({{0, 1}, {1, 2}, {2, 3}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(!mm.route_circuit(
-        circ, {std::make_shared<LexiLabellingMethod>(),
-               std::make_shared<LexiRouteRoutingMethod>()}));
+        circ,
+        {
+            std::make_shared<LexiLabellingMethod>(),
+            std::make_shared<LexiRouteRoutingMethod>(),
+        },
+        false));
     REQUIRE(orig_vertices - 8 == circ.n_gates());
   }
 }
@@ -1103,23 +1197,421 @@ SCENARIO("Empty circuits, with and without blank wires") {
     RingArch arc(6);
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(!mm.route_circuit(
+        circ,
+        {
+            std::make_shared<LexiLabellingMethod>(),
+            std::make_shared<LexiRouteRoutingMethod>(),
+        },
+        false));
+    REQUIRE(circ.depth() == 0);
+    REQUIRE(circ.n_gates() == 0);
+    REQUIRE(circ.n_qubits() == 6);
+    REQUIRE(!respects_connectivity_constraints(circ, arc, true));
+  }
+  GIVEN("An empty circuit with some qubits with labelling") {
+    Circuit circ(6);
+    RingArch arc(6);
+    MappingManager mm(std::make_shared<Architecture>(arc));
+    REQUIRE(mm.route_circuit(
         circ, {std::make_shared<LexiLabellingMethod>(),
                std::make_shared<LexiRouteRoutingMethod>()}));
     REQUIRE(circ.depth() == 0);
     REQUIRE(circ.n_gates() == 0);
     REQUIRE(circ.n_qubits() == 6);
-    REQUIRE(!respects_connectivity_constraints(circ, arc, true));
+    REQUIRE(respects_connectivity_constraints(circ, arc, true));
   }
   GIVEN("An empty circuit with no qubits") {
     Circuit circ(0);
     RingArch arc(6);
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(!mm.route_circuit(
-        circ, {std::make_shared<LexiLabellingMethod>(),
-               std::make_shared<LexiRouteRoutingMethod>()}));
+        circ,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        false));
     REQUIRE(circ.depth() == 0);
     REQUIRE(circ.n_gates() == 0);
     REQUIRE(circ.n_qubits() == 0);
+  }
+}
+
+SCENARIO("Initial map should contain all data qubits") {
+  GIVEN("An example circuit") {
+    Circuit circ(10);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[4]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[2]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[7], qubits[6]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[8], qubits[7]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[9], qubits[4]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[6], qubits[5]});
+    SquareGrid sg(4, 4);
+    // Contains initial and final map
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    // Initialise the maps by the same way it's done with CompilationUnit
+    for (const UnitID& u : circ.all_units()) {
+      maps->initial.insert({u, u});
+      maps->final.insert({u, u});
+    }
+
+    MappingManager mm(std::make_shared<Architecture>(sg));
+    mm.route_circuit_with_maps(
+        circ,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        maps);
+    for (auto q : qubits) {
+      REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
+      REQUIRE(maps->final.left.find(q) != maps->final.left.end());
+    }
+
+    REQUIRE(check_permutation(circ, maps));
+  }
+  GIVEN("An example circuit with remap") {
+    Circuit circ(10);
+    SquareGrid sg(4, 4);
+    std::vector<Node> nodes = sg.get_all_nodes_vec();
+    std::vector<Qubit> qubits = circ.all_qubits();
+
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[4]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[2]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[7], qubits[6]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[8], qubits[7]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[9], qubits[4]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[6], qubits[5]});
+
+    std::map<UnitID, UnitID> rename_map;
+
+    for (unsigned i = 0; i < 10; ++i) {
+      rename_map.insert({qubits[i], nodes[i]});
+    }
+
+    circ.rename_units(rename_map);
+
+    Circuit initial_circ = Circuit(circ);
+
+    // Contains initial and final map
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    // Initialise the maps by the same way it's done with CompilationUnit
+    for (const UnitID& u : circ.all_units()) {
+      maps->initial.insert({u, u});
+      maps->final.insert({u, u});
+    }
+
+    MappingManager mm(std::make_shared<Architecture>(sg));
+    mm.route_circuit_with_maps(
+        circ,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        maps);
+    for (auto q : circ.all_qubits()) {
+      REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
+      REQUIRE(maps->final.left.find(q) != maps->final.left.end());
+    }
+    REQUIRE(check_permutation(circ, maps));
+  }
+  GIVEN("An example circuit with remap II") {
+    Circuit circ(6);
+    SquareGrid sg(3, 3);
+    std::vector<Node> nodes = sg.get_all_nodes_vec();
+    std::vector<Qubit> qubits = circ.all_qubits();
+
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+
+    std::map<UnitID, UnitID> rename_map;
+
+    for (unsigned i = 0; i < 6; ++i) {
+      rename_map.insert({qubits[i], nodes[i]});
+    }
+
+    circ.rename_units(rename_map);
+
+    Circuit initial_circ = Circuit(circ);
+
+    // Contains initial and final map
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    // Initialise the maps by the same way it's done with CompilationUnit
+    for (const UnitID& u : circ.all_units()) {
+      maps->initial.insert({u, u});
+      maps->final.insert({u, u});
+    }
+
+    MappingManager mm(std::make_shared<Architecture>(sg));
+    mm.route_circuit_with_maps(
+        circ,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        maps);
+    for (auto q : circ.all_qubits()) {
+      REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
+      REQUIRE(maps->final.left.find(q) != maps->final.left.end());
+    }
+    REQUIRE(check_permutation(circ, maps));
+
+    std::vector<Qubit> qubits_renamed = circ.all_qubits();
+
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[1], qubits_renamed[4]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[3], qubits_renamed[4]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[1], qubits_renamed[2]});
+
+    REQUIRE(test_unitary_comparison(initial_circ, circ));
+  }
+  GIVEN("An example circuit with remap III") {
+    Circuit circ(6);
+    SquareGrid sg(3, 3);
+    std::vector<Node> nodes = sg.get_all_nodes_vec();
+    std::vector<Qubit> qubits = circ.all_qubits();
+
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[5]});
+
+    std::map<UnitID, UnitID> rename_map;
+
+    for (unsigned i = 0; i < 6; ++i) {
+      rename_map.insert({qubits[i], nodes[i]});
+    }
+
+    circ.rename_units(rename_map);
+
+    Circuit initial_circ = Circuit(circ);
+
+    // Contains initial and final map
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    // Initialise the maps by the same way it's done with CompilationUnit
+    for (const UnitID& u : circ.all_units()) {
+      maps->initial.insert({u, u});
+      maps->final.insert({u, u});
+    }
+
+    MappingManager mm(std::make_shared<Architecture>(sg));
+    mm.route_circuit_with_maps(
+        circ,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        maps);
+    for (auto q : circ.all_qubits()) {
+      REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
+      REQUIRE(maps->final.left.find(q) != maps->final.left.end());
+    }
+    REQUIRE(check_permutation(circ, maps));
+
+    std::vector<Qubit> qubits_renamed = circ.all_qubits();
+
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[2], qubits_renamed[5]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[3], qubits_renamed[4]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[1], qubits_renamed[2]});
+
+    REQUIRE(test_unitary_comparison(initial_circ, circ));
+  }
+  GIVEN("An example circuit with remap IV") {
+    Circuit circ(6);
+    SquareGrid sg(3, 3);
+    std::vector<Node> nodes = sg.get_all_nodes_vec();
+    std::vector<Qubit> qubits = circ.all_qubits();
+
+    circ.add_op<UnitID>(OpType::H, {qubits[0]});
+    circ.add_op<UnitID>(OpType::H, {qubits[1]});
+    circ.add_op<UnitID>(OpType::H, {qubits[2]});
+    circ.add_op<UnitID>(OpType::H, {qubits[3]});
+    circ.add_op<UnitID>(OpType::H, {qubits[4]});
+    circ.add_op<UnitID>(OpType::H, {qubits[5]});
+
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+
+    circ.add_op<UnitID>(OpType::Y, {qubits[0]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[1]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[2]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[3]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[4]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[5]});
+
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+
+    circ.add_op<UnitID>(OpType::Y, {qubits[0]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[1]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[2]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[3]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[4]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[5]});
+
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[3], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[1]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[5]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[4], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[5]});
+
+    std::map<UnitID, UnitID> rename_map;
+
+    for (unsigned i = 0; i < 6; ++i) {
+      rename_map.insert({qubits[i], nodes[i]});
+    }
+
+    circ.rename_units(rename_map);
+
+    Circuit initial_circ = Circuit(circ);
+
+    // Contains initial and final map
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    // Initialise the maps by the same way it's done with CompilationUnit
+    for (const UnitID& u : circ.all_units()) {
+      maps->initial.insert({u, u});
+      maps->final.insert({u, u});
+    }
+
+    MappingManager mm(std::make_shared<Architecture>(sg));
+    mm.route_circuit_with_maps(
+        circ,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        maps);
+
+    for (auto q : circ.all_qubits()) {
+      REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
+      REQUIRE(maps->final.left.find(q) != maps->final.left.end());
+    }
+    REQUIRE(check_permutation(circ, maps));
+
+    std::vector<Qubit> qubits_renamed = circ.all_qubits();
+
+    // add swaps to resolve permutation
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[1], qubits_renamed[2]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[4], qubits_renamed[5]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[1], qubits_renamed[4]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[1], qubits_renamed[3]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[2], qubits_renamed[5]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[1], qubits_renamed[2]});
+    circ.add_op<UnitID>(OpType::SWAP, {qubits_renamed[3], qubits_renamed[4]});
+
+    REQUIRE(test_unitary_comparison(initial_circ, circ));
+  }
+}
+SCENARIO("Unlabelled qubits should be assigned to ancilla qubits.") {
+  Architecture arc({{0, 1}, {1, 2}, {2, 3}, {3, 0}});
+  Circuit c(4);
+  c.add_op<unsigned>(OpType::CZ, {0, 3});
+  c.add_op<unsigned>(OpType::CZ, {1, 0});
+  c.add_op<unsigned>(OpType::CZ, {3, 1});
+  c.add_op<unsigned>(OpType::H, {2});
+
+  std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+  // Initialise the maps by the same way it's done with CompilationUnit
+  for (const UnitID& u : c.all_units()) {
+    maps->initial.insert({u, u});
+    maps->final.insert({u, u});
+  }
+
+  MappingManager mm(std::make_shared<Architecture>(arc));
+  mm.route_circuit_with_maps(
+      c,
+      {std::make_shared<LexiLabellingMethod>(),
+       std::make_shared<LexiRouteRoutingMethod>()},
+      maps, true);
+  REQUIRE(maps->initial.left.find(Qubit(0))->second == Node(0));
+  REQUIRE(maps->initial.left.find(Qubit(1))->second == Node(3));
+  REQUIRE(maps->initial.left.find(Qubit(2))->second == Node(2));
+  REQUIRE(maps->initial.left.find(Qubit(3))->second == Node(1));
+  REQUIRE(maps->final.left.find(Qubit(0))->second == Node(0));
+  REQUIRE(maps->final.left.find(Qubit(1))->second == Node(2));
+  REQUIRE(maps->final.left.find(Qubit(2))->second == Node(3));
+  REQUIRE(maps->final.left.find(Qubit(3))->second == Node(1));
+}
+SCENARIO("Lexi relabel with partially mapped circuit") {
+  GIVEN("With an unplaced qubit") {
+    Architecture arc({{0, 1}, {1, 2}});
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::CZ, {0, 1}, "cz0,1");
+    c.add_op<unsigned>(OpType::CZ, {1, 2}, "cz1,2");
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    // Initialise the maps by the same way it's done with CompilationUnit
+    for (const UnitID& u : c.all_units()) {
+      maps->initial.insert({u, u});
+      maps->final.insert({u, u});
+    }
+    Placement pl(arc);
+    qubit_mapping_t partial_map;
+    partial_map.insert({Qubit(0), Node(0)});
+    partial_map.insert({Qubit(1), Node(1)});
+    pl.place_with_map(c, partial_map, maps);
+
+    MappingManager mm(std::make_shared<Architecture>(arc));
+    mm.route_circuit_with_maps(
+        c,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()},
+        maps);
+    REQUIRE(check_permutation(c, maps));
+  }
+  GIVEN("With an unplaced qubit merged to an ancilla") {
+    Circuit c(4);
+    c.add_op<unsigned>(OpType::CZ, {3, 0}, "cz3,0");
+    c.add_op<unsigned>(OpType::CZ, {1, 0}, "cz1,0");
+    c.add_op<unsigned>(OpType::CZ, {1, 3}, "cz1,3");
+    c.add_op<unsigned>(OpType::CZ, {3, 2}, "cz3,2");
+
+    Architecture arc({{0, 1}, {0, 2}, {0, 3}, {4, 1}, {4, 2}});
+    PassPtr plac_p = gen_placement_pass(std::make_shared<GraphPlacement>(arc));
+    CompilationUnit cu(c);
+    REQUIRE(plac_p->apply(cu));
+    const unit_bimap_t& initial_map = cu.get_initial_map_ref();
+    const unit_bimap_t& final_map = cu.get_final_map_ref();
+
+    PassPtr r_p = gen_routing_pass(
+        arc, {std::make_shared<LexiLabellingMethod>(),
+              std::make_shared<LexiRouteRoutingMethod>()});
+    REQUIRE(r_p->apply(cu));
+
+    for (const Qubit& q : c.all_qubits()) {
+      REQUIRE(initial_map.left.find(q) != initial_map.left.end());
+      REQUIRE(final_map.left.find(q) != final_map.left.end());
+    }
+    for (const Qubit& q : cu.get_circ_ref().all_qubits()) {
+      REQUIRE(initial_map.right.find(q) != initial_map.right.end());
+      REQUIRE(final_map.right.find(q) != final_map.right.end());
+    }
   }
 }
 

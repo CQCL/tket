@@ -570,15 +570,8 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(DecomposeSingleQubitsTK1, DecomposeSingleQubitsTK1())
   COMPPASSJSONTEST(PeepholeOptimise2Q, PeepholeOptimise2Q())
   COMPPASSJSONTEST(FullPeepholeOptimise, FullPeepholeOptimise())
-  COMPPASSJSONTEST(RebaseCirq, RebaseCirq())
   COMPPASSJSONTEST(RebaseTket, RebaseTket())
-  COMPPASSJSONTEST(RebaseHQS, RebaseHQS())
-  COMPPASSJSONTEST(RebaseQuil, RebaseQuil())
-  COMPPASSJSONTEST(RebaseProjectQ, RebaseProjectQ())
-  COMPPASSJSONTEST(RebasePyZX, RebasePyZX())
-  COMPPASSJSONTEST(RebaseUMD, RebaseUMD())
   COMPPASSJSONTEST(RebaseUFR, RebaseUFR())
-  COMPPASSJSONTEST(RebaseOQC, RebaseOQC())
   COMPPASSJSONTEST(RemoveRedundancies, RemoveRedundancies())
   COMPPASSJSONTEST(SynthesiseHQS, SynthesiseHQS())
   COMPPASSJSONTEST(SynthesiseTket, SynthesiseTket())
@@ -659,22 +652,6 @@ SCENARIO("Test compiler pass serializations") {
     nlohmann::json j_loaded = loaded;
     REQUIRE(j_pp == j_loaded);
   }
-#define COMPPASSDESERIALIZE(passname, pass)            \
-  GIVEN(#passname) {                                   \
-    Circuit circ = CircuitsForTesting::get().uccsd;    \
-    CompilationUnit cu{circ};                          \
-    CompilationUnit copy = cu;                         \
-    PassPtr pp = pass;                                 \
-    nlohmann::json j_pp;                               \
-    j_pp["pass_class"] = "StandardPass";               \
-    j_pp["StandardPass"]["name"] = #passname;          \
-    PassPtr loaded = j_pp.get<PassPtr>();              \
-    pp->apply(cu);                                     \
-    loaded->apply(copy);                               \
-    REQUIRE(cu.get_circ_ref() == copy.get_circ_ref()); \
-  }
-  COMPPASSDESERIALIZE(SquashHQS, SquashHQS())
-#undef COMPPASSDESERIALIZE
   GIVEN("FullMappingPass") {
     // Sequence pass - deserializable only
     Circuit circ = CircuitsForTesting::get().uccsd;

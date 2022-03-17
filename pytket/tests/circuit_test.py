@@ -66,7 +66,7 @@ def test_op_free_symbols() -> None:
     c.add_barrier([0, 1])
     op = c.get_commands()[0].op
     assert op.free_symbols() == set()
-    alpha = Symbol("alpha")
+    alpha = Symbol("alpha")  # type: ignore
     c.Rx(alpha, 0)
     op = c.get_commands()[1].op
     assert op.free_symbols() == {alpha}
@@ -209,7 +209,7 @@ def test_circuit_gen_ids() -> None:
 
 def test_symbolic_ops() -> None:
     c = Circuit(2)
-    alpha = Symbol("alpha")
+    alpha = Symbol("alpha")  # type: ignore
     c.Rx(alpha, 0)
     beta = fresh_symbol("alpha")
     c.CRz(beta * 2, 1, 0)
@@ -243,7 +243,7 @@ def test_sympy_conversion() -> None:
         tree_str = str(type(expr)).rsplit(".", 1)[-1].split("'")[0]
         if len(expr.args) != 0:
             tree_str += " ("
-            tree_str += ", ".join([get_type_tree(a) for a in expr.args])
+            tree_str += ", ".join([get_type_tree(a) for a in expr.args])  # type: ignore
             tree_str += ")"
         return tree_str
 
@@ -259,7 +259,7 @@ def test_sympy_conversion() -> None:
     }
     for expr_string, type_tree in test_dict.items():
         c = Circuit(1)
-        c.Rz(sympify(expr_string), 0)
+        c.Rz(sympify(expr_string), 0)  # type: ignore
         com = c.get_commands()[0]
         assert get_type_tree(com.op.params[0]) == type_tree
 
@@ -380,7 +380,7 @@ def test_boxes() -> None:
     d.add_expbox(ebox, 3, 2)
 
     paulis = [Pauli.X, Pauli.Z, Pauli.X]
-    pbox = PauliExpBox(paulis, Symbol("alpha"))
+    pbox = PauliExpBox(paulis, Symbol("alpha"))  # type: ignore
     assert pbox.type == OpType.PauliExpBox
     d.add_pauliexpbox(pbox, [3, 2, 1])
 
@@ -395,7 +395,7 @@ def test_boxes() -> None:
     pauli_exps = [cmd.op for cmd in d if cmd.op.type == OpType.PauliExpBox]
     assert len(pauli_exps) == 1
     assert pauli_exps[0].get_paulis() == paulis
-    assert pauli_exps[0].get_phase() == Symbol("alpha")
+    assert pauli_exps[0].get_phase() == Symbol("alpha")  # type: ignore
 
     boxes = (cbox, mbox, u2qbox, u3qbox, ebox, pbox, qcbox)
     assert all(box == box for box in boxes)
@@ -426,8 +426,8 @@ def test_u1q_stability() -> None:
 
 
 def test_custom_gates() -> None:
-    a = Symbol("a")
-    b = Symbol("b")
+    a = Symbol("a")  # type: ignore
+    b = Symbol("b")  # type: ignore
     setup = Circuit(3)
     setup.CX(0, 1)
     setup.Rz(a + 0.5, 2)
@@ -448,7 +448,7 @@ def test_custom_gates() -> None:
 def test_errors() -> None:
     # TKET-289
     c = Circuit(1)
-    a = Symbol("a")
+    a = Symbol("a")  # type: ignore
     c.Rz(a, 0)
     c.Rz(0.5, 0)
     c.Rz(0, 0)

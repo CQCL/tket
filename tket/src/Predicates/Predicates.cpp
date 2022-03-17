@@ -17,6 +17,7 @@
 #include "Gate/Gate.hpp"
 #include "Mapping/Verification.hpp"
 #include "Placement/Placement.hpp"
+#include "Utils/UnitID.hpp"
 
 namespace tket {
 
@@ -332,6 +333,12 @@ bool ConnectivityPredicate::implies(const Predicate& other) const {
         dynamic_cast<const ConnectivityPredicate&>(other);
     const Architecture& arc1 = arch_;
     const Architecture& arc2 = other_c.arch_;
+    // Check that all nodes in arc1 are in arc2:
+    for (const Node& n : arc1.get_all_nodes_vec()) {
+      if (!arc2.node_exists(n)) {
+        return false;
+      }
+    }
     // Collect all edges in arc1
     for (auto [n1, n2] : arc1.get_all_edges_vec()) {
       if (!arc2.edge_exists(n1, n2) && !arc2.edge_exists(n2, n1)) {

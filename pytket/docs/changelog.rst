@@ -1,12 +1,20 @@
 Changelog
 =========
 
-x.y.z (unreleased)
+1.0.1 (March 2022)
+------------------
+
+Fixes:
+
+* Fix problem with unassigned ancilla qubits during mapping.
+
+1.0.0 (March 2022)
 ------------------
 
 API changes:
 
-* ``Rebase<Target>`` and ``SquahsHQS`` methods are removed. Specifically:
+* ``Rebase<Target>`` and ``SquashHQS`` methods are removed. Specifically:
+
   * ``RebaseHQS``
   * ``RebaseProjectQ``
   * ``RebasePyZX``
@@ -14,6 +22,7 @@ API changes:
   * ``RebaseUMD``
   * ``RebaseUFR``
   * ``RebaseOQC``
+
 * The deprecated ``QubitPauliString.to_dict`` method is removed. (Use the
   ``map`` property instead.)
 * The deprecated ``Backend.compile_circuit`` method is removed. (Use
@@ -57,6 +66,13 @@ Minor new features:
 * Add ``opgroups`` property to ``Circuit``.
 * ``Architecture`` has new ``valid_operation`` method which returns true if passed UnitIDs that respect 
   architecture constraints.
+* ``CircuitStatus`` has several new optional properties such as time-stamps associated with status changes,
+  queue position or detailed error information.
+
+Fixes:
+
+* ``ConnectivityPredicate.implies()`` checks for existence of isolated nodes as
+  well as edges in second architecture.
   
 0.19.2 (February 2022)
 ----------------------

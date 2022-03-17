@@ -105,6 +105,18 @@ MappingFrontier::MappingFrontier(Circuit& _circuit) : circuit_(_circuit) {
 MappingFrontier::MappingFrontier(
     Circuit& _circuit, std::shared_ptr<unit_bimaps_t> _bimaps)
     : circuit_(_circuit), bimaps_(_bimaps) {
+  // Check that the maps are valid
+  for (const Qubit& q : _circuit.all_qubits()) {
+    if (_bimaps->initial.right.find(q) == _bimaps->initial.right.end()) {
+      throw MappingFrontierError(
+          "Uid " + q.repr() + " not found in initial map.");
+    }
+    if (_bimaps->final.right.find(q) == _bimaps->final.right.end()) {
+      throw MappingFrontierError(
+          "Uid " + q.repr() + " not found in final map.");
+    }
+  }
+
   this->linear_boundary = std::make_shared<unit_vertport_frontier_t>();
   this->boolean_boundary = std::make_shared<b_frontier_t>();
 
@@ -441,6 +453,29 @@ Subcircuit MappingFrontier::get_frontier_subcircuit(
       subcircuit_vertices);
 }
 
+UnitID MappingFrontier::get_qubit_from_circuit_uid(const UnitID& uid) {
+  auto it = this->bimaps_->initial.right.find(uid);
+  if (it == this->bimaps_->initial.right.end()) {
+    throw MappingFrontierError("UnitID not found in initial map.");
+  }
+  return it->second;
+}
+
+void MappingFrontier::update_bimaps(UnitID qubit, UnitID node) {
+  // Update initial map
+  auto init_it = this->bimaps_->initial.left.find(qubit);
+  if (init_it == this->bimaps_->initial.left.end())
+    throw MappingFrontierError("Qubit not found in initial map.");
+  this->bimaps_->initial.left.erase(init_it);
+  this->bimaps_->initial.left.insert({qubit, node});
+  // Update final map
+  auto final_it = this->bimaps_->final.left.find(qubit);
+  if (final_it == this->bimaps_->final.left.end())
+    throw MappingFrontierError("Qubit not found in final map.");
+  this->bimaps_->final.left.erase(final_it);
+  this->bimaps_->final.left.insert({qubit, node});
+}
+
 void MappingFrontier::update_linear_boundary_uids(
     const unit_map_t& relabelled_uids) {
   for (const std::pair<const UnitID, UnitID>& label : relabelled_uids) {
@@ -449,6 +484,7 @@ void MappingFrontier::update_linear_boundary_uids(
       // by type, label.first already assumed in circuit
       // this condition means label.second also in circuit
       // implies that a merging is done -> remove first qubit
+
       if (this->linear_boundary->get<TagKey>().find(label.second) !=
           this->linear_boundary->get<TagKey>().end()) {
         // erase, assume updated already
@@ -461,22 +497,6 @@ void MappingFrontier::update_linear_boundary_uids(
             current_label_it, {label.second, current_label_it->second});
         unit_map_t relabel = {label};
         this->circuit_.rename_units(relabel);
-      }
-
-      // update initial map
-      auto it = this->bimaps_->initial.right.find(label.first);
-      if (it != this->bimaps_->initial.right.end()) {
-        UnitID simple_q_init = it->second;
-        this->bimaps_->initial.left.erase(simple_q_init);
-        this->bimaps_->initial.left.insert({simple_q_init, label.second});
-      }
-
-      // update final map
-      it = this->bimaps_->final.right.find(label.first);
-      if (it != this->bimaps_->final.right.end()) {
-        UnitID simple_q_final = it->second;
-        this->bimaps_->final.left.erase(simple_q_final);
-        this->bimaps_->final.left.insert({simple_q_final, label.second});
       }
     }
   }
@@ -724,8 +744,33 @@ void MappingFrontier::merge_ancilla(
   // Can now just erase "merge" qubit from the circuit
   this->circuit_.boundary.get<TagID>().erase(merge);
 
-  this->bimaps_->initial.right.erase(merge);
-  this->bimaps_->final.left.erase(merge);
+  // Update the qubit mappings
+  // let's call the arguments ancilla_node and merge_node
+  // e.g. before merge:
+  //  initial := {ancilla_q:node_x, merge_q:some_uid}
+  //  final := {ancilla_q:ancilla_node, merge_q:merge_node}
+  // e.g. after merge:
+  //  initial := {merge_q:node_x}
+  //  final := {merge_q:ancilla_node}
+  // Basically, in both qubit maps, erase the entry with qubit merge_q
+  // then replace the entry ancilla_q -> x with the merge_q -> x
+
+  auto merge_it = this->bimaps_->initial.right.find(merge);
+  TKET_ASSERT(merge_it != this->bimaps_->initial.right.end());
+  UnitID merge_q = merge_it->second;
+  this->bimaps_->initial.right.erase(merge_it);
+  this->bimaps_->final.left.erase(merge_q);
+  // Find ancilla_q
+  auto final_it = this->bimaps_->final.right.find(ancilla);
+  UnitID ancilla_q = final_it->second;
+  // Replace in final map
+  this->bimaps_->final.right.erase(final_it);
+  this->bimaps_->final.left.insert({merge_q, ancilla});
+  // Replace in initial map
+  auto init_it = this->bimaps_->initial.left.find(ancilla_q);
+  UnitID init_ancilla_node = init_it->second;
+  this->bimaps_->initial.left.erase(init_it);
+  this->bimaps_->initial.left.insert({merge_q, init_ancilla_node});
 }
 
 bool MappingFrontier::valid_boundary_operation(

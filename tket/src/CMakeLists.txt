@@ -72,7 +72,6 @@ list(APPEND TKET_COMPS
     Architecture
     Simulation
     Diagonalisation
-    Program
     Characterisation
     Converters
     Placement

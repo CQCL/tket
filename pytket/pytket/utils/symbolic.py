@@ -20,11 +20,11 @@ from typing import Callable, Dict, List, Optional, Type, Union, cast
 
 import numpy as np
 import sympy  # type: ignore
-from sympy import (
+from sympy import (  # type: ignore
     BlockDiagMatrix,
     BlockMatrix,
     Expr,
-    Identity,  # type: ignore
+    Identity,
     ImmutableMatrix,
     Matrix,
     Mul,
@@ -64,11 +64,11 @@ SymGateMap = Dict[OpType, SymGateFunc]
 
 
 def symb_controlled(target: SymGateFunc) -> SymGateFunc:
-    return lambda x: ImmutableMatrix(BlockDiagMatrix(Identity(2), target(x)))
+    return lambda x: ImmutableMatrix(BlockDiagMatrix(Identity(2), target(x)))  # type: ignore
 
 
 def symb_rz(params: ParamsType) -> ImmutableMatrix:
-    return ImmutableMatrix(
+    return ImmutableMatrix(  # type: ignore
         [
             [sympy.exp(-I * (sympy.pi / 2) * params[0]), 0],
             [0, sympy.exp(I * (sympy.pi / 2) * params[0])],
@@ -79,7 +79,7 @@ def symb_rz(params: ParamsType) -> ImmutableMatrix:
 def symb_rx(params: ParamsType) -> ImmutableMatrix:
     costerm = sympy.cos((sympy.pi / 2) * params[0])
     sinterm = -I * sympy.sin((sympy.pi / 2) * params[0])
-    return ImmutableMatrix(
+    return ImmutableMatrix(  # type: ignore
         [
             [costerm, sinterm],
             [sinterm, costerm],
@@ -90,7 +90,7 @@ def symb_rx(params: ParamsType) -> ImmutableMatrix:
 def symb_ry(params: ParamsType) -> ImmutableMatrix:
     costerm = sympy.cos((sympy.pi / 2) * params[0])
     sinterm = sympy.sin((sympy.pi / 2) * params[0])
-    return ImmutableMatrix(
+    return ImmutableMatrix(  # type: ignore
         [
             [costerm, -sinterm],
             [sinterm, costerm],
@@ -102,7 +102,7 @@ def symb_u3(params: ParamsType) -> ImmutableMatrix:
     theta, phi, lam = params
     costerm = sympy.cos((sympy.pi / 2) * theta)
     sinterm = sympy.sin((sympy.pi / 2) * theta)
-    return ImmutableMatrix(
+    return ImmutableMatrix(  # type: ignore
         [
             [costerm, -sinterm * sympy.exp(I * sympy.pi * lam)],
             [
@@ -114,22 +114,22 @@ def symb_u3(params: ParamsType) -> ImmutableMatrix:
 
 
 def symb_u2(params: ParamsType) -> ImmutableMatrix:
-    return symb_u3([0.5] + params)
+    return symb_u3([0.5] + params)  # type: ignore
 
 
 def symb_u1(params: ParamsType) -> ImmutableMatrix:
-    return symb_u3([0.0, 0.0] + params)
+    return symb_u3([0.0, 0.0] + params)  # type: ignore
 
 
 def symb_tk1(params: ParamsType) -> ImmutableMatrix:
-    return symb_rz([params[0]]) * symb_rx([params[1]]) * symb_rz([params[2]])
+    return symb_rz([params[0]]) * symb_rx([params[1]]) * symb_rz([params[2]])  # type: ignore
 
 
 def symb_iswap(params: ParamsType) -> ImmutableMatrix:
     alpha = params[0]
     costerm = sympy.cos((sympy.pi / 2) * alpha)
     sinterm = sympy.sin((sympy.pi / 2) * alpha)
-    return ImmutableMatrix(
+    return ImmutableMatrix(  # type: ignore
         [
             [1, 0, 0, 0],
             [0, costerm, I * sinterm, 0],
@@ -144,7 +144,7 @@ def symb_phasediswap(params: ParamsType) -> ImmutableMatrix:
     costerm = sympy.cos((sympy.pi / 2) * alpha)
     sinterm = I * sympy.sin((sympy.pi / 2) * alpha)
     phase = sympy.exp(2 * I * sympy.pi * p)
-    return ImmutableMatrix(
+    return ImmutableMatrix(  # type: ignore
         [
             [1, 0, 0, 0],
             [0, costerm, sinterm * phase, 0],
@@ -158,7 +158,7 @@ def symb_xxphase(params: ParamsType) -> ImmutableMatrix:
     alpha = params[0]
     c = sympy.cos((sympy.pi / 2) * alpha)
     s = -I * sympy.sin((sympy.pi / 2) * alpha)
-    return ImmutableMatrix(
+    return ImmutableMatrix(  # type: ignore
         [
             [c, 0, 0, s],
             [0, c, s, 0],
@@ -172,7 +172,7 @@ def symb_yyphase(params: ParamsType) -> ImmutableMatrix:
     alpha = params[0]
     c = sympy.cos((sympy.pi / 2) * alpha)
     s = I * sympy.sin((sympy.pi / 2) * alpha)
-    return ImmutableMatrix(
+    return ImmutableMatrix(  # type: ignore
         [
             [c, 0, 0, s],
             [0, c, -s, 0],
@@ -185,31 +185,31 @@ def symb_yyphase(params: ParamsType) -> ImmutableMatrix:
 def symb_zzphase(params: ParamsType) -> ImmutableMatrix:
     alpha = params[0]
     t = sympy.exp(I * (sympy.pi / 2) * alpha)
-    return ImmutableMatrix(diag(1 / t, t, t, 1 / t))
+    return ImmutableMatrix(diag(1 / t, t, t, 1 / t))  # type: ignore
 
 
 def symb_xxphase3(params: ParamsType) -> ImmutableMatrix:
     xxphase2 = symb_xxphase(params)
-    res1 = matrix_tensor_product(xxphase2, eye(2))
+    res1 = matrix_tensor_product(xxphase2, eye(2))  # type: ignore
     res2 = Matrix(
-        BlockMatrix(
+        BlockMatrix(  # type: ignore
             [
-                [xxphase2[:2, :2], zeros(2), xxphase2[:2, 2:], zeros(2)],
-                [zeros(2), xxphase2[:2, :2], zeros(2), xxphase2[:2, 2:]],
-                [xxphase2[2:, :2], zeros(2), xxphase2[2:, 2:], zeros(2)],
-                [zeros(2), xxphase2[2:, :2], zeros(2), xxphase2[2:, 2:]],
+                [xxphase2[:2, :2], zeros(2), xxphase2[:2, 2:], zeros(2)],  # type: ignore
+                [zeros(2), xxphase2[:2, :2], zeros(2), xxphase2[:2, 2:]],  # type: ignore
+                [xxphase2[2:, :2], zeros(2), xxphase2[2:, 2:], zeros(2)],  # type: ignore
+                [zeros(2), xxphase2[2:, :2], zeros(2), xxphase2[2:, 2:]],  # type: ignore
             ]
         )
     )
-    res3 = matrix_tensor_product(eye(2), xxphase2)
-    res = ImmutableMatrix(res1 * res2 * res3)
+    res3 = matrix_tensor_product(eye(2), xxphase2)  # type: ignore
+    res = ImmutableMatrix(res1 * res2 * res3)  # type: ignore
     return res
 
 
 def symb_phasedx(params: ParamsType) -> ImmutableMatrix:
     alpha, beta = params
 
-    return symb_rz([beta]) * symb_rx([alpha]) * symb_rz([-beta])
+    return symb_rz([beta]) * symb_rx([alpha]) * symb_rz([-beta])  # type: ignore
 
 
 def symb_eswap(params: ParamsType) -> ImmutableMatrix:
@@ -218,7 +218,7 @@ def symb_eswap(params: ParamsType) -> ImmutableMatrix:
     s = -I * sympy.sin((sympy.pi / 2) * alpha)
     t = sympy.exp(-I * (sympy.pi / 2) * alpha)
 
-    return ImmutableMatrix(
+    return ImmutableMatrix(  # type: ignore
         [
             [t, 0, 0, 0],
             [0, c, s, 0],
@@ -234,7 +234,7 @@ def symb_fsim(params: ParamsType) -> ImmutableMatrix:
     s = -I * sympy.sin(sympy.pi * alpha)
     t = sympy.exp(-I * sympy.pi * beta)
 
-    return ImmutableMatrix(
+    return ImmutableMatrix(  # type: ignore
         [
             [1, 0, 0, 0],
             [0, c, s, 0],
@@ -319,7 +319,7 @@ def _op_to_sympy_gate(op: Op, targets: List[int]) -> symgate.Gate:
     else:
         try:
             # use internal tket unitary definition
-            u_mat = ImmutableMatrix(op.get_unitary())
+            u_mat = ImmutableMatrix(op.get_unitary())  # type: ignore
         except RuntimeError as e:
             # to catch tket failure to get Op unitary
             # most likely due to symbolic parameters.
@@ -328,7 +328,7 @@ def _op_to_sympy_gate(op: Op, targets: List[int]) -> symgate.Gate:
                 " Try registering your own symbolic matrix representation"
                 " with SymGateRegister.func."
             ) from e
-    gate = symgate.UGate(targets, u_mat)
+    gate = symgate.UGate(targets, u_mat)  # type: ignore
     return gate
 
 
@@ -341,7 +341,7 @@ def circuit_to_symbolic_gates(circ: Circuit) -> Mul:
     :return: Symbolic gate multiplication expression.
     :rtype: Mul
     """
-    outmat = symgate.IdentityGate(0)
+    outmat = symgate.IdentityGate(0)  # type: ignore
     nqb = circ.n_qubits
     qubit_map = {qb: nqb - 1 - i for i, qb in enumerate(circ.qubits)}
     for com in circ:
@@ -360,9 +360,9 @@ def circuit_to_symbolic_gates(circ: Circuit) -> Mul:
         outmat = gate * outmat
 
     for i in range(len(qubit_map)):
-        outmat = symgate.IdentityGate(i) * outmat
+        outmat = symgate.IdentityGate(i) * outmat  # type: ignore
 
-    return outmat * sympy.exp((circ.phase * sympy.pi * I))
+    return outmat * sympy.exp((circ.phase * sympy.pi * I))  # type: ignore
 
 
 def circuit_to_symbolic_unitary(circ: Circuit) -> ImmutableMatrix:
@@ -378,18 +378,18 @@ def circuit_to_symbolic_unitary(circ: Circuit) -> ImmutableMatrix:
     gates = circuit_to_symbolic_gates(circ)
     nqb = circ.n_qubits
     try:
-        return cast(ImmutableMatrix, represent(gates, nqubits=circ.n_qubits))
+        return cast(ImmutableMatrix, represent(gates, nqubits=circ.n_qubits))  # type: ignore
     except NotImplementedError:
         # sympy can't represent n>1 qubit unitaries very well
         # so if it fails we will just calculate columns using the statevectors
         # for all possible input basis states
         matrix_dim = 1 << nqb
-        input_states = (Qubit(f"{i:0{nqb}b}") for i in range(matrix_dim))
-        outmat = Matrix([])
+        input_states = (Qubit(f"{i:0{nqb}b}") for i in range(matrix_dim))  # type: ignore
+        outmat = Matrix([])  # type: ignore
         for col, input_state in enumerate(input_states):
-            outmat = outmat.col_insert(col, represent(qapply(gates * input_state)))
+            outmat = outmat.col_insert(col, represent(qapply(gates * input_state)))  # type: ignore
 
-        return ImmutableMatrix(outmat)
+        return ImmutableMatrix(outmat)  # type: ignore
 
 
 def circuit_apply_symbolic_qubit(circ: Circuit, input_qb: Expr) -> Qubit:
@@ -404,7 +404,7 @@ def circuit_apply_symbolic_qubit(circ: Circuit, input_qb: Expr) -> Qubit:
     """
     gates = circuit_to_symbolic_gates(circ)
 
-    return cast(Qubit, qapply(gates * input_qb))
+    return cast(Qubit, qapply(gates * input_qb))  # type: ignore
 
 
 def circuit_apply_symbolic_statevector(
@@ -423,10 +423,10 @@ def circuit_apply_symbolic_statevector(
     :rtype: ImmutableMatrix
     """
     if input_state:
-        input_qb = matrix_to_qubit(input_state)
+        input_qb = matrix_to_qubit(input_state)  # type: ignore
     else:
-        input_qb = Qubit("0" * circ.n_qubits)
+        input_qb = Qubit("0" * circ.n_qubits)  # type: ignore
     return cast(
         ImmutableMatrix,
-        represent(circuit_apply_symbolic_qubit(circ, cast(Qubit, input_qb))),
+        represent(circuit_apply_symbolic_qubit(circ, cast(Qubit, input_qb))),  # type: ignore
     )

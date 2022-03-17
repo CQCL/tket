@@ -42,17 +42,8 @@ const PassPtr &ComposePhasePolyBoxes();
 /** Squash sequences of single-qubit gates to TK1 gates. */
 const PassPtr &SquashTK1();
 
-const PassPtr &SquashHQS();
-
-const PassPtr &RebaseCirq();
 const PassPtr &RebaseTket();
-const PassPtr &RebaseQuil();
-const PassPtr &RebasePyZX();
-const PassPtr &RebaseProjectQ();
-const PassPtr &RebaseHQS();
-const PassPtr &RebaseUMD();
 const PassPtr &RebaseUFR();
-const PassPtr &RebaseOQC();
 
 const PassPtr &DecomposeBridges();
 const PassPtr &FlattenRegisters();

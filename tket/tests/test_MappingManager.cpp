@@ -53,7 +53,7 @@ SCENARIO("Test MappingManager::route_circuit") {
   }
   GIVEN("Circuit unmodified.") {
     Circuit circ(2);
-    REQUIRE(!test_mm.route_circuit(circ, test_vrm));
+    REQUIRE(!test_mm.route_circuit(circ, test_vrm, false));
   }
   GIVEN("No method can route circuit.") {
     Circuit circ(3);

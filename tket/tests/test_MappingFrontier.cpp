@@ -922,4 +922,38 @@ SCENARIO("Test MappingFrontier set_linear_boundary") {
   REQUIRE(vp2_in.first == vp2_c.first);
   REQUIRE(vp3_in.first == vp3_c.first);
 }
+
+SCENARIO("Test MappingFrontier maps checking") {
+  Circuit circ(3);
+  GIVEN("Valid maps") {
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    maps->initial.insert({Qubit(0), Qubit(0)});
+    maps->final.insert({Qubit(0), Qubit(0)});
+    maps->initial.insert({Qubit(1), Qubit(1)});
+    maps->final.insert({Qubit(1), Qubit(1)});
+    maps->initial.insert({Qubit(2), Qubit(2)});
+    maps->final.insert({Qubit(2), Qubit(2)});
+    MappingFrontier mf(circ, maps);
+  }
+  GIVEN("Maps with wrong size") {
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    maps->initial.insert({Qubit(0), Qubit(0)});
+    maps->final.insert({Qubit(0), Qubit(0)});
+    maps->initial.insert({Qubit(1), Qubit(1)});
+    maps->final.insert({Qubit(1), Qubit(1)});
+    REQUIRE_THROWS_AS(MappingFrontier(circ, maps), MappingFrontierError);
+  }
+  GIVEN("Uids not found in map") {
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    maps->initial.insert({Qubit(0), Node(0)});
+    maps->final.insert({Qubit(0), Qubit(0)});
+    maps->initial.insert({Qubit(1), Qubit(1)});
+    maps->final.insert({Qubit(1), Qubit(1)});
+    maps->initial.insert({Qubit(2), Qubit(2)});
+    maps->final.insert({Qubit(2), Qubit(2)});
+
+    REQUIRE_THROWS_AS(MappingFrontier(circ, maps), MappingFrontierError);
+  }
+}
+
 }  // namespace tket

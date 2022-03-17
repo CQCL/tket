@@ -90,6 +90,9 @@ std::pair<bool, unit_map_t> AASLabellingMethod::routing_method(
         }
         qubit_to_nodes_place.insert({q, nodes_vec[index_to_use]});
         node_set_placed.insert(nodes_vec[index_to_use]);
+        mapping_frontier->update_bimaps(
+            mapping_frontier->get_qubit_from_circuit_uid(q),
+            nodes_vec[index_to_use]);
       }
     }
 
