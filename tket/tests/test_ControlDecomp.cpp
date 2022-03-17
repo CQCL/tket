@@ -178,6 +178,16 @@ SCENARIO("Test switch statement") {
       REQUIRE(circ.count_gates(OpType::Ry) == 6);
       REQUIRE(verify_n_qubits_for_ops(circ));
     }
+  }
+}
+
+SCENARIO("Test switch statement long", "[.long]") {
+  Circuit test(1);
+  test.add_op<unsigned>(OpType::Ry, 1.95, {0});
+  const Eigen::Matrix2cd correct_block = tket_sim::get_unitary(test);
+  GIVEN("A circuit and a CnRy(Pi/2)") {
+    Circuit circ;
+    const double p = 0.5;
     WHEN("N-qubit CnRy gates") {
       THEN("Test with params nonzero") {
         for (unsigned N = 4; N < 10; ++N) {
@@ -216,6 +226,7 @@ SCENARIO("Test switch statement") {
     }
   }
 }
+
 
 SCENARIO("Test incrementer using n borrowed qubits") {
   GIVEN("0 qbs") {
@@ -370,7 +381,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
   }
 }
 
-SCENARIO("Test a CnX is decomposed correctly when bootstrapped") {
+SCENARIO("Test a CnX is decomposed correctly when bootstrapped", "[.long]") {
   GIVEN("Test CnX unitary for 3 to 9 controls") {
     for (unsigned n = 3; n < 10; ++n) {
       Circuit circ = Transforms::cnx_normal_decomp(n);

@@ -408,6 +408,11 @@ SCENARIO(
     REQUIRE(all_coms[1].get_args()[0] == circ.all_bits()[0]);
     REQUIRE(all_coms[1].get_args()[1] == circ.all_bits()[1]);
   }
+}
+
+SCENARIO(
+    "Methods related to correct routing and decomposition of circuits with "
+    "classical wires - long test.", "[.long]") {
   GIVEN(
       "A large circuit, with a mixture of conditional CX and CZ with "
       "multiple classical wires, non conditional CX and CZ, and single "

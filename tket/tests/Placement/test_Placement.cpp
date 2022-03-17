@@ -663,7 +663,7 @@ SCENARIO(
 
 SCENARIO(
     "Does the timeout config option work as expected with monomorpher "
-    "place?") {
+    "place?", "[.long]") {
   GIVEN("A large architecture, qubit graph and small timeout") {
     const SquareGrid arc(10, 10, 5);
     Circuit circ(40);
@@ -686,6 +686,7 @@ SCENARIO(
     REQUIRE(all_maps.size() < pc.vf2_max_matches);
   }
 }
+
 SCENARIO(
     "Does the NoiseAwarePlacement class correctly modify Circuits and "
     "return "

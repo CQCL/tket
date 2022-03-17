@@ -2421,7 +2421,7 @@ SCENARIO("Represent symbolic operations correctly") {
   REQUIRE(cmd_1.str() == expected_1);
 }
 
-SCENARIO("Confirm that LaTeX output compiles", "[latex]") {
+SCENARIO("Confirm that LaTeX output compiles", "[latex][.long]") {
   Circuit c(5, 2);
   c.add_conditional_gate<unsigned>(OpType::Z, {}, uvec{0}, {}, 0);
   c.add_conditional_gate<unsigned>(OpType::U1, {0.3}, uvec{1}, {}, 0);
