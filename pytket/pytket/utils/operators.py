@@ -268,7 +268,7 @@ class QubitPauliOperator:
         """
         qubits_ = qubits
         if qubits is None:
-            qubits_ = list(self._all_qubits)
+            qubits_ = sorted(list(self._all_qubits))
         return sum(
             complex(coeff) * pauli.to_sparse_matrix(qubits_)
             for pauli, coeff in self._dict.items()
