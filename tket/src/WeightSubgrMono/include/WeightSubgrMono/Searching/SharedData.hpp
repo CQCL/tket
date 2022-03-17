@@ -26,6 +26,7 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+class CompleteTargetManager;
 struct FixedData;
 class SearchBranch;
 class VariableOrdering;
@@ -45,7 +46,12 @@ struct SharedData {
   DerivedGraphsReducer derived_graphs_reducer;
   RNG rng;
 
+  // Set to non-null if the target graph is complete.
+  std::unique_ptr<const CompleteTargetManager> complete_target_manager_ptr;
+
   explicit SharedData(const FixedData& fixed_data);
+
+  ~SharedData();
 
   /** Initialise a new searcher. The CALLER can create multiple
    * SearchBranch objects, stored elsewhere, and interleave searching
@@ -74,6 +80,11 @@ struct SharedData {
   ReductionResult search(
       SearchBranch& branch, VariableOrdering& var_ordering,
       ValueOrdering& val_ordering);
+
+  ReductionResult search_with_suggestion(
+        SearchBranch& branch, VariableOrdering& var_ordering,
+        ValueOrdering& val_ordering,
+        const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments);
 };
 
 }  // namespace WeightedSubgraphMonomorphism
