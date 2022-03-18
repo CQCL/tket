@@ -23,6 +23,22 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+static bool weights_are_equal(const GraphEdgeWeights& data) {
+  if(data.size() < 2) {
+    return true;
+  }
+  auto citer = data.cbegin();
+  const auto weight = citer->second;
+  for(++citer; citer != data.cend(); ++citer) {
+    if(citer->second != weight) {
+      return false;
+    }
+  }
+  return true;
+}
+
+
+
 bool FixedData::initialise(
     const GraphEdgeWeights& p_data, const GraphEdgeWeights& t_data,
     DomainInitialiser::Parameters parameters) {
@@ -30,12 +46,16 @@ bool FixedData::initialise(
   initial_node.chosen_assignments.clear();
   initial_node.total_p_edge_weights = 0;
   total_p_edge_weights = 0;
-
   if (p_data.size() > t_data.size()) {
     // Who knows? Who cares? Doesn't actually matter!
+    // It's a trivially impossible problem.
     target_is_complete = false;
+    problem_is_unweighted = false;
     return false;
   }
+
+  problem_is_unweighted = weights_are_equal(p_data) && weights_are_equal(t_data);
+
   pattern_neighbours_data.initialise(p_data);
   target_neighbours_data.initialise(t_data);
 

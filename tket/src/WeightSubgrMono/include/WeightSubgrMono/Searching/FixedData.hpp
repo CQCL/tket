@@ -28,6 +28,7 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+
 /** Store all data which is unchanged throughout the backtracking
  * conveniently in one place.
  * TODO: however, we may introduce some lazy initialisation; i.e.,
@@ -62,6 +63,11 @@ struct FixedData {
    * EVERY tv lies in every PV domain.
    */
   bool target_is_complete;
+
+  /** If all pattern weights are equal, AND all target weights are equal,
+   * it's effectively unweighted (a pure subgraph isomorphism problem).
+   */
+  bool problem_is_unweighted;
 
   /** Contains the initial lists of possible pv->tv mappings, etc.
    * As each new search starts - if we are interleaving searches -

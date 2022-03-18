@@ -206,16 +206,27 @@ ReductionResult SearchBranch::reduce_current_node(
     // if we're already at a dead end (we just don't know it yet...)
 
     const auto& node = enriched_node.node_wrapper.get();
-    if (m_weight_nogood_detector_manager.should_activate_detector(
-            node.current_scalar_product, max_weight, node.total_p_edge_weights,
-            shared_data.fixed_data.total_p_edge_weights, m_assignments.size(),
-            node.pattern_v_to_possible_target_v.size())) {
+    if (!shared_data.fixed_data.problem_is_unweighted &&
+        m_weight_nogood_detector_manager.should_activate_detector(
+              node.current_scalar_product, max_weight, node.total_p_edge_weights,
+              shared_data.fixed_data.total_p_edge_weights, m_assignments.size(),
+              node.pattern_v_to_possible_target_v.size())) {
       const WeightWSM max_extra_weight =
           max_weight - node.current_scalar_product;
       const auto weight_nogood_result =
           shared_data.fixed_data.weight_nogood_detector(
               shared_data.fixed_data, node.pattern_v_to_possible_target_v,
               m_assignments, max_extra_weight);
+
+      if(weight_nogood_result.assignment_with_invalid_t_vertex) {
+        const auto& p_vertices_map = shared_data.fixed_data.pattern_neighbours_data.get_map();
+        const auto& t_vertex = weight_nogood_result.assignment_with_invalid_t_vertex->second;
+        for(const auto& entry : p_vertices_map) {
+          const auto& p_vertex = entry.first;
+          erase_assignment(p_vertex, t_vertex);
+        }
+        return ReductionResult::FAILURE;
+      }
 
       if (!weight_nogood_result.extra_weight_lower_bound) {
         m_weight_nogood_detector_manager.register_success();
