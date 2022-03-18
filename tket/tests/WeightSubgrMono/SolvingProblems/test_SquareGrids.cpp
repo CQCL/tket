@@ -28,8 +28,6 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-using tket::graphs::tests::RNG;
-
 static std::vector<SquareGrid> get_test_grids() {
   std::vector<SquareGrid> grids;
   size_t total_edges = 0;

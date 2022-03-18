@@ -30,7 +30,7 @@ void SquareGrid::resize_weight_vectors() {
   vert_weights.resize((width + 1) * height);
 }
 
-void SquareGrid::fill_weights(tket::graphs::tests::RNG& rng) {
+void SquareGrid::fill_weights(RNG& rng) {
   resize_weight_vectors();
   for (auto& ww : horiz_weights) {
     ww = rng.get_size_t(1, 9);

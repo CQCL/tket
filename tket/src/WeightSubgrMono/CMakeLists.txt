@@ -21,7 +21,6 @@ endif()
 add_library(tket-${COMP}
   Common/BitFunctions.cpp
   Common/DyadicFraction.cpp
-  Common/RNG.cpp
   DomainInitialising/DistanceCounts.cpp
   DomainInitialising/DomainInitialiser.cpp
   EndToEndWrappers/CheckedWeightBounds.cpp

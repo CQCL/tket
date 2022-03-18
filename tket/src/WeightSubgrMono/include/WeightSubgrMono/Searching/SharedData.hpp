@@ -17,7 +17,7 @@
 #include <optional>
 #include <set>
 
-#include "../Common/RNG.hpp"
+#include "Utils/RNG.hpp"
 #include "../Reducing/CloseVerticesFilter.hpp"
 #include "../GraphTheoretic/DerivedGraphsFilter.hpp"
 #include "SolutionStorage.hpp"

@@ -21,8 +21,6 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-using tket::graphs::tests::RNG;
-
 // Also test get_graph_edge_weights
 static WeightWSM get_total_weights(const SquareGrid& grid) {
   WeightWSM total = 0;
