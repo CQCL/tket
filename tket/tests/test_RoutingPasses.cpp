@@ -412,7 +412,8 @@ SCENARIO(
 
 SCENARIO(
     "Methods related to correct routing and decomposition of circuits with "
-    "classical wires - long test.", "[.long]") {
+    "classical wires - long test.",
+    "[.long]") {
   GIVEN(
       "A large circuit, with a mixture of conditional CX and CZ with "
       "multiple classical wires, non conditional CX and CZ, and single "

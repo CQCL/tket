@@ -663,7 +663,8 @@ SCENARIO(
 
 SCENARIO(
     "Does the timeout config option work as expected with monomorpher "
-    "place?", "[.long]") {
+    "place?",
+    "[.long]") {
   GIVEN("A large architecture, qubit graph and small timeout") {
     const SquareGrid arc(10, 10, 5);
     Circuit circ(40);

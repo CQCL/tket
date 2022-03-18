@@ -149,12 +149,9 @@ struct Summary {
 };
 }  // namespace
 
-
 static void run_solve_problems_fixed_swap_seqs(
-    FixedSwapSequences& sequences,
-    const std::string full_seq_str,
-    const double full_seq_improvement,
-    const std::string partial_seq_str,
+    FixedSwapSequences& sequences, const std::string full_seq_str,
+    const double full_seq_improvement, const std::string partial_seq_str,
     const double partial_seq_improvement) {
   BestTsaTester tester;
   const Summary full_seqs_summary(sequences.full, tester);
@@ -170,7 +167,9 @@ static void run_solve_problems_fixed_swap_seqs(
   partial_seqs_summary.check_overall_improvement(partial_seq_improvement);
 }
 
-SCENARIO("Best TSA : solve problems from fixed swap sequences - long test", "[.long]") {
+SCENARIO(
+    "Best TSA : solve problems from fixed swap sequences - long test",
+    "[.long]") {
   FixedSwapSequences sequences;
   CHECK(sequences.full.size() == 453);
   CHECK(sequences.partial.size() == 755);
@@ -193,9 +192,8 @@ SCENARIO("Best TSA : solve problems from fixed swap sequences - long test", "[.l
   const double partial_seq_improvement = -0.474543;
 
   run_solve_problems_fixed_swap_seqs(
-      sequences,
-      full_seq_str, full_seq_improvement,
-      partial_seq_str, partial_seq_improvement);
+      sequences, full_seq_str, full_seq_improvement, partial_seq_str,
+      partial_seq_improvement);
 }
 
 SCENARIO("Best TSA : solve problems from fixed swap sequences") {
@@ -219,11 +217,9 @@ SCENARIO("Best TSA : solve problems from fixed swap sequences") {
   const double partial_seq_improvement = 0.0;
 
   run_solve_problems_fixed_swap_seqs(
-      sequences,
-      full_seq_str, full_seq_improvement,
-      partial_seq_str, partial_seq_improvement);
+      sequences, full_seq_str, full_seq_improvement, partial_seq_str,
+      partial_seq_improvement);
 }
-
 
 // Now we want to solve complete problems; this is one of
 // our most important tests. It is a bit silly
@@ -307,7 +303,6 @@ class StatisticsGrouper {
 };
 }  // namespace
 
-
 static void run_solve_complete_problems(
     FixedCompleteSolutions& complete_solutions,
     const vector<std::string> expected_messages,
@@ -342,7 +337,6 @@ static void run_solve_complete_problems(
   // comparing our TSA with the solver used to generate them.
   grouper.check_overall_improvement(expected_improvement);
 }
-
 
 SCENARIO("Best TSA : solve complete problems - long test", "[.long]") {
   FixedCompleteSolutions complete_solutions;
@@ -381,7 +375,8 @@ SCENARIO("Best TSA : solve complete problems - long test", "[.long]") {
 
   const double expected_improvement = 3.25087;
 
-  run_solve_complete_problems(complete_solutions, expected_messages, expected_improvement);
+  run_solve_complete_problems(
+      complete_solutions, expected_messages, expected_improvement);
 }
 
 SCENARIO("Best TSA : solve complete problems") {
@@ -429,7 +424,8 @@ SCENARIO("Best TSA : solve complete problems") {
       "5 WORSE (288 vs 273): av 5% incr]"};
   const double expected_improvement = 1.62791;
 
-  run_solve_complete_problems(complete_solutions, expected_messages, expected_improvement);
+  run_solve_complete_problems(
+      complete_solutions, expected_messages, expected_improvement);
 }
 
 }  // namespace tests

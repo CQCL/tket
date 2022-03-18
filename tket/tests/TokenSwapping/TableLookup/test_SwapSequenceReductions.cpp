@@ -49,10 +49,8 @@ static void check_final_messages(
 
 static void add_solutions(
     SwapSequenceReductionTester& tester,
-    SwapSequenceReductionTester::Options& options,
-    const unsigned skip_number,
-    const vector<std::string>& seq_codes,
-    SequenceReductionStats& stats) {
+    SwapSequenceReductionTester::Options& options, const unsigned skip_number,
+    const vector<std::string>& seq_codes, SequenceReductionStats& stats) {
   for (unsigned ii = 0; ii < seq_codes.size(); ++ii) {
     if (ii % skip_number != 0) {
       continue;
@@ -67,26 +65,27 @@ static void add_solutions(
 
 static void run_reduction(
     SwapSequenceReductionTester& tester,
-    SwapSequenceReductionTester::Options& options,
-    const unsigned skip_number,
-    const FixedSwapSequences& sequences,
-    vector<std::string>& calc_messages) {
+    SwapSequenceReductionTester::Options& options, const unsigned skip_number,
+    const FixedSwapSequences& sequences, vector<std::string>& calc_messages) {
   for (int ii = 0; ii < 2; ++ii) {
     options.optimise_initial_segment_only = (ii % 2 == 0);
     {
       SequenceReductionStats full_tokens_stats;
-      add_solutions(tester, options, skip_number,
-                    sequences.full, full_tokens_stats);
-      add_solutions(tester, options, skip_number,
-                    sequences.full_with_errors, full_tokens_stats);
+      add_solutions(
+          tester, options, skip_number, sequences.full, full_tokens_stats);
+      add_solutions(
+          tester, options, skip_number, sequences.full_with_errors,
+          full_tokens_stats);
       add_message(full_tokens_stats, "Full tokens", options, calc_messages);
     }
     {
       SequenceReductionStats partial_tokens_stats;
-      add_solutions(tester, options, skip_number,
-                    sequences.partial, partial_tokens_stats);
-      add_solutions(tester, options, skip_number,
-                    sequences.partial_with_errors, partial_tokens_stats);
+      add_solutions(
+          tester, options, skip_number, sequences.partial,
+          partial_tokens_stats);
+      add_solutions(
+          tester, options, skip_number, sequences.partial_with_errors,
+          partial_tokens_stats);
       add_message(
           partial_tokens_stats, "Partial tokens", options, calc_messages);
     }
@@ -153,11 +152,8 @@ SCENARIO("Fixed swap sequences reduction") {
   check_final_messages(expected_messages, calc_messages);
 }
 
-
 static void run_complete_problems(
-    const unsigned skip_number,
-    vector<std::string>& calc_messages
-    ) {
+    const unsigned skip_number, vector<std::string>& calc_messages) {
   SwapSequenceReductionTester::Options options;
   options.optimise_initial_segment_only = false;
 

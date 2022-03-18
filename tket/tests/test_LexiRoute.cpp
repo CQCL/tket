@@ -1131,7 +1131,8 @@ SCENARIO("Dense CX circuits route succesfully") {
 
 SCENARIO(
     "Dense CX circuits route succesfully on undirected Ring with "
-    "placement.", "[.long]") {
+    "placement.",
+    "[.long]") {
   GIVEN("Complex CX circuits, big ring") {
     Circuit circ(29);
     for (unsigned x = 0; x < 29; ++x) {

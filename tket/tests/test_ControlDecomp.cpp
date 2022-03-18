@@ -227,7 +227,6 @@ SCENARIO("Test switch statement long", "[.long]") {
   }
 }
 
-
 SCENARIO("Test incrementer using n borrowed qubits") {
   GIVEN("0 qbs") {
     Circuit inc = Transforms::incrementer_borrow_n_qubits(0);
