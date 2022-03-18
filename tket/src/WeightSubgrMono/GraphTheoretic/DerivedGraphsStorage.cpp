@@ -17,7 +17,8 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-DerivedGraphStructs::Iter DerivedGraphsStorage::get_new_neighbours_and_counts_iter() {
+DerivedGraphStructs::Iter
+DerivedGraphsStorage::get_new_neighbours_and_counts_iter() {
   m_stored_neighbours_and_counts.emplace_front();
   return m_stored_neighbours_and_counts.begin();
 }

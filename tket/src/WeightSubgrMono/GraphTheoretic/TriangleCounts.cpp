@@ -13,20 +13,20 @@
 // limitations under the License.
 
 #include "WeightSubgrMono/GraphTheoretic/TriangleCounts.hpp"
-#include "WeightSubgrMono/GraphTheoretic/DerivedGraphsUpdater.hpp"
 
 #include "Utils/Assert.hpp"
+#include "WeightSubgrMono/GraphTheoretic/DerivedGraphsUpdater.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-
-TriangleCounts::TriangleCounts(DerivedGraphsUpdater& updater) : m_updater(updater) {}
+TriangleCounts::TriangleCounts(DerivedGraphsUpdater& updater)
+    : m_updater(updater) {}
 
 DerivedGraphStructs::Count TriangleCounts::get_count(VertexWSM v) {
   {
     const auto iter = m_data.find(v);
-    if(iter != m_data.end()) {
+    if (iter != m_data.end()) {
       return iter->second;
     }
   }

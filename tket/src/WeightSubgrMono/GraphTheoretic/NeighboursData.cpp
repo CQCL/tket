@@ -133,8 +133,8 @@ const NeighboursData::NeighboursMap& NeighboursData::get_map() const {
   return m_neighbours_and_weights_map;
 }
 
-
-bool NeighboursData::is_adjacent_to_assigned_pv(VertexWSM pv, const Assignments& assignments) const {
+bool NeighboursData::is_adjacent_to_assigned_pv(
+    VertexWSM pv, const Assignments& assignments) const {
   // Crude: could do fancy back-and-forth iterator trick.
   if (assignments.empty()) {
     return false;
@@ -147,7 +147,6 @@ bool NeighboursData::is_adjacent_to_assigned_pv(VertexWSM pv, const Assignments&
   }
   return false;
 }
-
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

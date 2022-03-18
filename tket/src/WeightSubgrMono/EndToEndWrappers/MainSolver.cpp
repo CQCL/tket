@@ -54,16 +54,13 @@ const SolutionStatistics& MainSolver::solve(
   return solve(parameters);
 }
 
-
 const SolutionStatistics& MainSolver::get_solution_statistics() const {
   return m_data.statistics;
 }
 
-
 const SolutionStatistics& MainSolver::initialise(
     const GraphEdgeWeights& pattern_edges,
     const GraphEdgeWeights& target_edges) {
-
   const auto init_start = Clock::now();
   const auto init_result = m_data.initialise(pattern_edges, target_edges);
 
@@ -125,7 +122,7 @@ const SolutionStatistics& MainSolver::initialise(
 }
 
 void MainSolver::do_one_solve_iteration_with_suggestion(
-      const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments) {
+    const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments) {
   if (m_data.statistics.finished) {
     return;
   }
@@ -145,8 +142,7 @@ const SolutionStatistics& MainSolver::solve(
         parameters.weight_upper_bound_constraint.value();
     if (m_data.previous_upper_bound_constraint) {
       TKET_ASSERT(
-          m_data.previous_upper_bound_constraint.value() >=
-          weight_constraint);
+          m_data.previous_upper_bound_constraint.value() >= weight_constraint);
       m_data.previous_upper_bound_constraint = weight_constraint;
     }
     m_data.shared_data_ptr->solution_storage.set_pruning_weight(

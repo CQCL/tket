@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "WeightSubgrMono/EndToEndWrappers/MainSolverParameters.hpp"
+
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 
 namespace tket {
@@ -23,7 +24,8 @@ MainSolverParameters::MainSolverParameters()
   set_maximum(max_iterations);
 }
 
-MainSolverParameters::MainSolverParameters(long long t_out_ms) : MainSolverParameters() {
+MainSolverParameters::MainSolverParameters(long long t_out_ms)
+    : MainSolverParameters() {
   timeout_ms = t_out_ms;
 }
 

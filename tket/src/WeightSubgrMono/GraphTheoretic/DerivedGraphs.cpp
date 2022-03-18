@@ -13,12 +13,13 @@
 // limitations under the License.
 
 #include "WeightSubgrMono/GraphTheoretic/DerivedGraphs.hpp"
+
 #include "Utils/Assert.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-DerivedGraphs::DerivedGraphs(DerivedGraphsUpdater& updater) 
+DerivedGraphs::DerivedGraphs(DerivedGraphsUpdater& updater)
     : d2_graph(updater), d3_graph(updater), triangle_counts(updater) {}
 
 }  // namespace WeightedSubgraphMonomorphism

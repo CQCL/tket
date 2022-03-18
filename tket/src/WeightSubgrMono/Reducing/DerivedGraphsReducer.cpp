@@ -13,11 +13,12 @@
 // limitations under the License.
 
 #include "WeightSubgrMono/Reducing/DerivedGraphsReducer.hpp"
+
+#include <algorithm>
+
 #include "WeightSubgrMono/GraphTheoretic/DerivedGraphs.hpp"
 #include "WeightSubgrMono/Searching/FixedData.hpp"
 #include "WeightSubgrMono/Searching/SearchNodeWrapper.hpp"
-
-#include <algorithm>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
@@ -27,13 +28,13 @@ namespace WeightedSubgraphMonomorphism {
 // unassigned, or assigned to neighbours of TV.
 // This merely checks, though, it does not reduce anything.
 static bool check_assigned_edges_filter(
-      const DerivedGraphStructs::NeighboursAndCounts& pattern_neighbours,
-      const DerivedGraphStructs::NeighboursAndCounts& target_neighbours,
-      const Assignments& assignments) {
+    const DerivedGraphStructs::NeighboursAndCounts& pattern_neighbours,
+    const DerivedGraphStructs::NeighboursAndCounts& target_neighbours,
+    const Assignments& assignments) {
   // Could do fancy back-and-forth iterators
-  for(const auto& p_entry : pattern_neighbours) {
+  for (const auto& p_entry : pattern_neighbours) {
     const auto assigned_tv_opt = get_optional_value(assignments, p_entry.first);
-    if(!assigned_tv_opt) {
+    if (!assigned_tv_opt) {
       continue;
     }
     const auto assigned_tv = assigned_tv_opt.value();
@@ -41,33 +42,30 @@ static bool check_assigned_edges_filter(
     // so (tv origin)--tv MUST be an edge in the target graph.
 
     const auto target_citer = std::lower_bound(
-        target_neighbours.cbegin(),
-        target_neighbours.cend(),
+        target_neighbours.cbegin(), target_neighbours.cend(),
         // Also, the edge weight must be at least as great.
         // It's lexicographic ordering, so want (x,y) >= (TV, p-weight).
         // Either x=TV [so that y >= p-weight automatically],
         // or x>TV. (Or "x" doesn't exist).
         std::make_pair(assigned_tv, p_entry.second));
-    if(target_citer == target_neighbours.cend() ||
-          target_citer->first != assigned_tv) {
+    if (target_citer == target_neighbours.cend() ||
+        target_citer->first != assigned_tv) {
       return false;
     }
   }
   return true;
 }
 
-
 static bool reduce_domains_of_neighbours(
-      const DerivedGraphStructs::NeighboursAndCounts& pattern_neighbours,
-      const DerivedGraphStructs::NeighboursAndCounts& target_neighbours,
-      SearchNodeWrapper& node_wrapper,
-      Assignments& assignments,
-      std::vector<VertexWSM>& reduced_domain) {
+    const DerivedGraphStructs::NeighboursAndCounts& pattern_neighbours,
+    const DerivedGraphStructs::NeighboursAndCounts& target_neighbours,
+    SearchNodeWrapper& node_wrapper, Assignments& assignments,
+    std::vector<VertexWSM>& reduced_domain) {
   const auto& domains_map = node_wrapper.get().pattern_v_to_possible_target_v;
   // Could do fancy back-and-forth iterators
-  for(const auto& p_entry : pattern_neighbours) {
+  for (const auto& p_entry : pattern_neighbours) {
     const auto citer = domains_map.find(p_entry.first);
-    if(citer == domains_map.cend()) {
+    if (citer == domains_map.cend()) {
       continue;
     }
     const auto& domain = citer->second;
@@ -75,44 +73,43 @@ static bool reduce_domains_of_neighbours(
 
     // Every PV neighbour (in the derived graph) must map to a TV neighbour.
     // Hence we must INTERSECT the existing domain with this set.
-    for(const auto& t_entry : target_neighbours) {
-      if(domain.count(t_entry.first) != 0 &&
-            t_entry.second >= p_entry.second) {
+    for (const auto& t_entry : target_neighbours) {
+      if (domain.count(t_entry.first) != 0 &&
+          t_entry.second >= p_entry.second) {
         reduced_domain.push_back(t_entry.first);
       }
     }
-    if(reduced_domain.empty()) {
+    if (reduced_domain.empty()) {
       return false;
     }
-    if(reduced_domain.size() != domain.size()) {
+    if (reduced_domain.size() != domain.size()) {
       node_wrapper.overwrite_domain(reduced_domain, p_entry.first, assignments);
     }
   }
   return true;
 }
 
-
-static bool check_and_reduce(const DerivedGraphStructs::NeighboursAndCounts& pattern_neighbours,
-      const DerivedGraphStructs::NeighboursAndCounts& target_neighbours,
-      SearchNodeWrapper& node_wrapper,
-      Assignments& assignments,
-      std::vector<VertexWSM>& reduced_domain) {
-  return check_assigned_edges_filter(pattern_neighbours, target_neighbours, assignments) &&
-      reduce_domains_of_neighbours(pattern_neighbours, target_neighbours,
-        node_wrapper, assignments, reduced_domain);
+static bool check_and_reduce(
+    const DerivedGraphStructs::NeighboursAndCounts& pattern_neighbours,
+    const DerivedGraphStructs::NeighboursAndCounts& target_neighbours,
+    SearchNodeWrapper& node_wrapper, Assignments& assignments,
+    std::vector<VertexWSM>& reduced_domain) {
+  return check_assigned_edges_filter(
+             pattern_neighbours, target_neighbours, assignments) &&
+         reduce_domains_of_neighbours(
+             pattern_neighbours, target_neighbours, node_wrapper, assignments,
+             reduced_domain);
 }
 
-
 bool DerivedGraphsReducer::reduce_domains(
-      const FixedData& fixed_data, Assignments& assignments,
-      std::size_t number_of_assignments_previously_processed_in_this_node,
-      SearchNodeWrapper& node_wrapper,
-      DerivedGraphs& derived_pattern_graphs,
-      DerivedGraphs& derived_target_graphs) {
+    const FixedData& fixed_data, Assignments& assignments,
+    std::size_t number_of_assignments_previously_processed_in_this_node,
+    SearchNodeWrapper& node_wrapper, DerivedGraphs& derived_pattern_graphs,
+    DerivedGraphs& derived_target_graphs) {
   if (fixed_data.target_is_complete) {
     return true;
   }
-  
+
   const auto& chosen_assignments = node_wrapper.get().chosen_assignments;
   const auto& domains_map = node_wrapper.get().pattern_v_to_possible_target_v;
 
@@ -125,24 +122,30 @@ bool DerivedGraphsReducer::reduce_domains(
     const auto& new_pv = new_assignment.first;
     const auto& new_tv = new_assignment.second;
 
-    if(!check_and_reduce(
+    if (!check_and_reduce(
             derived_pattern_graphs.d2_graph.get_neighbours(new_pv),
-            derived_target_graphs.d2_graph.get_neighbours(new_tv),
-            node_wrapper, assignments, m_reduced_domain) 
-            
+            derived_target_graphs.d2_graph.get_neighbours(new_tv), node_wrapper,
+            assignments, m_reduced_domain)
+
+        /*
+          // TODO: there is a strange intermittent bug
+          // (seems like a Heisenbug?) in
+          // tests\WeightSubgrMono\SolvingProblems\test_UnweightedProblems.cpp,
+          // when this is uncommented.
+          // No time to fix it now! come back later...
             ||
-            
+
           !check_and_reduce(
             derived_pattern_graphs.d3_graph.get_neighbours(new_pv),
             derived_target_graphs.d3_graph.get_neighbours(new_tv),
             node_wrapper, assignments, m_reduced_domain)
-            ) {
+            //*/
+    ) {
       return false;
     }
   }
   return true;
 }
-
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

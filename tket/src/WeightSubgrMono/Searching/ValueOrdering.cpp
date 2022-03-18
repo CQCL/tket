@@ -36,28 +36,29 @@ so that lower degrees are less likely.
 ValueOrdering::ValueOrdering() {
   m_data.resize(5);
   m_data.back().mass = 1;
-  for(unsigned index = m_data.size()-1; index > 0; --index) {
-    m_data[index-1].mass = 2*m_data[index].mass;
+  for (unsigned index = m_data.size() - 1; index > 0; --index) {
+    m_data[index - 1].mass = 2 * m_data[index].mass;
   }
 }
 
-
-void ValueOrdering::fill_data(const std::set<VertexWSM>& possible_values, SharedData& shared_data) {
+void ValueOrdering::fill_data(
+    const std::set<VertexWSM>& possible_values, SharedData& shared_data) {
   // Pass one, just to find the max degree.
   size_t max_degree = 0;
   for (auto tv : possible_values) {
-    max_degree = std::max(max_degree, 
+    max_degree = std::max(
+        max_degree,
         shared_data.fixed_data.target_neighbours_data.get_degree(tv));
-  }  
+  }
   // Pass two: record all those vertices with large enough degree.
-  for(auto& entry : m_data) {
+  for (auto& entry : m_data) {
     entry.vertices.clear();
   }
 
   for (auto tv : possible_values) {
     const auto degree =
         shared_data.fixed_data.target_neighbours_data.get_degree(tv);
-    if(degree + m_data.size() > max_degree) {
+    if (degree + m_data.size() > max_degree) {
       const auto index = max_degree - degree;
       m_data[index].vertices.push_back(tv);
     }
@@ -65,27 +66,28 @@ void ValueOrdering::fill_data(const std::set<VertexWSM>& possible_values, Shared
   TKET_ASSERT(!m_data[0].vertices.empty());
 }
 
-
-VertexWSM ValueOrdering::get_random_choice_from_data(SharedData& shared_data) const {
+VertexWSM ValueOrdering::get_random_choice_from_data(
+    SharedData& shared_data) const {
   // We need probability proportional to the mass; so get the total mass.
   std::size_t mass_sum = 0;
-  for(const auto& entry : m_data) {
+  for (const auto& entry : m_data) {
     mass_sum += entry.vertices.size() * entry.mass;
   }
   TKET_ASSERT(mass_sum > 0);
-  const auto index = shared_data.rng.get_size_t(mass_sum-1);
+  const auto index = shared_data.rng.get_size_t(mass_sum - 1);
 
   // Now, choose the vertex corresponding to this index.
   std::size_t preceding_mass = 0;
-  for(const auto& entry : m_data) {
-    std::size_t mass_after_these_vertices = preceding_mass + entry.vertices.size() * entry.mass;
-    if(mass_after_these_vertices < index) {
+  for (const auto& entry : m_data) {
+    std::size_t mass_after_these_vertices =
+        preceding_mass + entry.vertices.size() * entry.mass;
+    if (mass_after_these_vertices < index) {
       preceding_mass = mass_after_these_vertices;
       continue;
     }
-    for(auto vertex : entry.vertices) {
+    for (auto vertex : entry.vertices) {
       size_t mass_after_this_vertex = preceding_mass + entry.mass;
-      if(mass_after_this_vertex >= index) {
+      if (mass_after_this_vertex >= index) {
         return vertex;
       }
       preceding_mass = mass_after_this_vertex;
@@ -105,7 +107,6 @@ VertexWSM ValueOrdering::get_random_choice_from_data(SharedData& shared_data) co
   TKET_ASSERT(false);
   return m_data.at(0).vertices.at(0);
 }
-
 
 VertexWSM ValueOrdering::get_target_value(
     const std::set<VertexWSM>& possible_values, SharedData& shared_data) {

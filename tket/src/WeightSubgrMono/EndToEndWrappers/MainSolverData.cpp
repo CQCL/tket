@@ -42,28 +42,26 @@ ReductionResult MainSolverData::initialise(
   return shared_data_ptr->initialise(branch);
 }
 
-
 void MainSolverData::do_one_solve_iteration_with_suggestion(
-      const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments) {
+    const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments) {
   TKET_ASSERT(initialised);
   TKET_ASSERT(shared_data_ptr);
   const auto reduction_result = shared_data_ptr->search_with_suggestion(
-        branch, var_ordering, val_ordering, suggested_assignments);
+      branch, var_ordering, val_ordering, suggested_assignments);
   if (reduction_result == ReductionResult::FINISHED) {
     statistics.finished = true;
   }
 }
 
-
-void MainSolverData::solve_loop_after_initialisation(const MainSolverParameters& parameters) {
+void MainSolverData::solve_loop_after_initialisation(
+    const MainSolverParameters& parameters) {
   TKET_ASSERT(initialised);
   TKET_ASSERT(shared_data_ptr);
   const auto solve_start_time = Clock::now();
   const auto solve_timeout_time =
       solve_start_time + std::chrono::milliseconds(parameters.timeout_ms);
 
-  const auto& solution =
-      shared_data_ptr->solution_storage.best_solution();
+  const auto& solution = shared_data_ptr->solution_storage.best_solution();
 
   // We don't want to compute time twice
   // (even though it's hopefully cheap; but it's not free!)
@@ -71,9 +69,8 @@ void MainSolverData::solve_loop_after_initialisation(const MainSolverParameters&
 
   for (; statistics.iterations < parameters.max_iterations;
        statistics.iterations += 1) {
-
-    const auto reduction_result = shared_data_ptr->search(
-        branch, var_ordering, val_ordering);
+    const auto reduction_result =
+        shared_data_ptr->search(branch, var_ordering, val_ordering);
 
     if (reduction_result == ReductionResult::FINISHED) {
       statistics.finished = true;
@@ -101,7 +98,6 @@ void MainSolverData::solve_loop_after_initialisation(const MainSolverParameters&
             .count();
   }
 }
-
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

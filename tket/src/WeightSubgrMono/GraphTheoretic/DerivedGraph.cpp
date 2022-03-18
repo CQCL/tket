@@ -13,18 +13,21 @@
 // limitations under the License.
 
 #include "WeightSubgrMono/GraphTheoretic/DerivedGraph.hpp"
-#include "WeightSubgrMono/GraphTheoretic/DerivedGraphsUpdater.hpp"
+
 #include "Utils/Assert.hpp"
+#include "WeightSubgrMono/GraphTheoretic/DerivedGraphsUpdater.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-DerivedGraph::DerivedGraph(DerivedGraphsUpdater& updater) : m_updater(updater) {}
+DerivedGraph::DerivedGraph(DerivedGraphsUpdater& updater)
+    : m_updater(updater) {}
 
-const DerivedGraphStructs::NeighboursAndCounts& DerivedGraph::get_neighbours(VertexWSM v) {
+const DerivedGraphStructs::NeighboursAndCounts& DerivedGraph::get_neighbours(
+    VertexWSM v) {
   {
     const auto iter = m_data.find(v);
-    if(iter != m_data.end()) {
+    if (iter != m_data.end()) {
       // The value is itself an iterator! (To the ACTUAL raw data).
       return *iter->second;
     }
@@ -39,7 +42,6 @@ const DerivedGraphStructs::NeighboursAndCounts& DerivedGraph::get_neighbours(Ver
 void DerivedGraph::add_neighbours(VertexWSM v, DerivedGraphStructs::Iter iter) {
   TKET_ASSERT(m_data.insert(std::make_pair(v, iter)).second);
 }
-
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

@@ -43,7 +43,8 @@ void VariableOrdering::fill_pattern_vertices_with_smallest_domain(
       if (domain_size > min_domain_size) {
         continue;
       }
-      if (!shared_data.fixed_data.pattern_neighbours_data.is_adjacent_to_assigned_pv(p_vertex, assignments)) {
+      if (!shared_data.fixed_data.pattern_neighbours_data
+               .is_adjacent_to_assigned_pv(p_vertex, assignments)) {
         continue;
       }
       if (domain_size < min_domain_size) {
@@ -55,7 +56,8 @@ void VariableOrdering::fill_pattern_vertices_with_smallest_domain(
       continue;
     }
     // We currently have NO vertices adjacent to an assigned one.
-    if (shared_data.fixed_data.pattern_neighbours_data.is_adjacent_to_assigned_pv(p_vertex, assignments)) {
+    if (shared_data.fixed_data.pattern_neighbours_data
+            .is_adjacent_to_assigned_pv(p_vertex, assignments)) {
       // It's strictly better than anything so far.
       m_pattern_vertices_with_smallest_domain.clear();
       min_domain_size = domain_size;
