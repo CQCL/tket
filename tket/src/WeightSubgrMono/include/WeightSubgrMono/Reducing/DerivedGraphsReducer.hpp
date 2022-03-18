@@ -16,15 +16,14 @@
 #include <map>
 #include <set>
 
-#include "../GraphTheoretic/DerivedGraphsCalculator.hpp"
+#include "../GraphTheoretic/DerivedGraphStructs.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 struct FixedData;
 class SearchNodeWrapper;
-
-class DerivedGraphsContainer;
+struct DerivedGraphs;
 
 /** We take a new PV->TV assignment and use derived graphs to reduce the
  * domains of other vertices (e.g., neighbours of PV in a derived graph
@@ -46,27 +45,13 @@ class DerivedGraphsReducer {
       const FixedData& fixed_data, Assignments& assignments,
       std::size_t number_of_assignments_previously_processed_in_this_node,
       SearchNodeWrapper& node_wrapper,
-      DerivedGraphsContainer& derived_graphs);
+      DerivedGraphs& derived_pattern_graphs,
+      DerivedGraphs& derived_target_graphs);
 
  private:
 
+  // A work vector.
   std::vector<VertexWSM> m_reduced_domain;
-
-  bool reduce_with_derived_weighted_neighbours(
-          const DerivedGraphsCalculator::NeighboursAndCounts& pattern_neighbours,
-          const DerivedGraphsCalculator::NeighboursAndCounts& target_neighbours,
-          Assignments& assignments,
-          SearchNodeWrapper& node_wrapper);
-
-  // Within the derived graph D3, look at distance-2 vertices,
-  // calculated lazily.
-
-  std::set<VertexWSM> m_work_set;
-
-  std::map<VertexWSM, std::vector<VertexWSM>> m_pattern_neighbours_at_distance_two_in_d2;
-  std::map<VertexWSM, std::vector<VertexWSM>> m_target_neighbours_at_distance_two_in_d2;
-  std::map<VertexWSM, std::vector<VertexWSM>> m_pattern_neighbours_at_distance_two_in_d3;
-  std::map<VertexWSM, std::vector<VertexWSM>> m_target_neighbours_at_distance_two_in_d3;
 };
 
 }  // namespace WeightedSubgraphMonomorphism

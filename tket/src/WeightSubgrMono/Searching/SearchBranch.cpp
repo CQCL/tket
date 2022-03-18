@@ -189,7 +189,8 @@ ReductionResult SearchBranch::reduce_current_node(
       if (!shared_data.derived_graphs_reducer.reduce_domains(
               shared_data.fixed_data, m_assignments,
               assignments_processed_in_this_node, enriched_node.node_wrapper,
-              shared_data.derived_graphs_filter.get_container())) {
+              shared_data.derived_graphs_filter.get_derived_pattern_graphs(),
+              shared_data.derived_graphs_filter.get_derived_target_graphs())) {
         return ReductionResult::FAILURE;
       }
       if (current_number_of_assignments != m_assignments.size()) {

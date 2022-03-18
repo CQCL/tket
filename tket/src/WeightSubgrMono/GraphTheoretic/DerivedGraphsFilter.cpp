@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "WeightSubgrMono/GraphTheoretic/DerivedGraphsFilter.hpp"
+#include "WeightSubgrMono/GraphTheoretic/DerivedGraphs.hpp"
 #include "WeightSubgrMono/Searching/FixedData.hpp"
 
 #include "WeightSubgrMono/GraphTheoretic/FilterUtils.hpp"
@@ -25,41 +26,64 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-DerivedGraphsContainer& DerivedGraphsFilter::get_container() {
-  return m_container;
+DerivedGraphsFilter::DerivedGraphsFilter(const FixedData& fixed_data) {
+  m_updater_pair_ptr = std::make_unique<DerivedGraphsUpdaterPair>(
+      fixed_data.pattern_neighbours_data,
+      fixed_data.target_neighbours_data,
+      m_calculator,
+      m_storage);
+  TKET_ASSERT(m_updater_pair_ptr);
 }
 
+DerivedGraphsFilter::~DerivedGraphsFilter() {}
 
-static void fill_sorted_counts(const DerivedGraphsCalculator::NeighboursAndCounts& neighbours,
-    std::vector<std::size_t>& counts) {
-  if(counts.size() == neighbours.size()) {
+DerivedGraphs& DerivedGraphsFilter::get_derived_pattern_graphs() {
+  return m_updater_pair_ptr->patterns_updater.get_derived_graphs();
+}
+
+DerivedGraphs& DerivedGraphsFilter::get_derived_target_graphs() {
+  return m_updater_pair_ptr->targets_updater.get_derived_graphs();
+}
+
+static void fill_and_sort_weights(
+      const DerivedGraphStructs::NeighboursAndCounts& raw_data,
+      std::vector<DerivedGraphStructs::Count>& weights) {
+  if(!weights.empty()) {
+    TKET_ASSERT(weights.size() == raw_data.size());
     return;
   }
-  counts.resize(neighbours.size());
-  for(unsigned ii=0; ii<neighbours.size(); ++ii) {
-    counts[ii] = neighbours[ii].second;
+  weights.reserve(raw_data.size());
+  for(const auto& entry : raw_data) {
+    weights.push_back(entry.second);
   }
-  std::sort(counts.begin(), counts.end());
+  std::sort(weights.begin(), weights.end());
 }
 
-template<class GetDegreeFunc>
-static void fill_degree_sequence(
-      const DerivedGraphsCalculator::NeighboursAndCounts& neighbours,
-      std::vector<std::size_t>& degree_sequence,
-      const GetDegreeFunc& func) {
-  if(degree_sequence.size() == neighbours.size()) {
-    return;
+
+template<class DGraph>
+static bool compatible_using_weight_maps(VertexWSM pv, VertexWSM tv,
+      DGraph& pattern_graph,
+      std::map<VertexWSM, std::vector<DerivedGraphStructs::Count>>& pattern_weights_map,
+      DGraph& target_graph,
+      std::map<VertexWSM, std::vector<DerivedGraphStructs::Count>>& target_weights_map) {
+  const auto& pattern_neighbours = pattern_graph.get_neighbours(pv);
+  const auto& target_neighbours = target_graph.get_neighbours(tv);
+  if(pattern_neighbours.size() > target_neighbours.size()) {
+    return false;
   }
-  degree_sequence.resize(neighbours.size());
-  for(unsigned ii=0; ii<neighbours.size(); ++ii) {
-    degree_sequence[ii] = func(neighbours[ii].first);
-  }
-  std::sort(degree_sequence.begin(), degree_sequence.end());
+  auto& pattern_weights = pattern_weights_map[pv];
+  fill_and_sort_weights(pattern_neighbours, pattern_weights);
+
+  auto& target_weights = target_weights_map[tv];
+  fill_and_sort_weights(target_neighbours, target_weights);
+  return FilterUtils::compatible_sorted_degree_sequences(pattern_weights, target_weights);
 }
+
 
 
 bool DerivedGraphsFilter::is_compatible(VertexWSM pv, VertexWSM tv, const FixedData& fixed_data) {
   {
+    // Do we already know that it's compatible?
     const auto domain_citer = m_compatible_assignments.find(pv);
     if(domain_citer != m_compatible_assignments.cend() &&
           domain_citer->second.count(tv) != 0) {
@@ -67,75 +91,35 @@ bool DerivedGraphsFilter::is_compatible(VertexWSM pv, VertexWSM tv, const FixedD
     }
   }
   {
+    // Do we already know that it's impossible?
     const auto domain_complement_citer = m_impossible_assignments.find(pv);
     if(domain_complement_citer != m_impossible_assignments.cend() &&
           domain_complement_citer->second.count(tv) != 0) {
       return false;
     }
   }
-  // It must be calculated.
-  auto& pv_data = m_container.get_pattern_v_data_permanent_reference(pv, fixed_data.pattern_neighbours_data);
-  auto& tv_data = m_container.get_target_v_data_permanent_reference(tv, fixed_data.target_neighbours_data);
 
-  // Do increaingly expensive checks.
-  // Break out of the loop if invalid.
+  // We don't know, we must calculate!
+  // Break out of the loop if we detect an impossibility.
   for(;;) {
-    if(pv_data.triangle_count > tv_data.triangle_count ||
-          pv_data.depth_2_neighbours.size() > tv_data.depth_2_neighbours.size() ||
-          pv_data.depth_3_neighbours.size() > tv_data.depth_3_neighbours.size()) {
-            
+    if(get_derived_pattern_graphs().triangle_counts.get_count(pv) >
+          get_derived_target_graphs().triangle_counts.get_count(tv)) {
       break;
     }
-    // Match the counts, i.e. edge weights in the derived graph.
-    
-    fill_sorted_counts(pv_data.depth_2_neighbours, pv_data.depth_2_counts);
-    fill_sorted_counts(tv_data.depth_2_neighbours, tv_data.depth_2_counts);
-    if(!FilterUtils::compatible_sorted_degree_sequences(pv_data.depth_2_counts, tv_data.depth_2_counts)) {
+    if(!compatible_using_weight_maps(pv, tv, 
+            get_derived_pattern_graphs().d2_graph,
+            m_d2_pattern_weights,
+            get_derived_target_graphs().d2_graph,
+            m_d2_target_weights)) {
       break;
     }
-    fill_sorted_counts(pv_data.depth_3_neighbours, pv_data.depth_3_counts);
-    fill_sorted_counts(tv_data.depth_3_neighbours, tv_data.depth_3_counts);
-    if(!FilterUtils::compatible_sorted_degree_sequences(pv_data.depth_3_counts, tv_data.depth_3_counts)) {
+    if(!compatible_using_weight_maps(pv, tv, 
+            get_derived_pattern_graphs().d3_graph,
+            m_d3_pattern_weights,
+            get_derived_target_graphs().d3_graph,
+            m_d3_target_weights)) {
       break;
     }
-    // Now, check the degree sequences in the derived graphs themselves.
-    auto& container = m_container;
-    fill_degree_sequence(pv_data.depth_2_neighbours, pv_data.depth_2_degree_sequence,
-        [pv, &container, &fixed_data](VertexWSM other_v) {
-          return container.get_pattern_v_data_permanent_reference(
-              other_v, fixed_data.pattern_neighbours_data).depth_2_neighbours.size();
-        });
-
-    fill_degree_sequence(tv_data.depth_2_neighbours, tv_data.depth_2_degree_sequence,
-        [tv, &container, &fixed_data](VertexWSM other_v) {
-          return container.get_target_v_data_permanent_reference(
-              other_v, fixed_data.target_neighbours_data).depth_2_neighbours.size();
-        });
-    
-    if(!FilterUtils::compatible_sorted_degree_sequences(pv_data.depth_2_degree_sequence, tv_data.depth_2_degree_sequence)) {
-      break;
-    }
-
-    // Finally, depth 3. A bit ugly to repeat similar code,
-    // but not worth fancy stuff to deduplicate (we are NOT doing
-    // deeper levels of iterated derived graphs; experiments showed that
-    // it took longer to compute than the time saved).
-    fill_degree_sequence(pv_data.depth_3_neighbours, pv_data.depth_3_degree_sequence,
-        [pv, &container, &fixed_data](VertexWSM other_v) {
-          return container.get_pattern_v_data_permanent_reference(
-              other_v, fixed_data.pattern_neighbours_data).depth_3_neighbours.size();
-        });
-
-    fill_degree_sequence(tv_data.depth_3_neighbours, tv_data.depth_3_degree_sequence,
-        [tv, &container, &fixed_data](VertexWSM other_v) {
-          return container.get_target_v_data_permanent_reference(
-              other_v, fixed_data.target_neighbours_data).depth_3_neighbours.size();
-        });
-    
-    if(!FilterUtils::compatible_sorted_degree_sequences(pv_data.depth_3_degree_sequence, tv_data.depth_3_degree_sequence)) {
-      break;
-    }
-
     m_compatible_assignments[pv].insert(tv);
     return true;
   }

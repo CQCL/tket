@@ -21,19 +21,29 @@ endif()
 add_library(tket-${COMP}
   Common/BitFunctions.cpp
   Common/DyadicFraction.cpp
+  Common/RNG.cpp
   DomainInitialising/DistanceCounts.cpp
   DomainInitialising/DomainInitialiser.cpp
-  DomainInitialising/SquareCountsReduction.cpp
-  DomainInitialising/TriangleCountsReduction.cpp
   EndToEndWrappers/CheckedWeightBounds.cpp
   EndToEndWrappers/MainSolver.cpp
+  EndToEndWrappers/MainSolverData.cpp
+  EndToEndWrappers/MainSolverParameters.cpp
   GraphTheoretic/CloseNeighboursCalculator.cpp
+  GraphTheoretic/DerivedGraph.cpp
+  GraphTheoretic/DerivedGraphs.cpp
+  GraphTheoretic/DerivedGraphsCalculator.cpp
+  GraphTheoretic/DerivedGraphsFilter.cpp
+  GraphTheoretic/DerivedGraphsStorage.cpp
+  GraphTheoretic/DerivedGraphsUpdater.cpp
   GraphTheoretic/FilterUtils.cpp
-  GraphTheoretic/NeighboursData.cpp
   GraphTheoretic/GeneralStructs.cpp
+  GraphTheoretic/NeighboursData.cpp
+  GraphTheoretic/TriangleCounts.cpp
   Reducing/AllDiffPropagator.cpp
   Reducing/CloseVerticesFilter.cpp
+  Reducing/DerivedGraphsReducer.cpp
   Reducing/HallSetReducer.cpp
+  Searching/CompleteTargetManager.cpp
   Searching/EnrichedNode.cpp
   Searching/FixedData.cpp
   Searching/SearchBranch.cpp

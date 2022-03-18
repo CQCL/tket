@@ -13,12 +13,14 @@
 // limitations under the License.
 
 #pragma once
-#include "DerivedGraphsContainer.hpp"
-#include <forward_list>
+#include "DerivedGraphsCalculator.hpp"
+#include "DerivedGraphsUpdater.hpp"
+#include <memory>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+struct DerivedGraphs;
 struct FixedData;
 
 /** A vertex filter, i.e. uses properties of derived graphs to check
@@ -26,6 +28,10 @@ struct FixedData;
  */
 class DerivedGraphsFilter {
 public:
+
+  explicit DerivedGraphsFilter(const FixedData& fixed_data);
+
+  ~DerivedGraphsFilter();
 
   /** Does the individual PV->TV mapping appear to be compatible?
    * @param pv A pattern vertex
@@ -35,22 +41,38 @@ public:
    */
   bool is_compatible(VertexWSM pv, VertexWSM tv, const FixedData& fixed_data);
 
-  /** For convenience, return the internal container, to be shared by other objects.
-   * @return The internal container with derived graphs data.
+  /** For convenience, return the internal derived graphs, to be shared by other objects.
+   * @return The derived graphs.
   */
-  DerivedGraphsContainer& get_container();
+  DerivedGraphs& get_derived_pattern_graphs();
+  DerivedGraphs& get_derived_target_graphs();
 
 private:
 
-  DerivedGraphsContainer m_container;
+  DerivedGraphsCalculator m_calculator;
+  DerivedGraphsStorage m_storage;
+  
+  std::unique_ptr<DerivedGraphsUpdaterPair> m_updater_pair_ptr;
 
   // All PV->TV mappings previously calculated to be compatible.
   PossibleAssignments m_compatible_assignments;
 
   // All PV->TV mappings previously calculated to be impossible.
   PossibleAssignments m_impossible_assignments;
-};
 
+  // For fast checking of PV->TV, we need the edge weights
+  // in derived graphs to be sorted (whereas, initially they are stored
+  // ordered by vertex instead, for fast neighbour detection).
+  // We store them here rather than bothering the graphs objects directly.
+  // Note that we only ever need at most 1 object from each map
+  // simultaneously, so they are independent and we don't need to worry
+  // about invalidated references.
+  std::map<VertexWSM, std::vector<DerivedGraphStructs::Count>> m_d2_pattern_weights;
+  std::map<VertexWSM, std::vector<DerivedGraphStructs::Count>> m_d2_target_weights;
+
+  std::map<VertexWSM, std::vector<DerivedGraphStructs::Count>> m_d3_pattern_weights;  
+  std::map<VertexWSM, std::vector<DerivedGraphStructs::Count>> m_d3_target_weights;
+};
 
 
 }  // namespace WeightedSubgraphMonomorphism

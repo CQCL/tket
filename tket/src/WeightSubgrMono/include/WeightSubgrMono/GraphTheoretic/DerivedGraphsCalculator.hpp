@@ -13,8 +13,7 @@
 // limitations under the License.
 
 #pragma once
-#include <map>
-#include "GeneralStructs.hpp"
+#include "DerivedGraphStructs.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
@@ -41,11 +40,6 @@ class NeighboursData;
 class DerivedGraphsCalculator {
 public:
 
-  /** The "count" is an actual count of paths in the original graphs.
-   * It becomes an edge weight in the derived graphs D2,D3.
-   */
-  typedef std::vector<std::pair<VertexWSM, std::size_t>> NeighboursAndCounts;
-
   /** Upon demand, calculates teh neighbours in D2, D3 of the given vertex,
    * and fills the given vectors with thr results.
    * @param ndata The NeighboursData object for the original graph.
@@ -54,9 +48,9 @@ public:
    * @param depth_3_neighbours_and_counts Data for the neighbours of v in the derived graph D3. Sorted by vertex.
    * @return The triangle count of v (number of triangles containing v), another useful vertex property.
    */
-  std::size_t fill_neighbours_and_weights(const NeighboursData& ndata, VertexWSM v,
-          NeighboursAndCounts& depth_2_neighbours_and_counts,
-          NeighboursAndCounts& depth_3_neighbours_and_counts);
+  DerivedGraphStructs::Count fill_neighbours_and_weights(const NeighboursData& ndata, VertexWSM v,
+          DerivedGraphStructs::NeighboursAndCounts& depth_2_neighbours_and_counts,
+          DerivedGraphStructs::NeighboursAndCounts& depth_3_neighbours_and_counts);
 
 private:
 
@@ -66,7 +60,7 @@ private:
   
   // KEY: vertex v3
   // VALUE: the number of distinct paths v--v1--v2--v3.
-  std::map<VertexWSM, std::size_t> m_depth_3_neighbours_and_counts_map;
+  std::map<VertexWSM, DerivedGraphStructs::Count> m_depth_3_neighbours_and_counts_map;
 };
 
 

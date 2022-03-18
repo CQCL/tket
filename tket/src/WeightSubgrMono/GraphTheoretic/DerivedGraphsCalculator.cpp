@@ -24,9 +24,10 @@ namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 
-std::size_t DerivedGraphsCalculator::fill_neighbours_and_weights(const NeighboursData& ndata, VertexWSM v,
-          NeighboursAndCounts& depth_2_neighbours_and_counts,
-          NeighboursAndCounts& depth_3_neighbours_and_counts) {
+DerivedGraphStructs::Count
+  DerivedGraphsCalculator::fill_neighbours_and_weights(const NeighboursData& ndata, VertexWSM v,
+          DerivedGraphStructs::NeighboursAndCounts& depth_2_neighbours_and_counts,
+          DerivedGraphStructs::NeighboursAndCounts& depth_3_neighbours_and_counts) {
 
   m_mid_vertices_for_length_two_paths.clear();
 

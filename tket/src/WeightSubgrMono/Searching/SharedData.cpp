@@ -26,7 +26,7 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-SharedData::SharedData(const FixedData& fd) : fixed_data(fd) {
+SharedData::SharedData(const FixedData& fd) : fixed_data(fd), derived_graphs_filter(fd) {
   if(fixed_data.target_is_complete) {
     complete_target_manager_ptr = std::make_unique<const CompleteTargetManager>(fixed_data);
     TKET_ASSERT(complete_target_manager_ptr);
