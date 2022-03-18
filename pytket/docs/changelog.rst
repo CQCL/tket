@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.x.y (unreleased)
+------------------
+
+Fixes:
+
+* Fix qubit order in ``QubitPauliOperator.to_sparse_matrix()``.
+
 1.0.1 (March 2022)
 ------------------
 
