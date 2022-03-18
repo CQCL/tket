@@ -63,7 +63,6 @@ target_link_libraries(test_tket PRIVATE
     tket-Ops
     tket-OpType
     tket-PauliGraph
-    tket-PlacementWithWSM
     tket-Predicates
     tket-Placement
     tket-TokenSwapping
