@@ -61,7 +61,8 @@ struct CheckedSolution {
       const GraphEdgeWeights& pdata, const GraphEdgeWeights& tdata,
       ProblemInformation info, const MainSolverParameters& solver_params,
       Statistics& stats,
-      const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments = {});
+      const std::vector<std::pair<VertexWSM, VertexWSM>>&
+          suggested_assignments = {});
 };
 
 }  // namespace WeightedSubgraphMonomorphism

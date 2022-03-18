@@ -72,25 +72,27 @@ struct EmbedGraphSequences {
   std::string result;
 
   // Once a problem is solved, run it again with a partial suggestion.
-  void recalculate_with_suggestions(const std::vector<GraphEdgeWeights>& graph_sequence1,
-        const std::vector<GraphEdgeWeights>& graph_sequence2,
-        const std::vector<FullSolutionInformation>& solved_problems_data,
-        CheckedSolution::Statistics& statistics,
-        const MainSolverParameters& solver_params,
-        const CheckedSolution::ProblemInformation& info) {
+  void recalculate_with_suggestions(
+      const std::vector<GraphEdgeWeights>& graph_sequence1,
+      const std::vector<GraphEdgeWeights>& graph_sequence2,
+      const std::vector<FullSolutionInformation>& solved_problems_data,
+      CheckedSolution::Statistics& statistics,
+      const MainSolverParameters& solver_params,
+      const CheckedSolution::ProblemInformation& info) {
     number_of_suggested_problems = solved_problems_data.size();
     total_original_time_for_suggested_problems = 0;
     total_suggestion_time_ms = 0;
 
-    if(number_of_suggested_problems == 0) {
+    if (number_of_suggested_problems == 0) {
       return;
     }
     TestSettings::get().os << "\nNow retrying " << number_of_suggested_problems
-        << " problems with suggested partial solutions.";
+                           << " problems with suggested partial solutions.";
 
-    const auto start_time = statistics.total_init_time_ms + statistics.total_search_time_ms;
+    const auto start_time =
+        statistics.total_init_time_ms + statistics.total_search_time_ms;
 
-    for(const auto& suggestion_entry : solved_problems_data) {
+    for (const auto& suggestion_entry : solved_problems_data) {
       const auto search_time_before = statistics.total_search_time_ms;
       const auto& pattern_graph = graph_sequence1[suggestion_entry.index1];
       const auto& target_graph = graph_sequence2[suggestion_entry.index2];
@@ -99,15 +101,17 @@ struct EmbedGraphSequences {
           pattern_graph, target_graph, info, solver_params, statistics,
           suggestion_entry.suggested_assignments);
 
-      TestSettings::get().os << " (orig time " << suggestion_entry.original_time_ms << ")";
-      if(search_time_before + 100 < statistics.total_search_time_ms) {
+      TestSettings::get().os << " (orig time "
+                             << suggestion_entry.original_time_ms << ")";
+      if (search_time_before + 100 < statistics.total_search_time_ms) {
         TestSettings::get().os << "\n";
       }
-      total_original_time_for_suggested_problems += suggestion_entry.original_time_ms;
+      total_original_time_for_suggested_problems +=
+          suggestion_entry.original_time_ms;
     }
-    total_suggestion_time_ms = statistics.total_init_time_ms + statistics.total_search_time_ms - start_time;
+    total_suggestion_time_ms = statistics.total_init_time_ms +
+                               statistics.total_search_time_ms - start_time;
   }
-
 
   EmbedGraphSequences(
       const std::vector<GraphEdgeWeights>& graph_sequence1,
@@ -124,14 +128,14 @@ struct EmbedGraphSequences {
     std::stringstream ss;
     unsigned result_index = 0;
 
-    for (unsigned index1=0; index1<graph_sequence1.size(); ++index1) {
+    for (unsigned index1 = 0; index1 < graph_sequence1.size(); ++index1) {
       const auto& pattern_graph = graph_sequence1[index1];
-      for (unsigned index2=0; index2<graph_sequence2.size(); ++index2) {
+      for (unsigned index2 = 0; index2 < graph_sequence2.size(); ++index2) {
         const auto& target_graph = graph_sequence2[index2];
         const bool timeout_expected = result_index < expected_result.size() &&
                                       expected_result.at(result_index) == '*';
 
-        if(result_index % 8 == 0) {
+        if (result_index % 8 == 0) {
           TestSettings::get().os << "\n### RI=" << result_index << ": ";
         }
 
@@ -147,7 +151,7 @@ struct EmbedGraphSequences {
         const CheckedSolution checked_solution(
             pattern_graph, target_graph, info, solver_params, statistics);
 
-        if(search_time_before + 100 < statistics.total_search_time_ms) {
+        if (search_time_before + 100 < statistics.total_search_time_ms) {
           TestSettings::get().os << "\n";
         }
         if (checked_solution.complete_solution_weight) {
@@ -155,13 +159,17 @@ struct EmbedGraphSequences {
               checked_solution.complete_solution_weight.value();
           if (scalar_product == pattern_graph.size()) {
             ss << "1";
-            if(checked_solution.assignments.size() > 4) {
+            if (checked_solution.assignments.size() > 4) {
               solved_problems_data.emplace_back();
               solved_problems_data.back().index1 = index1;
               solved_problems_data.back().index2 = index2;
-              solved_problems_data.back().original_time_ms = statistics.total_search_time_ms - search_time_before;
-              const auto& assignment = checked_solution.assignments[checked_solution.assignments.size()/2];
-              solved_problems_data.back().suggested_assignments.emplace_back(assignment);
+              solved_problems_data.back().original_time_ms =
+                  statistics.total_search_time_ms - search_time_before;
+              const auto& assignment =
+                  checked_solution
+                      .assignments[checked_solution.assignments.size() / 2];
+              solved_problems_data.back().suggested_assignments.emplace_back(
+                  assignment);
             }
           } else {
             // Error: wrong scalar product!
@@ -186,9 +194,11 @@ struct EmbedGraphSequences {
     total_time_ms =
         statistics.total_init_time_ms + statistics.total_search_time_ms;
 
-    info.existence = CheckedSolution::ProblemInformation::SolutionsExistence::KNOWN_TO_BE_SOLUBLE;
-    recalculate_with_suggestions(graph_sequence1, graph_sequence2,
-        solved_problems_data, statistics, solver_params, info);
+    info.existence = CheckedSolution::ProblemInformation::SolutionsExistence::
+        KNOWN_TO_BE_SOLUBLE;
+    recalculate_with_suggestions(
+        graph_sequence1, graph_sequence2, solved_problems_data, statistics,
+        solver_params, info);
   }
 };
 
@@ -351,17 +361,15 @@ SCENARIO("Increasing graph sequences") {
   }
   const unsigned timeout_ms = 10000;
 
-  std::string line1 = 
-    "11111111011111110011111100011111000011110000011100000011000000*1";
+  std::string line1 =
+      "11111111011111110011111100011111000011110000011100000011000000*1";
 
   std::string line2 =
-    "111111110011111100001111000011110000011100000011000000*100000001";
-  
-  if(TestSettings::get().run_slow_tests) {
-    line1 = 
-    "1111111101111111001111110001111100001111000001110000001100000001";
-    line2 =
-    "1111111100111111000011110000111100000111000000110000001100000001";
+      "111111110011111100001111000011110000011100000011000000*100000001";
+
+  if (TestSettings::get().run_slow_tests) {
+    line1 = "1111111101111111001111110001111100001111000001110000001100000001";
+    line2 = "1111111100111111000011110000111100000111000000110000001100000001";
   }
 
   const std::vector<std::string> expected_results{
@@ -402,7 +410,6 @@ SCENARIO("Increasing graph sequences") {
   for (unsigned ii = 0; ii < list_of_increasing_graph_sequences.size(); ++ii) {
     for (unsigned jj = 0; jj < list_of_increasing_graph_sequences.size();
          ++jj) {
-      
       TestSettings::get().os << "\ni=" << ii << ", j=" << jj << " : ";
       const EmbedGraphSequences embedding_tester(
           list_of_increasing_graph_sequences[ii],
@@ -413,18 +420,24 @@ SCENARIO("Increasing graph sequences") {
       total_time_ms += embedding_tester.total_time_ms;
       check_monotonic_embedding_property(
           embedding_tester.result, num_entries, ii == jj);
-      total_full_solutions_original_time_ms += embedding_tester.total_original_time_for_suggested_problems;
-      total_recalculated_suggestions_time_ms += embedding_tester.total_suggestion_time_ms;
+      total_full_solutions_original_time_ms +=
+          embedding_tester.total_original_time_for_suggested_problems;
+      total_recalculated_suggestions_time_ms +=
+          embedding_tester.total_suggestion_time_ms;
       number_of_full_solutions += embedding_tester.number_of_suggested_problems;
     }
   }
   TestSettings::get().os << "\n:::: unweighted probs time: " << total_time_ms
-    << "\nRecalc with suggestions: " << number_of_full_solutions << " problems; orig time "
-    << total_full_solutions_original_time_ms << "; new time " << total_recalculated_suggestions_time_ms
-    << "\n";
+                         << "\nRecalc with suggestions: "
+                         << number_of_full_solutions << " problems; orig time "
+                         << total_full_solutions_original_time_ms
+                         << "; new time "
+                         << total_recalculated_suggestions_time_ms << "\n";
 
   // The actual factor is >7, not 3.
-  CHECK(total_full_solutions_original_time_ms >= 3*total_recalculated_suggestions_time_ms);
+  CHECK(
+      total_full_solutions_original_time_ms >=
+      3 * total_recalculated_suggestions_time_ms);
   CHECK(calc_results == expected_results);
 }
 

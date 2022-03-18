@@ -36,12 +36,6 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_SnakeIntoSquareGrid.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_SquareGrids.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_UnweightedProblems.cpp
-    ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/CheckedSolution.cpp
-    ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/FixedArchitectures.cpp
-    ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/GraphGeneration.cpp
-    ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/ProblemGeneration.cpp
-    ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/SquareGridGeneration.cpp
-    ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/TestSettings.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/test_SquareGridGeneration.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphColouring.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindComponents.cpp

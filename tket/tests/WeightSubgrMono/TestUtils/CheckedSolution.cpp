@@ -151,7 +151,7 @@ static void solve_problem(
   check_known_solution_information(info);
   check_for_impossible_weight_constraint(info, solver_params);
   MainSolver solver;
-  if(suggested_assignments.empty()) {
+  if (suggested_assignments.empty()) {
     solver.solve(pdata, tdata, solver_params);
   } else {
     solver.initialise(pdata, tdata);
@@ -212,15 +212,14 @@ static void solve_problem(
     }
     return;
   }
-  if(solver_params.terminate_with_first_full_solution && solution.complete) {
+  if (solver_params.terminate_with_first_full_solution && solution.complete) {
     check_finished_complete_solution(
-          info, soln_statistics, solution, stats, os);
+        info, soln_statistics, solution, stats, os);
     return;
   }
   check_unfinished_solution(
       info, soln_statistics, solution, solver_params, stats, os);
 }
-
 
 CheckedSolution::CheckedSolution(
     const GraphEdgeWeights& pdata, const GraphEdgeWeights& tdata,
@@ -231,7 +230,9 @@ CheckedSolution::CheckedSolution(
 
   const auto orig_init_time = stats.total_init_time_ms;
   const auto orig_search_time = stats.total_search_time_ms;
-  solve_problem(pdata, tdata, info, solver_params, stats, *this, os, suggested_assignments);
+  solve_problem(
+      pdata, tdata, info, solver_params, stats, *this, os,
+      suggested_assignments);
 }
 
 }  // namespace WeightedSubgraphMonomorphism
