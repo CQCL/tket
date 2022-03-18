@@ -20,11 +20,14 @@
 #include "Circuit/CircPool.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Converters/PhasePoly.hpp"
+#include "Mapping/LexiLabelling.hpp"
+#include "Mapping/LexiRoute.hpp"
+#include "Mapping/MappingManager.hpp"
+#include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassLibrary.hpp"
 #include "Predicates/Predicates.hpp"
-#include "Routing/Placement.hpp"
 #include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/ContextualReduction.hpp"
 #include "Transformations/Decomposition.hpp"
@@ -38,16 +41,14 @@
 namespace tket {
 
 PassPtr gen_rebase_pass(
-    const OpTypeSet& multiqs, const Circuit& cx_replacement,
-    const OpTypeSet& singleqs,
+    const OpTypeSet& allowed_gates, const Circuit& cx_replacement,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement) {
   Transform t = Transforms::rebase_factory(
-      multiqs, cx_replacement, singleqs, tk1_replacement);
+      allowed_gates, cx_replacement, tk1_replacement);
 
   PredicatePtrMap precons;
-  OpTypeSet all_types(singleqs);
-  all_types.insert(multiqs.begin(), multiqs.end());
+  OpTypeSet all_types(allowed_gates);
   all_types.insert(OpType::Measure);
   all_types.insert(OpType::Collapse);
   all_types.insert(OpType::Reset);
@@ -61,9 +62,8 @@ PassPtr gen_rebase_pass(
   // record pass config
   nlohmann::json j;
   j["name"] = "RebaseCustom";
-  j["basis_multiqs"] = multiqs;
+  j["basis_allowed"] = allowed_gates;
   j["basis_cx_replacement"] = cx_replacement;
-  j["basis_singleqs"] = singleqs;
   j["basis_tk1_replacement"] =
       "SERIALIZATION OF FUNCTIONS IS NOT YET SUPPORTED";
   return std::make_shared<StandardPass>(precons, t, pc, j);
@@ -183,24 +183,55 @@ PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
-PassPtr gen_full_mapping_pass(
-    const Architecture& arc, const PlacementPtr& placement_ptr,
-    const RoutingConfig& config) {
-  return gen_placement_pass(placement_ptr) >> gen_routing_pass(arc, config);
+PassPtr gen_naive_placement_pass(const Architecture& arc) {
+  Transform::Transformation trans = [=](Circuit& circ,
+                                        std::shared_ptr<unit_bimaps_t> maps) {
+    NaivePlacement np(arc);
+    return np.place(circ, maps);
+  };
+  Transform t = Transform(trans);
+  PredicatePtr n_qubit_pred =
+      std::make_shared<MaxNQubitsPredicate>(arc.n_nodes());
+
+  PredicatePtrMap precons{CompilationUnit::make_type_pair(n_qubit_pred)};
+  PredicatePtr placement_pred = std::make_shared<PlacementPredicate>(arc);
+  PredicatePtrMap s_postcons{CompilationUnit::make_type_pair(placement_pred)};
+  PostConditions pc{s_postcons, {}, Guarantee::Preserve};
+  // record pass config
+  nlohmann::json j;
+  j["name"] = "NaivePlacementPass";
+  j["architecture"] = arc;
+  return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
-PassPtr gen_default_mapping_pass(const Architecture& arc) {
-  PlacementPtr pp = std::make_shared<GraphPlacement>(arc);
-  return gen_full_mapping_pass(arc, pp);
+PassPtr gen_full_mapping_pass(
+    const Architecture& arc, const PlacementPtr& placement_ptr,
+    const std::vector<RoutingMethodPtr>& config) {
+  std::vector<PassPtr> vpp = {
+      gen_placement_pass(placement_ptr), gen_routing_pass(arc, config),
+      gen_naive_placement_pass(arc)};
+  return std::make_shared<SequencePass>(vpp);
+}
+
+PassPtr gen_default_mapping_pass(const Architecture& arc, bool delay_measures) {
+  PassPtr return_pass = gen_full_mapping_pass(
+      arc, std::make_shared<GraphPlacement>(arc),
+      {std::make_shared<LexiLabellingMethod>(),
+       std::make_shared<LexiRouteRoutingMethod>()});
+  if (delay_measures) {
+    return_pass = return_pass >> DelayMeasures();
+  }
+  return return_pass;
 }
 
 PassPtr gen_cx_mapping_pass(
     const Architecture& arc, const PlacementPtr& placement_ptr,
-    const RoutingConfig& config, bool directed_cx, bool delay_measures) {
-  PassPtr rebase_pass = gen_rebase_pass(
-      {OpType::CX}, CircPool::CX(), all_single_qubit_types(),
-      Transforms::tk1_to_tk1);
-
+    const std::vector<RoutingMethodPtr>& config, bool directed_cx,
+    bool delay_measures) {
+  OpTypeSet gate_set = all_single_qubit_types();
+  gate_set.insert(OpType::CX);
+  PassPtr rebase_pass =
+      gen_rebase_pass(gate_set, CircPool::CX(), CircPool::tk1_to_tk1);
   PassPtr return_pass =
       rebase_pass >> gen_full_mapping_pass(arc, placement_ptr, config);
   if (delay_measures) return_pass = return_pass >> DelayMeasures();
@@ -209,22 +240,19 @@ PassPtr gen_cx_mapping_pass(
   return return_pass;
 }
 
-PassPtr gen_routing_pass(const Architecture& arc, const RoutingConfig& config) {
+PassPtr gen_routing_pass(
+    const Architecture& arc, const std::vector<RoutingMethodPtr>& config) {
   Transform::Transformation trans = [=](Circuit& circ,
                                         std::shared_ptr<unit_bimaps_t> maps) {
-    Routing route(circ, arc);
-    std::pair<Circuit, bool> circbool = route.solve(config, maps);
-    circ = circbool.first;
-    return circbool.second;
+    MappingManager mm(std::make_shared<Architecture>(arc));
+    return mm.route_circuit_with_maps(circ, config, maps);
   };
   Transform t = Transform(trans);
 
   PredicatePtr twoqbpred = std::make_shared<MaxTwoQubitGatesPredicate>();
-  PredicatePtr placedpred = std::make_shared<PlacementPredicate>(arc);
   PredicatePtr n_qubit_pred =
       std::make_shared<MaxNQubitsPredicate>(arc.n_nodes());
   PredicatePtrMap precons{
-      CompilationUnit::make_type_pair(placedpred),
       CompilationUnit::make_type_pair(twoqbpred),
       CompilationUnit::make_type_pair(n_qubit_pred)};
 
@@ -430,12 +458,13 @@ PassPtr gen_full_mapping_pass_phase_poly(
 }
 
 PassPtr gen_directed_cx_routing_pass(
-    const Architecture& arc, const RoutingConfig& config) {
+    const Architecture& arc, const std::vector<RoutingMethodPtr>& config) {
   OpTypeSet multis = {OpType::CX, OpType::BRIDGE, OpType::SWAP};
+  OpTypeSet gate_set = all_single_qubit_types();
+  gate_set.insert(multis.begin(), multis.end());
+
   return gen_routing_pass(arc, config) >>
-         gen_rebase_pass(
-             multis, CircPool::CX(), all_single_qubit_types(),
-             Transforms::tk1_to_tk1) >>
+         gen_rebase_pass(gate_set, CircPool::CX(), CircPool::tk1_to_tk1) >>
          gen_decompose_routing_gates_to_cxs_pass(arc, true);
 }
 

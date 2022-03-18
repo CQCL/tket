@@ -380,6 +380,12 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
   }
+  GIVEN("complex coefficient") {
+    Expr ei{SymEngine::I};
+    PauliExpBox pebox({Pauli::Z}, ei);
+    Expr p = pebox.get_phase();
+    REQUIRE(p == ei);
+  }
 }
 
 SCENARIO("box daggers", "[boxes]") {

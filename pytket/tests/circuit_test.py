@@ -33,6 +33,8 @@ from pytket.circuit import (  # type: ignore
     CustomGateDef,
     Qubit,
     Bit,
+    BitRegister,
+    QubitRegister,
 )
 from pytket.circuit.display import render_circuit_as_html
 
@@ -64,7 +66,7 @@ def test_op_free_symbols() -> None:
     c.add_barrier([0, 1])
     op = c.get_commands()[0].op
     assert op.free_symbols() == set()
-    alpha = Symbol("alpha")
+    alpha = Symbol("alpha")  # type: ignore
     c.Rx(alpha, 0)
     op = c.get_commands()[1].op
     assert op.free_symbols() == {alpha}
@@ -207,7 +209,7 @@ def test_circuit_gen_ids() -> None:
 
 def test_symbolic_ops() -> None:
     c = Circuit(2)
-    alpha = Symbol("alpha")
+    alpha = Symbol("alpha")  # type: ignore
     c.Rx(alpha, 0)
     beta = fresh_symbol("alpha")
     c.CRz(beta * 2, 1, 0)
@@ -223,13 +225,25 @@ def test_symbolic_ops() -> None:
     assert np.allclose(commands[1].op.params, [2.4], atol=1e-10)
 
 
+def test_subst_4() -> None:
+    # https://github.com/CQCL/tket/issues/219
+    m = fresh_symbol("m")
+    c = Circuit(1)
+    a = m / 4
+    c.add_gate(OpType.Rx, a, [0])
+    c.symbol_substitution({m: 4})
+    angle = c.get_commands()[0].op.params[0]
+    print(angle)
+    assert np.isclose(angle, 1.0)
+
+
 def test_sympy_conversion() -> None:
     def get_type_tree(expr: sympy.Expr) -> str:
         # Format e.g. "<class 'sympy.core.numbers.Pi'>" to "Pi"
         tree_str = str(type(expr)).rsplit(".", 1)[-1].split("'")[0]
         if len(expr.args) != 0:
             tree_str += " ("
-            tree_str += ", ".join([get_type_tree(a) for a in expr.args])
+            tree_str += ", ".join([get_type_tree(a) for a in expr.args])  # type: ignore
             tree_str += ")"
         return tree_str
 
@@ -245,7 +259,7 @@ def test_sympy_conversion() -> None:
     }
     for expr_string, type_tree in test_dict.items():
         c = Circuit(1)
-        c.Rz(sympify(expr_string), 0)
+        c.Rz(sympify(expr_string), 0)  # type: ignore
         com = c.get_commands()[0]
         assert get_type_tree(com.op.params[0]) == type_tree
 
@@ -366,7 +380,7 @@ def test_boxes() -> None:
     d.add_expbox(ebox, 3, 2)
 
     paulis = [Pauli.X, Pauli.Z, Pauli.X]
-    pbox = PauliExpBox(paulis, Symbol("alpha"))
+    pbox = PauliExpBox(paulis, Symbol("alpha"))  # type: ignore
     assert pbox.type == OpType.PauliExpBox
     d.add_pauliexpbox(pbox, [3, 2, 1])
 
@@ -381,16 +395,39 @@ def test_boxes() -> None:
     pauli_exps = [cmd.op for cmd in d if cmd.op.type == OpType.PauliExpBox]
     assert len(pauli_exps) == 1
     assert pauli_exps[0].get_paulis() == paulis
-    assert pauli_exps[0].get_phase() == Symbol("alpha")
+    assert pauli_exps[0].get_phase() == Symbol("alpha")  # type: ignore
 
     boxes = (cbox, mbox, u2qbox, u3qbox, ebox, pbox, qcbox)
     assert all(box == box for box in boxes)
     assert all(isinstance(box, Op) for box in boxes)
 
 
+def test_u1q_stability() -> None:
+    # https://github.com/CQCL/tket/issues/222
+    u = np.array(
+        [
+            [
+                -1.0000000000000000e00 + 0.0000000000000000e00j,
+                -4.7624091282918654e-10 + 2.0295010872500105e-16j,
+            ],
+            [
+                4.5447577055178555e-10 - 1.4232772405184710e-10j,
+                -9.5429791447115209e-01 + 2.9885697320961047e-01j,
+            ],
+        ]
+    )
+    ubox = Unitary1qBox(u)
+    op = ubox.get_circuit().get_commands()[0].op
+    assert op.type == OpType.TK1
+    a, b, c = op.params
+    assert np.isfinite(a)
+    assert np.isfinite(b)
+    assert np.isfinite(c)
+
+
 def test_custom_gates() -> None:
-    a = Symbol("a")
-    b = Symbol("b")
+    a = Symbol("a")  # type: ignore
+    b = Symbol("b")  # type: ignore
     setup = Circuit(3)
     setup.CX(0, 1)
     setup.Rz(a + 0.5, 2)
@@ -411,7 +448,7 @@ def test_custom_gates() -> None:
 def test_errors() -> None:
     # TKET-289
     c = Circuit(1)
-    a = Symbol("a")
+    a = Symbol("a")  # type: ignore
     c.Rz(a, 0)
     c.Rz(0.5, 0)
     c.Rz(0, 0)
@@ -641,13 +678,16 @@ def test_opgroups() -> None:
 
     # Remove a redundant gate
     c = Circuit(3).H(0)
+    assert len(c.opgroups) == 0
     c.CX(0, 1, opgroup="cx0")
     c.CX(1, 2, opgroup="cx1")
     c.CX(2, 0, opgroup="cx2")
     c.CX(0, 1, opgroup="cx3")
+    assert c.opgroups == {"cx0", "cx1", "cx2", "cx3"}
     c.substitute_named(Circuit(2), "cx3")
     assert c.n_gates == 4
     assert c.n_gates_of_type(OpType.CX) == 3
+    assert c.opgroups == {"cx0", "cx1", "cx2"}
 
 
 def test_phase_polybox() -> None:
@@ -664,6 +704,26 @@ def test_phase_polybox() -> None:
     assert p_box.qubit_indices == qubit_indices
     assert p_box.phase_polynomial == phase_polynomial
     assert np.array_equal(p_box.linear_transformation, linear_transformation)
+
+
+def test_phase_polybox_big() -> None:
+    c = Circuit(3, 3)
+    n_qb = 3
+    qubit_indices = {Qubit(0): 0, Qubit(1): 1, Qubit(2): 2}
+    phase_polynomial = {
+        (True, False, True): 0.333,
+        (False, False, True): 0.05,
+        (False, False, False): 1.05,
+    }
+    linear_transformation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
+
+    c.add_phasepolybox(p_box, [0, 1, 2])
+    assert p_box.n_qubits == n_qb
+    assert p_box.qubit_indices == qubit_indices
+    assert p_box.phase_polynomial == phase_polynomial
+    assert np.array_equal(p_box.linear_transformation, linear_transformation)
+    assert DecomposeBoxes().apply(c)
 
 
 def test_depth() -> None:
@@ -703,6 +763,45 @@ def test_clifford_checking() -> None:
     assert rz2.is_clifford_type() == False
     m = c.get_commands()[5].op
     assert m.is_clifford_type() == False
+
+
+def test_getting_registers() -> None:
+    c = Circuit(2, 1)
+    c_regs = c.c_registers
+    assert len(c_regs) == 1
+    assert c_regs[0] == BitRegister("c", 1)
+    q_regs = c.q_registers
+    assert len(q_regs) == 1
+    assert q_regs[0] == QubitRegister("q", 2)
+    q_err_msg = "Cannot find quantum register with name"
+    c_err_msg = "Cannot find classical register with name"
+    with pytest.raises(RuntimeError) as e:
+        c.get_c_register("q")
+    assert c_err_msg in str(e.value)
+    with pytest.raises(RuntimeError) as e:
+        c.get_q_register("c")
+    assert q_err_msg in str(e.value)
+    assert c.get_c_register("c").name == "c"
+    assert c.get_c_register("c").size == 1
+    assert c.get_q_register("q").name == "q"
+    assert c.get_q_register("q").size == 2
+    c.add_q_register("test_qr", 10)
+    c.add_c_register("test_cr", 8)
+    assert c.get_c_register("test_cr").name == "test_cr"
+    assert c.get_c_register("test_cr").size == 8
+    assert c.get_q_register("test_qr").name == "test_qr"
+    assert c.get_q_register("test_qr").size == 10
+
+    c_regs = c.c_registers
+    c_regs.sort()
+    assert len(c_regs) == 2
+    assert c_regs[0] == BitRegister("c", 1)
+    assert c_regs[1] == BitRegister("test_cr", 8)
+    q_regs = c.q_registers
+    q_regs.sort()
+    assert len(q_regs) == 2
+    assert q_regs[0] == QubitRegister("q", 2)
+    assert q_regs[1] == QubitRegister("test_qr", 10)
 
 
 if __name__ == "__main__":

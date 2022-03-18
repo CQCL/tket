@@ -16,9 +16,10 @@
 
 set -evu
 
-pip install conan delocate wheel
 cd $GITHUB_WORKSPACE/pytket
 export PYVER=`python -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'`
-python -m pip install -U pip setuptools_scm
-python setup.py bdist_wheel -d "$GITHUB_WORKSPACE/tmp/tmpwheel_${PYVER}" --plat-name=macosx_10_14_x86_64
+# Ensure wheels are compatible with MacOS 10.14 and later:
+export WHEEL_PLAT_NAME=macosx_10_14_x86_64
+python -m pip install -U pip build delocate
+python -m build --outdir "$GITHUB_WORKSPACE/tmp/tmpwheel_${PYVER}"
 delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/${PYVER}/" "$GITHUB_WORKSPACE/tmp/tmpwheel_${PYVER}/pytket-"*".whl"

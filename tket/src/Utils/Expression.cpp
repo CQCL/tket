@@ -14,10 +14,18 @@
 
 #include "Expression.hpp"
 
+#include <optional>
+
 #include "Constants.hpp"
 #include "Symbols.hpp"
+#include "symengine/symengine_exception.h"
 
 namespace tket {
+
+bool approx_0(const Expr& e, double tol) {
+  std::optional<double> v = eval_expr(e);
+  return v && (std::abs(v.value()) < tol);
+}
 
 double fmodn(double x, unsigned n) {
   x /= n;
@@ -52,7 +60,11 @@ std::optional<double> eval_expr(const Expr& e) {
   if (!SymEngine::free_symbols(e).empty()) {
     return std::nullopt;
   } else {
-    return SymEngine::eval_double(e);
+    try {
+      return SymEngine::eval_double(e);
+    } catch (SymEngine::NotImplementedError&) {
+      return std::nullopt;
+    }
   }
 }
 

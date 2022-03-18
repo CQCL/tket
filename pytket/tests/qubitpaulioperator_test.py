@@ -27,16 +27,9 @@ from pytket.circuit import Qubit  # type: ignore
 
 import strategies as st  # type: ignore
 
-try:
-    from openfermion import QubitOperator  # type: ignore
-
-    _of_installed = True
-except ImportError:
-    _of_installed = False
-
 
 def test_QubitPauliOperator_addition() -> None:
-    x = Symbol("x")
+    x = Symbol("x")  # type: ignore
     qpo = QubitPauliOperator()
     qpo += QubitPauliOperator(
         {
@@ -56,9 +49,9 @@ def test_QubitPauliOperator_addition() -> None:
 
 
 def test_QubitPauliOperator_scalarmult() -> None:
-    y = Symbol("y")
+    y = Symbol("y")  # type: ignore
     qpo = QubitPauliOperator({QubitPauliString(Qubit("q"), Pauli.X): y})
-    x = Symbol("x")
+    x = Symbol("x")  # type: ignore
     qpo2 = x * qpo
     qpo3 = qpo * x
     assert qpo2 == qpo3
@@ -68,9 +61,9 @@ def test_QubitPauliOperator_scalarmult() -> None:
 
 
 def test_QubitPauliOperator_opmult() -> None:
-    y = Symbol("y")
+    y = Symbol("y")  # type: ignore
     qpo = QubitPauliOperator({QubitPauliString(Qubit(0), Pauli.Z): y})
-    x = Symbol("x")
+    x = Symbol("x")  # type: ignore
     qpo2 = QubitPauliOperator({QubitPauliString(Qubit(0), Pauli.X): x})
     qpo3 = qpo * qpo2  # order matters!
     assert qpo3._dict[QubitPauliString(Qubit(0), Pauli.Y)] == 1j * x * y
@@ -80,7 +73,7 @@ def test_QubitPauliOperator_opmult() -> None:
 
 def test_QubitPauliOperator_substitution() -> None:
     qps = QubitPauliString(Qubit(0), Pauli.X)
-    e = Symbol("e")
+    e = Symbol("e")  # type: ignore
     exp = e + 5
     qpo = QubitPauliOperator({qps: exp})
     qpo.subs({e: 1})
@@ -98,36 +91,13 @@ def test_QubitPauliOperator_io() -> None:
     qps1 = pickle.loads(string_data)
     assert qps0 == qps1
     qps2 = QubitPauliString(Qubit(2), Pauli.Z)
-    a = Symbol("a")
+    a = Symbol("a")  # type: ignore
     op = QubitPauliOperator({qps1: a, qps2: 3.1})
     op_data = pickle.dumps(op)
     op2 = pickle.loads(op_data)
     op2.subs({a: 1})
     assert np.isclose(complex(op2[qps1]), 1)
     assert np.isclose(complex(op2[qps2]), 3.1)
-
-
-@pytest.mark.skipif(not _of_installed, reason="openfermion not installed")
-def test_QubitPauliOperator_conversion() -> None:
-    openf_op = QubitOperator("X0 X1 Y2 Z3", 0.34)
-    openf_op += QubitOperator("Z0 X1 Y2 Z3", -0.1j)
-
-    tk_op = QubitPauliOperator.from_OpenFermion(openf_op)
-    assert len(tk_op._dict) == 2
-
-    qbs = [Qubit(i) for i in range(4)]
-    qps1 = QubitPauliString(qbs, [Pauli.X, Pauli.X, Pauli.Y, Pauli.Z])
-    qps2 = QubitPauliString(qbs, [Pauli.Z, Pauli.X, Pauli.Y, Pauli.Z])
-    assert np.isclose(complex(tk_op[qps1]), 0.34)
-    assert np.isclose(complex(tk_op[qps2]), -0.1j)
-
-    openf_op2 = tk_op.to_OpenFermion()
-    assert openf_op == openf_op2
-
-    tk_op[QubitPauliString(Qubit(0), Pauli.Z)] = Symbol("x")
-    with pytest.raises(ValueError) as errorinfo:
-        fail_openf_op = tk_op.to_OpenFermion()
-    assert "QubitPauliOperator contains unevaluated symbols." in str(errorinfo.value)
 
 
 def test_QubitPauliOperator_matrices() -> None:
@@ -165,13 +135,18 @@ def test_QubitPauliOperator_matrices() -> None:
         named_op.to_sparse_matrix(named_qbs + [Qubit("a", 1)]).toarray(),
     )
 
+    # https://github.com/CQCL/tket/issues/294
+    P = QubitPauliString({Qubit(0): Pauli.Z, Qubit(1): Pauli.I})
+    H = QubitPauliOperator({P: 1})
+    assert np.allclose(P.to_sparse_matrix().todense(), H.to_sparse_matrix().todense())
+
 
 def test_QubitPauliOperator_compression() -> None:
     qbs = [Qubit(i) for i in range(2)]
     qpsXY = QubitPauliString(qbs, [Pauli.X, Pauli.Y])
     qpsZI = QubitPauliString(qbs, [Pauli.Z, Pauli.I])
     qpsYY = QubitPauliString(qbs, [Pauli.Y, Pauli.Y])
-    x = Symbol("x")
+    x = Symbol("x")  # type: ignore
     op = QubitPauliOperator({qpsXY: 2, qpsZI: 1e-11j * x, qpsYY: 1e-11 * x + 1j})
     op.compress()
     with pytest.raises(KeyError) as errorinfo:
@@ -180,8 +155,8 @@ def test_QubitPauliOperator_compression() -> None:
     assert op[qpsXY] == 2
     assert re(op[qpsYY]) == 0
     assert im(op[qpsYY])
-    assert op[qpsYY].subs({x: 0.001}) == 1j
-    assert op[qpsYY].subs({x: 10}) == 1j
+    assert op[qpsYY].subs({x: 0.001}).equals(1.0j)
+    assert op[qpsYY].subs({x: 10}).equals(1.0j)
 
 
 if __name__ == "__main__":
@@ -190,18 +165,20 @@ if __name__ == "__main__":
     test_QubitPauliOperator_opmult()
     test_QubitPauliOperator_substitution()
     test_QubitPauliOperator_io()
-    test_QubitPauliOperator_conversion()
     test_QubitPauliOperator_matrices()
     test_QubitPauliOperator_compression()
 
 
 def test_QubitPauliString_serialization() -> None:
-    qps = QubitPauliString(
+    qps0 = QubitPauliString()
+    qps1 = QubitPauliString(
         [Qubit(i) for i in range(4)], [Pauli.Y, Pauli.I, Pauli.X, Pauli.Z]
     )
-    serializable = qps.to_list()
-    assert QubitPauliString.from_list(serializable) == qps
-    assert json.loads(json.dumps(serializable)) == serializable
+    assert qps0.to_list() == []
+    for qps in [qps0, qps1]:
+        serializable = qps.to_list()
+        assert QubitPauliString.from_list(serializable) == qps
+        assert json.loads(json.dumps(serializable)) == serializable
 
 
 def test_QubitPauliOperator_serialization() -> None:

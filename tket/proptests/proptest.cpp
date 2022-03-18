@@ -42,11 +42,7 @@ using namespace tket;
   DO(DecomposeBoxes)                      \
   DO(ComposePhasePolyBoxes)               \
   DO(SquashTK1)                           \
-  DO(RebaseCirq)                          \
   DO(RebaseTket)                          \
-  DO(RebaseQuil)                          \
-  DO(RebasePyZX)                          \
-  DO(RebaseProjectQ)                      \
   DO(DecomposeBridges)                    \
   DO(FlattenRegisters)                    \
   DO(RemoveBarriers)                      \
@@ -335,7 +331,7 @@ bool check_mapping() {
         // All gates must act on 1 or 2 qubits.
         PredicatePtr pp3 = std::make_shared<MaxTwoQubitGatesPredicate>();
         if (!pp3->verify(c)) return;
-        PassPtr pass = gen_default_mapping_pass(a);
+        PassPtr pass = gen_default_mapping_pass(a, true);
         CompilationUnit cu(c);
         bool applied = pass->apply(cu);
         const Circuit &c1 = cu.get_circ_ref();

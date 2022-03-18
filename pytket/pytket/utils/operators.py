@@ -16,16 +16,9 @@ import copy
 from typing import cast, Dict, TYPE_CHECKING, Union, List, Optional, Set, Any
 import numpy as np
 from sympy import Symbol, sympify, Expr, re, im  # type: ignore
-from pytket.pauli import Pauli, QubitPauliString, pauli_string_mult  # type: ignore
+from pytket.pauli import QubitPauliString, pauli_string_mult  # type: ignore
 from pytket.circuit import Qubit  # type: ignore
 from pytket.utils.serialization import complex_to_list, list_to_complex  # type: ignore
-
-_of_installed = True
-
-try:
-    from openfermion import QubitOperator  # type: ignore
-except ImportError:
-    _of_installed = False
 
 
 CoeffType = Union[int, float, complex, Expr]
@@ -65,7 +58,7 @@ class QubitPauliOperator:
         self._dict = dict()
         if dictionary:
             self._dict = dict(
-                (key, sympify(value)) for key, value in dictionary.items()
+                (key, sympify(value)) for key, value in dictionary.items()  # type: ignore
             )
         self._collect_qubits()
 
@@ -87,7 +80,7 @@ class QubitPauliOperator:
         :param value: Associated coefficient
         :type value: Union[int, float, complex, Expr]
         """
-        self._dict[key] = sympify(value)
+        self._dict[key] = sympify(value)  # type: ignore
 
     def __getstate__(self) -> dict:
         return self._dict
@@ -250,47 +243,6 @@ class QubitPauliOperator:
 
         return QubitPauliOperator({get_qps(obj): get_coeff(obj) for obj in pauli_list})
 
-    def to_OpenFermion(self) -> "QubitOperator":  #  type: ignore
-        """Convert pytket QubitPauliOperator to OpenFermion QubitOperator."""
-        if not _of_installed:
-            raise ImportError("Install OpenFermion to use QubitOperator converters")
-        op = QubitOperator()
-        for key, value in self._dict.items():
-            qubit_string = ""
-            for qubit, tket_pauli in key.map.items():
-                if qubit.reg_name != "q":
-                    raise ValueError("Qubit register must have default name.")
-                index = qubit.index
-                if len(index) != 1:
-                    raise ValueError("Qubit register must be 1-dimensional.")
-                if tket_pauli != Pauli.I:
-                    pauli = tket_pauli.name
-                    qubit_string += pauli + str(index[0]) + " "
-            try:
-                coeff = complex(value)
-            except TypeError:
-                raise ValueError("QubitPauliOperator contains unevaluated symbols.")
-            op += QubitOperator(qubit_string, coeff)
-        return op
-
-    @classmethod
-    def from_OpenFermion(
-        cls, openf_op: "QubitOperator"
-    ) -> "QubitPauliOperator":  #  type: ignore
-        """Convert OpenFermion QubitOperator to pytket QubitPauliOperator."""
-        tk_op = dict()
-        if not _of_installed:
-            raise ImportError("Install OpenFermion to use QubitOperator converters")
-        for term, coeff in openf_op.terms.items():
-            string = QubitPauliString(
-                {
-                    Qubit(qubitnum): _STRING_TO_PAULI[paulisym]
-                    for qubitnum, paulisym in term
-                }
-            )
-            tk_op[string] = coeff
-        return cls(tk_op)
-
     def to_sparse_matrix(
         self, qubits: Union[List[Qubit], int, None] = None
     ) -> "csc_matrix":
@@ -316,7 +268,7 @@ class QubitPauliOperator:
         """
         qubits_ = qubits
         if qubits is None:
-            qubits_ = list(self._all_qubits)
+            qubits_ = sorted(list(self._all_qubits))
         return sum(
             complex(coeff) * pauli.to_sparse_matrix(qubits_)
             for pauli, coeff in self._dict.items()
@@ -411,6 +363,3 @@ class QubitPauliOperator:
         for key in self._dict.keys():
             for q in key.map.keys():
                 self._all_qubits.add(q)
-
-
-_STRING_TO_PAULI = {"I": Pauli.I, "X": Pauli.X, "Y": Pauli.Y, "Z": Pauli.Z}

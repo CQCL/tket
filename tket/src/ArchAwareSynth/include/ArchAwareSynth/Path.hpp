@@ -14,7 +14,7 @@
 
 #pragma once
 #include "Architecture/Architecture.hpp"
-#include "Routing/Placement.hpp"
+#include "Placement/Placement.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"
 namespace tket {
@@ -133,11 +133,6 @@ class IterationOrder {
  * @return ordered vector of nodes in the path
  */
 std::vector<Node> find_hampath(const Architecture &arch, long timeout = 10000);
-
-/**
- * print out a given Pathhandler
- */
-std::ostream &operator<<(std::ostream &out, const PathHandler &path);
 
 }  // namespace aas
 }  // namespace tket

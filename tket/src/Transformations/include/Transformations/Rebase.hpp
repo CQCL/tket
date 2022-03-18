@@ -23,10 +23,9 @@ namespace Transforms {
 // decomposes multiq gates not in the gate set to CXs, then replaces CXs with
 // the replacement (if CX is not allowed) then converts singleq gates no in
 // the gate set to U3 and replaces them using provided function Expects: any
-// gates Produces: gates in multiqs and singleqs
+// gates Produces: gates in allowed_gates
 Transform rebase_factory(
-    const OpTypeSet& multiqs, const Circuit& cx_replacement,
-    const OpTypeSet& singleqs,
+    const OpTypeSet& allowed_gates, const Circuit& cx_replacement,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement);
 
@@ -37,14 +36,6 @@ Transform rebase_tket();
 // Multiqs: CZ
 // Singleqs: PhasedX, Rz
 Transform rebase_cirq();
-
-// Multiqs: ZZMax
-// Singleqs: PhasedX, Rz
-Transform rebase_HQS();
-
-// Multiqs: XXPhase
-// Singleqs: PhasedX, Rz
-Transform rebase_UMD();
 
 // Multiqs: CZ
 // Singleqs: Rx, Rz
@@ -66,18 +57,6 @@ Transform rebase_UFR();
 // Multiqs: ECR
 // Singleqs: Rz, SX
 Transform rebase_OQC();
-
-// converts a TK1 gate to a PhasedXRz gate
-Circuit tk1_to_PhasedXRz(
-    const Expr& alpha, const Expr& beta, const Expr& gamma);
-
-Circuit tk1_to_rzrx(const Expr& alpha, const Expr& beta, const Expr& gamma);
-
-Circuit tk1_to_rzh(const Expr& alpha, const Expr& beta, const Expr& gamma);
-
-Circuit tk1_to_rzsx(const Expr& alpha, const Expr& beta, const Expr& gamma);
-
-Circuit tk1_to_tk1(const Expr& alpha, const Expr& beta, const Expr& gamma);
 
 }  // namespace Transforms
 

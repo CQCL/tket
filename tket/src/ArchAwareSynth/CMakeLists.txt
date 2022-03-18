@@ -31,10 +31,10 @@ list(APPEND DEPS_${COMP}
     Converters
     Gate
     Graphs
+    PauliGraph
+    Placement
     Ops
     OpType
-    PauliGraph
-    Routing
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

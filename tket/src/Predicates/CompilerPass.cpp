@@ -16,6 +16,7 @@
 
 #include <memory>
 
+#include "Mapping/RoutingMethodJson.hpp"
 #include "PassGenerators.hpp"
 #include "PassLibrary.hpp"
 #include "Transformations/ContextualReduction.hpp"
@@ -377,24 +378,10 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = PeepholeOptimise2Q();
     } else if (passname == "FullPeepholeOptimise") {
       pp = FullPeepholeOptimise();
-    } else if (passname == "RebaseCirq") {
-      pp = RebaseCirq();
     } else if (passname == "RebaseTket") {
       pp = RebaseTket();
-    } else if (passname == "RebaseHQS") {
-      pp = RebaseHQS();
-    } else if (passname == "RebaseQuil") {
-      pp = RebaseQuil();
-    } else if (passname == "RebaseProjectQ") {
-      pp = RebaseProjectQ();
-    } else if (passname == "RebasePyZX") {
-      pp = RebasePyZX();
-    } else if (passname == "RebaseUMD") {
-      pp = RebaseUMD();
     } else if (passname == "RebaseUFR") {
       pp = RebaseUFR();
-    } else if (passname == "RebaseOQC") {
-      pp = RebaseOQC();
     } else if (passname == "RemoveRedundancies") {
       pp = RemoveRedundancies();
     } else if (passname == "SynthesiseHQS") {
@@ -432,10 +419,14 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = gen_euler_pass(q, p, s);
     } else if (passname == "RoutingPass") {
       Architecture arc = content.at("architecture").get<Architecture>();
-      RoutingConfig con = content.at("routing_config").get<RoutingConfig>();
+      std::vector<RoutingMethodPtr> con = content.at("routing_config");
       pp = gen_routing_pass(arc, con);
+
     } else if (passname == "PlacementPass") {
       pp = gen_placement_pass(content.at("placement").get<PlacementPtr>());
+    } else if (passname == "NaivePlacementPass") {
+      pp = gen_naive_placement_pass(
+          content.at("architecture").get<Architecture>());
     } else if (passname == "RenameQubitsPass") {
       pp = gen_rename_qubits_pass(
           content.at("qubit_map").get<std::map<Qubit, Qubit>>());
@@ -480,24 +471,23 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
             content.at("x_circuit").get<Circuit>());
       }
       pp = gen_simplify_initial(ac, caq, xc);
-    } else if (passname == "SquashHQS") {
-      // SEQUENCE PASS - DESERIALIZABLE ONLY
-      pp = SquashHQS();
     } else if (passname == "FullMappingPass") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
       PlacementPtr place = content.at("placement").get<PlacementPtr>();
-      RoutingConfig config = content.at("routing_config").get<RoutingConfig>();
+      std::vector<RoutingMethodPtr> config = content.at("routing_config");
+
       pp = gen_full_mapping_pass(arc, place, config);
     } else if (passname == "DefaultMappingPass") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
-      pp = gen_default_mapping_pass(arc);
+      bool delay_measures = content.at("delay_measures").get<bool>();
+      pp = gen_default_mapping_pass(arc, delay_measures);
     } else if (passname == "CXMappingPass") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
       PlacementPtr place = content.at("placement").get<PlacementPtr>();
-      RoutingConfig config = content.at("routing_config").get<RoutingConfig>();
+      std::vector<RoutingMethodPtr> config = content.at("routing_config");
       bool directed_cx = content.at("directed").get<bool>();
       bool delay_measures = content.at("delay_measures").get<bool>();
       pp = gen_cx_mapping_pass(arc, place, config, directed_cx, delay_measures);

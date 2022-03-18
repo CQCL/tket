@@ -472,6 +472,21 @@ std::vector<EdgeVec> Circuit::get_b_out_bundles(const Vertex &vert) const {
   return bundles;
 }
 
+std::vector<EdgeVec> Circuit::get_b_in_bundles(const Vertex &vert) const {
+  unsigned n = n_ports(vert);
+  std::vector<EdgeVec> bundles(n);
+  BGL_FORALL_INEDGES(vert, e, dag, DAG) {
+    if (get_edgetype(e) == EdgeType::Boolean) {
+      port_t port = get_target_port(e);
+      if (port > n) {
+        throw CircuitInvalidity("Vertex has an output on an unexpected port");
+      }
+      bundles.at(port).push_back(e);
+    }
+  }
+  return bundles;
+}
+
 // n represents the port of the edge at vert_from
 // there are no checks to ensure the vertex exists in the graph
 // will only return Quantum or Classical edges
@@ -556,6 +571,17 @@ const Op_ptr Circuit::get_Op_ptr_from_Vertex(const Vertex &vert) const {
 const std::optional<std::string> &Circuit::get_opgroup_from_Vertex(
     const Vertex &vert) const {
   return this->dag[vert].opgroup;
+}
+
+const std::unordered_set<std::string> Circuit::get_opgroups() const {
+  std::unordered_set<std::string> opgroups;
+  BGL_FORALL_VERTICES(v, dag, DAG) {
+    std::optional<std::string> v_opgroup = get_opgroup_from_Vertex(v);
+    if (v_opgroup) {
+      opgroups.insert(v_opgroup.value());
+    }
+  }
+  return opgroups;
 }
 
 void Circuit::set_vertex_Op_ptr(const Vertex &vert, const Op_ptr &op) {

@@ -185,9 +185,11 @@ Circuit Circuit::subcircuit(const Subcircuit& sc) const {
 // used to construct a routing grid
 QPathDetailed Circuit::unit_path(const UnitID& unit) const {
   Vertex current_v = get_in(unit);
+
   QPathDetailed path = {{current_v, 0}};
   Edge betweenEdge = get_nth_out_edge(current_v, 0);
   current_v = target(betweenEdge);
+
   while (detect_final_Op(current_v) == false) {
     if (n_out_edges(current_v) == 0) {
       throw CircuitInvalidity("A path ends before reaching an output vertex.");
@@ -513,6 +515,43 @@ CutFrontier Circuit::next_cut(
   return {
       next_slice, get_next_u_frontier(*this, u_frontier, next_slice_lookup),
       get_next_b_frontier(*this, b_frontier, u_frontier, next_slice_lookup)};
+}
+
+CutFrontier Circuit::next_q_cut(
+    std::shared_ptr<const unit_frontier_t> u_frontier) const {
+  auto next_slice = std::make_shared<Slice>();
+  VertexSet next_slice_lookup;
+  VertexSet bad_vertices;
+  EdgeSet edge_lookup;
+  for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
+    edge_lookup.insert(pair.second);
+  }
+
+  // find the next slice first
+  for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
+    Vertex try_v = target(pair.second);
+    if (detect_final_Op(try_v)) continue;
+    if (next_slice_lookup.contains(try_v))
+      continue;  // already going to be in next slice
+    bool good_vertex = !bad_vertices.contains(try_v);
+    if (!good_vertex) continue;
+    EdgeVec ins = get_in_edges(try_v);
+    for (const Edge& in : ins) {
+      if (!edge_lookup.contains(in) && get_edgetype(in) == EdgeType::Quantum) {
+        good_vertex = false;
+        bad_vertices.insert(try_v);
+        break;
+      }
+    }
+    if (good_vertex) {
+      next_slice_lookup.insert(try_v);
+      next_slice->push_back(try_v);
+    }
+  }
+
+  return {
+      next_slice, get_next_u_frontier(*this, u_frontier, next_slice_lookup),
+      std::make_shared<b_frontier_t>()};
 }
 
 SliceVec Circuit::get_reverse_slices() const {

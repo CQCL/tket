@@ -18,6 +18,7 @@
 #include <stdexcept>
 
 #include "AdjacencyData.hpp"
+#include "Utils/Assert.hpp"
 
 using std::map;
 using std::set;
@@ -37,12 +38,14 @@ static void fill_initial_node_sequence(
 
   try {
     for (size_t clique_vertex : initial_clique) {
+      // GCOVR_EXCL_START
       if (vertices_in_component.count(clique_vertex) == 0) {
         std::stringstream ss;
         ss << "initial clique vertex " << clique_vertex
            << " is not in this component";
         throw std::runtime_error(ss.str());
       }
+      // GCOVR_EXCL_STOP
       nodes.emplace_back();
       nodes.back().vertex = clique_vertex;
     }
@@ -76,21 +79,25 @@ static void fill_initial_node_sequence(
       vertices_to_add.clear();
       current_nodes_begin = current_nodes_end;
     }
+    // GCOVR_EXCL_START
     if (nodes.size() != vertices_in_component.size()) {
       throw std::runtime_error(
           "Final size check: number of filled "
           "nodes does not match number of vertices in this component");
     }
+    // GCOVR_EXCL_STOP
   } catch (const std::exception& e) {
-    std::stringstream ss;
-    ss << "ColouringPriority: fill_initial_node_sequence: initial"
-       << " clique size " << initial_clique.size() << ", "
-       << vertices_in_component.size() << " vertices in"
-       << " this component (full graph has "
-       << adjacency_data.get_number_of_vertices() << " vertices)."
-       << " So far, filled " << nodes.size() << " nodes."
-       << " Error: " << e.what();
-    throw std::runtime_error(ss.str());
+    // GCOVR_EXCL_START
+    TKET_ASSERT(
+        AssertMessage()
+        << "ColouringPriority: fill_initial_node_sequence: initial"
+        << " clique size " << initial_clique.size() << ", "
+        << vertices_in_component.size() << " vertices in"
+        << " this component (full graph has "
+        << adjacency_data.get_number_of_vertices() << " vertices)."
+        << " So far, filled " << nodes.size() << " nodes."
+        << " Error: " << e.what());
+    // GCOVR_EXCL_STOP
   }
 }
 
@@ -115,6 +122,8 @@ const ColouringPriority::Nodes& ColouringPriority::get_nodes() const {
   return m_nodes;
 }
 
+// GCOVR_EXCL_START
+// currently used only within a tket assert macro
 string ColouringPriority::print_raw_data(bool relabel_to_simplify) const {
   map<size_t, size_t> old_vertex_to_new_vertex;
   if (relabel_to_simplify) {
@@ -168,6 +177,7 @@ string ColouringPriority::print_raw_data(bool relabel_to_simplify) const {
   ss << "\n};\n\n";
   return ss.str();
 }
+// GCOVR_EXCL_STOP
 
 ColouringPriority::ColouringPriority(
     const AdjacencyData& adjacency_data,

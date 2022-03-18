@@ -21,7 +21,6 @@
 #include <functional>
 
 #include "Circuit/Circuit.hpp"
-#include "Routing/Routing.hpp"
 #include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/Combinator.hpp"
 #include "Transformations/ContextualReduction.hpp"
@@ -147,7 +146,6 @@ PYBIND11_MODULE(transform, m) {
           "Rebase from any gate set into the gate set supported by "
           "ProjectQ (Rx, Ry, Rz, X, Y, Z, S, T, V, H, CX, CZ, CRz, "
           "SWAP).")
-      //.def_static("RebaseToMaryland", &Transforms::rebase_UMD)
       .def_static(
           "DecomposeCCX", &Transforms::decomp_CCX,
           "Decomposes all 3-qubit Toffoli (CCX) gates into "

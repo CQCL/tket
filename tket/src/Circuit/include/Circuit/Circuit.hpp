@@ -565,6 +565,16 @@ class Circuit {
       const Vertex &vert) const;  // returned by port no.
 
   /**
+   * All bundles of in Boolean edges, ordered by port number
+   *
+   * Each member of the list is a list of edges sharing the same port
+   *
+   * @param vert vertex
+   */
+  std::vector<EdgeVec> get_b_in_bundles(
+      const Vertex &vert) const;  // returned by port no.
+
+  /**
    * Total number of inward edges
    *
    * @param vert vertex
@@ -635,6 +645,11 @@ class Circuit {
    */
   const std::optional<std::string> &get_opgroup_from_Vertex(
       const Vertex &vert) const;
+
+  /**
+   * Get the set of all opgroup names.
+   */
+  const std::unordered_set<std::string> get_opgroups() const;
 
   // O(1) (lookup in hashtable)
   OpDesc get_OpDesc_from_Vertex(const Vertex &vert) const;
@@ -1059,6 +1074,11 @@ class Circuit {
       std::shared_ptr<const b_frontier_t> b_frontier,
       const std::function<bool(Op_ptr)> &skip_func) const;
 
+  // given current slice of quantum frontier, returns the next slice.
+  // ignore classical and boolean edges
+  CutFrontier next_q_cut(
+      std::shared_ptr<const unit_frontier_t> u_frontier) const;
+
   /**
    * Depth of circuit.
    *
@@ -1374,6 +1394,13 @@ class Circuit {
    * 2 (10b) means bits[0] must be 0 and bits[1] must be 1)
    */
   Circuit conditional_circuit(const bit_vector_t &bits, unsigned value) const;
+
+  /**
+   * Replaces one vertex by applying \ref Box::to_circuit
+   *
+   * @return whether the vertex holds a box or a conditional box
+   */
+  bool substitute_box_vertex(Vertex &vert, VertexDeletion vertex_deletion);
 
   /**
    * Replaces each \ref Box operation by applying \ref Box::to_circuit
