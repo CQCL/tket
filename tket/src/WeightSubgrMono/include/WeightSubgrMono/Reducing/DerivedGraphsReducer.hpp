@@ -31,25 +31,26 @@ struct DerivedGraphs;
  */
 class DerivedGraphsReducer {
  public:
-
   /** Go through the new assignments PV->TV and reduce all associated domains
    * using derived graphs.
-   * @param fixed_data Contains, e.g. neighbours data for original pattern and target graphs.
+   * @param fixed_data Contains, e.g. neighbours data for original pattern and
+   * target graphs.
    * @param assignments All assignments pv->tv made so far.
-   * @param number_of_assignments_previously_processed_in_this_node Used to avoid processing older assignments multiple times.
+   * @param number_of_assignments_previously_processed_in_this_node Used to
+   * avoid processing older assignments multiple times.
    * @param node_wrapper The object containing the node to be updated.
-   * @param derived_graphs The object containing the necessary data for the derived graphs.
-   * @return True if the search is still ongoing, false if a nogood is detected (so the search must backtrack).
+   * @param derived_graphs The object containing the necessary data for the
+   * derived graphs.
+   * @return True if the search is still ongoing, false if a nogood is detected
+   * (so the search must backtrack).
    */
   bool reduce_domains(
       const FixedData& fixed_data, Assignments& assignments,
       std::size_t number_of_assignments_previously_processed_in_this_node,
-      SearchNodeWrapper& node_wrapper,
-      DerivedGraphs& derived_pattern_graphs,
+      SearchNodeWrapper& node_wrapper, DerivedGraphs& derived_pattern_graphs,
       DerivedGraphs& derived_target_graphs);
 
  private:
-
   // A work vector.
   std::vector<VertexWSM> m_reduced_domain;
 };

@@ -21,24 +21,20 @@ namespace WeightedSubgraphMonomorphism {
 class DerivedGraphsUpdater;
 
 class TriangleCounts {
-public:
-
+ public:
   explicit TriangleCounts(DerivedGraphsUpdater& updater);
 
   /** Calculates lazily if it doesn't exist. */
   DerivedGraphStructs::Count get_count(VertexWSM v);
 
-private:
-
+ private:
   DerivedGraphsUpdater& m_updater;
   std::map<VertexWSM, DerivedGraphStructs::Count> m_data;
-  
+
   void fill_count(VertexWSM v, DerivedGraphStructs::Count count);
-  
+
   friend class DerivedGraphsUpdater;
 };
-
-
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

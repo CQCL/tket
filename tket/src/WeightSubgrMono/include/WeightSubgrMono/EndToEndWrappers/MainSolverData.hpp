@@ -16,9 +16,8 @@
 #include <memory>
 #include <optional>
 
-
-#include "MainSolverParameters.hpp"
 #include "../Searching/SolutionWSM.hpp"
+#include "MainSolverParameters.hpp"
 #include "SolutionStatistics.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 #include "WeightSubgrMono/EndToEndWrappers/CheckedWeightBounds.hpp"
@@ -27,7 +26,6 @@
 #include "WeightSubgrMono/Searching/SharedData.hpp"
 #include "WeightSubgrMono/Searching/ValueOrdering.hpp"
 #include "WeightSubgrMono/Searching/VariableOrdering.hpp"
-
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
@@ -49,20 +47,23 @@ struct MainSolverData {
   const SolutionWSM empty_solution;
 
   /** Sets "fixed_data" and, if successful, shared_data_ptr.
-   * Does some basic reduction also: some problems can be solved, or shown to be impossible, without any searching.
+   * Does some basic reduction also: some problems can be solved, or shown to be
+   * impossible, without any searching.
    * @param pattern_edges The raw data for the pattern graph.
    * @param target_edges The raw data for the target graph.
-   * @return The status: whether the problem is trivially soluble or insoluble without deep searching, or still needs searching.
+   * @return The status: whether the problem is trivially soluble or insoluble
+   * without deep searching, or still needs searching.
    */
   ReductionResult initialise(
       const GraphEdgeWeights& pattern_edges,
       const GraphEdgeWeights& target_edges);
-  
+
   /** The main searching loop to be called, after it has been initialised. */
   void solve_loop_after_initialisation(const MainSolverParameters& parameters);
 
   void do_one_solve_iteration_with_suggestion(
-      const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments);
+      const std::vector<std::pair<VertexWSM, VertexWSM>>&
+          suggested_assignments);
 };
 
 }  // namespace WeightedSubgraphMonomorphism

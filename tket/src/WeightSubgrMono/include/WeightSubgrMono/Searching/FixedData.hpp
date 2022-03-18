@@ -28,7 +28,6 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-
 /** Store all data which is unchanged throughout the backtracking
  * conveniently in one place.
  * TODO: however, we may introduce some lazy initialisation; i.e.,

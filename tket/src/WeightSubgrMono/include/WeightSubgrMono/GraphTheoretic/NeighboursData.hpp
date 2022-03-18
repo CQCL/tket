@@ -91,8 +91,9 @@ class NeighboursData {
    */
   std::vector<VertexWSM> get_neighbours_expensive(VertexWSM v) const;
 
-  typedef std::map<VertexWSM, std::vector<std::pair<VertexWSM, WeightWSM>>> NeighboursMap;
-  
+  typedef std::map<VertexWSM, std::vector<std::pair<VertexWSM, WeightWSM>>>
+      NeighboursMap;
+
   /** The caller should NOT rely on the value type, which is liable to change;
    * only the KEYS are guaranteed to be stable (the vertices).
    */
@@ -103,10 +104,10 @@ class NeighboursData {
    * Of course this is only useful/meaningful for pattern graphs,
    * not target graphs.
    */
-  bool is_adjacent_to_assigned_pv(VertexWSM pv, const Assignments& assignments) const;
+  bool is_adjacent_to_assigned_pv(
+      VertexWSM pv, const Assignments& assignments) const;
 
  private:
-
   // KEY: a vertex VALUE: all neighbouring vertices, with the edge weights.
   NeighboursMap m_neighbours_and_weights_map;
 

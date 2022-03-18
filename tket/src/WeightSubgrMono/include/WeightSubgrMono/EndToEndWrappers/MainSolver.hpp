@@ -21,13 +21,11 @@ namespace WeightedSubgraphMonomorphism {
 /** The main class which takes a raw WSM problem and tries to solve it. */
 class MainSolver {
  public:
-
   // NOTE: all the returned const SolutionStatistics& actually refer
   // to a single internally stored object, so the same reference
   // remains valid and can be reused throughout the lifetime of this object.
 
   const SolutionStatistics& get_solution_statistics() const;
-
 
   /** Do not actually solve, just set up the initial data etc. READY to solve.
    * Note that the GraphEdgeWeights objects are not needed after this,
@@ -51,7 +49,8 @@ class MainSolver {
    * had arisen normally from the variable and value ordering heuristics.
    */
   void do_one_solve_iteration_with_suggestion(
-      const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments);
+      const std::vector<std::pair<VertexWSM, VertexWSM>>&
+          suggested_assignments);
 
   /** After "initialise" has been called, actually run the solver.
    * This can be done repeatedly. The statistics are updated
@@ -68,7 +67,8 @@ class MainSolver {
   /** All-in-one initialise and solve function. */
   const SolutionStatistics& solve(
       const GraphEdgeWeights& pattern_edges,
-      const GraphEdgeWeights& target_edges, const MainSolverParameters& parameters = {});
+      const GraphEdgeWeights& target_edges,
+      const MainSolverParameters& parameters = {});
 
   /** All-in-one initialise and solve function. */
   const SolutionStatistics& solve(
@@ -82,7 +82,6 @@ class MainSolver {
   const SolutionWSM& get_best_solution() const;
 
  private:
-
   MainSolverData m_data;
 };
 

@@ -28,21 +28,19 @@ struct SharedData;
  */
 class ValueOrdering {
  public:
-
   ValueOrdering();
 
-  /** Choose TV with larger degrees, with some randomness ("Solution-Biased Search").
+  /** Choose TV with larger degrees, with some randomness ("Solution-Biased
+   * Search").
    * @param possible_values The domain of the pattern vertex PV.
-   * @param shared_data Data about graphs, etc. etc. (and also RNG) to assist with the
-   * decision.
+   * @param shared_data Data about graphs, etc. etc. (and also RNG) to assist
+   * with the decision.
    * @return The chosen TV from Dom(PV).
    */
   VertexWSM get_target_value(
-      const std::set<VertexWSM>& possible_values,
-      SharedData& shared_data);
+      const std::set<VertexWSM>& possible_values, SharedData& shared_data);
 
-private:
-
+ private:
   struct HighDegreeVerticesData {
     std::vector<VertexWSM> vertices;
 
@@ -56,7 +54,8 @@ private:
   std::vector<HighDegreeVerticesData> m_data;
 
   // Fills m_data.
-  void fill_data(const std::set<VertexWSM>& possible_values, SharedData& shared_data);
+  void fill_data(
+      const std::set<VertexWSM>& possible_values, SharedData& shared_data);
 
   // Once fill_data has been called, select a vertex
   // at random, biased so that the probability is proportional

@@ -13,9 +13,10 @@
 // limitations under the License.
 
 #pragma once
+#include <memory>
+
 #include "DerivedGraphsCalculator.hpp"
 #include "DerivedGraphsUpdater.hpp"
-#include <memory>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
@@ -27,8 +28,7 @@ struct FixedData;
  * if a single PV->TV assignment may be possible.
  */
 class DerivedGraphsFilter {
-public:
-
+ public:
   explicit DerivedGraphsFilter(const FixedData& fixed_data);
 
   ~DerivedGraphsFilter();
@@ -36,22 +36,25 @@ public:
   /** Does the individual PV->TV mapping appear to be compatible?
    * @param pv A pattern vertex
    * @param tv A target vertex
-   * @param fixed_data Contains necessary data (specifically, NeighboursData), since the information is calculated lazily.
-   * @return True if the mapping appears to be possible, false if it is DEFINITELY always impossible, regardless of the other assignments. Thus, if false, TV can be deleted from Dom(PV) at every level.
+   * @param fixed_data Contains necessary data (specifically, NeighboursData),
+   * since the information is calculated lazily.
+   * @return True if the mapping appears to be possible, false if it is
+   * DEFINITELY always impossible, regardless of the other assignments. Thus, if
+   * false, TV can be deleted from Dom(PV) at every level.
    */
   bool is_compatible(VertexWSM pv, VertexWSM tv, const FixedData& fixed_data);
 
-  /** For convenience, return the internal derived graphs, to be shared by other objects.
+  /** For convenience, return the internal derived graphs, to be shared by other
+   * objects.
    * @return The derived graphs.
-  */
+   */
   DerivedGraphs& get_derived_pattern_graphs();
   DerivedGraphs& get_derived_target_graphs();
 
-private:
-
+ private:
   DerivedGraphsCalculator m_calculator;
   DerivedGraphsStorage m_storage;
-  
+
   std::unique_ptr<DerivedGraphsUpdaterPair> m_updater_pair_ptr;
 
   // All PV->TV mappings previously calculated to be compatible.
@@ -67,13 +70,16 @@ private:
   // Note that we only ever need at most 1 object from each map
   // simultaneously, so they are independent and we don't need to worry
   // about invalidated references.
-  std::map<VertexWSM, std::vector<DerivedGraphStructs::Count>> m_d2_pattern_weights;
-  std::map<VertexWSM, std::vector<DerivedGraphStructs::Count>> m_d2_target_weights;
+  std::map<VertexWSM, std::vector<DerivedGraphStructs::Count>>
+      m_d2_pattern_weights;
+  std::map<VertexWSM, std::vector<DerivedGraphStructs::Count>>
+      m_d2_target_weights;
 
-  std::map<VertexWSM, std::vector<DerivedGraphStructs::Count>> m_d3_pattern_weights;  
-  std::map<VertexWSM, std::vector<DerivedGraphStructs::Count>> m_d3_target_weights;
+  std::map<VertexWSM, std::vector<DerivedGraphStructs::Count>>
+      m_d3_pattern_weights;
+  std::map<VertexWSM, std::vector<DerivedGraphStructs::Count>>
+      m_d3_target_weights;
 };
-
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

@@ -38,6 +38,5 @@ struct DerivedGraphs {
   DerivedGraphs(DerivedGraphsUpdater& updater);
 };
 
-
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

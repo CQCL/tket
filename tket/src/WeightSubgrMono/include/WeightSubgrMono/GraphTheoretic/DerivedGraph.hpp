@@ -21,8 +21,7 @@ namespace WeightedSubgraphMonomorphism {
 class DerivedGraphsUpdater;
 
 class DerivedGraph {
-public:
-
+ public:
   explicit DerivedGraph(DerivedGraphsUpdater& updater);
 
   /** If the data does not already exist, will evaluate it lazily.
@@ -32,16 +31,15 @@ public:
    */
   const DerivedGraphStructs::NeighboursAndCounts& get_neighbours(VertexWSM v);
 
-private:
+ private:
   DerivedGraphsUpdater& m_updater;
   std::map<VertexWSM, DerivedGraphStructs::Iter> m_data;
 
   /** Requires the entry for v NOT to exist before this call. */
   void add_neighbours(VertexWSM v, DerivedGraphStructs::Iter iter);
-  
+
   friend class DerivedGraphsUpdater;
 };
-
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

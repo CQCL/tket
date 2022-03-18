@@ -13,8 +13,9 @@
 // limitations under the License.
 
 #pragma once
-#include "DerivedGraphsCalculator.hpp"
 #include <memory>
+
+#include "DerivedGraphsCalculator.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
@@ -23,15 +24,15 @@ class NeighboursData;
 struct DerivedGraphs;
 
 class DerivedGraphsUpdater {
-public:
-
+ public:
   /** The updater needs to have a reference to derived graph objects
    * (so it knows what to update); but then, within this constructor,
    * the derived graph objects are given a pointer to this updater object
    * (so, each graph knows who to inform, when data needs to be updated).
    */
-  DerivedGraphsUpdater(const NeighboursData& ndata, DerivedGraphsCalculator& calculator,
-        DerivedGraphsStorage& storage);
+  DerivedGraphsUpdater(
+      const NeighboursData& ndata, DerivedGraphsCalculator& calculator,
+      DerivedGraphsStorage& storage);
 
   ~DerivedGraphsUpdater();
 
@@ -42,25 +43,21 @@ public:
   unsigned get_n_verts() const;
   unsigned get_n_edges() const;
 
-private:
-
+ private:
   const NeighboursData& m_original_graph;
   DerivedGraphsCalculator& m_calculator;
   DerivedGraphsStorage& m_storage;
   std::unique_ptr<DerivedGraphs> m_derived_graphs_ptr;
 };
 
-
 struct DerivedGraphsUpdaterPair {
   DerivedGraphsUpdater patterns_updater;
   DerivedGraphsUpdater targets_updater;
 
-  DerivedGraphsUpdaterPair(const NeighboursData& pattern_ndata,
-      const NeighboursData& target_ndata,
-      DerivedGraphsCalculator& calculator,
-      DerivedGraphsStorage& storage);
+  DerivedGraphsUpdaterPair(
+      const NeighboursData& pattern_ndata, const NeighboursData& target_ndata,
+      DerivedGraphsCalculator& calculator, DerivedGraphsStorage& storage);
 };
-
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

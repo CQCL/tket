@@ -35,7 +35,6 @@ struct SharedData;
  */
 class SearchBranch {
  public:
-
   SearchBranch();
 
   /** Fills in the top node, but might not FULLY reduce.
@@ -119,10 +118,10 @@ class SearchBranch {
    * from all domains.
    * @param pv A pattern vertex.
    * @param tv A target vertex.
-   * @return True if tv has been successfully erased from every Dom(pv), at every level.
+   * @return True if tv has been successfully erased from every Dom(pv), at
+   * every level.
    */
   bool erase_assignment(VertexWSM pv, VertexWSM tv);
-
 
  private:
   std::size_t m_level;

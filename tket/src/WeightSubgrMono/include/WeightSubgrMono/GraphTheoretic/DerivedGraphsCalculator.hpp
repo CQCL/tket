@@ -38,31 +38,34 @@ class NeighboursData;
  * until they're needed.
  */
 class DerivedGraphsCalculator {
-public:
-
+ public:
   /** Upon demand, calculates teh neighbours in D2, D3 of the given vertex,
    * and fills the given vectors with thr results.
    * @param ndata The NeighboursData object for the original graph.
    * @param v The vertex in the original graph.
-   * @param depth_2_neighbours_and_counts Data for the neighbours of v in the derived graph D2. Sorted by vertex.
-   * @param depth_3_neighbours_and_counts Data for the neighbours of v in the derived graph D3. Sorted by vertex.
-   * @return The triangle count of v (number of triangles containing v), another useful vertex property.
+   * @param depth_2_neighbours_and_counts Data for the neighbours of v in the
+   * derived graph D2. Sorted by vertex.
+   * @param depth_3_neighbours_and_counts Data for the neighbours of v in the
+   * derived graph D3. Sorted by vertex.
+   * @return The triangle count of v (number of triangles containing v), another
+   * useful vertex property.
    */
-  DerivedGraphStructs::Count fill_neighbours_and_weights(const NeighboursData& ndata, VertexWSM v,
-          DerivedGraphStructs::NeighboursAndCounts& depth_2_neighbours_and_counts,
-          DerivedGraphStructs::NeighboursAndCounts& depth_3_neighbours_and_counts);
+  DerivedGraphStructs::Count fill_neighbours_and_weights(
+      const NeighboursData& ndata, VertexWSM v,
+      DerivedGraphStructs::NeighboursAndCounts& depth_2_neighbours_and_counts,
+      DerivedGraphStructs::NeighboursAndCounts& depth_3_neighbours_and_counts);
 
-private:
-
+ private:
   // KEY: a vertex v2
   // VALUE: sorted vector of all v1 such that v0--v1--v2 is a path.
-  std::map<VertexWSM, std::vector<VertexWSM>> m_mid_vertices_for_length_two_paths;
-  
+  std::map<VertexWSM, std::vector<VertexWSM>>
+      m_mid_vertices_for_length_two_paths;
+
   // KEY: vertex v3
   // VALUE: the number of distinct paths v--v1--v2--v3.
-  std::map<VertexWSM, DerivedGraphStructs::Count> m_depth_3_neighbours_and_counts_map;
+  std::map<VertexWSM, DerivedGraphStructs::Count>
+      m_depth_3_neighbours_and_counts_map;
 };
-
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

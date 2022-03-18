@@ -26,8 +26,7 @@ struct SharedData;
  */
 class VariableOrdering {
  public:
-
-  /** 
+  /**
    * @param node The node containing data on the current domains.
    * @param assignments All current assignments, not just those in the current
    * node.
@@ -41,7 +40,6 @@ class VariableOrdering {
       SharedData& shared_data);
 
  private:
-
   std::vector<VertexWSM> m_pattern_vertices_with_smallest_domain;
 
   // Fills m_pattern_vertices_with_smallest_domain,

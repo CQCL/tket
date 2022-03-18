@@ -13,14 +13,14 @@
 // limitations under the License.
 
 #pragma once
-#include "GeneralStructs.hpp"
 #include <forward_list>
+
+#include "GeneralStructs.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 struct DerivedGraphStructs {
-
   /** This is an actual count of paths in the original graph,
    * used as an edge weight in a derived graph.
    */
@@ -35,18 +35,15 @@ struct DerivedGraphStructs {
   typedef List::iterator Iter;
 };
 
-
 /** Put all the raw data for graphs in one place. */
 class DerivedGraphsStorage {
-public:
-
+ public:
   /** The whole point is that we want references which are not invalidated
    * by lazy evaluation of other parts of the graphs.
    */
   DerivedGraphStructs::Iter get_new_neighbours_and_counts_iter();
 
-private:
-  
+ private:
   // Stores the neighbours data, but without understanding the meaning.
   // (I.e., it's up to the caller to assign this data to appropriate graphs;
   // this class knows nothing about which graphs/vertices have which

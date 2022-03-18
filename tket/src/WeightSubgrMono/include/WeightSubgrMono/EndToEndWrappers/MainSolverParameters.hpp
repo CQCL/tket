@@ -20,7 +20,6 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-
 /** Simple input parameters to configure the solving. */
 struct MainSolverParameters {
   /** The timeout only for the current call to "solve",
@@ -52,7 +51,6 @@ struct MainSolverParameters {
   /** Just set the timeout in milliseconds; the most common parameter. */
   explicit MainSolverParameters(long long timeout_ms);
 };
-
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

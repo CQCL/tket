@@ -17,10 +17,10 @@
 #include <optional>
 #include <set>
 
-#include "Utils/RNG.hpp"
-#include "../Reducing/CloseVerticesFilter.hpp"
 #include "../GraphTheoretic/DerivedGraphsFilter.hpp"
+#include "../Reducing/CloseVerticesFilter.hpp"
 #include "SolutionStorage.hpp"
+#include "Utils/RNG.hpp"
 #include "WeightSubgrMono/Reducing/DerivedGraphsReducer.hpp"
 
 namespace tket {
@@ -82,9 +82,10 @@ struct SharedData {
       ValueOrdering& val_ordering);
 
   ReductionResult search_with_suggestion(
-        SearchBranch& branch, VariableOrdering& var_ordering,
-        ValueOrdering& val_ordering,
-        const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments);
+      SearchBranch& branch, VariableOrdering& var_ordering,
+      ValueOrdering& val_ordering,
+      const std::vector<std::pair<VertexWSM, VertexWSM>>&
+          suggested_assignments);
 };
 
 }  // namespace WeightedSubgraphMonomorphism

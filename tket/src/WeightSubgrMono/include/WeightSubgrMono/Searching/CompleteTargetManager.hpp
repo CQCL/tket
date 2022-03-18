@@ -28,17 +28,18 @@ struct SearchNode;
  */
 class CompleteTargetManager {
  public:
-
   explicit CompleteTargetManager(const FixedData& fixed_data);
 
-  /** All-in-one variable and valure chooser. Returns the next PV->TV assignment to make. */
-  std::pair<VertexWSM, VertexWSM> choose_next_assignment(const SearchNode& node, const Assignments& assignments) const;
+  /** All-in-one variable and valure chooser. Returns the next PV->TV assignment
+   * to make. */
+  std::pair<VertexWSM, VertexWSM> choose_next_assignment(
+      const SearchNode& node, const Assignments& assignments) const;
 
   /** A replacement for the class VariableOrdering. */
-  VertexWSM choose_variable(const SearchNode& node, const Assignments& assignments) const;
+  VertexWSM choose_variable(
+      const SearchNode& node, const Assignments& assignments) const;
 
  private:
-
   const FixedData& m_fixed_data;
 
   // Crude: choose PV with LARGEST edge weights sum.
@@ -47,7 +48,8 @@ class CompleteTargetManager {
   std::map<VertexWSM, WeightWSM> m_pattern_edge_sums;
 
   // KEY: target vertex TV
-  // VALUE: element[i] is the sum of the smallest i+1 target edge weights joining TV
+  // VALUE: element[i] is the sum of the smallest i+1 target edge weights
+  // joining TV
   std::map<VertexWSM, std::vector<WeightWSM>> m_target_partial_edge_sums;
 };
 
