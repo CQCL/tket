@@ -269,7 +269,7 @@ SCENARIO("Self-embed cubic lattices") {
 
   CheckedSolution::Statistics stats;
   CheckedSolution::ProblemInformation info;
-  const MainSolver::Parameters solver_params(10000);
+  const MainSolverParameters solver_params(10000);
 
   for (unsigned ii = 0; ii < max_k; ++ii) {
     const CubicLattice lattice(ii + 1);
@@ -294,11 +294,9 @@ SCENARIO("Self-embed cubic lattices") {
     CheckedSolution(
         list_of_weights_data[0], list_of_weights_data[0], info, solver_params,
         stats);
-    os << "; time " << stats.total_init_time_ms - old_init_time << "+"
-       << stats.total_search_time_ms - old_search_time;
   }
-  os << "\n@@@ fin. time " << stats.total_init_time_ms << "+"
-     << stats.total_search_time_ms;
+  os << "\n@@@ Cubic lattice fin. Time " << stats.total_init_time_ms << "+"
+     << stats.total_search_time_ms << "\n";
 
   CHECK(stats.success_count == max_k);
   CHECK(stats.failure_count == 0);

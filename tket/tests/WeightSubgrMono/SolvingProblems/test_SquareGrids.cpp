@@ -116,7 +116,7 @@ SCENARIO("test searching with square grids") {
         const WeightWSM optimal_solution =
             grids[ii].get_subgraph_isomorphism_min_scalar_product(grids[jj]);
         CheckedSolution::ProblemInformation info;
-        MainSolver::Parameters solver_params;
+        MainSolverParameters solver_params;
 
         if (optimal_solution == 0) {
           info.existence = CheckedSolution::ProblemInformation::

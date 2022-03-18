@@ -49,6 +49,8 @@ struct CheckedSolution {
   std::optional<WeightWSM> complete_solution_weight;
   bool finished = false;
 
+  std::size_t iterations = 0;
+
   // The best solution found. This may or may not be complete.
   // If "complete_solution_weight" is not null, then it IS complete,
   // and has been checked to be valid.
@@ -57,8 +59,9 @@ struct CheckedSolution {
   // Solve the given problem, updating the statistics.
   CheckedSolution(
       const GraphEdgeWeights& pdata, const GraphEdgeWeights& tdata,
-      ProblemInformation info, const MainSolver::Parameters& solver_params,
-      Statistics& stats);
+      ProblemInformation info, const MainSolverParameters& solver_params,
+      Statistics& stats,
+      const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments = {});
 };
 
 }  // namespace WeightedSubgraphMonomorphism

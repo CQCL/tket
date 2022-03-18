@@ -222,13 +222,13 @@ SCENARIO("embedding paths into square grids") {
       KNOWN_TO_BE_SOLUBLE;
 
   CheckedSolution::Statistics statistics;
-  const MainSolver::Parameters solver_params(timeout);
+  const MainSolverParameters solver_params(timeout);
   const auto& os = TestSettings::get().os;
 
   for (const auto& entry : solved_problems_map) {
     os << "\nTesting '" << entry.first << "', square grid target " << std::hex
        << entry.second[0] << std::dec
-       << ", embedding shakes of length <= " << entry.second.size() - 3
+       << ", embedding snakes of length <= " << entry.second.size() - 3
        << ", timeout=" << timeout << ":";
     const auto t_graph_data =
         ProblemGeneration::get_target_graph_for_encoded_square_grid(

@@ -92,7 +92,6 @@ static std::map<std::string, EncodedSolvedProblems> get_data() {
            0,
            832,
        }},
-
       {"Varying density1",
        {
            0x602001850028000,
@@ -458,9 +457,9 @@ SCENARIO("embedding all-against-all") {
 
   // These problems are small and easy.
   // <300ms TOTAL for the whole set, no timeouts anywhere near being hit.
-  const unsigned timeout_ms = 200;
+  const unsigned timeout_ms = 1000;
   CheckedSolution::Statistics statistics;
-  const MainSolver::Parameters solver_params(timeout_ms);
+  const MainSolverParameters solver_params(timeout_ms);
   const CheckedSolution::ProblemInformation info;
 
   // Holds the decoded graph data.
@@ -500,6 +499,7 @@ SCENARIO("embedding all-against-all") {
       for (unsigned jj = 0; jj < gdata.size(); ++jj) {
         const CheckedSolution checked_solution(
             gdata[ii], gdata[jj], info, solver_params, statistics);
+
         // Should be no timeouts!
         CHECK(checked_solution.finished);
         if (checked_solution.complete_solution_weight) {

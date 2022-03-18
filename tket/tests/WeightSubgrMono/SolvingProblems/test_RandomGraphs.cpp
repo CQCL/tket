@@ -182,7 +182,7 @@ static TestResult test_all_against_all(
      << " vertices\n#### now testing all against all, timeout "
      << params.timeout;
   CheckedSolution::Statistics statistics;
-  const MainSolver::Parameters solver_params(params.timeout);
+  const MainSolverParameters solver_params(params.timeout);
 
   const auto update_calc_results =
       [&calc_results](const CheckedSolution& checked_solution) {
@@ -380,7 +380,6 @@ SCENARIO("embedding random graphs - mixed sizes and densities") {
       "30 200 8888", "30 400 9999"};
   const std::vector<WeightWSM> weights{1, 2, 5, 20};
 
-  // timeout 5000
   const ResultsSummary expected_results{
       911552196, 461091619, 772140787, 11588550,   1037162436, 766190752,
       951748272, 961275497, 870669976, 1033828678, 117,        91,
@@ -403,7 +402,7 @@ SCENARIO("embedding random graphs - mixed sizes and densities") {
       0,         31845};
 
   TestParameters params;
-  params.timeout = 5000;
+  params.timeout = 20000;
 
   OverwriteValues overwrite_values;
   unsigned expected_time_ms = 7000;
