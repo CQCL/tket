@@ -19,6 +19,7 @@ import subprocess
 import sys
 import json
 import shutil
+from tempfile import NamedTemporaryFile
 from multiprocessing import cpu_count
 from distutils.version import LooseVersion
 from concurrent.futures import ThreadPoolExecutor as Pool
@@ -83,27 +84,21 @@ class CMakeBuild(build_ext):
         if platform.system() in ["Darwin", "Windows"]:
             # Hack to put the tket library alongside the extension libraries
             conan_tket_profile = os.getenv("CONAN_TKET_PROFILE", default="tket")
-            conaninfo = dict(
-                [
-                    (comp["reference"], comp)
-                    for comp in json.loads(
-                        subprocess.run(
-                            [
-                                "conan",
-                                "info",
-                                "--profile",
-                                conan_tket_profile,
-                                "--path",
-                                "--json",
-                                "--",
-                                ".",
-                            ],
-                            stdout=subprocess.PIPE,
-                            cwd=extsource,
-                        ).stdout
-                    )
-                ]
-            )
+            with NamedTemporaryFile() as f:
+                subprocess.run(
+                    [
+                        "conan",
+                        "info",
+                        "--profile",
+                        conan_tket_profile,
+                        "--path",
+                        "--json",
+                        f.name,
+                        ".",
+                    ],
+                    cwd=extsource,
+                )
+                conaninfo = dict([(comp["reference"], comp) for comp in json.loads(f)])
             reqs = conaninfo["conanfile.txt"]["requires"]
             tket_reqs = [req for req in reqs if req.startswith("tket/")]
             assert len(tket_reqs) == 1
