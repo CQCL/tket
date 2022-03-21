@@ -83,27 +83,23 @@ class CMakeBuild(build_ext):
         if platform.system() in ["Darwin", "Windows"]:
             # Hack to put the tket library alongside the extension libraries
             conan_tket_profile = os.getenv("CONAN_TKET_PROFILE", default="tket")
-            conaninfo = dict(
+            jsondump = "conaninfo.json"
+            subprocess.run(
                 [
-                    (comp["reference"], comp)
-                    for comp in json.loads(
-                        subprocess.run(
-                            [
-                                "conan",
-                                "info",
-                                "--profile",
-                                conan_tket_profile,
-                                "--path",
-                                "--json",
-                                "--",
-                                ".",
-                            ],
-                            stdout=subprocess.PIPE,
-                            cwd=extsource,
-                        ).stdout
-                    )
-                ]
+                    "conan",
+                    "info",
+                    "--profile",
+                    conan_tket_profile,
+                    "--path",
+                    "--json",
+                    jsondump,
+                    ".",
+                ],
+                cwd=extsource,
             )
+            with open(jsondump) as f:
+                conaninfo = dict([(comp["reference"], comp) for comp in json.load(f)])
+            os.remove(jsondump)
             reqs = conaninfo["conanfile.txt"]["requires"]
             tket_reqs = [req for req in reqs if req.startswith("tket/")]
             assert len(tket_reqs) == 1
