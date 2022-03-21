@@ -124,16 +124,13 @@ SCENARIO("Testing diagram creation & vertex/edge additions") {
 
   CHECK(diag.remove_wire(
       tri_v, zSpid_v,
-      {ZXWireType::Basic, QuantumType::Quantum, std::nullopt,
-      std::nullopt}));
+      {ZXWireType::Basic, QuantumType::Quantum, std::nullopt, std::nullopt}));
   diag.add_wire(
-      zSpid_v, tri_v, ZXWireType::Basic, QuantumType::Quantum, std::nullopt,
-      1);
+      zSpid_v, tri_v, ZXWireType::Basic, QuantumType::Quantum, std::nullopt, 1);
   REQUIRE_NOTHROW(diag.check_validity());
 
   Wire extra_port =
-      diag.add_wire(tri_v, zSpid_v, ZXWireType::Basic, QuantumType::Quantum,
-      1);
+      diag.add_wire(tri_v, zSpid_v, ZXWireType::Basic, QuantumType::Quantum, 1);
   REQUIRE_THROWS_WITH(
       diag.check_validity(), "Multiple wires on the same port of a vertex");
   diag.remove_wire(extra_port);
@@ -154,8 +151,7 @@ SCENARIO("Testing diagram creation & vertex/edge additions") {
   diag.add_wire(box_v, hbox_v, ZXWireType::Basic, QuantumType::Quantum, 1);
   diag.add_wire(box_v, xSpid_v, ZXWireType::Basic, QuantumType::Quantum, 2);
   Wire wrong_qtype =
-      diag.add_wire(box_v, hbox_v, ZXWireType::Basic, QuantumType::Quantum,
-      3);
+      diag.add_wire(box_v, hbox_v, ZXWireType::Basic, QuantumType::Quantum, 3);
   REQUIRE_THROWS_WITH(
       diag.check_validity(),
       "QuantumType of wire is incompatible with the given port");
@@ -291,7 +287,7 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(x_ptr->get_qtype() == QuantumType::Quantum);
     PhasedGen x_gen = static_cast<const PhasedGen &>(*x_ptr);
     REQUIRE(x_gen.get_param() == 0.3);
-    REQUIRE(test_equiv_expr_c(zx.get_scalar(), exp(-i_ * 0.5 * PI * 0.3)));
+    REQUIRE(test_equiv_expr_c(zx.get_scalar(), exp(-i_ * PI * 0.3)));
     // False
     REQUIRE(zx.n_vertices() == 3);
     REQUIRE(zx.n_wires() == 2);
@@ -324,7 +320,7 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(z_ptr->get_qtype() == QuantumType::Quantum);
     PhasedGen z_gen = static_cast<const PhasedGen &>(*z_ptr);
     REQUIRE(z_gen.get_param() == 0.4);
-    REQUIRE(test_equiv_expr_c(zx.get_scalar(), exp(-i_ * 0.5 * PI * 0.4)));
+    REQUIRE(test_equiv_expr_c(zx.get_scalar(), exp(-i_ * PI * 0.4)));
     REQUIRE(zx.n_vertices() == 3);
     REQUIRE(zx.n_wires() == 2);
   }
@@ -338,7 +334,7 @@ SCENARIO("Check converting gates to spiders") {
     ZXGen_ptr h_ptr = zx.get_vertex_ZXGen_ptr(h);
     REQUIRE(h_ptr->get_type() == ZXType::Hbox);
     REQUIRE(h_ptr->get_qtype() == QuantumType::Quantum);
-    REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
+    REQUIRE(test_equiv_expr_c(zx.get_scalar(), 0.5));
     REQUIRE(zx.n_vertices() == 3);
     REQUIRE(zx.n_wires() == 2);
   }
@@ -362,7 +358,7 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(ctr_ptr->get_qtype() == QuantumType::Quantum);
     REQUIRE(targ_ptr->get_type() == ZXType::XSpider);
     REQUIRE(targ_ptr->get_qtype() == QuantumType::Quantum);
-    REQUIRE(test_equiv_expr_c(zx.get_scalar(), sqrt(2)));
+    REQUIRE(test_equiv_expr_c(zx.get_scalar(), 2));
     REQUIRE(zx.n_vertices() == 6);
     REQUIRE(zx.n_wires() == 5);
     REQUIRE(zx.get_qtype(w.value()) == QuantumType::Quantum);
@@ -388,7 +384,7 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(ctr_ptr->get_qtype() == QuantumType::Quantum);
     REQUIRE(targ_ptr->get_type() == ZXType::ZSpider);
     REQUIRE(targ_ptr->get_qtype() == QuantumType::Quantum);
-    REQUIRE(test_equiv_expr_c(zx.get_scalar(), sqrt(2)));
+    REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
     REQUIRE(zx.n_vertices() == 6);
     REQUIRE(zx.n_wires() == 5);
     REQUIRE(zx.get_qtype(w.value()) == QuantumType::Quantum);
@@ -441,7 +437,7 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(gen_ptr0->get_qtype() == QuantumType::Classical);
     REQUIRE(gen_ptr1->get_type() == ZXType::XSpider);
     REQUIRE(gen_ptr1->get_qtype() == QuantumType::Quantum);
-    REQUIRE(test_equiv_expr_c(zx.get_scalar(), sqrt(0.5)));
+    REQUIRE(test_equiv_expr_c(zx.get_scalar(), 0.5));
     REQUIRE(zx.n_vertices() == 4);
     REQUIRE(zx.n_wires() == 2);
   }
@@ -484,7 +480,7 @@ SCENARIO("Check converting circuits to diagrams") {
     REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Classical) == 1);
     REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Quantum) == 3);
     REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Classical) == 1);
-    Expr e = exp(i_ * PI * ea);
+    Expr e = exp(2. * i_ * PI * ea);
     REQUIRE(zx.get_scalar() == 1.0 * e);
   }
 
@@ -506,8 +502,7 @@ SCENARIO("Check converting circuits to diagrams") {
     REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Quantum) == 6);
     REQUIRE(zx.count_vertices(ZXType::Hbox, QuantumType::Quantum) == 1);
     REQUIRE(zx.count_wires(ZXWireType::H) == 2);
-    REQUIRE(test_equiv_expr_c(
-        zx.get_scalar(), 2 * sqrt(2) * exp(-i_ * PI * 0.5 * 0.5)));
+    REQUIRE(test_equiv_expr_c(zx.get_scalar(), exp(-i_ * PI * 0.5)));
   }
 
   GIVEN("A simple symbolic circuit") {
@@ -521,7 +516,7 @@ SCENARIO("Check converting circuits to diagrams") {
     ZXDiagram zx(circ);
     REQUIRE(zx.n_vertices() == 3);
     REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Quantum) == 1);
-    Expr e = exp(-i_ * PI * 0.5 * ea + i_ * PI * eb);
+    Expr e = exp(-i_ * PI * ea + 2. * i_ * PI * eb);
     REQUIRE(zx.get_scalar() == 1.0 * e);
   }
 
@@ -535,8 +530,7 @@ SCENARIO("Check converting circuits to diagrams") {
     circ.add_box(c0box, {0, 1});
     ZXDiagram zx(circ);
     REQUIRE(zx.n_vertices() == 8);
-    REQUIRE(test_equiv_expr_c(
-        zx.get_scalar(), sqrt(2) * exp(-i_ * PI * 0.5 * 0.8)));
+    REQUIRE(test_equiv_expr_c(zx.get_scalar(), 2. * exp(-i_ * PI * 0.8)));
   }
 
   GIVEN("A circuit requires rebase") {
@@ -548,7 +542,7 @@ SCENARIO("Check converting circuits to diagrams") {
     REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Quantum) == 2);
     REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Quantum) == 2);
     REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Quantum) == 4);
-    REQUIRE(test_equiv_expr_c(zx.get_scalar(), 2));
+    REQUIRE(test_equiv_expr_c(zx.get_scalar(), 4));
   }
 
   GIVEN("A simple circuit with projective operations") {

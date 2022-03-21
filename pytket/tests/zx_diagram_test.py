@@ -630,12 +630,21 @@ def test_simplification() -> None:
     final = final * 0.5 * 1j
     assert np.allclose(original, final)
 
+
 def test_converting_to_circuit() -> None:
-    c = Circuit(2)
-    c.CX(0,1)
+    c = Circuit(4)
+    c.CZ(0, 1)
+    c.CX(1, 2)
+    c.H(1)
+    c.Rx(0.7, 3)
+    c.Rz(0.2, 1)
+    c.X(3)
+    c.CRz(0.9, 0, 1)
     diag = ZXDiagram(c)
+    print(c.get_unitary())
+    print(unitary_from_quantum_diagram(diag))
     assert np.allclose(c.get_unitary(), unitary_from_quantum_diagram(diag))
-    
+
 
 if __name__ == "__main__":
     test_generator_creation()

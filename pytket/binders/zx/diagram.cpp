@@ -138,7 +138,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "n_wires", &ZXDiagram::n_wires,
           "Counts the number of edges in the diagram.")
       .def(
-          "count_vertices", 
+          "count_vertices",
           [](const ZXDiagram& diag, const ZXType& type) {
             return diag.count_vertices(type);
           },
