@@ -98,7 +98,7 @@ class CMakeBuild(build_ext):
                     ],
                     cwd=extsource,
                 )
-                conaninfo = dict([(comp["reference"], comp) for comp in json.loads(f)])
+                conaninfo = dict([(comp["reference"], comp) for comp in json.load(f)])
             reqs = conaninfo["conanfile.txt"]["requires"]
             tket_reqs = [req for req in reqs if req.startswith("tket/")]
             assert len(tket_reqs) == 1
