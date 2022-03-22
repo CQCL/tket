@@ -128,7 +128,7 @@ jobs:
       if: github.event_name == 'schedule'
       run: |
         wget https://cqcl.github.io/tket/tket/test-coverage/summary.txt
-        ./.github/workflows/compare-coverage summary-full.txt test-coverage/summary-full.txt
+        ./.github/workflows/compare-coverage summary.txt test-coverage/summary.txt
 
   publish_coverage:
     name: Publish coverage
