@@ -111,7 +111,6 @@ bool DerivedGraphsReducer::reduce_domains(
   }
 
   const auto& chosen_assignments = node_wrapper.get().chosen_assignments;
-  const auto& domains_map = node_wrapper.get().pattern_v_to_possible_target_v;
 
   while (number_of_assignments_previously_processed_in_this_node <
          chosen_assignments.size()) {
@@ -127,19 +126,17 @@ bool DerivedGraphsReducer::reduce_domains(
             derived_target_graphs.d2_graph.get_neighbours(new_tv), node_wrapper,
             assignments, m_reduced_domain)
 
-        /*
-          // TODO: there is a strange intermittent bug
-          // (seems like a Heisenbug?) in
-          // tests\WeightSubgrMono\SolvingProblems\test_UnweightedProblems.cpp,
-          // when this is uncommented.
-          // No time to fix it now! come back later...
-            ||
+        // TODO: there is a strange intermittent bug
+        // (seems like a Heisenbug?) in
+        // tests\WeightSubgrMono\SolvingProblems\test_UnweightedProblems.cpp,
+        // when this is uncommented.
+        // No time to fix it now! come back later...
+        //   ||
+        // !check_and_reduce(
+        //   derived_pattern_graphs.d3_graph.get_neighbours(new_pv),
+        //   derived_target_graphs.d3_graph.get_neighbours(new_tv),
+        //   node_wrapper, assignments, m_reduced_domain)
 
-          !check_and_reduce(
-            derived_pattern_graphs.d3_graph.get_neighbours(new_pv),
-            derived_target_graphs.d3_graph.get_neighbours(new_tv),
-            node_wrapper, assignments, m_reduced_domain)
-            //*/
     ) {
       return false;
     }
