@@ -202,7 +202,7 @@ ReductionResult SearchBranch::reduce_current_node(
           current_n_chosen_assignments ==
           enriched_node.node_wrapper.get().chosen_assignments.size());
     }
-    //*/
+    */
 
     // Nogood detectors; these don't REDUCE anything, they just try to detect
     // if we're already at a dead end (we just don't know it yet...)
