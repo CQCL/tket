@@ -14,4 +14,3 @@
 
 """Functions for splitting circuits to a variable number of subcircuits and 
 converting each to measurement based quantum computing."""
-
