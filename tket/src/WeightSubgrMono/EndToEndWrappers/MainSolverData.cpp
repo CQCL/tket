@@ -57,6 +57,13 @@ void MainSolverData::solve_loop_after_initialisation(
     const MainSolverParameters& parameters) {
   TKET_ASSERT(initialised);
   TKET_ASSERT(shared_data_ptr);
+  if (parameters.for_multiple_full_solutions_the_max_number_to_obtain > 0) {
+    shared_data_ptr->solution_storage.get_parameters()
+        .accept_equally_good_solutions = true;
+    shared_data_ptr->solution_storage.get_parameters()
+        .store_all_full_solutions = true;
+  }
+
   const auto solve_start_time = Clock::now();
   const auto solve_timeout_time =
       solve_start_time + std::chrono::milliseconds(parameters.timeout_ms);
@@ -72,6 +79,12 @@ void MainSolverData::solve_loop_after_initialisation(
     const auto reduction_result =
         shared_data_ptr->search(branch, var_ordering, val_ordering);
 
+    if (parameters.for_multiple_full_solutions_the_max_number_to_obtain > 0 &&
+        shared_data_ptr->solution_storage.get_some_full_solutions().size() >=
+            parameters.for_multiple_full_solutions_the_max_number_to_obtain) {
+      statistics.finished = true;
+      break;
+    }
     if (reduction_result == ReductionResult::FINISHED) {
       statistics.finished = true;
       break;

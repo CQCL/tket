@@ -43,18 +43,27 @@ static void copy_solution_into_storage(
   solution.total_scalar_product_weight = new_scalar_prod;
 }
 
-SolutionStorage::SolutionStorage() : m_log_level(0), m_pruning_weight(0) {}
+SolutionStorage::SolutionStorage() : m_pruning_weight(0) {}
+
+SolutionStorage::Parameters::Parameters()
+    : log_level(0),
+      accept_equally_good_solutions(false),
+      store_all_full_solutions(false) {}
+
+SolutionStorage::Parameters& SolutionStorage::get_parameters() {
+  return m_parameters;
+}
+
+const SolutionStorage::FullSolutionsList&
+SolutionStorage::get_some_full_solutions() const {
+  return m_full_solutions_list;
+}
 
 const SolutionWSM& SolutionStorage::best_solution() const { return m_solution; }
 
 SolutionStorage& SolutionStorage::set_pruning_weight(WeightWSM weight) {
   TKET_ASSERT(weight > 0);
   m_pruning_weight = weight;
-  return *this;
-}
-
-SolutionStorage& SolutionStorage::set_log_level(unsigned log_level) {
-  m_log_level = log_level;
   return *this;
 }
 
@@ -66,7 +75,9 @@ std::optional<WeightWSM> SolutionStorage::get_acceptable_scalar_product()
     }
     return {};
   }
+
   auto weight = m_pruning_weight;
+
   if (m_solution.complete) {
     if (m_solution.total_scalar_product_weight <= 1) {
       return 0;
@@ -91,6 +102,18 @@ bool SolutionStorage::add_full_solution(const SearchBranch& branch) {
   if (m_solution.complete) {
     TKET_ASSERT(new_p_edges_weight == m_solution.total_p_edges_weight);
   }
+  if (m_parameters.store_all_full_solutions) {
+    const auto& assignments = branch.get_assignments();
+    if (!m_full_solutions_list.empty()) {
+      TKET_ASSERT(m_full_solutions_list[0].size() == assignments.size());
+    }
+    m_full_solutions_list.emplace_back();
+    m_full_solutions_list.back().reserve(assignments.size());
+    for (const auto& pair : assignments) {
+      m_full_solutions_list.back().emplace_back(pair);
+    }
+  }
+
   const auto weight_optional = get_acceptable_scalar_product();
   if (weight_optional && new_scalar_prod > weight_optional.value()) {
     return false;
@@ -104,11 +127,11 @@ bool SolutionStorage::add_full_solution(const SearchBranch& branch) {
     TKET_ASSERT(current_number_of_assignments == m_solution.assignments.size());
   }
   m_solution.complete = true;
-  if (m_log_level > 0) {
+  if (m_parameters.log_level > 0) {
     std::cerr << "\n#### NEW FULL soln: sc.prod "
               << m_solution.total_scalar_product_weight << "; p-edges "
               << m_solution.total_p_edges_weight;
-    if (m_log_level > 1) {
+    if (m_parameters.log_level > 1) {
       print_assignments(m_solution);
     }
   }
@@ -139,11 +162,11 @@ bool SolutionStorage::add_partial_solution(const SearchBranch& branch) {
   }
   copy_solution_into_storage(
       branch, new_p_edges_weight, new_scalar_prod, m_solution);
-  if (m_log_level > 0) {
+  if (m_parameters.log_level > 0) {
     std::cerr << "\n\n#### NEW part soln: sc.prod "
               << m_solution.total_scalar_product_weight << "; p-edges "
               << m_solution.total_p_edges_weight;
-    if (m_log_level > 1) {
+    if (m_parameters.log_level > 1) {
       print_assignments(m_solution);
     }
   }

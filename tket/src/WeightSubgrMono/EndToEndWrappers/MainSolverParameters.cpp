@@ -20,7 +20,9 @@ namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 MainSolverParameters::MainSolverParameters()
-    : timeout_ms(5000), terminate_with_first_full_solution(false) {
+    : timeout_ms(5000),
+      terminate_with_first_full_solution(false),
+      for_multiple_full_solutions_the_max_number_to_obtain(0) {
   set_maximum(max_iterations);
 }
 

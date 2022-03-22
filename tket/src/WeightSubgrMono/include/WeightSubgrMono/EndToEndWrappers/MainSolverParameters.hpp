@@ -38,6 +38,14 @@ struct MainSolverParameters {
    */
   std::size_t max_iterations;
 
+  /** If set to 0 (the default), ignore.
+   * Otherwise, sets the store_all_full_solutions and
+   * accept_equally_good_solutions flags to TRUE in SolutionStorage,
+   * and terminates as soon as this many different full solutions
+   * are stored.
+   */
+  std::size_t for_multiple_full_solutions_the_max_number_to_obtain;
+
   /** If non-null, it means that we artificially impose
    * an upper bound on the total weight for a full solution,
    * i.e. an extra constraint on the solution.

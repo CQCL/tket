@@ -81,6 +81,22 @@ class MainSolver {
    */
   const SolutionWSM& get_best_solution() const;
 
+  typedef std::vector<std::vector<std::pair<VertexWSM, VertexWSM>>>
+      FullSolutionsList;
+
+  /** A wrapper around the function in the internal SolutionStorage class.
+   * See that class for more explanation. (This can be tricky. For example,
+   * this might be empty, even if some full solutions were found;
+   * it depends on the input parameters. In the unweighted case,
+   * if it runs to completion and the upper bound on the number of solutions
+   * is not hit, then this is guaranteed to contain ALL solutions; but in the
+   * weighted case, it is NOT, even though it must contain at least one
+   * jointly optimal solution).
+   * @return The solutions returned by the function of the same name in the
+   * internal SolutionStorage class.
+   */
+  const FullSolutionsList& get_some_full_solutions() const;
+
  private:
   MainSolverData m_data;
 };

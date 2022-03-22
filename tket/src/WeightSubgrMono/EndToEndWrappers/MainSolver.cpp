@@ -160,5 +160,11 @@ const SolutionWSM& MainSolver::get_best_solution() const {
   return m_data.empty_solution;
 }
 
+const MainSolver::FullSolutionsList& MainSolver::get_some_full_solutions()
+    const {
+  TKET_ASSERT(m_data.shared_data_ptr);
+  return m_data.shared_data_ptr->solution_storage.get_some_full_solutions();
+}
+
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket
