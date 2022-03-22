@@ -42,7 +42,7 @@ class DerivedGraphsFilter {
    * DEFINITELY always impossible, regardless of the other assignments. Thus, if
    * false, TV can be deleted from Dom(PV) at every level.
    */
-  bool is_compatible(VertexWSM pv, VertexWSM tv, const FixedData& fixed_data);
+  bool is_compatible(VertexWSM pv, VertexWSM tv);
 
   /** For convenience, return the internal derived graphs, to be shared by other
    * objects.

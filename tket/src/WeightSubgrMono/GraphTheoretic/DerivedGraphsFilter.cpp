@@ -78,8 +78,7 @@ static bool compatible_using_weight_maps(
       pattern_weights, target_weights);
 }
 
-bool DerivedGraphsFilter::is_compatible(
-    VertexWSM pv, VertexWSM tv, const FixedData& fixed_data) {
+bool DerivedGraphsFilter::is_compatible(VertexWSM pv, VertexWSM tv) {
   {
     // Do we already know that it's compatible?
     const auto domain_citer = m_compatible_assignments.find(pv);

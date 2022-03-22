@@ -98,8 +98,7 @@ ReductionResult SearchBranch::reduce_current_node(
 
         const auto& pv = chosen_assignments[assignment_index].first;
         if (!shared_data.fixed_data.target_is_complete) {
-          if (!shared_data.derived_graphs_filter.is_compatible(
-                  pv, new_tv, shared_data.fixed_data)) {
+          if (!shared_data.derived_graphs_filter.is_compatible(pv, new_tv)) {
             erase_assignment(pv, new_tv);
             return ReductionResult::FAILURE;
           }
