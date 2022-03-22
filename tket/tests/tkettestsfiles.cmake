@@ -36,6 +36,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_SnakeIntoSquareGrid.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_SquareGrids.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_UnweightedProblems.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_UnweightedSelfEmbeddings.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/test_SquareGridGeneration.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphColouring.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindComponents.cpp
@@ -65,6 +66,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/TokenSwapping/test_VariousPartialTsa.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_VectorListHybrid.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_VectorListHybridSkeleton.cpp
+    ${TKET_TESTS_DIR}/Architecture/test_SubgraphMonomorphisms.cpp
     ${TKET_TESTS_DIR}/test_PauliString.cpp
     ${TKET_TESTS_DIR}/Ops/test_ClassicalOps.cpp
     ${TKET_TESTS_DIR}/Ops/test_Expression.cpp
