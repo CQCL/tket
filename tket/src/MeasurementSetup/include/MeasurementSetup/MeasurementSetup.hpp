@@ -15,6 +15,7 @@
 #pragma once
 
 #include "Circuit/Circuit.hpp"
+#include "Utils/Json.hpp"
 #include "Utils/PauliStrings.hpp"
 
 namespace tket {
@@ -37,6 +38,7 @@ namespace tket {
 class MeasurementSetup {
  public:
   struct MeasurementBitMap {
+    MeasurementBitMap(){};
     MeasurementBitMap(
         unsigned _circ_index, const std::vector<unsigned> &_bits,
         bool _invert = 0)
@@ -90,5 +92,8 @@ class MeasurementSetup {
   std::vector<Circuit> measurement_circs;
   measure_result_map_t result_map;
 };
+
+JSON_DECL(MeasurementSetup::MeasurementBitMap)
+JSON_DECL(MeasurementSetup)
 
 }  // namespace tket

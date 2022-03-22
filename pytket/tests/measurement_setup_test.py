@@ -86,6 +86,51 @@ def test_error_logging(capfd: Any) -> None:
     out = capfd.readouterr().out
     assert not out
 
+def test_serialization() -> None:
+    mbm_dict = {"circ_index": 0, "bits": [0], "invert": True}
+    mbm = MeasurementBitMap(0, [0], True)
+    j_mbm = mbm.to_dict()
+    assert j_mbm == mbm_dict
+    assert mbm_dict == MeasurementBitMap.from_dict(mbm_dict).to_dict()
+
+    ms = MeasurementSetup()
+    circ = Circuit(2, 2)
+    circ.X(0)
+    circ.Measure(0, 0)
+    circ.V(1)
+    circ.Measure(1, 1)
+    circ2 = Circuit(2, 2)
+    circ2.Measure(0, 0)
+    circ2.Measure(1, 1)
+    ms.add_measurement_circuit(circ)
+    ms.add_measurement_circuit(circ2)
+    zi = QubitPauliString()
+    zi[Qubit(0)] = Pauli.Z
+    iz = QubitPauliString()
+    iz[Qubit(1)] = Pauli.Z
+    xx = QubitPauliString()
+    xx[Qubit(0)] = Pauli.X
+    xx[Qubit(1)] = Pauli.X
+    mbm = MeasurementBitMap(0, [0], False)
+    mbm2 = MeasurementBitMap(1, [0], False)
+    mbm3 = MeasurementBitMap(1, [0, 1], False)
+
+    ms.add_result_for_term(zi, mbm)
+    ms.add_result_for_term(iz, mbm)
+    ms.add_result_for_term(zi, mbm2)
+    ms.add_result_for_term(xx, mbm3)
+
+    j_ms = ms.to_dict()
+    assert len(j_ms["circs"]) == 2
+    assert j_ms["circs"][0] == circ.to_dict()
+    assert j_ms["circs"][1] == circ2.to_dict()
+    assert len(j_ms["result_map"]) == 3
+    assert j_ms["result_map"][0] == [iz.to_list(), [mbm.to_dict()]]
+    assert j_ms["result_map"][1] == [xx.to_list(), [mbm3.to_dict()]]
+    assert j_ms["result_map"][2] == [zi.to_list(), [mbm.to_dict(), mbm2.to_dict()]]
+    assert MeasurementSetup.from_dict(j_ms).to_dict() == j_ms
+
+
 
 if __name__ == "__main__":
     test_empty_setup()
