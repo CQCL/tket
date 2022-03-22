@@ -17,17 +17,17 @@ from .knitting import Knitter
 from .mpattern import MPattern
 
 
-def repeated_mbqc_conversion(circ: Circuit, arc: Architecture, splits: int, splitter: Splitter, mpattern: MPattern, knitter: Knitter) -> Circuit:
+def repeated_mbqc_conversion(Circuit: circ, Architecture: arc, Splitter: splitter, MPattern: mpattern, Knitter: knitter) -> Circuit:
     """
     does the thing
     
     """
-    split_circuits = splitter(circ, splits)
+    split_circuits = splitter(circ)
     mbqc_subcircuits = mpattern(split_circuits)
     final_circuit = knitter(mbqc_circuits, arc)
     return final_circuit
 
-def single_mbqc_conversion(circ: Circuit, arc: Architecture, mpattern: MPattern) -> Circuit:
+def single_mbqc_conversion(Circuit: circ, Architecture: arc, MPattern: mpattern) -> Circuit:
     """
     does the thing but once calls the other thing
     
