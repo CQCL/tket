@@ -35,6 +35,7 @@ list(APPEND DEPS_${COMP}
     Placement
     Ops
     OpType
+    ZX
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

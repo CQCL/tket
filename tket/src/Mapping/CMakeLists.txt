@@ -47,6 +47,7 @@ list(APPEND DEPS_${COMP}
     PauliGraph
     Placement
     TokenSwapping
+    ZX
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

@@ -28,19 +28,11 @@ add_library(tket-${COMP}
     ZXRWCombinators.cpp
     ZXRWAxioms.cpp
     ZXRWDecompositions.cpp
-    ZXDFromCircuit.cpp
     ZXRWGraphLikeForm.cpp
     ZXRWGraphLikeSimplification.cpp
     Flow.cpp)
 
 list(APPEND DEPS_${COMP}
-    Architecture
-    Circuit
-    Gate
-    Graphs
-    Ops
-    OpType
-    Transformations
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

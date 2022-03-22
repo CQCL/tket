@@ -31,6 +31,7 @@ list(APPEND DEPS_${COMP}
     Ops
     OpType
     PauliGraph
+    ZX
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

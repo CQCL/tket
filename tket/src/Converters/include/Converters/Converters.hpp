@@ -18,6 +18,7 @@
 #include "Clifford/CliffTableau.hpp"
 #include "Clifford/UnitaryTableau.hpp"
 #include "PauliGraph/PauliGraph.hpp"
+#include "ZX/ZXDiagram.hpp"
 
 namespace tket {
 
@@ -64,5 +65,11 @@ Circuit pauli_graph_to_circuit_pairwise(
  */
 Circuit pauli_graph_to_circuit_sets(
     const PauliGraph &pg, CXConfigType cx_config = CXConfigType::Snake);
+
+/**
+ * Construct a zx diagram from a given circuit.
+ */
+
+zx::ZXDiagram circuit_to_zx(const Circuit &circuit);
 
 }  // namespace tket

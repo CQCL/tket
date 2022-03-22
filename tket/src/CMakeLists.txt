@@ -73,6 +73,7 @@ list(APPEND TKET_COMPS
     Simulation
     Diagonalisation
     Characterisation
+    ZX
     Converters
     Placement
     ArchAwareSynth
@@ -80,7 +81,7 @@ list(APPEND TKET_COMPS
     MeasurementSetup
     Transformations    
     Predicates
-    ZX)
+    )
 
 foreach(COMP ${TKET_COMPS})
     set(TKET_${COMP}_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${COMP}/include)
