@@ -83,9 +83,24 @@ def repeated_mbqc_conversion(
     return final_circuit
 
 
-"""
-def single_mbqc_conversion(circ: Circuit, arc: Architecture, mpattern: MPattern) -> Circuit:
-
-    does the thing but once calls the other thing
-    return repeated_mbqc_conversion(circ, arc, Splitter.SetSubcircuits(1), mpattern, Knitter.Routed)
-"""
+def single_mbqc_conversion(
+    circ: Circuit, arch: Architecture
+) -> Tuple[Circuit, Dict[str, Dict[Qubit, int]]]:
+    """
+    Takes a pytket circuit object and an architecture, converts the circuit to a
+    measurement pattern, extracts a new circuit from the pattern and routes it on
+    the architecture. Finally, it returns a tuple containing the final circuit and
+    its corresponding i/o map.
+    
+    :param circ:    The original pytket circuit.
+    :param type:    Circuit
+    
+    :param arch:    The architecture to route onto.
+    :param type:    Architecture
+    
+    :returns:        A tuple containing the new circuit as well as its corresponding i/o map.
+    :rtype:          Tuple[Circuit,Dict[str, Dict[Qubit, int]]]
+    """
+    return repeated_mbqc_conversion(
+        circ, arch, 1, Splitter.depth_split, Knitter.sequential
+    )
