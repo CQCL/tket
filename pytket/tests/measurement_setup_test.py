@@ -86,6 +86,7 @@ def test_error_logging(capfd: Any) -> None:
     out = capfd.readouterr().out
     assert not out
 
+
 def test_serialization() -> None:
     mbm_dict = {"circ_index": 0, "bits": [0], "invert": True}
     mbm = MeasurementBitMap(0, [0], True)
@@ -129,7 +130,6 @@ def test_serialization() -> None:
     assert j_ms["result_map"][1] == [xx.to_list(), [mbm3.to_dict()]]
     assert j_ms["result_map"][2] == [zi.to_list(), [mbm.to_dict(), mbm2.to_dict()]]
     assert MeasurementSetup.from_dict(j_ms).to_dict() == j_ms
-
 
 
 if __name__ == "__main__":
