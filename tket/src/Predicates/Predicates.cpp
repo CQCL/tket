@@ -665,6 +665,7 @@ void to_json(nlohmann::json& j, const PredicatePtr& pred_ptr) {
           std::dynamic_pointer_cast<GateSetPredicate>(pred_ptr)) {
     j["type"] = "GateSetPredicate";
     j["allowed_types"] = cast_pred->get_allowed_types();
+    std::sort(j["allowed_types"].begin(), j["allowed_types"].end());
   } else if (
       std::shared_ptr<NoClassicalControlPredicate> cast_pred =
           std::dynamic_pointer_cast<NoClassicalControlPredicate>(pred_ptr)) {
