@@ -38,7 +38,7 @@ namespace tket {
 class MeasurementSetup {
  public:
   struct MeasurementBitMap {
-    MeasurementBitMap(){};
+    MeasurementBitMap() {}
     MeasurementBitMap(
         unsigned _circ_index, const std::vector<unsigned> &_bits,
         bool _invert = 0)

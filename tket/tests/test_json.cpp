@@ -822,6 +822,19 @@ SCENARIO("Test MeasurementSetup serializations") {
     nlohmann::json j_loaded_map = map_loaded;
     REQUIRE(j_loaded_map == j_map);
   }
+  GIVEN("MeasurementBitMap with default constructor") {
+    MeasurementSetup::MeasurementBitMap map;
+    nlohmann::json j_map = map;
+    // The default constructor leaves circ_index and invert uninitialized
+    // so don't check values
+    REQUIRE(j_map.contains("circ_index"));
+    REQUIRE(j_map.contains("invert"));
+    REQUIRE(j_map["bits"].size() == 0);
+    MeasurementSetup::MeasurementBitMap map_loaded =
+        j_map.get<MeasurementSetup::MeasurementBitMap>();
+    nlohmann::json j_loaded_map = map_loaded;
+    REQUIRE(j_loaded_map == j_map);
+  }
   GIVEN("MeasurementSetup") {
     MeasurementSetup ms;
     Circuit mc(2, 2);
@@ -864,6 +877,17 @@ SCENARIO("Test MeasurementSetup serializations") {
     };
     REQUIRE(j_ms["circs"] == j_circs);
     REQUIRE(j_ms["result_map"] == j_result_map);
+    MeasurementSetup ms_loaded = j_ms.get<MeasurementSetup>();
+    nlohmann::json j_loaded_ms = ms_loaded;
+    REQUIRE(j_loaded_ms == j_ms);
+  }
+  GIVEN("Empty MeasurementSetup") {
+    MeasurementSetup ms;
+    nlohmann::json j_ms = ms;
+    nlohmann::json j_correct_ms = {
+        {"circs", nlohmann::json::array()},
+        {"result_map", nlohmann::json::array()}};
+    REQUIRE(j_ms == j_correct_ms);
     MeasurementSetup ms_loaded = j_ms.get<MeasurementSetup>();
     nlohmann::json j_loaded_ms = ms_loaded;
     REQUIRE(j_loaded_ms == j_ms);
