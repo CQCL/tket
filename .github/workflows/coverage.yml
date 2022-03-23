@@ -156,11 +156,13 @@ jobs:
       if: github.event_name == 'schedule'
       run: git rm -r docs/tket/test-coverage/*
     - name: Add report to repository (short tests)
+      if: github.event_name == 'push'
       run: |
         mv test-coverage/* docs/tket/test-coverage-short/
         git add -f docs/tket/test-coverage-short
         git commit --allow-empty -m "Add generated coverage report (short tests)."
     - name: Add report to repository (full suite)
+      if: github.event_name == 'schedule'
       run: |
         mv test-coverage/* docs/tket/test-coverage/
         git add -f docs/tket/test-coverage
