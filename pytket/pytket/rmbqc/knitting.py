@@ -29,18 +29,20 @@ class Knitter(Enum):
     ) -> Tuple[Circuit, Dict[str, Dict[Qubit, int]]]:
         """
         Takes a list of tuples containing pytket circuits and their corresponding
-        i/o maps as well as an architecture. It then routes each circuit on the
+        input/output maps as well as an architecture. It then routes each circuit on the
         architecture separately. Finally it connects the outputs of one segment to
         the inputs of the next by generating a network of SWAP gates. Then returns
-        a tuple containing the new circuit object and its corresponding i/o map.
+        a tuple containing the new circuit object and its corresponding input/output map.
         
-        :param pattern_list:  List of tuples of circuits with their i/o maps.
+        :param pattern_list:  List of tuples of circuits with their input/output maps.
+                                These map the input/output qubits of the original circuit
+                                to their new locations in the qubit register.
         :param type:          List[Tuple[Circuit,Dict[str, Dict[Qubit, int]]]]
         
         :param arch:          The architecture onto which to fit the circuits.
         :param type:          Architecture
         
-        :returns:        A tuple containing a circuit and an i/o map dictionary.
+        :returns:        A tuple containing a circuit and an input/output map dictionary.
         :rtype:          Tuple[Circuit,Dict[str, Dict[Qubit, int]]]
         """
         new_c = Circuit()
@@ -146,21 +148,23 @@ class Knitter(Enum):
     ) -> Tuple[Circuit, Dict[str, Dict[Qubit, int]]]:
         """
         Takes a list of tuples containing pytket circuits and their corresponding
-        i/o maps as well as an architecture. It then routes the first circuit onto
+        input/output maps as well as an architecture. It then routes the first circuit onto
         the architecture. For every subsequent circuit, the inputs are forcefully
         assigned to the location of the corresponding outputs of the previous segment
         on the architecture. The current subcircuit is then routed as best as possible
         given those initial conditions. One all subcircuits have been placed, the
         method returns a tuple containing the new circuit object and its corresponding
-        i/o map.
+        input/output map.
         
-        :param pattern_list:  List of tuples of circuits with their i/o maps.
+        :param pattern_list:  List of tuples of circuits with their input/output maps.
+                                These map the inputs/outputs of the original circuit to
+                                their new locations in the qubit register.
         :param type:          List[Tuple[Circuit,Dict[str, Dict[Qubit, int]]]]
         
         :param arch:          The architecture onto which to fit the circuits.
         :param type:          Architecture
         
-        :returns:        A tuple containing a circuit and an i/o map dictionary.
+        :returns:        A tuple containing a circuit and an input/output map dictionary.
         :rtype:          Tuple[Circuit,Dict[str, Dict[Qubit, int]]]
         """
         new_c = Circuit()
@@ -265,14 +269,16 @@ class Knitter(Enum):
     ) -> Tuple[Circuit, Dict[str, Dict[Qubit, int]]]:
         """
         Takes a list of tuples containing pytket circuits and their corresponding
-        i/o maps and joins them together into a new pytket circuit object assuming
+        input/output maps and joins them together into a new pytket circuit object assuming
         full connectivity. Then returns a tuple containing the new circuit object
-        and its corresponding i/o map.
+        and its corresponding input/output map.
         
-        :param pattern_list:  List of tuples of circuits with their i/o maps.
+        :param pattern_list:  List of tuples of circuits with their input/output maps.
+                                These map the inputs/outputs of the original circuit to
+                                their new location in the qubit register.
         :param type:          List[Tuple[Circuit,Dict[str, Dict[Qubit, int]]]]
         
-        :returns:        A tuple containing a circuit and an i/o map dictionary.
+        :returns:        A tuple containing a circuit and an input/output map dictionary.
         :rtype:          Tuple[Circuit,Dict[str, Dict[Qubit, int]]]
         """
         new_c = Circuit()

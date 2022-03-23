@@ -26,13 +26,12 @@ def format_circ(circ: Circuit) -> Tuple[Circuit, Dict[str, Dict[Qubit, int]]]:
     well as a dictionary mapping the original input and output qubits to their indices
     in the qubit register.
     
-    :param g:       A zx diagram with some remaining simple edges we want to remove.
-    :param type:    GraphS
+    :param circ:    The pytket circuit which requires formatting.
+    :param type:    Circuit
     
-    :param io_map:  A dictionary containing the current i/o mapping.
-    :param type:    dict
-    
-    :returns:        A tuple containing the circuit as well as its corresponding i/o map.
+    :returns:        A tuple containing the circuit as well as its corresponding input/output map.
+                        This maps the input/output qubits of the original circuit to their index
+                        in the qubit register.
     :rtype:          Tuple[Circuit,Dict[str, Dict[Qubit, int]]]
     """
     new_map: Dict[str, Dict[Qubit, int]] = {"i": {}, "o": {}}
@@ -51,7 +50,7 @@ def repeated_mbqc_conversion(
     a splitter method and a knitter method as inputs. It splits the original circuit into
     the specified number of segments, converts each to a measurement pattern and joins them
     up in an architecture aware manner. Outputs a tuple containing the final circuit and
-    its corresponding i/o map.
+    its corresponding input/output map.
     
     :param circ:    The original pytket circuit.
     :param type:    Circuit
@@ -68,7 +67,9 @@ def repeated_mbqc_conversion(
     :param knitter:   A knitter which determines how the converted segments will be joined up.
     :param type:      Knitter
     
-    :returns:        A tuple containing the new circuit as well as its corresponding i/o map.
+    :returns:        A tuple containing the new circuit as well as its corresponding input/output map.
+                        This maps the inputs/outputs of the original circuit to their corresponding qubits
+                        in the new circuit.
     :rtype:          Tuple[Circuit,Dict[str, Dict[Qubit, int]]]
     """
     split_circuits = splitter(circ, splits)  # type: ignore
@@ -90,7 +91,7 @@ def single_mbqc_conversion(
     Takes a pytket circuit object and an architecture, converts the circuit to a
     measurement pattern, extracts a new circuit from the pattern and routes it on
     the architecture. Finally, it returns a tuple containing the final circuit and
-    its corresponding i/o map.
+    its corresponding input/output map.
     
     :param circ:    The original pytket circuit.
     :param type:    Circuit
@@ -98,8 +99,10 @@ def single_mbqc_conversion(
     :param arch:    The architecture to route onto.
     :param type:    Architecture
     
-    :returns:        A tuple containing the new circuit as well as its corresponding i/o map.
-    :rtype:          Tuple[Circuit,Dict[str, Dict[Qubit, int]]]
+    :returns:       A tuple containing the new circuit as well as its corresponding input/output map.
+                        This maps the input/output qubits of the original circuit to the corresponding
+                        qubits in the new circuit.
+    :rtype:         Tuple[Circuit,Dict[str, Dict[Qubit, int]]]
     """
     return repeated_mbqc_conversion(
         circ, arch, 1, Splitter.depth_split, Knitter.sequential

@@ -25,7 +25,8 @@ from typing import Dict, Tuple, List, Set, Union
 class MPattern:
     """
     Class with tools to convert a pytket circuit into a new pytket circuit
-    with lower depth and higher width, by using MBQC techniques.
+    with lower depth and higher width, by using Measurement-Based Quantum
+    Computation (MBQC) techniques.
     """
 
     def __init__(self, c: Circuit) -> None:
@@ -37,28 +38,141 @@ class MPattern:
         :param type:    Circuit
         """
         self.c = c
-
-    def single_conversion(self) -> Tuple[Circuit, Dict[str, Dict[Qubit, int]]]:
-        """
-        Converts a pytket circuit to another with reduced depth and higher width.
         
-        :returns:       A tuple containing the new circuit and the i/o map.
-        :rtype:         Tuple[Circuit, Dict[str,Dict[Qubit,int]]]
+    def label_squish(self, g: GraphS, io_map: Dict[str, Dict[Qubit, int]]) -> None:
         """
-        (g, io_map) = self.zx_diagram()  # Creates a simplified ZX diagram.
-        subs = self.split_subgraphs(g, io_map)  # Returns list of disjoint subgraphs.
-        cz_circ = MPattern.entangle(g)  # Creates the CZ circuit part of the pattern.
-        m_circ = MPattern.correct(
-            subs
-        )  # Circuit implementing measurements/corrections.
-        cz_circ.add_circuit(m_circ, [])
-        return (cz_circ, io_map)
-
+        Updates the input/output labels of the MPattern to matched a squished
+        graph caused by g.copy().
+        
+        :param g:       A pyzx graph representing a zx diagram.
+        :param type:    GraphS
+        
+        :param io_map:  A dictionary containing the current input/output mappings
+                            which map the input/output qubits of the original circuit
+                            to the corresponding vertices in the ZX diagram.
+        :param type:    Dict[str,Dict[Qubit,int]]
+        """
+        original_labels = sorted(
+            list(g.vertices())
+        )  # Sort the original vertices in ascending order.
+        # The following code will update the i/o map with the new labels of the
+        # input/output qubits after the squish.
+        for i in io_map["i"].keys():
+            for v in range(len(original_labels)):
+                if io_map["i"][i] == original_labels[v]:
+                    io_map["i"][i] = v
+                    break
+        for o in io_map["o"].keys():
+            for v in range(len(original_labels)):
+                if io_map["o"][o] == original_labels[v]:
+                    io_map["o"][o] = v
+                    break
+                
+    def remove_redundant(self, g: GraphS, io_map: Dict[str, Dict[Qubit, int]]) -> None:
+        """
+        Removes simples edges from a zx diagram by merging the connected
+        vertices.
+        
+        :param g:       A zx diagram with some remaining simple edges we want to remove.
+        :param type:    GraphS
+        
+        :param io_map:  A dictionary containing the current input/output mapping
+                            to map the input/output qubits of the original circuit
+                            to their corresponding vertices in the ZX diagram.
+        :param type:    Dict[str,Dict[Qubit,int]]
+        """
+        simple_edges = set()
+        for edge in g.edge_set():
+            if g.edge_type(edge) == 1:
+                simple_edges.add(edge)
+        for edge in simple_edges:
+            v1, v2 = edge
+            g.remove_edge(edge)
+            is_boundary = True
+            removing_input = True
+            remove_vertex = v1
+            keep_vertex = v2
+            if v1 in g.inputs:
+                remove_vertex = v1
+                keep_vertex = v2
+            elif v2 in g.inputs:
+                remove_vertex = v2
+                keep_vertex = v1
+            elif v1 in g.outputs:
+                removing_input = False
+            elif v2 in g.outputs:
+                removing_input = False
+                remove_vertex = v2
+                keep_vertex = v1
+            else:
+                is_boundary = False
+            g.set_row(keep_vertex, g.row(remove_vertex))
+            g.set_qubit(keep_vertex, g.qubit(remove_vertex))
+            neighbors = g.neighbors(remove_vertex) - [keep_vertex]
+            for neighbor in neighbors:
+                this_type = g.edge_type((remove_vertex, neighbor))
+                if g.connected(keep_vertex, neighbor):
+                    if g.edge_type((keep_vertex, neighbor)) == this_type:
+                        g.remove_edge((keep_vertex, neighbor))
+                    else:
+                        g.add_edge((keep_vertex, neighbor), this_type)
+                else:
+                    g.add_edge((keep_vertex, neighbor), this_type)
+            g.add_to_phase(keep_vertex, g.phase(remove_vertex))
+            g.remove_vertex(remove_vertex)
+            if is_boundary:
+                if removing_input:
+                    g.inputs.remove(remove_vertex)
+                    g.inputs.append(keep_vertex)
+                    for i in io_map["i"].keys():
+                        if io_map["i"][i] == remove_vertex:
+                            io_map["i"][i] = keep_vertex
+                            break
+                else:
+                    g.outputs.remove(remove_vertex)
+                    g.outputs.append(keep_vertex)
+                    for o in io_map["o"].keys():
+                        if io_map["o"][o] == remove_vertex:
+                            io_map["o"][o] = keep_vertex
+                            break
+                g.set_type(keep_vertex, 0)
+        self.identity_cleanup(g, io_map)
+        
+    def identity_cleanup(self, g: GraphS, io_map: Dict[str, Dict[Qubit, int]]) -> None:
+        """
+        Removes identity vertices from a zx diagram if any exist.
+        
+        :param g:       A zx diagram with a few possible remaining identity vertices.
+        :param type:    GraphS
+        
+        :param io_map:  A dictionary containing the dictionary mapping the input/output
+                            qubits of the original circuit to their corresponding vertices
+                            in the ZX diagram.
+        :param type:    Dict[str,Dict[Qubit,int]]
+        """
+        v_list = []
+        for v in g.vertices():
+            if (
+                (len(g.neighbors(v)) == 2)
+                and (g.phase(v) == 0)
+                and not (v in g.inputs + g.outputs)
+            ):
+                v_list.append(v)
+                neigh = g.neighbors(v)
+                new_edge = (neigh[0], neigh[1])
+                g.add_edge(new_edge, 1)
+        for v in v_list:
+            g.remove_vertex(v)
+        if len(v_list) > 0:
+            self.remove_redundant(g, io_map)
+        
     def zx_diagram(self) -> Tuple[GraphS, Dict[str, Dict[Qubit, int]]]:
         """
         Converts a pytket circuit to a zx diagram.
         
-        :returns:       A tuple containing the zx diagram and new i/o maps.
+        :returns:       A tuple containing the zx diagram and new input/output maps
+                            which map the input/output qubits of the original circuit
+                            to their corresponding vertices in the zx diagram.
         :rtype:         Tuple[GraphS, Dict[str,Dict[Qubit,int]]]
         """
         rebased_c = (
@@ -73,7 +187,7 @@ class MPattern:
         interior_clifford_simp(g, quiet=True)  # Remove interior clifford spiders.
         new_inputs = {}
         new_outputs = {}
-        sorted_vertices = sorted(list(g.vertices()))
+        sorted_vertices = sorted(list(g.vertices())) #Probably already sorted but don't want to take the chance.
         for q in range(self.c.n_qubits):
             new_inputs[self.c.qubits[q]] = sorted_vertices[q]
             new_outputs[self.c.qubits[q]] = sorted_vertices[q - self.c.n_qubits]
@@ -92,34 +206,7 @@ class MPattern:
             g, io_map
         )  # Squishes the labels of the graph vertices to fill in empty vertex indices.
         return (g.copy(), io_map)
-
-    def label_squish(self, g: GraphS, io_map: Dict[str, Dict[Qubit, int]]) -> None:
-        """
-        Updates the input/output labels of the MPattern to matched a squished
-        graph caused by g.copy().
-        
-        :param g:       A pyzx graph representing a zx diagram.
-        :param type:    GraphS
-        
-        :param io_map:  A dictionary containing the current i/o mappings.
-        :param type:    Dict[str,Dict[Qubit,int]]
-        """
-        original_labels = sorted(
-            list(g.vertices())
-        )  # Sort the original vertices in ascending order.
-        # The following code will update the i/o map with the new labels of the
-        # input/output qubits after the squish.
-        for i in io_map["i"].keys():
-            for v in range(len(original_labels)):
-                if io_map["i"][i] == original_labels[v]:
-                    io_map["i"][i] = v
-                    break
-        for o in io_map["o"].keys():
-            for v in range(len(original_labels)):
-                if io_map["o"][o] == original_labels[v]:
-                    io_map["o"][o] = v
-                    break
-
+    
     @staticmethod
     def entangle(g: GraphS) -> Circuit:
         """
@@ -192,101 +279,7 @@ class MPattern:
         c.add_barrier(active_vertices, active_vertices)
         """
         return c
-
-    def remove_redundant(self, g: GraphS, io_map: Dict[str, Dict[Qubit, int]]) -> None:
-        """
-        Removes simples edges from a zx diagram by merging the connected
-        vertices.
-        
-        :param g:       A zx diagram with some remaining simple edges we want to remove.
-        :param type:    GraphS
-        
-        :param io_map:  A dictionary containing the current i/o mapping.
-        :param type:    Dict[str,Dict[Qubit,int]]
-        """
-        simple_edges = set()
-        for edge in g.edge_set():
-            if g.edge_type(edge) == 1:
-                simple_edges.add(edge)
-        for edge in simple_edges:
-            v1, v2 = edge
-            g.remove_edge(edge)
-            is_boundary = True
-            removing_input = True
-            remove_vertex = v1
-            keep_vertex = v2
-            if v1 in g.inputs:
-                remove_vertex = v1
-                keep_vertex = v2
-            elif v2 in g.inputs:
-                remove_vertex = v2
-                keep_vertex = v1
-            elif v1 in g.outputs:
-                removing_input = False
-            elif v2 in g.outputs:
-                removing_input = False
-                remove_vertex = v2
-                keep_vertex = v1
-            else:
-                is_boundary = False
-            g.set_row(keep_vertex, g.row(remove_vertex))
-            g.set_qubit(keep_vertex, g.qubit(remove_vertex))
-            neighbors = g.neighbors(remove_vertex) - [keep_vertex]
-            for neighbor in neighbors:
-                this_type = g.edge_type((remove_vertex, neighbor))
-                if g.connected(keep_vertex, neighbor):
-                    if g.edge_type((keep_vertex, neighbor)) == this_type:
-                        g.remove_edge((keep_vertex, neighbor))
-                    else:
-                        g.add_edge((keep_vertex, neighbor), this_type)
-                else:
-                    g.add_edge((keep_vertex, neighbor), this_type)
-            g.add_to_phase(keep_vertex, g.phase(remove_vertex))
-            g.remove_vertex(remove_vertex)
-            if is_boundary:
-                if removing_input:
-                    g.inputs.remove(remove_vertex)
-                    g.inputs.append(keep_vertex)
-                    for i in io_map["i"].keys():
-                        if io_map["i"][i] == remove_vertex:
-                            io_map["i"][i] = keep_vertex
-                            break
-                else:
-                    g.outputs.remove(remove_vertex)
-                    g.outputs.append(keep_vertex)
-                    for o in io_map["o"].keys():
-                        if io_map["o"][o] == remove_vertex:
-                            io_map["o"][o] = keep_vertex
-                            break
-                g.set_type(keep_vertex, 0)
-        self.identity_cleanup(g, io_map)
-
-    def identity_cleanup(self, g: GraphS, io_map: Dict[str, Dict[Qubit, int]]) -> None:
-        """
-        Removes identity vertices from a zx diagram if any exist.
-        
-        :param g:       A zx diagram with a few possible remaining identity vertices.
-        :param type:    GraphS
-        
-        :param io_map:  A dictionary containing the current i/o mapping.
-        :param type:    Dict[str,Dict[Qubit,int]]
-        """
-        v_list = []
-        for v in g.vertices():
-            if (
-                (len(g.neighbors(v)) == 2)
-                and (g.phase(v) == 0)
-                and not (v in g.inputs + g.outputs)
-            ):
-                v_list.append(v)
-                neigh = g.neighbors(v)
-                new_edge = (neigh[0], neigh[1])
-                g.add_edge(new_edge, 1)
-        for v in v_list:
-            g.remove_vertex(v)
-        if len(v_list) > 0:
-            self.remove_redundant(g, io_map)
-
+    
     def split_subgraphs(self, g: GraphS, io_map: dict) -> List[GraphS]:
         """
         If a zx diagram contains sub-diagrams which are not connected to each
@@ -296,7 +289,9 @@ class MPattern:
         :param g:       A zx diagram which may contain disjointed sub-diagrams.
         :param type:    GraphS
         
-        :param io_map:  A dictionary containing the current i/o mapping.
+        :param io_map:  A dictionary containing the current input/output map, which
+                            maps the input/output qubits of the original circuit to
+                            their corresponding vertices in the ZX diagram.
         :param type:    dict
         
         :returns:       A list of zx diagrams.
@@ -357,7 +352,7 @@ class MPattern:
                     new_g.remove_vertex(v)
             graph_list.append(new_g)  # Add new subgraph to the list.
         return graph_list
-
+    
     @staticmethod
     def layer_list(layers: Dict[int, int]) -> List[Set[int]]:
         """
@@ -507,3 +502,22 @@ class MPattern:
                     else:
                         new_c.Rz(-g.phase(v), v)
         return new_c
+
+    def single_conversion(self) -> Tuple[Circuit, Dict[str, Dict[Qubit, int]]]:
+        """
+        Converts a pytket circuit to another with reduced depth and higher width.
+        
+        :returns:       A tuple containing the new circuit and the input/output map
+                            which is a dictionary mapping the inputs and outputs
+                            of the original circuit to their new locations in the qubit
+                            register.
+        :rtype:         Tuple[Circuit, Dict[str,Dict[Qubit,int]]]
+        """
+        (g, io_map) = self.zx_diagram()  # Creates a simplified ZX diagram.
+        subs = self.split_subgraphs(g, io_map)  # Returns list of disjoint subgraphs.
+        cz_circ = self.entangle(g)  # Creates the CZ circuit part of the pattern.
+        m_circ = self.correct(
+            subs
+        )  # Circuit implementing measurements/corrections.
+        cz_circ.add_circuit(m_circ, [])
+        return (cz_circ, io_map)

@@ -20,6 +20,32 @@ from typing import Tuple, List
 
 
 class Splitter(Enum):
+    def depth_structure(c: Circuit) -> List[List[Command]]:
+        """
+        Converts a pytket circuit to a list containing 'x' lists, each containing
+        'y' gates, where 'x' is the depth of the circuit and 'y' is the number
+        of gates acting in a given timestep. Essentially we split the circuit
+        into a list of 'timeslices'.
+        
+        :returns:       A list containing lists of gates.
+        :rtype:         List[List[Command]]
+        """
+        qubits = c.qubits
+        depth = c.depth()
+        qn = c.n_qubits
+        current_frontiers = [0] * qn
+        depth_slices: List[List[int]] = [[] for d in range(depth)]
+        for gate in c.get_commands():
+            involved_qubits = gate.qubits
+            qubit_indices = []
+            for qubit in involved_qubits:
+                qubit_indices.append(qubits.index(qubit))
+            max_frontier = max([current_frontiers[qid] for qid in qubit_indices])
+            for qid in qubit_indices:
+                current_frontiers[qid] = max_frontier + 1
+            depth_slices[max_frontier].append(gate)
+        return depth_slices
+    
     def depth_split(c: Circuit, splits: int) -> List[Tuple[Circuit, bool]]:
         """
         Splits a pytket circuit into a given number of subcircuits of approximately
@@ -188,30 +214,3 @@ class Splitter(Enum):
                 new_tuple = (subcircuit.copy(),new_map)
                 """
         return subc_list
-
-    def depth_structure(c: Circuit) -> List[List[Command]]:
-        """
-        Converts a pytket circuit to a list containing 'x' lists, each containing
-        'y' gates, where 'x' is the depth of the circuit and 'y' is the number
-        of gates acting in a given timestep. Essentially we split the circuit
-        into a list of 'timeslices'.
-        
-        :returns:       A list containing lists of gates.
-        :rtype:         List[List[Command]]
-        """
-        gates = c.get_commands()
-        qubits = c.qubits
-        depth = c.depth()
-        qn = c.n_qubits
-        current_frontiers = [0] * qn
-        depth_slices: List[List[int]] = [[] for d in range(depth)]
-        for gate in gates:
-            involved_qubits = gate.qubits
-            qubit_indices = []
-            for qubit in involved_qubits:
-                qubit_indices.append(qubits.index(qubit))
-            max_frontier = max([current_frontiers[qid] for qid in qubit_indices])
-            for qid in qubit_indices:
-                current_frontiers[qid] = max_frontier + 1
-            depth_slices[max_frontier].append(gate)
-        return depth_slices
