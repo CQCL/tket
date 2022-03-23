@@ -136,4 +136,5 @@ if __name__ == "__main__":
     test_empty_setup()
     test_parity_flip()
     test_reduction()
+    test_serialization()
     # test_error_logging()
