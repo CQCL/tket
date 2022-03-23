@@ -4,6 +4,10 @@ Changelog
 1.x.y (unreleased)
 ------------------
 
+Minor new features:
+
+* Add JSON serialization methods for ``MeasurementSetup`` and ``MeasurementBitMap``.
+
 Fixes:
 
 * Fix qubit order in ``QubitPauliOperator.to_sparse_matrix()``.
