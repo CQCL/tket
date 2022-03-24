@@ -18,6 +18,7 @@
 #include "OpType/OpType.hpp"
 #include "Utils/Expression.hpp"
 #include "Utils/Symbols.hpp"
+#include "symengine/constants.h"
 
 namespace tket {
 
@@ -30,7 +31,12 @@ static Expr atan2_bypi(const Expr &a, const Expr &b) {
     if (std::abs(vva) < EPS && std::abs(vvb) < EPS) return Expr(0.);
     return atan2(vva, vvb) / PI;
   } else {
-    return SymEngine::div(SymEngine::atan2(a, b), SymEngine::pi);
+    // Convert symbolic zero to 0. This is a workaround for
+    // https://github.com/symengine/symengine/issues/1875 .
+    Expr a1 = a, b1 = b;
+    if (a1 == SymEngine::zero) a1 = 0.;
+    if (b1 == SymEngine::zero) b1 = 0.;
+    return SymEngine::div(SymEngine::atan2(a1, b1), SymEngine::pi);
   }
 }
 
