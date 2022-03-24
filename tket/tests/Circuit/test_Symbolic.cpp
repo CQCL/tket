@@ -155,6 +155,8 @@ SCENARIO("Symbolic squashing, correctness") {
     CHECK_NOTHROW(SymEngine::eval_double(params[0]));
     CHECK_NOTHROW(SymEngine::eval_double(params[1]));
     CHECK_NOTHROW(SymEngine::eval_double(params[2]));
+    CHECK(approx_0(params[1]));
+    CHECK(approx_0(params[0] + params[2]));
   }
 }
 
