@@ -14,6 +14,8 @@
 
 #include "Gate.hpp"
 
+#include <regex>
+#include <string>
 #include <vector>
 
 #include "GateUnitaryMatrix.hpp"
@@ -21,6 +23,12 @@
 #include "OpPtrFunctions.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeInfo.hpp"
+#include "Utils/Constants.hpp"
+#include "Utils/Expression.hpp"
+#include "Utils/RNG.hpp"
+#include "symengine/dict.h"
+#include "symengine/eval_double.h"
+#include "symengine/symengine_exception.h"
 
 namespace tket {
 
@@ -221,11 +229,70 @@ Op_ptr Gate::transpose() const {
   }
 }
 
+static bool expr_contains_nan(const Expr& e) {
+  static const std::regex nan_regex("\\bnan\\b");
+  std::stringstream ss;
+  ss << e;
+  std::string s = ss.str();
+  return std::regex_search(s, nan_regex);
+}
+
+static double random_perturbation() {
+  static RNG rng;
+  int a = rng.get_size_t(20);
+  return (a - 10) * EPS;
+}
+
+// Perform symbolic substitution, but catch the case where the returned
+// expression is not a number, and attempt to set a value by perturbing the
+// inputs. This deals with cases where expressions contain terms that are
+// undefined at specific values but where the singularity is removable.
+// (Non-removable singularities, which ought strictly to fail substitution,
+// will result in spectacularly wrong values, but are unlikely to arise in
+// practice.)
+//
+// This is a partial workaround for issues arising from squashing symbolic
+// rotations, where it is hard or impossible to handle special cases(e.g. where
+// the general formula reduces to one involving atan2(0,0)).
+//
+// A proper solution to this problem may have to wait for TKET 2.
+static Expr safe_subs(
+    const Expr& p, const SymEngine::map_basic_basic& sub_map) {
+  Expr x = p.subs(sub_map);
+  if (!expr_contains_nan(x)) {  // happy path
+    return x;
+  }
+
+  // Try perturbing all values in the map. May need several attempts in case
+  // there are subexpressions on the boundary of validity, such as acos(1.0). If
+  // we fail after 1000 attempts, give up.
+  for (unsigned i = 0; i < 1000; i++) {
+    SymEngine::map_basic_basic new_sub_map;
+    for (const auto& pair : sub_map) {
+      new_sub_map[pair.first] = Expr(pair.second) + random_perturbation();
+    }
+    Expr x1 = p.subs(new_sub_map);
+    if (!expr_contains_nan(x1)) {
+      // OK. If it evaluates to a double, return that. (No point keeping
+      // symbolic constants in there as we've messed it up by perturbing it.)
+      if (expr_free_symbols(x1).empty()) {
+        return SymEngine::eval_double(x1);
+      } else {
+        return x1;
+      }
+    }
+  }
+
+  // Something really is fishy.
+  throw SymEngine::NotImplementedError(
+      "Invalid substitution in symbolic expression");
+}
+
 Op_ptr Gate::symbol_substitution(
     const SymEngine::map_basic_basic& sub_map) const {
   std::vector<Expr> new_params;
   for (const Expr& p : this->params_) {
-    new_params.push_back(p.subs(sub_map));
+    new_params.push_back(safe_subs(p, sub_map));
   }
   return get_op_ptr(this->type_, new_params, this->n_qubits_);
 }
