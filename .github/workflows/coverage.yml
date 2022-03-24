@@ -34,7 +34,7 @@ jobs:
   generate_coverage:
     name: Generate coverage report
     needs: changes
-    if: needs.changes.outputs.tket == 'true'
+    if: needs.changes.outputs.tket == 'true' || github.event_name == 'schedule'
     runs-on: ubuntu-20.04
     env:
       CC: gcc-10
