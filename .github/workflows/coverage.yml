@@ -7,6 +7,9 @@ on:
   push:
     branches:
       - develop
+  schedule:
+    # 03:00 every Saturday morning
+    - cron: '0 3 * * 6'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -31,7 +34,7 @@ jobs:
   generate_coverage:
     name: Generate coverage report
     needs: changes
-    if: needs.changes.outputs.tket == 'true'
+    if: needs.changes.outputs.tket == 'true' || github.event_name == 'schedule'
     runs-on: ubuntu-20.04
     env:
       CC: gcc-10
@@ -87,7 +90,11 @@ jobs:
         mkdir -p ~/texmf/tex/latex
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
     - name: Run tket tests
+      if: github.event_name == 'pull_request' || github.event_name == 'push'
       run: ./build/tket-tests/bin/test_tket
+    - name: Run full tket tests
+      if: github.event_name == 'schedule'
+      run: ./build/tket-tests/bin/test_tket "[long],~[long]"
     - name: Install gcovr
       run: pip install gcovr
     - name: Build coverage report
@@ -100,8 +107,31 @@ jobs:
         name: test_coverage
         path: test-coverage/
 
-  publish_coverage:
-    name: Publish coverage
+  check_coverage:
+    name: Check coverage
+    needs: generate_coverage
+    if: (github.event_name == 'pull_request' && needs.changes.outputs.tket == 'true') || github.event_name == 'schedule'
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+    - name: Download artefact
+      uses: actions/download-artifact@v2
+      with:
+        name: test_coverage
+        path: test-coverage/
+    - name: Compare with latest report from develop (short tests)
+      if: github.event_name == 'pull_request'
+      run: |
+        wget https://cqcl.github.io/tket/tket/test-coverage-short/summary.txt
+        ./.github/workflows/compare-coverage summary.txt test-coverage/summary.txt
+    - name: Compare with latest report from develop (full suite)
+      if: github.event_name == 'schedule'
+      run: |
+        wget https://cqcl.github.io/tket/tket/test-coverage/summary.txt
+        ./.github/workflows/compare-coverage summary.txt test-coverage/summary.txt
+
+  publish_coverage_short:
+    name: Publish coverage (short tests)
     needs: generate_coverage
     concurrency: gh_pages
     if: github.event_name == 'push' && needs.changes.outputs.tket == 'true'
@@ -120,28 +150,40 @@ jobs:
         git config --global user.email "tket-bot@cambridgequantum.com"
         git config --global user.name  "«$GITHUB_WORKFLOW» github action"
     - name: Remove old report
-      run: git rm -r docs/tket/test-coverage
+      run: git rm -r docs/tket/test-coverage-short/*
     - name: Add report to repository
       run: |
-        mv test-coverage/ docs/tket/
-        git add -f docs/tket/test-coverage
-        git commit --allow-empty -m "Add generated coverage report."
+        mv test-coverage/* docs/tket/test-coverage-short/
+        git add -f docs/tket/test-coverage-short
+        git commit --allow-empty -m "Add generated coverage report (short tests)."
     - name: Publish report
       run: git push origin gh-pages:gh-pages
 
-  check_coverage:
-    name: Check coverage
-    needs: generate_coverage
-    if: github.event_name == 'pull_request' && needs.changes.outputs.tket == 'true'
+  publish_coverage_full:
+    name: Publish coverage (full suite)
+    needs: check_coverage
+    concurrency: gh_pages
+    if: github.event_name == 'schedule'
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
+      with:
+        ref: gh-pages
     - name: Download artefact
       uses: actions/download-artifact@v2
       with:
         name: test_coverage
         path: test-coverage/
-    - name: Compare with latest report from develop
+    - name: Configure git
       run: |
-        wget https://cqcl.github.io/tket/tket/test-coverage/summary.txt
-        ./.github/workflows/compare-coverage summary.txt test-coverage/summary.txt
+        git config --global user.email "tket-bot@cambridgequantum.com"
+        git config --global user.name  "«$GITHUB_WORKFLOW» github action"
+    - name: Remove old report
+      run: git rm -r docs/tket/test-coverage/*
+    - name: Add report to repository
+      run: |
+        mv test-coverage/* docs/tket/test-coverage/
+        git add -f docs/tket/test-coverage
+        git commit --allow-empty -m "Add generated coverage report (full suite)."
+    - name: Publish report
+      run: git push origin gh-pages:gh-pages
