@@ -21,8 +21,12 @@
 #include "OpPtrFunctions.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeInfo.hpp"
+#include "Utils/Expression.hpp"
+#include "Utils/RNG.hpp"
+#include "symengine/eval_double.h"
 
 namespace tket {
+using std::stringstream;
 
 Op_ptr Gate::dagger() const {
   OpType optype = get_type();
@@ -221,13 +225,79 @@ Op_ptr Gate::transpose() const {
   }
 }
 
+static bool params_contain_nan(const std::vector<Expr>& params) {
+  static const std::regex nan_regex("\\bnan\\b");
+  for (const Expr& e : params) {
+    stringstream ss;
+    ss << e;
+    if (std::regex_search(ss.str(), nan_regex)) return true;
+  }
+  return false;
+}
+
+static double random_perturbation() {
+  static RNG rng;
+  int a = rng.get_size_t(20);
+  return (a - 10) * EPS;
+}
+
+// If `to_doubles` is true, when an expression contains no free symbols evaluate
+// it as a double. This is appropriate in the case where an expression has been
+// perturbed, when there is no point retaining exact values for symbolic
+// constants.
+static std::vector<Expr> subs_all_params(
+    const std::vector<Expr>& params, const SymEngine::map_basic_basic& sub_map,
+    bool to_doubles = false) {
+  std::vector<Expr> new_params;
+  for (const Expr& p : params) {
+    Expr psub = p.subs(sub_map);
+    if (to_doubles && expr_free_symbols(psub).empty()) {
+      new_params.push_back(SymEngine::eval_double(psub));
+    } else {
+      new_params.push_back(psub);
+    }
+  }
+  return new_params;
+}
+
 Op_ptr Gate::symbol_substitution(
     const SymEngine::map_basic_basic& sub_map) const {
-  std::vector<Expr> new_params;
-  for (const Expr& p : this->params_) {
-    new_params.push_back(p.subs(sub_map));
+  // Perform symbolic substitution, but catch the case where the returned
+  // expression is not a number, and in that case try to set a value by
+  // perturbing the inputs. This deals with cases where expressions contain
+  // terms that are undefined at specific values but where the singularity is
+  // removable at the op level. (Non-removable singularities, which ought
+  // strictly to fail substitution, will result in spectacularly wrong values,
+  // but are unlikely to arise in practice.)
+  //
+  // This is a partial workaround for issues arising from squashing symbolic
+  // rotations, where it is hard or impossible to handle special cases (e.g.
+  // where the general formula reduces to one involving atan2(0,0)).
+  //
+  // A proper solution to this problem may have to wait for TKET 2.
+  std::vector<Expr> new_params = subs_all_params(this->params_, sub_map);
+  if (!params_contain_nan(new_params)) {  // happy path
+    return get_op_ptr(this->type_, new_params, this->n_qubits_);
   }
-  return get_op_ptr(this->type_, new_params, this->n_qubits_);
+
+  // Try perturbing all values in the map. May need several attempts in case
+  // there are subexpressions on the boundary of validity, such as acos(1.0). If
+  // we fail after 1000 attempts, give up.
+  for (unsigned i = 0; i < 1000; i++) {
+    SymEngine::map_basic_basic new_sub_map;
+    for (const auto& pair : sub_map) {
+      new_sub_map[pair.first] = Expr(pair.second) + random_perturbation();
+    }
+    std::vector<Expr> new_params_1 =
+        subs_all_params(this->params_, new_sub_map, true);
+    if (!params_contain_nan(new_params_1)) {
+      return get_op_ptr(this->type_, new_params_1, this->n_qubits_);
+    }
+  }
+
+  // Something really is fishy.
+  throw SymEngine::NotImplementedError(
+      "Invalid substitution in symbolic expression");
 }
 
 std::optional<double> Gate::is_identity() const {
