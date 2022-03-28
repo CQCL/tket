@@ -151,10 +151,10 @@ jobs:
         git config --global user.email "tket-bot@cambridgequantum.com"
         git config --global user.name  "«$GITHUB_WORKFLOW» github action"
     - name: Remove old report
-      run: git rm -r docs/tket/test-coverage-short/*
+      run: git rm -r docs/tket/test-coverage-short
     - name: Add report to repository
       run: |
-        mv test-coverage/* docs/tket/test-coverage-short/
+        mv test-coverage docs/tket/test-coverage-short
         git add -f docs/tket/test-coverage-short
         git commit --allow-empty -m "Add generated coverage report (short tests)."
     - name: Publish report
@@ -180,10 +180,10 @@ jobs:
         git config --global user.email "tket-bot@cambridgequantum.com"
         git config --global user.name  "«$GITHUB_WORKFLOW» github action"
     - name: Remove old report
-      run: git rm -r docs/tket/test-coverage/*
+      run: git rm -r docs/tket/test-coverage
     - name: Add report to repository
       run: |
-        mv test-coverage/* docs/tket/test-coverage/
+        mv test-coverage docs/tket/test-coverage
         git add -f docs/tket/test-coverage
         git commit --allow-empty -m "Add generated coverage report (full suite)."
     - name: Publish report
