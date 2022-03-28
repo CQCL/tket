@@ -296,8 +296,13 @@ Op_ptr Gate::symbol_substitution(
   }
 
   // Something really is fishy.
-  throw SymEngine::NotImplementedError(
-      "Invalid substitution in symbolic expression");
+  std::stringstream msg;
+  msg << "Failed to substitute values { ";
+  for (const auto &pair : sub_map) {
+    msg << Expr(pair.first) << " --> " << Expr(pair.second) << ", ";
+  }
+  msg << "} in operation " << get_name() << ".";
+  throw SubstitutionFailure(msg.str());
 }
 
 std::optional<double> Gate::is_identity() const {
