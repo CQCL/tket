@@ -42,7 +42,11 @@ class MPattern:
     def label_squish(self, g: GraphS, io_map: Dict[str, Dict[Qubit, int]]) -> None:
         """
         Updates the input/output labels of the MPattern to matched a squished
-        graph caused by g.copy().
+        graph caused by g.copy(). The reason why we use g.copy() is because the
+        easiest way to split a zx diagram into multiple disjoint zx.diagrams is
+        to first identify X disjoint clusters of qubits, the copy the original
+        graph into X graphs, and then for each of the copies remove all the
+        vertices outside the corresponding cluster.
         
         :param g:       A pyzx graph representing a zx diagram.
         :param type:    GraphS
@@ -284,7 +288,13 @@ class MPattern:
         """
         If a zx diagram contains sub-diagrams which are not connected to each
         other, it splits them into multiple zx diagrams. It returns a list of
-        all the irreducible zx diagrams contained by the original.
+        all the irreducible zx diagrams contained by the original. The easiest
+        way to do this is to first identify all the disjoint clusters of vertices
+        in the original diagram, then produce a copy of the original for each
+        cluster and remove all the vertices that do not belong to that cluster
+        from the corresponding copy. However, as a result of using graph.copy()
+        the labelling in the zx diagram changes which is why label_squish is
+        needed.
         
         :param g:       A zx diagram which may contain disjointed sub-diagrams.
         :param type:    GraphS

@@ -31,10 +31,8 @@ class Splitter(Enum):
         :rtype:         List[List[Command]]
         """
         qubits = c.qubits
-        depth = c.depth()
-        qn = c.n_qubits
-        current_frontiers = [0] * qn
-        depth_slices: List[List[int]] = [[] for d in range(depth)]
+        current_frontiers = [0] * c.n_qubits
+        depth_slices: List[List[int]] = [[] for d in range(c.depth)]
         for gate in c.get_commands():
             involved_qubits = gate.qubits
             qubit_indices = []
@@ -62,12 +60,12 @@ class Splitter(Enum):
         :rtype:          List[Tuple[Circuit, bool]]
         """
         depth_structure = Splitter.depth_structure(c)
-        size = len(depth_structure)
-        slice_size = ceil(size / splits)
+        depth = len(depth_structure)
+        slice_size = ceil(depth / splits)
         done_depth = 0
         subc_list = []
         for curr in range(splits):
-            finish_at = min(done_depth + slice_size, size)
+            finish_at = min(done_depth + slice_size, depth)
             subcircuit = Circuit()
             for qubit in c.qubits:
                 subcircuit.add_qubit(qubit)
@@ -78,7 +76,7 @@ class Splitter(Enum):
                     subcircuit.add_gate(Op=gate.op, args=gate.args)
             new_tuple = (subcircuit, True)
             subc_list.append(new_tuple)
-            if finish_at >= size:
+            if finish_at >= depth:
                 break
             else:
                 done_depth = finish_at
@@ -101,14 +99,12 @@ class Splitter(Enum):
         :rtype:          List[Tuple[Circuit, bool]]
         """
         depth_structure = Splitter.depth_structure()  # type: ignore
-        size = len(depth_structure)
         non_cliff = 0
         for d in depth_structure:
             for gate in d:
                 if not is_Clifford(gate):
                     non_cliff += 1
-        size = non_cliff
-        slice_size = ceil(size / splits)
+        slice_size = ceil(non_cliff / splits)
         done_depth = 0
         subc_list = []
         for curr in range(splits):
@@ -159,22 +155,22 @@ class Splitter(Enum):
         :rtype:          List[Tuple[Circuit, bool]]
         """
         depth_structure = Splitter.depth_structure()  # type: ignore
-        size = len(depth_structure)
+        depth = len(depth_structure)
         done_depth = 0
         subc_list = []
-        if size > 0:
+        if depth > 0:
             clifford_circ = True
             for gate in depth_structure[0]:
                 if not is_Clifford(gate):
                     clifford_circ = False
                     break
-            while done_depth < size:
+            while done_depth < depth:
                 subcircuit = Circuit()
                 for qubit in c.qubits:
                     subcircuit.add_qubit(qubit)
                 for bit in c.bits:
                     subcircuit.add_bit(bit)
-                for depth_list in depth_structure[done_depth:size]:
+                for depth_list in depth_structure[done_depth:depth]:
                     has_non_clifford = False
                     for gate in depth_list:
                         if not is_Clifford(gate):
