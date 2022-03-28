@@ -305,7 +305,7 @@ bool Rewrite::rebase_to_mbqc_fun(ZXDiagram& diag) {
           if (diag.target(w) == v) v_bounds.push_back({w, WireEnd::Target});
         }
         ZXDiagram::Subdiagram sub{v_bounds, {v}};
-        ZXDiagram h = sub.to_diagram();
+        ZXDiagram h = sub.to_diagram(diag);
         rebase_to_zx_fun(h);
         rebase_to_mbqc_fun(h);
         diag.substitute(h, sub);
@@ -328,7 +328,7 @@ bool Rewrite::rebase_to_mbqc_fun(ZXDiagram& diag) {
           we1 = diag.end_of(w1, v);
         }
         ZXDiagram::Subdiagram sub{{{w0, we0}, {w1, we1}}, {v}};
-        ZXDiagram tri = sub.to_diagram();
+        ZXDiagram tri = sub.to_diagram(diag);
         rebase_to_zx_fun(tri);
         rebase_to_mbqc_fun(tri);
         diag.substitute(tri, sub);

@@ -71,6 +71,6 @@ Circuit pauli_graph_to_circuit_sets(
  * Produces an equivalent circuit using the gate extraction method from
  * Backens et al., "There and Back Again: A Circuit Extraction Tale".
  */
-Circuit zx_to_circuit(const ZXDiagram& diag);
+Circuit zx_to_circuit(const zx::ZXDiagram &diag);
 
 }  // namespace tket
