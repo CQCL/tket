@@ -298,7 +298,7 @@ Op_ptr Gate::symbol_substitution(
   // Something really is fishy.
   std::stringstream msg;
   msg << "Failed to substitute values { ";
-  for (const auto &pair : sub_map) {
+  for (const auto& pair : sub_map) {
     msg << Expr(pair.first) << " --> " << Expr(pair.second) << ", ";
   }
   msg << "} in operation " << get_name() << ".";
