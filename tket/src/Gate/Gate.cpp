@@ -237,8 +237,8 @@ static bool params_contain_nan(const std::vector<Expr>& params) {
 
 static double random_perturbation() {
   static RNG rng;
-  int a = rng.get_size_t(20);
-  return (a - 10) * EPS;
+  int a = rng.get_size_t(10);
+  return (a - 5) * EPS;
 }
 
 // If `to_doubles` is true, when an expression contains no free symbols evaluate
