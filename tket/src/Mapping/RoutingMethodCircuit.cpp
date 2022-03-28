@@ -26,7 +26,7 @@ RoutingMethodCircuit::RoutingMethodCircuit(
       max_depth_(_max_depth){};
 
 std::pair<bool, unit_map_t> RoutingMethodCircuit::routing_method(
-    std::shared_ptr<MappingFrontier>& mapping_frontier,
+    MappingFrontier_ptr& mapping_frontier,
     const ArchitecturePtr& architecture) const {
   // Produce subcircuit and circuit
   Subcircuit frontier_subcircuit = mapping_frontier->get_frontier_subcircuit(
@@ -34,7 +34,7 @@ std::pair<bool, unit_map_t> RoutingMethodCircuit::routing_method(
   Circuit frontier_circuit =
       mapping_frontier->circuit_.subcircuit(frontier_subcircuit);
   frontier_circuit.rename_units(
-      mapping_frontier->get_default_to_quantum_boundary_unit_map());
+      mapping_frontier->get_default_to_linear_boundary_unit_map());
 
   // get routed subcircuit
   std::tuple<bool, Circuit, unit_map_t, unit_map_t> routed_subcircuit =
@@ -45,8 +45,16 @@ std::pair<bool, unit_map_t> RoutingMethodCircuit::routing_method(
   }
 
   // update unit id at boundary in case of relabelling
-  mapping_frontier->update_quantum_boundary_uids(
-      std::get<2>(routed_subcircuit));
+  // The route_subcircuit_ method populates its initial map
+  // with unit ids from the circuit. e.g. Initial map from frontier ==
+  // q[0]:unplaced[0], circuit.all_qubits() == unplaced[0]. Then the produced
+  // initial map == unplaced[0]:node[0] We have to update the initial map to
+  // q[0]:node[0]
+  mapping_frontier->update_linear_boundary_uids(std::get<2>(routed_subcircuit));
+  for (const auto& pair : std::get<2>(routed_subcircuit)) {
+    mapping_frontier->update_bimaps(
+        mapping_frontier->get_qubit_from_circuit_uid(pair.first), pair.second);
+  }
 
   unit_map_t swap_permutation;
   for (const auto& pair : std::get<2>(routed_subcircuit)) {

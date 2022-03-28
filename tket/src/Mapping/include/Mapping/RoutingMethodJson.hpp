@@ -14,7 +14,11 @@
 
 #pragma once
 
-#include "Mapping/LexiRoute.hpp"
+#include "Mapping/AASLabelling.hpp"
+#include "Mapping/AASRoute.hpp"
+#include "Mapping/BoxDecomposition.hpp"
+#include "Mapping/LexiLabelling.hpp"
+#include "Mapping/LexiRouteRoutingMethod.hpp"
 #include "Mapping/MultiGateReorder.hpp"
 #include "Mapping/RoutingMethod.hpp"
 #include "Utils/Json.hpp"

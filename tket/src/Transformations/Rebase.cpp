@@ -123,18 +123,6 @@ Transform rebase_cirq() {
       CircPool::tk1_to_PhasedXRz);
 }
 
-Transform rebase_HQS() {
-  return rebase_factory(
-      {OpType::ZZMax, OpType::PhasedX, OpType::Rz}, CircPool::CX_using_ZZMax(),
-      CircPool::tk1_to_PhasedXRz);
-}
-
-Transform rebase_UMD() {
-  return rebase_factory(
-      {OpType::XXPhase, OpType::PhasedX, OpType::Rz},
-      CircPool::CX_using_XXPhase_0(), CircPool::tk1_to_PhasedXRz);
-}
-
 Transform rebase_quil() {
   return rebase_factory(
       {OpType::CZ, OpType::Rx, OpType::Rz}, CircPool::H_CZ_H(),

@@ -31,12 +31,12 @@ from pytket.backends.resulthandle import ResultHandle, _ResultIdTuple
 from pytket.backends.status import CircuitStatus, StatusEnum
 from pytket.passes import (  # type: ignore
     BasePass,
-    RebasePyZX,
     SequencePass,
     SynthesiseTket,
     FullPeepholeOptimise,
     DecomposeBoxes,
     SimplifyInitial,
+    auto_rebase_pass,
 )
 from pytket.predicates import (  # type: ignore
     GateSetPredicate,
@@ -48,6 +48,20 @@ from pytket.predicates import (  # type: ignore
 from pytket.utils import prepare_circuit
 from pytket.utils.outcomearray import OutcomeArray
 from pytket.utils.results import probs_from_state
+
+
+_GATE_SET = {
+    OpType.SWAP,
+    OpType.CX,
+    OpType.CZ,
+    OpType.Rz,
+    OpType.Rx,
+    OpType.S,
+    OpType.T,
+    OpType.S,
+    OpType.X,
+    OpType.H,
+}
 
 
 class TketSimBackend(Backend):
@@ -74,7 +88,7 @@ class TketSimBackend(Backend):
         ]
 
     def rebase_pass(self) -> BasePass:
-        return RebasePyZX()
+        return auto_rebase_pass(_GATE_SET)
 
     def default_compilation_pass(self, optimisation_level: int = 1) -> BasePass:
         assert optimisation_level in range(3)

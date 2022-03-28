@@ -806,41 +806,5 @@ unsigned CNotSwapSynth::swap_to_root(
 
 bool CNotSwapSynth::valid_result() { return CNOT_matrix.is_id(); }
 
-std::ostream& operator<<(std::ostream& out, const SteinerTree& st) {
-  out << "\nprint the details of a steiner tree: \n";
-  out << "root: " << st.root << "\n";
-  out << "cost: " << st.tree_cost << "\n";
-  out << "SteinerNodeTypes: ";
-  for (SteinerNodeType nt : st.node_types) {
-    out << (int)nt << " ";
-  }
-  out << "\n";
-  out << "neighbours: ";
-
-  for (unsigned n : st.num_neighbours) {
-    out << n << " ";
-  }
-  out << "\n\n";
-  return out;
-}
-
-std::ostream& operator<<(std::ostream& out, const CNotSwapSynth& cnot) {
-  out << "\nprint the details of a CNot synth object: \n";
-
-  out << "circuit:\n";
-  for (auto g : cnot.circ) {
-    out << g << ", ";
-  }
-  out << std::endl;
-
-  out << "path:\n";
-  out << cnot.paths;
-
-  out << "CNot matrix:\n";
-  out << cnot.CNOT_matrix;
-
-  return out;
-}
-
 }  // namespace aas
 }  // namespace tket

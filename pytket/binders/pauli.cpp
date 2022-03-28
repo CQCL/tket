@@ -121,7 +121,7 @@ PYBIND11_MODULE(pauli, m) {
           "\n\n:param qubits: the ordered list of qubits in the full "
           "operator"
           "\n:return: a sparse matrix corresponding to the operator",
-          py::arg("n_qubits"))
+          py::arg("qubits"))
       .def(
           "dot_state",
           (Eigen::VectorXcd(QubitPauliString::*)(const Eigen::VectorXcd &)

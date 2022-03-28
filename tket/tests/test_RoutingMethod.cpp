@@ -5,6 +5,7 @@
 
 #include "Mapping/MappingFrontier.hpp"
 #include "Mapping/RoutingMethodCircuit.hpp"
+#include "Placement/Placement.hpp"
 
 namespace tket {
 
@@ -14,22 +15,27 @@ SCENARIO("Test RoutingMethod default methods.") {
       {{Node("t", 1), Node("t", 0)}, {Node("t", 2), Node("t", 1)}});
   ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);
   Circuit circ(3);
-  std::shared_ptr<MappingFrontier> mf = std::make_shared<MappingFrontier>(circ);
+  MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
   unit_map_t empty;
   std::pair<bool, unit_map_t> rm_return = rm.routing_method(mf, shared_arc);
   REQUIRE(!rm_return.first);
   REQUIRE(rm_return.second == empty);
 }
 
-// These two method are not completely reflective of what is necessary for
-// routing Their design is to minimally test the required features of the
-// methods, not to actually succesfully route a circuit
-bool test_check_method(const Circuit& c, const ArchitecturePtr& a) {
-  if (c.n_qubits() > 2 && a->n_nodes() > 2) {
-    return true;
-  } else {
-    return false;
+std::tuple<bool, Circuit, unit_map_t, unit_map_t>
+test_routing_method_mf_simple_relabel(
+    const Circuit& c, const ArchitecturePtr& a) {
+  Circuit copy(c);
+  std::vector<Qubit> qs = copy.all_qubits();
+  std::vector<Node> ns = a->get_all_nodes_vec();
+  // enforce in tests that ns >= qs, this is testing purposes only so fine...
+  unit_map_t rename_map, final_map;
+  for (unsigned i = 0; i < qs.size(); i++) {
+    rename_map.insert({qs[i], ns[i]});
+    final_map.insert({ns[i], ns[i]});
   }
+  copy.rename_units(rename_map);
+  return {true, copy, rename_map, final_map};
 }
 
 std::tuple<bool, Circuit, unit_map_t, unit_map_t>
@@ -114,9 +120,8 @@ SCENARIO("Test RoutingMethodCircuit checking criteria") {
   c.add_op<unsigned>(OpType::CX, {0, 1});
   circ3.add_op<unsigned>(OpType::CX, {0, 2});
   circ3.add_op<unsigned>(OpType::CX, {2, 1});
-  std::shared_ptr<MappingFrontier> mf2 = std::make_shared<MappingFrontier>(c);
-  std::shared_ptr<MappingFrontier> mf3 =
-      std::make_shared<MappingFrontier>(circ3);
+  MappingFrontier_ptr mf2 = std::make_shared<MappingFrontier>(c);
+  MappingFrontier_ptr mf3 = std::make_shared<MappingFrontier>(circ3);
 
   Architecture arc(
       {{Node("t", 1), Node("t", 0)}, {Node("t", 2), Node("t", 1)}});
@@ -150,7 +155,7 @@ SCENARIO("Test RoutingMethodCircuit::routing_method") {
     c.add_op<unsigned>(OpType::CX, {0, 1});
     c.add_op<unsigned>(OpType::CX, {0, 1});
 
-    std::shared_ptr<MappingFrontier> mf = std::make_shared<MappingFrontier>(c);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(c);
     Architecture arc(
         {{Node("t", 1), Node("t", 0)}, {Node("t", 2), Node("t", 1)}});
     ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);
@@ -168,7 +173,7 @@ SCENARIO("Test RoutingMethodCircuit::routing_method") {
     c.add_op<unsigned>(OpType::CX, {0, 1});
     c.add_op<unsigned>(OpType::CX, {0, 1});
 
-    std::shared_ptr<MappingFrontier> mf = std::make_shared<MappingFrontier>(c);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(c);
     Architecture arc(
         {{Node("t", 1), Node("t", 0)}, {Node("t", 2), Node("t", 1)}});
     ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);
@@ -186,7 +191,7 @@ SCENARIO("Test RoutingMethodCircuit::routing_method") {
     c.add_op<unsigned>(OpType::CX, {0, 1});
     c.add_op<unsigned>(OpType::CX, {0, 1});
 
-    std::shared_ptr<MappingFrontier> mf = std::make_shared<MappingFrontier>(c);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(c);
     Architecture arc(
         {{Node("t", 1), Node("t", 0)}, {Node("t", 2), Node("t", 1)}});
     ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);
@@ -209,4 +214,34 @@ SCENARIO("Test RoutingMethodCircuit::routing_method") {
     REQUIRE(c == comp1);
   }
 }
+
+SCENARIO("Test RoutingMethodCircuit produces correct map") {
+  RoutingMethodCircuit rmc(test_routing_method_mf_simple_relabel, 5, 5);
+  Architecture arc({{Node(0), Node(1)}, {Node(1), Node(2)}});
+  ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);
+  Circuit c(3);
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::CX, {1, 2});
+  std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+  // Initialise the maps by the same way it's done with CompilationUnit
+  for (const UnitID& u : c.all_units()) {
+    maps->initial.insert({u, u});
+    maps->final.insert({u, u});
+  }
+  Placement pl(arc);
+  qubit_mapping_t partial_map;
+  partial_map.insert({Qubit(0), Node(0)});
+  partial_map.insert({Qubit(1), Node(1)});
+  // We leave q[2] unplaced
+  pl.place_with_map(c, partial_map, maps);
+  MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(c, maps);
+
+  std::pair<bool, unit_map_t> res = rmc.routing_method(mf, shared_arc);
+
+  for (const Qubit& q : c.all_qubits()) {
+    REQUIRE(maps->initial.right.find(q) != maps->initial.right.end());
+    REQUIRE(maps->final.right.find(q) != maps->final.right.end());
+  }
+}
+
 }  // namespace tket

@@ -33,7 +33,7 @@ class TokenSwappingTester : public RoutingMethod {
    *
    */
   std::pair<bool, unit_map_t> routing_method(
-      std::shared_ptr<MappingFrontier>& /*mapping_frontier*/,
+      MappingFrontier_ptr& /*mapping_frontier*/,
       const ArchitecturePtr& /*architecture*/) const {
     Node node0("test_node", 0), node1("test_node", 1), node2("test_node", 2);
     return {true, {{node0, node1}, {node1, node2}, {node2, node0}}};
@@ -53,7 +53,7 @@ SCENARIO("Test MappingManager::route_circuit") {
   }
   GIVEN("Circuit unmodified.") {
     Circuit circ(2);
-    REQUIRE(!test_mm.route_circuit(circ, test_vrm));
+    REQUIRE(!test_mm.route_circuit(circ, test_vrm, false));
   }
   GIVEN("No method can route circuit.") {
     Circuit circ(3);

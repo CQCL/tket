@@ -24,7 +24,7 @@ from pytket.placement import (  # type: ignore
     place_with_map,
 )
 from pytket.passes import PauliSimp, DefaultMappingPass  # type: ignore
-from pytket.mapping import MappingManager, LexiRouteRoutingMethod  # type: ignore
+from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
 from pytket.qasm import circuit_from_qasm  # type: ignore
 
 import json
@@ -73,9 +73,9 @@ def test_placements() -> None:
     assert circ_qbs != graph_placed.qubits
 
     mm = MappingManager(test_architecture)
-    mm.route_circuit(base_placed, [LexiRouteRoutingMethod()])
-    mm.route_circuit(line_placed, [LexiRouteRoutingMethod()])
-    mm.route_circuit(graph_placed, [LexiRouteRoutingMethod()])
+    mm.route_circuit(base_placed, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
+    mm.route_circuit(line_placed, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
+    mm.route_circuit(graph_placed, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
 
     assert base_placed.valid_connectivity(test_architecture, False)
     assert line_placed.valid_connectivity(test_architecture, False)
@@ -121,8 +121,8 @@ def test_placement_config() -> None:
     assert map1 != map2
 
     mm = MappingManager(test_architecture)
-    mm.route_circuit(circ1, [LexiRouteRoutingMethod()])
-    mm.route_circuit(circ2, [LexiRouteRoutingMethod()])
+    mm.route_circuit(circ1, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
+    mm.route_circuit(circ2, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
     assert circ1.n_gates < circ2.n_gates
 
 

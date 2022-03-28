@@ -24,7 +24,7 @@ import numpy as np
 from pytket.circuit import Circuit, OpType, BasisOrder, Qubit, Bit, Node  # type: ignore
 from pytket.predicates import CompilationUnit  # type: ignore
 from pytket.passes import PauliSimp, CliffordSimp, ContextSimp  # type: ignore
-from pytket.mapping import MappingManager, LexiRouteRoutingMethod  # type: ignore
+from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
 from pytket.architecture import Architecture  # type: ignore
 from pytket.utils.outcomearray import OutcomeArray, readout_counts
 from pytket.utils.prepare import prepare_circuit
@@ -401,12 +401,20 @@ def test_empty_result(n_shots, n_bits) -> None:
     message=strategies.text(),
 )
 @settings(deadline=None)
-def test_status_serialization(status: StatusEnum, message: str) -> None:
+def test_status_serialization_basic(status: StatusEnum, message: str) -> None:
     c_stat = CircuitStatus(status, message)
     assert CircuitStatus.from_dict(c_stat.to_dict()) == c_stat
     with pytest.raises(ValueError) as errorinfo:
         c_stat = CircuitStatus.from_dict({"message": "asf", "status": "COMPETED"})
         assert "invalid format" in str(errorinfo.value)
+
+
+@given(
+    c_stat=strategies.builds(CircuitStatus),
+)
+@settings(deadline=None)
+def test_status_serialization(c_stat: CircuitStatus) -> None:
+    assert CircuitStatus.from_dict(c_stat.to_dict()) == c_stat
 
 
 def test_shots_with_unmeasured() -> None:
@@ -528,7 +536,7 @@ def test_postprocess_3() -> None:
 
     mm = MappingManager(arc)
     rc = c.copy()
-    mm.route_circuit(rc, [LexiRouteRoutingMethod()])
+    mm.route_circuit(rc, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
     n_shots = 100
     h = b.process_circuit(b.get_compiled_circuit(c), n_shots=n_shots, postprocess=True)
     r = b.get_result(h)

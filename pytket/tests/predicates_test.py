@@ -46,16 +46,7 @@ from pytket.passes import (  # type: ignore
     DecomposeBoxes,
     PeepholeOptimise2Q,
     FullPeepholeOptimise,
-    RebaseCirq,
-    RebaseHQS,
-    RebaseProjectQ,
-    RebasePyZX,
-    RebaseQuil,
     RebaseTket,
-    RebaseUMD,
-    RebaseUFR,
-    RebaseOQC,
-    SquashHQS,
     FlattenRegisters,
     SquashCustom,
     DelayMeasures,
@@ -67,6 +58,7 @@ from pytket.passes import (  # type: ignore
     SimplifyInitial,
     RemoveBarriers,
     PauliSquash,
+    auto_rebase_pass,
 )
 from pytket.predicates import (  # type: ignore
     GateSetPredicate,
@@ -75,7 +67,12 @@ from pytket.predicates import (  # type: ignore
     CompilationUnit,
     UserDefinedPredicate,
 )
-from pytket.mapping import LexiRouteRoutingMethod  # type: ignore
+from pytket.mapping import (  # type: ignore
+    LexiLabellingMethod,
+    LexiRouteRoutingMethod,
+    MultiGateReorderRoutingMethod,
+    BoxDecompositionRoutingMethod,
+)
 from pytket.architecture import Architecture  # type: ignore
 from pytket.placement import Placement, GraphPlacement  # type: ignore
 from pytket.transform import Transform, PauliSynthStrat, CXConfigType  # type: ignore
@@ -230,7 +227,9 @@ def test_routing_and_placement_pass() -> None:
     assert seq_pass.apply(cu2)
     assert cu2.initial_map == expected_map
 
-    full_pass = FullMappingPass(arc, pl, config=[LexiRouteRoutingMethod()])
+    full_pass = FullMappingPass(
+        arc, pl, config=[LexiLabellingMethod(), LexiRouteRoutingMethod()]
+    )
     cu3 = CompilationUnit(circ.copy())
     assert full_pass.apply(cu3)
     assert cu3.initial_map == expected_map
@@ -342,7 +341,7 @@ def test_RebaseOQC_and_SynthesiseOQC() -> None:
     u_before_oqc = circ3.get_unitary()
     assert np.allclose(u, u_before_oqc)
 
-    RebaseOQC().apply(circ3)
+    auto_rebase_pass(oqc_gateset).apply(circ3)
     assert oqc_gateset_pred.verify(circ3)
     u_before_rebase_tket = circ3.get_unitary()
     assert np.allclose(u, u_before_rebase_tket)
@@ -584,14 +583,7 @@ def test_library_pass_config() -> None:
         FullPeepholeOptimise().to_dict()["StandardPass"]["name"]
         == "FullPeepholeOptimise"
     )
-    assert RebaseCirq().to_dict()["StandardPass"]["name"] == "RebaseCirq"
-    assert RebaseHQS().to_dict()["StandardPass"]["name"] == "RebaseHQS"
-    assert RebaseProjectQ().to_dict()["StandardPass"]["name"] == "RebaseProjectQ"
-    assert RebasePyZX().to_dict()["StandardPass"]["name"] == "RebasePyZX"
-    assert RebaseQuil().to_dict()["StandardPass"]["name"] == "RebaseQuil"
     assert RebaseTket().to_dict()["StandardPass"]["name"] == "RebaseTket"
-    assert RebaseUMD().to_dict()["StandardPass"]["name"] == "RebaseUMD"
-    assert RebaseUFR().to_dict()["StandardPass"]["name"] == "RebaseUFR"
     assert (
         RemoveRedundancies().to_dict()["StandardPass"]["name"] == "RemoveRedundancies"
     )
@@ -599,12 +591,6 @@ def test_library_pass_config() -> None:
     assert SynthesiseTket().to_dict()["StandardPass"]["name"] == "SynthesiseTket"
     assert SynthesiseOQC().to_dict()["StandardPass"]["name"] == "SynthesiseOQC"
     assert SynthesiseUMD().to_dict()["StandardPass"]["name"] == "SynthesiseUMD"
-    # Share name with SquashCustom
-    assert SquashHQS().to_dict()["StandardPass"]["name"] == "SquashCustom"
-    assert set(SquashHQS().to_dict()["StandardPass"]["basis_singleqs"]) == {
-        "Rz",
-        "PhasedX",
-    }
     assert FlattenRegisters().to_dict()["StandardPass"]["name"] == "FlattenRegisters"
     assert DelayMeasures().to_dict()["StandardPass"]["name"] == "DelayMeasures"
 
@@ -682,7 +668,16 @@ def test_generated_pass_config() -> None:
         [k.to_list(), v.to_list()] for k, v in qm.items()
     ]
     # FullMappingPass
-    fm_pass = FullMappingPass(arc, placer, config=[LexiRouteRoutingMethod()])
+    fm_pass = FullMappingPass(
+        arc,
+        placer,
+        config=[
+            LexiLabellingMethod(),
+            LexiRouteRoutingMethod(),
+            MultiGateReorderRoutingMethod(),
+            BoxDecompositionRoutingMethod(),
+        ],
+    )
     assert fm_pass.to_dict()["pass_class"] == "SequencePass"
     p_pass = fm_pass.get_sequence()[0]
     r_pass = fm_pass.get_sequence()[1]
@@ -692,6 +687,22 @@ def test_generated_pass_config() -> None:
     assert p_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"
     assert check_arc_dict(arc, r_pass.to_dict()["StandardPass"]["architecture"])
     assert p_pass.to_dict()["StandardPass"]["placement"]["type"] == "GraphPlacement"
+    assert r_pass.to_dict()["StandardPass"]["routing_config"] == [
+        {"name": "LexiLabellingMethod"},
+        {
+            "name": "LexiRouteRoutingMethod",
+            "depth": 10,
+        },
+        {
+            "name": "MultiGateReorderRoutingMethod",
+            "depth": 10,
+            "size": 10,
+        },
+        {"name": "BoxDecompositionRoutingMethod"},
+    ]
+    assert r_pass.to_dict()["StandardPass"]["routing_config"][3] == {
+        "name": "BoxDecompositionRoutingMethod"
+    }
     # DefaultMappingPass
     dm_pass = DefaultMappingPass(arc)
     assert dm_pass.to_dict()["pass_class"] == "SequencePass"

@@ -17,6 +17,8 @@
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/Circuit.hpp"
+#include "Mapping/LexiLabelling.hpp"
+#include "Mapping/LexiRoute.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
 #include "Placement/Placement.hpp"
@@ -254,9 +256,10 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     CompilationUnit cu(circ, preds);
 
     PlacementPtr pp = std::make_shared<GraphPlacement>(grid);
-    LexiRouteRoutingMethod lrrm(50);
-    RoutingMethodPtr rmw = std::make_shared<LexiRouteRoutingMethod>(lrrm);
-    PassPtr cp_route = gen_full_mapping_pass(grid, pp, {rmw});
+    PassPtr cp_route = gen_full_mapping_pass(
+        grid, pp,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()});
 
     PassPtr all_passes = SynthesiseHQS() >> SynthesiseOQC() >>
                          SynthesiseUMD() >> SynthesiseTket() >> cp_route;
@@ -902,9 +905,9 @@ SCENARIO("DecomposeArbitrarilyControlledGates test") {
 SCENARIO("Precomposed passes successfully compose") {
   GIVEN("gen_directed_cx_routing_pass") {
     RingArch arc(6);
-    LexiRouteRoutingMethod lrrm(50);
-    RoutingMethodPtr rmw = std::make_shared<LexiRouteRoutingMethod>(lrrm);
-    REQUIRE_NOTHROW(gen_directed_cx_routing_pass(arc, {rmw}));
+    REQUIRE_NOTHROW(gen_directed_cx_routing_pass(
+        arc, {std::make_shared<LexiLabellingMethod>(),
+              std::make_shared<LexiRouteRoutingMethod>()}));
   }
 }
 
@@ -925,9 +928,9 @@ SCENARIO("Test Pauli Graph Synthesis Pass") {
 
 SCENARIO("Compose Pauli Graph synthesis Passes") {
   RingArch arc(10);
-  LexiRouteRoutingMethod lrrm(50);
-  RoutingMethodPtr rmw = std::make_shared<LexiRouteRoutingMethod>(lrrm);
-  PassPtr dir_pass = gen_directed_cx_routing_pass(arc, {rmw});
+  PassPtr dir_pass = gen_directed_cx_routing_pass(
+      arc, {std::make_shared<LexiLabellingMethod>(),
+            std::make_shared<LexiRouteRoutingMethod>()});
   GIVEN("Special UCC Synthesis") {
     PassPtr spec_ucc = gen_special_UCC_synthesis();
     REQUIRE_NOTHROW(spec_ucc >> dir_pass);
@@ -1010,9 +1013,10 @@ SCENARIO("Commute measurements to the end of a circuit") {
 
     Architecture line({{0, 1}, {1, 2}, {2, 3}});
     PlacementPtr pp = std::make_shared<LinePlacement>(line);
-    LexiRouteRoutingMethod lrrm(50);
-    RoutingMethodPtr rmw = std::make_shared<LexiRouteRoutingMethod>(lrrm);
-    PassPtr route_pass = gen_full_mapping_pass(line, pp, {rmw});
+    PassPtr route_pass = gen_full_mapping_pass(
+        line, pp,
+        {std::make_shared<LexiLabellingMethod>(),
+         std::make_shared<LexiRouteRoutingMethod>()});
     CompilationUnit cu(test);
     route_pass->apply(cu);
     REQUIRE(delay_pass->apply(cu));
@@ -1085,7 +1089,10 @@ SCENARIO("CX mapping pass") {
     LexiRouteRoutingMethod lrrm(50);
     RoutingMethodPtr rmw = std::make_shared<LexiRouteRoutingMethod>(lrrm);
     CompilationUnit cu_route(c_placed);
-    gen_routing_pass(line, {rmw})->apply(cu_route);
+    gen_routing_pass(
+        line, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()})
+        ->apply(cu_route);
     const Circuit& c_routed = cu_route.get_circ_ref();
 
     // Rebase again

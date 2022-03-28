@@ -1,10 +1,34 @@
 Changelog
 =========
 
-x.y.z (unreleased)
+1.x.y (unreleased)
+------------------
+
+Fixes:
+
+* Fix qubit order in ``QubitPauliOperator.to_sparse_matrix()``.
+
+1.0.1 (March 2022)
+------------------
+
+Fixes:
+
+* Fix problem with unassigned ancilla qubits during mapping.
+
+1.0.0 (March 2022)
 ------------------
 
 API changes:
+
+* ``Rebase<Target>`` and ``SquashHQS`` methods are removed. Specifically:
+
+  * ``RebaseHQS``
+  * ``RebaseProjectQ``
+  * ``RebasePyZX``
+  * ``RebaseQuil``
+  * ``RebaseUMD``
+  * ``RebaseUFR``
+  * ``RebaseOQC``
 
 * The deprecated ``QubitPauliString.to_dict`` method is removed. (Use the
   ``map`` property instead.)
@@ -24,6 +48,18 @@ API changes:
   ``Backend.backend_info`` instead.)
 * The ``QubitPauliOperator.from_OpenFermion`` and
   ``QubitPauliOperator.to_OpenFermion`` methods are removed.
+* The ``pytket.program`` module is removed.
+* The ``pytket.telemetry`` module is removed.
+
+Major new features:
+
+* New methods for mapping logical to physical circuits for some ``Architecture``.
+  The new method will use a list of user-given methods, each of them suitable only 
+  for a specific set of subcircuits. Users can add their own methods if they want to.
+  All compiler passes in pytket are updated to use the new methods.
+  The methods already given by pytket are ``LexiRouteRoutingMethod``,
+  ``LexiLabellingMethod``, ``MultiGateReorderRoutingMethod``,
+  ``AASRouteRoutingMethod``, ``BoxDecompositionRoutingMethod``, and ``AASLabellingMethod``.
 
 Minor new features:
 
@@ -35,7 +71,16 @@ Minor new features:
 * New ``pytket.passes.NaivePlacementPass`` which completes a basic relabelling of all Circuit Qubit
   not labelled as some Architecture Node to any available Architecture Node
 * Add ``opgroups`` property to ``Circuit``.
+* ``Architecture`` has new ``valid_operation`` method which returns true if passed UnitIDs that respect 
+  architecture constraints.
+* ``CircuitStatus`` has several new optional properties such as time-stamps associated with status changes,
+  queue position or detailed error information.
 
+Fixes:
+
+* ``ConnectivityPredicate.implies()`` checks for existence of isolated nodes as
+  well as edges in second architecture.
+  
 0.19.2 (February 2022)
 ----------------------
 

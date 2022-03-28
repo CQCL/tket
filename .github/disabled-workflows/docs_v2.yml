@@ -1,0 +1,26 @@
+name: Build tket C++ documentation v2
+
+on:
+  push:
+    branches:
+      - develop2
+    paths:
+      - 'tket/src/**'
+
+jobs:
+  build_docs:
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: '0'
+    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - name: Install Doxygen
+      run: sudo apt update && sudo apt install -y doxygen graphviz
+    - name: Build Doxygen docs
+      run: cd tket && doxygen
+    - name: Upload artefact
+      uses: actions/upload-artifact@v2
+      with:
+        name: tket_docs
+        path: tket/doc/html/

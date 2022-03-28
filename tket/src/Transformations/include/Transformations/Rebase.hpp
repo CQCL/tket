@@ -37,14 +37,6 @@ Transform rebase_tket();
 // Singleqs: PhasedX, Rz
 Transform rebase_cirq();
 
-// Multiqs: ZZMax
-// Singleqs: PhasedX, Rz
-Transform rebase_HQS();
-
-// Multiqs: XXPhase
-// Singleqs: PhasedX, Rz
-Transform rebase_UMD();
-
 // Multiqs: CZ
 // Singleqs: Rx, Rz
 Transform rebase_quil();

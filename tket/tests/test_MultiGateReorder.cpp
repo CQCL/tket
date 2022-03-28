@@ -46,8 +46,7 @@ SCENARIO("Reorder circuits") {
         {qubits[3], nodes[3]}};
     circ.rename_units(rename_map);
     Circuit circ_copy(circ);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     MultiGateReorder mr(shared_arc, mf);
     mr.solve(20, 20);
@@ -57,8 +56,8 @@ SCENARIO("Reorder circuits") {
       for (auto arg : commands[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(
-          commands[i].get_op_ptr()->get_type(), nodes));
+      REQUIRE(mf->valid_boundary_operation(
+          shared_arc, commands[i].get_op_ptr(), nodes));
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -88,8 +87,7 @@ SCENARIO("Reorder circuits") {
         {qubits[3], nodes[3]}};
     circ.rename_units(rename_map);
     Circuit circ_copy(circ);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     MultiGateReorder mr(shared_arc, mf);
     mr.solve(20, 20);
@@ -99,8 +97,8 @@ SCENARIO("Reorder circuits") {
       for (auto arg : commands[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(
-          commands[i].get_op_ptr()->get_type(), nodes));
+      REQUIRE(mf->valid_boundary_operation(
+          shared_arc, commands[i].get_op_ptr(), nodes));
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -135,8 +133,7 @@ SCENARIO("Reorder circuits") {
     circ.rename_units(rename_map);
     Circuit circ_copy(circ);
 
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     MultiGateReorder mr(shared_arc, mf);
     mr.solve(20, 20);
@@ -146,8 +143,8 @@ SCENARIO("Reorder circuits") {
       for (auto arg : commands[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(
-          commands[i].get_op_ptr()->get_type(), nodes));
+      REQUIRE(mf->valid_boundary_operation(
+          shared_arc, commands[i].get_op_ptr(), nodes));
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -183,8 +180,7 @@ SCENARIO("Reorder circuits") {
     circ.rename_units(rename_map);
     Circuit circ_copy(circ);
 
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     MultiGateReorder mr(shared_arc, mf);
     mr.solve(20, 20);
@@ -194,8 +190,8 @@ SCENARIO("Reorder circuits") {
       for (auto arg : commands[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(
-          commands[i].get_op_ptr()->get_type(), nodes));
+      REQUIRE(mf->valid_boundary_operation(
+          shared_arc, commands[i].get_op_ptr(), nodes));
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -229,18 +225,17 @@ SCENARIO("Reorder circuits with limited search space") {
         {qubits[3], nodes[3]}};
     circ.rename_units(rename_map);
     Circuit circ_copy(circ);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     MultiGateReorder mr(shared_arc, mf);
     mr.solve(3, 3);
     // Check only the first valid CZ get commuted to the front
     std::vector<Command> commands = circ.get_commands();
-    REQUIRE(shared_arc->valid_operation(
-        commands[0].get_op_ptr()->get_type(),
+    REQUIRE(mf->valid_boundary_operation(
+        shared_arc, commands[0].get_op_ptr(),
         {Node(commands[0].get_args()[0]), Node(commands[0].get_args()[1])}));
-    REQUIRE(!shared_arc->valid_operation(
-        commands[1].get_op_ptr()->get_type(),
+    REQUIRE(!mf->valid_boundary_operation(
+        shared_arc, commands[0].get_op_ptr(),
         {Node(commands[1].get_args()[0]), Node(commands[1].get_args()[1])}));
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -278,8 +273,7 @@ SCENARIO("Test MultiGateReorderRoutingMethod") {
         {qubits[3], nodes[3]}};
     circ.rename_units(rename_map);
     Circuit circ_copy(circ);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     mf->advance_frontier_boundary(shared_arc);
     MultiGateReorderRoutingMethod mrrm;
 
@@ -293,8 +287,8 @@ SCENARIO("Test MultiGateReorderRoutingMethod") {
       for (auto arg : commands[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(
-          commands[i].get_op_ptr()->get_type(), nodes));
+      REQUIRE(mf->valid_boundary_operation(
+          shared_arc, commands[i].get_op_ptr(), nodes));
     }
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
@@ -304,8 +298,7 @@ SCENARIO("Test MultiGateReorderRoutingMethod") {
     // Test with limits
     Circuit circ2(circ_copy);
 
-    std::shared_ptr<MappingFrontier> mf2 =
-        std::make_shared<MappingFrontier>(circ2);
+    MappingFrontier_ptr mf2 = std::make_shared<MappingFrontier>(circ2);
     mf2->advance_frontier_boundary(shared_arc);
     MultiGateReorderRoutingMethod mrrm2(4, 4);
 
@@ -319,15 +312,15 @@ SCENARIO("Test MultiGateReorderRoutingMethod") {
       for (auto arg : commands2[i].get_args()) {
         nodes.push_back(Node(arg));
       }
-      REQUIRE(shared_arc->valid_operation(
-          commands2[i].get_op_ptr()->get_type(), nodes));
+      REQUIRE(mf2->valid_boundary_operation(
+          shared_arc, commands2[i].get_op_ptr(), nodes));
     }
     std::vector<Node> nodes;
     for (auto arg : commands2[4].get_args()) {
       nodes.push_back(Node(arg));
     }
-    REQUIRE(!shared_arc->valid_operation(
-        commands2[4].get_op_ptr()->get_type(), nodes));
+    REQUIRE(!mf2->valid_boundary_operation(
+        shared_arc, commands2[4].get_op_ptr(), nodes));
     const auto u2 = tket_sim::get_unitary(circ2);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(
         u2, u1, tket_sim::MatrixEquivalence::EQUAL));
@@ -360,8 +353,7 @@ SCENARIO("Test MappingManager with MultiGateReorderRoutingMethod") {
         {qubits[2], nodes[2]},
         {qubits[3], nodes[3]}};
     circ.rename_units(rename_map);
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
     MappingManager mm(shared_arc);
     // MultiGateReorderRoutingMethod should first commute the last two gates
     // then only one swap is needed.
@@ -382,7 +374,7 @@ SCENARIO("Test MappingManager with MultiGateReorderRoutingMethod") {
   }
 }
 
-SCENARIO("Test JSON serialisation") {
+SCENARIO("Test JSON serialisation for MultiGateReorderRoutingMethod") {
   GIVEN("MultiGateReorderRoutingMethod") {
     nlohmann::json j_rm;
     j_rm["name"] = "MultiGateReorderRoutingMethod";
@@ -396,10 +388,39 @@ SCENARIO("Test JSON serialisation") {
 
   GIVEN("RoutingMethod vector") {
     nlohmann::json j_rms = {
-        {{"name", "MultiGateReorderRoutingMethod"}, {"depth", 3}, {"size", 4}},
+        {
+            {"name", "MultiGateReorderRoutingMethod"},
+            {"depth", 3},
+            {"size", 4},
+        },
         {
             {"name", "LexiRouteRoutingMethod"},
             {"depth", 3},
+        }};
+    std::vector<RoutingMethodPtr> rms =
+        j_rms.get<std::vector<RoutingMethodPtr>>();
+    nlohmann::json j_rms_serialised = rms;
+    REQUIRE(j_rms == j_rms_serialised);
+  }
+
+  GIVEN("RoutingMethod vector II, Lexi and AAS") {
+    nlohmann::json j_rms = {
+        {
+            {"name", "MultiGateReorderRoutingMethod"},
+            {"depth", 3},
+            {"size", 4},
+        },
+        {
+            {"name", "LexiRouteRoutingMethod"},
+            {"depth", 3},
+        },
+        {
+            {"name", "AASRouteRoutingMethod"},
+            {"cnotsynthtype", 2},
+            {"aaslookahead", 1},
+        },
+        {
+            {"name", "AASLabellingMethod"},
         }};
     std::vector<RoutingMethodPtr> rms =
         j_rms.get<std::vector<RoutingMethodPtr>>();

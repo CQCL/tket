@@ -28,9 +28,9 @@ add_library(tket-${COMP}
 
 list(APPEND DEPS_${COMP}
     Graphs
-    OpType
     TokenSwapping
     Utils)
+
 
 foreach(DEP ${DEPS_${COMP}})
     target_include_directories(

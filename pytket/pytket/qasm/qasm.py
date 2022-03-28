@@ -227,7 +227,7 @@ class QASMParser(object):
             gatename, arg_list = signature.split(" ", 1)
             symbol_list = ""
         gatename = gatename.strip()
-        symbols = [sympify(s.strip()) for s in symbol_list.split(",")]
+        symbols = [sympify(s.strip()) for s in symbol_list.split(",")]  # type: ignore
         args = [a.strip() for a in arg_list.split(",")]
         rename_map = {}
         qb_map = {}
@@ -338,7 +338,7 @@ class QASMParser(object):
             halfturn_angles = []
             for ang in angles:
                 try:
-                    halfturns = sympify(ang) / pi
+                    halfturns = sympify(ang) / pi  # type: ignore
                     halfturn_angles.append(halfturns)
                 except:
                     raise QASMParseError("Cannot parse angle: {}".format(ang))

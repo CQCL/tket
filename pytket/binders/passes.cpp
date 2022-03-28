@@ -15,6 +15,8 @@
 #include <pybind11/functional.h>
 
 #include "ArchAwareSynth/SteinerForest.hpp"
+#include "Mapping/LexiLabelling.hpp"
+#include "Mapping/LexiRoute.hpp"
 #include "Mapping/RoutingMethod.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
@@ -33,8 +35,9 @@ namespace tket {
 
 static PassPtr gen_cx_mapping_pass_kwargs(
     const Architecture &arc, const PlacementPtr &placer, py::kwargs kwargs) {
-  RoutingMethodPtr method = std::make_shared<LexiRouteRoutingMethod>();
-  std::vector<RoutingMethodPtr> config = {method};
+  std::vector<RoutingMethodPtr> config = {
+      std::make_shared<LexiLabellingMethod>(),
+      std::make_shared<LexiRouteRoutingMethod>()};
   if (kwargs.contains("config")) {
     config = py::cast<std::vector<RoutingMethodPtr>>(kwargs["config"]);
   }
@@ -50,8 +53,9 @@ static PassPtr gen_cx_mapping_pass_kwargs(
 }
 
 static PassPtr gen_default_routing_pass(const Architecture &arc) {
-  RoutingMethodPtr method = std::make_shared<LexiRouteRoutingMethod>();
-  std::vector<RoutingMethodPtr> config = {method};
+  std::vector<RoutingMethodPtr> config = {
+      std::make_shared<LexiLabellingMethod>(),
+      std::make_shared<LexiRouteRoutingMethod>()};
   return gen_routing_pass(arc, config);
 }
 
@@ -360,23 +364,7 @@ PYBIND11_MODULE(passes, m) {
       "gates."
       "\n\n:param allow_swaps: whether to allow implicit wire swaps",
       py::arg("allow_swaps") = true);
-  m.def("RebaseCirq", &RebaseCirq, "Converts all gates to CZ, PhasedX and Rz.");
-  m.def(
-      "RebaseHQS", &RebaseHQS, "Converts all gates to ZZMax, PhasedX and Rz.");
-  m.def(
-      "RebaseProjectQ", &RebaseProjectQ,
-      "Converts all gates to SWAP, CRz, CX, CZ, H, X, Y, Z, S, T, V, Rx, "
-      "Ry and Rz.");
-  m.def(
-      "RebasePyZX", &RebasePyZX,
-      "Converts all gates to SWAP, CX, CZ, H, X, Z, S, T, Rx and Rz.");
-  m.def("RebaseQuil", &RebaseQuil, "Converts all gates to CZ, Rx and Rz.");
   m.def("RebaseTket", &RebaseTket, "Converts all gates to CX and TK1.");
-  m.def(
-      "RebaseUMD", &RebaseUMD,
-      "Converts all gates to XXPhase, PhasedX and Rz.");
-  m.def("RebaseUFR", &RebaseUFR, "Converts all gates to CX, Rz and H.");
-  m.def("RebaseOQC", &RebaseOQC, "Converts all gates to ECR, Rz and SX.");
   m.def(
       "RemoveRedundancies", &RemoveRedundancies,
       "Removes gate-inverse pairs, merges rotations, removes identity "
@@ -400,9 +388,6 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "SquashTK1", &SquashTK1,
       "Squash sequences of single-qubit gates to TK1 gates.");
-  m.def(
-      "SquashHQS", &SquashHQS,
-      "Squash Rz and PhasedX gate sequences into an optimal form.");
   m.def(
       "FlattenRegisters", &FlattenRegisters,
       "Merges all quantum and classical registers into their "

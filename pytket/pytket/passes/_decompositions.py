@@ -29,7 +29,7 @@ def approx_0_mod_2(x: Param, eps: float = 1e-10) -> bool:
     :return: Approximately 0 boolean.
     :rtype: bool
     """
-    if isinstance(x, Expr) and not x.is_constant():
+    if isinstance(x, Expr) and not x.is_constant():  # type: ignore
         return False
     x = float(x)
     x %= 2

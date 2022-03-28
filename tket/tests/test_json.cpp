@@ -24,6 +24,7 @@
 #include "CircuitsForTesting.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/SymTable.hpp"
+#include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/RoutingMethod.hpp"
 #include "OpType/OpType.hpp"
@@ -35,6 +36,7 @@
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
 #include "testutil.hpp"
+
 namespace tket {
 namespace test_json {
 
@@ -431,14 +433,15 @@ SCENARIO("Test RoutingMethod serializations") {
   c.add_op<unsigned>(OpType::CX, {0, 1});
 
   MappingFrontier mf(c);
-  std::shared_ptr<MappingFrontier> mf_sp =
-      std::make_shared<MappingFrontier>(mf);
+  MappingFrontier_ptr mf_sp = std::make_shared<MappingFrontier>(mf);
   CHECK(!loaded_rm_j.routing_method(mf_sp, std::make_shared<SquareGrid>(2, 2))
              .first);
 
   std::vector<RoutingMethodPtr> rmp = {
       std::make_shared<RoutingMethod>(rm),
+      std::make_shared<LexiLabellingMethod>(),
       std::make_shared<LexiRouteRoutingMethod>(5)};
+
   nlohmann::json rmp_j = rmp;
   std::vector<RoutingMethodPtr> loaded_rmp_j =
       rmp_j.get<std::vector<RoutingMethodPtr>>();
@@ -567,15 +570,8 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(DecomposeSingleQubitsTK1, DecomposeSingleQubitsTK1())
   COMPPASSJSONTEST(PeepholeOptimise2Q, PeepholeOptimise2Q())
   COMPPASSJSONTEST(FullPeepholeOptimise, FullPeepholeOptimise())
-  COMPPASSJSONTEST(RebaseCirq, RebaseCirq())
   COMPPASSJSONTEST(RebaseTket, RebaseTket())
-  COMPPASSJSONTEST(RebaseHQS, RebaseHQS())
-  COMPPASSJSONTEST(RebaseQuil, RebaseQuil())
-  COMPPASSJSONTEST(RebaseProjectQ, RebaseProjectQ())
-  COMPPASSJSONTEST(RebasePyZX, RebasePyZX())
-  COMPPASSJSONTEST(RebaseUMD, RebaseUMD())
   COMPPASSJSONTEST(RebaseUFR, RebaseUFR())
-  COMPPASSJSONTEST(RebaseOQC, RebaseOQC())
   COMPPASSJSONTEST(RemoveRedundancies, RemoveRedundancies())
   COMPPASSJSONTEST(SynthesiseHQS, SynthesiseHQS())
   COMPPASSJSONTEST(SynthesiseTket, SynthesiseTket())
@@ -637,10 +633,11 @@ SCENARIO("Test compiler pass serializations") {
     nlohmann::json j_loaded = loaded;
     REQUIRE(j_pp == j_loaded);
   }
-  GIVEN("Routing with MultiGateReorderRoutingMethod") {
+  GIVEN("Routing with multiple routing methods") {
     RoutingMethodPtr mrmp =
         std::make_shared<MultiGateReorderRoutingMethod>(60, 80);
-    std::vector<RoutingMethodPtr> mrcon = {mrmp, rmp};
+    RoutingMethodPtr brmp = std::make_shared<BoxDecompositionRoutingMethod>();
+    std::vector<RoutingMethodPtr> mrcon = {mrmp, rmp, brmp};
     Circuit circ = CircuitsForTesting::get().uccsd;
     CompilationUnit cu{circ};
     PassPtr placement = gen_placement_pass(place);
@@ -655,22 +652,6 @@ SCENARIO("Test compiler pass serializations") {
     nlohmann::json j_loaded = loaded;
     REQUIRE(j_pp == j_loaded);
   }
-#define COMPPASSDESERIALIZE(passname, pass)            \
-  GIVEN(#passname) {                                   \
-    Circuit circ = CircuitsForTesting::get().uccsd;    \
-    CompilationUnit cu{circ};                          \
-    CompilationUnit copy = cu;                         \
-    PassPtr pp = pass;                                 \
-    nlohmann::json j_pp;                               \
-    j_pp["pass_class"] = "StandardPass";               \
-    j_pp["StandardPass"]["name"] = #passname;          \
-    PassPtr loaded = j_pp.get<PassPtr>();              \
-    pp->apply(cu);                                     \
-    loaded->apply(copy);                               \
-    REQUIRE(cu.get_circ_ref() == copy.get_circ_ref()); \
-  }
-  COMPPASSDESERIALIZE(SquashHQS, SquashHQS())
-#undef COMPPASSDESERIALIZE
   GIVEN("FullMappingPass") {
     // Sequence pass - deserializable only
     Circuit circ = CircuitsForTesting::get().uccsd;

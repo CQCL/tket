@@ -50,6 +50,12 @@ class TketTestsTestConan(ConanFile):
                         os.path.join(self.install_folder, "lib", lib_file),
                         os.path.join("bin", lib_file),
                     )
-            cmd_extra = "" if platform.system() == "Linux" else ' "~[latex]"'
+            ignore_latex_tests = "" if platform.system() == "Linux" else ' "~[latex]"'
+            if self.options["tket-tests"].full:
+                cmd_extra = f"[long]{ignore_latex_tests},~[long]{ignore_latex_tests}"
+            elif self.options["tket-tests"].long:
+                cmd_extra = f"[long]{ignore_latex_tests}"
+            else:
+                cmd_extra = ignore_latex_tests
             os.chdir("bin")
-            self.run(os.path.join(os.curdir, "test_tket" + cmd_extra))
+            self.run(os.path.join(os.curdir, "test_tket " + cmd_extra))

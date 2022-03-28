@@ -17,6 +17,7 @@
 #include <fstream>
 #include <iostream>
 
+#include "Circuit/ClassicalExpBox.hpp"
 #include "Mapping/MappingManager.hpp"
 
 namespace tket {
@@ -55,10 +56,10 @@ SCENARIO("Test MappingFrontier initialisation, advance_frontier_boundary.") {
     MappingFrontier mf(m);
     mf.advance_frontier_boundary(shared_arc);
 
-    VertPort vp0 = mf.quantum_boundary->get<TagKey>().find(nodes[0])->second;
-    VertPort vp1 = mf.quantum_boundary->get<TagKey>().find(nodes[1])->second;
-    VertPort vp2 = mf.quantum_boundary->get<TagKey>().find(nodes[2])->second;
-    VertPort vp3 = mf.quantum_boundary->get<TagKey>().find(nodes[3])->second;
+    VertPort vp0 = mf.linear_boundary->get<TagKey>().find(nodes[0])->second;
+    VertPort vp1 = mf.linear_boundary->get<TagKey>().find(nodes[1])->second;
+    VertPort vp2 = mf.linear_boundary->get<TagKey>().find(nodes[2])->second;
+    VertPort vp3 = mf.linear_boundary->get<TagKey>().find(nodes[3])->second;
 
     Edge e0 = mf.circuit_.get_nth_out_edge(vp0.first, vp0.second);
     Edge e1 = mf.circuit_.get_nth_out_edge(vp1.first, vp1.second);
@@ -79,10 +80,10 @@ SCENARIO("Test MappingFrontier initialisation, advance_frontier_boundary.") {
     mf.advance_frontier_boundary(shared_arc);
     // check that advance_frontier_boundary doesn't incorrectly move boundary
     // forwards
-    vp0 = mf.quantum_boundary->get<TagKey>().find(nodes[0])->second;
-    vp1 = mf.quantum_boundary->get<TagKey>().find(nodes[1])->second;
-    vp2 = mf.quantum_boundary->get<TagKey>().find(nodes[2])->second;
-    vp3 = mf.quantum_boundary->get<TagKey>().find(nodes[3])->second;
+    vp0 = mf.linear_boundary->get<TagKey>().find(nodes[0])->second;
+    vp1 = mf.linear_boundary->get<TagKey>().find(nodes[1])->second;
+    vp2 = mf.linear_boundary->get<TagKey>().find(nodes[2])->second;
+    vp3 = mf.linear_boundary->get<TagKey>().find(nodes[3])->second;
 
     e0 = mf.circuit_.get_nth_out_edge(vp0.first, vp0.second);
     e1 = mf.circuit_.get_nth_out_edge(vp1.first, vp1.second);
@@ -100,14 +101,130 @@ SCENARIO("Test MappingFrontier initialisation, advance_frontier_boundary.") {
     REQUIRE(mf.circuit_.source(e3) == v9);
     REQUIRE(mf.circuit_.target(e3) == v3);
   }
+
+  GIVEN("A circuit with measurements and classically controlled operations") {
+    Circuit circ(3, 1);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    // All gates are physically permitted
+    Vertex v0 = circ.add_op<unsigned>(OpType::Measure, {0, 0});
+    Vertex v1 =
+        circ.add_conditional_gate<unsigned>(OpType::Rx, {0.6}, {0}, {0}, 1);
+    Vertex v2 =
+        circ.add_conditional_gate<unsigned>(OpType::Rz, {0.6}, {1}, {0}, 1);
+    Vertex v3 = circ.add_op<unsigned>(OpType::X, {2});
+    std::vector<Node> nodes = {Node(0), Node(1), Node(2)};
+
+    Architecture arc({{nodes[0], nodes[1]}, {nodes[1], nodes[2]}});
+    ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]}, {qubits[1], nodes[1]}, {qubits[2], nodes[2]}};
+    circ.rename_units(rename_map);
+    MappingFrontier mf(circ);
+    mf.advance_frontier_boundary(shared_arc);
+    VertPort vp0 = mf.linear_boundary->get<TagKey>().find(nodes[0])->second;
+    VertPort vp1 = mf.linear_boundary->get<TagKey>().find(nodes[1])->second;
+    VertPort vp2 = mf.linear_boundary->get<TagKey>().find(nodes[2])->second;
+    Op_ptr op = circ.get_Op_ptr_from_Vertex(vp0.first);
+    Op_ptr op2 = circ.get_Op_ptr_from_Vertex(vp1.first);
+    Op_ptr op3 = circ.get_Op_ptr_from_Vertex(vp2.first);
+    REQUIRE(vp0.first == v1);
+    REQUIRE(vp1.first == v2);
+    REQUIRE(vp2.first == v3);
+  }
+  GIVEN(
+      "A circuit with multi edge bundles of booleans, conditional gates with "
+      "multiple inputs, conditional 2-qubit gates.") {
+    Circuit circ(4, 4);
+
+    Vertex v0 =
+        circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0, 1}, 1);
+    Vertex v1 = circ.add_conditional_gate<unsigned>(OpType::Y, {}, {1}, {1}, 0);
+    Vertex v2 = circ.add_op<unsigned>(OpType::CX, {1, 2});
+    Vertex v3 = circ.add_measure(2, 2);
+    Vertex v4 = circ.add_op<unsigned>(OpType::CX, {3, 2});
+    Vertex v5 = circ.add_measure(3, 3);
+    Vertex v6 =
+        circ.add_conditional_gate<unsigned>(OpType::Z, {}, {3}, {1, 2}, 0);
+    Vertex v7 = circ.add_measure(3, 3);
+    Vertex v8 = circ.add_barrier(
+        {Qubit(0), Qubit(1), Qubit(2), Qubit(3), Bit(1), Bit(2), Bit(3)});
+    Vertex v9 =
+        circ.add_conditional_gate<unsigned>(OpType::Z, {}, {3}, {1, 2}, 0);
+
+    std::vector<Node> nodes = {Node(0), Node(1), Node(2), Node(3)};
+    Architecture arc(
+        {{nodes[0], nodes[1]}, {nodes[1], nodes[2]}, {nodes[2], nodes[3]}});
+    ArchitecturePtr shared_arc = std::make_shared<Architecture>(arc);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]},
+        {qubits[1], nodes[1]},
+        {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]}};
+
+    circ.rename_units(rename_map);
+    std::vector<Bit> bits = circ.all_bits();
+    MappingFrontier mf(circ);
+
+    REQUIRE(
+        mf.boolean_boundary->get<TagKey>().find(bits[0]) !=
+        mf.boolean_boundary->get<TagKey>().end());
+    REQUIRE(
+        mf.boolean_boundary->get<TagKey>().find(bits[1]) !=
+        mf.boolean_boundary->get<TagKey>().end());
+    REQUIRE(
+        mf.boolean_boundary->get<TagKey>().find(bits[2]) ==
+        mf.boolean_boundary->get<TagKey>().end());
+    REQUIRE(
+        mf.boolean_boundary->get<TagKey>().find(bits[3]) ==
+        mf.boolean_boundary->get<TagKey>().end());
+
+    mf.advance_frontier_boundary(shared_arc);
+
+    VertPort vp_q_0 = mf.linear_boundary->get<TagKey>().find(nodes[0])->second;
+    VertPort vp_q_1 = mf.linear_boundary->get<TagKey>().find(nodes[1])->second;
+    VertPort vp_q_2 = mf.linear_boundary->get<TagKey>().find(nodes[2])->second;
+    VertPort vp_q_3 = mf.linear_boundary->get<TagKey>().find(nodes[3])->second;
+    // note c[0] and c[1] not linear_boundary as they are immediately boolean
+    VertPort vp_b_2 = mf.linear_boundary->get<TagKey>().find(bits[2])->second;
+    VertPort vp_b_3 = mf.linear_boundary->get<TagKey>().find(bits[3])->second;
+
+    REQUIRE(
+        circ.get_OpType_from_Vertex(circ.target(circ.get_nth_out_edge(
+            vp_q_0.first, vp_q_0.second))) == OpType::Output);
+    REQUIRE(
+        circ.get_OpType_from_Vertex(circ.target(circ.get_nth_out_edge(
+            vp_q_1.first, vp_q_1.second))) == OpType::Output);
+    REQUIRE(
+        circ.get_OpType_from_Vertex(circ.target(circ.get_nth_out_edge(
+            vp_q_2.first, vp_q_2.second))) == OpType::Output);
+    REQUIRE(
+        circ.get_OpType_from_Vertex(circ.target(circ.get_nth_out_edge(
+            vp_q_3.first, vp_q_3.second))) == OpType::Output);
+    REQUIRE(
+        circ.get_OpType_from_Vertex(circ.target(circ.get_nth_out_edge(
+            vp_b_2.first, vp_b_2.second))) == OpType::ClOutput);
+    REQUIRE(
+        circ.get_OpType_from_Vertex(circ.target(circ.get_nth_out_edge(
+            vp_b_3.first, vp_b_3.second))) == OpType::ClOutput);
+
+    // in and then removed from boolean boundary
+    REQUIRE(
+        mf.boolean_boundary->get<TagKey>().find(bits[2]) ==
+        mf.boolean_boundary->get<TagKey>().end());
+    // not in boolean boundary because bool not used in condition
+    REQUIRE(
+        mf.boolean_boundary->get<TagKey>().find(bits[3]) ==
+        mf.boolean_boundary->get<TagKey>().end());
+  }
 }
 
-SCENARIO("Test MappingFrontier get_default_to_quantum_boundary_unit_map") {
+SCENARIO("Test MappingFrontier get_default_to_linear_boundary_unit_map") {
   Circuit circ;
   circ.add_q_register("test_nodes", 4);
   std::vector<Qubit> qubits = circ.all_qubits();
   MappingFrontier mf(circ);
-  unit_map_t d_2_q = mf.get_default_to_quantum_boundary_unit_map();
+  unit_map_t d_2_q = mf.get_default_to_linear_boundary_unit_map();
   REQUIRE(d_2_q[Qubit(0)] == qubits[0]);
   REQUIRE(d_2_q[Qubit(1)] == qubits[1]);
   REQUIRE(d_2_q[Qubit(2)] == qubits[2]);
@@ -212,7 +329,7 @@ SCENARIO("Test MappingFrontier get_frontier_subcircuit.") {
     Circuit frontier_circuit_1 = mf_1.circuit_.subcircuit(sc1);
 
     frontier_circuit_1.rename_units(
-        mf_1.get_default_to_quantum_boundary_unit_map());
+        mf_1.get_default_to_linear_boundary_unit_map());
     Circuit comparison_circuit(4);
     std::map<UnitID, UnitID> rename_map_default = {
         {Qubit(0), nodes[0]},
@@ -224,7 +341,7 @@ SCENARIO("Test MappingFrontier get_frontier_subcircuit.") {
     REQUIRE(frontier_circuit_1 == comparison_circuit);
     Circuit frontier_circuit_3 = mf_3.circuit_.subcircuit(sc3);
     frontier_circuit_3.rename_units(
-        mf_3.get_default_to_quantum_boundary_unit_map());
+        mf_3.get_default_to_linear_boundary_unit_map());
 
     comparison_circuit.add_op<UnitID>(OpType::CZ, {nodes[0], nodes[2]});
     comparison_circuit.add_op<UnitID>(OpType::Y, {nodes[0]});
@@ -233,27 +350,27 @@ SCENARIO("Test MappingFrontier get_frontier_subcircuit.") {
   }
 }
 
-SCENARIO("Test update_quantum_boundary_uids.") {
+SCENARIO("Test update_linear_boundary_uids.") {
   Circuit circ(10);
   std::vector<Qubit> qbs = circ.all_qubits();
   MappingFrontier mf(circ);
-  GIVEN("Empty relabelling.") { mf.update_quantum_boundary_uids({}); }
+  GIVEN("Empty relabelling.") { mf.update_linear_boundary_uids({}); }
   GIVEN("Relabel some qubits to same qubit.") {
-    mf.update_quantum_boundary_uids(
+    mf.update_linear_boundary_uids(
         {{qbs[0], qbs[0]}, {qbs[2], qbs[2]}, {qbs[7], qbs[7]}});
-    REQUIRE(mf.quantum_boundary->get<TagKey>().find(qbs[0])->first == qbs[0]);
-    REQUIRE(mf.quantum_boundary->get<TagKey>().find(qbs[2])->first == qbs[2]);
-    REQUIRE(mf.quantum_boundary->get<TagKey>().find(qbs[7])->first == qbs[7]);
+    REQUIRE(mf.linear_boundary->get<TagKey>().find(qbs[0])->first == qbs[0]);
+    REQUIRE(mf.linear_boundary->get<TagKey>().find(qbs[2])->first == qbs[2]);
+    REQUIRE(mf.linear_boundary->get<TagKey>().find(qbs[7])->first == qbs[7]);
   }
   GIVEN("Relabel to already present qubit, check boundary has qubit removed.") {
-    mf.update_quantum_boundary_uids({{qbs[0], qbs[1]}});
-    REQUIRE(mf.quantum_boundary->get<TagKey>().size() == 9);
+    mf.update_linear_boundary_uids({{qbs[0], qbs[1]}});
+    REQUIRE(mf.linear_boundary->get<TagKey>().size() == 9);
   }
   GIVEN("Relabel to new UnitID.") {
-    mf.update_quantum_boundary_uids({{qbs[0], Node("tn", 6)}});
+    mf.update_linear_boundary_uids({{qbs[0], Node("tn", 6)}});
     REQUIRE(
-        mf.quantum_boundary->get<TagKey>().find(qbs[0]) ==
-        mf.quantum_boundary->get<TagKey>().end());
+        mf.linear_boundary->get<TagKey>().find(qbs[0]) ==
+        mf.linear_boundary->get<TagKey>().end());
   }
 }
 
@@ -465,10 +582,10 @@ SCENARIO("Test MappingFrontier::advance_next_2qb_slice") {
     // gets to first two cx
     mf.advance_frontier_boundary(shared_arc);
 
-    VertPort vp0 = mf.quantum_boundary->get<TagKey>().find(nodes[0])->second;
-    VertPort vp4 = mf.quantum_boundary->get<TagKey>().find(nodes[4])->second;
-    VertPort vp6 = mf.quantum_boundary->get<TagKey>().find(nodes[6])->second;
-    VertPort vp7 = mf.quantum_boundary->get<TagKey>().find(nodes[7])->second;
+    VertPort vp0 = mf.linear_boundary->get<TagKey>().find(nodes[0])->second;
+    VertPort vp4 = mf.linear_boundary->get<TagKey>().find(nodes[4])->second;
+    VertPort vp6 = mf.linear_boundary->get<TagKey>().find(nodes[6])->second;
+    VertPort vp7 = mf.linear_boundary->get<TagKey>().find(nodes[7])->second;
 
     Edge e0 = mf.circuit_.get_nth_out_edge(vp0.first, vp0.second);
     Edge e4 = mf.circuit_.get_nth_out_edge(vp4.first, vp4.second);
@@ -484,8 +601,8 @@ SCENARIO("Test MappingFrontier::advance_next_2qb_slice") {
     REQUIRE(v6 == v7);
 
     mf.advance_next_2qb_slice(5);
-    VertPort vp2 = mf.quantum_boundary->get<TagKey>().find(nodes[2])->second;
-    vp7 = mf.quantum_boundary->get<TagKey>().find(nodes[7])->second;
+    VertPort vp2 = mf.linear_boundary->get<TagKey>().find(nodes[2])->second;
+    vp7 = mf.linear_boundary->get<TagKey>().find(nodes[7])->second;
 
     Edge e2 = mf.circuit_.get_nth_out_edge(vp2.first, vp2.second);
     e7 = mf.circuit_.get_nth_out_edge(vp7.first, vp7.second);
@@ -525,10 +642,10 @@ SCENARIO("Test MappingFrontier::advance_next_2qb_slice") {
     // gets to first two cx
     mf.advance_frontier_boundary(shared_arc);
 
-    VertPort vp0 = mf.quantum_boundary->get<TagKey>().find(nodes[0])->second;
-    VertPort vp4 = mf.quantum_boundary->get<TagKey>().find(nodes[4])->second;
-    VertPort vp6 = mf.quantum_boundary->get<TagKey>().find(nodes[6])->second;
-    VertPort vp7 = mf.quantum_boundary->get<TagKey>().find(nodes[7])->second;
+    VertPort vp0 = mf.linear_boundary->get<TagKey>().find(nodes[0])->second;
+    VertPort vp4 = mf.linear_boundary->get<TagKey>().find(nodes[4])->second;
+    VertPort vp6 = mf.linear_boundary->get<TagKey>().find(nodes[6])->second;
+    VertPort vp7 = mf.linear_boundary->get<TagKey>().find(nodes[7])->second;
 
     Edge e0 = mf.circuit_.get_nth_out_edge(vp0.first, vp0.second);
     Edge e4 = mf.circuit_.get_nth_out_edge(vp4.first, vp4.second);
@@ -546,12 +663,12 @@ SCENARIO("Test MappingFrontier::advance_next_2qb_slice") {
     REQUIRE(v6 == v7);
 
     mf.advance_next_2qb_slice(1);
-    vp0 = mf.quantum_boundary->get<TagKey>().find(nodes[0])->second;
-    VertPort vp1 = mf.quantum_boundary->get<TagKey>().find(nodes[1])->second;
-    VertPort vp2 = mf.quantum_boundary->get<TagKey>().find(nodes[2])->second;
-    vp4 = mf.quantum_boundary->get<TagKey>().find(nodes[4])->second;
-    VertPort vp5 = mf.quantum_boundary->get<TagKey>().find(nodes[5])->second;
-    vp7 = mf.quantum_boundary->get<TagKey>().find(nodes[7])->second;
+    vp0 = mf.linear_boundary->get<TagKey>().find(nodes[0])->second;
+    VertPort vp1 = mf.linear_boundary->get<TagKey>().find(nodes[1])->second;
+    VertPort vp2 = mf.linear_boundary->get<TagKey>().find(nodes[2])->second;
+    vp4 = mf.linear_boundary->get<TagKey>().find(nodes[4])->second;
+    VertPort vp5 = mf.linear_boundary->get<TagKey>().find(nodes[5])->second;
+    vp7 = mf.linear_boundary->get<TagKey>().find(nodes[7])->second;
 
     e0 = mf.circuit_.get_nth_out_edge(vp0.first, vp0.second);
     Edge e1 = mf.circuit_.get_nth_out_edge(vp1.first, vp1.second);
@@ -572,12 +689,12 @@ SCENARIO("Test MappingFrontier::advance_next_2qb_slice") {
     REQUIRE(v2 == v7);
 
     mf.advance_next_2qb_slice(1);
-    vp0 = mf.quantum_boundary->get<TagKey>().find(nodes[0])->second;
-    vp1 = mf.quantum_boundary->get<TagKey>().find(nodes[1])->second;
-    vp2 = mf.quantum_boundary->get<TagKey>().find(nodes[2])->second;
-    VertPort vp3 = mf.quantum_boundary->get<TagKey>().find(nodes[3])->second;
-    vp4 = mf.quantum_boundary->get<TagKey>().find(nodes[4])->second;
-    vp7 = mf.quantum_boundary->get<TagKey>().find(nodes[7])->second;
+    vp0 = mf.linear_boundary->get<TagKey>().find(nodes[0])->second;
+    vp1 = mf.linear_boundary->get<TagKey>().find(nodes[1])->second;
+    vp2 = mf.linear_boundary->get<TagKey>().find(nodes[2])->second;
+    VertPort vp3 = mf.linear_boundary->get<TagKey>().find(nodes[3])->second;
+    vp4 = mf.linear_boundary->get<TagKey>().find(nodes[4])->second;
+    vp7 = mf.linear_boundary->get<TagKey>().find(nodes[7])->second;
 
     e0 = mf.circuit_.get_nth_out_edge(vp0.first, vp0.second);
     e1 = mf.circuit_.get_nth_out_edge(vp1.first, vp1.second);
@@ -615,8 +732,8 @@ SCENARIO("Test MappingFrontier::add_qubit") {
 
   REQUIRE(circ.all_qubits().size() == 4);
   REQUIRE(mf.circuit_.all_qubits().size() == 4);
-  REQUIRE(mf.quantum_boundary->size() == 4);
-  REQUIRE(mf.quantum_boundary->find(nodes[3]) != mf.quantum_boundary->end());
+  REQUIRE(mf.linear_boundary->size() == 4);
+  REQUIRE(mf.linear_boundary->find(nodes[3]) != mf.linear_boundary->end());
 }
 
 SCENARIO("Test MappingFrontier::add_swap") {
@@ -691,6 +808,30 @@ SCENARIO("Test MappingFrontier::add_swap") {
   REQUIRE(cx_c.get_args() == uids);
   REQUIRE(*cx_c.get_op_ptr() == *get_op_ptr(OpType::CZ));
 }
+
+SCENARIO("Test MappingFrontier::add_swap, classical wires edge case") {
+  std::vector<Node> nodes = {
+      Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
+      Node("node_test", 3)};
+  Circuit circ(4, 3);
+  std::vector<Qubit> qubits = circ.all_qubits();
+  std::vector<Bit> bits = circ.all_bits();
+  circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[2]});
+  circ.add_op<UnitID>(OpType::CX, {qubits[2], qubits[3]});
+  circ.add_measure(3, 0);
+  circ.add_conditional_gate<UnitID>(
+      OpType::Y, {}, {qubits[2]}, {bits[0], bits[1], bits[2]}, 3);
+  circ.add_conditional_gate<UnitID>(OpType::X, {}, {qubits[1]}, {bits[2]}, 1);
+  circ.add_op<UnitID>(OpType::CX, {qubits[2], qubits[0]});
+  circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[0]});
+
+  Architecture architecture(
+      {{nodes[0], nodes[1]}, {nodes[0], nodes[2]}, {nodes[0], nodes[3]}});
+  ArchitecturePtr shared_arc = std::make_shared<Architecture>(architecture);
+  MappingFrontier mf(circ);
+  mf.advance_frontier_boundary(shared_arc);
+  mf.add_swap(qubits[0], qubits[2]);
+}
 SCENARIO("Test MappingFrontier::add_bridge") {
   std::vector<Node> nodes = {
       Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
@@ -726,7 +867,7 @@ SCENARIO("Test MappingFrontier::add_bridge") {
   REQUIRE(cx_c.get_args() == uids);
   REQUIRE(*cx_c.get_op_ptr() == *get_op_ptr(OpType::CZ));
 }
-SCENARIO("Test MappingFrontier set_quantum_boundary") {
+SCENARIO("Test MappingFrontier set_linear_boundary") {
   std::vector<Node> nodes = {
       Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
       Node("node_test", 3)};
@@ -748,7 +889,7 @@ SCENARIO("Test MappingFrontier set_quantum_boundary") {
 
   unit_vertport_frontier_t copy;
   for (const std::pair<UnitID, VertPort>& pair :
-       mf.quantum_boundary->get<TagKey>()) {
+       mf.linear_boundary->get<TagKey>()) {
     copy.insert({pair.first, pair.second});
   }
 
@@ -759,26 +900,60 @@ SCENARIO("Test MappingFrontier set_quantum_boundary") {
 
   mf.advance_frontier_boundary(shared_arc);
 
-  VertPort vp0_in = mf.quantum_boundary->get<TagKey>().find(nodes[0])->second;
-  VertPort vp1_in = mf.quantum_boundary->get<TagKey>().find(nodes[1])->second;
-  VertPort vp2_in = mf.quantum_boundary->get<TagKey>().find(nodes[2])->second;
-  VertPort vp3_in = mf.quantum_boundary->get<TagKey>().find(nodes[3])->second;
+  VertPort vp0_in = mf.linear_boundary->get<TagKey>().find(nodes[0])->second;
+  VertPort vp1_in = mf.linear_boundary->get<TagKey>().find(nodes[1])->second;
+  VertPort vp2_in = mf.linear_boundary->get<TagKey>().find(nodes[2])->second;
+  VertPort vp3_in = mf.linear_boundary->get<TagKey>().find(nodes[3])->second;
 
   REQUIRE(vp0_in.first != vp0_c.first);
   REQUIRE(vp1_in.first != vp1_c.first);
   REQUIRE(vp2_in.first != vp2_c.first);
   REQUIRE(vp3_in.first != vp3_c.first);
 
-  mf.set_quantum_boundary(copy);
+  mf.set_linear_boundary(copy);
 
-  vp0_in = mf.quantum_boundary->get<TagKey>().find(nodes[0])->second;
-  vp1_in = mf.quantum_boundary->get<TagKey>().find(nodes[1])->second;
-  vp2_in = mf.quantum_boundary->get<TagKey>().find(nodes[2])->second;
-  vp3_in = mf.quantum_boundary->get<TagKey>().find(nodes[3])->second;
+  vp0_in = mf.linear_boundary->get<TagKey>().find(nodes[0])->second;
+  vp1_in = mf.linear_boundary->get<TagKey>().find(nodes[1])->second;
+  vp2_in = mf.linear_boundary->get<TagKey>().find(nodes[2])->second;
+  vp3_in = mf.linear_boundary->get<TagKey>().find(nodes[3])->second;
 
   REQUIRE(vp0_in.first == vp0_c.first);
   REQUIRE(vp1_in.first == vp1_c.first);
   REQUIRE(vp2_in.first == vp2_c.first);
   REQUIRE(vp3_in.first == vp3_c.first);
 }
+
+SCENARIO("Test MappingFrontier maps checking") {
+  Circuit circ(3);
+  GIVEN("Valid maps") {
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    maps->initial.insert({Qubit(0), Qubit(0)});
+    maps->final.insert({Qubit(0), Qubit(0)});
+    maps->initial.insert({Qubit(1), Qubit(1)});
+    maps->final.insert({Qubit(1), Qubit(1)});
+    maps->initial.insert({Qubit(2), Qubit(2)});
+    maps->final.insert({Qubit(2), Qubit(2)});
+    MappingFrontier mf(circ, maps);
+  }
+  GIVEN("Maps with wrong size") {
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    maps->initial.insert({Qubit(0), Qubit(0)});
+    maps->final.insert({Qubit(0), Qubit(0)});
+    maps->initial.insert({Qubit(1), Qubit(1)});
+    maps->final.insert({Qubit(1), Qubit(1)});
+    REQUIRE_THROWS_AS(MappingFrontier(circ, maps), MappingFrontierError);
+  }
+  GIVEN("Uids not found in map") {
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    maps->initial.insert({Qubit(0), Node(0)});
+    maps->final.insert({Qubit(0), Qubit(0)});
+    maps->initial.insert({Qubit(1), Qubit(1)});
+    maps->final.insert({Qubit(1), Qubit(1)});
+    maps->initial.insert({Qubit(2), Qubit(2)});
+    maps->final.insert({Qubit(2), Qubit(2)});
+
+    REQUIRE_THROWS_AS(MappingFrontier(circ, maps), MappingFrontierError);
+  }
+}
+
 }  // namespace tket

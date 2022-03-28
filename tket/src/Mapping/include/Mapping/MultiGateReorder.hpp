@@ -28,12 +28,14 @@ class MultiGateReorder {
    */
   MultiGateReorder(
       const ArchitecturePtr& _architecture,
-      std::shared_ptr<MappingFrontier>& _mapping_frontier);
+      MappingFrontier_ptr& _mapping_frontier);
 
   /**
    * Try to commute any multi-qubit gates to the quantum frontier
-   * @param max_depth Maximum number of layers of gates checked for commutation.
-   * @param max_size Maximum number of gates checked for commutation.
+   * @param max_depth Maximum number of layers of gates checked for simultaneous
+   * commutation.
+   * @param max_size Maximum number of gates checked for simultaneous
+   * commutation.
    *
    * @return true if modification made
    */
@@ -42,7 +44,7 @@ class MultiGateReorder {
  private:
   // Architecture all new physical operations must respect
   ArchitecturePtr architecture_;
-  std::shared_ptr<MappingFrontier> mapping_frontier_;
+  MappingFrontier_ptr mapping_frontier_;
   EdgeVec u_frontier_edges_;
 };
 
@@ -51,8 +53,9 @@ class MultiGateReorderRoutingMethod : public RoutingMethod {
   /**
    * Checking and Routing methods redefined using MultiGateReorder.
    * @param _max_depth Maximum number of layers of gates checked for
+   * simultaneous commutation.
+   * @param _max_size Maximum number of gates checked for simultaneous
    * commutation.
-   * @param _max_size Maximum number of gates checked for commutation.
    */
   MultiGateReorderRoutingMethod(
       unsigned _max_depth = 10, unsigned _max_size = 10);
@@ -66,7 +69,7 @@ class MultiGateReorderRoutingMethod : public RoutingMethod {
    *
    */
   std::pair<bool, unit_map_t> routing_method(
-      std::shared_ptr<MappingFrontier>& mapping_frontier,
+      MappingFrontier_ptr& mapping_frontier,
       const ArchitecturePtr& architecture) const override;
 
   nlohmann::json serialize() const override;
@@ -74,12 +77,13 @@ class MultiGateReorderRoutingMethod : public RoutingMethod {
   static MultiGateReorderRoutingMethod deserialize(const nlohmann::json& j);
 
   /**
-   * @return Maximum number of layers of gates checked for commutation.
+   * @return Maximum number of layers of gates checked for simultaneous
+   * commutation.
    */
   unsigned get_max_depth() const;
 
   /**
-   * @return Maximum number of gates checked for commutation.
+   * @return Maximum number of gates checked for simultaneous commutation.
    */
   unsigned get_max_size() const;
 
