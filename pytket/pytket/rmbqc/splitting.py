@@ -32,7 +32,7 @@ class Splitter(Enum):
         """
         qubits = c.qubits
         current_frontiers = [0] * c.n_qubits
-        depth_slices: List[List[int]] = [[] for d in range(c.depth)]
+        depth_slices: List[List[int]] = [[] for d in range(c.depth())]
         for gate in c.get_commands():
             involved_qubits = gate.qubits
             qubit_indices = []
@@ -98,7 +98,7 @@ class Splitter(Enum):
         :returns:        A list of tuples of circuits and booleans indicating whether to convert them or not.
         :rtype:          List[Tuple[Circuit, bool]]
         """
-        depth_structure = Splitter.depth_structure()  # type: ignore
+        depth_structure = Splitter.depth_structure(c)  # type: ignore
         non_cliff = 0
         for d in depth_structure:
             for gate in d:
@@ -154,7 +154,7 @@ class Splitter(Enum):
         :returns:        A list of tuples of circuits and booleans indicating whether to convert them or not.
         :rtype:          List[Tuple[Circuit, bool]]
         """
-        depth_structure = Splitter.depth_structure()  # type: ignore
+        depth_structure = Splitter.depth_structure(c)  # type: ignore
         depth = len(depth_structure)
         done_depth = 0
         subc_list = []
