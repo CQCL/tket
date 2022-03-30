@@ -13,12 +13,34 @@
 # limitations under the License.
 
 import numpy as np
-from pytket.circuit import Command, Circuit  # type: ignore
+from pytket.circuit import Command, Circuit, OpType  # type: ignore
+from typing import List
 
 
-def is_Clifford(aGate: Command) -> bool:
+def depth_structure(c: Circuit) -> List[List[Command]]:
     """
-    Check if a gate is Clifford.
+    Converts a pytket circuit to a list containing 'x' lists, each containing
+    'y' gates, where 'x' is the depth of the circuit and 'y' is the number
+    of gates acting in a given timestep. Essentially we split the circuit
+    into a list of 'timeslices'.
+    
+    :returns:       A list containing lists of gates.
+    :rtype:         List[List[Command]]
+    """
+    qubits = c.qubits
+    current_frontiers = [0] * len(qubits)
+    depth_slices: List[List[int]] = [[] for _ in range(c.depth())]
+    for gate in c.get_commands():
+        qubit_indices = [qubits.index(q) for q in gate.qubits]
+        max_frontier = max([current_frontiers[qid] for qid in qubit_indices])
+        for qid in qubit_indices:
+            current_frontiers[qid] = max_frontier + 1
+        depth_slices[max_frontier].append(gate)
+    return depth_slices
+
+def is_mbqc_clifford(aGate: Command) -> bool:
+    """
+    Check if a gate is a valid operation for splitting Circuits into Clifford components.
     
     :param aGate:    Command to check.
     :param type:     Command
@@ -26,40 +48,37 @@ def is_Clifford(aGate: Command) -> bool:
     :returns:        The result of the check.
     :rtype:          bool
     """
-    if aGate.op.get_name() in {
-        "Z",
-        "X",
-        "Y",
-        "H",
-        "S",
-        "V",
-        "Sdg",
-        "Vdg",
-        "SX",
-        "SXdg",
-        "CX",
-        "CY",
-        "CZ",
-        "CH",
-        "CV",
-        "CVdg",
-        "CSX",
-        "CSXdg",
-        "CCX",
-        "SWAP",
-        "CSWAP",
-        "noop",
-        "BRIDGE",
-        "Reset",
+    if aGate.op.type in {
+        OpType.Z,
+        OpType.X,
+        OpType.Y,
+        OpType.H,
+        OpType.S,
+        OpType.V,
+        OpType.Sdg,
+        OpType.Vdg,
+        OpType.SX,
+        OpType.SXdg,
+        OpType.CX,
+        OpType.CY,
+        OpType.CZ,
+        OpType.CH,
+        OpType.CV,
+        OpType.CVdg,
+        OpType.CSX,
+        OpType.CSXdg,
+        OpType.CCX,
+        OpType.SWAP,
+        OpType.CSWAP,
+        OpType.noop,
+        OpType.BRIDGE,
+        OpType.Reset,
     }:
         return True
-    elif aGate.op.get_name() in {"T", "Tdg"}:
-        return False
-    elif aGate.op.get_name() in {"Rx", "Rz", "Ry", "CRx", "CRy", "CRz"}:
+    elif aGate.op.type in {OpType.Rx, OpType.Rz, OpType.Ry, OpType.CRx, OpType.CRy, OpType.CRz}:
         if aGate.op.params[0] in {0, 1 / 2, 1, 3 / 2, 2}:
             return True
     return False
-
 
 def count_nCliffords(c: Circuit) -> int:
     """
@@ -71,16 +90,11 @@ def count_nCliffords(c: Circuit) -> int:
     :returns:        The number of non-Clifford gates.
     :rtype:          int
     """
-    count = 0
-    for g in c.get_commands():
-        if is_Clifford(g):
-            count += 1
-    return count
-
+    return sum([int(not is_mbqc_clifford(cmd)) for cmd in c.get_commands()])
 
 def is_worthwhile(
     self,
-    improveOn: str = "Depth",
+    depth_focus_only: bool = True,
     maxWidth: int = None,
     maxDepth: int = None,
     strictness=0.5,
@@ -88,8 +102,8 @@ def is_worthwhile(
     """
     Check if a circuit is worth converting to MBQC.
     
-    :param improveOn:    The resource we want to lower - can be "Depth", "Width" or "Both".
-    :param type:         str
+    :param depth_focus_only:    True if we only care about depth. False if we care about both depth and width.
+    :param type:                bool
     
     :param maxWidth:     Provide an upper limit to the width of the new circuit. If exceeded, disregard the new circuit entirely.
     :param type:         int
@@ -129,11 +143,9 @@ def is_worthwhile(
                 delete_columns |= {i}
     keep_columns = set(n - 1) - delete_columns
     interesting_row = 2
-    if improveOn == "Width":
-        interesting_row = 1
-    if improveOn == "Depth":
+    if depth_focus_only:
         interesting_row = 2
-    elif improveOn == "Both":
+    else:
         interesting_row = 3
     benchmarks = [None, cw, cd, cw * cd]
     for c in keep_columns:

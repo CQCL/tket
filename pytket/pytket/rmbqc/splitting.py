@@ -13,37 +13,13 @@
 # limitations under the License.
 
 from enum import Enum
-from pytket.circuit import Circuit, Command  # type: ignore
-from utils import is_Clifford
+from pytket.circuit import Circuit  # type: ignore
+from utils import is_mbqc_clifford, depth_structure
 from math import ceil
 from typing import Tuple, List
 
 
 class Splitter(Enum):
-    def depth_structure(c: Circuit) -> List[List[Command]]:
-        """
-        Converts a pytket circuit to a list containing 'x' lists, each containing
-        'y' gates, where 'x' is the depth of the circuit and 'y' is the number
-        of gates acting in a given timestep. Essentially we split the circuit
-        into a list of 'timeslices'.
-        
-        :returns:       A list containing lists of gates.
-        :rtype:         List[List[Command]]
-        """
-        qubits = c.qubits
-        current_frontiers = [0] * c.n_qubits
-        depth_slices: List[List[int]] = [[] for d in range(c.depth())]
-        for gate in c.get_commands():
-            involved_qubits = gate.qubits
-            qubit_indices = []
-            for qubit in involved_qubits:
-                qubit_indices.append(qubits.index(qubit))
-            max_frontier = max([current_frontiers[qid] for qid in qubit_indices])
-            for qid in qubit_indices:
-                current_frontiers[qid] = max_frontier + 1
-            depth_slices[max_frontier].append(gate)
-        return depth_slices
-    
     def depth_split(c: Circuit, splits: int) -> List[Tuple[Circuit, bool]]:
         """
         Splits a pytket circuit into a given number of subcircuits of approximately
@@ -59,27 +35,24 @@ class Splitter(Enum):
         :returns:        A list of tuples of circuits and booleans indicating whether to convert them or not.
         :rtype:          List[Tuple[Circuit, bool]]
         """
-        depth_structure = Splitter.depth_structure(c)
-        depth = len(depth_structure)
+        depth_struct = depth_structure(c)
+        depth = len(depth_struct)
         slice_size = ceil(depth / splits)
         done_depth = 0
         subc_list = []
-        for curr in range(splits):
+        finish_at = 0
+        while finish_at < depth:
             finish_at = min(done_depth + slice_size, depth)
             subcircuit = Circuit()
             for qubit in c.qubits:
                 subcircuit.add_qubit(qubit)
             for bit in c.bits:
                 subcircuit.add_bit(bit)
-            for depth_list in depth_structure[done_depth:finish_at]:
+            for depth_list in depth_struct[done_depth:finish_at]:
                 for gate in depth_list:
                     subcircuit.add_gate(Op=gate.op, args=gate.args)
-            new_tuple = (subcircuit, True)
-            subc_list.append(new_tuple)
-            if finish_at >= depth:
-                break
-            else:
-                done_depth = finish_at
+            subc_list.append((subcircuit, True))
+            done_depth = finish_at
         return subc_list
 
     def gates_split(c: Circuit, splits: int) -> List[Tuple[Circuit, bool]]:
@@ -98,11 +71,11 @@ class Splitter(Enum):
         :returns:        A list of tuples of circuits and booleans indicating whether to convert them or not.
         :rtype:          List[Tuple[Circuit, bool]]
         """
-        depth_structure = Splitter.depth_structure(c)  # type: ignore
+        depth_struct = depth_structure(c)  # type: ignore
         non_cliff = 0
-        for d in depth_structure:
+        for d in depth_struct:
             for gate in d:
-                if not is_Clifford(gate):
+                if not is_mbqc_clifford(gate):
                     non_cliff += 1
         slice_size = ceil(non_cliff / splits)
         done_depth = 0
@@ -110,36 +83,44 @@ class Splitter(Enum):
         for curr in range(splits):
             ncliff_total = 0
             added_depths = 0
-            stop_at_next_nClifford = False
+            stop_at_next_nClifford = False #This will be flagged true when the current 'slice' contains enough non-Clifford gates
             stopped = False
-            for depth in depth_structure[done_depth:]:
-                for gate in depth:
-                    if not is_Clifford(gate):
-                        if stop_at_next_nClifford:
+            #The following loop checks through the remaining timesteps and counts non-Clifford gates.
+            #Once the number of non-Clifford gates exceeds 'slice_size', 'stop_at_next_nClifford' is flagged True.
+            #However, this doesn't mean the subcircuit is over, because it is still possible to include more timesteps
+            #as long as they only contain Clifford gates. So only if stop_at_next_nClifford is True AND we encounter
+            #another non-Clifford gate do we flag 'stopped' and exit the loop. As long as 'stopped' is False,
+            #we continue moving to the next timeslice.
+            for depth in depth_struct[done_depth:]: #Look in all the remaining timesteps of the circuit
+                for gate in depth: #Look through each gate in each such timestep
+                    if not is_mbqc_clifford(gate):
+                        if stop_at_next_nClifford: #Will only be True if current subcircuit is already saturated with non-Clifford gates.
                             stopped = True
                             break
                         else:
-                            ncliff_total += 1
+                            ncliff_total += 1 #Keep incrementing for every non-Clifford gate we find.
                 if stopped:
                     break
-                else:
+                else: #stopped is 'False' so the current timeslice can be added to the subcircuit.
                     added_depths += 1
-                    if ncliff_total >= slice_size:
+                    if ncliff_total >= slice_size: #If the number of non-Clifford gates exceeds the saturation point we flag this to stop next time we find one.
                         stop_at_next_nClifford = True
             subcircuit = Circuit()
             for qubit in c.qubits:
                 subcircuit.add_qubit(qubit)
             for bit in c.bits:
                 subcircuit.add_bit(bit)
-            for depth_list in depth_structure[done_depth : done_depth + added_depths]:
+            #The loop above was only tracking which timeslices are gonna be added to each subcircuit.
+            #This is the loop where the gates are actually added to the subcircuit. The starting point
+            #'done_depth' is where the previous subcircuit left off. The endpoint 'done_depth + added_depths'
+            #is where the current subcircuit will stop.
+            for depth_list in depth_struct[done_depth : done_depth + added_depths]:
                 for gate in depth_list:
                     subcircuit.add_gate(Op=gate.op, args=gate.args)
-            new_tuple = (subcircuit, True)
-            subc_list.append(new_tuple)
-            if done_depth + added_depths >= len(depth_structure):
+            subc_list.append((subcircuit, True))
+            if done_depth + added_depths >= len(depth_struct):
                 break
-            else:
-                done_depth += added_depths
+            done_depth += added_depths
         return subc_list
 
     def clifford_split(c: Circuit, splits: int = 1) -> List[Tuple[Circuit, bool]]:
@@ -154,59 +135,41 @@ class Splitter(Enum):
         :returns:        A list of tuples of circuits and booleans indicating whether to convert them or not.
         :rtype:          List[Tuple[Circuit, bool]]
         """
-        depth_structure = Splitter.depth_structure(c)  # type: ignore
-        depth = len(depth_structure)
+        depth_struct = depth_structure(c)  # type: ignore
+        depth = len(depth_struct)
         done_depth = 0
         subc_list = []
         if depth > 0:
             clifford_circ = True
-            for gate in depth_structure[0]:
-                if not is_Clifford(gate):
+            for gate in depth_struct[0]: #This loop checks if the first timeslice is a Clifford circuit (i.e. doesn't contain non-Clifford gate)
+                if not is_mbqc_clifford(gate):
                     clifford_circ = False
-                    break
-            while done_depth < depth:
-                subcircuit = Circuit()
+                    break #If it contains at least one non-Clifford gate it's not Clifford, no need to keep checking.
+            while done_depth < depth: #Look through the remainder of the circuit.
+                subcircuit = Circuit() #Define a new subcircuit.
                 for qubit in c.qubits:
                     subcircuit.add_qubit(qubit)
                 for bit in c.bits:
                     subcircuit.add_bit(bit)
-                for depth_list in depth_structure[done_depth:depth]:
+                for depth_list in depth_struct[done_depth:depth]:
                     has_non_clifford = False
-                    for gate in depth_list:
-                        if not is_Clifford(gate):
+                    for gate in depth_list: #Check if the current timeslice is Clifford or not, like we did above.
+                        if not is_mbqc_clifford(gate):
                             has_non_clifford = True
                             break
-                    if has_non_clifford == clifford_circ:
-                        if clifford_circ:
-                            new_tuple = (subcircuit, True)
-                            subc_list.append(new_tuple)
-                        else:
-                            new_tuple = (subcircuit, False)
-                            subc_list.append(new_tuple)
-                            """
-                            new_map = {"i":{},"o":{}}
-                            for qubit in subcircuit.qubits:
-                                new_map["i"][qubit] = subcircuit.qubits.index(qubit)
-                                new_map["o"][qubit] = subcircuit.qubits.index(qubit)
-                            new_tuple = (subcircuit.copy(),new_map)
-                            """
-                        clifford_circ = not clifford_circ
-                        break
-                    else:
+                    if has_non_clifford == clifford_circ: #If the current timeslice differs from the previous one, then that is the end of the current subcircuit.
+                        if clifford_circ: #If the previous subcircuit that has just been concluded is Clifford, it will be flagged for conversion to MBQC.
+                            subc_list.append((subcircuit, True))
+                        else: #If the previous subcircuit is non-Clifford, then it will not be flagged for conversion to MBQC.
+                            subc_list.append((subcircuit, False))
+                        clifford_circ = not clifford_circ #And since the new timeslice doesn't match the previous one, we are switching to the opposite type of subcircuit.
+                        break #... and exit the current subcircuit to begin a new one of the opposite type.
+                    else: #However, if the new timeslice DOES match the previous one, then we simply include it in the subcircuit and continue iterating.
                         done_depth += 1
                         for gate in depth_list:
                             subcircuit.add_gate(Op=gate.op, args=gate.args)
             if clifford_circ:
-                new_tuple = (subcircuit, True)
-                subc_list.append(new_tuple)
+                subc_list.append((subcircuit, True))
             else:
-                new_tuple = (subcircuit, False)
-                subc_list.append(new_tuple)
-                """
-                new_map = {"i":{},"o":{}}
-                for qubit in subcircuit.qubits:
-                    new_map["i"][qubit] = subcircuit.qubits.index(qubit)
-                    new_map["o"][qubit] = subcircuit.qubits.index(qubit)
-                new_tuple = (subcircuit.copy(),new_map)
-                """
+                subc_list.append((subcircuit, True))
         return subc_list
