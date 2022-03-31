@@ -119,36 +119,36 @@ def is_worthwhile(
     """
 
     # Numerical averages extracted from random Clifford+T circuit samples.
-    # gw ~= 2.56cw + 1.1t
-    # gd ~= 13.9 + 0.51gw − 0.37cw
+    # gw ~= 2.56cw + 1.1t               (Theoretical upper bound is 4cw + 2t)
+    # gd ~= 13.9 + 0.51gw − 0.37cw      (Theoretical upper bound is gw(gw-1)/2)
 
     # hw(n) ~= (2.56cw + 1.1t/n)*1.1
     # hd(n) ~= n*(13.9 + 0.51hw(n)/1.1 - 0.37cw)
 
-    cw = self.c.n_qubits
-    cd = self.c.depth()
-    t = count_nCliffords(self.c)
-    n = np.array(range(1, cd))
-    hw = (2.56 * cw + 1.1 * t / n) * 1.1
-    hd = n * (13.9 + 0.51 * hw / 1.1 - 0.37 * cw)
-    result_array = np.vstack((n, hw, hd, hw * hd))
+    cw = self.c.n_qubits #Width in the circuit model
+    cd = self.c.depth()  #Depth in the circuit model
+    t = count_nCliffords(self.c) #Number of non-Clifford gates in the circuit
+    n = np.array(range(1, cd)) #We check for varying numbers of MBQC splits ranging from 1 to the maximum possible.
+    hw = (2.56 * cw + 1.1 * t / n) * 1.1 #Width in the hybrid model is based on width in the circuit model, the number of non-Clifford gates and the number of splits.
+    hd = n * (13.9 + 0.51 * hw / 1.1 - 0.37 * cw) #Depth in the hybrid model
+    result_array = np.vstack((n, hw, hd, hw * hd)) #Using np array for parallel processing of all the values we are interested in, by varying the number of splits.
     delete_columns = set()
-    if not (maxWidth == None):
+    if not (maxWidth == None): #If a maximum width was provided we immediately eliminate every column that exceeds it.
         for i in range(result_array.shape[1]):
-            if result_array[1, i] * strictness > maxWidth:
+            if result_array[1, i] * strictness > maxWidth: #'strictness' can be set to a value between 0.0 and 1.0 to allow some wiggle room because the equations are based on numerical averages and are not exact.
                 delete_columns |= {i}
-    if not (maxDepth == None):
+    if not (maxDepth == None): #Same as above, if a maximum depth was provided we disqualify the columns that exceed it.
         for i in range(result_array.shape[1]):
             if result_array[2, i] * strictness > maxDepth:
                 delete_columns |= {i}
-    keep_columns = set(n - 1) - delete_columns
-    interesting_row = 2
-    if depth_focus_only:
-        interesting_row = 2
-    else:
+    keep_columns = set(n - 1) - delete_columns #We are only interested in the remaining columns
+    interesting_row = 2 #By default we are interested in minimizing depth.
+    if not depth_focus_only: #However, if the user wants they can choose to look for minimum depth*width.
         interesting_row = 3
     benchmarks = [None, cw, cd, cw * cd]
+    #If there exists at least one value in the row of interest and in the allowed columns which performs
+    #better than the circuit model, then converting this circuit to MBQC 'is_worthwhile'.
     for c in keep_columns:
-        if result_array[interesting_row, c] * strictness < benchmarks[interesting_row]:
+        if result_array[interesting_row, c] * strictness < benchmarks[interesting_row]: 
             return True
     return False

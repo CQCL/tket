@@ -44,7 +44,7 @@ def format_circ(circ: Circuit) -> Tuple[Circuit, Dict[Qubit, int], Dict[Qubit, i
 
 
 def repeated_mbqc_conversion(
-    circ: Circuit, arch: Architecture, splits: int, splitter: Splitter, knitter: Knitter
+    circ: Circuit, arch: Architecture, splits: int, splitter: Splitter, knitter: Knitter, add_barriers: bool = False
 ) -> Tuple[Circuit, Dict[Qubit, int], Dict[Qubit, int]]:
     """
     Takes a pytket circuit object, an architecture, a number of mbqc segments to split into,
@@ -69,6 +69,9 @@ def repeated_mbqc_conversion(
     :param knitter:   A knitter which determines how the converted segments will be joined up.
     :param type:      Knitter
     
+    :param add_barriers:   Option to add barriers between measurement layers.
+    :param type:           bool
+    
     :returns:        A tuple containing the new circuit as well as its corresponding input/output maps.
                         These map the inputs/outputs of the original circuit to their corresponding qubits
                         in the new circuit.
@@ -79,7 +82,7 @@ def repeated_mbqc_conversion(
     for sc in split_circuits:
         if sc[1]:
             mp = MPattern(sc[0])
-            pattern_list.append(mp.single_conversion())
+            pattern_list.append(mp.single_conversion(add_barriers))
         else:
             pattern_list.append(format_circ(sc[0]))
     final_circuit = knitter(pattern_list, arch)  # type: ignore
@@ -87,7 +90,7 @@ def repeated_mbqc_conversion(
 
 
 def single_mbqc_conversion(
-    circ: Circuit, arch: Architecture
+    circ: Circuit, arch: Architecture, add_barriers: bool = False
 ) -> Tuple[Circuit, Dict[Qubit, int], Dict[Qubit, int]]:
     """
     Takes a pytket circuit object and an architecture, converts the circuit to a
@@ -101,11 +104,14 @@ def single_mbqc_conversion(
     :param arch:    The architecture to route onto.
     :param type:    Architecture
     
+    :param add_barriers:   Option to add barriers between measurement layers.
+    :param type:           bool
+    
     :returns:       A tuple containing the new circuit as well as its corresponding input/output maps.
                         These map the input/output qubits of the original circuit to the corresponding
                         qubits in the new circuit.
     :rtype:         Tuple[Circuit, Dict[Qubit, int], Dict[Qubit, int]]
     """
     return repeated_mbqc_conversion(
-        circ, arch, 1, Splitter.depth_split, Knitter.sequential
+        circ, arch, 1, Splitter.depth_split, Knitter.sequential, add_barriers
     )
