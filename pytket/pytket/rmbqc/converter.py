@@ -23,8 +23,9 @@ from typing import Dict, Tuple
 def format_circ(circ: Circuit) -> Tuple[Circuit, Dict[Qubit, int], Dict[Qubit, int]]:
     """
     Takes a pytket circuit object as input and returns a tuple containing the circuit as
-    well as dictionaries mapping the original input and output qubits to their indices
-    in the qubit register.
+    well as two dictionaries, the first mapping the original input qubits to the indices of the corresponding
+    qubits in the new circuit and the second mapping the orginal output qubits to the indices of the corresponding
+    qubits in the new circuit.
     
     :param circ:    The pytket circuit which requires formatting.
     :param type:    Circuit
@@ -39,12 +40,16 @@ def format_circ(circ: Circuit) -> Tuple[Circuit, Dict[Qubit, int], Dict[Qubit, i
     for qubit in circ.qubits:
         new_inputs[qubit] = circ.qubits.index(qubit)
         new_outputs[qubit] = circ.qubits.index(qubit)
-    new_tuple = (circ, new_inputs, new_outputs)
-    return new_tuple
+    return (circ, new_inputs, new_outputs)
 
 
 def repeated_mbqc_conversion(
-    circ: Circuit, arch: Architecture, splits: int, splitter: Splitter, knitter: Knitter, add_barriers: bool = False
+    circ: Circuit,
+    arch: Architecture,
+    splits: int,
+    splitter: Splitter,
+    knitter: Knitter,
+    add_barriers: bool = False,
 ) -> Tuple[Circuit, Dict[Qubit, int], Dict[Qubit, int]]:
     """
     Takes a pytket circuit object, an architecture, a number of mbqc segments to split into,

@@ -53,7 +53,9 @@ class Knitter(Enum):
             route_map = {}
             if p == 0:
                 for k in curr_inputs.keys():
-                    if k in arch.nodes:
+                    if (
+                        k in arch.nodes
+                    ):  # If a qubit was already placed on an architecture node in the original circuit, we place it back to the same place.
                         temp_val = curr_inputs[k]
                         route_map[curr_circ.qubits[temp_val]] = k
                         curr_inputs[k] = k
@@ -61,11 +63,13 @@ class Knitter(Enum):
                             curr_outputs[k] = k
                         else:
                             curr_outputs[k] = curr_circ.qubits[curr_outputs[k]]
-                    else:
+                    else:  # Otherwise we retrieve the corresponding qubit object from the register.
                         curr_inputs[k] = curr_circ.qubits[curr_inputs[k]]
                         curr_outputs[k] = curr_circ.qubits[curr_outputs[k]]
-                curr_circ.rename_units(route_map)
-            else:
+                curr_circ.rename_units(
+                    route_map
+                )  # We perform the partial qubit placement.
+            else:  # For subsequent segments we assummed that all the qubits start unplaced and we start fresh since the segments will be linked with a SWAP network anyway.
                 for k in curr_inputs.keys():
                     curr_inputs[k] = curr_circ.qubits[curr_inputs[k]]
                     curr_outputs[k] = curr_circ.qubits[curr_outputs[k]]
@@ -79,41 +83,69 @@ class Knitter(Enum):
             all_nodes = set(arch.nodes)
             unassigned_qubits = []
             for k in curr_inputs.keys():
-                if cu.initial_map[curr_inputs[k]] in all_nodes:
+                if (
+                    cu.initial_map[curr_inputs[k]] in all_nodes
+                ):  # We keep track of the architecture nodes which have been used.
                     used_nodes |= {cu.initial_map[curr_inputs[k]]}
                     used_nodes |= {cu.initial_map[curr_outputs[k]]}
                     curr_inputs[k] = cu.initial_map[curr_inputs[k]]
                     curr_outputs[k] = cu.final_map[curr_outputs[k]]
-                else:
+                else:  # We also keep track of all the qubits which have not been placed yet.
                     unassigned_qubits.append(k)
             for command in cu.circuit.get_commands():
-                if command.op.type == OpType.CZ:
+                if (
+                    command.op.type == OpType.CZ
+                ):  # Initially 'used_nodes' only contains the nodes where the inputs were placed, but through the CZ interactions we can find other nodes occupied by logical qubits.
                     for q in command.qubits:
                         if q in used_nodes:
                             used_nodes |= set(command.qubits)
                             break
-                elif command.op.type == OpType.SWAP:
+                elif (
+                    command.op.type == OpType.SWAP
+                ):  # If a SWAP gate is found between a qubit in used_nodes and a qubit not in used_nodes, then the latter takes the former's place.
                     if (
-                        (command.qubits[0] in used_nodes) and not (command.qubits[1] in used_nodes)
-                    ) or (not (command.qubits[0] in used_nodes) and (command.qubits[1] in used_nodes)):
+                        (command.qubits[0] in used_nodes)
+                        and not (command.qubits[1] in used_nodes)
+                    ) or (
+                        not (command.qubits[0] in used_nodes)
+                        and (command.qubits[1] in used_nodes)
+                    ):
                         used_nodes ^= set(command.qubits)
-                elif command.op.type == OpType.BRIDGE:
+                elif (
+                    command.op.type == OpType.BRIDGE
+                ):  # The BRIDGE gate is also a logical interaction between the first and third qubit, so if one is in 'used_nodes' the other must be too.
                     for q in {command.qubits[0], command.qubits[2]}:
                         if q in used_nodes:
                             used_nodes |= {command.qubits[0], command.qubits[2]}
                             break
-            permutation = {x: x for x in all_nodes}
+            permutation = {
+                x: x for x in all_nodes
+            }  # We make note of the qubit permutations caused by SWAP gates throughout the circuit.
             for com in cu.circuit.commands_of_type(OpType.SWAP):
                 permutation[com.qubits[0]] = com.qubits[1]
                 permutation[com.qubits[1]] = com.qubits[0]
-            unused_nodes = all_nodes - used_nodes
+            unused_nodes = (
+                all_nodes - used_nodes
+            )  # The unused nodes are where we want to place the unassigned qubits.
             segment_circuit = cu.circuit.copy()
-            for uq in unassigned_qubits:
+            for (
+                uq
+            ) in (
+                unassigned_qubits
+            ):  # Each unassigned qubit is placed on an unused node.
                 temp = unused_nodes.pop()
-                curr_outputs[uq] = temp
-                for k in permutation.keys():
+                curr_outputs[
+                    uq
+                ] = temp  # However, we only know where the qubit will be at the end of the circuit.
+                for (
+                    k
+                ) in (
+                    permutation.keys()
+                ):  # We must use the noted permutations to trace the previously unassigned node back to the beginning.
                     if permutation[k] == temp:
-                        segment_circuit.rename_units({curr_inputs[uq]: k})
+                        segment_circuit.rename_units(
+                            {curr_inputs[uq]: k}
+                        )  # So this is where the qubit is going to be placed at the beginning of the circuit.
                         curr_inputs[uq] = k
                         break
             new_tuple = (segment_circuit, curr_inputs, curr_outputs)
@@ -121,7 +153,9 @@ class Knitter(Enum):
             for q in arch.nodes:
                 if not q in segment_circuit.qubits:
                     segment_circuit.add_qubit(q)
-            if p > 0:
+            if (
+                p > 0
+            ):  # If this isn't the first segment then we need to use token swapping to link to the previous segment.
                 prev_outputs = pattern_list[p - 1][2]
                 matching_dict = {}
                 for k in curr_inputs.keys():
@@ -172,28 +206,40 @@ class Knitter(Enum):
                 (prev_circ, prev_inputs, prev_outputs) = pattern_list[p - 1]
                 route_map = {}
                 for k in curr_inputs.keys():
-                    if curr_outputs[k] == curr_inputs[k]:
+                    if (
+                        curr_outputs[k] == curr_inputs[k]
+                    ):  # If the input and output qubits in the new circuit which correspond to some qubit in the original circuit are the same, then the current output is set to the corresponding output of the previous segment.
                         curr_outputs[k] = prev_outputs[k]
-                    else:
+                    else:  # Otherwise, we retrieve the qubit object from the qubit register.
                         curr_outputs[k] = curr_circ.qubits[curr_outputs[k]]
-                    route_map[curr_circ.qubits[curr_inputs[k]]] = prev_outputs[k]
+                    route_map[curr_circ.qubits[curr_inputs[k]]] = prev_outputs[
+                        k
+                    ]  # The inputs will be placed where the corresponding outputs of the previous segment were placed, so that the two circuits can be matched.
                     curr_inputs[k] = prev_outputs[k]
-                curr_circ.rename_units(route_map)
+                curr_circ.rename_units(route_map)  # Partial placement of the qubits.
             else:
                 route_map = {}
                 for k in curr_inputs.keys():
-                    if k in arch.nodes:
+                    if (
+                        k in arch.nodes
+                    ):  # If qubit is already placed on an architecture node then it stays there.
                         temp_val = curr_inputs[k]
                         route_map[curr_circ.qubits[temp_val]] = k
-                        curr_inputs[k] = k
-                        if curr_outputs[k] == temp_val:
+                        curr_inputs[
+                            k
+                        ] = k  # Map the input qubit of the original circuit to the architecture node.
+                        if (
+                            curr_outputs[k] == temp_val
+                        ):  # And if the output corresponding to this input is the same, then it is also mapped to the same architecture node.
                             curr_outputs[k] = k
-                        else:
+                        else:  # Otherwise, we retrieve the qubit object from the register to map the output to.
                             curr_outputs[k] = curr_circ.qubits[curr_outputs[k]]
-                    else:
+                    else:  # If the input qubit is not an architecture node we retrieve the input and output qubit objects from the register.
                         curr_inputs[k] = curr_circ.qubits[curr_inputs[k]]
                         curr_outputs[k] = curr_circ.qubits[curr_outputs[k]]
-                curr_circ.rename_units(route_map)
+                curr_circ.rename_units(
+                    route_map
+                )  # Partial placement of qubits on the architecture.
             cu = CompilationUnit(curr_circ)
             if arch == FullyConnected:
                 raise TypeError(
@@ -204,41 +250,69 @@ class Knitter(Enum):
             all_nodes = set(arch.nodes)
             unassigned_qubits = []
             for k in curr_inputs.keys():
-                if cu.initial_map[curr_inputs[k]] in all_nodes:
+                if (
+                    cu.initial_map[curr_inputs[k]] in all_nodes
+                ):  # We keep track of the architecture nodes which have been used.
                     used_nodes |= {cu.initial_map[curr_inputs[k]]}
                     used_nodes |= {cu.initial_map[curr_outputs[k]]}
                     curr_inputs[k] = cu.initial_map[curr_inputs[k]]
                     curr_outputs[k] = cu.final_map[curr_outputs[k]]
-                else:
+                else:  # We also keep track of all the qubits which have not been placed yet.
                     unassigned_qubits.append(k)
             for command in cu.circuit.get_commands():
-                if command.op.type == OpType.CZ:
+                if (
+                    command.op.type == OpType.CZ
+                ):  # Initially 'used_nodes' only contains the nodes where the inputs were placed, but through the CZ interactions we can find other nodes occupied by logical qubits.
                     for q in command.qubits:
                         if q in used_nodes:
                             used_nodes |= set(command.qubits)
                             break
-                elif command.op.type == OpType.SWAP:
+                elif (
+                    command.op.type == OpType.SWAP
+                ):  # If a SWAP gate is found between a qubit in used_nodes and a qubit not in used_nodes, then the latter takes the former's place.
                     if (
-                        (command.qubits[0] in used_nodes) and not (command.qubits[1] in used_nodes)
-                    ) or (not (command.qubits[0] in used_nodes) and (command.qubits[1] in used_nodes)):
+                        (command.qubits[0] in used_nodes)
+                        and not (command.qubits[1] in used_nodes)
+                    ) or (
+                        not (command.qubits[0] in used_nodes)
+                        and (command.qubits[1] in used_nodes)
+                    ):
                         used_nodes ^= set(command.qubits)
-                elif command.op.type == OpType.BRIDGE:
+                elif (
+                    command.op.type == OpType.BRIDGE
+                ):  # The BRIDGE gate is also a logical interaction between the first and third qubit, so if one is in 'used_nodes' the other must be too.
                     for q in {command.qubits[0], command.qubits[2]}:
                         if q in used_nodes:
                             used_nodes |= {command.qubits[0], command.qubits[2]}
                             break
-            permutation = {x: x for x in all_nodes}
+            permutation = {
+                x: x for x in all_nodes
+            }  # We make note of the qubit permutations caused by SWAP gates throughout the circuit.
             for com in cu.circuit.commands_of_type(OpType.SWAP):
                 permutation[com.qubits[0]] = com.qubits[1]
                 permutation[com.qubits[1]] = com.qubits[0]
-            unused_nodes = all_nodes - used_nodes
+            unused_nodes = (
+                all_nodes - used_nodes
+            )  # The unused nodes are where we want to place the unassigned qubits.
             segment_circuit = cu.circuit.copy()
-            for uq in unassigned_qubits:
+            for (
+                uq
+            ) in (
+                unassigned_qubits
+            ):  # Each unassigned qubit is placed on an unused node.
                 temp = unused_nodes.pop()
-                curr_outputs[uq] = temp
-                for k in permutation.keys():
+                curr_outputs[
+                    uq
+                ] = temp  # However, we only know where the qubit will be at the end of the circuit.
+                for (
+                    k
+                ) in (
+                    permutation.keys()
+                ):  # We must use the noted permutations to trace the previously unassigned node back to the beginning.
                     if permutation[k] == temp:
-                        segment_circuit.rename_units({curr_inputs[uq]: k})
+                        segment_circuit.rename_units(
+                            {curr_inputs[uq]: k}
+                        )  # So this is where the qubit is going to be placed at the beginning of the circuit.
                         curr_inputs[uq] = k
                         break
             new_tuple = (segment_circuit, curr_inputs, curr_outputs)
@@ -278,48 +352,81 @@ class Knitter(Enum):
         prev_outputs: Dict[Qubit, Union[Qubit, int]] = {}
         for p in range(len(pattern_list)):
             (curr_circ, curr_inputs, curr_outputs) = pattern_list[p]
-            if len(prev_inputs) == 0:
+            if (
+                len(prev_inputs) == 0
+            ):  # If it's the first segment then it's just added as it is.
                 new_c.add_circuit(curr_circ, [])
                 prev_inputs = curr_inputs.copy()
                 prev_outputs = curr_outputs.copy()
             else:
                 q_map = {}
-                for k in prev_outputs.keys():
+                for (
+                    k
+                ) in (
+                    prev_outputs.keys()
+                ):  # Map the current segment's inputs to the previous segment's outputs.
                     q_map[curr_circ.qubits[curr_inputs[k]]] = new_c.qubits[
                         prev_outputs[k]
                     ]
                 prev_ancillas = []
                 curr_ancillas = []
-                for q in new_c.qubits:
+                for (
+                    q
+                ) in (
+                    new_c.qubits
+                ):  # Any qubit that was not an output of the previous circuit was an ancilla.
                     if not q in list(q_map.values()):
                         prev_ancillas.append(q)
-                for q in curr_circ.qubits:
+                for (
+                    q
+                ) in (
+                    curr_circ.qubits
+                ):  # Any qubit that is not an input in the current circuit is also an ancilla.
                     if not q in q_map.keys():
                         curr_ancillas.append(q)
-                while len(prev_ancillas) > 0 and len(curr_ancillas) > 0:
+                while (
+                    len(prev_ancillas) > 0 and len(curr_ancillas) > 0
+                ):  # Arbitrarily assign qubits of the new segment to ancillas in the previous segment.
                     q_map[curr_ancillas.pop()] = prev_ancillas.pop()
-                if len(curr_ancillas) > 0:
+                if (
+                    len(curr_ancillas) > 0
+                ):  # If we still have ancillas in the current segment but the ancillas in the previous segment have ran out, then we need to assign them to new qubit ids.
                     unused_id_pool = []
                     for q in curr_circ.qubits:
-                        if not q in list(q_map.values()):
-                            unused_id_pool.append(q)
+                        if q not in list(q_map.values()):
+                            unused_id_pool.append(
+                                q
+                            )  # Keep track of the qubits we already have in the current circuit's register which haven't been mapped to.
                     for q in curr_circ.qubits:
-                        if not q in q_map.keys():
+                        if (
+                            q not in q_map.keys()
+                        ):  # All the qubits in current segment that haven't been assigned yet, are now assigned to one of the locations we kept track of.
                             q_map[q] = unused_id_pool.pop()
                 for k in curr_outputs.keys():
-                    curr_outputs[k] = q_map[curr_circ.qubits[curr_outputs[k]]]
-                curr_circ.rename_units(q_map)
+                    curr_outputs[k] = q_map[
+                        curr_circ.qubits[curr_outputs[k]]
+                    ]  # Use the map between segments to update the output map for the current segment with the new assigned indices of the outputs.
+                curr_circ.rename_units(
+                    q_map
+                )  # Use the map we developed to rename the qubits of the current segment to the corresponding qubits of the previous segment.
                 prev_bits = len(new_c.bits)
                 b_map = {}
                 for b in range(len(curr_circ.bits)):
                     b_map[curr_circ.bits[b]] = Bit(prev_bits + b)
                 curr_circ.rename_units(b_map)
-                new_c.add_circuit(curr_circ, [])
+                new_c.add_circuit(
+                    curr_circ, []
+                )  # Add the current segment to the rest of the new circuit.
                 for k in curr_outputs.keys():
                     curr_outputs[k] = new_c.qubits.index(curr_outputs[k])
                 prev_inputs = curr_inputs.copy()
                 prev_outputs = curr_outputs.copy()
-        for io in [pattern_list[0][1], prev_outputs]:
-            for q in io.keys():
-                io[q] = new_c.qubits[io[q]]
+        for io in [
+            pattern_list[0][1],
+            prev_outputs,
+        ]:  # For each of the input/output maps.
+            for q in io.keys():  # For each qubit in that map.
+                io[q] = new_c.qubits[
+                    io[q]
+                ]  # Switch the values of the maps from indices to the actual qubit objects.
         return (new_c, pattern_list[0][1], prev_outputs)

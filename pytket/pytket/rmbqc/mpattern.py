@@ -38,8 +38,10 @@ class MPattern:
         :param type:    Circuit
         """
         self.c = c
-        
-    def label_squish(self, g: GraphS, input_map: Dict[Qubit, int], output_map: Dict[Qubit, int]) -> None:
+
+    def label_squish(
+        self, g: GraphS, input_map: Dict[Qubit, int], output_map: Dict[Qubit, int]
+    ) -> None:
         """
         Updates the input/output labels of the MPattern to matched a squished
         graph caused by g.copy(). The reason why we use g.copy() is because the
@@ -76,8 +78,10 @@ class MPattern:
                 if output_map[o] == original_labels[v]:
                     output_map[o] = v
                     break
-                
-    def remove_redundant(self, g: GraphS, input_map: Dict[Qubit, int], output_map: Dict[Qubit, int]) -> None:
+
+    def remove_redundant(
+        self, g: GraphS, input_map: Dict[Qubit, int], output_map: Dict[Qubit, int]
+    ) -> None:
         """
         Removes simple edges from a zx diagram by merging the connected
         vertices.
@@ -151,8 +155,10 @@ class MPattern:
                             break
                 g.set_type(keep_vertex, 0)
         self.identity_cleanup(g, input_map, output_map)
-        
-    def identity_cleanup(self, g: GraphS, input_map: Dict[Qubit, int], output_map: Dict[Qubit, int]) -> None:
+
+    def identity_cleanup(
+        self, g: GraphS, input_map: Dict[Qubit, int], output_map: Dict[Qubit, int]
+    ) -> None:
         """
         Removes identity vertices from a zx diagram if any exist.
         
@@ -184,7 +190,7 @@ class MPattern:
             g.remove_vertex(v)
         if len(v_list) > 0:
             self.remove_redundant(g, input_map, output_map)
-        
+
     def zx_diagram(self) -> Tuple[GraphS, Dict[Qubit, int], Dict[Qubit, int]]:
         """
         Converts a pytket circuit to a zx diagram.
@@ -206,7 +212,9 @@ class MPattern:
         interior_clifford_simp(g, quiet=True)  # Remove interior clifford spiders.
         new_inputs = {}
         new_outputs = {}
-        sorted_vertices = sorted(list(g.vertices())) #Probably already sorted but don't want to take the chance.
+        sorted_vertices = sorted(
+            list(g.vertices())
+        )  # Probably already sorted but don't want to take the chance.
         for q in range(self.c.n_qubits):
             new_inputs[self.c.qubits[q]] = sorted_vertices[q]
             new_outputs[self.c.qubits[q]] = sorted_vertices[q - self.c.n_qubits]
@@ -221,7 +229,7 @@ class MPattern:
             g, new_inputs, new_outputs
         )  # Squishes the labels of the graph vertices to fill in empty vertex indices.
         return (g.copy(), new_inputs, new_outputs)
-    
+
     @staticmethod
     def entangle(g: GraphS, add_barriers: bool = False) -> Circuit:
         """
@@ -240,29 +248,49 @@ class MPattern:
         vlist = list(g.vertices())
         vnum = len(vlist)
         c = Circuit(vnum, vnum)
-        dlist = [len(g.neighbors(v)) for v in vlist] #Tracks number of remaining edges for each vertex.
+        dlist = [
+            len(g.neighbors(v)) for v in vlist
+        ]  # Tracks number of remaining edges for each vertex.
         for v in vlist:
             if not v in g.inputs:
                 c.H(v)
-        sorted_vlist = [x for _, x in sorted(zip(dlist, vlist))] #Sort the vertices by descending number of edges.
+        sorted_vlist = [
+            x for _, x in sorted(zip(dlist, vlist))
+        ]  # Sort the vertices by descending number of edges.
         sorted_vlist.reverse()
         edge_pool = set(g.edge_set())
         finished_edge_pool: Dict[int, int] = {}
-        doneround = [False] * len(sorted_vlist) # Which qubits have had CZ gates placed on them during this round of application.
-        while len(edge_pool) > 0: #Do this while there are still un-implemented edges pending.
-            for vid1 in range(len(sorted_vlist)): #Look through all the vertices.
-                if not doneround[vid1]: #Only interested in the ones that haven't been involved in a CZ during the current timestep.
-                    for vid2 in range(vid1 + 1, len(sorted_vlist)): #Look for another vertex which has a pending edge with the current vertex and has also not been involved yet.
+        doneround = [False] * len(
+            sorted_vlist
+        )  # Which qubits have had CZ gates placed on them during this round of application.
+        while (
+            len(edge_pool) > 0
+        ):  # Do this while there are still un-implemented edges pending.
+            for vid1 in range(len(sorted_vlist)):  # Look through all the vertices.
+                if not doneround[
+                    vid1
+                ]:  # Only interested in the ones that haven't been involved in a CZ during the current timestep.
+                    for vid2 in range(
+                        vid1 + 1, len(sorted_vlist)
+                    ):  # Look for another vertex which has a pending edge with the current vertex and has also not been involved yet.
                         if not doneround[vid2]:
-                            if ((sorted_vlist[vid1], sorted_vlist[vid2]) in edge_pool) or (
+                            if (
+                                (sorted_vlist[vid1], sorted_vlist[vid2]) in edge_pool
+                            ) or (
                                 (sorted_vlist[vid2], sorted_vlist[vid1]) in edge_pool
                             ):
-                                c.CZ(sorted_vlist[vid1], sorted_vlist[vid2]) #Implement the CZ gate corresponding to the edge.
+                                c.CZ(
+                                    sorted_vlist[vid1], sorted_vlist[vid2]
+                                )  # Implement the CZ gate corresponding to the edge.
                                 doneround[vid1] = True
                                 doneround[vid2] = True
-                                edge_pool -= set([(sorted_vlist[vid1], sorted_vlist[vid2])]) #Remove the edge from the edge pool.
-                                edge_pool -= set([(sorted_vlist[vid2], sorted_vlist[vid1])])
-                                #Following if statements increment the values in a dictionary which correspond to the the number of implemented edges for each vertex.
+                                edge_pool -= set(
+                                    [(sorted_vlist[vid1], sorted_vlist[vid2])]
+                                )  # Remove the edge from the edge pool.
+                                edge_pool -= set(
+                                    [(sorted_vlist[vid2], sorted_vlist[vid1])]
+                                )
+                                # Following if statements increment the values in a dictionary which correspond to the the number of implemented edges for each vertex.
                                 if sorted_vlist[vid1] in finished_edge_pool.keys():
                                     finished_edge_pool[sorted_vlist[vid1]] += 1
                                 else:
@@ -279,10 +307,12 @@ class MPattern:
             for v in range(len(doneround)):
                 doneround[v] = False
             dlist = []
-            #After every timestep we need to sort the list again to make sure that the vertices with the highest vertex degree are always prioritized.
+            # After every timestep we need to sort the list again to make sure that the vertices with the highest vertex degree are always prioritized.
             for v in vlist:
                 if v in finished_edge_pool.keys():
-                    dlist.append(len(g.neighbors(v)) - finished_edge_pool[v]) #Remaining vertex degree = original vertex degree minus the number of edges already implemented.
+                    dlist.append(
+                        len(g.neighbors(v)) - finished_edge_pool[v]
+                    )  # Remaining vertex degree = original vertex degree minus the number of edges already implemented.
                 else:
                     dlist.append(len(g.neighbors(v)))
                     finished_edge_pool[v] = 0
@@ -291,12 +321,14 @@ class MPattern:
         if add_barriers:
             active_vertices = []
             for v in g.vertices():
-                if len(g.neighbors(v))>0:
+                if len(g.neighbors(v)) > 0:
                     active_vertices.append(v)
             c.add_barrier(active_vertices, active_vertices)
         return c
-    
-    def split_subgraphs(self, g: GraphS, input_map: Dict[Qubit, int], output_map: Dict[Qubit, int]) -> List[GraphS]:
+
+    def split_subgraphs(
+        self, g: GraphS, input_map: Dict[Qubit, int], output_map: Dict[Qubit, int]
+    ) -> List[GraphS]:
         """
         If a zx diagram contains sub-diagrams which are not connected to each
         other, it splits them into multiple zx diagrams. It returns a list of
@@ -345,11 +377,15 @@ class MPattern:
             ):  # If the current vertex isn't in a cluster, create new cluster.
                 new_set = set([v])  # Current state of new cluster.
                 new_nodes = set([v])  # The latest additions to the new cluster.
-                while len(new_nodes) > 0: #If there are no new nodes to add to the cluster the cluster is complete.
+                while (
+                    len(new_nodes) > 0
+                ):  # If there are no new nodes to add to the cluster the cluster is complete.
                     temp = set()
                     for v2 in new_nodes:
                         temp |= set(g1.neighbors(v2))  # Get neighbors of new additions.
-                    new_nodes = temp - new_set # If they have already been added to the cluster they are not new additions.
+                    new_nodes = (
+                        temp - new_set
+                    )  # If they have already been added to the cluster they are not new additions.
                     new_set |= new_nodes  # Add new additions to the cluster.
                 cluster_list.append(new_set)  # Add new cluster to the list.
         graph_list = []  # This is a list of all the disjoint subgraphs.
@@ -358,10 +394,8 @@ class MPattern:
         ):  # We will extract one subgraph for each cluster.
             curr_cluster = cluster_list[cl]
             new_g = g1.copy()  # The subgraph can start as a copy of the full graph.
-            for (
-                v
-            ) in (
-                set(new_g.vertices())
+            for v in set(
+                new_g.vertices()
             ):  # Remove each vertex not in the current cluster from the current subgraph.
                 if v not in curr_cluster:
                     new_g.remove_edges(new_g.incident_edges(v))
@@ -372,7 +406,7 @@ class MPattern:
                     new_g.remove_vertex(v)
             graph_list.append(new_g)  # Add new subgraph to the list.
         return graph_list
-    
+
     @staticmethod
     def layer_list(layers: Dict[int, int]) -> List[Set[int]]:
         """
@@ -388,7 +422,7 @@ class MPattern:
         :rtype:         List[Set[int]]
         """
         new_list: List[Set[int]] = []
-        for l in range(max(list(layers.values()))+1):
+        for l in range(max(list(layers.values())) + 1):
             new_list.append(set())
         for vertex in layers.keys():
             new_list[layers[vertex]] |= {vertex}
@@ -429,33 +463,56 @@ class MPattern:
                 for corr_layer in range(len(l_list) - 1):
                     if corr_layer > 0:
                         isClifford = True
-                        for v in l_list[-1 - corr_layer]: #If all the measurements in the next layer are Clifford then it can be performed in parallel to the current layer.
-                            if g.phase(v) not in {0, 1 / 2, 1, 3 / 2}: #Check if the phase of the measurement is non-Clifford.
+                        for v in l_list[
+                            -1 - corr_layer
+                        ]:  # If all the measurements in the next layer are Clifford then it can be performed in parallel to the current layer.
+                            if g.phase(v) not in {
+                                0,
+                                1 / 2,
+                                1,
+                                3 / 2,
+                            }:  # Check if the phase of the measurement is non-Clifford.
                                 isClifford = False
                                 break
                         if not isClifford:
                             if add_barriers:
-                                new_c.add_barrier(list(g.vertices()),list(g.vertices()))
+                                new_c.add_barrier(
+                                    list(g.vertices()), list(g.vertices())
+                                )
                             for v in reset_list:
                                 new_c.add_gate(OpType.Reset, [v])
                             reset_list = []
-                    for v in l_list[-1 - corr_layer]: #Iterate through the layers in reverse order (layer 0 are the outputs and layer 1 is the last layer to be measured)
-                        my_result = {v} #Measurement of qubit 'v' is initially assumed to only depend on itself.
+                    for v in l_list[
+                        -1 - corr_layer
+                    ]:  # Iterate through the layers in reverse order (layer 0 are the outputs and layer 1 is the last layer to be measured)
+                        my_result = {
+                            v
+                        }  # Measurement of qubit 'v' is initially assumed to only depend on itself.
                         if g.phase(v) in {0, 1 / 2, 1, 3 / 2}:
-                            my_result ^= signals[v]["z"] #Depending on the phase of qubit v its outcome will be affected by Z corrections.
+                            my_result ^= signals[v][
+                                "z"
+                            ]  # Depending on the phase of qubit v its outcome will be affected by Z corrections.
                         if g.phase(v) in {1 / 2, 1, 3 / 2}:
-                            my_result ^= signals[v]["x"] #Depending on the phase of qubit v its outcome will be affected by X corrections.
+                            my_result ^= signals[v][
+                                "x"
+                            ]  # Depending on the phase of qubit v its outcome will be affected by X corrections.
                         if g.phase(v) in {1 / 2, 3 / 2}:
-                            my_result ^= {True} #Depending on the phase of qubit v its outcome may be flipped.
-                        for u in gf[1][v] - {v}: #Adds corections to other qubits which carry over the dependencies of current qubit.
+                            my_result ^= {
+                                True
+                            }  # Depending on the phase of qubit v its outcome may be flipped.
+                        for u in gf[1][v] - {
+                            v
+                        }:  # Adds corrections to other qubits which carry over the dependencies of current qubit.
                             signals[u]["x"] ^= my_result
                         for u in g.vertices() - {v}:
                             Nu = set(g.neighbors(u))
                             if (len(Nu & gf[1][v]) % 2) == 1:
-                                signals[u]["z"] ^= my_result #Adds corections to other qubits which carry over the dependencies of current qubit.
-                        #Measurement plane/angle of current qubit is affected by its phase and dependencies.
-                        #For more details on how these measurements and corrections work refer to 
-                        #https://arxiv.org/abs/quant-ph/0702212
+                                signals[u][
+                                    "z"
+                                ] ^= my_result  # Adds corections to other qubits which carry over the dependencies of current qubit.
+                        # Measurement plane/angle of current qubit is affected by its phase and dependencies.
+                        # For more details on how these measurements and corrections work refer to
+                        # https://arxiv.org/abs/quant-ph/0702212
                         if g.phase(v) in {0, 1}:
                             new_c.H(v)
                         elif g.phase(v) in {1 / 2, 3 / 2}:
@@ -490,8 +547,8 @@ class MPattern:
                                 new_c.Rx(-g.phase(v), v, condition=(xi ^ True))
                         new_c.Measure(v, v)
                         reset_list.append(v)
-                if add_barriers and len(l_list)>1:
-                    new_c.add_barrier(list(g.vertices()),list(g.vertices()))
+                if add_barriers and len(l_list) > 1:
+                    new_c.add_barrier(list(g.vertices()), list(g.vertices()))
                 for v in reset_list:
                     new_c.add_gate(OpType.Reset, [v])
                 for v in l_list[0]:
@@ -525,7 +582,9 @@ class MPattern:
                         new_c.Rz(-g.phase(v), v)
         return new_c
 
-    def single_conversion(self, add_barriers: bool = False) -> Tuple[Circuit, Dict[Qubit, int], Dict[Qubit, int]]:
+    def single_conversion(
+        self, add_barriers: bool = False
+    ) -> Tuple[Circuit, Dict[Qubit, int], Dict[Qubit, int]]:
         """
         Converts a pytket circuit to another with reduced depth and higher width.
         
@@ -538,9 +597,17 @@ class MPattern:
                             qubit register.
         :rtype:         Tuple[Circuit, Dict[Qubit,int], Dict[Qubit,int]]
         """
-        (g, input_map, output_map) = self.zx_diagram()  # Creates a simplified ZX diagram.
-        subs = self.split_subgraphs(g, input_map, output_map)  # Returns list of disjoint subgraphs.
-        cz_circ = self.entangle(g, add_barriers)  # Creates the CZ circuit part of the pattern.
+        (
+            g,
+            input_map,
+            output_map,
+        ) = self.zx_diagram()  # Creates a simplified ZX diagram.
+        subs = self.split_subgraphs(
+            g, input_map, output_map
+        )  # Returns list of disjoint subgraphs.
+        cz_circ = self.entangle(
+            g, add_barriers
+        )  # Creates the CZ circuit part of the pattern.
         m_circ = self.correct(
             subs, add_barriers
         )  # Circuit implementing measurements/corrections.
