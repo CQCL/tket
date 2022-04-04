@@ -29,6 +29,7 @@ from pytket.zx import (  # type: ignore
     unitary_from_classical_diagram,
     density_matrix_from_cptp_diagram,
     Rewrite,
+    circuit_to_zx,
 )
 
 
@@ -636,14 +637,17 @@ def test_converting_to_circuit() -> None:
     c.CZ(0, 1)
     c.CX(1, 2)
     c.H(1)
-    c.Rx(0.7, 3)
+    c.X(0)
+    c.Rx(0.7, 0)
     c.Rz(0.2, 1)
     c.X(3)
-    c.CRz(0.9, 0, 1)
-    diag = ZXDiagram(c)
-    print(c.get_unitary())
-    print(unitary_from_quantum_diagram(diag))
-    assert np.allclose(c.get_unitary(), unitary_from_quantum_diagram(diag))
+    c.H(2)
+    diag = circuit_to_zx(c)
+    # Check the unitaries are equal up to a global phase
+    u = c.get_unitary()
+    v = unitary_from_quantum_diagram(diag)
+    m = np.dot(u, v.conj().T)
+    assert np.allclose(np.dot(m, m.conj().T), np.eye(16))
 
 
 if __name__ == "__main__":
