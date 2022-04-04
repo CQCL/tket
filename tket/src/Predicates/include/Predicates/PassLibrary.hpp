@@ -37,7 +37,7 @@ const PassPtr &DecomposeBoxes();
  * converts a circuit containing all possible gates to a circuit containing only
  * phase poly boxes + H gates (and measure + reset + collapse + barrier)
  */
-const PassPtr &ComposePhasePolyBoxes();
+PassPtr ComposePhasePolyBoxes(const unsigned min_size = 0);
 
 /** Squash sequences of single-qubit gates to TK1 gates. */
 const PassPtr &SquashTK1();

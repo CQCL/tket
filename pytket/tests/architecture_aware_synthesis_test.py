@@ -14,7 +14,7 @@
 
 from pytket.circuit import Circuit, OpType  # type: ignore
 from pytket.architecture import Architecture  # type: ignore
-from pytket.passes import AASRouting, CNotSynthType  # type: ignore
+from pytket.passes import AASRouting, CNotSynthType, ComposePhasePolyBoxes  # type: ignore
 from pytket.predicates import CompilationUnit  # type: ignore
 
 
@@ -202,6 +202,15 @@ def test_noncontiguous_arc_phase_poly() -> None:
     assert c.n_gates_of_type(OpType.CX) == 0
 
 
+def test_compose_ppb() -> None:
+    circ = Circuit(5).CZ(0, 1).CZ(1, 2).CX(2, 3).CX(3, 4)
+    pass1 = ComposePhasePolyBoxes(min_size=2)
+    cu = CompilationUnit(circ)
+    assert pass1.apply(cu)
+    out_circ = cu.circuit
+    assert out_circ.depth() == 6
+
+
 if __name__ == "__main__":
     test_AAS()
     test_AAS_2()
@@ -219,3 +228,4 @@ if __name__ == "__main__":
     test_AAS_14()
     test_AAS_15()
     test_noncontiguous_arc_phase_poly()
+    test_compose_ppb()

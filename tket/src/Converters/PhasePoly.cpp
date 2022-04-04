@@ -314,8 +314,11 @@ Op_ptr PhasePolyBox::from_json(const nlohmann::json& j) {
 
 REGISTER_OPFACTORY(PhasePolyBox, PhasePolyBox)
 
-CircToPhasePolyConversion::CircToPhasePolyConversion(const Circuit& circ) {
+CircToPhasePolyConversion::CircToPhasePolyConversion(
+    const Circuit& circ, unsigned min_size) {
+  min_size_ = min_size;
   circ_ = circ;
+  box_size_ = 0;
 
   nq_ = circ_.n_qubits();
   nb_ = circ_.n_bits();
@@ -357,8 +360,33 @@ CircToPhasePolyConversion::CircToPhasePolyConversion(const Circuit& circ) {
 void CircToPhasePolyConversion::add_phase_poly_box() {
   qubit_types_.assign(nq_, QubitType::pre);
 
-  PhasePolyBox ppbox(box_circ_);
-  circ_.add_box(ppbox, all_qu_);
+  if (box_size_ >= min_size_) {
+    PhasePolyBox ppbox(box_circ_);
+    circ_.add_box(ppbox, all_qu_);
+  } else {
+    for (const Command& com : box_circ_) {
+      OpType ot = com.get_op_ptr()->get_type();
+      unit_vector_t qbs = com.get_args();
+      switch (ot) {
+        case OpType::CX: {
+          unsigned ctrl = qubit_indices_.at(Qubit(qbs[0]));
+          unsigned target = qubit_indices_.at(Qubit(qbs[1]));
+          circ_.add_op<unsigned>(ot, {ctrl, target});
+          break;
+        }
+        case OpType::Rz: {
+          unsigned qb = qubit_indices_.at(Qubit(qbs[0]));
+          auto angle = com.get_op_ptr()->get_params().at(0);
+          circ_.add_op<unsigned>(ot, angle, {qb});
+          break;
+        }
+        default: {
+          // no other types should be in this circuit
+          TKET_ASSERT(!"unvalid op type in phase poly box construction");
+        }
+      }
+    }
+  }
 
   for (const Command& post_com : post_circ_) {
     OpType post_ot = post_com.get_op_ptr()->get_type();
@@ -378,6 +406,7 @@ void CircToPhasePolyConversion::add_phase_poly_box() {
 
   post_circ_ = Circuit(empty_circ_);
   box_circ_ = Circuit(nq_);
+  box_size_ = 0;
 }
 
 void CircToPhasePolyConversion::convert() {
@@ -416,7 +445,8 @@ void CircToPhasePolyConversion::convert() {
       }
       default: {
         throw NotImplemented(
-            "Please rebase with the compiler pass RebaseUFR to only CX, Rz, H, "
+            "Please rebase with the compiler pass RebaseUFR to only CX, Rz, "
+            "H, "
             "measure, reset, collapse, barrier gates. Found gate of type: " +
             com.get_op_ptr()->get_name());
       }
@@ -469,22 +499,26 @@ qubits states are reset to pre.
         if ((qubit_types_[ctrl] == QubitType::in) &&
             (qubit_types_[target] == QubitType::in)) {
           box_circ_.add_op<unsigned>(OpType::CX, {ctrl, target});
+          ++box_size_;
         } else if (
             (qubit_types_[ctrl] == QubitType::pre) &&
             (qubit_types_[target] == QubitType::in)) {
           qubit_types_[ctrl] = QubitType::in;
           box_circ_.add_op<unsigned>(OpType::CX, {ctrl, target});
+          ++box_size_;
         } else if (
             (qubit_types_[ctrl] == QubitType::in) &&
             (qubit_types_[target] == QubitType::pre)) {
           qubit_types_[target] = QubitType::in;
           box_circ_.add_op<unsigned>(OpType::CX, {ctrl, target});
+          ++box_size_;
         } else if (
             (qubit_types_[ctrl] == QubitType::pre) &&
             (qubit_types_[target] == QubitType::pre)) {
           qubit_types_[ctrl] = QubitType::in;
           qubit_types_[target] = QubitType::in;
           box_circ_.add_op<unsigned>(OpType::CX, {ctrl, target});
+          ++box_size_;
         } else if (
             (qubit_types_[ctrl] == QubitType::post) ||
             (qubit_types_[target] == QubitType::post)) {
@@ -493,6 +527,7 @@ qubits states are reset to pre.
           qubit_types_[ctrl] = QubitType::in;
           qubit_types_[target] = QubitType::in;
           box_circ_.add_op<unsigned>(OpType::CX, {ctrl, target});
+          ++box_size_;
         } else {
           // no other types should be in this list
           TKET_ASSERT(!"Invalid Qubit Type in Phase Poly Box creation");
@@ -578,7 +613,8 @@ qubits states are reset to pre.
       }
       default: {
         throw NotImplemented(
-            "Please rebase with the compiler pass RebaseUFR to only CX, Rz, H, "
+            "Please rebase with the compiler pass RebaseUFR to only CX, Rz, "
+            "H, "
             "measure, reset, collapse, barrier gates. Found gate of type: " +
             com.get_op_ptr()->get_name());
       }

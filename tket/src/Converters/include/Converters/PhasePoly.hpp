@@ -115,7 +115,8 @@ class CircToPhasePolyConversion {
    * @throw not implemented for unsupported gates
    * @param circ circuit to be converted
    */
-  explicit CircToPhasePolyConversion(const Circuit &circ);
+  explicit CircToPhasePolyConversion(
+      const Circuit &circ, unsigned min_size = 0);
   void convert();
   Circuit get_circuit() const;
 
@@ -124,6 +125,8 @@ class CircToPhasePolyConversion {
   void add_phase_poly_box();
   unsigned nq_;
   unsigned nb_;
+  unsigned min_size_;
+  unsigned box_size_;
   std::map<Qubit, unsigned> qubit_indices_;
   std::map<Bit, unsigned> bit_indices_;
   std::vector<QubitType> qubit_types_;

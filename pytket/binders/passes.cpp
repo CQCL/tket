@@ -78,6 +78,16 @@ static PassPtr gen_default_aas_routing_pass(
   return gen_full_mapping_pass_phase_poly(arc, lookahead, cnotsynthtype);
 }
 
+static PassPtr gen_composephasepolybox_pass(py::kwargs kwargs) {
+  unsigned min_size = 0;
+
+  if (kwargs.contains("min_size")) {
+    min_size = py::cast<unsigned>(kwargs["min_size"]);
+  }
+
+  return RebaseUFR() >> ComposePhasePolyBoxes(min_size);
+}
+
 const PassPtr &DecomposeClassicalExp() {
   // a special box decomposer for Circuits containing
   // ClassicalExpBox<py::object>
@@ -539,6 +549,16 @@ PYBIND11_MODULE(passes, m) {
       "\n:param \\**kwargs: parameters for routing (described above)"
       "\n:return: a pass to perform the remapping",
       py::arg("arc"));
+
+  m.def(
+      "ComposePhasePolyBoxes", &gen_composephasepolybox_pass,
+      "Pass to convert a given circuit to the CX, Rz, H gateset and composes "
+      "phasepolyboxes from the groups of the CX+Rz gates."
+      "\n\n- (unsigned) min_size=0: minimal number of cnots in each phase "
+      "polynominal box, groups with a smaler number of CX gates are not "
+      "effected by this transformation"
+      "\n:param \\**kwargs: parameters for composition (described above)"
+      "\n:return: a pass to perform the composition");
 
   m.def(
       "CXMappingPass", &gen_cx_mapping_pass_kwargs,

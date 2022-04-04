@@ -355,7 +355,7 @@ SCENARIO("Test conversion of circuit to circuit with phase poly boxes") {
     circ.add_op<unsigned>(OpType::H, {0});
     circ.add_op<unsigned>(OpType::H, {1});
 
-    CircToPhasePolyConversion conv = CircToPhasePolyConversion(circ);
+    CircToPhasePolyConversion conv = CircToPhasePolyConversion(circ, 1);
     conv.convert();
     Circuit result = conv.get_circuit();
 
@@ -570,6 +570,109 @@ SCENARIO("Test conversion of circuit to circuit with phase poly boxes") {
         ++countmeasure;
       }
 
+      REQUIRE(ot == qubit_types[count]);
+      ++count;
+    }
+  }
+  GIVEN("convert_to_phase_poly minimal box size") {
+    unsigned n = 2;
+    Circuit circ(n);
+
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::H, {1});
+
+    circ.add_op<unsigned>(OpType::Rz, 0.01, {0});
+    for (unsigned i = 1; i < n; ++i) {
+      circ.add_op<unsigned>(OpType::CX, {i, 0});
+      circ.add_op<unsigned>(OpType::Rz, 0.1 * i, {0});
+    }
+
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_barrier({0, 1});
+
+    circ.add_op<unsigned>(OpType::Rz, 0.01, {0});
+    for (unsigned i = 1; i < n; ++i) {
+      circ.add_op<unsigned>(OpType::CX, {i, 0});
+      circ.add_op<unsigned>(OpType::Rz, 0.1 * i, {0});
+    }
+
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::H, {1});
+
+    CircToPhasePolyConversion conv = CircToPhasePolyConversion(circ, 2);
+    conv.convert();
+    Circuit result = conv.get_circuit();
+
+    std::vector<OpType> qubit_types = std::vector<OpType>(13, OpType::H);
+
+    qubit_types[2] = OpType::Rz;
+    qubit_types[3] = OpType::CX;
+    qubit_types[4] = OpType::Rz;
+    qubit_types[7] = OpType::Barrier;
+    qubit_types[8] = OpType::Rz;
+    qubit_types[9] = OpType::CX;
+    qubit_types[10] = OpType::Rz;
+
+    int count = 0;
+
+    for (const Command& com : result) {
+      OpType ot = com.get_op_ptr()->get_type();
+      REQUIRE(ot == qubit_types[count]);
+      ++count;
+    }
+  }
+  GIVEN("convert_to_phase_poly minimal box size II") {
+    unsigned n = 4;
+    Circuit circ(n);
+
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::H, {2});
+    circ.add_op<unsigned>(OpType::H, {3});
+
+    circ.add_op<unsigned>(OpType::Rz, 0.01, {0});
+    for (unsigned i = 1; i < n; ++i) {
+      circ.add_op<unsigned>(OpType::CX, {i, 0});
+      circ.add_op<unsigned>(OpType::Rz, 0.1 * i, {0});
+    }
+
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_barrier({0, 1});
+
+    circ.add_op<unsigned>(OpType::Rz, 0.01, {0});
+    for (unsigned i = 1; i < n; ++i) {
+      circ.add_op<unsigned>(OpType::CX, {i, 0});
+      circ.add_op<unsigned>(OpType::Rz, 0.1 * i, {0});
+    }
+
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::H, {2});
+    circ.add_op<unsigned>(OpType::H, {3});
+
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Rz, 0.1 * 2, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.1 * 3, {1});
+
+    CircToPhasePolyConversion conv = CircToPhasePolyConversion(circ, 2);
+    conv.convert();
+    Circuit result = conv.get_circuit();
+
+    std::vector<OpType> qubit_types = std::vector<OpType>(16, OpType::H);
+
+    qubit_types[4] = OpType::PhasePolyBox;
+    qubit_types[7] = OpType::Barrier;
+    qubit_types[8] = OpType::PhasePolyBox;
+    qubit_types[13] = OpType::CX;
+    qubit_types[14] = OpType::Rz;
+    qubit_types[15] = OpType::Rz;
+
+    int count = 0;
+
+    for (const Command& com : result) {
+      OpType ot = com.get_op_ptr()->get_type();
       REQUIRE(ot == qubit_types[count]);
       ++count;
     }
