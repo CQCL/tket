@@ -17,7 +17,7 @@ from typing import List, Optional, Tuple
 
 from pyqir.generator import SimpleModule, BasicQisBuilder  # type: ignore
 from pytket import Circuit, OpType, Bit, Qubit
-from pytket.circuit import Op # type: ignore
+from pytket.circuit import Op  # type: ignore
 
 
 NOPARAM_COMMANDS = {
