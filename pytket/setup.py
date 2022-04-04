@@ -239,8 +239,8 @@ setup(
     license="Apache 2",
     packages=setuptools.find_packages(),
     install_requires=[
-        "pyqir-generator ~=0.3.1",
-        "pyqir-parser ~=0.3.1",
+        "pyqir-generator == 0.3.1a1",
+        "pyqir-parser == 0.3.1a1",
         "sympy ~=1.6",
         "numpy >=1.21.4, <2.0",
         "lark-parser ~=0.7",
