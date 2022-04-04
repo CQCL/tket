@@ -39,8 +39,10 @@ class DerivedGraphsReducer {
    * @param number_of_assignments_previously_processed_in_this_node Used to
    * avoid processing older assignments multiple times.
    * @param node_wrapper The object containing the node to be updated.
-   * @param derived_graphs The object containing the necessary data for the
-   * derived graphs.
+   * @param derived_pattern_graphs The object containing the necessary data for the
+   * derived p-graphs.
+   * @param derived_target_graphs The object containing the necessary data for the
+   * derived t-graphs.
    * @return True if the search is still ongoing, false if a nogood is detected
    * (so the search must backtrack).
    */

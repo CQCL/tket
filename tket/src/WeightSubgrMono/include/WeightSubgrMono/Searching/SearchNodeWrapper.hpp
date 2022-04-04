@@ -40,7 +40,7 @@ class SearchNodeWrapper {
    * is to restrict the operations done on the stored SearchNode.
    * However, the algorithms are still subject to change, so the interface
    * is not yet stable.
-   * @return A const reference to the stored node.
+   * @return A reference to the stored node.
    */
   SearchNode& get_mutable();
 
