@@ -15,9 +15,9 @@
 import os
 from typing import List, Optional, Tuple
 
-from pyqir.generator import SimpleModule, BasicQisBuilder
+from pyqir.generator import SimpleModule, BasicQisBuilder  # type: ignore
 from pytket import Circuit, OpType, Bit, Qubit
-from pytket.circuit import Op
+from pytket.circuit import Op # type: ignore
 
 
 NOPARAM_COMMANDS = {
@@ -102,6 +102,7 @@ def circuit_to_qir_str(circ: Circuit, root: str) -> str:
             add_gate = getattr(qis, _tk_to_qir_noparams[optype])
             add_gate(qubits)
         elif optype in _tk_to_qir_params:
+            assert params
             add_gate = getattr(qis, _tk_to_qir_params[optype])
             add_gate(params[0], qubits)
         else:
