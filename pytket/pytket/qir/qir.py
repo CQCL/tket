@@ -70,34 +70,31 @@ def _to_qis_qubit(qubits: List[Qubit], mod: SimpleModule):
 def _to_qis_results(bits: List[Bit], mod: SimpleModule):
     return mod.results[bits[0].index[0]]
 
+
 def circuit_from_qir(input_file):
     pass
 
-def circuit_to_qir_io(
-        circ: Circuit, stream_out: TextIO
-) -> None:
+
+def circuit_to_qir_io(circ: Circuit, stream_out: TextIO) -> None:
     pass
+
 
 def circuit_to_qir_str(circ: Circuit, root: str) -> str:
     """A method to generate a QIR string from a pytket circuit."""
-    if (
-        any(
-            circ.n_gates_of_type(typ)
-            for typ in (
-                OpType.RangePredicate,
-                OpType.MultiBit,
-                OpType.ExplicitPredicate,
-                OpType.ExplicitModifier,
-                OpType.SetBits,
-            )
+    if any(
+        circ.n_gates_of_type(typ)
+        for typ in (
+            OpType.RangePredicate,
+            OpType.MultiBit,
+            OpType.ExplicitPredicate,
+            OpType.ExplicitModifier,
+            OpType.SetBits,
         )
     ):
-        raise QIRUnsupportedError(
-            "Complex classical gates not supported."
-        )
+        raise QIRUnsupportedError("Complex classical gates not supported.")
     module = SimpleModule(root, num_qubits=circ.n_qubits, num_results=len(circ.bits))
     qis = BasicQisBuilder(module.builder)
-    
+
     for command in circ:
         op = command.op
         args = command.args
@@ -120,6 +117,7 @@ def circuit_to_qir_str(circ: Circuit, root: str) -> str:
             )
     return module.ir()
 
+
 def circuit_to_qir(circ: Circuit, output_file: str) -> None:
     """A method to generate a qir file from a tket circuit."""
     root, ext = os.path.splitext(os.path.basename(output_file))
@@ -128,4 +126,3 @@ def circuit_to_qir(circ: Circuit, output_file: str) -> None:
     circ_qir_str = circuit_to_qir(circ, root)
     with open(output_file, "w") as out:
         circuit_to_qir_io(circ, out)
-        
