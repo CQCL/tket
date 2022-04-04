@@ -13,9 +13,9 @@
 // limitations under the License.
 
 #include "Circuit/Circuit.hpp"
+#include "Converters/Converters.hpp"
 #include "Utils/GraphHeaders.hpp"
 #include "ZX/ZXDiagram.hpp"
-#include "Converters/Converters.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
@@ -583,13 +583,9 @@ PYBIND11_MODULE(zx, m) {
           "diagram", &ZXBox::get_diagram,
           "The internal diagram represented by the box.");
   init_rewrite(m);
-	m.def(
-		"circuit_to_zx",
-		[](Circuit circ) {
-			return circuit_to_zx(circ);
-		},
-		"Construct a ZX diagram from a circuit."
-	);
+  m.def(
+      "circuit_to_zx", [](Circuit circ) { return circuit_to_zx(circ); },
+      "Construct a ZX diagram from a circuit.");
 }
 
 }  // namespace zx
