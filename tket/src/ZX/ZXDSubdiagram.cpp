@@ -63,7 +63,7 @@ ZXDiagram ZXDiagram::Subdiagram::to_diagram(const ZXDiagram& orig) const {
   std::map<ZXVert, ZXVert> vert_iso;
   std::map<std::pair<Wire, WireEnd>, ZXVert> bound_iso;
   for (const std::pair<Wire, WireEnd>& bw : boundary_) {
-    ZXVert bv = diag.add_vertex(ZXType::Open);
+    ZXVert bv = diag.add_vertex(ZXType::Open, orig.get_qtype(bw.first));
     diag.boundary.push_back(bv);
     bound_iso.insert({bw, bv});
   }
@@ -78,7 +78,7 @@ ZXDiagram ZXDiagram::Subdiagram::to_diagram(const ZXDiagram& orig) const {
           internal = false;
           WireProperties wp = orig.get_wire_info(w);
           diag.add_wire(
-              ov, found_bound->second, ZXWireType::Basic, wp.qtype,
+              v, found_bound->second, ZXWireType::Basic, wp.qtype,
               wp.source_port, std::nullopt);
         }
       }
@@ -88,8 +88,8 @@ ZXDiagram ZXDiagram::Subdiagram::to_diagram(const ZXDiagram& orig) const {
           internal = false;
           WireProperties wp = orig.get_wire_info(w);
           diag.add_wire(
-              found_bound->second, ov, ZXWireType::Basic, wp.qtype,
-              std::nullopt, wp.target_port);
+              found_bound->second, v, ZXWireType::Basic, wp.qtype, std::nullopt,
+              wp.target_port);
         }
       }
       if (internal) {
@@ -98,9 +98,9 @@ ZXDiagram ZXDiagram::Subdiagram::to_diagram(const ZXDiagram& orig) const {
         if (found_other != vert_iso.end()) {
           WireProperties wp = orig.get_wire_info(w);
           if (orig.source(w) == ov)
-            diag.add_wire(ov, found_other->second, wp);
+            diag.add_wire(v, found_other->second, wp);
           else
-            diag.add_wire(found_other->second, ov, wp);
+            diag.add_wire(found_other->second, v, wp);
         }
       }
     }

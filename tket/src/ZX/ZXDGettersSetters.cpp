@@ -189,8 +189,10 @@ ZXVert ZXDiagram::other_end(const Wire& w, const ZXVert& u) const {
 }
 
 ZXVert ZXDiagram::vertex_at_end(const Wire& w, WireEnd we) const {
-  if (we == WireEnd::Source) return source(w);
-  else return target(w);
+  if (we == WireEnd::Source)
+    return source(w);
+  else
+    return target(w);
 }
 
 WireEnd ZXDiagram::end_of(const Wire& w, const ZXVert& u) const {
@@ -277,7 +279,8 @@ static std::string graphviz_vertex_props(ZXGen_ptr op) {
     case ZXType::PX:
     case ZXType::PY:
     case ZXType::PZ: {
-      ss << "shape=point label=\"" << op->get_name() << "\"";
+      ss << "shape=circle width=0.1 fixedsize=shape label=\"" << op->get_name()
+         << "\\n\\n\"";
       break;
     }
     case ZXType::Triangle: {

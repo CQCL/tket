@@ -83,7 +83,6 @@ bool Rewrite::rebase_to_zx_fun(ZXDiagram& diag) {
   for (const ZXVert& v : verts) {
     switch (diag.get_zxtype(v)) {
       case ZXType::Hbox: {
-        // TODO:: Find a paper with a decomposition
         // Use a combination of the equations in doi:10.1145/3209108.3209128 and
         // doi:10.4204/EPTCS.340.16 Iteratively decompose based on the phase, so
         // cannot be applied to symbolic phases
@@ -96,6 +95,7 @@ bool Rewrite::rebase_to_zx_fun(ZXDiagram& diag) {
         QuantumType qt = *vg.get_qtype();
         unsigned deg = diag.degree(v);
         WireVec v_ws = diag.adj_wires(v);
+        std::vector<std::pair<Wire, WireEnd>> v_bounds;
 
         ZXDiagram rep(0, 0, 0, 0);
         double r = std::abs(*opt_ph - 1.);
@@ -107,15 +107,51 @@ bool Rewrite::rebase_to_zx_fun(ZXDiagram& diag) {
         }
         // Core is an algebraic Zbox surrounded by triangles
         ZXVert zph = rep.add_vertex(ZXType::ZSpider, Expr(ph), qt);
-        for (unsigned i = 0; i < deg; ++i) {
-          ZXVert bound = rep.add_vertex(ZXType::Open, qt);
-          ZXVert tri = rep.add_vertex(ZXType::Triangle, qt);
-          rep.add_wire(bound, tri, ZXWireType::Basic, qt, std::nullopt, 0);
-          rep.add_wire(tri, zph, ZXWireType::Basic, qt, 1, std::nullopt);
+        // Not every will may have the same QuantumType in general
+        bool all_same_qt = true;
+        for (const Wire& w : diag.adj_wires(v)) {
+          QuantumType wqt = diag.get_qtype(w);
+          if (qt != wqt) all_same_qt = false;
+          if (diag.source(w) == v) {
+            v_bounds.push_back({w, WireEnd::Source});
+            ZXVert bound = rep.add_vertex(ZXType::Open, wqt);
+            rep.boundary.push_back(bound);
+            ZXVert tri = rep.add_vertex(ZXType::Triangle, wqt);
+            rep.add_wire(bound, tri, ZXWireType::Basic, wqt, std::nullopt, 0);
+            rep.add_wire(tri, zph, ZXWireType::Basic, wqt, 1, std::nullopt);
+          }
+          if (diag.target(w) == v) {
+            v_bounds.push_back({w, WireEnd::Target});
+            ZXVert bound = rep.add_vertex(ZXType::Open, wqt);
+            rep.boundary.push_back(bound);
+            ZXVert tri = rep.add_vertex(ZXType::Triangle, wqt);
+            rep.add_wire(bound, tri, ZXWireType::Basic, wqt, std::nullopt, 0);
+            rep.add_wire(tri, zph, ZXWireType::Basic, wqt, 1, std::nullopt);
+          }
+        }
+        // Special cases for degree 2
+        if (deg == 2 && all_same_qt && approx_eq(opt_ph->real(), -1.) &&
+            approx_0(opt_ph->imag())) {
+          WireVec ws = diag.adj_wires(v);
+          if (ws.size() == 1) {
+            // self-loop
+            diag.multiply_scalar(0.);
+          } else {
+            // Replace with a Hadamard edge
+            ZXVert s = diag.other_end(ws.at(0), v);
+            ZXVert t = diag.other_end(ws.at(1), v);
+            unsigned n_hs = 0;
+            if (diag.get_wire_type(ws.at(0)) == ZXWireType::H) ++n_hs;
+            if (diag.get_wire_type(ws.at(1)) == ZXWireType::H) ++n_hs;
+            diag.add_wire(
+                s, t, (n_hs == 1) ? ZXWireType::Basic : ZXWireType::H, qt);
+          }
+          diag.remove_vertex(v);
+          break;
         }
         // Using the algebraic fusion rule, can break off 2-boxes (0-phase
         // ZSpider and a triangle)
-        while (r > 2.) {
+        for (; r > 2.; r -= 1) {
           ZXVert tri = rep.add_vertex(ZXType::Triangle, qt);
           ZXVert one = rep.add_vertex(ZXType::ZSpider, qt);
           rep.add_wire(zph, tri, ZXWireType::Basic, qt, std::nullopt, 0);
@@ -141,11 +177,6 @@ bool Rewrite::rebase_to_zx_fun(ZXDiagram& diag) {
         rebase_to_zx_fun(rep);
 
         // Substitute
-        std::vector<std::pair<Wire, WireEnd>> v_bounds;
-        for (const Wire& w : v_ws) {
-          if (diag.source(w) == v) v_bounds.push_back({w, WireEnd::Source});
-          if (diag.target(w) == v) v_bounds.push_back({w, WireEnd::Target});
-        }
         ZXDiagram::Subdiagram sub{v_bounds, {v}};
         diag.substitute(rep, sub);
         break;
@@ -215,7 +246,9 @@ bool Rewrite::rebase_to_zx_fun(ZXDiagram& diag) {
         ZXDiagram tri(0, 0, 0, 0);
         QuantumType qt = *diag.get_qtype(v);
         ZXVert in = tri.add_vertex(ZXType::Input, qt);
+        tri.boundary.push_back(in);
         ZXVert out = tri.add_vertex(ZXType::Output, qt);
+        tri.boundary.push_back(out);
         tri.multiply_scalar(
             (qt == QuantumType::Quantum) ? Expr(2.)
                                          : Expr(SymEngine::sqrt(Expr(2.))));
