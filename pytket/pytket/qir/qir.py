@@ -48,6 +48,7 @@ PARAM_COMMANDS = {
 _tk_to_qir_noparams = dict(((item[1], item[0]) for item in NOPARAM_COMMANDS.items()))
 _tk_to_qir_params = dict(((item[1], item[0]) for item in PARAM_COMMANDS.items()))
 
+
 class QIRUnsupportedError(Exception):
     pass
 
