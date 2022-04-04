@@ -826,7 +826,9 @@ SCENARIO("Test MeasurementSetup serializations") {
     MeasurementSetup::MeasurementBitMap map;
     nlohmann::json j_map = map;
     nlohmann::json j_correct_map = {
-        {"circ_index", 0}, {"bits", nlohmann::json::array()}, {"invert", true}};
+        {"circ_index", 0},
+        {"bits", nlohmann::json::array()},
+        {"invert", false}};
     REQUIRE(j_map == j_correct_map);
     MeasurementSetup::MeasurementBitMap map_loaded =
         j_map.get<MeasurementSetup::MeasurementBitMap>();
