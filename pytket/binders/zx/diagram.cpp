@@ -15,6 +15,7 @@
 #include "Circuit/Circuit.hpp"
 #include "Utils/GraphHeaders.hpp"
 #include "ZX/ZXDiagram.hpp"
+#include "Converters/Converters.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
@@ -82,11 +83,6 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "Constructs a copy of an existing ZX diagram.\n\n"
           ":param other: ZX diagram to copy.",
           py::arg("other"))
-      .def(
-          py::init<const Circuit&>(),
-          "Constructs a ZX diagram from a circuit.\n\n"
-          ":param circ: circuit to be converted.",
-          py::arg("circ"))
       .def(
           "get_boundary",
           [](const ZXDiagram& diag, std::optional<ZXType> type,
@@ -587,6 +583,13 @@ PYBIND11_MODULE(zx, m) {
           "diagram", &ZXBox::get_diagram,
           "The internal diagram represented by the box.");
   init_rewrite(m);
+	m.def(
+		"circuit_to_zx",
+		[](Circuit circ) {
+			return circuit_to_zx(circ);
+		},
+		"Construct a ZX diagram from a circuit."
+	);
 }
 
 }  // namespace zx
