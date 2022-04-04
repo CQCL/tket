@@ -141,23 +141,13 @@ static void check_for_impossible_weight_constraint(
       KNOWN_TO_BE_INSOLUBLE;
 }
 
-static void solve_problem(
+
+static void check_solver_object(const MainSolver& solver,
     const GraphEdgeWeights& pdata, const GraphEdgeWeights& tdata,
     CheckedSolution::ProblemInformation info,
     const MainSolverParameters& solver_params,
     CheckedSolution::Statistics& stats, CheckedSolution& checked_solution,
-    const OStreamWrapper& os,
-    const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments) {
-  check_known_solution_information(info);
-  check_for_impossible_weight_constraint(info, solver_params);
-  MainSolver solver;
-  if (suggested_assignments.empty()) {
-    solver.solve(pdata, tdata, solver_params);
-  } else {
-    solver.initialise(pdata, tdata);
-    solver.do_one_solve_iteration_with_suggestion(suggested_assignments);
-    solver.solve(solver_params);
-  }
+    const OStreamWrapper& os) {
   const auto& solution = solver.get_best_solution();
   const auto& soln_statistics = solver.get_solution_statistics();
   checked_solution.iterations = soln_statistics.iterations;
@@ -220,6 +210,31 @@ static void solve_problem(
   check_unfinished_solution(
       info, soln_statistics, solution, solver_params, stats, os);
 }
+
+
+static void solve_problem(
+    const GraphEdgeWeights& pdata, const GraphEdgeWeights& tdata,
+    CheckedSolution::ProblemInformation info,
+    const MainSolverParameters& solver_params,
+    CheckedSolution::Statistics& stats, CheckedSolution& checked_solution,
+    const OStreamWrapper& os,
+    const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments) {
+  check_known_solution_information(info);
+  check_for_impossible_weight_constraint(info, solver_params);
+  
+  if (suggested_assignments.empty()) {
+    const MainSolver solver(pdata, tdata, solver_params);
+    check_solver_object(solver, pdata, tdata, info, solver_params,
+          stats,  checked_solution, os);
+    return;
+  }
+  MainSolver solver(pdata, tdata, suggested_assignments);
+  solver.solve(solver_params);
+  check_solver_object(solver, pdata, tdata, info, solver_params,
+          stats, checked_solution, os);
+}
+
+
 
 CheckedSolution::CheckedSolution(
     const GraphEdgeWeights& pdata, const GraphEdgeWeights& tdata,

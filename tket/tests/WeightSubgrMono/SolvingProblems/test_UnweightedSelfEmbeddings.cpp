@@ -49,8 +49,7 @@ SCENARIO("Single fixed graph: multiple self embeddings") {
   for (parameters.for_multiple_full_solutions_the_max_number_to_obtain = 0;
        parameters.for_multiple_full_solutions_the_max_number_to_obtain < 10;
        ++parameters.for_multiple_full_solutions_the_max_number_to_obtain) {
-    MainSolver solver;
-    solver.solve(pattern_graph, pattern_graph, parameters);
+    const MainSolver solver(pattern_graph, pattern_graph, parameters);
     const auto& stored_solutions = solver.get_some_full_solutions();
     calc_solution_strings.clear();
     for (const auto& solution : stored_solutions) {

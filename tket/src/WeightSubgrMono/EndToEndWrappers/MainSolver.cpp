@@ -31,34 +31,32 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+MainSolver::MainSolver(
+      const GraphEdgeWeights& pattern_edges,
+      const GraphEdgeWeights& target_edges,
+      const MainSolverParameters& parameters) 
+    : MainSolver(pattern_edges, target_edges) {
+  solve(parameters);
+}
+
+
+MainSolver::MainSolver(
+      const GraphEdgeWeights& pattern_edges,
+      const GraphEdgeWeights& target_edges,
+      const std::vector<std::pair<VertexWSM, VertexWSM>>&
+          suggested_assignments) 
+    : MainSolver(pattern_edges, target_edges) {
+  do_one_solve_iteration_with_suggestion(suggested_assignments);
+}
+
 typedef std::chrono::steady_clock Clock;
-
-const SolutionStatistics& MainSolver::solve(long long timeout_ms) {
-  MainSolverParameters parameters;
-  parameters.timeout_ms = timeout_ms;
-  return solve(parameters);
-}
-
-const SolutionStatistics& MainSolver::solve(
-    const GraphEdgeWeights& pattern_edges, const GraphEdgeWeights& target_edges,
-    long long timeout_ms) {
-  MainSolverParameters parameters;
-  parameters.timeout_ms = timeout_ms;
-  return solve(pattern_edges, target_edges, parameters);
-}
-
-const SolutionStatistics& MainSolver::solve(
-    const GraphEdgeWeights& pattern_edges, const GraphEdgeWeights& target_edges,
-    const MainSolverParameters& parameters) {
-  initialise(pattern_edges, target_edges);
-  return solve(parameters);
-}
 
 const SolutionStatistics& MainSolver::get_solution_statistics() const {
   return m_data.statistics;
 }
 
-const SolutionStatistics& MainSolver::initialise(
+
+MainSolver::MainSolver(
     const GraphEdgeWeights& pattern_edges,
     const GraphEdgeWeights& target_edges) {
   const auto init_start = Clock::now();
@@ -66,7 +64,6 @@ const SolutionStatistics& MainSolver::initialise(
 
   if (init_result == ReductionResult::FAILURE) {
     // No solution is possible.
-    m_data.shared_data_ptr.reset();
     m_data.statistics.finished = true;
   }
 
@@ -117,8 +114,6 @@ const SolutionStatistics& MainSolver::initialise(
       std::chrono::duration_cast<std::chrono::milliseconds>(
           Clock::now() - init_start)
           .count();
-
-  return m_data.statistics;
 }
 
 void MainSolver::do_one_solve_iteration_with_suggestion(
@@ -129,10 +124,9 @@ void MainSolver::do_one_solve_iteration_with_suggestion(
   m_data.do_one_solve_iteration_with_suggestion(suggested_assignments);
 }
 
-const SolutionStatistics& MainSolver::solve(
-    const MainSolverParameters& parameters) {
+void MainSolver::solve(const MainSolverParameters& parameters) {
   if (m_data.statistics.finished) {
-    return m_data.statistics;
+    return;
   }
 
   TKET_ASSERT(m_data.initialised);
@@ -148,9 +142,7 @@ const SolutionStatistics& MainSolver::solve(
     m_data.shared_data_ptr->solution_storage.set_pruning_weight(
         weight_constraint);
   }
-
   m_data.solve_loop_after_initialisation(parameters);
-  return m_data.statistics;
 }
 
 const SolutionWSM& MainSolver::get_best_solution() const {
