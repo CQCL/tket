@@ -90,7 +90,7 @@ PYBIND11_MODULE(predicates, m) {
             return nlohmann::json(predicate);
           },
           "Return a JSON serializable dict representation of "
-          "the Predicate.\n"
+          "the Predicate.\n\n"
           ":return: dict representation of the Predicate.")
       .def_static(
           "from_dict",
