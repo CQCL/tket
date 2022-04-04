@@ -13,13 +13,12 @@
 # limitations under the License.
 
 import os
-from typing import List, Optional, Tuple, Union, TextIO
+from typing import List, Optional, Tuple
 
 from pytket import Circuit, OpType, Bit, Qubit
 from pytket.circuit import Op
 
 from pyqir.generator import SimpleModule, BasicQisBuilder
-import pyqir.parser
 
 
 NOPARAM_COMMANDS = {
@@ -75,10 +74,6 @@ def circuit_from_qir(input_file):
     pass
 
 
-def circuit_to_qir_io(circ: Circuit, stream_out: TextIO) -> None:
-    pass
-
-
 def circuit_to_qir_str(circ: Circuit, root: str) -> str:
     """A method to generate a QIR string from a pytket circuit."""
     if any(
@@ -97,7 +92,6 @@ def circuit_to_qir_str(circ: Circuit, root: str) -> str:
 
     for command in circ:
         op = command.op
-        args = command.args
         qubits = _to_qis_qubit(command.qubits, module)
         optype, params = _get_optype_and_params(op)
         if optype == OpType.Measure:
@@ -125,4 +119,4 @@ def circuit_to_qir(circ: Circuit, output_file: str) -> None:
         raise ValueError("The file extension should be '.ll'.")
     circ_qir_str = circuit_to_qir(circ, root)
     with open(output_file, "w") as out:
-        circuit_to_qir_io(circ, out)
+        out.write(circ_qir_str)
