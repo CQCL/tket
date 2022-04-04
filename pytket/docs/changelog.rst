@@ -11,6 +11,8 @@ Minor new features:
 Fixes:
 
 * Fix qubit order in ``QubitPauliOperator.to_sparse_matrix()``.
+* Fix issue with "nan" values appearing after symbolic substitution following
+  compilation of some symbolic circuits.
 
 1.0.1 (March 2022)
 ------------------
