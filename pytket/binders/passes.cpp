@@ -552,11 +552,12 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "ComposePhasePolyBoxes", &gen_composephasepolybox_pass,
-      "Pass to convert a given circuit to the CX, Rz, H gateset and composes "
+      "Pass to convert a given :py:class:`Circuit` to the CX, Rz, H gateset "
+      "and composes "
       "phasepolyboxes from the groups of the CX+Rz gates."
       "\n\n- (unsigned) min_size=0: minimal number of cnots in each phase "
       "polynominal box, groups with a smaler number of CX gates are not "
-      "effected by this transformation"
+      "effected by this transformation\n"
       "\n:param \\**kwargs: parameters for composition (described above)"
       "\n:return: a pass to perform the composition");
 
