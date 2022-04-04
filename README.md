@@ -169,12 +169,25 @@ To build and run the tket tests:
 conan create --profile=tket recipes/tket-tests
 ```
 
-If you want to build them without running them, pass `--test-folder None` to the
-`conan` command. (You can still run them manually afterwards.)
+The tests with a running time >=1 second (on a regular modern laptop) are marked as hidden,
+tagged with `"[long]"`, and are not run by default. To run the full suite of tests,
+add `-o tket-tests:full=True` to the above `conan create` command (or to the tket profile).
+The option `-o tket-tests:long=True` can also be used to run only the long tests.
 
-Some tests (those that add significantly to the runtime) are not built by
-default. To build all tests, add `-o tket-tests:full=True` to the above
-`conan create` command.
+If you want to build the tests without running them, pass `--test-folder None` to the
+`conan` command. Then, you can manually run the binary.
+If no arguments are provided only the default (short) tests are run.
+To run the long tests use the `"[long]"` tag as an argument:
+
+```shell
+<package_folder>/bin/test_tket "[long]"
+```
+
+To run the full suite manually you need to include also the short tests, like:
+
+```shell
+<package_folder>/bin/test_tket "[long],~[long]"
+```
 
 There is also a small set of property-based tests which you can build and run
 with:
