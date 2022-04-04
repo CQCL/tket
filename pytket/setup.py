@@ -239,8 +239,6 @@ setup(
     license="Apache 2",
     packages=setuptools.find_packages(),
     install_requires=[
-        "pyqir-generator == 0.3.1a1",
-        "pyqir-parser == 0.3.1a1",
         "sympy ~=1.6",
         "numpy >=1.21.4, <2.0",
         "lark-parser ~=0.7",
@@ -250,6 +248,8 @@ setup(
         "jinja2 ~= 3.0",
         "types-pkg_resources",
         "typing-extensions ~= 3.7",
+        "pyqir-generator",
+        "pyqir-parser",
     ],
     ext_modules=[
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders
