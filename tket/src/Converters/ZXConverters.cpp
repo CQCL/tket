@@ -8,15 +8,13 @@ typedef std::pair<VertPort, PortType> TypedVertPort;
 
 zx::ZXDiagram circuit_to_zx(const Circuit& circ) {
   zx::ZXDiagram zxd;
-  // Raise the scalar to the power of 2 due to doubling
-  zxd.multiply_scalar(exp(2. * i_ * PI * circ.get_phase()));
 
   sequenced_map_t<TypedVertPort, zx::ZXVert> vert_lookup;
-  // Append each vertex to ZXDiagram raise error if not supported
 
+  // Append each vertex to ZXDiagram raise error if not supported
   BGL_FORALL_VERTICES(vert, circ.dag, DAG) {
     // We currently throw an error if the vertex is either
-    // 1. box , conditional, classical, flow, projective
+    // 1. box , conditional, classical, flow
     Op_ptr op = circ.get_Op_ptr_from_Vertex(vert);
     if (is_box_type(op->get_type()) || is_flowop_type(op->get_type()) ||
         is_classical_type(op->get_type()) ||
@@ -68,7 +66,6 @@ zx::ZXDiagram circuit_to_zx(const Circuit& circ) {
             zx::ZXType::ZSpider, op->get_params()[0], zx::QuantumType::Quantum);
         vert_lookup.insert({{{vert, 0}, PortType::In}, zx_vert});
         vert_lookup.insert({{{vert, 0}, PortType::Out}, zx_vert});
-        zxd.multiply_scalar(exp(-i_ * PI * op->get_params()[0]));
         break;
       }
       case OpType::Rx: {
@@ -76,7 +73,20 @@ zx::ZXDiagram circuit_to_zx(const Circuit& circ) {
             zx::ZXType::XSpider, op->get_params()[0], zx::QuantumType::Quantum);
         vert_lookup.insert({{{vert, 0}, PortType::In}, zx_vert});
         vert_lookup.insert({{{vert, 0}, PortType::Out}, zx_vert});
-        zxd.multiply_scalar(exp(-i_ * PI * op->get_params()[0]));
+        break;
+      }
+      case OpType::X: {
+        zx::ZXVert zx_vert =
+            zxd.add_vertex(zx::ZXType::XSpider, 1, zx::QuantumType::Quantum);
+        vert_lookup.insert({{{vert, 0}, PortType::In}, zx_vert});
+        vert_lookup.insert({{{vert, 0}, PortType::Out}, zx_vert});
+        break;
+      }
+      case OpType::Z: {
+        zx::ZXVert zx_vert =
+            zxd.add_vertex(zx::ZXType::ZSpider, 1, zx::QuantumType::Quantum);
+        vert_lookup.insert({{{vert, 0}, PortType::In}, zx_vert});
+        vert_lookup.insert({{{vert, 0}, PortType::Out}, zx_vert});
         break;
       }
       case OpType::CX: {
