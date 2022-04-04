@@ -15,10 +15,9 @@
 import os
 from typing import List, Optional, Tuple
 
+from pyqir.generator import SimpleModule, BasicQisBuilder
 from pytket import Circuit, OpType, Bit, Qubit
 from pytket.circuit import Op
-
-from pyqir.generator import SimpleModule, BasicQisBuilder
 
 
 NOPARAM_COMMANDS = {
