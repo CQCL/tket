@@ -117,6 +117,6 @@ def circuit_to_qir(circ: Circuit, output_file: str) -> None:
     root, ext = os.path.splitext(os.path.basename(output_file))
     if ext != ".ll":
         raise ValueError("The file extension should be '.ll'.")
-    circ_qir_str = circuit_to_qir(circ, root)
+    circ_qir_str = circuit_to_qir_str(circ, root)
     with open(output_file, "w") as out:
         out.write(circ_qir_str)
