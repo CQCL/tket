@@ -38,6 +38,7 @@ ZXVertVec ZXDiagram::get_boundary(
   return sub_boundary;
 }
 
+void ZXDiagram::add_boundary(ZXVert& vert) { boundary.push_back(vert); }
 const Expr& ZXDiagram::get_scalar() const { return scalar; }
 
 void ZXDiagram::multiply_scalar(const Expr& sc) { scalar *= sc; }
