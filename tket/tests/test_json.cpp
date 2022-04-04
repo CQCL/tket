@@ -825,11 +825,9 @@ SCENARIO("Test MeasurementSetup serializations") {
   GIVEN("MeasurementBitMap with default constructor") {
     MeasurementSetup::MeasurementBitMap map;
     nlohmann::json j_map = map;
-    // The default constructor leaves circ_index and invert uninitialized
-    // so don't check values
-    REQUIRE(j_map.contains("circ_index"));
-    REQUIRE(j_map.contains("invert"));
-    REQUIRE(j_map["bits"].size() == 0);
+    nlohmann::json j_correct_map = {
+        {"circ_index", 0}, {"bits", nlohmann::json::array()}, {"invert", true}};
+    REQUIRE(j_map == j_correct_map);
     MeasurementSetup::MeasurementBitMap map_loaded =
         j_map.get<MeasurementSetup::MeasurementBitMap>();
     nlohmann::json j_loaded_map = map_loaded;
