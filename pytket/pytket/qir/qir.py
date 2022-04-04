@@ -61,15 +61,15 @@ def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
     return (optype, params)
 
 
-def _to_qis_qubit(qubits: List[Qubit], mod: SimpleModule):
+def _to_qis_qubit(qubits: List[Qubit], mod: SimpleModule) -> SimpleModule.qubits:
     return mod.qubits[qubits[0].index[0]]
 
 
-def _to_qis_results(bits: List[Bit], mod: SimpleModule):
+def _to_qis_results(bits: List[Bit], mod: SimpleModule) -> SimpleModule.results:
     return mod.results[bits[0].index[0]]
 
 
-def circuit_from_qir(input_file):
+def circuit_from_qir(input_file) -> None:
     pass
 
 
@@ -109,7 +109,7 @@ def circuit_to_qir_str(circ: Circuit, root: str) -> str:
             raise QIRUnsupportedError(
                 "Cannot print command of type: {}".format(op.get_name())
             )
-    return module.ir()
+    return str(module.ir())
 
 
 def circuit_to_qir(circ: Circuit, output_file: str) -> None:
