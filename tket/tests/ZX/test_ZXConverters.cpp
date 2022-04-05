@@ -36,6 +36,7 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
     REQUIRE(zx.n_vertices() == 3);
     REQUIRE(zx.n_wires() == 2);
+    REQUIRE_NOTHROW(zx.check_validity());
   }
   GIVEN("Rx") {
     Circuit circ(1);
@@ -51,6 +52,7 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
     REQUIRE(zx.n_vertices() == 3);
     REQUIRE(zx.n_wires() == 2);
+    REQUIRE_NOTHROW(zx.check_validity());
   }
   GIVEN("Z") {
     Circuit circ(1);
@@ -66,6 +68,7 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
     REQUIRE(zx.n_vertices() == 3);
     REQUIRE(zx.n_wires() == 2);
+    REQUIRE_NOTHROW(zx.check_validity());
   }
   GIVEN("Rz") {
     Circuit circ(1);
@@ -81,6 +84,7 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
     REQUIRE(zx.n_vertices() == 3);
     REQUIRE(zx.n_wires() == 2);
+    REQUIRE_NOTHROW(zx.check_validity());
   }
   GIVEN("H") {
     Circuit circ(1);
@@ -95,6 +99,7 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 0.5));
     REQUIRE(zx.n_vertices() == 3);
     REQUIRE(zx.n_wires() == 2);
+    REQUIRE_NOTHROW(zx.check_validity());
   }
   GIVEN("CX") {
     Circuit circ(2);
@@ -119,6 +124,7 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(zx.n_wires() == 5);
     REQUIRE(zx.get_qtype(w.value()) == QuantumType::Quantum);
     REQUIRE(zx.get_wire_type(w.value()) == ZXWireType::Basic);
+    REQUIRE_NOTHROW(zx.check_validity());
   }
   GIVEN("CZ") {
     Circuit circ(2);
@@ -143,6 +149,7 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(zx.n_wires() == 5);
     REQUIRE(zx.get_qtype(w.value()) == QuantumType::Quantum);
     REQUIRE(zx.get_wire_type(w.value()) == ZXWireType::H);
+    REQUIRE_NOTHROW(zx.check_validity());
   }
   GIVEN("Measure") {
     Circuit circ(1, 1);
@@ -157,6 +164,8 @@ SCENARIO("Check converting gates to spiders") {
     ZXVert vert1 = zx.neighbours(input1)[0];
     PhasedGen gen0 = zx.get_vertex_ZXGen<PhasedGen>(vert0);
     PhasedGen gen1 = zx.get_vertex_ZXGen<PhasedGen>(vert1);
+    REQUIRE(zx.degree(vert0) == 3);
+    REQUIRE(zx.degree(vert1) == 1);
     REQUIRE(gen0.get_param() == 0);
     REQUIRE(gen1.get_param() == 0);
     REQUIRE(gen0.get_type() == ZXType::ZSpider);
@@ -166,6 +175,7 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
     REQUIRE(zx.n_vertices() == 6);
     REQUIRE(zx.n_wires() == 4);
+    REQUIRE_NOTHROW(zx.check_validity());
   }
   GIVEN("Reset") {
     Circuit circ(1);
@@ -181,6 +191,8 @@ SCENARIO("Check converting gates to spiders") {
     ZXVert init = zx.neighbours(output)[0];
     PhasedGen gen0 = zx.get_vertex_ZXGen<PhasedGen>(discard);
     PhasedGen gen1 = zx.get_vertex_ZXGen<PhasedGen>(init);
+    REQUIRE(zx.degree(discard) == 1);
+    REQUIRE(zx.degree(init) == 1);
     REQUIRE(gen0.get_param() == 0);
     REQUIRE(gen1.get_param() == 0);
     REQUIRE(gen0.get_type() == ZXType::ZSpider);
@@ -190,6 +202,7 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 0.5));
     REQUIRE(zx.n_vertices() == 4);
     REQUIRE(zx.n_wires() == 2);
+    REQUIRE_NOTHROW(zx.check_validity());
   }
   GIVEN("Collapse") {
     Circuit circ(1);
@@ -205,6 +218,18 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
     REQUIRE(zx.n_vertices() == 3);
     REQUIRE(zx.n_wires() == 2);
+    REQUIRE_NOTHROW(zx.check_validity());
+  }
+  GIVEN("Barrier") {
+    Circuit circ(1);
+    circ.add_op<unsigned>(OpType::Barrier, {0});
+    ZXDiagram zx = circuit_to_zx(circ);
+    ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    ZXVert input = boundary[0];
+    ZXVert output = zx.neighbours(input)[0];
+    ZXVertVec out_boundary =
+        zx.get_boundary(ZXType::Output, QuantumType::Quantum);
+    REQUIRE(out_boundary[0] == output);
   }
 }
 
