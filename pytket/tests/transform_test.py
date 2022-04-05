@@ -28,8 +28,8 @@ from pytket.passes import (  # type: ignore
     FullPeepholeOptimise,
     DefaultMappingPass,
     FullMappingPass,
-    DefaultRoutingPass,
     RoutingPass,
+    CustomRoutingPass,
     PlacementPass,
     CXMappingPass,
     auto_rebase_pass,
@@ -802,8 +802,8 @@ def test_RoutingPass() -> None:
     cu_1 = CompilationUnit(circ)
     placer = GraphPlacement(arc)
     p_pass = PlacementPass(placer)
-    r_pass_0 = DefaultRoutingPass(arc)
-    r_pass_1 = RoutingPass(arc, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
+    r_pass_0 = RoutingPass(arc)
+    r_pass_1 = CustomRoutingPass(arc, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
     p_pass.apply(cu_0)
     r_pass_0.apply(cu_0)
     p_pass.apply(cu_1)

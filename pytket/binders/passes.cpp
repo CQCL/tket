@@ -466,14 +466,14 @@ PYBIND11_MODULE(passes, m) {
       py::arg("q"), py::arg("p"), py::arg("strict") = false);
 
   m.def(
-      "RoutingPass", &gen_routing_pass,
+      "CustomRoutingPass", &gen_routing_pass,
       "Construct a pass to route to the connectivity graph of an "
       ":py:class:`Architecture`. Edge direction is ignored."
       "\n:return: a pass that routes to the given device architecture",
       py::arg("arc"), py::arg("config"));
 
   m.def(
-      "DefaultRoutingPass", &gen_default_routing_pass,
+      "RoutingPass", &gen_default_routing_pass,
       "Construct a pass to route to the connectivity graph of an "
       ":py:class:`Architecture`. Edge direction is ignored. "
       "Uses :py:class:`LexiLabellingMethod` and "

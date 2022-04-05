@@ -421,7 +421,7 @@
           "if": {
             "properties": {
               "name": {
-                "const": "RoutingPass"
+                "const": "CustomRoutingPass"
               }
             }
           },
@@ -436,7 +436,7 @@
           "if": {
             "properties": {
               "name": {
-                "const": "DefaultRoutingPass"
+                "const": "RoutingPass"
               }
             }
           },
