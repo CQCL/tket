@@ -7,6 +7,7 @@ Changelog
 Minor new features:
 * Phasepolyboxes can be constructed from a given circuit and new pass
   ``ComposePhasePolyBoxes`` for generating PhasePolyBoxes in a given circuit
+* Add JSON serialization methods for ``Predicate``. 
 
 Fixes:
 
