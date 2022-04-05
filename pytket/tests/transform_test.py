@@ -29,6 +29,7 @@ from pytket.passes import (  # type: ignore
     DefaultMappingPass,
     FullMappingPass,
     DefaultRoutingPass,
+    RoutingPass,
     PlacementPass,
     CXMappingPass,
     auto_rebase_pass,
@@ -788,7 +789,7 @@ def test_noncontiguous_DefaultMappingPass_arc() -> None:
     pass1.apply(c)
 
 
-def test_DefaultRoutingPass() -> None:
+def test_RoutingPass() -> None:
     arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
     circ = Circuit(5)
     circ.CX(0, 1)
@@ -798,13 +799,18 @@ def test_DefaultRoutingPass() -> None:
     circ.CX(1, 3)
     circ.CX(1, 2)
     cu_0 = CompilationUnit(circ)
+    cu_1 = CompilationUnit(circ)
     placer = GraphPlacement(arc)
     p_pass = PlacementPass(placer)
     r_pass_0 = DefaultRoutingPass(arc)
+    r_pass_1 = RoutingPass(arc, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
     p_pass.apply(cu_0)
     r_pass_0.apply(cu_0)
+    p_pass.apply(cu_1)
+    r_pass_1.apply(cu_1)
     out_circ_0 = cu_0.circuit
     assert out_circ_0.valid_connectivity(arc, False, True)
+    assert out_circ_0 == cu_1.circuit
 
 
 def test_FullMappingPass() -> None:
@@ -1078,7 +1084,7 @@ if __name__ == "__main__":
     test_implicit_swaps_3()
     test_decompose_swap_to_cx()
     test_noncontiguous_DefaultMappingPass_arc()
-    test_DefaultRoutingPass()
+    test_RoutingPass()
     test_DefaultMappingPass()
     test_CXMappingPass()
     test_CXMappingPass_correctness()
