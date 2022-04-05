@@ -287,9 +287,13 @@ class BackendResult:
         :rtype: np.ndarray
         """
         original_labeling: Sequence["Qubit"] = self.get_qbitlist()
-        permutation = [0] * len(original_labeling)
+        n_labels = len(original_labeling)
+        permutation = [0] * n_labels
         for i, orig_qb in enumerate(original_labeling):
             permutation[i] = original_labeling.index(relabling_map[orig_qb])
+        if permutation == list(range(n_labels)):
+            # Optimization: nothing to do; return original array.
+            return array
         permuter = (
             permute_basis_indexing
             if len(array.shape) == 1
