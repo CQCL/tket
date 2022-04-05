@@ -11,7 +11,7 @@ zx::ZXDiagram circuit_to_zx(const Circuit& circ) {
 
   sequenced_map_t<TypedVertPort, zx::ZXVert> vert_lookup;
 
-  // Append each vertex to ZXDiagram raise error if not supported
+  // Convert each vertex to ZXDiagram, raise error if not supported
   BGL_FORALL_VERTICES(vert, circ.dag, DAG) {
     // We currently throw an error if the vertex is either
     // 1. box , conditional, classical, flow
@@ -146,11 +146,28 @@ zx::ZXDiagram circuit_to_zx(const Circuit& circ) {
         vert_lookup.insert({{{vert, 0}, PortType::Out}, zx_vert});
         break;
       }
+      case OpType::Create: {
+        zx::ZXVert zx_init_vert =
+            zxd.add_vertex(zx::ZXType::XSpider, 0, zx::QuantumType::Quantum);
+        zxd.multiply_scalar(0.5);
+        vert_lookup.insert({{{vert, 0}, PortType::Out}, zx_init_vert});
+        break;
+      }
+      case OpType::Discard: {
+        zx::ZXVert zx_discard_vert =
+            zxd.add_vertex(zx::ZXType::ZSpider, 0, zx::QuantumType::Classical);
+        vert_lookup.insert({{{vert, 0}, PortType::In}, zx_discard_vert});
+        break;
+      }
       default:
         throw Unsupported(
-            "Cannot convert OpType: " + op->get_name() + " to a ZX node. \n");
+            "Cannot convert gate type: " + op->get_name() +
+            " to a ZX node, try rebase the gates to use Rx, Rz, X, Z, H, CZ "
+            "or CX. \n");
     }
   }
+
+  // Connect the ZX nodes
   BGL_FORALL_EDGES(edge, circ.dag, DAG) {
     Vertex v_s = circ.source(edge);
     Vertex v_t = circ.target(edge);

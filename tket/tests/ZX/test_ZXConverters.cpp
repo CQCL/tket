@@ -244,6 +244,46 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(zx.n_wires() == 2);
     REQUIRE_NOTHROW(zx.check_validity());
   }
+  GIVEN("Create") {
+    Circuit circ(1);
+    circ.qubit_create(Qubit(0));
+    ZXDiagram zx = circuit_to_zx(circ);
+    ZXVertVec input_boundary =
+        zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    REQUIRE(input_boundary.size() == 0);
+    ZXVertVec output_boundary =
+        zx.get_boundary(ZXType::Output, QuantumType::Quantum);
+    ZXVert output = output_boundary[0];
+    ZXVert x = zx.neighbours(output)[0];
+    PhasedGen x_gen = zx.get_vertex_ZXGen<PhasedGen>(x);
+    REQUIRE(x_gen.get_type() == ZXType::XSpider);
+    REQUIRE(x_gen.get_qtype() == QuantumType::Quantum);
+    REQUIRE(x_gen.get_param() == 0);
+    REQUIRE(test_equiv_expr_c(zx.get_scalar(), 0.5));
+    REQUIRE(zx.n_vertices() == 2);
+    REQUIRE(zx.n_wires() == 1);
+    REQUIRE_NOTHROW(zx.check_validity());
+  }
+  GIVEN("Discard") {
+    Circuit circ(1);
+    circ.qubit_discard(Qubit(0));
+    ZXDiagram zx = circuit_to_zx(circ);
+    ZXVertVec input_boundary =
+        zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    ZXVertVec output_boundary =
+        zx.get_boundary(ZXType::Output, QuantumType::Quantum);
+    REQUIRE(output_boundary.size() == 0);
+    ZXVert input = input_boundary[0];
+    ZXVert z = zx.neighbours(input)[0];
+    PhasedGen z_gen = zx.get_vertex_ZXGen<PhasedGen>(z);
+    REQUIRE(z_gen.get_type() == ZXType::ZSpider);
+    REQUIRE(z_gen.get_qtype() == QuantumType::Classical);
+    REQUIRE(z_gen.get_param() == 0);
+    REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
+    REQUIRE(zx.n_vertices() == 2);
+    REQUIRE(zx.n_wires() == 1);
+    REQUIRE_NOTHROW(zx.check_validity());
+  }
 }
 
 SCENARIO("Check converting circuits to diagrams") {
