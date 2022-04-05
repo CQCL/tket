@@ -223,7 +223,7 @@ SCENARIO("Check converting gates to spiders") {
   GIVEN("Barrier") {
     Circuit circ(1, 1);
     circ.add_barrier({0}, {0});
-    circ.add_barrier({0});
+    circ.add_barrier({}, {0});
     circ.add_barrier({0}, {});
     ZXDiagram zx = circuit_to_zx(circ);
     ZXVertVec q_in_boundary =
