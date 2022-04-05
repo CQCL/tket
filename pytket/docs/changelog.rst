@@ -4,11 +4,16 @@ Changelog
 1.x.y (unreleased)
 ------------------
 
+Minor new features:
+* Phasepolyboxes can be constructed from a given circuit and new pass
+  ``ComposePhasePolyBoxes`` for generating PhasePolyBoxes in a given circuit
+
 Fixes:
 
 * Fix qubit order in ``QubitPauliOperator.to_sparse_matrix()``.
 * Fix issue with "nan" values appearing after symbolic substitution following
   compilation of some symbolic circuits.
+* PhasePolyBox constructor is not accepting unvalid boxes anymore
 
 1.0.1 (March 2022)
 ------------------
