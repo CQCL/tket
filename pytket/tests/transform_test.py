@@ -28,7 +28,7 @@ from pytket.passes import (  # type: ignore
     FullPeepholeOptimise,
     DefaultMappingPass,
     FullMappingPass,
-    RoutingPass,
+    DefaultRoutingPass,
     PlacementPass,
     CXMappingPass,
     auto_rebase_pass,
@@ -788,7 +788,7 @@ def test_noncontiguous_DefaultMappingPass_arc() -> None:
     pass1.apply(c)
 
 
-def test_RoutingPass() -> None:
+def test_DefaultRoutingPass() -> None:
     arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
     circ = Circuit(5)
     circ.CX(0, 1)
@@ -800,7 +800,7 @@ def test_RoutingPass() -> None:
     cu_0 = CompilationUnit(circ)
     placer = GraphPlacement(arc)
     p_pass = PlacementPass(placer)
-    r_pass_0 = RoutingPass(arc)
+    r_pass_0 = DefaultRoutingPass(arc)
     p_pass.apply(cu_0)
     r_pass_0.apply(cu_0)
     out_circ_0 = cu_0.circuit
@@ -1078,7 +1078,7 @@ if __name__ == "__main__":
     test_implicit_swaps_3()
     test_decompose_swap_to_cx()
     test_noncontiguous_DefaultMappingPass_arc()
-    test_RoutingPass()
+    test_DefaultRoutingPass()
     test_DefaultMappingPass()
     test_CXMappingPass()
     test_CXMappingPass_correctness()

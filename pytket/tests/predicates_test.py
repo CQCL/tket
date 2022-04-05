@@ -29,7 +29,7 @@ from pytket.passes import (  # type: ignore
     RepeatWithMetricPass,
     RebaseCustom,
     EulerAngleReduction,
-    RoutingPass,
+    DefaultRoutingPass,
     CXMappingPass,
     PlacementPass,
     NaivePlacementPass,
@@ -209,7 +209,7 @@ def test_routing_and_placement_pass() -> None:
     n5 = Node("f", 2)
     arc = Architecture([[n0, n1], [n1, n2], [n2, n3], [n3, n4], [n1, n5]])
     pl = Placement(arc)
-    routing = RoutingPass(arc)
+    routing = DefaultRoutingPass(arc)
     placement = PlacementPass(pl)
     nplacement = NaivePlacementPass(arc)
     cu = CompilationUnit(circ.copy())
@@ -270,7 +270,7 @@ def test_default_mapping_pass() -> None:
     pl = GraphPlacement(arc)
 
     nplacement = NaivePlacementPass(arc)
-    routing = RoutingPass(arc)
+    routing = DefaultRoutingPass(arc)
     placement = PlacementPass(pl)
     default = DefaultMappingPass(arc)
     cu_rp = CompilationUnit(circ.copy())
@@ -393,7 +393,7 @@ def test_SynthesiseTket_creation() -> None:
     arc = Architecture([(0, 2), (1, 2)])
     pl = Placement(arc)
     pl.place(circ1)
-    routing_pass = RoutingPass(arc)
+    routing_pass = DefaultRoutingPass(arc)
     cu3 = CompilationUnit(circ1)
     cu4 = CompilationUnit(circ1)
     cu5 = CompilationUnit(circ1)
@@ -656,9 +656,9 @@ def test_generated_pass_config() -> None:
     assert euler_pass.to_dict()["StandardPass"]["name"] == "EulerAngleReduction"
     assert euler_pass.to_dict()["StandardPass"]["euler_q"] == "Ry"
     assert euler_pass.to_dict()["StandardPass"]["euler_p"] == "Rx"
-    # RoutingPass
+    # DefaultRoutingPass
     arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
-    r_pass = RoutingPass(arc)
+    r_pass = DefaultRoutingPass(arc)
     assert r_pass.to_dict()["StandardPass"]["name"] == "RoutingPass"
     assert check_arc_dict(arc, r_pass.to_dict()["StandardPass"]["architecture"])
     # PlacementPass

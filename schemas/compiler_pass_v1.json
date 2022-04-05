@@ -436,6 +436,20 @@
           "if": {
             "properties": {
               "name": {
+                "const": "DefaultRoutingPass"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "architecture",
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
                 "const": "DecomposeSwapsToCXs"
               }
             }
