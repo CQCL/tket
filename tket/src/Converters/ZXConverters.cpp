@@ -156,6 +156,20 @@ zx::ZXDiagram circuit_to_zx(const Circuit& circ) {
     Vertex v_t = circ.target(edge);
     port_t p_s = circ.get_source_port(edge);
     port_t p_t = circ.get_target_port(edge);
+    // Handle Barriers
+    if (circ.get_OpType_from_Vertex(v_s) == OpType::Barrier) {
+      // We only handles in-edges
+      continue;
+    }
+    if (circ.get_OpType_from_Vertex(v_t) == OpType::Barrier) {
+      // Find the next nonbarrier vertport
+      Edge next_e = edge;
+      do {
+        std::tie(v_t, next_e) = circ.get_next_pair(v_t, next_e);
+      } while (circ.get_OpType_from_Vertex(v_t) == OpType::Barrier);
+      p_t = circ.get_target_port(next_e);
+    }
+
     auto it_s = vert_lookup.get<TagKey>().find(
         TypedVertPort(VertPort(v_s, p_s), PortType::Out));
     auto it_t = vert_lookup.get<TagKey>().find(

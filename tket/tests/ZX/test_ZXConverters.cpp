@@ -221,15 +221,28 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE_NOTHROW(zx.check_validity());
   }
   GIVEN("Barrier") {
-    Circuit circ(1);
-    circ.add_op<unsigned>(OpType::Barrier, {0});
+    Circuit circ(1, 1);
+    circ.add_barrier({0}, {0});
+    circ.add_barrier({0});
+    circ.add_barrier({0}, {});
     ZXDiagram zx = circuit_to_zx(circ);
-    ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
-    ZXVert input = boundary[0];
-    ZXVert output = zx.neighbours(input)[0];
-    ZXVertVec out_boundary =
+    ZXVertVec q_in_boundary =
+        zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    ZXVertVec c_in_boundary =
+        zx.get_boundary(ZXType::Input, QuantumType::Classical);
+    ZXVert q_input = q_in_boundary[0];
+    ZXVert q_next = zx.neighbours(q_input)[0];
+    ZXVert c_input = c_in_boundary[0];
+    ZXVert c_next = zx.neighbours(c_input)[0];
+    ZXVertVec q_out_boundary =
         zx.get_boundary(ZXType::Output, QuantumType::Quantum);
-    REQUIRE(out_boundary[0] == output);
+    ZXVertVec c_out_boundary =
+        zx.get_boundary(ZXType::Output, QuantumType::Classical);
+    REQUIRE(q_out_boundary[0] == q_next);
+    REQUIRE(c_out_boundary[0] == c_next);
+    REQUIRE(zx.n_vertices() == 4);
+    REQUIRE(zx.n_wires() == 2);
+    REQUIRE_NOTHROW(zx.check_validity());
   }
 }
 
@@ -240,6 +253,7 @@ SCENARIO("Check converting circuits to diagrams") {
     REQUIRE(zx.n_vertices() == 0);
     REQUIRE(zx.n_wires() == 0);
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
+    REQUIRE_NOTHROW(zx.check_validity());
   }
 
   GIVEN("A circuit with no gates") {
@@ -255,6 +269,28 @@ SCENARIO("Check converting circuits to diagrams") {
     REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Quantum) == 3);
     REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Classical) == 1);
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
+    REQUIRE_NOTHROW(zx.check_validity());
+  }
+
+  GIVEN("A circuit with barriers") {
+    Circuit circ(3, 2);
+    circ.add_op<unsigned>(OpType::X, {2});
+    circ.add_barrier({0, 2}, {0, 1});
+    circ.add_barrier({0, 1});
+    circ.add_barrier({}, {0});
+    circ.add_op<unsigned>(OpType::X, {1});
+    circ.add_op<unsigned>(OpType::Measure, {0, 0});
+    circ.add_barrier({1}, {0, 1});
+    ZXDiagram zx = circuit_to_zx(circ);
+    REQUIRE(zx.n_vertices() == 14);
+    REQUIRE(zx.n_wires() == 9);
+    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 3);
+    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Classical) == 2);
+    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Quantum) == 3);
+    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Classical) == 2);
+    REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Quantum) == 2);
+    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Classical) == 2);
+    REQUIRE_NOTHROW(zx.check_validity());
   }
 
   GIVEN("A simple circuit") {
@@ -276,6 +312,7 @@ SCENARIO("Check converting circuits to diagrams") {
     REQUIRE(zx.count_vertices(ZXType::Hbox, QuantumType::Quantum) == 1);
     REQUIRE(zx.count_wires(ZXWireType::H) == 2);
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
+    REQUIRE_NOTHROW(zx.check_validity());
   }
 
   GIVEN("A simple symbolic circuit") {
@@ -290,6 +327,7 @@ SCENARIO("Check converting circuits to diagrams") {
     REQUIRE(zx.n_vertices() == 3);
     REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Quantum) == 1);
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
+    REQUIRE_NOTHROW(zx.check_validity());
   }
 
   GIVEN("A simple circuit with projective operations") {
@@ -309,6 +347,7 @@ SCENARIO("Check converting circuits to diagrams") {
     REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Quantum) == 1);
     REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Classical) == 4);
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
+    REQUIRE_NOTHROW(zx.check_validity());
   }
 }
 }  // namespace test_ZXConverters
