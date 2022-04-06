@@ -21,31 +21,80 @@ from pytket import Circuit, OpType, Bit, Qubit
 from pytket.circuit import Op  # type: ignore
 
 
-NOPARAM_COMMANDS = {
-    "cx": OpType.CX,
-    "cz": OpType.CZ,
+PyQIRGate = NamedTuple(
+    "PyQIRGate",
+    [
+        ("function", List[type(types)]), 
+    ]
+)
+
+GateSet = NamedTuple(
+    "GateSet",
+    [
+        ("template", Template),
+        ("gateset", Dict[str, PyQIRGate])
+    ]
+)
+
+QUANTINUUM_GATES = GateSet(
+    template=Template('__quantinuum__qis__${name}__body'),
+    gateset={
+        "h": PyQIRGate(function=[types.QUBIT]),
+        "x": PyQIRGate(function=[types.QUBIT]),
+        "y": PyQIRGate(function=[types.QUBIT]),
+        "z": PyQIRGate(function=[types.QUBIT]),
+        "rx": PyQIRGate(function=[types.DOUBLE, types.QUBIT]),
+        "ry": PyQIRGate(function=[types.DOUBLE, types.QUBIT]),
+        "rz": PyQIRGate(function=[types.DOUBLE, types.QUBIT]),
+        "phx": PyQIRGate(function=[types.DOUBLE, types.DOUBLE, types.QUBIT]),
+        "cnot": PyQIRGate(function=[types.QUBIT, types.QUBIT]),
+        "zzmax": PyQIRGate(function=[types.QUBIT, types.QUBIT]),
+        "zzph": PyQIRGate(function=[types.DOUBLE, types.QUBIT, types.QUBIT]),
+        "mz": PyQIRGate(function=[types.QUBIT, types.RESULT]),
+    }
+)
+
+
+# Natively in pyqir
+QUANTINUUM_NOPARAM_1Q_COMMANDS = {
     "h": OpType.H,
     "m": OpType.Measure,
     "reset": OpType.Reset,
     "s": OpType.S,
-    "s_adj": OpType.Sdg,
     "t": OpType.T,
-    "t_adj": OpType.Tdg,
     "x": OpType.X,
     "y": OpType.Y,
     "z": OpType.Z,
 }
 
 
-PARAM_COMMANDS = {
-    "rx": OpType.Rx,
-    "ry": OpType.Ry,
-    "rz": OpType.Rz,
+NOPARAM_2Q_COMMANDS = {
+    "cx": OpType.CX,
+    "cz": OpType.CZ,
 }
 
 
-_tk_to_qir_noparams = dict(((item[1], item[0]) for item in NOPARAM_COMMANDS.items()))
-_tk_to_qir_params = dict(((item[1], item[0]) for item in PARAM_COMMANDS.items()))
+PARAM_1Q_COMMANDS = {
+    "rx": OpType.Rx,
+    "ry": OpType.Ry,
+    "rz": OpType.Rz,  # Also belongs to H machine gate set 
+}
+
+
+# To be included for the H machines gate set
+NOPARAM_INCLUDED = {
+    "zzmax": OpType.ZZMax
+}
+
+PARAM_INCLUDED = {
+    "U1q": OpType.PhasedX,
+    "rzz": OpType.ZZPhase,
+}
+
+
+_tk_to_qir_noparams_1q = dict(((item[1], item[0]) for item in QUANTINUUM_NOPARAM_1Q_COMMANDS.items()))
+_tk_to_qir_noparams_2q = dict(((item[1], item[0]) for item in NOPARAM_2Q_COMMANDS.items()))
+_tk_to_qir_params_1q = dict(((item[1], item[0]) for item in PARAM_1Q_COMMANDS.items()))
 
 
 class QIRUnsupportedError(Exception):
