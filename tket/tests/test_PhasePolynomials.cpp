@@ -210,7 +210,6 @@ SCENARIO("Test affine Phase Polynomial circuit generation") {
 }
 
 SCENARIO("Test assertion in PhasePolyBox creation") {
-  // TODO MELF
   GIVEN("check invalid qubit_indices i") {
     unsigned n_qubits = 2;
 
