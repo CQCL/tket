@@ -127,8 +127,8 @@ def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
     return (optype, params)
 
 
-def _to_qis_qubit(qubits: List[Qubit], mod: SimpleModule) -> SimpleModule.qubits:
-    return mod.qubits[qubits[0].index[0]]
+def _to_qis_qubits(qubits: List[Qubit], mod: SimpleModule) -> List:
+    return (mod.qubits[qubit.index[0]] for qubit in qubits)
 
 
 def _to_qis_results(bits: List[Bit], mod: SimpleModule) -> SimpleModule.results:
