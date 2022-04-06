@@ -746,45 +746,6 @@ def test_phase_polybox_II() -> None:
     assert DecomposeBoxes().apply(c)
 
 
-def test_phase_polybox_error() -> None:
-    # uses invalid qubit_indices not starting at 0
-    c = Circuit(1, 1)
-    n_qb = 1
-    qubit_indices = {Qubit(0): 1}
-    phase_polynomial = {(True,): 0.1, (True,): 0.3}
-    linear_transformation = np.array([[1]])
-    with pytest.raises(Exception):
-        p_box = PhasePolyBox(
-            n_qb, qubit_indices, phase_polynomial, linear_transformation
-        )
-
-
-def test_phase_polybox_error_ii() -> None:
-    # uses an invalid phase_polynomial
-    c = Circuit(1, 1)
-    n_qb = 1
-    qubit_indices = {Qubit(0): 0}
-    phase_polynomial = {(False,): 0.1, (True,): 0.3}
-    linear_transformation = np.array([[1]])
-    with pytest.raises(Exception):
-        p_box = PhasePolyBox(
-            n_qb, qubit_indices, phase_polynomial, linear_transformation
-        )
-
-
-def test_phase_polybox_error_iii() -> None:
-    # uses a linear_transformation with a dimension not matching the qubit list
-    c = Circuit(1, 1)
-    n_qb = 1
-    qubit_indices = {Qubit(0): 0}
-    phase_polynomial = {(True,): 0.3}
-    linear_transformation = np.array([[1, 0], [0, 1]])
-    with pytest.raises(Exception):
-        p_box = PhasePolyBox(
-            n_qb, qubit_indices, phase_polynomial, linear_transformation
-        )
-
-
 def test_phase_polybox_big() -> None:
     c = Circuit(3, 3)
     n_qb = 3
