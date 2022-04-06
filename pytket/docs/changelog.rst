@@ -7,6 +7,7 @@ Changelog
 Minor new features:
 
 * Add JSON serialization methods for ``Predicate``, ``MeasurementSetup`` and ``MeasurementBitMap``.
+* Add ``NoBarriersPredicate``.
 
 Fixes:
 
