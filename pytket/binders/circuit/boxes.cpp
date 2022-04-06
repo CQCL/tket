@@ -209,7 +209,7 @@ void init_boxes(py::module &m) {
               if (!found_element) {
                 throw std::invalid_argument(
                     "The creation of a phasepolybox failed: PhasePolynomial "
-                    "contains unvalid element");
+                    "contains invalid element");
               }
             }
 
