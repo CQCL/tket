@@ -198,7 +198,7 @@ void init_boxes(py::module &m) {
       .def(
           py::init([](const Circuit &circ) { return PhasePolyBox(circ); }),
           "Construct a PhasePolyBox from a given circuit containing only Rz "
-          "and CNot gates.",
+          "and CX gates.",
           py::arg("circuit"))
       .def_property_readonly(
           "n_qubits", &PhasePolyBox::get_n_qubits,
