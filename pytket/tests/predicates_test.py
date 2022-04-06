@@ -73,6 +73,7 @@ from pytket.predicates import (  # type: ignore
     CliffordCircuitPredicate,
     DefaultRegisterPredicate,
     MaxNQubitsPredicate,
+    NoBarriersPredicate,
     NoMidMeasurePredicate,
     NoSymbolsPredicate,
     CompilationUnit,
@@ -427,6 +428,14 @@ def test_directed_cx_pass() -> None:
     circ2 = cu1.circuit
     dir_pred = DirectednessPredicate(arc)
     assert dir_pred.verify(circ2)
+
+
+def test_no_barriers_pred() -> None:
+    pred = NoBarriersPredicate()
+    c = Circuit(1).H(0)
+    assert pred.verify(c)
+    c.add_barrier([0]).H(0)
+    assert not pred.verify(c)
 
 
 def test_decompose_routing_gates_to_cxs() -> None:
@@ -1072,6 +1081,10 @@ def test_predicate_serialization() -> None:
 
     pred = MaxNQubitsPredicate(10)
     assert pred.to_dict() == {"type": "MaxNQubitsPredicate", "n_qubits": 10}
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+    pred = NoBarriersPredicate()
+    assert pred.to_dict() == {"type": "NoBarriersPredicate"}
     pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
 
     pred = NoMidMeasurePredicate()
