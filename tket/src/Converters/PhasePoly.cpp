@@ -382,7 +382,7 @@ void CircToPhasePolyConversion::add_phase_poly_box() {
         }
         default: {
           // no other types should be in this circuit
-          TKET_ASSERT(!"unvalid op type in phase poly box construction");
+          TKET_ASSERT(!"invalid op type in phase poly box construction");
         }
       }
     }

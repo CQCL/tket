@@ -107,4 +107,50 @@ std::string MeasurementSetup::to_str() const {
   return ss.str();
 }
 
+void to_json(
+    nlohmann::json &j, const MeasurementSetup::MeasurementBitMap &result) {
+  j["circ_index"] = result.get_circ_index();
+  j["bits"] = result.get_bits();
+  j["invert"] = result.get_invert();
+}
+
+void from_json(
+    const nlohmann::json &j, MeasurementSetup::MeasurementBitMap &result) {
+  result = MeasurementSetup::MeasurementBitMap(
+      j.at("circ_index").get<unsigned>(),
+      j.at("bits").get<std::vector<unsigned>>(), j.at("invert").get<bool>());
+}
+
+void to_json(nlohmann::json &j, const MeasurementSetup &setup) {
+  std::vector<std::pair<
+      QubitPauliString, std::vector<MeasurementSetup::MeasurementBitMap>>>
+      map_list;
+  for (const std::pair<
+           const QubitPauliString,
+           std::vector<MeasurementSetup::MeasurementBitMap>> &tensor_map :
+       setup.get_result_map()) {
+    map_list.push_back(tensor_map);
+  }
+  // sort the list for consistent serialisation
+  std::sort(map_list.begin(), map_list.end(), [](auto pair1, auto pair2) {
+    return pair1.first < pair2.first;
+  });
+  j["result_map"] = map_list;
+  j["circs"] = setup.get_circs();
+}
+
+void from_json(const nlohmann::json &j, MeasurementSetup &setup) {
+  for (auto it = j["circs"].begin(); it != j["circs"].end(); ++it) {
+    setup.add_measurement_circuit(it->get<Circuit>());
+  }
+  for (auto it = j["result_map"].begin(); it != j["result_map"].end(); ++it) {
+    for (auto second_it = it->at(1).begin(); second_it != it->at(1).end();
+         ++second_it) {
+      setup.add_result_for_term(
+          it->at(0).get<QubitPauliString>(),
+          second_it->get<MeasurementSetup::MeasurementBitMap>());
+    }
+  }
+}
+
 }  // namespace tket
