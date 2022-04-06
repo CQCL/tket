@@ -760,7 +760,7 @@ def test_phase_polybox_error() -> None:
 
 
 def test_phase_polybox_error_ii() -> None:
-    # uses a unvalid phase_polynomial
+    # uses an invalid phase_polynomial
     c = Circuit(1, 1)
     n_qb = 1
     qubit_indices = {Qubit(0): 0}
