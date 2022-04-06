@@ -152,7 +152,12 @@ def circuit_to_qir_str(circ: Circuit, root: str, gateset: GateSet) -> str:
         )
     ):
         raise QIRUnsupportedError("Complex classical gates not supported.")
-    module = SimpleModule(root, num_qubits=circ.n_qubits, num_results=len(circ.bits))
+    module = ExtendedModule(
+        name=root,
+        num_qubits=circ.n_qubits,
+        num_results=len(circ.bits),
+        gateset=gateset
+    ).module
     qis = BasicQisBuilder(module.builder)
 
     for command in circ:
