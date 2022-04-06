@@ -33,11 +33,16 @@ const PassPtr &DecomposeArbitrarilyControlledGates();
 const PassPtr &DecomposeMultiQubitsCX();
 const PassPtr &DecomposeSingleQubitsTK1();
 const PassPtr &DecomposeBoxes();
+
 /**
  * converts a circuit containing all possible gates to a circuit containing only
  * phase poly boxes + H gates (and measure + reset + collapse + barrier)
+ * @param min_size value for the minimal number of CX in each box, groups with
+ * less than min_size CX gates are not converted to a PhasePolyBox, dafault
+ * value is 0
+ * @return PassPtr to perform the conversion
  */
-PassPtr ComposePhasePolyBoxes(const unsigned min_size = 0);
+PassPtr ComposePhasePolyBoxes(unsigned min_size = 0);
 
 /** Squash sequences of single-qubit gates to TK1 gates. */
 const PassPtr &SquashTK1();

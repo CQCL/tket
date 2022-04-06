@@ -445,8 +445,7 @@ void CircToPhasePolyConversion::convert() {
       }
       default: {
         throw NotImplemented(
-            "Please rebase with the compiler pass RebaseUFR to only CX, Rz, "
-            "H, "
+            "Please rebase with the compiler pass RebaseUFR to only CX, Rz, H, "
             "measure, reset, collapse, barrier gates. Found gate of type: " +
             com.get_op_ptr()->get_name());
       }
@@ -499,26 +498,22 @@ qubits states are reset to pre.
         if ((qubit_types_[ctrl] == QubitType::in) &&
             (qubit_types_[target] == QubitType::in)) {
           box_circ_.add_op<unsigned>(OpType::CX, {ctrl, target});
-          ++box_size_;
         } else if (
             (qubit_types_[ctrl] == QubitType::pre) &&
             (qubit_types_[target] == QubitType::in)) {
           qubit_types_[ctrl] = QubitType::in;
           box_circ_.add_op<unsigned>(OpType::CX, {ctrl, target});
-          ++box_size_;
         } else if (
             (qubit_types_[ctrl] == QubitType::in) &&
             (qubit_types_[target] == QubitType::pre)) {
           qubit_types_[target] = QubitType::in;
           box_circ_.add_op<unsigned>(OpType::CX, {ctrl, target});
-          ++box_size_;
         } else if (
             (qubit_types_[ctrl] == QubitType::pre) &&
             (qubit_types_[target] == QubitType::pre)) {
           qubit_types_[ctrl] = QubitType::in;
           qubit_types_[target] = QubitType::in;
           box_circ_.add_op<unsigned>(OpType::CX, {ctrl, target});
-          ++box_size_;
         } else if (
             (qubit_types_[ctrl] == QubitType::post) ||
             (qubit_types_[target] == QubitType::post)) {
@@ -527,11 +522,11 @@ qubits states are reset to pre.
           qubit_types_[ctrl] = QubitType::in;
           qubit_types_[target] = QubitType::in;
           box_circ_.add_op<unsigned>(OpType::CX, {ctrl, target});
-          ++box_size_;
         } else {
           // no other types should be in this list
           TKET_ASSERT(!"Invalid Qubit Type in Phase Poly Box creation");
         }
+        ++box_size_;
         break;
       }
       case OpType::Rz: {
@@ -613,8 +608,7 @@ qubits states are reset to pre.
       }
       default: {
         throw NotImplemented(
-            "Please rebase with the compiler pass RebaseUFR to only CX, Rz, "
-            "H, "
+            "Please rebase with the compiler pass RebaseUFR to only CX, Rz, H, "
             "measure, reset, collapse, barrier gates. Found gate of type: " +
             com.get_op_ptr()->get_name());
       }

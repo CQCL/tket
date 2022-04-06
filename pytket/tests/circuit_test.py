@@ -753,7 +753,7 @@ def test_phase_polybox_error() -> None:
     qubit_indices = {Qubit(0): 1}
     phase_polynomial = {(True,): 0.1, (True,): 0.3}
     linear_transformation = np.array([[1]])
-    with pytest.raises(Exception) as e:
+    with pytest.raises(Exception):
         p_box = PhasePolyBox(
             n_qb, qubit_indices, phase_polynomial, linear_transformation
         )
@@ -766,7 +766,7 @@ def test_phase_polybox_error_ii() -> None:
     qubit_indices = {Qubit(0): 0}
     phase_polynomial = {(False,): 0.1, (True,): 0.3}
     linear_transformation = np.array([[1]])
-    with pytest.raises(Exception) as e:
+    with pytest.raises(Exception):
         p_box = PhasePolyBox(
             n_qb, qubit_indices, phase_polynomial, linear_transformation
         )
@@ -779,7 +779,7 @@ def test_phase_polybox_error_iii() -> None:
     qubit_indices = {Qubit(0): 0}
     phase_polynomial = {(True,): 0.3}
     linear_transformation = np.array([[1, 0], [0, 1]])
-    with pytest.raises(Exception) as e:
+    with pytest.raises(Exception):
         p_box = PhasePolyBox(
             n_qb, qubit_indices, phase_polynomial, linear_transformation
         )

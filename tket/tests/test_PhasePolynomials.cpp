@@ -29,6 +29,47 @@
 namespace tket {
 namespace test_PhasePolynomials {
 
+/**
+ * generate circuit for tests with large structures of Rz+CX gates
+ * @param n size of the circuit
+ * @return circuit
+ */
+Circuit generate_test_circuit(unsigned n) {
+  Circuit circ(n);
+  if (n >= 2) {
+    for (unsigned i = 0; i < n; ++i) {
+      circ.add_op<unsigned>(OpType::H, {i});
+    }
+
+    circ.add_op<unsigned>(OpType::Rz, 0.01, {0});
+    for (unsigned i = 1; i < n; ++i) {
+      circ.add_op<unsigned>(OpType::CX, {i, 0});
+      circ.add_op<unsigned>(OpType::Rz, 0.1 * i, {0});
+    }
+
+    for (unsigned i = 0; i < 2; ++i) {
+      circ.add_op<unsigned>(OpType::H, {i});
+    }
+    circ.add_barrier({0, 1});
+
+    circ.add_op<unsigned>(OpType::Rz, 0.01, {0});
+    for (unsigned i = 1; i < n; ++i) {
+      circ.add_op<unsigned>(OpType::CX, {i, 0});
+      circ.add_op<unsigned>(OpType::Rz, 0.1 * i, {0});
+    }
+
+    for (unsigned i = 0; i < n; ++i) {
+      circ.add_op<unsigned>(OpType::H, {i});
+    }
+    if (n > 3) {
+      circ.add_op<unsigned>(OpType::CX, {0, 1});
+      circ.add_op<unsigned>(OpType::Rz, 0.1 * 2, {0});
+      circ.add_op<unsigned>(OpType::Rz, 0.1 * 3, {1});
+    }
+  }
+  return circ;
+}
+
 SCENARIO("Test basic phase polynomial creation") {
   GIVEN("A 2qb CX+Rz phase gadget") {
     Circuit circ(2);
@@ -575,30 +616,7 @@ SCENARIO("Test conversion of circuit to circuit with phase poly boxes") {
     }
   }
   GIVEN("convert_to_phase_poly minimal box size") {
-    unsigned n = 2;
-    Circuit circ(n);
-
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_op<unsigned>(OpType::H, {1});
-
-    circ.add_op<unsigned>(OpType::Rz, 0.01, {0});
-    for (unsigned i = 1; i < n; ++i) {
-      circ.add_op<unsigned>(OpType::CX, {i, 0});
-      circ.add_op<unsigned>(OpType::Rz, 0.1 * i, {0});
-    }
-
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_op<unsigned>(OpType::H, {1});
-    circ.add_barrier({0, 1});
-
-    circ.add_op<unsigned>(OpType::Rz, 0.01, {0});
-    for (unsigned i = 1; i < n; ++i) {
-      circ.add_op<unsigned>(OpType::CX, {i, 0});
-      circ.add_op<unsigned>(OpType::Rz, 0.1 * i, {0});
-    }
-
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_op<unsigned>(OpType::H, {1});
+    Circuit circ = generate_test_circuit(2);
 
     CircToPhasePolyConversion conv = CircToPhasePolyConversion(circ, 2);
     conv.convert();
@@ -623,38 +641,7 @@ SCENARIO("Test conversion of circuit to circuit with phase poly boxes") {
     }
   }
   GIVEN("convert_to_phase_poly minimal box size II") {
-    unsigned n = 4;
-    Circuit circ(n);
-
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_op<unsigned>(OpType::H, {1});
-    circ.add_op<unsigned>(OpType::H, {2});
-    circ.add_op<unsigned>(OpType::H, {3});
-
-    circ.add_op<unsigned>(OpType::Rz, 0.01, {0});
-    for (unsigned i = 1; i < n; ++i) {
-      circ.add_op<unsigned>(OpType::CX, {i, 0});
-      circ.add_op<unsigned>(OpType::Rz, 0.1 * i, {0});
-    }
-
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_op<unsigned>(OpType::H, {1});
-    circ.add_barrier({0, 1});
-
-    circ.add_op<unsigned>(OpType::Rz, 0.01, {0});
-    for (unsigned i = 1; i < n; ++i) {
-      circ.add_op<unsigned>(OpType::CX, {i, 0});
-      circ.add_op<unsigned>(OpType::Rz, 0.1 * i, {0});
-    }
-
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_op<unsigned>(OpType::H, {1});
-    circ.add_op<unsigned>(OpType::H, {2});
-    circ.add_op<unsigned>(OpType::H, {3});
-
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    circ.add_op<unsigned>(OpType::Rz, 0.1 * 2, {0});
-    circ.add_op<unsigned>(OpType::Rz, 0.1 * 3, {1});
+    Circuit circ = generate_test_circuit(4);
 
     CircToPhasePolyConversion conv = CircToPhasePolyConversion(circ, 2);
     conv.convert();

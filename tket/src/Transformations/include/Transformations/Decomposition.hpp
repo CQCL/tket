@@ -111,9 +111,12 @@ Transform decomp_boxes();
 /**
  * Replaces all CX+Rz sub circuits by PhasePolyBox
  * Expects: only CX + Rz + H (and measure + reset + collapse + barrier)
- * returns: H + PhasePolyBox
+ * @param min_size value for the minimal number of CX in each box, groups with
+ * less than min_size CX gates are not converted to a PhasePolyBox, dafault
+ * value is 0
+ * @return Transformation to perform the conversion
  */
-Transform compose_phase_poly_boxes(const unsigned min_size = 0);
+Transform compose_phase_poly_boxes(unsigned min_size = 0);
 
 // converts all SWAP gates to given replacement circuit (not checked to
 // preserve unitary) Expects: SWAP gates, replacement circuit Produces:
