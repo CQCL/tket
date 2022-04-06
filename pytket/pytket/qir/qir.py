@@ -13,9 +13,10 @@
 # limitations under the License.
 
 import os
-from typing import List, Optional, Tuple
+from string import Template
+from typing import Dict, List, NamedTuple, Optional, Tuple
 
-from pyqir.generator import SimpleModule, BasicQisBuilder  # type: ignore
+from pyqir.generator import SimpleModule, BasicQisBuilder, types  # type: ignore
 from pytket import Circuit, OpType, Bit, Qubit
 from pytket.circuit import Op  # type: ignore
 
