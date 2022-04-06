@@ -37,6 +37,7 @@ from pytket.passes import (  # type: ignore
     FullMappingPass,
     DefaultMappingPass,
     AASRouting,
+    ComposePhasePolyBoxes,
     DecomposeSwapsToCXs,
     DecomposeSwapsToCircuit,
     PauliSimp,
@@ -755,6 +756,14 @@ def test_generated_pass_config() -> None:
     assert rebase_pass.to_dict()["StandardPass"]["name"] == "RebaseUFR"
     comppb_pass = aas_pass_00.get_sequence()[1]
     assert comppb_pass.to_dict()["StandardPass"]["name"] == "ComposePhasePolyBoxes"
+    # ComposePhasePolyBoxes
+    ppb_pass = ComposePhasePolyBoxes(min_size=3)
+    assert ppb_pass.to_dict()["pass_class"] == "SequencePass"
+    ppb_pass_0 = ppb_pass.get_sequence()[0]
+    ppb_pass_1 = ppb_pass.get_sequence()[1]
+    assert ppb_pass_0.to_dict()["StandardPass"]["name"] == "RebaseUFR"
+    assert ppb_pass_1.to_dict()["StandardPass"]["name"] == "ComposePhasePolyBoxes"
+    assert ppb_pass_1.to_dict()["StandardPass"]["min_size"] == 3
     # CXMappingPass
     cxm_pass = CXMappingPass(arc, placer, directed_cx=True, delay_measures=True)
     assert cxm_pass.to_dict()["pass_class"] == "SequencePass"

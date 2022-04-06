@@ -853,6 +853,80 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     REQUIRE(test_unitary_comparison(result, circ));
     REQUIRE(NoWireSwapsPredicate().verify(result));
   }
+  GIVEN("NoWireSwapsPredicate for ComposePhasePolyBoxes min size") {
+    Circuit circ(5);
+    add_2qb_gates(circ, OpType::CX, {{0, 3}, {1, 4}});
+    circ.add_op<unsigned>(OpType::SWAP, {3, 4});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::Z, {3});
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 4});
+    circ.add_op<unsigned>(OpType::Z, {4});
+    circ.add_op<unsigned>(OpType::CX, {1, 4});
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::SWAP, {1, 2});
+    circ.add_op<unsigned>(OpType::SWAP, {2, 3});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+
+    REQUIRE(NoWireSwapsPredicate().verify(circ));
+    circ.replace_SWAPs();
+    REQUIRE(!NoWireSwapsPredicate().verify(circ));
+
+    CompilationUnit cu(circ);
+    REQUIRE(ComposePhasePolyBoxes(5)->apply(cu));
+    Circuit result = cu.get_circ_ref();
+
+    REQUIRE(result.count_gates(OpType::H) == 3);
+    REQUIRE(result.count_gates(OpType::CX) == 2);
+    REQUIRE(result.count_gates(OpType::SWAP) == 0);
+    REQUIRE(result.count_gates(OpType::Z) == 0);
+    REQUIRE(result.count_gates(OpType::PhasePolyBox) == 2);
+
+    REQUIRE(test_unitary_comparison(result, circ));
+    REQUIRE(NoWireSwapsPredicate().verify(result));
+  }
+  GIVEN("NoWireSwapsPredicate for ComposePhasePolyBoxes min size ii") {
+    Circuit circ(5);
+    add_2qb_gates(circ, OpType::CX, {{0, 3}, {1, 4}});
+    circ.add_op<unsigned>(OpType::SWAP, {3, 4});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::Z, {3});
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 4});
+    circ.add_op<unsigned>(OpType::Z, {4});
+    circ.add_op<unsigned>(OpType::CX, {1, 4});
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::SWAP, {1, 2});
+    circ.add_op<unsigned>(OpType::SWAP, {2, 3});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+
+    REQUIRE(NoWireSwapsPredicate().verify(circ));
+    circ.replace_SWAPs();
+    REQUIRE(!NoWireSwapsPredicate().verify(circ));
+
+    CompilationUnit cu(circ);
+    REQUIRE(ComposePhasePolyBoxes(6)->apply(cu));
+    Circuit result = cu.get_circ_ref();
+
+    REQUIRE(result.count_gates(OpType::H) == 3);
+    REQUIRE(result.count_gates(OpType::CX) == 7);
+    REQUIRE(result.count_gates(OpType::SWAP) == 0);
+    REQUIRE(result.count_gates(OpType::Z) == 0);
+    REQUIRE(result.count_gates(OpType::PhasePolyBox) == 1);
+
+    REQUIRE(test_unitary_comparison(result, circ));
+    REQUIRE(NoWireSwapsPredicate().verify(result));
+  }
   GIVEN("NoWireSwapsPredicate for aas I") {
     std::vector<Node> nodes = {Node(0), Node(1), Node(2), Node(3), Node(4)};
     Architecture architecture(

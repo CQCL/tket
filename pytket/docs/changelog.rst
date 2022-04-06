@@ -6,6 +6,9 @@ Changelog
 
 Minor new features:
 
+* new additional constructor for ``PhasePolyBox`` from a given ``Circuit``
+* New compilation pass ``ComposePhasePolyBoxes`` for generating
+  PhasePolyBoxes in a given circuit
 * Add JSON serialization methods for ``Predicate``, ``MeasurementSetup`` and ``MeasurementBitMap``.
 
 Fixes:
@@ -13,6 +16,7 @@ Fixes:
 * Fix qubit order in ``QubitPauliOperator.to_sparse_matrix()``.
 * Fix issue with "nan" values appearing after symbolic substitution following
   compilation of some symbolic circuits.
+* ``PhasePolyBox`` constructor is not accepting invalid boxes anymore
 
 1.0.1 (March 2022)
 ------------------

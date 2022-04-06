@@ -29,6 +29,47 @@
 namespace tket {
 namespace test_PhasePolynomials {
 
+/**
+ * generate circuit for tests with large structures of Rz+CX gates
+ * @param n size of the circuit
+ * @return circuit
+ */
+Circuit generate_test_circuit(unsigned n) {
+  Circuit circ(n);
+  if (n >= 2) {
+    for (unsigned i = 0; i < n; ++i) {
+      circ.add_op<unsigned>(OpType::H, {i});
+    }
+
+    circ.add_op<unsigned>(OpType::Rz, 0.01, {0});
+    for (unsigned i = 1; i < n; ++i) {
+      circ.add_op<unsigned>(OpType::CX, {i, 0});
+      circ.add_op<unsigned>(OpType::Rz, 0.1 * i, {0});
+    }
+
+    for (unsigned i = 0; i < 2; ++i) {
+      circ.add_op<unsigned>(OpType::H, {i});
+    }
+    circ.add_barrier({0, 1});
+
+    circ.add_op<unsigned>(OpType::Rz, 0.01, {0});
+    for (unsigned i = 1; i < n; ++i) {
+      circ.add_op<unsigned>(OpType::CX, {i, 0});
+      circ.add_op<unsigned>(OpType::Rz, 0.1 * i, {0});
+    }
+
+    for (unsigned i = 0; i < n; ++i) {
+      circ.add_op<unsigned>(OpType::H, {i});
+    }
+    if (n > 3) {
+      circ.add_op<unsigned>(OpType::CX, {0, 1});
+      circ.add_op<unsigned>(OpType::Rz, 0.1 * 2, {0});
+      circ.add_op<unsigned>(OpType::Rz, 0.1 * 3, {1});
+    }
+  }
+  return circ;
+}
+
 SCENARIO("Test basic phase polynomial creation") {
   GIVEN("A 2qb CX+Rz phase gadget") {
     Circuit circ(2);
@@ -165,6 +206,103 @@ SCENARIO("Test affine Phase Polynomial circuit generation") {
     Circuit circ2 = *circptr;
     Circuit after2 = prepend >> circ2;
     REQUIRE(test_statevector_comparison(after1, after2));
+  }
+}
+
+SCENARIO("Test assertion in PhasePolyBox creation") {
+  GIVEN("check invalid qubit_indices i") {
+    unsigned n_qubits = 2;
+
+    boost::bimap<Qubit, unsigned> qubit_indices;
+    for (unsigned i = 0; i < 3; ++i) {
+      qubit_indices.insert({Qubit(i), i});
+    }
+
+    PhasePolynomial phase_polynomial = {{{true, false}, 1.0}};
+
+    MatrixXb linear_transformation(2, 2);
+    linear_transformation << 0, 1,  //
+        1, 0;
+
+    REQUIRE_THROWS_AS(
+        PhasePolyBox(
+            n_qubits, qubit_indices, phase_polynomial, linear_transformation),
+        std::invalid_argument);
+  }
+  GIVEN("check invalid qubit_indices ii") {
+    unsigned n_qubits = 2;
+
+    boost::bimap<Qubit, unsigned> qubit_indices;
+    for (unsigned i = 0; i < 2; ++i) {
+      qubit_indices.insert({Qubit(i), (i + 1)});
+    }
+
+    PhasePolynomial phase_polynomial = {{{true, false}, 1.0}};
+
+    MatrixXb linear_transformation(2, 2);
+    linear_transformation << 0, 1,  //
+        1, 0;
+
+    REQUIRE_THROWS_AS(
+        PhasePolyBox(
+            n_qubits, qubit_indices, phase_polynomial, linear_transformation),
+        std::invalid_argument);
+  }
+  GIVEN("check invalid phase_polynomial i") {
+    unsigned n_qubits = 2;
+
+    boost::bimap<Qubit, unsigned> qubit_indices;
+    for (unsigned i = 0; i < 2; ++i) {
+      qubit_indices.insert({Qubit(i), i});
+    }
+
+    PhasePolynomial phase_polynomial = {{{true}, 1.0}};
+
+    MatrixXb linear_transformation(2, 2);
+    linear_transformation << 0, 1,  //
+        1, 0;
+
+    REQUIRE_THROWS_AS(
+        PhasePolyBox(
+            n_qubits, qubit_indices, phase_polynomial, linear_transformation),
+        std::invalid_argument);
+  }
+  GIVEN("check invalid phase_polynomial ii") {
+    unsigned n_qubits = 2;
+
+    boost::bimap<Qubit, unsigned> qubit_indices;
+    for (unsigned i = 0; i < 2; ++i) {
+      qubit_indices.insert({Qubit(i), i});
+    }
+
+    PhasePolynomial phase_polynomial = {{{false, false}, 1.0}};
+
+    MatrixXb linear_transformation(2, 2);
+    linear_transformation << 0, 1,  //
+        1, 0;
+
+    REQUIRE_THROWS_AS(
+        PhasePolyBox(
+            n_qubits, qubit_indices, phase_polynomial, linear_transformation),
+        std::invalid_argument);
+  }
+  GIVEN("check invalid linear_transformation i") {
+    unsigned n_qubits = 2;
+
+    boost::bimap<Qubit, unsigned> qubit_indices;
+    for (unsigned i = 0; i < 2; ++i) {
+      qubit_indices.insert({Qubit(i), i});
+    }
+
+    PhasePolynomial phase_polynomial = {{{false, false}, 1.0}};
+
+    MatrixXb linear_transformation(1, 1);
+    linear_transformation << 1;
+
+    REQUIRE_THROWS_AS(
+        PhasePolyBox(
+            n_qubits, qubit_indices, phase_polynomial, linear_transformation),
+        std::invalid_argument);
   }
 }
 
@@ -355,7 +493,7 @@ SCENARIO("Test conversion of circuit to circuit with phase poly boxes") {
     circ.add_op<unsigned>(OpType::H, {0});
     circ.add_op<unsigned>(OpType::H, {1});
 
-    CircToPhasePolyConversion conv = CircToPhasePolyConversion(circ);
+    CircToPhasePolyConversion conv = CircToPhasePolyConversion(circ, 1);
     conv.convert();
     Circuit result = conv.get_circuit();
 
@@ -570,6 +708,55 @@ SCENARIO("Test conversion of circuit to circuit with phase poly boxes") {
         ++countmeasure;
       }
 
+      REQUIRE(ot == qubit_types[count]);
+      ++count;
+    }
+  }
+  GIVEN("convert_to_phase_poly minimal box size") {
+    Circuit circ = generate_test_circuit(2);
+
+    CircToPhasePolyConversion conv = CircToPhasePolyConversion(circ, 2);
+    conv.convert();
+    Circuit result = conv.get_circuit();
+
+    std::vector<OpType> qubit_types = std::vector<OpType>(13, OpType::H);
+
+    qubit_types[2] = OpType::Rz;
+    qubit_types[3] = OpType::CX;
+    qubit_types[4] = OpType::Rz;
+    qubit_types[7] = OpType::Barrier;
+    qubit_types[8] = OpType::Rz;
+    qubit_types[9] = OpType::CX;
+    qubit_types[10] = OpType::Rz;
+
+    int count = 0;
+
+    for (const Command& com : result) {
+      OpType ot = com.get_op_ptr()->get_type();
+      REQUIRE(ot == qubit_types[count]);
+      ++count;
+    }
+  }
+  GIVEN("convert_to_phase_poly minimal box size II") {
+    Circuit circ = generate_test_circuit(4);
+
+    CircToPhasePolyConversion conv = CircToPhasePolyConversion(circ, 2);
+    conv.convert();
+    Circuit result = conv.get_circuit();
+
+    std::vector<OpType> qubit_types = std::vector<OpType>(16, OpType::H);
+
+    qubit_types[4] = OpType::PhasePolyBox;
+    qubit_types[7] = OpType::Barrier;
+    qubit_types[8] = OpType::PhasePolyBox;
+    qubit_types[13] = OpType::CX;
+    qubit_types[14] = OpType::Rz;
+    qubit_types[15] = OpType::Rz;
+
+    int count = 0;
+
+    for (const Command& com : result) {
+      OpType ot = com.get_op_ptr()->get_type();
       REQUIRE(ot == qubit_types[count]);
       ++count;
     }

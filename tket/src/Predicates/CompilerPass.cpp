@@ -408,7 +408,7 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "RemoveBarriers") {
       pp = RemoveBarriers();
     } else if (passname == "ComposePhasePolyBoxes") {
-      pp = ComposePhasePolyBoxes();
+      pp = ComposePhasePolyBoxes(content.at("min_size").get<unsigned>());
     } else if (passname == "RebaseCustom") {
       throw NotImplemented(
           "Deserialization of RebaseCustom not yet implemented.");
