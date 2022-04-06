@@ -555,7 +555,7 @@ PYBIND11_MODULE(passes, m) {
       "Pass to convert a given :py:class:`Circuit` to the CX, Rz, H gateset "
       "and compose "
       "phase polynomial boxes from the groups of the CX+Rz gates."
-      "\n\n- (unsigned) min_size=0: minimal number of cnots in each phase "
+      "\n\n- (unsigned) min_size=0: minimal number of CX gates in each phase "
       "polynominal box: groups with a smaller number of CX gates are not "
       "affected by this transformation\n"
       "\n:param \\**kwargs: parameters for composition (described above)"
