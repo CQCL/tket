@@ -209,6 +209,104 @@ SCENARIO("Test affine Phase Polynomial circuit generation") {
   }
 }
 
+SCENARIO("Test assertion in PhasePolyBox creation") {
+  // TODO MELF
+  GIVEN("check invalid qubit_indices i") {
+    unsigned n_qubits = 2;
+
+    boost::bimap<Qubit, unsigned> qubit_indices;
+    for (unsigned i = 0; i < 3; ++i) {
+      qubit_indices.insert({Qubit(i), i});
+    }
+
+    PhasePolynomial phase_polynomial = {{{true, false}, 1.0}};
+
+    MatrixXb linear_transformation(2, 2);
+    linear_transformation << 0, 1,  //
+        1, 0;
+
+    REQUIRE_THROWS_AS(
+        PhasePolyBox(
+            n_qubits, qubit_indices, phase_polynomial, linear_transformation),
+        std::invalid_argument);
+  }
+  GIVEN("check invalid qubit_indices ii") {
+    unsigned n_qubits = 2;
+
+    boost::bimap<Qubit, unsigned> qubit_indices;
+    for (unsigned i = 0; i < 2; ++i) {
+      qubit_indices.insert({Qubit(i), (i + 1)});
+    }
+
+    PhasePolynomial phase_polynomial = {{{true, false}, 1.0}};
+
+    MatrixXb linear_transformation(2, 2);
+    linear_transformation << 0, 1,  //
+        1, 0;
+
+    REQUIRE_THROWS_AS(
+        PhasePolyBox(
+            n_qubits, qubit_indices, phase_polynomial, linear_transformation),
+        std::invalid_argument);
+  }
+  GIVEN("check invalid phase_polynomial i") {
+    unsigned n_qubits = 2;
+
+    boost::bimap<Qubit, unsigned> qubit_indices;
+    for (unsigned i = 0; i < 2; ++i) {
+      qubit_indices.insert({Qubit(i), i});
+    }
+
+    PhasePolynomial phase_polynomial = {{{true}, 1.0}};
+
+    MatrixXb linear_transformation(2, 2);
+    linear_transformation << 0, 1,  //
+        1, 0;
+
+    REQUIRE_THROWS_AS(
+        PhasePolyBox(
+            n_qubits, qubit_indices, phase_polynomial, linear_transformation),
+        std::invalid_argument);
+  }
+  GIVEN("check invalid phase_polynomial ii") {
+    unsigned n_qubits = 2;
+
+    boost::bimap<Qubit, unsigned> qubit_indices;
+    for (unsigned i = 0; i < 2; ++i) {
+      qubit_indices.insert({Qubit(i), i});
+    }
+
+    PhasePolynomial phase_polynomial = {{{false, false}, 1.0}};
+
+    MatrixXb linear_transformation(2, 2);
+    linear_transformation << 0, 1,  //
+        1, 0;
+
+    REQUIRE_THROWS_AS(
+        PhasePolyBox(
+            n_qubits, qubit_indices, phase_polynomial, linear_transformation),
+        std::invalid_argument);
+  }
+  GIVEN("check invalid linear_transformation i") {
+    unsigned n_qubits = 2;
+
+    boost::bimap<Qubit, unsigned> qubit_indices;
+    for (unsigned i = 0; i < 2; ++i) {
+      qubit_indices.insert({Qubit(i), i});
+    }
+
+    PhasePolynomial phase_polynomial = {{{false, false}, 1.0}};
+
+    MatrixXb linear_transformation(1, 1);
+    linear_transformation << 1;
+
+    REQUIRE_THROWS_AS(
+        PhasePolyBox(
+            n_qubits, qubit_indices, phase_polynomial, linear_transformation),
+        std::invalid_argument);
+  }
+}
+
 SCENARIO("Test conversion of circuit to circuit with phase poly boxes") {
   GIVEN("convert_to_phase_poly simple") {
     unsigned n = 3;

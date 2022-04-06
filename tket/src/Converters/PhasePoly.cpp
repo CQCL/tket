@@ -230,6 +230,41 @@ PhasePolyBox::PhasePolyBox(
       qubit_indices_(qubit_indices),
       phase_polynomial_(phase_polynomial),
       linear_transformation_(linear_transformation) {
+  for (const auto& pair : qubit_indices_) {
+    if (pair.right >= n_qubits) {
+      throw std::invalid_argument(
+          "The creation of a phasepolybox failed: index in qubit "
+          "list is out of range");
+    }
+  }
+
+  for (auto const& ps : phase_polynomial_) {
+    if (ps.first.size() != n_qubits_) {
+      throw std::invalid_argument(
+          "The creation of a phasepolybox failed: PhasePolynomial "
+          "does not match the given number of qubits");
+    }
+
+    if (std::none_of(
+            ps.first.begin(), ps.first.end(), [](bool x) { return x; })) {
+      throw std::invalid_argument(
+          "The creation of a phasepolybox failed: PhasePolynomial "
+          "contains invalid element");
+    }
+  }
+
+  if (linear_transformation_.rows() != n_qubits) {
+    throw std::invalid_argument(
+        "The creation of a phasepolybox failed: row size of the "
+        "linear transformation does not match the number of qubits");
+  }
+
+  if (linear_transformation_.cols() != n_qubits) {
+    throw std::invalid_argument(
+        "The creation of a phasepolybox failed: cols size of the "
+        "linear transformation does not match the number of qubits");
+  }
+
   signature_ = op_signature_t(n_qubits_, EdgeType::Quantum);
 }
 

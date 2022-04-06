@@ -186,43 +186,6 @@ void init_boxes(py::module &m) {
             boost::bimap<Qubit, unsigned> bmap;
             for (const auto &pair : q_ind) {
               bmap.insert({pair.first, pair.second});
-              if (pair.second >= n_qb) {
-                throw std::invalid_argument(
-                    "The creation of a phasepolybox failed: index in qubit "
-                    "list is out of range");
-              }
-            }
-
-            for (auto const &ps : p_p) {
-              if (ps.first.size() != n_qb) {
-                throw std::invalid_argument(
-                    "The creation of a phasepolybox failed: PhasePolynomial "
-                    "does not match the given number of qubits");
-              }
-              bool found_element = false;
-              for (bool e : ps.first) {
-                if (e) {
-                  found_element = true;
-                  break;
-                }
-              }
-              if (!found_element) {
-                throw std::invalid_argument(
-                    "The creation of a phasepolybox failed: PhasePolynomial "
-                    "contains invalid element");
-              }
-            }
-
-            if (lin_trans.rows() != n_qb) {
-              throw std::invalid_argument(
-                  "The creation of a phasepolybox failed: row size of the "
-                  "linear transformation does not match the number of qubits");
-            }
-
-            if (lin_trans.cols() != n_qb) {
-              throw std::invalid_argument(
-                  "The creation of a phasepolybox failed: cols size of the "
-                  "linear transformation does not match the number of qubits");
             }
 
             return PhasePolyBox(n_qb, bmap, p_p, lin_trans);
