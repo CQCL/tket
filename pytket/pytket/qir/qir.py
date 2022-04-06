@@ -101,6 +101,22 @@ class QIRUnsupportedError(Exception):
     pass
 
 
+class ExtendedModule:
+    """Module extensions to account for H series gate set."""
+
+    
+    def __init__(self, name: str, num_qubits: int, num_results: int, gateset: GateSet) -> None:
+        self.module = SimpleModule(name, num_qubits, num_results)
+        for k, v in gateset.gateset.items():
+            self.__setattr__(
+                str(k),
+                self.module.add_external_function(
+                    gateset.template.substitute(name=k),
+                    types.Function(v.function, types.VOID)
+                )
+            )
+
+
 def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
     optype = op.type
     params = op.params if optype in _tk_to_qir_params else None
