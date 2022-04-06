@@ -747,7 +747,7 @@ def test_phase_polybox_II() -> None:
 
 
 def test_phase_polybox_error() -> None:
-    # uses a unvalid qubit_indices not staring at 0
+    # uses invalid qubit_indices not starting at 0
     c = Circuit(1, 1)
     n_qb = 1
     qubit_indices = {Qubit(0): 1}
