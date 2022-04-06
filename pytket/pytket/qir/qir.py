@@ -162,20 +162,24 @@ def circuit_to_qir_str(circ: Circuit, root: str, gateset: GateSet) -> str:
 
     for command in circ:
         op = command.op
-        qubits = _to_qis_qubit(command.qubits, module)
+        qubits = _to_qis_qubits(command.qubits, module)
+        print("qubits {}".format(qubits))
         optype, params = _get_optype_and_params(op)
         if optype == OpType.Measure:
             results = _to_qis_results(command.bits, module)
-            add_gate = getattr(qis, _tk_to_qir_noparams[optype])
-            add_gate(qubits, results)
+            add_gate = getattr(qis, _tk_to_qir_noparams_1q[optype])
+            add_gate(*qubits, results)
 
-        elif optype in _tk_to_qir_noparams:
-            add_gate = getattr(qis, _tk_to_qir_noparams[optype])
-            add_gate(qubits)
-        elif optype in _tk_to_qir_params:
+        if optype in _tk_to_qir_noparams_1q:
+            add_gate = getattr(qis, _tk_to_qir_noparams_1q[optype])
+            add_gate(*qubits)
+        elif optype in _tk_to_qir_noparams_2q:
+            add_gate = getattr(qis, _tk_to_qir_noparams_2q[optype])
+            add_gate(*qubits)
+        elif optype in _tk_to_qir_params_1q:
             assert params
-            add_gate = getattr(qis, _tk_to_qir_params[optype])
-            add_gate(params[0], qubits)
+            add_gate = getattr(qis, _tk_to_qir_params_1q[optype])
+            add_gate(params[0], *qubits)
         else:
             raise QIRUnsupportedError(
                 "Cannot print command of type: {}".format(op.get_name())
@@ -183,11 +187,11 @@ def circuit_to_qir_str(circ: Circuit, root: str, gateset: GateSet) -> str:
     return str(module.ir())
 
 
-def circuit_to_qir(circ: Circuit, output_file: str) -> None:
+def circuit_to_qir(circ: Circuit, output_file: str, gateset: GateSet) -> None:
     """A method to generate a qir file from a tket circuit."""
     root, ext = os.path.splitext(os.path.basename(output_file))
     if ext != ".ll":
         raise ValueError("The file extension should be '.ll'.")
-    circ_qir_str = circuit_to_qir_str(circ, root)
+    circ_qir_str = circuit_to_qir_str(circ, root, gateset)
     with open(output_file, "w") as out:
         out.write(circ_qir_str)
