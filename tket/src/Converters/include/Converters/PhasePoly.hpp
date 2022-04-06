@@ -115,7 +115,7 @@ class CircToPhasePolyConversion {
    * @throw not implemented for unsupported gates
    * @param circ circuit to be converted
    * @param min_size value for the minimal number of CX in each box, groups with
-   * less than min_size CX gates are not converted to a PhasePolyBox, dafault
+   * less than min_size CX gates are not converted to a PhasePolyBox, default
    * value is 0
    */
   explicit CircToPhasePolyConversion(
