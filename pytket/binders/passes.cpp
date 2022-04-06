@@ -557,7 +557,7 @@ PYBIND11_MODULE(passes, m) {
       "phase polynomial boxes from the groups of the CX+Rz gates."
       "\n\n- (unsigned) min_size=0: minimal number of cnots in each phase "
       "polynominal box: groups with a smaller number of CX gates are not "
-      "effected by this transformation\n"
+      "affected by this transformation\n"
       "\n:param \\**kwargs: parameters for composition (described above)"
       "\n:return: a pass to perform the composition");
 
