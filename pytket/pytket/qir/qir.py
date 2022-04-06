@@ -119,7 +119,7 @@ class ExtendedModule:
 
 def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
     optype = op.type
-    params = op.params if optype in _tk_to_qir_params else None
+    params = op.params if optype in _tk_to_qir_params_1q else None
     if optype == OpType.TK1:
         # convert to U3
         optype = OpType.U3
