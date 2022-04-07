@@ -167,3 +167,29 @@ jobs:
     - name: upload package
       if: github.event_name == 'push'
       run: conan upload symengine/${{ env.SYMENGINE_VER }}@tket/stable --all -r=tket-conan
+  manylinux:
+    name: build symengine (manylinux)
+    needs: changes
+    if: needs.changes.outputs.recipes_symengine == 'true'
+    runs-on: ubuntu-20.04
+    env:
+      UPLOAD_PACKAGE: "NO"
+    steps:
+    - uses: actions/checkout@v2
+    - name: set up container
+      run: |
+        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:latest /bin/bash
+        docker cp ./recipes/symengine linux_build:/
+        docker cp ./.github/workflows/linuxbuildsymengine linux_build:/
+    - name: determine whether to upload package
+      if: github.event_name == 'push'
+      run: echo "UPLOAD_PACKAGE=YES" >> ${GITHUB_ENV}
+    - name: build symengine
+      run: |
+        docker start linux_build
+        at <<EOF > env-vars
+        UPLOAD_PACKAGE=${UPLOAD_PACKAGE}
+        JFROG_ARTIFACTORY_TOKEN_1=${{ secrets.JFROG_ARTIFACTORY_TOKEN_1 }}
+        JFROG_ARTIFACTORY_USER_1=${{ secrets.JFROG_ARTIFACTORY_USER_1 }}
+        EOF
+        docker exec --env-file env-vars linux_build /bin/bash -c "/linuxbuildsymengine"
