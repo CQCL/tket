@@ -21,6 +21,7 @@ required_conan_version = ">=1.43.0"
 
 class SpdlogConan(ConanFile):
     name = "spdlog"
+    version = "1.10.0"
     description = "Fast C++ logging library"
     url = "https://github.com/conan-io/conan-center-index"
     homepage = "https://github.com/gabime/spdlog"
