@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# Copyright 2019-2022 Cambridge Quantum Computing
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+set -evu
+
+# Choose a Python to install conan
+export PYBIN=/opt/python/cp39-cp39/bin
+
+export CONAN_REVISIONS_ENABLED=1
+
+${PYBIN}/pip install --upgrade pip
+${PYBIN}/pip install --upgrade conan
+
+export CONAN_CMD=${PYBIN}/conan
+
+${CONAN_CMD} profile new tket --detect
+
+${CONAN_CMD} remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
+
+${CONAN_CMD} user -p ${JFROG_ARTIFACTORY_TOKEN_1} -r tket-conan ${JFROG_ARTIFACTORY_USER_1}
+
+SYMENGINE_VER=$(${CONAN_CMD} inspect --raw version symengine/)
+
+${CONAN_CMD} create --profile=tket -o symengine:shared=False symengine tket/stable
+${CONAN_CMD} create --profile=tket -o symengine:shared=True symengine tket/stable
+
+if [ ${UPLOAD_PACKAGE} == "YES" ]
+then
+    ${CONAN_CMD} upload symengine/${SYMENGINE_VER}@tket/stable --all -r=tket-conan
+else
+    ${CONAN_CMD} upload symengine/${SYMENGINE_VER}@tket/stable --all -r=tket-conan --skip-upload
+fi
