@@ -108,6 +108,7 @@ class ExtendedModule:
         self, name: str, num_qubits: int, num_results: int, gateset: GateSet
     ) -> None:
         self.module = SimpleModule(name, num_qubits, num_results)
+        self.gateset = gateset
         for k, v in gateset.gateset.items():
             self.__setattr__(
                 str(k),
