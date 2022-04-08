@@ -23,15 +23,13 @@ from pytket.circuit import (  # type: ignore
     Circuit,
     OpType,
 )
-from pytket.qir.qir import (
-    circuit_to_qir,
-    ExtendedModule,
-    QUANTINUUM_GATES
-)
+from pytket.qir.qir import circuit_to_qir, ExtendedModule, QUANTINUUM_GATES
+
 
 @fixture
 def file_name() -> str:
     return "SimpleCircuit.ll"
+
 
 @fixture
 def ext_module_quantinuum_gateset() -> ExtendedModule:
@@ -39,63 +37,30 @@ def ext_module_quantinuum_gateset() -> ExtendedModule:
         name="Simple module for Quantinuum gateset.",
         num_qubits=2,
         num_results=1,
-        gateset=QUANTINUUM_GATES
+        gateset=QUANTINUUM_GATES,
     )
     em.module.builder.call(em.h, [em.module.qubits[0]])  # type: ignore
     em.module.builder.call(em.x, [em.module.qubits[1]])  # type: ignore
     em.module.builder.call(em.y, [em.module.qubits[0]])  # type: ignore
     em.module.builder.call(em.z, [em.module.qubits[1]])  # type: ignore
+    em.module.builder.call(em.rx, [0.0, em.module.qubits[1]])  # type: ignore
+    em.module.builder.call(em.ry, [1.0, em.module.qubits[0]])  # type: ignore
+    em.module.builder.call(em.rz, [2.0, em.module.qubits[1]])  # type: ignore
+    em.module.builder.call(em.phx, [1.0, 2.0, em.module.qubits[1]])  # type: ignore
     em.module.builder.call(
-        em.rx, [  # type: ignore
-            0.0,
-            em.module.qubits[1]
-        ]
+        em.cnot, [em.module.qubits[0], em.module.qubits[1]]  # type: ignore
     )
     em.module.builder.call(
-        em.ry, [  # type: ignore
-            1.0,
-            em.module.qubits[0]
-        ]
+        em.zzmax, [em.module.qubits[1], em.module.qubits[0]]  # type: ignore
     )
     em.module.builder.call(
-        em.rz, [  # type: ignore
-            2.0,
-            em.module.qubits[1]
-        ]
+        em.zzph, [1.0, em.module.qubits[0], em.module.qubits[1]]  # type: ignore
     )
     em.module.builder.call(
-        em.phx, [  # type: ignore
-            1.0,
-            2.0,
-            em.module.qubits[1]
-        ]
-    )
-    em.module.builder.call(
-        em.cnot, [  # type: ignore
-            em.module.qubits[0],
-            em.module.qubits[1]
-        ]
-    )
-    em.module.builder.call(
-        em.zzmax, [  # type: ignore
-            em.module.qubits[1],
-            em.module.qubits[0]
-        ]
-    )
-    em.module.builder.call(
-        em.zzph, [  # type: ignore
-            1.0,
-            em.module.qubits[0],
-            em.module.qubits[1]
-        ]
-    )
-    em.module.builder.call(
-        em.mz, [  # type: ignore
-            em.module.qubits[0],
-            em.module.results[0]
-        ]
+        em.mz, [em.module.qubits[0], em.module.results[0]]  # type: ignore
     )
     return em
+
 
 @fixture
 def circuit_quantinuum_gateset(file_name: str) -> Generator:
