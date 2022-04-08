@@ -44,7 +44,7 @@ class TketConan(ConanFile):
         # symengine from remote: https://tket.jfrog.io/artifactory/api/conan/tket-conan
         "symengine/0.9.0@tket/stable",
         "eigen/3.4.0",
-        "spdlog/1.10.0@tket/stable",
+        "spdlog/1.9.2",
         "nlohmann_json/3.10.5",
     )
 
