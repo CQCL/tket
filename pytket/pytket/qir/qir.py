@@ -104,8 +104,9 @@ class QIRUnsupportedError(Exception):
 class ExtendedModule:
     """Module extensions to account for any input gate set."""
 
-    
-    def __init__(self, name: str, num_qubits: int, num_results: int, gateset: GateSet) -> None:
+    def __init__(
+        self, name: str, num_qubits: int, num_results: int, gateset: GateSet
+    ) -> None:
         self.module = SimpleModule(name, num_qubits, num_results)
         for k, v in gateset.gateset.items():
             self.__setattr__(
