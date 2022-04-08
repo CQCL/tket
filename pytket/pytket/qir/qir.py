@@ -143,7 +143,9 @@ def circuit_from_qir(input_file) -> None:
     pass
 
 
-def circuit_to_qir_str(circ: Circuit, root: str, gateset: GateSet) -> str:
+def circuit_to_qir_str(
+    circ: Circuit, module: Union[ExtendedModule, SimpleModule]
+) -> str:
     """A method to generate a QIR string from a pytket circuit."""
     if any(
         circ.n_gates_of_type(typ)
