@@ -195,10 +195,26 @@ def circuit_to_qir_str(
             else:
                 get_gate(*qubits)
     return str(mod.ir())
+
+
+def circuit_to_qir(
+    circ: Circuit, output_file: str, gateset: Optional[GateSet] = None
+) -> None:
     """A method to generate a qir file from a tket circuit."""
     root, ext = os.path.splitext(os.path.basename(output_file))
     if ext != ".ll":
         raise ValueError("The file extension should be '.ll'.")
-    circ_qir_str = circuit_to_qir_str(circ, root, gateset)
+    if gateset is not None:
+        module = ExtendedModule(
+            name=root,
+            num_qubits=circ.n_qubits,
+            num_results=len(circ.bits),
+            gateset=gateset,
+        )
+    else:
+        module = SimpleModule(
+            name=root, num_qubits=circ.n_qubits, num_results=len(circ.bits)
+        )
+    circ_qir_str = circuit_to_qir_str(circ, module)
     with open(output_file, "w") as out:
         out.write(circ_qir_str)
