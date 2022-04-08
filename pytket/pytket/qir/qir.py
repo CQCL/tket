@@ -158,41 +158,31 @@ def circuit_to_qir_str(
         )
     ):
         raise QIRUnsupportedError("Complex classical gates not supported.")
-    module = ExtendedModule(
-        name=root,
-        num_qubits=circ.n_qubits,
-        num_results=len(circ.bits),
-        gateset=gateset
-    ).module
-    qis = BasicQisBuilder(module.builder)
-
     for command in circ:
         op = command.op
-        qubits = _to_qis_qubits(command.qubits, module)
-        print("qubits {}".format(qubits))
         optype, params = _get_optype_and_params(op)
-        if optype == OpType.Measure:
+        if isinstance(module, ExtendedModule):
+            mod = module.module
+            qubits = _to_qis_qubits(command.qubits, mod)
+            results = _to_qis_results(command.bits, mod)
+            try:
+                gate = module.gateset.tk_to_gateset(optype)
+            except KeyError:
+                raise KeyError(
+                    "Gate not defined in {:} gate set.".format(module.gateset.name)
+                )
+            get_gate = getattr(module, gate)
+            if params:
+                mod.builder.call(get_gate, [*params, *qubits])
+            elif results:
+                mod.builder.call(get_gate, [*qubits, results])
+            else:
+                mod.builder.call(get_gate, qubits)
+        elif isinstance(module, SimpleModule):
+            mod = module
+            qis = BasicQisBuilder(module.builder)
+            qubits = _to_qis_qubits(command.qubits, module)
             results = _to_qis_results(command.bits, module)
-            add_gate = getattr(qis, _tk_to_qir_noparams_1q[optype])
-            add_gate(*qubits, results)
-
-        if optype in _tk_to_qir_noparams_1q:
-            add_gate = getattr(qis, _tk_to_qir_noparams_1q[optype])
-            add_gate(*qubits)
-        elif optype in _tk_to_qir_noparams_2q:
-            add_gate = getattr(qis, _tk_to_qir_noparams_2q[optype])
-            add_gate(*qubits)
-        elif optype in _tk_to_qir_params_1q:
-            assert params
-            add_gate = getattr(qis, _tk_to_qir_params_1q[optype])
-            add_gate(params[0], *qubits)
-        else:
-            raise QIRUnsupportedError(
-                "Cannot print command of type: {}".format(op.get_name())
-            )
-    return str(module.ir())
-
-
 def circuit_to_qir(circ: Circuit, output_file: str, gateset: GateSet) -> None:
     """A method to generate a qir file from a tket circuit."""
     root, ext = os.path.splitext(os.path.basename(output_file))
