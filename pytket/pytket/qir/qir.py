@@ -24,7 +24,10 @@ from pytket.circuit import Op  # type: ignore
 CustomPyQIRGate = NamedTuple(
     "CustomPyQIRGate",
     [
-        ("functions", List[Union[types.DOUBLE, types.QUBIT, types.RESULT]]),
+        (
+            "functions",
+            List[Union[type[types.DOUBLE], type[types.QUBIT], type[types.RESULT]]],
+        ),
     ],
 )
 
@@ -129,11 +132,11 @@ def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
     return (optype, params)
 
 
-def _to_qis_qubits(qubits: List[Qubit], mod: SimpleModule) -> List[types.QUBIT]:
+def _to_qis_qubits(qubits: List[Qubit], mod: SimpleModule) -> List[type[types.QUBIT]]:
     return [mod.qubits[qubit.index[0]] for qubit in qubits]
 
 
-def _to_qis_results(bits: List[Bit], mod: SimpleModule) -> Optional[types.RESULT]:
+def _to_qis_results(bits: List[Bit], mod: SimpleModule) -> Optional[type[types.RESULT]]:
     if bits:
         return mod.results[bits[0].index[0]]
     return None
