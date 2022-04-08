@@ -12,16 +12,132 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 import math
-from pytest import fixture  # type: ignore
+from pytest import fixture, yield_fixture  # type: ignore
 import random
 import time
-from typing import Any
+from typing import Any, Generator
 
 from pytket.circuit import (  # type: ignore
     Circuit,
     OpType,
 )
+from pytket.qir.qir import (
+    circuit_to_qir,
+    ExtendedModule,
+    QUANTINUUM_GATES
+)
+
+@fixture
+def file_name() -> str:
+    return "SimpleCircuit.ll"
+
+@fixture
+def ext_module_quantinuum_gateset() -> ExtendedModule:
+    em = ExtendedModule(
+        name="Simple module for Quantinuum gateset.",
+        num_qubits=2,
+        num_results=1,
+        gateset=QUANTINUUM_GATES
+    )
+    em.module.builder.call(em.h, [em.module.qubits[0]])  # type: ignore
+    em.module.builder.call(em.x, [em.module.qubits[1]])  # type: ignore
+    em.module.builder.call(em.y, [em.module.qubits[0]])  # type: ignore
+    em.module.builder.call(em.z, [em.module.qubits[1]])  # type: ignore
+    em.module.builder.call(
+        em.rx, [  # type: ignore
+            0.0,
+            em.module.qubits[1]
+        ]
+    )
+    em.module.builder.call(
+        em.ry, [  # type: ignore
+            1.0,
+            em.module.qubits[0]
+        ]
+    )
+    em.module.builder.call(
+        em.rz, [  # type: ignore
+            2.0,
+            em.module.qubits[1]
+        ]
+    )
+    em.module.builder.call(
+        em.phx, [  # type: ignore
+            1.0,
+            2.0,
+            em.module.qubits[1]
+        ]
+    )
+    em.module.builder.call(
+        em.cnot, [  # type: ignore
+            em.module.qubits[0],
+            em.module.qubits[1]
+        ]
+    )
+    em.module.builder.call(
+        em.zzmax, [  # type: ignore
+            em.module.qubits[1],
+            em.module.qubits[0]
+        ]
+    )
+    em.module.builder.call(
+        em.zzph, [  # type: ignore
+            1.0,
+            em.module.qubits[0],
+            em.module.qubits[1]
+        ]
+    )
+    em.module.builder.call(
+        em.mz, [  # type: ignore
+            em.module.qubits[0],
+            em.module.results[0]
+        ]
+    )
+    return em
+
+@fixture
+def circuit_quantinuum_gateset(file_name: str) -> Generator:
+    c = Circuit(2, 2)
+    c.H(0)
+    c.X(1)
+    c.Y(0)
+    c.Z(1)
+    c.CX(0, 1)
+    c.add_gate(OpType.ZZMax, [1, 0])
+    c.Rx(0.0, 1)
+    c.Ry(1.0, 0)
+    c.Rz(2.0, 1)
+    c.add_gate(OpType.PhasedX, [1.5, 2.5], [1])
+    c.add_gate(OpType.ZZPhase, [1.0], [0, 1])
+    c.Measure(1, 1)
+    circuit_to_qir(c, file_name, QUANTINUUM_GATES)
+    yield
+    os.remove(file_name)
+
+
+@fixture
+def circuit_pyqir_gateset(file_name: str) -> Generator:
+    c = Circuit(2, 2)
+    c.H(0)
+    c.X(1)
+    c.Y(0)
+    c.Z(1)
+    c.S(0)
+    c.Sdg(1)
+    c.T(0)
+    c.Tdg(1)
+    c.add_gate(OpType.Reset, [0])
+    c.CX(0, 1)
+    c.CZ(1, 0)
+    c.Rx(0.0, 1)
+    c.Ry(1.0, 0)
+    c.Rz(2.0, 1)
+    c.Measure(1, 1)
+    circuit_to_qir(c, file_name)
+    yield
+    os.remove(file_name)
 
 
 @fixture
