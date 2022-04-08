@@ -133,8 +133,10 @@ def _to_qis_qubits(qubits: List[Qubit], mod: SimpleModule) -> List[types.QUBIT]:
     return [mod.qubits[qubit.index[0]] for qubit in qubits]
 
 
-def _to_qis_results(bits: List[Bit], mod: SimpleModule) -> SimpleModule.results:
-    return mod.results[bits[0].index[0]]
+def _to_qis_results(bits: List[Bit], mod: SimpleModule) -> Optional[types.RESULT]:
+    if bits:
+        return mod.results[bits[0].index[0]]
+    return None
 
 
 def circuit_from_qir(input_file) -> None:
