@@ -114,14 +114,14 @@ class ExtendedModule:
                 str(k),
                 self.module.add_external_function(
                     gateset.template.substitute(name=k),
-                    types.Function(v.function, types.VOID)
-                )
+                    types.Function(v.functions, types.VOID),
+                ),
             )
 
 
 def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
     optype = op.type
-    params = op.params if optype in _tk_to_qir_params_1q else None
+    params = op.params
     if optype == OpType.TK1:
         # convert to U3
         optype = OpType.U3
