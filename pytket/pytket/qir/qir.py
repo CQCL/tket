@@ -183,7 +183,18 @@ def circuit_to_qir_str(
             qis = BasicQisBuilder(module.builder)
             qubits = _to_qis_qubits(command.qubits, module)
             results = _to_qis_results(command.bits, module)
-def circuit_to_qir(circ: Circuit, output_file: str, gateset: GateSet) -> None:
+            try:
+                pyqir_gate = _tk_to_pyqir(optype)
+            except KeyError:
+                raise KeyError("Gate not defined in PyQIR gate set.")
+            get_gate = getattr(qis, pyqir_gate)
+            if params:
+                get_gate(*params, *qubits)
+            elif results:
+                get_gate(*qubits, results)
+            else:
+                get_gate(*qubits)
+    return str(mod.ir())
     """A method to generate a qir file from a tket circuit."""
     root, ext = os.path.splitext(os.path.basename(output_file))
     if ext != ".ll":
