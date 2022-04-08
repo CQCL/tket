@@ -102,7 +102,7 @@ class QIRUnsupportedError(Exception):
 
 
 class ExtendedModule:
-    """Module extensions to account for H series gate set."""
+    """Module extensions to account for any input gate set."""
 
     
     def __init__(self, name: str, num_qubits: int, num_results: int, gateset: GateSet) -> None:
