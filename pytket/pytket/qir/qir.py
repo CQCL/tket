@@ -14,87 +14,87 @@
 
 import os
 from string import Template
-from typing import Dict, List, NamedTuple, Optional, Tuple
+from typing import Callable, Dict, List, NamedTuple, Optional, Tuple, Union
 
 from pyqir.generator import SimpleModule, BasicQisBuilder, types  # type: ignore
 from pytket import Circuit, OpType, Bit, Qubit
 from pytket.circuit import Op  # type: ignore
 
 
-PyQIRGate = NamedTuple(
-    "PyQIRGate",
+CustomPyQIRGate = NamedTuple(
+    "CustomPyQIRGate",
     [
-        ("function", List[type(types)]), 
-    ]
+        ("functions", List[Union[types.DOUBLE, types.QUBIT, types.RESULT]]),
+    ],
 )
 
 GateSet = NamedTuple(
     "GateSet",
     [
+        ("name", str),
         ("template", Template),
-        ("gateset", Dict[str, PyQIRGate])
-    ]
+        ("gateset", Dict[str, CustomPyQIRGate]),
+        ("tk_to_gateset", Callable),
+    ],
 )
+
+
+_TK_TO_QUANTINUUM = {
+    OpType.H: "h",
+    OpType.X: "x",
+    OpType.Y: "y",
+    OpType.Z: "z",
+    OpType.CX: "cnot",
+    OpType.ZZMax: "zzmax",
+    OpType.Measure: "mz",
+    OpType.Rx: "rx",
+    OpType.Ry: "ry",
+    OpType.Rz: "rz",
+    OpType.PhasedX: "phx",
+    OpType.ZZPhase: "zzph",
+}
 
 QUANTINUUM_GATES = GateSet(
-    template=Template('__quantinuum__qis__${name}__body'),
+    name="Quantinuum",
+    template=Template("__quantinuum__qis__${name}__body"),
     gateset={
-        "h": PyQIRGate(function=[types.QUBIT]),
-        "x": PyQIRGate(function=[types.QUBIT]),
-        "y": PyQIRGate(function=[types.QUBIT]),
-        "z": PyQIRGate(function=[types.QUBIT]),
-        "rx": PyQIRGate(function=[types.DOUBLE, types.QUBIT]),
-        "ry": PyQIRGate(function=[types.DOUBLE, types.QUBIT]),
-        "rz": PyQIRGate(function=[types.DOUBLE, types.QUBIT]),
-        "phx": PyQIRGate(function=[types.DOUBLE, types.DOUBLE, types.QUBIT]),
-        "cnot": PyQIRGate(function=[types.QUBIT, types.QUBIT]),
-        "zzmax": PyQIRGate(function=[types.QUBIT, types.QUBIT]),
-        "zzph": PyQIRGate(function=[types.DOUBLE, types.QUBIT, types.QUBIT]),
-        "mz": PyQIRGate(function=[types.QUBIT, types.RESULT]),
-    }
+        "h": CustomPyQIRGate(functions=[types.QUBIT]),
+        "x": CustomPyQIRGate(functions=[types.QUBIT]),
+        "y": CustomPyQIRGate(functions=[types.QUBIT]),
+        "z": CustomPyQIRGate(functions=[types.QUBIT]),
+        "rx": CustomPyQIRGate(functions=[types.DOUBLE, types.QUBIT]),
+        "ry": CustomPyQIRGate(functions=[types.DOUBLE, types.QUBIT]),
+        "rz": CustomPyQIRGate(functions=[types.DOUBLE, types.QUBIT]),
+        "phx": CustomPyQIRGate(functions=[types.DOUBLE, types.DOUBLE, types.QUBIT]),
+        "cnot": CustomPyQIRGate(functions=[types.QUBIT, types.QUBIT]),
+        "zzmax": CustomPyQIRGate(functions=[types.QUBIT, types.QUBIT]),
+        "zzph": CustomPyQIRGate(functions=[types.DOUBLE, types.QUBIT, types.QUBIT]),
+        "mz": CustomPyQIRGate(functions=[types.QUBIT, types.RESULT]),
+    },
+    tk_to_gateset=lambda optype: {**_TK_TO_QUANTINUUM}[optype],
 )
 
-
-# Natively in pyqir
-QUANTINUUM_NOPARAM_1Q_COMMANDS = {
-    "h": OpType.H,
-    "m": OpType.Measure,
-    "reset": OpType.Reset,
-    "s": OpType.S,
-    "t": OpType.T,
-    "x": OpType.X,
-    "y": OpType.Y,
-    "z": OpType.Z,
+_TK_TO_PYQIR = {
+    OpType.H: "h",
+    OpType.X: "x",
+    OpType.Y: "y",
+    OpType.Z: "z",
+    OpType.S: "s",
+    OpType.Sdg: "s_adj",
+    OpType.T: "t",
+    OpType.Tdg: "t_adj",
+    OpType.Reset: "reset",
+    OpType.CX: "cx",
+    OpType.CZ: "cz",
+    OpType.Measure: "m",
+    OpType.Rx: "rx",
+    OpType.Ry: "ry",
+    OpType.Rz: "rz",
 }
 
 
-NOPARAM_2Q_COMMANDS = {
-    "cx": OpType.CX,
-    "cz": OpType.CZ,
-}
-
-
-PARAM_1Q_COMMANDS = {
-    "rx": OpType.Rx,
-    "ry": OpType.Ry,
-    "rz": OpType.Rz,  # Also belongs to H machine gate set 
-}
-
-
-# To be included for the H machines gate set
-NOPARAM_INCLUDED = {
-    "zzmax": OpType.ZZMax
-}
-
-PARAM_INCLUDED = {
-    "U1q": OpType.PhasedX,
-    "rzz": OpType.ZZPhase,
-}
-
-
-_tk_to_qir_noparams_1q = dict(((item[1], item[0]) for item in QUANTINUUM_NOPARAM_1Q_COMMANDS.items()))
-_tk_to_qir_noparams_2q = dict(((item[1], item[0]) for item in NOPARAM_2Q_COMMANDS.items()))
-_tk_to_qir_params_1q = dict(((item[1], item[0]) for item in PARAM_1Q_COMMANDS.items()))
+def _tk_to_pyqir(optype: OpType):
+    return _TK_TO_PYQIR[optype]
 
 
 class QIRUnsupportedError(Exception):
