@@ -39,4 +39,4 @@ SCENARIO("Logging") {
   tket_log()->set_level(LogLevel::Err);
 }
 
-}
+}  // namespace tket
