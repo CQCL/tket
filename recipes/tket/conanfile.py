@@ -30,9 +30,8 @@ class TketConan(ConanFile):
     options = {
         "shared": [True, False],
         "profile_coverage": [True, False],
-        "spdlog_ho": [True, False],
     }
-    default_options = {"shared": False, "profile_coverage": False, "spdlog_ho": False}
+    default_options = {"shared": False, "profile_coverage": False}
     generators = "cmake"
     # Putting "patches" in both "exports_sources" and "exports" means that this works
     # in either the CI workflow (`conan create`) or the development workflow
@@ -44,7 +43,6 @@ class TketConan(ConanFile):
         # symengine from remote: https://tket.jfrog.io/artifactory/api/conan/tket-conan
         "symengine/0.9.0@tket/stable",
         "eigen/3.4.0",
-        "spdlog/1.9.2",
         "nlohmann_json/3.10.5",
     )
 
@@ -91,12 +89,6 @@ class TketConan(ConanFile):
     def configure(self):
         # Disable features that are still under the LGPL.
         self.options["eigen"].MPL2_only = True
-        if self.options.spdlog_ho:
-            # Use header-only version of spdlog/fmt to avoid linker warnings and
-            # runtime errors due to undefined symbol `pthread_cond_clockwait`. See
-            # https://github.com/conan-io/conan-docker-tools/issues/303#issuecomment-922492130
-            self.options["fmt"].header_only = True
-            self.options["spdlog"].header_only = True
 
     def build(self):
         # Build with boost patches

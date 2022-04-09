@@ -15,6 +15,7 @@
 #include "NeighbourPlacements.hpp"
 
 #include <cstdlib>
+#include <sstream>
 #include <string>
 
 #include "TokenSwapping/SwapListOptimiser.hpp"
@@ -68,8 +69,9 @@ NeighbourPlacements::ResultVec NeighbourPlacements::get(
       ++n_unsuccessful;
     }
     if (n_unsuccessful == max_tries) {
-      tket_log()->warn(
-          "Could not generate " + std::to_string(n) + " distinct placements");
+      std::stringstream ss;
+      ss << "Could not generate " << n << " distinct placements";
+      tket_log()->warn(ss.str());
     }
   }
   return resvec;
@@ -102,9 +104,9 @@ NeighbourPlacements::Result NeighbourPlacements::gen_result(
   }
 
   if (n_unsuccessful == max_tries) {
-    tket_log()->warn(
-        "Unable to generate " + std::to_string(dist) +
-        " swaps for given architecture");
+    std::stringstream ss;
+    ss << "Unable to generate " << dist << " swaps for given architecture";
+    tket_log()->warn(ss.str());
   }
 
   return convert_to_res(swaps.to_vector());

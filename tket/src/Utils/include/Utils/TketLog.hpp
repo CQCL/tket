@@ -20,13 +20,37 @@
  */
 
 #include <memory>
-
-#include "spdlog/sinks/stdout_color_sinks.h"
-#include "spdlog/spdlog.h"
+#include <string>
 
 namespace tket {
 
-typedef std::shared_ptr<spdlog::logger> LogPtr_t;
+enum class LogLevel {
+  Trace = 0,
+  Debug = 1,
+  Info = 2,
+  Warn = 3,
+  Err = 4,
+  Critical = 5,
+  Off = 6
+};
+
+class Logger {
+ public:
+  Logger(LogLevel level = LogLevel::Err);
+  void trace(const std::string &s);
+  void debug(const std::string &s);
+  void info(const std::string &s);
+  void warn(const std::string &s);
+  void error(const std::string &s);
+  void critical(const std::string &s);
+  void set_level(LogLevel lev);
+
+ private:
+  LogLevel level;
+  void log(const char *levstr, const std::string &s);
+};
+
+typedef std::shared_ptr<Logger> LogPtr_t;
 
 /** Logger for tket messages */
 LogPtr_t &tket_log();
