@@ -1752,19 +1752,6 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
     const auto u_correct = tket_sim::get_unitary(circ);
     REQUIRE((u - u_correct).cwiseAbs().sum() < ERR_EPS);
   }
-  GIVEN("A CRz(pi) gate") {
-    Circuit circ(2);
-    Vertex v = circ.add_op<unsigned>(OpType::CRz, 1., {0, 1});
-    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-    Circuit rep;
-    WHEN("Default circuit replacement") { rep = CX_circ_from_multiq(op); }
-
-    REQUIRE(rep.count_gates(OpType::CX) == 1);
-
-    const auto u = tket_sim::get_unitary(rep);
-    const auto u_correct = tket_sim::get_unitary(circ);
-    REQUIRE((u - u_correct).cwiseAbs().sum() < ERR_EPS);
-  }
   GIVEN("A CV gate") {
     Circuit circ(2);
     Vertex v = circ.add_op<unsigned>(OpType::CV, {0, 1});
