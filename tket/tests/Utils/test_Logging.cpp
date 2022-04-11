@@ -13,30 +13,45 @@
 // limitations under the License.
 
 #include <Utils/TketLog.hpp>
+#include <sstream>
 #include <catch2/catch.hpp>
+#include <string>
 
 namespace tket {
 
 SCENARIO("Logging") {
+
+  std::stringstream ss;
+
   tket_log()->set_level(LogLevel::Trace);
 
-  tket_log()->trace("Test trace (output).");
-  tket_log()->debug("Test debug (output).");
-  tket_log()->info("Test info (output).");
-  tket_log()->warn("Test warn (output).");
-  tket_log()->error("Test error (output).");
-  tket_log()->critical("Test critical (output).");
+  tket_log()->trace("Test trace (output).", ss);
+  tket_log()->debug("Test debug (output).", ss);
+  tket_log()->info("Test info (output).", ss);
+  tket_log()->warn("Test warn (output).", ss);
+  tket_log()->error("Test error (output).", ss);
+  tket_log()->critical("Test critical (output).", ss);
 
   tket_log()->set_level(LogLevel::Off);
 
-  tket_log()->trace("Test trace (no output).");
-  tket_log()->debug("Test debug (no output).");
-  tket_log()->info("Test info (no output).");
-  tket_log()->warn("Test warn (no output).");
-  tket_log()->error("Test error (no output).");
-  tket_log()->critical("Test critical (no output).");
+  tket_log()->trace("Test trace (no output).", ss);
+  tket_log()->debug("Test debug (no output).", ss);
+  tket_log()->info("Test info (no output).", ss);
+  tket_log()->warn("Test warn (no output).", ss);
+  tket_log()->error("Test error (no output).", ss);
+  tket_log()->critical("Test critical (no output).", ss);
 
   tket_log()->set_level(LogLevel::Err);
+
+  std::string s = ss.str();
+
+  CHECK(s.find("Test trace (output).") != std::string::npos);
+  CHECK(s.find("Test debug (output).") != std::string::npos);
+  CHECK(s.find("Test info (output).") != std::string::npos);
+  CHECK(s.find("Test warn (output).") != std::string::npos);
+  CHECK(s.find("Test error (output).") != std::string::npos);
+  CHECK(s.find("Test critical (output).") != std::string::npos);
+  CHECK(s.find("(no output)") == std::string::npos);
 }
 
 }  // namespace tket

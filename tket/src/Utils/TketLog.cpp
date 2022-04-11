@@ -22,40 +22,40 @@
 namespace tket {
 
 Logger::Logger(LogLevel level) : level(level) {}
-void Logger::trace(const std::string &s) {
+void Logger::trace(const std::string &s, std::ostream &os) {
   if (level <= LogLevel::Trace) {
-    log("trace", s);
+    log("trace", s, os);
   }
 }
-void Logger::debug(const std::string &s) {
+void Logger::debug(const std::string &s, std::ostream &os) {
   if (level <= LogLevel::Debug) {
-    log("debug", s);
+    log("debug", s, os);
   }
 }
-void Logger::info(const std::string &s) {
+void Logger::info(const std::string &s, std::ostream &os) {
   if (level <= LogLevel::Info) {
-    log("info", s);
+    log("info", s, os);
   }
 }
-void Logger::warn(const std::string &s) {
+void Logger::warn(const std::string &s, std::ostream &os) {
   if (level <= LogLevel::Warn) {
-    log("warn", s);
+    log("warn", s, os);
   }
 }
-void Logger::error(const std::string &s) {
+void Logger::error(const std::string &s, std::ostream &os) {
   if (level <= LogLevel::Err) {
-    log("error", s);
+    log("error", s, os);
   }
 }
-void Logger::critical(const std::string &s) {
+void Logger::critical(const std::string &s, std::ostream &os) {
   if (level <= LogLevel::Critical) {
-    log("critical", s);
+    log("critical", s, os);
   }
 }
 
-void Logger::log(const char *levstr, const std::string &s) {
+void Logger::log(const char *levstr, const std::string &s, std::ostream &os) {
   std::time_t t = std::time(nullptr);
-  std::cout << "[" << std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S")
+  os << "[" << std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S")
             << "] [tket] [" << levstr << "] " << s << std::endl;
 }
 
