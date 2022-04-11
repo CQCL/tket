@@ -21,6 +21,7 @@ from pytket.circuit import (  # type: ignore
     Circuit,
     Op,
     OpType,
+    Command,
     fresh_symbol,
     CircBox,
     Unitary1qBox,
@@ -178,6 +179,7 @@ def test_circuit_gen() -> None:
     assert commands[14].qubits == [Qubit(3)]
     assert commands[14].bits == [Bit(3)]
     assert c.depth_by_type({OpType.CX, OpType.CRz}) == 2
+    assert commands[0] == Command(Op.create(OpType.X), [Qubit(0)])
 
 
 def test_circuit_gen_ids() -> None:
