@@ -53,10 +53,9 @@ static PassPtr gen_cx_mapping_pass_kwargs(
 }
 
 static PassPtr gen_default_routing_pass(const Architecture &arc) {
-  std::vector<RoutingMethodPtr> config = {
-      std::make_shared<LexiLabellingMethod>(),
-      std::make_shared<LexiRouteRoutingMethod>()};
-  return gen_routing_pass(arc, config);
+  return gen_routing_pass(
+      arc, {std::make_shared<LexiLabellingMethod>(),
+            std::make_shared<LexiRouteRoutingMethod>()});
 }
 
 static PassPtr gen_default_aas_routing_pass(
@@ -477,9 +476,18 @@ PYBIND11_MODULE(passes, m) {
       py::arg("q"), py::arg("p"), py::arg("strict") = false);
 
   m.def(
-      "RoutingPass", &gen_default_routing_pass,
+      "CustomRoutingPass", &gen_routing_pass,
       "Construct a pass to route to the connectivity graph of an "
       ":py:class:`Architecture`. Edge direction is ignored."
+      "\n:return: a pass that routes to the given device architecture",
+      py::arg("arc"), py::arg("config"));
+
+  m.def(
+      "RoutingPass", &gen_default_routing_pass,
+      "Construct a pass to route to the connectivity graph of an "
+      ":py:class:`Architecture`. Edge direction is ignored. "
+      "Uses :py:class:`LexiLabellingMethod` and "
+      ":py:class:`LexiRouteRoutingMethod`."
       "\n:return: a pass that routes to the given device architecture",
       py::arg("arc"));
 
