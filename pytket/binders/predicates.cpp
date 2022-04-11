@@ -192,6 +192,11 @@ PYBIND11_MODULE(predicates, m) {
           py::init<const node_set_t &>(), "Construct from a set of Node.",
           py::arg("nodes"));
   py::class_<
+      NoBarriersPredicate, std::shared_ptr<NoBarriersPredicate>, Predicate>(
+      m, "NoBarriersPredicate",
+      "Predicate asserting that a circuit contains no Barrier operations.")
+      .def(py::init<>(), "Constructor.");
+  py::class_<
       NoMidMeasurePredicate, std::shared_ptr<NoMidMeasurePredicate>, Predicate>(
       m, "NoMidMeasurePredicate",
       "Predicate asserting that all measurements occur at the end of the "
