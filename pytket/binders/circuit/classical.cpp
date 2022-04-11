@@ -61,6 +61,9 @@ void init_classical(py::module& m) {
       "A wrapper for an operation to be applied conditionally on the "
       "value of some classical bits (following the nature of conditional "
       "operations in the OpenQASM specification).")
+      .def(py::init<const Op_ptr&, unsigned, unsigned>(),
+          "Construct from operation, bit width and (little-endian) value",
+          py::arg("op"), py::arg("width"), py::arg("value"))
       .def_property_readonly(
           "op", &Conditional::get_op,
           "The operation to be applied conditionally")

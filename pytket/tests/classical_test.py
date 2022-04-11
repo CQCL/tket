@@ -32,6 +32,8 @@ from pytket._tket.circuit import (  # type: ignore
     Circuit,
     OpType,
     Qubit,
+    Conditional,
+    Op,
 )
 from pytket.circuit.logic_exp import (
     BinaryOp,
@@ -606,3 +608,11 @@ def test_decomposition_known() -> None:
 
     DecomposeClassicalExp().apply(circ_copy)
     assert circ_copy == decomposed_circ
+
+
+def test_conditional() -> None:
+    c = Circuit(1, 2)
+    c.H(0, condition_bits=[0, 1], condition_value=3)
+    op = c.get_commands()[0].op
+    cond_op = Conditional(Op.create(OpType.H), 2, 3)
+    assert op == cond_op
