@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.x.y (unreleased)
+1.1.0 (April 2022)
 ------------------
 
 Minor new features:
