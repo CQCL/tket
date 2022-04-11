@@ -192,7 +192,7 @@ jobs:
     - name: Install boost
       run: conan install --profile=tket boost/1.78.0@ --build=missing
     - name: Build tket
-      run: conan create --profile=tket recipes/tket --build=spdlog --build=tket
+      run: conan create --profile=tket recipes/tket --build=tket
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
@@ -286,7 +286,7 @@ jobs:
     - name: Install boost
       run: conan install --profile=tket boost/1.78.0@ --build=missing
     - name: Build tket
-      run: conan create --profile=tket recipes/tket --build=spdlog --build=tket
+      run: conan create --profile=tket recipes/tket --build=tket
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
