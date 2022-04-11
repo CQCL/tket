@@ -13,14 +13,13 @@
 // limitations under the License.
 
 #include <Utils/TketLog.hpp>
-#include <sstream>
 #include <catch2/catch.hpp>
+#include <sstream>
 #include <string>
 
 namespace tket {
 
 SCENARIO("Logging") {
-
   std::stringstream ss;
 
   tket_log()->set_level(LogLevel::Trace);

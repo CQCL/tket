@@ -38,12 +38,12 @@ enum class LogLevel {
 class Logger {
  public:
   Logger(LogLevel level = LogLevel::Err);
-  void trace(const std::string &s, std::ostream &os=std::cout);
-  void debug(const std::string &s, std::ostream &os=std::cout);
-  void info(const std::string &s, std::ostream &os=std::cout);
-  void warn(const std::string &s, std::ostream &os=std::cout);
-  void error(const std::string &s, std::ostream &os=std::cerr);
-  void critical(const std::string &s, std::ostream &os=std::cerr);
+  void trace(const std::string &s, std::ostream &os = std::cout);
+  void debug(const std::string &s, std::ostream &os = std::cout);
+  void info(const std::string &s, std::ostream &os = std::cout);
+  void warn(const std::string &s, std::ostream &os = std::cout);
+  void error(const std::string &s, std::ostream &os = std::cerr);
+  void critical(const std::string &s, std::ostream &os = std::cerr);
   void set_level(LogLevel lev);
 
  private:

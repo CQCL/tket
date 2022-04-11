@@ -56,7 +56,7 @@ void Logger::critical(const std::string &s, std::ostream &os) {
 void Logger::log(const char *levstr, const std::string &s, std::ostream &os) {
   std::time_t t = std::time(nullptr);
   os << "[" << std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S")
-            << "] [tket] [" << levstr << "] " << s << std::endl;
+     << "] [tket] [" << levstr << "] " << s << std::endl;
 }
 
 void Logger::set_level(LogLevel lev) { level = lev; }
