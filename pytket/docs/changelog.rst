@@ -10,6 +10,7 @@ Minor new features:
 * New compilation pass ``ComposePhasePolyBoxes`` for generating
   PhasePolyBoxes in a given circuit
 * Add JSON serialization methods for ``Predicate``, ``MeasurementSetup`` and ``MeasurementBitMap``.
+* Add ``NoBarriersPredicate``.
 
 Fixes:
 
