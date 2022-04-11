@@ -147,6 +147,8 @@ void init_boxes(py::module &m) {
       m, "CustomGateDef",
       "A custom unitary gate definition, given as a composition of other "
       "gates")
+      .def(py::init<
+           const std::string &, const Circuit &, const std::vector<Sym> &>())
       .def_static(
           "define", &CompositeGateDef::define_gate,
           "Define a new custom gate as a composite of other "
