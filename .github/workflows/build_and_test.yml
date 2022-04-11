@@ -149,7 +149,7 @@ jobs:
       if: github.event_name == 'pull_request'
       run: |
         brew update
-        brew install clang-format@13
+        brew install clang-format@14
         git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
     - name: Get current time
       uses: srfrnk/current-time@v1.1.0
@@ -192,7 +192,7 @@ jobs:
     - name: Install boost
       run: conan install --profile=tket boost/1.78.0@ --build=missing
     - name: Build tket
-      run: conan create --profile=tket recipes/tket --build=spdlog --build=tket
+      run: conan create --profile=tket recipes/tket --build=tket
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
@@ -286,7 +286,7 @@ jobs:
     - name: Install boost
       run: conan install --profile=tket boost/1.78.0@ --build=missing
     - name: Build tket
-      run: conan create --profile=tket recipes/tket --build=spdlog --build=tket
+      run: conan create --profile=tket recipes/tket --build=tket
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
@@ -389,7 +389,7 @@ jobs:
       uses: actions/cache@v2
       with:
         path: C:\Users\runneradmin\.conan\data\tket
-        key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-15
+        key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-17
     - name: Build tket
       if: steps.cache-tket.outputs.cache-hit != 'true'
       run: conan create --profile=tket recipes/tket

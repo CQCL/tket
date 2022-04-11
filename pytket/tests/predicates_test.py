@@ -37,6 +37,7 @@ from pytket.passes import (  # type: ignore
     FullMappingPass,
     DefaultMappingPass,
     AASRouting,
+    ComposePhasePolyBoxes,
     DecomposeSwapsToCXs,
     DecomposeSwapsToCircuit,
     PauliSimp,
@@ -64,6 +65,18 @@ from pytket.predicates import (  # type: ignore
     GateSetPredicate,
     NoClassicalControlPredicate,
     DirectednessPredicate,
+    NoFastFeedforwardPredicate,
+    NoClassicalBitsPredicate,
+    NoWireSwapsPredicate,
+    MaxTwoQubitGatesPredicate,
+    PlacementPredicate,
+    ConnectivityPredicate,
+    CliffordCircuitPredicate,
+    DefaultRegisterPredicate,
+    MaxNQubitsPredicate,
+    NoBarriersPredicate,
+    NoMidMeasurePredicate,
+    NoSymbolsPredicate,
     CompilationUnit,
     UserDefinedPredicate,
 )
@@ -418,6 +431,14 @@ def test_directed_cx_pass() -> None:
     assert dir_pred.verify(circ2)
 
 
+def test_no_barriers_pred() -> None:
+    pred = NoBarriersPredicate()
+    c = Circuit(1).H(0)
+    assert pred.verify(c)
+    c.add_barrier([0]).H(0)
+    assert not pred.verify(c)
+
+
 def test_decompose_routing_gates_to_cxs() -> None:
     circ = Circuit(4)
     circ.CX(1, 0)
@@ -744,6 +765,14 @@ def test_generated_pass_config() -> None:
     assert rebase_pass.to_dict()["StandardPass"]["name"] == "RebaseUFR"
     comppb_pass = aas_pass_00.get_sequence()[1]
     assert comppb_pass.to_dict()["StandardPass"]["name"] == "ComposePhasePolyBoxes"
+    # ComposePhasePolyBoxes
+    ppb_pass = ComposePhasePolyBoxes(min_size=3)
+    assert ppb_pass.to_dict()["pass_class"] == "SequencePass"
+    ppb_pass_0 = ppb_pass.get_sequence()[0]
+    ppb_pass_1 = ppb_pass.get_sequence()[1]
+    assert ppb_pass_0.to_dict()["StandardPass"]["name"] == "RebaseUFR"
+    assert ppb_pass_1.to_dict()["StandardPass"]["name"] == "ComposePhasePolyBoxes"
+    assert ppb_pass_1.to_dict()["StandardPass"]["min_size"] == 3
     # CXMappingPass
     cxm_pass = CXMappingPass(arc, placer, directed_cx=True, delay_measures=True)
     assert cxm_pass.to_dict()["pass_class"] == "SequencePass"
@@ -1003,6 +1032,79 @@ def test_three_qubit_squash() -> None:
     assert c.n_gates_of_type(OpType.CX) <= 18
 
 
+def test_predicate_serialization() -> None:
+    arc = Architecture([(0, 2), (1, 2)])
+
+    pred = GateSetPredicate({OpType.X, OpType.Z})
+    assert pred.to_dict() == {"type": "GateSetPredicate", "allowed_types": ["X", "Z"]}
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+    pred = NoClassicalControlPredicate()
+    assert pred.to_dict() == {"type": "NoClassicalControlPredicate"}
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+    pred = DirectednessPredicate(arc)
+    assert pred.to_dict() == {
+        "type": "DirectednessPredicate",
+        "architecture": arc.to_dict(),
+    }
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+    pred = NoFastFeedforwardPredicate()
+    assert pred.to_dict() == {"type": "NoFastFeedforwardPredicate"}
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+    pred = NoClassicalBitsPredicate()
+    assert pred.to_dict() == {"type": "NoClassicalBitsPredicate"}
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+    pred = NoWireSwapsPredicate()
+    assert pred.to_dict() == {"type": "NoWireSwapsPredicate"}
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+    pred = MaxTwoQubitGatesPredicate()
+    assert pred.to_dict() == {"type": "MaxTwoQubitGatesPredicate"}
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+    pred = PlacementPredicate(arc)
+    assert pred.to_dict() == {
+        "type": "PlacementPredicate",
+        "node_set": arc.to_dict()["nodes"],
+    }
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+    pred = ConnectivityPredicate(arc)
+    assert pred.to_dict() == {
+        "type": "ConnectivityPredicate",
+        "architecture": arc.to_dict(),
+    }
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+    pred = CliffordCircuitPredicate()
+    assert pred.to_dict() == {"type": "CliffordCircuitPredicate"}
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+    pred = DefaultRegisterPredicate()
+    assert pred.to_dict() == {"type": "DefaultRegisterPredicate"}
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+    pred = MaxNQubitsPredicate(10)
+    assert pred.to_dict() == {"type": "MaxNQubitsPredicate", "n_qubits": 10}
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+    pred = NoBarriersPredicate()
+    assert pred.to_dict() == {"type": "NoBarriersPredicate"}
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+    pred = NoMidMeasurePredicate()
+    assert pred.to_dict() == {"type": "NoMidMeasurePredicate"}
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+    pred = NoSymbolsPredicate()
+    assert pred.to_dict() == {"type": "NoSymbolsPredicate"}
+    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
+
+
 if __name__ == "__main__":
     test_predicate_generation()
     test_compilation_unit_generation()
@@ -1021,3 +1123,4 @@ if __name__ == "__main__":
     test_apply_pass_with_callbacks()
     test_remove_barriers()
     test_RebaseOQC_and_SynthesiseOQC()
+    test_predicate_serialization()

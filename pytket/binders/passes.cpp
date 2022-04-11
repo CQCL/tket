@@ -53,10 +53,9 @@ static PassPtr gen_cx_mapping_pass_kwargs(
 }
 
 static PassPtr gen_default_routing_pass(const Architecture &arc) {
-  std::vector<RoutingMethodPtr> config = {
-      std::make_shared<LexiLabellingMethod>(),
-      std::make_shared<LexiRouteRoutingMethod>()};
-  return gen_routing_pass(arc, config);
+  return gen_routing_pass(
+      arc, {std::make_shared<LexiLabellingMethod>(),
+            std::make_shared<LexiRouteRoutingMethod>()});
 }
 
 static PassPtr gen_default_aas_routing_pass(
@@ -76,6 +75,16 @@ static PassPtr gen_default_aas_routing_pass(
   }
 
   return gen_full_mapping_pass_phase_poly(arc, lookahead, cnotsynthtype);
+}
+
+static PassPtr gen_composephasepolybox_pass(py::kwargs kwargs) {
+  unsigned min_size = 0;
+
+  if (kwargs.contains("min_size")) {
+    min_size = py::cast<unsigned>(kwargs["min_size"]);
+  }
+
+  return RebaseUFR() >> ComposePhasePolyBoxes(min_size);
 }
 
 const PassPtr &DecomposeClassicalExp() {
@@ -439,8 +448,7 @@ PYBIND11_MODULE(passes, m) {
       "matrix-multiplication order, i.e. reverse order in the "
       "circuit);\n(4) applies the `tk1_replacement` function to each of "
       "these triples :math:`(a,b,c)` to generate replacement circuits."
-      "\n\n:param gateset: The allowed multi-qubit operations in the "
-      "rebased circuit."
+      "\n\n:param gateset: The allowed operations in the rebased circuit."
       "\n:param cx_replacement: The equivalent circuit to replace a CX "
       "gate using two qubit gates from the desired basis (can use any single "
       "qubit OpTypes)."
@@ -468,9 +476,18 @@ PYBIND11_MODULE(passes, m) {
       py::arg("q"), py::arg("p"), py::arg("strict") = false);
 
   m.def(
-      "RoutingPass", &gen_default_routing_pass,
+      "CustomRoutingPass", &gen_routing_pass,
       "Construct a pass to route to the connectivity graph of an "
       ":py:class:`Architecture`. Edge direction is ignored."
+      "\n:return: a pass that routes to the given device architecture",
+      py::arg("arc"), py::arg("config"));
+
+  m.def(
+      "RoutingPass", &gen_default_routing_pass,
+      "Construct a pass to route to the connectivity graph of an "
+      ":py:class:`Architecture`. Edge direction is ignored. "
+      "Uses :py:class:`LexiLabellingMethod` and "
+      ":py:class:`LexiRouteRoutingMethod`."
       "\n:return: a pass that routes to the given device architecture",
       py::arg("arc"));
 
@@ -540,6 +557,17 @@ PYBIND11_MODULE(passes, m) {
       "\n:param \\**kwargs: parameters for routing (described above)"
       "\n:return: a pass to perform the remapping",
       py::arg("arc"));
+
+  m.def(
+      "ComposePhasePolyBoxes", &gen_composephasepolybox_pass,
+      "Pass to convert a given :py:class:`Circuit` to the CX, Rz, H gateset "
+      "and compose "
+      "phase polynomial boxes from the groups of the CX+Rz gates."
+      "\n\n- (unsigned) min_size=0: minimal number of CX gates in each phase "
+      "polynominal box: groups with a smaller number of CX gates are not "
+      "affected by this transformation\n"
+      "\n:param \\**kwargs: parameters for composition (described above)"
+      "\n:return: a pass to perform the composition");
 
   m.def(
       "CXMappingPass", &gen_cx_mapping_pass_kwargs,

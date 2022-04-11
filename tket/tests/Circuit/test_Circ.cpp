@@ -1667,6 +1667,22 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
             0, 0, 0, sq + sq * i_;
     // clang-format on
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(rep.count_gates(OpType::CX) == 2);
+  }
+  GIVEN("A CRz(+-pi) gate") {
+    Circuit circ(2);
+    Vertex v;
+    WHEN("CRz(+pi)") { v = circ.add_op<unsigned>(OpType::CRz, 1., {0, 1}); }
+    WHEN("CRz(-pi)") { v = circ.add_op<unsigned>(OpType::CRz, -1., {0, 1}); }
+    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    Circuit rep;
+    rep = CX_circ_from_multiq(op);
+
+    REQUIRE(rep.count_gates(OpType::CX) == 1);
+
+    const auto u = tket_sim::get_unitary(rep);
+    const auto u_correct = tket_sim::get_unitary(circ);
+    REQUIRE((u - u_correct).cwiseAbs().sum() < ERR_EPS);
   }
   GIVEN("A CRx gate") {
     Circuit circ(2);
@@ -1685,6 +1701,22 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
             0, 0, -sq* i_, sq;
     // clang-format on
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(rep.count_gates(OpType::CX) == 2);
+  }
+  GIVEN("A CRx(+-pi) gate") {
+    Circuit circ(2);
+    Vertex v;
+    WHEN("CRx(+pi)") { v = circ.add_op<unsigned>(OpType::CRx, 1., {0, 1}); }
+    WHEN("CRx(-pi)") { v = circ.add_op<unsigned>(OpType::CRx, -1., {0, 1}); }
+    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    Circuit rep;
+    rep = CX_circ_from_multiq(op);
+
+    REQUIRE(rep.count_gates(OpType::CX) == 1);
+
+    const auto u = tket_sim::get_unitary(rep);
+    const auto u_correct = tket_sim::get_unitary(circ);
+    REQUIRE((u - u_correct).cwiseAbs().sum() < ERR_EPS);
   }
   GIVEN("A CRy gate") {
     Circuit circ(2);
@@ -1703,6 +1735,22 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
             0, 0, sq, sq;
     // clang-format on
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(rep.count_gates(OpType::CX) == 2);
+  }
+  GIVEN("A CRy(+-pi) gate") {
+    Circuit circ(2);
+    Vertex v;
+    WHEN("CRy(+pi)") { v = circ.add_op<unsigned>(OpType::CRy, 1., {0, 1}); }
+    WHEN("CRy(-pi)") { v = circ.add_op<unsigned>(OpType::CRy, -1., {0, 1}); }
+    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    Circuit rep;
+    rep = CX_circ_from_multiq(op);
+
+    REQUIRE(rep.count_gates(OpType::CX) == 1);
+
+    const auto u = tket_sim::get_unitary(rep);
+    const auto u_correct = tket_sim::get_unitary(circ);
+    REQUIRE((u - u_correct).cwiseAbs().sum() < ERR_EPS);
   }
   GIVEN("A CV gate") {
     Circuit circ(2);
@@ -2421,7 +2469,7 @@ SCENARIO("Represent symbolic operations correctly") {
   REQUIRE(cmd_1.str() == expected_1);
 }
 
-SCENARIO("Confirm that LaTeX output compiles", "[latex]") {
+SCENARIO("Confirm that LaTeX output compiles", "[latex][.long]") {
   Circuit c(5, 2);
   c.add_conditional_gate<unsigned>(OpType::Z, {}, uvec{0}, {}, 0);
   c.add_conditional_gate<unsigned>(OpType::U1, {0.3}, uvec{1}, {}, 0);

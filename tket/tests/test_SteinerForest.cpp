@@ -402,7 +402,7 @@ SCENARIO("check error in steiner Forest") {
         aas::best_operations_lookahead(ph, sf, 1), std::logic_error);
   }
 }
-SCENARIO("Synthesise a phase polynomial for a given architecture") {
+SCENARIO("Synthesise a phase polynomial for a given architecture", "[.long]") {
   GIVEN("phase_poly_synthesis 1") {
     const Architecture archi(
         {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});

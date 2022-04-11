@@ -1556,7 +1556,9 @@ bool Circuit::rename_units(const std::map<UnitA, UnitB> &qm) {
   for (const std::pair<const UnitA, UnitB> &pair : qm) {
     boundary_t::iterator found = boundary.get<TagID>().find(pair.first);
     if (found == boundary.get<TagID>().end()) {
-      tket_log()->warn("unit {} not found in circuit", pair.first.repr());
+      std::stringstream ss;
+      ss << "unit " << pair.first.repr() << " not found in circuit";
+      tket_log()->warn(ss.str());
       continue;
     }
 

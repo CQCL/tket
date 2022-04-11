@@ -230,6 +230,41 @@ PhasePolyBox::PhasePolyBox(
       qubit_indices_(qubit_indices),
       phase_polynomial_(phase_polynomial),
       linear_transformation_(linear_transformation) {
+  for (const auto& pair : qubit_indices_) {
+    if (pair.right >= n_qubits) {
+      throw std::invalid_argument(
+          "The creation of a phasepolybox failed: index in qubit "
+          "list is out of range");
+    }
+  }
+
+  for (auto const& ps : phase_polynomial_) {
+    if (ps.first.size() != n_qubits_) {
+      throw std::invalid_argument(
+          "The creation of a phasepolybox failed: PhasePolynomial "
+          "does not match the given number of qubits");
+    }
+
+    if (std::none_of(
+            ps.first.begin(), ps.first.end(), [](bool x) { return x; })) {
+      throw std::invalid_argument(
+          "The creation of a phasepolybox failed: PhasePolynomial "
+          "contains invalid element");
+    }
+  }
+
+  if (linear_transformation_.rows() != n_qubits) {
+    throw std::invalid_argument(
+        "The creation of a phasepolybox failed: row size of the "
+        "linear transformation does not match the number of qubits");
+  }
+
+  if (linear_transformation_.cols() != n_qubits) {
+    throw std::invalid_argument(
+        "The creation of a phasepolybox failed: cols size of the "
+        "linear transformation does not match the number of qubits");
+  }
+
   signature_ = op_signature_t(n_qubits_, EdgeType::Quantum);
 }
 
@@ -314,8 +349,11 @@ Op_ptr PhasePolyBox::from_json(const nlohmann::json& j) {
 
 REGISTER_OPFACTORY(PhasePolyBox, PhasePolyBox)
 
-CircToPhasePolyConversion::CircToPhasePolyConversion(const Circuit& circ) {
+CircToPhasePolyConversion::CircToPhasePolyConversion(
+    const Circuit& circ, unsigned min_size) {
+  min_size_ = min_size;
   circ_ = circ;
+  box_size_ = 0;
 
   nq_ = circ_.n_qubits();
   nb_ = circ_.n_bits();
@@ -357,8 +395,33 @@ CircToPhasePolyConversion::CircToPhasePolyConversion(const Circuit& circ) {
 void CircToPhasePolyConversion::add_phase_poly_box() {
   qubit_types_.assign(nq_, QubitType::pre);
 
-  PhasePolyBox ppbox(box_circ_);
-  circ_.add_box(ppbox, all_qu_);
+  if (box_size_ >= min_size_) {
+    PhasePolyBox ppbox(box_circ_);
+    circ_.add_box(ppbox, all_qu_);
+  } else {
+    for (const Command& com : box_circ_) {
+      OpType ot = com.get_op_ptr()->get_type();
+      unit_vector_t qbs = com.get_args();
+      switch (ot) {
+        case OpType::CX: {
+          unsigned ctrl = qubit_indices_.at(Qubit(qbs[0]));
+          unsigned target = qubit_indices_.at(Qubit(qbs[1]));
+          circ_.add_op<unsigned>(ot, {ctrl, target});
+          break;
+        }
+        case OpType::Rz: {
+          unsigned qb = qubit_indices_.at(Qubit(qbs[0]));
+          auto angle = com.get_op_ptr()->get_params().at(0);
+          circ_.add_op<unsigned>(ot, angle, {qb});
+          break;
+        }
+        default: {
+          // no other types should be in this circuit
+          TKET_ASSERT(!"invalid op type in phase poly box construction");
+        }
+      }
+    }
+  }
 
   for (const Command& post_com : post_circ_) {
     OpType post_ot = post_com.get_op_ptr()->get_type();
@@ -378,6 +441,7 @@ void CircToPhasePolyConversion::add_phase_poly_box() {
 
   post_circ_ = Circuit(empty_circ_);
   box_circ_ = Circuit(nq_);
+  box_size_ = 0;
 }
 
 void CircToPhasePolyConversion::convert() {
@@ -497,6 +561,7 @@ qubits states are reset to pre.
           // no other types should be in this list
           TKET_ASSERT(!"Invalid Qubit Type in Phase Poly Box creation");
         }
+        ++box_size_;
         break;
       }
       case OpType::Rz: {

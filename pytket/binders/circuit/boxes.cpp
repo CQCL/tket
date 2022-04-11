@@ -187,6 +187,7 @@ void init_boxes(py::module &m) {
             for (const auto &pair : q_ind) {
               bmap.insert({pair.first, pair.second});
             }
+
             return PhasePolyBox(n_qb, bmap, p_p, lin_trans);
           }),
           "Construct from the number of qubits, the mapping from "
@@ -194,6 +195,11 @@ void init_boxes(py::module &m) {
           "to phase) and the linear transformation (boolean matrix)",
           py::arg("n_qubits"), py::arg("qubit_indices"),
           py::arg("phase_polynomial"), py::arg("linear_transformation"))
+      .def(
+          py::init([](const Circuit &circ) { return PhasePolyBox(circ); }),
+          "Construct a PhasePolyBox from a given circuit containing only Rz "
+          "and CX gates.",
+          py::arg("circuit"))
       .def_property_readonly(
           "n_qubits", &PhasePolyBox::get_n_qubits,
           "Number of gates the polynomial acts on.")
@@ -211,6 +217,9 @@ void init_boxes(py::module &m) {
       .def_property_readonly(
           "linear_transformation", &PhasePolyBox::get_linear_transformation,
           "Boolean matrix corresponding to linear transformation.")
+      .def(
+          "get_circuit", [](PhasePolyBox &ppb) { return *ppb.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box.")
       .def_property_readonly(
           "qubit_indices",
           [](PhasePolyBox &ppoly) {

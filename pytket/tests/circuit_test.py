@@ -693,17 +693,57 @@ def test_opgroups() -> None:
 def test_phase_polybox() -> None:
     c = Circuit(1, 1)
     n_qb = 1
-    qubit_indices = {Qubit(0): 1}
-    phase_polynomial = {(True,): 0.1, (False,): 0.1}
-    linear_transformation = np.array([[1, 0], [0, 1]])
+    qubit_indices = {Qubit(0): 0}
+    phase_polynomial = {(True,): 0.1}
+    linear_transformation = np.array([[1]])
     p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
+
+    b = p_box.get_circuit()
+
+    p_box_ii = PhasePolyBox(b)
 
     c.add_phasepolybox(p_box, [0])
     c.add_phasepolybox(p_box, [Qubit(0)])
+
+    c.add_phasepolybox(p_box_ii, [0])
+
     assert p_box.n_qubits == n_qb
+    assert p_box_ii.n_qubits == n_qb
     assert p_box.qubit_indices == qubit_indices
+    assert p_box_ii.qubit_indices == qubit_indices
     assert p_box.phase_polynomial == phase_polynomial
+    assert p_box_ii.phase_polynomial == phase_polynomial
     assert np.array_equal(p_box.linear_transformation, linear_transformation)
+    assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
+    assert DecomposeBoxes().apply(c)
+
+
+def test_phase_polybox_II() -> None:
+    c = Circuit(1, 1)
+    n_qb = 1
+    qubit_indices = {Qubit(0): 0}
+    phase_polynomial = {(True,): 0.1, (True,): 0.3}
+    linear_transformation = np.array([[1]])
+    p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
+
+    b = p_box.get_circuit()
+
+    p_box_ii = PhasePolyBox(b)
+
+    c.add_phasepolybox(p_box, [0])
+    c.add_phasepolybox(p_box, [Qubit(0)])
+
+    c.add_phasepolybox(p_box_ii, [0])
+
+    assert p_box.n_qubits == n_qb
+    assert p_box_ii.n_qubits == n_qb
+    assert p_box.qubit_indices == qubit_indices
+    assert p_box_ii.qubit_indices == qubit_indices
+    assert p_box.phase_polynomial == phase_polynomial
+    assert p_box_ii.phase_polynomial == phase_polynomial
+    assert np.array_equal(p_box.linear_transformation, linear_transformation)
+    assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
+    assert DecomposeBoxes().apply(c)
 
 
 def test_phase_polybox_big() -> None:
@@ -713,16 +753,25 @@ def test_phase_polybox_big() -> None:
     phase_polynomial = {
         (True, False, True): 0.333,
         (False, False, True): 0.05,
-        (False, False, False): 1.05,
+        (False, True, False): 1.05,
     }
-    linear_transformation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    linear_transformation = np.array([[1, 1, 0], [0, 1, 0], [0, 0, 1]])
     p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
 
+    b = p_box.get_circuit()
+
+    p_box_ii = PhasePolyBox(b)
+
     c.add_phasepolybox(p_box, [0, 1, 2])
+    c.add_phasepolybox(p_box_ii, [0, 1, 2])
     assert p_box.n_qubits == n_qb
+    assert p_box_ii.n_qubits == n_qb
     assert p_box.qubit_indices == qubit_indices
+    assert p_box_ii.qubit_indices == qubit_indices
     assert p_box.phase_polynomial == phase_polynomial
+    assert p_box_ii.phase_polynomial == phase_polynomial
     assert np.array_equal(p_box.linear_transformation, linear_transformation)
+    assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
     assert DecomposeBoxes().apply(c)
 
 

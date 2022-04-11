@@ -15,6 +15,8 @@
 #include <algorithm>
 #include <boost/algorithm/minmax_element.hpp>
 #include <chrono>
+#include <ctime>
+#include <sstream>
 
 #include "Architecture/Architecture.hpp"
 #include "Graphs/Utils.hpp"
@@ -69,11 +71,13 @@ std::vector<qubit_bimap_t> monomorphism_edge_break(
         undirected_pattern, undirected_target, callback, search_timeout);
 
     if (std::chrono::steady_clock::now() >= end_time) {
-      tket_log()->warn(
-          "boost::vf2_subgraph_mono reached {} millisecond timeout before "
-          "reaching set max matches {}, instead finding {} matches. "
-          "Please change PlacementConfig.timeout to allow more matches.",
-          timeout, callback.max, all_maps.size());
+      std::stringstream ss;
+      ss << "boost::vf2_subgraph_mono reached " << timeout
+         << " millisecond timeout before reaching set max matches "
+         << callback.max << ", instead finding " << all_maps.size()
+         << " matches. "
+            "Please change PlacementConfig.timeout to allow more matches.";
+      tket_log()->warn(ss.str());
       if (all_maps.empty()) {
         throw std::runtime_error("No mappings found before timeout.");
       }

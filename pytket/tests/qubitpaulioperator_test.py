@@ -57,7 +57,7 @@ def test_QubitPauliOperator_scalarmult() -> None:
     assert qpo2 == qpo3
     assert qpo2[QubitPauliString(Qubit("q"), Pauli.X)] == x * y
     qpo2 *= x
-    assert qpo2[QubitPauliString(Qubit("q"), Pauli.X)] == x ** 2 * y
+    assert qpo2[QubitPauliString(Qubit("q"), Pauli.X)] == x**2 * y
 
 
 def test_QubitPauliOperator_opmult() -> None:
@@ -134,6 +134,11 @@ def test_QubitPauliOperator_matrices() -> None:
         np.kron(op_mat, np.eye(2)),  # type: ignore
         named_op.to_sparse_matrix(named_qbs + [Qubit("a", 1)]).toarray(),
     )
+
+    # https://github.com/CQCL/tket/issues/294
+    P = QubitPauliString({Qubit(0): Pauli.Z, Qubit(1): Pauli.I})
+    H = QubitPauliOperator({P: 1})
+    assert np.allclose(P.to_sparse_matrix().todense(), H.to_sparse_matrix().todense())
 
 
 def test_QubitPauliOperator_compression() -> None:

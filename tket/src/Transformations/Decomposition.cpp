@@ -745,8 +745,8 @@ Transform decomp_boxes() {
   return Transform([](Circuit &circ) { return circ.decompose_boxes(); });
 }
 
-Transform compose_phase_poly_boxes() {
-  return Transform([](Circuit &circ) {
+Transform compose_phase_poly_boxes(const unsigned min_size) {
+  return Transform([=](Circuit &circ) {
     // replace wireswaps with three CX
     while (circ.has_implicit_wireswaps()) {
       qubit_map_t perm = circ.implicit_qubit_permutation();
@@ -758,7 +758,7 @@ Transform compose_phase_poly_boxes() {
       }
     }
 
-    CircToPhasePolyConversion conv = CircToPhasePolyConversion(circ);
+    CircToPhasePolyConversion conv = CircToPhasePolyConversion(circ, min_size);
     conv.convert();
     circ = conv.get_circuit();
     return true;
