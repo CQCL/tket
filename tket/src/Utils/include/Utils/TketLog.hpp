@@ -42,8 +42,8 @@ class Logger {
   void debug(const std::string &s, std::ostream &os = std::cout);
   void info(const std::string &s, std::ostream &os = std::cout);
   void warn(const std::string &s, std::ostream &os = std::cout);
-  void error(const std::string &s, std::ostream &os = std::cerr);
-  void critical(const std::string &s, std::ostream &os = std::cerr);
+  void error(const std::string &s, std::ostream &os = std::cout);
+  void critical(const std::string &s, std::ostream &os = std::cout);
   void set_level(LogLevel lev);
 
  private:
