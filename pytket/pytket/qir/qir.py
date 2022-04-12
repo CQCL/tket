@@ -233,6 +233,9 @@ def circuit_to_qir_str(
             mod = module.module
             qubits = _to_qis_qubits(command.qubits, mod)
             results = _to_qis_results(command.bits, mod)
+            bits: Optional[type[types.RESULT]] = None
+            if type(optype) == BitWiseOp:
+                bits = _to_qis_bits(command.args, mod)
             try:
                 gate = module.gateset.tk_to_gateset(optype)
             except KeyError:
