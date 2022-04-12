@@ -233,7 +233,7 @@ setup(
     author="Seyon Sivarajah",
     author_email="seyon.sivarajah@cambridgequantum.com",
     python_requires=">=3.8",
-    url="https://cqcl.github.io/pytket",
+    url="https://cqcl.github.io/tket/pytket/api/",
     description="Python module for interfacing with the CQC tket library of quantum "
     "software",
     license="Apache 2",
