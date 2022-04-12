@@ -169,7 +169,7 @@ class ExtendedModule:
             self.__setattr__(
                 str(k),
                 self.module.add_external_function(
-                    gateset.template.substitute(name=k),
+                    gateset.template.substitute(optype=v.optype, opname=k),
                     types.Function(v.functions, types.VOID),
                 ),
             )
