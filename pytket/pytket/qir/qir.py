@@ -203,6 +203,12 @@ def _to_qis_results(bits: List[Bit], mod: SimpleModule) -> Optional[type[types.R
         return mod.results[bits[0].index[0]]
     return None
 
+def _to_qis_bits(args: List[Bit], mod: SimpleModule) -> Optional[type[types.RESULT]]:
+    print(args)
+    if args:
+        return [mod.results[bit.index[0]] for bit in args]
+    return None
+
 
 def circuit_from_qir(input_file) -> None:
     pass
