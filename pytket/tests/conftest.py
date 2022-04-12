@@ -25,17 +25,18 @@ from pytket.circuit import (  # type: ignore
 )
 from pytket.qir.qir import circuit_to_qir, ExtendedModule, QUANTINUUM_GATES
 
+
 @fixture
 def bitwise_file() -> str:
     return "test_bitwise_ops.ll"
 
-    
+
 @fixture
 def circuit_bitwise_ops(bitwise_file: str) -> None:
-    c = Circuit(0,3)
-    c.add_c_and(0,1,2)
-    c.add_c_or(2,1,0)
-    c.add_c_xor(0,1,2)
+    c = Circuit(0, 3)
+    c.add_c_and(0, 1, 2)
+    c.add_c_or(2, 1, 0)
+    c.add_c_xor(0, 1, 2)
     circuit_to_qir(c, bitwise_file, QUANTINUUM_GATES)
     yield
     os.remove(bitwise_file)
