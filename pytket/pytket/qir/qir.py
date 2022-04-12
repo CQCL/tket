@@ -204,7 +204,6 @@ def _to_qis_results(bits: List[Bit], mod: SimpleModule) -> Optional[type[types.R
     return None
 
 def _to_qis_bits(args: List[Bit], mod: SimpleModule) -> Optional[type[types.RESULT]]:
-    print(args)
     if args:
         return [mod.results[bit.index[0]] for bit in args]
     return None
