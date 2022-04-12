@@ -177,11 +177,20 @@ class ExtendedModule:
 
 def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
     optype = op.type
-    params = op.params
-    if optype == OpType.TK1:
-        # convert to U3
-        optype = OpType.U3
-        params = [op.params[1], op.params[0] - 0.5, op.params[2] + 0.5]
+    if optype == OpType.ExplicitPredicate:
+        params = None
+        if op.get_name() == "AND":
+            optype = BitWiseOp.AND
+        elif op.get_name() == "OR":
+            optype = BitWiseOp.OR
+        elif op.get_name() == "XOR":
+            optype = BitWiseOp.XOR
+    else:
+        params = op.params
+        if optype == OpType.TK1:
+            # convert to U3
+            optype = OpType.U3
+            params = [op.params[1], op.params[0] - 0.5, op.params[2] + 0.5]
     return (optype, params)
 
 
