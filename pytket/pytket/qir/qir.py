@@ -66,18 +66,66 @@ QUANTINUUM_GATES = GateSet(
     name="Quantinuum",
     template=Template("__quantinuum__${optype}__${opname}__body"),
     gateset={
-        "h": CustomPyQIRGate(functions=[types.QUBIT]),
-        "x": CustomPyQIRGate(functions=[types.QUBIT]),
-        "y": CustomPyQIRGate(functions=[types.QUBIT]),
-        "z": CustomPyQIRGate(functions=[types.QUBIT]),
-        "rx": CustomPyQIRGate(functions=[types.DOUBLE, types.QUBIT]),
-        "ry": CustomPyQIRGate(functions=[types.DOUBLE, types.QUBIT]),
-        "rz": CustomPyQIRGate(functions=[types.DOUBLE, types.QUBIT]),
-        "phx": CustomPyQIRGate(functions=[types.DOUBLE, types.DOUBLE, types.QUBIT]),
-        "cnot": CustomPyQIRGate(functions=[types.QUBIT, types.QUBIT]),
-        "zzmax": CustomPyQIRGate(functions=[types.QUBIT, types.QUBIT]),
-        "zzph": CustomPyQIRGate(functions=[types.DOUBLE, types.QUBIT, types.QUBIT]),
-        "mz": CustomPyQIRGate(functions=[types.QUBIT, types.RESULT]),
+        "h": CustomPyQIRGate(
+            optype="qis",
+            functions=[types.QUBIT]
+        ),
+        "x": CustomPyQIRGate(
+            optype="qis",
+            functions=[types.QUBIT]
+        ),
+        "y": CustomPyQIRGate(
+            optype="qis",
+            functions=[types.QUBIT]
+        ),
+        "z": CustomPyQIRGate(
+            optype="qis",
+            functions=[types.QUBIT]
+        ),
+        "rx": CustomPyQIRGate(
+            optype="qis",
+            functions=[types.DOUBLE, types.QUBIT]
+        ),
+        "ry": CustomPyQIRGate(
+            optype="qis",
+            functions=[types.DOUBLE, types.QUBIT]
+        ),
+        "rz": CustomPyQIRGate(
+            optype="qis",
+            functions=[types.DOUBLE, types.QUBIT]
+        ),
+        "phx": CustomPyQIRGate(
+            optype="qis",
+            functions=[types.DOUBLE, types.DOUBLE, types.QUBIT]
+        ),
+        "cnot": CustomPyQIRGate(
+            optype="qis",
+            functions=[types.QUBIT, types.QUBIT]
+        ),
+        "zzmax": CustomPyQIRGate(
+            optype="qis",
+            functions=[types.QUBIT, types.QUBIT]
+        ),
+        "zzph": CustomPyQIRGate(
+            optype="qis",
+            functions=[types.DOUBLE, types.QUBIT, types.QUBIT]
+        ),
+        "mz": CustomPyQIRGate(
+            optype="qis",
+            functions=[types.QUBIT, types.RESULT]
+        ),
+        "and": CustomPyQIRGate(
+            optype="cis",
+            functions=[types.RESULT, types.RESULT, types.RESULT]
+        ),
+        "or": CustomPyQIRGate(
+            optype="cis",
+            functions=[types.RESULT, types.RESULT, types.RESULT]
+        ),
+        "xor": CustomPyQIRGate(
+            optype="cis",
+            functions=[types.RESULT, types.RESULT, types.RESULT]
+        )
     },
     tk_to_gateset=lambda optype: {**_TK_TO_QUANTINUUM}[optype],
 )
