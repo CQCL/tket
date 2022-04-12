@@ -64,7 +64,7 @@ _TK_TO_QUANTINUUM = {
 
 QUANTINUUM_GATES = GateSet(
     name="Quantinuum",
-    template=Template("__quantinuum__qis__${name}__body"),
+    template=Template("__quantinuum__${optype}__${opname}__body"),
     gateset={
         "h": CustomPyQIRGate(functions=[types.QUBIT]),
         "x": CustomPyQIRGate(functions=[types.QUBIT]),
