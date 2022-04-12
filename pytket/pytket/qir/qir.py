@@ -222,8 +222,6 @@ def circuit_to_qir_str(
         for typ in (
             OpType.RangePredicate,
             OpType.MultiBit,
-            OpType.ExplicitPredicate,
-            OpType.ExplicitModifier,
             OpType.SetBits,
         )
     ):
