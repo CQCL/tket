@@ -6,7 +6,13 @@ namespace tket {
 enum class PortType { In, Out };
 typedef std::pair<VertPort, PortType> TypedVertPort;
 
+bool is_spiderless_optype(const OpType& optype) {
+  return optype == OpType::Barrier || optype == OpType::SWAP ||
+         optype == OpType::noop;
+}
+
 zx::ZXDiagram circuit_to_zx(const Circuit& circ) {
+  // TODO: how can users know the boundary mapping?
   zx::ZXDiagram zxd;
 
   sequenced_map_t<TypedVertPort, zx::ZXVert> vert_lookup;
@@ -51,8 +57,12 @@ zx::ZXDiagram circuit_to_zx(const Circuit& circ) {
         vert_lookup.insert({{{vert, 0}, PortType::In}, zx_vert});
         break;
       }
+      // Spiderless ops are handled during vertex wiring
       case OpType::Barrier:
+      case OpType::noop:
+      case OpType::SWAP: {
         continue;
+      }
       case OpType::H: {
         zx::ZXVert zx_vert =
             zxd.add_vertex(zx::ZXType::Hbox, zx::QuantumType::Quantum);
@@ -173,17 +183,23 @@ zx::ZXDiagram circuit_to_zx(const Circuit& circ) {
     Vertex v_t = circ.target(edge);
     port_t p_s = circ.get_source_port(edge);
     port_t p_t = circ.get_target_port(edge);
-    // Handle Barriers
-    if (circ.get_OpType_from_Vertex(v_s) == OpType::Barrier) {
-      // We only handles in-edges
+    // Handle Spiderless ops
+    if (is_spiderless_optype(circ.get_OpType_from_Vertex(v_s))) {
+      // We only handle in-edges
       continue;
     }
-    if (circ.get_OpType_from_Vertex(v_t) == OpType::Barrier) {
-      // Find the next nonbarrier vertport
+    if (is_spiderless_optype(circ.get_OpType_from_Vertex(v_t))) {
+      // Traverse the path to find the next non-spiderless op
       Edge next_e = edge;
       do {
-        std::tie(v_t, next_e) = circ.get_next_pair(v_t, next_e);
-      } while (circ.get_OpType_from_Vertex(v_t) == OpType::Barrier);
+        if (circ.get_OpType_from_Vertex(v_t) == OpType::SWAP) {
+          next_e = circ.get_nth_out_edge(
+              v_t, (circ.get_target_port(next_e) + 1) % 2);
+          v_t = circ.target(next_e);
+        } else {
+          std::tie(v_t, next_e) = circ.get_next_pair(v_t, next_e);
+        }
+      } while (is_spiderless_optype(circ.get_OpType_from_Vertex(v_t)));
       p_t = circ.get_target_port(next_e);
     }
 

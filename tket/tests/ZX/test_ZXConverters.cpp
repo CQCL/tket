@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <boost/graph/adjacency_list.hpp>
 #include <catch2/catch.hpp>
 
 #include "../testutil.hpp"
 #include "Converters/Converters.hpp"
 #include "Gate/SymTable.hpp"
-
 namespace tket {
 namespace zx {
 namespace test_ZXConverters {
@@ -244,6 +244,59 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(zx.n_wires() == 2);
     REQUIRE_NOTHROW(zx.check_validity());
   }
+  GIVEN("noop") {
+    Circuit circ(1);
+    circ.add_op<unsigned>(OpType::noop, {0});
+    ZXDiagram zx = circuit_to_zx(circ);
+    ZXVertVec q_in_boundary =
+        zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    ZXVert q_input = q_in_boundary[0];
+    ZXVert q_next = zx.neighbours(q_input)[0];
+    ZXVertVec q_out_boundary =
+        zx.get_boundary(ZXType::Output, QuantumType::Quantum);
+    REQUIRE(q_out_boundary[0] == q_next);
+    REQUIRE(zx.n_vertices() == 2);
+    REQUIRE(zx.n_wires() == 1);
+    REQUIRE_NOTHROW(zx.check_validity());
+  }
+  GIVEN("SWAP") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+    circ.add_op<unsigned>(OpType::SWAP, {1, 2});
+    circ.add_op<unsigned>(OpType::Rz, 0.1, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.2, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {2});
+
+    ZXDiagram zx = circuit_to_zx(circ);
+    ZXVertVec q_in_boundary =
+        zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    ZXVert q_input_0 = q_in_boundary[0];
+    ZXVert q_next_0 = zx.neighbours(q_input_0)[0];
+    ZXVert q_input_1 = q_in_boundary[1];
+    ZXVert q_next_1 = zx.neighbours(q_input_1)[0];
+    ZXVert q_input_2 = q_in_boundary[2];
+    ZXVert q_next_2 = zx.neighbours(q_input_2)[0];
+
+    PhasedGen z0_gen = zx.get_vertex_ZXGen<PhasedGen>(q_next_0);
+    PhasedGen z1_gen = zx.get_vertex_ZXGen<PhasedGen>(q_next_1);
+    PhasedGen z2_gen = zx.get_vertex_ZXGen<PhasedGen>(q_next_2);
+
+    REQUIRE(z0_gen.get_type() == ZXType::ZSpider);
+    REQUIRE(z0_gen.get_qtype() == QuantumType::Quantum);
+    REQUIRE(z0_gen.get_param() == 0.3);
+
+    REQUIRE(z1_gen.get_type() == ZXType::ZSpider);
+    REQUIRE(z1_gen.get_qtype() == QuantumType::Quantum);
+    REQUIRE(z1_gen.get_param() == 0.1);
+
+    REQUIRE(z2_gen.get_type() == ZXType::ZSpider);
+    REQUIRE(z2_gen.get_qtype() == QuantumType::Quantum);
+    REQUIRE(z2_gen.get_param() == 0.2);
+
+    REQUIRE(zx.n_vertices() == 9);
+    REQUIRE(zx.n_wires() == 6);
+    REQUIRE_NOTHROW(zx.check_validity());
+  }
   GIVEN("Create") {
     Circuit circ(1);
     circ.qubit_create(Qubit(0));
@@ -312,12 +365,18 @@ SCENARIO("Check converting circuits to diagrams") {
     REQUIRE_NOTHROW(zx.check_validity());
   }
 
-  GIVEN("A circuit with barriers") {
+  GIVEN("A circuit with spiderless ops") {
     Circuit circ(3, 2);
     circ.add_op<unsigned>(OpType::X, {2});
     circ.add_barrier({0, 2}, {0, 1});
+    circ.add_op<unsigned>(OpType::noop, {0});
+    circ.add_op<unsigned>(OpType::noop, {0});
     circ.add_barrier({0, 1});
+    circ.add_op<unsigned>(OpType::noop, {1});
     circ.add_barrier({}, {0});
+    circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+    circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+    circ.add_op<unsigned>(OpType::SWAP, {0, 1});
     circ.add_op<unsigned>(OpType::X, {1});
     circ.add_op<unsigned>(OpType::Measure, {0, 0});
     circ.add_barrier({1}, {0, 1});
