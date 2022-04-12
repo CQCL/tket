@@ -243,7 +243,9 @@ def circuit_to_qir_str(
                     "Gate not defined in {:} gate set.".format(module.gateset.name)
                 )
             get_gate = getattr(module, gate)
-            if params:
+            if bits is not None:
+                mod.builder.call(get_gate, bits)
+            elif params:
                 mod.builder.call(get_gate, [*params, *qubits])
             elif results:
                 mod.builder.call(get_gate, [*qubits, results])
