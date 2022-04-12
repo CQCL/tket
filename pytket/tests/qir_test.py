@@ -12,10 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import dataclasses
+from types import SimpleNamespace
 import pytest
 from pytket import Circuit
 
-from pytket.qir.qir import circuit_to_qir, ExtendedModule, QUANTINUUM_GATES
+from pytket.qir.qir import circuit_to_qir, circuit_to_qir_str, ExtendedModule, QUANTINUUM_GATES
 
 
 def test_raise_quantinuum_gateset_keyerror() -> None:
@@ -112,6 +114,7 @@ def test_qir_from_pytket_circuit_and_pyqir_gateset(
 ):
     with open(file_name, "r") as input:
         data = input.read()
+    print(data)
     call_h = f"call void @__quantum__qis__h__body(%Qubit* null)"
     call_x = f"call void @__quantum__qis__x__body(%Qubit* inttoptr (i64 1 to %Qubit*))"
     call_y = f"call void @__quantum__qis__y__body(%Qubit* null)"
@@ -151,34 +154,14 @@ def test_qir_from_pytket_circuit_and_pyqir_gateset(
     assert call_rz in data
 
 
-# def test_pyqir_builtin_gates_from_pytket_circuit() -> None:
-#     c = Circuit(2)
-#     c.CX(0, 1)
-#     mod_name = "Simple CX circuit"
-#     c_qir_str = circuit_to_qir_str(c, mod_name)
-#     print(c_qir_str)
+def test_bitwise_ops_for_quantinuum_gateset(circuit_bitwise_ops: Circuit, bitwise_file: str) -> None:
+    with open(bitwise_file, "r") as input:
+        data = input.read()
+    print(data)
+    call_and = f"call void @__quantinuum__cis__and__body(%Result* %zero, %Result* %zero1, %Result* %zero2)"
+    call_or = f"call void @__quantinuum__cis__or__body(%Result* %zero3, %Result* %zero4, %Result* %zero5)"
+    call_xor = f"call void @__quantinuum__cis__xor__body(%Result* %zero6, %Result* %zero7, %Result* %zero8)"
 
-# def test_qir_str_measure() -> None:
-#     c = Circuit(1, 1)
-#     c.Measure(0, 0)
-#     module_name = "Simple Measure circuit"
-#     c_qir_str = circuit_to_qir_str(c, module_name)
-#     call = f"call %Result* @__quantum__qis__m__body(%Qubit* null)"
-#     assert call in c_qir_str
-
-
-# def test_qir_str_rz() -> None:
-#     c = Circuit(1)
-#     c.Rz(0.0, 0)
-#     module_name = "Simple Rz circuit"
-#     c_qir_str = circuit_to_qir_str(c, module_name)
-#     call = f"call void @__quantum__qis__rz__body(double 0.000000e+00, %Qubit* null)"
-#     assert call in c_qir_str
-
-
-# def test_extended_module() -> None:
-#     em = ExtendedModule('Extended Module', 2, 1)
-#     em.module.builder.call(em.zzmax, [em.module.qubits[0],em.module.qubits[1]])
-#     em_ir_str = em.module.ir()
-#     call = f"call void @__quantum__qis__zzmax__body(%Qubit* null, %Qubit* inttoptr (i64 1 to %Qubit*))"
-#     assert call in em_ir_str
+    assert call_and in data
+    assert call_or in data
+    assert call_xor in data
