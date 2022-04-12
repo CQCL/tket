@@ -17,7 +17,12 @@ from types import SimpleNamespace
 import pytest
 from pytket import Circuit
 
-from pytket.qir.qir import circuit_to_qir, circuit_to_qir_str, ExtendedModule, QUANTINUUM_GATES
+from pytket.qir.qir import (
+    circuit_to_qir,
+    circuit_to_qir_str,
+    ExtendedModule,
+    QUANTINUUM_GATES,
+)
 
 
 def test_raise_quantinuum_gateset_keyerror() -> None:
@@ -154,7 +159,9 @@ def test_qir_from_pytket_circuit_and_pyqir_gateset(
     assert call_rz in data
 
 
-def test_bitwise_ops_for_quantinuum_gateset(circuit_bitwise_ops: Circuit, bitwise_file: str) -> None:
+def test_bitwise_ops_for_quantinuum_gateset(
+    circuit_bitwise_ops: Circuit, bitwise_file: str
+) -> None:
     with open(bitwise_file, "r") as input:
         data = input.read()
     print(data)
