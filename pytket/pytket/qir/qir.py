@@ -25,6 +25,7 @@ from pytket.circuit.logic_exp import BitWiseOp
 CustomPyQIRGate = NamedTuple(
     "CustomPyQIRGate",
     [
+        ("optype", str,),
         (
             "functions",
             List[Union[type[types.DOUBLE], type[types.QUBIT], type[types.RESULT]]],
