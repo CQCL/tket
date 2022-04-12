@@ -19,6 +19,7 @@ from typing import Callable, Dict, List, NamedTuple, Optional, Tuple, Union
 from pyqir.generator import SimpleModule, BasicQisBuilder, types  # type: ignore
 from pytket import Circuit, OpType, Bit, Qubit
 from pytket.circuit import Op  # type: ignore
+from pytket.circuit.logic_exp import BitWiseOp
 
 
 CustomPyQIRGate = NamedTuple(
