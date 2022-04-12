@@ -49,6 +49,10 @@ from .status import CircuitStatus
 ResultCache = Dict[str, Any]
 
 
+class ResultHandleTypeError(Exception):
+    """Wrong result handle type."""
+
+
 class Backend(ABC):
     """
     This abstract class defines the structure of a backend as something that
@@ -223,7 +227,7 @@ class Backend(ABC):
         if (len(reshandle) != len(self._result_id_type)) or not all(
             isinstance(idval, ty) for idval, ty in zip(reshandle, self._result_id_type)
         ):
-            raise TypeError(
+            raise ResultHandleTypeError(
                 "{0!r} does not match expected identifier types {1}".format(
                     reshandle, self._result_id_type
                 )
@@ -344,7 +348,18 @@ class Backend(ABC):
 
         Keyword arguments are as for `get_result`, and apply to all jobs.
         """
-        return [self.get_result(handle, **kwargs) for handle in handles]
+        try:
+            return [self.get_result(handle, **kwargs) for handle in handles]
+        except ResultHandleTypeError as e:
+            try:
+                self._check_handle_type(cast(ResultHandle, handles))
+            except ResultHandleTypeError:
+                raise e
+
+            raise ResultHandleTypeError(
+                "Possible use of single ResultHandle"
+                " where sequence of ResultHandles was expected."
+            ) from e
 
     def run_circuit(
         self,
