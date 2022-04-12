@@ -57,6 +57,9 @@ _TK_TO_QUANTINUUM = {
     OpType.Rz: "rz",
     OpType.PhasedX: "phx",
     OpType.ZZPhase: "zzph",
+    BitWiseOp.AND: "and",
+    BitWiseOp.OR: "or",
+    BitWiseOp.XOR: "xor",
 }
 
 QUANTINUUM_GATES = GateSet(
