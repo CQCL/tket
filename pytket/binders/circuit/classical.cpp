@@ -88,16 +88,25 @@ void init_classical(py::module& m) {
   py::class_<SetBitsOp, std::shared_ptr<SetBitsOp>, ClassicalOp>(
       m, "SetBitsOp",
       "An operation to set the values of Bits to some constants.")
+      .def(py::init<const std::vector<bool>&>(),
+          "Construct from a table of values.",
+          py::arg("values"))
       .def_property_readonly(
           "values", &SetBitsOp::get_values, "The values to set bits to.");
   py::class_<MultiBitOp, std::shared_ptr<MultiBitOp>, ClassicalOp>(
       m, "MultiBitOp",
-      "An operation to set the values of Bits to some constants.")
+      "An operation to apply a classical op multiple times in parallel.")
+      .def(py::init<std::shared_ptr<const ClassicalOp>, unsigned>(),
+          "Construct from a basic operation and a multiplier.",
+          py::arg("op"), py::arg("multiplier"))
       .def_property_readonly(
           "basic_op", &MultiBitOp::get_op, "Underlying bitwise op.");
   py::class_<RangePredicateOp, std::shared_ptr<RangePredicateOp>, ClassicalOp>(
       m, "RangePredicateOp",
       "A predicate defined by a range of values in binary encoding.")
+      .def(py::init<unsigned, uint32_t, uint32_t>(),
+          "Construct from a bit width, an upper bound and a lower bound.",
+          py::arg("width"), py::arg("upper"), py::arg("lower"))
       .def_property_readonly(
           "upper", &RangePredicateOp::upper, "Inclusive upper bound.")
       .def_property_readonly(
@@ -106,6 +115,10 @@ void init_classical(py::module& m) {
       ClassicalExpBox<py::object>, std::shared_ptr<ClassicalExpBox<py::object>>,
       Op>(
       m, "ClassicalExpBox", "A box for holding classical expressions on Bits.")
+      .def(py::init<unsigned, unsigned, unsigned, py::object>(),
+          "Construct from signature (number of input, input/output, and output "
+          "bits) and expression.",
+          py::arg("n_i"), py::arg("n_io"), py::arg("n_o"), py::arg("exp"))
       .def(
           "get_exp", &ClassicalExpBox<py::object>::get_exp,
           ":return: the classical expression")

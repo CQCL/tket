@@ -34,6 +34,10 @@ from pytket._tket.circuit import (  # type: ignore
     Qubit,
     Conditional,
     Op,
+    SetBitsOp,
+    MultiBitOp,
+    RangePredicateOp,
+    ClassicalExpBox,
 )
 from pytket.circuit.logic_exp import (
     BinaryOp,
@@ -616,3 +620,20 @@ def test_conditional() -> None:
     op = c.get_commands()[0].op
     cond_op = Conditional(Op.create(OpType.H), 2, 3)
     assert op == cond_op
+
+
+def test_classical_ops() -> None:
+    set_bits = SetBitsOp([True, True, False])
+    multi_bit = MultiBitOp(set_bits, 2)
+    range_predicate = RangePredicateOp(6, 27, 27)
+    c = Circuit(0, 7)
+    c.add_gate(multi_bit, [0, 1, 2, 3, 4, 5])
+    c.add_gate(range_predicate, [0, 1, 2, 3, 4, 5, 6])
+    exp = Bit(2) & Bit(3)
+    c.add_classicalexpbox_bit(exp, [Bit(4)])
+    cmds = c.get_commands()
+    assert cmds[0].op.type == OpType.MultiBit
+    assert cmds[1].op.type == OpType.RangePredicate
+    ceb = ClassicalExpBox(2, 0, 1, exp)
+    op2 = cmds[2].op
+    assert ceb.get_exp() == op2.get_exp()
