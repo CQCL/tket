@@ -203,7 +203,10 @@ def _to_qis_results(bits: List[Bit], mod: SimpleModule) -> Optional[type[types.R
         return mod.results[bits[0].index[0]]
     return None
 
-def _to_qis_bits(args: List[Bit], mod: SimpleModule) -> Optional[type[types.RESULT]]:
+
+def _to_qis_bits(
+    args: List[Bit], mod: SimpleModule
+) -> Optional[List[type[types.RESULT]]]:
     if args:
         return [mod.results[bit.index[0]] for bit in args]
     return None
@@ -233,7 +236,7 @@ def circuit_to_qir_str(
             mod = module.module
             qubits = _to_qis_qubits(command.qubits, mod)
             results = _to_qis_results(command.bits, mod)
-            bits: Optional[type[types.RESULT]] = None
+            bits: Optional[List[type[types.RESULT]]] = None
             if type(optype) == BitWiseOp:
                 bits = _to_qis_bits(command.args, mod)
             try:
