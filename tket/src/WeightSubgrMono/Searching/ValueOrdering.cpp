@@ -17,8 +17,8 @@
 #include <algorithm>
 
 #include "Utils/Assert.hpp"
-#include "WeightSubgrMono/Searching/FixedData.hpp"
-#include "WeightSubgrMono/Searching/SharedData.hpp"
+#include "Utils/RNG.hpp"
+#include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
@@ -34,6 +34,8 @@ so that lower degrees are less likely.
 */
 
 ValueOrdering::ValueOrdering() {
+  // 2^{-5} = 1/32 ~ 0.03. A choice with probability <3% is probably
+  // not very significant for the overall search.
   m_data.resize(5);
   m_data.back().mass = 1;
   for (unsigned index = m_data.size() - 1; index > 0; --index) {
@@ -42,22 +44,22 @@ ValueOrdering::ValueOrdering() {
 }
 
 void ValueOrdering::fill_data(
-    const std::set<VertexWSM>& possible_values, SharedData& shared_data) {
-  // Pass one, just to find the max degree.
+    const std::set<VertexWSM>& possible_values,
+    const NeighboursData& target_ndata) {
+  // Multipass algorithm; simple and efficient enough.
+  // Pass one: find the max degree.
   size_t max_degree = 0;
-  for (auto tv : possible_values) {
-    max_degree = std::max(
-        max_degree,
-        shared_data.fixed_data.target_neighbours_data.get_degree(tv));
+  for (VertexWSM tv : possible_values) {
+    max_degree = std::max(max_degree, target_ndata.get_degree(tv));
   }
+  TKET_ASSERT(max_degree > 0);
+
   // Pass two: record all those vertices with large enough degree.
   for (auto& entry : m_data) {
     entry.vertices.clear();
   }
-
-  for (auto tv : possible_values) {
-    const auto degree =
-        shared_data.fixed_data.target_neighbours_data.get_degree(tv);
+  for (VertexWSM tv : possible_values) {
+    const auto degree = target_ndata.get_degree(tv);
     if (degree + m_data.size() > max_degree) {
       const auto index = max_degree - degree;
       m_data[index].vertices.push_back(tv);
@@ -66,15 +68,17 @@ void ValueOrdering::fill_data(
   TKET_ASSERT(!m_data[0].vertices.empty());
 }
 
-VertexWSM ValueOrdering::get_random_choice_from_data(
-    SharedData& shared_data) const {
+VertexWSM ValueOrdering::get_random_choice_from_data(RNG& rng) const {
   // We need probability proportional to the mass; so get the total mass.
+  // Consider each vertex as having k copies, k corresponding to the mass,
+  // list them all, and choose one uniformly.
+
   std::size_t mass_sum = 0;
   for (const auto& entry : m_data) {
     mass_sum += entry.vertices.size() * entry.mass;
   }
   TKET_ASSERT(mass_sum > 0);
-  const auto index = shared_data.rng.get_size_t(mass_sum - 1);
+  const auto index = rng.get_size_t(mass_sum - 1);
 
   // Now, choose the vertex corresponding to this index.
   std::size_t preceding_mass = 0;
@@ -94,25 +98,19 @@ VertexWSM ValueOrdering::get_random_choice_from_data(
     }
   }
 
-  /*
-  // It's an error if we reach here, although a pretty harmless one:
+  // It's an error if we reach here, although a "harmless" one:
   // it just means our calculation of the solution biased heuristic is wrong.
   // This assert can just be removed in an "emergency" until the bug is sorted.
-  std::cerr << "\n\nm_data: [";
-  for(const auto& entry : m_data) {
-    std::cerr << " m=" << entry.mass << ", v=" << entry.vertices.size() << "; ";
-  }
-  std::cerr << "]\n\nindex=" << index << ";  mass_sum=" << mass_sum << "\n";
-  */
   TKET_ASSERT(false);
   return m_data.at(0).vertices.at(0);
 }
 
 VertexWSM ValueOrdering::get_target_value(
-    const std::set<VertexWSM>& possible_values, SharedData& shared_data) {
+    const std::set<VertexWSM>& possible_values,
+    const NeighboursData& target_ndata, RNG& rng) {
   TKET_ASSERT(possible_values.size() >= 2);
-  fill_data(possible_values, shared_data);
-  return get_random_choice_from_data(shared_data);
+  fill_data(possible_values, target_ndata);
+  return get_random_choice_from_data(rng);
 }
 
 }  // namespace WeightedSubgraphMonomorphism

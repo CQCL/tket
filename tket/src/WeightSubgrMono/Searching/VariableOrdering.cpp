@@ -16,75 +16,63 @@
 
 #include <algorithm>
 
-#include "Utils/Assert.hpp"
-#include "WeightSubgrMono/Searching/FixedData.hpp"
-#include "WeightSubgrMono/Searching/SearchNode.hpp"
-#include "WeightSubgrMono/Searching/SharedData.hpp"
+#include "Utils/RNG.hpp"
+#include "WeightSubgrMono/Common/GeneralUtils.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-void VariableOrdering::fill_pattern_vertices_with_smallest_domain(
-    const SearchNode& node, const Assignments& assignments,
-    SharedData& shared_data) {
-  m_pattern_vertices_with_smallest_domain.clear();
-  std::size_t min_domain_size;
-  set_maximum(min_domain_size);
-  bool vertices_adjacent_to_assigned = false;
-
-  for (const auto& entry : node.pattern_v_to_possible_target_v) {
-    const auto& p_vertex = entry.first;
-    TKET_ASSERT(assignments.count(p_vertex) == 0);
-    const auto domain_size = entry.second.size();
-    TKET_ASSERT(domain_size >= 2);
-    if (vertices_adjacent_to_assigned) {
-      // We'll only accept if this domain is adjacent,
-      // AND has small enough domain.
-      if (domain_size > min_domain_size) {
-        continue;
-      }
-      if (!shared_data.fixed_data.pattern_neighbours_data
-               .is_adjacent_to_assigned_pv(p_vertex, assignments)) {
-        continue;
-      }
-      if (domain_size < min_domain_size) {
-        // Strictly better.
-        m_pattern_vertices_with_smallest_domain.clear();
-        min_domain_size = domain_size;
-      }
-      m_pattern_vertices_with_smallest_domain.push_back(p_vertex);
-      continue;
-    }
-    // We currently have NO vertices adjacent to an assigned one.
-    if (shared_data.fixed_data.pattern_neighbours_data
-            .is_adjacent_to_assigned_pv(p_vertex, assignments)) {
-      // It's strictly better than anything so far.
-      m_pattern_vertices_with_smallest_domain.clear();
-      min_domain_size = domain_size;
-      m_pattern_vertices_with_smallest_domain.push_back(p_vertex);
-      vertices_adjacent_to_assigned = true;
-      continue;
-    }
-    // This is also not adjacent.
-    if (domain_size > min_domain_size) {
-      continue;
-    }
-    // Now, we definitely accept.
-    if (domain_size < min_domain_size) {
-      // Strictly better.
-      m_pattern_vertices_with_smallest_domain.clear();
-      min_domain_size = domain_size;
-    }
-    m_pattern_vertices_with_smallest_domain.push_back(p_vertex);
+bool VariableOrdering::check_candidate(
+    VertexWSM pv, std::size_t domain_size, std::size_t& min_domain_size) {
+  if (domain_size == 0) {
+    return false;
   }
+  if (domain_size == 1 || domain_size > min_domain_size) {
+    return true;
+  }
+  if (domain_size < min_domain_size) {
+    // Strictly better.
+    m_pv_list.clear();
+    min_domain_size = domain_size;
+  }
+  m_pv_list.emplace_back(pv);
+  return true;
 }
 
-VertexWSM VariableOrdering::choose_next_variable(
-    const SearchNode& node, const Assignments& assignments,
-    SharedData& shared_data) {
-  fill_pattern_vertices_with_smallest_domain(node, assignments, shared_data);
-  TKET_ASSERT(!m_pattern_vertices_with_smallest_domain.empty());
-  return shared_data.rng.get_element(m_pattern_vertices_with_smallest_domain);
+VariableOrdering::Result VariableOrdering::get_variable(
+    const PossibleAssignments& possible_assignments,
+    const std::set<VertexWSM>& candidate_vertices, RNG& rng) {
+  m_pv_list.clear();
+  std::size_t min_domain_size;
+  set_maximum(min_domain_size);
+  Result result;
+
+  for (VertexWSM pv : candidate_vertices) {
+    const auto domain_size = possible_assignments.at(pv).size();
+    if (!check_candidate(pv, domain_size, min_domain_size)) {
+      result.empty_domain = true;
+      return result;
+    }
+  }
+  if (m_pv_list.empty()) {
+    // No candidates are unassigned, so look through ALL vertices.
+    for (const auto& entry : possible_assignments) {
+      const VertexWSM& pv = entry.first;
+      const auto domain_size = entry.second.size();
+      if (!check_candidate(pv, domain_size, min_domain_size)) {
+        result.empty_domain = true;
+        return result;
+      }
+    }
+  }
+  result.empty_domain = false;
+  if (m_pv_list.empty()) {
+    return result;
+  }
+  // We have a vertex!
+  const auto index = rng.get_size_t(m_pv_list.size() - 1);
+  result.variable_opt = m_pv_list[index];
+  return result;
 }
 
 }  // namespace WeightedSubgraphMonomorphism

@@ -13,41 +13,41 @@
 // limitations under the License.
 
 #pragma once
+#include <optional>
+
 #include "../GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
+class RNG;
 namespace WeightedSubgraphMonomorphism {
-
-struct SearchNode;
-struct SharedData;
 
 /** Out of all the unassigned pattern v, which one should we choose next
  * to assign? Should ONLY be called with fully reduced domains, etc.
  */
 class VariableOrdering {
  public:
-  /**
-   * @param node The node containing data on the current domains.
-   * @param assignments All current assignments, not just those in the current
-   * node.
-   * @param shared_data Contains all extra data which could be useful for making
-   * the decision.
-   * @return The pattern vertex PV which we should assign next (choosing the
-   * associated TV is a separate task).
+  struct Result {
+    // If null, we couldn't find an unassigned variable.
+    // So EITHER we've got a full solution, OR the problem is insoluble
+    // (there is an empty domain).
+    std::optional<VertexWSM> variable_opt;
+    bool empty_domain;
+  };
+
+  /** We prefer, first, vertices in the candidate set.
+   * Only if no unassigned candidates exist do we allow other vertices.
+   * Next, we prefer those with smallest domains.
    */
-  VertexWSM choose_next_variable(
-      const SearchNode& node, const Assignments& assignments,
-      SharedData& shared_data);
+  Result get_variable(
+      const PossibleAssignments& possible_assignments,
+      const std::set<VertexWSM>& candidate_vertices, RNG& rng);
 
  private:
-  std::vector<VertexWSM> m_pattern_vertices_with_smallest_domain;
+  std::vector<VertexWSM> m_pv_list;
 
-  // Fills m_pattern_vertices_with_smallest_domain,
-  // such that we are unassigned AND adjacent
-  // to an assigned p-vertex if possible.
-  void fill_pattern_vertices_with_smallest_domain(
-      const SearchNode& node, const Assignments& assignments,
-      SharedData& shared_data);
+  /** Returns false if an empty domain is detected. */
+  bool check_candidate(
+      VertexWSM pv, std::size_t domain_size, std::size_t& min_domain_size);
 };
 
 }  // namespace WeightedSubgraphMonomorphism

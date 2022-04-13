@@ -18,9 +18,10 @@
 #include "../GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
+class RNG;
 namespace WeightedSubgraphMonomorphism {
 
-struct SharedData;
+class NeighboursData;
 
 /** Given an unassigned PV, choose a possible target vertex TV from Dom(PV)
  * so that the search can proceed with trying pv->tv.
@@ -30,15 +31,17 @@ class ValueOrdering {
  public:
   ValueOrdering();
 
-  /** Choose TV with larger degrees, with some randomness ("Solution-Biased
-   * Search").
-   * @param possible_values The domain of the pattern vertex PV.
-   * @param shared_data Data about graphs, etc. etc. (and also RNG) to assist
+  /** Choose TV with larger degrees, with some randomness (e.g.,
+   * "Solution-Biased Search").
+   * @param possible_values The domain of the pattern vertex PV. This MUST have
+   * size>1.
+   * @param target_ndata Data about graphs, etc. etc. (and also RNG) to assist
    * with the decision.
    * @return The chosen TV from Dom(PV).
    */
   VertexWSM get_target_value(
-      const std::set<VertexWSM>& possible_values, SharedData& shared_data);
+      const std::set<VertexWSM>& possible_values,
+      const NeighboursData& target_ndata, RNG& rng);
 
  private:
   struct HighDegreeVerticesData {
@@ -55,12 +58,13 @@ class ValueOrdering {
 
   // Fills m_data.
   void fill_data(
-      const std::set<VertexWSM>& possible_values, SharedData& shared_data);
+      const std::set<VertexWSM>& possible_values,
+      const NeighboursData& target_ndata);
 
   // Once fill_data has been called, select a vertex
   // at random, biased so that the probability is proportional
   // to the mass.
-  VertexWSM get_random_choice_from_data(SharedData& shared_data) const;
+  VertexWSM get_random_choice_from_data(RNG& rng) const;
 };
 
 }  // namespace WeightedSubgraphMonomorphism
