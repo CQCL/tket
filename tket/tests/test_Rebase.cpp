@@ -471,5 +471,110 @@ SCENARIO("Check cases for tk1_to_rzsx") {
   }
 }
 
+SCENARIO("Decompose NPhasedX gates into PhasedX") {
+  GIVEN("A simple circuit") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::NPhasedX, {0.2, 0.4}, {0, 1, 2});
+    WHEN("Decomposing NPhasedX gates") {
+      REQUIRE(Transforms::decompose_NPhasedX().apply(c));
+      THEN("We obtain three gates") { REQUIRE(c.n_gates() == 3); }
+      THEN("All gates are PhasedX(0.2, 0.4)") {
+        for (auto cmd : c.get_commands()) {
+          auto op = cmd.get_op_ptr();
+          REQUIRE(op->get_type() == OpType::PhasedX);
+          REQUIRE(op->get_params() == std::vector<Expr>{0.2, 0.4});
+        }
+      }
+      THEN("Applying it twice does nothing") {
+        REQUIRE(!Transforms::decompose_NPhasedX().apply(c));
+      }
+    }
+    /*WHEN("Leaving global gates untouched") {
+      Circuit c2 = c;
+      THEN("Nothing happens") {
+        REQUIRE(!Transforms::decompose_NPhasedX(true).apply(c2));
+        REQUIRE(c2 == c);
+      }
+    }*/
+  }
+  GIVEN("Another simple circuit") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::NPhasedX, {0.4, 0.3}, {0, 1});
+    c.add_op<unsigned>(OpType::NPhasedX, {0.4, 0.3}, {0, 1});
+    WHEN("Decomposing NPhasedX gates") {
+      REQUIRE(Transforms::decompose_NPhasedX().apply(c));
+      THEN("We obtain four gates") { REQUIRE(c.n_gates() == 4); }
+      THEN("All gates are PhasedX(0.4, 0.3)") {
+        for (auto cmd : c.get_commands()) {
+          auto op = cmd.get_op_ptr();
+          REQUIRE(op->get_type() == OpType::PhasedX);
+          REQUIRE(op->get_params() == std::vector<Expr>{0.4, 0.3});
+        }
+      }
+      THEN("Applying it twice does nothing") {
+        REQUIRE(!Transforms::decompose_NPhasedX().apply(c));
+      }
+    }
+  }
+  GIVEN("A slightly more complex circuit") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::NPhasedX, {0.2, 0.4}, {0, 1, 2});
+    c.add_op<unsigned>(OpType::NPhasedX, {0.1, 0.2}, {0, 1});
+    c.add_op<unsigned>(OpType::NPhasedX, {0.2, 0.2}, {0, 2});
+    c.add_op<unsigned>(OpType::NPhasedX, {0.2, 0.4}, {0});
+    WHEN("Decomposing NPhasedX gates") {
+      REQUIRE(Transforms::decompose_NPhasedX().apply(c));
+      THEN("We obtain 3+2+2+1 gates") { REQUIRE(c.n_gates() == 3 + 2 + 2 + 1); }
+      std::vector<std::vector<Expr>> angles{{0.2, 0.4}, {0.2, 0.4}, {0.2, 0.4},
+                                            {0.1, 0.2}, {0.1, 0.2}, {0.2, 0.2},
+                                            {0.2, 0.2}, {0.2, 0.4}};
+      auto cmds = c.get_commands();
+      THEN("All gates are PhasedX") {
+        for (unsigned i = 0; i < cmds.size(); ++i) {
+          auto op = cmds[i].get_op_ptr();
+          REQUIRE(op->get_type() == OpType::PhasedX);
+          REQUIRE(op->get_params() == angles[i]);
+        }
+      }
+      THEN("The gates are on the right qubits") {
+        const Qubit qb0(0), qb1(1), qb2(2);
+        for (unsigned i = 0; i < 3; ++i) {
+          auto qbs = cmds[i].get_qubits();
+          REQUIRE(qbs.size() == 1);
+          REQUIRE(std::set<Qubit>{qb0, qb1, qb2}.contains(qbs.front()));
+        }
+        for (unsigned i = 3; i < 5; ++i) {
+          auto qbs = cmds[i].get_qubits();
+          REQUIRE(qbs.size() == 1);
+          REQUIRE(std::set<Qubit>{qb0, qb1}.contains(qbs.front()));
+        }
+        for (unsigned i = 5; i < 7; ++i) {
+          auto qbs = cmds[i].get_qubits();
+          REQUIRE(qbs.size() == 1);
+          REQUIRE(std::set<Qubit>{qb0, qb2}.contains(qbs.front()));
+        }
+        for (unsigned i = 7; i < 8; ++i) {
+          auto qbs = cmds[i].get_qubits();
+          REQUIRE(qbs.size() == 1);
+          REQUIRE(std::set<Qubit>{qb0}.contains(qbs.front()));
+        }
+      }
+      THEN("Applying it twice does nothing") {
+        REQUIRE(!Transforms::decompose_NPhasedX().apply(c));
+      }
+    }
+    /*WHEN("Leaving global gates untouched") {
+      REQUIRE(Transforms::decompose_NPhasedX(true).apply(c));
+      THEN("There is one global NPhasedX left") {
+        REQUIRE(c.count_gates(OpType::NPhasedX) == 1);
+        REQUIRE(c.count_gates(OpType::PhasedX) == 5);
+      }
+      THEN("Applying it twice does nothing") {
+        REQUIRE(!Transforms::decompose_NPhasedX(true).apply(c));
+      }
+    }*/
+  }
+}
+
 }  // namespace test_Rebase
 }  // namespace tket

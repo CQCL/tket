@@ -150,6 +150,11 @@ Transform decompose_BRIDGE_to_CX();
 // Produces CX and H gates
 Transform decompose_CX_directed(const Architecture& arc);
 
+/**
+ * @brief Decompose NPhasedX gates into single-qb PhasedX gates.
+ */
+Transform decompose_NPhasedX();
+
 }  // namespace Transforms
 
 }  // namespace tket
