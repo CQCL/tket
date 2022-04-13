@@ -14,303 +14,299 @@
 
 #include "WeightSubgrMono/Searching/SearchBranch.hpp"
 
+#include <algorithm>
+
 #include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
-#include "WeightSubgrMono/Searching/FixedData.hpp"
-#include "WeightSubgrMono/Searching/SharedData.hpp"
+#include "WeightSubgrMono/Reducing/DistancesReducer.hpp"
+#include "WeightSubgrMono/WeightPruning/WeightChecker.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-SearchBranch::SearchBranch() : m_level(0) {}
+SearchBranch::SearchBranch(
+    PossibleAssignments initial_pattern_v_to_possible_target_v,
+    const NeighboursData& pattern_ndata, const NeighboursData& target_ndata,
+    DistancesReducer& distances_reducer)
+    : m_pattern_ndata(pattern_ndata),
+      m_target_ndata(target_ndata),
+      m_distances_reducer(distances_reducer),
+      m_derived_graphs_reducer(m_pattern_ndata, m_target_ndata),
+      m_assignment_checker(m_derived_graphs_reducer, m_distances_reducer),
+      m_enriched_nodes_index(0) {
+  m_enriched_nodes.resize(1);
+  m_enriched_nodes[0].node.set_possible_assignments(
+      initial_pattern_v_to_possible_target_v);
+  m_enriched_nodes[0].superficially_valid = true;
+}
 
-ReductionResult SearchBranch::initialise(SharedData& shared_data) {
-  m_level = 0;
-  m_move_down_has_been_called = false;
-  if (m_enriched_nodes.empty()) {
-    m_enriched_nodes.resize(1);
+std::set<VertexWSM> SearchBranch::get_used_target_vertices() const {
+  std::set<VertexWSM> vertices;
+  for (std::size_t index = 0; index <= m_enriched_nodes_index; ++index) {
+    const auto& domains =
+        m_enriched_nodes[index].node.get_possible_assignments();
+    for (const auto& entry : domains) {
+      for (VertexWSM tv : entry.second) {
+        vertices.insert(tv);
+      }
+    }
   }
-  auto& enriched_node = m_enriched_nodes[0];
-  enriched_node.node_wrapper =
-      SearchNodeWrapper(shared_data.fixed_data.initial_node);
-  enriched_node.clear_enriched_data();
-  m_assignments.clear();
-  WeightWSM max_weight;
-  set_maximum(max_weight);
-  return reduce_current_node(shared_data, max_weight);
+  return vertices;
 }
 
-const Assignments& SearchBranch::get_assignments() const {
-  return m_assignments;
+void SearchBranch::activate_weight_checker(WeightWSM total_p_edge_weights) {
+  m_weight_checker_ptr = std::make_unique<WeightChecker>(
+      m_pattern_ndata, m_target_ndata, *this, total_p_edge_weights);
+  TKET_ASSERT(m_weight_checker_ptr);
 }
 
-Assignments& SearchBranch::get_assignments_mutable() { return m_assignments; }
+bool SearchBranch::attempt_to_clear_outstanding_impossible_data() {
+  // Invalid single TVs are very rare;
+  // do a simple hack of adding them to assignments.
+  while (!m_outstanding_impossible_target_vertices.empty()) {
+    const VertexWSM tv = m_outstanding_impossible_target_vertices.back();
+    m_outstanding_impossible_target_vertices.pop_back();
+    for (std::size_t index = 0; index <= m_enriched_nodes_index; ++index) {
+      for (const auto& entry :
+           m_enriched_nodes[index].node.get_possible_assignments()) {
+        if (entry.second.count(tv) != 0) {
+          m_outstanding_impossible_assignments.emplace_back(entry.first, tv);
+        }
+      }
+    }
+  }
 
-bool SearchBranch::erase_assignment(VertexWSM pv, VertexWSM tv) {
-  for (std::size_t level = 0; level <= m_level; ++level) {
-    auto& domains = m_enriched_nodes[level]
-                        .node_wrapper.get_mutable()
-                        .pattern_v_to_possible_target_v;
-    auto iter = domains.find(pv);
-    if (iter == domains.end()) {
+  auto& node = get_current_node_nonconst();
+
+  // DON'T increment ii, as we erase by swapping with the back.
+  for (unsigned ii = 0; ii < m_outstanding_impossible_assignments.size();) {
+    auto& impossible_assignment = m_outstanding_impossible_assignments[ii];
+    const auto erasure_result = node.erase_assignment(impossible_assignment);
+    if (!erasure_result.valid) {
       return false;
     }
-    auto& domain = iter->second;
-    if (domain.size() <= 2) {
-      return false;
+    // Erase from previous nodes also, IF safe to do so.
+    bool was_erased = true;
+    for (unsigned index = 0; index < m_enriched_nodes_index; ++index) {
+      const auto erase_attempt_result =
+          m_enriched_nodes[index].node.attempt_to_erase_assignment(
+              impossible_assignment);
+
+      if (erase_attempt_result == NodeWSM::SoftErasureResult::TV_REMAINS) {
+        was_erased = false;
+        break;
+      }
     }
-    auto tv_iter = domain.find(tv);
-    if (tv_iter == domain.end()) {
-      return false;
+    if (was_erased) {
+      // We can discard it; swap with the back!
+      if (ii + 1 < m_outstanding_impossible_assignments.size()) {
+        impossible_assignment = m_outstanding_impossible_assignments.back();
+      }
+      m_outstanding_impossible_assignments.pop_back();
+    } else {
+      // We cannot erase yet.
+      ++ii;
     }
-    domain.erase(tv_iter);
   }
   return true;
 }
 
-ReductionResult SearchBranch::reduce_current_node(
-    SharedData& shared_data, WeightWSM max_weight) {
-  // E.g., we might have variable domains
-  //  Dom(u) = Dom(v) = {a,b},
-  // and later filters/reductions might reduce them to Dom(u) = Dom(v) = {a}.
-  // We use this set to check for this; the assignments are not checked
-  // when they occur.
-  m_values_assigned_in_this_node.clear();
 
-  // We will break out of this loop if and only if
-  // we have finished (assigned all vertices);
-  // otherwise, we shall return.
+bool SearchBranch::reduce_current_node(const ReductionParameters& parameters) {
+  if (!attempt_to_clear_outstanding_impossible_data()) {
+    return false;
+  }
+  m_distances_reducer.reset(parameters.max_distance_reduction_value);
+  m_derived_graphs_reducer.clear();
+
+  auto& node = get_current_node_nonconst();
+  const auto& new_assignments = node.get_new_assignments();
+
+  // Within the loop, we reduce; we break out when it stops changing,
+  // so is valid and fully reduced.
+
+  // At the start of each new loop, this tells us how many initial elements
+  // of new_assignments have been processed by the alldiff reducer,
+  // and the standard non-altering filter/checking routines.
+  std::size_t n_assignments_processed = 0;
+
+  m_hall_set_reducer.clear();
+
   for (;;) {
-    auto& enriched_node = m_enriched_nodes[m_level];
-    const auto assignments_processed_in_this_node =
-        enriched_node.n_assignments_processed_by_all_diff_propagator;
+    if (!node.alldiff_reduce(n_assignments_processed)) {
+      return false;
+    }
+    // First, do all checks/updates which don't alter domains.
 
+    for (auto ii = n_assignments_processed; ii < new_assignments.size(); ++ii) {
+      if (!m_assignment_checker(
+              new_assignments[ii], parameters.max_distance_reduction_value)) {
+        register_impossible_assignment(new_assignments[ii]);
+        return false;
+      }
+    }
     {
-      const auto& chosen_assignments =
-          enriched_node.node_wrapper.get().chosen_assignments;
-      for (auto assignment_index = m_values_assigned_in_this_node.size();
-           assignment_index < chosen_assignments.size(); ++assignment_index) {
-        const auto& new_tv = chosen_assignments[assignment_index].second;
-        if (!m_values_assigned_in_this_node.insert(new_tv).second) {
-          // A duplicate TV.
-          return ReductionResult::FAILURE;
-        }
+      const auto weight_result_opt = m_weight_updater(
+          m_pattern_ndata, m_target_ndata, node.get_possible_assignments(),
+          new_assignments, n_assignments_processed, node.get_scalar_product(),
+          parameters.max_weight,
+          m_enriched_nodes[m_enriched_nodes_index]
+              .pvs_adjacent_to_newly_assigned_vertices);
 
-        const auto& pv = chosen_assignments[assignment_index].first;
-        if (!shared_data.fixed_data.target_is_complete) {
-          if (!shared_data.derived_graphs_filter.is_compatible(pv, new_tv)) {
-            erase_assignment(pv, new_tv);
-            return ReductionResult::FAILURE;
+      if (!weight_result_opt) {
+        return false;
+      }
+      node.set_scalar_product(weight_result_opt->scalar_product);
+      node.set_total_pattern_edge_weights(
+          node.get_total_pattern_edge_weights() +
+          weight_result_opt->total_extra_p_edge_weights);
+    }
+    {
+      if (!is_maximum(parameters.max_weight)) {
+        const WeightWSM current_scalar_product = node.get_scalar_product();
+        if (current_scalar_product > parameters.max_weight) {
+          return false;
+        }
+        const WeightWSM max_extra_scalar_product =
+            parameters.max_weight - current_scalar_product;
+        if (m_weight_checker_ptr) {
+          const auto weight_check_result =
+              m_weight_checker_ptr->operator()(node, max_extra_scalar_product);
+          if (weight_check_result.invalid_t_vertex) {
+            m_outstanding_impossible_target_vertices.emplace_back(
+                weight_check_result.invalid_t_vertex.value());
+          }
+          if (weight_check_result.nogood) {
+            return false;
           }
         }
       }
     }
-    if (!shared_data.fixed_data.alldiff_propagator.reduce(
-            m_assignments, enriched_node.node_wrapper,
-            enriched_node.n_assignments_processed_by_all_diff_propagator)) {
-      return ReductionResult::FAILURE;
+
+    // Now begin REDUCTIONS, which do alter domains.
+    // If we detect that a new assignment has occurred,
+    // we jump back to the start of the loop. (Since the node reductions
+    // and assignment checking should be faster
+    // than these more complicated reductions).
+
+    n_assignments_processed = new_assignments.size();
+    {
+      const auto distance_reduction_result = m_distances_reducer(node);
+
+      if (distance_reduction_result.impossible_assignment) {
+        register_impossible_assignment(
+            distance_reduction_result.impossible_assignment.value());
+        return false;
+      }
+
+      if (distance_reduction_result.nogood_found) {
+        return false;
+      }
+      if (distance_reduction_result.new_assignments_created) {
+        // Jump back to start of loop.
+        continue;
+      }
+    }
+    {
+      const auto hall_set_result = m_hall_set_reducer(node);
+      if (hall_set_result == HallSetReducer::Result::NEW_ASSIGNMENTS) {
+        // Jump back to start of loop.
+        continue;
+      }
+      if (hall_set_result == HallSetReducer::Result::NOGOOD) {
+        return false;
+      }
+    }
+    {
+      const auto derived_graphs_result = m_derived_graphs_reducer.reduce(node);
+      if (derived_graphs_result ==
+          DerivedGraphsReducer::ReductionResult::NEW_ASSIGNMENT) {
+        continue;
+      }
+      if (derived_graphs_result ==
+          DerivedGraphsReducer::ReductionResult::NOGOOD) {
+        return false;
+      }
+      TKET_ASSERT(
+          derived_graphs_result ==
+          DerivedGraphsReducer::ReductionResult::SUCCESS);
     }
 
-    // We tried putting an extra derived_graphs_filter check here,
-    // but it only slowed things down slightly;
-    // this is not completely stupid, as m_assignments was smaller
-    // when we checked above.
-
-    if (!shared_data.fixed_data.weight_updater(
-            shared_data.fixed_data, m_assignments, enriched_node.node_wrapper,
-            assignments_processed_in_this_node, max_weight)) {
-      return ReductionResult::FAILURE;
-    }
-
-    if (enriched_node.node_wrapper.get()
-            .pattern_v_to_possible_target_v.empty()) {
-      // If we are here, everything is at least CORRECT,
-      // regardless of the other filters: all vertices have been assigned,
-      // and all new edges checked.
+    if (n_assignments_processed == new_assignments.size()) {
+      // No further assignments from reductions.
       break;
     }
-
-    // Now, more filtering.
-    // QUESTION: in which ORDER should we apply different filters?
-    // It should not affect correctness, but it very definitely
-    // could affect speed.
-    //
-    // Very unclear...each filter potentially could reduce domain sizes,
-    // and/or make new assignments, maybe enabling other filters
-    // to reduce further...
-    //
-    // Estimates of both filter calculation time
-    // and power would be helpful,
-    // but even then, a bit unclear.
-
-    // NOTE: the reducers may intersect current domains,
-    // and thus reduce them. If reduced to empty, it's a nogood;
-    // but if reduced to size 1, it's a new assignment.
-    // HOWEVER, the assignments are not checked for all diff propagation;
-    // that must be done above, at the start of this containing loop.
-    const auto current_n_chosen_assignments =
-        enriched_node.node_wrapper.get().chosen_assignments.size();
-
-    {
-      const auto current_number_of_assignments = m_assignments.size();
-
-      if (!shared_data.close_vertices_filter.reduce(
-              shared_data.fixed_data, m_assignments,
-              assignments_processed_in_this_node, enriched_node.node_wrapper)) {
-        return ReductionResult::FAILURE;
-      }
-      if (current_number_of_assignments != m_assignments.size()) {
-        // Propagate the new assignments and edge weights immediately.
-        TKET_ASSERT(current_number_of_assignments < m_assignments.size());
-        continue;
-      }
-      TKET_ASSERT(
-          current_n_chosen_assignments ==
-          enriched_node.node_wrapper.get().chosen_assignments.size());
-    }
-    {
-      const auto current_number_of_assignments = m_assignments.size();
-      if (!shared_data.fixed_data.hall_set_reducer.reduce(
-              enriched_node.node_wrapper, *this)) {
-        return ReductionResult::FAILURE;
-      }
-      if (current_number_of_assignments != m_assignments.size()) {
-        TKET_ASSERT(current_number_of_assignments < m_assignments.size());
-        continue;
-      }
-      TKET_ASSERT(
-          current_n_chosen_assignments ==
-          enriched_node.node_wrapper.get().chosen_assignments.size());
-    }
-    /*
-    // TODO: a very annoying intermittent Heisenbug appears to be
-    // in here somewhere...but no time to fix it now, will come back to it...
-    {
-      const auto current_number_of_assignments = m_assignments.size();
-      if (!shared_data.derived_graphs_reducer.reduce_domains(
-              shared_data.fixed_data, m_assignments,
-              assignments_processed_in_this_node, enriched_node.node_wrapper,
-              shared_data.derived_graphs_filter.get_derived_pattern_graphs(),
-              shared_data.derived_graphs_filter.get_derived_target_graphs())) {
-        return ReductionResult::FAILURE;
-      }
-      if (current_number_of_assignments != m_assignments.size()) {
-        TKET_ASSERT(current_number_of_assignments < m_assignments.size());
-        continue;
-      }
-      TKET_ASSERT(
-          current_n_chosen_assignments ==
-          enriched_node.node_wrapper.get().chosen_assignments.size());
-    }
-    */
-
-    // Nogood detectors; these don't REDUCE anything, they just try to detect
-    // if we're already at a dead end (we just don't know it yet...)
-
-    const auto& node = enriched_node.node_wrapper.get();
-    if (!shared_data.fixed_data.problem_is_unweighted &&
-        m_weight_nogood_detector_manager.should_activate_detector(
-            node.current_scalar_product, max_weight, node.total_p_edge_weights,
-            shared_data.fixed_data.total_p_edge_weights, m_assignments.size(),
-            node.pattern_v_to_possible_target_v.size())) {
-      const WeightWSM max_extra_weight =
-          max_weight - node.current_scalar_product;
-      const auto weight_nogood_result =
-          shared_data.fixed_data.weight_nogood_detector(
-              shared_data.fixed_data, node.pattern_v_to_possible_target_v,
-              m_assignments, max_extra_weight);
-
-      if (weight_nogood_result.assignment_with_invalid_t_vertex) {
-        const auto& p_vertices_map =
-            shared_data.fixed_data.pattern_neighbours_data.get_map();
-        const auto& t_vertex =
-            weight_nogood_result.assignment_with_invalid_t_vertex->second;
-        for (const auto& entry : p_vertices_map) {
-          const auto& p_vertex = entry.first;
-          erase_assignment(p_vertex, t_vertex);
-        }
-        return ReductionResult::FAILURE;
-      }
-
-      if (!weight_nogood_result.extra_weight_lower_bound) {
-        m_weight_nogood_detector_manager.register_success();
-        return ReductionResult::FAILURE;
-      }
-      const auto extra_weight_lower_bound =
-          weight_nogood_result.extra_weight_lower_bound.value();
-      TKET_ASSERT(extra_weight_lower_bound <= max_extra_weight);
-
-      m_weight_nogood_detector_manager.register_lower_bound_failure(
-          node.current_scalar_product, max_weight, extra_weight_lower_bound);
-    }
-
-    // If we've reached here, then all the reducers/filters reduced
-    // the domain sizes and searched for inconsistencies, but didn't find any;
-    // thus this node is now fully reduced, ready for more searching.
-    return ReductionResult::SUCCESS;
+    TKET_ASSERT(false);
   }
 
-  // If we reach here, we've broken out of the loop;
-  // this can only happen if all vertices have been assigned,
-  // AND they are all valid (all edges are assigned also);
-  // this has been checked.
-  TKET_ASSERT(
-      m_assignments.size() == shared_data.fixed_data.pattern_neighbours_data
-                                  .get_number_of_nonisolated_vertices());
-
-  return ReductionResult::FINISHED;
-}
-
-bool SearchBranch::backtrack() {
-  if (m_level == 0) {
-    return false;
+  // Avoid the candidate vertices building up too much.
+  // Will be useful later (when we need to choose a new assignment to make).
+  for (const auto& entry : new_assignments) {
+    m_enriched_nodes[m_enriched_nodes_index]
+        .pvs_adjacent_to_newly_assigned_vertices.erase(entry.first);
   }
-  for (const auto& entry :
-       m_enriched_nodes[m_level].node_wrapper.get().chosen_assignments) {
-    if (m_assignments.count(entry.first) != 0) {
-      TKET_ASSERT(m_assignments.at(entry.first) == entry.second);
-    }
-    m_assignments.erase(entry.first);
-  }
-  --m_level;
+
+  // Now that we've processed all the assignments,
+  // we don't need them.
+  node.clear_new_assignments();
   return true;
 }
 
-const SearchBranch::EnrichedNodes& SearchBranch::get_data(
-    std::size_t& level) const {
-  level = m_level;
-  return m_enriched_nodes;
-}
-
-const SearchNodeWrapper& SearchBranch::get_current_node_wrapper() const {
-  return m_enriched_nodes.at(m_level).node_wrapper;
-}
-
-bool SearchBranch::move_down_has_been_called() const {
-  return m_move_down_has_been_called;
+bool SearchBranch::backtrack(const ReductionParameters& parameters) {
+  do {
+    if (m_enriched_nodes_index == 0) {
+      return false;
+    }
+    --m_enriched_nodes_index;
+  } while (!m_enriched_nodes[m_enriched_nodes_index].superficially_valid ||
+           !reduce_current_node(parameters));
+  return true;
 }
 
 void SearchBranch::move_down(VertexWSM p_vertex, VertexWSM t_vertex) {
-  m_move_down_has_been_called = true;
-  {
-    auto& node = m_enriched_nodes.at(m_level).node_wrapper.get_mutable();
-    auto& domain_data = node.pattern_v_to_possible_target_v.at(p_vertex);
-    TKET_ASSERT(domain_data.erase(t_vertex) == 1);
-    // Now we can move down; our current choice has been erased,
-    // so will not be repeated in future.
-  }
+  // We shouldn't be moving down unless we're FULLY reduced.
+  TKET_ASSERT(get_current_node().get_new_assignments().empty());
 
-  ++m_level;
-  if (m_level >= m_enriched_nodes.size()) {
-    m_enriched_nodes.resize(m_level + 1);
+  ++m_enriched_nodes_index;
+  if (m_enriched_nodes_index >= m_enriched_nodes.size()) {
+    m_enriched_nodes.resize(m_enriched_nodes_index + 1);
   }
-  m_enriched_nodes[m_level]
-      .node_wrapper.get_mutable()
-      .initialise_from_assignment(
-          p_vertex, t_vertex, m_enriched_nodes[m_level - 1].node_wrapper.get());
+  auto& prev_enriched_node = m_enriched_nodes.at(m_enriched_nodes_index - 1);
+  auto& current_enriched_node = m_enriched_nodes.at(m_enriched_nodes_index);
 
-  // We're maybe NOT fully reduced, but that's OK.
-  m_enriched_nodes[m_level].clear_enriched_data();
+  // Remove the assignment from the previous node.
+  const auto assignment = std::make_pair(p_vertex, t_vertex);
+  const auto erasure_result =
+      prev_enriched_node.node.erase_assignment(assignment);
+
+  prev_enriched_node.superficially_valid = erasure_result.valid;
+  TKET_ASSERT(erasure_result.assignment_was_possible);
+
+  // Make the new node, with the new assignment.
+  current_enriched_node.node = prev_enriched_node.node;
+  current_enriched_node.node.clear_new_assignments();
+  current_enriched_node.node.force_assignment(assignment);
+
+  // Deal with the enriched data not in "node".
+  current_enriched_node.superficially_valid = true;
+  current_enriched_node.pvs_adjacent_to_newly_assigned_vertices =
+      prev_enriched_node.pvs_adjacent_to_newly_assigned_vertices;
+}
+
+void SearchBranch::register_impossible_assignment(
+    const std::pair<VertexWSM, VertexWSM>& assignment) {
+  m_outstanding_impossible_assignments.emplace_back(assignment);
+}
+
+const NodeWSM& SearchBranch::get_current_node() const {
+  return m_enriched_nodes.at(m_enriched_nodes_index).node;
+}
+NodeWSM& SearchBranch::get_current_node_nonconst() {
+  return m_enriched_nodes.at(m_enriched_nodes_index).node;
+}
+std::set<VertexWSM>& SearchBranch::get_current_node_candidate_variables() {
+  return m_enriched_nodes.at(m_enriched_nodes_index)
+      .pvs_adjacent_to_newly_assigned_vertices;
 }
 
 }  // namespace WeightedSubgraphMonomorphism

@@ -13,19 +13,20 @@
 // limitations under the License.
 
 #pragma once
-#include <map>
-#include <optional>
-#include <set>
-#include <string>
+#include <memory>
 
-#include "../WeightPruning/WeightNogoodDetectorManager.hpp"
+#include "../Reducing/DerivedGraphsReducer.hpp"
+#include "../Reducing/HallSetReducer.hpp"
+#include "AssignmentChecker.hpp"
 #include "EnrichedNode.hpp"
+#include "WeightUpdater.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-struct FixedData;
-struct SharedData;
+class DistancesReducer;
+class NeighboursData;
+class WeightChecker;
 
 /** Represents a depth-first traversal.
  * However, it's really about reducing nodes etc.,
@@ -35,112 +36,93 @@ struct SharedData;
  */
 class SearchBranch {
  public:
-  SearchBranch();
+  /** Constructs node[0], i.e. the initial node.*/
+  SearchBranch(
+      PossibleAssignments initial_pattern_v_to_possible_target_v,
+      const NeighboursData& pattern_ndata, const NeighboursData& target_ndata,
+      DistancesReducer& distances_reducer);
 
-  /** Fills in the top node, but might not FULLY reduce.
-   * @param shared_data Contains data shared across ALL search branches (we may
-   * be running several "in parallel", i.e. interleaved), which may include
-   * previously searched parts of the tree, etc. etc.
-   * @return What happens when we reduce the top node; does it give a complete
-   * solution, or an inconsistency (meaning that the search is finished?)
+  /** Extra parameters needed to configure how we reduce a single node
+   * with all the extra components stored in the SearchComponents object.
    */
-  ReductionResult initialise(SharedData& shared_data);
+  struct ReductionParameters {
+    WeightWSM max_weight;
+    unsigned max_distance_reduction_value;
+  };
 
-  /** For the search logic, it's necessary to know if we are at
-   * the very first search or not.
+  /** This is at the branch level, not node level, BECAUSE this branch has
+   * m_outstanding_impossible_assignments, which nodes don't know about.
+   * If it returns false, the node is in an invalid state; but that's OK
+   * because the caller should immediately discard it and move up.
    */
-  bool move_down_has_been_called() const;
+  bool reduce_current_node(const ReductionParameters& parameters);
 
-  /** Move up one level, but do NOT reduce the node.
-   * Returns false if finished, i.e. the search is OVER!
+  /** Keep moving up one level and reducing, until EITHER it's reduced
+   * (returning true), OR we can't move up any more (and return false).
    */
-  bool backtrack();
+  bool backtrack(const ReductionParameters& parameters);
 
-  /** ASSUMING that the current node has been fully reduced,
-   * make the given assignment [which must be valid; hence this cannot fail]
-   * and move down one level to a new node.
-   * The new node, however, will not yet be reduced.
+  /** ASSUMING that the current node has been reduced,
+   * make the given assignment [which must be valid],
+   * and move down to a new node.
    * @param p_vertex A pattern vertex, pv.
    * @param t_vertex A target vertex, tv. We are making the new assignment
    * pv->tv.
    */
   void move_down(VertexWSM p_vertex, VertexWSM t_vertex);
 
-  /** Reduce the current node as much as possible,
-   * until it is valid (or invalid), i.e. not in a "partial" state;
-   * if successfully reduced, we are confident that
-   * there are no edge/vertex clashes, the current weight
-   * is up to date,...
-   * Does NOT take any further action with full/partial solutions, though.
-   * @param shared_data The data shared across ALL search branches.
-   * @param max_weight The maximum permitted weight (scalar product) for any
-   * solution.
-   * @return What happened with the reduction.
+  /** Inform the branch that pv->tv is (and always was)
+   * impossible (regardless of the state of the search,
+   * i.e. this would be safe to share with other searches even at the start).
+   * The assignment will be removed from all domains, so it can never occur.
+   * However, IGNORE the current node.
    */
-  ReductionResult reduce_current_node(
-      SharedData& shared_data, WeightWSM max_weight);
+  void register_impossible_assignment(
+      const std::pair<VertexWSM, VertexWSM>& assignment);
 
-  /** Simply returns the read-only accessor for the current search node. */
-  const SearchNodeWrapper& get_current_node_wrapper() const;
+  const NodeWSM& get_current_node() const;
 
-  typedef std::vector<EnrichedNode> EnrichedNodes;
-
-  /** Returns all the data for the search so far, and the current level
-   * by reference (i.e., index of current enriched node;
-   * NOT the number of nodes, which is level+1).
-   * The CALLER can decide what to do with partial/complete solutions, etc.
-   * @param level The current level, returned by reference.
-   * @return The current list of all search nodes. NOTE that there may be extra
-   * unused data on the end, which should be ignored; it would be wasteful to
-   * keep resizing and deallocating/reallocating memory for search nodes. This
-   * is why the current level is also returned.
+  /** This is the set of vertices adjacent to any existing assigned vertex,
+   * to be used as candidates when choosing a new variable to assign.
    */
-  const EnrichedNodes& get_data(std::size_t& level) const;
+  std::set<VertexWSM>& get_current_node_candidate_variables();
 
-  /** Returns the current assignments pv->tv in the search.
-   * @return All current pv->tv assignments made in this search branch down to
-   * and including the current node.
-   */
-  const Assignments& get_assignments() const;
+  std::set<VertexWSM> get_used_target_vertices() const;
 
-  /** Should be rare; returns a writeable version of the assignments.
-   * @return All current pv->tv assignments made in this search branch,
-   * non-const.
-   */
-  Assignments& get_assignments_mutable();
-
-  /** If we've decided that PV->TV is an impossible assignment,
-   * try to erase TV from every Dom(PV). However, for simplicity,
-   * do not introduce extra assignments, i.e. if Dom(PV) = { TV, u }
-   * at some level, leave Dom(PV) unchanged, as otherwise we'd need
-   * more complicated code to force PV=u; it will naturally take care
-   * of itself in time. Returns true if all trace of PV->TV is removed
-   * from all domains.
-   * @param pv A pattern vertex.
-   * @param tv A target vertex.
-   * @return True if tv has been successfully erased from every Dom(pv), at
-   * every level.
-   */
-  bool erase_assignment(VertexWSM pv, VertexWSM tv);
+  void activate_weight_checker(WeightWSM total_p_edge_weights);
 
  private:
-  std::size_t m_level;
-  EnrichedNodes m_enriched_nodes;
+  const NeighboursData& m_pattern_ndata;
+  const NeighboursData& m_target_ndata;
+  DistancesReducer& m_distances_reducer;
+  DerivedGraphsReducer m_derived_graphs_reducer;
+  AssignmentChecker m_assignment_checker;
 
-  // KEY: PV, VALUE: TV
-  // Assignments across the WHOLE branch (not just the current node).
-  // Note that we will maintain the AllDiff constraint,
-  // always deleting TV from domains immediately;
-  // so we NEVER have to check all assignments, only
-  // the domains of the unassigned variables.
-  Assignments m_assignments;
+  /** To save reallocation, we DON'T resize m_enriched_nodes;
+   * instead, we just remember the index and overwrite/resize as appropriate.
+   */
+  std::size_t m_enriched_nodes_index;
 
-  bool m_move_down_has_been_called = false;
+  const WeightUpdater m_weight_updater;
+  HallSetReducer m_hall_set_reducer;
 
-  // A workset.
-  std::set<VertexWSM> m_values_assigned_in_this_node;
+  std::vector<EnrichedNode> m_enriched_nodes;
 
-  WeightNogoodDetectorManager m_weight_nogood_detector_manager;
+  std::unique_ptr<WeightChecker> m_weight_checker_ptr;
+
+  /** As long as this is nonempty, will keep trying to erase these assignments
+   * completely from the nodes, until they're all gone.
+   */
+  std::vector<std::pair<VertexWSM, VertexWSM>>
+      m_outstanding_impossible_assignments;
+
+  std::vector<VertexWSM> m_outstanding_impossible_target_vertices;
+
+  NodeWSM& get_current_node_nonconst();
+
+  /** Reduces the current node aggressively, returning false if it becomes
+   * impossible. */
+  bool attempt_to_clear_outstanding_impossible_data();
 };
 
 }  // namespace WeightedSubgraphMonomorphism
