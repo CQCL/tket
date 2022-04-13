@@ -38,13 +38,13 @@ using OptEdgeVec = std::vector<OptEdge>;
  * frontier as useful for that specific pass. It also provides a simple
  * interface for all the circuit manipulations that are required within that
  * pass.
- * 
- * The transform itself (in `GlobalisePhasedX.cpp`) therefore only needs to 
+ *
+ * The transform itself (in `GlobalisePhasedX.cpp`) therefore only needs to
  * worry about the logic of the transformation and none of the bookkeeping
  * and circuit substitutions.
- * 
+ *
  * All gates of `circ` must be either PhasedX, NPhasedX, Rz or multi-qb gates.
- * 
+ *
  * ## Intervals
  * For each qubit, the frontier stores the current interval. An interval is a
  * single-qubit subcircuit of `circ` forming a sequence of single-qubit gates
@@ -53,7 +53,7 @@ using OptEdgeVec = std::vector<OptEdge>;
  * the circuit DAG. end is in the future of start. The source of the start edge
  * is a multi-qb gate (or an Input vertex) and the target of the end edge is
  * a multi-qb gate (or an Output vertex).
- * 
+ *
  * ## Initialisation and moving forward
  * The frontier is initialised at the beginning of the circuit, at which stage
  * an interval is created for each qubit of `circ`.
@@ -61,7 +61,7 @@ using OptEdgeVec = std::vector<OptEdge>;
  * will be the edge after the former end edge. The new end edge will be moved
  * forward along the qubit until its target is a multi-qb gate or the Output
  * vertex.
- * 
+ *
  * One can move forward an individual interval by calling `next_interval`.
  * Careful, however: all intervals are assumed to be space-like separated (i.e.
  * there cannot be a path between an interval and another at any time).
@@ -70,7 +70,7 @@ using OptEdgeVec = std::vector<OptEdge>;
  * qb vertex `v` as argument and will move forward all the qubits whose end edge
  * has target `v`. By calling `next_multiqb` on each multi-qb gate in a causal
  * order, the space-like separation invariant will be maintained.
- * 
+ *
  * ## Operations on intervals
  * ### Squashing
  * Each interval can be squashed into a normal form `PhasedX + Rz` using
@@ -80,14 +80,14 @@ using OptEdgeVec = std::vector<OptEdge>;
  * decompositions. This is what `globalise_PhasedX(squash=true)` does
  * (the default). This is however not necessary for the frontier to be well-
  * behaved
- * 
+ *
  * ### Get beta angles
  * When squashed, each interval is associated with a unique "beta angle", given
  * by the formula U_2 = Rz(α)Rx(β)Rz(ɣ) = PhasedX(β, α)Rz(ɣ - α).
  * These can be obtained for each interval using `get_all_betas`, while
  * `get_beta_edge` and `get_beta_edges` will return the edge pointing to the
  * gate that contains the β-angle (ie the PhasedX gate).
- * 
+ *
  * ### Insert global NPhasedX gates
  * `insert_1_phasedx` and `insert_2_phasedx` will insert 1x resp 2x global
  * NPhasedX gates at the beginning of the current frontier. The resuling
@@ -97,7 +97,7 @@ class PhasedXFrontier {
  public:
   /**
    * @brief Construct a new Phased X Frontier object.
-   * 
+   *
    * @param circ The circuit to traverse.
    */
   PhasedXFrontier(Circuit& circ);
@@ -109,49 +109,49 @@ class PhasedXFrontier {
 
   /**
    * @brief Move frontier forward on qubit `i`.
-   * 
+   *
    * @param i The qubit index whose interval will be moved.
    */
   void next_interval(unsigned i);
 
   /**
    * @brief Move frontier on all qubits with end target `v`.
-   * 
+   *
    * This is the recommended way to move the frontier forward. Make successive
    * calls to this method by looping through all mulit-qb gates of `circ` in
    * topological ordering.
-   * 
+   *
    * @param v A multi-qb gate in `circ`.
    */
   void next_multiqb(Vertex v);
 
   /**
    * @brief Insert a single global NPhasedX at the current frontier.
-   * 
+   *
    * This will insert a NPhasedX gate with β-angle given by the β-angle of qubit
    * `i`. This will get rid of the PhasedX on qubit `i` (and any other qubits
    * with the same β-angle), but might introduce new garbage on the remaining
    * qubits.
-   * 
+   *
    * @param i The qubit index whose PhasedX will be replaced by a global gate.
    */
   void insert_1_phasedx(unsigned i);
 
   /**
    * @brief Insert two global NPhasedX gates at the current frontier.
-   * 
+   *
    * This will replace all current PhasedX gates with two global NPhasedX gates
    * using the equation
-   * 
+   *
    *    PhX(α, β) = Rz(β + 1/2) PhX(1/2, 0) Rz(α) PhX(-1/2, 0) Rz(-β - 1/2)
-   * 
+   *
    * ie the PhX gates can be made global.
    */
   void insert_2_phasedx();
 
   /**
    * @brief The qubits whose end edge's target is `v`.
-   * 
+   *
    * @param v  A multi-qb gate in `circ`.
    * @return std::set<unsigned> Indices of the qubits whose end target is `v`.
    */
@@ -164,29 +164,29 @@ class PhasedXFrontier {
 
   /**
    * @brief Get all β-angles.
-   * 
+   *
    * If a qubit has no β-angle gate, its β-angle is 0. Note that some gates
    * might be shadowed and thus appear as 0 even though a β-angle gate exists
    * (see `get_all_beta_edges`)l
-   * 
+   *
    * @return std::vector<Expr> The vector of β-angles.
    */
   std::vector<Expr> get_all_betas() const;
 
   /**
    * @brief Get vertices of all β-angle gates.
-   * 
+   *
    * If a qubit has no β-angle gate (or it is shadowed), return std::nullopt.
-   * 
+   *
    * @return OptVertexVec The vertices of all β-angle gates.
    */
   OptVertexVec get_all_beta_vertices() const;
-  
+
   /**
    * @brief Get the edge with target the β-angle gate on qubit `i`.
 
    * If qubit `i` has no β-angle gate, return std::nullopt.
-   * 
+   *
    * @param i The qubit index.
    * @return OptEdge The edge with target the current β-angle gate.
    */
@@ -194,26 +194,26 @@ class PhasedXFrontier {
 
   /**
    * @brief Get edges with target the β-angle gates.
-   * 
+   *
    * An edge will be std::nullopt if there is no PhasedX gate on that qubit
    * or if it is shadowed. Shadowed gates are NPhasedX gates that are not
    * entirely in the current frontier, i.e. there is at least one qubit that
    * needs to process another gate before getting to the NPhasedX gate.
    * We cannot transform that gate until all other gates in its causal past
    * have been processed, and we therefore ignore it.
-   * 
+   *
    * To get around this issue, we recommend using the `decompose_nphasedx`
    * transform first, so that there are no NPhasedX gates left in the input
    * circuit. This of course is not possible if one wants to preserve some of
    * the existing structure of the circuit.
-   * 
+   *
    * @return OptEdgeVec The edges with target the β-angle gates.
    */
   OptEdgeVec get_all_beta_edges() const;
 
   /**
    * @brief Whether there are further non-trivial intervals ahead.
-   * 
+   *
    * Useful to know if a certain computation can be deferred until later.
    */
   bool are_phasedx_left() const;
@@ -222,11 +222,10 @@ class PhasedXFrontier {
   /**
    * @brief Shorten current intervals by moving the start edge past `n` global
    * gates.
-   * 
+   *
    * @param n The number of global gates to move past.
    */
   void skip_global_gates(unsigned n = 1);
-
 
  private:
   // squash gates in the current interval on qubit i to ZXZ form

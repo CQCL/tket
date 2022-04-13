@@ -198,7 +198,6 @@ PassPtr gen_contextual_pass(
  */
 PassPtr PauliSquash(Transforms::PauliSynthStrat strat, CXConfigType cx_config);
 
-
 PassPtr GlobalisePhasedX(bool squash = true);
 
 }  // namespace tket
