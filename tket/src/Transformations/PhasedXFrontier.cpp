@@ -16,8 +16,8 @@
 
 #include <string>
 
-#include "Circuit/CircUtils.hpp"
 #include "Circuit/CircPool.hpp"
+#include "Circuit/CircUtils.hpp"
 #include "OpType/OpType.hpp"
 #include "StandardSquash.hpp"
 #include "Utils/Expression.hpp"
@@ -171,7 +171,8 @@ class PhasedXSquasher : public StandardSquasher {
  public:
   PhasedXSquasher()
       : StandardSquasher(
-            OpTypeSet{OpType::Rz, OpType::PhasedX}, CircPool::tk1_to_PhasedXRz) {}
+            OpTypeSet{OpType::Rz, OpType::PhasedX},
+            CircPool::tk1_to_PhasedXRz) {}
 
   // accept any single-qb gate to squash it
   bool accepts(OpType type) const override { return !is_projective_type(type); }
