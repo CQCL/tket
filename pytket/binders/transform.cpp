@@ -288,6 +288,9 @@ PYBIND11_MODULE(transform, m) {
           "of OpType to single-qubit gate error maps",
           py::arg("op_node_errors"))
       .def_static(
+          "DecomposeNPhasedX", &Transforms::decompose_NPhasedX,
+          "Decompose NPhasedX gates into single-qb PhasedX gates.\n\n")
+      .def_static(
           "GlobalisePhasedX", &Transforms::globalise_phasedx,
           "Replaces every occurence of PhasedX or NPhasedX gates with NPhasedX "
           "gates acting on all qubits, and correcting rotation gates."

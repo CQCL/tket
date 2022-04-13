@@ -996,6 +996,32 @@ Transform decompose_CX_directed(const Architecture &arc) {
   });
 }
 
+Transform decompose_NPhasedX() {
+  return Transform([](Circuit &circ) {
+    VertexList bin;
+    bool success = false;
+
+    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+      if (circ.get_OpType_from_Vertex(v) == OpType::NPhasedX) {
+        Gate_ptr g = as_gate_ptr(circ.get_Op_ptr_from_Vertex(v));
+        unsigned n = g->n_qubits();
+        Circuit sub(n);
+
+        for (unsigned i = 0; i < n; ++i) {
+          sub.add_op<unsigned>(OpType::PhasedX, g->get_params(), {i});
+        }
+        circ.substitute(sub, v, Circuit::VertexDeletion::No);
+        bin.push_back(v);
+        success = true;
+      }
+    }
+    circ.remove_vertices(
+        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+    return success;
+  });
+}
+
+
 }  // namespace Transforms
 
 }  // namespace tket
