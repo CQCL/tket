@@ -99,13 +99,15 @@ class NeighboursData {
    */
   const NeighboursMap& get_map() const;
 
-  /** Check if the given patten vertex pv is adjacent to an already assigned
-   * vertex, i.e. one of the keys of "assignments".
-   * Of course this is only useful/meaningful for pattern graphs,
-   * not target graphs.
+  /** This is "expensive" because it must be constructed afresh each time,
+   * taking O(E) time. The weights are not in sorted order.
    */
-  bool is_adjacent_to_assigned_pv(
-      VertexWSM pv, const Assignments& assignments) const;
+  std::vector<WeightWSM> get_weights_expensive() const;
+
+  /** Convenience function: for neighbours and weights, already sorted by
+   * vertex, do a binary search to see if the given vertex lies within it. */
+  static bool binary_search(
+      VertexWSM v, const std::vector<std::pair<VertexWSM, WeightWSM>>& list);
 
  private:
   // KEY: a vertex VALUE: all neighbouring vertices, with the edge weights.

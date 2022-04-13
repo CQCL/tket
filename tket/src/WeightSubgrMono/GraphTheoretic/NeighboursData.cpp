@@ -98,6 +98,16 @@ std::optional<WeightWSM> NeighboursData::get_edge_weight_opt(
   return {};
 }
 
+bool NeighboursData::binary_search(
+    VertexWSM v, const std::vector<std::pair<VertexWSM, WeightWSM>>& list) {
+  const auto citer = std::lower_bound(
+      list.cbegin(), list.cend(), std::make_pair(v, WeightWSM(0)));
+  if (citer == list.cend()) {
+    return false;
+  }
+  return citer->first == v;
+}
+
 std::size_t NeighboursData::get_degree(VertexWSM v) const {
   const auto v_citer = m_neighbours_and_weights_map.find(v);
   if (v_citer == m_neighbours_and_weights_map.cend()) {
@@ -133,19 +143,23 @@ const NeighboursData::NeighboursMap& NeighboursData::get_map() const {
   return m_neighbours_and_weights_map;
 }
 
-bool NeighboursData::is_adjacent_to_assigned_pv(
-    VertexWSM pv, const Assignments& assignments) const {
-  // Crude: could do fancy back-and-forth iterator trick.
-  if (assignments.empty()) {
-    return false;
-  }
-  const auto& neighbours_and_weights = get_neighbours_and_weights(pv);
-  for (const auto& entry : neighbours_and_weights) {
-    if (assignments.count(entry.first) != 0) {
-      return true;
+std::vector<WeightWSM> NeighboursData::get_weights_expensive() const {
+  std::vector<WeightWSM> weights;
+  weights.reserve(m_number_of_edges);
+  for (const auto& entry : m_neighbours_and_weights_map) {
+    const VertexWSM v1 = entry.first;
+    // Every edge is implicitly stored twice, for (v1, v2) and (v2, v1).
+    // Thus, only write the weight when v1>v2 (the opposite of normal).
+    // The neighbour edges are stored with increasing v, as always.
+    for (const auto& inner_entry : entry.second) {
+      const VertexWSM& v2 = inner_entry.first;
+      if (v2 > v1) {
+        break;
+      }
+      weights.emplace_back(inner_entry.second);
     }
   }
-  return false;
+  return weights;
 }
 
 }  // namespace WeightedSubgraphMonomorphism
