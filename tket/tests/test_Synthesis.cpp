@@ -950,25 +950,43 @@ SCENARIO("Test commutation through CXsw", "[transform]") {
   }
 }
 
-SCENARIO("Testing globalise_phasedx") {
-  GIVEN("A simple PhasedX gate in 2qb circuit") {
+SCENARIO("Testing globalise_PhasedX") {
+  GIVEN("A simple PhasedX gate in 2qb circuit, squash=false") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::PhasedX, {0.2, 0.54}, {0});
     auto orig_u = tket_sim::get_unitary(circ);
     WHEN("Applying globalise PhasedX transform") {
-      REQUIRE(Transforms::globalise_phasedx().apply(circ));
+      REQUIRE(Transforms::globalise_PhasedX(false).apply(circ));
       THEN("The correct gates are introduced") {
         REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
         REQUIRE(circ.count_gates(OpType::NPhasedX) == 2);
-        REQUIRE(circ.count_gates(OpType::Rz) == 1);
-        REQUIRE(circ.n_gates() == 3);
+        REQUIRE(circ.count_gates(OpType::Rz) == 3);
+        REQUIRE(circ.n_gates() == 5);
       }
       THEN("The unitaries are equal") {
         auto new_u = tket_sim::get_unitary(circ);
         REQUIRE(tket_sim::compare_statevectors_or_unitaries(orig_u, new_u));
       }
       THEN("Cannot apply transform x2") {
-        REQUIRE_FALSE(Transforms::globalise_phasedx().apply(circ));
+        REQUIRE_FALSE(Transforms::globalise_PhasedX(false).apply(circ));
+      }
+    }
+  }
+  GIVEN("A simple PhasedX gate in 2qb circuit") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::PhasedX, {0.2, 0.54}, {0});
+    auto orig_u = tket_sim::get_unitary(circ);
+    WHEN("Applying globalise PhasedX transform") {
+      REQUIRE(Transforms::globalise_PhasedX().apply(circ));
+      THEN("The correct gates are introduced") {
+        REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
+        REQUIRE(circ.count_gates(OpType::NPhasedX) == 2);
+        REQUIRE(circ.count_gates(OpType::Rz) == 3);
+        REQUIRE(circ.n_gates() == 5);
+      }
+      THEN("The unitaries are equal") {
+        auto new_u = tket_sim::get_unitary(circ);
+        REQUIRE(tket_sim::compare_statevectors_or_unitaries(orig_u, new_u));
       }
     }
   }
@@ -977,19 +995,16 @@ SCENARIO("Testing globalise_phasedx") {
     circ.add_op<unsigned>(OpType::NPhasedX, {0.2, 0.54}, {0});
     auto orig_u = tket_sim::get_unitary(circ);
     WHEN("Applying globalise PhasedX transform") {
-      REQUIRE(Transforms::globalise_phasedx().apply(circ));
+      REQUIRE(Transforms::globalise_PhasedX().apply(circ));
       THEN("The correct gates are introduced") {
         REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
         REQUIRE(circ.count_gates(OpType::NPhasedX) == 2);
-        REQUIRE(circ.count_gates(OpType::Rz) == 1);
-        REQUIRE(circ.n_gates() == 3);
+        REQUIRE(circ.count_gates(OpType::Rz) == 3);
+        REQUIRE(circ.n_gates() == 5);
       }
       THEN("The unitaries are equal") {
         auto new_u = tket_sim::get_unitary(circ);
         REQUIRE(tket_sim::compare_statevectors_or_unitaries(orig_u, new_u));
-      }
-      THEN("Cannot apply transform x2") {
-        REQUIRE_FALSE(Transforms::globalise_phasedx().apply(circ));
       }
     }
   }
@@ -998,19 +1013,16 @@ SCENARIO("Testing globalise_phasedx") {
     circ.add_op<unsigned>(OpType::NPhasedX, {0.2, 0.54}, {0, 1});
     auto orig_u = tket_sim::get_unitary(circ);
     WHEN("Applying globalise PhasedX transform") {
-      REQUIRE(Transforms::globalise_phasedx().apply(circ));
+      REQUIRE(Transforms::globalise_PhasedX().apply(circ));
       THEN("The correct gates are introduced") {
         REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
         REQUIRE(circ.count_gates(OpType::NPhasedX) == 2);
-        REQUIRE(circ.count_gates(OpType::Rz) == 2);
-        REQUIRE(circ.n_gates() == 4);
+        REQUIRE(circ.count_gates(OpType::Rz) == 6);
+        REQUIRE(circ.n_gates() == 8);
       }
       THEN("The unitaries are equal") {
         auto new_u = tket_sim::get_unitary(circ);
         REQUIRE(tket_sim::compare_statevectors_or_unitaries(orig_u, new_u));
-      }
-      THEN("Cannot apply transform x2") {
-        REQUIRE_FALSE(Transforms::globalise_phasedx().apply(circ));
       }
     }
   }
@@ -1025,19 +1037,30 @@ SCENARIO("Testing globalise_phasedx") {
     circ.add_op<unsigned>(OpType::H, {3});
     circ.add_op<unsigned>(OpType::NPhasedX, {0.53, 0.23}, {0, 1, 2, 3});
     auto orig_u = tket_sim::get_unitary(circ);
-    WHEN("Applying globalise PhasedX transform") {
-      REQUIRE(Transforms::globalise_phasedx().apply(circ));
+    WHEN("Applying globalise PhasedX transform, squash=true") {
+      Circuit tmp_circ(circ);
+      REQUIRE(Transforms::globalise_PhasedX().apply(tmp_circ));
       THEN("The correct gates are introduced") {
-        REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
-        REQUIRE(circ.count_gates(OpType::NPhasedX) == 7);
-        REQUIRE(circ.count_gates(OpType::Rz) == 6);
+        REQUIRE(tmp_circ.count_gates(OpType::PhasedX) == 0);
+        REQUIRE(tmp_circ.count_gates(OpType::NPhasedX) == 4);
+        REQUIRE(tmp_circ.count_gates(OpType::Rz) == 22);
       }
       THEN("The unitaries are equal") {
-        auto new_u = tket_sim::get_unitary(circ);
+        auto new_u = tket_sim::get_unitary(tmp_circ);
         REQUIRE(tket_sim::compare_statevectors_or_unitaries(orig_u, new_u));
       }
-      THEN("Cannot apply transform x2") {
-        REQUIRE_FALSE(Transforms::globalise_phasedx().apply(circ));
+    }
+    WHEN("Applying globalise PhasedX transform, squash=false") {
+      Circuit tmp_circ(circ);
+      REQUIRE(Transforms::globalise_PhasedX(false).apply(tmp_circ));
+      THEN("The correct gates are introduced") {
+        REQUIRE(tmp_circ.count_gates(OpType::PhasedX) == 0);
+        REQUIRE(tmp_circ.count_gates(OpType::NPhasedX) == 7);
+        REQUIRE(tmp_circ.count_gates(OpType::Rz) == 18);
+      }
+      THEN("The unitaries are equal") {
+        auto new_u = tket_sim::get_unitary(tmp_circ);
+        REQUIRE(tket_sim::compare_statevectors_or_unitaries(orig_u, new_u));
       }
     }
   }
