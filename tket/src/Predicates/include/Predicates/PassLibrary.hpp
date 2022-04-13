@@ -26,7 +26,6 @@ const PassPtr &SynthesiseUMD();
 const PassPtr &PeepholeOptimise2Q();
 const PassPtr &RemoveRedundancies();
 const PassPtr &CommuteThroughMultis();
-const PassPtr &GlobalisePhasedX();
 const PassPtr &DecomposeArbitrarilyControlledGates();
 // Expects: CX and any single-qubit gates,
 // but does not break if it encounters others

@@ -14,7 +14,10 @@
 
 #include "Decomposition.hpp"
 
+#include <functional>
 #include <optional>
+// replace with c++20 <ranges> when available
+#include <boost/range/adaptor/filtered.hpp>
 
 #include "Architecture/Architecture.hpp"
 #include "BasicOptimisation.hpp"
@@ -24,6 +27,7 @@
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
 #include "Ops/OpPtr.hpp"
+#include "PhasedXFrontier.hpp"
 #include "Rebase.hpp"
 #include "Replacement.hpp"
 #include "Transform.hpp"
@@ -1021,6 +1025,190 @@ Transform decompose_NPhasedX() {
   });
 }
 
+///////////////////////////////
+//     GlobalisePhasedX      //
+///////////////////////////////
+
+static std::vector<Expr> distinct_beta(
+    const Circuit &circ, const OptVertexVec &gates);
+template <typename T>
+static bool all_equal(const std::vector<T> &vs);
+
+// Any PhasedX or NPhasedX gate is replaced by an NPhasedX that is global
+Transform globalise_PhasedX(bool squash) {
+  // The key bit: choose the decomposition strategy depending on the current
+  // beta angles.
+  //
+  // Given the set of PhasedX gates to synthesise, choose which decompsition
+  // valid strategies are 0, 1, 2, corresponding to the number of NPhasedX gates
+  // to be inserted.
+  //
+  // The current strategy is rather simple: it chooses to insert a single
+  // NPhasedX whenever it would solve the current problem and there are further
+  // PhasedX left (meaning that the rest of the computation can be deferred till
+  // later), otherwise inserts 2x PhasedX.
+  auto choose_strategy = [](const PhasedXFrontier &frontier,
+                            std::vector<Expr> target, std::vector<Expr> all) {
+    if (all.size() == 0 || target.size() == 0) {
+      return 0;
+    }
+    if (target.size() == 1 && frontier.are_phasedx_left()) {
+      return 1;
+    }
+    return 2;
+  };
+
+  // the actual transform
+  return Transform([squash, &choose_strategy](Circuit &circ) {
+    bool success = false;
+
+    if (squash) {
+      // if we squash, we start by removing all NPhasedX gates
+      success |= Transforms::decompose_NPhasedX().apply(circ);
+    }
+
+    std::vector<unsigned> range_qbs(circ.n_qubits());
+    std::iota(range_qbs.begin(), range_qbs.end(), 0);
+    PhasedXFrontier frontier(circ);
+
+    // find a total ordering of multi-qb gates
+    auto filter_pred = [&circ](Vertex v) {
+      Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+      OpType type = op->get_type();
+      return is_gate_type(type) && as_gate_ptr(op)->n_qubits() > 1 &&
+             type != OpType::NPhasedX;
+    };
+    auto r = circ.vertices_in_order() | boost::adaptors::filtered(filter_pred);
+    OptVertexVec multiq_gates(r.begin(), r.end());
+    // add sentinel to process the gates after last multiq_gate
+    multiq_gates.push_back(std::nullopt);
+
+    // Loop through each multi-qb gate.
+    // At each iteration, decide how to decompose the single-qb gates
+    // immediately preceding the current multi-qb gate into global gates.
+    //
+    // The rationale: defer any computation until just before the next multi-qb
+    // gate. At that point, the single-qb gates on the qubits where the multi-qb
+    // gate is acting HAVE TO be decomposed. Figure out how to do that and take
+    // care of the garbage you might have created on other qubits at a later
+    // point.
+    for (OptVertex v : multiq_gates) {
+      // the qubits whose intervals must be decomposed into global gates
+      std::set<unsigned> curr_qubits;
+      while (true) {
+        if (v) {
+          curr_qubits = frontier.qubits_ending_in(*v);
+        } else {
+          for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+            curr_qubits.insert(curr_qubits.end(), i);
+          }
+        }
+        if (squash) {
+          frontier.squash_intervals();
+        }
+        OptVertexVec all_phasedx = frontier.get_all_beta_vertices();
+        OptVertexVec curr_phasedx;
+        for (unsigned q : curr_qubits) {
+          curr_phasedx.push_back(all_phasedx[q]);
+        }
+
+        if (all_nullopt(curr_phasedx)) {
+          // there is nothing to decompose anymore, move to next multiq_gate
+          break;
+        }
+        if (all_equal(all_phasedx)) {
+          // this is already a global NPhasedX gate, leave untouched
+          frontier.skip_global_gates(1);
+          continue;
+        }
+
+        // find best decomposition strategy
+        std::vector<Expr> curr_betas = distinct_beta(circ, curr_phasedx);
+        std::vector<Expr> all_betas = distinct_beta(circ, all_phasedx);
+        unsigned strategy;
+        if (squash) {
+          strategy = choose_strategy(frontier, curr_betas, all_betas);
+        } else {
+          // if we don't squash we decompose each NPhasedX with 2x global
+          strategy = 2;
+        }
+        switch (strategy) {
+          case 0:
+            // do nothing
+            break;
+          case 1:
+            // insert one single global NPhasedX
+            TKET_ASSERT(curr_qubits.size() > 0);
+            frontier.insert_1_phasedx(*(curr_qubits.begin()));
+            success = true;
+            break;
+          case 2:
+            // insert two global NPhasedX
+            frontier.insert_2_phasedx();
+            success = true;
+            break;
+          default:
+            throw NotValid("Invalid strategy in replace_non_global_phasedx");
+        }
+      }
+      if (v) {
+        frontier.next_multiqb(*v);
+      }
+    }
+    return success;
+  });
+}
+
+std::vector<Expr> distinct_beta(
+    const Circuit &circ, const OptVertexVec &gates) {
+  std::set<double> vals;
+  std::vector<Expr> non_vals;
+  for (OptVertex v : gates) {
+    if (v) {
+      Expr angle = circ.get_Op_ptr_from_Vertex(*v)->get_params()[0];
+      std::optional<double> eval = eval_expr_mod(angle, 4);
+      if (eval) {
+        vals.insert(*eval);
+      } else {
+        non_vals.push_back(angle);
+      }
+    } else {
+      vals.insert(0.);
+    }
+  }
+
+  std::vector<Expr> exprs;
+  for (unsigned i = 0; i < non_vals.size(); ++i) {
+    bool is_unique = true;
+    for (unsigned j = i + 1; j < non_vals.size(); ++j) {
+      if (equiv_expr(non_vals[i], non_vals[j])) {
+        is_unique = false;
+        break;
+      }
+    }
+    if (is_unique) {
+      exprs.push_back(non_vals[i]);
+    }
+  }
+  for (double val : vals) {
+    exprs.push_back(val);
+  }
+  return exprs;
+}
+
+template <typename T>
+bool all_equal(const std::vector<T> &vs) {
+  if (vs.empty()) {
+    return true;
+  }
+  T front = vs.front();
+  for (auto v : vs) {
+    if (front != v) {
+      return false;
+    }
+  }
+  return true;
+}
 
 }  // namespace Transforms
 

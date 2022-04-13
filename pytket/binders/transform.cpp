@@ -291,12 +291,24 @@ PYBIND11_MODULE(transform, m) {
           "DecomposeNPhasedX", &Transforms::decompose_NPhasedX,
           "Decompose NPhasedX gates into single-qb PhasedX gates.\n\n")
       .def_static(
-          "GlobalisePhasedX", &Transforms::globalise_phasedx,
-          "Replaces every occurence of PhasedX or NPhasedX gates with NPhasedX "
-          "gates acting on all qubits, and correcting rotation gates."
-          "\n\nThis is achieved using the identity"
-          "\nPhX(α, β) = PhX(-1/2, β + 1/2) Rz(α) PhX(1/2, β + 1/2)"
-          "\n(circuit order).")
+          "GlobalisePhasedX", &Transforms::globalise_PhasedX,
+          "Turns all PhasedX and NPhasedX gates into global gates\n\n"
+          "Replaces any PhasedX gates with global NPhasedX gates. "
+          "By default, this transform will squash all single-qubit gates "
+          "to PhasedX and Rz gates before proceeding further. "
+          "Existing non-global NPhasedX will not be preserved."
+          "This is the recommended setting for best "
+          "performance. If squashing is disabled, each non-global PhasedX gate "
+          "will be replaced with 2x global NPhasedX, but any other gates will "
+          "be left untouched."
+          "\n\n:param squash: Whether to squash the circuit in pre-processing "
+          "(default: true)."
+          "\n\nIf squash=true (default), this transform always returns true. "
+          "For squash=false, it will return true if the circuit was transformed"
+          " and false otherwise.\n\n"
+          "It is not recommended to use this pass with symbolic expressions, as"
+          " in certain cases a blow-up in symbolic expression sizes may occur.",
+          py::arg("squash") = true)
       .def_static(
           "SynthesisePauliGraph", &Transforms::synthesise_pauli_graph,
           "Synthesises Pauli Graphs.",

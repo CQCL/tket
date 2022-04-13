@@ -355,9 +355,23 @@ PYBIND11_MODULE(passes, m) {
       "Converts all multi-qubit gates into CX and single-qubit gates.");
   m.def(
       "GlobalisePhasedX", &GlobalisePhasedX,
-      "Replaces every occurence of PhasedX or NPhasedX gates with NPhasedX "
-      "gates acting on all qubits, and correcting rotation gates, so that the "
-      "GlobalPhasedXPredicate is satisfied.");
+      "Turns all PhasedX and NPhasedX gates into global gates\n\n"
+      "Replaces any PhasedX gates with global NPhasedX gates. "
+      "By default, this transform will squash all single-qubit gates "
+      "to PhasedX and Rz gates before proceeding further. "
+      "Existing non-global NPhasedX will not be preserved."
+      "This is the recommended setting for best "
+      "performance. If squashing is disabled, each non-global PhasedX gate "
+      "will be replaced with 2x global NPhasedX, but any other gates will "
+      "be left untouched."
+      "\n\n:param squash: Whether to squash the circuit in pre-processing "
+      "(default: true)."
+      "\n\nIf squash=true (default), this transform always returns true. "
+      "For squash=false, it will return true if the circuit was transformed"
+      " and false otherwise.\n\n"
+      "It is not recommended to use this pass with symbolic expressions, as"
+      " in certain cases a blow-up in symbolic expression sizes may occur.",
+      py::arg("squash") = true);
   m.def(
       "DecomposeSingleQubitsTK1", &DecomposeSingleQubitsTK1,
       "Converts all single-qubit gates into TK1 gates.");
