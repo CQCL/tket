@@ -241,7 +241,8 @@ void PhasedXFrontier::skip_global_gates(unsigned n) {
       Vertex v = circ_.target(e);
       OpType type = circ_.get_OpType_from_Vertex(v);
       e = circ_.get_next_edge(v, e);
-      if (type == OpType::NPhasedX) {
+      if (type == OpType::NPhasedX ||
+          (circ_.n_qubits() == 1 && type == OpType::PhasedX)) {
         unsigned in_edges = circ_.n_in_edges_of_type(v, EdgeType::Quantum);
         unsigned out_edges = circ_.n_out_edges_of_type(v, EdgeType::Quantum);
         if (in_edges != circ_.n_qubits() || out_edges != circ_.n_qubits()) {

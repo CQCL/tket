@@ -1060,11 +1060,9 @@ Transform globalise_PhasedX(bool squash) {
 
   // the actual transform
   return Transform([squash, &choose_strategy](Circuit &circ) {
-    bool success = false;
-
+    // if we squash, we start by removing all NPhasedX gates
     if (squash) {
-      // if we squash, we start by removing all NPhasedX gates
-      success |= Transforms::decompose_NPhasedX().apply(circ);
+      Transforms::decompose_NPhasedX().apply(circ);
     }
 
     std::vector<unsigned> range_qbs(circ.n_qubits());
@@ -1083,6 +1081,9 @@ Transform globalise_PhasedX(bool squash) {
     // add sentinel to process the gates after last multiq_gate
     multiq_gates.push_back(std::nullopt);
 
+    // whether transform is successful (always true if squash=true)
+    bool success = squash;
+
     // Loop through each multi-qb gate.
     // At each iteration, decide how to decompose the single-qb gates
     // immediately preceding the current multi-qb gate into global gates.
@@ -1092,6 +1093,7 @@ Transform globalise_PhasedX(bool squash) {
     // gate is acting HAVE TO be decomposed. Figure out how to do that and take
     // care of the garbage you might have created on other qubits at a later
     // point.
+
     for (OptVertex v : multiq_gates) {
       // the qubits whose intervals must be decomposed into global gates
       std::set<unsigned> curr_qubits;
