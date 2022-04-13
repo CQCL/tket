@@ -1064,6 +1064,44 @@ SCENARIO("Testing globalise_PhasedX") {
       }
     }
   }
+  GIVEN("A realistic 4qb example") {
+    Circuit c(4);
+    for (unsigned i = 0; i < 4; ++i) {
+      c.add_op<unsigned>(OpType::H, {i});
+    }
+    const std::vector<std::pair<unsigned, unsigned>> edges{
+        {0, 3}, {1, 3}, {2, 3}};
+    for (auto [i, j] : edges) {
+      c.add_op<unsigned>(OpType::ZZPhase, 0.32, {i, j});
+    }
+    for (unsigned i = 0; i < 4; ++i) {
+      c.add_op<unsigned>(OpType::Rx, 0.44, {i});
+    }
+
+    // rebase to right gate set
+    Transform t = Transforms::decompose_multi_qubits_CX() >>
+                  Transforms::decompose_ZX() >>
+                  Transforms::squash_1qb_to_pqp(OpType::Rz, OpType::Rx) >>
+                  Transforms::decompose_ZX_to_HQS1();
+    t.apply(c);
+    WHEN("Using globalise_PhasedX, squash=false") {
+      Circuit tmp_circ(c);
+      REQUIRE(Transforms::globalise_PhasedX(false).apply(tmp_circ));
+      THEN("8 NPhasedX are required") {
+        REQUIRE(tmp_circ.count_gates(OpType::PhasedX) == 0);
+        REQUIRE(tmp_circ.count_gates(OpType::NPhasedX) == 8);
+      }
+    }
+    WHEN("Using globalise_PhasedX, squash=true") {
+      Circuit tmp_circ(c);
+      REQUIRE(Transforms::globalise_PhasedX().apply(tmp_circ));
+      THEN("6 NPhasedX are required") {
+        REQUIRE(tmp_circ.count_gates(OpType::PhasedX) == 0);
+        REQUIRE(tmp_circ.count_gates(OpType::NPhasedX) == 6);
+      }
+      tmp_circ.to_graphviz_file("tmp_circ");
+    }
+  }
 }
 
 SCENARIO(
