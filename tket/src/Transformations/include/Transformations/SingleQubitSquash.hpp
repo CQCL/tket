@@ -110,10 +110,12 @@ class SingleQubitSquash {
    *
    * @param in Starting edge of the squash.
    * @param out Last edge of the squash.
+   * @param circ_ptr The circuit to be squashed (optional).
    * @retval true The circuit was changed.
    * @retval false The circuit was not changed.
    */
-  bool squash_between(const Edge &in, const Edge &out);
+  bool squash_between(
+      const Edge &in, const Edge &out, Circuit *circ_ptr = nullptr);
 
  private:
   std::unique_ptr<AbstractSquasher> squasher_;
