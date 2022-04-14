@@ -13,8 +13,7 @@
 // limitations under the License.
 
 #pragma once
-#include <forward_list>
-
+#include "../Common/SimpleStorage.hpp"
 #include "GeneralStructs.hpp"
 
 namespace tket {
@@ -26,29 +25,16 @@ struct DerivedGraphStructs {
    */
   typedef std::size_t Count;
 
-  /** This is a list of neighbours in a dervied graph, where the "counts"
+  /** This is a list of neighbours in a derived graph, where the "counts"
    * are edge weights (actual counts of vertices in the original graph).
+   * Sorted by vertex number, for easy neighbours lookup.
    */
   typedef std::vector<std::pair<VertexWSM, Count>> NeighboursAndCounts;
+  typedef SimpleStorage<NeighboursAndCounts> NeighboursAndCountsStorage;
 
-  typedef std::forward_list<NeighboursAndCounts> List;
-  typedef List::iterator Iter;
-};
-
-/** Put all the raw data for graphs in one place. */
-class DerivedGraphsStorage {
- public:
-  /** The whole point is that we want references which are not invalidated
-   * by lazy evaluation of other parts of the graphs.
-   */
-  DerivedGraphStructs::Iter get_new_neighbours_and_counts_iter();
-
- private:
-  // Stores the neighbours data, but without understanding the meaning.
-  // (I.e., it's up to the caller to assign this data to appropriate graphs;
-  // this class knows nothing about which graphs/vertices have which
-  // neighbours and counts objects).
-  DerivedGraphStructs::List m_stored_neighbours_and_counts;
+  /** However, these are the counts, sorted (for checking). */
+  typedef std::vector<Count> SortedCounts;
+  typedef SimpleStorage<SortedCounts> SortedCountsStorage;
 };
 
 }  // namespace WeightedSubgraphMonomorphism

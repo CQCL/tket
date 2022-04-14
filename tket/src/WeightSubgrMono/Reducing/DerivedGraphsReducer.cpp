@@ -14,134 +14,144 @@
 
 #include "WeightSubgrMono/Reducing/DerivedGraphsReducer.hpp"
 
-#include <algorithm>
-
-#include "WeightSubgrMono/GraphTheoretic/DerivedGraphs.hpp"
-#include "WeightSubgrMono/Searching/FixedData.hpp"
-#include "WeightSubgrMono/Searching/SearchNodeWrapper.hpp"
+#include "Utils/Assert.hpp"
+#include "WeightSubgrMono/Common/SetIntersection.hpp"
+#include "WeightSubgrMono/GraphTheoretic/FilterUtils.hpp"
+#include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
+#include "WeightSubgrMono/Searching/NodeWSM.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-// As soon as we get a new assignment PV->TV, it means that
-// each neighbour of PV (in some derived graph) must be either
-// unassigned, or assigned to neighbours of TV.
-// This merely checks, though, it does not reduce anything.
-static bool check_assigned_edges_filter(
+DerivedGraphsReducer::DerivedGraphsReducer(
+    const NeighboursData& pattern_ndata, const NeighboursData& target_ndata)
+    : m_derived_pattern_graphs(
+          pattern_ndata, m_calculator, m_storage, m_counts_storage),
+      m_derived_target_graphs(
+          target_ndata, m_calculator, m_storage, m_counts_storage),
+      m_number_of_assignments_processed(0) {}
+
+bool DerivedGraphsReducer::check(
+    const std::pair<VertexWSM, VertexWSM>& assignment) {
+  const auto pattern_vdata =
+      m_derived_pattern_graphs.get_data(assignment.first);
+  const auto target_vdata = m_derived_target_graphs.get_data(assignment.second);
+
+  return pattern_vdata.triangle_count <= target_vdata.triangle_count &&
+         pattern_vdata.d2_neighbours->size() <=
+             target_vdata.d2_neighbours->size() &&
+         pattern_vdata.d3_neighbours->size() <=
+             target_vdata.d3_neighbours->size() &&
+
+         // It happens that the sorted degree sequences filter algorithm
+         // is identical to the algorithm here (the pattern edge weight must be
+         // <= the target edge weight).
+         FilterUtils::compatible_sorted_degree_sequences(
+             *pattern_vdata.d2_sorted_counts_iter,
+             *target_vdata.d2_sorted_counts_iter) &&
+         FilterUtils::compatible_sorted_degree_sequences(
+             *pattern_vdata.d3_sorted_counts_iter,
+             *target_vdata.d3_sorted_counts_iter);
+}
+
+
+DerivedGraphsReducer::ReductionResult DerivedGraphsReducer::reduce(
     const DerivedGraphStructs::NeighboursAndCounts& pattern_neighbours,
     const DerivedGraphStructs::NeighboursAndCounts& target_neighbours,
-    const Assignments& assignments) {
-  // Could do fancy back-and-forth iterators
+    NodeWSM& node) {
+  // If we do create a new assignment, we will continue
+  // so that this assignment at least is fully processed.
+  bool found_new_assignment = false;
+
+  // We will not change this directly;
+  // but it may change indirectly as we reduce the node.
+  // The reference is still valid, however.
+  const auto& domains = node.get_possible_assignments();
+
   for (const auto& p_entry : pattern_neighbours) {
-    const auto assigned_tv_opt = get_optional_value(assignments, p_entry.first);
-    if (!assigned_tv_opt) {
+    const VertexWSM& pv = p_entry.first;
+    // This is the edge weight in the derived graph,
+    // from the (unknown) root PV to this new PV.
+    const auto& p_count = p_entry.second;
+    const auto& domain = domains.at(pv);
+
+    fill_intersection(
+        domain, target_neighbours, m_new_domain,
+        [](const std::pair<VertexWSM, DerivedGraphStructs::Count>& pair) {
+          return pair.first;
+        },
+
+        // To get the next pair (tv2, count)  after tv1,
+        // we add the extra condition that count >= p-count.
+        // (Since, edges in the derived p-graph must map to edges with equal
+        // or greater counts in the target graph).
+        // Luckily, this fits in exactly with the general framework.
+        [p_count](VertexWSM tv) { return std::make_pair(tv, p_count); });
+
+    if (m_new_domain.size() == domain.size()) {
       continue;
     }
-    const auto assigned_tv = assigned_tv_opt.value();
-    // Now, (pv origin)--pv is an edge in the pattern graph,
-    // so (tv origin)--tv MUST be an edge in the target graph.
-
-    const auto target_citer = std::lower_bound(
-        target_neighbours.cbegin(), target_neighbours.cend(),
-        // Also, the edge weight must be at least as great.
-        // It's lexicographic ordering, so want (x,y) >= (TV, p-weight).
-        // Either x=TV [so that y >= p-weight automatically],
-        // or x>TV. (Or "x" doesn't exist).
-        std::make_pair(assigned_tv, p_entry.second));
-    if (target_citer == target_neighbours.cend() ||
-        target_citer->first != assigned_tv) {
-      return false;
+    if (m_new_domain.empty()) {
+      return ReductionResult::NOGOOD;
     }
+    if (m_new_domain.size() == 1) {
+      found_new_assignment = true;
+    }
+    node.overwrite_domain(pv, m_new_domain);
   }
-  return true;
+  if (found_new_assignment) {
+    return ReductionResult::NEW_ASSIGNMENT;
+  }
+  return ReductionResult::SUCCESS;
 }
 
-static bool reduce_domains_of_neighbours(
-    const DerivedGraphStructs::NeighboursAndCounts& pattern_neighbours,
-    const DerivedGraphStructs::NeighboursAndCounts& target_neighbours,
-    SearchNodeWrapper& node_wrapper, Assignments& assignments,
-    std::vector<VertexWSM>& reduced_domain) {
-  const auto& domains_map = node_wrapper.get().pattern_v_to_possible_target_v;
-  // Could do fancy back-and-forth iterators
-  for (const auto& p_entry : pattern_neighbours) {
-    const auto citer = domains_map.find(p_entry.first);
-    if (citer == domains_map.cend()) {
-      continue;
-    }
-    const auto& domain = citer->second;
-    reduced_domain.clear();
+DerivedGraphsReducer::ReductionResult DerivedGraphsReducer::reduce(
+    const std::pair<VertexWSM, VertexWSM>& assignment, NodeWSM& node) {
+  const auto pattern_vdata =
+      m_derived_pattern_graphs.get_data(assignment.first);
+  const auto target_vdata = m_derived_target_graphs.get_data(assignment.second);
 
-    // Every PV neighbour (in the derived graph) must map to a TV neighbour.
-    // Hence we must INTERSECT the existing domain with this set.
-    for (const auto& t_entry : target_neighbours) {
-      if (domain.count(t_entry.first) != 0 &&
-          t_entry.second >= p_entry.second) {
-        reduced_domain.push_back(t_entry.first);
-      }
-    }
-    if (reduced_domain.empty()) {
-      return false;
-    }
-    if (reduced_domain.size() != domain.size()) {
-      node_wrapper.overwrite_domain(reduced_domain, p_entry.first, assignments);
-    }
+  // All the d2, d3 pattern neighbours must map to target neighbours.
+  // Furthermore, the edge weights must increase in the target graph.
+  // Even if a new assignment is found, let's reduce with all graphs
+  // before returning. Thus, we know at least that the assignment is fully
+  // processed.
+  const auto d2_result =
+      reduce(*pattern_vdata.d2_neighbours, *target_vdata.d2_neighbours, node);
+
+  if (d2_result == ReductionResult::NOGOOD) {
+    return ReductionResult::NOGOOD;
   }
-  return true;
+  const auto d3_result =
+      reduce(*pattern_vdata.d3_neighbours, *target_vdata.d3_neighbours, node);
+
+  if (d3_result == ReductionResult::NOGOOD) {
+    return ReductionResult::NOGOOD;
+  }
+  if (d2_result == ReductionResult::SUCCESS &&
+      d3_result == ReductionResult::SUCCESS) {
+    return ReductionResult::SUCCESS;
+  }
+  return ReductionResult::NEW_ASSIGNMENT;
 }
 
-static bool check_and_reduce(
-    const DerivedGraphStructs::NeighboursAndCounts& pattern_neighbours,
-    const DerivedGraphStructs::NeighboursAndCounts& target_neighbours,
-    SearchNodeWrapper& node_wrapper, Assignments& assignments,
-    std::vector<VertexWSM>& reduced_domain) {
-  return check_assigned_edges_filter(
-             pattern_neighbours, target_neighbours, assignments) &&
-         reduce_domains_of_neighbours(
-             pattern_neighbours, target_neighbours, node_wrapper, assignments,
-             reduced_domain);
-}
+void DerivedGraphsReducer::clear() { m_number_of_assignments_processed = 0; }
 
-bool DerivedGraphsReducer::reduce_domains(
-    const FixedData& fixed_data, Assignments& assignments,
-    std::size_t number_of_assignments_previously_processed_in_this_node,
-    SearchNodeWrapper& node_wrapper, DerivedGraphs& derived_pattern_graphs,
-    DerivedGraphs& derived_target_graphs) {
-  if (fixed_data.target_is_complete) {
-    return true;
-  }
-
-  const auto& chosen_assignments = node_wrapper.get().chosen_assignments;
-
-  while (number_of_assignments_previously_processed_in_this_node <
-         chosen_assignments.size()) {
-    const auto& new_assignment = chosen_assignments
-        [number_of_assignments_previously_processed_in_this_node];
-
-    ++number_of_assignments_previously_processed_in_this_node;
-    const auto& new_pv = new_assignment.first;
-    const auto& new_tv = new_assignment.second;
-
-    if (!check_and_reduce(
-            derived_pattern_graphs.d2_graph.get_neighbours(new_pv),
-            derived_target_graphs.d2_graph.get_neighbours(new_tv), node_wrapper,
-            assignments, m_reduced_domain)
-
-        // TODO: there is a strange intermittent bug
-        // (seems like a Heisenbug?) in
-        // tests\WeightSubgrMono\SolvingProblems\test_UnweightedProblems.cpp,
-        // when this is uncommented.
-        // No time to fix it now! come back later...
-        //   ||
-        // !check_and_reduce(
-        //   derived_pattern_graphs.d3_graph.get_neighbours(new_pv),
-        //   derived_target_graphs.d3_graph.get_neighbours(new_tv),
-        //   node_wrapper, assignments, m_reduced_domain)
-
-    ) {
-      return false;
+DerivedGraphsReducer::ReductionResult DerivedGraphsReducer::reduce(
+    NodeWSM& node) {
+  // The assignments are stored in a fixed place in "node",
+  // separately from the rest of the node data,
+  // so are not invalidated.
+  const auto& assignments = node.get_new_assignments();
+  while (m_number_of_assignments_processed < assignments.size()) {
+    const auto result =
+        reduce(assignments[m_number_of_assignments_processed], node);
+    ++m_number_of_assignments_processed;
+    if (result != ReductionResult::SUCCESS) {
+      return result;
     }
   }
-  return true;
+  return ReductionResult::SUCCESS;
 }
 
 }  // namespace WeightedSubgraphMonomorphism

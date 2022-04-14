@@ -13,48 +13,53 @@
 // limitations under the License.
 
 #pragma once
-#include <map>
-#include <set>
-
-#include "../GraphTheoretic/DerivedGraphStructs.hpp"
+#include "../GraphTheoretic/DerivedGraphs.hpp"
+#include "../GraphTheoretic/DerivedGraphsCalculator.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-struct FixedData;
-class SearchNodeWrapper;
-struct DerivedGraphs;
+class NodeWSM;
 
-/** We take a new PV->TV assignment and use derived graphs to reduce the
- * domains of other vertices (e.g., neighbours of PV in a derived graph
- * must map to neighbours of TV in the corresponding derived target graph).
- */
 class DerivedGraphsReducer {
  public:
-  /** Go through the new assignments PV->TV and reduce all associated domains
-   * using derived graphs.
-   * @param fixed_data Contains, e.g. neighbours data for original pattern and
-   * target graphs.
-   * @param assignments All assignments pv->tv made so far.
-   * @param number_of_assignments_previously_processed_in_this_node Used to
-   * avoid processing older assignments multiple times.
-   * @param node_wrapper The object containing the node to be updated.
-   * @param derived_pattern_graphs The object containing the necessary data for the
-   * derived p-graphs.
-   * @param derived_target_graphs The object containing the necessary data for the
-   * derived t-graphs.
-   * @return True if the search is still ongoing, false if a nogood is detected
-   * (so the search must backtrack).
+  DerivedGraphsReducer(
+      const NeighboursData& pattern_ndata, const NeighboursData& target_ndata);
+
+  /** Returns false if the pv->tv assignment is impossible,
+   * according to the derived graphs.
    */
-  bool reduce_domains(
-      const FixedData& fixed_data, Assignments& assignments,
-      std::size_t number_of_assignments_previously_processed_in_this_node,
-      SearchNodeWrapper& node_wrapper, DerivedGraphs& derived_pattern_graphs,
-      DerivedGraphs& derived_target_graphs);
+  bool check(const std::pair<VertexWSM, VertexWSM>& assignment);
+
+  /** Call at the start when we have a new node, to begin reducing. */
+  void clear();
+
+  enum class ReductionResult { SUCCESS, NOGOOD, NEW_ASSIGNMENT };
+
+  /** Automatically remembers which assignments in this node
+   * have already been processed; if NEW_ASSIGNMENT is returned,
+   * then this will resume from where it left off.
+   */
+  ReductionResult reduce(NodeWSM& node);
 
  private:
-  // A work vector.
-  std::vector<VertexWSM> m_reduced_domain;
+  DerivedGraphStructs::NeighboursAndCountsStorage m_storage;
+  DerivedGraphStructs::SortedCountsStorage m_counts_storage;
+  DerivedGraphsCalculator m_calculator;
+  DerivedGraphs m_derived_pattern_graphs;
+  DerivedGraphs m_derived_target_graphs;
+
+  std::set<VertexWSM> m_new_domain;
+  std::size_t m_number_of_assignments_processed;
+
+  // Reduce an individual assignment.
+  ReductionResult reduce(
+      const std::pair<VertexWSM, VertexWSM>& assignment, NodeWSM& node);
+
+  ReductionResult reduce(
+      const DerivedGraphStructs::NeighboursAndCounts& pattern_neighbours,
+      const DerivedGraphStructs::NeighboursAndCounts& target_neighbours,
+      NodeWSM& node);
 };
 
 }  // namespace WeightedSubgraphMonomorphism

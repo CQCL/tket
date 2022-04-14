@@ -13,29 +13,48 @@
 // limitations under the License.
 
 #pragma once
-#include "DerivedGraph.hpp"
-#include "TriangleCounts.hpp"
+#include "DerivedGraphStructs.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-class DerivedGraphsUpdater;
+class DerivedGraphsCalculator;
+class NeighboursData;
 
-/** The actual graphs are stored here, initialised
- * so that they know how to evaluate things lazily and propagate calculations
- * automatically as necessary; the caller need not worry.
+/** The whole point is that the references remain valid,
+ * taking care of dependencies on other data,
+ * even though everything is lazily evaluated.
  */
-struct DerivedGraphs {
-  DerivedGraph d2_graph;
-  DerivedGraph d3_graph;
+class DerivedGraphs {
+ public:
+  DerivedGraphs(
+      const NeighboursData& ndata, DerivedGraphsCalculator& calculator,
+      DerivedGraphStructs::NeighboursAndCountsStorage& storage,
+      DerivedGraphStructs::SortedCountsStorage& counts_storage);
 
-  /** This is a derived vertex property rather than a graph
-   * (although one could also regard it as a totally disconnected
-   * graph with vertex labels).
+  /** The point is, this is cheap to copy, AND the iters
+   * provide references which remain valid.
    */
-  TriangleCounts triangle_counts;
+  struct VertexData {
+    DerivedGraphStructs::Count triangle_count;
+    DerivedGraphStructs::NeighboursAndCountsStorage::Iter d2_neighbours;
+    DerivedGraphStructs::SortedCountsStorage::Iter d2_sorted_counts_iter;
 
-  DerivedGraphs(DerivedGraphsUpdater& updater);
+    DerivedGraphStructs::NeighboursAndCountsStorage::Iter d3_neighbours;
+    DerivedGraphStructs::SortedCountsStorage::Iter d3_sorted_counts_iter;
+  };
+
+  VertexData get_data(VertexWSM v);
+
+ private:
+  const NeighboursData& m_neighbours_data;
+  DerivedGraphsCalculator& m_calculator;
+  DerivedGraphStructs::NeighboursAndCountsStorage& m_storage;
+  DerivedGraphStructs::SortedCountsStorage& m_counts_storage;
+
+  std::map<VertexWSM, VertexData> m_data;
+
+  void fill(VertexWSM v, VertexData& vertex_data);
 };
 
 }  // namespace WeightedSubgraphMonomorphism

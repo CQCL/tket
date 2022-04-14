@@ -23,12 +23,9 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-DerivedGraphStructs::Count DerivedGraphsCalculator::fill_neighbours_and_weights(
-    const NeighboursData& ndata, VertexWSM v,
-    DerivedGraphStructs::NeighboursAndCounts& depth_2_neighbours_and_counts,
-    DerivedGraphStructs::NeighboursAndCounts& depth_3_neighbours_and_counts) {
+void DerivedGraphsCalculator::fill_mid_vertices_for_length_two_paths(
+    const NeighboursData& ndata, VertexWSM v) {
   m_mid_vertices_for_length_two_paths.clear();
-
   const auto& neighbours = ndata.get_neighbours_and_weights(v);
   for (const auto& entry : neighbours) {
     const auto& v1 = entry.first;
@@ -41,6 +38,10 @@ DerivedGraphStructs::Count DerivedGraphsCalculator::fill_neighbours_and_weights(
       m_mid_vertices_for_length_two_paths[v2].push_back(v1);
     }
   }
+}
+
+void DerivedGraphsCalculator::fill_d2_neighbours_and_counts(
+    DerivedGraphStructs::NeighboursAndCounts& depth_2_neighbours_and_counts) {
   depth_2_neighbours_and_counts.clear();
   for (const auto& entry : m_mid_vertices_for_length_two_paths) {
     const auto& v2 = entry.first;
@@ -49,7 +50,10 @@ DerivedGraphStructs::Count DerivedGraphsCalculator::fill_neighbours_and_weights(
     TKET_ASSERT(is_sorted_and_unique(v1_set));
     depth_2_neighbours_and_counts.emplace_back(v2, v1_set.size());
   }
+}
 
+void DerivedGraphsCalculator::fill_d3_neighbours_and_counts_map(
+    const NeighboursData& ndata) {
   m_depth_3_neighbours_and_counts_map.clear();
   for (const auto& entry : m_mid_vertices_for_length_two_paths) {
     const auto& v2 = entry.first;
@@ -75,8 +79,13 @@ DerivedGraphStructs::Count DerivedGraphsCalculator::fill_neighbours_and_weights(
       }
     }
   }
+}
+
+void DerivedGraphsCalculator::fill_remaining_d3_data(
+    VertexWSM v, DerivedGraphStructs::Count& triangle_count,
+    DerivedGraphStructs::NeighboursAndCounts& depth_3_neighbours_and_counts) {
   depth_3_neighbours_and_counts.clear();
-  std::size_t triangle_count = 0;
+  triangle_count = 0;
   for (const auto& entry : m_depth_3_neighbours_and_counts_map) {
     if (entry.first == v) {
       triangle_count = entry.second;
@@ -84,7 +93,17 @@ DerivedGraphStructs::Count DerivedGraphsCalculator::fill_neighbours_and_weights(
       depth_3_neighbours_and_counts.emplace_back(entry);
     }
   }
-  return triangle_count;
+}
+
+void DerivedGraphsCalculator::fill(
+    const NeighboursData& ndata, VertexWSM v,
+    DerivedGraphStructs::Count& triangle_count,
+    DerivedGraphStructs::NeighboursAndCounts& depth_2_neighbours_and_counts,
+    DerivedGraphStructs::NeighboursAndCounts& depth_3_neighbours_and_counts) {
+  fill_mid_vertices_for_length_two_paths(ndata, v);
+  fill_d2_neighbours_and_counts(depth_2_neighbours_and_counts);
+  fill_d3_neighbours_and_counts_map(ndata);
+  fill_remaining_d3_data(v, triangle_count, depth_3_neighbours_and_counts);
 }
 
 }  // namespace WeightedSubgraphMonomorphism

@@ -39,19 +39,18 @@ class NeighboursData;
  */
 class DerivedGraphsCalculator {
  public:
-  /** Upon demand, calculates teh neighbours in D2, D3 of the given vertex,
-   * and fills the given vectors with thr results.
+  /** Upon demand, calculates the neighbours in D2, D3 of the given vertex.
    * @param ndata The NeighboursData object for the original graph.
    * @param v The vertex in the original graph.
+   * @param triangle_count The triangle count in the original graph.
    * @param depth_2_neighbours_and_counts Data for the neighbours of v in the
    * derived graph D2. Sorted by vertex.
    * @param depth_3_neighbours_and_counts Data for the neighbours of v in the
    * derived graph D3. Sorted by vertex.
-   * @return The triangle count of v (number of triangles containing v), another
-   * useful vertex property.
    */
-  DerivedGraphStructs::Count fill_neighbours_and_weights(
+  void fill(
       const NeighboursData& ndata, VertexWSM v,
+      DerivedGraphStructs::Count& triangle_count,
       DerivedGraphStructs::NeighboursAndCounts& depth_2_neighbours_and_counts,
       DerivedGraphStructs::NeighboursAndCounts& depth_3_neighbours_and_counts);
 
@@ -65,6 +64,20 @@ class DerivedGraphsCalculator {
   // VALUE: the number of distinct paths v--v1--v2--v3.
   std::map<VertexWSM, DerivedGraphStructs::Count>
       m_depth_3_neighbours_and_counts_map;
+
+  // Call the following functions, in order, to build up the data.
+
+  void fill_mid_vertices_for_length_two_paths(
+      const NeighboursData& ndata, VertexWSM v);
+
+  void fill_d2_neighbours_and_counts(
+      DerivedGraphStructs::NeighboursAndCounts& depth_2_neighbours_and_counts);
+
+  void fill_d3_neighbours_and_counts_map(const NeighboursData& ndata);
+
+  void fill_remaining_d3_data(
+      VertexWSM v, DerivedGraphStructs::Count& triangle_count,
+      DerivedGraphStructs::NeighboursAndCounts& depth_3_neighbours_and_counts);
 };
 
 }  // namespace WeightedSubgraphMonomorphism
