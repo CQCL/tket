@@ -12,20 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/EndToEndWrappers/MainSolverParameters.hpp"
+#include "WeightSubgrMono/EndToEndWrappers/PreSearchComponents.hpp"
 
+#include <algorithm>
+#include <functional>
+#include <numeric>
+
+#include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
+#include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-MainSolverParameters::MainSolverParameters(long long timeout_millisecs)
-    : timeout_ms(timeout_millisecs),
-      iterations_timeout(1000000),
-      terminate_with_first_full_solution(false),
-      for_multiple_full_solutions_the_max_number_to_obtain(0),
-      max_distance_for_domain_initialisation_distance_filter(2),
-      max_distance_for_distance_reduction_during_search(10) {}
+PreSearchComponents::PreSearchComponents(
+    const NeighboursData& pattern_nd, const NeighboursData& target_nd)
+    : pattern_ndata(pattern_nd),
+      target_ndata(target_nd),
+      pattern_near_ndata(pattern_ndata),
+      target_near_ndata(target_ndata),
+      distances_reducer(
+          pattern_ndata, pattern_near_ndata, target_ndata, target_near_ndata) {}
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

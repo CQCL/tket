@@ -12,20 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/EndToEndWrappers/MainSolverParameters.hpp"
-
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
+#pragma once
+#include "WeightSubgrMono/Searching/ValueOrdering.hpp"
+#include "WeightSubgrMono/Searching/VariableOrdering.hpp"
+#include "Utils/RNG.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-MainSolverParameters::MainSolverParameters(long long timeout_millisecs)
-    : timeout_ms(timeout_millisecs),
-      iterations_timeout(1000000),
-      terminate_with_first_full_solution(false),
-      for_multiple_full_solutions_the_max_number_to_obtain(0),
-      max_distance_for_domain_initialisation_distance_filter(2),
-      max_distance_for_distance_reduction_during_search(10) {}
+struct SearchComponents {
+  // The newly created search-specific components follow.
+  ValueOrdering value_ordering;
+  VariableOrdering variable_ordering;
+  RNG rng;
+};
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

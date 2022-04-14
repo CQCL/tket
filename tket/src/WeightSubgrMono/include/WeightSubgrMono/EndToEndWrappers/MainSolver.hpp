@@ -13,96 +13,84 @@
 // limitations under the License.
 
 #pragma once
-#include "MainSolverData.hpp"
+#include "../GraphTheoretic/NeighboursData.hpp"
+#include "../Searching/SearchBranch.hpp"
+#include "MainSolverParameters.hpp"
+#include "SolutionData.hpp"
+
+#include <chrono>
+#include <memory>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+struct PreSearchComponents;
+struct SearchComponents;
+
 /** The main class which takes a raw WSM problem and tries to solve it. */
 class MainSolver {
  public:
-
   /** Upon construction, try to solve the problem.
    * @param pattern_edges The pattern graph, with edge weights
    * @param target_edges The target graph, with edge weights
-   * @param parameters The parameters which configure the solving algorithm.
+   * @param parameters Parameters which configure the solving algorithm.
    */
   MainSolver(
       const GraphEdgeWeights& pattern_edges,
       const GraphEdgeWeights& target_edges,
       const MainSolverParameters& parameters);
 
-  /** Upon construction, do a single solve iteration, trying to use as many of the suggested assignments as possible.
-   * Partial, incomplete, and even inconsistent suggestions will still be accepted;   
-   * they will not invalidate the solver, but could lead to slowdowns (if the suggestion is very bad!)
-   * The function "solve" will then behave in future exactly as though this initial move
-   * had arisen normally from the variable and value ordering heuristics.
-   * @param pattern_edges The pattern graph, with edge weights
-   * @param target_edges The target graph, with edge weights
-   * @param suggested_assignments A list of assignments to try, which need not be complete or valid.
-   */
-  MainSolver(
-      const GraphEdgeWeights& pattern_edges,
-      const GraphEdgeWeights& target_edges,
-      const std::vector<std::pair<VertexWSM, VertexWSM>>&
-          suggested_assignments);
+  ~MainSolver();
 
-  /** One can continue solving, if the original solve terminated early
-   * (which may occur before the end, due to timeouts, maximum iterations being hit, etc.)
-   * Does nothing if it finished already (i.e., has gone through a complete search, so can guarantee that EITHER it has found
-   * a jointly optimal solution, OR that no solutions exist).
-   * Note that the timeout refers ONLY to the extra time taken by this function, not the total elapsed time so far which is stored and updated in the SolutionStatistics object within this class.
+  /** After construction, do further solving, if the original solve terminated
+   * early (which may occur due to timeouts, maximum iterations being hit, etc.)
+   * Does nothing if it finished already (i.e., has gone through a complete
+   * search, so can guarantee that EITHER it has found a jointly optimal
+   * solution, OR that no solutions exist). Note that the timeout refers ONLY to
+   * the extra time taken by this function, not the total elapsed time so far
+   * which is stored and updated in the SolutionStatistics object within this
+   * class.
    * @param parameters The parameters which configure the solving algorithm.
    */
   void solve(const MainSolverParameters& parameters);
 
-  const SolutionStatistics& get_solution_statistics() const;
-
-  /** Return the best solution found so far. It may change as "solve" is
-   * called more times, but the object is stored internally in this class
-   * so the reference remains valid as long as this class does.
-   */
-  const SolutionWSM& get_best_solution() const;
-
-  typedef std::vector<std::vector<std::pair<VertexWSM, VertexWSM>>>
-      FullSolutionsList;
-
-  /** A wrapper around the function in the internal SolutionStorage class.
-   * See that class for more explanation. (This can be tricky. For example,
-   * this might be empty, even if some full solutions were found;
-   * it depends on the input parameters. In the unweighted case,
-   * if it runs to completion and the upper bound on the number of solutions
-   * is not hit, then this is guaranteed to contain ALL solutions; but in the
-   * weighted case, it is NOT, even though it must contain at least one
-   * jointly optimal solution).
-   * @return The solutions returned by the function of the same name in the
-   * internal SolutionStorage class.
-   */
-  const FullSolutionsList& get_some_full_solutions() const;
+  /** Returns information about the solving and the best solution
+   * found so far. */
+  const SolutionData& get_solution_data() const;
 
  private:
-  MainSolverData m_data;
+  SolutionData m_solution_data;
 
-  /** Do not actually solve, just set up the initial data etc. READY to solve.
-   * Note that the GraphEdgeWeights objects are not needed after this,
-   * as the data has been processed and converted.
-   * @param pattern_edges The pattern graph, with edge weights
-   * @param target_edges The target graph, with edge weights
-   */
-  MainSolver(
-      const GraphEdgeWeights& pattern_edges,
-      const GraphEdgeWeights& target_edges);
+  NeighboursData m_pattern_neighbours_data;
+  NeighboursData m_target_neighbours_data;
 
-  /** Before calling the "solve" function,
-   * take the suggested assignments and move down the search branch once,
-   * trying to set as many assignments as possible.
-   * Solve will behave in future as though this initial move
-   * had arisen normally from the variable and value ordering heuristics.
-   * @param suggested_assignments A list of assignments to try, which need not be complete or valid.
+  // If the problem is trivially insoluble, no need to spend time constructing
+  // these.
+  std::unique_ptr<PreSearchComponents> m_pre_search_components_ptr;
+  std::unique_ptr<SearchComponents> m_search_components_ptr;
+  std::unique_ptr<SearchBranch> m_search_branch_ptr;
+
+  /** Do NOT backtrack, just move down directly from the current node as far as
+   * possible, i.e. a single solve iteration. Returns TRUE if we end with a full
+   * solution, false otherwise.
    */
-  void do_one_solve_iteration_with_suggestion(
-      const std::vector<std::pair<VertexWSM, VertexWSM>>&
-          suggested_assignments);
+  bool move_down_from_reduced_node(
+      const MainSolverParameters& parameters,
+      const SearchBranch::ReductionParameters& reduction_parameters);
+
+  /** Performs the solve.
+   * We should NOT time things by timing each individual iteration and summing
+   * them; instead, we set the END time and stop when we go over. This converts
+   * the max EXTRA iterations and time into an absolute maximum time and
+   * iterations.
+   */
+  void internal_solve(
+      const MainSolverParameters& parameters, std::size_t max_iterations,
+      const std::chrono::steady_clock::time_point& desired_end_time);
+
+  void add_solution_from_final_node(
+      const MainSolverParameters& parameters,
+      const SearchBranch::ReductionParameters& reduction_parameters);
 };
 
 }  // namespace WeightedSubgraphMonomorphism

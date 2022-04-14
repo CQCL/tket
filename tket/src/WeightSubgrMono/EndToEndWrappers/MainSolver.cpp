@@ -15,147 +15,379 @@
 #include "WeightSubgrMono/EndToEndWrappers/MainSolver.hpp"
 
 #include <algorithm>
-#include <array>
 #include <chrono>
-#include <sstream>
+#include <numeric>
 
 #include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
-#include "WeightSubgrMono/EndToEndWrappers/CheckedWeightBounds.hpp"
-#include "WeightSubgrMono/Searching/FixedData.hpp"
-#include "WeightSubgrMono/Searching/SearchBranch.hpp"
-#include "WeightSubgrMono/Searching/SharedData.hpp"
-#include "WeightSubgrMono/Searching/ValueOrdering.hpp"
-#include "WeightSubgrMono/Searching/VariableOrdering.hpp"
+#include "WeightSubgrMono/EndToEndWrappers/PreSearchComponents.hpp"
+#include "WeightSubgrMono/EndToEndWrappers/SearchComponents.hpp"
+#include "WeightSubgrMono/GraphTheoretic/DomainInitialiser.hpp"
+#include "WeightSubgrMono/WeightPruning/WeightChecker.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-MainSolver::MainSolver(
-      const GraphEdgeWeights& pattern_edges,
-      const GraphEdgeWeights& target_edges,
-      const MainSolverParameters& parameters) 
-    : MainSolver(pattern_edges, target_edges) {
-  solve(parameters);
-}
-
-
-MainSolver::MainSolver(
-      const GraphEdgeWeights& pattern_edges,
-      const GraphEdgeWeights& target_edges,
-      const std::vector<std::pair<VertexWSM, VertexWSM>>&
-          suggested_assignments) 
-    : MainSolver(pattern_edges, target_edges) {
-  do_one_solve_iteration_with_suggestion(suggested_assignments);
-}
-
 typedef std::chrono::steady_clock Clock;
 
-const SolutionStatistics& MainSolver::get_solution_statistics() const {
-  return m_data.statistics;
-}
-
-
 MainSolver::MainSolver(
-    const GraphEdgeWeights& pattern_edges,
-    const GraphEdgeWeights& target_edges) {
+    const GraphEdgeWeights& pattern_edges, const GraphEdgeWeights& target_edges,
+    const MainSolverParameters& parameters)
+    : m_pattern_neighbours_data(pattern_edges),
+      m_target_neighbours_data(target_edges) {
+  const auto num_p_vertices =
+      m_pattern_neighbours_data.get_number_of_nonisolated_vertices();
+  if (num_p_vertices == 0) {
+    m_solution_data.trivial_weight_lower_bound = 0;
+    m_solution_data.trivial_weight_initial_upper_bound = 0;
+    m_solution_data.finished = true;
+    return;
+  }
+
+  const auto num_t_vertices =
+      m_target_neighbours_data.get_number_of_nonisolated_vertices();
+  {
+    const auto number_of_possible_t_edges =
+        (num_t_vertices * (num_t_vertices - 1)) / 2;
+    m_solution_data.target_is_complete =
+        number_of_possible_t_edges ==
+        m_target_neighbours_data.get_number_of_edges();
+  }
+
+  // Start off assuming that it's impossible. So L = +inf, U = 0 make
+  // sense mathematically (infimum over empty set is +infinity, etc. etc.)
+  m_solution_data.trivial_weight_initial_upper_bound = 0;
+  set_maximum(m_solution_data.trivial_weight_lower_bound);
+
+  if (m_pattern_neighbours_data.get_number_of_edges() >
+          m_target_neighbours_data.get_number_of_edges() ||
+      num_p_vertices > num_t_vertices) {
+    m_solution_data.finished = true;
+    return;
+  }
+
   const auto init_start = Clock::now();
-  const auto init_result = m_data.initialise(pattern_edges, target_edges);
 
-  if (init_result == ReductionResult::FAILURE) {
-    // No solution is possible.
-    m_data.statistics.finished = true;
-  }
+  m_pre_search_components_ptr = std::make_unique<PreSearchComponents>(
+      m_pattern_neighbours_data, m_target_neighbours_data);
+  TKET_ASSERT(m_pre_search_components_ptr);
 
-  if (init_result == ReductionResult::FINISHED) {
-    // The initial domains and vertex filtering have led to
-    // a unique solution, which is valid; and stored in the shared data.
-    m_data.statistics.finished = true;
-    TKET_ASSERT(m_data.shared_data_ptr);
+  bool initialisation_succeeded;
+  {
+    PossibleAssignments initial_pattern_v_to_possible_target_v;
+    initialisation_succeeded = DomainInitialiser::full_initialisation(
+        initial_pattern_v_to_possible_target_v, m_pattern_neighbours_data,
+        m_pre_search_components_ptr->pattern_near_ndata,
+        m_target_neighbours_data,
+        m_pre_search_components_ptr->target_near_ndata,
+        parameters.max_distance_for_domain_initialisation_distance_filter);
 
-    // TODO: Check for int overflow and warn...although doesn't actually matter,
-    // since the solution is unique anyway...!
+    if (initialisation_succeeded) {
+      m_search_components_ptr = std::make_unique<SearchComponents>();
+      TKET_ASSERT(m_search_components_ptr);
 
-    const auto& unique_solution =
-        m_data.shared_data_ptr->solution_storage.best_solution();
-
-    m_data.statistics.trivial_weight_lower_bound =
-        unique_solution.total_scalar_product_weight;
-    m_data.statistics.trivial_weight_initial_upper_bound =
-        unique_solution.total_scalar_product_weight;
-  }
-
-  if (init_result == ReductionResult::SUCCESS) {
-    // So far as we know, a solution may be possible; we need to search.
-    // But we haven't found one yet.
-    m_data.statistics.finished = false;
-    TKET_ASSERT(m_data.shared_data_ptr);
-
-    // The cheapest check.
-    const CheckedWeightBounds checked_bounds(
-        m_data.fixed_data, pattern_edges, target_edges, 10);
-
-    if (!checked_bounds.other_inconsistency_occurred &&
-        checked_bounds.lower_bound && checked_bounds.upper_bound &&
-        checked_bounds.lower_bound.value() <=
-            checked_bounds.upper_bound.value()) {
-      m_data.statistics.trivial_weight_lower_bound =
-          checked_bounds.lower_bound.value();
-      m_data.statistics.trivial_weight_initial_upper_bound =
-          checked_bounds.upper_bound.value();
-    } else {
-      // We're finished, but with no solutions.
-      m_data.statistics.finished = true;
-      m_data.shared_data_ptr.reset();
+      m_search_branch_ptr = std::make_unique<SearchBranch>(
+          // Might be std::moved, and hence invalidated
+          initial_pattern_v_to_possible_target_v, m_pattern_neighbours_data,
+          m_target_neighbours_data,
+          m_pre_search_components_ptr->distances_reducer);
     }
   }
-
-  m_data.statistics.initialisation_time_ms =
+  m_solution_data.initialisation_time_ms =
       std::chrono::duration_cast<std::chrono::milliseconds>(
           Clock::now() - init_start)
           .count();
-}
 
-void MainSolver::do_one_solve_iteration_with_suggestion(
-    const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments) {
-  if (m_data.statistics.finished) {
+  if (!initialisation_succeeded) {
+    m_solution_data.finished = true;
     return;
   }
-  m_data.do_one_solve_iteration_with_suggestion(suggested_assignments);
+
+  // The problem is not obviously impossible, so fill in more information.
+  {
+    auto p_weights = m_pattern_neighbours_data.get_weights_expensive();
+    std::sort(p_weights.begin(), p_weights.end());
+
+    auto t_weights = m_target_neighbours_data.get_weights_expensive();
+    std::sort(t_weights.begin(), t_weights.end());
+
+    TKET_ASSERT(
+        p_weights.size() == m_pattern_neighbours_data.get_number_of_edges());
+    TKET_ASSERT(
+        t_weights.size() == m_target_neighbours_data.get_number_of_edges());
+    TKET_ASSERT(p_weights.size() <= t_weights.size());
+    m_solution_data.total_p_edge_weights =
+        std::accumulate(p_weights.cbegin(), p_weights.cend(), WeightWSM(0));
+
+    // Now get trivial lower, upper bounds.
+    // When considering   sum a[i].b[p(i)],  where p can be any permutation
+    // and a,b are sequences of real numbers,
+    // the min value arises when p is such that a,b are in opposite order.
+    // The max value arises when a,b are in the same order.
+    m_solution_data.trivial_weight_lower_bound = 0;
+
+    // Lower bound: p-weights increasing, t-weights decreasing;
+    // BUT we only need use the smallest t-weights, for the minimum.
+    for (unsigned ii = 0; ii < p_weights.size(); ++ii) {
+      const auto product = get_product_or_throw(
+          p_weights[ii], t_weights[(p_weights.size() - 1) - ii]);
+      m_solution_data.trivial_weight_lower_bound =
+          get_sum_or_throw(m_solution_data.trivial_weight_lower_bound, product);
+    }
+    // Now, for the MAXIMUM, we use the LARGEST t-weights,
+    // as well as summing both vectors in increasing order.
+    const unsigned offset = t_weights.size() - p_weights.size();
+    m_solution_data.trivial_weight_initial_upper_bound = 0;
+
+    for (unsigned ii = 0; ii < p_weights.size(); ++ii) {
+      const auto product =
+          get_product_or_throw(p_weights[ii], t_weights[ii + offset]);
+      m_solution_data.trivial_weight_initial_upper_bound = get_sum_or_throw(
+          m_solution_data.trivial_weight_initial_upper_bound, product);
+    }
+  }
+
+  if (m_solution_data.trivial_weight_lower_bound !=
+      m_solution_data.trivial_weight_initial_upper_bound) {
+    // It's not an unweighted problem, so it's worth checking for weights.
+    m_search_branch_ptr->activate_weight_checker(
+        m_solution_data.total_p_edge_weights);
+  }
+
+  if (m_solution_data.initialisation_time_ms >= parameters.timeout_ms) {
+    return;
+  }
+
+  const auto search_start_time = Clock::now();
+  const auto desired_search_end_time =
+      search_start_time + std::chrono::milliseconds(parameters.timeout_ms);
+
+  if (parameters.iterations_timeout != 0) {
+    internal_solve(
+        parameters, parameters.iterations_timeout, desired_search_end_time);
+  }
+  m_solution_data.search_time_ms =
+      std::chrono::duration_cast<std::chrono::milliseconds>(
+          Clock::now() - search_start_time)
+          .count();
+}
+
+MainSolver::~MainSolver() {}
+
+const SolutionData& MainSolver::get_solution_data() const {
+  return m_solution_data;
 }
 
 void MainSolver::solve(const MainSolverParameters& parameters) {
-  if (m_data.statistics.finished) {
+  if (m_solution_data.finished) {
     return;
   }
+  const auto search_start_time = Clock::now();
+  const auto desired_search_end_time =
+      search_start_time + std::chrono::milliseconds(parameters.timeout_ms);
+  const auto max_iterations_opt = get_checked_sum(
+      m_solution_data.iterations, parameters.iterations_timeout);
+  decltype(m_solution_data.iterations) max_iterations;
+  if (max_iterations_opt) {
+    max_iterations = max_iterations_opt.value();
+  } else {
+    set_maximum(max_iterations);
+  }
+  internal_solve(parameters, max_iterations, desired_search_end_time);
+  m_solution_data.search_time_ms +=
+      std::chrono::duration_cast<std::chrono::milliseconds>(
+          Clock::now() - search_start_time)
+          .count();
+}
 
-  TKET_ASSERT(m_data.initialised);
-  TKET_ASSERT(m_data.shared_data_ptr);
+static bool terminate_with_enough_full_solutions(
+    const MainSolverParameters& parameters, const SolutionData& solution_data) {
+  if (parameters.for_multiple_full_solutions_the_max_number_to_obtain == 0) {
+    return parameters.terminate_with_first_full_solution &&
+           !solution_data.solutions.empty();
+  }
+  return solution_data.solutions.size() >=
+         parameters.for_multiple_full_solutions_the_max_number_to_obtain;
+}
+
+void MainSolver::internal_solve(
+    const MainSolverParameters& parameters, std::size_t max_iterations,
+    const std::chrono::steady_clock::time_point& desired_end_time) {
+  if (m_solution_data.finished ||
+      terminate_with_enough_full_solutions(parameters, m_solution_data)) {
+    return;
+  }
+  TKET_ASSERT(m_pre_search_components_ptr);
+  TKET_ASSERT(m_search_branch_ptr);
+
+  SearchBranch::ReductionParameters reduction_parameters;
+  reduction_parameters.max_distance_reduction_value =
+      parameters.max_distance_for_distance_reduction_during_search;
+  decltype(reduction_parameters.max_weight) initial_weight_upper_bound;
+
   if (parameters.weight_upper_bound_constraint) {
-    const WeightWSM weight_constraint =
+    initial_weight_upper_bound =
         parameters.weight_upper_bound_constraint.value();
-    if (m_data.previous_upper_bound_constraint) {
-      TKET_ASSERT(
-          m_data.previous_upper_bound_constraint.value() >= weight_constraint);
-      m_data.previous_upper_bound_constraint = weight_constraint;
+  } else {
+    set_maximum(initial_weight_upper_bound);
+  }
+
+  while (m_solution_data.iterations < max_iterations) {
+    // Set the maximum weight.
+    if (m_solution_data.solutions.empty()) {
+      // We have no solution yet.
+      reduction_parameters.max_weight = initial_weight_upper_bound;
+    } else {
+      if (parameters.for_multiple_full_solutions_the_max_number_to_obtain > 0) {
+        // Because we want to store multiple solutions,
+        // we allow equally good, or worse, solutions.
+        reduction_parameters.max_weight = initial_weight_upper_bound;
+      } else {
+        // We only want a single solution, so only allow a strictly better
+        // solution. Force exactly one solution to be stored - the best. We
+        // should only have one, but previously we've stored more. So just
+        // choose the best.
+        {
+          auto best_scalar_product =
+              m_solution_data.solutions[0].total_scalar_product_weight;
+          unsigned best_index = 0;
+          for (unsigned index = 1; index < m_solution_data.solutions.size();
+               ++index) {
+            if (m_solution_data.solutions[index].total_scalar_product_weight <
+                best_scalar_product) {
+              best_scalar_product =
+                  m_solution_data.solutions[index].total_scalar_product_weight;
+              best_index = index;
+            }
+          }
+          if (best_index > 0) {
+            m_solution_data.solutions[0] =
+                m_solution_data.solutions[best_index];
+          }
+        }
+        m_solution_data.solutions.resize(1);
+        reduction_parameters.max_weight =
+            m_solution_data.solutions[0].total_scalar_product_weight;
+        if (reduction_parameters.max_weight == 0) {
+          // We can't do better than zero!
+          m_solution_data.finished = true;
+          return;
+        }
+        // Make it strictly better.
+        --reduction_parameters.max_weight;
+        reduction_parameters.max_weight = std::min(
+            reduction_parameters.max_weight, initial_weight_upper_bound);
+      }
     }
-    m_data.shared_data_ptr->solution_storage.set_pruning_weight(
-        weight_constraint);
+    if (reduction_parameters.max_weight <
+        m_solution_data.trivial_weight_lower_bound) {
+      m_solution_data.finished = true;
+      return;
+    }
+
+    // Now we can search!
+    ++m_solution_data.iterations;
+
+    // On the first move ONLY, we don't backtrack; but we also haven't reduced.
+    if (m_solution_data.iterations == 1) {
+      if (!m_search_branch_ptr->reduce_current_node(reduction_parameters)) {
+        m_solution_data.finished = true;
+        return;
+      }
+    } else {
+      if (!m_search_branch_ptr->backtrack(reduction_parameters)) {
+        m_solution_data.finished = true;
+        return;
+      }
+    }
+    if (move_down_from_reduced_node(parameters, reduction_parameters)) {
+      // We've GOT a complete solution! Note that it MUST be good enough
+      // to add, since we've set the max weight already.
+      // We also already checked that we haven't yet got too many,
+      // if we're storing more than one.
+      add_solution_from_final_node(parameters, reduction_parameters);
+      if (terminate_with_enough_full_solutions(parameters, m_solution_data)) {
+        return;
+      }
+    }
+    if (Clock::now() >= desired_end_time) {
+      return;
+    }
   }
-  m_data.solve_loop_after_initialisation(parameters);
 }
 
-const SolutionWSM& MainSolver::get_best_solution() const {
-  if (m_data.shared_data_ptr) {
-    return m_data.shared_data_ptr->solution_storage.best_solution();
+void MainSolver::add_solution_from_final_node(
+    const MainSolverParameters& parameters,
+    const SearchBranch::ReductionParameters& reduction_parameters) {
+  TKET_ASSERT(m_pre_search_components_ptr);
+  TKET_ASSERT(m_search_branch_ptr);
+
+  const auto& final_node = m_search_branch_ptr->get_current_node();
+  TKET_ASSERT(
+      final_node.get_total_pattern_edge_weights() ==
+      m_solution_data.total_p_edge_weights);
+
+  TKET_ASSERT(
+      final_node.get_scalar_product() <= reduction_parameters.max_weight);
+
+  // We'll overwrite the solution into back()
+  if (parameters.for_multiple_full_solutions_the_max_number_to_obtain > 0 ||
+      m_solution_data.solutions.empty()) {
+    m_solution_data.solutions.emplace_back();
   }
-  return m_data.empty_solution;
+  auto& assignments = m_solution_data.solutions.back().assignments;
+  const auto number_of_p_vertices =
+      m_pattern_neighbours_data.get_number_of_nonisolated_vertices();
+  assignments.clear();
+  assignments.reserve(number_of_p_vertices);
+  for (const auto& entry : final_node.get_possible_assignments()) {
+    const auto& domain = entry.second;
+    TKET_ASSERT(domain.size() == 1);
+    assignments.emplace_back(entry.first, *domain.cbegin());
+  }
+  TKET_ASSERT(assignments.size() == number_of_p_vertices);
+  m_solution_data.solutions.back().total_p_edges_weight =
+      final_node.get_total_pattern_edge_weights();
+  m_solution_data.solutions.back().total_scalar_product_weight =
+      final_node.get_scalar_product();
 }
 
-const MainSolver::FullSolutionsList& MainSolver::get_some_full_solutions()
-    const {
-  TKET_ASSERT(m_data.shared_data_ptr);
-  return m_data.shared_data_ptr->solution_storage.get_some_full_solutions();
+bool MainSolver::move_down_from_reduced_node(
+    const MainSolverParameters& parameters,
+    const SearchBranch::ReductionParameters& reduction_parameters) {
+  TKET_ASSERT(m_search_components_ptr);
+  TKET_ASSERT(m_search_branch_ptr);
+
+  for (;;) {
+    const auto& node = m_search_branch_ptr->get_current_node();
+    const auto& domains = node.get_possible_assignments();
+
+    const auto next_var_result =
+        m_search_components_ptr->variable_ordering.get_variable(
+            domains,
+            m_search_branch_ptr->get_current_node_candidate_variables(),
+            m_search_components_ptr->rng);
+
+    if (next_var_result.empty_domain) {
+      return false;
+    }
+    if (!next_var_result.variable_opt) {
+      break;
+    }
+    // We've chosen a variable to assign! Now choose a value.
+    const VertexWSM& next_pv = next_var_result.variable_opt.value();
+
+    const VertexWSM next_tv =
+        m_search_components_ptr->value_ordering.get_target_value(
+            domains.at(next_pv), m_target_neighbours_data,
+            m_search_components_ptr->rng);
+
+    m_search_branch_ptr->move_down(next_pv, next_tv);
+    if (!m_search_branch_ptr->reduce_current_node(reduction_parameters)) {
+      return false;
+    }
+  }
+  return true;
 }
 
 }  // namespace WeightedSubgraphMonomorphism
