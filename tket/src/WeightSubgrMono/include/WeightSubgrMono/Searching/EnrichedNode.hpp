@@ -13,30 +13,24 @@
 // limitations under the License.
 
 #pragma once
-#include <map>
-#include <optional>
-#include <set>
-#include <string>
-
-#include "../GraphTheoretic/GeneralStructs.hpp"
-#include "SearchNodeWrapper.hpp"
+#include "NodeWSM.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-/** The search node with raw data,
- * together with other associated necessary data for reduction.
- * All reduction objects should autodetect whether
- * further reduction is needed.
+/** Contains extra data necessary for searching,
+ * which nodes themselves don't need to know about.
  */
 struct EnrichedNode {
-  SearchNodeWrapper node_wrapper;
-  std::size_t n_assignments_processed_by_all_diff_propagator;
+  NodeWSM node;
 
-  /** All data attached to the SearchNode is cleared,
-   * as if it is a new node requiring reduction etc.
+  /** When we initialise another node from this one by assigning pv->tv,
+   * set this to false if it becomes invalid after erasing the assignment.
+   * Thus, when backtracking, we can pass over this node quickly.
    */
-  void clear_enriched_data();
+  bool superficially_valid;
+
+  std::set<VertexWSM> pvs_adjacent_to_newly_assigned_vertices;
 };
 
 }  // namespace WeightedSubgraphMonomorphism

@@ -23,40 +23,46 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-class SearchNodeWrapper;
-struct FixedData;
+class NeighboursData;
 
 /** Some new pv->tv assignments have been made in a search node.
  * Updates the total weight (scalar product) of this node,
  * whenever new edges become assigned.
+ * This does NOT have to be attached to a specific node,
+ * BUT the caller must keep track of which assignments in THIS node
+ * were already processed in a previous call.
  */
 class WeightUpdater {
  public:
-  /** Returns false if too heavy, and stops updating.
-   * @param fixed_data Contains data (including neighbours data) necessary to
-   * compute edges and weight.
-   * @param assignments All current assignments, including previous nodes.
-   * @param node A wrapper around the current node; only the total weight will
-   * be changed.
-   * @param number_of_assignments_previously_processed_in_this_node We process
-   * the assignments in order; all new assignments since the previous call for
-   * this node are processed.
-   * @param max_weight The maximum weight (scalar product) which we allow;
-   * ifthis is exceeded, the calculation breaks off early.
-   * @return False if the current weight exceeds the maximum weight (so that
-   * we're at a nogood; treat this the same as a graph-theoretic nogood, i.e. no
-   * complete monomorphism is possible from extending the current state).
+  struct Result {
+    WeightWSM scalar_product;
+    // It's more convenient to return the additional edge weights,
+    // rather than the total.
+    WeightWSM total_extra_p_edge_weights;
+  };
+
+  /** Calculates the new scalar product and total p-edges weight
+   * from all new p-edges which have become assigned
+   * (i.e., both end vertices are now assigned).
+   * @return Null if the current weight exceeds the maximum weight,
+   * OR we detect a graph-theoretic nogood (i.e., ignoring the weights).
    */
-  bool operator()(
-      const FixedData& fixed_data, const Assignments& assignments,
-      SearchNodeWrapper& node,
-      std::size_t number_of_assignments_previously_processed_in_this_node,
-      WeightWSM max_weight) const;
+  std::optional<Result> operator()(
+      const NeighboursData& pattern_ndata, const NeighboursData& target_ndata,
+      const PossibleAssignments& possible_assignments,
+      const std::vector<std::pair<VertexWSM, VertexWSM>>& assignments,
+      std::size_t number_of_p_vertices_previously_processed_in_this_node,
+      WeightWSM current_weight, WeightWSM max_weight,
+      std::set<VertexWSM>& unassigned_neighbour_vertices) const;
 
  private:
-  // Necessary to avoid double counting edges.
-  // TODO: but, is there a trick to avoid this?
-  mutable std::set<std::pair<VertexWSM, VertexWSM>> m_p_edges_processed;
+  // Necessary to avoid double counting edges,
+  // since newly_assigned_p_vertices is not sorted and thus not
+  // efficiently searchable.
+  // A p-edge is only added if exactly one end vertex was already seen.
+  // If both were seen, it would have been added
+  // when the first vertex was seen.
+  mutable std::set<VertexWSM> m_p_vertices_seen;
 };
 
 }  // namespace WeightedSubgraphMonomorphism

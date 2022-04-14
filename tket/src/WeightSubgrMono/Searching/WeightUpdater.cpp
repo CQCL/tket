@@ -14,70 +14,64 @@
 
 #include "WeightSubgrMono/Searching/WeightUpdater.hpp"
 
-#include "WeightSubgrMono/Searching/FixedData.hpp"
-#include "WeightSubgrMono/Searching/SearchNodeWrapper.hpp"
+#include "Utils/Assert.hpp"
+#include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-static bool add_edge_weights(
-    const FixedData& fixed_data, VertexWSM pv, VertexWSM tv, VertexWSM other_pv,
-    WeightWSM p_edge_weight, const Assignments& assignments,
-    std::set<std::pair<VertexWSM, VertexWSM>>& p_edges_processed,
-    SearchNodeWrapper& node_wrapper, WeightWSM max_weight) {
-  const auto other_tv_citer = assignments.find(other_pv);
-  if (other_tv_citer == assignments.cend()) {
-    // The neighbouring p-vertex is not yet assigned.
-    return true;
-  }
-  const auto p_edge = get_edge(pv, other_pv);
-  if (p_edges_processed.count(p_edge) != 0) {
-    // This edge was already processed.
-    return true;
-  }
-  const VertexWSM& other_tv = other_tv_citer->second;
-  const auto target_weight_opt =
-      fixed_data.target_neighbours_data.get_edge_weight_opt(tv, other_tv);
+std::optional<WeightUpdater::Result> WeightUpdater::operator()(
+    const NeighboursData& pattern_ndata, const NeighboursData& target_ndata,
+    const PossibleAssignments& possible_assignments,
+    const std::vector<std::pair<VertexWSM, VertexWSM>>& assignments,
+    std::size_t number_of_p_vertices_previously_processed_in_this_node,
+    WeightWSM current_weight, WeightWSM max_weight,
+    std::set<VertexWSM>& unassigned_neighbour_vertices) const {
+  m_p_vertices_seen.clear();
+  Result result;
+  result.scalar_product = current_weight;
+  result.total_extra_p_edge_weights = 0;
 
-  if (!target_weight_opt) {
-    return false;
-  }
-  p_edges_processed.insert(p_edge);
+  for (auto ii = number_of_p_vertices_previously_processed_in_this_node;
+       ii < assignments.size(); ++ii) {
+    const VertexWSM& pv = assignments[ii].first;
+    const VertexWSM& tv = assignments[ii].second;
 
-  // We have a p-edge AND a t-edge.
-  node_wrapper.add_p_edge_weights(p_edge_weight)
-      .add_scalar_product(p_edge_weight * target_weight_opt.value());
+    TKET_ASSERT(m_p_vertices_seen.insert(pv).second);
 
-  if (node_wrapper.get().current_scalar_product > max_weight) {
-    return false;
-  }
-  return true;
-}
-
-bool WeightUpdater::operator()(
-    const FixedData& fixed_data, const Assignments& assignments,
-    SearchNodeWrapper& node_wrapper,
-    std::size_t number_of_assignments_previously_processed_in_this_node,
-    WeightWSM max_weight) const {
-  const auto& chosen_assignments = node_wrapper.get().chosen_assignments;
-  m_p_edges_processed.clear();
-  for (auto ii = number_of_assignments_previously_processed_in_this_node;
-       ii < chosen_assignments.size(); ++ii) {
-    const auto& p_vertex = chosen_assignments[ii].first;
-    const auto& t_vertex = chosen_assignments[ii].second;
-
-    const auto& edges_and_weights =
-        fixed_data.pattern_neighbours_data.get_neighbours_and_weights(p_vertex);
-
-    for (const auto& entry : edges_and_weights) {
-      if (!add_edge_weights(
-              fixed_data, p_vertex, t_vertex, entry.first, entry.second,
-              assignments, m_p_edges_processed, node_wrapper, max_weight)) {
-        return false;
+    // Look for assigned neighbours.
+    for (const auto& entry : pattern_ndata.get_neighbours_and_weights(pv)) {
+      const VertexWSM& other_pv = entry.first;
+      const auto& other_domain = possible_assignments.at(other_pv);
+      switch (other_domain.size()) {
+        case 0:
+          return {};
+        case 1: {
+          // We have an assigned edge.
+          if (m_p_vertices_seen.count(other_pv) != 0) {
+            // We've already seen both vertices,
+            // so the edge must already have been added.
+            break;
+          }
+          const VertexWSM& other_tv = *other_domain.cbegin();
+          const auto t_edge_weight_opt =
+              target_ndata.get_edge_weight_opt(tv, other_tv);
+          if (!t_edge_weight_opt) {
+            return {};
+          }
+          result.scalar_product += entry.second * t_edge_weight_opt.value();
+          if (result.scalar_product > max_weight) {
+            return {};
+          }
+          result.total_extra_p_edge_weights += entry.second;
+        } break;
+        default:
+          // An unassigned vertex, which is ALSO adjacent to an assigned one.
+          unassigned_neighbour_vertices.insert(other_pv);
       }
     }
   }
-  return true;
+  return result;
 }
 
 }  // namespace WeightedSubgraphMonomorphism
