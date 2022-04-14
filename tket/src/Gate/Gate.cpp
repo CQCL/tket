@@ -131,6 +131,8 @@ Op_ptr Gate::dagger() const {
       {
         return get_op_ptr(OpType::TK1, {-params_[2], -params_[1], -params_[0]});
       }
+    case OpType::TK2:
+      return get_op_ptr(OpType::TK2, {-params_[0], -params_[1], -params_[2]});
     case OpType::PhasedX:
     case OpType::NPhasedX:
       // PhasedX(a,b).dagger() == PhasedX(-a,b)
@@ -179,6 +181,7 @@ Op_ptr Gate::transpose() const {
     case OpType::XXPhase:
     case OpType::YYPhase:
     case OpType::ZZPhase:
+    case OpType::TK2:
     case OpType::XXPhase3:
     case OpType::ESWAP:
     case OpType::FSim: {
@@ -355,6 +358,17 @@ std::optional<double> Gate::is_identity() const {
         return (equiv_0(s, 4) ^ equiv_0(t, 4)) ? 1. : 0.;
       } else
         return notid;
+    }
+    case OpType::TK2: {
+      int phase = 0;
+      for (const Expr& a : params) {
+        if (equiv_0(a + 2, 4)) {
+          phase ^= 1;
+        } else if (!equiv_0(a, 4)) {
+          return notid;
+        }
+      }
+      return phase ? 1. : 0.;
     }
     case OpType::CRz:
     case OpType::CRx:
@@ -580,7 +594,8 @@ std::optional<Pauli> Gate::commuting_basis(port_t port) const {
     case OpType::U2:
     case OpType::PhasedX:
     case OpType::NPhasedX:
-    case OpType::TK1: {
+    case OpType::TK1:
+    case OpType::TK2: {
       return std::nullopt;
     }
     case OpType::CH:

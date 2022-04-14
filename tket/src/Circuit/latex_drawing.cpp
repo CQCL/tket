@@ -16,6 +16,7 @@
 
 #include "Boxes.hpp"
 #include "Circuit.hpp"
+#include "OpType/OpType.hpp"
 namespace tket {
 
 struct LineBufferInfo {
