@@ -21,6 +21,10 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+WeightNogoodDetectorManager::WeightNogoodDetectorManager(
+    WeightWSM total_p_edge_weights)
+    : m_total_p_edge_weights(total_p_edge_weights) {}
+
 template <typename T>
 void clamp(T& val, T low, T high) {
   val = std::clamp(val, low, high);
@@ -44,8 +48,8 @@ static TempCounter& get_counter() {
 
 bool WeightNogoodDetectorManager::should_activate_detector(
     WeightWSM current_weight, WeightWSM max_weight,
-    WeightWSM current_sum_of_p_edge_weights, WeightWSM total_p_edge_weights,
-    std::size_t n_assigned_vertices, std::size_t n_unassigned_vertices) {
+    WeightWSM current_sum_of_p_edge_weights, std::size_t n_assigned_vertices,
+    std::size_t n_unassigned_vertices) {
   const auto total_n_vertices = n_assigned_vertices + n_unassigned_vertices;
 
   // Note that vertex numbers are sensibly small, so won't overflow.
@@ -79,7 +83,7 @@ bool WeightNogoodDetectorManager::should_activate_detector(
   // if you're very close to a solution, just do it,
   // rather than estimating)?
   if (n_assigned_vertices <= 2 || n_unassigned_vertices <= 2 ||
-      current_weight == 0 || total_p_edge_weights == 0) {
+      current_weight == 0 || m_total_p_edge_weights == 0) {
     // Not enough assignments (or remaining unassigned vertices)
     // for a useful estimate.
     return false;
@@ -105,7 +109,7 @@ bool WeightNogoodDetectorManager::should_activate_detector(
   if (
       // The fraction of pattern graph assignments
       // based upon total p-weight.
-      DyadicFraction(current_weight).mult(total_p_edge_weights) <
+      DyadicFraction(current_weight).mult(m_total_p_edge_weights) <
           DyadicFraction(max_weight)
               .mult(current_sum_of_p_edge_weights)
               .mult_n_over_k(m_state.final_weight_estimate_pk_to_activate) &&
@@ -167,10 +171,6 @@ void WeightNogoodDetectorManager::clamp_state_values() {
       m_state.min_weight_pk_to_activate, m_parameters.min_weight_pk_to_activate,
       m_parameters.max_weight_pk_to_activate);
 }
-
-WeightNogoodDetectorManager::WeightNogoodDetectorManager() {}
-
-WeightNogoodDetectorManager::~WeightNogoodDetectorManager() {}
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

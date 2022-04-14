@@ -54,9 +54,7 @@ class SearchBranch;
  */
 class WeightNogoodDetectorManager {
  public:
-  WeightNogoodDetectorManager();
-
-  ~WeightNogoodDetectorManager();
+  explicit WeightNogoodDetectorManager(WeightWSM total_p_edge_weights);
 
   /** Decide, based upon the current data and previous results,
    * whether to try detecting or not.
@@ -78,7 +76,7 @@ class WeightNogoodDetectorManager {
    */
   bool should_activate_detector(
       WeightWSM current_weight, WeightWSM max_weight,
-      WeightWSM current_sum_of_p_edge_weights, WeightWSM total_p_edge_weights,
+      WeightWSM current_sum_of_p_edge_weights,
       std::size_t current_number_of_assigned_vertices,
       std::size_t current_number_of_unassigned_vertices);
 
@@ -103,6 +101,8 @@ class WeightNogoodDetectorManager {
       WeightWSM extra_weight_lower_bound);
 
  private:
+  const WeightWSM m_total_p_edge_weights;
+
   // The below values of the parameters are little more than
   // (slightly intelligent) GUESSES, with a very small amount of
   // experimental evidence. It would be great to have some really good theory

@@ -13,17 +13,14 @@
 // limitations under the License.
 
 #pragma once
-#include <map>
 #include <optional>
-#include <set>
 
 #include "../GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-struct SearchNode;
-struct FixedData;
+class NeighboursData;
 
 /** Can we get a good guaranteed lower bound on the extra weight
  * to be added from all unassigned pattern vertices,
@@ -44,6 +41,18 @@ struct FixedData;
  */
 class WeightNogoodDetector {
  public:
+  /** The detector needs to know all target vertices which are possible.
+   * But note that this
+   * need not be done at the START of the search; it can be delayed
+   * until needed, when search progress may have cut down some
+   * possibilities, and hence reduced the domains slightly,
+   * giving better estimates.
+   */
+  WeightNogoodDetector(
+      const NeighboursData& pattern_neighbours_data,
+      const NeighboursData& target_neighbours_data,
+      const std::set<VertexWSM>& initial_used_target_vertices);
+
   /** The result of our attempted detection. */
   struct Result {
     /** The extra weight from adding all unassigned variables
@@ -54,7 +63,7 @@ class WeightNogoodDetector {
      * We will break off calculation early of course
      * as soon as we exceed the bound.
      */
-    std::optional<WeightWSM> extra_weight_lower_bound;
+    std::optional<WeightWSM> extra_scalar_product_lower_bound;
 
     /** If not null, gives a (PV,TV) pair where a PV->TV assignment
      * has already taken place,
@@ -76,25 +85,25 @@ class WeightNogoodDetector {
      * A "middle" nogood might be, say, the fresh discovery that PV->TV is
      * always invalid, even though TV is valid).
      */
-    std::optional<std::pair<VertexWSM, VertexWSM>>
-        assignment_with_invalid_t_vertex;
+    std::optional<VertexWSM> invalid_t_vertex;
   };
 
   /** Try to find a weight nogood (i.e., an impossible current position).
-   * @param fixed_data Contains edge/weight data, etc. needed for the
-   * calculation.
    * @param possible_assignments Data for all unassigned vertices.
-   * @param assignments Data for all assignments.
-   * @param max_extra_weight The maximum extra weight we allow (the whole point
-   * of this nogood detection attempt).
+   * @param max_extra_scalar_product The maximum extra weight we allow (the
+   * whole point of this nogood detection attempt).
    * @return Information about a possible weight nogood.
    */
   Result operator()(
-      const FixedData& fixed_data,
       const PossibleAssignments& possible_assignments,
-      const Assignments& assignments, WeightWSM max_extra_weight) const;
+      WeightWSM max_extra_scalar_product) const;
 
  private:
+  const NeighboursData& m_pattern_neighbours_data;
+  const NeighboursData& m_target_neighbours_data;
+
+  mutable std::set<VertexWSM> m_valid_target_vertices;
+
   // There are many mutable data members.
   // Even though this class is "logically" const,
   // it's not "physically" const because of lazy evaluation,
@@ -110,17 +119,10 @@ class WeightNogoodDetector {
   // Mutable because it's lazily initialised.
   mutable std::map<VertexWSM, WeightWSM> m_minimum_t_weights_from_tv;
 
-  // Lazy initialised, with those target vertices which actually
-  // are used somewhere (i.e., lie in the domain of some pattern v).
-  mutable std::set<VertexWSM> m_valid_target_vertices;
-
-  bool target_vertex_is_valid(VertexWSM tv, const FixedData& fixed_data) const;
-
   // Calculated only on first use, and cached;
   // if non-null, the minimum edge weight of any target edge
   // containing the target vertex tv.
-  std::optional<WeightWSM> get_min_weight_for_tv(
-      VertexWSM tv, const FixedData& fixed_data) const;
+  std::optional<WeightWSM> get_min_weight_for_tv(VertexWSM tv) const;
 
   // This really is mutable, to avoid reallocation.
   // In each pair: the FIRST is an UNASSIGNED pattern vertex pv.
@@ -137,7 +139,6 @@ class WeightNogoodDetector {
   // relevant for this current search node only.
   // Returns false if it found we're already at a nogood.
   bool fill_t_weight_lower_bounds_for_p_edges_containing_pv(
-      const FixedData& fixed_data,
       const PossibleAssignments& possible_assignments) const;
 
   // Simply looks up and returns the weight in

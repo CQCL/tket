@@ -18,37 +18,24 @@
 
 #include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
-#include "WeightSubgrMono/Searching/FixedData.hpp"
-#include "WeightSubgrMono/Searching/SearchNode.hpp"
+#include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-bool WeightNogoodDetector::target_vertex_is_valid(
-    VertexWSM tv, const FixedData& fixed_data) const {
-  if (m_valid_target_vertices.empty()) {
-    // We must first fill the valid target vertices.
-    for (const auto& entry :
-         fixed_data.initial_node.pattern_v_to_possible_target_v) {
-      const auto& domain = entry.second;
-      if (m_valid_target_vertices.empty()) {
-        m_valid_target_vertices = domain;
-        continue;
-      }
-      for (auto tv : domain) {
-        m_valid_target_vertices.insert(tv);
-      }
-    }
-    for (const auto& entry : fixed_data.initial_node.chosen_assignments) {
-      m_valid_target_vertices.insert(entry.second);
-    }
-  }
-  return m_valid_target_vertices.count(tv) != 0;
-}
+WeightNogoodDetector::WeightNogoodDetector(
+    const NeighboursData& pattern_neighbours_data,
+    const NeighboursData& target_neighbours_data,
+    const std::set<VertexWSM>& initial_used_target_vertices)
+    : m_pattern_neighbours_data(pattern_neighbours_data),
+      m_target_neighbours_data(target_neighbours_data),
+      m_valid_target_vertices(
+          initial_used_target_vertices.cbegin(),
+          initial_used_target_vertices.cend()) {}
 
 std::optional<WeightWSM> WeightNogoodDetector::get_min_weight_for_tv(
-    VertexWSM tv, const FixedData& fixed_data) const {
-  if (!target_vertex_is_valid(tv, fixed_data)) {
+    VertexWSM tv) const {
+  if (m_valid_target_vertices.count(tv) == 0) {
     return {};
   }
   const auto weight_opt = get_optional_value(m_minimum_t_weights_from_tv, tv);
@@ -58,11 +45,10 @@ std::optional<WeightWSM> WeightNogoodDetector::get_min_weight_for_tv(
   // We must find the minimum weight, by looking at all neighbours.
   WeightWSM min_weight;
   set_maximum(min_weight);
-  const auto& data =
-      fixed_data.target_neighbours_data.get_neighbours_and_weights(tv);
+  const auto& data = m_target_neighbours_data.get_neighbours_and_weights(tv);
   for (const auto& entry : data) {
     const auto& neighbour_tv = entry.first;
-    if (!target_vertex_is_valid(neighbour_tv, fixed_data)) {
+    if (m_valid_target_vertices.count(neighbour_tv) == 0) {
       continue;
     }
     min_weight = std::min(min_weight, entry.second);
@@ -92,7 +78,6 @@ WeightWSM WeightNogoodDetector::get_t_weight_lower_bound(VertexWSM pv) const {
 }
 
 bool WeightNogoodDetector::fill_t_weight_lower_bounds_for_p_edges_containing_pv(
-    const FixedData& fixed_data,
     const PossibleAssignments& possible_assignments) const {
   // Every unassigned edge must connect to an unassigned p-vertex.
   m_t_weight_lower_bounds_for_p_edges_containing_pv.clear();
@@ -103,7 +88,7 @@ bool WeightNogoodDetector::fill_t_weight_lower_bounds_for_p_edges_containing_pv(
     const auto& domain = entry.second;
     TKET_ASSERT(!domain.empty());
     for (auto tv : domain) {
-      const auto weight_opt_for_tv = get_min_weight_for_tv(tv, fixed_data);
+      const auto weight_opt_for_tv = get_min_weight_for_tv(tv);
       if (weight_opt_for_tv) {
         weight = std::min(weight, weight_opt_for_tv.value());
       }
@@ -119,12 +104,11 @@ bool WeightNogoodDetector::fill_t_weight_lower_bounds_for_p_edges_containing_pv(
 }
 
 WeightNogoodDetector::Result WeightNogoodDetector::operator()(
-    const FixedData& fixed_data,
     const PossibleAssignments& possible_assignments,
-    const Assignments& assignments, WeightWSM max_extra_weight) const {
+    WeightWSM max_extra_scalar_product) const {
   Result result;
   if (!fill_t_weight_lower_bounds_for_p_edges_containing_pv(
-          fixed_data, possible_assignments)) {
+          possible_assignments)) {
     // A nogood!
     return result;
   }
@@ -135,8 +119,12 @@ WeightNogoodDetector::Result WeightNogoodDetector::operator()(
   // There's a problem: if BOTH p-edge endpoints are unassigned,
   // the edge will be counted twice.
   // To solve this: only add the data when pv1 < pv2.
-  for (const auto& p_entry : possible_assignments) {
-    const auto& pv1 = p_entry.first;
+  for (const auto& entry : possible_assignments) {
+    if (entry.second.size() == 1) {
+      // It's assigned.
+      continue;
+    }
+    const auto& pv1 = entry.first;
 
     // Note: we don't care about the domain of pv1,
     // we've already gone through it before (when we called
@@ -147,24 +135,23 @@ WeightNogoodDetector::Result WeightNogoodDetector::operator()(
     const auto minimum_t_weight = get_t_weight_lower_bound(pv1);
 
     const auto& p_neighbours_and_weights =
-        fixed_data.pattern_neighbours_data.get_neighbours_and_weights(pv1);
+        m_pattern_neighbours_data.get_neighbours_and_weights(pv1);
 
     for (const auto& pv2_weight_pair : p_neighbours_and_weights) {
-      const auto& pv2 = pv2_weight_pair.first;
-      const auto& p_weight = pv2_weight_pair.second;
-      auto t_weight_estimate = minimum_t_weight;
-
-      if (possible_assignments.count(pv2) == 0) {
+      const VertexWSM& pv2 = pv2_weight_pair.first;
+      const WeightWSM& p_weight = pv2_weight_pair.second;
+      WeightWSM t_weight_estimate = minimum_t_weight;
+      const auto& domain2 = possible_assignments.at(pv2);
+      if (domain2.size() == 1) {
         // This other p-vertex PV2 is assigned already.
         // So let's check the other t-weight estimate, it may be better.
-        const auto& tv2 = assignments.at(pv2);
+        const auto& tv2 = *domain2.cbegin();
 
         // We already know that this edge contains pv1,
         // so DEFINITELY has t-weight >= this current estimate.
         // But we also know that it will be assigned to a target edge
         // containing tv2, which has t_weight >= the other value.
-        const auto other_tv_weight_bound_opt =
-            get_min_weight_for_tv(tv2, fixed_data);
+        const auto other_tv_weight_bound_opt = get_min_weight_for_tv(tv2);
 
         if (!other_tv_weight_bound_opt) {
           // We're at a nogood!
@@ -173,7 +160,7 @@ WeightNogoodDetector::Result WeightNogoodDetector::operator()(
           // but we didn't realise this at the time we made the assignment).
           // Definitely worth the caller trying to make use of this new
           // information, although it is algorithmically complicated.
-          result.assignment_with_invalid_t_vertex = std::make_pair(pv2, tv2);
+          result.invalid_t_vertex = tv2;
           return result;
         }
 
@@ -192,12 +179,12 @@ WeightNogoodDetector::Result WeightNogoodDetector::operator()(
             std::max(t_weight_estimate, get_t_weight_lower_bound(pv2));
       }
       weight_lower_bound += p_weight * t_weight_estimate;
-      if (weight_lower_bound > max_extra_weight) {
+      if (weight_lower_bound > max_extra_scalar_product) {
         return result;
       }
     }
   }
-  result.extra_weight_lower_bound = weight_lower_bound;
+  result.extra_scalar_product_lower_bound = weight_lower_bound;
   return result;
 }
 
