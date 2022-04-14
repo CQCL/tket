@@ -14,7 +14,7 @@
 
 import os
 import math
-from pytest import fixture, yield_fixture  # type: ignore
+from pytest import fixture  # type: ignore
 import random
 import time
 from typing import Any, Generator
