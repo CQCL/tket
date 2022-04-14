@@ -13,91 +13,50 @@
 // limitations under the License.
 
 #pragma once
-#include <array>
-#include <map>
-#include <optional>
-#include <set>
-#include <string>
-
-#include "../GraphTheoretic/GeneralStructs.hpp"
+#include "HallSetDetector.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-class SearchBranch;
-class SearchNodeWrapper;
+class NodeWSM;
 
-/** We have possible mappings [v(i), Dom(v(i))],
- * i.e., for each pattern graph v(i), it must map to one of the target
- * vertices in Dom(v(i)).
- * For each set I of indices, let
- *
- *    U = union_{i in I} Dom(v(i))
- *
- * If there is some I with
- *
- *  | union_{i in I} v(i) | < |U|,
- *
- * then no solution is possible (we have detected a nogood):
- * however we assign, there would be some pair of distinct v(i),v(j)
- * with i,j in I which mapped to the same target vertex.
- * This class tries to detect this, although it does not GUARANTEE
- * to detect this in all cases (it doesn't search through all possible I,
- * because there are exponentially many).
- * Also, if ever we find
- *
- *  | union_{i in I} v(i) | = |U|,
- *
- * Then it's clear that only vertices v(i) for i in I can be assigned
- * to tv in U, and so we may erase every tv in U from every other domain.
+/** See the class "HallSetDetector", which tries to find sets of
+ * pattern vertices {v(i)} such that
+ *    |union Domain(v(i))| <= |{v(i)}|.
+ * When this occurs, reduction is possible (but the detector class doesn't
+ * know how to reduce).
+ * This class actually handles the reductions, if any.
  */
 class HallSetReducer {
  public:
-  /** Try to detect inconsistencies and possible reductions,
-   * and carry reductions out if found.
-   * @param search_node_wrapper Accesses the internal search node data.
-   * @param branch The entire search branch, not just this node; needed just to
-   * update "assignments" if reduction occurs.
-   * @return False if an inconsistency is detected.
-   */
-  bool reduce(
-      SearchNodeWrapper& search_node_wrapper, SearchBranch& branch) const;
+  HallSetReducer();
+
+  /** Call as soon as you reach a new node. */
+  void clear();
+
+  enum class Result { FINISHED, NOGOOD, NEW_ASSIGNMENTS };
+
+  Result operator()(NodeWSM& node);
 
  private:
-  // See the paper "A Parallel, Backjumping Subgraph Isomorphism
-  // Algorithm using Supplemental Graphs" by Ciaran McCreesh
-  // and Patrick Prosser; algorithm 6.
-  // However, we'll do a simpler version, just repeatedly reducing
-  // until everything stops changing.
+  bool m_awaiting_first_reduction;
+  HallSetDetector m_detector;
 
-  // THe following stored data for reuse
-  // is purely to cut down on memory allocation.
-  mutable std::set<VertexWSM> m_combined_domains;
+  // Reuse, rather than reallocate.
+  // The first will be the PV;
+  // the second, the new Domain(PV) after reduction.
+  std::vector<std::pair<VertexWSM, std::vector<VertexWSM>>> m_new_domains_data;
 
-  struct VariableData {
-    VertexWSM vertex;
-    std::size_t domain_size;
-
-    // We'll sort by LARGEST domain size first,
-    // so we can pop off the Hall sets as they are discovered.
-    bool operator<(const VariableData& other) const;
+  struct FillResult {
+    unsigned number_of_new_domains;
+    bool new_assignments;
+    bool nogood;
+    bool changed;
   };
 
-  mutable std::vector<VariableData> m_domain_sizes_and_vertices;
-
-  // ASSUMING that m_domain_sizes_and_vertices has been filled
-  // and sorted, searches for a Hall set at the top
-  // (i.e., a set of variables {v(1), ..., v(n)} such that
-  //  | union_{1 <= i <= n} Dom(v(i)) | = n).
-  bool find_and_remove_top_hall_set_block(
-      SearchNodeWrapper& search_node_wrapper, SearchBranch& branch) const;
-
-  // A Hall set was definitely found.
-  // Remove it, and resort if necessary
-  // (if anything changed).
-  bool remove_top_hall_set_block(
-      std::size_t hall_set_size, SearchNodeWrapper& search_node_wrapper,
-      SearchBranch& branch) const;
+  FillResult fill_new_domains_data_from_hall_set(
+      const PossibleAssignments& current_domains,
+      const HallSetDetector::Result& detector_result);
 };
 
 }  // namespace WeightedSubgraphMonomorphism

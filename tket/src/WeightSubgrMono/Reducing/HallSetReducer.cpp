@@ -14,109 +14,119 @@
 
 #include "WeightSubgrMono/Reducing/HallSetReducer.hpp"
 
-#include <algorithm>
-
 #include "Utils/Assert.hpp"
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
-#include "WeightSubgrMono/Searching/SearchBranch.hpp"
-#include "WeightSubgrMono/Searching/SearchNodeWrapper.hpp"
+#include "WeightSubgrMono/Common/SetIntersection.hpp"
+#include "WeightSubgrMono/Searching/NodeWSM.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-// We put smaller domains at the TOP (back) of a vector, so we can pop_back
-// the smaller domains.
-bool HallSetReducer::VariableData::operator<(const VariableData& other) const {
-  return domain_size > other.domain_size ||
-         (domain_size == other.domain_size && vertex < other.vertex);
-}
+// NOTE:
+// If a Hall set is detected in node[i],
+// it might seem like a good idea to check node[i-1], node[i-2], ...
+// also in the search branch, if the check is cheap.
+// We need to experiment and see. Maybe it seems a little unlikely
+// to be useful, since domain sizes are (mostly) monotonic,
+// and it might seem that it would have been detected sooner.
+// On the other hand, the Hall set detector might fail to detect
+// many sets, purely down to a slight reordering of variables,
+// so maybe our chances of finding the Hall set in previous nodes is higher.
 
-bool HallSetReducer::reduce(
-    SearchNodeWrapper& search_node_wrapper, SearchBranch& branch) const {
-  m_domain_sizes_and_vertices.clear();
 
-  // Initial fill of the data.
-  for (const auto& entry :
-       search_node_wrapper.get().pattern_v_to_possible_target_v) {
-    m_domain_sizes_and_vertices.emplace_back();
-    m_domain_sizes_and_vertices.back().vertex = entry.first;
-    m_domain_sizes_and_vertices.back().domain_size = entry.second.size();
+HallSetReducer::HallSetReducer() : m_awaiting_first_reduction(true) {}
 
-    if (m_domain_sizes_and_vertices.back().domain_size == 0) {
-      return false;
-    }
+void HallSetReducer::clear() { m_awaiting_first_reduction = true; }
+
+HallSetReducer::Result HallSetReducer::operator()(NodeWSM& node) {
+  HallSetDetector::Action action;
+  if (m_awaiting_first_reduction) {
+    action = HallSetDetector::Action::CLEAR_DATA;
+    m_awaiting_first_reduction = false;
+  } else {
+    action = HallSetDetector::Action::USE_EXISTING_DATA;
   }
-  std::sort(
-      m_domain_sizes_and_vertices.begin(), m_domain_sizes_and_vertices.end());
-
-  for (;;) {
-    const auto old_size = m_domain_sizes_and_vertices.size();
-    if (!find_and_remove_top_hall_set_block(search_node_wrapper, branch)) {
-      return false;
-    }
-    if (old_size == m_domain_sizes_and_vertices.size()) {
+  const auto& current_domains = node.get_possible_assignments();
+  const auto& detector_result =
+      m_detector.get_hall_set(current_domains, action);
+  switch (detector_result.status) {
+    case HallSetDetector::Status::UNINTERESTING:
+      return Result::FINISHED;
+    case HallSetDetector::Status::NOGOOD:
+      return Result::NOGOOD;
+    case HallSetDetector::Status::HALL_SET:
       break;
-    }
-    TKET_ASSERT(old_size > m_domain_sizes_and_vertices.size());
   }
-  return true;
+  // We've got a Hall set.
+  const auto fill_result =
+      fill_new_domains_data_from_hall_set(current_domains, detector_result);
+
+  if (fill_result.nogood) {
+    return Result::NOGOOD;
+  }
+  if (!fill_result.changed) {
+    return Result::FINISHED;
+  }
+  TKET_ASSERT(fill_result.number_of_new_domains <= m_new_domains_data.size());
+  for (unsigned ii = 0; ii < fill_result.number_of_new_domains; ++ii) {
+    node.overwrite_domain(
+        m_new_domains_data[ii].first, m_new_domains_data[ii].second);
+  }
+  if (fill_result.new_assignments) {
+    return Result::NEW_ASSIGNMENTS;
+  }
+  // We've reduced, but not got new assignments; so recurse.
+  return operator()(node);
 }
 
-bool HallSetReducer::find_and_remove_top_hall_set_block(
-    SearchNodeWrapper& search_node_wrapper, SearchBranch& branch) const {
-  m_combined_domains.clear();
-  std::size_t hall_set_size = 0;
-  bool hall_set_found = false;
+HallSetReducer::FillResult HallSetReducer::fill_new_domains_data_from_hall_set(
+    const PossibleAssignments& current_domains,
+    const HallSetDetector::Result& detector_result) {
+  TKET_ASSERT(
+      detector_result.pattern_vertices.size() ==
+      detector_result.union_of_domains.size());
 
-  for (auto citer = m_domain_sizes_and_vertices.crbegin();
-       citer != m_domain_sizes_and_vertices.crend(); ++citer) {
-    ++hall_set_size;
-    const auto& domains =
-        search_node_wrapper.get().pattern_v_to_possible_target_v;
+  FillResult result;
+  result.number_of_new_domains = 0;
+  result.new_assignments = false;
+  result.nogood = false;
+  result.changed = false;
 
-    const auto domain_citer = domains.find(citer->vertex);
-    if (domain_citer == domains.cend()) {
-      return false;
+  for (const auto& entry : current_domains) {
+    const VertexWSM& pv = entry.first;
+    if (std::binary_search(
+            detector_result.pattern_vertices.cbegin(),
+            detector_result.pattern_vertices.cend(), pv)) {
+      continue;
     }
-    for (auto tv : domain_citer->second) {
-      m_combined_domains.insert(tv);
+    const auto& current_domain = entry.second;
+    if (disjoint(current_domain, detector_result.union_of_domains)) {
+      continue;
     }
-    if (m_combined_domains.size() < hall_set_size) {
-      return false;
+    // Now we find the new domain; it is definitely different.
+    result.changed = true;
+    if (result.number_of_new_domains >= m_new_domains_data.size()) {
+      m_new_domains_data.resize(result.number_of_new_domains + 1);
     }
-    if (m_combined_domains.size() == hall_set_size) {
-      hall_set_found = true;
-      break;
-    }
-  }
-  if (!hall_set_found) {
-    return true;
-  }
-  return remove_top_hall_set_block(hall_set_size, search_node_wrapper, branch);
-}
+    auto& new_domain_data = m_new_domains_data[result.number_of_new_domains];
+    auto& new_domain = new_domain_data.second;
+    ++result.number_of_new_domains;
 
-bool HallSetReducer::remove_top_hall_set_block(
-    std::size_t hall_set_size, SearchNodeWrapper& search_node_wrapper,
-    SearchBranch& branch) const {
-  m_domain_sizes_and_vertices.resize(
-      m_domain_sizes_and_vertices.size() - hall_set_size);
-  bool needs_reorder = false;
-  for (auto& entry : m_domain_sizes_and_vertices) {
-    const auto new_size = search_node_wrapper.remove_elements_from_domain(
-        entry.vertex, m_combined_domains, branch.get_assignments_mutable());
-    if (new_size == 0) {
-      return false;
+    new_domain.clear();
+    for (VertexWSM tv : current_domain) {
+      if (detector_result.union_of_domains.count(tv) == 0) {
+        new_domain.push_back(tv);
+      }
     }
-    if (entry.domain_size != new_size) {
-      needs_reorder = true;
-      entry.domain_size = new_size;
+    if (new_domain.empty()) {
+      result.nogood = true;
+      return result;
+    }
+    new_domain_data.first = pv;
+    if (new_domain.size() == 1) {
+      result.new_assignments = true;
     }
   }
-  if (needs_reorder) {
-    std::sort(
-        m_domain_sizes_and_vertices.begin(), m_domain_sizes_and_vertices.end());
-  }
-  return true;
+  return result;
 }
 
 }  // namespace WeightedSubgraphMonomorphism
