@@ -69,6 +69,8 @@ class ZXDiagram {
       std::optional<ZXType> type = std::nullopt,
       std::optional<QuantumType> qtype = std::nullopt) const;
 
+  // TODO discuss whether to expose these two
+  std::unique_ptr<ZXGraph>& get_graph();
   void add_boundary(ZXVert& vert);
 
   // Getting the global scalar and modifying by multiplication
