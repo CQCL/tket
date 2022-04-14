@@ -5,25 +5,25 @@ namespace tket {
 
 enum class PortType { In, Out };
 typedef std::pair<VertPort, PortType> TypedVertPort;
+typedef boost::bimap<zx::ZXVert, Vertex> BoundaryVertMap;
 
 bool is_spiderless_optype(const OpType& optype) {
   return optype == OpType::Barrier || optype == OpType::SWAP ||
          optype == OpType::noop;
 }
 
-zx::ZXDiagram circuit_to_zx(const Circuit& circ) {
+BoundaryVertMap circuit_to_zx_recursive(
+    const Circuit& circ, zx::ZXDiagram& zxd, bool add_boundary) {
   // TODO: how can users know the boundary mapping?
-  zx::ZXDiagram zxd;
-
   sequenced_map_t<TypedVertPort, zx::ZXVert> vert_lookup;
+  BoundaryVertMap bmap;
 
   // Convert each vertex to ZXDiagram, raise error if not supported
   BGL_FORALL_VERTICES(vert, circ.dag, DAG) {
     // We currently throw an error if the vertex is either
-    // 1. box , conditional, classical, flow
+    // 1. conditional, classical, flow
     Op_ptr op = circ.get_Op_ptr_from_Vertex(vert);
-    if (is_box_type(op->get_type()) || is_flowop_type(op->get_type()) ||
-        is_classical_type(op->get_type()) ||
+    if (is_flowop_type(op->get_type()) || is_classical_type(op->get_type()) ||
         op->get_type() == OpType::Conditional) {
       throw Unsupported(
           "Cannot convert OpType: " + op->get_name() + " to a ZX node. \n");
@@ -32,29 +32,33 @@ zx::ZXDiagram circuit_to_zx(const Circuit& circ) {
       case OpType::Input: {
         zx::ZXVert zx_vert =
             zxd.add_vertex(zx::ZXType::Input, zx::QuantumType::Quantum);
-        zxd.add_boundary(zx_vert);
+        if (add_boundary) zxd.add_boundary(zx_vert);
         vert_lookup.insert({{{vert, 0}, PortType::Out}, zx_vert});
+        bmap.insert({zx_vert, vert});
         break;
       }
       case OpType::Output: {
         zx::ZXVert zx_vert =
             zxd.add_vertex(zx::ZXType::Output, zx::QuantumType::Quantum);
-        zxd.add_boundary(zx_vert);
+        if (add_boundary) zxd.add_boundary(zx_vert);
         vert_lookup.insert({{{vert, 0}, PortType::In}, zx_vert});
+        bmap.insert({zx_vert, vert});
         break;
       }
       case OpType::ClInput: {
         zx::ZXVert zx_vert =
             zxd.add_vertex(zx::ZXType::Input, zx::QuantumType::Classical);
-        zxd.add_boundary(zx_vert);
+        if (add_boundary) zxd.add_boundary(zx_vert);
         vert_lookup.insert({{{vert, 0}, PortType::Out}, zx_vert});
+        bmap.insert({zx_vert, vert});
         break;
       }
       case OpType::ClOutput: {
         zx::ZXVert zx_vert =
             zxd.add_vertex(zx::ZXType::Output, zx::QuantumType::Classical);
-        zxd.add_boundary(zx_vert);
+        if (add_boundary) zxd.add_boundary(zx_vert);
         vert_lookup.insert({{{vert, 0}, PortType::In}, zx_vert});
+        bmap.insert({zx_vert, vert});
         break;
       }
       // Spiderless ops are handled during vertex wiring
@@ -170,10 +174,61 @@ zx::ZXDiagram circuit_to_zx(const Circuit& circ) {
         break;
       }
       default:
-        throw Unsupported(
-            "Cannot convert gate type: " + op->get_name() +
-            " to a ZX node, try rebase the gates to use Rx, Rz, X, Z, H, CZ "
-            "or CX. \n");
+        // TODO Rebase quantum gates
+        if (op->get_type() == OpType::Conditional) {
+          // Add a multi-leg swap
+          // Add a op or a box
+          // Add a multi-leg swap
+        }
+        if (is_box_type(op->get_type())) {
+          const Box& b = static_cast<const Box&>(*op);
+          Circuit replacement = *b.to_circuit();
+          BoundaryVertMap box_bm =
+              circuit_to_zx_recursive(replacement, zxd, false);
+          // Find the boundaries of the replacement circuit associated with each
+          // port
+          EdgeVec q_in_holes =
+              circ.get_in_edges_of_type(vert, EdgeType::Quantum);
+          EdgeVec q_out_holes =
+              circ.get_out_edges_of_type(vert, EdgeType::Quantum);
+          EdgeVec c_in_holes =
+              circ.get_in_edges_of_type(vert, EdgeType::Classical);
+          EdgeVec c_out_holes =
+              circ.get_out_edges_of_type(vert, EdgeType::Classical);
+          // TODO:: handle boolean wires
+          // std::cout<<"\nA\n";
+          for (unsigned i = 0; i < q_in_holes.size(); i++) {
+            port_t port = circ.get_target_port(q_in_holes[i]);
+            Vertex inp = replacement.get_in(Qubit(i));
+            vert_lookup.insert(
+                {{{vert, port}, PortType::In}, box_bm.right.find(inp)->second});
+          }
+          for (unsigned i = 0; i < q_out_holes.size(); i++) {
+            port_t port = circ.get_source_port(q_out_holes[i]);
+            Vertex outp = replacement.get_out(Qubit(i));
+            vert_lookup.insert(
+                {{{vert, port}, PortType::Out},
+                 box_bm.right.find(outp)->second});
+          }
+          for (unsigned i = 0; i < c_in_holes.size(); i++) {
+            port_t port = circ.get_target_port(c_in_holes[i]);
+            Vertex inp = replacement.get_in(Bit(i));
+            vert_lookup.insert(
+                {{{vert, port}, PortType::In}, box_bm.right.find(inp)->second});
+          }
+          for (unsigned i = 0; i < c_out_holes.size(); i++) {
+            port_t port = circ.get_source_port(c_out_holes[i]);
+            Vertex outp = replacement.get_out(Bit(i));
+            vert_lookup.insert(
+                {{{vert, port}, PortType::Out},
+                 box_bm.right.find(outp)->second});
+          }
+        } else {
+          throw Unsupported(
+              "Cannot convert gate type: " + op->get_name() +
+              " to a ZX node, try rebase the gates to use Rx, Rz, X, Z, H, CZ "
+              "or CX. \n");
+        }
     }
   }
 
@@ -213,6 +268,34 @@ zx::ZXDiagram circuit_to_zx(const Circuit& circ) {
       zxd.add_wire(
           it_s->second, it_t->second, zx::ZXWireType::Basic,
           zx::QuantumType::Classical);
+    }
+  }
+  return bmap;
+}
+
+zx::ZXDiagram circuit_to_zx(const Circuit& circ) {
+  zx::ZXDiagram zxd;
+  BoundaryVertMap bmap = circuit_to_zx_recursive(circ, zxd, true);
+  // TODO return the map as well
+  zx::ZXVertVec true_boundary = zxd.get_boundary();
+  zx::ZXVertIterator vi, vi_end, next;
+  tie(vi, vi_end) = boost::vertices(*zxd.get_graph());
+  for (next = vi; vi != vi_end; vi = next) {
+    ++next;
+    if ((zxd.get_zxtype(*vi) == zx::ZXType::Input ||
+         zxd.get_zxtype(*vi) == zx::ZXType::Output) &&
+        std::find(true_boundary.begin(), true_boundary.end(), *vi) ==
+            true_boundary.end()) {
+      zx::WireVec adj_wires = zxd.adj_wires(*vi);
+      TKET_ASSERT(adj_wires.size() == 2);
+      TKET_ASSERT(zxd.get_qtype(adj_wires[0]) == zxd.get_qtype(adj_wires[1]));
+      TKET_ASSERT(
+          zxd.get_wire_type(adj_wires[0]) == zxd.get_wire_type(adj_wires[1]));
+      zx::ZXVertVec neighbours = zxd.neighbours(*vi);
+      zxd.add_wire(
+          neighbours[0], neighbours[1], zxd.get_wire_type(adj_wires[0]),
+          zxd.get_qtype(adj_wires[0]));
+      zxd.remove_vertex(*vi);
     }
   }
   return zxd;
