@@ -168,9 +168,9 @@ void init_boxes(py::module &m) {
   py::class_<CustomGate, std::shared_ptr<CustomGate>, Op>(
       m, "CustomGate",
       "A user-defined gate defined by a parametrised :py:class:`Circuit`.")
-      .def(py::init<const composite_def_ptr_t &, const std::vector<Expr> &>(),
-          "Instantiate a custom gate.",
-          py::arg("gatedef"), py::arg("params"))
+      .def(
+          py::init<const composite_def_ptr_t &, const std::vector<Expr> &>(),
+          "Instantiate a custom gate.", py::arg("gatedef"), py::arg("params"))
       .def_property_readonly(
           "name", &CustomGate::get_name, "The readable name of the gate.")
       .def_property_readonly(
