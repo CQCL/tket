@@ -33,6 +33,8 @@
 #include "Transform.hpp"
 #include "Utils/Expression.hpp"
 
+#include <iostream>
+
 namespace tket {
 
 namespace Transforms {
@@ -1061,12 +1063,15 @@ Transform globalise_PhasedX(bool squash) {
   // the actual transform
   return Transform([squash, &choose_strategy](Circuit &circ) {
     // if we squash, we start by removing all NPhasedX gates
+      std::cout << "-4" << std::endl;
     if (squash) {
       Transforms::decompose_NPhasedX().apply(circ);
     }
 
+      std::cout << "-3" << std::endl;
     std::vector<unsigned> range_qbs(circ.n_qubits());
     std::iota(range_qbs.begin(), range_qbs.end(), 0);
+      std::cout << "-2" << std::endl;
     PhasedXFrontier frontier(circ);
 
     // find a total ordering of multi-qb gates
@@ -1076,10 +1081,20 @@ Transform globalise_PhasedX(bool squash) {
       return is_gate_type(type) && as_gate_ptr(op)->n_qubits() > 1 &&
              type != OpType::NPhasedX;
     };
-    auto r = circ.vertices_in_order() | boost::adaptors::filtered(filter_pred);
-    OptVertexVec multiq_gates(r.begin(), r.end());
+      std::cout << "-1" << std::endl;
+    // auto r = circ.vertices_in_order() | boost::adaptors::filtered(filter_pred);
+    OptVertexVec multiq_gates;
+    for (Vertex v: circ.vertices_in_order()) {
+      std::cout << "-0.5" << std::endl;
+      if (filter_pred(v)) {
+        multiq_gates.push_back(v);
+      }
+      std::cout << "-0.4" << std::endl;
+    }
+      std::cout << "-0.2" << std::endl;
     // add sentinel to process the gates after last multiq_gate
     multiq_gates.push_back(std::nullopt);
+      std::cout << "0" << std::endl;
 
     // whether transform is successful (always true if squash=true)
     bool success = squash;
@@ -1095,9 +1110,11 @@ Transform globalise_PhasedX(bool squash) {
     // point.
 
     for (OptVertex v : multiq_gates) {
+      std::cout << "1" << std::endl;
       // the qubits whose intervals must be decomposed into global gates
       std::set<unsigned> curr_qubits;
       while (true) {
+      std::cout << "2" << std::endl;
         if (v) {
           curr_qubits = frontier.qubits_ending_in(*v);
         } else {
@@ -1105,46 +1122,56 @@ Transform globalise_PhasedX(bool squash) {
             curr_qubits.insert(curr_qubits.end(), i);
           }
         }
+      std::cout << "3" << std::endl;
         if (squash) {
           frontier.squash_intervals();
         }
+      std::cout << "4" << std::endl;
         OptVertexVec all_phasedx = frontier.get_all_beta_vertices();
         OptVertexVec curr_phasedx;
         for (unsigned q : curr_qubits) {
           curr_phasedx.push_back(all_phasedx[q]);
         }
+      std::cout << "5" << std::endl;
 
         if (all_nullopt(curr_phasedx)) {
           // there is nothing to decompose anymore, move to next multiq_gate
           break;
         }
+      std::cout << "6" << std::endl;
         if (all_equal(all_phasedx)) {
           // this is already a global NPhasedX gate, leave untouched
           frontier.skip_global_gates(1);
           continue;
         }
+      std::cout << "7" << std::endl;
 
         // find best decomposition strategy
         std::vector<Expr> curr_betas = distinct_beta(circ, curr_phasedx);
         std::vector<Expr> all_betas = distinct_beta(circ, all_phasedx);
         unsigned strategy;
+      std::cout << "8" << std::endl;
         if (squash) {
           strategy = choose_strategy(frontier, curr_betas, all_betas);
         } else {
           // if we don't squash we decompose each NPhasedX with 2x global
           strategy = 2;
         }
+      std::cout << "9" << std::endl;
         switch (strategy) {
           case 0:
+      std::cout << "10 case 0" << std::endl;
             // do nothing
             break;
           case 1:
+      std::cout << "10 case 1" << std::endl;
             // insert one single global NPhasedX
             TKET_ASSERT(curr_qubits.size() > 0);
             frontier.insert_1_phasedx(*(curr_qubits.begin()));
             success = true;
             break;
           case 2:
+      std::cout << "10 case 2" << std::endl;
             // insert two global NPhasedX
             frontier.insert_2_phasedx();
             success = true;
@@ -1156,6 +1183,7 @@ Transform globalise_PhasedX(bool squash) {
       if (v) {
         frontier.next_multiqb(*v);
       }
+      std::cout << "11" << std::endl;
     }
     return success;
   });
