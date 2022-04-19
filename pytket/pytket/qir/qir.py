@@ -192,7 +192,7 @@ class ExtendedModule:
                 str(k),
                 self.module.add_external_function(
                     gateset.template.substitute(opnat=v.opnat, opname=k),
-                    types.Function(v.function_signature, types.VOID),
+                    types.Function(v.function_signature, v.return_type),
                 ),
             )
 
