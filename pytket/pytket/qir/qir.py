@@ -73,30 +73,80 @@ QUANTINUUM_GATES = GateSet(
     name="Quantinuum",
     template=Template("__quantinuum__${opnat}__${opname}__body"),
     gateset={
-        "h": CustomPyQIRGate(opnat="qis", function_signature=[types.QUBIT]),
-        "x": CustomPyQIRGate(opnat="qis", function_signature=[types.QUBIT]),
-        "y": CustomPyQIRGate(opnat="qis", function_signature=[types.QUBIT]),
-        "z": CustomPyQIRGate(opnat="qis", function_signature=[types.QUBIT]),
-        "rx": CustomPyQIRGate(opnat="qis", function_signature=[types.DOUBLE, types.QUBIT]),
-        "ry": CustomPyQIRGate(opnat="qis", function_signature=[types.DOUBLE, types.QUBIT]),
-        "rz": CustomPyQIRGate(opnat="qis", function_signature=[types.DOUBLE, types.QUBIT]),
+        "h": CustomPyQIRGate(
+            opnat="qis",
+            function_signature=[types.QUBIT],
+            return_type=types.VOID
+        ),
+        "x": CustomPyQIRGate(
+            opnat="qis",
+            function_signature=[types.QUBIT],
+            return_type=types.VOID
+        ),
+        "y": CustomPyQIRGate(
+            opnat="qis",
+            function_signature=[types.QUBIT],
+            return_type=types.VOID
+        ),
+        "z": CustomPyQIRGate(
+            opnat="qis",
+            function_signature=[types.QUBIT],
+            return_type=types.VOID
+        ),
+        "rx": CustomPyQIRGate(
+            opnat="qis",
+            function_signature=[types.DOUBLE, types.QUBIT],
+            return_type=types.VOID
+        ),
+        "ry": CustomPyQIRGate(
+            opnat="qis",
+            function_signature=[types.DOUBLE, types.QUBIT],
+            return_type=types.VOID
+        ),
+        "rz": CustomPyQIRGate(
+            opnat="qis",
+            function_signature=[types.DOUBLE, types.QUBIT],
+            return_type=types.VOID
+        ),
         "phx": CustomPyQIRGate(
-            opnat="qis", function_signature=[types.DOUBLE, types.DOUBLE, types.QUBIT]
+            opnat="qis",
+            function_signature=[types.DOUBLE, types.DOUBLE, types.QUBIT],
+            return_type=types.VOID
         ),
-        "cnot": CustomPyQIRGate(opnat="qis", function_signature=[types.QUBIT, types.QUBIT]),
-        "zzmax": CustomPyQIRGate(opnat="qis", function_signature=[types.QUBIT, types.QUBIT]),
+        "cnot": CustomPyQIRGate(
+            opnat="qis",
+            function_signature=[types.QUBIT, types.QUBIT],
+            return_type=types.VOID
+        ),
+        "zzmax": CustomPyQIRGate(
+            opnat="qis",
+            function_signature=[types.QUBIT, types.QUBIT],
+            return_type=types.VOID
+        ),
         "zzph": CustomPyQIRGate(
-            opnat="qis", function_signature=[types.DOUBLE, types.QUBIT, types.QUBIT]
+            opnat="qis",
+            function_signature=[types.DOUBLE, types.QUBIT, types.QUBIT],
+            return_type=types.VOID
         ),
-        "mz": CustomPyQIRGate(opnat="qis", function_signature=[types.QUBIT, types.RESULT]),
+        "mz": CustomPyQIRGate(
+            opnat="qis",
+            function_signature=[types.QUBIT, types.RESULT],
+            return_type=types.VOID
+        ),
         "and": CustomPyQIRGate(
-            opnat="cis", function_signature=[types.RESULT, types.RESULT, types.RESULT]
+            opnat="cis",
+            function_signature=[types.RESULT, types.RESULT],
+            return_type=types.RESULT
         ),
         "or": CustomPyQIRGate(
-            opnat="cis", function_signature=[types.RESULT, types.RESULT, types.RESULT]
+            opnat="cis",
+            function_signature=[types.RESULT, types.RESULT],
+            return_type=types.RESULT
         ),
         "xor": CustomPyQIRGate(
-            opnat="cis", function_signature=[types.RESULT, types.RESULT, types.RESULT]
+            opnat="cis",
+            function_signature=[types.RESULT, types.RESULT],
+            return_type=types.RESULT
         ),
     },
     tk_to_gateset=lambda optype: {**_TK_TO_QUANTINUUM}[optype],
