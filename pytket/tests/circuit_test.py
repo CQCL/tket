@@ -21,6 +21,7 @@ from pytket.circuit import (  # type: ignore
     Circuit,
     Op,
     OpType,
+    Command,
     fresh_symbol,
     CircBox,
     Unitary1qBox,
@@ -31,6 +32,7 @@ from pytket.circuit import (  # type: ignore
     QControlBox,
     PhasePolyBox,
     CustomGateDef,
+    CustomGate,
     Qubit,
     Bit,
     BitRegister,
@@ -177,6 +179,7 @@ def test_circuit_gen() -> None:
     assert commands[14].qubits == [Qubit(3)]
     assert commands[14].bits == [Bit(3)]
     assert c.depth_by_type({OpType.CX, OpType.CRz}) == 2
+    assert commands[0] == Command(Op.create(OpType.X), [Qubit(0)])
 
 
 def test_circuit_gen_ids() -> None:
@@ -437,7 +440,12 @@ def test_custom_gates() -> None:
     c.add_custom_gate(gatedef, [0.2, 1.3], [0, 3, 1])
     coms = c.get_commands()
     assert len(coms) == 1
-    assert str(coms[0]) == "g(0.2,1.3) q[0], q[3], q[1];"
+    cmd0 = coms[0]
+    assert str(cmd0) == "g(0.2,1.3) q[0], q[3], q[1];"
+    gate = CustomGate(gatedef, [0.2, 1.3])
+    op0 = cmd0.op
+    assert gate.type == op0.type
+    assert gate.params == op0.params
     Transform.DecomposeBoxes().apply(c)
     coms = c.get_commands()
     assert str(coms[0]) == "CX q[0], q[3];"

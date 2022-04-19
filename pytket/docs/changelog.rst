@@ -1,10 +1,11 @@
 Changelog
 =========
 
-UNRELEASED (May 2022)
+x.y.z (unreleased)
 ------------------
 
 Minor new features:
+* Added explicit constructors for various Python classes.
 * The ``GlobalisePhasedX`` transform and homonymous pass take a new optional
   ``squash`` parameter. ``squash=true`` (default) implements a new algorithm
   that significantly reduces the number of ``NPhasedX`` gates synthesised.
