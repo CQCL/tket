@@ -33,6 +33,10 @@ CustomPyQIRGate = NamedTuple(
             "function_signature",
             List[Union[type[types.DOUBLE], type[types.QUBIT], type[types.RESULT]]],
         ),
+        (
+            "return_type",
+            Union[type[types.DOUBLE], type[types.QUBIT], type[types.RESULT], type[types.VOID]],
+        ),
     ],
 )
 
