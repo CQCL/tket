@@ -90,7 +90,7 @@ enum class OpType {
   ClassicalTransform,
 
   /**
-   * A general classical operation where all inputs are also outputs
+   * Op containing a classical wasm function call
    */
   WASM,
 
