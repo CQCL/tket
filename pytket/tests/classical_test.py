@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import operator
+from pickle import FALSE
 import re
 from typing import Callable, Dict, List, Optional, Tuple, Type, TypeVar, Union, cast
 import json
@@ -120,6 +121,12 @@ def test_c_ops() -> None:
         and mb_cmds[0] != mb_cmds[2]
         and mb_cmds[1] != mb_cmds[2]
     )
+
+
+def test_wasm() -> None:
+    c = Circuit(0, 4)
+    c.add_wasm("funcname", "path/to/wasm/file", [Bit(0), Bit(1)])
+    c.add_wasm("funcname", "path/to/wasm/file", [0, 1, 2, 3])
 
 
 def gen_reg(

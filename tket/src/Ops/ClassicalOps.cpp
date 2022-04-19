@@ -126,6 +126,22 @@ static std::shared_ptr<ClassicalOp> classical_from_json(
   }
 }
 
+static nlohmann::json wasm_to_json(const Op_ptr &op) {
+  nlohmann::json j_class;
+  const auto &wasm = static_cast<const WASMOp &>(*op);
+  j_class["n"] = wasm.get_n();
+  j_class["func_name"] = wasm.get_func_name();
+  j_class["file_path"] = wasm.get_file_path();
+  return j_class;
+}
+
+static std::shared_ptr<WASMOp> wasm_from_json(const nlohmann::json &j_class) {
+  return std::make_shared<WASMOp>(
+      j_class.at("n").get<unsigned>(),
+      j_class.at("func_name").get<std::string>(),
+      j_class.at("file_path").get<std::string>());
+}
+
 ClassicalOp::ClassicalOp(
     OpType type, unsigned n_i, unsigned n_io, unsigned n_o,
     const std::string &name)
@@ -147,6 +163,17 @@ nlohmann::json ClassicalOp::serialize() const {
 
 Op_ptr ClassicalOp::deserialize(const nlohmann::json &j) {
   return classical_from_json(j.at("classical"), j.at("type").get<OpType>());
+}
+
+nlohmann::json WASMOp::serialize() const {
+  nlohmann::json j;
+  j["type"] = get_type();
+  j["wasm"] = wasm_to_json(shared_from_this());
+  return j;
+}
+
+Op_ptr WASMOp::deserialize(const nlohmann::json &j) {
+  return wasm_from_json(j.at("wasm"));
 }
 
 std::string ClassicalOp::get_name(bool) const { return name_; }
@@ -187,6 +214,18 @@ std::vector<bool> ClassicalTransformOp::eval(const std::vector<bool> &x) const {
     y[j] = (val >> j) & 1;
   }
   return y;
+}
+
+WASMOp::WASMOp(
+    unsigned _n, const std::string &_func_name, const std::string &_file_path)
+    : Op(OpType::WASM),
+      n_(_n),
+      func_name_(_func_name),
+      file_path_(_file_path),
+      sig_() {
+  for (unsigned j = 0; j < n_; j++) {
+    sig_.push_back(EdgeType::Classical);
+  }
 }
 
 std::string SetBitsOp::get_name(bool) const {

@@ -90,6 +90,11 @@ enum class OpType {
   ClassicalTransform,
 
   /**
+   * A general classical operation where all inputs are also outputs
+   */
+  WASM,
+
+  /**
    * An operation to set some bits to specified values
    */
   SetBits,

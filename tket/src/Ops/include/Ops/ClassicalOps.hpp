@@ -120,6 +120,120 @@ class ClassicalTransformOp : public ClassicalOp {
 };
 
 /**
+ * Op containing a classical wasm function call
+ */
+class WASMOp : public Op {
+ public:
+  /**
+   * add a wasm operation to the circuit given the name of a function and the
+   * path to the wasm file containing this function
+   *
+   * @param _n number of input/output bits
+   * @param _func_name name of the function
+   * @param _file_path path to the wasm file
+   */
+  WASMOp(
+      unsigned _n, const std::string &_func_name,
+      const std::string &_file_path);
+
+  /**
+   * function to substitute all the symbols in the wasmop
+   * will return the same op, because there are no symbols possible in the box
+   */
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &) const override {
+    return Op_ptr();
+  }
+
+  /**
+   * function to return all the symbols in the wasmop
+   * will return an empty set, because there are no symbols possible in the box
+   */
+  SymSet free_symbols() const override { return {}; }
+
+  /**
+   * number of qubits in the wasmop
+   * will be 0, no qubits in the wasmop
+   */
+  unsigned n_qubits() const override { return 0; }
+
+  /**
+   * return the signature of the wasmop
+   */
+  op_signature_t get_signature() const override { return sig_; }
+
+  /**
+   * return if is the op is external
+   */
+  bool is_extern() const override { return true; }
+
+  /**
+   * serialize wasmop to json
+   */
+  nlohmann::json serialize() const override;
+
+  /**
+   * deserialize json to wasmop
+   */
+  static Op_ptr deserialize(const nlohmann::json &j);
+
+  /**
+   * get name of the wasmop
+   */
+  std::string get_name(bool = false) const override { return "WASM"; }
+
+  /**
+   * Equality check between two WASMOp instances
+   */
+  bool is_equal(const Op &other) const override {
+    if (other.get_type() != OpType::WASM) {
+      return false;
+    }
+    const WASMOp &other_wasm = dynamic_cast<const WASMOp &>(other);
+    if (other_wasm.get_n() != n_) return false;
+    if (other_wasm.get_func_name() != func_name_) return false;
+    if (other_wasm.get_file_path() != file_path_) return false;
+    return true;
+  };
+
+  /**
+   * returns the number of classical bits the wasm op is acting on
+   */
+  unsigned get_n() const { return n_; }
+
+  /**
+   * returns the name of the function the wasm op is using
+   */
+  std::string get_func_name() const { return func_name_; }
+
+  /**
+   * returns the path to the wasm file the op is using
+   */
+  std::string get_file_path() const { return file_path_; }
+
+ private:
+  /**
+   * returns the path to the wasm file the op is using
+   */
+  const unsigned n_;
+
+  /**
+   * returns the path to the wasm file the op is using
+   */
+  const std::string func_name_;
+
+  /**
+   * returns the path to the wasm file the op is using
+   */
+  const std::string file_path_;
+
+  /**
+   * signature of the op
+   */
+  std::vector<EdgeType> sig_;
+};
+
+/**
  * An operation to set some bits to specified values
  */
 class SetBitsOp : public ClassicalOp {

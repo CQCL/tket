@@ -89,6 +89,36 @@ void init_circuit_add_classical_op(
           "See :py:meth:`add_c_transform`.", py::arg("values"), py::arg("args"),
           py::arg("name") = "ClassicalTransform")
       .def(
+          "add_wasm",
+          [](Circuit &circ, const std::string &funcname,
+             const std::string &filepath,
+             const std::vector<unsigned> &args) -> Circuit & {
+            unsigned n_args = args.size();
+            std::shared_ptr<WASMOp> op =
+                std::make_shared<WASMOp>(n_args, funcname, filepath);
+            circ.add_op(op, args);
+            return circ;
+          },
+          "Add a classical function call from a wasm file to the circuit. "
+          "\n\n:param funcname: name of the function that is called"
+          "\n:param filepath: path to the wasm file"
+          "\n:param args: vector of circuit bits the wasm op should be added to"
+          "\n:return: the new :py:class:`Circuit`", py::arg("funcname"), py::arg("filepath"),
+          py::arg("args"))
+      .def(
+          "add_wasm",
+          [](Circuit &circ, const std::string &funcname,
+             const std::string &filepath,
+             const std::vector<Bit> &args) -> Circuit & {
+            unsigned n_args = args.size();
+            std::shared_ptr<WASMOp> op =
+                std::make_shared<WASMOp>(n_args, funcname, filepath);
+            circ.add_op(op, args);
+            return circ;
+          },
+          "See :py:meth:`add_wasm`.", py::arg("funcname"), py::arg("filepath"),
+          py::arg("args"))
+      .def(
           "add_c_setbits",
           [](Circuit &circ, const std::vector<bool> &values,
              const std::vector<unsigned> args) -> Circuit & {
