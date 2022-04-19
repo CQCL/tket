@@ -1112,6 +1112,15 @@ SCENARIO("RemoveRedundancies and phase") {
     REQUIRE(c1.get_commands().size() == 0);
     REQUIRE(equiv_val(c1.get_phase(), 1.));
   }
+  GIVEN("A circuit with a trivial TK2 gate and nonzero phase") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::TK2, {0., 2., 4.}, {0, 1});
+    CompilationUnit cu(c);
+    REQUIRE(RemoveRedundancies()->apply(cu));
+    const Circuit& c1 = cu.get_circ_ref();
+    REQUIRE(c1.get_commands().size() == 0);
+    REQUIRE(equiv_val(c1.get_phase(), 1.));
+  }
 }
 
 // Check whether a circuit maps all basis states to basis states.
