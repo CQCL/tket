@@ -485,6 +485,10 @@ PYBIND11_MODULE(circuit, m) {
       m, "Command",
       "A single quantum command in the circuit, defined by the Op, the "
       "qubits it acts on, and the op group name if any.")
+      .def(
+          py::init<const Op_ptr, unit_vector_t>(),
+          "Construct from an operation and a vector of unit IDs", py::arg("op"),
+          py::arg("args"))
       .def("__eq__", &Command::operator==)
       .def("__repr__", &Command::to_str)
       .def_property_readonly(
