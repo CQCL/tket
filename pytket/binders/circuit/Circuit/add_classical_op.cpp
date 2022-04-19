@@ -103,8 +103,8 @@ void init_circuit_add_classical_op(
           "\n\n:param funcname: name of the function that is called"
           "\n:param filepath: path to the wasm file"
           "\n:param args: vector of circuit bits the wasm op should be added to"
-          "\n:return: the new :py:class:`Circuit`", py::arg("funcname"), py::arg("filepath"),
-          py::arg("args"))
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("funcname"), py::arg("filepath"), py::arg("args"))
       .def(
           "add_wasm",
           [](Circuit &circ, const std::string &funcname,
