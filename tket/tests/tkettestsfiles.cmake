@@ -24,6 +24,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Utils/test_HelperFunctions.cpp
     ${TKET_TESTS_DIR}/Utils/test_MatrixAnalysis.cpp
     ${TKET_TESTS_DIR}/Utils/test_RNG.cpp
+    ${TKET_TESTS_DIR}/Utils/test_Logging.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphColouring.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindComponents.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindMaxClique.cpp

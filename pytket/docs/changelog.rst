@@ -1,7 +1,14 @@
 Changelog
 =========
 
-1.x.y (unreleased)
+x.y.z (unreleased)
+------------------
+
+Minor new features:
+
+* Added explicit constructors for various Python classes.
+
+1.1.0 (April 2022)
 ------------------
 
 Minor new features:

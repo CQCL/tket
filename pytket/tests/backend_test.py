@@ -29,7 +29,7 @@ from pytket.architecture import Architecture  # type: ignore
 from pytket.utils.outcomearray import OutcomeArray, readout_counts
 from pytket.utils.prepare import prepare_circuit
 from pytket.backends import CircuitNotValidError
-from pytket.backends.backend import Backend
+from pytket.backends.backend import Backend, ResultHandleTypeError
 from pytket.backends.resulthandle import ResultHandle
 from pytket.backends.backendresult import BackendResult
 from pytket.backends.backend_exceptions import InvalidResultType, CircuitNotRunError
@@ -66,6 +66,17 @@ def test_resulthandle() -> None:
     assert input_str_invalid("sin(2)")
     assert input_str_invalid("({'a':2}, 4)")
     assert input_str_invalid("[3, 'asdf']")
+
+
+def test_check_handle_single() -> None:
+    b = TketSimBackend()
+    c = Circuit(2).measure_all()
+    handles = b.process_circuits([c, c])
+    assert b.get_results(handles)
+
+    with pytest.raises(ResultHandleTypeError) as e:
+        b.get_results(handles[0])
+    assert "Possible use of single ResultHandle" in str(e.value)
 
 
 @pytest.mark.filterwarnings("ignore::PendingDeprecationWarning")

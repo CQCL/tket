@@ -23,8 +23,8 @@
 # lines: 87.5% (17090 out of 19537)
 # branches: 46.4% (23147 out of 49885)
 #
-# Returns status 0 if `file1` is at least as good as `file` on both scores, otherwise
-# returns status 1.
+# Returns status 0 if `file1` is at least as good as `file` on the "lines" score,
+# otherwise returns status 1.
 
 import sys
 
@@ -52,8 +52,12 @@ def compare(summary, summary1):
     lpercent, bpercent = get_percentages(summary)
     lpercent1, bpercent1 = get_percentages(summary1)
 
-    if lpercent1 < lpercent or bpercent1 < bpercent:
-        print("Percentage line or branch coverage has decreased.")
+    # Ignore branch coverage since it includes compiler-generated branches beyond our
+    # control.
+    # TODO: Maybe use the `--decisions` flag (available in gcovr 5.1) to mitigate this
+    # issue, but this seems to throw an error.
+    if lpercent1 < lpercent:
+        print("Percentage line coverage has decreased.")
         exit(1)
 
 
