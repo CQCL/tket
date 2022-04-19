@@ -14,7 +14,7 @@
 
 import os
 from string import Template
-from typing import Callable, Dict, List, NamedTuple, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, NamedTuple, Optional, TextIO, Tuple, Union
 
 from pyqir.generator import SimpleModule, BasicQisBuilder, types  # type: ignore
 from pytket import Circuit, OpType, Bit, Qubit
