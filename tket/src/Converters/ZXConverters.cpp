@@ -14,6 +14,46 @@ bool is_spiderless_optype(const OpType& optype) {
          optype == OpType::noop;
 }
 
+// A swicth with the on-state controlled by the on_value
+std::pair<ZXVert, ZXVert> add_switch(
+    ZXDiagram& zxd, const bool& on_value, const QuantumType& qtype) {
+  // TODO: what is the scalar for a classical switch?
+  zxd.multiply_scalar(std::sqrt(2.));
+  ZXVert triangle = zxd.add_vertex(ZXType::Triangle, qtype);
+  ZXVert x = zxd.add_vertex(ZXType::XSpider, 0, qtype);
+  zxd.add_wire(triangle, x, ZXWireType::Basic, qtype);
+  if (on_value) {
+    // Turn on the switch if the input is 1
+    ZXVert negate = zxd.add_vertex(ZXType::XSpider, 1, QuantumType::Classical);
+    zxd.add_wire(triangle, negate, ZXWireType::Basic, qtype);
+    return {negate, x};
+  }
+  return {triangle, x};
+}
+
+std::pair<ZXVertVec, ZXVertVec> add_conditional_swap(
+    ZXDiagram& zxd, const QuantumType& qtype) {
+  ZXVert in0 = zxd.add_vertex(ZXType::ZSpider, 0, qtype);
+  ZXVert in1 = zxd.add_vertex(ZXType::ZSpider, 0, qtype);
+  ZXVert out0 = zxd.add_vertex(ZXType::ZSpider, 0, qtype);
+  ZXVert out1 = zxd.add_vertex(ZXType::ZSpider, 0, qtype);
+  auto switch_i0 = add_switch(zxd, false, qtype);
+  auto switch_i1 = add_switch(zxd, false, qtype);
+  auto switch_s0 = add_switch(zxd, true, qtype);
+  auto switch_s1 = add_switch(zxd, true, qtype);
+  zxd.add_wire(in0, switch_i0.second, ZXWireType::Basic, qtype);
+  zxd.add_wire(out0, switch_i0.second, ZXWireType::Basic, qtype);
+  zxd.add_wire(in1, switch_i1.second, ZXWireType::Basic, qtype);
+  zxd.add_wire(out1, switch_i1.second, ZXWireType::Basic, qtype);
+  zxd.add_wire(in0, switch_s0.second, ZXWireType::Basic, qtype);
+  zxd.add_wire(out1, switch_s0.second, ZXWireType::Basic, qtype);
+  zxd.add_wire(in1, switch_s1.second, ZXWireType::Basic, qtype);
+  zxd.add_wire(out0, switch_s1.second, ZXWireType::Basic, qtype);
+  return {
+      {in0, in1, out0, out1},
+      {switch_i0.first, switch_i1.first, switch_s0.first, switch_s1.first}};
+}
+
 BoundaryVertMap circuit_to_zx_recursive(
     const Circuit& circ, ZXDiagram& zxd, bool add_boundary) {
   // TODO: how can users know the boundary mapping?
@@ -25,39 +65,34 @@ BoundaryVertMap circuit_to_zx_recursive(
     // We currently throw an error if the vertex is either
     // 1. conditional, classical, flow
     Op_ptr op = circ.get_Op_ptr_from_Vertex(vert);
-    if (is_flowop_type(op->get_type()) || is_classical_type(op->get_type()) ||
-        op->get_type() == OpType::Conditional) {
+    if (is_flowop_type(op->get_type()) || is_classical_type(op->get_type())) {
       throw Unsupported(
           "Cannot convert OpType: " + op->get_name() + " to a ZX node. \n");
     }
     switch (op->get_type()) {
       case OpType::Input: {
-        ZXVert zx_vert =
-            zxd.add_vertex(ZXType::Input, QuantumType::Quantum);
+        ZXVert zx_vert = zxd.add_vertex(ZXType::Input, QuantumType::Quantum);
         if (add_boundary) zxd.add_boundary(zx_vert);
         vert_lookup.insert({{{vert, 0}, PortType::Out}, zx_vert});
         bmap.insert({zx_vert, vert});
         break;
       }
       case OpType::Output: {
-        ZXVert zx_vert =
-            zxd.add_vertex(ZXType::Output, QuantumType::Quantum);
+        ZXVert zx_vert = zxd.add_vertex(ZXType::Output, QuantumType::Quantum);
         if (add_boundary) zxd.add_boundary(zx_vert);
         vert_lookup.insert({{{vert, 0}, PortType::In}, zx_vert});
         bmap.insert({zx_vert, vert});
         break;
       }
       case OpType::ClInput: {
-        ZXVert zx_vert =
-            zxd.add_vertex(ZXType::Input, QuantumType::Classical);
+        ZXVert zx_vert = zxd.add_vertex(ZXType::Input, QuantumType::Classical);
         if (add_boundary) zxd.add_boundary(zx_vert);
         vert_lookup.insert({{{vert, 0}, PortType::Out}, zx_vert});
         bmap.insert({zx_vert, vert});
         break;
       }
       case OpType::ClOutput: {
-        ZXVert zx_vert =
-            zxd.add_vertex(ZXType::Output, QuantumType::Classical);
+        ZXVert zx_vert = zxd.add_vertex(ZXType::Output, QuantumType::Classical);
         if (add_boundary) zxd.add_boundary(zx_vert);
         vert_lookup.insert({{{vert, 0}, PortType::In}, zx_vert});
         bmap.insert({zx_vert, vert});
@@ -70,8 +105,7 @@ BoundaryVertMap circuit_to_zx_recursive(
         continue;
       }
       case OpType::H: {
-        ZXVert zx_vert =
-            zxd.add_vertex(ZXType::Hbox, QuantumType::Quantum);
+        ZXVert zx_vert = zxd.add_vertex(ZXType::Hbox, QuantumType::Quantum);
         vert_lookup.insert({{{vert, 0}, PortType::In}, zx_vert});
         vert_lookup.insert({{{vert, 0}, PortType::Out}, zx_vert});
         zxd.multiply_scalar(0.5);
@@ -178,17 +212,158 @@ BoundaryVertMap circuit_to_zx_recursive(
       default:
         // TODO Rebase quantum gates
         if (op->get_type() == OpType::Conditional) {
-          // Add a multi-leg swap
-          // Add a op or a box
-          // Add a multi-leg swap
-        }
-        if (is_box_type(op->get_type())) {
-          const Box& b = static_cast<const Box&>(*op);
-          Circuit replacement = *b.to_circuit();
+          const Conditional& cond = static_cast<const Conditional&>(*op);
+          Op_ptr inner_op = cond.get_op();
+          // First, convert the underlying op to zx.
+          op_signature_t inner_sig = inner_op->get_signature();
+          Circuit replacement;
+          if (is_box_type(inner_op->get_type())) {
+            const Box& b = static_cast<const Box&>(*inner_op);
+            replacement = *b.to_circuit();
+          } else {
+            // Assume the inner op doesn't have boolean edges
+            unit_vector_t args;
+            unsigned q_index = 0;
+            unsigned c_index = 0;
+            for (const EdgeType& etype : inner_sig) {
+              if (etype == EdgeType::Quantum) {
+                args.push_back(Qubit(q_index++));
+              } else if (etype == EdgeType::Classical) {
+                args.push_back(Bit(c_index++));
+              }
+            }
+            replacement = Circuit(q_index, c_index);
+            replacement.add_op(inner_op, args);
+          }
           BoundaryVertMap box_bm =
               circuit_to_zx_recursive(replacement, zxd, false);
-          // Find the boundaries of the replacement circuit associated with each
-          // port
+          EdgeVec ins =
+              circ.get_in_edges(vert);
+          EdgeVec outs =
+              circ.get_all_out_edges(vert);
+          EdgeVec q_in_holes =
+              circ.get_in_edges_of_type(vert, EdgeType::Quantum);
+          EdgeVec c_in_holes =
+              circ.get_in_edges_of_type(vert, EdgeType::Classical);
+          EdgeVec b_in_holes =
+              circ.get_in_edges_of_type(vert, EdgeType::Boolean);
+          EdgeVec b_out_holes =
+              circ.get_out_edges_of_type(vert, EdgeType::Boolean);
+          EdgeVec c_out_holes =
+              circ.get_out_edges_of_type(vert, EdgeType::Classical);
+          // Add a control spider
+          ZXVert zx_control_vert =
+              zxd.add_vertex(ZXType::ZSpider, 0, QuantumType::Classical);
+
+          for (unsigned i = 0; i < q_in_holes.size(); i++) {
+            ZXVertVec swap_boundary0, swap_boundary1, swap_ctrs0, swap_ctrs1;
+            // Add the first swap
+            std::tie(swap_boundary0, swap_ctrs0) =
+                add_conditional_swap(zxd, QuantumType::Quantum);
+            Vertex inp = replacement.get_in(Qubit(i));
+            ZXVert zx_inp = box_bm.right.find(inp)->second;
+            // Connect the bottom wire to the op
+            zxd.add_wire(swap_boundary0[3], zx_inp);
+            // Add the second swap
+            std::tie(swap_boundary1, swap_ctrs1) =
+                add_conditional_swap(zxd, QuantumType::Quantum);
+            Vertex outp = replacement.get_out(Qubit(i));
+            ZXVert zx_outp = box_bm.right.find(outp)->second;
+            // Connect the bottom wire to the op
+            zxd.add_wire(swap_boundary1[1], zx_outp);
+            // Connect the top wires
+            zxd.add_wire(swap_boundary0[2], swap_boundary1[0]);
+            // Connect switches to control
+            for (const ZXVert& sv : swap_ctrs0) {
+              zxd.add_wire(sv, zx_control_vert);
+            }
+            for (const ZXVert& sv : swap_ctrs1) {
+              zxd.add_wire(sv, zx_control_vert);
+            }
+            // Update lookup
+            port_t port = circ.get_target_port(q_in_holes[i]);
+            vert_lookup.insert(
+                {{{vert, port}, PortType::In}, swap_boundary0[0]});
+            vert_lookup.insert(
+                {{{vert, port}, PortType::Out}, swap_boundary1[2]});
+          }
+          std::cout<<"\nE\n";
+          for (unsigned i = 0; i < c_in_holes.size(); i++) {
+            unsigned j = i;
+            ZXVertVec swap_boundary0, swap_boundary1, swap_ctrs0, swap_ctrs1;
+            // Add the first swap
+            std::tie(swap_boundary0, swap_ctrs0) =
+                add_conditional_swap(zxd, QuantumType::Classical);
+            Vertex inp = replacement.get_in(Bit(j));
+            ZXVert zx_inp = box_bm.right.find(inp)->second;
+            // Connect the bottom wire to the op
+            zxd.add_wire(
+                swap_boundary0[3], zx_inp, ZXWireType::Basic,
+                QuantumType::Classical);
+            // Add the second swap
+            std::tie(swap_boundary1, swap_ctrs1) =
+                add_conditional_swap(zxd, QuantumType::Classical);
+            Vertex outp = replacement.get_out(Bit(j));
+            ZXVert zx_outp = box_bm.right.find(outp)->second;
+            // Connect the bottom wire to the op
+            zxd.add_wire(
+                swap_boundary1[1], zx_outp, ZXWireType::Basic,
+                QuantumType::Classical);
+            // Connect the top wires
+            zxd.add_wire(
+                swap_boundary0[2], swap_boundary1[0], ZXWireType::Basic,
+                QuantumType::Classical);
+            // Connect switches to control
+            for (const ZXVert& sv : swap_ctrs0) {
+              zxd.add_wire(sv, zx_control_vert);
+            }
+            for (const ZXVert& sv : swap_ctrs1) {
+              zxd.add_wire(sv, zx_control_vert);
+            }
+            // Update lookup
+            port_t port = circ.get_target_port(c_in_holes[i]);
+            vert_lookup.insert(
+                {{{vert, port}, PortType::In}, swap_boundary0[0]});
+            vert_lookup.insert(
+                {{{vert, port}, PortType::Out}, swap_boundary1[2]});
+          }
+          std::cout<<"\nF\n";
+          // Deal with the conditional bits
+          unsigned value = cond.get_value();
+          for (unsigned i = 0; i < cond.get_width(); i++) {
+            ZXVert z_vert =
+                zxd.add_vertex(ZXType::ZSpider, 0, QuantumType::Classical);
+            bool set = value & (1 << (cond.get_width() - i - 1));
+            std::cout<<"\nSet:"<<set<<"\n";
+            if (!set) {
+              ZXVert x_vert =
+                  zxd.add_vertex(ZXType::XSpider, 1, QuantumType::Classical);
+              zxd.add_wire(
+                  z_vert, x_vert, ZXWireType::Basic, QuantumType::Classical);
+              zxd.add_wire(
+                  x_vert, zx_control_vert, ZXWireType::Basic,
+                  QuantumType::Classical);
+            } else {
+              zxd.add_wire(
+                  z_vert, zx_control_vert, ZXWireType::Basic,
+                  QuantumType::Classical);
+            }
+            std::cout<<"\nH1\n"<<b_in_holes.size();
+            port_t port = circ.get_target_port(b_in_holes[i]);
+            std::cout<<"\nH2\n";
+            vert_lookup.insert({{{vert, port}, PortType::In}, z_vert});
+          }
+          std::cout<<"\nG\n";
+        }
+        else if (is_box_type(op->get_type())) {
+          const Box& b = static_cast<const Box&>(*op);
+          Circuit replacement = *b.to_circuit();
+          // First, add the converted box to diagram.
+          BoundaryVertMap box_bm =
+              circuit_to_zx_recursive(replacement, zxd, false);
+          // Then, map the vertports in the box boundary to zx nodes.
+          // Assume that a box can't have Boolean input edges, and all Boolean output edges
+          // share ports with Classical edges. Therefore we don't have to map Boolean vertports.
           EdgeVec q_in_holes =
               circ.get_in_edges_of_type(vert, EdgeType::Quantum);
           EdgeVec q_out_holes =
@@ -197,8 +372,7 @@ BoundaryVertMap circuit_to_zx_recursive(
               circ.get_in_edges_of_type(vert, EdgeType::Classical);
           EdgeVec c_out_holes =
               circ.get_out_edges_of_type(vert, EdgeType::Classical);
-          // TODO:: handle boolean wires
-          // std::cout<<"\nA\n";
+
           for (unsigned i = 0; i < q_in_holes.size(); i++) {
             port_t port = circ.get_target_port(q_in_holes[i]);
             Vertex inp = replacement.get_in(Qubit(i));
@@ -228,7 +402,8 @@ BoundaryVertMap circuit_to_zx_recursive(
         } else {
           throw Unsupported(
               "Cannot convert gate type: " + op->get_name() +
-              " to a ZX node, try rebase the gates to use Rx, Rz, X, Z, H, CZ "
+              " to a ZX node, try rebase the gates to use Rx, Rz, "
+              "X, Z, H, CZ "
               "or CX. \n");
         }
     }

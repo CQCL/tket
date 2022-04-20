@@ -26,11 +26,12 @@ SCENARIO("Check converting gates to spiders") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::X, {0});
     ZXDiagram zx = circuit_to_zx(circ);
-    ZXVertVec boundary = zx.get_boundary(ZXType::Input,
-    QuantumType::Quantum); ZXVert input = boundary[0]; ZXVert x =
-    zx.neighbours(input)[0]; PhasedGen x_gen =
-    zx.get_vertex_ZXGen<PhasedGen>(x); REQUIRE(x_gen.get_type() ==
-    ZXType::XSpider); REQUIRE(x_gen.get_qtype() == QuantumType::Quantum);
+    ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    ZXVert input = boundary[0];
+    ZXVert x = zx.neighbours(input)[0];
+    PhasedGen x_gen = zx.get_vertex_ZXGen<PhasedGen>(x);
+    REQUIRE(x_gen.get_type() == ZXType::XSpider);
+    REQUIRE(x_gen.get_qtype() == QuantumType::Quantum);
     REQUIRE(x_gen.get_param() == 1);
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
     REQUIRE(zx.n_vertices() == 3);
@@ -41,11 +42,12 @@ SCENARIO("Check converting gates to spiders") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Rx, 0.3, {0});
     ZXDiagram zx = circuit_to_zx(circ);
-    ZXVertVec boundary = zx.get_boundary(ZXType::Input,
-    QuantumType::Quantum); ZXVert input = boundary[0]; ZXVert x =
-    zx.neighbours(input)[0]; PhasedGen x_gen =
-    zx.get_vertex_ZXGen<PhasedGen>(x); REQUIRE(x_gen.get_type() ==
-    ZXType::XSpider); REQUIRE(x_gen.get_qtype() == QuantumType::Quantum);
+    ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    ZXVert input = boundary[0];
+    ZXVert x = zx.neighbours(input)[0];
+    PhasedGen x_gen = zx.get_vertex_ZXGen<PhasedGen>(x);
+    REQUIRE(x_gen.get_type() == ZXType::XSpider);
+    REQUIRE(x_gen.get_qtype() == QuantumType::Quantum);
     REQUIRE(x_gen.get_param() == 0.3);
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
     REQUIRE(zx.n_vertices() == 3);
@@ -56,11 +58,12 @@ SCENARIO("Check converting gates to spiders") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Z, {0});
     ZXDiagram zx = circuit_to_zx(circ);
-    ZXVertVec boundary = zx.get_boundary(ZXType::Input,
-    QuantumType::Quantum); ZXVert input = boundary[0]; ZXVert z =
-    zx.neighbours(input)[0]; PhasedGen z_gen =
-    zx.get_vertex_ZXGen<PhasedGen>(z); REQUIRE(z_gen.get_type() ==
-    ZXType::ZSpider); REQUIRE(z_gen.get_qtype() == QuantumType::Quantum);
+    ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    ZXVert input = boundary[0];
+    ZXVert z = zx.neighbours(input)[0];
+    PhasedGen z_gen = zx.get_vertex_ZXGen<PhasedGen>(z);
+    REQUIRE(z_gen.get_type() == ZXType::ZSpider);
+    REQUIRE(z_gen.get_qtype() == QuantumType::Quantum);
     REQUIRE(z_gen.get_param() == 1);
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
     REQUIRE(zx.n_vertices() == 3);
@@ -71,11 +74,12 @@ SCENARIO("Check converting gates to spiders") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Rz, 0.4, {0});
     ZXDiagram zx = circuit_to_zx(circ);
-    ZXVertVec boundary = zx.get_boundary(ZXType::Input,
-    QuantumType::Quantum); ZXVert input = boundary[0]; ZXVert z =
-    zx.neighbours(input)[0]; PhasedGen z_gen =
-    zx.get_vertex_ZXGen<PhasedGen>(z); REQUIRE(z_gen.get_type() ==
-    ZXType::ZSpider); REQUIRE(z_gen.get_qtype() == QuantumType::Quantum);
+    ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    ZXVert input = boundary[0];
+    ZXVert z = zx.neighbours(input)[0];
+    PhasedGen z_gen = zx.get_vertex_ZXGen<PhasedGen>(z);
+    REQUIRE(z_gen.get_type() == ZXType::ZSpider);
+    REQUIRE(z_gen.get_qtype() == QuantumType::Quantum);
     REQUIRE(z_gen.get_param() == 0.4);
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
     REQUIRE(zx.n_vertices() == 3);
@@ -86,9 +90,10 @@ SCENARIO("Check converting gates to spiders") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::H, {0});
     ZXDiagram zx = circuit_to_zx(circ);
-    ZXVertVec boundary = zx.get_boundary(ZXType::Input,
-    QuantumType::Quantum); ZXVert input = boundary[0]; ZXVert h =
-    zx.neighbours(input)[0]; ZXGen_ptr h_ptr = zx.get_vertex_ZXGen_ptr(h);
+    ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    ZXVert input = boundary[0];
+    ZXVert h = zx.neighbours(input)[0];
+    ZXGen_ptr h_ptr = zx.get_vertex_ZXGen_ptr(h);
     REQUIRE(h_ptr->get_type() == ZXType::Hbox);
     REQUIRE(h_ptr->get_qtype() == QuantumType::Quantum);
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 0.5));
@@ -100,12 +105,14 @@ SCENARIO("Check converting gates to spiders") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     ZXDiagram zx = circuit_to_zx(circ);
-    ZXVertVec boundary = zx.get_boundary(ZXType::Input,
-    QuantumType::Quantum); ZXVert input0 = boundary[0]; ZXVert input1 =
-    boundary[1]; ZXVert ctr = zx.neighbours(input0)[0]; ZXVert targ =
-    zx.neighbours(input1)[0]; std::optional<Wire> w = zx.wire_between(ctr,
-    targ); PhasedGen ctr_gen = zx.get_vertex_ZXGen<PhasedGen>(ctr); PhasedGen
-    targ_gen = zx.get_vertex_ZXGen<PhasedGen>(targ);
+    ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    ZXVert input0 = boundary[0];
+    ZXVert input1 = boundary[1];
+    ZXVert ctr = zx.neighbours(input0)[0];
+    ZXVert targ = zx.neighbours(input1)[0];
+    std::optional<Wire> w = zx.wire_between(ctr, targ);
+    PhasedGen ctr_gen = zx.get_vertex_ZXGen<PhasedGen>(ctr);
+    PhasedGen targ_gen = zx.get_vertex_ZXGen<PhasedGen>(targ);
     REQUIRE(ctr_gen.get_param() == 0);
     REQUIRE(targ_gen.get_param() == 0);
     REQUIRE(ctr_gen.get_type() == ZXType::ZSpider);
@@ -123,12 +130,14 @@ SCENARIO("Check converting gates to spiders") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CZ, {0, 1});
     ZXDiagram zx = circuit_to_zx(circ);
-    ZXVertVec boundary = zx.get_boundary(ZXType::Input,
-    QuantumType::Quantum); ZXVert input0 = boundary[0]; ZXVert input1 =
-    boundary[1]; ZXVert ctr = zx.neighbours(input0)[0]; ZXVert targ =
-    zx.neighbours(input1)[0]; std::optional<Wire> w = zx.wire_between(ctr,
-    targ); PhasedGen ctr_gen = zx.get_vertex_ZXGen<PhasedGen>(ctr); PhasedGen
-    targ_gen = zx.get_vertex_ZXGen<PhasedGen>(targ);
+    ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    ZXVert input0 = boundary[0];
+    ZXVert input1 = boundary[1];
+    ZXVert ctr = zx.neighbours(input0)[0];
+    ZXVert targ = zx.neighbours(input1)[0];
+    std::optional<Wire> w = zx.wire_between(ctr, targ);
+    PhasedGen ctr_gen = zx.get_vertex_ZXGen<PhasedGen>(ctr);
+    PhasedGen targ_gen = zx.get_vertex_ZXGen<PhasedGen>(targ);
     REQUIRE(ctr_gen.get_param() == 0);
     REQUIRE(targ_gen.get_param() == 0);
     REQUIRE(ctr_gen.get_type() == ZXType::ZSpider);
@@ -146,8 +155,8 @@ SCENARIO("Check converting gates to spiders") {
     Circuit circ(1, 1);
     circ.add_op<unsigned>(OpType::Measure, {0, 0});
     ZXDiagram zx = circuit_to_zx(circ);
-    ZXVertVec q_boundary = zx.get_boundary(ZXType::Input,
-    QuantumType::Quantum); ZXVertVec c_boundary =
+    ZXVertVec q_boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    ZXVertVec c_boundary =
         zx.get_boundary(ZXType::Input, QuantumType::Classical);
     ZXVert input0 = q_boundary[0];
     ZXVert input1 = c_boundary[0];
@@ -199,11 +208,12 @@ SCENARIO("Check converting gates to spiders") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Collapse, {0});
     ZXDiagram zx = circuit_to_zx(circ);
-    ZXVertVec boundary = zx.get_boundary(ZXType::Input,
-    QuantumType::Quantum); ZXVert input = boundary[0]; ZXVert z =
-    zx.neighbours(input)[0]; PhasedGen z_gen =
-    zx.get_vertex_ZXGen<PhasedGen>(z); REQUIRE(z_gen.get_type() ==
-    ZXType::ZSpider); REQUIRE(z_gen.get_qtype() == QuantumType::Classical);
+    ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    ZXVert input = boundary[0];
+    ZXVert z = zx.neighbours(input)[0];
+    PhasedGen z_gen = zx.get_vertex_ZXGen<PhasedGen>(z);
+    REQUIRE(z_gen.get_type() == ZXType::ZSpider);
+    REQUIRE(z_gen.get_qtype() == QuantumType::Classical);
     REQUIRE(z_gen.get_param() == 0.);
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
     REQUIRE(zx.n_vertices() == 3);
@@ -336,6 +346,72 @@ SCENARIO("Check converting gates to spiders") {
     circ.add_box(cbox, {0, 1, 2});
     ZXDiagram zx = circuit_to_zx(circ);
   }
+  // GIVEN("Conditional") {
+  //   Circuit circ(1,1);
+  //   circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
+  //   ZXDiagram zx = circuit_to_zx(circ);
+  // }
+  GIVEN("Conditional test") {
+    Circuit circ(1,1);
+    // Vertex m = circ.add_op<unsigned>(OpType::Measure, {0, 0});
+    Vertex c = circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
+    // EdgeVec ins =
+    //     circ.get_in_edges(m);
+    // std::cout<<"\nIn total\n"<<ins.size()<<"\n";
+    // EdgeVec outs =
+    //     circ.get_all_out_edges(m);
+    // std::cout<<"\nOut total\n"<<outs.size()<<"\n";
+    // EdgeVec q_in_holes =
+    //     circ.get_in_edges_of_type(m, EdgeType::Quantum);
+    // std::cout<<"\nq_in_holes\n"<<q_in_holes.size()<<"\n";
+    // EdgeVec c_in_holes =
+    //     circ.get_in_edges_of_type(m, EdgeType::Classical);
+    // std::cout<<"\nc_in_holes\n"<<c_in_holes.size()<<"\n";
+    // EdgeVec b_in_holes =
+    //     circ.get_in_edges_of_type(m, EdgeType::Boolean);
+    // std::cout<<"\nb_in_holes\n"<<b_in_holes.size()<<"\n";
+    // EdgeVec b_out_holes =
+    //     circ.get_out_edges_of_type(m, EdgeType::Boolean);
+    // std::cout<<"\nb_out_holes\n"<<b_out_holes.size()<<"\n";
+    // EdgeVec c_out_holes =
+    //     circ.get_out_edges_of_type(m, EdgeType::Classical);
+    // std::cout<<"\nc_out_holes\n"<<c_out_holes.size()<<"\n";
+    EdgeVec ins2 =
+        circ.get_in_edges(c);
+    std::cout<<"\nIn total\n"<<ins2.size()<<"\n";
+    EdgeVec outs2 =
+        circ.get_all_out_edges(c);
+    std::cout<<"\nOut total\n"<<outs2.size()<<"\n";
+    EdgeVec q_in_holes2 =
+        circ.get_in_edges_of_type(c, EdgeType::Quantum);
+    std::cout<<"\nq_in_holes2\n"<<q_in_holes2.size()<<"\n";
+    EdgeVec c_in_holes2 =
+        circ.get_in_edges_of_type(c, EdgeType::Classical);
+    std::cout<<"\nc_in_holes2\n"<<c_in_holes2.size()<<"\n";
+    EdgeVec b_in_holes2 =
+        circ.get_in_edges_of_type(c, EdgeType::Boolean);
+    std::cout<<"\nb_in_holes2\n"<<b_in_holes2.size()<<"\n";
+    EdgeVec b_out_holes2 =
+        circ.get_out_edges_of_type(c, EdgeType::Boolean);
+    std::cout<<"\nb_out_holes2\n"<<b_out_holes2.size()<<"\n";
+    EdgeVec c_out_holes2 =
+        circ.get_out_edges_of_type(c, EdgeType::Classical);
+    std::cout<<"\nc_out_holes2\n"<<c_out_holes2.size()<<"\n";
+
+    // 
+    Vertex in = circ.get_in(Bit(0));
+    EdgeVec outs3 =
+    circ.get_all_out_edges(in);
+    std::cout<<"\nOut total3\n"<<outs3.size()<<"\n";
+    Op_ptr op = circ.get_Op_ptr_from_Vertex(in);
+    std::cout<<"\nSig\n"<<op->get_signature().size()<<"\n";
+    Op_ptr op2 = circ.get_Op_ptr_from_Vertex(c);
+    std::cout<<"\nSig2\n"<<op2->get_signature().size()<<"\n";
+    for (auto e : outs3) {
+      std::cout<<"\nSource port" << circ.get_source_port(e);
+    }
+  }
+
 }
 
 SCENARIO("Check converting circuits to diagrams") {
