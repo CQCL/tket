@@ -300,6 +300,7 @@ jobs:
         pyenv shell tket-3.8
         OPENBLAS="$(brew --prefix openblas)" pip install -U scipy
         cd pytket
+        pip uninstall -y pytket
         pip install -e . -v
     - name: Test pytket (3.8)
       if: github.event_name == 'push'
@@ -316,6 +317,7 @@ jobs:
         pyenv shell tket-3.9
         OPENBLAS="$(brew --prefix openblas)" pip install -U scipy
         cd pytket
+        pip uninstall -y pytket
         pip install -e . -v
     - name: Test pytket (3.9)
       if: github.event_name == 'pull_request'
@@ -332,6 +334,7 @@ jobs:
         pyenv shell tket-3.10
         OPENBLAS="$(brew --prefix openblas)" pip install -U scipy
         cd pytket
+        pip uninstall -y pytket
         pip install -e . -v
     - name: Test pytket (3.10)
       if: github.event_name == 'schedule'
