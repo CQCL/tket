@@ -45,7 +45,6 @@ from pytket._tket.circuit import (  # type: ignore
 )
 from pytket.circuit.logic_exp import (
     BinaryOp,
-    BitEq,
     BitLogicExp,
     BitWiseOp,
     ConstPredicate,
@@ -57,6 +56,7 @@ from pytket.circuit.logic_exp import (
     RegLogicExp,
     RegLt,
     RegNeq,
+    RegPow,
     RegWiseOp,
     UnaryOp,
     reg_eq,
@@ -246,7 +246,7 @@ def primitive_bit_logic_exps(
     exp_type = LogicExp.factory(op)
     args: List[Bit] = [draw(bits)]
     if issubclass(exp_type, BinaryOp):
-        if issubclass(exp_type, BitEq):
+        if issubclass(exp_type, ConstPredicate):
             const_compare = draw(binary_digits)
             args.append(const_compare)
         else:
@@ -255,6 +255,13 @@ def primitive_bit_logic_exps(
     exp = exp_type(*args)
     assert isinstance(exp, BitLogicExp)
     return exp
+
+
+def overflow_wrapper(f: Callable[..., int], maxval: int) -> Callable[..., int]:
+    def wrapper(*args: int) -> int:
+        return f(*args) % maxval
+
+    return wrapper
 
 
 @given(
@@ -271,7 +278,9 @@ def test_bit_exp(bit_exp: BitLogicExp, constants: Tuple[int, int]) -> None:
         BitWiseOp.XOR: operator.xor,
         BitWiseOp.NOT: operator.not_,
         BitWiseOp.EQ: operator.eq,
+        BitWiseOp.NEQ: operator.ne,
     }
+    op_map = {key: overflow_wrapper(val, 2) for key, val in op_map.items()}
     eval_val = bit_exp.eval_vals()
 
     assert eval_val in (0, 1)
@@ -324,10 +333,14 @@ def primitive_reg_logic_exps(
         uint32,
     ),
 )
-def test_reg_exp(reg_exp: BitLogicExp, constants: Tuple[int, int]) -> None:
+def test_reg_exp(reg_exp: RegLogicExp, constants: Tuple[int, int]) -> None:
+    if isinstance(reg_exp, RegPow):
+        # to stop massive numbers
+        constants = (min(1000, constants[0]), min(constants[1], 3))
     iter_c = iter(constants)
     for inp in reg_exp.all_inputs():
         reg_exp.set_value(inp, next(iter_c))
+
     op_map: Dict[RegWiseOp, Callable] = {
         RegWiseOp.AND: operator.and_,
         RegWiseOp.OR: operator.or_,
@@ -339,11 +352,21 @@ def test_reg_exp(reg_exp: BitLogicExp, constants: Tuple[int, int]) -> None:
         RegWiseOp.LEQ: operator.le,
         RegWiseOp.GEQ: operator.ge,
     }
-
+    unsupported_ops = {
+        RegWiseOp.ADD,
+        RegWiseOp.SUB,
+        RegWiseOp.MUL,
+        RegWiseOp.DIV,
+        RegWiseOp.POW,
+        RegWiseOp.LSH,
+        RegWiseOp.RSH,
+        RegWiseOp.NOT,
+        RegWiseOp.NEG,
+    }
     eval_val = reg_exp.eval_vals()
     op = cast(RegWiseOp, reg_exp.op)
 
-    correct_val = op_map[op](*reg_exp.args)
+    correct_val = reg_exp if op in unsupported_ops else op_map[op](*reg_exp.args)
     if isinstance(correct_val, bool):
         correct_val = int(correct_val)
 
@@ -485,6 +508,14 @@ def compare_commands_box(
         if c1.op.type == OpType.ClassicalExpBox:
             commands_equal &= c1.op.content_equality(c2.op)
             commands_equal &= c1.args == c2.args
+        elif c1.op.type == OpType.Conditional:
+            commands_equal &= c1.op.value == c2.op.value
+            commands_equal &= c1.op.width == c2.op.width
+            if c1.op.op.type == OpType.ClassicalExpBox:
+                commands_equal &= c1.op.op.content_equality(c2.op.op)
+            else:
+                commands_equal &= c1.op == c2.op
+            commands_equal &= c1.args == c2.args
         else:
             commands_equal &= c1 == c2
         if not commands_equal:
@@ -559,6 +590,9 @@ def test_decomposition_known() -> None:
     big_reg_exp = registers[4] & registers[3] | registers[6] ^ registers[7]
     circ.CX(qreg[3], qreg[4], condition=reg_eq(big_reg_exp, 3))
 
+    circ.add_classicalexpbox_bit(
+        bits[4] | bits[5] & bits[3], [bits[0]], condition=bits[1]
+    )
     check_serialization_roundtrip(circ)
 
     temp_bits = BitRegister(_TEMP_BIT_NAME, 32)
@@ -614,13 +648,17 @@ def test_decomposition_known() -> None:
     conditioned_circ.CX(
         qreg[3], qreg[4], condition_bits=[temp_bits[9]], condition_value=1
     )
+    conditioned_circ.add_classicalexpbox_bit(
+        bits[4] | bits[5] & bits[3], [bits[0]], condition=bits[1]
+    )
 
     assert compare_commands_box(circ, conditioned_circ)
 
     for b in (temp_bits[i] for i in range(0, 11)):
         decomposed_circ.add_bit(b)
-    for t_r in (temp_reg(i) for i in range(0, 2)):
-        decomposed_circ.add_c_register(t_r.name, t_r.size)
+
+    decomposed_circ.add_c_register(BitRegister(f"{_TEMP_BIT_REG_BASE}_0", 3))
+    decomposed_circ.add_c_register(BitRegister(f"{_TEMP_BIT_REG_BASE}_1", 32))
 
     decomposed_circ.H(qreg[0], condition_bits=[bits[0]], condition_value=1)
     decomposed_circ.X(qreg[0], condition_bits=[bits[1]], condition_value=1)
@@ -661,12 +699,19 @@ def test_decomposition_known() -> None:
 
     decomposed_circ.add_c_and_to_registers(registers[4], registers[3], temp_reg(0))
     decomposed_circ.add_c_xor_to_registers(registers[6], registers[7], temp_reg(1))
-    decomposed_circ.add_c_or_to_registers(temp_reg(0), temp_reg(1), temp_reg(0))
+    decomposed_circ.add_c_or_to_registers(
+        temp_reg(0), BitRegister(temp_reg(1).name, 3), temp_reg(0)
+    )
     decomposed_circ.add_c_range_predicate(3, 3, list(temp_reg(0))[:3], temp_bits[9])
     decomposed_circ.CX(
         qreg[3], qreg[4], condition_bits=[temp_bits[9]], condition_value=1
     )
-
+    decomposed_circ.add_c_and(
+        bits[5], bits[3], bits[0], condition_bits=[bits[1]], condition_value=1
+    )
+    decomposed_circ.add_c_or(
+        bits[4], bits[0], bits[0], condition_bits=[bits[1]], condition_value=1
+    )
     check_serialization_roundtrip(decomposed_circ)
     circ_copy = circ.copy()
 
@@ -697,3 +742,61 @@ def test_classical_ops() -> None:
     ceb = ClassicalExpBox(2, 0, 1, exp)
     op2 = cmds[2].op
     assert ceb.get_exp() == op2.get_exp()
+
+
+def test_add_expbox_bug() -> None:
+    # previously a bug where if IO args weren't
+    # at the back of the input iterator, the op signature
+    # and wiring were incorrect
+    c = Circuit()
+    b = c.add_c_register("b", 2)
+    c.add_classicalexpbox_bit(b[0] & b[1], [b[0]])
+    com = c.get_commands()[0]
+
+    assert com.op.get_n_i() == 1
+    assert com.op.get_n_io() == 1
+    assert com.op.get_n_o() == 0
+
+    assert com.args == [b[1], b[0]]
+
+    b1 = c.add_c_register("b1", 2)
+    c.add_classicalexpbox_register(b | b1, list(b))
+    com = c.get_commands()[1]
+
+    assert com.op.get_n_i() == 2
+    assert com.op.get_n_io() == 2
+    assert com.op.get_n_o() == 0
+
+    assert com.args == [b1[0], b1[1], b[0], b[1]]
+
+
+def test_conditional_classicals() -> None:
+    c = Circuit()
+    b = c.add_c_register("b", 2)
+    c.add_c_and(b[0], b[1], b[1], condition=b[0])
+    assert str(c.get_commands()[0]) == "IF ([b[0]] == 1) THEN AND b[0], b[1];"
+
+
+def test_arithmetic_ops() -> None:
+    circ = Circuit()
+    a = circ.add_c_register("a", 3)
+    b = circ.add_c_register("b", 3)
+    c = circ.add_c_register("c", 3)
+
+    circ.add_classicalexpbox_register(a + b // c, a)
+    circ.add_classicalexpbox_register(b << 2, c)
+    circ.add_classicalexpbox_register(c >> 2, b)
+    circ.add_classicalexpbox_register(a**c - b, a)
+
+    commands = circ.get_commands()
+    assert all(com.op.type == OpType.ClassicalExpBox for com in commands)
+
+    assert commands[0].args == list(b) + list(c) + list(a)
+    assert commands[1].args == list(b) + list(c)
+    assert commands[2].args == list(c) + list(b)
+    assert commands[3].args == list(b) + list(c) + list(a)
+
+    assert str(commands[0].op.get_exp()) == "(a + (b / c))"
+    assert str(commands[1].op.get_exp()) == "(b << 2)"
+    assert str(commands[2].op.get_exp()) == "(c >> 2)"
+    assert str(commands[3].op.get_exp()) == "((a ** c) - b)"

@@ -638,6 +638,7 @@ bool Circuit::substitute_box_vertex(
     op = cond.get_op();
   }
   if (!op->get_desc().is_box()) return false;
+  if (op->get_type() == OpType::ClassicalExpBox) return false;
   const Box& b = static_cast<const Box&>(*op);
   Circuit replacement = *b.to_circuit();
   if (conditional) {

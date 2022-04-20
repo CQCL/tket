@@ -27,81 +27,14 @@
 #include "Gate/OpPtrFunctions.hpp"
 #include "Ops/Op.hpp"
 #include "UnitRegister.hpp"
+#include "add_gate.hpp"
 #include "binder_utils.hpp"
 #include "typecast.hpp"
-
 namespace py = pybind11;
 
 namespace tket {
 
 const bit_vector_t no_bits;
-
-template <typename ID>
-static Circuit *add_gate_method(
-    Circuit *circ, const Op_ptr &op, const std::vector<ID> &args,
-    const py::kwargs &kwargs) {
-  if (op->get_desc().is_meta()) {
-    throw CircuitInvalidity(
-        "Cannot add metaop. Please use `add_barrier` to add a "
-        "barrier.");
-  }
-  const std::set<std::string> allowed_kwargs = {
-      "opgroup", "condition", "condition_bits", "condition_value"};
-  for (const auto kwarg : kwargs) {
-    const std::string kwargstr = py::cast<std::string>(kwarg.first);
-    if (!allowed_kwargs.contains(kwargstr)) {
-      std::stringstream msg;
-      msg << "Unsupported keyword argument '" << kwargstr << "'";
-      throw CircuitInvalidity(msg.str());
-    }
-  }
-  std::optional<std::string> opgroup;
-  if (kwargs.contains("opgroup")) {
-    opgroup = py::cast<std::string>(kwargs["opgroup"]);
-  }
-  bool condition_given = kwargs.contains("condition");
-  bool condition_bits_given = kwargs.contains("condition_bits");
-  bool condition_value_given = kwargs.contains("condition_value");
-  if (condition_given && condition_bits_given) {
-    throw CircuitInvalidity("Both `condition` and `condition_bits` specified");
-  }
-  if (condition_value_given && !condition_bits_given) {
-    throw CircuitInvalidity(
-        "`condition_value` specified without `condition_bits`");
-  }
-  if (condition_given) {
-    py::module condition = py::module::import("pytket.circuit.add_condition");
-    py::object add_condition = condition.attr("_add_condition");
-    auto conditions =
-        add_condition(circ, kwargs["condition"]).cast<std::pair<Bit, bool>>();
-    unit_vector_t new_args = {conditions.first};
-    unsigned n_new_args = new_args.size();
-    Op_ptr cond =
-        std::make_shared<Conditional>(op, n_new_args, int(conditions.second));
-    op_signature_t sig = op->get_signature();
-
-    for (unsigned i = 0; i < args.size(); ++i) {
-      if (sig.at(i) == EdgeType::Quantum) {
-        new_args.push_back(Qubit(args[i]));
-      } else {
-        new_args.push_back(Bit(args[i]));
-      }
-    }
-    circ->add_op(cond, new_args, opgroup);
-  } else if (condition_bits_given) {
-    std::vector<ID> new_args =
-        py::cast<std::vector<ID>>(kwargs["condition_bits"]);
-    unsigned n_new_args = new_args.size();
-    unsigned value = condition_value_given
-                         ? py::cast<unsigned>(kwargs["condition_value"])
-                         : (1u << n_new_args) - 1;
-    Op_ptr cond = std::make_shared<Conditional>(op, n_new_args, value);
-    new_args.insert(new_args.end(), args.begin(), args.end());
-    circ->add_op(cond, new_args, opgroup);
-  } else
-    circ->add_op(op, args, opgroup);
-  return circ;
-}
 
 template <typename ID>
 static Circuit *add_gate_method_noparams(
@@ -347,24 +280,28 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           [](Circuit *circ, const py::object exp,
              const std::vector<Bit> &outputs, const py::kwargs &kwargs) {
             auto inputs = exp.attr("all_inputs")().cast<std::set<Bit>>();
-            std::vector<Bit> args(inputs.begin(), inputs.end());
-            unsigned n_io = 0, n_o = 0;
-            unsigned n_i = inputs.size();
+            std::vector<Bit> o_vec, io_vec;
+
             // if outputs are also in inputs, add to i/o wires
             for (const Bit &out : outputs) {
-              if (inputs.find(out) != inputs.end()) {
-                n_io++;
-                n_i--;
+              auto find = inputs.find(out);
+              if (find != inputs.end()) {
+                inputs.erase(find);
+                io_vec.push_back(out);
               } else {
-                n_o++;
-                args.push_back(out);
+                o_vec.push_back(out);
               }
             }
+            unsigned n_i = inputs.size();
+            unsigned n_io = io_vec.size();
+            unsigned n_o = o_vec.size();
+            o_vec.insert(o_vec.begin(), io_vec.begin(), io_vec.end());
+            o_vec.insert(o_vec.begin(), inputs.begin(), inputs.end());
             return add_box_method<Bit>(
                 circ,
                 std::make_shared<ClassicalExpBox<py::object>>(
                     n_i, n_io, n_o, exp),
-                args, kwargs);
+                o_vec, kwargs);
           },
           "Append a :py:class:`ClassicalExpBox` over Bit to the circuit.\n\n"
           ":param classicalexpbox: The box to append\n"
@@ -383,23 +320,26 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
                 all_bits.insert(reg[i]);
               }
             }
-            std::vector<Bit> args(all_bits.begin(), all_bits.end());
-            unsigned n_io = 0, n_o = 0;
-            unsigned n_i = all_bits.size();
+            std::vector<Bit> o_vec, io_vec;
             for (const Bit &out : outputs) {
-              if (all_bits.find(out) != all_bits.end()) {
-                n_io++;
-                n_i--;
+              auto find = all_bits.find(out);
+              if (find != all_bits.end()) {
+                all_bits.erase(find);
+                io_vec.push_back(out);
               } else {
-                n_o++;
-                args.push_back(out);
+                o_vec.push_back(out);
               }
             }
+            unsigned n_i = all_bits.size();
+            unsigned n_io = io_vec.size();
+            unsigned n_o = o_vec.size();
+            o_vec.insert(o_vec.begin(), io_vec.begin(), io_vec.end());
+            o_vec.insert(o_vec.begin(), all_bits.begin(), all_bits.end());
             return add_box_method<Bit>(
                 circ,
                 std::make_shared<ClassicalExpBox<py::object>>(
                     n_i, n_io, n_o, exp),
-                args, kwargs);
+                o_vec, kwargs);
           },
           "Append a :py:class:`ClassicalExpBox` over BitRegister to the "
           "circuit.\n\n"
