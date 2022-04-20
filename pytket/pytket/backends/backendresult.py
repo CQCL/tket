@@ -78,7 +78,7 @@ class BackendResult:
     :param c_bits: Sequence of classical bits
     :param counts: The counts in the result
     :param shots: The shots in the result
-    :param state: The resulting statevector (i.e from a statevector simulation)
+    :param state: The resulting statevector (from a statevector simulation)
     :param unitary: The resulting unitary operator (i.e from a unitary simulation)
     :param density_matrix: The resulting density matrix
      (i.e output from a density matrix simulator)
