@@ -66,9 +66,13 @@ class StoredResult(NamedTuple):
 class BackendResult:
     """Encapsulate generic results from pytket Backend instances.
 
-    In the case of a real quantum device or a shots based simulator a BackendResult will typically be a collection of measurements (shots and counts). Shots are stored internally as 8-bit integers e.g. the '11' basis state is represented as [192] (192=11000000) 
+    In the case of a real quantum device or a shots based simulator
+    a BackendResult will typically be a collection of measurements (shots and counts).
+    Shots are stored internally as 8-bit integers
+    e.g. the '11' basis state is represented as [192] (192=11000000).
 
-    Results can also be the output of ideal simulations of circuits. These can take the form of statevectors, unitary arrays or density matrices.
+    Results can also be the output of ideal simulations of circuits.
+    These can take the form of statevectors, unitary arrays or density matrices.
 
     :param q_bits: Sequence of qubits
     :param c_bits: Sequence of classical bits
@@ -76,9 +80,10 @@ class BackendResult:
     :param shots: The shots in the result
     :param state: The resulting statevector (i.e from a statevector simulation)
     :param unitary: The resulting unitary operator (i.e from a unitary simulation)
-    :param density_matrix: The resulting density matrix (i.e output from a density matrix simulator)
+    :param density_matrix: The resulting density matrix
+     (i.e output from a density matrix simulator)
     :param ppcirc: If provided, classical postprocessing to be applied to all measured
-        results (i.e. shots and counts).
+     results (i.e. shots and counts).
     """
 
     def __init__(
