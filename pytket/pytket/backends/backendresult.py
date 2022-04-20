@@ -66,7 +66,7 @@ class StoredResult(NamedTuple):
 class BackendResult:
     """Encapsulate generic results from pytket Backend instances.
 
-    In the case of a real quantum device or a shots based simulator
+    In the case of a real quantum device or a shots-based simulator
     a BackendResult will typically be a collection of measurements (shots and counts).
     Shots are stored internally as 8-bit integers
     e.g. the '11' basis state is represented as [192] (192=11000000).
