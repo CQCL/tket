@@ -13,6 +13,9 @@ Minor new features:
   with single-qubit ``PhasedX`` gates.
 * Extend range of Clifford operations recognized by
   ``CliffordCircuitPredicate``.
+* New ``circuit_from_qasm_wasm`` function to parse QASM files containing
+  external WASM calls.
+* Faster QASM parsing, capable of parsing extended grammar.
 
 1.2.1 (May 2022)
 ----------------
