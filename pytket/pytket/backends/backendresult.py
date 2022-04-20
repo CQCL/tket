@@ -79,7 +79,7 @@ class BackendResult:
     :param counts: The counts in the result
     :param shots: The shots in the result
     :param state: The resulting statevector (from a statevector simulation)
-    :param unitary: The resulting unitary operator (i.e from a unitary simulation)
+    :param unitary: The resulting unitary operator (from a unitary simulation)
     :param density_matrix: The resulting density matrix
      (i.e output from a density matrix simulator)
     :param ppcirc: If provided, classical postprocessing to be applied to all measured
