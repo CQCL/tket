@@ -346,72 +346,11 @@ SCENARIO("Check converting gates to spiders") {
     circ.add_box(cbox, {0, 1, 2});
     ZXDiagram zx = circuit_to_zx(circ);
   }
-  // GIVEN("Conditional") {
-  //   Circuit circ(1,1);
-  //   circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
-  //   ZXDiagram zx = circuit_to_zx(circ);
-  // }
-  GIVEN("Conditional test") {
-    Circuit circ(1,1);
-    // Vertex m = circ.add_op<unsigned>(OpType::Measure, {0, 0});
-    Vertex c = circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
-    // EdgeVec ins =
-    //     circ.get_in_edges(m);
-    // std::cout<<"\nIn total\n"<<ins.size()<<"\n";
-    // EdgeVec outs =
-    //     circ.get_all_out_edges(m);
-    // std::cout<<"\nOut total\n"<<outs.size()<<"\n";
-    // EdgeVec q_in_holes =
-    //     circ.get_in_edges_of_type(m, EdgeType::Quantum);
-    // std::cout<<"\nq_in_holes\n"<<q_in_holes.size()<<"\n";
-    // EdgeVec c_in_holes =
-    //     circ.get_in_edges_of_type(m, EdgeType::Classical);
-    // std::cout<<"\nc_in_holes\n"<<c_in_holes.size()<<"\n";
-    // EdgeVec b_in_holes =
-    //     circ.get_in_edges_of_type(m, EdgeType::Boolean);
-    // std::cout<<"\nb_in_holes\n"<<b_in_holes.size()<<"\n";
-    // EdgeVec b_out_holes =
-    //     circ.get_out_edges_of_type(m, EdgeType::Boolean);
-    // std::cout<<"\nb_out_holes\n"<<b_out_holes.size()<<"\n";
-    // EdgeVec c_out_holes =
-    //     circ.get_out_edges_of_type(m, EdgeType::Classical);
-    // std::cout<<"\nc_out_holes\n"<<c_out_holes.size()<<"\n";
-    EdgeVec ins2 =
-        circ.get_in_edges(c);
-    std::cout<<"\nIn total\n"<<ins2.size()<<"\n";
-    EdgeVec outs2 =
-        circ.get_all_out_edges(c);
-    std::cout<<"\nOut total\n"<<outs2.size()<<"\n";
-    EdgeVec q_in_holes2 =
-        circ.get_in_edges_of_type(c, EdgeType::Quantum);
-    std::cout<<"\nq_in_holes2\n"<<q_in_holes2.size()<<"\n";
-    EdgeVec c_in_holes2 =
-        circ.get_in_edges_of_type(c, EdgeType::Classical);
-    std::cout<<"\nc_in_holes2\n"<<c_in_holes2.size()<<"\n";
-    EdgeVec b_in_holes2 =
-        circ.get_in_edges_of_type(c, EdgeType::Boolean);
-    std::cout<<"\nb_in_holes2\n"<<b_in_holes2.size()<<"\n";
-    EdgeVec b_out_holes2 =
-        circ.get_out_edges_of_type(c, EdgeType::Boolean);
-    std::cout<<"\nb_out_holes2\n"<<b_out_holes2.size()<<"\n";
-    EdgeVec c_out_holes2 =
-        circ.get_out_edges_of_type(c, EdgeType::Classical);
-    std::cout<<"\nc_out_holes2\n"<<c_out_holes2.size()<<"\n";
-
-    // 
-    Vertex in = circ.get_in(Bit(0));
-    EdgeVec outs3 =
-    circ.get_all_out_edges(in);
-    std::cout<<"\nOut total3\n"<<outs3.size()<<"\n";
-    Op_ptr op = circ.get_Op_ptr_from_Vertex(in);
-    std::cout<<"\nSig\n"<<op->get_signature().size()<<"\n";
-    Op_ptr op2 = circ.get_Op_ptr_from_Vertex(c);
-    std::cout<<"\nSig2\n"<<op2->get_signature().size()<<"\n";
-    for (auto e : outs3) {
-      std::cout<<"\nSource port" << circ.get_source_port(e);
-    }
+  GIVEN("Conditional") {
+    Circuit circ(1, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.3}, {0}, {0}, 1);
+    ZXDiagram zx = circuit_to_zx(circ);
   }
-
 }
 
 SCENARIO("Check converting circuits to diagrams") {
