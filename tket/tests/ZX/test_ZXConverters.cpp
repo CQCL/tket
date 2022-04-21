@@ -337,19 +337,40 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(zx.n_wires() == 1);
     REQUIRE_NOTHROW(zx.check_validity());
   }
-  GIVEN("CircBox") {
-    Circuit circ(4);
-    Circuit inner(3);
-    inner.add_op<unsigned>(OpType::Rx, 0.5, {2});
-    inner.add_op<unsigned>(OpType::CX, {0, 1});
-    CircBox cbox(inner);
-    circ.add_box(cbox, {0, 1, 2});
+  GIVEN("Empty CircBox") {
+    Circuit circ(3);
+    Circuit inner(2);
+    CircBox inner_box(inner);
+    circ.add_box(inner_box, {1, 2});
     ZXDiagram zx = circuit_to_zx(circ);
+    REQUIRE(zx.n_vertices() == 6);
+    REQUIRE_NOTHROW(zx.check_validity());
+  }
+  GIVEN("Nested CircBox") {
+    Circuit circ(3);
+    Circuit inner(2);
+    Circuit inner_most(2);
+    inner.add_op<unsigned>(OpType::Rx, 0.5, {0});
+    inner.add_op<unsigned>(OpType::CX, {0, 1});
+    inner_most.add_op<unsigned>(OpType::H, {1});
+    CircBox inner_most_box(inner_most);
+    inner.add_box(inner_most_box, {0, 1});
+    CircBox inner_box(inner);
+    circ.add_box(inner_box, {1, 2});
+    ZXDiagram zx = circuit_to_zx(circ);
+    REQUIRE(zx.n_vertices() == 10);
+    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 3);
+    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Quantum) == 3);
+    REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Quantum) == 2);
+    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Quantum) == 1);
+    REQUIRE(zx.count_vertices(ZXType::Hbox, QuantumType::Quantum) == 1);
+    REQUIRE_NOTHROW(zx.check_validity());
   }
   GIVEN("Conditional") {
     Circuit circ(1, 1);
     circ.add_conditional_gate<unsigned>(OpType::Rx, {0.3}, {0}, {0}, 1);
     ZXDiagram zx = circuit_to_zx(circ);
+    REQUIRE_NOTHROW(zx.check_validity());
   }
 }
 
