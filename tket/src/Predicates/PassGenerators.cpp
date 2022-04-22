@@ -15,6 +15,7 @@
 #include "PassGenerators.hpp"
 
 #include <memory>
+#include <sstream>
 
 #include "ArchAwareSynth/SteinerForest.hpp"
 #include "Circuit/CircPool.hpp"
@@ -155,9 +156,10 @@ PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
     try {
       changed = placement_ptr->place(circ, maps);
     } catch (const std::runtime_error& e) {
-      tket_log()->warn(fmt::format(
-          "PlacementPass failed with message: {} Fall back to LinePlacement.",
-          e.what()));
+      std::stringstream ss;
+      ss << "PlacementPass failed with message: " << e.what()
+         << " Fall back to LinePlacement.";
+      tket_log()->warn(ss.str());
       PlacementPtr line_placement_ptr = std::make_shared<LinePlacement>(
           placement_ptr->get_architecture_ref());
       changed = line_placement_ptr->place(circ, maps);

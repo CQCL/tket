@@ -632,32 +632,63 @@ const Circuit &ZZMax_using_CX() {
 
 Circuit CRz_using_CX(Expr alpha) {
   Circuit c(2);
-  c.add_op<unsigned>(OpType::Rz, alpha / 2, {1});
-  c.add_op<unsigned>(OpType::CX, {0, 1});
-  c.add_op<unsigned>(OpType::Rz, -alpha / 2, {1});
-  c.add_op<unsigned>(OpType::CX, {0, 1});
+  if (equiv_expr(alpha, 1.)) {
+    c.add_op<unsigned>(OpType::H, {1});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::H, {1});
+    if (equiv_expr(alpha, 1., 4)) {
+      c.add_op<unsigned>(OpType::Sdg, {0});
+    } else {
+      c.add_op<unsigned>(OpType::S, {0});
+    }
+  } else {
+    c.add_op<unsigned>(OpType::Rz, alpha / 2, {1});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::Rz, -alpha / 2, {1});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+  }
   return c;
 }
 
 Circuit CRx_using_CX(Expr alpha) {
   Circuit c(2);
-  c.add_op<unsigned>(OpType::Rx, alpha / 2, {1});
-  c.add_op<unsigned>(OpType::H, {1});
-  c.add_op<unsigned>(OpType::CX, {0, 1});
-  c.add_op<unsigned>(OpType::H, {1});
-  c.add_op<unsigned>(OpType::Rx, -alpha / 2, {1});
-  c.add_op<unsigned>(OpType::H, {1});
-  c.add_op<unsigned>(OpType::CX, {0, 1});
-  c.add_op<unsigned>(OpType::H, {1});
+  if (equiv_expr(alpha, 1.)) {
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    if (equiv_expr(alpha, 1., 4)) {
+      c.add_op<unsigned>(OpType::Sdg, {0});
+    } else {
+      c.add_op<unsigned>(OpType::S, {0});
+    }
+  } else {
+    c.add_op<unsigned>(OpType::Rx, alpha / 2, {1});
+    c.add_op<unsigned>(OpType::H, {1});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::H, {1});
+    c.add_op<unsigned>(OpType::Rx, -alpha / 2, {1});
+    c.add_op<unsigned>(OpType::H, {1});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::H, {1});
+  }
   return c;
 }
 
 Circuit CRy_using_CX(Expr alpha) {
   Circuit c(2);
-  c.add_op<unsigned>(OpType::Ry, alpha / 2, {1});
-  c.add_op<unsigned>(OpType::CX, {0, 1});
-  c.add_op<unsigned>(OpType::Ry, -alpha / 2, {1});
-  c.add_op<unsigned>(OpType::CX, {0, 1});
+  if (equiv_expr(alpha, 1.)) {
+    c.add_op<unsigned>(OpType::Sdg, {1});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::S, {1});
+    if (equiv_expr(alpha, 1., 4)) {
+      c.add_op<unsigned>(OpType::Sdg, {0});
+    } else {
+      c.add_op<unsigned>(OpType::S, {0});
+    }
+  } else {
+    c.add_op<unsigned>(OpType::Ry, alpha / 2, {1});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::Ry, -alpha / 2, {1});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+  }
   return c;
 }
 

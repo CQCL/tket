@@ -22,7 +22,7 @@ jobs:
     outputs:
       tket: ${{ steps.filter.outputs.tket }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: dorny/paths-filter@v2
       id: filter
       with:
@@ -41,7 +41,7 @@ jobs:
       CXX: g++-10
       CONAN_REVISIONS_ENABLED: 1
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
@@ -51,7 +51,7 @@ jobs:
       with:
         format: YYYYMMDDHHmmss
     - name: Cache ccache data
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.ccache
         key: ${{ runner.os }}-tket-ccache-${{ steps.current_time.outputs.formattedTime }}
@@ -103,7 +103,7 @@ jobs:
         mkdir test-coverage
         gcovr --print-summary --html --html-details -r ./tket/src/ --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/tket/ -o test-coverage/index.html > test-coverage/summary.txt
     - name: Upload artefact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: test_coverage
         path: test-coverage/
@@ -114,9 +114,9 @@ jobs:
     if: (github.event_name == 'pull_request' && needs.changes.outputs.tket == 'true') || github.event_name == 'schedule'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Download artefact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: test_coverage
         path: test-coverage/
@@ -138,11 +138,11 @@ jobs:
     if: github.event_name == 'push' && needs.changes.outputs.tket == 'true'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: gh-pages
     - name: Download artefact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: test_coverage
         path: test-coverage/
@@ -167,11 +167,11 @@ jobs:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: gh-pages
     - name: Download artefact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: test_coverage
         path: test-coverage/
