@@ -25,8 +25,6 @@ from pytket.qir.qir import (
 )
 
 
-
-
 def test_raise_quantinuum_gateset_keyerror() -> None:
     c = Circuit(2)
     c.CY(0, 1)
@@ -178,15 +176,19 @@ def test_bitwise_ops_for_quantinuum_gateset(
     assert call_xor in data
 
 
-def test_qir_parser(qir_bc_file_path: Path) -> None: 
+def test_qir_parser(qir_bc_file_path: Path) -> None:
     qir_parser = QIRParser(str(qir_bc_file_path))
-    func_name = "Microsoft__Quantum__Samples__SimpleGrover__SearchForMarkedInput__Interop"
+    func_name = (
+        "Microsoft__Quantum__Samples__SimpleGrover__SearchForMarkedInput__Interop"
+    )
     func = qir_parser.module.get_func_by_name(func_name)
     assert func.name == func_name
     assert qir_parser.get_required_qubits() == 3
     assert qir_parser.get_required_results() == 2
 
 
-def test_circuit_from_qir_from_bitcode(qir_bc_file_path: Path, qir_circuit: Circuit) -> None:
+def test_circuit_from_qir_from_bitcode(
+    qir_bc_file_path: Path, qir_circuit: Circuit
+) -> None:
     c = circuit_from_qir(qir_bc_file_path)
-    assert c == qir_circuit  
+    assert c == qir_circuit

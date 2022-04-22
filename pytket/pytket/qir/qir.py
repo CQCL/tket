@@ -37,7 +37,12 @@ CustomPyQIRGate = NamedTuple(
         ),
         (
             "return_type",
-            Union[type[types.DOUBLE], type[types.QUBIT], type[types.RESULT], type[types.VOID]],
+            Union[
+                type[types.DOUBLE],
+                type[types.QUBIT],
+                type[types.RESULT],
+                type[types.VOID],
+            ],
         ),
     ],
 )
@@ -76,79 +81,71 @@ QUANTINUUM_GATES = GateSet(
     template=Template("__quantinuum__${opnat}__${opname}__body"),
     gateset={
         "h": CustomPyQIRGate(
-            opnat="qis",
-            function_signature=[types.QUBIT],
-            return_type=types.VOID
+            opnat="qis", function_signature=[types.QUBIT], return_type=types.VOID
         ),
         "x": CustomPyQIRGate(
-            opnat="qis",
-            function_signature=[types.QUBIT],
-            return_type=types.VOID
+            opnat="qis", function_signature=[types.QUBIT], return_type=types.VOID
         ),
         "y": CustomPyQIRGate(
-            opnat="qis",
-            function_signature=[types.QUBIT],
-            return_type=types.VOID
+            opnat="qis", function_signature=[types.QUBIT], return_type=types.VOID
         ),
         "z": CustomPyQIRGate(
-            opnat="qis",
-            function_signature=[types.QUBIT],
-            return_type=types.VOID
+            opnat="qis", function_signature=[types.QUBIT], return_type=types.VOID
         ),
         "rx": CustomPyQIRGate(
             opnat="qis",
             function_signature=[types.DOUBLE, types.QUBIT],
-            return_type=types.VOID
+            return_type=types.VOID,
         ),
         "ry": CustomPyQIRGate(
             opnat="qis",
             function_signature=[types.DOUBLE, types.QUBIT],
-            return_type=types.VOID
+            return_type=types.VOID,
         ),
         "rz": CustomPyQIRGate(
             opnat="qis",
             function_signature=[types.DOUBLE, types.QUBIT],
-            return_type=types.VOID
+            return_type=types.VOID,
         ),
         "phx": CustomPyQIRGate(
             opnat="qis",
             function_signature=[types.DOUBLE, types.DOUBLE, types.QUBIT],
-            return_type=types.VOID
+            return_type=types.VOID,
         ),
         "cnot": CustomPyQIRGate(
             opnat="qis",
             function_signature=[types.QUBIT, types.QUBIT],
-            return_type=types.VOID
+            return_type=types.VOID,
         ),
         "zzmax": CustomPyQIRGate(
             opnat="qis",
             function_signature=[types.QUBIT, types.QUBIT],
-            return_type=types.VOID
+            return_type=types.VOID,
         ),
         "zzph": CustomPyQIRGate(
             opnat="qis",
             function_signature=[types.DOUBLE, types.QUBIT, types.QUBIT],
-            return_type=types.VOID
+            return_type=types.VOID,
         ),
         "mz": CustomPyQIRGate(
             opnat="qis",
             function_signature=[types.QUBIT, types.RESULT],
-            return_type=types.VOID
+            return_type=types.VOID,
         ),
         "and": CustomPyQIRGate(
             opnat="cis",
             function_signature=[types.RESULT, types.RESULT],
-            return_type=types.RESULT
+            return_type=types.RESULT,
         ),
         "or": CustomPyQIRGate(
             opnat="cis",
             function_signature=[types.RESULT, types.RESULT],
-            return_type=types.RESULT
+            return_type=types.RESULT,
         ),
         "xor": CustomPyQIRGate(
             opnat="cis",
             function_signature=[types.RESULT, types.RESULT],
-            return_type=types.RESULT
+            return_type=types.RESULT,
         ),
     },
     tk_to_gateset=lambda optype: {**_TK_TO_QUANTINUUM}[optype],
@@ -178,6 +175,7 @@ _PYQIR_TO_TKET = dict(((item[1], item[0]) for item in _TK_TO_PYQIR.items()))
 
 class QIRParser:
     """A parser class to return a pytket circuit from a QIR file."""
+
     def __init__(self, file_path: str) -> None:
         self.module = QirModule(file_path)
 
@@ -306,7 +304,8 @@ def circuit_from_qir(input_file: Union[str, "os.PathLike[Any]"]) -> None:
     ext = os.path.splitext(input_file)[-1]
     if ext not in [".ll", ".bc"]:
         raise TypeError("Can only convert .bc or .ll files")
-    if isinstance(input_file, os.PathLike): input_file = str(input_file)
+    if isinstance(input_file, os.PathLike):
+        input_file = str(input_file)
     qir_parser = QIRParser(input_file)
     return qir_parser.to_circuit()
 

@@ -181,11 +181,10 @@ def qir_bc_file_path() -> Path:
 
 @fixture
 def qir_circuit() -> Circuit:
-    circuit = Circuit(3,2)
+    circuit = Circuit(3, 2)
     circuit.H(0).H(1).X(2).H(2).X(0).H(2).Tdg(0).Tdg(1)
-    circuit.CX(2, 0).T(0).CX(1,2).CX(1,0).T(2).Tdg(0)
-    circuit.CX(1,2).CX(2,0).Tdg(2).T(0).CX(1,0).H(2).X(0)
-    circuit.H(2).X(2).H(0).X(0).Z(1).CX(0,1).Z(1).X(0).H(0)
-    circuit.Measure(0,0).Measure(1,1)
+    circuit.CX(2, 0).T(0).CX(1, 2).CX(1, 0).T(2).Tdg(0)
+    circuit.CX(1, 2).CX(2, 0).Tdg(2).T(0).CX(1, 0).H(2).X(0)
+    circuit.H(2).X(2).H(0).X(0).Z(1).CX(0, 1).Z(1).X(0).H(0)
+    circuit.Measure(0, 0).Measure(1, 1)
     return circuit
-    
