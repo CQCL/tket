@@ -267,9 +267,7 @@ BoundaryVertMap circuit_to_zx_recursive(
                 add_conditional_zx(zxd, zx_inp, zx_outp, qtype);
             for (const ZXVert& ctr : controls) {
               if (zxd.get_zxtype(ctr) == ZXType::Triangle) {
-                zxd.add_wire(
-                    ctr, zx_control_vert, ZXWireType::Basic,
-                    QuantumType::Quantum, 0);
+                zxd.add_wire(ctr, zx_control_vert, ZXWireType::Basic, qtype, 0);
               } else {
                 zxd.add_wire(
                     ctr, zx_control_vert, ZXWireType::Basic,

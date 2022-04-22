@@ -398,37 +398,141 @@ SCENARIO("Check converting gates to spiders") {
     ZXDiagram zx;
     boost::bimap<ZXVert, Vertex> bmap;
     std::tie(zx, bmap) = circuit_to_zx(circ);
+    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 3);
+    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Quantum) == 3);
     REQUIRE(zx.n_vertices() == 6);
+    REQUIRE(zx.n_wires() == 3);
     REQUIRE_NOTHROW(zx.check_validity());
   }
   GIVEN("Nested CircBox") {
-    Circuit circ(3);
-    Circuit inner(2);
+    Circuit circ(5);
+    Circuit inner(4);
     Circuit inner_most(2);
     inner.add_op<unsigned>(OpType::Rx, 0.5, {0});
-    inner.add_op<unsigned>(OpType::CX, {0, 1});
+    inner.add_op<unsigned>(OpType::CX, {1, 2});
     inner_most.add_op<unsigned>(OpType::H, {1});
     CircBox inner_most_box(inner_most);
-    inner.add_box(inner_most_box, {0, 1});
+    inner.add_box(inner_most_box, {2, 3});
     CircBox inner_box(inner);
-    circ.add_box(inner_box, {1, 2});
+    circ.add_box(inner_box, {0, 1, 2, 3});
+    circ.add_op<unsigned>(OpType::Rz, 0.5, {4});
     ZXDiagram zx;
     boost::bimap<ZXVert, Vertex> bmap;
     std::tie(zx, bmap) = circuit_to_zx(circ);
-    REQUIRE(zx.n_vertices() == 10);
-    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 3);
-    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Quantum) == 3);
+    for (unsigned i = 0; i < 5; i++) {
+      Vertex q_in = circ.get_in(Qubit(i));
+      Vertex q_out = circ.get_out(Qubit(i));
+      auto q_zx_in = bmap.right.find(q_in)->second;
+      auto q_zx_out = bmap.right.find(q_out)->second;
+      ZXVert mid_v = zx.neighbours(q_zx_in)[0];
+      ZXVertVec mid_v_nbs = zx.neighbours(mid_v);
+      REQUIRE(
+          std::find(mid_v_nbs.begin(), mid_v_nbs.end(), q_zx_out) !=
+          mid_v_nbs.end());
+      PhasedGen mid_gen = zx.get_vertex_ZXGen<PhasedGen>(mid_v);
+      switch (i) {
+        case 0:
+          REQUIRE(zx.degree(mid_v) == 2);
+          REQUIRE(mid_gen.get_type() == ZXType::XSpider);
+          REQUIRE(mid_gen.get_qtype() == QuantumType::Quantum);
+          REQUIRE(mid_gen.get_param() == 0.5);
+          break;
+        case 1:
+          REQUIRE(zx.degree(mid_v) == 3);
+          REQUIRE(mid_gen.get_type() == ZXType::ZSpider);
+          REQUIRE(mid_gen.get_qtype() == QuantumType::Quantum);
+          REQUIRE(mid_gen.get_param() == 0);
+          break;
+        case 2:
+          REQUIRE(zx.degree(mid_v) == 3);
+          REQUIRE(mid_gen.get_type() == ZXType::XSpider);
+          REQUIRE(mid_gen.get_qtype() == QuantumType::Quantum);
+          REQUIRE(mid_gen.get_param() == 0);
+          break;
+        case 3:
+          REQUIRE(zx.degree(mid_v) == 2);
+          REQUIRE(mid_gen.get_type() == ZXType::Hbox);
+          REQUIRE(mid_gen.get_qtype() == QuantumType::Quantum);
+          break;
+        case 4:
+          REQUIRE(zx.degree(mid_v) == 2);
+          REQUIRE(mid_gen.get_type() == ZXType::ZSpider);
+          REQUIRE(mid_gen.get_qtype() == QuantumType::Quantum);
+          REQUIRE(mid_gen.get_param() == 0.5);
+          break;
+      }
+    }
+    REQUIRE(zx.n_vertices() == 15);
+    REQUIRE(zx.n_wires() == 11);
+    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 5);
+    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Quantum) == 5);
     REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Quantum) == 2);
-    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Quantum) == 1);
+    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Quantum) == 2);
     REQUIRE(zx.count_vertices(ZXType::Hbox, QuantumType::Quantum) == 1);
     REQUIRE_NOTHROW(zx.check_validity());
   }
-  GIVEN("Conditional") {
+  GIVEN("Conditional gate") {
     Circuit circ(1, 1);
-    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.3}, {0}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {0}, 1);
     ZXDiagram zx;
     boost::bimap<ZXVert, Vertex> bmap;
     std::tie(zx, bmap) = circuit_to_zx(circ);
+    REQUIRE(zx.n_vertices() == 17);
+    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 1);
+    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Classical) == 1);
+    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Quantum) == 1);
+    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Classical) == 1);
+    REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Quantum) == 3);
+    REQUIRE(zx.count_vertices(ZXType::Triangle, QuantumType::Quantum) == 3);
+    REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Classical) == 2);
+    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Quantum) == 2);
+    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Classical) == 2);
+    REQUIRE(zx.count_vertices(ZXType::Hbox, QuantumType::Quantum) == 1);
+    REQUIRE_NOTHROW(zx.check_validity());
+  }
+  GIVEN("Conditional measure") {
+    Circuit circ(1, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {0}, 0);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
+    REQUIRE(zx.n_vertices() == 29);
+    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 1);
+    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Classical) == 1);
+    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Quantum) == 1);
+    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Classical) == 1);
+    REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Quantum) == 3);
+    REQUIRE(zx.count_vertices(ZXType::Triangle, QuantumType::Quantum) == 3);
+    REQUIRE(zx.count_vertices(ZXType::Triangle, QuantumType::Classical) == 3);
+    REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Classical) == 8);
+    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Quantum) == 2);
+    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Classical) == 6);
+    REQUIRE_NOTHROW(zx.check_validity());
+  }
+  GIVEN("Conditional CircBox") {
+    Circuit circ(2, 2);
+    Circuit inner(2);
+    inner.add_op<unsigned>(OpType::H, {0});
+    inner.add_op<unsigned>(OpType::H, {1});
+    CircBox inner_box(inner);
+    Op_ptr inner_op = std::make_shared<CircBox>(inner_box);
+    Op_ptr con_op = std::make_shared<Conditional>(inner_op, 2, 3);
+    circ.add_op<UnitID>(
+        con_op, {Bit(0), Bit(1), Qubit(0), Qubit(1)}, std::nullopt);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
+    REQUIRE(zx.n_vertices() == 33);
+    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 2);
+    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Classical) == 2);
+    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Quantum) == 2);
+    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Classical) == 2);
+    REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Quantum) == 6);
+    REQUIRE(zx.count_vertices(ZXType::Triangle, QuantumType::Quantum) == 6);
+    REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Classical) == 4);
+    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Quantum) == 4);
+    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Classical) == 3);
+    REQUIRE(zx.count_vertices(ZXType::Hbox, QuantumType::Quantum) == 2);
     REQUIRE_NOTHROW(zx.check_validity());
   }
 }
