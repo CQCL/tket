@@ -25,7 +25,9 @@ SCENARIO("Check converting gates to spiders") {
   GIVEN("X") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::X, {0});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
     ZXVert input = boundary[0];
     ZXVert x = zx.neighbours(input)[0];
@@ -41,7 +43,9 @@ SCENARIO("Check converting gates to spiders") {
   GIVEN("Rx") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Rx, 0.3, {0});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
     ZXVert input = boundary[0];
     ZXVert x = zx.neighbours(input)[0];
@@ -57,7 +61,9 @@ SCENARIO("Check converting gates to spiders") {
   GIVEN("Z") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Z, {0});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
     ZXVert input = boundary[0];
     ZXVert z = zx.neighbours(input)[0];
@@ -73,7 +79,9 @@ SCENARIO("Check converting gates to spiders") {
   GIVEN("Rz") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Rz, 0.4, {0});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
     ZXVert input = boundary[0];
     ZXVert z = zx.neighbours(input)[0];
@@ -89,7 +97,9 @@ SCENARIO("Check converting gates to spiders") {
   GIVEN("H") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::H, {0});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
     ZXVert input = boundary[0];
     ZXVert h = zx.neighbours(input)[0];
@@ -104,7 +114,9 @@ SCENARIO("Check converting gates to spiders") {
   GIVEN("CX") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
     ZXVert input0 = boundary[0];
     ZXVert input1 = boundary[1];
@@ -129,7 +141,9 @@ SCENARIO("Check converting gates to spiders") {
   GIVEN("CZ") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CZ, {0, 1});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
     ZXVert input0 = boundary[0];
     ZXVert input1 = boundary[1];
@@ -154,7 +168,9 @@ SCENARIO("Check converting gates to spiders") {
   GIVEN("Measure") {
     Circuit circ(1, 1);
     circ.add_op<unsigned>(OpType::Measure, {0, 0});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     ZXVertVec q_boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
     ZXVertVec c_boundary =
         zx.get_boundary(ZXType::Input, QuantumType::Classical);
@@ -180,7 +196,9 @@ SCENARIO("Check converting gates to spiders") {
   GIVEN("Reset") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Reset, {0});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     ZXVertVec in_boundary =
         zx.get_boundary(ZXType::Input, QuantumType::Quantum);
     ZXVertVec out_boundary =
@@ -207,7 +225,9 @@ SCENARIO("Check converting gates to spiders") {
   GIVEN("Collapse") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Collapse, {0});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     ZXVertVec boundary = zx.get_boundary(ZXType::Input, QuantumType::Quantum);
     ZXVert input = boundary[0];
     ZXVert z = zx.neighbours(input)[0];
@@ -225,7 +245,9 @@ SCENARIO("Check converting gates to spiders") {
     circ.add_barrier({0}, {0});
     circ.add_barrier({}, {0});
     circ.add_barrier({0}, {});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     ZXVertVec q_in_boundary =
         zx.get_boundary(ZXType::Input, QuantumType::Quantum);
     ZXVertVec c_in_boundary =
@@ -247,7 +269,9 @@ SCENARIO("Check converting gates to spiders") {
   GIVEN("noop") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::noop, {0});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     ZXVertVec q_in_boundary =
         zx.get_boundary(ZXType::Input, QuantumType::Quantum);
     ZXVert q_input = q_in_boundary[0];
@@ -259,7 +283,29 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(zx.n_wires() == 1);
     REQUIRE_NOTHROW(zx.check_validity());
   }
-  GIVEN("SWAP") {
+  GIVEN("Simple SWAP") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
+    ZXVertVec q_in_boundary =
+        zx.get_boundary(ZXType::Input, QuantumType::Quantum);
+    Vertex q0_in = circ.get_in(Qubit(0));
+    Vertex q1_in = circ.get_in(Qubit(1));
+    Vertex q0_out = circ.get_out(Qubit(0));
+    Vertex q1_out = circ.get_out(Qubit(1));
+    auto q0_zx_in = bmap.right.find(q0_in)->second;
+    auto q1_zx_in = bmap.right.find(q1_in)->second;
+    auto q0_zx_out = bmap.right.find(q0_out)->second;
+    auto q1_zx_out = bmap.right.find(q1_out)->second;
+    REQUIRE(zx.neighbours(q0_zx_in)[0] == q1_zx_out);
+    REQUIRE(zx.neighbours(q1_zx_in)[0] == q0_zx_out);
+    REQUIRE(zx.n_vertices() == 4);
+    REQUIRE(zx.n_wires() == 2);
+    REQUIRE_NOTHROW(zx.check_validity());
+  }
+  GIVEN("Multiple SWAPs") {
     Circuit circ(3);
     circ.add_op<unsigned>(OpType::SWAP, {0, 1});
     circ.add_op<unsigned>(OpType::SWAP, {1, 2});
@@ -267,7 +313,10 @@ SCENARIO("Check converting gates to spiders") {
     circ.add_op<unsigned>(OpType::Rz, 0.2, {1});
     circ.add_op<unsigned>(OpType::Rz, 0.3, {2});
 
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
+
     ZXVertVec q_in_boundary =
         zx.get_boundary(ZXType::Input, QuantumType::Quantum);
     ZXVert q_input_0 = q_in_boundary[0];
@@ -300,7 +349,9 @@ SCENARIO("Check converting gates to spiders") {
   GIVEN("Create") {
     Circuit circ(1);
     circ.qubit_create(Qubit(0));
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     ZXVertVec input_boundary =
         zx.get_boundary(ZXType::Input, QuantumType::Quantum);
     REQUIRE(input_boundary.size() == 0);
@@ -320,7 +371,9 @@ SCENARIO("Check converting gates to spiders") {
   GIVEN("Discard") {
     Circuit circ(1);
     circ.qubit_discard(Qubit(0));
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     ZXVertVec input_boundary =
         zx.get_boundary(ZXType::Input, QuantumType::Quantum);
     ZXVertVec output_boundary =
@@ -342,7 +395,9 @@ SCENARIO("Check converting gates to spiders") {
     Circuit inner(2);
     CircBox inner_box(inner);
     circ.add_box(inner_box, {1, 2});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     REQUIRE(zx.n_vertices() == 6);
     REQUIRE_NOTHROW(zx.check_validity());
   }
@@ -357,7 +412,9 @@ SCENARIO("Check converting gates to spiders") {
     inner.add_box(inner_most_box, {0, 1});
     CircBox inner_box(inner);
     circ.add_box(inner_box, {1, 2});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     REQUIRE(zx.n_vertices() == 10);
     REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 3);
     REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Quantum) == 3);
@@ -369,7 +426,9 @@ SCENARIO("Check converting gates to spiders") {
   GIVEN("Conditional") {
     Circuit circ(1, 1);
     circ.add_conditional_gate<unsigned>(OpType::Rx, {0.3}, {0}, {0}, 1);
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     REQUIRE_NOTHROW(zx.check_validity());
   }
 }
@@ -377,7 +436,9 @@ SCENARIO("Check converting gates to spiders") {
 SCENARIO("Check converting circuits to diagrams") {
   GIVEN("A empty circuit") {
     Circuit circ;
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     REQUIRE(zx.n_vertices() == 0);
     REQUIRE(zx.n_wires() == 0);
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
@@ -389,7 +450,9 @@ SCENARIO("Check converting circuits to diagrams") {
     Sym a = SymTable::fresh_symbol("a");
     Expr ea(a);
     circ.add_phase(ea);
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     REQUIRE(zx.n_vertices() == 8);
     REQUIRE(zx.n_wires() == 4);
     REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 3);
@@ -415,7 +478,9 @@ SCENARIO("Check converting circuits to diagrams") {
     circ.add_op<unsigned>(OpType::X, {1});
     circ.add_op<unsigned>(OpType::Measure, {0, 0});
     circ.add_barrier({1}, {0, 1});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     REQUIRE(zx.n_vertices() == 14);
     REQUIRE(zx.n_wires() == 9);
     REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 3);
@@ -435,7 +500,9 @@ SCENARIO("Check converting circuits to diagrams") {
     circ.add_op<unsigned>(OpType::H, {2});
     circ.add_op<unsigned>(OpType::CZ, {1, 2});
     circ.add_op<unsigned>(OpType::CZ, {1, 0});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     REQUIRE(zx.n_vertices() == 15);
     REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 3);
     REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Classical) == 0);
@@ -457,7 +524,9 @@ SCENARIO("Check converting circuits to diagrams") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::Rz, ea, {0});
     circ.add_phase(eb);
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     REQUIRE(zx.n_vertices() == 3);
     REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Quantum) == 1);
     REQUIRE(test_equiv_expr_c(zx.get_scalar(), 1));
@@ -471,7 +540,9 @@ SCENARIO("Check converting circuits to diagrams") {
     circ.add_op<unsigned>(OpType::X, {2});
     circ.add_op<unsigned>(OpType::Reset, {2});
     circ.add_op<unsigned>(OpType::Collapse, {1});
-    ZXDiagram zx = circuit_to_zx(circ);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
     REQUIRE(zx.n_vertices() == 16);
     REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 3);
     REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Classical) == 1);

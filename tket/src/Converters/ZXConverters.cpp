@@ -270,13 +270,11 @@ BoundaryVertMap circuit_to_zx_recursive(
                 zxd.add_wire(
                     ctr, zx_control_vert, ZXWireType::Basic,
                     QuantumType::Quantum, 0);
-              }
-              else {
+              } else {
                 zxd.add_wire(
                     ctr, zx_control_vert, ZXWireType::Basic,
                     QuantumType::Classical);
               }
-
             }
             // Update lookup
             vert_lookup.insert(
@@ -420,10 +418,10 @@ BoundaryVertMap circuit_to_zx_recursive(
   return bmap;
 }
 
-ZXDiagram circuit_to_zx(const Circuit& circ) {
+std::pair<ZXDiagram, BoundaryVertMap> circuit_to_zx(const Circuit& circ) {
   ZXDiagram zxd;
   BoundaryVertMap bmap = circuit_to_zx_recursive(circ, zxd, true);
-  // TODO return the map as well
+  // Remove internal boundary vertices produced by the recursion
   ZXVertVec true_boundary = zxd.get_boundary();
   ZXVertIterator vi, vi_end, next;
   tie(vi, vi_end) = boost::vertices(*zxd.get_graph());
@@ -445,7 +443,7 @@ ZXDiagram circuit_to_zx(const Circuit& circ) {
       zxd.remove_vertex(*vi);
     }
   }
-  return zxd;
+  return {std::move(zxd), std::move(bmap)};
 }
 
 }  // namespace tket

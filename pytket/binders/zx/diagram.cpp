@@ -48,6 +48,25 @@ class ZXVertWrapper {
   operator const ZXVert&() const { return v_; }
 };
 
+std::pair<ZXDiagram, std::map<ZXVertWrapper, UnitID>> wrapped_circuit_to_zx(
+    const Circuit& circ) {
+  ZXDiagram zxd;
+  boost::bimap<ZXVert, Vertex> bmap;
+  std::tie(zxd, bmap) = circuit_to_zx(circ);
+  std::map<ZXVertWrapper, UnitID> ret_map;
+  for (auto it = bmap.left.begin(); it != bmap.left.end(); it++) {
+    OpType io_type = circ.get_OpType_from_Vertex(it->second);
+    if (io_type == OpType::Input || io_type == OpType::ClInput) {
+      ret_map.insert(
+          {ZXVertWrapper(it->first), circ.get_id_from_in(it->second)});
+    } else {
+      ret_map.insert(
+          {ZXVertWrapper(it->first), circ.get_id_from_out(it->second)});
+    }
+  }
+  return {std::move(zxd), std::move(ret_map)};
+}
+
 class ZXDiagramPybind {
  public:
   static void init_zxdiagram(py::module& m);
@@ -584,7 +603,7 @@ PYBIND11_MODULE(zx, m) {
           "The internal diagram represented by the box.");
   init_rewrite(m);
   m.def(
-      "circuit_to_zx", [](Circuit circ) { return circuit_to_zx(circ); },
+      "circuit_to_zx", &wrapped_circuit_to_zx,
       "Construct a ZX diagram from a circuit.");
 }
 

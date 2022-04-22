@@ -70,6 +70,7 @@ Circuit pauli_graph_to_circuit_sets(
  * Construct a zx diagram from a given circuit.
  */
 
-zx::ZXDiagram circuit_to_zx(const Circuit &circuit);
+std::pair<zx::ZXDiagram, boost::bimap<zx::ZXVert, Vertex>> circuit_to_zx(
+    const Circuit &circuit);
 
 }  // namespace tket
