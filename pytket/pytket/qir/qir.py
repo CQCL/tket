@@ -155,24 +155,25 @@ QUANTINUUM_GATES = GateSet(
 )
 
 _TK_TO_PYQIR = {
-    OpType.H: "h",
-    OpType.X: "x",
-    OpType.Y: "y",
-    OpType.Z: "z",
-    OpType.S: "s",
-    OpType.Sdg: "s_adj",
-    OpType.T: "t",
-    OpType.Tdg: "t_adj",
-    OpType.Reset: "reset",
-    OpType.CX: "cx",
-    OpType.CZ: "cz",
-    OpType.Measure: "m",
-    OpType.Rx: "rx",
-    OpType.Ry: "ry",
-    OpType.Rz: "rz",
+    OpType.H: "__h__body",
+    OpType.X: "__x__body",
+    OpType.Y: "__y__body",
+    OpType.Z: "__z__body",
+    OpType.S: "__s__body",
+    OpType.Sdg: "__s__adj",
+    OpType.T: "__t__body",
+    OpType.Tdg: "__t__adj",
+    OpType.Reset: "__reset__body",
+    OpType.CX: "__cnot__body",
+    OpType.CZ: "__cz__body",
+    OpType.Measure: "__mz__body",
+    OpType.Rx: "__rx__body",
+    OpType.Ry: "__ry__body",
+    OpType.Rz: "__rz__body",
 }
 
 
+_PYQIR_TO_TKET = dict(((item[1], item[0]) for item in _TK_TO_PYQIR.items()))
 def _tk_to_pyqir(optype: OpType):
     return _TK_TO_PYQIR[optype]
 
