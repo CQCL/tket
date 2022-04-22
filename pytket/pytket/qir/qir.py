@@ -306,21 +306,9 @@ def circuit_from_qir(input_file: Union[str, "os.PathLike[Any]"]) -> None:
     ext = os.path.splitext(input_file)[-1]
     if ext not in [".ll", ".bc"]:
         raise TypeError("Can only convert .bc or .ll files")
-    with open(input_file, "r") as f:
-        circ = circuit_from_qir_io(f)
-    return circ
-
-
-def circuit_from_qir_io(stream_in: TextIO) -> Circuit:
-    """A method to generate a tket Circuit from a QIR text stream"""
-    return circuit_from_qir_str(stream_in.read())
-
-
-def circuit_from_qir_str(qir_str: str) -> Circuit:
-    """A method to generate a tket Circuit from a qasm str"""
-    pass
-    # p = QIRParser()
-    # return p.parse_qir(qir_str)
+    if isinstance(input_file, os.PathLike): input_file = str(input_file)
+    qir_parser = QIRParser(input_file)
+    return qir_parser.to_circuit()
 
 
 def circuit_to_qir_str(
