@@ -12,17 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import dataclasses
-from types import SimpleNamespace
+from pathlib import Path
 import pytest
 from pytket import Circuit
 
 from pytket.qir.qir import (
     circuit_to_qir,
-    circuit_to_qir_str,
+    circuit_from_qir,
     ExtendedModule,
+    QIRParser,
     QUANTINUUM_GATES,
 )
+
+
 
 
 def test_raise_quantinuum_gateset_keyerror() -> None:
@@ -114,6 +116,7 @@ def test_raise_pyqir_gateset_keyerror() -> None:
         circuit_to_qir(c, "RaiseError.ll")
 
 
+@pytest.mark.skip
 def test_qir_from_pytket_circuit_and_pyqir_gateset(
     circuit_pyqir_gateset, file_name: str
 ):
@@ -159,6 +162,7 @@ def test_qir_from_pytket_circuit_and_pyqir_gateset(
     assert call_rz in data
 
 
+@pytest.mark.skip
 def test_bitwise_ops_for_quantinuum_gateset(
     circuit_bitwise_ops: Circuit, bitwise_file: str
 ) -> None:
@@ -172,3 +176,17 @@ def test_bitwise_ops_for_quantinuum_gateset(
     assert call_and in data
     assert call_or in data
     assert call_xor in data
+
+
+def test_qir_parser(qir_bc_file_path: Path) -> None: 
+    qir_parser = QIRParser(str(qir_bc_file_path))
+    func_name = "Microsoft__Quantum__Samples__SimpleGrover__SearchForMarkedInput__Interop"
+    func = qir_parser.module.get_func_by_name(func_name)
+    assert func.name == func_name
+    assert qir_parser.get_required_qubits() == 3
+    assert qir_parser.get_required_results() == 2
+
+
+def test_circuit_from_qir_from_bitcode(qir_bc_file_path: Path, qir_circuit: Circuit) -> None:
+    c = circuit_from_qir(qir_bc_file_path)
+    assert c == qir_circuit  
