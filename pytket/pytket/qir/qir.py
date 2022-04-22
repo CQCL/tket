@@ -174,6 +174,71 @@ _TK_TO_PYQIR = {
 
 
 _PYQIR_TO_TKET = dict(((item[1], item[0]) for item in _TK_TO_PYQIR.items()))
+
+
+class QIRParser:
+    """A parser class to return a pytket circuit from a QIR file."""
+    def __init__(self, file_path: str) -> None:
+        self.module = QirModule(file_path)
+
+    def get_required_qubits(self) -> int:
+        interop_funcs = self.module.get_funcs_by_attr("InteropFriendly")
+        qubits = interop_funcs[0].get_attribute_value("requiredQubits")
+        if qubits is not None:
+            return int(qubits)
+        return 0
+
+    def get_required_results(self) -> int:
+        interop_funcs = self.module.get_funcs_by_attr("InteropFriendly")
+        results = interop_funcs[0].get_attribute_value("requiredResults")
+        if results is not None:
+            return int(results)
+        return 0
+
+    def get_optype(self, instr: PyQirInstruction) -> OpType:
+        call_func_name = instr.call_func_name
+        for k, v in _PYQIR_TO_TKET.items():
+            if k in call_func_name:
+                return v
+
+    def get_params(self, instr: PyQirInstruction) -> Optional[List[float]]:
+        params = instr.call_func_params[0].constant.float_double_value
+        if params is not None:
+            return [params]
+        return None
+
+    def get_operation(self, instr: QirCallInstr) -> Op:
+        optype = self.get_optype(instr.instr)
+        params = self.get_params(instr.instr)
+        if params is not None:
+            return Op.create(optype, params)
+        return Op.create(optype)
+
+    def get_qubit_indices(self, instr: PyQirInstruction) -> List[int]:
+        func_params = instr.call_func_params
+        params: List = []
+        for param in func_params:
+            if param.constant.is_qubit:
+                params.append(param.constant.qubit_static_id)
+            else:
+                params.append(param.constant.result_static_id)
+        return params
+
+    def to_circuit(self) -> Circuit:
+        qubits = self.get_required_qubits()
+        bits = self.get_required_results()
+        circuit = Circuit(qubits, bits)
+        entry_block = self.module.functions[0].get_block_by_name("entry")
+        if entry_block is None:
+            raise NotImplementedError("The QIR file does not contain an entry block.")
+        instrs = entry_block.instructions
+        for instr in instrs:
+            op = self.get_operation(instr)
+            unitids = self.get_qubit_indices(instr.instr)
+            circuit.add_gate(op, unitids)
+        return circuit
+
+
 def _tk_to_pyqir(optype: OpType):
     return _TK_TO_PYQIR[optype]
 
