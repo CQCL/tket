@@ -14,10 +14,10 @@
 
 import os
 from string import Template
-from typing import Any, Callable, Dict, List, NamedTuple, Optional, TextIO, Tuple, Union
+from typing import Callable, Dict, List, NamedTuple, Optional, Tuple, Union
 
-from pyqir.parser import QirModule, QirCallInstr
-from pyqir.parser._native import PyQirInstruction
+from pyqir.parser import QirModule, QirCallInstr  # type: ignore
+from pyqir.parser._native import PyQirInstruction  # type: ignore
 from pyqir.generator import SimpleModule, BasicQisBuilder, types  # type: ignore
 from pytket import Circuit, OpType, Bit, Qubit
 from pytket.circuit import Op  # type: ignore
