@@ -14,10 +14,10 @@ bool is_spiderless_optype(const OpType& optype) {
          optype == OpType::noop;
 }
 
-// A swicth with the on-state controlled by the on_value
+// Add a swicth with the on-state controlled by the on_value.
+// qtype indicates the quantum type of the switch.
 std::pair<ZXVert, ZXVert> add_switch(
     ZXDiagram& zxd, const bool& on_value, const QuantumType& qtype) {
-  // TODO: what is the scalar for a classical switch?
   zxd.multiply_scalar(std::sqrt(2.));
   ZXVert triangle = zxd.add_vertex(ZXType::Triangle, qtype);
   ZXVert x = zxd.add_vertex(ZXType::XSpider, 0, qtype);
@@ -36,7 +36,9 @@ std::pair<ZXVert, ZXVert> add_switch(
 //   n     n
 //   |--G--|
 // s, n are switches, G is the conditional zx diagram specified by 'left' and
-// 'right'. s is on when the input is 0, n is on when the input is 1
+// 'right'. s is on when the input is 0, n is on when the input is 1.
+// return the input and the output of the conditional zx along with a vector of
+// control spiders
 std::pair<std::pair<ZXVert, ZXVert>, std::vector<ZXVert>> add_conditional_zx(
     ZXDiagram& zxd, const ZXVert& left, const ZXVert& right,
     const QuantumType& qtype) {
@@ -54,17 +56,17 @@ std::pair<std::pair<ZXVert, ZXVert>, std::vector<ZXVert>> add_conditional_zx(
   return {{in, out}, {switch_i.first, switch_s0.first, switch_s1.first}};
 }
 
+// Add converted circ into zxd. Set add_boundary to true
+// if boundary spiders are to be added to the boundary.
 BoundaryVertMap circuit_to_zx_recursive(
     const Circuit& circ, ZXDiagram& zxd, bool add_boundary) {
-  // TODO: how can users know the boundary mapping?
   std::map<TypedVertPort, ZXVert> vert_lookup;
   std::map<VertPort, ZXVert> boolean_outport_lookup;
   BoundaryVertMap bmap;
 
   // Convert each vertex to ZXDiagram, raise error if not supported
   BGL_FORALL_VERTICES(vert, circ.dag, DAG) {
-    // We currently throw an error if the vertex is either
-    // 1. conditional, classical, flow
+    // We currently throw an error if the vertex is either classical or flow
     Op_ptr op = circ.get_Op_ptr_from_Vertex(vert);
     if (is_flowop_type(op->get_type()) || is_classical_type(op->get_type())) {
       throw Unsupported(
@@ -211,7 +213,6 @@ BoundaryVertMap circuit_to_zx_recursive(
         break;
       }
       default:
-        // TODO Rebase quantum gates
         if (op->get_type() == OpType::Conditional) {
           const Conditional& cond = static_cast<const Conditional&>(*op);
           Op_ptr inner_op = cond.get_op();
@@ -244,7 +245,7 @@ BoundaryVertMap circuit_to_zx_recursive(
           ZXVert zx_control_vert =
               zxd.add_vertex(ZXType::ZSpider, 0, QuantumType::Classical);
           // For each qubit path in the inner op, convert it into a conditional
-          // zx.
+          // path.
           unsigned q_index = 0;
           unsigned c_index = 0;
           for (unsigned i = 0; i < inner_sig.size(); i++) {
@@ -298,7 +299,7 @@ BoundaryVertMap circuit_to_zx_recursive(
                   {{{vert, p_t}, PortType::In}, zx_control_vert});
             }
             // Each boolean edge shares a source port with other
-            // classical/boolean edges Use the classical z spider to explicitly
+            // classical/boolean edges. Use the classical z spider to explicitly
             // implement this copy operation
             ZXVert copy_vert =
                 zxd.add_vertex(ZXType::ZSpider, 0, QuantumType::Classical);
@@ -402,6 +403,9 @@ BoundaryVertMap circuit_to_zx_recursive(
             it_s->second, it_t->second, ZXWireType::Basic,
             QuantumType::Classical);
       } else {
+        // If the source port is boolean, then connect the copy spider to the
+        // source vertex. All out-edges originated from the source port should
+        // be connected to the copy spider.
         if (zxd.degree(bool_it->second) == 0) {
           zxd.add_wire(
               it_s->second, bool_it->second, ZXWireType::Basic,

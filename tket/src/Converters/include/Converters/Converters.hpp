@@ -68,8 +68,9 @@ Circuit pauli_graph_to_circuit_sets(
 
 /**
  * Construct a zx diagram from a given circuit.
+ * Return the zx diagram and a map between the zx boundary vertices and the
+ * circuit boundary vertices.
  */
-
 std::pair<zx::ZXDiagram, boost::bimap<zx::ZXVert, Vertex>> circuit_to_zx(
     const Circuit &circuit);
 
