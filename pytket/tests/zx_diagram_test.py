@@ -642,7 +642,7 @@ def test_converting_to_circuit() -> None:
     c.Rz(0.2, 1)
     c.X(3)
     c.H(2)
-    diag = circuit_to_zx(c)
+    diag, _ = circuit_to_zx(c)
     # Check the unitaries are equal up to a global phase
     u = c.get_unitary()
     v = unitary_from_quantum_diagram(diag)
