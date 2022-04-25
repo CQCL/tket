@@ -27,6 +27,7 @@
 using namespace tket;
 
 #define ALL_PASSES(DO)                    \
+  DO(SynthesiseTK)                        \
   DO(SynthesiseTket)                      \
   DO(SynthesiseHQS)                       \
   DO(SynthesiseUMD)                       \

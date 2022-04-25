@@ -44,6 +44,21 @@ const Circuit &BRIDGE_using_CX_1() {
   return *C;
 }
 
+const Circuit &CX_using_TK2() {
+  static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
+    Circuit c(2);
+    c.add_op<unsigned>(tket::OpType::V, {0});
+    c.add_op<unsigned>(tket::OpType::S, {0});
+    c.add_op<unsigned>(tket::OpType::V, {1});
+    c.add_op<unsigned>(tket::OpType::Z, {1});
+    c.add_op<unsigned>(tket::OpType::TK2, {-0.5, 0, 0}, {0, 1});
+    c.add_op<unsigned>(tket::OpType::H, {0});
+    c.add_op<unsigned>(tket::OpType::Y, {1});
+    return c;
+  }());
+  return *C;
+}
+
 const Circuit &CX_using_flipped_CX() {
   static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
     Circuit c(2);

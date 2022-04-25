@@ -136,6 +136,22 @@ Circuit pauli_gadget(
     CXConfigType cx_config = CXConfigType::Snake);
 
 /**
+ * Utility function to replace all CX gates with TK2 and single-qubit gates.
+ *
+ * @param c circuit to modify
+ */
+void replace_CX_with_TK2(Circuit& c);
+
+/**
+ * Express a gate as a circuit using TK2 as the only multi-qubit gate.
+ *
+ * @param op operation
+ *
+ * @return circuit representing the operation
+ */
+Circuit with_TK2(Gate_ptr op);
+
+/**
  * Express a gate as a circuit using CX as the only multi-qubit gate.
  *
  * @param op operation

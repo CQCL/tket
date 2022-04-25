@@ -21,7 +21,9 @@
 #include "CircPool.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Gate/GatePtr.hpp"
+#include "Gate/GateUnitaryMatrixImplementations.hpp"
 #include "Gate/Rotation.hpp"
+#include "OpType/OpType.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/Expression.hpp"
 #include "Utils/MatrixAnalysis.hpp"
@@ -375,6 +377,74 @@ Circuit pauli_gadget(
     }
   }
   return circ;
+}
+
+void replace_CX_with_TK2(Circuit &c) {
+  static const Op_ptr cx = std::make_shared<Gate>(OpType::CX);
+  c.substitute_all(CircPool::CX_using_TK2(), cx);
+}
+
+Circuit with_TK2(Gate_ptr op) {
+  std::vector<Expr> params = op->get_params();
+  unsigned n = op->n_qubits();
+  if (n == 0) {
+    return Circuit();
+  } else if (n == 1) {
+    Circuit c(1);
+    c.add_op(op, std::vector<unsigned>{0});
+    return c;
+  } else if (n == 2 && op->free_symbols().empty()) {
+    Eigen::Matrix4cd U = op->get_unitary();
+    auto [K1, A, K2] = get_information_content(U);
+    // Decompose single qubits
+    auto [K1a, K1b] = kronecker_decomposition(K1);
+    auto [K2a, K2b] = kronecker_decomposition(K2);
+    Circuit c(2);
+    std::vector<double> angles_K1a = tk1_angles_from_unitary(K1a);
+    std::vector<double> angles_K1b = tk1_angles_from_unitary(K1b);
+    std::vector<double> angles_K2a = tk1_angles_from_unitary(K2a);
+    std::vector<double> angles_K2b = tk1_angles_from_unitary(K2b);
+    c.add_op<unsigned>(
+        OpType::TK1, {angles_K2a.begin(), angles_K2a.end() - 1}, {0});
+    c.add_op<unsigned>(
+        OpType::TK1, {angles_K2b.begin(), angles_K2b.end() - 1}, {1});
+    constexpr double f = -2 / PI;
+    double alpha = f * std::get<0>(A);
+    double beta = f * std::get<1>(A);
+    double gamma = f * std::get<2>(A);
+    c.add_op<unsigned>(OpType::TK2, {alpha, beta, gamma}, {0, 1});
+    c.add_op<unsigned>(
+        OpType::TK1, {angles_K1a.begin(), angles_K1a.end() - 1}, {0});
+    c.add_op<unsigned>(
+        OpType::TK1, {angles_K1b.begin(), angles_K1b.end() - 1}, {1});
+
+    // Correct phase by computing the unitary and comparing with U:
+    Eigen::Matrix4cd V_K1 = Eigen::KroneckerProduct(
+        get_matrix_from_tk1_angles(
+            {angles_K1a[0], angles_K1a[1], angles_K1a[2], 0}),
+        get_matrix_from_tk1_angles(
+            {angles_K1b[0], angles_K1b[1], angles_K1b[2], 0}));
+    Eigen::Matrix4cd V_A =
+        internal::GateUnitaryMatrixImplementations::TK2(alpha, beta, gamma);
+    Eigen::Matrix4cd V_K2 = Eigen::KroneckerProduct(
+        get_matrix_from_tk1_angles(
+            {angles_K2a[0], angles_K2a[1], angles_K2a[2], 0}),
+        get_matrix_from_tk1_angles(
+            {angles_K2b[0], angles_K2b[1], angles_K2b[2], 0}));
+    Eigen::Matrix4cd V = V_K1 * V_A * V_K2;
+    Eigen::Matrix4cd R = V.adjoint() * U;
+    const Complex phase = R(0, 0);  // R = phase * I
+    c.add_phase(arg(phase) / PI);
+
+    return c;
+  }
+  // We are left with the non-trivial cases. As a first, inefficient, solution,
+  // we can decompose these into CX and then replace each CX with a TK2 (and
+  // some single-qubit gates).
+  // TODO Later we should find more efficient decompositions for these.
+  Circuit c = with_CX(op);
+  replace_CX_with_TK2(c);
+  return c;
 }
 
 Circuit with_CX(Gate_ptr op) {

@@ -27,6 +27,9 @@ const Circuit &BRIDGE_using_CX_0();
 /** Equivalent to BRIDGE, using four CX, first CX has control on qubit 1 */
 const Circuit &BRIDGE_using_CX_1();
 
+/** Equivalent to CX, using a TK2 and single-qubit gates */
+const Circuit &CX_using_TK2();
+
 /** Equivalent to CX[0,1], using a CX[1,0] and four H gates */
 const Circuit &CX_using_flipped_CX();
 
