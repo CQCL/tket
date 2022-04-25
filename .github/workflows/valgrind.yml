@@ -16,7 +16,7 @@ jobs:
     outputs:
       tket: ${{ steps.filter.outputs.tket }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: dorny/paths-filter@v2
       id: filter
       with:
@@ -33,9 +33,9 @@ jobs:
       CXX: g++-10
       CONAN_REVISIONS_ENABLED: 1
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: cache ccache data
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.ccache
         key: ${{ runner.os }}-tket-ccache-${{ steps.current_time.outputs.formattedTime }}

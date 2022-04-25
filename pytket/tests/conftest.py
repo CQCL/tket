@@ -70,39 +70,5 @@ def add_randomly_double_qubit_gates(
 
 
 @fixture
-def circuit_random(request: Any, circuit: Circuit) -> Circuit:
-    single_qubit_gate_density = 0.5  # Proportion of single vs. double qubit gates
-    double_qubit_gate_density = 0.5
-    nb_single_qubit_gates = math.floor(single_qubit_gate_density * circuit.n_qubits)
-    nb_double_qubit_gates = math.floor(
-        double_qubit_gate_density * circuit.n_qubits * 0.5
-    )
-    for layer in range(request.param):
-        # Recreate these sets every iteration as they get depopulated
-        single_qubit_indices = set(i for i in range(circuit.n_qubits))
-        double_qubit_indices = single_qubit_indices
-        circuit = add_randomly_single_qubit_gates(
-            nb_single_qubit_gates, single_qubit_indices, circuit
-        )
-        circuit = add_randomly_double_qubit_gates(
-            nb_double_qubit_gates, double_qubit_indices, circuit
-        )
-
-    # Save the circuit to be run in tket benchmarks to a timestamped file
-    timestr = time.strftime("%Y-%m-%d_%H:%M:%S")
-    filename = (
-        "circuit_random_nb_qubits="
-        + str(circuit.n_qubits)
-        + "_nb_layers="
-        + str(request.param)
-        + "_"
-        + timestr
-        + ".tkc"
-    )
-    circuit._to_tkc_file(filename)
-    return circuit
-
-
-@fixture
 def optype() -> OpType:
     return OpType
