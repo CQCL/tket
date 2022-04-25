@@ -7,6 +7,7 @@ x.y.z (unreleased)
 Minor new features:
 
 * Added explicit constructors for various Python classes.
+* New ``measure_register`` method for measuring registers.
 
 1.1.0 (April 2022)
 ------------------
