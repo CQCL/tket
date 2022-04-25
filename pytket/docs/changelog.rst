@@ -7,6 +7,7 @@ x.y.z (unreleased)
 Minor new features:
 
 * Added explicit constructors for various Python classes.
+* New ``measure_register`` method for measuring registers.
 
 1.1.0 (April 2022)
 ------------------
@@ -18,7 +19,6 @@ Minor new features:
   PhasePolyBoxes in a given circuit
 * Add JSON serialization methods for ``Predicate``, ``MeasurementSetup`` and ``MeasurementBitMap``.
 * Add ``NoBarriersPredicate``.
-* New ``measure_register`` method for measuring registers.
 
 Fixes:
 
