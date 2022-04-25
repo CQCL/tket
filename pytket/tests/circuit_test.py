@@ -861,6 +861,22 @@ def test_getting_registers() -> None:
     assert q_regs[1] == QubitRegister("test_qr", 10)
 
 
+def test_measuring_registers() -> None:
+    c = Circuit()
+    with pytest.raises(RuntimeError) as e:
+        qreg = QubitRegister("qr", 2)
+        c.measure_register(qreg, "cr")
+    assert "The given QubitRegister is not in use" in str(e.value)
+    qreg = c.add_q_register("qr", 2)
+    c.measure_register(qreg, "cr")
+    assert len(c.bits) == 2
+    assert c.n_qubits == 2
+    commands = c.get_commands()
+    assert len(commands) == 2
+    assert str(commands[0]) == "Measure qr[0] --> cr[0];"
+    assert str(commands[1]) == "Measure qr[1] --> cr[1];"
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
@@ -871,3 +887,4 @@ if __name__ == "__main__":
     test_str()
     test_phase()
     test_clifford_checking()
+    test_measuring_registers()
