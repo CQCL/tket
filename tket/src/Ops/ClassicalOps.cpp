@@ -15,6 +15,7 @@
 #include "ClassicalOps.hpp"
 
 #include "OpType/OpType.hpp"
+#include "Utils/Assert.hpp"
 #include "Utils/Json.hpp"
 
 namespace tket {
@@ -129,7 +130,9 @@ static std::shared_ptr<ClassicalOp> classical_from_json(
 static nlohmann::json wasm_to_json(const Op_ptr &op) {
   nlohmann::json j_class;
   const auto &wasm = static_cast<const WASMOp &>(*op);
-  j_class["n"] = wasm.get_n();
+  j_class["n_i32"] = wasm.get_n_i32();
+  j_class["returns_void"] = wasm.get_returns_void();
+  j_class["n_vec"] = wasm.get_n_vec();
   j_class["func_name"] = wasm.get_func_name();
   j_class["file_path"] = wasm.get_file_path();
   return j_class;
@@ -137,7 +140,9 @@ static nlohmann::json wasm_to_json(const Op_ptr &op) {
 
 static std::shared_ptr<WASMOp> wasm_from_json(const nlohmann::json &j_class) {
   return std::make_shared<WASMOp>(
-      j_class.at("n").get<unsigned>(),
+      j_class.at("n_i32").get<unsigned>(),
+      j_class.at("returns_void").get<bool>(),
+      j_class.at("n_vec").get<std::vector<unsigned>>(),
       j_class.at("func_name").get<std::string>(),
       j_class.at("file_path").get<std::string>());
 }
@@ -217,14 +222,36 @@ std::vector<bool> ClassicalTransformOp::eval(const std::vector<bool> &x) const {
 }
 
 WASMOp::WASMOp(
-    unsigned _n, const std::string &_func_name, const std::string &_file_path)
+    unsigned _n_i32, bool _returns_void, std::vector<unsigned> _n_vec,
+    const std::string &_func_name, const std::string &_file_path)
     : Op(OpType::WASM),
-      n_(_n),
+      n_i32_(_n_i32),
+      returns_void_(_returns_void),
+      n_vec_(_n_vec),
       func_name_(_func_name),
       file_path_(_file_path),
       sig_() {
-  for (unsigned j = 0; j < n_; j++) {
-    sig_.push_back(EdgeType::Classical);
+  TKET_ASSERT(n_vec_.size() == n_i32_);
+
+  bool first_iteration = true;
+
+  for (unsigned n : n_vec_) {
+    if (first_iteration) {
+      first_iteration = false;
+      if (returns_void_) {
+        for (unsigned j = 0; j < n; j++) {
+          sig_.push_back(EdgeType::Classical);
+        }
+      } else {
+        for (unsigned j = 0; j < n; j++) {
+          sig_.push_back(EdgeType::Boolean);
+        }
+      }
+    } else {
+      for (unsigned j = 0; j < n; j++) {
+        sig_.push_back(EdgeType::Boolean);
+      }
+    }
   }
 }
 

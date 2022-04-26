@@ -128,13 +128,15 @@ class WASMOp : public Op {
    * add a wasm operation to the circuit given the name of a function and the
    * path to the wasm file containing this function
    *
-   * @param _n number of input/output bits
+   * @param _n_i32 number of input/output bits TODO
+   * @param _n_vec number of input/output bits TODO
+   * @param _returns_void number of input/output bits TODO
    * @param _func_name name of the function
    * @param _file_path path to the wasm file
    */
   WASMOp(
-      unsigned _n, const std::string &_func_name,
-      const std::string &_file_path);
+      unsigned _n_i32, bool _returns_void, std::vector<unsigned> _n_vec,
+      const std::string &_func_name, const std::string &_file_path);
 
   /**
    * function to substitute all the symbols in the wasmop
@@ -190,16 +192,28 @@ class WASMOp : public Op {
       return false;
     }
     const WASMOp &other_wasm = dynamic_cast<const WASMOp &>(other);
-    if (other_wasm.get_n() != n_) return false;
+    // TODO
+    if (other_wasm.get_n_i32() != n_i32_) return false;
+    if (other_wasm.get_n_vec() != n_vec_) return false;
     if (other_wasm.get_func_name() != func_name_) return false;
     if (other_wasm.get_file_path() != file_path_) return false;
     return true;
   };
 
   /**
-   * returns the number of classical bits the wasm op is acting on
+   * returns the number of classical bits the wasm op is acting on TODO
    */
-  unsigned get_n() const { return n_; }
+  unsigned get_n_i32() const { return n_i32_; }
+
+  /**
+   * returns the number of classical bits the wasm op is acting on TODO
+   */
+  std::vector<unsigned> get_n_vec() const { return n_vec_; }
+
+  /**
+   * returns the number of classical bits the wasm op is acting on TODO
+   */
+  bool get_returns_void() const { return returns_void_; }
 
   /**
    * returns the name of the function the wasm op is using
@@ -214,8 +228,21 @@ class WASMOp : public Op {
  private:
   /**
    * returns the path to the wasm file the op is using
+   * TODO
    */
-  const unsigned n_;
+  const unsigned n_i32_;
+
+  /**
+   * returns the path to the wasm file the op is using
+   * TODO
+   */
+  const bool returns_void_;
+
+  /**
+   * returns the path to the wasm file the op is using
+   * TODO
+   */
+  const std::vector<unsigned> n_vec_;
 
   /**
    * returns the path to the wasm file the op is using

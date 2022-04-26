@@ -125,8 +125,8 @@ def test_c_ops() -> None:
 
 def test_wasm() -> None:
     c = Circuit(0, 4)
-    c.add_wasm("funcname", "path/to/wasm/file", [Bit(0), Bit(1)])
-    c.add_wasm("funcname", "path/to/wasm/file", [0, 1, 2, 3])
+    c.add_wasm(bool(FALSE), "funcname", "path/to/wasm/file", [1, 1], [Bit(0), Bit(1)])
+    c.add_wasm(bool(FALSE), "funcname", "path/to/wasm/file", [1, 1, 1, 1], [0, 1, 2, 3])
 
 
 def gen_reg(

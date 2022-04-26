@@ -30,16 +30,20 @@ SCENARIO("generating circ with wasm") {
 
   std::string wasm_func = "stringNameOfWASMFunc";
 
-  GIVEN("wasmop creation") {
-    WASMOp wop = WASMOp(1, wasm_func, wasm_file);
+  std::vector<unsigned> uv = {2, 1};
 
-    REQUIRE(wop.get_n() == 1);
+  std::vector<unsigned> uv_2 = {1};
+
+  GIVEN("wasmop creation") {
+    WASMOp wop = WASMOp(2, false, uv, wasm_func, wasm_file);
+
+    REQUIRE(wop.get_n_i32() == 2);
     REQUIRE(wop.get_func_name() == wasm_func);
     REQUIRE(wop.get_file_path() == wasm_file);
   }
   GIVEN("wasmop to json") {
     const std::shared_ptr<WASMOp> wop_ptr =
-        std::make_shared<WASMOp>(1, wasm_func, wasm_file);
+        std::make_shared<WASMOp>(2, false, uv, wasm_func, wasm_file);
 
     nlohmann::json j = wop_ptr->serialize();
 
@@ -48,48 +52,48 @@ SCENARIO("generating circ with wasm") {
     REQUIRE(wop_ptr->is_equal(*wopj));
   }
   GIVEN("add wasmop to circ") {
-    Circuit u(2, 2);
+    Circuit u(4, 4);
 
     const std::shared_ptr<WASMOp> wop_ptr =
-        std::make_shared<WASMOp>(1, wasm_func, wasm_file);
+        std::make_shared<WASMOp>(1, false, uv_2, wasm_func, wasm_file);
     u.add_op<unsigned>(wop_ptr, {0});
 
     const std::shared_ptr<WASMOp> wop_ptr_2 =
-        std::make_shared<WASMOp>(2, wasm_func, wasm_file);
+        std::make_shared<WASMOp>(2, false, uv, wasm_func, wasm_file);
 
-    u.add_op<unsigned>(wop_ptr_2, {0, 1});
+    u.add_op<unsigned>(wop_ptr_2, {0, 1, 2});  // needs 3 bits
   }
   GIVEN("compare wasmop") {
-    WASMOp wop = WASMOp(1, wasm_func, wasm_file);
+    WASMOp wop = WASMOp(1, false, uv_2, wasm_func, wasm_file);
 
-    WASMOp wop_2 = WASMOp(2, wasm_func, wasm_file);
+    WASMOp wop_2 = WASMOp(2, false, uv, wasm_func, wasm_file);
 
     REQUIRE(!wop.is_equal(wop_2));
   }
   GIVEN("compare wasmop II") {
-    WASMOp wop = WASMOp(1, wasm_func, wasm_file);
+    WASMOp wop = WASMOp(1, false, uv_2, wasm_func, wasm_file);
 
-    WASMOp wop_2 = WASMOp(1, wasm_file, wasm_func);
+    WASMOp wop_2 = WASMOp(1, false, uv_2, wasm_file, wasm_func);
 
     REQUIRE(!wop.is_equal(wop_2));
   }
   GIVEN("compare wasmop III") {
-    WASMOp wop = WASMOp(1, wasm_func, wasm_file);
+    WASMOp wop = WASMOp(1, false, uv_2, wasm_func, wasm_file);
 
-    WASMOp wop_2 = WASMOp(1, wasm_func, wasm_func);
+    WASMOp wop_2 = WASMOp(1, false, uv_2, wasm_func, wasm_func);
 
     REQUIRE(!wop.is_equal(wop_2));
   }
   GIVEN("compare wasmop IV") {
-    WASMOp wop = WASMOp(1, wasm_func, wasm_file);
+    WASMOp wop = WASMOp(1, false, uv_2, wasm_func, wasm_file);
 
-    WASMOp wop_2 = WASMOp(1, wasm_func, wasm_file);
+    WASMOp wop_2 = WASMOp(1, false, uv_2, wasm_func, wasm_file);
 
     REQUIRE(wop.is_equal(wop_2));
   }
   GIVEN("wasmop is_extern") {
     const std::shared_ptr<WASMOp> wop_ptr =
-        std::make_shared<WASMOp>(1, wasm_func, wasm_file);
+        std::make_shared<WASMOp>(1, false, uv_2, wasm_func, wasm_file);
 
     REQUIRE(wop_ptr->is_extern());
   }

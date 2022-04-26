@@ -90,12 +90,13 @@ void init_circuit_add_classical_op(
           py::arg("name") = "ClassicalTransform")
       .def(
           "add_wasm",
-          [](Circuit &circ, const std::string &funcname,
-             const std::string &filepath,
+          [](Circuit &circ, const bool returnsvoid,
+             const std::string &funcname, const std::string &filepath,
+             const std::vector<unsigned> &i32list,
              const std::vector<unsigned> &args) -> Circuit & {
             unsigned n_args = args.size();
-            std::shared_ptr<WASMOp> op =
-                std::make_shared<WASMOp>(n_args, funcname, filepath);
+            std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
+                n_args, returnsvoid, i32list, funcname, filepath);
             circ.add_op(op, args);
             return circ;
           },
@@ -104,19 +105,22 @@ void init_circuit_add_classical_op(
           "\n:param filepath: path to the wasm file"
           "\n:param args: vector of circuit bits the wasm op should be added to"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("funcname"), py::arg("filepath"), py::arg("args"))
+          py::arg("returnsvoid"), py::arg("funcname"), py::arg("filepath"),
+          py::arg("i32list"), py::arg("args"))
       .def(
           "add_wasm",
-          [](Circuit &circ, const std::string &funcname,
-             const std::string &filepath,
+          [](Circuit &circ, const bool returnsvoid,
+             const std::string &funcname, const std::string &filepath,
+             const std::vector<unsigned> &i32list,
              const std::vector<Bit> &args) -> Circuit & {
             unsigned n_args = args.size();
-            std::shared_ptr<WASMOp> op =
-                std::make_shared<WASMOp>(n_args, funcname, filepath);
+            std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
+                n_args, returnsvoid, i32list, funcname, filepath);
             circ.add_op(op, args);
             return circ;
           },
-          "See :py:meth:`add_wasm`.", py::arg("funcname"), py::arg("filepath"),
+          "See :py:meth:`add_wasm`.", py::arg("returnsvoid"),
+          py::arg("funcname"), py::arg("filepath"), py::arg("i32list"),
           py::arg("args"))
       .def(
           "add_c_setbits",
