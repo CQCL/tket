@@ -537,12 +537,20 @@ PYBIND11_MODULE(zx, m) {
       m, "PhasedGen",
       "Specialisation of :py:class:`ZXGen` for arbitrary-arity, symmetric "
       "generators with a single continuous parameter.")
+      .def(
+          py::init<ZXType, const Expr&, QuantumType>(),
+          "Construct from a ZX type, parameter and quantum type.",
+          py::arg("zxtype"), py::arg("param"), py::arg("qtype"))
       .def_property_readonly(
           "param", &PhasedGen::get_param, "The parameter of the generator.");
   py::class_<CliffordGen, std::shared_ptr<CliffordGen>, ZXGen>(
       m, "CliffordGen",
       "Specialisation of :py:class:`ZXGen` for arbitrary-arity, symmetric "
       "Clifford generators with a single boolean parameter.")
+      .def(
+          py::init<ZXType, bool, QuantumType>(),
+          "Construct from a ZX type, parameter and quantum type.",
+          py::arg("zxtype"), py::arg("param"), py::arg("qtype"))
       .def_property_readonly(
           "param", &CliffordGen::get_param, "The parameter of the generator.");
   py::class_<DirectedGen, std::shared_ptr<DirectedGen>, ZXGen>(
@@ -550,6 +558,10 @@ PYBIND11_MODULE(zx, m) {
       "Specialisation of :py:class:`ZXGen` for asymmetric ZX generators which "
       "can be doubled to form a Quantum variant. Asymmetric effects handled by "
       "ports to distinguish operands.")
+      .def(
+          py::init<ZXType, QuantumType>(),
+          "Construct from a ZX type and quantum type.", py::arg("zxtype"),
+          py::arg("qtype"))
       .def_property_readonly(
           "n_ports", &DirectedGen::n_ports,
           "The number of ports on the generator.")
@@ -564,6 +576,9 @@ PYBIND11_MODULE(zx, m) {
       "diagrams. In general, arbitrary diagrams may be asymmetric tensors with "
       "both Quantum and Classical boundaries, so ports are used to distinguish "
       "each boundary.")
+      .def(
+          py::init<const ZXDiagram&>(), "Construct from a ZX diagram.",
+          py::arg("zxdiag"))
       .def_property_readonly(
           "n_ports", &ZXBox::n_ports, "The number of ports on the generator.")
       .def_property_readonly(

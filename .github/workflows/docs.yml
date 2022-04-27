@@ -11,7 +11,7 @@ jobs:
   build_docs:
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
@@ -20,7 +20,7 @@ jobs:
     - name: Build Doxygen docs
       run: cd tket && doxygen
     - name: Upload artefact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: tket_docs
         path: tket/doc/html/
@@ -29,11 +29,11 @@ jobs:
     concurrency: gh_pages
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: gh-pages
     - name: Download artefact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: tket_docs
         path: api/

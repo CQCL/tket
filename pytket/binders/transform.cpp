@@ -72,6 +72,7 @@ PYBIND11_MODULE(transform, m) {
 
   py::class_<Transform>(
       m, "Transform", "An in-place transformation of a :py:class:`Circuit`.")
+      .def(py::init<const Transform::SimpleTransformation &>())
       .def(
           "apply",
           [](const Transform &tr, Circuit &circ) { return tr.apply(circ); },
