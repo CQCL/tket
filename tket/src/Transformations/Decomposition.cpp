@@ -1118,6 +1118,7 @@ Transform globalise_PhasedX(bool squash) {
         if (v) {
           curr_qubits = frontier.qubits_ending_in(*v);
         } else {
+          curr_qubits.clear();
           for (unsigned i = 0; i < circ.n_qubits(); ++i) {
             curr_qubits.insert(curr_qubits.end(), i);
           }
@@ -1128,9 +1129,14 @@ Transform globalise_PhasedX(bool squash) {
         }
         std::cout << "4" << std::endl;
         OptVertexVec all_phasedx = frontier.get_all_beta_vertices();
+        std::cout << "4.5" << std::endl;
         OptVertexVec curr_phasedx;
-        for (unsigned q : curr_qubits) {
-          curr_phasedx.push_back(all_phasedx[q]);
+        for (auto it = curr_qubits.begin(); it != curr_qubits.end(); ++it) {
+        // for (unsigned q : curr_qubits) {
+          std::cout << "\tlooping" << std::endl;
+          std::cout << *it << " < " << all_phasedx.size() << std::endl;
+          curr_phasedx.push_back(all_phasedx[*it]);
+          std::cout << "\tlooped" << std::endl;
         }
         std::cout << "5" << std::endl;
 
