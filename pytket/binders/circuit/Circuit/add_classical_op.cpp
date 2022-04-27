@@ -90,9 +90,8 @@ void init_circuit_add_classical_op(
           py::arg("name") = "ClassicalTransform")
       .def(
           "add_wasm",
-          [](Circuit &circ, const bool returnsvoid,
-             const std::string &funcname, const std::string &filepath,
-             const std::vector<unsigned> &i32list,
+          [](Circuit &circ, const bool returnsvoid, const std::string &funcname,
+             const std::string &filepath, const std::vector<unsigned> &i32list,
              const std::vector<unsigned> &args) -> Circuit & {
             unsigned n_args = args.size();
             std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
@@ -109,9 +108,8 @@ void init_circuit_add_classical_op(
           py::arg("i32list"), py::arg("args"))
       .def(
           "add_wasm",
-          [](Circuit &circ, const bool returnsvoid,
-             const std::string &funcname, const std::string &filepath,
-             const std::vector<unsigned> &i32list,
+          [](Circuit &circ, const bool returnsvoid, const std::string &funcname,
+             const std::string &filepath, const std::vector<unsigned> &i32list,
              const std::vector<Bit> &args) -> Circuit & {
             unsigned n_args = args.size();
             std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
