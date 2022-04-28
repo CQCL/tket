@@ -360,15 +360,15 @@ std::optional<double> Gate::is_identity() const {
         return notid;
     }
     case OpType::TK2: {
-      int phase = 0;
+      bool pi_phase = false;
       for (const Expr& a : params) {
         if (equiv_0(a + 2, 4)) {
-          phase ^= 1;
+          pi_phase = !pi_phase;
         } else if (!equiv_0(a, 4)) {
           return notid;
         }
       }
-      return phase ? 1. : 0.;
+      return pi_phase ? 1. : 0.;
     }
     case OpType::CRz:
     case OpType::CRx:
