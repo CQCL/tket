@@ -99,6 +99,7 @@ struct GateUnitaryMatrixImplementations {
   static Eigen::Matrix4cd XXPhase(double alpha);
   static Eigen::Matrix4cd YYPhase(double alpha);
   static Eigen::Matrix4cd ZZPhase(double alpha);
+  static Eigen::Matrix4cd TK2(double alpha, double beta, double gamma);
   static Matrix8cd XXPhase3(double alpha);
 
   static Eigen::Matrix2cd PhasedX(double alpha, double beta);

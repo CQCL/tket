@@ -14,6 +14,8 @@
 
 #include "CircPool.hpp"
 
+#include "Utils/Expression.hpp"
+
 namespace tket {
 
 namespace CircPool {
@@ -750,6 +752,24 @@ Circuit ZZPhase_using_CX(Expr alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::CX, {0, 1});
   c.add_op<unsigned>(OpType::Rz, alpha, {1});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  return c;
+}
+
+Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::Z, {0});
+  c.add_op<unsigned>(OpType::Vdg, {0});
+  c.add_op<unsigned>(OpType::V, {1});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::H, {0});
+  c.add_op<unsigned>(OpType::Rz, beta, {1});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::S, {0});
+  c.add_op<unsigned>(OpType::H, {0});
+  c.add_op<unsigned>(OpType::Rx, -alpha, {0});
+  c.add_op<unsigned>(OpType::Z, {0});
+  c.add_op<unsigned>(OpType::Rz, gamma, {1});
   c.add_op<unsigned>(OpType::CX, {0, 1});
   return c;
 }

@@ -16,6 +16,8 @@
 
 #include <memory>
 
+#include "OpType.hpp"
+
 namespace tket {
 const std::map<OpType, OpTypeInfo>& optypeinfo() {
   static const op_signature_t noargs;
@@ -107,6 +109,7 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
       {OpType::CnRy, {"CnRy", "CnRy", {4}, std::nullopt}},
       {OpType::CnX, {"CnX", "CnX", {}, std::nullopt}},
       {OpType::TK1, {"TK1", "TK1", {4, 4, 4}, singleq}},
+      {OpType::TK2, {"TK2", "TK2", {4, 4, 4}, doubleq}},
       {OpType::ESWAP, {"ESWAP", "$\\mathrm{eSWAP}$", {4}, doubleq}},
       {OpType::FSim, {"FSim", "$\\mathrm{fSim}$", {2, 2}, doubleq}},
       {OpType::Sycamore, {"Sycamore", "\\mathrm{Syc}", {}, doubleq}},
