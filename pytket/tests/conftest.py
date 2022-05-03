@@ -29,11 +29,9 @@ from pytket.circuit import (  # type: ignore
 if platform.machine() == "x86_64":
     from pytket.qir.qir import circuit_to_qir, ExtendedModule, QUANTINUUM_GATES
 
-
     @fixture
     def bitwise_file() -> str:
         return "test_bitwise_ops.ll"
-
 
     @fixture
     def circuit_bitwise_ops(bitwise_file: str) -> None:
@@ -45,11 +43,9 @@ if platform.machine() == "x86_64":
         yield
         os.remove(bitwise_file)
 
-
     @fixture
     def file_name() -> str:
         return "SimpleCircuit.ll"
-
 
     @fixture
     def ext_module_quantinuum_gateset() -> ExtendedModule:
@@ -81,7 +77,6 @@ if platform.machine() == "x86_64":
         )
         return em
 
-
     @fixture
     def circuit_quantinuum_gateset(file_name: str) -> Generator:
         c = Circuit(2, 2)
@@ -100,7 +95,6 @@ if platform.machine() == "x86_64":
         circuit_to_qir(c, file_name, QUANTINUUM_GATES)
         yield
         os.remove(file_name)
-
 
     @fixture
     def circuit_pyqir_gateset(file_name: str) -> Generator:
