@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+Call this version 0.3.
 
 BASIC PROBLEM:
 
@@ -21,13 +22,12 @@ Given graphs P, T (the pattern graph and target graph), find a subgraph monomorp
 
     f : V(P) -> V(T)
 
-such that
+(i.e., f maps the vertices of P into the vertices of T, without clashes),
+such that if (v1,v2) are adjacent in P, then (f(v1), f(v2)) are adjacent in T.
 
-    e in E(P) => f(e) in E(T).
+Thus we can define a new function  f : E(P) -> E(T)  via  f((v1,v2)) = (f(v1), f(v2)), which is uniquely defined and well-defined precisely because of the monomorphism property.
 
-In other words, f maps the vertices of P into the vertices of T, without clashes, such that if (v1,v2) are adjacent in P, then (f(v1), f(v2)) are adjacent in T.
-
-(It is "non-induced" because we allow (f(v1), f(v2)) to be adjacent in T even if (v1,v2) are not adjacent in P).
+(Also, f is "non-induced" because we allow (f(v1), f(v2)) to be adjacent in T even if (v1,v2) are not adjacent in P).
 
 Our graphs are always undirected, without loops or multiple edges.
 
@@ -37,11 +37,11 @@ We also consider a new problem, called Weighted Subgraph Monomorphism (WSM): eac
 
     S(f) = sum_(e in E(P)) w(e).w(f(e))
 
-We call S(f) the "total weight" or "scalar product" of a monomorphism f.
+We call S(f) the "scalar product" of a monomorphism f.
 
 Then, the WSM problem is to find f which minimises S(f).
 
-(It seems unlikely that this is a new problem, but we have not found this in existing papers).
+(It seems unlikely that this is a new problem, but we have not seen this in existing papers).
 
 The point is that we can adjust the P-edge weights to account for less "important" qubit interactions: i.e., less often used, or occurring further in the future of the circuit.
 
@@ -54,9 +54,7 @@ MAIN FEATURES:
 
 - We can pass in a timeout (in milliseconds), and also an exact max number of iterations (useful for reproducible tests).
 
-- We can pass in "suggestions", i.e. a list of assignments PV->TV which it will try to satisfy first.
-
-- If it terminates due to timeout (or max iterations), we can still continue solving later.
+- If it terminates due to timeout (or max iterations) and we retain the solver object, we can resume solving later.
 
 - We can set it to terminate immediately upon finding a solution (especially useful for unweighted problems, i.e. standard subgraph monomorphism problems).
 
@@ -71,17 +69,21 @@ NOT YET IMPLEMENTED:
 
 The exact form of Cost(F) is not very relevant; since the search tree goes through all possibilities, basically ANY cost function is possible. But it would work much better for functions like the above with a monotonic property, i.e. if F is a partial mapping and F' extends F, then Cost(F') >= Cost(F). This would enable pruning of the search tree.
 
+- (Easy): if PV->TV, and we know Dom(x) for all neighbours x of PV, we can use maximum weighted bipartite matching to get a guaranteed lower bound on the contribution to the scalar product of all edges containing PV. In some cases, the optimal matching can prove that f(PV)=TV is impossible. This would work well with the WeightNogoodDetector.
 
-MORE COMMENTS ABOUT "SUGGESTIONS":
-
-- The solver will try to satisfy all of them, and then proceed as if the variable and value choosers had chosen those at random.
-
-- They can be bad or invalid, which can cause poor runtimes. Suggestions are not very useful for the full weighted case running to completion. But, this mainly appears to be because they don't reduce the time taken to prove optimality; they can often enable the optimal solution to be found more quickly, BUT then the solver still takes about the same time to prove that no better solution exists.
+  We tried a quick crude version of this, but it was too slow (even though single matchings are fast, there were just too many of them). Something like the WeightNogoodDetectorManager will probably work well (i.e., we observe how successful the matchings are at detecting impossible assignments, or finding large lower bounds, and dynamically adjust the probabilities up or down for different problem sizes
 
 
-ALGORITHMIC COMMENTS:
+- (Medium): if the target graph is complete and the pattern graph is a cycle, then WSM is exactly the Travelling Salesman Problem. Thus, for general pattern graphs but complete target graphs, we should be able to get reasonable solutions using simulated annealing and similar algorithms. Notice that the general WSM routines are NOT well suited to complete target graphs (because, they are basically brute force: no graph theoretic reductions are possible).
 
-Call this version 0.2.
+  However, for the application to qubit placement, we don't need a really good solution; we propose finding an OK solution very quickly using trivial greedy heuristics, jumping about a bit with simulated annealing, and then ERASING some higher weight target edges and applying the normal WSM.
+
+
+- (Hard): for approximate results (or maybe to consider restarts intelligently), it would be good to get a good estimator function for when the current solution is likely to be close to optimal. (E.g., there seem to be some problems where the solver finds a solution which is close to optimal or even optimal quite quickly, but takes much longer to attain or PROVE optimality - which maybe is not so important for our applications). Maybe something fancy with machine learning could be used? There are several thousand test problems (and it is easy to generate many more). We could run the WSM solver through to completion on many classes of problems of varying sizes, and record the progress of the search tree (the shape, depth, weights, etc. of each branch we generate, in order, together with the total and partial scalar products). Maybe some useful, general numerical patterns will emerge?
+
+
+FURTHER COMMENTS:
+
 
 - Some of the basic ideas are similar to the Glasgow Subgraph Solver, described for example in the paper "A Parallel, Backjumping Subgraph Isomorphism Algorithm using Supplemental Graphs" by Ciaran McCreesh and Patrick Prosser.
 
@@ -91,5 +93,28 @@ Call this version 0.2.
 
 (However, that paper only considers the unweighted problem, and the case where we stop at the FIRST solution. Thus, maybe it is still worth trying when we only need one solution).
 
-- The data structures (composed of std::maps, std::sets, etc.) are far from optimised at present; fancier data structures are planned once the basic algorithms and heuristics are nailed down.
+- Previously (version 0.2) we separated the domains from assignments, i.e. we stored the main x -> Dom(x)  data in std::maps, but if  Dom(x)={y}  then x was not listed, instead occurring in a separate  x->y map.  Now we've simplified and just have one main std::map to represent  x -> Dom(x).
+
+- Because the std::maps in each node have IDENTICAL keys (i.e., the pattern vertices), we could possibly relabel and use a std::vector instead of a std::map; this would be a little faster.
+
+- When searching and pruning the domains etc., we distinguish between a CHECK (which takes a single assignment PV->TV and sees if it is obviously impossible, independent of other domains) and a REDUCER (which reduces domains of OTHER nearby pattern vertices).
+
+  In most cases, a reducer gives a corresponding check. E.g., the most obvious one is the NeighbourReducer: if  f(x)=y  has been set, let v be a neighbour of x (in the pattern graph). Then obviously  f(v)  must be a neighbour of  y  (in the target graph). Hence we can INTERSECT Dom(v) with {t in V(T) : t is adjacent to y}.
+
+  Notice that the corresponding check is simply: #{neighbours of x} <= #{neighbours of y}.
+
+  Some reducers don't quite fit into this framework, e.g. Hall set reduction: if, e.g., Dom(x1) = {y,z}, Dom(x2) = {y,z}, Dom(x3) = {s,t,y,z}, it is clear that only x1,x2 can take the values y,z. Thus we can immediately erase them from all other domains, so that Dom(x3) = {s,t}. This, of course, is a generalisation of the alldiff constraint  f(x)=y  =>  y is not in Dom(v) for all v!=x.
+
+- Derived graphs (similar, but sometimes different, to "supplemental graphs" in the Glasgow Subgraph Solver paper): there are various transformations which transform a graph  (V,E)  into a new graph  (V,E'),  i.e. we keep the vertices but change the edges, sometimes quite drastically; and sometimes adding extra data, e.g. edge weights to E'.
+
+  For some transformations, it has the property that if   f : V(P) -> V(T)  is a subgraph monomorphism from (V(P), E(P)) to (V(T), E(T)), then the same f is a subgraph monomorphism from (V(P), E'(P)) to (V(T), E'(T)).
+
+  The most obvious example is the D2 derived graph (this is just my notation, I don't know of any standard notation):  for u,v in V, let  (u,v) in E'  <==>  there is a path [u,x,v] of length 2 (i.e., u,x,v are all distinct, and (u,x), (x,v) are in E).
+
+  Notice that this is similar but different to dist(u,v)=2. Furthermore, one can give (u,v) in E' a weight (completely unrelated to the edge weights in the original graph): simply let it be the number of such distinct paths; then  f : E'(P) -> E'(T)  must increase edge weights (in addition to being well-defined).
+
+  Similar things can be done with D3, D4, etc. but after D3 the computation becomes quite heavy. Furthermore, this raises the possibility of recursive deriving: one could take D2(D2), D2(D3), etc. etc. and do simple checks on f for a whole sequence of them.
+
+  It sounds like some interesting theory could be worked out. However in practice these higher order derived graphs don't seem to be worth the computation: they seemed to take longer to compute than the time saved by using them for reducing.
+
 

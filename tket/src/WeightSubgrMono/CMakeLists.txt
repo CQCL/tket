@@ -21,39 +21,30 @@ endif()
 add_library(tket-${COMP}
   Common/BitFunctions.cpp
   Common/DyadicFraction.cpp
-  DomainInitialising/DistanceCounts.cpp
-  DomainInitialising/DomainInitialiser.cpp
-  EndToEndWrappers/CheckedWeightBounds.cpp
   EndToEndWrappers/MainSolver.cpp
-  EndToEndWrappers/MainSolverData.cpp
   EndToEndWrappers/MainSolverParameters.cpp
-  GraphTheoretic/CloseNeighboursCalculator.cpp
-  GraphTheoretic/DerivedGraph.cpp
+  EndToEndWrappers/PreSearchComponents.cpp
+  EndToEndWrappers/SolutionWSM.cpp
   GraphTheoretic/DerivedGraphs.cpp
   GraphTheoretic/DerivedGraphsCalculator.cpp
-  GraphTheoretic/DerivedGraphsFilter.cpp
-  GraphTheoretic/DerivedGraphsStorage.cpp
-  GraphTheoretic/DerivedGraphsUpdater.cpp
+  GraphTheoretic/DomainInitialiser.cpp
   GraphTheoretic/FilterUtils.cpp
   GraphTheoretic/GeneralStructs.cpp
+  GraphTheoretic/NearNeighboursData.cpp
   GraphTheoretic/NeighboursData.cpp
-  GraphTheoretic/TriangleCounts.cpp
-  Reducing/AllDiffPropagator.cpp
-  Reducing/CloseVerticesFilter.cpp
   Reducing/DerivedGraphsReducer.cpp
-  Reducing/HallSetReducer.cpp
-  Searching/CompleteTargetManager.cpp
-  Searching/EnrichedNode.cpp
-  Searching/FixedData.cpp
+  Reducing/DistancesReducer.cpp
+  Reducing/HallSetReduction.cpp
+  Reducing/NeighboursReducer.cpp
+  Reducing/ReducerWrapper.cpp
+  Searching/DomainsAccessor.cpp
+  Searching/NodeListTraversal.cpp
+  Searching/NodesRawData.cpp
   Searching/SearchBranch.cpp
-  Searching/SearchNode.cpp
-  Searching/SearchNodeWrapper.cpp
-  Searching/SharedData.cpp
-  Searching/SolutionStorage.cpp
-  Searching/SolutionWSM.cpp
   Searching/ValueOrdering.cpp
   Searching/VariableOrdering.cpp
-  Searching/WeightUpdater.cpp
+  Searching/WeightCalculator.cpp
+  WeightPruning/WeightChecker.cpp
   WeightPruning/WeightNogoodDetector.cpp
   WeightPruning/WeightNogoodDetectorManager.cpp
   )
