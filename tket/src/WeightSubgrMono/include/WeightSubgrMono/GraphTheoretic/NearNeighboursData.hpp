@@ -35,6 +35,9 @@ class NearNeighboursData {
   const std::vector<VertexWSM>& get_vertices_at_distance(
       VertexWSM v, unsigned distance);
 
+  /** Cached. Does NOT include the vertex v itself. */
+  std::size_t get_n_vertices_at_max_distance(VertexWSM v, unsigned distance);
+
   /** In each counts vector, element[i] will be the NUMBER of vertices at
    * distance i+1 from the root vertex (thus, we DO include immediate
    * neighbours).
@@ -60,14 +63,20 @@ class NearNeighboursData {
  private:
   const NeighboursData& m_ndata;
 
-  /** element[i] is all the vertices at distance i+2, sorted by vertex number.
-   * We don't list immediate neighbours, to save space,
-   * since they're already stored in the NeighboursData object.
-   */
-  typedef std::vector<std::vector<VertexWSM>> VerticesAtDistance;
+  struct VertexData {
+    /** element[i] is all the vertices at distance i+2, sorted by vertex number.
+     * We don't list immediate neighbours, to save space,
+     * since they're already stored in the NeighboursData object.
+     */
+    std::vector<std::vector<VertexWSM>> vertices_at_distance;
+    std::vector<std::size_t> n_vertices_at_max_distance;
+  };
 
   std::set<VertexWSM> m_vertices_workset;
-  std::map<VertexWSM, VerticesAtDistance> m_data;
+
+  // KEY: the vertex  VALUE: data about that vertex (including lazy
+  // initialisation).
+  std::map<VertexWSM, VertexData> m_data;
 };
 
 }  // namespace WeightedSubgraphMonomorphism

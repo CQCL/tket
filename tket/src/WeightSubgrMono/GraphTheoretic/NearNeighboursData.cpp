@@ -105,6 +105,7 @@ bool NearNeighboursData::test_against_target(
 }
 
 static void fill_neighbours_of_neighbours(
+    VertexWSM root_vertex,
     const std::vector<std::pair<VertexWSM, WeightWSM>>& neighbours_and_weights,
     const NeighboursData& ndata, std::set<VertexWSM>& vertices_workset,
     std::vector<VertexWSM>& vertices) {
@@ -113,7 +114,8 @@ static void fill_neighbours_of_neighbours(
     const VertexWSM& vv1 = entry.first;
     for (const auto& other_entry : ndata.get_neighbours_and_weights(vv1)) {
       const VertexWSM& vv2 = other_entry.first;
-      if (NeighboursData::binary_search(vv2, neighbours_and_weights)) {
+      if (vv2 == root_vertex ||
+          NeighboursData::binary_search(vv2, neighbours_and_weights)) {
         continue;
       }
       vertices_workset.insert(vv2);
@@ -135,23 +137,28 @@ static void fill_more_distant_vertices(
   for (unsigned index = old_size; index < result.size(); ++index) {
     vertices_workset.clear();
     for (auto vv_prev : result[index - 1]) {
+      TKET_ASSERT(result[index].empty());
       for (const auto& entry : ndata.get_neighbours_and_weights(vv_prev)) {
         const VertexWSM& vv_new = entry.first;
-        if (NeighboursData::binary_search(vv_new, neighbours_and_weights)) {
+        // vv_prev is at distance d from the root vertex;
+        // thus neighbours of vv_prev are at distance d-1, d, d+1.
+        // So we only need to check two vectors (for d-1,d).
+        if (std::binary_search(
+                result[index - 1].cbegin(), result[index - 1].cend(), vv_new)) {
           continue;
         }
-        // We must also search previous entries.
-        bool seen_already = false;
-        for (unsigned jj = 0; jj < index; ++jj) {
+        if (index == 1) {
+          if (NeighboursData::binary_search(vv_new, neighbours_and_weights)) {
+            continue;
+          }
+        } else {
           if (std::binary_search(
-                  result[jj].cbegin(), result[jj].cend(), vv_new)) {
-            seen_already = true;
-            break;
+                  result[index - 2].cbegin(), result[index - 2].cend(),
+                  vv_new)) {
+            continue;
           }
         }
-        if (!seen_already) {
-          vertices_workset.insert(vv_new);
-        }
+        vertices_workset.insert(vv_new);
       }
     }
     if (vertices_workset.empty()) {
@@ -164,10 +171,10 @@ static void fill_more_distant_vertices(
 }
 
 const std::vector<VertexWSM>& NearNeighboursData::get_vertices_at_distance(
-    VertexWSM vv, unsigned max_distance) {
-  TKET_ASSERT(max_distance >= 2);
-  const auto index = max_distance - 2;
-  auto& results_for_this_vertex = m_data[vv];
+    VertexWSM vv, unsigned distance) {
+  TKET_ASSERT(distance >= 2);
+  const auto index = distance - 2;
+  auto& results_for_this_vertex = m_data[vv].vertices_at_distance;
   unsigned old_size = results_for_this_vertex.size();
 
   if (index >= old_size) {
@@ -179,7 +186,7 @@ const std::vector<VertexWSM>& NearNeighboursData::get_vertices_at_distance(
     if (old_size == 0) {
       // A special case. We must fill in distance 2 data.
       fill_neighbours_of_neighbours(
-          neighbours_and_weights, m_ndata, m_vertices_workset,
+          vv, neighbours_and_weights, m_ndata, m_vertices_workset,
           results_for_this_vertex[0]);
       old_size = 1;
     }
@@ -188,6 +195,35 @@ const std::vector<VertexWSM>& NearNeighboursData::get_vertices_at_distance(
         m_vertices_workset, m_ndata);
   }
   return results_for_this_vertex.at(index);
+}
+
+std::size_t NearNeighboursData::get_n_vertices_at_max_distance(
+    VertexWSM vv, unsigned max_distance) {
+  switch (max_distance) {
+    case 0:
+      return 0;
+    case 1:
+      return m_ndata.get_degree(vv);
+    default:
+      break;
+  }
+  auto& sizes_list = m_data[vv].n_vertices_at_max_distance;
+  const unsigned index = max_distance - 2;
+  if (index < sizes_list.size()) {
+    return sizes_list[index];
+  }
+  auto old_size = sizes_list.size();
+  sizes_list.resize(index + 1);
+  if (old_size == 0) {
+    sizes_list[0] =
+        m_ndata.get_degree(vv) + get_vertices_at_distance(vv, 2).size();
+    ++old_size;
+  }
+  for (unsigned ii = old_size; ii <= index; ++ii) {
+    sizes_list[ii] =
+        sizes_list[ii - 1] + get_vertices_at_distance(vv, ii + 2).size();
+  }
+  return sizes_list[index];
 }
 
 }  // namespace WeightedSubgraphMonomorphism
