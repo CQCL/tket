@@ -15,12 +15,11 @@
 import os
 import platform
 from string import Template
-from typing import Callable, Dict, List, NamedTuple, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, NamedTuple, Optional, Tuple, Union
 
 from pytket import Circuit, OpType, Bit, Qubit
 from pytket.circuit import Op  # type: ignore
 from pytket.circuit.logic_exp import BitWiseOp
-
 if platform.machine() == "x86_64":
     from pyqir.parser import QirModule, QirCallInstr  # type: ignore
     from pyqir.parser._native import PyQirInstruction  # type: ignore
