@@ -37,8 +37,7 @@ bool DomainInitialiser::full_initialisation(
              target_neighbours_data) &&
 
          distance_counts_reduction(
-             possible_assignments, pattern_neighbours_data,
-             pattern_near_neighbours_data, target_neighbours_data,
+             possible_assignments, pattern_near_neighbours_data,
              target_near_neighbours_data, max_path_length);
 }
 
@@ -104,9 +103,7 @@ bool DomainInitialiser::degree_sequence_initialisation(
 
 bool DomainInitialiser::distance_counts_reduction(
     PossibleAssignments& possible_assignments,
-    const NeighboursData& pattern_neighbours_data,
     NearNeighboursData& pattern_near_neighbours_data,
-    const NeighboursData& target_neighbours_data,
     NearNeighboursData& target_near_neighbours_data, unsigned max_path_length) {
   if (max_path_length <= 1) {
     // Neighbour counts are already included in degree sequences.

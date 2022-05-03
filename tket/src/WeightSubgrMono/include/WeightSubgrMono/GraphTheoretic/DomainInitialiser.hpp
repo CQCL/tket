@@ -73,9 +73,7 @@ class DomainInitialiser {
    */
   static bool distance_counts_reduction(
       PossibleAssignments& possible_assignments,
-      const NeighboursData& pattern_neighbours_data,
       NearNeighboursData& pattern_near_neighbours_data,
-      const NeighboursData& target_neighbours_data,
       NearNeighboursData& target_near_neighbours_data,
       unsigned max_path_length);
 };
