@@ -35,16 +35,11 @@ CustomPyQIRGate = NamedTuple(
         ),
         (
             "function_signature",
-            List[Union[type[types.DOUBLE], type[types.QUBIT], type[types.RESULT]]],
+            List[types],
         ),
         (
             "return_type",
-            Union[
-                type[types.DOUBLE],
-                type[types.QUBIT],
-                type[types.RESULT],
-                type[types.VOID],
-            ],
+            types,
         ),
     ],
 )
@@ -239,7 +234,7 @@ class QIRParser:
         return circuit
 
 
-def _tk_to_pyqir(optype: OpType):
+def _tk_to_pyqir(optype: OpType) -> str:
     return _TK_TO_PYQIR[optype]
 
 
@@ -284,11 +279,11 @@ def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
     return (optype, params)
 
 
-def _to_qis_qubits(qubits: List[Qubit], mod: SimpleModule) -> List[type[types.QUBIT]]:
+def _to_qis_qubits(qubits: List[Qubit], mod: SimpleModule) -> List[types.QUBIT]:
     return [mod.qubits[qubit.index[0]] for qubit in qubits]
 
 
-def _to_qis_results(bits: List[Bit], mod: SimpleModule) -> Optional[type[types.RESULT]]:
+def _to_qis_results(bits: List[Bit], mod: SimpleModule) -> Optional[types.RESULT]:
     if bits:
         return mod.results[bits[0].index[0]]
     return None
@@ -296,13 +291,13 @@ def _to_qis_results(bits: List[Bit], mod: SimpleModule) -> Optional[type[types.R
 
 def _to_qis_bits(
     args: List[Bit], mod: SimpleModule
-) -> Optional[List[type[types.RESULT]]]:
+) -> Optional[List[types.RESULT]]:
     if args:
         return [mod.results[bit.index[0]] for bit in args[:-1]]
     return None
 
 
-def circuit_from_qir(input_file: Union[str, "os.PathLike[Any]"]) -> None:
+def circuit_from_qir(input_file: Union[str, "os.PathLike[Any]"]) -> Circuit:
     ext = os.path.splitext(input_file)[-1]
     if ext not in [".ll", ".bc"]:
         raise TypeError("Can only convert .bc or .ll files")
@@ -332,7 +327,7 @@ def circuit_to_qir_str(
             mod = module.module
             qubits = _to_qis_qubits(command.qubits, mod)
             results = _to_qis_results(command.bits, mod)
-            bits: Optional[List[type[types.RESULT]]] = None
+            bits: Optional[List[types.RESULT]] = None
             if type(optype) == BitWiseOp:
                 bits = _to_qis_bits(command.args, mod)
             try:
