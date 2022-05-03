@@ -14,14 +14,6 @@
 
 #include "WeightSubgrMono/EndToEndWrappers/PreSearchComponents.hpp"
 
-#include <algorithm>
-#include <functional>
-#include <numeric>
-
-#include "Utils/Assert.hpp"
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
-#include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
-
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
@@ -30,9 +22,7 @@ PreSearchComponents::PreSearchComponents(
     : pattern_ndata(pattern_nd),
       target_ndata(target_nd),
       pattern_near_ndata(pattern_ndata),
-      target_near_ndata(target_ndata),
-      distances_reducer(
-          pattern_ndata, pattern_near_ndata, target_ndata, target_near_ndata) {}
+      target_near_ndata(target_ndata) {}
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

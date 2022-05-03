@@ -43,7 +43,6 @@ MainSolver::MainSolver(
     m_solution_data.finished = true;
     return;
   }
-
   const auto num_t_vertices =
       m_target_neighbours_data.get_number_of_nonisolated_vertices();
   {
@@ -87,12 +86,14 @@ MainSolver::MainSolver(
       TKET_ASSERT(m_search_components_ptr);
 
       m_search_branch_ptr = std::make_unique<SearchBranch>(
-          // Might be std::moved, and hence invalidated
           initial_pattern_v_to_possible_target_v, m_pattern_neighbours_data,
+          m_pre_search_components_ptr->pattern_near_ndata,
           m_target_neighbours_data,
-          m_pre_search_components_ptr->distances_reducer);
+          m_pre_search_components_ptr->target_near_ndata,
+          parameters.max_distance_for_distance_reduction_during_search);
     }
   }
+
   m_solution_data.initialisation_time_ms =
       std::chrono::duration_cast<std::chrono::milliseconds>(
           Clock::now() - init_start)
@@ -134,6 +135,7 @@ MainSolver::MainSolver(
       m_solution_data.trivial_weight_lower_bound =
           get_sum_or_throw(m_solution_data.trivial_weight_lower_bound, product);
     }
+
     // Now, for the MAXIMUM, we use the LARGEST t-weights,
     // as well as summing both vectors in increasing order.
     const unsigned offset = t_weights.size() - p_weights.size();
@@ -166,6 +168,7 @@ MainSolver::MainSolver(
     internal_solve(
         parameters, parameters.iterations_timeout, desired_search_end_time);
   }
+
   m_solution_data.search_time_ms =
       std::chrono::duration_cast<std::chrono::milliseconds>(
           Clock::now() - search_start_time)
@@ -221,8 +224,6 @@ void MainSolver::internal_solve(
   TKET_ASSERT(m_search_branch_ptr);
 
   SearchBranch::ReductionParameters reduction_parameters;
-  reduction_parameters.max_distance_reduction_value =
-      parameters.max_distance_for_distance_reduction_during_search;
   decltype(reduction_parameters.max_weight) initial_weight_upper_bound;
 
   if (parameters.weight_upper_bound_constraint) {
@@ -249,14 +250,14 @@ void MainSolver::internal_solve(
         // choose the best.
         {
           auto best_scalar_product =
-              m_solution_data.solutions[0].total_scalar_product_weight;
+              m_solution_data.solutions[0].scalar_product;
           unsigned best_index = 0;
           for (unsigned index = 1; index < m_solution_data.solutions.size();
                ++index) {
-            if (m_solution_data.solutions[index].total_scalar_product_weight <
+            if (m_solution_data.solutions[index].scalar_product <
                 best_scalar_product) {
               best_scalar_product =
-                  m_solution_data.solutions[index].total_scalar_product_weight;
+                  m_solution_data.solutions[index].scalar_product;
               best_index = index;
             }
           }
@@ -267,7 +268,7 @@ void MainSolver::internal_solve(
         }
         m_solution_data.solutions.resize(1);
         reduction_parameters.max_weight =
-            m_solution_data.solutions[0].total_scalar_product_weight;
+            m_solution_data.solutions[0].scalar_product;
         if (reduction_parameters.max_weight == 0) {
           // We can't do better than zero!
           m_solution_data.finished = true;
@@ -279,6 +280,7 @@ void MainSolver::internal_solve(
             reduction_parameters.max_weight, initial_weight_upper_bound);
       }
     }
+
     if (reduction_parameters.max_weight <
         m_solution_data.trivial_weight_lower_bound) {
       m_solution_data.finished = true;
@@ -322,34 +324,34 @@ void MainSolver::add_solution_from_final_node(
   TKET_ASSERT(m_pre_search_components_ptr);
   TKET_ASSERT(m_search_branch_ptr);
 
-  const auto& final_node = m_search_branch_ptr->get_current_node();
+  const auto& accessor = m_search_branch_ptr->get_domains_accessor();
+  const auto scalar_product = accessor.get_scalar_product();
+
   TKET_ASSERT(
-      final_node.get_total_pattern_edge_weights() ==
+      accessor.get_total_p_edge_weights() ==
       m_solution_data.total_p_edge_weights);
 
-  TKET_ASSERT(
-      final_node.get_scalar_product() <= reduction_parameters.max_weight);
+  TKET_ASSERT(scalar_product <= reduction_parameters.max_weight);
 
-  // We'll overwrite the solution into back()
+  // We'll overwrite the solution into back().
   if (parameters.for_multiple_full_solutions_the_max_number_to_obtain > 0 ||
       m_solution_data.solutions.empty()) {
     m_solution_data.solutions.emplace_back();
   }
   auto& assignments = m_solution_data.solutions.back().assignments;
-  const auto number_of_p_vertices =
-      m_pattern_neighbours_data.get_number_of_nonisolated_vertices();
+  const auto& p_vertices = accessor.get_pattern_vertices();
   assignments.clear();
-  assignments.reserve(number_of_p_vertices);
-  for (const auto& entry : final_node.get_possible_assignments()) {
-    const auto& domain = entry.second;
+  assignments.reserve(p_vertices.size());
+
+  for (VertexWSM pv : p_vertices) {
+    const auto& domain = accessor.get_domain(pv);
     TKET_ASSERT(domain.size() == 1);
-    assignments.emplace_back(entry.first, *domain.cbegin());
+    assignments.emplace_back(pv, *domain.cbegin());
   }
-  TKET_ASSERT(assignments.size() == number_of_p_vertices);
+  m_solution_data.solutions.back().scalar_product = scalar_product;
+
   m_solution_data.solutions.back().total_p_edges_weight =
-      final_node.get_total_pattern_edge_weights();
-  m_solution_data.solutions.back().total_scalar_product_weight =
-      final_node.get_scalar_product();
+      m_solution_data.total_p_edge_weights;
 }
 
 bool MainSolver::move_down_from_reduced_node(
@@ -357,16 +359,13 @@ bool MainSolver::move_down_from_reduced_node(
     const SearchBranch::ReductionParameters& reduction_parameters) {
   TKET_ASSERT(m_search_components_ptr);
   TKET_ASSERT(m_search_branch_ptr);
+  const auto& accessor = m_search_branch_ptr->get_domains_accessor();
 
   for (;;) {
-    const auto& node = m_search_branch_ptr->get_current_node();
-    const auto& domains = node.get_possible_assignments();
-
-    const auto next_var_result =
-        m_search_components_ptr->variable_ordering.get_variable(
-            domains,
-            m_search_branch_ptr->get_current_node_candidate_variables(),
-            m_search_components_ptr->rng);
+    const auto next_var_result = m_search_components_ptr->variable_ordering.get_variable(
+        accessor, m_search_components_ptr->rng,
+        m_search_branch_ptr->get_domains_accessor_nonconst()
+            .get_current_node_unassigned_pattern_vertices_superset_to_overwrite());
 
     if (next_var_result.empty_domain) {
       return false;
@@ -379,7 +378,7 @@ bool MainSolver::move_down_from_reduced_node(
 
     const VertexWSM next_tv =
         m_search_components_ptr->value_ordering.get_target_value(
-            domains.at(next_pv), m_target_neighbours_data,
+            accessor.get_domain(next_pv), m_target_neighbours_data,
             m_search_components_ptr->rng);
 
     m_search_branch_ptr->move_down(next_pv, next_tv);
