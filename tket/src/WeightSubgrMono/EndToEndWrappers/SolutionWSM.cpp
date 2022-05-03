@@ -48,14 +48,13 @@ static void check_assignments_for_value_clashes(
   }
 }
 
-
 std::string SolutionWSM::get_errors(
     const GraphEdgeWeights& pattern_edges_and_weights,
     const GraphEdgeWeights& target_edges_and_weights) const {
   std::stringstream ss;
   if (assignments.empty()) {
-    if (total_scalar_product_weight != 0 || total_p_edges_weight != 0) {
-      ss << "empty assignments, but sc.prod=" << total_scalar_product_weight
+    if (scalar_product != 0 || total_p_edges_weight != 0) {
+      ss << "empty assignments, but sc.prod=" << scalar_product
          << ", total p.edge.weights=" << total_p_edges_weight;
     }
     return ss.str();
@@ -118,10 +117,10 @@ std::string SolutionWSM::get_errors(
   } catch (const IntegerOverflow& overflow) {
     ss << "\nInteger overflow occurred " << overflow.what();
   }
-  if (expected_scalar_product != total_scalar_product_weight ||
+  if (expected_scalar_product != scalar_product ||
       total_expected_p_edge_weight != total_p_edges_weight) {
     ss << "\nWeights mismatch: scalar products " << expected_scalar_product
-       << "," << total_scalar_product_weight << "; total p-edge weights "
+       << "," << scalar_product << "; total p-edge weights "
        << total_expected_p_edge_weight << "," << total_p_edges_weight;
   }
   if (p_vertices_used.size() != assignments.size()) {

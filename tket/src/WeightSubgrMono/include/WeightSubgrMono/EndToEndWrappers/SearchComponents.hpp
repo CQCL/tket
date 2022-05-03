@@ -13,9 +13,9 @@
 // limitations under the License.
 
 #pragma once
+#include "Utils/RNG.hpp"
 #include "WeightSubgrMono/Searching/ValueOrdering.hpp"
 #include "WeightSubgrMono/Searching/VariableOrdering.hpp"
-#include "Utils/RNG.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

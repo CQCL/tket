@@ -20,7 +20,6 @@
 
 #include "../GraphTheoretic/NearNeighboursData.hpp"
 #include "../GraphTheoretic/NeighboursData.hpp"
-#include "../Reducing/DistancesReducer.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
@@ -36,9 +35,6 @@ struct PreSearchComponents {
   const NeighboursData& target_ndata;
   NearNeighboursData pattern_near_ndata;
   NearNeighboursData target_near_ndata;
-
-  // Contains a distance filter (checker) as well as a reducer.
-  DistancesReducer distances_reducer;
 
   PreSearchComponents(
       const NeighboursData& pattern_ndata, const NeighboursData& target_ndata);

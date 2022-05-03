@@ -13,13 +13,13 @@
 // limitations under the License.
 
 #pragma once
+#include <chrono>
+#include <memory>
+
 #include "../GraphTheoretic/NeighboursData.hpp"
 #include "../Searching/SearchBranch.hpp"
 #include "MainSolverParameters.hpp"
 #include "SolutionData.hpp"
-
-#include <chrono>
-#include <memory>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

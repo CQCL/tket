@@ -34,7 +34,7 @@ struct SolutionWSM {
    * (which exists by the definition of f being a subgraph
    * monomorphism).
    */
-  WeightWSM total_scalar_product_weight = 0;
+  WeightWSM scalar_product = 0;
 
   /** sum w(e) over all pattern edges e currently assigned.
    * Of course, all valid solutions should have the same value.
