@@ -102,7 +102,8 @@ OptVertexVec PhasedXFrontier::get_all_beta_vertices() const {
       Vertex v = circ_.target(*e);
       vertices.push_back(v);
     } else {
-      vertices.push_back(std::nullopt);
+      OptVertex optv;
+      vertices.push_back(optv);
     }
   }
   return vertices;
