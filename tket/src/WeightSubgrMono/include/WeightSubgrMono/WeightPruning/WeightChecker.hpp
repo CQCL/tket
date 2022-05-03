@@ -22,11 +22,18 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+class DomainsAccessor;
 class NeighboursData;
-class NodeWSM;
 class SearchBranch;
 class WeightNogoodDetector;
 
+/** This wraps both a WeightNogoodDetector object (used to estimate weights,
+ * and hence break off early if we can prove that any solution from this point
+ * would be rejected, for having too high a scalar product),
+ * and a WeightNogoodDetectorManager object
+ * (used to monitor progress, and decide whether or not we even want
+ * to attempt detection).
+ */
 class WeightChecker {
  public:
   /** The weight checking will not take place until the last possible
@@ -57,7 +64,8 @@ class WeightChecker {
    * whole point of this nogood detection attempt).
    * @return Information about a possible weight nogood.
    */
-  Result operator()(const NodeWSM& node, WeightWSM max_extra_scalar_product);
+  Result operator()(
+      const DomainsAccessor& accessor, WeightWSM max_extra_scalar_product);
 
  private:
   const NeighboursData& m_pattern_neighbours_data;

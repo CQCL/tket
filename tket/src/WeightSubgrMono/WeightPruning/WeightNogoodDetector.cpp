@@ -19,6 +19,7 @@
 #include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 #include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
+#include "WeightSubgrMono/Searching/DomainsAccessor.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
@@ -78,14 +79,14 @@ WeightWSM WeightNogoodDetector::get_t_weight_lower_bound(VertexWSM pv) const {
 }
 
 bool WeightNogoodDetector::fill_t_weight_lower_bounds_for_p_edges_containing_pv(
-    const PossibleAssignments& possible_assignments) const {
+    const DomainsAccessor& accessor) const {
   // Every unassigned edge must connect to an unassigned p-vertex.
   m_t_weight_lower_bounds_for_p_edges_containing_pv.clear();
 
-  for (const auto& entry : possible_assignments) {
+  for (VertexWSM pv : accessor.get_pattern_vertices()) {
     WeightWSM weight;
     set_maximum(weight);
-    const auto& domain = entry.second;
+    const auto& domain = accessor.get_domain(pv);
     TKET_ASSERT(!domain.empty());
     for (auto tv : domain) {
       const auto weight_opt_for_tv = get_min_weight_for_tv(tv);
@@ -97,18 +98,15 @@ bool WeightNogoodDetector::fill_t_weight_lower_bounds_for_p_edges_containing_pv(
       // A nogood found already!
       return false;
     }
-    m_t_weight_lower_bounds_for_p_edges_containing_pv.emplace_back(
-        entry.first, weight);
+    m_t_weight_lower_bounds_for_p_edges_containing_pv.emplace_back(pv, weight);
   }
   return true;
 }
 
 WeightNogoodDetector::Result WeightNogoodDetector::operator()(
-    const PossibleAssignments& possible_assignments,
-    WeightWSM max_extra_scalar_product) const {
+    const DomainsAccessor& accessor, WeightWSM max_extra_scalar_product) const {
   Result result;
-  if (!fill_t_weight_lower_bounds_for_p_edges_containing_pv(
-          possible_assignments)) {
+  if (!fill_t_weight_lower_bounds_for_p_edges_containing_pv(accessor)) {
     // A nogood!
     return result;
   }
@@ -119,13 +117,11 @@ WeightNogoodDetector::Result WeightNogoodDetector::operator()(
   // There's a problem: if BOTH p-edge endpoints are unassigned,
   // the edge will be counted twice.
   // To solve this: only add the data when pv1 < pv2.
-  for (const auto& entry : possible_assignments) {
-    if (entry.second.size() == 1) {
+  for (VertexWSM pv1 : accessor.get_unassigned_pattern_vertices_superset()) {
+    if (accessor.get_domain(pv1).size() == 1) {
       // It's assigned.
       continue;
     }
-    const auto& pv1 = entry.first;
-
     // Note: we don't care about the domain of pv1,
     // we've already gone through it before (when we called
     // fill_t_weight_lower_bounds_for_p_edges_containing_pv).
@@ -141,7 +137,7 @@ WeightNogoodDetector::Result WeightNogoodDetector::operator()(
       const VertexWSM& pv2 = pv2_weight_pair.first;
       const WeightWSM& p_weight = pv2_weight_pair.second;
       WeightWSM t_weight_estimate = minimum_t_weight;
-      const auto& domain2 = possible_assignments.at(pv2);
+      const auto& domain2 = accessor.get_domain(pv2);
       if (domain2.size() == 1) {
         // This other p-vertex PV2 is assigned already.
         // So let's check the other t-weight estimate, it may be better.

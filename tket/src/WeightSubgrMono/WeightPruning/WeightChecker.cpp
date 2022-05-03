@@ -19,7 +19,7 @@
 #include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 #include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
-#include "WeightSubgrMono/Searching/NodeWSM.hpp"
+#include "WeightSubgrMono/Searching/DomainsAccessor.hpp"
 #include "WeightSubgrMono/Searching/SearchBranch.hpp"
 #include "WeightSubgrMono/WeightPruning/WeightNogoodDetector.hpp"
 
@@ -38,30 +38,32 @@ WeightChecker::WeightChecker(
 WeightChecker::~WeightChecker() {}
 
 WeightChecker::Result WeightChecker::operator()(
-    const NodeWSM& node, WeightWSM max_extra_scalar_product) {
+    const DomainsAccessor& accessor, WeightWSM max_extra_scalar_product) {
   Result result;
-  std::size_t current_number_of_assigned_vertices = 0;
   std::size_t current_number_of_unassigned_vertices = 0;
-  const auto& domains_data = node.get_possible_assignments();
-  for (const auto& entry : domains_data) {
-    switch (entry.second.size()) {
+
+  for (VertexWSM pv : accessor.get_unassigned_pattern_vertices_superset()) {
+    switch (accessor.get_domain(pv).size()) {
       case 0:
         result.nogood = true;
         return result;
       case 1:
-        ++current_number_of_assigned_vertices;
         break;
       default:
         ++current_number_of_unassigned_vertices;
     }
   }
-  const auto current_scalar_product = node.get_scalar_product();
+  const std::size_t current_number_of_assigned_vertices =
+      accessor.get_pattern_vertices().size() -
+      current_number_of_unassigned_vertices;
+
+  const auto current_scalar_product = accessor.get_scalar_product();
   const auto max_scalar_product =
       current_scalar_product + max_extra_scalar_product;
 
   if (!m_manager.should_activate_detector(
           current_scalar_product, max_scalar_product,
-          node.get_total_pattern_edge_weights(),
+          accessor.get_total_p_edge_weights(),
           current_number_of_assigned_vertices,
           current_number_of_unassigned_vertices)) {
     result.nogood = false;
@@ -76,7 +78,7 @@ WeightChecker::Result WeightChecker::operator()(
     TKET_ASSERT(m_detector_ptr);
   }
   const auto detector_result =
-      m_detector_ptr->operator()(domains_data, max_extra_scalar_product);
+      m_detector_ptr->operator()(accessor, max_extra_scalar_product);
   result.invalid_t_vertex = detector_result.invalid_t_vertex;
 
   if (detector_result.extra_scalar_product_lower_bound) {

@@ -20,6 +20,7 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+class DomainsAccessor;
 class NeighboursData;
 
 /** Can we get a good guaranteed lower bound on the extra weight
@@ -89,13 +90,12 @@ class WeightNogoodDetector {
   };
 
   /** Try to find a weight nogood (i.e., an impossible current position).
-   * @param possible_assignments Data for all unassigned vertices.
    * @param max_extra_scalar_product The maximum extra weight we allow (the
    * whole point of this nogood detection attempt).
    * @return Information about a possible weight nogood.
    */
   Result operator()(
-      const PossibleAssignments& possible_assignments,
+      const DomainsAccessor& accessor,
       WeightWSM max_extra_scalar_product) const;
 
  private:
@@ -139,7 +139,7 @@ class WeightNogoodDetector {
   // relevant for this current search node only.
   // Returns false if it found we're already at a nogood.
   bool fill_t_weight_lower_bounds_for_p_edges_containing_pv(
-      const PossibleAssignments& possible_assignments) const;
+      const DomainsAccessor& accessor) const;
 
   // Simply looks up and returns the weight in
   // m_t_weight_lower_bounds_for_p_edges_containing_pv.
