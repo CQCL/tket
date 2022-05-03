@@ -25,6 +25,7 @@ from pytket.circuit import (  # type: ignore
     Circuit,
     OpType,
 )
+
 if platform.machine() == "x86_64":
     from pytket.qir.qir import circuit_to_qir, ExtendedModule, QUANTINUUM_GATES
 
