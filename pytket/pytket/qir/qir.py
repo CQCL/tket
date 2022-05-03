@@ -25,6 +25,8 @@ if platform.machine() == "x86_64":
     from pyqir.parser import QirModule, QirCallInstr  # type: ignore
     from pyqir.parser._native import PyQirInstruction  # type: ignore
     from pyqir.generator import SimpleModule, BasicQisBuilder, types  # type: ignore
+    from pyqir.generator.types import Double, Qubit, Result, Void  # type: ignore
+
 
 
 CustomPyQIRGate = NamedTuple(
