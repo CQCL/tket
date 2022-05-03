@@ -40,8 +40,7 @@ HallSetReduction::HallSetReduction()
 
 void HallSetReduction::clear() { m_awaiting_initial_fill = true; }
 
-ReductionResult HallSetReduction::reduce(
-    DomainsAccessor& accessor, std::set<VertexWSM>& work_set) {
+ReductionResult HallSetReduction::reduce(DomainsAccessor& accessor) {
   const bool new_reduce_call = m_awaiting_initial_fill;
   if (m_awaiting_initial_fill && !fill_initial_partition(accessor)) {
     return ReductionResult::NOGOOD;
@@ -139,8 +138,8 @@ ReductionResult HallSetReduction::within_reduce_loop_handle_hall_set_reduction(
     DomainsAccessor& accessor, Partition& partition,
     ReusableStorageId partition_id) {
   // First, erase the TV from all other domains in this partition.
-  const auto reduction_data = partition.reduce_with_hall_set(
-      accessor, m_union_of_domains, m_work_vector);
+  const auto reduction_data =
+      partition.reduce_with_hall_set(accessor, m_union_of_domains);
 
   if (reduction_data.result_to_return == ReductionResult::NOGOOD) {
     return ReductionResult::NOGOOD;
@@ -338,8 +337,7 @@ HallSetReduction::Partition::search_for_hall_set(
 
 HallSetReduction::Partition::HallSetReductionData
 HallSetReduction::Partition::reduce_with_hall_set(
-    DomainsAccessor& accessor, const std::set<VertexWSM>& union_of_domains,
-    std::vector<VertexWSM>& work_vector) {
+    DomainsAccessor& accessor, const std::set<VertexWSM>& union_of_domains) {
   TKET_ASSERT(union_of_domains.size() > 1);
   TKET_ASSERT(union_of_domains.size() < domains_data.size());
 

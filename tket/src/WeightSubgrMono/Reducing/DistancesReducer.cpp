@@ -24,11 +24,9 @@ namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 DistancesReducer::DistancesReducer(
-    const NeighboursData& pattern_ndata, NearNeighboursData& pattern_near_ndata,
-    const NeighboursData& target_ndata, NearNeighboursData& target_near_ndata,
-    unsigned distance)
-    : m_pattern_ndata(pattern_ndata),
-      m_pattern_near_ndata(pattern_near_ndata),
+    NearNeighboursData& pattern_near_ndata, const NeighboursData& target_ndata,
+    NearNeighboursData& target_near_ndata, unsigned distance)
+    : m_pattern_near_ndata(pattern_near_ndata),
       m_target_ndata(target_ndata),
       m_target_near_ndata(target_near_ndata),
       m_distance(distance) {

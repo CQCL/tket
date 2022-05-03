@@ -47,8 +47,7 @@ class HallSetReduction {
   /** Call at the start of reducing a new search node. */
   void clear();
 
-  ReductionResult reduce(
-      DomainsAccessor& accessor, std::set<VertexWSM>& work_set);
+  ReductionResult reduce(DomainsAccessor& accessor);
 
  private:
   struct Data {
@@ -110,8 +109,7 @@ class HallSetReduction {
     // by construction the ONLY PV which have domains intersecting the
     // given union_of_domains).
     HallSetReductionData reduce_with_hall_set(
-        DomainsAccessor& accessor, const std::set<VertexWSM>& union_of_domains,
-        std::vector<VertexWSM>& work_vector);
+        DomainsAccessor& accessor, const std::set<VertexWSM>& union_of_domains);
 
     // Moves the smallest domain sizes to the BACK (so we can pop them off;
     // this also removes size 1 domains, treated as a separate case,
@@ -121,7 +119,6 @@ class HallSetReduction {
 
   const unsigned m_max_number_of_consecutive_failed_attempts;
   bool m_awaiting_initial_fill;
-  std::vector<VertexWSM> m_work_vector;
   std::set<VertexWSM> m_union_of_domains;
 
   std::set<ReusableStorageId> m_partition_ids;

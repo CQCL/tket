@@ -31,7 +31,6 @@ std::set<VertexWSM> NodeListTraversal::get_used_target_vertices() const {
 
   // Examine all PV.
   for (const auto& entry_just_for_one_pv : m_raw_data.domains_data) {
-    const VertexWSM& pv = entry_just_for_one_pv.first;
     const auto& domain_data = entry_just_for_one_pv.second;
 
     // Examine Dom(PV) at all levels.

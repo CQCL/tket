@@ -30,7 +30,6 @@ class DistancesReducer : public ReducerInterface {
    * with the special case d=1.
    */
   DistancesReducer(
-      const NeighboursData& pattern_ndata,
       NearNeighboursData& pattern_near_ndata,
       const NeighboursData& target_ndata, NearNeighboursData& target_near_ndata,
       unsigned distance);
@@ -42,7 +41,6 @@ class DistancesReducer : public ReducerInterface {
       std::set<VertexWSM>& work_set) override;
 
  private:
-  const NeighboursData& m_pattern_ndata;
   NearNeighboursData& m_pattern_near_ndata;
   const NeighboursData& m_target_ndata;
   NearNeighboursData& m_target_near_ndata;

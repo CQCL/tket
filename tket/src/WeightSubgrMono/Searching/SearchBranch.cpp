@@ -48,8 +48,7 @@ SearchBranch::SearchBranch(
     for (unsigned distance = 2; distance <= max_distance_reduction_value;
          ++distance) {
       m_distance_reducers.emplace_back(
-          m_pattern_ndata, pattern_near_ndata, m_target_ndata,
-          target_near_ndata, distance);
+          pattern_near_ndata, m_target_ndata, target_near_ndata, distance);
     }
     // Now that all the reducer objects are stored
     // (the vector will not be resized),
@@ -240,8 +239,8 @@ bool SearchBranch::perform_main_reduce_loop(
     // (i.e., is more likely to detect a possible reduction).
     // The standard reducers ONLY work with actual ASSIGNMENTS;
     // it makes no difference if a domain has size 2 or 100.
-    const auto hall_set_result = m_hall_set_reduction.reduce(
-        m_domains_accessor, m_work_set_for_reducers);
+    const auto hall_set_result =
+        m_hall_set_reduction.reduce(m_domains_accessor);
     if (hall_set_result == ReductionResult::NOGOOD) {
       return false;
     }
