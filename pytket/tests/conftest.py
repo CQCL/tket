@@ -14,7 +14,8 @@
 
 import os
 import math
-from pytest import fixture, yield_fixture  # type: ignore
+import platform
+from pytest import fixture  # type: ignore
 from pathlib import Path
 import random
 import time
@@ -24,7 +25,8 @@ from pytket.circuit import (  # type: ignore
     Circuit,
     OpType,
 )
-from pytket.qir.qir import circuit_to_qir, ExtendedModule, QUANTINUUM_GATES
+if platform.machine() == "x86_64":
+    from pytket.qir.qir import circuit_to_qir, ExtendedModule, QUANTINUUM_GATES
 
 
 @fixture
