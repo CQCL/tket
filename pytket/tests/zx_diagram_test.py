@@ -29,6 +29,10 @@ from pytket.zx import (  # type: ignore
     unitary_from_classical_diagram,
     density_matrix_from_cptp_diagram,
     Rewrite,
+    PhasedGen,
+    CliffordGen,
+    DirectedGen,
+    ZXBox,
 )
 
 
@@ -629,6 +633,18 @@ def test_simplification() -> None:
     final = unitary_from_quantum_diagram(diag)
     final = final * 0.5 * 1j
     assert np.allclose(original, final)
+
+
+def test_constructors() -> None:
+    phased_gen = PhasedGen(ZXType.ZSpider, 0.5, QuantumType.Quantum)
+    assert phased_gen.param == 0.5
+    clifford_gen = CliffordGen(ZXType.PX, True, QuantumType.Quantum)
+    assert clifford_gen.param == True
+    directed_gen = DirectedGen(ZXType.Triangle, QuantumType.Quantum)
+    assert directed_gen.signature == [QuantumType.Quantum] * 2
+    diag = ZXDiagram(4, 4, 0, 0)
+    zx_box = ZXBox(diag)
+    assert zx_box.diagram.scalar == diag.scalar
 
 
 if __name__ == "__main__":

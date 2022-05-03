@@ -19,29 +19,27 @@ set -evu
 # Choose a Python to install conan
 export PYBIN=/opt/python/cp39-cp39/bin
 
-${PYBIN}/pip install conan
-
-export CONAN_CMD=${PYBIN}/conan
 export CONAN_REVISIONS_ENABLED=1
 
-cd /tket
+${PYBIN}/pip install --upgrade pip
+${PYBIN}/pip install --upgrade conan
+
+export CONAN_CMD=${PYBIN}/conan
 
 ${CONAN_CMD} profile new tket --detect
-${CONAN_CMD} profile update options.tket:shared=True tket
-${CONAN_CMD} remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
-${CONAN_CMD} create --profile=tket --test-folder=None recipes/tket
-${CONAN_CMD} create --profile=tket --test-folder=None recipes/pybind11
 
-cd /tket/pytket
-mkdir wheelhouse
-mkdir audited
+${CONAN_CMD} remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
 
-for pyX in $PY_VERS
-do
-    cd /tket/pytket
-    export PYEX=/opt/python/${pyX}/bin/python
-    export PYVER=`${PYEX} -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'`
-    ${PYEX} -m pip install -U pip build
-    ${PYEX} -m build --outdir "tmpwheel_${PYVER}"
-    auditwheel repair "tmpwheel_${PYVER}/pytket-"*".whl" -w "audited/${PYVER}/"
-done
+${CONAN_CMD} user -p ${JFROG_ARTIFACTORY_TOKEN_1} -r tket-conan ${JFROG_ARTIFACTORY_USER_1}
+
+SYMENGINE_VER=$(${CONAN_CMD} inspect --raw version symengine/)
+
+${CONAN_CMD} create --profile=tket -o symengine:shared=False symengine tket/stable
+${CONAN_CMD} create --profile=tket -o symengine:shared=True symengine tket/stable
+
+if [ ${UPLOAD_PACKAGE} == "YES" ]
+then
+    ${CONAN_CMD} upload symengine/${SYMENGINE_VER}@tket/stable --all -r=tket-conan
+else
+    ${CONAN_CMD} upload symengine/${SYMENGINE_VER}@tket/stable --all -r=tket-conan --skip-upload
+fi

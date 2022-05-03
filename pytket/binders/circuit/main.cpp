@@ -202,6 +202,12 @@ PYBIND11_MODULE(circuit, m) {
           ":math:`(\\alpha, \\beta, \\gamma) \\mapsto "
           "\\mathrm{Rz}(\\alpha) \\mathrm{Rx}(\\beta) "
           "\\mathrm{Rz}(\\gamma)`")
+      .value(
+          "TK2", OpType::TK2,
+          ":math:`(\\alpha, \\beta, \\gamma) \\mapsto "
+          "\\mathrm{XXPhase}(\\alpha) "
+          "\\mathrm{YYPhase}(\\beta) "
+          "\\mathrm{ZZPhase}(\\gamma)`")
       .value("CX", OpType::CX, "Controlled :math:`\\mathrm{X}` gate")
       .value("CY", OpType::CY, "Controlled :math:`\\mathrm{Y}` gate")
       .value("CZ", OpType::CZ, "Controlled :math:`\\mathrm{Z}` gate")
@@ -479,6 +485,10 @@ PYBIND11_MODULE(circuit, m) {
       m, "Command",
       "A single quantum command in the circuit, defined by the Op, the "
       "qubits it acts on, and the op group name if any.")
+      .def(
+          py::init<const Op_ptr, unit_vector_t>(),
+          "Construct from an operation and a vector of unit IDs", py::arg("op"),
+          py::arg("args"))
       .def("__eq__", &Command::operator==)
       .def("__repr__", &Command::to_str)
       .def_property_readonly(

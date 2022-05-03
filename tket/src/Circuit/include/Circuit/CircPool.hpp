@@ -210,6 +210,9 @@ Circuit YYPhase_using_CX(Expr alpha);
 /** Equivalent to ZZPhase, using CX and Rz gates */
 Circuit ZZPhase_using_CX(Expr alpha);
 
+/** Equivalent to TK2, using CX and single-qubit gates */
+Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma);
+
 /** Equivalent to 3-qubit MS interaction, using CX and U3 gates */
 Circuit XXPhase3_using_CX(Expr alpha);
 

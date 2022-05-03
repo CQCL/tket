@@ -15,11 +15,14 @@
 #include <Circuit/Circuit.hpp>
 #include <Transformations/BasicOptimisation.hpp>
 #include <Transformations/CliffordOptimisation.hpp>
+#include <Transformations/OptimisationPass.hpp>
 #include <Transformations/Transform.hpp>
 #include <catch2/catch.hpp>
 #include <vector>
 
+#include "OpType/OpType.hpp"
 #include "Simulation/CircuitSimulator.hpp"
+#include "symengine/eval_double.h"
 
 namespace tket {
 namespace test_Symbolic {
@@ -46,6 +49,8 @@ static void check_equiv(const Circuit &circ, const Circuit &circ1) {
 SCENARIO("Symbolic squashing, correctness") {
   Sym asym = SymEngine::symbol("a");
   Expr alpha(asym);
+  Sym bsym = SymEngine::symbol("b");
+  Expr beta(bsym);
 
   GIVEN("squash_1qb_to_pqp") {
     Circuit circ(1);
@@ -132,6 +137,48 @@ SCENARIO("Symbolic squashing, correctness") {
     Circuit circ1 = circ;
     Transforms::singleq_clifford_sweep().apply(circ1);
     check_equiv(circ, circ1);
+  }
+
+  GIVEN("Edge case where symengine atan2 returns nan (1)") {
+    // https://github.com/CQCL/tket/issues/304
+    Circuit circ(1);
+    circ.add_op<unsigned>(OpType::Rx, {alpha}, {0});
+    circ.add_op<unsigned>(OpType::Ry, {beta}, {0});
+    Transforms::synthesise_tket().apply(circ);
+    symbol_map_t smap = {{asym, 0}, {bsym, 0}};
+    circ.symbol_substitution(smap);
+    std::vector<Command> cmds = circ.get_commands();
+    CHECK(cmds.size() == 1);
+    Op_ptr op = cmds[0].get_op_ptr();
+    CHECK(op->get_type() == OpType::TK1);
+    std::vector<Expr> params = op->get_params();
+    CHECK_NOTHROW(SymEngine::eval_double(params[0]));
+    CHECK_NOTHROW(SymEngine::eval_double(params[1]));
+    CHECK_NOTHROW(SymEngine::eval_double(params[2]));
+    CHECK(approx_0(params[1]));
+    CHECK(approx_0(params[0] + params[2]));
+  }
+
+  GIVEN("Edge case where symengine atan2 returns nan (2)") {
+    // https://github.com/CQCL/tket/issues/304
+    // and
+    // https://github.com/symengine/symengine/issues/1875
+    Circuit circ(1);
+    circ.add_op<unsigned>(OpType::Rx, {alpha}, {0});
+    circ.add_op<unsigned>(OpType::Ry, {alpha}, {0});
+    Transforms::synthesise_tket().apply(circ);
+    symbol_map_t smap = {{asym, 0}};
+    circ.symbol_substitution(smap);
+    std::vector<Command> cmds = circ.get_commands();
+    CHECK(cmds.size() == 1);
+    Op_ptr op = cmds[0].get_op_ptr();
+    CHECK(op->get_type() == OpType::TK1);
+    std::vector<Expr> params = op->get_params();
+    CHECK_NOTHROW(SymEngine::eval_double(params[0]));
+    CHECK_NOTHROW(SymEngine::eval_double(params[1]));
+    CHECK_NOTHROW(SymEngine::eval_double(params[2]));
+    CHECK(approx_0(params[1]));
+    CHECK(approx_0(params[0] + params[2]));
   }
 }
 

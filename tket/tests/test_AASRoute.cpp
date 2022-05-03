@@ -291,48 +291,6 @@ SCENARIO("Test aas route in RV3") {
     CompilationUnit cu0(mf->circuit_, preds);
     REQUIRE(cu0.check_all_predicates());
   }
-  GIVEN("AASRouteRoutingMethod - test routing_method III") {
-    Circuit circ(11);
-    std::vector<Qubit> qubits = circ.all_qubits();
-
-    std::map<UnitID, UnitID> rename_map = {
-        {qubits[0], nodes[0]}, {qubits[1], nodes[1]},  {qubits[2], nodes[2]},
-        {qubits[3], nodes[3]}, {qubits[4], nodes[4]},  {qubits[5], nodes[5]},
-        {qubits[6], nodes[6]}, {qubits[7], nodes[7]},  {qubits[8], nodes[8]},
-        {qubits[9], nodes[9]}, {qubits[10], nodes[10]}};
-
-    Circuit ppb_circ(11);
-
-    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[4]});
-    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[7]});
-    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[10]});
-    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[8], qubits[5]});
-    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[9]});
-
-    PhasePolyBox ppbox(ppb_circ);
-    circ.add_box(ppbox, qubits);
-
-    circ.rename_units(rename_map);
-
-    Circuit circ_copy(circ);
-
-    std::shared_ptr<MappingFrontier> mf =
-        std::make_shared<MappingFrontier>(circ);
-
-    AASRouteRoutingMethod aasrm(1, aas::CNotSynthType::Rec);
-
-    REQUIRE(aasrm.routing_method(mf, shared_arc).first);
-
-    // aasrm.routing_method(mf, shared_arc);
-
-    REQUIRE(test_unitary_comparison(mf->circuit_, circ_copy));
-
-    PredicatePtr routed_correctly =
-        std::make_shared<ConnectivityPredicate>(architecture);
-    PredicatePtrMap preds{CompilationUnit::make_type_pair(routed_correctly)};
-    CompilationUnit cu0(mf->circuit_, preds);
-    REQUIRE(cu0.check_all_predicates());
-  }
   GIVEN("AASRouteRoutingMethod  and LexiRouteRoutingMethod I") {
     std::vector<Node> nodes_mixed = {
         Node("node_test", 0), Node("test_node", 1), Node("node_test", 2)};
@@ -874,4 +832,68 @@ SCENARIO("Test aas route in RV3") {
     REQUIRE(circ.count_gates(OpType::SWAP) == 28);
   }
 }
+
+SCENARIO("Test aas route in RV3 - long test", "[.long]") {
+  std::vector<Node> nodes = {
+      Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
+      Node("node_test", 3), Node("node_test", 4), Node("node_test", 5),
+      Node("test_node", 6), Node("node_test", 7), Node("node_test", 8),
+      Node("node_test", 9), Node("node_test", 10)};
+
+  Architecture architecture(
+      {{nodes[0], nodes[1]},
+       {nodes[1], nodes[2]},
+       {nodes[2], nodes[3]},
+       {nodes[3], nodes[4]},
+       {nodes[2], nodes[5]},
+       {nodes[5], nodes[6]},
+       {nodes[4], nodes[7]},
+       {nodes[7], nodes[8]},
+       {nodes[8], nodes[9]},
+       {nodes[9], nodes[10]}});
+  ArchitecturePtr shared_arc = std::make_shared<Architecture>(architecture);
+  GIVEN("AASRouteRoutingMethod - test routing_method III") {
+    Circuit circ(11);
+    std::vector<Qubit> qubits = circ.all_qubits();
+
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]}, {qubits[1], nodes[1]},  {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]}, {qubits[4], nodes[4]},  {qubits[5], nodes[5]},
+        {qubits[6], nodes[6]}, {qubits[7], nodes[7]},  {qubits[8], nodes[8]},
+        {qubits[9], nodes[9]}, {qubits[10], nodes[10]}};
+
+    Circuit ppb_circ(11);
+
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[4]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[6], qubits[7]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[10]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[8], qubits[5]});
+    ppb_circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[9]});
+
+    PhasePolyBox ppbox(ppb_circ);
+    circ.add_box(ppbox, qubits);
+
+    circ.rename_units(rename_map);
+
+    Circuit circ_copy(circ);
+
+    std::shared_ptr<MappingFrontier> mf =
+        std::make_shared<MappingFrontier>(circ);
+
+    AASRouteRoutingMethod aasrm(1, aas::CNotSynthType::Rec);
+
+    REQUIRE(aasrm.routing_method(mf, shared_arc).first);
+
+    // aasrm.routing_method(mf, shared_arc);
+
+    REQUIRE(test_unitary_comparison(mf->circuit_, circ_copy));
+
+    PredicatePtr routed_correctly =
+        std::make_shared<ConnectivityPredicate>(architecture);
+    PredicatePtrMap preds{CompilationUnit::make_type_pair(routed_correctly)};
+    CompilationUnit cu0(mf->circuit_, preds);
+    REQUIRE(cu0.check_all_predicates());
+  }
+}
+
 }  // namespace tket

@@ -98,7 +98,7 @@ PYBIND11_MODULE(architecture, m) {
       .def(py::self == py::self);
   py::class_<SquareGrid, std::shared_ptr<SquareGrid>, Architecture>(
       m, "SquareGrid",
-      "Architecture class for qubits arranged in a square lattice of "
+      "Inherited Architecture class for qubits arranged in a square lattice of "
       "given number of rows and columns. Qubits are arranged with qubits "
       "values increasing first along rows then along columns i.e. for a "
       "3 x 3 grid:\n\n 0 1 2\n\n 3 4 5\n\n 6 7 8")
@@ -147,7 +147,7 @@ PYBIND11_MODULE(architecture, m) {
       });
   py::class_<RingArch, std::shared_ptr<RingArch>, Architecture>(
       m, "RingArch",
-      "Architecture class for number of qubits arranged in a ring.")
+      "Inherited Architecture class for number of qubits arranged in a ring.")
       .def(
           py::init<const unsigned>(),
           "The constructor for a RingArchitecture with some undirected "
@@ -158,7 +158,9 @@ PYBIND11_MODULE(architecture, m) {
       });
   py::class_<FullyConnected>(
       m, "FullyConnected",
-      "An architecture with full connectivity between qubits.")
+      "A specialised non-Architecture object emulating an architecture with "
+      "all qubits connected. "
+      "Not compatible with Routing or Placement methods.")
       .def(
           py::init<unsigned>(),
           "Construct a fully-connected architecture."

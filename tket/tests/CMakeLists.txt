@@ -36,12 +36,6 @@ ENDIF()
 
 add_definitions(-DALL_LOGS)
 
-set(TESTS_FULL no CACHE BOOL "Run full set of tests")
-
-if (TESTS_FULL)
-    add_definitions(-DTKET_TESTS_FULL)
-endif()
-
 set(TKET_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(tkettestutilsfiles.cmake)

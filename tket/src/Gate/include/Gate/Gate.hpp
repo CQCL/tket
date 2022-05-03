@@ -19,6 +19,12 @@
 
 namespace tket {
 
+class SubstitutionFailure : public std::logic_error {
+ public:
+  explicit SubstitutionFailure(const std::string &message)
+      : std::logic_error(message) {}
+};
+
 class Gate : public Op {
  public:
   // return hermitian conjugate

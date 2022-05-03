@@ -226,7 +226,7 @@ const PassPtr &DecomposeSingleQubitsTK1() {
   return pp;
 }
 
-const PassPtr &ComposePhasePolyBoxes() {
+PassPtr ComposePhasePolyBoxes(const unsigned min_size) {
   /**
    * converts a circuit containing all possible gates to a circuit
    * containing only phase poly boxes + H gates (and measure + reset + collapse
@@ -234,25 +234,27 @@ const PassPtr &ComposePhasePolyBoxes() {
    * this pass will replace all wire swaps in the given circuit and they will be
    * included in the last or an additional phase poly boxes
    */
-  static const PassPtr pp([]() {
-    Transform t =
-        (Transforms::rebase_UFR() >> Transforms::compose_phase_poly_boxes());
-    PredicatePtr noclas = std::make_shared<NoClassicalControlPredicate>();
 
-    PredicatePtrMap precons{CompilationUnit::make_type_pair(noclas)};
+  Transform t =
+      (Transforms::rebase_UFR() >>
+       Transforms::compose_phase_poly_boxes(min_size));
 
-    PredicatePtr no_wire_swap = std::make_shared<NoWireSwapsPredicate>();
+  PredicatePtr noclas = std::make_shared<NoClassicalControlPredicate>();
 
-    PredicatePtrMap s_postcons{
-        CompilationUnit::make_type_pair(noclas),
-        CompilationUnit::make_type_pair(no_wire_swap)};
-    PostConditions postcon{s_postcons, {}, Guarantee::Preserve};
+  PredicatePtrMap precons{CompilationUnit::make_type_pair(noclas)};
 
-    nlohmann::json j;
-    j["name"] = "ComposePhasePolyBoxes";
-    return std::make_shared<StandardPass>(precons, t, postcon, j);
-  }());
-  return pp;
+  PredicatePtr no_wire_swap = std::make_shared<NoWireSwapsPredicate>();
+
+  PredicatePtrMap s_postcons{
+      CompilationUnit::make_type_pair(noclas),
+      CompilationUnit::make_type_pair(no_wire_swap)};
+  PostConditions postcon{s_postcons, {}, Guarantee::Preserve};
+
+  nlohmann::json j;
+  j["name"] = "ComposePhasePolyBoxes";
+  j["min_size"] = min_size;
+
+  return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
 const PassPtr &DecomposeBoxes() {

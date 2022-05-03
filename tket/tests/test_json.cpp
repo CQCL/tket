@@ -27,6 +27,7 @@
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/RoutingMethod.hpp"
+#include "MeasurementSetup/MeasurementSetup.hpp"
 #include "OpType/OpType.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Predicates/PassGenerators.hpp"
@@ -181,7 +182,6 @@ SCENARIO("Test Circuit serialization") {
     c.add_box(temp_box, {0, 1});
 
     nlohmann::json j_cbox = c;
-    // std::cout << j_cbox;
     const Circuit new_c = j_cbox.get<Circuit>();
 
     const Command cbox_com = new_c.get_commands()[1];
@@ -807,6 +807,90 @@ SCENARIO("Test QubitPauliString serialization") {
   QubitPauliString new_qps = j_qps.get<QubitPauliString>();
 
   REQUIRE(qps == new_qps);
+}
+
+SCENARIO("Test MeasurementSetup serializations") {
+  GIVEN("MeasurementBitMap") {
+    MeasurementSetup::MeasurementBitMap map(0, {0, 1}, 1);
+    nlohmann::json j_map = map;
+    nlohmann::json j_correct_map = {
+        {"circ_index", 0}, {"bits", {0, 1}}, {"invert", true}};
+    REQUIRE(j_map == j_correct_map);
+    MeasurementSetup::MeasurementBitMap map_loaded =
+        j_map.get<MeasurementSetup::MeasurementBitMap>();
+    nlohmann::json j_loaded_map = map_loaded;
+    REQUIRE(j_loaded_map == j_map);
+  }
+  GIVEN("MeasurementBitMap with default constructor") {
+    MeasurementSetup::MeasurementBitMap map;
+    nlohmann::json j_map = map;
+    nlohmann::json j_correct_map = {
+        {"circ_index", 0},
+        {"bits", nlohmann::json::array()},
+        {"invert", false}};
+    REQUIRE(j_map == j_correct_map);
+    MeasurementSetup::MeasurementBitMap map_loaded =
+        j_map.get<MeasurementSetup::MeasurementBitMap>();
+    nlohmann::json j_loaded_map = map_loaded;
+    REQUIRE(j_loaded_map == j_map);
+  }
+  GIVEN("MeasurementSetup") {
+    MeasurementSetup ms;
+    Circuit mc(2, 2);
+    mc.add_measure(0, 0);
+    mc.add_measure(1, 1);
+    Circuit mc2(2, 2);
+    mc2.add_measure(0, 1);
+    mc2.add_measure(1, 0);
+    ms.add_measurement_circuit(mc);
+    ms.add_measurement_circuit(mc2);
+    Qubit q0(q_default_reg(), 0);
+    Qubit q1(q_default_reg(), 1);
+    QubitPauliString ii;
+    QubitPauliString zi({{q0, Pauli::Z}});
+    QubitPauliString iz({{q1, Pauli::Z}});
+    QubitPauliString zz({{q0, Pauli::Z}, {q1, Pauli::Z}});
+    QubitPauliString xx({{q0, Pauli::X}, {q1, Pauli::X}});
+    QubitPauliString yy({{q0, Pauli::Y}, {q1, Pauli::Y}});
+    ms.add_result_for_term(ii, {0, {}, false});
+    ms.add_result_for_term(zi, {0, {0}, false});
+    ms.add_result_for_term(iz, {0, {1}, false});
+    ms.add_result_for_term(zz, {0, {0, 1}, false});
+    ms.add_result_for_term(zi, {1, {0}, true});
+    ms.add_result_for_term(xx, {1, {0, 1}, true});
+    ms.add_result_for_term(yy, {1, {0, 1}, true});
+    nlohmann::json j_ms = ms;
+    nlohmann::json j_circs = {mc, mc2};
+    nlohmann::json j_result_map = {
+        {ii,
+         {{{"circ_index", 0},
+           {"bits", nlohmann::json::array()},
+           {"invert", false}}}},
+        {iz, {{{"circ_index", 0}, {"bits", {1}}, {"invert", false}}}},
+        {xx, {{{"circ_index", 1}, {"bits", {0, 1}}, {"invert", true}}}},
+        {yy, {{{"circ_index", 1}, {"bits", {0, 1}}, {"invert", true}}}},
+        {zi,
+         {{{"circ_index", 0}, {"bits", {0}}, {"invert", false}},
+          {{"circ_index", 1}, {"bits", {0}}, {"invert", true}}}},
+        {zz, {{{"circ_index", 0}, {"bits", {0, 1}}, {"invert", false}}}},
+    };
+    REQUIRE(j_ms["circs"] == j_circs);
+    REQUIRE(j_ms["result_map"] == j_result_map);
+    MeasurementSetup ms_loaded = j_ms.get<MeasurementSetup>();
+    nlohmann::json j_loaded_ms = ms_loaded;
+    REQUIRE(j_loaded_ms == j_ms);
+  }
+  GIVEN("Empty MeasurementSetup") {
+    MeasurementSetup ms;
+    nlohmann::json j_ms = ms;
+    nlohmann::json j_correct_ms = {
+        {"circs", nlohmann::json::array()},
+        {"result_map", nlohmann::json::array()}};
+    REQUIRE(j_ms == j_correct_ms);
+    MeasurementSetup ms_loaded = j_ms.get<MeasurementSetup>();
+    nlohmann::json j_loaded_ms = ms_loaded;
+    REQUIRE(j_loaded_ms == j_ms);
+  }
 }
 
 }  // namespace test_json
