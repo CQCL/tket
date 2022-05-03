@@ -28,15 +28,17 @@ namespace WeightedSubgraphMonomorphism {
  * than the obvious method of just going through
  * the smaller container one-by-one and checking against the larger container.
  *
- * These are usually quite good if the intersection is much smaller
- * than both sets.
+ * In the worst case, these algorithms use O(1) space and time
+ *      O([min size].log [min size].log [max size]),
+ * and so asymptotically are no worse than the naive
+ * methods; but in practice they are usually faster.
+ * They're especially good if the intersection is much smaller
+ * than each individual set.
  *
- * In the worst case, these algorithms are all O([min size].log [max size]),
- * and so asymptotically no worse than the naive
- * methods; but in practice they should be faster.
- *
- * Also, it is slightly faster to intersect a std::set and a sorted
- * std::vector than two std::sets.
+ * It is faster with sorted vectors than std::sets
+ * (e.g. std::lower_bound on sorted vectors can take a narrower range,
+ * i.e., it takes a start iterator as well as an end iterator,
+ * whereas std::set::lower_bound doesn't).
  */
 
 template <class T>
@@ -45,33 +47,60 @@ bool disjoint(const std::set<T>& set1, const std::set<T>& set2);
 template <class T>
 void fill_intersection(
     const std::set<T>& set, const std::vector<T>& sorted_vect,
-    std::set<T>& result);
+    std::vector<T>& result);
 
-/** Assume that Int is an integer type (signed or unsigned), and that the vector
- * is sorted according to first elements (i.e., the second elements are simply
- * ignored). This is equivalent to lexicograph sorting, of course, since we
- * assume that the T values are distinct.
+/** Assume that the ".first" T objects in the vector are distinct,
+ * and that the vector is sorted lexicographically w.r.t. these T values.
+ * Treat these T values as though they formed a set<T> object,
+ * and fill "result" with the intersection.
  */
-template <class T, class Int>
+template <class T, class Number>
 void fill_intersection_ignoring_second_elements(
-    const std::set<T>& set, const std::vector<std::pair<T, Int>>& sorted_vect,
-    std::set<T>& result);
+    const std::set<T>& set,
+    const std::vector<std::pair<T, Number>>& sorted_vect, std::set<T>& result);
 
 /** Assume that "ExtraData" is some kind of object that contains a T value,
  * plus some kind of extra data, irrelevant (for the purposes of
  * this intersection, at least).
+ * Assume that "ExtraData" objects can be ordered, in such a way that
+ * distinct T-values within "ExtraData" uniquely determine
+ * the order (e.g., std::pair<T, ...> has this property
+ * with lexicographic ordering).
+ *
+ * Assume that we can convert back-and-forth between
+ * T values and ExtraData objects (at least for the purposes of
+ * this intersection; it doesn't have to be an invertible mapping,
+ * but we assume that we can create a "fake" ExtraData object
+ * which is good enough to find lower bounds in the vector accurately,
+ * as long as the T-elements are DISTINCT.
+ * Thus, pass in T -> ExtraData and ExtraData -> T functions.
+ */
+template <
+    class T, class ExtraData, class GetTFromExtraData, class GetExtraDataFromT>
+void fill_intersection(
+    const std::set<T>& set, const std::vector<ExtraData>& sorted_vect,
+    std::set<T>& result_set, GetTFromExtraData get_t,
+    GetExtraDataFromT get_extra_data);
+
+// Implementations below:
+
+/** The general algorithm.
+ * Assume that "ExtraData" is some kind of object that contains a T value,
+ * plus some kind of extra data, irrelevant (for the purposes of
+ * this intersection, at least); and that it can be sorted w.r.t. T.
+ *
  * Assume that we can convert back-and-forth between
  * T values and ExtraData objects (at least for the purposes of
  * this intersection). Thus, pass in T -> ExtraData and ExtraData -> T
  * functions.
  */
 template <
-    class T, class ExtraData, class GetTFromExtraData, class GetExtraDataFromT>
-void fill_intersection(
+    class T, class ResultInserter, class ExtraData, class GetTFromExtraData,
+    class GetExtraDataFromT>
+void fill_intersection_using_inserter(
     const std::set<T>& set, const std::vector<ExtraData>& sorted_vect,
-    std::set<T>& result, GetTFromExtraData get_t,
+    ResultInserter& inserter, GetTFromExtraData get_t,
     GetExtraDataFromT get_extra_data) {
-  result.clear();
   if (set.empty() || sorted_vect.empty()) {
     return;
   }
@@ -86,7 +115,7 @@ void fill_intersection(
     // We have s >= v, where s in S, v in V.
     if (vect_t_value == *set_citer) {
       // s=v is a common element.
-      result.insert(vect_t_value);
+      inserter.insert(vect_t_value);
       // Advance in S.
       ++set_citer;
       if (set_citer == set.cend()) {
@@ -112,8 +141,6 @@ void fill_intersection(
   }
   return;
 }
-
-// Further implementations:
 
 // Slightly streamlined, because we return as soon as
 // a common element is found.
@@ -150,25 +177,66 @@ bool disjoint(const std::set<T>& set1, const std::set<T>& set2) {
   return true;
 }
 
+namespace internal {
+
+template <class T>
+struct SetInserter {
+  std::set<T>& result;
+
+  explicit SetInserter(std::set<T>& res) : result(res) {}
+
+  void insert(T value) { result.insert(value); }
+};
+
+template <class T>
+struct VectorInserter {
+  std::vector<T>& result;
+
+  explicit VectorInserter(std::vector<T>& res) : result(res) {}
+
+  void insert(T value) { result.push_back(value); }
+};
+
+}  // namespace internal
+
+template <class T, class Number>
+void fill_intersection_ignoring_second_elements(
+    const std::set<T>& set,
+    const std::vector<std::pair<T, Number>>& sorted_vect, std::set<T>& result) {
+  result.clear();
+  internal::SetInserter<T> inserter(result);
+
+  fill_intersection_using_inserter(
+      set, sorted_vect, inserter,
+      [](const std::pair<T, Number>& pair) { return pair.first; },
+      [](T value) {
+        return std::make_pair(value, std::numeric_limits<Number>::min());
+      });
+}
+
+template <
+    class T, class ExtraData, class GetTFromExtraData, class GetExtraDataFromT>
+void fill_intersection(
+    const std::set<T>& set, const std::vector<ExtraData>& sorted_vect,
+    std::set<T>& result, GetTFromExtraData get_t,
+    GetExtraDataFromT get_extra_data) {
+  result.clear();
+  internal::SetInserter<T> inserter(result);
+
+  fill_intersection_using_inserter(
+      set, sorted_vect, inserter, get_t, get_extra_data);
+}
+
 template <class T>
 void fill_intersection(
     const std::set<T>& set, const std::vector<T>& sorted_vect,
-    std::set<T>& result) {
-  fill_intersection<T, T>(
-      set, sorted_vect, result, [](T value) { return value; },
-      [](T value) { return value; });
-}
+    std::vector<T>& result) {
+  result.clear();
+  internal::VectorInserter<T> inserter(result);
 
-template <class T, class Int>
-void fill_intersection_ignoring_second_elements(
-    const std::set<T>& set, const std::vector<std::pair<T, Int>>& sorted_vect,
-    std::set<T>& result) {
-  fill_intersection<T, std::pair<T, Int>>(
-      set, sorted_vect, result,
-      [](const std::pair<T, Int>& pair) { return pair.first; },
-      [](T value) {
-        return std::make_pair(value, std::numeric_limits<Int>::min());
-      });
+  fill_intersection_using_inserter(
+      set, sorted_vect, inserter, [](T value) { return value; },
+      [](T value) { return value; });
 }
 
 }  // namespace WeightedSubgraphMonomorphism

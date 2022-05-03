@@ -47,32 +47,55 @@ bool is_maximum(const T& val) {
   return val == std::numeric_limits<T>::max();
 }
 
-/** Handy for testing; a string represention of a vector.
- * @param elems An ordinary std::vector of elements.
+/** If elems[index] is invalid, resize elems to make it valid; then return it.
+ */
+template <class T>
+T& get_element_with_resize(std::vector<T>& elems, std::size_t index) {
+  if (index >= elems.size()) {
+    elems.resize(index + 1);
+  }
+  return elems[index];
+}
+
+template <class T>
+void resize_if_too_small(std::vector<T>& elems, std::size_t min_size) {
+  if (elems.size() >= min_size) {
+    return;
+  }
+  elems.resize(min_size);
+}
+
+/** If elems[index] is invalid, simply resize elems so that it becomes valid.
+ */
+template <class T>
+void resize_if_index_is_invalid(std::vector<T>& elems, std::size_t index) {
+  resize_if_too_small(elems, index + 1);
+}
+
+/** Handy for testing; a string represention of a std container.
+ * @param elems A container of elements.
  * @param max_elems_to_print The maximum number to print, before terminating
  * early.
  * @return a string representation of the elements.
  */
-template <class T>
-std::string str(
-    const std::vector<T>& elems, std::size_t max_elems_to_print = 10) {
+template <class Container>
+std::string str(const Container& elems, std::size_t max_elems_to_print = 10) {
   std::stringstream ss;
   if (elems.size() > 3) {
     ss << elems.size() << " elems: ";
   }
-  ss << "[";
-  for (std::size_t nn = 0;; ++nn) {
-    if (nn == elems.size()) {
+  ss << "[ ";
+  std::size_t number_printed = 0;
+  for (const auto& elem : elems) {
+    ss << elem << " ";
+    ++number_printed;
+    if (number_printed == elems.size()) {
       break;
     }
-    if (nn == max_elems_to_print) {
-      if (nn + 1 < elems.size()) {
-        // It would have printed the next, without this limit
-        ss << "...";
-      }
+    if (number_printed >= max_elems_to_print) {
+      ss << "...";
       break;
     }
-    ss << elems[nn] << " ";
   }
   ss << "]";
   return ss.str();
