@@ -27,7 +27,7 @@ from pytket.qir.qir import (
 
 
 @pytest.mark.skipif(
-    "arm64" in platform.machine(), reason="There is no M1 wheels for pyqir yet."
+    platform.machine()=="arm64", reason="There is no M1 wheels for pyqir yet."
 )
 def test_raise_quantinuum_gateset_keyerror() -> None:
     c = Circuit(2)
@@ -37,7 +37,7 @@ def test_raise_quantinuum_gateset_keyerror() -> None:
 
 
 @pytest.mark.skipif(
-    "arm64" in platform.machine(), reason="There is no M1 wheels for pyqir yet."
+    platform.machine()=="arm64", reason="There is no M1 wheels for pyqir yet."
 )
 def test_extended_module_for_quantinuum_gateset(
     ext_module_quantinuum_gateset: ExtendedModule,
@@ -77,7 +77,7 @@ def test_extended_module_for_quantinuum_gateset(
 
 
 @pytest.mark.skipif(
-    "arm64" in platform.machine(), reason="There is no M1 wheels for pyqir yet."
+    platform.machine()=="arm64", reason="There is no M1 wheels for pyqir yet."
 )
 def test_qir_from_pytket_circuit_and_quantinuum_gateset(
     circuit_quantinuum_gateset, file_name: str
@@ -118,7 +118,7 @@ def test_qir_from_pytket_circuit_and_quantinuum_gateset(
 
 
 @pytest.mark.skipif(
-    "arm64" in platform.machine(), reason="There is no M1 wheels for pyqir yet."
+    platform.machine()=="arm64", reason="There is no M1 wheels for pyqir yet."
 )
 def test_raise_pyqir_gateset_keyerror() -> None:
     c = Circuit(2)
@@ -129,7 +129,7 @@ def test_raise_pyqir_gateset_keyerror() -> None:
 
 @pytest.mark.skip
 @pytest.mark.skipif(
-    "arm64" in platform.machine(), reason="There is no M1 wheels for pyqir yet."
+    platform.machine()=="arm64", reason="There is no M1 wheels for pyqir yet."
 )
 def test_qir_from_pytket_circuit_and_pyqir_gateset(
     circuit_pyqir_gateset, file_name: str
@@ -178,7 +178,7 @@ def test_qir_from_pytket_circuit_and_pyqir_gateset(
 
 @pytest.mark.skip
 @pytest.mark.skipif(
-    "arm64" in platform.machine(), reason="There is no M1 wheels for pyqir yet."
+    platform.machine()=="arm64", reason="There is no M1 wheels for pyqir yet."
 )
 def test_bitwise_ops_for_quantinuum_gateset(
     circuit_bitwise_ops: Circuit, bitwise_file: str
@@ -196,7 +196,7 @@ def test_bitwise_ops_for_quantinuum_gateset(
 
 
 @pytest.mark.skipif(
-    "arm64" in platform.machine(), reason="There is no M1 wheels for pyqir yet."
+    platform.machine()=="arm64", reason="There is no M1 wheels for pyqir yet."
 )
 def test_qir_parser(qir_bc_file_path: Path) -> None:
     qir_parser = QIRParser(str(qir_bc_file_path))
@@ -210,7 +210,7 @@ def test_qir_parser(qir_bc_file_path: Path) -> None:
 
 
 @pytest.mark.skipif(
-    "arm64" in platform.machine(), reason="There is no M1 wheels for pyqir yet."
+    platform.machine()=="arm64", reason="There is no M1 wheels for pyqir yet."
 )
 def test_circuit_from_qir_from_bitcode(
     qir_bc_file_path: Path, qir_circuit: Circuit
