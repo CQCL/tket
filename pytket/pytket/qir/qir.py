@@ -20,7 +20,6 @@ from typing import Callable, Dict, List, NamedTuple, Optional, Tuple, Union
 from pytket import Circuit, OpType, Bit, Qubit
 from pytket.circuit import Op  # type: ignore
 from pytket.circuit.logic_exp import BitWiseOp
-
 if platform.machine() == "x86_64":
     from pyqir.parser import QirModule, QirCallInstr  # type: ignore
     from pyqir.parser._native import PyQirInstruction  # type: ignore
@@ -290,7 +289,9 @@ def _to_qis_results(bits: List[Bit], mod: SimpleModule) -> Optional[types.RESULT
     return None
 
 
-def _to_qis_bits(args: List[Bit], mod: SimpleModule) -> Optional[List[types.RESULT]]:
+def _to_qis_bits(
+    args: List[Bit], mod: SimpleModule
+) -> Optional[List[types.RESULT]]:
     if args:
         return [mod.results[bit.index[0]] for bit in args[:-1]]
     return None
