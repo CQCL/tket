@@ -28,6 +28,21 @@
 namespace tket {
 namespace test_TwoQubitCanonical {
 
+static void check_get_information_content(const Eigen::Matrix4cd &U) {
+  Eigen::Matrix2cd PauliX, PauliY, PauliZ;
+  PauliX << 0, 1, 1, 0;
+  PauliY << 0, -i_, i_, 0;
+  PauliZ << 1, 0, 0, -1;
+  const auto [K1, A, K2] = get_information_content(U);
+  const auto [a, b, c] = A;
+  const Eigen::Matrix4cd arg =
+      i_ * (a * Eigen::kroneckerProduct(PauliX, PauliX) +
+            b * Eigen::kroneckerProduct(PauliY, PauliY) +
+            c * Eigen::kroneckerProduct(PauliZ, PauliZ));
+  Eigen::Matrix4cd res = K1 * arg.exp() * K2;
+  REQUIRE(res.isApprox(U));
+}
+
 SCENARIO("Testing two-qubit canonical forms") {
   GIVEN("Decomposing a kronecker product of matrices (0)") {
     Eigen::Matrix2cd testA, testB, resA, resB;
@@ -85,21 +100,19 @@ SCENARIO("Testing two-qubit canonical forms") {
   }
 
   GIVEN("Performing a KAK decomposition (0)") {
-    Eigen::Matrix2cd PauliX, PauliY, PauliZ;
-    PauliX << 0, 1, 1, 0;
-    PauliY << 0, -i_, i_, 0;
-    PauliZ << 1, 0, 0, -1;
     Eigen::Matrix4cd test;
     test << 1, 0, 0, 0, 0, 0, exp(i_), 0, 0, exp(i_), 0, 0, 0, 0, 0,
         exp(i_ * 2.814);
-    const auto [K1, A, K2] = get_information_content(test);
-    const auto [a, b, c] = A;
-    const Eigen::Matrix4cd arg =
-        i_ * (a * Eigen::kroneckerProduct(PauliX, PauliX) +
-              b * Eigen::kroneckerProduct(PauliY, PauliY) +
-              c * Eigen::kroneckerProduct(PauliZ, PauliZ));
-    Eigen::Matrix4cd res = K1 * arg.exp() * K2;
-    REQUIRE(res.isApprox(test));
+    check_get_information_content(test);
+
+    Eigen::Matrix4cd CX;
+    CX << 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0;
+    check_get_information_content(CX);
+
+    for (unsigned i = 0; i < 100; i++) {
+      Eigen::Matrix4cd U = random_unitary(4, i);
+      check_get_information_content(U);
+    }
   }
 
   GIVEN("Performing a KAK decomposition (1)") {
