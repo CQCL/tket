@@ -15,13 +15,14 @@
 from pathlib import Path
 from pytket import Circuit  # type: ignore
 from pytket.circuit import Node, Qubit  # type: ignore
-from pytket.architecture import Architecture  # type: ignore
+from pytket.architecture import Architecture, FullyConnected  # type: ignore
 from pytket.placement import (  # type: ignore
     Placement,
     LinePlacement,
     GraphPlacement,
     NoiseAwarePlacement,
     place_with_map,
+    place_fully_connected,
 )
 from pytket.passes import PauliSimp, DefaultMappingPass  # type: ignore
 from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
@@ -189,6 +190,18 @@ def test_place_with_map_twice() -> None:
     assert all(qb.reg_name == "unplaced" for qb in c.qubits)
 
 
+def test_place_fully_connected() -> None:
+    c = Circuit(5)
+    fc5 = FullyConnected(5)
+    place_fully_connected(c, fc5)
+    qbs = c.qubits
+    assert qbs[0].reg_name == "fcNode"
+    assert qbs[1].reg_name == "fcNode"
+    assert qbs[2].reg_name == "fcNode"
+    assert qbs[3].reg_name == "fcNode"
+    assert qbs[4].reg_name == "fcNode"
+
+
 def test_big_placement() -> None:
     # TKET-1275
     c = circuit_from_qasm(
@@ -249,3 +262,4 @@ if __name__ == "__main__":
     test_convert_index_mapping()
     test_place_with_map_twice()
     test_big_placement()
+    test_place_fully_connected()
