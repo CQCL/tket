@@ -248,8 +248,8 @@ setup(
         "jinja2 ~= 3.0",
         "types-pkg_resources",
         "typing-extensions ~= 4.2",
-        "pyqir-generator",
-        "pyqir-parser",
+        "pyqir-generator; platform_machine=='x86_64'",
+        "pyqir-parser; platform_machine=='x86_64'",
     ],
     ext_modules=[
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders
