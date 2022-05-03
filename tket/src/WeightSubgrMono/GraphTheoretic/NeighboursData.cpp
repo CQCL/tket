@@ -149,7 +149,7 @@ std::vector<WeightWSM> NeighboursData::get_weights_expensive() const {
   for (const auto& entry : m_neighbours_and_weights_map) {
     const VertexWSM v1 = entry.first;
     // Every edge is implicitly stored twice, for (v1, v2) and (v2, v1).
-    // Thus, only write the weight when v1>v2 (the opposite of normal).
+    // To avoid duplicates, only write the weight when v1>v2.
     // The neighbour edges are stored with increasing v, as always.
     for (const auto& inner_entry : entry.second) {
       const VertexWSM& v2 = inner_entry.first;
@@ -159,6 +159,7 @@ std::vector<WeightWSM> NeighboursData::get_weights_expensive() const {
       weights.emplace_back(inner_entry.second);
     }
   }
+  TKET_ASSERT(weights.size() == m_number_of_edges);
   return weights;
 }
 

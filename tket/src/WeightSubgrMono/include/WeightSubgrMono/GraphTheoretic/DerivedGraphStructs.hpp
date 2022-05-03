@@ -32,7 +32,8 @@ struct DerivedGraphStructs {
   typedef std::vector<std::pair<VertexWSM, Count>> NeighboursAndCounts;
   typedef SimpleStorage<NeighboursAndCounts> NeighboursAndCountsStorage;
 
-  /** However, these are the counts, sorted (for checking). */
+  /** These are the counts alone, which are in "NeighboursAndCounts",
+   * sorted (for fast compatibility checking). */
   typedef std::vector<Count> SortedCounts;
   typedef SimpleStorage<SortedCounts> SortedCountsStorage;
 };

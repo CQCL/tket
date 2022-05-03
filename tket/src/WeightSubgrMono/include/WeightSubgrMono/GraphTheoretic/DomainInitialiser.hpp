@@ -70,9 +70,6 @@ class DomainInitialiser {
    * and there are N vertices x with Dist(v,x) = d,
    * then there are also >= N vertices y with
    * Dist(F(v),y) <= d.
-   *
-   * This also "cheats" by mixing in a partial alldiff checker,
-   * because it's cheap.
    */
   static bool distance_counts_reduction(
       PossibleAssignments& possible_assignments,

@@ -63,17 +63,17 @@ EdgeWSM get_edge(VertexWSM v1, VertexWSM v2);
  */
 std::vector<VertexWSM> get_vertices(const GraphEdgeWeights& edges_and_weights);
 
-/** For use in reduced a search node. */
+/** For use in reducing a search node, or individual Domain(pv). */
 enum class ReductionResult {
   SUCCESS,
 
-  /** The node is impossible, i.e. some domains are empty;
-  // impossible/inconsistent assignments.
+  /** At least one new assignment PV->TV was created;
+   * a special case needing different treatment to "SUCCESS".
    */
-  FAILURE,
+  NEW_ASSIGNMENTS,
 
-  /** All variables have been assigned; we've found a solution. */
-  FINISHED
+  /** The node is impossible; some domain has become empty. */
+  NOGOOD
 };
 
 /** KEY: pattern vertex

@@ -30,12 +30,12 @@ DerivedGraphs::DerivedGraphs(
 
 DerivedGraphs::VertexData DerivedGraphs::get_data(VertexWSM v) {
   auto iter = m_data.find(v);
-  if (iter == m_data.end()) {
-    auto& entry = m_data[v];
-    fill(v, entry);
-    return entry;
+  if (iter != m_data.end()) {
+    return iter->second;
   }
-  return iter->second;
+  auto& entry = m_data[v];
+  fill(v, entry);
+  return entry;
 }
 
 static void fill_with_sorted_counts(
