@@ -13,18 +13,20 @@
 // limitations under the License.
 
 #pragma once
-#include "../GraphTheoretic/DerivedGraphs.hpp"
-#include "../GraphTheoretic/DerivedGraphsCalculator.hpp"
 #include "ReducerWrapper.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-class DomainsAccessor;
+class NeighboursData;
 
-class DerivedGraphsReducer : public ReducerInterface {
+/** This is like DistancesReducer, but with d=1, i.e.
+ * simply ensure, when pv->tv is made, that all neighbours of pv
+ * have domains contained within the set of neighbours of tv.
+ */
+class NeighboursReducer : public ReducerInterface {
  public:
-  DerivedGraphsReducer(
+  NeighboursReducer(
       const NeighboursData& pattern_ndata, const NeighboursData& target_ndata);
 
   virtual bool check(std::pair<VertexWSM, VertexWSM> assignment) override;
@@ -34,20 +36,8 @@ class DerivedGraphsReducer : public ReducerInterface {
       std::set<VertexWSM>& work_set) override;
 
  private:
-  DerivedGraphStructs::NeighboursAndCountsStorage m_storage;
-  DerivedGraphStructs::SortedCountsStorage m_counts_storage;
-  DerivedGraphsCalculator m_calculator;
-  DerivedGraphs m_derived_pattern_graphs;
-  DerivedGraphs m_derived_target_graphs;
-
-  // We will call this several times with different derived graphs data.
-  ReductionResult reduce_with_derived_data(
-      const DerivedGraphStructs::NeighboursAndCounts&
-          pattern_derived_neighbours_data,
-      const DerivedGraphStructs::NeighboursAndCounts&
-          target_derived_neighbours_data,
-      VertexWSM root_pattern_vertex, DomainsAccessor& accessor,
-      std::set<VertexWSM>& work_set);
+  const NeighboursData& m_pattern_ndata;
+  const NeighboursData& m_target_ndata;
 };
 
 }  // namespace WeightedSubgraphMonomorphism

@@ -13,56 +13,52 @@
 // limitations under the License.
 
 #pragma once
-#include <optional>
-
-#include "DistancesRawReducer.hpp"
+#include "ReducerWrapper.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-/** "DistancesRawReducer" only knows about single assignments.
- * However we want to check them in a specific order for best performance,
- * so this class keeps track of which reductions have already been done,
- * and what to do next. (Might seem a bit complicated, but actually
- * negligible in comparison to the reduction calculation).
- */
-class DistancesReducer {
+class NearNeighboursData;
+class NeighboursData;
+
+class DistancesReducer : public ReducerInterface {
  public:
+  /** If pv->tv is made, ensures that all pattern vertices v' with
+   * distance(pv,v')=d have Domain(v') a subset of
+   *    {u : distance(tv,u) <= d}.
+   * Note that d >= 2 is required; a separate NeighboursReducer deals
+   * with the special case d=1.
+   */
   DistancesReducer(
       const NeighboursData& pattern_ndata,
       NearNeighboursData& pattern_near_ndata,
-      const NeighboursData& target_ndata,
-      NearNeighboursData& target_near_ndata);
+      const NeighboursData& target_ndata, NearNeighboursData& target_near_ndata,
+      unsigned distance);
 
-  /** Checks if pv->tv appears to be valid at first glance. */
-  bool check(
-      const std::pair<VertexWSM, VertexWSM>& assignment,
-      unsigned distance) const;
+  virtual bool check(std::pair<VertexWSM, VertexWSM> assignment) override;
 
-  /** When we start reducing a node, the assignments are stored in a vector
-   * which the node controls. This class only needs to know the associated
-   * sizes, and gets the assignments data from the node.
-   */
-  void reset(unsigned distance_value);
-
-  struct Result {
-    std::optional<std::pair<VertexWSM, VertexWSM>> impossible_assignment;
-    bool new_assignments_created;
-    bool nogood_found;
-  };
-
-  /** Tries to reduce everything, but breaks off early
-   * if new assignments arise in the node due to reductions. */
-  Result operator()(NodeWSM& node);
+  virtual ReductionResult reduce(
+      std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,
+      std::set<VertexWSM>& work_set) override;
 
  private:
-  DistancesRawReducer m_raw_reducer;
+  const NeighboursData& m_pattern_ndata;
+  NearNeighboursData& m_pattern_near_ndata;
+  const NeighboursData& m_target_ndata;
+  NearNeighboursData& m_target_near_ndata;
 
-  // Element[i] gives data for the assignments still to be checked
-  // for distance i+1.
-  // It is simply the next index in the assignments list
-  // which should be checked.
-  std::vector<std::size_t> m_data;
+  // A bit crude to store the distance and have separate objects,
+  // but all the heavy data is stored elsewhere and accessed by reference,
+  // so actually not inefficient, and it fits the framework better.
+  const unsigned m_distance;
+
+  // We fill the elements with the domain intersections for distance=j,
+  // for each j<=d.
+  // So, by checking sizes, we might not have to create a single set
+  // of the union at the end
+  // (concatenating N vectors into a single set is not
+  // particularly slow, but it's good if we can avoid it).
+  std::vector<std::vector<VertexWSM>> m_work_vectors_list;
 };
 
 }  // namespace WeightedSubgraphMonomorphism
