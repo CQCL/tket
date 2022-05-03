@@ -30,99 +30,99 @@ if platform.machine() == "x86_64":
     from pytket.qir.qir import circuit_to_qir, ExtendedModule, QUANTINUUM_GATES
 
 
-@fixture
-def bitwise_file() -> str:
-    return "test_bitwise_ops.ll"
+    @fixture
+    def bitwise_file() -> str:
+        return "test_bitwise_ops.ll"
 
 
-@fixture
-def circuit_bitwise_ops(bitwise_file: str) -> None:
-    c = Circuit(0, 3)
-    c.add_c_and(0, 1, 2)
-    c.add_c_or(2, 1, 0)
-    c.add_c_xor(0, 1, 2)
-    circuit_to_qir(c, bitwise_file, QUANTINUUM_GATES)
-    yield
-    os.remove(bitwise_file)
+    @fixture
+    def circuit_bitwise_ops(bitwise_file: str) -> None:
+        c = Circuit(0, 3)
+        c.add_c_and(0, 1, 2)
+        c.add_c_or(2, 1, 0)
+        c.add_c_xor(0, 1, 2)
+        circuit_to_qir(c, bitwise_file, QUANTINUUM_GATES)
+        yield
+        os.remove(bitwise_file)
 
 
-@fixture
-def file_name() -> str:
-    return "SimpleCircuit.ll"
+    @fixture
+    def file_name() -> str:
+        return "SimpleCircuit.ll"
 
 
-@fixture
-def ext_module_quantinuum_gateset() -> ExtendedModule:
-    em = ExtendedModule(
-        name="Simple module for Quantinuum gateset.",
-        num_qubits=2,
-        num_results=1,
-        gateset=QUANTINUUM_GATES,
-    )
-    em.module.builder.call(em.h, [em.module.qubits[0]])  # type: ignore
-    em.module.builder.call(em.x, [em.module.qubits[1]])  # type: ignore
-    em.module.builder.call(em.y, [em.module.qubits[0]])  # type: ignore
-    em.module.builder.call(em.z, [em.module.qubits[1]])  # type: ignore
-    em.module.builder.call(em.rx, [0.0, em.module.qubits[1]])  # type: ignore
-    em.module.builder.call(em.ry, [1.0, em.module.qubits[0]])  # type: ignore
-    em.module.builder.call(em.rz, [2.0, em.module.qubits[1]])  # type: ignore
-    em.module.builder.call(em.phx, [1.0, 2.0, em.module.qubits[1]])  # type: ignore
-    em.module.builder.call(
-        em.cnot, [em.module.qubits[0], em.module.qubits[1]]  # type: ignore
-    )
-    em.module.builder.call(
-        em.zzmax, [em.module.qubits[1], em.module.qubits[0]]  # type: ignore
-    )
-    em.module.builder.call(
-        em.zzph, [1.0, em.module.qubits[0], em.module.qubits[1]]  # type: ignore
-    )
-    em.module.builder.call(
-        em.mz, [em.module.qubits[0], em.module.results[0]]  # type: ignore
-    )
-    return em
+    @fixture
+    def ext_module_quantinuum_gateset() -> ExtendedModule:
+        em = ExtendedModule(
+            name="Simple module for Quantinuum gateset.",
+            num_qubits=2,
+            num_results=1,
+            gateset=QUANTINUUM_GATES,
+        )
+        em.module.builder.call(em.h, [em.module.qubits[0]])  # type: ignore
+        em.module.builder.call(em.x, [em.module.qubits[1]])  # type: ignore
+        em.module.builder.call(em.y, [em.module.qubits[0]])  # type: ignore
+        em.module.builder.call(em.z, [em.module.qubits[1]])  # type: ignore
+        em.module.builder.call(em.rx, [0.0, em.module.qubits[1]])  # type: ignore
+        em.module.builder.call(em.ry, [1.0, em.module.qubits[0]])  # type: ignore
+        em.module.builder.call(em.rz, [2.0, em.module.qubits[1]])  # type: ignore
+        em.module.builder.call(em.phx, [1.0, 2.0, em.module.qubits[1]])  # type: ignore
+        em.module.builder.call(
+            em.cnot, [em.module.qubits[0], em.module.qubits[1]]  # type: ignore
+        )
+        em.module.builder.call(
+            em.zzmax, [em.module.qubits[1], em.module.qubits[0]]  # type: ignore
+        )
+        em.module.builder.call(
+            em.zzph, [1.0, em.module.qubits[0], em.module.qubits[1]]  # type: ignore
+        )
+        em.module.builder.call(
+            em.mz, [em.module.qubits[0], em.module.results[0]]  # type: ignore
+        )
+        return em
 
 
-@fixture
-def circuit_quantinuum_gateset(file_name: str) -> Generator:
-    c = Circuit(2, 2)
-    c.H(0)
-    c.X(1)
-    c.Y(0)
-    c.Z(1)
-    c.CX(0, 1)
-    c.add_gate(OpType.ZZMax, [1, 0])
-    c.Rx(0.0, 1)
-    c.Ry(1.0, 0)
-    c.Rz(2.0, 1)
-    c.add_gate(OpType.PhasedX, [1.5, 2.5], [1])
-    c.add_gate(OpType.ZZPhase, [1.0], [0, 1])
-    c.Measure(1, 1)
-    circuit_to_qir(c, file_name, QUANTINUUM_GATES)
-    yield
-    os.remove(file_name)
+    @fixture
+    def circuit_quantinuum_gateset(file_name: str) -> Generator:
+        c = Circuit(2, 2)
+        c.H(0)
+        c.X(1)
+        c.Y(0)
+        c.Z(1)
+        c.CX(0, 1)
+        c.add_gate(OpType.ZZMax, [1, 0])
+        c.Rx(0.0, 1)
+        c.Ry(1.0, 0)
+        c.Rz(2.0, 1)
+        c.add_gate(OpType.PhasedX, [1.5, 2.5], [1])
+        c.add_gate(OpType.ZZPhase, [1.0], [0, 1])
+        c.Measure(1, 1)
+        circuit_to_qir(c, file_name, QUANTINUUM_GATES)
+        yield
+        os.remove(file_name)
 
 
-@fixture
-def circuit_pyqir_gateset(file_name: str) -> Generator:
-    c = Circuit(2, 2)
-    c.H(0)
-    c.X(1)
-    c.Y(0)
-    c.Z(1)
-    c.S(0)
-    c.Sdg(1)
-    c.T(0)
-    c.Tdg(1)
-    c.add_gate(OpType.Reset, [0])
-    c.CX(0, 1)
-    c.CZ(1, 0)
-    c.Rx(0.0, 1)
-    c.Ry(1.0, 0)
-    c.Rz(2.0, 1)
-    c.Measure(1, 1)
-    circuit_to_qir(c, file_name)
-    yield
-    os.remove(file_name)
+    @fixture
+    def circuit_pyqir_gateset(file_name: str) -> Generator:
+        c = Circuit(2, 2)
+        c.H(0)
+        c.X(1)
+        c.Y(0)
+        c.Z(1)
+        c.S(0)
+        c.Sdg(1)
+        c.T(0)
+        c.Tdg(1)
+        c.add_gate(OpType.Reset, [0])
+        c.CX(0, 1)
+        c.CZ(1, 0)
+        c.Rx(0.0, 1)
+        c.Ry(1.0, 0)
+        c.Rz(2.0, 1)
+        c.Measure(1, 1)
+        circuit_to_qir(c, file_name)
+        yield
+        os.remove(file_name)
 
 
 @fixture
