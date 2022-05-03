@@ -36,7 +36,7 @@ static GraphEdgeWeights get_weight_one_edges(
 }
 
 static void add_solver_solutions(
-    const MainSolver::FullSolutionsList& solutions, size_t pattern_n_vertices,
+    const std::vector<SolutionWSM>& solutions, size_t pattern_n_vertices,
     size_t target_n_vertices, SubgraphMonomorphisms& monomorphisms) {
   monomorphisms.mappings.reserve(solutions.size());
 
@@ -50,7 +50,7 @@ static void add_solver_solutions(
     monomorphisms.mappings.back().resize(pattern_n_vertices);
     used_pattern_vertices.clear();
     used_target_vertices.clear();
-    for (const auto& pair : solution) {
+    for (const auto& pair : solution.assignments) {
       const auto& pv = pair.first;
       const auto& tv = pair.second;
       TKET_ASSERT(used_pattern_vertices.insert(pv).second);
@@ -129,20 +129,22 @@ SubgraphMonomorphisms::SubgraphMonomorphisms(
   const auto target_edges_and_weights =
       get_weight_one_edges(target_edges, target_n_vertices);
 
-  MainSolver main_solver;
   MainSolverParameters solver_parameters;
   solver_parameters.terminate_with_first_full_solution = false;
   solver_parameters.for_multiple_full_solutions_the_max_number_to_obtain =
       parameters.max_number_of_mappings;
   solver_parameters.timeout_ms = parameters.timeout_ms;
 
-  const auto& statistics = main_solver.solve(
+  const MainSolver main_solver(
       pattern_edges_and_weights, target_edges_and_weights, solver_parameters);
-  time_taken_ms = statistics.initialisation_time_ms + statistics.search_time_ms;
 
-  const auto& stored_solutions = main_solver.get_some_full_solutions();
+  const auto& solution_data = main_solver.get_solution_data();
+
+  time_taken_ms =
+      solution_data.initialisation_time_ms + solution_data.search_time_ms;
+
   add_solver_solutions(
-      stored_solutions, pattern_n_vertices, target_n_vertices, *this);
+      solution_data.solutions, pattern_n_vertices, target_n_vertices, *this);
 }
 
 }  // namespace tket
