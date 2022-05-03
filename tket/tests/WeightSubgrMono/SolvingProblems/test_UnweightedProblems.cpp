@@ -63,55 +63,9 @@ Recalc with suggestions: 517 problems; orig time 1303; new time 173
 struct EmbedGraphSequences {
   long long total_time_ms;
 
-  long long total_original_time_for_suggested_problems;
-  long long total_suggestion_time_ms;
-  unsigned number_of_suggested_problems;
-
   // Simply use 0 for no embedding, 1 for an embedding,
   // * for timeout, and letters for errors.
   std::string result;
-
-  // Once a problem is solved, run it again with a partial suggestion.
-  void recalculate_with_suggestions(
-      const std::vector<GraphEdgeWeights>& graph_sequence1,
-      const std::vector<GraphEdgeWeights>& graph_sequence2,
-      const std::vector<FullSolutionInformation>& solved_problems_data,
-      CheckedSolution::Statistics& statistics,
-      const MainSolverParameters& solver_params,
-      const CheckedSolution::ProblemInformation& info) {
-    number_of_suggested_problems = solved_problems_data.size();
-    total_original_time_for_suggested_problems = 0;
-    total_suggestion_time_ms = 0;
-
-    if (number_of_suggested_problems == 0) {
-      return;
-    }
-    TestSettings::get().os << "\nNow retrying " << number_of_suggested_problems
-                           << " problems with suggested partial solutions.";
-
-    const auto start_time =
-        statistics.total_init_time_ms + statistics.total_search_time_ms;
-
-    for (const auto& suggestion_entry : solved_problems_data) {
-      const auto search_time_before = statistics.total_search_time_ms;
-      const auto& pattern_graph = graph_sequence1[suggestion_entry.index1];
-      const auto& target_graph = graph_sequence2[suggestion_entry.index2];
-
-      const CheckedSolution checked_solution_with_suggestion(
-          pattern_graph, target_graph, info, solver_params, statistics,
-          suggestion_entry.suggested_assignments);
-
-      TestSettings::get().os << " (orig time "
-                             << suggestion_entry.original_time_ms << ")";
-      if (search_time_before + 100 < statistics.total_search_time_ms) {
-        TestSettings::get().os << "\n";
-      }
-      total_original_time_for_suggested_problems +=
-          suggestion_entry.original_time_ms;
-    }
-    total_suggestion_time_ms = statistics.total_init_time_ms +
-                               statistics.total_search_time_ms - start_time;
-  }
 
   EmbedGraphSequences(
       const std::vector<GraphEdgeWeights>& graph_sequence1,
@@ -140,6 +94,7 @@ struct EmbedGraphSequences {
         }
 
         ++result_index;
+
         if (timeout_expected) {
           // To save time, don't bother trying to solve
           // known hard problems.
@@ -151,38 +106,20 @@ struct EmbedGraphSequences {
         const CheckedSolution checked_solution(
             pattern_graph, target_graph, info, solver_params, statistics);
 
-        if (search_time_before + 100 < statistics.total_search_time_ms) {
-          TestSettings::get().os << "\n";
-        }
-        if (checked_solution.complete_solution_weight) {
-          const auto scalar_product =
-              checked_solution.complete_solution_weight.value();
-          if (scalar_product == pattern_graph.size()) {
-            ss << "1";
-            if (checked_solution.assignments.size() > 4) {
-              solved_problems_data.emplace_back();
-              solved_problems_data.back().index1 = index1;
-              solved_problems_data.back().index2 = index2;
-              solved_problems_data.back().original_time_ms =
-                  statistics.total_search_time_ms - search_time_before;
-              const auto& assignment =
-                  checked_solution
-                      .assignments[checked_solution.assignments.size() / 2];
-              solved_problems_data.back().suggested_assignments.emplace_back(
-                  assignment);
-            }
-          } else {
-            // Error: wrong scalar product!
-            ss << "X";
-          }
+        if (checked_solution.scalar_product == pattern_graph.size()) {
+          ss << "1";
           continue;
         }
-        // No solution found.
-        if (checked_solution.finished) {
-          ss << "0";
+        if (checked_solution.scalar_product == 0) {
+          if (checked_solution.finished) {
+            ss << "0";
+          } else {
+            // Timed out.
+            ss << "*";
+          }
         } else {
-          // Must have timed out.
-          ss << "*";
+          // Error: wrong scalar product!
+          ss << "X";
         }
       }
     }
@@ -193,12 +130,6 @@ struct EmbedGraphSequences {
     }
     total_time_ms =
         statistics.total_init_time_ms + statistics.total_search_time_ms;
-
-    info.existence = CheckedSolution::ProblemInformation::SolutionsExistence::
-        KNOWN_TO_BE_SOLUBLE;
-    recalculate_with_suggestions(
-        graph_sequence1, graph_sequence2, solved_problems_data, statistics,
-        solver_params, info);
   }
 };
 
@@ -411,6 +342,7 @@ SCENARIO("Increasing graph sequences") {
     for (unsigned jj = 0; jj < list_of_increasing_graph_sequences.size();
          ++jj) {
       TestSettings::get().os << "\ni=" << ii << ", j=" << jj << " : ";
+
       const EmbedGraphSequences embedding_tester(
           list_of_increasing_graph_sequences[ii],
           list_of_increasing_graph_sequences[jj], timeout_ms,
@@ -420,24 +352,10 @@ SCENARIO("Increasing graph sequences") {
       total_time_ms += embedding_tester.total_time_ms;
       check_monotonic_embedding_property(
           embedding_tester.result, num_entries, ii == jj);
-      total_full_solutions_original_time_ms +=
-          embedding_tester.total_original_time_for_suggested_problems;
-      total_recalculated_suggestions_time_ms +=
-          embedding_tester.total_suggestion_time_ms;
-      number_of_full_solutions += embedding_tester.number_of_suggested_problems;
     }
   }
   TestSettings::get().os << "\n:::: unweighted probs time: " << total_time_ms
-                         << "\nRecalc with suggestions: "
-                         << number_of_full_solutions << " problems; orig time "
-                         << total_full_solutions_original_time_ms
-                         << "; new time "
-                         << total_recalculated_suggestions_time_ms << "\n";
-
-  // The actual factor is >7, not 3.
-  CHECK(
-      total_full_solutions_original_time_ms >=
-      3 * total_recalculated_suggestions_time_ms);
+                         << "\n";
   CHECK(calc_results == expected_results);
 }
 

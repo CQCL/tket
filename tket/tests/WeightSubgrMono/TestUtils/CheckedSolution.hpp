@@ -20,6 +20,9 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+// Full end-to-end solve and automatic checking of the solution.
+// Only for use with single solutions, i.e.
+// for_multiple_full_solutions_the_max_number_to_obtain should be set to 0.
 struct CheckedSolution {
   // Extra information about the problem to be solved.
   struct ProblemInformation {
@@ -43,26 +46,24 @@ struct CheckedSolution {
     long long total_search_time_ms = 0;
   };
 
-  // We don't really care about incomplete solutions.
-  // If non-null, it means that the solver found a complete solution
-  // (however, it may have timed out).
-  std::optional<WeightWSM> complete_solution_weight;
+  // Did the solver time out?
   bool finished = false;
 
   std::size_t iterations = 0;
 
-  // The best solution found. This may or may not be complete.
-  // If "complete_solution_weight" is not null, then it IS complete,
+  // The best solution found. If nonempty, it is complete,
   // and has been checked to be valid.
   std::vector<std::pair<VertexWSM, VertexWSM>> assignments;
+
+  // If assignments is nonempty, the reported scalar product of the solution
+  // (automatically checked to be correct).
+  WeightWSM scalar_product = 0;
 
   // Solve the given problem, updating the statistics.
   CheckedSolution(
       const GraphEdgeWeights& pdata, const GraphEdgeWeights& tdata,
-      ProblemInformation info, const MainSolverParameters& solver_params,
-      Statistics& stats,
-      const std::vector<std::pair<VertexWSM, VertexWSM>>&
-          suggested_assignments = {});
+      ProblemInformation info, MainSolverParameters solver_params,
+      Statistics& stats);
 };
 
 }  // namespace WeightedSubgraphMonomorphism

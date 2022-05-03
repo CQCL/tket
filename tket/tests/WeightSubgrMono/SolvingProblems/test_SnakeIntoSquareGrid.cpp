@@ -252,11 +252,7 @@ SCENARIO("embedding paths into square grids") {
           line_graph, t_graph_data, info, solver_params, statistics);
       // Should be no timeouts, and a complete solution.
       CHECK(checked_solution.finished);
-      CHECK(checked_solution.complete_solution_weight);
-      if (checked_solution.complete_solution_weight) {
-        calc_problems.push_back(
-            checked_solution.complete_solution_weight.value());
-      }
+      calc_problems.push_back(checked_solution.scalar_product);
     }
     CHECK(entry.second == calc_problems);
   }

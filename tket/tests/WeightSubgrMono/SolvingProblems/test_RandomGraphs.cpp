@@ -191,12 +191,8 @@ static TestResult test_all_against_all(
           calc_results.push_back(-1);
           return;
         }
-        if (checked_solution.complete_solution_weight) {
-          calc_results.push_back(
-              checked_solution.complete_solution_weight.value());
-        } else {
-          calc_results.push_back(0);
-        }
+        // If no solution, it will be zero.
+        calc_results.push_back(checked_solution.scalar_product);
       };
 
   for (unsigned ii = 0; ii < graphs.size(); ++ii) {
@@ -308,7 +304,7 @@ SCENARIO("embedding random graphs - medium graphs, small weights") {
       0,         0,         1068,      0,         0,         0,
       0,         0,         0,         0,         0,         1257};
   TestParameters params;
-  params.timeout = 5000;
+  params.timeout = 10000;
 
   const auto result =
       test_all_against_all(codes, weights, expected_results, params);
@@ -329,7 +325,6 @@ SCENARIO("embedding random graphs - large graphs, small weights") {
       "50 500 9999", "55 1000 101010"};
   const std::vector<WeightWSM> weights{1, 2, 3, 8};
 
-  // 5000 ms timeout...
   const ResultsSummary expected_results{
       460517071,  255540664,  811304662, 581415081, 853453591, 367941120,
       1072813581, 1006422874, 309411091, 971368384, 1261,      0,
@@ -359,7 +354,7 @@ SCENARIO("embedding random graphs - large graphs, small weights") {
   }
 
   TestParameters params;
-  params.timeout = 5000;
+  params.timeout = 10000;
 
   const auto result = test_all_against_all(
       codes, weights, expected_results, params, overwrite_values);

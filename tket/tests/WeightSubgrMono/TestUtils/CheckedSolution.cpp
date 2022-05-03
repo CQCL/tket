@@ -17,77 +17,99 @@
 #include <catch2/catch.hpp>
 
 #include "../TestUtils/TestSettings.hpp"
+#include "WeightSubgrMono/Common/GeneralUtils.hpp"
 #include "WeightSubgrMono/EndToEndWrappers/MainSolver.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-static void check_finished_complete_solution(
-    const CheckedSolution::ProblemInformation& info,
-    const SolutionStatistics& soln_statistics, const SolutionWSM& solution,
-    CheckedSolution::Statistics& stats, const OStreamWrapper& os) {
-  // Finished and complete; this MUST be the optimal solution.
-  if (!info.known_optimal_solution) {
-    os << "; soln " << solution.total_scalar_product_weight;
-  }
-  os << "; " << soln_statistics.iterations << " iters.";
-  bool satisfies_optimal_bounds = true;
-  if (info.known_lower_bound) {
-    const auto lb = info.known_lower_bound.value();
-    if (lb > solution.total_scalar_product_weight) {
-      satisfies_optimal_bounds = false;
+static void check_with_no_solution(
+    CheckedSolution::ProblemInformation info,
+    // const MainSolverParameters& solver_params,
+    const SolutionData& soln_data, CheckedSolution::Statistics& stats,
+    const OStreamWrapper& os) {
+  if (soln_data.finished) {
+    os << "; no soln.";
+    switch (info.existence) {
+      case CheckedSolution::ProblemInformation::SolutionsExistence::
+          KNOWN_TO_BE_INSOLUBLE:
+        // fallthrough.
+      case CheckedSolution::ProblemInformation::SolutionsExistence::UNKNOWN:
+        ++stats.success_count;
+        return;
+      case CheckedSolution::ProblemInformation::SolutionsExistence::
+          KNOWN_TO_BE_SOLUBLE:
+        ++stats.failure_count;
+        return;
+      default:
+        CHECK(false);
     }
-  }
-  if (info.known_upper_bound) {
-    const auto ub = info.known_upper_bound.value();
-    if (ub < solution.total_scalar_product_weight) {
-      satisfies_optimal_bounds = false;
-    }
-  }
-  if (satisfies_optimal_bounds) {
-    ++stats.success_count;
   } else {
-    ++stats.failure_count;
-    os << " violates known soln bounds!";
+    os << "; TIMED OUT";
+    ++stats.timeout_count;
   }
 }
 
-static void check_unfinished_solution(
-    const CheckedSolution::ProblemInformation& info,
-    const SolutionStatistics& soln_statistics, const SolutionWSM& solution,
-    const MainSolverParameters& solver_params,
-    CheckedSolution::Statistics& stats, const OStreamWrapper& os) {
-  if (soln_statistics.iterations >= solver_params.max_iterations) {
-    os << " - hit iterations limit: " << soln_statistics.iterations;
-  } else {
-    os << " - TIMED OUT.";
-  }
+static bool check_solution_scalar_product(
+    CheckedSolution::ProblemInformation info,
+    // const MainSolverParameters& solver_params,
+    const SolutionData& solution_data,
+    // CheckedSolution::Statistics& stats,
+    // CheckedSolution& checked_solution,
+    const SolutionWSM& best_solution, const OStreamWrapper& os) {
+  // OK, maybe without realising the caller might just happen to pass in
+  // an unweighted problem, but ignore that.
+  const bool unweighted_problem =
+      info.known_lower_bound && info.known_upper_bound &&
+      info.known_lower_bound.value() == info.known_upper_bound.value();
 
-  ++stats.timeout_count;
-  if (!solution.complete) {
-    // Not really anything useful to test for an incomplete solution.
-    return;
-  }
-  // Just check the lower bound, nothing else we can do.
-  // (It was already checked to be VALID, with get_errors).
+  auto lower_bound = solution_data.trivial_weight_lower_bound;
   if (info.known_lower_bound) {
-    const auto lb = info.known_lower_bound.value();
-    if (lb > solution.total_scalar_product_weight) {
-      os << " - error - we know that the optimal solution value (if it exists) "
-            "has lower bound "
-         << lb << ". But we found a complete solution with value "
-         << solution.total_scalar_product_weight;
-
-      ++stats.failure_count;
+    lower_bound = std::max(lower_bound, info.known_lower_bound.value());
+  }
+  auto upper_bound = solution_data.trivial_weight_initial_upper_bound;
+  if (info.known_upper_bound) {
+    // Do we expect an OPTIMAL solution?
+    if (solution_data.finished || unweighted_problem) {
+      upper_bound = std::min(upper_bound, info.known_upper_bound.value());
     }
   }
-  if (info.existence == CheckedSolution::ProblemInformation::
-                            SolutionsExistence::KNOWN_TO_BE_INSOLUBLE) {
-    os << " - error - found a complete solution with value "
-       << solution.total_scalar_product_weight
-       << ", even though we know no solution exists";
+  if (!(lower_bound <= best_solution.scalar_product &&
+        best_solution.scalar_product <= upper_bound)) {
+    os << ": CALC " << best_solution.scalar_product
+       << " violates known soln bounds [" << lower_bound << ", " << upper_bound
+       << "]";
+    return false;
+  }
+  return true;
+}
 
-    ++stats.failure_count;
+static void check_calculated_solution(
+    CheckedSolution::ProblemInformation info,
+    const MainSolverParameters& solver_params, const SolutionData& soln_data,
+    CheckedSolution::Statistics& stats, CheckedSolution& checked_solution,
+    const OStreamWrapper& os) {
+  REQUIRE(soln_data.solutions.size() == 1);
+  const auto& best_solution = soln_data.solutions[0];
+  checked_solution.scalar_product = best_solution.scalar_product;
+
+  checked_solution.assignments = best_solution.assignments;
+  REQUIRE(is_sorted_and_unique(checked_solution.assignments));
+  REQUIRE(!checked_solution.assignments.empty());
+  if (!info.known_optimal_solution) {
+    os << "; soln " << checked_solution.scalar_product;
+  }
+  const bool valid_scalar_product =
+      check_solution_scalar_product(info, soln_data, best_solution, os);
+  if (soln_data.finished || solver_params.terminate_with_first_full_solution) {
+    if (valid_scalar_product) {
+      ++stats.success_count;
+    } else {
+      ++stats.failure_count;
+    }
+  } else {
+    os << "; TIMED OUT";
+    ++stats.timeout_count;
   }
 }
 
@@ -141,113 +163,75 @@ static void check_for_impossible_weight_constraint(
       KNOWN_TO_BE_INSOLUBLE;
 }
 
-
-static void check_solver_object(const MainSolver& solver,
-    const GraphEdgeWeights& pdata, const GraphEdgeWeights& tdata,
-    CheckedSolution::ProblemInformation info,
+static void check_solver_object(
+    const MainSolver& solver, const GraphEdgeWeights& pdata,
+    const GraphEdgeWeights& tdata, CheckedSolution::ProblemInformation info,
     const MainSolverParameters& solver_params,
     CheckedSolution::Statistics& stats, CheckedSolution& checked_solution,
     const OStreamWrapper& os) {
-  const auto& solution = solver.get_best_solution();
-  const auto& soln_statistics = solver.get_solution_statistics();
-  checked_solution.iterations = soln_statistics.iterations;
-  checked_solution.finished = soln_statistics.finished;
-  checked_solution.assignments = solution.assignments;
-  if (solution.complete) {
-    checked_solution.complete_solution_weight =
-        solution.total_scalar_product_weight;
-  }
+  const auto& solution_data = solver.get_solution_data();
+  checked_solution.iterations = solution_data.iterations;
+  checked_solution.finished = solution_data.finished;
+  CHECK(solution_data.solutions.size() <= 1);
 
-  stats.total_init_time_ms += soln_statistics.initialisation_time_ms;
-  stats.total_search_time_ms += soln_statistics.search_time_ms;
+  stats.total_init_time_ms += solution_data.initialisation_time_ms;
+  stats.total_search_time_ms += solution_data.search_time_ms;
 
-  os << " - time " << soln_statistics.initialisation_time_ms << "+"
-     << soln_statistics.search_time_ms;
+  os << "; time " << solution_data.initialisation_time_ms << "+"
+     << solution_data.search_time_ms << "; " << solution_data.iterations
+     << " iters";
   if (info.known_optimal_solution) {
-    os << " - known opt.val. " << info.known_optimal_solution.value();
+    os << "; known opt.val. " << info.known_optimal_solution.value();
   }
 
-  {
+  for (const auto& solution : solution_data.solutions) {
     const auto errors = solution.get_errors(pdata, tdata);
     CHECK("" == errors);
     if (!errors.empty()) {
       ++stats.failure_count;
       return;
     }
-    // The solution, if complete, is valid.
   }
 
-  if (soln_statistics.finished) {
-    if (solution.complete) {
-      check_finished_complete_solution(
-          info, soln_statistics, solution, stats, os);
-      return;
-    }
-    // It is finished, but with no COMPLETE solution.
-    os << " - no soln.";
-
-    switch (info.existence) {
-      case CheckedSolution::ProblemInformation::SolutionsExistence::
-          KNOWN_TO_BE_INSOLUBLE:
-        // fallthrough.
-      case CheckedSolution::ProblemInformation::SolutionsExistence::UNKNOWN:
-        ++stats.success_count;
-        return;
-      case CheckedSolution::ProblemInformation::SolutionsExistence::
-          KNOWN_TO_BE_SOLUBLE:
-        ++stats.failure_count;
-        return;
-      default:
-        CHECK(false);
-    }
-    return;
+  if (solution_data.solutions.empty()) {
+    check_with_no_solution(info, solution_data, stats, os);
+  } else {
+    check_calculated_solution(
+        info, solver_params, solution_data, stats, checked_solution, os);
   }
-  if (solver_params.terminate_with_first_full_solution && solution.complete) {
-    check_finished_complete_solution(
-        info, soln_statistics, solution, stats, os);
-    return;
-  }
-  check_unfinished_solution(
-      info, soln_statistics, solution, solver_params, stats, os);
 }
-
 
 static void solve_problem(
     const GraphEdgeWeights& pdata, const GraphEdgeWeights& tdata,
     CheckedSolution::ProblemInformation info,
     const MainSolverParameters& solver_params,
     CheckedSolution::Statistics& stats, CheckedSolution& checked_solution,
-    const OStreamWrapper& os,
-    const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments) {
+    const OStreamWrapper& os) {
   check_known_solution_information(info);
   check_for_impossible_weight_constraint(info, solver_params);
-  
-  if (suggested_assignments.empty()) {
-    const MainSolver solver(pdata, tdata, solver_params);
-    check_solver_object(solver, pdata, tdata, info, solver_params,
-          stats,  checked_solution, os);
-    return;
-  }
-  MainSolver solver(pdata, tdata, suggested_assignments);
-  solver.solve(solver_params);
-  check_solver_object(solver, pdata, tdata, info, solver_params,
-          stats, checked_solution, os);
+  const MainSolver solver(pdata, tdata, solver_params);
+  check_solver_object(
+      solver, pdata, tdata, info, solver_params, stats, checked_solution, os);
 }
-
-
 
 CheckedSolution::CheckedSolution(
     const GraphEdgeWeights& pdata, const GraphEdgeWeights& tdata,
-    ProblemInformation info, const MainSolverParameters& solver_params,
-    Statistics& stats,
-    const std::vector<std::pair<VertexWSM, VertexWSM>>& suggested_assignments) {
-  const auto& os = TestSettings::get().os;
+    ProblemInformation info, MainSolverParameters solver_params,
+    Statistics& stats) {
+  // What should the parameters be? Experiment!
+  // Unfortunately, changing them seems to be better for some tests,
+  // worse for others; probably the best option is to have a dynamic
+  // manager adjusting them as the search proceeds, similar to
+  // the WeightNogoodDetectorManager ...
+  solver_params.max_distance_for_domain_initialisation_distance_filter = 2;
+  solver_params.max_distance_for_distance_reduction_during_search = 8;
 
+  REQUIRE(
+      solver_params.for_multiple_full_solutions_the_max_number_to_obtain == 0);
+  const auto& os = TestSettings::get().os;
   const auto orig_init_time = stats.total_init_time_ms;
   const auto orig_search_time = stats.total_search_time_ms;
-  solve_problem(
-      pdata, tdata, info, solver_params, stats, *this, os,
-      suggested_assignments);
+  solve_problem(pdata, tdata, info, solver_params, stats, *this, os);
 }
 
 }  // namespace WeightedSubgraphMonomorphism
