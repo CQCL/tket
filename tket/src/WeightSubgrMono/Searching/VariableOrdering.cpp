@@ -18,14 +18,20 @@
 
 #include "Utils/RNG.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
+#include "WeightSubgrMono/Searching/DomainsAccessor.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 bool VariableOrdering::check_candidate(
-    VertexWSM pv, std::size_t domain_size, std::size_t& min_domain_size) {
+    VertexWSM pv, std::size_t domain_size, std::size_t& min_domain_size,
+    std::set<VertexWSM>& current_node_unassigned_vertices_to_overwrite,
+    bool write_unassigned_vertices) {
   if (domain_size == 0) {
     return false;
+  }
+  if (write_unassigned_vertices && domain_size > 1) {
+    current_node_unassigned_vertices_to_overwrite.insert(pv);
   }
   if (domain_size == 1 || domain_size > min_domain_size) {
     return true;
@@ -40,26 +46,35 @@ bool VariableOrdering::check_candidate(
 }
 
 VariableOrdering::Result VariableOrdering::get_variable(
-    const PossibleAssignments& possible_assignments,
-    const std::set<VertexWSM>& candidate_vertices, RNG& rng) {
+    const DomainsAccessor& accessor, RNG& rng,
+    std::set<VertexWSM>& current_node_unassigned_vertices_to_overwrite) {
   m_pv_list.clear();
   std::size_t min_domain_size;
   set_maximum(min_domain_size);
   Result result;
 
-  for (VertexWSM pv : candidate_vertices) {
-    const auto domain_size = possible_assignments.at(pv).size();
-    if (!check_candidate(pv, domain_size, min_domain_size)) {
+  for (VertexWSM pv : accessor.get_candidate_vertices_for_assignment()) {
+    const auto domain_size = accessor.get_domain(pv).size();
+    if (!check_candidate(
+            pv, domain_size, min_domain_size,
+            // The candidate vertices are NOT necessarily
+            // all the unassigned vertices, therefore we DON'T
+            // try to fill the set.
+            current_node_unassigned_vertices_to_overwrite, false)) {
       result.empty_domain = true;
       return result;
     }
   }
   if (m_pv_list.empty()) {
     // No candidates are unassigned, so look through ALL vertices.
-    for (const auto& entry : possible_assignments) {
-      const VertexWSM& pv = entry.first;
-      const auto domain_size = entry.second.size();
-      if (!check_candidate(pv, domain_size, min_domain_size)) {
+    const bool write_unassigned_vertices =
+        current_node_unassigned_vertices_to_overwrite.empty();
+    for (VertexWSM pv : accessor.get_unassigned_pattern_vertices_superset()) {
+      const auto domain_size = accessor.get_domain(pv).size();
+      if (!check_candidate(
+              pv, domain_size, min_domain_size,
+              current_node_unassigned_vertices_to_overwrite,
+              write_unassigned_vertices)) {
         result.empty_domain = true;
         return result;
       }

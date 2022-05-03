@@ -12,28 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/Searching/WeightUpdater.hpp"
+#include "WeightSubgrMono/Searching/WeightCalculator.hpp"
 
 #include "Utils/Assert.hpp"
 #include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
+#include "WeightSubgrMono/Searching/DomainsAccessor.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-std::optional<WeightUpdater::Result> WeightUpdater::operator()(
+std::optional<WeightCalculator::Result> WeightCalculator::operator()(
     const NeighboursData& pattern_ndata, const NeighboursData& target_ndata,
-    const PossibleAssignments& possible_assignments,
-    const std::vector<std::pair<VertexWSM, VertexWSM>>& assignments,
-    std::size_t number_of_p_vertices_previously_processed_in_this_node,
-    WeightWSM current_weight, WeightWSM max_weight,
+    const DomainsAccessor& accessor,
+    std::size_t number_of_processed_assignments, WeightWSM max_weight,
     std::set<VertexWSM>& unassigned_neighbour_vertices) const {
   m_p_vertices_seen.clear();
+
   Result result;
-  result.scalar_product = current_weight;
+  result.scalar_product = accessor.get_scalar_product();
   result.total_extra_p_edge_weights = 0;
 
-  for (auto ii = number_of_p_vertices_previously_processed_in_this_node;
-       ii < assignments.size(); ++ii) {
+  const auto& assignments = accessor.get_new_assignments();
+
+  for (auto ii = number_of_processed_assignments; ii < assignments.size();
+       ++ii) {
     const VertexWSM& pv = assignments[ii].first;
     const VertexWSM& tv = assignments[ii].second;
 
@@ -42,7 +44,7 @@ std::optional<WeightUpdater::Result> WeightUpdater::operator()(
     // Look for assigned neighbours.
     for (const auto& entry : pattern_ndata.get_neighbours_and_weights(pv)) {
       const VertexWSM& other_pv = entry.first;
-      const auto& other_domain = possible_assignments.at(other_pv);
+      const auto& other_domain = accessor.get_domain(other_pv);
       switch (other_domain.size()) {
         case 0:
           return {};
@@ -64,7 +66,8 @@ std::optional<WeightUpdater::Result> WeightUpdater::operator()(
             return {};
           }
           result.total_extra_p_edge_weights += entry.second;
-        } break;
+          break;
+        }
         default:
           // An unassigned vertex, which is ALSO adjacent to an assigned one.
           unassigned_neighbour_vertices.insert(other_pv);

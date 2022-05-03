@@ -21,6 +21,8 @@ namespace tket {
 class RNG;
 namespace WeightedSubgraphMonomorphism {
 
+class DomainsAccessor;
+
 /** Out of all the unassigned pattern v, which one should we choose next
  * to assign? Should ONLY be called with fully reduced domains, etc.
  */
@@ -34,20 +36,26 @@ class VariableOrdering {
     bool empty_domain;
   };
 
-  /** We prefer, first, vertices in the candidate set.
-   * Only if no unassigned candidates exist do we allow other vertices.
-   * Next, we prefer those with smallest domains.
+  /** We prefer, first, vertices in the candidate set (which, in practice,
+   * are vertices adjacent to assigned ones).
+   * Only if no unassigned candidates exist do we allow other vertices
+   * (i.e., implicitly take the candidate list to be the set of all
+   * unassigned vertices - this necessarily means vertices
+   * in other components).
+   * Within the candidate vertices, we prefer those with smallest domains.
    */
   Result get_variable(
-      const PossibleAssignments& possible_assignments,
-      const std::set<VertexWSM>& candidate_vertices, RNG& rng);
+      const DomainsAccessor& accessor, RNG& rng,
+      std::set<VertexWSM>& current_node_unassigned_vertices_to_overwrite);
 
  private:
   std::vector<VertexWSM> m_pv_list;
 
   /** Returns false if an empty domain is detected. */
   bool check_candidate(
-      VertexWSM pv, std::size_t domain_size, std::size_t& min_domain_size);
+      VertexWSM pv, std::size_t domain_size, std::size_t& min_domain_size,
+      std::set<VertexWSM>& current_node_unassigned_vertices_to_overwrite,
+      bool write_unassigned_vertices);
 };
 
 }  // namespace WeightedSubgraphMonomorphism

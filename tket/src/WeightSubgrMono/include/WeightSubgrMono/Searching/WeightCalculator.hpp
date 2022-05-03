@@ -13,30 +13,29 @@
 // limitations under the License.
 
 #pragma once
-#include <map>
 #include <optional>
 #include <set>
-#include <string>
 
 #include "../GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+class DomainsAccessor;
 class NeighboursData;
 
 /** Some new pv->tv assignments have been made in a search node.
  * Updates the total weight (scalar product) of this node,
  * whenever new edges become assigned.
  * This does NOT have to be attached to a specific node,
- * BUT the caller must keep track of which assignments in THIS node
- * were already processed in a previous call.
+ * BUT the caller must keep track of how many assignments in THIS node
+ * were already processed in a previous call (similar to reducing).
  */
-class WeightUpdater {
+class WeightCalculator {
  public:
   struct Result {
     WeightWSM scalar_product;
-    // It's more convenient to return the additional edge weights,
+    // It's convenient to return the additional edge weights,
     // rather than the total.
     WeightWSM total_extra_p_edge_weights;
   };
@@ -49,10 +48,8 @@ class WeightUpdater {
    */
   std::optional<Result> operator()(
       const NeighboursData& pattern_ndata, const NeighboursData& target_ndata,
-      const PossibleAssignments& possible_assignments,
-      const std::vector<std::pair<VertexWSM, VertexWSM>>& assignments,
-      std::size_t number_of_p_vertices_previously_processed_in_this_node,
-      WeightWSM current_weight, WeightWSM max_weight,
+      const DomainsAccessor& accessor,
+      std::size_t number_of_processed_assignments, WeightWSM max_weight,
       std::set<VertexWSM>& unassigned_neighbour_vertices) const;
 
  private:
