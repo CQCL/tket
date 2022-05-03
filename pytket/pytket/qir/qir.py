@@ -15,7 +15,7 @@
 import os
 import platform
 from string import Template
-from typing import Any, Callable, Dict, List, NamedTuple, Optional, Tuple, Union
+from typing import Callable, Dict, List, NamedTuple, Optional, Tuple, Union
 
 from pytket import Circuit, OpType, Bit, Qubit
 from pytket.circuit import Op  # type: ignore
