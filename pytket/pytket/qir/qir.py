@@ -301,7 +301,7 @@ def _to_qis_bits(args: List[Bit], mod: SimpleModule) -> Optional[List[Result]]:
     return None
 
 
-def circuit_from_qir(input_file: Union[str, "os.PathLike[Any]"]) -> Circuit:
+def circuit_from_qir(input_file: Union[str, "os.PathLike"]) -> Circuit:
     ext = os.path.splitext(input_file)[-1]
     if ext not in [".ll", ".bc"]:
         raise TypeError("Can only convert .bc or .ll files")
