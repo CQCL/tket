@@ -16,15 +16,19 @@
 #include <memory>
 
 #include "../Reducing/DerivedGraphsReducer.hpp"
-#include "../Reducing/HallSetReducer.hpp"
-#include "AssignmentChecker.hpp"
-#include "EnrichedNode.hpp"
-#include "WeightUpdater.hpp"
+#include "../Reducing/DistancesReducer.hpp"
+#include "../Reducing/HallSetReduction.hpp"
+#include "../Reducing/NeighboursReducer.hpp"
+#include "../Reducing/ReducerWrapper.hpp"
+#include "DomainsAccessor.hpp"
+#include "NodeListTraversal.hpp"
+#include "NodesRawData.hpp"
+#include "WeightCalculator.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-class DistancesReducer;
+class NearNeighboursData;
 class NeighboursData;
 class WeightChecker;
 
@@ -38,21 +42,18 @@ class SearchBranch {
  public:
   /** Constructs node[0], i.e. the initial node.*/
   SearchBranch(
-      PossibleAssignments initial_pattern_v_to_possible_target_v,
-      const NeighboursData& pattern_ndata, const NeighboursData& target_ndata,
-      DistancesReducer& distances_reducer);
+      const PossibleAssignments& initial_pattern_v_to_possible_target_v,
+      const NeighboursData& pattern_ndata,
+      NearNeighboursData& pattern_near_ndata,
+      const NeighboursData& target_ndata, NearNeighboursData& target_near_ndata,
+      unsigned max_distance_reduction_value);
 
-  /** Extra parameters needed to configure how we reduce a single node
-   * with all the extra components stored in the SearchComponents object.
-   */
+  /** Extra parameters to configure reducing a single node. */
   struct ReductionParameters {
     WeightWSM max_weight;
-    unsigned max_distance_reduction_value;
   };
 
-  /** This is at the branch level, not node level, BECAUSE this branch has
-   * m_outstanding_impossible_assignments, which nodes don't know about.
-   * If it returns false, the node is in an invalid state; but that's OK
+  /** If it returns false, the node is in an invalid state; but that's OK
    * because the caller should immediately discard it and move up.
    */
   bool reduce_current_node(const ReductionParameters& parameters);
@@ -71,58 +72,68 @@ class SearchBranch {
    */
   void move_down(VertexWSM p_vertex, VertexWSM t_vertex);
 
-  /** Inform the branch that pv->tv is (and always was)
-   * impossible (regardless of the state of the search,
-   * i.e. this would be safe to share with other searches even at the start).
-   * The assignment will be removed from all domains, so it can never occur.
-   * However, IGNORE the current node.
+  /** A relatively expensive operation. Simply returns ALL target vertices
+   * which still exist in SOME domain, ANYWHERE in the search tree.
+   * Thus, anything NOT in this set can be safely erased
+   * (as far as THIS search is concerned, anyway).
+   * Naturally, as the search progresses this set will reduce,
+   * so for best results the caller should delay this as long as possible.
+   * @return The set of all target vertices which might still occur during the
+   * future search.
    */
-  void register_impossible_assignment(
-      const std::pair<VertexWSM, VertexWSM>& assignment);
-
-  const NodeWSM& get_current_node() const;
-
-  /** This is the set of vertices adjacent to any existing assigned vertex,
-   * to be used as candidates when choosing a new variable to assign.
-   */
-  std::set<VertexWSM>& get_current_node_candidate_variables();
-
   std::set<VertexWSM> get_used_target_vertices() const;
 
   void activate_weight_checker(WeightWSM total_p_edge_weights);
 
+  const DomainsAccessor& get_domains_accessor() const;
+
+  /** Should only rarely be used. */
+  DomainsAccessor& get_domains_accessor_nonconst();
+
  private:
   const NeighboursData& m_pattern_ndata;
   const NeighboursData& m_target_ndata;
-  DistancesReducer& m_distances_reducer;
   DerivedGraphsReducer m_derived_graphs_reducer;
-  AssignmentChecker m_assignment_checker;
+  const WeightCalculator m_weight_calculator;
+  HallSetReduction m_hall_set_reduction;
+  NeighboursReducer m_neighbours_reducer;
 
-  /** To save reallocation, we DON'T resize m_enriched_nodes;
-   * instead, we just remember the index and overwrite/resize as appropriate.
+  NodesRawDataWrapper m_nodes_raw_data_wrapper;
+  DomainsAccessor m_domains_accessor;
+  NodeListTraversal m_node_list_traversal;
+
+  // A bit crude, but to fit into the general framework we want each distance
+  // to have a separate reducer object.
+  // Since they all share references to the main data,
+  // this is not really inefficient.
+  std::vector<DistancesReducer> m_distance_reducers;
+  std::vector<ReducerWrapper> m_reducer_wrappers;
+
+  std::set<VertexWSM> m_work_set_for_reducers;
+
+  /** Every pv->tv assignment in here has previously passed all
+   * the simple checks for validity, so we need not repeat.
+   * (Also, we don't need to store the impossible ones,
+   * since the caller should erase them from all data as soon as they fail
+   * the checks).
    */
-  std::size_t m_enriched_nodes_index;
-
-  const WeightUpdater m_weight_updater;
-  HallSetReducer m_hall_set_reducer;
-
-  std::vector<EnrichedNode> m_enriched_nodes;
+  PossibleAssignments m_checked_assignments;
 
   std::unique_ptr<WeightChecker> m_weight_checker_ptr;
 
-  /** As long as this is nonempty, will keep trying to erase these assignments
-   * completely from the nodes, until they're all gone.
-   */
-  std::vector<std::pair<VertexWSM, VertexWSM>>
-      m_outstanding_impossible_assignments;
+  bool perform_single_assignment_checks_in_reduce_loop(
+      std::size_t num_assignments_alldiff_processed);
 
-  std::vector<VertexWSM> m_outstanding_impossible_target_vertices;
+  bool check_and_update_scalar_product_in_reduce_loop(
+      const ReductionParameters& parameters,
+      std::size_t num_assignments_alldiff_processed);
 
-  NodeWSM& get_current_node_nonconst();
+  bool perform_weight_nogood_check_in_reduce_loop(
+      const ReductionParameters& parameters);
 
-  /** Reduces the current node aggressively, returning false if it becomes
-   * impossible. */
-  bool attempt_to_clear_outstanding_impossible_data();
+  ReductionResult perform_reducers_in_reduce_loop();
+
+  bool perform_main_reduce_loop(const ReductionParameters& parameters);
 };
 
 }  // namespace WeightedSubgraphMonomorphism
