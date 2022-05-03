@@ -28,6 +28,9 @@ if platform.machine() == "x86_64":
     from pyqir.generator.types import Double, Qubit, Result, Void  # type: ignore
 
 
+PyQirInputTypes = Union[Double, Qubit, Result]
+PyQirOutputTypes = Union[Result, Void]
+
 
 CustomPyQIRGate = NamedTuple(
     "CustomPyQIRGate",
