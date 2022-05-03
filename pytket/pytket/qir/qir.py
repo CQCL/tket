@@ -13,12 +13,14 @@
 # limitations under the License.
 
 import os
+import platform
 from string import Template
 from typing import Callable, Dict, List, NamedTuple, Optional, Tuple, Union
 
-from pyqir.parser import QirModule, QirCallInstr  # type: ignore
-from pyqir.parser._native import PyQirInstruction  # type: ignore
-from pyqir.generator import SimpleModule, BasicQisBuilder, types  # type: ignore
+if platform.machine() == "x86_64":
+    from pyqir.parser import QirModule, QirCallInstr  # type: ignore
+    from pyqir.parser._native import PyQirInstruction  # type: ignore
+    from pyqir.generator import SimpleModule, BasicQisBuilder, types  # type: ignore
 from pytket import Circuit, OpType, Bit, Qubit
 from pytket.circuit import Op  # type: ignore
 from pytket.circuit.logic_exp import BitWiseOp
