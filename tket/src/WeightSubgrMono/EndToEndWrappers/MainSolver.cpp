@@ -302,7 +302,7 @@ void MainSolver::internal_solve(
         return;
       }
     }
-    if (move_down_from_reduced_node(parameters, reduction_parameters)) {
+    if (move_down_from_reduced_node(reduction_parameters)) {
       // We've GOT a complete solution! Note that it MUST be good enough
       // to add, since we've set the max weight already.
       // We also already checked that we haven't yet got too many,
@@ -355,7 +355,6 @@ void MainSolver::add_solution_from_final_node(
 }
 
 bool MainSolver::move_down_from_reduced_node(
-    const MainSolverParameters& parameters,
     const SearchBranch::ReductionParameters& reduction_parameters) {
   TKET_ASSERT(m_search_components_ptr);
   TKET_ASSERT(m_search_branch_ptr);

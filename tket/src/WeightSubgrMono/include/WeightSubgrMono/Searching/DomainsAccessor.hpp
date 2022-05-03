@@ -22,7 +22,7 @@ namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 struct NodesRawData;
-struct NodesRawDataWrapper;
+class NodesRawDataWrapper;
 
 /** This is passed to Reducer, Checker, Updater objects,
  * to obtain information about the domains in the current node only,

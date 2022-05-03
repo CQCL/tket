@@ -43,6 +43,8 @@ class ReducerInterface {
       std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,
       std::set<VertexWSM>& work_set);
 
+  virtual ~ReducerInterface() = default;
+
  protected:
   /*
   Most natural reducers have a symmetry. Suppose that

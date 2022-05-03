@@ -22,7 +22,7 @@ namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 struct NodesRawData;
-struct NodesRawDataWrapper;
+class NodesRawDataWrapper;
 
 /** This is concerned with moving up and down a NodesRawData object,
  * i.e. used for traversing the complete search tree;

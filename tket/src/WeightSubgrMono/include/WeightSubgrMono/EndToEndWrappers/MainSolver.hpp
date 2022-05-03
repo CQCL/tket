@@ -75,7 +75,6 @@ class MainSolver {
    * solution, false otherwise.
    */
   bool move_down_from_reduced_node(
-      const MainSolverParameters& parameters,
       const SearchBranch::ReductionParameters& reduction_parameters);
 
   /** Performs the solve.

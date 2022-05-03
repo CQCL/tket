@@ -21,7 +21,7 @@ namespace WeightedSubgraphMonomorphism {
 template <class T>
 class SimpleStorage {
  public:
-  typedef std::forward_list<T>::iterator Iter;
+  typedef typename std::forward_list<T>::iterator Iter;
 
   /** The purpose is, the iterator (and associated pointer) is easy to copy,
    * but also the T object it points to will remain valid
@@ -36,7 +36,7 @@ class SimpleStorage {
 // Implementations
 
 template <class T>
-std::forward_list<T>::iterator SimpleStorage<T>::get_new_iter() {
+typename std::forward_list<T>::iterator SimpleStorage<T>::get_new_iter() {
   m_data.emplace_front();
   return m_data.begin();
 }

@@ -14,6 +14,7 @@
 
 #include "WeightSubgrMono/Common/DyadicFraction.hpp"
 
+#include <cmath>
 #include <sstream>
 
 #include "Utils/Assert.hpp"
