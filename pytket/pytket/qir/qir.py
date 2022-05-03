@@ -41,11 +41,11 @@ CustomPyQIRGate = NamedTuple(
         ),
         (
             "function_signature",
-            List[types],
+            List[PyQirInputTypes],
         ),
         (
             "return_type",
-            types,
+            PyQirOutputTypes,
         ),
     ],
 )
