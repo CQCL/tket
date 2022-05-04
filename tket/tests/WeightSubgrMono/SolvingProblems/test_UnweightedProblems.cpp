@@ -28,35 +28,6 @@ namespace tket {
 namespace WeightedSubgraphMonomorphism {
 namespace {
 
-// We'll try rerunning with a suggestion.
-struct FullSolutionInformation {
-  unsigned index1;
-  unsigned index2;
-  long long original_time_ms;
-  std::vector<std::pair<VertexWSM, VertexWSM>> suggested_assignments;
-};
-
-/* Typical results from suggestions:
-
-1/4 of assignments:
-Recalc with suggestions: 392 problems; orig time 1330; new time 50
-
-1/10:
-Recalc with suggestions: 86 problems; orig time 1191; new time 121
-
-last assignment only:
-Recalc with suggestions: 517 problems; orig time 1344; new time 604
-
-first assignment:
-Recalc with suggestions: 517 problems; orig time 1315; new time 346
-
-first 2 assignments:
-Recalc with suggestions: 517 problems; orig time 1336; new time 233
-
-one middle assignment:
-Recalc with suggestions: 517 problems; orig time 1303; new time 173
-*/
-
 // Try to embed graphs from the first sequence
 // into graphs from the second sequence,
 // recording the result in a string (for easy copy/paste).
@@ -76,8 +47,6 @@ struct EmbedGraphSequences {
     MainSolverParameters solver_params(timeout_ms);
     solver_params.terminate_with_first_full_solution = true;
 
-    std::vector<FullSolutionInformation> solved_problems_data;
-
     CheckedSolution::ProblemInformation info;
     std::stringstream ss;
     unsigned result_index = 0;
@@ -92,7 +61,6 @@ struct EmbedGraphSequences {
         if (result_index % 8 == 0) {
           TestSettings::get().os << "\n### RI=" << result_index << ": ";
         }
-
         ++result_index;
 
         if (timeout_expected) {
@@ -255,8 +223,38 @@ static void check_monotonic_embedding_property(
   }
 }
 
-SCENARIO("Increasing graph sequences") {
-  TestSettings::get().os << "\n\n:::: START unweighted probs";
+static const std::vector<std::string>& get_expected_results_ref() {
+  static const std::vector<std::string> expected_results{
+      "1111111101111111001111110001111100001111000001110000001100000001",
+      "1111111111111111111111110111111100111111000111110001111100011111",
+      "1111111111111111111111111111111101111111011111110011111100111111",
+      "1111111111111111111111111111111111111111011111110011111100111111",
+      "1111111111111111111111111111111111111111111111110111111101111111",
+      "0000000100000000000000000000000000000000000000000000000000000000",
+      "1111111101111111001111110001111100001111000001110000001100000001",
+      "1111111101111111001111110000111100000111000000110000001100000001",
+      "1111111101111111001111110001111100001111000011110000001100000011",
+      "1111111111111111011111110011111100011111000111110000011100000011",
+      "0000000000000000000000000000000000000000000000000000000000000000",
+      "0011111100000000000000000000000000000000000000000000000000000000",
+      "1111111101111111001111110001111100001111000001110000001100000001",
+      "0111111100111111000111110000111100000111000000110000000100000001",
+      "1111111101111111001111110001111100001111000001110000001100000001",
+      "0000000000000000000000000000000000000000000000000000000000000000",
+      "0000000000000000000000000000000000000000000000000000000000000000",
+      "0011111100000000000000000000000000000000000000000000000000000000",
+      "1111111101111111001111110001111100001111000001110000001100000001",
+      "1111111100111111000011110000111100000111000000110000001100000001",
+      "0000000000000000000000000000000000000000000000000000000000000000",
+      "0000000000000000000000000000000000000000000000000000000000000000",
+      "0000000000000000000000000000000000000000000000000000000000000000",
+      "0000000000000000000000000000000000000000000000000000000000000000",
+      "1111111101111111001111110001111100001111000001110000001100000001"};
+  return expected_results;
+}
+
+static std::vector<std::vector<GraphEdgeWeights>>
+get_list_of_increasing_graph_sequences() {
   std::vector<std::vector<GraphEdgeWeights>> list_of_increasing_graph_sequences;
   const unsigned num_entries = 8;
   unsigned number_of_vertices = 3;
@@ -290,74 +288,69 @@ SCENARIO("Increasing graph sequences") {
       break;
     }
   }
-  const unsigned timeout_ms = 10000;
+  return list_of_increasing_graph_sequences;
+}
 
-  std::string line1 =
-      "11111111011111110011111100011111000011110000011100000011000000*1";
+static const std::vector<std::vector<GraphEdgeWeights>>&
+get_list_of_increasing_graph_sequences_ref() {
+  static const auto list_of_increasing_graph_sequences =
+      get_list_of_increasing_graph_sequences();
+  return list_of_increasing_graph_sequences;
+}
 
-  std::string line2 =
-      "111111110011111100001111000011110000011100000011000000*100000001";
+static std::set<std::pair<unsigned, unsigned>> get_longer_ij_pair_tests() {
+  return {{2, 3}, {2, 4}, {3, 3}, {3, 4}, {4, 4}};
+}
 
-  if (TestSettings::get().run_slow_tests) {
-    line1 = "1111111101111111001111110001111100001111000001110000001100000001";
-    line2 = "1111111100111111000011110000111100000111000000110000001100000001";
-  }
+static void test(bool short_test) {
+  const unsigned num_entries = 8;
+  const unsigned timeout_ms = short_test ? 1000 : 10000;
+  const auto& expected_results = get_expected_results_ref();
 
-  const std::vector<std::string> expected_results{
-      "1111111101111111001111110001111100001111000001110000001100000001",
-      "1111111111111111111111110111111100111111000111110001111100011111",
-      "1111111111111111111111111111111101111111011111110011111100111111",
-      "1111111111111111111111111111111111111111011111110011111100111111",
-      "1111111111111111111111111111111111111111111111110111111101111111",
-      "0000000100000000000000000000000000000000000000000000000000000000",
-      "1111111101111111001111110001111100001111000001110000001100000001",
-      "1111111101111111001111110000111100000111000000110000001100000001",
-      "1111111101111111001111110001111100001111000011110000001100000011",
-      "1111111111111111011111110011111100011111000111110000011100000011",
-      "0000000000000000000000000000000000000000000000000000000000000000",
-      "0011111100000000000000000000000000000000000000000000000000000000",
-      "1111111101111111001111110001111100001111000001110000001100000001",
-      "0111111100111111000111110000111100000111000000110000000100000001",
-      line1,
-      "0000000000000000000000000000000000000000000000000000000000000000",
-      "0000000000000000000000000000000000000000000000000000000000000000",
-      "0011111100000000000000000000000000000000000000000000000000000000",
-      "1111111101111111001111110001111100001111000001110000001100000001",
-      line2,
-      "0000000000000000000000000000000000000000000000000000000000000000",
-      "0000000000000000000000000000000000000000000000000000000000000000",
-      "0000000000000000000000000000000000000000000000000000000000000000",
-      "0000000000000000000000000000000000000000000000000000000000000000",
-      "1111111101111111001111110001111100001111000001110000001100000001"};
-
-  std::vector<std::string> calc_results;
   long long total_time_ms = 0;
   unsigned expected_str_index = 0;
-
-  long long total_full_solutions_original_time_ms = 0;
-  long long total_recalculated_suggestions_time_ms = 0;
-  unsigned number_of_full_solutions = 0;
+  const auto& list_of_increasing_graph_sequences =
+      get_list_of_increasing_graph_sequences_ref();
+  const std::string short_test_str = short_test ? "SHORT" : "LONG";
+  TestSettings::get().os << "\n\nRunning unweighted probs: " << short_test_str;
+  const auto longer_test_pairs = get_longer_ij_pair_tests();
+  unsigned pair_count = 0;
 
   for (unsigned ii = 0; ii < list_of_increasing_graph_sequences.size(); ++ii) {
     for (unsigned jj = 0; jj < list_of_increasing_graph_sequences.size();
          ++jj) {
       TestSettings::get().os << "\ni=" << ii << ", j=" << jj << " : ";
+      const bool should_test =
+          (longer_test_pairs.count(std::make_pair(ii, jj)) == 0) == short_test;
 
+      if (!should_test) {
+        TestSettings::get().os << "SKIPPED";
+        ++expected_str_index;
+        continue;
+      }
       const EmbedGraphSequences embedding_tester(
           list_of_increasing_graph_sequences[ii],
           list_of_increasing_graph_sequences[jj], timeout_ms,
           expected_results.at(expected_str_index));
+
+      CHECK(embedding_tester.result == expected_results.at(expected_str_index));
       ++expected_str_index;
-      calc_results.emplace_back(embedding_tester.result);
+      ++pair_count;
+      TestSettings::get().os << "\n@@@@@ (" << ii << "," << jj << ") took time "
+                             << embedding_tester.total_time_ms;
       total_time_ms += embedding_tester.total_time_ms;
       check_monotonic_embedding_property(
           embedding_tester.result, num_entries, ii == jj);
     }
   }
-  TestSettings::get().os << "\n:::: unweighted probs time: " << total_time_ms
-                         << "\n";
-  CHECK(calc_results == expected_results);
+  CHECK(expected_str_index == expected_results.size());
+  TestSettings::get().os << "\n:::: Unweighted probs time for " << pair_count
+                         << " (i,j) pairs, " << short_test_str
+                         << " tests: " << total_time_ms << " ms.\n";
 }
+
+SCENARIO("Increasing graph sequences: short tests") { test(true); }
+SCENARIO("Increasing graph sequences: long tests", "[.long]") { test(false); }
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

@@ -48,8 +48,7 @@ struct MainSolverParameters {
    * Otherwise, we will store ALL full solutions found, regardless
    * of how good or bad they are,
    * and terminate as soon as this many different full solutions
-   * are stored. However, we make no guarantees about the order of solutions;
-   * they need not be the N best possible solutions.
+   * are stored. However, we make no guarantees about the order of solutions.
    */
   std::size_t for_multiple_full_solutions_the_max_number_to_obtain;
 

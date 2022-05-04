@@ -41,9 +41,16 @@ struct TestResult {
 };
 
 struct TestParameters {
-  bool test_trivially_impossible_embeddings = false;
-  bool recalculate_known_timeouts = false;
   unsigned timeout = 1000;
+
+  // If nonzero, will check that the total time taken
+  // is within these limits.
+  unsigned expected_max_total_time_ms = 0;
+  unsigned expected_min_total_time_ms = 0;
+
+  // Extra checks against changing tests. Fill with the values, if known.
+  unsigned total_number_of_vertices = 0;
+  unsigned total_number_of_edges = 0;
 };
 }  // namespace
 
@@ -150,115 +157,111 @@ static std::uint32_t get_weights_hash(const GraphEdgeWeights& data) {
 
 typedef std::vector<std::intmax_t> ResultsSummary;
 
-// To save time, do not actually compute the solution for
-// the (i,j) pair; instead, simply take the given value
-// as if it had been computed.
-typedef std::map<std::pair<unsigned, unsigned>, int> OverwriteValues;
+namespace {
+struct AllAgainstAllTester {
+  std::vector<std::string> codes;
+  std::vector<WeightWSM> weights;
 
-// expected_results should FIRST list the hashes of the graphs with weights,
-// THEN the scalar products S in order: S=0 means no solution,
-// S>0 means an optimal solution with S was found, -1 means a timeout.
-static TestResult test_all_against_all(
-    const std::vector<std::string>& codes,
-    const std::vector<WeightWSM>& weights,
-    const ResultsSummary& expected_results, const TestParameters& params,
-    const OverwriteValues& shortcut_values = {}) {
-  TestResult result;
-  ResultsSummary calc_results;
-  std::vector<GraphEdgeWeights> graphs;
-  std::vector<unsigned> num_vertices;
-  graphs.reserve(codes.size());
-  for (const auto& code : codes) {
-    graphs.emplace_back(get_graph_data(code, weights));
-    result.total_edges += graphs.back().size();
-    num_vertices.push_back(get_vertices(graphs.back()).size());
-    result.total_verts += num_vertices.back();
-    calc_results.push_back(get_weights_hash(graphs.back()));
-  }
-  const auto& os = TestSettings::get().os;
-  os << "\n\n########### generated " << graphs.size()
-     << " random graphs, total " << result.total_edges << " edges, "
-     << result.total_verts
-     << " vertices\n#### now testing all against all, timeout "
-     << params.timeout;
-  CheckedSolution::Statistics statistics;
-  const MainSolverParameters solver_params(params.timeout);
+  // expected_results should FIRST list the hashes of the graphs with weights,
+  // THEN the scalar products S in order: S=0 means no solution,
+  // S>0 means an optimal solution with S was found.
+  // -1 means a timeout; we have never actually completed the solution,
+  // so don't actually know the solution.
+  std::vector<std::intmax_t> expected_results;
 
-  const auto update_calc_results =
-      [&calc_results](const CheckedSolution& checked_solution) {
-        if (!checked_solution.finished) {
-          // A timeout.
-          calc_results.push_back(-1);
-          return;
-        }
-        // If no solution, it will be zero.
-        calc_results.push_back(checked_solution.scalar_product);
-      };
-
-  for (unsigned ii = 0; ii < graphs.size(); ++ii) {
-    for (unsigned jj = 0; jj < graphs.size(); ++jj) {
-      const auto value_optional =
-          get_optional_value(shortcut_values, std::make_pair(ii, jj));
-      if (value_optional) {
-        ++statistics.success_count;
-        calc_results.push_back(value_optional.value());
-        continue;
-      }
-
-      if ((num_vertices[ii] > num_vertices[jj] ||
-           graphs[ii].size() > graphs[jj].size()) &&
-          !params.test_trivially_impossible_embeddings) {
-        ++statistics.success_count;
-        calc_results.push_back(0);
-        continue;
-      }
-      if (!params.recalculate_known_timeouts &&
-          calc_results.size() < expected_results.size() &&
-          expected_results[calc_results.size()] == -1) {
-        // It's known to be a timeout, so don't bother again.
-        calc_results.push_back(-1);
-        ++statistics.timeout_count;
-        continue;
-      }
-
-      os << "\n#### embedding: G[" << ii << "]: (V=" << num_vertices[ii]
-         << ",E=" << graphs[ii].size() << ") -> G[" << jj
-         << "]: (V=" << num_vertices[jj] << ",E=" << graphs[jj].size() << ")";
-
-      CheckedSolution::ProblemInformation info;
-      if (ii == jj) {
-        // Self embedding is always possible,
-        // although we do not know the OPTIMAL solution.
-        WeightWSM total_w = 0;
-        for (const auto& entry : graphs[ii]) {
-          total_w += entry.second * entry.second;
-        }
-        info.known_upper_bound = total_w;
-        info.existence = CheckedSolution::ProblemInformation::
-            SolutionsExistence::KNOWN_TO_BE_SOLUBLE;
-      }
-
-      const CheckedSolution checked_solution(
-          graphs[ii], graphs[jj], info, solver_params, statistics);
-      update_calc_results(checked_solution);
+  TestResult test_all_against_all(const TestParameters& params) const {
+    TestResult result;
+    ResultsSummary calc_results;
+    std::vector<GraphEdgeWeights> graphs;
+    std::vector<unsigned> num_vertices;
+    graphs.reserve(codes.size());
+    for (const auto& code : codes) {
+      graphs.emplace_back(get_graph_data(code, weights));
+      result.total_edges += graphs.back().size();
+      num_vertices.push_back(get_vertices(graphs.back()).size());
+      result.total_verts += num_vertices.back();
+      calc_results.push_back(get_weights_hash(graphs.back()));
     }
+    const auto& os = TestSettings::get().os;
+    os << "\n\n########### generated " << graphs.size()
+       << " random graphs, total " << result.total_edges << " edges, "
+       << result.total_verts
+       << " vertices\n#### now testing all against all, timeout "
+       << params.timeout;
+    if (params.total_number_of_edges != 0) {
+      CHECK(params.total_number_of_edges == result.total_edges);
+    }
+    if (params.total_number_of_vertices != 0) {
+      CHECK(params.total_number_of_vertices == result.total_verts);
+    }
+    CheckedSolution::Statistics statistics;
+    const MainSolverParameters solver_params(params.timeout);
+
+    const auto update_calc_results =
+        [&calc_results](const CheckedSolution& checked_solution) {
+          if (!checked_solution.finished) {
+            // A timeout.
+            calc_results.push_back(-1);
+            return;
+          }
+          // If no solution, it will be zero.
+          calc_results.push_back(checked_solution.scalar_product);
+        };
+
+    for (unsigned ii = 0; ii < graphs.size(); ++ii) {
+      for (unsigned jj = 0; jj < graphs.size(); ++jj) {
+        if (calc_results.size() < expected_results.size() &&
+            expected_results[calc_results.size()] == -1) {
+          // It's known to be a timeout, so don't bother again.
+          calc_results.push_back(-1);
+          ++statistics.timeout_count;
+          continue;
+        }
+
+        os << "\n#### embedding: G[" << ii << "]: (V=" << num_vertices[ii]
+           << ",E=" << graphs[ii].size() << ") -> G[" << jj
+           << "]: (V=" << num_vertices[jj] << ",E=" << graphs[jj].size() << ")";
+
+        CheckedSolution::ProblemInformation info;
+        if (ii == jj) {
+          // Self embedding is always possible,
+          // although we do not know the OPTIMAL solution.
+          WeightWSM total_w = 0;
+          for (const auto& entry : graphs[ii]) {
+            total_w += entry.second * entry.second;
+          }
+          info.known_upper_bound = total_w;
+          info.existence = CheckedSolution::ProblemInformation::
+              SolutionsExistence::KNOWN_TO_BE_SOLUBLE;
+        }
+
+        const CheckedSolution checked_solution(
+            graphs[ii], graphs[jj], info, solver_params, statistics);
+        update_calc_results(checked_solution);
+      }
+    }
+    result.total_time_ms =
+        statistics.total_init_time_ms + statistics.total_search_time_ms;
+    result.failure_count = statistics.failure_count;
+    result.timeout_count = statistics.timeout_count;
+    result.success_count = statistics.success_count;
+    os << "\n#### FIN: total time " << result.total_time_ms << " ms. ";
+    CHECK(expected_results == calc_results);
+    if (params.expected_max_total_time_ms != 0) {
+      CHECK(result.total_time_ms <= params.expected_max_total_time_ms);
+    }
+    CHECK(result.total_time_ms >= params.expected_min_total_time_ms);
+    return result;
   }
-  result.total_time_ms =
-      statistics.total_init_time_ms + statistics.total_search_time_ms;
-  result.failure_count = statistics.failure_count;
-  result.timeout_count = statistics.timeout_count;
-  result.success_count = statistics.success_count;
-  os << "\n#### FIN: total time " << result.total_time_ms << " ms. ";
-  CHECK(expected_results == calc_results);
-  return result;
-}
+};
+}  // namespace
 
 SCENARIO("embedding random graphs - smaller graphs, small weights") {
-  const std::vector<std::string> codes{"5 8 111",  "5 9 12211", "6 10 13311",
-                                       "7 10 222", "7 15 333",  "8 16 1111",
-                                       "8 20 444", "10 20 333"};
-  const std::vector<WeightWSM> weights{1, 2, 3, 8};
-  const ResultsSummary expected_results{
+  AllAgainstAllTester tester;
+  tester.codes = {"5 8 111",  "5 9 12211", "6 10 13311", "7 10 222",
+                  "7 15 333", "8 16 1111", "8 20 444",   "10 20 333"};
+  tester.weights = {1, 2, 3, 8};
+  tester.expected_results = {
       820581231, 797760108, 317578032, 996088179, 905537177, 505148537,
       63334049,  630164384, 87,        89,        0,         0,
       49,        67,        35,        45,        0,         222,
@@ -271,26 +274,27 @@ SCENARIO("embedding random graphs - smaller graphs, small weights") {
       0,         0,         0,         0,         0,         0,
       0,         0,         174,       0,         0,         0,
       0,         0,         0,         0,         0,         279};
+
   TestParameters params;
   params.timeout = 1000;
+  params.total_number_of_edges = 108;
+  params.total_number_of_vertices = 56;
 
-  const auto result =
-      test_all_against_all(codes, weights, expected_results, params);
+  // Currently, ~10 ms.
+  params.expected_max_total_time_ms = 100;
 
-  CHECK(result.total_time_ms < 10 * 6);
+  const auto result = tester.test_all_against_all(params);
   CHECK(result.success_count == 64);
   CHECK(result.failure_count == 0);
   CHECK(result.timeout_count == 0);
-  CHECK(result.total_edges == 108);
-  CHECK(result.total_verts == 56);
 }
 
 SCENARIO("embedding random graphs - medium graphs, small weights") {
-  const std::vector<std::string> codes{
-      "10 20 1111", "10 30 2222",  "11 20 3333", "11 40 4444",
-      "15 30 5555", "16 50, 6666", "17 60 7777", "18 70 888"};
-  const std::vector<WeightWSM> weights{1, 2, 3, 8};
-  const ResultsSummary expected_results{
+  AllAgainstAllTester tester;
+  tester.codes = {"10 20 1111", "10 30 2222",  "11 20 3333", "11 40 4444",
+                  "15 30 5555", "16 50, 6666", "17 60 7777", "18 70 888"};
+  tester.weights = {1, 2, 3, 8};
+  tester.expected_results = {
       724217328, 705349590, 154711899, 916605139, 166486361, 875669872,
       325817875, 806972053, 411,       182,       0,         122,
       0,         259,       146,       128,       0,         616,
@@ -305,32 +309,35 @@ SCENARIO("embedding random graphs - medium graphs, small weights") {
       0,         0,         0,         0,         0,         1257};
   TestParameters params;
   params.timeout = 10000;
+  params.total_number_of_edges = 320;
+  params.total_number_of_vertices = 108;
 
-  const auto result =
-      test_all_against_all(codes, weights, expected_results, params);
+  // Currently, ~600 ms.
+  params.expected_max_total_time_ms = 5000;
+  params.expected_min_total_time_ms = 10;
 
-  CHECK(result.total_time_ms < 10 * 728);
-  CHECK(result.total_time_ms > 728 / 10);
+  const auto result = tester.test_all_against_all(params);
   CHECK(result.success_count == 64);
   CHECK(result.failure_count == 0);
   CHECK(result.timeout_count == 0);
-  CHECK(result.total_edges == 320);
-  CHECK(result.total_verts == 108);
 }
 
-SCENARIO("embedding random graphs - large graphs, small weights") {
-  const std::vector<std::string> codes{
-      "20 50 1111",  "22 80 2222",    "25 120 3333", "25 200 4444",
-      "30 200 5555", "32 300 6666",   "35 300 7777", "40 500 8888",
-      "50 500 9999", "55 1000 101010"};
-  const std::vector<WeightWSM> weights{1, 2, 3, 8};
+static AllAgainstAllTester get_large_graphs_small_weights_data() {
+  AllAgainstAllTester tester;
+  tester.codes = {"20 50 1111",  "22 80 2222",    "25 120 3333", "25 200 4444",
+                  "30 200 5555", "32 300 6666",   "35 300 7777", "40 500 8888",
+                  "50 500 9999", "55 1000 101010"};
 
-  const ResultsSummary expected_results{
+  tester.weights = {1, 2, 3, 8};
+
+  // Any value < -1 (e.g., -9999) means that we DID, once,
+  // compute that there's NO solution, but it took a long time.
+  tester.expected_results = {
       460517071,  255540664,  811304662, 581415081, 853453591, 367941120,
       1072813581, 1006422874, 309411091, 971368384, 1261,      0,
       619,        -1,         -1,        -1,        -1,        -1,
       -1,         -1,         0,         1732,      0,         -1,
-      0,          -1,         -1,        -1,        -1,        -1,
+      -9999,      -1,         -1,        -1,        -1,        -1,
       0,          0,          2132,      -1,        0,         -1,
       -1,         -1,         -1,        -1,        0,         0,
       0,          3463,       0,         0,         0,         -1,
@@ -345,37 +352,71 @@ SCENARIO("embedding random graphs - large graphs, small weights") {
       0,          0,          9721,      -1,        0,         0,
       0,          0,          0,         0,         0,         0,
       0,          18810};
-
-  OverwriteValues overwrite_values;
-  unsigned expected_time_ms = 8000;
-  if (!TestSettings::get().run_slow_tests) {
-    overwrite_values[std::make_pair<unsigned>(1, 4)] = 0;
-    expected_time_ms -= 4000;
-  }
-
-  TestParameters params;
-  params.timeout = 10000;
-
-  const auto result = test_all_against_all(
-      codes, weights, expected_results, params, overwrite_values);
-
-  CHECK(result.total_time_ms < 10 * expected_time_ms);
-  CHECK(result.total_time_ms > expected_time_ms / 10);
-  CHECK(result.success_count == 70);
-  CHECK(result.failure_count == 0);
-  CHECK(result.timeout_count == 30);
-  CHECK(result.total_edges == 3250);
-  CHECK(result.total_verts == 334);
+  return tester;
 }
 
-SCENARIO("embedding random graphs - mixed sizes and densities") {
-  const std::vector<std::string> codes{
-      "5 7 111",     "6 14 222",    "10 20 1111",  "10 40 3333",
-      "20 50 4444",  "20 100 5555", "20 150 6666", "30 100 7777",
-      "30 200 8888", "30 400 9999"};
-  const std::vector<WeightWSM> weights{1, 2, 5, 20};
+SCENARIO(
+    "embedding random graphs - 2 nasty problems: large graphs, small weights",
+    "[.long]") {
+  auto tester = get_large_graphs_small_weights_data();
+  for (auto& entry : tester.expected_results) {
+    if (entry < -1) {
+      // It's the no-solution problem, ~2 seconds.
+      entry = 0;
+      continue;
+    }
+    if (entry == 619 || entry > 1000000) {
+      // Either the problem taking ~5 seconds, or a code number.
+      continue;
+    }
+    // We'll just skip all other problems; pretend they're timeouts.
+    entry = -1;
+  }
+  TestParameters params;
+  params.timeout = 20000;
+  params.total_number_of_edges = 3250;
+  params.total_number_of_vertices = 334;
 
-  const ResultsSummary expected_results{
+  // Currently, ~7 seconds; although only because of two nasty problems.
+  params.expected_max_total_time_ms = 20000;
+  params.expected_min_total_time_ms = 1000;
+  const auto result = tester.test_all_against_all(params);
+  CHECK(result.success_count == 2);
+  CHECK(result.failure_count == 0);
+  CHECK(result.timeout_count == 98);
+}
+
+SCENARIO(
+    "embedding random graphs - large graphs, small weights, shorter problems") {
+  auto tester = get_large_graphs_small_weights_data();
+  for (auto& entry : tester.expected_results) {
+    if (entry < -1 || entry == 619) {
+      // It's one of the longer problems; skip.
+      entry = -1;
+    }
+  }
+  TestParameters params;
+  params.timeout = 1000;
+  params.total_number_of_edges = 3250;
+  params.total_number_of_vertices = 334;
+  params.expected_max_total_time_ms = 1000;
+  params.expected_min_total_time_ms = 100;
+  const auto result = tester.test_all_against_all(params);
+  CHECK(result.success_count == 68);
+  CHECK(result.failure_count == 0);
+  CHECK(result.timeout_count == 32);
+}
+
+static AllAgainstAllTester get_mixed_sizes_problems() {
+  AllAgainstAllTester tester;
+  tester.codes = {"5 7 111",     "6 14 222",    "10 20 1111",  "10 40 3333",
+                  "20 50 4444",  "20 100 5555", "20 150 6666", "30 100 7777",
+                  "30 200 8888", "30 400 9999"};
+
+  tester.weights = {1, 2, 5, 20};
+
+  // It so happens that all no-solution problems in this set are fairly quick.
+  tester.expected_results = {
       911552196, 461091619, 772140787, 11588550,   1037162436, 766190752,
       951748272, 961275497, 870669976, 1033828678, 117,        91,
       126,       52,        0,         42,         36,         58,
@@ -395,26 +436,66 @@ SCENARIO("embedding random graphs - mixed sizes and densities") {
       0,         0,         21893,     -1,         0,          0,
       0,         0,         0,         0,          0,          0,
       0,         31845};
+  return tester;
+}
 
+static std::set<unsigned> get_medium_time_problem_values() {
+  // Problems taking roughly ~100 ms to ~500ms.
+  return {149, 294, 282, 181};
+};
+
+static unsigned get_long_problem_value() {
+  // Just this one nasty problem takes almost all the time.
+  return 2461;
+}
+
+SCENARIO(
+    "embedding random graphs - mixed sizes and densities: short problems") {
+  const auto long_problem_value = get_long_problem_value();
+  const auto medium_problem_values = get_medium_time_problem_values();
+  auto tester = get_mixed_sizes_problems();
+  for (auto& entry : tester.expected_results) {
+    if (entry == long_problem_value ||
+        medium_problem_values.count(entry) != 0) {
+      // It's one of the longer problems; skip.
+      entry = -1;
+    }
+  }
+  TestParameters params;
+  params.timeout = 1000;
+  params.total_number_of_edges = 1081;
+  params.total_number_of_vertices = 181;
+  params.expected_max_total_time_ms = 1000;
+  params.expected_min_total_time_ms = 50;
+  const auto result = tester.test_all_against_all(params);
+  CHECK(result.success_count == 80);
+  CHECK(result.failure_count == 0);
+  CHECK(result.timeout_count == 20);
+}
+
+SCENARIO(
+    "embedding random graphs - mixed sizes and densities: longer problems",
+    "[.long]") {
+  const auto long_problem_value = get_long_problem_value();
+  const auto medium_problem_values = get_medium_time_problem_values();
+  auto tester = get_mixed_sizes_problems();
+  for (auto& entry : tester.expected_results) {
+    if (entry != long_problem_value &&
+        medium_problem_values.count(entry) == 0 && entry < 1000000) {
+      // It's one of the short problems, and nort a codeword; skip.
+      entry = -1;
+    }
+  }
   TestParameters params;
   params.timeout = 20000;
-
-  OverwriteValues overwrite_values;
-  unsigned expected_time_ms = 7000;
-  if (!TestSettings::get().run_slow_tests) {
-    overwrite_values[std::make_pair<unsigned>(4, 5)] = 2461;
-    expected_time_ms -= 3300;
-  }
-  const auto result = test_all_against_all(
-      codes, weights, expected_results, params, overwrite_values);
-
-  CHECK(result.total_time_ms < 10 * expected_time_ms);
-  CHECK(result.total_time_ms > expected_time_ms / 10);
-  CHECK(result.success_count == 85);
+  params.total_number_of_edges = 1081;
+  params.total_number_of_vertices = 181;
+  params.expected_max_total_time_ms = 20000;
+  params.expected_min_total_time_ms = 1000;
+  const auto result = tester.test_all_against_all(params);
+  CHECK(result.success_count == 5);
   CHECK(result.failure_count == 0);
-  CHECK(result.timeout_count == 15);
-  CHECK(result.total_edges == 1081);
-  CHECK(result.total_verts == 181);
+  CHECK(result.timeout_count == 95);
 }
 
 }  // namespace WeightedSubgraphMonomorphism
