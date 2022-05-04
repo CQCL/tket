@@ -1248,6 +1248,16 @@ SCENARIO("Decomposition of multi-qubit gates") {
     REQUIRE(success);
     REQUIRE(circ.count_gates(OpType::CU1) == 0);
   }
+
+  GIVEN("TK2 gate") {
+    Circuit circ(2);
+    double a = 0.3, b = 0.4, c = 1.85;
+    circ.add_op<unsigned>(OpType::TK2, {a, b, c}, {0, 1});
+    Eigen::MatrixXcd u = tket_sim::get_unitary(circ);
+    Transforms::decompose_multi_qubits_CX().apply(circ);
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(circ);
+    REQUIRE(u1.isApprox(u));
+  }
 }
 
 SCENARIO("Testing Synthesis OQC") {

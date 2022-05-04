@@ -182,7 +182,6 @@ SCENARIO("Test Circuit serialization") {
     c.add_box(temp_box, {0, 1});
 
     nlohmann::json j_cbox = c;
-    // std::cout << j_cbox;
     const Circuit new_c = j_cbox.get<Circuit>();
 
     const Command cbox_com = new_c.get_commands()[1];

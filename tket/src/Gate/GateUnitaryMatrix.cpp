@@ -137,6 +137,7 @@ static Eigen::MatrixXcd get_unitary_or_throw(
     CASE_RETURN_3P(CU3)
     CASE_RETURN_3P(U3)
     CASE_RETURN_3P(TK1)
+    CASE_RETURN_3P(TK2)
 #undef CASE_RETURN_3P
     default: {
       std::stringstream ss;

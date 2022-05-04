@@ -181,6 +181,7 @@ Circuit CX_ZX_circ_from_op(const Op_ptr op) {
       replacement.add_op<unsigned>(op, {0, 1});
       return replacement;
     }
+    case OpType::TK2:
     case OpType::CY:
     case OpType::CZ:
     case OpType::CH:
