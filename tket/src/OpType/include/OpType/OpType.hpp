@@ -90,6 +90,11 @@ enum class OpType {
   ClassicalTransform,
 
   /**
+   * Op containing a classical wasm function call
+   */
+  WASM,
+
+  /**
    * An operation to set some bits to specified values
    */
   SetBits,

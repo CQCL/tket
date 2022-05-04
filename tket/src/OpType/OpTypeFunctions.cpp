@@ -196,7 +196,7 @@ bool is_classical_type(OpType optype) {
       OpType::ClassicalTransform, OpType::SetBits,
       OpType::CopyBits,           OpType::RangePredicate,
       OpType::ExplicitPredicate,  OpType::ExplicitModifier,
-      OpType::MultiBit,
+      OpType::MultiBit,           OpType::WASM,
   };
   return find_in_set(optype, classical_gates);
 }

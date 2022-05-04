@@ -23,6 +23,10 @@ from hypothesis import given, reproduce_failure, settings, strategies
 from hypothesis.core import encode_failure
 from hypothesis.strategies import SearchStrategy
 
+from pytket import wasm
+
+import pytest
+
 from pytket._tket.circuit import (  # type: ignore
     _TEMP_BIT_NAME,
     _TEMP_BIT_REG_BASE,
@@ -120,6 +124,38 @@ def test_c_ops() -> None:
         and mb_cmds[0] != mb_cmds[2]
         and mb_cmds[1] != mb_cmds[2]
     )
+
+
+def test_wasm() -> None:
+    c = Circuit(0, 6)
+    c.add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)])
+    c.add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(2)])
+    c.add_wasm("funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 3])
+    c.add_wasm("funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 4])
+    c.add_wasm("funcname", "wasmfileuid", [1], [1, 2], [0, 1, 2, 3])
+    c.add_wasm("funcname", "wasmfileuid", [2, 1], [3], [0, 1, 2, 3, 4, 5])
+
+    # the boxes with no output are not counted
+    assert c.depth() == 4
+
+
+def test_wasm_handler() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm", True)
+
+    with pytest.raises(ValueError):
+        w2 = wasm.WasmFileHandler("testfile-2.wasm", True)
+
+
+def test_wasm_handler_2() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm", False)
+
+    c = Circuit(0, 6)
+
+    w.add_wasmop_to_circuit(c, "funcname", [1, 2], [], [Bit(0), Bit(1), Bit(2)])
+    w.add_wasmop_to_circuit(c, "funcname", [1, 1], [1], [Bit(0), Bit(1), Bit(2)])
+
+    # the boxes with no output are not counted
+    assert c.depth() == 1
 
 
 def gen_reg(
