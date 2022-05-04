@@ -1076,7 +1076,9 @@ Transform globalise_PhasedX(bool squash) {
       return is_gate_type(type) && as_gate_ptr(op)->n_qubits() > 1 &&
              type != OpType::NPhasedX;
     };
-    auto r = circ.vertices_in_order() | boost::adaptors::filtered(filter_pred);
+    // get a lexicographic ordering of mulit-qb vertices
+    auto vertices_in_order = circ.vertices_in_order();
+    auto r = vertices_in_order | boost::adaptors::filtered(filter_pred);
     OptVertexVec multiq_gates(r.begin(), r.end());
     // add sentinel to process the gates after last multiq_gate
     multiq_gates.push_back(std::nullopt);
@@ -1101,6 +1103,7 @@ Transform globalise_PhasedX(bool squash) {
         if (v) {
           curr_qubits = frontier.qubits_ending_in(*v);
         } else {
+          curr_qubits.clear();
           for (unsigned i = 0; i < circ.n_qubits(); ++i) {
             curr_qubits.insert(curr_qubits.end(), i);
           }
