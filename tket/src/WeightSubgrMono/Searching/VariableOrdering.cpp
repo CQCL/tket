@@ -23,68 +23,38 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-bool VariableOrdering::check_candidate(
-    VertexWSM pv, std::size_t domain_size, std::size_t& min_domain_size,
-    std::set<VertexWSM>& current_node_unassigned_vertices_to_overwrite,
-    bool write_unassigned_vertices) {
-  if (domain_size == 0) {
-    return false;
-  }
-  if (write_unassigned_vertices && domain_size > 1) {
-    current_node_unassigned_vertices_to_overwrite.insert(pv);
-  }
-  if (domain_size == 1 || domain_size > min_domain_size) {
-    return true;
-  }
-  if (domain_size < min_domain_size) {
-    // Strictly better.
-    m_pv_list.clear();
-    min_domain_size = domain_size;
-  }
-  m_pv_list.emplace_back(pv);
-  return true;
-}
-
 VariableOrdering::Result VariableOrdering::get_variable(
-    const DomainsAccessor& accessor, RNG& rng,
-    std::set<VertexWSM>& current_node_unassigned_vertices_to_overwrite) {
+    const DomainsAccessor& accessor, RNG& rng) {
   m_pv_list.clear();
   std::size_t min_domain_size;
   set_maximum(min_domain_size);
   Result result;
 
-  for (VertexWSM pv : accessor.get_candidate_vertices_for_assignment()) {
+  // NOTE: it might seem natural to give priority to PV adjacent to
+  // newly assigned vertices, but tests showed that this is actually
+  // a bad idea; it's faster and simpler just to consider all
+  // unassigned vertices equally.
+  for (VertexWSM pv : accessor.get_unassigned_pattern_vertices_superset()) {
     const auto domain_size = accessor.get_domain(pv).size();
-    if (!check_candidate(
-            pv, domain_size, min_domain_size,
-            // The candidate vertices are NOT necessarily
-            // all the unassigned vertices, therefore we DON'T
-            // try to fill the set.
-            current_node_unassigned_vertices_to_overwrite, false)) {
+    if (domain_size == 0) {
       result.empty_domain = true;
       return result;
     }
-  }
-  if (m_pv_list.empty()) {
-    // No candidates are unassigned, so look through ALL vertices.
-    const bool write_unassigned_vertices =
-        current_node_unassigned_vertices_to_overwrite.empty();
-    for (VertexWSM pv : accessor.get_unassigned_pattern_vertices_superset()) {
-      const auto domain_size = accessor.get_domain(pv).size();
-      if (!check_candidate(
-              pv, domain_size, min_domain_size,
-              current_node_unassigned_vertices_to_overwrite,
-              write_unassigned_vertices)) {
-        result.empty_domain = true;
-        return result;
-      }
+    if (domain_size == 1 || domain_size > min_domain_size) {
+      continue;
     }
+    if (domain_size < min_domain_size) {
+      // Strictly better.
+      m_pv_list.clear();
+      min_domain_size = domain_size;
+    }
+    m_pv_list.emplace_back(pv);
   }
   result.empty_domain = false;
   if (m_pv_list.empty()) {
     return result;
   }
-  // We have a vertex!
+  // We have an unassigned vertex!
   const auto index = rng.get_size_t(m_pv_list.size() - 1);
   result.variable_opt = m_pv_list[index];
   return result;

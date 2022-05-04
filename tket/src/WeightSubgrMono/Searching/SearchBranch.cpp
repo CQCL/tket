@@ -107,8 +107,7 @@ bool SearchBranch::check_and_update_scalar_product_in_reduce_loop(
     std::size_t num_assignments_alldiff_processed) {
   const auto weight_result_opt = m_weight_calculator(
       m_pattern_ndata, m_target_ndata, m_domains_accessor,
-      num_assignments_alldiff_processed, parameters.max_weight,
-      m_domains_accessor.get_candidate_vertices_for_assignment_nonconst());
+      num_assignments_alldiff_processed, parameters.max_weight);
 
   if (!weight_result_opt) {
     return false;
@@ -265,13 +264,6 @@ bool SearchBranch::reduce_current_node(const ReductionParameters& parameters) {
 
   if (!perform_main_reduce_loop(parameters)) {
     return false;
-  }
-  // Avoid the candidate vertices building up too much.
-  // Will be useful later (when we need to choose a new assignment to make).
-  auto& candidate_vertices =
-      m_domains_accessor.get_candidate_vertices_for_assignment_nonconst();
-  for (const auto& entry : m_domains_accessor.get_new_assignments()) {
-    candidate_vertices.erase(entry.first);
   }
   // Now that we've processed all the assignments,
   // we don't need them.

@@ -33,64 +33,123 @@ class DomainsAccessor {
   /** The wrapped NodesRawData object will be directly altered. */
   explicit DomainsAccessor(NodesRawDataWrapper& raw_data_wrapper);
 
+  /** Stored once and available forever.
+   * @return A sorted vector of all vertices in the pattern graph.
+   */
   const std::vector<VertexWSM>& get_pattern_vertices() const;
 
   /** Every unassigned p-vertex (i.e., with size Domain(pv) > 1) in the
    * current node is included in here.
    * However, this may also include some assigned vertices.
+   * @return A set which definitely includes all pattern vertices which are
+   * currently unassigned, in the current vertex. However, it may include other
+   * pattern vertices. But this will usually be quicker than
+   * get_pattern_vertices().
    */
   const std::set<VertexWSM>& get_unassigned_pattern_vertices_superset() const;
 
+  /** Return Domain(pv) in the current node, i.e. the set of all target
+   * vertices which pv could be mapped to, as we extend the current mapping.
+   * @param pv A vertex in the pattern graph.
+   * @return The domain of pv in the current search node.
+   */
   const std::set<VertexWSM>& get_domain(VertexWSM pv) const;
 
-  /** Is Dom(pv) different in the previous node? */
+  /** Returns true if Domain(pv) is different in the current search node
+   * and the previous node. */
   bool domain_created_in_current_node(VertexWSM pv) const;
 
-  /** We prefer these vertices, when assigning.
-   * But, this may be empty, in which case we'll have to look at all
-   * unassigned vertices. However, also provide direct access.
+  /** The newly made assignments, just in the current node.
+   * Note that this list might be cleared after they have been processed;
+   * thus it need not be the complete list of ALL assignments which occurred
+   * in this node.
    */
-  std::set<VertexWSM>& get_candidate_vertices_for_assignment_nonconst();
-  const std::set<VertexWSM>& get_candidate_vertices_for_assignment() const;
-
-  /** The newly made assignments, just in the current node. */
   const std::vector<std::pair<VertexWSM, VertexWSM>>& get_new_assignments()
       const;
 
   /** Once a domain is fully reduced and all assignments processed, clear the
-   * data. */
+   * data; there is no use for it any more.
+   */
   void clear_new_assignments();
 
+  /** Returns the scalar product  sum_e w(e).w(f(e))  over all p-edges e
+   * in the which have actually been assigned, i.e. for which
+   * both end vertices are assigned in the current node (although of course
+   * they may have been assigned first in previous nodes).
+   */
   WeightWSM get_scalar_product() const;
-  DomainsAccessor& set_scalar_product(WeightWSM);
 
+  /** Simply overwrite the scalar product in the current node with
+   * the new value; the caller is assumed to know how to calculate it
+   * correctly (which requires, of course, carefully considering the new
+   * assignments in the current node, and adding the values appropriately).
+   * @param scalar_product The new scalar product value; simply overwrites the
+   * existing one.
+   * @return This object, for chaining.
+   */
+  DomainsAccessor& set_scalar_product(WeightWSM scalar_product);
+
+  /** Returns the sum of all pattern edge weights for those edges
+   *  which have been assigned so far (i.e., both end vertices
+   * have been assigned).
+   * @return The sum of weights of all assigned pattern edges.
+   */
   WeightWSM get_total_p_edge_weights() const;
-  DomainsAccessor& set_total_p_edge_weights(WeightWSM);
 
+  /** Simply overwrite the total sum of pattern edge weights in the current
+   * node with the new value. The caller is responsible for doing this
+   * calculation correctly.
+   * @param value The new value; simply overwrites the existing one.
+   * @return This object, for chaining.
+   */
+  DomainsAccessor& set_total_p_edge_weights(WeightWSM value);
+
+  /** For testing/debugging, a string representation.
+   * @param full True if we should print more verbose data, false if we just
+   * want the basic data.
+   * @return A human readable string for debugging.
+   */
   std::string str(bool full = false) const;
 
-  /** The caller should keep track of how many
-   * new_assignments are processed. */
+  /** Assuming that the caller has already processed the given number
+   * of new assignments in this current node (without clearing the
+   * new assignments list - which stores them in order of creation),
+   * go through ALL remaining assignments and process them, by applying
+   * alldiff propagation. (I.e., if PV->y, then y must be erased from EVERY
+   * other domain in this node).
+   * The caller must keep track of how many new_assignments are processed.
+   * @param n_assignments_already_processed The number of assignments in the
+   * current new assignments list which were previously processed by this
+   * function in the current node. The caller must keep track of this
+   * information. After returning, EITHER all will have been processed, OR a
+   * nogood is found.
+   * @return False if some domain becomes empty (so, we are at a nogood: an
+   * invalid node, meaning that we must backtrack in the search. We return early
+   * as soon as this occurs, since there's no point in continuing with an
+   * invalid node).
+   */
   bool alldiff_reduce_current_node(std::size_t n_assignments_already_processed);
 
-  /** The new domain should be a subset of the old domain,
-   * but this is not fully checked - only trivial O(1) checks.
-   */
-  ReductionResult overwrite_domain(
-      VertexWSM pv, const std::set<VertexWSM>& new_domain);
-
-  /** "new domain" has already been filled, and we are happy to alter it
-   * (it is wrok data, i.e. "dummy" reusable data).
-   * Thus, do set::swap instead of copying.
+  /** Directly overwrite the domain in the current node with the new set.
+   * The caller is responsible for calculating set intersections etc.
+   * correctly to fill "new domain".
+   * The new domain should be a subset of the old domain,
+   * but this is not fully checked - only cheap partial checks are done.
+   * Updates new assignments if necessary.
+   *
+   * We are happy to alter "new domain" (it is work data, i.e.
+   * "dummy" reusable data).
+   *
+   * For extra performance, we do set::swap instead of copying.
+   * Note that we might NOT update the domain if the new domain is empty
+   * (a nogood); we do not waste time manipulating an invalid node.
+   * @param pv The pattern vertex.
+   * @param new_domain The new set which the domain will change to (via a
+   * set::swap).
+   * @return The result of overwriting the domain.
    */
   ReductionResult overwrite_domain_with_set_swap(
       VertexWSM pv, std::set<VertexWSM>& new_domain);
-
-  /** Vectors are faster than sets for some purposes; we assume (but don't
-   * check) that the vector elements are distinct, but unsorted.
-   */
-  ReductionResult overwrite_domain(
-      VertexWSM pattern_v, const std::vector<VertexWSM>& new_domain);
 
   struct IntersectionResult {
     ReductionResult reduction_result;
@@ -100,11 +159,29 @@ class DomainsAccessor {
 
     bool changed;
   };
-  /** We erase all of the given TV from Dom(PV). */
+
+  /** We erase all of the given TV from Dom(PV).
+   * Similarly to "overwrite_domain_with_set_swap", we check for and update
+   * new assignments if necessary.
+   * @param pattern_v The pattern vertex.
+   * @param forbidden_target_vertices A set of target vertices which must NOT
+   * occur in the new domain; all will be erased.
+   * @return The result of changing the domain.
+   */
   IntersectionResult intersect_domain_with_complement_set(
       VertexWSM pattern_v,
       const std::set<VertexWSM>& forbidden_target_vertices);
 
+  /** Recall that get_unassigned_pattern_vertices_superset() returns a
+   * guaranteed superset of all unassigned pattern vertices, for performance.
+   * In order to update the superset, this function directly provides access
+   * to the set object for manipulation by the caller.
+   * The caller is not obliged to alter it; however, the set MAY be left empty
+   * to save time, which means that get_unassigned_pattern_vertices_superset()
+   * will return a PREVIOUS set, possibly containing some assigned vertices.
+   * @return Direct access to the internal set which is EITHER empty, OR should
+   * be a valid superset of the unassigned vertices.
+   */
   std::set<VertexWSM>&
   get_current_node_unassigned_pattern_vertices_superset_to_overwrite();
 

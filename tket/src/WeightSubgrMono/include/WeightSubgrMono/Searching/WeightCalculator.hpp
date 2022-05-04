@@ -49,8 +49,7 @@ class WeightCalculator {
   std::optional<Result> operator()(
       const NeighboursData& pattern_ndata, const NeighboursData& target_ndata,
       const DomainsAccessor& accessor,
-      std::size_t number_of_processed_assignments, WeightWSM max_weight,
-      std::set<VertexWSM>& unassigned_neighbour_vertices) const;
+      std::size_t number_of_processed_assignments, WeightWSM max_weight) const;
 
  private:
   // Necessary to avoid double counting edges,

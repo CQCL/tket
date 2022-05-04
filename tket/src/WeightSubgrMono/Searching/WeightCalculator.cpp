@@ -24,8 +24,7 @@ namespace WeightedSubgraphMonomorphism {
 std::optional<WeightCalculator::Result> WeightCalculator::operator()(
     const NeighboursData& pattern_ndata, const NeighboursData& target_ndata,
     const DomainsAccessor& accessor,
-    std::size_t number_of_processed_assignments, WeightWSM max_weight,
-    std::set<VertexWSM>& unassigned_neighbour_vertices) const {
+    std::size_t number_of_processed_assignments, WeightWSM max_weight) const {
   m_p_vertices_seen.clear();
 
   Result result;
@@ -69,8 +68,7 @@ std::optional<WeightCalculator::Result> WeightCalculator::operator()(
           break;
         }
         default:
-          // An unassigned vertex, which is ALSO adjacent to an assigned one.
-          unassigned_neighbour_vertices.insert(other_pv);
+          break;
       }
     }
   }

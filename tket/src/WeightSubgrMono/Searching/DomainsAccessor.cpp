@@ -62,16 +62,6 @@ std::set<VertexWSM>& DomainsAccessor::get_domain_nonconst(VertexWSM pv) {
   return data.entries[data.entries_back_index].domain;
 }
 
-std::set<VertexWSM>&
-DomainsAccessor::get_candidate_vertices_for_assignment_nonconst() {
-  return m_raw_data.get_current_node_nonconst()
-      .pvs_adjacent_to_newly_assigned_vertices;
-}
-const std::set<VertexWSM>&
-DomainsAccessor::get_candidate_vertices_for_assignment() const {
-  return m_raw_data.get_current_node().pvs_adjacent_to_newly_assigned_vertices;
-}
-
 const std::vector<std::pair<VertexWSM, VertexWSM>>&
 DomainsAccessor::get_new_assignments() const {
   return m_raw_data.get_current_node().new_assignments;
@@ -155,94 +145,53 @@ bool DomainsAccessor::alldiff_reduce_current_node(
   return true;
 }
 
-namespace {
+ReductionResult DomainsAccessor::overwrite_domain_with_set_swap(
+    VertexWSM pv, std::set<VertexWSM>& new_domain) {
+  if (new_domain.empty()) {
+    return ReductionResult::NOGOOD;
+  }
+  auto& data_for_this_pv = m_raw_data.domains_data.at(pv);
+  auto& existing_domain_data =
+      data_for_this_pv.entries[data_for_this_pv.entries_back_index];
+  auto& existing_domain = existing_domain_data.domain;
 
-// We need this for the "overwrite_domain" functions.
-// Handles everything EXCEPT the final domain overwrite,
-// which the caller should do (there are different container types).
-struct DomainOverwriteData {
-  ReductionResult reduction_result;
+  // We should do a detailed assert that "new_domain" is a subset
+  // of "existing_domain", but this is expensive; thus we do a very
+  // cheap assert.
+  TKET_ASSERT(existing_domain.size() >= new_domain.size());
+  TKET_ASSERT(existing_domain.count(*new_domain.cbegin()) != 0);
 
-  // If true, the caller should just overwrite it in place;
-  // all indices, vectors, etc. have been checked and resized if necessary.
-  bool caller_should_overwrite_domain;
+  if (existing_domain.size() == new_domain.size()) {
+    // No change, no action required (even if the new domain has size 1;
+    // it's not a NEW assignment).
+    return ReductionResult::SUCCESS;
+  }
+  auto result = ReductionResult::SUCCESS;
 
-  template <class DomainObject>
-  DomainOverwriteData(
-      VertexWSM pattern_v, const DomainObject& new_domain,
-      NodesRawData& raw_data) {
-    caller_should_overwrite_domain = false;
-    if (new_domain.empty()) {
-      reduction_result = ReductionResult::NOGOOD;
-      return;
-    }
-    auto& data_for_this_pv = raw_data.domains_data.at(pattern_v);
-    auto& existing_domain_data =
-        data_for_this_pv.entries[data_for_this_pv.entries_back_index];
-    auto& existing_domain = existing_domain_data.domain;
-    TKET_ASSERT(!existing_domain.empty());
-    TKET_ASSERT(new_domain.size() <= existing_domain.size());
+  if (new_domain.size() == 1) {
+    result = ReductionResult::NEW_ASSIGNMENTS;
+    auto& current_node = m_raw_data.get_current_node_nonconst();
+    current_node.new_assignments.emplace_back(pv, *new_domain.cbegin());
 
-    // We should check that the new domain is a subset;
-    // but this is expensive, so just check one element.
-    const VertexWSM first_new_tv = *new_domain.cbegin();
-    TKET_ASSERT(existing_domain.count(first_new_tv) != 0);
-    if (new_domain.size() == existing_domain.size()) {
-      reduction_result = ReductionResult::SUCCESS;
-      return;
-    }
-    caller_should_overwrite_domain = true;
-
-    // Now, the new domain is nonempty and smaller than the existing one.
-    if (new_domain.size() == 1) {
-      reduction_result = ReductionResult::NEW_ASSIGNMENTS;
-      raw_data.get_current_node_nonconst().new_assignments.emplace_back(
-          pattern_v, first_new_tv);
-      raw_data.get_current_node_nonconst().unassigned_vertices_superset.erase(
-          pattern_v);
-    } else {
-      reduction_result = ReductionResult::SUCCESS;
-    }
-
-    if (existing_domain_data.node_level == raw_data.current_node_level) {
-      // We can just overwrite the domain in-place; the caller will do that.
-      return;
-    }
-    // We need to make a new domain object.
+    // The superset is EITHER valid, OR it's empty (meaning not actually
+    // a superset). In either case, PV is no longer unassigned
+    // and should be erased.
+    current_node.unassigned_vertices_superset.erase(pv);
+  }
+  // We must be careful; "existing_domain" might be shared with previous nodes.
+  if (existing_domain_data.node_level == m_raw_data.current_node_level) {
+    // We can just overwrite the domain in-place; the caller will do that.
+    existing_domain.swap(new_domain);
+  } else {
+    // We need to make a new domain object (or, possibly, reuse an existing
+    // one).
     ++data_for_this_pv.entries_back_index;
     auto& new_entry = get_element_with_resize(
         data_for_this_pv.entries, data_for_this_pv.entries_back_index);
-    new_entry.node_level = raw_data.current_node_level;
+    new_entry.node_level = m_raw_data.current_node_level;
+    new_entry.domain.swap(new_domain);
   }
-};
-}  // namespace
-
-ReductionResult DomainsAccessor::overwrite_domain(
-    VertexWSM pv, const std::set<VertexWSM>& new_domain) {
-  const DomainOverwriteData overwrite_data(pv, new_domain, m_raw_data);
-  if (overwrite_data.caller_should_overwrite_domain) {
-    // Simple copy.
-    get_domain_nonconst(pv) = new_domain;
-  }
-  return overwrite_data.reduction_result;
-}
-
-ReductionResult DomainsAccessor::overwrite_domain_with_set_swap(
-    VertexWSM pv, std::set<VertexWSM>& new_domain) {
-  const DomainOverwriteData overwrite_data(pv, new_domain, m_raw_data);
-  if (overwrite_data.caller_should_overwrite_domain) {
-    get_domain_nonconst(pv).swap(new_domain);
-  }
-  return overwrite_data.reduction_result;
-}
-
-ReductionResult DomainsAccessor::overwrite_domain(
-    VertexWSM pv, const std::vector<VertexWSM>& new_domain) {
-  const DomainOverwriteData overwrite_data(pv, new_domain, m_raw_data);
-  if (overwrite_data.caller_should_overwrite_domain) {
-    get_domain_nonconst(pv) = {new_domain.cbegin(), new_domain.cend()};
-  }
-  return overwrite_data.reduction_result;
+  return result;
 }
 
 DomainsAccessor::IntersectionResult

@@ -361,10 +361,9 @@ bool MainSolver::move_down_from_reduced_node(
   const auto& accessor = m_search_branch_ptr->get_domains_accessor();
 
   for (;;) {
-    const auto next_var_result = m_search_components_ptr->variable_ordering.get_variable(
-        accessor, m_search_components_ptr->rng,
-        m_search_branch_ptr->get_domains_accessor_nonconst()
-            .get_current_node_unassigned_pattern_vertices_superset_to_overwrite());
+    const auto next_var_result =
+        m_search_components_ptr->variable_ordering.get_variable(
+            accessor, m_search_components_ptr->rng);
 
     if (next_var_result.empty_domain) {
       return false;

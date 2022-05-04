@@ -44,18 +44,10 @@ class VariableOrdering {
    * in other components).
    * Within the candidate vertices, we prefer those with smallest domains.
    */
-  Result get_variable(
-      const DomainsAccessor& accessor, RNG& rng,
-      std::set<VertexWSM>& current_node_unassigned_vertices_to_overwrite);
+  Result get_variable(const DomainsAccessor& accessor, RNG& rng);
 
  private:
   std::vector<VertexWSM> m_pv_list;
-
-  /** Returns false if an empty domain is detected. */
-  bool check_candidate(
-      VertexWSM pv, std::size_t domain_size, std::size_t& min_domain_size,
-      std::set<VertexWSM>& current_node_unassigned_vertices_to_overwrite,
-      bool write_unassigned_vertices);
 };
 
 }  // namespace WeightedSubgraphMonomorphism

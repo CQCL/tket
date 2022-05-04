@@ -50,7 +50,8 @@ namespace WeightedSubgraphMonomorphism {
 
 /** This is the data structure containing all the data about nodes
  * and domains necessary for searching, but without many manipulation
- * functions.
+ * functions; it's difficult to split the data up further, so instead
+ * we divide up the data manipulation tasks between different classes.
  */
 struct NodesRawData {
   // Think of DomainData as being "vertical"; each vertical strand
@@ -107,12 +108,6 @@ struct NodesRawData {
      * some may be deleted again after processing.
      */
     std::vector<std::pair<VertexWSM, VertexWSM>> new_assignments;
-
-    /** When searching, we first look at vertices adjacent
-     * (in the pattern graph) to a vertex already assigned.
-     * TODO: is this actually a good idea? Seems natural, but we should test!
-     */
-    std::set<VertexWSM> pvs_adjacent_to_newly_assigned_vertices;
 
     /** For performance: rather than searching through EVERY Dom(PV),
      * which will include many assigned PV (for which Dom(PV)={y}),

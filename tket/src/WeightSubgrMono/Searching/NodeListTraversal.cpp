@@ -154,9 +154,10 @@ static void complete_move_down_with_resized_vectors_and_indices(
   new_node_data.new_assignments.resize(1);
   new_node_data.new_assignments[0] = {p_vertex, t_vertex};
   new_node_data.nogood = false;
-  new_node_data.pvs_adjacent_to_newly_assigned_vertices.clear();
+
   new_node_data.scalar_product =
       raw_data.nodes_data[raw_data.current_node_level - 1].scalar_product;
+
   new_node_data.total_p_edge_weights =
       raw_data.nodes_data[raw_data.current_node_level - 1].total_p_edge_weights;
 }
