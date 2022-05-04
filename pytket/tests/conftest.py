@@ -34,7 +34,7 @@ if platform.machine() == "x86_64":
         return "test_bitwise_ops.ll"
 
     @fixture
-    def circuit_bitwise_ops(bitwise_file: str) -> None:
+    def circuit_bitwise_ops(bitwise_file: str) -> Generator:
         c = Circuit(0, 3)
         c.add_c_and(0, 1, 2)
         c.add_c_or(2, 1, 0)

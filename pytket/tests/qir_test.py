@@ -14,6 +14,7 @@
 
 from pathlib import Path
 import platform
+from typing import Generator
 import pytest
 from pytket import Circuit
 
@@ -67,7 +68,7 @@ if platform.machine() == "x86_64":
         # assert call_mz in em_ir_str
 
     def test_qir_from_pytket_circuit_and_quantinuum_gateset(
-        circuit_quantinuum_gateset, file_name: str
+        circuit_quantinuum_gateset: Generator, file_name: str
     ) -> None:
         with open(file_name, "r") as input:
             data = input.read()
@@ -107,8 +108,8 @@ if platform.machine() == "x86_64":
 
     @pytest.mark.skip
     def test_qir_from_pytket_circuit_and_pyqir_gateset(
-        circuit_pyqir_gateset, file_name: str
-    ):
+        circuit_pyqir_gateset: Generator, file_name: str
+    ) -> None:
         with open(file_name, "r") as input:
             data = input.read()
         print(data)
