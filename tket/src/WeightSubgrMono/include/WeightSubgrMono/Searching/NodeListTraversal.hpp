@@ -30,7 +30,11 @@ class NodesRawDataWrapper;
  */
 class NodeListTraversal {
  public:
-  /** The wrapped NodesRawData object will be directly altered. */
+  /** The wrapped NodesRawData object will be directly altered.
+   * @param raw_data_wrapper A wrapper around the raw data, which will be
+   * directly manipulated by this NodeListTraversal object. The raw data is
+   * shared with other manipulation objects, such as DomainsAccessor.
+   */
   explicit NodeListTraversal(NodesRawDataWrapper& raw_data_wrapper);
 
   /** Simply return all TVs which occur in some domain, somewhere. */
@@ -39,11 +43,17 @@ class NodeListTraversal {
   /** Moves up (i.e., decreases current_node_level) UNTIL it reaches
    * an apparently valid node; returns false if it cannot
    * (runs out of valid nodes).
+   * @return False if it cannot move up any further to reach a valid node (which
+   * means that the search is finished).
    */
   bool move_up();
 
   /** Make the given assignment PV->TV, which must be valid,
    * and move down to a new node, taking care of new assignments.
+   * @param p_vertex A pattern vertex PV, for the assignment PV->TV (which must
+   * be valid).
+   * @param t_vertex A target vertex tV, for the assignment PV->TV (which must
+   * be valid).
    */
   void move_down(VertexWSM p_vertex, VertexWSM t_vertex);
 
@@ -59,6 +69,11 @@ class NodeListTraversal {
    * If the caller knows that the current node is already a nogood,
    * it would be a waste of time checking the current node,
    * as we are about to move up.
+   * @param impossible_assignment An assignment PV->TV which should be erased
+   * from ALL data.
+   * @param action Should we include the current node, or ignore it? (If we're
+   * about to move up, it's pointless to include it).
+   * @return False if the current node becomes a nogood.
    */
   bool erase_impossible_assignment(
       std::pair<VertexWSM, VertexWSM> impossible_assignment,

@@ -21,14 +21,14 @@ namespace WeightedSubgraphMonomorphism {
 class NearNeighboursData;
 class NeighboursData;
 
+/** If pv->tv is made, ensures that all pattern vertices v' with
+ * distance(pv,v')=d have Domain(v') a subset of
+ *    {u : distance(tv,u) <= d}.
+ * Note that d >= 2 is required; a separate NeighboursReducer deals
+ * with the special case d=1.
+ */
 class DistancesReducer : public ReducerInterface {
  public:
-  /** If pv->tv is made, ensures that all pattern vertices v' with
-   * distance(pv,v')=d have Domain(v') a subset of
-   *    {u : distance(tv,u) <= d}.
-   * Note that d >= 2 is required; a separate NeighboursReducer deals
-   * with the special case d=1.
-   */
   DistancesReducer(
       NearNeighboursData& pattern_near_ndata,
       const NeighboursData& target_ndata, NearNeighboursData& target_near_ndata,

@@ -37,12 +37,14 @@ class DomainInitialiser {
    * possible_assignments as much as possible.
    * @param possible_assignments All possible pv->tv mappings. We will erase
    * some, if we can show that they are impossible.
-   * @param pattern_vertices The list of all P-vertices.
    * @param pattern_neighbours_data The object to calculate information about
-   * the pattern graph.
-   * @param target_vertices The list of all T-vertices.
+   * the pattern graph (immediate neighbours of a vertex).
+   * @param pattern_near_neighbours_data An object to calculate nearby vertices
+   * in the pattern graph (and cache calculated results).
    * @param target_neighbours_data The object to calculate information about the
    * target graph.
+   * @param target_near_neighbours_data The object for calculating nearby
+   * vertices in the target graph (not just immediate neighbours).
    * @param max_path_length Extra parameter for the calculation. Larger values
    * need more computation, but give smaller domains.
    * @return False if the filters reduced any domain to empty (so that no

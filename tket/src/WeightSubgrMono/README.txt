@@ -93,6 +93,8 @@ FURTHER COMMENTS:
 
 (However, that paper only considers the unweighted problem, and the case where we stop at the FIRST solution. Thus, maybe it is still worth trying when we only need one solution).
 
+- Previously (version 0.2), when deciding on a new candidate p-vertex to assign (variable ordering), we gave priority to those adjacent to newly assigned PV. However, removing this and simply treating all unassigned vertices equally was equally fast or significantly faster in almost every test case (even ignoring the extra slight speedup from erasing the extra bookkeeping code). Maybe this is not so surprising; initially we think of "nearby" vertices as being "more constrained", and so more natural to assign first. But we have many graph-theoretic reduction methods, some of which are more "long range". So, viewed purely as an abstract constrained variables problem, there is no compelling reason why we should pay attention to adjacent vertices.
+
 - Previously (version 0.2) we separated the domains from assignments, i.e. we stored the main x -> Dom(x)  data in std::maps, but if  Dom(x)={y}  then x was not listed, instead occurring in a separate  x->y map.  Now we've simplified and just have one main std::map to represent  x -> Dom(x).
 
 - Because the std::maps in each node have IDENTICAL keys (i.e., the pattern vertices), we could possibly relabel and use a std::vector instead of a std::map; this would be a little faster.

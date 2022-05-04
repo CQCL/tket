@@ -35,7 +35,7 @@ typedef std::pair<VertexWSM, VertexWSM> EdgeWSM;
 typedef std::map<EdgeWSM, WeightWSM> GraphEdgeWeights;
 
 /** KEY: pattern vertex
-// VALUE: all possible target vertices it could map to.
+ * VALUE: all possible target vertices it could map to.
  */
 typedef std::map<VertexWSM, std::set<VertexWSM>> PossibleAssignments;
 

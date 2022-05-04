@@ -22,22 +22,53 @@ namespace WeightedSubgraphMonomorphism {
 
 class DomainsAccessor;
 
+/** A general interface for an object which knows, using various
+ * graph-theoretic tools, that if a new assignment PV->TV is made,
+ * then certain other domains can be reduced,
+ * thus possibly pruning the search space and speeding up the search.
+ * However, these objects do NOT remember which assignments were previously
+ * processed.
+ *
+ * The reason for having a "check" and "reduce" function is that, in most
+ * natural cases, the SAME graph theory which enables a particular reduction
+ * ALSO can be applied to give a useful "check" function.
+ */
 class ReducerInterface {
  public:
+  /** Call whenever we reach a new node to begin reducing. */
   virtual void clear();
 
   /** Check if pv->tv may be valid, considered in isolation from all other
    * assignments. This should be cheaper than a reduction. By default, just
    * returns true always.
+   * Of course it is a waste of time to call this multiple times with the same
+   * assignment; the CALLER is responsible for arranging things so as to avoid
+   * duplicated calls.
+   * Note that this doesn't actually alter any domains (it doesn't even know
+   * about the current domains). The caller should erase PV->TV completely
+   * from ALL data whenever this returns false.
+   * @param assignment An assignment PV->TV under consideration.
+   * @return False if the assignment is and was ALWAYS invalid (NOT just because
+   * of the other domains at this exact moment in the search). Thus, TV can be
+   * erased from EVERY Domain(PV) in EVERY node of EVERY search, not just the
+   * current node).
    */
   virtual bool check(std::pair<VertexWSM, VertexWSM> assignment);
 
   /** Given that PV->TV is a new assignment, reduces the domains
    * of all affected vertices. Breaks off early
    * if new assignments arise in the node due to reductions.
-   * Of course, a nogood here does NOT mean that PV->TV is invalid always;
+   * Of course, UNLIKE when the "check" function returns false, a nogood here
+   * does NOT mean that PV->TV is invalid always;
    * just that it is invalid IN COMBINATION with the complete collection
-   * of domains.
+   * of domains in the CURRENT node.
+   * @param assignment An assignment PV->TV under consideration.
+   * @param accessor An object providing read/write access to the complete
+   * collection of domains in the CURRENT node.
+   * @param work_set A reusable object which may or may not be used by this
+   * class, to avoid unnecessary memory reallocation.
+   * @return After reducing the domains, information about what happened; did we
+   * hit a nogood? Did we create a new assignment?
    */
   virtual ReductionResult reduce(
       std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,
@@ -116,12 +147,26 @@ class ReducerWrapper {
   /** Checks if the given PV->TV assignment appears to be valid,
    * separately from others (i.e., in isolation).
    * Does NOT keep track of whether it was checked before.
+   * For convenience, just wrap around the "check" function of the
+   * ReducerInterface object.
+   * @param assignment An assignment PV->TV under consideration.
+   * @return False if the assignment is and was ALWAYS invalid, in ALL search
+   * nodes.
    */
   bool check(std::pair<VertexWSM, VertexWSM> assignment);
 
-  /** Keeps track of previously processed assignments and doesn't repeat them.
+  /** Starts to reduce domains using any new assignments which arose since
+   * the last call.
+   * Keeps track of previously processed assignments and doesn't repeat them.
+   * Breaks off early if a new assignment is created, but will subsequently
+   * resume automatically from the next unprocessed assignment if this occurs.
+   * The reason is that new assignments have cascading effects, often reducing
+   * many other domains simultaneously and cheaply. Thus it is better to let
+   * the caller perform these cheap reductions first, before carrying out the
+   * reductions in this object (which are usually much more expensive).
    * @param accessor An object to get information about the current domains, and
-   * alter them if necessary.
+   * alter them if necessary. Also, gets the list of new assignments from this
+   * object.
    * @param work_set An object for reuse, to avoid expensive memory
    * reallocations.
    * @return The result of reducing the current node with ALL new assignments

@@ -22,6 +22,26 @@ namespace WeightedSubgraphMonomorphism {
 
 class DomainsAccessor;
 
+/** Use derived graphs (similar to so-called "supplemental graphs")
+ * to restrict domains. There are various graph transformations
+ * G -> G' which change edges, but preserve vertices, i.e. V(G)=V(G'),
+ * with the following property:
+ * whenever a monomorphism  f : V(P) -> V(T)  exists, so by definition f
+ * creates a well-defined mapping  F : E(P) -> E(T),  then the new graphs
+ * P', T' have the property that the SAME  f : V(P') -> V(T')
+ * is a monomorphism from P' to T'.
+ *
+ * A simple example is the D(n) graph (not standard notation):
+ * given any graph G (without edge weights), define G' = D(n)[G] by:
+ * (u,v) are adjacent in G'  <==>  there exists a path of length exactly n
+ * joining u to v.
+ * Furthermore, we can let the edge u--v in D(n) have a weight, equal to
+ * the number of distinct paths of length n joining u to v.
+ *
+ * Note that this is related, but different, to saying  Distance(u,v)=n,
+ * which would NOT work. Note also that D(n) would become very expensive
+ * to compute for larger n, but we only consider D(2), D(3).
+ */
 class DerivedGraphsReducer : public ReducerInterface {
  public:
   DerivedGraphsReducer(

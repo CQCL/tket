@@ -21,6 +21,7 @@ namespace WeightedSubgraphMonomorphism {
 
 /** This is a kind of "Reducer" object, but not derived from
  * ReducerInterface because it doesn't care about individual assignments.
+ *
  * This tries to find sets of pattern vertices {v(i)} such that
  *    |U| = |union_i Domain(v(i))| = |{v(i)}| > 1.
  * (This is termed a "Hall set", as in the 2015 Glasgow subgraph solver paper
@@ -47,6 +48,12 @@ class HallSetReduction {
   /** Call at the start of reducing a new search node. */
   void clear();
 
+  /** Reduce domains, if Hall sets are found. This can be called repeatedly
+   * when reducing the same node.
+   * @param accessor An object which provides read and write access to the
+   * current node.
+   * @return Information about the reduction.
+   */
   ReductionResult reduce(DomainsAccessor& accessor);
 
  private:

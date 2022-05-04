@@ -31,6 +31,11 @@ class NearNeighboursData {
   /** Calculated lazily, on demand; returns a sorted list of vertices
    * exactly at distance d from v. We must have d >= 2
    * (neighbours with d=1 come from the NeighboursData object instead).
+   * @param v A vertex in the graph.
+   * @param distance A distance d >= 2.
+   * @return A reference to a sorted vector (stored within this class) of all
+   * vertices at distance exactly d from v. The reference may be invalidated, of
+   * course, if further non-const calls are made to this class.
    */
   const std::vector<VertexWSM>& get_vertices_at_distance(
       VertexWSM v, unsigned distance);
