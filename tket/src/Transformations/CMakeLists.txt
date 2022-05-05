@@ -48,7 +48,8 @@ list(APPEND DEPS_${COMP}
     Ops
     OpType
     PauliGraph
-    Utils)
+    Utils
+    WeightSubgrMono)
 
 foreach(DEP ${DEPS_${COMP}})
     target_include_directories(
