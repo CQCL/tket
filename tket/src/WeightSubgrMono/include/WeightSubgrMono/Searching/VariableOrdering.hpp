@@ -42,6 +42,7 @@ class VariableOrdering {
    * node.
    * @param rng A random number generator, in case we need to choose between
    * multiple equally good choices.
+   * @return Our choice of PV to assign next
    */
   Result get_variable(DomainsAccessor& accessor, RNG& rng);
 

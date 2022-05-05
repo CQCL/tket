@@ -37,6 +37,7 @@ class ValueOrdering {
    * size>1.
    * @param target_ndata Data about graphs, etc. etc. (and also RNG) to assist
    * with the decision.
+   * @param rng A random number generator.
    * @return The chosen TV from Dom(PV).
    */
   VertexWSM get_target_value(
