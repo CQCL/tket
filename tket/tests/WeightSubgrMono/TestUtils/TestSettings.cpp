@@ -17,17 +17,11 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-// Verbose, test all
-// TestSettings::TestSettings() : os(OStreamWrapper::Target::CERR),
-// run_slow_tests(true) {}
+// Uncomment to get a running printout for the tests.
+// TestSettings::TestSettings() : os(OStreamWrapper::Target::CERR) {}
 
-// Verbose, test only quick tests
-// TestSettings::TestSettings() : os(OStreamWrapper::Target::CERR),
-// run_slow_tests(false) {}
-
-// No printout, only quick tests
-TestSettings::TestSettings()
-    : os(OStreamWrapper::Target::NONE), run_slow_tests(false) {}
+// No printed output for the tests.
+TestSettings::TestSettings() : os(OStreamWrapper::Target::NONE) {}
 
 const TestSettings& TestSettings::get() {
   static const TestSettings settings;

@@ -54,7 +54,6 @@ class OStreamWrapper {
 struct TestSettings {
   OStreamWrapper os;
   OStreamWrapper os_null;
-  bool run_slow_tests;
 
   TestSettings();
 
