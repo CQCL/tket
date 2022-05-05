@@ -13,11 +13,13 @@
 // limitations under the License.
 
 #pragma once
-#include "ReducerWrapper.hpp"
 #include "WeightSubgrMono/Common/ReusableStorage.hpp"
+#include "WeightSubgrMono/GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
+
+class DomainsAccessor;
 
 /** This is a kind of "Reducer" object, but not derived from
  * ReducerInterface because it doesn't care about individual assignments.
