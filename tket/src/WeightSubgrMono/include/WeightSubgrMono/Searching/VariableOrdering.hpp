@@ -28,6 +28,7 @@ class DomainsAccessor;
  */
 class VariableOrdering {
  public:
+  /** Our choice of variable PV to assign (if possible). */
   struct Result {
     // If null, we couldn't find an unassigned variable.
     // So EITHER we've got a full solution, OR the problem is insoluble
@@ -36,18 +37,17 @@ class VariableOrdering {
     bool empty_domain;
   };
 
-  /** We prefer, first, vertices in the candidate set (which, in practice,
-   * are vertices adjacent to assigned ones).
-   * Only if no unassigned candidates exist do we allow other vertices
-   * (i.e., implicitly take the candidate list to be the set of all
-   * unassigned vertices - this necessarily means vertices
-   * in other components).
-   * Within the candidate vertices, we prefer those with smallest domains.
+  /** Choose a variable PV to assign, if possible.
+   * @param accessor An object giving us access to domains data of the current
+   * node.
+   * @param rng A random number generator, in case we need to choose between
+   * multiple equally good choices.
    */
-  Result get_variable(const DomainsAccessor& accessor, RNG& rng);
+  Result get_variable(DomainsAccessor& accessor, RNG& rng);
 
  private:
   std::vector<VertexWSM> m_pv_list;
+  std::vector<VertexWSM> m_work_vector;
 };
 
 }  // namespace WeightedSubgraphMonomorphism

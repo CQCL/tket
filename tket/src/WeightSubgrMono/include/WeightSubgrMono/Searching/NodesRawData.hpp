@@ -111,13 +111,16 @@ struct NodesRawData {
 
     /** For performance: rather than searching through EVERY Dom(PV),
      * which will include many assigned PV (for which Dom(PV)={y}),
-     * we have a set giving all those PV with |Dom(PV)| > 1.
-     * However, it would be too slow to maintain an accurate list,
-     * so instead this is EITHER an empty set,
-     * OR every PV with size Dom(PV) > 1 is included in here.
+     * we have a list of all those PV known to have |Dom(PV)| > 1.
+     * However, we don't need a strictly accurate list.
+     * This is EITHER empty, OR guarantees that every PV with
+     * size Dom(PV) > 1 is included in here.
      * However, some extra PV with  |Dom(PV)| = 1  may also be included.
+     *
+     * Note that this only works because, as we move down the search tree,
+     * the domain sets reduce (so we can restrict to a previous list of PVs).
      */
-    std::set<VertexWSM> unassigned_vertices_superset;
+    std::vector<VertexWSM> unassigned_vertices_superset;
 
     std::string str() const;
   };

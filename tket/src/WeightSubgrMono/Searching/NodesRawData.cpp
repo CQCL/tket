@@ -56,7 +56,7 @@ NodesRawData::NodesRawData(const PossibleAssignments& possible_assignments)
     if (domain.size() == 1) {
       node.new_assignments.emplace_back(pv, *domain.cbegin());
     } else {
-      node.unassigned_vertices_superset.insert(pv);
+      node.unassigned_vertices_superset.push_back(pv);
     }
   }
 }

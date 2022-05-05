@@ -358,12 +358,12 @@ bool MainSolver::move_down_from_reduced_node(
     const SearchBranch::ReductionParameters& reduction_parameters) {
   TKET_ASSERT(m_search_components_ptr);
   TKET_ASSERT(m_search_branch_ptr);
-  const auto& accessor = m_search_branch_ptr->get_domains_accessor();
 
   for (;;) {
     const auto next_var_result =
         m_search_components_ptr->variable_ordering.get_variable(
-            accessor, m_search_components_ptr->rng);
+            m_search_branch_ptr->get_domains_accessor_nonconst(),
+            m_search_components_ptr->rng);
 
     if (next_var_result.empty_domain) {
       return false;
@@ -376,8 +376,8 @@ bool MainSolver::move_down_from_reduced_node(
 
     const VertexWSM next_tv =
         m_search_components_ptr->value_ordering.get_target_value(
-            accessor.get_domain(next_pv), m_target_neighbours_data,
-            m_search_components_ptr->rng);
+            m_search_branch_ptr->get_domains_accessor().get_domain(next_pv),
+            m_target_neighbours_data, m_search_components_ptr->rng);
 
     m_search_branch_ptr->move_down(next_pv, next_tv);
     if (!m_search_branch_ptr->reduce_current_node(reduction_parameters)) {

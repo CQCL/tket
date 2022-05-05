@@ -24,11 +24,12 @@ namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 VariableOrdering::Result VariableOrdering::get_variable(
-    const DomainsAccessor& accessor, RNG& rng) {
+    DomainsAccessor& accessor, RNG& rng) {
   m_pv_list.clear();
   std::size_t min_domain_size;
   set_maximum(min_domain_size);
   Result result;
+  m_work_vector.clear();
 
   // NOTE: it might seem natural to give priority to PV adjacent to
   // newly assigned vertices, but tests showed that this is actually
@@ -40,7 +41,23 @@ VariableOrdering::Result VariableOrdering::get_variable(
       result.empty_domain = true;
       return result;
     }
-    if (domain_size == 1 || domain_size > min_domain_size) {
+    if (domain_size == 1) {
+      continue;
+    }
+    // The point is, we're guaranteed to consider every
+    // unassigned PV (and maybe some assigned ones).
+    // When we move down the search tree, the set of unassigned
+    // vertices decreases; thus we can save time by only searching
+    // this subset of PV.
+    // When we move up and return to a node,
+    // as we reduce further some vertices become assigned, BUT that
+    // doesn't bother us; it just means we have a few extra PV
+    // to search through next time.
+    // This is quicker than trying to maintain a strictly accurate
+    // list of unassigned PV (which would need a std::set).
+    m_work_vector.push_back(pv);
+
+    if (domain_size > min_domain_size) {
       continue;
     }
     if (domain_size < min_domain_size) {
@@ -50,6 +67,9 @@ VariableOrdering::Result VariableOrdering::get_variable(
     }
     m_pv_list.emplace_back(pv);
   }
+  accessor.get_unassigned_pattern_vertices_superset_to_overwrite().swap(
+      m_work_vector);
+
   result.empty_domain = false;
   if (m_pv_list.empty()) {
     return result;

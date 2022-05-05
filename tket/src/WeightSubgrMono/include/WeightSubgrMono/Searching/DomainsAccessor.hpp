@@ -41,12 +41,22 @@ class DomainsAccessor {
   /** Every unassigned p-vertex (i.e., with size Domain(pv) > 1) in the
    * current node is included in here.
    * However, this may also include some assigned vertices.
-   * @return A set which definitely includes all pattern vertices which are
-   * currently unassigned, in the current vertex. However, it may include other
-   * pattern vertices. But this will usually be quicker than
-   * get_pattern_vertices().
+   * @return A vector which definitely includes all pattern vertices which are
+   * unassigned, in the current node. However, it may include other
+   * pattern vertices.
    */
-  const std::set<VertexWSM>& get_unassigned_pattern_vertices_superset() const;
+  const std::vector<VertexWSM>& get_unassigned_pattern_vertices_superset()
+      const;
+
+  /** This may be a reference to the SAME object returned by
+   * get_unassigned_pattern_vertices_superset(), or it may be different.
+   * The caller is free to overwrite it at the END (after processing).
+   * A vector::swap is most efficient, of course.
+   * @return A vector which can be directly overwritten at the END, in order to
+   * fill out all the unassigned vertices in the current node.
+   */
+  std::vector<VertexWSM>&
+  get_unassigned_pattern_vertices_superset_to_overwrite();
 
   /** Return Domain(pv) in the current node, i.e. the set of all target
    * vertices which pv could be mapped to, as we extend the current mapping.
@@ -172,22 +182,8 @@ class DomainsAccessor {
       VertexWSM pattern_v,
       const std::set<VertexWSM>& forbidden_target_vertices);
 
-  /** Recall that get_unassigned_pattern_vertices_superset() returns a
-   * guaranteed superset of all unassigned pattern vertices, for performance.
-   * In order to update the superset, this function directly provides access
-   * to the set object for manipulation by the caller.
-   * The caller is not obliged to alter it; however, the set MAY be left empty
-   * to save time, which means that get_unassigned_pattern_vertices_superset()
-   * will return a PREVIOUS set, possibly containing some assigned vertices.
-   * @return Direct access to the internal set which is EITHER empty, OR should
-   * be a valid superset of the unassigned vertices.
-   */
-  std::set<VertexWSM>&
-  get_current_node_unassigned_pattern_vertices_superset_to_overwrite();
-
  private:
   NodesRawData& m_raw_data;
-
   std::set<VertexWSM>& get_domain_nonconst(VertexWSM pv);
 };
 

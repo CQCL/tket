@@ -36,21 +36,6 @@ const std::set<VertexWSM>& DomainsAccessor::get_domain(VertexWSM pv) const {
   return data.entries[data.entries_back_index].domain;
 }
 
-const std::set<VertexWSM>&
-DomainsAccessor::get_unassigned_pattern_vertices_superset() const {
-  for (unsigned index = m_raw_data.current_node_level; index != 0; --index) {
-    if (m_raw_data.nodes_data[index].nogood) {
-      continue;
-    }
-    const auto& vertices =
-        m_raw_data.nodes_data[index].unassigned_vertices_superset;
-    if (!vertices.empty()) {
-      return vertices;
-    }
-  }
-  return m_raw_data.nodes_data[0].unassigned_vertices_superset;
-}
-
 bool DomainsAccessor::domain_created_in_current_node(VertexWSM pv) const {
   const auto& data = m_raw_data.domains_data.at(pv);
   return data.entries[data.entries_back_index].node_level ==
@@ -97,7 +82,6 @@ bool DomainsAccessor::alldiff_reduce_current_node(
   while (n_assignments_already_processed < new_assignments.size()) {
     const auto assignment = new_assignments[n_assignments_already_processed];
     ++n_assignments_already_processed;
-    node.unassigned_vertices_superset.erase(assignment.first);
 
     for (auto& domains_information : m_raw_data.domains_data) {
       const VertexWSM& pv = domains_information.first;
@@ -172,11 +156,6 @@ ReductionResult DomainsAccessor::overwrite_domain_with_set_swap(
     result = ReductionResult::NEW_ASSIGNMENTS;
     auto& current_node = m_raw_data.get_current_node_nonconst();
     current_node.new_assignments.emplace_back(pv, *new_domain.cbegin());
-
-    // The superset is EITHER valid, OR it's empty (meaning not actually
-    // a superset). In either case, PV is no longer unassigned
-    // and should be erased.
-    current_node.unassigned_vertices_superset.erase(pv);
   }
   // We must be careful; "existing_domain" might be shared with previous nodes.
   if (existing_domain_data.node_level == m_raw_data.current_node_level) {
@@ -261,11 +240,6 @@ DomainsAccessor::intersect_domain_with_complement_set(
   return result;
 }
 
-std::set<VertexWSM>& DomainsAccessor::
-    get_current_node_unassigned_pattern_vertices_superset_to_overwrite() {
-  return m_raw_data.get_current_node_nonconst().unassigned_vertices_superset;
-}
-
 std::string DomainsAccessor::str(bool full) const {
   std::stringstream ss;
   if (full) {
@@ -292,6 +266,25 @@ std::string DomainsAccessor::str(bool full) const {
   }
   ss << "\n";
   return ss.str();
+}
+
+const std::vector<VertexWSM>&
+DomainsAccessor::get_unassigned_pattern_vertices_superset() const {
+  const auto& candidate =
+      m_raw_data.get_current_node().unassigned_vertices_superset;
+  if (!candidate.empty()) {
+    return candidate;
+  }
+  if (m_raw_data.current_node_level == 0) {
+    return m_raw_data.pattern_vertices;
+  }
+  return m_raw_data.nodes_data[m_raw_data.current_node_level - 1]
+      .unassigned_vertices_superset;
+}
+
+std::vector<VertexWSM>&
+DomainsAccessor::get_unassigned_pattern_vertices_superset_to_overwrite() {
+  return m_raw_data.get_current_node_nonconst().unassigned_vertices_superset;
 }
 
 }  // namespace WeightedSubgraphMonomorphism
