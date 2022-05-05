@@ -224,12 +224,20 @@ std::set<std::pair<unsigned, unsigned>> get_tiny_pattern_longer_problems() {
 // Embedding 1x1, 2x1, etc. is fast, even into large 20x20 targets.
 SCENARIO("Trivial problems: tiny pattern square grids") {
   const std::set<std::pair<unsigned, unsigned>> empty_problems;
-  test(get_tiny_pattern_longer_problems(), empty_problems, 0, 20, 20, 1000, 10);
+  test(
+      get_tiny_pattern_longer_problems(), empty_problems, 0, 20, 20, 1000,
+      // test coverage takes longer than normal running,
+      // as does Valgrind;
+      // 10ms timeout would be sufficient in normal runs.
+      100 * 10);
 }
 
 SCENARIO("Easy problems: tiny pattern square grids") {
   const std::set<std::pair<unsigned, unsigned>> empty_problems;
-  test(empty_problems, get_tiny_pattern_longer_problems(), 0, 20, 6, 1000, 500);
+  test(
+      empty_problems, get_tiny_pattern_longer_problems(), 0, 20, 6, 1000,
+      // Longer timeout for Valgrind.
+      10 * 500);
 }
 
 SCENARIO(

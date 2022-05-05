@@ -281,7 +281,8 @@ SCENARIO("embedding random graphs - smaller graphs, small weights") {
   params.total_number_of_vertices = 56;
 
   // Currently, ~10 ms.
-  params.expected_max_total_time_ms = 100;
+  // However, Valgrind is much slower than normal runs.
+  params.expected_max_total_time_ms = 1000 * 10;
 
   const auto result = tester.test_all_against_all(params);
   CHECK(result.success_count == 64);
@@ -289,7 +290,7 @@ SCENARIO("embedding random graphs - smaller graphs, small weights") {
   CHECK(result.timeout_count == 0);
 }
 
-SCENARIO("embedding random graphs - medium graphs, small weights") {
+SCENARIO("embedding random graphs - medium graphs, small weights", "[.long]") {
   AllAgainstAllTester tester;
   tester.codes = {"10 20 1111", "10 30 2222",  "11 20 3333", "11 40 4444",
                   "15 30 5555", "16 50, 6666", "17 60 7777", "18 70 888"};
@@ -387,7 +388,8 @@ SCENARIO(
 }
 
 SCENARIO(
-    "embedding random graphs - large graphs, small weights, shorter problems") {
+    "embedding random graphs - large graphs, small weights, shorter problems",
+    "[.long]") {
   auto tester = get_large_graphs_small_weights_data();
   for (auto& entry : tester.expected_results) {
     if (entry < -1 || entry == 619) {
@@ -399,7 +401,9 @@ SCENARIO(
   params.timeout = 1000;
   params.total_number_of_edges = 3250;
   params.total_number_of_vertices = 334;
-  params.expected_max_total_time_ms = 1000;
+
+  // test coverage takes longer than normal running.
+  params.expected_max_total_time_ms = 20 * 1000;
   params.expected_min_total_time_ms = 100;
   const auto result = tester.test_all_against_all(params);
   CHECK(result.success_count == 68);
@@ -450,7 +454,8 @@ static unsigned get_long_problem_value() {
 }
 
 SCENARIO(
-    "embedding random graphs - mixed sizes and densities: short problems") {
+    "embedding random graphs - mixed sizes and densities: short problems",
+    "[.long]") {
   const auto long_problem_value = get_long_problem_value();
   const auto medium_problem_values = get_medium_time_problem_values();
   auto tester = get_mixed_sizes_problems();
@@ -465,7 +470,10 @@ SCENARIO(
   params.timeout = 1000;
   params.total_number_of_edges = 1081;
   params.total_number_of_vertices = 181;
-  params.expected_max_total_time_ms = 1000;
+
+  // test coverage takes longer than normal running.
+  params.expected_max_total_time_ms = 20 * 1000;
+
   params.expected_min_total_time_ms = 50;
   const auto result = tester.test_all_against_all(params);
   CHECK(result.success_count == 80);
