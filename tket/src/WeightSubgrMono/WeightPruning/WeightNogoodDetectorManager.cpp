@@ -54,13 +54,19 @@ bool WeightNogoodDetectorManager::should_activate_detector(
 
   // Note that vertex numbers are sensibly small, so won't overflow.
   // Check state resetting.
+  // (More detail: as we move up and down the search tree, nearby search nodes
+  // are quite similar to each other, so our dynamic feedback strategy
+  // of, roughly, "do more checks if it's successful a lot; reduce
+  // the amount of checking if it's failing a lot" seems sensible.
+  // But, if conditions change a lot, treat it as a fresh search).
   if (m_state.can_reset &&
       (n_assigned_vertices <= 2 ||
        1024 * n_assigned_vertices <=
            m_parameters.drop_below_n_assigned_vertices_reset_pk *
                total_n_vertices)) {
     // The number of assigned vertices is very low,
-    // so we've backtracked far enough that we'll reset.
+    // so we've backtracked far enough that we'll reset
+    // (treat it as a whole new search).
     m_state = State();
   } else {
     if (!m_state.can_reset &&

@@ -24,7 +24,22 @@ namespace WeightedSubgraphMonomorphism {
 struct FixedData;
 class SearchBranch;
 
-/** Should be attached to a specific search branch.
+/** The basic idea is simple: during a search, if:
+ * (1) we can QUICKLY calculate
+ * a guaranteed lower bound on the additional scalar product which would
+ * arise if the partial solution were to be completed, WHATEVER new
+ * assignments are made; and if
+ * (2) that would make the final scalar product larger than in the current
+ * best solution;
+ * ...THEN we can prune the search, and hence save a lot of time.
+ *
+ * The PROBLEM is: if (2) doesn't hold, then all of this calculation
+ * is pointless. (1) is quite fast, but not free.
+ *
+ * Thus, we wrap within ANOTHER estimator (this class); we estimate
+ * (very quickly) the lower bound roughly, and only if it seems likely
+ * to detect a nogood do we actually do the calculation.
+ *
  * Uses simple heuristics and feedback control to decide
  * when to activate the weight nogood detector,
  * and when to skip (trying to guess if the extra calculation
@@ -158,6 +173,9 @@ class WeightNogoodDetectorManager {
     // is above a certain amount of the max weight.
     unsigned final_weight_estimate_pk_to_activate = 1024;
 
+    // "Resetting" the state is for when the conditions of the current
+    // search node have changed so much that we should regard it as
+    // a new, fresh environment.
     bool can_reset = false;
     unsigned remaining_skips = 0;
   };

@@ -62,7 +62,7 @@ struct CheckedSolution {
   // Solve the given problem, updating the statistics.
   CheckedSolution(
       const GraphEdgeWeights& pdata, const GraphEdgeWeights& tdata,
-      ProblemInformation info, MainSolverParameters solver_params,
+      ProblemInformation info, const MainSolverParameters& solver_params,
       Statistics& stats);
 };
 

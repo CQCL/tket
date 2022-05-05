@@ -216,16 +216,8 @@ static void solve_problem(
 
 CheckedSolution::CheckedSolution(
     const GraphEdgeWeights& pdata, const GraphEdgeWeights& tdata,
-    ProblemInformation info, MainSolverParameters solver_params,
+    ProblemInformation info, const MainSolverParameters& solver_params,
     Statistics& stats) {
-  // What should the parameters be? Experiment!
-  // Unfortunately, changing them seems to be better for some tests,
-  // worse for others; probably the best option is to have a dynamic
-  // manager adjusting them as the search proceeds, similar to
-  // the WeightNogoodDetectorManager ...
-  solver_params.max_distance_for_domain_initialisation_distance_filter = 2;
-  solver_params.max_distance_for_distance_reduction_during_search = 8;
-
   REQUIRE(
       solver_params.for_multiple_full_solutions_the_max_number_to_obtain == 0);
   const auto& os = TestSettings::get().os;

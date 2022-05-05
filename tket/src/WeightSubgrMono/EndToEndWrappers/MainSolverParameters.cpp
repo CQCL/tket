@@ -24,8 +24,19 @@ MainSolverParameters::MainSolverParameters(long long timeout_millisecs)
       iterations_timeout(1000000),
       terminate_with_first_full_solution(false),
       for_multiple_full_solutions_the_max_number_to_obtain(0),
+      // What should the distance parameters be?
+      // Crude experiments suggested that these values are the best
+      // overall. But the running time for almost all problems
+      // is not very sensitive to the values.
+      // However, look at this again if we start having thousands
+      // of vertices; it hasn't really been tested on problems
+      // of that size.
+      // Probably the best option would be a dynamic
+      // manager adjusting them as the search proceeds, like
+      // the WeightNogoodDetectorManager...but that would be
+      // complicated.
       max_distance_for_domain_initialisation_distance_filter(2),
-      max_distance_for_distance_reduction_during_search(10) {}
+      max_distance_for_distance_reduction_during_search(6) {}
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

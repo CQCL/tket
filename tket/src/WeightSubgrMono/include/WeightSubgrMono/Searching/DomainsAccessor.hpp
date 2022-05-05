@@ -143,6 +143,12 @@ class DomainsAccessor {
   /** Directly overwrite the domain in the current node with the new set.
    * The caller is responsible for calculating set intersections etc.
    * correctly to fill "new domain".
+   *
+   * It would be cleaner to have more specific functions like "intersect the
+   * current domain with this set", etc. - alteration rather than crude
+   * overwriting - but there were some ad-hoc operations which wouldn't
+   * fit into a clean interface, so just have this single function.
+   *
    * The new domain should be a subset of the old domain,
    * but this is not fully checked - only cheap partial checks are done.
    * Updates new assignments if necessary.
