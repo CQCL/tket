@@ -39,9 +39,9 @@ class TketConan(ConanFile):
     exports_sources = ["../../tket/src/*", "!*/build/*", "patches/*"]
     exports = ["patches/*"]
     requires = (
-        "boost/1.78.0",
+        "boost/1.79.0",
         # symengine from remote: https://tket.jfrog.io/artifactory/api/conan/tket-conan
-        "symengine/0.9.0@tket/stable",
+        "symengine/0.9.0.1@tket/stable",
         "eigen/3.4.0",
         "nlohmann_json/3.10.5",
     )
@@ -95,11 +95,6 @@ class TketConan(ConanFile):
         boost_include_path = self.deps_cpp_info["boost"].include_paths[0]
         curdir = os.path.dirname(os.path.realpath(__file__))
         patches = {
-            # Patch pending merge of https://github.com/boostorg/graph/pull/269
-            # and new boost release.
-            os.path.join(
-                boost_include_path, "boost", "graph", "detail", "adjacency_list.hpp"
-            ): os.path.join(curdir, "patches", "adjacency_list.diff"),
             # Patch pending merge of https://github.com/boostorg/graph/pull/280
             # and new boost release. (Note that PR implements a different solution so
             # code will need updating as well.)
