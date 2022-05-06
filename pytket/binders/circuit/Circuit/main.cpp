@@ -749,6 +749,20 @@ void init_circuit(py::module &m) {
           "\n\n:param optype: operation type"
           "\n\n:return: list of :py:class:`Command`",
           py::arg("optype"))
+      .def(
+          "count_subcircuits",
+          [](Circuit &circ, unsigned n_qubit, unsigned min_gate_count) {
+            std::vector<Subcircuit> subs =
+                circ.get_subcircuits(n_qubit, min_gate_count);
+            return subs.size();
+          },
+          "A greedy search method to count the number of n-qubit subcircuits "
+          "(without overlaping gates) with at least some number of gates."
+          "\n\n:param min_gate_count: the minimum number of gates a subcircuit "
+          "needs to have."
+          "\n\n:param n_qubit: the exact number of qubits in the subcircuits."
+          "\n\n:return: the number of subcircuits found.",
+          py::arg("n_qubit"), py::arg("min_gate_count"))
       .def_property_readonly(
           "_dag_data",
           [](Circuit &circ) {
