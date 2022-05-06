@@ -221,7 +221,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     PassPtr pz_rebase = gen_rebase_pass(
         {OpType::CX, OpType::PhasedX, OpType::Rz}, cx,
         CircPool::tk1_to_PhasedXRz);
-    PassPtr all_passes = SynthesiseTket() >> cp_route >> pz_rebase;
+    PassPtr all_passes = SynthesiseTK() >> cp_route >> pz_rebase;
 
     REQUIRE(all_passes->apply(cu));
     REQUIRE(cu.check_all_predicates());
@@ -230,7 +230,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
       REQUIRE(cu.check_all_predicates());
     }
     WHEN("Make incorrect sequence") {
-      PassPtr bad_pass = cp_route >> SynthesiseTket();
+      PassPtr bad_pass = cp_route >> SynthesiseTK();
       bad_pass->apply(cu);
       REQUIRE(!cu.check_all_predicates());
     }
@@ -243,7 +243,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3});
     circ.add_op<unsigned>(OpType::CZ, {0, 1});
     circ.add_op<unsigned>(OpType::X, {4});
-    OpTypeSet ots = {OpType::CX, OpType::TK1, OpType::SWAP};
+    OpTypeSet ots = {OpType::TK2, OpType::TK1, OpType::SWAP};
     PredicatePtr gsp = std::make_shared<GateSetPredicate>(ots);
     SquareGrid grid(2, 3);
 
@@ -262,7 +262,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
          std::make_shared<LexiRouteRoutingMethod>()});
 
     PassPtr all_passes = SynthesiseHQS() >> SynthesiseOQC() >>
-                         SynthesiseUMD() >> SynthesiseTket() >> cp_route;
+                         SynthesiseUMD() >> SynthesiseTK() >> cp_route;
     REQUIRE(all_passes->apply(cu));
     REQUIRE(cu.check_all_predicates());
   }
@@ -414,7 +414,7 @@ SCENARIO("Construct sequence pass") {
 
 SCENARIO("Construct invalid sequence passes from vector") {
   std::vector<PassPtr> invalid_pass_to_combo{
-      SynthesiseHQS(), SynthesiseOQC(), SynthesiseUMD(), SynthesiseTket()};
+      SynthesiseHQS(), SynthesiseOQC(), SynthesiseUMD(), SynthesiseTK()};
   for (const PassPtr& pass : invalid_pass_to_combo) {
     std::vector<PassPtr> passes = {pass};
     OpTypeSet ots = {OpType::CX};
@@ -468,14 +468,14 @@ SCENARIO("Test RepeatWithMetricPass") {
 }
 
 SCENARIO("Track initial and final maps throughout compilation") {
-  GIVEN("SynthesiseTket should not affect them") {
+  GIVEN("SynthesiseTK should not affect them") {
     Circuit circ(5);
     add_2qb_gates(circ, OpType::CY, {{0, 3}, {1, 4}, {1, 0}, {2, 1}});
     circ.add_op<unsigned>(OpType::SWAP, {3, 4});
     circ.add_op<unsigned>(OpType::Z, {4});
     circ.replace_SWAPs();
     CompilationUnit cu(circ);
-    SynthesiseTket()->apply(cu);
+    SynthesiseTK()->apply(cu);
     for (auto pair : cu.get_initial_map_ref().left) {
       REQUIRE(pair.first == pair.second);
     }
