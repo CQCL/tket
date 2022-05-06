@@ -79,7 +79,7 @@ jobs:
     - name: create profile
       run: conan profile new tket --detect
     - name: install boost
-      run: conan install --profile=tket -s build_type=${{ matrix.build_type }} boost/1.78.0@ --build=missing
+      run: conan install --profile=tket -s build_type=${{ matrix.build_type }} boost/1.79.0@ --build=missing
     - name: build symengine
       run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o symengine:shared=${{ matrix.shared }} recipes/symengine tket/stable
     - name: add remote
