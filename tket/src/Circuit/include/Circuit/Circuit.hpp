@@ -1041,6 +1041,9 @@ class Circuit {
   unsigned count_gates(const OpType &op_type) const;
   VertexSet get_gates_of_type(const OpType &op_type) const;
 
+  std::vector<Subcircuit> get_subcircuits(
+      const unsigned &n_qubit, const unsigned &min_gate_count);
+
   /**
    * @brief Get all commands of a given type.
    *

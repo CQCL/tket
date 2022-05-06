@@ -1,12 +1,12 @@
 #include <algorithm>
 #include <array>
+#include <functional>
 #include <iostream>
 #include <iterator>
 #include <memory>
 #include <numeric>
 #include <set>
 #include <string>
-#include <functional>
 
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
@@ -60,7 +60,8 @@ typedef std::unique_ptr<QInteraction> iptr;
 class QISystem {
  public:
   // Construct an empty system.
-  explicit QISystem(Circuit &circ, std::function<Circuit(Circuit)> replacement_func);
+  explicit QISystem(
+      Circuit &circ, std::function<Circuit(Circuit)> replacement_func);
 
   // Add a new interaction to the system consisting of a single edge, and
   // return its index.
@@ -85,21 +86,24 @@ class QISystem {
   // Close an interaction, squashing it if possible, and erasing it from the
   // set. Return true iff any substitution was made, and the (possibly new)
   // vector of outgoing edges from the region of the interaction.
-  std::pair<bool, EdgeVec> close_interaction(int i);
+  std::pair<bool, EdgeVec> close_interaction(int i, const bool &replace = true);
 
   // Close an interaction and spawn new ones on its outgoing edges. Return true
   // iff any substitution is made.
-  bool close_interaction_and_spawn(int i);
+  bool close_interaction_and_spawn(int i, const bool &replace = true);
 
   // Close all interactions that have v as a direct successor, and start new
   // ones following them. Return true iff any substitution is made.
-  bool close_interactions_feeding_vertex(const Vertex &v);
+  bool close_interactions_feeding_vertex(
+      const Vertex &v, const bool &replace = true);
 
   // Close all interactions. Return true iff any substitution is made.
-  bool close_all_interactions();
+  bool close_all_interactions(const bool &replace = true);
 
   // Delete all vertices marked for deletion.
   void destroy_bin();
+
+  std::map<int, iptr> *get_interactions();
 
  private:
   Circuit &circ_;

@@ -35,7 +35,9 @@ add_library(tket-${COMP}
     DAGProperties.cpp
     OpJson.cpp
     Conditional.cpp
-    QInteraction.cpp)
+    QInteraction.cpp
+    SubcircuitAnalysis.cpp
+    )
 
 list(APPEND DEPS_${COMP}
     Gate
