@@ -231,6 +231,9 @@ Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma);
 /** Equivalent to 3-qubit MS interaction, using CX and U3 gates */
 Circuit XXPhase3_using_CX(Expr alpha);
 
+/** Equivalent to ESWAP, using a TK2 and (Clifford) TK1 gates */
+Circuit ESWAP_using_TK2(Expr alpha);
+
 /** Equivalent to ESWAP, using CX, X, S, Ry and U1 gates */
 Circuit ESWAP_using_CX(Expr alpha);
 
