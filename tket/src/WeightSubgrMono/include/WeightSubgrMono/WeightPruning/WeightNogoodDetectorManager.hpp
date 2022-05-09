@@ -80,8 +80,6 @@ class WeightNogoodDetectorManager {
    * @param max_weight The total allowed weight of any solution
    * @param current_sum_of_p_edge_weights The sum of p-weights currently
    * assigned
-   * @param total_p_edge_weights The total of all p-weights in any complete
-   * solution.
    * @param current_number_of_assigned_vertices How many p-vertices are
    * assigned.
    * @param current_number_of_unassigned_vertices How many p-vertices are

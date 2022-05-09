@@ -28,6 +28,10 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+// GCOVR_EXCL_START
+// A bug in test coverage? The following functions DEFINITELY are
+// used many times, but not according to test coverage...
+
 /** Sets the numeric variable to its maximum possible value.
  * This helps avoid mixing types accidentally, e.g. writing
  * x = std::numeric_limits<long>::max() where x is actually an int.
@@ -46,6 +50,7 @@ template <class T>
 bool is_maximum(const T& val) {
   return val == std::numeric_limits<T>::max();
 }
+// GCOVR_EXCL_STOP
 
 /** If elems[index] is invalid, resize elems to make it valid; then return it.
  */
@@ -101,6 +106,8 @@ std::string str(const Container& elems, std::size_t max_elems_to_print = 10) {
   return ss.str();
 }
 
+// GCOVR_EXCL_START
+// A bug in test coverage?
 /** Handy for testing.
  * @param elems An ordinary std::vector of comparable elements.
  * @return True if they are in increasing order, with all values distinct.
@@ -110,6 +117,7 @@ bool is_sorted_and_unique(const std::vector<T>& elems) {
   return std::is_sorted(elems.cbegin(), elems.cend()) &&
          (std::adjacent_find(elems.cbegin(), elems.cend()) == elems.cend());
 }
+// GCOVR_EXCL_STOP
 
 /** Checks if the the map has this key.
  * @param map A std::map
@@ -148,6 +156,14 @@ std::map<Value, Key> get_reversed_map(
   }
   return result;
 }
+
+// GCOVR_EXCL_START
+// There MUST be a bug in test coverage, surely?
+// Below, "get_sum_or_throw" definitely calls "get_checked_sum" in all cases.
+// Yet the SAME coverage report (for the same file!)
+// reported the first as covered (including the actual lines calling
+// the second),
+// but the second as uncovered (every line!)
 
 /** For an unsigned integer type, returns x+y if the value is correct,
  * or null if overflow would occur (so the actual value of x+y does not fit in
@@ -227,6 +243,7 @@ std::optional<UINT> get_checked_product(UINT x, UINT y) {
   }
   return x * y;
 }
+// GCOVR_EXCL_STOP
 
 /** Throws the special IntegerOverflow exception if the values are too big.
  * @param x First number

@@ -43,13 +43,23 @@ class WeightCalculator {
   /** Calculates the new scalar product and total p-edges weight
    * from all new p-edges which have become assigned
    * (i.e., both end vertices are now assigned).
+   * @param pattern_ndata Data about the pattern graph.
+   * @param target_ndata Data about the target graph.
+   * @param accessor Object to retrieve information about the current search
+   * node (inclusing new assignments).
+   * @param number_of_processed_assignments The number of assignments stored at
+   * the start of the new assignments vector, of the current node, which this
+   * class has already processed (and thus, need not process again).
+   * @param max_scalar_product The maximum scalar product which is allowed; if
+   * we exceed this, we break off immediately: it's a nogood.
    * @return Null if the current weight exceeds the maximum weight,
    * OR we detect a graph-theoretic nogood (i.e., ignoring the weights).
    */
   std::optional<Result> operator()(
       const NeighboursData& pattern_ndata, const NeighboursData& target_ndata,
       const DomainsAccessor& accessor,
-      std::size_t number_of_processed_assignments, WeightWSM max_weight) const;
+      std::size_t number_of_processed_assignments,
+      WeightWSM max_scalar_product) const;
 
  private:
   // Necessary to avoid double counting edges,
