@@ -55,6 +55,12 @@ struct TestSettings {
   OStreamWrapper os;
   OStreamWrapper os_null;
 
+  // If false, we ONLY print number of iterations, which DOESN'T change
+  // from run to run, unlike times.
+  bool print_solution_times;
+
+  bool print_verbose_solution_data;
+
   TestSettings();
 
   static const TestSettings& get();

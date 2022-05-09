@@ -18,10 +18,20 @@ namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 // Uncomment to get a running printout for the tests.
-// TestSettings::TestSettings() : os(OStreamWrapper::Target::CERR) {}
+/*
+TestSettings::TestSettings()
+    : os(OStreamWrapper::Target::CERR),
+      print_solution_times(false),
+      // print_solution_times(true),
+      // print_verbose_solution_data(true) {}
+      print_verbose_solution_data(false) {}
+*/
 
 // No printed output for the tests.
-TestSettings::TestSettings() : os(OStreamWrapper::Target::NONE) {}
+TestSettings::TestSettings()
+    : os(OStreamWrapper::Target::NONE),
+      print_solution_times(false),
+      print_verbose_solution_data(false) {}
 
 const TestSettings& TestSettings::get() {
   static const TestSettings settings;
