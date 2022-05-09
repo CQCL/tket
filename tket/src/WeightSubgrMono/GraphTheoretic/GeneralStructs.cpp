@@ -20,17 +20,6 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-VertexWSM get_single_value(
-    VertexWSM pv, const PossibleAssignments& assignments) {
-  const auto& domain = assignments.at(pv);
-  if (domain.size() != 1) {
-    throw std::runtime_error(
-        std::string("get_single_value called with domain size ") +
-        std::to_string(domain.size()));
-  }
-  return *domain.cbegin();
-}
-
 std::vector<VertexWSM> get_vertices(const GraphEdgeWeights& edges_and_weights) {
   std::set<VertexWSM> vertices;
   for (const auto& entry : edges_and_weights) {

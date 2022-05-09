@@ -43,28 +43,6 @@ class NearNeighboursData {
   /** Cached. Does NOT include the vertex v itself. */
   std::size_t get_n_vertices_at_max_distance(VertexWSM v, unsigned distance);
 
-  /** In each counts vector, element[i] will be the NUMBER of vertices at
-   * distance i+1 from the root vertex (thus, we DO include immediate
-   * neighbours).
-   */
-  void fill_counts_vector(
-      VertexWSM v, unsigned max_distance,
-      std::vector<std::size_t>& counts_vector);
-
-  /** The function to compare count vectors.
-   * In each vector, element[i] is the number of vertices at distance exactly
-   * i+1 from the root vertex (pv or tv) in the pattern or target graph.
-   * Of course, the vectors might not be large enough to include all vertices,
-   * and they might be of different lengths; but this is not a problem.
-   * @param p_counts The counts, in the pattern graph, for some vertex pv.
-   * @param t_counts The counts, in the target graph, for some vertex tv.
-   * @return False if the information is sufficient to prove that no
-   * monomorphism f exists with f(pv)=tv.
-   */
-  static bool test_against_target(
-      const std::vector<std::size_t>& p_counts,
-      const std::vector<std::size_t>& t_counts);
-
  private:
   const NeighboursData& m_ndata;
 

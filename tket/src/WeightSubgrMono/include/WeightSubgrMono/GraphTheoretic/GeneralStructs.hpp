@@ -39,10 +39,6 @@ typedef std::map<EdgeWSM, WeightWSM> GraphEdgeWeights;
  */
 typedef std::map<VertexWSM, std::set<VertexWSM>> PossibleAssignments;
 
-/** When you're SURE that Dom(pv) = { tv } has size 1, return tv. */
-VertexWSM get_single_value(
-    VertexWSM pv, const PossibleAssignments& assignments);
-
 /** A string representation of a graph with edge weights. */
 std::string str(const GraphEdgeWeights& gdata);
 

@@ -24,7 +24,7 @@ namespace WeightedSubgraphMonomorphism {
 std::optional<WeightCalculator::Result> WeightCalculator::operator()(
     const NeighboursData& pattern_ndata, const NeighboursData& target_ndata,
     const DomainsAccessor& accessor,
-    std::size_t number_of_processed_assignments, WeightWSM max_weight) const {
+    std::size_t number_of_processed_assignments, WeightWSM max_scalar_product) const {
   m_p_vertices_seen.clear();
 
   Result result;
@@ -61,7 +61,7 @@ std::optional<WeightCalculator::Result> WeightCalculator::operator()(
             return {};
           }
           result.scalar_product += entry.second * t_edge_weight_opt.value();
-          if (result.scalar_product > max_weight) {
+          if (result.scalar_product > max_scalar_product) {
             return {};
           }
           result.total_extra_p_edge_weights += entry.second;
