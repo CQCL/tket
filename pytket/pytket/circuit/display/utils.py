@@ -254,6 +254,7 @@ def is_classical_gate(op_type: str) -> bool:
         "ClassicalTransform",
         "CopyBits",
         "MultiBit",
+        "WASM",
     }
 
 
