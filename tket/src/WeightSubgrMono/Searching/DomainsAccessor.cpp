@@ -31,6 +31,10 @@ const std::vector<VertexWSM>& DomainsAccessor::get_pattern_vertices() const {
   return m_raw_data.pattern_vertices;
 }
 
+bool DomainsAccessor::current_node_is_valid() const {
+  return !m_raw_data.nodes_data[m_raw_data.current_node_level].nogood;
+}
+
 const std::set<VertexWSM>& DomainsAccessor::get_domain(VertexWSM pv) const {
   const auto& data = m_raw_data.domains_data.at(pv);
   return data.entries[data.entries_back_index].domain;

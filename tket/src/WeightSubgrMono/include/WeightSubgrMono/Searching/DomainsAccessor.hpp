@@ -48,6 +48,8 @@ class DomainsAccessor {
   const std::vector<VertexWSM>& get_unassigned_pattern_vertices_superset()
       const;
 
+  bool current_node_is_valid() const;
+
   /** This may be a reference to the SAME object returned by
    * get_unassigned_pattern_vertices_superset(), or it may be different.
    * The caller is free to overwrite it at the END (after processing).

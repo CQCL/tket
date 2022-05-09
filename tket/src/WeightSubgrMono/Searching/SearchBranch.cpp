@@ -18,6 +18,8 @@
 
 #include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
+#include "WeightSubgrMono/EndToEndWrappers/SolutionData.hpp"
+#include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
 #include "WeightSubgrMono/Reducing/DistancesReducer.hpp"
 #include "WeightSubgrMono/WeightPruning/WeightChecker.hpp"
 
@@ -28,14 +30,25 @@ SearchBranch::SearchBranch(
     const PossibleAssignments& initial_pattern_v_to_possible_target_v,
     const NeighboursData& pattern_ndata, NearNeighboursData& pattern_near_ndata,
     const NeighboursData& target_ndata, NearNeighboursData& target_near_ndata,
-    unsigned max_distance_reduction_value)
+    unsigned max_distance_reduction_value, ExtraStatistics& extra_statistics)
     : m_pattern_ndata(pattern_ndata),
       m_target_ndata(target_ndata),
+      m_extra_statistics(extra_statistics),
       m_derived_graphs_reducer(m_pattern_ndata, m_target_ndata),
       m_neighbours_reducer(m_pattern_ndata, m_target_ndata),
       m_nodes_raw_data_wrapper(initial_pattern_v_to_possible_target_v),
       m_domains_accessor(m_nodes_raw_data_wrapper),
       m_node_list_traversal(m_nodes_raw_data_wrapper) {
+  m_extra_statistics.number_of_pattern_vertices =
+      m_pattern_ndata.get_number_of_nonisolated_vertices();
+  m_extra_statistics.number_of_target_vertices =
+      m_target_ndata.get_number_of_nonisolated_vertices();
+  m_extra_statistics.initial_number_of_possible_assignments = 0;
+  for (const auto& entry : initial_pattern_v_to_possible_target_v) {
+    m_extra_statistics.initial_number_of_possible_assignments +=
+        entry.second.size();
+  }
+
   // In what order should we do reduction/checks?
   // The simplest/cheapest first? Most powerful?
   // Seems a difficult question...
@@ -70,9 +83,28 @@ std::set<VertexWSM> SearchBranch::get_used_target_vertices() const {
   return m_node_list_traversal.get_used_target_vertices();
 }
 
+const ExtraStatistics& SearchBranch::get_updated_extra_statistics() {
+  if (m_weight_checker_ptr) {
+    const auto weight_checker_data_opt =
+        m_weight_checker_ptr->get_tv_data_opt();
+    if (weight_checker_data_opt) {
+      m_extra_statistics.n_tv_initially_passed_to_weight_nogood_detector =
+          weight_checker_data_opt->initial_number_of_tv;
+      m_extra_statistics.n_tv_still_valid_in_weight_nogood_detector =
+          weight_checker_data_opt->final_number_of_tv;
+    }
+  }
+  m_extra_statistics.total_number_of_assignments_tried = 0;
+  for (const auto& entry : m_checked_assignments) {
+    m_extra_statistics.total_number_of_assignments_tried += entry.second.size();
+  }
+  return m_extra_statistics;
+}
+
 void SearchBranch::activate_weight_checker(WeightWSM total_p_edge_weights) {
   m_weight_checker_ptr = std::make_unique<WeightChecker>(
-      m_pattern_ndata, m_target_ndata, *this, total_p_edge_weights);
+      m_pattern_ndata, m_target_ndata, *this, total_p_edge_weights,
+      m_impossible_target_vertices);
   TKET_ASSERT(m_weight_checker_ptr);
 }
 
@@ -89,12 +121,11 @@ bool SearchBranch::perform_single_assignment_checks_in_reduce_loop(
       if (!reducer_wrapper.check(new_assignments[ii])) {
         // The whole point is, the check for PV->TV does NOT depend on
         // the other domains; since it's failed the check, it was ALWAYS
-        // invalid, so we remove it completely from all data.
-        m_node_list_traversal.erase_impossible_assignment(
-            new_assignments[ii], NodeListTraversal::ImpossibleAssignmentAction::
-                                     PROCESS_CURRENT_NODE);
+        // invalid, so we remove it completely from ALL data.
+        m_node_list_traversal.erase_impossible_assignment(new_assignments[ii]);
         // The current node is a nogood, so we'll move up from it shortly;
         // no point in further checks or reductions, this node is doomed!
+        ++m_extra_statistics.total_number_of_impossible_assignments;
         return false;
       }
     }
@@ -131,38 +162,27 @@ bool SearchBranch::perform_weight_nogood_check_in_reduce_loop(
   }
 
   if (m_weight_checker_ptr) {
+    m_impossible_target_vertices.clear();
     const WeightWSM max_extra_scalar_product =
         parameters.max_weight - scalar_product;
 
-    auto weight_check_result = m_weight_checker_ptr->operator()(
+    bool node_is_valid = m_weight_checker_ptr->check(
         m_domains_accessor, max_extra_scalar_product);
 
-    if (weight_check_result.invalid_t_vertex) {
+    for (VertexWSM tv : m_impossible_target_vertices) {
       // This is rare. Crudely treat as a list of assignments.
-      // We want to pass them all in, though, even if we're at a nogood;
+      // We want to pass them all in now, though, even if we're at a nogood;
       // they might not be detected again.
-      const VertexWSM invalid_tv = weight_check_result.invalid_t_vertex.value();
-      auto action = weight_check_result.nogood
-                        ? NodeListTraversal::ImpossibleAssignmentAction::
-                              PROCESS_CURRENT_NODE
-                        : NodeListTraversal::ImpossibleAssignmentAction::
-                              IGNORE_CURRENT_NODE;
-
+      m_extra_statistics.impossible_target_vertices.emplace_back(tv);
       for (VertexWSM pv : m_domains_accessor.get_pattern_vertices()) {
-        if (!m_node_list_traversal.erase_impossible_assignment(
-                std::make_pair(pv, invalid_tv), action)) {
-          // We've found the current node to be invalid.
-          // No point in checking the node further. HOWEVER we don't return yet,
-          // so that TV is completely removed from all nodes.
-          weight_check_result.nogood = true;
-          action = NodeListTraversal::ImpossibleAssignmentAction::
-              PROCESS_CURRENT_NODE;
-        }
+        m_node_list_traversal.erase_impossible_assignment(
+            std::make_pair(pv, tv));
       }
+      // Detecting an invalid TV is separate from whether
+      // the current node is a nogood.
+      node_is_valid &= m_domains_accessor.current_node_is_valid();
     }
-    if (weight_check_result.nogood) {
-      return false;
-    }
+    return node_is_valid;
   }
   return true;
 }
