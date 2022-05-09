@@ -200,5 +200,42 @@ SCENARIO("Use uintmax to test sum, product for smaller int sizes") {
   CHECK(result_32_bits.product_overflow_count == 1653);
 }
 
+SCENARIO("test get_sum (or product) _or_throw") {
+  const std::vector<std::uint16_t> numbers{0,    1,     2,     12,
+                                           4124, 12313, 51235, 65535};
+  std::stringstream errors;
+
+  for (std::uint16_t number1 : numbers) {
+    for (std::uint16_t number2 : numbers) {
+      const std::uint64_t num1_64bit = number1;
+      const std::uint64_t num2_64bit = number2;
+      const std::uint64_t sum_64bit = num1_64bit + num2_64bit;
+      const std::uint64_t product_64bit = num1_64bit * num2_64bit;
+      const bool sum_valid = sum_64bit <= 65535;
+      const bool product_valid = product_64bit <= 65535;
+
+      try {
+        const std::uint16_t sum = get_sum_or_throw(number1, number2);
+        REQUIRE(static_cast<std::uint64_t>(sum) == sum_64bit);
+        REQUIRE(sum_valid);
+        const std::uint16_t product = get_product_or_throw(number1, number2);
+        REQUIRE(static_cast<std::uint64_t>(product) == product_64bit);
+        REQUIRE(product_valid);
+      } catch (const IntegerOverflow& e) {
+        errors << e.what() << " ";
+      }
+    }
+  }
+  // clang-format off
+  CHECK(errors.str() == "(1 + 65535) (2 * 51235) (2 + 65535) (12 * 12313)"
+    " (12 * 51235) (12 + 65535) (4124 * 4124) (4124 * 12313) (4124 * 51235)"
+    " (4124 + 65535) (12313 * 12) (12313 * 4124) (12313 * 12313)"
+    " (12313 * 51235) (12313 + 65535) (51235 * 2) (51235 * 12)"
+    " (51235 * 4124) (51235 * 12313) (51235 + 51235) (51235 + 65535)"
+    " (65535 + 1) (65535 + 2) (65535 + 12) (65535 + 4124) (65535 + 12313)"
+    " (65535 + 51235) (65535 + 65535) ");
+  // clang-format on
+}
+
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

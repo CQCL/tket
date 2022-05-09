@@ -29,11 +29,15 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_DyadicFraction.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_GeneralUtils.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_SetIntersection.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/EndToEndWrappers/test_SolutionWSM.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/GraphTheoretic/test_GeneralStructs.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/GraphTheoretic/test_NeighboursData.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Searching/test_NodesRawData.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_CubicLattice.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_FixedSmallGraphs.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_RandomGraphs.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_SnakeIntoSquareGrid.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_SpecialProblems.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_SquareGrids.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_UnweightedProblems.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_UnweightedSelfEmbeddings.cpp

@@ -15,6 +15,7 @@
 #include <catch2/catch.hpp>
 
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
+#include "WeightSubgrMono/GraphTheoretic/NearNeighboursData.hpp"
 #include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
 
 namespace tket {
@@ -69,6 +70,47 @@ SCENARIO("test neighbours_data on cycles") {
   for (VertexWSM ii = 0; ii < cycle_length + 5; ++ii) {
     for (VertexWSM jj = cycle_length; jj < cycle_length + 10; ++jj) {
       CHECK(!ndata.get_edge_weight_opt(ii, jj));
+    }
+  }
+
+  // Also, test near neighbours.
+  NearNeighboursData near_neighbours_data(ndata);
+  for (VertexWSM ii = 0; ii < cycle_length; ++ii) {
+    for (unsigned distance = 0; distance <= 8; ++distance) {
+      const auto count_within_d =
+          near_neighbours_data.get_n_vertices_at_max_distance(ii, distance);
+      switch (distance) {
+        case 0:
+          CHECK(count_within_d == 0);
+          break;
+        case 1:
+          CHECK(count_within_d == 2);
+          break;
+        // case 6: // fallthrough
+        // case 7: // fallthrough
+        // case 8: CHECK(count_within_d == 0); break;
+        default:
+          CHECK(count_within_d == 4);
+          break;
+      }
+      if (distance < 2) {
+        continue;
+      }
+      const auto& v_at_distance =
+          near_neighbours_data.get_vertices_at_distance(ii, distance);
+      CHECK(is_sorted_and_unique(v_at_distance));
+      if (distance > 2) {
+        CHECK(v_at_distance.empty());
+        continue;
+      }
+      CHECK(v_at_distance.size() == 2);
+      for (auto v : v_at_distance) {
+        const unsigned route1_dist = ((cycle_length + ii) - v) % cycle_length;
+        const unsigned route2_dist =
+            (cycle_length - route1_dist) % cycle_length;
+        const unsigned shortest_distance = std::min(route1_dist, route2_dist);
+        CHECK(shortest_distance == 2);
+      }
     }
   }
 }
