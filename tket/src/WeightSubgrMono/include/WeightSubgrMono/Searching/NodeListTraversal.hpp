@@ -57,11 +57,6 @@ class NodeListTraversal {
    */
   void move_down(VertexWSM p_vertex, VertexWSM t_vertex);
 
-  enum class ImpossibleAssignmentAction {
-    IGNORE_CURRENT_NODE,
-    PROCESS_CURRENT_NODE
-  };
-
   /** We've newly discovered that PV->TV is always impossible.
    * Erase it from all data, so it never arises again.
    * Returns false if the current node is checked
@@ -71,13 +66,9 @@ class NodeListTraversal {
    * as we are about to move up.
    * @param impossible_assignment An assignment PV->TV which should be erased
    * from ALL data.
-   * @param action Should we include the current node, or ignore it? (If we're
-   * about to move up, it's pointless to include it).
-   * @return False if the current node becomes a nogood.
    */
-  bool erase_impossible_assignment(
-      std::pair<VertexWSM, VertexWSM> impossible_assignment,
-      ImpossibleAssignmentAction action);
+  void erase_impossible_assignment(
+      std::pair<VertexWSM, VertexWSM> impossible_assignment);
 
  private:
   NodesRawData& m_raw_data;

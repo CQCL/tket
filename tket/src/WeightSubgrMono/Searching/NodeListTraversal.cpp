@@ -220,16 +220,45 @@ void NodeListTraversal::move_down(VertexWSM p_vertex, VertexWSM t_vertex) {
       m_raw_data, data_for_this_pv, p_vertex, t_vertex);
 }
 
-bool NodeListTraversal::erase_impossible_assignment(
-    std::pair<VertexWSM, VertexWSM> impossible_assignment,
-    ImpossibleAssignmentAction action) {
-  auto max_level = m_raw_data.current_node_level;
-  if (action == ImpossibleAssignmentAction::PROCESS_CURRENT_NODE) {
-    if (max_level == 0) {
-      return true;
-    }
-    --max_level;
+static void fill_nogood_or_new_assignment_in_all_shared_nodes(
+    VertexWSM pv, const std::set<VertexWSM>& new_domain,
+    unsigned data_for_this_pv_entry_index,
+    const NodesRawData::DomainData& data_for_this_pv, NodesRawData& raw_data) {
+  // If there's no node domain after the domain under consideration,
+  // then it extends all the way to the current level.
+  unsigned final_node_level = raw_data.current_node_level;
+  if (data_for_this_pv_entry_index < data_for_this_pv.entries_back_index) {
+    // We must stop just BEFORE the next level,
+    // which has a different domain.
+    final_node_level =
+        data_for_this_pv.entries[data_for_this_pv_entry_index + 1].node_level -
+        1;
   }
+  if (new_domain.empty()) {
+    // The nodes are all nogoods.
+    for (unsigned jj =
+             data_for_this_pv.entries[data_for_this_pv_entry_index].node_level;
+         jj <= final_node_level; ++jj) {
+      raw_data.nodes_data[jj].nogood = true;
+    }
+    return;
+  }
+
+  // It's a new assignment
+  // (in all the intermediate nodes, since they share this Domain(pv)).
+  const auto new_assignment = std::make_pair(pv, *new_domain.cbegin());
+
+  for (unsigned jj =
+           data_for_this_pv.entries[data_for_this_pv_entry_index].node_level;
+       jj <= final_node_level; ++jj) {
+    if (!raw_data.nodes_data[jj].nogood) {
+      raw_data.nodes_data[jj].new_assignments.emplace_back(new_assignment);
+    }
+  }
+}
+
+void NodeListTraversal::erase_impossible_assignment(
+    std::pair<VertexWSM, VertexWSM> impossible_assignment) {
   auto& data_for_this_pv =
       m_raw_data.domains_data.at(impossible_assignment.first);
 
@@ -237,41 +266,23 @@ bool NodeListTraversal::erase_impossible_assignment(
     TKET_ASSERT(
         data_for_this_pv.entries[ii].node_level <=
         m_raw_data.current_node_level);
-    if (data_for_this_pv.entries[ii].node_level > max_level) {
-      break;
+
+    if (m_raw_data.nodes_data[data_for_this_pv.entries[ii].node_level].nogood) {
+      // Don't waste time with nogood nodes.
+      continue;
     }
     auto& domain = data_for_this_pv.entries[ii].domain;
     if (domain.erase(impossible_assignment.second) == 0 || domain.size() >= 2) {
-      // Nothing changed, OR it did change, but with no significant effect.
+      // EITHER nothing changed, OR the change had no significant effect.
       continue;
     }
     // Now, it's EITHER a nogood, OR a new assignment is created.
-    // Anyway, we have to go through all the nodes which use this domain.
-    unsigned node_level_end = max_level + 1;
-    if (ii < data_for_this_pv.entries_back_index) {
-      node_level_end =
-          std::min(node_level_end, data_for_this_pv.entries[ii + 1].node_level);
-    }
-    if (domain.size() == 0) {
-      for (unsigned jj = data_for_this_pv.entries[ii].node_level;
-           jj < node_level_end; ++jj) {
-        m_raw_data.nodes_data[jj].nogood = true;
-      }
-    } else {
-      // A new assignment.
-      const auto new_assignment =
-          std::make_pair(impossible_assignment.first, *domain.cbegin());
-
-      for (unsigned jj = data_for_this_pv.entries[ii].node_level;
-           jj < node_level_end; ++jj) {
-        m_raw_data.nodes_data[jj].new_assignments.emplace_back(new_assignment);
-      }
-    }
+    // Anyway, we go through all the nodes which use this domain
+    // and mark them ALL in the same way (since the same Domain(pv)
+    // may be shared across several nodes).
+    fill_nogood_or_new_assignment_in_all_shared_nodes(
+        impossible_assignment.first, domain, ii, data_for_this_pv, m_raw_data);
   }
-  if (action == ImpossibleAssignmentAction::PROCESS_CURRENT_NODE) {
-    return true;
-  }
-  return !m_raw_data.get_current_node().nogood;
 }
 
 }  // namespace WeightedSubgraphMonomorphism
