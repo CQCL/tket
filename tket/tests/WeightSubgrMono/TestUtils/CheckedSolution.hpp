@@ -39,11 +39,22 @@ struct CheckedSolution {
   };
 
   struct Statistics {
-    unsigned success_count = 0;
-    unsigned failure_count = 0;
-    unsigned timeout_count = 0;
-    long long total_init_time_ms = 0;
-    long long total_search_time_ms = 0;
+    explicit Statistics(const std::string& test_name);
+    Statistics(const std::string& test_name, std::size_t number_of_graphs);
+
+    enum class Expectation {
+      ALL_SUCCESS,
+      ALL_SUCCESS_OR_TIMEOUT,
+      SUCCESS_FAILURE_TIMEOUTS_ALL_ALLOWED
+    };
+    void finish(Expectation expectation = Expectation::ALL_SUCCESS) const;
+
+    unsigned success_count;
+    unsigned failure_count;
+    unsigned timeout_count;
+    long long total_init_time_ms;
+    long long total_search_time_ms;
+    unsigned long long total_iterations;
   };
 
   // Did the solver time out?
@@ -58,6 +69,9 @@ struct CheckedSolution {
   // If assignments is nonempty, the reported scalar product of the solution
   // (automatically checked to be correct).
   WeightWSM scalar_product = 0;
+
+  // This is rare, but occasionally an impossible TV is detected.
+  std::vector<VertexWSM> impossible_target_vertices;
 
   // Solve the given problem, updating the statistics.
   CheckedSolution(

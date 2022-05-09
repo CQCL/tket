@@ -22,6 +22,7 @@ set(TESTUTILS_SOURCES
     ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/FixedArchitectures.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/GraphGeneration.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/ProblemGeneration.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/ResumedSolutionChecker.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/SquareGridGeneration.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/TestSettings.cpp
     ${TKET_TESTS_DIR}/CircuitsForTesting.cpp

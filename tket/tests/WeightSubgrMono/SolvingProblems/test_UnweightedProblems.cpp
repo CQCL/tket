@@ -21,6 +21,7 @@
 #include <utility>
 
 #include "../TestUtils/CheckedSolution.hpp"
+#include "../TestUtils/ResumedSolutionChecker.hpp"
 #include "../TestUtils/TestSettings.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 
@@ -43,13 +44,16 @@ struct EmbedGraphSequences {
       const std::vector<GraphEdgeWeights>& graph_sequence2, unsigned timeout_ms,
       const std::string& expected_result)
       : total_time_ms(0) {
-    CheckedSolution::Statistics statistics;
+    CheckedSolution::Statistics statistics(
+        "unweighted problems; embedding graph sequences");
+
     MainSolverParameters solver_params(timeout_ms);
     solver_params.terminate_with_first_full_solution = true;
 
     CheckedSolution::ProblemInformation info;
     std::stringstream ss;
     unsigned result_index = 0;
+    ResumedSolutionChecker resumption_checker;
 
     for (unsigned index1 = 0; index1 < graph_sequence1.size(); ++index1) {
       const auto& pattern_graph = graph_sequence1[index1];
@@ -73,6 +77,9 @@ struct EmbedGraphSequences {
         const auto search_time_before = statistics.total_search_time_ms;
         const CheckedSolution checked_solution(
             pattern_graph, target_graph, info, solver_params, statistics);
+
+        resumption_checker.check(
+            checked_solution, pattern_graph, target_graph, solver_params);
 
         if (checked_solution.scalar_product == pattern_graph.size()) {
           ss << "1";
@@ -98,6 +105,8 @@ struct EmbedGraphSequences {
     }
     total_time_ms =
         statistics.total_init_time_ms + statistics.total_search_time_ms;
+
+    statistics.finish();
   }
 };
 
@@ -344,9 +353,9 @@ static void test(bool short_test) {
     }
   }
   CHECK(expected_str_index == expected_results.size());
-  TestSettings::get().os << "\n:::: Unweighted probs time for " << pair_count
-                         << " (i,j) pairs, " << short_test_str
-                         << " tests: " << total_time_ms << " ms.\n";
+  TestSettings::get().os << "\n::::END: all unweighted probs for " << pair_count
+                         << " (i,j) pairs, " << short_test_str << " tests; "
+                         << total_time_ms << " ms.\n";
 }
 
 SCENARIO("Increasing graph sequences: short tests") { test(true); }

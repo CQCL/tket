@@ -143,7 +143,7 @@ static void test(
   long long total_time_init = 0;
   long long total_time_search = 0;
 
-  CheckedSolution::Statistics stats;
+  CheckedSolution::Statistics stats("square grids");
   bool break_out = false;
 
   for (unsigned ii = 0; ii < grids.size(); ++ii) {
@@ -201,13 +201,10 @@ static void test(
           graph_data[ii], graph_data[jj], info, solver_params, stats);
     }
   }
-  os << "\n### FINAL time (ms): " << stats.total_init_time_ms << "+"
-     << stats.total_search_time_ms << "; " << stats.success_count
-     << " success; " << stats.failure_count << " failures; "
-     << stats.timeout_count << " timeouts.";
+  stats.finish();
 
   if (skipped_problems_count > 0) {
-    os << " Skipped " << skipped_problems_count << " problems.";
+    os << "Skipped " << skipped_problems_count << " problems.\n";
   }
   // CHECK(skipped_problems_count + tested_problems_count == problems_count);
   CHECK(expected_problems_count == tested_problems_count);

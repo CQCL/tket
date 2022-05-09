@@ -16,6 +16,7 @@
 #include <catch2/catch.hpp>
 
 #include "../TestUtils/CheckedSolution.hpp"
+#include "../TestUtils/ResumedSolutionChecker.hpp"
 #include "../TestUtils/TestSettings.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 
@@ -275,16 +276,18 @@ It's unclear why cubic lattices should suffer like this
 it needs further investigation.
 */
 
-void test_cubic_lattices(const std::vector<unsigned>& k_values) {
+void test_cubic_lattices(
+    const std::vector<unsigned>& k_values, bool do_resumption_check) {
   const auto& os = TestSettings::get().os;
 
   std::mt19937_64 rng_64;
   std::vector<GraphEdgeWeights> list_of_weights_data;
   list_of_weights_data.reserve(48);
 
-  CheckedSolution::Statistics stats;
+  CheckedSolution::Statistics stats("Cubic lattices");
   CheckedSolution::ProblemInformation info;
   const MainSolverParameters solver_params(10000);
+  ResumedSolutionChecker resumption_checker;
 
   for (unsigned k_value : k_values) {
     const CubicLattice lattice(k_value);
@@ -297,7 +300,7 @@ void test_cubic_lattices(const std::vector<unsigned>& k_values) {
     append_all_transformed_cubes_data(lattice, list_of_weights_data);
     const auto optimal_weight =
         get_optimal_self_embedding(list_of_weights_data);
-    os << "\ncubic lattice: k=" << lattice.get_max_value()
+    os << "\nk=" << lattice.get_max_value()
        << ", V=" << lattice.get_n_vertices()
        << ", E=" << list_of_weights_data[0].size() << ", opt. soln "
        << optimal_weight;
@@ -306,13 +309,18 @@ void test_cubic_lattices(const std::vector<unsigned>& k_values) {
     const auto old_search_time = stats.total_search_time_ms;
 
     info.known_optimal_solution = optimal_weight;
-    CheckedSolution(
+
+    const CheckedSolution checked_solution(
         list_of_weights_data[0], list_of_weights_data[0], info, solver_params,
         stats);
-  }
-  os << "\n@@@ Cubic lattice fin. Time " << stats.total_init_time_ms << "+"
-     << stats.total_search_time_ms << "\n";
 
+    if (do_resumption_check) {
+      resumption_checker.check(
+          checked_solution, list_of_weights_data[0], list_of_weights_data[0],
+          solver_params);
+    }
+  }
+  stats.finish();
   CHECK(stats.success_count == k_values.size());
   CHECK(stats.failure_count == 0);
   CHECK(stats.timeout_count == 0);
@@ -320,13 +328,13 @@ void test_cubic_lattices(const std::vector<unsigned>& k_values) {
 
 SCENARIO("Self-embed cubic lattices - quicker test") {
   const std::vector<unsigned> k_values{1, 2};
-  test_cubic_lattices(k_values);
+  test_cubic_lattices(k_values, true);
 }
 
 SCENARIO("Self-embed cubic lattices - slower test", "[.long]") {
   // k=3, V=343, E=882 is currently around 1.5 secs; slower than we'd like
   const std::vector<unsigned> k_values{3};
-  test_cubic_lattices(k_values);
+  test_cubic_lattices(k_values, false);
 }
 
 }  // namespace WeightedSubgraphMonomorphism

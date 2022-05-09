@@ -19,6 +19,7 @@
 #include "../TestUtils/CheckedSolution.hpp"
 #include "../TestUtils/GraphGeneration.hpp"
 #include "../TestUtils/ProblemGeneration.hpp"
+#include "../TestUtils/ResumedSolutionChecker.hpp"
 #include "../TestUtils/TestSettings.hpp"
 
 /*
@@ -102,7 +103,6 @@ static void test(
   info.existence = CheckedSolution::ProblemInformation::SolutionsExistence::
       KNOWN_TO_BE_SOLUBLE;
 
-  CheckedSolution::Statistics statistics;
   const MainSolverParameters solver_params(timeout);
   const auto& os = TestSettings::get().os;
   unsigned total_solution_value = 0;
@@ -110,11 +110,15 @@ static void test(
   unsigned target_graph_test_count = 0;
   unsigned problem_count = 0;
 
-  os << "\nEmbedding snakes: skipping " << number_of_targets_to_skip
-     << " initial targets; testing max " << number_of_targets_to_test
-     << " targets";
-
   const std::string short_test_str = short_test ? "SHORT" : "LONG";
+  std::stringstream ss;
+  ss << "Embedding snakes into square grids; skipping "
+     << number_of_targets_to_skip << " initial targets; testing max "
+     << number_of_targets_to_test << " targets; " << short_test_str
+     << " test problems";
+
+  CheckedSolution::Statistics statistics(ss.str());
+  ResumedSolutionChecker resumption_checker;
 
   for (const auto& entry : solved_problems_map) {
     ++target_graph_count;
@@ -176,6 +180,10 @@ static void test(
       }
       const CheckedSolution checked_solution(
           line_graph, t_graph_data, info, solver_params, statistics);
+
+      resumption_checker.check(
+          checked_solution, line_graph, t_graph_data, solver_params);
+
       // Should be no timeouts, and a complete solution.
       CHECK(checked_solution.finished);
       calc_problems.push_back(checked_solution.scalar_product);
@@ -184,11 +192,7 @@ static void test(
     calc_problems.push_back(entry.second.back());
     CHECK(entry.second == calc_problems);
   }
-  os << "\nFIN snakes into grids (" << short_test_str << "): tested "
-     << target_graph_test_count << " target graphs; " << problem_count
-     << " problems; total time " << statistics.total_init_time_ms << "+"
-     << statistics.total_search_time_ms << " ms.\n";
-
+  statistics.finish();
   CHECK(expected_total_solution_value == total_solution_value);
 }
 

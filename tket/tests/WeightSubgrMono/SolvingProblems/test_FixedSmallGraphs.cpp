@@ -18,6 +18,7 @@
 
 #include "../TestUtils/CheckedSolution.hpp"
 #include "../TestUtils/GraphGeneration.hpp"
+#include "../TestUtils/ResumedSolutionChecker.hpp"
 #include "../TestUtils/TestSettings.hpp"
 
 namespace tket {
@@ -99,9 +100,10 @@ SCENARIO("embedding all-against-all") {
   // These problems are small and easy.
   // <300ms TOTAL for the whole set, no timeouts anywhere near being hit.
   const unsigned timeout_ms = 1000;
-  CheckedSolution::Statistics statistics;
+  CheckedSolution::Statistics statistics("fixed small graphs");
   const MainSolverParameters solver_params(timeout_ms);
   const CheckedSolution::ProblemInformation info;
+  ResumedSolutionChecker resumption_checker;
 
   // Holds the decoded graph data.
   std::vector<GraphEdgeWeights> gdata;
@@ -149,6 +151,9 @@ SCENARIO("embedding all-against-all") {
         const CheckedSolution checked_solution(
             gdata[ii], gdata[jj], info, solver_params, statistics);
 
+        resumption_checker.check(
+            checked_solution, gdata[ii], gdata[jj], solver_params);
+
         // Should be no timeouts!
         CHECK(checked_solution.finished);
         if (!checked_solution.assignments.empty()) {
@@ -173,9 +178,7 @@ SCENARIO("embedding all-against-all") {
     }
     CHECK(entry.second == calc_problems);
   }
-  os << "\n @@@ fixed small graphs fin. Total time "
-     << statistics.total_init_time_ms << "+" << statistics.total_search_time_ms;
-
+  statistics.finish();
   CHECK(statistics.success_count == 349);
   CHECK(statistics.failure_count == 0);
   CHECK(statistics.timeout_count == 0);

@@ -176,10 +176,13 @@ static void check_solver_object(
 
   stats.total_init_time_ms += solution_data.initialisation_time_ms;
   stats.total_search_time_ms += solution_data.search_time_ms;
+  stats.total_iterations += solution_data.iterations;
 
-  os << "; time " << solution_data.initialisation_time_ms << "+"
-     << solution_data.search_time_ms << "; " << solution_data.iterations
-     << " iters";
+  if (TestSettings::get().print_solution_times) {
+    os << "; time " << solution_data.initialisation_time_ms << "+"
+       << solution_data.search_time_ms;
+  }
+  os << "; " << solution_data.iterations << " iters";
   if (info.known_optimal_solution) {
     os << "; known opt.val. " << info.known_optimal_solution.value();
   }
@@ -212,6 +215,77 @@ static void solve_problem(
   const MainSolver solver(pdata, tdata, solver_params);
   check_solver_object(
       solver, pdata, tdata, info, solver_params, stats, checked_solution, os);
+
+  const auto& extra_statistics = solver.get_solution_data().extra_statistics;
+  if (!extra_statistics.impossible_target_vertices.empty()) {
+    checked_solution.impossible_target_vertices =
+        extra_statistics.impossible_target_vertices;
+  }
+  if (!TestSettings::get().print_verbose_solution_data) {
+    return;
+  }
+
+  if (extra_statistics.number_of_pattern_vertices != 0 &&
+      extra_statistics.number_of_target_vertices != 0) {
+    TestSettings::get().os
+        << "; tot.ass: "
+        << extra_statistics.number_of_pattern_vertices *
+               extra_statistics.number_of_target_vertices
+        << "->(" << extra_statistics.initial_number_of_possible_assignments
+        << "," << extra_statistics.total_number_of_assignments_tried << ","
+        << extra_statistics.total_number_of_impossible_assignments << ")";
+  }
+  if (!extra_statistics.impossible_target_vertices.empty()) {
+    TestSettings::get().os << "; imposs.tv: "
+                           << str(extra_statistics.impossible_target_vertices);
+  }
+  if (extra_statistics.n_tv_initially_passed_to_weight_nogood_detector) {
+    TestSettings::get().os
+        << "; wngd.tv.: "
+        << extra_statistics.n_tv_initially_passed_to_weight_nogood_detector
+               .value()
+        << "->";
+    if (extra_statistics.n_tv_still_valid_in_weight_nogood_detector) {
+      TestSettings::get().os
+          << extra_statistics.n_tv_still_valid_in_weight_nogood_detector
+                 .value();
+    } else {
+      TestSettings::get().os << "?";
+    }
+  }
+}
+
+CheckedSolution::Statistics::Statistics(const std::string& test_name)
+    : success_count(0),
+      failure_count(0),
+      timeout_count(0),
+      total_init_time_ms(0),
+      total_search_time_ms(0),
+      total_iterations(0) {
+  TestSettings::get().os << "\n##### BEGIN test '" << test_name
+                         << "' ########\n";
+}
+
+CheckedSolution::Statistics::Statistics(
+    const std::string& test_name, std::size_t number_of_graphs)
+    : Statistics(
+          test_name + "; " + std::to_string(number_of_graphs) + " graphs") {}
+
+void CheckedSolution::Statistics::finish(Expectation expectation) const {
+  TestSettings::get().os << "\n##### END test: " << success_count
+                         << " successes, " << failure_count << " failures, "
+                         << timeout_count << " timeouts;\nTotal time "
+                         << total_init_time_ms << "+" << total_search_time_ms
+                         << " ms; total " << total_iterations
+                         << " iterations\n";
+
+  if (expectation == Expectation::ALL_SUCCESS) {
+    CHECK(failure_count == 0);
+    CHECK(timeout_count == 0);
+  }
+  if (expectation == Expectation::ALL_SUCCESS_OR_TIMEOUT) {
+    CHECK(failure_count == 0);
+  }
 }
 
 CheckedSolution::CheckedSolution(

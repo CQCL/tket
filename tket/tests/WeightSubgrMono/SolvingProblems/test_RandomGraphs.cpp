@@ -183,18 +183,18 @@ struct AllAgainstAllTester {
       calc_results.push_back(get_weights_hash(graphs.back()));
     }
     const auto& os = TestSettings::get().os;
-    os << "\n\n########### generated " << graphs.size()
-       << " random graphs, total " << result.total_edges << " edges, "
-       << result.total_verts
-       << " vertices\n#### now testing all against all, timeout "
-       << params.timeout;
     if (params.total_number_of_edges != 0) {
       CHECK(params.total_number_of_edges == result.total_edges);
     }
     if (params.total_number_of_vertices != 0) {
       CHECK(params.total_number_of_vertices == result.total_verts);
     }
-    CheckedSolution::Statistics statistics;
+    std::stringstream ss;
+    ss << "random graphs: " << graphs.size() << " graphs; "
+       << result.total_edges << " edges; " << result.total_verts
+       << " vertices; timeout " << params.timeout;
+
+    CheckedSolution::Statistics statistics(ss.str());
     const MainSolverParameters solver_params(params.timeout);
 
     const auto update_calc_results =
@@ -245,7 +245,9 @@ struct AllAgainstAllTester {
     result.failure_count = statistics.failure_count;
     result.timeout_count = statistics.timeout_count;
     result.success_count = statistics.success_count;
-    os << "\n#### FIN: total time " << result.total_time_ms << " ms. ";
+    statistics.finish(
+        CheckedSolution::Statistics::Expectation::ALL_SUCCESS_OR_TIMEOUT);
+
     CHECK(expected_results == calc_results);
     if (params.expected_max_total_time_ms != 0) {
       CHECK(result.total_time_ms <= params.expected_max_total_time_ms);
