@@ -125,6 +125,14 @@ def symb_tk1(params: ParamsType) -> ImmutableMatrix:
     return symb_rz([params[0]]) * symb_rx([params[1]]) * symb_rz([params[2]])  # type: ignore
 
 
+def symb_tk2(params: ParamsType) -> ImmutableMatrix:
+    return (
+        symb_xxphase([params[0]])
+        * symb_yyphase([params[1]])
+        * symb_zzphase([params[2]])
+    )
+
+
 def symb_iswap(params: ParamsType) -> ImmutableMatrix:
     alpha = params[0]
     costerm = sympy.cos((sympy.pi / 2) * alpha)
@@ -256,6 +264,7 @@ class SymGateRegister:
         OpType.Ry: symb_ry,
         OpType.Rz: symb_rz,
         OpType.TK1: symb_tk1,
+        OpType.TK2: symb_tk2,
         OpType.U1: symb_u1,
         OpType.U2: symb_u2,
         OpType.U3: symb_u3,
