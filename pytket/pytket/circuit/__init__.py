@@ -15,7 +15,7 @@
 """The circuit module provides an API to interact with the
  tket :py:class:`Circuit` data structure.
   This module is provided in binary form during the PyPI installation."""
-from typing import Any, Tuple, Type, Union, cast, Callable, List
+from typing import TYPE_CHECKING, Any, Tuple, Type, Union, cast, Callable, List
 
 from pytket._tket.circuit import *  # type: ignore
 from pytket._tket.circuit import Bit, BitRegister
@@ -24,7 +24,6 @@ from pytket._tket.circuit import Bit, BitRegister
 from pytket._tket.circuit import _DEBUG_ZERO_REG_PREFIX, _DEBUG_ONE_REG_PREFIX  # type: ignore
 from pytket._tket.pauli import Pauli  # type: ignore
 
-from pytket.circuit import Circuit  # type: ignore
 from pytket import wasm
 
 from .logic_exp import (
@@ -45,6 +44,10 @@ from .logic_exp import (
     reg_lt,
     reg_neq,
 )
+
+if TYPE_CHECKING:
+    from pytket.circuit import Circuit  # type: ignore
+
 
 # Add ability to compare Bit equality with arbitrary class
 Bit.oldeq = Bit.__eq__
