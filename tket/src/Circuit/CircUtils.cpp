@@ -24,6 +24,7 @@
 #include "Gate/GateUnitaryMatrixImplementations.hpp"
 #include "Gate/Rotation.hpp"
 #include "OpType/OpType.hpp"
+#include "Ops/Op.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/Expression.hpp"
 #include "Utils/MatrixAnalysis.hpp"
@@ -438,13 +439,36 @@ Circuit with_TK2(Gate_ptr op) {
 
     return c;
   }
-  // We are left with the non-trivial cases. As a first, inefficient, solution,
-  // we can decompose these into CX and then replace each CX with a TK2 (and
-  // some single-qubit gates).
-  // TODO Later we should find more efficient decompositions for these.
-  Circuit c = with_CX(op);
-  replace_CX_with_TK2(c);
-  return c;
+  // Now the non-trivial cases.
+  switch (op->get_type()) {
+    case OpType::CCX:
+    case OpType::CSWAP:
+    case OpType::BRIDGE:
+    case OpType::CRx:
+    case OpType::CRy:
+    case OpType::CRz:
+    case OpType::CU1:
+    case OpType::CU3:
+    case OpType::PhaseGadget:
+    case OpType::ISWAP:
+    case OpType::XXPhase:
+    case OpType::YYPhase:
+    case OpType::ZZPhase:
+    case OpType::XXPhase3:
+    case OpType::ESWAP:
+    case OpType::FSim:
+    case OpType::PhasedISWAP:
+    case OpType::NPhasedX: {
+      // As a first, inefficient, solution, decompose these into CX and then
+      // replace each CX with a TK2 (and some single-qubit gates).
+      // TODO Find more efficient decompositions for these gates.
+      Circuit c = with_CX(op);
+      replace_CX_with_TK2(c);
+      return c;
+    }
+    default:
+      throw CircuitInvalidity("Cannot decompose " + op->get_name());
+  }
 }
 
 Circuit with_CX(Gate_ptr op) {
