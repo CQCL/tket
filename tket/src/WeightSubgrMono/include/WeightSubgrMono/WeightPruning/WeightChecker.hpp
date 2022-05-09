@@ -44,34 +44,40 @@ class WeightChecker {
   WeightChecker(
       const NeighboursData& pattern_neighbours_data,
       const NeighboursData& target_neighbours_data,
-      const SearchBranch& search_branch, WeightWSM total_p_edge_weights);
+      const SearchBranch& search_branch, WeightWSM total_p_edge_weights,
+      std::set<VertexWSM>& impossible_target_vertices);
 
   ~WeightChecker();
 
-  struct Result {
-    bool nogood;
+  /** Try to find a weight nogood (i.e., an impossible current position).
+   * @param accessor Object to retrieve data about domains.
+   * @param max_extra_scalar_product The maximum extra scalar product allowed,
+   * for an acceptable solution (the whole point of this nogood detection
+   * attempt).
+   * @return False if the current node is a nogood.
+   */
+  bool check(
+      const DomainsAccessor& accessor, WeightWSM max_extra_scalar_product);
 
-    /** If not null, we've newly discovered that the target vertex TV
-     * is invalid (e.g., there's simply no PV which could ever map to it,
-     * without causing the total scalar product to be too high).
-     */
-    std::optional<VertexWSM> invalid_t_vertex;
+  /** Information about many target vertices were/are still valid. */
+  struct TVData {
+    /** The number of used TV initially passed into the weight detector. */
+    std::size_t initial_number_of_tv;
+
+    /** The number of valid TV finally. */
+    std::size_t final_number_of_tv;
   };
 
-  /** Try to find a weight nogood (i.e., an impossible current position).
-   * @param possible_assignments Data for all unassigned vertices.
-   * @param max_extra_scalar_product The maximum extra weight we allow (the
-   * whole point of this nogood detection attempt).
-   * @return Information about a possible weight nogood.
-   */
-  Result operator()(
-      const DomainsAccessor& accessor, WeightWSM max_extra_scalar_product);
+  /** Null if the weight nogood detector was never activated. */
+  std::optional<TVData> get_tv_data_opt();
 
  private:
   const NeighboursData& m_pattern_neighbours_data;
   const NeighboursData& m_target_neighbours_data;
   const SearchBranch& m_search_branch;
   WeightNogoodDetectorManager m_manager;
+  TVData m_tv_data;
+  std::set<VertexWSM>& m_impossible_target_vertices;
 
   // Will be initialised at the point of first use.
   // Delaying as long as possible can give better results.

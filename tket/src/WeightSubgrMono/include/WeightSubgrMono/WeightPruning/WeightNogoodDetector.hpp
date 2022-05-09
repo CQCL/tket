@@ -52,57 +52,46 @@ class WeightNogoodDetector {
   WeightNogoodDetector(
       const NeighboursData& pattern_neighbours_data,
       const NeighboursData& target_neighbours_data,
-      const std::set<VertexWSM>& initial_used_target_vertices);
+      std::set<VertexWSM> initial_used_target_vertices,
+      std::set<VertexWSM>& invalid_target_vertices);
 
-  /** The result of our attempted detection. */
-  struct Result {
-    /** The extra weight from adding all unassigned variables
-     * will DEFINITELY be at least as big as this.
-     *
-     * (Or, if null, we're ALREADY at a nogood).
-     *
-     * We will break off calculation early of course
-     * as soon as we exceed the bound.
-     */
-    std::optional<WeightWSM> extra_scalar_product_lower_bound;
-
-    /** If not null, gives a (PV,TV) pair where a PV->TV assignment
-     * has already taken place,
-     * but TV has been newly discovered to be invalid
-     * (and in fact was ALWAYS invalid),
-     * meaning that no p-vertex could ever be assigned to it.
-     *
-     * Thus, we have a very "strong" nogood,
-     * giving the caller the option to backtrack
-     * (possibly many levels up) to where the assignment PV->TV
-     * was first made,
-     * and ALSO erase TV from ALL domains.
-     *
-     * (As opposed to a "weak nogood", i.e. an ordinary nogood:
-     * some assignment PV->TV has been made, which we discover
-     * is invalid at the current position only, but might be possible
-     * after backtracking.
-     *
-     * A "middle" nogood might be, say, the fresh discovery that PV->TV is
-     * always invalid, even though TV is valid).
-     */
-    std::optional<VertexWSM> invalid_t_vertex;
-  };
-
-  /** Try to find a weight nogood (i.e., an impossible current position).
+  /** Return a guaranteed lower bound for the scalar product increase
+   * if the current partial solution could be extended to a complete
+   * valid solution, or null if in fact we can prove that it's impossible
+   * (EITHER for graph theoretic reasons - maybe the graphs simply aren't
+   * compatible, regardless of weights - OR because it would exceed
+   * the allowed maximum).
+   * @param accessor An object to retrieve information about domains.
    * @param max_extra_scalar_product The maximum extra weight we allow (the
    * whole point of this nogood detection attempt).
-   * @return Information about a possible weight nogood.
+   * @return Information about the min possible scalar product increase (null if
+   * it's a nogood)
    */
-  Result operator()(
-      const DomainsAccessor& accessor,
-      WeightWSM max_extra_scalar_product) const;
+  std::optional<WeightWSM> get_extra_scalar_product_lower_bound(
+      const DomainsAccessor& accessor, WeightWSM max_extra_scalar_product);
+
+  /** How many target vertices are still valid (i.e., could possibly
+   * be mapped to by some PV)?
+   * @return the size of m_valid_target_vertices
+   */
+  std::size_t get_number_of_possible_tv() const;
 
  private:
   const NeighboursData& m_pattern_neighbours_data;
   const NeighboursData& m_target_neighbours_data;
 
   mutable std::set<VertexWSM> m_valid_target_vertices;
+
+  // As soon as a TV is newly discovered to be invalid,
+  // meaning that no p-vertex could ever be assigned to it
+  // (quite a rare event), store it here.
+  //
+  // This of course is even stronger than a normal impossible
+  // assignment PV->TV.
+  //
+  // Moreover (in case the caller ever tries parallel searches, etc.)
+  // the TV was ALWAYS invalid, so can be erased from ALL data.
+  std::set<VertexWSM>& m_invalid_target_vertices;
 
   // There are many mutable data members.
   // Even though this class is "logically" const,

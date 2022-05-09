@@ -27,12 +27,16 @@ namespace WeightedSubgraphMonomorphism {
 WeightNogoodDetector::WeightNogoodDetector(
     const NeighboursData& pattern_neighbours_data,
     const NeighboursData& target_neighbours_data,
-    const std::set<VertexWSM>& initial_used_target_vertices)
+    std::set<VertexWSM> initial_used_target_vertices,
+    std::set<VertexWSM>& invalid_target_vertices)
     : m_pattern_neighbours_data(pattern_neighbours_data),
       m_target_neighbours_data(target_neighbours_data),
-      m_valid_target_vertices(
-          initial_used_target_vertices.cbegin(),
-          initial_used_target_vertices.cend()) {}
+      m_valid_target_vertices(std::move(initial_used_target_vertices)),
+      m_invalid_target_vertices(invalid_target_vertices) {}
+
+std::size_t WeightNogoodDetector::get_number_of_possible_tv() const {
+  return m_valid_target_vertices.size();
+}
 
 std::optional<WeightWSM> WeightNogoodDetector::get_min_weight_for_tv(
     VertexWSM tv) const {
@@ -54,11 +58,12 @@ std::optional<WeightWSM> WeightNogoodDetector::get_min_weight_for_tv(
     }
     min_weight = std::min(min_weight, entry.second);
   }
-  // Really, to do this properly, we should update
-  // target_neighbours_data dynamically,
-  // erasing invalid target vertices and updating neighbour lists.
   if (is_maximum(min_weight)) {
-    m_valid_target_vertices.erase(tv);
+    // This TV has no valid neighbours; so clearly, no (nonisolated) PV
+    // could ever be assigned to it.
+    // Really, to do this properly, we should update
+    // target_neighbours_data dynamically,
+    // erasing invalid target vertices and updating neighbour lists.
     return {};
   }
   m_minimum_t_weights_from_tv[tv] = min_weight;
@@ -92,6 +97,9 @@ bool WeightNogoodDetector::fill_t_weight_lower_bounds_for_p_edges_containing_pv(
       const auto weight_opt_for_tv = get_min_weight_for_tv(tv);
       if (weight_opt_for_tv) {
         weight = std::min(weight, weight_opt_for_tv.value());
+      } else {
+        m_invalid_target_vertices.insert(tv);
+        m_valid_target_vertices.erase(tv);
       }
     }
     if (is_maximum(weight)) {
@@ -103,12 +111,12 @@ bool WeightNogoodDetector::fill_t_weight_lower_bounds_for_p_edges_containing_pv(
   return true;
 }
 
-WeightNogoodDetector::Result WeightNogoodDetector::operator()(
-    const DomainsAccessor& accessor, WeightWSM max_extra_scalar_product) const {
-  Result result;
+std::optional<WeightWSM>
+WeightNogoodDetector::get_extra_scalar_product_lower_bound(
+    const DomainsAccessor& accessor, WeightWSM max_extra_scalar_product) {
   if (!fill_t_weight_lower_bounds_for_p_edges_containing_pv(accessor)) {
     // A nogood!
-    return result;
+    return {};
   }
   WeightWSM weight_lower_bound = 0;
 
@@ -154,10 +162,8 @@ WeightNogoodDetector::Result WeightNogoodDetector::operator()(
           // (This COULD actually happen. It means that TV2 is invalid,
           // and in fact always was;
           // but we didn't realise this at the time we made the assignment).
-          // Definitely worth the caller trying to make use of this new
-          // information, although it is algorithmically complicated.
-          result.invalid_t_vertex = tv2;
-          return result;
+          m_invalid_target_vertices.insert(tv2);
+          return {};
         }
 
         // We take the MAX to get a valid LOWER bound
@@ -176,12 +182,11 @@ WeightNogoodDetector::Result WeightNogoodDetector::operator()(
       }
       weight_lower_bound += p_weight * t_weight_estimate;
       if (weight_lower_bound > max_extra_scalar_product) {
-        return result;
+        return {};
       }
     }
   }
-  result.extra_scalar_product_lower_bound = weight_lower_bound;
-  return result;
+  return weight_lower_bound;
 }
 
 }  // namespace WeightedSubgraphMonomorphism

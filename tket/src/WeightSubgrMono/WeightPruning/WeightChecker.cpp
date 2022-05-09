@@ -29,24 +29,35 @@ namespace WeightedSubgraphMonomorphism {
 WeightChecker::WeightChecker(
     const NeighboursData& pattern_neighbours_data,
     const NeighboursData& target_neighbours_data,
-    const SearchBranch& search_branch, WeightWSM total_p_edge_weights)
+    const SearchBranch& search_branch, WeightWSM total_p_edge_weights,
+    std::set<VertexWSM>& impossible_target_vertices)
     : m_pattern_neighbours_data(pattern_neighbours_data),
       m_target_neighbours_data(target_neighbours_data),
       m_search_branch(search_branch),
-      m_manager(total_p_edge_weights) {}
+      m_manager(total_p_edge_weights),
+      m_impossible_target_vertices(impossible_target_vertices) {}
 
 WeightChecker::~WeightChecker() {}
 
-WeightChecker::Result WeightChecker::operator()(
+std::optional<WeightChecker::TVData> WeightChecker::get_tv_data_opt() {
+  if (!m_detector_ptr) {
+    return {};
+  }
+  m_tv_data.final_number_of_tv = m_detector_ptr->get_number_of_possible_tv();
+  return m_tv_data;
+}
+
+bool WeightChecker::check(
     const DomainsAccessor& accessor, WeightWSM max_extra_scalar_product) {
-  Result result;
   std::size_t current_number_of_unassigned_vertices = 0;
 
   for (VertexWSM pv : accessor.get_unassigned_pattern_vertices_superset()) {
     switch (accessor.get_domain(pv).size()) {
+      // TODO: make a test case for this; but it's fiddly.
+      // GCOVR_EXCL_START
       case 0:
-        result.nogood = true;
-        return result;
+        return false;
+      // GCOVR_EXCL_STOP
       case 1:
         break;
       default:
@@ -66,31 +77,36 @@ WeightChecker::Result WeightChecker::operator()(
           accessor.get_total_p_edge_weights(),
           current_number_of_assigned_vertices,
           current_number_of_unassigned_vertices)) {
-    result.nogood = false;
-    return result;
+    return true;
   }
 
   // Finally, we use the detector; check if it's initialised.
   if (!m_detector_ptr) {
+    const auto used_tv = m_search_branch.get_used_target_vertices();
+    m_tv_data.initial_number_of_tv = used_tv.size();
+
     m_detector_ptr = std::make_unique<WeightNogoodDetector>(
-        m_pattern_neighbours_data, m_target_neighbours_data,
-        m_search_branch.get_used_target_vertices());
+        m_pattern_neighbours_data, m_target_neighbours_data, used_tv,
+        m_impossible_target_vertices);
     TKET_ASSERT(m_detector_ptr);
   }
-  const auto detector_result =
-      m_detector_ptr->operator()(accessor, max_extra_scalar_product);
-  result.invalid_t_vertex = detector_result.invalid_t_vertex;
+  const auto extra_scalar_product_lower_bound_opt =
+      m_detector_ptr->get_extra_scalar_product_lower_bound(
+          accessor, max_extra_scalar_product);
 
-  if (detector_result.extra_scalar_product_lower_bound) {
-    result.nogood = false;
+  if (extra_scalar_product_lower_bound_opt) {
+    // We have a lower bound, but it's not big enough to force the
+    // scalar product beyond the limit; thus we haven't found a weight nogood,
+    // so this counts as a failure.
     m_manager.register_lower_bound_failure(
         current_scalar_product, max_scalar_product,
-        detector_result.extra_scalar_product_lower_bound.value());
-    return result;
+        extra_scalar_product_lower_bound_opt.value());
+    return true;
   }
-  result.nogood = true;
+  // We HAVE found a nogood, which is a SUCCESS
+  // (since it's the whole purpose of the detector).
   m_manager.register_success();
-  return result;
+  return false;
 }
 
 }  // namespace WeightedSubgraphMonomorphism
