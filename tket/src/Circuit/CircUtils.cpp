@@ -441,6 +441,8 @@ Circuit with_TK2(Gate_ptr op) {
   }
   // Now the non-trivial cases.
   switch (op->get_type()) {
+    case OpType::ISWAP:
+      return CircPool::ISWAP_using_TK2(params[0]);
     case OpType::CCX:
     case OpType::CSWAP:
     case OpType::BRIDGE:
@@ -450,7 +452,6 @@ Circuit with_TK2(Gate_ptr op) {
     case OpType::CU1:
     case OpType::CU3:
     case OpType::PhaseGadget:
-    case OpType::ISWAP:
     case OpType::XXPhase:
     case OpType::YYPhase:
     case OpType::ZZPhase:

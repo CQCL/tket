@@ -201,6 +201,9 @@ Circuit CU1_using_CX(Expr lambda);
 /** Equivalent to CU1, using CX, U1 and U3 gates */
 Circuit CU3_using_CX(Expr theta, Expr phi, Expr lambda);
 
+/** Equivalent to ISWAP, using a TK2 gate */
+Circuit ISWAP_using_TK2(Expr alpha);
+
 /** Equivalent to ISWAP, using CX, U3 and Rz gates */
 Circuit ISWAP_using_CX(Expr alpha);
 

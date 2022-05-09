@@ -730,6 +730,12 @@ Circuit CU3_using_CX(Expr theta, Expr phi, Expr lambda) {
   return c;
 }
 
+Circuit ISWAP_using_TK2(Expr alpha) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::TK2, {-0.5 * alpha, -0.5 * alpha, 0}, {0, 1});
+  return c;
+}
+
 Circuit ISWAP_using_CX(Expr alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::U3, {0.5, -0.5, 0.5}, {0});
