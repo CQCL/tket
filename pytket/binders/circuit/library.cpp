@@ -176,7 +176,7 @@ void init_library(py::module &m) {
       "_PhasedISWAP_using_CX", &CircPool::PhasedISWAP_using_CX,
       "Equivalent to PhasedISWAP, using CX, U3 and Rz gates");
   library_m.def(
-      "_NPhasedX_using_CX", &CircPool::NPhasedX_using_CX,
+      "_NPhasedX_using_PhasedX", &CircPool::NPhasedX_using_PhasedX,
       "Unwrap NPhasedX, into number_of_qubits PhasedX gates");
 
   library_m.def(

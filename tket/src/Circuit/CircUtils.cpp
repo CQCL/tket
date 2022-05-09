@@ -445,6 +445,14 @@ Circuit with_TK2(Gate_ptr op) {
       return CircPool::ISWAP_using_TK2(params[0]);
     case OpType::PhasedISWAP:
       return CircPool::PhasedISWAP_using_TK2(params[0], params[1]);
+    case OpType::XXPhase:
+      return CircPool::XXPhase_using_TK2(params[0]);
+    case OpType::YYPhase:
+      return CircPool::YYPhase_using_TK2(params[0]);
+    case OpType::ZZPhase:
+      return CircPool::ZZPhase_using_TK2(params[0]);
+    case OpType::NPhasedX:
+      return CircPool::NPhasedX_using_PhasedX(n, params[0], params[1]);
     case OpType::CCX:
     case OpType::CSWAP:
     case OpType::BRIDGE:
@@ -454,13 +462,9 @@ Circuit with_TK2(Gate_ptr op) {
     case OpType::CU1:
     case OpType::CU3:
     case OpType::PhaseGadget:
-    case OpType::XXPhase:
-    case OpType::YYPhase:
-    case OpType::ZZPhase:
     case OpType::XXPhase3:
     case OpType::ESWAP:
-    case OpType::FSim:
-    case OpType::NPhasedX: {
+    case OpType::FSim: {
       // As a first, inefficient, solution, decompose these into CX and then
       // replace each CX with a TK2 (and some single-qubit gates).
       // TODO Find more efficient decompositions for these gates.
@@ -551,7 +555,7 @@ Circuit with_CX(Gate_ptr op) {
     case OpType::PhasedISWAP:
       return CircPool::PhasedISWAP_using_CX(params[0], params[1]);
     case OpType::NPhasedX:
-      return CircPool::NPhasedX_using_CX(n, params[0], params[1]);
+      return CircPool::NPhasedX_using_PhasedX(n, params[0], params[1]);
     default:
       throw CircuitInvalidity("Cannot decompose " + op->get_name());
   }

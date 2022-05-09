@@ -207,11 +207,20 @@ Circuit ISWAP_using_TK2(Expr alpha);
 /** Equivalent to ISWAP, using CX, U3 and Rz gates */
 Circuit ISWAP_using_CX(Expr alpha);
 
+/** Equivalent to XXPhase, using a TK2 gate */
+Circuit XXPhase_using_TK2(Expr alpha);
+
 /** Equivalent to XXPhase, using CX and U3 gates */
 Circuit XXPhase_using_CX(Expr alpha);
 
+/** Equivalent to YYPhase, using a TK2 gate */
+Circuit YYPhase_using_TK2(Expr alpha);
+
 /** Equivalent to YYPhase, using CX, Rz and U3 gates */
 Circuit YYPhase_using_CX(Expr alpha);
+
+/** Equivalent to ZZPhase, using a TK2 gate */
+Circuit ZZPhase_using_TK2(Expr alpha);
 
 /** Equivalent to ZZPhase, using CX and Rz gates */
 Circuit ZZPhase_using_CX(Expr alpha);
@@ -235,7 +244,8 @@ Circuit PhasedISWAP_using_TK2(Expr p, Expr t);
 Circuit PhasedISWAP_using_CX(Expr p, Expr t);
 
 /** Unwrap NPhasedX, into number_of_qubits PhasedX gates */
-Circuit NPhasedX_using_CX(unsigned int number_of_qubits, Expr alpha, Expr beta);
+Circuit NPhasedX_using_PhasedX(
+    unsigned int number_of_qubits, Expr alpha, Expr beta);
 
 // converts a TK1 gate to a PhasedXRz gate
 Circuit tk1_to_PhasedXRz(

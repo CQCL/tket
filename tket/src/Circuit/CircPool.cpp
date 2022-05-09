@@ -749,11 +749,23 @@ Circuit ISWAP_using_CX(Expr alpha) {
   return c;
 }
 
+Circuit XXPhase_using_TK2(Expr alpha) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::TK2, {alpha, 0, 0}, {0, 1});
+  return c;
+}
+
 Circuit XXPhase_using_CX(Expr alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::CX, {0, 1});
   c.add_op<unsigned>(OpType::U3, {alpha, -0.5, 0.5}, {0});
   c.add_op<unsigned>(OpType::CX, {0, 1});
+  return c;
+}
+
+Circuit YYPhase_using_TK2(Expr alpha) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::TK2, {0, alpha, 0}, {0, 1});
   return c;
 }
 
@@ -766,6 +778,12 @@ Circuit YYPhase_using_CX(Expr alpha) {
   c.add_op<unsigned>(OpType::CX, {0, 1});
   c.add_op<unsigned>(OpType::U3, {-0.5, -0.5, 0.5}, {0});
   c.add_op<unsigned>(OpType::U3, {-0.5, -0.5, 0.5}, {1});
+  return c;
+}
+
+Circuit ZZPhase_using_TK2(Expr alpha) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::TK2, {0, 0, alpha}, {0, 1});
   return c;
 }
 
@@ -859,7 +877,7 @@ Circuit PhasedISWAP_using_CX(Expr p, Expr t) {
   return c;
 }
 
-Circuit NPhasedX_using_CX(
+Circuit NPhasedX_using_PhasedX(
     unsigned int number_of_qubits, Expr alpha, Expr beta) {
   Circuit c(number_of_qubits);
   for (unsigned int i = 0; i < number_of_qubits; ++i) {
