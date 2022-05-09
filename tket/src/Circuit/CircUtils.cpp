@@ -443,6 +443,8 @@ Circuit with_TK2(Gate_ptr op) {
   switch (op->get_type()) {
     case OpType::ISWAP:
       return CircPool::ISWAP_using_TK2(params[0]);
+    case OpType::PhasedISWAP:
+      return CircPool::PhasedISWAP_using_TK2(params[0], params[1]);
     case OpType::CCX:
     case OpType::CSWAP:
     case OpType::BRIDGE:
@@ -458,7 +460,6 @@ Circuit with_TK2(Gate_ptr op) {
     case OpType::XXPhase3:
     case OpType::ESWAP:
     case OpType::FSim:
-    case OpType::PhasedISWAP:
     case OpType::NPhasedX: {
       // As a first, inefficient, solution, decompose these into CX and then
       // replace each CX with a TK2 (and some single-qubit gates).

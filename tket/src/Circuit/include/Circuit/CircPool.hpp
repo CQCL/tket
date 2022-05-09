@@ -228,6 +228,9 @@ Circuit ESWAP_using_CX(Expr alpha);
 /** Equivalent to Fsim, using CX, X, S, U1 and U3 gates */
 Circuit FSim_using_CX(Expr alpha, Expr beta);
 
+/** Equivalent to PhasedISWAP, using a TK2 and Rz gates */
+Circuit PhasedISWAP_using_TK2(Expr p, Expr t);
+
 /** Equivalent to PhasedISWAP, using CX, U3 and Rz gates */
 Circuit PhasedISWAP_using_CX(Expr p, Expr t);
 

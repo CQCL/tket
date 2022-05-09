@@ -836,6 +836,16 @@ Circuit FSim_using_CX(Expr alpha, Expr beta) {
   return c;
 }
 
+Circuit PhasedISWAP_using_TK2(Expr p, Expr t) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::Rz, p, {0});
+  c.add_op<unsigned>(OpType::Rz, -p, {1});
+  c.add_op<unsigned>(OpType::TK2, {-0.5 * t, -0.5 * t, 0}, {0, 1});
+  c.add_op<unsigned>(OpType::Rz, -p, {0});
+  c.add_op<unsigned>(OpType::Rz, p, {1});
+  return c;
+}
+
 Circuit PhasedISWAP_using_CX(Expr p, Expr t) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::U3, {0.5, -0.5, 0.5 + p}, {0});
