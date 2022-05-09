@@ -22,7 +22,7 @@ class TketTestsConan(ConanFile):
     version = "0.6.2"
     license = "CQC Proprietary"
     author = "Alec Edgington <alec.edgington@cambridgequantum.com>"
-    url = "https://github.com/CQCL-DEV/tket"
+    url = "https://github.com/CQCL/tket"
     description = "Unit tests for tket"
     topics = ("quantum", "computation", "compiler")
     settings = "os", "compiler", "build_type", "arch"
