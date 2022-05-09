@@ -457,10 +457,11 @@ Circuit with_TK2(Gate_ptr op) {
       return CircPool::ESWAP_using_TK2(params[0]);
     case OpType::FSim:
       return CircPool::FSim_using_TK2(params[0], params[1]);
+    case OpType::CRx:
+      return CircPool::CRx_using_TK2(params[0]);
     case OpType::CCX:
     case OpType::CSWAP:
     case OpType::BRIDGE:
-    case OpType::CRx:
     case OpType::CRy:
     case OpType::CRz:
     case OpType::CU1:

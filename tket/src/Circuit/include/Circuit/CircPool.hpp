@@ -189,6 +189,9 @@ const Circuit &ZZMax_using_CX();
 /** Equivalent to CRz, using CX and Rz gates */
 Circuit CRz_using_CX(Expr alpha);
 
+/** Equivalent to CRx, using a TK2 and TK1 gates */
+Circuit CRx_using_TK2(Expr alpha);
+
 /** Equivalent to CRx, using CX, H and Rx gates */
 Circuit CRx_using_CX(Expr alpha);
 

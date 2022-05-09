@@ -667,6 +667,16 @@ Circuit CRz_using_CX(Expr alpha) {
   return c;
 }
 
+Circuit CRx_using_TK2(Expr alpha) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::TK1, {-0.5, 0.5, 0}, {0});
+  c.add_op<unsigned>(OpType::TK1, {1, 0.5, 0}, {1});
+  c.add_op<unsigned>(OpType::TK2, {-0.5 * alpha, 0, 0}, {0, 1});
+  c.add_op<unsigned>(OpType::TK1, {-1, 0.5, -0.5}, {0});
+  c.add_op<unsigned>(OpType::TK1, {1, 0.5 - 0.5 * alpha, 0}, {1});
+  return c;
+}
+
 Circuit CRx_using_CX(Expr alpha) {
   Circuit c(2);
   if (equiv_expr(alpha, 1.)) {
