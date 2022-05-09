@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <algorithm>
+#include <array>
 #include <catch2/catch.hpp>
 #include <map>
 #include <numeric>

@@ -14,6 +14,7 @@
 
 #include <catch2/catch.hpp>
 #include <map>
+#include <sstream>
 #include <utility>
 
 #include "../TestUtils/CheckedSolution.hpp"
