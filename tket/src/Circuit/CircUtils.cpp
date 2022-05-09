@@ -455,6 +455,8 @@ Circuit with_TK2(Gate_ptr op) {
       return CircPool::NPhasedX_using_PhasedX(n, params[0], params[1]);
     case OpType::ESWAP:
       return CircPool::ESWAP_using_TK2(params[0]);
+    case OpType::FSim:
+      return CircPool::FSim_using_TK2(params[0], params[1]);
     case OpType::CCX:
     case OpType::CSWAP:
     case OpType::BRIDGE:
@@ -464,8 +466,7 @@ Circuit with_TK2(Gate_ptr op) {
     case OpType::CU1:
     case OpType::CU3:
     case OpType::PhaseGadget:
-    case OpType::XXPhase3:
-    case OpType::FSim: {
+    case OpType::XXPhase3: {
       // As a first, inefficient, solution, decompose these into CX and then
       // replace each CX with a TK2 (and some single-qubit gates).
       // TODO Find more efficient decompositions for these gates.

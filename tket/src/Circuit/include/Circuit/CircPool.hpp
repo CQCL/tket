@@ -237,7 +237,10 @@ Circuit ESWAP_using_TK2(Expr alpha);
 /** Equivalent to ESWAP, using CX, X, S, Ry and U1 gates */
 Circuit ESWAP_using_CX(Expr alpha);
 
-/** Equivalent to Fsim, using CX, X, S, U1 and U3 gates */
+/** Equivalent to FSim, using a TK2 and TK1 gates */
+Circuit FSim_using_TK2(Expr alpha, Expr beta);
+
+/** Equivalent to FSim, using CX, X, S, U1 and U3 gates */
 Circuit FSim_using_CX(Expr alpha, Expr beta);
 
 /** Equivalent to PhasedISWAP, using a TK2 and Rz gates */

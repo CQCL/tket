@@ -850,6 +850,17 @@ Circuit ESWAP_using_CX(Expr alpha) {
   return c;
 }
 
+Circuit FSim_using_TK2(Expr alpha, Expr beta) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::TK1, {-0.5, 0.5, -1}, {0});
+  c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 1}, {1});
+  c.add_op<unsigned>(OpType::TK2, {-0.5 * beta, -alpha, alpha}, {0, 1});
+  c.add_op<unsigned>(OpType::TK1, {-0.5 * beta, 0.5, -0.5}, {0});
+  c.add_op<unsigned>(OpType::TK1, {-0.5 * beta, 0.5, 0.5}, {1});
+  c.add_phase(-0.25 * beta);
+  return c;
+}
+
 Circuit FSim_using_CX(Expr alpha, Expr beta) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::U3, {0.5, 0.5, 0.5}, {0});
