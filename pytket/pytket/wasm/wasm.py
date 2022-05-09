@@ -16,19 +16,15 @@ from os.path import exists
 import base64
 import hashlib
 
-from typing import List
-from pytket import Circuit
-
 
 class WasmFileHandler:
     """Add a wasm file to your workflow, stores a copy of the file and
     checks the function signatures of the file. Offers function to add
     a wasm op to a circuit"""
 
-    def __init__(self, filepath: str, checksignatures: bool = False):
+    def __init__(self, filepath: str):
         """construct a wasm file handler"""
         self._filepath = filepath
-        self._checksignatures = checksignatures
 
         if not exists(self._filepath):
             raise ValueError("wasm file not found at given path")
@@ -41,18 +37,3 @@ class WasmFileHandler:
     def __str__(self) -> str:
         """str representation of the wasm file"""
         return self._wasmuid
-
-    def add_wasmop_to_circuit(
-        self,
-        circ: Circuit,
-        funcname: str,
-        i32list_i: List[int],
-        i32list_o: List[int],
-        args: List[int],
-    ) -> None:
-        """function to add a wasm op to the circuit with the given name of the
-        function and the classical bits assigend to the input of the function"""
-
-        # add check of function signatures here
-
-        circ.add_wasm(funcname, self._wasmuid, i32list_i, i32list_o, args)

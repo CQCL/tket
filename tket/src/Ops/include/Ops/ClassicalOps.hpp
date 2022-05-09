@@ -30,7 +30,10 @@ namespace tket {
 class ClassicalOp : public Op {
  public:
   /**
-   * Construct a ClassicalEvalOp of specified shape
+   * Construct a ClassicalOp of specified shape
+   *
+   * this is a classical operation, only acting on the classical parts of the
+   * circuit
    *
    * @param type operation type
    * @param n_i number of input-only bits
@@ -84,6 +87,10 @@ class ClassicalEvalOp : public ClassicalOp {
  public:
   /**
    * Construct a ClassicalEvalOp of specified shape
+   *
+   * this is a classical operation, only acting on the classical parts of the
+   * Circuit In addition to the ClassicalOp  has the class the eval function in
+   * the signature, which allows a evaluation of this op
    *
    * @param type operation type
    * @param n_i number of input-only bits

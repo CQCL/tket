@@ -89,7 +89,7 @@ void init_circuit_add_classical_op(
           "See :py:meth:`add_c_transform`.", py::arg("values"), py::arg("args"),
           py::arg("name") = "ClassicalTransform")
       .def(
-          "add_wasm",
+          "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
              const std::string &wasm_uid,
              const std::vector<unsigned> &i32list_i,
@@ -113,7 +113,7 @@ void init_circuit_add_classical_op(
           py::arg("funcname"), py::arg("wasm_uid"), py::arg("i32list_i"),
           py::arg("i32list_o"), py::arg("args"))
       .def(
-          "add_wasm",
+          "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
              const std::string &wasm_uid,
              const std::vector<unsigned> &i32list_i,
@@ -127,6 +127,54 @@ void init_circuit_add_classical_op(
           },
           "See :py:meth:`add_wasm`.", py::arg("funcname"), py::arg("wasm_uid"),
           py::arg("i32list_i"), py::arg("i32list_o"), py::arg("args"))
+      .def(
+          "_add_wasm",
+          [](Circuit &circ, const std::string &funcname,
+             const std::string &wasm_uid,
+             const std::vector<BitRegister> &list_reg_in,
+             const std::vector<BitRegister> &list_reg_out) -> Circuit & {
+            unsigned n_args = 0;
+
+            for (auto r : list_reg_in) {
+              n_args += r.size();
+            }
+
+            for (auto r : list_reg_out) {
+              n_args += r.size();
+            }
+
+            std::vector<Bit> args(n_args);
+            std::vector<unsigned> i32list_i(list_reg_in.size());
+            std::vector<unsigned> i32list_o(list_reg_out.size());
+
+            unsigned i = 0;
+            unsigned j = 0;
+            for (auto r : list_reg_in) {
+              i32list_i[i] = r.size();
+              for (unsigned k = 0; k < r.size(); ++k) {
+                args[j] = r[k];
+                ++j;
+              }
+              ++i;
+            }
+
+            i = 0;
+            for (auto r : list_reg_out) {
+              i32list_o[i] = r.size();
+              for (unsigned k = 0; k < r.size(); ++k) {
+                args[j] = r[k];
+                ++j;
+              }
+              ++i;
+            }
+
+            std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
+                n_args, i32list_i, i32list_o, funcname, wasm_uid);
+            circ.add_op(op, args);
+            return circ;
+          },
+          "See :py:meth:`add_wasm`.", py::arg("funcname"), py::arg("wasm_uid"),
+          py::arg("list_reg_in"), py::arg("list_reg_out"))
       .def(
           "add_c_setbits",
           [](Circuit &circ, const std::vector<bool> &values,
