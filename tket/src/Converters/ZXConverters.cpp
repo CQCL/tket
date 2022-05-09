@@ -31,10 +31,13 @@ std::pair<ZXVert, ZXVert> add_switch(
   return {triangle, x};
 }
 
-// --o--s--o--
-//   |     |
-//   n     n
-//   |--G--|
+// --o--s---o--
+//   |      |
+//   n      n
+//   |--G-o-|
+//        |
+//        s
+//        |-discard
 // s, n are switches, G is the conditional zx diagram specified by 'left' and
 // 'right'. s is on when the input is 0, n is on when the input is 1.
 // return the input and the output of the conditional zx along with a vector of
@@ -44,16 +47,24 @@ std::pair<std::pair<ZXVert, ZXVert>, std::vector<ZXVert>> add_conditional_zx(
     const QuantumType& qtype) {
   ZXVert in = zxd.add_vertex(ZXType::ZSpider, 0, qtype);
   ZXVert out = zxd.add_vertex(ZXType::ZSpider, 0, qtype);
-  auto switch_i = add_switch(zxd, false, qtype);
-  auto switch_s0 = add_switch(zxd, true, qtype);
-  auto switch_s1 = add_switch(zxd, true, qtype);
-  zxd.add_wire(in, switch_i.second, ZXWireType::Basic, qtype);
-  zxd.add_wire(out, switch_i.second, ZXWireType::Basic, qtype);
+  ZXVert discard_ctr = zxd.add_vertex(ZXType::ZSpider, 0, qtype);
+  ZXVert discard = zxd.add_vertex(ZXType::ZSpider, 0, QuantumType::Classical);
+  auto switch_s0 = add_switch(zxd, false, qtype);
+  auto switch_n0 = add_switch(zxd, true, qtype);
+  auto switch_n1 = add_switch(zxd, true, qtype);
+  auto switch_s1 = add_switch(zxd, false, qtype);
   zxd.add_wire(in, switch_s0.second, ZXWireType::Basic, qtype);
-  zxd.add_wire(left, switch_s0.second, ZXWireType::Basic, qtype);
-  zxd.add_wire(right, switch_s1.second, ZXWireType::Basic, qtype);
-  zxd.add_wire(out, switch_s1.second, ZXWireType::Basic, qtype);
-  return {{in, out}, {switch_i.first, switch_s0.first, switch_s1.first}};
+  zxd.add_wire(out, switch_s0.second, ZXWireType::Basic, qtype);
+  zxd.add_wire(in, switch_n0.second, ZXWireType::Basic, qtype);
+  zxd.add_wire(left, switch_n0.second, ZXWireType::Basic, qtype);
+  zxd.add_wire(right, discard_ctr, ZXWireType::Basic, qtype);
+  zxd.add_wire(discard_ctr, switch_n1.second, ZXWireType::Basic, qtype);
+  zxd.add_wire(out, switch_n1.second, ZXWireType::Basic, qtype);
+  zxd.add_wire(discard_ctr, switch_s1.second, ZXWireType::Basic, qtype);
+  zxd.add_wire(discard, switch_s1.second, ZXWireType::Basic, qtype);
+  return {
+      {in, out},
+      {switch_s0.first, switch_s1.first, switch_n0.first, switch_n1.first}};
 }
 
 // Add converted circ into zxd. Set add_boundary to true
