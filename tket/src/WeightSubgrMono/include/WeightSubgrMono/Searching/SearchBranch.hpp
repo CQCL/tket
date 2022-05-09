@@ -28,6 +28,7 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+struct ExtraStatistics;
 class NearNeighboursData;
 class NeighboursData;
 class WeightChecker;
@@ -40,13 +41,15 @@ class WeightChecker;
  */
 class SearchBranch {
  public:
-  /** Constructs node[0], i.e. the initial node.*/
+  /** Constructs node[0], i.e. the initial node.
+   * The search branch is also entirely responsible for ExtraStatistics.
+   */
   SearchBranch(
       const PossibleAssignments& initial_pattern_v_to_possible_target_v,
       const NeighboursData& pattern_ndata,
       NearNeighboursData& pattern_near_ndata,
       const NeighboursData& target_ndata, NearNeighboursData& target_near_ndata,
-      unsigned max_distance_reduction_value);
+      unsigned max_distance_reduction_value, ExtraStatistics& extra_statistics);
 
   /** Extra parameters to configure reducing a single node. */
   struct ReductionParameters {
@@ -90,9 +93,17 @@ class SearchBranch {
   /** Should only rarely be used. */
   DomainsAccessor& get_domains_accessor_nonconst();
 
+  std::size_t get_number_of_possible_assignments_from_initial_domains() const;
+
+  std::size_t get_total_number_of_assignments_tried() const;
+
+  /** Updates the statistics before returning them. */
+  const ExtraStatistics& get_updated_extra_statistics();
+
  private:
   const NeighboursData& m_pattern_ndata;
   const NeighboursData& m_target_ndata;
+  ExtraStatistics& m_extra_statistics;
   DerivedGraphsReducer m_derived_graphs_reducer;
   const WeightCalculator m_weight_calculator;
   HallSetReduction m_hall_set_reduction;
@@ -120,6 +131,8 @@ class SearchBranch {
   PossibleAssignments m_checked_assignments;
 
   std::unique_ptr<WeightChecker> m_weight_checker_ptr;
+
+  std::set<VertexWSM> m_impossible_target_vertices;
 
   bool perform_single_assignment_checks_in_reduce_loop(
       std::size_t num_assignments_alldiff_processed);

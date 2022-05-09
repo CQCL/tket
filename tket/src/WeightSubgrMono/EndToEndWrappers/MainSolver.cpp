@@ -90,7 +90,8 @@ MainSolver::MainSolver(
           m_pre_search_components_ptr->pattern_near_ndata,
           m_target_neighbours_data,
           m_pre_search_components_ptr->target_near_ndata,
-          parameters.max_distance_for_distance_reduction_during_search);
+          parameters.max_distance_for_distance_reduction_during_search,
+          m_solution_data.extra_statistics);
     }
   }
 
@@ -178,6 +179,9 @@ MainSolver::MainSolver(
 MainSolver::~MainSolver() {}
 
 const SolutionData& MainSolver::get_solution_data() const {
+  if (m_search_branch_ptr) {
+    m_search_branch_ptr->get_updated_extra_statistics();
+  }
   return m_solution_data;
 }
 

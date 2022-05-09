@@ -21,6 +21,51 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
+/** These are mainly useful for testing. It is important that
+ * they are all cheap to calculate.
+ */
+struct ExtraStatistics {
+  std::size_t number_of_pattern_vertices = 0;
+  std::size_t number_of_target_vertices = 0;
+
+  /** Count how many PV->TV assignments were "maybe possible" at the start,
+   * i.e. not excluded by the domain initialisation (although we may
+   * subsequently discover that some are, and always were, impossible).
+   */
+  std::size_t initial_number_of_possible_assignments = 0;
+
+  /** When the weight nogood detector is initialised with the set of all used
+   * tarbet vertices, record their number here.
+   */
+  std::optional<std::size_t> n_tv_initially_passed_to_weight_nogood_detector;
+
+  /** How many target vertices were still under consideration by
+   * the weight nogood detector?
+   */
+  std::optional<std::size_t> n_tv_still_valid_in_weight_nogood_detector;
+
+  /** How many PV->TV assignments were actually carried out
+   * during the search? This is of course counting a subset of those
+   * counted in initial_number_of_possible_assignments.
+   * The smaller this number is, the better the pruning which took place.
+   */
+  std::size_t total_number_of_assignments_tried = 0;
+
+  /** How many PV->TV assignments were excluded during the search,
+   * which domain initialisation had not originally excluded?
+   * These are of course a subset of those
+   * counted in initial_number_of_possible_assignments.
+   * However, there may some some PV->TV which are counted in NEITHER
+   */
+  std::size_t total_number_of_impossible_assignments = 0;
+
+  /** Occasionally, a target vertex TV is found to be impossible;
+   * NOTHING can actually map to it, even though some initial domains
+   * included it. This is very rare, but record them here.
+   */
+  std::vector<VertexWSM> impossible_target_vertices;
+};
+
 struct SolutionData {
   /** If true, the search is over;
    * EITHER we've found a (joint) OPTIMAL solution,
@@ -80,6 +125,8 @@ struct SolutionData {
   WeightWSM total_p_edge_weights;
 
   std::vector<SolutionWSM> solutions;
+
+  ExtraStatistics extra_statistics;
 };
 
 }  // namespace WeightedSubgraphMonomorphism
