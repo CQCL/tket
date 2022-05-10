@@ -647,6 +647,17 @@ const Circuit &ZZMax_using_CX() {
   return *C;
 }
 
+Circuit CRz_using_TK2(Expr alpha) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 1}, {0});
+  c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 0}, {1});
+  c.add_op<unsigned>(OpType::TK2, {-0.5 * alpha, 0, 0}, {0, 1});
+  c.add_op<unsigned>(OpType::TK1, {0, 0.5, 0.5}, {0});
+  c.add_op<unsigned>(OpType::TK1, {-1 + 0.5 * alpha, 0.5, 0.5}, {1});
+  c.add_phase(1);
+  return c;
+}
+
 Circuit CRz_using_CX(Expr alpha) {
   Circuit c(2);
   if (equiv_expr(alpha, 1.)) {
