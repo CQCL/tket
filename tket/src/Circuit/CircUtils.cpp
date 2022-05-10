@@ -463,10 +463,11 @@ Circuit with_TK2(Gate_ptr op) {
       return CircPool::CRy_using_TK2(params[0]);
     case OpType::CRz:
       return CircPool::CRz_using_TK2(params[0]);
+    case OpType::CU1:
+      return CircPool::CU1_using_TK2(params[0]);
     case OpType::CCX:
     case OpType::CSWAP:
     case OpType::BRIDGE:
-    case OpType::CU1:
     case OpType::CU3:
     case OpType::PhaseGadget:
     case OpType::XXPhase3: {

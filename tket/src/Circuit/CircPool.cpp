@@ -741,6 +741,17 @@ Circuit CRy_using_CX(Expr alpha) {
   return c;
 }
 
+Circuit CU1_using_TK2(Expr alpha) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 1}, {0});
+  c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 0}, {1});
+  c.add_op<unsigned>(OpType::TK2, {-0.5 * alpha, 0, 0}, {0, 1});
+  c.add_op<unsigned>(OpType::TK1, {0.5 * alpha, 0.5, 0.5}, {0});
+  c.add_op<unsigned>(OpType::TK1, {-1 + 0.5 * alpha, 0.5, 0.5}, {1});
+  c.add_phase(-1 + 0.25 * alpha);
+  return c;
+}
+
 Circuit CU1_using_CX(Expr lambda) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::U1, lambda / 2, {0});

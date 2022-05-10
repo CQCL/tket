@@ -204,6 +204,9 @@ Circuit CRy_using_TK2(Expr alpha);
 /** Equivalent to CRy, using CX and Ry gates */
 Circuit CRy_using_CX(Expr alpha);
 
+/** Equivalent to CU1, using a TK2 and TK1 gates */
+Circuit CU1_using_TK2(Expr lambda);
+
 /** Equivalent to CU1, using CX and U1 gates */
 Circuit CU1_using_CX(Expr lambda);
 
