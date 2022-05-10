@@ -126,7 +126,7 @@ def symb_tk1(params: ParamsType) -> ImmutableMatrix:
 
 
 def symb_tk2(params: ParamsType) -> ImmutableMatrix:
-    return (
+    return (  # type: ignore
         symb_xxphase([params[0]])
         * symb_yyphase([params[1]])
         * symb_zzphase([params[2]])
