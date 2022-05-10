@@ -856,6 +856,14 @@ Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma) {
   return c;
 }
 
+Circuit XXPhase3_using_TK2(Expr alpha) {
+  Circuit c(3);
+  c.add_op<unsigned>(OpType::TK2, {alpha, 0, 0}, {0, 1});
+  c.add_op<unsigned>(OpType::TK2, {alpha, 0, 0}, {1, 2});
+  c.add_op<unsigned>(OpType::TK2, {alpha, 0, 0}, {0, 2});
+  return c;
+}
+
 Circuit XXPhase3_using_CX(Expr alpha) {
   Circuit c(3);
   Circuit rep1 = XXPhase_using_CX(alpha);
