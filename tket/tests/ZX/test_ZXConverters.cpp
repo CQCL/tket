@@ -522,16 +522,17 @@ SCENARIO("Check converting gates to spiders") {
     ZXDiagram zx;
     boost::bimap<ZXVert, Vertex> bmap;
     std::tie(zx, bmap) = circuit_to_zx(circ);
-    REQUIRE(zx.n_vertices() == 41);
+    REQUIRE(zx.n_vertices() == 47);
     REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 2);
     REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Classical) == 2);
     REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Quantum) == 2);
     REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Classical) == 2);
     REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Quantum) == 8);
     REQUIRE(zx.count_vertices(ZXType::Triangle, QuantumType::Quantum) == 8);
+    REQUIRE(zx.count_vertices(ZXType::Triangle, QuantumType::Classical) == 3);
     REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Classical) == 4);
     REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Quantum) == 6);
-    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Classical) == 5);
+    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Classical) == 8);
     REQUIRE(zx.count_vertices(ZXType::Hbox, QuantumType::Quantum) == 2);
     REQUIRE_NOTHROW(zx.check_validity());
   }
