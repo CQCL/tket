@@ -195,6 +195,9 @@ Circuit CRx_using_TK2(Expr alpha);
 /** Equivalent to CRx, using CX, H and Rx gates */
 Circuit CRx_using_CX(Expr alpha);
 
+/** Equivalent to CRy, using a TK2 and TK1 gates */
+Circuit CRy_using_TK2(Expr alpha);
+
 /** Equivalent to CRy, using CX and Ry gates */
 Circuit CRy_using_CX(Expr alpha);
 
