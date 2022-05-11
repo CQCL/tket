@@ -290,7 +290,7 @@ PYBIND11_MODULE(transform, m) {
           py::arg("op_node_errors"))
       .def_static(
           "DecomposeNPhasedX", &Transforms::decompose_NPhasedX,
-          "Decompose NPhasedX gates into single-qb PhasedX gates.\n\n")
+          "Decompose NPhasedX gates into single-qubit PhasedX gates.")
       .def_static(
           "GlobalisePhasedX", &Transforms::globalise_PhasedX,
           "Turns all PhasedX and NPhasedX gates into global gates\n\n"
