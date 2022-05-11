@@ -43,7 +43,7 @@ using OptEdgeVec = std::vector<OptEdge>;
  * worry about the logic of the transformation and none of the bookkeeping
  * and circuit substitutions.
  *
- * All gates of `circ` must be either PhasedX, NPhasedX, Rz or multi-qb gates.
+ * All gates of `circ` must be either PhasedX, NPhasedX, Rz or multi-qubit gates.
  *
  * ## Intervals
  * For each qubit, the frontier stores the current interval. An interval is a
