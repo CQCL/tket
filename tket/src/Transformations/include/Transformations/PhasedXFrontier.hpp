@@ -39,20 +39,21 @@ using OptEdgeVec = std::vector<OptEdge>;
  * interface for all the circuit manipulations that are required within that
  * pass.
  *
- * The transform itself (in `GlobalisePhasedX.cpp`) therefore only needs to
- * worry about the logic of the transformation and none of the bookkeeping
- * and circuit substitutions.
+ * The transform itself therefore only needs to worry about the logic of the
+ * transformation and none of the bookkeeping and circuit substitutions.
  *
  * All gates of `circ` must be either PhasedX, NPhasedX, Rz or multi-qubit gates.
  *
  * ## Intervals
  * For each qubit, the frontier stores the current interval. An interval is a
  * single-qubit subcircuit of `circ` forming a sequence of single-qubit gates
- * between two multi-qb gates (or the input/output vertices) of the original
+ * between two multi-qb gates (or non-gate vertices) of the original
  * circuit. Each interval is defined by start and end edges, which are edges of
- * the circuit DAG ("end" is in the future of "start"). The source of the start edge
- * is a multi-qb gate (or an Input vertex) and the target of the end edge is
- * a multi-qb gate (or an Output vertex).
+ * the circuit DAG ("end" is in the future of "start"). The source of the start
+ * edge is a multi-qubit gate (or a non-gate vertex such as OpType::Input or
+ * OpType::Create) and the target of the end
+ * edge is a multi-qubit gate (or a non-gate vertex such as OpType::Output or
+ * OpType::Discard).
  *
  * ## Initialisation and moving forward
  * The frontier is initialised at the beginning of the circuit, at which stage

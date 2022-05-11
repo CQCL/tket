@@ -31,7 +31,7 @@ StandardSquasher::StandardSquasher(
     : singleqs_(singleqs),
       squash_fn_(tk1_replacement),
       combined_(),
-      phase_(1.) {
+      phase_(0.) {
   for (OpType ot : singleqs_) {
     if (!is_single_qubit_type(ot))
       throw NotValid(

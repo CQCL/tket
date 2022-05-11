@@ -186,8 +186,6 @@ void SingleQubitSquash::insert_left_over_gate(
 
 bool SingleQubitSquash::is_squashable(Vertex v, OpType v_type) const {
   circ_ptr_->n_in_edges_of_type(v, EdgeType::Quantum);
-  is_gate_type(v_type);
-  squasher_->accepts(v_type);
   return circ_ptr_->n_in_edges_of_type(v, EdgeType::Quantum) == 1 &&
          is_gate_type(v_type) && squasher_->accepts(v_type);
 }
