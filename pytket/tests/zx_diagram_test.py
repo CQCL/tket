@@ -632,7 +632,7 @@ def test_simplification() -> None:
     assert np.allclose(original, final)
 
 
-def test_converting_to_circuit() -> None:
+def test_converting_from_circuit() -> None:
     c = Circuit(4)
     c.CZ(0, 1)
     c.CX(1, 2)
@@ -658,4 +658,4 @@ if __name__ == "__main__":
     test_graph_like_reduction()
     test_spider_fusion()
     test_simplification()
-    test_converting_to_circuit()
+    test_converting_from_circuit()

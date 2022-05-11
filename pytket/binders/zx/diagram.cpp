@@ -605,7 +605,7 @@ PYBIND11_MODULE(zx, m) {
   m.def(
       "circuit_to_zx", &wrapped_circuit_to_zx,
       "Construct a ZX diagram from a circuit. Return the ZX diagram and a map "
-      "between the ZX boundary vertices and the circuit boundary vertices.");
+      "Between the ZX boundary vertices and the resource UIDs of the circuit.");
 }
 
 }  // namespace zx
