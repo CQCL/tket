@@ -52,7 +52,7 @@ SCENARIO("globalise_PhasedX transform") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
       /*THEN("Applying it twice does nothing") {
         REQUIRE(!Transforms::globalise_PhasedX().apply(c2));
@@ -76,7 +76,7 @@ SCENARIO("globalise_PhasedX transform") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
     }
   }
@@ -104,7 +104,7 @@ SCENARIO("globalise_PhasedX transform") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
     }
     WHEN("Applying the transform (without squashing)") {
@@ -125,7 +125,7 @@ SCENARIO("globalise_PhasedX transform") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
     }
   }
@@ -153,7 +153,7 @@ SCENARIO("globalise_PhasedX transform") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
     }
     WHEN("Applying the transform (without squashing)") {
@@ -174,7 +174,7 @@ SCENARIO("globalise_PhasedX transform") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
     }
   }
@@ -203,7 +203,7 @@ SCENARIO("globalise_PhasedX transform") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
     }
     WHEN("GlobalisePhasedX(squash=true)") {
@@ -216,7 +216,7 @@ SCENARIO("globalise_PhasedX transform") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
     }
   }
@@ -245,7 +245,7 @@ SCENARIO("globalise_PhasedX transform") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
     }
     WHEN("Applying the transform (without squashing)") {
@@ -266,7 +266,7 @@ SCENARIO("globalise_PhasedX transform") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
     }
   }
@@ -300,7 +300,7 @@ SCENARIO("globalise_PhasedX transform") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
     }
     WHEN("Applying the transform (without squashing)") {
@@ -320,7 +320,7 @@ SCENARIO("globalise_PhasedX transform") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
     }
   }

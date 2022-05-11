@@ -179,7 +179,7 @@ SCENARIO("PhasedXFrontier: replacing gates") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
     }
     WHEN("Replacing q1 with 1x NPhasedX") {
@@ -193,7 +193,7 @@ SCENARIO("PhasedXFrontier: replacing gates") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
       WHEN("Replacing q2 with 1x NPhasedX") {
         frontier.insert_1_phasedx(1);
@@ -204,7 +204,7 @@ SCENARIO("PhasedXFrontier: replacing gates") {
         THEN("The resulting unitaries are equal") {
           auto u1 = tket_sim::get_unitary(c1);
           auto u2 = tket_sim::get_unitary(c2);
-          REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+          REQUIRE(u1.isApprox(u2));
         }
       }
     }
@@ -225,7 +225,7 @@ SCENARIO("PhasedXFrontier: replacing gates") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
     }
     WHEN("Replacing q1-q2 with 1x NPhasedX") {
@@ -239,7 +239,7 @@ SCENARIO("PhasedXFrontier: replacing gates") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
     }
   }
@@ -259,7 +259,7 @@ SCENARIO("PhasedXFrontier: replacing gates") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
       WHEN("Replacing second one with 2x NPhasedX") {
         frontier.insert_2_phasedx();
@@ -271,7 +271,7 @@ SCENARIO("PhasedXFrontier: replacing gates") {
         THEN("The resulting unitaries are equal") {
           auto u1 = tket_sim::get_unitary(c1);
           auto u2 = tket_sim::get_unitary(c2);
-          REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+          REQUIRE(u1.isApprox(u2));
         }
       }
     }
@@ -291,7 +291,7 @@ SCENARIO("PhasedXFrontier: Squashing PhasedX") {
       THEN("The resulting unitaries are equal") {
         auto u1 = tket_sim::get_unitary(c1);
         auto u2 = tket_sim::get_unitary(c2);
-        REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+        REQUIRE(u1.isApprox(u2));
       }
     }
   }
