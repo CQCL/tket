@@ -512,7 +512,7 @@ SCENARIO("Decompose NPhasedX gates into PhasedX") {
           auto expected_params = std::vector<Expr>{0.4, 0.3};
           REQUIRE(params.size() == expected_params.size());
           for (unsigned i = 0; i < params.size(); ++i) {
-            REQUIRE(params[i] - expected_params[i] < ERR_EPS);
+            REQUIRE(equiv_expr(params[i], expected_params[i], 4));
           }
         }
       }
@@ -538,7 +538,9 @@ SCENARIO("Decompose NPhasedX gates into PhasedX") {
         for (unsigned i = 0; i < cmds.size(); ++i) {
           auto op = cmds[i].get_op_ptr();
           REQUIRE(op->get_type() == OpType::PhasedX);
-          REQUIRE(op->get_params() - angles[i] < ERR_EPS);
+          for (unsigned j = 0; j < angles[i].size(); ++j) {
+            REQUIRE(equiv_expr(op->get_params()[j], angles[i][j], 4));
+          }
         }
       }
       THEN("The gates are on the right qubits") {
