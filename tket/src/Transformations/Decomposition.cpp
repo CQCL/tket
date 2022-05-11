@@ -1039,8 +1039,8 @@ Transform globalise_PhasedX(bool squash) {
   // The key bit: choose the decomposition strategy depending on the current
   // beta angles.
   //
-  // Given the set of PhasedX gates to synthesise, choose which decompsition
-  // valid strategies are 0, 1, 2, corresponding to the number of NPhasedX gates
+  // Given the set of PhasedX gates to synthesise, choose which decomposition strategy.
+  // Valid strategies are 0, 1, 2, corresponding to the number of NPhasedX gates
   // to be inserted.
   //
   // The current strategy is rather simple: it chooses to insert a single
