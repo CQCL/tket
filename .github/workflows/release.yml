@@ -68,7 +68,7 @@ jobs:
         conan profile new tket --detect --force
         conan profile update options.tket:shared=True tket
         conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
-        conan install --profile=tket boost/1.78.0@ --build=missing
+        conan install --profile=tket boost/1.79.0@ --build=missing
         conan create --profile=tket recipes/tket
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
@@ -111,7 +111,7 @@ jobs:
         conan profile new tket --detect --force
         conan profile update options.tket:shared=True tket
         conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
-        conan install --profile=tket boost/1.78.0@ --build=missing
+        conan install --profile=tket boost/1.79.0@ --build=missing
         conan create --profile=tket recipes/tket
         conan create --profile=tket recipes/pybind11
         .github/workflows/build_macos_m1_wheel

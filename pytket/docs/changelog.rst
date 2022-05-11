@@ -14,6 +14,7 @@ Minor new features:
   that significantly reduces the number of ``NPhasedX`` gates synthesised.
 * New ``DecomposeNPhasedX`` transform and pass replaces all ``NPhasedX`` gates
   with single-qubit ``PhasedX`` gates.
+* Add ``Optype.WASM``, adding a classical wasm function call to the circuit
 
 1.1.0 (April 2022)
 ------------------

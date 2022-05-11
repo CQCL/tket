@@ -76,17 +76,17 @@ void init_classical(py::module& m) {
           "The little-endian value the classical register must read "
           "in order to apply the operation (e.g. value 2 (10b) means "
           "bits[0] must be 0 and bits[1] must be 1)");
-  py::class_<ClassicalOp, std::shared_ptr<ClassicalOp>, Op>(
-      m, "ClassicalOp",
+  py::class_<ClassicalEvalOp, std::shared_ptr<ClassicalEvalOp>, Op>(
+      m, "ClassicalEvalOp",
       "An operation to set the values of Bits to some constants.")
       .def_property_readonly(
-          "n_inputs", &ClassicalOp::get_n_i, "Number of pure inputs.")
+          "n_inputs", &ClassicalEvalOp::get_n_i, "Number of pure inputs.")
       .def_property_readonly(
-          "n_input_outputs", &ClassicalOp::get_n_io,
+          "n_input_outputs", &ClassicalEvalOp::get_n_io,
           "Number of pure input/output arguments.")
       .def_property_readonly(
-          "n_outputs", &ClassicalOp::get_n_o, "Number of pure outputs.");
-  py::class_<SetBitsOp, std::shared_ptr<SetBitsOp>, ClassicalOp>(
+          "n_outputs", &ClassicalEvalOp::get_n_o, "Number of pure outputs.");
+  py::class_<SetBitsOp, std::shared_ptr<SetBitsOp>, ClassicalEvalOp>(
       m, "SetBitsOp",
       "An operation to set the values of Bits to some constants.")
       .def(
@@ -94,16 +94,17 @@ void init_classical(py::module& m) {
           "Construct from a table of values.", py::arg("values"))
       .def_property_readonly(
           "values", &SetBitsOp::get_values, "The values to set bits to.");
-  py::class_<MultiBitOp, std::shared_ptr<MultiBitOp>, ClassicalOp>(
+  py::class_<MultiBitOp, std::shared_ptr<MultiBitOp>, ClassicalEvalOp>(
       m, "MultiBitOp",
       "An operation to apply a classical op multiple times in parallel.")
       .def(
-          py::init<std::shared_ptr<const ClassicalOp>, unsigned>(),
+          py::init<std::shared_ptr<const ClassicalEvalOp>, unsigned>(),
           "Construct from a basic operation and a multiplier.", py::arg("op"),
           py::arg("multiplier"))
       .def_property_readonly(
           "basic_op", &MultiBitOp::get_op, "Underlying bitwise op.");
-  py::class_<RangePredicateOp, std::shared_ptr<RangePredicateOp>, ClassicalOp>(
+  py::class_<
+      RangePredicateOp, std::shared_ptr<RangePredicateOp>, ClassicalEvalOp>(
       m, "RangePredicateOp",
       "A predicate defined by a range of values in binary encoding.")
       .def(

@@ -23,6 +23,10 @@ from hypothesis import given, reproduce_failure, settings, strategies
 from hypothesis.core import encode_failure
 from hypothesis.strategies import SearchStrategy
 
+from pytket import wasm
+
+import pytest
+
 from pytket._tket.circuit import (  # type: ignore
     _TEMP_BIT_NAME,
     _TEMP_BIT_REG_BASE,
@@ -120,6 +124,62 @@ def test_c_ops() -> None:
         and mb_cmds[0] != mb_cmds[2]
         and mb_cmds[1] != mb_cmds[2]
     )
+
+
+def test_wasm() -> None:
+    c = Circuit(0, 6)
+    c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)])
+    c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(2)])
+    c._add_wasm("funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 3])
+    c._add_wasm("funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 4])
+    c._add_wasm("funcname", "wasmfileuid", [1], [1, 2], [0, 1, 2, 3])
+    c._add_wasm("funcname", "wasmfileuid", [2, 1], [3], [0, 1, 2, 3, 4, 5])
+
+    # the boxes with no output are not counted
+    assert c.depth() == 4
+
+
+def test_wasm_2() -> None:
+    c = Circuit(6, 6)
+    c0 = c.add_c_register("c0", 3)
+    c1 = c.add_c_register("c1", 4)
+    c2 = c.add_c_register("c2", 5)
+
+    c._add_wasm("funcname", "wasmfileuid", [c0, c1], [c2])
+
+    # the boxes with no output are not counted
+    assert c.depth() == 1
+
+
+def test_wasm_3() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+
+    c = Circuit(0, 6)
+
+    c.add_wasm("funcname", w, [1], [1], [Bit(0), Bit(1)])
+
+    assert c.depth() == 1
+
+
+def test_wasm_handler() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+
+    with pytest.raises(ValueError):
+        w2 = wasm.WasmFileHandler("testfile-2.wasm")
+
+
+def test_add_wasm_to_reg() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+
+    c = Circuit(6, 6)
+    c0 = c.add_c_register("c0", 3)
+    c1 = c.add_c_register("c1", 4)
+    c2 = c.add_c_register("c2", 5)
+
+    c.add_wasm_to_reg("funcname", w, [c0, c1], [c2])
+    c.add_wasm_to_reg("funcname2", w, [c2], [c2])
+
+    assert c.depth() == 2
 
 
 def gen_reg(
