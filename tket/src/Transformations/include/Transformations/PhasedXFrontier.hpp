@@ -166,7 +166,7 @@ class PhasedXFrontier {
    * @brief Get all β-angles.
    *
    * If a qubit has no β-angle gate, its β-angle is 0. Note that some gates
-   * might be shadowed and thus appear as 0 even though a β-angle gate exists
+   * might be "shadowed" and thus appear as 0 even though a β-angle gate exists
    * (see `get_all_beta_edges`)l
    *
    * @return std::vector<Expr> The vector of β-angles.
