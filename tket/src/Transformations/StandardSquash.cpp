@@ -78,7 +78,7 @@ static bool standard_squash(
     const std::function<Circuit(const Expr &, const Expr &, const Expr &)>
         &tk1_replacement) {
   auto squasher = std::make_unique<StandardSquasher>(singleqs, tk1_replacement);
-  return SingleQubitSquash(std::move(squasher), false).squash(circ);
+  return SingleQubitSquash(std::move(squasher), circ, false).squash();
 }
 
 Transform squash_factory(

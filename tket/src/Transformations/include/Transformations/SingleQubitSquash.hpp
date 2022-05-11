@@ -85,47 +85,20 @@ class SingleQubitSquash {
    * @brief Construct a new Single Qubit Squash object.
    *
    * @param squasher The Squasher instance.
+   * @param circ The circuit to be squashed.
    * @param reversed Whether squashing is made back to front or front to back
    *      (default: false).
    */
   SingleQubitSquash(
-      std::unique_ptr<AbstractSquasher> squasher, bool reversed = false)
-      : squasher_(std::move(squasher)),
-        reversed_(reversed),
-        circ_ptr_(nullptr) {}
+      std::unique_ptr<AbstractSquasher> squasher, Circuit &circ,
+      bool reversed = false, )
+      : squasher_(std::move(squasher)), circ_(circ), reversed_(reversed) {}
 
   /**
-   * @brief Construct a new Single Qubit Squash object.
+   * @brief Squash entire circuit, one qubit at a time.
    *
-   * @param squasher The Squasher instance.
-   * @param reversed Whether squashing is made back to front or front to back
-   *      (default: false).
-   * @param circ The circuit to be squashed.
-   */
-  SingleQubitSquash(
-      std::unique_ptr<AbstractSquasher> squasher, bool reversed = false,
-      Circuit &circ)
-      : squasher_(std::move(squasher)), reversed_(reversed), circ_ptr_(&circ) {}
-
-  /**
-   * @brief Squash an entire circuit, one qubit at a time.
-   *
-   * Either pass a circuit as argument or use the current circuit.
-   *
-   * @param circ The circuit to be squashed.
-   *
-   * @return true The squash succeeded.
-   * @return false The circuit was not changed.
-   */
-  bool squash(Circuit &circ);
-
-  /**
-   * @brief Squash an entire circuit, one qubit at a time.
-   *
-   * Either pass a circuit as argument or use the current circuit.
-   *
-   * @return true The squash succeeded.
-   * @return false The circuit was not changed.
+   * @retval true The squash succeeded.
+   * @retval false The circuit was not changed.
    */
   bool squash();
 
@@ -135,8 +108,6 @@ class SingleQubitSquash {
    * If `reversed=true`, then the in-edge should come after the out-edge
    * in the circuit.
    *
-   * Either pass a circuit as argument or use the current circuit.
-   *
    * @param in Starting edge of the squash.
    * @param out Last edge of the squash.
    *
@@ -145,28 +116,11 @@ class SingleQubitSquash {
    */
   bool squash_between(const Edge &in, const Edge &out);
 
-  /**
-   * @brief Squash everything between in-edge and out-edge
-   *
-   * If `reversed=true`, then the in-edge should come after the out-edge
-   * in the circuit.
-   *
-   * Either pass a circuit as argument or use the current circuit.
-   *
-   * @param in Starting edge of the squash.
-   * @param out Last edge of the squash.
-   * @param circ The circuit to be squashed.
-   *
-   * @retval true The circuit was changed.
-   * @retval false The circuit was not changed.
-   */
-  bool squash_between(const Edge &in, const Edge &out, Circuit &circ);
-
  private:
   std::unique_ptr<AbstractSquasher> squasher_;
   bool reversed_;
   // points to the current circuit during squashing
-  Circuit *circ_ptr_;
+  Circuit &circ_;
 
   // substitute chain by a sub circuit, handling conditions
   // and backing up + restoring current edge

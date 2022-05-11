@@ -179,7 +179,7 @@ static bool squash_to_pqp(
     Circuit &circ, OpType q, OpType p, bool strict = false) {
   bool reverse = true;
   auto squasher = std::make_unique<PQPSquasher>(p, q, !strict, reverse);
-  return SingleQubitSquash(std::move(squasher), reverse).squash(circ);
+  return SingleQubitSquash(std::move(squasher), circ, reverse).squash();
 }
 
 Transform reduce_XZ_chains() {
