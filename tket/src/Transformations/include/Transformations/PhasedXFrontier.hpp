@@ -50,7 +50,7 @@ using OptEdgeVec = std::vector<OptEdge>;
  * single-qubit subcircuit of `circ` forming a sequence of single-qubit gates
  * between two multi-qb gates (or the input/output vertices) of the original
  * circuit. Each interval is defined by start and end edges, which are edges of
- * the circuit DAG. end is in the future of start. The source of the start edge
+ * the circuit DAG ("end" is in the future of "start"). The source of the start edge
  * is a multi-qb gate (or an Input vertex) and the target of the end edge is
  * a multi-qb gate (or an Output vertex).
  *
