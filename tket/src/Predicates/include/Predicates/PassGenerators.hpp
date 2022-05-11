@@ -217,7 +217,7 @@ PassPtr PauliSquash(Transforms::PauliSynthStrat strat, CXConfigType cx_config);
  * changed and false otherwise.
  *
  * It is not recommended to use this pass with symbolic expressions, as
- *  in certain cases a blow-up in symbolic expression sizes may occur.
+ * in certain cases a blow-up in symbolic expression sizes may occur.
  */
 PassPtr GlobalisePhasedX(bool squash = true);
 
