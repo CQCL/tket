@@ -176,9 +176,9 @@ class PhasedXSquasher : public StandardSquasher {
             OpTypeSet{OpType::Rz, OpType::PhasedX},
             CircPool::tk1_to_PhasedXRz) {}
 
-  // accept any single-qb gate to squash it
+  // Accept any single-qubit gate to squash it.
   bool accepts(OpType type) const override {
-    return is_single_qubit_type(type);
+    return is_single_qubit_type(type) && is_gate_type(type);
   }
 };
 
