@@ -83,7 +83,7 @@ using OptEdgeVec = std::vector<OptEdge>;
  *
  * ### Get beta angles
  * When squashed, each interval is associated with a unique "beta angle", given
- * by the formula U_2 = Rz(α)Rx(β)Rz(ɣ) = PhasedX(β, α)Rz(ɣ - α).
+ * by the formula U_2 = Rz(α)Rx(β)Rz(ɣ) = PhasedX(β, α)Rz(α + ɣ).
  * These can be obtained for each interval using `get_all_betas`, while
  * `get_beta_edge` and `get_beta_edges` will return the edge pointing to the
  * gate that contains the β-angle (ie the PhasedX gate).
