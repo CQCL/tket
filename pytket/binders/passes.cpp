@@ -366,9 +366,10 @@ PYBIND11_MODULE(passes, m) {
       "be left untouched."
       "\n\n:param squash: Whether to squash the circuit in pre-processing "
       "(default: true)."
-      "\n\nIf squash=true (default), this transform always returns true. "
-      "For squash=false, it will return true if the circuit was changed"
-      " and false otherwise.\n\n"
+      "\n\nIf squash=true (default), the `GlobalisePhasedX().apply` method "
+      "will always returns true. "
+      "For squash=false, `apply()` will return true if the circuit was "
+      "changed and false otherwise.\n\n"
       "It is not recommended to use this pass with symbolic expressions, as"
       " in certain cases a blow-up in symbolic expression sizes may occur.",
       py::arg("squash") = true);
