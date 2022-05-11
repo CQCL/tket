@@ -51,10 +51,8 @@ using OptEdgeVec = std::vector<OptEdge>;
  * between two multi-qubit gates (or non-gate vertices) of the original
  * circuit. Each interval is defined by start and end edges, which are edges of
  * the circuit DAG ("end" is in the future of "start"). The source of the start
- * edge is a multi-qubit gate (or a non-gate vertex such as OpType::Input or
- * OpType::Create) and the target of the end
- * edge is a multi-qubit gate (or a non-gate vertex such as OpType::Output or
- * OpType::Discard).
+ * edge and the target of the end edge are either multi-qubit gates or non-gate
+ * vertices such as input/output vertices, create/discard vertices etc.
  *
  * ## Initialisation and moving forward
  * The frontier is initialised at the beginning of the circuit, at which stage
