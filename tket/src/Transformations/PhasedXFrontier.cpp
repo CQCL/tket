@@ -30,8 +30,10 @@ template <typename T>
 static std::map<T, unsigned> count(std::vector<T> xs) {
   std::map<T, unsigned> cnts;
   for (const auto& x : xs) {
-    auto it = cnts.find(x) if (it != cnts.end()) { ++(*it); }
-    else {
+    auto it = cnts.find(x);
+    if (it != cnts.end()) {
+      ++(*it);
+    } else {
       cnts[x] = 1;
     }
   }
