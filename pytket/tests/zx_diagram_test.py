@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from math import pow
+from math import pow, isclose
 import numpy as np
 import pytest  # type: ignore
 from pytket import Qubit, Circuit, OpType
@@ -647,7 +647,9 @@ def test_converting_from_circuit() -> None:
     u = c.get_unitary()
     v = unitary_from_quantum_diagram(diag)
     m = np.dot(u, v.conj().T)
-    assert np.allclose(np.dot(m, m.conj().T), np.eye(16))
+    phase = m[0][0]
+    assert isclose(abs(phase), 1)
+    assert np.allclose(m * (1 / phase), np.eye(16))
 
 
 if __name__ == "__main__":
