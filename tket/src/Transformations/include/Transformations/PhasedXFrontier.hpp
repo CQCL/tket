@@ -42,12 +42,13 @@ using OptEdgeVec = std::vector<OptEdge>;
  * The transform itself therefore only needs to worry about the logic of the
  * transformation and none of the bookkeeping and circuit substitutions.
  *
- * All gates of `circ` must be either PhasedX, NPhasedX, Rz or multi-qubit gates.
+ * All gates of `circ` must be either PhasedX, NPhasedX, Rz or multi-qubit
+ * gates.
  *
  * ## Intervals
  * For each qubit, the frontier stores the current interval. An interval is a
  * single-qubit subcircuit of `circ` forming a sequence of single-qubit gates
- * between two multi-qb gates (or non-gate vertices) of the original
+ * between two multi-qubit gates (or non-gate vertices) of the original
  * circuit. Each interval is defined by start and end edges, which are edges of
  * the circuit DAG ("end" is in the future of "start"). The source of the start
  * edge is a multi-qubit gate (or a non-gate vertex such as OpType::Input or
@@ -60,7 +61,7 @@ using OptEdgeVec = std::vector<OptEdge>;
  * an interval is created for each qubit of `circ`.
  * The frontier then moves forward in jumps, where the new start of the interval
  * will be the edge after the former end edge. The new end edge will be moved
- * forward along the qubit until its target is a multi-qb gate or the Output
+ * forward along the qubit until its target is a multi-qubit gate or the Output
  * vertex.
  *
  * One can move forward an individual interval by calling `next_interval`.
@@ -69,8 +70,19 @@ using OptEdgeVec = std::vector<OptEdge>;
  * Moving arbitrary intervals forward may break this invariant.
  * To avoid this issue, the `next_multiqb` method is provided. It takes a multi-
  * qb vertex `v` as argument and will move forward all the qubits whose end edge
- * has target `v`. By calling `next_multiqb` on each multi-qb gate in a causal
- * order, the space-like separation invariant will be maintained.
+ * has target `v`. By calling `next_multiqb` on each multi-qubit gate in a
+ * causal order, the space-like separation invariant will be maintained.
+ *
+ * Within each interval, edges pointing to PhasedX (or Rx) gates are called
+ * beta edges: the angle parameter of these gates correspond to the β angle for
+ * the next global PhasedX(β, α) gate. When squashed to normal form, each
+ * interval will have at most one beta edge.
+ * For non-normalised intervals, a beta edge can also be "shadowed" if the gate
+ * it points to is a multi-qubit NPhasedX gate that is not entirely in the
+ * current frontier, i.e. there is at least one qubit that needs to process
+ * another gate before getting to the NPhasedX gate.
+ * We cannot transform that gate until all other gates in its causal past
+ * have been processed, and we therefore say ignore that beta edge.
  *
  * ## Operations on intervals
  * ### Squashing
@@ -111,6 +123,10 @@ class PhasedXFrontier {
   /**
    * @brief Move frontier forward on qubit `i`.
    *
+   * If there is no further interval on qubit `i`, the interval will be the
+   * empty interval `(last_e, last_e)` where `last_e` is the last edge on qubit
+   * `i`. Calling `next_interval` again on `i` will not do anything.
+   *
    * @param i The qubit index whose interval will be moved.
    */
   void next_interval(unsigned i);
@@ -119,12 +135,12 @@ class PhasedXFrontier {
    * @brief Move frontier on all qubits with end target `v`.
    *
    * This is the recommended way to move the frontier forward. Make successive
-   * calls to this method by looping through all mulit-qb gates of `circ` in
+   * calls to this method by looping through all multi-qubit gates of `circ` in
    * topological ordering.
    *
-   * @param v A multi-qb gate in `circ`.
+   * @param v A multi-qubit gate in `circ`.
    */
-  void next_multiqb(Vertex v);
+  void next_multiqb(const Vertex& v);
 
   /**
    * @brief Insert a single global NPhasedX at the current frontier.
@@ -153,10 +169,10 @@ class PhasedXFrontier {
   /**
    * @brief The qubits whose end edge's target is `v`.
    *
-   * @param v  A multi-qb gate in `circ`.
+   * @param v  A multi-qubit gate in `circ`.
    * @return std::set<unsigned> Indices of the qubits whose end target is `v`.
    */
-  std::set<unsigned> qubits_ending_in(Vertex v) const;
+  std::set<unsigned> qubits_ending_in(const Vertex& v) const;
 
   // =============== beta edges, beta vertices and beta angles ===============
   // Any SU(2) operation is written as Rz(α)Rx(β)Rz(ɣ). We care mostly about
@@ -219,7 +235,6 @@ class PhasedXFrontier {
    */
   bool are_phasedx_left() const;
 
-  // shorten interval on each qubit by passing past `n` global gates
   /**
    * @brief Shorten current intervals by moving the start edge past `n` global
    * gates.
@@ -233,15 +248,15 @@ class PhasedXFrontier {
   void squash_interval(unsigned i);
 
   // whether the vertex can be in an interval
-  // checks if v is a multi-qb gate or a final optype
+  // checks if v is a multi-qubit gate or a final optype
   bool is_interval_boundary(Vertex v) const;
 
-  // given an edge, advances through the circuit until hitting
-  // a interval boundary vertex
+  // given an edge within an interval (eg the first), advances through the
+  // circuit until hitting a interval boundary vertex
   Edge get_interval_end(Edge e) const;
 
-  // given an edge, advances through the circuit for as long as
-  // the vertices are interval boundary vertices
+  // given the last edge of an interval, returns the beginning of the next
+  // interval
   Edge get_interval_start(Edge e) const;
 
   struct BackupIntervals {

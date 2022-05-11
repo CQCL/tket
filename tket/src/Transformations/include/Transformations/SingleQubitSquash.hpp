@@ -95,20 +95,17 @@ class SingleQubitSquash {
         reversed_(reversed),
         circ_ptr_(nullptr) {}
   SingleQubitSquash(
-      std::unique_ptr<AbstractSquasher> squasher,
-      bool reversed = false,
-      Circuit & circ)
-      : squasher_(std::move(squasher)),
-        reversed_(reversed),
-        circ_ptr_(&circ) {}
+      std::unique_ptr<AbstractSquasher> squasher, bool reversed = false,
+      Circuit &circ)
+      : squasher_(std::move(squasher)), reversed_(reversed), circ_ptr_(&circ) {}
 
   /**
    * @brief Squash an entire circuit, one qubit at a time.
-   * 
+   *
    * Either pass a circuit as argument or use the current circuit.
    *
    * @param circ The circuit to be squashed (optional).
-   * 
+   *
    * @return true The squash succeeded.
    * @return false The circuit was not changed.
    */
@@ -126,7 +123,7 @@ class SingleQubitSquash {
    * @param in Starting edge of the squash.
    * @param out Last edge of the squash.
    * @param circ The circuit to be squashed (optional).
-   * 
+   *
    * @retval true The circuit was changed.
    * @retval false The circuit was not changed.
    */

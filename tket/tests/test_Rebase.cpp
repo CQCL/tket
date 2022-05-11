@@ -508,7 +508,12 @@ SCENARIO("Decompose NPhasedX gates into PhasedX") {
         for (auto cmd : c.get_commands()) {
           auto op = cmd.get_op_ptr();
           REQUIRE(op->get_type() == OpType::PhasedX);
-          REQUIRE(op->get_params() == std::vector<Expr>{0.4, 0.3});
+          auto params = op->get_params();
+          auto expected_params = std::vector<Expr>{0.4, 0.3};
+          REQUIRE(params.size() == expected_params.size());
+          for (unsigned i = 0; i < params.size(); ++i) {
+            REQUIRE(params[i] - expected_params[i] < ERR_EPS);
+          }
         }
       }
       THEN("Applying it twice does nothing") {
@@ -533,7 +538,7 @@ SCENARIO("Decompose NPhasedX gates into PhasedX") {
         for (unsigned i = 0; i < cmds.size(); ++i) {
           auto op = cmds[i].get_op_ptr();
           REQUIRE(op->get_type() == OpType::PhasedX);
-          REQUIRE(op->get_params() == angles[i]);
+          REQUIRE(op->get_params() - angles[i] < ERR_EPS);
         }
       }
       THEN("The gates are on the right qubits") {
@@ -563,16 +568,6 @@ SCENARIO("Decompose NPhasedX gates into PhasedX") {
         REQUIRE(!Transforms::decompose_NPhasedX().apply(c));
       }
     }
-    /*WHEN("Leaving global gates untouched") {
-      REQUIRE(Transforms::decompose_NPhasedX(true).apply(c));
-      THEN("There is one global NPhasedX left") {
-        REQUIRE(c.count_gates(OpType::NPhasedX) == 1);
-        REQUIRE(c.count_gates(OpType::PhasedX) == 5);
-      }
-      THEN("Applying it twice does nothing") {
-        REQUIRE(!Transforms::decompose_NPhasedX(true).apply(c));
-      }
-    }*/
   }
 }
 

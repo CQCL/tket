@@ -30,16 +30,15 @@ template <typename T>
 static std::map<T, unsigned> count(std::vector<T> xs) {
   std::map<T, unsigned> cnts;
   for (const auto& x : xs) {
-    if (cnts.contains(x)) {
-      ++cnts[x];
-    } else {
+    auto it = cnts.find(x) if (it != cnts.end()) { ++(*it); }
+    else {
       cnts[x] = 1;
     }
   }
   return cnts;
 }
 
-std::set<unsigned> PhasedXFrontier::qubits_ending_in(Vertex v) const {
+std::set<unsigned> PhasedXFrontier::qubits_ending_in(const Vertex& v) const {
   std::set<unsigned> qubits;
   for (unsigned i = 0; i < circ_.n_qubits(); ++i) {
     if (circ_.target(intervals_[i].second) == v) {
@@ -130,9 +129,9 @@ void PhasedXFrontier::next_interval(unsigned i) {
   end = get_interval_end(start);
 }
 
-void PhasedXFrontier::next_multiqb(Vertex v) {
+void PhasedXFrontier::next_multiqb(const Vertex& v) {
   std::set<unsigned> curr_qubits = qubits_ending_in(v);
-  // perform substitution
+  // move forward
   for (unsigned i : curr_qubits) {
     next_interval(i);
   }
@@ -176,7 +175,9 @@ class PhasedXSquasher : public StandardSquasher {
             CircPool::tk1_to_PhasedXRz) {}
 
   // accept any single-qb gate to squash it
-  bool accepts(OpType type) const override { return !is_projective_type(type); }
+  bool accepts(OpType type) const override {
+    return is_single_qubit_type(type);
+  }
 };
 
 PhasedXFrontier::PhasedXFrontier(Circuit& circ)

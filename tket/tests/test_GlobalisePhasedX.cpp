@@ -54,9 +54,6 @@ SCENARIO("globalise_PhasedX transform") {
         auto u2 = tket_sim::get_unitary(c2);
         REQUIRE(u1.isApprox(u2));
       }
-      /*THEN("Applying it twice does nothing") {
-        REQUIRE(!Transforms::globalise_PhasedX().apply(c2));
-      }*/
     }
     WHEN("Applying the transform (without squashing)") {
       Circuit c2 = c1;

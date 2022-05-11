@@ -1029,8 +1029,7 @@ Transform decompose_NPhasedX() {
 //     GlobalisePhasedX      //
 ///////////////////////////////
 
-static std::vector<Expr> distinct_beta(
-    const Circuit &circ, const OptVertexVec &gates);
+static unsigned n_distinct_beta(const Circuit &circ, const OptVertexVec &gates);
 template <typename T>
 static bool all_equal(const std::vector<T> &vs);
 
@@ -1047,12 +1046,12 @@ Transform globalise_PhasedX(bool squash) {
   // NPhasedX whenever it would solve the current problem and there are further
   // PhasedX left (meaning that the rest of the computation can be deferred till
   // later), otherwise inserts 2x PhasedX.
-  auto choose_strategy = [](const PhasedXFrontier &frontier,
-                            std::vector<Expr> target, std::vector<Expr> all) {
-    if (all.size() == 0 || target.size() == 0) {
+  auto choose_strategy = [](const PhasedXFrontier &frontier, unsigned n_target,
+                            unsigned n_all) {
+    if (n_all == 0 || n_target == 0) {
       return 0;
     }
-    if (target.size() == 1 && frontier.are_phasedx_left()) {
+    if (n_target == 1 && frontier.are_phasedx_left()) {
       return 1;
     }
     return 2;
@@ -1080,8 +1079,11 @@ Transform globalise_PhasedX(bool squash) {
     auto vertices_in_order = circ.vertices_in_order();
     auto r = vertices_in_order | boost::adaptors::filtered(filter_pred);
     OptVertexVec multiq_gates(r.begin(), r.end());
-    // add sentinel to process the gates after last multiq_gate
-    multiq_gates.push_back(std::nullopt);
+    // Add sentinel to process the gates after last multiq_gate.
+    // This is required to force flush the frontier after the last multi-qubit
+    // gate.
+    OptVertex optv;
+    multiq_gates.push_back(optv);
 
     // whether transform is successful (always true if squash=true)
     bool success = squash;
@@ -1128,11 +1130,11 @@ Transform globalise_PhasedX(bool squash) {
         }
 
         // find best decomposition strategy
-        std::vector<Expr> curr_betas = distinct_beta(circ, curr_phasedx);
-        std::vector<Expr> all_betas = distinct_beta(circ, all_phasedx);
+        unsigned n_curr_betas = n_distinct_beta(circ, curr_phasedx);
+        unsigned n_all_betas = n_distinct_beta(circ, all_phasedx);
         unsigned strategy;
         if (squash) {
-          strategy = choose_strategy(frontier, curr_betas, all_betas);
+          strategy = choose_strategy(frontier, n_curr_betas, n_all_betas);
         } else {
           // if we don't squash we decompose each NPhasedX with 2x global
           strategy = 2;
@@ -1164,10 +1166,15 @@ Transform globalise_PhasedX(bool squash) {
   });
 }
 
-std::vector<Expr> distinct_beta(
-    const Circuit &circ, const OptVertexVec &gates) {
+// The number of distinct beta angles in `gates`.
+//
+// Handles symbolic angles by trying to evaluate them, and otherwise performing
+// pairwise equivalence comparisons between expressions.
+unsigned n_distinct_beta(const Circuit &circ, const OptVertexVec &gates) {
   std::set<double> vals;
   std::vector<Expr> non_vals;
+
+  // split evaluatable angles from unevaluatable
   for (OptVertex v : gates) {
     if (v) {
       Expr angle = circ.get_Op_ptr_from_Vertex(*v)->get_params()[0];
@@ -1182,7 +1189,9 @@ std::vector<Expr> distinct_beta(
     }
   }
 
-  std::vector<Expr> exprs;
+  unsigned n_distinct = vals.size();
+
+  // for unevaluatable angles, perform pairwise equivalence checks
   for (unsigned i = 0; i < non_vals.size(); ++i) {
     bool is_unique = true;
     for (unsigned j = i + 1; j < non_vals.size(); ++j) {
@@ -1192,13 +1201,10 @@ std::vector<Expr> distinct_beta(
       }
     }
     if (is_unique) {
-      exprs.push_back(non_vals[i]);
+      ++n_distinct;
     }
   }
-  for (double val : vals) {
-    exprs.push_back(val);
-  }
-  return exprs;
+  return n_distinct;
 }
 
 template <typename T>

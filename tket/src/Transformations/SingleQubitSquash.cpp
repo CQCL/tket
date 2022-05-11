@@ -51,8 +51,7 @@ bool SingleQubitSquash::squash_between(
   return success;
 }
 
-bool SingleQubitSquash::squash_between(
-    const Edge &in, const Edge &out) {
+bool SingleQubitSquash::squash_between(const Edge &in, const Edge &out) {
   if (circ_ptr != nullptr) {
     circ_ptr_ = circ_ptr;
   }
