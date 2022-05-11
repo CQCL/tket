@@ -34,7 +34,7 @@ using OptEdgeVec = std::vector<OptEdge>;
 /**
  * @brief Frontier and circuit manipulation for `globalise_PhasedX`
  *
- * This helper class for the globalise_PhasedX transform stores the circuit
+ * This helper class for the \ref globalise_PhasedX transform stores the circuit
  * frontier as useful for that specific pass. It also provides a simple
  * interface for all the circuit manipulations that are required within that
  * pass.
