@@ -48,20 +48,20 @@ class ZXVertWrapper {
   operator const ZXVert&() const { return v_; }
 };
 
-std::pair<ZXDiagram, std::map<ZXVertWrapper, UnitID>> wrapped_circuit_to_zx(
+std::pair<ZXDiagram, std::map<UnitID, ZXVertWrapper>> wrapped_circuit_to_zx(
     const Circuit& circ) {
   ZXDiagram zxd;
   boost::bimap<ZXVert, Vertex> bmap;
   std::tie(zxd, bmap) = circuit_to_zx(circ);
-  std::map<ZXVertWrapper, UnitID> ret_map;
+  std::map<UnitID, ZXVertWrapper> ret_map;
   for (auto it = bmap.left.begin(); it != bmap.left.end(); it++) {
     OpType io_type = circ.get_OpType_from_Vertex(it->second);
     if (io_type == OpType::Input || io_type == OpType::ClInput) {
       ret_map.insert(
-          {ZXVertWrapper(it->first), circ.get_id_from_in(it->second)});
+          {circ.get_id_from_in(it->second), ZXVertWrapper(it->first)});
     } else {
       ret_map.insert(
-          {ZXVertWrapper(it->first), circ.get_id_from_out(it->second)});
+          {circ.get_id_from_out(it->second), ZXVertWrapper(it->first)});
     }
   }
   return {std::move(zxd), std::move(ret_map)};
