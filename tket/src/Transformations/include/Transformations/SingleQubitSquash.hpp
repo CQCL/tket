@@ -85,22 +85,35 @@ class SingleQubitSquash {
    * @brief Construct a new Single Qubit Squash object.
    *
    * @param squasher The Squasher instance.
-   * @param reversed whether squashing is made back-to-front or front to back.
+   * @param reversed Whether squashing is made back to front or front to back
+   *      (default: false).
+   * @param circ The circuit to be squashed (optional).
    */
   SingleQubitSquash(
       std::unique_ptr<AbstractSquasher> squasher, bool reversed = false)
       : squasher_(std::move(squasher)),
         reversed_(reversed),
         circ_ptr_(nullptr) {}
+  SingleQubitSquash(
+      std::unique_ptr<AbstractSquasher> squasher,
+      bool reversed = false,
+      Circuit & circ)
+      : squasher_(std::move(squasher)),
+        reversed_(reversed),
+        circ_ptr_(&circ) {}
 
   /**
    * @brief Squash an entire circuit, one qubit at a time.
+   * 
+   * Either pass a circuit as argument or use the current circuit.
    *
-   * @param circ The circuit to be squashed.
+   * @param circ The circuit to be squashed (optional).
+   * 
    * @return true The squash succeeded.
    * @return false The circuit was not changed.
    */
   bool squash(Circuit &circ);
+  bool squash();
 
   /**
    * @brief Squash everything between in-edge and out-edge
@@ -108,14 +121,17 @@ class SingleQubitSquash {
    * If `reversed=true`, then the in-edge should come after the out-edge
    * in the circuit.
    *
+   * Either pass a circuit as argument or use the current circuit.
+   *
    * @param in Starting edge of the squash.
    * @param out Last edge of the squash.
-   * @param circ_ptr The circuit to be squashed (optional).
+   * @param circ The circuit to be squashed (optional).
+   * 
    * @retval true The circuit was changed.
    * @retval false The circuit was not changed.
    */
-  bool squash_between(
-      const Edge &in, const Edge &out, Circuit *circ_ptr = nullptr);
+  bool squash_between(const Edge &in, const Edge &out);
+  bool squash_between(const Edge &in, const Edge &out, Circuit &circ);
 
  private:
   std::unique_ptr<AbstractSquasher> squasher_;

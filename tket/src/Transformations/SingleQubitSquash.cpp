@@ -19,8 +19,14 @@
 namespace tket {
 
 bool SingleQubitSquash::squash(Circuit &circ) {
-  bool success = false;
   circ_ptr_ = &circ;
+  bool success = squash();
+  circ_ptr_ = nullptr;
+  return success;
+}
+
+bool SingleQubitSquash::squash() {
+  bool success = false;
 
   VertexVec inputs = circ.q_inputs();
   VertexVec outputs = circ.q_outputs();
@@ -34,12 +40,19 @@ bool SingleQubitSquash::squash(Circuit &circ) {
     }
   }
 
+  return success;
+}
+
+bool SingleQubitSquash::squash_between(
+    const Edge &in, const Edge &out, Circuit &circ) {
+  circ_ptr_ = &circ;
+  bool success = squash_between(in, out);
   circ_ptr_ = nullptr;
   return success;
 }
 
 bool SingleQubitSquash::squash_between(
-    const Edge &in, const Edge &out, Circuit *circ_ptr) {
+    const Edge &in, const Edge &out) {
   if (circ_ptr != nullptr) {
     circ_ptr_ = circ_ptr;
   }

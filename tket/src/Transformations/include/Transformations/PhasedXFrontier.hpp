@@ -254,14 +254,14 @@ class PhasedXFrontier {
   // using backup, restore old frontier
   void restore_intervals(const BackupIntervals& b);
 
-  // squasher to squash gates
-  static SingleQubitSquash squasher;
-
   // for each qubit: first and last edge of current interval
   std::vector<std::pair<Edge, Edge>> intervals_;
 
   // a reference to the circuit
   Circuit& circ_;
+
+  // squasher to squash gates
+  SingleQubitSquash squasher_;
 };
 
 /**

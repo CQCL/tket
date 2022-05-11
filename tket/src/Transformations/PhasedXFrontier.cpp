@@ -179,10 +179,10 @@ class PhasedXSquasher : public StandardSquasher {
   bool accepts(OpType type) const override { return !is_projective_type(type); }
 };
 
-SingleQubitSquash PhasedXFrontier::squasher(
-    std::make_unique<PhasedXSquasher>(), false);
-
-PhasedXFrontier::PhasedXFrontier(Circuit& circ) : intervals_(), circ_(circ) {
+PhasedXFrontier::PhasedXFrontier(Circuit& circ)
+    : intervals_(),
+      circ_(circ),
+      squasher_(std::make_unique<PhasedXSquasher>(), false, circ) {
   const unsigned n = circ_.n_qubits();
   intervals_.resize(n);
 
@@ -208,7 +208,7 @@ void PhasedXFrontier::squash_interval(unsigned i) {
   VertPort start{circ_.source(start_e), circ_.get_source_port(start_e)};
   VertPort end{circ_.target(end_e), circ_.get_target_port(end_e)};
 
-  squasher.squash_between(start_e, end_e, &circ_);
+  squasher_.squash_between(start_e, end_e);
 
   // restore interval edges
   start_e = circ_.get_nth_out_edge(start.first, start.second);
