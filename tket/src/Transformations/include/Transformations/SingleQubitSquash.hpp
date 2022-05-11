@@ -91,7 +91,7 @@ class SingleQubitSquash {
    */
   SingleQubitSquash(
       std::unique_ptr<AbstractSquasher> squasher, Circuit &circ,
-      bool reversed = false, )
+      bool reversed = false)
       : squasher_(std::move(squasher)), circ_(circ), reversed_(reversed) {}
 
   /**
