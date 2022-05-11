@@ -536,6 +536,29 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(zx.count_vertices(ZXType::Hbox, QuantumType::Quantum) == 2);
     REQUIRE_NOTHROW(zx.check_validity());
   }
+  GIVEN("Nested conditional gate") {
+    Circuit circ(1, 3);
+    Op_ptr cond = std::make_shared<Conditional>(get_op_ptr(OpType::H), 1, 1);
+    Op_ptr condcond = std::make_shared<Conditional>(cond, 2, 1);
+    circ.add_op<UnitID>(
+        condcond, {Bit(0), Bit(1), Bit(2), Qubit(0)}, std::nullopt);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
+    REQUIRE(zx.n_vertices() == 35);
+    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 1);
+    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Classical) == 3);
+    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Quantum) == 1);
+    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Classical) == 3);
+    REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Quantum) == 4);
+    REQUIRE(zx.count_vertices(ZXType::Triangle, QuantumType::Quantum) == 4);
+    REQUIRE(zx.count_vertices(ZXType::Triangle, QuantumType::Classical) == 4);
+    REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Classical) == 3);
+    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Quantum) == 3);
+    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Classical) == 8);
+    REQUIRE(zx.count_vertices(ZXType::Hbox, QuantumType::Quantum) == 1);
+    REQUIRE_NOTHROW(zx.check_validity());
+  }
 }
 
 SCENARIO("Check converting circuits to diagrams") {
