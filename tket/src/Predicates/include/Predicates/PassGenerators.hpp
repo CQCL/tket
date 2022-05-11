@@ -213,7 +213,7 @@ PassPtr PauliSquash(Transforms::PauliSynthStrat strat, CXConfigType cx_config);
  *      (default: true).
  *
  * If squash=true (default), the `GlobalisePhasedX().apply` method will always
- * returns true. For squash=false, `apply()` will return true if the circuit was
+ * return true. For squash=false, `apply()` will return true if the circuit was
  * changed and false otherwise.
  *
  * It is not recommended to use this pass with symbolic expressions, as
