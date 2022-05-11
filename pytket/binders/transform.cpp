@@ -297,7 +297,7 @@ PYBIND11_MODULE(transform, m) {
           "Replaces any PhasedX gates with global NPhasedX gates. "
           "By default, this transform will squash all single-qubit gates "
           "to PhasedX and Rz gates before proceeding further. "
-          "Existing non-global NPhasedX will not be preserved."
+          "Existing non-global NPhasedX will not be preserved. "
           "This is the recommended setting for best "
           "performance. If squashing is disabled, each non-global PhasedX gate "
           "will be replaced with 2x global NPhasedX, but any other gates will "
