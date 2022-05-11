@@ -300,7 +300,7 @@ PYBIND11_MODULE(transform, m) {
           "Existing non-global NPhasedX will not be preserved. "
           "This is the recommended setting for best "
           "performance. If squashing is disabled, each non-global PhasedX gate "
-          "will be replaced with 2x global NPhasedX, but any other gates will "
+          "will be replaced with two global NPhasedX, but any other gates will "
           "be left untouched."
           "\n\n:param squash: Whether to squash the circuit in pre-processing "
           "(default: true)."
