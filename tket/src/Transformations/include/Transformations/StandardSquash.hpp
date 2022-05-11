@@ -49,6 +49,8 @@ class StandardSquasher : public AbstractSquasher {
 
   void clear() override;
 
+  std::unique_ptr<AbstractSquasher> clone() const override;
+
  private:
   const OpTypeSet singleqs_;
   const Func squash_fn_;

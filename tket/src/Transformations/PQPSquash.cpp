@@ -160,6 +160,10 @@ std::pair<Circuit, Gate_ptr> PQPSquasher::flush(
 
 void PQPSquasher::clear() { rotation_chain.clear(); }
 
+std::unique_ptr<AbstractSquasher> PQPSquasher::clone() const {
+  return std::make_unique<PQPSquasher>(*this);
+}
+
 static Rotation merge_rotations(
     OpType r, const std::vector<Gate_ptr> &chain,
     std::vector<Gate_ptr>::const_iterator &iter) {

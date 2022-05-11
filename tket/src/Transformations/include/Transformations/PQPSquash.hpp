@@ -71,6 +71,8 @@ class PQPSquasher : public AbstractSquasher {
   std::pair<Circuit, Gate_ptr> flush(
       std::optional<Pauli> commutation_colour = std::nullopt) const override;
 
+  std::unique_ptr<AbstractSquasher> clone() const override;
+
  private:
   OpType p_;
   OpType q_;

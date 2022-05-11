@@ -73,6 +73,10 @@ void StandardSquasher::clear() {
   phase_ = 0.;
 }
 
+std::unique_ptr<AbstractSquasher> StandardSquasher::clone() const {
+  return std::make_unique<StandardSquasher>(*this);
+}
+
 static bool standard_squash(
     Circuit &circ, const OpTypeSet &singleqs,
     const std::function<Circuit(const Expr &, const Expr &, const Expr &)>

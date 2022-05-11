@@ -32,7 +32,7 @@ static std::map<T, unsigned> count(std::vector<T> xs) {
   for (const auto& x : xs) {
     auto it = cnts.find(x);
     if (it != cnts.end()) {
-      ++(*it);
+      ++(it->second);
     } else {
       cnts[x] = 1;
     }
@@ -185,7 +185,7 @@ class PhasedXSquasher : public StandardSquasher {
 PhasedXFrontier::PhasedXFrontier(Circuit& circ)
     : intervals_(),
       circ_(circ),
-      squasher_(std::make_unique<PhasedXSquasher>(), false, circ) {
+      squasher_(std::make_unique<PhasedXSquasher>(), circ, false) {
   const unsigned n = circ_.n_qubits();
   intervals_.resize(n);
 

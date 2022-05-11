@@ -18,6 +18,31 @@
 
 namespace tket {
 
+SingleQubitSquash::SingleQubitSquash(const SingleQubitSquash &other)
+    : squasher_(other.squasher_->clone()),
+      circ_(other.circ_),
+      reversed_(other.reversed_) {}
+
+SingleQubitSquash &SingleQubitSquash::operator=(
+    const SingleQubitSquash &other) {
+  squasher_ = other.squasher_->clone();
+  circ_ = other.circ_;
+  reversed_ = other.reversed_;
+  return *this;
+}
+
+SingleQubitSquash::SingleQubitSquash(SingleQubitSquash &&other)
+    : squasher_(std::move(other.squasher_)),
+      circ_(other.circ_),
+      reversed_(other.reversed_) {}
+
+SingleQubitSquash &SingleQubitSquash::operator=(SingleQubitSquash &&other) {
+  squasher_ = std::move(other.squasher_);
+  circ_ = other.circ_;
+  reversed_ = other.reversed_;
+  return *this;
+}
+
 bool SingleQubitSquash::squash() {
   bool success = false;
 

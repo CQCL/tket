@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <memory>
 #include <optional>
 
 #include "Circuit/Circuit.hpp"
@@ -70,6 +71,13 @@ class AbstractSquasher {
    */
   virtual void clear() = 0;
 
+  /**
+   * @brief Virtual constructor
+   *
+   * @return std::unique_ptr<AbstractSquasher> A copy of *this.
+   */
+  virtual std::unique_ptr<AbstractSquasher> clone() const = 0;
+
   virtual ~AbstractSquasher() {}
 };
 
@@ -87,12 +95,19 @@ class SingleQubitSquash {
    * @param squasher The Squasher instance.
    * @param circ The circuit to be squashed.
    * @param reversed Whether squashing is made back to front or front to back
-   *      (default: false).
+   *      (default: false, ie front to back).
    */
   SingleQubitSquash(
       std::unique_ptr<AbstractSquasher> squasher, Circuit &circ,
       bool reversed = false)
       : squasher_(std::move(squasher)), circ_(circ), reversed_(reversed) {}
+
+  // rule of 5
+  SingleQubitSquash(const SingleQubitSquash &other);
+  SingleQubitSquash &operator=(const SingleQubitSquash &other);
+  ~SingleQubitSquash() = default;
+  SingleQubitSquash(SingleQubitSquash &&other);
+  SingleQubitSquash &operator=(SingleQubitSquash &&other);
 
   /**
    * @brief Squash entire circuit, one qubit at a time.
@@ -118,9 +133,8 @@ class SingleQubitSquash {
 
  private:
   std::unique_ptr<AbstractSquasher> squasher_;
-  bool reversed_;
-  // points to the current circuit during squashing
   Circuit &circ_;
+  bool reversed_;
 
   // substitute chain by a sub circuit, handling conditions
   // and backing up + restoring current edge
