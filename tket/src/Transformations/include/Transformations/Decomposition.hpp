@@ -151,7 +151,7 @@ Transform decompose_BRIDGE_to_CX();
 Transform decompose_CX_directed(const Architecture& arc);
 
 /**
- * @brief Decompose NPhasedX gates into single-qb PhasedX gates.
+ * @brief Decompose NPhasedX gates into single-qubit PhasedX gates.
  */
 Transform decompose_NPhasedX();
 
