@@ -163,7 +163,7 @@ bool PhasedXFrontier::is_interval_boundary(Vertex v) const {
   if (optype == OpType::NPhasedX) {
     return false;
   }
-  return !is_single_qubit_type(optype) || !is_gate_type(optype);
+  return !is_single_qubit_unitary_type(optype);
 }
 
 /**
@@ -178,12 +178,8 @@ class PhasedXSquasher : public StandardSquasher {
 
   // Accept any single-qubit gate that has TK1 angles to squash it.
   bool accepts(Gate_ptr gp) const override {
-    try {
-      gp->get_tk1_angles();
-    } catch (const NotImplemented&) {
-      return false;
-    }
-    return true;
+    OpType optype = gp->get_type();
+    return is_single_qubit_unitary_type(optype);
   }
 };
 
