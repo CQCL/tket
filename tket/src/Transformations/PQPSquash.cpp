@@ -50,12 +50,13 @@ PQPSquasher::PQPSquasher(OpType p, OpType q, bool smart_squash, bool reversed)
   }
 }
 
-bool PQPSquasher::accepts(OpType type) const {
+bool PQPSquasher::accepts(Gate_ptr gp) const {
+  OpType type = gp->get_type();
   return type == p_ || type == q_;
 }
 
 void PQPSquasher::append(Gate_ptr gp) {
-  if (!accepts(gp->get_type())) {
+  if (!accepts(gp)) {
     throw NotValid("PQPSquasher: cannot append OpType");
   }
   rotation_chain.push_back(gp);

@@ -87,7 +87,11 @@ bool SingleQubitSquash::squash_between(const Edge &in, const Edge &out) {
       }
     }
 
-    if (e != out && condition == this_condition && is_squashable(v, v_type)) {
+    bool is_squashable = circ_.n_in_edges_of_type(v, EdgeType::Quantum) == 1 &&
+                         is_gate_type(v_type) &&
+                         squasher_->accepts(as_gate_ptr(v_op));
+
+    if (e != out && condition == this_condition && is_squashable) {
       // => add gate to current squash
       squasher_->append(as_gate_ptr(reversed_ ? v_op->dagger() : v_op));
       move_to_next_vertex = true;
@@ -187,12 +191,6 @@ void SingleQubitSquash::insert_left_over_gate(
   preds.push_back(e);
   sigs.push_back(EdgeType::Quantum);
   circ_.rewire(new_v, preds, sigs);
-}
-
-bool SingleQubitSquash::is_squashable(Vertex v, OpType v_type) const {
-  circ_.n_in_edges_of_type(v, EdgeType::Quantum);
-  return circ_.n_in_edges_of_type(v, EdgeType::Quantum) == 1 &&
-         is_gate_type(v_type) && squasher_->accepts(v_type);
 }
 
 bool SingleQubitSquash::sub_is_better(

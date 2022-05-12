@@ -39,12 +39,13 @@ StandardSquasher::StandardSquasher(
   }
 }
 
-bool StandardSquasher::accepts(OpType type) const {
+bool StandardSquasher::accepts(Gate_ptr gp) const {
+  OpType type = gp->get_type();
   return (singleqs_.find(type) != singleqs_.end()) && !is_projective_type(type);
 }
 
-void StandardSquasher::append(Gate_ptr gate) {
-  std::vector<Expr> angs = gate->get_tk1_angles();
+void StandardSquasher::append(Gate_ptr gp) {
+  std::vector<Expr> angs = gp->get_tk1_angles();
   combined_.apply(Rotation(OpType::Rz, angs.at(2)));
   combined_.apply(Rotation(OpType::Rx, angs.at(1)));
   combined_.apply(Rotation(OpType::Rz, angs.at(0)));

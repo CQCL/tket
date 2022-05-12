@@ -40,9 +40,9 @@ class StandardSquasher : public AbstractSquasher {
 
   StandardSquasher(const OpTypeSet &singleqs, const Func &tk1_replacement);
 
-  bool accepts(OpType type) const override;
+  bool accepts(Gate_ptr gp) const override;
 
-  void append(Gate_ptr gate) override;
+  void append(Gate_ptr gp) override;
 
   std::pair<Circuit, Gate_ptr> flush(
       std::optional<Pauli> = std::nullopt) const override;

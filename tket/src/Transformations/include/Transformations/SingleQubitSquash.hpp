@@ -41,7 +41,7 @@ class AbstractSquasher {
    * @retval true `ot` can be squashed.
    * @retval false `ot` cannot be squashed.
    */
-  virtual bool accepts(OpType ot) const = 0;
+  virtual bool accepts(Gate_ptr gp) const = 0;
 
   /**
    * @brief Add gate to current squash.
