@@ -881,6 +881,12 @@ def test_measuring_registers() -> None:
     assert 'A register with name "cr" already exists' in str(e.value)
 
 
+def test_zzmax() -> None:
+    c = Circuit(5)
+    c.ZZMax(0, 1)
+    assert c.depth() == 1
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()

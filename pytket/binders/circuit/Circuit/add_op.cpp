@@ -919,6 +919,16 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
       .def(
+          "ZZMax",
+          [](Circuit *circ, unsigned qb0, unsigned qb1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_noparams<unsigned>(
+                circ, OpType::ZZMax, {qb0, qb1}, kwargs);
+          },
+          "Appends a ZZMax gate on the wires for the specified two qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("qubit0"), py::arg("qubit1"))
+      .def(
           "XXPhase",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
              const py::kwargs &kwargs) {
@@ -1324,6 +1334,16 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("qubit0"), py::arg("qubit1"), py::arg("angle"))
+      .def(
+          "ZZMax",
+          [](Circuit *circ, const Qubit &qb0, const Qubit &qb1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_noparams<UnitID>(
+                circ, OpType::ZZMax, {qb0, qb1}, kwargs);
+          },
+          "Appends a ZZMax gate on the wires for the specified two qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "XXPhase",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,
