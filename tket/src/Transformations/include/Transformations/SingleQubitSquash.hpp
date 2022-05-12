@@ -37,7 +37,7 @@ class AbstractSquasher {
   /**
    * @brief Whether the OpType can be added to current squash.
    *
-   * @param ot OpType to be accepted.
+   * @param gp Gate_ptr to be accepted.
    * @retval true `ot` can be squashed.
    * @retval false `ot` cannot be squashed.
    */
