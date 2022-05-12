@@ -409,10 +409,9 @@ Circuit with_TK2(Gate_ptr op) {
         OpType::TK1, {angles_K2a.begin(), angles_K2a.end() - 1}, {0});
     c.add_op<unsigned>(
         OpType::TK1, {angles_K2b.begin(), angles_K2b.end() - 1}, {1});
-    constexpr double f = -2 / PI;
-    double alpha = f * std::get<0>(A);
-    double beta = f * std::get<1>(A);
-    double gamma = f * std::get<2>(A);
+    double alpha = std::get<0>(A);
+    double beta = std::get<1>(A);
+    double gamma = std::get<2>(A);
     c.add_op<unsigned>(OpType::TK2, {alpha, beta, gamma}, {0, 1});
     c.add_op<unsigned>(
         OpType::TK1, {angles_K1a.begin(), angles_K1a.end() - 1}, {0});

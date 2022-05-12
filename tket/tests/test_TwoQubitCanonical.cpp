@@ -35,10 +35,10 @@ static void check_get_information_content(const Eigen::Matrix4cd &U) {
   PauliZ << 1, 0, 0, -1;
   const auto [K1, A, K2] = get_information_content(U);
   const auto [a, b, c] = A;
-  const Eigen::Matrix4cd arg =
-      i_ * (a * Eigen::kroneckerProduct(PauliX, PauliX) +
-            b * Eigen::kroneckerProduct(PauliY, PauliY) +
-            c * Eigen::kroneckerProduct(PauliZ, PauliZ));
+  const Eigen::Matrix4cd arg = -0.5 * PI * i_ *
+                               (a * Eigen::kroneckerProduct(PauliX, PauliX) +
+                                b * Eigen::kroneckerProduct(PauliY, PauliY) +
+                                c * Eigen::kroneckerProduct(PauliZ, PauliZ));
   Eigen::Matrix4cd res = K1 * arg.exp() * K2;
   REQUIRE(res.isApprox(U));
 }
@@ -133,10 +133,10 @@ SCENARIO("Testing two-qubit canonical forms") {
 
     const auto [K1, A, K2] = get_information_content(U);
     const auto [a, b, c] = A;
-    const Eigen::Matrix4cd arg =
-        i_ * (a * Eigen::kroneckerProduct(PauliX, PauliX) +
-              b * Eigen::kroneckerProduct(PauliY, PauliY) +
-              c * Eigen::kroneckerProduct(PauliZ, PauliZ));
+    const Eigen::Matrix4cd arg = -0.5 * PI * i_ *
+                                 (a * Eigen::kroneckerProduct(PauliX, PauliX) +
+                                  b * Eigen::kroneckerProduct(PauliY, PauliY) +
+                                  c * Eigen::kroneckerProduct(PauliZ, PauliZ));
     Eigen::Matrix4cd res = K1 * arg.exp() * K2;
     REQUIRE(res.isApprox(U));
   }
@@ -162,10 +162,10 @@ SCENARIO("Testing two-qubit canonical forms") {
 
     const auto [K1, A, K2] = get_information_content(U);
     const auto [a, b, c] = A;
-    const Eigen::Matrix4cd arg =
-        i_ * (a * Eigen::kroneckerProduct(PauliX, PauliX) +
-              b * Eigen::kroneckerProduct(PauliY, PauliY) +
-              c * Eigen::kroneckerProduct(PauliZ, PauliZ));
+    const Eigen::Matrix4cd arg = -0.5 * PI * i_ *
+                                 (a * Eigen::kroneckerProduct(PauliX, PauliX) +
+                                  b * Eigen::kroneckerProduct(PauliY, PauliY) +
+                                  c * Eigen::kroneckerProduct(PauliZ, PauliZ));
     Eigen::Matrix4cd res = K1 * arg.exp() * K2;
     REQUIRE(res.isApprox(U));
   }
@@ -187,10 +187,10 @@ SCENARIO("Testing two-qubit canonical forms") {
 
     const auto [K1, AA, K2] = get_information_content(U);
     const auto [a, b, c] = AA;
-    const Eigen::Matrix4cd arg =
-        i_ * (a * Eigen::kroneckerProduct(PauliX, PauliX) +
-              b * Eigen::kroneckerProduct(PauliY, PauliY) +
-              c * Eigen::kroneckerProduct(PauliZ, PauliZ));
+    const Eigen::Matrix4cd arg = -0.5 * PI * i_ *
+                                 (a * Eigen::kroneckerProduct(PauliX, PauliX) +
+                                  b * Eigen::kroneckerProduct(PauliY, PauliY) +
+                                  c * Eigen::kroneckerProduct(PauliZ, PauliZ));
     Eigen::Matrix4cd res = K1 * arg.exp() * K2;
     REQUIRE(res.isApprox(U));
   }
@@ -222,12 +222,12 @@ SCENARIO("Testing two-qubit canonical forms") {
     PauliX << 0, 1, 1, 0;
     PauliY << 0, -i_, i_, 0;
     PauliZ << 1, 0, 0, -1;
-    const double a = PI / 4, b = 0, c = 0;  // this is = CX decomposition
+    const double a = -0.5 * PI, b = 0, c = 0;  // this is = CX decomposition
     const std::tuple<double, double, double> A(a, b, c);
-    const Eigen::Matrix4cd arg =
-        i_ * (a * Eigen::kroneckerProduct(PauliX, PauliX) +
-              b * Eigen::kroneckerProduct(PauliY, PauliY) +
-              c * Eigen::kroneckerProduct(PauliZ, PauliZ));
+    const Eigen::Matrix4cd arg = -0.5 * PI * i_ *
+                                 (a * Eigen::kroneckerProduct(PauliX, PauliX) +
+                                  b * Eigen::kroneckerProduct(PauliY, PauliY) +
+                                  c * Eigen::kroneckerProduct(PauliZ, PauliZ));
     const Eigen::Matrix4cd U = arg.exp();
     const auto gates = expgate_as_CX(A, 1.);
     Circuit circ_out = Circuit(2);
@@ -257,10 +257,10 @@ SCENARIO("Testing two-qubit canonical forms") {
     PauliZ << 1, 0, 0, -1;
     const double a = 0.7, b = 0.5342, c = -0.3;  // some arbitrary constants
     const std::tuple<double, double, double> A(a, b, c);
-    const Eigen::Matrix4cd arg =
-        i_ * (a * Eigen::kroneckerProduct(PauliX, PauliX) +
-              b * Eigen::kroneckerProduct(PauliY, PauliY) +
-              c * Eigen::kroneckerProduct(PauliZ, PauliZ));
+    const Eigen::Matrix4cd arg = -0.5 * PI * i_ *
+                                 (a * Eigen::kroneckerProduct(PauliX, PauliX) +
+                                  b * Eigen::kroneckerProduct(PauliY, PauliY) +
+                                  c * Eigen::kroneckerProduct(PauliZ, PauliZ));
     const Eigen::Matrix4cd U = arg.exp();
     const auto gates = expgate_as_CX(A, 1.);
     Circuit circ_out = Circuit(2);
@@ -286,12 +286,12 @@ SCENARIO("Testing two-qubit canonical forms") {
     PauliX << 0, 1, 1, 0;
     PauliY << 0, -i_, i_, 0;
     PauliZ << 1, 0, 0, -1;
-    const double a = PI / 4, b = PI / 4, c = 0;
+    const double a = -0.5, b = -0.5, c = 0;
     const std::tuple<double, double, double> A(a, b, c);
-    const Eigen::Matrix4cd arg =
-        i_ * (a * Eigen::kroneckerProduct(PauliX, PauliX) +
-              b * Eigen::kroneckerProduct(PauliY, PauliY) +
-              c * Eigen::kroneckerProduct(PauliZ, PauliZ));
+    const Eigen::Matrix4cd arg = -0.5 * PI * i_ *
+                                 (a * Eigen::kroneckerProduct(PauliX, PauliX) +
+                                  b * Eigen::kroneckerProduct(PauliY, PauliY) +
+                                  c * Eigen::kroneckerProduct(PauliZ, PauliZ));
     const Eigen::Matrix4cd U = arg.exp();
     const auto gates = expgate_as_CX(A, 1.);
     Circuit circ_out = Circuit(2);
