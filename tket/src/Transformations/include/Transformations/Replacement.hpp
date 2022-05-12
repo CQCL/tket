@@ -19,6 +19,19 @@
 namespace tket {
 
 /**
+ * Replace a multi-qubit operation with an equivalent circuit using TK2 gates
+ *
+ * @param op operation
+ *
+ * @return equivalent circuit
+ *
+ * @pre \p op is a multi-qubit operation
+ *
+ * @post The only multi-qubit gates in the replacement circuit are TK2
+ */
+Circuit TK2_circ_from_multiq(const Op_ptr op);
+
+/**
  * Replace a multi-qubit operation with an equivalent circuit using CX gates
  *
  * @param op operation

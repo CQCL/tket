@@ -42,6 +42,32 @@ static bool convert_to_zyz(Circuit &circ);
 static bool convert_to_xyx(Circuit &circ);
 
 /**
+ * Decompose all multi-qubit unitary gates into TK2 and single-qubit gates.
+ *
+ * This function does not decompose boxes.
+ */
+static bool convert_multiqs_TK2(Circuit &circ) {
+  bool success = false;
+  VertexList bin;
+  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+    Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    OpType optype = op->get_type();
+    if (is_gate_type(optype) && !is_projective_type(optype) &&
+        op->n_qubits() >= 2 && (optype != OpType::TK2)) {
+      Circuit in_circ = TK2_circ_from_multiq(op);
+      Subcircuit sub = {
+          {circ.get_in_edges(v)}, {circ.get_all_out_edges(v)}, {v}};
+      bin.push_back(v);
+      circ.substitute(in_circ, sub, Circuit::VertexDeletion::No);
+      success = true;
+    }
+  }
+  circ.remove_vertices(
+      bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+  return success;
+}
+
+/**
  * Decompose all multi-qubit unitary gates into CX and single-qubit gates.
  *
  * This function does not decompose boxes.
@@ -133,6 +159,10 @@ static bool convert_to_xyx(Circuit &circ) {
   circ.remove_vertices(
       bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
   return success;
+}
+
+Transform decompose_multi_qubits_TK2() {
+  return Transform(convert_multiqs_TK2);
 }
 
 Transform decompose_multi_qubits_CX() { return Transform(convert_multiqs_CX); }

@@ -81,10 +81,10 @@ std::vector<std::pair<unsigned, unsigned>> gaussian_elimination_row_ops(
  * Given a unitary \f$ X \f$, returns
  * \f$ (K_1, (k_\mathrm{XX},k_\mathrm{YY},k_\mathrm{ZZ}, K_2) \f$
  * such that
- * \f$ X = K_1 \cdot \exp(\sum_{i \in \{\mathrm{XX}, \mathrm{YY}, \mathrm{ZZ}\}}
- * k_i \sigma_i) \cdot K_2 \f$. The \f$ k_i \f$ are called information content
- * and partition \f$ \mathrm{SU}(4) \f$ into equivalence classes modulo local
- * transformations.
+ * \f$ X = K_1 \cdot \exp(-\frac12 i \pi \sum_{w \in \{\mathrm{XX}, \mathrm{YY},
+ * \mathrm{ZZ}\}} k_w \sigma_w) \cdot K_2 \f$.
+ * The \f$ k_w \f$ are called information content and partition
+ * \f$ \mathrm{SU}(4) \f$ into equivalence classes modulo local transformations.
  *
  * See arXiv quant-ph/0507171 for details
  *

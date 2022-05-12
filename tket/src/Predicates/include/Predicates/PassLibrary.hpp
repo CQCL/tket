@@ -18,6 +18,7 @@
 
 namespace tket {
 
+const PassPtr &SynthesiseTK();
 const PassPtr &SynthesiseTket();
 const PassPtr &SynthesiseHQS();
 const PassPtr &SynthesiseOQC();

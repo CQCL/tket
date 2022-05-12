@@ -306,6 +306,10 @@ static double get_CX_fidelity(
 
   TKET_ASSERT(nb_cx < 4);
   auto [a, b, c] = k;
+  constexpr double g = -PI / 2;
+  a *= g;
+  b *= g;
+  c *= g;
 
   // gate fidelity achievable with 0,...,3 cnots
   // this is fully determined by the information content k and is optimal
@@ -333,7 +337,11 @@ std::vector<std::tuple<Eigen::Matrix2cd, Eigen::Matrix2cd>> expgate_as_CX(
         "Expected CX fidelity cx_fidelity must be between 0 and 1");
   }
 
-  const auto [k_a, k_b, k_c] = k;
+  auto [k_a, k_b, k_c] = k;
+  constexpr double g = -PI / 2;
+  k_a *= g;
+  k_b *= g;
+  k_c *= g;
   Mat2 PauliX, PauliY, PauliZ;
   PauliX << 0, 1, 1, 0;
   PauliY << 0, -i_, i_, 0;
@@ -595,7 +603,8 @@ get_information_content(const Eigen::Matrix4cd &X) {
   K1 *= norm_X;
 
   // Finally, we got our ks
-  ExpGate A(k(0), k(1), k(2));
+  constexpr double f = -2 / PI;
+  ExpGate A(f * k(0), f * k(1), f * k(2));
 
   // K1,K2 in SU(2)xSU(2), A = Exp(i aσ_XX + i bσ_YY + i cσ_ZZ)
   return std::tuple<Mat4, ExpGate, Mat4>{K1, A, K2};

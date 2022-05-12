@@ -22,6 +22,16 @@ namespace tket {
 namespace Transforms {
 
 /**
+ * Decomposes all multi-qubit unitary gates into TK2 and single-qubit gates.
+ *
+ * Ignores boxes.
+ *
+ * Expects: any gates
+ * Produces: TK2 and any single-qubit gates
+ */
+Transform decompose_multi_qubits_TK2();
+
+/**
  * Decomposes all multi-qubit unitary gates into CX and single-qubit gates.
  *
  * Ignores boxes.

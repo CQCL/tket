@@ -62,6 +62,11 @@ Transform clifford_simp(bool allow_swaps = true);
 /*Synthesis passes preserve connectivity */
 
 /**
+ * Synthesise a circuit consisting of TK2 and TK1 gates only.
+ */
+Transform synthesise_tk();
+
+/**
  * Synthesise a circuit consisting of CX and TK1 gates only.
  */
 Transform synthesise_tket();
