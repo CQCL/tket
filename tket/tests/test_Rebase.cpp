@@ -489,13 +489,6 @@ SCENARIO("Decompose NPhasedX gates into PhasedX") {
         REQUIRE(!Transforms::decompose_NPhasedX().apply(c));
       }
     }
-    /*WHEN("Leaving global gates untouched") {
-      Circuit c2 = c;
-      THEN("Nothing happens") {
-        REQUIRE(!Transforms::decompose_NPhasedX(true).apply(c2));
-        REQUIRE(c2 == c);
-      }
-    }*/
   }
   GIVEN("Another simple circuit") {
     Circuit c(2);
