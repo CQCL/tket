@@ -21,7 +21,10 @@
 #include "CircPool.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Gate/GatePtr.hpp"
+#include "Gate/GateUnitaryMatrixImplementations.hpp"
 #include "Gate/Rotation.hpp"
+#include "OpType/OpType.hpp"
+#include "Ops/Op.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/Expression.hpp"
 #include "Utils/MatrixAnalysis.hpp"
@@ -377,6 +380,109 @@ Circuit pauli_gadget(
   return circ;
 }
 
+void replace_CX_with_TK2(Circuit &c) {
+  static const Op_ptr cx = std::make_shared<Gate>(OpType::CX);
+  c.substitute_all(CircPool::CX_using_TK2(), cx);
+}
+
+Circuit with_TK2(Gate_ptr op) {
+  std::vector<Expr> params = op->get_params();
+  unsigned n = op->n_qubits();
+  if (n == 0) {
+    return Circuit();
+  } else if (n == 1) {
+    Circuit c(1);
+    c.add_op(op, std::vector<unsigned>{0});
+    return c;
+  } else if (n == 2 && op->free_symbols().empty()) {
+    Eigen::Matrix4cd U = op->get_unitary();
+    auto [K1, A, K2] = get_information_content(U);
+    // Decompose single qubits
+    auto [K1a, K1b] = kronecker_decomposition(K1);
+    auto [K2a, K2b] = kronecker_decomposition(K2);
+    Circuit c(2);
+    std::vector<double> angles_K1a = tk1_angles_from_unitary(K1a);
+    std::vector<double> angles_K1b = tk1_angles_from_unitary(K1b);
+    std::vector<double> angles_K2a = tk1_angles_from_unitary(K2a);
+    std::vector<double> angles_K2b = tk1_angles_from_unitary(K2b);
+    c.add_op<unsigned>(
+        OpType::TK1, {angles_K2a.begin(), angles_K2a.end() - 1}, {0});
+    c.add_op<unsigned>(
+        OpType::TK1, {angles_K2b.begin(), angles_K2b.end() - 1}, {1});
+    double alpha = std::get<0>(A);
+    double beta = std::get<1>(A);
+    double gamma = std::get<2>(A);
+    c.add_op<unsigned>(OpType::TK2, {alpha, beta, gamma}, {0, 1});
+    c.add_op<unsigned>(
+        OpType::TK1, {angles_K1a.begin(), angles_K1a.end() - 1}, {0});
+    c.add_op<unsigned>(
+        OpType::TK1, {angles_K1b.begin(), angles_K1b.end() - 1}, {1});
+
+    // Correct phase by computing the unitary and comparing with U:
+    Eigen::Matrix4cd V_K1 = Eigen::KroneckerProduct(
+        get_matrix_from_tk1_angles(
+            {angles_K1a[0], angles_K1a[1], angles_K1a[2], 0}),
+        get_matrix_from_tk1_angles(
+            {angles_K1b[0], angles_K1b[1], angles_K1b[2], 0}));
+    Eigen::Matrix4cd V_A =
+        internal::GateUnitaryMatrixImplementations::TK2(alpha, beta, gamma);
+    Eigen::Matrix4cd V_K2 = Eigen::KroneckerProduct(
+        get_matrix_from_tk1_angles(
+            {angles_K2a[0], angles_K2a[1], angles_K2a[2], 0}),
+        get_matrix_from_tk1_angles(
+            {angles_K2b[0], angles_K2b[1], angles_K2b[2], 0}));
+    Eigen::Matrix4cd V = V_K1 * V_A * V_K2;
+    Eigen::Matrix4cd R = V.adjoint() * U;
+    const Complex phase = R(0, 0);  // R = phase * I
+    c.add_phase(arg(phase) / PI);
+
+    return c;
+  }
+  // Now the non-trivial cases.
+  switch (op->get_type()) {
+    case OpType::ISWAP:
+      return CircPool::ISWAP_using_TK2(params[0]);
+    case OpType::PhasedISWAP:
+      return CircPool::PhasedISWAP_using_TK2(params[0], params[1]);
+    case OpType::XXPhase:
+      return CircPool::XXPhase_using_TK2(params[0]);
+    case OpType::YYPhase:
+      return CircPool::YYPhase_using_TK2(params[0]);
+    case OpType::ZZPhase:
+      return CircPool::ZZPhase_using_TK2(params[0]);
+    case OpType::NPhasedX:
+      return CircPool::NPhasedX_using_PhasedX(n, params[0], params[1]);
+    case OpType::ESWAP:
+      return CircPool::ESWAP_using_TK2(params[0]);
+    case OpType::FSim:
+      return CircPool::FSim_using_TK2(params[0], params[1]);
+    case OpType::CRx:
+      return CircPool::CRx_using_TK2(params[0]);
+    case OpType::CRy:
+      return CircPool::CRy_using_TK2(params[0]);
+    case OpType::CRz:
+      return CircPool::CRz_using_TK2(params[0]);
+    case OpType::CU1:
+      return CircPool::CU1_using_TK2(params[0]);
+    case OpType::XXPhase3:
+      return CircPool::XXPhase3_using_TK2(params[0]);
+    case OpType::CCX:
+    case OpType::CSWAP:
+    case OpType::BRIDGE:
+    case OpType::CU3:
+    case OpType::PhaseGadget: {
+      // As a first, inefficient, solution, decompose these into CX and then
+      // replace each CX with a TK2 (and some single-qubit gates).
+      // TODO Find more efficient decompositions for these gates.
+      Circuit c = with_CX(op);
+      replace_CX_with_TK2(c);
+      return c;
+    }
+    default:
+      throw CircuitInvalidity("Cannot decompose " + op->get_name());
+  }
+}
+
 Circuit with_CX(Gate_ptr op) {
   OpType optype = op->get_type();
   std::vector<Expr> params = op->get_params();
@@ -455,7 +561,7 @@ Circuit with_CX(Gate_ptr op) {
     case OpType::PhasedISWAP:
       return CircPool::PhasedISWAP_using_CX(params[0], params[1]);
     case OpType::NPhasedX:
-      return CircPool::NPhasedX_using_CX(n, params[0], params[1]);
+      return CircPool::NPhasedX_using_PhasedX(n, params[0], params[1]);
     default:
       throw CircuitInvalidity("Cannot decompose " + op->get_name());
   }

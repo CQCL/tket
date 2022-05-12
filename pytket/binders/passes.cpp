@@ -386,6 +386,9 @@ PYBIND11_MODULE(passes, m) {
       "Optimises and converts a circuit consisting of CX and single-qubit "
       "gates into one containing only ZZMax, PhasedX and Rz.");
   m.def(
+      "SynthesiseTK", &SynthesiseTK,
+      "Optimises and converts all gates to TK2 and TK1 gates.");
+  m.def(
       "SynthesiseTket", &SynthesiseTket,
       "Optimises and converts all gates to CX and TK1 gates.");
   m.def(

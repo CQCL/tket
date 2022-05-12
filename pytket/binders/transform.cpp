@@ -188,6 +188,11 @@ PYBIND11_MODULE(transform, m) {
 
       /* OPTIMISATION TRANSFORMS */
       .def_static(
+          "OptimiseStandard", &Transforms::synthesise_tk,
+          "Fast optimisation pass, performing basic simplifications. "
+          "Works on any circuit, giving the result in TK1 and TK2 gates. "
+          "Preserves connectivity of circuit.")
+      .def_static(
           "OptimisePostRouting", &Transforms::synthesise_tket,
           "Fast optimisation pass, performing basic simplifications. "
           "Works on any circuit, giving the result in TK1 and CX gates. "
