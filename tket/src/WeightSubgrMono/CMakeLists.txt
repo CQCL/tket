@@ -32,6 +32,7 @@ add_library(tket-${COMP}
   GraphTheoretic/GeneralStructs.cpp
   GraphTheoretic/NearNeighboursData.cpp
   GraphTheoretic/NeighboursData.cpp
+  GraphTheoretic/VertexRelabelling.cpp
   Reducing/DerivedGraphsReducer.cpp
   Reducing/DistancesReducer.cpp
   Reducing/HallSetReduction.cpp
