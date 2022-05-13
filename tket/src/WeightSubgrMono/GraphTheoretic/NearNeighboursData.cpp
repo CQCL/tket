@@ -22,8 +22,10 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-NearNeighboursData::NearNeighboursData(const NeighboursData& ndata)
-    : m_ndata(ndata) {}
+NearNeighboursData::NearNeighboursData(const NeighboursData& ndata, Type type)
+    : m_ndata(ndata), m_type(type) {
+  m_data.resize(ndata.get_number_of_nonisolated_vertices());
+}
 
 static void fill_neighbours_of_neighbours(
     VertexWSM root_vertex,
@@ -145,6 +147,79 @@ std::size_t NearNeighboursData::get_n_vertices_at_max_distance(
         sizes_list[ii - 1] + get_vertices_at_distance(vv, ii + 2).size();
   }
   return sizes_list[index];
+}
+
+const FilterUtils::DegreeCounts& NearNeighboursData::get_degree_counts(
+    VertexWSM vv, unsigned distance) {
+  TKET_ASSERT(distance >= 2);
+  auto& counts_list = m_data[vv].degree_counts_for_distance;
+  const unsigned index = distance - 2;
+  if (index < counts_list.size()) {
+    return counts_list[index];
+  }
+  // We don't have data up to this distance, for this vertex.
+  // Ensure first that we HAVE calculated the vertices up to this distance.
+  get_vertices_at_distance(vv, distance);
+
+  // Notice that the vertices, and degree counts here, are stored separately,
+  // but on the SAAME value m_data[vv],
+  // so references aren't invalidated.
+  const auto& vertices_lists = m_data[vv].vertices_at_distance;
+  TKET_ASSERT(index < vertices_lists.size());
+
+  auto old_size = counts_list.size();
+  counts_list.resize(index + 1);
+  m_work_map.clear();
+  if (old_size == 0) {
+    // We have to fill in distance 2 data as the initial "seed".
+    for (VertexWSM distance_2_vertex : vertices_lists[0]) {
+      // C++ standard guarantees it will be initialised with 0.
+      m_work_map[m_ndata.get_degree(distance_2_vertex)] += 1;
+    }
+    if (m_type == Type::TARGET_GRAPH) {
+      // We ALSO must fill in distance 1 data, i.e. neighbours.
+      for (const auto& entry : m_ndata.get_neighbours_and_weights(vv)) {
+        m_work_map[m_ndata.get_degree(entry.first)] += 1;
+      }
+    }
+    counts_list[0].reserve(m_work_map.size());
+    for (const auto& entry : m_work_map) {
+      counts_list[0].emplace_back(entry);
+    }
+    // Simply pretend that we'd already filled it in.
+    ++old_size;
+  }
+
+  for (unsigned index_to_fill = old_size; index_to_fill <= index;
+       ++index_to_fill) {
+    switch (m_type) {
+      case Type::PATTERN_GRAPH:
+        m_work_map.clear();
+        break;
+      case Type::TARGET_GRAPH:
+        // We'll maintain the data within m_work_map and add to it
+        // as we increase the distances.
+        if (m_work_map.empty()) {
+          // Need the initial fill of the previous data.
+          const auto& previous_counts = counts_list[index_to_fill - 1];
+          for (const auto& entry : previous_counts) {
+            m_work_map.emplace(entry);
+          }
+        }
+        break;
+    }
+    const auto& vertices = vertices_lists[index_to_fill];
+    for (auto other_vertex : vertices) {
+      m_work_map[m_ndata.get_degree(other_vertex)] += 1;
+    }
+    // Now dump it out from the map back into the vector, to be stored.
+    counts_list[index_to_fill].reserve(m_work_map.size());
+    for (const auto& entry : m_work_map) {
+      counts_list[index_to_fill].emplace_back(entry);
+    }
+    TKET_ASSERT(counts_list[index_to_fill].size() == m_work_map.size());
+  }
+  return counts_list[index];
 }
 
 }  // namespace WeightedSubgraphMonomorphism

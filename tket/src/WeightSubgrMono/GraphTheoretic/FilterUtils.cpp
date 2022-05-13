@@ -16,6 +16,8 @@
 
 #include <algorithm>
 
+#include "Utils/Assert.hpp"
+
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
@@ -97,6 +99,57 @@ bool FilterUtils::compatible_sorted_degree_sequences(
     // We could also have been fancy and searched up to somewhere before
     // target_v_deg_seq.cend() earlier.
     start_t_citer = t_citer + 1;
+  }
+  return true;
+}
+
+bool FilterUtils::compatible_sorted_degree_counts(
+    const DegreeCounts& degree_counts1, const DegreeCounts& degree_counts2) {
+  if (degree_counts1.empty()) {
+    return true;
+  }
+  auto counts_to_satisfy = degree_counts1.back();
+  TKET_ASSERT(counts_to_satisfy.first >= 1);
+  TKET_ASSERT(counts_to_satisfy.second >= 1);
+  if (degree_counts2.empty()) {
+    return false;
+  }
+  auto next_counts_sink = degree_counts2.back();
+  unsigned index1 = degree_counts1.size() - 1;
+  unsigned index2 = degree_counts2.size() - 1;
+
+  // Break out when we've cleared all the pattern vertices to be matched.
+  for (;;) {
+    while (next_counts_sink.first < counts_to_satisfy.first) {
+      if (index2 == 0) {
+        // We can't move down any further.
+        return false;
+      }
+      --index2;
+      next_counts_sink = degree_counts2[index2];
+      TKET_ASSERT(next_counts_sink.first >= 1);
+      TKET_ASSERT(next_counts_sink.second >= 1);
+    }
+    if (counts_to_satisfy.second <= next_counts_sink.second) {
+      next_counts_sink.second -= counts_to_satisfy.second;
+      if (index1 == 0) {
+        break;
+      }
+      --index1;
+      counts_to_satisfy = degree_counts1[index1];
+      TKET_ASSERT(counts_to_satisfy.first >= 1);
+      TKET_ASSERT(counts_to_satisfy.second >= 1);
+      continue;
+    }
+    counts_to_satisfy.second -= next_counts_sink.second;
+    if (index2 == 0) {
+      // We can't move down any further.
+      return false;
+    }
+    --index2;
+    next_counts_sink = degree_counts2[index2];
+    TKET_ASSERT(next_counts_sink.first >= 1);
+    TKET_ASSERT(next_counts_sink.second >= 1);
   }
   return true;
 }

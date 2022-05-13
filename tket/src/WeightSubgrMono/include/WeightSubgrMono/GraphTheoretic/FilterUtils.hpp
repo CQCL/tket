@@ -37,6 +37,18 @@ struct FilterUtils {
   static bool compatible_sorted_degree_sequences(
       const std::vector<std::size_t>& pattern_v_deg_seq,
       const std::vector<std::size_t>& target_v_deg_seq);
+
+  // In each element, FIRST is a vertex degree;
+  // SECOND is the number of vertices with that degree.
+  // Should be sorted lexicographically.
+  // We require always that the first, second are both >= 1.
+  typedef std::vector<std::pair<std::size_t, std::size_t>> DegreeCounts;
+
+  /** Really the same function as "compatible_sorted_degree_sequences",
+   * just with the data in a different format.
+   */
+  static bool compatible_sorted_degree_counts(
+      const DegreeCounts& degree_counts1, const DegreeCounts& degree_counts2);
 };
 
 }  // namespace WeightedSubgraphMonomorphism

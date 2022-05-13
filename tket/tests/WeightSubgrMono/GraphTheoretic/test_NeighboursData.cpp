@@ -72,7 +72,8 @@ SCENARIO("test neighbours_data on cycles") {
   }
 
   // Also, test near neighbours.
-  NearNeighboursData near_neighbours_data(ndata);
+  NearNeighboursData near_neighbours_data(
+      ndata, NearNeighboursData::Type::PATTERN_GRAPH);
   for (VertexWSM ii = 0; ii < cycle_length; ++ii) {
     for (unsigned distance = 0; distance <= 8; ++distance) {
       const auto count_within_d =

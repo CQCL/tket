@@ -30,6 +30,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_GeneralUtils.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_SetIntersection.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/EndToEndWrappers/test_SolutionWSM.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/GraphTheoretic/test_FilterUtils.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/GraphTheoretic/test_GeneralStructs.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/GraphTheoretic/test_NeighboursData.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Searching/test_NodesRawData.cpp

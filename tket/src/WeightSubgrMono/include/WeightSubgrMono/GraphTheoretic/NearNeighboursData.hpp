@@ -17,6 +17,7 @@
 #include <optional>
 #include <utility>
 
+#include "FilterUtils.hpp"
 #include "GeneralStructs.hpp"
 
 namespace tket {
@@ -26,7 +27,9 @@ class NeighboursData;
 
 class NearNeighboursData {
  public:
-  explicit NearNeighboursData(const NeighboursData& ndata);
+  enum class Type { PATTERN_GRAPH, TARGET_GRAPH };
+
+  NearNeighboursData(const NeighboursData& ndata, Type type);
 
   /** Calculated lazily, on demand; returns a sorted list of vertices
    * exactly at distance d from v. We must have d >= 2
@@ -40,11 +43,22 @@ class NearNeighboursData {
   const std::vector<VertexWSM>& get_vertices_at_distance(
       VertexWSM v, unsigned distance);
 
+  /** Returns information about the degrees of vertices up to
+   * the given distance from the root vertex.
+   * If this is a pattern graph, returns data for vertices EXACTLY at
+   * the specified distance; if a target graph, for vertices at
+   * or closer than the given distance.
+   * Requires the distance to be >= 2.
+   */
+  const FilterUtils::DegreeCounts& get_degree_counts(
+      VertexWSM v, unsigned distance);
+
   /** Cached. Does NOT include the vertex v itself. */
   std::size_t get_n_vertices_at_max_distance(VertexWSM v, unsigned distance);
 
  private:
   const NeighboursData& m_ndata;
+  const Type m_type;
 
   struct VertexData {
     /** element[i] is all the vertices at distance i+2, sorted by vertex number.
@@ -53,13 +67,22 @@ class NearNeighboursData {
      */
     std::vector<std::vector<VertexWSM>> vertices_at_distance;
     std::vector<std::size_t> n_vertices_at_max_distance;
+
+    /** Element[i] is for distance i+2.
+     * If a pattern graph, includes vertices at distance EXACTLY i+2;
+     * but if a target graph, includes vertices at distance <= i+2.
+     */
+    std::vector<FilterUtils::DegreeCounts> degree_counts_for_distance;
   };
+
+  // Element[i] gives data for vertex i.
+  // Lazy initialisation, but will be resized correctly upon construction.
+  std::vector<VertexData> m_data;
 
   std::set<VertexWSM> m_vertices_workset;
 
-  // KEY: the vertex  VALUE: data about that vertex (including lazy
-  // initialisation).
-  std::map<VertexWSM, VertexData> m_data;
+  // Will be used to fill "degree_counts_at_distance".
+  std::map<std::size_t, std::size_t> m_work_map;
 };
 
 }  // namespace WeightedSubgraphMonomorphism

@@ -39,13 +39,9 @@ DistancesReducer::DistancesReducer(
 }
 
 bool DistancesReducer::check(std::pair<VertexWSM, VertexWSM> assignment) {
-  const auto n_pv = m_pattern_near_ndata.get_n_vertices_at_max_distance(
-                            assignment.first, m_distance);
-
-  const auto n_tv = m_target_near_ndata.get_n_vertices_at_max_distance(
-      assignment.second, m_distance);
-
-  return n_pv <= n_tv;
+  return FilterUtils::compatible_sorted_degree_counts(
+      m_pattern_near_ndata.get_degree_counts(assignment.first, m_distance),
+      m_target_near_ndata.get_degree_counts(assignment.second, m_distance));
 }
 
 ReductionResult DistancesReducer::reduce(
