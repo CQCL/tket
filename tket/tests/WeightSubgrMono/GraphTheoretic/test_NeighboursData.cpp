@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <catch2/catch.hpp>
+#include <stdexcept>
 
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 #include "WeightSubgrMono/GraphTheoretic/NearNeighboursData.hpp"
@@ -46,11 +47,8 @@ SCENARIO("test neighbours_data on cycles") {
     std::sort(neighbours_recalc.begin(), neighbours_recalc.end());
     CHECK(neighbours_recalc == neighbours);
   }
-  const auto vertices = ndata.get_nonisolated_vertices_expensive();
-  CHECK(vertices.size() == cycle_length);
-  CHECK(vertices[0] == 0);
-  CHECK(vertices.back() + 1 == cycle_length);
-  CHECK(is_sorted_and_unique(vertices));
+  const auto number_of_vertices = ndata.get_number_of_nonisolated_vertices();
+  CHECK(number_of_vertices == cycle_length);
 
   // Now, edge functions
   for (VertexWSM ii = 0; ii < cycle_length; ++ii) {
@@ -86,9 +84,6 @@ SCENARIO("test neighbours_data on cycles") {
         case 1:
           CHECK(count_within_d == 2);
           break;
-        // case 6: // fallthrough
-        // case 7: // fallthrough
-        // case 8: CHECK(count_within_d == 0); break;
         default:
           CHECK(count_within_d == 4);
           break;
@@ -113,6 +108,50 @@ SCENARIO("test neighbours_data on cycles") {
       }
     }
   }
+}
+
+static std::string to_string(const NeighboursData& ndata) {
+  std::stringstream ss;
+  const auto number_of_vertices = ndata.get_number_of_nonisolated_vertices();
+  ss << number_of_vertices << " vertices. Neighbours and weights:";
+  for (unsigned vv = 0; vv < number_of_vertices; ++vv) {
+    ss << "\nv=" << vv << ": [ ";
+    const auto& data = ndata.get_neighbours_and_weights(vv);
+    for (const auto& entry : data) {
+      ss << entry.first << ";" << entry.second << " ";
+    }
+    ss << "]";
+  }
+  return ss.str();
+}
+
+SCENARIO("neighbours_data with invalid and simple input data") {
+  GraphEdgeWeights edge_weights;
+  CHECK_THROWS_AS(NeighboursData(edge_weights), std::runtime_error);
+  edge_weights[std::make_pair<VertexWSM, VertexWSM>(0, 0)] = 1;
+  CHECK_THROWS_AS(NeighboursData(edge_weights), std::runtime_error);
+  edge_weights.clear();
+  edge_weights[get_edge(0, 1)] = 1;
+  // v1>v2 is allowed...
+  edge_weights[std::make_pair<VertexWSM, VertexWSM>(2, 0)] = 2;
+  const NeighboursData ndata1(edge_weights);
+  const auto ndata1_str = to_string(ndata1);
+  CHECK(
+      ndata1_str ==
+      "3 vertices. Neighbours and weights:"
+      "\nv=0: [ 1;1 2;2 ]"
+      "\nv=1: [ 0;1 ]"
+      "\nv=2: [ 0;2 ]");
+
+  // Inconsistent edge weights are not allowed...
+  edge_weights[std::make_pair<VertexWSM, VertexWSM>(0, 2)] = 3;
+  REQUIRE(edge_weights.size() == 3);
+  CHECK_THROWS_AS(NeighboursData(edge_weights), std::runtime_error);
+
+  //...but duplicate data IS allowed, as long as it's not inconsistent
+  edge_weights[std::make_pair<VertexWSM, VertexWSM>(0, 2)] = 2;
+  const NeighboursData ndata2(edge_weights);
+  CHECK(ndata1_str == to_string(ndata2));
 }
 
 }  // namespace WeightedSubgraphMonomorphism
