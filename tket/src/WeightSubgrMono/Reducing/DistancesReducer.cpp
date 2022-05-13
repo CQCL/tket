@@ -15,7 +15,9 @@
 #include "WeightSubgrMono/Reducing/DistancesReducer.hpp"
 
 #include "Utils/Assert.hpp"
+#include "WeightSubgrMono/Common/GeneralUtils.hpp"
 #include "WeightSubgrMono/Common/SetIntersection.hpp"
+#include "WeightSubgrMono/GraphTheoretic/FilterUtils.hpp"
 #include "WeightSubgrMono/GraphTheoretic/NearNeighboursData.hpp"
 #include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
 #include "WeightSubgrMono/Searching/DomainsAccessor.hpp"
@@ -37,14 +39,13 @@ DistancesReducer::DistancesReducer(
 }
 
 bool DistancesReducer::check(std::pair<VertexWSM, VertexWSM> assignment) {
-  // We must have   #{u : dist(pv,u) = j } <= #{v : dist(tv,v) <= j}
-  // for each j; but ALSO
-  //  #{u : dist(pv,u) <= j } <= #{v : dist(tv,v) <= j }
-  // The second clearly implies the first, thus we check the second.
-  return m_pattern_near_ndata.get_n_vertices_at_max_distance(
-             assignment.first, m_distance) <=
-         m_target_near_ndata.get_n_vertices_at_max_distance(
-             assignment.second, m_distance);
+  const auto n_pv = m_pattern_near_ndata.get_n_vertices_at_max_distance(
+                            assignment.first, m_distance);
+
+  const auto n_tv = m_target_near_ndata.get_n_vertices_at_max_distance(
+      assignment.second, m_distance);
+
+  return n_pv <= n_tv;
 }
 
 ReductionResult DistancesReducer::reduce(

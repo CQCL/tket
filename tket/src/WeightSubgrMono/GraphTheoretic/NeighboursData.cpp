@@ -46,34 +46,61 @@ std::vector<VertexWSM> NeighboursData::get_neighbours_expensive(
 }
 
 std::size_t NeighboursData::get_number_of_nonisolated_vertices() const {
-  return m_neighbours_and_weights_map.size();
-}
-
-std::vector<VertexWSM> NeighboursData::get_nonisolated_vertices_expensive()
-    const {
-  std::vector<VertexWSM> nonisolated_vertices;
-  nonisolated_vertices.reserve(m_neighbours_and_weights_map.size());
-  for (auto& entry : m_neighbours_and_weights_map) {
-    nonisolated_vertices.push_back(entry.first);
-  }
-  return nonisolated_vertices;
+  return m_neighbours_and_weights.size();
 }
 
 void NeighboursData::initialise(const GraphEdgeWeights& edges_and_weights) {
-  m_number_of_edges = edges_and_weights.size();
-  m_neighbours_and_weights_map.clear();
-
+  // Only the edges (v1,v2) with v1<v2.
+  std::set<std::pair<VertexWSM, VertexWSM>> ordered_edges_seen;
+  std::set<VertexWSM> vertices_seen;
   for (const auto& entry : edges_and_weights) {
     const auto& v1 = entry.first.first;
     const auto& v2 = entry.first.second;
+    vertices_seen.insert(v1);
+    vertices_seen.insert(v2);
     if (v1 == v2) {
       throw std::runtime_error("Loop found in graph; not allowed");
     }
-    m_neighbours_and_weights_map[v1].emplace_back(v2, entry.second);
-    m_neighbours_and_weights_map[v2].emplace_back(v1, entry.second);
+    ordered_edges_seen.insert(get_edge(v1, v2));
   }
-  for (auto& entry : m_neighbours_and_weights_map) {
-    auto& neigh_data = entry.second;
+  if (vertices_seen.empty()) {
+    throw std::runtime_error("No edges passed to NeighboursData");
+  }
+  if (*vertices_seen.cbegin() != 0 ||
+      *vertices_seen.crbegin() != vertices_seen.size() - 1) {
+    throw std::runtime_error("Vertices should be [0,1,2,...,N].");
+  }
+  for (const auto& edge : ordered_edges_seen) {
+    const auto weight_opt = get_optional_value(edges_and_weights, edge);
+    if (weight_opt) {
+      const auto other_weight_opt = get_optional_value(
+          edges_and_weights, std::make_pair(edge.second, edge.first));
+      if (other_weight_opt && weight_opt.value() != other_weight_opt.value()) {
+        throw std::runtime_error("Edge weights mismatch");
+      }
+    }
+  }
+  m_number_of_edges = ordered_edges_seen.size();
+  m_neighbours_and_weights.resize(vertices_seen.size());
+  for (auto& entry : m_neighbours_and_weights) {
+    entry.clear();
+  }
+  for (const auto& edge : ordered_edges_seen) {
+    const auto& v1 = edge.first;
+    const auto& v2 = edge.second;
+    TKET_ASSERT(v1 < v2);
+    TKET_ASSERT(v2 < vertices_seen.size());
+    WeightWSM weight;
+    const auto weight_opt = get_optional_value(edges_and_weights, edge);
+    if (weight_opt) {
+      weight = weight_opt.value();
+    } else {
+      weight = edges_and_weights.at(std::make_pair(v2, v1));
+    }
+    m_neighbours_and_weights[v1].emplace_back(v2, weight);
+    m_neighbours_and_weights[v2].emplace_back(v1, weight);
+  }
+  for (auto& neigh_data : m_neighbours_and_weights) {
     // Automatically sort by vertex first; lexicographic.
     std::sort(neigh_data.begin(), neigh_data.end());
     TKET_ASSERT(is_sorted_and_unique(neigh_data));
@@ -82,11 +109,10 @@ void NeighboursData::initialise(const GraphEdgeWeights& edges_and_weights) {
 
 std::optional<WeightWSM> NeighboursData::get_edge_weight_opt(
     VertexWSM v1, VertexWSM v2) const {
-  const auto v1_citer = m_neighbours_and_weights_map.find(v1);
-  if (v1_citer == m_neighbours_and_weights_map.cend()) {
+  if (v1 >= m_neighbours_and_weights.size()) {
     return {};
   }
-  const auto& v1_data = v1_citer->second;
+  const auto& v1_data = m_neighbours_and_weights[v1];
   // (x,0) = (x,min) <= (x,w) <= (x+1, y) in lexicographic order
   std::pair<VertexWSM, WeightWSM> key;
   key.first = v2;
@@ -109,21 +135,19 @@ bool NeighboursData::binary_search(
 }
 
 std::size_t NeighboursData::get_degree(VertexWSM v) const {
-  const auto v_citer = m_neighbours_and_weights_map.find(v);
-  if (v_citer == m_neighbours_and_weights_map.cend()) {
+  if (v >= m_neighbours_and_weights.size()) {
     return 0;
   }
-  return v_citer->second.size();
+  return m_neighbours_and_weights[v].size();
 }
 
 std::vector<std::size_t> NeighboursData::get_sorted_degree_sequence_expensive(
     VertexWSM v) const {
   std::vector<std::size_t> result;
-  const auto v_citer = m_neighbours_and_weights_map.find(v);
-  if (v_citer == m_neighbours_and_weights_map.cend()) {
+  if (v >= m_neighbours_and_weights.size()) {
     return result;
   }
-  for (const auto& entry : v_citer->second) {
+  for (const auto& entry : m_neighbours_and_weights[v]) {
     result.push_back(get_degree(entry.first));
   }
   std::sort(result.begin(), result.end());
@@ -132,26 +156,20 @@ std::vector<std::size_t> NeighboursData::get_sorted_degree_sequence_expensive(
 
 const std::vector<std::pair<VertexWSM, WeightWSM>>&
 NeighboursData::get_neighbours_and_weights(VertexWSM v) const {
-  const auto v_citer = m_neighbours_and_weights_map.find(v);
-  if (v_citer == m_neighbours_and_weights_map.cend()) {
+  if (v >= m_neighbours_and_weights.size()) {
     return m_empty_data;
   }
-  return v_citer->second;
-}
-
-const NeighboursData::NeighboursMap& NeighboursData::get_map() const {
-  return m_neighbours_and_weights_map;
+  return m_neighbours_and_weights[v];
 }
 
 std::vector<WeightWSM> NeighboursData::get_weights_expensive() const {
   std::vector<WeightWSM> weights;
   weights.reserve(m_number_of_edges);
-  for (const auto& entry : m_neighbours_and_weights_map) {
-    const VertexWSM v1 = entry.first;
+  for (unsigned v1 = 0; v1 < m_neighbours_and_weights.size(); ++v1) {
     // Every edge is implicitly stored twice, for (v1, v2) and (v2, v1).
     // To avoid duplicates, only write the weight when v1>v2.
     // The neighbour edges are stored with increasing v, as always.
-    for (const auto& inner_entry : entry.second) {
+    for (const auto& inner_entry : m_neighbours_and_weights[v1]) {
       const VertexWSM& v2 = inner_entry.first;
       if (v2 > v1) {
         break;

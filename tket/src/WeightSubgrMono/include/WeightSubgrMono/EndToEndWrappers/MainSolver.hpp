@@ -17,6 +17,7 @@
 #include <memory>
 
 #include "../GraphTheoretic/NeighboursData.hpp"
+#include "../GraphTheoretic/VertexRelabelling.hpp"
 #include "../Searching/SearchBranch.hpp"
 #include "MainSolverParameters.hpp"
 #include "SolutionData.hpp"
@@ -59,10 +60,14 @@ class MainSolver {
   const SolutionData& get_solution_data() const;
 
  private:
-  SolutionData m_solution_data;
+  const VertexRelabelling m_pattern_vertex_relabelling;
+  const VertexRelabelling m_target_vertex_relabelling;
 
   NeighboursData m_pattern_neighbours_data;
   NeighboursData m_target_neighbours_data;
+
+  SolutionData m_solution_data;
+  mutable SolutionData m_solution_data_original_vertices;
 
   // If the problem is trivially insoluble, no need to spend time constructing
   // these.

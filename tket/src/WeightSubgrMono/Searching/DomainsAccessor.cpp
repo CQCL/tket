@@ -27,8 +27,8 @@ namespace WeightedSubgraphMonomorphism {
 DomainsAccessor::DomainsAccessor(NodesRawDataWrapper& raw_data_wrapper)
     : m_raw_data(raw_data_wrapper.m_raw_data) {}
 
-const std::vector<VertexWSM>& DomainsAccessor::get_pattern_vertices() const {
-  return m_raw_data.pattern_vertices;
+unsigned DomainsAccessor::get_number_of_pattern_vertices() const {
+  return m_raw_data.domains_data.size();
 }
 
 bool DomainsAccessor::current_node_is_valid() const {
@@ -87,12 +87,11 @@ bool DomainsAccessor::alldiff_reduce_current_node(
     const auto assignment = new_assignments[n_assignments_already_processed];
     ++n_assignments_already_processed;
 
-    for (auto& domains_information : m_raw_data.domains_data) {
-      const VertexWSM& pv = domains_information.first;
+    for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
       if (pv == assignment.first) {
         continue;
       }
-      auto& data_for_this_pv = m_raw_data.domains_data.at(pv);
+      auto& data_for_this_pv = m_raw_data.domains_data[pv];
       auto& existing_domain =
           data_for_this_pv.entries[data_for_this_pv.entries_back_index].domain;
       auto iter = existing_domain.find(assignment.second);
@@ -254,17 +253,18 @@ std::string DomainsAccessor::str(bool full) const {
       ss << "\n+++ node " << level << ":" << node.str();
     }
     ss << "\nDOMAINS: ";
-    for (const auto& entry : m_raw_data.domains_data) {
-      ss << "\nDOM(" << entry.first << "):" << entry.second.str();
+    for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
+      ss << "\nDOM(" << pv << "):" << m_raw_data.domains_data[pv].str();
     }
     ss << "\n";
     return ss.str();
   }
   ss << "\ncurr.node lev=" << m_raw_data.current_node_level << "; DOMAINS: ";
-  for (const auto& entry : m_raw_data.domains_data) {
-    ss << "\n  DOM(" << entry.first << "): ";
+  for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
+    ss << "\n  DOM(" << pv << "): ";
     const auto& dom_data =
-        entry.second.entries[entry.second.entries_back_index];
+        m_raw_data.domains_data[pv]
+            .entries[m_raw_data.domains_data[pv].entries_back_index];
     ss << "(since lev " << dom_data.node_level
        << "): " << tket::WeightedSubgraphMonomorphism::str(dom_data.domain);
   }
@@ -279,9 +279,7 @@ DomainsAccessor::get_unassigned_pattern_vertices_superset() const {
   if (!candidate.empty()) {
     return candidate;
   }
-  if (m_raw_data.current_node_level == 0) {
-    return m_raw_data.pattern_vertices;
-  }
+  TKET_ASSERT(m_raw_data.current_node_level > 0);
   return m_raw_data.nodes_data[m_raw_data.current_node_level - 1]
       .unassigned_vertices_superset;
 }

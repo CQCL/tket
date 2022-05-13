@@ -65,7 +65,7 @@ bool WeightChecker::check(
     }
   }
   const std::size_t current_number_of_assigned_vertices =
-      accessor.get_pattern_vertices().size() -
+      accessor.get_number_of_pattern_vertices() -
       current_number_of_unassigned_vertices;
 
   const auto current_scalar_product = accessor.get_scalar_product();

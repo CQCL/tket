@@ -27,7 +27,7 @@ namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 SearchBranch::SearchBranch(
-    const PossibleAssignments& initial_pattern_v_to_possible_target_v,
+    const DomainInitialiser::InitialDomains& initial_domains,
     const NeighboursData& pattern_ndata, NearNeighboursData& pattern_near_ndata,
     const NeighboursData& target_ndata, NearNeighboursData& target_near_ndata,
     unsigned max_distance_reduction_value, ExtraStatistics& extra_statistics)
@@ -36,7 +36,7 @@ SearchBranch::SearchBranch(
       m_extra_statistics(extra_statistics),
       m_derived_graphs_reducer(m_pattern_ndata, m_target_ndata),
       m_neighbours_reducer(m_pattern_ndata, m_target_ndata),
-      m_nodes_raw_data_wrapper(initial_pattern_v_to_possible_target_v),
+      m_nodes_raw_data_wrapper(initial_domains),
       m_domains_accessor(m_nodes_raw_data_wrapper),
       m_node_list_traversal(m_nodes_raw_data_wrapper) {
   m_extra_statistics.number_of_pattern_vertices =
@@ -44,9 +44,8 @@ SearchBranch::SearchBranch(
   m_extra_statistics.number_of_target_vertices =
       m_target_ndata.get_number_of_nonisolated_vertices();
   m_extra_statistics.initial_number_of_possible_assignments = 0;
-  for (const auto& entry : initial_pattern_v_to_possible_target_v) {
-    m_extra_statistics.initial_number_of_possible_assignments +=
-        entry.second.size();
+  for (const auto& entry : initial_domains) {
+    m_extra_statistics.initial_number_of_possible_assignments += entry.size();
   }
 
   // In what order should we do reduction/checks?
@@ -169,12 +168,14 @@ bool SearchBranch::perform_weight_nogood_check_in_reduce_loop(
     bool node_is_valid = m_weight_checker_ptr->check(
         m_domains_accessor, max_extra_scalar_product);
 
+    const auto number_of_pv =
+        m_domains_accessor.get_number_of_pattern_vertices();
     for (VertexWSM tv : m_impossible_target_vertices) {
       // This is rare. Crudely treat as a list of assignments.
       // We want to pass them all in now, though, even if we're at a nogood;
       // they might not be detected again.
       m_extra_statistics.impossible_target_vertices.emplace_back(tv);
-      for (VertexWSM pv : m_domains_accessor.get_pattern_vertices()) {
+      for (unsigned pv = 0; pv < number_of_pv; ++pv) {
         m_node_list_traversal.erase_impossible_assignment(
             std::make_pair(pv, tv));
       }

@@ -15,6 +15,7 @@
 #pragma once
 #include <memory>
 
+#include "../GraphTheoretic/DomainInitialiser.hpp"
 #include "../Reducing/DerivedGraphsReducer.hpp"
 #include "../Reducing/DistancesReducer.hpp"
 #include "../Reducing/HallSetReduction.hpp"
@@ -45,7 +46,7 @@ class SearchBranch {
    * The search branch is also entirely responsible for ExtraStatistics.
    */
   SearchBranch(
-      const PossibleAssignments& initial_pattern_v_to_possible_target_v,
+      const DomainInitialiser::InitialDomains& initial_domains,
       const NeighboursData& pattern_ndata,
       NearNeighboursData& pattern_near_ndata,
       const NeighboursData& target_ndata, NearNeighboursData& target_near_ndata,

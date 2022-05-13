@@ -27,40 +27,41 @@ namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 bool DomainInitialiser::full_initialisation(
-    PossibleAssignments& possible_assignments,
+    InitialDomains& initial_domains,
     const NeighboursData& pattern_neighbours_data,
     NearNeighboursData& pattern_near_neighbours_data,
     const NeighboursData& target_neighbours_data,
     NearNeighboursData& target_near_neighbours_data, unsigned max_path_length) {
   return degree_sequence_initialisation(
-             possible_assignments, pattern_neighbours_data,
+             initial_domains, pattern_neighbours_data,
              target_neighbours_data) &&
 
          distance_counts_reduction(
-             possible_assignments, pattern_near_neighbours_data,
+             initial_domains, pattern_near_neighbours_data,
              target_near_neighbours_data, max_path_length);
 }
 
 bool DomainInitialiser::degree_sequence_initialisation(
-    PossibleAssignments& possible_assignments,
+    InitialDomains& initial_domains,
     const NeighboursData& pattern_neighbours_data,
     const NeighboursData& target_neighbours_data) {
-  possible_assignments.clear();
-  for (const auto& entry : pattern_neighbours_data.get_map()) {
-    possible_assignments[entry.first];
+  initial_domains.resize(
+      pattern_neighbours_data.get_number_of_nonisolated_vertices());
+  for (auto& domain : initial_domains) {
+    domain.clear();
   }
 
   // Get the target degree sequences.
+  const auto number_of_tv =
+      target_neighbours_data.get_number_of_nonisolated_vertices();
 
   // FIRST: the target vertex;
   // SECOND: its degree sequence.
   typedef std::pair<VertexWSM, std::vector<std::size_t>> DegSeqData;
   std::vector<DegSeqData> target_degree_sequences;
 
-  const auto& target_map = target_neighbours_data.get_map();
-  target_degree_sequences.reserve(target_map.size());
-  for (const auto& t_entry : target_map) {
-    const VertexWSM tv = t_entry.first;
+  target_degree_sequences.reserve(number_of_tv);
+  for (unsigned tv = 0; tv < number_of_tv; ++tv) {
     target_degree_sequences.emplace_back(
         tv, target_neighbours_data.get_sorted_degree_sequence_expensive(tv));
   }
@@ -76,10 +77,10 @@ bool DomainInitialiser::degree_sequence_initialisation(
                 lhs.first < rhs.first);
       });
 
+  // TODO: get TV data lazily (maybe some will be unused).
   std::vector<std::size_t> pattern_sequence;
-  for (auto& entry : possible_assignments) {
-    const auto& pv = entry.first;
-    auto& domain = entry.second;
+  for (unsigned pv = 0; pv < initial_domains.size(); ++pv) {
+    auto& domain = initial_domains[pv];
     pattern_sequence =
         pattern_neighbours_data.get_sorted_degree_sequence_expensive(pv);
 
@@ -102,7 +103,7 @@ bool DomainInitialiser::degree_sequence_initialisation(
 }
 
 bool DomainInitialiser::distance_counts_reduction(
-    PossibleAssignments& possible_assignments,
+    InitialDomains& initial_domains,
     NearNeighboursData& pattern_near_neighbours_data,
     NearNeighboursData& target_near_neighbours_data, unsigned max_path_length) {
   if (max_path_length <= 1) {
@@ -110,13 +111,10 @@ bool DomainInitialiser::distance_counts_reduction(
     return true;
   }
   // Easier to build them all up, then erase them later in a separate pass.
-  // KEY: PV  VALUE:
-  // std::map<VertexWSM, std::vector<VertexWSM>> impossible_assignments;
   std::vector<VertexWSM> tv_to_erase;
 
-  for (auto& entry : possible_assignments) {
-    const VertexWSM& pv = entry.first;
-    auto& domain = entry.second;
+  for (unsigned pv = 0; pv < initial_domains.size(); ++pv) {
+    auto& domain = initial_domains[pv];
     tv_to_erase.clear();
     for (VertexWSM tv : domain) {
       // If f is a valid monomorphism then

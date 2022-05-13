@@ -33,8 +33,12 @@ typedef std::chrono::steady_clock Clock;
 MainSolver::MainSolver(
     const GraphEdgeWeights& pattern_edges, const GraphEdgeWeights& target_edges,
     const MainSolverParameters& parameters)
-    : m_pattern_neighbours_data(pattern_edges),
-      m_target_neighbours_data(target_edges) {
+    : m_pattern_vertex_relabelling(pattern_edges),
+      m_target_vertex_relabelling(target_edges),
+      m_pattern_neighbours_data(
+          m_pattern_vertex_relabelling.new_edges_and_weights),
+      m_target_neighbours_data(
+          m_target_vertex_relabelling.new_edges_and_weights) {
   const auto num_p_vertices =
       m_pattern_neighbours_data.get_number_of_nonisolated_vertices();
   if (num_p_vertices == 0) {
@@ -73,9 +77,9 @@ MainSolver::MainSolver(
 
   bool initialisation_succeeded;
   {
-    PossibleAssignments initial_pattern_v_to_possible_target_v;
+    DomainInitialiser::InitialDomains initial_domains;
     initialisation_succeeded = DomainInitialiser::full_initialisation(
-        initial_pattern_v_to_possible_target_v, m_pattern_neighbours_data,
+        initial_domains, m_pattern_neighbours_data,
         m_pre_search_components_ptr->pattern_near_ndata,
         m_target_neighbours_data,
         m_pre_search_components_ptr->target_near_ndata,
@@ -86,7 +90,7 @@ MainSolver::MainSolver(
       TKET_ASSERT(m_search_components_ptr);
 
       m_search_branch_ptr = std::make_unique<SearchBranch>(
-          initial_pattern_v_to_possible_target_v, m_pattern_neighbours_data,
+          initial_domains, m_pattern_neighbours_data,
           m_pre_search_components_ptr->pattern_near_ndata,
           m_target_neighbours_data,
           m_pre_search_components_ptr->target_near_ndata,
@@ -182,7 +186,29 @@ const SolutionData& MainSolver::get_solution_data() const {
   if (m_search_branch_ptr) {
     m_search_branch_ptr->get_updated_extra_statistics();
   }
-  return m_solution_data;
+  if (m_pattern_vertex_relabelling.new_to_old_vertex_labels.empty() &&
+      m_target_vertex_relabelling.new_to_old_vertex_labels.empty()) {
+    return m_solution_data;
+  }
+  // We must relabel some vertices.
+  m_solution_data_original_vertices = m_solution_data;
+  for (auto& solution : m_solution_data_original_vertices.solutions) {
+    if (!m_pattern_vertex_relabelling.new_to_old_vertex_labels.empty()) {
+      for (auto& assignment : solution.assignments) {
+        assignment.first =
+            m_pattern_vertex_relabelling.new_to_old_vertex_labels.at(
+                assignment.first);
+      }
+    }
+    if (!m_target_vertex_relabelling.new_to_old_vertex_labels.empty()) {
+      for (auto& assignment : solution.assignments) {
+        assignment.second =
+            m_target_vertex_relabelling.new_to_old_vertex_labels.at(
+                assignment.second);
+      }
+    }
+  }
+  return m_solution_data_original_vertices;
 }
 
 void MainSolver::solve(const MainSolverParameters& parameters) {
@@ -343,11 +369,11 @@ void MainSolver::add_solution_from_final_node(
     m_solution_data.solutions.emplace_back();
   }
   auto& assignments = m_solution_data.solutions.back().assignments;
-  const auto& p_vertices = accessor.get_pattern_vertices();
+  const auto number_of_pv = accessor.get_number_of_pattern_vertices();
   assignments.clear();
-  assignments.reserve(p_vertices.size());
+  assignments.reserve(number_of_pv);
 
-  for (VertexWSM pv : p_vertices) {
+  for (unsigned pv = 0; pv < number_of_pv; ++pv) {
     const auto& domain = accessor.get_domain(pv);
     TKET_ASSERT(domain.size() == 1);
     assignments.emplace_back(pv, *domain.cbegin());

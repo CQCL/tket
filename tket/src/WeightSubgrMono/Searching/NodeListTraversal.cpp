@@ -30,8 +30,8 @@ std::set<VertexWSM> NodeListTraversal::get_used_target_vertices() const {
   std::set<VertexWSM> target_vertices;
 
   // Examine all PV.
-  for (const auto& entry_just_for_one_pv : m_raw_data.domains_data) {
-    const auto& domain_data = entry_just_for_one_pv.second;
+  for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
+    const auto& domain_data = m_raw_data.domains_data[pv];
 
     // Examine Dom(PV) at all levels.
     for (unsigned level = 0; level <= domain_data.entries_back_index; ++level) {
@@ -73,8 +73,8 @@ bool NodeListTraversal::move_up() {
     if (m_raw_data.nodes_data[m_raw_data.current_node_level].nogood) {
       continue;
     }
-    for (auto& entry_for_single_pv : m_raw_data.domains_data) {
-      auto& domain_data = entry_for_single_pv.second;
+    for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
+      auto& domain_data = m_raw_data.domains_data[pv];
       while (domain_data.entries[domain_data.entries_back_index].node_level >
              m_raw_data.current_node_level) {
         // We've moved above the level of "junk data",

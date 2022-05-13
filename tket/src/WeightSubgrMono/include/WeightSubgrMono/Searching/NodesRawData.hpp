@@ -15,7 +15,7 @@
 #pragma once
 #include <string>
 
-#include "../GraphTheoretic/GeneralStructs.hpp"
+#include "../GraphTheoretic/DomainInitialiser.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
@@ -60,17 +60,16 @@ struct NodesRawData {
   // about one particular Node in a list,
   // which cuts roughly horizontally across the DomainData strands.
 
-  // A sorted list of all PV.
-  const std::vector<VertexWSM> pattern_vertices;
-
   /** DomainData is "vertical"; each particular object is a "vertical strand"
-   * giving information about one particular PV.
+   * giving information about one particular PV (all along the search nodes).
    */
   struct DomainData {
     struct Entry {
       std::set<VertexWSM> domain;
 
-      // The index in the std::vector of node objects.
+      // The index in the std::vector of node objects
+      // when this new domain was first set (i.e., changed from
+      // the domain in the previous node).
       unsigned node_level;
     };
 
@@ -84,9 +83,9 @@ struct NodesRawData {
     std::string str() const;
   };
 
-  /** Key: pv  Value: A "vertical strand": information about all Domain(pv).
+  /** "vertical strands": element[pv] gives information about all Domain(pv).
    */
-  std::map<VertexWSM, DomainData> domains_data;
+  std::vector<DomainData> domains_data;
 
   /** This is the "horizontal" data; each one has information about the node
    * which does NOT depend on the PV.
@@ -134,7 +133,8 @@ struct NodesRawData {
    */
   unsigned current_node_level;
 
-  explicit NodesRawData(const PossibleAssignments& possible_assignments);
+  explicit NodesRawData(
+      const DomainInitialiser::InitialDomains& initial_domains);
 
   const NodeData& get_current_node() const;
   NodeData& get_current_node_nonconst();
@@ -145,7 +145,8 @@ struct NodesRawData {
 /** We are careful to restrict access to the raw data. */
 class NodesRawDataWrapper {
  public:
-  explicit NodesRawDataWrapper(const PossibleAssignments& possible_assignments);
+  explicit NodesRawDataWrapper(
+      const DomainInitialiser::InitialDomains& initial_domains);
 
  private:
   NodesRawData m_raw_data;

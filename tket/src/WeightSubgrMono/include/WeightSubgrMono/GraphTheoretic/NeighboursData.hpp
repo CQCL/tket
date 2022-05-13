@@ -24,6 +24,7 @@ namespace WeightedSubgraphMonomorphism {
 
 /** The main object used to search for neighbours of a vertex,
  * check for existing edges, and get edge weights.
+ * The input vertices MUST be {0,1,2,...,N} for some N.
  */
 class NeighboursData {
  public:
@@ -70,11 +71,6 @@ class NeighboursData {
   const std::vector<std::pair<VertexWSM, WeightWSM>>&
   get_neighbours_and_weights(VertexWSM v) const;
 
-  /** Compute all vertices occurring in an edge, sorted by vertex number.
-   * Time O(V log V), only for one-off constructions.
-   */
-  std::vector<VertexWSM> get_nonisolated_vertices_expensive() const;
-
   /** Get the list of vertex degrees of all neighbours of v, sorted in
    * increasing order.
    * Constructed afresh each time, so should not be called repeatedly.
@@ -91,14 +87,6 @@ class NeighboursData {
    */
   std::vector<VertexWSM> get_neighbours_expensive(VertexWSM v) const;
 
-  typedef std::map<VertexWSM, std::vector<std::pair<VertexWSM, WeightWSM>>>
-      NeighboursMap;
-
-  /** The caller should NOT rely on the value type, which is liable to change;
-   * only the KEYS are guaranteed to be stable (the vertices).
-   */
-  const NeighboursMap& get_map() const;
-
   /** This is "expensive" because it must be constructed afresh each time,
    * taking O(E) time. The weights are not in sorted order.
    */
@@ -110,8 +98,10 @@ class NeighboursData {
       VertexWSM v, const std::vector<std::pair<VertexWSM, WeightWSM>>& list);
 
  private:
-  // KEY: a vertex VALUE: all neighbouring vertices, with the edge weights.
-  NeighboursMap m_neighbours_and_weights_map;
+  // Element[i] gives all neighbouring vertices and edge weights
+  // for vertex i, sorted by the the neighbouring vertex numerical value.
+  std::vector<std::vector<std::pair<VertexWSM, WeightWSM>>>
+      m_neighbours_and_weights;
 
   std::vector<std::pair<VertexWSM, WeightWSM>> m_empty_data;
 

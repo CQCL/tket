@@ -13,10 +13,7 @@
 // limitations under the License.
 
 #pragma once
-#include <limits>
 #include <set>
-#include <string>
-#include <utility>
 
 #include "../GraphTheoretic/GeneralStructs.hpp"
 
@@ -33,10 +30,17 @@ class NeighboursData;
  */
 class DomainInitialiser {
  public:
-  /** Apply all the different filters once at the start to reduce
-   * possible_assignments as much as possible.
-   * @param possible_assignments All possible pv->tv mappings. We will erase
-   * some, if we can show that they are impossible.
+  /** Element[pv] is Domain(pv), i.e. the set of all target vertices
+   * which pv could map to.
+   */
+  typedef std::vector<std::set<VertexWSM>> InitialDomains;
+
+  /** Fill initial_domains, using the different filters to try to make domains
+   * small; the whole purpose of this class. The necessary data about the
+   * pattern and target graphs is already contained within the NeighboursData
+   * objects.
+   * @param initial_domains All possible pv->tv mappings, returned by reference.
+   * We will erase some, if we can show that they are impossible.
    * @param pattern_neighbours_data The object to calculate information about
    * the pattern graph (immediate neighbours of a vertex).
    * @param pattern_near_neighbours_data An object to calculate nearby vertices
@@ -51,7 +55,7 @@ class DomainInitialiser {
    * monomorphism f exists).
    */
   static bool full_initialisation(
-      PossibleAssignments& possible_assignments,
+      InitialDomains& initial_domains,
       const NeighboursData& pattern_neighbours_data,
       NearNeighboursData& pattern_near_neighbours_data,
       const NeighboursData& target_neighbours_data,
@@ -61,10 +65,10 @@ class DomainInitialiser {
  private:
   /** The most obvious initialisation: just look at degree sequences,
    * i.e. the vertex degrees of all neighbouring vertices.
-   * Begin here by filling possible_assignments.
+   * Begin here by filling initial_domains.
    */
   static bool degree_sequence_initialisation(
-      PossibleAssignments& possible_assignments,
+      InitialDomains& initial_domains,
       const NeighboursData& pattern_neighbours_data,
       const NeighboursData& target_neighbours_data);
 
@@ -74,7 +78,7 @@ class DomainInitialiser {
    * Dist(F(v),y) <= d.
    */
   static bool distance_counts_reduction(
-      PossibleAssignments& possible_assignments,
+      InitialDomains& initial_domains,
       NearNeighboursData& pattern_near_neighbours_data,
       NearNeighboursData& target_near_neighbours_data,
       unsigned max_path_length);

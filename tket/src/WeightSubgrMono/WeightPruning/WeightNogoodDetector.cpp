@@ -88,7 +88,7 @@ bool WeightNogoodDetector::fill_t_weight_lower_bounds_for_p_edges_containing_pv(
   // Every unassigned edge must connect to an unassigned p-vertex.
   m_t_weight_lower_bounds_for_p_edges_containing_pv.clear();
 
-  for (VertexWSM pv : accessor.get_pattern_vertices()) {
+  for (unsigned pv = 0; pv < accessor.get_number_of_pattern_vertices(); ++pv) {
     WeightWSM weight;
     set_maximum(weight);
     const auto& domain = accessor.get_domain(pv);

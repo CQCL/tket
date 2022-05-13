@@ -15,6 +15,7 @@
 #include "WeightSubgrMono/Searching/NodesRawData.hpp"
 
 #include <sstream>
+#include <stdexcept>
 
 #include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
@@ -22,41 +23,36 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-static std::vector<VertexWSM> get_pattern_vertices(
-    const PossibleAssignments& possible_assignments) {
-  std::vector<VertexWSM> pattern_vertices;
-  pattern_vertices.reserve(possible_assignments.size());
-  for (const auto& entry : possible_assignments) {
-    pattern_vertices.push_back(entry.first);
-  }
-  return pattern_vertices;
-}
-
-NodesRawData::NodesRawData(const PossibleAssignments& possible_assignments)
-    : pattern_vertices(get_pattern_vertices(possible_assignments)),
-      current_node_level(0) {
+NodesRawData::NodesRawData(
+    const DomainInitialiser::InitialDomains& initial_domains)
+    : current_node_level(0) {
   nodes_data.resize(1);
-
+  TKET_ASSERT(initial_domains.size() >= 2);
+  domains_data.resize(initial_domains.size());
   auto& node = nodes_data[0];
   node.nogood = false;
   node.scalar_product = 0;
   node.total_p_edge_weights = 0;
 
-  for (const auto& entry : possible_assignments) {
-    const VertexWSM& pv = entry.first;
-    const auto& domain = entry.second;
-
+  for (unsigned pv = 0; pv < initial_domains.size(); ++pv) {
+    const auto& domain = initial_domains[pv];
     auto& domain_data = domains_data[pv];
     domain_data.entries_back_index = 0;
     domain_data.entries.resize(1);
     domain_data.entries[0].domain = domain;
     domain_data.entries[0].node_level = 0;
 
-    TKET_ASSERT(!domain.empty());
-    if (domain.size() == 1) {
-      node.new_assignments.emplace_back(pv, *domain.cbegin());
-    } else {
-      node.unassigned_vertices_superset.push_back(pv);
+    switch (domain.size()) {
+      case 0: {
+        std::stringstream ss;
+        ss << "NodesRawData: Domain(" << pv << ") is empty!";
+        throw std::runtime_error(ss.str());
+      }
+      case 1:
+        node.new_assignments.emplace_back(pv, *domain.cbegin());
+        break;
+      default:
+        node.unassigned_vertices_superset.push_back(pv);
     }
   }
 }
@@ -95,8 +91,8 @@ std::string NodesRawData::DomainData::str() const {
 }
 
 NodesRawDataWrapper::NodesRawDataWrapper(
-    const PossibleAssignments& possible_assignments)
-    : m_raw_data(possible_assignments) {}
+    const DomainInitialiser::InitialDomains& initial_domains)
+    : m_raw_data(initial_domains) {}
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

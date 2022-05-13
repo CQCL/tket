@@ -33,10 +33,7 @@ class DomainsAccessor {
   /** The wrapped NodesRawData object will be directly altered. */
   explicit DomainsAccessor(NodesRawDataWrapper& raw_data_wrapper);
 
-  /** Stored once and available forever.
-   * @return A sorted vector of all vertices in the pattern graph.
-   */
-  const std::vector<VertexWSM>& get_pattern_vertices() const;
+  unsigned get_number_of_pattern_vertices() const;
 
   /** Every unassigned p-vertex (i.e., with size Domain(pv) > 1) in the
    * current node is included in here.

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-Version 0.3.
+Version 0.31.
 
 BASIC PROBLEM:
 
@@ -97,6 +97,10 @@ FURTHER COMMENTS:
 
 NOTABLE CHANGES FROM PREVIOUS VERSIONS:
 
+Version 0.3 -> 0.31:
+- Refactor: internally relabels vertices if necessary (and converts them back again at the end - no visible difference for the user), to make them lie in {0,1,2,...,N}. This allows std::vector instead of std::map in some places. This simple change increases speed by >10% !
+
+
 Version 0.2 -> 0.3:
 
 - We used to have a std::vector of Node objects, with each Node containing a   std::map<vertex, std::set<vertex>>   object. Thus, for each PV, we have a set Dom(PV) which is the collection of all target vertices which PV could take (if not yet assigned). This corresponds exactly to the obvious mathematical formulation of the algorithm. HOWEVER, this requires a lot of copying of data. Instead, we now split into  std::map<vertex, history>,  where a "history" object records instead all versions of Domain(PV), for a SINGLE PV. We can streamline this further by only making a new domain object when it CHANGES.
@@ -127,10 +131,6 @@ Version 0.2 -> 0.3:
 
 
 POSSIBLE FUTURE PLANS/REFACTORINGS:
-
-- Because the pattern vertices don't change, we could relabel vertices and use std::vectors instead of std::maps; this would be a little faster. The initial relabelling overhead would be completely negligible for all but the most trivial small problems.
-
-There is no doubt that this WOULD work; the question is how significant the speedup would be.
 
 - Obviously, encoding a domain with a dynamic bitset instead of a std::set could be worth doing.
 
