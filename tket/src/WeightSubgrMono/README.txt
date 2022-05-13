@@ -100,10 +100,9 @@ NOTABLE CHANGES FROM PREVIOUS VERSIONS:
 Version 0.3 -> 0.31:
 - Refactor: internally relabels vertices if necessary (and converts them back again at the end - no visible difference for the user), to make them lie in {0,1,2,...,N}. This allows std::vector instead of std::map in some places. This simple change increases speed by >10% !
 
-
 Version 0.2 -> 0.3:
 
-- We used to have a std::vector of Node objects, with each Node containing a   std::map<vertex, std::set<vertex>>   object. Thus, for each PV, we have a set Dom(PV) which is the collection of all target vertices which PV could take (if not yet assigned). This corresponds exactly to the obvious mathematical formulation of the algorithm. HOWEVER, this requires a lot of copying of data. Instead, we now split into  std::map<vertex, history>,  where a "history" object records instead all versions of Domain(PV), for a SINGLE PV. We can streamline this further by only making a new domain object when it CHANGES.
+- We used to have a std::vector of Node objects, with each Node containing a   std::map<vertex, std::set<vertex>>   object. Thus, for each PV, we have a set Dom(PV) which is the collection of all target vertices which PV could take (if not yet assigned). This corresponds exactly to the obvious mathematical formulation of the algorithm. HOWEVER, this requires a lot of copying of data. Instead, we now split into  std::map<vertex, history>,  where a "history" object records instead all versions of Domain(PV), for a SINGLE PV. We now only make a new domain object when it CHANGES. [REMARK: in version 0.31, these std::maps have become std::vectors!]
 
 - When deciding on a new candidate p-vertex to assign (variable ordering), version 0.2 gave priority to those adjacent to newly assigned PV. However, removing this and simply treating all unassigned vertices equally was equally fast or significantly faster in almost every test case (even ignoring the extra slight speedup from erasing the extra bookkeeping code). Maybe this is not so surprising; initially we think of "nearby" vertices as being "more constrained", and so more natural to assign first. But we have many graph-theoretic reduction methods, some of which are more "long range". So, viewed purely as an abstract constrained variables problem, there is no compelling reason why we should pay attention to adjacent vertices.
 
