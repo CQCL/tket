@@ -919,6 +919,16 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
       .def(
+          "ZZMax",
+          [](Circuit *circ, unsigned qb0, unsigned qb1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_noparams<unsigned>(
+                circ, OpType::ZZMax, {qb0, qb1}, kwargs);
+          },
+          "Appends a ZZMax gate on the wires for the specified two qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("qubit0"), py::arg("qubit1"))
+      .def(
           "XXPhase",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
              const py::kwargs &kwargs) {
@@ -1015,6 +1025,26 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "in the default classical register. Bits are added to the "
           "circuit if they do not already exist."
           "\n\n:return: the new :py:class:`Circuit`")
+      .def(
+          "measure_register",
+          [](Circuit *circ, const QubitRegister &qreg,
+             const std::string &creg_name) {
+            if (!circ->get_reg_info(qreg.name())) {
+              throw CircuitInvalidity(
+                  "The given QubitRegister is not in use, please use "
+                  "add_q_register to add it to the circuit first.");
+            }
+            circ->add_c_register(creg_name, qreg.size());
+            for (unsigned i = 0; i < qreg.size(); i++) {
+              circ->add_measure(qreg[i], Bit(creg_name, i));
+            }
+            return circ;
+          },
+          "Appends a measure gate to all qubits in the given register, storing "
+          "the results in a newly created classical register."
+          "\n\n:param qreg: the QubitRegister to be measured"
+          "\n:param creg_name: the name of the BitRegister to be created"
+          "\n:return: the new :py:class:`Circuit`")
       .def(
           "H",
           [](Circuit *circ, const Qubit &qb, const py::kwargs &kwargs) {
@@ -1304,6 +1334,16 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("qubit0"), py::arg("qubit1"), py::arg("angle"))
+      .def(
+          "ZZMax",
+          [](Circuit *circ, const Qubit &qb0, const Qubit &qb1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_noparams<UnitID>(
+                circ, OpType::ZZMax, {qb0, qb1}, kwargs);
+          },
+          "Appends a ZZMax gate on the wires for the specified two qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "XXPhase",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,

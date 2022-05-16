@@ -12,7 +12,7 @@ jobs:
     outputs:
       recipes_symengine: ${{ steps.filter.outputs.recipes_symengine }}
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - uses: dorny/paths-filter@v2
       id: filter
       with:
@@ -34,7 +34,7 @@ jobs:
       CXX: g++-10
       CONAN_REVISIONS_ENABLED: 1
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: install conan
       run: pip install conan
     - name: create profile
@@ -69,9 +69,9 @@ jobs:
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.9'
     - name: install conan
@@ -79,7 +79,7 @@ jobs:
     - name: create profile
       run: conan profile new tket --detect
     - name: install boost
-      run: conan install --profile=tket -s build_type=${{ matrix.build_type }} boost/1.78.0@ --build=missing
+      run: conan install --profile=tket -s build_type=${{ matrix.build_type }} boost/1.79.0@ --build=missing
     - name: build symengine
       run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o symengine:shared=${{ matrix.shared }} recipes/symengine tket/stable
     - name: add remote
@@ -108,7 +108,7 @@ jobs:
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: install conan
       run: pip install -U conan
     - name: create profile
@@ -141,7 +141,7 @@ jobs:
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: install conan
       run: pip install conan
     - name: create profile
@@ -167,3 +167,29 @@ jobs:
     - name: upload package
       if: github.event_name == 'push'
       run: conan upload symengine/${{ env.SYMENGINE_VER }}@tket/stable --all -r=tket-conan
+  manylinux:
+    name: build symengine (manylinux)
+    needs: changes
+    if: needs.changes.outputs.recipes_symengine == 'true'
+    runs-on: ubuntu-20.04
+    env:
+      UPLOAD_PACKAGE: "NO"
+    steps:
+    - uses: actions/checkout@v3
+    - name: set up container
+      run: |
+        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:latest /bin/bash
+        docker cp ./recipes/symengine linux_build:/
+        docker cp ./.github/workflows/linuxbuildsymengine linux_build:/
+    - name: determine whether to upload package
+      if: github.event_name == 'push'
+      run: echo "UPLOAD_PACKAGE=YES" >> ${GITHUB_ENV}
+    - name: build symengine
+      run: |
+        docker start linux_build
+        cat <<EOF > env-vars
+        UPLOAD_PACKAGE=${UPLOAD_PACKAGE}
+        JFROG_ARTIFACTORY_TOKEN_1=${{ secrets.JFROG_ARTIFACTORY_TOKEN_1 }}
+        JFROG_ARTIFACTORY_USER_1=${{ secrets.JFROG_ARTIFACTORY_USER_1 }}
+        EOF
+        docker exec --env-file env-vars linux_build /bin/bash -c "/linuxbuildsymengine"

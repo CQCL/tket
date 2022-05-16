@@ -16,6 +16,7 @@
 
 #include "Predicates/CompilationUnit.hpp"
 #include "Utils/UnitID.hpp"
+#include "binder_json.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
@@ -82,7 +83,20 @@ PYBIND11_MODULE(predicates, m) {
           ":return: True if predicate implies another one, else False",
           py::arg("other"))
       .def("__str__", [](const Predicate &) { return "<tket::Predicate>"; })
-      .def("__repr__", &Predicate::to_string);
+      .def("__repr__", &Predicate::to_string)
+      .def(
+          "to_dict",
+          [](const PredicatePtr &predicate) {
+            return nlohmann::json(predicate);
+          },
+          "Return a JSON serializable dict representation of "
+          "the Predicate.\n\n"
+          ":return: dict representation of the Predicate.")
+      .def_static(
+          "from_dict",
+          [](const nlohmann::json &j) { return j.get<PredicatePtr>(); },
+          "Construct Predicate instance from JSON serializable "
+          "dict representation of the Predicate.");
   py::class_<GateSetPredicate, std::shared_ptr<GateSetPredicate>, Predicate>(
       m, "GateSetPredicate",
       "Predicate asserting that the circuit contains only gates from a "
@@ -177,6 +191,11 @@ PYBIND11_MODULE(predicates, m) {
       .def(
           py::init<const node_set_t &>(), "Construct from a set of Node.",
           py::arg("nodes"));
+  py::class_<
+      NoBarriersPredicate, std::shared_ptr<NoBarriersPredicate>, Predicate>(
+      m, "NoBarriersPredicate",
+      "Predicate asserting that a circuit contains no Barrier operations.")
+      .def(py::init<>(), "Constructor.");
   py::class_<
       NoMidMeasurePredicate, std::shared_ptr<NoMidMeasurePredicate>, Predicate>(
       m, "NoMidMeasurePredicate",

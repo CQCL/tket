@@ -24,6 +24,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Utils/test_HelperFunctions.cpp
     ${TKET_TESTS_DIR}/Utils/test_MatrixAnalysis.cpp
     ${TKET_TESTS_DIR}/Utils/test_RNG.cpp
+    ${TKET_TESTS_DIR}/Utils/test_Logging.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphColouring.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindComponents.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindMaxClique.cpp
@@ -56,6 +57,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Ops/test_ClassicalOps.cpp
     ${TKET_TESTS_DIR}/Ops/test_Expression.cpp
     ${TKET_TESTS_DIR}/Ops/test_Ops.cpp
+    ${TKET_TESTS_DIR}/Passes/test_SynthesiseTK.cpp
     ${TKET_TESTS_DIR}/Gate/test_GateUnitaryMatrix.cpp
     ${TKET_TESTS_DIR}/Simulation/test_CircuitSimulator.cpp
     ${TKET_TESTS_DIR}/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
@@ -101,6 +103,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/test_Path.cpp
     ${TKET_TESTS_DIR}/test_SteinerTree.cpp
     ${TKET_TESTS_DIR}/test_SteinerForest.cpp
+    ${TKET_TESTS_DIR}/test_wasm.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXDiagram.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXAxioms.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXSimp.cpp

@@ -233,7 +233,7 @@ setup(
     author="Seyon Sivarajah",
     author_email="seyon.sivarajah@cambridgequantum.com",
     python_requires=">=3.8",
-    url="https://cqcl.github.io/pytket",
+    url="https://cqcl.github.io/tket/pytket/api/",
     description="Python module for interfacing with the CQC tket library of quantum "
     "software",
     license="Apache 2",
@@ -247,7 +247,7 @@ setup(
         "graphviz ~= 0.14",
         "jinja2 ~= 3.0",
         "types-pkg_resources",
-        "typing-extensions ~= 3.7",
+        "typing-extensions ~= 4.2",
     ],
     ext_modules=[
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders

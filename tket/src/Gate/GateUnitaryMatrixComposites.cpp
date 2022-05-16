@@ -63,6 +63,11 @@ Eigen::Matrix4cd GateUnitaryMatrixImplementations::CRz(double alpha) {
   return GateUnitaryMatrixUtils::get_controlled_gate_unitary(Rz(alpha));
 }
 
+Eigen::Matrix4cd GateUnitaryMatrixImplementations::TK2(
+    double alpha, double beta, double gamma) {
+  return XXPhase(alpha) * YYPhase(beta) * ZZPhase(gamma);
+}
+
 Eigen::Matrix4cd GateUnitaryMatrixImplementations::PhasedISWAP(
     double p, double t) {
   auto matr = ISWAP(t);

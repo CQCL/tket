@@ -1,14 +1,35 @@
 Changelog
 =========
 
-1.x.y (unreleased)
+x.y.z (unreleased)
 ------------------
+
+Minor new features:
+
+* Added explicit constructors for various Python classes.
+* New ``measure_register`` method for measuring registers.
+* Added ``OpType.TK2``, a three-parameter two-qubit gate.
+* New pass ``SynthesiseTK`` and transform ``OptimiseStandard`` to synthesize
+  TK2 gates.
+* Add ``Optype.WASM``, adding a classical wasm function call to the circuit
+
+1.1.0 (April 2022)
+------------------
+
+Minor new features:
+
+* new additional constructor for ``PhasePolyBox`` from a given ``Circuit``
+* New compilation pass ``ComposePhasePolyBoxes`` for generating
+  PhasePolyBoxes in a given circuit
+* Add JSON serialization methods for ``Predicate``, ``MeasurementSetup`` and ``MeasurementBitMap``.
+* Add ``NoBarriersPredicate``.
 
 Fixes:
 
 * Fix qubit order in ``QubitPauliOperator.to_sparse_matrix()``.
 * Fix issue with "nan" values appearing after symbolic substitution following
   compilation of some symbolic circuits.
+* ``PhasePolyBox`` constructor is not accepting invalid boxes anymore
 
 1.0.1 (March 2022)
 ------------------

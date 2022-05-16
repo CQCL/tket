@@ -34,6 +34,9 @@ void init_library(py::module &m) {
       "_BRIDGE_using_CX_1", &CircPool::BRIDGE_using_CX_1,
       "Equivalent to BRIDGE, using four CX, first CX has control on qubit 1");
   library_m.def(
+      "_CX_using_TK2", &CircPool::CX_using_TK2,
+      "Equivalent to CX, using a TK2 and single-qubit gates");
+  library_m.def(
       "_CX_using_flipped_CX", &CircPool::CX_using_flipped_CX,
       "Equivalent to CX[0,1], using a CX[1,0] and four H gates");
   library_m.def(
@@ -137,14 +140,26 @@ void init_library(py::module &m) {
       "_ZZMax_using_CX", &CircPool::ZZMax_using_CX,
       "Equivalent to ZZMax, using CX, Rz and U3 gates ");
   library_m.def(
+      "_CRz_using_TK2", &CircPool::CRz_using_TK2,
+      "Equivalent to CRz, using a TK2 and TK1 gates");
+  library_m.def(
       "_CRz_using_CX", &CircPool::CRz_using_CX,
       "Equivalent to CRz, using CX and Rz gates");
+  library_m.def(
+      "_CRx_using_TK2", &CircPool::CRx_using_TK2,
+      "Equivalent to CRx, using a TK2 and TK1 gates");
   library_m.def(
       "_CRx_using_CX", &CircPool::CRx_using_CX,
       "Equivalent to CRx, using CX, H and Rx gates");
   library_m.def(
+      "_CRy_using_TK2", &CircPool::CRy_using_TK2,
+      "Equivalent to CRy, using a TK2 and TK1 gates");
+  library_m.def(
       "_CRy_using_CX", &CircPool::CRy_using_CX,
       "Equivalent to CRy, using CX and Ry gates");
+  library_m.def(
+      "_CU1_using_TK2", &CircPool::CU1_using_TK2,
+      "Equivalent to CU1, using a TK2 and TK1 gates");
   library_m.def(
       "_CU1_using_CX", &CircPool::CU1_using_CX,
       "Equivalent to CU1, using CX and U1 gates");
@@ -152,31 +167,55 @@ void init_library(py::module &m) {
       "_CU3_using_CX", &CircPool::CU3_using_CX,
       "Equivalent to CU1, using CX, U1 and U3 gates");
   library_m.def(
+      "_ISWAP_using_TK2", &CircPool::ISWAP_using_TK2,
+      "Equivalent to ISWAP, using a TK2 gate");
+  library_m.def(
       "_ISWAP_using_CX", &CircPool::ISWAP_using_CX,
       "Equivalent to ISWAP, using CX, U3 and Rz gates");
+  library_m.def(
+      "_XXPhase_using_TK2", &CircPool::XXPhase_using_TK2,
+      "Equivalent to XXPhase, using a TK2 gate");
   library_m.def(
       "_XXPhase_using_CX", &CircPool::XXPhase_using_CX,
       "Equivalent to XXPhase, using CX and U3 gates ");
   library_m.def(
+      "_YYPhase_using_TK2", &CircPool::YYPhase_using_TK2,
+      "Equivalent to YYPhase, using a TK2 gate");
+  library_m.def(
       "_YYPhase_using_CX", &CircPool::YYPhase_using_CX,
       "Equivalent to YYPhase, using CX, Rz and U3 gates");
+  library_m.def(
+      "_ZZPhase_using_TK2", &CircPool::ZZPhase_using_TK2,
+      "Equivalent to ZZPhase, using a TK2 gate");
   library_m.def(
       "_ZZPhase_using_CX", &CircPool::ZZPhase_using_CX,
       "Equivalent to ZZPhase, using CX and Rz gates");
   library_m.def(
+      "_XXPhase3_using_TK2", &CircPool::XXPhase3_using_TK2,
+      "Equivalent to XXPhase3, using three TK2 gates");
+  library_m.def(
       "_XXPhase3_using_CX", &CircPool::XXPhase3_using_CX,
       "Equivalent to 3-qubit MS interaction, using CX and U3 gates");
+  library_m.def(
+      "_ESWAP_using_TK2", &CircPool::ESWAP_using_TK2,
+      "Equivalent to ESWAP, using a TK2 and (Clifford) TK1 gates");
   library_m.def(
       "_ESWAP_using_CX", &CircPool::XXPhase3_using_CX,
       "Equivalent to ESWAP, using CX, X, S, Ry and U1 gates");
   library_m.def(
+      "_FSim_using_TK2", &CircPool::FSim_using_TK2,
+      "Equivalent to FSim, using a TK2 and TK1 gates");
+  library_m.def(
       "_FSim_using_CX", &CircPool::FSim_using_CX,
       "Equivalent to Fsim, using CX, X, S, U1 and U3 gates ");
+  library_m.def(
+      "_PhasedISWAP_using_TK2", &CircPool::PhasedISWAP_using_TK2,
+      "Equivalent to PhasedISWAP, using a TK2 and Rz gates");
   library_m.def(
       "_PhasedISWAP_using_CX", &CircPool::PhasedISWAP_using_CX,
       "Equivalent to PhasedISWAP, using CX, U3 and Rz gates");
   library_m.def(
-      "_NPhasedX_using_CX", &CircPool::NPhasedX_using_CX,
+      "_NPhasedX_using_PhasedX", &CircPool::NPhasedX_using_PhasedX,
       "Unwrap NPhasedX, into number_of_qubits PhasedX gates");
 
   library_m.def(

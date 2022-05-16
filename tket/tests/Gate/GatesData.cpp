@@ -56,6 +56,7 @@ static GatesData get_data() {
   };
   data.input_data[2][3] = {
       OpType::CU3,
+      OpType::TK2,
   };
   data.input_data[3][0] = {
       OpType::CCX,

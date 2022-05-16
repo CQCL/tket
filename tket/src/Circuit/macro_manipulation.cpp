@@ -676,8 +676,8 @@ std::map<Bit, bool> Circuit::classical_eval(
     if (!is_classical_type(optype)) {
       throw CircuitInvalidity("Non-classical operation");
     }
-    std::shared_ptr<const ClassicalOp> cop =
-        std::dynamic_pointer_cast<const ClassicalOp>(op);
+    std::shared_ptr<const ClassicalEvalOp> cop =
+        std::dynamic_pointer_cast<const ClassicalEvalOp>(op);
     unit_vector_t args = it->get_args();
     unsigned n_args = args.size();
     switch (optype) {
