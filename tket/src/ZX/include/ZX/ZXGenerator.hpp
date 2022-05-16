@@ -67,6 +67,8 @@ enum class ZXType {
   // A (postselected) Pauli X qubit in MBQC
   // Corresponds to a Z spider with phase either 0 (param=False) or 1
   // (param=True)
+  // Also used for unmeasured vertices in MBQC diagrams (connected to an Output
+  // via a Basic wire)
   PX,
 
   // A (postselected) Pauli Y qubit in MBQC

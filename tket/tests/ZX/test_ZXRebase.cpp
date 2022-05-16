@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include <catch2/catch.hpp>
-#include <fstream>
 
 #include "ZX/Rewrite.hpp"
 #include "ZX/ZXDiagram.hpp"
@@ -38,7 +37,6 @@ SCENARIO("Take a generic diagram and apply each rebase to it") {
   ZXVert xspid = diag.add_vertex(ZXType::XSpider, 1.8, QuantumType::Classical);
   diag.add_wire(ins.at(0), h0);
   diag.add_wire(h0, xy);
-  // diag.add_wire(ins.at(0), xy);
   diag.add_wire(xy, yz);
   diag.add_wire(xy, pz);
   diag.add_wire(pz, outs.at(0));
@@ -50,7 +48,6 @@ SCENARIO("Take a generic diagram and apply each rebase to it") {
   diag.add_wire(py, h1, ZXWireType::Basic, QuantumType::Classical);
   diag.add_wire(h1, h1);
   diag.add_wire(h1, outs.at(1), ZXWireType::Basic, QuantumType::Classical);
-  // diag.add_wire(py, outs.at(1), ZXWireType::Basic, QuantumType::Classical);
   REQUIRE_NOTHROW(diag.check_validity());
 
   // Just check for gate counts here; check for semantic preservation in python

@@ -172,8 +172,8 @@ class ZXDiagram {
   // boundaries)
   bool is_graphlike() const;
 
-  // Whether the diagram is MBQC (MBQC, Inputs, and Outputs, Basic from Input, H
-  // otherwise)
+  // Whether the diagram is MBQC (MBQC, Inputs, and Outputs, Basic to
+  // boundaries, H otherwise)
   bool is_MBQC() const;
 
   /**

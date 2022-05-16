@@ -36,7 +36,6 @@ void clean_frontier(
         }
         switch (diag.get_zxtype(f)) {
           case ZXType::Input: {
-            frontier.erase(std::find(frontier.begin(), frontier.end(), f));
             break;
           }
           case ZXType::XY: {
@@ -44,9 +43,9 @@ void clean_frontier(
             Expr ph = f_gen.get_param();
             if (!equiv_0(ph)) {
               circ.add_op<unsigned>(OpType::U1, ph, {q});
-              diag.set_vertex_ZXGen_ptr(
-                  f, ZXGen::create_gen(ZXType::PX, *f_gen.get_qtype()));
             }
+            diag.set_vertex_ZXGen_ptr(
+                f, ZXGen::create_gen(ZXType::PX, *f_gen.get_qtype()));
             break;
           }
           case ZXType::PX: {
@@ -81,10 +80,28 @@ void clean_frontier(
     circ.add_op<unsigned>(
         OpType::CZ, {qubit_map.at(pair.first), qubit_map.at(pair.second)});
   }
+  ZXVertVec new_frontier;
+  for (const ZXVert& f : frontier) {
+    bool removed = false;
+    ZXVertVec ns = diag.neighbours(f);
+    if (ns.size() == 2) {
+      ZXType nt0 = diag.get_zxtype(ns.at(0));
+      ZXType nt1 = diag.get_zxtype(ns.at(1));
+      if ((nt0 == ZXType::Input && nt1 == ZXType::Output) ||
+          (nt0 == ZXType::Output && nt1 == ZXType::Input)) {
+        diag.add_wire(ns.at(0), ns.at(1));
+        diag.remove_vertex(f);
+        removed = true;
+      }
+    }
+    if (!removed && diag.get_zxtype(f) != ZXType::Input)
+      new_frontier.push_back(f);
+  }
+  frontier = new_frontier;
 }
 
 ZXVertSeqSet neighbours_of_frontier(
-    const ZXDiagram& diag, ZXVertVec& frontier) {
+    const ZXDiagram& diag, const ZXVertVec& frontier) {
   ZXVertSeqSet n_set;
   for (const ZXVert& f : frontier) {
     for (const Wire& w : diag.adj_wires(f)) {
@@ -110,7 +127,22 @@ static void bipartite_complementation(
   }
 }
 
-bool remove_all_gadgets(ZXDiagram& diag, const ZXVertVec& frontier) {
+void extend_if_input(ZXDiagram& diag, const ZXVert& v, std::map<ZXVert, ZXVert>& input_qubits) {
+  std::map<ZXVert, ZXVert>::iterator found = input_qubits.find(v);
+  if (found != input_qubits.end()) {
+    ZXVert in = found->second;
+    ZXVert ext0 = diag.add_vertex(ZXType::XY);
+    ZXVert ext1 = diag.add_vertex(ZXType::XY);
+    diag.remove_wire(diag.adj_wires(in).at(0));
+    diag.add_wire(in, ext0);
+    diag.add_wire(ext0, ext1, ZXWireType::H);
+    diag.add_wire(ext1, v, ZXWireType::H);
+    input_qubits.erase(found);
+    input_qubits.insert({ext0, in});
+  }
+}
+
+bool remove_all_gadgets(ZXDiagram& diag, const ZXVertVec& frontier, std::map<ZXVert, ZXVert>& input_qubits) {
   bool removed_gadget = false;
   for (const ZXVert& f : frontier) {
     ZXVertVec f_ns = diag.neighbours(f);
@@ -126,23 +158,34 @@ bool remove_all_gadgets(ZXDiagram& diag, const ZXVertVec& frontier) {
       if (diag.get_zxtype(n) == ZXType::YZ) {
         // Pivot
         // Identify three subsets of neighbours
-        ZXVertSeqSet excl_f{f_ns.begin(), f_ns.end()};
-        excl_f.erase(n);
-        excl_f.erase(o);
+        ZXVertSeqSet excl_f;
+        // Need to recalculate neighbours rather than use f_ns as we might have extended
+        extend_if_input(diag, f, input_qubits);
+        for (const ZXVert& n : diag.neighbours(f)) {
+          extend_if_input(diag, n, input_qubits);
+          excl_f.insert(n);
+        }
+        excl_f.get<TagKey>().erase(n);
+        excl_f.get<TagKey>().erase(o);
         ZXVertSeqSet excl_n, joint;
         auto& lookup_f = excl_f.get<TagKey>();
         for (const ZXVert& nn : diag.neighbours(n)) {
+          extend_if_input(diag, nn, input_qubits);
           if (lookup_f.find(nn) != lookup_f.end())
             joint.insert(nn);
           else
             excl_n.insert(nn);
         }
-        excl_n.erase(f);
-        excl_f.erase(joint.begin(), joint.end());
+        excl_n.get<TagKey>().erase(f);
+        for (const ZXVert& nn : joint.get<TagSeq>()) excl_f.get<TagKey>().erase(nn);
         // The is_MBQC check in zx_to_circuit guarantees QuantumType::Quantum
         bipartite_complementation(diag, joint, excl_n);
         bipartite_complementation(diag, joint, excl_f);
         bipartite_complementation(diag, excl_n, excl_f);
+        // In place of switching vertices f and n, we invert their connectivities
+        excl_n.insert(excl_f.begin(), excl_f.end());
+        bipartite_complementation(diag, {f}, excl_n);
+        bipartite_complementation(diag, {n}, excl_n);
         Wire ow = *diag.wire_between(f, o);
         diag.set_wire_type(
             ow, (diag.get_wire_type(ow) == ZXWireType::Basic)
@@ -188,6 +231,7 @@ bool remove_all_gadgets(ZXDiagram& diag, const ZXVertVec& frontier) {
           diag.set_vertex_ZXGen_ptr(nn, new_gen);
         }
         removed_gadget = true;
+        break;
       }
     }
   }
@@ -207,22 +251,29 @@ Circuit zx_to_circuit(const ZXDiagram& d) {
 
   ZXVertVec frontier;
   std::map<ZXVert, unsigned> qubit_map;
+  unsigned q = 0;
   for (const ZXVert& o : outs) {
     ZXVert f_i = diag.neighbours(o).at(0);
     frontier.push_back(f_i);
-    qubit_map.insert({o, qubit_map.size()});
-    qubit_map.insert({f_i, qubit_map.size()});
+    qubit_map.insert({o, q});
+    qubit_map.insert({f_i, q});
+    ++q;
   }
+  std::map<ZXVert, ZXVert> input_qubits;
+  for (const ZXVert& i : ins) input_qubits.insert({diag.neighbours(i).at(0), i});
 
   clean_frontier(diag, frontier, circ, qubit_map);
   while (!frontier.empty()) {
-    if (remove_all_gadgets(diag, frontier)) continue;
-
+    if (remove_all_gadgets(diag, frontier, input_qubits)) {
+      clean_frontier(diag, frontier, circ, qubit_map);
+    }
     ZXVertSeqSet neighbours = neighbours_of_frontier(diag, frontier);
     boost::bimap<ZXVert, unsigned> correctors, preserve, ys;
     ZXVertVec to_solve;
-    for (const ZXVert& f : frontier)
-      correctors.insert({f, (unsigned)correctors.size()});
+    for (const ZXVert& f : frontier) {
+      if (input_qubits.find(f) == input_qubits.end())
+        correctors.insert({f, (unsigned)correctors.size()});
+    }
     for (const ZXVert& n : neighbours.get<TagSeq>()) {
       ZXType n_type = diag.get_zxtype(n);
       if (n_type == ZXType::XY || n_type == ZXType::PX ||
@@ -282,8 +333,6 @@ Circuit zx_to_circuit(const ZXDiagram& d) {
     }
 
     clean_frontier(diag, frontier, circ, qubit_map);
-    // Remove inputs from frontier
-    neighbours_of_frontier(diag, frontier);
   }
 
   qubit_map_t qm;
