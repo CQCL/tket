@@ -315,6 +315,14 @@ std::string CustomGate::get_name(bool) const {
   return s.str();
 }
 
+bool CustomGate::is_clifford() const {
+  std::shared_ptr<Circuit> circ = to_circuit();
+  BGL_FORALL_VERTICES(v, circ->dag, DAG) {
+    if (!circ->get_Op_ptr_from_Vertex(v)->is_clifford()) return false;
+  }
+  return true;
+}
+
 QControlBox::QControlBox(const Op_ptr &op, unsigned n_controls)
     : Box(OpType::QControlBox), op_(op), n_controls_(n_controls) {
   op_signature_t inner_sig = op_->get_signature();

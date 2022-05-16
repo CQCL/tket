@@ -524,6 +524,8 @@ class CustomGate : public Box {
 
   static nlohmann::json to_json(const Op_ptr &op);
 
+  bool is_clifford() const override;
+
  protected:
   void generate_circuit() const override;
   CustomGate() : Box(OpType::CustomGate), gate_(), params_() {}
