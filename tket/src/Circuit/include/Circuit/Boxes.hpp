@@ -108,12 +108,13 @@ Op_ptr set_box_id(BoxT &b, boost::uuids::uuid newid) {
 }
 
 /**
- * Operation defined as a circuit
+ * Operation defined as a circuit.
  */
 class CircBox : public Box {
  public:
   /**
-   * Construct from a given circuit
+   * Construct from a given circuit. The circuit must be simple; see
+   * https://github.com/CQCL/tket/issues/205
    */
   explicit CircBox(const Circuit &circ);
 
