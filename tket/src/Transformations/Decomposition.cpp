@@ -597,12 +597,12 @@ Transform decompose_cliffords_std() {
     bool success = false;
     VertexList bin;
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-      OpType opT = circ.get_OpType_from_Vertex(v);
-      if (opT == OpType::TK1 || opT == OpType::U3 || opT == OpType::U2 ||
-          opT == OpType::U1 || opT == OpType::Rx || opT == OpType::Ry ||
-          opT == OpType::Rz || opT == OpType::PhasedX) {
-        const Op_ptr g = circ.get_Op_ptr_from_Vertex(v);
-        std::vector<Expr> tk1_param_exprs = as_gate_ptr(g)->get_tk1_angles();
+      Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+      OpType type = op->get_type();
+      if (type != OpType::V && type != OpType::S && type != OpType::X &&
+          type != OpType::Z && is_single_qubit_unitary_type(type) &&
+          op->is_clifford()) {
+        std::vector<Expr> tk1_param_exprs = as_gate_ptr(op)->get_tk1_angles();
         bool all_reduced = true;
         bool all_roundable = true;
         std::vector<int> iangles(3);
