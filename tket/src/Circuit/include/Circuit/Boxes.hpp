@@ -427,6 +427,8 @@ class PauliExpBox : public Box {
 
   ~PauliExpBox() override {}
 
+  bool is_clifford() const override;
+
   SymSet free_symbols() const override;
 
   /**

@@ -23,6 +23,7 @@
 #include "Ops/OpJsonFactory.hpp"
 #include "ThreeQubitConversion.hpp"
 #include "Utils/EigenConfig.hpp"
+#include "Utils/Expression.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/PauliStrings.hpp"
 
@@ -208,6 +209,10 @@ PauliExpBox::PauliExpBox(const PauliExpBox &other)
     : Box(other), paulis_(other.paulis_), t_(other.t_) {}
 
 PauliExpBox::PauliExpBox() : PauliExpBox({}, 0.) {}
+
+bool PauliExpBox::is_clifford() const {
+  return equiv_0(4 * t_) || paulis_.empty();
+}
 
 SymSet PauliExpBox::free_symbols() const { return expr_free_symbols(t_); }
 
