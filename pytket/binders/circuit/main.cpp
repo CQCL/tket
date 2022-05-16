@@ -296,7 +296,8 @@ PYBIND11_MODULE(circuit, m) {
       .value(
           "PhasePolyBox", OpType::PhasePolyBox,
           "An operation representing arbitrary circuits made "
-          "up of CX and Rz gates, represented as a phase polynomial together with a boolean matrix "
+          "up of CX and Rz gates, represented as a phase polynomial together "
+          "with a boolean matrix "
           "representing an additional linear transformation.")
       .value(
           "Unitary1qBox", OpType::Unitary1qBox,
