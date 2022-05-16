@@ -76,6 +76,13 @@ CircBox::CircBox() : Box(OpType::CircBox) {
   circ_ = std::make_shared<Circuit>();
 }
 
+bool CircBox::is_clifford() const {
+  BGL_FORALL_VERTICES(v, circ_->dag, DAG) {
+    if (!circ_->get_Op_ptr_from_Vertex(v)->is_clifford()) return false;
+  }
+  return true;
+}
+
 Op_ptr CircBox::symbol_substitution(
     const SymEngine::map_basic_basic &sub_map) const {
   Circuit new_circ(*to_circuit());
