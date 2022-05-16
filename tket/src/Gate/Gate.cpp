@@ -389,6 +389,12 @@ std::optional<double> Gate::is_identity() const {
   }
 }
 
+bool Gate::is_clifford() const {
+  OpDesc OD = get_desc();
+  return OD.is_clifford_gate() || (OD.is_parameterised_pauli_rotation() &&
+                                   equiv_0(4 * get_params().at(0)));
+}
+
 std::string Gate::get_name(bool latex) const {
   OpDesc desc = get_desc();
   if (params_.size() > 0) {
