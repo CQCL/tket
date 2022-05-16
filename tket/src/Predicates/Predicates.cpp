@@ -442,8 +442,7 @@ std::string DirectednessPredicate::to_string() const {
 bool CliffordCircuitPredicate::verify(const Circuit& circ) const {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-    if (is_gate_type(op->get_type()) && !op->is_clifford())
-      return false;
+    if (is_gate_type(op->get_type()) && !op->is_clifford()) return false;
   }
   return true;
 }

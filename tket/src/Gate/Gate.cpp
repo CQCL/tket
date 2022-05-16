@@ -14,13 +14,16 @@
 
 #include "Gate.hpp"
 
+#include <algorithm>
 #include <vector>
 
 #include "GateUnitaryMatrix.hpp"
 #include "GateUnitaryMatrixError.hpp"
 #include "OpPtrFunctions.hpp"
 #include "OpType/OpType.hpp"
+#include "OpType/OpTypeFunctions.hpp"
 #include "OpType/OpTypeInfo.hpp"
+#include "Ops/Op.hpp"
 #include "Utils/Expression.hpp"
 #include "Utils/RNG.hpp"
 #include "symengine/eval_double.h"
@@ -390,9 +393,35 @@ std::optional<double> Gate::is_identity() const {
 }
 
 bool Gate::is_clifford() const {
-  OpDesc OD = get_desc();
-  return OD.is_clifford_gate() || (OD.is_parameterised_pauli_rotation() &&
-                                   equiv_0(4 * get_params().at(0)));
+  if (is_clifford_type(type_)) return true;
+
+  switch (type_) {
+    case OpType::Rx:
+    case OpType::Ry:
+    case OpType::Rz:
+    case OpType::U1:
+    case OpType::U2:
+    case OpType::U3:
+    case OpType::TK1:
+    case OpType::TK2:
+    case OpType::XXPhase:
+    case OpType::YYPhase:
+    case OpType::ZZPhase:
+    case OpType::XXPhase3:
+    case OpType::PhasedX:
+    case OpType::NPhasedX:
+      return std::all_of(params_.begin(), params_.end(), [](const Expr& e) {
+        return equiv_0(4 * e);
+      });
+    case OpType::ISWAP:
+    case OpType::ESWAP:
+      return equiv_0(2 * params_.at(0));
+    case OpType::PhasedISWAP:
+    case OpType::FSim:
+      return equiv_0(4 * params_.at(0)) && equiv_0(2 * params_.at(1));
+    default:
+      return false;
+  }
 }
 
 std::string Gate::get_name(bool latex) const {
