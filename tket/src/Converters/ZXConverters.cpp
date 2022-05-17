@@ -26,7 +26,7 @@ std::pair<ZXVertPort, ZXVertPort> add_switch(
   zxd.add_wire(triangle, x, ZXWireType::Basic, qtype, 1);
   if (on_value) {
     // Turn on the switch if the input is 1
-    ZXVert negate = zxd.add_vertex(ZXType::XSpider, 1, QuantumType::Classical);
+    ZXVert negate = zxd.add_vertex(ZXType::XSpider, 1, qtype);
     zxd.add_wire(triangle, negate, ZXWireType::Basic, qtype, 0);
     return {{negate, std::nullopt}, {x, std::nullopt}};
   }
