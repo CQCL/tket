@@ -12,6 +12,7 @@ Minor new features:
 * New pass ``SynthesiseTK`` and transform ``OptimiseStandard`` to synthesize
   TK2 gates.
 * Add ``Optype.WASM``, adding a classical wasm function call to the circuit
+* Add optype for existing PhasePolyBox ``OpType.PhasePolyBox``
 
 1.1.0 (April 2022)
 ------------------
