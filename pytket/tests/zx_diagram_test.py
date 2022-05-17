@@ -655,6 +655,7 @@ def test_converting_from_circuit() -> None:
     assert isclose(abs(phase), 1)
     assert np.allclose(m * (1 / phase), np.eye(16))
 
+
 def test_constructors() -> None:
     phased_gen = PhasedGen(ZXType.ZSpider, 0.5, QuantumType.Quantum)
     assert phased_gen.param == 0.5
