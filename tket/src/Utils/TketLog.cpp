@@ -14,17 +14,59 @@
 
 #include "TketLog.hpp"
 
+#include <ctime>
+#include <iomanip>
+#include <iostream>
+#include <memory>
+
 namespace tket {
+
+Logger::Logger(LogLevel level) : level(level) {}
+void Logger::trace(const std::string &s, std::ostream &os) {
+  if (level <= LogLevel::Trace) {
+    log("trace", s, os);
+  }
+}
+void Logger::debug(const std::string &s, std::ostream &os) {
+  if (level <= LogLevel::Debug) {
+    log("debug", s, os);
+  }
+}
+void Logger::info(const std::string &s, std::ostream &os) {
+  if (level <= LogLevel::Info) {
+    log("info", s, os);
+  }
+}
+void Logger::warn(const std::string &s, std::ostream &os) {
+  if (level <= LogLevel::Warn) {
+    log("warn", s, os);
+  }
+}
+void Logger::error(const std::string &s, std::ostream &os) {
+  if (level <= LogLevel::Err) {
+    log("error", s, os);
+  }
+}
+void Logger::critical(const std::string &s, std::ostream &os) {
+  if (level <= LogLevel::Critical) {
+    log("critical", s, os);
+  }
+}
+
+void Logger::log(const char *levstr, const std::string &s, std::ostream &os) {
+  std::time_t t = std::time(nullptr);
+  os << "[" << std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S")
+     << "] [tket] [" << levstr << "] " << s << std::endl;
+}
+
+void Logger::set_level(LogLevel lev) { level = lev; }
+
 LogPtr_t &tket_log() {
-  static LogPtr_t logger = [](LogPtr_t l) -> LogPtr_t {
-    l->set_pattern("%+");
 #ifdef ALL_LOGS
-    l->set_level(spdlog::level::trace);
+  static LogPtr_t logger = std::make_shared<Logger>(LogLevel::Trace);
 #else
-    l->set_level(spdlog::level::err);
+  static LogPtr_t logger = std::make_shared<Logger>(LogLevel::Err);
 #endif
-    return l;
-  }((LogPtr_t)spdlog::stdout_color_mt("tket"));
   return logger;
 }
 }  // namespace tket

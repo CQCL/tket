@@ -116,7 +116,7 @@ def format_raw_matrix(
 ) -> Dict[str, Any]:
     """Extract the matrix from a box if applicable and format it for display."""
     n_qubits = round(math.log(len(unitary), 2))
-    basis = [bin(n)[2:].zfill(n_qubits) for n in range(2 ** n_qubits)]
+    basis = [bin(n)[2:].zfill(n_qubits) for n in range(2**n_qubits)]
     return {
         "chart": zip(
             basis,
@@ -133,7 +133,7 @@ def format_bool_matrix(
 ) -> Dict[str, Any]:
     """Format a boolean matrix for display."""
     n_qubits = round(math.log(len(matrix), 2))
-    basis = [bin(n)[2:].zfill(n_qubits) for n in range(2 ** n_qubits)]
+    basis = [bin(n)[2:].zfill(n_qubits) for n in range(2**n_qubits)]
     return {
         "chart": zip(
             basis,
@@ -254,6 +254,7 @@ def is_classical_gate(op_type: str) -> bool:
         "ClassicalTransform",
         "CopyBits",
         "MultiBit",
+        "WASM",
     }
 
 

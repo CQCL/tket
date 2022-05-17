@@ -149,12 +149,31 @@ struct Summary {
 };
 }  // namespace
 
-SCENARIO("Best TSA : solve problems from fixed swap sequences") {
+static void run_solve_problems_fixed_swap_seqs(
+    FixedSwapSequences& sequences, const std::string full_seq_str,
+    const double full_seq_improvement, const std::string partial_seq_str,
+    const double partial_seq_improvement) {
+  BestTsaTester tester;
+  const Summary full_seqs_summary(sequences.full, tester);
+  CHECK(full_seqs_summary.total_number_of_problems == sequences.full.size());
+  CHECK(full_seqs_summary.str == full_seq_str);
+  full_seqs_summary.check_overall_improvement(full_seq_improvement);
+
+  const Summary partial_seqs_summary(sequences.partial, tester);
+  CHECK(
+      partial_seqs_summary.total_number_of_problems ==
+      sequences.partial.size());
+  CHECK(partial_seqs_summary.str == partial_seq_str);
+  partial_seqs_summary.check_overall_improvement(partial_seq_improvement);
+}
+
+SCENARIO(
+    "Best TSA : solve problems from fixed swap sequences - long test",
+    "[.long]") {
   FixedSwapSequences sequences;
   CHECK(sequences.full.size() == 453);
   CHECK(sequences.partial.size() == 755);
 
-#ifdef TKET_TESTS_FULL
   // The "long" tests take ~6 seconds on an ordinary 2021 Windows laptop.
   const std::string full_seq_str =
       "[248 equal (6088); 104 BETTER (4645 vs 4979): av 7% decr\n"
@@ -171,7 +190,17 @@ SCENARIO("Best TSA : solve problems from fixed swap sequences") {
       "[455 equal (6487); 165 BETTER (7044 vs 7457): av 7% decr\n"
       "135 WORSE (9124 vs 8604): av 6% incr]";
   const double partial_seq_improvement = -0.474543;
-#else
+
+  run_solve_problems_fixed_swap_seqs(
+      sequences, full_seq_str, full_seq_improvement, partial_seq_str,
+      partial_seq_improvement);
+}
+
+SCENARIO("Best TSA : solve problems from fixed swap sequences") {
+  FixedSwapSequences sequences;
+  CHECK(sequences.full.size() == 453);
+  CHECK(sequences.partial.size() == 755);
+
   // The reduced tests take ~50 milliseconds
   // (and are also biased towards smaller problems,
   // as the problem strings are sorted by length).
@@ -186,20 +215,10 @@ SCENARIO("Best TSA : solve problems from fixed swap sequences") {
       "[40 equal (166); 0 BETTER (0 vs 0): av 0% decr\n"
       "0 WORSE (0 vs 0): av 0% incr]";
   const double partial_seq_improvement = 0.0;
-#endif
 
-  BestTsaTester tester;
-  const Summary full_seqs_summary(sequences.full, tester);
-  CHECK(full_seqs_summary.total_number_of_problems == sequences.full.size());
-  CHECK(full_seqs_summary.str == full_seq_str);
-  full_seqs_summary.check_overall_improvement(full_seq_improvement);
-
-  const Summary partial_seqs_summary(sequences.partial, tester);
-  CHECK(
-      partial_seqs_summary.total_number_of_problems ==
-      sequences.partial.size());
-  CHECK(partial_seqs_summary.str == partial_seq_str);
-  partial_seqs_summary.check_overall_improvement(partial_seq_improvement);
+  run_solve_problems_fixed_swap_seqs(
+      sequences, full_seq_str, full_seq_improvement, partial_seq_str,
+      partial_seq_improvement);
 }
 
 // Now we want to solve complete problems; this is one of
@@ -284,72 +303,10 @@ class StatisticsGrouper {
 };
 }  // namespace
 
-SCENARIO("Best TSA : solve complete problems") {
-  FixedCompleteSolutions complete_solutions;
-
-  // It's a map, with key the architecture name; this is the number
-  // of architectures, not problems.
-  CHECK(complete_solutions.solutions.size() == 21);
-  vector<unsigned> sizes;
-  for (const auto& entry : complete_solutions.solutions) {
-    sizes.push_back(entry.second.size());
-  }
-  CHECK(sizes == vector<unsigned>{49, 97, 49,  49, 97, 93, 45, 45, 45, 39, 41,
-                                  49, 39, 100, 48, 28, 22, 27, 49, 49, 38});
-
-  // For a good test, very different problems should not be amalgamated
-  // in the statistics. Thus we determine the different categories using length
-  // of encoding string, which presumably roughly corresponds to "problem size"
-  // and problem hardness.
-
-#ifdef TKET_TESTS_FULL
-  // The "long" tests take ~12 seconds on an ordinary 2021 Windows laptop.
-  const vector<std::string> expected_messages{
-      "[210 equal (1018); 19 BETTER (84 vs 111): av 24% decr\n"
-      "2 WORSE (19 vs 15): av 26% incr]",
-
-      "[145 equal (1822); 39 BETTER (451 vs 525): av 13% decr\n"
-      "17 WORSE (269 vs 242): av 11% incr]",
-
-      "[58 equal (1619); 122 BETTER (3465 vs 3832): av 9% decr\n"
-      "34 WORSE (1321 vs 1232): av 6% incr]",
-
-      "[18 equal (1382); 114 BETTER (8322 vs 8856): av 5% decr\n"
-      "83 WORSE (6875 vs 6457): av 5% incr]",
-
-      "[8 equal (1470); 164 BETTER (25183 vs 27141): av 6% decr\n"
-      "44 WORSE (8722 vs 8384): av 3% incr]"};
-
-  const double expected_improvement = 3.25087;
-#else
-  // The reduced tests take ~700 milliseconds.
-  for (auto& entry : complete_solutions.solutions) {
-    auto reduced_size = entry.second.size() / 10;
-    if (reduced_size < 4) {
-      reduced_size = 4;
-    }
-    if (reduced_size < entry.second.size()) {
-      entry.second.resize(reduced_size);
-    }
-  }
-  const vector<std::string> expected_messages{
-      "[18 equal (62); 0 BETTER (0 vs 0): av 0% decr\n"
-      "0 WORSE (0 vs 0): av 0% incr]",
-
-      "[17 equal (82); 0 BETTER (0 vs 0): av 0% decr\n"
-      "0 WORSE (0 vs 0): av 0% incr]",
-
-      "[12 equal (119); 2 BETTER (15 vs 18): av 16% decr\n"
-      "0 WORSE (0 vs 0): av 0% incr]",
-
-      "[6 equal (149); 6 BETTER (164 vs 173): av 5% decr\n"
-      "4 WORSE (115 vs 110): av 5% incr]",
-
-      "[4 equal (163); 10 BETTER (535 vs 571): av 5% decr\n"
-      "5 WORSE (288 vs 273): av 5% incr]"};
-  const double expected_improvement = 1.62791;
-#endif
-
+static void run_solve_complete_problems(
+    FixedCompleteSolutions& complete_solutions,
+    const vector<std::string> expected_messages,
+    const double expected_improvement) {
   vector<unsigned> problem_sizes;
   for (const auto& entry : complete_solutions.solutions) {
     REQUIRE(entry.second.size() >= 2);
@@ -379,6 +336,96 @@ SCENARIO("Best TSA : solve complete problems") {
   // A positive result is good; the fixed complete problems are DIRECTLY
   // comparing our TSA with the solver used to generate them.
   grouper.check_overall_improvement(expected_improvement);
+}
+
+SCENARIO("Best TSA : solve complete problems - long test", "[.long]") {
+  FixedCompleteSolutions complete_solutions;
+
+  // It's a map, with key the architecture name; this is the number
+  // of architectures, not problems.
+  CHECK(complete_solutions.solutions.size() == 21);
+  vector<unsigned> sizes;
+  for (const auto& entry : complete_solutions.solutions) {
+    sizes.push_back(entry.second.size());
+  }
+  CHECK(sizes == vector<unsigned>{49, 97, 49,  49, 97, 93, 45, 45, 45, 39, 41,
+                                  49, 39, 100, 48, 28, 22, 27, 49, 49, 38});
+
+  // For a good test, very different problems should not be amalgamated
+  // in the statistics. Thus we determine the different categories using length
+  // of encoding string, which presumably roughly corresponds to "problem size"
+  // and problem hardness.
+
+  // The "long" tests take ~12 seconds on an ordinary 2021 Windows laptop.
+  const vector<std::string> expected_messages{
+      "[210 equal (1018); 19 BETTER (84 vs 111): av 24% decr\n"
+      "2 WORSE (19 vs 15): av 26% incr]",
+
+      "[145 equal (1822); 39 BETTER (451 vs 525): av 13% decr\n"
+      "17 WORSE (269 vs 242): av 11% incr]",
+
+      "[58 equal (1619); 122 BETTER (3465 vs 3832): av 9% decr\n"
+      "34 WORSE (1321 vs 1232): av 6% incr]",
+
+      "[18 equal (1382); 114 BETTER (8322 vs 8856): av 5% decr\n"
+      "83 WORSE (6875 vs 6457): av 5% incr]",
+
+      "[8 equal (1470); 164 BETTER (25183 vs 27141): av 6% decr\n"
+      "44 WORSE (8722 vs 8384): av 3% incr]"};
+
+  const double expected_improvement = 3.25087;
+
+  run_solve_complete_problems(
+      complete_solutions, expected_messages, expected_improvement);
+}
+
+SCENARIO("Best TSA : solve complete problems") {
+  FixedCompleteSolutions complete_solutions;
+
+  // It's a map, with key the architecture name; this is the number
+  // of architectures, not problems.
+  CHECK(complete_solutions.solutions.size() == 21);
+  vector<unsigned> sizes;
+  for (const auto& entry : complete_solutions.solutions) {
+    sizes.push_back(entry.second.size());
+  }
+  CHECK(sizes == vector<unsigned>{49, 97, 49,  49, 97, 93, 45, 45, 45, 39, 41,
+                                  49, 39, 100, 48, 28, 22, 27, 49, 49, 38});
+
+  // For a good test, very different problems should not be amalgamated
+  // in the statistics. Thus we determine the different categories using length
+  // of encoding string, which presumably roughly corresponds to "problem size"
+  // and problem hardness.
+
+  // The reduced tests take ~700 milliseconds.
+  for (auto& entry : complete_solutions.solutions) {
+    auto reduced_size = entry.second.size() / 10;
+    if (reduced_size < 4) {
+      reduced_size = 4;
+    }
+    if (reduced_size < entry.second.size()) {
+      entry.second.resize(reduced_size);
+    }
+  }
+  const vector<std::string> expected_messages{
+      "[18 equal (62); 0 BETTER (0 vs 0): av 0% decr\n"
+      "0 WORSE (0 vs 0): av 0% incr]",
+
+      "[17 equal (82); 0 BETTER (0 vs 0): av 0% decr\n"
+      "0 WORSE (0 vs 0): av 0% incr]",
+
+      "[12 equal (119); 2 BETTER (15 vs 18): av 16% decr\n"
+      "0 WORSE (0 vs 0): av 0% incr]",
+
+      "[6 equal (149); 6 BETTER (164 vs 173): av 5% decr\n"
+      "4 WORSE (115 vs 110): av 5% incr]",
+
+      "[4 equal (163); 10 BETTER (535 vs 571): av 5% decr\n"
+      "5 WORSE (288 vs 273): av 5% incr]"};
+  const double expected_improvement = 1.62791;
+
+  run_solve_complete_problems(
+      complete_solutions, expected_messages, expected_improvement);
 }
 
 }  // namespace tests

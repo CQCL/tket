@@ -71,6 +71,21 @@ void place_with_map(Circuit &circ, qubit_mapping_t &qmap) {
   plobj.place_with_map(circ, qmap);
 }
 
+void place_fully_connected(
+    Circuit &circ, const FullyConnected &fully_connected) {
+  if (circ.n_qubits() > fully_connected.n_nodes()) {
+    throw std::logic_error(
+        "Circuit has more qubits than the FullyConnected graph has nodes");
+  }
+  qubit_mapping_t qmap;
+  unsigned index = 0;
+  for (const Qubit &q : circ.all_qubits()) {
+    qmap[q] = Node("fcNode", index);
+    index++;
+  }
+  place_with_map(circ, qmap);
+}
+
 PYBIND11_MODULE(placement, m) {
   py::class_<Placement, std::shared_ptr<Placement>>(
             m, "Placement",
@@ -220,5 +235,14 @@ PYBIND11_MODULE(placement, m) {
       "\n\n:param circuit: The Circuit being relabelled. \n:param qmap: "
       "The map from logical to physical qubits to apply.",
       py::arg("circuit"), py::arg("qmap"));
+
+  m.def(
+      "place_fully_connected", &place_fully_connected,
+      "Relabels all Circuit Qubits to the Node objects of a FullyConnected "
+      "object. "
+      "\n\n:param circuit: The Circuit being relabelled. \n:param "
+      "fully_connected: "
+      "FullyConnected object Qubits being relabelled to match.",
+      py::arg("circuit"), py::arg("fully_connected"));
 }
 }  // namespace tket

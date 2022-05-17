@@ -202,6 +202,12 @@ PYBIND11_MODULE(circuit, m) {
           ":math:`(\\alpha, \\beta, \\gamma) \\mapsto "
           "\\mathrm{Rz}(\\alpha) \\mathrm{Rx}(\\beta) "
           "\\mathrm{Rz}(\\gamma)`")
+      .value(
+          "TK2", OpType::TK2,
+          ":math:`(\\alpha, \\beta, \\gamma) \\mapsto "
+          "\\mathrm{XXPhase}(\\alpha) "
+          "\\mathrm{YYPhase}(\\beta) "
+          "\\mathrm{ZZPhase}(\\gamma)`")
       .value("CX", OpType::CX, "Controlled :math:`\\mathrm{X}` gate")
       .value("CY", OpType::CY, "Controlled :math:`\\mathrm{Y}` gate")
       .value("CZ", OpType::CZ, "Controlled :math:`\\mathrm{Z}` gate")
@@ -287,6 +293,11 @@ PYBIND11_MODULE(circuit, m) {
           "Reset", OpType::Reset,
           "Resets the qubit to :math:`\\left|0\\right>`")
       .value("CircBox", OpType::CircBox, "Represents an arbitrary subcircuit")
+      .value(
+          "PhasePolyBox", OpType::PhasePolyBox,
+          "An operation representing arbitrary circuits made up of CX and Rz "
+          "gates, represented as a phase polynomial together with a boolean "
+          "matrix representing an additional linear transformation.")
       .value(
           "Unitary1qBox", OpType::Unitary1qBox,
           "Represents an arbitrary one-qubit unitary operation by its "
@@ -427,6 +438,8 @@ PYBIND11_MODULE(circuit, m) {
           "ClassicalTransform", OpType::ClassicalTransform,
           "A general classical operation where all inputs are also outputs")
       .value(
+          "WASM", OpType::WASM, "Op containing a classical wasm function call")
+      .value(
           "SetBits", OpType::SetBits,
           "An operation to set some bits to specified values")
       .value(
@@ -479,6 +492,10 @@ PYBIND11_MODULE(circuit, m) {
       m, "Command",
       "A single quantum command in the circuit, defined by the Op, the "
       "qubits it acts on, and the op group name if any.")
+      .def(
+          py::init<const Op_ptr, unit_vector_t>(),
+          "Construct from an operation and a vector of unit IDs", py::arg("op"),
+          py::arg("args"))
       .def("__eq__", &Command::operator==)
       .def("__repr__", &Command::to_str)
       .def_property_readonly(

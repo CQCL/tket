@@ -30,6 +30,10 @@ from pytket.zx import (  # type: ignore
     density_matrix_from_cptp_diagram,
     Rewrite,
     circuit_to_zx,
+    PhasedGen,
+    CliffordGen,
+    DirectedGen,
+    ZXBox,
 )
 
 
@@ -650,6 +654,17 @@ def test_converting_from_circuit() -> None:
     phase = m[0][0]
     assert isclose(abs(phase), 1)
     assert np.allclose(m * (1 / phase), np.eye(16))
+
+def test_constructors() -> None:
+    phased_gen = PhasedGen(ZXType.ZSpider, 0.5, QuantumType.Quantum)
+    assert phased_gen.param == 0.5
+    clifford_gen = CliffordGen(ZXType.PX, True, QuantumType.Quantum)
+    assert clifford_gen.param == True
+    directed_gen = DirectedGen(ZXType.Triangle, QuantumType.Quantum)
+    assert directed_gen.signature == [QuantumType.Quantum] * 2
+    diag = ZXDiagram(4, 4, 0, 0)
+    zx_box = ZXBox(diag)
+    assert zx_box.diagram.scalar == diag.scalar
 
 
 if __name__ == "__main__":

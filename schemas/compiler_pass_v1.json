@@ -421,7 +421,7 @@
           "if": {
             "properties": {
               "name": {
-                "const": "RoutingPass"
+                "const": "CustomRoutingPass"
               }
             }
           },
@@ -429,6 +429,20 @@
             "required": [
               "architecture",
               "routing_config"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "RoutingPass"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "architecture",
             ]
           }
         },

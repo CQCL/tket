@@ -21,19 +21,17 @@ namespace py = pybind11;
 namespace tket {
 
 PYBIND11_MODULE(logging, m) {
-  py::enum_<spdlog::level::level_enum>(m, "level")
-      .value("trace", spdlog::level::trace, "all logs")
-      .value("debug", spdlog::level::debug, "debug logs and above")
-      .value("info", spdlog::level::info, "informational logs and above")
-      .value("warn", spdlog::level::warn, "warnings and above")
-      .value(
-          "err", spdlog::level::err, "error and critical logs only (default)")
-      .value("critical", spdlog::level::critical, "critical logs only")
-      .value("off", spdlog::level::off, "no logs");
+  py::enum_<LogLevel>(m, "level")
+      .value("trace", LogLevel::Trace, "all logs")
+      .value("debug", LogLevel::Debug, "debug logs and above")
+      .value("info", LogLevel::Info, "informational logs and above")
+      .value("warn", LogLevel::Warn, "warnings and above")
+      .value("err", LogLevel::Err, "error and critical logs only (default)")
+      .value("critical", LogLevel::Critical, "critical logs only")
+      .value("off", LogLevel::Off, "no logs");
 
   m.def(
-      "set_level",
-      [](spdlog::level::level_enum level) { tket_log()->set_level(level); },
+      "set_level", [](LogLevel level) { tket_log()->set_level(level); },
       "Set the global logging level."
       "\n\n:param level: Desired logging level");
 }

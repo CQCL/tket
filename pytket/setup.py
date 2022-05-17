@@ -83,27 +83,23 @@ class CMakeBuild(build_ext):
         if platform.system() in ["Darwin", "Windows"]:
             # Hack to put the tket library alongside the extension libraries
             conan_tket_profile = os.getenv("CONAN_TKET_PROFILE", default="tket")
-            conaninfo = dict(
+            jsondump = "conaninfo.json"
+            subprocess.run(
                 [
-                    (comp["reference"], comp)
-                    for comp in json.loads(
-                        subprocess.run(
-                            [
-                                "conan",
-                                "info",
-                                "--profile",
-                                conan_tket_profile,
-                                "--path",
-                                "--json",
-                                "--",
-                                ".",
-                            ],
-                            stdout=subprocess.PIPE,
-                            cwd=extsource,
-                        ).stdout
-                    )
-                ]
+                    "conan",
+                    "info",
+                    "--profile",
+                    conan_tket_profile,
+                    "--path",
+                    "--json",
+                    jsondump,
+                    ".",
+                ],
+                cwd=extsource,
             )
+            with open(jsondump) as f:
+                conaninfo = dict([(comp["reference"], comp) for comp in json.load(f)])
+            os.remove(jsondump)
             reqs = conaninfo["conanfile.txt"]["requires"]
             tket_reqs = [req for req in reqs if req.startswith("tket/")]
             assert len(tket_reqs) == 1
@@ -237,7 +233,7 @@ setup(
     author="Seyon Sivarajah",
     author_email="seyon.sivarajah@cambridgequantum.com",
     python_requires=">=3.8",
-    url="https://cqcl.github.io/pytket",
+    url="https://cqcl.github.io/tket/pytket/api/",
     description="Python module for interfacing with the CQC tket library of quantum "
     "software",
     license="Apache 2",
@@ -251,7 +247,7 @@ setup(
         "graphviz ~= 0.14",
         "jinja2 ~= 3.0",
         "types-pkg_resources",
-        "typing-extensions ~= 3.7",
+        "typing-extensions ~= 4.2",
     ],
     ext_modules=[
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders

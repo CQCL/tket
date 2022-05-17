@@ -22,6 +22,16 @@ namespace tket {
 namespace Transforms {
 
 /**
+ * Decomposes all multi-qubit unitary gates into TK2 and single-qubit gates.
+ *
+ * Ignores boxes.
+ *
+ * Expects: any gates
+ * Produces: TK2 and any single-qubit gates
+ */
+Transform decompose_multi_qubits_TK2();
+
+/**
  * Decomposes all multi-qubit unitary gates into CX and single-qubit gates.
  *
  * Ignores boxes.
@@ -111,9 +121,12 @@ Transform decomp_boxes();
 /**
  * Replaces all CX+Rz sub circuits by PhasePolyBox
  * Expects: only CX + Rz + H (and measure + reset + collapse + barrier)
- * returns: H + PhasePolyBox
+ * @param min_size value for the minimal number of CX in each box, groups with
+ * less than min_size CX gates are not converted to a PhasePolyBox, dafault
+ * value is 0
+ * @return Transformation to perform the conversion
  */
-Transform compose_phase_poly_boxes();
+Transform compose_phase_poly_boxes(unsigned min_size = 0);
 
 // converts all SWAP gates to given replacement circuit (not checked to
 // preserve unitary) Expects: SWAP gates, replacement circuit Produces:

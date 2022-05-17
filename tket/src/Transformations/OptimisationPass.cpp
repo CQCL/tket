@@ -59,6 +59,17 @@ Transform clifford_simp(bool allow_swaps) {
          squash_1qb_to_tk1();
 }
 
+Transform synthesise_tk() {
+  Transform seq = commute_through_multis() >> remove_redundancies();
+  Transform rep = repeat(seq);
+  Transform synth = decompose_multi_qubits_TK2() >> remove_redundancies() >>
+                    rep >> squash_1qb_to_tk1();
+  Transform small_part = remove_redundancies() >> rep >> squash_1qb_to_tk1();
+  Transform repeat_synth = repeat_with_metric(
+      small_part, [](const Circuit &circ) { return circ.n_vertices(); });
+  return synth >> repeat_synth;
+}
+
 Transform synthesise_tket() {
   Transform seq = commute_through_multis() >> remove_redundancies();
   Transform rep = repeat(seq);

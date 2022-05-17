@@ -414,6 +414,9 @@ void init_circuit(py::module &m) {
           "n_qubits", &Circuit::n_qubits,
           ":return: the number of qubits in the circuit")
       .def_property_readonly(
+          "n_bits", &Circuit::n_bits,
+          ":return: the number of classiclal bits in the circuit")
+      .def_property_readonly(
           "phase", &Circuit::get_phase,
           ":return: the global phase applied to the circuit, in "
           "halfturns (not meaningful for circuits with classical "

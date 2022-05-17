@@ -547,7 +547,7 @@ SCENARIO("Two-qubit entangling gates") {
     REQUIRE(test_unitary_comparison(c0, c1));
     // Rebase
     CompilationUnit cu(c1);
-    SynthesiseTket()->apply(cu);
+    SynthesiseTK()->apply(cu);
     REQUIRE(test_unitary_comparison(c0, cu.get_circ_ref()));
   }
   GIVEN("FSim") {
@@ -569,7 +569,7 @@ SCENARIO("Two-qubit entangling gates") {
     REQUIRE(test_unitary_comparison(c0, c1));
     // Rebase
     CompilationUnit cu(c1);
-    SynthesiseTket()->apply(cu);
+    SynthesiseTK()->apply(cu);
     REQUIRE(test_unitary_comparison(c0, cu.get_circ_ref()));
   }
   GIVEN("Sycamore") {

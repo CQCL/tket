@@ -114,8 +114,12 @@ class CircToPhasePolyConversion {
    * CX+Rz to a PhasePolyBox.
    * @throw not implemented for unsupported gates
    * @param circ circuit to be converted
+   * @param min_size value for the minimal number of CX in each box, groups with
+   * less than min_size CX gates are not converted to a PhasePolyBox, default
+   * value is 0
    */
-  explicit CircToPhasePolyConversion(const Circuit &circ);
+  explicit CircToPhasePolyConversion(
+      const Circuit &circ, unsigned min_size = 0);
   void convert();
   Circuit get_circuit() const;
 
@@ -124,6 +128,8 @@ class CircToPhasePolyConversion {
   void add_phase_poly_box();
   unsigned nq_;
   unsigned nb_;
+  unsigned min_size_;
+  unsigned box_size_;
   std::map<Qubit, unsigned> qubit_indices_;
   std::map<Bit, unsigned> bit_indices_;
   std::vector<QubitType> qubit_types_;
