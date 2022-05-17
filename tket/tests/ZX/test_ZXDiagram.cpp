@@ -15,6 +15,7 @@
 #include <catch2/catch.hpp>
 #include <fstream>
 
+#include "ZX/ZXDiagram.hpp"
 #include "ZX/ZXGenerator.hpp"
 
 namespace tket {
