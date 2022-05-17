@@ -342,9 +342,9 @@ BoundaryVertMap circuit_to_zx_recursive(
           std::pair<ZXVertPort, ZXVertPort> boundary;
           ZXVertPortVec controls;
           Vertex inp = replacement.get_in(reg);
-          ZXVert zx_inp = box_bm.right.find(inp)->second;
+          ZXVert zx_inp = box_bm.right.at(inp);
           Vertex outp = replacement.get_out(reg);
-          ZXVert zx_outp = box_bm.right.find(outp)->second;
+          ZXVert zx_outp = box_bm.right.at(outp);
           // Convert the path between zx_inp and zx_outp into a conditional
           // path
           std::tie(boundary, controls) =
@@ -439,28 +439,28 @@ BoundaryVertMap circuit_to_zx_recursive(
             Vertex inp = replacement.get_in(Qubit(i));
             vert_lookup.insert(
                 {{{vert, port}, PortType::In},
-                 {box_bm.right.find(inp)->second, std::nullopt}});
+                 {box_bm.right.at(inp), std::nullopt}});
           }
           for (unsigned i = 0; i < q_out_holes.size(); i++) {
             port_t port = circ.get_source_port(q_out_holes[i]);
             Vertex outp = replacement.get_out(Qubit(i));
             vert_lookup.insert(
                 {{{vert, port}, PortType::Out},
-                 {box_bm.right.find(outp)->second, std::nullopt}});
+                 {box_bm.right.at(outp), std::nullopt}});
           }
           for (unsigned i = 0; i < c_in_holes.size(); i++) {
             port_t port = circ.get_target_port(c_in_holes[i]);
             Vertex inp = replacement.get_in(Bit(i));
             vert_lookup.insert(
                 {{{vert, port}, PortType::In},
-                 {box_bm.right.find(inp)->second, std::nullopt}});
+                 {box_bm.right.at(inp), std::nullopt}});
           }
           for (unsigned i = 0; i < c_out_holes.size(); i++) {
             port_t port = circ.get_source_port(c_out_holes[i]);
             Vertex outp = replacement.get_out(Bit(i));
             vert_lookup.insert(
                 {{{vert, port}, PortType::Out},
-                 {box_bm.right.find(outp)->second, std::nullopt}});
+                 {box_bm.right.at(outp), std::nullopt}});
           }
         } else {
           throw Unsupported(
@@ -498,34 +498,32 @@ BoundaryVertMap circuit_to_zx_recursive(
       p_t = circ.get_target_port(next_e);
     }
 
-    auto it_s =
-        vert_lookup.find(TypedVertPort(VertPort(v_s, p_s), PortType::Out));
-    auto it_t =
-        vert_lookup.find(TypedVertPort(VertPort(v_t, p_t), PortType::In));
+    ZXVertPort zx_vp_s =
+        vert_lookup.at(TypedVertPort(VertPort(v_s, p_s), PortType::Out));
+    ZXVertPort zx_vp_t =
+        vert_lookup.at(TypedVertPort(VertPort(v_t, p_t), PortType::In));
     if (circ.get_edgetype(edge) == EdgeType::Quantum) {
       zxd.add_wire(
-          it_s->second.first, it_t->second.first, ZXWireType::Basic,
-          QuantumType::Quantum, it_s->second.second, it_t->second.second);
+          zx_vp_s.first, zx_vp_t.first, ZXWireType::Basic, QuantumType::Quantum,
+          zx_vp_s.second, zx_vp_t.second);
     } else {
       auto bool_it = boolean_outport_lookup.find(VertPort(v_s, p_s));
       if (bool_it == boolean_outport_lookup.end()) {
         zxd.add_wire(
-            it_s->second.first, it_t->second.first, ZXWireType::Basic,
-            QuantumType::Classical, it_s->second.second, it_t->second.second);
+            zx_vp_s.first, zx_vp_t.first, ZXWireType::Basic,
+            QuantumType::Classical, zx_vp_s.second, zx_vp_t.second);
       } else {
         // If the source port is boolean, then connect the copy spider to the
         // source vertex. All out-edges originated from the source port should
         // be connected to the copy spider.
         if (zxd.degree(bool_it->second.first) == 0) {
           zxd.add_wire(
-              it_s->second.first, bool_it->second.first, ZXWireType::Basic,
-              QuantumType::Classical, it_s->second.second,
-              bool_it->second.second);
+              zx_vp_s.first, bool_it->second.first, ZXWireType::Basic,
+              QuantumType::Classical, zx_vp_s.second, bool_it->second.second);
         }
         zxd.add_wire(
-            bool_it->second.first, it_t->second.first, ZXWireType::Basic,
-            QuantumType::Classical, bool_it->second.second,
-            it_t->second.second);
+            bool_it->second.first, zx_vp_t.first, ZXWireType::Basic,
+            QuantumType::Classical, bool_it->second.second, zx_vp_t.second);
       }
     }
   }
