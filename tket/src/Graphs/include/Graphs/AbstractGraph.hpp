@@ -41,6 +41,7 @@ class AbstractGraph {
  protected:
   using Edge = std::pair<T, T>;
   std::set<T> nodes_;
+  std::optional<unsigned> diameter_;
 
  public:
   /** Construct an empty graph */
@@ -79,7 +80,7 @@ class AbstractGraph {
   virtual unsigned get_distance(const T &node1, const T &node2) const = 0;
 
   /** Diameter of graph. */
-  virtual unsigned get_diameter() const = 0;
+  virtual unsigned get_diameter() = 0;
 
   virtual ~AbstractGraph() {}
 };
