@@ -56,6 +56,12 @@ static PassPtr gate_translation_pass(
   return ptr;
 }
 
+const PassPtr &SynthesiseTK() {
+  static const PassPtr pp(gate_translation_pass(
+      Transforms::synthesise_tk(), {OpType::TK1, OpType::TK2}, true,
+      "SynthesiseTK"));
+  return pp;
+}
 const PassPtr &SynthesiseTket() {
   static const PassPtr pp(gate_translation_pass(
       Transforms::synthesise_tket(), {OpType::TK1, OpType::CX}, true,

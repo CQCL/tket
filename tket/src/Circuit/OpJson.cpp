@@ -32,6 +32,8 @@ void from_json(const nlohmann::json& j, Op_ptr& op) {
     op = Box::deserialize(j);
   } else if (optype == OpType::Conditional) {
     op = Conditional::deserialize(j);
+  } else if (optype == OpType::WASM) {
+    op = WASMOp::deserialize(j);
   } else if (is_classical_type(optype)) {
     op = ClassicalOp::deserialize(j);
   } else if (is_gate_type(optype)) {

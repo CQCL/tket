@@ -66,20 +66,20 @@ class StoredResult(NamedTuple):
 class BackendResult:
     """Encapsulate generic results from pytket Backend instances.
 
-    Results can either be measured (shots or counts), or ideal simulations in
-    the form of statevector, unitary arrays or density matrices. For measured results,
-    a map of Bit identifiers to its stored outcome index is also stored (e.g.
-    {Bit(1):2} tells us Bit(1) corresponds to the 2 reading in the bitstring
-    0010). Likewise, for state results a map of Qubit identifiers to qubit
-    location in basis vector labelling is stored (e.g. statevector index 3
-    corresponds to bitwise encoding 011, and a mapping {Qubit(2): 0} tells us
-    the 0 in the bitwise encoding corresponds to Qubit(2)).
+    In the case of a real quantum device or a shots-based simulator
+    a BackendResult will typically be a collection of measurements (shots and counts).
 
-    This allows results to be requested for the specific subset and ordering of
-    units you require. For instance results for [Bit(0), Bit(1)] in that order
-    can be requested using get_counts([Bit(0), Bit(1)]). Requests for state results
-    must be a permutation of all Qubits, not a subset.
+    Results can also be the output of ideal simulations of circuits.
+    These can take the form of statevectors, unitary arrays or density matrices.
 
+    :param q_bits: Sequence of qubits.
+    :param c_bits: Sequence of classical bits.
+    :param counts: The counts in the result.
+    :param shots: The shots in the result.
+    :param state: The resulting statevector (from a statevector simulation).
+    :param unitary: The resulting unitary operator (from a unitary simulation).
+    :param density_matrix: The resulting density matrix
+        (from a density-matrix simulator).
     :param ppcirc: If provided, classical postprocessing to be applied to all measured
         results (i.e. shots and counts).
     """

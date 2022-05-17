@@ -57,6 +57,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Ops/test_ClassicalOps.cpp
     ${TKET_TESTS_DIR}/Ops/test_Expression.cpp
     ${TKET_TESTS_DIR}/Ops/test_Ops.cpp
+    ${TKET_TESTS_DIR}/Passes/test_SynthesiseTK.cpp
     ${TKET_TESTS_DIR}/Gate/test_GateUnitaryMatrix.cpp
     ${TKET_TESTS_DIR}/Simulation/test_CircuitSimulator.cpp
     ${TKET_TESTS_DIR}/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
@@ -102,6 +103,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/test_Path.cpp
     ${TKET_TESTS_DIR}/test_SteinerTree.cpp
     ${TKET_TESTS_DIR}/test_SteinerForest.cpp
+    ${TKET_TESTS_DIR}/test_wasm.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXDiagram.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXAxioms.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXSimp.cpp

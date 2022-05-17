@@ -90,6 +90,11 @@ enum class OpType {
   ClassicalTransform,
 
   /**
+   * Op containing a classical wasm function call
+   */
+  WASM,
+
+  /**
    * An operation to set some bits to specified values
    */
   SetBits,
@@ -239,6 +244,12 @@ enum class OpType {
    * \mathrm{Rx}(\beta) \mathrm{Rz}(\gamma) \f$
    */
   TK1,
+
+  /**
+   * \f$ \mathrm{TK1}(\alpha, \beta, \gamma) = \mathrm{XXPhase}(\alpha)
+   * \mathrm{YYPhase}(\beta) \mathrm{ZZPhase}(\gamma) \f$
+   */
+  TK2,
 
   /**
    * Controlled \ref OpType::X

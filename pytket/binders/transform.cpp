@@ -72,6 +72,7 @@ PYBIND11_MODULE(transform, m) {
 
   py::class_<Transform>(
       m, "Transform", "An in-place transformation of a :py:class:`Circuit`.")
+      .def(py::init<const Transform::SimpleTransformation &>())
       .def(
           "apply",
           [](const Transform &tr, Circuit &circ) { return tr.apply(circ); },
@@ -186,6 +187,11 @@ PYBIND11_MODULE(transform, m) {
           "Decomposes all Boxed operations into elementary gates.")
 
       /* OPTIMISATION TRANSFORMS */
+      .def_static(
+          "OptimiseStandard", &Transforms::synthesise_tk,
+          "Fast optimisation pass, performing basic simplifications. "
+          "Works on any circuit, giving the result in TK1 and TK2 gates. "
+          "Preserves connectivity of circuit.")
       .def_static(
           "OptimisePostRouting", &Transforms::synthesise_tket,
           "Fast optimisation pass, performing basic simplifications. "

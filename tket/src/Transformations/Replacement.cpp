@@ -25,6 +25,37 @@ namespace tket {
 
 using namespace Transforms;
 
+Circuit TK2_circ_from_multiq(const Op_ptr op) {
+  OpDesc desc = op->get_desc();
+  if (!desc.is_gate())
+    throw NotImplemented(
+        "Can only build replacement circuits for basic gates; given " +
+        desc.name());
+  unsigned n_qubits = op->n_qubits();
+  switch (desc.type()) {
+    case OpType::CnRy: {
+      // TODO We should be able to do better than this.
+      Circuit c = decomposed_CnRy(op, n_qubits);
+      replace_CX_with_TK2(c);
+      return c;
+    }
+    case OpType::CnX:
+      if (n_qubits >= 6 && n_qubits <= 8) {
+        // TODO We should be able to do better than this.
+        Circuit c = cnx_gray_decomp(n_qubits - 1);
+        replace_CX_with_TK2(c);
+        return c;
+      } else {
+        // TODO We should be able to do better than this.
+        Circuit c = cnx_normal_decomp(n_qubits - 1);
+        replace_CX_with_TK2(c);
+        return c;
+      }
+    default:
+      return with_TK2(as_gate_ptr(op));
+  }
+}
+
 Circuit CX_circ_from_multiq(const Op_ptr op) {
   OpDesc desc = op->get_desc();
   if (!desc.is_gate())
@@ -181,6 +212,7 @@ Circuit CX_ZX_circ_from_op(const Op_ptr op) {
       replacement.add_op<unsigned>(op, {0, 1});
       return replacement;
     }
+    case OpType::TK2:
     case OpType::CY:
     case OpType::CZ:
     case OpType::CH:

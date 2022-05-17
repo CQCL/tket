@@ -12,12 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from conans import ConanFile
+"""Handler for wasm files in pytket"""
 
+__path__ = __import__("pkgutil").extend_path(__path__, __name__)  # type: ignore
 
-class TketBenchmarksConan(ConanFile):
-    name = "tket-benchmarks"
-    version = "0.1.0"
-    requires = "gtest/1.10.0", "benchmark/1.5.1"
-
-    # TODO
+from .wasm import (
+    WasmFileHandler,
+)

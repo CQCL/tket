@@ -129,6 +129,11 @@ class Op : public std::enable_shared_from_this<Op> {
     throw NotValid();
   }
 
+  /**
+   * return if the op is external
+   */
+  virtual bool is_extern() const { return false; }
+
   /** Vector specifying type of data for each port on op */
   virtual op_signature_t get_signature() const = 0;
 

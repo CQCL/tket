@@ -16,7 +16,7 @@ jobs:
     env:
       PY_VERS: cp38-cp38 cp39-cp39 cp310-cp310
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
@@ -31,7 +31,7 @@ jobs:
         mkdir wheelhouse
         docker cp linux_build:/tket/pytket/audited/. wheelhouse/
         docker rm --force -v linux_build
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: Linux_wheels
         path: wheelhouse/
@@ -42,7 +42,7 @@ jobs:
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
@@ -52,14 +52,14 @@ jobs:
       with:
         format: YYYYMMDDHHmmss
     - name: Cache conan data
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: ~/.conan
         key: ${{ runner.os }}-tket-conan-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
           ${{ runner.os }}-tket-conan-
     - name: Set up Python 3.8
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.8'
     - name: Build tket C++
@@ -68,25 +68,25 @@ jobs:
         conan profile new tket --detect --force
         conan profile update options.tket:shared=True tket
         conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
-        conan install --profile=tket boost/1.78.0@ --build=missing
+        conan install --profile=tket boost/1.79.0@ --build=missing
         conan create --profile=tket recipes/tket
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
     - name: Build wheel (3.8)
       run: .github/workflows/build_macos_wheel
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.9'
     - name: Build wheel (3.9)
       run: .github/workflows/build_macos_wheel
     - name: Set up Python 3.10
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.10'
     - name: Build wheel (3.10)
       run: .github/workflows/build_macos_wheel
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: MacOS_wheels
         path: wheelhouse/
@@ -100,7 +100,7 @@ jobs:
       run:
         shell: "/usr/bin/arch -arch arm64e /bin/bash {0}"
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
@@ -111,7 +111,7 @@ jobs:
         conan profile new tket --detect --force
         conan profile update options.tket:shared=True tket
         conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
-        conan install --profile=tket boost/1.78.0@ --build=missing
+        conan install --profile=tket boost/1.79.0@ --build=missing
         conan create --profile=tket recipes/tket
         conan create --profile=tket recipes/pybind11
         .github/workflows/build_macos_m1_wheel
@@ -119,7 +119,7 @@ jobs:
         .github/workflows/build_macos_m1_wheel
         pyenv shell tket-3.10
         .github/workflows/build_macos_m1_wheel
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: MacOS_M1_wheels
         path: wheelhouse/
@@ -130,7 +130,7 @@ jobs:
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: '0'
     - name: Hash tket source
@@ -164,7 +164,7 @@ jobs:
       run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
     - name: Cache tket build
       id: cache-tket
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: C:\Users\runneradmin\.conan\data\tket
         key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-11
@@ -174,7 +174,7 @@ jobs:
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
     - name: Set up Python 3.8
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.8'
     - name: Build wheel (3.8)
@@ -182,12 +182,12 @@ jobs:
         cd pytket
         python -m pip install -U pip build
         python -m build --outdir "${{ github.workspace }}/wheelhouse/3.8"
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: Windows_wheels
         path: wheelhouse/
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.9'
     - name: Build wheel (3.9)
@@ -195,12 +195,12 @@ jobs:
         cd pytket
         python -m pip install -U pip build
         python -m build --outdir "${{ github.workspace }}/wheelhouse/3.9"
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: Windows_wheels
         path: wheelhouse/
     - name: Set up Python 3.10
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.10'
     - name: Build wheel (3.10)
@@ -208,7 +208,7 @@ jobs:
         cd pytket
         python -m pip install -U pip build
         python -m build --outdir "${{ github.workspace }}/wheelhouse/3.10"
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: Windows_wheels
         path: wheelhouse/
@@ -224,17 +224,17 @@ jobs:
         python-version: ['3.8', '3.9', '3.10']
     steps:
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
       - name: Download wheels
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: Linux_wheels
           path: wheelhouse/
       - name: Install wheel
         run: pip install wheelhouse/${{ matrix.python-version }}.*/pytket-*.whl
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
             path: tket
       - name: Setup tests
@@ -255,15 +255,15 @@ jobs:
         python-version: ['3.8', '3.9', '3.10']
     steps:
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
     - name: Download wheels
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: MacOS_wheels
         path: wheelhouse/
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         path: tket
     - name: Install wheel
@@ -286,15 +286,15 @@ jobs:
         python-version: ['3.8', '3.9', '3.10']
     steps:
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
     - name: Download wheels
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: MacOS_wheels
         path: wheelhouse/
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         path: tket
     - name: Install wheel
@@ -321,11 +321,11 @@ jobs:
         python-version: ['3.8', '3.9', '3.10']
     steps:
     - name: Download wheels
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: MacOS_M1_wheels
         path: wheelhouse/
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         path: tket
     - name: Install wheel
@@ -353,18 +353,18 @@ jobs:
         python-version: ['3.8', '3.9', '3.10']
     steps:
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
     - name: Download wheels
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: Windows_wheels
         path: wheelhouse/
     - name: Install wheel
       shell: bash
       run: for i in wheelhouse/${{ matrix.python-version }}/pytket-*.whl ; do pip install $i ; done
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
           path: tket
     - name: Run tests
@@ -381,7 +381,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
     - name: Download all wheels
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         path: wheelhouse
     - name: Put them all in the dist folder
@@ -401,15 +401,15 @@ jobs:
     if: github.event_name == 'release'
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         fetch-depth: '0'
     - name: Set up Python 3.9
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v3
       with:
         python-version: '3.9'
     - name: Download wheels
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: Linux_wheels
         path: wheelhouse/
@@ -423,7 +423,7 @@ jobs:
       timeout-minutes: 20
       run: ./.github/workflows/build-docs
     - name: Upload artefact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: pytket_docs
         path: pytket/docs/build/html/
@@ -435,11 +435,11 @@ jobs:
     if: github.event_name == 'release' && github.event.release.prerelease != true
     runs-on: ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
       with:
         ref: gh-pages
     - name: Download artefact
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v3
       with:
         name: pytket_docs
         path: api/

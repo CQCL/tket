@@ -1,6 +1,18 @@
 Changelog
 =========
 
+1.2.0 (May 2022)
+----------------
+
+Minor new features:
+
+* Added explicit constructors for various Python classes.
+* New ``measure_register`` method for measuring registers.
+* Added ``OpType.TK2``, a three-parameter two-qubit gate.
+* New pass ``SynthesiseTK`` and transform ``OptimiseStandard`` to synthesize
+  TK2 gates.
+* Add ``Optype.WASM``, adding a classical wasm function call to the circuit
+
 1.1.0 (April 2022)
 ------------------
 

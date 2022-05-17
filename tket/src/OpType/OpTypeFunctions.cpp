@@ -16,6 +16,8 @@
 
 #include <memory>
 
+#include "OpType.hpp"
+
 namespace tket {
 
 bool find_in_set(const OpType& val, const OpTypeSet& set) {
@@ -42,7 +44,8 @@ const OpTypeSet& all_gate_types() {
       OpType::ZZPhase,     OpType::CnRy,     OpType::CnX,
       OpType::BRIDGE,      OpType::Collapse, OpType::ESWAP,
       OpType::FSim,        OpType::Sycamore, OpType::ISWAPMax,
-      OpType::PhasedISWAP, OpType::XXPhase3, OpType::NPhasedX};
+      OpType::PhasedISWAP, OpType::XXPhase3, OpType::NPhasedX,
+      OpType::TK2};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -60,7 +63,8 @@ const OpTypeSet& all_multi_qubit_types() {
       OpType::YYPhase,     OpType::ZZPhase,     OpType::CnRy,
       OpType::CnX,         OpType::BRIDGE,      OpType::ESWAP,
       OpType::FSim,        OpType::Sycamore,    OpType::ISWAPMax,
-      OpType::PhasedISWAP, OpType::XXPhase3,    OpType::NPhasedX};
+      OpType::PhasedISWAP, OpType::XXPhase3,    OpType::NPhasedX,
+      OpType::TK2};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -192,7 +196,7 @@ bool is_classical_type(OpType optype) {
       OpType::ClassicalTransform, OpType::SetBits,
       OpType::CopyBits,           OpType::RangePredicate,
       OpType::ExplicitPredicate,  OpType::ExplicitModifier,
-      OpType::MultiBit,
+      OpType::MultiBit,           OpType::WASM,
   };
   return find_in_set(optype, classical_gates);
 }

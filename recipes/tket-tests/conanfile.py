@@ -22,7 +22,7 @@ class TketTestsConan(ConanFile):
     version = "0.6.2"
     license = "CQC Proprietary"
     author = "Alec Edgington <alec.edgington@cambridgequantum.com>"
-    url = "https://github.com/CQCL-DEV/tket"
+    url = "https://github.com/CQCL/tket"
     description = "Unit tests for tket"
     topics = ("quantum", "computation", "compiler")
     settings = "os", "compiler", "build_type", "arch"
@@ -34,7 +34,7 @@ class TketTestsConan(ConanFile):
     default_options = {"with_coverage": False, "full": False, "long": False}
     generators = "cmake"
     exports_sources = "../../tket/tests/*"
-    requires = ("tket/1.0.1", "catch2/2.13.8")
+    requires = ("tket/1.0.1", "catch2/2.13.9")
 
     _cmake = None
 
