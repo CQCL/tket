@@ -14,11 +14,11 @@
 
 #pragma once
 
+#include <optional>
 #include <set>
 #include <stdexcept>
 #include <utility>
 #include <vector>
-#include <optional>
 
 namespace tket::graphs {
 
