@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.2.0 (May 2022)
+1.2.1 (May 2022)
 ----------------
 
 Minor new features:
