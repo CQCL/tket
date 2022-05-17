@@ -385,16 +385,18 @@ BoundaryVertMap circuit_to_zx_recursive(
           // Each boolean edge shares a source port with other
           // classical/boolean edges. Use the classical Z spider to explicitly
           // implement this copy operation
-          ZXVert copy_vert =
-              zxd.add_vertex(ZXType::ZSpider, 0, QuantumType::Classical);
           Edge in_edge = circ.get_nth_in_edge(vert, i);
           port_t source_port = circ.get_source_port(in_edge);
           Vertex vert_s = circ.source(in_edge);
           // During the wiring stage, each edge originated from {vert_s,
           // p_s} needs go through copy_vert
-          boolean_outport_lookup.insert(
-              {{vert_s, source_port}, {copy_vert, std::nullopt}});
-
+          if (boolean_outport_lookup.find({vert_s, source_port}) ==
+              boolean_outport_lookup.end()) {
+            ZXVert copy_vert =
+                zxd.add_vertex(ZXType::ZSpider, 0, QuantumType::Classical);
+            boolean_outport_lookup.insert(
+                {{vert_s, source_port}, {copy_vert, std::nullopt}});
+          }
           if (port_conditions[i]) {
             vert_lookup.insert({{{vert, i}, PortType::In}, and_inputs[i]});
           } else {

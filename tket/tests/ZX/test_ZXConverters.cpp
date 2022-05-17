@@ -562,6 +562,27 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(zx.count_vertices(ZXType::Hbox, QuantumType::Quantum) == 1);
     REQUIRE_NOTHROW(zx.check_validity());
   }
+  GIVEN("Consecutive conditional gates") {
+    // Test that only one copy spider should be connected to the classical input
+    Circuit circ(1, 1);
+    circ.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {0}, 1);
+    ZXDiagram zx;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(zx, bmap) = circuit_to_zx(circ);
+    REQUIRE(zx.n_vertices() == 37);
+    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Quantum) == 1);
+    REQUIRE(zx.count_vertices(ZXType::Input, QuantumType::Classical) == 1);
+    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Quantum) == 1);
+    REQUIRE(zx.count_vertices(ZXType::Output, QuantumType::Classical) == 1);
+    REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Quantum) == 12);
+    REQUIRE(zx.count_vertices(ZXType::Triangle, QuantumType::Quantum) == 8);
+    REQUIRE(zx.count_vertices(ZXType::XSpider, QuantumType::Classical) == 0);
+    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Quantum) == 6);
+    REQUIRE(zx.count_vertices(ZXType::ZSpider, QuantumType::Classical) == 5);
+    REQUIRE(zx.count_vertices(ZXType::Hbox, QuantumType::Quantum) == 2);
+    REQUIRE_NOTHROW(zx.check_validity());
+  }
 }
 
 SCENARIO("Check converting circuits to diagrams") {
