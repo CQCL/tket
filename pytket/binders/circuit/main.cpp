@@ -294,6 +294,11 @@ PYBIND11_MODULE(circuit, m) {
           "Resets the qubit to :math:`\\left|0\\right>`")
       .value("CircBox", OpType::CircBox, "Represents an arbitrary subcircuit")
       .value(
+          "PhasePolyBox", OpType::PhasePolyBox,
+          "An operation representing arbitrary circuits made up of CX and Rz "
+          "gates, represented as a phase polynomial together with a boolean "
+          "matrix representing an additional linear transformation.")
+      .value(
           "Unitary1qBox", OpType::Unitary1qBox,
           "Represents an arbitrary one-qubit unitary operation by its "
           "matrix")

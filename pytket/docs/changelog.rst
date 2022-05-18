@@ -1,8 +1,8 @@
 Changelog
 =========
 
-x.y.z (unreleased)
-------------------
+1.2.1 (May 2022)
+----------------
 
 Minor new features:
 
@@ -12,6 +12,7 @@ Minor new features:
 * New pass ``SynthesiseTK`` and transform ``OptimiseStandard`` to synthesize
   TK2 gates.
 * Add ``Optype.WASM``, adding a classical wasm function call to the circuit
+* Add optype for existing PhasePolyBox ``OpType.PhasePolyBox``
 * The ``GlobalisePhasedX`` transform and homonymous pass take a new optional
   ``squash`` parameter. ``squash=true`` (default) implements a new algorithm
   that significantly reduces the number of ``NPhasedX`` gates synthesised.
