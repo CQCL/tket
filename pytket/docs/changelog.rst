@@ -1,8 +1,8 @@
 Changelog
 =========
 
-x.y.z (unreleased)
-------------------
+1.2.1 (May 2022)
+----------------
 
 Minor new features:
 
@@ -13,7 +13,6 @@ Minor new features:
   TK2 gates.
 * Add ``Optype.WASM``, adding a classical wasm function call to the circuit
 * Add optype for existing PhasePolyBox ``OpType.PhasePolyBox``
-
 
 1.1.0 (April 2022)
 ------------------
