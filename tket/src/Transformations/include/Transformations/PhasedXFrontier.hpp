@@ -242,6 +242,11 @@ class PhasedXFrontier {
   void skip_global_gates(unsigned n = 1);
 
   /**
+   * @brief Whether the frontier has reached the end of the circuit.
+   */
+  bool is_finished();
+
+  /**
    * @brief Whether the vertex is within a single-qb interval
    *
    * Checks if v is a multi-qubit gate or a final optype.

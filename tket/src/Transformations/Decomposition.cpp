@@ -1190,6 +1190,7 @@ Transform globalise_PhasedX(bool squash) {
         frontier.next_multiqb(*v);
       }
     }
+    TKET_ASSERT(frontier.is_finished());
     return success;
   });
 }

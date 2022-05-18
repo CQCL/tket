@@ -40,6 +40,16 @@ static std::map<T, unsigned> count(std::vector<T> xs) {
   return cnts;
 }
 
+bool PhasedXFrontier::is_finished() {
+  for (unsigned i = 0; i < circ_.n_qubits(); ++i) {
+    Vertex v = circ_.target(intervals_[i].second);
+    if (!circ_.detect_final_Op(v)) {
+      return false;
+    }
+  }
+  return true;
+}
+
 std::set<unsigned> PhasedXFrontier::qubits_ending_in(const Vertex& v) const {
   std::set<unsigned> qubits;
   for (unsigned i = 0; i < circ_.n_qubits(); ++i) {
