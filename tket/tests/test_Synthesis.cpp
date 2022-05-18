@@ -951,6 +951,27 @@ SCENARIO("Test commutation through CXsw", "[transform]") {
 }
 
 SCENARIO("Testing globalise_PhasedX") {
+  GIVEN("A very simple circuit") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::PhaseGadget, 0, {0});
+    circ.add_op<unsigned>(OpType::ZZPhase, 0, {1, 0});
+    circ.add_op<unsigned>(OpType::X, {1});
+
+    auto orig_u = tket_sim::get_unitary(circ);
+    WHEN("Applying globalise PhasedX transform") {
+      REQUIRE(Transforms::globalise_PhasedX().apply(circ));
+      THEN("The correct gates are introduced") {
+        REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
+        REQUIRE(circ.count_gates(OpType::NPhasedX) == 2);
+        REQUIRE(circ.count_gates(OpType::Rz) == 1);
+        REQUIRE(circ.n_gates() == 5);
+      }
+      THEN("The unitaries are equal") {
+        auto new_u = tket_sim::get_unitary(circ);
+        REQUIRE(tket_sim::compare_statevectors_or_unitaries(orig_u, new_u));
+      }
+    }
+  }
   GIVEN("A simple PhasedX gate in 2qb circuit, squash=false") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::PhasedX, {0.2, 0.54}, {0});

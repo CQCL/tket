@@ -241,12 +241,20 @@ class PhasedXFrontier {
    */
   void skip_global_gates(unsigned n = 1);
 
+  /**
+   * @brief Whether the vertex is within a single-qb interval
+   *
+   * Checks if v is a multi-qubit gate or a final optype.
+   *
+   * @param op The operation.
+   */
+  static bool is_interval_boundary(Op_ptr op);
+
  private:
   // squash gates in the current interval on qubit i to ZXZ form
   void squash_interval(unsigned i);
 
-  // whether the vertex can be in an interval
-  // checks if v is a multi-qubit gate or a final optype
+  // forwards to public static method
   bool is_interval_boundary(Vertex v) const;
 
   // given an edge within an interval (eg the first), advances through the

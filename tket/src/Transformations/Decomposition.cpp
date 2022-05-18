@@ -1088,7 +1088,7 @@ Transform globalise_PhasedX(bool squash) {
   };
 
   // the actual transform
-  return Transform([squash, &choose_strategy](Circuit &circ) {
+  return Transform([squash, choose_strategy](Circuit &circ) {
     // if we squash, we start by removing all NPhasedX gates
     if (squash) {
       Transforms::decompose_NPhasedX().apply(circ);
@@ -1098,22 +1098,20 @@ Transform globalise_PhasedX(bool squash) {
     std::iota(range_qbs.begin(), range_qbs.end(), 0);
     PhasedXFrontier frontier(circ);
 
-    // find a total ordering of multi-qb gates
-    auto filter_pred = [&circ](Vertex v) {
+    // find a total ordering of boundary gates (aka non-NPhasedX multi-qb gates)
+    auto is_boundary = [&circ](Vertex v) {
       Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-      OpType type = op->get_type();
-      return is_gate_type(type) && as_gate_ptr(op)->n_qubits() > 1 &&
-             type != OpType::NPhasedX;
+      return PhasedXFrontier::is_interval_boundary(op);
     };
-    // get a lexicographic ordering of mulit-qb vertices
+    // get a lexicographic ordering of boundary vertices
     auto vertices_in_order = circ.vertices_in_order();
-    auto r = vertices_in_order | boost::adaptors::filtered(filter_pred);
-    OptVertexVec multiq_gates(r.begin(), r.end());
-    // Add sentinel to process the gates after last multiq_gate.
+    auto r = vertices_in_order | boost::adaptors::filtered(is_boundary);
+    OptVertexVec boundary_gates(r.begin(), r.end());
+    // Add sentinel to process the gates after last boundary_gate.
     // This is required to force flush the frontier after the last multi-qubit
     // gate.
     OptVertex optv;
-    multiq_gates.push_back(optv);
+    boundary_gates.push_back(optv);
 
     // whether transform is successful (always true if squash=true)
     bool success = squash;
@@ -1128,7 +1126,7 @@ Transform globalise_PhasedX(bool squash) {
     // care of the garbage you might have created on other qubits at a later
     // point.
 
-    for (OptVertex v : multiq_gates) {
+    for (OptVertex v : boundary_gates) {
       // the qubits whose intervals must be decomposed into global gates
       std::set<unsigned> curr_qubits;
       while (true) {
@@ -1150,7 +1148,7 @@ Transform globalise_PhasedX(bool squash) {
         }
 
         if (all_nullopt(curr_phasedx)) {
-          // there is nothing to decompose anymore, move to next multiq_gate
+          // there is nothing to decompose anymore, move to next boundary_gate
           break;
         }
         if (all_equal(all_phasedx)) {

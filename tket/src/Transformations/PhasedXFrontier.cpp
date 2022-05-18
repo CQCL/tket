@@ -141,7 +141,7 @@ void PhasedXFrontier::next_multiqb(const Vertex& v) {
 
 Edge PhasedXFrontier::get_interval_end(Edge e) const {
   Vertex v = circ_.target(e);
-  while (!is_interval_boundary(v)) {
+  while (!circ_.detect_final_Op(v) && !is_interval_boundary(v)) {
     auto p = circ_.get_next_pair(v, e);
     v = p.first;
     e = p.second;
@@ -157,13 +157,15 @@ Edge PhasedXFrontier::get_interval_start(Edge e) const {
   return e;
 }
 
+bool PhasedXFrontier::is_interval_boundary(Op_ptr op) {
+  OpType type = op->get_type();
+  return is_gate_type(type) && as_gate_ptr(op)->n_qubits() > 1 &&
+         type != OpType::NPhasedX;
+}
+
 bool PhasedXFrontier::is_interval_boundary(Vertex v) const {
   Op_ptr op = circ_.get_Op_ptr_from_Vertex(v);
-  OpType optype = op->get_type();
-  if (optype == OpType::NPhasedX) {
-    return false;
-  }
-  return !is_single_qubit_unitary_type(optype);
+  return is_interval_boundary(op);
 }
 
 /**
