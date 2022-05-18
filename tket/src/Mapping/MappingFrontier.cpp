@@ -567,7 +567,7 @@ void MappingFrontier::set_linear_boundary(
  * linear_boundary This directly modifies circuit_ Updates linear_boundary to
  * reflect new edges
  */
-void MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
+bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
   // get iterators to linear_boundary uids
   auto uid0_in_it = this->linear_boundary->find(uid_0);
   auto uid1_in_it = this->linear_boundary->find(uid_1);
@@ -607,6 +607,19 @@ void MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
       this->circuit_.get_nth_out_edge(vp0.first, vp0.second),
       this->circuit_.get_nth_out_edge(vp1.first, vp1.second)};
 
+  // If the immediate vertex before the new vertex is the same SWAP, this
+  // implies a rut has been hit In which case return false that SWAP can't be
+  // added Can safely do this check here after relabelling as adding/updating
+  // ancillas => fresh SWAP
+  Vertex source0 = this->circuit_.source(predecessors[0]);
+  Vertex source1 = this->circuit_.source(predecessors[1]);
+  if (source0 == source1) {
+    if (this->circuit_.get_OpType_from_Vertex(source0) == OpType::SWAP) {
+      std::cout << "SWAP FALSE!" << std::endl;
+      return false;
+    }
+  }
+
   // add SWAP vertex to circuit_ and rewire into predecessor
   Vertex swap_v = this->circuit_.add_vertex(OpType::SWAP);
   this->circuit_.rewire(
@@ -643,6 +656,7 @@ void MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
   std::map<Node, Node> final_map = {{n0, n1}, {n1, n0}};
 
   update_maps(this->bimaps_, {}, final_map);
+  return true;
 }
 
 void MappingFrontier::add_bridge(
