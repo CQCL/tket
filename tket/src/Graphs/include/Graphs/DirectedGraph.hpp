@@ -433,20 +433,22 @@ class DirectedGraph : public DirectedGraphBase<T> {
     return d;
   }
 
-  unsigned get_diameter() const override {
+  unsigned get_diameter() override {
     unsigned N = n_nodes();
     if (N == 0) {
       throw std::logic_error("Graph is empty.");
     }
-    unsigned max = 0;
-    const std::vector<T> nodes = get_all_nodes_vec();
-    for (unsigned i = 0; i < N; i++) {
-      for (unsigned j = i + 1; j < N; j++) {
-        unsigned d = get_distance(nodes[i], nodes[j]);
-        if (d > max) max = d;
+    if (!this->diameter_) {
+      this->diameter_ = 0;
+      const std::vector<T> nodes = get_all_nodes_vec();
+      for (unsigned i = 0; i < N; i++) {
+        for (unsigned j = i + 1; j < N; j++) {
+          unsigned d = get_distance(nodes[i], nodes[j]);
+          if (d > *this->diameter_) this->diameter_ = d;
+        }
       }
     }
-    return max;
+    return *this->diameter_;
   }
 
   /** Returns all nodes at a given distance from a given 'source' node */
