@@ -615,7 +615,6 @@ bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
   Vertex source1 = this->circuit_.source(predecessors[1]);
   if (source0 == source1) {
     if (this->circuit_.get_OpType_from_Vertex(source0) == OpType::SWAP) {
-      std::cout << "SWAP FALSE!" << std::endl;
       return false;
     }
   }

@@ -531,9 +531,9 @@ bool LexiRoute::solve(unsigned lookahead) {
           CheckLabellingValidity::No);
       // if SWAP has both Nodes in interaction default takes first
       // this could be inefficient compared to other SWAP, however
-      // this failsafe is expected to be called extremely rarely (once in thousands)
-      // on very dense circuits for very symmetrical architectures
-      // so doesn't largely matter
+      // this failsafe is expected to be called extremely rarely (once in
+      // thousands) on very dense circuits for very symmetrical architectures so
+      // doesn't largely matter
       auto it = this->interacting_uids_.find(chosen_swap.first);
       if (it != this->interacting_uids_.end()) {
         auto path =
