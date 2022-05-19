@@ -318,7 +318,7 @@ double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx) {
     case 0:
       return trace_fidelity(a, b, c);
     case 1:
-      return trace_fidelity(-0.5 - a, b, c);
+      return trace_fidelity(0.5 - a, b, c);
     case 2:
       return trace_fidelity(0, 0, c);
     case 3:
@@ -450,8 +450,8 @@ inline double mod(double d, double max) { return d - max * floor(d / max); }
 // computes the distance of the exponent r
 // from the Weyl chamber - used for sorting ExpGate components
 static double dist_from_weyl(double r) {
-  const double opt1 = mod(r, PI / 2);
-  const double opt2 = PI / 2 - opt1;
+  const double opt1 = mod(r, 1.);
+  const double opt2 = 1. - opt1;
   return std::min(opt1, opt2);
 }
 
@@ -524,13 +524,13 @@ get_information_content(const Eigen::Matrix4cd &X) {
   basis_change << 1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, 1, 1, 1, 1,
       1;  // k3 = 0 always
   Eigen::Vector3d k =
-      (.25 * basis_change * thetas).head<3>().unaryExpr([](double d) {
-        return mod(d, 2 * PI);
+      (-.5 * basis_change * thetas / PI).head<3>().unaryExpr([](double d) {
+        return mod(d, 4);
       });
 
-  // move k into Weyl chamber ie pi/4 >= k_x >= k_y >= |k_z|
+  // move k into Weyl chamber ie 1/2 >= k_x >= k_y >= |k_z|
   //   1. permutate ks
-  //   2. modulo pi/2 and pi/4
+  //   2. modulo 1. and 1/2
   std::vector<int> ind_order{0, 1, 2};
   std::sort(ind_order.begin(), ind_order.end(), [&k](int i, int j) {
     return dist_from_weyl(k(i)) > dist_from_weyl(k(j));
@@ -569,32 +569,32 @@ get_information_content(const Eigen::Matrix4cd &X) {
       Eigen::kroneckerProduct(PauliX, Eigen::Matrix2cd::Identity());
   const Eigen::Matrix4cd s_ix =
       Eigen::kroneckerProduct(Eigen::Matrix2cd::Identity(), PauliX);
-  if (k(0) > PI / 2) {
-    k(0) -= 1.5 * PI;
+  if (k(0) > 1.) {
+    k(0) -= 3.;
     K1 *= -i_ * s_xx;
   }
-  if (k(1) > PI / 2) {
-    k(1) -= 1.5 * PI;
+  if (k(1) > 1.) {
+    k(1) -= 3.;
     K1 *= -i_ * s_yy;
   }
-  if (k(2) > PI / 2) {
-    k(2) -= 1.5 * PI;
+  if (k(2) > 1.) {
+    k(2) -= 3.;
     K1 *= -i_ * s_zz;
   }
-  if (k(0) > PI / 4) {
-    k(0) = PI / 2 - k(0);
-    k(1) = PI / 2 - k(1);
+  if (k(0) > .5) {
+    k(0) = 1. - k(0);
+    k(1) = 1. - k(1);
     K1 *= s_iz;
     K2 = s_zi * K2;
   }
-  if (k(1) > PI / 4) {
-    k(1) = PI / 2 - k(1);
-    k(2) = PI / 2 - k(2);
+  if (k(1) > .5) {
+    k(1) = 1. - k(1);
+    k(2) = 1. - k(2);
     K1 *= s_ix;
     K2 = s_xi * K2;
   }
-  if (k(2) > PI / 4) {
-    k(2) -= PI / 2;
+  if (k(2) > .5) {
+    k(2) -= 1.;
     K1 *= i_ * s_zz;
   }
 
@@ -602,8 +602,7 @@ get_information_content(const Eigen::Matrix4cd &X) {
   K1 *= norm_X;
 
   // Finally, we got our ks
-  constexpr double f = -2 / PI;
-  ExpGate A {f * k(0), f * k(1), f * k(2)};
+  ExpGate A{k(0), k(1), k(2)};
 
   // K1,K2 in SU(2)xSU(2), A = Exp(i aσ_XX + i bσ_YY + i cσ_ZZ)
   return std::tuple<Mat4, ExpGate, Mat4>{K1, A, K2};
