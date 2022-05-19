@@ -538,7 +538,6 @@ bool LexiRoute::solve(unsigned lookahead) {
       auto add_path_swaps = [this](const Node& source, const Node& target) {
         auto path = this->architecture_->get_path(source, target);
         auto path_it_0 = path.begin() + 1;
-        // ++path_it_0;
         auto path_it_1 = path.begin();
         // adds a SWAP between each pair of adjacent nodes on path
         while (path_it_0 != path.end()) {
