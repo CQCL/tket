@@ -535,11 +535,10 @@ bool LexiRoute::solve(unsigned lookahead) {
       // thousands) on very dense circuits for very symmetrical architectures so
       // doesn't largely matter
       auto it = this->interacting_uids_.find(chosen_swap.first);
-      if (it != this->interacting_uids_.end()) {
-        auto path =
-            this->architecture_->get_path(chosen_swap.first, Node(it->second));
-        auto path_it_0 = path.begin();
-        ++path_it_0;
+      auto add_path_swaps = [this](const Node& source, const Node& target) {
+        auto path = this->architecture_->get_path(source, target);
+        auto path_it_0 = path.begin() + 1;
+        // ++path_it_0;
         auto path_it_1 = path.begin();
         // adds a SWAP between each pair of adjacent nodes on path
         while (path_it_0 != path.end()) {
@@ -547,21 +546,13 @@ bool LexiRoute::solve(unsigned lookahead) {
           ++path_it_0;
           ++path_it_1;
         }
+      };
+      if (it != this->interacting_uids_.end()) {
+        add_path_swaps(chosen_swap.first, Node(it->second));
       } else {
         it = this->interacting_uids_.find(chosen_swap.second);
-        if (it == this->interacting_uids_.end()) {
-          throw LexiRouteError("Neither Node in SWAP in interaction.");
-        }
-        auto path =
-            this->architecture_->get_path(chosen_swap.second, Node(it->second));
-        auto path_it_0 = path.begin();
-        ++path_it_0;
-        auto path_it_1 = path.begin();
-        while (path_it_0 != path.end()) {
-          this->mapping_frontier_->add_swap(*path_it_0, *path_it_1);
-          ++path_it_0;
-          ++path_it_1;
-        }
+        TKET_ASSERT(it != this->interacting_uids_.end());
+        add_path_swaps(chosen_swap.second, Node(it->second));
       }
     }
 
