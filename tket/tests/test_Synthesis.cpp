@@ -1615,6 +1615,39 @@ SCENARIO("Check the identification of ZZPhase gates works correctly") {
   }
 }
 
+SCENARIO("Decomposition of XXPhase and YYPhase into ZZPhase") {
+  unsigned exp_n_zzphase;
+  Circuit c;
+  GIVEN("A circuit with a single XXPhase") {
+    c = Circuit(2);
+    c.add_op<unsigned>(OpType::XXPhase, 0.3, {0, 1});
+    exp_n_zzphase = 1;
+  }
+  GIVEN("A circuit with a single YYPhase") {
+    c = Circuit(2);
+    c.add_op<unsigned>(OpType::YYPhase, 0.3, {0, 1});
+    exp_n_zzphase = 1;
+  }
+  GIVEN("A circuit with 1x XXPhase, 2x YYPhase and 1xZZPhase") {
+    c = Circuit(3);
+    c.add_op<unsigned>(OpType::XXPhase, 0.3, {0, 1});
+    c.add_op<unsigned>(OpType::YYPhase, 0.7, {1, 2});
+    c.add_op<unsigned>(OpType::ZZPhase, 0.88, {0, 2});
+    c.add_op<unsigned>(OpType::YYPhase, 0.38, {0, 2});
+    exp_n_zzphase = 4;
+  }
+  GIVEN("A XXPhase(a) symbolic circ") {
+    c = Circuit(2);
+    Sym a = SymEngine::symbol("alpha");
+    Expr alpha(a);
+    c.add_op<unsigned>(OpType::XXPhase, alpha, {0, 1});
+    exp_n_zzphase = 1;
+  }
+  REQUIRE(Transforms::decompose_ZZPhase().apply(c));
+  REQUIRE(c.count_gates(OpType::ZZPhase) == exp_n_zzphase);
+  REQUIRE(!Transforms::decompose_ZZPhase().apply(c));
+}
+
 SCENARIO("Test TK1 gate decomp for some gates") {
   std::vector<Expr> pars = {
       0.3, 0.7, 0.8};  // no ops required >3 params currently
@@ -1643,6 +1676,120 @@ SCENARIO("Test TK1 gate decomp for some gates") {
     Transforms::decompose_tk1_to_rzrx().apply(circ);
     const StateVector sv = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(sv, sv2));
+  }
+}
+
+SCENARIO("Testing decompose_TK2") {
+  GIVEN("Parameterless decompose_TK2") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::TK2, {0.3, 0.1, 0.}, {0, 1});
+    REQUIRE(Transforms::decompose_TK2().apply(c));
+    REQUIRE(c.count_gates(OpType::CX) == 2);
+    REQUIRE(c.count_gates(OpType::TK2) == 0);
+    REQUIRE(!Transforms::decompose_TK2().apply(c));
+  }
+
+  // some useful symbolics
+  Sym a = SymEngine::symbol("alpha");
+  Expr alpha(a);
+  Sym b = SymEngine::symbol("beta");
+  Expr beta(b);
+  Sym c = SymEngine::symbol("gamma");
+  Expr gamma(c);
+
+  GIVEN("Not in Weyl chamber error") {
+    std::vector<std::vector<Expr>> params{
+        {0.1, 0.3, 0.}, {0.6, 0, 0}, {0.4, 0.1, -0.2}, {0.2, alpha, 0}};
+    for (auto angles : params) {
+      Circuit c(2);
+      c.add_op<unsigned>(OpType::TK2, angles, {0, 1});
+      REQUIRE_THROWS_AS(Transforms::decompose_TK2().apply(c), NotValid);
+    }
+  }
+
+  std::vector<std::vector<Expr>> params;
+  std::vector<unsigned> exp_n_cx(4, 0);
+  std::vector<unsigned> exp_n_zzmax(4, 0);
+  std::vector<unsigned> exp_n_zzphase(4, 0);
+  Transforms::TwoQbFidelities fid;
+  bool is_symbolic = false;
+  double eps = ERR_EPS;
+
+  GIVEN("A bunch of TK2 gates, no fidelities") {
+    params = {{.5, 0., 0.}, {.4, 0., 0.}, {.2, .2, 0.}, {0.2, 0.1, 0.08}};
+    exp_n_cx = {1, 2, 2, 3};
+  }
+  GIVEN("A bunch of TK2 gates, perfect ZZMax fidelities") {
+    fid.ZZMax_fidelity = 1.;
+    params = {{.5, 0., 0.}, {.4, 0., 0.}, {.2, .2, 0.}, {0.2, 0.1, 0.1}};
+    exp_n_zzmax = {1, 2, 2, 3};
+  }
+  GIVEN("A bunch of TK2 gates, ZZMax vs ZZPhase fidelities") {
+    fid.ZZMax_fidelity = .99;
+    fid.ZZPhase_fidelity = [](double angle) { return 1 - angle / 10.; };
+    params = {
+        {.5, 0., 0.},      // use single ZZMax
+        {.48, 0., 0.},     // use single ZZMax (approx)
+        {.4, 0., 0.},      // use two ZZMax
+        {0.4, 0.1, 0.},    // use two ZZMax
+        {0.4, 0.1, 0.01},  // use two ZZMax (approx)
+        {.4, 0.3, 0.2},    // use three ZZMax
+        {.1, 0., 0.},      // use single ZZPhase
+        {0.05, 0.01, 0},   // use identity (approx)
+        {0.1, 0.01, 0},    // use single ZZPhase (approx)
+        {0.3, 0.01, 0},    // use two ZZMax
+        {0.49, 0.01, 0},   // use single ZZMax (approx)
+        {0.1, 0.1, 0},     // use two ZZMax
+    };
+    exp_n_zzmax = {1, 1, 2, 2, 2, 3, 0, 0, 0, 2, 1, 2};
+    exp_n_zzphase = {0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0};
+    exp_n_cx = std::vector<unsigned>(exp_n_zzmax.size(), 0);
+    eps = 0.98;
+  }
+  GIVEN("Symbolic cases") {
+    is_symbolic = true;
+    params = {
+        {alpha, 0., 0.},
+        {alpha, beta, gamma},
+        {alpha, 0.2, 0},
+        {alpha, 0.1, 0.05}};
+    GIVEN("Using default") { exp_n_cx = {2, 3, 2, 3}; }
+    GIVEN("Using CX") {
+      fid.CX_fidelity = 1.;
+      exp_n_cx = {2, 3, 2, 3};
+    }
+    GIVEN("Using ZZMax") {
+      fid.ZZMax_fidelity = 1.;
+      exp_n_zzmax = {2, 3, 2, 3};
+    }
+    GIVEN("Force use ZZPhase") {
+      fid.ZZPhase_fidelity = [](double) { return 1.; };
+      exp_n_zzphase = {1, 3, 2, 3};
+    }
+    GIVEN("Either ZZMax or ZZPhase") {
+      fid.ZZPhase_fidelity = [](double) { return 1.; };
+      fid.ZZMax_fidelity = 1.;
+      exp_n_zzphase = {1, 0, 0, 0};
+      exp_n_zzmax = {0, 3, 2, 3};
+    }
+  }
+
+  Eigen::MatrixXcd u1, u2;
+  for (unsigned i = 0; i < params.size(); ++i) {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::TK2, params[i], {0, 1});
+    if (!is_symbolic) {
+      u1 = tket_sim::get_unitary(c);
+    }
+    REQUIRE(Transforms::decompose_TK2(fid).apply(c));
+    if (!is_symbolic) {
+      u2 = tket_sim::get_unitary(c);
+    }
+    REQUIRE(u1.isApprox(u2, eps));
+    REQUIRE(c.count_gates(OpType::CX) == exp_n_cx[i]);
+    REQUIRE(c.count_gates(OpType::ZZMax) == exp_n_zzmax[i]);
+    REQUIRE(c.count_gates(OpType::ZZPhase) == exp_n_zzphase[i]);
+    REQUIRE(!Transforms::decompose_TK2().apply(c));
   }
 }
 

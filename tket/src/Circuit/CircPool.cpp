@@ -838,6 +838,26 @@ Circuit ZZPhase_using_CX(Expr alpha) {
   return c;
 }
 
+Circuit XXPhase_using_ZZPhase(Expr alpha) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::H, {0});
+  c.add_op<unsigned>(OpType::H, {1});
+  c.add_op<unsigned>(OpType::ZZPhase, alpha, {0, 1});
+  c.add_op<unsigned>(OpType::H, {0});
+  c.add_op<unsigned>(OpType::H, {1});
+  return c;
+}
+
+Circuit YYPhase_using_ZZPhase(Expr alpha) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::Vdg, {0});
+  c.add_op<unsigned>(OpType::Vdg, {1});
+  c.add_op<unsigned>(OpType::ZZPhase, alpha, {0, 1});
+  c.add_op<unsigned>(OpType::V, {0});
+  c.add_op<unsigned>(OpType::V, {1});
+  return c;
+}
+
 Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::Z, {0});

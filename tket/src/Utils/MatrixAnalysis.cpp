@@ -292,35 +292,35 @@ Eigen::VectorXcd apply_qubit_permutation(
   return perm_m * v;
 }
 
-/**
- * returns average fidelity of the decomposition of the information
- * content with nb_cx CNOTS.
- */
-static double get_CX_fidelity(
-    const std::tuple<double, double, double> &k, unsigned nb_cx) {
-  auto fidelity = [](double a, double b, double c) {
-    double trace_sq = 16. * (pow(cos(a) * cos(b) * cos(c), 2) +
-                             pow(sin(a) * sin(b) * sin(c), 2));
-    return (4. + trace_sq) / 20.;
-  };
-
-  TKET_ASSERT(nb_cx < 4);
-  auto [a, b, c] = k;
+// How close TK2(a,b,c) is from the identity
+double trace_fidelity(double a, double b, double c) {
   constexpr double g = -PI / 2;
   a *= g;
   b *= g;
   c *= g;
+  double trace_sq = 16. * (pow(cos(a) * cos(b) * cos(c), 2) +
+                           pow(sin(a) * sin(b) * sin(c), 2));
+  return (4. + trace_sq) / 20.;
+}
+
+/**
+ * returns average fidelity of the decomposition of the information
+ * content with nb_cx CNOTS.
+ */
+double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx) {
+  TKET_ASSERT(nb_cx < 4);
+  auto [a, b, c] = k;
 
   // gate fidelity achievable with 0,...,3 cnots
   // this is fully determined by the information content k and is optimal
   // see PhysRevA 71.062331 (2005) for more details on this
   switch (nb_cx) {
     case 0:
-      return fidelity(a, b, c);
+      return trace_fidelity(a, b, c);
     case 1:
-      return fidelity(PI / 4 - a, b, c);
+      return trace_fidelity(-0.5 - a, b, c);
     case 2:
-      return fidelity(0, 0, c);
+      return trace_fidelity(0, 0, c);
     case 3:
       return 1.;
   }
@@ -329,7 +329,7 @@ static double get_CX_fidelity(
 }
 
 std::vector<std::tuple<Eigen::Matrix2cd, Eigen::Matrix2cd>> expgate_as_CX(
-    const std::tuple<double, double, double> &k, double cx_fidelity) {
+    const std::array<double, 3> &k, double cx_fidelity) {
   using Mat2 = Eigen::Matrix2cd;
 
   if (cx_fidelity < 0 || cx_fidelity - 1 > EPS) {
@@ -455,10 +455,9 @@ static double dist_from_weyl(double r) {
   return std::min(opt1, opt2);
 }
 
-std::tuple<
-    Eigen::Matrix4cd, std::tuple<double, double, double>, Eigen::Matrix4cd>
+std::tuple<Eigen::Matrix4cd, std::array<double, 3>, Eigen::Matrix4cd>
 get_information_content(const Eigen::Matrix4cd &X) {
-  using ExpGate = std::tuple<double, double, double>;
+  using ExpGate = std::array<double, 3>;
   using Mat4 = Eigen::Matrix4cd;
   using Vec4 = Eigen::Vector4cd;
 
@@ -604,7 +603,7 @@ get_information_content(const Eigen::Matrix4cd &X) {
 
   // Finally, we got our ks
   constexpr double f = -2 / PI;
-  ExpGate A(f * k(0), f * k(1), f * k(2));
+  ExpGate A {f * k(0), f * k(1), f * k(2)};
 
   // K1,K2 in SU(2)xSU(2), A = Exp(i aσ_XX + i bσ_YY + i cσ_ZZ)
   return std::tuple<Mat4, ExpGate, Mat4>{K1, A, K2};

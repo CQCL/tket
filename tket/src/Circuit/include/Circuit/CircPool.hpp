@@ -237,6 +237,12 @@ Circuit ZZPhase_using_TK2(Expr alpha);
 /** Equivalent to ZZPhase, using CX and Rz gates */
 Circuit ZZPhase_using_CX(Expr alpha);
 
+/** Equivalent to XXPhase, using ZZPhase and H gates */
+Circuit XXPhase_using_ZZPhase(Expr alpha);
+
+/** Equivalent to YYPhase, using ZZPhase and V/Vdg gates */
+Circuit YYPhase_using_ZZPhase(Expr alpha);
+
 /** Equivalent to TK2, using CX and single-qubit gates */
 Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma);
 

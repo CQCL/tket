@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <array>
 #include <vector>
 
 #include "EigenConfig.hpp"
@@ -92,8 +93,7 @@ std::vector<std::pair<unsigned, unsigned>> gaussian_elimination_row_ops(
  *
  * @return KAK decomposition
  */
-std::tuple<
-    Eigen::Matrix4cd, std::tuple<double, double, double>, Eigen::Matrix4cd>
+std::tuple<Eigen::Matrix4cd, std::array<double, 3>, Eigen::Matrix4cd>
 get_information_content(const Eigen::Matrix4cd &X);
 /**
  * given information content and cnot fidelity, returns
@@ -101,7 +101,7 @@ get_information_content(const Eigen::Matrix4cd &X);
  * minimising number of CNOTs
  */
 std::vector<std::tuple<Eigen::Matrix2cd, Eigen::Matrix2cd>> expgate_as_CX(
-    const std::tuple<double, double, double> &k, double cx_fidelity = 1.);
+    const std::array<double, 3> &k, double cx_fidelity = 1.);
 
 // given a 4x4 unitary matrix (ILO-BE), returns two 2x2 unitaries that
 // approximately make the input by kronecker product
@@ -148,5 +148,23 @@ std::vector<TripletCd> get_triplets(
  */
 std::vector<TripletCd> get_triplets(
     const Eigen::MatrixXcd &matr, double abs_epsilon = EPS);
+
+// TODO: move get_CX_fidelity to Decomposition.cpp when no longer needed here
+/** Given TK2 angles, computes the fidelity that can be achieved using
+ *  nb_cx CX gates.
+ *
+ *  @param k The TK2 angles.
+ *  @param nb_cx The number of CX gates to be used for decomposition.
+ *  @return The fidelity.
+ */
+double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx);
+
+/** Similarity measure of TK2(a, b, c) to SU(4) identity
+ *
+ *  @param a The XX interaction angle
+ *  @param b The YY interaction angle
+ *  @param c The ZZ interaction angle
+ */
+double trace_fidelity(double a, double b, double c);
 
 }  // namespace tket
