@@ -1,6 +1,14 @@
 Changelog
 =========
 
+x.y.z (unreleased)
+------------------
+
+Minor new features:
+
+* New pass and transform `DecomposeTK2` to decompose TK2 gates using the
+  approximate KAK decomposition.
+
 1.2.1 (May 2022)
 ----------------
 
