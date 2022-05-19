@@ -13,6 +13,11 @@ Minor new features:
   TK2 gates.
 * Add ``Optype.WASM``, adding a classical wasm function call to the circuit
 * Add optype for existing PhasePolyBox ``OpType.PhasePolyBox``
+* The ``GlobalisePhasedX`` transform and homonymous pass take a new optional
+  ``squash`` parameter. ``squash=true`` (default) implements a new algorithm
+  that significantly reduces the number of ``NPhasedX`` gates synthesised.
+* New ``DecomposeNPhasedX`` transform and pass replaces all ``NPhasedX`` gates
+  with single-qubit ``PhasedX`` gates.
 
 1.1.0 (April 2022)
 ------------------
