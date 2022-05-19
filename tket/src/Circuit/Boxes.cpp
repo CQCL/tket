@@ -19,9 +19,12 @@
 
 #include "CircUtils.hpp"
 #include "Circuit/AssertionSynthesis.hpp"
+#include "Command.hpp"
 #include "Gate/Rotation.hpp"
 #include "Ops/OpJsonFactory.hpp"
+#include "Ops/OpPtr.hpp"
 #include "ThreeQubitConversion.hpp"
+#include "Utils/Assert.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/Expression.hpp"
 #include "Utils/Json.hpp"
@@ -119,6 +122,12 @@ Op_ptr Unitary1qBox::dagger() const {
 
 Op_ptr Unitary1qBox::transpose() const {
   return std::make_shared<Unitary1qBox>(m_.transpose());
+}
+
+bool Unitary1qBox::is_clifford() const {
+  std::vector<Command> cmds = to_circuit()->get_commands();
+  TKET_ASSERT(cmds.size() == 1);
+  return cmds[0].get_op_ptr()->is_clifford();
 }
 
 void Unitary1qBox::generate_circuit() const {

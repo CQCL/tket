@@ -204,6 +204,8 @@ class Unitary1qBox : public Box {
 
   Op_ptr transpose() const override;
 
+  bool is_clifford() const override;
+
   static Op_ptr from_json(const nlohmann::json &j);
 
   static nlohmann::json to_json(const Op_ptr &op);
