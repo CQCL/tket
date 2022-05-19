@@ -219,6 +219,9 @@ SCENARIO("Test CliffordCircuitPredicate") {
   circ1.add_box(u1box, {4});
   PredicatePtr ccp = std::make_shared<CliffordCircuitPredicate>();
   REQUIRE(ccp->verify(circ1));
+  Circuit circ2(2);
+  circ2.add_op<unsigned>(OpType::TK2, {1.5, 2.5, -1.01}, {0, 1});
+  REQUIRE(!ccp->verify(circ2));
 }
 
 SCENARIO("Test routing-related predicates' meet and implication") {
