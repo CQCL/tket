@@ -63,4 +63,3 @@ class TketTestsConan(ConanFile):
         if platform.system() == "Windows":
             executable_filename = executable_filename + ".exe"
         self.copy(executable_filename)
-        self.copy("random_angles.txt", dst="bin", keep_path=False)
