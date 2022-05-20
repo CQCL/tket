@@ -64,3 +64,8 @@ class TketTestsConan(ConanFile):
             executable_filename = executable_filename + ".exe"
         self.copy(executable_filename)
         self.copy("random_angles.txt", dst="bin", keep_path=False)
+        self.copy(
+            os.path.join("test_circuits", "lexiroute_circuit.json"),
+            dst="bin",
+            keep_path=False,
+        )

@@ -1619,8 +1619,7 @@ SCENARIO("Lexi relabel with partially mapped circuit") {
 }
 
 SCENARIO("Test failing case") {
-  // std::ifstream circuit_file("test_circuits/lexiroute_circuit.json");
-  std::ifstream circuit_file("/Users/silasdilkes/code/tket-public/tket/tests/test_circuits/lexiroute_circuit.json");
+  std::ifstream circuit_file("lexiroute_circuit.json");
   nlohmann::json j = nlohmann::json::parse(circuit_file);
   auto c = j.get<Circuit>();
   Architecture arc({{0, 1},   {1, 2},   {2, 3},   {3, 5},   {4, 1},   {4, 7},
