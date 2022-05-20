@@ -38,7 +38,7 @@ SCENARIO("globalise_PhasedX transform") {
       Circuit c2 = c1;
       REQUIRE(Transforms::globalise_PhasedX().apply(c2));
       THEN("There are two global NPhasedX gates") {
-        REQUIRE(c2.count_gates(OpType::NPhasedX) == 2);
+        REQUIRE(c2.count_gates(OpType::NPhasedX) == 1);
         BGL_FORALL_VERTICES(v, c2.dag, DAG) {
           OpType type = c2.get_OpType_from_Vertex(v);
           if (type == OpType::NPhasedX) {

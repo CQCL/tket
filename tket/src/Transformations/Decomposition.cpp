@@ -1081,6 +1081,9 @@ Transform globalise_PhasedX(bool squash) {
     if (n_all == 0 || n_target == 0) {
       return 0;
     }
+    if (n_target == 1 && n_all == 1) {
+      return 1;
+    }
     if (n_target == 1 && frontier.are_phasedx_left()) {
       return 1;
     }
