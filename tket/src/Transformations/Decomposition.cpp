@@ -1200,41 +1200,33 @@ Transform globalise_PhasedX(bool squash) {
 
 // The number of distinct beta angles in `gates`.
 //
-// Handles symbolic angles by trying to evaluate them, and otherwise performing
-// pairwise equivalence comparisons between expressions.
+// Performs O(n^2) pairwise equivalence comparisons between expressions to
+// handle symbolic variables and floating point errors
 unsigned n_distinct_beta(const Circuit &circ, const OptVertexVec &gates) {
-  std::set<double> vals;
-  std::vector<Expr> non_vals;
+  std::vector<Expr> vals;
 
-  // split evaluatable angles from unevaluatable
+  // collect all epxressions
   for (OptVertex v : gates) {
     if (v) {
       Expr angle = circ.get_Op_ptr_from_Vertex(*v)->get_params()[0];
-      std::optional<double> eval = eval_expr_mod(angle, 4);
-      if (eval) {
-        vals.insert(*eval);
-      } else {
-        non_vals.push_back(angle);
-      }
+      vals.push_back(angle);
     } else {
-      vals.insert(0.);
+      vals.push_back(0.);
     }
   }
 
-  unsigned n_distinct = vals.size();
+  unsigned n_distinct = 0;
 
-  // for unevaluatable angles, perform pairwise equivalence checks
-  for (unsigned i = 0; i < non_vals.size(); ++i) {
+  // perform pairwise equivalence checks
+  for (unsigned i = 0; i < vals.size(); ++i) {
     bool is_unique = true;
-    for (unsigned j = i + 1; j < non_vals.size(); ++j) {
-      if (equiv_expr(non_vals[i], non_vals[j])) {
+    for (unsigned j = i + 1; j < vals.size(); ++j) {
+      if (equiv_expr(vals[i], vals[j])) {
         is_unique = false;
         break;
       }
     }
-    if (is_unique) {
-      ++n_distinct;
-    }
+    n_distinct += is_unique;
   }
   return n_distinct;
 }
