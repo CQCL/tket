@@ -1627,11 +1627,11 @@ SCENARIO("Test failing case") {
                     {11, 14}, {12, 13}, {14, 13}, {14, 16}, {12, 15}, {15, 18},
                     {17, 18}, {16, 19}, {19, 20}, {18, 21}, {21, 23}, {19, 22},
                     {22, 25}, {23, 24}, {24, 25}, {25, 26}});
-  
+
   CompilationUnit cu(c);
   PassPtr r_p = gen_routing_pass(
-        arc, {std::make_shared<LexiLabellingMethod>(),
-              std::make_shared<LexiRouteRoutingMethod>()});
+      arc, {std::make_shared<LexiLabellingMethod>(),
+            std::make_shared<LexiRouteRoutingMethod>()});
   REQUIRE(r_p->apply(cu));
 }
 
