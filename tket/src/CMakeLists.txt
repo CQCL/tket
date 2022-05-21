@@ -40,6 +40,10 @@ endif()
 
 set(PROFILE_COVERAGE no CACHE BOOL "Build library with profiling for test coverage")
 IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    # Bug in Eigen with gcc 11: https://gitlab.com/libeigen/eigen/-/issues/2304
+    IF (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 11)    
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-maybe-uninitialized")
+    ENDIF()
     IF (PROFILE_COVERAGE)
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -fprofile-arcs -ftest-coverage")
         # Bug in gcc 10: https://gcc.gnu.org/bugzilla/show_bug.cgi?id=95353

@@ -15,7 +15,7 @@
 #include "TokenSwapping/FilteredSwapSequences.hpp"
 
 #include <algorithm>
-
+#include <limits>
 #include "TokenSwapping/GeneralFunctions.hpp"
 #include "TokenSwapping/SwapSequenceTable.hpp"
 #include "Utils/Assert.hpp"
