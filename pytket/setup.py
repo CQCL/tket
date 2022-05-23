@@ -230,7 +230,7 @@ class bdist_wheel(_bdist_wheel):
 
 setup(
     name="pytket",
-    author="Tket development team",
+    author="TKET development team",
     author_email="tket-support@cambridgequantum.com",
     python_requires=">=3.8",
     url="https://cqcl.github.io/tket/pytket/api/",
