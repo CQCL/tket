@@ -84,6 +84,7 @@ jobs:
         ${CONAN_CMD} install recipes/tket-tests --install-folder=build/tket-tests --profile=tket -o tket-tests:with_coverage=True
         ${CONAN_CMD} build recipes/tket-tests --configure --build-folder=build/tket-tests --source-folder=tket/tests
         ${CONAN_CMD} build recipes/tket-tests --build --build-folder=build/tket-tests
+        ${CONAN_CMD} package recipes/tket-tests/ --build-folder=build/tket-tests --package-folder build/tket-tests/package --source-folder=tket/tests
     - name: Install runtime test requirements
       run: |
         sudo apt-get install texlive texlive-latex-extra latexmk
@@ -91,10 +92,12 @@ jobs:
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
     - name: Run tket tests
       if: github.event_name == 'pull_request' || github.event_name == 'push'
-      run: ./build/tket-tests/bin/test_tket
+      working-directory: ./build/tket-tests/package/bin
+      run: ./test_tket
     - name: Run full tket tests
       if: github.event_name == 'schedule'
-      run: ./build/tket-tests/bin/test_tket "[long],~[long]"
+      working-directory: ./build/tket-tests/package/bin
+      run: ./test_tket "[long],~[long]"
     - name: Install gcovr
       # gcovr 5.0 is incompatible with jinja2 3.1.0
       run: pip install jinja2==3.0.3 gcovr==5.0

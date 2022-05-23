@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <catch2/catch.hpp>
+#include <fstream>
 
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
@@ -24,6 +25,7 @@
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
 #include "Transformations/Decomposition.hpp"
+#include "Utils/Json.hpp"
 #include "testutil.hpp"
 
 namespace tket {
@@ -1614,6 +1616,23 @@ SCENARIO("Lexi relabel with partially mapped circuit") {
       REQUIRE(final_map.right.find(q) != final_map.right.end());
     }
   }
+}
+
+SCENARIO("Test failing case") {
+  std::ifstream circuit_file("lexiroute_circuit.json");
+  nlohmann::json j = nlohmann::json::parse(circuit_file);
+  auto c = j.get<Circuit>();
+  Architecture arc({{0, 1},   {1, 2},   {2, 3},   {3, 5},   {4, 1},   {4, 7},
+                    {5, 8},   {6, 7},   {7, 10},  {8, 9},   {8, 11},  {10, 12},
+                    {11, 14}, {12, 13}, {14, 13}, {14, 16}, {12, 15}, {15, 18},
+                    {17, 18}, {16, 19}, {19, 20}, {18, 21}, {21, 23}, {19, 22},
+                    {22, 25}, {23, 24}, {24, 25}, {25, 26}});
+
+  CompilationUnit cu(c);
+  PassPtr r_p = gen_routing_pass(
+      arc, {std::make_shared<LexiLabellingMethod>(),
+            std::make_shared<LexiRouteRoutingMethod>()});
+  REQUIRE(r_p->apply(cu));
 }
 
 }  // namespace tket

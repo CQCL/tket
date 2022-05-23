@@ -52,6 +52,10 @@ from pytket.circuit.logic_exp import (
 T = TypeVar("T")
 
 
+class DecomposeClassicalError(Exception):
+    """Error with decomposing classical operations."""
+
+
 class VarHeap(Generic[T]):
     """A generic heap implementation."""
 
@@ -147,9 +151,14 @@ def temp_reg_in_args(args: List[Bit]) -> Optional[BitRegister]:
 VarType = TypeVar("VarType", Type[Bit], Type[BitRegister])
 
 
+def int_to_bools(val: Constant, width: int) -> List[bool]:
+    # map int to bools via litle endian encoding
+    return list(map(bool, map(int, reversed(f"{val:0{width}b}"[-width:]))))
+
+
 def _gen_walk(
     var_type: VarType, newcirc: Circuit, heap: VarHeap
-) -> Callable[[Union[RegLogicExp, BitLogicExp]], Variable]:
+) -> Callable[[Union[RegLogicExp, BitLogicExp], Optional[Dict]], Variable,]:
     """Generate a recursive walk method for decomposing an expression tree."""
     # map operation enum to circuit method
     _method_map = {
@@ -175,9 +184,9 @@ def _gen_walk(
             _ = [newcirc.add_bit(b, reject_dups=False) for b in var]
 
     # method for setting bits during walk
-    def set_bits(var: Variable, val: Constant) -> None:
+    def set_bits(var: Variable, val: Constant, kwargs: Dict) -> None:
         if var_type is Bit:
-            newcirc.add_c_setbits([bool(val)], [var])
+            newcirc.add_c_setbits([bool(val)], [var], **kwargs)
         else:
             assert isinstance(var, BitRegister)
             bit_width = ceil(log2(val + 1)) if val else 1
@@ -187,22 +196,25 @@ def _gen_walk(
             reg.size = bit_width
             add_method(reg)
             # map int to bools via litle endian encoding
-            bools = list(map(bool, map(int, reversed(f"{val:0{len(reg)}b}"))))
-            newcirc.add_c_setbits(bools, list(reg))
+            bools = int_to_bools(val, len(reg))
+            newcirc.add_c_setbits(bools, list(reg), **kwargs)
 
     # convert an expression to gates on the circuit
     # and return the variable holding the result
-    def recursive_walk(exp: Union[RegLogicExp, BitLogicExp]) -> Variable:
+    def recursive_walk(
+        exp: Union[RegLogicExp, BitLogicExp], kwargs: Optional[Dict] = None
+    ) -> Variable:
         assert isinstance(exp.op, op_type)
+        kwargs = kwargs or {}
         # decompose children
         for i, sub_e in filter_by_type(exp.args, exp_type):
-            exp.args[i] = recursive_walk(sub_e)
+            exp.args[i] = recursive_walk(sub_e, kwargs)
         # all args should now be Constant or Variable
         # write Constant to temporary Variable
         for idx, constant in filter_by_type(exp.args, Constant):
             fresh_var = heap.fresh_var()
             add_method(fresh_var)
-            set_bits(fresh_var, constant)
+            set_bits(fresh_var, constant, kwargs)
 
             exp.args[idx] = fresh_var
 
@@ -217,7 +229,13 @@ def _gen_walk(
         add_method(targ_bit)
         # exp should now be a binary operation on args: List[Bit]
 
-        _method_map[exp.op](arg1, arg2, targ_bit)
+        try:
+            _method_map[exp.op](arg1, arg2, targ_bit, **kwargs)
+        except KeyError as e:
+            raise DecomposeClassicalError(
+                f"{exp.op} cannot be decomposed to TKET primitives."
+                " If targetting extended QASM you may not need to decompose."
+            ) from e
         return targ_bit
 
     return recursive_walk
@@ -269,16 +287,20 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
                 bit_heap.push(replace_bit)
 
                 # write new conditional op
-                args = args[op.width :]
                 kwargs = {"condition_bits": [replace_bit], "condition_value": op.value}
-                op = op.op
+            else:
+                kwargs = {"condition_bits": bits, "condition_value": op.value}
+            args = args[op.width :]
+            op = op.op
+            optype = op.type
 
-        elif optype == OpType.RangePredicate:
+        if optype == OpType.RangePredicate:
             target = args[-1]
             newcirc.add_bit(target, reject_dups=False)
             temp_reg = temp_reg_in_args(args)
             # ensure predicate is reading from correct output register
             if temp_reg in replace_targets:
+                assert temp_reg is not None
                 new_target = replace_targets[temp_reg]
                 for i, a in enumerate(args):
                     if a.reg_name == temp_reg.name:
@@ -288,22 +310,32 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
 
         elif optype == OpType.ClassicalExpBox:
             pred_exp = copy.deepcopy(op.get_exp())
+            n_out_bits = op.get_n_o() + op.get_n_io()
             # copied as it will be modified in place
-            if op.get_n_o() == 1:
-                assert isinstance(pred_exp, BitLogicExp)
+            if isinstance(pred_exp, BitLogicExp):
+                assert n_out_bits == 1
                 target = args[-1]
 
                 bit_heap.push(target)
-                comp_bit = bit_recursive_walk(pred_exp)
+                comp_bit = bit_recursive_walk(pred_exp, kwargs)
 
                 replace_targets[target] = comp_bit
 
             else:
-                temp_reg = temp_reg_in_args(args)
+                output_args = args[-n_out_bits:]
+                if not all(
+                    arg.reg_name == output_args[0].reg_name for arg in output_args
+                ):
+                    raise DecomposeClassicalError(
+                        "Classical Expression must"
+                        " only write to one Bit or one Register."
+                    )
+                out_reg = BitRegister(output_args[0].reg_name, len(output_args))
 
-                reg_heap.push(temp_reg)
-                comp_reg = reg_recursive_walk(pred_exp)
-                replace_targets[temp_reg] = comp_reg
+                reg_heap.push(out_reg)
+                comp_reg = reg_recursive_walk(pred_exp, kwargs)
+                if comp_reg.name != out_reg.name:
+                    replace_targets[out_reg] = comp_reg
             modified = True
             continue
         if optype == OpType.Barrier:

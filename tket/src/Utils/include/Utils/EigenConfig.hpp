@@ -21,13 +21,16 @@
 
 #include "Utils/Json.hpp"
 
-#if defined(__clang__)
+#if !defined(_MSC_VER)
 #pragma GCC diagnostic push
 
+#if defined(__clang__)
 #if __has_warning("-Wdeprecated-copy")
 #pragma GCC diagnostic ignored "-Wdeprecated-copy"
 #endif
-
+#elif __GNUC__ >= 11
+#pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#endif
 #endif
 
 #include <Eigen/Dense>
@@ -35,7 +38,7 @@
 #include <unsupported/Eigen/KroneckerProduct>
 #include <unsupported/Eigen/MatrixFunctions>
 
-#if defined(__clang__)
+#if !defined(_MSC_VER)
 #pragma GCC diagnostic pop
 #endif
 

@@ -77,8 +77,7 @@ void init_classical(py::module& m) {
           "in order to apply the operation (e.g. value 2 (10b) means "
           "bits[0] must be 0 and bits[1] must be 1)");
   py::class_<ClassicalOp, std::shared_ptr<ClassicalOp>, Op>(
-      m, "ClassicalOp",
-      "An operation to set the values of Bits to some constants.")
+      m, "ClassicalOp", "Classical operation.")
       .def_property_readonly(
           "n_inputs", &ClassicalOp::get_n_i, "Number of pure inputs.")
       .def_property_readonly(
@@ -86,7 +85,9 @@ void init_classical(py::module& m) {
           "Number of pure input/output arguments.")
       .def_property_readonly(
           "n_outputs", &ClassicalOp::get_n_o, "Number of pure outputs.");
-  py::class_<SetBitsOp, std::shared_ptr<SetBitsOp>, ClassicalOp>(
+  py::class_<ClassicalEvalOp, std::shared_ptr<ClassicalEvalOp>, ClassicalOp>(
+      m, "ClassicalEvalOp", "Evaluatable classical operation.");
+  py::class_<SetBitsOp, std::shared_ptr<SetBitsOp>, ClassicalEvalOp>(
       m, "SetBitsOp",
       "An operation to set the values of Bits to some constants.")
       .def(
@@ -94,16 +95,20 @@ void init_classical(py::module& m) {
           "Construct from a table of values.", py::arg("values"))
       .def_property_readonly(
           "values", &SetBitsOp::get_values, "The values to set bits to.");
-  py::class_<MultiBitOp, std::shared_ptr<MultiBitOp>, ClassicalOp>(
+  py::class_<CopyBitsOp, std::shared_ptr<CopyBitsOp>, ClassicalEvalOp>(
+      m, "CopyBitsOp",
+      "An operation to copy the values of Bits to other Bits.");
+  py::class_<MultiBitOp, std::shared_ptr<MultiBitOp>, ClassicalEvalOp>(
       m, "MultiBitOp",
       "An operation to apply a classical op multiple times in parallel.")
       .def(
-          py::init<std::shared_ptr<const ClassicalOp>, unsigned>(),
+          py::init<std::shared_ptr<const ClassicalEvalOp>, unsigned>(),
           "Construct from a basic operation and a multiplier.", py::arg("op"),
           py::arg("multiplier"))
       .def_property_readonly(
           "basic_op", &MultiBitOp::get_op, "Underlying bitwise op.");
-  py::class_<RangePredicateOp, std::shared_ptr<RangePredicateOp>, ClassicalOp>(
+  py::class_<
+      RangePredicateOp, std::shared_ptr<RangePredicateOp>, ClassicalEvalOp>(
       m, "RangePredicateOp",
       "A predicate defined by a range of values in binary encoding.")
       .def(
@@ -138,5 +143,31 @@ void init_classical(py::module& m) {
       .def(
           "content_equality", &ClassicalExpBox<py::object>::content_equality,
           "Check whether two ClassicalExpBox are equal in content");
+  py::class_<WASMOp, std::shared_ptr<WASMOp>, ClassicalOp>(
+      m, "WASMOp",
+      "An op holding an external classical call, defined by the external "
+      "module id, the name of the function and the arguments. External calls "
+      "can only act on entire registers (which will be interpreted as "
+      "fixed-width integers).")
+      .def(
+          py::init<
+              unsigned, std::vector<unsigned>, std::vector<unsigned>,
+              const std::string&, const std::string&>(),
+          "Construct from number of bits, bitwidths of inputs and outputs, "
+          "function name and module id.",
+          py::arg("num_bits"), py::arg("n_inputs"), py::arg("n_outputs"),
+          py::arg("func_name"), py::arg("wasm_uid"))
+      .def_property_readonly(
+          "wasm_uid", &WASMOp::get_wasm_uid, "Wasm module id.")
+      .def_property_readonly(
+          "func_name", &WASMOp::get_func_name, "Name of function.")
+      .def_property_readonly(
+          "num_bits", &WASMOp::get_n, "Number of bits interacted with.")
+      .def_property_readonly(
+          "n_i32", &WASMOp::get_n_i32, "Number of integers acted on.")
+      .def_property_readonly(
+          "input_widths", &WASMOp::get_ni_vec, "Widths of input integers.")
+      .def_property_readonly(
+          "output_widths", &WASMOp::get_no_vec, "Widths of output integers.");
 }
 }  // namespace tket

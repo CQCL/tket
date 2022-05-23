@@ -20,7 +20,8 @@ required_conan_version = ">=1.33.0"
 
 class SymengineConan(ConanFile):
     name = "symengine"
-    version = "0.9.0"
+    version = "0.9.0.1"
+    upstream_version = "0.9.0"
     description = "A fast symbolic manipulation library, written in C++"
     license = "MIT"
     topics = ("symbolic", "algebra")
@@ -44,15 +45,15 @@ class SymengineConan(ConanFile):
 
     def requirements(self):
         if self.options.integer_class == "boostmp":
-            self.requires("boost/1.78.0")
+            self.requires("boost/1.79.0")
         else:
             self.requires("gmp/6.2.1")
 
     def source(self):
         tools.get(
-            f"https://github.com/symengine/symengine/releases/download/v{self.version}/symengine-{self.version}.tar.gz"
+            f"https://github.com/symengine/symengine/releases/download/v{self.upstream_version}/symengine-{self.upstream_version}.tar.gz"
         )
-        os.rename(f"symengine-{self.version}", "symengine")
+        os.rename(f"symengine-{self.upstream_version}", "symengine")
 
     def _configure_cmake(self):
         if self._cmake is None:

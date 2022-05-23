@@ -32,6 +32,9 @@ class ClassicalOp : public Op {
   /**
    * Construct a ClassicalOp of specified shape
    *
+   * this is a classical operation, only acting on the classical parts of the
+   * circuit
+   *
    * @param type operation type
    * @param n_i number of input-only bits
    * @param n_io number of input/output bits
@@ -68,16 +71,7 @@ class ClassicalOp : public Op {
   unsigned get_n_o() const { return n_o_; }
 
   /**
-   * Evaluation
-   *
-   * @param x vector of input bits
-   *
-   * @return vector of outbut bits
-   */
-  virtual std::vector<bool> eval(const std::vector<bool> &x) const = 0;
-
-  /**
-   * Equality check between two ClassicalOp instances
+   * Equality check between two ClassicalEvalOp instances
    */
   bool is_equal(const Op &other) const override;
 
@@ -89,10 +83,44 @@ class ClassicalOp : public Op {
   std::vector<EdgeType> sig_;
 };
 
+class ClassicalEvalOp : public ClassicalOp {
+ public:
+  /**
+   * Construct a ClassicalEvalOp of specified shape
+   *
+   * this is a classical operation, only acting on the classical parts of the
+   * Circuit In addition to the ClassicalOp  has the class the eval function in
+   * the signature, which allows a evaluation of this op
+   *
+   * @param type operation type
+   * @param n_i number of input-only bits
+   * @param n_io number of input/output bits
+   * @param n_o number of output-only bits
+   * @param name name of operation
+   */
+  ClassicalEvalOp(
+      OpType type, unsigned n_i, unsigned n_io, unsigned n_o,
+      const std::string &name = "");
+
+  /**
+   * Evaluation
+   *
+   * @param x vector of input bits
+   *
+   * @return vector of outbut bits
+   */
+  virtual std::vector<bool> eval(const std::vector<bool> &x) const = 0;
+
+  /**
+   * Equality check between two ClassicalEvalOp instances
+   */
+  bool is_equal(const Op &other) const override;
+};
+
 /**
  * A general classical operation where all inputs are also outputs
  */
-class ClassicalTransformOp : public ClassicalOp {
+class ClassicalTransformOp : public ClassicalEvalOp {
  public:
   /**
    * Construct from a truth table.
@@ -120,9 +148,114 @@ class ClassicalTransformOp : public ClassicalOp {
 };
 
 /**
+ * Op containing a classical wasm function call
+ */
+class WASMOp : public ClassicalOp {
+ public:
+  /**
+   * contains a wasm op that could be added to a circuit.
+   * This op stores in its signatures which bits are interacting as input and
+   * output with the call to which function of the wasm file
+   *
+   * @param _n total number bits it is interacting with
+   * @param _ni_vec vector of bits for each input i32
+   * @param _no_vec vector of bits for each output i32
+   * @param _func_name name of the function
+   * @param _wasm_uid uid of the wasm file to be called
+   */
+  WASMOp(
+      unsigned _n, std::vector<unsigned> _ni_vec, std::vector<unsigned> _no_vec,
+      const std::string &_func_name, const std::string &_wasm_uid);
+
+  /**
+   * return if the op is external
+   */
+  bool is_extern() const override { return true; }
+
+  /**
+   * serialize wasmop to json
+   */
+  nlohmann::json serialize() const override;
+
+  /**
+   * deserialize json to wasmop
+   */
+  static Op_ptr deserialize(const nlohmann::json &j);
+
+  /**
+   * Equality check between two WASMOp instances
+   */
+  bool is_equal(const Op &other) const override;
+
+  /**
+   * returns the number of classical bits the wasm op is acting on
+   */
+  unsigned get_n() const { return n_; }
+
+  /**
+   * returns the number of i32 the function is acting on
+   */
+  unsigned get_n_i32() const { return n_i32_; }
+
+  /**
+   * returns the vector of number of bit used for each of the input i32
+   * variables
+   */
+  std::vector<unsigned> get_ni_vec() const { return ni_vec_; }
+
+  /**
+   * returns the vector of number of bit used for each of the output i32
+   * variables
+   */
+  std::vector<unsigned> get_no_vec() const { return no_vec_; }
+
+  /**
+   * returns the name of the function the wasm op is using
+   */
+  std::string get_func_name() const { return func_name_; }
+
+  /**
+   * returns the uid of the wasm file the op is using, the file is stored on the
+   * python layer
+   */
+  std::string get_wasm_uid() const { return wasm_uid_; }
+
+ private:
+  /**
+   * total number of classical bits the op is interacting with
+   */
+  const unsigned n_;
+
+  /**
+   * total number of i32 inut and output variables
+   */
+  const unsigned n_i32_;
+
+  /**
+   * vector of bits for each input i32
+   */
+  const std::vector<unsigned> ni_vec_;
+
+  /**
+   * vector of bits for each output i32
+   */
+  const std::vector<unsigned> no_vec_;
+
+  /**
+   * name of the called function
+   */
+  const std::string func_name_;
+
+  /**
+   * uid of the wasm file the op is using
+   */
+  const std::string wasm_uid_;
+};
+
+/**
  * An operation to set some bits to specified values
  */
-class SetBitsOp : public ClassicalOp {
+class SetBitsOp : public ClassicalEvalOp {
  public:
   /**
    * Construct from values.
@@ -130,7 +263,7 @@ class SetBitsOp : public ClassicalOp {
    * @param values values to set
    */
   explicit SetBitsOp(const std::vector<bool> &values)
-      : ClassicalOp(OpType::SetBits, 0, 0, values.size(), "SetBits"),
+      : ClassicalEvalOp(OpType::SetBits, 0, 0, values.size(), "SetBits"),
         values_(values) {}
 
   std::string get_name(bool latex) const override;
@@ -148,10 +281,10 @@ class SetBitsOp : public ClassicalOp {
  *
  * @param n number of bits copied
  */
-class CopyBitsOp : public ClassicalOp {
+class CopyBitsOp : public ClassicalEvalOp {
  public:
   explicit CopyBitsOp(unsigned n)
-      : ClassicalOp(OpType::CopyBits, n, 0, n, "CopyBits") {}
+      : ClassicalEvalOp(OpType::CopyBits, n, 0, n, "CopyBits") {}
 
   std::vector<bool> eval(const std::vector<bool> &x) const override;
 };
@@ -161,7 +294,7 @@ class CopyBitsOp : public ClassicalOp {
  *
  * There may be any number of input bits. The output bit is distinct from these.
  */
-class PredicateOp : public ClassicalOp {
+class PredicateOp : public ClassicalEvalOp {
  public:
   /**
    * Construct a PredicateOp of specified arity
@@ -171,7 +304,7 @@ class PredicateOp : public ClassicalOp {
    * @param name name of operation
    */
   PredicateOp(OpType type, unsigned n, const std::string &name = "")
-      : ClassicalOp(type, n, 0, 1, name) {}
+      : ClassicalEvalOp(type, n, 0, 1, name) {}
 };
 
 /**
@@ -244,7 +377,7 @@ class ExplicitPredicateOp : public PredicateOp {
 /**
  * A classical operation with one output bit which is also an input bit
  */
-class ModifyingOp : public ClassicalOp {
+class ModifyingOp : public ClassicalEvalOp {
  public:
   /**
    * Construct a ModifyingOp of specified arity
@@ -254,7 +387,7 @@ class ModifyingOp : public ClassicalOp {
    * @param name name of operation
    */
   ModifyingOp(OpType type, unsigned n, const std::string &name)
-      : ClassicalOp(type, n, 1, 0, name) {}
+      : ClassicalEvalOp(type, n, 1, 0, name) {}
 };
 
 /**
@@ -293,13 +426,13 @@ class ExplicitModifierOp : public ModifyingOp {
  * The order of arguments is: all arguments to first operation, then all
  * arguments to second operation, and so on.
  */
-class MultiBitOp : public ClassicalOp {
+class MultiBitOp : public ClassicalEvalOp {
  public:
-  MultiBitOp(std::shared_ptr<const ClassicalOp> op, unsigned n);
+  MultiBitOp(std::shared_ptr<const ClassicalEvalOp> op, unsigned n);
 
   std::string get_name(bool latex) const override;
 
-  std::shared_ptr<const ClassicalOp> get_op() const { return op_; }
+  std::shared_ptr<const ClassicalEvalOp> get_op() const { return op_; }
 
   unsigned get_n() const { return n_; }
 
@@ -311,7 +444,7 @@ class MultiBitOp : public ClassicalOp {
   bool is_equal(const Op &other) const override;
 
  private:
-  std::shared_ptr<const ClassicalOp> op_;
+  std::shared_ptr<const ClassicalEvalOp> op_;
   unsigned n_;
 };
 

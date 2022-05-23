@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from io import StringIO
+import re
 from pathlib import Path
 
 import pytest  # type: ignore
@@ -29,13 +31,23 @@ from pytket.circuit import (  # type: ignore
     reg_geq,
     if_not_bit,
 )
+from pytket.circuit.decompose_classical import DecomposeClassicalError
 from pytket.qasm import (
     circuit_from_qasm,
     circuit_to_qasm,
     circuit_from_qasm_str,
     circuit_to_qasm_str,
+    circuit_from_qasm_wasm,
 )
 from pytket.qasm.qasm import QASMParseError, QASMUnsupportedError
+from pytket.qasm.includes.load_includes import (
+    _get_declpath,
+    _get_files,
+    _get_defpath,
+    _write_defs,
+    _write_decls,
+    _load_gdict,
+)
 from pytket.transform import Transform  # type: ignore
 from pytket.passes import DecomposeClassicalExp  # type: ignore
 
@@ -72,7 +84,7 @@ def test_qasm_correct() -> None:
 
 
 def test_qasm_qubit() -> None:
-    with pytest.raises(Exception) as errorinfo:
+    with pytest.raises(RuntimeError) as errorinfo:
         fname = str(curr_file_path / "qasm_test_files/test2.qasm")
         circuit_from_qasm(fname)
     assert "Circuit does not contain unit with id: q[4]" in str(errorinfo.value)
@@ -91,7 +103,10 @@ def test_qasm_gate() -> None:
     with pytest.raises(QASMParseError) as errorinfo:
         fname = str(curr_file_path / "qasm_test_files/test4.qasm")
         circuit_from_qasm(fname)
-    assert "Cannot parse gate of type: gatedoesntexist" in str(errorinfo.value)
+    errormsg = str(errorinfo.value)
+    assert "Cannot parse gate of type: gatedoesntexist" in errormsg
+    assert "test4.qasm" in errormsg
+    assert "Line:6" in errormsg
 
 
 # @pytest.mark.skip()
@@ -131,7 +146,7 @@ def test_qasm_str_roundtrip() -> None:
 def test_qasm_str_roundtrip_oqc() -> None:
     with open(curr_file_path / "qasm_test_files/test15.qasm", "r") as f:
         c = circuit_from_qasm_str(f.read())
-        qasm_str = circuit_to_qasm_str(c, "oqc")
+        qasm_str = circuit_to_qasm_str(c, "oqclib1")
         c2 = circuit_from_qasm_str(qasm_str)
     assert c == c2
 
@@ -162,13 +177,16 @@ def test_symbolic_write() -> None:
     circ2 = circuit_from_qasm(fname)
     coms2 = circ2.get_commands()
     new_params = coms2[0].op.params
-    assert new_params[2] == 1.0 + a
+    assert new_params[2] == a + 1.0
 
 
 def test_custom_gate() -> None:
     fname = str(curr_file_path / "qasm_test_files/test6.qasm")
     c = circuit_from_qasm(fname)
     assert str(c.get_commands()) == "[mygate(alpha,0.2) q[0], q[1];]"
+    with open(curr_file_path / "qasm_test_files/test6_output.qasm") as f:
+        # test custom gates are unrolled
+        assert circuit_to_qasm_str(c) == f.read()
     Transform.DecomposeBoxes().apply(c)
     assert str(c.get_commands()) == "[Rz(alpha) q[0];, CX q[1], q[0];, Rx(0.2) q[1];]"
 
@@ -249,37 +267,27 @@ def test_hqs_conditional_params() -> None:
 
 
 def test_input_error_modes() -> None:
-    with pytest.raises(Exception) as errorinfo:
-        circuit_from_qasm_str('OPENQASM 1.0;\ninclude "qelib1.inc";')
-    assert "File must declare OPENQASM version and its includes." in str(
-        errorinfo.value
-    )
-    with pytest.raises(Exception) as errorinfo:
+    with pytest.raises(QASMParseError):
         circuit_from_qasm_str('OPENQASM 2.0;\ninclude "qelib2.inc";')
-    assert "Header qelib2.inc not recognised" in str(errorinfo.value)
     with pytest.raises(Exception) as errorinfo:
         circuit_from_qasm_str(
             'OPENQASM 2.0;\ninclude "qelib1.inc";\n\ngate anrz(p) a {\n    rz(p) a;'
         )
-    assert "Custom gate definition is invalid." in str(errorinfo.value)
-    with pytest.raises(Exception) as errorinfo:
+    with pytest.raises(QASMParseError) as errorinfo:
         circuit_from_qasm_str(
             'OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[4];\nifrz(1.5*pi) q[3];'
         )
-    assert 'Error in parsing: cannot match "ifrz" against "if"' in str(errorinfo.value)
+    assert "Cannot parse gate of type: ifrz" in str(errorinfo.value)
     with pytest.raises(Exception) as errorinfo:
         circuit_from_qasm_str(
             'OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[4];\ncreg c[4];\nrogue q[3] -> c[2];'
         )
-    assert (
-        "Error in parsing: cannot accept a non-Measure gate writing to classical register"
-        in str(errorinfo.value)
-    )
+    assert "Unexpected token" in str(errorinfo.value)
     with pytest.raises(Exception) as errorinfo:
         circuit_from_qasm_str(
             'OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[4];\nrz(@£hog) q[2];'
         )
-    assert "Cannot parse angle: @£hog" in str(errorinfo.value)
+    assert "No terminal matches" in str(errorinfo.value)
     with pytest.raises(Exception) as errorinfo:
         circuit_from_qasm_str(
             'OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[4];\nnotanrz(0.3) q[2];'
@@ -348,6 +356,78 @@ def test_h1_rzz() -> None:
     c.add_gate(OpType.ZZPhase, [0.1], [0, 1])
     assert "rzz" in circuit_to_qasm_str(c, header="qelib1")
     assert "RZZ" in circuit_to_qasm_str(c, header="hqslib1")
+
+
+def test_extended_qasm() -> None:
+    fname = str(curr_file_path / "qasm_test_files/test17.qasm")
+    out_fname = str(curr_file_path / "qasm_test_files/test17_output.qasm")
+    c = circuit_from_qasm_wasm(fname, "testfile.wasm")
+
+    out_qasm = circuit_to_qasm_str(c, "hqslib1")
+    with open(out_fname) as f:
+        assert out_qasm == f.read()
+
+    c2 = circuit_from_qasm_wasm(out_fname, "testfile.wasm")
+
+    assert circuit_to_qasm_str(c2, "hqslib1")
+
+    with pytest.raises(DecomposeClassicalError) as e:
+        DecomposeClassicalExp().apply(c)
+
+
+def test_decomposable_extended() -> None:
+    fname = str(curr_file_path / "qasm_test_files/test18.qasm")
+    out_fname = str(curr_file_path / "qasm_test_files/test18_output.qasm")
+
+    c = circuit_from_qasm_wasm(fname, "testfile.wasm")
+    DecomposeClassicalExp().apply(c)
+
+    out_qasm = circuit_to_qasm_str(c, "hqslib1")
+    with open(out_fname) as f:
+        assert out_qasm == f.read()
+
+
+def test_opaque() -> None:
+    c = circuit_from_qasm_str(
+        'OPENQASM 2.0;\ninclude "qelib1.inc";\nqreg q[4];\nopaque myopaq() q1, q2;\n myopaq() q[0], q[1];'
+    )
+    with pytest.raises(QASMUnsupportedError) as e:
+        circuit_to_qasm_str(c)
+    assert "CustomGate myopaq has empty definition"
+
+
+def test_alternate_encoding() -> None:
+    encoded_files = {
+        "utf-16": str(curr_file_path / "qasm_test_files/utf16.qasm"),
+        "utf-32": str(curr_file_path / "qasm_test_files/utf32.qasm"),
+    }
+    for enc, fil in encoded_files.items():
+        with pytest.raises(Exception) as e:
+            circuit_from_qasm(fil)
+        c = circuit_from_qasm(fil, encoding=enc)
+        assert c.n_gates == 6
+
+
+@pytest.mark.parametrize("fi", _get_files())
+def test_include_loading(fi: Path) -> None:
+    # If this test fails, you may have updated
+    #  an .inc file and need to re-run load_includes.py
+    id_match = r"'id': '[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'"
+    gdict = _load_gdict(fi)
+    for write_method, get_method in [
+        (_write_defs, _get_defpath),
+        (_write_decls, _get_declpath),
+    ]:
+        defs_stream = StringIO()
+        write_method(defs_stream, gdict)
+        defs_string = defs_stream.getvalue()
+        with open(get_method(fi)) as f_def:
+            fil_content = f_def.read()
+        # get rid of uuids in the definitions
+        defs_string = re.sub(id_match, "'id': ''", defs_string)
+        fil_content = re.sub(id_match, "'id': ''", fil_content)
+        # bytes comparison much faster than str comparison
+        assert bytes(defs_string, "utf-8") == bytes(fil_content, "utf-8")
 
 
 if __name__ == "__main__":

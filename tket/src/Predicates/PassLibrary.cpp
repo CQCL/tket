@@ -56,6 +56,12 @@ static PassPtr gate_translation_pass(
   return ptr;
 }
 
+const PassPtr &SynthesiseTK() {
+  static const PassPtr pp(gate_translation_pass(
+      Transforms::synthesise_tk(), {OpType::TK1, OpType::TK2}, true,
+      "SynthesiseTK"));
+  return pp;
+}
 const PassPtr &SynthesiseTket() {
   static const PassPtr pp(gate_translation_pass(
       Transforms::synthesise_tket(), {OpType::TK1, OpType::CX}, true,
@@ -137,23 +143,6 @@ const PassPtr &CommuteThroughMultis() {
     // record pass config
     nlohmann::json j;
     j["name"] = "CommuteThroughMultis";
-    return std::make_shared<StandardPass>(precons, t, postcon, j);
-  }());
-  return pp;
-}
-
-const PassPtr &GlobalisePhasedX() {
-  static const PassPtr pp([]() {
-    Transform t = Transforms::globalise_phasedx();
-    PredicatePtrMap precons;
-    PredicatePtr globalphasedx = std::make_shared<GlobalPhasedXPredicate>();
-    PredicatePtrMap spec_postcons = {
-        CompilationUnit::make_type_pair(globalphasedx)};
-    PredicateClassGuarantees g_postcons;
-    PostConditions postcon{spec_postcons, {}, Guarantee::Preserve};
-    // record pass config
-    nlohmann::json j;
-    j["name"] = "GlobalisePhasedX";
     return std::make_shared<StandardPass>(precons, t, postcon, j);
   }());
   return pp;

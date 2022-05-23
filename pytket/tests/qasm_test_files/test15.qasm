@@ -1,5 +1,5 @@
 OPENQASM 2.0;
-include "qelib1.inc";
+include "oqclib1.inc";
 //some comments
 qreg q[4];
 rz(1.5*pi) q[3];

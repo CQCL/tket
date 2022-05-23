@@ -129,6 +129,11 @@ class Op : public std::enable_shared_from_this<Op> {
     throw NotValid();
   }
 
+  /**
+   * return if the op is external
+   */
+  virtual bool is_extern() const { return false; }
+
   /** Vector specifying type of data for each port on op */
   virtual op_signature_t get_signature() const = 0;
 
@@ -139,6 +144,17 @@ class Op : public std::enable_shared_from_this<Op> {
    * @throw NotValid if operation is not a \ref Gate
    */
   virtual std::optional<double> is_identity() const { throw NotValid(); }
+
+  /**
+   * Test whether operation is in the Clifford group.
+   *
+   * A return value of true guarantees that the operation is Clifford. (Note
+   * that the converse is not the case: some Clifford operations may not be
+   * detected as such.)
+   *
+   * @retval true operation is in the Clifford group
+   */
+  virtual bool is_clifford() const { return false; }
 
   /**
    * If meaningful and implemented, return the numerical unitary matrix

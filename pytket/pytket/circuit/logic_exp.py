@@ -49,6 +49,7 @@ class BitWiseOp(Enum):
     OR = "|"
     XOR = "^"
     EQ = "=="
+    NEQ = "!="
     NOT = "~"
 
 
@@ -64,6 +65,15 @@ class RegWiseOp(Enum):
     GT = ">"
     LEQ = "<="
     GEQ = ">="
+    ADD = "+"
+    SUB = "-"
+    MUL = "*"
+    DIV = "/"
+    POW = "**"
+    LSH = "<<"
+    RSH = ">>"
+    NOT = "~"
+    NEG = "-"
 
 
 Ops = Union[BitWiseOp, RegWiseOp]  # all op enum types
@@ -86,6 +96,7 @@ class LogicExp:
     @classmethod
     def factory(cls, op: Ops) -> Type["LogicExp"]:
         """Return matching operation class for enum."""
+        # RegNeg cannot be initialised this way as "-" clashes with SUB
         if not cls.op_cls_dict:
             cls.op_cls_dict = {
                 cl.op: cl  # type:ignore
@@ -95,15 +106,24 @@ class LogicExp:
                     BitXor,
                     BitNot,
                     BitEq,
+                    BitNeq,
                     RegAnd,
                     RegOr,
                     RegXor,
+                    RegAdd,
+                    RegSub,
+                    RegMul,
+                    RegDiv,
+                    RegPow,
+                    RegLsh,
+                    RegRsh,
                     RegEq,
                     RegNeq,
                     RegLt,
                     RegGt,
                     RegLeq,
                     RegGeq,
+                    RegNot,
                 )
             }
         return cls.op_cls_dict[op]
@@ -128,7 +148,10 @@ class LogicExp:
         for i, arg in filter_by_type(self.args, LogicExp):
             self.args[i] = arg.eval_vals()
         if all(isinstance(a, Constant) for a in self.args):
-            rval = self._const_eval(cast(List[Constant], self.args))
+            try:
+                rval = self._const_eval(cast(List[Constant], self.args))
+            except NotImplementedError:
+                pass
         return rval
 
     def all_inputs(self) -> Set[Variable]:
@@ -186,8 +209,10 @@ class LogicExp:
                     args.append(LogicExp.from_dict(arg_ser))
                 else:
                     args.append(BitRegister(arg_ser["name"], arg_ser["size"]))
-
-        return cls.factory(op)(*args)  # type: ignore
+        if op == RegWiseOp.SUB and len(args) == 1:
+            return RegNeg(args[0])
+        else:
+            return cls.factory(op)(*args)  # type: ignore
 
 
 class BitLogicExp(LogicExp):
@@ -289,6 +314,42 @@ class RegXor(Xor, RegLogicExp):
     op = RegWiseOp.XOR
 
 
+class RegAdd(BinaryOp, RegLogicExp):
+    op = RegWiseOp.ADD
+
+
+class RegSub(BinaryOp, RegLogicExp):
+    op = RegWiseOp.SUB
+
+
+class RegMul(BinaryOp, RegLogicExp):
+    op = RegWiseOp.MUL
+
+
+class RegDiv(BinaryOp, RegLogicExp):
+    op = RegWiseOp.DIV
+
+
+class RegPow(BinaryOp, RegLogicExp):
+    op = RegWiseOp.POW
+
+
+class RegLsh(BinaryOp, RegLogicExp):
+    op = RegWiseOp.LSH
+
+
+class RegNeg(UnaryOp, RegLogicExp):
+    op = RegWiseOp.NEG
+
+
+class RegNot(UnaryOp, RegLogicExp):
+    op = RegWiseOp.NOT
+
+
+class RegRsh(BinaryOp, RegLogicExp):
+    op = RegWiseOp.RSH
+
+
 class ConstPredicate(BinaryOp):
     """A binary predicate where at least one of the arguments is constant."""
 
@@ -312,6 +373,10 @@ class Neq(ConstPredicate):
 
 class BitEq(Eq, BitLogicExp):
     op = BitWiseOp.EQ
+
+
+class BitNeq(Neq, BitLogicExp):
+    op = BitWiseOp.NEQ
 
 
 class RegEq(Eq, RegLogicExp):

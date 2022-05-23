@@ -141,8 +141,9 @@ struct MappingFrontier {
    *
    * @param uid_0 First Node in SWAP
    * @param uid_1 Second Node in SWAP
+   * @return true if SWAP added
    */
-  void add_swap(const UnitID& uid_0, const UnitID& uid_1);
+  bool add_swap(const UnitID& uid_0, const UnitID& uid_1);
 
   /**
    * add_bridge

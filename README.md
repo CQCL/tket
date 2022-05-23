@@ -189,6 +189,12 @@ To run the full suite manually you need to include also the short tests, like:
 <package_folder>/bin/test_tket "[long],~[long]"
 ```
 
+A smaller selection of the compiled tests can also be run by passing a filter of the test file name:
+
+```shell
+<package_folder>/bin/test_tket -# "[#test_name]"
+```
+
 There is also a small set of property-based tests which you can build and run
 with:
 
