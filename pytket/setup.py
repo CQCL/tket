@@ -237,7 +237,7 @@ setup(
     description="Python module for interfacing with the CQC tket library of quantum "
     "software",
     long_description=open("package.md", "r").read(),
-    long_description_content_type="text/markdown"
+    long_description_content_type="text/markdown" ,
     license="Apache 2",
     packages=setuptools.find_packages(),
     install_requires=[
