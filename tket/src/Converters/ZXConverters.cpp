@@ -295,6 +295,8 @@ BoundaryVertMap circuit_to_zx_recursive(
           }
           op = cond.get_op();
         }
+        unsigned port_conditions_size =
+            static_cast<unsigned>(port_conditions.size());
         // Convert the underlying op to zx.
         // If the op is a quantum gate, construct a 1 gate circuit
         // If the op is a box, obtain its circuit decomposition
@@ -356,32 +358,32 @@ BoundaryVertMap circuit_to_zx_recursive(
                 zxd.get_qtype(ctr.first).value(), ctr.second);
           }
           // Update lookup
-          TKET_ASSERT(parent_sig[i + port_conditions.size()] == inner_sig[i]);
+          TKET_ASSERT(parent_sig[i + port_conditions_size] == inner_sig[i]);
           // Since we assume that the conditions always use the first few
           // ports, the gate path should use the i + port_conditions.size()
           // port.
           vert_lookup.insert(
-              {{{vert, i + port_conditions.size()}, PortType::In},
+              {{{vert, i + port_conditions_size}, PortType::In},
                boundary.first});
           vert_lookup.insert(
-              {{{vert, i + port_conditions.size()}, PortType::Out},
+              {{{vert, i + port_conditions_size}, PortType::Out},
                boundary.second});
         }
         // Use either a Z spider or a AND operator to connect the master
         // switch and the boolean inputs
         ZXVertPortVec and_inputs;
-        if (port_conditions.size() == 1) {
+        if (port_conditions_size == 1) {
           and_inputs.push_back({master_switch, std::nullopt});
         } else {
           ZXVertPort and_output;
-          std::tie(and_inputs, and_output) = add_n_bit_and(
-              zxd, port_conditions.size(), QuantumType::Classical);
+          std::tie(and_inputs, and_output) =
+              add_n_bit_and(zxd, port_conditions_size, QuantumType::Classical);
           zxd.add_wire(
               and_output.first, master_switch, ZXWireType::Basic,
               QuantumType::Classical, and_output.second);
         }
         // Connect inputs to the nodes obtained from above
-        for (unsigned i = 0; i < port_conditions.size(); i++) {
+        for (unsigned i = 0; i < port_conditions_size; i++) {
           // Each boolean edge shares a source port with other
           // classical/boolean edges. Use the classical Z spider to explicitly
           // implement this copy operation
