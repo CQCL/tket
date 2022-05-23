@@ -34,6 +34,7 @@ add_library(tket-${COMP}
     ContextualReduction.cpp
     ThreeQubitSquash.cpp
     SingleQubitSquash.cpp
+    PhasedXFrontier.cpp
     PQPSquash.cpp
     StandardSquash.cpp)
 

@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <memory>
 #include <optional>
 
 #include "Circuit/Circuit.hpp"
@@ -36,11 +37,11 @@ class AbstractSquasher {
   /**
    * @brief Whether the OpType can be added to current squash.
    *
-   * @param ot OpType to be accepted.
+   * @param gp Gate_ptr to be accepted.
    * @retval true `ot` can be squashed.
    * @retval false `ot` cannot be squashed.
    */
-  virtual bool accepts(OpType ot) const = 0;
+  virtual bool accepts(Gate_ptr gp) const = 0;
 
   /**
    * @brief Add gate to current squash.
@@ -70,6 +71,13 @@ class AbstractSquasher {
    */
   virtual void clear() = 0;
 
+  /**
+   * @brief Virtual constructor
+   *
+   * @return std::unique_ptr<AbstractSquasher> A copy of *this.
+   */
+  virtual std::unique_ptr<AbstractSquasher> clone() const = 0;
+
   virtual ~AbstractSquasher() {}
 };
 
@@ -85,22 +93,29 @@ class SingleQubitSquash {
    * @brief Construct a new Single Qubit Squash object.
    *
    * @param squasher The Squasher instance.
-   * @param reversed whether squashing is made back-to-front or front to back.
+   * @param circ The circuit to be squashed.
+   * @param reversed Whether squashing is made back to front or front to back
+   *      (default: false, ie front to back).
    */
   SingleQubitSquash(
-      std::unique_ptr<AbstractSquasher> squasher, bool reversed = false)
-      : squasher_(std::move(squasher)),
-        reversed_(reversed),
-        circ_ptr_(nullptr) {}
+      std::unique_ptr<AbstractSquasher> squasher, Circuit &circ,
+      bool reversed = false)
+      : squasher_(std::move(squasher)), circ_(circ), reversed_(reversed) {}
+
+  // rule of 5
+  SingleQubitSquash(const SingleQubitSquash &other);
+  SingleQubitSquash &operator=(const SingleQubitSquash &other);
+  ~SingleQubitSquash() = default;
+  SingleQubitSquash(SingleQubitSquash &&other);
+  SingleQubitSquash &operator=(SingleQubitSquash &&other);
 
   /**
-   * @brief Squash an entire circuit, one qubit at a time.
+   * @brief Squash entire circuit, one qubit at a time.
    *
-   * @param circ The circuit to be squashed.
-   * @return true The squash succeeded.
-   * @return false The circuit was not changed.
+   * @retval true The squash succeeded.
+   * @retval false The circuit was not changed.
    */
-  bool squash(Circuit &circ);
+  bool squash();
 
   /**
    * @brief Squash everything between in-edge and out-edge
@@ -110,6 +125,7 @@ class SingleQubitSquash {
    *
    * @param in Starting edge of the squash.
    * @param out Last edge of the squash.
+   *
    * @retval true The circuit was changed.
    * @retval false The circuit was not changed.
    */
@@ -117,9 +133,8 @@ class SingleQubitSquash {
 
  private:
   std::unique_ptr<AbstractSquasher> squasher_;
+  Circuit &circ_;
   bool reversed_;
-  // points to the current circuit during squashing
-  Circuit *circ_ptr_;
 
   // substitute chain by a sub circuit, handling conditions
   // and backing up + restoring current edge

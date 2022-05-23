@@ -36,6 +36,9 @@ const OpTypeSet &all_multi_qubit_types();
 /** Set of all gates over a single qubit */
 const OpTypeSet &all_single_qubit_types();
 
+/** Set of all single-qubit gates that can be expressed as TK1 */
+const OpTypeSet &all_single_qubit_unitary_types();
+
 /** Set of all measurement and reset gates */
 const OpTypeSet &all_projective_types();
 
@@ -74,6 +77,9 @@ bool is_multi_qubit_type(OpType optype);
 
 /** Test for gates over a single qubit */
 bool is_single_qubit_type(OpType optype);
+
+/** Test for single-qubit gates that can be expressed as TK1 */
+bool is_single_qubit_unitary_type(OpType optype);
 
 /** Test for non-invertible operations */
 bool is_oneway_type(OpType optype);

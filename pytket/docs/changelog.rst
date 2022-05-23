@@ -1,6 +1,17 @@
 Changelog
 =========
 
+x.y.z (unreleased)
+------------------
+
+Minor new features:
+
+* The ``GlobalisePhasedX`` transform and homonymous pass take a new optional
+  ``squash`` parameter. ``squash=true`` (default) implements a new algorithm
+  that significantly reduces the number of ``NPhasedX`` gates synthesised.
+* New ``DecomposeNPhasedX`` transform and pass replaces all ``NPhasedX`` gates
+  with single-qubit ``PhasedX`` gates.
+
 1.2.1 (May 2022)
 ----------------
 
