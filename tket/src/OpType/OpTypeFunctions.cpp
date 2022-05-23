@@ -70,6 +70,19 @@ const OpTypeSet& all_multi_qubit_types() {
   return *gates;
 }
 
+// the set of OpTypes that implement Gate_ptr->get_tk1_angles()
+const OpTypeSet& all_single_qubit_unitary_types() {
+  static const OpTypeSet optypes{
+      OpType::noop, OpType::Z,    OpType::X,   OpType::Y,  OpType::S,
+      OpType::Sdg,  OpType::T,    OpType::Tdg, OpType::V,  OpType::Vdg,
+      OpType::SX,   OpType::SXdg, OpType::H,   OpType::Rx, OpType::Ry,
+      OpType::Rz,   OpType::U1,   OpType::U2,  OpType::U3, OpType::PhasedX,
+      OpType::TK1};
+  static std::unique_ptr<const OpTypeSet> gates =
+      std::make_unique<const OpTypeSet>(optypes);
+  return *gates;
+}
+
 const OpTypeSet& all_single_qubit_types() {
   static const OpTypeSet optypes{
       OpType::Z,     OpType::X,        OpType::Y,       OpType::S,
@@ -165,6 +178,12 @@ bool is_multi_qubit_type(OpType optype) {
 bool is_single_qubit_type(OpType optype) {
   return find_in_set(optype, all_single_qubit_types());
 }
+
+// the set of OpTypes that implement Gate_ptr->get_tk1_angles()
+bool is_single_qubit_unitary_type(OpType optype) {
+  return find_in_set(optype, all_single_qubit_unitary_types());
+}
+
 bool is_oneway_type(OpType optype) {
   // This set should contain only gates for which an dagger is nonsensical
   // or we do not yet have the dagger gate as an OpType.

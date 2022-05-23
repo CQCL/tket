@@ -61,6 +61,8 @@ Op_ptr MetaOp::deserialize(const nlohmann::json& j) {
   return std::make_shared<MetaOp>(optype, sig);
 }
 
+bool MetaOp::is_clifford() const { return true; }
+
 MetaOp::~MetaOp() {}
 
 bool MetaOp::is_equal(const Op& op_other) const {

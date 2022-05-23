@@ -15,6 +15,8 @@
 #include <catch2/catch.hpp>
 #include <memory>
 
+#include "Circuit/Boxes.hpp"
+#include "Gate/SymTable.hpp"
 #include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/Predicates.hpp"
@@ -179,8 +181,47 @@ SCENARIO("Test CliffordCircuitPredicate") {
   circ.add_op<unsigned>(OpType::CX, {5, 6});
   circ.add_op<unsigned>(OpType::CX, {6, 7});
   circ.add_op<unsigned>(OpType::H, {2});
+  circ.add_barrier({3, 4, 5});
+  circ.add_op<unsigned>(OpType::Rx, -0.5, {0});
+  circ.add_op<unsigned>(OpType::Ry, 1.5, {1});
+  circ.add_op<unsigned>(OpType::Rz, 0.5, {2});
+  circ.add_op<unsigned>(OpType::U1, 1.0, {3});
+  circ.add_op<unsigned>(OpType::U2, {-0.5, 1.5}, {4});
+  circ.add_op<unsigned>(OpType::U3, {0., 1.5, 4.5}, {5});
+  circ.add_op<unsigned>(OpType::TK1, {-0.5, 1.5, 4.}, {6});
+  circ.add_op<unsigned>(OpType::TK2, {1.5, 2.5, -1.}, {7, 0});
+  circ.add_op<unsigned>(OpType::XXPhase, -0.5, {1, 2});
+  circ.add_op<unsigned>(OpType::YYPhase, 0.5, {2, 3});
+  circ.add_op<unsigned>(OpType::ZZPhase, 0., {3, 4});
+  circ.add_op<unsigned>(OpType::XXPhase3, 1.0, {4, 5, 6});
+  circ.add_op<unsigned>(OpType::PhasedX, {-0.5, 0.5}, {5});
+  circ.add_op<unsigned>(OpType::NPhasedX, {1.5, 1.5}, {6, 7});
+  circ.add_op<unsigned>(OpType::ISWAP, 1.0, {0, 1});
+  circ.add_op<unsigned>(OpType::ESWAP, 2.0, {2, 3});
+  circ.add_op<unsigned>(OpType::PhasedISWAP, {1.5, 0.}, {4, 5});
+  circ.add_op<unsigned>(OpType::FSim, {0.5, 1.}, {6, 7});
+  CircBox cbox(circ);
+  Circuit circ1(8);
+  circ1.add_box(cbox, {0, 1, 2, 3, 4, 5, 6, 7});
+  PauliExpBox pebox({Pauli::Y, Pauli::Z}, 0.5);
+  circ1.add_box(pebox, {0, 1});
+  Circuit setup(2);
+  Sym a = SymTable::fresh_symbol("a");
+  setup.add_op<unsigned>(OpType::Rx, {a}, {0});
+  setup.add_op<unsigned>(OpType::CX, {0, 1});
+  setup.add_op<unsigned>(OpType::Ry, 0.5, {0});
+  composite_def_ptr_t def = CompositeGateDef::define_gate("g", setup, {a});
+  CustomGate cgbox(def, {1.5});
+  circ1.add_box(cgbox, {2, 3});
+  Eigen::Matrix2cd U;
+  U << 0.5 - 0.5 * i_, 0.5 + 0.5 * i_, 0.5 + 0.5 * i_, 0.5 - 0.5 * i_;
+  Unitary1qBox u1box(U);
+  circ1.add_box(u1box, {4});
   PredicatePtr ccp = std::make_shared<CliffordCircuitPredicate>();
-  REQUIRE(ccp->verify(circ));
+  REQUIRE(ccp->verify(circ1));
+  Circuit circ2(2);
+  circ2.add_op<unsigned>(OpType::TK2, {1.5, 2.5, -1.01}, {0, 1});
+  REQUIRE(!ccp->verify(circ2));
 }
 
 SCENARIO("Test routing-related predicates' meet and implication") {

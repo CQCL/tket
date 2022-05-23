@@ -16,6 +16,7 @@
 
 #include "Gate/Gate.hpp"
 #include "Mapping/Verification.hpp"
+#include "OpType/OpTypeFunctions.hpp"
 #include "Placement/Placement.hpp"
 #include "Utils/UnitID.hpp"
 
@@ -440,12 +441,7 @@ std::string DirectednessPredicate::to_string() const {
 
 bool CliffordCircuitPredicate::verify(const Circuit& circ) const {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-    Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-    OpDesc OD = op->get_desc();
-    if (OD.is_gate() && !OD.is_clifford_gate() &&
-        (!OD.is_parameterised_pauli_rotation() ||
-         !equiv_0(4 * op->get_params().at(0))))
-      return false;
+    if (!circ.get_Op_ptr_from_Vertex(v)->is_clifford()) return false;
   }
   return true;
 }

@@ -24,6 +24,21 @@
 namespace tket {
 namespace test_Boxes {
 
+SCENARIO("CircBox requires simple circuits", "[boxes]") {
+  Circuit circ(2);
+  circ.add_op<unsigned>(OpType::Y, {0});
+  circ.add_op<unsigned>(OpType::CX, {0, 1});
+  REQUIRE(circ.is_simple());
+  Qubit qb0(0);
+  Qubit qb1(1);
+  Qubit a0("a", 0);
+  Qubit a1("a", 1);
+  unit_map_t qubit_map = {{qb0, a0}, {qb1, a1}};
+  circ.rename_units(qubit_map);
+  REQUIRE(!circ.is_simple());
+  REQUIRE_THROWS_AS(CircBox(circ), SimpleOnly);
+}
+
 SCENARIO("Using Boxes", "[boxes]") {
   GIVEN("CircBox manipulation") {
     // Small box
