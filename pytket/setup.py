@@ -230,12 +230,14 @@ class bdist_wheel(_bdist_wheel):
 
 setup(
     name="pytket",
-    author="Seyon Sivarajah",
-    author_email="seyon.sivarajah@cambridgequantum.com",
+    author="Tket development team",
+    author_email="tket-support@cambridgequantum.com",
     python_requires=">=3.8",
     url="https://cqcl.github.io/tket/pytket/api/",
     description="Python module for interfacing with the CQC tket library of quantum "
     "software",
+    long_description=open("package.md", "r").read(),
+    long_description_content_type="text/markdown"
     license="Apache 2",
     packages=setuptools.find_packages(),
     install_requires=[
