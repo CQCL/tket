@@ -63,3 +63,8 @@ class TketTestsConan(ConanFile):
         if platform.system() == "Windows":
             executable_filename = executable_filename + ".exe"
         self.copy(executable_filename)
+        self.copy(
+            os.path.join("test_circuits", "lexiroute_circuit.json"),
+            dst="bin",
+            keep_path=False,
+        )
