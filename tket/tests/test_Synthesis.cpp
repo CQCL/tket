@@ -1118,7 +1118,7 @@ SCENARIO("Testing globalise_PhasedX") {
       REQUIRE(Transforms::globalise_PhasedX().apply(tmp_circ));
       THEN("6 NPhasedX are required") {
         REQUIRE(tmp_circ.count_gates(OpType::PhasedX) == 0);
-        REQUIRE(tmp_circ.count_gates(OpType::NPhasedX) == 6);
+        REQUIRE(tmp_circ.count_gates(OpType::NPhasedX) == 5);
       }
       tmp_circ.to_graphviz_file("tmp_circ");
     }

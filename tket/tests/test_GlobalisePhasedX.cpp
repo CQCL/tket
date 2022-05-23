@@ -38,7 +38,7 @@ SCENARIO("globalise_PhasedX transform") {
       Circuit c2 = c1;
       REQUIRE(Transforms::globalise_PhasedX().apply(c2));
       THEN("There are two global NPhasedX gates") {
-        REQUIRE(c2.count_gates(OpType::NPhasedX) == 2);
+        REQUIRE(c2.count_gates(OpType::NPhasedX) == 1);
         BGL_FORALL_VERTICES(v, c2.dag, DAG) {
           OpType type = c2.get_OpType_from_Vertex(v);
           if (type == OpType::NPhasedX) {
@@ -156,6 +156,37 @@ SCENARIO("globalise_PhasedX transform") {
     WHEN("Applying the transform (without squashing)") {
       Circuit c2 = c1;
       Transforms::globalise_PhasedX(false).apply(c2);
+      THEN("There are two global NPhasedX gates") {
+        REQUIRE(c2.count_gates(OpType::NPhasedX) == 2);
+        BGL_FORALL_VERTICES(v, c2.dag, DAG) {
+          OpType type = c2.get_OpType_from_Vertex(v);
+          if (type == OpType::NPhasedX) {
+            REQUIRE(is_global(v, c2));
+          } else if (c2.detect_singleq_unitary_op(v)) {
+            // single-qb gates are Rz
+            REQUIRE(type == OpType::Rz);
+          }
+        }
+      }
+      THEN("The resulting unitaries are equal") {
+        auto u1 = tket_sim::get_unitary(c1);
+        auto u2 = tket_sim::get_unitary(c2);
+        REQUIRE(u1.isApprox(u2));
+      }
+    }
+  }
+  GIVEN("A circuit with floating point error") {
+    Circuit c1(3);
+    c1.add_op<unsigned>(OpType::PhasedX, {0.3, 0.0}, {0});
+    c1.add_op<unsigned>(OpType::PhasedX, {0.3, 0.0}, {1});
+    c1.add_op<unsigned>(OpType::PhasedX, {0.4, 0.0}, {2});
+    c1.add_op<unsigned>(OpType::CZ, {0, 1});
+    c1.add_op<unsigned>(OpType::PhasedX, {0.1, 0.0}, {0});
+    c1.add_op<unsigned>(OpType::PhasedX, {0.1, 0.0}, {1});
+
+    WHEN("Applying the transform") {
+      Circuit c2 = c1;
+      Transforms::globalise_PhasedX().apply(c2);
       THEN("There are two global NPhasedX gates") {
         REQUIRE(c2.count_gates(OpType::NPhasedX) == 2);
         BGL_FORALL_VERTICES(v, c2.dag, DAG) {
