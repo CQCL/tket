@@ -129,9 +129,9 @@ PYBIND11_MODULE(transform, m) {
           "Rebase single qubit gates into Rz, Rx.")
       .def_static(
           "RebaseToCliffordSingles", &Transforms::decompose_cliffords_std,
-          "Identify Clifford-angle rotations (from U1, U2, U3, Rx, "
-          "Ry, Rz, TK1, PhasedX), replacing them with Z, X, S, V "
-          "gates. Any non-Clifford rotations will stay as they are.")
+          "Replace all single-qubit unitary gates outside the set {Z, X, S, V} "
+          "that are recognized as Clifford operations with an equivalent "
+          "sequence of gates from that set.")
       .def_static(
           "RebaseToCirq", &Transforms::rebase_cirq,
           "Rebase from any gate set into PhasedX, Rz, CZ.")
