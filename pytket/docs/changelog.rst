@@ -11,6 +11,8 @@ Minor new features:
   that significantly reduces the number of ``NPhasedX`` gates synthesised.
 * New ``DecomposeNPhasedX`` transform and pass replaces all ``NPhasedX`` gates
   with single-qubit ``PhasedX`` gates.
+* Extend range of Clifford operations recognized by
+  ``CliffordCircuitPredicate``.
 
 1.2.1 (May 2022)
 ----------------

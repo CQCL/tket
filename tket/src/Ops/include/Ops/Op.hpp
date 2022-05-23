@@ -146,6 +146,17 @@ class Op : public std::enable_shared_from_this<Op> {
   virtual std::optional<double> is_identity() const { throw NotValid(); }
 
   /**
+   * Test whether operation is in the Clifford group.
+   *
+   * A return value of true guarantees that the operation is Clifford. (Note
+   * that the converse is not the case: some Clifford operations may not be
+   * detected as such.)
+   *
+   * @retval true operation is in the Clifford group
+   */
+  virtual bool is_clifford() const { return false; }
+
+  /**
    * If meaningful and implemented, return the numerical unitary matrix
    * (in ILO-BE convention) which this Op represents.
    *

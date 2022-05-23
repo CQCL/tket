@@ -96,12 +96,13 @@ Transform decompose_MolmerSorensen();
 // into ZZ gates Expects: CX, Rz Produces: ZZ, CX, Rz
 Transform decompose_ZZPhase();
 
-// identifies any TK1, Rz,Ry,Rx,u3,u2,u1 gate sequences that can be naively
-// decomposed into S,Z,X,V returns clifford sequences in a standard form
-// (Z)(X)(S)(V)(S)
-// Expects: TK1, U3, U2, U1, Rx, Ry, Rz, and any multi-qubit gates
-// Produces: Z, X, S, V, and any remaining non-clifford single-qubit gates,
-// and any multi-qubit gates
+/**
+ * Decompose single-qubit Clifford gates to a standard Cliffford gate set.
+ *
+ * Replaces all single-qubit unitary gates outside the set {Z, X, S, V} that are
+ * recognized as Clifford operations with an equivalent sequence of gates from
+ * that set.
+ */
 Transform decompose_cliffords_std();
 
 Transform decompose_ZX_to_cliffords();
