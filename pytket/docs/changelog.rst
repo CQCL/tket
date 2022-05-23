@@ -1,8 +1,8 @@
 Changelog
 =========
 
-x.y.z (unreleased)
-------------------
+1.2.2 (May 2022)
+----------------
 
 Minor new features:
 
