@@ -23,18 +23,20 @@ from pytket.zx import (  # type: ignore
     ZXType,
     QuantumType,
     ZXWireType,
-    unitary_from_quantum_diagram,
-    fix_inputs_to_binary_state,
     ZXGen,
-    tensor_from_quantum_diagram,
-    unitary_from_classical_diagram,
-    density_matrix_from_cptp_diagram,
     Rewrite,
     circuit_to_zx,
     PhasedGen,
     CliffordGen,
     DirectedGen,
     ZXBox,
+)
+from zx_tensor import (
+    unitary_from_quantum_diagram,
+    fix_inputs_to_binary_state,
+    tensor_from_quantum_diagram,
+    unitary_from_classical_diagram,
+    density_matrix_from_cptp_diagram,
 )
 
 
