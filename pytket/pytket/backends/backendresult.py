@@ -455,7 +455,8 @@ class BackendResult:
         if res.state is not None:
             return res.state
         if res.unitary is not None:
-            return res.unitary[:, 0]
+            state: np.ndarray = res.unitary[:, 0]
+            return state
         raise InvalidResultType("state")
 
     def get_unitary(
