@@ -77,7 +77,7 @@ class Flow {
   // https://arxiv.org/pdf/2109.05654.pdf
   static std::set<ZXVertSeqSet> identify_focussed_sets(const ZXDiagram& diag);
 
-  friend Circuit tket::zx_to_circuit(const ZXDiagram& diag);
+  friend Circuit tket::zx_to_circuit(const zx::ZXDiagram& diag);
 
  private:
   // Correction sets

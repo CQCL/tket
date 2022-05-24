@@ -540,6 +540,7 @@ std::set<ZXVertSeqSet> Flow::identify_focussed_sets(const ZXDiagram& diag) {
           correctors.insert({v, n_correctors});
           ++n_correctors;
         }
+        break;
       }
       case ZXType::PX: {
         // Nonmeasured vertices also covered by PX
