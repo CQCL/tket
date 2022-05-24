@@ -42,7 +42,7 @@ void clean_frontier(
             const PhasedGen& f_gen = diag.get_vertex_ZXGen<PhasedGen>(f);
             Expr ph = f_gen.get_param();
             if (!equiv_0(ph)) {
-              circ.add_op<unsigned>(OpType::U1, ph, {q});
+              circ.add_op<unsigned>(OpType::U1, -ph, {q});
             }
             diag.set_vertex_ZXGen_ptr(
                 f, ZXGen::create_gen(ZXType::PX, *f_gen.get_qtype()));
