@@ -16,10 +16,10 @@
 numpy tensor features, in particular the einsum evaluation and optimisations."""
 from typing import Dict, List, Any
 from math import floor, pi, sqrt
-import sympy
+import sympy  # type: ignore
 import numpy as np
 from pytket.zx import ZXDiagram, ZXType, ZXVert, PhasedGen, QuantumType, Rewrite  # type: ignore
-import quimb.tensor as qtn
+import quimb.tensor as qtn  # type: ignore
 
 
 def _spider_to_tensor(gen: PhasedGen, rank: int) -> np.ndarray:

@@ -13,8 +13,7 @@
 # limitations under the License.
 
 """
-Python API module for interfacing with tket c++ implemented functions and modules.
-Exports class ZXDiagram and associated tools.
+Test-only tensor evaluation utilities for ZX diagrams.
 """
 
 from .tensor_eval import (

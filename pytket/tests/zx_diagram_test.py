@@ -31,7 +31,7 @@ from pytket.zx import (  # type: ignore
     DirectedGen,
     ZXBox,
 )
-from zx_tensor import (
+from zx_tensor import (  # type: ignore
     unitary_from_quantum_diagram,
     fix_inputs_to_binary_state,
     tensor_from_quantum_diagram,
@@ -651,9 +651,9 @@ def test_converting_from_circuit() -> None:
     c.H(2)
     diag, _ = circuit_to_zx(c)
     # Check the unitaries are equal up to a global phase
-    u = c.get_unitary()
     v = unitary_from_quantum_diagram(diag)
-    m = np.dot(u, v.conj().T)
+    u = c.get_unitary()
+    m = v.dot(u.conj().T)
     phase = m[0][0]
     assert isclose(abs(phase), 1)
     assert np.allclose(m * (1 / phase), np.eye(16))
