@@ -12,11 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#define STR(x) #x
+
 #include <pybind11/eigen.h>
 #include <pybind11/functional.h>
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+
+#include <bitset>
 
 #include "Circuit/Circuit.hpp"
 #include "Gate/OpPtrFunctions.hpp"
@@ -54,7 +58,7 @@ void init_circuit_add_classical_op(
     py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
   c.def(
        "add_c_transform",
-       [](Circuit &circ, const std::vector<uint32_t> &values,
+       [](Circuit &circ, const std::vector<_tket_uint_t> &values,
           const std::vector<unsigned> &args, const std::string &name,
           const py::kwargs &kwargs) {
          unsigned n_args = args.size();
@@ -77,7 +81,7 @@ void init_circuit_add_classical_op(
        py::arg("name") = "ClassicalTransform")
       .def(
           "add_c_transform",
-          [](Circuit &circ, const std::vector<uint32_t> &values,
+          [](Circuit &circ, const std::vector<_tket_uint_t> &values,
              const std::vector<Bit> &args, const std::string &name,
              const py::kwargs &kwargs) {
             unsigned n_args = args.size();
@@ -195,6 +199,25 @@ void init_circuit_add_classical_op(
           },
           "See :py:meth:`add_c_setbits`.", py::arg("values"), py::arg("args"))
       .def(
+          "add_c_setreg",
+          [](Circuit &circ, const _tket_uint_t value, const BitRegister &reg,
+             const py::kwargs &kwargs) {
+            auto bs = std::bitset<_TKET_REG_WIDTH>(value);
+            std::vector<Bit> args(reg.size());
+            std::vector<bool> vals(reg.size());
+            for (unsigned i = 0; i < reg.size(); i++) {
+              args[i] = reg[i];
+              vals[i] = bs[i];
+            }
+
+            std::shared_ptr<SetBitsOp> op = std::make_shared<SetBitsOp>(vals);
+            return add_gate_method<Bit>(&circ, op, args, kwargs);
+          },
+          "Set a classical register to an unsigned integer value. The "
+          "little-endian bitwise representation of the integer is truncated to "
+          "the register size, up to " STR(_TKET_REG_WIDTH) " bit width.",
+          py::arg("value"), py::arg("arg"))
+      .def(
           "add_c_copybits",
           [](Circuit &circ, const std::vector<unsigned> &args_in,
              const std::vector<unsigned> &args_out, const py::kwargs &kwargs) {
@@ -223,6 +246,25 @@ void init_circuit_add_classical_op(
           },
           "See :py:meth:`add_c_copybits`.", py::arg("args_in"),
           py::arg("args_out"))
+      .def(
+          "add_c_copyreg",
+          [](Circuit &circ, const BitRegister &input_reg,
+             const BitRegister &output_reg, const py::kwargs &kwargs) {
+            const unsigned width =
+                std::min(input_reg.size(), output_reg.size());
+
+            std::shared_ptr<CopyBitsOp> op =
+                std::make_shared<CopyBitsOp>(width);
+            std::vector<Bit> args(width * 2);
+            for (unsigned i = 0; i < width; i++) {
+              args[i] = input_reg[i];
+              args[i + width] = output_reg[i];
+            }
+            return add_gate_method<Bit>(&circ, op, args, kwargs);
+          },
+          "Copy a classical register to another. Copying is truncated to the "
+          "size of the smaller of the two registers.",
+          py::arg("input_reg"), py::arg("output_reg"))
       .def(
           "add_c_predicate",
           [](Circuit &circ, const std::vector<bool> &values,
@@ -456,7 +498,7 @@ void init_circuit_add_classical_op(
           "See :py:meth:`add_c_not`.", py::arg("arg_in"), py::arg("arg_out"))
       .def(
           "add_c_range_predicate",
-          [](Circuit &circ, uint32_t a, uint32_t b,
+          [](Circuit &circ, _tket_uint_t a, _tket_uint_t b,
              const std::vector<unsigned> &args_in, unsigned arg_out,
              const py::kwargs &kwargs) {
             unsigned n_args_in = args_in.size();
@@ -476,7 +518,7 @@ void init_circuit_add_classical_op(
           py::arg("arg_out"))
       .def(
           "add_c_range_predicate",
-          [](Circuit &circ, uint32_t a, uint32_t b,
+          [](Circuit &circ, _tket_uint_t a, _tket_uint_t b,
              const std::vector<Bit> &args_in, Bit arg_out,
              const py::kwargs &kwargs) {
             unsigned n_args_in = args_in.size();

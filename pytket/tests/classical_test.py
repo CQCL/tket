@@ -19,8 +19,7 @@ import json
 from pathlib import Path
 
 from jsonschema import validate  # type: ignore
-from hypothesis import given, reproduce_failure, settings, strategies
-from hypothesis.core import encode_failure
+from hypothesis import given, settings, strategies
 from hypothesis.strategies import SearchStrategy
 
 from pytket import wasm
@@ -111,8 +110,12 @@ def test_c_ops() -> None:
     c.add_c_and_to_registers(c0, c1, c2)
     c.add_c_xor_to_registers(c2, c1, c2)
     c.add_c_not_to_registers(c1, c2)
+
+    c.add_c_setreg(3, c0)
+    c.add_c_copyreg(c1, c0)
+
     cmds = c.get_commands()
-    assert len(cmds) == 19
+    assert len(cmds) == 21
     assert len([cmd for cmd in cmds if cmd.op.get_name() == "AND"]) == 2
     rp_cmds = [cmd for cmd in cmds if cmd.op.type == OpType.RangePredicate]
     assert len(rp_cmds) == 2
@@ -124,6 +127,8 @@ def test_c_ops() -> None:
         and mb_cmds[0] != mb_cmds[2]
         and mb_cmds[1] != mb_cmds[2]
     )
+    assert str(cmds[6]) == "CopyBits c1[0], c1[1], c1[2], c0[0], c0[1], c0[2];"
+    assert str(cmds[3]) == "SetBits(110) c0[0], c0[1], c0[2];"
 
 
 def test_wasm() -> None:

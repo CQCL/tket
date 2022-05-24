@@ -71,7 +71,7 @@ void declare_register(py::module &m, const std::string &typestr) {
       });
 }
 void init_unitid(py::module &m) {
-  m.attr("_TEMP_REG_SIZE") = 32;
+  m.attr("_TEMP_REG_SIZE") = _TKET_REG_WIDTH;
   m.attr("_TEMP_BIT_NAME") = "tk_SCRATCH_BIT";
   m.attr("_TEMP_BIT_REG_BASE") = "tk_SCRATCH_BITREG";
   m.attr("_DEBUG_ONE_REG_PREFIX") = py::str(c_debug_one_prefix());
