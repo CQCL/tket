@@ -23,4 +23,5 @@ from .qasm import (
     circuit_to_qasm_str,
     circuit_from_qasm_io,
     circuit_to_qasm_io,
+    circuit_from_qasm_wasm,
 )

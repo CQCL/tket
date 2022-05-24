@@ -15,6 +15,7 @@
 #include "GraphColouring.hpp"
 
 #include <algorithm>
+#include <limits>
 #include <set>
 #include <sstream>
 #include <stdexcept>

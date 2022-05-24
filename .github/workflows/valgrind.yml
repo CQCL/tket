@@ -75,5 +75,7 @@ jobs:
         conan install recipes/tket-tests --install-folder=build/tket-tests --profile=tket
         conan build recipes/tket-tests --configure --build-folder=build/tket-tests --source-folder=tket/tests
         conan build recipes/tket-tests --build --build-folder=build/tket-tests
+        conan package recipes/tket-tests/ --build-folder=build/tket-tests --package-folder build/tket-tests/package --source-folder=tket/tests
     - name: run tests under valgrind
-      run: valgrind --error-exitcode=1 ./build/tket-tests/bin/test_tket
+      working-directory: ./build/tket-tests/package/bin
+      run: valgrind --error-exitcode=1 ./test_tket

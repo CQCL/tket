@@ -18,7 +18,7 @@
 from typing import TYPE_CHECKING, Any, Tuple, Type, Union, cast, Callable, List
 
 from pytket._tket.circuit import *  # type: ignore
-from pytket._tket.circuit import Bit, BitRegister
+from pytket._tket.circuit import Bit, BitRegister, Circuit
 
 # prefixes for assertion bits
 from pytket._tket.circuit import _DEBUG_ZERO_REG_PREFIX, _DEBUG_ONE_REG_PREFIX  # type: ignore
@@ -44,9 +44,6 @@ from .logic_exp import (
     reg_lt,
     reg_neq,
 )
-
-if TYPE_CHECKING:
-    from pytket.circuit import Circuit  # type: ignore
 
 
 # Add ability to compare Bit equality with arbitrary class
@@ -131,3 +128,13 @@ for clas, enum in cls_enum_pairs:
     setattr(clas, "__ror__", gen_binary_method(enum.OR))
     setattr(clas, "__xor__", gen_binary_method(enum.XOR))
     setattr(clas, "__rxor__", gen_binary_method(enum.XOR))
+
+
+for clas in (BitRegister, RegLogicExp):
+    setattr(clas, "__add__", gen_binary_method(RegWiseOp.ADD))
+    setattr(clas, "__sub__", gen_binary_method(RegWiseOp.SUB))
+    setattr(clas, "__mul__", gen_binary_method(RegWiseOp.MUL))
+    setattr(clas, "__floordiv__", gen_binary_method(RegWiseOp.DIV))
+    setattr(clas, "__pow__", gen_binary_method(RegWiseOp.POW))
+    setattr(clas, "__lshift__", gen_binary_method(RegWiseOp.LSH))
+    setattr(clas, "__rshift__", gen_binary_method(RegWiseOp.RSH))

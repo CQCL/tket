@@ -57,6 +57,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Ops/test_ClassicalOps.cpp
     ${TKET_TESTS_DIR}/Ops/test_Expression.cpp
     ${TKET_TESTS_DIR}/Ops/test_Ops.cpp
+    ${TKET_TESTS_DIR}/OpType/test_OpTypeFunctions.cpp
     ${TKET_TESTS_DIR}/Passes/test_SynthesiseTK.cpp
     ${TKET_TESTS_DIR}/Gate/test_GateUnitaryMatrix.cpp
     ${TKET_TESTS_DIR}/Simulation/test_CircuitSimulator.cpp
@@ -90,6 +91,8 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/test_MeasurementReduction.cpp
     ${TKET_TESTS_DIR}/test_PhaseGadget.cpp
     ${TKET_TESTS_DIR}/test_Rebase.cpp
+    ${TKET_TESTS_DIR}/test_PhasedXFrontier.cpp
+    ${TKET_TESTS_DIR}/test_GlobalisePhasedX.cpp
     ${TKET_TESTS_DIR}/test_Synthesis.cpp
     ${TKET_TESTS_DIR}/test_TwoQubitCanonical.cpp
     ${TKET_TESTS_DIR}/test_ControlDecomp.cpp
@@ -109,5 +112,6 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/ZX/test_ZXSimp.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXRebase.cpp
     ${TKET_TESTS_DIR}/ZX/test_Flow.cpp
+    ${TKET_TESTS_DIR}/ZX/test_ZXConverters.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXExtraction.cpp
 )

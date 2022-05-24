@@ -67,6 +67,7 @@ class Gate : public Op {
   static Op_ptr deserialize(const nlohmann::json &j);
 
   std::optional<double> is_identity() const override;
+  bool is_clifford() const override;
   Eigen::MatrixXcd get_unitary() const override;
 
   ~Gate() override {}

@@ -394,6 +394,8 @@ jobs:
         user: __token__
         password: ${{ secrets.PYPI_PYTKET_API_TOKEN }}
         verbose: true
+        # TODO Remove this line when long_description added:
+        verify_metadata: false
 
   build_docs:
     name: Build docs
