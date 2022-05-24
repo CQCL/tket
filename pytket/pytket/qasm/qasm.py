@@ -989,7 +989,10 @@ def circuit_to_qasm_io(
 
         if optype == OpType.ClassicalExpBox:
             out_args = args[op.get_n_i() :]
-            if out_args == list(cregs[out_args[0].reg_name]):
+            if (
+                out_args
+                == list(cregs[out_args[0].reg_name])[: op.get_n_io() + op.get_n_o()]
+            ):
                 stream_out.write(f"{out_args[0].reg_name} = {str(op.get_exp())};\n")
             elif len(out_args) == 1:
                 stream_out.write(f"{out_args[0]} = {str(op.get_exp())};\n")
