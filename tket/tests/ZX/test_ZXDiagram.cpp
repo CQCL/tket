@@ -255,7 +255,6 @@ SCENARIO("Check that diagram conversions achieve the correct form") {
     }
   }
 }
-
 }  // namespace test_ZXDiagram
 }  // namespace zx
 }  // namespace tket

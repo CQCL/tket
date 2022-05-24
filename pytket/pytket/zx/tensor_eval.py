@@ -16,6 +16,7 @@
 numpy tensor features, in particular the einsum evaluation and optimisations."""
 from typing import Dict, List, Any
 from math import floor, pi, sqrt
+import sympy
 import numpy as np
 from pytket.zx import ZXDiagram, ZXType, ZXVert, PhasedGen, QuantumType, Rewrite  # type: ignore
 
@@ -127,7 +128,7 @@ def tensor_from_quantum_diagram(diag: ZXDiagram) -> np.ndarray:
                 "supports diagrams consisting of only quantum components"
             )
     diag_copy = ZXDiagram(diag)
-    diag_copy.multiply_scalar(1 / sqrt(diag.scalar))
+    diag_copy.multiply_scalar(1 / sympy.sqrt(diag.scalar))  # type: ignore
     Rewrite.basic_wires().apply(diag_copy)
     return _tensor_from_basic_diagram(diag_copy)
 

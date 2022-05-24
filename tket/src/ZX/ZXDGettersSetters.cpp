@@ -38,6 +38,9 @@ ZXVertVec ZXDiagram::get_boundary(
   return sub_boundary;
 }
 
+std::unique_ptr<ZXGraph>& ZXDiagram::get_graph() { return graph; }
+
+void ZXDiagram::add_boundary(ZXVert& vert) { boundary.push_back(vert); }
 const Expr& ZXDiagram::get_scalar() const { return scalar; }
 
 void ZXDiagram::multiply_scalar(const Expr& sc) { scalar *= sc; }
@@ -50,6 +53,14 @@ unsigned ZXDiagram::count_vertices(ZXType type) const {
   unsigned count = 0;
   BGL_FORALL_VERTICES(v, *graph, ZXGraph) {
     if (get_zxtype(v) == type) ++count;
+  }
+  return count;
+}
+
+unsigned ZXDiagram::count_vertices(ZXType zxtype, QuantumType qtype) const {
+  unsigned count = 0;
+  BGL_FORALL_VERTICES(v, *graph, ZXGraph) {
+    if (get_zxtype(v) == zxtype && get_qtype(v) == qtype) ++count;
   }
   return count;
 }

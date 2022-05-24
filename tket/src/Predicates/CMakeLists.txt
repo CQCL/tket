@@ -41,6 +41,7 @@ list(APPEND DEPS_${COMP}
     Placement
     TokenSwapping
     Transformations
+    ZX
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

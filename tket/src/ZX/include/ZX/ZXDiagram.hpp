@@ -69,6 +69,10 @@ class ZXDiagram {
       std::optional<ZXType> type = std::nullopt,
       std::optional<QuantumType> qtype = std::nullopt) const;
 
+  // TODO discuss whether to expose these two
+  std::unique_ptr<ZXGraph>& get_graph();
+  void add_boundary(ZXVert& vert);
+
   // Getting the global scalar and modifying by multiplication
   const Expr& get_scalar() const;
   void multiply_scalar(const Expr& sc);
@@ -79,6 +83,7 @@ class ZXDiagram {
 
   // Count number of vertices with certain types & properties
   unsigned count_vertices(ZXType type) const;
+  unsigned count_vertices(ZXType zxtype, QuantumType qtype) const;
   unsigned count_wires(ZXWireType type) const;
 
   // Local properties on vertices and edges

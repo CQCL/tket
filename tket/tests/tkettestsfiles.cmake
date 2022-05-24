@@ -111,4 +111,5 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/ZX/test_ZXAxioms.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXSimp.cpp
     ${TKET_TESTS_DIR}/ZX/test_Flow.cpp
+    ${TKET_TESTS_DIR}/ZX/test_ZXConverters.cpp
 )
