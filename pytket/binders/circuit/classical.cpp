@@ -19,6 +19,7 @@
 #include "Circuit/Conditional.hpp"
 #include "Ops/ClassicalOps.hpp"
 #include "Ops/OpJsonFactory.hpp"
+#include "UnitRegister.hpp"
 #include "Utils/Json.hpp"
 #include "binder_json.hpp"
 
@@ -112,7 +113,7 @@ void init_classical(py::module& m) {
       m, "RangePredicateOp",
       "A predicate defined by a range of values in binary encoding.")
       .def(
-          py::init<unsigned, uint32_t, uint32_t>(),
+          py::init<unsigned, _tket_uint_t, _tket_uint_t>(),
           "Construct from a bit width, an upper bound and a lower bound.",
           py::arg("width"), py::arg("upper"), py::arg("lower"))
       .def_property_readonly(

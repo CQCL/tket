@@ -195,9 +195,7 @@ def _gen_walk(
             reg = copy.copy(var)
             reg.size = bit_width
             add_method(reg)
-            # map int to bools via litle endian encoding
-            bools = int_to_bools(val, len(reg))
-            newcirc.add_c_setbits(bools, list(reg), **kwargs)
+            newcirc.add_c_setreg(val, reg, **kwargs)
 
     # convert an expression to gates on the circuit
     # and return the variable holding the result
