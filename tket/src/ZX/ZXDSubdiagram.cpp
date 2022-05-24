@@ -47,9 +47,10 @@ void ZXDiagram::Subdiagram::check_validity(const ZXDiagram& diag) const {
             boundary_lookup.end())
           throw ZXError("Malformed ZX Subdiagram: subdiagram is not closed");
       } else {
-        if (boundary_lookup.find({w, WireEnd::Source}) ==
-                boundary_lookup.end() ^
-            boundary_lookup.find({w, WireEnd::Target}) == boundary_lookup.end())
+        if ((boundary_lookup.find({w, WireEnd::Source}) ==
+             boundary_lookup.end()) ^
+            (boundary_lookup.find({w, WireEnd::Target}) ==
+             boundary_lookup.end()))
           throw ZXError(
               "Malformed ZX Subdiagram: wire between two interior vertices "
               "contains one boundary");
