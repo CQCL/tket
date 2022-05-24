@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "Circuit/CircPool.hpp"
 #include "Converters.hpp"
 #include "ZX/Flow.hpp"
-#include "Circuit/CircPool.hpp"
 #include "ZX/ZXDiagram.hpp"
 
 namespace tket {
@@ -686,7 +686,8 @@ static void bipartite_complementation(
   }
 }
 
-void extend_if_input(ZXDiagram& diag, const ZXVert& v, std::map<ZXVert, ZXVert>& input_qubits) {
+void extend_if_input(
+    ZXDiagram& diag, const ZXVert& v, std::map<ZXVert, ZXVert>& input_qubits) {
   std::map<ZXVert, ZXVert>::iterator found = input_qubits.find(v);
   if (found != input_qubits.end()) {
     ZXVert in = found->second;
@@ -701,7 +702,9 @@ void extend_if_input(ZXDiagram& diag, const ZXVert& v, std::map<ZXVert, ZXVert>&
   }
 }
 
-bool remove_all_gadgets(ZXDiagram& diag, const ZXVertVec& frontier, std::map<ZXVert, ZXVert>& input_qubits) {
+bool remove_all_gadgets(
+    ZXDiagram& diag, const ZXVertVec& frontier,
+    std::map<ZXVert, ZXVert>& input_qubits) {
   bool removed_gadget = false;
   for (const ZXVert& f : frontier) {
     ZXVertVec f_ns = diag.neighbours(f);
@@ -718,7 +721,8 @@ bool remove_all_gadgets(ZXDiagram& diag, const ZXVertVec& frontier, std::map<ZXV
         // Pivot
         // Identify three subsets of neighbours
         ZXVertSeqSet excl_f;
-        // Need to recalculate neighbours rather than use f_ns as we might have extended
+        // Need to recalculate neighbours rather than use f_ns as we might have
+        // extended
         extend_if_input(diag, f, input_qubits);
         for (const ZXVert& n : diag.neighbours(f)) {
           extend_if_input(diag, n, input_qubits);
@@ -736,12 +740,14 @@ bool remove_all_gadgets(ZXDiagram& diag, const ZXVertVec& frontier, std::map<ZXV
             excl_n.insert(nn);
         }
         excl_n.get<TagKey>().erase(f);
-        for (const ZXVert& nn : joint.get<TagSeq>()) excl_f.get<TagKey>().erase(nn);
+        for (const ZXVert& nn : joint.get<TagSeq>())
+          excl_f.get<TagKey>().erase(nn);
         // The is_MBQC check in zx_to_circuit guarantees QuantumType::Quantum
         bipartite_complementation(diag, joint, excl_n);
         bipartite_complementation(diag, joint, excl_f);
         bipartite_complementation(diag, excl_n, excl_f);
-        // In place of switching vertices f and n, we invert their connectivities
+        // In place of switching vertices f and n, we invert their
+        // connectivities
         excl_n.insert(excl_f.begin(), excl_f.end());
         bipartite_complementation(diag, {f}, excl_n);
         bipartite_complementation(diag, {n}, excl_n);
@@ -819,7 +825,8 @@ Circuit zx_to_circuit(const ZXDiagram& d) {
     ++q;
   }
   std::map<ZXVert, ZXVert> input_qubits;
-  for (const ZXVert& i : ins) input_qubits.insert({diag.neighbours(i).at(0), i});
+  for (const ZXVert& i : ins)
+    input_qubits.insert({diag.neighbours(i).at(0), i});
 
   clean_frontier(diag, frontier, circ, qubit_map);
   while (!frontier.empty()) {

@@ -801,6 +801,7 @@ def test_XY_YZ_extraction() -> None:
     circ_u = circ.get_unitary()
     assert compare_unitaries(diag_u, circ_u)
 
+
 if __name__ == "__main__":
     test_generator_creation()
     test_diagram_creation()

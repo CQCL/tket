@@ -63,7 +63,8 @@ void Flow::verify(const ZXDiagram& diag) const {
   }
   BGL_FORALL_VERTICES(u, *diag.graph, ZXGraph) {
     ZXType type = diag.get_zxtype(u);
-    if (is_boundary_type(type) || output_set.find(u) != output_set.end()) continue;
+    if (is_boundary_type(type) || output_set.find(u) != output_set.end())
+      continue;
     ZXVertSeqSet uc = c(u);
     ZXVertSeqSet uodd = odd(u, diag);
     for (const ZXVert& v : uc.get<TagSeq>()) {
@@ -143,8 +144,8 @@ void Flow::focus(const ZXDiagram& diag) {
       for (const ZXVert& v : uc.get<TagSeq>()) {
         if (v == u) continue;
         ZXType vtype = diag.get_zxtype(v);
-        if ((vtype != ZXType::XY &&
-             vtype != ZXType::PX && vtype != ZXType::PY) ||
+        if ((vtype != ZXType::XY && vtype != ZXType::PX &&
+             vtype != ZXType::PY) ||
             (vtype == ZXType::PY && uodd.find(v) == uodd.end())) {
           ZXVertSeqSet cv = c(v);
           for (const ZXVert& w : cv.get<TagSeq>()) {
@@ -196,8 +197,10 @@ Flow Flow::identify_causal_flow(const ZXDiagram& diag) {
   }
   BGL_FORALL_VERTICES(v, *diag.graph, ZXGraph) {
     ZXType vtype = diag.get_zxtype(v);
-    if (!is_boundary_type(vtype) && output_set.find(v) == output_set.end() && vtype != ZXType::XY)
-      throw ZXError("Causal flow is only defined when all measured vertices are XY");
+    if (!is_boundary_type(vtype) && output_set.find(v) == output_set.end() &&
+        vtype != ZXType::XY)
+      throw ZXError(
+          "Causal flow is only defined when all measured vertices are XY");
   }
 
   // solved contains all vertices for which we have found corrections
@@ -436,7 +439,8 @@ Flow Flow::identify_pauli_flow(const ZXDiagram& diag) {
           fl.c_.insert({n, {}});
           fl.d_.insert({n, 0});
         }
-        // n is either an Input or PX, in which case it will be added to the correctors in the PX case
+        // n is either an Input or PX, in which case it will be added to the
+        // correctors in the PX case
         break;
       }
       case ZXType::PX:

@@ -90,7 +90,7 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
             # Two boundaries are directly connected, so insert an id tensor for
             # this boundary
             id_ind = [bwi, next_index]
-            qt = qtn.Tensor(data = _id_tensor, inds = id_ind)
+            qt = qtn.Tensor(data=_id_tensor, inds=id_ind)
             tensor_list.append(qt)
             res_indices.append(next_index)
             next_index += 1
@@ -108,17 +108,17 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
             if diag.other_end(w, v) == v:
                 v_ind.append(indices[w])
         t = _spider_to_tensor(gen, len(v_ind))
-        qt = qtn.Tensor(data = t, inds = v_ind)
+        qt = qtn.Tensor(data=t, inds=v_ind)
         tensor_list.append(qt)
     net = qtn.TensorNetwork(tensor_list)
-    net.full_simplify_(seq='ADCR')
-    res_ten = net.contract(output_inds=res_indices, optimize='random-greedy')
+    net.full_simplify_(seq="ADCR")
+    res_ten = net.contract(output_inds=res_indices, optimize="random-greedy")
     result: np.ndarray
     if type(res_ten) == qtn.Tensor:
-      result = res_ten.data
+        result = res_ten.data
     else:
-      # Scalar
-      result = np.asarray(res_ten)
+        # Scalar
+        result = np.asarray(res_ten)
     return result * scalar
 
 

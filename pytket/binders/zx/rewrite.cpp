@@ -58,7 +58,8 @@ void init_rewrite(py::module &m) {
           "Replaces every Hadamard wire by an explicit Hbox node.")
       .def_static(
           "rebase_to_zx", &Rewrite::rebase_to_zx,
-          "Expands every generator into ZSpiders, XSpiders, and a combination of Basic and Hadamard edges.")
+          "Expands every generator into ZSpiders, XSpiders, and a combination "
+          "of Basic and Hadamard edges.")
       .def_static(
           "rebase_to_mbqc", &Rewrite::rebase_to_mbqc,
           "Expands every generator into MBQC vertices.")

@@ -404,8 +404,11 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "remove_wire",
           (void(ZXDiagram::*)(const Wire&)) & ZXDiagram::remove_wire,
           "Removes the given wire from the diagram.", py::arg("w"))
-      .def("to_circuit", &zx_to_circuit,
-          "Extracts a diagram in MBQC form as a Circuit following the routine by Backens et al. (\"There and back again: A circuit extraction tale\").")
+      .def(
+          "to_circuit", &zx_to_circuit,
+          "Extracts a diagram in MBQC form as a Circuit following the routine "
+          "by Backens et al. (\"There and back again: A circuit extraction "
+          "tale\").")
       .def(
           "to_doubled_diagram", &ZXDiagram::to_doubled_diagram,
           "Expands any quantum vertices into pairs of classical vertices "

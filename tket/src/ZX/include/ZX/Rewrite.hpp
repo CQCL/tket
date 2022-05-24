@@ -75,7 +75,8 @@ class Rewrite {
   static Rewrite basic_wires();
 
   /**
-   * Expands every generator into ZSpiders, XSpiders, and a combination of Basic and Hadamard edges.
+   * Expands every generator into ZSpiders, XSpiders, and a combination of Basic
+   * and Hadamard edges.
    */
   static Rewrite rebase_to_zx();
 

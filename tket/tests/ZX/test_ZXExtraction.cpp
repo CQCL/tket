@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #include <catch2/catch.hpp>
 
 #include "Converters/Converters.hpp"
@@ -24,7 +23,9 @@ namespace tket::zx::test_ZXExtraction {
 // Check for semantic preservation in python
 
 SCENARIO("Extracting a circuit with XY-gflow") {
-  // Based on taking multiple instances of Fig. 2, "Generalised flow and determinism in measurement-based quantum computation", Dan Browne et al. 2007
+  // Based on taking multiple instances of Fig. 2, "Generalised flow and
+  // determinism in measurement-based quantum computation", Dan Browne et al.
+  // 2007
   ZXDiagram diag(3, 3, 0, 0);
   ZXVertVec ins = diag.get_boundary(ZXType::Input);
   ZXVertVec outs = diag.get_boundary(ZXType::Output);
@@ -64,7 +65,8 @@ SCENARIO("Extracting a circuit with XY-gflow") {
 }
 
 SCENARIO("Extracting a circuit from XY/YZ diagram with gflow") {
-  // Diagram from Fig. 1(c), "Reducing the number of non-Clifford gates in quantum circuits", Aleks Kissinger & John Van de Wetering, 2020
+  // Diagram from Fig. 1(c), "Reducing the number of non-Clifford gates in
+  // quantum circuits", Aleks Kissinger & John Van de Wetering, 2020
   ZXDiagram diag(5, 5, 0, 0);
   ZXVertVec ins = diag.get_boundary(ZXType::Input);
   ZXVertVec outs = diag.get_boundary(ZXType::Output);

@@ -113,8 +113,7 @@ SCENARIO("Testing flow verification") {
 
   // Check all basis corrections are ok
   // Correct XY with I, X, Y
-  std::vector<ZXVertSeqSet> cs{
-      {}, {pc, o2}, {pc, o1, o2}};
+  std::vector<ZXVertSeqSet> cs{{}, {pc, o2}, {pc, o1, o2}};
   for (const ZXVertSeqSet& cc : cs) {
     c.at(pc) = cc;
     fl = {c, d};
@@ -329,8 +328,7 @@ SCENARIO("Test focussed set identificaiton") {
     for (const ZXVert& v : fset.get<TagSeq>()) {
       ZXType vtype = diag.get_zxtype(v);
       REQUIRE(
-          (vtype == ZXType::XY ||
-           vtype == ZXType::PX || vtype == ZXType::PY));
+          (vtype == ZXType::XY || vtype == ZXType::PX || vtype == ZXType::PY));
       for (const ZXVert& n : fset.get<TagSeq>()) {
         auto inserted = parities.insert({n, 1});
         if (!inserted.second) {
@@ -341,8 +339,10 @@ SCENARIO("Test focussed set identificaiton") {
     for (const std::pair<const ZXVert, unsigned>& p : parities) {
       if (p.second % 2 == 1) {
         ZXType vtype = diag.get_zxtype(p.first);
-        REQUIRE((vtype == ZXType::XZ ||
-            vtype == ZXType::YZ || vtype == ZXType::PY || vtype == ZXType::PZ || output_set.find(p.first) != output_set.end()));
+        REQUIRE(
+            (vtype == ZXType::XZ || vtype == ZXType::YZ ||
+             vtype == ZXType::PY || vtype == ZXType::PZ ||
+             output_set.find(p.first) != output_set.end()));
         REQUIRE(
             (vtype != ZXType::PY ||
              fset.get<TagKey>().find(p.first) != fset.get<TagKey>().end()));
