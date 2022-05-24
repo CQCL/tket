@@ -91,6 +91,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/test_PauliGraph.cpp
     ${TKET_TESTS_DIR}/test_Architectures.cpp
     ${TKET_TESTS_DIR}/test_ArchitectureAwareSynthesis.cpp
+    ${TKET_TESTS_DIR}/Placement/test_monomorphism_edge_break.cpp
     ${TKET_TESTS_DIR}/Placement/test_Placement.cpp
     ${TKET_TESTS_DIR}/Placement/test_NeighbourPlacements.cpp
     ${TKET_TESTS_DIR}/test_MappingVerification.cpp
