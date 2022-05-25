@@ -243,8 +243,26 @@ Circuit XXPhase_using_ZZPhase(Expr alpha);
 /** Equivalent to YYPhase, using ZZPhase and V/Vdg gates */
 Circuit YYPhase_using_ZZPhase(Expr alpha);
 
-/** Equivalent to TK2, using CX and single-qubit gates */
+/** Equivalents to TK2, using CX and single-qubit gates, using 1, 2 or 3 CX.
+ *
+ * Using 1 or 2 CX yields approximate decompositions in the general case (and
+ * only require a subset of the TK2 angles). The 3-CX decomposition is exact.
+ */
+Circuit approx_TK2_using_1xCX();
+Circuit approx_TK2_using_2xCX(Expr alpha, Expr beta);
 Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma);
+
+/** Equivalent to TK2, using ZZPhase and single-qubit gates, using 1,2 or 3 ZZ
+ *
+ * Using 1 or 2 ZZPhase yields approximate decompositions in the general case
+ * (and only require a subset of the TK2 angles). On hardware, we would expect
+ * the 2- and 3-ZZPhase decompositions to not be attractive, as the same
+ * approximation fidelity can be obtained with ZZMax gates, which would
+ * typically have the same or higher fidelity than ZZPhase.
+ */
+Circuit approx_TK2_using_1xZZPhase(Expr alpha);
+Circuit approx_TK2_using_2xZZPhase(Expr alpha, Expr beta);
+Circuit TK2_using_ZZPhase(Expr alpha, Expr beta, Expr gamma);
 
 /** Equivalent to XXPhase3, using three TK2 gates */
 Circuit XXPhase3_using_TK2(Expr alpha);

@@ -105,7 +105,11 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit &circ) {
           }
           break;
         }
-        default: {
+        case OpType::TK2: {
+          auto params = o->get_params(); TKET_ASSERT(params.size() == 3);
+          v_to_op[it->first] = get_matrix_from_2qb_circ(
+              CircPool::TK2_using_CX(params[0], params[1], params[2]));
+        } default: {
           if (o->get_desc().is_gate() && circ.n_in_edges(it->first) == 1 &&
               circ.n_out_edges(it->first) == 1) {
             const Op_ptr g = o;
@@ -135,8 +139,7 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit &circ) {
   return std::exp(i_ * PI * eval_expr(circ.get_phase()).value()) * m;
 }
 
-// TODO all cnots are in one direction: freedom to choose the optimal one
-Circuit two_qubit_canonical(const Eigen::Matrix4cd &U, double cx_fidelity) {
+Circuit two_qubit_canonical(const Eigen::Matrix4cd &U) {
   if (!is_unitary(U)) {
     throw std::invalid_argument(
         "Non-unitary matrix passed to two_qubit_canonical");
@@ -146,9 +149,7 @@ Circuit two_qubit_canonical(const Eigen::Matrix4cd &U, double cx_fidelity) {
 
   K1 /= pow(K1.determinant(), 0.25);
   K2 /= pow(K2.determinant(), 0.25);
-
-  // Decompose Exp term
-  auto gates = expgate_as_CX(A, cx_fidelity);
+  auto [a, b, c] = A;
 
   // Decompose single qubits
   auto [K1a, K1b] = kronecker_decomposition(K1);
@@ -156,36 +157,21 @@ Circuit two_qubit_canonical(const Eigen::Matrix4cd &U, double cx_fidelity) {
 
   Circuit result(2);
 
-  if (gates.empty()) {
-    std::vector<double> angles_q0 = tk1_angles_from_unitary(K1a * K2a);
-    result.add_op<unsigned>(
-        OpType::TK1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
-    std::vector<double> angles_q1 = tk1_angles_from_unitary(K1b * K2b);
-    result.add_op<unsigned>(
-        OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
-  }
-  for (auto it = gates.begin(); it != gates.end(); ++it) {
-    auto [ga, gb] = *it;
-    if (it == gates.begin()) {
-      // begin of circuit -> merge with K2
-      ga = ga * K2a;
-      gb = gb * K2b;
-    }
-    if (it + 1 == gates.end()) {
-      // end of circuit -> merge with K1
-      ga = K1a * ga;
-      gb = K1b * gb;
-    }
-    std::vector<double> angles_q0 = tk1_angles_from_unitary(ga);
-    result.add_op<unsigned>(
-        OpType::TK1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
-    std::vector<double> angles_q1 = tk1_angles_from_unitary(gb);
-    result.add_op<unsigned>(
-        OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
-    if (it + 1 != gates.end()) {
-      result.add_op<unsigned>(OpType::CX, {0, 1});
-    }
-  }
+  std::vector<double> angles_q0 = tk1_angles_from_unitary(K2a);
+  std::vector<double> angles_q1 = tk1_angles_from_unitary(K2b);
+  result.add_op<unsigned>(
+      OpType::TK1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
+  result.add_op<unsigned>(
+      OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
+
+  result.add_op<unsigned>(OpType::TK2, {a, b, c}, {0, 1});
+
+  angles_q0 = tk1_angles_from_unitary(K1a);
+  angles_q1 = tk1_angles_from_unitary(K1b);
+  result.add_op<unsigned>(
+      OpType::TK1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
+  result.add_op<unsigned>(
+      OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
 
   // this fixes phase if decomposition is exact
   Eigen::Matrix4cd reminder = get_matrix_from_2qb_circ(result).adjoint() * U;
@@ -212,10 +198,11 @@ static std::pair<Eigen::Matrix4cd, Complex> decompose_VD(
               u(0, 1) * u(3, 2);
   // Now we want to find z such that |z|=1 and (az* - bz) is real.
   // The numerical stability of this function is a concern when a is close to
-  // -b*. This problem can be demonstrated in artificially constructed examples
-  // (passing unitaries very close to, but not quite, the identity to the
-  // functions below). In these cases the product VD (or DV) may not approximate
-  // U to within Eigen's default tolerance. Is there a way to dodge this issue?
+  // -b*. This problem can be demonstrated in artificially constructed
+  // examples (passing unitaries very close to, but not quite, the identity to
+  // the functions below). In these cases the product VD (or DV) may not
+  // approximate U to within Eigen's default tolerance. Is there a way to
+  // dodge this issue?
   Complex w = a + std::conj(b);
   double d = std::abs(w);
   // If w = 0 then we can set z = 1.
@@ -230,10 +217,26 @@ static std::pair<Eigen::Matrix4cd, Complex> decompose_VD(
   return {V, z0};
 }
 
+void replace_TK2_2CX(Circuit &circ) {
+  VertexList bin;
+  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+    if (circ.get_OpType_from_Vertex(v) != OpType::TK2) continue;
+    auto params = circ.get_Op_ptr_from_Vertex(v)->get_params();
+    TKET_ASSERT(params.size() == 3);
+    TKET_ASSERT(equiv_0(params[2], 4));
+    Circuit sub = CircPool::approx_TK2_using_2xCX(params[0], params[1]);
+    bin.push_back(v);
+    circ.substitute(sub, v, Circuit::VertexDeletion::No);
+  }
+  TKET_ASSERT(bin.size() == 1);
+  circ.remove_vertices(
+      bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+}
+
 std::pair<Circuit, Complex> decompose_2cx_VD(const Eigen::Matrix4cd &U) {
   auto [V, z0] = decompose_VD(U);
   Circuit circ = two_qubit_canonical(V);
-  TKET_ASSERT(circ.count_gates(OpType::CX) <= 2);
+  replace_TK2_2CX(circ);
   return {circ, z0};
 }
 
@@ -241,7 +244,7 @@ std::pair<Circuit, Complex> decompose_2cx_DV(const Eigen::Matrix4cd &U) {
   auto [V, z0] = decompose_VD(U.adjoint());
   V.adjointInPlace();
   Circuit circ = two_qubit_canonical(V);
-  TKET_ASSERT(circ.count_gates(OpType::CX) <= 2);
+  replace_TK2_2CX(circ);
   return {circ, std::conj(z0)};
 }
 
@@ -676,8 +679,8 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
         // Operation is U3(theta, phi, lambda) + phase t.
         // First absorb t in the overall phase.
         a += t;
-        // Construct a multi-controlled U3, by extending the standard CU3-to-CX
-        // decomposition.
+        // Construct a multi-controlled U3, by extending the standard
+        // CU3-to-CX decomposition.
         Qubit target = new_args[n_controls];
         Circuit cnu1 = CnU1(n_controls - 1, 0.5 * (lambda + phi));
         c2.append(cnu1);

@@ -95,13 +95,6 @@ std::vector<std::pair<unsigned, unsigned>> gaussian_elimination_row_ops(
  */
 std::tuple<Eigen::Matrix4cd, std::array<double, 3>, Eigen::Matrix4cd>
 get_information_content(const Eigen::Matrix4cd &X);
-/**
- * given information content and cnot fidelity, returns
- * decomposition of information content as CNOT + local gates
- * minimising number of CNOTs
- */
-std::vector<std::tuple<Eigen::Matrix2cd, Eigen::Matrix2cd>> expgate_as_CX(
-    const std::array<double, 3> &k, double cx_fidelity = 1.);
 
 // given a 4x4 unitary matrix (ILO-BE), returns two 2x2 unitaries that
 // approximately make the input by kronecker product

@@ -223,7 +223,7 @@ SCENARIO("Testing two-qubit canonical forms") {
     PauliY << 0, -i_, i_, 0;
     PauliZ << 1, 0, 0, -1;
     const double a = -0.5 * PI, b = 0, c = 0;  // this is = CX decomposition
-    const std::tuple<double, double, double> A(a, b, c);
+    const std::array<double, 3> A{a, b, c};
     const Eigen::Matrix4cd arg = -0.5 * PI * i_ *
                                  (a * Eigen::kroneckerProduct(PauliX, PauliX) +
                                   b * Eigen::kroneckerProduct(PauliY, PauliY) +
@@ -256,7 +256,7 @@ SCENARIO("Testing two-qubit canonical forms") {
     PauliY << 0, -i_, i_, 0;
     PauliZ << 1, 0, 0, -1;
     const double a = 0.7, b = 0.5342, c = -0.3;  // some arbitrary constants
-    const std::tuple<double, double, double> A(a, b, c);
+    const std::array<double, 3> A{a, b, c};
     const Eigen::Matrix4cd arg = -0.5 * PI * i_ *
                                  (a * Eigen::kroneckerProduct(PauliX, PauliX) +
                                   b * Eigen::kroneckerProduct(PauliY, PauliY) +
@@ -287,7 +287,7 @@ SCENARIO("Testing two-qubit canonical forms") {
     PauliY << 0, -i_, i_, 0;
     PauliZ << 1, 0, 0, -1;
     const double a = -0.5, b = -0.5, c = 0;
-    const std::tuple<double, double, double> A(a, b, c);
+    const std::array<double, 3> A{a, b, c};
     const Eigen::Matrix4cd arg = -0.5 * PI * i_ *
                                  (a * Eigen::kroneckerProduct(PauliX, PauliX) +
                                   b * Eigen::kroneckerProduct(PauliY, PauliY) +

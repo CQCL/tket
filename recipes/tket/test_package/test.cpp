@@ -13,24 +13,47 @@
 // limitations under the License.
 
 #include <Circuit/Circuit.hpp>
-#include <Transformations/Decomposition.hpp>
 #include <Transformations/OptimisationPass.hpp>
 #include <Utils/Assert.hpp>
 #include <iostream>
-#include <optional>
 
 using namespace tket;
 
 int main() {
-  Circuit circ(2);
+  Circuit circ(4);
 
-  circ.add_op<unsigned>(OpType::TK2, {0.4, 0.1, 0.}, {0, 1});
-  // circ.add_op<unsigned>(OpType::XXPhase, 0.2, {0, 1});
-  // circ.add_op<unsigned>(OpType::YYPhase, 0.2, {0, 1});
+  circ.add_op<unsigned>(OpType::CZ, {0, 2});
+  circ.add_op<unsigned>(OpType::CZ, {3, 1});
+  circ.add_op<unsigned>(OpType::V, {2});
+  circ.add_op<unsigned>(OpType::V, {3});
+  circ.add_op<unsigned>(OpType::CZ, {0, 3});
+  circ.add_op<unsigned>(OpType::V, {3});
+  circ.add_op<unsigned>(OpType::CZ, {3, 1});
+  circ.add_op<unsigned>(OpType::CZ, {2, 1});
+  circ.add_op<unsigned>(OpType::V, {2});
+  circ.add_op<unsigned>(OpType::CZ, {0, 2});
+  circ.add_op<unsigned>(OpType::X, {2});
+  circ.add_op<unsigned>(OpType::V, {1});
+  circ.add_op<unsigned>(OpType::CZ, {3, 1});
+  circ.add_op<unsigned>(OpType::CZ, {2, 1});
+  circ.add_op<unsigned>(OpType::CZ, {3, 1});
+  circ.add_op<unsigned>(OpType::V, {2});
+  circ.add_op<unsigned>(OpType::V, {1});
+  circ.add_op<unsigned>(OpType::CZ, {2, 1});
+  circ.add_op<unsigned>(OpType::X, {2});
+  circ.add_op<unsigned>(OpType::CZ, {2, 1});
+  circ.add_op<unsigned>(OpType::V, {2});
+  circ.add_op<unsigned>(OpType::CZ, {2, 1});
+  circ.add_op<unsigned>(OpType::CZ, {0, 2});
+  circ.add_op<unsigned>(OpType::CZ, {2, 1});
 
-  // Transforms::decompose_ZZPhase().apply(circ);
-  Transforms::TwoQbFidelities fid{0.99, std::nullopt, std::nullopt};
-  Transforms::decompose_TK2(fid).apply(circ);
+  Transforms::clifford_simp().apply(circ);
 
-  std::cout << circ << std::endl;
+  unsigned n = circ.n_qubits();
+  TKET_ASSERT(n == 4);
+  Circuit newcirc;  // TKET-800
+  unsigned n_zero = newcirc.n_qubits();
+  TKET_ASSERT(n_zero == 0);
+
+  std::cout << "success" << std::endl;
 }

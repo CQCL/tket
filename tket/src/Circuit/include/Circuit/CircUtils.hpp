@@ -77,7 +77,7 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit& circ);
  *
  * @return circuit implementing U with minimal error
  */
-Circuit two_qubit_canonical(const Eigen::Matrix4cd& U, double cx_fidelity = 1.);
+Circuit two_qubit_canonical(const Eigen::Matrix4cd& U);
 
 /**
  * Decompose a unitary matrix into a 2-CX circuit following a diagonal operator.

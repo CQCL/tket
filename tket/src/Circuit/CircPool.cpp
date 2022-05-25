@@ -858,6 +858,29 @@ Circuit YYPhase_using_ZZPhase(Expr alpha) {
   return c;
 }
 
+Circuit approx_TK2_using_1xCX() {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::TK1, {0.5, 1.5, 3.5}, {0});
+  c.add_op<unsigned>(OpType::TK1, {0., .5, 0}, {1});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::TK1, {0., .5, 0}, {1});
+  c.add_phase(1.25);
+  return c;
+}
+
+Circuit approx_TK2_using_2xCX(Expr alpha, Expr beta) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::TK1, {0.5, .5, 0}, {0});
+  c.add_op<unsigned>(OpType::TK1, {0., 1.5, 0}, {1});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::TK1, {0., 1 + alpha, 3.5}, {0});
+  c.add_op<unsigned>(OpType::TK1, {0., 1.5, 2 - beta}, {1});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::TK1, {0., .5, 0}, {0});
+  c.add_phase(1.5);
+  return c;
+}
+
 Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::Z, {0});
@@ -873,6 +896,25 @@ Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma) {
   c.add_op<unsigned>(OpType::Z, {0});
   c.add_op<unsigned>(OpType::Rz, gamma, {1});
   c.add_op<unsigned>(OpType::CX, {0, 1});
+  return c;
+}
+
+Circuit approx_TK2_using_1xZZPhase(Expr alpha) {
+  return XXPhase_using_ZZPhase(alpha);
+}
+
+Circuit approx_TK2_using_2xZZPhase(Expr alpha, Expr beta) {
+  Circuit c(2);
+  c.append(XXPhase_using_ZZPhase(alpha));
+  c.append(YYPhase_using_ZZPhase(beta));
+  return c;
+}
+
+Circuit TK2_using_ZZPhase(Expr alpha, Expr beta, Expr gamma) {
+  Circuit c(2);
+  c.append(XXPhase_using_ZZPhase(alpha));
+  c.append(YYPhase_using_ZZPhase(beta));
+  c.add_op<unsigned>(OpType::ZZPhase, gamma, {0, 1});
   return c;
 }
 

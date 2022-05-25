@@ -294,7 +294,7 @@ Eigen::VectorXcd apply_qubit_permutation(
 
 // How close TK2(a,b,c) is from the identity
 double trace_fidelity(double a, double b, double c) {
-  constexpr double g = -PI / 2;
+  constexpr double g = PI / 2;
   a *= g;
   b *= g;
   c *= g;
@@ -326,123 +326,6 @@ double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx) {
   }
   // never happens
   return -1.;
-}
-
-std::vector<std::tuple<Eigen::Matrix2cd, Eigen::Matrix2cd>> expgate_as_CX(
-    const std::array<double, 3> &k, double cx_fidelity) {
-  using Mat2 = Eigen::Matrix2cd;
-
-  if (cx_fidelity < 0 || cx_fidelity - 1 > EPS) {
-    throw std::invalid_argument(
-        "Expected CX fidelity cx_fidelity must be between 0 and 1");
-  }
-
-  auto [k_a, k_b, k_c] = k;
-  constexpr double g = -PI / 2;
-  k_a *= g;
-  k_b *= g;
-  k_c *= g;
-  Mat2 PauliX, PauliY, PauliZ;
-  PauliX << 0, 1, 1, 0;
-  PauliY << 0, -i_, i_, 0;
-  PauliZ << 1, 0, 0, -1;
-
-  unsigned nb_cx = 0;
-  double best_fid = 0.;
-
-  for (int nb_cx_try = 0; nb_cx_try < 4; ++nb_cx_try) {
-    double circuit_fid = get_CX_fidelity(k, nb_cx_try);
-    double tentative_fid = circuit_fid * pow(cx_fidelity, nb_cx_try);
-    if (tentative_fid - best_fid > EPS) {
-      best_fid = tentative_fid;
-      nb_cx = nb_cx_try;
-    }
-  }
-
-  Mat2 cx_K1a, cx_K1b, cx_K2a, cx_K2b;
-  // cnot KAK decomposition
-  cx_K1a << 1. - i_, 1. - i_, -1. - i_, 1. + i_;
-  cx_K1a /= 2.;
-  cx_K1b << -i_, 1., -1., i_;
-  cx_K1b /= sqrt(2.);
-  cx_K2a << i_, i_, i_, -i_;
-  cx_K2a /= sqrt(2.);
-  cx_K2b << 0., -1., 1., 0.;
-
-  auto Rz = [](const double theta) {
-    Mat2 mat;
-    mat << exp(-i_ * theta / 2.), 0, 0, exp(i_ * theta / 2.);
-    return mat;
-  };
-  auto Rx = [](const double theta) {
-    Mat2 mat;
-    mat << cos(theta / 2.), -i_ * sin(theta / 2.), -i_ * sin(theta / 2.),
-        cos(theta / 2.);
-    return mat;
-  };
-
-  TKET_ASSERT(nb_cx < 4);
-  switch (nb_cx) {
-    case 0:
-      return {};
-    case 1: {
-      // obtained from considering the KAK decomposition of CNOT
-      const Complex phase_fix = 1. / sqrt(2.) * (1. + i_);
-      return {
-          {phase_fix * cx_K2a.adjoint(), cx_K2b.adjoint()},
-          {cx_K1a.adjoint(), cx_K1b.adjoint()}};
-    }
-    case 2: {
-      // this was adapted from the qiskit implementation
-      // by taking the KAK decomposition of the CNOT
-      // alternatively, the same result can be obtained with arXiv
-      // quant-ph/0307177
-      Mat2 a1, b1, a2, b2;
-      a1 << i_, i_, -1, 1.;    // K12l
-      b1 << i_, 1., -1., -i_;  // K12r
-      a2 << -i_ * exp(-i_ * k_b), exp(-i_ * k_b), -i_ * exp(i_ * k_b),
-          -exp(i_ * k_b);  // K11l
-      b2 << i_ * exp(-i_ * k_b), -exp(-i_ * k_b), exp(i_ * k_b),
-          -i_ * exp(i_ * k_b);  // K11r
-      a1 /= (1. + i_);
-      b1 /= sqrt(2.);
-      a2 /= (1. + i_);
-      b2 /= sqrt(2);
-      const Complex phase_fix = -i_;
-      // clang-format off
-            return {{phase_fix * cx_K2a.adjoint() * a1, cx_K2b.adjoint() * b1},
-                    {cx_K2a.adjoint() * a2.adjoint() *
-                            Rz(-2 * k_a) * a2 * cx_K1a.adjoint(),
-                    cx_K2b.adjoint() * i_ * PauliZ * b2.adjoint() *
-                            Rz(2 * k_b) * b2 * cx_K1b.adjoint()},
-                    {a1.adjoint() * cx_K1a.adjoint(),
-                            b1.adjoint() * i_ * PauliZ * cx_K1b.adjoint()}};
-      // clang-format on
-    }
-    case 3: {
-      // this is taken from arXiv quant-ph/0307177
-      // note that a slight adjustment to u2 was necessary (not sure why)
-      // Also our notation: exp(i H) vs their exp(-i H),
-      // hence the additional PauliZ multiplications for u2 and Pzw = PauliZ * w
-      Mat2 u2, v2, u3, v3, Pzw, w_inv;
-      u2 << 1, 1, i_, -i_;
-      u2 *= 1. / sqrt(2.) * Rx(2 * k_a - PI);
-      v2 = Rz(-2 * k_c);
-      u3 = -i_ / sqrt(2.) * (PauliX + PauliZ);
-      v3 = Rz(-2. * k_b);
-      Pzw << 1, -i_, i_, -1;
-      Pzw /= sqrt(2.);
-      w_inv << 1, i_, i_, 1;
-      w_inv /= sqrt(2.);
-      return {
-          {Mat2::Identity(), Mat2::Identity()},
-          {u2 * PauliZ, v2},
-          {u3, v3},
-          {Pzw, w_inv}};
-    }
-  }
-  // never happens
-  return {};
 }
 
 inline double mod(double d, double max) { return d - max * floor(d / max); }
@@ -571,15 +454,15 @@ get_information_content(const Eigen::Matrix4cd &X) {
       Eigen::kroneckerProduct(Eigen::Matrix2cd::Identity(), PauliX);
   if (k(0) > 1.) {
     k(0) -= 3.;
-    K1 *= -i_ * s_xx;
+    K1 *= i_ * s_xx;
   }
   if (k(1) > 1.) {
     k(1) -= 3.;
-    K1 *= -i_ * s_yy;
+    K1 *= i_ * s_yy;
   }
   if (k(2) > 1.) {
     k(2) -= 3.;
-    K1 *= -i_ * s_zz;
+    K1 *= i_ * s_zz;
   }
   if (k(0) > .5) {
     k(0) = 1. - k(0);
@@ -595,7 +478,7 @@ get_information_content(const Eigen::Matrix4cd &X) {
   }
   if (k(2) > .5) {
     k(2) -= 1.;
-    K1 *= i_ * s_zz;
+    K1 *= -i_ * s_zz;
   }
 
   // fix phase

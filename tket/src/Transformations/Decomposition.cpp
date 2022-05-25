@@ -632,32 +632,61 @@ Transform decompose_TK2(const TwoQbFidelities &fid) {
       }
 
       // Build circuit for substitution.
-      const std::vector<OpType> optypes{
-          OpType::XXPhase, OpType::YYPhase, OpType::ZZPhase};
       Circuit sub(2);
-      for (unsigned i = 0; i < n_gates; ++i) {
-        Expr e = angles[i];
-        if (fixed_angle.contains(best_optype) && n_gates == 1) {
-          e = .5;
+      switch (best_optype) {
+        case OpType::ZZMax:
+        case OpType::CX: {
+          switch (n_gates) {
+            case 0:
+              break;
+            case 1: {
+              sub.append(CircPool::approx_TK2_using_1xCX());
+              break;
+            }
+            case 2: {
+              sub.append(CircPool::approx_TK2_using_2xCX(angles[0], angles[1]));
+              break;
+            }
+            case 3: {
+              sub.append(
+                  CircPool::TK2_using_CX(angles[0], angles[1], angles[2]));
+              break;
+            }
+            default:
+              throw NotValid("Number of CX invalid in decompose_TK2");
+          }
+          if (best_optype == OpType::ZZMax) {
+            decompose_CX_to_HQS2().apply(sub);
+          }
+          break;
         }
-        sub.add_op<unsigned>(optypes[i], e, {0, 1});
+        case OpType::ZZPhase: {
+          switch (n_gates) {
+            case 0:
+              break;
+            case 1: {
+              sub.append(CircPool::approx_TK2_using_1xZZPhase(angles[0]));
+              break;
+            }
+            case 2: {
+              sub.append(
+                  CircPool::approx_TK2_using_2xZZPhase(angles[0], angles[1]));
+              break;
+            }
+            case 3: {
+              sub.append(
+                  CircPool::TK2_using_ZZPhase(angles[0], angles[1], angles[2]));
+              break;
+            }
+            default:
+              throw NotValid("Number of ZZPhase invalid in decompose_TK2");
+          }
+          break;
+        }
+        default:
+          throw NotValid("Unrecognised target OpType in decompose_TK2");
       }
 
-      if (fixed_angle.contains(best_optype)) {
-        // Call to CliffordSimp to reduce CX - V(0)/Vdg(0) - CX to single CX.
-        // This is a pretty simple pattern. If using CliffordSimp is too slow,
-        // A dedicated pass that matches this pattern could be implemented.
-        (decompose_multi_qubits_CX() >> decompose_ZX() >> reduce_XZ_chains() >>
-         clifford_simp(false))
-            .apply(sub);
-        if (best_optype == OpType::ZZMax) {
-          // Rebase to ZZMax.
-          decompose_CX_to_HQS2().apply(sub);
-        }
-      } else if (best_optype == OpType::ZZPhase) {
-        // Rebase to ZZPhase.
-        decompose_ZZPhase().apply(sub);
-      }
       bin.push_back(v);
       circ.substitute(sub, v, Circuit::VertexDeletion::No);
     }
