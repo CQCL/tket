@@ -883,19 +883,16 @@ Circuit approx_TK2_using_2xCX(Expr alpha, Expr beta) {
 
 Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma) {
   Circuit c(2);
-  c.add_op<unsigned>(OpType::Z, {0});
-  c.add_op<unsigned>(OpType::Vdg, {0});
-  c.add_op<unsigned>(OpType::V, {1});
+  c.add_op<unsigned>(OpType::TK1, {0.5, 1.5, 1}, {0});
+  c.add_op<unsigned>(OpType::TK1, {0, 0.5, 0}, {1});
   c.add_op<unsigned>(OpType::CX, {0, 1});
-  c.add_op<unsigned>(OpType::H, {0});
-  c.add_op<unsigned>(OpType::Rz, beta, {1});
+  c.add_op<unsigned>(OpType::TK1, {3.5 + alpha, 3.5, 0.}, {0});
+  c.add_op<unsigned>(OpType::TK1, {0.5, 1, 0.5 + beta}, {1});
   c.add_op<unsigned>(OpType::CX, {0, 1});
-  c.add_op<unsigned>(OpType::S, {0});
-  c.add_op<unsigned>(OpType::H, {0});
-  c.add_op<unsigned>(OpType::Rx, -alpha, {0});
-  c.add_op<unsigned>(OpType::Z, {0});
-  c.add_op<unsigned>(OpType::Rz, gamma, {1});
+  c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 0.}, {0});
+  c.add_op<unsigned>(OpType::TK1, {0, 0, gamma}, {1});
   c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_phase(0.75);
   return c;
 }
 

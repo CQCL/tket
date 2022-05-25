@@ -141,7 +141,7 @@ PassPtr KAKDecomposition(double cx_fidelity = 1.);
  * @return PassPtr
  */
 PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid);
-PassPtr DecomposeTK2() { return DecomposeTK2({}); }
+PassPtr DecomposeTK2();
 
 /**
  * Resynthesize and squash three-qubit interactions.

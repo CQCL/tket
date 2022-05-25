@@ -548,6 +548,7 @@ PassPtr KAKDecomposition(double cx_fidelity) {
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
+PassPtr DecomposeTK2() { return DecomposeTK2({}); }
 PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid) {
   Transform t = Transforms::decompose_TK2(fid);
   const PredicatePtrMap no_precons;
@@ -558,7 +559,7 @@ PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid) {
   nlohmann::json fid_json;
   fid_json["CX"] = fid.CX_fidelity;
   fid_json["ZZPhase"] = "SERIALIZATION OF FUNCTIONS IS NOT YET SUPPORTED";
-  fid_json["ZZMax"] = fid.ZZMax;
+  fid_json["ZZMax"] = fid.ZZMax_fidelity;
   j["fidelities"] = fid_json;
   return std::make_shared<StandardPass>(no_precons, t, postcons, j);
 }
