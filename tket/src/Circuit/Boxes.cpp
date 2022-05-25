@@ -19,10 +19,14 @@
 
 #include "CircUtils.hpp"
 #include "Circuit/AssertionSynthesis.hpp"
+#include "Command.hpp"
 #include "Gate/Rotation.hpp"
 #include "Ops/OpJsonFactory.hpp"
+#include "Ops/OpPtr.hpp"
 #include "ThreeQubitConversion.hpp"
+#include "Utils/Assert.hpp"
 #include "Utils/EigenConfig.hpp"
+#include "Utils/Expression.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/PauliStrings.hpp"
 
@@ -76,6 +80,13 @@ CircBox::CircBox() : Box(OpType::CircBox) {
   circ_ = std::make_shared<Circuit>();
 }
 
+bool CircBox::is_clifford() const {
+  BGL_FORALL_VERTICES(v, circ_->dag, DAG) {
+    if (!circ_->get_Op_ptr_from_Vertex(v)->is_clifford()) return false;
+  }
+  return true;
+}
+
 Op_ptr CircBox::symbol_substitution(
     const SymEngine::map_basic_basic &sub_map) const {
   Circuit new_circ(*to_circuit());
@@ -111,6 +122,12 @@ Op_ptr Unitary1qBox::dagger() const {
 
 Op_ptr Unitary1qBox::transpose() const {
   return std::make_shared<Unitary1qBox>(m_.transpose());
+}
+
+bool Unitary1qBox::is_clifford() const {
+  std::vector<Command> cmds = to_circuit()->get_commands();
+  TKET_ASSERT(cmds.size() == 1);
+  return cmds[0].get_op_ptr()->is_clifford();
 }
 
 void Unitary1qBox::generate_circuit() const {
@@ -201,6 +218,10 @@ PauliExpBox::PauliExpBox(const PauliExpBox &other)
     : Box(other), paulis_(other.paulis_), t_(other.t_) {}
 
 PauliExpBox::PauliExpBox() : PauliExpBox({}, 0.) {}
+
+bool PauliExpBox::is_clifford() const {
+  return equiv_0(4 * t_) || paulis_.empty();
+}
 
 SymSet PauliExpBox::free_symbols() const { return expr_free_symbols(t_); }
 
@@ -301,6 +322,14 @@ std::string CustomGate::get_name(bool) const {
     s << ")";
   }
   return s.str();
+}
+
+bool CustomGate::is_clifford() const {
+  std::shared_ptr<Circuit> circ = to_circuit();
+  BGL_FORALL_VERTICES(v, circ->dag, DAG) {
+    if (!circ->get_Op_ptr_from_Vertex(v)->is_clifford()) return false;
+  }
+  return true;
 }
 
 QControlBox::QControlBox(const Op_ptr &op, unsigned n_controls)

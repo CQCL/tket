@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from math import pow
+from math import pow, isclose
 import numpy as np
 import pytest  # type: ignore
-from pytket import Qubit
+from pytket import Qubit, Circuit, OpType
 from pytket.pauli import Pauli, QubitPauliString  # type: ignore
 from pytket.zx import (  # type: ignore
     ZXDiagram,
@@ -29,6 +29,7 @@ from pytket.zx import (  # type: ignore
     unitary_from_classical_diagram,
     density_matrix_from_cptp_diagram,
     Rewrite,
+    circuit_to_zx,
     PhasedGen,
     CliffordGen,
     DirectedGen,
@@ -635,6 +636,26 @@ def test_simplification() -> None:
     assert np.allclose(original, final)
 
 
+def test_converting_from_circuit() -> None:
+    c = Circuit(4)
+    c.CZ(0, 1)
+    c.CX(1, 2)
+    c.H(1)
+    c.X(0)
+    c.Rx(0.7, 0)
+    c.Rz(0.2, 1)
+    c.X(3)
+    c.H(2)
+    diag, _ = circuit_to_zx(c)
+    # Check the unitaries are equal up to a global phase
+    u = c.get_unitary()
+    v = unitary_from_quantum_diagram(diag)
+    m = np.dot(u, v.conj().T)
+    phase = m[0][0]
+    assert isclose(abs(phase), 1)
+    assert np.allclose(m * (1 / phase), np.eye(16))
+
+
 def test_constructors() -> None:
     phased_gen = PhasedGen(ZXType.ZSpider, 0.5, QuantumType.Quantum)
     assert phased_gen.param == 0.5
@@ -655,3 +676,4 @@ if __name__ == "__main__":
     test_graph_like_reduction()
     test_spider_fusion()
     test_simplification()
+    test_converting_from_circuit()

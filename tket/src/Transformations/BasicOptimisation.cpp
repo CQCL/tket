@@ -39,7 +39,6 @@ static bool remove_redundancy(
     Circuit &circ, const Vertex &vert, VertexList &bin,
     std::set<IVertex> &new_affected_verts, IndexMap &im);
 static bool commute_singles_to_front(Circuit &circ);
-static bool replace_non_global_phasedx(Circuit &circ);
 
 Transform remove_redundancies() { return Transform(redundancy_removal); }
 
@@ -193,8 +192,6 @@ Transform commute_through_multis() {
   return Transform(commute_singles_to_front);
 }
 
-Transform globalise_phasedx() { return Transform(replace_non_global_phasedx); }
-
 // moves single qubit operations past multiqubit operations they commute with,
 // towards front of circuit (hardcoded)
 static bool commute_singles_to_front(Circuit &circ) {
@@ -241,73 +238,6 @@ static bool commute_singles_to_front(Circuit &circ) {
     }
   }
 
-  return success;
-}
-
-// Any PhasedX or NPhasedX gate is replaced by an NPhasedX that is global
-static bool replace_non_global_phasedx(Circuit &circ) {
-  bool success = false;
-  std::vector<unsigned> range_qbs(circ.n_qubits());
-  std::iota(range_qbs.begin(), range_qbs.end(), 0);
-  std::vector<Edge> frontier;
-  frontier.reserve(range_qbs.size());
-  for (const Qubit &q : circ.all_qubits()) {
-    Vertex v_in = circ.get_in(q);
-    EdgeVec all_out_e = circ.get_all_out_edges(v_in);
-    TKET_ASSERT(all_out_e.size() == 1);
-    frontier.push_back(all_out_e[0]);
-  }
-
-  for (Vertex v : circ.vertices_in_order()) {
-    Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-    OpType optype = op->get_type();
-
-    Subcircuit hole;
-    hole.verts = {v};
-    hole.q_in_hole = frontier;
-    // move frontier forward
-    if (!is_final_q_type(optype)) {
-      for (Edge e : circ.get_in_edges_of_type(v, EdgeType::Quantum)) {
-        auto it = std::find(frontier.begin(), frontier.end(), e);
-        TKET_ASSERT(it != frontier.end());
-        *it = circ.get_next_edge(v, e);
-      }
-    }
-    hole.q_out_hole = frontier;
-
-    if (optype == OpType::PhasedX || optype == OpType::NPhasedX) {
-      if (op->n_qubits() < range_qbs.size()) {
-        // global substitution for v
-        const std::vector<Expr> params = op->get_params();
-        TKET_ASSERT(params.size() == 2);
-        Expr a = params[0], b = params[1];
-        Circuit sub(range_qbs.size());
-        sub.add_op<unsigned>(OpType::NPhasedX, {-0.5, b + 0.5}, range_qbs);
-        for (unsigned i = 0; i < range_qbs.size(); ++i) {
-          if (circ.source(frontier[i]) == v) {
-            sub.add_op<unsigned>(OpType::Rz, {a}, {i});
-          }
-        }
-        sub.add_op<unsigned>(OpType::NPhasedX, {0.5, b + 0.5}, range_qbs);
-
-        // backup frontier
-        std::vector<Vertex> frontier_v;
-        std::vector<port_t> frontier_p;
-        for (const Edge &e : frontier) {
-          frontier_v.push_back(circ.target(e));
-          frontier_p.push_back(circ.get_target_port(e));
-        }
-        // perform substitution
-        circ.substitute(sub, hole, Circuit::VertexDeletion::Yes);
-        // restore frontier
-        for (unsigned i = 0; i < frontier.size(); ++i) {
-          frontier[i] = circ.get_nth_in_edge(frontier_v[i], frontier_p[i]);
-        }
-
-        success = true;
-      }
-    }
-  }
   return success;
 }
 

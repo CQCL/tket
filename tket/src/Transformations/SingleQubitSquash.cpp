@@ -18,15 +18,39 @@
 
 namespace tket {
 
-bool SingleQubitSquash::squash(Circuit &circ) {
-  bool success = false;
-  circ_ptr_ = &circ;
+SingleQubitSquash::SingleQubitSquash(const SingleQubitSquash &other)
+    : squasher_(other.squasher_->clone()),
+      circ_(other.circ_),
+      reversed_(other.reversed_) {}
 
-  VertexVec inputs = circ.q_inputs();
-  VertexVec outputs = circ.q_outputs();
-  for (unsigned i = 0; i < circ.n_qubits(); ++i) {
-    Edge in = circ.get_nth_out_edge(inputs[i], 0);
-    Edge out = circ.get_nth_in_edge(outputs[i], 0);
+SingleQubitSquash &SingleQubitSquash::operator=(
+    const SingleQubitSquash &other) {
+  squasher_ = other.squasher_->clone();
+  circ_ = other.circ_;
+  reversed_ = other.reversed_;
+  return *this;
+}
+
+SingleQubitSquash::SingleQubitSquash(SingleQubitSquash &&other)
+    : squasher_(std::move(other.squasher_)),
+      circ_(other.circ_),
+      reversed_(other.reversed_) {}
+
+SingleQubitSquash &SingleQubitSquash::operator=(SingleQubitSquash &&other) {
+  squasher_ = std::move(other.squasher_);
+  circ_ = other.circ_;
+  reversed_ = other.reversed_;
+  return *this;
+}
+
+bool SingleQubitSquash::squash() {
+  bool success = false;
+
+  VertexVec inputs = circ_.q_inputs();
+  VertexVec outputs = circ_.q_outputs();
+  for (unsigned i = 0; i < circ_.n_qubits(); ++i) {
+    Edge in = circ_.get_nth_out_edge(inputs[i], 0);
+    Edge out = circ_.get_nth_in_edge(outputs[i], 0);
     if (reversed_) {
       success |= squash_between(out, in);
     } else {
@@ -34,7 +58,6 @@ bool SingleQubitSquash::squash(Circuit &circ) {
     }
   }
 
-  circ_ptr_ = nullptr;
   return success;
 }
 
@@ -47,7 +70,7 @@ bool SingleQubitSquash::squash_between(const Edge &in, const Edge &out) {
   bool success = false;
   Condition condition = std::nullopt;
   while (true) {
-    Op_ptr v_op = circ_ptr_->get_Op_ptr_from_Vertex(v);
+    Op_ptr v_op = circ_.get_Op_ptr_from_Vertex(v);
     OpType v_type = v_op->get_type();
     bool move_to_next_vertex = false;
     bool reset_search = false;
@@ -64,7 +87,11 @@ bool SingleQubitSquash::squash_between(const Edge &in, const Edge &out) {
       }
     }
 
-    if (e != out && condition == this_condition && is_squashable(v, v_type)) {
+    bool is_squashable = circ_.n_in_edges_of_type(v, EdgeType::Quantum) == 1 &&
+                         is_gate_type(v_type) &&
+                         squasher_->accepts(as_gate_ptr(v_op));
+
+    if (e != out && condition == this_condition && is_squashable) {
       // => add gate to current squash
       squasher_->append(as_gate_ptr(reversed_ ? v_op->dagger() : v_op));
       move_to_next_vertex = true;
@@ -130,13 +157,12 @@ void SingleQubitSquash::substitute(
   VertPort backup = {next_vertex(e), next_port(e)};
 
   if (condition) {
-    circ_ptr_->substitute_conditional(
+    circ_.substitute_conditional(
         sub, single_chain.front(), Circuit::VertexDeletion::No);
   } else {
-    circ_ptr_->substitute(
-        sub, single_chain.front(), Circuit::VertexDeletion::No);
+    circ_.substitute(sub, single_chain.front(), Circuit::VertexDeletion::No);
   }
-  circ_ptr_->remove_vertices(
+  circ_.remove_vertices(
       VertexSet{single_chain.begin(), single_chain.end()},
       Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);
 
@@ -155,21 +181,16 @@ void SingleQubitSquash::insert_left_over_gate(
     left_over = std::make_shared<Conditional>(
         left_over, (unsigned)condition->first.size(), condition->second);
   }
-  Vertex new_v = circ_ptr_->add_vertex(left_over);
+  Vertex new_v = circ_.add_vertex(left_over);
   if (condition) {
     for (const VertPort &vp : condition->first) {
-      preds.push_back(circ_ptr_->get_nth_out_edge(vp.first, vp.second));
+      preds.push_back(circ_.get_nth_out_edge(vp.first, vp.second));
       sigs.push_back(EdgeType::Boolean);
     }
   }
   preds.push_back(e);
   sigs.push_back(EdgeType::Quantum);
-  circ_ptr_->rewire(new_v, preds, sigs);
-}
-
-bool SingleQubitSquash::is_squashable(Vertex v, OpType v_type) const {
-  return circ_ptr_->n_in_edges_of_type(v, EdgeType::Quantum) == 1 &&
-         is_gate_type(v_type) && squasher_->accepts(v_type);
+  circ_.rewire(new_v, preds, sigs);
 }
 
 bool SingleQubitSquash::sub_is_better(
@@ -181,17 +202,17 @@ bool SingleQubitSquash::sub_is_better(
 
 // returns a description of the condition of current vertex
 SingleQubitSquash::Condition SingleQubitSquash::get_condition(Vertex v) const {
-  Op_ptr v_op = circ_ptr_->get_Op_ptr_from_Vertex(v);
+  Op_ptr v_op = circ_.get_Op_ptr_from_Vertex(v);
   OpType v_type = v_op->get_type();
   if (v_type != OpType::Conditional) {
     throw NotValid("Cannot get condition from non-conditional OpType");
   }
   const Conditional &cond_op = static_cast<const Conditional &>(*v_op);
-  EdgeVec ins = circ_ptr_->get_in_edges(v);
+  EdgeVec ins = circ_.get_in_edges(v);
   Condition cond = std::pair<std::list<VertPort>, unsigned>();
   for (port_t p = 0; p < cond_op.get_width(); ++p) {
     Edge in_p = ins.at(p);
-    VertPort vp = {circ_ptr_->source(in_p), circ_ptr_->get_source_port(in_p)};
+    VertPort vp = {circ_.source(in_p), circ_.get_source_port(in_p)};
     cond->first.push_back(vp);
   }
   cond->second = cond_op.get_value();
@@ -200,22 +221,20 @@ SingleQubitSquash::Condition SingleQubitSquash::get_condition(Vertex v) const {
 
 // simple utils respecting reversed boolean
 Vertex SingleQubitSquash::next_vertex(const Edge &e) const {
-  return reversed_ ? circ_ptr_->source(e) : circ_ptr_->target(e);
+  return reversed_ ? circ_.source(e) : circ_.target(e);
 }
 
 port_t SingleQubitSquash::next_port(const Edge &e) const {
-  return reversed_ ? circ_ptr_->get_source_port(e)
-                   : circ_ptr_->get_target_port(e);
+  return reversed_ ? circ_.get_source_port(e) : circ_.get_target_port(e);
 }
 
 Edge SingleQubitSquash::prev_edge(const VertPort &pair) const {
-  return reversed_ ? circ_ptr_->get_nth_out_edge(pair.first, pair.second)
-                   : circ_ptr_->get_nth_in_edge(pair.first, pair.second);
+  return reversed_ ? circ_.get_nth_out_edge(pair.first, pair.second)
+                   : circ_.get_nth_in_edge(pair.first, pair.second);
 }
 
 Edge SingleQubitSquash::next_edge(const Vertex &v, const Edge &e) const {
-  return reversed_ ? circ_ptr_->get_last_edge(v, e)
-                   : circ_ptr_->get_next_edge(v, e);
+  return reversed_ ? circ_.get_last_edge(v, e) : circ_.get_next_edge(v, e);
 }
 
 bool SingleQubitSquash::is_last_optype(OpType type) const {

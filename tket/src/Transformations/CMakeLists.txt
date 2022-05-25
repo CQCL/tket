@@ -34,6 +34,7 @@ add_library(tket-${COMP}
     ContextualReduction.cpp
     ThreeQubitSquash.cpp
     SingleQubitSquash.cpp
+    PhasedXFrontier.cpp
     PQPSquash.cpp
     StandardSquash.cpp)
 
@@ -48,6 +49,7 @@ list(APPEND DEPS_${COMP}
     Ops
     OpType
     PauliGraph
+    ZX
     Utils)
 
 foreach(DEP ${DEPS_${COMP}})

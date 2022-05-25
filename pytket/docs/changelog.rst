@@ -9,6 +9,22 @@ Minor new features:
 * New pass and transform `DecomposeTK2` to decompose TK2 gates using the
   approximate KAK decomposition.
 
+1.2.2 (May 2022)
+----------------
+
+Minor new features:
+
+* The ``GlobalisePhasedX`` transform and homonymous pass take a new optional
+  ``squash`` parameter. ``squash=true`` (default) implements a new algorithm
+  that significantly reduces the number of ``NPhasedX`` gates synthesised.
+* New ``DecomposeNPhasedX`` transform and pass replaces all ``NPhasedX`` gates
+  with single-qubit ``PhasedX`` gates.
+* Extend range of Clifford operations recognized by
+  ``CliffordCircuitPredicate``.
+* New ``circuit_from_qasm_wasm`` function to parse QASM files containing
+  external WASM calls.
+* Faster QASM parsing, capable of parsing extended grammar.
+
 1.2.1 (May 2022)
 ----------------
 

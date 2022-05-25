@@ -257,6 +257,10 @@ pybind11_add_module(zx
     binders/zx/rewrite.cpp)
 target_include_directories(zx PRIVATE binders/include)
 target_link_libraries(zx PRIVATE
+    tket-Circuit
+    tket-Converters
+    tket-Ops
+    tket-OpType
     tket-Utils
     tket-ZX)
 target_link_libraries(zx PRIVATE ${TKET_EXTRA_LIBS})

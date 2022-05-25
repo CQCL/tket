@@ -148,23 +148,6 @@ const PassPtr &CommuteThroughMultis() {
   return pp;
 }
 
-const PassPtr &GlobalisePhasedX() {
-  static const PassPtr pp([]() {
-    Transform t = Transforms::globalise_phasedx();
-    PredicatePtrMap precons;
-    PredicatePtr globalphasedx = std::make_shared<GlobalPhasedXPredicate>();
-    PredicatePtrMap spec_postcons = {
-        CompilationUnit::make_type_pair(globalphasedx)};
-    PredicateClassGuarantees g_postcons;
-    PostConditions postcon{spec_postcons, {}, Guarantee::Preserve};
-    // record pass config
-    nlohmann::json j;
-    j["name"] = "GlobalisePhasedX";
-    return std::make_shared<StandardPass>(precons, t, postcon, j);
-  }());
-  return pp;
-}
-
 const PassPtr &DecomposeArbitrarilyControlledGates() {
   static const PassPtr pp([]() {
     Transform t = Transforms::decomp_arbitrary_controlled_gates();

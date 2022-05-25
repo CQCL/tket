@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "Circuit/Circuit.hpp"
+#include "Converters/Converters.hpp"
 #include "Utils/GraphHeaders.hpp"
 #include "ZX/ZXDiagram.hpp"
 #include "typecast.hpp"
@@ -45,6 +47,25 @@ class ZXVertWrapper {
   }
   operator const ZXVert&() const { return v_; }
 };
+
+std::pair<ZXDiagram, std::map<UnitID, ZXVertWrapper>> wrapped_circuit_to_zx(
+    const Circuit& circ) {
+  ZXDiagram zxd;
+  boost::bimap<ZXVert, Vertex> bmap;
+  std::tie(zxd, bmap) = circuit_to_zx(circ);
+  std::map<UnitID, ZXVertWrapper> ret_map;
+  for (auto it = bmap.left.begin(); it != bmap.left.end(); it++) {
+    OpType io_type = circ.get_OpType_from_Vertex(it->second);
+    if (io_type == OpType::Input || io_type == OpType::ClInput) {
+      ret_map.insert(
+          {circ.get_id_from_in(it->second), ZXVertWrapper(it->first)});
+    } else {
+      ret_map.insert(
+          {circ.get_id_from_out(it->second), ZXVertWrapper(it->first)});
+    }
+  }
+  return {std::move(zxd), std::move(ret_map)};
+}
 
 class ZXDiagramPybind {
  public:
@@ -132,7 +153,8 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "n_wires", &ZXDiagram::n_wires,
           "Counts the number of edges in the diagram.")
       .def(
-          "count_vertices", &ZXDiagram::count_vertices,
+          "count_vertices",
+          (unsigned(ZXDiagram::*)(ZXType) const) & ZXDiagram::count_vertices,
           "Counts the number of vertices of a given :py:class:`ZXType` in the "
           "diagram.",
           py::arg("type"))
@@ -392,7 +414,11 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "  + quantum boundaries are mapped to a pair with original and "
           "conjugated phases\n"
           "  + unconjugated copies are listed first\n",
-          "  + classical boundaries only have the unconjugated version");
+          "  + classical boundaries only have the unconjugated version")
+      .def(
+          "to_graphviz_str",
+          [](ZXDiagram& diag) { return diag.to_graphviz_str(); },
+          "Returns a graphviz source string");
 }
 
 PYBIND11_MODULE(zx, m) {
@@ -589,6 +615,10 @@ PYBIND11_MODULE(zx, m) {
           "diagram", &ZXBox::get_diagram,
           "The internal diagram represented by the box.");
   init_rewrite(m);
+  m.def(
+      "circuit_to_zx", &wrapped_circuit_to_zx,
+      "Construct a ZX diagram from a circuit. Return the ZX diagram and a map "
+      "Between the ZX boundary vertices and the resource UIDs of the circuit.");
 }
 
 }  // namespace zx

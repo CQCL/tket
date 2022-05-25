@@ -32,6 +32,8 @@ class MetaOp : public Op {
 
   op_signature_t get_signature() const override;
 
+  bool is_clifford() const override;
+
   ~MetaOp() override;
 
   /**

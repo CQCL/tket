@@ -753,7 +753,7 @@ SCENARIO("Test MappingFrontier::add_swap") {
       {qubits[3], nodes[3]}};
   circ.rename_units(rename_map);
   MappingFrontier mf(circ);
-  mf.add_swap(nodes[0], nodes[1]);
+  REQUIRE(mf.add_swap(nodes[0], nodes[1]));
 
   std::vector<Command> commands = mf.circuit_.get_commands();
   REQUIRE(commands.size() == 4);
@@ -778,7 +778,7 @@ SCENARIO("Test MappingFrontier::add_swap") {
   REQUIRE(*cx_c.get_op_ptr() == *get_op_ptr(OpType::CZ));
 
   Node new_node("new_node", 8);
-  mf.add_swap(nodes[0], new_node);
+  REQUIRE(mf.add_swap(nodes[0], new_node));
 
   commands = mf.circuit_.get_commands();
   REQUIRE(commands.size() == 5);
@@ -807,6 +807,9 @@ SCENARIO("Test MappingFrontier::add_swap") {
   uids = {new_node, nodes[3]};
   REQUIRE(cx_c.get_args() == uids);
   REQUIRE(*cx_c.get_op_ptr() == *get_op_ptr(OpType::CZ));
+
+  // swap on same pair of nodes returns false
+  REQUIRE(!mf.add_swap(nodes[0], new_node));
 }
 
 SCENARIO("Test MappingFrontier::add_swap, classical wires edge case") {
@@ -830,7 +833,7 @@ SCENARIO("Test MappingFrontier::add_swap, classical wires edge case") {
   ArchitecturePtr shared_arc = std::make_shared<Architecture>(architecture);
   MappingFrontier mf(circ);
   mf.advance_frontier_boundary(shared_arc);
-  mf.add_swap(qubits[0], qubits[2]);
+  REQUIRE(mf.add_swap(qubits[0], qubits[2]));
 }
 SCENARIO("Test MappingFrontier::add_bridge") {
   std::vector<Node> nodes = {
