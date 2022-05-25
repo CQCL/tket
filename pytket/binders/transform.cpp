@@ -36,26 +36,6 @@ namespace py = pybind11;
 
 namespace tket {
 
-// given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
-Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
-  Transforms::TwoQbFidelities fid;
-  for (const auto kwarg : kwargs) {
-    const std::string kwargstr = py::cast<std::string>(kwarg.first);
-    using Func = std::function<double(double)>;
-    if (kwargstr == "CX_fidelity") {
-      fid.CX_fidelity = py::cast<double>(kwarg.second);
-    } else if (kwargstr == "ZZMax_fidelity") {
-      fid.ZZMax_fidelity = py::cast<double>(kwarg.second);
-    } else if (kwargstr == "ZZPhase_fidelity") {
-      fid.ZZPhase_fidelity = py::cast<Func>(kwarg.second);
-    } else {
-      throw py::type_error(
-          "got an unexpected keyword argument '" + kwargstr + ";");
-    }
-  }
-  return fid;
-}
-
 PYBIND11_MODULE(transform, m) {
   py::enum_<Transforms::PauliSynthStrat>(
       m, "PauliSynthStrat",
@@ -205,6 +185,7 @@ PYBIND11_MODULE(transform, m) {
       .def_static(
           "DecomposeBoxes", &Transforms::decomp_boxes,
           "Decomposes all Boxed operations into elementary gates.")
+      // TODO: Mention NormalisedTK2 predicate.
       .def_static(
           "DecomposeTK2",
           [](const py::kwargs &kwargs) {
@@ -222,7 +203,8 @@ PYBIND11_MODULE(transform, m) {
           "to return the optimal decomposition of each TK2 gate, taking "
           "noise into consideration.\n\n"
           "If no fidelities are provided, the TK2 gates will be decomposed "
-          "exactly using CX gates."
+          "exactly using CX gates.\n\n"
+          "All TK2 gate parameters must be normalised to the Weyl chamber."
           "\n\nIf the TK2 angles are symbolic values, the decomposition will "
           "be exact (i.e. not noise-aware). It is not possible in general "
           "to obtain optimal decompositions for arbitrary symbolic parameters, "

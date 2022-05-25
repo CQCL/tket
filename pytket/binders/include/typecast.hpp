@@ -325,3 +325,27 @@ struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
 };
 }  // namespace detail
 }  // namespace pybind11
+
+namespace tket {
+
+// given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
+Transforms::TwoQbFidelities get_fidelities(const py::kwargs& kwargs) {
+  Transforms::TwoQbFidelities fid;
+  for (const auto kwarg : kwargs) {
+    const std::string kwargstr = py::cast<std::string>(kwarg.first);
+    using Func = std::function<double(double)>;
+    if (kwargstr == "CX_fidelity") {
+      fid.CX_fidelity = py::cast<double>(kwarg.second);
+    } else if (kwargstr == "ZZMax_fidelity") {
+      fid.ZZMax_fidelity = py::cast<double>(kwarg.second);
+    } else if (kwargstr == "ZZPhase_fidelity") {
+      fid.ZZPhase_fidelity = py::cast<Func>(kwarg.second);
+    } else {
+      throw py::type_error(
+          "got an unexpected keyword argument '" + kwargstr + ";");
+    }
+  }
+  return fid;
+}
+
+}  // namespace tket

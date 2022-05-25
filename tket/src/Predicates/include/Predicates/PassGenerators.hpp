@@ -120,6 +120,29 @@ PassPtr gen_user_defined_swap_decomp_pass(const Circuit& replacement_circ);
 PassPtr KAKDecomposition(double cx_fidelity = 1.);
 
 /**
+ * @brief Decomposes each TK2 gate into two-qubit gates.
+ *
+ * We currently support CX, ZZMax and ZZPhase.
+ *
+ * Decompose each TK2 gate into two-qubit gates in a noise-aware way. Supported
+ * two-qubit gate fidelities will be used to return the optimal decomposition of
+ * each TK2 gate, taking noise into consideration.
+ *
+ * If no fidelities are provided, the decomposition will be exact, using CX
+ * gates.
+ *
+ * If the TK2 angles are symbolic values, the decomposition will be exact
+ * (i.e. not noise-aware). It is not possible in general to obtain optimal
+ * decompositions for arbitrary symbolic parameters, so consider substituting
+ * for concrete values if possible.
+ *
+ * @param fid The two-qubit gate fidelities (optional).
+ * @return PassPtr
+ */
+PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid);
+PassPtr DecomposeTK2() { return DecomposeTK2({}); }
+
+/**
  * Resynthesize and squash three-qubit interactions.
  *
  * Steps through the circuit accumulating sequences of 2- and 3-qubit

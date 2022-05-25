@@ -190,13 +190,6 @@ const PassPtr &DecomposeMultiQubitsCX() {
   return pp;
 }
 
-const PassPtr &DecomposeTK2() {
-  static const PassPtr pp(gate_translation_pass(
-      Transforms::decompose_TK2(), {OpType::TK1, OpType::TK2}, true,
-      "DecomposeTK2"));
-  return pp;
-}
-
 const PassPtr &DecomposeSingleQubitsTK1() {
   static const PassPtr pp([]() {
     Transform t = Transforms::decompose_single_qubits_TK1();
