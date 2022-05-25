@@ -1,6 +1,13 @@
 Changelog
 =========
 
+x.y.z (unreleased)
+------------------
+
+Minor new features:
+
+* New ``circuit_to_zx`` function to convert ``Circuit`` to ``ZXDiagram``.
+
 1.2.2 (May 2022)
 ----------------
 
