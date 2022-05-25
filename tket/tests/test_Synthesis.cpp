@@ -33,6 +33,7 @@
 #include "Transformations/Rebase.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
+#include "Utils/Expression.hpp"
 #include "testutil.hpp"
 
 /* This test file covers decomposition, basic optimisation and synthesis passes.
@@ -1860,13 +1861,27 @@ SCENARIO("Testing decompose_TK2") {
   for (unsigned i = 0; i < params.size(); ++i) {
     Circuit c(2);
     c.add_op<unsigned>(OpType::TK2, params[i], {0, 1});
-    if (!is_symbolic) {
-      u1 = tket_sim::get_unitary(c);
-    }
+
+    Circuit c1 = c;
     REQUIRE(Transforms::decompose_TK2(fid).apply(c));
-    if (!is_symbolic) {
-      u2 = tket_sim::get_unitary(c);
+    Circuit c2 = c;
+
+    if (is_symbolic) {
+      // Substitute "arbitrary" values for symbols in both circuits
+      const SymSet symbols = c.free_symbols();
+      symbol_map_t smap;
+      unsigned i = 0;
+      for (const Sym &s : symbols) {
+        smap[s] = PI * (i + 1) / ((i + 2) * (i + 3));
+        i++;
+      }
+      c1.symbol_substitution(smap);
+      c2.symbol_substitution(smap);
     }
+
+    u1 = tket_sim::get_unitary(c1);
+    u2 = tket_sim::get_unitary(c2);
+
     REQUIRE(u1.isApprox(u2, eps));
     REQUIRE(c.count_gates(OpType::CX) == exp_n_cx[i]);
     REQUIRE(c.count_gates(OpType::ZZMax) == exp_n_zzmax[i]);
