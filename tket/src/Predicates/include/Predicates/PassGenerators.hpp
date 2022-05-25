@@ -19,6 +19,7 @@
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/RoutingMethod.hpp"
 #include "Transformations/ContextualReduction.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 
 namespace tket {
