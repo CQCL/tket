@@ -25,18 +25,18 @@ namespace tket {
 
 PlacementConfig::PlacementConfig(
     unsigned _depth_limit, unsigned _max_interaction_edges,
-    unsigned _vf2_max_matches, unsigned _arc_contraction_ratio,
+    unsigned _monomorphism_max_matches, unsigned _arc_contraction_ratio,
     unsigned _timeout)
     : depth_limit(_depth_limit),
       max_interaction_edges(_max_interaction_edges),
-      vf2_max_matches(_vf2_max_matches),
+      monomorphism_max_matches(_monomorphism_max_matches),
       arc_contraction_ratio(_arc_contraction_ratio),
       timeout(_timeout) {}
 
 bool PlacementConfig::operator==(const PlacementConfig &other) const {
   return (this->depth_limit == other.depth_limit) &&
          (this->max_interaction_edges == other.max_interaction_edges) &&
-         (this->vf2_max_matches == other.vf2_max_matches) &&
+         (this->monomorphism_max_matches == other.monomorphism_max_matches) &&
          (this->arc_contraction_ratio == other.arc_contraction_ratio) &&
          (this->timeout == other.timeout);
 }
@@ -86,7 +86,7 @@ void from_json(const nlohmann::json &j, PlacementPtr &placement_ptr) {
 void to_json(nlohmann::json &j, const PlacementConfig &config) {
   j["depth_limit"] = config.depth_limit;
   j["max_interaction_edges"] = config.max_interaction_edges;
-  j["vf2_max_matches"] = config.vf2_max_matches;
+  j["monomorphism_max_matches"] = config.monomorphism_max_matches;
   j["arc_contraction_ratio"] = config.arc_contraction_ratio;
   j["timeout"] = config.timeout;
 }
@@ -94,7 +94,8 @@ void to_json(nlohmann::json &j, const PlacementConfig &config) {
 void from_json(const nlohmann::json &j, PlacementConfig &config) {
   config.depth_limit = j.at("depth_limit").get<unsigned>();
   config.max_interaction_edges = j.at("max_interaction_edges").get<unsigned>();
-  config.vf2_max_matches = j.at("vf2_max_matches").get<unsigned>();
+  config.monomorphism_max_matches =
+      j.at("monomorphism_max_matches").get<unsigned>();
   config.arc_contraction_ratio = j.at("arc_contraction_ratio").get<unsigned>();
   config.timeout = j.at("timeout").get<unsigned>();
 }
@@ -212,7 +213,7 @@ qubit_mapping_t GraphPlacement::get_placement_map(const Circuit &circ_) const {
   QubitGraph q_graph = monomorph_interaction_graph(
       circ_, arc_.n_connections(), config_.depth_limit);
   std::vector<qubit_bimap_t> all_bimaps = monomorphism_edge_break(
-      arc_, q_graph, config_.vf2_max_matches, config_.timeout);
+      arc_, q_graph, config_.monomorphism_max_matches, config_.timeout);
   qubit_mapping_t out_map = bimap_to_map(all_bimaps[0].left);
   fill_partial_mapping(circ_.all_qubits(), out_map);
   return out_map;
@@ -223,7 +224,7 @@ std::vector<qubit_mapping_t> GraphPlacement::get_all_placement_maps(
   QubitGraph q_graph = monomorph_interaction_graph(
       circ_, arc_.n_connections(), config_.depth_limit);
   std::vector<qubit_bimap_t> all_bimaps = monomorphism_edge_break(
-      arc_, q_graph, config_.vf2_max_matches, config_.timeout);
+      arc_, q_graph, config_.monomorphism_max_matches, config_.timeout);
   std::vector<qubit_mapping_t> all_qmaps;
   qubit_vector_t all_qbs = circ_.all_qubits();
   for (qubit_bimap_t bm : all_bimaps) {

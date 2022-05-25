@@ -81,8 +81,9 @@ struct PlacementConfig {
   unsigned depth_limit;
   // max edges in interaction graph
   unsigned max_interaction_edges;
-  // max number of matches from monomorphism calculator
-  unsigned vf2_max_matches = 1000;
+  // max number of matches from monomorphism calculator.
+  unsigned monomorphism_max_matches = 1000;
+
   /*
   value of num_gates/num_qubits above which to contract architecture before
   placement for high values of this ratio it is assumed swap count is more
@@ -97,8 +98,8 @@ struct PlacementConfig {
 
   PlacementConfig(
       unsigned _depth_limit, unsigned _max_interaction_edges,
-      unsigned _vf2_max_matches = 1000, unsigned _arc_contraction_ratio = 10,
-      unsigned _timeout = 60000);
+      unsigned _monomorphism_max_matches = 1000,
+      unsigned _arc_contraction_ratio = 10, unsigned _timeout = 60000);
 
   bool operator==(const PlacementConfig& other) const;
 };
@@ -161,12 +162,20 @@ QubitGraph monomorph_interaction_graph(
  * @param q_graph qubit graph
  * @param max_matches maximum number of matches to find
  * @param timeout timeout in milliseconds
- *
  * @return vector of matches found, sorted in canonical order
  */
 std::vector<qubit_bimap_t> monomorphism_edge_break(
     const Architecture& arc, const QubitGraph& q_graph, unsigned max_matches,
     unsigned timeout);
+
+/** Solves the pure unweighted subgraph monomorphism problem, trying
+ * to embed the pattern graph into the target graph.
+ * Note that graph edge weights are IGNORED by this function.
+ */
+std::vector<qubit_bimap_t> get_unweighted_subgraph_monomorphisms(
+    const QubitGraph::UndirectedConnGraph& pattern_graph,
+    const Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
+    unsigned timeout_ms);
 
 node_set_t best_nodes(Architecture& arc, unsigned n_remove);
 
@@ -176,10 +185,9 @@ class PatternError : public std::logic_error {
       : std::logic_error(message) {}
 };
 
-// Note: boost's VF2 standard subgraph monomorphism uses the `always_equivalent`
-// predicate, so it will match any vertex with any vertex
-// and any edge with any edge, regardless of their bundled properties. This is
-// very good for us!
+// Note: the WSM subgraph monomorphism algorithm
+// matches any vertex with any vertex
+// and any edge with any edge, regardless of their bundled properties.
 struct QubitWeight {
   QubitWeight() : val(0.) {}
   explicit QubitWeight(const boost::no_property) : val(0.) {}
@@ -203,33 +211,6 @@ struct MapCost {
   double cost;
   bool operator<(const MapCost& other) const { return this->cost < other.cost; }
   bool operator>(const MapCost& other) const { return this->cost > other.cost; }
-};
-
-template <typename GraphP, typename GraphT>
-class vf2_match_add_callback {
-  using qubit_grapht_bimap_t =
-      boost::bimap<Node, graphs::utils::vertex<GraphT>>;
-  using qubit_graphp_bimap_t =
-      boost::bimap<Qubit, graphs::utils::vertex<GraphP>>;
-
- public:
-  vf2_match_add_callback(
-      std::vector<qubit_bimap_t>& all_maps, const GraphP& pattern_graph,
-      const GraphT& target_graph, unsigned _max)
-      : n_maps_(all_maps),
-        max(_max),
-        pattern_graph_(pattern_graph),
-        target_graph_(target_graph) {}
-
-  template <typename CorrespondenceMap1To2, typename CorrespondenceMap2To1>
-  bool operator()(const CorrespondenceMap1To2& f, const CorrespondenceMap2To1&);
-
-  std::vector<qubit_bimap_t>& n_maps_;
-  const unsigned max;
-
- private:
-  const GraphP& pattern_graph_;
-  const GraphT& target_graph_;
 };
 
 class Placement {
@@ -322,7 +303,7 @@ class GraphPlacement : public Placement {
     arc_ = _arc;
     config_.depth_limit = 5;
     config_.max_interaction_edges = arc_.n_connections();
-    config_.vf2_max_matches = 10000;
+    config_.monomorphism_max_matches = 10000;
     config_.arc_contraction_ratio = 10;
   }
 
@@ -390,7 +371,7 @@ class NoiseAwarePlacement : public Placement {
         _readout_errors ? *_readout_errors : avg_readout_errors_t()};
     config_.depth_limit = 5;
     config_.max_interaction_edges = arc_.n_connections();
-    config_.vf2_max_matches = 10000;
+    config_.monomorphism_max_matches = 10000;
     config_.arc_contraction_ratio = 10;
     config_.timeout = 60000;
   }
