@@ -19,6 +19,7 @@
 #include "Circuit/Circuit.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Eigen/src/Core/Matrix.h"
+#include "Gate/SymTable.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 
 namespace tket {
@@ -820,6 +821,37 @@ SCENARIO("Checking equality", "[boxes]") {
       PhasePolyBox ppbox2(u);
       REQUIRE(ppbox != ppbox2);
     }
+  }
+  GIVEN("CustomGate") {
+    Circuit setup(1);
+    Sym a = SymTable::fresh_symbol("a");
+    Expr ea(a);
+
+    // "random" 1qb gate.
+    const double param1 = 1.23323;
+    const double param2 = 0.42323;
+    const double param3 = 0.34212;
+    const std::string name1{"gate name1"};
+    const std::string name2{"gate name2"};
+    setup.add_op<unsigned>(OpType::TK1, {ea, param1, param2}, {0});
+
+    composite_def_ptr_t def1 = CompositeGateDef::define_gate(name1, setup, {a});
+    composite_def_ptr_t def2 = CompositeGateDef::define_gate(name2, setup, {a});
+    const CustomGate g1(def1, {param3});
+    const CustomGate g1_repeated(def1, {param3});
+    const CustomGate g1_wrong(def1, {param1});
+    const CustomGate g2(def2, {param3});
+
+    // Check that all IDs are different.
+    const std::set<boost::uuids::uuid> ids{
+        g1.get_id(), g1_repeated.get_id(), g1_wrong.get_id(), g2.get_id()};
+    CHECK(ids.size() == 4);
+    CHECK(g1 == g1);
+    CHECK(g1 == g1_repeated);
+    CHECK(g1 != g2);
+    CHECK(g1 != g1_wrong);
+    CHECK(g1_repeated != g1_wrong);
+    CHECK_THROWS_AS(CustomGate(nullptr, {param3}), std::runtime_error);
   }
 }
 

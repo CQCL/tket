@@ -285,14 +285,37 @@ bool CompositeGateDef::operator==(const CompositeGateDef &other) const {
   return this->get_def()->circuit_equality(*other.get_def(), {}, false);
 }
 
+static const composite_def_ptr_t &get_non_null_ptr(
+    const composite_def_ptr_t &gate) {
+  if (gate) {
+    return gate;
+  }
+  throw std::runtime_error(
+      "Null CompositeGateDef pointer passed to CustomGate");
+}
+
 CustomGate::CustomGate(
     const composite_def_ptr_t &gate, const std::vector<Expr> &params)
-    : Box(OpType::CustomGate, gate->signature()), gate_(gate), params_(params) {
+    : Box(OpType::CustomGate, get_non_null_ptr(gate)->signature()),
+      gate_(gate),
+      params_(params) {
   if (params_.size() != gate_->n_args()) throw InvalidParameterCount();
 }
 
 CustomGate::CustomGate(const CustomGate &other)
-    : Box(other), gate_(other.gate_), params_(other.params_) {}
+    // Should be impossible to get a null gate ptr, but check anyway.
+    : Box(other),
+      gate_(get_non_null_ptr(other.gate_)),
+      params_(other.params_) {}
+
+bool CustomGate::is_equal(const Op &op_other) const {
+  const CustomGate &other = dynamic_cast<const CustomGate &>(op_other);
+  if (this->id_ == other.id_) {
+    return true;
+  }
+  TKET_ASSERT(gate_ && other.gate_);
+  return params_ == other.params && *gate_ == *other.gate_;
+}
 
 Op_ptr CustomGate::symbol_substitution(
     const SymEngine::map_basic_basic &sub_map) const {
