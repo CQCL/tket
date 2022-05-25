@@ -821,10 +821,10 @@
           "minimum": 0,
           "description": "The maximum number of edges in the interaction graph."
         },
-        "vf2_max_matches": {
+        "monomorphism_max_matches": {
           "type": "integer",
           "minimum": 0,
-          "description": "The maximum number of matches from the vf2 monomorphism solver."
+          "description": "The maximum number of matches from the monomorphism solver."
         },
         "arc_contraction_ratio": {
           "type": "integer",
@@ -834,13 +834,13 @@
         "timeout": {
           "type": "integer",
           "minimum": 0,
-          "description": "Timeout for vf2 search, in seconds."
+          "description": "Timeout for monomorphism search, in milliseconds."
         }
       },
       "required": [
         "depth_limit",
         "max_interaction_edges",
-        "vf2_max_matches",
+        "monomorphism_max_matches",
         "arc_contraction_ratio",
         "timeout"
       ]
