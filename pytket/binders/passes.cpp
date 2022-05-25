@@ -22,6 +22,7 @@
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
 #include "Transformations/ContextualReduction.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
@@ -32,6 +33,26 @@ namespace py = pybind11;
 using json = nlohmann::json;
 
 namespace tket {
+
+// given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
+Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
+  Transforms::TwoQbFidelities fid;
+  for (const auto kwarg : kwargs) {
+    const std::string kwargstr = py::cast<std::string>(kwarg.first);
+    using Func = std::function<double(double)>;
+    if (kwargstr == "CX_fidelity") {
+      fid.CX_fidelity = py::cast<double>(kwarg.second);
+    } else if (kwargstr == "ZZMax_fidelity") {
+      fid.ZZMax_fidelity = py::cast<double>(kwarg.second);
+    } else if (kwargstr == "ZZPhase_fidelity") {
+      fid.ZZPhase_fidelity = py::cast<Func>(kwarg.second);
+    } else {
+      throw py::type_error(
+          "got an unexpected keyword argument '" + kwargstr + ";");
+    }
+  }
+  return fid;
+}
 
 static PassPtr gen_cx_mapping_pass_kwargs(
     const Architecture &arc, const PlacementPtr &placer, py::kwargs kwargs) {
