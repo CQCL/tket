@@ -6,6 +6,9 @@ x.y.z (unreleased)
 
 Minor new features:
 
+* New ``circuit_to_zx`` function to convert ``Circuit`` to ``ZXDiagram``.
+* New ``to_graphviz_str`` method for ``ZXDiagram`` to generate a source string
+  that can be rendered by the ``graphviz`` package.
 * New pass and transform `DecomposeTK2` to decompose TK2 gates using the
   approximate KAK decomposition.
 
