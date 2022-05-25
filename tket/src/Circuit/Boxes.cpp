@@ -314,7 +314,7 @@ bool CustomGate::is_equal(const Op &op_other) const {
     return true;
   }
   TKET_ASSERT(gate_ && other.gate_);
-  return params_ == other.params && *gate_ == *other.gate_;
+  return params_ == other.params_ && *gate_ == *other.gate_;
 }
 
 Op_ptr CustomGate::symbol_substitution(
