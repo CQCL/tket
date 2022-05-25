@@ -213,6 +213,33 @@ struct MapCost {
   bool operator>(const MapCost& other) const { return this->cost > other.cost; }
 };
 
+template <typename GraphP, typename GraphT>
+class vf2_match_add_callback {
+  using qubit_grapht_bimap_t =
+      boost::bimap<Node, graphs::utils::vertex<GraphT>>;
+  using qubit_graphp_bimap_t =
+      boost::bimap<Qubit, graphs::utils::vertex<GraphP>>;
+
+ public:
+  vf2_match_add_callback(
+      std::vector<qubit_bimap_t>& all_maps, const GraphP& pattern_graph,
+      const GraphT& target_graph, unsigned _max)
+      : n_maps_(all_maps),
+        max(_max),
+        pattern_graph_(pattern_graph),
+        target_graph_(target_graph) {}
+
+  template <typename CorrespondenceMap1To2, typename CorrespondenceMap2To1>
+  bool operator()(const CorrespondenceMap1To2& f, const CorrespondenceMap2To1&);
+
+  std::vector<qubit_bimap_t>& n_maps_;
+  const unsigned max;
+
+ private:
+  const GraphP& pattern_graph_;
+  const GraphT& target_graph_;
+};
+
 class Placement {
  public:
   explicit Placement(const Architecture& _arc) : arc_(_arc) {}
