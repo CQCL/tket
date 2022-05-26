@@ -956,6 +956,7 @@ Transform decompose_cliffords_std() {
       } else if (type == OpType::TK2 && op->is_clifford()) {
         auto params = op->get_params();
         TKET_ASSERT(params.size() == 3);
+        // TODO: Maybe handle TK2 gates natively within clifford_simp?
         Circuit replacement = TK2_replacement(params[0], params[1], params[2]);
         decompose_cliffords_std().apply(replacement);
         bin.push_back(v);
