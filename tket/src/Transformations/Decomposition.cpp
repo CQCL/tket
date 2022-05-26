@@ -44,6 +44,10 @@ static bool convert_to_zxz(Circuit &circ);
 static bool convert_to_zyz(Circuit &circ);
 static bool convert_to_xyx(Circuit &circ);
 
+static Circuit TK2_replacement(Expr alpha, Expr beta, Expr gamma);
+static Circuit TK2_replacement(
+    std::array<Expr, 3> angles, const TwoQbFidelities &fid);
+
 /**
  * Decompose all multi-qubit unitary gates into TK2 and single-qubit gates.
  *
@@ -567,6 +571,118 @@ static bool in_weyl_chamber(std::array<Expr, 3> k) {
   return true;
 }
 
+/**
+ * @brief TK2 expressed (approximately) as CX/ZZMax or ZZPhase.
+ *
+ * This is the core logic of how to decompose a TK2 gate into other two-qubit
+ * gates, taking hardware fidelities into account for optimal approximate
+ * decompositions.
+ *
+ * Decomposes to whatever gate type has non-nullopt fidelity. If there are
+ * multiple options, choose the best one. Defaults to CX if no fidelities are
+ * provided.
+ *
+ * Symbolic parameters are supported. In that case, decompositions are exact.
+ *
+ * @param alpha First TK2 parameter
+ * @param beta Second TK2 parameter
+ * @param gamma Third TK2 parameter
+ * @return Circuit TK2-equivalent circuit
+ */
+Circuit TK2_replacement(
+    std::array<Expr, 3> angles, const TwoQbFidelities &fid) {
+  if (!in_weyl_chamber(angles)) {
+    throw NotValid("TK2 params are not normalised to Weyl chamber.");
+  }
+  OpType best_optype = OpType::CX;  // default to using CX
+  unsigned n_gates = 3;             // default to 3x CX
+
+  // Try to evaluate exprs to doubles.
+  bool is_symbolic = false;
+  std::vector<double> angles_eval;
+  for (const Expr &e : angles) {
+    std::optional<double> eval = eval_expr_mod(e);
+    if (!eval) {
+      is_symbolic = true;
+      break;
+    } else {
+      angles_eval.push_back(*eval);
+    }
+  }
+
+  if (is_symbolic) {
+    // For symbolic angles, we can only provide an exact decomposition.
+    best_exact_decomposition(angles, fid, best_optype, n_gates);
+  } else {
+    // For non-symbolic angles, we can find the optimal number of gates
+    // using the gate fidelities provided.
+    std::array<double, 3> angles_float = {
+        angles_eval[0], angles_eval[1], angles_eval[2]};
+
+    // Try gate sets and see if there is a good noise-aware decomposition.
+    best_noise_aware_decomposition(angles_float, fid, best_optype, n_gates);
+  }
+
+  // Build circuit for substitution.
+  Circuit sub(2);
+  switch (best_optype) {
+    case OpType::ZZMax:
+    case OpType::CX: {
+      switch (n_gates) {
+        case 0:
+          break;
+        case 1: {
+          sub.append(CircPool::approx_TK2_using_1xCX());
+          break;
+        }
+        case 2: {
+          sub.append(CircPool::approx_TK2_using_2xCX(angles[0], angles[1]));
+          break;
+        }
+        case 3: {
+          sub.append(CircPool::TK2_using_CX(angles[0], angles[1], angles[2]));
+          break;
+        }
+        default:
+          throw NotValid("Number of CX invalid in decompose_TK2");
+      }
+      if (best_optype == OpType::ZZMax) {
+        decompose_CX_to_HQS2().apply(sub);
+      }
+      break;
+    }
+    case OpType::ZZPhase: {
+      switch (n_gates) {
+        case 0:
+          break;
+        case 1: {
+          sub.append(CircPool::approx_TK2_using_1xZZPhase(angles[0]));
+          break;
+        }
+        case 2: {
+          sub.append(
+              CircPool::approx_TK2_using_2xZZPhase(angles[0], angles[1]));
+          break;
+        }
+        case 3: {
+          sub.append(
+              CircPool::TK2_using_ZZPhase(angles[0], angles[1], angles[2]));
+          break;
+        }
+        default:
+          throw NotValid("Number of ZZPhase invalid in decompose_TK2");
+      }
+      break;
+    }
+    default:
+      throw NotValid("Unrecognised target OpType in decompose_TK2");
+  }
+  return sub;
+}
+Circuit TK2_replacement(Expr alpha, Expr beta, Expr gamma) {
+  return TK2_replacement({alpha, beta, gamma}, {});
+}
+
 Transform decompose_TK2() { return decompose_TK2({}); }
 Transform decompose_TK2(const TwoQbFidelities &fid) {
   if (fid.ZZMax_fidelity) {
@@ -598,100 +714,11 @@ Transform decompose_TK2(const TwoQbFidelities &fid) {
       if (circ.get_OpType_from_Vertex(v) != OpType::TK2) continue;
 
       success = true;
-
       auto params = circ.get_Op_ptr_from_Vertex(v)->get_params();
       TKET_ASSERT(params.size() == 3);
       std::array<Expr, 3> angles{params[0], params[1], params[2]};
 
-      if (!in_weyl_chamber(angles)) {
-        throw NotValid("TK2 params are not normalised to Weyl chamber.");
-      }
-
-      OpType best_optype = OpType::CX;  // default to using CX
-      unsigned n_gates = 3;             // default to 3x CX
-
-      // Try to evaluate exprs to doubles.
-      bool is_symbolic = false;
-      std::vector<double> angles_eval;
-      for (const Expr &e : angles) {
-        std::optional<double> eval = eval_expr_mod(e);
-        if (!eval) {
-          is_symbolic = true;
-          break;
-        } else {
-          angles_eval.push_back(*eval);
-        }
-      }
-
-      if (is_symbolic) {
-        // For symbolic angles, we can only provide an exact decomposition.
-        best_exact_decomposition(angles, fid, best_optype, n_gates);
-      } else {
-        // For non-symbolic angles, we can find the optimal number of gates
-        // using the gate fidelities provided.
-        std::array<double, 3> angles_float = {
-            angles_eval[0], angles_eval[1], angles_eval[2]};
-
-        // Try gate sets and see if there is a good noise-aware decomposition.
-        best_noise_aware_decomposition(angles_float, fid, best_optype, n_gates);
-      }
-
-      // Build circuit for substitution.
-      Circuit sub(2);
-      switch (best_optype) {
-        case OpType::ZZMax:
-        case OpType::CX: {
-          switch (n_gates) {
-            case 0:
-              break;
-            case 1: {
-              sub.append(CircPool::approx_TK2_using_1xCX());
-              break;
-            }
-            case 2: {
-              sub.append(CircPool::approx_TK2_using_2xCX(angles[0], angles[1]));
-              break;
-            }
-            case 3: {
-              sub.append(
-                  CircPool::TK2_using_CX(angles[0], angles[1], angles[2]));
-              break;
-            }
-            default:
-              throw NotValid("Number of CX invalid in decompose_TK2");
-          }
-          if (best_optype == OpType::ZZMax) {
-            decompose_CX_to_HQS2().apply(sub);
-          }
-          break;
-        }
-        case OpType::ZZPhase: {
-          switch (n_gates) {
-            case 0:
-              break;
-            case 1: {
-              sub.append(CircPool::approx_TK2_using_1xZZPhase(angles[0]));
-              break;
-            }
-            case 2: {
-              sub.append(
-                  CircPool::approx_TK2_using_2xZZPhase(angles[0], angles[1]));
-              break;
-            }
-            case 3: {
-              sub.append(
-                  CircPool::TK2_using_ZZPhase(angles[0], angles[1], angles[2]));
-              break;
-            }
-            default:
-              throw NotValid("Number of ZZPhase invalid in decompose_TK2");
-          }
-          break;
-        }
-        default:
-          throw NotValid("Unrecognised target OpType in decompose_TK2");
-      }
-
+      Circuit sub = TK2_replacement(angles, fid);
       bin.push_back(v);
       circ.substitute(sub, v, Circuit::VertexDeletion::No);
     }
@@ -925,6 +952,14 @@ Transform decompose_cliffords_std() {
         bin.push_back(v);
         circ.substitute(replacement, sub, Circuit::VertexDeletion::No);
         circ.add_phase(tk1_param_exprs[3]);
+        success = true;
+      } else if (type == OpType::TK2 && op->is_clifford()) {
+        auto params = op->get_params();
+        TKET_ASSERT(params.size() == 3);
+        Circuit replacement = TK2_replacement(params[0], params[1], params[2]);
+        decompose_cliffords_std().apply(replacement);
+        bin.push_back(v);
+        circ.substitute(replacement, v, Circuit::VertexDeletion::No);
         success = true;
       }
     }
