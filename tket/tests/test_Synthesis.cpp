@@ -809,6 +809,14 @@ SCENARIO("Testing general 1qb squash") {
   }
 }
 
+SCENARIO("Decomposing TK1 into Rx, Ry") {
+  Circuit circ(1);
+  circ.add_op<unsigned>(OpType::TK1, {0.2, 0.2, 0.3}, {0});
+  Transforms::decompose_XY().apply(circ);
+  REQUIRE(circ.count_gates(OpType::Rx) == 2);
+  REQUIRE(circ.count_gates(OpType::Ry) == 3);
+}
+
 SCENARIO("Squishing a circuit into U3 and CNOTs") {
   GIVEN("A series of one-qubit gates and CNOTs") {
     Circuit test1(4);
@@ -1804,8 +1812,15 @@ SCENARIO("Testing decompose_TK2") {
   }
   GIVEN("A bunch of TK2 gates, perfect ZZMax fidelities") {
     fid.ZZMax_fidelity = 1.;
-    params = {{.5, 0., 0.}, {.4, 0., 0.}, {.2, .2, 0.}, {0.2, 0.1, 0.1}};
-    exp_n_zzmax = {1, 2, 2, 3};
+    params = {
+        {0., 0., 0.},
+        {.5, 0., 0.},
+        {.4, 0., 0.},
+        {.2, .2, 0.},
+        {0.2, 0.1, 0.1}};
+    exp_n_zzmax = {0, 1, 2, 2, 3};
+    exp_n_zzphase = std::vector<unsigned>(exp_n_zzmax.size(), 0);
+    exp_n_cx = std::vector<unsigned>(exp_n_zzmax.size(), 0);
   }
   GIVEN("A bunch of TK2 gates, ZZMax vs ZZPhase fidelities") {
     fid.ZZMax_fidelity = .99;
@@ -1828,6 +1843,11 @@ SCENARIO("Testing decompose_TK2") {
     exp_n_zzphase = {0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0};
     exp_n_cx = std::vector<unsigned>(exp_n_zzmax.size(), 0);
     eps = 0.98;
+  }
+  GIVEN("Force use ZZPhase") {
+    fid.ZZPhase_fidelity = [](double) { return 1.; };
+    params = {{0., 0., 0.}, {0.3, 0., 0.}, {0.4, 1.2, 0.}, {0.4, 1.2, -0.4}};
+    exp_n_zzphase = {0, 1, 2, 3};
   }
   GIVEN("Symbolic cases") {
     is_symbolic = true;

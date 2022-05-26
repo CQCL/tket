@@ -472,12 +472,15 @@ static void best_noise_aware_decomposition(
   // Try decomposition using ZZPhase(α)
   if (fid.ZZPhase_fidelity) {
     double zz_fid = 1.;
-    for (unsigned n_zz = 1; n_zz <= 3; ++n_zz) {
-      double gate_fid = (*fid.ZZPhase_fidelity)(angles[n_zz - 1]);
-      if (gate_fid < 0 || gate_fid > 1) {
-        throw NotValid("ZZPhase_fidelity returned a value outside of [0, 1].");
+    for (unsigned n_zz = 0; n_zz <= 3; ++n_zz) {
+      if (n_zz > 0) {
+        double gate_fid = (*fid.ZZPhase_fidelity)(angles[n_zz - 1]);
+        if (gate_fid < 0 || gate_fid > 1) {
+          throw NotValid(
+              "ZZPhase_fidelity returned a value outside of [0, 1].");
+        }
+        zz_fid *= gate_fid;
       }
-      zz_fid *= gate_fid;
       double nzz_fid = get_ZZPhase_fidelity(angles, n_zz) * zz_fid;
       if (nzz_fid > max_fid) {
         max_fid = nzz_fid;
@@ -516,9 +519,6 @@ static void best_exact_decomposition(
     // Reduce n_gates if possible.
     if (equiv_0(angles[2], 4)) {
       n_gates = 2;
-      if (equiv_0(angles[1], 4) && equiv_expr(angles[0], .25, 4)) {
-        n_gates = 1;
-      }
     }
   } else if (best_optype == OpType::ZZPhase) {
     // Reduce n_gates if possible.
