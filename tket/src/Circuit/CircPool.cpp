@@ -881,7 +881,7 @@ Circuit approx_TK2_using_2xCX(Expr alpha, Expr beta) {
   return c;
 }
 
-Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma) {
+Circuit TK2_using_3xCX(Expr alpha, Expr beta, Expr gamma) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::TK1, {0.5, 1.5, 1}, {0});
   c.add_op<unsigned>(OpType::TK1, {0, 0.5, 0}, {1});
@@ -894,6 +894,17 @@ Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma) {
   c.add_op<unsigned>(OpType::CX, {0, 1});
   c.add_phase(0.75);
   return c;
+}
+
+Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma) {
+  // only handle TK2 if normalised to Weyl chamber
+  if (equiv_expr(alpha, 0.5, 4) && equiv_0(beta, 4) && equiv_0(gamma, 4)) {
+    return approx_TK2_using_1xCX();
+  } else if (equiv_0(gamma, 4)) {
+    return approx_TK2_using_2xCX(alpha, beta);
+  } else {
+    return TK2_using_3xCX(alpha, beta, gamma);
+  }
 }
 
 Circuit approx_TK2_using_1xZZPhase(Expr alpha) {

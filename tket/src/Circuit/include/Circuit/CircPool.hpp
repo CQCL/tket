@@ -250,6 +250,8 @@ Circuit YYPhase_using_ZZPhase(Expr alpha);
  */
 Circuit approx_TK2_using_1xCX();
 Circuit approx_TK2_using_2xCX(Expr alpha, Expr beta);
+Circuit TK2_using_3xCX(Expr alpha, Expr beta, Expr gamma);
+// Choose which of the above decompositions to use. Decomposition is exact
 Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma);
 
 /** Equivalent to TK2, using ZZPhase and single-qubit gates, using 1,2 or 3 ZZ

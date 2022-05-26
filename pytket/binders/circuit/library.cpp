@@ -38,7 +38,7 @@ void init_library(py::module &m) {
       "Equivalent to CX, using a TK2 and single-qubit gates");
   library_m.def(
       "_TK2_using_CX", &CircPool::TK2_using_CX,
-      "Equivalent to TK2, using 3 CX gates and single-qubit gates");
+      "Equivalent to TK2, using up to 3 CX gates and single-qubit gates");
   library_m.def(
       "_approx_TK2_using_1xCX", &CircPool::approx_TK2_using_1xCX,
       "Approximate equivalent to TK2, using 1 CX gates and single-qubit gates. "
@@ -49,6 +49,9 @@ void init_library(py::module &m) {
       "Approximate equivalent to TK2, using 2 CX gates and single-qubit gates. "
       "Only requires the first two angles of the TK2 gate (it is assumed that "
       "`NormalisedTK2Predicate` is satisfied).");
+  library_m.def(
+      "_TK2_using_3xCX", &CircPool::TK2_using_3xCX,
+      "Equivalent to TK2, using 3 CX gates and single-qubit gates");
   library_m.def(
       "_CX_using_flipped_CX", &CircPool::CX_using_flipped_CX,
       "Equivalent to CX[0,1], using a CX[1,0] and four H gates");

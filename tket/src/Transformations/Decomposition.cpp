@@ -44,10 +44,6 @@ static bool convert_to_zxz(Circuit &circ);
 static bool convert_to_zyz(Circuit &circ);
 static bool convert_to_xyx(Circuit &circ);
 
-static Circuit TK2_replacement(Expr alpha, Expr beta, Expr gamma);
-static Circuit TK2_replacement(
-    std::array<Expr, 3> angles, const TwoQbFidelities &fid);
-
 /**
  * Decompose all multi-qubit unitary gates into TK2 and single-qubit gates.
  *
@@ -584,12 +580,11 @@ static bool in_weyl_chamber(std::array<Expr, 3> k) {
  *
  * Symbolic parameters are supported. In that case, decompositions are exact.
  *
- * @param alpha First TK2 parameter
- * @param beta Second TK2 parameter
- * @param gamma Third TK2 parameter
+ * @param angles The TK2 parameters
+ * @param fid The two-qubit gate fidelities
  * @return Circuit TK2-equivalent circuit
  */
-Circuit TK2_replacement(
+static Circuit TK2_replacement(
     std::array<Expr, 3> angles, const TwoQbFidelities &fid) {
   if (!in_weyl_chamber(angles)) {
     throw NotValid("TK2 params are not normalised to Weyl chamber.");
@@ -640,7 +635,7 @@ Circuit TK2_replacement(
           break;
         }
         case 3: {
-          sub.append(CircPool::TK2_using_CX(angles[0], angles[1], angles[2]));
+          sub.append(CircPool::TK2_using_3xCX(angles[0], angles[1], angles[2]));
           break;
         }
         default:
@@ -678,9 +673,6 @@ Circuit TK2_replacement(
       throw NotValid("Unrecognised target OpType in decompose_TK2");
   }
   return sub;
-}
-Circuit TK2_replacement(Expr alpha, Expr beta, Expr gamma) {
-  return TK2_replacement({alpha, beta, gamma}, {});
 }
 
 Transform decompose_TK2() { return decompose_TK2({}); }
@@ -957,7 +949,8 @@ Transform decompose_cliffords_std() {
         auto params = op->get_params();
         TKET_ASSERT(params.size() == 3);
         // TODO: Maybe handle TK2 gates natively within clifford_simp?
-        Circuit replacement = TK2_replacement(params[0], params[1], params[2]);
+        Circuit replacement =
+            CircPool::TK2_using_CX(params[0], params[1], params[2]);
         decompose_cliffords_std().apply(replacement);
         bin.push_back(v);
         circ.substitute(replacement, v, Circuit::VertexDeletion::No);
