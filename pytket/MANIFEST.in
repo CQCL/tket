@@ -1,6 +1,1 @@
-include pytket/circuit/display/circuit_css.html
 include pytket/circuit/display/circuit.html
-include pytket/circuit/display/images/measure-gate.svg
-include pytket/circuit/display/images/reset-gate.svg
-include pytket/circuit/display/images/swap-gate.svg
-include pytket/circuit/display/images/x-gate.svg
