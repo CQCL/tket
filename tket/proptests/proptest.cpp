@@ -41,6 +41,7 @@ using namespace tket;
   DO(DecomposeMultiQubitsCX)              \
   DO(DecomposeSingleQubitsTK1)            \
   DO(DecomposeBoxes)                      \
+  DO(DecomposeTK2)                        \
   DO(ComposePhasePolyBoxes)               \
   DO(SquashTK1)                           \
   DO(RebaseTket)                          \
