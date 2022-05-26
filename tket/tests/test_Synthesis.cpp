@@ -1846,7 +1846,7 @@ SCENARIO("Testing decompose_TK2") {
   }
   GIVEN("Force use ZZPhase") {
     fid.ZZPhase_fidelity = [](double) { return 1.; };
-    params = {{0., 0., 0.}, {0.3, 0., 0.}, {0.4, 1.2, 0.}, {0.4, 1.2, -0.4}};
+    params = {{0., 0., 0.}, {0.3, 0., 0.}, {0.4, 0.3, 0.}, {0.4, 0.4, -0.3}};
     exp_n_zzphase = {0, 1, 2, 3};
   }
   GIVEN("Symbolic cases") {

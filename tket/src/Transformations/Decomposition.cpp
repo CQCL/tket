@@ -472,7 +472,10 @@ static void best_noise_aware_decomposition(
   // Try decomposition using ZZPhase(α)
   if (fid.ZZPhase_fidelity) {
     double zz_fid = 1.;
-    for (unsigned n_zz = 0; n_zz <= 3; ++n_zz) {
+    // If ZZMax is available, ZZPhase is only interesting when used once.
+    // (two ZZPhase can always be written using two ZZmax)
+    unsigned max_nzz = fid.ZZMax_fidelity ? 1 : 3;
+    for (unsigned n_zz = 0; n_zz <= max_nzz; ++n_zz) {
       if (n_zz > 0) {
         double gate_fid = (*fid.ZZPhase_fidelity)(angles[n_zz - 1]);
         if (gate_fid < 0 || gate_fid > 1) {
@@ -486,11 +489,6 @@ static void best_noise_aware_decomposition(
         max_fid = nzz_fid;
         best_optype = OpType::ZZPhase;
         n_gates = n_zz;
-      }
-      if (fid.ZZMax_fidelity) {
-        // ZZPhase is only interesting when used once.
-        // (two ZZPhase can always be written using two ZZmax)
-        break;
       }
     }
   }
