@@ -36,6 +36,7 @@ class ZXVertWrapper {
   ZXVert v_;
 
  public:
+  ZXVertWrapper() : v_() {}
   ZXVertWrapper(const ZXVert& v) : v_(v) {}
   bool operator==(const ZXVertWrapper& other) const {
     return this->v_ == other.v_;
