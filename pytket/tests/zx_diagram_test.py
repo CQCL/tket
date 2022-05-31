@@ -705,7 +705,7 @@ def test_XY_extraction() -> None:
     diag.add_wire(o0, outs[0])
     diag.add_wire(o1, outs[1])
     diag.add_wire(o2, outs[2])
-    circ = diag.to_circuit()
+    circ, _ = diag.to_circuit()
     assert circ.n_qubits == 3
     Rewrite.rebase_to_zx().apply(diag)
     diag.check_validity()
@@ -795,7 +795,7 @@ def test_XY_YZ_extraction() -> None:
     diag.add_wire(o2ext, outs[2])
     diag.add_wire(o3, outs[3])
     diag.add_wire(o4ext, outs[4])
-    circ = diag.to_circuit()
+    circ, _ = diag.to_circuit()
     assert circ.n_qubits == 5
     Rewrite.rebase_to_zx().apply(diag)
     diag.check_validity()

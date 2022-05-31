@@ -16,6 +16,8 @@ Minor new features:
 * New ``circuit_from_qasm_wasm`` function to parse QASM files containing
   external WASM calls.
 * Faster QASM parsing, capable of parsing extended grammar.
+* Conversion from circuits to ZX diagrams and extraction of unitary ZX diagrams
+  to circuits.
 
 1.2.1 (May 2022)
 ----------------

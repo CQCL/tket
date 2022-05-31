@@ -19,6 +19,30 @@
 
 namespace tket::zx::test_ZXRebase {
 
+SCENARIO("Decompose box with an identity wire") {
+  GIVEN("Identity Box") {
+    ZXDiagram iboxd(1, 1, 0, 0);
+    ZXVertVec ib = iboxd.get_boundary();
+    iboxd.add_wire(ib[0], ib[1]);
+    REQUIRE_NOTHROW(iboxd.check_validity());
+    ZXGen_ptr ibox_gen = std::make_shared<const ZXBox>(iboxd);
+    ZXDiagram diag(1, 1, 0, 0);
+    ZXVert box = diag.add_vertex(ibox_gen);
+    ZXVertVec b = diag.get_boundary();
+    diag.add_wire(box, b[0], ZXWireType::Basic, QuantumType::Quantum, 0);
+    diag.add_wire(box, b[1], ZXWireType::Basic, QuantumType::Quantum, 1);
+
+    REQUIRE_NOTHROW(diag.check_validity());
+
+    CHECK(Rewrite::decompose_boxes().apply(diag));
+    REQUIRE_NOTHROW(diag.check_validity());
+    REQUIRE(diag.n_wires() == 1);
+    REQUIRE(diag.n_vertices() == 2);
+    ZXVertVec d = diag.get_boundary();
+    REQUIRE(diag.neighbours(d[0])[0] == d[1]);
+  }
+}
+
 SCENARIO("Take a generic diagram and apply each rebase to it") {
   ZXDiagram diag(2, 1, 0, 1);
   ZXVertVec ins = diag.get_boundary(ZXType::Input);

@@ -282,6 +282,8 @@ SCENARIO("Subdiagram substitutions") {
 
     ZXDiagram::Subdiagram sub{
         {{iw, WireEnd::Target}, {ow, WireEnd::Source}}, {za, x, zb}};
+    REQUIRE_NOTHROW(sub.check_validity(diag));
+    REQUIRE_NOTHROW(sub.to_diagram(diag).check_validity());
     REQUIRE_NOTHROW(diag.substitute(to_insert, sub));
     REQUIRE_NOTHROW(diag.check_validity());
     CHECK(diag.n_vertices() == 5);
@@ -326,6 +328,7 @@ SCENARIO("Subdiagram substitutions") {
          {wloop, WireEnd::Target},
          {woc, WireEnd::Source}},
         {x}};
+    REQUIRE_NOTHROW(sub.check_validity(diag));
     REQUIRE_NOTHROW(diag.substitute(to_insert, sub));
     REQUIRE_NOTHROW(diag.check_validity());
     CHECK(diag.n_vertices() == 4);
@@ -360,6 +363,7 @@ SCENARIO("Subdiagram substitutions") {
     ZXDiagram::Subdiagram sub{
         {{wi, WireEnd::Target}, {wo, WireEnd::Target}, {wz, WireEnd::Target}},
         {box}};
+    REQUIRE_NOTHROW(sub.check_validity(diag));
     REQUIRE_NOTHROW(diag.substitute(inner, sub));
     REQUIRE_NOTHROW(diag.check_validity());
     CHECK(
@@ -380,6 +384,7 @@ SCENARIO("Subdiagram substitutions") {
 
     ZXDiagram::Subdiagram sub{
         {{wloop, WireEnd::Source}, {wloop, WireEnd::Target}}, {z}};
+    REQUIRE_NOTHROW(sub.check_validity(loop));
     REQUIRE_NOTHROW(loop.substitute(identity, sub));
     REQUIRE_NOTHROW(loop.check_validity());
     CHECK(loop.n_vertices() == 0);

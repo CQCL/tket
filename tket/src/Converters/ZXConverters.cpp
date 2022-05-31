@@ -604,7 +604,7 @@ void clean_frontier(
               circ.add_op<unsigned>(OpType::U1, -ph, {q});
             }
             diag.set_vertex_ZXGen_ptr(
-                f, ZXGen::create_gen(ZXType::PX, *f_gen.get_qtype()));
+                f, ZXGen::create_gen(ZXType::PX, QuantumType::Quantum));
             break;
           }
           case ZXType::PX: {
@@ -612,7 +612,7 @@ void clean_frontier(
             if (f_gen.get_param()) {
               circ.add_op<unsigned>(OpType::Z, {q});
               diag.set_vertex_ZXGen_ptr(
-                  f, ZXGen::create_gen(ZXType::PX, *f_gen.get_qtype()));
+                  f, ZXGen::create_gen(ZXType::PX, QuantumType::Quantum));
             }
             break;
           }
@@ -621,7 +621,7 @@ void clean_frontier(
             circ.add_op<unsigned>(
                 f_gen.get_param() ? OpType::S : OpType::Sdg, {q});
             diag.set_vertex_ZXGen_ptr(
-                f, ZXGen::create_gen(ZXType::PX, *f_gen.get_qtype()));
+                f, ZXGen::create_gen(ZXType::PX, QuantumType::Quantum));
             break;
           }
           default:
@@ -708,14 +708,19 @@ bool remove_all_gadgets(
   bool removed_gadget = false;
   for (const ZXVert& f : frontier) {
     ZXVertVec f_ns = diag.neighbours(f);
-    ZXVert o;
+    std::optional<ZXVert> found_output;
     for (const ZXVert& n : f_ns) {
       // Each frontier vertex is connected to a unique output, find it
       if (diag.get_zxtype(n) == ZXType::Output) {
-        o = n;
+        found_output = n;
         break;
       }
     }
+    if (!found_output)
+      throw ZXError(
+          "Error during extraction from ZXDiagram: frontier vertex not "
+          "adjacent to an output");
+    ZXVert o = *found_output;
     for (const ZXVert& n : f_ns) {
       if (diag.get_zxtype(n) == ZXType::YZ) {
         // Pivot
