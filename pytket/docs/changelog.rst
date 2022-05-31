@@ -6,7 +6,8 @@ x.y.z (unreleased)
 
 Minor new features:
 
-* New ``circuit_to_zx`` function to convert ``Circuit`` to ``ZXDiagram``.
+* New ``circuit_to_zx`` function to convert ``Circuit`` to ``ZXDiagram``, and
+  ``to_circuit`` to extract from a unitary diagram.
 * New ``to_graphviz_str`` method for ``ZXDiagram`` to generate a source string
   that can be rendered by the ``graphviz`` package.
 
@@ -25,8 +26,6 @@ Minor new features:
 * New ``circuit_from_qasm_wasm`` function to parse QASM files containing
   external WASM calls.
 * Faster QASM parsing, capable of parsing extended grammar.
-* Conversion from circuits to ZX diagrams and extraction of unitary ZX diagrams
-  to circuits.
 
 1.2.1 (May 2022)
 ----------------
