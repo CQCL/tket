@@ -62,8 +62,7 @@ wrapped_circuit_to_zx(const Circuit& circ) {
       auto found = ret_map.find(uid);
       if (found == ret_map.end())
         ret_map.insert(
-            {circ.get_id_from_in(it->second),
-             {ZXVertWrapper(it->first), ZXVertWrapper()}});
+            {uid, {ZXVertWrapper(it->first), ZXVertWrapper()}});
       else
         found->second.first = ZXVertWrapper(it->first);
     } else {
@@ -71,8 +70,7 @@ wrapped_circuit_to_zx(const Circuit& circ) {
       auto found = ret_map.find(uid);
       if (found == ret_map.end())
         ret_map.insert(
-            {circ.get_id_from_in(it->second),
-             {ZXVertWrapper(), ZXVertWrapper(it->first)}});
+            {uid, {ZXVertWrapper(), ZXVertWrapper(it->first)}});
       else
         found->second.second = ZXVertWrapper(it->first);
     }
