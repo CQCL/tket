@@ -6,6 +6,15 @@ x.y.z (unreleased)
 
 Minor new features:
 
+* New ``circuit_to_zx`` function to convert ``Circuit`` to ``ZXDiagram``.
+* New ``to_graphviz_str`` method for ``ZXDiagram`` to generate a source string
+  that can be rendered by the ``graphviz`` package.
+
+1.2.2 (May 2022)
+----------------
+
+Minor new features:
+
 * The ``GlobalisePhasedX`` transform and homonymous pass take a new optional
   ``squash`` parameter. ``squash=true`` (default) implements a new algorithm
   that significantly reduces the number of ``NPhasedX`` gates synthesised.
