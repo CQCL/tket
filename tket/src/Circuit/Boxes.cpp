@@ -303,10 +303,7 @@ CustomGate::CustomGate(
 }
 
 CustomGate::CustomGate(const CustomGate &other)
-    // Should be impossible to get a null gate ptr, but check anyway.
-    : Box(other),
-      gate_(get_non_null_ptr(other.gate_)),
-      params_(other.params_) {}
+    : Box(other), gate_(other.gate_), params_(other.params_) {}
 
 bool CustomGate::is_equal(const Op &op_other) const {
   const CustomGate &other = dynamic_cast<const CustomGate &>(op_other);
