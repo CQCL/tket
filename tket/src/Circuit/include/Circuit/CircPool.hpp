@@ -237,33 +237,115 @@ Circuit ZZPhase_using_TK2(Expr alpha);
 /** Equivalent to ZZPhase, using CX and Rz gates */
 Circuit ZZPhase_using_CX(Expr alpha);
 
-/** Equivalent to XXPhase, using ZZPhase and H gates */
+/**
+ * @brief Equivalent to XXPhase, using ZZPhase and H gates.
+ *
+ * @param alpha The gate parameter to the XXPhase gate.
+ * @return Circuit Equivalent circuit using ZZPhase.
+ */
 Circuit XXPhase_using_ZZPhase(Expr alpha);
 
-/** Equivalent to YYPhase, using ZZPhase and V/Vdg gates */
+/**
+ * @brief Equivalent to YYPhase, using ZZPhase and V/Vdg gates.
+ *
+ * @param alpha The gate parameter to the YYPhase gate.
+ * @return Circuit Equivalent circuit using ZZPhase.
+ */
 Circuit YYPhase_using_ZZPhase(Expr alpha);
 
-/** Equivalents to TK2, using CX and single-qubit gates, using 1, 2 or 3 CX.
+/**
+ * @brief Equivalent to TK2(0.5, 0, 0), using a single CX gate.
+
+ * Using 1 CX yields an approximate decomposition of the TK2 gate which is
+ * equivalent to a TK2(0.5, 0, 0) gate. This is always the optimal
+ * 1-CX approximation of any TK2 gate, with respect to the squared trace
+ * fidelity metric.
  *
- * Using 1 or 2 CX yields approximate decompositions in the general case (and
- * only require a subset of the TK2 angles). The 3-CX decomposition is exact.
+ * @return Circuit Equivalent circuit to TK2(0.5, 0, 0).
  */
 Circuit approx_TK2_using_1xCX();
+
+/**
+ * @brief Equivalent to TK2(α, β, 0), using 2 CX gates.
+ *
+ * Using 2 CX gates we can implement any gate of the form TK2(α, β, 0). This is
+ * the optimal 2-CX approximation for any TK2(α, β, γ), with respect to the
+ * squared trace fidelity metric.
+ *
+ * Requires 0.5 ≥ α ≥ β ≥ 0.
+ *
+ * @return Circuit Equivalent circuit to TK2(α, β, 0).
+ */
 Circuit approx_TK2_using_2xCX(Expr alpha, Expr beta);
+
+/**
+ * @brief Equivalent to TK2(α, β, γ), using 3 CX gates.
+ *
+ * This is an exact 3 CX decomposition of the TK2(α, β, γ) gate.
+ * Prefer using `TK2_using_CX` unless you wish to explicitly use 3 CX or if
+ * α, β and γ are not normalised to the Weyl chamber.
+ *
+ * @return Circuit Equivalent circuit to TK2(α, β, γ).
+ */
 Circuit TK2_using_3xCX(Expr alpha, Expr beta, Expr gamma);
-// Choose which of the above decompositions to use. Decomposition is exact
+
+/**
+ * @brief Equivalent to TK2(α, β, γ) with minimal number of CX gates.
+ *
+ * A TK2-equivalent circuit with as few CX gates as possible (0, 1, 2 or 3 CX).
+
+ * Decomposition is exact. The parameters must be normalised to the Weyl
+ * chamber, i.e. it must hold 0.5 ≥ 𝛼 ≥ 𝛽 ≥ |𝛾|.
+ *
+ * In cases where hardware gate fidelities are known, it might be sensible to
+ * use TK2 decompositions that are inexact but less noisy. See DecomposeTK2
+ * pass and transform.
+ *
+ * @return Circuit Equivalent circuit to TK2(α, β, γ).
+ */
 Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma);
 
-/** Equivalent to TK2, using ZZPhase and single-qubit gates, using 1,2 or 3 ZZ
+/**
+ * @brief Equivalent to TK2(α, 0, 0), using 1 ZZPhase gate.
  *
- * Using 1 or 2 ZZPhase yields approximate decompositions in the general case
- * (and only require a subset of the TK2 angles). On hardware, we would expect
- * the 2- and 3-ZZPhase decompositions to not be attractive, as the same
- * approximation fidelity can be obtained with ZZMax gates, which would
- * typically have the same or higher fidelity than ZZPhase.
+ * Using 1 ZZPhase gate we can implement any gate of the form TK2(α, 0, 0).
+ * This is the optimal 1-ZZPhase approximation for any TK2(α, β, γ), with
+ * respect to the squared trace fidelity metric.
+ *
+ * Requires 0.5 ≥ α ≥ 0.
+ *
+ * @return Circuit Equivalent circuit to TK2(α, β, 0).
  */
 Circuit approx_TK2_using_1xZZPhase(Expr alpha);
+
+/**
+ * @brief Equivalent to TK2(α, β, 0), using 2 ZZPhase gates.
+ *
+ * Using 2 ZZPhase gates we can implement any gate of the form TK2(α, β, 0).
+ * This is the optimal 2-ZZPhase approximation for any TK2(α, β, γ), with
+ * respect to the squared trace fidelity metric.
+ *
+ * Warning: in practice, we would not expect this decomposition to be attractive
+ * on real hardware, as the same approximation fidelity can be obtained using
+ * 2 ZZMax gates, which would typically have (same or) higher fidelity than
+ * variable angle ZZPhase gates.
+ *
+ * @return Circuit Equivalent circuit to TK2(α, β, 0).
+ */
 Circuit approx_TK2_using_2xZZPhase(Expr alpha, Expr beta);
+
+/**
+ * @brief Equivalent to TK2(α, β, γ), using 3 ZZPhase gates.
+ *
+ * This is an exact 3 ZZPhase decomposition of the TK2(α, β, γ) gate.
+ *
+ * Warning: in practice, we would not expect this decomposition to be attractive
+ * on real hardware, as the same approximation fidelity can be obtained using
+ * 3 ZZMax gates, which would typically have (same or) higher fidelity than
+ * variable angle ZZPhase gates.
+ *
+ * @return Circuit Equivalent circuit to TK2(α, β, γ).
+ */
 Circuit TK2_using_ZZPhase(Expr alpha, Expr beta, Expr gamma);
 
 /** Equivalent to XXPhase3, using three TK2 gates */

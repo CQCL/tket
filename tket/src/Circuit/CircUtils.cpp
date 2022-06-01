@@ -220,7 +220,7 @@ static std::pair<Eigen::Matrix4cd, Complex> decompose_VD(
   return {V, z0};
 }
 
-void replace_TK2_2CX(Circuit &circ) {
+static void replace_TK2_2CX(Circuit &circ) {
   VertexList bin;
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     if (circ.get_OpType_from_Vertex(v) != OpType::TK2) continue;
