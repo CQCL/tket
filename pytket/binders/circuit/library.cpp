@@ -38,20 +38,28 @@ void init_library(py::module &m) {
       "Equivalent to CX, using a TK2 and single-qubit gates");
   library_m.def(
       "_TK2_using_CX", &CircPool::TK2_using_CX,
-      "Equivalent to TK2, using up to 3 CX gates and single-qubit gates");
+      "Given expressions α, β and γ, return circuit equivalent to "
+      "TK2(α, β, γ) using up to 3 CX and single-qubit gates.\n\n"
+      "The parameters must be normalised to the Weyl chamber, i.e. it must "
+      "hold 0.5 ≥ 𝛼 ≥ 𝛽 ≥ |𝛾|.");
   library_m.def(
       "_approx_TK2_using_1xCX", &CircPool::approx_TK2_using_1xCX,
-      "Approximate equivalent to TK2, using 1 CX gate and single-qubit gates. "
-      "No TK2 gate angle is required for this approximation (it is assumed that"
-      " `NormalisedTK2Predicate` is satisfied).");
+      "Best approximation of TK2 using 1 CX gate and single-qubit gates, using "
+      "squared trace fidelity metric. "
+      "No parameter is required for this approximation. The returned circuit "
+      "will be equivalent to TK2(0.5, 0, 0).");
   library_m.def(
-      "_approx_TK2_using_2xCX", &CircPool::approx_TK2_using_1xCX,
-      "Approximate equivalent to TK2, using 2 CX gates and single-qubit gates. "
-      "Only requires the first two angles of the TK2 gate (it is assumed that "
-      "`NormalisedTK2Predicate` is satisfied).");
+      "_approx_TK2_using_2xCX", &CircPool::approx_TK2_using_2xCX,
+      "Best approximation of TK2 using 2 CX gates and single-qubit gates, "
+      "using squared trace fidelity metric. "
+      "Given expressions α and β, with 0.5 ≥ α ≥ β ≥ 0, return a circuit "
+      "equivalent to TK2(α, β, 0).");
   library_m.def(
       "_TK2_using_3xCX", &CircPool::TK2_using_3xCX,
-      "Equivalent to TK2, using 3 CX gates and single-qubit gates");
+      "Given expressions α, β and γ, return circuit equivalent to "
+      "TK2(α, β, γ) using 3 CX and single-qubit gates.\n\n"
+      "Prefer using `_TK2_using_CX` unless you wish to explicitly use 3 CX or "
+      "if α, β and γ are not normalised to the Weyl chamber.");
   library_m.def(
       "_CX_using_flipped_CX", &CircPool::CX_using_flipped_CX,
       "Equivalent to CX[0,1], using a CX[1,0] and four H gates");
