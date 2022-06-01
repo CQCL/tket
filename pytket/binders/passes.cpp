@@ -48,7 +48,7 @@ Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
       fid.ZZPhase_fidelity = py::cast<Func>(kwarg.second);
     } else {
       throw py::type_error(
-          "got an unexpected keyword argument '" + kwargstr + ";");
+          "got an unexpected keyword argument '" + kwargstr + "'");
     }
   }
   return fid;
