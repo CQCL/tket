@@ -49,8 +49,8 @@ list(APPEND DEPS_${COMP}
     Ops
     OpType
     PauliGraph
-    ZX
-    Utils)
+    Utils
+    ZX)
 
 foreach(DEP ${DEPS_${COMP}})
     target_include_directories(

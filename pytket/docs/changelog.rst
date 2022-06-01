@@ -6,7 +6,8 @@ x.y.z (unreleased)
 
 Minor new features:
 
-* New ``circuit_to_zx`` function to convert ``Circuit`` to ``ZXDiagram``.
+* New ``circuit_to_zx`` function to convert ``Circuit`` to ``ZXDiagram``, and
+  ``to_circuit`` to extract from a unitary diagram.
 * New ``to_graphviz_str`` method for ``ZXDiagram`` to generate a source string
   that can be rendered by the ``graphviz`` package.
 

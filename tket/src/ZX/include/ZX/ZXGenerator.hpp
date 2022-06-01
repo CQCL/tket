@@ -67,6 +67,8 @@ enum class ZXType {
   // A (postselected) Pauli X qubit in MBQC
   // Corresponds to a Z spider with phase either 0 (param=False) or 1
   // (param=True)
+  // Also used for unmeasured vertices in MBQC diagrams (connected to an Output
+  // via a Basic wire)
   PX,
 
   // A (postselected) Pauli Y qubit in MBQC
@@ -83,6 +85,8 @@ enum class ZXType {
    * Directed (non-commutative) generators
    */
   // Triangle [[1, 1], [0, 1]]
+  // Port 0 is the apex/input of the triangle, port 1 is the flat/output of the
+  // triangle
   Triangle,
 
   /**
@@ -161,7 +165,15 @@ class ZXGen {
    */
   virtual std::string get_name(bool latex = false) const = 0;
 
-  virtual bool operator==(const ZXGen& other) const;
+  /**
+   * Implementation of equivalence checking to eliminate ambiguous warnings
+   * for operator==.
+   *
+   * Assumes other matches the ZXType of this, so it is safe to cast.
+   */
+  virtual bool is_equal(const ZXGen& other) const;
+
+  bool operator==(const ZXGen& other) const;
 
   virtual ~ZXGen();
 
@@ -200,7 +212,7 @@ class BoundaryGen : public ZXGen {
   virtual ZXGen_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
   virtual std::string get_name(bool latex = false) const override;
-  virtual bool operator==(const ZXGen& other) const override;
+  virtual bool is_equal(const ZXGen& other) const override;
 
  protected:
   const QuantumType qtype_;
@@ -223,7 +235,7 @@ class BasicGen : public ZXGen {
   virtual std::optional<QuantumType> get_qtype() const override;
   virtual bool valid_edge(
       std::optional<unsigned> port, QuantumType qtype) const override;
-  virtual bool operator==(const ZXGen& other) const override;
+  virtual bool is_equal(const ZXGen& other) const override;
 
  protected:
   const QuantumType qtype_;
@@ -247,7 +259,7 @@ class PhasedGen : public BasicGen {
   virtual ZXGen_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
   virtual std::string get_name(bool latex = false) const override;
-  virtual bool operator==(const ZXGen& other) const override;
+  virtual bool is_equal(const ZXGen& other) const override;
 
  protected:
   const Expr param_;
@@ -270,7 +282,7 @@ class CliffordGen : public BasicGen {
   virtual ZXGen_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
   virtual std::string get_name(bool latex = false) const override;
-  virtual bool operator==(const ZXGen& other) const override;
+  virtual bool is_equal(const ZXGen& other) const override;
 
  protected:
   const bool param_;
@@ -310,7 +322,7 @@ class DirectedGen : public ZXDirected {
   virtual ZXGen_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
   virtual std::string get_name(bool latex = false) const override;
-  virtual bool operator==(const ZXGen& other) const override;
+  virtual bool is_equal(const ZXGen& other) const override;
 
   // Overrides from ZXDirected
   virtual unsigned n_ports() const override;
@@ -341,7 +353,7 @@ class ZXBox : public ZXDirected {
   virtual ZXGen_ptr symbol_substitution(
       const SymEngine::map_basic_basic& sub_map) const override;
   virtual std::string get_name(bool latex = false) const override;
-  virtual bool operator==(const ZXGen& other) const override;
+  virtual bool is_equal(const ZXGen& other) const override;
 
   // Overrides from ZXDirected
   virtual unsigned n_ports() const override;
