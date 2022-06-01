@@ -898,7 +898,10 @@ Circuit TK2_using_3xCX(Expr alpha, Expr beta, Expr gamma) {
 
 Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma) {
   // only handle TK2 if normalised to Weyl chamber
-  if (equiv_expr(alpha, 0.5, 4) && equiv_0(beta, 4) && equiv_0(gamma, 4)) {
+  if (equiv_0(alpha, 4) && equiv_0(beta, 4) && equiv_0(gamma, 4)) {
+    return Circuit(2);
+  } else if (
+      equiv_expr(alpha, 0.5, 4) && equiv_0(beta, 4) && equiv_0(gamma, 4)) {
     return approx_TK2_using_1xCX();
   } else if (equiv_0(gamma, 4)) {
     return approx_TK2_using_2xCX(alpha, beta);
