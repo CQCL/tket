@@ -153,6 +153,9 @@ PYBIND11_MODULE(architecture, m) {
           "The constructor for a RingArchitecture with some undirected "
           "connectivity between qubits.\n\n:param number of qubits",
           py::arg("nodes"))
+      .def(
+          "__deepcopy__",
+          [](const RingArch &arc, py::dict = py::dict()) { return arc; })
       .def("__repr__", [](const RingArch &arc) {
         return "<tket::RingArch, nodes=" + std::to_string(arc.n_nodes()) + ">";
       });
@@ -166,6 +169,9 @@ PYBIND11_MODULE(architecture, m) {
           "Construct a fully-connected architecture."
           "\n\n:param n: number of qubits",
           py::arg("n"))
+      .def(
+          "__deepcopy__",
+          [](const FullyConnected &arc, py::dict = py::dict()) { return arc; })
       .def(
           "__repr__",
           [](const FullyConnected &arc) {
