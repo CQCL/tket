@@ -11,6 +11,11 @@ Minor new features:
 * New ``to_graphviz_str`` method for ``ZXDiagram`` to generate a source string
   that can be rendered by the ``graphviz`` package.
 
+Fixes:
+
+* Fix serialization of `BackendInfo` for `RingArch` and `FullyConnected`
+  architectures.
+
 1.2.2 (May 2022)
 ----------------
 
