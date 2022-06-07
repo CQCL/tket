@@ -39,6 +39,9 @@ struct VertexProperties {
       : op(op), opgroup(opgroup) {}
 };
 
+/** A specific entry or exit port of a vertex */
+typedef unsigned port_t;
+
 /** Description of an edge in a circuit, representing a directional wire */
 struct EdgeProperties {
   EdgeType type; /**< type of wire */
