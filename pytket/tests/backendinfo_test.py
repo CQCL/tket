@@ -161,6 +161,10 @@ def test_fullyconnected() -> None:
     assert bi.n_nodes == 10
     assert type(bi.architecture) == FullyConnected
 
+    # https://github.com/CQCL/tket/issues/390
+    d = bi.to_dict()
+    assert BackendInfo.from_dict(d) == bi
+
 
 if __name__ == "__main__":
     test_nodes()
