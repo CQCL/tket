@@ -855,5 +855,51 @@ SCENARIO("Checking equality", "[boxes]") {
   }
 }
 
+SCENARIO("Checking box names", "[boxes]") {
+  GIVEN("CustomGate without parameters") {
+    Circuit setup(1);
+    setup.add_op<unsigned>(OpType::TK1, {0.3333, 1.111, 0.5555}, {0});
+    const std::string name("gate without params");
+    composite_def_ptr_t def = CompositeGateDef::define_gate(name, setup, {});
+    CustomGate g(def, {});
+    CHECK(g.get_name() == name);
+  }
+  GIVEN("CustomGate with 1 parameter") {
+    Circuit setup(1);
+    Sym a = SymTable::fresh_symbol("a");
+    Expr ea(a);
+    setup.add_op<unsigned>(OpType::TK1, {ea, 0.3333, 1.111}, {0});
+    const std::string prefix("gate with params");
+    composite_def_ptr_t def = CompositeGateDef::define_gate(prefix, setup, {a});
+    CustomGate g(def, {0.4444});
+    const std::string name = g.get_name();
+    CHECK(prefix != name);
+    CHECK_THAT(name, Catch::Matchers::StartsWith(prefix));
+
+    // Of course a bit naughty, it relies on the default precision
+    // not having too many decimal places (as 0.4444 is NOT exactly
+    // represented by a double!)
+    CHECK(name == "gate with params(0.4444)");
+  }
+  GIVEN("CustomGate with 3 parameters") {
+    Circuit setup(1);
+    Sym a = SymTable::fresh_symbol("a");
+    Sym b = SymTable::fresh_symbol("b");
+    Sym c = SymTable::fresh_symbol("c");
+    Expr ea(a);
+    Expr eb(b);
+    Expr ec(c);
+    setup.add_op<unsigned>(OpType::TK1, {ea, eb, ec}, {0});
+    const std::string prefix("gate with 3 params");
+    composite_def_ptr_t def =
+        CompositeGateDef::define_gate(prefix, setup, {a, b, c});
+    CustomGate g(def, {0.1111, 0.2222, 0.4444});
+    const std::string name = g.get_name();
+    CHECK(prefix != name);
+    CHECK_THAT(name, Catch::Matchers::StartsWith(prefix));
+    CHECK(name == "gate with 3 params(0.1111,0.2222,0.4444)");
+  }
+}
+
 }  // namespace test_Boxes
 }  // namespace tket
