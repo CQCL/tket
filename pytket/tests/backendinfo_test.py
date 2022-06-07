@@ -174,4 +174,4 @@ if __name__ == "__main__":
     test_misc()
     test_serialization()
     test_fullyconnected()
-    test_gate_errors_options
+    test_gate_errors_options()
