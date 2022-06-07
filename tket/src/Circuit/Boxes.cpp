@@ -285,20 +285,15 @@ bool CompositeGateDef::operator==(const CompositeGateDef &other) const {
   return this->get_def()->circuit_equality(*other.get_def(), {}, false);
 }
 
-static const composite_def_ptr_t &get_non_null_ptr(
-    const composite_def_ptr_t &gate) {
-  if (gate) {
-    return gate;
-  }
-  throw std::runtime_error(
-      "Null CompositeGateDef pointer passed to CustomGate");
-}
-
 CustomGate::CustomGate(
     const composite_def_ptr_t &gate, const std::vector<Expr> &params)
-    : Box(OpType::CustomGate, get_non_null_ptr(gate)->signature()),
-      gate_(gate),
-      params_(params) {
+    : Box(OpType::CustomGate), gate_(gate), params_(params) {
+  if (!gate) {
+    throw std::runtime_error(
+        "Null CompositeGateDef pointer passed to CustomGate");
+  }
+  signature_ = gate->signature();
+
   if (params_.size() != gate_->n_args()) throw InvalidParameterCount();
 }
 
