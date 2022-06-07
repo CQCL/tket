@@ -110,6 +110,8 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/ZX/test_ZXDiagram.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXAxioms.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXSimp.cpp
+    ${TKET_TESTS_DIR}/ZX/test_ZXRebase.cpp
     ${TKET_TESTS_DIR}/ZX/test_Flow.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXConverters.cpp
+    ${TKET_TESTS_DIR}/ZX/test_ZXExtraction.cpp
 )

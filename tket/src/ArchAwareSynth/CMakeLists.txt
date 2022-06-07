@@ -35,8 +35,8 @@ list(APPEND DEPS_${COMP}
     Placement
     Ops
     OpType
-    ZX
-    Utils)
+    Utils
+    ZX)
 
 foreach(DEP ${DEPS_${COMP}})
     target_include_directories(
