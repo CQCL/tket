@@ -154,6 +154,8 @@ double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx);
 
 /** Similarity measure of TK2(a, b, c) to SU(4) identity
  *
+ * a, b and c must be in the Weyl chamber, i.e. 1/2 >= a >= b >= |c|.
+ *
  *  @param a The XX interaction angle
  *  @param b The YY interaction angle
  *  @param c The ZZ interaction angle

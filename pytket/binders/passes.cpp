@@ -37,7 +37,7 @@ namespace tket {
 // given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
 Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
   Transforms::TwoQbFidelities fid;
-  for (const auto kwarg : kwargs) {
+  for (const auto &kwarg : kwargs) {
     const std::string kwargstr = py::cast<std::string>(kwarg.first);
     using Func = std::function<double(double)>;
     if (kwargstr == "CX_fidelity") {

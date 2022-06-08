@@ -695,7 +695,7 @@ def test_symbol_pauli_squash_1() -> None:
         u1 = c1.get_unitary()
         # PauliSquash does not preserve global phase.
         v = u @ u1.conjugate().transpose()
-        assert np.allclose(v, v[0, 0] * np.eye(4, 4, dtype=complex), atol=1e-7)
+        assert np.allclose(v, v[0, 0] * np.eye(4, 4, dtype=complex))
 
 
 def test_symbol_pauli_squash_2() -> None:

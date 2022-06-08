@@ -123,6 +123,17 @@ Expr cos_halfpi_times(const Expr& e);
 Expr sin_halfpi_times(const Expr& e);
 
 /**
+ * Return -e
+ *
+ * Expanding e after multiplying by -1 may reduce its size, especially when
+ * `minus_times` is applied repeatedly and should cancel out.
+ *
+ * @param e expression
+ * @return Expr -e
+ */
+Expr minus_times(const Expr& e);
+
+/**
  * Test if an expression is approximately zero
  *
  * @param e expression

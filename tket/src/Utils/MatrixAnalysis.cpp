@@ -321,11 +321,9 @@ double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx) {
       return trace_fidelity(0.5 - a, b, c);
     case 2:
       return trace_fidelity(0, 0, c);
-    case 3:
+    default:
       return 1.;
   }
-  // never happens
-  return -1.;
 }
 
 inline double mod(double d, double max) { return d - max * floor(d / max); }
@@ -414,7 +412,7 @@ get_information_content(const Eigen::Matrix4cd &X) {
   // move k into Weyl chamber ie 1/2 >= k_x >= k_y >= |k_z|
   //   1. permutate ks
   //   2. modulo 1. and 1/2
-  std::vector<int> ind_order{0, 1, 2};
+  std::array<int, 3> ind_order{0, 1, 2};
   std::sort(ind_order.begin(), ind_order.end(), [&k](int i, int j) {
     return dist_from_weyl(k(i)) > dist_from_weyl(k(j));
   });

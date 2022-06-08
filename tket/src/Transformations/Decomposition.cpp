@@ -424,14 +424,13 @@ Transform decompose_MolmerSorensen() {
 
 static double get_ZZPhase_fidelity(
     const std::array<double, 3> &k, unsigned nb_cx) {
-  auto [a, b, c] = k;
   switch (nb_cx) {
     case 0:
-      return trace_fidelity(a, b, c);
+      return trace_fidelity(k[0], k[1], k[2]);
     case 1:
-      return trace_fidelity(0, b, c);
+      return trace_fidelity(0, k[1], k[2]);
     case 2:
-      return trace_fidelity(0, 0, c);
+      return trace_fidelity(0, 0, k[2]);
     default:
       return 1.;
   }
@@ -441,8 +440,8 @@ static double get_ZZPhase_fidelity(
 // the highest fidelity.
 // If no fidelities are provided, (best_optype, n_gates) is left unchanged.
 static void best_noise_aware_decomposition(
-    std::array<double, 3> angles, TwoQbFidelities fid, OpType &best_optype,
-    unsigned &n_gates) {
+    const std::array<double, 3> &angles, const TwoQbFidelities &fid,
+    OpType &best_optype, unsigned &n_gates) {
   double max_fid = 0.;
 
   // Try decomposition using CX or equivalent gates.
@@ -501,8 +500,8 @@ static void best_noise_aware_decomposition(
 // Relies on default values of best_optype and n_gates if no optimisation can be
 // performed.
 static void best_exact_decomposition(
-    std::array<Expr, 3> angles, TwoQbFidelities fid, OpType &best_optype,
-    unsigned &n_gates) {
+    const std::array<Expr, 3> &angles, const TwoQbFidelities &fid,
+    OpType &best_optype, unsigned &n_gates) {
   // Prefer CX/ZZMax when possible.
   if (fid.CX_fidelity || fid.ZZMax_fidelity) {
     bool zzmax_is_better =
@@ -536,19 +535,19 @@ static void best_exact_decomposition(
   }
 }
 
-// Whether the TK2 angles are in the Weyl chamber.
+// Whether the TK2 angles are normalised.
 //
-// For numerical values: 1/2 >= k_x >= k_y >= |k_z|
-// Further, we demand that all symbolic values come before numerical values.
-static bool in_weyl_chamber(std::array<Expr, 3> k) {
+// Numerical values must be in the Weyl chamber, ie 1/2 >= k_x >= k_y >= |k_z|.
+// Symbolic values must come before any numerical value in the array.
+static bool in_weyl_chamber(const std::array<Expr, 3> &k) {
   bool is_symbolic = true;
   double last_val = .5;
   for (unsigned i = 0; i < k.size(); ++i) {
     std::optional<double> eval = eval_expr_mod(k[i], 4);
     if (eval) {
       is_symbolic = false;
-      double abs_eval = std::min(*eval, -(*eval) + 4);
       if (i + 1 == k.size()) {
+        double abs_eval = std::min(*eval, -(*eval) + 4);
         if (abs_eval > last_val) {
           return false;
         }
@@ -583,7 +582,7 @@ static bool in_weyl_chamber(std::array<Expr, 3> k) {
  * @return Circuit TK2-equivalent circuit
  */
 static Circuit TK2_replacement(
-    std::array<Expr, 3> angles, const TwoQbFidelities &fid) {
+    const std::array<Expr, 3> &angles, const TwoQbFidelities &fid) {
   if (!in_weyl_chamber(angles)) {
     throw NotValid("TK2 params are not normalised to Weyl chamber.");
   }
@@ -591,29 +590,25 @@ static Circuit TK2_replacement(
   unsigned n_gates = 3;             // default to 3x CX
 
   // Try to evaluate exprs to doubles.
-  bool is_symbolic = false;
-  std::vector<double> angles_eval;
+  std::array<double, 3> angles_eval;
+  unsigned last_angle = 0;
   for (const Expr &e : angles) {
     std::optional<double> eval = eval_expr_mod(e);
-    if (!eval) {
-      is_symbolic = true;
-      break;
+    if (eval) {
+      angles_eval[last_angle++] = *eval;
     } else {
-      angles_eval.push_back(*eval);
+      break;
     }
   }
 
-  if (is_symbolic) {
+  if (last_angle <= 2) {
+    // Not all angles could be resolved numerically.
     // For symbolic angles, we can only provide an exact decomposition.
     best_exact_decomposition(angles, fid, best_optype, n_gates);
   } else {
     // For non-symbolic angles, we can find the optimal number of gates
     // using the gate fidelities provided.
-    std::array<double, 3> angles_float = {
-        angles_eval[0], angles_eval[1], angles_eval[2]};
-
-    // Try gate sets and see if there is a good noise-aware decomposition.
-    best_noise_aware_decomposition(angles_float, fid, best_optype, n_gates);
+    best_noise_aware_decomposition(angles_eval, fid, best_optype, n_gates);
   }
 
   // Build circuit for substitution.
@@ -695,10 +690,6 @@ Transform decompose_TK2(const TwoQbFidelities &fid) {
   return Transform([fid](Circuit &circ) {
     bool success = false;
 
-    // The gates that we currently support.
-    const std::set fixed_angle({OpType::CX, OpType::ZZMax});
-    const std::set variable_angle({OpType::ZZPhase});
-
     VertexList bin;
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
       if (circ.get_OpType_from_Vertex(v) != OpType::TK2) continue;
@@ -724,21 +715,34 @@ Transform decompose_ZZPhase() {
     bool success = decompose_PhaseGadgets().apply(circ);
     VertexList bin;
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-      if (circ.get_OpType_from_Vertex(v) == OpType::PhaseGadget) {
-        const Op_ptr g = circ.get_Op_ptr_from_Vertex(v);
-        circ.dag[v] = {get_op_ptr(OpType::ZZPhase, g->get_params()[0])};
-      } else if (circ.get_OpType_from_Vertex(v) == OpType::XXPhase) {
-        success = true;
-        const Op_ptr g = circ.get_Op_ptr_from_Vertex(v);
-        Circuit sub = CircPool::XXPhase_using_ZZPhase(g->get_params()[0]);
-        circ.substitute(sub, v, Circuit::VertexDeletion::No);
-        bin.push_back(v);
-      } else if (circ.get_OpType_from_Vertex(v) == OpType::YYPhase) {
-        success = true;
-        const Op_ptr g = circ.get_Op_ptr_from_Vertex(v);
-        Circuit sub = CircPool::YYPhase_using_ZZPhase(g->get_params()[0]);
-        circ.substitute(sub, v, Circuit::VertexDeletion::No);
-        bin.push_back(v);
+      switch (circ.get_OpType_from_Vertex(v)) {
+        case OpType::PhaseGadget: {
+          success = true;
+          const Op_ptr g = circ.get_Op_ptr_from_Vertex(v);
+          TKET_ASSERT(g->get_params().size() == 1);
+          circ.dag[v] = {get_op_ptr(OpType::ZZPhase, g->get_params()[0])};
+          break;
+        }
+        case OpType::XXPhase: {
+          success = true;
+          const Op_ptr g = circ.get_Op_ptr_from_Vertex(v);
+          TKET_ASSERT(g->get_params().size() == 1);
+          Circuit sub = CircPool::XXPhase_using_ZZPhase(g->get_params()[0]);
+          circ.substitute(sub, v, Circuit::VertexDeletion::No);
+          bin.push_back(v);
+          break;
+        }
+        case OpType::YYPhase: {
+          success = true;
+          const Op_ptr g = circ.get_Op_ptr_from_Vertex(v);
+          TKET_ASSERT(g->get_params().size() == 1);
+          Circuit sub = CircPool::YYPhase_using_ZZPhase(g->get_params()[0]);
+          circ.substitute(sub, v, Circuit::VertexDeletion::No);
+          bin.push_back(v);
+          break;
+        }
+        default:
+          break;
       }
     }
     circ.remove_vertices(

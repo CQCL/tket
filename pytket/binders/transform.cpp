@@ -39,7 +39,7 @@ namespace tket {
 // given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
 Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
   Transforms::TwoQbFidelities fid;
-  for (const auto kwarg : kwargs) {
+  for (const auto &kwarg : kwargs) {
     const std::string kwargstr = py::cast<std::string>(kwarg.first);
     using Func = std::function<double(double)>;
     if (kwargstr == "CX_fidelity") {
@@ -219,7 +219,7 @@ PYBIND11_MODULE(transform, m) {
           "If no fidelities are provided, the TK2 gates will be decomposed "
           "exactly using CX gates.\n\n"
           "All TK2(α, β, γ) gates must be normalised to the Weyl chamber, i.e. "
-          "0.5 ≥ 𝛼 ≥ 𝛽 ≥ |𝛾|."
+          "`0.5 ≥ 𝛼 ≥ 𝛽 ≥ |𝛾|`."
           "\n\n"
           "Gate fidelities are passed as keyword arguments to perform "
           "noise-aware decompositions. "

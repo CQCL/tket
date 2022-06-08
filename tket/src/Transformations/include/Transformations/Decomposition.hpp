@@ -97,8 +97,6 @@ Transform decompose_MolmerSorensen();
  *
  * We currently support CX, ZZMax and ZZPhase.
  *
- * In the Python layer, this struct is replaced by keyword arguments.
- *
  * This is meant to be easily extensible when further gate types will be
  * supported.
  *

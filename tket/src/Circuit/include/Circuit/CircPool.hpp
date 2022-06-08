@@ -187,55 +187,55 @@ const Circuit &ECR_using_CX();
 const Circuit &ZZMax_using_CX();
 
 /** Equivalent to CRz, using a TK2 and TK1 gates */
-Circuit CRz_using_TK2(Expr alpha);
+Circuit CRz_using_TK2(const Expr &alpha);
 
 /** Equivalent to CRz, using CX and Rz gates */
-Circuit CRz_using_CX(Expr alpha);
+Circuit CRz_using_CX(const Expr &alpha);
 
 /** Equivalent to CRx, using a TK2 and TK1 gates */
-Circuit CRx_using_TK2(Expr alpha);
+Circuit CRx_using_TK2(const Expr &alpha);
 
 /** Equivalent to CRx, using CX, H and Rx gates */
-Circuit CRx_using_CX(Expr alpha);
+Circuit CRx_using_CX(const Expr &alpha);
 
 /** Equivalent to CRy, using a TK2 and TK1 gates */
-Circuit CRy_using_TK2(Expr alpha);
+Circuit CRy_using_TK2(const Expr &alpha);
 
 /** Equivalent to CRy, using CX and Ry gates */
-Circuit CRy_using_CX(Expr alpha);
+Circuit CRy_using_CX(const Expr &alpha);
 
 /** Equivalent to CU1, using a TK2 and TK1 gates */
-Circuit CU1_using_TK2(Expr lambda);
+Circuit CU1_using_TK2(const Expr &lambda);
 
 /** Equivalent to CU1, using CX and U1 gates */
-Circuit CU1_using_CX(Expr lambda);
+Circuit CU1_using_CX(const Expr &lambda);
 
 /** Equivalent to CU1, using CX, U1 and U3 gates */
-Circuit CU3_using_CX(Expr theta, Expr phi, Expr lambda);
+Circuit CU3_using_CX(const Expr &theta, const Expr &phi, const Expr &lambda);
 
 /** Equivalent to ISWAP, using a TK2 gate */
-Circuit ISWAP_using_TK2(Expr alpha);
+Circuit ISWAP_using_TK2(const Expr &alpha);
 
 /** Equivalent to ISWAP, using CX, U3 and Rz gates */
-Circuit ISWAP_using_CX(Expr alpha);
+Circuit ISWAP_using_CX(const Expr &alpha);
 
 /** Equivalent to XXPhase, using a TK2 gate */
-Circuit XXPhase_using_TK2(Expr alpha);
+Circuit XXPhase_using_TK2(const Expr &alpha);
 
 /** Equivalent to XXPhase, using CX and U3 gates */
-Circuit XXPhase_using_CX(Expr alpha);
+Circuit XXPhase_using_CX(const Expr &alpha);
 
 /** Equivalent to YYPhase, using a TK2 gate */
-Circuit YYPhase_using_TK2(Expr alpha);
+Circuit YYPhase_using_TK2(const Expr &alpha);
 
 /** Equivalent to YYPhase, using CX, Rz and U3 gates */
-Circuit YYPhase_using_CX(Expr alpha);
+Circuit YYPhase_using_CX(const Expr &alpha);
 
 /** Equivalent to ZZPhase, using a TK2 gate */
-Circuit ZZPhase_using_TK2(Expr alpha);
+Circuit ZZPhase_using_TK2(const Expr &alpha);
 
 /** Equivalent to ZZPhase, using CX and Rz gates */
-Circuit ZZPhase_using_CX(Expr alpha);
+Circuit ZZPhase_using_CX(const Expr &alpha);
 
 /**
  * @brief Equivalent to XXPhase, using ZZPhase and H gates.
@@ -243,7 +243,7 @@ Circuit ZZPhase_using_CX(Expr alpha);
  * @param alpha The gate parameter to the XXPhase gate.
  * @return Circuit Equivalent circuit using ZZPhase.
  */
-Circuit XXPhase_using_ZZPhase(Expr alpha);
+Circuit XXPhase_using_ZZPhase(const Expr &alpha);
 
 /**
  * @brief Equivalent to YYPhase, using ZZPhase and V/Vdg gates.
@@ -251,7 +251,7 @@ Circuit XXPhase_using_ZZPhase(Expr alpha);
  * @param alpha The gate parameter to the YYPhase gate.
  * @return Circuit Equivalent circuit using ZZPhase.
  */
-Circuit YYPhase_using_ZZPhase(Expr alpha);
+Circuit YYPhase_using_ZZPhase(const Expr &alpha);
 
 /**
  * @brief Equivalent to TK2(0.5, 0, 0), using a single CX gate.
@@ -276,7 +276,7 @@ Circuit approx_TK2_using_1xCX();
  *
  * @return Circuit Equivalent circuit to TK2(α, β, 0).
  */
-Circuit approx_TK2_using_2xCX(Expr alpha, Expr beta);
+Circuit approx_TK2_using_2xCX(const Expr &alpha, const Expr &beta);
 
 /**
  * @brief Equivalent to TK2(α, β, γ), using 3 CX gates.
@@ -287,7 +287,7 @@ Circuit approx_TK2_using_2xCX(Expr alpha, Expr beta);
  *
  * @return Circuit Equivalent circuit to TK2(α, β, γ).
  */
-Circuit TK2_using_3xCX(Expr alpha, Expr beta, Expr gamma);
+Circuit TK2_using_3xCX(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 /**
  * @brief Equivalent to TK2(α, β, γ) with minimal number of CX gates.
@@ -303,7 +303,7 @@ Circuit TK2_using_3xCX(Expr alpha, Expr beta, Expr gamma);
  *
  * @return Circuit Equivalent circuit to TK2(α, β, γ).
  */
-Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma);
+Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 /**
  * @brief Equivalent to TK2(α, 0, 0), using 1 ZZPhase gate.
@@ -316,7 +316,7 @@ Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma);
  *
  * @return Circuit Equivalent circuit to TK2(α, β, 0).
  */
-Circuit approx_TK2_using_1xZZPhase(Expr alpha);
+Circuit approx_TK2_using_1xZZPhase(const Expr &alpha);
 
 /**
  * @brief Equivalent to TK2(α, β, 0), using 2 ZZPhase gates.
@@ -332,7 +332,7 @@ Circuit approx_TK2_using_1xZZPhase(Expr alpha);
  *
  * @return Circuit Equivalent circuit to TK2(α, β, 0).
  */
-Circuit approx_TK2_using_2xZZPhase(Expr alpha, Expr beta);
+Circuit approx_TK2_using_2xZZPhase(const Expr &alpha, const Expr &beta);
 
 /**
  * @brief Equivalent to TK2(α, β, γ), using 3 ZZPhase gates.
@@ -346,35 +346,36 @@ Circuit approx_TK2_using_2xZZPhase(Expr alpha, Expr beta);
  *
  * @return Circuit Equivalent circuit to TK2(α, β, γ).
  */
-Circuit TK2_using_ZZPhase(Expr alpha, Expr beta, Expr gamma);
+Circuit TK2_using_ZZPhase(
+    const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 /** Equivalent to XXPhase3, using three TK2 gates */
-Circuit XXPhase3_using_TK2(Expr alpha);
+Circuit XXPhase3_using_TK2(const Expr &alpha);
 
 /** Equivalent to 3-qubit MS interaction, using CX and U3 gates */
-Circuit XXPhase3_using_CX(Expr alpha);
+Circuit XXPhase3_using_CX(const Expr &alpha);
 
 /** Equivalent to ESWAP, using a TK2 and (Clifford) TK1 gates */
-Circuit ESWAP_using_TK2(Expr alpha);
+Circuit ESWAP_using_TK2(const Expr &alpha);
 
 /** Equivalent to ESWAP, using CX, X, S, Ry and U1 gates */
-Circuit ESWAP_using_CX(Expr alpha);
+Circuit ESWAP_using_CX(const Expr &alpha);
 
 /** Equivalent to FSim, using a TK2 and TK1 gates */
-Circuit FSim_using_TK2(Expr alpha, Expr beta);
+Circuit FSim_using_TK2(const Expr &alpha, const Expr &beta);
 
 /** Equivalent to FSim, using CX, X, S, U1 and U3 gates */
-Circuit FSim_using_CX(Expr alpha, Expr beta);
+Circuit FSim_using_CX(const Expr &alpha, const Expr &beta);
 
 /** Equivalent to PhasedISWAP, using a TK2 and Rz gates */
-Circuit PhasedISWAP_using_TK2(Expr p, Expr t);
+Circuit PhasedISWAP_using_TK2(const Expr &p, const Expr &t);
 
 /** Equivalent to PhasedISWAP, using CX, U3 and Rz gates */
-Circuit PhasedISWAP_using_CX(Expr p, Expr t);
+Circuit PhasedISWAP_using_CX(const Expr &p, const Expr &t);
 
 /** Unwrap NPhasedX, into number_of_qubits PhasedX gates */
 Circuit NPhasedX_using_PhasedX(
-    unsigned int number_of_qubits, Expr alpha, Expr beta);
+    unsigned int number_of_qubits, const Expr &alpha, const Expr &beta);
 
 // converts a TK1 gate to a PhasedXRz gate
 Circuit tk1_to_PhasedXRz(
