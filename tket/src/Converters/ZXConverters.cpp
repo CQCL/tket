@@ -21,8 +21,8 @@ namespace tket {
 
 using namespace zx;
 
-enum class PortType { In, Out };
-typedef std::pair<VertPort, PortType> TypedVertPort;
+enum class ZXPortType { In, Out };
+typedef std::pair<VertPort, ZXPortType> TypedVertPort;
 typedef std::pair<ZXVert, std::optional<unsigned>> ZXVertPort;
 typedef std::vector<ZXVertPort> ZXVertPortVec;
 typedef boost::bimap<ZXVert, Vertex> BoundaryVertMap;
@@ -128,7 +128,7 @@ BoundaryVertMap circuit_to_zx_recursive(
         ZXVert zx_vert = zxd.add_vertex(ZXType::Input, QuantumType::Quantum);
         if (add_boundary) zxd.add_boundary(zx_vert);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::Out}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::Out}, {zx_vert, std::nullopt}});
         bmap.insert({zx_vert, vert});
         break;
       }
@@ -136,7 +136,7 @@ BoundaryVertMap circuit_to_zx_recursive(
         ZXVert zx_vert = zxd.add_vertex(ZXType::Output, QuantumType::Quantum);
         if (add_boundary) zxd.add_boundary(zx_vert);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::In}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::In}, {zx_vert, std::nullopt}});
         bmap.insert({zx_vert, vert});
         break;
       }
@@ -144,7 +144,7 @@ BoundaryVertMap circuit_to_zx_recursive(
         ZXVert zx_vert = zxd.add_vertex(ZXType::Input, QuantumType::Classical);
         if (add_boundary) zxd.add_boundary(zx_vert);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::Out}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::Out}, {zx_vert, std::nullopt}});
         bmap.insert({zx_vert, vert});
         break;
       }
@@ -152,7 +152,7 @@ BoundaryVertMap circuit_to_zx_recursive(
         ZXVert zx_vert = zxd.add_vertex(ZXType::Output, QuantumType::Classical);
         if (add_boundary) zxd.add_boundary(zx_vert);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::In}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::In}, {zx_vert, std::nullopt}});
         bmap.insert({zx_vert, vert});
         break;
       }
@@ -165,9 +165,9 @@ BoundaryVertMap circuit_to_zx_recursive(
       case OpType::H: {
         ZXVert zx_vert = zxd.add_vertex(ZXType::Hbox, QuantumType::Quantum);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::In}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::In}, {zx_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 0}, PortType::Out}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::Out}, {zx_vert, std::nullopt}});
         zxd.multiply_scalar(0.5);
         break;
       }
@@ -175,36 +175,36 @@ BoundaryVertMap circuit_to_zx_recursive(
         ZXVert zx_vert = zxd.add_vertex(
             ZXType::ZSpider, op->get_params()[0], QuantumType::Quantum);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::In}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::In}, {zx_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 0}, PortType::Out}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::Out}, {zx_vert, std::nullopt}});
         break;
       }
       case OpType::Rx: {
         ZXVert zx_vert = zxd.add_vertex(
             ZXType::XSpider, op->get_params()[0], QuantumType::Quantum);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::In}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::In}, {zx_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 0}, PortType::Out}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::Out}, {zx_vert, std::nullopt}});
         break;
       }
       case OpType::X: {
         ZXVert zx_vert =
             zxd.add_vertex(ZXType::XSpider, 1, QuantumType::Quantum);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::In}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::In}, {zx_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 0}, PortType::Out}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::Out}, {zx_vert, std::nullopt}});
         break;
       }
       case OpType::Z: {
         ZXVert zx_vert =
             zxd.add_vertex(ZXType::ZSpider, 1, QuantumType::Quantum);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::In}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::In}, {zx_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 0}, PortType::Out}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::Out}, {zx_vert, std::nullopt}});
         break;
       }
       case OpType::CX: {
@@ -214,13 +214,13 @@ BoundaryVertMap circuit_to_zx_recursive(
             zxd.add_vertex(ZXType::ZSpider, 0, QuantumType::Quantum);
         zxd.add_wire(zx_x_vert, zx_z_vert);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::In}, {zx_z_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::In}, {zx_z_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 0}, PortType::Out}, {zx_z_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::Out}, {zx_z_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 1}, PortType::In}, {zx_x_vert, std::nullopt}});
+            {{{vert, 1}, ZXPortType::In}, {zx_x_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 1}, PortType::Out}, {zx_x_vert, std::nullopt}});
+            {{{vert, 1}, ZXPortType::Out}, {zx_x_vert, std::nullopt}});
         zxd.multiply_scalar(2);
         break;
       }
@@ -231,13 +231,13 @@ BoundaryVertMap circuit_to_zx_recursive(
             zxd.add_vertex(ZXType::ZSpider, 0, QuantumType::Quantum);
         zxd.add_wire(zx_za_vert, zx_zb_vert, ZXWireType::H);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::In}, {zx_za_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::In}, {zx_za_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 0}, PortType::Out}, {zx_za_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::Out}, {zx_za_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 1}, PortType::In}, {zx_zb_vert, std::nullopt}});
+            {{{vert, 1}, ZXPortType::In}, {zx_zb_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 1}, PortType::Out}, {zx_zb_vert, std::nullopt}});
+            {{{vert, 1}, ZXPortType::Out}, {zx_zb_vert, std::nullopt}});
         break;
       }
       case OpType::Measure: {
@@ -248,13 +248,13 @@ BoundaryVertMap circuit_to_zx_recursive(
         ZXVert zx_delete_vert =
             zxd.add_vertex(ZXType::ZSpider, 0, QuantumType::Classical);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::In}, {zx_measure_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::In}, {zx_measure_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 0}, PortType::Out}, {zx_measure_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::Out}, {zx_measure_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 1}, PortType::In}, {zx_delete_vert, std::nullopt}});
+            {{{vert, 1}, ZXPortType::In}, {zx_delete_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 1}, PortType::Out}, {zx_measure_vert, std::nullopt}});
+            {{{vert, 1}, ZXPortType::Out}, {zx_measure_vert, std::nullopt}});
         break;
       }
       case OpType::Reset: {
@@ -266,18 +266,18 @@ BoundaryVertMap circuit_to_zx_recursive(
             zxd.add_vertex(ZXType::XSpider, 0, QuantumType::Quantum);
         zxd.multiply_scalar(0.5);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::In}, {zx_discard_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::In}, {zx_discard_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 0}, PortType::Out}, {zx_reset_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::Out}, {zx_reset_vert, std::nullopt}});
         break;
       }
       case OpType::Collapse: {
         ZXVert zx_vert =
             zxd.add_vertex(ZXType::ZSpider, QuantumType::Classical);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::In}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::In}, {zx_vert, std::nullopt}});
         vert_lookup.insert(
-            {{{vert, 0}, PortType::Out}, {zx_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::Out}, {zx_vert, std::nullopt}});
         break;
       }
       case OpType::Create: {
@@ -285,14 +285,14 @@ BoundaryVertMap circuit_to_zx_recursive(
             zxd.add_vertex(ZXType::XSpider, 0, QuantumType::Quantum);
         zxd.multiply_scalar(0.5);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::Out}, {zx_init_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::Out}, {zx_init_vert, std::nullopt}});
         break;
       }
       case OpType::Discard: {
         ZXVert zx_discard_vert =
             zxd.add_vertex(ZXType::ZSpider, 0, QuantumType::Classical);
         vert_lookup.insert(
-            {{{vert, 0}, PortType::In}, {zx_discard_vert, std::nullopt}});
+            {{{vert, 0}, ZXPortType::In}, {zx_discard_vert, std::nullopt}});
         break;
       }
       case OpType::Conditional: {
@@ -379,10 +379,10 @@ BoundaryVertMap circuit_to_zx_recursive(
           // ports, the gate path should use the i + port_conditions.size()
           // port.
           vert_lookup.insert(
-              {{{vert, i + port_conditions_size}, PortType::In},
+              {{{vert, i + port_conditions_size}, ZXPortType::In},
                boundary.first});
           vert_lookup.insert(
-              {{{vert, i + port_conditions_size}, PortType::Out},
+              {{{vert, i + port_conditions_size}, ZXPortType::Out},
                boundary.second});
         }
         // Use either a Z spider or a AND operator to connect the master
@@ -416,7 +416,7 @@ BoundaryVertMap circuit_to_zx_recursive(
                 {{vert_s, source_port}, {copy_vert, std::nullopt}});
           }
           if (port_conditions[i]) {
-            vert_lookup.insert({{{vert, i}, PortType::In}, and_inputs[i]});
+            vert_lookup.insert({{{vert, i}, ZXPortType::In}, and_inputs[i]});
           } else {
             ZXVert x_vert =
                 zxd.add_vertex(ZXType::XSpider, 1, QuantumType::Classical);
@@ -424,7 +424,7 @@ BoundaryVertMap circuit_to_zx_recursive(
                 and_inputs[i].first, x_vert, ZXWireType::Basic,
                 QuantumType::Classical, and_inputs[i].second);
             vert_lookup.insert(
-                {{{vert, i}, PortType::In}, {x_vert, std::nullopt}});
+                {{{vert, i}, ZXPortType::In}, {x_vert, std::nullopt}});
           }
         }
         break;
@@ -458,28 +458,28 @@ BoundaryVertMap circuit_to_zx_recursive(
             port_t port = circ.get_target_port(q_in_holes[i]);
             Vertex inp = replacement.get_in(Qubit(i));
             vert_lookup.insert(
-                {{{vert, port}, PortType::In},
+                {{{vert, port}, ZXPortType::In},
                  {box_bm.right.at(inp), std::nullopt}});
           }
           for (unsigned i = 0; i < q_out_holes.size(); i++) {
             port_t port = circ.get_source_port(q_out_holes[i]);
             Vertex outp = replacement.get_out(Qubit(i));
             vert_lookup.insert(
-                {{{vert, port}, PortType::Out},
+                {{{vert, port}, ZXPortType::Out},
                  {box_bm.right.at(outp), std::nullopt}});
           }
           for (unsigned i = 0; i < c_in_holes.size(); i++) {
             port_t port = circ.get_target_port(c_in_holes[i]);
             Vertex inp = replacement.get_in(Bit(i));
             vert_lookup.insert(
-                {{{vert, port}, PortType::In},
+                {{{vert, port}, ZXPortType::In},
                  {box_bm.right.at(inp), std::nullopt}});
           }
           for (unsigned i = 0; i < c_out_holes.size(); i++) {
             port_t port = circ.get_source_port(c_out_holes[i]);
             Vertex outp = replacement.get_out(Bit(i));
             vert_lookup.insert(
-                {{{vert, port}, PortType::Out},
+                {{{vert, port}, ZXPortType::Out},
                  {box_bm.right.at(outp), std::nullopt}});
           }
         } else {
@@ -519,9 +519,9 @@ BoundaryVertMap circuit_to_zx_recursive(
     }
 
     ZXVertPort zx_vp_s =
-        vert_lookup.at(TypedVertPort(VertPort(v_s, p_s), PortType::Out));
+        vert_lookup.at(TypedVertPort(VertPort(v_s, p_s), ZXPortType::Out));
     ZXVertPort zx_vp_t =
-        vert_lookup.at(TypedVertPort(VertPort(v_t, p_t), PortType::In));
+        vert_lookup.at(TypedVertPort(VertPort(v_t, p_t), ZXPortType::In));
     if (circ.get_edgetype(edge) == EdgeType::Quantum) {
       zxd.add_wire(
           zx_vp_s.first, zx_vp_t.first, ZXWireType::Basic, QuantumType::Quantum,
