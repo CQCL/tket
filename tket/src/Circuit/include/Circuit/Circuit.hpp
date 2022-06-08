@@ -699,25 +699,28 @@ class Circuit {
    * Which Pauli, if any, commutes with the operation at a given vertex and port
    *
    * @param vert vertex
+   * @param port_type type of specified port
    * @param port port number at which Pauli should commute
    * @return a Pauli that commutes with the given operation
    * @retval std::nullopt no Pauli commutes
    * @retval Pauli::I every Pauli commutes
    * @throw NotValid if operation is not a gate
    */
-  std::optional<Pauli> commuting_basis(const Vertex &vert, port_t port) const;
+  std::optional<Pauli> commuting_basis(
+      const Vertex &vert, PortType port_type, port_t port) const;
 
   /**
    * Whether the operation at a vertex commutes with a Pauli at the given port
    *
    * @param vert vertex
    * @param colour Pauli operation type
+   * @param port_type type of specified port
    * @param port port number at which Pauli may commute
    * @throw NotValid if operation is not a gate
    */
   bool commutes_with_basis(
       const Vertex &vert, const std::optional<Pauli> &colour,
-      port_t port) const;
+      PortType port_type, port_t port) const;
 
   /**
    * Convert all quantum and classical bits to use default registers.

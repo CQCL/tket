@@ -42,6 +42,9 @@ struct VertexProperties {
 /** A specific entry or exit port of a vertex */
 typedef unsigned port_t;
 
+/** Whether a vertex port is out-going (source) or in-coming (target) */
+enum class PortType { Source, Target };
+
 /** Description of an edge in a circuit, representing a directional wire */
 struct EdgeProperties {
   EdgeType type; /**< type of wire */

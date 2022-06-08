@@ -111,7 +111,7 @@ static bool remove_redundancy(
          port++) {
       if (circ.get_OpType_from_Vertex(kids[port]) == OpType::Measure) {
         z_followed_by_measures &=
-            circ.commutes_with_basis(vert, Pauli::Z, port);
+            circ.commutes_with_basis(vert, Pauli::Z, PortType::Source, port);
       } else {
         z_followed_by_measures = false;
       }
@@ -215,9 +215,10 @@ static bool commute_singles_to_front(Circuit &circ) {
         if (prev_op->get_desc().is_gate() &&
             circ.n_in_edges_of_type(prev_v, EdgeType::Quantum) == 1) {
           const std::optional<Pauli> prev_colour =
-              circ.commuting_basis(prev_v, ports.second);
+              circ.commuting_basis(prev_v, PortType::Target, ports.second);
 
-          if (circ.commutes_with_basis(current_v, prev_colour, ports.first)) {
+          if (circ.commutes_with_basis(
+                  current_v, prev_colour, PortType::Source, ports.first)) {
             // subsequent op on qubit path is a single qubit gate
             // and commutes with current multi qubit gate
             success = true;
