@@ -77,12 +77,11 @@ static std::optional<std::pair<EdgeVec, EdgeVec>> try_find_commute_edges(
   EdgeVec current_edges = circ.get_in_edges(vert);
   EdgeVec initial_edges(current_edges.begin(), current_edges.end());
 
-  Op_ptr current_op = circ.get_Op_ptr_from_Vertex(vert);
   // Record the colour of each port of the vertex.
   std::vector<std::optional<Pauli>> colours;
   for (const Edge &edge : current_edges) {
     port_t target_port = circ.get_target_port(edge);
-    std::optional<Pauli> colour = current_op->commuting_basis(target_port);
+    std::optional<Pauli> colour = circ.commuting_basis(vert, target_port);
     colours.push_back(colour);
   }
   // Stores all edges which the vertex can be commuted to
@@ -108,7 +107,7 @@ static std::optional<std::pair<EdgeVec, EdgeVec>> try_find_commute_edges(
 
       // Check commute
       port_t source_port = circ.get_source_port(current_edges[i]);
-      if (!prev_op->commutes_with_basis(colours[i], source_port)) {
+      if (!circ.commutes_with_basis(prev_vert, colours[i], source_port)) {
         // not commute
         return std::nullopt;
       } else {

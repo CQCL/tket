@@ -668,4 +668,16 @@ bool Circuit::detect_singleq_unitary_op(const Vertex &vert) const {
   return desc.is_gate() && desc.is_singleq_unitary();
 }
 
+std::optional<Pauli> Circuit::commuting_basis(
+    const Vertex &vert, port_t port) const {
+  // FIXME
+  return get_Op_ptr_from_Vertex(vert)->commuting_basis(port);
+}
+
+bool Circuit::commutes_with_basis(
+    const Vertex &vert, const std::optional<Pauli> &colour, port_t port) const {
+  // FIXME
+  return get_Op_ptr_from_Vertex(vert)->commutes_with_basis(colour, port);
+}
+
 }  // namespace tket

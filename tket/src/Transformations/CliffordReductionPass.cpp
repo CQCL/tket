@@ -204,7 +204,7 @@ void CliffordReductionPass::insert_interaction_point(InteractionPoint ip) {
         break;
       }
       default: {
-        if (!op->commutes_with_basis(ip.p, next_p)) {
+        if (!circ.commutes_with_basis(next, ip.p, next_p)) {
           commute = false;
           continue;
         }
@@ -276,7 +276,7 @@ std::optional<InteractionMatch> CliffordReductionPass::search_back_for_match(
           break;
         }
         default: {
-          commute = pred_op->commutes_with_basis(point[i].p, pred_port);
+          commute = circ.commutes_with_basis(pred, point[i].p, pred_port);
           break;
         }
       }
@@ -703,7 +703,7 @@ bool CliffordReductionPass::reduce_circuit(Circuit &circ, bool allow_swaps) {
             auto r = context.itable.get<TagEdge>().equal_range(ins[i]);
             for (auto it = r.first; it != r.second; ++it) {
               InteractionPoint ip = *it;
-              if (op->commutes_with_basis(ip.p, i)) {
+              if (circ.commutes_with_basis(v, ip.p, i)) {
                 ip.e = *outs[i];
                 new_points.push_back(ip);
               }
