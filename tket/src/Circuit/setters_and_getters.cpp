@@ -17,11 +17,13 @@
 ////////////////////////////////////////////////////////
 
 #include "Circuit.hpp"
+#include "DAGDefs.hpp"
 #include "DAGProperties.hpp"
 #include "OpType/OpDesc.hpp"
 #include "OpType/OpType.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Utils/Assert.hpp"
+#include "Utils/Exceptions.hpp"
 #include "Utils/GraphHeaders.hpp"
 #include "Utils/TketLog.hpp"
 
@@ -670,17 +672,55 @@ bool Circuit::detect_singleq_unitary_op(const Vertex &vert) const {
 
 std::optional<Pauli> Circuit::commuting_basis(
     const Vertex &vert, PortType port_type, port_t port) const {
-  // FIXME
-  (void)port_type;
-  return get_Op_ptr_from_Vertex(vert)->commuting_basis(port);
+  Op_ptr op = get_Op_ptr_from_Vertex(vert);
+  if (op->get_type() == OpType::Conditional) {
+    op = static_cast<const Conditional &>(*op).get_op();
+  }
+  if (port_type == PortType::Source) {
+    const EdgeVec out_edges = get_out_edges_of_type(vert, EdgeType::Quantum);
+    unsigned n_edges = out_edges.size();
+    for (unsigned i = 0; i < n_edges; i++) {
+      if (get_source_port(out_edges[i]) == port) {
+        return op->commuting_basis(i);
+      }
+    }
+  } else {
+    const EdgeVec in_edges = get_in_edges_of_type(vert, EdgeType::Quantum);
+    unsigned n_edges = in_edges.size();
+    for (unsigned i = 0; i < n_edges; i++) {
+      if (get_target_port(in_edges[i]) == port) {
+        return op->commuting_basis(i);
+      }
+    }
+  }
+  throw NotValid("Invalid port number");
 }
 
 bool Circuit::commutes_with_basis(
     const Vertex &vert, const std::optional<Pauli> &colour, PortType port_type,
     port_t port) const {
-  // FIXME
-  (void)port_type;
-  return get_Op_ptr_from_Vertex(vert)->commutes_with_basis(colour, port);
+  Op_ptr op = get_Op_ptr_from_Vertex(vert);
+  if (op->get_type() == OpType::Conditional) {
+    op = static_cast<const Conditional &>(*op).get_op();
+  }
+  if (port_type == PortType::Source) {
+    const EdgeVec out_edges = get_out_edges_of_type(vert, EdgeType::Quantum);
+    unsigned n_edges = out_edges.size();
+    for (unsigned i = 0; i < n_edges; i++) {
+      if (get_source_port(out_edges[i]) == port) {
+        return op->commutes_with_basis(colour, i);
+      }
+    }
+  } else {
+    const EdgeVec in_edges = get_in_edges_of_type(vert, EdgeType::Quantum);
+    unsigned n_edges = in_edges.size();
+    for (unsigned i = 0; i < n_edges; i++) {
+      if (get_target_port(in_edges[i]) == port) {
+        return op->commutes_with_basis(colour, i);
+      }
+    }
+  }
+  throw NotValid("Invalid port number");
 }
 
 }  // namespace tket
