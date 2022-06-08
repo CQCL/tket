@@ -892,8 +892,6 @@ SCENARIO("Checking box names", "[boxes]") {
         CompositeGateDef::define_gate(prefix, setup, {a, b, c});
     CustomGate g(def, {0.1111, 0.2222, 0.4444});
     const std::string name = g.get_name();
-    CHECK(prefix != name);
-    CHECK_THAT(name, Catch::Matchers::StartsWith(prefix));
     CHECK(name == "gate with 3 params(0.1111,0.2222,0.4444)");
   }
 }
