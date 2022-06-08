@@ -696,6 +696,19 @@ class Circuit {
   bool detect_singleq_unitary_op(const Vertex &vert) const;
 
   /**
+   * Index of qubit for operation at a given vertex port
+   *
+   * @param vert vertex
+   * @param port_type type of specified port
+   * @param port port index
+   *
+   * @return qubit index
+   * @throw NotValid if port doesn't correspond to a quantum wire
+   */
+  unsigned qubit_index(
+      const Vertex &vert, PortType port_type, port_t port) const;
+
+  /**
    * Which Pauli, if any, commutes with the operation at a given vertex and port
    *
    * @param vert vertex

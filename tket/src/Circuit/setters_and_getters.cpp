@@ -670,30 +670,28 @@ bool Circuit::detect_singleq_unitary_op(const Vertex &vert) const {
   return desc.is_gate() && desc.is_singleq_unitary();
 }
 
+unsigned Circuit::qubit_index(
+    const Vertex &vert, PortType port_type, port_t port) const {
+  const EdgeVec edges = (port_type == PortType::Source)
+                            ? get_out_edges_of_type(vert, EdgeType::Quantum)
+                            : get_in_edges_of_type(vert, EdgeType::Quantum);
+  unsigned n_edges = edges.size();
+  for (unsigned i = 0; i < n_edges; i++) {
+    const Edge &e = edges[i];
+    port_t p = (port_type == PortType::Source) ? get_source_port(e)
+                                               : get_target_port(e);
+    if (p == port) return i;
+  }
+  throw NotValid("Invalid port for vertex");
+}
+
 std::optional<Pauli> Circuit::commuting_basis(
     const Vertex &vert, PortType port_type, port_t port) const {
   Op_ptr op = get_Op_ptr_from_Vertex(vert);
   if (op->get_type() == OpType::Conditional) {
     op = static_cast<const Conditional &>(*op).get_op();
   }
-  if (port_type == PortType::Source) {
-    const EdgeVec out_edges = get_out_edges_of_type(vert, EdgeType::Quantum);
-    unsigned n_edges = out_edges.size();
-    for (unsigned i = 0; i < n_edges; i++) {
-      if (get_source_port(out_edges[i]) == port) {
-        return op->commuting_basis(i);
-      }
-    }
-  } else {
-    const EdgeVec in_edges = get_in_edges_of_type(vert, EdgeType::Quantum);
-    unsigned n_edges = in_edges.size();
-    for (unsigned i = 0; i < n_edges; i++) {
-      if (get_target_port(in_edges[i]) == port) {
-        return op->commuting_basis(i);
-      }
-    }
-  }
-  throw NotValid("Invalid port number");
+  return op->commuting_basis(qubit_index(vert, port_type, port));
 }
 
 bool Circuit::commutes_with_basis(
@@ -703,24 +701,7 @@ bool Circuit::commutes_with_basis(
   if (op->get_type() == OpType::Conditional) {
     op = static_cast<const Conditional &>(*op).get_op();
   }
-  if (port_type == PortType::Source) {
-    const EdgeVec out_edges = get_out_edges_of_type(vert, EdgeType::Quantum);
-    unsigned n_edges = out_edges.size();
-    for (unsigned i = 0; i < n_edges; i++) {
-      if (get_source_port(out_edges[i]) == port) {
-        return op->commutes_with_basis(colour, i);
-      }
-    }
-  } else {
-    const EdgeVec in_edges = get_in_edges_of_type(vert, EdgeType::Quantum);
-    unsigned n_edges = in_edges.size();
-    for (unsigned i = 0; i < n_edges; i++) {
-      if (get_target_port(in_edges[i]) == port) {
-        return op->commutes_with_basis(colour, i);
-      }
-    }
-  }
-  throw NotValid("Invalid port number");
+  return op->commutes_with_basis(colour, qubit_index(vert, port_type, port));
 }
 
 }  // namespace tket
