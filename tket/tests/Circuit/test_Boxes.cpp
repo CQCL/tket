@@ -872,14 +872,11 @@ SCENARIO("Checking box names", "[boxes]") {
     const std::string prefix("gate with params");
     composite_def_ptr_t def = CompositeGateDef::define_gate(prefix, setup, {a});
     CustomGate g(def, {0.4444});
-    const std::string name = g.get_name();
-    CHECK(prefix != name);
-    CHECK_THAT(name, Catch::Matchers::StartsWith(prefix));
 
-    // Of course a bit naughty, it relies on the default precision
-    // not having too many decimal places (as 0.4444 is NOT exactly
-    // represented by a double!)
-    CHECK(name == "gate with params(0.4444)");
+    // Of course, 0.4444 is NOT exactly represented by a double,
+    // so it might print something like 0.4443999... or 0.4440000...1.
+    // This test will still pass even if so.
+    CHECK_THAT(g.get_name(), Catch::Matchers::StartsWith(prefix + "(0.444"));
   }
   GIVEN("CustomGate with 3 parameters") {
     Circuit setup(1);
