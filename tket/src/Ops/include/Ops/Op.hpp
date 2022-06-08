@@ -103,13 +103,12 @@ class Op : public std::enable_shared_from_this<Op> {
    *
    * @param i qubit number at which Pauli should commute
    * @return A Pauli that commutes with the given operation
-   * @retval std::nullopt no Pauli commutes
+   * @retval std::nullopt no Pauli commutes (or operation not a gate)
    * @retval Pauli::I any Pauli commutes
-   * @throw NotValid if operation is not a gate
    */
   virtual std::optional<Pauli> commuting_basis(unsigned i) const {
     (void)i;
-    throw NotValid();
+    return std::nullopt;
   }
 
   /**
@@ -117,13 +116,12 @@ class Op : public std::enable_shared_from_this<Op> {
    *
    * @param colour Pauli operation type
    * @param i operation qubit index
-   * @throw NotValid if operation is not a gate
    */
   virtual bool commutes_with_basis(
       const std::optional<Pauli> &colour, unsigned i) const {
     (void)colour;
     (void)i;
-    throw NotValid();
+    return false;
   }
 
   /**

@@ -702,9 +702,8 @@ class Circuit {
    * @param port_type type of specified port
    * @param port port number at which Pauli should commute
    * @return a Pauli that commutes with the given operation
-   * @retval std::nullopt no Pauli commutes
+   * @retval std::nullopt no Pauli commutes (or operation is not a gate)
    * @retval Pauli::I every Pauli commutes
-   * @throw NotValid if operation is not a gate
    */
   std::optional<Pauli> commuting_basis(
       const Vertex &vert, PortType port_type, port_t port) const;
@@ -716,7 +715,6 @@ class Circuit {
    * @param colour Pauli operation type
    * @param port_type type of specified port
    * @param port port number at which Pauli may commute
-   * @throw NotValid if operation is not a gate
    */
   bool commutes_with_basis(
       const Vertex &vert, const std::optional<Pauli> &colour,
