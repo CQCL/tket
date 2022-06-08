@@ -16,8 +16,10 @@
 numpy tensor features, in particular the einsum evaluation and optimisations."""
 from typing import Dict, List, Any
 from math import floor, pi, sqrt
+import sympy  # type: ignore
 import numpy as np
 from pytket.zx import ZXDiagram, ZXType, ZXVert, PhasedGen, QuantumType, Rewrite  # type: ignore
+import quimb.tensor as qtn  # type: ignore
 
 
 def _spider_to_tensor(gen: PhasedGen, rank: int) -> np.ndarray:
@@ -74,8 +76,8 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
     all_wires = diag.wires
     indices = dict(zip(all_wires, range(len(all_wires))))
     next_index = len(all_wires)
-    arg_list: List[Any]
-    arg_list = []
+    tensor_list: List[Any]
+    tensor_list = []
     id_wires = set()
     res_indices = []
     for b in diag.get_boundary():
@@ -87,9 +89,9 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
         if diag.get_zxtype(other) in _boundary_types and bw not in id_wires:
             # Two boundaries are directly connected, so insert an id tensor for
             # this boundary
-            arg_list.append(_id_tensor)
             id_ind = [bwi, next_index]
-            arg_list.append(id_ind)
+            qt = qtn.Tensor(data=_id_tensor, inds=id_ind)
+            tensor_list.append(qt)
             res_indices.append(next_index)
             next_index += 1
             id_wires.add(bw)
@@ -105,11 +107,18 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
             v_ind.append(indices[w])
             if diag.other_end(w, v) == v:
                 v_ind.append(indices[w])
-        arg_list.append(_spider_to_tensor(gen, len(v_ind)))
-        arg_list.append(v_ind)
-    arg_list.append(res_indices)
+        t = _spider_to_tensor(gen, len(v_ind))
+        qt = qtn.Tensor(data=t, inds=v_ind)
+        tensor_list.append(qt)
+    net = qtn.TensorNetwork(tensor_list)
+    net.full_simplify_(seq="ADCR")
+    res_ten = net.contract(output_inds=res_indices, optimize="random-greedy")
     result: np.ndarray
-    result = np.einsum(*arg_list, optimize="greedy")
+    if type(res_ten) == qtn.Tensor:
+        result = res_ten.data
+    else:
+        # Scalar
+        result = np.asarray(res_ten)
     return result * scalar
 
 
@@ -127,7 +136,7 @@ def tensor_from_quantum_diagram(diag: ZXDiagram) -> np.ndarray:
                 "supports diagrams consisting of only quantum components"
             )
     diag_copy = ZXDiagram(diag)
-    diag_copy.multiply_scalar(1 / sqrt(diag.scalar))
+    diag_copy.multiply_scalar(1 / sympy.sqrt(diag.scalar))  # type: ignore
     Rewrite.basic_wires().apply(diag_copy)
     return _tensor_from_basic_diagram(diag_copy)
 

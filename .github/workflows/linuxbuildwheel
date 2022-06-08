@@ -36,6 +36,9 @@ cd /tket/pytket
 mkdir wheelhouse
 mkdir audited
 
+# Work around https://github.com/pypa/manylinux/issues/1309
+git config --global --add safe.directory "*"
+
 for pyX in $PY_VERS
 do
     cd /tket/pytket

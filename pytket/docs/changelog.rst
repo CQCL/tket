@@ -6,9 +6,44 @@ x.y.z (unreleased)
 
 Minor new features:
 
+* New ``circuit_to_zx`` function to convert ``Circuit`` to ``ZXDiagram``, and
+  ``to_circuit`` to extract from a unitary diagram.
+* New ``to_graphviz_str`` method for ``ZXDiagram`` to generate a source string
+  that can be rendered by the ``graphviz`` package.
+
+Fixes:
+
+* Fix serialization of `BackendInfo` for `RingArch` and `FullyConnected`
+  architectures.
+
+1.2.2 (May 2022)
+----------------
+
+Minor new features:
+
+* The ``GlobalisePhasedX`` transform and homonymous pass take a new optional
+  ``squash`` parameter. ``squash=true`` (default) implements a new algorithm
+  that significantly reduces the number of ``NPhasedX`` gates synthesised.
+* New ``DecomposeNPhasedX`` transform and pass replaces all ``NPhasedX`` gates
+  with single-qubit ``PhasedX`` gates.
+* Extend range of Clifford operations recognized by
+  ``CliffordCircuitPredicate``.
+* New ``circuit_from_qasm_wasm`` function to parse QASM files containing
+  external WASM calls.
+* Faster QASM parsing, capable of parsing extended grammar.
+
+1.2.1 (May 2022)
+----------------
+
+Minor new features:
+
 * Added explicit constructors for various Python classes.
 * New ``measure_register`` method for measuring registers.
 * Added ``OpType.TK2``, a three-parameter two-qubit gate.
+* New pass ``SynthesiseTK`` and transform ``OptimiseStandard`` to synthesize
+  TK2 gates.
+* Add ``Optype.WASM``, adding a classical wasm function call to the circuit
+* Add optype for existing PhasePolyBox ``OpType.PhasePolyBox``
 
 1.1.0 (April 2022)
 ------------------

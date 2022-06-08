@@ -129,9 +129,9 @@ PYBIND11_MODULE(transform, m) {
           "Rebase single qubit gates into Rz, Rx.")
       .def_static(
           "RebaseToCliffordSingles", &Transforms::decompose_cliffords_std,
-          "Identify Clifford-angle rotations (from U1, U2, U3, Rx, "
-          "Ry, Rz, TK1, PhasedX), replacing them with Z, X, S, V "
-          "gates. Any non-Clifford rotations will stay as they are.")
+          "Replace all single-qubit unitary gates outside the set {Z, X, S, V} "
+          "that are recognized as Clifford operations with an equivalent "
+          "sequence of gates from that set.")
       .def_static(
           "RebaseToCirq", &Transforms::rebase_cirq,
           "Rebase from any gate set into PhasedX, Rz, CZ.")
@@ -187,6 +187,11 @@ PYBIND11_MODULE(transform, m) {
           "Decomposes all Boxed operations into elementary gates.")
 
       /* OPTIMISATION TRANSFORMS */
+      .def_static(
+          "OptimiseStandard", &Transforms::synthesise_tk,
+          "Fast optimisation pass, performing basic simplifications. "
+          "Works on any circuit, giving the result in TK1 and TK2 gates. "
+          "Preserves connectivity of circuit.")
       .def_static(
           "OptimisePostRouting", &Transforms::synthesise_tket,
           "Fast optimisation pass, performing basic simplifications. "
@@ -289,12 +294,29 @@ PYBIND11_MODULE(transform, m) {
           "of OpType to single-qubit gate error maps",
           py::arg("op_node_errors"))
       .def_static(
-          "GlobalisePhasedX", &Transforms::globalise_phasedx,
-          "Replaces every occurence of PhasedX or NPhasedX gates with NPhasedX "
-          "gates acting on all qubits, and correcting rotation gates."
-          "\n\nThis is achieved using the identity"
-          "\nPhX(α, β) = PhX(-1/2, β + 1/2) Rz(α) PhX(1/2, β + 1/2)"
-          "\n(circuit order).")
+          "DecomposeNPhasedX", &Transforms::decompose_NPhasedX,
+          "Decompose NPhasedX gates into single-qubit PhasedX gates.")
+      .def_static(
+          "GlobalisePhasedX", &Transforms::globalise_PhasedX,
+          "Turns all PhasedX and NPhasedX gates into global gates\n\n"
+          "Replaces any PhasedX gates with global NPhasedX gates. "
+          "By default, this transform will squash all single-qubit gates "
+          "to PhasedX and Rz gates before proceeding further. "
+          "Existing non-global NPhasedX will not be preserved. "
+          "This is the recommended setting for best "
+          "performance. If squashing is disabled, each non-global PhasedX gate "
+          "will be replaced with two global NPhasedX, but any other gates will "
+          "be left untouched."
+          "\n\n:param squash: Whether to squash the circuit in pre-processing "
+          "(default: true)."
+          "\n\nIf squash=true (default), the `GlobalisePhasedX().apply` method "
+          "will always returns true. "
+          "For squash=false, `apply()` will return true if the circuit was "
+          "changed and false otherwise.\n\n"
+          "It is not recommended to use this transformation with symbolic "
+          "expressions, as in certain cases a blow-up in symbolic expression "
+          "sizes may occur.",
+          py::arg("squash") = true)
       .def_static(
           "SynthesisePauliGraph", &Transforms::synthesise_pauli_graph,
           "Synthesises Pauli Graphs.",

@@ -1299,7 +1299,7 @@ class Circuit {
   Circuit transpose() const;
 
   /**
-   * Subsitute all vertices matching the given op with the given circuit
+   * Substitute all vertices matching the given op with the given circuit
    *
    * @param to_insert circuit to insert
    * @param op operation to match

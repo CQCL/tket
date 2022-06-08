@@ -25,7 +25,8 @@ add_library(tket-${COMP}
     Gauss.cpp
     PhasePoly.cpp
     UnitaryTableauBox.cpp
-    UnitaryTableauConverters.cpp)
+    UnitaryTableauConverters.cpp
+    ZXConverters.cpp)
 
 list(APPEND DEPS_${COMP}
     Circuit
@@ -35,7 +36,8 @@ list(APPEND DEPS_${COMP}
     Ops
     OpType
     PauliGraph
-    Utils)
+    Utils
+    ZX)
 
 foreach(DEP ${DEPS_${COMP}})
     target_include_directories(

@@ -12,12 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from conans import ConanFile
+"""
+Test-only tensor evaluation utilities for ZX diagrams.
+"""
 
-
-class TketBenchmarksConan(ConanFile):
-    name = "tket-benchmarks"
-    version = "0.1.0"
-    requires = "gtest/1.10.0", "benchmark/1.5.1"
-
-    # TODO
+from .tensor_eval import (
+    tensor_from_quantum_diagram,
+    tensor_from_mixed_diagram,
+    unitary_from_classical_diagram,
+    unitary_from_quantum_diagram,
+    density_matrix_from_cptp_diagram,
+    fix_boundaries_to_binary_states,
+    fix_inputs_to_binary_state,
+    fix_outputs_to_binary_state,
+)

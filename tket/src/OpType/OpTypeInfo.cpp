@@ -126,6 +126,7 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
        {"StabiliserAssertionBox", "StabiliserAssertionBox", {}, std::nullopt}},
       {OpType::ClassicalTransform,
        {"ClassicalTransform", "ClassicalTransform", {}, std::nullopt}},
+      {OpType::WASM, {"WASM", "WASM", {}, std::nullopt}},
       {OpType::SetBits, {"SetBits", "SetBits", {}, std::nullopt}},
       {OpType::CopyBits, {"CopyBits", "CopyBits", {}, std::nullopt}},
       {OpType::RangePredicate,

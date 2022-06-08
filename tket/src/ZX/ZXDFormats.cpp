@@ -38,8 +38,8 @@ bool ZXDiagram::is_graphlike() const {
 bool ZXDiagram::is_MBQC() const {
   BGL_FORALL_EDGES(w, *graph, ZXGraph) {
     if (get_qtype(w) != QuantumType::Quantum) return false;
-    if (get_zxtype(source(w)) == ZXType::Input ||
-        get_zxtype(target(w)) == ZXType::Input) {
+    if (is_boundary_type(get_zxtype(source(w))) ||
+        is_boundary_type(get_zxtype(target(w)))) {
       if (get_wire_type(w) != ZXWireType::Basic) return false;
     } else {
       if (get_wire_type(w) != ZXWireType::H) return false;

@@ -20,10 +20,13 @@
 
 #include "Circuit/Circuit.hpp"
 #include "Converters/PhasePoly.hpp"
+#include "Utils/Json.hpp"
+#include "binder_json.hpp"
 #include "binder_utils.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
+using json = nlohmann::json;
 
 namespace tket {
 
@@ -163,8 +166,23 @@ void init_boxes(py::module &m) {
           "definition", &CompositeGateDef::get_def,
           "Return definition as a circuit.")
       .def_property_readonly(
+          "args", &CompositeGateDef::get_args,
+          "Return symbolic arguments of gate.")
+      .def_property_readonly(
           "arity", &CompositeGateDef::n_args,
-          "The number of real parameters for the gate");
+          "The number of real parameters for the gate")
+      .def(
+          "to_dict",
+          [](const CompositeGateDef &c) {
+            return json(std::make_shared<CompositeGateDef>(c));
+          },
+          ":return: a JSON serializable dictionary representation of "
+          "the CustomGateDef")
+      .def_static(
+          "from_dict",
+          [](const json &j) { return j.get<composite_def_ptr_t>(); },
+          "Construct Circuit instance from JSON serializable "
+          "dictionary representation of the Circuit.");
   py::class_<CustomGate, std::shared_ptr<CustomGate>, Op>(
       m, "CustomGate",
       "A user-defined gate defined by a parametrised :py:class:`Circuit`.")
@@ -172,7 +190,8 @@ void init_boxes(py::module &m) {
           py::init<const composite_def_ptr_t &, const std::vector<Expr> &>(),
           "Instantiate a custom gate.", py::arg("gatedef"), py::arg("params"))
       .def_property_readonly(
-          "name", &CustomGate::get_name, "The readable name of the gate.")
+          "name", [](CustomGate &cgate) { return cgate.get_name(false); },
+          "The readable name of the gate.")
       .def_property_readonly(
           "params", &CustomGate::get_params, "The parameters of the gate.")
       .def_property_readonly(

@@ -521,7 +521,40 @@ bool LexiRoute::solve(unsigned lookahead) {
   if (!check.first && !check.second) {
     // update circuit with new swap
     // final_labelling is initial labelling permuted by single swap
-    this->mapping_frontier_->add_swap(chosen_swap.first, chosen_swap.second);
+
+    // if false, SWAP is identical to last SWAP added without any gates realised
+    if (!this->mapping_frontier_->add_swap(
+            chosen_swap.first, chosen_swap.second)) {
+      // only need to reset in bridge case
+      this->set_interacting_uids(
+          AssignedOnly::No, CheckRoutingValidity::No,
+          CheckLabellingValidity::No);
+      // if SWAP has both Nodes in interaction default takes first
+      // this could be inefficient compared to other SWAP, however
+      // this failsafe is expected to be called extremely rarely (once in
+      // thousands) on very dense circuits for very symmetrical architectures so
+      // doesn't largely matter
+      auto it = this->interacting_uids_.find(chosen_swap.first);
+      auto add_path_swaps = [this](const Node& source, const Node& target) {
+        auto path = this->architecture_->get_path(source, target);
+        auto path_it_0 = path.begin() + 1;
+        auto path_it_1 = path.begin();
+        // adds a SWAP between each pair of adjacent nodes on path
+        while (path_it_0 != path.end()) {
+          this->mapping_frontier_->add_swap(*path_it_0, *path_it_1);
+          ++path_it_0;
+          ++path_it_1;
+        }
+      };
+      if (it != this->interacting_uids_.end()) {
+        add_path_swaps(chosen_swap.first, Node(it->second));
+      } else {
+        it = this->interacting_uids_.find(chosen_swap.second);
+        TKET_ASSERT(it != this->interacting_uids_.end());
+        add_path_swaps(chosen_swap.second, Node(it->second));
+      }
+    }
+
   } else {
     // only need to reset in bridge case
     this->set_interacting_uids(

@@ -38,6 +38,9 @@ ZXVertVec ZXDiagram::get_boundary(
   return sub_boundary;
 }
 
+std::unique_ptr<ZXGraph>& ZXDiagram::get_graph() { return graph; }
+
+void ZXDiagram::add_boundary(ZXVert& vert) { boundary.push_back(vert); }
 const Expr& ZXDiagram::get_scalar() const { return scalar; }
 
 void ZXDiagram::multiply_scalar(const Expr& sc) { scalar *= sc; }
@@ -50,6 +53,14 @@ unsigned ZXDiagram::count_vertices(ZXType type) const {
   unsigned count = 0;
   BGL_FORALL_VERTICES(v, *graph, ZXGraph) {
     if (get_zxtype(v) == type) ++count;
+  }
+  return count;
+}
+
+unsigned ZXDiagram::count_vertices(ZXType zxtype, QuantumType qtype) const {
+  unsigned count = 0;
+  BGL_FORALL_VERTICES(v, *graph, ZXGraph) {
+    if (get_zxtype(v) == zxtype && get_qtype(v) == qtype) ++count;
   }
   return count;
 }
@@ -188,6 +199,13 @@ ZXVert ZXDiagram::other_end(const Wire& w, const ZXVert& u) const {
   }
 }
 
+ZXVert ZXDiagram::vertex_at_end(const Wire& w, WireEnd we) const {
+  if (we == WireEnd::Source)
+    return source(w);
+  else
+    return target(w);
+}
+
 WireEnd ZXDiagram::end_of(const Wire& w, const ZXVert& u) const {
   if (source(w) == u) {
     return WireEnd::Source;
@@ -272,7 +290,8 @@ static std::string graphviz_vertex_props(ZXGen_ptr op) {
     case ZXType::PX:
     case ZXType::PY:
     case ZXType::PZ: {
-      ss << "shape=point label=\"" << op->get_name() << "\"";
+      ss << "shape=circle width=0.1 fixedsize=shape label=\"" << op->get_name()
+         << "\\n\\n\"";
       break;
     }
     case ZXType::Triangle: {

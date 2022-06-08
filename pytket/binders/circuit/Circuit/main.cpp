@@ -51,10 +51,12 @@ void init_circuit(py::module &m) {
   py::class_<Circuit, std::shared_ptr<Circuit>> circuit_cls(
       m, "Circuit", py::dynamic_attr(),
       "Encapsulates a quantum circuit using a DAG representation.\n\n>>> "
-      "from pytket import Circuit\n>>> c = Circuit(4) # Create a circuit "
-      "with 4 qubits\n>>> c.H(0) # Apply a gate to qubit 0\n>>> "
+      "from pytket import Circuit\n>>> c = Circuit(4,2) # Create a circuit "
+      "with 4 qubits and 2 classical bits"
+      "\n>>> c.H(0) # Apply a gate to qubit 0\n>>> "
       "c.Rx(0.5,1) # Angles of rotation are expressed in half-turns "
-      "(i.e. 0.5 means PI/2)\n>>> c.Measure(1)");
+      "(i.e. 0.5 means PI/2)\n>>> c.Measure(1,0) # Measure qubit 1, saving "
+      "result in bit 0");
   init_circuit_add_op(circuit_cls);
   init_circuit_add_classical_op(circuit_cls);
   circuit_cls
@@ -413,6 +415,9 @@ void init_circuit(py::module &m) {
       .def_property_readonly(
           "n_qubits", &Circuit::n_qubits,
           ":return: the number of qubits in the circuit")
+      .def_property_readonly(
+          "n_bits", &Circuit::n_bits,
+          ":return: the number of classiclal bits in the circuit")
       .def_property_readonly(
           "phase", &Circuit::get_phase,
           ":return: the global phase applied to the circuit, in "

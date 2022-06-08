@@ -42,7 +42,8 @@ list(APPEND DEPS_${COMP}
     TokenSwapping
     Transformations
     Utils
-    WeightSubgrMono)
+    WeightSubgrMono
+    ZX)
 
 foreach(DEP ${DEPS_${COMP}})
     target_include_directories(

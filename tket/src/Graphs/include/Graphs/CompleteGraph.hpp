@@ -67,7 +67,7 @@ class CompleteGraph : public AbstractGraph<T> {
     return 1;
   }
 
-  unsigned get_diameter() const override {
+  unsigned get_diameter() override {
     switch (n_nodes()) {
       case 0:
         throw std::logic_error("Graph is empty.");
