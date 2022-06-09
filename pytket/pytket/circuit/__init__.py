@@ -68,7 +68,7 @@ def overload_add_wasm(
     list_i: List[List[int]],
     list_o: List[List[int]],
     args: Union[List[int], List[Bit]],
-    **kwargs: KwargTypes,
+    **kwargs: "KwargTypes",
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
     \n\n:param funcname: name of the function that is called
@@ -76,21 +76,12 @@ def overload_add_wasm(
     \n:param list_i: list of the number of bits in the input variables
     \n:param list_o: list of the number of bits in the output variables
     \n:param args: vector of circuit bits the wasm op should be added to
-    \n:param kwargs: additional information to make the wasm op conditional
+    \n:param kwargs: additional arguments passed to `add_gate_method` .
+     Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
+     `condition_value`
     \n:return: the new :py:class:`Circuit`"""
 
-    if kwargs is not None:
-        if "condition" in kwargs:
-            return self._add_wasm(
-                funcname,
-                str(filehandler),
-                list_i,
-                list_o,
-                args,
-                condition=kwargs["condition"],
-            )
-
-    return self._add_wasm(funcname, str(filehandler), list_i, list_o, args)
+    return self._add_wasm(funcname, str(filehandler), list_i, list_o, args, **kwargs)
 
 
 setattr(Circuit, "add_wasm", overload_add_wasm)
@@ -102,7 +93,7 @@ def overload_add_wasm_to_reg(
     filehandler: wasm.WasmFileHandler,
     list_i: List[BitRegister],
     list_o: List[BitRegister],
-    **kwargs: KwargTypes,
+    **kwargs: "KwargTypes",
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
     \n\n:param funcname: name of the function that is called
@@ -112,20 +103,12 @@ def overload_add_wasm_to_reg(
     \n:param list_o: list of the classical registers assigned to
      the output variables of the function call
     \n:param args: vector of circuit bits the wasm op should be added to
-    \n:param kwargs: additional information to make the wasm op conditional
+    \n:param kwargs: additional arguments passed to `add_gate_method` .
+     Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
+     `condition_value`
     \n:return: the new :py:class:`Circuit`"""
 
-    if kwargs is not None:
-        if "condition" in kwargs:
-            return self._add_wasm(
-                funcname,
-                str(filehandler),
-                list_i,
-                list_o,
-                condition=kwargs["condition"],
-            )
-
-    return self._add_wasm(funcname, str(filehandler), list_i, list_o)
+    return self._add_wasm(funcname, str(filehandler), list_i, list_o, **kwargs)
 
 
 setattr(Circuit, "add_wasm_to_reg", overload_add_wasm_to_reg)
