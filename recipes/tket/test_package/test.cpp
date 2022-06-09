@@ -13,47 +13,34 @@
 // limitations under the License.
 
 #include <Circuit/Circuit.hpp>
+#include <Transformations/BasicOptimisation.hpp>
 #include <Transformations/OptimisationPass.hpp>
+#include <Transformations/PauliOptimisation.hpp>
 #include <Utils/Assert.hpp>
+#include <cmath>
 #include <iostream>
+
+#include "Utils/Expression.hpp"
 
 using namespace tket;
 
 int main() {
-  Circuit circ(4);
+  Circuit circ(3);
 
-  circ.add_op<unsigned>(OpType::CZ, {0, 2});
-  circ.add_op<unsigned>(OpType::CZ, {3, 1});
-  circ.add_op<unsigned>(OpType::V, {2});
-  circ.add_op<unsigned>(OpType::V, {3});
-  circ.add_op<unsigned>(OpType::CZ, {0, 3});
-  circ.add_op<unsigned>(OpType::V, {3});
-  circ.add_op<unsigned>(OpType::CZ, {3, 1});
-  circ.add_op<unsigned>(OpType::CZ, {2, 1});
-  circ.add_op<unsigned>(OpType::V, {2});
-  circ.add_op<unsigned>(OpType::CZ, {0, 2});
-  circ.add_op<unsigned>(OpType::X, {2});
-  circ.add_op<unsigned>(OpType::V, {1});
-  circ.add_op<unsigned>(OpType::CZ, {3, 1});
-  circ.add_op<unsigned>(OpType::CZ, {2, 1});
-  circ.add_op<unsigned>(OpType::CZ, {3, 1});
-  circ.add_op<unsigned>(OpType::V, {2});
-  circ.add_op<unsigned>(OpType::V, {1});
-  circ.add_op<unsigned>(OpType::CZ, {2, 1});
-  circ.add_op<unsigned>(OpType::X, {2});
-  circ.add_op<unsigned>(OpType::CZ, {2, 1});
-  circ.add_op<unsigned>(OpType::V, {2});
-  circ.add_op<unsigned>(OpType::CZ, {2, 1});
-  circ.add_op<unsigned>(OpType::CZ, {0, 2});
-  circ.add_op<unsigned>(OpType::CZ, {2, 1});
+  for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {i});
+  }
+  circ.add_op<unsigned>(OpType::Rz, 0.4, {2});
+  circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.2}, {0, 1});
+  for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+    circ.add_op<unsigned>(OpType::Rz, i * 0.2, {i});
+  }
 
-  Transforms::clifford_simp().apply(circ);
+  std::cout << circ << std::endl;
 
-  unsigned n = circ.n_qubits();
-  TKET_ASSERT(n == 4);
-  Circuit newcirc;  // TKET-800
-  unsigned n_zero = newcirc.n_qubits();
-  TKET_ASSERT(n_zero == 0);
+  Transforms::absorb_Rz_NPhasedX().apply(circ);
 
-  std::cout << "success" << std::endl;
+  std::cout << circ << std::endl;
+  std::cout << "n gates: " << circ.count_gates(OpType::NPhasedX) << std::endl;
+  circ.to_graphviz_file("test.dot");
 }
