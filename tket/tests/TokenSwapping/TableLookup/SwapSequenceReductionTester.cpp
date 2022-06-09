@@ -14,7 +14,7 @@
 
 #include "SwapSequenceReductionTester.hpp"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include "NeighboursFromEdges.hpp"
 #include "TokenSwapping/SwapListSegmentOptimiser.hpp"

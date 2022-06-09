@@ -52,7 +52,7 @@ Eigen::Matrix2cd get_matrix_from_circ(const Circuit& circ);
  *
  * @param circ circuit
  *
- * @pre \p circ is composed of CX and single-qubit gates only
+ * @pre \p circ is composed of CX, TK2 and single-qubit gates only
  * @pre circuit has no symbolic parameters
  * @post matrix is in \ref BasisOrder::ilo
  *
@@ -63,21 +63,17 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit& circ);
 /**
  * Convert a 4x4 unitary matrix optimally to a corresponding circuit
  *
- * If cx_fidelity = 1 (the default), the decomposition is equivalent
- * to the input circuit circ and is optimal in the number of CX gates.
- * For cx_fidelity < 1, the decomposed circuit might not be equivalent,
- * but it will minimise overall circuit fidelity assuming a fidelity of
- * cx_fidelity for CX gates and a fidelity of 1. for single-qubit ops.
+ * This will express `U` using a single TK2 gate. See `decompose_TK2` to
+ * decompose this gate further into other primitives.
  *
  * @param U unitary matrix
- * @param cx_fidelity fidelity of CX gate
  *
  * @pre \p U is in \ref BasisOrder::ilo
- * @post circuit consists of CX and TK1 gates only
+ * @post circuit consists of one TK2 and single-qubit gates
  *
  * @return circuit implementing U with minimal error
  */
-Circuit two_qubit_canonical(const Eigen::Matrix4cd& U, double cx_fidelity = 1.);
+Circuit two_qubit_canonical(const Eigen::Matrix4cd& U);
 
 /**
  * Decompose a unitary matrix into a 2-CX circuit following a diagonal operator.

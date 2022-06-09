@@ -16,6 +16,7 @@
 
 #include <complex>
 #include <exception>
+#include <optional>
 
 // Workaround for Windows madness.
 // See: https://github.com/nlohmann/json/issues/1408
@@ -48,6 +49,23 @@ template <class T>
 void from_json(const nlohmann::json& j, std::complex<T>& p) {
   p.real(j.at(0));
   p.imag(j.at(1));
+}
+
+// no default serialization for std::optional types
+template <class T>
+void to_json(nlohmann::json& j, const std::optional<T>& v) {
+  if (v.has_value())
+    j = *v;
+  else
+    j = nullptr;
+}
+
+template <class T>
+void from_json(const nlohmann::json& j, std::optional<T>& v) {
+  if (j.is_null())
+    v = std::nullopt;
+  else
+    v = j.get<T>();
 }
 
 }  // namespace std

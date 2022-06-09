@@ -287,12 +287,27 @@ bool CompositeGateDef::operator==(const CompositeGateDef &other) const {
 
 CustomGate::CustomGate(
     const composite_def_ptr_t &gate, const std::vector<Expr> &params)
-    : Box(OpType::CustomGate, gate->signature()), gate_(gate), params_(params) {
+    : Box(OpType::CustomGate), gate_(gate), params_(params) {
+  if (!gate) {
+    throw std::runtime_error(
+        "Null CompositeGateDef pointer passed to CustomGate");
+  }
+  signature_ = gate->signature();
+
   if (params_.size() != gate_->n_args()) throw InvalidParameterCount();
 }
 
 CustomGate::CustomGate(const CustomGate &other)
     : Box(other), gate_(other.gate_), params_(other.params_) {}
+
+bool CustomGate::is_equal(const Op &op_other) const {
+  const CustomGate &other = dynamic_cast<const CustomGate &>(op_other);
+  if (this->id_ == other.id_) {
+    return true;
+  }
+  TKET_ASSERT(gate_ && other.gate_);
+  return params_ == other.params_ && *gate_ == *other.gate_;
+}
 
 Op_ptr CustomGate::symbol_substitution(
     const SymEngine::map_basic_basic &sub_map) const {
