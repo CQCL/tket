@@ -154,7 +154,19 @@ double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx);
 
 /** Similarity measure of TK2(a, b, c) to SU(4) identity
  *
+ * This computes the fidelity between TK2(a, b, c) and the 2-qubit identity.
+ *
  * a, b and c must be in the Weyl chamber, i.e. 1/2 >= a >= b >= |c|.
+ *
+ * This is computed using the formula
+ *               Fidᵤ = (4 + Tr(Id₄U)) / 20 = (4 + Tr(U)) / 20
+ * where U is the 4x4 matrix of TK2(a, b, c).
+ *
+ * Tr(U) can in turn be computed as
+ *               Tr(U) = 4cos(a)cos(b)cos(c) − 4i sin(a)sin(b)sin(c).
+ *
+ * These are formulas B3 and B5 of https://arxiv.org/pdf/1811.12926.pdf. Refer
+ * to that paper for more details.
  *
  *  @param a The XX interaction angle
  *  @param b The YY interaction angle

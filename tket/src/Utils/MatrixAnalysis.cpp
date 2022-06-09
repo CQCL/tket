@@ -292,7 +292,6 @@ Eigen::VectorXcd apply_qubit_permutation(
   return perm_m * v;
 }
 
-// How close TK2(a,b,c) is from the identity
 double trace_fidelity(double a, double b, double c) {
   constexpr double g = PI / 2;
   a *= g;
