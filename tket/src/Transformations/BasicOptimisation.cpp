@@ -29,6 +29,7 @@
 #include "Transform.hpp"
 #include "Utils/Assert.hpp"
 #include "Utils/EigenConfig.hpp"
+#include "Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 
@@ -280,7 +281,8 @@ static bool replace_two_qubit_interaction(
   // should output TK2, and decompose to CX (or other gates) later if necessary.
   TwoQbFidelities fid;
   fid.CX_fidelity = cx_fidelity;
-  (decompose_TK2(fid) >> squash_1qb_to_tk1()).apply(replacement);
+  (normalise_TK2() >> decompose_TK2(fid) >> squash_1qb_to_tk1())
+      .apply(replacement);
   const int nb_cx_old = subc.count_gates(OpType::CX);
   const int nb_cx_new = replacement.count_gates(OpType::CX);
   if (nb_cx_new < nb_cx_old) {
@@ -703,6 +705,34 @@ Transform absorb_Rz_NPhasedX() {
     }
     circ.remove_vertices(
         all_bins, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+
+    return success;
+  });
+}
+
+Transform normalise_TK2() {
+  return Transform([](Circuit &circ) {
+    bool success = false;
+    VertexSet bin;
+
+    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+      Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+      if (op->get_type() == OpType::TK2) {
+        auto params = op->get_params();
+        TKET_ASSERT(params.size() == 3);
+        if (!in_weyl_chamber({params[0], params[1], params[2]})) {
+          success = true;
+          circ.substitute(
+              CircPool::TK2_using_normalised_TK2(
+                  params[0], params[1], params[2]),
+              v, Circuit::VertexDeletion::No);
+          bin.insert(v);
+        }
+      }
+    }
+
+    circ.remove_vertices(
+        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
 
     return success;
   });

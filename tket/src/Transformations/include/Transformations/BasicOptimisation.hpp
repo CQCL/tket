@@ -92,6 +92,11 @@ Transform commute_SQ_gates_through_SWAPS(const op_node_errors_t& node_errors);
  */
 Transform absorb_Rz_NPhasedX();
 
+/**
+ * @brief Normalises all TK2 gates so that `NormaliseTK2Predicate` is satisfied.
+ */
+Transform normalise_TK2();
+
 }  // namespace Transforms
 
 }  // namespace tket

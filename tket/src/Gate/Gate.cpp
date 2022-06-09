@@ -185,6 +185,7 @@ Op_ptr Gate::transpose() const {
     case OpType::CSWAP:
     case OpType::BRIDGE:
     case OpType::S:
+    case OpType::Sdg:
     case OpType::T:
     case OpType::V:
     case OpType::Vdg:

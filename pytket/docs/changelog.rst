@@ -1,6 +1,13 @@
 Changelog
 =========
 
+x.y.z (unreleased)
+------------------
+
+Minor new features:
+
+* New ``NormalisedTK2Predicate`` predicate and ``NormaliseTK2`` pass.
+
 1.3.0 (June 2022)
 -----------------
 

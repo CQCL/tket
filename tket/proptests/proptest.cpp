@@ -51,7 +51,8 @@ using namespace tket;
   DO(FlattenRegisters)                    \
   DO(RemoveBarriers)                      \
   DO(DelayMeasures)                       \
-  DO(GlobalisePhasedX)
+  DO(GlobalisePhasedX)                    \
+  DO(NormaliseTK2)
 
 // Map from PassPtr to readable name
 static const std::map<PassPtr, std::string> passes = {
@@ -116,21 +117,6 @@ static Circuit random_circuit() {
     unsigned g_np = opinfo.n_params();
     std::vector<unsigned> qb = random_subset(qbs, g_nq);
     std::vector<Expr> params = random_params(g_np);
-    // For OpType::TK2, angles must currently be normalised.
-    // TODO: Remove this when NormalisedTK2Predicate is implemented.
-    if (g == OpType::TK2) {
-      TKET_ASSERT(params.size() == 3);
-      double p0 = *eval_expr(params[0]);
-      double p1 = *eval_expr(params[1]);
-      double p2 = *eval_expr(params[2]);
-      p0 = std::fmod(p0, 0.5);
-      p1 = p0 < EPS ? 0. : std::fmod(p1, p0);
-      p2 = p1 < EPS ? 0. : std::fmod(p2, p1);
-      p2 *= (*rc::gen::arbitrary<bool>()) ? 1 : -1;
-      params[0] = p0;
-      params[1] = p1;
-      params[2] = p2;
-    }
     c.add_op<unsigned>(g, params, qb);
     i++;
   }
