@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <numeric>
 #include <optional>
 
@@ -1047,8 +1047,8 @@ SCENARIO("Testing globalise_PhasedX") {
       THEN("The correct gates are introduced") {
         REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
         REQUIRE(circ.count_gates(OpType::NPhasedX) == 2);
-        REQUIRE(circ.count_gates(OpType::Rz) == 6);
-        REQUIRE(circ.n_gates() == 8);
+        REQUIRE(circ.count_gates(OpType::Rz) == 4);
+        REQUIRE(circ.n_gates() == 6);
       }
       THEN("The unitaries are equal") {
         auto new_u = tket_sim::get_unitary(circ);
@@ -1073,7 +1073,7 @@ SCENARIO("Testing globalise_PhasedX") {
       THEN("The correct gates are introduced") {
         REQUIRE(tmp_circ.count_gates(OpType::PhasedX) == 0);
         REQUIRE(tmp_circ.count_gates(OpType::NPhasedX) == 4);
-        REQUIRE(tmp_circ.count_gates(OpType::Rz) == 22);
+        REQUIRE(tmp_circ.count_gates(OpType::Rz) == 15);
       }
       THEN("The unitaries are equal") {
         auto new_u = tket_sim::get_unitary(tmp_circ);
@@ -1086,7 +1086,7 @@ SCENARIO("Testing globalise_PhasedX") {
       THEN("The correct gates are introduced") {
         REQUIRE(tmp_circ.count_gates(OpType::PhasedX) == 0);
         REQUIRE(tmp_circ.count_gates(OpType::NPhasedX) == 7);
-        REQUIRE(tmp_circ.count_gates(OpType::Rz) == 18);
+        REQUIRE(tmp_circ.count_gates(OpType::Rz) == 14);
       }
       THEN("The unitaries are equal") {
         auto new_u = tket_sim::get_unitary(tmp_circ);
@@ -1906,6 +1906,148 @@ SCENARIO("Testing decompose_TK2") {
     REQUIRE(c.count_gates(OpType::ZZMax) == exp_n_zzmax[i]);
     REQUIRE(c.count_gates(OpType::ZZPhase) == exp_n_zzphase[i]);
     REQUIRE(!Transforms::decompose_TK2().apply(c));
+  }
+}
+
+SCENARIO("Testing absorb_Rz_NPhasedX") {
+  Circuit circ(3);
+  Expr exp_beta;
+  unsigned exp_n_rz;
+  Vertex nphasedx;
+  GIVEN("All Rz can be absorbed") {
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, 0.3, {i});
+    }
+    nphasedx = circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.}, {0, 1, 2});
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, -0.3, {i});
+    }
+    exp_beta = -0.3;
+    exp_n_rz = 0;
+  }
+  GIVEN("All Rz can be absorbed, add to existing beta") {
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, 0.3, {i});
+    }
+    nphasedx = circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.2}, {0, 1, 2});
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, -0.3, {i});
+    }
+    exp_beta = 0.2 - 0.3;
+    exp_n_rz = 0;
+  }
+  GIVEN("3 Rz can be absorbed") {
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, 0.3, {i});
+    }
+    nphasedx = circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.2}, {0, 1, 2});
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, i * 0.2, {i});
+    }
+    exp_beta = 0.2 - 0.3;
+    exp_n_rz = 3;
+  }
+  GIVEN("Only act on a subset") {
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, 0.3, {i});
+    }
+    circ.add_op<unsigned>(OpType::Rz, 0.4, {2});
+    nphasedx = circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.2}, {0, 1});
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, i * 0.2, {i});
+    }
+    exp_beta = 0.2 - 0.3;
+    exp_n_rz = 3;
+  }
+  GIVEN("3 Rz can be absorbed, 3 must be created") {
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, 0.3, {i});
+    }
+    nphasedx = circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.2}, {0, 1, 2});
+    exp_beta = 0.2 - 0.3;
+    exp_n_rz = 3;
+  }
+  GIVEN("A more random configuration") {
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.6, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.899, {2});
+    nphasedx =
+        circ.add_op<unsigned>(OpType::NPhasedX, {0.213, 0.212231}, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::Rz, -0.6, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.1244, {2});
+    exp_beta = 0.212231 - 0.6;
+    exp_n_rz = 4;
+  }
+  GIVEN("beta should be zero") {
+    circ.add_op<unsigned>(OpType::Rz, 0.6, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.6, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.899, {2});
+    nphasedx =
+        circ.add_op<unsigned>(OpType::NPhasedX, {0.213, 0.212231}, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::Rz, 0.6, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.1244, {2});
+    exp_beta = 0.212231;
+    exp_n_rz = 4;
+  }
+
+  if (circ.get_commands().size()) {
+    auto orig_u = tket_sim::get_unitary(circ);
+    REQUIRE(Transforms::absorb_Rz_NPhasedX().apply(circ));
+    auto new_u = tket_sim::get_unitary(circ);
+
+    REQUIRE(!Transforms::absorb_Rz_NPhasedX().apply(circ));
+    REQUIRE(circ.count_gates(OpType::NPhasedX) == 1);
+    REQUIRE(circ.count_gates(OpType::Rz) == exp_n_rz);
+    Expr beta = circ.get_Op_ptr_from_Vertex(nphasedx)->get_params().at(1);
+    REQUIRE(equiv_expr(beta, exp_beta, 4));
+    REQUIRE(new_u.isApprox(orig_u));
+  }
+
+  GIVEN("A circuit with multiple NPhasedX gates") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.6, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.899, {2});
+    circ.add_op<unsigned>(OpType::NPhasedX, {0.213, 0.212231}, {0, 1});
+    circ.add_op<unsigned>(OpType::Rz, -0.3, {0});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::Rz, -0.3, {1});
+    circ.add_op<unsigned>(OpType::NPhasedX, {0.323, 0.231}, {1, 2});
+    circ.add_op<unsigned>(OpType::Rz, 0.298, {2});
+    circ.add_op<unsigned>(OpType::CX, {0, 2});
+    circ.add_op<unsigned>(OpType::Rz, 0.198, {1});
+    circ.add_op<unsigned>(OpType::NPhasedX, {0.123, 0.345}, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+
+    auto orig_u = tket_sim::get_unitary(circ);
+    REQUIRE(Transforms::absorb_Rz_NPhasedX().apply(circ));
+    auto new_u = tket_sim::get_unitary(circ);
+
+    REQUIRE(circ.count_gates(OpType::NPhasedX) == 3);
+    REQUIRE(new_u.isApprox(orig_u));
+  }
+  GIVEN("A circuit with nothing to do") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::NPhasedX, {0.213, 0.212231}, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::Rz, -0.3, {0});
+    REQUIRE(!Transforms::absorb_Rz_NPhasedX().apply(circ));
+  }
+  GIVEN("A circuit with symbolics") {
+    Sym asym = SymEngine::symbol("a");
+    Sym bsym = SymEngine::symbol("b");
+    Expr a(asym), b(bsym);
+
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::Rz, -a, {0});
+    circ.add_op<unsigned>(OpType::Rz, -a, {1});
+    Vertex nphasedx =
+        circ.add_op<unsigned>(OpType::NPhasedX, {0.213, b}, {0, 1});
+    circ.add_op<unsigned>(OpType::Rz, a, {0});
+
+    REQUIRE(Transforms::absorb_Rz_NPhasedX().apply(circ));
+    Expr beta = circ.get_Op_ptr_from_Vertex(nphasedx)->get_params().at(1);
+    REQUIRE(equiv_expr(beta, a + b));
   }
 }
 

@@ -1522,6 +1522,9 @@ Transform globalise_PhasedX(bool squash) {
       }
     }
     TKET_ASSERT(frontier.is_finished());
+
+    success |= absorb_Rz_NPhasedX().apply(circ);
+
     return success;
   });
 }

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <Placement/NeighbourPlacements.hpp>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <random>
 #include <utility>
 

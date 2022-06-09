@@ -12,11 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 
 #include "TokenSwapping/SwapFunctions.hpp"
 
-using Catch::Matchers::Contains;
+using Catch::Matchers::ContainsSubstring;
 
 using std::vector;
 
@@ -34,7 +35,7 @@ SCENARIO("Get swaps, with exceptions") {
         CHECK(swap.second == std::max(ii, jj));
       } catch (const std::exception& e) {
         CHECK(ii == jj);
-        CHECK_THAT(std::string(e.what()), Contains("equal vertices"));
+        CHECK_THAT(std::string(e.what()), ContainsSubstring("equal vertices"));
       }
     }
   }
