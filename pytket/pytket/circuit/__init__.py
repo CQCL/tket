@@ -49,8 +49,6 @@ from .logic_exp import (
 # Add ability to compare Bit equality with arbitrary class
 Bit.oldeq = Bit.__eq__
 
-KwargTypes = Union[Bit, int, float, str, None]
-
 
 def overload_biteq(self: Bit, other: Any) -> bool:
     if not isinstance(other, Bit):
@@ -61,14 +59,14 @@ def overload_biteq(self: Bit, other: Any) -> bool:
 setattr(Bit, "__eq__", overload_biteq)
 
 
-def overload_add_wasm(
+def overload_add_wasm(  # type: ignore
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmFileHandler,
     list_i: List[List[int]],
     list_o: List[List[int]],
     args: Union[List[int], List[Bit]],
-    **kwargs: "KwargTypes",
+    **kwargs,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
     \n\n:param funcname: name of the function that is called
@@ -87,13 +85,13 @@ def overload_add_wasm(
 setattr(Circuit, "add_wasm", overload_add_wasm)
 
 
-def overload_add_wasm_to_reg(
+def overload_add_wasm_to_reg(  # type: ignore
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmFileHandler,
     list_i: List[BitRegister],
     list_o: List[BitRegister],
-    **kwargs: "KwargTypes",
+    **kwargs,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
     \n\n:param funcname: name of the function that is called

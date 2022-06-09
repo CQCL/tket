@@ -136,8 +136,20 @@ void init_circuit_add_classical_op(
 
             return add_gate_method<Bit>(&circ, op, args, kwargs);
           },
-          "See :py:meth:`_add_wasm`.", py::arg("funcname"), py::arg("wasm_uid"),
-          py::arg("i32list_i"), py::arg("i32list_o"), py::arg("args"))
+          "Add a classical function call from a wasm file to the circuit. "
+          "\n\n:param funcname: name of the function that is called"
+          "\n:param wasm_uid: unit id to identify the wasm file"
+          "\n:param i32list_i: list of the number of bits in the input "
+          "variables"
+          "\n:param i32list_o: list of the number of bits in the output "
+          "variables"
+          "\n:param args: vector of circuit bits the wasm op should be added to"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("funcname"), py::arg("wasm_uid"), py::arg("i32list_i"),
+          py::arg("i32list_o"), py::arg("args"))
       .def(
           "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
@@ -185,8 +197,19 @@ void init_circuit_add_classical_op(
 
             return add_gate_method<Bit>(&circ, op, args, kwargs);
           },
-          "See :py:meth:`_add_wasm`.", py::arg("funcname"), py::arg("wasm_uid"),
-          py::arg("list_reg_in"), py::arg("list_reg_out"))
+          "Add a classical function call from a wasm file to the circuit. "
+          "\n\n:param funcname: name of the function that is called"
+          "\n:param wasm_uid: unit id to identify the wasm file"
+          "\n:param list_reg_in: list of the classical registers in the "
+          "circuit used as inputs"
+          "\n:param list_reg_out: list of the classical registers in the "
+          "circuit used as outputs"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("funcname"), py::arg("wasm_uid"), py::arg("list_reg_in"),
+          py::arg("list_reg_out"))
       .def(
           "add_c_setbits",
           [](Circuit &circ, const std::vector<bool> &values,
