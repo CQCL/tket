@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 
 #include "../testutil.hpp"
 #include "Circuit/CircUtils.hpp"
@@ -21,6 +22,8 @@
 #include "Eigen/src/Core/Matrix.h"
 #include "Gate/SymTable.hpp"
 #include "Simulation/CircuitSimulator.hpp"
+
+using Catch::Matchers::StartsWith;
 
 namespace tket {
 namespace test_Boxes {
@@ -876,7 +879,7 @@ SCENARIO("Checking box names", "[boxes]") {
     // Of course, 0.4444 is NOT exactly represented by a double,
     // so it might print something like 0.4443999... or 0.4440000...1.
     // This test will still pass even if so.
-    CHECK_THAT(g.get_name(), Catch::Matchers::StartsWith(prefix + "(0.444"));
+    CHECK_THAT(g.get_name(), StartsWith(prefix + "(0.444"));
   }
   GIVEN("CustomGate with 3 parameters") {
     Circuit setup(1);

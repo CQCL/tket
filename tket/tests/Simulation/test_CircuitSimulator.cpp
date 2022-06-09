@@ -15,7 +15,9 @@
 // This file is specifically for testing of tket-sim functions
 // (which, of course, are used in other tests for correctness).
 #include <array>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
+#include <catch2/catch_approx.hpp>
 
 #include "../Gate/GatesData.hpp"
 #include "../testutil.hpp"
@@ -31,7 +33,8 @@
 
 namespace tket {
 namespace test_CircuitSimulator {
-using Catch::Matchers::Contains;
+using Catch::Matchers::ContainsSubstring;
+using Catch::Approx;
 
 SCENARIO("Simple circuits produce the correct statevectors") {
   GIVEN("A 1 qubit circ with X-gate") {
@@ -508,7 +511,7 @@ SCENARIO("compare_statevectors_or_unitaries gives expected errors") {
         INFO("matrices compared equivalent: " << equivalent);
         CHECK(false);
       } catch (const std::exception& e) {
-        CHECK_THAT(e.what(), Contains(message));
+        CHECK_THAT(e.what(), ContainsSubstring(message));
       }
     }
   };

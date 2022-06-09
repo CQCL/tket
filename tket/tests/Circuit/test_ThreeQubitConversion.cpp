@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <array>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <cmath>
 
 #include "../Simulation/ComparisonFunctions.hpp"

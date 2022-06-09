@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <boost/range/join.hpp>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <iostream>
 
 #include "Architecture/Architecture.hpp"
