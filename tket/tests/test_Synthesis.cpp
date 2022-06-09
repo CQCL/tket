@@ -21,7 +21,12 @@
 #include "CircuitsForTesting.hpp"
 #include "Gate/Rotation.hpp"
 #include "OpType/OpType.hpp"
+#include "OpType/OpTypeFunctions.hpp"
 #include "Ops/MetaOp.hpp"
+#include "Predicates/CompilationUnit.hpp"
+#include "Predicates/CompilerPass.hpp"
+#include "Predicates/PassLibrary.hpp"
+#include "Predicates/Predicates.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/BasicOptimisation.hpp"
@@ -2050,6 +2055,42 @@ SCENARIO("Testing absorb_Rz_NPhasedX") {
     Expr beta = circ.get_Op_ptr_from_Vertex(nphasedx)->get_params().at(1);
     REQUIRE(equiv_expr(beta, a + b));
   }
+}
+
+// Verify preconditions and postconditions for pass applied to circuit
+static void check_conditions(PassPtr pp, const Circuit &c) {
+  CompilationUnit cu(c);
+  pp->apply(cu);
+  const Circuit c1 = cu.get_circ_ref();
+  PassConditions pcons = pp->get_conditions();
+  PredicatePtrMap precons = pcons.first;
+  PredicatePtrMap postcons = pcons.second.specific_postcons_;
+  for (auto precon : precons) {
+    PredicatePtr pred = precon.second;
+    CHECK(pred->verify(c));
+  }
+  for (auto postcon : postcons) {
+    PredicatePtr pred = postcon.second;
+    CHECK(pred->verify(c1));
+  }
+}
+
+SCENARIO("Synthesis with conditional gates") {
+  // https://github.com/CQCL/tket/issues/394
+  Circuit c(3);
+  c.add_c_register("c", 3);
+  c.add_op<unsigned>(OpType::H, {0});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_measure(0, 0);
+  c.add_measure(1, 1);
+  c.add_conditional_gate<unsigned>(OpType::U1, {0.25}, {1}, {0}, 1);
+  c.add_conditional_gate<unsigned>(OpType::CnRy, {0.25}, {0, 1, 2}, {0, 1}, 0);
+  c.add_measure(2, 2);
+  check_conditions(SynthesiseHQS(), c);
+  check_conditions(SynthesiseOQC(), c);
+  check_conditions(SynthesiseTK(), c);
+  check_conditions(SynthesiseTket(), c);
+  check_conditions(SynthesiseUMD(), c);
 }
 
 }  // namespace test_Synthesis
