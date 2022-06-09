@@ -78,7 +78,7 @@ Transform synthesise_tket() {
   Transform small_part = remove_redundancies() >> rep >> squash_1qb_to_tk1();
   Transform repeat_synth = repeat_with_metric(
       small_part, [](const Circuit &circ) { return circ.n_vertices(); });
-  return synth >> repeat_synth;
+  return synth >> repeat_synth >> rebase_tket() >> remove_redundancies();
 }
 
 static Transform CXs_from_phase_gadgets(CXConfigType cx_config) {
