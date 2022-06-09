@@ -220,13 +220,11 @@ void init_library(py::module &m) {
   library_m.def(
       "_approx_TK2_using_1xZZPhase", &CircPool::approx_TK2_using_1xZZPhase,
       "Approximate equivalent to TK2, using 1 ZZPhase gate and single-qubit "
-      "gates. Only requires the first angle of the TK2 gate (it is assumed that"
-      " `NormalisedTK2Predicate` is satisfied).");
+      "gates. Only requires the first angle of the TK2 gate.");
   library_m.def(
       "_approx_TK2_using_2xZZPhase", &CircPool::approx_TK2_using_2xZZPhase,
       "Approximate equivalent to TK2, using 2 ZZPhase gates and single-qubit "
-      "gates. Only requires the first two angles of the TK2 gate (it is assumed"
-      "that `NormalisedTK2Predicate` is satisfied).");
+      "gates. Only requires the first two angles of the TK2 gate.");
   library_m.def(
       "_XXPhase3_using_TK2", &CircPool::XXPhase3_using_TK2,
       "Equivalent to XXPhase3, using three TK2 gates");
