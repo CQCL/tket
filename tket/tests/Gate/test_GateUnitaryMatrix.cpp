@@ -348,8 +348,12 @@ SCENARIO("Invalid numbers of arguments cause exceptions") {
               if (type != OpType::CnX && type != OpType::CnRy) {
                 CHECK_THAT(e.what(), ContainsSubstring(name));
               }
-              CHECK_THAT(e.what(), ContainsSubstring(std::to_string(number_of_qubits)));
-              CHECK_THAT(e.what(), ContainsSubstring(std::to_string(parameters.size())));
+              CHECK_THAT(
+                  e.what(),
+                  ContainsSubstring(std::to_string(number_of_qubits)));
+              CHECK_THAT(
+                  e.what(),
+                  ContainsSubstring(std::to_string(parameters.size())));
               did_throw = true;
             }
             CHECK(expect_throw == did_throw);
