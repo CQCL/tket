@@ -647,7 +647,7 @@ const Circuit &ZZMax_using_CX() {
   return *C;
 }
 
-Circuit CRz_using_TK2(Expr alpha) {
+Circuit CRz_using_TK2(const Expr &alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 1}, {0});
   c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 0}, {1});
@@ -658,7 +658,7 @@ Circuit CRz_using_TK2(Expr alpha) {
   return c;
 }
 
-Circuit CRz_using_CX(Expr alpha) {
+Circuit CRz_using_CX(const Expr &alpha) {
   Circuit c(2);
   if (equiv_expr(alpha, 1.)) {
     c.add_op<unsigned>(OpType::H, {1});
@@ -678,7 +678,7 @@ Circuit CRz_using_CX(Expr alpha) {
   return c;
 }
 
-Circuit CRx_using_TK2(Expr alpha) {
+Circuit CRx_using_TK2(const Expr &alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::TK1, {-0.5, 0.5, 0}, {0});
   c.add_op<unsigned>(OpType::TK1, {1, 0.5, 0}, {1});
@@ -688,7 +688,7 @@ Circuit CRx_using_TK2(Expr alpha) {
   return c;
 }
 
-Circuit CRx_using_CX(Expr alpha) {
+Circuit CRx_using_CX(const Expr &alpha) {
   Circuit c(2);
   if (equiv_expr(alpha, 1.)) {
     c.add_op<unsigned>(OpType::CX, {0, 1});
@@ -710,7 +710,7 @@ Circuit CRx_using_CX(Expr alpha) {
   return c;
 }
 
-Circuit CRy_using_TK2(Expr alpha) {
+Circuit CRy_using_TK2(const Expr &alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 0.5}, {0});
   c.add_op<unsigned>(OpType::TK1, {0, 0.5, -0.5}, {1});
@@ -721,7 +721,7 @@ Circuit CRy_using_TK2(Expr alpha) {
   return c;
 }
 
-Circuit CRy_using_CX(Expr alpha) {
+Circuit CRy_using_CX(const Expr &alpha) {
   Circuit c(2);
   if (equiv_expr(alpha, 1.)) {
     c.add_op<unsigned>(OpType::Sdg, {1});
@@ -741,7 +741,7 @@ Circuit CRy_using_CX(Expr alpha) {
   return c;
 }
 
-Circuit CU1_using_TK2(Expr alpha) {
+Circuit CU1_using_TK2(const Expr &alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 1}, {0});
   c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 0}, {1});
@@ -752,7 +752,7 @@ Circuit CU1_using_TK2(Expr alpha) {
   return c;
 }
 
-Circuit CU1_using_CX(Expr lambda) {
+Circuit CU1_using_CX(const Expr &lambda) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::U1, lambda / 2, {0});
   c.add_op<unsigned>(OpType::CX, {0, 1});
@@ -762,7 +762,7 @@ Circuit CU1_using_CX(Expr lambda) {
   return c;
 }
 
-Circuit CU3_using_CX(Expr theta, Expr phi, Expr lambda) {
+Circuit CU3_using_CX(const Expr &theta, const Expr &phi, const Expr &lambda) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::U1, (lambda + phi) / 2, {0});
   c.add_op<unsigned>(OpType::U1, (lambda - phi) / 2, {1});
@@ -773,13 +773,13 @@ Circuit CU3_using_CX(Expr theta, Expr phi, Expr lambda) {
   return c;
 }
 
-Circuit ISWAP_using_TK2(Expr alpha) {
+Circuit ISWAP_using_TK2(const Expr &alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::TK2, {-0.5 * alpha, -0.5 * alpha, 0}, {0, 1});
   return c;
 }
 
-Circuit ISWAP_using_CX(Expr alpha) {
+Circuit ISWAP_using_CX(const Expr &alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::U3, {0.5, -0.5, 0.5}, {0});
   c.add_op<unsigned>(OpType::U3, {0.5, -0.5, 0.5}, {1});
@@ -792,13 +792,13 @@ Circuit ISWAP_using_CX(Expr alpha) {
   return c;
 }
 
-Circuit XXPhase_using_TK2(Expr alpha) {
+Circuit XXPhase_using_TK2(const Expr &alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::TK2, {alpha, 0, 0}, {0, 1});
   return c;
 }
 
-Circuit XXPhase_using_CX(Expr alpha) {
+Circuit XXPhase_using_CX(const Expr &alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::CX, {0, 1});
   c.add_op<unsigned>(OpType::U3, {alpha, -0.5, 0.5}, {0});
@@ -806,13 +806,13 @@ Circuit XXPhase_using_CX(Expr alpha) {
   return c;
 }
 
-Circuit YYPhase_using_TK2(Expr alpha) {
+Circuit YYPhase_using_TK2(const Expr &alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::TK2, {0, alpha, 0}, {0, 1});
   return c;
 }
 
-Circuit YYPhase_using_CX(Expr alpha) {
+Circuit YYPhase_using_CX(const Expr &alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::U3, {0.5, -0.5, 0.5}, {0});
   c.add_op<unsigned>(OpType::U3, {0.5, -0.5, 0.5}, {1});
@@ -824,13 +824,13 @@ Circuit YYPhase_using_CX(Expr alpha) {
   return c;
 }
 
-Circuit ZZPhase_using_TK2(Expr alpha) {
+Circuit ZZPhase_using_TK2(const Expr &alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::TK2, {0, 0, alpha}, {0, 1});
   return c;
 }
 
-Circuit ZZPhase_using_CX(Expr alpha) {
+Circuit ZZPhase_using_CX(const Expr &alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::CX, {0, 1});
   c.add_op<unsigned>(OpType::Rz, alpha, {1});
@@ -838,25 +838,99 @@ Circuit ZZPhase_using_CX(Expr alpha) {
   return c;
 }
 
-Circuit TK2_using_CX(Expr alpha, Expr beta, Expr gamma) {
+Circuit XXPhase_using_ZZPhase(const Expr &alpha) {
   Circuit c(2);
-  c.add_op<unsigned>(OpType::Z, {0});
-  c.add_op<unsigned>(OpType::Vdg, {0});
-  c.add_op<unsigned>(OpType::V, {1});
-  c.add_op<unsigned>(OpType::CX, {0, 1});
   c.add_op<unsigned>(OpType::H, {0});
-  c.add_op<unsigned>(OpType::Rz, beta, {1});
-  c.add_op<unsigned>(OpType::CX, {0, 1});
-  c.add_op<unsigned>(OpType::S, {0});
+  c.add_op<unsigned>(OpType::H, {1});
+  c.add_op<unsigned>(OpType::ZZPhase, alpha, {0, 1});
   c.add_op<unsigned>(OpType::H, {0});
-  c.add_op<unsigned>(OpType::Rx, -alpha, {0});
-  c.add_op<unsigned>(OpType::Z, {0});
-  c.add_op<unsigned>(OpType::Rz, gamma, {1});
-  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::H, {1});
   return c;
 }
 
-Circuit XXPhase3_using_TK2(Expr alpha) {
+Circuit YYPhase_using_ZZPhase(const Expr &alpha) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::Vdg, {0});
+  c.add_op<unsigned>(OpType::Vdg, {1});
+  c.add_op<unsigned>(OpType::ZZPhase, alpha, {0, 1});
+  c.add_op<unsigned>(OpType::V, {0});
+  c.add_op<unsigned>(OpType::V, {1});
+  return c;
+}
+
+Circuit approx_TK2_using_1xCX() {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::TK1, {0.5, 1.5, 1.5}, {0});
+  c.add_op<unsigned>(OpType::TK1, {0., 0.5, 0}, {1});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 0}, {0});
+  c.add_phase(0.25);
+  return c;
+}
+
+Circuit approx_TK2_using_2xCX(const Expr &alpha, const Expr &beta) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 0}, {0});
+  c.add_op<unsigned>(OpType::TK1, {0., 1.5, 0}, {1});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::TK1, {0., 1 + alpha, 1.5}, {0});
+  c.add_op<unsigned>(OpType::TK1, {0., 1.5, 2 - beta}, {1});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::TK1, {0., 0.5, 0}, {0});
+  c.add_phase(0.5);
+  return c;
+}
+
+Circuit TK2_using_3xCX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::TK1, {0.5, 1.5, 1}, {0});
+  c.add_op<unsigned>(OpType::TK1, {0, 0.5, 0}, {1});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::TK1, {3.5 + alpha, 3.5, 0.}, {0});
+  c.add_op<unsigned>(OpType::TK1, {0.5, 1, 0.5 + beta}, {1});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 0.}, {0});
+  c.add_op<unsigned>(OpType::TK1, {0, 0, gamma}, {1});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_phase(0.75);
+  return c;
+}
+
+Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  // only handle TK2 if normalised to Weyl chamber
+  if (equiv_0(alpha, 4) && equiv_0(beta, 4) && equiv_0(gamma, 4)) {
+    return Circuit(2);
+  } else if (
+      equiv_expr(alpha, 0.5, 4) && equiv_0(beta, 4) && equiv_0(gamma, 4)) {
+    return approx_TK2_using_1xCX();
+  } else if (equiv_0(gamma, 4)) {
+    return approx_TK2_using_2xCX(alpha, beta);
+  } else {
+    return TK2_using_3xCX(alpha, beta, gamma);
+  }
+}
+
+Circuit approx_TK2_using_1xZZPhase(const Expr &alpha) {
+  return XXPhase_using_ZZPhase(alpha);
+}
+
+Circuit approx_TK2_using_2xZZPhase(const Expr &alpha, const Expr &beta) {
+  Circuit c(2);
+  c.append(XXPhase_using_ZZPhase(alpha));
+  c.append(YYPhase_using_ZZPhase(beta));
+  return c;
+}
+
+Circuit TK2_using_ZZPhase(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c(2);
+  c.append(XXPhase_using_ZZPhase(alpha));
+  c.append(YYPhase_using_ZZPhase(beta));
+  c.add_op<unsigned>(OpType::ZZPhase, gamma, {0, 1});
+  return c;
+}
+
+Circuit XXPhase3_using_TK2(const Expr &alpha) {
   Circuit c(3);
   c.add_op<unsigned>(OpType::TK2, {alpha, 0, 0}, {0, 1});
   c.add_op<unsigned>(OpType::TK2, {alpha, 0, 0}, {1, 2});
@@ -864,7 +938,7 @@ Circuit XXPhase3_using_TK2(Expr alpha) {
   return c;
 }
 
-Circuit XXPhase3_using_CX(Expr alpha) {
+Circuit XXPhase3_using_CX(const Expr &alpha) {
   Circuit c(3);
   Circuit rep1 = XXPhase_using_CX(alpha);
   c.append_qubits(rep1, {0, 1});
@@ -873,7 +947,7 @@ Circuit XXPhase3_using_CX(Expr alpha) {
   return c;
 }
 
-Circuit ESWAP_using_TK2(Expr alpha) {
+Circuit ESWAP_using_TK2(const Expr &alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, -0.5}, {0});
   c.add_op<unsigned>(OpType::TK1, {-0.5, 0.5, -0.5}, {1});
@@ -885,7 +959,7 @@ Circuit ESWAP_using_TK2(Expr alpha) {
   return c;
 }
 
-Circuit ESWAP_using_CX(Expr alpha) {
+Circuit ESWAP_using_CX(const Expr &alpha) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::S, {0});
   c.add_op<unsigned>(OpType::X, {1});
@@ -901,7 +975,7 @@ Circuit ESWAP_using_CX(Expr alpha) {
   return c;
 }
 
-Circuit FSim_using_TK2(Expr alpha, Expr beta) {
+Circuit FSim_using_TK2(const Expr &alpha, const Expr &beta) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::TK1, {-0.5, 0.5, -1}, {0});
   c.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 1}, {1});
@@ -912,7 +986,7 @@ Circuit FSim_using_TK2(Expr alpha, Expr beta) {
   return c;
 }
 
-Circuit FSim_using_CX(Expr alpha, Expr beta) {
+Circuit FSim_using_CX(const Expr &alpha, const Expr &beta) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::U3, {0.5, 0.5, 0.5}, {0});
   c.add_op<unsigned>(OpType::U3, {0.5, 0., 1.5}, {1});
@@ -928,7 +1002,7 @@ Circuit FSim_using_CX(Expr alpha, Expr beta) {
   return c;
 }
 
-Circuit PhasedISWAP_using_TK2(Expr p, Expr t) {
+Circuit PhasedISWAP_using_TK2(const Expr &p, const Expr &t) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::Rz, p, {0});
   c.add_op<unsigned>(OpType::Rz, -p, {1});
@@ -938,7 +1012,7 @@ Circuit PhasedISWAP_using_TK2(Expr p, Expr t) {
   return c;
 }
 
-Circuit PhasedISWAP_using_CX(Expr p, Expr t) {
+Circuit PhasedISWAP_using_CX(const Expr &p, const Expr &t) {
   Circuit c(2);
   c.add_op<unsigned>(OpType::U3, {0.5, -0.5, 0.5 + p}, {0});
   c.add_op<unsigned>(OpType::U3, {0.5, -0.5, 0.5 - p}, {1});
@@ -952,7 +1026,7 @@ Circuit PhasedISWAP_using_CX(Expr p, Expr t) {
 }
 
 Circuit NPhasedX_using_PhasedX(
-    unsigned int number_of_qubits, Expr alpha, Expr beta) {
+    unsigned int number_of_qubits, const Expr &alpha, const Expr &beta) {
   Circuit c(number_of_qubits);
   for (unsigned int i = 0; i < number_of_qubits; ++i) {
     c.add_op<unsigned>(OpType::PhasedX, {alpha, beta}, {i});

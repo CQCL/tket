@@ -105,7 +105,7 @@ Op_ptr Gate::dagger() const {
     case OpType::XXPhase3:
     case OpType::ISWAP:
     case OpType::ESWAP: {
-      return get_op_ptr(optype, -params_[0], n_qubits_);
+      return get_op_ptr(optype, minus_times(params_[0]), n_qubits_);
     }
     case OpType::ZZMax: {
       // ZZMax.dagger = ZZPhase(-0.5)
@@ -113,7 +113,8 @@ Op_ptr Gate::dagger() const {
     }
     case OpType::FSim: {
       // FSim(a,b).dagger() == FSim(-a,-b)
-      return get_op_ptr(OpType::FSim, {-params_[0], -params_[1]});
+      return get_op_ptr(
+          OpType::FSim, {minus_times(params_[0]), minus_times(params_[1])});
     }
     case OpType::Sycamore: {
       return get_op_ptr(OpType::FSim, {-0.5, -1. / 6.});
@@ -123,26 +124,41 @@ Op_ptr Gate::dagger() const {
     }
     case OpType::U2: {
       // U2(a,b).dagger() == U3(-pi/2,-b,-a)
-      return get_op_ptr(OpType::U3, {-0.5, -params_[1], -params_[0]});
+      return get_op_ptr(
+          OpType::U3, {-0.5, minus_times(params_[1]), minus_times(params_[0])});
     }
     case OpType::U3:
     case OpType::CU3:
       // U3(a,b,c).dagger() == U3(-a,-c.-b)
-      { return get_op_ptr(optype, {-params_[0], -params_[2], -params_[1]}); }
+      {
+        return get_op_ptr(
+            optype, {minus_times(params_[0]), minus_times(params_[2]),
+                     minus_times(params_[1])});
+      }
     case OpType::TK1:
       // TK1(a,b,c).dagger() == TK1(-c,-b,-a)
       {
-        return get_op_ptr(OpType::TK1, {-params_[2], -params_[1], -params_[0]});
+        return get_op_ptr(
+            OpType::TK1, {minus_times(params_[2]), minus_times(params_[1]),
+                          minus_times(params_[0])});
       }
     case OpType::TK2:
-      return get_op_ptr(OpType::TK2, {-params_[0], -params_[1], -params_[2]});
+      return get_op_ptr(
+          OpType::TK2, {minus_times(params_[0]), minus_times(params_[1]),
+                        minus_times(params_[2])});
     case OpType::PhasedX:
     case OpType::NPhasedX:
       // PhasedX(a,b).dagger() == PhasedX(-a,b)
-      { return get_op_ptr(optype, {-params_[0], params_[1]}, n_qubits_); }
+      {
+        return get_op_ptr(
+            optype, {minus_times(params_[0]), params_[1]}, n_qubits_);
+      }
     case OpType::PhasedISWAP:
       // PhasedISWAP(a,b).dagger() == PhasedISWAP(a,-b)
-      { return get_op_ptr(OpType::PhasedISWAP, {params_[0], -params_[1]}); }
+      {
+        return get_op_ptr(
+            OpType::PhasedISWAP, {params_[0], minus_times(params_[1])});
+      }
     default: {
       throw NotImplemented(
           "Cannot retrieve the dagger of OpType::" + get_desc().name());
@@ -196,7 +212,7 @@ Op_ptr Gate::transpose() const {
     case OpType::Ry:
     case OpType::CRy:
     case OpType::CnRy: {
-      return get_op_ptr(optype, -params_[0], n_qubits_);
+      return get_op_ptr(optype, minus_times(params_[0]), n_qubits_);
     }
     case OpType::CnX: {
       return get_op_ptr(optype, std::vector<Expr>(), n_qubits_);
@@ -208,7 +224,8 @@ Op_ptr Gate::transpose() const {
     case OpType::U3:
     case OpType::CU3: {
       // U3(a,b,c).transpose() == U3(-a,c,b)
-      return get_op_ptr(OpType::U3, {-params_[0], params_[2], params_[1]});
+      return get_op_ptr(
+          OpType::U3, {minus_times(params_[0]), params_[2], params_[1]});
     }
     case OpType::TK1: {
       // TK1(a,b,c).transpose() == TK1(c,b,a)
@@ -217,11 +234,13 @@ Op_ptr Gate::transpose() const {
     case OpType::PhasedX:
     case OpType::NPhasedX: {
       // PhasedX(a,b).transpose() == PhasedX(a,-b)
-      return get_op_ptr(optype, {params_[0], -params_[1]}, n_qubits_);
+      return get_op_ptr(
+          optype, {params_[0], minus_times(params_[1])}, n_qubits_);
     }
     case OpType::PhasedISWAP: {
       // PhasedISWAP(a,b).transpose() == PhasedISWAP(-a,b)
-      return get_op_ptr(OpType::PhasedISWAP, {-params_[0], params_[1]});
+      return get_op_ptr(
+          OpType::PhasedISWAP, {minus_times(params_[0]), params_[1]});
     }
 
     default: {
@@ -576,10 +595,10 @@ std::vector<Expr> Gate::get_tk1_angles() const {
             "OpType::NPhasedX can only be decomposed into a TK1 "
             "if it acts on a single qubit");
       }
-      return {params_.at(1), params_.at(0), -params_.at(1), 0};
+      return {params_.at(1), params_.at(0), minus_times(params_.at(1)), 0};
     }
     case OpType::PhasedX: {
-      return {params_.at(1), params_.at(0), -params_.at(1), 0};
+      return {params_.at(1), params_.at(0), minus_times(params_.at(1)), 0};
     }
     case OpType::TK1: {
       return {params_.at(0), params_.at(1), params_.at(2), 0};

@@ -10,6 +10,8 @@ Minor new features:
   ``to_circuit`` to extract from a unitary diagram.
 * New ``to_graphviz_str`` method for ``ZXDiagram`` to generate a source string
   that can be rendered by the ``graphviz`` package.
+* New pass and transform `DecomposeTK2` to decompose TK2 gates using the
+  approximate KAK decomposition.
 
 Fixes:
 

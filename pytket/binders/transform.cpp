@@ -36,6 +36,26 @@ namespace py = pybind11;
 
 namespace tket {
 
+// given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
+Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
+  Transforms::TwoQbFidelities fid;
+  for (const auto &kwarg : kwargs) {
+    const std::string kwargstr = py::cast<std::string>(kwarg.first);
+    using Func = std::function<double(double)>;
+    if (kwargstr == "CX_fidelity") {
+      fid.CX_fidelity = py::cast<double>(kwarg.second);
+    } else if (kwargstr == "ZZMax_fidelity") {
+      fid.ZZMax_fidelity = py::cast<double>(kwarg.second);
+    } else if (kwargstr == "ZZPhase_fidelity") {
+      fid.ZZPhase_fidelity = py::cast<Func>(kwarg.second);
+    } else {
+      throw py::type_error(
+          "got an unexpected keyword argument '" + kwargstr + "'");
+    }
+  }
+  return fid;
+}
+
 PYBIND11_MODULE(transform, m) {
   py::enum_<Transforms::PauliSynthStrat>(
       m, "PauliSynthStrat",
@@ -185,6 +205,35 @@ PYBIND11_MODULE(transform, m) {
       .def_static(
           "DecomposeBoxes", &Transforms::decomp_boxes,
           "Decomposes all Boxed operations into elementary gates.")
+      // TODO: Mention NormalisedTK2 predicate.
+      .def_static(
+          "DecomposeTK2",
+          [](const py::kwargs &kwargs) {
+            return Transforms::decompose_TK2(get_fidelities(kwargs));
+          },
+          "Decompose each TK2 gate into two-qubit gates."
+          "\n\nWe currently support CX, ZZMax and ZZPhase."
+          "\n\nIf one or more gate fidelities are provided, the two-qubit gate "
+          "type achieving the highest fidelity will be chosen for the "
+          "decomposition, as measured using squared trace fidelity. "
+          "If no fidelities are provided, the TK2 gates will be decomposed "
+          "exactly using CX gates.\n\n"
+          "All TK2(α, β, γ) gates must be normalised to the Weyl chamber, i.e. "
+          "`0.5 ≥ 𝛼 ≥ 𝛽 ≥ |𝛾|`."
+          "\n\n"
+          "Gate fidelities are passed as keyword arguments to perform "
+          "noise-aware decompositions. "
+          "We currently support `CX_fidelity`, `ZZMax_fidelity` and "
+          "`ZZPhase_fidelity`. If provided, the `CX` and `ZZMax` fidelities "
+          "must be given by a single floating point fidelity. The `ZZPhase` "
+          "fidelity is given as a lambda float -> float, mapping a ZZPhase "
+          "angle parameter to its fidelity. These parameters will be used "
+          "to return the optimal decomposition of each TK2 gate, taking "
+          "noise into consideration.\n\n"
+          "If the TK2 angles are symbolic values, the decomposition will "
+          "be exact (i.e. not noise-aware). It is not possible in general "
+          "to obtain optimal decompositions for arbitrary symbolic parameters, "
+          "so consider substituting for concrete values if possible.")
 
       /* OPTIMISATION TRANSFORMS */
       .def_static(

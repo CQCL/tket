@@ -273,7 +273,12 @@ static bool replace_two_qubit_interaction(
   Subcircuit sub = {in_edges, out_edges, i.vertices};
   Circuit subc = circ.subcircuit(sub);
   Eigen::Matrix4cd mat = get_matrix_from_2qb_circ(subc);
-  Circuit replacement = two_qubit_canonical(mat, cx_fidelity);
+  Circuit replacement = two_qubit_canonical(mat);
+  // TODO: for now we decompose all the way to CX. In the future, this pass
+  // should output TK2, and decompose to CX (or other gates) later if necessary.
+  TwoQbFidelities fid;
+  fid.CX_fidelity = cx_fidelity;
+  (decompose_TK2(fid) >> squash_1qb_to_tk1()).apply(replacement);
   const int nb_cx_old = subc.count_gates(OpType::CX);
   const int nb_cx_new = replacement.count_gates(OpType::CX);
   if (nb_cx_new < nb_cx_old) {

@@ -92,8 +92,49 @@ Transform decompose_ZX_to_HQS1();
 // single-qubit gates
 Transform decompose_MolmerSorensen();
 
-// finds all ZZ gates which are in the form of CX and Rz gates and converts
-// into ZZ gates Expects: CX, Rz Produces: ZZ, CX, Rz
+/**
+ * @brief A simple struct to store some two-qubit gate fidelities.
+ *
+ * We currently support CX, ZZMax and ZZPhase.
+ *
+ * This is meant to be easily extensible when further gate types will be
+ * supported.
+ *
+ */
+struct TwoQbFidelities {
+  std::optional<double> CX_fidelity;
+  std::optional<double> ZZMax_fidelity;
+  std::optional<std::function<double(double)>> ZZPhase_fidelity;
+};
+
+/**
+ * @brief Decomposes each TK2 gate into two-qubit gates.
+ *
+ * We currently support CX, ZZMax and ZZPhase.
+ *
+ * Decompose each TK2 gate into two-qubit gates in a noise-aware way. Supported
+ * two-qubit gate fidelities will be used to return the optimal decomposition of
+ * each TK2 gate, taking noise into consideration.
+ *
+ * If no fidelities are provided, the decomposition will be exact, using CX
+ * gates.
+ *
+ * If the TK2 angles are symbolic values, the decomposition will be exact
+ * (i.e. not noise-aware). It is not possible in general to obtain optimal
+ * decompositions for arbitrary symbolic parameters, so consider substituting
+ * for concrete values if possible.
+ *
+ * @param fid The two-qubit gate fidelities (optional).
+ * @return Transform
+ */
+Transform decompose_TK2(const TwoQbFidelities& fid);
+Transform decompose_TK2();
+
+/**
+ * @brief Synthesise ZZPhase gates from CX and Rz, as well as XX/YYPhase.
+ *
+ * Expects: CX, Rz, XXPhase, YYPhase Produces: ZZPhase, CX, Rz.
+ */
 Transform decompose_ZZPhase();
 
 /**

@@ -27,6 +27,7 @@
 #include "Circuit/Circuit.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Circuit/ThreeQubitConversion.hpp"
+#include "Decomposition.hpp"
 #include "OpType/EdgeType.hpp"
 #include "OpType/OpType.hpp"
 #include "OptimisationPass.hpp"
@@ -115,6 +116,10 @@ static Circuit candidate_sub(const Circuit &circ) {
   } else {
     TKET_ASSERT(n_qb == 3);
     Circuit repl = three_qubit_synthesis(get_3q_unitary(circ));
+    // TODO: for now we decompose all the way to CX. In the future, it's worth
+    // considering keeping TK2, and decomposing to CX (or other gates) later
+    // when necessary.
+    decompose_TK2().apply(repl);
     clifford_simp(false).apply(repl);
     return repl;
   }

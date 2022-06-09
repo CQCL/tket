@@ -22,6 +22,7 @@
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
 #include "Transformations/ContextualReduction.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
@@ -32,6 +33,26 @@ namespace py = pybind11;
 using json = nlohmann::json;
 
 namespace tket {
+
+// given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
+Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
+  Transforms::TwoQbFidelities fid;
+  for (const auto &kwarg : kwargs) {
+    const std::string kwargstr = py::cast<std::string>(kwarg.first);
+    using Func = std::function<double(double)>;
+    if (kwargstr == "CX_fidelity") {
+      fid.CX_fidelity = py::cast<double>(kwarg.second);
+    } else if (kwargstr == "ZZMax_fidelity") {
+      fid.ZZMax_fidelity = py::cast<double>(kwarg.second);
+    } else if (kwargstr == "ZZPhase_fidelity") {
+      fid.ZZPhase_fidelity = py::cast<Func>(kwarg.second);
+    } else {
+      throw py::type_error(
+          "got an unexpected keyword argument '" + kwargstr + "'");
+    }
+  }
+  return fid;
+}
 
 static PassPtr gen_cx_mapping_pass_kwargs(
     const Architecture &arc, const PlacementPtr &placer, py::kwargs kwargs) {
@@ -329,6 +350,30 @@ PYBIND11_MODULE(passes, m) {
       "\n:return: a KAK Decomposition pass using the given CX gate "
       "fidelity",
       py::arg("cx_fidelity") = 1.);
+  // TODO: Add NormalisedTK2 predicate support.
+  m.def(
+      "DecomposeTK2",
+      [](const py::kwargs &kwargs) {
+        return DecomposeTK2(get_fidelities(kwargs));
+      },
+      "Decompose each TK2 gate into two-qubit gates."
+      "\n\nGate fidelities can be passed as keyword arguments to perform "
+      "noise-aware decompositions. If the fidelities of several gate types "
+      "are provided, the best will be chosen.\n\n"
+      "We currently support `CX_fidelity`, `ZZMax_fidelity` and "
+      "`ZZPhase_fidelity`. If provided, the `CX` and `ZZMax` fidelities "
+      "must be given by a single floating point fidelity. The `ZZPhase` "
+      "fidelity is given as a lambda float -> float, mapping a ZZPhase "
+      "angle parameter to its fidelity. These parameters will be used "
+      "to return the optimal decomposition of each TK2 gate, taking "
+      "noise into consideration.\n\n"
+      "If no fidelities are provided, the TK2 gates will be decomposed "
+      "exactly using CX gates.\n\n"
+      "All TK2 gate parameters must be normalised to the Weyl chamber."
+      "\n\nIf the TK2 angles are symbolic values, the decomposition will "
+      "be exact (i.e. not noise-aware). It is not possible in general "
+      "to obtain optimal decompositions for arbitrary symbolic parameters, "
+      "so consider substituting for concrete values if possible.");
   m.def(
       "ThreeQubitSquash", &ThreeQubitSquash,
       "Squash three-qubit subcircuits into subcircuits having fewer CX gates, "
