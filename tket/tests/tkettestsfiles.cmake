@@ -64,6 +64,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
     ${TKET_TESTS_DIR}/Circuit/test_Boxes.cpp
     ${TKET_TESTS_DIR}/Circuit/test_Circ.cpp
+    ${TKET_TESTS_DIR}/Circuit/test_CircPool.cpp
     ${TKET_TESTS_DIR}/Circuit/test_Symbolic.cpp
     ${TKET_TESTS_DIR}/Circuit/test_ThreeQubitConversion.cpp
     ${TKET_TESTS_DIR}/test_CliffTableau.cpp
