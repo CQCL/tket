@@ -59,13 +59,14 @@ def overload_biteq(self: Bit, other: Any) -> bool:
 setattr(Bit, "__eq__", overload_biteq)
 
 
-def overload_add_wasm(
+def overload_add_wasm(  # type: ignore
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmFileHandler,
     list_i: List[List[int]],
     list_o: List[List[int]],
     args: Union[List[int], List[Bit]],
+    **kwargs,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
     \n\n:param funcname: name of the function that is called
@@ -73,20 +74,24 @@ def overload_add_wasm(
     \n:param list_i: list of the number of bits in the input variables
     \n:param list_o: list of the number of bits in the output variables
     \n:param args: vector of circuit bits the wasm op should be added to
+    \n:param kwargs: additional arguments passed to `add_gate_method` .
+     Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
+     `condition_value`
     \n:return: the new :py:class:`Circuit`"""
 
-    return self._add_wasm(funcname, str(filehandler), list_i, list_o, args)
+    return self._add_wasm(funcname, str(filehandler), list_i, list_o, args, **kwargs)
 
 
 setattr(Circuit, "add_wasm", overload_add_wasm)
 
 
-def overload_add_wasm_to_reg(
+def overload_add_wasm_to_reg(  # type: ignore
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmFileHandler,
     list_i: List[BitRegister],
     list_o: List[BitRegister],
+    **kwargs,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
     \n\n:param funcname: name of the function that is called
@@ -96,9 +101,12 @@ def overload_add_wasm_to_reg(
     \n:param list_o: list of the classical registers assigned to
      the output variables of the function call
     \n:param args: vector of circuit bits the wasm op should be added to
+    \n:param kwargs: additional arguments passed to `add_gate_method` .
+     Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
+     `condition_value`
     \n:return: the new :py:class:`Circuit`"""
 
-    return self._add_wasm(funcname, str(filehandler), list_i, list_o)
+    return self._add_wasm(funcname, str(filehandler), list_i, list_o, **kwargs)
 
 
 setattr(Circuit, "add_wasm_to_reg", overload_add_wasm_to_reg)

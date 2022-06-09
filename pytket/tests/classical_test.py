@@ -782,6 +782,58 @@ def test_conditional_classicals() -> None:
     assert str(c.get_commands()[0]) == "IF ([b[0]] == 1) THEN AND b[0], b[1];"
 
 
+def test_conditional_wasm() -> None:
+    c = Circuit(0, 6)
+    b = c.add_c_register("b", 2)
+    c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], condition=b[0])
+
+    assert c.depth() == 1
+    assert str(c.get_commands()[0]) == "IF ([b[0]] == 1) THEN WASM c[0], c[1];"
+
+
+def test_conditional_wasm_ii() -> None:
+    c = Circuit(0, 6)
+    b = c.add_c_register("b", 2)
+    c._add_wasm("funcname", "wasmfileuid", [b], [], condition=b[0])
+
+    assert c.depth() == 1
+    assert str(c.get_commands()[0]) == "IF ([b[0]] == 1) THEN WASM b[0], b[1];"
+
+
+def test_conditional_wasm_iii() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+
+    c = Circuit(6, 6)
+    c0 = c.add_c_register("c0", 3)
+    c1 = c.add_c_register("c1", 4)
+    c2 = c.add_c_register("c2", 5)
+
+    b = c.add_c_register("b", 2)
+
+    c.add_wasm_to_reg("funcname", w, [c0, c1], [c2], condition=b[0])
+    c.add_wasm_to_reg("funcname2", w, [c2], [c2], condition=b[1])
+
+    assert c.depth() == 2
+    assert (
+        str(c.get_commands()[0])
+        == "IF ([b[0]] == 1) THEN WASM c0[0], c0[1], c0[2], c1[0], c1[1], c1[2], c1[3], c2[0], c2[1], c2[2], c2[3], c2[4];"
+    )
+    assert (
+        str(c.get_commands()[1])
+        == "IF ([b[1]] == 1) THEN WASM c2[0], c2[1], c2[2], c2[3], c2[4], c2[0], c2[1], c2[2], c2[3], c2[4];"
+    )
+
+
+def test_conditional_wasm_iv() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(0, 6)
+    b = c.add_c_register("controlreg", 2)
+    c.add_wasm("funcname", w, [1], [1], [Bit(0), Bit(1)], condition=b[0])
+
+    assert c.depth() == 1
+    assert str(c.get_commands()[0]) == "IF ([controlreg[0]] == 1) THEN WASM c[0], c[1];"
+
+
 def test_arithmetic_ops() -> None:
     circ = Circuit()
     a = circ.add_c_register("a", 3)
