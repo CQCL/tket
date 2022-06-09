@@ -12,7 +12,7 @@ Minor new features:
   that can be rendered by the ``graphviz`` package.
 * New pass and transform `DecomposeTK2` to decompose TK2 gates using the
   approximate KAK decomposition.
-* ``GlobalisePhasedX`` uses fewer Rz rotations.
+* Pass and transform ``GlobalisePhasedX`` use fewer Rz rotations.
 
 Fixes:
 
