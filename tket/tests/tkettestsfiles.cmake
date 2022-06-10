@@ -59,6 +59,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Ops/test_Ops.cpp
     ${TKET_TESTS_DIR}/OpType/test_OpTypeFunctions.cpp
     ${TKET_TESTS_DIR}/Passes/test_SynthesiseTK.cpp
+    ${TKET_TESTS_DIR}/Passes/test_SynthesiseTket.cpp
     ${TKET_TESTS_DIR}/Gate/test_GateUnitaryMatrix.cpp
     ${TKET_TESTS_DIR}/Simulation/test_CircuitSimulator.cpp
     ${TKET_TESTS_DIR}/Simulation/test_PauliExpBoxUnitaryCalculator.cpp

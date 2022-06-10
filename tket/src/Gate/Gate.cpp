@@ -614,9 +614,9 @@ std::vector<Expr> Gate::get_params() const { return params_; }
 
 SymSet Gate::free_symbols() const { return expr_free_symbols(get_params()); }
 
-std::optional<Pauli> Gate::commuting_basis(port_t port) const {
+std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
   unsigned n_q = n_qubits();
-  if (port >= n_q) throw NotValid();
+  if (i >= n_q) throw NotValid();
   switch (get_type()) {
     case OpType::XXPhase:
     case OpType::XXPhase3: {
@@ -655,16 +655,16 @@ std::optional<Pauli> Gate::commuting_basis(port_t port) const {
     case OpType::CH:
     case OpType::CU3:
     case OpType::CSWAP: {
-      if (port == 0) {
+      if (i == 0) {
         return Pauli::Z;
       } else {
         return std::nullopt;
       }
     }
     case OpType::BRIDGE: {
-      if (port == 0) {
+      if (i == 0) {
         return Pauli::Z;
-      } else if (port == 2) {
+      } else if (i == 2) {
         return Pauli::X;
       } else {
         return Pauli::I;
@@ -684,14 +684,14 @@ std::optional<Pauli> Gate::commuting_basis(port_t port) const {
     case OpType::CX:
     case OpType::CCX:
     case OpType::CnX: {
-      if (port == n_q - 1) {
+      if (i == n_q - 1) {
         return Pauli::X;
       } else {
         return Pauli::Z;
       }
     }
     case OpType::ECR: {
-      if (port == 1) {
+      if (i == 1) {
         return Pauli::X;
       } else {
         return std::nullopt;
@@ -702,7 +702,7 @@ std::optional<Pauli> Gate::commuting_basis(port_t port) const {
     case OpType::CY:
     case OpType::CRy:
     case OpType::CnRy: {
-      if (port == n_q - 1) {
+      if (i == n_q - 1) {
         return Pauli::Y;
       } else {
         return Pauli::Z;
@@ -715,9 +715,9 @@ std::optional<Pauli> Gate::commuting_basis(port_t port) const {
 }
 
 bool Gate::commutes_with_basis(
-    const std::optional<Pauli>& colour, port_t port) const {
+    const std::optional<Pauli>& colour, unsigned i) const {
   if (colour == Pauli::I) return true;
-  const std::optional<Pauli> my_colour = commuting_basis(port);
+  const std::optional<Pauli> my_colour = commuting_basis(i);
   if (!colour && !my_colour) return false;
   if (my_colour == Pauli::I || my_colour == colour) return true;
   return false;
