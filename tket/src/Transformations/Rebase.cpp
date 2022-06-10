@@ -18,6 +18,7 @@
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Gate/GatePtr.hpp"
+#include "OpType/OpType.hpp"
 #include "Replacement.hpp"
 #include "Transform.hpp"
 #include "Utils/TketLog.hpp"
@@ -154,6 +155,30 @@ Transform rebase_OQC() {
   return rebase_factory(
       {OpType::ECR, OpType::Rz, OpType::SX}, CircPool::CX_using_ECR(),
       CircPool::tk1_to_rzsx);
+}
+
+// Multiqs: ZZMax
+// Singleqs: Rz, PhasedX
+Transform rebase_HQS() {
+  return rebase_factory(
+      {OpType::ZZMax, OpType::Rz, OpType::PhasedX}, CircPool::CX_using_ZZMax(),
+      CircPool::tk1_to_PhasedXRz);
+}
+
+// Multiqs: TK2
+// Singleqs: TK1
+Transform rebase_TK() {
+  return rebase_factory(
+      {OpType::TK2, OpType::TK1}, CircPool::CX_using_TK2(),
+      CircPool::tk1_to_tk1);
+}
+
+// Multiqs: XXPhase
+// Singleqs: Rz, PhasedX
+Transform rebase_UMD() {
+  return rebase_factory(
+      {OpType::XXPhase, OpType::Rz, OpType::PhasedX},
+      CircPool::CX_using_XXPhase_0(), CircPool::tk1_to_PhasedXRz);
 }
 
 }  // namespace Transforms
