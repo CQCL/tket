@@ -1068,6 +1068,18 @@ Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
     c.add_op<unsigned>(OpType::SX, {0});
     correction_phase =
         int_half(beta - 0.5) + int_half(alpha) + int_half(gamma) - 0.25;
+  } else if (equiv_0(beta - 0.5)) {
+    // SX.Rz(2m-0.5).SX = (-1)^{m}e^{i \pi /4} Rz(-0.5).SX.Rz(-0.5)
+    c.add_op<unsigned>(OpType::Rz, gamma, {0});
+    c.add_op<unsigned>(OpType::SX, {0});
+    c.add_op<unsigned>(OpType::Rz, alpha, {0});
+    correction_phase = int_half(beta - 0.5) - 0.25;
+  } else if (equiv_0(beta + 0.5)) {
+    // SX.Rz(2m+0.5).SX = (-1)^{m}e^{i \pi /4} Rz(0.5).SX.Rz(0.5)
+    c.add_op<unsigned>(OpType::Rz, gamma + 1, {0});
+    c.add_op<unsigned>(OpType::SX, {0});
+    c.add_op<unsigned>(OpType::Rz, alpha + 1, {0});
+    correction_phase = int_half(beta - 1.5) - 0.25;
   } else if (equiv_0(alpha - 0.5) && equiv_0(gamma - 0.5)) {
     // Rz(2k + 0.5)Rx(b)Rz(2m + 0.5) = -i(-1)^{k+m}SX.Rz(1-b).SX
     c.add_op<unsigned>(OpType::SX, {0});
