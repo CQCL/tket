@@ -18,7 +18,7 @@
 #include <set>
 #include <sstream>
 
-#include "Utils/RNG.hpp"
+#include <tkrng/RNG.hpp>
 
 using std::stringstream;
 using std::vector;
