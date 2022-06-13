@@ -12,10 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.16.0)
 project(tkrng CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+endif()
 
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
+if(WIN32)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS yes)
+endif()
+
+if(APPLE)
+    # set correct install_name
+    set(CMAKE_INSTALL_NAME_DIR "@loader_path")
+    set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
+endif()
+
 add_library(tkrng RNG.cpp)
+
+if(MSVC)
+  target_compile_options(tkrng PRIVATE /W4 /WX)
+else()
+  target_compile_options(tkrng PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()
