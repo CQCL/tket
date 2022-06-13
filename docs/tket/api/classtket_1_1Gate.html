@@ -135,12 +135,12 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a1de8a6be1c1ee667053bc75369eeee2e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f7d24fa47670d643081678e66a11695"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Gate.html#a4f7d24fa47670d643081678e66a11695">n_qubits</a> () const override</td></tr>
 <tr class="separator:a4f7d24fa47670d643081678e66a11695"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a78bd0d6ecf4a10ca2d5340b97dace82b"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Gate.html#a78bd0d6ecf4a10ca2d5340b97dace82b">commuting_basis</a> (<a class="el" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> port) const override</td></tr>
-<tr class="memdesc:a78bd0d6ecf4a10ca2d5340b97dace82b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Which Pauli, if any, commutes with the operation at a given port.  <a href="classtket_1_1Gate.html#a78bd0d6ecf4a10ca2d5340b97dace82b">More...</a><br /></td></tr>
-<tr class="separator:a78bd0d6ecf4a10ca2d5340b97dace82b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa12a8772f239e397b6c4bd4e842fc786"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Gate.html#aa12a8772f239e397b6c4bd4e842fc786">commutes_with_basis</a> (const std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;colour, <a class="el" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a> port) const override</td></tr>
-<tr class="memdesc:aa12a8772f239e397b6c4bd4e842fc786"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the operation commutes with the given Pauli at the given port.  <a href="classtket_1_1Gate.html#aa12a8772f239e397b6c4bd4e842fc786">More...</a><br /></td></tr>
-<tr class="separator:aa12a8772f239e397b6c4bd4e842fc786"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e8c0589d8fc3cc8eb37f79e9bcb2799"><td class="memItemLeft" align="right" valign="top">std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Gate.html#a8e8c0589d8fc3cc8eb37f79e9bcb2799">commuting_basis</a> (unsigned i) const override</td></tr>
+<tr class="memdesc:a8e8c0589d8fc3cc8eb37f79e9bcb2799"><td class="mdescLeft">&#160;</td><td class="mdescRight">Which Pauli, if any, commutes with the operation at a given qubit.  <a href="classtket_1_1Gate.html#a8e8c0589d8fc3cc8eb37f79e9bcb2799">More...</a><br /></td></tr>
+<tr class="separator:a8e8c0589d8fc3cc8eb37f79e9bcb2799"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae53051f8c98cbb3c8c3f31aed58ae776"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Gate.html#ae53051f8c98cbb3c8c3f31aed58ae776">commutes_with_basis</a> (const std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;colour, unsigned i) const override</td></tr>
+<tr class="memdesc:ae53051f8c98cbb3c8c3f31aed58ae776"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the operation commutes with the given Pauli at the given qubit.  <a href="classtket_1_1Gate.html#ae53051f8c98cbb3c8c3f31aed58ae776">More...</a><br /></td></tr>
+<tr class="separator:ae53051f8c98cbb3c8c3f31aed58ae776"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a412791dac3435aa74a22b1e286a6f4a8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#ac9cc41e0b406b456fabc9ae1e4517ebd">op_signature_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Gate.html#a412791dac3435aa74a22b1e286a6f4a8">get_signature</a> () const override</td></tr>
 <tr class="memdesc:a412791dac3435aa74a22b1e286a6f4a8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector specifying type of data for each port on op.  <a href="classtket_1_1Gate.html#a412791dac3435aa74a22b1e286a6f4a8">More...</a><br /></td></tr>
 <tr class="separator:a412791dac3435aa74a22b1e286a6f4a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -284,8 +284,8 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="aa12a8772f239e397b6c4bd4e842fc786"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa12a8772f239e397b6c4bd4e842fc786">&#9670;&nbsp;</a></span>commutes_with_basis()</h2>
+<a id="ae53051f8c98cbb3c8c3f31aed58ae776"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae53051f8c98cbb3c8c3f31aed58ae776">&#9670;&nbsp;</a></span>commutes_with_basis()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -302,8 +302,8 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a>&#160;</td>
-          <td class="paramname"><em>port</em>&#160;</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>i</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -318,29 +318,23 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Whether the operation commutes with the given Pauli at the given port. </p>
+<p>Whether the operation commutes with the given Pauli at the given qubit. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">colour</td><td>Pauli operation type </td></tr>
-    <tr><td class="paramname">port</td><td>operation port </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classtket_1_1NotValid.html" title="Operation invalid.">NotValid</a></td><td>if operation is not a gate </td></tr>
+    <tr><td class="paramname">i</td><td>operation qubit index </td></tr>
   </table>
   </dd>
 </dl>
 
-<p>Reimplemented from <a class="el" href="classtket_1_1Op.html#aff05ec43a07be6a5fda3fd68113cb0a5">tket::Op</a>.</p>
+<p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a71485b3d27d58a4c5054a214837084bd">tket::Op</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l00717">717</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
 
 </div>
 </div>
-<a id="a78bd0d6ecf4a10ca2d5340b97dace82b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a78bd0d6ecf4a10ca2d5340b97dace82b">&#9670;&nbsp;</a></span>commuting_basis()</h2>
+<a id="a8e8c0589d8fc3cc8eb37f79e9bcb2799"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e8c0589d8fc3cc8eb37f79e9bcb2799">&#9670;&nbsp;</a></span>commuting_basis()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -351,8 +345,8 @@ Additional Inherited Members</h2></td></tr>
         <tr>
           <td class="memname">std::optional&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; tket::Gate::commuting_basis </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacetket.html#a85e7f8d119b3b35dd331a339729f4cfb">port_t</a>&#160;</td>
-          <td class="paramname"><em>port</em></td><td>)</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>i</em></td><td>)</td>
           <td> const</td>
         </tr>
       </table>
@@ -363,29 +357,23 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Which Pauli, if any, commutes with the operation at a given port. </p>
+<p>Which Pauli, if any, commutes with the operation at a given qubit. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">port</td><td>port number at which Pauli should commute </td></tr>
+    <tr><td class="paramname">i</td><td>qubit number at which Pauli should commute </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A Pauli that commutes with the given operation </dd></dl>
 <dl class="retval"><dt>Return values</dt><dd>
   <table class="retval">
-    <tr><td class="paramname">std::nullopt</td><td>no Pauli commutes </td></tr>
+    <tr><td class="paramname">std::nullopt</td><td>no Pauli commutes (or operation not a gate) </td></tr>
     <tr><td class="paramname">Pauli::I</td><td>any Pauli commutes </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classtket_1_1NotValid.html" title="Operation invalid.">NotValid</a></td><td>if operation is not a gate </td></tr>
-  </table>
-  </dd>
-</dl>
 
-<p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a7ea2e26493612bf27d0a65a1b8a8cf21">tket::Op</a>.</p>
+<p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a8ed2c005331129c54b910933c20af354">tket::Op</a>.</p>
 
 <p class="definition">Definition at line <a class="el" href="Gate_8cpp_source.html#l00617">617</a> of file <a class="el" href="Gate_8cpp_source.html">Gate.cpp</a>.</p>
 
