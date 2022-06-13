@@ -18,11 +18,9 @@ from conans import ConanFile, CMake
 class TkrngConan(ConanFile):
     name = "tkrng"
     version = "0.1.0"
-    license = "<Put the package license here>"
-    author = "<Put your name here> <And your email here>"
-    url = "<Package recipe repository url here, for issues about the package>"
-    description = "<Description of Tkrng here>"
-    topics = ("<Put some tag here>", "<here>", "<and here>")
+    license = "Apache 2"
+    url = "https://github.com/CQCL/tket"
+    description = "Deterministic cross-platform PRNG"
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False], "fPIC": [True, False]}
     default_options = {"shared": False, "fPIC": True}
@@ -37,11 +35,6 @@ class TkrngConan(ConanFile):
         cmake = CMake(self)
         cmake.configure(source_folder="src")
         cmake.build()
-
-        # Explicit way:
-        # self.run('cmake %s/hello %s'
-        #          % (self.source_folder, cmake.command_line))
-        # self.run("cmake --build . %s" % cmake.build_config)
 
     def package(self):
         self.copy("*.hpp", dst="include", src="src")
