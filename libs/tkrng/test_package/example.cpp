@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "tkrng/RNG.hpp"
 #include <iostream>
+
+#include "tkrng/RNG.hpp"
 
 using namespace tket;
 
 int main() {
-    RNG rng;
-    size_t a = rng.get_size_t(10);
-    std::cout << "0 <= " << a << " <= 10" << std::endl;
-    return 0;
+  RNG rng;
+  size_t a = rng.get_size_t(10);
+  std::cout << "0 <= " << a << " <= 10" << std::endl;
+  return 0;
 }
