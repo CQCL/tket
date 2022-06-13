@@ -37,6 +37,9 @@ if(APPLE)
 endif()
 
 add_library(tkrng RNG.cpp)
+target_include_directories(tkrng PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/tkrng)
+target_include_directories(tkrng INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 
 if(MSVC)
   target_compile_options(tkrng PRIVATE /W4 /WX)

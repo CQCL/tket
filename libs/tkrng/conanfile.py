@@ -37,7 +37,7 @@ class TkrngConan(ConanFile):
         cmake.build()
 
     def package(self):
-        self.copy("*.hpp", dst="include", src="src")
+        self.copy("include/*.hpp", dst="include/tkrng", src="src", keep_path=False)
         self.copy("*.lib", dst="lib", keep_path=False)
         self.copy("*.dll", dst="bin", keep_path=False)
         self.copy("*.dylib*", dst="lib", keep_path=False)
