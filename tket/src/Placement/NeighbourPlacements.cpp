@@ -17,9 +17,9 @@
 #include <cstdlib>
 #include <sstream>
 #include <string>
+#include <tklog/TketLog.hpp>
 
 #include "TokenSwapping/SwapListOptimiser.hpp"
-#include "Utils/TketLog.hpp"
 
 namespace tket {
 

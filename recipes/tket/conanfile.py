@@ -35,12 +35,13 @@ class TketConan(ConanFile):
     generators = "cmake"
     exports_sources = ["../../tket/src/*", "!*/build/*"]
     requires = (
-        # symengine and tkrng may come from remote:
+        # symengine and tk* libraries may come from remote:
         # https://tket.jfrog.io/artifactory/api/conan/tket-conan
         "boost/1.79.0",
         "symengine/0.9.0.1@tket/stable",
         "eigen/3.4.0",
         "nlohmann_json/3.10.5",
+        "tklog/0.1.0@tket/stable",
         "tkrng/0.1.1@tket/stable",
     )
 

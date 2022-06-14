@@ -15,9 +15,9 @@
 #pragma once
 
 #include <cstdlib>
+#include <tklog/TketLog.hpp>
 
 #include "AssertMessage.hpp"
-#include "TketLog.hpp"
 
 /**
  * If `condition` is not satisfied, log a diagnostic message and abort.

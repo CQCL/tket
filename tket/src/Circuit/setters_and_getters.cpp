@@ -16,6 +16,8 @@
 // ALL METHODS TO SET AND GET BASIC CIRCUIT INFORMATION//
 ////////////////////////////////////////////////////////
 
+#include <tklog/TketLog.hpp>
+
 #include "Circuit.hpp"
 #include "DAGDefs.hpp"
 #include "DAGProperties.hpp"
@@ -25,7 +27,6 @@
 #include "Utils/Assert.hpp"
 #include "Utils/Exceptions.hpp"
 #include "Utils/GraphHeaders.hpp"
-#include "Utils/TketLog.hpp"
 
 namespace tket {
 

@@ -208,6 +208,7 @@ target_link_libraries(pauli PRIVATE ${TKET_EXTRA_LIBS})
 pybind11_add_module(logging binders/logging.cpp)
 target_include_directories(logging PRIVATE binders/include)
 target_link_libraries(logging PRIVATE
+    tklog
     tket-Utils)
 target_link_libraries(logging PRIVATE ${TKET_EXTRA_LIBS})
 

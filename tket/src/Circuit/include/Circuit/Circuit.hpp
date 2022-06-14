@@ -34,6 +34,7 @@
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <tklog/TketLog.hpp>
 #include <type_traits>
 #include <unordered_map>
 #include <utility>
@@ -49,7 +50,6 @@
 #include "Utils/GraphHeaders.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/SequencedContainers.hpp"
-#include "Utils/TketLog.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket {
