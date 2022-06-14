@@ -23,7 +23,6 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Utils/test_CosSinDecomposition.cpp
     ${TKET_TESTS_DIR}/Utils/test_HelperFunctions.cpp
     ${TKET_TESTS_DIR}/Utils/test_MatrixAnalysis.cpp
-    ${TKET_TESTS_DIR}/Utils/test_Logging.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_BitFunctions.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_DyadicFraction.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_GeneralUtils.cpp
