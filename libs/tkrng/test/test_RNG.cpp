@@ -17,7 +17,6 @@
 #include <numeric>
 #include <set>
 #include <sstream>
-
 #include <tkrng/RNG.hpp>
 
 using std::stringstream;

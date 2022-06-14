@@ -14,9 +14,10 @@
 
 #pragma once
 
+#include <tkrng/RNG.hpp>
+
 #include "Architecture/Architecture.hpp"
 #include "TokenSwapping/VertexMappingFunctions.hpp"
-#include "Utils/RNG.hpp"
 
 namespace tket {
 namespace tsa_internal {

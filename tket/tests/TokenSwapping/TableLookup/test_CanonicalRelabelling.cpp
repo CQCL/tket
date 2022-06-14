@@ -16,10 +16,10 @@
 #include <catch2/catch_test_macros.hpp>
 #include <numeric>
 #include <set>
+#include <tkrng/RNG.hpp>
 
 #include "PermutationTestUtils.hpp"
 #include "TokenSwapping/CanonicalRelabelling.hpp"
-#include "Utils/RNG.hpp"
 
 using std::vector;
 

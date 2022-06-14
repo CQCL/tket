@@ -15,10 +15,9 @@
 #pragma once
 
 #include <cstddef>
+#include <tkrng/RNG.hpp>
 #include <utility>
 #include <vector>
-
-#include "Utils/RNG.hpp"
 
 namespace tket {
 namespace graphs {

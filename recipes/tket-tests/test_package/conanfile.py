@@ -45,7 +45,7 @@ class TketTestsTestConan(ConanFile):
         if not tools.cross_building(self):
             lib_files = os.listdir(os.path.join(self.install_folder, "lib"))
             for lib_file in lib_files:
-                if "tket" in lib_file:
+                if "tk" in lib_file:
                     copyfile(
                         os.path.join(self.install_folder, "lib", lib_file),
                         os.path.join("bin", lib_file),

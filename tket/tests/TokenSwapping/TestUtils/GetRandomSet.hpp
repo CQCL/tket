@@ -15,8 +15,7 @@
 #pragma once
 
 #include <set>
-
-#include "Utils/RNG.hpp"
+#include <tkrng/RNG.hpp>
 
 namespace tket {
 namespace tsa_internal {

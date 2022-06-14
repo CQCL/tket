@@ -39,11 +39,13 @@ class TketConan(ConanFile):
     exports_sources = ["../../tket/src/*", "!*/build/*", "patches/*"]
     exports = ["patches/*"]
     requires = (
+        # symengine and tkrng may come from remote:
+        # https://tket.jfrog.io/artifactory/api/conan/tket-conan
         "boost/1.79.0",
-        # symengine from remote: https://tket.jfrog.io/artifactory/api/conan/tket-conan
         "symengine/0.9.0.1@tket/stable",
         "eigen/3.4.0",
         "nlohmann_json/3.10.5",
+        "tkrng/0.1.0@tket/stable",
     )
 
     comps = [
