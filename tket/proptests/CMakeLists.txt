@@ -55,4 +55,5 @@ target_link_libraries(proptest PRIVATE
     tket-Transformations
     tket-Utils)
 
-target_link_libraries(proptest PRIVATE ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(proptest PRIVATE
+    ${CONAN_LIBS_SYMENGINE} ${CONAN_LIBS_TKRNG})
