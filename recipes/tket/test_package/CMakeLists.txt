@@ -39,5 +39,4 @@ target_link_libraries(test PRIVATE
     tket-Transformations
     tket-Utils)
 
-target_link_libraries(test PRIVATE
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(test PRIVATE ${CONAN_LIBS_SYMENGINE})
