@@ -16,10 +16,10 @@
 #include <functional>
 #include <set>
 #include <sstream>
+#include <tkrng/RNG.hpp>
 
 #include "TestUtils/DebugFunctions.hpp"
 #include "TokenSwapping/SwapListOptimiser.hpp"
-#include "Utils/RNG.hpp"
 
 using std::vector;
 

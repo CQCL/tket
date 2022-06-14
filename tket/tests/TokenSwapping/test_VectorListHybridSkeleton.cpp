@@ -19,9 +19,9 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
+#include <tkrng/RNG.hpp>
 
 #include "TokenSwapping/VectorListHybridSkeleton.hpp"
-#include "Utils/RNG.hpp"
 
 using std::vector;
 

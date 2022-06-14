@@ -15,9 +15,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include <limits>
 #include <map>
+#include <tkrng/RNG.hpp>
 
 #include "TokenSwapping/FilteredSwapSequences.hpp"
-#include "Utils/RNG.hpp"
 
 using std::vector;
 

@@ -15,11 +15,11 @@
 #pragma once
 
 #include <map>
+#include <tkrng/RNG.hpp>
 
 #include "Placement.hpp"
 #include "TokenSwapping/SwapFunctions.hpp"
 #include "Utils/BiMapHeaders.hpp"
-#include "Utils/RNG.hpp"
 
 namespace tket {
 

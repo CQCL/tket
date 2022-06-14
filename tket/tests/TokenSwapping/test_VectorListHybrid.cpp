@@ -15,9 +15,9 @@
 #include <algorithm>
 #include <catch2/catch_test_macros.hpp>
 #include <sstream>
+#include <tkrng/RNG.hpp>
 
 #include "TokenSwapping/VectorListHybrid.hpp"
-#include "Utils/RNG.hpp"
 
 using std::vector;
 

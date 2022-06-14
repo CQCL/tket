@@ -17,10 +17,10 @@
 #include <map>
 #include <memory>
 #include <optional>
+#include <tkrng/RNG.hpp>
 
 #include "DistancesInterface.hpp"
 #include "NeighboursInterface.hpp"
-#include "Utils/RNG.hpp"
 
 namespace tket {
 namespace tsa_internal {

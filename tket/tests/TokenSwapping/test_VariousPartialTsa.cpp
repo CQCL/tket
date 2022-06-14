@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
+#include <tkrng/RNG.hpp>
 
 #include "TestUtils/ArchitectureEdgesReimplementation.hpp"
 #include "TestUtils/DebugFunctions.hpp"
@@ -21,7 +22,6 @@
 #include "TokenSwapping/CyclesPartialTsa.hpp"
 #include "TokenSwapping/RiverFlowPathFinder.hpp"
 #include "TokenSwapping/TrivialTSA.hpp"
-#include "Utils/RNG.hpp"
 
 using std::vector;
 
