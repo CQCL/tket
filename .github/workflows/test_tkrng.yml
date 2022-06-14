@@ -1,0 +1,134 @@
+name: test tkrng
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+jobs:
+  changes:
+    runs-on: ubuntu-20.04
+    outputs:
+      tkrng: ${{ steps.filter.outputs.tkrng }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        base: ${{ github.ref }}
+        filters: |
+          tkrng_code:
+            - 'libs/tkrng/**'
+  linux:
+    name: test tkrng (linux)
+    needs: changes
+    if: needs.changes.outputs.tkrng_code == 'true'
+    runs-on: ubuntu-20.04
+    env:
+      CC: gcc-10
+      CXX: g++-10
+      CONAN_REVISIONS_ENABLED: 1
+    steps:
+    - uses: actions/checkout@v3
+    - name: install conan
+      run: pip install conan
+    - name: create profile
+      run: |
+        conan profile new tket --detect
+        conan profile update settings.compiler.libcxx=libstdc++11 tket
+    - name: add remote
+      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
+    - name: build tkrng
+      run: conan create --profile=tket libs/tkrng
+    - name: build tkrng tests
+      run: |
+        conan install libs/tkrng/test --install-folder=build/test-tkrng --profile=tket
+        conan build libs/tkrng/test --configure --build-folder=build/test-tkrng --source-folder=libs/tkrng/test
+        conan build libs/tkrng/test --build --build-folder=build/test-tkrng
+        conan package libs/tkrng/test --build-folder=build/test-tkrng --package-folder build/test-tkrng/package --source-folder=libs/tkrng/test
+    - name: run tkrng tests
+      working-directory: ./build/test-tkrng/package/bin
+      run: ./test-tkrng
+  macos:
+    name: test tkrng (macos)
+    needs: changes
+    if: needs.changes.outputs.tkrng_code == 'true'
+    runs-on: macos-11
+    env:
+      CONAN_REVISIONS_ENABLED: 1
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.9'
+    - name: install conan
+      run: pip install conan
+    - name: create profile
+      run: conan profile new tket --detect
+    - name: add remote
+      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
+    - name: build tkrng
+      run: conan create --profile=tket libs/tkrng
+    - name: build tkrng tests
+      run: |
+        conan install libs/tkrng/test --install-folder=build/test-tkrng --profile=tket
+        conan build libs/tkrng/test --configure --build-folder=build/test-tkrng --source-folder=libs/tkrng/test
+        conan build libs/tkrng/test --build --build-folder=build/test-tkrng
+        conan package libs/tkrng/test --build-folder=build/test-tkrng --package-folder build/test-tkrng/package --source-folder=libs/tkrng/test
+    - name: run tkrng tests
+      working-directory: ./build/test-tkrng/package/bin
+      run: ./test-tkrng
+  macos-m1:
+    name: test tkrng (macos-m1)
+    needs: changes
+    if: needs.changes.outputs.tkrng_code == 'true'
+    runs-on: [self-hosted, macos, M1]
+    env:
+      CONAN_REVISIONS_ENABLED: 1
+    steps:
+    - uses: actions/checkout@v3
+    - name: install conan
+      run: pip install -U conan
+    - name: create profile
+      run: conan profile new tket --detect --force
+    - name: add remote
+      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
+    - name: build tkrng
+      run: conan create --profile=tket libs/tkrng
+    - name: build tkrng tests
+      run: |
+        conan install libs/tkrng/test --install-folder=build/test-tkrng --profile=tket
+        conan build libs/tkrng/test --configure --build-folder=build/test-tkrng --source-folder=libs/tkrng/test
+        conan build libs/tkrng/test --build --build-folder=build/test-tkrng
+        conan package libs/tkrng/test --build-folder=build/test-tkrng --package-folder build/test-tkrng/package --source-folder=libs/tkrng/test
+    - name: run tkrng tests
+      working-directory: ./build/test-tkrng/package/bin
+      run: ./test-tkrng
+  windows:
+    name: test tkrng (windows)
+    needs: changes
+    if: needs.changes.outputs.tkrng_code == 'true'
+    runs-on: windows-2019
+    env:
+      CONAN_REVISIONS_ENABLED: 1
+    steps:
+    - uses: actions/checkout@v3
+    - name: install conan
+      run: pip install conan
+    - name: create profile
+      run: conan profile new tket --detect
+    - name: add remote
+      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
+    - name: build tkrng
+      run: conan create --profile=tket libs/tkrng
+    - name: build tkrng tests
+      run: |
+        conan install libs/tkrng/test --install-folder=build/test-tkrng --profile=tket
+        conan build libs/tkrng/test --configure --build-folder=build/test-tkrng --source-folder=libs/tkrng/test
+        conan build libs/tkrng/test --build --build-folder=build/test-tkrng
+        conan package libs/tkrng/test --build-folder=build/test-tkrng --package-folder build/test-tkrng/package --source-folder=libs/tkrng/test
+    - name: run tkrng tests
+      working-directory: ./build/test-tkrng/package/bin
+      run: ./test-tkrng
