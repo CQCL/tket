@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <Utils/TketLog.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <sstream>
 #include <string>
+#include <tklog/TketLog.hpp>
 
 namespace tket {
 
