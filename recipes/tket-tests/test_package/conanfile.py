@@ -19,18 +19,6 @@ import platform
 from conans import ConanFile, tools
 
 
-def libfile(name):
-    sysname = platform.system()
-    if sysname == "Linux":
-        return "lib" + name + ".so"
-    elif sysname == "Darwin":
-        return "lib" + name + ".dylib"
-    elif sysname == "Windows":
-        return name + ".dll"
-    else:
-        return None
-
-
 class TketTestsTestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {"with_coverage": [True, False]}
