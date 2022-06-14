@@ -68,4 +68,4 @@ target_link_libraries(test_tket PRIVATE
     tket-ZX)
 
 target_link_libraries(test_tket PRIVATE
-    ${CONAN_LIBS_SYMENGINE} ${CONAN_LIBS_CATCH2})
+    ${CONAN_LIBS_SYMENGINE} ${CONAN_LIBS_TKRNG} ${CONAN_LIBS_CATCH2})
