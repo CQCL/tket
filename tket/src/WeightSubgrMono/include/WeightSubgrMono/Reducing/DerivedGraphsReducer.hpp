@@ -54,9 +54,10 @@ class DerivedGraphsReducer : public ReducerInterface {
       std::set<VertexWSM>& work_set) override;
 
  private:
-  DerivedGraphStructs::NeighboursAndCountsStorage m_storage;
-  DerivedGraphStructs::SortedCountsStorage m_counts_storage;
+  // The m_calculator object is shared between the m_derived_pattern_graphs
+  // and m_derived_target_graphs objects.
   DerivedGraphsCalculator m_calculator;
+
   DerivedGraphs m_derived_pattern_graphs;
   DerivedGraphs m_derived_target_graphs;
 

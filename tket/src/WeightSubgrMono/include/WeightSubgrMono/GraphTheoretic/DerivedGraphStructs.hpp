@@ -13,7 +13,8 @@
 // limitations under the License.
 
 #pragma once
-#include "../Common/SimpleStorage.hpp"
+#include <forward_list>
+
 #include "GeneralStructs.hpp"
 
 namespace tket {
@@ -30,12 +31,22 @@ struct DerivedGraphStructs {
    * Sorted by vertex number, for easy neighbours lookup.
    */
   typedef std::vector<std::pair<VertexWSM, Count>> NeighboursAndCounts;
-  typedef SimpleStorage<NeighboursAndCounts> NeighboursAndCountsStorage;
+
+  /** We create derived graphs lazily (since many vertices and edges
+   * might never be needed).
+   * For convenience, we want to pass around references or pointers,
+   * but we can't just store the objects in a vector
+   * because the references might be invalidated upon insertions.
+   * Thus we use a linked list.
+   */
+  typedef std::forward_list<NeighboursAndCounts> NeighboursAndCountsStorage;
+  typedef NeighboursAndCountsStorage::iterator NeighboursAndCountsIter;
 
   /** These are the counts alone, which are in "NeighboursAndCounts",
    * sorted (for fast compatibility checking). */
   typedef std::vector<Count> SortedCounts;
-  typedef SimpleStorage<SortedCounts> SortedCountsStorage;
+  typedef std::forward_list<SortedCounts> SortedCountsStorage;
+  typedef SortedCountsStorage::iterator SortedCountsIter;
 };
 
 }  // namespace WeightedSubgraphMonomorphism

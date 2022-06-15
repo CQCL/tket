@@ -25,15 +25,14 @@ namespace WeightedSubgraphMonomorphism {
 
 DerivedGraphsReducer::DerivedGraphsReducer(
     const NeighboursData& pattern_ndata, const NeighboursData& target_ndata)
-    : m_derived_pattern_graphs(
-          pattern_ndata, m_calculator, m_storage, m_counts_storage),
-      m_derived_target_graphs(
-          target_ndata, m_calculator, m_storage, m_counts_storage) {}
+    : m_derived_pattern_graphs(pattern_ndata, m_calculator),
+      m_derived_target_graphs(target_ndata, m_calculator) {}
 
 bool DerivedGraphsReducer::check(std::pair<VertexWSM, VertexWSM> assignment) {
-  const auto pattern_vdata =
+  const DerivedGraphs::VertexData pattern_vdata =
       m_derived_pattern_graphs.get_data(assignment.first);
-  const auto target_vdata = m_derived_target_graphs.get_data(assignment.second);
+  const DerivedGraphs::VertexData target_vdata =
+      m_derived_target_graphs.get_data(assignment.second);
 
   return pattern_vdata.triangle_count <= target_vdata.triangle_count &&
          pattern_vdata.d2_neighbours->size() <=
@@ -66,12 +65,13 @@ ReductionResult DerivedGraphsReducer::reduce_with_derived_data(
   // to squeeze the maximum performance from lazy evaluation).
   bool found_new_assignment = false;
 
-  for (const auto& p_entry : pattern_derived_neighbours_data) {
+  for (const std::pair<VertexWSM, DerivedGraphStructs::Count>& p_entry :
+       pattern_derived_neighbours_data) {
     // This PV is a neighbour of the root PV, in some derived graph.
     const VertexWSM& pv = p_entry.first;
 
     // This is Dom(pv), which we're reducing.
-    const auto& domain = accessor.get_domain(pv);
+    const std::set<VertexWSM>& domain = accessor.get_domain(pv);
 
     if (other_vertex_reduction_can_be_skipped_by_symmetry(
             domain, accessor, root_pattern_vertex, pv)) {
@@ -79,7 +79,7 @@ ReductionResult DerivedGraphsReducer::reduce_with_derived_data(
     }
 
     // This is the edge weight of PV--(root PV) in the derived graph.
-    const auto& p_count = p_entry.second;
+    const DerivedGraphStructs::Count& p_count = p_entry.second;
 
     fill_intersection(
         domain, target_derived_neighbours_data, work_set,
