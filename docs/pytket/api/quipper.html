@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pytket.quipper &mdash; pytket 1.2.2 documentation</title>
+  <title>pytket.quipper &mdash; pytket 1.3.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -14,6 +14,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -30,7 +31,7 @@
             <a href="index.html" class="icon icon-home"> pytket
           </a>
               <div class="version">
-                1.2
+                1.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -99,11 +100,11 @@
            <div itemprop="articleBody">
              
   <section id="module-pytket.quipper">
-<span id="pytket-quipper"></span><h1>pytket.quipper<a class="headerlink" href="#module-pytket.quipper" title="Permalink to this headline"></a></h1>
+<span id="pytket-quipper"></span><h1>pytket.quipper<a class="headerlink" href="#module-pytket.quipper" title="Permalink to this heading"></a></h1>
 <p>Parser from Quipper ASCII to tket circuits</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.quipper.circuit_from_quipper">
-<span class="sig-prename descclassname"><span class="pre">pytket.quipper.</span></span><span class="sig-name descname"><span class="pre">circuit_from_quipper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">pytket.circuit.Circuit</span></a></span></span><a class="headerlink" href="#pytket.quipper.circuit_from_quipper" title="Permalink to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">pytket.quipper.</span></span><span class="sig-name descname"><span class="pre">circuit_from_quipper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></span><a class="headerlink" href="#pytket.quipper.circuit_from_quipper" title="Permalink to this definition"></a></dt>
 <dd><p>Generate a pytket <code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code> given a program in Quipper ASCII format.
 Limitations (due to current limitations of <cite>pytket</cite>):</p>
 <ul class="simple">

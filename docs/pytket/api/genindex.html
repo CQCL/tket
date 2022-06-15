@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; pytket 1.2.2 documentation</title>
+  <title>Index &mdash; pytket 1.3.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -13,6 +13,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="#" />
@@ -27,7 +28,7 @@
             <a href="index.html" class="icon icon-home"> pytket
           </a>
               <div class="version">
-                1.2
+                1.3
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -363,6 +364,8 @@
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_c_copybits">add_c_copybits() (pytket.circuit.Circuit method)</a>
 </li>
+      <li><a href="circuit_class.html#pytket.circuit.Circuit.add_c_copyreg">add_c_copyreg() (pytket.circuit.Circuit method)</a>
+</li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_c_modifier">add_c_modifier() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_c_not">add_c_not() (pytket.circuit.Circuit method)</a>
@@ -380,6 +383,8 @@
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_c_register">add_c_register() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_c_setbits">add_c_setbits() (pytket.circuit.Circuit method)</a>
+</li>
+      <li><a href="circuit_class.html#pytket.circuit.Circuit.add_c_setreg">add_c_setreg() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_c_transform">add_c_transform() (pytket.circuit.Circuit method)</a>
 </li>
@@ -466,7 +471,11 @@
       <li><a href="architecture.html#pytket.architecture.Architecture">Architecture (class in pytket.architecture)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.Command.args">args (pytket.circuit.Command property)</a>
+
+      <ul>
+        <li><a href="circuit.html#pytket.circuit.CustomGateDef.args">(pytket.circuit.CustomGateDef property)</a>
 </li>
+      </ul></li>
       <li><a href="circuit.html#pytket.circuit.CustomGateDef.arity">arity (pytket.circuit.CustomGateDef property)</a>
 </li>
       <li><a href="utils.html#pytket.utils.Graph.as_nx">as_nx() (pytket.utils.Graph method)</a>
@@ -510,6 +519,8 @@
       <li><a href="classical.html#pytket.circuit.logic_exp.BitEq">BitEq (class in pytket.circuit.logic_exp)</a>
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.BitLogicExp">BitLogicExp (class in pytket.circuit.logic_exp)</a>
+</li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.BitNeq">BitNeq (class in pytket.circuit.logic_exp)</a>
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.BitNot">BitNot (class in pytket.circuit.logic_exp)</a>
 </li>
@@ -575,6 +586,8 @@
 </li>
       <li><a href="qasm.html#pytket.qasm.circuit_from_qasm_str">circuit_from_qasm_str() (in module pytket.qasm)</a>
 </li>
+      <li><a href="qasm.html#pytket.qasm.circuit_from_qasm_wasm">circuit_from_qasm_wasm() (in module pytket.qasm)</a>
+</li>
       <li><a href="quipper.html#pytket.quipper.circuit_from_quipper">circuit_from_quipper() (in module pytket.quipper)</a>
 </li>
       <li><a href="backends.html#pytket.backends.Backend.circuit_status">circuit_status() (pytket.backends.Backend method)</a>
@@ -588,6 +601,8 @@
       <li><a href="utils.html#pytket.utils.symbolic.circuit_to_symbolic_gates">circuit_to_symbolic_gates() (in module pytket.utils.symbolic)</a>
 </li>
       <li><a href="utils.html#pytket.utils.symbolic.circuit_to_symbolic_unitary">circuit_to_symbolic_unitary() (in module pytket.utils.symbolic)</a>
+</li>
+      <li><a href="zx.html#pytket.zx.circuit_to_zx">circuit_to_zx() (in module pytket.zx)</a>
 </li>
       <li><a href="backends.html#pytket.backends.status.CircuitStatus">CircuitStatus (class in pytket.backends.status)</a>
 </li>
@@ -619,10 +634,10 @@
       </ul></li>
       <li><a href="utils.html#pytket.utils.compare_statevectors">compare_statevectors() (in module pytket.utils)</a>
 </li>
-      <li><a href="utils.html#pytket.utils.compare_unitaries">compare_unitaries() (in module pytket.utils)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utils.html#pytket.utils.compare_unitaries">compare_unitaries() (in module pytket.utils)</a>
+</li>
       <li><a href="passes.html#pytket.passes.script.compilation_pass_from_script">compilation_pass_from_script() (in module pytket.passes.script)</a>
 </li>
       <li><a href="passes.html#pytket.passes.script.compilation_pass_grammar">compilation_pass_grammar() (in module pytket.passes.script)</a>
@@ -751,10 +766,16 @@
 </li>
       <li><a href="passes.html#pytket.passes.DecomposeSwapsToCXs">DecomposeSwapsToCXs() (in module pytket.passes)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="transform.html#pytket.transform.Transform.DecomposeSWAPtoCX">DecomposeSWAPtoCX() (pytket.transform.Transform static method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="passes.html#pytket.passes.DecomposeTK2">DecomposeTK2() (in module pytket.passes)</a>
+
+      <ul>
+        <li><a href="transform.html#pytket.transform.Transform.DecomposeTK2">(pytket.transform.Transform static method)</a>
+</li>
+      </ul></li>
       <li><a href="config.html#pytket.config.pytket_config.PytketConfig.default">default() (pytket.config.pytket_config.PytketConfig class method)</a>
 </li>
       <li><a href="backends.html#pytket.backends.Backend.default_compilation_pass">default_compilation_pass() (pytket.backends.Backend method)</a>
@@ -865,6 +886,8 @@
         <li><a href="architecture.html#pytket.architecture.FullyConnected.from_dict">(pytket.architecture.FullyConnected static method)</a>
 </li>
         <li><a href="circuit_class.html#pytket.circuit.Circuit.from_dict">(pytket.circuit.Circuit static method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.CustomGateDef.from_dict">(pytket.circuit.CustomGateDef static method)</a>
 </li>
         <li><a href="partition.html#pytket.partition.MeasurementBitMap.from_dict">(pytket.partition.MeasurementBitMap static method)</a>
 </li>
@@ -1814,6 +1837,10 @@
 </li>
       <li><a href="backends.html#pytket.backends.Backend.rebase_pass">rebase_pass() (pytket.backends.Backend method)</a>
 </li>
+      <li><a href="zx.html#pytket.zx.Rewrite.rebase_to_mbqc">rebase_to_mbqc() (pytket.zx.Rewrite static method)</a>
+</li>
+      <li><a href="zx.html#pytket.zx.Rewrite.rebase_to_zx">rebase_to_zx() (pytket.zx.Rewrite static method)</a>
+</li>
       <li><a href="passes.html#pytket.passes.RebaseCustom">RebaseCustom() (in module pytket.passes)</a>
 </li>
       <li><a href="passes.html#pytket.passes.RebaseTket">RebaseTket() (in module pytket.passes)</a>
@@ -1850,7 +1877,11 @@
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.reg_neq">reg_neq() (in module pytket.circuit.logic_exp)</a>
 </li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegAdd">RegAdd (class in pytket.circuit.logic_exp)</a>
+</li>
       <li><a href="classical.html#pytket.circuit.logic_exp.RegAnd">RegAnd (class in pytket.circuit.logic_exp)</a>
+</li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegDiv">RegDiv (class in pytket.circuit.logic_exp)</a>
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.RegEq">RegEq (class in pytket.circuit.logic_exp)</a>
 </li>
@@ -1864,18 +1895,32 @@
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.RegLogicExp">RegLogicExp (class in pytket.circuit.logic_exp)</a>
 </li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegLsh">RegLsh (class in pytket.circuit.logic_exp)</a>
+</li>
       <li><a href="classical.html#pytket.circuit.logic_exp.RegLt">RegLt (class in pytket.circuit.logic_exp)</a>
+</li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegMul">RegMul (class in pytket.circuit.logic_exp)</a>
+</li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegNeg">RegNeg (class in pytket.circuit.logic_exp)</a>
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.RegNeq">RegNeq (class in pytket.circuit.logic_exp)</a>
 </li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegNot">RegNot (class in pytket.circuit.logic_exp)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="classical.html#pytket.circuit.logic_exp.RegOr">RegOr (class in pytket.circuit.logic_exp)</a>
+</li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegPow">RegPow (class in pytket.circuit.logic_exp)</a>
+</li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegRsh">RegRsh (class in pytket.circuit.logic_exp)</a>
+</li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegSub">RegSub (class in pytket.circuit.logic_exp)</a>
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp">RegWiseOp (class in pytket.circuit.logic_exp)</a>
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.RegXor">RegXor (class in pytket.circuit.logic_exp)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.remove_blank_wires">remove_blank_wires() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="zx.html#pytket.zx.Rewrite.remove_interior_cliffords">remove_interior_cliffords() (pytket.zx.Rewrite static method)</a>
@@ -2110,12 +2155,16 @@
         <li><a href="transform.html#pytket.transform.Transform.ThreeQubitSquash">(pytket.transform.Transform static method)</a>
 </li>
       </ul></li>
+      <li><a href="zx.html#pytket.zx.ZXDiagram.to_circuit">to_circuit() (pytket.zx.ZXDiagram method)</a>
+</li>
       <li><a href="architecture.html#pytket.architecture.Architecture.to_dict">to_dict() (pytket.architecture.Architecture method)</a>
 
       <ul>
         <li><a href="architecture.html#pytket.architecture.FullyConnected.to_dict">(pytket.architecture.FullyConnected method)</a>
 </li>
         <li><a href="circuit_class.html#pytket.circuit.Circuit.to_dict">(pytket.circuit.Circuit method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.CustomGateDef.to_dict">(pytket.circuit.CustomGateDef method)</a>
 </li>
         <li><a href="partition.html#pytket.partition.MeasurementBitMap.to_dict">(pytket.partition.MeasurementBitMap method)</a>
 </li>
@@ -2145,6 +2194,8 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="zx.html#pytket.zx.ZXDiagram.to_doubled_diagram">to_doubled_diagram() (pytket.zx.ZXDiagram method)</a>
+</li>
+      <li><a href="zx.html#pytket.zx.ZXDiagram.to_graphviz_str">to_graphviz_str() (pytket.zx.ZXDiagram method)</a>
 </li>
       <li><a href="utils.html#pytket.utils.OutcomeArray.to_intlist">to_intlist() (pytket.utils.OutcomeArray method)</a>
 </li>
