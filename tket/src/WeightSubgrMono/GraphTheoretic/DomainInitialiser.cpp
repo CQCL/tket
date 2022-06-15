@@ -47,7 +47,7 @@ bool DomainInitialiser::degree_sequence_initialisation(
     const NeighboursData& target_neighbours_data) {
   initial_domains.resize(
       pattern_neighbours_data.get_number_of_nonisolated_vertices());
-  for (auto& domain : initial_domains) {
+  for (std::set<VertexWSM>& domain : initial_domains) {
     domain.clear();
   }
 
@@ -80,7 +80,7 @@ bool DomainInitialiser::degree_sequence_initialisation(
   // TODO: get TV data lazily (maybe some will be unused).
   std::vector<std::size_t> pattern_sequence;
   for (unsigned pv = 0; pv < initial_domains.size(); ++pv) {
-    auto& domain = initial_domains[pv];
+    std::set<VertexWSM>& domain = initial_domains[pv];
     pattern_sequence =
         pattern_neighbours_data.get_sorted_degree_sequence_expensive(pv);
 
@@ -114,7 +114,7 @@ bool DomainInitialiser::distance_counts_reduction(
   std::vector<VertexWSM> tv_to_erase;
 
   for (unsigned pv = 0; pv < initial_domains.size(); ++pv) {
-    auto& domain = initial_domains[pv];
+    std::set<VertexWSM>& domain = initial_domains[pv];
     tv_to_erase.clear();
     for (VertexWSM tv : domain) {
       // If f is a valid monomorphism then

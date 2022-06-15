@@ -35,7 +35,7 @@ NodesRawData::NodesRawData(
   node.total_p_edge_weights = 0;
 
   for (unsigned pv = 0; pv < initial_domains.size(); ++pv) {
-    const auto& domain = initial_domains[pv];
+    const std::set<VertexWSM>& domain = initial_domains[pv];
     auto& domain_data = domains_data[pv];
     domain_data.entries_back_index = 0;
     domain_data.entries.resize(1);
@@ -71,7 +71,7 @@ std::string NodesRawData::NodeData::str() const {
     ss << "##NOGOOD!## ";
   }
   ss << "Has " << new_assignments.size() << " ass.: [ ";
-  for (const auto& entry : new_assignments) {
+  for (const std::pair<VertexWSM, VertexWSM>& entry : new_assignments) {
     ss << entry.first << ":" << entry.second << " ";
   }
   ss << "];  sc.prod " << scalar_product << "; p-edge weight "

@@ -31,17 +31,18 @@ std::set<VertexWSM> NodeListTraversal::get_used_target_vertices() const {
 
   // Examine all PV.
   for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
-    const auto& domain_data = m_raw_data.domains_data[pv];
+    const NodesRawData::DomainData& domain_data = m_raw_data.domains_data[pv];
 
     // Examine Dom(PV) at all levels.
     for (unsigned level = 0; level <= domain_data.entries_back_index; ++level) {
-      const auto& node_index = domain_data.entries[level].node_level;
+      const unsigned& node_index = domain_data.entries[level].node_level;
       // Nogood nodes are ignored.
       // So, check that at least one node with this domain
       // is not a nogood; otherwise skip.
       if (m_raw_data.nodes_data[node_index].nogood &&
           level < domain_data.entries_back_index) {
-        const auto& next_node_index = domain_data.entries[level + 1].node_level;
+        const unsigned& next_node_index =
+            domain_data.entries[level + 1].node_level;
         bool some_node_is_good = false;
         for (auto ii = node_index; ii < next_node_index; ++ii) {
           if (!m_raw_data.nodes_data[ii].nogood) {
@@ -54,7 +55,7 @@ std::set<VertexWSM> NodeListTraversal::get_used_target_vertices() const {
           continue;
         }
       }
-      const auto& domain = domain_data.entries[level].domain;
+      const std::set<VertexWSM>& domain = domain_data.entries[level].domain;
       if (target_vertices.empty()) {
         target_vertices = domain;
       } else {
@@ -74,7 +75,7 @@ bool NodeListTraversal::move_up() {
       continue;
     }
     for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
-      auto& domain_data = m_raw_data.domains_data[pv];
+      NodesRawData::DomainData& domain_data = m_raw_data.domains_data[pv];
       while (domain_data.entries[domain_data.entries_back_index].node_level >
              m_raw_data.current_node_level) {
         // We've moved above the level of "junk data",
@@ -106,6 +107,8 @@ static bool when_moving_down_check_current_domain_size(
     case 2: {
       // Dom(PV) = {TV, y}, so it will become Dom(PV) = {y}
       // at the current level, so we need a new assignment PV->y.
+      // The elements of a set of size 2 can be found using
+      // cbegin and crbegin.
       VertexWSM tv_other = *existing_domain.cbegin();
       if (tv_other == t_vertex) {
         tv_other = *existing_domain.crbegin();
@@ -128,7 +131,7 @@ static void when_moving_down_copy_old_shared_domain_and_erase_tv(
   data_for_this_pv.entries[data_for_this_pv.entries_back_index + 1].node_level =
       raw_data.current_node_level;
 
-  auto& new_domain =
+  std::set<VertexWSM>& new_domain =
       data_for_this_pv.entries[data_for_this_pv.entries_back_index + 1].domain;
   new_domain =
       data_for_this_pv.entries[data_for_this_pv.entries_back_index].domain;
@@ -142,7 +145,7 @@ static void complete_move_down_with_resized_vectors_and_indices(
     VertexWSM p_vertex, VertexWSM t_vertex) {
   // Remember, the domain data and node data
   // at the current level is now "junk".
-  auto& new_domain =
+  std::set<VertexWSM>& new_domain =
       data_for_this_pv.entries[data_for_this_pv.entries_back_index].domain;
   new_domain.clear();
   new_domain.insert(t_vertex);
@@ -168,8 +171,9 @@ void NodeListTraversal::move_down(VertexWSM p_vertex, VertexWSM t_vertex) {
   TKET_ASSERT(existing_node_valid);
   TKET_ASSERT(m_raw_data.get_current_node().new_assignments.empty());
 
-  auto& data_for_this_pv = m_raw_data.domains_data.at(p_vertex);
-  auto& existing_domain =
+  NodesRawData::DomainData& data_for_this_pv =
+      m_raw_data.domains_data.at(p_vertex);
+  std::set<VertexWSM>& existing_domain =
       data_for_this_pv.entries[data_for_this_pv.entries_back_index].domain;
   auto iter = existing_domain.find(t_vertex);
 
@@ -271,7 +275,7 @@ void NodeListTraversal::erase_impossible_assignment(
       // Don't waste time with nogood nodes.
       continue;
     }
-    auto& domain = data_for_this_pv.entries[ii].domain;
+    std::set<VertexWSM>& domain = data_for_this_pv.entries[ii].domain;
     if (domain.erase(impossible_assignment.second) == 0 || domain.size() >= 2) {
       // EITHER nothing changed, OR the change had no significant effect.
       continue;

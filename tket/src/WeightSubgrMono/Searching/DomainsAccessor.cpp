@@ -79,20 +79,22 @@ DomainsAccessor& DomainsAccessor::set_total_p_edge_weights(
 
 bool DomainsAccessor::alldiff_reduce_current_node(
     std::size_t n_assignments_already_processed) {
-  auto& node = m_raw_data.get_current_node_nonconst();
+  NodesRawData::NodeData& node = m_raw_data.get_current_node_nonconst();
   TKET_ASSERT(!node.nogood);
-  auto& new_assignments = node.new_assignments;
+  std::vector<std::pair<VertexWSM, VertexWSM>>& new_assignments =
+      node.new_assignments;
 
   while (n_assignments_already_processed < new_assignments.size()) {
-    const auto assignment = new_assignments[n_assignments_already_processed];
+    const std::pair<VertexWSM, VertexWSM> assignment =
+        new_assignments[n_assignments_already_processed];
     ++n_assignments_already_processed;
 
     for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
       if (pv == assignment.first) {
         continue;
       }
-      auto& data_for_this_pv = m_raw_data.domains_data[pv];
-      auto& existing_domain =
+      NodesRawData::DomainData& data_for_this_pv = m_raw_data.domains_data[pv];
+      std::set<VertexWSM>& existing_domain =
           data_for_this_pv.entries[data_for_this_pv.entries_back_index].domain;
       auto iter = existing_domain.find(assignment.second);
       if (iter == existing_domain.end()) {
@@ -118,7 +120,7 @@ bool DomainsAccessor::alldiff_reduce_current_node(
         existing_domain.erase(iter);
       } else {
         // We must make a new domain and copy the data across.
-        auto& new_entry = get_element_with_resize(
+        NodesRawData::DomainData::Entry& new_entry = get_element_with_resize(
             data_for_this_pv.entries, data_for_this_pv.entries_back_index + 1);
         new_entry.domain =
             data_for_this_pv.entries[data_for_this_pv.entries_back_index]
@@ -140,7 +142,7 @@ ReductionResult DomainsAccessor::overwrite_domain_with_set_swap(
   auto& data_for_this_pv = m_raw_data.domains_data.at(pv);
   auto& existing_domain_data =
       data_for_this_pv.entries[data_for_this_pv.entries_back_index];
-  auto& existing_domain = existing_domain_data.domain;
+  std::set<VertexWSM>& existing_domain = existing_domain_data.domain;
 
   // We should do a detailed assert that "new_domain" is a subset
   // of "existing_domain", but this is expensive; thus we do a very
@@ -181,7 +183,7 @@ DomainsAccessor::intersect_domain_with_complement_set(
     VertexWSM pattern_v, const std::set<VertexWSM>& forbidden_target_vertices) {
   IntersectionResult result;
   {
-    const auto& current_domain = get_domain(pattern_v);
+    const std::set<VertexWSM>& current_domain = get_domain(pattern_v);
     if (disjoint(current_domain, forbidden_target_vertices)) {
       result.changed = false;
       result.new_domain_size = current_domain.size();
@@ -195,7 +197,7 @@ DomainsAccessor::intersect_domain_with_complement_set(
   if (data_for_this_pv.entries[data_for_this_pv.entries_back_index]
           .node_level == m_raw_data.current_node_level) {
     // We can simply overwrite.
-    auto& domain =
+    std::set<VertexWSM>& domain =
         data_for_this_pv.entries[data_for_this_pv.entries_back_index].domain;
     for (VertexWSM tv : forbidden_target_vertices) {
       if (domain.erase(tv) == 1 && domain.empty()) {
@@ -229,7 +231,7 @@ DomainsAccessor::intersect_domain_with_complement_set(
   }
   // At this stage, we've created the new domain
   // (necessarily different from the old one).
-  const auto& domain =
+  const std::set<VertexWSM>& domain =
       data_for_this_pv.entries[data_for_this_pv.entries_back_index].domain;
   result.new_domain_size = domain.size();
   TKET_ASSERT(!domain.empty());

@@ -26,11 +26,13 @@ namespace WeightedSubgraphMonomorphism {
 void DerivedGraphsCalculator::fill_mid_vertices_for_length_two_paths(
     const NeighboursData& ndata, VertexWSM v) {
   m_mid_vertices_for_length_two_paths.clear();
-  const auto& neighbours = ndata.get_neighbours_and_weights(v);
-  for (const auto& entry : neighbours) {
-    const auto& v1 = entry.first;
-    for (const auto& v2_entry : ndata.get_neighbours_and_weights(v1)) {
-      const auto& v2 = v2_entry.first;
+  const std::vector<std::pair<VertexWSM, WeightWSM>>& neighbours =
+      ndata.get_neighbours_and_weights(v);
+  for (const std::pair<VertexWSM, WeightWSM>& entry : neighbours) {
+    const VertexWSM& v1 = entry.first;
+    for (const std::pair<VertexWSM, WeightWSM>& v2_entry :
+         ndata.get_neighbours_and_weights(v1)) {
+      const VertexWSM& v2 = v2_entry.first;
       if (v2 == v) {
         continue;
       }
@@ -44,7 +46,7 @@ void DerivedGraphsCalculator::fill_d2_neighbours_and_counts(
     DerivedGraphStructs::NeighboursAndCounts& depth_2_neighbours_and_counts) {
   depth_2_neighbours_and_counts.clear();
   for (const auto& entry : m_mid_vertices_for_length_two_paths) {
-    const auto& v2 = entry.first;
+    const VertexWSM& v2 = entry.first;
     const auto& v1_set = entry.second;
     // Notice, the v2 vertices already are in sorted order!
     TKET_ASSERT(is_sorted_and_unique(v1_set));
@@ -56,7 +58,7 @@ void DerivedGraphsCalculator::fill_d3_neighbours_and_counts_map(
     const NeighboursData& ndata) {
   m_depth_3_neighbours_and_counts_map.clear();
   for (const auto& entry : m_mid_vertices_for_length_two_paths) {
-    const auto& v2 = entry.first;
+    const VertexWSM& v2 = entry.first;
     const auto& v1_set = entry.second;
 
     // Now, v--v1--v2--v3 will be either a path, or a triangle (if v3=v).
@@ -66,9 +68,10 @@ void DerivedGraphsCalculator::fill_d3_neighbours_and_counts_map(
     // Note that v3 IS allowed to be a neighbour of v,
     // as long as it isn't v1.
     // Let   |{v1}|=N.
-    for (const auto& v3_entry : ndata.get_neighbours_and_weights(v2)) {
+    for (const std::pair<VertexWSM, WeightWSM>& v3_entry :
+         ndata.get_neighbours_and_weights(v2)) {
       // The weight is simply ignored.
-      const auto& v3 = v3_entry.first;
+      const VertexWSM& v3 = v3_entry.first;
       if (std::binary_search(v1_set.cbegin(), v1_set.cend(), v3)) {
         // It's a path of the form  v--v1--v2--(v1)'.
         // So we contribute N-1, since  v1 != (v1)' is the only restriction.

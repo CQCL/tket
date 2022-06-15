@@ -62,13 +62,13 @@ ReductionResult DistancesReducer::reduce(
   // where A(j) = {v : dist(TV,v)=j}.
   // We build it up by combining
   //    Dom(PV') intersect A(j)   (which are disjoint), directly.
-  const auto& tv_neighbours =
+  const std::vector<std::pair<VertexWSM, WeightWSM>>& tv_neighbours =
       m_target_ndata.get_neighbours_and_weights(assignment.second);
 
   auto result = ReductionResult::SUCCESS;
 
   for (VertexWSM new_pv : pv_at_distance_d) {
-    const auto& current_domain = accessor.get_domain(new_pv);
+    const std::set<VertexWSM>& current_domain = accessor.get_domain(new_pv);
     if (other_vertex_reduction_can_be_skipped_by_symmetry(
             current_domain, accessor, assignment.first, new_pv)) {
       continue;
@@ -87,7 +87,8 @@ ReductionResult DistancesReducer::reduce(
 
       // The constructor already resized the vectors_list,
       // to ensure a valid index.
-      auto& work_vector = m_work_vectors_list[next_work_vector_index];
+      std::vector<VertexWSM>& work_vector =
+          m_work_vectors_list[next_work_vector_index];
 
       fill_intersection(current_domain, new_tv_list, work_vector);
       if (!work_vector.empty()) {

@@ -35,14 +35,15 @@ bool NeighboursReducer::check(std::pair<VertexWSM, VertexWSM> assignment) {
 ReductionResult NeighboursReducer::reduce(
     std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,
     std::set<VertexWSM>& work_set) {
-  const auto& target_neighbours_and_weights =
-      m_target_ndata.get_neighbours_and_weights(assignment.second);
+  const std::vector<std::pair<VertexWSM, WeightWSM>>&
+      target_neighbours_and_weights =
+          m_target_ndata.get_neighbours_and_weights(assignment.second);
   auto result = ReductionResult::SUCCESS;
 
-  for (const auto& p_neighbour_entry :
+  for (const std::pair<VertexWSM, WeightWSM>& p_neighbour_entry :
        m_pattern_ndata.get_neighbours_and_weights(assignment.first)) {
     const VertexWSM& p_neighbour = p_neighbour_entry.first;
-    const auto& domain = accessor.get_domain(p_neighbour);
+    const std::set<VertexWSM>& domain = accessor.get_domain(p_neighbour);
     if (other_vertex_reduction_can_be_skipped_by_symmetry(
             domain, accessor, assignment.first, p_neighbour)) {
       continue;
