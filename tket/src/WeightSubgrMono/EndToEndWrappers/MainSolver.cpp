@@ -75,15 +75,15 @@ MainSolver::MainSolver(
       m_pattern_neighbours_data, m_target_neighbours_data);
   TKET_ASSERT(m_pre_search_components_ptr);
 
-  bool initialisation_succeeded;
   {
     DomainInitialiser::InitialDomains initial_domains;
-    initialisation_succeeded = DomainInitialiser::full_initialisation(
-        initial_domains, m_pattern_neighbours_data,
-        m_pre_search_components_ptr->pattern_near_ndata,
-        m_target_neighbours_data,
-        m_pre_search_components_ptr->target_near_ndata,
-        parameters.max_distance_for_domain_initialisation_distance_filter);
+    const bool initialisation_succeeded =
+        DomainInitialiser::full_initialisation(
+            initial_domains, m_pattern_neighbours_data,
+            m_pre_search_components_ptr->pattern_near_ndata,
+            m_target_neighbours_data,
+            m_pre_search_components_ptr->target_near_ndata,
+            parameters.max_distance_for_domain_initialisation_distance_filter);
 
     if (initialisation_succeeded) {
       m_search_components_ptr = std::make_unique<SearchComponents>();
@@ -97,24 +97,25 @@ MainSolver::MainSolver(
           parameters.max_distance_for_distance_reduction_during_search,
           m_solution_data.extra_statistics);
     }
-  }
+    m_solution_data.initialisation_time_ms =
+        std::chrono::duration_cast<std::chrono::milliseconds>(
+            Clock::now() - init_start)
+            .count();
 
-  m_solution_data.initialisation_time_ms =
-      std::chrono::duration_cast<std::chrono::milliseconds>(
-          Clock::now() - init_start)
-          .count();
-
-  if (!initialisation_succeeded) {
-    m_solution_data.finished = true;
-    return;
+    if (!initialisation_succeeded) {
+      m_solution_data.finished = true;
+      return;
+    }
   }
 
   // The problem is not obviously impossible, so fill in more information.
   {
-    auto p_weights = m_pattern_neighbours_data.get_weights_expensive();
+    std::vector<WeightWSM> p_weights =
+        m_pattern_neighbours_data.get_weights_expensive();
     std::sort(p_weights.begin(), p_weights.end());
 
-    auto t_weights = m_target_neighbours_data.get_weights_expensive();
+    std::vector<WeightWSM> t_weights =
+        m_target_neighbours_data.get_weights_expensive();
     std::sort(t_weights.begin(), t_weights.end());
 
     TKET_ASSERT(
@@ -192,16 +193,16 @@ const SolutionData& MainSolver::get_solution_data() const {
   }
   // We must relabel some vertices.
   m_solution_data_original_vertices = m_solution_data;
-  for (auto& solution : m_solution_data_original_vertices.solutions) {
+  for (SolutionWSM& solution : m_solution_data_original_vertices.solutions) {
     if (!m_pattern_vertex_relabelling.new_to_old_vertex_labels.empty()) {
-      for (auto& assignment : solution.assignments) {
+      for (std::pair<VertexWSM, VertexWSM>& assignment : solution.assignments) {
         assignment.first =
             m_pattern_vertex_relabelling.new_to_old_vertex_labels.at(
                 assignment.first);
       }
     }
     if (!m_target_vertex_relabelling.new_to_old_vertex_labels.empty()) {
-      for (auto& assignment : solution.assignments) {
+      for (std::pair<VertexWSM, VertexWSM>& assignment : solution.assignments) {
         assignment.second =
             m_target_vertex_relabelling.new_to_old_vertex_labels.at(
                 assignment.second);
@@ -354,8 +355,8 @@ void MainSolver::add_solution_from_final_node(
   TKET_ASSERT(m_pre_search_components_ptr);
   TKET_ASSERT(m_search_branch_ptr);
 
-  const auto& accessor = m_search_branch_ptr->get_domains_accessor();
-  const auto scalar_product = accessor.get_scalar_product();
+  const DomainsAccessor& accessor = m_search_branch_ptr->get_domains_accessor();
+  const WeightWSM scalar_product = accessor.get_scalar_product();
 
   TKET_ASSERT(
       accessor.get_total_p_edge_weights() ==
@@ -368,13 +369,14 @@ void MainSolver::add_solution_from_final_node(
       m_solution_data.solutions.empty()) {
     m_solution_data.solutions.emplace_back();
   }
-  auto& assignments = m_solution_data.solutions.back().assignments;
+  std::vector<std::pair<VertexWSM, VertexWSM>>& assignments =
+      m_solution_data.solutions.back().assignments;
   const auto number_of_pv = accessor.get_number_of_pattern_vertices();
   assignments.clear();
   assignments.reserve(number_of_pv);
 
   for (unsigned pv = 0; pv < number_of_pv; ++pv) {
-    const auto& domain = accessor.get_domain(pv);
+    const std::set<VertexWSM>& domain = accessor.get_domain(pv);
     TKET_ASSERT(domain.size() == 1);
     assignments.emplace_back(pv, *domain.cbegin());
   }
@@ -390,7 +392,7 @@ bool MainSolver::move_down_from_reduced_node(
   TKET_ASSERT(m_search_branch_ptr);
 
   for (;;) {
-    const auto next_var_result =
+    const VariableOrdering::Result next_var_result =
         m_search_components_ptr->variable_ordering.get_variable(
             m_search_branch_ptr->get_domains_accessor_nonconst(),
             m_search_components_ptr->rng);
@@ -399,11 +401,19 @@ bool MainSolver::move_down_from_reduced_node(
       return false;
     }
     if (!next_var_result.variable_opt) {
+      // If no variable to choose, it means we've got a full solution
+      // (every PV is assigned).
+      // Before we reached here, we already checked that any new pattern edges
+      // joining any newly assigned PV to an existing assigned PV
+      // ARE indeed mapped to valid target edges,
+      // so we don't need any further validity check.
       break;
     }
-    // We've chosen a variable to assign! Now choose a value.
+    // We've chosen a variable (i.e., PV) to assign:
     const VertexWSM& next_pv = next_var_result.variable_opt.value();
 
+    // Now choose a value (i.e., some TV in Domain(PV)).
+    // Thus the new assignment is next_pv -> next_tv.
     const VertexWSM next_tv =
         m_search_components_ptr->value_ordering.get_target_value(
             m_search_branch_ptr->get_domains_accessor().get_domain(next_pv),
