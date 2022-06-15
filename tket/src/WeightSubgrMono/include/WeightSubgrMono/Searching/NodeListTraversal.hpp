@@ -27,6 +27,19 @@ class NodesRawDataWrapper;
 /** This is concerned with moving up and down a NodesRawData object,
  * i.e. used for traversing the complete search tree;
  * "vertical" motion, as explained in NodesRawData.hpp.
+ *
+ * Don't think of the nodes as "histories".
+ * Instead, think of them as states still to be explored
+ * (which happen to be explored in a particular order, like traversing
+ * a tree depth first; only needs linear size. Other orderings are possible,
+ * but more complicated to implement, needing some kind of priority queue,
+ * and could need exponential size).
+ * Thus, when we move down from a node by assigning PV->TV,
+ * we REMOVE TV from Domain(PV) before creating a new node.
+ * This is simpler than trying to remember which assignment was made
+ * and removing TV next time we return to the node.
+ * Thus the node left behind is NOT a previous state, but is rather
+ * a new CANDIDATE state to be further reduced.
  */
 class NodeListTraversal {
  public:

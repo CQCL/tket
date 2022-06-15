@@ -74,6 +74,9 @@ struct NodesRawData {
     };
 
     // Not all domains are stored; only those which have just changed.
+    // This is for performance reasons; otherwise we would have to copy
+    // the domain for EVERY pv, at EVERY node, even if only a few domains
+    // changed from one node to the next.
     std::vector<Entry> entries;
 
     // The index of the "logical back()" of "entries". All data beyond

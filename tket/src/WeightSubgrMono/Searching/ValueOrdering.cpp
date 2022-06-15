@@ -25,7 +25,14 @@ namespace WeightedSubgraphMonomorphism {
 
 /*
 We are using "solution biased searching" as our heuristic. See the paper
-"Sequential and Parallel Solution-Biased Search for Subgraph Algorithms".
+"Sequential and Parallel Solution-Biased Search for Subgraph Algorithms":
+
+https://link.springer.com/chapter/10.1007/978-3-030-19212-9_2
+
+A free version available from a co-author's website:
+
+http://blairarchibald.co.uk/resources/publications/cpaior19.pdf
+
 The idea is, rather than always mapping into the target vertex with largest
 possible degree, we should try lower degrees occasionally.
 This is done simply by choosing a random vertex,
@@ -34,16 +41,48 @@ so that lower degrees are less likely.
 */
 
 ValueOrdering::ValueOrdering() {
-  // 2^{-5} = 1/32 ~ 0.03. A choice with probability <3% is probably
-  // not very significant for the overall search.
-  m_data.resize(5);
-  m_data.back().mass = 1;
-  for (unsigned index = m_data.size() - 1; index > 0; --index) {
-    m_data[index - 1].mass = 2 * m_data[index].mass;
+  /* 2^{-5} = 1/32 ~ 0.03. A choice with probability <3% is probably
+     not very significant for the overall search.
+
+    The probability of picking a vertex (the mass) is proportional to
+      2^degree.
+
+    Therefore if a vertex has degree <= max degree - 5, then it has weighting
+    <= 1/32 ~ 3% of any vertex of maximum degree.
+
+    Thus, including these vertices also would usually only make a difference
+    in a very small number of cases.
+
+    As explained in the linked paper, the heuristic generally chooses
+    highest degree vertices first, but occasionally chooses
+    slightly lower degrees.
+
+    This is based on a very rough estimate that the expected number of
+    solutions in the subtree is roughly C . 2^degree.
+
+    However, this is all very rough and experimental (as the paper says);
+    a better estimate is more like A.B^degree for unknown B>1, but that's
+    still very rough.
+
+    As the paper says, it generally gives better results than non-exponential
+    formulae but there's no deep underlying theory here.
+
+    The selection "5" is also an arbitrary choice; we need a cutoff to avoid
+    wasting time on vanishingly unlikely choices, and 3% seems small enough
+    that it's a reasonable cutoff. (OK, we could have 1 vertex of degree 10
+    and 1000 vertices of degree 5. But even in that case, I think we'd rather
+    just try the degree 10 vertex first).
+  */
+  m_entries_for_high_degree_vertices.resize(5);
+  m_entries_for_high_degree_vertices.back().mass = 1;
+  for (unsigned index = m_entries_for_high_degree_vertices.size() - 1;
+       index > 0; --index) {
+    m_entries_for_high_degree_vertices[index - 1].mass =
+        2 * m_entries_for_high_degree_vertices[index].mass;
   }
 }
 
-void ValueOrdering::fill_data(
+void ValueOrdering::fill_entries_for_high_degree_vertices(
     const std::set<VertexWSM>& possible_values,
     const NeighboursData& target_ndata) {
   // Multipass algorithm; simple and efficient enough.
@@ -55,17 +94,17 @@ void ValueOrdering::fill_data(
   TKET_ASSERT(max_degree > 0);
 
   // Pass two: record all those vertices with large enough degree.
-  for (auto& entry : m_data) {
+  for (HighDegreeVerticesData& entry : m_entries_for_high_degree_vertices) {
     entry.vertices.clear();
   }
   for (VertexWSM tv : possible_values) {
     const auto degree = target_ndata.get_degree(tv);
-    if (degree + m_data.size() > max_degree) {
+    if (degree + m_entries_for_high_degree_vertices.size() > max_degree) {
       const auto index = max_degree - degree;
-      m_data[index].vertices.push_back(tv);
+      m_entries_for_high_degree_vertices[index].vertices.push_back(tv);
     }
   }
-  TKET_ASSERT(!m_data[0].vertices.empty());
+  TKET_ASSERT(!m_entries_for_high_degree_vertices[0].vertices.empty());
 }
 
 VertexWSM ValueOrdering::get_random_choice_from_data(RNG& rng) const {
@@ -74,7 +113,7 @@ VertexWSM ValueOrdering::get_random_choice_from_data(RNG& rng) const {
   // list them all, and choose one uniformly.
 
   std::size_t mass_sum = 0;
-  for (const auto& entry : m_data) {
+  for (const auto& entry : m_entries_for_high_degree_vertices) {
     mass_sum += entry.vertices.size() * entry.mass;
   }
   TKET_ASSERT(mass_sum > 0);
@@ -82,7 +121,7 @@ VertexWSM ValueOrdering::get_random_choice_from_data(RNG& rng) const {
 
   // Now, choose the vertex corresponding to this index.
   std::size_t preceding_mass = 0;
-  for (const auto& entry : m_data) {
+  for (const auto& entry : m_entries_for_high_degree_vertices) {
     std::size_t mass_after_these_vertices =
         preceding_mass + entry.vertices.size() * entry.mass;
     if (mass_after_these_vertices < index) {
@@ -99,17 +138,22 @@ VertexWSM ValueOrdering::get_random_choice_from_data(RNG& rng) const {
   }
 
   // It's an error if we reach here, although a "harmless" one:
-  // it just means our calculation of the solution biased heuristic is wrong.
-  // This assert can just be removed in an "emergency" until the bug is sorted.
+  // it just means that our calculation of the solution biased heuristic
+  // is wrong.
+  // So, if ever this is reached, and it's an "emergency"
+  // (no time to find the bug), just comment it out temporarily
+  // until the bug is properly fixed.
+  // The worst that could happen is reduced performance; it can't
+  // lead to incorrect results.
   TKET_ASSERT(false);
-  return m_data.at(0).vertices.at(0);
+  return m_entries_for_high_degree_vertices.at(0).vertices.at(0);
 }
 
 VertexWSM ValueOrdering::get_target_value(
     const std::set<VertexWSM>& possible_values,
     const NeighboursData& target_ndata, RNG& rng) {
   TKET_ASSERT(possible_values.size() >= 2);
-  fill_data(possible_values, target_ndata);
+  fill_entries_for_high_degree_vertices(possible_values, target_ndata);
   return get_random_choice_from_data(rng);
 }
 
