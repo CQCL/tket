@@ -69,6 +69,10 @@ class ZXDiagram {
       std::optional<ZXType> type = std::nullopt,
       std::optional<QuantumType> qtype = std::nullopt) const;
 
+  // TODO discuss whether to expose these two
+  std::unique_ptr<ZXGraph>& get_graph();
+  void add_boundary(ZXVert& vert);
+
   // Getting the global scalar and modifying by multiplication
   const Expr& get_scalar() const;
   void multiply_scalar(const Expr& sc);
@@ -79,6 +83,7 @@ class ZXDiagram {
 
   // Count number of vertices with certain types & properties
   unsigned count_vertices(ZXType type) const;
+  unsigned count_vertices(ZXType zxtype, QuantumType qtype) const;
   unsigned count_wires(ZXWireType type) const;
 
   // Local properties on vertices and edges
@@ -128,6 +133,7 @@ class ZXDiagram {
   std::optional<unsigned> target_port(const Wire& w) const;
   // Returns the vertex on `w` at the other end from `u`
   ZXVert other_end(const Wire& w, const ZXVert& u) const;
+  ZXVert vertex_at_end(const Wire& w, WireEnd we) const;
   // Returns which end of `w` is connected to `u`
   WireEnd end_of(const Wire& w, const ZXVert& u) const;
   void set_wire_info(const Wire& w, const WireProperties& wp);
@@ -171,8 +177,8 @@ class ZXDiagram {
   // boundaries)
   bool is_graphlike() const;
 
-  // Whether the diagram is MBQC (MBQC, Inputs, and Outputs, Basic from Input, H
-  // otherwise)
+  // Whether the diagram is MBQC (MBQC, Inputs, and Outputs, Basic to
+  // boundaries, H otherwise)
   bool is_MBQC() const;
 
   /**
@@ -185,6 +191,11 @@ class ZXDiagram {
 
   /**
    * Diagram manipulation
+   */
+  /**
+   * Adds a vertex with a given generator to the diagram.
+   * It is initially disconnected from any other vertex.
+   * Automatically adds boundary generators to the boundary.
    */
   ZXVert add_vertex(ZXGen_ptr op);
   ZXVert add_vertex(ZXType type, QuantumType qtype = QuantumType::Quantum);
@@ -276,29 +287,36 @@ class ZXDiagram {
    * - Boundary edges are all Basic (i.e. the Hadamard from Hadamard
    *      wires in the `boundary` list are treated as outside of the
    *      Subdiagram).
+   * Each wire in the boundary is tagged with the WireEnd facing the interior of
+   * the subdiagram. If a wire appears with both ends, they are treated as two
+   * separate boundary wires split by an identity (Basic) or Hadamard.
    */
   struct Subdiagram {
     // Ordered boundary edges of the subdiagram
-    WireVec boundary;
+    std::vector<std::pair<Wire, WireEnd>> boundary_;
     // All vertices within the subdiagram
-    ZXVertSeqSet verts;
+    ZXVertSeqSet verts_;
 
     Subdiagram();
-    Subdiagram(const WireVec& cut, const ZXVertSeqSet& verts);
+    Subdiagram(
+        const std::vector<std::pair<Wire, WireEnd>>& cut,
+        const ZXVertSeqSet& verts);
 
     /**
      * Checks for well-formedness of a subdiagram.
      * - For each wire in `boundary`, exactly one end of it is in `verts`.
      * - For each vertex in `verts`, every incident edge is either in `boundary`
      * or connects to another vertex in `verts`.
-     * - There are no bondary vertices in `verts`.
+     * - There are no boundary vertices in `verts`.
      * Throws an exception if any of these fail.
      */
-    void check_validity() const;
+    void check_validity(const ZXDiagram& diag) const;
 
     // Copy the Subdiagram into a new ZXDiagram object.
-    ZXDiagram to_diagram() const;
+    ZXDiagram to_diagram(const ZXDiagram& orig) const;
   };
+
+  void substitute(const ZXDiagram& to_insert, const Subdiagram& to_replace);
 
   friend Rewrite;
   friend ZXDiagramPybind;

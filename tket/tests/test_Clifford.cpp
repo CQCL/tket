@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <set>
 
 #include "Circuit/CircUtils.hpp"
@@ -682,6 +682,12 @@ SCENARIO("Testing full clifford_simp") {
     REQUIRE(circ.count_gates(OpType::CX) == 8);
     const StateVector s1 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
+  }
+  GIVEN("A TK2 equivalent to 1CX") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::TK2, {0.5, 0, 0}, {0, 1});
+    REQUIRE(Transforms::clifford_simp().apply(circ));
+    REQUIRE(circ.count_gates(OpType::CX) == 1);
   }
 }
 

@@ -81,8 +81,10 @@ ZXGen::ZXGen(ZXType type) : type_(type) {}
 ZXType ZXGen::get_type() const { return type_; }
 
 bool ZXGen::operator==(const ZXGen& other) const {
-  return (this->type_ == other.type_);
+  return (this->type_ == other.type_) && is_equal(other);
 }
+
+bool ZXGen::is_equal(const ZXGen&) const { return true; }
 
 ZXGen::~ZXGen() {}
 
@@ -208,8 +210,7 @@ std::string BoundaryGen::get_name(bool) const {
   return st.str();
 }
 
-bool BoundaryGen::operator==(const ZXGen& other) const {
-  if (!ZXGen::operator==(other)) return false;
+bool BoundaryGen::is_equal(const ZXGen& other) const {
   const BoundaryGen& other_bgen = static_cast<const BoundaryGen&>(other);
   return (this->qtype_ == other_bgen.qtype_);
 }
@@ -233,8 +234,7 @@ bool BasicGen::valid_edge(
                    this->qtype_ == QuantumType::Classical);
 }
 
-bool BasicGen::operator==(const ZXGen& other) const {
-  if (!ZXGen::operator==(other)) return false;
+bool BasicGen::is_equal(const ZXGen& other) const {
   const BasicGen& other_basic = static_cast<const BasicGen&>(other);
   return this->qtype_ == other_basic.qtype_;
 }
@@ -291,8 +291,8 @@ std::string PhasedGen::get_name(bool) const {
   return st.str();
 }
 
-bool PhasedGen::operator==(const ZXGen& other) const {
-  if (!BasicGen::operator==(other)) return false;
+bool PhasedGen::is_equal(const ZXGen& other) const {
+  if (!BasicGen::is_equal(other)) return false;
   const PhasedGen& other_basic = static_cast<const PhasedGen&>(other);
   return this->param_ == other_basic.param_;
 }
@@ -340,8 +340,8 @@ std::string CliffordGen::get_name(bool) const {
   return st.str();
 }
 
-bool CliffordGen::operator==(const ZXGen& other) const {
-  if (!BasicGen::operator==(other)) return false;
+bool CliffordGen::is_equal(const ZXGen& other) const {
+  if (!BasicGen::is_equal(other)) return false;
   const CliffordGen& other_basic = static_cast<const CliffordGen&>(other);
   return this->param_ == other_basic.param_;
 }
@@ -389,9 +389,7 @@ std::string DirectedGen::get_name(bool) const {
   }
 }
 
-bool DirectedGen::operator==(const ZXGen& other) const {
-  if (!ZXGen::operator==(other)) return false;
-
+bool DirectedGen::is_equal(const ZXGen& other) const {
   const DirectedGen& other_dir = static_cast<const DirectedGen&>(other);
   return (this->qtype_ == other_dir.qtype_);
 }
@@ -432,7 +430,7 @@ ZXGen_ptr ZXBox::symbol_substitution(
 
 std::string ZXBox::get_name(bool) const { return "Box"; }
 
-bool ZXBox::operator==(const ZXGen&) const {
+bool ZXBox::is_equal(const ZXGen&) const {
   // Checking for a proper graph isomorphism is difficult. Safest to just assume
   // all boxes are unique.
   return false;

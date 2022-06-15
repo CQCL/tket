@@ -14,6 +14,7 @@
 
 #include "MeasurePass.hpp"
 
+#include "Circuit/DAGDefs.hpp"
 #include "Transform.hpp"
 
 namespace tket {
@@ -36,11 +37,12 @@ Transform delay_measures() {
         Edge current_edge = out_edge;
         Vertex current_vertex = circ.target(current_edge);
         port_t current_port = circ.get_target_port(current_edge);
-        Op_ptr current_op = circ.get_Op_ptr_from_Vertex(current_vertex);
-        OpType current_optype = current_op->get_type();
-        while (!is_final_q_type(current_optype) &&
-               (current_optype == OpType::SWAP ||
-                current_op->commutes_with_basis(Pauli::Z, current_port))) {
+        OpType current_optype = circ.get_OpType_from_Vertex(current_vertex);
+        while (
+            !is_final_q_type(current_optype) &&
+            (current_optype == OpType::SWAP ||
+             circ.commutes_with_basis(
+                 current_vertex, Pauli::Z, PortType::Target, current_port))) {
           if (current_optype == OpType::SWAP) {
             // Update from SWAP
             current_edge =
@@ -51,8 +53,8 @@ Transform delay_measures() {
           }
           current_vertex = circ.target(current_edge);
           current_port = circ.get_target_port(current_edge);
-          current_op = circ.get_Op_ptr_from_Vertex(current_vertex);
-          current_optype = current_op->get_type();
+          current_optype = circ.get_OpType_from_Vertex(current_vertex);
+          ;
         }
         // If we haven't moved it to an output, we can't continue
         if (!is_final_q_type(current_optype)) {

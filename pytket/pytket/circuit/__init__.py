@@ -18,7 +18,7 @@
 from typing import TYPE_CHECKING, Any, Tuple, Type, Union, cast, Callable, List
 
 from pytket._tket.circuit import *  # type: ignore
-from pytket._tket.circuit import Bit, BitRegister
+from pytket._tket.circuit import Bit, BitRegister, Circuit
 
 # prefixes for assertion bits
 from pytket._tket.circuit import _DEBUG_ZERO_REG_PREFIX, _DEBUG_ONE_REG_PREFIX  # type: ignore
@@ -45,9 +45,6 @@ from .logic_exp import (
     reg_neq,
 )
 
-if TYPE_CHECKING:
-    from pytket.circuit import Circuit  # type: ignore
-
 
 # Add ability to compare Bit equality with arbitrary class
 Bit.oldeq = Bit.__eq__
@@ -62,13 +59,14 @@ def overload_biteq(self: Bit, other: Any) -> bool:
 setattr(Bit, "__eq__", overload_biteq)
 
 
-def overload_add_wasm(
+def overload_add_wasm(  # type: ignore
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmFileHandler,
     list_i: List[List[int]],
     list_o: List[List[int]],
     args: Union[List[int], List[Bit]],
+    **kwargs,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
     \n\n:param funcname: name of the function that is called
@@ -76,20 +74,24 @@ def overload_add_wasm(
     \n:param list_i: list of the number of bits in the input variables
     \n:param list_o: list of the number of bits in the output variables
     \n:param args: vector of circuit bits the wasm op should be added to
+    \n:param kwargs: additional arguments passed to `add_gate_method` .
+     Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
+     `condition_value`
     \n:return: the new :py:class:`Circuit`"""
 
-    return self._add_wasm(funcname, str(filehandler), list_i, list_o, args)
+    return self._add_wasm(funcname, str(filehandler), list_i, list_o, args, **kwargs)
 
 
 setattr(Circuit, "add_wasm", overload_add_wasm)
 
 
-def overload_add_wasm_to_reg(
+def overload_add_wasm_to_reg(  # type: ignore
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmFileHandler,
     list_i: List[BitRegister],
     list_o: List[BitRegister],
+    **kwargs,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
     \n\n:param funcname: name of the function that is called
@@ -99,9 +101,12 @@ def overload_add_wasm_to_reg(
     \n:param list_o: list of the classical registers assigned to
      the output variables of the function call
     \n:param args: vector of circuit bits the wasm op should be added to
+    \n:param kwargs: additional arguments passed to `add_gate_method` .
+     Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
+     `condition_value`
     \n:return: the new :py:class:`Circuit`"""
 
-    return self._add_wasm(funcname, str(filehandler), list_i, list_o)
+    return self._add_wasm(funcname, str(filehandler), list_i, list_o, **kwargs)
 
 
 setattr(Circuit, "add_wasm_to_reg", overload_add_wasm_to_reg)
@@ -131,3 +136,13 @@ for clas, enum in cls_enum_pairs:
     setattr(clas, "__ror__", gen_binary_method(enum.OR))
     setattr(clas, "__xor__", gen_binary_method(enum.XOR))
     setattr(clas, "__rxor__", gen_binary_method(enum.XOR))
+
+
+for clas in (BitRegister, RegLogicExp):
+    setattr(clas, "__add__", gen_binary_method(RegWiseOp.ADD))
+    setattr(clas, "__sub__", gen_binary_method(RegWiseOp.SUB))
+    setattr(clas, "__mul__", gen_binary_method(RegWiseOp.MUL))
+    setattr(clas, "__floordiv__", gen_binary_method(RegWiseOp.DIV))
+    setattr(clas, "__pow__", gen_binary_method(RegWiseOp.POW))
+    setattr(clas, "__lshift__", gen_binary_method(RegWiseOp.LSH))
+    setattr(clas, "__rshift__", gen_binary_method(RegWiseOp.RSH))

@@ -17,6 +17,14 @@
 #include "Utils/UnitID.hpp"
 
 namespace tket {
+/*
+Bit registers which can be interpreted as unsigned integers follow the
+conventions defined here:
+registers are up to _TKET_REG_WIDTH wide in bits and are interpreted as
+equivalent to the C++ type _tket_uint_t
+*/
+#define _TKET_REG_WIDTH 32
+typedef uint32_t _tket_uint_t;
 
 template <typename T>
 class UnitRegister {

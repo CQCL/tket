@@ -5,3 +5,6 @@ pytest-benchmark
 hypothesis
 docker
 jsonschema
+quimb
+opt_einsum
+autoray

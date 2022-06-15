@@ -1,5 +1,3 @@
-# Project Description
-
 Pytket is a python module for interfacing with TKET, an optimising compiler for quantum circuits developed by Cambridge Quantum. In addition to pytket there are several extension modules for accessing a range of quantum hardware and classical simulators. The extension modules also provide integration with several widely used quantum software tools.
 
 The source code for the TKET compiler can be found in [this github repository](https://github.com/CQCL/tket).
@@ -20,7 +18,7 @@ To install the pytket extension modules add a hyphen and the extension name to t
 
 For a list of pytket extensions see this page: https://cqcl.github.io/pytket-extensions/api/index.html.
 
-## Documentaion and Examples
+## Documentation and Examples
 
 API reference: https://cqcl.github.io/tket/pytket/api/
 

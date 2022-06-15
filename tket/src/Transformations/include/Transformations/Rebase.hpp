@@ -58,6 +58,18 @@ Transform rebase_UFR();
 // Singleqs: Rz, SX
 Transform rebase_OQC();
 
+// Multiqs: ZZMax
+// Singleqs: Rz, PhasedX
+Transform rebase_HQS();
+
+// Multiqs: TK2
+// Singleqs: TK1
+Transform rebase_TK();
+
+// Multiqs: XXPhase
+// Singleqs: Rz, PhasedX
+Transform rebase_UMD();
+
 }  // namespace Transforms
 
 }  // namespace tket

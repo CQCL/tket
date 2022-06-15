@@ -37,6 +37,30 @@ void init_library(py::module &m) {
       "_CX_using_TK2", &CircPool::CX_using_TK2,
       "Equivalent to CX, using a TK2 and single-qubit gates");
   library_m.def(
+      "_TK2_using_CX", &CircPool::TK2_using_CX,
+      "Given expressions α, β and γ, return circuit equivalent to "
+      "TK2(α, β, γ) using up to 3 CX and single-qubit gates.\n\n"
+      "The parameters must be normalised to the Weyl chamber, i.e. it must "
+      "hold 0.5 ≥ 𝛼 ≥ 𝛽 ≥ |𝛾|.");
+  library_m.def(
+      "_approx_TK2_using_1xCX", &CircPool::approx_TK2_using_1xCX,
+      "Best approximation of TK2 using 1 CX gate and single-qubit gates, using "
+      "squared trace fidelity metric. "
+      "No parameter is required for this approximation. The returned circuit "
+      "will be equivalent to TK2(0.5, 0, 0).");
+  library_m.def(
+      "_approx_TK2_using_2xCX", &CircPool::approx_TK2_using_2xCX,
+      "Best approximation of TK2 using 2 CX gates and single-qubit gates, "
+      "using squared trace fidelity metric. "
+      "Given expressions α and β, with 0.5 ≥ α ≥ β ≥ 0, return a circuit "
+      "equivalent to TK2(α, β, 0).");
+  library_m.def(
+      "_TK2_using_3xCX", &CircPool::TK2_using_3xCX,
+      "Given expressions α, β and γ, return circuit equivalent to "
+      "TK2(α, β, γ) using 3 CX and single-qubit gates.\n\n"
+      "Prefer using `_TK2_using_CX` unless you wish to explicitly use 3 CX or "
+      "if α, β and γ are not normalised to the Weyl chamber.");
+  library_m.def(
       "_CX_using_flipped_CX", &CircPool::CX_using_flipped_CX,
       "Equivalent to CX[0,1], using a CX[1,0] and four H gates");
   library_m.def(
@@ -190,6 +214,17 @@ void init_library(py::module &m) {
   library_m.def(
       "_ZZPhase_using_CX", &CircPool::ZZPhase_using_CX,
       "Equivalent to ZZPhase, using CX and Rz gates");
+  library_m.def(
+      "_TK2_using_ZZPhase", &CircPool::TK2_using_ZZPhase,
+      "Equivalent to TK2, using 3 ZZPhase gates");
+  library_m.def(
+      "_approx_TK2_using_1xZZPhase", &CircPool::approx_TK2_using_1xZZPhase,
+      "Approximate equivalent to TK2, using 1 ZZPhase gate and single-qubit "
+      "gates. Only requires the first angle of the TK2 gate.");
+  library_m.def(
+      "_approx_TK2_using_2xZZPhase", &CircPool::approx_TK2_using_2xZZPhase,
+      "Approximate equivalent to TK2, using 2 ZZPhase gates and single-qubit "
+      "gates. Only requires the first two angles of the TK2 gate.");
   library_m.def(
       "_XXPhase3_using_TK2", &CircPool::XXPhase3_using_TK2,
       "Equivalent to XXPhase3, using three TK2 gates");

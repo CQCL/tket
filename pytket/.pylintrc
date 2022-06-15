@@ -56,3 +56,4 @@ enable=
 # Ignore long lines containing URLs or pylint or mypy directives.
 ignore-long-lines=^(.*#\w*pylint: disable.*|.*# type: ignore.*|\s*(# )?<?https?://\S+>?)$
 
+ignored-modules=pytket.qasm.includes

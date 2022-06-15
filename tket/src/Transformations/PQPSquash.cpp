@@ -17,6 +17,7 @@
 #include <memory>
 
 #include "BasicOptimisation.hpp"
+#include "Circuit/DAGDefs.hpp"
 #include "Decomposition.hpp"
 #include "Gate/Rotation.hpp"
 #include "Transform.hpp"
@@ -296,7 +297,8 @@ static bool remove_redundancy(
     for (port_t port = 0; port < kids.size() && z_followed_by_measures;
          port++) {
       if (circ.get_OpType_from_Vertex(kids[port]) == OpType::Measure) {
-        z_followed_by_measures &= op->commutes_with_basis(Pauli::Z, port);
+        z_followed_by_measures &=
+            circ.commutes_with_basis(vert, Pauli::Z, PortType::Source, port);
       } else {
         z_followed_by_measures = false;
       }

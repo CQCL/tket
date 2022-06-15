@@ -24,6 +24,7 @@ add_library(tket-${COMP}
     ZXDFormats.cpp
     ZXDGettersSetters.cpp
     ZXDManipulation.cpp
+    ZXDSubdiagram.cpp
     ZXGenerator.cpp
     ZXRWCombinators.cpp
     ZXRWAxioms.cpp

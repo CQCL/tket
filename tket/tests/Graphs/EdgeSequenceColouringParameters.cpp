@@ -14,7 +14,7 @@
 
 #include "EdgeSequenceColouringParameters.hpp"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include "EdgeSequence.hpp"
 #include "GraphTestingRoutines.hpp"
