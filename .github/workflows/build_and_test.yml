@@ -57,6 +57,7 @@ jobs:
         conan_cmd=/home/runner/.local/bin/conan
         ${conan_cmd} profile new tket --detect
         ${conan_cmd} profile update settings.compiler.libcxx=libstdc++11 tket
+        ${conan_cmd} profile update options.tklog:shared=True tket
         ${conan_cmd} profile update options.tket:shared=True tket
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: set option to run full test suite
@@ -181,6 +182,7 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect --force
+        conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
@@ -275,6 +277,7 @@ jobs:
       id: conan
       run: |
         conan profile new tket --detect --force
+        conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
@@ -379,6 +382,7 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect
+        conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
