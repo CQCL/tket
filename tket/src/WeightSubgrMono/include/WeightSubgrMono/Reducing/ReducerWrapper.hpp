@@ -35,9 +35,6 @@ class DomainsAccessor;
  */
 class ReducerInterface {
  public:
-  /** Call whenever we reach a new node to begin reducing. */
-  virtual void clear();
-
   /** Check if pv->tv may be valid, considered in isolation from all other
    * assignments. This should be cheaper than a reduction. By default, just
    * returns true always.
@@ -129,7 +126,7 @@ class ReducerInterface {
    * reduced to a singleton.
    * @return True if there is no need to reduce Domain(pv2).
    */
-  bool other_vertex_reduction_can_be_skipped_by_symmetry(
+  static bool other_vertex_reduction_can_be_skipped_by_symmetry(
       const std::set<VertexWSM>& other_domain, const DomainsAccessor& accessor,
       VertexWSM this_vertex, VertexWSM other_vertex);
 };

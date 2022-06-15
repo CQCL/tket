@@ -19,8 +19,6 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-void ReducerInterface::clear() {}
-
 bool ReducerInterface::check(std::pair<VertexWSM, VertexWSM> /*assignment*/) {
   return true;
 }
@@ -54,10 +52,7 @@ bool ReducerInterface::other_vertex_reduction_can_be_skipped_by_symmetry(
 ReducerWrapper::ReducerWrapper(ReducerInterface& reducer_interface)
     : m_reducer(reducer_interface) {}
 
-void ReducerWrapper::clear() {
-  m_reducer.clear();
-  m_number_of_processed_assignments = 0;
-}
+void ReducerWrapper::clear() { m_number_of_processed_assignments = 0; }
 
 bool ReducerWrapper::check(std::pair<VertexWSM, VertexWSM> assignment) {
   return m_reducer.check(assignment);
@@ -66,12 +61,16 @@ bool ReducerWrapper::check(std::pair<VertexWSM, VertexWSM> assignment) {
 ReductionResult ReducerWrapper::reduce(
     DomainsAccessor& accessor, std::set<VertexWSM>& work_set) {
   auto result = ReductionResult::SUCCESS;
-  for (const auto& new_assignments = accessor.get_new_assignments();
+  for (const std::vector<std::pair<VertexWSM, VertexWSM>>& new_assignments =
+           accessor.get_new_assignments();
        m_number_of_processed_assignments < new_assignments.size();) {
     result = m_reducer.reduce(
         new_assignments[m_number_of_processed_assignments], accessor, work_set);
 
-    // It's important that we increment this BEFORE breaking out of the loop.
+    // We should increment this BEFORE breaking out of the loop.
+    // We've finished processing this particular assignment,
+    // so don't want to waste time reprocessing it
+    // next time "reduce" is called.
     ++m_number_of_processed_assignments;
     if (result != ReductionResult::SUCCESS) {
       break;
