@@ -38,7 +38,7 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 endif()
 
-list(APPEND TKET_EXTRA_LIBS ${CONAN_LIBS_SYMENGINE})
+list(APPEND TKET_EXTRA_LIBS ${CONAN_LIBS_SYMENGINE} ${CONAN_LIBS_TKLOG})
 
 pybind11_add_module(circuit
     binders/circuit/main.cpp
@@ -207,8 +207,6 @@ target_link_libraries(pauli PRIVATE ${TKET_EXTRA_LIBS})
 
 pybind11_add_module(logging binders/logging.cpp)
 target_include_directories(logging PRIVATE binders/include)
-target_link_libraries(logging PRIVATE
-    tklog)
 target_link_libraries(logging PRIVATE ${TKET_EXTRA_LIBS})
 
 pybind11_add_module(utils_serialization binders/utils_serialization.cpp)
