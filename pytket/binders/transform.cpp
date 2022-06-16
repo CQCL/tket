@@ -242,7 +242,7 @@ PYBIND11_MODULE(transform, m) {
           "More precisely, the three angles a, b, c of TK2(a, b, c) are "
           "normalised exactly when the two following conditions are met:\n"
           " - numerical values must be in the Weyl chamber, "
-          "ie 1/2 >= a >= b >= |c|,\n"
+          "ie `1/2 >= a >= b >= |c|`,\n"
           " - symbolic values must come before any numerical value in the "
           "array.\n\n"
           "After this transform, all TK2 angles will be normalised and the "
