@@ -94,6 +94,8 @@ FURTHER COMMENTS:
 
 - It is often much faster if you only want a reasonable solution, or if you don't care about proving optimality. The solver can be stopped and restarted.
 
+- Don't think of the list of nodes as a historical record of previous states (although it looks that way). Instead, think of them as future candidate states to collapse further (by making more assignments). E.g., when we decide to make a new assignment PV->TV, we remove TV from Domain(PV)={TV,a,b,c,...} before creating the next node, to leave Domain(PV) = {TV} in the new node, but Domain(PV)={a,b,c,...} in the old node. Thus the OLD node, now changed, is NOT any previously considered state, since Domain(PV) is different from both the original node AND the new node.
+
 
 NOTABLE CHANGES FROM PREVIOUS VERSIONS:
 

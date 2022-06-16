@@ -53,9 +53,11 @@ class NodeListTraversal {
   /** Simply return all TVs which occur in some domain, somewhere. */
   std::set<VertexWSM> get_used_target_vertices() const;
 
-  /** Moves up (i.e., decreases current_node_level) UNTIL it reaches
-   * an apparently valid node; returns false if it cannot
-   * (runs out of valid nodes).
+  /** Keep popping back the internal nodes data UNTIL it reaches
+   * an apparently valid node (i.e., a "good" node, i.e. a node which is
+   * NOT nogood); returns false if it cannot.
+   * However, does not reduce the node (so it may still end up being invalid
+   * after we perform reductions).
    * @return False if it cannot move up any further to reach a valid node (which
    * means that the search is finished).
    */
@@ -72,12 +74,8 @@ class NodeListTraversal {
 
   /** We've newly discovered that PV->TV is always impossible.
    * Erase it from all data, so it never arises again.
-   * Returns false if the current node is checked
-   * and found to be impossible.
-   * If the caller knows that the current node is already a nogood,
-   * it would be a waste of time checking the current node,
-   * as we are about to move up.
-   * @param impossible_assignment An assignment PV->TV which should be erased
+   * Does not check if the current node becomes a nogood.
+   * @param impossible_assignment An assignment PV->TV which will be erased
    * from ALL data.
    */
   void erase_impossible_assignment(
