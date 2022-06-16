@@ -400,6 +400,12 @@ get_information_content(const Eigen::Matrix4cd &X) {
         return mod(d, 4);
       });
 
+  // we need to ensure that det(Q) == 1 so that K1,K2 \in SU(2) x SU(2)
+  if (Q2.determinant().real() < 0) {
+    Q2.row(3) = -Q2.row(3);
+    Q1 = Xprime * Q2.transpose() * eigs_sqrt_inv;
+  }
+
   // these are our local operations (left and right)
   Mat4 K1 = MagicM * Q1 * MagicM.adjoint();
   Mat4 K2 = MagicM * Q2 * MagicM.adjoint();
