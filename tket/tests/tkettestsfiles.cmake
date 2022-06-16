@@ -35,6 +35,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/WeightSubgrMono/GraphTheoretic/test_GeneralStructs.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/GraphTheoretic/test_NeighboursData.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Searching/test_NodesRawData.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Searching/test_NodesRawDataTraversals.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_CubicLattice.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_FixedSmallGraphs.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_RandomGraphs.cpp

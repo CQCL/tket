@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include <catch2/catch.hpp>
-#include <random>
 #include <stdexcept>
 
 #include "WeightSubgrMono/Searching/NodesRawData.hpp"
