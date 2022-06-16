@@ -33,6 +33,7 @@ ZXVertSeqSet Flow::odd(const ZXVert& v, const ZXDiagram& diag) const {
   ZXVertSeqSet cv = c(v);
   for (const ZXVert& u : cv.get<TagSeq>()) {
     for (const ZXVert& n : diag.neighbours(u)) {
+      if (diag.get_zxtype(n) == ZXType::Output) continue;
       sequenced_map_t<ZXVert, unsigned>::iterator found =
           parities.get<TagKey>().find(n);
       if (found == parities.get<TagKey>().end()) {
@@ -56,9 +57,14 @@ unsigned Flow::d(const ZXVert& v) const { return d_.at(v); }
 void Flow::verify(const ZXDiagram& diag) const {
   if (!diag.is_MBQC())
     throw ZXError("Verifying a flow for a diagram that is not in MBQC form");
+  std::set<ZXVert> output_set;
+  for (const ZXVert& o : diag.get_boundary(ZXType::Output)) {
+    output_set.insert(diag.neighbours(o).at(0));
+  }
   BGL_FORALL_VERTICES(u, *diag.graph, ZXGraph) {
     ZXType type = diag.get_zxtype(u);
-    if (is_boundary_type(type)) continue;
+    if (is_boundary_type(type) || output_set.find(u) != output_set.end())
+      continue;
     ZXVertSeqSet uc = c(u);
     ZXVertSeqSet uodd = odd(u, diag);
     for (const ZXVert& v : uc.get<TagSeq>()) {
@@ -115,6 +121,10 @@ void Flow::verify(const ZXDiagram& diag) const {
 }
 
 void Flow::focus(const ZXDiagram& diag) {
+  std::set<ZXVert> output_set;
+  for (const ZXVert& o : diag.get_boundary(ZXType::Output)) {
+    output_set.insert(diag.neighbours(o).at(0));
+  }
   std::map<unsigned, ZXVertVec> order;
   for (const std::pair<const ZXVert, unsigned>& p : d_) {
     auto found = order.find(p.second);
@@ -126,7 +136,7 @@ void Flow::focus(const ZXDiagram& diag) {
 
   for (const std::pair<const unsigned, ZXVertVec>& p : order) {
     for (const ZXVert& u : p.second) {
-      if (diag.get_zxtype(u) == ZXType::Output) continue;
+      if (output_set.find(u) != output_set.end()) continue;
       ZXVertSeqSet uc = c(u);
       ZXVertSeqSet uodd = odd(u, diag);
       sequenced_map_t<ZXVert, unsigned> parities;
@@ -134,8 +144,8 @@ void Flow::focus(const ZXDiagram& diag) {
       for (const ZXVert& v : uc.get<TagSeq>()) {
         if (v == u) continue;
         ZXType vtype = diag.get_zxtype(v);
-        if ((vtype != ZXType::Output && vtype != ZXType::XY &&
-             vtype != ZXType::PX && vtype != ZXType::PY) ||
+        if ((vtype != ZXType::XY && vtype != ZXType::PX &&
+             vtype != ZXType::PY) ||
             (vtype == ZXType::PY && uodd.find(v) == uodd.end())) {
           ZXVertSeqSet cv = c(v);
           for (const ZXVert& w : cv.get<TagSeq>()) {
@@ -150,7 +160,7 @@ void Flow::focus(const ZXDiagram& diag) {
       for (const ZXVert& v : uodd.get<TagSeq>()) {
         if (v == u) continue;
         ZXType vtype = diag.get_zxtype(v);
-        if ((vtype != ZXType::Output && vtype != ZXType::XZ &&
+        if ((output_set.find(v) == output_set.end() && vtype != ZXType::XZ &&
              vtype != ZXType::YZ && vtype != ZXType::PY &&
              vtype != ZXType::PZ) ||
             (vtype == ZXType::PY && uc.find(v) == uc.end())) {
@@ -177,10 +187,20 @@ Flow Flow::identify_causal_flow(const ZXDiagram& diag) {
   // Check diagram has the expected form for causal flow
   if (!diag.is_MBQC())
     throw ZXError("ZXDiagram must be in MBQC form to identify causal flow");
+  std::set<ZXVert> input_set;
+  for (const ZXVert& i : diag.get_boundary(ZXType::Input)) {
+    input_set.insert(diag.neighbours(i).at(0));
+  }
+  std::set<ZXVert> output_set;
+  for (const ZXVert& o : diag.get_boundary(ZXType::Output)) {
+    output_set.insert(diag.neighbours(o).at(0));
+  }
   BGL_FORALL_VERTICES(v, *diag.graph, ZXGraph) {
     ZXType vtype = diag.get_zxtype(v);
-    if (!is_boundary_type(vtype) && vtype != ZXType::XY)
-      throw ZXError("Causal flow is only defined when all vertices are XY");
+    if (!is_boundary_type(vtype) && output_set.find(v) == output_set.end() &&
+        vtype != ZXType::XY)
+      throw ZXError(
+          "Causal flow is only defined when all measured vertices are XY");
   }
 
   // solved contains all vertices for which we have found corrections
@@ -197,15 +217,15 @@ Flow Flow::identify_causal_flow(const ZXDiagram& diag) {
 
   // Outputs are trivially solved
   for (const ZXVert& o : diag.get_boundary(ZXType::Output)) {
-    // MBQC form of ZX Diagrams requires each output to have a unique Hadamard
-    // edge to another vertex
-    past[o] = 1;
+    // ZX Diagrams requires each output to have a unique edge to another vertex
+    ZXVert n = diag.neighbours(o).at(0);
+    past[n] = diag.degree(n) - 1;
     solved.insert(o);
-    fl.c_.insert({o, {}});
-    fl.d_.insert({o, 0});
-    // All outputs have been extended so are either non-inputs or disconnected
-    // from any other vertices, so safe to add to correctors
-    correctors.insert(o);
+    solved.insert(n);
+    fl.c_.insert({n, {}});
+    fl.d_.insert({n, 0});
+    // Add output to correctors if it is not an input
+    if (input_set.find(n) == input_set.end()) correctors.insert(n);
   }
 
   unsigned depth = 1;
@@ -411,15 +431,16 @@ Flow Flow::identify_pauli_flow(const ZXDiagram& diag) {
   BGL_FORALL_VERTICES(v, *diag.graph, ZXGraph) {
     switch (diag.get_zxtype(v)) {
       case ZXType::Output: {
+        ZXVert n = diag.neighbours(v).at(0);
         // Outputs are trivially solved
         solved.insert(v);
-        fl.c_.insert({v, {}});
-        fl.d_.insert({v, 0});
-        // Cannot use inputs to correct
-        if (inputs.find(v) == inputs.end()) {
-          correctors.insert({v, corrector_i});
-          ++corrector_i;
+        if (diag.get_zxtype(n) != ZXType::Input) {
+          solved.insert(n);
+          fl.c_.insert({n, {}});
+          fl.d_.insert({n, 0});
         }
+        // n is either an Input or PX, in which case it will be added to the
+        // correctors in the PX case
         break;
       }
       case ZXType::PX:
@@ -484,6 +505,7 @@ std::set<ZXVertSeqSet> Flow::identify_focussed_sets(const ZXDiagram& diag) {
     throw ZXError("ZXDiagram must be in MBQC form to identify gflow");
 
   std::set<ZXVert> inputs;
+  std::set<ZXVert> outputs;
 
   // Tag input measurements
   for (const ZXVert& i : diag.get_boundary(ZXType::Input)) {
@@ -494,6 +516,10 @@ std::set<ZXVertSeqSet> Flow::identify_focussed_sets(const ZXDiagram& diag) {
       throw ZXError(
           "Inputs measured in XZ, YZ, or Y cannot be corrected with Pauli "
           "flow");
+  }
+  for (const ZXVert& o : diag.get_boundary(ZXType::Output)) {
+    ZXVert no = diag.neighbours(o).at(0);
+    outputs.insert(no);
   }
 
   // Build Gaussian elimination problem
@@ -506,18 +532,23 @@ std::set<ZXVertSeqSet> Flow::identify_focussed_sets(const ZXDiagram& diag) {
 
   BGL_FORALL_VERTICES(v, *diag.graph, ZXGraph) {
     switch (diag.get_zxtype(v)) {
-      case ZXType::Output: {
-        // Cannot use inputs to correct
+      case ZXType::XY: {
+        preserve.insert({v, n_preserve});
+        ++n_preserve;
+        // Can use non-input Xs and Ys to correct
         if (inputs.find(v) == inputs.end()) {
           correctors.insert({v, n_correctors});
           ++n_correctors;
         }
         break;
       }
-      case ZXType::XY:
       case ZXType::PX: {
-        preserve.insert({v, n_preserve});
-        ++n_preserve;
+        // Nonmeasured vertices also covered by PX
+        // Only need to preserve measured vertices
+        if (outputs.find(v) == outputs.end()) {
+          preserve.insert({v, n_preserve});
+          ++n_preserve;
+        }
         // Can use non-input Xs and Ys to correct
         if (inputs.find(v) == inputs.end()) {
           correctors.insert({v, n_correctors});

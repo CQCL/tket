@@ -41,8 +41,8 @@ list(APPEND DEPS_${COMP}
     Placement
     TokenSwapping
     Transformations
-    ZX
-    Utils)
+    Utils
+    ZX)
 
 foreach(DEP ${DEPS_${COMP}})
     target_include_directories(

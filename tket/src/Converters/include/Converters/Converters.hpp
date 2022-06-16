@@ -74,4 +74,11 @@ Circuit pauli_graph_to_circuit_sets(
 std::pair<zx::ZXDiagram, boost::bimap<zx::ZXVert, Vertex>> circuit_to_zx(
     const Circuit &circuit);
 
+/**
+ * Takes a unitary ZX diagram in MBQC form with the promise that a gflow exists.
+ * Produces an equivalent circuit using the gate extraction method from
+ * Backens et al., "There and Back Again: A Circuit Extraction Tale".
+ */
+Circuit zx_to_circuit(const zx::ZXDiagram &diag);
+
 }  // namespace tket

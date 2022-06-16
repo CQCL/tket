@@ -59,11 +59,13 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Ops/test_Ops.cpp
     ${TKET_TESTS_DIR}/OpType/test_OpTypeFunctions.cpp
     ${TKET_TESTS_DIR}/Passes/test_SynthesiseTK.cpp
+    ${TKET_TESTS_DIR}/Passes/test_SynthesiseTket.cpp
     ${TKET_TESTS_DIR}/Gate/test_GateUnitaryMatrix.cpp
     ${TKET_TESTS_DIR}/Simulation/test_CircuitSimulator.cpp
     ${TKET_TESTS_DIR}/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
     ${TKET_TESTS_DIR}/Circuit/test_Boxes.cpp
     ${TKET_TESTS_DIR}/Circuit/test_Circ.cpp
+    ${TKET_TESTS_DIR}/Circuit/test_CircPool.cpp
     ${TKET_TESTS_DIR}/Circuit/test_Symbolic.cpp
     ${TKET_TESTS_DIR}/Circuit/test_ThreeQubitConversion.cpp
     ${TKET_TESTS_DIR}/test_CliffTableau.cpp
@@ -110,6 +112,8 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/ZX/test_ZXDiagram.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXAxioms.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXSimp.cpp
+    ${TKET_TESTS_DIR}/ZX/test_ZXRebase.cpp
     ${TKET_TESTS_DIR}/ZX/test_Flow.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXConverters.cpp
+    ${TKET_TESTS_DIR}/ZX/test_ZXExtraction.cpp
 )

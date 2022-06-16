@@ -84,6 +84,14 @@ Transform squash_factory(
 Transform commute_SQ_gates_through_SWAPS(const avg_node_errors_t& node_errors);
 Transform commute_SQ_gates_through_SWAPS(const op_node_errors_t& node_errors);
 
+/**
+ * @brief Absorb Rz gates into NPhasedX where possible
+ *
+ * For any gate NPhasedX(𝛼, 𝛽) in the circuit, try to change 𝛽 to reduce the
+ * number of surrounding Rz gates.
+ */
+Transform absorb_Rz_NPhasedX();
+
 }  // namespace Transforms
 
 }  // namespace tket

@@ -17,23 +17,26 @@ import numpy as np
 import pytest  # type: ignore
 from pytket import Qubit, Circuit, OpType
 from pytket.pauli import Pauli, QubitPauliString  # type: ignore
+from pytket.utils.results import compare_unitaries
 from pytket.zx import (  # type: ignore
     ZXDiagram,
     ZXType,
     QuantumType,
     ZXWireType,
-    unitary_from_quantum_diagram,
-    fix_inputs_to_binary_state,
     ZXGen,
-    tensor_from_quantum_diagram,
-    unitary_from_classical_diagram,
-    density_matrix_from_cptp_diagram,
     Rewrite,
     circuit_to_zx,
     PhasedGen,
     CliffordGen,
     DirectedGen,
     ZXBox,
+)
+from zx_tensor import (  # type: ignore
+    unitary_from_quantum_diagram,
+    fix_inputs_to_binary_state,
+    tensor_from_quantum_diagram,
+    unitary_from_classical_diagram,
+    density_matrix_from_cptp_diagram,
 )
 
 
@@ -648,9 +651,9 @@ def test_converting_from_circuit() -> None:
     c.H(2)
     diag, _ = circuit_to_zx(c)
     # Check the unitaries are equal up to a global phase
-    u = c.get_unitary()
     v = unitary_from_quantum_diagram(diag)
-    m = np.dot(u, v.conj().T)
+    u = c.get_unitary()
+    m = v.dot(u.conj().T)
     phase = m[0][0]
     assert isclose(abs(phase), 1)
     assert np.allclose(m * (1 / phase), np.eye(16))
@@ -668,6 +671,139 @@ def test_constructors() -> None:
     assert zx_box.diagram.scalar == diag.scalar
 
 
+def test_XY_extraction() -> None:
+    # Identical to the diagram in test_ZXExtraction.cpp
+    diag = ZXDiagram(3, 3, 0, 0)
+    ins = diag.get_boundary(ZXType.Input)
+    outs = diag.get_boundary(ZXType.Output)
+    v00 = diag.add_vertex(ZXType.XY, 0.7)
+    v01 = diag.add_vertex(ZXType.XY, 0.2)
+    v02 = diag.add_vertex(ZXType.XY, 1.9)
+    v10 = diag.add_vertex(ZXType.XY, 0.56)
+    v11 = diag.add_vertex(ZXType.XY, 1.2)
+    v12 = diag.add_vertex(ZXType.XY, 0.9)
+    o0 = diag.add_vertex(ZXType.PX)
+    o1 = diag.add_vertex(ZXType.PX)
+    o2 = diag.add_vertex(ZXType.PX)
+    diag.add_wire(ins[0], v00)
+    diag.add_wire(ins[1], v01)
+    diag.add_wire(ins[2], v02)
+    diag.add_wire(v00, v10, ZXWireType.H)
+    diag.add_wire(v00, v12, ZXWireType.H)
+    diag.add_wire(v01, v10, ZXWireType.H)
+    diag.add_wire(v01, v11, ZXWireType.H)
+    diag.add_wire(v01, v12, ZXWireType.H)
+    diag.add_wire(v02, v11, ZXWireType.H)
+    diag.add_wire(v02, v12, ZXWireType.H)
+    diag.add_wire(v10, o0, ZXWireType.H)
+    diag.add_wire(v10, o2, ZXWireType.H)
+    diag.add_wire(v11, o0, ZXWireType.H)
+    diag.add_wire(v11, o1, ZXWireType.H)
+    diag.add_wire(v11, o2, ZXWireType.H)
+    diag.add_wire(v12, o1, ZXWireType.H)
+    diag.add_wire(v12, o2, ZXWireType.H)
+    diag.add_wire(o0, outs[0])
+    diag.add_wire(o1, outs[1])
+    diag.add_wire(o2, outs[2])
+    circ, _ = diag.to_circuit()
+    assert circ.n_qubits == 3
+    Rewrite.rebase_to_zx().apply(diag)
+    diag.check_validity()
+    diag_u = unitary_from_quantum_diagram(diag)
+    circ_u = circ.get_unitary()
+    assert compare_unitaries(diag_u, circ_u)
+
+
+def test_XY_YZ_extraction() -> None:
+    # Almost identical to the diagram in test_ZXExtraction.cpp
+    # Gadgets g3 and g8 removed as they made tensor evaluation real slow
+    diag = ZXDiagram(5, 5, 0, 0)
+    ins = diag.get_boundary(ZXType.Input)
+    outs = diag.get_boundary(ZXType.Output)
+    i0 = diag.add_vertex(ZXType.XY)
+    i1 = diag.add_vertex(ZXType.XY)
+    i2 = diag.add_vertex(ZXType.XY, 0.25)
+    i3ext = diag.add_vertex(ZXType.XY)
+    i3 = diag.add_vertex(ZXType.XY, 0.25)
+    i4 = diag.add_vertex(ZXType.XY)
+    inter0 = diag.add_vertex(ZXType.XY, -0.25)
+    inter1 = diag.add_vertex(ZXType.XY, -0.25)
+    o0 = diag.add_vertex(ZXType.XY)
+    o0ext = diag.add_vertex(ZXType.PX)
+    o1 = diag.add_vertex(ZXType.XY)
+    o1ext = diag.add_vertex(ZXType.PX)
+    o2 = diag.add_vertex(ZXType.XY)
+    o2ext = diag.add_vertex(ZXType.PX)
+    o3 = diag.add_vertex(ZXType.PX)
+    o4 = diag.add_vertex(ZXType.XY)
+    o4ext = diag.add_vertex(ZXType.PX)
+    g0 = diag.add_vertex(ZXType.YZ, -0.25)
+    g1 = diag.add_vertex(ZXType.YZ, 0.25)
+    g2 = diag.add_vertex(ZXType.YZ, 0.25)
+    g4 = diag.add_vertex(ZXType.YZ, 0.25)
+    g5 = diag.add_vertex(ZXType.YZ, 0.25)
+    g6 = diag.add_vertex(ZXType.YZ, -0.25)
+    g7 = diag.add_vertex(ZXType.YZ, -0.25)
+    g9 = diag.add_vertex(ZXType.YZ, -0.25)
+    # Input wires
+    diag.add_wire(ins[0], i0)
+    diag.add_wire(ins[1], i1)
+    diag.add_wire(ins[2], i2)
+    diag.add_wire(ins[3], i3ext)
+    diag.add_wire(ins[4], i4)
+    diag.add_wire(i3ext, i3, ZXWireType.H)
+    # Interior wires
+    diag.add_wire(i0, i1, ZXWireType.H)
+    diag.add_wire(i0, i3, ZXWireType.H)
+    diag.add_wire(i0, i4, ZXWireType.H)
+    diag.add_wire(i0, inter1, ZXWireType.H)
+    diag.add_wire(i0, o0, ZXWireType.H)
+    diag.add_wire(i1, o1, ZXWireType.H)
+    diag.add_wire(i2, o2, ZXWireType.H)
+    diag.add_wire(i3, inter0, ZXWireType.H)
+    diag.add_wire(i3, o3, ZXWireType.H)
+    diag.add_wire(i3, o4, ZXWireType.H)
+    diag.add_wire(i4, inter0, ZXWireType.H)
+    diag.add_wire(inter0, inter1, ZXWireType.H)
+    diag.add_wire(inter1, o4, ZXWireType.H)
+    # Gadget wires
+    diag.add_wire(g0, i0, ZXWireType.H)
+    diag.add_wire(g0, i1, ZXWireType.H)
+    diag.add_wire(g0, inter0, ZXWireType.H)
+    diag.add_wire(g1, i1, ZXWireType.H)
+    diag.add_wire(g1, inter0, ZXWireType.H)
+    diag.add_wire(g2, i0, ZXWireType.H)
+    diag.add_wire(g2, inter0, ZXWireType.H)
+    diag.add_wire(g4, i3, ZXWireType.H)
+    diag.add_wire(g4, inter1, ZXWireType.H)
+    diag.add_wire(g5, i2, ZXWireType.H)
+    diag.add_wire(g5, inter1, ZXWireType.H)
+    diag.add_wire(g6, i2, ZXWireType.H)
+    diag.add_wire(g6, i3, ZXWireType.H)
+    diag.add_wire(g6, inter1, ZXWireType.H)
+    diag.add_wire(g7, i1, ZXWireType.H)
+    diag.add_wire(g7, o4, ZXWireType.H)
+    diag.add_wire(g9, i2, ZXWireType.H)
+    diag.add_wire(g9, i3, ZXWireType.H)
+    # Output wires
+    diag.add_wire(o0, o0ext, ZXWireType.H)
+    diag.add_wire(o1, o1ext, ZXWireType.H)
+    diag.add_wire(o2, o2ext, ZXWireType.H)
+    diag.add_wire(o4, o4ext, ZXWireType.H)
+    diag.add_wire(o0ext, outs[0])
+    diag.add_wire(o1ext, outs[1])
+    diag.add_wire(o2ext, outs[2])
+    diag.add_wire(o3, outs[3])
+    diag.add_wire(o4ext, outs[4])
+    circ, _ = diag.to_circuit()
+    assert circ.n_qubits == 5
+    Rewrite.rebase_to_zx().apply(diag)
+    diag.check_validity()
+    diag_u = unitary_from_quantum_diagram(diag)
+    circ_u = circ.get_unitary()
+    assert compare_unitaries(diag_u, circ_u)
+
+
 if __name__ == "__main__":
     test_generator_creation()
     test_diagram_creation()
@@ -677,3 +813,6 @@ if __name__ == "__main__":
     test_spider_fusion()
     test_simplification()
     test_converting_from_circuit()
+    test_constructors()
+    test_XY_extraction()
+    test_XY_YZ_extraction()

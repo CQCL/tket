@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <boost/graph/graph_traits.hpp>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <memory>
 #include <sstream>
 #include <unsupported/Eigen/MatrixFunctions>
@@ -2788,6 +2788,32 @@ SCENARIO("Vertices in order") {
     CHECK(t_pos < cz_pos);
     CHECK(cy_pos < s_pos);
     CHECK(cy_pos < cz_pos);
+  }
+}
+
+SCENARIO("Checking circuit graphviz output") {
+  GIVEN("A simple circuit") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+
+    auto out = c.to_graphviz_str();
+    std::string exp_out =
+        "digraph G {\n"
+        "{ rank = same\n"
+        "0 2 }\n"
+        "{ rank = same\n"
+        "1 3 }\n"
+        "0 [label = \"Input, 0\"];\n"
+        "1 [label = \"Output, 1\"];\n"
+        "2 [label = \"Input, 2\"];\n"
+        "3 [label = \"Output, 3\"];\n"
+        "4 [label = \"CX, 4\"];\n"
+        "0 -> 4 [label =  \"0, 0\"];\n"
+        "4 -> 1 [label =  \"0, 0\"];\n"
+        "2 -> 4 [label =  \"0, 1\"];\n"
+        "4 -> 3 [label =  \"1, 0\"];\n"
+        "}";
+    REQUIRE(out == exp_out);
   }
 }
 

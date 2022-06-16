@@ -14,7 +14,7 @@
 
 #include "PartialTsaTesting.hpp"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include "Architecture/DistancesFromArchitecture.hpp"
 #include "Architecture/NeighboursFromArchitecture.hpp"

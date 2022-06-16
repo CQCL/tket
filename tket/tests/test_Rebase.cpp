@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <numeric>
 
 #include "Circuit/Boxes.hpp"
@@ -434,12 +434,12 @@ SCENARIO("Check cases for tk1_to_rzsx") {
 
         {0., 0.5, 0., 1},       {0., 0.5, 2., 1},         {0., 2.5, 0., 1},
         {0., 2.5, 2., 1},       {2., 0.5, 0., 1},         {2., 0.5, 2., 1},
-        {2., 2.5, 0., 1},       {2., 2.5, 2., 1},
+        {2., 2.5, 0., 1},       {2., 2.5, 2., 1},         {1.3, 0.5, 8.53, 3},
 
         {7.55, 1.3, 1.55, 5},   {3.55, 1.3, 0.5, 5},      {8.53, 1.3, 2.25, 5},
-        {0., -0.5, 0, 5},       {0., 1.5, 0, 5},          {0., 3.5, 0, 5},
-        {2., -0.5, 0, 5},       {2., 1.5, 0, 5},          {2., 3.5, 0, 5},
-        {0.234, 3.5, 0.953, 5}, {0.234, 0.354, 0.953, 5},
+        {0., -0.5, 0, 3},       {0., 1.5, 0, 3},          {0., 3.5, 0, 3},
+        {2., -0.5, 0, 3},       {2., 1.5, 0, 3},          {2., 3.5, 0, 3},
+        {0.234, 3.5, 0.953, 3}, {0.234, 0.354, 0.953, 5},
     };
     const Expr a_expr(SymEngine::symbol("a"));
     const Expr b_expr(SymEngine::symbol("b"));

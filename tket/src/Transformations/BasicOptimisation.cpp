@@ -110,7 +110,8 @@ static bool remove_redundancy(
     for (port_t port = 0; port < kids.size() && z_followed_by_measures;
          port++) {
       if (circ.get_OpType_from_Vertex(kids[port]) == OpType::Measure) {
-        z_followed_by_measures &= op->commutes_with_basis(Pauli::Z, port);
+        z_followed_by_measures &=
+            circ.commutes_with_basis(vert, Pauli::Z, PortType::Source, port);
       } else {
         z_followed_by_measures = false;
       }
@@ -214,9 +215,10 @@ static bool commute_singles_to_front(Circuit &circ) {
         if (prev_op->get_desc().is_gate() &&
             circ.n_in_edges_of_type(prev_v, EdgeType::Quantum) == 1) {
           const std::optional<Pauli> prev_colour =
-              prev_op->commuting_basis(ports.second);
+              circ.commuting_basis(prev_v, PortType::Target, ports.second);
 
-          if (curr_op->commutes_with_basis(prev_colour, ports.first)) {
+          if (circ.commutes_with_basis(
+                  current_v, prev_colour, PortType::Source, ports.first)) {
             // subsequent op on qubit path is a single qubit gate
             // and commutes with current multi qubit gate
             success = true;
@@ -273,7 +275,12 @@ static bool replace_two_qubit_interaction(
   Subcircuit sub = {in_edges, out_edges, i.vertices};
   Circuit subc = circ.subcircuit(sub);
   Eigen::Matrix4cd mat = get_matrix_from_2qb_circ(subc);
-  Circuit replacement = two_qubit_canonical(mat, cx_fidelity);
+  Circuit replacement = two_qubit_canonical(mat);
+  // TODO: for now we decompose all the way to CX. In the future, this pass
+  // should output TK2, and decompose to CX (or other gates) later if necessary.
+  TwoQbFidelities fid;
+  fid.CX_fidelity = cx_fidelity;
+  (decompose_TK2(fid) >> squash_1qb_to_tk1()).apply(replacement);
   const int nb_cx_old = subc.count_gates(OpType::CX);
   const int nb_cx_new = replacement.count_gates(OpType::CX);
   if (nb_cx_new < nb_cx_old) {
@@ -573,6 +580,132 @@ Transform commute_SQ_gates_through_SWAPS(const avg_node_errors_t &node_errors) {
 Transform commute_SQ_gates_through_SWAPS(const op_node_errors_t &node_errors) {
   return commute_SQ_gates_through_SWAPS_helper(
       DeviceCharacterisation(node_errors));
+}
+
+Transform absorb_Rz_NPhasedX() {
+  return Transform([](Circuit &circ) {
+    bool success = false;
+    VertexSet all_bins;
+
+    // Start by squashing Rz gates
+    success |= squash_1qb_to_pqp(OpType::Rz, OpType::Rx).apply(circ);
+
+    // Loop through all NPhasedX gates
+    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+      Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+      if (op->get_type() == OpType::NPhasedX) {
+        // gather surrounding Rz gates
+        unsigned arity = op->n_qubits();
+        std::vector<Expr> in_rz(arity);
+        std::vector<Expr> out_rz(arity);
+        EdgeVec in_edges = circ.get_in_edges_of_type(v, EdgeType::Quantum);
+        EdgeVec out_edges = circ.get_out_edges_of_type(v, EdgeType::Quantum);
+        TKET_ASSERT(in_edges.size() == arity);
+        TKET_ASSERT(out_edges.size() == arity);
+        for (unsigned i = 0; i < arity; ++i) {
+          Vertex in_v = circ.source(in_edges[i]);
+          Op_ptr in_op = circ.get_Op_ptr_from_Vertex(in_v);
+          Vertex out_v = circ.target(out_edges[i]);
+          Op_ptr out_op = circ.get_Op_ptr_from_Vertex(out_v);
+
+          if (in_op->get_type() == OpType::Rz) {
+            in_rz[i] = -in_op->get_params().at(0);
+          } else {
+            in_rz[i] = 0.;
+          }
+          if (out_op->get_type() == OpType::Rz) {
+            out_rz[i] = out_op->get_params().at(0);
+          } else {
+            out_rz[i] = 0.;
+          }
+        }
+
+        // Find out which Rz angle is most popular.
+        // Note that we only compare expr[i] with expr[j] when j < i. This means
+        // that only the largest i from a set of equivalent exprs will have the
+        // right occurence count, but that is good enough.
+        std::vector<Expr> all_rz = in_rz;
+        all_rz.insert(all_rz.end(), out_rz.begin(), out_rz.end());
+        std::vector<unsigned> occurences_count(2 * arity);
+        for (unsigned i = 0; i < 2 * arity; ++i) {
+          unsigned cnt = 0;
+          for (unsigned j = 0; j < i; ++j) {
+            if (equiv_expr(all_rz[i], all_rz[j], 4)) {
+              ++cnt;
+            }
+          }
+          occurences_count[i] = cnt;
+        }
+        unsigned max_i =
+            std::max_element(occurences_count.begin(), occurences_count.end()) -
+            occurences_count.begin();
+        Expr absorb_rz = all_rz[max_i];
+
+        if (!equiv_0(absorb_rz, 4)) {
+          success = true;
+
+          // Subtract absorb_rz in NPhasedX
+          std::vector<Expr> new_params = op->get_params();
+          TKET_ASSERT(new_params.size() == 2);
+          new_params[1] += absorb_rz;
+          circ.dag[v] = get_op_ptr(OpType::NPhasedX, new_params, arity);
+
+          // Finally, adjust +-absorb_rz in Rz everywhere around
+          for (unsigned i = 0; i < arity; ++i) {
+            Vertex in_v = circ.source(in_edges[i]);
+            Op_ptr in_op = circ.get_Op_ptr_from_Vertex(in_v);
+            Vertex out_v = circ.target(out_edges[i]);
+            Op_ptr out_op = circ.get_Op_ptr_from_Vertex(out_v);
+
+            Expr angle;
+            Edge in_e, out_e;
+            VertexSet bin;
+            if (in_op->get_type() == OpType::Rz) {
+              angle = in_op->get_params().at(0) + absorb_rz;
+              out_e = in_edges[i];
+              in_e = circ.get_last_edge(in_v, out_e);
+              bin = {in_v};
+            } else {
+              angle = absorb_rz;
+              out_e = in_edges[i];
+              in_e = out_e;
+              bin = {};
+            }
+            Subcircuit sub{{in_e}, {out_e}, bin};
+            Circuit c(1);
+            if (!equiv_0(angle, 4)) {
+              c.add_op<unsigned>(OpType::Rz, angle, {0});
+            }
+            circ.substitute(c, sub, Circuit::VertexDeletion::No);
+            all_bins.insert(bin.begin(), bin.end());
+
+            if (out_op->get_type() == OpType::Rz) {
+              angle = out_op->get_params().at(0) - absorb_rz;
+              in_e = out_edges[i];
+              out_e = circ.get_next_edge(out_v, in_e);
+              bin = {out_v};
+            } else {
+              angle = -absorb_rz;
+              in_e = out_edges[i];
+              out_e = in_e;
+              bin = {};
+            }
+            sub = Subcircuit{{in_e}, {out_e}, bin};
+            c = Circuit(1);
+            if (!equiv_0(angle, 4)) {
+              c.add_op<unsigned>(OpType::Rz, angle, {0});
+            }
+            circ.substitute(c, sub, Circuit::VertexDeletion::No);
+            all_bins.insert(bin.begin(), bin.end());
+          }
+        }
+      }
+    }
+    circ.remove_vertices(
+        all_bins, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+
+    return success;
+  });
 }
 
 }  // namespace Transforms
