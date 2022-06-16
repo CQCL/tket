@@ -62,7 +62,7 @@ class SearchBranch {
    */
   bool reduce_current_node(const ReductionParameters& parameters);
 
-  /** Keep moving up one level and reducing, until EITHER it's reduced
+  /** Keep decreasing the node index and reducing, until EITHER it's reduced
    * (returning true), OR we can't move up any more (and return false).
    */
   bool backtrack(const ReductionParameters& parameters);

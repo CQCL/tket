@@ -39,7 +39,7 @@ NodesRawData::NodesRawData(
     auto& domain_data = domains_data[pv];
     domain_data.entries.push();
     domain_data.entries[0].domain = domain;
-    domain_data.entries[0].node_level = 0;
+    domain_data.entries[0].node_index = 0;
 
     switch (domain.size()) {
       case 0: {
@@ -86,7 +86,7 @@ std::string NodesRawData::DomainData::str() const {
   std::stringstream ss;
   const unsigned size = entries.size();
   for (unsigned ii = 0; ii < size; ++ii) {
-    ss << "\n  lev=" << entries[ii].node_level << ", Dom: "
+    ss << "\n  node_index=" << entries[ii].node_index << ", Dom: "
        << tket::WeightedSubgraphMonomorphism::str(entries[ii].domain);
   }
   ss << "\n";

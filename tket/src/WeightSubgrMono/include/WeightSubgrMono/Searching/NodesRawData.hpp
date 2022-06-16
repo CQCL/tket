@@ -71,7 +71,7 @@ struct NodesRawData {
       // The index in the std::vector of node objects
       // when this new domain was first set (i.e., changed from
       // the domain in the previous node).
-      unsigned node_level;
+      unsigned node_index;
     };
 
     // Not all domains are stored; only those which have just changed.

@@ -93,8 +93,8 @@ SCENARIO("Test detailed complete search") {
       REQUIRE(size > 0);
       const auto& last_entry = raw_data.domains_data[pv].entries[size - 1];
       REQUIRE(domain == last_entry.domain);
-      REQUIRE(last_entry.node_level <= raw_data.current_node_index());
-      ss << "(s" << size << ",ni" << last_entry.node_level << ") ";
+      REQUIRE(last_entry.node_index <= raw_data.current_node_index());
+      ss << "(s" << size << ",ni" << last_entry.node_index << ") ";
     }
     ss << "}";
   }

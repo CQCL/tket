@@ -36,7 +36,9 @@ SCENARIO("Test search node string functions") {
       node_data.str() ==
       "Has 3 ass.: [ 1:17 3:2 0:0 ];  sc.prod 0; p-edge weight 0");
 
-  CHECK(nodes_raw_data.domains_data.at(3).str() == "\n  lev=0, Dom: [ 2 ]\n");
+  CHECK(
+      nodes_raw_data.domains_data.at(3).str() ==
+      "\n  node_index=0, Dom: [ 2 ]\n");
 
   node_data.nogood = true;
   CHECK(
