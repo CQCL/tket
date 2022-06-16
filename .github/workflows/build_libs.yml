@@ -20,56 +20,41 @@ jobs:
         filters: |
           tkrng_conanfile:
             - 'libs/tkrng/conanfile.py'
-  linux:
-    name: build tkrng (linux)
+  build_libraries:
+    name: build tkrng
     needs: changes
     if: needs.changes.outputs.tkrng_conanfile == 'true'
-    runs-on: ubuntu-20.04
     strategy:
       matrix:
+        os: ['ubuntu-20.04', 'macos-11', 'windows-2019']
         build_type: ['Release', 'Debug']
         shared: ['True', 'False']
-    env:
-      CC: gcc-10
-      CXX: g++-10
-      CONAN_REVISIONS_ENABLED: 1
-    steps:
-    - uses: actions/checkout@v3
-    - name: install conan
-      run: pip install conan
-    - name: create profile
-      run: |
-        conan profile new tket --detect
-        conan profile update settings.compiler.libcxx=libstdc++11 tket
-    - name: build tkrng
-      run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o tkrng:shared=${{ matrix.shared }} libs/tkrng tket/stable
-    - name: add remote
-      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
-    - name: authenticate to repository
-      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_1 }} -r tket-conan ${{ secrets.JFROG_ARTIFACTORY_USER_1 }}
-    - name: get version
-      run: |
-        tkrng_ver=$(conan inspect --raw version libs/tkrng/conanfile.py)
-        echo "TKRNG_VER=${tkrng_ver}" >> $GITHUB_ENV
-    - name: upload package (dry run)
-      if: github.event_name == 'pull_request'
-      run: conan upload tkrng/${TKRNG_VER}@tket/stable --all -r=tket-conan --skip-upload
-    - name: upload package
-      if: github.event_name == 'push'
-      run: conan upload tkrng/${TKRNG_VER}@tket/stable --all -r=tket-conan
-  macos:
-    name: build tkrng (macos)
-    needs: changes
-    if: needs.changes.outputs.tkrng_conanfile == 'true'
-    runs-on: macos-11
-    strategy:
-      matrix:
-        build_type: ['Release', 'Debug']
-        shared: ['True', 'False']
+    runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
+    - name: normalize line endings in conanfile and src directory
+      if: matrix.os == 'windows-2019'
+      # This is necessary to ensure consistent revisions across platforms.
+      # Conan's revision hash is composed of hashes all the exported files, so
+      # we must normalize the line endings in these.
+      run: |
+        $conanfile ='libs/tkrng/conanfile.py'
+        $normalized_file = [IO.File]::ReadAllText($conanfile) -replace "`r`n", "`n"
+        [IO.File]::WriteAllText($conanfile, $normalized_file)
+        $src_files = Get-ChildItem "libs/tkrng/src" -File -Recurse
+        foreach ($f in $src_files) {
+          $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
+          [IO.File]::WriteAllText($f, $normalized_file)
+        }
+    - name: set compiler
+      if: matrix.os == 'ubuntu-20.04'
+      run: |
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
+        sudo update-alternatives --set gcc /usr/bin/gcc-10
+        sudo update-alternatives --set g++ /usr/bin/g++-10
     - name: Set up Python 3.9
       uses: actions/setup-python@v3
       with:
@@ -78,6 +63,9 @@ jobs:
       run: pip install conan
     - name: create profile
       run: conan profile new tket --detect
+    - name: set libcxx
+      if: matrix.os == 'ubuntu-20.04'
+      run: conan profile update settings.compiler.libcxx=libstdc++11 tket
     - name: build tkrng
       run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o tkrng:shared=${{ matrix.shared }} libs/tkrng tket/stable
     - name: add remote
@@ -85,15 +73,21 @@ jobs:
     - name: authenticate to repository
       run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_1 }} -r tket-conan ${{ secrets.JFROG_ARTIFACTORY_USER_1 }}
     - name: get version
+      if: matrix.os != 'windows-2019'
       run: |
         tkrng_ver=$(conan inspect --raw version libs/tkrng/conanfile.py)
         echo "TKRNG_VER=${tkrng_ver}" >> $GITHUB_ENV
+    - name: get version
+      if: matrix.os == 'windows-2019'
+      run: |
+        $tkrng_ver = conan inspect --raw version libs/tkrng/conanfile.py
+        echo "TKRNG_VER=${tkrng_ver}" >> $env:GITHUB_ENV
     - name: upload package (dry run)
       if: github.event_name == 'pull_request'
-      run: conan upload tkrng/${TKRNG_VER}@tket/stable --all -r=tket-conan --skip-upload
+      run: conan upload tkrng/${{ env.TKRNG_VER }}@tket/stable --all -r=tket-conan --skip-upload
     - name: upload package
       if: github.event_name == 'push'
-      run: conan upload tkrng/${TKRNG_VER}@tket/stable --all -r=tket-conan
+      run: conan upload tkrng/${{ env.TKRNG_VER }}@tket/stable --all -r=tket-conan
   macos-m1:
     name: build tkrng (macos-m1)
     needs: changes
@@ -127,52 +121,6 @@ jobs:
     - name: upload package
       if: github.event_name == 'push'
       run: conan upload tkrng/${TKRNG_VER}@tket/stable --all -r=tket-conan
-  windows:
-    name: build tkrng (windows)
-    needs: changes
-    if: needs.changes.outputs.tkrng_conanfile == 'true'
-    runs-on: windows-2019
-    strategy:
-      matrix:
-        build_type: ['Release', 'Debug']
-        shared: ['True', 'False']
-    env:
-      CONAN_REVISIONS_ENABLED: 1
-    steps:
-    - uses: actions/checkout@v3
-    - name: install conan
-      run: pip install conan
-    - name: create profile
-      run: conan profile new tket --detect
-    - name: normalize line endings in conanfile and src directory
-      # This is necessary to ensure consistent revisions across platforms.
-      # Conan's revision hash is composed of hashes all the exported files, so
-      # we must normalize the line endings in these.
-      run: |
-        $conanfile ='libs/tkrng/conanfile.py'
-        $normalized_file = [IO.File]::ReadAllText($conanfile) -replace "`r`n", "`n"
-        [IO.File]::WriteAllText($conanfile, $normalized_file)
-        $src_files = Get-ChildItem "libs/tkrng/src" -File -Recurse
-        foreach ($f in $src_files) {
-          $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
-          [IO.File]::WriteAllText($f, $normalized_file)
-        }
-    - name: build tkrng
-      run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o tkrng:shared=${{ matrix.shared }} libs/tkrng tket/stable
-    - name: add remote
-      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
-    - name: authenticate to repository
-      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_1 }} -r tket-conan ${{ secrets.JFROG_ARTIFACTORY_USER_1 }}
-    - name: get version
-      run: |
-        $tkrng_ver = conan inspect --raw version libs/tkrng/conanfile.py
-        echo "TKRNG_VER=${tkrng_ver}" >> $env:GITHUB_ENV
-    - name: upload package (dry run)
-      if: github.event_name == 'pull_request'
-      run: conan upload tkrng/${{ env.TKRNG_VER }}@tket/stable --all -r=tket-conan --skip-upload
-    - name: upload package
-      if: github.event_name == 'push'
-      run: conan upload tkrng/${{ env.TKRNG_VER }}@tket/stable --all -r=tket-conan
   manylinux:
     name: build tkrng (manylinux)
     needs: changes

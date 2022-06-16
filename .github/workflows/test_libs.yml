@@ -20,45 +20,25 @@ jobs:
         filters: |
           tkrng_code:
             - 'libs/tkrng/**'
-  linux:
-    name: test tkrng (linux)
+  test_libraries:
+    name: test tkrng
     needs: changes
     if: needs.changes.outputs.tkrng_code == 'true'
-    runs-on: ubuntu-20.04
-    env:
-      CC: gcc-10
-      CXX: g++-10
-      CONAN_REVISIONS_ENABLED: 1
-    steps:
-    - uses: actions/checkout@v3
-    - name: install conan
-      run: pip install conan
-    - name: create profile
-      run: |
-        conan profile new tket --detect
-        conan profile update settings.compiler.libcxx=libstdc++11 tket
-    - name: add remote
-      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
-    - name: build tkrng
-      run: conan create --profile=tket libs/tkrng
-    - name: build tkrng tests
-      run: |
-        conan install libs/tkrng/test --install-folder=build/test-tkrng --profile=tket
-        conan build libs/tkrng/test --configure --build-folder=build/test-tkrng --source-folder=libs/tkrng/test
-        conan build libs/tkrng/test --build --build-folder=build/test-tkrng
-        conan package libs/tkrng/test --build-folder=build/test-tkrng --package-folder build/test-tkrng/package --source-folder=libs/tkrng/test
-    - name: run tkrng tests
-      working-directory: ./build/test-tkrng/package/bin
-      run: ./test-tkrng
-  macos:
-    name: test tkrng (macos)
-    needs: changes
-    if: needs.changes.outputs.tkrng_code == 'true'
-    runs-on: macos-11
+    strategy:
+      matrix:
+        os: ['ubuntu-20.04', 'macos-11', 'windows-2019']
+    runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
+    - name: set compiler
+      if: matrix.os == 'ubuntu-20.04'
+      run: |
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
+        sudo update-alternatives --set gcc /usr/bin/gcc-10
+        sudo update-alternatives --set g++ /usr/bin/g++-10
     - name: Set up Python 3.9
       uses: actions/setup-python@v3
       with:
@@ -67,6 +47,9 @@ jobs:
       run: pip install conan
     - name: create profile
       run: conan profile new tket --detect
+    - name: set libcxx
+      if: matrix.os == 'ubuntu-20.04'
+      run: conan profile update settings.compiler.libcxx=libstdc++11 tket
     - name: add remote
       run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
     - name: build tkrng
@@ -95,32 +78,6 @@ jobs:
       run: conan profile new tket --detect --force
     - name: add remote
       run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
-    - name: build tkrng
-      run: conan create --profile=tket libs/tkrng
-    - name: build tkrng tests
-      run: |
-        conan install libs/tkrng/test --install-folder=build/test-tkrng --profile=tket
-        conan build libs/tkrng/test --configure --build-folder=build/test-tkrng --source-folder=libs/tkrng/test
-        conan build libs/tkrng/test --build --build-folder=build/test-tkrng
-        conan package libs/tkrng/test --build-folder=build/test-tkrng --package-folder build/test-tkrng/package --source-folder=libs/tkrng/test
-    - name: run tkrng tests
-      working-directory: ./build/test-tkrng/package/bin
-      run: ./test-tkrng
-  windows:
-    name: test tkrng (windows)
-    needs: changes
-    if: needs.changes.outputs.tkrng_code == 'true'
-    runs-on: windows-2019
-    env:
-      CONAN_REVISIONS_ENABLED: 1
-    steps:
-    - uses: actions/checkout@v3
-    - name: install conan
-      run: pip install conan
-    - name: create profile
-      run: conan profile new tket --detect
-    - name: add remote
-      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
     - name: build tkrng
       run: conan create --profile=tket libs/tkrng
     - name: build tkrng tests
