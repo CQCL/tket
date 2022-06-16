@@ -517,12 +517,15 @@ SCENARIO("Test qubit reversal") {
 static void check_decompose_2cx_VD(const Eigen::Matrix4cd &U) {
   auto [circ, z0] = decompose_2cx_VD(U);
   unsigned n_cx = 0;
+  static const std::set<OpType> expected_1q_gates = {
+      OpType::TK1, OpType::H, OpType::V, OpType::Vdg, OpType::S,
+      OpType::Sdg, OpType::X, OpType::Y, OpType::Z};
   for (const Command &cmd : circ) {
     OpType optype = cmd.get_op_ptr()->get_type();
     if (optype == OpType::CX) {
       n_cx++;
     } else {
-      CHECK(optype == OpType::TK1);
+      CHECK(expected_1q_gates.contains(optype));
     }
   }
   CHECK(n_cx <= 2);
@@ -540,12 +543,15 @@ static void check_decompose_2cx_VD(const Eigen::Matrix4cd &U) {
 static void check_decompose_2cx_DV(const Eigen::Matrix4cd &U) {
   auto [circ, z0] = decompose_2cx_DV(U);
   unsigned n_cx = 0;
+  static const std::set<OpType> expected_1q_gates = {
+      OpType::TK1, OpType::V, OpType::Vdg, OpType::S,
+      OpType::Sdg, OpType::X, OpType::Y,   OpType::Z};
   for (const Command &cmd : circ) {
     OpType optype = cmd.get_op_ptr()->get_type();
     if (optype == OpType::CX) {
       n_cx++;
     } else {
-      CHECK(optype == OpType::TK1);
+      CHECK(expected_1q_gates.contains(optype));
     }
   }
   CHECK(n_cx <= 2);

@@ -1047,27 +1047,28 @@ Circuit TK2_using_normalised_TK2(Expr ea, Expr eb, Expr ec) {
     Op_ptr opdg = op->dagger();
     pre.add_op<unsigned>(opdg, {0});
     pre.add_op<unsigned>(opdg, {1});
-    post.add_op<unsigned>(op, {0});
-    post.add_op<unsigned>(op, {1});
+    // These get undaggered at the end
+    post.add_op<unsigned>(opdg, {0});
+    post.add_op<unsigned>(opdg, {1});
   };
 
   // Step 1: For non-symbolic: a, b, c ∈ [0, 1] ∪ [3, 4].
   if (a && *a > 1. && *a <= 3.) {
     ea -= 2;
     *a -= 2;
-    post.add_phase(1);
+    pre.add_phase(1);
     *a = fmodn(*a, 4);
   }
   if (b && *b > 1. && *b <= 3.) {
     eb -= 2;
     *b -= 2;
-    post.add_phase(1);
+    pre.add_phase(1);
     *b = fmodn(*b, 4);
   }
   if (c && *c > 1. && *c <= 3.) {
     ec -= 2;
     *c -= 2;
-    post.add_phase(1);
+    pre.add_phase(1);
     *c = fmodn(*c, 4);
   }
 
@@ -1120,21 +1121,21 @@ Circuit TK2_using_normalised_TK2(Expr ea, Expr eb, Expr ec) {
     *a -= 3;
     post.add_op<unsigned>(OpType::X, {0});
     post.add_op<unsigned>(OpType::X, {1});
-    post.add_phase(0.5);
+    pre.add_phase(0.5);
   }
   if (b && *b > 1.) {
     eb -= 3.;
     *b -= 3;
     post.add_op<unsigned>(OpType::Y, {0});
     post.add_op<unsigned>(OpType::Y, {1});
-    post.add_phase(0.5);
+    pre.add_phase(0.5);
   }
   if (c && *c > 1.) {
     ec -= 3.;
     *c -= 3;
     post.add_op<unsigned>(OpType::Z, {0});
     post.add_op<unsigned>(OpType::Z, {1});
-    post.add_phase(0.5);
+    pre.add_phase(0.5);
   }
   if (a && *a > .5) {
     ea = 1. - ea;
@@ -1157,10 +1158,10 @@ Circuit TK2_using_normalised_TK2(Expr ea, Expr eb, Expr ec) {
     *c -= 1.;
     post.add_op<unsigned>(OpType::Z, {0});
     post.add_op<unsigned>(OpType::Z, {1});
-    post.add_phase(-0.5);
+    pre.add_phase(-0.5);
   }
   // Cheeky way of reversing order of ops.
-  post = post.transpose();
+  post = post.dagger();
 
   // Step 5: Assemble!
   Circuit res(2);
