@@ -52,31 +52,6 @@ bool is_maximum(const T& val) {
 }
 // GCOVR_EXCL_STOP
 
-/** If elems[index] is invalid, resize elems to make it valid; then return it.
- */
-template <class T>
-T& get_element_with_resize(std::vector<T>& elems, std::size_t index) {
-  if (index >= elems.size()) {
-    elems.resize(index + 1);
-  }
-  return elems[index];
-}
-
-template <class T>
-void resize_if_too_small(std::vector<T>& elems, std::size_t min_size) {
-  if (elems.size() >= min_size) {
-    return;
-  }
-  elems.resize(min_size);
-}
-
-/** If elems[index] is invalid, simply resize elems so that it becomes valid.
- */
-template <class T>
-void resize_if_index_is_invalid(std::vector<T>& elems, std::size_t index) {
-  resize_if_too_small(elems, index + 1);
-}
-
 /** Handy for testing; a string represention of a std container.
  * @param elems A container of elements.
  * @param max_elems_to_print The maximum number to print, before terminating
@@ -119,7 +94,7 @@ bool is_sorted_and_unique(const std::vector<T>& elems) {
 }
 // GCOVR_EXCL_STOP
 
-/** Checks if the the map has this key.
+/** Checks if the map has this key.
  * @param map A std::map
  * @param key A key to check
  * @return The value in the map corresponding to the key if it exists, or null
@@ -133,28 +108,6 @@ std::optional<Value> get_optional_value(
     return {};
   }
   return citer->second;
-}
-
-/** The inverse of the mapping A -> B.
- * TODO maybe merge with TokenSwapping when TokenSwapping is merged into
- * develop; maybe move into Utils.
- * @param map a std::map<K,V>
- * @param require_invertible If true, the std::map is required to be invertible
- * (no duplicate values).
- * @return The inverse map invmap, so if map[x]=y then invmap[y]=x (assuming
- * that map[x2] != y for all x2 != x).
- */
-template <class Key, class Value>
-std::map<Value, Key> get_reversed_map(
-    const std::map<Key, Value>& map, bool require_invertible = true) {
-  std::map<Value, Key> result;
-  for (const auto& entry : map) {
-    result[entry.second] = entry.first;
-  }
-  if (require_invertible && result.size() != map.size()) {
-    throw std::runtime_error("get_reversed_map called on non-invertible map");
-  }
-  return result;
 }
 
 // GCOVR_EXCL_START
