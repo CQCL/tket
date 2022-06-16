@@ -281,8 +281,7 @@ static bool replace_two_qubit_interaction(
   // should output TK2, and decompose to CX (or other gates) later if necessary.
   TwoQbFidelities fid;
   fid.CX_fidelity = cx_fidelity;
-  (normalise_TK2() >> decompose_TK2(fid) >> squash_1qb_to_tk1())
-      .apply(replacement);
+  (decompose_TK2(fid) >> squash_1qb_to_tk1()).apply(replacement);
   const int nb_cx_old = subc.count_gates(OpType::CX);
   const int nb_cx_new = replacement.count_gates(OpType::CX);
   if (nb_cx_new < nb_cx_old) {
