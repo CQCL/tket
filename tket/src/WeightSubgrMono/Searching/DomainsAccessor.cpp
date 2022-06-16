@@ -32,7 +32,7 @@ unsigned DomainsAccessor::get_number_of_pattern_vertices() const {
 }
 
 bool DomainsAccessor::current_node_is_valid() const {
-  return !m_raw_data.nodes_data[m_raw_data.current_node_level].nogood;
+  return !m_raw_data.nodes_data.top().nogood;
 }
 
 const std::set<VertexWSM>& DomainsAccessor::get_domain(VertexWSM pv) const {
@@ -43,7 +43,7 @@ const std::set<VertexWSM>& DomainsAccessor::get_domain(VertexWSM pv) const {
 bool DomainsAccessor::domain_created_in_current_node(VertexWSM pv) const {
   const auto& data = m_raw_data.domains_data.at(pv);
   return data.entries[data.entries_back_index].node_level ==
-         m_raw_data.current_node_level;
+         m_raw_data.current_node_index();
 }
 
 std::set<VertexWSM>& DomainsAccessor::get_domain_nonconst(VertexWSM pv) {
@@ -115,7 +115,7 @@ bool DomainsAccessor::alldiff_reduce_current_node(
       // Now, we've taken care of everything EXCEPT
       // erasing TV from the domain.
       if (data_for_this_pv.entries[data_for_this_pv.entries_back_index]
-              .node_level == m_raw_data.current_node_level) {
+              .node_level == m_raw_data.current_node_index()) {
         // Erase in-place.
         existing_domain.erase(iter);
       } else {
@@ -126,7 +126,7 @@ bool DomainsAccessor::alldiff_reduce_current_node(
             data_for_this_pv.entries[data_for_this_pv.entries_back_index]
                 .domain;
         TKET_ASSERT(new_entry.domain.erase(assignment.second) == 1);
-        new_entry.node_level = m_raw_data.current_node_level;
+        new_entry.node_level = m_raw_data.current_node_index();
         ++data_for_this_pv.entries_back_index;
       }
     }
@@ -163,7 +163,7 @@ ReductionResult DomainsAccessor::overwrite_domain_with_set_swap(
     current_node.new_assignments.emplace_back(pv, *new_domain.cbegin());
   }
   // We must be careful; "existing_domain" might be shared with previous nodes.
-  if (existing_domain_data.node_level == m_raw_data.current_node_level) {
+  if (existing_domain_data.node_level == m_raw_data.current_node_index()) {
     // We can just overwrite the domain in-place; the caller will do that.
     existing_domain.swap(new_domain);
   } else {
@@ -172,7 +172,7 @@ ReductionResult DomainsAccessor::overwrite_domain_with_set_swap(
     ++data_for_this_pv.entries_back_index;
     auto& new_entry = get_element_with_resize(
         data_for_this_pv.entries, data_for_this_pv.entries_back_index);
-    new_entry.node_level = m_raw_data.current_node_level;
+    new_entry.node_level = m_raw_data.current_node_index();
     new_entry.domain.swap(new_domain);
   }
   return result;
@@ -195,7 +195,7 @@ DomainsAccessor::intersect_domain_with_complement_set(
   result.changed = true;
   auto& data_for_this_pv = m_raw_data.domains_data.at(pattern_v);
   if (data_for_this_pv.entries[data_for_this_pv.entries_back_index]
-          .node_level == m_raw_data.current_node_level) {
+          .node_level == m_raw_data.current_node_index()) {
     // We can simply overwrite.
     std::set<VertexWSM>& domain =
         data_for_this_pv.entries[data_for_this_pv.entries_back_index].domain;
@@ -210,7 +210,7 @@ DomainsAccessor::intersect_domain_with_complement_set(
     resize_if_index_is_invalid(
         data_for_this_pv.entries, data_for_this_pv.entries_back_index);
     auto& entry = data_for_this_pv.entries[data_for_this_pv.entries_back_index];
-    entry.node_level = m_raw_data.current_node_level;
+    entry.node_level = m_raw_data.current_node_index();
 
     // Is it quicker to build it up as here, or copy then grind it down?
     // Depends on all the sizes, and how many end up being erased...
@@ -248,9 +248,9 @@ DomainsAccessor::intersect_domain_with_complement_set(
 std::string DomainsAccessor::str(bool full) const {
   std::stringstream ss;
   if (full) {
-    ss << "\n@@@@@ ALL NODES: (curr.lev=" << m_raw_data.current_node_level
+    ss << "\n@@@@@ ALL NODES: (curr.lev=" << m_raw_data.current_node_index()
        << ")";
-    for (unsigned level = 0; level <= m_raw_data.current_node_level; ++level) {
+    for (unsigned level = 0; level < m_raw_data.nodes_data.size(); ++level) {
       const auto& node = m_raw_data.nodes_data[level];
       ss << "\n+++ node " << level << ":" << node.str();
     }
@@ -261,7 +261,7 @@ std::string DomainsAccessor::str(bool full) const {
     ss << "\n";
     return ss.str();
   }
-  ss << "\ncurr.node lev=" << m_raw_data.current_node_level << "; DOMAINS: ";
+  ss << "\ncurr.node lev=" << m_raw_data.current_node_index() << "; DOMAINS: ";
   for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
     ss << "\n  DOM(" << pv << "): ";
     const auto& dom_data =
@@ -281,9 +281,8 @@ DomainsAccessor::get_unassigned_pattern_vertices_superset() const {
   if (!candidate.empty()) {
     return candidate;
   }
-  TKET_ASSERT(m_raw_data.current_node_level > 0);
-  return m_raw_data.nodes_data[m_raw_data.current_node_level - 1]
-      .unassigned_vertices_superset;
+  TKET_ASSERT(m_raw_data.nodes_data.size() > 1);
+  return m_raw_data.nodes_data.one_below_top().unassigned_vertices_superset;
 }
 
 std::vector<VertexWSM>&

@@ -28,6 +28,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_BitFunctions.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_DyadicFraction.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_GeneralUtils.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_LogicalStack.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_SetIntersection.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/EndToEndWrappers/test_SolutionWSM.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/GraphTheoretic/test_FilterUtils.cpp

@@ -15,6 +15,7 @@
 #pragma once
 #include <string>
 
+#include "../Common/LogicalStack.hpp"
 #include "../GraphTheoretic/DomainInitialiser.hpp"
 
 namespace tket {
@@ -127,20 +128,15 @@ struct NodesRawData {
     std::string str() const;
   };
 
-  std::vector<NodeData> nodes_data;
-
-  /** The index of the current search node in "nodes_data".
-   * Always valid; but any NodeData objects beyond this
-   * are junk data to be reused (much faster than resizing and
-   * reallocating as we move vertically).
-   */
-  unsigned current_node_level;
+  LogicalStack<NodeData> nodes_data;
 
   explicit NodesRawData(
       const DomainInitialiser::InitialDomains& initial_domains);
 
   const NodeData& get_current_node() const;
   NodeData& get_current_node_nonconst();
+
+  unsigned current_node_index() const;
 
   DomainData& get_most_recent_domain_data_for_pv(VertexWSM);
 };

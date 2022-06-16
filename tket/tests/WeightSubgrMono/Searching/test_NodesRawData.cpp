@@ -30,7 +30,7 @@ SCENARIO("Test search node string functions") {
   initial_domains[2] = {77, 88};
 
   NodesRawData nodes_raw_data(initial_domains);
-  auto& node_data = nodes_raw_data.nodes_data.at(0);
+  auto& node_data = nodes_raw_data.nodes_data[0];
 
   node_data.new_assignments.emplace_back(0, 0);
   CHECK(

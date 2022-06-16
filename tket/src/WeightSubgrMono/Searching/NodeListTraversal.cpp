@@ -69,25 +69,36 @@ std::set<VertexWSM> NodeListTraversal::get_used_target_vertices() const {
 }
 
 bool NodeListTraversal::move_up() {
-  while (m_raw_data.current_node_level > 0) {
-    --m_raw_data.current_node_level;
-    if (m_raw_data.nodes_data[m_raw_data.current_node_level].nogood) {
-      continue;
-    }
-    for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
-      NodesRawData::DomainData& domain_data = m_raw_data.domains_data[pv];
-      while (domain_data.entries[domain_data.entries_back_index].node_level >
-             m_raw_data.current_node_level) {
-        // We've moved above the level of "junk data",
-        // so shrink the back index.
-        TKET_ASSERT(domain_data.entries_back_index > 0);
-        --domain_data.entries_back_index;
-      }
-    }
-    return true;
+  if (m_raw_data.nodes_data.size() <= 1) {
+    // We will run out of nodes when we pop.
+    // So, this is the end of the search!
+    return false;
   }
-  // We've hit the top!
-  return false;
+  m_raw_data.nodes_data.pop();
+
+  // Keep popping more nodes off, until we reach a node which is NOT a nogood
+  // (i.e., a "good" node; although not standard terminology!)
+  while (m_raw_data.nodes_data.top().nogood) {
+    m_raw_data.nodes_data.pop();
+    if (m_raw_data.nodes_data.empty()) {
+      return false;
+    }
+  }
+
+  // Now we've reached a "good" (not nogood) node.
+  const unsigned current_node_level = m_raw_data.current_node_index();
+
+  for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
+    NodesRawData::DomainData& domain_data = m_raw_data.domains_data[pv];
+    while (domain_data.entries[domain_data.entries_back_index].node_level >
+           current_node_level) {
+      // We've moved above the level of "junk data",
+      // so shrink the back index.
+      TKET_ASSERT(domain_data.entries_back_index > 0);
+      --domain_data.entries_back_index;
+    }
+  }
+  return true;
 }
 
 // Returns false if the current node becomes invalid.
@@ -129,7 +140,7 @@ static void when_moving_down_copy_old_shared_domain_and_erase_tv(
     NodesRawData& raw_data, NodesRawData::DomainData& data_for_this_pv,
     VertexWSM t_vertex) {
   data_for_this_pv.entries[data_for_this_pv.entries_back_index + 1].node_level =
-      raw_data.current_node_level;
+      raw_data.current_node_index();
 
   std::set<VertexWSM>& new_domain =
       data_for_this_pv.entries[data_for_this_pv.entries_back_index + 1].domain;
@@ -151,18 +162,18 @@ static void complete_move_down_with_resized_vectors_and_indices(
   new_domain.insert(t_vertex);
 
   data_for_this_pv.entries[data_for_this_pv.entries_back_index].node_level =
-      raw_data.current_node_level;
+      raw_data.current_node_index();
 
-  auto& new_node_data = raw_data.nodes_data[raw_data.current_node_level];
+  auto& new_node_data = raw_data.nodes_data.top();
   new_node_data.new_assignments.resize(1);
   new_node_data.new_assignments[0] = {p_vertex, t_vertex};
   new_node_data.nogood = false;
 
   new_node_data.scalar_product =
-      raw_data.nodes_data[raw_data.current_node_level - 1].scalar_product;
+      raw_data.nodes_data.one_below_top().scalar_product;
 
   new_node_data.total_p_edge_weights =
-      raw_data.nodes_data[raw_data.current_node_level - 1].total_p_edge_weights;
+      raw_data.nodes_data.one_below_top().total_p_edge_weights;
 }
 
 void NodeListTraversal::move_down(VertexWSM p_vertex, VertexWSM t_vertex) {
@@ -185,7 +196,7 @@ void NodeListTraversal::move_down(VertexWSM p_vertex, VertexWSM t_vertex) {
   // Next, we need to erase TV from the existing domain.
   if (existing_node_valid) {
     if (data_for_this_pv.entries[data_for_this_pv.entries_back_index]
-            .node_level == m_raw_data.current_node_level) {
+            .node_level == m_raw_data.current_node_index()) {
       // The data is not shared by previous nodes, so we can just overwrite it
       // in place.
       existing_domain.erase(iter);
@@ -216,9 +227,7 @@ void NodeListTraversal::move_down(VertexWSM p_vertex, VertexWSM t_vertex) {
 
     ++data_for_this_pv.entries_back_index;
   }
-  ++m_raw_data.current_node_level;
-  resize_if_index_is_invalid(
-      m_raw_data.nodes_data, m_raw_data.current_node_level);
+  m_raw_data.nodes_data.push();
   m_raw_data.get_current_node_nonconst().unassigned_vertices_superset.clear();
   complete_move_down_with_resized_vectors_and_indices(
       m_raw_data, data_for_this_pv, p_vertex, t_vertex);
@@ -230,7 +239,7 @@ static void fill_nogood_or_new_assignment_in_all_shared_nodes(
     const NodesRawData::DomainData& data_for_this_pv, NodesRawData& raw_data) {
   // If there's no node domain after the domain under consideration,
   // then it extends all the way to the current level.
-  unsigned final_node_level = raw_data.current_node_level;
+  unsigned final_node_level = raw_data.current_node_index();
   if (data_for_this_pv_entry_index < data_for_this_pv.entries_back_index) {
     // We must stop just BEFORE the next level,
     // which has a different domain.
@@ -269,7 +278,7 @@ void NodeListTraversal::erase_impossible_assignment(
   for (unsigned ii = 0; ii <= data_for_this_pv.entries_back_index; ++ii) {
     TKET_ASSERT(
         data_for_this_pv.entries[ii].node_level <=
-        m_raw_data.current_node_level);
+        m_raw_data.current_node_index());
 
     if (m_raw_data.nodes_data[data_for_this_pv.entries[ii].node_level].nogood) {
       // Don't waste time with nogood nodes.
