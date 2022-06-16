@@ -37,18 +37,16 @@ bool DomainsAccessor::current_node_is_valid() const {
 
 const std::set<VertexWSM>& DomainsAccessor::get_domain(VertexWSM pv) const {
   const auto& data = m_raw_data.domains_data.at(pv);
-  return data.entries[data.entries_back_index].domain;
+  return data.entries.top().domain;
 }
 
 bool DomainsAccessor::domain_created_in_current_node(VertexWSM pv) const {
-  const auto& data = m_raw_data.domains_data.at(pv);
-  return data.entries[data.entries_back_index].node_level ==
+  return m_raw_data.domains_data.at(pv).entries.top().node_level ==
          m_raw_data.current_node_index();
 }
 
 std::set<VertexWSM>& DomainsAccessor::get_domain_nonconst(VertexWSM pv) {
-  auto& data = m_raw_data.domains_data.at(pv);
-  return data.entries[data.entries_back_index].domain;
+  return m_raw_data.domains_data.at(pv).entries.top().domain;
 }
 
 const std::vector<std::pair<VertexWSM, VertexWSM>>&
@@ -95,7 +93,7 @@ bool DomainsAccessor::alldiff_reduce_current_node(
       }
       NodesRawData::DomainData& data_for_this_pv = m_raw_data.domains_data[pv];
       std::set<VertexWSM>& existing_domain =
-          data_for_this_pv.entries[data_for_this_pv.entries_back_index].domain;
+          data_for_this_pv.entries.top().domain;
       auto iter = existing_domain.find(assignment.second);
       if (iter == existing_domain.end()) {
         continue;
@@ -114,20 +112,20 @@ bool DomainsAccessor::alldiff_reduce_current_node(
       }
       // Now, we've taken care of everything EXCEPT
       // erasing TV from the domain.
-      if (data_for_this_pv.entries[data_for_this_pv.entries_back_index]
-              .node_level == m_raw_data.current_node_index()) {
+      if (data_for_this_pv.entries.top().node_level ==
+          m_raw_data.current_node_index()) {
         // Erase in-place.
         existing_domain.erase(iter);
       } else {
         // We must make a new domain and copy the data across.
-        NodesRawData::DomainData::Entry& new_entry = get_element_with_resize(
-            data_for_this_pv.entries, data_for_this_pv.entries_back_index + 1);
-        new_entry.domain =
-            data_for_this_pv.entries[data_for_this_pv.entries_back_index]
-                .domain;
-        TKET_ASSERT(new_entry.domain.erase(assignment.second) == 1);
-        new_entry.node_level = m_raw_data.current_node_index();
-        ++data_for_this_pv.entries_back_index;
+        data_for_this_pv.entries.push();
+        data_for_this_pv.entries.top().node_level =
+            m_raw_data.current_node_index();
+        data_for_this_pv.entries.top().domain =
+            data_for_this_pv.entries.one_below_top().domain;
+        TKET_ASSERT(
+            data_for_this_pv.entries.top().domain.erase(assignment.second) ==
+            1);
       }
     }
   }
@@ -140,8 +138,7 @@ ReductionResult DomainsAccessor::overwrite_domain_with_set_swap(
     return ReductionResult::NOGOOD;
   }
   auto& data_for_this_pv = m_raw_data.domains_data.at(pv);
-  auto& existing_domain_data =
-      data_for_this_pv.entries[data_for_this_pv.entries_back_index];
+  auto& existing_domain_data = data_for_this_pv.entries.top();
   std::set<VertexWSM>& existing_domain = existing_domain_data.domain;
 
   // We should do a detailed assert that "new_domain" is a subset
@@ -167,13 +164,10 @@ ReductionResult DomainsAccessor::overwrite_domain_with_set_swap(
     // We can just overwrite the domain in-place; the caller will do that.
     existing_domain.swap(new_domain);
   } else {
-    // We need to make a new domain object (or, possibly, reuse an existing
-    // one).
-    ++data_for_this_pv.entries_back_index;
-    auto& new_entry = get_element_with_resize(
-        data_for_this_pv.entries, data_for_this_pv.entries_back_index);
-    new_entry.node_level = m_raw_data.current_node_index();
-    new_entry.domain.swap(new_domain);
+    // We need to make a new domain object.
+    data_for_this_pv.entries.push();
+    data_for_this_pv.entries.top().node_level = m_raw_data.current_node_index();
+    data_for_this_pv.entries.top().domain.swap(new_domain);
   }
   return result;
 }
@@ -184,6 +178,7 @@ DomainsAccessor::intersect_domain_with_complement_set(
   IntersectionResult result;
   {
     const std::set<VertexWSM>& current_domain = get_domain(pattern_v);
+
     if (disjoint(current_domain, forbidden_target_vertices)) {
       result.changed = false;
       result.new_domain_size = current_domain.size();
@@ -194,11 +189,11 @@ DomainsAccessor::intersect_domain_with_complement_set(
   // The domain definitely is changing.
   result.changed = true;
   auto& data_for_this_pv = m_raw_data.domains_data.at(pattern_v);
-  if (data_for_this_pv.entries[data_for_this_pv.entries_back_index]
-          .node_level == m_raw_data.current_node_index()) {
-    // We can simply overwrite.
-    std::set<VertexWSM>& domain =
-        data_for_this_pv.entries[data_for_this_pv.entries_back_index].domain;
+  if (data_for_this_pv.entries.top().node_level ==
+      m_raw_data.current_node_index()) {
+    // Domain is not shared; we can simply overwrite.
+    std::set<VertexWSM>& domain = data_for_this_pv.entries.top().domain;
+
     for (VertexWSM tv : forbidden_target_vertices) {
       if (domain.erase(tv) == 1 && domain.empty()) {
         result.reduction_result = ReductionResult::NOGOOD;
@@ -206,38 +201,41 @@ DomainsAccessor::intersect_domain_with_complement_set(
       }
     }
   } else {
-    ++data_for_this_pv.entries_back_index;
-    resize_if_index_is_invalid(
-        data_for_this_pv.entries, data_for_this_pv.entries_back_index);
-    auto& entry = data_for_this_pv.entries[data_for_this_pv.entries_back_index];
-    entry.node_level = m_raw_data.current_node_index();
+    // Shared domain; copy on write:
+    data_for_this_pv.entries.push();
+    data_for_this_pv.entries.top().node_level = m_raw_data.current_node_index();
+
+    const std::set<VertexWSM>& old_domain =
+        data_for_this_pv.entries.one_below_top().domain;
+    std::set<VertexWSM>& new_domain = data_for_this_pv.entries.top().domain;
 
     // Is it quicker to build it up as here, or copy then grind it down?
     // Depends on all the sizes, and how many end up being erased...
-    entry.domain.clear();
-    for (VertexWSM old_tv :
-         data_for_this_pv.entries[data_for_this_pv.entries_back_index - 1]
-             .domain) {
+    new_domain.clear();
+
+    for (VertexWSM old_tv : old_domain) {
       if (forbidden_target_vertices.count(old_tv) == 0) {
-        entry.domain.insert(old_tv);
+        new_domain.insert(old_tv);
       }
     }
-    if (entry.domain.empty()) {
-      // Erase it again!
-      --data_for_this_pv.entries_back_index;
+
+    if (new_domain.empty()) {
+      // The caller will move up, no further action here.
       result.reduction_result = ReductionResult::NOGOOD;
       return result;
     }
   }
-  // At this stage, we've created the new domain
+
+  // At this stage, we've created and filled the new domain object
   // (necessarily different from the old one).
-  const std::set<VertexWSM>& domain =
-      data_for_this_pv.entries[data_for_this_pv.entries_back_index].domain;
+  const std::set<VertexWSM>& domain = data_for_this_pv.entries.top().domain;
   result.new_domain_size = domain.size();
   TKET_ASSERT(!domain.empty());
   if (domain.size() > 1) {
     result.reduction_result = ReductionResult::SUCCESS;
   } else {
+    // domain size 1, so a new assignment (as we KNOW that the domain has
+    // changed).
     m_raw_data.get_current_node_nonconst().new_assignments.emplace_back(
         pattern_v, *domain.cbegin());
     result.reduction_result = ReductionResult::NEW_ASSIGNMENTS;
@@ -264,9 +262,7 @@ std::string DomainsAccessor::str(bool full) const {
   ss << "\ncurr.node lev=" << m_raw_data.current_node_index() << "; DOMAINS: ";
   for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
     ss << "\n  DOM(" << pv << "): ";
-    const auto& dom_data =
-        m_raw_data.domains_data[pv]
-            .entries[m_raw_data.domains_data[pv].entries_back_index];
+    const auto& dom_data = m_raw_data.domains_data[pv].entries.top();
     ss << "(since lev " << dom_data.node_level
        << "): " << tket::WeightedSubgraphMonomorphism::str(dom_data.domain);
   }

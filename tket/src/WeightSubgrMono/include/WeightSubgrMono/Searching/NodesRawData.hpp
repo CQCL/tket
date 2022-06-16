@@ -78,11 +78,7 @@ struct NodesRawData {
     // This is for performance reasons; otherwise we would have to copy
     // the domain for EVERY pv, at EVERY node, even if only a few domains
     // changed from one node to the next.
-    std::vector<Entry> entries;
-
-    // The index of the "logical back()" of "entries". All data beyond
-    // is junk to be reused (faster than reallocating).
-    unsigned entries_back_index;
+    LogicalStack<Entry> entries;
 
     std::string str() const;
   };
@@ -146,6 +142,11 @@ class NodesRawDataWrapper {
  public:
   explicit NodesRawDataWrapper(
       const DomainInitialiser::InitialDomains& initial_domains);
+
+  /** For debugging and testing, it's helpful to access the raw data.
+   * @return A const reference to the internal NodesRawData object.
+   */
+  const NodesRawData& get_raw_data_for_debug() const;
 
  private:
   NodesRawData m_raw_data;
