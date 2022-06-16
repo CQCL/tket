@@ -383,7 +383,7 @@ PYBIND11_MODULE(passes, m) {
       "More precisely, the three angles a, b, c of TK2(a, b, c) are normalised "
       "exactly when the two following conditions are met:\n"
       " - numerical values must be in the Weyl chamber, "
-      "ie 1/2 >= a >= b >= |c|,\n"
+      "ie `1/2 >= a >= b >= |c|`,\n"
       " - symbolic values must come before any numerical value in the array."
       "\n\nAfter this pass, all TK2 angles will be normalised and the circuit "
       "will satisfy `NormalisedTK2Predicate`.");
