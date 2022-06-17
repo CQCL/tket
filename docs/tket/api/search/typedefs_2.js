@@ -1,17 +1,19 @@
 var searchData=
 [
-  ['candidate_5ft_4763',['candidate_t',['../namespacetket_1_1Transforms.html#a86611d202168722880ab1f33e32b51fa',1,'tket::Transforms']]],
-  ['cmplxspmat_4764',['CmplxSpMat',['../namespacetket.html#a0b2a87e4bf360a357e15dad177551ed8',1,'tket']]],
-  ['code_4765',['Code',['../structtket_1_1tsa__internal_1_1SwapSequenceTable.html#a5ebcfc82cc79c5d42a1481790d816258',1,'tket::tsa_internal::SwapSequenceTable']]],
-  ['color_5fpmap_5ft_4766',['color_pmap_t',['../classtket_1_1graphs_1_1detail_1_1TreeSearchBase.html#a971439f806a070d6b981ce5532048cab',1,'tket::graphs::detail::TreeSearchBase']]],
-  ['color_5fvec_4767',['color_vec',['../classtket_1_1graphs_1_1detail_1_1TreeSearchBase.html#a45aaa9f0988c4619baa692eff8de892a',1,'tket::graphs::detail::TreeSearchBase']]],
-  ['complex_4768',['Complex',['../namespacetket.html#a68999408b52ab2f0f191f814ec93f4de',1,'tket']]],
-  ['composite_5fdef_5fptr_5ft_4769',['composite_def_ptr_t',['../namespacetket.html#af75542439fd2b810fa80c3fcea30c236',1,'tket']]],
-  ['conjugations_4770',['Conjugations',['../namespacetket.html#af68c3d1ae6d4e2b35060ce06befbb61d',1,'tket']]],
-  ['connection_4771',['Connection',['../classtket_1_1graphs_1_1DirectedGraphBase.html#af2996885921415194201dac3e513b959',1,'tket::graphs::DirectedGraphBase::Connection()'],['../classtket_1_1graphs_1_1DirectedGraph.html#a57d7a72d63ee3d811b8187399b5544e3',1,'tket::graphs::DirectedGraph::Connection()']]],
-  ['conngraph_4772',['ConnGraph',['../classtket_1_1graphs_1_1DirectedGraphBase.html#aa2c7906fa93591310f6f2a81155d0b8d',1,'tket::graphs::DirectedGraphBase::ConnGraph()'],['../classtket_1_1graphs_1_1DirectedGraph.html#ade3d3f4a0b45366a8d7d51d2fdc88d5d',1,'tket::graphs::DirectedGraph::ConnGraph()']]],
-  ['costedoperations_4773',['CostedOperations',['../namespacetket_1_1aas.html#aaa570d7ab3ac352ff3562b1827f56c38',1,'tket::aas']]],
-  ['costedtrees_4774',['CostedTrees',['../namespacetket_1_1aas.html#ac196c4be7722c9b84da25f0d31de5f14',1,'tket::aas']]],
-  ['csd_5ft_4775',['csd_t',['../namespacetket.html#a6aac7c33e30bd03cd80947edc87ada23',1,'tket']]],
-  ['cycles_4776',['Cycles',['../namespacetket_1_1tsa__internal.html#a7f7b8d9b9f3c8831321286b952804270',1,'tket::tsa_internal']]]
+  ['candidate_5ft_5377',['candidate_t',['../namespacetket_1_1Transforms.html#a86611d202168722880ab1f33e32b51fa',1,'tket::Transforms']]],
+  ['clock_5378',['Clock',['../namespacetket_1_1WeightedSubgraphMonomorphism.html#a17990ae8bfd321c3123115e17b980545',1,'tket::WeightedSubgraphMonomorphism']]],
+  ['cmplxspmat_5379',['CmplxSpMat',['../namespacetket.html#a0b2a87e4bf360a357e15dad177551ed8',1,'tket']]],
+  ['code_5380',['Code',['../structtket_1_1tsa__internal_1_1SwapSequenceTable.html#a5ebcfc82cc79c5d42a1481790d816258',1,'tket::tsa_internal::SwapSequenceTable']]],
+  ['color_5fpmap_5ft_5381',['color_pmap_t',['../classtket_1_1graphs_1_1detail_1_1TreeSearchBase.html#a971439f806a070d6b981ce5532048cab',1,'tket::graphs::detail::TreeSearchBase']]],
+  ['color_5fvec_5382',['color_vec',['../classtket_1_1graphs_1_1detail_1_1TreeSearchBase.html#a45aaa9f0988c4619baa692eff8de892a',1,'tket::graphs::detail::TreeSearchBase']]],
+  ['complex_5383',['Complex',['../namespacetket.html#a68999408b52ab2f0f191f814ec93f4de',1,'tket']]],
+  ['composite_5fdef_5fptr_5ft_5384',['composite_def_ptr_t',['../namespacetket.html#af75542439fd2b810fa80c3fcea30c236',1,'tket']]],
+  ['conjugations_5385',['Conjugations',['../namespacetket.html#af68c3d1ae6d4e2b35060ce06befbb61d',1,'tket']]],
+  ['connection_5386',['Connection',['../classtket_1_1graphs_1_1DirectedGraphBase.html#af2996885921415194201dac3e513b959',1,'tket::graphs::DirectedGraphBase::Connection()'],['../classtket_1_1graphs_1_1DirectedGraph.html#a57d7a72d63ee3d811b8187399b5544e3',1,'tket::graphs::DirectedGraph::Connection()']]],
+  ['conngraph_5387',['ConnGraph',['../classtket_1_1graphs_1_1DirectedGraphBase.html#aa2c7906fa93591310f6f2a81155d0b8d',1,'tket::graphs::DirectedGraphBase::ConnGraph()'],['../classtket_1_1graphs_1_1DirectedGraph.html#ade3d3f4a0b45366a8d7d51d2fdc88d5d',1,'tket::graphs::DirectedGraph::ConnGraph()']]],
+  ['costedoperations_5388',['CostedOperations',['../namespacetket_1_1aas.html#aaa570d7ab3ac352ff3562b1827f56c38',1,'tket::aas']]],
+  ['costedtrees_5389',['CostedTrees',['../namespacetket_1_1aas.html#ac196c4be7722c9b84da25f0d31de5f14',1,'tket::aas']]],
+  ['count_5390',['Count',['../structtket_1_1WeightedSubgraphMonomorphism_1_1DerivedGraphStructs.html#a637fe5e7141b27dfc3a041084729235e',1,'tket::WeightedSubgraphMonomorphism::DerivedGraphStructs']]],
+  ['csd_5ft_5391',['csd_t',['../namespacetket.html#a6aac7c33e30bd03cd80947edc87ada23',1,'tket']]],
+  ['cycles_5392',['Cycles',['../namespacetket_1_1tsa__internal.html#a7f7b8d9b9f3c8831321286b952804270',1,'tket::tsa_internal']]]
 ];

@@ -1,9 +1,19 @@
 var searchData=
 [
-  ['neighbourplacements_2ecpp_2946',['NeighbourPlacements.cpp',['../NeighbourPlacements_8cpp.html',1,'']]],
-  ['neighbourplacements_2ehpp_2947',['NeighbourPlacements.hpp',['../NeighbourPlacements_8hpp.html',1,'']]],
-  ['neighboursfromarchitecture_2ecpp_2948',['NeighboursFromArchitecture.cpp',['../NeighboursFromArchitecture_8cpp.html',1,'']]],
-  ['neighboursfromarchitecture_2ehpp_2949',['NeighboursFromArchitecture.hpp',['../NeighboursFromArchitecture_8hpp.html',1,'']]],
-  ['neighboursinterface_2ecpp_2950',['NeighboursInterface.cpp',['../NeighboursInterface_8cpp.html',1,'']]],
-  ['neighboursinterface_2ehpp_2951',['NeighboursInterface.hpp',['../NeighboursInterface_8hpp.html',1,'']]]
+  ['nearneighboursdata_2ecpp_3327',['NearNeighboursData.cpp',['../NearNeighboursData_8cpp.html',1,'']]],
+  ['nearneighboursdata_2ehpp_3328',['NearNeighboursData.hpp',['../NearNeighboursData_8hpp.html',1,'']]],
+  ['neighbourplacements_2ecpp_3329',['NeighbourPlacements.cpp',['../NeighbourPlacements_8cpp.html',1,'']]],
+  ['neighbourplacements_2ehpp_3330',['NeighbourPlacements.hpp',['../NeighbourPlacements_8hpp.html',1,'']]],
+  ['neighboursdata_2ecpp_3331',['NeighboursData.cpp',['../NeighboursData_8cpp.html',1,'']]],
+  ['neighboursdata_2ehpp_3332',['NeighboursData.hpp',['../NeighboursData_8hpp.html',1,'']]],
+  ['neighboursfromarchitecture_2ecpp_3333',['NeighboursFromArchitecture.cpp',['../NeighboursFromArchitecture_8cpp.html',1,'']]],
+  ['neighboursfromarchitecture_2ehpp_3334',['NeighboursFromArchitecture.hpp',['../NeighboursFromArchitecture_8hpp.html',1,'']]],
+  ['neighboursinterface_2ecpp_3335',['NeighboursInterface.cpp',['../NeighboursInterface_8cpp.html',1,'']]],
+  ['neighboursinterface_2ehpp_3336',['NeighboursInterface.hpp',['../NeighboursInterface_8hpp.html',1,'']]],
+  ['neighboursreducer_2ecpp_3337',['NeighboursReducer.cpp',['../NeighboursReducer_8cpp.html',1,'']]],
+  ['neighboursreducer_2ehpp_3338',['NeighboursReducer.hpp',['../NeighboursReducer_8hpp.html',1,'']]],
+  ['nodelisttraversal_2ecpp_3339',['NodeListTraversal.cpp',['../NodeListTraversal_8cpp.html',1,'']]],
+  ['nodelisttraversal_2ehpp_3340',['NodeListTraversal.hpp',['../NodeListTraversal_8hpp.html',1,'']]],
+  ['nodesrawdata_2ecpp_3341',['NodesRawData.cpp',['../NodesRawData_8cpp.html',1,'']]],
+  ['nodesrawdata_2ehpp_3342',['NodesRawData.hpp',['../NodesRawData_8hpp.html',1,'']]]
 ];

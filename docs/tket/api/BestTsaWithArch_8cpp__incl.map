@@ -1,52 +1,52 @@
 <map id="src/Architecture/BestTsaWithArch.cpp" name="src/Architecture/BestTsaWithArch.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="1252,5,1431,47"/>
-<area shape="rect" id="node2" href="$BestTsaWithArch_8hpp.html" title=" " alt="" coords="969,393,1127,420"/>
-<area shape="rect" id="node27" href="$Assert_8hpp.html" title=" " alt="" coords="265,721,391,748"/>
-<area shape="rect" id="node33" href="$DistancesFromArchitecture_8hpp.html" title=" " alt="" coords="1152,393,1379,420"/>
-<area shape="rect" id="node35" href="$NeighboursFromArchitecture_8hpp.html" title=" " alt="" coords="1403,393,1639,420"/>
-<area shape="rect" id="node37" href="$BestFullTsa_8hpp.html" title=" " alt="" coords="2196,95,2423,121"/>
-<area shape="rect" id="node49" href="$RNG_8hpp.html" title=" " alt="" coords="1323,721,1437,748"/>
-<area shape="rect" id="node3" href="$ArchitectureMapping_8hpp.html" title=" " alt="" coords="1173,475,1358,502"/>
-<area shape="rect" id="node32" href="$VertexMappingFunctions_8hpp.html" title=" " alt="" coords="1713,468,1937,509"/>
-<area shape="rect" id="node4" href="$Architecture_8hpp.html" title=" " alt="" coords="807,557,1019,584"/>
-<area shape="rect" id="node25" href="$SwapFunctions_8hpp.html" title=" " alt="" coords="1389,557,1640,584"/>
-<area shape="rect" id="node5" title=" " alt="" coords="139,871,219,897"/>
-<area shape="rect" id="node6" title=" " alt="" coords="545,639,620,666"/>
-<area shape="rect" id="node7" title=" " alt="" coords="2827,796,2869,823"/>
-<area shape="rect" id="node8" title=" " alt="" coords="407,871,465,897"/>
-<area shape="rect" id="node9" title=" " alt="" coords="1647,639,1707,666"/>
-<area shape="rect" id="node10" title=" " alt="" coords="2010,796,2073,823"/>
-<area shape="rect" id="node11" href="$CompleteGraph_8hpp.html" title=" " alt="" coords="1268,639,1471,666"/>
-<area shape="rect" id="node12" href="$DirectedGraph_8hpp.html" title=" " alt="" coords="1053,721,1248,748"/>
-<area shape="rect" id="node18" href="$BiMapHeaders_8hpp.html" title=" " alt="" coords="427,796,605,823"/>
-<area shape="rect" id="node19" href="$EigenConfig_8hpp.html" title="Include this file rather than including the Eigen headers directly." alt="" coords="765,721,926,748"/>
-<area shape="rect" id="node20" href="$Json_8hpp.html" title=" " alt="" coords="833,796,943,823"/>
-<area shape="rect" id="node21" href="$MatrixAnalysis_8hpp.html" title=" " alt="" coords="695,639,876,666"/>
-<area shape="rect" id="node22" href="$UnitID_8hpp.html" title="Named registers of arrays of (quantum or classical) nodes." alt="" coords="649,721,740,748"/>
-<area shape="rect" id="node24" href="$TketLog_8hpp.html" title="Logging." alt="" coords="128,796,229,823"/>
-<area shape="rect" id="node13" title=" " alt="" coords="1283,796,1368,823"/>
-<area shape="rect" id="node14" title=" " alt="" coords="1392,796,1443,823"/>
-<area shape="rect" id="node15" title=" " alt="" coords="629,871,707,897"/>
-<area shape="rect" id="node16" title=" " alt="" coords="1343,871,1417,897"/>
-<area shape="rect" id="node17" title=" " alt="" coords="1171,796,1258,823"/>
-<area shape="rect" id="node23" title=" " alt="" coords="731,871,805,897"/>
-<area shape="rect" id="node26" href="$VectorListHybrid_8hpp.html" title=" " alt="" coords="1053,632,1243,673"/>
-<area shape="rect" id="node30" href="$VectorListHybridSkeleton_8hpp.html" title=" " alt="" coords="1715,721,1928,748"/>
-<area shape="rect" id="node28" title=" " alt="" coords="38,796,103,823"/>
-<area shape="rect" id="node29" href="$AssertMessage_8hpp.html" title=" " alt="" coords="253,796,403,823"/>
-<area shape="rect" id="node31" title=" " alt="" coords="2343,796,2409,823"/>
-<area shape="rect" id="node34" href="$DistancesInterface_8hpp.html" title=" " alt="" coords="2037,557,2313,584"/>
-<area shape="rect" id="node36" href="$NeighboursInterface_8hpp.html" title=" " alt="" coords="2113,468,2313,509"/>
-<area shape="rect" id="node38" href="$HybridTsa_8hpp.html" title=" " alt="" coords="2608,169,2723,196"/>
-<area shape="rect" id="node43" href="$SwapListOptimiser_8hpp.html" title=" " alt="" coords="2107,319,2277,345"/>
-<area shape="rect" id="node45" href="$SwapListTableOptimiser_8hpp.html" title=" " alt="" coords="2331,244,2536,271"/>
-<area shape="rect" id="node39" href="$CyclesPartialTsa_8hpp.html" title=" " alt="" coords="2588,244,2743,271"/>
-<area shape="rect" id="node42" href="$TrivialTSA_8hpp.html" title=" " alt="" coords="3012,319,3127,345"/>
-<area shape="rect" id="node40" href="$CyclesCandidateManager_8hpp.html" title=" " alt="" coords="2722,319,2937,345"/>
-<area shape="rect" id="node41" href="$PartialTsaInterface_8hpp.html" title=" " alt="" coords="2641,393,2812,420"/>
-<area shape="rect" id="node44" href="$DynamicTokenTracker_8hpp.html" title=" " alt="" coords="1866,393,2057,420"/>
-<area shape="rect" id="node46" href="$PartialMappingLookup_8hpp.html" title=" " alt="" coords="2541,721,2734,748"/>
-<area shape="rect" id="node47" href="$SwapListSegmentOptimiser_8hpp.html" title=" " alt="" coords="2352,319,2581,345"/>
-<area shape="rect" id="node48" href="$include_2TokenSwapping_2VertexMapResizing_8hpp.html" title=" " alt="" coords="2182,393,2357,420"/>
-<area shape="rect" id="node50" title=" " alt="" coords="1467,796,1539,823"/>
+<area shape="rect" id="node1" title=" " alt="" coords="1245,5,1423,47"/>
+<area shape="rect" id="node2" href="$BestTsaWithArch_8hpp.html" title=" " alt="" coords="1188,393,1347,420"/>
+<area shape="rect" id="node27" href="$Assert_8hpp.html" title=" " alt="" coords="463,721,589,748"/>
+<area shape="rect" id="node33" href="$DistancesFromArchitecture_8hpp.html" title=" " alt="" coords="1371,393,1598,420"/>
+<area shape="rect" id="node35" href="$NeighboursFromArchitecture_8hpp.html" title=" " alt="" coords="1623,393,1859,420"/>
+<area shape="rect" id="node37" href="$BestFullTsa_8hpp.html" title=" " alt="" coords="2129,95,2355,121"/>
+<area shape="rect" id="node49" href="$RNG_8hpp.html" title=" " alt="" coords="1453,721,1567,748"/>
+<area shape="rect" id="node3" href="$ArchitectureMapping_8hpp.html" title=" " alt="" coords="1348,475,1533,502"/>
+<area shape="rect" id="node32" href="$VertexMappingFunctions_8hpp.html" title=" " alt="" coords="1685,468,1909,509"/>
+<area shape="rect" id="node4" href="$Architecture_8hpp.html" title=" " alt="" coords="681,557,893,584"/>
+<area shape="rect" id="node25" href="$SwapFunctions_8hpp.html" title=" " alt="" coords="1446,557,1697,584"/>
+<area shape="rect" id="node5" title=" " alt="" coords="337,871,417,897"/>
+<area shape="rect" id="node6" title=" " alt="" coords="598,639,673,666"/>
+<area shape="rect" id="node7" title=" " alt="" coords="2774,796,2817,823"/>
+<area shape="rect" id="node8" title=" " alt="" coords="503,871,562,897"/>
+<area shape="rect" id="node9" title=" " alt="" coords="1687,639,1747,666"/>
+<area shape="rect" id="node10" title=" " alt="" coords="1997,796,2060,823"/>
+<area shape="rect" id="node11" href="$CompleteGraph_8hpp.html" title=" " alt="" coords="1270,639,1473,666"/>
+<area shape="rect" id="node12" href="$DirectedGraph_8hpp.html" title=" " alt="" coords="1082,721,1277,748"/>
+<area shape="rect" id="node18" href="$BiMapHeaders_8hpp.html" title=" " alt="" coords="33,796,211,823"/>
+<area shape="rect" id="node19" href="$EigenConfig_8hpp.html" title="Include this file rather than including the Eigen headers directly." alt="" coords="795,721,956,748"/>
+<area shape="rect" id="node20" href="$Json_8hpp.html" title=" " alt="" coords="828,796,939,823"/>
+<area shape="rect" id="node21" href="$MatrixAnalysis_8hpp.html" title=" " alt="" coords="697,639,878,666"/>
+<area shape="rect" id="node22" href="$UnitID_8hpp.html" title="Named registers of arrays of (quantum or classical) nodes." alt="" coords="621,721,711,748"/>
+<area shape="rect" id="node24" href="$TketLog_8hpp.html" title="Logging." alt="" coords="326,796,427,823"/>
+<area shape="rect" id="node13" title=" " alt="" coords="1325,796,1410,823"/>
+<area shape="rect" id="node14" title=" " alt="" coords="1250,796,1301,823"/>
+<area shape="rect" id="node15" title=" " alt="" coords="625,871,702,897"/>
+<area shape="rect" id="node16" title=" " alt="" coords="1117,871,1191,897"/>
+<area shape="rect" id="node17" title=" " alt="" coords="1435,796,1521,823"/>
+<area shape="rect" id="node23" title=" " alt="" coords="726,871,801,897"/>
+<area shape="rect" id="node26" href="$VectorListHybrid_8hpp.html" title=" " alt="" coords="953,632,1144,673"/>
+<area shape="rect" id="node30" href="$VectorListHybridSkeleton_8hpp.html" title=" " alt="" coords="1642,721,1855,748"/>
+<area shape="rect" id="node28" title=" " alt="" coords="236,796,301,823"/>
+<area shape="rect" id="node29" href="$AssertMessage_8hpp.html" title=" " alt="" coords="451,796,601,823"/>
+<area shape="rect" id="node31" title=" " alt="" coords="2366,796,2433,823"/>
+<area shape="rect" id="node34" href="$DistancesInterface_8hpp.html" title=" " alt="" coords="2085,557,2361,584"/>
+<area shape="rect" id="node36" href="$NeighboursInterface_8hpp.html" title=" " alt="" coords="2135,468,2335,509"/>
+<area shape="rect" id="node38" href="$HybridTsa_8hpp.html" title=" " alt="" coords="2541,169,2655,196"/>
+<area shape="rect" id="node43" href="$SwapListOptimiser_8hpp.html" title=" " alt="" coords="2041,319,2211,345"/>
+<area shape="rect" id="node45" href="$SwapListTableOptimiser_8hpp.html" title=" " alt="" coords="2267,244,2473,271"/>
+<area shape="rect" id="node39" href="$CyclesPartialTsa_8hpp.html" title=" " alt="" coords="2521,244,2675,271"/>
+<area shape="rect" id="node42" href="$TrivialTSA_8hpp.html" title=" " alt="" coords="2959,319,3074,345"/>
+<area shape="rect" id="node40" href="$CyclesCandidateManager_8hpp.html" title=" " alt="" coords="2669,319,2884,345"/>
+<area shape="rect" id="node41" href="$PartialTsaInterface_8hpp.html" title=" " alt="" coords="2398,393,2569,420"/>
+<area shape="rect" id="node44" href="$DynamicTokenTracker_8hpp.html" title=" " alt="" coords="1933,393,2124,420"/>
+<area shape="rect" id="node46" href="$PartialMappingLookup_8hpp.html" title=" " alt="" coords="2539,721,2732,748"/>
+<area shape="rect" id="node47" href="$SwapListSegmentOptimiser_8hpp.html" title=" " alt="" coords="2286,319,2515,345"/>
+<area shape="rect" id="node48" href="$include_2TokenSwapping_2VertexMapResizing_8hpp.html" title=" " alt="" coords="2148,393,2323,420"/>
+<area shape="rect" id="node50" title=" " alt="" coords="1546,796,1618,823"/>
 </map>

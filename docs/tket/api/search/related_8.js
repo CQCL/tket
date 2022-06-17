@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['unitary_5ftableau_5fto_5fcircuit_5175',['unitary_tableau_to_circuit',['../classtket_1_1SymplecticTableau.html#ae866f67ebd2518ad7eb442bde020dcc9',1,'tket::SymplecticTableau::unitary_tableau_to_circuit()'],['../classtket_1_1UnitaryTableau.html#ae866f67ebd2518ad7eb442bde020dcc9',1,'tket::UnitaryTableau::unitary_tableau_to_circuit()']]],
-  ['unitarytableau_5176',['UnitaryTableau',['../classtket_1_1SymplecticTableau.html#a6949c9bcf2a53554bfa789de4333bf9c',1,'tket::SymplecticTableau']]]
+  ['set_5fbox_5fid_5809',['set_box_id',['../classtket_1_1Box.html#a184d60741239409a147c8efec73751c4',1,'tket::Box']]],
+  ['standardpass_5810',['StandardPass',['../classtket_1_1CompilationUnit.html#a1c0e93192af49ac4ca9547e3215c5e44',1,'tket::CompilationUnit']]]
 ];

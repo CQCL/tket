@@ -1,0 +1,4 @@
+<map id="tket::WeightedSubgraphMonomorphism::DistancesReducer" name="tket::WeightedSubgraphMonomorphism::DistancesReducer">
+<area shape="rect" id="node1" title="If pv&#45;&gt;tv is made, ensures that all pattern vertices v&#39; with distance(pv,v&#39;)=d have Domain(v&#39;) a subs..." alt="" coords="5,95,284,136"/>
+<area shape="rect" id="node2" href="$classtket_1_1WeightedSubgraphMonomorphism_1_1ReducerInterface.html" title="A general interface for an object which knows, using various graph&#45;theoretic tools,..." alt="" coords="5,5,284,47"/>
+</map>

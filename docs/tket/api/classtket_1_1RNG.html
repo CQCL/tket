@@ -90,6 +90,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa742441bbe5aa1d2da0ecf07f42067aa"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1RNG.html#aa742441bbe5aa1d2da0ecf07f42067aa">get_size_t</a> (size_t max_value)</td></tr>
 <tr class="memdesc:aa742441bbe5aa1d2da0ecf07f42067aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a random integer from 0 to N, inclusive.  <a href="classtket_1_1RNG.html#aa742441bbe5aa1d2da0ecf07f42067aa">More...</a><br /></td></tr>
 <tr class="separator:aa742441bbe5aa1d2da0ecf07f42067aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a2c0be2d401cf021069acafce5e7d48"><td class="memItemLeft" align="right" valign="top">std::uint64_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1RNG.html#a7a2c0be2d401cf021069acafce5e7d48">operator()</a> ()</td></tr>
+<tr class="memdesc:a7a2c0be2d401cf021069acafce5e7d48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the next 64-bit integer; guaranteed by the C++ standard to be portable.  <a href="classtket_1_1RNG.html#a7a2c0be2d401cf021069acafce5e7d48">More...</a><br /></td></tr>
+<tr class="separator:a7a2c0be2d401cf021069acafce5e7d48"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad3c38e3bd95c540bfea6ba8192205b9d"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1RNG.html#ad3c38e3bd95c540bfea6ba8192205b9d">get_size_t</a> (size_t min_value, size_t max_value)</td></tr>
 <tr class="memdesc:ad3c38e3bd95c540bfea6ba8192205b9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a number in the inclusive interval, including the endpoints.  <a href="classtket_1_1RNG.html#ad3c38e3bd95c540bfea6ba8192205b9d">More...</a><br /></td></tr>
 <tr class="separator:ad3c38e3bd95c540bfea6ba8192205b9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -117,9 +120,9 @@ Public Member Functions</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A random number generator class. </p>
-<p>Of course, this is only for random test data generation, definitely NOT suitable for any kind of cryptography! Note that there are no functions involving doubles anywhere! Actually, double calculations can give very slightly different answers across platforms, compilers, compiler optimisation settings; the numerical difference is absolutely negligible, but it's worth being ultra cautious! (And it's much easier for testing to get IDENTICAL results across platforms). </p>
+<p>Of course, this is only for random test data generation, or simple randomisation of algorithms, definitely NOT suitable for any kind of cryptography! Note that there are no functions involving doubles anywhere! Actually, double calculations can give very slightly different answers across platforms, compilers, compiler optimisation settings; the numerical difference is absolutely negligible, but it's worth being ultra cautious! (And it's much easier for testing to get IDENTICAL results across platforms). </p>
 
-<p class="definition">Definition at line <a class="el" href="RNG_8hpp_source.html#l00051">51</a> of file <a class="el" href="RNG_8hpp_source.html">RNG.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RNG_8hpp_source.html#l00053">53</a> of file <a class="el" href="RNG_8hpp_source.html">RNG.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="af79e862cacf0f9aac353b58cd0447810"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af79e862cacf0f9aac353b58cd0447810">&#9670;&nbsp;</a></span>check_percentage()</h2>
@@ -146,7 +149,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A random bool, returns true with specified probability. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="RNG_8cpp_source.html#l00156">156</a> of file <a class="el" href="RNG_8cpp_source.html">RNG.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RNG_8cpp_source.html#l00158">158</a> of file <a class="el" href="RNG_8cpp_source.html">RNG.cpp</a>.</p>
 
 </div>
 </div>
@@ -177,14 +180,15 @@ template&lt;class T &gt; </div>
 </div><div class="memdoc">
 
 <p>Simply shuffle the elements around at random. </p>
-<p>Approximately uniform "in practice" over all possible permutations. (Although of course, strictly speaking very far from uniform for larger vectors. The number of possible permutations grows very rapidly and quickly becomes larger than the total number of distinct states any fixed engine can take, no matter which is used. Thus, for larger vectors, only a small proportion of permutations are actually possible). This is necessary because C++ random_shuffle is implementation-dependent (see above comments). </p><dl class="params"><dt>Parameters</dt><dd>
+<p>Approximately uniform "in practice" over all possible permutations.</p>
+<p>(Although of course, strictly speaking very far from uniform for larger vectors. The number of possible permutations grows very rapidly and quickly becomes larger than the total number of distinct states any fixed engine can take, no matter which is used. Thus, for larger vectors, only a small proportion of permutations are actually possible). This is necessary because C++ random_shuffle is implementation-dependent (see above comments). </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">elements</td><td>The vector to be shuffled randomly. </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="RNG_8hpp_source.html#l00106">106</a> of file <a class="el" href="RNG_8hpp_source.html">RNG.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RNG_8hpp_source.html#l00115">115</a> of file <a class="el" href="RNG_8hpp_source.html">RNG.hpp</a>.</p>
 
 </div>
 </div>
@@ -223,7 +227,7 @@ template&lt;class T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A copy of the removed element. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="RNG_8hpp_source.html#l00156">156</a> of file <a class="el" href="RNG_8hpp_source.html">RNG.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RNG_8hpp_source.html#l00165">165</a> of file <a class="el" href="RNG_8hpp_source.html">RNG.hpp</a>.</p>
 
 </div>
 </div>
@@ -262,7 +266,7 @@ template&lt;class T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A reference to a random element, approximately uniform. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="RNG_8hpp_source.html#l00139">139</a> of file <a class="el" href="RNG_8hpp_source.html">RNG.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RNG_8hpp_source.html#l00148">148</a> of file <a class="el" href="RNG_8hpp_source.html">RNG.hpp</a>.</p>
 
 </div>
 </div>
@@ -291,7 +295,7 @@ template&lt;class T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>An interval of nonnegative numbers, starting at zero, but rearranged randomly. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="RNG_8cpp_source.html#l00145">145</a> of file <a class="el" href="RNG_8cpp_source.html">RNG.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RNG_8cpp_source.html#l00147">147</a> of file <a class="el" href="RNG_8cpp_source.html">RNG.cpp</a>.</p>
 
 </div>
 </div>
@@ -365,6 +369,28 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
+<a id="a7a2c0be2d401cf021069acafce5e7d48"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7a2c0be2d401cf021069acafce5e7d48">&#9670;&nbsp;</a></span>operator()()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::uint64_t tket::RNG::operator() </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns the next 64-bit integer; guaranteed by the C++ standard to be portable. </p>
+<dl class="section return"><dt>Returns</dt><dd>A 64-bit unsigned integer, should be roughly uniform. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="RNG_8cpp_source.html#l00145">145</a> of file <a class="el" href="RNG_8cpp_source.html">RNG.cpp</a>.</p>
+
+</div>
+</div>
 <a id="aba76f4c96666433460200fbcf9cde566"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aba76f4c96666433460200fbcf9cde566">&#9670;&nbsp;</a></span>set_seed()</h2>
 
@@ -389,7 +415,7 @@ template&lt;class T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="RNG_8cpp_source.html#l00154">154</a> of file <a class="el" href="RNG_8cpp_source.html">RNG.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="RNG_8cpp_source.html#l00156">156</a> of file <a class="el" href="RNG_8cpp_source.html">RNG.cpp</a>.</p>
 
 </div>
 </div>

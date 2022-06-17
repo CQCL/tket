@@ -1,19 +1,11 @@
 var searchData=
 [
-  ['zxconverters_2ecpp_3084',['ZXConverters.cpp',['../ZXConverters_8cpp.html',1,'']]],
-  ['zxdconstructors_2ecpp_3085',['ZXDConstructors.cpp',['../ZXDConstructors_8cpp.html',1,'']]],
-  ['zxdexpansions_2ecpp_3086',['ZXDExpansions.cpp',['../ZXDExpansions_8cpp.html',1,'']]],
-  ['zxdformats_2ecpp_3087',['ZXDFormats.cpp',['../ZXDFormats_8cpp.html',1,'']]],
-  ['zxdgetterssetters_2ecpp_3088',['ZXDGettersSetters.cpp',['../ZXDGettersSetters_8cpp.html',1,'']]],
-  ['zxdiagram_2ehpp_3089',['ZXDiagram.hpp',['../ZXDiagram_8hpp.html',1,'']]],
-  ['zxdiagramimpl_2ehpp_3090',['ZXDiagramImpl.hpp',['../ZXDiagramImpl_8hpp.html',1,'']]],
-  ['zxdmanipulation_2ecpp_3091',['ZXDManipulation.cpp',['../ZXDManipulation_8cpp.html',1,'']]],
-  ['zxdsubdiagram_2ecpp_3092',['ZXDSubdiagram.cpp',['../ZXDSubdiagram_8cpp.html',1,'']]],
-  ['zxgenerator_2ecpp_3093',['ZXGenerator.cpp',['../ZXGenerator_8cpp.html',1,'']]],
-  ['zxgenerator_2ehpp_3094',['ZXGenerator.hpp',['../ZXGenerator_8hpp.html',1,'']]],
-  ['zxrwaxioms_2ecpp_3095',['ZXRWAxioms.cpp',['../ZXRWAxioms_8cpp.html',1,'']]],
-  ['zxrwcombinators_2ecpp_3096',['ZXRWCombinators.cpp',['../ZXRWCombinators_8cpp.html',1,'']]],
-  ['zxrwdecompositions_2ecpp_3097',['ZXRWDecompositions.cpp',['../ZXRWDecompositions_8cpp.html',1,'']]],
-  ['zxrwgraphlikeform_2ecpp_3098',['ZXRWGraphLikeForm.cpp',['../ZXRWGraphLikeForm_8cpp.html',1,'']]],
-  ['zxrwgraphlikesimplification_2ecpp_3099',['ZXRWGraphLikeSimplification.cpp',['../ZXRWGraphLikeSimplification_8cpp.html',1,'']]]
+  ['weightcalculator_2ecpp_3496',['WeightCalculator.cpp',['../WeightCalculator_8cpp.html',1,'']]],
+  ['weightcalculator_2ehpp_3497',['WeightCalculator.hpp',['../WeightCalculator_8hpp.html',1,'']]],
+  ['weightchecker_2ecpp_3498',['WeightChecker.cpp',['../WeightChecker_8cpp.html',1,'']]],
+  ['weightchecker_2ehpp_3499',['WeightChecker.hpp',['../WeightChecker_8hpp.html',1,'']]],
+  ['weightnogooddetector_2ecpp_3500',['WeightNogoodDetector.cpp',['../WeightNogoodDetector_8cpp.html',1,'']]],
+  ['weightnogooddetector_2ehpp_3501',['WeightNogoodDetector.hpp',['../WeightNogoodDetector_8hpp.html',1,'']]],
+  ['weightnogooddetectormanager_2ecpp_3502',['WeightNogoodDetectorManager.cpp',['../WeightNogoodDetectorManager_8cpp.html',1,'']]],
+  ['weightnogooddetectormanager_2ehpp_3503',['WeightNogoodDetectorManager.hpp',['../WeightNogoodDetectorManager_8hpp.html',1,'']]]
 ];
