@@ -34,7 +34,8 @@ list(APPEND DEPS_${COMP}
     Ops
     OpType
     TokenSwapping
-    Utils)
+    Utils
+    WeightSubgrMono)
 
 foreach(DEP ${DEPS_${COMP}})
     target_include_directories(

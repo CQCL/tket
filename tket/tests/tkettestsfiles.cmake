@@ -25,6 +25,26 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Utils/test_MatrixAnalysis.cpp
     ${TKET_TESTS_DIR}/Utils/test_RNG.cpp
     ${TKET_TESTS_DIR}/Utils/test_Logging.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_BitFunctions.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_DyadicFraction.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_GeneralUtils.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_LogicalStack.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_SetIntersection.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/EndToEndWrappers/test_SolutionWSM.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/GraphTheoretic/test_FilterUtils.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/GraphTheoretic/test_GeneralStructs.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/GraphTheoretic/test_NeighboursData.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Searching/test_NodesRawData.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Searching/test_NodesRawDataTraversals.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_CubicLattice.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_FixedSmallGraphs.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_RandomGraphs.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_SnakeIntoSquareGrid.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_SpecialProblems.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_SquareGrids.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_UnweightedProblems.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_UnweightedSelfEmbeddings.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/TestUtils/test_SquareGridGeneration.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphColouring.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindComponents.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindMaxClique.cpp
@@ -53,6 +73,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/TokenSwapping/test_VariousPartialTsa.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_VectorListHybrid.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_VectorListHybridSkeleton.cpp
+    ${TKET_TESTS_DIR}/Architecture/test_SubgraphMonomorphisms.cpp
     ${TKET_TESTS_DIR}/test_PauliString.cpp
     ${TKET_TESTS_DIR}/Ops/test_ClassicalOps.cpp
     ${TKET_TESTS_DIR}/Ops/test_Expression.cpp

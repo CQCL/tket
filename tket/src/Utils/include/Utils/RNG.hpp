@@ -15,6 +15,7 @@
 #pragma once
 
 #include <algorithm>
+#include <cstdint>
 #include <random>
 #include <stdexcept>
 #include <vector>
@@ -40,6 +41,7 @@ namespace tket {
 
 /** A random number generator class.
  * Of course, this is only for random test data generation,
+ * or simple randomisation of algorithms,
  * definitely NOT suitable for any kind of cryptography!
  * Note that there are no functions involving doubles anywhere!
  * Actually, double calculations can give very slightly different answers
@@ -62,6 +64,12 @@ class RNG {
    * @return A size_t from the inclusive range {0,1,2,...,N}.
    */
   size_t get_size_t(size_t max_value);
+
+  /** Returns the next 64-bit integer; guaranteed by the C++ standard
+   * to be portable.
+   * @return A 64-bit unsigned integer, should be roughly uniform.
+   */
+  std::uint64_t operator()();
 
   /**
    * Returns a number in the inclusive interval, including the endpoints.
@@ -93,6 +101,7 @@ class RNG {
   /**
    * Simply shuffle the elements around at random.
    * Approximately uniform "in practice" over all possible permutations.
+
    * (Although of course, strictly speaking very far from uniform for larger
    * vectors. The number of possible permutations grows very rapidly
    * and quickly becomes larger than the total number of distinct states

@@ -24,12 +24,16 @@ add_library(tket-${COMP}
     ArchitectureMapping.cpp
     BestTsaWithArch.cpp
     DistancesFromArchitecture.cpp
-    NeighboursFromArchitecture.cpp)
+    NeighboursFromArchitecture.cpp
+    SubgraphMonomorphisms.cpp
+    )
 
 list(APPEND DEPS_${COMP}
     Graphs
     TokenSwapping
-    Utils)
+    Utils
+    WeightSubgrMono
+    )
 
 
 foreach(DEP ${DEPS_${COMP}})

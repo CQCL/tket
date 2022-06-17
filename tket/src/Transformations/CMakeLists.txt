@@ -50,6 +50,7 @@ list(APPEND DEPS_${COMP}
     OpType
     PauliGraph
     Utils
+    WeightSubgrMono
     ZX)
 
 foreach(DEP ${DEPS_${COMP}})

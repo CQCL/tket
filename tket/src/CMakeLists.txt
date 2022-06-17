@@ -61,6 +61,7 @@ ENDIF()
 # this list corresponds to a topological sorting of the dependency graph of the different modules
 list(APPEND TKET_COMPS
     Utils
+    WeightSubgrMono
     TokenSwapping
     OpType
     Clifford

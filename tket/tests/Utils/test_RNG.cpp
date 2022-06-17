@@ -142,4 +142,72 @@ SCENARIO("RNG: permutations") {
       " 69 24 68 71 64 84 36 65 97 98 52 45 ]");
 }
 
+SCENARIO("RNG: default seed") {
+  vector<size_t> numbers;
+  {
+    RNG rng;
+    for (unsigned ii = 0; ii < 10; ++ii) {
+      numbers.emplace_back(rng.get_size_t(100));
+    }
+  }
+  vector<size_t> numbers_again;
+  {
+    RNG rng;
+    rng.set_seed();
+    for (unsigned ii = 0; ii < 10; ++ii) {
+      numbers_again.emplace_back(rng.get_size_t(100));
+    }
+  }
+  CHECK(numbers == numbers_again);
+  CHECK(numbers == vector<size_t>{79, 25, 71, 95, 1, 40, 25, 2, 52, 34});
+}
+
+SCENARIO("RNG: 64-bit uints") {
+  RNG rng;
+  // Check some fixed 4-bit blocks for approximate uniformity.
+  // Count how often each of the 16 possible bits occurs.
+  // OK, this is not a very precise statistical test,
+  // but OK for a quick sanity check.
+  std::array<std::array<unsigned, 16>, 5> counts;
+  for (auto& list : counts) {
+    std::fill(list.begin(), list.end(), 0);
+  }
+  vector<std::uint64_t> numbers;
+  const std::array<unsigned, 5> shift_amounts{0, 10, 25, 41, 60};
+
+  for (unsigned ii = 0; ii < 10000; ++ii) {
+    const std::uint64_t number = rng();
+    if (ii < 10) {
+      numbers.push_back(number);
+    }
+    for (unsigned jj = 0; jj < shift_amounts.size(); ++jj) {
+      const auto block_value = (number >> shift_amounts[jj]) & 0xf;
+      counts.at(jj).at(block_value) += 1;
+    }
+  }
+  CHECK(
+      numbers == vector<std::uint64_t>{
+                     0xc96d191cf6f6aea6, 0x401f7ac78bc80f1c, 0xb5ee8cb6abe457f8,
+                     0xf258d22d4db91392, 0x4eef2b4b5d860cc, 0x67a7aabe10d172d6,
+                     0x40565d50e72b4021, 0x5d07b7d1e8de386, 0x8548dea130821acc,
+                     0x583c502c832e0a3a});
+
+  // The counts should be roughly equal. Looks OK at a glance.
+  const std::array<std::string, 5> expected_count_strings{
+      "[ 610 686 615 602 598 613 607 610 632 589 599 630 626 647 674 662 ]",
+      "[ 603 577 623 674 619 638 630 682 628 614 653 597 644 596 644 578 ]",
+      "[ 636 600 621 604 660 636 608 601 662 623 622 635 587 607 640 658 ]",
+      "[ 584 619 614 622 640 607 594 639 599 647 660 659 661 619 616 620 ]",
+      "[ 619 682 617 616 619 574 573 632 655 640 616 637 643 631 628 618 ]"};
+  for (unsigned ii = 0; ii < counts.size(); ++ii) {
+    std::stringstream ss;
+    ss << "[ ";
+    for (auto x : counts[ii]) {
+      ss << x << " ";
+    }
+    ss << "]";
+    CHECK(expected_count_strings[ii] == ss.str());
+  }
+}
+
 }  // namespace tket

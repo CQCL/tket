@@ -42,6 +42,7 @@ list(APPEND DEPS_${COMP}
     TokenSwapping
     Transformations
     Utils
+    WeightSubgrMono
     ZX)
 
 foreach(DEP ${DEPS_${COMP}})

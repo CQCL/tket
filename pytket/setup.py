@@ -127,6 +127,7 @@ class CMakeBuild(build_ext):
                 "tket-Transformations",
                 "tket-ArchAwareSynth",
                 "tket-Predicates",
+                "tket-WeightSubgrMono",
             ]
             for tket_lib in tket_libs:
                 shutil.copy(os.path.join(directory, "lib", libfile(tket_lib)), extdir)
