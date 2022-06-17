@@ -81,7 +81,7 @@ Circuit two_qubit_canonical(const Eigen::Matrix4cd& U);
  * Given an arbitrary unitary 4x4 matrix, this method returns a circuit C and a
  * complex number z such that |z|=1 and U = VD where V is the unitary
  * implemented by the circuit and D = diag(z, z*, z*, z). The circuit C consists
- * of CX and TK1 gates only and has at most 2 CX gates.
+ * of CX and single-qubit gates and has at most 2 CX gates.
  *
  * @param U unitary matrix
  *
@@ -95,7 +95,7 @@ std::pair<Circuit, Complex> decompose_2cx_VD(const Eigen::Matrix4cd& U);
  * Given an arbitrary unitary 4x4 matrix, this method returns a circuit C and a
  * complex number z such that |z|=1 and U = DV where V is the unitary
  * implemented by the circuit and D = diag(z, z*, z*, z). The circuit C consists
- * of CX and TK1 gates only and has at most 2 CX gates.
+ * of CX and single-qubit gates and has at most 2 CX gates.
  *
  * @param U unitary matrix
  *

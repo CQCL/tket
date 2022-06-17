@@ -716,15 +716,27 @@ Transform normalise_TK2() {
 
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
       Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+      bool conditional = op->get_type() == OpType::Conditional;
+      if (conditional) {
+        const Conditional &cond = static_cast<const Conditional &>(*op);
+        op = cond.get_op();
+      }
       if (op->get_type() == OpType::TK2) {
         auto params = op->get_params();
         TKET_ASSERT(params.size() == 3);
         if (!in_weyl_chamber({params[0], params[1], params[2]})) {
           success = true;
-          circ.substitute(
-              CircPool::TK2_using_normalised_TK2(
-                  params[0], params[1], params[2]),
-              v, Circuit::VertexDeletion::No);
+          if (conditional) {
+            circ.substitute_conditional(
+                CircPool::TK2_using_normalised_TK2(
+                    params[0], params[1], params[2]),
+                v, Circuit::VertexDeletion::No);
+          } else {
+            circ.substitute(
+                CircPool::TK2_using_normalised_TK2(
+                    params[0], params[1], params[2]),
+                v, Circuit::VertexDeletion::No);
+          }
           bin.insert(v);
         }
       }

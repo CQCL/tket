@@ -661,6 +661,11 @@ std::string GlobalPhasedXPredicate::to_string() const {
 bool NormalisedTK2Predicate::verify(const Circuit& circ) const {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    bool conditional = op->get_type() == OpType::Conditional;
+    if (conditional) {
+      const Conditional& cond = static_cast<const Conditional&>(*op);
+      op = cond.get_op();
+    }
     if (op->get_type() == OpType::TK2) {
       auto params = op->get_params();
       TKET_ASSERT(params.size() == 3);

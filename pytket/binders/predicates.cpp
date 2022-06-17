@@ -208,6 +208,20 @@ PYBIND11_MODULE(predicates, m) {
       "Predicate asserting that no gates in the circuit have symbolic "
       "parameters.")
       .def(py::init<>(), "Constructor.");
+  py::class_<
+      NormalisedTK2Predicate, std::shared_ptr<NormalisedTK2Predicate>,
+      Predicate>(
+      m, "NormalisedTK2Predicate",
+      "Asserts that all TK2 gates are normalised\n\n"
+      "A gate TK2(a, b, c) is considered normalised if\n\n"
+      " - If all expressions are non symbolic, then it must hold "
+      "`0.5 ≥ a ≥ b ≥ |c|`.\n"
+      " - In the ordering (a, b, c), any symbolic expression must appear "
+      "before non-symbolic ones. The remaining non-symbolic expressions must "
+      "still be ordered in non-increasing order and must be in the interval "
+      "[0, 1/2], with the exception of the last one that may be in "
+      "[-1/2, 1/2].\n")
+      .def(py::init<>(), "Constructor.");
 
   /* Compilation units */
 

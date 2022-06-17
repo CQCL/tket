@@ -165,7 +165,7 @@ SCENARIO("Test out basic Predicate useage") {
   }
   GIVEN("NormalisedTK2Predicate") {
     PredicatePtr pp = std::make_shared<NormalisedTK2Predicate>();
-    Circuit circ(3);
+    Circuit circ(3, 1);
     circ.add_op<unsigned>(OpType::TK2, {0.4, 0.2, -0.1}, {0, 1});
     circ.add_op<unsigned>(OpType::TK1, {2.42, 1.214, -1.18}, {0});
     circ.add_op<unsigned>(OpType::TK1, {2.11, 0.123, 2.23}, {1});
@@ -197,6 +197,33 @@ SCENARIO("Test out basic Predicate useage") {
       REQUIRE(circ.count_gates(OpType::TK2) == 4);
       auto u_res = tket_sim::get_unitary(circ);
       REQUIRE(u_res.isApprox(u_orig));
+    }
+    WHEN("Conditional TK2 gate") {
+      Vertex v = circ.add_conditional_gate<unsigned>(
+          OpType::TK2, {0.12, -0.3, 0.1}, {0, 1}, {0}, 1);
+      Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+      Circuit cond_circ(2);
+      cond_circ.add_op<unsigned>(
+          static_cast<const Conditional &>(*op).get_op(), {0, 1});
+      auto cond_u_orig = tket_sim::get_unitary(cond_circ);
+
+      CompilationUnit cu(circ);
+      REQUIRE_FALSE(pp->verify(circ));
+      REQUIRE(NormaliseTK2()->apply(cu));
+      REQUIRE(!NormaliseTK2()->apply(cu));
+      circ = cu.get_circ_ref();
+      REQUIRE(pp->verify(circ));
+      REQUIRE(circ.count_gates(OpType::TK2) == 2);
+      cond_circ = Circuit(2);
+      for (auto cmd : circ.get_commands()) {
+        Op_ptr op = cmd.get_op_ptr();
+        if (op->get_type() == OpType::Conditional) {
+          op = static_cast<const Conditional &>(*op).get_op();
+          cond_circ.add_op(op, cmd.get_qubits());
+        }
+      }
+      auto cond_u_res = tket_sim::get_unitary(cond_circ);
+      REQUIRE(cond_u_res.isApprox(cond_u_orig));
     }
   }
 }
