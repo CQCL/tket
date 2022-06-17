@@ -373,6 +373,9 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1NonDefaultQubit.html">NonDefaultQubit</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1NormalisedTK2Predicate.html">NormalisedTK2Predicate</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asserts that all TK2 gates are normalised.  <a href="classtket_1_1NormalisedTK2Predicate.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1NoSymbolsPredicate.html">NoSymbolsPredicate</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Asserts that no gates in the circuit have symbolic parameters.  <a href="classtket_1_1NoSymbolsPredicate.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1625,6 +1628,9 @@ Functions</h2></td></tr>
 <tr class="memitem:abb93631302000ee3dca95181020d3c4e"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#abb93631302000ee3dca95181020d3c4e">SimplifyMeasured</a> ()</td></tr>
 <tr class="memdesc:abb93631302000ee3dca95181020d3c4e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replace all measured classical maps that are followed by Measure operations whose quantum output is discarded with classical operations following the Measure.  <a href="namespacetket.html#abb93631302000ee3dca95181020d3c4e">More...</a><br /></td></tr>
 <tr class="separator:abb93631302000ee3dca95181020d3c4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7368443348c534c6ff56212f2912d8aa"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a7368443348c534c6ff56212f2912d8aa">NormaliseTK2</a> ()</td></tr>
+<tr class="memdesc:a7368443348c534c6ff56212f2912d8aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normalises all TK2 gates.  <a href="namespacetket.html#a7368443348c534c6ff56212f2912d8aa">More...</a><br /></td></tr>
+<tr class="separator:a7368443348c534c6ff56212f2912d8aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f64eb1930e0f91098fbd9f83872f938"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a4f64eb1930e0f91098fbd9f83872f938">predicate_name</a> (std::type_index idx)</td></tr>
 <tr class="separator:a4f64eb1930e0f91098fbd9f83872f938"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a903d0e05c58620dc0d082c414c078911"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a903d0e05c58620dc0d082c414c078911">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="namespacetket.html#ad6db3955c4f1dbc5fb33f72bc2822e35">PredicatePtr</a> &amp;pred_ptr)</td></tr>
@@ -1781,6 +1787,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a89bcfd90ad10c2d13072a0f184871a4a"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a89bcfd90ad10c2d13072a0f184871a4a">trace_fidelity</a> (double a, double b, double c)</td></tr>
 <tr class="memdesc:a89bcfd90ad10c2d13072a0f184871a4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Similarity measure of TK2(a, b, c) to SU(4) identity.  <a href="namespacetket.html#a89bcfd90ad10c2d13072a0f184871a4a">More...</a><br /></td></tr>
 <tr class="separator:a89bcfd90ad10c2d13072a0f184871a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5a4d7de23884e54943c6dff655efa1c6"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a5a4d7de23884e54943c6dff655efa1c6">in_weyl_chamber</a> (const std::array&lt; <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>, 3 &gt; &amp;k)</td></tr>
+<tr class="memdesc:a5a4d7de23884e54943c6dff655efa1c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether a triplet of TK2 angles are normalised.  <a href="namespacetket.html#a5a4d7de23884e54943c6dff655efa1c6">More...</a><br /></td></tr>
+<tr class="separator:a5a4d7de23884e54943c6dff655efa1c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa5f3bbf274366dd15f89a1453874b7fe"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aa5f3bbf274366dd15f89a1453874b7fe">NLOHMANN_JSON_SERIALIZE_ENUM</a> (<a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a>, { {Pauli::I, &quot;I&quot;}, {Pauli::X, &quot;X&quot;}, {Pauli::Y, &quot;Y&quot;}, {Pauli::Z, &quot;Z&quot;}, })</td></tr>
 <tr class="separator:aa5f3bbf274366dd15f89a1453874b7fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a283bc95e31c391e217ac10465a88afbb"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a283bc95e31c391e217ac10465a88afbb">NLOHMANN_JSON_SERIALIZE_ENUM</a> (<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>, {{<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>, &quot;Snake&quot;}, {CXConfigType::Tree, &quot;Tree&quot;}, {CXConfigType::Star, &quot;Star&quot;}, {CXConfigType::MultiQGate, &quot;MultiQGate&quot;}})</td></tr>
@@ -2539,7 +2548,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8hpp_source.html#l00030">30</a> of file <a class="el" href="MatrixAnalysis_8hpp_source.html">MatrixAnalysis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8hpp_source.html#l00031">31</a> of file <a class="el" href="MatrixAnalysis_8hpp_source.html">MatrixAnalysis.hpp</a>.</p>
 
 </div>
 </div>
@@ -2555,7 +2564,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8hpp_source.html#l00026">26</a> of file <a class="el" href="MatrixAnalysis_8hpp_source.html">MatrixAnalysis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8hpp_source.html#l00027">27</a> of file <a class="el" href="MatrixAnalysis_8hpp_source.html">MatrixAnalysis.hpp</a>.</p>
 
 </div>
 </div>
@@ -3412,7 +3421,7 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8hpp_source.html#l00119">119</a> of file <a class="el" href="MatrixAnalysis_8hpp_source.html">MatrixAnalysis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8hpp_source.html#l00120">120</a> of file <a class="el" href="MatrixAnalysis_8hpp_source.html">MatrixAnalysis.hpp</a>.</p>
 
 </div>
 </div>
@@ -3578,7 +3587,7 @@ template&lt;typename A , typename B &gt; </div>
 
 <p>It is sometimes more convenient to deal with Triplets directly, rather than sparse matrices. </p>
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8hpp_source.html#l00117">117</a> of file <a class="el" href="MatrixAnalysis_8hpp_source.html">MatrixAnalysis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8hpp_source.html#l00118">118</a> of file <a class="el" href="MatrixAnalysis_8hpp_source.html">MatrixAnalysis.hpp</a>.</p>
 
 </div>
 </div>
@@ -3740,7 +3749,7 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8hpp_source.html#l00028">28</a> of file <a class="el" href="MatrixAnalysis_8hpp_source.html">MatrixAnalysis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8hpp_source.html#l00029">29</a> of file <a class="el" href="MatrixAnalysis_8hpp_source.html">MatrixAnalysis.hpp</a>.</p>
 
 </div>
 </div>
@@ -3756,7 +3765,7 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8hpp_source.html#l00027">27</a> of file <a class="el" href="MatrixAnalysis_8hpp_source.html">MatrixAnalysis.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8hpp_source.html#l00028">28</a> of file <a class="el" href="MatrixAnalysis_8hpp_source.html">MatrixAnalysis.hpp</a>.</p>
 
 </div>
 </div>
@@ -6449,7 +6458,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Decompose a unitary matrix into a 2-CXs preceding a diagonal operator. </p>
-<p>Given an arbitrary unitary 4x4 matrix, this method returns a circuit C and a complex number z such that |z|=1 and U = DV where V is the unitary implemented by the circuit and D = diag(z, z*, z*, z). The circuit C consists of CX and TK1 gates only and has at most 2 CX gates.</p>
+<p>Given an arbitrary unitary 4x4 matrix, this method returns a circuit C and a complex number z such that |z|=1 and U = DV where V is the unitary implemented by the circuit and D = diag(z, z*, z*, z). The circuit C consists of CX and single-qubit gates and has at most 2 CX gates.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">U</td><td>unitary matrix</td></tr>
@@ -6479,7 +6488,7 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p>Decompose a unitary matrix into a 2-CX circuit following a diagonal operator. </p>
-<p>Given an arbitrary unitary 4x4 matrix, this method returns a circuit C and a complex number z such that |z|=1 and U = VD where V is the unitary implemented by the circuit and D = diag(z, z*, z*, z). The circuit C consists of CX and TK1 gates only and has at most 2 CX gates.</p>
+<p>Given an arbitrary unitary 4x4 matrix, this method returns a circuit C and a complex number z such that |z|=1 and U = VD where V is the unitary implemented by the circuit and D = diag(z, z*, z*, z). The circuit C consists of CX and single-qubit gates and has at most 2 CX gates.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">U</td><td>unitary matrix</td></tr>
@@ -7779,7 +7788,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Predicates_8cpp_source.html#l00739">739</a> of file <a class="el" href="Predicates_8cpp_source.html">Predicates.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Predicates_8cpp_source.html#l00776">776</a> of file <a class="el" href="Predicates_8cpp_source.html">Predicates.cpp</a>.</p>
 
 </div>
 </div>
@@ -8019,7 +8028,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00585">585</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00586">586</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8138,7 +8147,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00728">728</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00729">729</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8463,7 +8472,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00605">605</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00606">606</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8483,7 +8492,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00629">629</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00630">630</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8667,7 +8676,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00704">704</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00705">705</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8697,7 +8706,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00685">685</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00686">686</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8757,7 +8766,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00651">651</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00652">652</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8991,7 +9000,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>KAK decomposition </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00339">339</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00331">331</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -9152,7 +9161,7 @@ circuit has no symbolic parameters</dd></dl>
 <p>Returns 2^n, but throws if n is too large (causes overflow). </p>
 <p>(Warning: simply taking 1&lt;&lt;n and testing against zero can give incorrect results with large n). </p>
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00513">513</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00445">445</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -9195,7 +9204,7 @@ circuit has no symbolic parameters</dd></dl>
 <p>We have a matrix size, which should be 2^n. </p>
 <p>Return n, or throw if invalid. </p>
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00527">527</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00459">459</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -9363,7 +9372,7 @@ circuit has no symbolic parameters</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00538">538</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00470">470</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -9393,7 +9402,7 @@ circuit has no symbolic parameters</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00545">545</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00477">477</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -9473,7 +9482,7 @@ circuit has no symbolic parameters</dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A vector of (i,j,z) tuples, meaning that M(i,j)=z. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00565">565</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00497">497</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -9506,7 +9515,7 @@ circuit has no symbolic parameters</dd></dl>
 <p>abs_epsilon is used to decide if a near-zero entry should be set to zero exactly. </p>
 <p>Thus, if std::abs(z) &lt;= abs_epsilon, then z is treated as zero. </p>
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00550">550</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00482">482</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -9570,7 +9579,7 @@ circuit has no symbolic parameters</dd></dl>
 <p>If squash=true (default), the <code><a class="el" href="namespacetket.html#aeefc21d2bb61add1f89468ef9e61ee3a" title="Turns all PhasedX and NPhasedX gates into global gates.">GlobalisePhasedX()</a>.apply</code> method will always return true. For squash=false, <code>apply()</code> will return true if the circuit was changed and false otherwise.</p>
 <p>It is not recommended to use this pass with symbolic expressions, as in certain cases a blow-up in symbolic expression sizes may occur. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00745">745</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00746">746</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -9737,6 +9746,29 @@ circuit has no symbolic parameters</dd></dl>
 </div><div class="memdoc">
 
 <p>A fixed square root of -1. </p>
+
+</div>
+</div>
+<a id="a5a4d7de23884e54943c6dff655efa1c6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5a4d7de23884e54943c6dff655efa1c6">&#9670;&nbsp;</a></span>in_weyl_chamber()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tket::in_weyl_chamber </td>
+          <td>(</td>
+          <td class="paramtype">const std::array&lt; <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>, 3 &gt; &amp;&#160;</td>
+          <td class="paramname"><em>k</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Whether a triplet of TK2 angles are normalised. </p>
+<p>Numerical values must be in the Weyl chamber, ie 1/2 &gt;= k_x &gt;= k_y &gt;= |k_z|. Symbolic values must come before any numerical value in the array. </p>
+
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00510">510</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -10481,7 +10513,7 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00491">491</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00423">423</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -11040,6 +11072,34 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00079">79</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a7368443348c534c6ff56212f2912d8aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7368443348c534c6ff56212f2912d8aa">&#9670;&nbsp;</a></span>NormaliseTK2()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> &amp; tket::NormaliseTK2 </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Normalises all TK2 gates. </p>
+<p>TK2 gates have three angles in the interval [0, 4], but these can always be normalised to be within the so-called Weyl chamber by adding single-qubit gates.</p>
+<p>More precisely, the three angles a, b, c of TK2(a, b, c) are normalised exactly when the two following conditions are met:</p><ul>
+<li>numerical values must be in the Weyl chamber, ie 1/2 &gt;= a &gt;= b &gt;= |c|,</li>
+<li>symbolic values must come before any numerical value in the array.</li>
+</ul>
+<p>After this pass, all TK2 angles will be normalised and the circuit will satisfy <code><a class="el" href="classtket_1_1NormalisedTK2Predicate.html" title="Asserts that all TK2 gates are normalised.">NormalisedTK2Predicate</a></code>.</p>
+<dl class="section return"><dt>Returns</dt><dd>compilation pass to perform this transformation </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00402">402</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -11874,7 +11934,7 @@ template&lt;typename T &gt; </div>
 
 <p>Builds a sequence of PauliSimp (gen_synthesise_pauli_graph) and FullPeepholeOptimise. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00739">739</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00740">740</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -11990,7 +12050,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Predicates_8cpp_source.html#l00053">53</a> of file <a class="el" href="Predicates_8cpp_source.html">Predicates.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Predicates_8cpp_source.html#l00054">54</a> of file <a class="el" href="Predicates_8cpp_source.html">Predicates.cpp</a>.</p>
 
 </div>
 </div>
@@ -12769,7 +12829,7 @@ template&lt;typename BoxT &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00567">567</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00568">568</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -13390,7 +13450,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Predicates_8cpp_source.html#l00659">659</a> of file <a class="el" href="Predicates_8cpp_source.html">Predicates.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Predicates_8cpp_source.html#l00692">692</a> of file <a class="el" href="Predicates_8cpp_source.html">Predicates.cpp</a>.</p>
 
 </div>
 </div>
@@ -13930,7 +13990,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 <code>c</code> has no implicit wireswaps </dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd>the returned circuit has a single default qubit register, whose initial qubits act as the controls over the other qubits, which correspond to those of <code>c</code> in the same order </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00601">601</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00603">603</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
 
 </div>
 </div>
@@ -13959,7 +14019,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>circuit representing the operation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00492">492</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00494">494</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
 
 </div>
 </div>
