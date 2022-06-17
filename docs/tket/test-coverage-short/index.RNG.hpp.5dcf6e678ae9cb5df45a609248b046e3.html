@@ -26,7 +26,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-17 12:42:23</td>
+      <td>2022-06-17 15:27:41</td>
     </tr>
   </table>
 </div>
@@ -207,7 +207,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;random&gt;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;cstdint&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -215,7 +215,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;stdexcept&gt;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;random&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -223,7 +223,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;stdexcept&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -231,7 +231,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -239,7 +239,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">namespace</span> <span class="n">tket</span> <span class="p">{</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -247,7 +247,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="k">namespace</span> <span class="n">tket</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -255,7 +255,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// Something like this is needed for proper random test data generation</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -263,7 +263,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// if you want to be platform-independent, as the C++ standard is stupid.</span></td>
+      <td class="src "><span class="c1">// Something like this is needed for proper random test data generation</span></td>
     </tr>
 
     <tr class="source-line">
@@ -271,7 +271,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// (A major scandal, in my opinion).</span></td>
+      <td class="src "><span class="c1">// if you want to be platform-independent, as the C++ standard is stupid.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -279,7 +279,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// The random engines are mostly guaranteed by the standard,</span></td>
+      <td class="src "><span class="c1">// (A major scandal, in my opinion).</span></td>
     </tr>
 
     <tr class="source-line">
@@ -287,7 +287,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// but the DISTRIBUTIONS, e.g. uniform_distribution, are NOT</span></td>
+      <td class="src "><span class="c1">// The random engines are mostly guaranteed by the standard,</span></td>
     </tr>
 
     <tr class="source-line">
@@ -295,7 +295,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// (i.e., the actual algorithm used to convert a string of bits to a number</span></td>
+      <td class="src "><span class="c1">// but the DISTRIBUTIONS, e.g. uniform_distribution, are NOT</span></td>
     </tr>
 
     <tr class="source-line">
@@ -303,7 +303,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// in the range {0,1,2,...,N} is not specified at all by the C++ standard).</span></td>
+      <td class="src "><span class="c1">// (i.e., the actual algorithm used to convert a string of bits to a number</span></td>
     </tr>
 
     <tr class="source-line">
@@ -311,7 +311,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// Thus, we are NOT guaranteed to get the same results, even with the same</span></td>
+      <td class="src "><span class="c1">// in the range {0,1,2,...,N} is not specified at all by the C++ standard).</span></td>
     </tr>
 
     <tr class="source-line">
@@ -319,7 +319,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// (1) engine; (2) initial seed; (3) distribution,</span></td>
+      <td class="src "><span class="c1">// Thus, we are NOT guaranteed to get the same results, even with the same</span></td>
     </tr>
 
     <tr class="source-line">
@@ -327,7 +327,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// if we use different platforms (or even different compilers</span></td>
+      <td class="src "><span class="c1">// (1) engine; (2) initial seed; (3) distribution,</span></td>
     </tr>
 
     <tr class="source-line">
@@ -335,7 +335,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// on the SAME platform), or even different compiler VERSIONS!!!</span></td>
+      <td class="src "><span class="c1">// if we use different platforms (or even different compilers</span></td>
     </tr>
 
     <tr class="source-line">
@@ -343,7 +343,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">//</span></td>
+      <td class="src "><span class="c1">// on the SAME platform), or even different compiler VERSIONS!!!</span></td>
     </tr>
 
     <tr class="source-line">
@@ -351,7 +351,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// The C++ standard as far as I know does not specify ANY distribution</span></td>
+      <td class="src "><span class="c1">//</span></td>
     </tr>
 
     <tr class="source-line">
@@ -359,7 +359,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// implementations, not even optionally, so you HAVE to do this yourself,</span></td>
+      <td class="src "><span class="c1">// The C++ standard as far as I know does not specify ANY distribution</span></td>
     </tr>
 
     <tr class="source-line">
@@ -367,7 +367,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// even for something as simple as a uniform distribution.</span></td>
+      <td class="src "><span class="c1">// implementations, not even optionally, so you HAVE to do this yourself,</span></td>
     </tr>
 
     <tr class="source-line">
@@ -375,7 +375,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// The same applies to, e.g., std::random_shuffle.</span></td>
+      <td class="src "><span class="c1">// even for something as simple as a uniform distribution.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -383,7 +383,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="c1">// The same applies to, e.g., std::random_shuffle.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -391,7 +391,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">/** A random number generator class.</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -399,7 +399,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * Of course, this is only for random test data generation,</span></td>
+      <td class="src "><span class="cm">/** A random number generator class.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -407,7 +407,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * definitely NOT suitable for any kind of cryptography!</span></td>
+      <td class="src "><span class="cm"> * Of course, this is only for random test data generation,</span></td>
     </tr>
 
     <tr class="source-line">
@@ -415,7 +415,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * Note that there are no functions involving doubles anywhere!</span></td>
+      <td class="src "><span class="cm"> * or simple randomisation of algorithms,</span></td>
     </tr>
 
     <tr class="source-line">
@@ -423,7 +423,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * Actually, double calculations can give very slightly different answers</span></td>
+      <td class="src "><span class="cm"> * definitely NOT suitable for any kind of cryptography!</span></td>
     </tr>
 
     <tr class="source-line">
@@ -431,7 +431,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * across platforms, compilers, compiler optimisation settings;</span></td>
+      <td class="src "><span class="cm"> * Note that there are no functions involving doubles anywhere!</span></td>
     </tr>
 
     <tr class="source-line">
@@ -439,7 +439,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * the numerical difference is absolutely negligible,</span></td>
+      <td class="src "><span class="cm"> * Actually, double calculations can give very slightly different answers</span></td>
     </tr>
 
     <tr class="source-line">
@@ -447,7 +447,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * but it&#39;s worth being ultra cautious! (And it&#39;s much easier for testing</span></td>
+      <td class="src "><span class="cm"> * across platforms, compilers, compiler optimisation settings;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -455,7 +455,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * to get IDENTICAL results across platforms).</span></td>
+      <td class="src "><span class="cm"> * the numerical difference is absolutely negligible,</span></td>
     </tr>
 
     <tr class="source-line">
@@ -463,7 +463,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> */</span></td>
+      <td class="src "><span class="cm"> * but it&#39;s worth being ultra cautious! (And it&#39;s much easier for testing</span></td>
     </tr>
 
     <tr class="source-line">
@@ -471,7 +471,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">class</span> <span class="nc">RNG</span> <span class="p">{</span></td>
+      <td class="src "><span class="cm"> * to get IDENTICAL results across platforms).</span></td>
     </tr>
 
     <tr class="source-line">
@@ -479,7 +479,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "> <span class="k">public</span><span class="o">:</span></td>
+      <td class="src "><span class="cm"> */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -487,7 +487,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="cm">/**</span></td>
+      <td class="src "><span class="k">class</span> <span class="nc">RNG</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -495,7 +495,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Return a random integer from 0 to N, inclusive.</span></td>
+      <td class="src "> <span class="k">public</span><span class="o">:</span></td>
     </tr>
 
     <tr class="source-line">
@@ -503,7 +503,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Approximately uniform, if max_value is much less than</span></td>
+      <td class="src ">  <span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -511,7 +511,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * the max possible value that can be returned.</span></td>
+      <td class="src "><span class="cm">   * Return a random integer from 0 to N, inclusive.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -519,7 +519,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * N &lt;&lt; sqrt(max uint64) ~ 2^32 ~ 4e9 will work well.</span></td>
+      <td class="src "><span class="cm">   * Approximately uniform, if max_value is much less than</span></td>
     </tr>
 
     <tr class="source-line">
@@ -527,7 +527,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * See the comments in the cpp file implementation for more detail.</span></td>
+      <td class="src "><span class="cm">   * the max possible value that can be returned.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -535,7 +535,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   *</span></td>
+      <td class="src "><span class="cm">   * N &lt;&lt; sqrt(max uint64) ~ 2^32 ~ 4e9 will work well.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -543,7 +543,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param max_value The value N which is the (inclusive) maximum value</span></td>
+      <td class="src "><span class="cm">   * See the comments in the cpp file implementation for more detail.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -551,7 +551,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * which can be returned.</span></td>
+      <td class="src "><span class="cm">   *</span></td>
     </tr>
 
     <tr class="source-line">
@@ -559,7 +559,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @return A size_t from the inclusive range {0,1,2,...,N}.</span></td>
+      <td class="src "><span class="cm">   * @param max_value The value N which is the (inclusive) maximum value</span></td>
     </tr>
 
     <tr class="source-line">
@@ -567,7 +567,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span></td>
+      <td class="src "><span class="cm">   * which can be returned.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -575,7 +575,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="kt">size_t</span> <span class="n">get_size_t</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">max_value</span><span class="p">);</span></td>
+      <td class="src "><span class="cm">   * @return A size_t from the inclusive range {0,1,2,...,N}.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -583,7 +583,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm">   */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -591,7 +591,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="cm">/**</span></td>
+      <td class="src ">  <span class="kt">size_t</span> <span class="n">get_size_t</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">max_value</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -599,7 +599,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Returns a number in the inclusive interval, including the endpoints.</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -607,7 +607,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param min_value The smallest value (inclusive) that can be returned.</span></td>
+      <td class="src ">  <span class="cm">/** Returns the next 64-bit integer; guaranteed by the C++ standard</span></td>
     </tr>
 
     <tr class="source-line">
@@ -615,7 +615,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param max_value The largest value (inclusive) that can be returned.</span></td>
+      <td class="src "><span class="cm">   * to be portable.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -623,7 +623,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @return A size_t from the inclusive range {a, a+1, a+2, ... , b}.</span></td>
+      <td class="src "><span class="cm">   * @return A 64-bit unsigned integer, should be roughly uniform.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -639,7 +639,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="kt">size_t</span> <span class="nf">get_size_t</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">min_value</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">max_value</span><span class="p">);</span></td>
+      <td class="src ">  <span class="n">std</span><span class="o">::</span><span class="kt">uint64_t</span> <span class="k">operator</span><span class="p">()();</span></td>
     </tr>
 
     <tr class="source-line">
@@ -663,7 +663,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * The behaviour of the RAW BITS of the Mersenne twister random engine</span></td>
+      <td class="src "><span class="cm">   * Returns a number in the inclusive interval, including the endpoints.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -671,7 +671,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * is guaranteed by the C++ standard.</span></td>
+      <td class="src "><span class="cm">   * @param min_value The smallest value (inclusive) that can be returned.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -679,7 +679,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * The standard specifies 5489u as the default initial seed.</span></td>
+      <td class="src "><span class="cm">   * @param max_value The largest value (inclusive) that can be returned.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -687,7 +687,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param seed A seed value, to alter the RNG state.</span></td>
+      <td class="src "><span class="cm">   * @return A size_t from the inclusive range {a, a+1, a+2, ... , b}.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -695,7 +695,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   *    By default, uses the value specified by the standard.</span></td>
+      <td class="src "><span class="cm">   */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -703,7 +703,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span></td>
+      <td class="src ">  <span class="kt">size_t</span> <span class="nf">get_size_t</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">min_value</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">max_value</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -711,7 +711,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="kt">void</span> <span class="nf">set_seed</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">seed</span> <span class="o">=</span> <span class="mi">5489</span><span class="p">);</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -719,7 +719,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src ">  <span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -727,7 +727,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="cm">/** Return true p% of the time.</span></td>
+      <td class="src "><span class="cm">   * The behaviour of the RAW BITS of the Mersenne twister random engine</span></td>
     </tr>
 
     <tr class="source-line">
@@ -735,7 +735,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * (Very quick and dirty, doesn&#39;t check for, e.g., 110% effort...)</span></td>
+      <td class="src "><span class="cm">   * is guaranteed by the C++ standard.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -743,7 +743,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * As mentioned above, we deliberately DON&#39;T have a function returning</span></td>
+      <td class="src "><span class="cm">   * The standard specifies 5489u as the default initial seed.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -751,7 +751,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * a uniform double. Sticking to integer values is safest.</span></td>
+      <td class="src "><span class="cm">   * @param seed A seed value, to alter the RNG state.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -759,7 +759,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param percentage The probability of returning true, expressed as</span></td>
+      <td class="src "><span class="cm">   *    By default, uses the value specified by the standard.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -767,7 +767,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   *  a percentage.</span></td>
+      <td class="src "><span class="cm">   */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -775,7 +775,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @return A random bool, returns true with specified probability.</span></td>
+      <td class="src ">  <span class="kt">void</span> <span class="nf">set_seed</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">seed</span> <span class="o">=</span> <span class="mi">5489</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -783,7 +783,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -791,7 +791,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="kt">bool</span> <span class="nf">check_percentage</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">percentage</span><span class="p">);</span></td>
+      <td class="src ">  <span class="cm">/** Return true p% of the time.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -799,7 +799,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm">   * (Very quick and dirty, doesn&#39;t check for, e.g., 110% effort...)</span></td>
     </tr>
 
     <tr class="source-line">
@@ -807,7 +807,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="cm">/**</span></td>
+      <td class="src "><span class="cm">   * As mentioned above, we deliberately DON&#39;T have a function returning</span></td>
     </tr>
 
     <tr class="source-line">
@@ -815,7 +815,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Simply shuffle the elements around at random.</span></td>
+      <td class="src "><span class="cm">   * a uniform double. Sticking to integer values is safest.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -823,7 +823,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Approximately uniform &quot;in practice&quot; over all possible permutations.</span></td>
+      <td class="src "><span class="cm">   * @param percentage The probability of returning true, expressed as</span></td>
     </tr>
 
     <tr class="source-line">
@@ -831,7 +831,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * (Although of course, strictly speaking very far from uniform for larger</span></td>
+      <td class="src "><span class="cm">   *  a percentage.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -839,7 +839,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * vectors. The number of possible permutations grows very rapidly</span></td>
+      <td class="src "><span class="cm">   * @return A random bool, returns true with specified probability.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -847,7 +847,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * and quickly becomes larger than the total number of distinct states</span></td>
+      <td class="src "><span class="cm">   */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -855,7 +855,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * any fixed engine can take, no matter which is used. Thus, for larger</span></td>
+      <td class="src ">  <span class="kt">bool</span> <span class="nf">check_percentage</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">percentage</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -863,7 +863,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * vectors, only a small proportion of permutations are actually possible).</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -871,7 +871,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * This is necessary because C++ random_shuffle is</span></td>
+      <td class="src ">  <span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -879,7 +879,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * implementation-dependent (see above comments).</span></td>
+      <td class="src "><span class="cm">   * Simply shuffle the elements around at random.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -887,7 +887,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param elements The vector to be shuffled randomly.</span></td>
+      <td class="src "><span class="cm">   * Approximately uniform &quot;in practice&quot; over all possible permutations.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -895,7 +895,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -903,31 +903,31 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span></td>
+      <td class="src "><span class="cm">   * (Although of course, strictly speaking very far from uniform for larger</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l106" href="#l106">106</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">  <span class="kt">void</span> <span class="n">do_shuffle</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span> <span class="n">elements</span><span class="p">)</span> <span class="p">{</span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm">   * vectors. The number of possible permutations grows very rapidly</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l107" href="#l107">107</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">    <span class="k">if</span> <span class="p">(</span><span class="n">elements</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm">   * and quickly becomes larger than the total number of distinct states</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l108" href="#l108">108</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">      <span class="k">return</span><span class="p">;</span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm">   * any fixed engine can take, no matter which is used. Thus, for larger</span></td>
     </tr>
 
     <tr class="source-line">
@@ -935,31 +935,31 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">    <span class="p">}</span></td>
+      <td class="src "><span class="cm">   * vectors, only a small proportion of permutations are actually possible).</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l110" href="#l110">110</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">    <span class="n">m_shuffling_data</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">elements</span><span class="p">.</span><span class="n">size</span><span class="p">());</span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm">   * This is necessary because C++ random_shuffle is</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l111" href="#l111">111</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_shuffling_data</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm">   * implementation-dependent (see above comments).</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l112" href="#l112">112</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">      <span class="n">m_shuffling_data</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">first</span> <span class="o">=</span> <span class="n">m_engine</span><span class="p">();</span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm">   * @param elements The vector to be shuffled randomly.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -967,7 +967,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">      <span class="c1">// Tricky subtle point: without this extra entry to break ties,</span></td>
+      <td class="src "><span class="cm">   */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -975,15 +975,15 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">      <span class="c1">// std::sort could give DIFFERENT results across platforms and compilers,</span></td>
+      <td class="src ">  <span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l115" href="#l115">115</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount "></td>
-      <td class="src ">      <span class="c1">// if the object T allows unequal elements comparing equal.</span></td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">  <span class="kt">void</span> <span class="n">do_shuffle</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span> <span class="n">elements</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -991,11 +991,19 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">      <span class="n">m_shuffling_data</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">second</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span></td>
+      <td class="src uncoveredLine">    <span class="k">if</span> <span class="p">(</span><span class="n">elements</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l117" href="#l117">117</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">      <span class="k">return</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l118" href="#l118">118</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -1003,19 +1011,11 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l118" href="#l118">118</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">    <span class="n">std</span><span class="o">::</span><span class="n">sort</span><span class="p">(</span></td>
-    </tr>
-
-    <tr class="source-line">
       <td class="lineno"><a id="l119" href="#l119">119</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount "></td>
-      <td class="src ">        <span class="n">m_shuffling_data</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">m_shuffling_data</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span></td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">    <span class="n">m_shuffling_data</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">elements</span><span class="p">.</span><span class="n">size</span><span class="p">());</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1023,31 +1023,31 @@
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">        <span class="p">[](</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uintmax_t</span><span class="p">,</span> <span class="kt">size_t</span><span class="o">&gt;&amp;</span> <span class="n">lhs</span><span class="p">,</span></td>
+      <td class="src uncoveredLine">    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_shuffling_data</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l121" href="#l121">121</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount "></td>
-      <td class="src ">           <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uintmax_t</span><span class="p">,</span> <span class="kt">size_t</span><span class="o">&gt;&amp;</span> <span class="n">rhs</span><span class="p">)</span> <span class="p">{</span></td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">      <span class="n">m_shuffling_data</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">first</span> <span class="o">=</span> <span class="n">m_engine</span><span class="p">();</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l122" href="#l122">122</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">          <span class="k">return</span> <span class="n">lhs</span><span class="p">.</span><span class="n">first</span> <span class="o">&lt;</span> <span class="n">rhs</span><span class="p">.</span><span class="n">first</span> <span class="o">||</span></td>
+      <td class="linecount "></td>
+      <td class="src ">      <span class="c1">// Tricky subtle point: without this extra entry to break ties,</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l123" href="#l123">123</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">                 <span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">first</span> <span class="o">==</span> <span class="n">rhs</span><span class="p">.</span><span class="n">first</span> <span class="o">&amp;&amp;</span> <span class="n">lhs</span><span class="p">.</span><span class="n">second</span> <span class="o">&lt;</span> <span class="n">rhs</span><span class="p">.</span><span class="n">second</span><span class="p">);</span></td>
+      <td class="linecount "></td>
+      <td class="src ">      <span class="c1">// std::sort could give DIFFERENT results across platforms and compilers,</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1055,59 +1055,19 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">        <span class="p">});</span></td>
+      <td class="src ">      <span class="c1">// if the object T allows unequal elements comparing equal.</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l125" href="#l125">125</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount "></td>
-      <td class="src ">    <span class="c1">// Don&#39;t need to make a copy of &quot;elements&quot;! Just do repeated swaps...</span></td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">      <span class="n">m_shuffling_data</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">second</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l126" href="#l126">126</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_shuffling_data</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l127" href="#l127">127</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">      <span class="k">const</span> <span class="kt">size_t</span><span class="o">&amp;</span> <span class="n">j</span> <span class="o">=</span> <span class="n">m_shuffling_data</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">second</span><span class="p">;</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l128" href="#l128">128</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">      <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="n">j</span><span class="p">)</span> <span class="p">{</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l129" href="#l129">129</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">        <span class="n">std</span><span class="o">::</span><span class="n">swap</span><span class="p">(</span><span class="n">elements</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">elements</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l130" href="#l130">130</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src ">      <span class="p">}</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l131" href="#l131">131</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -1115,11 +1075,51 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l132" href="#l132">132</a></td>
+      <td class="lineno"><a id="l127" href="#l127">127</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">    <span class="n">std</span><span class="o">::</span><span class="n">sort</span><span class="p">(</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l128" href="#l128">128</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="p">}</span></td>
+      <td class="src ">        <span class="n">m_shuffling_data</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">m_shuffling_data</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l129" href="#l129">129</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">        <span class="p">[](</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uintmax_t</span><span class="p">,</span> <span class="kt">size_t</span><span class="o">&gt;&amp;</span> <span class="n">lhs</span><span class="p">,</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l130" href="#l130">130</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">           <span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uintmax_t</span><span class="p">,</span> <span class="kt">size_t</span><span class="o">&gt;&amp;</span> <span class="n">rhs</span><span class="p">)</span> <span class="p">{</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l131" href="#l131">131</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">          <span class="k">return</span> <span class="n">lhs</span><span class="p">.</span><span class="n">first</span> <span class="o">&lt;</span> <span class="n">rhs</span><span class="p">.</span><span class="n">first</span> <span class="o">||</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l132" href="#l132">132</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">                 <span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">first</span> <span class="o">==</span> <span class="n">rhs</span><span class="p">.</span><span class="n">first</span> <span class="o">&amp;&amp;</span> <span class="n">lhs</span><span class="p">.</span><span class="n">second</span> <span class="o">&lt;</span> <span class="n">rhs</span><span class="p">.</span><span class="n">second</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1127,7 +1127,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src ">        <span class="p">});</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1135,11 +1135,83 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="cm">/** Return a random element from the vector.</span></td>
+      <td class="src ">    <span class="c1">// Don&#39;t need to make a copy of &quot;elements&quot;! Just do repeated swaps...</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l135" href="#l135">135</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">    <span class="k">for</span> <span class="p">(</span><span class="kt">size_t</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">m_shuffling_data</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l136" href="#l136">136</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">      <span class="k">const</span> <span class="kt">size_t</span><span class="o">&amp;</span> <span class="n">j</span> <span class="o">=</span> <span class="n">m_shuffling_data</span><span class="p">[</span><span class="n">i</span><span class="p">].</span><span class="n">second</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l137" href="#l137">137</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">      <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">!=</span> <span class="n">j</span><span class="p">)</span> <span class="p">{</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l138" href="#l138">138</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">        <span class="n">std</span><span class="o">::</span><span class="n">swap</span><span class="p">(</span><span class="n">elements</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">elements</span><span class="p">[</span><span class="n">j</span><span class="p">]);</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l139" href="#l139">139</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">      <span class="p">}</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l140" href="#l140">140</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">    <span class="p">}</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l141" href="#l141">141</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">  <span class="p">}</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l142" href="#l142">142</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l143" href="#l143">143</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">  <span class="cm">/** Return a random element from the vector.</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l144" href="#l144">144</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -1147,7 +1219,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l136" href="#l136">136</a></td>
+      <td class="lineno"><a id="l145" href="#l145">145</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -1155,7 +1227,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l137" href="#l137">137</a></td>
+      <td class="lineno"><a id="l146" href="#l146">146</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -1163,7 +1235,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l138" href="#l138">138</a></td>
+      <td class="lineno"><a id="l147" href="#l147">147</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -1171,7 +1243,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l139" href="#l139">139</a></td>
+      <td class="lineno"><a id="l148" href="#l148">148</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">296618</td>
@@ -1179,7 +1251,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l140" href="#l140">140</a></td>
+      <td class="lineno"><a id="l149" href="#l149">149</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -1194,7 +1266,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l141" href="#l141">141</a></td>
+      <td class="lineno"><a id="l150" href="#l150">150</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
@@ -1202,7 +1274,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l142" href="#l142">142</a></td>
+      <td class="lineno"><a id="l151" href="#l151">151</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -1210,7 +1282,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l143" href="#l143">143</a></td>
+      <td class="lineno"><a id="l152" href="#l152">152</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">296618</td>
@@ -1218,83 +1290,11 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l144" href="#l144">144</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src ">  <span class="p">}</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l145" href="#l145">145</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l146" href="#l146">146</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src ">  <span class="cm">/**</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l147" href="#l147">147</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Pick out a random element from the vector, copy and return it,</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l148" href="#l148">148</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   * but also remove that element from the vector (swapping with</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l149" href="#l149">149</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   * the back for efficiency, i.e. the ordering changes).</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l150" href="#l150">150</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param elements The vector to be sampled from.</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l151" href="#l151">151</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   *  Decreases size by one each time.</span></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l152" href="#l152">152</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   *  Time O(1) because the ordering is allowed to change.</span></td>
-    </tr>
-
-    <tr class="source-line">
       <td class="lineno"><a id="l153" href="#l153">153</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @return A copy of the removed element.</span></td>
+      <td class="src ">  <span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1302,7 +1302,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -1310,7 +1310,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span></td>
+      <td class="src ">  <span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1318,7 +1318,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">T</span> <span class="n">get_and_remove_element</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span> <span class="n">elements</span><span class="p">)</span> <span class="p">{</span></td>
+      <td class="src "><span class="cm">   * Pick out a random element from the vector, copy and return it,</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1326,7 +1326,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">    <span class="k">if</span> <span class="p">(</span><span class="n">elements</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span></td>
+      <td class="src "><span class="cm">   * but also remove that element from the vector (swapping with</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1334,7 +1334,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">      <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span></td>
+      <td class="src "><span class="cm">   * the back for efficiency, i.e. the ordering changes).</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1342,7 +1342,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">          <span class="s">&quot;RNG: get_and_remove_element called on empty vector&quot;</span><span class="p">);</span></td>
+      <td class="src "><span class="cm">   * @param elements The vector to be sampled from.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1350,7 +1350,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">    <span class="p">}</span></td>
+      <td class="src "><span class="cm">   *  Decreases size by one each time.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1358,7 +1358,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">    <span class="kt">size_t</span> <span class="n">index</span> <span class="o">=</span> <span class="n">get_size_t</span><span class="p">(</span><span class="n">elements</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span></td>
+      <td class="src "><span class="cm">   *  Time O(1) because the ordering is allowed to change.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1366,7 +1366,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">    <span class="k">const</span> <span class="n">T</span> <span class="n">copy</span> <span class="o">=</span> <span class="n">elements</span><span class="p">[</span><span class="n">index</span><span class="p">];</span></td>
+      <td class="src "><span class="cm">   * @return A copy of the removed element.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1374,7 +1374,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">    <span class="n">elements</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">elements</span><span class="p">.</span><span class="n">back</span><span class="p">();</span></td>
+      <td class="src "><span class="cm">   */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1382,7 +1382,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">    <span class="n">elements</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span></td>
+      <td class="src ">  <span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="o">&gt;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1390,7 +1390,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">    <span class="k">return</span> <span class="n">copy</span><span class="p">;</span></td>
+      <td class="src ">  <span class="n">T</span> <span class="n">get_and_remove_element</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span> <span class="n">elements</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1398,7 +1398,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="p">}</span></td>
+      <td class="src ">    <span class="k">if</span> <span class="p">(</span><span class="n">elements</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1406,7 +1406,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src ">      <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">runtime_error</span><span class="p">(</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1414,7 +1414,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="cm">/** Returns the numbers {0,1,2,...,N-1} in some random order.</span></td>
+      <td class="src ">          <span class="s">&quot;RNG: get_and_remove_element called on empty vector&quot;</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1422,7 +1422,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   *  @param size The size of the returned vector.</span></td>
+      <td class="src ">    <span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1430,7 +1430,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   *  @return An interval of nonnegative numbers, starting at zero,</span></td>
+      <td class="src ">    <span class="kt">size_t</span> <span class="n">index</span> <span class="o">=</span> <span class="n">get_size_t</span><span class="p">(</span><span class="n">elements</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1438,7 +1438,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   *    but rearranged randomly.</span></td>
+      <td class="src ">    <span class="k">const</span> <span class="n">T</span> <span class="n">copy</span> <span class="o">=</span> <span class="n">elements</span><span class="p">[</span><span class="n">index</span><span class="p">];</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1446,7 +1446,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span></td>
+      <td class="src ">    <span class="n">elements</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">elements</span><span class="p">.</span><span class="n">back</span><span class="p">();</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1454,7 +1454,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span> <span class="n">get_permutation</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span></td>
+      <td class="src ">    <span class="n">elements</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1462,7 +1462,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src ">    <span class="k">return</span> <span class="n">copy</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1470,7 +1470,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "> <span class="k">private</span><span class="o">:</span></td>
+      <td class="src ">  <span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1478,7 +1478,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">std</span><span class="o">::</span><span class="n">mt19937_64</span> <span class="n">m_engine</span><span class="p">;</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -1486,7 +1486,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src ">  <span class="cm">/** Returns the numbers {0,1,2,...,N-1} in some random order.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1494,7 +1494,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="c1">// Avoids repeated memory reallocation.</span></td>
+      <td class="src "><span class="cm">   *  @param size The size of the returned vector.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1502,7 +1502,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uintmax_t</span><span class="p">,</span> <span class="kt">size_t</span><span class="o">&gt;&gt;</span> <span class="n">m_shuffling_data</span><span class="p">;</span></td>
+      <td class="src "><span class="cm">   *  @return An interval of nonnegative numbers, starting at zero,</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1510,7 +1510,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span></td>
+      <td class="src "><span class="cm">   *    but rearranged randomly.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1518,7 +1518,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm">   */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1526,11 +1526,83 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">}</span>  <span class="c1">// namespace tket</span></td>
+      <td class="src ">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">size_t</span><span class="o">&gt;</span> <span class="n">get_permutation</span><span class="p">(</span><span class="kt">size_t</span> <span class="n">size</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l183" href="#l183">183</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l184" href="#l184">184</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "> <span class="k">private</span><span class="o">:</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l185" href="#l185">185</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">  <span class="n">std</span><span class="o">::</span><span class="n">mt19937_64</span> <span class="n">m_engine</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l186" href="#l186">186</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l187" href="#l187">187</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">  <span class="c1">// Avoids repeated memory reallocation.</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l188" href="#l188">188</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uintmax_t</span><span class="p">,</span> <span class="kt">size_t</span><span class="o">&gt;&gt;</span> <span class="n">m_shuffling_data</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l189" href="#l189">189</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">};</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l190" href="#l190">190</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l191" href="#l191">191</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span>  <span class="c1">// namespace tket</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l192" href="#l192">192</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
