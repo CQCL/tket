@@ -1,4 +1,4 @@
-name: test tkrng
+name: test libraries
 on:
   push:
     branches:
@@ -10,7 +10,9 @@ jobs:
   changes:
     runs-on: ubuntu-20.04
     outputs:
+      tklog: ${{ steps.filter.outputs.tklog }}
       tkrng: ${{ steps.filter.outputs.tkrng }}
+      libs: ${{ steps.filter.outputs.changes }}
     steps:
     - uses: actions/checkout@v3
     - uses: dorny/paths-filter@v2
@@ -18,15 +20,18 @@ jobs:
       with:
         base: ${{ github.ref }}
         filters: |
-          tkrng_code:
+          tklog:
+            - 'libs/tklog/**'
+          tkrng:
             - 'libs/tkrng/**'
   test_libraries:
-    name: test tkrng
+    name: test library
     needs: changes
-    if: needs.changes.outputs.tkrng_code == 'true'
+    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     strategy:
       matrix:
         os: ['ubuntu-20.04', 'macos-11', 'windows-2019']
+        lib: ${{ fromJson(needs.changes.outputs.libs) }}
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
@@ -52,22 +57,25 @@ jobs:
       run: conan profile update settings.compiler.libcxx=libstdc++11 tket
     - name: add remote
       run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
-    - name: build tkrng
-      run: conan create --profile=tket libs/tkrng
-    - name: build tkrng tests
+    - name: build ${{ matrix.lib }}
+      run: conan create --profile=tket libs/${{ matrix.lib }}
+    - name: build ${{ matrix.lib }} tests
       run: |
-        conan install libs/tkrng/test --install-folder=build/test-tkrng --profile=tket
-        conan build libs/tkrng/test --configure --build-folder=build/test-tkrng --source-folder=libs/tkrng/test
-        conan build libs/tkrng/test --build --build-folder=build/test-tkrng
-        conan package libs/tkrng/test --build-folder=build/test-tkrng --package-folder build/test-tkrng/package --source-folder=libs/tkrng/test
-    - name: run tkrng tests
-      working-directory: ./build/test-tkrng/package/bin
-      run: ./test-tkrng
+        conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --profile=tket
+        conan build libs/${{ matrix.lib }}/test --configure --build-folder=build/test-${{ matrix.lib }} --source-folder=libs/${{ matrix.lib }}/test
+        conan build libs/${{ matrix.lib }}/test --build --build-folder=build/test-${{ matrix.lib }}
+        conan package libs/${{ matrix.lib }}/test --build-folder=build/test-${{ matrix.lib }} --package-folder build/test-${{ matrix.lib }}/package --source-folder=libs/${{ matrix.lib }}/test
+    - name: run ${{ matrix.lib }} tests
+      working-directory: ./build/test-${{ matrix.lib }}/package/bin
+      run: ./test-${{ matrix.lib }}
   macos-m1:
-    name: test tkrng (macos-m1)
+    name: test library (macos-m1)
     needs: changes
-    if: needs.changes.outputs.tkrng_code == 'true'
+    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     runs-on: [self-hosted, macos, M1]
+    strategy:
+      matrix:
+        lib: ${{ fromJson(needs.changes.outputs.libs) }}
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
@@ -78,14 +86,14 @@ jobs:
       run: conan profile new tket --detect --force
     - name: add remote
       run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
-    - name: build tkrng
-      run: conan create --profile=tket libs/tkrng
-    - name: build tkrng tests
+    - name: build ${{ matrix.lib }}
+      run: conan create --profile=tket libs/${{ matrix.lib }}
+    - name: build ${{ matrix.lib }} tests
       run: |
-        conan install libs/tkrng/test --install-folder=build/test-tkrng --profile=tket
-        conan build libs/tkrng/test --configure --build-folder=build/test-tkrng --source-folder=libs/tkrng/test
-        conan build libs/tkrng/test --build --build-folder=build/test-tkrng
-        conan package libs/tkrng/test --build-folder=build/test-tkrng --package-folder build/test-tkrng/package --source-folder=libs/tkrng/test
-    - name: run tkrng tests
-      working-directory: ./build/test-tkrng/package/bin
-      run: ./test-tkrng
+        conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --profile=tket
+        conan build libs/${{ matrix.lib }}/test --configure --build-folder=build/test-${{ matrix.lib }} --source-folder=libs/${{ matrix.lib }}/test
+        conan build libs/${{ matrix.lib }}/test --build --build-folder=build/test-${{ matrix.lib }}
+        conan package libs/${{ matrix.lib }}/test --build-folder=build/test-${{ matrix.lib }} --package-folder build/test-${{ matrix.lib }}/package --source-folder=libs/${{ matrix.lib }}/test
+    - name: run ${{ matrix.lib }} tests
+      working-directory: ./build/test-${{ matrix.lib }}/package/bin
+      run: ./test-${{ matrix.lib }}

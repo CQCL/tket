@@ -32,14 +32,14 @@ ${CONAN_CMD} remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/t
 
 ${CONAN_CMD} user -p ${JFROG_ARTIFACTORY_TOKEN_1} -r tket-conan ${JFROG_ARTIFACTORY_USER_1}
 
-TKRNG_VER=$(${CONAN_CMD} inspect --raw version tkrng/)
+LIB_VER=$(${CONAN_CMD} inspect --raw version ${TKLIB})
 
-${CONAN_CMD} create --profile=tket -o tkrng:shared=False tkrng tket/stable
-${CONAN_CMD} create --profile=tket -o tkrng:shared=True tkrng tket/stable
+${CONAN_CMD} create --profile=tket -o ${TKLIB}:shared=False ${TKLIB} tket/stable
+${CONAN_CMD} create --profile=tket -o ${TKLIB}:shared=True ${TKLIB} tket/stable
 
 if [ ${UPLOAD_PACKAGE} == "YES" ]
 then
-    ${CONAN_CMD} upload tkrng/${TKRNG_VER}@tket/stable --all -r=tket-conan
+    ${CONAN_CMD} upload ${TKLIB}/${LIB_VER}@tket/stable --all -r=tket-conan
 else
-    ${CONAN_CMD} upload tkrng/${TKRNG_VER}@tket/stable --all -r=tket-conan --skip-upload
+    ${CONAN_CMD} upload ${TKLIB}/${LIB_VER}@tket/stable --all -r=tket-conan --skip-upload
 fi

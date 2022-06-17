@@ -1,4 +1,4 @@
-name: build tkrng
+name: build libraries
 on:
   push:
     branches:
@@ -10,7 +10,9 @@ jobs:
   changes:
     runs-on: ubuntu-20.04
     outputs:
+      tklog: ${{ steps.filter.outputs.tklog }}
       tkrng: ${{ steps.filter.outputs.tkrng }}
+      libs: ${{ steps.filter.outputs.changes }}
     steps:
     - uses: actions/checkout@v3
     - uses: dorny/paths-filter@v2
@@ -18,15 +20,18 @@ jobs:
       with:
         base: ${{ github.ref }}
         filters: |
-          tkrng_conanfile:
+          tklog:
+            - 'libs/tklog/conanfile.py'
+          tkrng:
             - 'libs/tkrng/conanfile.py'
   build_libraries:
-    name: build tkrng
+    name: build library
     needs: changes
-    if: needs.changes.outputs.tkrng_conanfile == 'true'
+    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     strategy:
       matrix:
         os: ['ubuntu-20.04', 'macos-11', 'windows-2019']
+        lib: ${{ fromJson(needs.changes.outputs.libs) }}
         build_type: ['Release', 'Debug']
         shared: ['True', 'False']
     runs-on: ${{ matrix.os }}
@@ -40,10 +45,10 @@ jobs:
       # Conan's revision hash is composed of hashes all the exported files, so
       # we must normalize the line endings in these.
       run: |
-        $conanfile ='libs/tkrng/conanfile.py'
+        $conanfile ='libs/${{ matrix.lib }}/conanfile.py'
         $normalized_file = [IO.File]::ReadAllText($conanfile) -replace "`r`n", "`n"
         [IO.File]::WriteAllText($conanfile, $normalized_file)
-        $src_files = Get-ChildItem "libs/tkrng/src" -File -Recurse
+        $src_files = Get-ChildItem "libs/${{ matrix.lib }}/src" -File -Recurse
         foreach ($f in $src_files) {
           $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
           [IO.File]::WriteAllText($f, $normalized_file)
@@ -66,8 +71,8 @@ jobs:
     - name: set libcxx
       if: matrix.os == 'ubuntu-20.04'
       run: conan profile update settings.compiler.libcxx=libstdc++11 tket
-    - name: build tkrng
-      run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o tkrng:shared=${{ matrix.shared }} libs/tkrng tket/stable
+    - name: build ${{ matrix.lib }}
+      run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o ${{ matrix.lib }}:shared=${{ matrix.shared }} libs/${{ matrix.lib }} tket/stable
     - name: add remote
       run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
     - name: authenticate to repository
@@ -75,26 +80,27 @@ jobs:
     - name: get version
       if: matrix.os != 'windows-2019'
       run: |
-        tkrng_ver=$(conan inspect --raw version libs/tkrng/conanfile.py)
-        echo "TKRNG_VER=${tkrng_ver}" >> $GITHUB_ENV
+        lib_ver=$(conan inspect --raw version libs/${{ matrix.lib }}/conanfile.py)
+        echo "LIB_VER=${lib_ver}" >> $GITHUB_ENV
     - name: get version
       if: matrix.os == 'windows-2019'
       run: |
-        $tkrng_ver = conan inspect --raw version libs/tkrng/conanfile.py
-        echo "TKRNG_VER=${tkrng_ver}" >> $env:GITHUB_ENV
+        $${{ matrix.lib }}_ver = conan inspect --raw version libs/${{ matrix.lib }}/conanfile.py
+        echo "LIB_VER=${${{ matrix.lib }}_ver}" >> $env:GITHUB_ENV
     - name: upload package (dry run)
       if: github.event_name == 'pull_request'
-      run: conan upload tkrng/${{ env.TKRNG_VER }}@tket/stable --all -r=tket-conan --skip-upload
+      run: conan upload ${{ matrix.lib }}/${{ env.LIB_VER }}@tket/stable --all -r=tket-conan --skip-upload
     - name: upload package
       if: github.event_name == 'push'
-      run: conan upload tkrng/${{ env.TKRNG_VER }}@tket/stable --all -r=tket-conan
+      run: conan upload ${{ matrix.lib }}/${{ env.LIB_VER }}@tket/stable --all -r=tket-conan
   macos-m1:
-    name: build tkrng (macos-m1)
+    name: build library (macos-m1)
     needs: changes
-    if: needs.changes.outputs.tkrng_conanfile == 'true'
+    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     runs-on: [self-hosted, macos, M1]
     strategy:
       matrix:
+        lib: ${{ fromJson(needs.changes.outputs.libs) }}
         build_type: ['Release', 'Debug']
         shared: ['True', 'False']
     env:
@@ -105,27 +111,30 @@ jobs:
       run: pip install -U conan
     - name: create profile
       run: conan profile new tket --detect --force
-    - name: build tkrng
-      run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o symengine:shared=${{ matrix.shared }} libs/tkrng tket/stable
+    - name: build ${{ matrix.lib }}
+      run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o ${{ matrix.lib }}:shared=${{ matrix.shared }} libs/${{ matrix.lib }} tket/stable
     - name: add remote
       run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
     - name: authenticate to repository
       run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_1 }} -r tket-conan ${{ secrets.JFROG_ARTIFACTORY_USER_1 }}
     - name: get version
       run: |
-        tkrng_ver=$(conan inspect --raw version libs/tkrng/conanfile.py)
-        echo "TKRNG_VER=${tkrng_ver}" >> $GITHUB_ENV
+        lib_ver=$(conan inspect --raw version libs/${{ matrix.lib }}/conanfile.py)
+        echo "LIB_VER=${lib_ver}" >> $GITHUB_ENV
     - name: upload package (dry run)
       if: github.event_name == 'pull_request'
-      run: conan upload tkrng/${TKRNG_VER}@tket/stable --all -r=tket-conan --skip-upload
+      run: conan upload ${{ matrix.lib }}/${LIB_VER}@tket/stable --all -r=tket-conan --skip-upload
     - name: upload package
       if: github.event_name == 'push'
-      run: conan upload tkrng/${TKRNG_VER}@tket/stable --all -r=tket-conan
+      run: conan upload ${{ matrix.lib }}/${LIB_VER}@tket/stable --all -r=tket-conan
   manylinux:
-    name: build tkrng (manylinux)
+    name: build library (manylinux)
     needs: changes
-    if: needs.changes.outputs.tkrng_conanfile == 'true'
+    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        lib: ${{ fromJson(needs.changes.outputs.libs) }}
     env:
       UPLOAD_PACKAGE: "NO"
     steps:
@@ -133,17 +142,18 @@ jobs:
     - name: set up container
       run: |
         docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:latest /bin/bash
-        docker cp ./libs/tkrng linux_build:/
-        docker cp ./.github/workflows/linuxbuildtkrng linux_build:/
+        docker cp ./libs/${{ matrix.lib }} linux_build:/
+        docker cp ./.github/workflows/linuxbuildlib linux_build:/
     - name: determine whether to upload package
       if: github.event_name == 'push'
       run: echo "UPLOAD_PACKAGE=YES" >> ${GITHUB_ENV}
-    - name: build tkrng
+    - name: build ${{ matrix.lib }}
       run: |
         docker start linux_build
         cat <<EOF > env-vars
+        TKLIB=${{ matrix.lib }}
         UPLOAD_PACKAGE=${UPLOAD_PACKAGE}
         JFROG_ARTIFACTORY_TOKEN_1=${{ secrets.JFROG_ARTIFACTORY_TOKEN_1 }}
         JFROG_ARTIFACTORY_USER_1=${{ secrets.JFROG_ARTIFACTORY_USER_1 }}
         EOF
-        docker exec --env-file env-vars linux_build /bin/bash -c "/linuxbuildtkrng"
+        docker exec --env-file env-vars linux_build /bin/bash -c "/linuxbuildlib"
