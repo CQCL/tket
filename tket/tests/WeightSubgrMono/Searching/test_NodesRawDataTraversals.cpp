@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
+#include <sstream>
 
 #include "Utils/RNG.hpp"
 #include "WeightSubgrMono/Searching/DomainsAccessor.hpp"
