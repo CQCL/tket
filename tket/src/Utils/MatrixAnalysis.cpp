@@ -327,14 +327,6 @@ double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx) {
 
 inline double mod(double d, double max) { return d - max * floor(d / max); }
 
-// computes the distance of the exponent r
-// from the Weyl chamber - used for sorting ExpGate components
-static double dist_from_weyl(double r) {
-  const double opt1 = mod(r, 1.);
-  const double opt2 = 1. - opt1;
-  return std::min(opt1, opt2);
-}
-
 std::tuple<Eigen::Matrix4cd, std::array<double, 3>, Eigen::Matrix4cd>
 get_information_content(const Eigen::Matrix4cd &X) {
   using ExpGate = std::array<double, 3>;
@@ -408,75 +400,15 @@ get_information_content(const Eigen::Matrix4cd &X) {
         return mod(d, 4);
       });
 
-  // move k into Weyl chamber ie 1/2 >= k_x >= k_y >= |k_z|
-  //   1. permutate ks
-  //   2. modulo 1. and 1/2
-  std::array<int, 3> ind_order{0, 1, 2};
-  std::sort(ind_order.begin(), ind_order.end(), [&k](int i, int j) {
-    return dist_from_weyl(k(i)) > dist_from_weyl(k(j));
-  });
-  const Eigen::Vector3i build_perm(ind_order.data());
-  Eigen::PermutationMatrix<3> P_small(build_perm);
-  P_small = P_small.transpose().eval();
-
-  k = P_small * k;  // now k is sorted
-
-  // store resulting permutation of thetas in P
-  Mat4 P = Mat4::Zero();
-  P.block<3, 3>(0, 0) << P_small.toDenseMatrix().cast<std::complex<double>>();
-  P(3, 3) = 1;
-  P = (0.25 * basis_change.transpose() * P * basis_change).eval();
-
-  // we need to ensure that det(P * Q) == 1 so that K1,K2 \in SU(2) x SU(2)
-  if (P_small.determinant() * Q2.determinant().real() < 0) {
+  // we need to ensure that det(Q) == 1 so that K1,K2 \in SU(2) x SU(2)
+  if (Q2.determinant().real() < 0) {
     Q2.row(3) = -Q2.row(3);
     Q1 = Xprime * Q2.transpose() * eigs_sqrt_inv;
   }
 
   // these are our local operations (left and right)
-  Mat4 K1 = MagicM * Q1 * P.transpose() * MagicM.adjoint();
-  Mat4 K2 = MagicM * P * Q2 * MagicM.adjoint();
-
-  // last minute adjustments (modulos and reflections to be in Weyl chamber)
-  const Eigen::Matrix4cd s_xx = Eigen::kroneckerProduct(PauliX, PauliX);
-  const Eigen::Matrix4cd s_yy = Eigen::kroneckerProduct(PauliY, PauliY);
-  const Eigen::Matrix4cd s_zz = Eigen::kroneckerProduct(PauliZ, PauliZ);
-  const Eigen::Matrix4cd s_zi =
-      Eigen::kroneckerProduct(PauliZ, Eigen::Matrix2cd::Identity());
-  const Eigen::Matrix4cd s_iz =
-      Eigen::kroneckerProduct(Eigen::Matrix2cd::Identity(), PauliZ);
-  const Eigen::Matrix4cd s_xi =
-      Eigen::kroneckerProduct(PauliX, Eigen::Matrix2cd::Identity());
-  const Eigen::Matrix4cd s_ix =
-      Eigen::kroneckerProduct(Eigen::Matrix2cd::Identity(), PauliX);
-  if (k(0) > 1.) {
-    k(0) -= 3.;
-    K1 *= i_ * s_xx;
-  }
-  if (k(1) > 1.) {
-    k(1) -= 3.;
-    K1 *= i_ * s_yy;
-  }
-  if (k(2) > 1.) {
-    k(2) -= 3.;
-    K1 *= i_ * s_zz;
-  }
-  if (k(0) > .5) {
-    k(0) = 1. - k(0);
-    k(1) = 1. - k(1);
-    K1 *= s_iz;
-    K2 = s_zi * K2;
-  }
-  if (k(1) > .5) {
-    k(1) = 1. - k(1);
-    k(2) = 1. - k(2);
-    K1 *= s_ix;
-    K2 = s_xi * K2;
-  }
-  if (k(2) > .5) {
-    k(2) -= 1.;
-    K1 *= -i_ * s_zz;
-  }
+  Mat4 K1 = MagicM * Q1 * MagicM.adjoint();
+  Mat4 K2 = MagicM * Q2 * MagicM.adjoint();
 
   // fix phase
   K1 *= norm_X;
@@ -573,6 +505,31 @@ std::vector<TripletCd> get_triplets(
     }
   }
   return triplets;
+}
+
+bool in_weyl_chamber(const std::array<Expr, 3> &k) {
+  bool is_symbolic = true;
+  double last_val = .5;
+  for (unsigned i = 0; i < k.size(); ++i) {
+    std::optional<double> eval = eval_expr_mod(k[i], 4);
+    if (eval) {
+      is_symbolic = false;
+      if (i + 1 == k.size()) {
+        double abs_eval = std::min(*eval, -(*eval) + 4);
+        if (abs_eval > last_val) {
+          return false;
+        }
+      } else {
+        if (*eval > last_val) {
+          return false;
+        }
+      }
+      last_val = *eval;
+    } else if (!is_symbolic) {
+      return false;
+    }
+  }
+  return true;
 }
 
 }  // namespace tket

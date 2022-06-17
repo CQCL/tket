@@ -29,6 +29,7 @@
 #include "Transform.hpp"
 #include "Utils/Assert.hpp"
 #include "Utils/EigenConfig.hpp"
+#include "Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 
@@ -703,6 +704,46 @@ Transform absorb_Rz_NPhasedX() {
     }
     circ.remove_vertices(
         all_bins, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+
+    return success;
+  });
+}
+
+Transform normalise_TK2() {
+  return Transform([](Circuit &circ) {
+    bool success = false;
+    VertexSet bin;
+
+    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+      Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+      bool conditional = op->get_type() == OpType::Conditional;
+      if (conditional) {
+        const Conditional &cond = static_cast<const Conditional &>(*op);
+        op = cond.get_op();
+      }
+      if (op->get_type() == OpType::TK2) {
+        auto params = op->get_params();
+        TKET_ASSERT(params.size() == 3);
+        if (!in_weyl_chamber({params[0], params[1], params[2]})) {
+          success = true;
+          if (conditional) {
+            circ.substitute_conditional(
+                CircPool::TK2_using_normalised_TK2(
+                    params[0], params[1], params[2]),
+                v, Circuit::VertexDeletion::No);
+          } else {
+            circ.substitute(
+                CircPool::TK2_using_normalised_TK2(
+                    params[0], params[1], params[2]),
+                v, Circuit::VertexDeletion::No);
+          }
+          bin.insert(v);
+        }
+      }
+    }
+
+    circ.remove_vertices(
+        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
 
     return success;
   });

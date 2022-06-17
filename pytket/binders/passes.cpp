@@ -350,7 +350,6 @@ PYBIND11_MODULE(passes, m) {
       "\n:return: a KAK Decomposition pass using the given CX gate "
       "fidelity",
       py::arg("cx_fidelity") = 1.);
-  // TODO: Add NormalisedTK2 predicate support.
   m.def(
       "DecomposeTK2",
       [](const py::kwargs &kwargs) {
@@ -369,11 +368,25 @@ PYBIND11_MODULE(passes, m) {
       "noise into consideration.\n\n"
       "If no fidelities are provided, the TK2 gates will be decomposed "
       "exactly using CX gates.\n\n"
-      "All TK2 gate parameters must be normalised to the Weyl chamber."
+      "All TK2 gate parameters must be normalised, i.e. they must satisfy "
+      "`NormalisedTK2Predicate`."
       "\n\nIf the TK2 angles are symbolic values, the decomposition will "
       "be exact (i.e. not noise-aware). It is not possible in general "
       "to obtain optimal decompositions for arbitrary symbolic parameters, "
       "so consider substituting for concrete values if possible.");
+  m.def(
+      "NormaliseTK2", &NormaliseTK2,
+      "Normalises all TK2 gates.\n\n"
+      "TK2 gates have three angles in the interval [0, 4], but these can always"
+      " be normalised to be within the so-called Weyl chamber by adding "
+      "single-qubit gates.\n\n"
+      "More precisely, the three angles a, b, c of TK2(a, b, c) are normalised "
+      "exactly when the two following conditions are met:\n"
+      " - numerical values must be in the Weyl chamber, "
+      "ie `1/2 >= a >= b >= |c|`,\n"
+      " - symbolic values must come before any numerical value in the array."
+      "\n\nAfter this pass, all TK2 angles will be normalised and the circuit "
+      "will satisfy `NormalisedTK2Predicate`.");
   m.def(
       "ThreeQubitSquash", &ThreeQubitSquash,
       "Squash three-qubit subcircuits into subcircuits having fewer CX gates, "

@@ -72,4 +72,23 @@ const PassPtr &RemoveDiscarded();
  */
 const PassPtr &SimplifyMeasured();
 
+/**
+ * @brief Normalises all TK2 gates.
+ *
+ * TK2 gates have three angles in the interval [0, 4], but these can always
+ * be normalised to be within the so-called Weyl chamber by adding single-qubit
+ * gates.
+ *
+ * More precisely, the three angles a, b, c of TK2(a, b, c) are normalised
+ * exactly when the two following conditions are met:
+ *  - numerical values must be in the Weyl chamber, ie 1/2 >= a >= b >= |c|,
+ *  - symbolic values must come before any numerical value in the array.
+ *
+ * After this pass, all TK2 angles will be normalised and the circuit will
+ * satisfy `NormalisedTK2Predicate`.
+ *
+ * @return compilation pass to perform this transformation
+ */
+const PassPtr &NormaliseTK2();
+
 }  // namespace tket

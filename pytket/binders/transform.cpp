@@ -205,7 +205,6 @@ PYBIND11_MODULE(transform, m) {
       .def_static(
           "DecomposeBoxes", &Transforms::decomp_boxes,
           "Decomposes all Boxed operations into elementary gates.")
-      // TODO: Mention NormalisedTK2 predicate.
       .def_static(
           "DecomposeTK2",
           [](const py::kwargs &kwargs) {
@@ -218,8 +217,8 @@ PYBIND11_MODULE(transform, m) {
           "decomposition, as measured using squared trace fidelity. "
           "If no fidelities are provided, the TK2 gates will be decomposed "
           "exactly using CX gates.\n\n"
-          "All TK2(α, β, γ) gates must be normalised to the Weyl chamber, i.e. "
-          "`0.5 ≥ 𝛼 ≥ 𝛽 ≥ |𝛾|`."
+          "All TK2 gate parameters must be normalised, i.e. they must satisfy "
+          "`NormalisedTK2Predicate`."
           "\n\n"
           "Gate fidelities are passed as keyword arguments to perform "
           "noise-aware decompositions. "
@@ -234,6 +233,20 @@ PYBIND11_MODULE(transform, m) {
           "be exact (i.e. not noise-aware). It is not possible in general "
           "to obtain optimal decompositions for arbitrary symbolic parameters, "
           "so consider substituting for concrete values if possible.")
+      .def_static(
+          "NormaliseTK2", &Transforms::normalise_TK2,
+          "Normalises all TK2 gates.\n\n"
+          "TK2 gates have three angles in the interval [0, 4], but these can "
+          "always be normalised to be within the so-called Weyl chamber by "
+          "adding single-qubit gates.\n\n"
+          "More precisely, the three angles a, b, c of TK2(a, b, c) are "
+          "normalised exactly when the two following conditions are met:\n"
+          " - numerical values must be in the Weyl chamber, "
+          "ie `1/2 >= a >= b >= |c|`,\n"
+          " - symbolic values must come before any numerical value in the "
+          "array.\n\n"
+          "After this transform, all TK2 angles will be normalised and the "
+          "circuit will satisfy `NormalisedTK2Predicate`.")
 
       /* OPTIMISATION TRANSFORMS */
       .def_static(
