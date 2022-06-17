@@ -17,7 +17,7 @@ from conans import ConanFile, CMake
 
 class TklogConan(ConanFile):
     name = "tklog"
-    version = "0.1.0"
+    version = "0.1.1"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
     description = "Simple logging library"
