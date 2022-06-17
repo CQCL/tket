@@ -87,7 +87,7 @@ const PassPtr &SimplifyMeasured();
  * After this pass, all TK2 angles will be normalised and the circuit will
  * satisfy `NormalisedTK2Predicate`.
  *
- * @return const PassPtr&
+ * @return compilation pass to perform this transformation
  */
 const PassPtr &NormaliseTK2();
 
