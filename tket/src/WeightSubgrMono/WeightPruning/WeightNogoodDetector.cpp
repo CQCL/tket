@@ -50,7 +50,8 @@ std::optional<WeightWSM> WeightNogoodDetector::get_min_weight_for_tv(
   // We must find the minimum weight, by looking at all neighbours.
   WeightWSM min_weight;
   set_maximum(min_weight);
-  const std::vector<std::pair<VertexWSM, WeightWSM>>& data = m_target_neighbours_data.get_neighbours_and_weights(tv);
+  const std::vector<std::pair<VertexWSM, WeightWSM>>& data =
+      m_target_neighbours_data.get_neighbours_and_weights(tv);
   for (const std::pair<VertexWSM, WeightWSM>& entry : data) {
     const VertexWSM& neighbour_tv = entry.first;
     if (m_valid_target_vertices.count(neighbour_tv) == 0) {
@@ -138,10 +139,12 @@ WeightNogoodDetector::get_extra_scalar_product_lower_bound(
     // which could possibly contain f(pv).
     const auto minimum_t_weight = get_t_weight_lower_bound(pv1);
 
-    const std::vector<std::pair<VertexWSM, WeightWSM>>& p_neighbours_and_weights =
-        m_pattern_neighbours_data.get_neighbours_and_weights(pv1);
+    const std::vector<std::pair<VertexWSM, WeightWSM>>&
+        p_neighbours_and_weights =
+            m_pattern_neighbours_data.get_neighbours_and_weights(pv1);
 
-    for (const std::pair<VertexWSM, WeightWSM>& pv2_weight_pair : p_neighbours_and_weights) {
+    for (const std::pair<VertexWSM, WeightWSM>& pv2_weight_pair :
+         p_neighbours_and_weights) {
       const VertexWSM& pv2 = pv2_weight_pair.first;
       const WeightWSM& p_weight = pv2_weight_pair.second;
       WeightWSM t_weight_estimate = minimum_t_weight;

@@ -25,7 +25,8 @@ namespace WeightedSubgraphMonomorphism {
 
 VertexRelabelling::VertexRelabelling(GraphEdgeWeights edges_and_weights)
     : new_edges_and_weights(std::move(edges_and_weights)) {
-  for (const std::pair<EdgeWSM, WeightWSM>& entry : new_edges_and_weights) {
+  for (const std::pair<const EdgeWSM, WeightWSM>& entry :
+       new_edges_and_weights) {
     const VertexWSM& v1 = entry.first.first;
     const VertexWSM& v2 = entry.first.second;
     if (v1 == v2) {
@@ -61,9 +62,8 @@ VertexRelabelling::VertexRelabelling(GraphEdgeWeights edges_and_weights)
     return;
   }
   new_to_old_vertex_labels.reserve(number_of_vertices);
-  for (std::pair<const VertexWSM, VertexWSM>& entry :
-       old_to_new_vertex_labels) {
-    const VertexWSM new_vertex = new_to_old_vertex_labels.size();
+  for (std::pair<const VertexWSM, unsigned>& entry : old_to_new_vertex_labels) {
+    const unsigned new_vertex = new_to_old_vertex_labels.size();
     new_to_old_vertex_labels.push_back(entry.first);
     entry.second = new_vertex;
   }

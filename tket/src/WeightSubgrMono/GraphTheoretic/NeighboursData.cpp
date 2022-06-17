@@ -48,7 +48,7 @@ NeighboursData::NeighboursData(const GraphEdgeWeights& edges_and_weights) {
   // Only the edges (v1,v2) with v1<v2.
   std::set<std::pair<VertexWSM, VertexWSM>> ordered_edges_seen;
   std::set<VertexWSM> vertices_seen;
-  for (const std::pair<EdgeWSM, WeightWSM>& entry : edges_and_weights) {
+  for (const std::pair<const EdgeWSM, WeightWSM>& entry : edges_and_weights) {
     const VertexWSM& v1 = entry.first.first;
     const VertexWSM& v2 = entry.first.second;
     vertices_seen.insert(v1);

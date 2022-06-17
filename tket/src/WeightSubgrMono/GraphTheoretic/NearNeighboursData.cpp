@@ -190,7 +190,7 @@ const FilterUtils::DegreeCounts& NearNeighboursData::get_degree_counts(
       }
     }
     counts_list[0].reserve(m_work_map.size());
-    for (const std::pair<std::size_t, std::size_t>& entry : m_work_map) {
+    for (const std::pair<const std::size_t, std::size_t>& entry : m_work_map) {
       counts_list[0].emplace_back(entry);
     }
     // Simply pretend that we'd already filled it in.
@@ -223,7 +223,7 @@ const FilterUtils::DegreeCounts& NearNeighboursData::get_degree_counts(
     }
     // Now dump it out from the map back into the vector, to be stored.
     counts_list[index_to_fill].reserve(m_work_map.size());
-    for (const std::pair<std::size_t, std::size_t>& entry : m_work_map) {
+    for (const std::pair<const std::size_t, std::size_t>& entry : m_work_map) {
       counts_list[index_to_fill].emplace_back(entry);
     }
     TKET_ASSERT(counts_list[index_to_fill].size() == m_work_map.size());

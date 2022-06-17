@@ -117,7 +117,8 @@ static std::string to_string(const NeighboursData& ndata) {
   ss << number_of_vertices << " vertices. Neighbours and weights:";
   for (unsigned vv = 0; vv < number_of_vertices; ++vv) {
     ss << "\nv=" << vv << ": [ ";
-    const std::vector<std::pair<VertexWSM, WeightWSM>>& data = ndata.get_neighbours_and_weights(vv);
+    const std::vector<std::pair<VertexWSM, WeightWSM>>& data =
+        ndata.get_neighbours_and_weights(vv);
     for (const std::pair<VertexWSM, WeightWSM>& entry : data) {
       ss << entry.first << ";" << entry.second << " ";
     }

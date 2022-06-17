@@ -74,7 +74,7 @@ std::string str(const std::vector<EdgeWSM>& assignments) {
 std::string str(const Assignments& assignments) {
   std::stringstream ss;
   ss << "[";
-  for (const EdgeWSM& entry : assignments) {
+  for (const std::pair<const VertexWSM, VertexWSM>& entry : assignments) {
     ss << " " << entry.first << ":" << entry.second << " ";
   }
   ss << "]";
