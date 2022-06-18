@@ -40,6 +40,7 @@ class TklogConan(ConanFile):
         self.copy("include/*.hpp", dst="include/tklog", src="src", keep_path=False)
         self.copy("*.lib", dst="lib", keep_path=False)
         self.copy("*.dll", dst="bin", keep_path=False)
+        self.copy("*.dll", dst="lib", keep_path=False)
         self.copy("*.dylib*", dst="lib", keep_path=False)
         self.copy("*.so", dst="lib", keep_path=False)
         self.copy("*.a", dst="lib", keep_path=False)
