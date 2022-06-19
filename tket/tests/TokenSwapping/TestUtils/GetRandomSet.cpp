@@ -15,8 +15,7 @@
 #include "GetRandomSet.hpp"
 
 #include <numeric>
-
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
 
 namespace tket {
 namespace tsa_internal {

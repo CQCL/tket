@@ -15,11 +15,11 @@
 #include "TokenSwapping/ExactMappingLookup.hpp"
 
 #include <algorithm>
+#include <tkassert/Assert.hpp>
 
 #include "TokenSwapping/FilteredSwapSequences.hpp"
 #include "TokenSwapping/GeneralFunctions.hpp"
 #include "TokenSwapping/SwapConversion.hpp"
-#include "Utils/Assert.hpp"
 
 using std::vector;
 

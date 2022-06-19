@@ -14,7 +14,8 @@
 
 #include "WeightSubgrMono/Reducing/DistancesReducer.hpp"
 
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
+
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 #include "WeightSubgrMono/Common/SetIntersection.hpp"
 #include "WeightSubgrMono/GraphTheoretic/FilterUtils.hpp"

@@ -17,8 +17,8 @@
 #include <algorithm>
 #include <boost/functional/hash.hpp>
 #include <stdexcept>
+#include <tkassert/Assert.hpp>
 
-#include "Utils/Assert.hpp"
 #include "VertexSwapResult.hpp"
 
 using std::vector;

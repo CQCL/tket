@@ -21,8 +21,7 @@
 #include <map>
 #include <optional>
 #include <set>
-
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
 
 namespace tket {
 namespace tsa_internal {

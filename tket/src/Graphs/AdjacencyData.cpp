@@ -18,8 +18,7 @@
 #include <set>
 #include <sstream>
 #include <stdexcept>
-
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
 
 using std::exception;
 using std::map;

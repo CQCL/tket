@@ -40,4 +40,5 @@ target_include_directories(tket-${COMP}
     ${TKET_${COMP}_INCLUDE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS_TKLOG})
+target_link_libraries(tket-${COMP} PRIVATE
+    ${CONAN_LIBS_TKLOG} ${CONAN_LIBS_TKASSERT})

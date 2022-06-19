@@ -34,6 +34,7 @@
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <tkassert/Assert.hpp>
 #include <tklog/TketLog.hpp>
 #include <type_traits>
 #include <unordered_map>
@@ -45,7 +46,6 @@
 #include "Conditional.hpp"
 #include "DAGDefs.hpp"
 #include "Gate/OpPtrFunctions.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/GraphHeaders.hpp"
 #include "Utils/Json.hpp"

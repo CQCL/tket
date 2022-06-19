@@ -15,9 +15,9 @@
 #include "WeightSubgrMono/Searching/ValueOrdering.hpp"
 
 #include <algorithm>
+#include <tkassert/Assert.hpp>
 #include <tkrng/RNG.hpp>
 
-#include "Utils/Assert.hpp"
 #include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
 
 namespace tket {

@@ -17,8 +17,7 @@
 #include <limits>
 #include <sstream>
 #include <stdexcept>
-
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
 
 namespace tket {
 namespace tsa_internal {

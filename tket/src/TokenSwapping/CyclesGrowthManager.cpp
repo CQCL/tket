@@ -15,9 +15,9 @@
 #include "CyclesGrowthManager.hpp"
 
 #include <stdexcept>
+#include <tkassert/Assert.hpp>
 
 #include "TokenSwapping/DistanceFunctions.hpp"
-#include "Utils/Assert.hpp"
 
 using std::vector;
 

@@ -15,6 +15,7 @@
 #include "DecomposeCircuit.hpp"
 
 #include <sstream>
+#include <tkassert/Assert.hpp>
 
 #include "Circuit/Boxes.hpp"
 #include "Circuit/Circuit.hpp"
@@ -22,7 +23,6 @@
 #include "Gate/GateUnitaryMatrix.hpp"
 #include "GateNodesBuffer.hpp"
 #include "PauliExpBoxUnitaryCalculator.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/Exceptions.hpp"
 
 namespace tket {

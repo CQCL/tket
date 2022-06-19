@@ -15,8 +15,8 @@
 #include "WeightSubgrMono/Searching/NodeListTraversal.hpp"
 
 #include <sstream>
+#include <tkassert/Assert.hpp>
 
-#include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 #include "WeightSubgrMono/Searching/NodesRawData.hpp"
 

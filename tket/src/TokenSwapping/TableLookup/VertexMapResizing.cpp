@@ -16,8 +16,7 @@
 
 #include <algorithm>
 #include <limits>
-
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
 
 using std::vector;
 

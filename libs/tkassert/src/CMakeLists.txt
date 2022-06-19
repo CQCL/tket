@@ -1,0 +1,48 @@
+# Copyright 2019-2022 Cambridge Quantum Computing
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+cmake_minimum_required(VERSION 3.16.0)
+project(tkassert CXX)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+find_program(CCACHE_PROGRAM ccache)
+if(CCACHE_PROGRAM)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+endif()
+
+include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
+conan_basic_setup()
+
+if(WIN32)
+    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS yes)
+endif()
+
+if(APPLE)
+    # set correct install_name
+    set(CMAKE_INSTALL_NAME_DIR "@loader_path")
+    set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
+endif()
+
+add_library(tkassert AssertMessage.cpp)
+target_include_directories(tkassert PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/tkassert)
+target_include_directories(tkassert INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+
+if(MSVC)
+  target_compile_options(tkassert PRIVATE /W4 /WX)
+else()
+  target_compile_options(tkassert PRIVATE -Wall -Wextra -Wpedantic -Werror)
+endif()

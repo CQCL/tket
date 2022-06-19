@@ -14,8 +14,9 @@
 
 #include "GateNode.hpp"
 
+#include <tkassert/Assert.hpp>
+
 #include "BitOperations.hpp"
-#include "Utils/Assert.hpp"
 
 /*
 The following is intended to be helpful, but there are no guarantees

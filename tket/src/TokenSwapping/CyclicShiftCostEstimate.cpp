@@ -14,7 +14,7 @@
 
 #include "CyclicShiftCostEstimate.hpp"
 
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
 
 using std::vector;
 

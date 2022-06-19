@@ -56,4 +56,7 @@ target_link_libraries(proptest PRIVATE
     tket-Utils)
 
 target_link_libraries(proptest PRIVATE
-    ${CONAN_LIBS_SYMENGINE} ${CONAN_LIBS_TKLOG} ${CONAN_LIBS_TKRNG})
+    ${CONAN_LIBS_SYMENGINE}
+    ${CONAN_LIBS_TKLOG}
+    ${CONAN_LIBS_TKASSERT}
+    ${CONAN_LIBS_TKRNG})

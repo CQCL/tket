@@ -38,7 +38,10 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 endif()
 
-list(APPEND TKET_EXTRA_LIBS ${CONAN_LIBS_SYMENGINE} ${CONAN_LIBS_TKLOG})
+list(APPEND TKET_EXTRA_LIBS
+    ${CONAN_LIBS_SYMENGINE}
+    ${CONAN_LIBS_TKLOG}
+    ${CONAN_LIBS_TKASSERT})
 
 pybind11_add_module(circuit
     binders/circuit/main.cpp

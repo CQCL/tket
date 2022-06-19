@@ -15,8 +15,7 @@
 #include "TokenSwapping/PartialMappingLookup.hpp"
 
 #include <algorithm>
-
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
 
 using std::vector;
 

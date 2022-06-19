@@ -16,12 +16,12 @@
 
 #include <sstream>
 #include <stdexcept>
+#include <tkassert/Assert.hpp>
 
 #include "CyclicShiftCostEstimate.hpp"
 #include "TokenSwapping/DistanceFunctions.hpp"
 #include "TokenSwapping/GeneralFunctions.hpp"
 #include "TokenSwapping/VertexSwapResult.hpp"
-#include "Utils/Assert.hpp"
 
 using std::vector;
 

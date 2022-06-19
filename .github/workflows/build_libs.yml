@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-20.04
     outputs:
       tklog: ${{ steps.filter.outputs.tklog }}
+      tkassert: ${{ steps.filter.outputs.tkassert }}
       tkrng: ${{ steps.filter.outputs.tkrng }}
       libs: ${{ steps.filter.outputs.changes }}
     steps:
@@ -22,6 +23,8 @@ jobs:
         filters: |
           tklog:
             - 'libs/tklog/conanfile.py'
+          tkassert:
+            - 'libs/tkassert/conanfile.py'
           tkrng:
             - 'libs/tkrng/conanfile.py'
   build_libraries:

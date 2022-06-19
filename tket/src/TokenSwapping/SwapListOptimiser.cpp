@@ -14,7 +14,8 @@
 
 #include "SwapListOptimiser.hpp"
 
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
+
 #include "VertexSwapResult.hpp"
 
 namespace tket {

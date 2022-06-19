@@ -15,8 +15,7 @@
 #include "WeightSubgrMono/GraphTheoretic/FilterUtils.hpp"
 
 #include <algorithm>
-
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

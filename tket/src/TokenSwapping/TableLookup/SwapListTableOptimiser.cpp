@@ -17,8 +17,7 @@
 #include <algorithm>
 #include <array>
 #include <limits>
-
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
 
 namespace tket {
 namespace tsa_internal {

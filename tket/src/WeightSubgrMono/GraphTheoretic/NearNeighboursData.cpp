@@ -15,8 +15,8 @@
 #include "WeightSubgrMono/GraphTheoretic/NearNeighboursData.hpp"
 
 #include <algorithm>
+#include <tkassert/Assert.hpp>
 
-#include "Utils/Assert.hpp"
 #include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
 
 namespace tket {

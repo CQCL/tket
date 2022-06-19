@@ -16,8 +16,8 @@
 
 #include <cmath>
 #include <sstream>
+#include <tkassert/Assert.hpp>
 
-#include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/BitFunctions.hpp"
 
 namespace tket {

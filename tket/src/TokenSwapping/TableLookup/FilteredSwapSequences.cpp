@@ -16,10 +16,10 @@
 
 #include <algorithm>
 #include <limits>
+#include <tkassert/Assert.hpp>
 
 #include "TokenSwapping/GeneralFunctions.hpp"
 #include "TokenSwapping/SwapSequenceTable.hpp"
-#include "Utils/Assert.hpp"
 
 using std::vector;
 

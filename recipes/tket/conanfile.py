@@ -42,6 +42,7 @@ class TketConan(ConanFile):
         "eigen/3.4.0",
         "nlohmann_json/3.10.5",
         "tklog/0.1.1@tket/stable",
+        "tkassert/0.1.0@tket/stable",
         "tkrng/0.1.1@tket/stable",
     )
 
