@@ -16,7 +16,7 @@ from conans import ConanFile, CMake
 import platform
 
 
-class TestTkrngConan(ConanFile):
+class TestTklogConan(ConanFile):
     name = "test-tklog"
     version = "0.1.0"
     license = "Apache 2"
