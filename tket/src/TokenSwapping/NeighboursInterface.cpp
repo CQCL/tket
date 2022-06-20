@@ -14,12 +14,12 @@
 
 #include "NeighboursInterface.hpp"
 
-#include "Utils/Exceptions.hpp"
+#include <stdexcept>
 
 namespace tket {
 
 const std::vector<size_t>& NeighboursInterface::operator()(size_t) {
-  throw NotImplemented("NeighboursInterface::get_neighbours: not implemented");
+  throw std::logic_error("NeighboursInterface::operator() not implemented");
 }
 
 NeighboursInterface::~NeighboursInterface() {}
