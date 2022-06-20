@@ -33,11 +33,7 @@ class TketConan(ConanFile):
     }
     default_options = {"shared": False, "profile_coverage": False}
     generators = "cmake"
-    # Putting "patches" in both "exports_sources" and "exports" means that this works
-    # in either the CI workflow (`conan create`) or the development workflow
-    # (`conan build`). Maybe there is a better way?
-    exports_sources = ["../../tket/src/*", "!*/build/*", "patches/*"]
-    exports = ["patches/*"]
+    exports_sources = ["../../tket/src/*", "!*/build/*"]
     requires = (
         "boost/1.79.0",
         # symengine from remote: https://tket.jfrog.io/artifactory/api/conan/tket-conan
@@ -106,29 +102,9 @@ class TketConan(ConanFile):
         self.options["eigen"].MPL2_only = True
 
     def build(self):
-        # Build with boost patches
-        boost_include_path = self.deps_cpp_info["boost"].include_paths[0]
-        curdir = os.path.dirname(os.path.realpath(__file__))
-        patches = {
-            # Patch pending merge of https://github.com/boostorg/graph/pull/280
-            # and new boost release. (Note that PR implements a different solution so
-            # code will need updating as well.)
-            os.path.join(
-                boost_include_path, "boost", "graph", "vf2_sub_graph_iso.hpp"
-            ): os.path.join(curdir, "patches", "vf2_sub_graph_iso.diff"),
-        }
-        for filepath, patch_file in patches.items():
-            print("Patching " + filepath)
-            shutil.copyfile(filepath, filepath + ".original")
-            tools.patch(base_path=boost_include_path, patch_file=patch_file)
         cmake = self._configure_cmake()
-        try:
-            print("Building")
-            cmake.build()
-        finally:
-            for filepath in patches.keys():
-                print("Restoring " + filepath)
-                shutil.move(filepath + ".original", filepath)
+        print("Building")
+        cmake.build()
 
     def package(self):
         self.copy("LICENSE", dst="licenses", src="../..")
