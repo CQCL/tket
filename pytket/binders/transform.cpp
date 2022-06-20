@@ -389,7 +389,10 @@ PYBIND11_MODULE(transform, m) {
           "Synthesises UCC circuits in the form that Term Sequencing "
           "provides them.",
           py::arg("synth_strat") = Transforms::PauliSynthStrat::Sets,
-          py::arg("cx_config") = CXConfigType::Snake);
+          py::arg("cx_config") = CXConfigType::Snake)
+      .def_static(
+          "RestrictZZPhaseAngles", &Transforms::restrict_ZZPhase_angles,
+          "Fixes all ZZPhase gate angles to [-1, 1) half turns.");
   m.def(
       "separate_classical", &Transforms::separate_classical,
       "Separate the input circuit into a 'main' circuit and a classical "

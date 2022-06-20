@@ -2092,5 +2092,36 @@ SCENARIO("Synthesis with conditional gates") {
   check_conditions(SynthesiseUMD(), c);
 }
 
+SCENARIO("Restricting ZZPhase gate angles.") {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::ZZPhase, 0.5, {0, 1});
+  c.add_op<unsigned>(OpType::ZZPhase, 1.4, {0, 1});
+  c.add_op<unsigned>(OpType::ZZPhase, 1.0, {1, 0});
+  c.add_op<unsigned>(OpType::ZZPhase, -0.5, {0, 1});
+  c.add_op<unsigned>(OpType::ZZPhase, -1.3, {0, 1});
+  c.add_op<unsigned>(OpType::ZZPhase, -1.0, {0, 1});
+  REQUIRE(Transforms::restrict_ZZPhase_angles().apply(c));
+  std::vector<Command> coms = c.get_commands();
+  REQUIRE(coms.size() == 8);
+  // REQUIRE(eval_expr(coms[0].get_op_ptr()->get_params[0]).value() == 0.5);
+  // REQUIRE(eval_expr(coms[1].get_op_ptr()->get_params[0]).value() == 0.5);
+  // REQUIRE(eval_expr(coms[2].get_op_ptr()->get_params[0]).value() == 1.0);
+  // REQUIRE(eval_expr(coms[3].get_op_ptr()->get_params[0]).value() == 1.0);
+  // REQUIRE(eval_expr(coms[4].get_op_ptr()->get_params[0]).value() == 0.5);
+  // REQUIRE(eval_expr(coms[5].get_op_ptr()->get_params[0]).value() == 0.5);
+  // REQUIRE(eval_expr(coms[6].get_op_ptr()->get_params[0]).value() == 1.0);
+  // REQUIRE(eval_expr(coms[7].get_op_ptr()->get_params[0]).value() == 1.0);
+
+
+  for(auto x : coms){
+    Op_ptr op = x.get_op_ptr();
+    auto params = op->get_params(); 
+    REQUIRE(params.size() == 1);
+    std::cout << op->get_name() << std::endl;
+    std::cout << eval_expr(params[0]).value() << std::endl;
+
+  }
+}
+
 }  // namespace test_Synthesis
 }  // namespace tket

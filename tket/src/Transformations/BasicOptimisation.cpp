@@ -574,6 +574,7 @@ static Transform commute_SQ_gates_through_SWAPS_helper(
     return success;
   });
 }
+
 Transform commute_SQ_gates_through_SWAPS(const avg_node_errors_t &node_errors) {
   return commute_SQ_gates_through_SWAPS_helper(
       DeviceCharacterisation(node_errors));
@@ -705,6 +706,46 @@ Transform absorb_Rz_NPhasedX() {
     circ.remove_vertices(
         all_bins, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
 
+    return success;
+  });
+}
+
+Transform restrict_ZZPhase_angles() {
+  // fixes all ZZPhase values to [-pi, pi)
+  // for half turns this is equivalent to [-1, 1)
+  return Transform([](Circuit &circ) {
+    bool success = false;
+    VertexSet bin;
+
+    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+      Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+      if (op->get_type() == OpType::ZZPhase) {
+        auto params = op->get_params();
+        TKET_ASSERT(params.size() == 1);
+        // evaluate 
+        double param_value = eval_expr(params[0]).value();
+        if (abs(param_value) == 1.0) {
+          success = true;
+          // basic optimisation, replace ZZPhase with two Rz(1)
+          Circuit replacement(2);
+          replacement.add_op<unsigned>(OpType::Rz, 1.0, {0});
+          replacement.add_op<unsigned>(OpType::Rz, 1.0, {1});
+          circ.substitute(replacement, v, Circuit::VertexDeletion::No);
+          bin.insert(v);
+        }
+        // fix the parameter to be in range [-1, 1)
+        else if (abs(param_value) > 1.0) {
+          success = true;
+          double new_param = std::fmod(param_value, 2.0);
+          if (new_param > 1) {
+            new_param = 1 - new_param;
+          }
+          circ.dag[v] = get_op_ptr(OpType::ZZPhase, exp(new_param), 2);
+        }
+      }
+    }
+    circ.remove_vertices(
+        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
     return success;
   });
 }

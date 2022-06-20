@@ -93,6 +93,13 @@ Transform commute_SQ_gates_through_SWAPS(const op_node_errors_t& node_errors);
 Transform absorb_Rz_NPhasedX();
 
 /**
+ * @brief Fixes all ZZPhase angles between [-pi, pi), i.e. parameters [-1, 1).
+ *
+ * Also converts any ZZPhase with angle in (-1, 1) to two pi Rz gates.
+ */
+Transform restrict_ZZPhase_angles();
+
+/**
  * @brief Normalises all TK2 gates so that `NormalisedTK2Predicate` is
  * satisfied.
  */
