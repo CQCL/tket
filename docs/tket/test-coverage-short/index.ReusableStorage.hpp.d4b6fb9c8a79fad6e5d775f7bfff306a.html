@@ -26,7 +26,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-17 15:27:41</td>
+      <td>2022-06-20 13:09:45</td>
     </tr>
   </table>
 </div>
@@ -270,7 +270,7 @@
       <td class="lineno"><a id="l26" href="#l26">26</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">10061</td>
+      <td class="linecount coveredLine">10194</td>
       <td class="src coveredLine">  <span class="kt">bool</span> <span class="k">operator</span><span class="o">&lt;</span><span class="p">(</span><span class="k">const</span> <span class="n">ReusableStorageId</span><span class="o">&amp;</span> <span class="n">other</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span></td>
     </tr>
 
@@ -278,7 +278,7 @@
       <td class="lineno"><a id="l27" href="#l27">27</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">10061</td>
+      <td class="linecount coveredLine">10194</td>
       <td class="src coveredLine">    <span class="k">return</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="n">other</span><span class="p">.</span><span class="n">index</span><span class="p">;</span></td>
     </tr>
 
@@ -574,7 +574,7 @@
       <td class="lineno"><a id="l64" href="#l64">64</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">153028</td>
+      <td class="linecount coveredLine">164579</td>
       <td class="src coveredLine"><span class="n">ReusableStorageId</span> <span class="n">ReusableStorage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">get_new_id</span><span class="p">()</span> <span class="p">{</span></td>
     </tr>
 
@@ -592,12 +592,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 1386 times.</div>
-          <div class="takenBranch">&check; Branch 2 taken 151642 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 1529 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 163050 times.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">153028</td>
+      <td class="linecount coveredLine">164579</td>
       <td class="src coveredLine">  <span class="k">if</span> <span class="p">(</span><span class="n">m_released_indices</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span></td>
     </tr>
 
@@ -605,7 +605,7 @@
       <td class="lineno"><a id="l67" href="#l67">67</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">1386</td>
+      <td class="linecount coveredLine">1529</td>
       <td class="src coveredLine">    <span class="n">id</span><span class="p">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">m_data</span><span class="p">.</span><span class="n">size</span><span class="p">();</span></td>
     </tr>
 
@@ -615,12 +615,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 1386 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 1529 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">1386</td>
+      <td class="linecount coveredLine">1529</td>
       <td class="src coveredLine">    <span class="n">m_data</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span></td>
     </tr>
 
@@ -636,7 +636,7 @@
       <td class="lineno"><a id="l70" href="#l70">70</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">151642</td>
+      <td class="linecount coveredLine">163050</td>
       <td class="src coveredLine">    <span class="n">id</span><span class="p">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">m_released_indices</span><span class="p">.</span><span class="n">back</span><span class="p">();</span></td>
     </tr>
 
@@ -644,7 +644,7 @@
       <td class="lineno"><a id="l71" href="#l71">71</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">151642</td>
+      <td class="linecount coveredLine">163050</td>
       <td class="src coveredLine">    <span class="n">m_released_indices</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span></td>
     </tr>
 
@@ -660,7 +660,7 @@
       <td class="lineno"><a id="l73" href="#l73">73</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">153028</td>
+      <td class="linecount coveredLine">164579</td>
       <td class="src coveredLine">  <span class="k">return</span> <span class="n">id</span><span class="p">;</span></td>
     </tr>
 
@@ -692,7 +692,7 @@
       <td class="lineno"><a id="l77" href="#l77">77</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">152737</td>
+      <td class="linecount coveredLine">164269</td>
       <td class="src coveredLine"><span class="kt">void</span> <span class="n">ReusableStorage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">release</span><span class="p">(</span><span class="n">ReusableStorageId</span> <span class="n">id</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -700,7 +700,7 @@
       <td class="lineno"><a id="l78" href="#l78">78</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">152737</td>
+      <td class="linecount coveredLine">164269</td>
       <td class="src coveredLine">  <span class="n">m_released_indices</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">index</span><span class="p">);</span></td>
     </tr>
 
@@ -708,7 +708,7 @@
       <td class="lineno"><a id="l79" href="#l79">79</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">152737</td>
+      <td class="linecount coveredLine">164269</td>
       <td class="src coveredLine"><span class="p">}</span></td>
     </tr>
 
@@ -732,7 +732,7 @@
       <td class="lineno"><a id="l82" href="#l82">82</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">2923</td>
+      <td class="linecount coveredLine">2941</td>
       <td class="src coveredLine"><span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">ReusableStorage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">get_object</span><span class="p">(</span><span class="n">ReusableStorageId</span> <span class="n">id</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span></td>
     </tr>
 
@@ -740,7 +740,7 @@
       <td class="lineno"><a id="l83" href="#l83">83</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">2923</td>
+      <td class="linecount coveredLine">2941</td>
       <td class="src coveredLine">  <span class="k">return</span> <span class="n">m_data</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">index</span><span class="p">);</span></td>
     </tr>
 
@@ -772,7 +772,7 @@
       <td class="lineno"><a id="l87" href="#l87">87</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">253954</td>
+      <td class="linecount coveredLine">267234</td>
       <td class="src coveredLine"><span class="n">T</span><span class="o">&amp;</span> <span class="n">ReusableStorage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">get_nonconst_object</span><span class="p">(</span><span class="n">ReusableStorageId</span> <span class="n">id</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -780,7 +780,7 @@
       <td class="lineno"><a id="l88" href="#l88">88</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">253954</td>
+      <td class="linecount coveredLine">267234</td>
       <td class="src coveredLine">  <span class="k">return</span> <span class="n">m_data</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">index</span><span class="p">);</span></td>
     </tr>
 

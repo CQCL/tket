@@ -1,2 +1,2 @@
-lines: 87.0% (24137 out of 27757)
-branches: 51.5% (30439 out of 59131)
+lines: 87.0% (24223 out of 27847)
+branches: 51.0% (30499 out of 59847)
