@@ -103,7 +103,6 @@ class TketConan(ConanFile):
 
     def build(self):
         cmake = self._configure_cmake()
-        print("Building")
         cmake.build()
 
     def package(self):
