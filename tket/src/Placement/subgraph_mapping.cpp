@@ -36,11 +36,10 @@ std::vector<qubit_bimap_t> monomorphism_edge_break(
         "Interaction graph too large for architecture");
   }
 
-  using ArchitectureConn = Architecture::UndirectedConnGraph;
-  using InteractionGraph = QubitGraph::UndirectedConnGraph;
-
-  ArchitectureConn undirected_target = arc.get_undirected_connectivity();
-  InteractionGraph undirected_pattern = q_graph.get_undirected_connectivity();
+  Architecture::UndirectedConnGraph undirected_target =
+      arc.get_undirected_connectivity();
+  QubitGraph::UndirectedConnGraph undirected_pattern =
+      q_graph.get_undirected_connectivity();
 
   std::chrono::time_point<std::chrono::steady_clock> end_time =
       std::chrono::steady_clock::now() + std::chrono::milliseconds(timeout);
@@ -51,7 +50,7 @@ std::vector<qubit_bimap_t> monomorphism_edge_break(
                               .count();
     if (search_timeout <= 0) search_timeout = 1;
 
-    auto all_maps = get_unweighted_subgraph_monomorphisms(
+    std::vector<qubit_bimap_t> all_maps = get_unweighted_subgraph_monomorphisms(
         undirected_pattern, undirected_target, max_matches, timeout);
     std::sort(all_maps.begin(), all_maps.end());
 
@@ -75,7 +74,7 @@ std::vector<qubit_bimap_t> monomorphism_edge_break(
         boost::num_edges(undirected_pattern);
     // It MUST have found a solution, if no pattern edges!
     TKET_ASSERT(current_number_of_edges > 0);
-    using edge_t = graphs::utils::edge<InteractionGraph>;
+    using edge_t = graphs::utils::edge<QubitGraph::UndirectedConnGraph>;
     auto e_its = boost::edges(undirected_pattern);
     auto max_e_it = boost::first_max_element(
         e_its.first, e_its.second,
