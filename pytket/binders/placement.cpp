@@ -38,7 +38,8 @@ void amend_config_from_kwargs(NoiseAwarePlacement &pobj, py::kwargs kwargs) {
     config_.max_interaction_edges =
         py::cast<unsigned>(kwargs["max_interaction_edges"]);
   if (kwargs.contains("max_matches"))
-    config_.vf2_max_matches = py::cast<unsigned>(kwargs["max_matches"]);
+    config_.monomorphism_max_matches =
+        py::cast<unsigned>(kwargs["max_matches"]);
   if (kwargs.contains("contraction_ratio"))
     config_.arc_contraction_ratio =
         py::cast<unsigned>(kwargs["contraction_ratio"]);
@@ -56,7 +57,8 @@ void amend_config_from_kwargs(GraphPlacement &pobj, py::kwargs kwargs) {
     config_.max_interaction_edges =
         py::cast<unsigned>(kwargs["max_interaction_edges"]);
   if (kwargs.contains("max_matches"))
-    config_.vf2_max_matches = py::cast<unsigned>(kwargs["max_matches"]);
+    config_.monomorphism_max_matches =
+        py::cast<unsigned>(kwargs["max_matches"]);
   if (kwargs.contains("contraction_ratio"))
     config_.arc_contraction_ratio =
         py::cast<unsigned>(kwargs["contraction_ratio"]);
