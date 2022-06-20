@@ -8,7 +8,6 @@ on:
   push:
     branches:
       - develop
-      - feature/1799_attempt_2_add_unweighted_wsm_to_graph_placement
   schedule:
     # 03:00 every Saturday morning
     - cron: '0 3 * * 6'
