@@ -15,6 +15,7 @@
 #pragma once
 #include <string>
 
+#include "../Common/LogicalStack.hpp"
 #include "../GraphTheoretic/DomainInitialiser.hpp"
 
 namespace tket {
@@ -70,15 +71,14 @@ struct NodesRawData {
       // The index in the std::vector of node objects
       // when this new domain was first set (i.e., changed from
       // the domain in the previous node).
-      unsigned node_level;
+      unsigned node_index;
     };
 
     // Not all domains are stored; only those which have just changed.
-    std::vector<Entry> entries;
-
-    // The index of the "logical back()" of "entries". All data beyond
-    // is junk to be reused (faster than reallocating).
-    unsigned entries_back_index;
+    // This is for performance reasons; otherwise we would have to copy
+    // the domain for EVERY pv, at EVERY node, even if only a few domains
+    // changed from one node to the next.
+    LogicalStack<Entry> entries;
 
     std::string str() const;
   };
@@ -124,20 +124,15 @@ struct NodesRawData {
     std::string str() const;
   };
 
-  std::vector<NodeData> nodes_data;
-
-  /** The index of the current search node in "nodes_data".
-   * Always valid; but any NodeData objects beyond this
-   * are junk data to be reused (much faster than resizing and
-   * reallocating as we move vertically).
-   */
-  unsigned current_node_level;
+  LogicalStack<NodeData> nodes_data;
 
   explicit NodesRawData(
       const DomainInitialiser::InitialDomains& initial_domains);
 
   const NodeData& get_current_node() const;
   NodeData& get_current_node_nonconst();
+
+  unsigned current_node_index() const;
 
   DomainData& get_most_recent_domain_data_for_pv(VertexWSM);
 };
@@ -147,6 +142,11 @@ class NodesRawDataWrapper {
  public:
   explicit NodesRawDataWrapper(
       const DomainInitialiser::InitialDomains& initial_domains);
+
+  /** For debugging and testing, it's helpful to access the raw data.
+   * @return A const reference to the internal NodesRawData object.
+   */
+  const NodesRawData& get_raw_data_for_debug() const;
 
  private:
   NodesRawData m_raw_data;

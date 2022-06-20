@@ -55,16 +55,16 @@ class ValueOrdering {
   };
 
   // Element [i] is for vertices of degree D-i.
-  std::vector<HighDegreeVerticesData> m_data;
+  std::vector<HighDegreeVerticesData> m_entries_for_high_degree_vertices;
 
-  // Fills m_data.
-  void fill_data(
+  // Fills m_entries_for_high_degree_vertices.
+  void fill_entries_for_high_degree_vertices(
       const std::set<VertexWSM>& possible_values,
       const NeighboursData& target_ndata);
 
-  // Once fill_data has been called, select a vertex
-  // at random, biased so that the probability is proportional
-  // to the mass.
+  // Once fill_entries_for_high_degree_vertices has been called,
+  // select a vertex at random,
+  // biased so that the probability is proportional to the mass.
   VertexWSM get_random_choice_from_data(RNG& rng) const;
 };
 

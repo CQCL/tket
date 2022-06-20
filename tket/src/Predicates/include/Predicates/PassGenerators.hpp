@@ -19,6 +19,7 @@
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/RoutingMethod.hpp"
 #include "Transformations/ContextualReduction.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 
 namespace tket {
@@ -120,6 +121,39 @@ PassPtr gen_user_defined_swap_decomp_pass(const Circuit& replacement_circ);
 PassPtr KAKDecomposition(double cx_fidelity = 1.);
 
 /**
+ * @brief Decomposes each TK2 gate into two-qubit gates.
+ *
+ * We currently support CX, ZZMax and ZZPhase.
+ *
+ * If one or more gate fidelities are provided, the two-qubit gate
+ * type achieving the highest fidelity will be chosen for the
+ * decomposition, as measured using squared trace fidelity.
+ * If no fidelities are provided, the TK2 gates will be decomposed
+ * exactly using CX gates.
+ *
+ * All TK2(α, β, γ) gates must be normalised to the Weyl chamber, i.e.
+ * 0.5 ≥ 𝛼 ≥ 𝛽 ≥ |𝛾|.
+ *
+ * Gate fidelities are passed as keyword arguments to perform noise-aware
+ * decompositions. We currently support `CX_fidelity`, `ZZMax_fidelity` and
+ * `ZZPhase_fidelity`. If provided, the `CX` and `ZZMax` fidelities must be
+ * given by a single floating point fidelity. The `ZZPhase` fidelity is given as
+ * a lambda float -> float, mapping a ZZPhase angle parameter to its fidelity.
+ * These parameters will be used to return the optimal decomposition of each TK2
+ * gate, taking noise into consideration.
+ *
+ * If the TK2 angles are symbolic values, the decomposition will be exact
+ * (i.e. not noise-aware). It is not possible in general to obtain optimal
+ * decompositions for arbitrary symbolic parameters, so consider substituting
+ * for concrete values if possible.
+ *
+ * @param fid The two-qubit gate fidelities (optional).
+ * @return PassPtr
+ */
+PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid);
+PassPtr DecomposeTK2();
+
+/**
  * Resynthesize and squash three-qubit interactions.
  *
  * Steps through the circuit accumulating sequences of 2- and 3-qubit
@@ -197,5 +231,28 @@ PassPtr gen_contextual_pass(
  * FullPeepholeOptimise
  */
 PassPtr PauliSquash(Transforms::PauliSynthStrat strat, CXConfigType cx_config);
+
+/**
+ * Turns all PhasedX and NPhasedX gates into global gates
+ *
+ * Replaces any PhasedX gates with global NPhasedX gates.
+ * By default, this transform will squash all single-qubit gates to PhasedX and
+ * Rz gates before proceeding further. Existing non-global NPhasedX will not
+ * be preserved. This is the recommended setting for best performance.
+ *
+ * If squashing is disabled, each non-global PhasedX gate will be replaced with
+ * two global NPhasedX, but any other gates will be left untouched.
+ *
+ * @param squash Whether to squash the circuit in pre-processing
+ *      (default: true).
+ *
+ * If squash=true (default), the `GlobalisePhasedX().apply` method will always
+ * return true. For squash=false, `apply()` will return true if the circuit was
+ * changed and false otherwise.
+ *
+ * It is not recommended to use this pass with symbolic expressions, as
+ * in certain cases a blow-up in symbolic expression sizes may occur.
+ */
+PassPtr GlobalisePhasedX(bool squash = true);
 
 }  // namespace tket

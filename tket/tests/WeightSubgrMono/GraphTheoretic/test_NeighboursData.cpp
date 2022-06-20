@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <stdexcept>
 
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
@@ -117,8 +117,9 @@ static std::string to_string(const NeighboursData& ndata) {
   ss << number_of_vertices << " vertices. Neighbours and weights:";
   for (unsigned vv = 0; vv < number_of_vertices; ++vv) {
     ss << "\nv=" << vv << ": [ ";
-    const auto& data = ndata.get_neighbours_and_weights(vv);
-    for (const auto& entry : data) {
+    const std::vector<std::pair<VertexWSM, WeightWSM>>& data =
+        ndata.get_neighbours_and_weights(vv);
+    for (const std::pair<VertexWSM, WeightWSM>& entry : data) {
       ss << entry.first << ";" << entry.second << " ";
     }
     ss << "]";

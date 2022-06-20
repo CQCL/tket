@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <Utils/TketLog.hpp>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <sstream>
 #include <string>
 

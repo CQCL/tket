@@ -21,7 +21,7 @@ class TketProptestsConan(ConanFile):
     version = "0.6.3"
     license = "CQC Proprietary"
     author = "Alec Edgington <alec.edgington@cambridgequantum.com>"
-    url = "https://github.com/CQCL-DEV/tket"
+    url = "https://github.com/CQCL/tket"
     description = "Property tests for tket"
     topics = ("quantum", "computation", "compiler")
     settings = "os", "compiler", "build_type", "arch"
@@ -29,7 +29,7 @@ class TketProptestsConan(ConanFile):
     exports_sources = "../../tket/proptests/*"
     requires = (
         "tket/1.0.1",
-        "rapidcheck/cci.20210702",
+        "rapidcheck/cci.20220514",
     )
 
     def build(self):

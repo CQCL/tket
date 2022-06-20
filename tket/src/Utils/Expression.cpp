@@ -117,6 +117,16 @@ Expr sin_halfpi_times(const Expr& e) {
   return cos_halfpi_times(SymEngine::expand(SymEngine::integer(1) - e));
 }
 
+Expr minus_times(const Expr& e) {
+  Expr e1 = -e;
+  Expr e2 = SymEngine::expand(e1);
+
+  unsigned e1_size = e1.get_basic()->dumps().size();
+  unsigned e2_size = e2.get_basic()->dumps().size();
+
+  return e2_size < e1_size ? e2 : e1;
+}
+
 bool equiv_expr(const Expr& e0, const Expr& e1, unsigned n, double tol) {
   std::optional<double> eval0 = eval_expr(e0);
   std::optional<double> eval1 = eval_expr(e1);

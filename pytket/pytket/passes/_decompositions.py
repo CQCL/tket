@@ -87,7 +87,10 @@ def _TK1_to_X_SX_Rz(a: Param, b: Param, c: Param) -> Circuit:
         correction_phase += (
             int_half(float(b) - 0.5) + int_half(float(a)) + int_half(float(c)) - 0.25
         )
-
+    elif approx_0_mod_2(b - 0.5):
+        # Use SX.Rz(2m-0.5).SX = (-1)^{m}e^{i \pi /4} Rz(-0.5).SX.Rz(-0.5)
+        circ.Rz(c, 0).SX(0).Rz(a, 0)
+        correction_phase += int_half(float(b) - 0.5) - 0.25
     elif approx_0_mod_2(b + 0.5) and approx_0_mod_2(a) and approx_0_mod_2(c):
         # a = 2k, b = 2m-0.5, c = 2n
         # Rz(2k)Rx(2m - 0.5)Rz(2n) = (-1)^{k+m+n}e^{i \pi /4} X.SX
@@ -95,6 +98,10 @@ def _TK1_to_X_SX_Rz(a: Param, b: Param, c: Param) -> Circuit:
         correction_phase += (
             int_half(float(b) + 0.5) + int_half(float(a)) + int_half(float(c)) + 0.25
         )
+    elif approx_0_mod_2(b + 0.5):
+        # Use SX.Rz(2m+0.5).SX = (-1)^{m}e^{i \pi /4} Rz(0.5).SX.Rz(0.5)
+        circ.Rz(c + 1, 0).SX(0).Rz(a + 1, 0)
+        correction_phase += int_half(float(b) - 1.5) - 0.25
     elif approx_0_mod_2(a - 0.5) and approx_0_mod_2(c - 0.5):
         # Rz(2k + 0.5)Rx(b)Rz(2m + 0.5) = -i(-1)^{k+m}SX.Rz(1-b).SX
         circ.SX(0).Rz(1 - b, 0).SX(0)

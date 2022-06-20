@@ -548,6 +548,23 @@ PassPtr KAKDecomposition(double cx_fidelity) {
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
+PassPtr DecomposeTK2() { return DecomposeTK2({}); }
+PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid) {
+  Transform t = Transforms::decompose_TK2(fid);
+  PredicatePtr normalised_tk2 = std::make_shared<NormalisedTK2Predicate>();
+  PredicatePtrMap precons{CompilationUnit::make_type_pair(normalised_tk2)};
+  PredicateClassGuarantees preserve_all;
+  PostConditions postcons{{}, preserve_all, Guarantee::Preserve};
+  nlohmann::json j;
+  j["name"] = "DecomposeTK2";
+  nlohmann::json fid_json;
+  fid_json["CX"] = fid.CX_fidelity;
+  fid_json["ZZPhase"] = "SERIALIZATION OF FUNCTIONS IS NOT SUPPORTED";
+  fid_json["ZZMax"] = fid.ZZMax_fidelity;
+  j["fidelities"] = fid_json;
+  return std::make_shared<StandardPass>(precons, t, postcons, j);
+}
+
 PassPtr ThreeQubitSquash(bool allow_swaps) {
   Transform t = Transforms::two_qubit_squash() >>
                 Transforms::three_qubit_squash() >>
@@ -724,6 +741,21 @@ PassPtr PauliSquash(Transforms::PauliSynthStrat strat, CXConfigType cx_config) {
   std::vector<PassPtr> seq = {
       gen_synthesise_pauli_graph(strat, cx_config), FullPeepholeOptimise()};
   return std::make_shared<SequencePass>(seq);
+}
+
+PassPtr GlobalisePhasedX(bool squash) {
+  Transform t = Transforms::globalise_PhasedX(squash);
+  PredicatePtrMap precons;
+  PredicatePtr globalphasedx = std::make_shared<GlobalPhasedXPredicate>();
+  PredicatePtrMap spec_postcons = {
+      CompilationUnit::make_type_pair(globalphasedx)};
+  PredicateClassGuarantees g_postcons;
+  PostConditions postcon{spec_postcons, {}, Guarantee::Preserve};
+  // record pass config
+  nlohmann::json j;
+  j["name"] = "GlobalisePhasedX";
+  j["squash"] = squash;
+  return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
 }  // namespace tket

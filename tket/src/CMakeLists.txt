@@ -63,7 +63,6 @@ list(APPEND TKET_COMPS
     Utils
     WeightSubgrMono
     TokenSwapping
-    ZX
     OpType
     Clifford
     Ops
@@ -75,13 +74,15 @@ list(APPEND TKET_COMPS
     Simulation
     Diagonalisation
     Characterisation
+    ZX
     Converters
     Placement
     ArchAwareSynth
     Mapping    
     MeasurementSetup
     Transformations    
-    Predicates)
+    Predicates
+    )
 
 foreach(COMP ${TKET_COMPS})
     set(TKET_${COMP}_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/${COMP}/include)

@@ -46,9 +46,6 @@ class InvalidParameterCount : public std::logic_error {
       : std::logic_error("Gate has an invalid number of parameters") {}
 };
 
-/** A specific entry or exit port of an op */
-typedef unsigned port_t;
-
 /**
  * Abstract class representing an operation type
  */
@@ -102,32 +99,35 @@ class Op : public std::enable_shared_from_this<Op> {
   virtual SymSet free_symbols() const = 0;
 
   /**
-   * Which Pauli, if any, commutes with the operation at a given port
+   * Which Pauli, if any, commutes with the operation at a given qubit
    *
-   * @param port port number at which Pauli should commute
+   * @param i qubit number at which Pauli should commute
    * @return A Pauli that commutes with the given operation
-   * @retval std::nullopt no Pauli commutes
+   * @retval std::nullopt no Pauli commutes (or operation not a gate)
    * @retval Pauli::I any Pauli commutes
-   * @throw NotValid if operation is not a gate
    */
-  virtual std::optional<Pauli> commuting_basis(port_t port) const {
-    (void)port;
-    throw NotValid();
+  virtual std::optional<Pauli> commuting_basis(unsigned i) const {
+    (void)i;
+    return std::nullopt;
   }
 
   /**
-   * Whether the operation commutes with the given Pauli at the given port
+   * Whether the operation commutes with the given Pauli at the given qubit
    *
    * @param colour Pauli operation type
-   * @param port operation port
-   * @throw NotValid if operation is not a gate
+   * @param i operation qubit index
    */
   virtual bool commutes_with_basis(
-      const std::optional<Pauli> &colour, port_t port) const {
+      const std::optional<Pauli> &colour, unsigned i) const {
     (void)colour;
-    (void)port;
-    throw NotValid();
+    (void)i;
+    return false;
   }
+
+  /**
+   * return if the op is external
+   */
+  virtual bool is_extern() const { return false; }
 
   /** Vector specifying type of data for each port on op */
   virtual op_signature_t get_signature() const = 0;
@@ -139,6 +139,17 @@ class Op : public std::enable_shared_from_this<Op> {
    * @throw NotValid if operation is not a \ref Gate
    */
   virtual std::optional<double> is_identity() const { throw NotValid(); }
+
+  /**
+   * Test whether operation is in the Clifford group.
+   *
+   * A return value of true guarantees that the operation is Clifford. (Note
+   * that the converse is not the case: some Clifford operations may not be
+   * detected as such.)
+   *
+   * @retval true operation is in the Clifford group
+   */
+  virtual bool is_clifford() const { return false; }
 
   /**
    * If meaningful and implemented, return the numerical unitary matrix

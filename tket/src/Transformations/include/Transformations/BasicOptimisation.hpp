@@ -37,14 +37,6 @@ Transform squash_1qb_to_tk1();
 // Produces: Any gates
 Transform commute_through_multis();
 
-// replaces every non-global PhasedX gate with two global PhasedX gates,
-// using:
-//
-//         PhX(α, β) = PhX(-1/2, β + 1/2) Rz(α) PhX(1/2, β + 1/2)
-//
-// Setting α = 0 on non-targeted qubits makes the RHS the identity
-Transform globalise_phasedx();
-
 // commutes Rz gates through ZZMax, and combines adjacent ZZMax gates
 // Expects: ZZMax, Rz, Rx
 // Produces: ZZMax, Rz, Rx
@@ -91,6 +83,20 @@ Transform squash_factory(
 // gates, SWAP gates Produces: any single qubit gates, SWAP gates
 Transform commute_SQ_gates_through_SWAPS(const avg_node_errors_t& node_errors);
 Transform commute_SQ_gates_through_SWAPS(const op_node_errors_t& node_errors);
+
+/**
+ * @brief Absorb Rz gates into NPhasedX where possible
+ *
+ * For any gate NPhasedX(𝛼, 𝛽) in the circuit, try to change 𝛽 to reduce the
+ * number of surrounding Rz gates.
+ */
+Transform absorb_Rz_NPhasedX();
+
+/**
+ * @brief Normalises all TK2 gates so that `NormalisedTK2Predicate` is
+ * satisfied.
+ */
+Transform normalise_TK2();
 
 }  // namespace Transforms
 

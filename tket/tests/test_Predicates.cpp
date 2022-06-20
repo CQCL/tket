@@ -12,12 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <memory>
 
+#include "Circuit/Boxes.hpp"
+#include "Gate/SymTable.hpp"
 #include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
+#include "Predicates/PassLibrary.hpp"
 #include "Predicates/Predicates.hpp"
+#include "Simulation/CircuitSimulator.hpp"
 #include "testutil.hpp"
 
 namespace tket {
@@ -159,6 +163,69 @@ SCENARIO("Test out basic Predicate useage") {
       REQUIRE_FALSE(pp->verify(circ));
     }
   }
+  GIVEN("NormalisedTK2Predicate") {
+    PredicatePtr pp = std::make_shared<NormalisedTK2Predicate>();
+    Circuit circ(3, 1);
+    circ.add_op<unsigned>(OpType::TK2, {0.4, 0.2, -0.1}, {0, 1});
+    circ.add_op<unsigned>(OpType::TK1, {2.42, 1.214, -1.18}, {0});
+    circ.add_op<unsigned>(OpType::TK1, {2.11, 0.123, 2.23}, {1});
+    circ.add_op<unsigned>(OpType::TK2, {0.48, 0.34, 0.1}, {1, 2});
+    REQUIRE(pp->verify(circ));
+    WHEN("Add a non-normalised TK2 gate") {
+      circ.add_op<unsigned>(OpType::TK2, {0.2, 0.3, 0.1}, {0, 2});
+      auto u_orig = tket_sim::get_unitary(circ);
+      CompilationUnit cu(circ);
+      REQUIRE_FALSE(pp->verify(circ));
+      REQUIRE(NormaliseTK2()->apply(cu));
+      REQUIRE(!NormaliseTK2()->apply(cu));
+      circ = cu.get_circ_ref();
+      REQUIRE(pp->verify(circ));
+      REQUIRE(circ.count_gates(OpType::TK2) == 3);
+      auto u_res = tket_sim::get_unitary(circ);
+      REQUIRE(u_res.isApprox(u_orig));
+    }
+    WHEN("Add 2x non-normalised TK2 gate") {
+      circ.add_op<unsigned>(OpType::TK2, {0.12, -0.3, 0.1}, {0, 2});
+      circ.add_op<unsigned>(OpType::TK2, {1.213, 0.3, 2.34}, {1, 2});
+      auto u_orig = tket_sim::get_unitary(circ);
+      CompilationUnit cu(circ);
+      REQUIRE_FALSE(pp->verify(circ));
+      REQUIRE(NormaliseTK2()->apply(cu));
+      REQUIRE(!NormaliseTK2()->apply(cu));
+      circ = cu.get_circ_ref();
+      REQUIRE(pp->verify(circ));
+      REQUIRE(circ.count_gates(OpType::TK2) == 4);
+      auto u_res = tket_sim::get_unitary(circ);
+      REQUIRE(u_res.isApprox(u_orig));
+    }
+    WHEN("Conditional TK2 gate") {
+      Vertex v = circ.add_conditional_gate<unsigned>(
+          OpType::TK2, {0.12, -0.3, 0.1}, {0, 1}, {0}, 1);
+      Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+      Circuit cond_circ(2);
+      cond_circ.add_op<unsigned>(
+          static_cast<const Conditional &>(*op).get_op(), {0, 1});
+      auto cond_u_orig = tket_sim::get_unitary(cond_circ);
+
+      CompilationUnit cu(circ);
+      REQUIRE_FALSE(pp->verify(circ));
+      REQUIRE(NormaliseTK2()->apply(cu));
+      REQUIRE(!NormaliseTK2()->apply(cu));
+      circ = cu.get_circ_ref();
+      REQUIRE(pp->verify(circ));
+      REQUIRE(circ.count_gates(OpType::TK2) == 2);
+      cond_circ = Circuit(2);
+      for (auto cmd : circ.get_commands()) {
+        Op_ptr op = cmd.get_op_ptr();
+        if (op->get_type() == OpType::Conditional) {
+          op = static_cast<const Conditional &>(*op).get_op();
+          cond_circ.add_op(op, cmd.get_qubits());
+        }
+      }
+      auto cond_u_res = tket_sim::get_unitary(cond_circ);
+      REQUIRE(cond_u_res.isApprox(cond_u_orig));
+    }
+  }
 }
 
 SCENARIO("Make sure combining predicates for `implies` throws as expected") {
@@ -179,8 +246,47 @@ SCENARIO("Test CliffordCircuitPredicate") {
   circ.add_op<unsigned>(OpType::CX, {5, 6});
   circ.add_op<unsigned>(OpType::CX, {6, 7});
   circ.add_op<unsigned>(OpType::H, {2});
+  circ.add_barrier({3, 4, 5});
+  circ.add_op<unsigned>(OpType::Rx, -0.5, {0});
+  circ.add_op<unsigned>(OpType::Ry, 1.5, {1});
+  circ.add_op<unsigned>(OpType::Rz, 0.5, {2});
+  circ.add_op<unsigned>(OpType::U1, 1.0, {3});
+  circ.add_op<unsigned>(OpType::U2, {-0.5, 1.5}, {4});
+  circ.add_op<unsigned>(OpType::U3, {0., 1.5, 4.5}, {5});
+  circ.add_op<unsigned>(OpType::TK1, {-0.5, 1.5, 4.}, {6});
+  circ.add_op<unsigned>(OpType::TK2, {1.5, 2.5, -1.}, {7, 0});
+  circ.add_op<unsigned>(OpType::XXPhase, -0.5, {1, 2});
+  circ.add_op<unsigned>(OpType::YYPhase, 0.5, {2, 3});
+  circ.add_op<unsigned>(OpType::ZZPhase, 0., {3, 4});
+  circ.add_op<unsigned>(OpType::XXPhase3, 1.0, {4, 5, 6});
+  circ.add_op<unsigned>(OpType::PhasedX, {-0.5, 0.5}, {5});
+  circ.add_op<unsigned>(OpType::NPhasedX, {1.5, 1.5}, {6, 7});
+  circ.add_op<unsigned>(OpType::ISWAP, 1.0, {0, 1});
+  circ.add_op<unsigned>(OpType::ESWAP, 2.0, {2, 3});
+  circ.add_op<unsigned>(OpType::PhasedISWAP, {1.5, 0.}, {4, 5});
+  circ.add_op<unsigned>(OpType::FSim, {0.5, 1.}, {6, 7});
+  CircBox cbox(circ);
+  Circuit circ1(8);
+  circ1.add_box(cbox, {0, 1, 2, 3, 4, 5, 6, 7});
+  PauliExpBox pebox({Pauli::Y, Pauli::Z}, 0.5);
+  circ1.add_box(pebox, {0, 1});
+  Circuit setup(2);
+  Sym a = SymTable::fresh_symbol("a");
+  setup.add_op<unsigned>(OpType::Rx, {a}, {0});
+  setup.add_op<unsigned>(OpType::CX, {0, 1});
+  setup.add_op<unsigned>(OpType::Ry, 0.5, {0});
+  composite_def_ptr_t def = CompositeGateDef::define_gate("g", setup, {a});
+  CustomGate cgbox(def, {1.5});
+  circ1.add_box(cgbox, {2, 3});
+  Eigen::Matrix2cd U;
+  U << 0.5 - 0.5 * i_, 0.5 + 0.5 * i_, 0.5 + 0.5 * i_, 0.5 - 0.5 * i_;
+  Unitary1qBox u1box(U);
+  circ1.add_box(u1box, {4});
   PredicatePtr ccp = std::make_shared<CliffordCircuitPredicate>();
-  REQUIRE(ccp->verify(circ));
+  REQUIRE(ccp->verify(circ1));
+  Circuit circ2(2);
+  circ2.add_op<unsigned>(OpType::TK2, {1.5, 2.5, -1.01}, {0, 1});
+  REQUIRE(!ccp->verify(circ2));
 }
 
 SCENARIO("Test routing-related predicates' meet and implication") {

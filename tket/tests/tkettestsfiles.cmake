@@ -28,12 +28,14 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_BitFunctions.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_DyadicFraction.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_GeneralUtils.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_LogicalStack.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_SetIntersection.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/EndToEndWrappers/test_SolutionWSM.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/GraphTheoretic/test_FilterUtils.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/GraphTheoretic/test_GeneralStructs.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/GraphTheoretic/test_NeighboursData.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Searching/test_NodesRawData.cpp
+    ${TKET_TESTS_DIR}/WeightSubgrMono/Searching/test_NodesRawDataTraversals.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_CubicLattice.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_FixedSmallGraphs.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/SolvingProblems/test_RandomGraphs.cpp
@@ -76,11 +78,15 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Ops/test_ClassicalOps.cpp
     ${TKET_TESTS_DIR}/Ops/test_Expression.cpp
     ${TKET_TESTS_DIR}/Ops/test_Ops.cpp
+    ${TKET_TESTS_DIR}/OpType/test_OpTypeFunctions.cpp
+    ${TKET_TESTS_DIR}/Passes/test_SynthesiseTK.cpp
+    ${TKET_TESTS_DIR}/Passes/test_SynthesiseTket.cpp
     ${TKET_TESTS_DIR}/Gate/test_GateUnitaryMatrix.cpp
     ${TKET_TESTS_DIR}/Simulation/test_CircuitSimulator.cpp
     ${TKET_TESTS_DIR}/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
     ${TKET_TESTS_DIR}/Circuit/test_Boxes.cpp
     ${TKET_TESTS_DIR}/Circuit/test_Circ.cpp
+    ${TKET_TESTS_DIR}/Circuit/test_CircPool.cpp
     ${TKET_TESTS_DIR}/Circuit/test_Symbolic.cpp
     ${TKET_TESTS_DIR}/Circuit/test_ThreeQubitConversion.cpp
     ${TKET_TESTS_DIR}/test_CliffTableau.cpp
@@ -109,6 +115,8 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/test_MeasurementReduction.cpp
     ${TKET_TESTS_DIR}/test_PhaseGadget.cpp
     ${TKET_TESTS_DIR}/test_Rebase.cpp
+    ${TKET_TESTS_DIR}/test_PhasedXFrontier.cpp
+    ${TKET_TESTS_DIR}/test_GlobalisePhasedX.cpp
     ${TKET_TESTS_DIR}/test_Synthesis.cpp
     ${TKET_TESTS_DIR}/test_TwoQubitCanonical.cpp
     ${TKET_TESTS_DIR}/test_ControlDecomp.cpp
@@ -122,8 +130,12 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/test_Path.cpp
     ${TKET_TESTS_DIR}/test_SteinerTree.cpp
     ${TKET_TESTS_DIR}/test_SteinerForest.cpp
+    ${TKET_TESTS_DIR}/test_wasm.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXDiagram.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXAxioms.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXSimp.cpp
+    ${TKET_TESTS_DIR}/ZX/test_ZXRebase.cpp
     ${TKET_TESTS_DIR}/ZX/test_Flow.cpp
+    ${TKET_TESTS_DIR}/ZX/test_ZXConverters.cpp
+    ${TKET_TESTS_DIR}/ZX/test_ZXExtraction.cpp
 )

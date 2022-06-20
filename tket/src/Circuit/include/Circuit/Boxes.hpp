@@ -108,12 +108,12 @@ Op_ptr set_box_id(BoxT &b, boost::uuids::uuid newid) {
 }
 
 /**
- * Operation defined as a circuit
+ * Operation defined as a circuit.
  */
 class CircBox : public Box {
  public:
   /**
-   * Construct from a given circuit
+   * Construct from a given circuit. The circuit must be simple.
    */
   explicit CircBox(const Circuit &circ);
 
@@ -128,6 +128,8 @@ class CircBox : public Box {
   CircBox(const CircBox &other);
 
   ~CircBox() override {}
+
+  bool is_clifford() const override;
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &sub_map) const override;
@@ -201,6 +203,8 @@ class Unitary1qBox : public Box {
   Op_ptr dagger() const override;
 
   Op_ptr transpose() const override;
+
+  bool is_clifford() const override;
 
   static Op_ptr from_json(const nlohmann::json &j);
 
@@ -425,6 +429,8 @@ class PauliExpBox : public Box {
 
   ~PauliExpBox() override {}
 
+  bool is_clifford() const override;
+
   SymSet free_symbols() const override;
 
   /**
@@ -509,16 +515,16 @@ class CustomGate : public Box {
       const SymEngine::map_basic_basic &sub_map) const override;
 
   /**
-   * Equality check between two CustomGate instances
+   * Equality check between two CustomGate instances.
+   * This does more than simply checking id_.
    */
-  bool is_equal(const Op &op_other) const override {
-    const CustomGate &other = dynamic_cast<const CustomGate &>(op_other);
-    return this->id_ == other.id_;
-  }
+  bool is_equal(const Op &op_other) const override;
 
   static Op_ptr from_json(const nlohmann::json &j);
 
   static nlohmann::json to_json(const Op_ptr &op);
+
+  bool is_clifford() const override;
 
  protected:
   void generate_circuit() const override;

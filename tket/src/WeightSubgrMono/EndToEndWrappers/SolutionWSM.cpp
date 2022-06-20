@@ -27,7 +27,7 @@ static void check_assignments_for_value_clashes(
     Assignments& assignments_map, const SolutionWSM& solution,
     std::set<VertexWSM>& values, std::stringstream& ss) {
   values.clear();
-  for (const auto& entry : solution.assignments) {
+  for (const std::pair<VertexWSM, VertexWSM>& entry : solution.assignments) {
     const auto value_opt = get_optional_value(assignments_map, entry.first);
     if (value_opt) {
       ss << "\nRepeated PV: seen " << entry.first << "->" << entry.second
@@ -67,7 +67,7 @@ std::string SolutionWSM::get_errors(
   // Now, recalculate the weights, checking carefully for overflow.
   WeightWSM total_expected_p_edge_weight = 0;
   WeightWSM expected_scalar_product = 0;
-  auto& p_vertices_used = work_set;
+  std::set<VertexWSM>& p_vertices_used = work_set;
   p_vertices_used.clear();
 
   try {
@@ -76,7 +76,7 @@ std::string SolutionWSM::get_errors(
       total_expected_p_edge_weight =
           get_sum_or_throw(total_expected_p_edge_weight, p_edge_weight);
 
-      const auto& p_edge = p_edge_data.first;
+      const EdgeWSM& p_edge = p_edge_data.first;
       if (p_edge.first == p_edge.second) {
         ss << "\nInvalid loop at PV=" << p_edge.first;
       }

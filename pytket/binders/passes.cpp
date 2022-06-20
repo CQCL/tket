@@ -22,6 +22,7 @@
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
 #include "Transformations/ContextualReduction.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
@@ -32,6 +33,26 @@ namespace py = pybind11;
 using json = nlohmann::json;
 
 namespace tket {
+
+// given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
+Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
+  Transforms::TwoQbFidelities fid;
+  for (const auto &kwarg : kwargs) {
+    const std::string kwargstr = py::cast<std::string>(kwarg.first);
+    using Func = std::function<double(double)>;
+    if (kwargstr == "CX_fidelity") {
+      fid.CX_fidelity = py::cast<double>(kwarg.second);
+    } else if (kwargstr == "ZZMax_fidelity") {
+      fid.ZZMax_fidelity = py::cast<double>(kwarg.second);
+    } else if (kwargstr == "ZZPhase_fidelity") {
+      fid.ZZPhase_fidelity = py::cast<Func>(kwarg.second);
+    } else {
+      throw py::type_error(
+          "got an unexpected keyword argument '" + kwargstr + "'");
+    }
+  }
+  return fid;
+}
 
 static PassPtr gen_cx_mapping_pass_kwargs(
     const Architecture &arc, const PlacementPtr &placer, py::kwargs kwargs) {
@@ -330,6 +351,43 @@ PYBIND11_MODULE(passes, m) {
       "fidelity",
       py::arg("cx_fidelity") = 1.);
   m.def(
+      "DecomposeTK2",
+      [](const py::kwargs &kwargs) {
+        return DecomposeTK2(get_fidelities(kwargs));
+      },
+      "Decompose each TK2 gate into two-qubit gates."
+      "\n\nGate fidelities can be passed as keyword arguments to perform "
+      "noise-aware decompositions. If the fidelities of several gate types "
+      "are provided, the best will be chosen.\n\n"
+      "We currently support `CX_fidelity`, `ZZMax_fidelity` and "
+      "`ZZPhase_fidelity`. If provided, the `CX` and `ZZMax` fidelities "
+      "must be given by a single floating point fidelity. The `ZZPhase` "
+      "fidelity is given as a lambda float -> float, mapping a ZZPhase "
+      "angle parameter to its fidelity. These parameters will be used "
+      "to return the optimal decomposition of each TK2 gate, taking "
+      "noise into consideration.\n\n"
+      "If no fidelities are provided, the TK2 gates will be decomposed "
+      "exactly using CX gates.\n\n"
+      "All TK2 gate parameters must be normalised, i.e. they must satisfy "
+      "`NormalisedTK2Predicate`."
+      "\n\nIf the TK2 angles are symbolic values, the decomposition will "
+      "be exact (i.e. not noise-aware). It is not possible in general "
+      "to obtain optimal decompositions for arbitrary symbolic parameters, "
+      "so consider substituting for concrete values if possible.");
+  m.def(
+      "NormaliseTK2", &NormaliseTK2,
+      "Normalises all TK2 gates.\n\n"
+      "TK2 gates have three angles in the interval [0, 4], but these can always"
+      " be normalised to be within the so-called Weyl chamber by adding "
+      "single-qubit gates.\n\n"
+      "More precisely, the three angles a, b, c of TK2(a, b, c) are normalised "
+      "exactly when the two following conditions are met:\n"
+      " - numerical values must be in the Weyl chamber, "
+      "ie `1/2 >= a >= b >= |c|`,\n"
+      " - symbolic values must come before any numerical value in the array."
+      "\n\nAfter this pass, all TK2 angles will be normalised and the circuit "
+      "will satisfy `NormalisedTK2Predicate`.");
+  m.def(
       "ThreeQubitSquash", &ThreeQubitSquash,
       "Squash three-qubit subcircuits into subcircuits having fewer CX gates, "
       "when possible, and apply Clifford simplification."
@@ -355,9 +413,24 @@ PYBIND11_MODULE(passes, m) {
       "Converts all multi-qubit gates into CX and single-qubit gates.");
   m.def(
       "GlobalisePhasedX", &GlobalisePhasedX,
-      "Replaces every occurence of PhasedX or NPhasedX gates with NPhasedX "
-      "gates acting on all qubits, and correcting rotation gates, so that the "
-      "GlobalPhasedXPredicate is satisfied.");
+      "Turns all PhasedX and NPhasedX gates into global gates\n\n"
+      "Replaces any PhasedX gates with global NPhasedX gates. "
+      "By default, this transform will squash all single-qubit gates "
+      "to PhasedX and Rz gates before proceeding further. "
+      "Existing non-global NPhasedX will not be preserved. "
+      "This is the recommended setting for best "
+      "performance. If squashing is disabled, each non-global PhasedX gate "
+      "will be replaced with two global NPhasedX, but any other gates will "
+      "be left untouched."
+      "\n\n:param squash: Whether to squash the circuit in pre-processing "
+      "(default: true)."
+      "\n\nIf squash=true (default), the `GlobalisePhasedX().apply` method "
+      "will always return true. "
+      "For squash=false, `apply()` will return true if the circuit was "
+      "changed and false otherwise.\n\n"
+      "It is not recommended to use this pass with symbolic expressions, as"
+      " in certain cases a blow-up in symbolic expression sizes may occur.",
+      py::arg("squash") = true);
   m.def(
       "DecomposeSingleQubitsTK1", &DecomposeSingleQubitsTK1,
       "Converts all single-qubit gates into TK1 gates.");
@@ -385,6 +458,9 @@ PYBIND11_MODULE(passes, m) {
       "SynthesiseHQS", &SynthesiseHQS,
       "Optimises and converts a circuit consisting of CX and single-qubit "
       "gates into one containing only ZZMax, PhasedX and Rz.");
+  m.def(
+      "SynthesiseTK", &SynthesiseTK,
+      "Optimises and converts all gates to TK2 and TK1 gates.");
   m.def(
       "SynthesiseTket", &SynthesiseTket,
       "Optimises and converts all gates to CX and TK1 gates.");

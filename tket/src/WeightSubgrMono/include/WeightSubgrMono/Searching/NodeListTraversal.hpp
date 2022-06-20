@@ -27,6 +27,19 @@ class NodesRawDataWrapper;
 /** This is concerned with moving up and down a NodesRawData object,
  * i.e. used for traversing the complete search tree;
  * "vertical" motion, as explained in NodesRawData.hpp.
+ *
+ * Don't think of the nodes as "histories".
+ * Instead, think of them as states still to be explored
+ * (which happen to be explored in a particular order, like traversing
+ * a tree depth first; only needs linear size. Other orderings are possible,
+ * but more complicated to implement, needing some kind of priority queue,
+ * and could need exponential size).
+ * Thus, when we move down from a node by assigning PV->TV,
+ * we REMOVE TV from Domain(PV) before creating a new node.
+ * This is simpler than trying to remember which assignment was made
+ * and removing TV next time we return to the node.
+ * Thus the node left behind is NOT a previous state, but is rather
+ * a new CANDIDATE state to be further reduced.
  */
 class NodeListTraversal {
  public:
@@ -40,9 +53,11 @@ class NodeListTraversal {
   /** Simply return all TVs which occur in some domain, somewhere. */
   std::set<VertexWSM> get_used_target_vertices() const;
 
-  /** Moves up (i.e., decreases current_node_level) UNTIL it reaches
-   * an apparently valid node; returns false if it cannot
-   * (runs out of valid nodes).
+  /** Keep popping back the internal nodes data UNTIL it reaches
+   * an apparently valid node (i.e., a "good" node, i.e. a node which is
+   * NOT nogood); returns false if it cannot.
+   * However, does not reduce the node (so it may still end up being invalid
+   * after we perform reductions).
    * @return False if it cannot move up any further to reach a valid node (which
    * means that the search is finished).
    */
@@ -59,12 +74,8 @@ class NodeListTraversal {
 
   /** We've newly discovered that PV->TV is always impossible.
    * Erase it from all data, so it never arises again.
-   * Returns false if the current node is checked
-   * and found to be impossible.
-   * If the caller knows that the current node is already a nogood,
-   * it would be a waste of time checking the current node,
-   * as we are about to move up.
-   * @param impossible_assignment An assignment PV->TV which should be erased
+   * Does not check if the current node becomes a nogood.
+   * @param impossible_assignment An assignment PV->TV which will be erased
    * from ALL data.
    */
   void erase_impossible_assignment(

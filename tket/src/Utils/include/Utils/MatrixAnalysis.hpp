@@ -14,11 +14,13 @@
 
 #pragma once
 
+#include <array>
 #include <vector>
 
 #include "EigenConfig.hpp"
 #include "UnitID.hpp"
 #include "Utils/Constants.hpp"
+#include "Utils/Expression.hpp"
 
 namespace tket {
 
@@ -81,10 +83,10 @@ std::vector<std::pair<unsigned, unsigned>> gaussian_elimination_row_ops(
  * Given a unitary \f$ X \f$, returns
  * \f$ (K_1, (k_\mathrm{XX},k_\mathrm{YY},k_\mathrm{ZZ}, K_2) \f$
  * such that
- * \f$ X = K_1 \cdot \exp(\sum_{i \in \{\mathrm{XX}, \mathrm{YY}, \mathrm{ZZ}\}}
- * k_i \sigma_i) \cdot K_2 \f$. The \f$ k_i \f$ are called information content
- * and partition \f$ \mathrm{SU}(4) \f$ into equivalence classes modulo local
- * transformations.
+ * \f$ X = K_1 \cdot \exp(-\frac12 i \pi \sum_{w \in \{\mathrm{XX}, \mathrm{YY},
+ * \mathrm{ZZ}\}} k_w \sigma_w) \cdot K_2 \f$.
+ * The \f$ k_w \f$ are called information content and partition
+ * \f$ \mathrm{SU}(4) \f$ into equivalence classes modulo local transformations.
  *
  * See arXiv quant-ph/0507171 for details
  *
@@ -92,16 +94,8 @@ std::vector<std::pair<unsigned, unsigned>> gaussian_elimination_row_ops(
  *
  * @return KAK decomposition
  */
-std::tuple<
-    Eigen::Matrix4cd, std::tuple<double, double, double>, Eigen::Matrix4cd>
+std::tuple<Eigen::Matrix4cd, std::array<double, 3>, Eigen::Matrix4cd>
 get_information_content(const Eigen::Matrix4cd &X);
-/**
- * given information content and cnot fidelity, returns
- * decomposition of information content as CNOT + local gates
- * minimising number of CNOTs
- */
-std::vector<std::tuple<Eigen::Matrix2cd, Eigen::Matrix2cd>> expgate_as_CX(
-    const std::tuple<double, double, double> &k, double cx_fidelity = 1.);
 
 // given a 4x4 unitary matrix (ILO-BE), returns two 2x2 unitaries that
 // approximately make the input by kronecker product
@@ -148,5 +142,44 @@ std::vector<TripletCd> get_triplets(
  */
 std::vector<TripletCd> get_triplets(
     const Eigen::MatrixXcd &matr, double abs_epsilon = EPS);
+
+// TODO: move get_CX_fidelity to Decomposition.cpp when no longer needed here
+/** Given TK2 angles, computes the fidelity that can be achieved using
+ *  nb_cx CX gates.
+ *
+ *  @param k The TK2 angles.
+ *  @param nb_cx The number of CX gates to be used for decomposition.
+ *  @return The fidelity.
+ */
+double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx);
+
+/** Similarity measure of TK2(a, b, c) to SU(4) identity
+ *
+ * This computes the fidelity between TK2(a, b, c) and the 2-qubit identity.
+ *
+ * a, b and c must be in the Weyl chamber, i.e. 1/2 >= a >= b >= |c|.
+ *
+ * This is computed using the formula
+ *               Fidᵤ = (4 + Tr(Id₄U)) / 20 = (4 + Tr(U)) / 20
+ * where U is the 4x4 matrix of TK2(a, b, c).
+ *
+ * Tr(U) can in turn be computed as
+ *               Tr(U) = 4cos(a)cos(b)cos(c) − 4i sin(a)sin(b)sin(c).
+ *
+ * These are formulas B3 and B5 of https://arxiv.org/pdf/1811.12926.pdf. Refer
+ * to that paper for more details.
+ *
+ *  @param a The XX interaction angle
+ *  @param b The YY interaction angle
+ *  @param c The ZZ interaction angle
+ */
+double trace_fidelity(double a, double b, double c);
+
+/** Whether a triplet of TK2 angles are normalised.
+ *
+ * Numerical values must be in the Weyl chamber, ie 1/2 >= k_x >= k_y >= |k_z|.
+ * Symbolic values must come before any numerical value in the array.
+ */
+bool in_weyl_chamber(const std::array<Expr, 3> &k);
 
 }  // namespace tket

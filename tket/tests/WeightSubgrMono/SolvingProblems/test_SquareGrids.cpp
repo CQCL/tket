@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include "../TestUtils/CheckedSolution.hpp"
 #include "../TestUtils/SquareGridGeneration.hpp"
@@ -259,7 +259,7 @@ SCENARIO("Medium square grid problems only", "[.long]") {
 
 SCENARIO("Monster square grid problems only", "[.long]") {
   const std::set<std::pair<unsigned, unsigned>> empty_problems;
-  test(empty_problems, get_monster_problems(), 0, 3, 3, 9999, 20000);
+  test(empty_problems, get_monster_problems(), 0, 3, 3, 9999, 40000);
 }
 
 }  // namespace WeightedSubgraphMonomorphism

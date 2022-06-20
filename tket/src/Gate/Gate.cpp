@@ -14,13 +14,16 @@
 
 #include "Gate.hpp"
 
+#include <algorithm>
 #include <vector>
 
 #include "GateUnitaryMatrix.hpp"
 #include "GateUnitaryMatrixError.hpp"
 #include "OpPtrFunctions.hpp"
 #include "OpType/OpType.hpp"
+#include "OpType/OpTypeFunctions.hpp"
 #include "OpType/OpTypeInfo.hpp"
+#include "Ops/Op.hpp"
 #include "Utils/Expression.hpp"
 #include "Utils/RNG.hpp"
 #include "symengine/eval_double.h"
@@ -102,7 +105,7 @@ Op_ptr Gate::dagger() const {
     case OpType::XXPhase3:
     case OpType::ISWAP:
     case OpType::ESWAP: {
-      return get_op_ptr(optype, -params_[0], n_qubits_);
+      return get_op_ptr(optype, minus_times(params_[0]), n_qubits_);
     }
     case OpType::ZZMax: {
       // ZZMax.dagger = ZZPhase(-0.5)
@@ -110,7 +113,8 @@ Op_ptr Gate::dagger() const {
     }
     case OpType::FSim: {
       // FSim(a,b).dagger() == FSim(-a,-b)
-      return get_op_ptr(OpType::FSim, {-params_[0], -params_[1]});
+      return get_op_ptr(
+          OpType::FSim, {minus_times(params_[0]), minus_times(params_[1])});
     }
     case OpType::Sycamore: {
       return get_op_ptr(OpType::FSim, {-0.5, -1. / 6.});
@@ -120,26 +124,41 @@ Op_ptr Gate::dagger() const {
     }
     case OpType::U2: {
       // U2(a,b).dagger() == U3(-pi/2,-b,-a)
-      return get_op_ptr(OpType::U3, {-0.5, -params_[1], -params_[0]});
+      return get_op_ptr(
+          OpType::U3, {-0.5, minus_times(params_[1]), minus_times(params_[0])});
     }
     case OpType::U3:
     case OpType::CU3:
       // U3(a,b,c).dagger() == U3(-a,-c.-b)
-      { return get_op_ptr(optype, {-params_[0], -params_[2], -params_[1]}); }
+      {
+        return get_op_ptr(
+            optype, {minus_times(params_[0]), minus_times(params_[2]),
+                     minus_times(params_[1])});
+      }
     case OpType::TK1:
       // TK1(a,b,c).dagger() == TK1(-c,-b,-a)
       {
-        return get_op_ptr(OpType::TK1, {-params_[2], -params_[1], -params_[0]});
+        return get_op_ptr(
+            OpType::TK1, {minus_times(params_[2]), minus_times(params_[1]),
+                          minus_times(params_[0])});
       }
     case OpType::TK2:
-      return get_op_ptr(OpType::TK2, {-params_[0], -params_[1], -params_[2]});
+      return get_op_ptr(
+          OpType::TK2, {minus_times(params_[0]), minus_times(params_[1]),
+                        minus_times(params_[2])});
     case OpType::PhasedX:
     case OpType::NPhasedX:
       // PhasedX(a,b).dagger() == PhasedX(-a,b)
-      { return get_op_ptr(optype, {-params_[0], params_[1]}, n_qubits_); }
+      {
+        return get_op_ptr(
+            optype, {minus_times(params_[0]), params_[1]}, n_qubits_);
+      }
     case OpType::PhasedISWAP:
       // PhasedISWAP(a,b).dagger() == PhasedISWAP(a,-b)
-      { return get_op_ptr(OpType::PhasedISWAP, {params_[0], -params_[1]}); }
+      {
+        return get_op_ptr(
+            OpType::PhasedISWAP, {params_[0], minus_times(params_[1])});
+      }
     default: {
       throw NotImplemented(
           "Cannot retrieve the dagger of OpType::" + get_desc().name());
@@ -166,6 +185,7 @@ Op_ptr Gate::transpose() const {
     case OpType::CSWAP:
     case OpType::BRIDGE:
     case OpType::S:
+    case OpType::Sdg:
     case OpType::T:
     case OpType::V:
     case OpType::Vdg:
@@ -193,7 +213,7 @@ Op_ptr Gate::transpose() const {
     case OpType::Ry:
     case OpType::CRy:
     case OpType::CnRy: {
-      return get_op_ptr(optype, -params_[0], n_qubits_);
+      return get_op_ptr(optype, minus_times(params_[0]), n_qubits_);
     }
     case OpType::CnX: {
       return get_op_ptr(optype, std::vector<Expr>(), n_qubits_);
@@ -205,7 +225,8 @@ Op_ptr Gate::transpose() const {
     case OpType::U3:
     case OpType::CU3: {
       // U3(a,b,c).transpose() == U3(-a,c,b)
-      return get_op_ptr(OpType::U3, {-params_[0], params_[2], params_[1]});
+      return get_op_ptr(
+          OpType::U3, {minus_times(params_[0]), params_[2], params_[1]});
     }
     case OpType::TK1: {
       // TK1(a,b,c).transpose() == TK1(c,b,a)
@@ -214,11 +235,13 @@ Op_ptr Gate::transpose() const {
     case OpType::PhasedX:
     case OpType::NPhasedX: {
       // PhasedX(a,b).transpose() == PhasedX(a,-b)
-      return get_op_ptr(optype, {params_[0], -params_[1]}, n_qubits_);
+      return get_op_ptr(
+          optype, {params_[0], minus_times(params_[1])}, n_qubits_);
     }
     case OpType::PhasedISWAP: {
       // PhasedISWAP(a,b).transpose() == PhasedISWAP(-a,b)
-      return get_op_ptr(OpType::PhasedISWAP, {-params_[0], params_[1]});
+      return get_op_ptr(
+          OpType::PhasedISWAP, {minus_times(params_[0]), params_[1]});
     }
 
     default: {
@@ -389,6 +412,38 @@ std::optional<double> Gate::is_identity() const {
   }
 }
 
+bool Gate::is_clifford() const {
+  if (is_clifford_type(type_)) return true;
+
+  switch (type_) {
+    case OpType::Rx:
+    case OpType::Ry:
+    case OpType::Rz:
+    case OpType::U1:
+    case OpType::U2:
+    case OpType::U3:
+    case OpType::TK1:
+    case OpType::TK2:
+    case OpType::XXPhase:
+    case OpType::YYPhase:
+    case OpType::ZZPhase:
+    case OpType::XXPhase3:
+    case OpType::PhasedX:
+    case OpType::NPhasedX:
+      return std::all_of(params_.begin(), params_.end(), [](const Expr& e) {
+        return equiv_0(4 * e);
+      });
+    case OpType::ISWAP:
+    case OpType::ESWAP:
+      return equiv_0(2 * params_.at(0));
+    case OpType::PhasedISWAP:
+    case OpType::FSim:
+      return equiv_0(4 * params_.at(0)) && equiv_0(2 * params_.at(1));
+    default:
+      return false;
+  }
+}
+
 std::string Gate::get_name(bool latex) const {
   OpDesc desc = get_desc();
   if (params_.size() > 0) {
@@ -541,10 +596,10 @@ std::vector<Expr> Gate::get_tk1_angles() const {
             "OpType::NPhasedX can only be decomposed into a TK1 "
             "if it acts on a single qubit");
       }
-      return {params_.at(1), params_.at(0), -params_.at(1), 0};
+      return {params_.at(1), params_.at(0), minus_times(params_.at(1)), 0};
     }
     case OpType::PhasedX: {
-      return {params_.at(1), params_.at(0), -params_.at(1), 0};
+      return {params_.at(1), params_.at(0), minus_times(params_.at(1)), 0};
     }
     case OpType::TK1: {
       return {params_.at(0), params_.at(1), params_.at(2), 0};
@@ -560,9 +615,9 @@ std::vector<Expr> Gate::get_params() const { return params_; }
 
 SymSet Gate::free_symbols() const { return expr_free_symbols(get_params()); }
 
-std::optional<Pauli> Gate::commuting_basis(port_t port) const {
+std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
   unsigned n_q = n_qubits();
-  if (port >= n_q) throw NotValid();
+  if (i >= n_q) throw NotValid();
   switch (get_type()) {
     case OpType::XXPhase:
     case OpType::XXPhase3: {
@@ -601,16 +656,16 @@ std::optional<Pauli> Gate::commuting_basis(port_t port) const {
     case OpType::CH:
     case OpType::CU3:
     case OpType::CSWAP: {
-      if (port == 0) {
+      if (i == 0) {
         return Pauli::Z;
       } else {
         return std::nullopt;
       }
     }
     case OpType::BRIDGE: {
-      if (port == 0) {
+      if (i == 0) {
         return Pauli::Z;
-      } else if (port == 2) {
+      } else if (i == 2) {
         return Pauli::X;
       } else {
         return Pauli::I;
@@ -630,14 +685,14 @@ std::optional<Pauli> Gate::commuting_basis(port_t port) const {
     case OpType::CX:
     case OpType::CCX:
     case OpType::CnX: {
-      if (port == n_q - 1) {
+      if (i == n_q - 1) {
         return Pauli::X;
       } else {
         return Pauli::Z;
       }
     }
     case OpType::ECR: {
-      if (port == 1) {
+      if (i == 1) {
         return Pauli::X;
       } else {
         return std::nullopt;
@@ -648,7 +703,7 @@ std::optional<Pauli> Gate::commuting_basis(port_t port) const {
     case OpType::CY:
     case OpType::CRy:
     case OpType::CnRy: {
-      if (port == n_q - 1) {
+      if (i == n_q - 1) {
         return Pauli::Y;
       } else {
         return Pauli::Z;
@@ -661,9 +716,9 @@ std::optional<Pauli> Gate::commuting_basis(port_t port) const {
 }
 
 bool Gate::commutes_with_basis(
-    const std::optional<Pauli>& colour, port_t port) const {
+    const std::optional<Pauli>& colour, unsigned i) const {
   if (colour == Pauli::I) return true;
-  const std::optional<Pauli> my_colour = commuting_basis(port);
+  const std::optional<Pauli> my_colour = commuting_basis(i);
   if (!colour && !my_colour) return false;
   if (my_colour == Pauli::I || my_colour == colour) return true;
   return false;

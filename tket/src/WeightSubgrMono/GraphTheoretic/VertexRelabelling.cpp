@@ -25,9 +25,10 @@ namespace WeightedSubgraphMonomorphism {
 
 VertexRelabelling::VertexRelabelling(GraphEdgeWeights edges_and_weights)
     : new_edges_and_weights(std::move(edges_and_weights)) {
-  for (const auto& entry : new_edges_and_weights) {
-    const auto& v1 = entry.first.first;
-    const auto& v2 = entry.first.second;
+  for (const std::pair<const EdgeWSM, WeightWSM>& entry :
+       new_edges_and_weights) {
+    const VertexWSM& v1 = entry.first.first;
+    const VertexWSM& v2 = entry.first.second;
     if (v1 == v2) {
       throw std::runtime_error(
           std::string("Loop found in graph; not allowed: v=") +
@@ -35,10 +36,10 @@ VertexRelabelling::VertexRelabelling(GraphEdgeWeights edges_and_weights)
     }
     old_to_new_vertex_labels[v1];
     old_to_new_vertex_labels[v2];
-    const auto weight_opt =
+    const std::optional<WeightWSM> weight_opt =
         get_optional_value(new_edges_and_weights, std::make_pair(v2, v1));
     if (weight_opt) {
-      const auto other_weight = weight_opt.value();
+      const WeightWSM other_weight = weight_opt.value();
       if (entry.second != other_weight) {
         std::stringstream ss;
         ss << "Edge (" << v1 << "," << v2 << ") has weight " << entry.second
@@ -49,7 +50,8 @@ VertexRelabelling::VertexRelabelling(GraphEdgeWeights edges_and_weights)
     }
   }
   if (old_to_new_vertex_labels.empty()) {
-    throw std::runtime_error("no edges!");
+    throw std::runtime_error(
+        "VertexRelabelling WSM: input graph has no edges!");
   }
   number_of_vertices = old_to_new_vertex_labels.size();
   TKET_ASSERT(number_of_vertices >= 2);
@@ -60,20 +62,22 @@ VertexRelabelling::VertexRelabelling(GraphEdgeWeights edges_and_weights)
     return;
   }
   new_to_old_vertex_labels.reserve(number_of_vertices);
-  for (auto& entry : old_to_new_vertex_labels) {
-    const auto new_vertex = new_to_old_vertex_labels.size();
+  for (std::pair<const VertexWSM, unsigned>& entry : old_to_new_vertex_labels) {
+    const unsigned new_vertex = new_to_old_vertex_labels.size();
     new_to_old_vertex_labels.push_back(entry.first);
     entry.second = new_vertex;
   }
   TKET_ASSERT(new_to_old_vertex_labels.size() == number_of_vertices);
   TKET_ASSERT(old_to_new_vertex_labels.at(new_to_old_vertex_labels[0]) == 0);
 
-  // Another copy is unavoidable.
+  // Another copy is unavoidable (the vertices aren't contiguous,
+  // we MUST relabel; but this means changing the KEYS of the map
+  // new_edges_and_weights)
   const auto original_edges_and_weights = new_edges_and_weights;
   new_edges_and_weights.clear();
   for (const auto& entry : original_edges_and_weights) {
-    const auto& old_v1 = entry.first.first;
-    const auto& old_v2 = entry.first.second;
+    const VertexWSM& old_v1 = entry.first.first;
+    const VertexWSM& old_v2 = entry.first.second;
 
     new_edges_and_weights[get_edge(
         old_to_new_vertex_labels.at(old_v1),

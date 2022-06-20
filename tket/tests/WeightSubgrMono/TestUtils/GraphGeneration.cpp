@@ -16,7 +16,7 @@
 
 #include <algorithm>
 #include <array>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

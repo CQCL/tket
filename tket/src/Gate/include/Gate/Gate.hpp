@@ -55,10 +55,10 @@ class Gate : public Op {
 
   unsigned n_qubits() const override;
 
-  std::optional<Pauli> commuting_basis(port_t port) const override;
+  std::optional<Pauli> commuting_basis(unsigned i) const override;
 
   bool commutes_with_basis(
-      const std::optional<Pauli> &colour, port_t port) const override;
+      const std::optional<Pauli> &colour, unsigned i) const override;
 
   op_signature_t get_signature() const override;
 
@@ -67,6 +67,7 @@ class Gate : public Op {
   static Op_ptr deserialize(const nlohmann::json &j);
 
   std::optional<double> is_identity() const override;
+  bool is_clifford() const override;
   Eigen::MatrixXcd get_unitary() const override;
 
   ~Gate() override {}

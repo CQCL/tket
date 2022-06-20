@@ -24,22 +24,36 @@ namespace WeightedSubgraphMonomorphism {
 
 /** The main object used to search for neighbours of a vertex,
  * check for existing edges, and get edge weights.
- * The input vertices MUST be {0,1,2,...,N} for some N.
+ * The graph is undirected. No loops or multiple edges are allowed.
+ * The input vertices MUST be {0,1,2,...,N} for some N. Will throw if not.
+ * There cannot be any isolated vertices (more precisely, since edges
+ * are passed in and vertices are deduced from them, it's simply not possible
+ * for this class to know anything about isolated vertices).
  */
 class NeighboursData {
  public:
-  NeighboursData();
-
-  /** Initialise with a given graph with edge weights. */
+  /** Initialise with a given graph with edge weights.
+   * The graph is undirected, therefore edges (v1,v2) and (v2,v1) are
+   * counted as the same. It's not necessary to pass in both pairs,
+   * but if both ARE passed in, then the weights must be equal,
+   * and this is checked.
+   * Note that edge weights are nonnegative, but also allowed to be zero.
+   * An edge weight 0 has no special meaning.
+   * @param edges_and_weights An edge->weight map ("edge" just being a pair of
+   * VertexWSM).
+   */
   explicit NeighboursData(const GraphEdgeWeights& edges_and_weights);
 
-  /** Initialise with a given graph with edge weights. */
-  void initialise(const GraphEdgeWeights& edges_and_weights);
-
+  /** Return the total number of edges in the graph (remembering that the
+   * graph is UNDIRECTED, so (v1,v2) and (v2,v1) are the same edge).
+   * @return the number of edges in the graph.
+   */
   std::size_t get_number_of_edges() const;
 
   /** Isolated vertices are ignored (actually, not even ignored; they are
    * simply invisible to this class, since the class only sees edges).
+   * @return the number of vertices in the graph (which occurred in at least one
+   * input edge).
    */
   std::size_t get_number_of_nonisolated_vertices() const;
 
@@ -74,6 +88,8 @@ class NeighboursData {
   /** Get the list of vertex degrees of all neighbours of v, sorted in
    * increasing order.
    * Constructed afresh each time, so should not be called repeatedly.
+   * @param v A vertex.
+   * @return A list of the degrees of all neighbours of v, in increasing order.
    */
   std::vector<std::size_t> get_sorted_degree_sequence_expensive(
       VertexWSM v) const;
@@ -89,17 +105,24 @@ class NeighboursData {
 
   /** This is "expensive" because it must be constructed afresh each time,
    * taking O(E) time. The weights are not in sorted order.
+   * @return A list of all the edge weights, NOT in any particular order.
+   * Duplicate values are allowed, of course; the number of weights equals the
+   * number of edges.
    */
   std::vector<WeightWSM> get_weights_expensive() const;
 
   /** Convenience function: for neighbours and weights, already sorted by
-   * vertex, do a binary search to see if the given vertex lies within it. */
+   * vertex, do a binary search to see if the given vertex lies within it.
+   * @param v A vertex.
+   * @param list A list of (vertex,edge weight) pairs, sorted by vertex number.
+   * @return true if v occurs in the list; false if not.
+   */
   static bool binary_search(
       VertexWSM v, const std::vector<std::pair<VertexWSM, WeightWSM>>& list);
 
  private:
   // Element[i] gives all neighbouring vertices and edge weights
-  // for vertex i, sorted by the the neighbouring vertex numerical value.
+  // for vertex i, sorted by the neighbouring vertex numerical value.
   std::vector<std::vector<std::pair<VertexWSM, WeightWSM>>>
       m_neighbours_and_weights;
 

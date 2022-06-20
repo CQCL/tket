@@ -44,7 +44,7 @@ SearchBranch::SearchBranch(
   m_extra_statistics.number_of_target_vertices =
       m_target_ndata.get_number_of_nonisolated_vertices();
   m_extra_statistics.initial_number_of_possible_assignments = 0;
-  for (const auto& entry : initial_domains) {
+  for (const std::set<VertexWSM>& entry : initial_domains) {
     m_extra_statistics.initial_number_of_possible_assignments += entry.size();
   }
 
@@ -65,7 +65,7 @@ SearchBranch::SearchBranch(
     // Now that all the reducer objects are stored
     // (the vector will not be resized),
     // we can safely take references to them.
-    for (auto& reducer : m_distance_reducers) {
+    for (DistancesReducer& reducer : m_distance_reducers) {
       m_reducer_wrappers.emplace_back(reducer);
     }
   }
@@ -109,7 +109,8 @@ void SearchBranch::activate_weight_checker(WeightWSM total_p_edge_weights) {
 
 bool SearchBranch::perform_single_assignment_checks_in_reduce_loop(
     std::size_t num_assignments_alldiff_processed) {
-  const auto& new_assignments = m_domains_accessor.get_new_assignments();
+  const std::vector<std::pair<VertexWSM, VertexWSM>>& new_assignments =
+      m_domains_accessor.get_new_assignments();
   for (auto ii = num_assignments_alldiff_processed; ii < new_assignments.size();
        ++ii) {
     if (m_checked_assignments[new_assignments[ii].first].count(
@@ -210,7 +211,8 @@ bool SearchBranch::perform_main_reduce_loop(
 
   // We will not change this directly. The reference will remain valid,
   // but it will change indirectly due to other actions (reducing, etc.).
-  const auto& new_assignments = m_domains_accessor.get_new_assignments();
+  const std::vector<std::pair<VertexWSM, VertexWSM>>& new_assignments =
+      m_domains_accessor.get_new_assignments();
 
   for (;;) {
     if (!(m_domains_accessor.alldiff_reduce_current_node(

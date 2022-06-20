@@ -33,9 +33,10 @@ static void fill_neighbours_of_neighbours(
     const NeighboursData& ndata, std::set<VertexWSM>& vertices_workset,
     std::vector<VertexWSM>& vertices) {
   vertices_workset.clear();
-  for (const auto& entry : neighbours_and_weights) {
+  for (const std::pair<VertexWSM, WeightWSM>& entry : neighbours_and_weights) {
     const VertexWSM& vv1 = entry.first;
-    for (const auto& other_entry : ndata.get_neighbours_and_weights(vv1)) {
+    for (const std::pair<VertexWSM, WeightWSM>& other_entry :
+         ndata.get_neighbours_and_weights(vv1)) {
       const VertexWSM& vv2 = other_entry.first;
       if (vv2 == root_vertex ||
           NeighboursData::binary_search(vv2, neighbours_and_weights)) {
@@ -59,9 +60,10 @@ static void fill_more_distant_vertices(
 
   for (unsigned index = old_size; index < result.size(); ++index) {
     vertices_workset.clear();
-    for (auto vv_prev : result[index - 1]) {
+    for (VertexWSM vv_prev : result[index - 1]) {
       TKET_ASSERT(result[index].empty());
-      for (const auto& entry : ndata.get_neighbours_and_weights(vv_prev)) {
+      for (const std::pair<VertexWSM, WeightWSM>& entry :
+           ndata.get_neighbours_and_weights(vv_prev)) {
         const VertexWSM& vv_new = entry.first;
         // vv_prev is at distance d from the root vertex;
         // thus neighbours of vv_prev are at distance d-1, d, d+1.
@@ -96,15 +98,17 @@ static void fill_more_distant_vertices(
 const std::vector<VertexWSM>& NearNeighboursData::get_vertices_at_distance(
     VertexWSM vv, unsigned distance) {
   TKET_ASSERT(distance >= 2);
-  const auto index = distance - 2;
-  auto& results_for_this_vertex = m_data[vv].vertices_at_distance;
+  const unsigned index = distance - 2;
+  std::vector<std::vector<VertexWSM>>& results_for_this_vertex =
+      m_data[vv].vertices_at_distance;
   unsigned old_size = results_for_this_vertex.size();
 
   if (index >= old_size) {
     // "results_for_this_vertex" is too small, so we must fill in more entries.
     // Give it the correct size, prior to filling.
     results_for_this_vertex.resize(index + 1);
-    const auto& neighbours_and_weights = m_ndata.get_neighbours_and_weights(vv);
+    const std::vector<std::pair<VertexWSM, WeightWSM>>& neighbours_and_weights =
+        m_ndata.get_neighbours_and_weights(vv);
 
     if (old_size == 0) {
       // A special case. We must fill in distance 2 data.
@@ -130,12 +134,12 @@ std::size_t NearNeighboursData::get_n_vertices_at_max_distance(
     default:
       break;
   }
-  auto& sizes_list = m_data[vv].n_vertices_at_max_distance;
+  std::vector<std::size_t>& sizes_list = m_data[vv].n_vertices_at_max_distance;
   const unsigned index = max_distance - 2;
   if (index < sizes_list.size()) {
     return sizes_list[index];
   }
-  auto old_size = sizes_list.size();
+  unsigned old_size = sizes_list.size();
   sizes_list.resize(index + 1);
   if (old_size == 0) {
     sizes_list[0] =
@@ -152,7 +156,8 @@ std::size_t NearNeighboursData::get_n_vertices_at_max_distance(
 const FilterUtils::DegreeCounts& NearNeighboursData::get_degree_counts(
     VertexWSM vv, unsigned distance) {
   TKET_ASSERT(distance >= 2);
-  auto& counts_list = m_data[vv].degree_counts_for_distance;
+  std::vector<FilterUtils::DegreeCounts>& counts_list =
+      m_data[vv].degree_counts_for_distance;
   const unsigned index = distance - 2;
   if (index < counts_list.size()) {
     return counts_list[index];
@@ -164,10 +169,11 @@ const FilterUtils::DegreeCounts& NearNeighboursData::get_degree_counts(
   // Notice that the vertices, and degree counts here, are stored separately,
   // but on the SAAME value m_data[vv],
   // so references aren't invalidated.
-  const auto& vertices_lists = m_data[vv].vertices_at_distance;
+  const std::vector<std::vector<VertexWSM>>& vertices_lists =
+      m_data[vv].vertices_at_distance;
   TKET_ASSERT(index < vertices_lists.size());
 
-  auto old_size = counts_list.size();
+  unsigned old_size = counts_list.size();
   counts_list.resize(index + 1);
   m_work_map.clear();
   if (old_size == 0) {
@@ -178,12 +184,13 @@ const FilterUtils::DegreeCounts& NearNeighboursData::get_degree_counts(
     }
     if (m_type == Type::TARGET_GRAPH) {
       // We ALSO must fill in distance 1 data, i.e. neighbours.
-      for (const auto& entry : m_ndata.get_neighbours_and_weights(vv)) {
+      for (const std::pair<VertexWSM, WeightWSM>& entry :
+           m_ndata.get_neighbours_and_weights(vv)) {
         m_work_map[m_ndata.get_degree(entry.first)] += 1;
       }
     }
     counts_list[0].reserve(m_work_map.size());
-    for (const auto& entry : m_work_map) {
+    for (const std::pair<const std::size_t, std::size_t>& entry : m_work_map) {
       counts_list[0].emplace_back(entry);
     }
     // Simply pretend that we'd already filled it in.
@@ -201,20 +208,22 @@ const FilterUtils::DegreeCounts& NearNeighboursData::get_degree_counts(
         // as we increase the distances.
         if (m_work_map.empty()) {
           // Need the initial fill of the previous data.
-          const auto& previous_counts = counts_list[index_to_fill - 1];
-          for (const auto& entry : previous_counts) {
+          const FilterUtils::DegreeCounts& previous_counts =
+              counts_list[index_to_fill - 1];
+          for (const std::pair<std::size_t, std::size_t>& entry :
+               previous_counts) {
             m_work_map.emplace(entry);
           }
         }
         break;
     }
-    const auto& vertices = vertices_lists[index_to_fill];
-    for (auto other_vertex : vertices) {
+    const std::vector<VertexWSM>& vertices = vertices_lists[index_to_fill];
+    for (VertexWSM other_vertex : vertices) {
       m_work_map[m_ndata.get_degree(other_vertex)] += 1;
     }
     // Now dump it out from the map back into the vector, to be stored.
     counts_list[index_to_fill].reserve(m_work_map.size());
-    for (const auto& entry : m_work_map) {
+    for (const std::pair<const std::size_t, std::size_t>& entry : m_work_map) {
       counts_list[index_to_fill].emplace_back(entry);
     }
     TKET_ASSERT(counts_list[index_to_fill].size() == m_work_map.size());

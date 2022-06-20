@@ -20,20 +20,15 @@ namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 DerivedGraphs::DerivedGraphs(
-    const NeighboursData& ndata, DerivedGraphsCalculator& calculator,
-    DerivedGraphStructs::NeighboursAndCountsStorage& storage,
-    DerivedGraphStructs::SortedCountsStorage& counts_storage)
-    : m_neighbours_data(ndata),
-      m_calculator(calculator),
-      m_storage(storage),
-      m_counts_storage(counts_storage) {}
+    const NeighboursData& ndata, DerivedGraphsCalculator& calculator)
+    : m_neighbours_data(ndata), m_calculator(calculator) {}
 
 DerivedGraphs::VertexData DerivedGraphs::get_data(VertexWSM v) {
-  auto iter = m_data.find(v);
-  if (iter != m_data.end()) {
+  auto iter = m_data_for_vertices.find(v);
+  if (iter != m_data_for_vertices.end()) {
     return iter->second;
   }
-  auto& entry = m_data[v];
+  auto& entry = m_data_for_vertices[v];
   fill(v, entry);
   return entry;
 }
@@ -48,15 +43,22 @@ static void fill_with_sorted_counts(
   std::sort(counts.begin(), counts.end());
 }
 
+template <class T>
+static typename std::forward_list<T>::iterator get_new_iter(
+    std::forward_list<T>& storage) {
+  storage.emplace_front();
+  return storage.begin();
+}
+
 void DerivedGraphs::fill(VertexWSM v, VertexData& vertex_data) {
-  vertex_data.d2_neighbours = m_storage.get_new_iter();
-  vertex_data.d3_neighbours = m_storage.get_new_iter();
+  vertex_data.d2_neighbours = get_new_iter(m_storage);
+  vertex_data.d3_neighbours = get_new_iter(m_storage);
   m_calculator.fill(
       m_neighbours_data, v, vertex_data.triangle_count,
       *vertex_data.d2_neighbours, *vertex_data.d3_neighbours);
 
-  vertex_data.d2_sorted_counts_iter = m_counts_storage.get_new_iter();
-  vertex_data.d3_sorted_counts_iter = m_counts_storage.get_new_iter();
+  vertex_data.d2_sorted_counts_iter = get_new_iter(m_counts_storage);
+  vertex_data.d3_sorted_counts_iter = get_new_iter(m_counts_storage);
 
   fill_with_sorted_counts(
       *vertex_data.d2_sorted_counts_iter, *vertex_data.d2_neighbours);

@@ -50,9 +50,10 @@ std::optional<WeightWSM> WeightNogoodDetector::get_min_weight_for_tv(
   // We must find the minimum weight, by looking at all neighbours.
   WeightWSM min_weight;
   set_maximum(min_weight);
-  const auto& data = m_target_neighbours_data.get_neighbours_and_weights(tv);
-  for (const auto& entry : data) {
-    const auto& neighbour_tv = entry.first;
+  const std::vector<std::pair<VertexWSM, WeightWSM>>& data =
+      m_target_neighbours_data.get_neighbours_and_weights(tv);
+  for (const std::pair<VertexWSM, WeightWSM>& entry : data) {
+    const VertexWSM& neighbour_tv = entry.first;
     if (m_valid_target_vertices.count(neighbour_tv) == 0) {
       continue;
     }
@@ -91,9 +92,9 @@ bool WeightNogoodDetector::fill_t_weight_lower_bounds_for_p_edges_containing_pv(
   for (unsigned pv = 0; pv < accessor.get_number_of_pattern_vertices(); ++pv) {
     WeightWSM weight;
     set_maximum(weight);
-    const auto& domain = accessor.get_domain(pv);
+    const std::set<VertexWSM>& domain = accessor.get_domain(pv);
     TKET_ASSERT(!domain.empty());
-    for (auto tv : domain) {
+    for (VertexWSM tv : domain) {
       const auto weight_opt_for_tv = get_min_weight_for_tv(tv);
       if (weight_opt_for_tv) {
         weight = std::min(weight, weight_opt_for_tv.value());
@@ -138,18 +139,20 @@ WeightNogoodDetector::get_extra_scalar_product_lower_bound(
     // which could possibly contain f(pv).
     const auto minimum_t_weight = get_t_weight_lower_bound(pv1);
 
-    const auto& p_neighbours_and_weights =
-        m_pattern_neighbours_data.get_neighbours_and_weights(pv1);
+    const std::vector<std::pair<VertexWSM, WeightWSM>>&
+        p_neighbours_and_weights =
+            m_pattern_neighbours_data.get_neighbours_and_weights(pv1);
 
-    for (const auto& pv2_weight_pair : p_neighbours_and_weights) {
+    for (const std::pair<VertexWSM, WeightWSM>& pv2_weight_pair :
+         p_neighbours_and_weights) {
       const VertexWSM& pv2 = pv2_weight_pair.first;
       const WeightWSM& p_weight = pv2_weight_pair.second;
       WeightWSM t_weight_estimate = minimum_t_weight;
-      const auto& domain2 = accessor.get_domain(pv2);
+      const std::set<VertexWSM>& domain2 = accessor.get_domain(pv2);
       if (domain2.size() == 1) {
         // This other p-vertex PV2 is assigned already.
         // So let's check the other t-weight estimate, it may be better.
-        const auto& tv2 = *domain2.cbegin();
+        const VertexWSM& tv2 = *domain2.cbegin();
 
         // We already know that this edge contains pv1,
         // so DEFINITELY has t-weight >= this current estimate.

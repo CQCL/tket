@@ -27,32 +27,50 @@ class NeighboursData;
  */
 class DerivedGraphs {
  public:
+  /** The calculator is shared between several objects,
+   * to reduce memory consumption.
+   * @param ndata Data about the original graph we're deriving from.
+   * @param calculator An object which knows how to calculate edges and weights
+   * for derived graphs.
+   */
   DerivedGraphs(
-      const NeighboursData& ndata, DerivedGraphsCalculator& calculator,
-      DerivedGraphStructs::NeighboursAndCountsStorage& storage,
-      DerivedGraphStructs::SortedCountsStorage& counts_storage);
+      const NeighboursData& ndata, DerivedGraphsCalculator& calculator);
 
   /** The point is, this is cheap to copy, AND the iters
-   * provide references which remain valid.
+   * provide references which remain valid even after new insertions.
    */
   struct VertexData {
     DerivedGraphStructs::Count triangle_count;
-    DerivedGraphStructs::NeighboursAndCountsStorage::Iter d2_neighbours;
-    DerivedGraphStructs::SortedCountsStorage::Iter d2_sorted_counts_iter;
 
-    DerivedGraphStructs::NeighboursAndCountsStorage::Iter d3_neighbours;
-    DerivedGraphStructs::SortedCountsStorage::Iter d3_sorted_counts_iter;
+    // Of course one could consider more and more derived graphs,
+    // and recursion: D2 of D2, D2 of D3 of D2, etc.
+    // but quick tests seem to show that it isn't worthwhile
+    // (takes more time to compute than the time saved).
+
+    DerivedGraphStructs::NeighboursAndCountsIter d2_neighbours;
+    DerivedGraphStructs::SortedCountsIter d2_sorted_counts_iter;
+
+    DerivedGraphStructs::NeighboursAndCountsIter d3_neighbours;
+    DerivedGraphStructs::SortedCountsIter d3_sorted_counts_iter;
   };
 
+  /** Get data for a vertex. Notice that the data is cheap to copy,
+   * and the pointers contained within it remain valid even after
+   * new insertions.
+   * @param v A vertex in the graph.
+   * @return Data about that vertex, in the derived graphs.
+   */
   VertexData get_data(VertexWSM v);
 
  private:
   const NeighboursData& m_neighbours_data;
   DerivedGraphsCalculator& m_calculator;
-  DerivedGraphStructs::NeighboursAndCountsStorage& m_storage;
-  DerivedGraphStructs::SortedCountsStorage& m_counts_storage;
+  DerivedGraphStructs::NeighboursAndCountsStorage m_storage;
+  DerivedGraphStructs::SortedCountsStorage m_counts_storage;
 
-  std::map<VertexWSM, VertexData> m_data;
+  // KEY: a vertex
+  // VALUE: data for that vertex; note that VertexData is cheap to copy.
+  std::map<VertexWSM, VertexData> m_data_for_vertices;
 
   void fill(VertexWSM v, VertexData& vertex_data);
 };

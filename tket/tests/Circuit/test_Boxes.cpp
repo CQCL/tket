@@ -12,17 +12,36 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 
 #include "../testutil.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Eigen/src/Core/Matrix.h"
+#include "Gate/SymTable.hpp"
 #include "Simulation/CircuitSimulator.hpp"
+
+using Catch::Matchers::StartsWith;
 
 namespace tket {
 namespace test_Boxes {
+
+SCENARIO("CircBox requires simple circuits", "[boxes]") {
+  Circuit circ(2);
+  circ.add_op<unsigned>(OpType::Y, {0});
+  circ.add_op<unsigned>(OpType::CX, {0, 1});
+  REQUIRE(circ.is_simple());
+  Qubit qb0(0);
+  Qubit qb1(1);
+  Qubit a0("a", 0);
+  Qubit a1("a", 1);
+  unit_map_t qubit_map = {{qb0, a0}, {qb1, a1}};
+  circ.rename_units(qubit_map);
+  REQUIRE(!circ.is_simple());
+  REQUIRE_THROWS_AS(CircBox(circ), SimpleOnly);
+}
 
 SCENARIO("Using Boxes", "[boxes]") {
   GIVEN("CircBox manipulation") {
@@ -805,6 +824,78 @@ SCENARIO("Checking equality", "[boxes]") {
       PhasePolyBox ppbox2(u);
       REQUIRE(ppbox != ppbox2);
     }
+  }
+  GIVEN("CustomGate") {
+    Circuit setup(1);
+    Sym a = SymTable::fresh_symbol("a");
+    Expr ea(a);
+
+    // "random" 1qb gate.
+    const double param1 = 1.23323;
+    const double param2 = 0.42323;
+    const double param3 = 0.34212;
+    const std::string name1{"gate name1"};
+    const std::string name2{"gate name2"};
+    setup.add_op<unsigned>(OpType::TK1, {ea, param1, param2}, {0});
+
+    composite_def_ptr_t def1 = CompositeGateDef::define_gate(name1, setup, {a});
+    composite_def_ptr_t def2 = CompositeGateDef::define_gate(name2, setup, {a});
+    const CustomGate g1(def1, {param3});
+    const CustomGate g1_repeated(def1, {param3});
+    const CustomGate g1_wrong(def1, {param1});
+    const CustomGate g2(def2, {param3});
+
+    // Check that all IDs are different.
+    const std::set<boost::uuids::uuid> ids{
+        g1.get_id(), g1_repeated.get_id(), g1_wrong.get_id(), g2.get_id()};
+    CHECK(ids.size() == 4);
+    CHECK(g1 == g1);
+    CHECK(g1 == g1_repeated);
+    CHECK(g1 != g2);
+    CHECK(g1 != g1_wrong);
+    CHECK(g1_repeated != g1_wrong);
+    CHECK_THROWS_AS(CustomGate(nullptr, {param3}), std::runtime_error);
+  }
+}
+
+SCENARIO("Checking box names", "[boxes]") {
+  GIVEN("CustomGate without parameters") {
+    Circuit setup(1);
+    setup.add_op<unsigned>(OpType::TK1, {0.3333, 1.111, 0.5555}, {0});
+    const std::string name("gate without params");
+    composite_def_ptr_t def = CompositeGateDef::define_gate(name, setup, {});
+    CustomGate g(def, {});
+    CHECK(g.get_name() == name);
+  }
+  GIVEN("CustomGate with 1 parameter") {
+    Circuit setup(1);
+    Sym a = SymTable::fresh_symbol("a");
+    Expr ea(a);
+    setup.add_op<unsigned>(OpType::TK1, {ea, 0.3333, 1.111}, {0});
+    const std::string prefix("gate with params");
+    composite_def_ptr_t def = CompositeGateDef::define_gate(prefix, setup, {a});
+    CustomGate g(def, {0.4444});
+
+    // Of course, 0.4444 is NOT exactly represented by a double,
+    // so it might print something like 0.4443999... or 0.4440000...1.
+    // This test will still pass even if so.
+    CHECK_THAT(g.get_name(), StartsWith(prefix + "(0.444"));
+  }
+  GIVEN("CustomGate with 3 parameters") {
+    Circuit setup(1);
+    Sym a = SymTable::fresh_symbol("a");
+    Sym b = SymTable::fresh_symbol("b");
+    Sym c = SymTable::fresh_symbol("c");
+    Expr ea(a);
+    Expr eb(b);
+    Expr ec(c);
+    setup.add_op<unsigned>(OpType::TK1, {ea, eb, ec}, {0});
+    const std::string prefix("gate with 3 params");
+    composite_def_ptr_t def =
+        CompositeGateDef::define_gate(prefix, setup, {a, b, c});
+    CustomGate g(def, {0.1111, 0.2222, 0.4444});
+    const std::string name = g.get_name();
+    CHECK(name == "gate with 3 params(0.1111,0.2222,0.4444)");
   }
 }
 

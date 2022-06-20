@@ -22,6 +22,16 @@ namespace tket {
 namespace Transforms {
 
 /**
+ * Decomposes all multi-qubit unitary gates into TK2 and single-qubit gates.
+ *
+ * Ignores boxes.
+ *
+ * Expects: any gates
+ * Produces: TK2 and any single-qubit gates
+ */
+Transform decompose_multi_qubits_TK2();
+
+/**
  * Decomposes all multi-qubit unitary gates into CX and single-qubit gates.
  *
  * Ignores boxes.
@@ -82,16 +92,58 @@ Transform decompose_ZX_to_HQS1();
 // single-qubit gates
 Transform decompose_MolmerSorensen();
 
-// finds all ZZ gates which are in the form of CX and Rz gates and converts
-// into ZZ gates Expects: CX, Rz Produces: ZZ, CX, Rz
+/**
+ * @brief A simple struct to store some two-qubit gate fidelities.
+ *
+ * We currently support CX, ZZMax and ZZPhase.
+ *
+ * This is meant to be easily extensible when further gate types will be
+ * supported.
+ *
+ */
+struct TwoQbFidelities {
+  std::optional<double> CX_fidelity;
+  std::optional<double> ZZMax_fidelity;
+  std::optional<std::function<double(double)>> ZZPhase_fidelity;
+};
+
+/**
+ * @brief Decomposes each TK2 gate into two-qubit gates.
+ *
+ * We currently support CX, ZZMax and ZZPhase.
+ *
+ * Decompose each TK2 gate into two-qubit gates in a noise-aware way. Supported
+ * two-qubit gate fidelities will be used to return the optimal decomposition of
+ * each TK2 gate, taking noise into consideration.
+ *
+ * If no fidelities are provided, the decomposition will be exact, using CX
+ * gates.
+ *
+ * If the TK2 angles are symbolic values, the decomposition will be exact
+ * (i.e. not noise-aware). It is not possible in general to obtain optimal
+ * decompositions for arbitrary symbolic parameters, so consider substituting
+ * for concrete values if possible.
+ *
+ * @param fid The two-qubit gate fidelities (optional).
+ * @return Transform
+ */
+Transform decompose_TK2(const TwoQbFidelities& fid);
+Transform decompose_TK2();
+
+/**
+ * @brief Synthesise ZZPhase gates from CX and Rz, as well as XX/YYPhase.
+ *
+ * Expects: CX, Rz, XXPhase, YYPhase Produces: ZZPhase, CX, Rz.
+ */
 Transform decompose_ZZPhase();
 
-// identifies any TK1, Rz,Ry,Rx,u3,u2,u1 gate sequences that can be naively
-// decomposed into S,Z,X,V returns clifford sequences in a standard form
-// (Z)(X)(S)(V)(S)
-// Expects: TK1, U3, U2, U1, Rx, Ry, Rz, and any multi-qubit gates
-// Produces: Z, X, S, V, and any remaining non-clifford single-qubit gates,
-// and any multi-qubit gates
+/**
+ * Decompose single-qubit Clifford gates to a standard Cliffford gate set.
+ *
+ * Replaces all single-qubit unitary gates outside the set {Z, X, S, V} that are
+ * recognized as Clifford operations with an equivalent sequence of gates from
+ * that set.
+ */
 Transform decompose_cliffords_std();
 
 Transform decompose_ZX_to_cliffords();
@@ -149,6 +201,32 @@ Transform decompose_BRIDGE_to_CX();
 // Expects: CX gates
 // Produces CX and H gates
 Transform decompose_CX_directed(const Architecture& arc);
+
+/**
+ * @brief Decompose NPhasedX gates into single-qubit PhasedX gates.
+ */
+Transform decompose_NPhasedX();
+
+/**
+ * @brief Turns all PhasedX and NPhasedX gates into global gates
+ *
+ * Replaces any PhasedX gates with global NPhasedX gates. By default, this
+ * transform will squash all single-qubit gates to PhasedX and Rz gates before
+ * proceeding further. Existing non-global NPhasedX will not be preserved. This
+ * is the recommended setting for best performance. If squashing is disabled,
+ * each non-global PhasedX gate will be replaced with two global NPhasedX, but
+ * any other gates will be left untouched.
+ *
+ * @param squash Whether to squash the circuit before globalisation.
+ *
+ * If squash=true (default), this transform always returns true. For
+ * squash=false, it will return true if the circuit was transformed and
+ * false otherwise.
+ *
+ * It is not recommended to use this pass with symbolic expressions, as in
+ * certain cases a blow-up in symbolic expression sizes may occur.
+ */
+Transform globalise_PhasedX(bool squash = true);
 
 }  // namespace Transforms
 

@@ -12,13 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 #include <sstream>
 #include <stdexcept>
 
 #include "Architecture/DistancesFromArchitecture.hpp"
 
-using Catch::Matchers::Contains;
+using Catch::Matchers::ContainsSubstring;
 using std::vector;
 
 namespace tket {
@@ -58,7 +59,7 @@ SCENARIO("Architecture with disconnected graph") {
         CHECK(v1 + v2 != 9);
         summary << "INF;";
         const std::string message = e.what();
-        CHECK_THAT(message, Contains("are not connected"));
+        CHECK_THAT(message, ContainsSubstring("are not connected"));
       }
     }
   }

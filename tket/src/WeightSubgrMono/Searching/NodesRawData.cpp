@@ -24,23 +24,22 @@ namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 NodesRawData::NodesRawData(
-    const DomainInitialiser::InitialDomains& initial_domains)
-    : current_node_level(0) {
-  nodes_data.resize(1);
-  TKET_ASSERT(initial_domains.size() >= 2);
-  domains_data.resize(initial_domains.size());
-  auto& node = nodes_data[0];
+    const DomainInitialiser::InitialDomains& initial_domains) {
+  nodes_data.push();
+  auto& node = nodes_data.top();
   node.nogood = false;
   node.scalar_product = 0;
   node.total_p_edge_weights = 0;
 
+  TKET_ASSERT(initial_domains.size() >= 2);
+  domains_data.resize(initial_domains.size());
+
   for (unsigned pv = 0; pv < initial_domains.size(); ++pv) {
-    const auto& domain = initial_domains[pv];
+    const std::set<VertexWSM>& domain = initial_domains[pv];
     auto& domain_data = domains_data[pv];
-    domain_data.entries_back_index = 0;
-    domain_data.entries.resize(1);
+    domain_data.entries.push();
     domain_data.entries[0].domain = domain;
-    domain_data.entries[0].node_level = 0;
+    domain_data.entries[0].node_index = 0;
 
     switch (domain.size()) {
       case 0: {
@@ -57,12 +56,16 @@ NodesRawData::NodesRawData(
   }
 }
 
+unsigned NodesRawData::current_node_index() const {
+  return nodes_data.size() - 1;
+}
+
 const NodesRawData::NodeData& NodesRawData::get_current_node() const {
-  return nodes_data[current_node_level];
+  return nodes_data.top();
 }
 
 NodesRawData::NodeData& NodesRawData::get_current_node_nonconst() {
-  return nodes_data[current_node_level];
+  return nodes_data.top();
 }
 
 std::string NodesRawData::NodeData::str() const {
@@ -71,7 +74,7 @@ std::string NodesRawData::NodeData::str() const {
     ss << "##NOGOOD!## ";
   }
   ss << "Has " << new_assignments.size() << " ass.: [ ";
-  for (const auto& entry : new_assignments) {
+  for (const std::pair<VertexWSM, VertexWSM>& entry : new_assignments) {
     ss << entry.first << ":" << entry.second << " ";
   }
   ss << "];  sc.prod " << scalar_product << "; p-edge weight "
@@ -81,9 +84,9 @@ std::string NodesRawData::NodeData::str() const {
 
 std::string NodesRawData::DomainData::str() const {
   std::stringstream ss;
-  // ss << "\nDomains: (curr. node level=" << current_node_level << ")";
-  for (unsigned ii = 0; ii <= entries_back_index; ++ii) {
-    ss << "\n  lev=" << entries[ii].node_level << ", Dom: "
+  const unsigned size = entries.size();
+  for (unsigned ii = 0; ii < size; ++ii) {
+    ss << "\n  node_index=" << entries[ii].node_index << ", Dom: "
        << tket::WeightedSubgraphMonomorphism::str(entries[ii].domain);
   }
   ss << "\n";
@@ -93,6 +96,10 @@ std::string NodesRawData::DomainData::str() const {
 NodesRawDataWrapper::NodesRawDataWrapper(
     const DomainInitialiser::InitialDomains& initial_domains)
     : m_raw_data(initial_domains) {}
+
+const NodesRawData& NodesRawDataWrapper::get_raw_data_for_debug() const {
+  return m_raw_data;
+}
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

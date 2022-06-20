@@ -51,6 +51,14 @@ static inline bool test_equiv_expr(
   return equiv_expr(e0, e1, n, ERR_EPS);
 }
 
+static inline bool test_equiv_expr_c(const Expr& e0, const Expr& e1) {
+  std::optional<Complex> c0 = eval_expr_c(e0);
+  std::optional<Complex> c1 = eval_expr_c(e1);
+  if (!c0 || !c1) return e0 == e1;
+  Complex diff = c0.value() - c1.value();
+  return std::abs(diff) < ERR_EPS;
+}
+
 static inline bool test_equiv_val(const Expr& e, double x, unsigned n = 2) {
   return equiv_val(e, x, n, ERR_EPS);
 }

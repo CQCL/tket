@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <boost/range/join.hpp>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <iostream>
 
 #include "Architecture/Architecture.hpp"
@@ -474,6 +474,7 @@ SCENARIO("Test predicate serializations") {
   BASICPREDJSONTEST(NoMidMeasurePredicate)
   BASICPREDJSONTEST(NoSymbolsPredicate)
   BASICPREDJSONTEST(GlobalPhasedXPredicate)
+  BASICPREDJSONTEST(NormalisedTK2Predicate)
 #undef BASICPREDJSONTEST
   GIVEN("GateSetPredicate") {
     OpTypeSet ops = {OpType::X, OpType::V, OpType::Rz, OpType::ZZMax};
@@ -574,6 +575,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(RebaseUFR, RebaseUFR())
   COMPPASSJSONTEST(RemoveRedundancies, RemoveRedundancies())
   COMPPASSJSONTEST(SynthesiseHQS, SynthesiseHQS())
+  COMPPASSJSONTEST(SynthesiseTK, SynthesiseTK())
   COMPPASSJSONTEST(SynthesiseTket, SynthesiseTket())
   COMPPASSJSONTEST(SynthesiseOQC, SynthesiseOQC())
   COMPPASSJSONTEST(SynthesiseUMD, SynthesiseUMD())

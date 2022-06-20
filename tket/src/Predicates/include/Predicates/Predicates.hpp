@@ -254,4 +254,24 @@ class GlobalPhasedXPredicate : public Predicate {
   std::string to_string() const override;
 };
 
+/**
+ * Asserts that all TK2 gates are normalised
+ *
+ * A gate TK2(a, b, c) is considered normalised if
+ *
+ *  - If all expressions are non symbolic, then it must hold
+ *    `0.5 ≥ a ≥ b ≥ |c|`.
+ *  - In the ordering (a, b, c), any symbolic expression must appear before
+ *    non-symbolic ones. The remaining non-symbolic expressions must still be
+ *    ordered in non-increasing order and must be in the interval [0, 1/2],
+ *    with the exception of the last one that may be in [-1/2, 1/2].
+ */
+class NormalisedTK2Predicate : public Predicate {
+ public:
+  bool verify(const Circuit& circ) const override;
+  bool implies(const Predicate& other) const override;
+  PredicatePtr meet(const Predicate& other) const override;
+  std::string to_string() const override;
+};
+
 }  // namespace tket

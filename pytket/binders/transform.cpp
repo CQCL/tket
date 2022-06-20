@@ -36,6 +36,26 @@ namespace py = pybind11;
 
 namespace tket {
 
+// given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
+Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
+  Transforms::TwoQbFidelities fid;
+  for (const auto &kwarg : kwargs) {
+    const std::string kwargstr = py::cast<std::string>(kwarg.first);
+    using Func = std::function<double(double)>;
+    if (kwargstr == "CX_fidelity") {
+      fid.CX_fidelity = py::cast<double>(kwarg.second);
+    } else if (kwargstr == "ZZMax_fidelity") {
+      fid.ZZMax_fidelity = py::cast<double>(kwarg.second);
+    } else if (kwargstr == "ZZPhase_fidelity") {
+      fid.ZZPhase_fidelity = py::cast<Func>(kwarg.second);
+    } else {
+      throw py::type_error(
+          "got an unexpected keyword argument '" + kwargstr + "'");
+    }
+  }
+  return fid;
+}
+
 PYBIND11_MODULE(transform, m) {
   py::enum_<Transforms::PauliSynthStrat>(
       m, "PauliSynthStrat",
@@ -129,9 +149,9 @@ PYBIND11_MODULE(transform, m) {
           "Rebase single qubit gates into Rz, Rx.")
       .def_static(
           "RebaseToCliffordSingles", &Transforms::decompose_cliffords_std,
-          "Identify Clifford-angle rotations (from U1, U2, U3, Rx, "
-          "Ry, Rz, TK1, PhasedX), replacing them with Z, X, S, V "
-          "gates. Any non-Clifford rotations will stay as they are.")
+          "Replace all single-qubit unitary gates outside the set {Z, X, S, V} "
+          "that are recognized as Clifford operations with an equivalent "
+          "sequence of gates from that set.")
       .def_static(
           "RebaseToCirq", &Transforms::rebase_cirq,
           "Rebase from any gate set into PhasedX, Rz, CZ.")
@@ -185,8 +205,55 @@ PYBIND11_MODULE(transform, m) {
       .def_static(
           "DecomposeBoxes", &Transforms::decomp_boxes,
           "Decomposes all Boxed operations into elementary gates.")
+      .def_static(
+          "DecomposeTK2",
+          [](const py::kwargs &kwargs) {
+            return Transforms::decompose_TK2(get_fidelities(kwargs));
+          },
+          "Decompose each TK2 gate into two-qubit gates."
+          "\n\nWe currently support CX, ZZMax and ZZPhase."
+          "\n\nIf one or more gate fidelities are provided, the two-qubit gate "
+          "type achieving the highest fidelity will be chosen for the "
+          "decomposition, as measured using squared trace fidelity. "
+          "If no fidelities are provided, the TK2 gates will be decomposed "
+          "exactly using CX gates.\n\n"
+          "All TK2 gate parameters must be normalised, i.e. they must satisfy "
+          "`NormalisedTK2Predicate`."
+          "\n\n"
+          "Gate fidelities are passed as keyword arguments to perform "
+          "noise-aware decompositions. "
+          "We currently support `CX_fidelity`, `ZZMax_fidelity` and "
+          "`ZZPhase_fidelity`. If provided, the `CX` and `ZZMax` fidelities "
+          "must be given by a single floating point fidelity. The `ZZPhase` "
+          "fidelity is given as a lambda float -> float, mapping a ZZPhase "
+          "angle parameter to its fidelity. These parameters will be used "
+          "to return the optimal decomposition of each TK2 gate, taking "
+          "noise into consideration.\n\n"
+          "If the TK2 angles are symbolic values, the decomposition will "
+          "be exact (i.e. not noise-aware). It is not possible in general "
+          "to obtain optimal decompositions for arbitrary symbolic parameters, "
+          "so consider substituting for concrete values if possible.")
+      .def_static(
+          "NormaliseTK2", &Transforms::normalise_TK2,
+          "Normalises all TK2 gates.\n\n"
+          "TK2 gates have three angles in the interval [0, 4], but these can "
+          "always be normalised to be within the so-called Weyl chamber by "
+          "adding single-qubit gates.\n\n"
+          "More precisely, the three angles a, b, c of TK2(a, b, c) are "
+          "normalised exactly when the two following conditions are met:\n"
+          " - numerical values must be in the Weyl chamber, "
+          "ie `1/2 >= a >= b >= |c|`,\n"
+          " - symbolic values must come before any numerical value in the "
+          "array.\n\n"
+          "After this transform, all TK2 angles will be normalised and the "
+          "circuit will satisfy `NormalisedTK2Predicate`.")
 
       /* OPTIMISATION TRANSFORMS */
+      .def_static(
+          "OptimiseStandard", &Transforms::synthesise_tk,
+          "Fast optimisation pass, performing basic simplifications. "
+          "Works on any circuit, giving the result in TK1 and TK2 gates. "
+          "Preserves connectivity of circuit.")
       .def_static(
           "OptimisePostRouting", &Transforms::synthesise_tket,
           "Fast optimisation pass, performing basic simplifications. "
@@ -289,12 +356,29 @@ PYBIND11_MODULE(transform, m) {
           "of OpType to single-qubit gate error maps",
           py::arg("op_node_errors"))
       .def_static(
-          "GlobalisePhasedX", &Transforms::globalise_phasedx,
-          "Replaces every occurence of PhasedX or NPhasedX gates with NPhasedX "
-          "gates acting on all qubits, and correcting rotation gates."
-          "\n\nThis is achieved using the identity"
-          "\nPhX(α, β) = PhX(-1/2, β + 1/2) Rz(α) PhX(1/2, β + 1/2)"
-          "\n(circuit order).")
+          "DecomposeNPhasedX", &Transforms::decompose_NPhasedX,
+          "Decompose NPhasedX gates into single-qubit PhasedX gates.")
+      .def_static(
+          "GlobalisePhasedX", &Transforms::globalise_PhasedX,
+          "Turns all PhasedX and NPhasedX gates into global gates\n\n"
+          "Replaces any PhasedX gates with global NPhasedX gates. "
+          "By default, this transform will squash all single-qubit gates "
+          "to PhasedX and Rz gates before proceeding further. "
+          "Existing non-global NPhasedX will not be preserved. "
+          "This is the recommended setting for best "
+          "performance. If squashing is disabled, each non-global PhasedX gate "
+          "will be replaced with two global NPhasedX, but any other gates will "
+          "be left untouched."
+          "\n\n:param squash: Whether to squash the circuit in pre-processing "
+          "(default: true)."
+          "\n\nIf squash=true (default), the `GlobalisePhasedX().apply` method "
+          "will always returns true. "
+          "For squash=false, `apply()` will return true if the circuit was "
+          "changed and false otherwise.\n\n"
+          "It is not recommended to use this transformation with symbolic "
+          "expressions, as in certain cases a blow-up in symbolic expression "
+          "sizes may occur.",
+          py::arg("squash") = true)
       .def_static(
           "SynthesisePauliGraph", &Transforms::synthesise_pauli_graph,
           "Synthesises Pauli Graphs.",

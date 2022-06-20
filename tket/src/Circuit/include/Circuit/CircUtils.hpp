@@ -52,7 +52,7 @@ Eigen::Matrix2cd get_matrix_from_circ(const Circuit& circ);
  *
  * @param circ circuit
  *
- * @pre \p circ is composed of CX and single-qubit gates only
+ * @pre \p circ is composed of CX, TK2 and single-qubit gates only
  * @pre circuit has no symbolic parameters
  * @post matrix is in \ref BasisOrder::ilo
  *
@@ -63,21 +63,17 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit& circ);
 /**
  * Convert a 4x4 unitary matrix optimally to a corresponding circuit
  *
- * If cx_fidelity = 1 (the default), the decomposition is equivalent
- * to the input circuit circ and is optimal in the number of CX gates.
- * For cx_fidelity < 1, the decomposed circuit might not be equivalent,
- * but it will minimise overall circuit fidelity assuming a fidelity of
- * cx_fidelity for CX gates and a fidelity of 1. for single-qubit ops.
+ * This will express `U` using a single TK2 gate. See `decompose_TK2` to
+ * decompose this gate further into other primitives.
  *
  * @param U unitary matrix
- * @param cx_fidelity fidelity of CX gate
  *
  * @pre \p U is in \ref BasisOrder::ilo
- * @post circuit consists of CX and TK1 gates only
+ * @post circuit consists of one TK2 and single-qubit gates
  *
  * @return circuit implementing U with minimal error
  */
-Circuit two_qubit_canonical(const Eigen::Matrix4cd& U, double cx_fidelity = 1.);
+Circuit two_qubit_canonical(const Eigen::Matrix4cd& U);
 
 /**
  * Decompose a unitary matrix into a 2-CX circuit following a diagonal operator.
@@ -85,7 +81,7 @@ Circuit two_qubit_canonical(const Eigen::Matrix4cd& U, double cx_fidelity = 1.);
  * Given an arbitrary unitary 4x4 matrix, this method returns a circuit C and a
  * complex number z such that |z|=1 and U = VD where V is the unitary
  * implemented by the circuit and D = diag(z, z*, z*, z). The circuit C consists
- * of CX and TK1 gates only and has at most 2 CX gates.
+ * of CX and single-qubit gates and has at most 2 CX gates.
  *
  * @param U unitary matrix
  *
@@ -99,7 +95,7 @@ std::pair<Circuit, Complex> decompose_2cx_VD(const Eigen::Matrix4cd& U);
  * Given an arbitrary unitary 4x4 matrix, this method returns a circuit C and a
  * complex number z such that |z|=1 and U = DV where V is the unitary
  * implemented by the circuit and D = diag(z, z*, z*, z). The circuit C consists
- * of CX and TK1 gates only and has at most 2 CX gates.
+ * of CX and single-qubit gates and has at most 2 CX gates.
  *
  * @param U unitary matrix
  *
@@ -134,6 +130,22 @@ Circuit phase_gadget(
 Circuit pauli_gadget(
     const std::vector<Pauli>& paulis, const Expr& t,
     CXConfigType cx_config = CXConfigType::Snake);
+
+/**
+ * Utility function to replace all CX gates with TK2 and single-qubit gates.
+ *
+ * @param c circuit to modify
+ */
+void replace_CX_with_TK2(Circuit& c);
+
+/**
+ * Express a gate as a circuit using TK2 as the only multi-qubit gate.
+ *
+ * @param op operation
+ *
+ * @return circuit representing the operation
+ */
+Circuit with_TK2(Gate_ptr op);
 
 /**
  * Express a gate as a circuit using CX as the only multi-qubit gate.

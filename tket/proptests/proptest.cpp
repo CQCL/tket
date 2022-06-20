@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cmath>
+
 #include "Architecture/Architecture.hpp"
 #include "Circuit/Circuit.hpp"
 #include "ComparisonFunctions.hpp"
@@ -27,6 +29,7 @@
 using namespace tket;
 
 #define ALL_PASSES(DO)                    \
+  DO(SynthesiseTK)                        \
   DO(SynthesiseTket)                      \
   DO(SynthesiseHQS)                       \
   DO(SynthesiseUMD)                       \
@@ -40,6 +43,7 @@ using namespace tket;
   DO(DecomposeMultiQubitsCX)              \
   DO(DecomposeSingleQubitsTK1)            \
   DO(DecomposeBoxes)                      \
+  DO(DecomposeTK2)                        \
   DO(ComposePhasePolyBoxes)               \
   DO(SquashTK1)                           \
   DO(RebaseTket)                          \
@@ -47,7 +51,8 @@ using namespace tket;
   DO(FlattenRegisters)                    \
   DO(RemoveBarriers)                      \
   DO(DelayMeasures)                       \
-  DO(GlobalisePhasedX)
+  DO(GlobalisePhasedX)                    \
+  DO(NormaliseTK2)
 
 // Map from PassPtr to readable name
 static const std::map<PassPtr, std::string> passes = {

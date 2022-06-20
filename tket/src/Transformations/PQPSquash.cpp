@@ -12,12 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "PQPSquash.hpp"
+
 #include <memory>
 
 #include "BasicOptimisation.hpp"
+#include "Circuit/DAGDefs.hpp"
 #include "Decomposition.hpp"
 #include "Gate/Rotation.hpp"
-#include "SingleQubitSquash.hpp"
 #include "Transform.hpp"
 #include "Utils/Expression.hpp"
 
@@ -28,199 +30,162 @@ namespace Transforms {
 static bool fixup_angles(
     Expr &angle_p1, Expr &angle_q, Expr &angle_p2, bool reversed = false);
 static bool redundancy_removal(Circuit &circ);
+static Rotation merge_rotations(
+    OpType r, const std::vector<Gate_ptr> &chain,
+    std::vector<Gate_ptr>::const_iterator &iter);
 
-/**
- * @brief Implements the AbstractSquasher interface for SingleQubitSquash
- *
- * The PQP Squasher squashes chains of single qubit gates to minimal sequences
- * of any two type of rotations (Rx, Ry or Rz), using Euler angle
- * decompositions.
- *
- * Decompositions can either be strict or smart. Strict decompositions
- * will always decompose to P-Q-P, whereas smart will decompose to P-Q-P
- * or Q-P-Q and will always try to commute P or Q through multi-qubit gates.
- * For smart decomposition, swapping P and Q gives the same result.
- *
- * Note that even in strict mode, if a rotation in the PQP decomposition
- * has angle 0, it will be omitted.
- *
- * The squash is made backwards, so that rotations get pushed towards the front.
- * This was chosen to be compatible with the `commute_through_multis` pass,
- * which also proceeds backwards. There are several reasons to prefer commuting
- * rotations to the front rather than the back
- *  - Noise heuristic: CX gate distribute the errors out, so it makes sense to
- *    delay them as much as possible
- *  - For contextual optimisation, it also makes sense to move Clifford
- *    operations (i.e. CX) to the back, as this can be then removed
- *  - Some initial benchmarking by Seyon seemed to show that commuting to the
- *    front performed better, but this might be an artefact of the benchmarking
- *    circuits used.
- * Note finally there is also an argument for commuting non-Clifford rotations
- * towards the back, as this makes generating automatic assertions easier (not
- * implemented at the time of writing).
- *
- * The PQPSquasher shouldn't have to know if the squash is made forwards
- * or backwards. Here, however, `reversed` is needed in `fixup_angles` for
- * consistency, so that forward and backward passes squash to the same normal
- * form
- */
-class PQPSquasher : public AbstractSquasher {
- public:
-  PQPSquasher(
-      OpType p, OpType q, bool smart_squash = true, bool reversed = false)
-      : p_(p),
-        q_(q),
-        smart_squash_(smart_squash),
-        reversed_(reversed),
-        rotation_chain() {
-    if (!(p == OpType::Rx || p == OpType::Ry || p == OpType::Rz) ||
-        !(q == OpType::Rx || q == OpType::Ry || q == OpType::Rz)) {
-      throw std::logic_error(
-          "Can only reduce chains of single qubit rotations");
-    }
-    if (p == q) {
-      throw std::logic_error(
-          "Requires two different bases to perform single qubit "
-          "rotations");
+PQPSquasher::PQPSquasher(OpType p, OpType q, bool smart_squash, bool reversed)
+    : p_(p),
+      q_(q),
+      smart_squash_(smart_squash),
+      reversed_(reversed),
+      rotation_chain() {
+  if (!(p == OpType::Rx || p == OpType::Ry || p == OpType::Rz) ||
+      !(q == OpType::Rx || q == OpType::Ry || q == OpType::Rz)) {
+    throw std::logic_error("Can only reduce chains of single qubit rotations");
+  }
+  if (p == q) {
+    throw std::logic_error(
+        "Requires two different bases to perform single qubit "
+        "rotations");
+  }
+}
+
+bool PQPSquasher::accepts(Gate_ptr gp) const {
+  OpType type = gp->get_type();
+  return type == p_ || type == q_;
+}
+
+void PQPSquasher::append(Gate_ptr gp) {
+  if (!accepts(gp)) {
+    throw NotValid("PQPSquasher: cannot append OpType");
+  }
+  rotation_chain.push_back(gp);
+}
+
+std::pair<Circuit, Gate_ptr> PQPSquasher::flush(
+    std::optional<Pauli> commutation_colour) const {
+  bool commute_through = false;
+  OpType p = p_, q = q_;
+
+  if (smart_squash_ && commutation_colour.has_value()) {
+    Gate P(p_, {0}, 1);
+    Gate Q(q_, {0}, 1);
+    if (P.commutes_with_basis(commutation_colour, 0)) {
+      commute_through = true;
+    } else if (Q.commutes_with_basis(commutation_colour, 0)) {
+      commute_through = true;
+      p = q_;
+      q = p_;
     }
   }
 
-  bool accepts(OpType type) const override { return type == p_ || type == q_; }
-
-  void append(Gate_ptr gp) override {
-    if (!accepts(gp->get_type())) {
-      throw NotValid("PQPSquasher: cannot append OpType");
-    }
-    rotation_chain.push_back(gp);
+  // Construct list of merged rotations
+  std::list<Rotation> rots;
+  auto iter = rotation_chain.cbegin();
+  while (iter != rotation_chain.cend()) {
+    // Merge next q rotations
+    rots.push_back(merge_rotations(q, rotation_chain, iter));
+    // Merge next p rotations
+    rots.push_back(merge_rotations(p, rotation_chain, iter));
   }
 
-  std::pair<Circuit, Gate_ptr> flush(
-      std::optional<Pauli> commutation_colour = std::nullopt) const override {
-    bool commute_through = false;
-    OpType p = p_, q = q_;
-
-    if (smart_squash_ && commutation_colour.has_value()) {
-      Gate P(p_, {0}, 1);
-      Gate Q(q_, {0}, 1);
-      if (P.commutes_with_basis(commutation_colour, 0)) {
-        commute_through = true;
-      } else if (Q.commutes_with_basis(commutation_colour, 0)) {
-        commute_through = true;
-        p = q_;
-        q = p_;
-      }
-    }
-
-    // Construct list of merged rotations
-    std::list<Rotation> rots;
-    auto iter = rotation_chain.cbegin();
-    while (iter != rotation_chain.cend()) {
-      // Merge next q rotations
-      rots.push_back(merge_rotations(q, rotation_chain, iter));
-      // Merge next p rotations
-      rots.push_back(merge_rotations(p, rotation_chain, iter));
-    }
-
-    // Perform any cancellations
-    std::list<Rotation>::iterator r = rots.begin();
-    while (r != rots.end()) {
-      if (r->is_id()) {
+  // Perform any cancellations
+  std::list<Rotation>::iterator r = rots.begin();
+  while (r != rots.end()) {
+    if (r->is_id()) {
+      r = rots.erase(r);
+      if (r != rots.begin() && r != rots.end()) {
+        std::prev(r)->apply(*r);
         r = rots.erase(r);
-        if (r != rots.begin() && r != rots.end()) {
-          std::prev(r)->apply(*r);
-          r = rots.erase(r);
-          r--;
-        }
-      } else
-        r++;
-    }
-
-    // Extract any P rotations from the beginning and end of the list
-    Expr p1 = 0, p2 = 0;
-    std::list<Rotation>::iterator i1 = rots.begin();
-    if (i1 != rots.end()) {
-      std::optional<Expr> a = i1->angle(p);
-      if (a) {
-        p1 = a.value();
-        rots.pop_front();
+        r--;
       }
-    }
-    std::list<Rotation>::reverse_iterator i2 = rots.rbegin();
-    if (i2 != rots.rend()) {
-      std::optional<Expr> a = i2->angle(p);
-      if (a) {
-        p2 = a.value();
-        rots.pop_back();
-      }
-    }
-
-    // Finish up:
-    Rotation R = {};
-    for (auto rot : rots) {
-      R.apply(rot);
-    }
-    std::tuple<Expr, Expr, Expr> angles = R.to_pqp(p, q);
-
-    Expr angle_p1 = std::get<0>(angles) + p1;
-    Expr angle_q = std::get<1>(angles);
-    Expr angle_p2 = std::get<2>(angles) + p2;
-    fixup_angles(angle_p1, angle_q, angle_p2, reversed_);
-
-    Circuit replacement(1);
-    Gate_ptr left_over_gate = nullptr;
-    if (!equiv_0(angle_p1, 4)) {
-      if (equiv_0(angle_q, 4) && equiv_0(angle_p2, 4) && commute_through) {
-        left_over_gate =
-            std::make_shared<Gate>(p, std::vector<Expr>{angle_p1}, 1);
-      } else {
-        replacement.add_op<unsigned>(p, angle_p1, {0});
-      }
-    }
-    if (!equiv_0(angle_q, 4)) {
-      replacement.add_op<unsigned>(q, angle_q, {0});
-    }
-    if (!equiv_0(angle_p2, 4)) {
-      if (commute_through) {
-        left_over_gate =
-            std::make_shared<Gate>(p, std::vector<Expr>{angle_p2}, 1);
-      } else {
-        replacement.add_op<unsigned>(p, angle_p2, {0});
-      }
-    }
-    redundancy_removal(replacement);
-    return {replacement, left_over_gate};
+    } else
+      r++;
   }
 
-  void clear() override { rotation_chain.clear(); }
-
- private:
-  static Rotation merge_rotations(
-      OpType r, const std::vector<Gate_ptr> &chain,
-      std::vector<Gate_ptr>::const_iterator &iter) {
-    Expr total_angle(0);
-    while (iter != chain.end()) {
-      const Gate_ptr rot_op = *iter;
-      if (rot_op->get_type() != r) {
-        break;
-      }
-      total_angle += rot_op->get_params()[0];
-      iter++;
+  // Extract any P rotations from the beginning and end of the list
+  Expr p1 = 0, p2 = 0;
+  std::list<Rotation>::iterator i1 = rots.begin();
+  if (i1 != rots.end()) {
+    std::optional<Expr> a = i1->angle(p);
+    if (a) {
+      p1 = a.value();
+      rots.pop_front();
     }
-    return Rotation(r, total_angle);
+  }
+  std::list<Rotation>::reverse_iterator i2 = rots.rbegin();
+  if (i2 != rots.rend()) {
+    std::optional<Expr> a = i2->angle(p);
+    if (a) {
+      p2 = a.value();
+      rots.pop_back();
+    }
   }
 
-  OpType p_;
-  OpType q_;
-  bool smart_squash_;
-  bool reversed_;
-  std::vector<Gate_ptr> rotation_chain;
-};
+  // Finish up:
+  Rotation R = {};
+  for (auto rot : rots) {
+    R.apply(rot);
+  }
+  std::tuple<Expr, Expr, Expr> angles = R.to_pqp(p, q);
+
+  Expr angle_p1 = std::get<0>(angles) + p1;
+  Expr angle_q = std::get<1>(angles);
+  Expr angle_p2 = std::get<2>(angles) + p2;
+  fixup_angles(angle_p1, angle_q, angle_p2, reversed_);
+
+  Circuit replacement(1);
+  Gate_ptr left_over_gate = nullptr;
+  if (!equiv_0(angle_p1, 4)) {
+    if (equiv_0(angle_q, 4) && equiv_0(angle_p2, 4) && commute_through) {
+      left_over_gate =
+          std::make_shared<Gate>(p, std::vector<Expr>{angle_p1}, 1);
+    } else {
+      replacement.add_op<unsigned>(p, angle_p1, {0});
+    }
+  }
+  if (!equiv_0(angle_q, 4)) {
+    replacement.add_op<unsigned>(q, angle_q, {0});
+  }
+  if (!equiv_0(angle_p2, 4)) {
+    if (commute_through) {
+      left_over_gate =
+          std::make_shared<Gate>(p, std::vector<Expr>{angle_p2}, 1);
+    } else {
+      replacement.add_op<unsigned>(p, angle_p2, {0});
+    }
+  }
+  redundancy_removal(replacement);
+  return {replacement, left_over_gate};
+}
+
+void PQPSquasher::clear() { rotation_chain.clear(); }
+
+std::unique_ptr<AbstractSquasher> PQPSquasher::clone() const {
+  return std::make_unique<PQPSquasher>(*this);
+}
+
+static Rotation merge_rotations(
+    OpType r, const std::vector<Gate_ptr> &chain,
+    std::vector<Gate_ptr>::const_iterator &iter) {
+  Expr total_angle(0);
+  while (iter != chain.end()) {
+    const Gate_ptr rot_op = *iter;
+    if (rot_op->get_type() != r) {
+      break;
+    }
+    total_angle += rot_op->get_params()[0];
+    iter++;
+  }
+  return Rotation(r, total_angle);
+}
 
 static bool squash_to_pqp(
     Circuit &circ, OpType q, OpType p, bool strict = false) {
   bool reverse = true;
   auto squasher = std::make_unique<PQPSquasher>(p, q, !strict, reverse);
-  return SingleQubitSquash(std::move(squasher), reverse).squash(circ);
+  return SingleQubitSquash(std::move(squasher), circ, reverse).squash();
 }
 
 Transform reduce_XZ_chains() {
@@ -332,7 +297,8 @@ static bool remove_redundancy(
     for (port_t port = 0; port < kids.size() && z_followed_by_measures;
          port++) {
       if (circ.get_OpType_from_Vertex(kids[port]) == OpType::Measure) {
-        z_followed_by_measures &= op->commutes_with_basis(Pauli::Z, port);
+        z_followed_by_measures &=
+            circ.commutes_with_basis(vert, Pauli::Z, PortType::Source, port);
       } else {
         z_followed_by_measures = false;
       }

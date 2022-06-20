@@ -67,6 +67,16 @@ VariableOrdering::Result VariableOrdering::get_variable(
     }
     m_pv_list.emplace_back(pv);
   }
+
+  // NOTE: what we're doing is, building up the new vector
+  // (the pattern_vertices_superset) in m_work_vector.
+  // Then when we reach this point, we just write the data back
+  // into pattern_vertices_superset (by a vector swap, which is O(1) time).
+  // This is practically just as efficient as overwriting
+  // pattern_vertices_superset directly, but simpler because
+  // we need to copy and manipulate the old data to produce the new data,
+  // so we don't have to do it all within the SAME vector object
+  // (although we could do).
   accessor.get_unassigned_pattern_vertices_superset_to_overwrite().swap(
       m_work_vector);
 

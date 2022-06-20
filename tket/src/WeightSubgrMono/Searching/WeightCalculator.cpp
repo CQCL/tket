@@ -32,7 +32,8 @@ std::optional<WeightCalculator::Result> WeightCalculator::operator()(
   result.scalar_product = accessor.get_scalar_product();
   result.total_extra_p_edge_weights = 0;
 
-  const auto& assignments = accessor.get_new_assignments();
+  const std::vector<std::pair<VertexWSM, VertexWSM>>& assignments =
+      accessor.get_new_assignments();
 
   for (auto ii = number_of_processed_assignments; ii < assignments.size();
        ++ii) {
@@ -42,9 +43,10 @@ std::optional<WeightCalculator::Result> WeightCalculator::operator()(
     TKET_ASSERT(m_p_vertices_seen.insert(pv).second);
 
     // Look for assigned neighbours.
-    for (const auto& entry : pattern_ndata.get_neighbours_and_weights(pv)) {
+    for (const std::pair<VertexWSM, WeightWSM>& entry :
+         pattern_ndata.get_neighbours_and_weights(pv)) {
       const VertexWSM& other_pv = entry.first;
-      const auto& other_domain = accessor.get_domain(other_pv);
+      const std::set<VertexWSM>& other_domain = accessor.get_domain(other_pv);
       switch (other_domain.size()) {
         case 0:
           return {};

@@ -78,7 +78,7 @@ bool FilterUtils::compatible_sorted_degree_sequences(
   for (std::size_t next_p_index_to_dominate = 0;
        next_p_index_to_dominate < pattern_v_deg_seq.size();
        ++next_p_index_to_dominate) {
-    const auto& p_degree = pattern_v_deg_seq[next_p_index_to_dominate];
+    const std::size_t& p_degree = pattern_v_deg_seq[next_p_index_to_dominate];
     const auto t_citer =
         std::lower_bound(start_t_citer, target_v_deg_seq.cend(), p_degree);
     if (t_citer == target_v_deg_seq.cend()) {
