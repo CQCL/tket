@@ -48,16 +48,6 @@ add_library(tket-${COMP}
     TableLookup/VertexMapResizing.cpp
     )
 
-list(APPEND DEPS_${COMP}
-    Utils)
-
-foreach(DEP ${DEPS_${COMP}})
-    target_include_directories(
-        tket-${COMP} PRIVATE ${TKET_${DEP}_INCLUDE_DIR})
-    target_link_libraries(
-        tket-${COMP} PRIVATE tket-${DEP})
-endforeach()
-
 target_include_directories(tket-${COMP}
     PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
