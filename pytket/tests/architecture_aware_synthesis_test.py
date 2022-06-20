@@ -153,7 +153,7 @@ def test_AAS_12() -> None:
     assert pass1.apply(cu)
     out_circ = cu.circuit
     assert out_circ.valid_connectivity(arc, False, True)
-    assert out_circ.depth() == 36
+    assert out_circ.depth() == 28
 
 
 def test_AAS_13() -> None:
