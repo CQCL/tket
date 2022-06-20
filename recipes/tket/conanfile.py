@@ -44,6 +44,7 @@ class TketConan(ConanFile):
         "tklog/0.1.1@tket/stable",
         "tkassert/0.1.0@tket/stable",
         "tkrng/0.1.1@tket/stable",
+        "tktokenswap/0.1.0@tket/stable",
     )
 
     comps = [
@@ -64,7 +65,6 @@ class TketConan(ConanFile):
         "Program",
         "Characterisation",
         "Converters",
-        "TokenSwapping",
         "Mapping",
         "Placement",
         "MeasurementSetup",

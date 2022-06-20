@@ -16,9 +16,9 @@
 
 #include <map>
 #include <tkrng/RNG.hpp>
+#include <tktokenswap/SwapFunctions.hpp>
 
 #include "Placement.hpp"
-#include "TokenSwapping/SwapFunctions.hpp"
 #include "Utils/BiMapHeaders.hpp"
 
 namespace tket {

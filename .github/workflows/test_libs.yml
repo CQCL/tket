@@ -27,6 +27,8 @@ jobs:
             - 'libs/tkassert/**'
           tkrng:
             - 'libs/tkrng/**'
+          tktokenswap:
+            - 'libs/tktokenswap/**'
   test_libraries:
     name: test library
     needs: changes
@@ -61,7 +63,7 @@ jobs:
     - name: add remote
       run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
     - name: build ${{ matrix.lib }}
-      run: conan create --profile=tket libs/${{ matrix.lib }}
+      run: conan create --profile=tket libs/${{ matrix.lib }} --build=missing
     - name: build ${{ matrix.lib }} tests
       run: |
         conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --profile=tket
@@ -90,7 +92,7 @@ jobs:
     - name: add remote
       run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
     - name: build ${{ matrix.lib }}
-      run: conan create --profile=tket libs/${{ matrix.lib }}
+      run: conan create --profile=tket libs/${{ matrix.lib }} --build=missing
     - name: build ${{ matrix.lib }} tests
       run: |
         conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --profile=tket

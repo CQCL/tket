@@ -59,7 +59,6 @@ target_link_libraries(test_tket PRIVATE
     tket-PauliGraph
     tket-Predicates
     tket-Placement
-    tket-TokenSwapping
     tket-Mapping
     tket-Simulation
     tket-Transformations
@@ -72,4 +71,5 @@ target_link_libraries(test_tket PRIVATE
     ${CONAN_LIBS_TKLOG}
     ${CONAN_LIBS_TKASSERT}
     ${CONAN_LIBS_TKRNG}
+    ${CONAN_LIBS_TKTOKENSWAP}
     ${CONAN_LIBS_CATCH2})

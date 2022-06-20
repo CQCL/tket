@@ -60,7 +60,6 @@ target_link_libraries(circuit PRIVATE
     tket-Ops
     tket-OpType
     tket-Mapping
-    tket-TokenSwapping
     tket-Simulation
     tket-Utils)
 target_link_libraries(circuit PRIVATE ${TKET_EXTRA_LIBS})
@@ -84,7 +83,6 @@ target_link_libraries(mapping PRIVATE
     tket-PauliGraph
     tket-Placement    
     tket-Transformations
-    tket-TokenSwapping
     tket-Utils
     tket-WeightSubgrMono)
 
@@ -126,7 +124,6 @@ target_link_libraries(predicates PRIVATE
     tket-OpType
     tket-PauliGraph
     tket-Predicates
-    tket-TokenSwapping
     tket-Transformations
     tket-Utils
     tket-WeightSubgrMono)
@@ -152,7 +149,6 @@ target_link_libraries(passes PRIVATE
     tket-OpType
     tket-PauliGraph
     tket-Predicates
-    tket-TokenSwapping
     tket-Transformations
     tket-Utils
     tket-WeightSubgrMono)

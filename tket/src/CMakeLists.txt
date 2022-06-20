@@ -62,7 +62,6 @@ ENDIF()
 list(APPEND TKET_COMPS
     Utils
     WeightSubgrMono
-    TokenSwapping
     OpType
     Clifford
     Ops

@@ -27,6 +27,8 @@ jobs:
             - 'libs/tkassert/conanfile.py'
           tkrng:
             - 'libs/tkrng/conanfile.py'
+          tktokenswap:
+            - 'libs/tktokenswap/conanfile.py'
   build_libraries:
     name: build library
     needs: changes
@@ -77,7 +79,7 @@ jobs:
     - name: add remote
       run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
     - name: build ${{ matrix.lib }}
-      run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o ${{ matrix.lib }}:shared=${{ matrix.shared }} libs/${{ matrix.lib }} tket/stable
+      run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o ${{ matrix.lib }}:shared=${{ matrix.shared }} libs/${{ matrix.lib }} tket/stable --build=missing
     - name: authenticate to repository
       run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_1 }} -r tket-conan ${{ secrets.JFROG_ARTIFACTORY_USER_1 }}
     - name: get version
@@ -117,7 +119,7 @@ jobs:
     - name: add remote
       run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
     - name: build ${{ matrix.lib }}
-      run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o ${{ matrix.lib }}:shared=${{ matrix.shared }} libs/${{ matrix.lib }} tket/stable
+      run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o ${{ matrix.lib }}:shared=${{ matrix.shared }} libs/${{ matrix.lib }} tket/stable --build=missing
     - name: authenticate to repository
       run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_1 }} -r tket-conan ${{ secrets.JFROG_ARTIFACTORY_USER_1 }}
     - name: get version

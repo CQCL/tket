@@ -99,7 +99,6 @@ class CMakeBuild(build_ext):
                     "tket-Diagonalisation",
                     "tket-Characterisation",
                     "tket-Converters",
-                    "tket-TokenSwapping",
                     "tket-Placement",
                     "tket-Mapping",
                     "tket-MeasurementSetup",

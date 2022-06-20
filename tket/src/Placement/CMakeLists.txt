@@ -34,7 +34,6 @@ list(APPEND DEPS_${COMP}
     Graphs
     Ops
     OpType
-    TokenSwapping
     Utils
     WeightSubgrMono)
 
@@ -55,4 +54,6 @@ target_link_libraries(tket-${COMP} PUBLIC
     ${CONAN_LIBS_SYMENGINE}
     ${CONAN_LIBS_TKLOG}
     ${CONAN_LIBS_TKASSERT}
-    ${CONAN_LIBS_TKRNG})
+    ${CONAN_LIBS_TKRNG}
+    ${CONAN_LIBS_TKTOKENSWAP}
+    )

@@ -15,12 +15,12 @@
 #include <array>
 #include <catch2/catch_test_macros.hpp>
 #include <tkrng/RNG.hpp>
+#include <tktokenswap/RiverFlowPathFinder.hpp>
 
 #include "Architecture/ArchitectureMapping.hpp"
 #include "Architecture/DistancesFromArchitecture.hpp"
 #include "Architecture/NeighboursFromArchitecture.hpp"
 #include "TestUtils/ArchitectureEdgesReimplementation.hpp"
-#include "TokenSwapping/RiverFlowPathFinder.hpp"
 
 using std::vector;
 

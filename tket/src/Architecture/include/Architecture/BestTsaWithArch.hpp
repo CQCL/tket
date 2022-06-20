@@ -14,8 +14,9 @@
 
 #pragma once
 
+#include <tktokenswap/VertexMappingFunctions.hpp>
+
 #include "ArchitectureMapping.hpp"
-#include "TokenSwapping/VertexMappingFunctions.hpp"
 
 namespace tket {
 

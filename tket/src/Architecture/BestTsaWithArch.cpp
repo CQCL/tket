@@ -16,10 +16,10 @@
 
 #include <tkassert/Assert.hpp>
 #include <tkrng/RNG.hpp>
+#include <tktokenswap/BestFullTsa.hpp>
 
 #include "DistancesFromArchitecture.hpp"
 #include "NeighboursFromArchitecture.hpp"
-#include "TokenSwapping/BestFullTsa.hpp"
 
 namespace tket {
 
