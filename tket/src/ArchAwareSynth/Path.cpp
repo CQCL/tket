@@ -169,7 +169,7 @@ std::vector<Node> find_hampath(const Architecture &arch, long timeout) {
       undirected_pattern, undirected_target, 1, timeout);
 
   /* Architecture has no hampath, sad. */
-  if (all_maps.size() == 0) return {};
+  if (all_maps.empty()) return {};
 
   /* Left: line, Right: input architecture. */
   const qubit_bimap_t &qmap = all_maps[0];
