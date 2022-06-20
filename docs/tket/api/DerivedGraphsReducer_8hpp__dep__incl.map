@@ -1,10 +1,11 @@
 <map id="src/WeightSubgrMono/include/WeightSubgrMono/Reducing/DerivedGraphsReducer.hpp" name="src/WeightSubgrMono/include/WeightSubgrMono/Reducing/DerivedGraphsReducer.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="477,5,744,61"/>
-<area shape="rect" id="node2" href="$SearchBranch_8hpp.html" title=" " alt="" coords="375,109,585,165"/>
-<area shape="rect" id="node8" href="$DerivedGraphsReducer_8cpp.html" title=" " alt="" coords="609,117,876,158"/>
-<area shape="rect" id="node3" href="$MainSolver_8hpp.html" title=" " alt="" coords="95,213,350,269"/>
-<area shape="rect" id="node6" href="$SearchBranch_8cpp.html" title=" " alt="" coords="375,221,585,262"/>
-<area shape="rect" id="node7" href="$WeightChecker_8cpp.html" title=" " alt="" coords="609,221,855,262"/>
+<area shape="rect" id="node1" title=" " alt="" coords="584,5,851,61"/>
+<area shape="rect" id="node2" href="$SearchBranch_8hpp.html" title=" " alt="" coords="481,109,692,165"/>
+<area shape="rect" id="node9" href="$DerivedGraphsReducer_8cpp.html" title=" " alt="" coords="716,117,983,158"/>
+<area shape="rect" id="node3" href="$MainSolver_8hpp.html" title=" " alt="" coords="202,213,457,269"/>
+<area shape="rect" id="node7" href="$SearchBranch_8cpp.html" title=" " alt="" coords="481,221,692,262"/>
+<area shape="rect" id="node8" href="$WeightChecker_8cpp.html" title=" " alt="" coords="715,221,962,262"/>
 <area shape="rect" id="node4" href="$SubgraphMonomorphisms_8cpp.html" title=" " alt="" coords="5,317,195,359"/>
-<area shape="rect" id="node5" href="$MainSolver_8cpp.html" title=" " alt="" coords="219,317,472,359"/>
+<area shape="rect" id="node5" href="$MonomorphismCalculation_8cpp.html" title=" " alt="" coords="219,317,439,359"/>
+<area shape="rect" id="node6" href="$MainSolver_8cpp.html" title=" " alt="" coords="464,317,717,359"/>
 </map>

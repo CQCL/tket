@@ -106,102 +106,86 @@ $(function() {
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacetket.html">tket</a> {</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> GraphP, <span class="keyword">typename</span> GraphT&gt;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">template</span> &lt;<span class="keyword">typename</span> CorrespondenceMap1To2, <span class="keyword">typename</span> CorrespondenceMap2To1&gt;</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="keywordtype">bool</span> <a class="code" href="classtket_1_1vf2__match__add__callback.html#a1546cf74c2b31c08db78187ddda29fa3">vf2_match_add_callback&lt;GraphP, GraphT&gt;::operator()</a>(</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">const</span> CorrespondenceMap1To2&amp; f, <span class="keyword">const</span> CorrespondenceMap2To1&amp;) {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  <a class="code" href="namespacetket.html#a0e7c9f29964bb7b8f23a98bafe824702">qubit_bimap_t</a> new_node_map;</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  BGL_FORALL_VERTICES_T(v, pattern_graph_, GraphP) {</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> qb = pattern_graph_[v];</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    Node node = target_graph_[get(f, v)];</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    new_node_map.insert({qb, node});</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  }</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  n_maps_.push_back(new_node_map);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <span class="keywordflow">return</span> (n_maps_.size() &lt; max);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="namespacetket.html#a6cb01fc09f4f0eb66406ce5d9ea3a1f2">   45</a></span>&#160;std::vector&lt;qubit_bimap_t&gt; <a class="code" href="namespacetket.html#a6cb01fc09f4f0eb66406ce5d9ea3a1f2">monomorphism_edge_break</a>(</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">const</span> <a class="code" href="classtket_1_1Architecture.html">Architecture</a>&amp; arc, <span class="keyword">const</span> <a class="code" href="classtket_1_1QubitGraph.html">QubitGraph</a>&amp; q_graph, <span class="keywordtype">unsigned</span> max_matches,</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordtype">unsigned</span> timeout) {</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  <span class="keywordflow">if</span> (q_graph.<a class="code" href="classtket_1_1graphs_1_1AbstractGraph.html#a1dd52e51660aae6f70754eb64167e8f7">n_nodes</a>() &gt; arc.<a class="code" href="classtket_1_1graphs_1_1AbstractGraph.html#a1dd52e51660aae6f70754eb64167e8f7">n_nodes</a>()) {</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">throw</span> <a class="code" href="classtket_1_1ArchitectureInvalidity.html">ArchitectureInvalidity</a>(</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        <span class="stringliteral">&quot;Interaction graph too large for architecture&quot;</span>);</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  }</div>
+<div class="line"><a name="l00031"></a><span class="lineno"><a class="line" href="namespacetket.html#a6cb01fc09f4f0eb66406ce5d9ea3a1f2">   31</a></span>&#160;std::vector&lt;qubit_bimap_t&gt; <a class="code" href="namespacetket.html#a6cb01fc09f4f0eb66406ce5d9ea3a1f2">monomorphism_edge_break</a>(</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keyword">const</span> <a class="code" href="classtket_1_1Architecture.html">Architecture</a>&amp; arc, <span class="keyword">const</span> <a class="code" href="classtket_1_1QubitGraph.html">QubitGraph</a>&amp; q_graph, <span class="keywordtype">unsigned</span> max_matches,</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordtype">unsigned</span> timeout) {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  <span class="keywordflow">if</span> (q_graph.<a class="code" href="classtket_1_1graphs_1_1AbstractGraph.html#a1dd52e51660aae6f70754eb64167e8f7">n_nodes</a>() &gt; arc.<a class="code" href="classtket_1_1graphs_1_1AbstractGraph.html#a1dd52e51660aae6f70754eb64167e8f7">n_nodes</a>()) {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordflow">throw</span> <a class="code" href="classtket_1_1ArchitectureInvalidity.html">ArchitectureInvalidity</a>(</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        <span class="stringliteral">&quot;Interaction graph too large for architecture&quot;</span>);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  }</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <a class="code" href="classtket_1_1graphs_1_1DirectedGraph.html#ae2cf82cdd723653cbadcfee0c5a052ce">Architecture::UndirectedConnGraph</a> undirected_target =</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;      arc.<a class="code" href="classtket_1_1graphs_1_1DirectedGraph.html#a8d3d82f0ae953281ebf989922671499d">get_undirected_connectivity</a>();</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  <a class="code" href="classtket_1_1graphs_1_1DirectedGraph.html#ae2cf82cdd723653cbadcfee0c5a052ce">QubitGraph::UndirectedConnGraph</a> undirected_pattern =</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;      q_graph.<a class="code" href="classtket_1_1graphs_1_1DirectedGraph.html#a8d3d82f0ae953281ebf989922671499d">get_undirected_connectivity</a>();</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  std::chrono::time_point&lt;std::chrono::steady_clock&gt; end_time =</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;      std::chrono::steady_clock::now() + std::chrono::milliseconds(timeout);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="keywordflow">while</span> (<span class="keyword">true</span>) {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="keywordtype">long</span> search_timeout = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;                              (end_time - std::chrono::steady_clock::now()) / 2)</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;                              .count();</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keywordflow">if</span> (search_timeout &lt;= 0) search_timeout = 1;</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keyword">using</span> ArchitectureConn = <a class="code" href="classtket_1_1graphs_1_1DirectedGraph.html#ae2cf82cdd723653cbadcfee0c5a052ce">Architecture::UndirectedConnGraph</a>;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  <span class="keyword">using</span> InteractionGraph = <a class="code" href="classtket_1_1graphs_1_1DirectedGraph.html#ae2cf82cdd723653cbadcfee0c5a052ce">QubitGraph::UndirectedConnGraph</a>;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  ArchitectureConn undirected_target = arc.<a class="code" href="classtket_1_1graphs_1_1DirectedGraph.html#a8d3d82f0ae953281ebf989922671499d">get_undirected_connectivity</a>();</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  InteractionGraph undirected_pattern = q_graph.<a class="code" href="classtket_1_1graphs_1_1DirectedGraph.html#a8d3d82f0ae953281ebf989922671499d">get_undirected_connectivity</a>();</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  std::vector&lt;qubit_bimap_t&gt; all_maps;</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  std::chrono::time_point&lt;std::chrono::steady_clock&gt; end_time =</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;      std::chrono::steady_clock::now() + std::chrono::milliseconds(timeout);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  <span class="keywordflow">while</span> (<span class="keyword">true</span>) {</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordtype">long</span> search_timeout = std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;                              (end_time - std::chrono::steady_clock::now()) / 2)</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;                              .count();</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keywordflow">if</span> (search_timeout &lt;= 0) search_timeout = 1;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    <a class="code" href="classtket_1_1vf2__match__add__callback.html">vf2_match_add_callback&lt;InteractionGraph, ArchitectureConn&gt;</a> callback(</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        all_maps, undirected_pattern, undirected_target, max_matches);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordtype">bool</span> found_monomorphism = boost::vf2_subgraph_mono(</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        undirected_pattern, undirected_target, callback, search_timeout);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordflow">if</span> (std::chrono::steady_clock::now() &gt;= end_time) {</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;      std::stringstream ss;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;      ss &lt;&lt; <span class="stringliteral">&quot;boost::vf2_subgraph_mono reached &quot;</span> &lt;&lt; timeout</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;         &lt;&lt; <span class="stringliteral">&quot; millisecond timeout before reaching set max matches &quot;</span></div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;         &lt;&lt; callback.<a class="code" href="classtket_1_1vf2__match__add__callback.html#adfd518551b9566cb5608727ac3a812a0">max</a> &lt;&lt; <span class="stringliteral">&quot;, instead finding &quot;</span> &lt;&lt; all_maps.size()</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;         &lt;&lt; <span class="stringliteral">&quot; matches. &quot;</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;            <span class="stringliteral">&quot;Please change PlacementConfig.timeout to allow more matches.&quot;</span>;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;      <a class="code" href="namespacetket.html#acf17a7f6b999a13aebc2d2edad971487">tket_log</a>()-&gt;warn(ss.str());</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;      <span class="keywordflow">if</span> (all_maps.empty()) {</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;No mappings found before timeout.&quot;</span>);</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;      }</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;      std::sort(all_maps.begin(), all_maps.end());</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;      <span class="keywordflow">return</span> all_maps;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (found_monomorphism) {</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;      std::sort(all_maps.begin(), all_maps.end());</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;      <span class="keywordflow">return</span> all_maps;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (boost::num_edges(undirected_pattern) != 0) {</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;      <span class="keyword">using</span> edge_t = <a class="code" href="namespacetket_1_1graphs_1_1utils.html#a0ddb76f99e73585abb2f33d56bd69710">graphs::utils::edge&lt;InteractionGraph&gt;</a>;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;      <span class="keyword">auto</span> e_its = boost::edges(undirected_pattern);</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;      <span class="keyword">auto</span> max_e_it = boost::first_max_element(</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;          e_its.first, e_its.second,</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;          [&amp;undirected_pattern](<span class="keyword">const</span> edge_t&amp; lhs, <span class="keyword">const</span> edge_t&amp; rhs) {</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;            return undirected_pattern[lhs].weight &lt;</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;                   undirected_pattern[rhs].weight;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;          });</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;      <a class="code" href="namespacetket_1_1graphs_1_1utils.html#a45538f152d3a164d88f051928891ecc9">graphs::utils::remove_edge</a>(*max_e_it, undirected_pattern, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    }</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  }</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;}</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    std::vector&lt;qubit_bimap_t&gt; all_maps = <a class="code" href="namespacetket.html#a81331be2c51c75768ffd5e4ada0d58b7">get_unweighted_subgraph_monomorphisms</a>(</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        undirected_pattern, undirected_target, max_matches, timeout);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    std::sort(all_maps.begin(), all_maps.end());</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordflow">if</span> (std::chrono::steady_clock::now() &gt;= end_time) {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;      std::stringstream ss;</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;      ss &lt;&lt; <span class="stringliteral">&quot;subgraph monomorphism reached &quot;</span> &lt;&lt; timeout</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;         &lt;&lt; <span class="stringliteral">&quot; millisecond timeout before reaching set max matches &quot;</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;         &lt;&lt; max_matches &lt;&lt; <span class="stringliteral">&quot;, instead finding &quot;</span> &lt;&lt; all_maps.size()</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;         &lt;&lt; <span class="stringliteral">&quot; matches. &quot;</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;            <span class="stringliteral">&quot;Please change PlacementConfig.timeout to allow more matches.&quot;</span>;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;      <a class="code" href="namespacetket.html#acf17a7f6b999a13aebc2d2edad971487">tket_log</a>()-&gt;warn(ss.str());</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;      <span class="keywordflow">if</span> (all_maps.empty()) {</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordflow">throw</span> std::runtime_error(<span class="stringliteral">&quot;No mappings found before timeout.&quot;</span>);</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;      }</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;      <span class="keywordflow">return</span> all_maps;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    }</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keywordflow">if</span> (!all_maps.empty()) {</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;      <span class="keywordflow">return</span> all_maps;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    }</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> current_number_of_edges =</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;        boost::num_edges(undirected_pattern);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="comment">// It MUST have found a solution, if no pattern edges!</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(current_number_of_edges &gt; 0);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keyword">using</span> edge_t = <a class="code" href="namespacetket_1_1graphs_1_1utils.html#a0ddb76f99e73585abb2f33d56bd69710">graphs::utils::edge&lt;QubitGraph::UndirectedConnGraph&gt;</a>;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="keyword">auto</span> e_its = boost::edges(undirected_pattern);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keyword">auto</span> max_e_it = boost::first_max_element(</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        e_its.first, e_its.second,</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        [&amp;undirected_pattern](<span class="keyword">const</span> edge_t&amp; lhs, <span class="keyword">const</span> edge_t&amp; rhs) {</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;          return undirected_pattern[lhs].weight &lt;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;                 undirected_pattern[rhs].weight;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;        });</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <a class="code" href="namespacetket_1_1graphs_1_1utils.html#a45538f152d3a164d88f051928891ecc9">graphs::utils::remove_edge</a>(*max_e_it, undirected_pattern, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(boost::num_edges(undirected_pattern) &lt; current_number_of_edges);</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  }</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;}</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;}  <span class="comment">// namespace tket</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclasstket_1_1graphs_1_1AbstractGraph_html_a1dd52e51660aae6f70754eb64167e8f7"><div class="ttname"><a href="classtket_1_1graphs_1_1AbstractGraph.html#a1dd52e51660aae6f70754eb64167e8f7">tket::graphs::AbstractGraph::n_nodes</a></div><div class="ttdeci">unsigned n_nodes() const</div><div class="ttdoc">Number of nodes.</div><div class="ttdef"><b>Definition:</b> <a href="AbstractGraph_8hpp_source.html#l00075">AbstractGraph.hpp:75</a></div></div>
-<div class="ttc" id="aclasstket_1_1vf2__match__add__callback_html_adfd518551b9566cb5608727ac3a812a0"><div class="ttname"><a href="classtket_1_1vf2__match__add__callback.html#adfd518551b9566cb5608727ac3a812a0">tket::vf2_match_add_callback::max</a></div><div class="ttdeci">const unsigned max</div><div class="ttdef"><b>Definition:</b> <a href="Placement_8hpp_source.html#l00228">Placement.hpp:228</a></div></div>
+<div class="ttc" id="aAssert_8hpp_html_ae053544861204d4c3f5e8422252ca22e"><div class="ttname"><a href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a></div><div class="ttdeci">#define TKET_ASSERT(condition)</div><div class="ttdoc">If condition is not satisfied, log a diagnostic message and abort.</div><div class="ttdef"><b>Definition:</b> <a href="Assert_8hpp_source.html#l00076">Assert.hpp:76</a></div></div>
 <div class="ttc" id="aArchitecture_8hpp_html"><div class="ttname"><a href="Architecture_8hpp.html">Architecture.hpp</a></div></div>
-<div class="ttc" id="anamespacetket_html_ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3"><div class="ttname"><a href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">tket::UnitType::Qubit</a></div><div class="ttdeci">@ Qubit</div></div>
 <div class="ttc" id="aPlacement_8hpp_html"><div class="ttname"><a href="Placement_8hpp.html">Placement.hpp</a></div></div>
 <div class="ttc" id="anamespacetket_html"><div class="ttname"><a href="namespacetket.html">tket</a></div><div class="ttdoc">Defines tket::DeviceCharacterisation, used in NoiseAwarePlacement and in commute_SQ_gates_through_SWA...</div><div class="ttdef"><b>Definition:</b> <a href="Path_8hpp_source.html#l00020">Path.hpp:20</a></div></div>
 <div class="ttc" id="anamespacetket_1_1graphs_1_1utils_html_a45538f152d3a164d88f051928891ecc9"><div class="ttname"><a href="namespacetket_1_1graphs_1_1utils.html#a45538f152d3a164d88f051928891ecc9">tket::graphs::utils::remove_edge</a></div><div class="ttdeci">void remove_edge(edge&lt; Graph &gt; e, Graph &amp;graph, bool remove_unused_vertices=false)</div><div class="ttdef"><b>Definition:</b> <a href="Utils_8hpp_source.html#l00102">Utils.hpp:102</a></div></div>
 <div class="ttc" id="anamespacetket_html_acf17a7f6b999a13aebc2d2edad971487"><div class="ttname"><a href="namespacetket.html#acf17a7f6b999a13aebc2d2edad971487">tket::tket_log</a></div><div class="ttdeci">LogPtr_t &amp; tket_log()</div><div class="ttdoc">Logger for tket messages.</div><div class="ttdef"><b>Definition:</b> <a href="TketLog_8cpp_source.html#l00064">TketLog.cpp:64</a></div></div>
-<div class="ttc" id="aclasstket_1_1vf2__match__add__callback_html_a1546cf74c2b31c08db78187ddda29fa3"><div class="ttname"><a href="classtket_1_1vf2__match__add__callback.html#a1546cf74c2b31c08db78187ddda29fa3">tket::vf2_match_add_callback::operator()</a></div><div class="ttdeci">bool operator()(const CorrespondenceMap1To2 &amp;f, const CorrespondenceMap2To1 &amp;)</div><div class="ttdef"><b>Definition:</b> <a href="Path_8cpp_source.html#l00023">Path.cpp:23</a></div></div>
 <div class="ttc" id="aAssert_8hpp_html"><div class="ttname"><a href="Assert_8hpp.html">Assert.hpp</a></div></div>
 <div class="ttc" id="aclasstket_1_1Architecture_html"><div class="ttname"><a href="classtket_1_1Architecture.html">tket::Architecture</a></div><div class="ttdef"><b>Definition:</b> <a href="Architecture_8hpp_source.html#l00076">Architecture.hpp:76</a></div></div>
 <div class="ttc" id="aUtils_8hpp_html"><div class="ttname"><a href="Utils_8hpp.html">Utils.hpp</a></div></div>
-<div class="ttc" id="aclasstket_1_1vf2__match__add__callback_html"><div class="ttname"><a href="classtket_1_1vf2__match__add__callback.html">tket::vf2_match_add_callback</a></div><div class="ttdef"><b>Definition:</b> <a href="Placement_8hpp_source.html#l00209">Placement.hpp:209</a></div></div>
-<div class="ttc" id="anamespacetket_html_a0e7c9f29964bb7b8f23a98bafe824702"><div class="ttname"><a href="namespacetket.html#a0e7c9f29964bb7b8f23a98bafe824702">tket::qubit_bimap_t</a></div><div class="ttdeci">boost::bimap&lt; Qubit, Node &gt; qubit_bimap_t</div><div class="ttdef"><b>Definition:</b> <a href="Placement_8hpp_source.html#l00044">Placement.hpp:44</a></div></div>
 <div class="ttc" id="anamespacetket_1_1graphs_1_1utils_html_a0ddb76f99e73585abb2f33d56bd69710"><div class="ttname"><a href="namespacetket_1_1graphs_1_1utils.html#a0ddb76f99e73585abb2f33d56bd69710">tket::graphs::utils::edge</a></div><div class="ttdeci">detail::edge&lt; T &gt; edge</div><div class="ttdef"><b>Definition:</b> <a href="Utils_8hpp_source.html#l00039">Utils.hpp:39</a></div></div>
 <div class="ttc" id="aGraphHeaders_8hpp_html"><div class="ttname"><a href="GraphHeaders_8hpp.html">GraphHeaders.hpp</a></div></div>
 <div class="ttc" id="aTketLog_8hpp_html"><div class="ttname"><a href="TketLog_8hpp.html">TketLog.hpp</a></div><div class="ttdoc">Logging.</div></div>
 <div class="ttc" id="aclasstket_1_1graphs_1_1DirectedGraph_html_ae2cf82cdd723653cbadcfee0c5a052ce"><div class="ttname"><a href="classtket_1_1graphs_1_1DirectedGraph.html#ae2cf82cdd723653cbadcfee0c5a052ce">tket::graphs::DirectedGraph&lt; Node &gt;::UndirectedConnGraph</a></div><div class="ttdeci">typename Base::UndirectedConnGraph UndirectedConnGraph</div><div class="ttdef"><b>Definition:</b> <a href="DirectedGraph_8hpp_source.html#l00390">DirectedGraph.hpp:390</a></div></div>
+<div class="ttc" id="anamespacetket_html_a81331be2c51c75768ffd5e4ada0d58b7"><div class="ttname"><a href="namespacetket.html#a81331be2c51c75768ffd5e4ada0d58b7">tket::get_unweighted_subgraph_monomorphisms</a></div><div class="ttdeci">std::vector&lt; qubit_bimap_t &gt; get_unweighted_subgraph_monomorphisms(const QubitGraph::UndirectedConnGraph &amp;pattern_graph, const Architecture::UndirectedConnGraph &amp;target_graph, unsigned max_matches, unsigned timeout_ms)</div><div class="ttdoc">Solves the pure unweighted subgraph monomorphism problem, trying to embed the pattern graph into the ...</div><div class="ttdef"><b>Definition:</b> <a href="MonomorphismCalculation_8cpp_source.html#l00125">MonomorphismCalculation.cpp:125</a></div></div>
 <div class="ttc" id="aclasstket_1_1ArchitectureInvalidity_html"><div class="ttname"><a href="classtket_1_1ArchitectureInvalidity.html">tket::ArchitectureInvalidity</a></div><div class="ttdef"><b>Definition:</b> <a href="Architecture_8hpp_source.html#l00040">Architecture.hpp:40</a></div></div>
-<div class="ttc" id="aclasstket_1_1QubitGraph_html"><div class="ttname"><a href="classtket_1_1QubitGraph.html">tket::QubitGraph</a></div><div class="ttdef"><b>Definition:</b> <a href="Placement_8hpp_source.html#l00131">Placement.hpp:131</a></div></div>
+<div class="ttc" id="aclasstket_1_1QubitGraph_html"><div class="ttname"><a href="classtket_1_1QubitGraph.html">tket::QubitGraph</a></div><div class="ttdef"><b>Definition:</b> <a href="Placement_8hpp_source.html#l00132">Placement.hpp:132</a></div></div>
 <div class="ttc" id="aclasstket_1_1graphs_1_1DirectedGraph_html_a8d3d82f0ae953281ebf989922671499d"><div class="ttname"><a href="classtket_1_1graphs_1_1DirectedGraph.html#a8d3d82f0ae953281ebf989922671499d">tket::graphs::DirectedGraph::get_undirected_connectivity</a></div><div class="ttdeci">const UndirectedConnGraph &amp; get_undirected_connectivity() const &amp;</div><div class="ttdoc">Return an unweighted undirected graph with the same connectivity.</div><div class="ttdef"><b>Definition:</b> <a href="DirectedGraph_8hpp_source.html#l00467">DirectedGraph.hpp:467</a></div></div>
-<div class="ttc" id="anamespacetket_html_a6cb01fc09f4f0eb66406ce5d9ea3a1f2"><div class="ttname"><a href="namespacetket.html#a6cb01fc09f4f0eb66406ce5d9ea3a1f2">tket::monomorphism_edge_break</a></div><div class="ttdeci">std::vector&lt; qubit_bimap_t &gt; monomorphism_edge_break(const Architecture &amp;arc, const QubitGraph &amp;q_graph, unsigned max_matches, unsigned timeout)</div><div class="ttdoc">Search for embeddings of the qubit graph in the architecture graph.</div><div class="ttdef"><b>Definition:</b> <a href="subgraph__mapping_8cpp_source.html#l00045">subgraph_mapping.cpp:45</a></div></div>
+<div class="ttc" id="anamespacetket_html_a6cb01fc09f4f0eb66406ce5d9ea3a1f2"><div class="ttname"><a href="namespacetket.html#a6cb01fc09f4f0eb66406ce5d9ea3a1f2">tket::monomorphism_edge_break</a></div><div class="ttdeci">std::vector&lt; qubit_bimap_t &gt; monomorphism_edge_break(const Architecture &amp;arc, const QubitGraph &amp;q_graph, unsigned max_matches, unsigned timeout)</div><div class="ttdoc">Search for embeddings of the qubit graph in the architecture graph.</div><div class="ttdef"><b>Definition:</b> <a href="subgraph__mapping_8cpp_source.html#l00031">subgraph_mapping.cpp:31</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

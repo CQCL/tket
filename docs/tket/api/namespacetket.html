@@ -589,8 +589,6 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1VertexProperties.html">VertexProperties</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Description of a node in a circuit, representing some operation.  <a href="structtket_1_1VertexProperties.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1vf2__match__add__callback.html">vf2_match_add_callback</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1WASMOp.html">WASMOp</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtket_1_1Op.html" title="Abstract class representing an operation type.">Op</a> containing a classical wasm function call.  <a href="classtket_1_1WASMOp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -756,6 +754,12 @@ Typedefs</h2></td></tr>
 <tr class="separator:a395b2a6581622ba168664c866fa57ac0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1e9ef2f54928c21910e7463fed578f88"><td class="memItemLeft" align="right" valign="top">typedef std::shared_ptr&lt; <a class="el" href="classtket_1_1Placement.html">Placement</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a1e9ef2f54928c21910e7463fed578f88">PlacementPtr</a></td></tr>
 <tr class="separator:a1e9ef2f54928c21910e7463fed578f88"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acfc718584814475bab7d8a21b697107e"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#acfc718584814475bab7d8a21b697107e">RelabelledPatternGraph</a> = <a class="el" href="classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html">RelabelledGraphWSM</a>&lt; <a class="el" href="classtket_1_1Qubit.html">Qubit</a>, <a class="el" href="classtket_1_1graphs_1_1DirectedGraph.html#ae2cf82cdd723653cbadcfee0c5a052ce">QubitGraph::UndirectedConnGraph</a> &gt;</td></tr>
+<tr class="separator:acfc718584814475bab7d8a21b697107e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a03d49a3564fdd191a3d906f9120bf590"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a03d49a3564fdd191a3d906f9120bf590">RelabelledTargetGraph</a> = <a class="el" href="classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html">RelabelledGraphWSM</a>&lt; <a class="el" href="classtket_1_1Node.html">Node</a>, <a class="el" href="classtket_1_1graphs_1_1DirectedGraph.html#ae2cf82cdd723653cbadcfee0c5a052ce">Architecture::UndirectedConnGraph</a> &gt;</td></tr>
+<tr class="separator:a03d49a3564fdd191a3d906f9120bf590"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad95057f5ea5feaafe9ad25db5ca5e718"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ad95057f5ea5feaafe9ad25db5ca5e718">BimapValue</a> = qubit_bimap_t::value_type</td></tr>
+<tr class="separator:ad95057f5ea5feaafe9ad25db5ca5e718"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acdb3e5be140fdb0cd06fb2fbb7cc1fc7"><td class="memItemLeft" align="right" valign="top">typedef std::map&lt; std::type_index, <a class="el" href="namespacetket.html#ad6db3955c4f1dbc5fb33f72bc2822e35">PredicatePtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#acdb3e5be140fdb0cd06fb2fbb7cc1fc7">PredicatePtrMap</a></td></tr>
 <tr class="separator:acdb3e5be140fdb0cd06fb2fbb7cc1fc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad4d9946324fd31184912125c6f7a0576"><td class="memItemLeft" align="right" valign="top">typedef std::pair&lt; const std::type_index, <a class="el" href="namespacetket.html#ad6db3955c4f1dbc5fb33f72bc2822e35">PredicatePtr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ad4d9946324fd31184912125c6f7a0576">TypePredicatePair</a></td></tr>
@@ -1482,6 +1486,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a6cb01fc09f4f0eb66406ce5d9ea3a1f2"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="namespacetket.html#a0e7c9f29964bb7b8f23a98bafe824702">qubit_bimap_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6cb01fc09f4f0eb66406ce5d9ea3a1f2">monomorphism_edge_break</a> (const <a class="el" href="classtket_1_1Architecture.html">Architecture</a> &amp;arc, const <a class="el" href="classtket_1_1QubitGraph.html">QubitGraph</a> &amp;q_graph, unsigned max_matches, unsigned timeout)</td></tr>
 <tr class="memdesc:a6cb01fc09f4f0eb66406ce5d9ea3a1f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Search for embeddings of the qubit graph in the architecture graph.  <a href="namespacetket.html#a6cb01fc09f4f0eb66406ce5d9ea3a1f2">More...</a><br /></td></tr>
 <tr class="separator:a6cb01fc09f4f0eb66406ce5d9ea3a1f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81331be2c51c75768ffd5e4ada0d58b7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="namespacetket.html#a0e7c9f29964bb7b8f23a98bafe824702">qubit_bimap_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a81331be2c51c75768ffd5e4ada0d58b7">get_unweighted_subgraph_monomorphisms</a> (const <a class="el" href="classtket_1_1graphs_1_1DirectedGraph.html#ae2cf82cdd723653cbadcfee0c5a052ce">QubitGraph::UndirectedConnGraph</a> &amp;pattern_graph, const <a class="el" href="classtket_1_1graphs_1_1DirectedGraph.html#ae2cf82cdd723653cbadcfee0c5a052ce">Architecture::UndirectedConnGraph</a> &amp;target_graph, unsigned max_matches, unsigned timeout_ms)</td></tr>
+<tr class="memdesc:a81331be2c51c75768ffd5e4ada0d58b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solves the pure unweighted subgraph monomorphism problem, trying to embed the pattern graph into the target graph.  <a href="namespacetket.html#a81331be2c51c75768ffd5e4ada0d58b7">More...</a><br /></td></tr>
+<tr class="separator:a81331be2c51c75768ffd5e4ada0d58b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5fafe7fe0e3b498404d03fd29415bdb4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#ae0783a3ad2fcb131346b928d76ad0699">node_set_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a5fafe7fe0e3b498404d03fd29415bdb4">best_nodes</a> (<a class="el" href="classtket_1_1Architecture.html">Architecture</a> &amp;arc, unsigned n_remove)</td></tr>
 <tr class="separator:a5fafe7fe0e3b498404d03fd29415bdb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd3f8ef05d4dcb5bccf103055b28280d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#acd3f8ef05d4dcb5bccf103055b28280d">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="namespacetket.html#a1e9ef2f54928c21910e7463fed578f88">PlacementPtr</a> &amp;placement_ptr)</td></tr>
@@ -1977,6 +1984,22 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l00114">114</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ad95057f5ea5feaafe9ad25db5ca5e718"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad95057f5ea5feaafe9ad25db5ca5e718">&#9670;&nbsp;</a></span>BimapValue</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacetket.html#ad95057f5ea5feaafe9ad25db5ca5e718">tket::BimapValue</a> = typedef qubit_bimap_t::value_type</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="MonomorphismCalculation_8cpp_source.html#l00027">27</a> of file <a class="el" href="MonomorphismCalculation_8cpp_source.html">MonomorphismCalculation.cpp</a>.</p>
 
 </div>
 </div>
@@ -3309,6 +3332,38 @@ Variables</h2></td></tr>
 <p>A register of locations sharing the same name. </p>
 
 <p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00277">277</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+
+</div>
+</div>
+<a id="acfc718584814475bab7d8a21b697107e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acfc718584814475bab7d8a21b697107e">&#9670;&nbsp;</a></span>RelabelledPatternGraph</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacetket.html#acfc718584814475bab7d8a21b697107e">tket::RelabelledPatternGraph</a> = typedef <a class="el" href="classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html">RelabelledGraphWSM</a>&lt;<a class="el" href="classtket_1_1Qubit.html">Qubit</a>, <a class="el" href="classtket_1_1graphs_1_1DirectedGraph.html#ae2cf82cdd723653cbadcfee0c5a052ce">QubitGraph::UndirectedConnGraph</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="MonomorphismCalculation_8cpp_source.html#l00024">24</a> of file <a class="el" href="MonomorphismCalculation_8cpp_source.html">MonomorphismCalculation.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a03d49a3564fdd191a3d906f9120bf590"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a03d49a3564fdd191a3d906f9120bf590">&#9670;&nbsp;</a></span>RelabelledTargetGraph</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">using <a class="el" href="namespacetket.html#a03d49a3564fdd191a3d906f9120bf590">tket::RelabelledTargetGraph</a> = typedef <a class="el" href="classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html">RelabelledGraphWSM</a>&lt;<a class="el" href="classtket_1_1Node.html">Node</a>, <a class="el" href="classtket_1_1graphs_1_1DirectedGraph.html#ae2cf82cdd723653cbadcfee0c5a052ce">Architecture::UndirectedConnGraph</a>&gt;</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="MonomorphismCalculation_8cpp_source.html#l00026">26</a> of file <a class="el" href="MonomorphismCalculation_8cpp_source.html">MonomorphismCalculation.cpp</a>.</p>
 
 </div>
 </div>
@@ -7132,7 +7187,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Placement_8cpp_source.html#l00108">108</a> of file <a class="el" href="Placement_8cpp_source.html">Placement.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Placement_8cpp_source.html#l00109">109</a> of file <a class="el" href="Placement_8cpp_source.html">Placement.cpp</a>.</p>
 
 </div>
 </div>
@@ -9556,6 +9611,51 @@ circuit has no symbolic parameters</dd></dl>
 
 </div>
 </div>
+<a id="a81331be2c51c75768ffd5e4ada0d58b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81331be2c51c75768ffd5e4ada0d58b7">&#9670;&nbsp;</a></span>get_unweighted_subgraph_monomorphisms()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt; <a class="el" href="namespacetket.html#a0e7c9f29964bb7b8f23a98bafe824702">qubit_bimap_t</a> &gt; tket::get_unweighted_subgraph_monomorphisms </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1graphs_1_1DirectedGraph.html#ae2cf82cdd723653cbadcfee0c5a052ce">QubitGraph::UndirectedConnGraph</a> &amp;&#160;</td>
+          <td class="paramname"><em>pattern_graph</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1graphs_1_1DirectedGraph.html#ae2cf82cdd723653cbadcfee0c5a052ce">Architecture::UndirectedConnGraph</a> &amp;&#160;</td>
+          <td class="paramname"><em>target_graph</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>max_matches</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>timeout_ms</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Solves the pure unweighted subgraph monomorphism problem, trying to embed the pattern graph into the target graph. </p>
+<p>Note that graph edge weights are IGNORED by this function. </p>
+
+<p class="definition">Definition at line <a class="el" href="MonomorphismCalculation_8cpp_source.html#l00125">125</a> of file <a class="el" href="MonomorphismCalculation_8cpp_source.html">MonomorphismCalculation.cpp</a>.</p>
+
+</div>
+</div>
 <a id="aeefc21d2bb61add1f89468ef9e61ee3a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeefc21d2bb61add1f89468ef9e61ee3a">&#9670;&nbsp;</a></span>GlobalisePhasedX()</h2>
 
@@ -10879,13 +10979,13 @@ template&lt;typename T &gt; </div>
     <tr><td class="paramname">arc</td><td>architecture </td></tr>
     <tr><td class="paramname">q_graph</td><td>qubit graph </td></tr>
     <tr><td class="paramname">max_matches</td><td>maximum number of matches to find </td></tr>
-    <tr><td class="paramname">timeout</td><td>timeout in milliseconds</td></tr>
+    <tr><td class="paramname">timeout</td><td>timeout in milliseconds </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>vector of matches found, sorted in canonical order </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="subgraph__mapping_8cpp_source.html#l00045">45</a> of file <a class="el" href="subgraph__mapping_8cpp_source.html">subgraph_mapping.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="subgraph__mapping_8cpp_source.html#l00031">31</a> of file <a class="el" href="subgraph__mapping_8cpp_source.html">subgraph_mapping.cpp</a>.</p>
 
 </div>
 </div>

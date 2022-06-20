@@ -158,14 +158,16 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="Placement_8hpp__dep__incl.png" border="0" usemap="#src_2Placement_2include_2Placement_2Placement_8hppdep" alt=""/></div>
 <map name="src_2Placement_2include_2Placement_2Placement_8hppdep" id="src_2Placement_2include_2Placement_2Placement_8hppdep">
-<area shape="rect" title=" " alt="" coords="899,5,1095,47"/>
+<area shape="rect" title=" " alt="" coords="937,5,1133,47"/>
 <area shape="rect" href="Path_8hpp.html" title=" " alt="" coords="336,95,520,151"/>
 <area shape="rect" href="PassGenerators_8cpp.html" title=" " alt="" coords="537,771,783,798"/>
 <area shape="rect" href="NeighbourPlacements_8hpp.html" title=" " alt="" coords="595,102,866,143"/>
-<area shape="rect" href="Placement_8cpp.html" title=" " alt="" coords="890,109,1105,136"/>
-<area shape="rect" href="Qubit__Placement_8cpp.html" title=" " alt="" coords="1129,102,1282,143"/>
-<area shape="rect" href="subgraph__mapping_8cpp.html" title=" " alt="" coords="1307,102,1485,143"/>
-<area shape="rect" href="Predicates_8cpp.html" title=" " alt="" coords="1510,109,1722,136"/>
+<area shape="rect" href="MonomorphismCalculation_8cpp.html" title=" " alt="" coords="917,206,1137,247"/>
+<area shape="rect" href="RelabelledGraphWSM_8hpp.html" title=" " alt="" coords="941,102,1128,143"/>
+<area shape="rect" href="Placement_8cpp.html" title=" " alt="" coords="1153,109,1367,136"/>
+<area shape="rect" href="Qubit__Placement_8cpp.html" title=" " alt="" coords="1391,102,1545,143"/>
+<area shape="rect" href="subgraph__mapping_8cpp.html" title=" " alt="" coords="1569,102,1748,143"/>
+<area shape="rect" href="Predicates_8cpp.html" title=" " alt="" coords="1773,109,1985,136"/>
 <area shape="rect" href="SteinerTree_8hpp.html" title=" " alt="" coords="160,199,344,255"/>
 <area shape="rect" href="Path_8cpp.html" title=" " alt="" coords="368,206,520,247"/>
 <area shape="rect" href="SteinerForest_8hpp.html" title=" " alt="" coords="132,303,316,359"/>
@@ -211,8 +213,6 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1InteractionWeight.html">tket::InteractionWeight</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1MapCost.html">tket::MapCost</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1vf2__match__add__callback.html">tket::vf2_match_add_callback&lt; GraphP, GraphT &gt;</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Placement.html">tket::Placement</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -268,6 +268,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a6cb01fc09f4f0eb66406ce5d9ea3a1f2"><td class="memItemLeft" align="right" valign="top">std::vector&lt; qubit_bimap_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6cb01fc09f4f0eb66406ce5d9ea3a1f2">tket::monomorphism_edge_break</a> (const Architecture &amp;arc, const QubitGraph &amp;q_graph, unsigned max_matches, unsigned timeout)</td></tr>
 <tr class="memdesc:a6cb01fc09f4f0eb66406ce5d9ea3a1f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Search for embeddings of the qubit graph in the architecture graph.  <a href="namespacetket.html#a6cb01fc09f4f0eb66406ce5d9ea3a1f2">More...</a><br /></td></tr>
 <tr class="separator:a6cb01fc09f4f0eb66406ce5d9ea3a1f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81331be2c51c75768ffd5e4ada0d58b7"><td class="memItemLeft" align="right" valign="top">std::vector&lt; qubit_bimap_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a81331be2c51c75768ffd5e4ada0d58b7">tket::get_unweighted_subgraph_monomorphisms</a> (const QubitGraph::UndirectedConnGraph &amp;pattern_graph, const Architecture::UndirectedConnGraph &amp;target_graph, unsigned max_matches, unsigned timeout_ms)</td></tr>
+<tr class="memdesc:a81331be2c51c75768ffd5e4ada0d58b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solves the pure unweighted subgraph monomorphism problem, trying to embed the pattern graph into the target graph.  <a href="namespacetket.html#a81331be2c51c75768ffd5e4ada0d58b7">More...</a><br /></td></tr>
+<tr class="separator:a81331be2c51c75768ffd5e4ada0d58b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5fafe7fe0e3b498404d03fd29415bdb4"><td class="memItemLeft" align="right" valign="top">node_set_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a5fafe7fe0e3b498404d03fd29415bdb4">tket::best_nodes</a> (Architecture &amp;arc, unsigned n_remove)</td></tr>
 <tr class="separator:a5fafe7fe0e3b498404d03fd29415bdb4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
