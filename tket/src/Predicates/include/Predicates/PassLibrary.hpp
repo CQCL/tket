@@ -91,4 +91,14 @@ const PassPtr &SimplifyMeasured();
  */
 const PassPtr &NormaliseTK2();
 
+/**
+ * @brief Fixes all ZZPhase gate angles to (-1,1) i.e. (-pi,pi)
+ *
+ * Additionally this pass will also convert ZZPhase with angle 1 or -1
+ * to two Rz(1) gates.
+ *
+ * @return compilation pass to perform this transformation
+ */
+const PassPtr &RestrictZZPhaseAngles();
+
 }  // namespace tket
