@@ -281,6 +281,13 @@ The code coverage of the `tket` tests is reported
 [here](https://cqcl.github.io/tket/tket/test-coverage/index.html). This report
 is generated weekly from the `develop` branch.
 
+The libraries' coverage (from their own unit tests) is also reported: for
+example [tklog](https://cqcl.github.io/tket/tket/tklog-coverage/index.html).
+(For other libraries, just replace "tklog" with the library name in the URL.)
+
+In both cases, PRs to `develop` check that the coverage has not decreased, and
+merging is blocked until the coverage is at least as good as before.
+
 ## API documentation
 
 The `tket` (C++) API documentation (generated with `doxygen`, and still rather
