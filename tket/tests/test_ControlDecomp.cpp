@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <boost/dynamic_bitset.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <numeric>
 
 #include "Circuit/CircPool.hpp"
+#include "Gate/GateUnitaryMatrix.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/ControlledGates.hpp"
@@ -80,6 +82,40 @@ static bool check_incrementer_borrow_1_qubit(const unsigned n) {
       correct &= (std::abs(sv2[i]) > EPS);
     else
       correct &= (std::abs(sv2[i]) < ERR_EPS);
+  }
+  return correct;
+}
+
+static bool check_incrementer_linear_depth(
+    const unsigned n, const unsigned number) {
+  boost::dynamic_bitset<> in_bits(n, number);
+  Circuit circ(n);
+  for (unsigned i = 0; i < n; i++) {
+    if (in_bits[i]) {
+      circ.add_op<unsigned>(OpType::X, {i});
+    }
+  }
+  Circuit inc = Transforms::incrementer_linear_depth(n);
+  circ.append(inc);
+
+  unsigned long correct_out_long = in_bits.to_ulong() + 1UL;
+  boost::dynamic_bitset<> correct_out_bits(n, correct_out_long);
+
+  // Get the index of the entry that should have a "1" (with a phase difference)
+  unsigned sv_set_idx = 0;
+  for (unsigned i = 0; i < correct_out_bits.size(); i++) {
+    if (correct_out_bits[i] == 1) {
+      sv_set_idx = sv_set_idx + (1 << (n - i - 1));
+    }
+  }
+  const StateVector sv = tket_sim::get_statevector(circ);
+  bool correct = true;
+  for (unsigned i = 0; i < sv.size(); ++i) {
+    if (i == sv_set_idx) {
+      correct &= (std::abs(sv[i]) - 1 < ERR_EPS);
+    } else {
+      correct &= (std::abs(sv[i]) < ERR_EPS);
+    }
   }
   return correct;
 }
@@ -380,6 +416,39 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
   }
 }
 
+SCENARIO("Test linear depth incrementer") {
+  GIVEN("2 qbs") {
+    REQUIRE(check_incrementer_linear_depth(2, 0));
+    REQUIRE(check_incrementer_linear_depth(2, 1));
+    REQUIRE(check_incrementer_linear_depth(2, 2));
+    REQUIRE(check_incrementer_linear_depth(2, 3));
+  }
+  GIVEN("3 qbs") {
+    REQUIRE(check_incrementer_linear_depth(3, 0));
+    REQUIRE(check_incrementer_linear_depth(3, 1));
+    REQUIRE(check_incrementer_linear_depth(3, 5));
+    REQUIRE(check_incrementer_linear_depth(3, 7));
+  }
+  GIVEN("4 qbs") {
+    REQUIRE(check_incrementer_linear_depth(4, 0));
+    REQUIRE(check_incrementer_linear_depth(4, 1));
+    REQUIRE(check_incrementer_linear_depth(4, 10));
+    REQUIRE(check_incrementer_linear_depth(4, 15));
+  }
+  GIVEN("5 qbs") {
+    REQUIRE(check_incrementer_linear_depth(5, 0));
+    REQUIRE(check_incrementer_linear_depth(5, 1));
+    REQUIRE(check_incrementer_linear_depth(5, 26));
+    REQUIRE(check_incrementer_linear_depth(5, 31));
+  }
+  GIVEN("8 qbs") {
+    REQUIRE(check_incrementer_linear_depth(8, 0));
+    REQUIRE(check_incrementer_linear_depth(8, 1));
+    REQUIRE(check_incrementer_linear_depth(8, 100));
+    REQUIRE(check_incrementer_linear_depth(8, 255));
+  }
+}
+
 SCENARIO("Test a CnX is decomposed correctly when bootstrapped", "[.long]") {
   GIVEN("Test CnX unitary for 3 to 9 controls") {
     for (unsigned n = 3; n < 10; ++n) {
@@ -393,6 +462,45 @@ SCENARIO("Test a CnX is decomposed correctly when bootstrapped", "[.long]") {
       correct_matrix(m_size - 2, m_size - 2) = 0;
       correct_matrix(m_size - 1, m_size - 1) = 0;
       REQUIRE(m.isApprox(correct_matrix, ERR_EPS));
+    }
+  }
+}
+
+SCENARIO("Test a CnX is decomposed correctly using the linear depth method") {
+  GIVEN("Test CnX unitary for 2 to 9 controls") {
+    for (unsigned n = 2; n < 10; ++n) {
+      Eigen::MatrixXcd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
+      Circuit circ = Transforms::cnu_linear_depth_decomp(n, x);
+      const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+      unsigned m_size = pow(2, n + 1);
+      Eigen::MatrixXcd correct_matrix =
+          Eigen::MatrixXcd::Identity(m_size, m_size);
+      correct_matrix(m_size - 2, m_size - 1) = 1;
+      correct_matrix(m_size - 1, m_size - 2) = 1;
+      correct_matrix(m_size - 2, m_size - 2) = 0;
+      correct_matrix(m_size - 1, m_size - 1) = 0;
+      REQUIRE(m.isApprox(correct_matrix, ERR_EPS));
+    }
+  }
+}
+
+SCENARIO("Test a CnU is decomposed correctly using the linear depth method") {
+  GIVEN("Test CnU unitary for 2 to 9 controls") {
+    for (unsigned i = 0; i < 100; i++) {
+      Eigen::Matrix2cd U = random_unitary(2, i);
+      std::vector<unsigned> test_ns = {2, 3, 5};
+      for (auto n : test_ns) {
+        Circuit circ = Transforms::cnu_linear_depth_decomp(n, U);
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        unsigned m_size = pow(2, n + 1);
+        Eigen::MatrixXcd correct_matrix =
+            Eigen::MatrixXcd::Identity(m_size, m_size);
+        correct_matrix(m_size - 2, m_size - 2) = U(0, 0);
+        correct_matrix(m_size - 2, m_size - 1) = U(0, 1);
+        correct_matrix(m_size - 1, m_size - 2) = U(1, 0);
+        correct_matrix(m_size - 1, m_size - 1) = U(1, 1);
+        REQUIRE(m.isApprox(correct_matrix, ERR_EPS));
+      }
     }
   }
 }

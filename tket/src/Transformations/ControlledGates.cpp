@@ -805,6 +805,94 @@ Circuit cnx_gray_decomp(unsigned n) {
   }
 }
 
+static Eigen::Matrix2cd nth_root(const Eigen::Matrix2cd& u, unsigned n) {
+  Eigen::ComplexEigenSolver<Eigen::Matrix2cd> eigen_solver(u);
+  return std::pow(eigen_solver.eigenvalues()[0], 1. / n) *
+             eigen_solver.eigenvectors().col(0) *
+             eigen_solver.eigenvectors().col(0).adjoint() +
+         std::pow(eigen_solver.eigenvalues()[1], 1. / n) *
+             eigen_solver.eigenvectors().col(1) *
+             eigen_solver.eigenvectors().col(1).adjoint();
+}
+
+// Add pn to qubits {1,...,n}
+static void add_pn(Circuit& circ, unsigned n, bool inverse) {
+  // pn is self commute
+  for (unsigned i = 2; i < n + 1; i++) {
+    int d = 1 << (n - i + 1);
+    d = inverse ? -1 * d : d;
+    circ.add_op<unsigned>(OpType::CRx, (double)1 / d, {i - 1, n});
+  }
+}
+
+// Add pn(u) to qubits {1,...,n}
+static void add_pn_unitary(
+    Circuit& circ, const Eigen::Matrix2cd& u, unsigned n, bool inverse) {
+  // pn_(u) is self commute
+  for (unsigned i = 2; i < n + 1; i++) {
+    Eigen::Matrix2cd m = nth_root(u, 1 << (n - i + 1));
+    if (inverse) m.adjointInPlace();
+    Unitary1qBox ub(m);
+    Op_ptr op = std::make_shared<Unitary1qBox>(ub);
+    QControlBox qcb(op);
+    circ.add_box(qcb, {i - 1, n});
+  }
+}
+
+// Add an incrementer without toggling the least significant bit
+// Apply to qubits {0,...,n-1}
+static void add_qn(Circuit& circ, unsigned n) {
+  for (unsigned i = n - 1; i > 1; i--) {
+    int d = 1 << (i - 1);
+    add_pn(circ, i, false);
+    circ.add_op<unsigned>(OpType::CRx, (double)1 / d, {0, i});
+  }
+  circ.add_op<unsigned>(OpType::CRx, 1, {0, 1});
+  for (unsigned i = 2; i < n; i++) {
+    add_pn(circ, i, true);
+  }
+}
+
+// https://arxiv.org/abs/2203.11882 Equation 5
+Circuit incrementer_linear_depth(unsigned n, bool lsb) {
+  Circuit circ(n);
+  add_qn(circ, n);
+  if (lsb) {
+    circ.add_op<unsigned>(OpType::Rx, 1, {0});
+  }
+  return circ;
+}
+
+// https://arxiv.org/abs/2203.11882 Equation 3
+Circuit cnu_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
+  if (!is_unitary(u)) {
+    throw CircuitInvalidity(
+        "Matrix for the controlled operation must be unitary");
+  }
+  Circuit circ(n + 1);
+  // Add pn(u) to qubits {1,...,n}
+  add_pn_unitary(circ, u, n, false);
+  // Add CU to {0, n}
+  Eigen::Matrix2cd m = nth_root(u, 1 << (n - 1));
+  Unitary1qBox ub(m);
+  Op_ptr op = std::make_shared<Unitary1qBox>(ub);
+  QControlBox qcb(op);
+  circ.add_box(qcb, {0, n});
+
+  // Add incrementer (without toggling q0) to {0,...,n-1}
+  Circuit qn = incrementer_linear_depth(n, false);
+  Circuit qn_dag = qn.dagger();
+  circ.append(qn);
+
+  // Add pn(u).dagger to qubits {1,...,n}
+  add_pn_unitary(circ, u, n, true);
+
+  // Add incrementer inverse (without toggling q0) to {0,...,n-1}
+  circ.append(qn_dag);
+
+  return circ;
+}
+
 }  // namespace Transforms
 
 }  // namespace tket
