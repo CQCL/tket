@@ -1044,7 +1044,7 @@ def circuit_to_qasm_io(
             # special handling for zzphase
             opstr = "RZZ"
             param = op.params[0]
-            # as op.params returns reduced parameters, we can assume 
+            # as op.params returns reduced parameters, we can assume
             # that 0 <= param < 4
             if param > 1:
                 # first get in to 0 <= param < 2 range
