@@ -18,9 +18,10 @@
 #
 # compare-coverage <file> <file1>
 #
-# where each file contains a couple of lines of text such as:
+# where each file contains three lines of text such as:
 #
 # lines: 87.5% (17090 out of 19537)
+# functions: 100.0% (10 out of 10)
 # branches: 46.4% (23147 out of 49885)
 #
 # Returns status 0 if `file1` is at least as good as `file` on the "lines" score,
@@ -37,8 +38,13 @@ def extract_num_from_percent(word):
 def get_percentages(summary):
     words = summary.split()
     assert words[0] == "lines:"
-    assert words[6] == "branches:"
-    return extract_num_from_percent(words[1]), extract_num_from_percent(words[7])
+    assert words[6] == "functions:"
+    assert words[12] == "branches:"
+    return (
+        extract_num_from_percent(words[1]),
+        extract_num_from_percent(words[7]),
+        extract_num_from_percent(words[13]),
+    )
 
 
 def compare(summary, summary1):
@@ -49,13 +55,14 @@ def compare(summary, summary1):
     print("New:")
     print(summary1)
 
-    lpercent, bpercent = get_percentages(summary)
-    lpercent1, bpercent1 = get_percentages(summary1)
+    lpercent, fpercent, bpercent = get_percentages(summary)
+    lpercent1, fpercent1, bpercent1 = get_percentages(summary1)
 
     # Ignore branch coverage since it includes compiler-generated branches beyond our
     # control.
     # TODO: Maybe use the `--decisions` flag (available in gcovr 5.1) to mitigate this
     # issue, but this seems to throw an error.
+    # TODO: Take account of function coverage
     if lpercent1 < lpercent:
         print("Percentage line coverage has decreased.")
         exit(1)

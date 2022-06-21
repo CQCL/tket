@@ -150,7 +150,7 @@ jobs:
       working-directory: ./build/${{ matrix.lib }}-tests/package/bin
       run: ./test-${{ matrix.lib }}
     - name: install gcovr
-      run: pip install gcovr
+      run: pip install gcovr~=5.1
     - name: build coverage report
       run: |
         mkdir ${{ matrix.lib }}-coverage
