@@ -616,6 +616,7 @@ def test_library_pass_config() -> None:
     assert SynthesiseUMD().to_dict()["StandardPass"]["name"] == "SynthesiseUMD"
     assert FlattenRegisters().to_dict()["StandardPass"]["name"] == "FlattenRegisters"
     assert DelayMeasures().to_dict()["StandardPass"]["name"] == "DelayMeasures"
+    assert ZZPhaseToRz().to_dict()["StandardPass"]["name"] == "ZZPhaseToRz"
 
 
 def check_arc_dict(arc: Architecture, d: dict) -> bool:

@@ -584,6 +584,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(DelayMeasures, DelayMeasures())
   COMPPASSJSONTEST(RemoveDiscarded, RemoveDiscarded())
   COMPPASSJSONTEST(SimplifyMeasured, SimplifyMeasured())
+  COMPPASSJSONTEST(ZZPhaseToRz, ZZPhaseToRz())
   COMPPASSJSONTEST(RemoveBarriers, RemoveBarriers())
   COMPPASSJSONTEST(ComposePhasePolyBoxes, ComposePhasePolyBoxes())
   COMPPASSJSONTEST(DecomposeBridges, DecomposeBridges())
