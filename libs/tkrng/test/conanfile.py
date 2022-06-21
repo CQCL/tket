@@ -34,6 +34,7 @@ class TestTkrngConan(ConanFile):
     def _configure_cmake(self):
         if self._cmake is None:
             self._cmake = CMake(self)
+            self._cmake.definitions["WITH_COVERAGE"] = self.options.with_coverage
             self._cmake.configure()
         return self._cmake
 

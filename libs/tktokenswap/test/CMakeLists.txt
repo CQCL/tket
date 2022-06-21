@@ -60,3 +60,10 @@ target_include_directories(test-tktokenswap PRIVATE )
 
 target_link_libraries(test-tktokenswap PRIVATE
     tklog tkassert tkrng tktokenswap ${CONAN_LIBS_CATCH2})
+
+set(WITH_COVERAGE no CACHE BOOL "Link library with profiling for test coverage")
+IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    IF (WITH_COVERAGE)
+        target_link_options(test-tktokenswap PUBLIC --coverage)
+    ENDIF()
+ENDIF()

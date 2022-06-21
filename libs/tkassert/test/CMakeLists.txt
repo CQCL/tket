@@ -35,3 +35,10 @@ add_executable(test-tkassert test_assert.cpp)
 target_include_directories(test-tkassert PRIVATE )
 
 target_link_libraries(test-tkassert PRIVATE tklog tkassert ${CONAN_LIBS_CATCH2})
+
+set(WITH_COVERAGE no CACHE BOOL "Link library with profiling for test coverage")
+IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    IF (WITH_COVERAGE)
+        target_link_options(test-tkassert PUBLIC --coverage)
+    ENDIF()
+ENDIF()

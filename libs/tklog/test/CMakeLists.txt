@@ -35,3 +35,10 @@ add_executable(test-tklog test_Logging.cpp)
 target_include_directories(test-tklog PRIVATE )
 
 target_link_libraries(test-tklog PRIVATE tklog ${CONAN_LIBS_CATCH2})
+
+set(WITH_COVERAGE no CACHE BOOL "Link library with profiling for test coverage")
+IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    IF (WITH_COVERAGE)
+        target_link_options(test-tklog PUBLIC --coverage)
+    ENDIF()
+ENDIF()
