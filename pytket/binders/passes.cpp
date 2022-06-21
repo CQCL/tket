@@ -778,10 +778,9 @@ PYBIND11_MODULE(passes, m) {
       py::arg("allow_classical") = true, py::arg("xcirc") = nullptr);
 
   m.def(
-      "RestrictZZPhaseAngles", &RestrictZZPhaseAngles,
-      "Restricts all ZZPhase gate angles to between -pi and pi. Also"
-      "converts ZZPhase gates with angle pi or -pi to two Rz gates with"
-      "angle pi.\n:return: a pass to restrict ZZPhase gate angles.");
+      "ZZPhaseToRz", &ZZPhaseToRz,
+      "Converts ZZPhase gates with angle pi or -pi to two Rz gates with"
+      "angle pi.\n:return: a pass to convert ZZPhase gates to Rz");
 }
 
 }  // namespace tket

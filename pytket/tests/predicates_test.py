@@ -60,6 +60,7 @@ from pytket.passes import (  # type: ignore
     RemoveBarriers,
     PauliSquash,
     auto_rebase_pass,
+    ZZPhaseToRz,
 )
 from pytket.predicates import (  # type: ignore
     GateSetPredicate,
@@ -92,6 +93,7 @@ from pytket.transform import Transform, PauliSynthStrat, CXConfigType  # type: i
 from pytket._tket.passes import SynthesiseOQC  # type: ignore
 import numpy as np
 
+from pytket.qasm import circuit_to_qasm_str
 import pytest  # type: ignore
 
 from typing import Dict, Any, List
@@ -1007,6 +1009,26 @@ def test_simplify_initial_3() -> None:
     assert len(c1_cmds) == 0
 
 
+def test_ZZPhaseToRz() -> None:
+    c = (
+        Circuit(2)
+        .ZZPhase(0.6, 0, 1)
+        .ZZPhase(1, 0, 1)
+        .ZZPhase(-1, 0, 1)
+        .ZZPhase(-0.4, 0, 1)
+    )
+    comp = (
+        Circuit(2)
+        .ZZPhase(0.6, 0, 1)
+        .Rz(1, 0)
+        .Rz(1, 1)
+        .Rz(1, 0)
+        .Rz(1, 1)
+        .ZZPhase(-0.4, 0, 1)
+    )
+    assert comp == c
+
+
 def test_pauli_squash() -> None:
     c = Circuit(3)
     c.add_pauliexpbox(PauliExpBox([Pauli.Z, Pauli.X, Pauli.Z], 0.8), [0, 1, 2])
@@ -1123,4 +1145,5 @@ if __name__ == "__main__":
     test_apply_pass_with_callbacks()
     test_remove_barriers()
     test_RebaseOQC_and_SynthesiseOQC()
+    test_ZZPhaseToRz()
     test_predicate_serialization()

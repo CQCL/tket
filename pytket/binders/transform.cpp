@@ -391,7 +391,7 @@ PYBIND11_MODULE(transform, m) {
           py::arg("synth_strat") = Transforms::PauliSynthStrat::Sets,
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
-          "RestrictZZPhaseAngles", &Transforms::restrict_ZZPhase_angles,
+          "ZZPhaseToRz", &Transforms::ZZPhase_to_Rz,
           "Fixes all ZZPhase gate angles to [-1, 1) half turns.");
   m.def(
       "separate_classical", &Transforms::separate_classical,

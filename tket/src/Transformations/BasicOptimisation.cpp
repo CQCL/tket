@@ -710,9 +710,8 @@ Transform absorb_Rz_NPhasedX() {
   });
 }
 
-Transform restrict_ZZPhase_angles() {
-  // fixes all ZZPhase values to (-pi, pi)
-  // for half turns this is equivalent to (-1, 1)
+Transform ZZPhase_to_Rz() {
+          // basic optimisation, replace ZZPhase with two Rz(1)
   return Transform([](Circuit &circ) {
     bool success = false;
     VertexSet bin;
@@ -732,18 +731,6 @@ Transform restrict_ZZPhase_angles() {
           replacement.add_op<unsigned>(OpType::Rz, 1.0, {1});
           circ.substitute(replacement, v, Circuit::VertexDeletion::No);
           bin.insert(v);
-        }
-        // fix the parameter to be in range (-1, 1)
-        else if (abs(param_value) > 1.0) {
-          success = true;
-          double new_param = std::fmod(param_value, 2.0);
-          if (new_param > 1) {
-            new_param = -2 + new_param;
-          }
-          if (new_param < -1) {
-            new_param = 2 + new_param;
-          }
-          circ.dag[v] = get_op_ptr(OpType::ZZPhase, new_param, 2);
         }
       }
     }

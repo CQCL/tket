@@ -419,9 +419,9 @@ const PassPtr &NormaliseTK2() {
   return pp;
 }
 
-const PassPtr &RestrictZZPhaseAngles() {
+const PassPtr &ZZPhaseToRz() {
   static const PassPtr pp([]() {
-    Transform t = Transforms::restrict_ZZPhase_angles();
+    Transform t = Transforms::ZZPhase_to_Rz();
     // GateSetPredicate not preserved because ZZPhase gates may be converted to
     // Rz gates
     PredicateClassGuarantees g_postcons = {
@@ -430,7 +430,7 @@ const PassPtr &RestrictZZPhaseAngles() {
     PredicatePtrMap precons;
     // record pass config
     nlohmann::json j;
-    j["name"] = "RestrictZZPhaseAngles";
+    j["name"] = "ZZPhaseToRz";
     return std::make_shared<StandardPass>(precons, t, postcon, j);
   }());
   return pp;
