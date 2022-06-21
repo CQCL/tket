@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from conans import ConanFile, CMake
+from conans.errors import ConanInvalidConfiguration
 
 
 class TkassertConan(ConanFile):
@@ -22,8 +23,12 @@ class TkassertConan(ConanFile):
     url = "https://github.com/CQCL/tket"
     description = "Assertions"
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = {"shared": False, "fPIC": True}
+    options = {
+        "shared": [True, False],
+        "fPIC": [True, False],
+        "profile_coverage": [True, False],
+    }
+    default_options = {"shared": False, "fPIC": True, "profile_coverage": False}
     generators = "cmake"
     exports_sources = "src/*"
     requires = ["tklog/0.1.1@tket/stable"]
@@ -32,8 +37,15 @@ class TkassertConan(ConanFile):
         if self.settings.os == "Windows":
             del self.options.fPIC
 
+    def validate(self):
+        if self.options.profile_coverage and self.settings.compiler != "gcc":
+            raise ConanInvalidConfiguration(
+                "`profile_coverage` option only available with gcc"
+            )
+
     def build(self):
         cmake = CMake(self)
+        cmake.definitions["PROFILE_COVERAGE"] = self.options.profile_coverage
         cmake.configure(source_folder="src")
         cmake.build()
 

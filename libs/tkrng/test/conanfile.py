@@ -23,6 +23,8 @@ class TestTkrngConan(ConanFile):
     url = "https://github.com/CQCL/tket"
     description = "Unit tests for tkrng"
     settings = "os", "compiler", "build_type", "arch"
+    options = {"with_coverage": [True, False]}
+    default_options = {"with_coverage": False}
     generators = "cmake"
     exports_sources = "*"
     requires = ["tkrng/0.1.1", "catch2/3.0.1"]
@@ -34,6 +36,16 @@ class TestTkrngConan(ConanFile):
             self._cmake = CMake(self)
             self._cmake.configure()
         return self._cmake
+
+    def validate(self):
+        if self.options.with_coverage and self.settings.compiler != "gcc":
+            raise ConanInvalidConfiguration(
+                "`with_coverage` option only available with gcc"
+            )
+
+    def configure(self):
+        if self.options.with_coverage:
+            self.options["tkrng"].profile_coverage = True
 
     def build(self):
         cmake = self._configure_cmake()
