@@ -677,14 +677,14 @@ SCENARIO(
     PlacementConfig pc;
     pc.depth_limit = 5;
     pc.max_interaction_edges = arc.n_connections();
-    pc.vf2_max_matches = 10000000;
+    pc.monomorphism_max_matches = 10000000;
     pc.arc_contraction_ratio = 10;
     pc.timeout = 1000;
 
     GraphPlacement placer(arc);
     placer.set_config(pc);
     std::vector<qubit_mapping_t> all_maps = placer.get_all_placement_maps(circ);
-    REQUIRE(all_maps.size() < pc.vf2_max_matches);
+    REQUIRE(all_maps.size() < pc.monomorphism_max_matches);
   }
 }
 

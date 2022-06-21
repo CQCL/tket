@@ -23,7 +23,8 @@ add_library(tket-${COMP}
     subgraph_mapping.cpp
     Placement.cpp
     PlacementGraphClasses.cpp
-    NeighbourPlacements.cpp)
+    NeighbourPlacements.cpp
+    MonomorphismCalculation.cpp)
 
 list(APPEND DEPS_${COMP}
     Architecture
