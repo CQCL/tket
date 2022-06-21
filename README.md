@@ -94,11 +94,12 @@ Enable revisions:
 conan config set general.revisions_enabled=1
 ```
 
-We want to build shared rather than static libraries, so set this in the
-profile:
+We want to build tket and tklog as shared rather than static libraries, so set
+this in the profile:
 
 ```shell
 conan profile update options.tket:shared=True tket
+conan profile update options.tklog:shared=True tket
 ```
 
 If you wish you can set your profile to Debug mode:
@@ -150,6 +151,30 @@ conan create --profile=tket recipes/symengine
 to build it. If you are using a conan configuration supported by the CI
 (see above under "Build tools"), this is unnecessary as a pre-built package
 will be downloaded from the `tket-conan` repository when you build `tket`.
+
+### TKET libraries
+
+Some TKET functionality has been separated out into self-contained libraries,
+as a way to modularize and reduce average build times. These are in
+subdirectories of the `libs` directory. We anticipate that their number will
+increase as we work towards greater modularization.
+
+If you are using a supported conan configuration (see above under "Build
+tools"), you do not need to worry about these, unless you are modifying the code
+in them. The main build of TKET will download a pre-built package for each of
+them.
+
+If you are using an unsupported configuration, or want to make changes to these
+libraries, you will need to build them locally. For example:
+
+```shell
+conan create --profile=tket libs/tkrng tket/stable
+```
+
+If you make a change to one of these libraries, please increase the version
+number and make a PR with that change only: the component will then be tested on
+the CI, and on merge to `develop` the new version will be uploaded. Then it will
+be possible to update conan requirements to use the new version.
 
 ### Building tket
 
