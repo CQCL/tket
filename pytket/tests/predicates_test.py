@@ -1026,6 +1026,7 @@ def test_ZZPhaseToRz() -> None:
         .Rz(1, 1)
         .ZZPhase(-0.4, 0, 1)
     )
+    ZZPhaseToRz().apply(c)
     assert comp == c
 
 
