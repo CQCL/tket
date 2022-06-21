@@ -21,6 +21,7 @@ import uuid
 # TODO: Output custom gates
 from importlib import import_module
 from itertools import chain, groupby
+from decimal import Decimal
 from typing import (
     Any,
     Callable,
@@ -1042,7 +1043,17 @@ def circuit_to_qasm_io(
         elif header == "hqslib1" and optype == OpType.ZZPhase:
             # special handling for zzphase
             opstr = "RZZ"
-            params = op.params
+            param = op.params[0]
+            # as op.params returns reduced parameters, we can assume 
+            # that 0 <= param < 4
+            if param > 1:
+                # first get in to 0 <= param < 2 range
+                param = Decimal(str(param)) % Decimal("2")
+                # then flip 1 <= param < 2  range into
+                # -1 <= param < 0
+                if param > 1:
+                    param = -2 + param
+            params = [param]
         elif optype in _tk_to_qasm_noparams:
             opstr = _tk_to_qasm_noparams[optype]
         elif optype in _tk_to_qasm_params:
