@@ -711,7 +711,7 @@ Transform absorb_Rz_NPhasedX() {
 }
 
 Transform ZZPhase_to_Rz() {
-          // basic optimisation, replace ZZPhase with two Rz(1)
+  // basic optimisation, replace ZZPhase with two Rz(1)
   return Transform([](Circuit &circ) {
     bool success = false;
     VertexSet bin;
