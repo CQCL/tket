@@ -1,16 +1,16 @@
 var searchData=
 [
-  ['pairwise_5730',['Pairwise',['../namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028a327036a1ef7ccbd87697bb2a2197d9ae',1,'tket::Transforms']]],
-  ['pattern_5fgraph_5731',['PATTERN_GRAPH',['../classtket_1_1WeightedSubgraphMonomorphism_1_1NearNeighboursData.html#a9b71d6dd0e42297918a04ed51ece765fa95673e6e935b7ba6d995ef30762bd47f',1,'tket::WeightedSubgraphMonomorphism::NearNeighboursData']]],
-  ['pauliexpbox_5732',['PauliExpBox',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aaa7c55748f3e91d01205fe879c9fcbda',1,'tket']]],
-  ['phase_5733',['Phase',['../classtket_1_1Circuit.html#a80fa413c88ea82abce86d16c8f220559a5e35d7fff7b903516cba242ff68fc6d3',1,'tket::Circuit']]],
-  ['phasediswap_5734',['PhasedISWAP',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ae9803ce0546b458ef0384bdb380d6fec',1,'tket']]],
-  ['phasedx_5735',['PhasedX',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a667abdbcc77f7dead35f32f2efeebd3b',1,'tket']]],
-  ['phasegadget_5736',['PhaseGadget',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aa4be2ca477e4ec3bd42910620e67ae85',1,'tket']]],
-  ['phasepolybox_5737',['PhasePolyBox',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a242d5bcfd960527a3f152c6dfe220c67',1,'tket']]],
-  ['preserve_5738',['Preserve',['../classtket_1_1Circuit.html#a8c16bfe4c55bd9f2d3565c0dd9377931a6d2a1af98f2cad1e5ec2dd0a75953919',1,'tket::Circuit::Preserve()'],['../namespacetket.html#a927f86cd8e86326952a143fdc6222ec7a6d2a1af98f2cad1e5ec2dd0a75953919',1,'tket::Preserve()']]],
-  ['projectorassertionbox_5739',['ProjectorAssertionBox',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a927eb314e7755edbf2f295363eb70989',1,'tket']]],
-  ['px_5740',['PX',['../namespacetket_1_1zx.html#ab1dacff6605c3bc8caa5f7fa6e3f5646a87e6c078833a3c35b65067a50c936b37',1,'tket::zx']]],
-  ['py_5741',['PY',['../namespacetket_1_1zx.html#ab1dacff6605c3bc8caa5f7fa6e3f5646a0c145a13e49b47abccd510e5c899d80c',1,'tket::zx']]],
-  ['pz_5742',['PZ',['../namespacetket_1_1zx.html#ab1dacff6605c3bc8caa5f7fa6e3f5646a159fe58f8d47011813fb25bd91b46673',1,'tket::zx']]]
+  ['pairwise_5734',['Pairwise',['../namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028a327036a1ef7ccbd87697bb2a2197d9ae',1,'tket::Transforms']]],
+  ['pattern_5fgraph_5735',['PATTERN_GRAPH',['../classtket_1_1WeightedSubgraphMonomorphism_1_1NearNeighboursData.html#a9b71d6dd0e42297918a04ed51ece765fa95673e6e935b7ba6d995ef30762bd47f',1,'tket::WeightedSubgraphMonomorphism::NearNeighboursData']]],
+  ['pauliexpbox_5736',['PauliExpBox',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aaa7c55748f3e91d01205fe879c9fcbda',1,'tket']]],
+  ['phase_5737',['Phase',['../classtket_1_1Circuit.html#a80fa413c88ea82abce86d16c8f220559a5e35d7fff7b903516cba242ff68fc6d3',1,'tket::Circuit']]],
+  ['phasediswap_5738',['PhasedISWAP',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ae9803ce0546b458ef0384bdb380d6fec',1,'tket']]],
+  ['phasedx_5739',['PhasedX',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a667abdbcc77f7dead35f32f2efeebd3b',1,'tket']]],
+  ['phasegadget_5740',['PhaseGadget',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aa4be2ca477e4ec3bd42910620e67ae85',1,'tket']]],
+  ['phasepolybox_5741',['PhasePolyBox',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a242d5bcfd960527a3f152c6dfe220c67',1,'tket']]],
+  ['preserve_5742',['Preserve',['../classtket_1_1Circuit.html#a8c16bfe4c55bd9f2d3565c0dd9377931a6d2a1af98f2cad1e5ec2dd0a75953919',1,'tket::Circuit::Preserve()'],['../namespacetket.html#a927f86cd8e86326952a143fdc6222ec7a6d2a1af98f2cad1e5ec2dd0a75953919',1,'tket::Preserve()']]],
+  ['projectorassertionbox_5743',['ProjectorAssertionBox',['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a927eb314e7755edbf2f295363eb70989',1,'tket']]],
+  ['px_5744',['PX',['../namespacetket_1_1zx.html#ab1dacff6605c3bc8caa5f7fa6e3f5646a87e6c078833a3c35b65067a50c936b37',1,'tket::zx']]],
+  ['py_5745',['PY',['../namespacetket_1_1zx.html#ab1dacff6605c3bc8caa5f7fa6e3f5646a0c145a13e49b47abccd510e5c899d80c',1,'tket::zx']]],
+  ['pz_5746',['PZ',['../namespacetket_1_1zx.html#ab1dacff6605c3bc8caa5f7fa6e3f5646a159fe58f8d47011813fb25bd91b46673',1,'tket::zx']]]
 ];

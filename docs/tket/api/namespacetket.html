@@ -1643,6 +1643,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a7368443348c534c6ff56212f2912d8aa"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a7368443348c534c6ff56212f2912d8aa">NormaliseTK2</a> ()</td></tr>
 <tr class="memdesc:a7368443348c534c6ff56212f2912d8aa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normalises all TK2 gates.  <a href="namespacetket.html#a7368443348c534c6ff56212f2912d8aa">More...</a><br /></td></tr>
 <tr class="separator:a7368443348c534c6ff56212f2912d8aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7e0a2b1c89011b21b1190f429040494e"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a7e0a2b1c89011b21b1190f429040494e">ZZPhaseToRz</a> ()</td></tr>
+<tr class="memdesc:a7e0a2b1c89011b21b1190f429040494e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts ZZPhase with angle 1 or -1 to two Rz(1) gates.  <a href="namespacetket.html#a7e0a2b1c89011b21b1190f429040494e">More...</a><br /></td></tr>
+<tr class="separator:a7e0a2b1c89011b21b1190f429040494e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4f64eb1930e0f91098fbd9f83872f938"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a4f64eb1930e0f91098fbd9f83872f938">predicate_name</a> (std::type_index idx)</td></tr>
 <tr class="separator:a4f64eb1930e0f91098fbd9f83872f938"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a903d0e05c58620dc0d082c414c078911"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a903d0e05c58620dc0d082c414c078911">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="namespacetket.html#ad6db3955c4f1dbc5fb33f72bc2822e35">PredicatePtr</a> &amp;pred_ptr)</td></tr>
@@ -14219,6 +14222,28 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 <p>Produces an equivalent circuit using the gate extraction method from Backens et al., "There and Back Again: A Circuit Extraction Tale". </p>
 
 <p class="definition">Definition at line <a class="el" href="ZXConverters_8cpp_source.html#l00811">811</a> of file <a class="el" href="ZXConverters_8cpp_source.html">ZXConverters.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a7e0a2b1c89011b21b1190f429040494e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7e0a2b1c89011b21b1190f429040494e">&#9670;&nbsp;</a></span>ZZPhaseToRz()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const <a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> &amp; tket::ZZPhaseToRz </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Converts ZZPhase with angle 1 or -1 to two Rz(1) gates. </p>
+<dl class="section return"><dt>Returns</dt><dd>compilation pass to perform this transformation </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00422">422</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>

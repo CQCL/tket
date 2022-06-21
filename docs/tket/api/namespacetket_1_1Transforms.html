@@ -150,6 +150,9 @@ Functions</h2></td></tr>
 <tr class="memitem:adee710165c3b4aaac9e4521e9d74fbfa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#adee710165c3b4aaac9e4521e9d74fbfa">absorb_Rz_NPhasedX</a> ()</td></tr>
 <tr class="memdesc:adee710165c3b4aaac9e4521e9d74fbfa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Absorb Rz gates into NPhasedX where possible.  <a href="namespacetket_1_1Transforms.html#adee710165c3b4aaac9e4521e9d74fbfa">More...</a><br /></td></tr>
 <tr class="separator:adee710165c3b4aaac9e4521e9d74fbfa"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c85817ac5250d6d3d816cc50c6f4a0d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a4c85817ac5250d6d3d816cc50c6f4a0d">ZZPhase_to_Rz</a> ()</td></tr>
+<tr class="memdesc:a4c85817ac5250d6d3d816cc50c6f4a0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts any ZZPhase with angle in (-1, 1) to two pi Rz gates.  <a href="namespacetket_1_1Transforms.html#a4c85817ac5250d6d3d816cc50c6f4a0d">More...</a><br /></td></tr>
+<tr class="separator:a4c85817ac5250d6d3d816cc50c6f4a0d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af27a84ae14a0ac564832ac765e7599ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#af27a84ae14a0ac564832ac765e7599ac">normalise_TK2</a> ()</td></tr>
 <tr class="memdesc:af27a84ae14a0ac564832ac765e7599ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Normalises all TK2 gates so that <code><a class="el" href="classtket_1_1NormalisedTK2Predicate.html" title="Asserts that all TK2 gates are normalised.">NormalisedTK2Predicate</a></code> is satisfied.  <a href="namespacetket_1_1Transforms.html#af27a84ae14a0ac564832ac765e7599ac">More...</a><br /></td></tr>
 <tr class="separator:af27a84ae14a0ac564832ac765e7599ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -557,7 +560,7 @@ Variables</h2></td></tr>
 <p>Absorb Rz gates into NPhasedX where possible. </p>
 <p>For any gate NPhasedX(𝛼, 𝛽) in the circuit, try to change 𝛽 to reduce the number of surrounding Rz gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00586">586</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00587">587</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
 
 </div>
 </div>
@@ -778,7 +781,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00577">577</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00578">578</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
 
 </div>
 </div>
@@ -798,7 +801,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00581">581</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00582">582</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
 
 </div>
 </div>
@@ -1658,7 +1661,7 @@ template&lt;typename T &gt; </div>
 
 <p>Normalises all TK2 gates so that <code><a class="el" href="classtket_1_1NormalisedTK2Predicate.html" title="Asserts that all TK2 gates are normalised.">NormalisedTK2Predicate</a></code> is satisfied. </p>
 
-<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00712">712</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00743">743</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
 
 </div>
 </div>
@@ -2541,6 +2544,27 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00350">350</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a4c85817ac5250d6d3d816cc50c6f4a0d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4c85817ac5250d6d3d816cc50c6f4a0d">&#9670;&nbsp;</a></span>ZZPhase_to_Rz()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtket_1_1Transform.html">Transform</a> tket::Transforms::ZZPhase_to_Rz </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Converts any ZZPhase with angle in (-1, 1) to two pi Rz gates. </p>
+
+<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00713">713</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
 
 </div>
 </div>

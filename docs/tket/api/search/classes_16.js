@@ -1,9 +1,9 @@
 var searchData=
 [
-  ['zxbox_3093',['ZXBox',['../classtket_1_1zx_1_1ZXBox.html',1,'tket::zx']]],
-  ['zxdiagram_3094',['ZXDiagram',['../classtket_1_1zx_1_1ZXDiagram.html',1,'tket::zx']]],
-  ['zxdirected_3095',['ZXDirected',['../classtket_1_1zx_1_1ZXDirected.html',1,'tket::zx']]],
-  ['zxerror_3096',['ZXError',['../classtket_1_1zx_1_1ZXError.html',1,'tket::zx']]],
-  ['zxgen_3097',['ZXGen',['../classtket_1_1zx_1_1ZXGen.html',1,'tket::zx']]],
-  ['zxvertproperties_3098',['ZXVertProperties',['../structtket_1_1zx_1_1ZXVertProperties.html',1,'tket::zx']]]
+  ['zxbox_3095',['ZXBox',['../classtket_1_1zx_1_1ZXBox.html',1,'tket::zx']]],
+  ['zxdiagram_3096',['ZXDiagram',['../classtket_1_1zx_1_1ZXDiagram.html',1,'tket::zx']]],
+  ['zxdirected_3097',['ZXDirected',['../classtket_1_1zx_1_1ZXDirected.html',1,'tket::zx']]],
+  ['zxerror_3098',['ZXError',['../classtket_1_1zx_1_1ZXError.html',1,'tket::zx']]],
+  ['zxgen_3099',['ZXGen',['../classtket_1_1zx_1_1ZXGen.html',1,'tket::zx']]],
+  ['zxvertproperties_3100',['ZXVertProperties',['../structtket_1_1zx_1_1ZXVertProperties.html',1,'tket::zx']]]
 ];

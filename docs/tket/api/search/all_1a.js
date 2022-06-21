@@ -45,6 +45,8 @@ var searchData=
   ['zzmax_5fusing_5fcx_2674',['ZZMax_using_CX',['../namespacetket_1_1CircPool.html#a39c7327973bf62f8fa3e96b2e3434c95',1,'tket::CircPool']]],
   ['zzphase_2675',['ZZPhase',['../structtket_1_1internal_1_1GateUnitaryMatrixImplementations.html#a7dc0eb8ce3ad540871650fa16c1f9a8e',1,'tket::internal::GateUnitaryMatrixImplementations::ZZPhase()'],['../namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a3093b0af32d5a67378a948d9e90ac005',1,'tket::ZZPhase()']]],
   ['zzphase_5ffidelity_2676',['ZZPhase_fidelity',['../structtket_1_1Transforms_1_1TwoQbFidelities.html#a57bccc52af2c1e8542374c997e35be37',1,'tket::Transforms::TwoQbFidelities']]],
-  ['zzphase_5fusing_5fcx_2677',['ZZPhase_using_CX',['../namespacetket_1_1CircPool.html#a28717aa273e55871a044d24922bc2f49',1,'tket::CircPool']]],
-  ['zzphase_5fusing_5ftk2_2678',['ZZPhase_using_TK2',['../namespacetket_1_1CircPool.html#af75983a52faa28f30ba17aa889d58f2f',1,'tket::CircPool']]]
+  ['zzphase_5fto_5frz_2677',['ZZPhase_to_Rz',['../namespacetket_1_1Transforms.html#a4c85817ac5250d6d3d816cc50c6f4a0d',1,'tket::Transforms']]],
+  ['zzphase_5fusing_5fcx_2678',['ZZPhase_using_CX',['../namespacetket_1_1CircPool.html#a28717aa273e55871a044d24922bc2f49',1,'tket::CircPool']]],
+  ['zzphase_5fusing_5ftk2_2679',['ZZPhase_using_TK2',['../namespacetket_1_1CircPool.html#af75983a52faa28f30ba17aa889d58f2f',1,'tket::CircPool']]],
+  ['zzphasetorz_2680',['ZZPhaseToRz',['../namespacetket.html#a7e0a2b1c89011b21b1190f429040494e',1,'tket']]]
 ];
