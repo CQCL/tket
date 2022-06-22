@@ -14,10 +14,10 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <set>
+#include <tkrng/RNG.hpp>
 
 #include "Graphs/AdjacencyData.hpp"
 #include "Graphs/GraphRoutines.hpp"
-#include "Utils/RNG.hpp"
 
 using std::map;
 using std::set;

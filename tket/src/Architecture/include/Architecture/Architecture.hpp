@@ -18,6 +18,7 @@
 #include <numeric>
 #include <set>
 #include <string>
+#include <tklog/TketLog.hpp>
 #include <utility>
 #include <vector>
 
@@ -27,7 +28,6 @@
 #include "Utils/EigenConfig.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/MatrixAnalysis.hpp"
-#include "Utils/TketLog.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket {

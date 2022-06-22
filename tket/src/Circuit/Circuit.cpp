@@ -19,12 +19,12 @@
 #include <optional>
 #include <set>
 #include <string>
+#include <tklog/TketLog.hpp>
 #include <utility>
 
 #include "Utils/Expression.hpp"
 #include "Utils/GraphHeaders.hpp"
 #include "Utils/HelperFunctions.hpp"
-#include "Utils/TketLog.hpp"
 
 namespace tket {
 

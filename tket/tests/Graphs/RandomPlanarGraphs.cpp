@@ -15,8 +15,7 @@
 #include "RandomPlanarGraphs.hpp"
 
 #include <catch2/catch_test_macros.hpp>
-
-#include "Utils/RNG.hpp"
+#include <tkrng/RNG.hpp>
 
 using std::vector;
 

@@ -22,6 +22,7 @@
 #include <numeric>
 #include <set>
 #include <string>
+#include <tkassert/Assert.hpp>
 
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
@@ -32,7 +33,6 @@
 #include "OpType/OpType.hpp"
 #include "OptimisationPass.hpp"
 #include "Transform.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/GraphHeaders.hpp"
 
 namespace tket {

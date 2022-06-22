@@ -17,8 +17,8 @@
 #include <algorithm>
 #include <set>
 #include <stdexcept>
+#include <tkassert/Assert.hpp>
 
-#include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 
 namespace tket {

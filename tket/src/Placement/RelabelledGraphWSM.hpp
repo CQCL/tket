@@ -14,9 +14,9 @@
 
 #pragma once
 #include <stdexcept>
+#include <tkassert/Assert.hpp>
 
 #include "Placement/Placement.hpp"
-#include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 #include "WeightSubgrMono/GraphTheoretic/GeneralStructs.hpp"
 

@@ -16,11 +16,12 @@
 // ALL METHODS TO OBTAIN COMPLEX GRAPH INFORMATIION//
 ////////////////////////////////////////////////////
 
+#include <tklog/TketLog.hpp>
+
 #include "Circuit.hpp"
 #include "OpType/OpType.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Utils/GraphHeaders.hpp"
-#include "Utils/TketLog.hpp"
 
 namespace tket {
 

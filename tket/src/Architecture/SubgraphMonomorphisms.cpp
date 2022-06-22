@@ -15,8 +15,8 @@
 #include "SubgraphMonomorphisms.hpp"
 
 #include <set>
+#include <tkassert/Assert.hpp>
 
-#include "Utils/Assert.hpp"
 #include "WeightSubgrMono/EndToEndWrappers/MainSolver.hpp"
 
 namespace tket {

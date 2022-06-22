@@ -49,6 +49,7 @@ jobs:
         pip install conan
         conan profile new tket --detect
         conan profile update settings.compiler.libcxx=libstdc++11 tket
+        conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
     - name: set option to run full test suite
       if: github.event_name == 'schedule'

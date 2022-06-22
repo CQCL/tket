@@ -2092,5 +2092,29 @@ SCENARIO("Synthesis with conditional gates") {
   check_conditions(SynthesiseUMD(), c);
 }
 
+SCENARIO("Restricting ZZPhase gate angles.") {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::ZZPhase, 0.5, {0, 1});
+  c.add_op<unsigned>(OpType::ZZPhase, 1.4, {0, 1});
+  c.add_op<unsigned>(OpType::ZZPhase, 1.0, {1, 0});
+  c.add_op<unsigned>(OpType::ZZPhase, -0.5, {0, 1});
+  c.add_op<unsigned>(OpType::ZZPhase, -1.3, {0, 1});
+  c.add_op<unsigned>(OpType::ZZPhase, -1.0, {0, 1});
+
+  REQUIRE(Transforms::ZZPhase_to_Rz().apply(c));
+  check_conditions(ZZPhaseToRz(), c);
+
+  Circuit comparison(2);
+  comparison.add_op<unsigned>(OpType::ZZPhase, 0.5, {0, 1});
+  comparison.add_op<unsigned>(OpType::ZZPhase, 1.4, {0, 1});
+  comparison.add_op<unsigned>(OpType::Rz, 1.0, {0});
+  comparison.add_op<unsigned>(OpType::Rz, 1.0, {1});
+  comparison.add_op<unsigned>(OpType::ZZPhase, -0.5, {0, 1});
+  comparison.add_op<unsigned>(OpType::ZZPhase, -1.3, {0, 1});
+  comparison.add_op<unsigned>(OpType::Rz, 1.0, {0});
+  comparison.add_op<unsigned>(OpType::Rz, 1.0, {1});
+
+  REQUIRE(comparison == c);
+}
 }  // namespace test_Synthesis
 }  // namespace tket

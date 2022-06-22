@@ -14,8 +14,9 @@
 
 #pragma once
 
+#include <tktokenswap/VertexMappingFunctions.hpp>
+
 #include "DecodedProblemData.hpp"
-#include "TokenSwapping/VertexMappingFunctions.hpp"
 
 namespace tket {
 namespace tsa_internal {

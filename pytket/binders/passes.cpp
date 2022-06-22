@@ -776,6 +776,11 @@ PYBIND11_MODULE(passes, m) {
       "transformed circuit (if omitted, an X gate is used)"
       "\n:return: a pass to perform the simplification",
       py::arg("allow_classical") = true, py::arg("xcirc") = nullptr);
+
+  m.def(
+      "ZZPhaseToRz", &ZZPhaseToRz,
+      "Converts ZZPhase gates with angle pi or -pi to two Rz gates with"
+      "angle pi.\n:return: a pass to convert ZZPhase gates to Rz");
 }
 
 }  // namespace tket

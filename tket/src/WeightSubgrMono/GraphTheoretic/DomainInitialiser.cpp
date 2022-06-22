@@ -15,8 +15,8 @@
 #include "WeightSubgrMono/GraphTheoretic/DomainInitialiser.hpp"
 
 #include <algorithm>
+#include <tkassert/Assert.hpp>
 
-#include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 #include "WeightSubgrMono/Common/SetIntersection.hpp"
 #include "WeightSubgrMono/GraphTheoretic/FilterUtils.hpp"

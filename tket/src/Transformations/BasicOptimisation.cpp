@@ -15,6 +15,7 @@
 #include "BasicOptimisation.hpp"
 
 #include <optional>
+#include <tkassert/Assert.hpp>
 
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Characterisation/ErrorTypes.hpp"
@@ -27,7 +28,6 @@
 #include "Gate/GatePtr.hpp"
 #include "Gate/Rotation.hpp"
 #include "Transform.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 
@@ -574,6 +574,7 @@ static Transform commute_SQ_gates_through_SWAPS_helper(
     return success;
   });
 }
+
 Transform commute_SQ_gates_through_SWAPS(const avg_node_errors_t &node_errors) {
   return commute_SQ_gates_through_SWAPS_helper(
       DeviceCharacterisation(node_errors));
@@ -705,6 +706,36 @@ Transform absorb_Rz_NPhasedX() {
     circ.remove_vertices(
         all_bins, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
 
+    return success;
+  });
+}
+
+Transform ZZPhase_to_Rz() {
+  // basic optimisation, replace ZZPhase with two Rz(1)
+  return Transform([](Circuit &circ) {
+    bool success = false;
+    VertexSet bin;
+
+    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+      Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+      if (op->get_type() == OpType::ZZPhase) {
+        auto params = op->get_params();
+        TKET_ASSERT(params.size() == 1);
+        // evaluate
+        double param_value = eval_expr(params[0]).value();
+        if (abs(param_value) == 1.0) {
+          success = true;
+          // basic optimisation, replace ZZPhase with two Rz(1)
+          Circuit replacement(2);
+          replacement.add_op<unsigned>(OpType::Rz, 1.0, {0});
+          replacement.add_op<unsigned>(OpType::Rz, 1.0, {1});
+          circ.substitute(replacement, v, Circuit::VertexDeletion::No);
+          bin.insert(v);
+        }
+      }
+    }
+    circ.remove_vertices(
+        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
     return success;
   });
 }

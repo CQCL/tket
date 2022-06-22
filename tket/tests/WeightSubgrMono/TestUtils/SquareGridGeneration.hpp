@@ -14,9 +14,9 @@
 
 #pragma once
 #include <string>
+#include <tkrng/RNG.hpp>
 
 #include "GraphGeneration.hpp"
-#include "Utils/RNG.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

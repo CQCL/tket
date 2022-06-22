@@ -19,6 +19,7 @@
 #include <complex>
 #include <optional>
 #include <stdexcept>
+#include <tkassert/Assert.hpp>
 
 #include "CircUtils.hpp"
 #include "Circuit.hpp"
@@ -26,7 +27,6 @@
 #include "Gate/GatePtr.hpp"
 #include "Gate/Rotation.hpp"
 #include "OpType/OpType.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/CosSinDecomposition.hpp"
 #include "Utils/EigenConfig.hpp"

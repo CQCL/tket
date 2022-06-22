@@ -17,8 +17,8 @@
 #include <algorithm>
 #include <chrono>
 #include <numeric>
+#include <tkassert/Assert.hpp>
 
-#include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 #include "WeightSubgrMono/EndToEndWrappers/PreSearchComponents.hpp"
 #include "WeightSubgrMono/EndToEndWrappers/SearchComponents.hpp"
