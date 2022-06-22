@@ -256,6 +256,12 @@ The code coverage of the `tket` tests is reported
 [here](https://cqcl.github.io/tket/tket/test-coverage/index.html). This report
 is generated weekly from the `develop` branch.
 
+The code coverage of the `pytket` tests is reported
+[here](https://cqcl.github.io/tket/pytket/test-coverage/index.html). This report
+reflects the coverage of the `develop` branch, and is updated with every push.
+The same report can be found in XML format
+[here](https://cqcl.github.io/tket/pytket/test-coverage/cov.xml).
+
 ## API documentation
 
 The `tket` (C++) API documentation (generated with `doxygen`, and still rather
