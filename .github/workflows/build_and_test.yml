@@ -494,11 +494,4 @@ jobs:
     - name: Compare with latest report from develop
       run: |
         wget https://cqcl.github.io/tket/pytket/test-coverage/cov.xml -O oldcov.xml
-        ./.github/workflows/compare-pytket-coverage oldcov.xml pytket-test-coverage/summary.txt
-    - name: Compare with latest report from develop (full suite)
-      if: github.event_name == 'schedule'
-      run: |
-        wget https://cqcl.github.io/tket/tket/test-coverage/summary.txt
-        ./.github/workflows/compare-coverage summary.txt test-coverage/summary.txt
-
-
+        ./.github/workflows/compare-pytket-coverage oldcov.xml pytket-test-coverage/cov.xml
