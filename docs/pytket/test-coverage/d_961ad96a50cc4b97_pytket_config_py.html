@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Coverage for /home/runner/work/tket/tket/pytket/pytket/config/pytket_config.py: 93%</title>
+    <title>Coverage for /home/runner/work/tket/tket/pytket/pytket/config/pytket_config.py: 91%</title>
     <link rel="icon" sizes="32x32" href="favicon_32.png">
     <link rel="stylesheet" href="style.css" type="text/css">
     <script type="text/javascript" src="coverage_html.js" defer></script>
@@ -12,7 +12,7 @@
     <div class="content">
         <h1>
             <span class="text">Coverage for </span><b>/home/runner/work/tket/tket/pytket/pytket/config/pytket_config.py</b>:
-            <span class="pc_cov">93%</span>
+            <span class="pc_cov">91%</span>
         </h1>
         <aside id="help_panel_wrapper">
             <input id="help_panel_state" type="checkbox">
@@ -26,6 +26,7 @@
                         <kbd>r</kbd>
                         <kbd>m</kbd>
                         <kbd>x</kbd>
+                        <kbd>p</kbd>
                         &nbsp; toggle line displays
                     </p>
                     <p>
@@ -58,6 +59,7 @@
             <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">53<span class="text"> run</span></button>
             <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">4<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
+            <button type="button" class="par run show_par button_toggle_par" value="par" data-shortcut="p" title="Toggle lines partially run">2<span class="text"> partial</span></button>
         </h2>
         <p class="text">
             <a id="prevFileLink" class="nav" href="d_961ad96a50cc4b97___init___py.html">&#xab; prev</a> &nbsp; &nbsp;
@@ -65,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="d_f7c56acc48555b1e___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io">coverage.py v6.4.1</a>,
-            created at 2022-06-22 10:48 +0000
+            created at 2022-06-22 11:32 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -106,7 +108,7 @@
     <p class="pln"><span class="n"><a id="t24" href="#t24">24</a></span><span class="t">    <span class="str">"""Get a path to the config file on this machine."""</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t25" href="#t25">25</a></span><span class="t">    <span class="nam">config_dir</span><span class="op">:</span> <span class="nam">Path</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t26" href="#t26">26</a></span><span class="t">    <span class="nam">xdg_conifg_dir</span> <span class="op">=</span> <span class="nam">os</span><span class="op">.</span><span class="nam">environ</span><span class="op">.</span><span class="nam">get</span><span class="op">(</span><span class="str">"XDG_CONFIG_HOME"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t27" href="#t27">27</a></span><span class="t">    <span class="key">if</span> <span class="nam">xdg_conifg_dir</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="par run show_par"><span class="n"><a id="t27" href="#t27">27</a></span><span class="t">    <span class="key">if</span> <span class="nam">xdg_conifg_dir</span> <span class="key">is</span> <span class="key">None</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">27&#x202F;&#x219B;&#x202F;28</span><span class="annotate long">line 27 didn't jump to line 28, because the condition on line 27 was never true</span></span></p>
     <p class="mis show_mis"><span class="n"><a id="t28" href="#t28">28</a></span><span class="t">        <span class="nam">config_dir</span> <span class="op">=</span> <span class="nam">Path</span><span class="op">.</span><span class="nam">home</span><span class="op">(</span><span class="op">)</span> <span class="op">/</span> <span class="str">".config"</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t29" href="#t29">29</a></span><span class="t">    <span class="key">else</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t30" href="#t30">30</a></span><span class="t">        <span class="nam">config_dir</span> <span class="op">=</span> <span class="nam">Path</span><span class="op">(</span><span class="nam">xdg_conifg_dir</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
@@ -190,7 +192,7 @@
     <p class="run"><span class="n"><a id="t108" href="#t108">108</a></span><span class="t">    <span class="op">@</span><span class="nam">classmethod</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t109" href="#t109">109</a></span><span class="t">    <span class="key">def</span> <span class="nam">from_pytketconfig</span><span class="op">(</span><span class="nam">cls</span><span class="op">:</span> <span class="nam">Type</span><span class="op">[</span><span class="nam">T_ext</span><span class="op">]</span><span class="op">,</span> <span class="nam">p_config</span><span class="op">:</span> <span class="nam">PytketConfig</span><span class="op">)</span> <span class="op">-></span> <span class="nam">T_ext</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t110" href="#t110">110</a></span><span class="t">        <span class="str">"""Build from PytketConfig instance."""</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t111" href="#t111">111</a></span><span class="t">        <span class="key">if</span> <span class="nam">cls</span><span class="op">.</span><span class="nam">ext_dict_key</span> <span class="key">in</span> <span class="nam">p_config</span><span class="op">.</span><span class="nam">extensions</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="par run show_par"><span class="n"><a id="t111" href="#t111">111</a></span><span class="t">        <span class="key">if</span> <span class="nam">cls</span><span class="op">.</span><span class="nam">ext_dict_key</span> <span class="key">in</span> <span class="nam">p_config</span><span class="op">.</span><span class="nam">extensions</span><span class="op">:</span>&nbsp;</span><span class="r"><span class="annotate short">111&#x202F;&#x219B;&#x202F;113</span><span class="annotate long">line 111 didn't jump to line 113, because the condition on line 111 was never false</span></span></p>
     <p class="run"><span class="n"><a id="t112" href="#t112">112</a></span><span class="t">            <span class="key">return</span> <span class="nam">cls</span><span class="op">.</span><span class="nam">from_extension_dict</span><span class="op">(</span><span class="nam">p_config</span><span class="op">.</span><span class="nam">extensions</span><span class="op">[</span><span class="nam">cls</span><span class="op">.</span><span class="nam">ext_dict_key</span><span class="op">]</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="mis show_mis"><span class="n"><a id="t113" href="#t113">113</a></span><span class="t">        <span class="key">return</span> <span class="nam">cls</span><span class="op">.</span><span class="nam">from_extension_dict</span><span class="op">(</span><span class="op">{</span><span class="op">}</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t114" href="#t114">114</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -218,7 +220,7 @@
             <a id="nextFileLink" class="nav" href="d_f7c56acc48555b1e___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io">coverage.py v6.4.1</a>,
-            created at 2022-06-22 10:48 +0000
+            created at 2022-06-22 11:32 +0000
         </p>
     </div>
 </footer>
