@@ -403,6 +403,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
           "Deserialization of SquashCustom not yet implemented.");
     } else if (passname == "DelayMeasures") {
       pp = DelayMeasures();
+    } else if (passname == "ZZPhaseToRz") {
+      pp = ZZPhaseToRz();
     } else if (passname == "RemoveDiscarded") {
       pp = RemoveDiscarded();
     } else if (passname == "SimplifyMeasured") {

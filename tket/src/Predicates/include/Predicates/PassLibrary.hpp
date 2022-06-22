@@ -91,4 +91,10 @@ const PassPtr &SimplifyMeasured();
  */
 const PassPtr &NormaliseTK2();
 
+/**
+ * @brief Converts ZZPhase with angle 1 or -1 to two Rz(1) gates.
+ * @return compilation pass to perform this transformation
+ */
+const PassPtr &ZZPhaseToRz();
+
 }  // namespace tket
