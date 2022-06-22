@@ -95,7 +95,7 @@ static void run_reduction(
 // Reduce the fixed swap sequences, with edge set implicitly defined
 // by the swaps themselves.
 // This long test take ~5 seconds on a 2021 Windows laptop.
-SCENARIO("Fixed swap sequences reduction - long test", "[.long]") {
+SCENARIO("Fixed swap sequences reduction - long test") {
   vector<std::string> expected_messages{
       "[n=0, Full tokens: init segm optim? true]\n"
       "[478 equal probs (17115); 2 reduced probs (25 vs 29)]\n"
@@ -197,7 +197,7 @@ static void run_complete_problems(
 // The actual problem input data: the graph may have extra edges
 // not present in the returned solution.
 // The long tests take ~10 seconds on a 2021 Windows laptop.
-SCENARIO("Fixed complete problems - long test", "[.long]") {
+SCENARIO("Fixed complete problems - long test") {
   vector<std::string> expected_messages{
       "[n=0, Small: init segm optim? false]\n"
       "[249 equal probs (1353); 29 reduced probs (163 vs 204)]\n"
