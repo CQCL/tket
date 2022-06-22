@@ -116,7 +116,7 @@ jobs:
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-      pytest --ignore=simulator/ --doctest-modules --cov=../pytket --cov-report=html --cov-report=xml:htmlcov/cov.xml
+        pytest --ignore=simulator/ --doctest-modules --cov=../pytket --cov-report=html --cov-report=xml:htmlcov/cov.xml
     - name: Set up Python 3.10
       if: github.event_name == 'schedule'
       uses: actions/setup-python@v3
