@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">98.0%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>7</td>
+      <td>7</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>36</td>
       <td>64</td>
@@ -52,10 +59,102 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l53">tket::graphs::GraphColouringResult::GraphColouringResult()</a>
+      </td>
+      <td>
+        <a href="#l53">53</a>
+      </td>
+      <td>
+        <a href="#l53"> called 16990 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l55">tket::graphs::GraphColouringResult::GraphColouringResult(std::vector&lt;unsigned long, std::allocator&lt;unsigned long&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l55">55</a>
+      </td>
+      <td>
+        <a href="#l55"> called 174 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l41">tket::graphs::GraphColouringResult::to_string[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l41">41</a>
+      </td>
+      <td>
+        <a href="#l41"> called 30544 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l126">tket::graphs::GraphColouringRoutines::get_colouring(tket::graphs::AdjacencyData const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l126">126</a>
+      </td>
+      <td>
+        <a href="#l126"> called 16983 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l156">tket::graphs::GraphColouringRoutines::get_colouring(tket::graphs::AdjacencyData const&amp;)::{lambda(unsigned long, unsigned long)#1}::operator()(unsigned long, unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l156">156</a>
+      </td>
+      <td>
+        <a href="#l156"> called 1039153 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l111">tket::graphs::check_final_colouring(tket::graphs::GraphColouringResult&amp;)</a>
+      </td>
+      <td>
+        <a href="#l111">111</a>
+      </td>
+      <td>
+        <a href="#l111"> called 16983 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l63">tket::graphs::colour_single_component(tket::graphs::AdjacencyData const&amp;, std::vector&lt;std::set&lt;unsigned long, std::less&lt;unsigned long&gt;, std::allocator&lt;unsigned long&gt; &gt;, std::allocator&lt;std::set&lt;unsigned long, std::less&lt;unsigned long&gt;, std::allocator&lt;unsigned long&gt; &gt; &gt; &gt; const&amp;, std::vector&lt;std::set&lt;unsigned long, std::less&lt;unsigned long&gt;, std::allocator&lt;unsigned long&gt; &gt;, std::allocator&lt;std::set&lt;unsigned long, std::less&lt;unsigned long&gt;, std::allocator&lt;unsigned long&gt; &gt; &gt; &gt; const&amp;, unsigned long, tket::graphs::GraphColouringResult&amp;)</a>
+      </td>
+      <td>
+        <a href="#l63">63</a>
+      </td>
+      <td>
+        <a href="#l63"> called 302476 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -239,7 +338,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;tkassert/Assert.hpp&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -247,7 +346,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;AdjacencyData.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -255,7 +354,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;BruteForceColouring.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;AdjacencyData.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -263,7 +362,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;ColouringPriority.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;BruteForceColouring.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -271,7 +370,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;GraphRoutines.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;ColouringPriority.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -279,7 +378,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;LargeCliquesResult.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;GraphRoutines.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -287,7 +386,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Assert.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;LargeCliquesResult.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -1769,11 +1868,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

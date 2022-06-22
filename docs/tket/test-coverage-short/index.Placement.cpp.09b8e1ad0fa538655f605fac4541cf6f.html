@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-medium">89.0%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>19</td>
+      <td>21</td>
+      <td class="coverage-high">90.5%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>146</td>
       <td>298</td>
@@ -52,10 +59,256 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l121">auto tket::fill_partial_mapping(std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;, std::map&lt;tket::Qubit, tket::Node, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Node&gt; &gt; &gt;&amp;)::{lambda(auto:1)#1}::operator()&lt;std::pair&lt;tket::Qubit const, tket::Node&gt; &gt;(std::pair&lt;tket::Qubit const, tket::Node&gt;) const</a>
+      </td>
+      <td>
+        <a href="#l121">121</a>
+      </td>
+      <td>
+        <a href="#l121"> called 3595 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l222">tket::GraphPlacement::get_all_placement_maps(tket::Circuit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l222">222</a>
+      </td>
+      <td>
+        <a href="#l222"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l212">tket::GraphPlacement::get_placement_map(tket::Circuit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l212">212</a>
+      </td>
+      <td>
+        <a href="#l212"> called 30 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l201">tket::LinePlacement::get_all_placement_maps(tket::Circuit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l201">201</a>
+      </td>
+      <td>
+        <a href="#l201"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l197">tket::LinePlacement::get_placement_map(tket::Circuit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l197">197</a>
+      </td>
+      <td>
+        <a href="#l197"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l162">tket::NaivePlacement::get_all_placement_maps(tket::Circuit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l162">162</a>
+      </td>
+      <td>
+        <a href="#l162"> called 26 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l158">tket::NaivePlacement::get_placement_map(tket::Circuit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l158">158</a>
+      </td>
+      <td>
+        <a href="#l158"> called 26 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l243">tket::NoiseAwarePlacement::get_all_placement_maps(tket::Circuit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l243">243</a>
+      </td>
+      <td>
+        <a href="#l243"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l238">tket::NoiseAwarePlacement::get_placement_map(tket::Circuit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l238">238</a>
+      </td>
+      <td>
+        <a href="#l238"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l153">tket::Placement::get_all_placement_maps(tket::Circuit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l153">153</a>
+      </td>
+      <td>
+        <a href="#l153"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l147">tket::Placement::get_placement_map(tket::Circuit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l147">147</a>
+      </td>
+      <td>
+        <a href="#l147"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l131">tket::Placement::place(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;) const</a>
+      </td>
+      <td>
+        <a href="#l131">131</a>
+      </td>
+      <td>
+        <a href="#l131"> called 68 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l137">tket::Placement::place_with_map(tket::Circuit&amp;, std::map&lt;tket::Qubit, tket::Node, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Node&gt; &gt; &gt;&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;)</a>
+      </td>
+      <td>
+        <a href="#l137">137</a>
+      </td>
+      <td>
+        <a href="#l137"> called 69 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l103">tket::Placement::unplaced_reg[abi:cxx11]()</a>
+      </td>
+      <td>
+        <a href="#l103">103</a>
+      </td>
+      <td>
+        <a href="#l103"> called 2338 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l26">tket::PlacementConfig::PlacementConfig(unsigned int, unsigned int, unsigned int, unsigned int, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l26">26</a>
+      </td>
+      <td>
+        <a href="#l26"> called 59 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l36">tket::PlacementConfig::operator==(tket::PlacementConfig const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l36">36</a>
+      </td>
+      <td>
+        <a href="#l36"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l109">tket::fill_partial_mapping(std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;, std::map&lt;tket::Qubit, tket::Node, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Node&gt; &gt; &gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l109">109</a>
+      </td>
+      <td>
+        <a href="#l109"> called 176 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l65">tket::from_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, std::shared_ptr&lt;tket::Placement&gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l65">65</a>
+      </td>
+      <td>
+        <a href="#l65"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l94">tket::from_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, tket::PlacementConfig&amp;)</a>
+      </td>
+      <td>
+        <a href="#l94">94</a>
+      </td>
+      <td>
+        <a href="#l94"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l44">tket::to_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, std::shared_ptr&lt;tket::Placement&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l44">44</a>
+      </td>
+      <td>
+        <a href="#l44"> called 49 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l86">tket::to_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, tket::PlacementConfig const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l86">86</a>
+      </td>
+      <td>
+        <a href="#l86"> called 48 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -2820,11 +3073,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

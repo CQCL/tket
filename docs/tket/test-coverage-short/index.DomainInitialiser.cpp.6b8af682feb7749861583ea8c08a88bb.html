@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">92.3%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>4</td>
+      <td>4</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>47</td>
       <td>66</td>
@@ -52,10 +59,69 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l44">tket::WeightedSubgraphMonomorphism::DomainInitialiser::degree_sequence_initialisation(std::vector&lt;std::set&lt;unsigned long, std::less&lt;unsigned long&gt;, std::allocator&lt;unsigned long&gt; &gt;, std::allocator&lt;std::set&lt;unsigned long, std::less&lt;unsigned long&gt;, std::allocator&lt;unsigned long&gt; &gt; &gt; &gt;&amp;, tket::WeightedSubgraphMonomorphism::NeighboursData const&amp;, tket::WeightedSubgraphMonomorphism::NeighboursData const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l44">44</a>
+      </td>
+      <td>
+        <a href="#l44"> called 1539 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l72">tket::WeightedSubgraphMonomorphism::DomainInitialiser::degree_sequence_initialisation(std::vector&lt;std::set&lt;unsigned long, std::less&lt;unsigned long&gt;, std::allocator&lt;unsigned long&gt; &gt;, std::allocator&lt;std::set&lt;unsigned long, std::less&lt;unsigned long&gt;, std::allocator&lt;unsigned long&gt; &gt; &gt; &gt;&amp;, tket::WeightedSubgraphMonomorphism::NeighboursData const&amp;, tket::WeightedSubgraphMonomorphism::NeighboursData const&amp;)::{lambda(std::pair&lt;unsigned long, std::vector&lt;unsigned long, std::allocator&lt;unsigned long&gt; &gt; &gt; const&amp;, std::pair&lt;unsigned long, std::vector&lt;unsigned long, std::allocator&lt;unsigned long&gt; &gt; &gt; const&amp;)#1}::operator()(std::pair&lt;unsigned long, std::vector&lt;unsigned long, std::allocator&lt;unsigned long&gt; &gt; &gt; const&amp;, std::pair&lt;unsigned long, std::vector&lt;unsigned long, std::allocator&lt;unsigned long&gt; &gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l72">72</a>
+      </td>
+      <td>
+        <a href="#l72"> called 106398 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">tket::WeightedSubgraphMonomorphism::DomainInitialiser::distance_counts_reduction(std::vector&lt;std::set&lt;unsigned long, std::less&lt;unsigned long&gt;, std::allocator&lt;unsigned long&gt; &gt;, std::allocator&lt;std::set&lt;unsigned long, std::less&lt;unsigned long&gt;, std::allocator&lt;unsigned long&gt; &gt; &gt; &gt;&amp;, tket::WeightedSubgraphMonomorphism::NearNeighboursData&amp;, tket::WeightedSubgraphMonomorphism::NearNeighboursData&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> called 1286 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l29">tket::WeightedSubgraphMonomorphism::DomainInitialiser::full_initialisation(std::vector&lt;std::set&lt;unsigned long, std::less&lt;unsigned long&gt;, std::allocator&lt;unsigned long&gt; &gt;, std::allocator&lt;std::set&lt;unsigned long, std::less&lt;unsigned long&gt;, std::allocator&lt;unsigned long&gt; &gt; &gt; &gt;&amp;, tket::WeightedSubgraphMonomorphism::NeighboursData const&amp;, tket::WeightedSubgraphMonomorphism::NearNeighboursData&amp;, tket::WeightedSubgraphMonomorphism::NeighboursData const&amp;, tket::WeightedSubgraphMonomorphism::NearNeighboursData&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l29">29</a>
+      </td>
+      <td>
+        <a href="#l29"> called 1539 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -207,7 +273,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;tkassert/Assert.hpp&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -215,7 +281,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Assert.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -1504,11 +1570,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

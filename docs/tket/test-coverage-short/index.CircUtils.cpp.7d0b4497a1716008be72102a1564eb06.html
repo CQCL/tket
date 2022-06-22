@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">92.1%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>15</td>
+      <td>15</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>731</td>
       <td>1408</td>
@@ -52,10 +59,190 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l584">tket::CnU1(unsigned int, SymEngine::Expression)</a>
+      </td>
+      <td>
+        <a href="#l584">584</a>
+      </td>
+      <td>
+        <a href="#l584"> called 41 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l246">tket::decompose_2cx_DV(Eigen::Matrix&lt;std::complex&lt;double&gt;, 4, 4, 0, 4, 4&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l246">246</a>
+      </td>
+      <td>
+        <a href="#l246"> called 233 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l239">tket::decompose_2cx_VD(Eigen::Matrix&lt;std::complex&lt;double&gt;, 4, 4, 0, 4, 4&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l239">239</a>
+      </td>
+      <td>
+        <a href="#l239"> called 125 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l188">tket::decompose_VD(Eigen::Matrix&lt;std::complex&lt;double&gt;, 4, 4, 0, 4, 4&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l188">188</a>
+      </td>
+      <td>
+        <a href="#l188"> called 358 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l35">tket::get_matrix(tket::Circuit const&amp;, void* const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l35">35</a>
+      </td>
+      <td>
+        <a href="#l35"> called 211 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l63">tket::get_matrix_from_2qb_circ(tket::Circuit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l63">63</a>
+      </td>
+      <td>
+        <a href="#l63"> called 1539 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l47">tket::get_matrix_from_circ(tket::Circuit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l47">47</a>
+      </td>
+      <td>
+        <a href="#l47"> called 131 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l342">tket::pauli_gadget(std::vector&lt;tket::Pauli, std::allocator&lt;tket::Pauli&gt; &gt; const&amp;, SymEngine::Expression const&amp;, tket::CXConfigType)</a>
+      </td>
+      <td>
+        <a href="#l342">342</a>
+      </td>
+      <td>
+        <a href="#l342"> called 568 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l254">tket::phase_gadget(unsigned int, SymEngine::Expression const&amp;, tket::CXConfigType)</a>
+      </td>
+      <td>
+        <a href="#l254">254</a>
+      </td>
+      <td>
+        <a href="#l254"> called 586 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l389">tket::replace_CX_with_TK2(tket::Circuit&amp;)</a>
+      </td>
+      <td>
+        <a href="#l389">389</a>
+      </td>
+      <td>
+        <a href="#l389"> called 7 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l223">tket::replace_TK2_2CX(tket::Circuit&amp;)</a>
+      </td>
+      <td>
+        <a href="#l223">223</a>
+      </td>
+      <td>
+        <a href="#l223"> called 358 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l145">tket::two_qubit_canonical(Eigen::Matrix&lt;std::complex&lt;double&gt;, 4, 4, 0, 4, 4&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l145">145</a>
+      </td>
+      <td>
+        <a href="#l145"> called 487 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l494">tket::with_CX(std::shared_ptr&lt;tket::Gate const&gt;)</a>
+      </td>
+      <td>
+        <a href="#l494">494</a>
+      </td>
+      <td>
+        <a href="#l494"> called 495 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l394">tket::with_TK2(std::shared_ptr&lt;tket::Gate const&gt;)</a>
+      </td>
+      <td>
+        <a href="#l394">394</a>
+      </td>
+      <td>
+        <a href="#l394"> called 97 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l603">tket::with_controls(tket::Circuit const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l603">603</a>
+      </td>
+      <td>
+        <a href="#l603"> called 19 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -8625,11 +8812,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

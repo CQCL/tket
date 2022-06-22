@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">94.4%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>21</td>
+      <td>21</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>473</td>
       <td>874</td>
@@ -52,10 +59,256 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l77">tket::MappingFrontier::MappingFrontier(tket::Circuit&amp;)</a>
+      </td>
+      <td>
+        <a href="#l77">77</a>
+      </td>
+      <td>
+        <a href="#l77"> called 112 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">tket::MappingFrontier::MappingFrontier(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> called 39 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l138">tket::MappingFrontier::MappingFrontier(tket::MappingFrontier const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l138">138</a>
+      </td>
+      <td>
+        <a href="#l138"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l698">tket::MappingFrontier::add_ancilla(tket::UnitID const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l698">698</a>
+      </td>
+      <td>
+        <a href="#l698"> called 15 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l661">tket::MappingFrontier::add_bridge(tket::UnitID const&amp;, tket::UnitID const&amp;, tket::UnitID const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l661">661</a>
+      </td>
+      <td>
+        <a href="#l661"> called 290 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l570">tket::MappingFrontier::add_swap(tket::UnitID const&amp;, tket::UnitID const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l570">570</a>
+      </td>
+      <td>
+        <a href="#l570"> called 1958 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l258">tket::MappingFrontier::advance_frontier_boundary(std::shared_ptr&lt;tket::Architecture&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l258">258</a>
+      </td>
+      <td>
+        <a href="#l258"> called 2476 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l160">tket::MappingFrontier::advance_next_2qb_slice(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l160">160</a>
+      </td>
+      <td>
+        <a href="#l160"> called 9609 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l545">tket::MappingFrontier::get_default_to_linear_boundary_unit_map() const</a>
+      </td>
+      <td>
+        <a href="#l545">545</a>
+      </td>
+      <td>
+        <a href="#l545"> called 9 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l428">tket::MappingFrontier::get_frontier_subcircuit(unsigned int, unsigned int) const</a>
+      </td>
+      <td>
+        <a href="#l428">428</a>
+      </td>
+      <td>
+        <a href="#l428"> called 23 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l456">tket::MappingFrontier::get_qubit_from_circuit_uid(tket::UnitID const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l456">456</a>
+      </td>
+      <td>
+        <a href="#l456"> called 207 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l714">tket::MappingFrontier::merge_ancilla(tket::UnitID const&amp;, tket::UnitID const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l714">714</a>
+      </td>
+      <td>
+        <a href="#l714"> called 7 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l505">tket::MappingFrontier::permute_subcircuit_q_out_hole(std::map&lt;tket::UnitID, tket::UnitID, std::less&lt;tket::UnitID&gt;, std::allocator&lt;std::pair&lt;tket::UnitID const, tket::UnitID&gt; &gt; &gt; const&amp;, tket::Subcircuit&amp;)</a>
+      </td>
+      <td>
+        <a href="#l505">505</a>
+      </td>
+      <td>
+        <a href="#l505"> called 9 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l556">tket::MappingFrontier::set_linear_boundary(boost::multi_index::multi_index_container&lt;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt;, boost::multi_index::indexed_by&lt;boost::multi_index::ordered_unique&lt;boost::multi_index::tag&lt;tket::TagKey, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt;, boost::multi_index::member&lt;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt;, tket::UnitID, &amp;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt;::first&gt;, mpl_::na&gt;, boost::multi_index::ordered_unique&lt;boost::multi_index::tag&lt;tket::TagValue, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt;, boost::multi_index::member&lt;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt;, std::pair&lt;void*, unsigned int&gt;, &amp;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt;::second&gt;, mpl_::na&gt;, boost::multi_index::sequenced&lt;boost::multi_index::tag&lt;tket::TagSeq, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt; &gt;, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt;, std::allocator&lt;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l556">556</a>
+      </td>
+      <td>
+        <a href="#l556"> called 4452 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l464">tket::MappingFrontier::update_bimaps(tket::UnitID, tket::UnitID)</a>
+      </td>
+      <td>
+        <a href="#l464">464</a>
+      </td>
+      <td>
+        <a href="#l464"> called 207 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l479">tket::MappingFrontier::update_linear_boundary_uids(std::map&lt;tket::UnitID, tket::UnitID, std::less&lt;tket::UnitID&gt;, std::allocator&lt;std::pair&lt;tket::UnitID const, tket::UnitID&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l479">479</a>
+      </td>
+      <td>
+        <a href="#l479"> called 153 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l789">tket::MappingFrontier::valid_boundary_operation(std::shared_ptr&lt;tket::Architecture&gt; const&amp;, std::shared_ptr&lt;tket::Op const&gt; const&amp;, std::vector&lt;tket::Node, std::allocator&lt;tket::Node&gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l789">789</a>
+      </td>
+      <td>
+        <a href="#l789"> called 8460 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l420">tket::convert_u_frontier_to_edges(boost::multi_index::multi_index_container&lt;std::pair&lt;tket::UnitID, boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt;, boost::multi_index::indexed_by&lt;boost::multi_index::ordered_unique&lt;boost::multi_index::tag&lt;tket::TagKey, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt;, boost::multi_index::member&lt;std::pair&lt;tket::UnitID, boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt;, tket::UnitID, &amp;std::pair&lt;tket::UnitID, boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt;::first&gt;, mpl_::na&gt;, boost::multi_index::sequenced&lt;boost::multi_index::tag&lt;tket::TagSeq, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt; &gt;, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt;, std::allocator&lt;std::pair&lt;tket::UnitID, boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l420">420</a>
+      </td>
+      <td>
+        <a href="#l420"> called 73 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l58">tket::frontier_convert_vertport_to_edge(tket::Circuit const&amp;, std::shared_ptr&lt;boost::multi_index::multi_index_container&lt;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt;, boost::multi_index::indexed_by&lt;boost::multi_index::ordered_unique&lt;boost::multi_index::tag&lt;tket::TagKey, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt;, boost::multi_index::member&lt;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt;, tket::UnitID, &amp;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt;::first&gt;, mpl_::na&gt;, boost::multi_index::ordered_unique&lt;boost::multi_index::tag&lt;tket::TagValue, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt;, boost::multi_index::member&lt;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt;, std::pair&lt;void*, unsigned int&gt;, &amp;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt;::second&gt;, mpl_::na&gt;, boost::multi_index::sequenced&lt;boost::multi_index::tag&lt;tket::TagSeq, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt; &gt;, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt;, std::allocator&lt;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt; &gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l58">58</a>
+      </td>
+      <td>
+        <a href="#l58"> called 15300 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l39">tket::get_bit_from_bool_frontier(std::shared_ptr&lt;boost::multi_index::multi_index_container&lt;std::pair&lt;tket::Bit, std::vector&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, std::allocator&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt; &gt; &gt;, boost::multi_index::indexed_by&lt;boost::multi_index::ordered_unique&lt;boost::multi_index::tag&lt;tket::TagKey, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt;, boost::multi_index::member&lt;std::pair&lt;tket::Bit, std::vector&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, std::allocator&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt; &gt; &gt;, tket::Bit, &amp;std::pair&lt;tket::Bit, std::vector&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, std::allocator&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt; &gt; &gt;::first&gt;, mpl_::na&gt;, boost::multi_index::sequenced&lt;boost::multi_index::tag&lt;tket::TagSeq, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt; &gt;, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt;, std::allocator&lt;std::pair&lt;tket::Bit, std::vector&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, std::allocator&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt; &gt; &gt; &gt; &gt; &gt; const&amp;, std::vector&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, std::allocator&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l39">39</a>
+      </td>
+      <td>
+        <a href="#l39"> called 32 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l26">tket::get_unitid_from_unit_frontier(std::shared_ptr&lt;boost::multi_index::multi_index_container&lt;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt;, boost::multi_index::indexed_by&lt;boost::multi_index::ordered_unique&lt;boost::multi_index::tag&lt;tket::TagKey, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt;, boost::multi_index::member&lt;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt;, tket::UnitID, &amp;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt;::first&gt;, mpl_::na&gt;, boost::multi_index::ordered_unique&lt;boost::multi_index::tag&lt;tket::TagValue, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt;, boost::multi_index::member&lt;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt;, std::pair&lt;void*, unsigned int&gt;, &amp;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt;::second&gt;, mpl_::na&gt;, boost::multi_index::sequenced&lt;boost::multi_index::tag&lt;tket::TagSeq, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt; &gt;, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt;, std::allocator&lt;std::pair&lt;tket::UnitID, std::pair&lt;void*, unsigned int&gt; &gt; &gt; &gt; &gt; const&amp;, std::pair&lt;void*, unsigned int&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l26">26</a>
+      </td>
+      <td>
+        <a href="#l26"> called 19852 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -9117,11 +9370,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

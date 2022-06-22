@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">94.7%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>16</td>
+      <td>17</td>
+      <td class="coverage-high">94.1%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>293</td>
       <td>480</td>
@@ -52,10 +59,212 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l37">tket::Transforms::PQPSquasher::PQPSquasher(tket::OpType, tket::OpType, bool, bool)</a>
+      </td>
+      <td>
+        <a href="#l37">37</a>
+      </td>
+      <td>
+        <a href="#l37"> called 1792 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l54">tket::Transforms::PQPSquasher::accepts(std::shared_ptr&lt;tket::Gate const&gt;) const</a>
+      </td>
+      <td>
+        <a href="#l54">54</a>
+      </td>
+      <td>
+        <a href="#l54"> called 85803 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l59">tket::Transforms::PQPSquasher::append(std::shared_ptr&lt;tket::Gate const&gt;)</a>
+      </td>
+      <td>
+        <a href="#l59">59</a>
+      </td>
+      <td>
+        <a href="#l59"> called 42848 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l163">tket::Transforms::PQPSquasher::clear()</a>
+      </td>
+      <td>
+        <a href="#l163">163</a>
+      </td>
+      <td>
+        <a href="#l163"> called 19991 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l165">tket::Transforms::PQPSquasher::clone() const</a>
+      </td>
+      <td>
+        <a href="#l165">165</a>
+      </td>
+      <td>
+        <a href="#l165"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l66">tket::Transforms::PQPSquasher::flush(std::optional&lt;tket::Pauli&gt;) const</a>
+      </td>
+      <td>
+        <a href="#l66">66</a>
+      </td>
+      <td>
+        <a href="#l66"> called 10354 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l208">tket::Transforms::fixup_angles(SymEngine::Expression&amp;, SymEngine::Expression&amp;, SymEngine::Expression&amp;, bool)</a>
+      </td>
+      <td>
+        <a href="#l208">208</a>
+      </td>
+      <td>
+        <a href="#l208"> called 10354 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l169">tket::Transforms::merge_rotations(tket::OpType, std::vector&lt;std::shared_ptr&lt;tket::Gate const&gt;, std::allocator&lt;std::shared_ptr&lt;tket::Gate const&gt; &gt; &gt; const&amp;, __gnu_cxx::__normal_iterator&lt;std::shared_ptr&lt;tket::Gate const&gt; const*, std::vector&lt;std::shared_ptr&lt;tket::Gate const&gt;, std::allocator&lt;std::shared_ptr&lt;tket::Gate const&gt; &gt; &gt; &gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l169">169</a>
+      </td>
+      <td>
+        <a href="#l169"> called 36964 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l191">tket::Transforms::reduce_XZ_chains()</a>
+      </td>
+      <td>
+        <a href="#l191">191</a>
+      </td>
+      <td>
+        <a href="#l191"> called 24 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l192">tket::Transforms::reduce_XZ_chains()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l192">192</a>
+      </td>
+      <td>
+        <a href="#l192"> called 40 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l379">tket::Transforms::redundancy_removal(tket::Circuit&amp;)</a>
+      </td>
+      <td>
+        <a href="#l379">379</a>
+      </td>
+      <td>
+        <a href="#l379"> called 10354 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l261">tket::Transforms::remove_redundancy(tket::Circuit&amp;, void* const&amp;, std::__cxx11::list&lt;void*, std::allocator&lt;void*&gt; &gt;&amp;, std::set&lt;std::pair&lt;unsigned int, void*&gt;, std::less&lt;std::pair&lt;unsigned int, void*&gt; &gt;, std::allocator&lt;std::pair&lt;unsigned int, void*&gt; &gt; &gt;&amp;, std::unordered_map&lt;void*, unsigned int, std::hash&lt;void*&gt;, std::equal_to&lt;void*&gt;, std::allocator&lt;std::pair&lt;void* const, unsigned int&gt; &gt; &gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l261">261</a>
+      </td>
+      <td>
+        <a href="#l261"> called 39068 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l271">tket::Transforms::remove_redundancy(tket::Circuit&amp;, void* const&amp;, std::__cxx11::list&lt;void*, std::allocator&lt;void*&gt; &gt;&amp;, std::set&lt;std::pair&lt;unsigned int, void*&gt;, std::less&lt;std::pair&lt;unsigned int, void*&gt; &gt;, std::allocator&lt;std::pair&lt;unsigned int, void*&gt; &gt; &gt;&amp;, std::unordered_map&lt;void*, unsigned int, std::hash&lt;void*&gt;, std::equal_to&lt;void*&gt;, std::allocator&lt;std::pair&lt;void* const, unsigned int&gt; &gt; &gt;&amp;)::{lambda(void* const&amp;)#1}::operator()(void* const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l271">271</a>
+      </td>
+      <td>
+        <a href="#l271"> called 253 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l197">tket::Transforms::squash_1qb_to_pqp(tket::OpType const&amp;, tket::OpType const&amp;, bool)</a>
+      </td>
+      <td>
+        <a href="#l197">197</a>
+      </td>
+      <td>
+        <a href="#l197"> called 1684 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l199">tket::Transforms::squash_1qb_to_pqp(tket::OpType const&amp;, tket::OpType const&amp;, bool)::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l199">199</a>
+      </td>
+      <td>
+        <a href="#l199"> called 1752 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l202">tket::Transforms::squash_1qb_to_tk1()</a>
+      </td>
+      <td>
+        <a href="#l202">202</a>
+      </td>
+      <td>
+        <a href="#l202"> called 1583 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l184">tket::Transforms::squash_to_pqp(tket::Circuit&amp;, tket::OpType, tket::OpType, bool)</a>
+      </td>
+      <td>
+        <a href="#l184">184</a>
+      </td>
+      <td>
+        <a href="#l184"> called 1792 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -4462,11 +4671,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">92.0%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>17</td>
+      <td>19</td>
+      <td class="coverage-medium">89.5%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>483</td>
       <td>844</td>
@@ -52,10 +59,234 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l303">Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt; tket::load_dynamic_matrix&lt;bool&gt;(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, unsigned long, unsigned long)</a>
+      </td>
+      <td>
+        <a href="#l303">303</a>
+      </td>
+      <td>
+        <a href="#l303"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l352">tket::CircToPhasePolyConversion::CircToPhasePolyConversion(tket::Circuit const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l352">352</a>
+      </td>
+      <td>
+        <a href="#l352"> called 37 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l395">tket::CircToPhasePolyConversion::add_phase_poly_box()</a>
+      </td>
+      <td>
+        <a href="#l395">395</a>
+      </td>
+      <td>
+        <a href="#l395"> called 120 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l447">tket::CircToPhasePolyConversion::convert()</a>
+      </td>
+      <td>
+        <a href="#l447">447</a>
+      </td>
+      <td>
+        <a href="#l447"> called 37 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l657">tket::CircToPhasePolyConversion::get_circuit() const</a>
+      </td>
+      <td>
+        <a href="#l657">657</a>
+      </td>
+      <td>
+        <a href="#l657"> called 37 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l148">tket::PhasePolyBox::PhasePolyBox(tket::Circuit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l148">148</a>
+      </td>
+      <td>
+        <a href="#l148"> called 283 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l283">tket::PhasePolyBox::PhasePolyBox(tket::PhasePolyBox const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l283">283</a>
+      </td>
+      <td>
+        <a href="#l283"> called 132 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l224">tket::PhasePolyBox::PhasePolyBox(unsigned int, boost::bimaps::bimap&lt;tket::Qubit, unsigned int, mpl_::na, mpl_::na, mpl_::na&gt; const&amp;, std::map&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt;, SymEngine::Expression, std::less&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt; &gt;, std::allocator&lt;std::pair&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt; const, SymEngine::Expression&gt; &gt; &gt; const&amp;, Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l224">224</a>
+      </td>
+      <td>
+        <a href="#l224"> called 6 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l249">tket::PhasePolyBox::PhasePolyBox(unsigned int, boost::bimaps::bimap&lt;tket::Qubit, unsigned int, mpl_::na, mpl_::na, mpl_::na&gt; const&amp;, std::map&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt;, SymEngine::Expression, std::less&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt; &gt;, std::allocator&lt;std::pair&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt; const, SymEngine::Expression&gt; &gt; &gt; const&amp;, Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt; const&amp;)::{lambda(bool)#1}::operator()(bool) const</a>
+      </td>
+      <td>
+        <a href="#l249">249</a>
+      </td>
+      <td>
+        <a href="#l249"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l297">tket::PhasePolyBox::free_symbols() const</a>
+      </td>
+      <td>
+        <a href="#l297">297</a>
+      </td>
+      <td>
+        <a href="#l297"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l334">tket::PhasePolyBox::from_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l334">334</a>
+      </td>
+      <td>
+        <a href="#l334"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l271">tket::PhasePolyBox::generate_circuit() const</a>
+      </td>
+      <td>
+        <a href="#l271">271</a>
+      </td>
+      <td>
+        <a href="#l271"> called 194 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l290">tket::PhasePolyBox::symbol_substitution(std::map&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt;, Teuchos::RCP&lt;SymEngine::Basic const&gt;, SymEngine::RCPBasicKeyLess, std::allocator&lt;std::pair&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt; const, Teuchos::RCP&lt;SymEngine::Basic const&gt; &gt; &gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l290">290</a>
+      </td>
+      <td>
+        <a href="#l290"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l316">tket::PhasePolyBox::to_json[abi:cxx11](std::shared_ptr&lt;tket::Op const&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l316">316</a>
+      </td>
+      <td>
+        <a href="#l316"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l42">tket::adjust_vectors(unsigned int, unsigned int, std::__cxx11::list&lt;tket::SynthStruct, std::allocator&lt;tket::SynthStruct&gt; &gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l42">42</a>
+      </td>
+      <td>
+        <a href="#l42"> called 209 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l54">tket::find_best_split(std::__cxx11::list&lt;std::pair&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt;, SymEngine::Expression&gt;, std::allocator&lt;std::pair&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt;, SymEngine::Expression&gt; &gt; &gt; const&amp;, std::set&lt;unsigned int, std::less&lt;unsigned int&gt;, std::allocator&lt;unsigned int&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l54">54</a>
+      </td>
+      <td>
+        <a href="#l54"> called 811 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l61">tket::find_best_split(std::__cxx11::list&lt;std::pair&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt;, SymEngine::Expression&gt;, std::allocator&lt;std::pair&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt;, SymEngine::Expression&gt; &gt; &gt; const&amp;, std::set&lt;unsigned int, std::less&lt;unsigned int&gt;, std::allocator&lt;unsigned int&gt; &gt; const&amp;)::{lambda(std::pair&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt;, SymEngine::Expression&gt; const&amp;)#1}::operator()(std::pair&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt;, SymEngine::Expression&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l61">61</a>
+      </td>
+      <td>
+        <a href="#l61"> called 14686 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l92">tket::gray_synth(unsigned int, std::__cxx11::list&lt;std::pair&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt;, SymEngine::Expression&gt;, std::allocator&lt;std::pair&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt;, SymEngine::Expression&gt; &gt; &gt; const&amp;, Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l92">92</a>
+      </td>
+      <td>
+        <a href="#l92"> called 194 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l76">tket::split(std::__cxx11::list&lt;std::pair&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt;, SymEngine::Expression&gt;, std::allocator&lt;std::pair&lt;std::vector&lt;bool, std::allocator&lt;bool&gt; &gt;, SymEngine::Expression&gt; &gt; &gt;&amp;, int)</a>
+      </td>
+      <td>
+        <a href="#l76">76</a>
+      </td>
+      <td>
+        <a href="#l76"> called 811 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -215,7 +446,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;tklog/TketLog.hpp&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -223,7 +454,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -231,7 +462,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Circuit/Boxes.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -239,7 +470,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Circuit/Circuit.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Circuit/Boxes.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -247,7 +478,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Converters/Gauss.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Circuit/Circuit.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -255,7 +486,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;OpType/OpType.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Converters/Gauss.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -263,7 +494,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Ops/MetaOp.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;OpType/OpType.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -271,7 +502,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Ops/OpJsonFactory.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Ops/MetaOp.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -279,7 +510,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Ops/OpPtr.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Ops/OpJsonFactory.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -287,7 +518,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/GraphHeaders.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Ops/OpPtr.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -295,7 +526,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Json.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/GraphHeaders.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -303,7 +534,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/TketLog.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Json.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -7192,11 +7423,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

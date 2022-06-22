@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-medium">79.3%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>53</td>
+      <td>59</td>
+      <td class="coverage-medium">89.8%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>137</td>
       <td>301</td>
@@ -52,10 +59,674 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l222">tket::zx::BasicGen::BasicGen(tket::zx::ZXType, tket::zx::QuantumType)</a>
+      </td>
+      <td>
+        <a href="#l222">222</a>
+      </td>
+      <td>
+        <a href="#l222"> called 742 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l229">tket::zx::BasicGen::get_qtype() const</a>
+      </td>
+      <td>
+        <a href="#l229">229</a>
+      </td>
+      <td>
+        <a href="#l229"> called 1095 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l237">tket::zx::BasicGen::is_equal(tket::zx::ZXGen const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l237">237</a>
+      </td>
+      <td>
+        <a href="#l237"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l231">tket::zx::BasicGen::valid_edge(std::optional&lt;unsigned int&gt;, tket::zx::QuantumType) const</a>
+      </td>
+      <td>
+        <a href="#l231">231</a>
+      </td>
+      <td>
+        <a href="#l231"> called 1105 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l169">tket::zx::BoundaryGen::BoundaryGen(tket::zx::ZXType, tket::zx::QuantumType)</a>
+      </td>
+      <td>
+        <a href="#l169">169</a>
+      </td>
+      <td>
+        <a href="#l169"> called 358 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l183">tket::zx::BoundaryGen::free_symbols() const</a>
+      </td>
+      <td>
+        <a href="#l183">183</a>
+      </td>
+      <td>
+        <a href="#l183"> called 22 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l190">tket::zx::BoundaryGen::get_name[abi:cxx11](bool) const</a>
+      </td>
+      <td>
+        <a href="#l190">190</a>
+      </td>
+      <td>
+        <a href="#l190"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l176">tket::zx::BoundaryGen::get_qtype() const</a>
+      </td>
+      <td>
+        <a href="#l176">176</a>
+      </td>
+      <td>
+        <a href="#l176"> called 445 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l213">tket::zx::BoundaryGen::is_equal(tket::zx::ZXGen const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l213">213</a>
+      </td>
+      <td>
+        <a href="#l213"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l185">tket::zx::BoundaryGen::symbol_substitution(std::map&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt;, Teuchos::RCP&lt;SymEngine::Basic const&gt;, SymEngine::RCPBasicKeyLess, std::allocator&lt;std::pair&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt; const, Teuchos::RCP&lt;SymEngine::Basic const&gt; &gt; &gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l185">185</a>
+      </td>
+      <td>
+        <a href="#l185"> called 12 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l178">tket::zx::BoundaryGen::valid_edge(std::optional&lt;unsigned int&gt;, tket::zx::QuantumType) const</a>
+      </td>
+      <td>
+        <a href="#l178">178</a>
+      </td>
+      <td>
+        <a href="#l178"> called 239 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l303">tket::zx::CliffordGen::CliffordGen(tket::zx::ZXType, bool, tket::zx::QuantumType)</a>
+      </td>
+      <td>
+        <a href="#l303">303</a>
+      </td>
+      <td>
+        <a href="#l303"> called 80 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l312">tket::zx::CliffordGen::free_symbols() const</a>
+      </td>
+      <td>
+        <a href="#l312">312</a>
+      </td>
+      <td>
+        <a href="#l312"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l319">tket::zx::CliffordGen::get_name[abi:cxx11](bool) const</a>
+      </td>
+      <td>
+        <a href="#l319">319</a>
+      </td>
+      <td>
+        <a href="#l319"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l310">tket::zx::CliffordGen::get_param() const</a>
+      </td>
+      <td>
+        <a href="#l310">310</a>
+      </td>
+      <td>
+        <a href="#l310"> called 173 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l343">tket::zx::CliffordGen::is_equal(tket::zx::ZXGen const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l343">343</a>
+      </td>
+      <td>
+        <a href="#l343"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l314">tket::zx::CliffordGen::symbol_substitution(std::map&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt;, Teuchos::RCP&lt;SymEngine::Basic const&gt;, SymEngine::RCPBasicKeyLess, std::allocator&lt;std::pair&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt; const, Teuchos::RCP&lt;SymEngine::Basic const&gt; &gt; &gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l314">314</a>
+      </td>
+      <td>
+        <a href="#l314"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l363">tket::zx::DirectedGen::DirectedGen(tket::zx::ZXType, tket::zx::QuantumType)</a>
+      </td>
+      <td>
+        <a href="#l363">363</a>
+      </td>
+      <td>
+        <a href="#l363"> called 64 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l377">tket::zx::DirectedGen::free_symbols() const</a>
+      </td>
+      <td>
+        <a href="#l377">377</a>
+      </td>
+      <td>
+        <a href="#l377"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l384">tket::zx::DirectedGen::get_name[abi:cxx11](bool) const</a>
+      </td>
+      <td>
+        <a href="#l384">384</a>
+      </td>
+      <td>
+        <a href="#l384"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l370">tket::zx::DirectedGen::get_qtype() const</a>
+      </td>
+      <td>
+        <a href="#l370">370</a>
+      </td>
+      <td>
+        <a href="#l370"> called 100 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l399">tket::zx::DirectedGen::get_signature() const</a>
+      </td>
+      <td>
+        <a href="#l399">399</a>
+      </td>
+      <td>
+        <a href="#l399"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l392">tket::zx::DirectedGen::is_equal(tket::zx::ZXGen const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l392">392</a>
+      </td>
+      <td>
+        <a href="#l392"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l397">tket::zx::DirectedGen::n_ports() const</a>
+      </td>
+      <td>
+        <a href="#l397">397</a>
+      </td>
+      <td>
+        <a href="#l397"> called 139 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l379">tket::zx::DirectedGen::symbol_substitution(std::map&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt;, Teuchos::RCP&lt;SymEngine::Basic const&gt;, SymEngine::RCPBasicKeyLess, std::allocator&lt;std::pair&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt; const, Teuchos::RCP&lt;SymEngine::Basic const&gt; &gt; &gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l379">379</a>
+      </td>
+      <td>
+        <a href="#l379"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l372">tket::zx::DirectedGen::valid_edge(std::optional&lt;unsigned int&gt;, tket::zx::QuantumType) const</a>
+      </td>
+      <td>
+        <a href="#l372">372</a>
+      </td>
+      <td>
+        <a href="#l372"> called 94 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l245">tket::zx::PhasedGen::PhasedGen(tket::zx::ZXType, SymEngine::Expression const&amp;, tket::zx::QuantumType)</a>
+      </td>
+      <td>
+        <a href="#l245">245</a>
+      </td>
+      <td>
+        <a href="#l245"> called 662 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l254">tket::zx::PhasedGen::free_symbols() const</a>
+      </td>
+      <td>
+        <a href="#l254">254</a>
+      </td>
+      <td>
+        <a href="#l254"> called 14 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l261">tket::zx::PhasedGen::get_name[abi:cxx11](bool) const</a>
+      </td>
+      <td>
+        <a href="#l261">261</a>
+      </td>
+      <td>
+        <a href="#l261"> called 9 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l252">tket::zx::PhasedGen::get_param() const</a>
+      </td>
+      <td>
+        <a href="#l252">252</a>
+      </td>
+      <td>
+        <a href="#l252"> called 339 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l294">tket::zx::PhasedGen::is_equal(tket::zx::ZXGen const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l294">294</a>
+      </td>
+      <td>
+        <a href="#l294"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l256">tket::zx::PhasedGen::symbol_substitution(std::map&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt;, Teuchos::RCP&lt;SymEngine::Basic const&gt;, SymEngine::RCPBasicKeyLess, std::allocator&lt;std::pair&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt; const, Teuchos::RCP&lt;SymEngine::Basic const&gt; &gt; &gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l256">256</a>
+      </td>
+      <td>
+        <a href="#l256"> called 10 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l407">tket::zx::ZXBox::ZXBox(tket::zx::ZXDiagram const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l407">407</a>
+      </td>
+      <td>
+        <a href="#l407"> called 10 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l422">tket::zx::ZXBox::free_symbols() const</a>
+      </td>
+      <td>
+        <a href="#l422">422</a>
+      </td>
+      <td>
+        <a href="#l422"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l411">tket::zx::ZXBox::get_diagram() const</a>
+      </td>
+      <td>
+        <a href="#l411">411</a>
+      </td>
+      <td>
+        <a href="#l411"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l431">tket::zx::ZXBox::get_name[abi:cxx11](bool) const</a>
+      </td>
+      <td>
+        <a href="#l431">431</a>
+      </td>
+      <td>
+        <a href="#l431"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l413">tket::zx::ZXBox::get_qtype() const</a>
+      </td>
+      <td>
+        <a href="#l413">413</a>
+      </td>
+      <td>
+        <a href="#l413"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l441">tket::zx::ZXBox::get_signature() const</a>
+      </td>
+      <td>
+        <a href="#l441">441</a>
+      </td>
+      <td>
+        <a href="#l441"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l433">tket::zx::ZXBox::is_equal(tket::zx::ZXGen const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l433">433</a>
+      </td>
+      <td>
+        <a href="#l433"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l439">tket::zx::ZXBox::n_ports() const</a>
+      </td>
+      <td>
+        <a href="#l439">439</a>
+      </td>
+      <td>
+        <a href="#l439"> called 10 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l424">tket::zx::ZXBox::symbol_substitution(std::map&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt;, Teuchos::RCP&lt;SymEngine::Basic const&gt;, SymEngine::RCPBasicKeyLess, std::allocator&lt;std::pair&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt; const, Teuchos::RCP&lt;SymEngine::Basic const&gt; &gt; &gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l424">424</a>
+      </td>
+      <td>
+        <a href="#l424"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l415">tket::zx::ZXBox::valid_edge(std::optional&lt;unsigned int&gt;, tket::zx::QuantumType) const</a>
+      </td>
+      <td>
+        <a href="#l415">415</a>
+      </td>
+      <td>
+        <a href="#l415"> called 22 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l353">tket::zx::ZXDirected::ZXDirected(tket::zx::ZXType)</a>
+      </td>
+      <td>
+        <a href="#l353">353</a>
+      </td>
+      <td>
+        <a href="#l353"> called 74 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l79">tket::zx::ZXGen::ZXGen(tket::zx::ZXType)</a>
+      </td>
+      <td>
+        <a href="#l79">79</a>
+      </td>
+      <td>
+        <a href="#l79"> called 1174 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l128">tket::zx::ZXGen::create_gen(tket::zx::ZXType, SymEngine::Expression const&amp;, tket::zx::QuantumType)</a>
+      </td>
+      <td>
+        <a href="#l128">128</a>
+      </td>
+      <td>
+        <a href="#l128"> called 423 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l148">tket::zx::ZXGen::create_gen(tket::zx::ZXType, bool, tket::zx::QuantumType)</a>
+      </td>
+      <td>
+        <a href="#l148">148</a>
+      </td>
+      <td>
+        <a href="#l148"> called 9 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l91">tket::zx::ZXGen::create_gen(tket::zx::ZXType, tket::zx::QuantumType)</a>
+      </td>
+      <td>
+        <a href="#l91">91</a>
+      </td>
+      <td>
+        <a href="#l91"> called 625 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l81">tket::zx::ZXGen::get_type() const</a>
+      </td>
+      <td>
+        <a href="#l81">81</a>
+      </td>
+      <td>
+        <a href="#l81"> called 14111 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l87">tket::zx::ZXGen::is_equal(tket::zx::ZXGen const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l87">87</a>
+      </td>
+      <td>
+        <a href="#l87"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l83">tket::zx::ZXGen::operator==(tket::zx::ZXGen const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l83">83</a>
+      </td>
+      <td>
+        <a href="#l83"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l89">tket::zx::ZXGen::~ZXGen()</a>
+      </td>
+      <td>
+        <a href="#l89">89</a>
+      </td>
+      <td>
+        <a href="#l89"> called 1197 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l30">tket::zx::find_in_set(tket::zx::ZXType const&amp;, std::unordered_set&lt;tket::zx::ZXType, std::hash&lt;tket::zx::ZXType&gt;, std::equal_to&lt;tket::zx::ZXType&gt;, std::allocator&lt;tket::zx::ZXType&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l30">30</a>
+      </td>
+      <td>
+        <a href="#l30"> called 6868 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l70">tket::zx::is_Clifford_gen_type(tket::zx::ZXType)</a>
+      </td>
+      <td>
+        <a href="#l70">70</a>
+      </td>
+      <td>
+        <a href="#l70"> called 80 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l57">tket::zx::is_MBQC_type(tket::zx::ZXType)</a>
+      </td>
+      <td>
+        <a href="#l57">57</a>
+      </td>
+      <td>
+        <a href="#l57"> called 611 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l40">tket::zx::is_basic_gen_type(tket::zx::ZXType)</a>
+      </td>
+      <td>
+        <a href="#l40">40</a>
+      </td>
+      <td>
+        <a href="#l40"> called 742 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l34">tket::zx::is_boundary_type(tket::zx::ZXType)</a>
+      </td>
+      <td>
+        <a href="#l34">34</a>
+      </td>
+      <td>
+        <a href="#l34"> called 3391 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l52">tket::zx::is_directed_type(tket::zx::ZXType)</a>
+      </td>
+      <td>
+        <a href="#l52">52</a>
+      </td>
+      <td>
+        <a href="#l52"> called 811 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l63">tket::zx::is_phase_type(tket::zx::ZXType)</a>
+      </td>
+      <td>
+        <a href="#l63">63</a>
+      </td>
+      <td>
+        <a href="#l63"> called 666 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l47">tket::zx::is_spider_type(tket::zx::ZXType)</a>
+      </td>
+      <td>
+        <a href="#l47">47</a>
+      </td>
+      <td>
+        <a href="#l47"> called 567 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -207,7 +878,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;tkassert/Assert.hpp&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -215,7 +886,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Assert.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -808,7 +1479,7 @@
       <td class="lineno"><a id="l81" href="#l81">81</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">14126</td>
+      <td class="linecount coveredLine">14111</td>
       <td class="src coveredLine"><span class="n">ZXType</span> <span class="n">ZXGen</span><span class="o">::</span><span class="n">get_type</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">type_</span><span class="p">;</span> <span class="p">}</span></td>
     </tr>
 
@@ -2953,7 +3624,7 @@
       <td class="lineno"><a id="l310" href="#l310">310</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">172</td>
+      <td class="linecount coveredLine">173</td>
       <td class="src coveredLine"><span class="kt">bool</span> <span class="n">CliffordGen</span><span class="o">::</span><span class="n">get_param</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">param_</span><span class="p">;</span> <span class="p">}</span></td>
     </tr>
 
@@ -4331,11 +5002,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

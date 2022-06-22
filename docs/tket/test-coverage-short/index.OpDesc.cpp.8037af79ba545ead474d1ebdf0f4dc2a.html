@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-low">62.5%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>13</td>
+      <td>20</td>
+      <td class="coverage-low">65.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>23</td>
       <td>50</td>
@@ -52,10 +59,245 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l23">tket::OpDesc::OpDesc(tket::OpType)</a>
+      </td>
+      <td>
+        <a href="#l23">23</a>
+      </td>
+      <td>
+        <a href="#l23"> called 460555 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l78">tket::OpDesc::is_box() const</a>
+      </td>
+      <td>
+        <a href="#l78">78</a>
+      </td>
+      <td>
+        <a href="#l78"> called 25262 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l84">tket::OpDesc::is_classical() const</a>
+      </td>
+      <td>
+        <a href="#l84">84</a>
+      </td>
+      <td>
+        <a href="#l84"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l96">tket::OpDesc::is_clifford_gate() const</a>
+      </td>
+      <td>
+        <a href="#l96">96</a>
+      </td>
+      <td>
+        <a href="#l96"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l82">tket::OpDesc::is_flowop() const</a>
+      </td>
+      <td>
+        <a href="#l82">82</a>
+      </td>
+      <td>
+        <a href="#l82"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l80">tket::OpDesc::is_gate() const</a>
+      </td>
+      <td>
+        <a href="#l80">80</a>
+      </td>
+      <td>
+        <a href="#l80"> called 222395 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l76">tket::OpDesc::is_meta() const</a>
+      </td>
+      <td>
+        <a href="#l76">76</a>
+      </td>
+      <td>
+        <a href="#l76"> called 1670 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l90">tket::OpDesc::is_oneway() const</a>
+      </td>
+      <td>
+        <a href="#l90">90</a>
+      </td>
+      <td>
+        <a href="#l90"> called 55886 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l98">tket::OpDesc::is_parameterised_pauli_rotation() const</a>
+      </td>
+      <td>
+        <a href="#l98">98</a>
+      </td>
+      <td>
+        <a href="#l98"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l86">tket::OpDesc::is_rotation() const</a>
+      </td>
+      <td>
+        <a href="#l86">86</a>
+      </td>
+      <td>
+        <a href="#l86"> called 13129 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l92">tket::OpDesc::is_singleq_unitary() const</a>
+      </td>
+      <td>
+        <a href="#l92">92</a>
+      </td>
+      <td>
+        <a href="#l92"> called 8927 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l41">tket::OpDesc::latex[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l41">41</a>
+      </td>
+      <td>
+        <a href="#l41"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l58">tket::OpDesc::n_boolean() const</a>
+      </td>
+      <td>
+        <a href="#l58">58</a>
+      </td>
+      <td>
+        <a href="#l58"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l67">tket::OpDesc::n_classical() const</a>
+      </td>
+      <td>
+        <a href="#l67">67</a>
+      </td>
+      <td>
+        <a href="#l67"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l43">tket::OpDesc::n_params() const</a>
+      </td>
+      <td>
+        <a href="#l43">43</a>
+      </td>
+      <td>
+        <a href="#l43"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l49">tket::OpDesc::n_qubits() const</a>
+      </td>
+      <td>
+        <a href="#l49">49</a>
+      </td>
+      <td>
+        <a href="#l49"> called 212617 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l39">tket::OpDesc::name[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l39">39</a>
+      </td>
+      <td>
+        <a href="#l39"> called 5790 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l88">tket::OpDesc::param_mod(unsigned int) const</a>
+      </td>
+      <td>
+        <a href="#l88">88</a>
+      </td>
+      <td>
+        <a href="#l88"> called 10700 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l45">tket::OpDesc::signature() const</a>
+      </td>
+      <td>
+        <a href="#l45">45</a>
+      </td>
+      <td>
+        <a href="#l45"> called 732653 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l37">tket::OpDesc::type() const</a>
+      </td>
+      <td>
+        <a href="#l37">37</a>
+      </td>
+      <td>
+        <a href="#l37"> called 132499 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -246,7 +488,7 @@
       <td class="lineno"><a id="l23" href="#l23">23</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">460557</td>
+      <td class="linecount coveredLine">460555</td>
       <td class="src coveredLine"><span class="n">OpDesc</span><span class="o">::</span><span class="n">OpDesc</span><span class="p">(</span><span class="n">OpType</span> <span class="n">type</span><span class="p">)</span></td>
     </tr>
 
@@ -262,7 +504,7 @@
       <td class="lineno"><a id="l25" href="#l25">25</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">460557</td>
+      <td class="linecount coveredLine">460555</td>
       <td class="src coveredLine">      <span class="n">info_</span><span class="p">(</span><span class="n">optypeinfo</span><span class="p">().</span><span class="n">at</span><span class="p">(</span><span class="n">type</span><span class="p">)),</span></td>
     </tr>
 
@@ -272,12 +514,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 460557 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 460555 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">460557</td>
+      <td class="linecount coveredLine">460555</td>
       <td class="src coveredLine">      <span class="n">is_meta_</span><span class="p">(</span><span class="n">is_metaop_type</span><span class="p">(</span><span class="n">type</span><span class="p">)),</span></td>
     </tr>
 
@@ -285,7 +527,7 @@
       <td class="lineno"><a id="l27" href="#l27">27</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">921114</td>
+      <td class="linecount coveredLine">921110</td>
       <td class="src coveredLine">      <span class="n">is_box_</span><span class="p">(</span><span class="n">is_box_type</span><span class="p">(</span><span class="n">type</span><span class="p">)),</span></td>
     </tr>
 
@@ -293,7 +535,7 @@
       <td class="lineno"><a id="l28" href="#l28">28</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">921114</td>
+      <td class="linecount coveredLine">921110</td>
       <td class="src coveredLine">      <span class="n">is_gate_</span><span class="p">(</span><span class="n">is_gate_type</span><span class="p">(</span><span class="n">type</span><span class="p">)),</span></td>
     </tr>
 
@@ -301,7 +543,7 @@
       <td class="lineno"><a id="l29" href="#l29">29</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">921114</td>
+      <td class="linecount coveredLine">921110</td>
       <td class="src coveredLine">      <span class="n">is_flowop_</span><span class="p">(</span><span class="n">is_flowop_type</span><span class="p">(</span><span class="n">type</span><span class="p">)),</span></td>
     </tr>
 
@@ -309,7 +551,7 @@
       <td class="lineno"><a id="l30" href="#l30">30</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">921114</td>
+      <td class="linecount coveredLine">921110</td>
       <td class="src coveredLine">      <span class="n">is_classical_</span><span class="p">(</span><span class="n">is_classical_type</span><span class="p">(</span><span class="n">type</span><span class="p">)),</span></td>
     </tr>
 
@@ -317,7 +559,7 @@
       <td class="lineno"><a id="l31" href="#l31">31</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">921114</td>
+      <td class="linecount coveredLine">921110</td>
       <td class="src coveredLine">      <span class="n">is_rotation_</span><span class="p">(</span><span class="n">is_rotation_type</span><span class="p">(</span><span class="n">type</span><span class="p">)),</span></td>
     </tr>
 
@@ -325,7 +567,7 @@
       <td class="lineno"><a id="l32" href="#l32">32</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">921114</td>
+      <td class="linecount coveredLine">921110</td>
       <td class="src coveredLine">      <span class="n">is_oneway_</span><span class="p">(</span><span class="n">is_oneway_type</span><span class="p">(</span><span class="n">type</span><span class="p">)),</span></td>
     </tr>
 
@@ -333,7 +575,7 @@
       <td class="lineno"><a id="l33" href="#l33">33</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">921114</td>
+      <td class="linecount coveredLine">921110</td>
       <td class="src coveredLine">      <span class="n">is_clifford_</span><span class="p">(</span><span class="n">is_clifford_type</span><span class="p">(</span><span class="n">type</span><span class="p">)),</span></td>
     </tr>
 
@@ -351,26 +593,26 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">8/16</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 3 taken 460557 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 460555 times.</div>
           <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
-          <div class="takenBranch">&check; Branch 6 taken 460557 times.</div>
+          <div class="takenBranch">&check; Branch 6 taken 460555 times.</div>
           <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
-          <div class="takenBranch">&check; Branch 9 taken 460557 times.</div>
+          <div class="takenBranch">&check; Branch 9 taken 460555 times.</div>
           <div class="notTakenBranch">&cross; Branch 10 not taken.</div>
-          <div class="takenBranch">&check; Branch 12 taken 460557 times.</div>
+          <div class="takenBranch">&check; Branch 12 taken 460555 times.</div>
           <div class="notTakenBranch">&cross; Branch 13 not taken.</div>
-          <div class="takenBranch">&check; Branch 15 taken 460557 times.</div>
+          <div class="takenBranch">&check; Branch 15 taken 460555 times.</div>
           <div class="notTakenBranch">&cross; Branch 16 not taken.</div>
-          <div class="takenBranch">&check; Branch 18 taken 460557 times.</div>
+          <div class="takenBranch">&check; Branch 18 taken 460555 times.</div>
           <div class="notTakenBranch">&cross; Branch 19 not taken.</div>
-          <div class="takenBranch">&check; Branch 21 taken 460557 times.</div>
+          <div class="takenBranch">&check; Branch 21 taken 460555 times.</div>
           <div class="notTakenBranch">&cross; Branch 22 not taken.</div>
-          <div class="takenBranch">&check; Branch 24 taken 460557 times.</div>
+          <div class="takenBranch">&check; Branch 24 taken 460555 times.</div>
           <div class="notTakenBranch">&cross; Branch 25 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">1381671</td>
+      <td class="linecount coveredLine">1381665</td>
       <td class="src coveredLine">          <span class="n">is_parameterised_pauli_rotation_type</span><span class="p">(</span><span class="n">type</span><span class="p">))</span> <span class="p">{}</span></td>
     </tr>
 
@@ -386,7 +628,7 @@
       <td class="lineno"><a id="l37" href="#l37">37</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">132498</td>
+      <td class="linecount coveredLine">132499</td>
       <td class="src coveredLine"><span class="n">OpType</span> <span class="n">OpDesc</span><span class="o">::</span><span class="n">type</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">type_</span><span class="p">;</span> <span class="p">}</span></td>
     </tr>
 
@@ -482,7 +724,7 @@
       <td class="lineno"><a id="l49" href="#l49">49</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">212621</td>
+      <td class="linecount coveredLine">212617</td>
       <td class="src coveredLine"><span class="n">OptUInt</span> <span class="n">OpDesc</span><span class="o">::</span><span class="n">n_qubits</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span></td>
     </tr>
 
@@ -492,12 +734,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 209777 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 209773 times.</div>
           <div class="takenBranch">&check; Branch 2 taken 2844 times.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">212621</td>
+      <td class="linecount coveredLine">212617</td>
       <td class="src coveredLine">  <span class="k">if</span> <span class="p">(</span><span class="n">info_</span><span class="p">.</span><span class="n">signature</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -507,12 +749,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 4 taken 209777 times.</div>
+          <div class="takenBranch">&check; Branch 4 taken 209773 times.</div>
           <div class="notTakenBranch">&cross; Branch 5 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">209777</td>
+      <td class="linecount coveredLine">209773</td>
       <td class="src coveredLine">    <span class="kt">unsigned</span> <span class="n">n</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">count</span><span class="p">(</span></td>
     </tr>
 
@@ -520,7 +762,7 @@
       <td class="lineno"><a id="l52" href="#l52">52</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">209777</td>
+      <td class="linecount coveredLine">209773</td>
       <td class="src coveredLine">        <span class="n">info_</span><span class="p">.</span><span class="n">signature</span><span class="o">-&gt;</span><span class="n">begin</span><span class="p">(),</span> <span class="n">info_</span><span class="p">.</span><span class="n">signature</span><span class="o">-&gt;</span><span class="n">end</span><span class="p">(),</span> <span class="n">EdgeType</span><span class="o">::</span><span class="n">Quantum</span><span class="p">);</span></td>
     </tr>
 
@@ -530,12 +772,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 209777 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 209773 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">209777</td>
+      <td class="linecount coveredLine">209773</td>
       <td class="src coveredLine">    <span class="k">return</span> <span class="n">n</span><span class="p">;</span></td>
     </tr>
 
@@ -751,7 +993,7 @@
       <td class="lineno"><a id="l80" href="#l80">80</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">222392</td>
+      <td class="linecount coveredLine">222395</td>
       <td class="src coveredLine"><span class="kt">bool</span> <span class="n">OpDesc</span><span class="o">::</span><span class="n">is_gate</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">is_gate_</span><span class="p">;</span> <span class="p">}</span></td>
     </tr>
 
@@ -815,7 +1057,7 @@
       <td class="lineno"><a id="l88" href="#l88">88</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">10703</td>
+      <td class="linecount coveredLine">10700</td>
       <td class="src coveredLine"><span class="kt">unsigned</span> <span class="n">OpDesc</span><span class="o">::</span><span class="n">param_mod</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">info_</span><span class="p">.</span><span class="n">param_mod</span><span class="p">[</span><span class="n">i</span><span class="p">];</span> <span class="p">}</span></td>
     </tr>
 
@@ -831,7 +1073,7 @@
       <td class="lineno"><a id="l90" href="#l90">90</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">55885</td>
+      <td class="linecount coveredLine">55886</td>
       <td class="src coveredLine"><span class="kt">bool</span> <span class="n">OpDesc</span><span class="o">::</span><span class="n">is_oneway</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">is_oneway_</span><span class="p">;</span> <span class="p">}</span></td>
     </tr>
 
@@ -960,11 +1202,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

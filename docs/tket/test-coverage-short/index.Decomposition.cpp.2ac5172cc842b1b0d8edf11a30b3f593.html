@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">96.3%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>62</td>
+      <td>62</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>1199</td>
       <td>1982</td>
@@ -52,10 +59,707 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1537">bool tket::Transforms::all_equal&lt;std::optional&lt;void*&gt; &gt;(std::vector&lt;std::optional&lt;void*&gt;, std::allocator&lt;std::optional&lt;void*&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l1537">1537</a>
+      </td>
+      <td>
+        <a href="#l1537"> called 85 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l555">tket::Transforms::TK2_replacement(std::array&lt;SymEngine::Expression, 3ul&gt; const&amp;, tket::Transforms::TwoQbFidelities const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l555">555</a>
+      </td>
+      <td>
+        <a href="#l555"> called 143 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l502">tket::Transforms::best_exact_decomposition(std::array&lt;SymEngine::Expression, 3ul&gt; const&amp;, tket::Transforms::TwoQbFidelities const&amp;, tket::OpType&amp;, unsigned int&amp;)</a>
+      </td>
+      <td>
+        <a href="#l502">502</a>
+      </td>
+      <td>
+        <a href="#l502"> called 20 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l442">tket::Transforms::best_noise_aware_decomposition(std::array&lt;double, 3ul&gt; const&amp;, tket::Transforms::TwoQbFidelities const&amp;, tket::OpType&amp;, unsigned int&amp;)</a>
+      </td>
+      <td>
+        <a href="#l442">442</a>
+      </td>
+      <td>
+        <a href="#l442"> called 119 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l858">tket::Transforms::clifford_from_tk1(int, int, int)</a>
+      </td>
+      <td>
+        <a href="#l858">858</a>
+      </td>
+      <td>
+        <a href="#l858"> called 2081 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1082">tket::Transforms::compose_phase_poly_boxes(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l1082">1082</a>
+      </td>
+      <td>
+        <a href="#l1082"> called 26 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1083">tket::Transforms::compose_phase_poly_boxes(unsigned int)::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l1083">1083</a>
+      </td>
+      <td>
+        <a href="#l1083"> called 26 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l78">tket::Transforms::convert_multiqs_CX(tket::Circuit&amp;)</a>
+      </td>
+      <td>
+        <a href="#l78">78</a>
+      </td>
+      <td>
+        <a href="#l78"> called 246 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l52">tket::Transforms::convert_multiqs_TK2(tket::Circuit&amp;)</a>
+      </td>
+      <td>
+        <a href="#l52">52</a>
+      </td>
+      <td>
+        <a href="#l52"> called 15 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l173">tket::Transforms::convert_singleqs_TK1(tket::Circuit&amp;)</a>
+      </td>
+      <td>
+        <a href="#l173">173</a>
+      </td>
+      <td>
+        <a href="#l173"> called 3086 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l139">tket::Transforms::convert_to_xyx(tket::Circuit&amp;)</a>
+      </td>
+      <td>
+        <a href="#l139">139</a>
+      </td>
+      <td>
+        <a href="#l139"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l99">tket::Transforms::convert_to_zxz(tket::Circuit&amp;)</a>
+      </td>
+      <td>
+        <a href="#l99">99</a>
+      </td>
+      <td>
+        <a href="#l99"> called 115 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">tket::Transforms::convert_to_zyz(tket::Circuit&amp;)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> called 1640 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1078">tket::Transforms::decomp_boxes()</a>
+      </td>
+      <td>
+        <a href="#l1078">1078</a>
+      </td>
+      <td>
+        <a href="#l1078"> called 7 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1079">tket::Transforms::decomp_boxes()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l1079">1079</a>
+      </td>
+      <td>
+        <a href="#l1079"> called 11 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1188">tket::Transforms::decompose_BRIDGE_to_CX()</a>
+      </td>
+      <td>
+        <a href="#l1188">1188</a>
+      </td>
+      <td>
+        <a href="#l1188"> called 17 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1189">tket::Transforms::decompose_BRIDGE_to_CX()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l1189">1189</a>
+      </td>
+      <td>
+        <a href="#l1189"> called 14 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1207">tket::Transforms::decompose_BRIDGE_to_CX()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const::{lambda(std::pair&lt;void*, bool&gt;&amp;, tket::Circuit)#1}::operator()(std::pair&lt;void*, bool&gt;, tket::Circuit) const</a>
+      </td>
+      <td>
+        <a href="#l1207">1207</a>
+      </td>
+      <td>
+        <a href="#l1207"> called 32 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1267">tket::Transforms::decompose_CX_directed(tket::Architecture const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l1267">1267</a>
+      </td>
+      <td>
+        <a href="#l1267"> called 14 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1268">tket::Transforms::decompose_CX_directed(tket::Architecture const&amp;)::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l1268">1268</a>
+      </td>
+      <td>
+        <a href="#l1268"> called 10 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l291">tket::Transforms::decompose_CX_to_ECR()</a>
+      </td>
+      <td>
+        <a href="#l291">291</a>
+      </td>
+      <td>
+        <a href="#l291"> called 13 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l292">tket::Transforms::decompose_CX_to_ECR()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l292">292</a>
+      </td>
+      <td>
+        <a href="#l292"> called 13 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l308">tket::Transforms::decompose_CX_to_HQS2()</a>
+      </td>
+      <td>
+        <a href="#l308">308</a>
+      </td>
+      <td>
+        <a href="#l308"> called 34 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l309">tket::Transforms::decompose_CX_to_HQS2()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l309">309</a>
+      </td>
+      <td>
+        <a href="#l309"> called 34 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l371">tket::Transforms::decompose_MolmerSorensen()</a>
+      </td>
+      <td>
+        <a href="#l371">371</a>
+      </td>
+      <td>
+        <a href="#l371"> called 11 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l372">tket::Transforms::decompose_MolmerSorensen()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l372">372</a>
+      </td>
+      <td>
+        <a href="#l372"> called 11 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1332">tket::Transforms::decompose_NPhasedX()</a>
+      </td>
+      <td>
+        <a href="#l1332">1332</a>
+      </td>
+      <td>
+        <a href="#l1332"> called 38 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1333">tket::Transforms::decompose_NPhasedX()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l1333">1333</a>
+      </td>
+      <td>
+        <a href="#l1333"> called 38 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1006">tket::Transforms::decompose_PhaseGadgets()</a>
+      </td>
+      <td>
+        <a href="#l1006">1006</a>
+      </td>
+      <td>
+        <a href="#l1006"> called 23 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1007">tket::Transforms::decompose_PhaseGadgets()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l1007">1007</a>
+      </td>
+      <td>
+        <a href="#l1007"> called 23 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1102">tket::Transforms::decompose_SWAP(tket::Circuit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l1102">1102</a>
+      </td>
+      <td>
+        <a href="#l1102"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1103">tket::Transforms::decompose_SWAP(tket::Circuit const&amp;)::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l1103">1103</a>
+      </td>
+      <td>
+        <a href="#l1103"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1122">tket::Transforms::decompose_SWAP_to_CX(tket::Architecture const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l1122">1122</a>
+      </td>
+      <td>
+        <a href="#l1122"> called 31 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1128">tket::Transforms::decompose_SWAP_to_CX(tket::Architecture const&amp;)::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l1128">1128</a>
+      </td>
+      <td>
+        <a href="#l1128"> called 27 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l642">tket::Transforms::decompose_TK2()</a>
+      </td>
+      <td>
+        <a href="#l642">642</a>
+      </td>
+      <td>
+        <a href="#l642"> called 84 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l643">tket::Transforms::decompose_TK2(tket::Transforms::TwoQbFidelities const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l643">643</a>
+      </td>
+      <td>
+        <a href="#l643"> called 288 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l661">tket::Transforms::decompose_TK2(tket::Transforms::TwoQbFidelities const&amp;)::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l661">661</a>
+      </td>
+      <td>
+        <a href="#l661"> called 288 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l268">tket::Transforms::decompose_XY()</a>
+      </td>
+      <td>
+        <a href="#l268">268</a>
+      </td>
+      <td>
+        <a href="#l268"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l264">tket::Transforms::decompose_ZX()</a>
+      </td>
+      <td>
+        <a href="#l264">264</a>
+      </td>
+      <td>
+        <a href="#l264"> called 115 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l328">tket::Transforms::decompose_ZX_to_HQS1()</a>
+      </td>
+      <td>
+        <a href="#l328">328</a>
+      </td>
+      <td>
+        <a href="#l328"> called 14 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l329">tket::Transforms::decompose_ZX_to_HQS1()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l329">329</a>
+      </td>
+      <td>
+        <a href="#l329"> called 14 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l939">tket::Transforms::decompose_ZX_to_cliffords()</a>
+      </td>
+      <td>
+        <a href="#l939">939</a>
+      </td>
+      <td>
+        <a href="#l939"> called 11 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l940">tket::Transforms::decompose_ZX_to_cliffords()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l940">940</a>
+      </td>
+      <td>
+        <a href="#l940"> called 11 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l266">tket::Transforms::decompose_ZY()</a>
+      </td>
+      <td>
+        <a href="#l266">266</a>
+      </td>
+      <td>
+        <a href="#l266"> called 1583 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l200">tket::Transforms::decompose_ZYZ_to_TK1()</a>
+      </td>
+      <td>
+        <a href="#l200">200</a>
+      </td>
+      <td>
+        <a href="#l200"> called 1583 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l201">tket::Transforms::decompose_ZYZ_to_TK1()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l201">201</a>
+      </td>
+      <td>
+        <a href="#l201"> called 1640 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l684">tket::Transforms::decompose_ZZPhase()</a>
+      </td>
+      <td>
+        <a href="#l684">684</a>
+      </td>
+      <td>
+        <a href="#l684"> called 11 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l685">tket::Transforms::decompose_ZZPhase()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l685">685</a>
+      </td>
+      <td>
+        <a href="#l685"> called 11 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l885">tket::Transforms::decompose_cliffords_std()</a>
+      </td>
+      <td>
+        <a href="#l885">885</a>
+      </td>
+      <td>
+        <a href="#l885"> called 1443 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l886">tket::Transforms::decompose_cliffords_std()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l886">886</a>
+      </td>
+      <td>
+        <a href="#l886"> called 1447 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l171">tket::Transforms::decompose_multi_qubits_CX()</a>
+      </td>
+      <td>
+        <a href="#l171">171</a>
+      </td>
+      <td>
+        <a href="#l171"> called 226 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l167">tket::Transforms::decompose_multi_qubits_TK2()</a>
+      </td>
+      <td>
+        <a href="#l167">167</a>
+      </td>
+      <td>
+        <a href="#l167"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l196">tket::Transforms::decompose_single_qubits_TK1()</a>
+      </td>
+      <td>
+        <a href="#l196">196</a>
+      </td>
+      <td>
+        <a href="#l196"> called 3085 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l270">tket::Transforms::decompose_tk1_to_rzrx()</a>
+      </td>
+      <td>
+        <a href="#l270">270</a>
+      </td>
+      <td>
+        <a href="#l270"> called 164 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l271">tket::Transforms::decompose_tk1_to_rzrx()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l271">271</a>
+      </td>
+      <td>
+        <a href="#l271"> called 164 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l425">tket::Transforms::get_ZZPhase_fidelity(std::array&lt;double, 3ul&gt; const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l425">425</a>
+      </td>
+      <td>
+        <a href="#l425"> called 40 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1366">tket::Transforms::globalise_PhasedX(bool)</a>
+      </td>
+      <td>
+        <a href="#l1366">1366</a>
+      </td>
+      <td>
+        <a href="#l1366"> called 45 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1393">tket::Transforms::globalise_PhasedX(bool)::{lambda(tket::Circuit&amp;)#2}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l1393">1393</a>
+      </td>
+      <td>
+        <a href="#l1393"> called 45 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1404">tket::Transforms::globalise_PhasedX(bool)::{lambda(tket::Circuit&amp;)#2}::operator()(tket::Circuit&amp;) const::{lambda(void*)#1}::operator()({lambda(tket::Circuit&amp;)#2}) const</a>
+      </td>
+      <td>
+        <a href="#l1404">1404</a>
+      </td>
+      <td>
+        <a href="#l1404"> called 707 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1378">tket::Transforms::globalise_PhasedX(bool)::{lambda(tket::Transforms::PhasedXFrontier const&amp;, unsigned int, unsigned int)#1}::operator()(tket::Transforms::PhasedXFrontier const&amp;, unsigned int, unsigned int) const</a>
+      </td>
+      <td>
+        <a href="#l1378">1378</a>
+      </td>
+      <td>
+        <a href="#l1378"> called 37 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1507">tket::Transforms::n_distinct_beta(tket::Circuit const&amp;, std::vector&lt;std::optional&lt;void*&gt;, std::allocator&lt;std::optional&lt;void*&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l1507">1507</a>
+      </td>
+      <td>
+        <a href="#l1507"> called 148 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1109">tket::Transforms::swap_sub(tket::Circuit&amp;, tket::Circuit const&amp;, tket::Circuit const&amp;, tket::Subcircuit&amp;, std::pair&lt;unsigned int, unsigned int&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l1109">1109</a>
+      </td>
+      <td>
+        <a href="#l1109"> called 36 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -17138,11 +17842,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">96.0%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>9</td>
+      <td>9</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>4</td>
       <td>10</td>
@@ -52,10 +59,124 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l63">tket::tket_sim::internal::GateNodesBuffer::GateNodesBuffer(Eigen::Matrix&lt;std::complex&lt;double&gt;, -1, -1, 0, -1, -1&gt;&amp;, double)</a>
+      </td>
+      <td>
+        <a href="#l63">63</a>
+      </td>
+      <td>
+        <a href="#l63"> called 2419 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l31">tket::tket_sim::internal::GateNodesBuffer::Impl::Impl(Eigen::Matrix&lt;std::complex&lt;double&gt;, -1, -1, 0, -1, -1&gt;&amp;, double)</a>
+      </td>
+      <td>
+        <a href="#l31">31</a>
+      </td>
+      <td>
+        <a href="#l31"> called 2419 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l43">tket::tket_sim::internal::GateNodesBuffer::Impl::add_global_phase(double)</a>
+      </td>
+      <td>
+        <a href="#l43">43</a>
+      </td>
+      <td>
+        <a href="#l43"> called 2502 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l55">tket::tket_sim::internal::GateNodesBuffer::Impl::flush()</a>
+      </td>
+      <td>
+        <a href="#l55">55</a>
+      </td>
+      <td>
+        <a href="#l55"> called 2419 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l48">tket::tket_sim::internal::GateNodesBuffer::Impl::push(tket::tket_sim::internal::GateNode const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l48">48</a>
+      </td>
+      <td>
+        <a href="#l48"> called 28664 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l70">tket::tket_sim::internal::GateNodesBuffer::add_global_phase(double)</a>
+      </td>
+      <td>
+        <a href="#l70">70</a>
+      </td>
+      <td>
+        <a href="#l70"> called 2502 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l74">tket::tket_sim::internal::GateNodesBuffer::flush()</a>
+      </td>
+      <td>
+        <a href="#l74">74</a>
+      </td>
+      <td>
+        <a href="#l74"> called 2419 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l68">tket::tket_sim::internal::GateNodesBuffer::push(tket::tket_sim::internal::GateNode const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l68">68</a>
+      </td>
+      <td>
+        <a href="#l68"> called 28664 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l66">tket::tket_sim::internal::GateNodesBuffer::~GateNodesBuffer()</a>
+      </td>
+      <td>
+        <a href="#l66">66</a>
+      </td>
+      <td>
+        <a href="#l66"> called 2419 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -199,7 +320,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Assert.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;tkassert/Assert.hpp&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -207,7 +328,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Exceptions.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -215,7 +336,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Exceptions.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -223,7 +344,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">namespace</span> <span class="n">tket</span> <span class="p">{</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -231,7 +352,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">namespace</span> <span class="n">tket_sim</span> <span class="p">{</span></td>
+      <td class="src "><span class="k">namespace</span> <span class="n">tket</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -239,7 +360,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">namespace</span> <span class="n">internal</span> <span class="p">{</span></td>
+      <td class="src "><span class="k">namespace</span> <span class="n">tket_sim</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -247,7 +368,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="k">namespace</span> <span class="n">internal</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -255,7 +376,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">struct</span> <span class="n">GateNodesBuffer</span><span class="o">::</span><span class="n">Impl</span> <span class="p">{</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -263,7 +384,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">Eigen</span><span class="o">::</span><span class="n">MatrixXcd</span><span class="o">&amp;</span> <span class="n">matrix</span><span class="p">;</span></td>
+      <td class="src "><span class="k">struct</span> <span class="n">GateNodesBuffer</span><span class="o">::</span><span class="n">Impl</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -271,7 +392,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="k">const</span> <span class="kt">double</span> <span class="n">abs_epsilon</span><span class="p">;</span></td>
+      <td class="src ">  <span class="n">Eigen</span><span class="o">::</span><span class="n">MatrixXcd</span><span class="o">&amp;</span> <span class="n">matrix</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -279,7 +400,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="k">const</span> <span class="kt">unsigned</span> <span class="n">number_of_qubits</span><span class="p">;</span></td>
+      <td class="src ">  <span class="k">const</span> <span class="kt">double</span> <span class="n">abs_epsilon</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -287,7 +408,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="kt">double</span> <span class="n">global_phase</span><span class="p">;</span></td>
+      <td class="src ">  <span class="k">const</span> <span class="kt">unsigned</span> <span class="n">number_of_qubits</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -295,15 +416,15 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src ">  <span class="kt">double</span> <span class="n">global_phase</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l30" href="#l30">30</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">2419</td>
-      <td class="src coveredLine">  <span class="n">Impl</span><span class="p">(</span><span class="n">Eigen</span><span class="o">::</span><span class="n">MatrixXcd</span><span class="o">&amp;</span> <span class="n">matr</span><span class="p">,</span> <span class="kt">double</span> <span class="n">abs_eps</span><span class="p">)</span></td>
+      <td class="linecount "></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -311,11 +432,19 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">2419</td>
-      <td class="src coveredLine">      <span class="o">:</span> <span class="n">matrix</span><span class="p">(</span><span class="n">matr</span><span class="p">),</span></td>
+      <td class="src coveredLine">  <span class="n">Impl</span><span class="p">(</span><span class="n">Eigen</span><span class="o">::</span><span class="n">MatrixXcd</span><span class="o">&amp;</span> <span class="n">matr</span><span class="p">,</span> <span class="kt">double</span> <span class="n">abs_eps</span><span class="p">)</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l32" href="#l32">32</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount coveredLine">2419</td>
+      <td class="src coveredLine">      <span class="o">:</span> <span class="n">matrix</span><span class="p">(</span><span class="n">matr</span><span class="p">),</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l33" href="#l33">33</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -323,7 +452,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l33" href="#l33">33</a></td>
+      <td class="lineno"><a id="l34" href="#l34">34</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">2419</td>
@@ -331,7 +460,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l34" href="#l34">34</a></td>
+      <td class="lineno"><a id="l35" href="#l35">35</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">2419</td>
@@ -339,7 +468,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l35" href="#l35">35</a></td>
+      <td class="lineno"><a id="l36" href="#l36">36</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -354,7 +483,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l36" href="#l36">36</a></td>
+      <td class="lineno"><a id="l37" href="#l37">37</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
@@ -362,7 +491,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l37" href="#l37">37</a></td>
+      <td class="lineno"><a id="l38" href="#l38">38</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -370,7 +499,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l38" href="#l38">38</a></td>
+      <td class="lineno"><a id="l39" href="#l39">39</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">2419</td>
@@ -378,19 +507,11 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l39" href="#l39">39</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-
-    <tr class="source-line">
       <td class="lineno"><a id="l40" href="#l40">40</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="kt">void</span> <span class="n">push</span><span class="p">(</span><span class="k">const</span> <span class="n">GateNode</span><span class="o">&amp;</span><span class="p">);</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -398,11 +519,19 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src ">  <span class="kt">void</span> <span class="n">push</span><span class="p">(</span><span class="k">const</span> <span class="n">GateNode</span><span class="o">&amp;</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l42" href="#l42">42</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l43" href="#l43">43</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">2502</td>
@@ -410,19 +539,11 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l43" href="#l43">43</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-
-    <tr class="source-line">
       <td class="lineno"><a id="l44" href="#l44">44</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="kt">void</span> <span class="nf">flush</span><span class="p">();</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -430,7 +551,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span></td>
+      <td class="src ">  <span class="kt">void</span> <span class="nf">flush</span><span class="p">();</span></td>
     </tr>
 
     <tr class="source-line">
@@ -438,11 +559,19 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="p">};</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l47" href="#l47">47</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l48" href="#l48">48</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">28664</td>
@@ -450,7 +579,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l48" href="#l48">48</a></td>
+      <td class="lineno"><a id="l49" href="#l49">49</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -458,7 +587,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l49" href="#l49">49</a></td>
+      <td class="lineno"><a id="l50" href="#l50">50</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -466,7 +595,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l50" href="#l50">50</a></td>
+      <td class="lineno"><a id="l51" href="#l51">51</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -474,7 +603,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l51" href="#l51">51</a></td>
+      <td class="lineno"><a id="l52" href="#l52">52</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">28664</td>
@@ -482,7 +611,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l52" href="#l52">52</a></td>
+      <td class="lineno"><a id="l53" href="#l53">53</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">28664</td>
@@ -490,7 +619,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l53" href="#l53">53</a></td>
+      <td class="lineno"><a id="l54" href="#l54">54</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -498,7 +627,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l54" href="#l54">54</a></td>
+      <td class="lineno"><a id="l55" href="#l55">55</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">2419</td>
@@ -506,7 +635,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l55" href="#l55">55</a></td>
+      <td class="lineno"><a id="l56" href="#l56">56</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -521,7 +650,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l56" href="#l56">56</a></td>
+      <td class="lineno"><a id="l57" href="#l57">57</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">672</td>
@@ -529,7 +658,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l57" href="#l57">57</a></td>
+      <td class="lineno"><a id="l58" href="#l58">58</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -544,7 +673,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l58" href="#l58">58</a></td>
+      <td class="lineno"><a id="l59" href="#l59">59</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">672</td>
@@ -552,7 +681,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l59" href="#l59">59</a></td>
+      <td class="lineno"><a id="l60" href="#l60">60</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -560,7 +689,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l60" href="#l60">60</a></td>
+      <td class="lineno"><a id="l61" href="#l61">61</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">2419</td>
@@ -568,19 +697,11 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l61" href="#l61">61</a></td>
+      <td class="lineno"><a id="l62" href="#l62">62</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
       <td class="src "></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l62" href="#l62">62</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">2419</td>
-      <td class="src coveredLine"><span class="n">GateNodesBuffer</span><span class="o">::</span><span class="n">GateNodesBuffer</span><span class="p">(</span><span class="n">Eigen</span><span class="o">::</span><span class="n">MatrixXcd</span><span class="o">&amp;</span> <span class="n">matrix</span><span class="p">,</span> <span class="kt">double</span> <span class="n">abs_epsilon</span><span class="p">)</span></td>
     </tr>
 
     <tr class="source-line">
@@ -588,11 +709,19 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">2419</td>
-      <td class="src coveredLine">    <span class="o">:</span> <span class="n">pimpl</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">Impl</span><span class="o">&gt;</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">abs_epsilon</span><span class="p">))</span> <span class="p">{}</span></td>
+      <td class="src coveredLine"><span class="n">GateNodesBuffer</span><span class="o">::</span><span class="n">GateNodesBuffer</span><span class="p">(</span><span class="n">Eigen</span><span class="o">::</span><span class="n">MatrixXcd</span><span class="o">&amp;</span> <span class="n">matrix</span><span class="p">,</span> <span class="kt">double</span> <span class="n">abs_epsilon</span><span class="p">)</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l64" href="#l64">64</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount coveredLine">2419</td>
+      <td class="src coveredLine">    <span class="o">:</span> <span class="n">pimpl</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="n">Impl</span><span class="o">&gt;</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">abs_epsilon</span><span class="p">))</span> <span class="p">{}</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l65" href="#l65">65</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -600,7 +729,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l65" href="#l65">65</a></td>
+      <td class="lineno"><a id="l66" href="#l66">66</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">2419</td>
@@ -608,7 +737,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l66" href="#l66">66</a></td>
+      <td class="lineno"><a id="l67" href="#l67">67</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -616,7 +745,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l67" href="#l67">67</a></td>
+      <td class="lineno"><a id="l68" href="#l68">68</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">28664</td>
@@ -624,19 +753,11 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l68" href="#l68">68</a></td>
+      <td class="lineno"><a id="l69" href="#l69">69</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
       <td class="src "></td>
-    </tr>
-
-    <tr class="source-line">
-      <td class="lineno"><a id="l69" href="#l69">69</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linecount coveredLine">2502</td>
-      <td class="src coveredLine"><span class="kt">void</span> <span class="n">GateNodesBuffer</span><span class="o">::</span><span class="n">add_global_phase</span><span class="p">(</span><span class="kt">double</span> <span class="n">ph</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -644,7 +765,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">2502</td>
-      <td class="src coveredLine">  <span class="n">pimpl</span><span class="o">-&gt;</span><span class="n">add_global_phase</span><span class="p">(</span><span class="n">ph</span><span class="p">);</span></td>
+      <td class="src coveredLine"><span class="kt">void</span> <span class="n">GateNodesBuffer</span><span class="o">::</span><span class="n">add_global_phase</span><span class="p">(</span><span class="kt">double</span> <span class="n">ph</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -652,11 +773,19 @@
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">2502</td>
-      <td class="src coveredLine"><span class="p">}</span></td>
+      <td class="src coveredLine">  <span class="n">pimpl</span><span class="o">-&gt;</span><span class="n">add_global_phase</span><span class="p">(</span><span class="n">ph</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l72" href="#l72">72</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount coveredLine">2502</td>
+      <td class="src coveredLine"><span class="p">}</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l73" href="#l73">73</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -664,7 +793,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l73" href="#l73">73</a></td>
+      <td class="lineno"><a id="l74" href="#l74">74</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount coveredLine">2419</td>
@@ -672,7 +801,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l74" href="#l74">74</a></td>
+      <td class="lineno"><a id="l75" href="#l75">75</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -680,7 +809,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l75" href="#l75">75</a></td>
+      <td class="lineno"><a id="l76" href="#l76">76</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -688,7 +817,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l76" href="#l76">76</a></td>
+      <td class="lineno"><a id="l77" href="#l77">77</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -696,7 +825,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l77" href="#l77">77</a></td>
+      <td class="lineno"><a id="l78" href="#l78">78</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -704,7 +833,7 @@
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l78" href="#l78">78</a></td>
+      <td class="lineno"><a id="l79" href="#l79">79</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -713,11 +842,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

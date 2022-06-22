@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">95.4%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>10</td>
+      <td>10</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>216</td>
       <td>389</td>
@@ -52,10 +59,135 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l309">tket::add_assertion_operator(tket::Circuit&amp;, tket::PauliStabiliser const&amp;, unsigned int, tket::Qubit const&amp;, std::vector&lt;bool, std::allocator&lt;bool&gt; &gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l309">309</a>
+      </td>
+      <td>
+        <a href="#l309"> called 7 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l129">tket::apply_unitary(tket::Circuit*, Eigen::Matrix&lt;std::complex&lt;double&gt;, -1, -1, 0, -1, -1&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l129">129</a>
+      </td>
+      <td>
+        <a href="#l129"> called 20 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l161">tket::apply_z_measurements(tket::Circuit&amp;, std::vector&lt;Eigen::Matrix&lt;bool, 2, 1, 0, 2, 1&gt;, std::allocator&lt;Eigen::Matrix&lt;bool, 2, 1, 0, 2, 1&gt; &gt; &gt;, unsigned int, std::vector&lt;bool, std::allocator&lt;bool&gt; &gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l161">161</a>
+      </td>
+      <td>
+        <a href="#l161"> called 10 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l90">tket::get_bit(unsigned int, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l90">90</a>
+      </td>
+      <td>
+        <a href="#l90"> called 89 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l282">tket::get_n_qubits_from_stabilisers(std::vector&lt;tket::PauliStabiliser, std::allocator&lt;tket::PauliStabiliser&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l282">282</a>
+      </td>
+      <td>
+        <a href="#l282"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l223">tket::projector_assertion_synthesis(Eigen::Matrix&lt;std::complex&lt;double&gt;, -1, -1, 0, -1, -1&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l223">223</a>
+      </td>
+      <td>
+        <a href="#l223"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l47">tket::projector_diagonalisation(Eigen::Matrix&lt;std::complex&lt;double&gt;, -1, -1, 0, -1, -1&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l47">47</a>
+      </td>
+      <td>
+        <a href="#l47"> called 9 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l200">tket::projector_split(Eigen::Matrix&lt;bool, -1, 1, 0, -1, 1&gt; const&amp;, Eigen::Matrix&lt;std::complex&lt;double&gt;, -1, -1, 0, -1, -1&gt; const&amp;, unsigned int const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l200">200</a>
+      </td>
+      <td>
+        <a href="#l200"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l338">tket::stabiliser_assertion_synthesis(std::vector&lt;tket::PauliStabiliser, std::allocator&lt;tket::PauliStabiliser&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l338">338</a>
+      </td>
+      <td>
+        <a href="#l338"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l103">tket::tensor_factorization(Eigen::Matrix&lt;bool, -1, 1, 0, -1, 1&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l103">103</a>
+      </td>
+      <td>
+        <a href="#l103"> called 10 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -239,7 +371,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;tkassert/Assert.hpp&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -247,7 +379,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;CircUtils.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -255,7 +387,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Circuit.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;CircUtils.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -263,7 +395,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;OpType/OpType.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Circuit.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -271,7 +403,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Assert.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;OpType/OpType.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -3861,11 +3993,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

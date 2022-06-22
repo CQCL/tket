@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-low">59.2%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>19</td>
+      <td>52</td>
+      <td class="coverage-low">36.5%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>42</td>
       <td>240</td>
@@ -52,10 +59,597 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1584">bool tket::Circuit::rename_units&lt;tket::Bit, tket::Bit&gt;(std::map&lt;tket::Bit, tket::Bit, std::less&lt;tket::Bit&gt;, std::allocator&lt;std::pair&lt;tket::Bit const, tket::Bit&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l1584">1584</a>
+      </td>
+      <td>
+        <a href="#l1584"> called 218 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1584">bool tket::Circuit::rename_units&lt;tket::Qubit, tket::Node&gt;(std::map&lt;tket::Qubit, tket::Node, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Node&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l1584">1584</a>
+      </td>
+      <td>
+        <a href="#l1584"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1584">bool tket::Circuit::rename_units&lt;tket::Qubit, tket::Qubit&gt;(std::map&lt;tket::Qubit, tket::Qubit, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Qubit&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l1584">1584</a>
+      </td>
+      <td>
+        <a href="#l1584"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1584">bool tket::Circuit::rename_units&lt;tket::UnitID, tket::UnitID&gt;(std::map&lt;tket::UnitID, tket::UnitID, std::less&lt;tket::UnitID&gt;, std::allocator&lt;std::pair&lt;tket::UnitID const, tket::UnitID&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l1584">1584</a>
+      </td>
+      <td>
+        <a href="#l1584"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l74">tket::BoundaryElement::reg_info() const</a>
+      </td>
+      <td>
+        <a href="#l74">74</a>
+      </td>
+      <td>
+        <a href="#l74"> called 169112 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l73">tket::BoundaryElement::reg_name[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l73">73</a>
+      </td>
+      <td>
+        <a href="#l73"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l72">tket::BoundaryElement::type() const</a>
+      </td>
+      <td>
+        <a href="#l72">72</a>
+      </td>
+      <td>
+        <a href="#l72"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l368">tket::Circuit::Circuit()</a>
+      </td>
+      <td>
+        <a href="#l368">368</a>
+      </td>
+      <td>
+        <a href="#l368"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l396">tket::Circuit::Circuit(std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;, std::vector&lt;tket::Bit, std::allocator&lt;tket::Bit&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l396">396</a>
+      </td>
+      <td>
+        <a href="#l396"> called 220 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l335">tket::Circuit::CommandIterator::CommandIterator()</a>
+      </td>
+      <td>
+        <a href="#l335">335</a>
+      </td>
+      <td>
+        <a href="#l335"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l329">tket::Circuit::CommandIterator::Commandholder::Commandholder(tket::Command)</a>
+      </td>
+      <td>
+        <a href="#l329">329</a>
+      </td>
+      <td>
+        <a href="#l329"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l341">tket::Circuit::CommandIterator::get_vertex() const</a>
+      </td>
+      <td>
+        <a href="#l341">341</a>
+      </td>
+      <td>
+        <a href="#l341"> called 1002 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l345">tket::Circuit::CommandIterator::operator!=(tket::Circuit::CommandIterator const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l345">345</a>
+      </td>
+      <td>
+        <a href="#l345"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l339">tket::Circuit::CommandIterator::operator*() const</a>
+      </td>
+      <td>
+        <a href="#l339">339</a>
+      </td>
+      <td>
+        <a href="#l339"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l340">tket::Circuit::CommandIterator::operator-&gt;() const</a>
+      </td>
+      <td>
+        <a href="#l340">340</a>
+      </td>
+      <td>
+        <a href="#l340"> called 13835 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l342">tket::Circuit::CommandIterator::operator==(tket::Circuit::CommandIterator const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l342">342</a>
+      </td>
+      <td>
+        <a href="#l342"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l280">tket::Circuit::SliceIterator::SliceIterator()</a>
+      </td>
+      <td>
+        <a href="#l280">280</a>
+      </td>
+      <td>
+        <a href="#l280"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l269">tket::Circuit::SliceIterator::Sliceholder::Sliceholder(std::vector&lt;void*, std::allocator&lt;void*&gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l269">269</a>
+      </td>
+      <td>
+        <a href="#l269"> called 12 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l294">tket::Circuit::SliceIterator::get_prev_b_frontier() const</a>
+      </td>
+      <td>
+        <a href="#l294">294</a>
+      </td>
+      <td>
+        <a href="#l294"> called 65810 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l288">tket::Circuit::SliceIterator::get_u_frontier() const</a>
+      </td>
+      <td>
+        <a href="#l288">288</a>
+      </td>
+      <td>
+        <a href="#l288"> called 65810 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l285">tket::Circuit::SliceIterator::operator!=(tket::Circuit::SliceIterator const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l285">285</a>
+      </td>
+      <td>
+        <a href="#l285"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l281">tket::Circuit::SliceIterator::operator*() const</a>
+      </td>
+      <td>
+        <a href="#l281">281</a>
+      </td>
+      <td>
+        <a href="#l281"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l282">tket::Circuit::SliceIterator::operator==(tket::Circuit::SliceIterator const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l282">282</a>
+      </td>
+      <td>
+        <a href="#l282"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l835">tket::Circuit::add_measure(tket::Qubit const&amp;, tket::Bit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l835">835</a>
+      </td>
+      <td>
+        <a href="#l835"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1543">tket::Circuit::get_name[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l1543">1543</a>
+      </td>
+      <td>
+        <a href="#l1543"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1550">tket::Circuit::set_name(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l1550">1550</a>
+      </td>
+      <td>
+        <a href="#l1550"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l636">tket::Circuit::source(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l636">636</a>
+      </td>
+      <td>
+        <a href="#l636"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l634">tket::Circuit::target(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l634">634</a>
+      </td>
+      <td>
+        <a href="#l634"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l191">tket::CircuitInequality::CircuitInequality(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l191">191</a>
+      </td>
+      <td>
+        <a href="#l191"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l196">tket::CircuitInvalidity::CircuitInvalidity(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l196">196</a>
+      </td>
+      <td>
+        <a href="#l196"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l181">tket::CutFrontier::init()</a>
+      </td>
+      <td>
+        <a href="#l181">181</a>
+      </td>
+      <td>
+        <a href="#l181"> called 10397 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l223">tket::MissingEdge::MissingEdge()</a>
+      </td>
+      <td>
+        <a href="#l223">223</a>
+      </td>
+      <td>
+        <a href="#l223"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l211">tket::MissingVertex::MissingVertex(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l211">211</a>
+      </td>
+      <td>
+        <a href="#l211"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l228">tket::SimpleOnly::SimpleOnly()</a>
+      </td>
+      <td>
+        <a href="#l228">228</a>
+      </td>
+      <td>
+        <a href="#l228"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l150">tket::Subcircuit::Subcircuit()</a>
+      </td>
+      <td>
+        <a href="#l150">150</a>
+      </td>
+      <td>
+        <a href="#l150"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l151">tket::Subcircuit::Subcircuit(std::vector&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, std::allocator&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt; &gt; const&amp;, std::vector&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, std::allocator&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt; &gt; const&amp;, std::unordered_set&lt;void*, std::hash&lt;void*&gt;, std::equal_to&lt;void*&gt;, std::allocator&lt;void*&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l151">151</a>
+      </td>
+      <td>
+        <a href="#l151"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l159">tket::Subcircuit::Subcircuit(std::vector&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, std::allocator&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt; &gt; const&amp;, std::vector&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, std::allocator&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt; &gt; const&amp;, std::vector&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, std::allocator&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt; &gt; const&amp;, std::vector&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, std::allocator&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt; &gt; const&amp;, std::vector&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, std::allocator&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt; &gt; const&amp;, std::unordered_set&lt;void*, std::hash&lt;void*&gt;, std::equal_to&lt;void*&gt;, std::allocator&lt;void*&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l159">159</a>
+      </td>
+      <td>
+        <a href="#l159"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l202">tket::Unsupported::Unsupported(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l202">202</a>
+      </td>
+      <td>
+        <a href="#l202"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l861">void* tket::Circuit::add_box&lt;tket::PhasePolyBox, tket::Qubit&gt;(tket::PhasePolyBox const&amp;, std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;, std::optional&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l861">861</a>
+      </td>
+      <td>
+        <a href="#l861"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l799">void* tket::Circuit::add_op&lt;tket::Node&gt;(tket::OpType, SymEngine::Expression const&amp;, std::vector&lt;tket::Node, std::allocator&lt;tket::Node&gt; &gt; const&amp;, std::optional&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l799">799</a>
+      </td>
+      <td>
+        <a href="#l799"> called 56 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l816">void* tket::Circuit::add_op&lt;tket::Node&gt;(tket::OpType, std::vector&lt;SymEngine::Expression, std::allocator&lt;SymEngine::Expression&gt; &gt; const&amp;, std::vector&lt;tket::Node, std::allocator&lt;tket::Node&gt; &gt; const&amp;, std::optional&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l816">816</a>
+      </td>
+      <td>
+        <a href="#l816"> called 236 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l782">void* tket::Circuit::add_op&lt;tket::Node&gt;(tket::OpType, std::vector&lt;tket::Node, std::allocator&lt;tket::Node&gt; &gt; const&amp;, std::optional&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l782">782</a>
+      </td>
+      <td>
+        <a href="#l782"> called 180 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1637">void* tket::Circuit::add_op&lt;tket::Qubit&gt;(std::shared_ptr&lt;tket::Op const&gt; const&amp;, std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;, std::optional&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l1637">1637</a>
+      </td>
+      <td>
+        <a href="#l1637"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l799">void* tket::Circuit::add_op&lt;tket::Qubit&gt;(tket::OpType, SymEngine::Expression const&amp;, std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;, std::optional&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l799">799</a>
+      </td>
+      <td>
+        <a href="#l799"> called 43 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l816">void* tket::Circuit::add_op&lt;tket::Qubit&gt;(tket::OpType, std::vector&lt;SymEngine::Expression, std::allocator&lt;SymEngine::Expression&gt; &gt; const&amp;, std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;, std::optional&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l816">816</a>
+      </td>
+      <td>
+        <a href="#l816"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l782">void* tket::Circuit::add_op&lt;tket::Qubit&gt;(tket::OpType, std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;, std::optional&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l782">782</a>
+      </td>
+      <td>
+        <a href="#l782"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l1637">void* tket::Circuit::add_op&lt;tket::UnitID&gt;(std::shared_ptr&lt;tket::Op const&gt; const&amp;, std::vector&lt;tket::UnitID, std::allocator&lt;tket::UnitID&gt; &gt; const&amp;, std::optional&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l1637">1637</a>
+      </td>
+      <td>
+        <a href="#l1637"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l816">void* tket::Circuit::add_op&lt;tket::UnitID&gt;(tket::OpType, std::vector&lt;SymEngine::Expression, std::allocator&lt;SymEngine::Expression&gt; &gt; const&amp;, std::vector&lt;tket::UnitID, std::allocator&lt;tket::UnitID&gt; &gt; const&amp;, std::optional&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l816">816</a>
+      </td>
+      <td>
+        <a href="#l816"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l782">void* tket::Circuit::add_op&lt;tket::UnitID&gt;(tket::OpType, std::vector&lt;tket::UnitID, std::allocator&lt;tket::UnitID&gt; &gt; const&amp;, std::optional&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l782">782</a>
+      </td>
+      <td>
+        <a href="#l782"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l799">void* tket::Circuit::add_op&lt;unsigned int&gt;(tket::OpType, SymEngine::Expression const&amp;, std::vector&lt;unsigned int, std::allocator&lt;unsigned int&gt; &gt; const&amp;, std::optional&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l799">799</a>
+      </td>
+      <td>
+        <a href="#l799"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l816">void* tket::Circuit::add_op&lt;unsigned int&gt;(tket::OpType, std::vector&lt;SymEngine::Expression, std::allocator&lt;SymEngine::Expression&gt; &gt; const&amp;, std::vector&lt;unsigned int, std::allocator&lt;unsigned int&gt; &gt; const&amp;, std::optional&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l816">816</a>
+      </td>
+      <td>
+        <a href="#l816"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l782">void* tket::Circuit::add_op&lt;unsigned int&gt;(tket::OpType, std::vector&lt;unsigned int, std::allocator&lt;unsigned int&gt; &gt; const&amp;, std::optional&lt;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l782">782</a>
+      </td>
+      <td>
+        <a href="#l782"> not called</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -359,7 +953,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;type_traits&gt;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;tkassert/Assert.hpp&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -367,7 +961,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;unordered_map&gt;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;tklog/TketLog.hpp&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -375,7 +969,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;utility&gt;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;type_traits&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -383,7 +977,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;unordered_map&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -391,7 +985,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;utility&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -399,7 +993,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Boxes.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;vector&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -407,7 +1001,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Command.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -415,7 +1009,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Conditional.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Boxes.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -423,7 +1017,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;DAGDefs.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Command.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -431,7 +1025,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Gate/OpPtrFunctions.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Conditional.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -439,7 +1033,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Assert.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;DAGDefs.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -447,7 +1041,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Constants.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Gate/OpPtrFunctions.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -455,7 +1049,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/GraphHeaders.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Constants.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -463,7 +1057,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Json.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/GraphHeaders.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -471,7 +1065,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/SequencedContainers.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Json.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -479,7 +1073,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/TketLog.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/SequencedContainers.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -654,7 +1248,7 @@
       <td class="lineno"><a id="l74" href="#l74">74</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">169114</td>
+      <td class="linecount coveredLine">169112</td>
       <td class="src coveredLine">  <span class="n">register_info_t</span> <span class="n">reg_info</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">id_</span><span class="p">.</span><span class="n">reg_info</span><span class="p">();</span> <span class="p">}</span></td>
     </tr>
 
@@ -1510,7 +2104,7 @@
       <td class="lineno"><a id="l181" href="#l181">181</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">10398</td>
+      <td class="linecount coveredLine">10397</td>
       <td class="src coveredLine">  <span class="kt">void</span> <span class="nf">init</span><span class="p">()</span> <span class="p">{</span></td>
     </tr>
 
@@ -1518,7 +2112,7 @@
       <td class="lineno"><a id="l182" href="#l182">182</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">10398</td>
+      <td class="linecount coveredLine">10397</td>
       <td class="src coveredLine">    <span class="n">slice</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">Slice</span><span class="o">&gt;</span><span class="p">();</span></td>
     </tr>
 
@@ -1526,7 +2120,7 @@
       <td class="lineno"><a id="l183" href="#l183">183</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">10398</td>
+      <td class="linecount coveredLine">10397</td>
       <td class="src coveredLine">    <span class="n">u_frontier</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">unit_frontier_t</span><span class="o">&gt;</span><span class="p">();</span></td>
     </tr>
 
@@ -1534,7 +2128,7 @@
       <td class="lineno"><a id="l184" href="#l184">184</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">10398</td>
+      <td class="linecount coveredLine">10397</td>
       <td class="src coveredLine">    <span class="n">b_frontier</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">b_frontier_t</span><span class="o">&gt;</span><span class="p">();</span></td>
     </tr>
 
@@ -1542,7 +2136,7 @@
       <td class="lineno"><a id="l185" href="#l185">185</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">10398</td>
+      <td class="linecount coveredLine">10397</td>
       <td class="src coveredLine">  <span class="p">}</span></td>
     </tr>
 
@@ -2382,7 +2976,7 @@
       <td class="lineno"><a id="l288" href="#l288">288</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">65812</td>
+      <td class="linecount coveredLine">65810</td>
       <td class="src coveredLine">    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">unit_frontier_t</span><span class="o">&gt;</span> <span class="n">get_u_frontier</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span></td>
     </tr>
 
@@ -2390,7 +2984,7 @@
       <td class="lineno"><a id="l289" href="#l289">289</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">65812</td>
+      <td class="linecount coveredLine">65810</td>
       <td class="src coveredLine">      <span class="k">return</span> <span class="n">cut_</span><span class="p">.</span><span class="n">u_frontier</span><span class="p">;</span></td>
     </tr>
 
@@ -2430,7 +3024,7 @@
       <td class="lineno"><a id="l294" href="#l294">294</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">65812</td>
+      <td class="linecount coveredLine">65810</td>
       <td class="src coveredLine">    <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">b_frontier_t</span><span class="o">&gt;</span> <span class="n">get_prev_b_frontier</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span></td>
     </tr>
 
@@ -2438,7 +3032,7 @@
       <td class="lineno"><a id="l295" href="#l295">295</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">65812</td>
+      <td class="linecount coveredLine">65810</td>
       <td class="src coveredLine">      <span class="k">return</span> <span class="n">prev_b_frontier_</span><span class="p">;</span></td>
     </tr>
 
@@ -2812,7 +3406,7 @@
       <td class="lineno"><a id="l340" href="#l340">340</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">13837</td>
+      <td class="linecount coveredLine">13835</td>
       <td class="src coveredLine">    <span class="k">const</span> <span class="n">Command</span> <span class="o">*</span><span class="k">operator</span><span class="o">-&gt;</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="o">&amp;</span><span class="n">current_command_</span><span class="p">;</span> <span class="p">}</span></td>
     </tr>
 
@@ -13812,11 +14406,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

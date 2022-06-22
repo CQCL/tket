@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-low">53.5%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>14</td>
+      <td>16</td>
+      <td class="coverage-medium">87.5%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>362</td>
       <td>1144</td>
@@ -52,10 +59,201 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l781">tket::Transforms::cnx_gray_decomp(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l781">781</a>
+      </td>
+      <td>
+        <a href="#l781"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l241">tket::Transforms::cnx_normal_decomp(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l241">241</a>
+      </td>
+      <td>
+        <a href="#l241"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l694">tket::Transforms::decomp_CCX()</a>
+      </td>
+      <td>
+        <a href="#l694">694</a>
+      </td>
+      <td>
+        <a href="#l694"> called 13 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l695">tket::Transforms::decomp_CCX()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l695">695</a>
+      </td>
+      <td>
+        <a href="#l695"> called 15 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l775">tket::Transforms::decomp_arbitrary_controlled_gates()</a>
+      </td>
+      <td>
+        <a href="#l775">775</a>
+      </td>
+      <td>
+        <a href="#l775"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l754">tket::Transforms::decomp_controlled_Rys()</a>
+      </td>
+      <td>
+        <a href="#l754">754</a>
+      </td>
+      <td>
+        <a href="#l754"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l755">tket::Transforms::decomp_controlled_Rys()::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l755">755</a>
+      </td>
+      <td>
+        <a href="#l755"> called 7 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l701">tket::Transforms::decomposed_CnRy(std::shared_ptr&lt;tket::Op const&gt;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l701">701</a>
+      </td>
+      <td>
+        <a href="#l701"> called 13 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l358">tket::Transforms::find_first_differing_val(std::deque&lt;bool, std::allocator&lt;bool&gt; &gt; const&amp;, std::deque&lt;bool, std::allocator&lt;bool&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l358">358</a>
+      </td>
+      <td>
+        <a href="#l358"> called 238 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l51">tket::Transforms::incrementer_borrow_1_qubit(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l51">51</a>
+      </td>
+      <td>
+        <a href="#l51"> called 11 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l191">tket::Transforms::incrementer_borrow_n_qubits(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l191">191</a>
+      </td>
+      <td>
+        <a href="#l191"> called 21 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l344">tket::Transforms::lemma54(SymEngine::Expression const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l344">344</a>
+      </td>
+      <td>
+        <a href="#l344"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l374">tket::Transforms::lemma71(unsigned int, SymEngine::Expression const&amp;, tket::OpType const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l374">374</a>
+      </td>
+      <td>
+        <a href="#l374"> called 11 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l459">tket::Transforms::lemma72(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l459">459</a>
+      </td>
+      <td>
+        <a href="#l459"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l491">tket::Transforms::lemma73(tket::Circuit&amp;, std::pair&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, void*&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l491">491</a>
+      </td>
+      <td>
+        <a href="#l491"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l668">tket::Transforms::lemma79(tket::Circuit&amp;, unsigned int, SymEngine::Expression const&amp;, std::vector&lt;std::pair&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, void*&gt;, std::allocator&lt;std::pair&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, void*&gt; &gt; &gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l668">668</a>
+      </td>
+      <td>
+        <a href="#l668"> not called</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -8120,11 +8318,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

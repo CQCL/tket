@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">93.8%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>10</td>
+      <td>11</td>
+      <td class="coverage-high">90.9%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>27</td>
       <td>58</td>
@@ -52,10 +59,146 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l73">tket::MetaOp::MetaOp()</a>
+      </td>
+      <td>
+        <a href="#l73">73</a>
+      </td>
+      <td>
+        <a href="#l73"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l23">tket::MetaOp::MetaOp(tket::OpType, std::vector&lt;tket::EdgeType, std::allocator&lt;tket::EdgeType&gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l23">23</a>
+      </td>
+      <td>
+        <a href="#l23"> called 177160 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l58">tket::MetaOp::deserialize(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l58">58</a>
+      </td>
+      <td>
+        <a href="#l58"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l32">tket::MetaOp::free_symbols() const</a>
+      </td>
+      <td>
+        <a href="#l32">32</a>
+      </td>
+      <td>
+        <a href="#l32"> called 409 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l43">tket::MetaOp::get_signature() const</a>
+      </td>
+      <td>
+        <a href="#l43">43</a>
+      </td>
+      <td>
+        <a href="#l43"> called 1128 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l64">tket::MetaOp::is_clifford() const</a>
+      </td>
+      <td>
+        <a href="#l64">64</a>
+      </td>
+      <td>
+        <a href="#l64"> called 41 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l68">tket::MetaOp::is_equal(tket::Op const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l68">68</a>
+      </td>
+      <td>
+        <a href="#l68"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l34">tket::MetaOp::n_qubits() const</a>
+      </td>
+      <td>
+        <a href="#l34">34</a>
+      </td>
+      <td>
+        <a href="#l34"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l51">tket::MetaOp::serialize[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l51">51</a>
+      </td>
+      <td>
+        <a href="#l51"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l28">tket::MetaOp::symbol_substitution(std::map&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt;, Teuchos::RCP&lt;SymEngine::Basic const&gt;, SymEngine::RCPBasicKeyLess, std::allocator&lt;std::pair&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt; const, Teuchos::RCP&lt;SymEngine::Basic const&gt; &gt; &gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l28">28</a>
+      </td>
+      <td>
+        <a href="#l28"> called 860 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l66">tket::MetaOp::~MetaOp()</a>
+      </td>
+      <td>
+        <a href="#l66">66</a>
+      </td>
+      <td>
+        <a href="#l66"> called 177160 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -246,7 +389,7 @@
       <td class="lineno"><a id="l23" href="#l23">23</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">177162</td>
+      <td class="linecount coveredLine">177160</td>
       <td class="src coveredLine"><span class="n">MetaOp</span><span class="o">::</span><span class="n">MetaOp</span><span class="p">(</span><span class="n">OpType</span> <span class="n">type</span><span class="p">,</span> <span class="n">op_signature_t</span> <span class="n">signature</span><span class="p">)</span></td>
     </tr>
 
@@ -256,12 +399,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 177162 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 177160 times.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">177162</td>
+      <td class="linecount coveredLine">177160</td>
       <td class="src coveredLine">    <span class="o">:</span> <span class="n">Op</span><span class="p">(</span><span class="n">type</span><span class="p">),</span> <span class="n">signature_</span><span class="p">(</span><span class="n">signature</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -271,16 +414,16 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/6</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 177162 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 177160 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
-          <div class="takenBranch">&check; Branch 4 taken 177162 times.</div>
+          <div class="takenBranch">&check; Branch 4 taken 177160 times.</div>
           <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
           <div class="notTakenBranch">&cross; Branch 8 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">177162</td>
+      <td class="linecount coveredLine">177160</td>
       <td class="src coveredLine">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">is_metaop_type</span><span class="p">(</span><span class="n">type</span><span class="p">))</span> <span class="k">throw</span> <span class="n">NotValid</span><span class="p">();</span></td>
     </tr>
 
@@ -288,7 +431,7 @@
       <td class="lineno"><a id="l26" href="#l26">26</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">177162</td>
+      <td class="linecount coveredLine">177160</td>
       <td class="src coveredLine"><span class="p">}</span></td>
     </tr>
 
@@ -708,7 +851,7 @@
       <td class="lineno"><a id="l66" href="#l66">66</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">354324</td>
+      <td class="linecount coveredLine">354320</td>
       <td class="src coveredLine"><span class="n">MetaOp</span><span class="o">::~</span><span class="n">MetaOp</span><span class="p">()</span> <span class="p">{}</span></td>
     </tr>
 
@@ -810,11 +953,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

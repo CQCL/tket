@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">92.2%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>8</td>
+      <td>8</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>146</td>
       <td>528</td>
@@ -52,10 +59,113 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l33">tket::WeightedSubgraphMonomorphism::MainSolver::MainSolver(std::map&lt;std::pair&lt;unsigned long, unsigned long&gt;, unsigned long, std::less&lt;std::pair&lt;unsigned long, unsigned long&gt; &gt;, std::allocator&lt;std::pair&lt;std::pair&lt;unsigned long, unsigned long&gt; const, unsigned long&gt; &gt; &gt; const&amp;, std::map&lt;std::pair&lt;unsigned long, unsigned long&gt;, unsigned long, std::less&lt;std::pair&lt;unsigned long, unsigned long&gt; &gt;, std::allocator&lt;std::pair&lt;std::pair&lt;unsigned long, unsigned long&gt; const, unsigned long&gt; &gt; &gt; const&amp;, tket::WeightedSubgraphMonomorphism::MainSolverParameters const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l33">33</a>
+      </td>
+      <td>
+        <a href="#l33"> called 2878 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l352">tket::WeightedSubgraphMonomorphism::MainSolver::add_solution_from_final_node(tket::WeightedSubgraphMonomorphism::MainSolverParameters const&amp;, tket::WeightedSubgraphMonomorphism::SearchBranch::ReductionParameters const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l352">352</a>
+      </td>
+      <td>
+        <a href="#l352"> called 7930 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l186">tket::WeightedSubgraphMonomorphism::MainSolver::get_solution_data() const</a>
+      </td>
+      <td>
+        <a href="#l186">186</a>
+      </td>
+      <td>
+        <a href="#l186"> called 5585 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l247">tket::WeightedSubgraphMonomorphism::MainSolver::internal_solve(tket::WeightedSubgraphMonomorphism::MainSolverParameters const&amp;, unsigned long, std::chrono::time_point&lt;std::chrono::_V2::steady_clock, std::chrono::duration&lt;long, std::ratio&lt;1l, 1000000000l&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l247">247</a>
+      </td>
+      <td>
+        <a href="#l247"> called 1440 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l389">tket::WeightedSubgraphMonomorphism::MainSolver::move_down_from_reduced_node(tket::WeightedSubgraphMonomorphism::SearchBranch::ReductionParameters const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l389">389</a>
+      </td>
+      <td>
+        <a href="#l389"> called 82898 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l215">tket::WeightedSubgraphMonomorphism::MainSolver::solve(tket::WeightedSubgraphMonomorphism::MainSolverParameters const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l215">215</a>
+      </td>
+      <td>
+        <a href="#l215"> called 253 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l184">tket::WeightedSubgraphMonomorphism::MainSolver::~MainSolver()</a>
+      </td>
+      <td>
+        <a href="#l184">184</a>
+      </td>
+      <td>
+        <a href="#l184"> called 2878 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l237">tket::WeightedSubgraphMonomorphism::terminate_with_enough_full_solutions(tket::WeightedSubgraphMonomorphism::MainSolverParameters const&amp;, tket::WeightedSubgraphMonomorphism::SolutionData const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l237">237</a>
+      </td>
+      <td>
+        <a href="#l237"> called 9370 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -223,7 +333,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;tkassert/Assert.hpp&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -231,7 +341,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Assert.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -4456,11 +4566,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

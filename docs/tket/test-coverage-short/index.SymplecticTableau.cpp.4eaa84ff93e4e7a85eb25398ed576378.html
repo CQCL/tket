@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">92.5%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>21</td>
+      <td>22</td>
+      <td class="coverage-high">95.5%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>242</td>
       <td>386</td>
@@ -52,10 +59,267 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l23">tket::BoolPauli::operator&lt;(tket::BoolPauli const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l23">23</a>
+      </td>
+      <td>
+        <a href="#l23"> called 4286 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l30">tket::BoolPauli::to_pauli() const</a>
+      </td>
+      <td>
+        <a href="#l30">30</a>
+      </td>
+      <td>
+        <a href="#l30"> called 228 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l62">tket::SymplecticTableau::SymplecticTableau(Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt; const&amp;, Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt; const&amp;, Eigen::Matrix&lt;bool, -1, 1, 0, -1, 1&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l62">62</a>
+      </td>
+      <td>
+        <a href="#l62"> called 34 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l77">tket::SymplecticTableau::SymplecticTableau(std::vector&lt;tket::PauliStabiliser, std::allocator&lt;tket::PauliStabiliser&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l77">77</a>
+      </td>
+      <td>
+        <a href="#l77"> called 35 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l306">tket::SymplecticTableau::anticommuting_rows() const</a>
+      </td>
+      <td>
+        <a href="#l306">306</a>
+      </td>
+      <td>
+        <a href="#l306"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l148">tket::SymplecticTableau::apply_CX(unsigned int, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l148">148</a>
+      </td>
+      <td>
+        <a href="#l148"> called 110 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l136">tket::SymplecticTableau::apply_S(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l136">136</a>
+      </td>
+      <td>
+        <a href="#l136"> called 198 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l142">tket::SymplecticTableau::apply_V(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l142">142</a>
+      </td>
+      <td>
+        <a href="#l142"> called 111 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l157">tket::SymplecticTableau::apply_gate(tket::OpType, std::vector&lt;unsigned int, std::allocator&lt;unsigned int&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l157">157</a>
+      </td>
+      <td>
+        <a href="#l157"> called 137 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l247">tket::SymplecticTableau::apply_pauli_gadget(tket::PauliStabiliser const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l247">247</a>
+      </td>
+      <td>
+        <a href="#l247"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l358">tket::SymplecticTableau::col_mult(Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, -1, 1, true&gt; const&amp;, Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, -1, 1, true&gt; const&amp;, bool, Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, -1, 1, true&gt;&amp;, Eigen::Matrix&lt;bool, -1, 1, 0, -1, 1&gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l358">358</a>
+      </td>
+      <td>
+        <a href="#l358"> called 309 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l330">tket::SymplecticTableau::conjugate() const</a>
+      </td>
+      <td>
+        <a href="#l330">330</a>
+      </td>
+      <td>
+        <a href="#l330"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l101">tket::SymplecticTableau::get_n_qubits() const</a>
+      </td>
+      <td>
+        <a href="#l101">101</a>
+      </td>
+      <td>
+        <a href="#l101"> called 6 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l100">tket::SymplecticTableau::get_n_rows() const</a>
+      </td>
+      <td>
+        <a href="#l100">100</a>
+      </td>
+      <td>
+        <a href="#l100"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l103">tket::SymplecticTableau::get_pauli(unsigned int) const</a>
+      </td>
+      <td>
+        <a href="#l103">103</a>
+      </td>
+      <td>
+        <a href="#l103"> called 76 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l119">tket::SymplecticTableau::operator==(tket::SymplecticTableau const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l119">119</a>
+      </td>
+      <td>
+        <a href="#l119"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l322">tket::SymplecticTableau::rank() const</a>
+      </td>
+      <td>
+        <a href="#l322">322</a>
+      </td>
+      <td>
+        <a href="#l322"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l342">tket::SymplecticTableau::row_mult(Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, 1, -1, false&gt; const&amp;, Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, 1, -1, false&gt; const&amp;, bool const&amp;, Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, 1, -1, false&gt; const&amp;, Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, 1, -1, false&gt; const&amp;, bool const&amp;, std::complex&lt;double&gt;, Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, 1, -1, false&gt;&amp;, Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, 1, -1, false&gt;&amp;, bool&amp;)</a>
+      </td>
+      <td>
+        <a href="#l342">342</a>
+      </td>
+      <td>
+        <a href="#l342"> called 78 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l128">tket::SymplecticTableau::row_mult(unsigned int, unsigned int, std::complex&lt;double&gt;)</a>
+      </td>
+      <td>
+        <a href="#l128">128</a>
+      </td>
+      <td>
+        <a href="#l128"> called 69 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l375">tket::from_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, tket::SymplecticTableau&amp;)</a>
+      </td>
+      <td>
+        <a href="#l375">375</a>
+      </td>
+      <td>
+        <a href="#l375"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l111">tket::operator&lt;&lt;(std::ostream&amp;, tket::SymplecticTableau const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l111">111</a>
+      </td>
+      <td>
+        <a href="#l111"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l367">tket::to_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, tket::SymplecticTableau const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l367">367</a>
+      </td>
+      <td>
+        <a href="#l367"> called 1 time</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -4057,11 +4321,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

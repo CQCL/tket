@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-low">70.7%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>9</td>
+      <td>11</td>
+      <td class="coverage-medium">81.8%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>93</td>
       <td>214</td>
@@ -52,10 +59,146 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l135">auto tket::to_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, tket::MeasurementSetup const&amp;)::{lambda(auto:1, auto:2)#1}::operator()&lt;std::pair&lt;tket::QubitPauliString, std::vector&lt;tket::MeasurementSetup::MeasurementBitMap, std::allocator&lt;tket::QubitPauliString&gt; &gt; &gt;, std::vector&lt;tket::MeasurementSetup::MeasurementBitMap, std::allocator&lt;tket::QubitPauliString&gt; &gt; &gt;(std::pair&lt;tket::QubitPauliString, std::vector&lt;tket::MeasurementSetup::MeasurementBitMap, std::allocator&lt;tket::QubitPauliString&gt; &gt; &gt;, std::vector&lt;tket::MeasurementSetup::MeasurementBitMap, std::allocator&lt;tket::QubitPauliString&gt; &gt;) const</a>
+      </td>
+      <td>
+        <a href="#l135">135</a>
+      </td>
+      <td>
+        <a href="#l135"> called 13 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l21">tket::MeasurementSetup::MeasurementBitMap::to_str[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l21">21</a>
+      </td>
+      <td>
+        <a href="#l21"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l38">tket::MeasurementSetup::add_measurement_circuit(tket::Circuit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l38">38</a>
+      </td>
+      <td>
+        <a href="#l38"> called 46 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l42">tket::MeasurementSetup::add_result_for_term(tket::QubitPauliString const&amp;, tket::MeasurementSetup::MeasurementBitMap const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l42">42</a>
+      </td>
+      <td>
+        <a href="#l42"> called 177 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l47">tket::MeasurementSetup::add_result_for_term(tket::QubitPauliTensor const&amp;, tket::MeasurementSetup::MeasurementBitMap const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l47">47</a>
+      </td>
+      <td>
+        <a href="#l47"> called 113 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l92">tket::MeasurementSetup::to_str[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l92">92</a>
+      </td>
+      <td>
+        <a href="#l92"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l52">tket::MeasurementSetup::verify() const</a>
+      </td>
+      <td>
+        <a href="#l52">52</a>
+      </td>
+      <td>
+        <a href="#l52"> called 15 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l142">tket::from_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, tket::MeasurementSetup&amp;)</a>
+      </td>
+      <td>
+        <a href="#l142">142</a>
+      </td>
+      <td>
+        <a href="#l142"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l117">tket::from_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, tket::MeasurementSetup::MeasurementBitMap&amp;)</a>
+      </td>
+      <td>
+        <a href="#l117">117</a>
+      </td>
+      <td>
+        <a href="#l117"> called 9 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l124">tket::to_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, tket::MeasurementSetup const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l124">124</a>
+      </td>
+      <td>
+        <a href="#l124"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l110">tket::to_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, tket::MeasurementSetup::MeasurementBitMap const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l110">110</a>
+      </td>
+      <td>
+        <a href="#l110"> called 18 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -1676,11 +1819,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-low">71.4%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>5</td>
+      <td>11</td>
+      <td class="coverage-low">45.5%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>19</td>
       <td>76</td>
@@ -52,10 +59,146 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l50">bool tket::WeightedSubgraphMonomorphism::is_maximum&lt;unsigned long&gt;(unsigned long const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l50">50</a>
+      </td>
+      <td>
+        <a href="#l50"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l91">bool tket::WeightedSubgraphMonomorphism::is_sorted_and_unique&lt;std::pair&lt;unsigned long, unsigned long&gt; &gt;(std::vector&lt;std::pair&lt;unsigned long, unsigned long&gt;, std::allocator&lt;std::pair&lt;unsigned long, unsigned long&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l91">91</a>
+      </td>
+      <td>
+        <a href="#l91"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l91">bool tket::WeightedSubgraphMonomorphism::is_sorted_and_unique&lt;unsigned long&gt;(std::vector&lt;unsigned long, std::allocator&lt;unsigned long&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l91">91</a>
+      </td>
+      <td>
+        <a href="#l91"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l62">std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; tket::WeightedSubgraphMonomorphism::str&lt;std::set&lt;unsigned long, std::less&lt;unsigned long&gt;, std::allocator&lt;unsigned long&gt; &gt; &gt;(std::set&lt;unsigned long, std::less&lt;unsigned long&gt;, std::allocator&lt;unsigned long&gt; &gt; const&amp;, unsigned long)</a>
+      </td>
+      <td>
+        <a href="#l62">62</a>
+      </td>
+      <td>
+        <a href="#l62"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l164">std::optional&lt;unsigned long&gt; tket::WeightedSubgraphMonomorphism::get_checked_product&lt;unsigned long&gt;(unsigned long, unsigned long)</a>
+      </td>
+      <td>
+        <a href="#l164">164</a>
+      </td>
+      <td>
+        <a href="#l164"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l129">std::optional&lt;unsigned long&gt; tket::WeightedSubgraphMonomorphism::get_checked_sum&lt;unsigned long&gt;(unsigned long, unsigned long)</a>
+      </td>
+      <td>
+        <a href="#l129">129</a>
+      </td>
+      <td>
+        <a href="#l129"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l104">std::optional&lt;unsigned long&gt; tket::WeightedSubgraphMonomorphism::get_optional_value&lt;std::pair&lt;unsigned long, unsigned long&gt;, unsigned long&gt;(std::map&lt;std::pair&lt;unsigned long, unsigned long&gt;, unsigned long, std::less&lt;std::pair&lt;unsigned long, unsigned long&gt; &gt;, std::allocator&lt;std::pair&lt;std::pair&lt;unsigned long, unsigned long&gt; const, unsigned long&gt; &gt; &gt; const&amp;, std::pair&lt;unsigned long, unsigned long&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l104">104</a>
+      </td>
+      <td>
+        <a href="#l104"> called 524653 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l104">std::optional&lt;unsigned long&gt; tket::WeightedSubgraphMonomorphism::get_optional_value&lt;unsigned long, unsigned long&gt;(std::map&lt;unsigned long, unsigned long, std::less&lt;unsigned long&gt;, std::allocator&lt;std::pair&lt;unsigned long const, unsigned long&gt; &gt; &gt; const&amp;, unsigned long const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l104">104</a>
+      </td>
+      <td>
+        <a href="#l104"> called 670975 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l225">unsigned long tket::WeightedSubgraphMonomorphism::get_product_or_throw&lt;unsigned long&gt;(unsigned long, unsigned long)</a>
+      </td>
+      <td>
+        <a href="#l225">225</a>
+      </td>
+      <td>
+        <a href="#l225"> called 35456 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l208">unsigned long tket::WeightedSubgraphMonomorphism::get_sum_or_throw&lt;unsigned long&gt;(unsigned long, unsigned long)</a>
+      </td>
+      <td>
+        <a href="#l208">208</a>
+      </td>
+      <td>
+        <a href="#l208"> called 44617 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l41">void tket::WeightedSubgraphMonomorphism::set_maximum&lt;unsigned long&gt;(unsigned long&amp;)</a>
+      </td>
+      <td>
+        <a href="#l41">41</a>
+      </td>
+      <td>
+        <a href="#l41"> not called</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -2085,11 +2228,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

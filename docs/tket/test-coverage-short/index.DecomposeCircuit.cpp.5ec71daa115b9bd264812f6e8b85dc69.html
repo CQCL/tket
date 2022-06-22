@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-medium">83.0%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>6</td>
+      <td>7</td>
+      <td class="coverage-medium">85.7%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>69</td>
       <td>168</td>
@@ -52,10 +59,102 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l96">tket::tket_sim::internal::add_global_phase(tket::Circuit const&amp;, tket::tket_sim::internal::GateNodesBuffer&amp;)</a>
+      </td>
+      <td>
+        <a href="#l96">96</a>
+      </td>
+      <td>
+        <a href="#l96"> called 2502 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l195">tket::tket_sim::internal::decompose_circuit(tket::Circuit const&amp;, tket::tket_sim::internal::GateNodesBuffer&amp;, double)</a>
+      </td>
+      <td>
+        <a href="#l195">195</a>
+      </td>
+      <td>
+        <a href="#l195"> called 2419 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l124">tket::tket_sim::internal::decompose_circuit_recursive(tket::Circuit const&amp;, tket::tket_sim::internal::GateNodesBuffer&amp;, std::vector&lt;unsigned int, std::allocator&lt;unsigned int&gt; &gt; const&amp;, double)</a>
+      </td>
+      <td>
+        <a href="#l124">124</a>
+      </td>
+      <td>
+        <a href="#l124"> called 2502 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l115">tket::tket_sim::internal::fill_qubit_indices(std::vector&lt;tket::UnitID, std::allocator&lt;tket::UnitID&gt; &gt; const&amp;, std::map&lt;tket::Qubit, unsigned int, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, unsigned int&gt; &gt; &gt; const&amp;, tket::tket_sim::internal::GateNode&amp;)</a>
+      </td>
+      <td>
+        <a href="#l115">115</a>
+      </td>
+      <td>
+        <a href="#l115"> called 28747 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l53">tket::tket_sim::internal::fill_triplets_directly_from_box(tket::tket_sim::internal::GateNode&amp;, std::shared_ptr&lt;tket::Box const&gt; const&amp;, tket::OpType, double)</a>
+      </td>
+      <td>
+        <a href="#l53">53</a>
+      </td>
+      <td>
+        <a href="#l53"> called 250 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l35">tket::tket_sim::internal::get_qmap_no_checks(tket::Circuit const&amp;, std::vector&lt;unsigned int, std::allocator&lt;unsigned int&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l35">35</a>
+      </td>
+      <td>
+        <a href="#l35"> called 2502 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">tket::tket_sim::internal::throw_with_op_error_message(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;, std::map&lt;tket::Qubit, unsigned int, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, unsigned int&gt; &gt; &gt; const&amp;, tket::Circuit const&amp;, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> not called</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -207,7 +306,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;tkassert/Assert.hpp&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -215,7 +314,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Circuit/Boxes.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -223,7 +322,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Circuit/Circuit.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Circuit/Boxes.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -231,7 +330,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Gate/Gate.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Circuit/Circuit.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -239,7 +338,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Gate/GateUnitaryMatrix.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Gate/Gate.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -247,7 +346,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;GateNodesBuffer.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Gate/GateUnitaryMatrix.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -255,7 +354,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;PauliExpBoxUnitaryCalculator.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;GateNodesBuffer.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -263,7 +362,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Assert.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;PauliExpBoxUnitaryCalculator.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -2055,11 +2154,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

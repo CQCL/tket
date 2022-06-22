@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-medium">86.5%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>32</td>
+      <td>36</td>
+      <td class="coverage-medium">88.9%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>471</td>
       <td>1028</td>
@@ -52,10 +59,421 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l551">tket::DecomposeTK2()</a>
+      </td>
+      <td>
+        <a href="#l551">551</a>
+      </td>
+      <td>
+        <a href="#l551"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l552">tket::DecomposeTK2(tket::Transforms::TwoQbFidelities const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l552">552</a>
+      </td>
+      <td>
+        <a href="#l552"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l586">tket::FullPeepholeOptimise(bool)</a>
+      </td>
+      <td>
+        <a href="#l586">586</a>
+      </td>
+      <td>
+        <a href="#l586"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l746">tket::GlobalisePhasedX(bool)</a>
+      </td>
+      <td>
+        <a href="#l746">746</a>
+      </td>
+      <td>
+        <a href="#l746"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l528">tket::KAKDecomposition(double)</a>
+      </td>
+      <td>
+        <a href="#l528">528</a>
+      </td>
+      <td>
+        <a href="#l528"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l740">tket::PauliSquash(tket::Transforms::PauliSynthStrat, tket::CXConfigType)</a>
+      </td>
+      <td>
+        <a href="#l740">740</a>
+      </td>
+      <td>
+        <a href="#l740"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l568">tket::ThreeQubitSquash(bool)</a>
+      </td>
+      <td>
+        <a href="#l568">568</a>
+      </td>
+      <td>
+        <a href="#l568"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l331">tket::aas_routing_pass(tket::Architecture const&amp;, unsigned int, tket::aas::CNotSynthType)</a>
+      </td>
+      <td>
+        <a href="#l331">331</a>
+      </td>
+      <td>
+        <a href="#l331"> called 13 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l334">tket::aas_routing_pass(tket::Architecture const&amp;, unsigned int, tket::aas::CNotSynthType)::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l334">334</a>
+      </td>
+      <td>
+        <a href="#l334"> called 13 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">tket::gen_clifford_simp_pass(bool)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l729">tket::gen_contextual_pass(tket::Transforms::AllowClassical, std::shared_ptr&lt;tket::Circuit const&gt;)</a>
+      </td>
+      <td>
+        <a href="#l729">729</a>
+      </td>
+      <td>
+        <a href="#l729"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l229">tket::gen_cx_mapping_pass(tket::Architecture const&amp;, std::shared_ptr&lt;tket::Placement&gt; const&amp;, std::vector&lt;std::shared_ptr&lt;tket::RoutingMethod const&gt;, std::allocator&lt;std::shared_ptr&lt;tket::RoutingMethod const&gt; &gt; &gt; const&amp;, bool, bool)</a>
+      </td>
+      <td>
+        <a href="#l229">229</a>
+      </td>
+      <td>
+        <a href="#l229"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l473">tket::gen_decompose_routing_gates_to_cxs_pass(tket::Architecture const&amp;, bool)</a>
+      </td>
+      <td>
+        <a href="#l473">473</a>
+      </td>
+      <td>
+        <a href="#l473"> called 10 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l218">tket::gen_default_mapping_pass(tket::Architecture const&amp;, bool)</a>
+      </td>
+      <td>
+        <a href="#l218">218</a>
+      </td>
+      <td>
+        <a href="#l218"> called 13 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l462">tket::gen_directed_cx_routing_pass(tket::Architecture const&amp;, std::vector&lt;std::shared_ptr&lt;tket::RoutingMethod const&gt;, std::allocator&lt;std::shared_ptr&lt;tket::RoutingMethod const&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l462">462</a>
+      </td>
+      <td>
+        <a href="#l462"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l91">tket::gen_euler_pass(tket::OpType const&amp;, tket::OpType const&amp;, bool)</a>
+      </td>
+      <td>
+        <a href="#l91">91</a>
+      </td>
+      <td>
+        <a href="#l91"> called 6 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l209">tket::gen_full_mapping_pass(tket::Architecture const&amp;, std::shared_ptr&lt;tket::Placement&gt; const&amp;, std::vector&lt;std::shared_ptr&lt;tket::RoutingMethod const&gt;, std::allocator&lt;std::shared_ptr&lt;tket::RoutingMethod const&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l209">209</a>
+      </td>
+      <td>
+        <a href="#l209"> called 19 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l454">tket::gen_full_mapping_pass_phase_poly(tket::Architecture const&amp;, unsigned int, tket::aas::CNotSynthType)</a>
+      </td>
+      <td>
+        <a href="#l454">454</a>
+      </td>
+      <td>
+        <a href="#l454"> called 13 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l188">tket::gen_naive_placement_pass(tket::Architecture const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l188">188</a>
+      </td>
+      <td>
+        <a href="#l188"> called 21 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l189">tket::gen_naive_placement_pass(tket::Architecture const&amp;)::{lambda(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;)#1}::operator()(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;) const</a>
+      </td>
+      <td>
+        <a href="#l189">189</a>
+      </td>
+      <td>
+        <a href="#l189"> called 22 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l606">tket::gen_optimise_phase_gadgets(tket::CXConfigType)</a>
+      </td>
+      <td>
+        <a href="#l606">606</a>
+      </td>
+      <td>
+        <a href="#l606"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l630">tket::gen_pairwise_pauli_gadgets(tket::CXConfigType)</a>
+      </td>
+      <td>
+        <a href="#l630">630</a>
+      </td>
+      <td>
+        <a href="#l630"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l151">tket::gen_placement_pass(std::shared_ptr&lt;tket::Placement&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l151">151</a>
+      </td>
+      <td>
+        <a href="#l151"> called 34 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l152">tket::gen_placement_pass(std::shared_ptr&lt;tket::Placement&gt; const&amp;)::{lambda(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;)#1}::operator()(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;) const</a>
+      </td>
+      <td>
+        <a href="#l152">152</a>
+      </td>
+      <td>
+        <a href="#l152"> called 35 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l284">tket::gen_placement_pass_phase_poly(tket::Architecture const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l284">284</a>
+      </td>
+      <td>
+        <a href="#l284"> called 13 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l285">tket::gen_placement_pass_phase_poly(tket::Architecture const&amp;)::{lambda(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;)#1}::operator()(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;) const</a>
+      </td>
+      <td>
+        <a href="#l285">285</a>
+      </td>
+      <td>
+        <a href="#l285"> called 13 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l44">tket::gen_rebase_pass(std::unordered_set&lt;tket::OpType, std::hash&lt;tket::OpType&gt;, std::equal_to&lt;tket::OpType&gt;, std::allocator&lt;tket::OpType&gt; &gt; const&amp;, tket::Circuit const&amp;, std::function&lt;tket::Circuit (SymEngine::Expression const&amp;, SymEngine::Expression const&amp;, SymEngine::Expression const&amp;)&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l44">44</a>
+      </td>
+      <td>
+        <a href="#l44"> called 9 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l131">tket::gen_rename_qubits_pass(std::map&lt;tket::Qubit, tket::Qubit, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Qubit&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l131">131</a>
+      </td>
+      <td>
+        <a href="#l131"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l133">tket::gen_rename_qubits_pass(std::map&lt;tket::Qubit, tket::Qubit, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Qubit&gt; &gt; &gt; const&amp;)::{lambda(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;)#1}::operator()(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;) const</a>
+      </td>
+      <td>
+        <a href="#l133">133</a>
+      </td>
+      <td>
+        <a href="#l133"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l245">tket::gen_routing_pass(tket::Architecture const&amp;, std::vector&lt;std::shared_ptr&lt;tket::RoutingMethod const&gt;, std::allocator&lt;std::shared_ptr&lt;tket::RoutingMethod const&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l245">245</a>
+      </td>
+      <td>
+        <a href="#l245"> called 30 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l247">tket::gen_routing_pass(tket::Architecture const&amp;, std::vector&lt;std::shared_ptr&lt;tket::RoutingMethod const&gt;, std::allocator&lt;std::shared_ptr&lt;tket::RoutingMethod const&gt; &gt; &gt; const&amp;)::{lambda(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;)#1}::operator()(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;) const</a>
+      </td>
+      <td>
+        <a href="#l247">247</a>
+      </td>
+      <td>
+        <a href="#l247"> called 27 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l705">tket::gen_simplify_initial(tket::Transforms::AllowClassical, tket::Transforms::CreateAllQubits, std::shared_ptr&lt;tket::Circuit const&gt;)</a>
+      </td>
+      <td>
+        <a href="#l705">705</a>
+      </td>
+      <td>
+        <a href="#l705"> called 6 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l686">tket::gen_special_UCC_synthesis(tket::Transforms::PauliSynthStrat, tket::CXConfigType)</a>
+      </td>
+      <td>
+        <a href="#l686">686</a>
+      </td>
+      <td>
+        <a href="#l686"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l73">tket::gen_squash_pass(std::unordered_set&lt;tket::OpType, std::hash&lt;tket::OpType&gt;, std::equal_to&lt;tket::OpType&gt;, std::allocator&lt;tket::OpType&gt; &gt; const&amp;, std::function&lt;tket::Circuit (SymEngine::Expression const&amp;, SymEngine::Expression const&amp;, SymEngine::Expression const&amp;)&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l73">73</a>
+      </td>
+      <td>
+        <a href="#l73"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l652">tket::gen_synthesise_pauli_graph(tket::Transforms::PauliSynthStrat, tket::CXConfigType)</a>
+      </td>
+      <td>
+        <a href="#l652">652</a>
+      </td>
+      <td>
+        <a href="#l652"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l514">tket::gen_user_defined_swap_decomp_pass(tket::Circuit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l514">514</a>
+      </td>
+      <td>
+        <a href="#l514"> called 2 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -8551,11 +8969,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

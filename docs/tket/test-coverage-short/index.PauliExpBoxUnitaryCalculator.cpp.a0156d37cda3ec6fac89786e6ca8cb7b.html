@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">97.4%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>9</td>
+      <td>9</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>40</td>
       <td>70</td>
@@ -52,10 +59,124 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l116">tket::tket_sim::internal::(anonymous namespace)::PauliExpBoxUnitaryCalculator::PauliExpBoxUnitaryCalculator()</a>
+      </td>
+      <td>
+        <a href="#l116">116</a>
+      </td>
+      <td>
+        <a href="#l116"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l126">tket::tket_sim::internal::(anonymous namespace)::PauliExpBoxUnitaryCalculator::add_entries(unsigned int, tket::Pauli)</a>
+      </td>
+      <td>
+        <a href="#l126">126</a>
+      </td>
+      <td>
+        <a href="#l126"> called 22830 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l138">tket::tket_sim::internal::(anonymous namespace)::PauliExpBoxUnitaryCalculator::append(tket::Pauli)</a>
+      </td>
+      <td>
+        <a href="#l138">138</a>
+      </td>
+      <td>
+        <a href="#l138"> called 6668 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l119">tket::tket_sim::internal::(anonymous namespace)::PauliExpBoxUnitaryCalculator::clear()</a>
+      </td>
+      <td>
+        <a href="#l119">119</a>
+      </td>
+      <td>
+        <a href="#l119"> called 1845 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l148">tket::tket_sim::internal::(anonymous namespace)::PauliExpBoxUnitaryCalculator::fill_triplets(double)</a>
+      </td>
+      <td>
+        <a href="#l148">148</a>
+      </td>
+      <td>
+        <a href="#l148"> called 1845 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l111">tket::tket_sim::internal::(anonymous namespace)::PauliExpBoxUnitaryCalculator::get()</a>
+      </td>
+      <td>
+        <a href="#l111">111</a>
+      </td>
+      <td>
+        <a href="#l111"> called 1845 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l60">tket::tket_sim::internal::get_combined_entry(Eigen::Triplet&lt;int, int&gt; const&amp;, Eigen::Triplet&lt;int, int&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l60">60</a>
+      </td>
+      <td>
+        <a href="#l60"> called 45660 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l33">tket::tket_sim::internal::get_pauli_map()</a>
+      </td>
+      <td>
+        <a href="#l33">33</a>
+      </td>
+      <td>
+        <a href="#l33"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l210">tket::tket_sim::internal::get_triplets(tket::PauliExpBox const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l210">210</a>
+      </td>
+      <td>
+        <a href="#l210"> called 1845 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -207,7 +328,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;tkassert/Assert.hpp&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -215,7 +336,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Circuit/Boxes.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -223,7 +344,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Assert.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Circuit/Boxes.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -2109,11 +2230,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

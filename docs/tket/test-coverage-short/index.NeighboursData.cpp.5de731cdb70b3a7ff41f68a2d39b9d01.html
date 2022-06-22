@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">95.7%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>10</td>
+      <td>10</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>80</td>
       <td>120</td>
@@ -52,10 +59,135 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l47">tket::WeightedSubgraphMonomorphism::NeighboursData::NeighboursData(std::map&lt;std::pair&lt;unsigned long, unsigned long&gt;, unsigned long, std::less&lt;std::pair&lt;unsigned long, unsigned long&gt; &gt;, std::allocator&lt;std::pair&lt;std::pair&lt;unsigned long, unsigned long&gt; const, unsigned long&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l47">47</a>
+      </td>
+      <td>
+        <a href="#l47"> called 5762 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l124">tket::WeightedSubgraphMonomorphism::NeighboursData::binary_search(unsigned long, std::vector&lt;std::pair&lt;unsigned long, unsigned long&gt;, std::allocator&lt;std::pair&lt;unsigned long, unsigned long&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l124">124</a>
+      </td>
+      <td>
+        <a href="#l124"> called 722909 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l134">tket::WeightedSubgraphMonomorphism::NeighboursData::get_degree(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l134">134</a>
+      </td>
+      <td>
+        <a href="#l134"> called 2592040 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l106">tket::WeightedSubgraphMonomorphism::NeighboursData::get_edge_weight_opt(unsigned long, unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l106">106</a>
+      </td>
+      <td>
+        <a href="#l106"> called 360866 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l156">tket::WeightedSubgraphMonomorphism::NeighboursData::get_neighbours_and_weights(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l156">156</a>
+      </td>
+      <td>
+        <a href="#l156"> called 1781634 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l31">tket::WeightedSubgraphMonomorphism::NeighboursData::get_neighbours_expensive(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l31">31</a>
+      </td>
+      <td>
+        <a href="#l31"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l27">tket::WeightedSubgraphMonomorphism::NeighboursData::get_number_of_edges() const</a>
+      </td>
+      <td>
+        <a href="#l27">27</a>
+      </td>
+      <td>
+        <a href="#l27"> called 11206 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l43">tket::WeightedSubgraphMonomorphism::NeighboursData::get_number_of_nonisolated_vertices() const</a>
+      </td>
+      <td>
+        <a href="#l43">43</a>
+      </td>
+      <td>
+        <a href="#l43"> called 14488 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l141">tket::WeightedSubgraphMonomorphism::NeighboursData::get_sorted_degree_sequence_expensive(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l141">141</a>
+      </td>
+      <td>
+        <a href="#l141"> called 35126 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l163">tket::WeightedSubgraphMonomorphism::NeighboursData::get_weights_expensive() const</a>
+      </td>
+      <td>
+        <a href="#l163">163</a>
+      </td>
+      <td>
+        <a href="#l163"> called 2572 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -223,7 +355,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;tkassert/Assert.hpp&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -231,7 +363,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Assert.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -1901,11 +2033,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

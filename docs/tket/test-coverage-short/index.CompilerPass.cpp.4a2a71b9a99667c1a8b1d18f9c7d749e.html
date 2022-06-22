@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-medium">85.2%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>23</td>
+      <td>30</td>
+      <td class="coverage-medium">76.7%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>472</td>
       <td>914</td>
@@ -52,10 +59,355 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l32">tket::BasePass::get_conditions() const</a>
+      </td>
+      <td>
+        <a href="#l32">32</a>
+      </td>
+      <td>
+        <a href="#l32"> called 272 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l108">tket::BasePass::get_guarantee(std::type_index const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l108">108</a>
+      </td>
+      <td>
+        <a href="#l108"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l112">tket::BasePass::get_guarantee(std::type_index const&amp;, std::pair&lt;std::map&lt;std::type_index, std::shared_ptr&lt;tket::Predicate&gt;, std::less&lt;std::type_index&gt;, std::allocator&lt;std::pair&lt;std::type_index const, std::shared_ptr&lt;tket::Predicate&gt; &gt; &gt; &gt;, tket::PostConditions&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l112">112</a>
+      </td>
+      <td>
+        <a href="#l112"> called 338 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l139">tket::BasePass::match_passes(std::pair&lt;std::map&lt;std::type_index, std::shared_ptr&lt;tket::Predicate&gt;, std::less&lt;std::type_index&gt;, std::allocator&lt;std::pair&lt;std::type_index const, std::shared_ptr&lt;tket::Predicate&gt; &gt; &gt; &gt;, tket::PostConditions&gt; const&amp;, std::pair&lt;std::map&lt;std::type_index, std::shared_ptr&lt;tket::Predicate&gt;, std::less&lt;std::type_index&gt;, std::allocator&lt;std::pair&lt;std::type_index const, std::shared_ptr&lt;tket::Predicate&gt; &gt; &gt; &gt;, tket::PostConditions&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l139">139</a>
+      </td>
+      <td>
+        <a href="#l139"> called 147 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l186">tket::BasePass::match_passes(std::shared_ptr&lt;tket::BasePass&gt; const&amp;, std::shared_ptr&lt;tket::BasePass&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l186">186</a>
+      </td>
+      <td>
+        <a href="#l186"> called 79 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l36">tket::BasePass::to_string[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l36">36</a>
+      </td>
+      <td>
+        <a href="#l36"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l57">tket::BasePass::unsatisfied_precondition(tket::CompilationUnit const&amp;, tket::SafetyMode) const</a>
+      </td>
+      <td>
+        <a href="#l57">57</a>
+      </td>
+      <td>
+        <a href="#l57"> called 352 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l85">tket::BasePass::update_cache(tket::CompilationUnit const&amp;, tket::SafetyMode) const</a>
+      </td>
+      <td>
+        <a href="#l85">85</a>
+      </td>
+      <td>
+        <a href="#l85"> called 348 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l257">tket::RepeatPass::RepeatPass(std::shared_ptr&lt;tket::BasePass&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l257">257</a>
+      </td>
+      <td>
+        <a href="#l257"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l268">tket::RepeatPass::get_config[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l268">268</a>
+      </td>
+      <td>
+        <a href="#l268"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l262">tket::RepeatPass::to_string[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l262">262</a>
+      </td>
+      <td>
+        <a href="#l262"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l320">tket::RepeatUntilSatisfiedPass::RepeatUntilSatisfiedPass(std::shared_ptr&lt;tket::BasePass&gt; const&amp;, std::shared_ptr&lt;tket::Predicate&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l320">320</a>
+      </td>
+      <td>
+        <a href="#l320"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l326">tket::RepeatUntilSatisfiedPass::apply(tket::CompilationUnit&amp;, tket::SafetyMode, std::function&lt;void (tket::CompilationUnit const&amp;, nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)&gt; const&amp;, std::function&lt;void (tket::CompilationUnit const&amp;, nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l326">326</a>
+      </td>
+      <td>
+        <a href="#l326"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l345">tket::RepeatUntilSatisfiedPass::get_config[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l345">345</a>
+      </td>
+      <td>
+        <a href="#l345"> called 10 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l339">tket::RepeatUntilSatisfiedPass::to_string[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l339">339</a>
+      </td>
+      <td>
+        <a href="#l339"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l275">tket::RepeatWithMetricPass::RepeatWithMetricPass(std::shared_ptr&lt;tket::BasePass&gt; const&amp;, std::function&lt;unsigned int (tket::Circuit const&amp;)&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l275">275</a>
+      </td>
+      <td>
+        <a href="#l275"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l281">tket::RepeatWithMetricPass::apply(tket::CompilationUnit&amp;, tket::SafetyMode, std::function&lt;void (tket::CompilationUnit const&amp;, nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)&gt; const&amp;, std::function&lt;void (tket::CompilationUnit const&amp;, nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l281">281</a>
+      </td>
+      <td>
+        <a href="#l281"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l311">tket::RepeatWithMetricPass::get_config[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l311">311</a>
+      </td>
+      <td>
+        <a href="#l311"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l305">tket::RepeatWithMetricPass::to_string[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l305">305</a>
+      </td>
+      <td>
+        <a href="#l305"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l230">tket::SequencePass::SequencePass(std::vector&lt;std::shared_ptr&lt;tket::BasePass&gt;, std::allocator&lt;std::shared_ptr&lt;tket::BasePass&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l230">230</a>
+      </td>
+      <td>
+        <a href="#l230"> called 40 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l250">tket::SequencePass::get_config[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l250">250</a>
+      </td>
+      <td>
+        <a href="#l250"> called 362 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l244">tket::SequencePass::to_string[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l244">244</a>
+      </td>
+      <td>
+        <a href="#l244"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l190">tket::StandardPass::apply(tket::CompilationUnit&amp;, tket::SafetyMode, std::function&lt;void (tket::CompilationUnit const&amp;, nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)&gt; const&amp;, std::function&lt;void (tket::CompilationUnit const&amp;, nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l190">190</a>
+      </td>
+      <td>
+        <a href="#l190"> called 352 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l213">tket::StandardPass::get_config[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l213">213</a>
+      </td>
+      <td>
+        <a href="#l213"> called 1452 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l207">tket::StandardPass::to_string[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l207">207</a>
+      </td>
+      <td>
+        <a href="#l207"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l355">tket::from_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, std::shared_ptr&lt;tket::BasePass&gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l355">355</a>
+      </td>
+      <td>
+        <a href="#l355"> called 55 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l123">tket::match_class_guarantees(std::pair&lt;std::map&lt;std::type_index, std::shared_ptr&lt;tket::Predicate&gt;, std::less&lt;std::type_index&gt;, std::allocator&lt;std::pair&lt;std::type_index const, std::shared_ptr&lt;tket::Predicate&gt; &gt; &gt; &gt;, tket::PostConditions&gt; const&amp;, std::pair&lt;std::map&lt;std::type_index, std::shared_ptr&lt;tket::Predicate&gt;, std::less&lt;std::type_index&gt;, std::allocator&lt;std::pair&lt;std::type_index const, std::shared_ptr&lt;tket::Predicate&gt; &gt; &gt; &gt;, tket::PostConditions&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l123">123</a>
+      </td>
+      <td>
+        <a href="#l123"> called 282 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l220">tket::operator&gt;&gt;(std::shared_ptr&lt;tket::BasePass&gt; const&amp;, std::shared_ptr&lt;tket::BasePass&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l220">220</a>
+      </td>
+      <td>
+        <a href="#l220"> called 73 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l353">tket::to_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, std::shared_ptr&lt;tket::BasePass&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l353">353</a>
+      </td>
+      <td>
+        <a href="#l353"> called 918 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l30">tket::trivial_callback(tket::CompilationUnit const&amp;, nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l30">30</a>
+      </td>
+      <td>
+        <a href="#l30"> called 910 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -207,7 +559,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;tklog/TketLog.hpp&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -215,7 +567,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Mapping/RoutingMethodJson.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -223,7 +575,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;PassGenerators.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Mapping/RoutingMethodJson.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -231,7 +583,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;PassLibrary.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;PassGenerators.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -239,7 +591,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Transformations/ContextualReduction.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;PassLibrary.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -247,7 +599,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Transformations/PauliOptimisation.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Transformations/ContextualReduction.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -255,7 +607,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Json.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Transformations/PauliOptimisation.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -263,7 +615,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/TketLog.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Json.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -6438,11 +6790,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

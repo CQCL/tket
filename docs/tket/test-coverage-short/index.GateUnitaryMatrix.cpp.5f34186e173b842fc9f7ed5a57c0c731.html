@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">100.0%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>5</td>
+      <td>5</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>120</td>
       <td>172</td>
@@ -52,10 +59,80 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l196">tket::GateUnitaryMatrix::get_unitary(tket::Gate const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l196">196</a>
+      </td>
+      <td>
+        <a href="#l196"> called 30415 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l174">tket::GateUnitaryMatrix::get_unitary(tket::OpType, unsigned int, std::vector&lt;double, std::allocator&lt;double&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l174">174</a>
+      </td>
+      <td>
+        <a href="#l174"> called 33129 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l201">tket::GateUnitaryMatrix::get_unitary_triplets(tket::Gate const&amp;, double)</a>
+      </td>
+      <td>
+        <a href="#l201">201</a>
+      </td>
+      <td>
+        <a href="#l201"> called 29079 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l155">tket::get_unitary_for_ordinary_fixed_size_case(tket::OpType, unsigned int, std::vector&lt;double, std::allocator&lt;double&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l155">155</a>
+      </td>
+      <td>
+        <a href="#l155"> called 32499 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l83">tket::get_unitary_or_throw(tket::OpType, unsigned int, std::vector&lt;double, std::allocator&lt;double&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l83">83</a>
+      </td>
+      <td>
+        <a href="#l83"> called 32499 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -215,7 +292,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;tkassert/Assert.hpp&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -223,7 +300,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Gate/Gate.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -231,7 +308,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;GateUnitaryMatrixError.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Gate/Gate.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -239,7 +316,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;GateUnitaryMatrixImplementations.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;GateUnitaryMatrixError.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -247,7 +324,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;GateUnitaryMatrixUtils.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;GateUnitaryMatrixImplementations.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -255,7 +332,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;GateUnitaryMatrixVariableQubits.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;GateUnitaryMatrixUtils.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -263,7 +340,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;GateUnitarySparseMatrix.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;GateUnitaryMatrixVariableQubits.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -271,7 +348,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Assert.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;GateUnitarySparseMatrix.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -2217,11 +2294,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

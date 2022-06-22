@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-low">15.2%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>5</td>
+      <td>18</td>
+      <td class="coverage-low">27.8%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>0</td>
       <td>32</td>
@@ -52,10 +59,223 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l302">tket::GraphPlacement::GraphPlacement(tket::Architecture const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l302">302</a>
+      </td>
+      <td>
+        <a href="#l302"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l310">tket::GraphPlacement::GraphPlacement(tket::Architecture const&amp;, tket::PlacementConfig const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l310">310</a>
+      </td>
+      <td>
+        <a href="#l310"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l316">tket::GraphPlacement::get_config()</a>
+      </td>
+      <td>
+        <a href="#l316">316</a>
+      </td>
+      <td>
+        <a href="#l316"> called 41 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l291">tket::LinePlacement::LinePlacement(tket::Architecture const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l291">291</a>
+      </td>
+      <td>
+        <a href="#l291"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l212">tket::MapCost::operator&lt;(tket::MapCost const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l212">212</a>
+      </td>
+      <td>
+        <a href="#l212"> called 2543 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l213">tket::MapCost::operator&gt;(tket::MapCost const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l213">213</a>
+      </td>
+      <td>
+        <a href="#l213"> called 1138 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l335">tket::Monomorpher::Monomorpher(tket::Circuit const&amp;, tket::Architecture const&amp;, tket::DeviceCharacterisation const&amp;, tket::PlacementConfig const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l335">335</a>
+      </td>
+      <td>
+        <a href="#l335"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l265">tket::NaivePlacement::NaivePlacement(tket::Architecture const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l265">265</a>
+      </td>
+      <td>
+        <a href="#l265"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l378">tket::NoiseAwarePlacement::NoiseAwarePlacement(tket::Architecture const&amp;, tket::PlacementConfig const&amp;, std::optional&lt;std::map&lt;tket::Node, double, std::less&lt;tket::Node&gt;, std::allocator&lt;std::pair&lt;tket::Node const, double&gt; &gt; &gt; &gt;, std::optional&lt;std::map&lt;std::pair&lt;tket::Node, tket::Node&gt;, double, std::less&lt;std::pair&lt;tket::Node, tket::Node&gt; &gt;, std::allocator&lt;std::pair&lt;std::pair&lt;tket::Node, tket::Node&gt; const, double&gt; &gt; &gt; &gt;, std::optional&lt;std::map&lt;tket::Node, double, std::less&lt;tket::Node&gt;, std::allocator&lt;std::pair&lt;tket::Node const, double&gt; &gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l378">378</a>
+      </td>
+      <td>
+        <a href="#l378"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l391">tket::NoiseAwarePlacement::get_config()</a>
+      </td>
+      <td>
+        <a href="#l391">391</a>
+      </td>
+      <td>
+        <a href="#l391"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l219">tket::Placement::Placement()</a>
+      </td>
+      <td>
+        <a href="#l219">219</a>
+      </td>
+      <td>
+        <a href="#l219"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l218">tket::Placement::Placement(tket::Architecture const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l218">218</a>
+      </td>
+      <td>
+        <a href="#l218"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l246">tket::Placement::get_architecture_ref()</a>
+      </td>
+      <td>
+        <a href="#l246">246</a>
+      </td>
+      <td>
+        <a href="#l246"> called 119 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l247">tket::Placement::~Placement()</a>
+      </td>
+      <td>
+        <a href="#l247">247</a>
+      </td>
+      <td>
+        <a href="#l247"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l97">tket::PlacementConfig::PlacementConfig()</a>
+      </td>
+      <td>
+        <a href="#l97">97</a>
+      </td>
+      <td>
+        <a href="#l97"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l65">tket::PlacementError::PlacementError(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l65">65</a>
+      </td>
+      <td>
+        <a href="#l65"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l137">tket::QubitGraph::QubitGraph()</a>
+      </td>
+      <td>
+        <a href="#l137">137</a>
+      </td>
+      <td>
+        <a href="#l137"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l138">tket::QubitGraph::QubitGraph(std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l138">138</a>
+      </td>
+      <td>
+        <a href="#l138"> not called</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -3324,11 +3544,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

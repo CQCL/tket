@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-21 22:43:01</td>
+      <td>2022-06-22 13:50:45</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-medium">81.6%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>11</td>
+      <td>11</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>196</td>
       <td>400</td>
@@ -52,10 +59,146 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l30">tket::aas::SteinerForest::SteinerForest(tket::aas::PathHandler const&amp;, tket::PhasePolyBox const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l30">30</a>
+      </td>
+      <td>
+        <a href="#l30"> called 60 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l133">tket::aas::SteinerForest::add_operation_list(std::__cxx11::list&lt;std::pair&lt;unsigned int, unsigned int&gt;, std::allocator&lt;std::pair&lt;unsigned int, unsigned int&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l133">133</a>
+      </td>
+      <td>
+        <a href="#l133"> called 38 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l98">tket::aas::SteinerForest::add_row_globally(unsigned int, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l98">98</a>
+      </td>
+      <td>
+        <a href="#l98"> called 143 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l153">tket::aas::SteinerForest::operations_available_at_index[abi:cxx11](tket::aas::PathHandler const&amp;, unsigned int) const</a>
+      </td>
+      <td>
+        <a href="#l153">153</a>
+      </td>
+      <td>
+        <a href="#l153"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l166">tket::aas::SteinerForest::operations_available_at_min_costs[abi:cxx11](tket::aas::PathHandler const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l166">166</a>
+      </td>
+      <td>
+        <a href="#l166"> called 37 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l139">tket::aas::SteinerForest::operations_available_under_the_index[abi:cxx11](tket::aas::PathHandler const&amp;, unsigned int) const</a>
+      </td>
+      <td>
+        <a href="#l139">139</a>
+      </td>
+      <td>
+        <a href="#l139"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l180">tket::aas::best_operations_lookahead[abi:cxx11](tket::aas::PathHandler const&amp;, tket::aas::SteinerForest const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l180">180</a>
+      </td>
+      <td>
+        <a href="#l180"> called 39 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l20">tket::aas::parity_column_to_list[abi:cxx11](std::vector&lt;bool, std::allocator&lt;bool&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l20">20</a>
+      </td>
+      <td>
+        <a href="#l20"> called 82 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l318">tket::aas::phase_poly_synthesis(tket::Architecture const&amp;, tket::PhasePolyBox const&amp;, unsigned int, tket::aas::CNotSynthType)</a>
+      </td>
+      <td>
+        <a href="#l318">318</a>
+      </td>
+      <td>
+        <a href="#l318"> called 42 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l264">tket::aas::phase_poly_synthesis_int(tket::Architecture const&amp;, tket::PhasePolyBox const&amp;, unsigned int, tket::aas::CNotSynthType)</a>
+      </td>
+      <td>
+        <a href="#l264">264</a>
+      </td>
+      <td>
+        <a href="#l264"> called 43 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l220">tket::aas::recursive_operation_search(tket::aas::PathHandler const&amp;, tket::aas::SteinerForest, unsigned int, std::__cxx11::list&lt;std::pair&lt;unsigned int, unsigned int&gt;, std::allocator&lt;std::pair&lt;unsigned int, unsigned int&gt; &gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l220">220</a>
+      </td>
+      <td>
+        <a href="#l220"> called 76 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -4533,11 +4676,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>
