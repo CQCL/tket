@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['unittype_5629',['UnitType',['../namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9',1,'tket']]]
+  ['vertexdeletion_5156',['VertexDeletion',['../classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6',1,'tket::Circuit']]],
+  ['vertextype_5157',['VertexType',['../namespacetket.html#a5339172fa072164a0c7baa91f2e5b536',1,'tket']]]
 ];

@@ -93,9 +93,9 @@ $(function() {
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ValueOrdering_8hpp.html">WeightSubgrMono/Searching/ValueOrdering.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;algorithm&gt;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Assert_8hpp.html">Utils/Assert.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="RNG_8hpp.html">Utils/RNG.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;tkassert/Assert.hpp&gt;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &lt;tkrng/RNG.hpp&gt;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="NeighboursData_8hpp.html">WeightSubgrMono/GraphTheoretic/NeighboursData.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacetket.html">tket</a> {</div>
@@ -169,7 +169,7 @@ $(function() {
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <span class="keywordflow">for</span> (<a class="code" href="namespacetket_1_1WeightedSubgraphMonomorphism.html#a16ddd20338a7b22544b227977148ae0a">VertexWSM</a> tv : possible_values) {</div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <a class="code" href="namespacetket_1_1graphs_1_1utils.html#a483afb21951ca5e7c2b8a21cff5042ba">max_degree</a> = std::max(<a class="code" href="namespacetket_1_1graphs_1_1utils.html#a483afb21951ca5e7c2b8a21cff5042ba">max_degree</a>, target_ndata.<a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1NeighboursData.html#a519c20e88d6a76f947f15410fa9e6566">get_degree</a>(tv));</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  }</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(<a class="code" href="namespacetket_1_1graphs_1_1utils.html#a483afb21951ca5e7c2b8a21cff5042ba">max_degree</a> &gt; 0);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  TKET_ASSERT(<a class="code" href="namespacetket_1_1graphs_1_1utils.html#a483afb21951ca5e7c2b8a21cff5042ba">max_degree</a> &gt; 0);</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  <span class="comment">// Pass two: record all those vertices with large enough degree.</span></div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  <span class="keywordflow">for</span> (HighDegreeVerticesData&amp; entry : m_entries_for_high_degree_vertices) {</div>
@@ -182,7 +182,7 @@ $(function() {
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;      m_entries_for_high_degree_vertices[index].vertices.push_back(tv);</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    }</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  }</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(!m_entries_for_high_degree_vertices[0].vertices.empty());</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;  TKET_ASSERT(!m_entries_for_high_degree_vertices[0].vertices.empty());</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;}</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<a class="code" href="namespacetket_1_1WeightedSubgraphMonomorphism.html#a16ddd20338a7b22544b227977148ae0a">VertexWSM</a> ValueOrdering::get_random_choice_from_data(RNG&amp; rng)<span class="keyword"> const </span>{</div>
@@ -194,7 +194,7 @@ $(function() {
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; entry : m_entries_for_high_degree_vertices) {</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    mass_sum += entry.vertices.size() * entry.mass;</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;  }</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(mass_sum &gt; 0);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  TKET_ASSERT(mass_sum &gt; 0);</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> index = rng.get_size_t(mass_sum - 1);</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  <span class="comment">// Now, choose the vertex corresponding to this index.</span></div>
@@ -223,14 +223,14 @@ $(function() {
 <div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;  <span class="comment">// until the bug is properly fixed.</span></div>
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;  <span class="comment">// The worst that could happen is reduced performance; it can&#39;t</span></div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;  <span class="comment">// lead to incorrect results.</span></div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(<span class="keyword">false</span>);</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  TKET_ASSERT(<span class="keyword">false</span>);</div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  <span class="keywordflow">return</span> m_entries_for_high_degree_vertices.at(0).vertices.at(0);</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;}</div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
 <div class="line"><a name="l00152"></a><span class="lineno"><a class="line" href="classtket_1_1WeightedSubgraphMonomorphism_1_1ValueOrdering.html#a95442a3831c756a5becdf0ae8b8f4a55">  152</a></span>&#160;<a class="code" href="namespacetket_1_1WeightedSubgraphMonomorphism.html#a16ddd20338a7b22544b227977148ae0a">VertexWSM</a> <a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1ValueOrdering.html#a95442a3831c756a5becdf0ae8b8f4a55">ValueOrdering::get_target_value</a>(</div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    <span class="keyword">const</span> std::set&lt;VertexWSM&gt;&amp; possible_values,</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keyword">const</span> <a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1NeighboursData.html">NeighboursData</a>&amp; target_ndata, <a class="code" href="classtket_1_1RNG.html">RNG</a>&amp; rng) {</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(possible_values.size() &gt;= 2);</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    <span class="keyword">const</span> <a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1NeighboursData.html">NeighboursData</a>&amp; target_ndata, RNG&amp; rng) {</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;  TKET_ASSERT(possible_values.size() &gt;= 2);</div>
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;  fill_entries_for_high_degree_vertices(possible_values, target_ndata);</div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;  <span class="keywordflow">return</span> get_random_choice_from_data(rng);</div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;}</div>
@@ -239,14 +239,10 @@ $(function() {
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;}  <span class="comment">// namespace tket</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespacetket_1_1WeightedSubgraphMonomorphism_html_a16ddd20338a7b22544b227977148ae0a"><div class="ttname"><a href="namespacetket_1_1WeightedSubgraphMonomorphism.html#a16ddd20338a7b22544b227977148ae0a">tket::WeightedSubgraphMonomorphism::VertexWSM</a></div><div class="ttdeci">std::uint_fast32_t VertexWSM</div><div class="ttdef"><b>Definition:</b> <a href="GeneralStructs_8hpp_source.html#l00026">GeneralStructs.hpp:26</a></div></div>
-<div class="ttc" id="aclasstket_1_1RNG_html"><div class="ttname"><a href="classtket_1_1RNG.html">tket::RNG</a></div><div class="ttdoc">A random number generator class.</div><div class="ttdef"><b>Definition:</b> <a href="RNG_8hpp_source.html#l00053">RNG.hpp:53</a></div></div>
-<div class="ttc" id="aRNG_8hpp_html"><div class="ttname"><a href="RNG_8hpp.html">RNG.hpp</a></div></div>
-<div class="ttc" id="aAssert_8hpp_html_ae053544861204d4c3f5e8422252ca22e"><div class="ttname"><a href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a></div><div class="ttdeci">#define TKET_ASSERT(condition)</div><div class="ttdoc">If condition is not satisfied, log a diagnostic message and abort.</div><div class="ttdef"><b>Definition:</b> <a href="Assert_8hpp_source.html#l00076">Assert.hpp:76</a></div></div>
 <div class="ttc" id="anamespacetket_html"><div class="ttname"><a href="namespacetket.html">tket</a></div><div class="ttdoc">Defines tket::DeviceCharacterisation, used in NoiseAwarePlacement and in commute_SQ_gates_through_SWA...</div><div class="ttdef"><b>Definition:</b> <a href="Path_8hpp_source.html#l00020">Path.hpp:20</a></div></div>
 <div class="ttc" id="anamespacetket_1_1graphs_1_1utils_html_a050fee0366144452df8c98e74b35a76b"><div class="ttname"><a href="namespacetket_1_1graphs_1_1utils.html#a050fee0366144452df8c98e74b35a76b">tket::graphs::utils::vertex</a></div><div class="ttdeci">detail::vertex&lt; T &gt; vertex</div><div class="ttdef"><b>Definition:</b> <a href="Utils_8hpp_source.html#l00036">Utils.hpp:36</a></div></div>
 <div class="ttc" id="aclasstket_1_1WeightedSubgraphMonomorphism_1_1ValueOrdering_html_a169498e967514492bd9901e93c8452bd"><div class="ttname"><a href="classtket_1_1WeightedSubgraphMonomorphism_1_1ValueOrdering.html#a169498e967514492bd9901e93c8452bd">tket::WeightedSubgraphMonomorphism::ValueOrdering::ValueOrdering</a></div><div class="ttdeci">ValueOrdering()</div><div class="ttdef"><b>Definition:</b> <a href="ValueOrdering_8cpp_source.html#l00043">ValueOrdering.cpp:43</a></div></div>
 <div class="ttc" id="aValueOrdering_8hpp_html"><div class="ttname"><a href="ValueOrdering_8hpp.html">ValueOrdering.hpp</a></div></div>
-<div class="ttc" id="aAssert_8hpp_html"><div class="ttname"><a href="Assert_8hpp.html">Assert.hpp</a></div></div>
 <div class="ttc" id="aclasstket_1_1WeightedSubgraphMonomorphism_1_1ValueOrdering_html_a95442a3831c756a5becdf0ae8b8f4a55"><div class="ttname"><a href="classtket_1_1WeightedSubgraphMonomorphism_1_1ValueOrdering.html#a95442a3831c756a5becdf0ae8b8f4a55">tket::WeightedSubgraphMonomorphism::ValueOrdering::get_target_value</a></div><div class="ttdeci">VertexWSM get_target_value(const std::set&lt; VertexWSM &gt; &amp;possible_values, const NeighboursData &amp;target_ndata, RNG &amp;rng)</div><div class="ttdoc">Choose TV with larger degrees, with some randomness (e.g., &quot;Solution-Biased Search&quot;).</div><div class="ttdef"><b>Definition:</b> <a href="ValueOrdering_8cpp_source.html#l00152">ValueOrdering.cpp:152</a></div></div>
 <div class="ttc" id="aclasstket_1_1WeightedSubgraphMonomorphism_1_1NeighboursData_html"><div class="ttname"><a href="classtket_1_1WeightedSubgraphMonomorphism_1_1NeighboursData.html">tket::WeightedSubgraphMonomorphism::NeighboursData</a></div><div class="ttdoc">The main object used to search for neighbours of a vertex, check for existing edges,...</div><div class="ttdef"><b>Definition:</b> <a href="NeighboursData_8hpp_source.html#l00033">NeighboursData.hpp:33</a></div></div>
 <div class="ttc" id="aclasstket_1_1WeightedSubgraphMonomorphism_1_1NeighboursData_html_a519c20e88d6a76f947f15410fa9e6566"><div class="ttname"><a href="classtket_1_1WeightedSubgraphMonomorphism_1_1NeighboursData.html#a519c20e88d6a76f947f15410fa9e6566">tket::WeightedSubgraphMonomorphism::NeighboursData::get_degree</a></div><div class="ttdeci">std::size_t get_degree(VertexWSM v) const</div><div class="ttdoc">The number of neighbours of the given vertex.</div><div class="ttdef"><b>Definition:</b> <a href="NeighboursData_8cpp_source.html#l00134">NeighboursData.cpp:134</a></div></div>

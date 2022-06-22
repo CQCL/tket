@@ -1,5 +1,0 @@
-<map id="tket::NeighboursInterface" name="tket::NeighboursInterface">
-<area shape="rect" id="node1" title="What are the adjacent vertices to a given vertex on a graph? For larger, sparse graphs,..." alt="" coords="143,5,330,32"/>
-<area shape="rect" id="node2" href="$classtket_1_1NeighboursFromArchitecture.html" title="Stores and returns upon request the adjacent vertices to a given vertex on a graph,..." alt="" coords="5,87,247,114"/>
-<area shape="rect" id="node3" href="$classtket_1_1tsa__internal_1_1VertexMapResizing.html" title="If a vertex mapping { u &#45;&gt; v } has too few vertices, try to add extra vertices, fixed by the new mapp..." alt="" coords="271,80,426,121"/>
-</map>

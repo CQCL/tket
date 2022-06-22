@@ -80,7 +80,7 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="SearchBranch_8hpp_source.html">WeightSubgrMono/Searching/SearchBranch.hpp</a>&quot;</code><br />
 <code>#include &lt;algorithm&gt;</code><br />
-<code>#include &quot;<a class="el" href="Assert_8hpp_source.html">Utils/Assert.hpp</a>&quot;</code><br />
+<code>#include &lt;tkassert/Assert.hpp&gt;</code><br />
 <code>#include &quot;<a class="el" href="GeneralUtils_8hpp_source.html">WeightSubgrMono/Common/GeneralUtils.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="SolutionData_8hpp_source.html">WeightSubgrMono/EndToEndWrappers/SolutionData.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="NeighboursData_8hpp_source.html">WeightSubgrMono/GraphTheoretic/NeighboursData.hpp</a>&quot;</code><br />
@@ -91,49 +91,45 @@ Include dependency graph for SearchBranch.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="SearchBranch_8cpp__incl.png" border="0" usemap="#src_2WeightSubgrMono_2Searching_2SearchBranch_8cpp" alt=""/></div>
 <map name="src_2WeightSubgrMono_2Searching_2SearchBranch_8cpp" id="src_2WeightSubgrMono_2Searching_2SearchBranch_8cpp">
-<area shape="rect" title=" " alt="" coords="2089,5,2299,47"/>
-<area shape="rect" href="SearchBranch_8hpp.html" title=" " alt="" coords="922,95,1130,136"/>
-<area shape="rect" title=" " alt="" coords="3039,541,3125,568"/>
-<area shape="rect" href="DistancesReducer_8hpp.html" title=" " alt="" coords="1258,191,1501,218"/>
-<area shape="rect" href="Assert_8hpp.html" title=" " alt="" coords="2207,191,2333,218"/>
-<area shape="rect" href="GeneralUtils_8hpp.html" title=" " alt="" coords="2682,363,2885,404"/>
-<area shape="rect" href="SolutionData_8hpp.html" title=" " alt="" coords="1953,273,2160,315"/>
-<area shape="rect" href="NeighboursData_8hpp.html" title=" " alt="" coords="2363,363,2607,404"/>
-<area shape="rect" href="WeightChecker_8hpp.html" title=" " alt="" coords="1627,273,1865,315"/>
-<area shape="rect" title=" " alt="" coords="1895,370,1973,397"/>
-<area shape="rect" href="DomainInitialiser_8hpp.html" title=" " alt="" coords="319,363,509,404"/>
-<area shape="rect" href="DerivedGraphsReducer_8hpp.html" title=" " alt="" coords="661,184,855,225"/>
-<area shape="rect" href="ReducerWrapper_8hpp.html" title=" " alt="" coords="979,281,1137,307"/>
-<area shape="rect" href="HallSetReduction_8hpp.html" title=" " alt="" coords="5,370,244,397"/>
-<area shape="rect" href="NeighboursReducer_8hpp.html" title=" " alt="" coords="981,191,1233,218"/>
-<area shape="rect" href="DomainsAccessor_8hpp.html" title=" " alt="" coords="1130,370,1295,397"/>
-<area shape="rect" href="NodeListTraversal_8hpp.html" title=" " alt="" coords="1320,370,1487,397"/>
-<area shape="rect" href="NodesRawData_8hpp.html" title=" " alt="" coords="277,281,428,307"/>
-<area shape="rect" href="WeightCalculator_8hpp.html" title=" " alt="" coords="794,370,954,397"/>
-<area shape="rect" title=" " alt="" coords="963,541,1006,568"/>
-<area shape="rect" href="GeneralStructs_8hpp.html" title=" " alt="" coords="977,452,1166,493"/>
-<area shape="rect" title=" " alt="" coords="449,541,515,568"/>
-<area shape="rect" title=" " alt="" coords="2234,541,2285,568"/>
-<area shape="rect" title=" " alt="" coords="1638,541,1697,568"/>
-<area shape="rect" title=" " alt="" coords="609,541,672,568"/>
-<area shape="rect" href="DerivedGraphs_8hpp.html" title=" " alt="" coords="666,273,855,315"/>
-<area shape="rect" href="DerivedGraphsCalculator_8hpp.html" title=" " alt="" coords="453,273,642,315"/>
-<area shape="rect" href="DerivedGraphStructs_8hpp.html" title=" " alt="" coords="584,370,769,397"/>
-<area shape="rect" title=" " alt="" coords="627,459,726,486"/>
-<area shape="rect" title=" " alt="" coords="1514,459,1589,486"/>
-<area shape="rect" href="ReusableStorage_8hpp.html" title=" " alt="" coords="23,452,226,493"/>
-<area shape="rect" href="LogicalStack_8hpp.html" title=" " alt="" coords="251,459,457,486"/>
-<area shape="rect" title=" " alt="" coords="2184,281,2249,307"/>
-<area shape="rect" href="AssertMessage_8hpp.html" title=" " alt="" coords="2529,281,2678,307"/>
-<area shape="rect" href="TketLog_8hpp.html" title="Logging." alt="" coords="2274,281,2375,307"/>
-<area shape="rect" title=" " alt="" coords="2493,459,2567,486"/>
-<area shape="rect" title=" " alt="" coords="2207,370,2287,397"/>
-<area shape="rect" title=" " alt="" coords="2693,459,2751,486"/>
-<area shape="rect" title=" " alt="" coords="2897,541,2984,568"/>
-<area shape="rect" title=" " alt="" coords="2408,459,2468,486"/>
-<area shape="rect" href="SpecialExceptions_8hpp.html" title=" " alt="" coords="2826,459,2994,486"/>
-<area shape="rect" href="SolutionWSM_8hpp.html" title=" " alt="" coords="1997,370,2133,397"/>
-<area shape="rect" href="WeightNogoodDetectorManager_8hpp.html" title=" " alt="" coords="1613,370,1871,397"/>
+<area shape="rect" title=" " alt="" coords="2101,5,2312,47"/>
+<area shape="rect" href="SearchBranch_8hpp.html" title=" " alt="" coords="1116,95,1324,136"/>
+<area shape="rect" title=" " alt="" coords="2432,541,2517,568"/>
+<area shape="rect" href="DistancesReducer_8hpp.html" title=" " alt="" coords="1624,191,1867,218"/>
+<area shape="rect" title=" " alt="" coords="2744,102,2891,129"/>
+<area shape="rect" href="GeneralUtils_8hpp.html" title=" " alt="" coords="2440,363,2643,404"/>
+<area shape="rect" href="SolutionData_8hpp.html" title=" " alt="" coords="1947,273,2154,315"/>
+<area shape="rect" href="NeighboursData_8hpp.html" title=" " alt="" coords="2171,363,2415,404"/>
+<area shape="rect" href="WeightChecker_8hpp.html" title=" " alt="" coords="510,273,749,315"/>
+<area shape="rect" title=" " alt="" coords="667,370,744,397"/>
+<area shape="rect" href="DomainInitialiser_8hpp.html" title=" " alt="" coords="69,363,259,404"/>
+<area shape="rect" href="DerivedGraphsReducer_8hpp.html" title=" " alt="" coords="999,184,1193,225"/>
+<area shape="rect" href="ReducerWrapper_8hpp.html" title=" " alt="" coords="1416,281,1573,307"/>
+<area shape="rect" href="HallSetReduction_8hpp.html" title=" " alt="" coords="769,370,1007,397"/>
+<area shape="rect" href="NeighboursReducer_8hpp.html" title=" " alt="" coords="1218,191,1470,218"/>
+<area shape="rect" href="DomainsAccessor_8hpp.html" title=" " alt="" coords="1528,370,1693,397"/>
+<area shape="rect" href="NodeListTraversal_8hpp.html" title=" " alt="" coords="1769,370,1935,397"/>
+<area shape="rect" href="NodesRawData_8hpp.html" title=" " alt="" coords="23,281,174,307"/>
+<area shape="rect" href="WeightCalculator_8hpp.html" title=" " alt="" coords="1032,370,1192,397"/>
+<area shape="rect" title=" " alt="" coords="647,541,689,568"/>
+<area shape="rect" href="GeneralStructs_8hpp.html" title=" " alt="" coords="1345,452,1535,493"/>
+<area shape="rect" title=" " alt="" coords="1271,541,1337,568"/>
+<area shape="rect" title=" " alt="" coords="1551,541,1601,568"/>
+<area shape="rect" title=" " alt="" coords="1827,541,1885,568"/>
+<area shape="rect" title=" " alt="" coords="1015,541,1078,568"/>
+<area shape="rect" href="DerivedGraphs_8hpp.html" title=" " alt="" coords="989,273,1179,315"/>
+<area shape="rect" href="DerivedGraphsCalculator_8hpp.html" title=" " alt="" coords="1203,273,1392,315"/>
+<area shape="rect" href="DerivedGraphStructs_8hpp.html" title=" " alt="" coords="1217,370,1402,397"/>
+<area shape="rect" title=" " alt="" coords="1223,459,1321,486"/>
+<area shape="rect" title=" " alt="" coords="1693,459,1768,486"/>
+<area shape="rect" href="ReusableStorage_8hpp.html" title=" " alt="" coords="779,452,981,493"/>
+<area shape="rect" href="LogicalStack_8hpp.html" title=" " alt="" coords="335,459,542,486"/>
+<area shape="rect" title=" " alt="" coords="2512,459,2571,486"/>
+<area shape="rect" title=" " alt="" coords="2595,459,2669,486"/>
+<area shape="rect" title=" " alt="" coords="2290,541,2377,568"/>
+<area shape="rect" title=" " alt="" coords="1982,459,2042,486"/>
+<area shape="rect" href="SpecialExceptions_8hpp.html" title=" " alt="" coords="2219,459,2387,486"/>
+<area shape="rect" href="SolutionWSM_8hpp.html" title=" " alt="" coords="1960,370,2096,397"/>
+<area shape="rect" href="WeightNogoodDetectorManager_8hpp.html" title=" " alt="" coords="283,370,541,397"/>
 </map>
 </div>
 </div>

@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['safetymode_5626',['SafetyMode',['../namespacetket.html#ab65820ebbcb1ceb848e855a832420396',1,'tket']]],
-  ['steinernodetype_5627',['SteinerNodeType',['../namespacetket_1_1aas.html#a5d7e42ff2fcc3a26d82ea3d4dd415374',1,'tket::aas']]]
+  ['type_5154',['Type',['../classtket_1_1WeightedSubgraphMonomorphism_1_1NearNeighboursData.html#a9b71d6dd0e42297918a04ed51ece765f',1,'tket::WeightedSubgraphMonomorphism::NearNeighboursData']]]
 ];

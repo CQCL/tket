@@ -1,4 +1,0 @@
-<map id="tket::tsa_internal::CyclesPartialTsa" name="tket::tsa_internal::CyclesPartialTsa">
-<area shape="rect" id="node1" title="A partial TSA (token swapping algorithm), similar to the cycle&#45;finding algorithm as described in the ..." alt="" coords="13,95,148,136"/>
-<area shape="rect" id="node2" href="$classtket_1_1tsa__internal_1_1PartialTsaInterface.html" title="TSA stands for Token Swapping Algorithm." alt="" coords="5,5,156,47"/>
-</map>

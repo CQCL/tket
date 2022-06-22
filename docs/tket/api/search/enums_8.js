@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['quantumtype_5623',['QuantumType',['../namespacetket_1_1zx.html#ae5c1261d41bb456a2457d06f3c52b9ff',1,'tket::zx']]]
+  ['reductionresult_5150',['ReductionResult',['../namespacetket_1_1WeightedSubgraphMonomorphism.html#af28046d9cc31d7c64a9164873e8e4c2b',1,'tket::WeightedSubgraphMonomorphism']]],
+  ['reversetype_5151',['ReverseType',['../namespacetket.html#a0f814e0f8e98465926bde71420d68cf6',1,'tket']]]
 ];

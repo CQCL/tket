@@ -105,7 +105,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a57892870a941899b66ffd3656b8715c8"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classtket_1_1Node.html">Node</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ArchitectureMapping.html#a57892870a941899b66ffd3656b8715c8">get_node</a> (size_t vertex) const</td></tr>
 <tr class="memdesc:a57892870a941899b66ffd3656b8715c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reverse of "get_vertex", throws if the vertex is invalid.  <a href="classtket_1_1ArchitectureMapping.html#a57892870a941899b66ffd3656b8715c8">More...</a><br /></td></tr>
 <tr class="separator:a57892870a941899b66ffd3656b8715c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a827870cb582f7eb9d639ba07537d21b6"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="namespacetket.html#ae2eacf6ab35221f4acce2e51b150244a">Swap</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ArchitectureMapping.html#a827870cb582f7eb9d639ba07537d21b6">get_edges</a> () const</td></tr>
+<tr class="memitem:a827870cb582f7eb9d639ba07537d21b6"><td class="memItemLeft" align="right" valign="top">std::vector&lt; Swap &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ArchitectureMapping.html#a827870cb582f7eb9d639ba07537d21b6">get_edges</a> () const</td></tr>
 <tr class="memdesc:a827870cb582f7eb9d639ba07537d21b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the edges using the vertices created by this <a class="el" href="classtket_1_1ArchitectureMapping.html" title="Intended for use with TokenSwapping.">ArchitectureMapping</a> object.  <a href="classtket_1_1ArchitectureMapping.html#a827870cb582f7eb9d639ba07537d21b6">More...</a><br /></td></tr>
 <tr class="separator:a827870cb582f7eb9d639ba07537d21b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -115,7 +115,7 @@ Public Member Functions</h2></td></tr>
 <p>For now, we don't want to use <a class="el" href="classtket_1_1Node.html" title="Architectural qubit location.">Node</a> objects as (1) this would make TokenSwapping dependent on other parts of Tket and hence less modular, (2) it would probably slow things down significantly because Nodes contain extra data, like vectors and strings, which are relatively expensive to copy; vertices get copied and moved around many times by any TSA.</p>
 <p>TODO: it would be better to use a Vertex wrapper class instead of raw size_t. (Also, might change to unsigned instead of size_t). </p>
 
-<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8hpp_source.html#l00037">37</a> of file <a class="el" href="ArchitectureMapping_8hpp_source.html">ArchitectureMapping.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8hpp_source.html#l00038">38</a> of file <a class="el" href="ArchitectureMapping_8hpp_source.html">ArchitectureMapping.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aed3743189b9c08ee009a2c95752720c6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aed3743189b9c08ee009a2c95752720c6">&#9670;&nbsp;</a></span>ArchitectureMapping() <span class="overload">[1/2]</span></h2>
@@ -149,7 +149,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8cpp_source.html#l00024">24</a> of file <a class="el" href="ArchitectureMapping_8cpp_source.html">ArchitectureMapping.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8cpp_source.html#l00023">23</a> of file <a class="el" href="ArchitectureMapping_8cpp_source.html">ArchitectureMapping.cpp</a>.</p>
 
 </div>
 </div>
@@ -188,7 +188,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8cpp_source.html#l00047">47</a> of file <a class="el" href="ArchitectureMapping_8cpp_source.html">ArchitectureMapping.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8cpp_source.html#l00046">46</a> of file <a class="el" href="ArchitectureMapping_8cpp_source.html">ArchitectureMapping.cpp</a>.</p>
 
 </div>
 </div>
@@ -210,7 +210,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Convenient reference to the <a class="el" href="classtket_1_1Architecture.html">Architecture</a> object we used to construct this <a class="el" href="classtket_1_1ArchitectureMapping.html" title="Intended for use with TokenSwapping.">ArchitectureMapping</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8cpp_source.html#l00121">121</a> of file <a class="el" href="ArchitectureMapping_8cpp_source.html">ArchitectureMapping.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8cpp_source.html#l00120">120</a> of file <a class="el" href="ArchitectureMapping_8cpp_source.html">ArchitectureMapping.cpp</a>.</p>
 
 </div>
 </div>
@@ -221,7 +221,7 @@ Public Member Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::vector&lt; <a class="el" href="namespacetket.html#ae2eacf6ab35221f4acce2e51b150244a">Swap</a> &gt; tket::ArchitectureMapping::get_edges </td>
+          <td class="memname">std::vector&lt; Swap &gt; tket::ArchitectureMapping::get_edges </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -232,7 +232,7 @@ Public Member Functions</h2></td></tr>
 <p>Get the edges using the vertices created by this <a class="el" href="classtket_1_1ArchitectureMapping.html" title="Intended for use with TokenSwapping.">ArchitectureMapping</a> object. </p>
 <p>The vertex numbers, of course, do not necessarily match with the <a class="el" href="classtket_1_1Node.html" title="Architectural qubit location.">Node</a> uids of the underlying architecture object (that's why we have a mapping). </p><dl class="section return"><dt>Returns</dt><dd>The vector of edges in the architecture, using the new vertex numbers. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8cpp_source.html#l00125">125</a> of file <a class="el" href="ArchitectureMapping_8cpp_source.html">ArchitectureMapping.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8cpp_source.html#l00124">124</a> of file <a class="el" href="ArchitectureMapping_8cpp_source.html">ArchitectureMapping.cpp</a>.</p>
 
 </div>
 </div>
@@ -261,7 +261,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The node corresponding to this vertex. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8cpp_source.html#l00099">99</a> of file <a class="el" href="ArchitectureMapping_8cpp_source.html">ArchitectureMapping.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8cpp_source.html#l00098">98</a> of file <a class="el" href="ArchitectureMapping_8cpp_source.html">ArchitectureMapping.cpp</a>.</p>
 
 </div>
 </div>
@@ -290,7 +290,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The newly created vertex representing this node </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8cpp_source.html#l00111">111</a> of file <a class="el" href="ArchitectureMapping_8cpp_source.html">ArchitectureMapping.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8cpp_source.html#l00110">110</a> of file <a class="el" href="ArchitectureMapping_8cpp_source.html">ArchitectureMapping.cpp</a>.</p>
 
 </div>
 </div>
@@ -312,7 +312,7 @@ Public Member Functions</h2></td></tr>
 <p>The number of vertices in the <a class="el" href="classtket_1_1Architecture.html">Architecture</a>. </p>
 <dl class="section return"><dt>Returns</dt><dd>The number of vertices </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8cpp_source.html#l00095">95</a> of file <a class="el" href="ArchitectureMapping_8cpp_source.html">ArchitectureMapping.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ArchitectureMapping_8cpp_source.html#l00094">94</a> of file <a class="el" href="ArchitectureMapping_8cpp_source.html">ArchitectureMapping.cpp</a>.</p>
 
 </div>
 </div>

@@ -93,17 +93,17 @@ $(function() {
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Gate_8hpp.html">Gate.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;algorithm&gt;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="GateUnitaryMatrix_8hpp.html">GateUnitaryMatrix.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="GateUnitaryMatrixError_8hpp.html">GateUnitaryMatrixError.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="OpPtrFunctions_8hpp.html">OpPtrFunctions.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="OpType_8hpp.html">OpType/OpType.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="OpTypeFunctions_8hpp.html">OpType/OpTypeFunctions.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="OpTypeInfo_8hpp.html">OpType/OpTypeInfo.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Op_8hpp.html">Ops/Op.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Expression_8hpp.html">Utils/Expression.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="RNG_8hpp.html">Utils/RNG.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;tkrng/RNG.hpp&gt;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="GateUnitaryMatrix_8hpp.html">GateUnitaryMatrix.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="GateUnitaryMatrixError_8hpp.html">GateUnitaryMatrixError.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="OpPtrFunctions_8hpp.html">OpPtrFunctions.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="OpType_8hpp.html">OpType/OpType.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="OpTypeFunctions_8hpp.html">OpType/OpTypeFunctions.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="OpTypeInfo_8hpp.html">OpType/OpTypeInfo.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Op_8hpp.html">Ops/Op.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Expression_8hpp.html">Utils/Expression.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &quot;symengine/eval_double.h&quot;</span></div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacetket.html">tket</a> {</div>
@@ -890,7 +890,6 @@ $(function() {
 <div class="ttc" id="anamespacetket_html_af5d06a57a5dcaf0203433a22503eaf0e"><div class="ttname"><a href="namespacetket.html#af5d06a57a5dcaf0203433a22503eaf0e">tket::expr_free_symbols</a></div><div class="ttdeci">SymSet expr_free_symbols(const Expr &amp;e)</div><div class="ttdoc">Set of all free symbols contained in the expression.</div><div class="ttdef"><b>Definition:</b> <a href="Expression_8cpp_source.html#l00041">Expression.cpp:41</a></div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a360491a482e329423dbf01217091c0dd"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a360491a482e329423dbf01217091c0dd">tket::OpType::CSXdg</a></div><div class="ttdeci">@ CSXdg</div><div class="ttdoc">Controlled OpType::SXdg.</div></div>
 <div class="ttc" id="aclasstket_1_1OpDesc_html"><div class="ttname"><a href="classtket_1_1OpDesc.html">tket::OpDesc</a></div><div class="ttdoc">Operation descriptor.</div><div class="ttdef"><b>Definition:</b> <a href="OpDesc_8hpp_source.html#l00036">OpDesc.hpp:36</a></div></div>
-<div class="ttc" id="aRNG_8hpp_html"><div class="ttname"><a href="RNG_8hpp.html">RNG.hpp</a></div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3aa5c8c3544bc49ebacde4ffe04bf34de0"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aa5c8c3544bc49ebacde4ffe04bf34de0">tket::OpType::CV</a></div><div class="ttdeci">@ CV</div><div class="ttdoc">Controlled OpType::V.</div></div>
 <div class="ttc" id="aGateUnitaryMatrixFixedMatrices_8cpp_html_ade2e0c760b21b1e3e259bdef97f17186"><div class="ttname"><a href="GateUnitaryMatrixFixedMatrices_8cpp.html#ade2e0c760b21b1e3e259bdef97f17186">Y</a></div><div class="ttdeci">Eigen::Matrix2cd Y</div><div class="ttdef"><b>Definition:</b> <a href="GateUnitaryMatrixFixedMatrices_8cpp_source.html#l00026">GateUnitaryMatrixFixedMatrices.cpp:26</a></div></div>
 <div class="ttc" id="aGateUnitaryMatrixError_8hpp_html"><div class="ttname"><a href="GateUnitaryMatrixError_8hpp.html">GateUnitaryMatrixError.hpp</a></div></div>

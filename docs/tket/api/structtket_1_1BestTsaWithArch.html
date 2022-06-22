@@ -81,7 +81,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>A simple wrapper around <a class="el" href="classtket_1_1BestFullTsa.html" title="This class combines all the different token swapping components together in the best known way to get...">BestFullTsa</a> from TokenSwapping, using <a class="el" href="classtket_1_1Architecture.html">Architecture</a> objects directly to find distances and neighbours.  
+<p>A simple wrapper around BestFullTsa from TokenSwapping, using <a class="el" href="classtket_1_1Architecture.html">Architecture</a> objects directly to find distances and neighbours.  
  <a href="structtket_1_1BestTsaWithArch.html#details">More...</a></p>
 
 <p><code>#include &lt;<a class="el" href="BestTsaWithArch_8hpp_source.html">BestTsaWithArch.hpp</a>&gt;</code></p>
@@ -94,7 +94,7 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a39c6455300f5c24c7ab38cc41a81aace"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1BestTsaWithArch.html#a39c6455300f5c24c7ab38cc41a81aace">append_solution</a> (<a class="el" href="namespacetket.html#ae8a8548b749370f2d12478c8757ad439">SwapList</a> &amp;swaps, <a class="el" href="namespacetket.html#a0469a9ea2fecfd89c9e1e0bc8611a140">VertexMapping</a> &amp;vertex_mapping, const <a class="el" href="classtket_1_1ArchitectureMapping.html">ArchitectureMapping</a> &amp;arch_mapping)</td></tr>
+<tr class="memitem:a39c6455300f5c24c7ab38cc41a81aace"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1BestTsaWithArch.html#a39c6455300f5c24c7ab38cc41a81aace">append_solution</a> (SwapList &amp;swaps, VertexMapping &amp;vertex_mapping, const <a class="el" href="classtket_1_1ArchitectureMapping.html">ArchitectureMapping</a> &amp;arch_mapping)</td></tr>
 <tr class="memdesc:a39c6455300f5c24c7ab38cc41a81aace"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given the desired vertex mapping, a list of swaps (which may or may not be empty), and information about the architecture (the underlying graph), append extra swaps to it to produce the desired mapping.  <a href="structtket_1_1BestTsaWithArch.html#a39c6455300f5c24c7ab38cc41a81aace">More...</a><br /></td></tr>
 <tr class="separator:a39c6455300f5c24c7ab38cc41a81aace"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d5f5734b3ebac455acb486abcfb8bb9"><td class="memItemLeft" align="right" valign="top">static std::vector&lt; std::pair&lt; <a class="el" href="classtket_1_1Node.html">Node</a>, <a class="el" href="classtket_1_1Node.html">Node</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1BestTsaWithArch.html#a2d5f5734b3ebac455acb486abcfb8bb9">get_swaps</a> (const <a class="el" href="classtket_1_1Architecture.html">Architecture</a> &amp;architecture, const <a class="el" href="structtket_1_1BestTsaWithArch.html#a7a2a984b96f19b872162d425ff9e7067">NodeMapping</a> &amp;node_mapping)</td></tr>
@@ -102,9 +102,9 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a2d5f5734b3ebac455acb486abcfb8bb9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>A simple wrapper around <a class="el" href="classtket_1_1BestFullTsa.html" title="This class combines all the different token swapping components together in the best known way to get...">BestFullTsa</a> from TokenSwapping, using <a class="el" href="classtket_1_1Architecture.html">Architecture</a> objects directly to find distances and neighbours. </p>
+<div class="textblock"><p>A simple wrapper around BestFullTsa from TokenSwapping, using <a class="el" href="classtket_1_1Architecture.html">Architecture</a> objects directly to find distances and neighbours. </p>
 
-<p class="definition">Definition at line <a class="el" href="BestTsaWithArch_8hpp_source.html#l00025">25</a> of file <a class="el" href="BestTsaWithArch_8hpp_source.html">BestTsaWithArch.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BestTsaWithArch_8hpp_source.html#l00026">26</a> of file <a class="el" href="BestTsaWithArch_8hpp_source.html">BestTsaWithArch.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a7a2a984b96f19b872162d425ff9e7067"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7a2a984b96f19b872162d425ff9e7067">&#9670;&nbsp;</a></span>NodeMapping</h2>
@@ -121,7 +121,7 @@ Static Public Member Functions</h2></td></tr>
 <p>This specifies desired source-&gt;target vertex mappings. </p>
 <p>Any nodes not occurring as a key might be moved by the algorithm. </p>
 
-<p class="definition">Definition at line <a class="el" href="BestTsaWithArch_8hpp_source.html#l00043">43</a> of file <a class="el" href="BestTsaWithArch_8hpp_source.html">BestTsaWithArch.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BestTsaWithArch_8hpp_source.html#l00044">44</a> of file <a class="el" href="BestTsaWithArch_8hpp_source.html">BestTsaWithArch.hpp</a>.</p>
 
 </div>
 </div>
@@ -138,13 +138,13 @@ Static Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void tket::BestTsaWithArch::append_solution </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="namespacetket.html#ae8a8548b749370f2d12478c8757ad439">SwapList</a> &amp;&#160;</td>
+          <td class="paramtype">SwapList &amp;&#160;</td>
           <td class="paramname"><em>swaps</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="namespacetket.html#a0469a9ea2fecfd89c9e1e0bc8611a140">VertexMapping</a> &amp;&#160;</td>
+          <td class="paramtype">VertexMapping &amp;&#160;</td>
           <td class="paramname"><em>vertex_mapping</em>, </td>
         </tr>
         <tr>
@@ -176,7 +176,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="BestTsaWithArch_8cpp_source.html#l00027">27</a> of file <a class="el" href="BestTsaWithArch_8cpp_source.html">BestTsaWithArch.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BestTsaWithArch_8cpp_source.html#l00028">28</a> of file <a class="el" href="BestTsaWithArch_8cpp_source.html">BestTsaWithArch.cpp</a>.</p>
 
 </div>
 </div>
@@ -224,7 +224,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>The required list of node pairs to swap. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="BestTsaWithArch_8cpp_source.html#l00038">38</a> of file <a class="el" href="BestTsaWithArch_8cpp_source.html">BestTsaWithArch.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BestTsaWithArch_8cpp_source.html#l00039">39</a> of file <a class="el" href="BestTsaWithArch_8cpp_source.html">BestTsaWithArch.cpp</a>.</p>
 
 </div>
 </div>

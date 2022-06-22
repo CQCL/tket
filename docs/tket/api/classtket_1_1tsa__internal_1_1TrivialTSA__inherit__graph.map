@@ -1,4 +1,0 @@
-<map id="tket::tsa_internal::TrivialTSA" name="tket::tsa_internal::TrivialTSA">
-<area shape="rect" id="node1" title="A full TSA, simple and fast but not giving very good solutions." alt="" coords="15,95,147,136"/>
-<area shape="rect" id="node2" href="$classtket_1_1tsa__internal_1_1PartialTsaInterface.html" title="TSA stands for Token Swapping Algorithm." alt="" coords="5,5,156,47"/>
-</map>

@@ -1,4 +1,0 @@
-<map id="tket::DistancesInterface" name="tket::DistancesInterface">
-<area shape="rect" id="node1" title="What is the distance between any two vertices on a graph? To save time and cope with larger,..." alt="" coords="32,5,209,32"/>
-<area shape="rect" id="node2" href="$classtket_1_1DistancesFromArchitecture.html" title="Directly get distances from an architecture object, but evaluated lazily." alt="" coords="5,80,236,107"/>
-</map>

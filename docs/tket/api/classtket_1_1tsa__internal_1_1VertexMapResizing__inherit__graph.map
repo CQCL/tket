@@ -1,4 +1,0 @@
-<map id="tket::tsa_internal::VertexMapResizing" name="tket::tsa_internal::VertexMapResizing">
-<area shape="rect" id="node1" title="If a vertex mapping { u &#45;&gt; v } has too few vertices, try to add extra vertices, fixed by the new mapp..." alt="" coords="21,80,176,121"/>
-<area shape="rect" id="node2" href="$classtket_1_1NeighboursInterface.html" title="What are the adjacent vertices to a given vertex on a graph? For larger, sparse graphs,..." alt="" coords="5,5,192,32"/>
-</map>

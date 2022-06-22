@@ -1,16 +1,14 @@
 <map id="src/WeightSubgrMono/include/WeightSubgrMono/EndToEndWrappers/SearchComponents.hpp" name="src/WeightSubgrMono/include/WeightSubgrMono/EndToEndWrappers/SearchComponents.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="315,5,623,61"/>
-<area shape="rect" id="node2" href="$RNG_8hpp.html" title=" " alt="" coords="238,206,351,233"/>
-<area shape="rect" id="node8" href="$ValueOrdering_8hpp.html" title=" " alt="" coords="365,109,573,151"/>
-<area shape="rect" id="node13" href="$VariableOrdering_8hpp.html" title=" " alt="" coords="597,109,805,151"/>
-<area shape="rect" id="node3" title=" " alt="" coords="392,288,477,315"/>
-<area shape="rect" id="node4" title=" " alt="" coords="213,288,280,315"/>
-<area shape="rect" id="node5" title=" " alt="" coords="5,288,77,315"/>
-<area shape="rect" id="node6" title=" " alt="" coords="102,288,189,315"/>
-<area shape="rect" id="node7" title=" " alt="" coords="305,288,367,315"/>
-<area shape="rect" id="node9" title=" " alt="" coords="659,288,701,315"/>
-<area shape="rect" id="node10" href="$GeneralStructs_8hpp.html" title=" " alt="" coords="381,199,571,240"/>
-<area shape="rect" id="node11" title=" " alt="" coords="501,288,552,315"/>
-<area shape="rect" id="node12" title=" " alt="" coords="576,288,635,315"/>
-<area shape="rect" id="node14" title=" " alt="" coords="664,206,739,233"/>
+<area shape="rect" id="node1" title=" " alt="" coords="97,5,405,61"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,117,123,143"/>
+<area shape="rect" id="node3" href="$ValueOrdering_8hpp.html" title=" " alt="" coords="147,109,355,151"/>
+<area shape="rect" id="node11" href="$VariableOrdering_8hpp.html" title=" " alt="" coords="379,109,587,151"/>
+<area shape="rect" id="node4" title=" " alt="" coords="159,288,201,315"/>
+<area shape="rect" id="node5" href="$GeneralStructs_8hpp.html" title=" " alt="" coords="273,199,463,240"/>
+<area shape="rect" id="node6" title=" " alt="" coords="225,288,311,315"/>
+<area shape="rect" id="node7" title=" " alt="" coords="335,288,401,315"/>
+<area shape="rect" id="node8" title=" " alt="" coords="425,288,476,315"/>
+<area shape="rect" id="node9" title=" " alt="" coords="500,288,559,315"/>
+<area shape="rect" id="node10" title=" " alt="" coords="583,288,646,315"/>
+<area shape="rect" id="node12" title=" " alt="" coords="487,206,561,233"/>
 </map>

@@ -1,4 +1,0 @@
-<map id="tket::tsa_internal::HybridTsa" name="tket::tsa_internal::HybridTsa">
-<area shape="rect" id="node1" title="A full end&#45;to&#45;end TSA, combining the partial cycles TSA (hopefully good) with the full &quot;trivial&quot; TSA ..." alt="" coords="15,95,147,136"/>
-<area shape="rect" id="node2" href="$classtket_1_1tsa__internal_1_1PartialTsaInterface.html" title="TSA stands for Token Swapping Algorithm." alt="" coords="5,5,156,47"/>
-</map>

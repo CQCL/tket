@@ -1,6 +1,5 @@
 <map id="tket::WeightedSubgraphMonomorphism::SearchComponents" name="tket::WeightedSubgraphMonomorphism::SearchComponents">
-<area shape="rect" id="node1" title=" " alt="" coords="451,64,729,105"/>
+<area shape="rect" id="node1" title=" " alt="" coords="451,39,729,80"/>
 <area shape="rect" id="node2" href="$classtket_1_1WeightedSubgraphMonomorphism_1_1ValueOrdering.html" title="Given an unassigned PV, choose a possible target vertex TV from Dom(PV) so that the search can procee..." alt="" coords="5,5,284,47"/>
-<area shape="rect" id="node3" href="$classtket_1_1RNG.html" title="A random number generator class." alt="" coords="103,71,187,98"/>
-<area shape="rect" id="node4" href="$classtket_1_1WeightedSubgraphMonomorphism_1_1VariableOrdering.html" title="Out of all the unassigned pattern v, which one should we choose next to assign? Should ONLY be called..." alt="" coords="5,123,284,164"/>
+<area shape="rect" id="node3" href="$classtket_1_1WeightedSubgraphMonomorphism_1_1VariableOrdering.html" title="Out of all the unassigned pattern v, which one should we choose next to assign? Should ONLY be called..." alt="" coords="5,71,284,112"/>
 </map>

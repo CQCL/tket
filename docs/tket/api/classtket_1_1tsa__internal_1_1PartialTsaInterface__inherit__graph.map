@@ -1,7 +1,0 @@
-<map id="tket::tsa_internal::PartialTsaInterface" name="tket::tsa_internal::PartialTsaInterface">
-<area shape="rect" id="node1" title="TSA stands for Token Swapping Algorithm." alt="" coords="5,90,156,131"/>
-<area shape="rect" id="node2" href="$classtket_1_1BestFullTsa.html" title="This class combines all the different token swapping components together in the best known way to get..." alt="" coords="207,5,335,32"/>
-<area shape="rect" id="node3" href="$classtket_1_1tsa__internal_1_1CyclesPartialTsa.html" title="A partial TSA (token swapping algorithm), similar to the cycle&#45;finding algorithm as described in the ..." alt="" coords="204,57,339,98"/>
-<area shape="rect" id="node4" href="$classtket_1_1tsa__internal_1_1HybridTsa.html" title="A full end&#45;to&#45;end TSA, combining the partial cycles TSA (hopefully good) with the full &quot;trivial&quot; TSA ..." alt="" coords="205,122,337,163"/>
-<area shape="rect" id="node5" href="$classtket_1_1tsa__internal_1_1TrivialTSA.html" title="A full TSA, simple and fast but not giving very good solutions." alt="" coords="205,187,337,229"/>
-</map>

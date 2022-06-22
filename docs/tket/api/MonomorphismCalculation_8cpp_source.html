@@ -116,12 +116,12 @@ $(function() {
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  }</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  <span class="comment">// The PV assigned so far must be exactly the nonisolated ones.</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  TKET_ASSERT(</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;      map.size() ==</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;      relabelled_pattern_graph.<a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html#a472d46a2532af442128664f07c134274">get_relabelled_nonisolated_vertices</a>().size());</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <span class="comment">// Also, all PV so far must have been assigned to nonisolated TV.</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  TKET_ASSERT(</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;      map.size() &lt;=</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;      relabelled_target_graph.<a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html#a472d46a2532af442128664f07c134274">get_relabelled_nonisolated_vertices</a>().size());</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
@@ -139,13 +139,13 @@ $(function() {
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;          relabelled_pattern_graph.<a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html#a87c66c26950838282bb0360440dd1e36">get_relabelled_vertex</a>(entry.first);</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;      <span class="keyword">const</span> <a class="code" href="namespacetket_1_1WeightedSubgraphMonomorphism.html#a16ddd20338a7b22544b227977148ae0a">VertexWSM</a> new_tv =</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;          relabelled_target_graph.<a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html#a87c66c26950838282bb0360440dd1e36">get_relabelled_vertex</a>(entry.second);</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;      <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;      TKET_ASSERT(</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;          relabelled_pattern_graph.<a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html#a472d46a2532af442128664f07c134274">get_relabelled_nonisolated_vertices</a>().count(</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;              new_pv) != 0);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;      <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;      TKET_ASSERT(</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;          relabelled_target_graph.<a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html#a472d46a2532af442128664f07c134274">get_relabelled_nonisolated_vertices</a>().count(</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;              new_tv) != 0);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;      <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(unused_target_vertices.erase(new_tv) == 1);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;      TKET_ASSERT(unused_target_vertices.erase(new_tv) == 1);</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    }</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  } <span class="keywordflow">else</span> {</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    refilled_with_isolated_tv = <span class="keyword">true</span>;</div>
@@ -156,11 +156,11 @@ $(function() {
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;       relabelled_pattern_graph.<a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html#a96a60d963b2ea3ac629512fa95ef69cd">get_relabelled_isolated_vertices</a>()) {</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordflow">if</span> (unused_target_vertices.empty()) {</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;      <span class="comment">// We cannot run out of vertices.</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;      <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(!refilled_with_isolated_tv);</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;      TKET_ASSERT(!refilled_with_isolated_tv);</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;      refilled_with_isolated_tv = <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;      unused_target_vertices =</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;          relabelled_target_graph.<a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html#a96a60d963b2ea3ac629512fa95ef69cd">get_relabelled_isolated_vertices</a>();</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;      <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(!unused_target_vertices.empty());</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;      TKET_ASSERT(!unused_target_vertices.empty());</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    }</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keyword">const</span> <a class="code" href="namespacetket_1_1WeightedSubgraphMonomorphism.html#a16ddd20338a7b22544b227977148ae0a">VertexWSM</a> next_tv = *unused_target_vertices.cbegin();</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    unused_target_vertices.erase(next_tv);</div>
@@ -176,7 +176,7 @@ $(function() {
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <span class="keyword">const</span> std::vector&lt;SolutionWSM&gt;&amp; solutions,</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keyword">const</span> <a class="code" href="namespacetket.html#acfc718584814475bab7d8a21b697107e">RelabelledPatternGraph</a>&amp; relabelled_pattern_graph,</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="keyword">const</span> <a class="code" href="namespacetket.html#a03d49a3564fdd191a3d906f9120bf590">RelabelledTargetGraph</a>&amp; relabelled_target_graph) {</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(all_maps.empty());</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  TKET_ASSERT(all_maps.empty());</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  all_maps.resize(solutions.size());</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  <span class="keyword">const</span> <a class="code" href="namespacetket_1_1WeightedSubgraphMonomorphism.html#a22b1e0af35470fc4c209ebe10488b314">WeightWSM</a> expected_weight =</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;      relabelled_pattern_graph.get_relabelled_edges_and_weights().size();</div>
@@ -184,8 +184,8 @@ $(function() {
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> ii = 0; ii &lt; solutions.size(); ++ii) {</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; solution = solutions[ii];</div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <span class="keyword">auto</span>&amp; map = all_maps[ii];</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(solution.scalar_product == expected_weight);</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(solution.total_p_edges_weight == expected_weight);</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    TKET_ASSERT(solution.scalar_product == expected_weight);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    TKET_ASSERT(solution.total_p_edges_weight == expected_weight);</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; relabelled_pv_tv : solution.assignments) {</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;      map.insert(<a class="code" href="namespacetket.html#ad95057f5ea5feaafe9ad25db5ca5e718">BimapValue</a>(</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;          relabelled_pattern_graph.get_original_vertices().at(</div>
@@ -195,7 +195,7 @@ $(function() {
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    }</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    assign_isolated_pattern_vertices(</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        map, relabelled_pattern_graph, relabelled_target_graph);</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    TKET_ASSERT(</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        map.size() == relabelled_pattern_graph.get_original_vertices().size());</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  }</div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;}</div>
@@ -259,7 +259,6 @@ $(function() {
 <div class="ttc" id="anamespacetket_1_1WeightedSubgraphMonomorphism_html_a22b1e0af35470fc4c209ebe10488b314"><div class="ttname"><a href="namespacetket_1_1WeightedSubgraphMonomorphism.html#a22b1e0af35470fc4c209ebe10488b314">tket::WeightedSubgraphMonomorphism::WeightWSM</a></div><div class="ttdeci">std::uint64_t WeightWSM</div><div class="ttdef"><b>Definition:</b> <a href="GeneralStructs_8hpp_source.html#l00027">GeneralStructs.hpp:27</a></div></div>
 <div class="ttc" id="aclasstket_1_1WeightedSubgraphMonomorphism_1_1MainSolver_html_a6a642d3b7087a1bab3ae51c2ee5eb25f"><div class="ttname"><a href="classtket_1_1WeightedSubgraphMonomorphism_1_1MainSolver.html#a6a642d3b7087a1bab3ae51c2ee5eb25f">tket::WeightedSubgraphMonomorphism::MainSolver::get_solution_data</a></div><div class="ttdeci">const SolutionData &amp; get_solution_data() const</div><div class="ttdoc">Returns information about the solving and the best solution found so far.</div><div class="ttdef"><b>Definition:</b> <a href="MainSolver_8cpp_source.html#l00186">MainSolver.cpp:186</a></div></div>
 <div class="ttc" id="anamespacetket_1_1WeightedSubgraphMonomorphism_html_a16ddd20338a7b22544b227977148ae0a"><div class="ttname"><a href="namespacetket_1_1WeightedSubgraphMonomorphism.html#a16ddd20338a7b22544b227977148ae0a">tket::WeightedSubgraphMonomorphism::VertexWSM</a></div><div class="ttdeci">std::uint_fast32_t VertexWSM</div><div class="ttdef"><b>Definition:</b> <a href="GeneralStructs_8hpp_source.html#l00026">GeneralStructs.hpp:26</a></div></div>
-<div class="ttc" id="aAssert_8hpp_html_ae053544861204d4c3f5e8422252ca22e"><div class="ttname"><a href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a></div><div class="ttdeci">#define TKET_ASSERT(condition)</div><div class="ttdoc">If condition is not satisfied, log a diagnostic message and abort.</div><div class="ttdef"><b>Definition:</b> <a href="Assert_8hpp_source.html#l00076">Assert.hpp:76</a></div></div>
 <div class="ttc" id="astructtket_1_1WeightedSubgraphMonomorphism_1_1MainSolverParameters_html"><div class="ttname"><a href="structtket_1_1WeightedSubgraphMonomorphism_1_1MainSolverParameters.html">tket::WeightedSubgraphMonomorphism::MainSolverParameters</a></div><div class="ttdoc">Input parameters to configure the solving.</div><div class="ttdef"><b>Definition:</b> <a href="MainSolverParameters_8hpp_source.html#l00024">MainSolverParameters.hpp:24</a></div></div>
 <div class="ttc" id="aclasstket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM_html"><div class="ttname"><a href="classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html">tket::WeightedSubgraphMonomorphism::RelabelledGraphWSM</a></div><div class="ttdoc">Intended for use with Architecture and QubitGraph, which are similar but different types.</div><div class="ttdef"><b>Definition:</b> <a href="RelabelledGraphWSM_8hpp_source.html#l00030">RelabelledGraphWSM.hpp:30</a></div></div>
 <div class="ttc" id="aclasstket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM_html_a96a60d963b2ea3ac629512fa95ef69cd"><div class="ttname"><a href="classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html#a96a60d963b2ea3ac629512fa95ef69cd">tket::WeightedSubgraphMonomorphism::RelabelledGraphWSM::get_relabelled_isolated_vertices</a></div><div class="ttdeci">const std::set&lt; VertexWSM &gt; &amp; get_relabelled_isolated_vertices() const</div><div class="ttdef"><b>Definition:</b> <a href="RelabelledGraphWSM_8hpp_source.html#l00077">RelabelledGraphWSM.hpp:77</a></div></div>

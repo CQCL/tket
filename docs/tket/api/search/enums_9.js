@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['reductionresult_5624',['ReductionResult',['../namespacetket_1_1WeightedSubgraphMonomorphism.html#af28046d9cc31d7c64a9164873e8e4c2b',1,'tket::WeightedSubgraphMonomorphism']]],
-  ['reversetype_5625',['ReverseType',['../namespacetket.html#a0f814e0f8e98465926bde71420d68cf6',1,'tket']]]
+  ['safetymode_5152',['SafetyMode',['../namespacetket.html#ab65820ebbcb1ceb848e855a832420396',1,'tket']]],
+  ['steinernodetype_5153',['SteinerNodeType',['../namespacetket_1_1aas.html#a5d7e42ff2fcc3a26d82ea3d4dd415374',1,'tket::aas']]]
 ];

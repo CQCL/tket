@@ -95,8 +95,8 @@ $(function() {
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;algorithm&gt;</span></div>
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;chrono&gt;</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &lt;numeric&gt;</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Assert_8hpp.html">Utils/Assert.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &lt;tkassert/Assert.hpp&gt;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="GeneralUtils_8hpp.html">WeightSubgrMono/Common/GeneralUtils.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="PreSearchComponents_8hpp.html">WeightSubgrMono/EndToEndWrappers/PreSearchComponents.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="SearchComponents_8hpp.html">WeightSubgrMono/EndToEndWrappers/SearchComponents.hpp</a>&quot;</span></div>
@@ -151,7 +151,7 @@ $(function() {
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  m_pre_search_components_ptr = std::make_unique&lt;PreSearchComponents&gt;(</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;      m_pattern_neighbours_data, m_target_neighbours_data);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(m_pre_search_components_ptr);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  TKET_ASSERT(m_pre_search_components_ptr);</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  {</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1DomainInitialiser.html#acf88051bffbcaa075c3915907f59c4e9">DomainInitialiser::InitialDomains</a> initial_domains;</div>
@@ -165,7 +165,7 @@ $(function() {
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keywordflow">if</span> (initialisation_succeeded) {</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;      m_search_components_ptr = std::make_unique&lt;SearchComponents&gt;();</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;      <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(m_search_components_ptr);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;      TKET_ASSERT(m_search_components_ptr);</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;      m_search_branch_ptr = std::make_unique&lt;SearchBranch&gt;(</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;          initial_domains, m_pattern_neighbours_data,</div>
@@ -196,11 +196,11 @@ $(function() {
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        m_target_neighbours_data.<a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1NeighboursData.html#a092a2a49fda5c6f62802926669b67a85">get_weights_expensive</a>();</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    std::sort(t_weights.begin(), t_weights.end());</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    TKET_ASSERT(</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        p_weights.size() == m_pattern_neighbours_data.<a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1NeighboursData.html#aa8e85335844b466c7394880e45db2b40">get_number_of_edges</a>());</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    TKET_ASSERT(</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;        t_weights.size() == m_target_neighbours_data.<a class="code" href="classtket_1_1WeightedSubgraphMonomorphism_1_1NeighboursData.html#aa8e85335844b466c7394880e45db2b40">get_number_of_edges</a>());</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(p_weights.size() &lt;= t_weights.size());</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    TKET_ASSERT(p_weights.size() &lt;= t_weights.size());</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    m_solution_data.<a class="code" href="structtket_1_1WeightedSubgraphMonomorphism_1_1SolutionData.html#ab70b29acc21f7639c05c4f2e04c23435">total_p_edge_weights</a> =</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        std::accumulate(p_weights.cbegin(), p_weights.cend(), <a class="code" href="namespacetket_1_1WeightedSubgraphMonomorphism.html#a22b1e0af35470fc4c209ebe10488b314">WeightWSM</a>(0));</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
@@ -329,8 +329,8 @@ $(function() {
 <div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;      terminate_with_enough_full_solutions(parameters, m_solution_data)) {</div>
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;    <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;  }</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(m_pre_search_components_ptr);</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(m_search_branch_ptr);</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;  TKET_ASSERT(m_pre_search_components_ptr);</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;  TKET_ASSERT(m_search_branch_ptr);</div>
 <div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
 <div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;  SearchBranch::ReductionParameters reduction_parameters;</div>
 <div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;  decltype(reduction_parameters.max_weight) initial_weight_upper_bound;</div>
@@ -430,17 +430,17 @@ $(function() {
 <div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;<span class="keywordtype">void</span> MainSolver::add_solution_from_final_node(</div>
 <div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    <span class="keyword">const</span> MainSolverParameters&amp; parameters,</div>
 <div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    <span class="keyword">const</span> SearchBranch::ReductionParameters&amp; reduction_parameters) {</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(m_pre_search_components_ptr);</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(m_search_branch_ptr);</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;  TKET_ASSERT(m_pre_search_components_ptr);</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;  TKET_ASSERT(m_search_branch_ptr);</div>
 <div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160; </div>
 <div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;  <span class="keyword">const</span> DomainsAccessor&amp; accessor = m_search_branch_ptr-&gt;get_domains_accessor();</div>
 <div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;  <span class="keyword">const</span> <a class="code" href="namespacetket_1_1WeightedSubgraphMonomorphism.html#a22b1e0af35470fc4c209ebe10488b314">WeightWSM</a> scalar_product = accessor.get_scalar_product();</div>
 <div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160; </div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;  TKET_ASSERT(</div>
 <div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;      accessor.get_total_p_edge_weights() ==</div>
 <div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;      m_solution_data.<a class="code" href="structtket_1_1WeightedSubgraphMonomorphism_1_1SolutionData.html#ab70b29acc21f7639c05c4f2e04c23435">total_p_edge_weights</a>);</div>
 <div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160; </div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(scalar_product &lt;= reduction_parameters.max_weight);</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;  TKET_ASSERT(scalar_product &lt;= reduction_parameters.max_weight);</div>
 <div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160; </div>
 <div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;  <span class="comment">// We&#39;ll overwrite the solution into back().</span></div>
 <div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;  <span class="keywordflow">if</span> (parameters.for_multiple_full_solutions_the_max_number_to_obtain &gt; 0 ||</div>
@@ -455,7 +455,7 @@ $(function() {
 <div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160; </div>
 <div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> pv = 0; pv &lt; number_of_pv; ++pv) {</div>
 <div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    <span class="keyword">const</span> std::set&lt;VertexWSM&gt;&amp; domain = accessor.get_domain(pv);</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(domain.size() == 1);</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    TKET_ASSERT(domain.size() == 1);</div>
 <div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;    assignments.emplace_back(pv, *domain.cbegin());</div>
 <div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;  }</div>
 <div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;  m_solution_data.<a class="code" href="structtket_1_1WeightedSubgraphMonomorphism_1_1SolutionData.html#a7ca45b2883c3c3269564c0246dc81d71">solutions</a>.back().scalar_product = scalar_product;</div>
@@ -466,8 +466,8 @@ $(function() {
 <div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160; </div>
 <div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;<span class="keywordtype">bool</span> MainSolver::move_down_from_reduced_node(</div>
 <div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;    <span class="keyword">const</span> SearchBranch::ReductionParameters&amp; reduction_parameters) {</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(m_search_components_ptr);</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;  <a class="code" href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a>(m_search_branch_ptr);</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;  TKET_ASSERT(m_search_components_ptr);</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;  TKET_ASSERT(m_search_branch_ptr);</div>
 <div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160; </div>
 <div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;  <span class="keywordflow">for</span> (;;) {</div>
 <div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    <span class="keyword">const</span> VariableOrdering::Result next_var_result =</div>
@@ -514,7 +514,6 @@ $(function() {
 <div class="ttc" id="aclasstket_1_1WeightedSubgraphMonomorphism_1_1MainSolver_html_a6a642d3b7087a1bab3ae51c2ee5eb25f"><div class="ttname"><a href="classtket_1_1WeightedSubgraphMonomorphism_1_1MainSolver.html#a6a642d3b7087a1bab3ae51c2ee5eb25f">tket::WeightedSubgraphMonomorphism::MainSolver::get_solution_data</a></div><div class="ttdeci">const SolutionData &amp; get_solution_data() const</div><div class="ttdoc">Returns information about the solving and the best solution found so far.</div><div class="ttdef"><b>Definition:</b> <a href="MainSolver_8cpp_source.html#l00186">MainSolver.cpp:186</a></div></div>
 <div class="ttc" id="anamespacetket_1_1WeightedSubgraphMonomorphism_html_a16ddd20338a7b22544b227977148ae0a"><div class="ttname"><a href="namespacetket_1_1WeightedSubgraphMonomorphism.html#a16ddd20338a7b22544b227977148ae0a">tket::WeightedSubgraphMonomorphism::VertexWSM</a></div><div class="ttdeci">std::uint_fast32_t VertexWSM</div><div class="ttdef"><b>Definition:</b> <a href="GeneralStructs_8hpp_source.html#l00026">GeneralStructs.hpp:26</a></div></div>
 <div class="ttc" id="anamespacetket_1_1WeightedSubgraphMonomorphism_html_a85f6e73bb056c71dc6cd39781edd2045"><div class="ttname"><a href="namespacetket_1_1WeightedSubgraphMonomorphism.html#a85f6e73bb056c71dc6cd39781edd2045">tket::WeightedSubgraphMonomorphism::get_product_or_throw</a></div><div class="ttdeci">UINT get_product_or_throw(UINT x, UINT y)</div><div class="ttdoc">Throws the special IntegerOverflow exception if the values are too big.</div><div class="ttdef"><b>Definition:</b> <a href="GeneralUtils_8hpp_source.html#l00225">GeneralUtils.hpp:225</a></div></div>
-<div class="ttc" id="aAssert_8hpp_html_ae053544861204d4c3f5e8422252ca22e"><div class="ttname"><a href="Assert_8hpp.html#ae053544861204d4c3f5e8422252ca22e">TKET_ASSERT</a></div><div class="ttdeci">#define TKET_ASSERT(condition)</div><div class="ttdoc">If condition is not satisfied, log a diagnostic message and abort.</div><div class="ttdef"><b>Definition:</b> <a href="Assert_8hpp_source.html#l00076">Assert.hpp:76</a></div></div>
 <div class="ttc" id="aclasstket_1_1WeightedSubgraphMonomorphism_1_1MainSolver_html_acc1a7db2fc25caee5d84a8301bd9f62a"><div class="ttname"><a href="classtket_1_1WeightedSubgraphMonomorphism_1_1MainSolver.html#acc1a7db2fc25caee5d84a8301bd9f62a">tket::WeightedSubgraphMonomorphism::MainSolver::~MainSolver</a></div><div class="ttdeci">~MainSolver()</div><div class="ttdef"><b>Definition:</b> <a href="MainSolver_8cpp_source.html#l00184">MainSolver.cpp:184</a></div></div>
 <div class="ttc" id="aclasstket_1_1WeightedSubgraphMonomorphism_1_1MainSolver_html_a14f694bd2a350ea4e78ae01b432af284"><div class="ttname"><a href="classtket_1_1WeightedSubgraphMonomorphism_1_1MainSolver.html#a14f694bd2a350ea4e78ae01b432af284">tket::WeightedSubgraphMonomorphism::MainSolver::solve</a></div><div class="ttdeci">void solve(const MainSolverParameters &amp;parameters)</div><div class="ttdoc">After construction, do further solving, if the original solve terminated early (which may occur due t...</div><div class="ttdef"><b>Definition:</b> <a href="MainSolver_8cpp_source.html#l00215">MainSolver.cpp:215</a></div></div>
 <div class="ttc" id="astructtket_1_1WeightedSubgraphMonomorphism_1_1MainSolverParameters_html"><div class="ttname"><a href="structtket_1_1WeightedSubgraphMonomorphism_1_1MainSolverParameters.html">tket::WeightedSubgraphMonomorphism::MainSolverParameters</a></div><div class="ttdoc">Input parameters to configure the solving.</div><div class="ttdef"><b>Definition:</b> <a href="MainSolverParameters_8hpp_source.html#l00024">MainSolverParameters.hpp:24</a></div></div>
@@ -533,7 +532,6 @@ $(function() {
 <div class="ttc" id="anamespacetket_1_1WeightedSubgraphMonomorphism_html_a7ab15b37235a6e982f2a4ca53a4cc405"><div class="ttname"><a href="namespacetket_1_1WeightedSubgraphMonomorphism.html#a7ab15b37235a6e982f2a4ca53a4cc405">tket::WeightedSubgraphMonomorphism::set_maximum</a></div><div class="ttdeci">void set_maximum(T &amp;val)</div><div class="ttdoc">Sets the numeric variable to its maximum possible value.</div><div class="ttdef"><b>Definition:</b> <a href="GeneralUtils_8hpp_source.html#l00041">GeneralUtils.hpp:41</a></div></div>
 <div class="ttc" id="aMainSolver_8hpp_html"><div class="ttname"><a href="MainSolver_8hpp.html">MainSolver.hpp</a></div></div>
 <div class="ttc" id="anamespacetket_1_1WeightedSubgraphMonomorphism_html_aac072dec72c28915def2b512b35527bd"><div class="ttname"><a href="namespacetket_1_1WeightedSubgraphMonomorphism.html#aac072dec72c28915def2b512b35527bd">tket::WeightedSubgraphMonomorphism::get_sum_or_throw</a></div><div class="ttdeci">UINT get_sum_or_throw(UINT x, UINT y)</div><div class="ttdoc">Throws the special IntegerOverflow exception if the values are too big.</div><div class="ttdef"><b>Definition:</b> <a href="GeneralUtils_8hpp_source.html#l00208">GeneralUtils.hpp:208</a></div></div>
-<div class="ttc" id="aAssert_8hpp_html"><div class="ttname"><a href="Assert_8hpp.html">Assert.hpp</a></div></div>
 <div class="ttc" id="astructtket_1_1WeightedSubgraphMonomorphism_1_1MainSolverParameters_html_af6e402c7bf4b9bc5d260214ebe9e0b22"><div class="ttname"><a href="structtket_1_1WeightedSubgraphMonomorphism_1_1MainSolverParameters.html#af6e402c7bf4b9bc5d260214ebe9e0b22">tket::WeightedSubgraphMonomorphism::MainSolverParameters::timeout_ms</a></div><div class="ttdeci">long long timeout_ms</div><div class="ttdoc">The timeout in milliseconds, but only for the current call to &quot;solve&quot;, NOT the cumulative time.</div><div class="ttdef"><b>Definition:</b> <a href="MainSolverParameters_8hpp_source.html#l00028">MainSolverParameters.hpp:28</a></div></div>
 <div class="ttc" id="astructtket_1_1WeightedSubgraphMonomorphism_1_1SolutionData_html_a497db2895742b4f9b81c881025b0416a"><div class="ttname"><a href="structtket_1_1WeightedSubgraphMonomorphism_1_1SolutionData.html#a497db2895742b4f9b81c881025b0416a">tket::WeightedSubgraphMonomorphism::SolutionData::trivial_weight_lower_bound</a></div><div class="ttdeci">WeightWSM trivial_weight_lower_bound</div><div class="ttdoc">A simple lower bound for the total weight (scalar product) any complete valid solution would have.</div><div class="ttdef"><b>Definition:</b> <a href="SolutionData_8hpp_source.html#l00105">SolutionData.hpp:105</a></div></div>
 <div class="ttc" id="astructtket_1_1WeightedSubgraphMonomorphism_1_1MainSolverParameters_html_af80690321e272c8d36f0eff9b736ed7d"><div class="ttname"><a href="structtket_1_1WeightedSubgraphMonomorphism_1_1MainSolverParameters.html#af80690321e272c8d36f0eff9b736ed7d">tket::WeightedSubgraphMonomorphism::MainSolverParameters::for_multiple_full_solutions_the_max_number_to_obtain</a></div><div class="ttdeci">std::size_t for_multiple_full_solutions_the_max_number_to_obtain</div><div class="ttdoc">If set to 0 (the default), ignore; then at most one solution (the best one) will be stored (and guara...</div><div class="ttdef"><b>Definition:</b> <a href="MainSolverParameters_8hpp_source.html#l00053">MainSolverParameters.hpp:53</a></div></div>

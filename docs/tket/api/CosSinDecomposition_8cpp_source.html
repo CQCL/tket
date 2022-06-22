@@ -93,11 +93,11 @@ $(function() {
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="CosSinDecomposition_8hpp.html">CosSinDecomposition.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;cmath&gt;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Constants_8hpp.html">Constants.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="EigenConfig_8hpp.html">EigenConfig.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="MatrixAnalysis_8hpp.html">MatrixAnalysis.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="TketLog_8hpp.html">TketLog.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;tklog/TketLog.hpp&gt;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Constants_8hpp.html">Constants.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="EigenConfig_8hpp.html">EigenConfig.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="MatrixAnalysis_8hpp.html">MatrixAnalysis.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacetket.html">tket</a> {</div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
@@ -152,7 +152,7 @@ $(function() {
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <span class="comment">// message and do the adjustment ourselves if that behaviour does change.</span></div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  <span class="keywordflow">if</span> (!<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a4119c3716933f12c4852a706e9f4994c">S</a>.imag().isZero()) {</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <a class="code" href="namespacetket.html#acf17a7f6b999a13aebc2d2edad971487">tket_log</a>()-&gt;info(</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    tket_log()-&gt;info(</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        <span class="stringliteral">&quot;Eigen surprisingly returned a non-real diagonal R in QR &quot;</span></div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        <span class="stringliteral">&quot;decomposition; adjusting Q and R to make it real.&quot;</span>);</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; n; j++) {</div>
@@ -194,7 +194,6 @@ $(function() {
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="anamespacetket_html_aaa887e5f888ccafbec6d589bfcbdad3a"><div class="ttname"><a href="namespacetket.html#aaa887e5f888ccafbec6d589bfcbdad3a">tket::CS_decomp</a></div><div class="ttdeci">csd_t CS_decomp(const Eigen::MatrixXcd &amp;u)</div><div class="ttdoc">Compute a cosine-sine decomposition of a unitary matrix.</div><div class="ttdef"><b>Definition:</b> <a href="CosSinDecomposition_8cpp_source.html#l00026">CosSinDecomposition.cpp:26</a></div></div>
 <div class="ttc" id="anamespacetket_html"><div class="ttname"><a href="namespacetket.html">tket</a></div><div class="ttdoc">Defines tket::DeviceCharacterisation, used in NoiseAwarePlacement and in commute_SQ_gates_through_SWA...</div><div class="ttdef"><b>Definition:</b> <a href="Path_8hpp_source.html#l00020">Path.hpp:20</a></div></div>
-<div class="ttc" id="anamespacetket_html_acf17a7f6b999a13aebc2d2edad971487"><div class="ttname"><a href="namespacetket.html#acf17a7f6b999a13aebc2d2edad971487">tket::tket_log</a></div><div class="ttdeci">LogPtr_t &amp; tket_log()</div><div class="ttdoc">Logger for tket messages.</div><div class="ttdef"><b>Definition:</b> <a href="TketLog_8cpp_source.html#l00064">TketLog.cpp:64</a></div></div>
 <div class="ttc" id="anamespacetket_html_a85a557b9186a43dd79f284d4ac6d5bff"><div class="ttname"><a href="namespacetket.html#a85a557b9186a43dd79f284d4ac6d5bff">tket::is_unitary</a></div><div class="ttdeci">bool is_unitary(const Eigen::MatrixXcd &amp;U, double tol=EPS)</div><div class="ttdoc">Test matrix for unitarity.</div><div class="ttdef"><b>Definition:</b> <a href="MatrixAnalysis_8cpp_source.html#l00031">MatrixAnalysis.cpp:31</a></div></div>
 <div class="ttc" id="anamespacetket_html_a9cdfe3f23ec01d10a956474db74c9fc1"><div class="ttname"><a href="namespacetket.html#a9cdfe3f23ec01d10a956474db74c9fc1">tket::EPS</a></div><div class="ttdeci">constexpr double EPS</div><div class="ttdoc">Default tolerance for floating-point comparisons.</div><div class="ttdef"><b>Definition:</b> <a href="Constants_8hpp_source.html#l00038">Constants.hpp:38</a></div></div>
 <div class="ttc" id="aGateUnitaryMatrixFixedMatrices_8cpp_html_a4119c3716933f12c4852a706e9f4994c"><div class="ttname"><a href="GateUnitaryMatrixFixedMatrices_8cpp.html#a4119c3716933f12c4852a706e9f4994c">S</a></div><div class="ttdeci">Eigen::Matrix2cd S</div><div class="ttdef"><b>Definition:</b> <a href="GateUnitaryMatrixFixedMatrices_8cpp_source.html#l00028">GateUnitaryMatrixFixedMatrices.cpp:28</a></div></div>
@@ -202,7 +201,6 @@ $(function() {
 <div class="ttc" id="aEigenConfig_8hpp_html"><div class="ttname"><a href="EigenConfig_8hpp.html">EigenConfig.hpp</a></div><div class="ttdoc">Include this file rather than including the Eigen headers directly.</div></div>
 <div class="ttc" id="aCosSinDecomposition_8hpp_html"><div class="ttname"><a href="CosSinDecomposition_8hpp.html">CosSinDecomposition.hpp</a></div></div>
 <div class="ttc" id="aMatrixAnalysis_8hpp_html"><div class="ttname"><a href="MatrixAnalysis_8hpp.html">MatrixAnalysis.hpp</a></div></div>
-<div class="ttc" id="aTketLog_8hpp_html"><div class="ttname"><a href="TketLog_8hpp.html">TketLog.hpp</a></div><div class="ttdoc">Logging.</div></div>
 <div class="ttc" id="anamespacetket_html_a6aac7c33e30bd03cd80947edc87ada23"><div class="ttname"><a href="namespacetket.html#a6aac7c33e30bd03cd80947edc87ada23">tket::csd_t</a></div><div class="ttdeci">std::tuple&lt; Eigen::MatrixXcd, Eigen::MatrixXcd, Eigen::MatrixXcd, Eigen::MatrixXcd, Eigen::MatrixXd, Eigen::MatrixXd &gt; csd_t</div><div class="ttdoc">Cosine-sine decomposition.</div><div class="ttdef"><b>Definition:</b> <a href="CosSinDecomposition_8hpp_source.html#l00035">CosSinDecomposition.hpp:35</a></div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

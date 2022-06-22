@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['vertexdeletion_5630',['VertexDeletion',['../classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6',1,'tket::Circuit']]],
-  ['vertextype_5631',['VertexType',['../namespacetket.html#a5339172fa072164a0c7baa91f2e5b536',1,'tket']]]
+  ['wireend_5158',['WireEnd',['../namespacetket_1_1zx.html#a4a9af3f5180d9fb71107b0e917d71a4d',1,'tket::zx']]],
+  ['wiresearchoption_5159',['WireSearchOption',['../classtket_1_1zx_1_1ZXDiagram.html#a360408dd885df0960c5653b230bcc184',1,'tket::zx::ZXDiagram']]]
 ];
