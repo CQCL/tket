@@ -170,7 +170,7 @@ jobs:
         fi
   publish_coverage:
     name: Publish coverage
-    needs: generate_coverage
+    needs: [changes, generate_coverage]
     if: ${{ github.event_name == 'push' && needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     strategy:
       matrix:
