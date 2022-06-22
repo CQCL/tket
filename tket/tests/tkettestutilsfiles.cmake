@@ -33,9 +33,6 @@ set(TESTUTILS_SOURCES
     ${TKET_TESTS_DIR}/Graphs/RandomPlanarGraphs.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/Data/FixedCompleteSolutions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/Data/FixedSwapSequences.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/NeighboursFromEdges.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/PermutationTestUtils.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/SwapSequenceReductionTester.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/ArchitectureEdgesReimplementation.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/BestTsaTester.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/DebugFunctions.cpp

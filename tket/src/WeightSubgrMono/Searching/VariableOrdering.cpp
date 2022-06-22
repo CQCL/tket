@@ -15,8 +15,8 @@
 #include "WeightSubgrMono/Searching/VariableOrdering.hpp"
 
 #include <algorithm>
+#include <tkrng/RNG.hpp>
 
-#include "Utils/RNG.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 #include "WeightSubgrMono/Searching/DomainsAccessor.hpp"
 

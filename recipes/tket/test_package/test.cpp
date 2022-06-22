@@ -14,8 +14,8 @@
 
 #include <Circuit/Circuit.hpp>
 #include <Transformations/OptimisationPass.hpp>
-#include <Utils/Assert.hpp>
 #include <iostream>
+#include <tkassert/Assert.hpp>
 
 using namespace tket;
 

@@ -14,7 +14,8 @@
 
 #include "WeightSubgrMono/Searching/WeightCalculator.hpp"
 
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
+
 #include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
 #include "WeightSubgrMono/Searching/DomainsAccessor.hpp"
 

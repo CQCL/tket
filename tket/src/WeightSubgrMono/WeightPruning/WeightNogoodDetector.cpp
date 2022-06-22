@@ -15,8 +15,8 @@
 #include "WeightSubgrMono/WeightPruning/WeightNogoodDetector.hpp"
 
 #include <algorithm>
+#include <tkassert/Assert.hpp>
 
-#include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 #include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
 #include "WeightSubgrMono/Searching/DomainsAccessor.hpp"

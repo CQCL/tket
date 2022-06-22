@@ -16,6 +16,7 @@
 
 #include <algorithm>
 #include <string>
+#include <tklog/TketLog.hpp>
 #include <vector>
 
 #include "Circuit/Boxes.hpp"
@@ -27,7 +28,6 @@
 #include "Ops/OpPtr.hpp"
 #include "Utils/GraphHeaders.hpp"
 #include "Utils/Json.hpp"
-#include "Utils/TketLog.hpp"
 
 namespace tket {
 

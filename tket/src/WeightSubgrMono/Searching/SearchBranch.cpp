@@ -15,8 +15,8 @@
 #include "WeightSubgrMono/Searching/SearchBranch.hpp"
 
 #include <algorithm>
+#include <tkassert/Assert.hpp>
 
-#include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 #include "WeightSubgrMono/EndToEndWrappers/SolutionData.hpp"
 #include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"

@@ -13,11 +13,11 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
+#include <tktokenswap/HybridTsa.hpp>
 
 #include "TestUtils/ArchitectureEdgesReimplementation.hpp"
 #include "TestUtils/FullTsaTesting.hpp"
 #include "TestUtils/ProblemGeneration.hpp"
-#include "TokenSwapping/HybridTsa.hpp"
 
 using std::vector;
 

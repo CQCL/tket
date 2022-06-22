@@ -15,6 +15,7 @@
 #include "CompilerPass.hpp"
 
 #include <memory>
+#include <tklog/TketLog.hpp>
 
 #include "Mapping/RoutingMethodJson.hpp"
 #include "PassGenerators.hpp"
@@ -22,7 +23,6 @@
 #include "Transformations/ContextualReduction.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Utils/Json.hpp"
-#include "Utils/TketLog.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket {

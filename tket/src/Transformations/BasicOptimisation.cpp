@@ -15,6 +15,7 @@
 #include "BasicOptimisation.hpp"
 
 #include <optional>
+#include <tkassert/Assert.hpp>
 
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Characterisation/ErrorTypes.hpp"
@@ -27,7 +28,6 @@
 #include "Gate/GatePtr.hpp"
 #include "Gate/Rotation.hpp"
 #include "Transform.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 

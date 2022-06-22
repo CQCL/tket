@@ -19,18 +19,6 @@ import platform
 from conans import ConanFile, tools
 
 
-def libfile(name):
-    sysname = platform.system()
-    if sysname == "Linux":
-        return "lib" + name + ".so"
-    elif sysname == "Darwin":
-        return "lib" + name + ".dylib"
-    elif sysname == "Windows":
-        return name + ".dll"
-    else:
-        return None
-
-
 def get_executable_file():
     if platform.system() == "Windows":
         return "proptest.exe"
@@ -49,7 +37,7 @@ class TketPropestsTestConan(ConanFile):
         if not tools.cross_building(self):
             lib_files = os.listdir(os.path.join(self.install_folder, "lib"))
             for lib_file in lib_files:
-                if "tket" in lib_file:
+                if "tk" in lib_file:
                     copyfile(
                         os.path.join(self.install_folder, "lib", lib_file),
                         os.path.join("bin", lib_file),

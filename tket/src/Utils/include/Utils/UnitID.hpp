@@ -27,10 +27,10 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include <tklog/TketLog.hpp>
 
 #include "BiMapHeaders.hpp"
 #include "Json.hpp"
-#include "TketLog.hpp"
 
 namespace tket {
 
