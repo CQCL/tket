@@ -116,7 +116,7 @@ jobs:
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-        pytest --ignore=simulator/ --doctest-modules --cov=../pytket --cov-report=html --cov-report=xml:htmlcov/cov.xml
+        pytest --ignore=simulator/ --doctest-modules --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
     - name: Set up Python 3.10
       if: github.event_name == 'schedule'
       uses: actions/setup-python@v3
@@ -478,3 +478,27 @@ jobs:
         git commit --allow-empty -m "Add generated pytket coverage report."
     - name: Publish report
       run: git push origin gh-pages:gh-pages
+
+  check_pytket_coverage:
+    name: Check pytket line and branch coverage
+    needs: linux
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v3
+    - name: Download artefact
+      uses: actions/download-artifact@v3
+      with:
+        name: pytket_test_coverage
+        path: pytket-test-coverage/
+    - name: Compare with latest report from develop
+      run: |
+        wget https://cqcl.github.io/tket/pytket/test-coverage/cov.xml -O oldcov.xml
+        ./.github/workflows/compare-pytket-coverage oldcov.xml pytket-test-coverage/summary.txt
+    - name: Compare with latest report from develop (full suite)
+      if: github.event_name == 'schedule'
+      run: |
+        wget https://cqcl.github.io/tket/tket/test-coverage/summary.txt
+        ./.github/workflows/compare-coverage summary.txt test-coverage/summary.txt
+
+
