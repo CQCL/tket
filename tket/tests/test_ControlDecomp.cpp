@@ -22,6 +22,7 @@
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/ControlledGates.hpp"
 #include "Transformations/OptimisationPass.hpp"
+#include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
 #include "testutil.hpp"
 
@@ -120,24 +121,72 @@ static bool check_incrementer_linear_depth(
   return correct;
 }
 
-SCENARIO("Test C3X and C4X decomposition") {
-  GIVEN("A C3X gates") {
+SCENARIO("Test decomposition using CX") {
+  GIVEN("A C3X gate") {
     Circuit circ(4);
-    circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3});
+    Vertex v = circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3});
+    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     auto u1 = tket_sim::get_unitary(circ);
     auto u2 = tket_sim::get_unitary(CircPool::C3X_normal_decomp());
     REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
-    Transforms::synthesise_tket().apply(circ);
-    REQUIRE(circ.count_gates(OpType::CX) == 14);
+    Circuit decomposed_circ = CX_circ_from_multiq(op);
+    REQUIRE(decomposed_circ.count_gates(OpType::CX) == 14);
   }
-  GIVEN("A C4X gates") {
+  GIVEN("A C4X gate") {
     Circuit circ(5);
-    circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4});
+    Vertex v = circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4});
+    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     auto u1 = tket_sim::get_unitary(circ);
     auto u2 = tket_sim::get_unitary(CircPool::C4X_normal_decomp());
     REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
-    Transforms::synthesise_tket().apply(circ);
-    REQUIRE(circ.count_gates(OpType::CX) == 36);
+    Circuit decomposed_circ = CX_circ_from_multiq(op);
+    REQUIRE(decomposed_circ.count_gates(OpType::CX) == 36);
+  }
+  GIVEN("A C6X gate") {
+    Circuit circ(7);
+    Vertex v = circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4, 5, 6});
+    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    Circuit decomposed_circ = CX_circ_from_multiq(op);
+    REQUIRE(decomposed_circ.count_gates(OpType::CX) == 120);
+  }
+}
+
+SCENARIO("Test decomposition using TK2") {
+  GIVEN("A C3X gate") {
+    Circuit circ(4);
+    Vertex v = circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3});
+    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    auto u1 = tket_sim::get_unitary(circ);
+    auto u2 = tket_sim::get_unitary(CircPool::C3X_normal_decomp());
+    REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+    Circuit decomposed_circ = TK2_circ_from_multiq(op);
+    REQUIRE(decomposed_circ.count_gates(OpType::TK2) == 14);
+  }
+  GIVEN("A C4X gate") {
+    Circuit circ(5);
+    Vertex v = circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4});
+    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    auto u1 = tket_sim::get_unitary(circ);
+    auto u2 = tket_sim::get_unitary(CircPool::C4X_normal_decomp());
+    REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
+    Circuit decomposed_circ = TK2_circ_from_multiq(op);
+    REQUIRE(decomposed_circ.count_gates(OpType::TK2) == 36);
+  }
+  GIVEN("A C6X gate") {
+    Circuit circ(7);
+    Vertex v = circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4, 5, 6});
+    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    Circuit decomposed_circ = TK2_circ_from_multiq(op);
+    const Eigen::MatrixXcd m = tket_sim::get_unitary(decomposed_circ);
+    unsigned m_size = pow(2, 7);
+    Eigen::MatrixXcd correct_matrix =
+        Eigen::MatrixXcd::Identity(m_size, m_size);
+    correct_matrix(m_size - 2, m_size - 1) = 1;
+    correct_matrix(m_size - 1, m_size - 2) = 1;
+    correct_matrix(m_size - 2, m_size - 2) = 0;
+    correct_matrix(m_size - 1, m_size - 1) = 0;
+    REQUIRE(m.isApprox(correct_matrix, ERR_EPS));
+    REQUIRE(decomposed_circ.count_gates(OpType::TK2) == 72);
   }
 }
 
