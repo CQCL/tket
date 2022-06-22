@@ -16,8 +16,8 @@
 
 #include <sstream>
 #include <stdexcept>
+#include <tkassert/Assert.hpp>
 
-#include "Utils/Assert.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 
 namespace tket {

@@ -39,7 +39,9 @@ else()
 endif()
 
 list(APPEND TKET_EXTRA_LIBS
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE})
+    ${CONAN_LIBS_SYMENGINE}
+    ${CONAN_LIBS_TKLOG}
+    ${CONAN_LIBS_TKASSERT})
 
 pybind11_add_module(circuit
     binders/circuit/main.cpp
@@ -58,7 +60,6 @@ target_link_libraries(circuit PRIVATE
     tket-Ops
     tket-OpType
     tket-Mapping
-    tket-TokenSwapping
     tket-Simulation
     tket-Utils)
 target_link_libraries(circuit PRIVATE ${TKET_EXTRA_LIBS})
@@ -82,7 +83,6 @@ target_link_libraries(mapping PRIVATE
     tket-PauliGraph
     tket-Placement    
     tket-Transformations
-    tket-TokenSwapping
     tket-Utils
     tket-WeightSubgrMono)
 
@@ -124,7 +124,6 @@ target_link_libraries(predicates PRIVATE
     tket-OpType
     tket-PauliGraph
     tket-Predicates
-    tket-TokenSwapping
     tket-Transformations
     tket-Utils
     tket-WeightSubgrMono)
@@ -150,7 +149,6 @@ target_link_libraries(passes PRIVATE
     tket-OpType
     tket-PauliGraph
     tket-Predicates
-    tket-TokenSwapping
     tket-Transformations
     tket-Utils
     tket-WeightSubgrMono)
@@ -208,8 +206,6 @@ target_link_libraries(pauli PRIVATE ${TKET_EXTRA_LIBS})
 
 pybind11_add_module(logging binders/logging.cpp)
 target_include_directories(logging PRIVATE binders/include)
-target_link_libraries(logging PRIVATE
-    tket-Utils)
 target_link_libraries(logging PRIVATE ${TKET_EXTRA_LIBS})
 
 pybind11_add_module(utils_serialization binders/utils_serialization.cpp)

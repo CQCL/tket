@@ -14,8 +14,9 @@
 
 #include "ClassicalOps.hpp"
 
+#include <tkassert/Assert.hpp>
+
 #include "OpType/OpType.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/Json.hpp"
 
 namespace tket {

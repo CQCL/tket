@@ -14,9 +14,10 @@
 
 #include "Diagonalisation.hpp"
 
+#include <tkassert/Assert.hpp>
+
 #include "Ops/Op.hpp"
 #include "PauliGraph/ConjugatePauliFunctions.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket {

@@ -7,6 +7,9 @@ x.y.z (unreleased)
 Minor new features:
 
 * New ``NormalisedTK2Predicate`` predicate and ``NormaliseTK2`` pass.
+* New ``ZZPhaseToRz`` pass.
+* Circuit to QASM converters with the "hqslib1" header now fix ZZPhase angles
+  to be between -1 and 1 half-turns.
 
 1.3.0 (June 2022)
 -----------------

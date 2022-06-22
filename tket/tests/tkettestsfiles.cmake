@@ -23,8 +23,6 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Utils/test_CosSinDecomposition.cpp
     ${TKET_TESTS_DIR}/Utils/test_HelperFunctions.cpp
     ${TKET_TESTS_DIR}/Utils/test_MatrixAnalysis.cpp
-    ${TKET_TESTS_DIR}/Utils/test_RNG.cpp
-    ${TKET_TESTS_DIR}/Utils/test_Logging.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_BitFunctions.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_DyadicFraction.cpp
     ${TKET_TESTS_DIR}/WeightSubgrMono/Common/test_GeneralUtils.cpp
@@ -52,27 +50,13 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Graphs/test_DirectedGraph.cpp
     ${TKET_TESTS_DIR}/Graphs/test_ArticulationPoints.cpp
     ${TKET_TESTS_DIR}/Graphs/test_TreeSearch.cpp
-    # NOTE: For testing TokenSwapping, it is easier to make use of
-    # Architecture to set up test problems, rather than trying
-    # to separate TokenSwapping-without-Architecture tests.
-    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_CanonicalRelabelling.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_ExactMappingLookup.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_FilteredSwapSequences.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_SwapSequenceReductions.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TableLookup/test_SwapSequenceTable.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TestUtils/test_DebugFunctions.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/TSAUtils/test_SwapFunctions.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_ArchitectureMappingEndToEnd.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_BestTsaFixedSwapSequences.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_DistancesFromArchitecture.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_FullTsa.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_RiverFlowPathFinder.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_SwapsFromQubitMapping.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/test_SwapList.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/test_SwapListOptimiser.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_VariousPartialTsa.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/test_VectorListHybrid.cpp
-    ${TKET_TESTS_DIR}/TokenSwapping/test_VectorListHybridSkeleton.cpp
     ${TKET_TESTS_DIR}/Architecture/test_SubgraphMonomorphisms.cpp
     ${TKET_TESTS_DIR}/test_PauliString.cpp
     ${TKET_TESTS_DIR}/Ops/test_ClassicalOps.cpp

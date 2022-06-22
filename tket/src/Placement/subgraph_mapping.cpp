@@ -17,14 +17,14 @@
 #include <chrono>
 #include <ctime>
 #include <sstream>
+#include <tkassert/Assert.hpp>
+#include <tklog/TketLog.hpp>
 
 #include "Architecture/Architecture.hpp"
 #include "Graphs/Utils.hpp"
 #include "Placement.hpp"
 #include "Placement/Placement.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/GraphHeaders.hpp"
-#include "Utils/TketLog.hpp"
 
 namespace tket {
 

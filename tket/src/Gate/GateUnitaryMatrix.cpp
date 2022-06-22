@@ -16,6 +16,7 @@
 
 #include <cmath>
 #include <sstream>
+#include <tkassert/Assert.hpp>
 
 #include "Gate/Gate.hpp"
 #include "GateUnitaryMatrixError.hpp"
@@ -23,7 +24,6 @@
 #include "GateUnitaryMatrixUtils.hpp"
 #include "GateUnitaryMatrixVariableQubits.hpp"
 #include "GateUnitarySparseMatrix.hpp"
-#include "Utils/Assert.hpp"
 
 // This is just for the main Gate -> matrix function, so the only part
 // which actually uses the rest of tket. This is nothing but a wrapper around

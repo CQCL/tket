@@ -94,11 +94,12 @@ Enable revisions:
 conan config set general.revisions_enabled=1
 ```
 
-We want to build shared rather than static libraries, so set this in the
-profile:
+We want to build tket and tklog as shared rather than static libraries, so set
+this in the profile:
 
 ```shell
 conan profile update options.tket:shared=True tket
+conan profile update options.tklog:shared=True tket
 ```
 
 If you wish you can set your profile to Debug mode:
@@ -150,6 +151,30 @@ conan create --profile=tket recipes/symengine
 to build it. If you are using a conan configuration supported by the CI
 (see above under "Build tools"), this is unnecessary as a pre-built package
 will be downloaded from the `tket-conan` repository when you build `tket`.
+
+### TKET libraries
+
+Some TKET functionality has been separated out into self-contained libraries,
+as a way to modularize and reduce average build times. These are in
+subdirectories of the `libs` directory. We anticipate that their number will
+increase as we work towards greater modularization.
+
+If you are using a supported conan configuration (see above under "Build
+tools"), you do not need to worry about these, unless you are modifying the code
+in them. The main build of TKET will download a pre-built package for each of
+them.
+
+If you are using an unsupported configuration, or want to make changes to these
+libraries, you will need to build them locally. For example:
+
+```shell
+conan create --profile=tket libs/tkrng tket/stable
+```
+
+If you make a change to one of these libraries, please increase the version
+number and make a PR with that change only: the component will then be tested on
+the CI, and on merge to `develop` the new version will be uploaded. Then it will
+be possible to update conan requirements to use the new version.
 
 ### Building tket
 
@@ -252,15 +277,28 @@ First create a `build` folder in the project root. Then proceed as follows.
 
 ## Test coverage
 
+### tket
+
 The code coverage of the `tket` tests is reported
 [here](https://cqcl.github.io/tket/tket/test-coverage/index.html). This report
 is generated weekly from the `develop` branch.
+
+The libraries' coverage (from their own unit tests) is also reported: for
+example [tklog](https://cqcl.github.io/tket/tket/tklog-coverage/index.html).
+(For other libraries, just replace "tklog" with the library name in the URL.)
+
+In both cases, PRs to `develop` check that the coverage has not decreased, and
+merging is blocked until the coverage is at least as good as before.
+
+### pytket
 
 The code coverage of the `pytket` tests is reported
 [here](https://cqcl.github.io/tket/pytket/test-coverage/index.html). This report
 reflects the coverage of the `develop` branch, and is updated with every push.
 The same report can be found in XML format
 [here](https://cqcl.github.io/tket/pytket/test-coverage/cov.xml).
+
+Lines and branch coverage results are also checked with every PR to `develop`.
 
 ## API documentation
 

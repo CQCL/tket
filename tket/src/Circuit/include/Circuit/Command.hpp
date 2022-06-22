@@ -17,11 +17,11 @@
 #include <optional>
 #include <sstream>
 #include <string>
+#include <tklog/TketLog.hpp>
 
 #include "DAGDefs.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Utils/Json.hpp"
-#include "Utils/TketLog.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket {

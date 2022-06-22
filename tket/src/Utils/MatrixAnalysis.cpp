@@ -20,10 +20,10 @@
 #include <map>
 #include <optional>
 #include <sstream>
+#include <tkassert/Assert.hpp>
 #include <utility>
 #include <vector>
 
-#include "Utils/Assert.hpp"
 #include "Utils/EigenConfig.hpp"
 
 namespace tket {

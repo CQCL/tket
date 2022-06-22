@@ -20,12 +20,12 @@
 #include <random>
 #include <sstream>
 #include <string>
+#include <tkrng/RNG.hpp>
 #include <utility>
 
 #include "../TestUtils/CheckedSolution.hpp"
 #include "../TestUtils/ResumedSolutionChecker.hpp"
 #include "../TestUtils/TestSettings.hpp"
-#include "Utils/RNG.hpp"
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 
 namespace tket {

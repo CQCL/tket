@@ -19,13 +19,13 @@
 #include <set>
 #include <sstream>
 #include <stdexcept>
+#include <tkassert/Assert.hpp>
 
 #include "AdjacencyData.hpp"
 #include "BruteForceColouring.hpp"
 #include "ColouringPriority.hpp"
 #include "GraphRoutines.hpp"
 #include "LargeCliquesResult.hpp"
-#include "Utils/Assert.hpp"
 
 using std::exception;
 using std::map;

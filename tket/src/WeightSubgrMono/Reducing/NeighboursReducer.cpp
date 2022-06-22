@@ -14,7 +14,8 @@
 
 #include "WeightSubgrMono/Reducing/NeighboursReducer.hpp"
 
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
+
 #include "WeightSubgrMono/Common/GeneralUtils.hpp"
 #include "WeightSubgrMono/Common/SetIntersection.hpp"
 #include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"

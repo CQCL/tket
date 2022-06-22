@@ -15,8 +15,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <numeric>
 #include <random>
+#include <tkrng/RNG.hpp>
 
-#include "Utils/RNG.hpp"
 #include "WeightSubgrMono/Common/SetIntersection.hpp"
 
 namespace tket {

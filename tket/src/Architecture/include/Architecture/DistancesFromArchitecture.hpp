@@ -14,9 +14,10 @@
 
 #pragma once
 
+#include <tktokenswap/DistancesInterface.hpp>
+#include <tktokenswap/SwapFunctions.hpp>
+
 #include "ArchitectureMapping.hpp"
-#include "TokenSwapping/DistancesInterface.hpp"
-#include "TokenSwapping/SwapFunctions.hpp"
 
 namespace tket {
 

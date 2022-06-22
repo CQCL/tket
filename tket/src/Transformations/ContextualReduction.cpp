@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <optional>
 #include <sstream>
+#include <tkassert/Assert.hpp>
 
 #include "Circuit/Circuit.hpp"
 #include "Circuit/DAGDefs.hpp"
@@ -25,7 +26,6 @@
 #include "Ops/ClassicalOps.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Transform.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/Exceptions.hpp"
 #include "Utils/HelperFunctions.hpp"
 #include "Utils/UnitID.hpp"
