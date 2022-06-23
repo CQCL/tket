@@ -169,7 +169,11 @@ std::vector<Node> find_hampath(const Architecture &arch, long timeout) {
       undirected_pattern, undirected_target, 1, timeout);
 
   /* Architecture has no hampath, sad. */
-  if (all_maps.empty()) return {};
+  if (all_maps.empty()) {
+    throw NoHamiltonPath(
+        "[AAS]: no Hamilton path found in the given architecture, CNOT "
+        "synthesis stopped. Please try an alternative CNotSynthType.");
+  }
 
   /* Left: line, Right: input architecture. */
   const qubit_bimap_t &qmap = all_maps[0];

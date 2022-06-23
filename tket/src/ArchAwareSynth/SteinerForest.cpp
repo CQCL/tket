@@ -353,7 +353,10 @@ Circuit phase_poly_synthesis(
 
   PhasePolyBox placed_ppb(circuit_ppb_place);
 
-  std::vector<Node> hampath = find_hampath(arch);  // using default timeout
+  std::vector<Node> hampath;
+  if (cnottype == CNotSynthType::HamPath) {
+    hampath = find_hampath(arch);  // using default timeout
+  }
 
   // create maps from qubits/node to int
   std::map<UnitID, UnitID> forward_contiguous_uids_q;
@@ -364,12 +367,6 @@ Circuit phase_poly_synthesis(
   // calculate iteration order
   std::vector<Node> node_order;
   IterationOrder iter_order(arch);
-
-  if ((hampath.empty()) && (cnottype == CNotSynthType::HamPath)) {
-    throw NoHamiltonPath(
-        "[AAS]: no Hamilton path found in the given architecture, CNOT "
-        "synthesis stopped. Please try an alternative CNotSynthType.");
-  }
 
   if ((cnottype == CNotSynthType::Rec) || (cnottype == CNotSynthType::SWAP)) {
     node_order = iter_order.get_iterationorder();
