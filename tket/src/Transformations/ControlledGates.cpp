@@ -855,8 +855,13 @@ static void add_qn(Circuit& circ, unsigned n) {
 
 // https://arxiv.org/abs/2203.11882 Equation 5
 Circuit incrementer_linear_depth(unsigned n, bool lsb) {
+  if (n == 0) {
+    return Circuit();
+  }
   Circuit circ(n);
-  add_qn(circ, n);
+  if (n > 1) {
+    add_qn(circ, n);
+  }
   if (lsb) {
     circ.add_op<unsigned>(OpType::Rx, 1, {0});
   }

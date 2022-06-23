@@ -463,6 +463,14 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
 }
 
 SCENARIO("Test linear depth incrementer") {
+  GIVEN("0 qb") {
+    Circuit circ = Transforms::incrementer_linear_depth(0);
+    REQUIRE(circ.n_qubits() == 0);
+  }
+  GIVEN("1 qb") {
+    REQUIRE(check_incrementer_linear_depth(1, 0));
+    REQUIRE(check_incrementer_linear_depth(1, 1));
+  }
   GIVEN("2 qbs") {
     REQUIRE(check_incrementer_linear_depth(2, 0));
     REQUIRE(check_incrementer_linear_depth(2, 1));
