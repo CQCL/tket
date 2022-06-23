@@ -277,6 +277,8 @@ First create a `build` folder in the project root. Then proceed as follows.
 
 ## Test coverage
 
+### tket
+
 The code coverage of the `tket` tests is reported
 [here](https://cqcl.github.io/tket/tket/test-coverage/index.html). This report
 is generated weekly from the `develop` branch.
@@ -287,6 +289,16 @@ example [tklog](https://cqcl.github.io/tket/tket/tklog-coverage/index.html).
 
 In both cases, PRs to `develop` check that the coverage has not decreased, and
 merging is blocked until the coverage is at least as good as before.
+
+### pytket
+
+The code coverage of the `pytket` tests is reported
+[here](https://cqcl.github.io/tket/pytket/test-coverage/index.html). This report
+reflects the coverage of the `develop` branch, and is updated with every push.
+The same report can be found in XML format
+[here](https://cqcl.github.io/tket/pytket/test-coverage/cov.xml).
+
+Lines and branch coverage results are also checked with every PR to `develop`.
 
 ## API documentation
 
