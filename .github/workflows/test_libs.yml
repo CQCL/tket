@@ -193,7 +193,7 @@ jobs:
     - name: pull latest
       run: git pull
     - name: remove old report
-      run: git rm -r docs/tket/${{ matrix.lib }}/test-coverage
+      run: git rm -r docs/${{ matrix.lib }}/test-coverage
     - name: add report to repository
       run: |
         mkdir -p docs/${{ matrix.lib }}
