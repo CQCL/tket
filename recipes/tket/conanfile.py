@@ -50,7 +50,6 @@ class TketConan(ConanFile):
     comps = [
         "WeightSubgrMono",
         "Utils",
-        "PlacementWithWSM",
         "ZX",
         "OpType",
         "Clifford",
@@ -62,7 +61,6 @@ class TketConan(ConanFile):
         "Architecture",
         "Simulation",
         "Diagonalisation",
-        "Program",
         "Characterisation",
         "Converters",
         "Mapping",
