@@ -14,7 +14,6 @@
 
 #include <boost/dynamic_bitset.hpp>
 #include <catch2/catch_test_macros.hpp>
-#include <chrono>
 #include <numeric>
 
 #include "Circuit/CircPool.hpp"
@@ -27,7 +26,6 @@
 #include "Transformations/Transform.hpp"
 #include "testutil.hpp"
 
-using namespace std::chrono;
 namespace tket {
 namespace test_ControlDecomp {
 
@@ -516,8 +514,8 @@ SCENARIO("Test a CnX is decomposed correctly when bootstrapped", "[.long]") {
 SCENARIO(
     "Test a CnX is decomposed correctly using the linear depth method",
     "[.long]") {
-  GIVEN("Test CnX unitary for 2 to 9 controls") {
-    for (unsigned n = 2; n < 10; ++n) {
+  GIVEN("Test CnX unitary for 0 to 9 controls") {
+    for (unsigned n = 0; n < 10; ++n) {
       Eigen::MatrixXcd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
       Circuit circ = Transforms::cnu_linear_depth_decomp(n, x);
       const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
@@ -527,10 +525,10 @@ SCENARIO(
 }
 
 SCENARIO("Test a CnU is decomposed correctly using the linear depth method") {
-  GIVEN("Test CnU unitary for 2 to 9 controls") {
+  GIVEN("Test CnU unitary for n={0,1,2,3,5} controls") {
     for (unsigned i = 0; i < 100; i++) {
       Eigen::Matrix2cd U = random_unitary(2, i);
-      std::vector<unsigned> test_ns = {2, 3, 5};
+      std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
       for (auto n : test_ns) {
         Circuit circ = Transforms::cnu_linear_depth_decomp(n, U);
         const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);

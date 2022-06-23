@@ -815,8 +815,9 @@ static Eigen::Matrix2cd nth_root(const Eigen::Matrix2cd& u, unsigned n) {
              eigen_solver.eigenvectors().col(1).adjoint();
 }
 
-// Add pn to qubits {1,...,n}
+// Add pn to qubits {1,...,n}, assume n > 1
 static void add_pn(Circuit& circ, unsigned n, bool inverse) {
+  TKET_ASSERT(n > 1);
   // pn is self commute
   for (unsigned i = 2; i < n + 1; i++) {
     int d = 1 << (n - i + 1);
@@ -825,9 +826,10 @@ static void add_pn(Circuit& circ, unsigned n, bool inverse) {
   }
 }
 
-// Add pn(u) to qubits {1,...,n}
+// Add pn(u) to qubits {1,...,n}, assume n > 1
 static void add_pn_unitary(
     Circuit& circ, const Eigen::Matrix2cd& u, unsigned n, bool inverse) {
+  TKET_ASSERT(n > 1);
   // pn_(u) is self commute
   for (unsigned i = 2; i < n + 1; i++) {
     Eigen::Matrix2cd m = nth_root(u, 1 << (n - i + 1));
@@ -840,8 +842,9 @@ static void add_pn_unitary(
 }
 
 // Add an incrementer without toggling the least significant bit
-// Apply to qubits {0,...,n-1}
+// Apply to qubits {0,...,n-1}, assume n > 1
 static void add_qn(Circuit& circ, unsigned n) {
+  TKET_ASSERT(n > 1);
   for (unsigned i = n - 1; i > 1; i--) {
     int d = 1 << (i - 1);
     add_pn(circ, i, false);
@@ -875,6 +878,20 @@ Circuit cnu_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
         "Matrix for the controlled operation must be unitary");
   }
   Circuit circ(n + 1);
+
+  if (n == 0) {
+    Unitary1qBox ub(u);
+    circ.add_box(ub, {0});
+    return circ;
+  }
+  if (n == 1) {
+    Unitary1qBox ub(u);
+    Op_ptr op = std::make_shared<Unitary1qBox>(ub);
+    QControlBox qcb(op);
+    circ.add_box(qcb, {0, 1});
+    return circ;
+  }
+
   // Add pn(u) to qubits {1,...,n}
   add_pn_unitary(circ, u, n, false);
   // Add CU to {0, n}
