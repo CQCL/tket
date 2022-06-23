@@ -14,6 +14,7 @@
 
 #include <boost/dynamic_bitset.hpp>
 #include <catch2/catch_test_macros.hpp>
+#include <chrono>
 #include <numeric>
 
 #include "Circuit/CircPool.hpp"
@@ -26,6 +27,7 @@
 #include "Transformations/Transform.hpp"
 #include "testutil.hpp"
 
+using namespace std::chrono;
 namespace tket {
 namespace test_ControlDecomp {
 
@@ -514,7 +516,7 @@ SCENARIO("Test a CnX is decomposed correctly when bootstrapped", "[.long]") {
   }
 }
 
-SCENARIO("Test a CnX is decomposed correctly using the linear depth method") {
+SCENARIO("Test a CnX is decomposed correctly using the linear depth method", "[.long]") {
   GIVEN("Test CnX unitary for 2 to 9 controls") {
     for (unsigned n = 2; n < 10; ++n) {
       Eigen::MatrixXcd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
