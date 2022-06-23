@@ -110,15 +110,14 @@ static bool check_incrementer_linear_depth(
     }
   }
   const StateVector sv = tket_sim::get_statevector(circ);
-  bool correct = true;
   for (unsigned i = 0; i < sv.size(); ++i) {
     if (i == sv_set_idx) {
-      correct &= std::abs((std::abs(sv[i]) - 1) < ERR_EPS);
+      if (std::abs(std::abs(sv[i]) - 1) >= ERR_EPS) return false;
     } else {
-      correct &= (std::abs(sv[i]) < ERR_EPS);
+      if (std::abs(sv[i]) >= ERR_EPS) return false;
     }
   }
-  return correct;
+  return true;
 }
 
 SCENARIO("Test decomposition using CX") {
