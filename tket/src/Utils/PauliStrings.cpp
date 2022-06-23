@@ -17,10 +17,10 @@
 #include <map>
 #include <sstream>
 #include <string>
+#include <tkassert/Assert.hpp>
 #include <utility>
 #include <vector>
 
-#include "Utils/Assert.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/Json.hpp"

@@ -33,21 +33,24 @@ class TketConan(ConanFile):
     }
     default_options = {"shared": False, "profile_coverage": False}
     generators = "cmake"
-    # Putting "patches" in both "exports_sources" and "exports" means that this works
-    # in either the CI workflow (`conan create`) or the development workflow
-    # (`conan build`). Maybe there is a better way?
-    exports_sources = ["../../tket/src/*", "!*/build/*", "patches/*"]
-    exports = ["patches/*"]
+    exports_sources = ["../../tket/src/*", "!*/build/*"]
     requires = (
+        # symengine and tk* libraries may come from remote:
+        # https://tket.jfrog.io/artifactory/api/conan/tket-conan
         "boost/1.79.0",
-        # symengine from remote: https://tket.jfrog.io/artifactory/api/conan/tket-conan
         "symengine/0.9.0.1@tket/stable",
         "eigen/3.4.0",
         "nlohmann_json/3.10.5",
+        "tklog/0.1.1@tket/stable",
+        "tkassert/0.1.0@tket/stable",
+        "tkrng/0.1.1@tket/stable",
+        "tktokenswap/0.1.0@tket/stable",
     )
 
     comps = [
+        "WeightSubgrMono",
         "Utils",
+        "PlacementWithWSM",
         "ZX",
         "OpType",
         "Clifford",
@@ -62,7 +65,6 @@ class TketConan(ConanFile):
         "Program",
         "Characterisation",
         "Converters",
-        "TokenSwapping",
         "Mapping",
         "Placement",
         "MeasurementSetup",
@@ -70,6 +72,19 @@ class TketConan(ConanFile):
         "ArchAwareSynth",
         "Predicates",
     ]
+
+    # If a project has extra subdirectories, list them here.
+    extra_subdirectories = {
+        "WeightSubgrMono": [
+            "Common",
+            "DomainInitialising",
+            "EndToEndWrappers",
+            "GraphTheoretic",
+            "Reducing",
+            "Searching",
+            "WeightPruning",
+        ]
+    }
 
     _cmake = None
 
@@ -91,34 +106,24 @@ class TketConan(ConanFile):
         self.options["eigen"].MPL2_only = True
 
     def build(self):
-        # Build with boost patches
-        boost_include_path = self.deps_cpp_info["boost"].include_paths[0]
-        curdir = os.path.dirname(os.path.realpath(__file__))
-        patches = {
-            # Patch pending merge of https://github.com/boostorg/graph/pull/280
-            # and new boost release. (Note that PR implements a different solution so
-            # code will need updating as well.)
-            os.path.join(
-                boost_include_path, "boost", "graph", "vf2_sub_graph_iso.hpp"
-            ): os.path.join(curdir, "patches", "vf2_sub_graph_iso.diff"),
-        }
-        for filepath, patch_file in patches.items():
-            print("Patching " + filepath)
-            shutil.copyfile(filepath, filepath + ".original")
-            tools.patch(base_path=boost_include_path, patch_file=patch_file)
         cmake = self._configure_cmake()
-        try:
-            print("Building")
-            cmake.build()
-        finally:
-            for filepath in patches.keys():
-                print("Restoring " + filepath)
-                shutil.move(filepath + ".original", filepath)
+        cmake.build()
 
     def package(self):
         self.copy("LICENSE", dst="licenses", src="../..")
         for comp in self.comps:
-            self.copy(f"{comp}/include/*.hpp", dst=f"include/{comp}", keep_path=False)
+            if comp in self.extra_subdirectories:
+                for extra_dir in self.extra_subdirectories[comp]:
+                    self.copy(
+                        f"{comp}/include/{comp}/{extra_dir}/*.hpp",
+                        dst=f"include/{comp}/{extra_dir}",
+                        keep_path=False,
+                    )
+            else:
+                self.copy(
+                    f"{comp}/include/*.hpp", dst=f"include/{comp}", keep_path=False
+                )
+
         self.copy("*.dll", dst="lib", keep_path=False)
         self.copy("*.dll", dst="bin", keep_path=False)
         self.copy("*.lib", dst="lib", keep_path=False)

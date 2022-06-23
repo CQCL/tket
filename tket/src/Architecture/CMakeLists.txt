@@ -24,12 +24,15 @@ add_library(tket-${COMP}
     ArchitectureMapping.cpp
     BestTsaWithArch.cpp
     DistancesFromArchitecture.cpp
-    NeighboursFromArchitecture.cpp)
+    NeighboursFromArchitecture.cpp
+    SubgraphMonomorphisms.cpp
+    )
 
 list(APPEND DEPS_${COMP}
     Graphs
-    TokenSwapping
-    Utils)
+    Utils
+    WeightSubgrMono
+    )
 
 
 foreach(DEP ${DEPS_${COMP}})
@@ -44,3 +47,9 @@ target_include_directories(tket-${COMP}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
+
+target_link_libraries(tket-${COMP} PUBLIC
+    ${CONAN_LIBS_TKLOG}
+    ${CONAN_LIBS_TKASSERT}
+    ${CONAN_LIBS_TKRNG}
+    ${CONAN_LIBS_TKTOKENSWAP})

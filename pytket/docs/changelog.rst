@@ -6,6 +6,16 @@ x.y.z (unreleased)
 
 Minor new features:
 
+* New ``NormalisedTK2Predicate`` predicate and ``NormaliseTK2`` pass.
+* New ``ZZPhaseToRz`` pass.
+* Circuit to QASM converters with the "hqslib1" header now fix ZZPhase angles
+  to be between -1 and 1 half-turns.
+
+1.3.0 (June 2022)
+-----------------
+
+Minor new features:
+
 * New ``circuit_to_zx`` function to convert ``Circuit`` to ``ZXDiagram``, and
   ``to_circuit`` to extract from a unitary diagram.
 * New ``to_graphviz_str`` method for ``ZXDiagram`` to generate a source string

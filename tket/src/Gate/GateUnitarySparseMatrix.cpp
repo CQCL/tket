@@ -14,12 +14,13 @@
 
 #include "GateUnitarySparseMatrix.hpp"
 
+#include <tkassert/Assert.hpp>
+
 #include "Gate/Gate.hpp"
 #include "GateUnitaryMatrix.hpp"
 #include "GateUnitaryMatrixError.hpp"
 #include "GateUnitaryMatrixImplementations.hpp"
 #include "GateUnitaryMatrixUtils.hpp"
-#include "Utils/Assert.hpp"
 
 namespace tket {
 namespace internal {

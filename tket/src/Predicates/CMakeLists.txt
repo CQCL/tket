@@ -39,9 +39,9 @@ list(APPEND DEPS_${COMP}
     OpType
     PauliGraph
     Placement
-    TokenSwapping
     Transformations
     Utils
+    WeightSubgrMono
     ZX)
 
 foreach(DEP ${DEPS_${COMP}})
@@ -57,4 +57,8 @@ target_include_directories(tket-${COMP}
     ${TKET_${COMP}_INCLUDE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(tket-${COMP} PRIVATE
+    ${CONAN_LIBS_SYMENGINE}
+    ${CONAN_LIBS_TKLOG}
+    ${CONAN_LIBS_TKASSERT}
+    ${CONAN_LIBS_TKTOKENSWAP})

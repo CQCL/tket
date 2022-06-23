@@ -14,7 +14,8 @@
 
 #include "GateNodesBuffer.hpp"
 
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
+
 #include "Utils/Exceptions.hpp"
 
 namespace tket {

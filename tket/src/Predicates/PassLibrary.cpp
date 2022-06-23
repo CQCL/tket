@@ -399,4 +399,41 @@ const PassPtr &SimplifyMeasured() {
   return pp;
 }
 
+const PassPtr &NormaliseTK2() {
+  static const PassPtr pp([]() {
+    Transform t = Transforms::normalise_TK2();
+    PredicatePtrMap no_precons;
+
+    // GateSetPredicate not preserved because single-qubit gates may be added
+    PredicateClassGuarantees g_postcons = {
+        {typeid(GateSetPredicate), Guarantee::Clear}};
+
+    PredicatePtr normalisedpred = std::make_shared<NormalisedTK2Predicate>();
+    PredicatePtrMap spec_postcons = {
+        CompilationUnit::make_type_pair(normalisedpred)};
+    PostConditions postcon = {spec_postcons, g_postcons, Guarantee::Preserve};
+    nlohmann::json j;
+    j["name"] = "NormaliseTK2";
+    return std::make_shared<StandardPass>(no_precons, t, postcon, j);
+  }());
+  return pp;
+}
+
+const PassPtr &ZZPhaseToRz() {
+  static const PassPtr pp([]() {
+    Transform t = Transforms::ZZPhase_to_Rz();
+    // GateSetPredicate not preserved because ZZPhase gates may be converted to
+    // Rz gates
+    PredicateClassGuarantees g_postcons = {
+        {typeid(GateSetPredicate), Guarantee::Clear}};
+    PostConditions postcon = {{}, g_postcons, Guarantee::Preserve};
+    PredicatePtrMap precons;
+    // record pass config
+    nlohmann::json j;
+    j["name"] = "ZZPhaseToRz";
+    return std::make_shared<StandardPass>(precons, t, postcon, j);
+  }());
+  return pp;
+}
+
 }  // namespace tket

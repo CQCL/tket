@@ -377,6 +377,9 @@ Circuit PhasedISWAP_using_CX(const Expr &p, const Expr &t);
 Circuit NPhasedX_using_PhasedX(
     unsigned int number_of_qubits, const Expr &alpha, const Expr &beta);
 
+/** TK2(a, b, c)-equivalent circuit, using normalised TK2 and single-qb gates */
+Circuit TK2_using_normalised_TK2(Expr ea, Expr eb, Expr ec);
+
 // converts a TK1 gate to a PhasedXRz gate
 Circuit tk1_to_PhasedXRz(
     const Expr &alpha, const Expr &beta, const Expr &gamma);

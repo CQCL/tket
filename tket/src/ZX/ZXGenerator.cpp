@@ -15,8 +15,8 @@
 #include "ZX/ZXGenerator.hpp"
 
 #include <sstream>
+#include <tkassert/Assert.hpp>
 
-#include "Utils/Assert.hpp"
 #include "ZX/ZXDiagram.hpp"
 
 namespace tket {

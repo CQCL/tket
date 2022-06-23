@@ -34,7 +34,8 @@ namespace test_ThreeQubitConversion {
 
 static void check_three_qubit_synthesis(const Eigen::MatrixXcd &U) {
   static const std::set<OpType> expected_1q_gates = {
-      OpType::TK1, OpType::H, OpType::Ry, OpType::Rz};
+      OpType::TK1, OpType::H,   OpType::Ry, OpType::Rz, OpType::V, OpType::Vdg,
+      OpType::S,   OpType::Sdg, OpType::X,  OpType::Y,  OpType::Z};
   Circuit c = three_qubit_synthesis(U);
   Transforms::decompose_TK2().apply(c);
   unsigned n_cx = 0;

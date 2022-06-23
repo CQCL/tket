@@ -14,11 +14,12 @@
 
 #include "BestTsaWithArch.hpp"
 
+#include <tkassert/Assert.hpp>
+#include <tkrng/RNG.hpp>
+#include <tktokenswap/BestFullTsa.hpp>
+
 #include "DistancesFromArchitecture.hpp"
 #include "NeighboursFromArchitecture.hpp"
-#include "TokenSwapping/BestFullTsa.hpp"
-#include "Utils/Assert.hpp"
-#include "Utils/RNG.hpp"
 
 namespace tket {
 

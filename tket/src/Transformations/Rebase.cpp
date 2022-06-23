@@ -14,6 +14,8 @@
 
 #include "Rebase.hpp"
 
+#include <tklog/TketLog.hpp>
+
 #include "BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
@@ -21,7 +23,6 @@
 #include "OpType/OpType.hpp"
 #include "Replacement.hpp"
 #include "Transform.hpp"
-#include "Utils/TketLog.hpp"
 
 namespace tket {
 

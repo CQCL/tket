@@ -38,7 +38,6 @@
 #include <boost/graph/properties.hpp>
 #include <boost/graph/sequential_vertex_coloring.hpp>
 #include <boost/graph/topological_sort.hpp>
-#include <boost/graph/vf2_sub_graph_iso.hpp>
 
 #if !defined(_MSC_VER)
 #pragma GCC diagnostic pop

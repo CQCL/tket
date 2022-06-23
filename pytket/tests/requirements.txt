@@ -1,6 +1,7 @@
 # These are test-only dependencies.
 
 pytest
+pytest-cov
 pytest-benchmark
 hypothesis
 docker

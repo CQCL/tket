@@ -16,9 +16,9 @@
 
 #include <sstream>
 #include <stdexcept>
+#include <tkassert/Assert.hpp>
 
 #include "AdjacencyData.hpp"
-#include "Utils/Assert.hpp"
 
 using std::map;
 using std::set;

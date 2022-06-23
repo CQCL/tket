@@ -23,7 +23,8 @@ add_library(tket-${COMP}
     subgraph_mapping.cpp
     Placement.cpp
     PlacementGraphClasses.cpp
-    NeighbourPlacements.cpp)
+    NeighbourPlacements.cpp
+    MonomorphismCalculation.cpp)
 
 list(APPEND DEPS_${COMP}
     Architecture
@@ -33,8 +34,8 @@ list(APPEND DEPS_${COMP}
     Graphs
     Ops
     OpType
-    TokenSwapping
-    Utils)
+    Utils
+    WeightSubgrMono)
 
 foreach(DEP ${DEPS_${COMP}})
     target_include_directories(
@@ -48,3 +49,11 @@ target_include_directories(tket-${COMP}
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
+
+target_link_libraries(tket-${COMP} PUBLIC
+    ${CONAN_LIBS_SYMENGINE}
+    ${CONAN_LIBS_TKLOG}
+    ${CONAN_LIBS_TKASSERT}
+    ${CONAN_LIBS_TKRNG}
+    ${CONAN_LIBS_TKTOKENSWAP}
+    )

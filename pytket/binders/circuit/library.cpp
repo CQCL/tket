@@ -252,7 +252,10 @@ void init_library(py::module &m) {
   library_m.def(
       "_NPhasedX_using_PhasedX", &CircPool::NPhasedX_using_PhasedX,
       "Unwrap NPhasedX, into number_of_qubits PhasedX gates");
-
+  library_m.def(
+      "_TK2_using_normalised_TK2", &CircPool::TK2_using_normalised_TK2,
+      "TK2(a, b, c)-equivalent circuit, using a single normalised TK2 "
+      "and single-qb gates");
   library_m.def(
       "_TK1_to_PhasedXRz", &CircPool::tk1_to_PhasedXRz,
       "A tk1 equivalent circuit given tk1 parameters in terms of PhasedX, Rz");

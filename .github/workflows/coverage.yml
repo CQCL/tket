@@ -64,6 +64,7 @@ jobs:
         conan_cmd=/home/runner/.local/bin/conan
         ${conan_cmd} profile new tket --detect
         ${conan_cmd} profile update settings.compiler.libcxx=libstdc++11 tket
+        ${conan_cmd} profile update options.tklog:shared=True tket
         ${conan_cmd} profile update options.tket:shared=True tket
         ${conan_cmd} profile update settings.build_type=Debug tket
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
@@ -99,8 +100,7 @@ jobs:
       working-directory: ./build/tket-tests/package/bin
       run: ./test_tket "[long],~[long]"
     - name: Install gcovr
-      # gcovr 5.0 is incompatible with jinja2 3.1.0
-      run: pip install jinja2==3.0.3 gcovr==5.0
+      run: pip install gcovr~=5.1
     - name: Build coverage report
       run: |
         mkdir test-coverage

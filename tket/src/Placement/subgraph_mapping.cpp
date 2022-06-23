@@ -17,30 +17,16 @@
 #include <chrono>
 #include <ctime>
 #include <sstream>
+#include <tkassert/Assert.hpp>
+#include <tklog/TketLog.hpp>
 
 #include "Architecture/Architecture.hpp"
 #include "Graphs/Utils.hpp"
 #include "Placement.hpp"
 #include "Placement/Placement.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/GraphHeaders.hpp"
-#include "Utils/TketLog.hpp"
 
 namespace tket {
-
-template <typename GraphP, typename GraphT>
-template <typename CorrespondenceMap1To2, typename CorrespondenceMap2To1>
-bool vf2_match_add_callback<GraphP, GraphT>::operator()(
-    const CorrespondenceMap1To2& f, const CorrespondenceMap2To1&) {
-  qubit_bimap_t new_node_map;
-  BGL_FORALL_VERTICES_T(v, pattern_graph_, GraphP) {
-    Qubit qb = pattern_graph_[v];
-    Node node = target_graph_[get(f, v)];
-    new_node_map.insert({qb, node});
-  }
-  n_maps_.push_back(new_node_map);
-  return (n_maps_.size() < max);
-}
 
 std::vector<qubit_bimap_t> monomorphism_edge_break(
     const Architecture& arc, const QubitGraph& q_graph, unsigned max_matches,
@@ -50,13 +36,11 @@ std::vector<qubit_bimap_t> monomorphism_edge_break(
         "Interaction graph too large for architecture");
   }
 
-  using ArchitectureConn = Architecture::UndirectedConnGraph;
-  using InteractionGraph = QubitGraph::UndirectedConnGraph;
+  Architecture::UndirectedConnGraph undirected_target =
+      arc.get_undirected_connectivity();
+  QubitGraph::UndirectedConnGraph undirected_pattern =
+      q_graph.get_undirected_connectivity();
 
-  ArchitectureConn undirected_target = arc.get_undirected_connectivity();
-  InteractionGraph undirected_pattern = q_graph.get_undirected_connectivity();
-
-  std::vector<qubit_bimap_t> all_maps;
   std::chrono::time_point<std::chrono::steady_clock> end_time =
       std::chrono::steady_clock::now() + std::chrono::milliseconds(timeout);
 
@@ -65,38 +49,41 @@ std::vector<qubit_bimap_t> monomorphism_edge_break(
                               (end_time - std::chrono::steady_clock::now()) / 2)
                               .count();
     if (search_timeout <= 0) search_timeout = 1;
-    vf2_match_add_callback<InteractionGraph, ArchitectureConn> callback(
-        all_maps, undirected_pattern, undirected_target, max_matches);
-    bool found_monomorphism = boost::vf2_subgraph_mono(
-        undirected_pattern, undirected_target, callback, search_timeout);
+
+    std::vector<qubit_bimap_t> all_maps = get_unweighted_subgraph_monomorphisms(
+        undirected_pattern, undirected_target, max_matches, timeout);
+    std::sort(all_maps.begin(), all_maps.end());
 
     if (std::chrono::steady_clock::now() >= end_time) {
       std::stringstream ss;
-      ss << "boost::vf2_subgraph_mono reached " << timeout
+      ss << "subgraph monomorphism reached " << timeout
          << " millisecond timeout before reaching set max matches "
-         << callback.max << ", instead finding " << all_maps.size()
+         << max_matches << ", instead finding " << all_maps.size()
          << " matches. "
             "Please change PlacementConfig.timeout to allow more matches.";
       tket_log()->warn(ss.str());
       if (all_maps.empty()) {
         throw std::runtime_error("No mappings found before timeout.");
       }
-      std::sort(all_maps.begin(), all_maps.end());
       return all_maps;
-    } else if (found_monomorphism) {
-      std::sort(all_maps.begin(), all_maps.end());
-      return all_maps;
-    } else if (boost::num_edges(undirected_pattern) != 0) {
-      using edge_t = graphs::utils::edge<InteractionGraph>;
-      auto e_its = boost::edges(undirected_pattern);
-      auto max_e_it = boost::first_max_element(
-          e_its.first, e_its.second,
-          [&undirected_pattern](const edge_t& lhs, const edge_t& rhs) {
-            return undirected_pattern[lhs].weight <
-                   undirected_pattern[rhs].weight;
-          });
-      graphs::utils::remove_edge(*max_e_it, undirected_pattern, true);
     }
+    if (!all_maps.empty()) {
+      return all_maps;
+    }
+    const unsigned current_number_of_edges =
+        boost::num_edges(undirected_pattern);
+    // It MUST have found a solution, if no pattern edges!
+    TKET_ASSERT(current_number_of_edges > 0);
+    using edge_t = graphs::utils::edge<QubitGraph::UndirectedConnGraph>;
+    auto e_its = boost::edges(undirected_pattern);
+    auto max_e_it = boost::first_max_element(
+        e_its.first, e_its.second,
+        [&undirected_pattern](const edge_t& lhs, const edge_t& rhs) {
+          return undirected_pattern[lhs].weight <
+                 undirected_pattern[rhs].weight;
+        });
+    graphs::utils::remove_edge(*max_e_it, undirected_pattern, true);
+    TKET_ASSERT(boost::num_edges(undirected_pattern) < current_number_of_edges);
   }
 }
 

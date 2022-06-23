@@ -474,6 +474,7 @@ SCENARIO("Test predicate serializations") {
   BASICPREDJSONTEST(NoMidMeasurePredicate)
   BASICPREDJSONTEST(NoSymbolsPredicate)
   BASICPREDJSONTEST(GlobalPhasedXPredicate)
+  BASICPREDJSONTEST(NormalisedTK2Predicate)
 #undef BASICPREDJSONTEST
   GIVEN("GateSetPredicate") {
     OpTypeSet ops = {OpType::X, OpType::V, OpType::Rz, OpType::ZZMax};
@@ -583,6 +584,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(DelayMeasures, DelayMeasures())
   COMPPASSJSONTEST(RemoveDiscarded, RemoveDiscarded())
   COMPPASSJSONTEST(SimplifyMeasured, SimplifyMeasured())
+  COMPPASSJSONTEST(ZZPhaseToRz, ZZPhaseToRz())
   COMPPASSJSONTEST(RemoveBarriers, RemoveBarriers())
   COMPPASSJSONTEST(ComposePhasePolyBoxes, ComposePhasePolyBoxes())
   COMPPASSJSONTEST(DecomposeBridges, DecomposeBridges())

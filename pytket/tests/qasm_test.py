@@ -352,10 +352,23 @@ def test_new_qelib1_aliases() -> None:
 
 
 def test_h1_rzz() -> None:
-    c = Circuit(2)
-    c.add_gate(OpType.ZZPhase, [0.1], [0, 1])
+    c = (
+        Circuit(2)
+        .ZZPhase(0.3, 0, 1)
+        .ZZPhase(2.4, 0, 1)
+        .ZZPhase(1.4, 0, 1)
+        .ZZPhase(1.0, 0, 1)
+        .ZZPhase(-2.3, 0, 1)
+        .ZZPhase(-1.4, 0, 1)
+        .ZZPhase(-1.0, 0, 1)
+    )
     assert "rzz" in circuit_to_qasm_str(c, header="qelib1")
-    assert "RZZ" in circuit_to_qasm_str(c, header="hqslib1")
+    hqs_qasm_str = circuit_to_qasm_str(c, header="hqslib1")
+    assert "RZZ" in hqs_qasm_str
+
+    with open(str(curr_file_path / "qasm_test_files/zzphase.qasm"), "r") as f:
+        fread_str = str(f.read())
+        assert str(hqs_qasm_str) == fread_str
 
 
 def test_extended_qasm() -> None:
@@ -445,3 +458,4 @@ if __name__ == "__main__":
     test_output_error_modes()
     test_builtin_gates()
     test_new_qelib1_aliases()
+    test_h1_rzz()

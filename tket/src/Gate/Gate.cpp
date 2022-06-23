@@ -15,6 +15,7 @@
 #include "Gate.hpp"
 
 #include <algorithm>
+#include <tkrng/RNG.hpp>
 #include <vector>
 
 #include "GateUnitaryMatrix.hpp"
@@ -25,7 +26,6 @@
 #include "OpType/OpTypeInfo.hpp"
 #include "Ops/Op.hpp"
 #include "Utils/Expression.hpp"
-#include "Utils/RNG.hpp"
 #include "symengine/eval_double.h"
 
 namespace tket {
@@ -185,6 +185,7 @@ Op_ptr Gate::transpose() const {
     case OpType::CSWAP:
     case OpType::BRIDGE:
     case OpType::S:
+    case OpType::Sdg:
     case OpType::T:
     case OpType::V:
     case OpType::Vdg:

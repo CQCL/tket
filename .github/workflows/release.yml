@@ -66,6 +66,7 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect --force
+        conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
         conan install --profile=tket boost/1.79.0@ --build=missing
@@ -109,6 +110,7 @@ jobs:
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
         conan profile new tket --detect --force
+        conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
         conan install --profile=tket boost/1.79.0@ --build=missing
@@ -157,6 +159,7 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect
+        conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV

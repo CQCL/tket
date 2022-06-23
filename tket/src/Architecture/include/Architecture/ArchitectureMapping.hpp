@@ -14,8 +14,9 @@
 
 #pragma once
 
+#include <tktokenswap/SwapFunctions.hpp>
+
 #include "Architecture/Architecture.hpp"
-#include "TokenSwapping/SwapFunctions.hpp"
 
 namespace tket {
 

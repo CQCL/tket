@@ -20,6 +20,7 @@
 #include "EigenConfig.hpp"
 #include "UnitID.hpp"
 #include "Utils/Constants.hpp"
+#include "Utils/Expression.hpp"
 
 namespace tket {
 
@@ -173,5 +174,12 @@ double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx);
  *  @param c The ZZ interaction angle
  */
 double trace_fidelity(double a, double b, double c);
+
+/** Whether a triplet of TK2 angles are normalised.
+ *
+ * Numerical values must be in the Weyl chamber, ie 1/2 >= k_x >= k_y >= |k_z|.
+ * Symbolic values must come before any numerical value in the array.
+ */
+bool in_weyl_chamber(const std::array<Expr, 3> &k);
 
 }  // namespace tket

@@ -57,6 +57,7 @@ jobs:
         conan_cmd=/home/runner/.local/bin/conan
         ${conan_cmd} profile new tket --detect
         ${conan_cmd} profile update settings.compiler.libcxx=libstdc++11 tket
+        ${conan_cmd} profile update options.tklog:shared=True tket
         ${conan_cmd} profile update options.tket:shared=True tket
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: set option to run full test suite
@@ -94,7 +95,7 @@ jobs:
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-        pytest --ignore=simulator/ --doctest-modules
+        pytest --ignore=simulator/ --doctest-modules --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
     - name: Set up Python 3.9
       if: github.event_name == 'pull_request'
       uses: actions/setup-python@v3
@@ -116,7 +117,7 @@ jobs:
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-        pytest --ignore=simulator/ --doctest-modules
+        pytest --ignore=simulator/ --doctest-modules --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
     - name: Set up Python 3.10
       if: github.event_name == 'schedule'
       uses: actions/setup-python@v3
@@ -133,6 +134,13 @@ jobs:
         cd pytket/tests
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
+    - name: Upload pytket coverage artefact
+      if: github.event_name == 'pull_request' || github.event_name == 'push'
+      uses: actions/upload-artifact@v3
+      with:
+        name: pytket_test_coverage
+        path: pytket/tests/htmlcov
+
 
   macos:
     name: Build and test (MacOS)
@@ -181,6 +189,7 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect --force
+        conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
@@ -275,6 +284,7 @@ jobs:
       id: conan
       run: |
         conan profile new tket --detect --force
+        conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
@@ -379,6 +389,7 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect
+        conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
@@ -441,3 +452,49 @@ jobs:
         cd tests
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
+
+  publish_pytket_coverage:
+    name: Publish pytket coverage
+    needs: linux
+    concurrency: gh_pages
+    if: github.event_name == 'push'
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: gh-pages
+    - name: Download artefact
+      uses: actions/download-artifact@v3
+      with:
+        name: pytket_test_coverage
+        path: htmlcov/
+    - name: Configure git
+      run: |
+        git config --global user.email "tket-bot@cambridgequantum.com"
+        git config --global user.name  "«$GITHUB_WORKFLOW» github action"
+    - name: Remove old report
+      run: git rm -r docs/pytket/test-coverage
+    - name: Add report to repository
+      run: |
+        mv htmlcov docs/pytket/test-coverage
+        git add -f docs/pytket/test-coverage
+        git commit --allow-empty -m "Add generated pytket coverage report."
+    - name: Publish report
+      run: git push origin gh-pages:gh-pages
+
+  check_pytket_coverage:
+    name: Check pytket line and branch coverage
+    needs: linux
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v3
+    - name: Download artefact
+      uses: actions/download-artifact@v3
+      with:
+        name: pytket_test_coverage
+        path: pytket-test-coverage/
+    - name: Compare with latest report from develop
+      run: |
+        wget https://cqcl.github.io/tket/pytket/test-coverage/cov.xml -O oldcov.xml
+        ./.github/workflows/compare-pytket-coverage oldcov.xml pytket-test-coverage/cov.xml
