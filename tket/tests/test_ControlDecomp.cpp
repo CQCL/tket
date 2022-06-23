@@ -113,7 +113,7 @@ static bool check_incrementer_linear_depth(
   bool correct = true;
   for (unsigned i = 0; i < sv.size(); ++i) {
     if (i == sv_set_idx) {
-      correct &= (std::abs(sv[i]) - 1 < ERR_EPS);
+      correct &= std::abs((std::abs(sv[i]) - 1) < ERR_EPS);
     } else {
       correct &= (std::abs(sv[i]) < ERR_EPS);
     }
