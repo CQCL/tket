@@ -45,7 +45,7 @@ Circuit incrementer_linear_depth(unsigned n, bool lsb = true);
  * @brief Implement CnU gate with linear depth and O(n^2) gate count.
  * https://arxiv.org/abs/2203.11882
  *
- * @param n number of controlls
+ * @param n number of controls
  * @param u the controlled 2x2 unitary matrix
  * @return Circuit CRx, Rx(1), and controlled unitary boxes
  */
