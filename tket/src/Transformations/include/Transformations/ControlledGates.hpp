@@ -31,7 +31,7 @@ Circuit incrementer_borrow_1_qubit(unsigned n);
 Circuit incrementer_borrow_n_qubits(unsigned n);
 
 /**
- * @brief Get a n-qubit incrementer circuit with linear depth and O(n^2) gate
+ * @brief Get an n-qubit incrementer circuit with linear depth and O(n^2) gate
  * count. There exists a global phase difference
  * https://arxiv.org/abs/2203.11882
  *
