@@ -353,60 +353,44 @@ Circuit phase_poly_synthesis(
 
   PhasePolyBox placed_ppb(circuit_ppb_place);
 
-  std::vector<Node> hampath;
-  if (cnottype == CNotSynthType::HamPath) {
-    hampath = find_hampath(arch);  // using default timeout
-  }
-
   // create maps from qubits/node to int
   std::map<UnitID, UnitID> forward_contiguous_uids_q;
   std::map<UnitID, UnitID> backward_contiguous_uids_n;
   // extra map with node type needed for the creation of the architecture
   std::map<UnitID, Node> unitid_to_int_nodes;
 
-  // calculate iteration order
-  std::vector<Node> node_order;
-  IterationOrder iter_order(arch);
-
-  if ((cnottype == CNotSynthType::Rec) || (cnottype == CNotSynthType::SWAP)) {
-    node_order = iter_order.get_iterationorder();
-  }
-
-  unsigned counter = 0;
-  if (cnottype == CNotSynthType::HamPath) {
-    for (Node orig_node : hampath) {
-      UnitID qu_no = UnitID(orig_node);
-      Qubit q = Qubit(counter);
-      Node n = Node(counter);
-      unitid_to_int_nodes.insert({qu_no, n});
-      forward_contiguous_uids_q.insert({q, qu_no});
-      backward_contiguous_uids_n.insert({qu_no, n});
-
-      ++counter;
-    }
-  } else {
-    for (Node orig_node : node_order) {
-      UnitID qu_no =
-          UnitID(orig_node);  // convert node to superclass type of qubit/node
-      Qubit q = Qubit(counter);
-      Node n = Node(counter);
-      forward_contiguous_uids_q.insert({q, qu_no});
-      backward_contiguous_uids_n.insert({qu_no, n});
-      unitid_to_int_nodes.insert({qu_no, n});
-      ++counter;
-    }
-  }
-
-  // define new arcitecture
   std::vector<Architecture::Connection> new_con;
+
   if (cnottype == CNotSynthType::HamPath) {
+    std::vector<Node> hampath = find_hampath(arch);  // using default timeout
+    for (unsigned i = 0; i < hampath.size(); i++) {
+      UnitID qu_no = UnitID(hampath[i]);
+      Qubit q = Qubit(i);
+      Node n = Node(i);
+      unitid_to_int_nodes.insert({qu_no, n});
+      forward_contiguous_uids_q.insert({q, qu_no});
+      backward_contiguous_uids_n.insert({qu_no, n});
+    }
+    // define new arcitecture
     for (auto pair : arch.get_all_edges_vec()) {
       new_con.push_back(
           {unitid_to_int_nodes[UnitID(pair.first)],
            unitid_to_int_nodes[UnitID(pair.second)]});
     }
   } else {
-    // include only the tree edges:
+    // calculate iteration order
+    IterationOrder iter_order(arch);
+    std::vector<Node> node_order = iter_order.get_iterationorder();
+    for (unsigned i = 0; i < node_order.size(); i++) {
+      // convert node to superclass type of qubit/node
+      UnitID qu_no = UnitID(node_order[i]);
+      Qubit q = Qubit(i);
+      Node n = Node(i);
+      forward_contiguous_uids_q.insert({q, qu_no});
+      backward_contiguous_uids_n.insert({qu_no, n});
+      unitid_to_int_nodes.insert({qu_no, n});
+    }
+    // define new arcitecture: include only the tree edges
     for (auto pair : iter_order.get_edgelist()) {
       new_con.push_back(
           {unitid_to_int_nodes[UnitID(pair.first)],
