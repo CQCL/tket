@@ -866,7 +866,10 @@ Circuit incrementer_linear_depth(unsigned n, bool lsb) {
     add_qn(circ, n);
   }
   if (lsb) {
-    circ.add_op<unsigned>(OpType::Rx, 1, {0});
+    // Some optimisations might have better handlings for X gates
+    // so use X instead of Rx(1)
+    circ.add_op<unsigned>(OpType::X, {0});
+    circ.add_phase(-0.5);
   }
   return circ;
 }
