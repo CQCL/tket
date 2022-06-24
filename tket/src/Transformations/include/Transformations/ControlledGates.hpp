@@ -37,7 +37,7 @@ Circuit incrementer_borrow_n_qubits(unsigned n);
  *
  * @param n number of qubits
  * @param lsb set to false if we don't want to toggle the least siginificant bit
- * @return Circuit CRx, Rx(1)
+ * @return Circuit containing CRx, X
  */
 Circuit incrementer_linear_depth(unsigned n, bool lsb = true);
 
@@ -47,7 +47,8 @@ Circuit incrementer_linear_depth(unsigned n, bool lsb = true);
  *
  * @param n number of controls
  * @param u the controlled 2x2 unitary matrix
- * @return Circuit CRx, Rx(1), and controlled unitary boxes
+ * @return Circuit containing CRx, Unitary1QBox, and one-qubit controlled
+ * Unitary1QBox
  */
 Circuit cnu_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u);
 
