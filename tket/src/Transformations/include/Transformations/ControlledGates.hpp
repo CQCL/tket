@@ -30,6 +30,28 @@ Circuit incrementer_borrow_1_qubit(unsigned n);
 
 Circuit incrementer_borrow_n_qubits(unsigned n);
 
+/**
+ * @brief Get an n-qubit incrementer circuit with linear depth and O(n^2) gate
+ * count. There exists a global phase difference
+ * https://arxiv.org/abs/2203.11882
+ *
+ * @param n number of qubits
+ * @param lsb set to false if we don't want to toggle the least siginificant bit
+ * @return Circuit containing CRx, X
+ */
+Circuit incrementer_linear_depth(unsigned n, bool lsb = true);
+
+/**
+ * @brief Implement CnU gate with linear depth and O(n^2) gate count.
+ * https://arxiv.org/abs/2203.11882
+ *
+ * @param n number of controls
+ * @param u the controlled 2x2 unitary matrix
+ * @return Circuit containing CRx, Unitary1QBox, and one-qubit controlled
+ * Unitary1QBox
+ */
+Circuit cnu_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u);
+
 Circuit cnx_normal_decomp(unsigned n);
 
 Circuit cnx_gray_decomp(unsigned n);

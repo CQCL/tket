@@ -19,6 +19,7 @@
 #include "ControlledGates.hpp"
 #include "Decomposition.hpp"
 #include "Gate/GatePtr.hpp"
+#include "Gate/GateUnitaryMatrix.hpp"
 #include "Transform.hpp"
 
 namespace tket {
@@ -40,10 +41,12 @@ Circuit TK2_circ_from_multiq(const Op_ptr op) {
       return c;
     }
     case OpType::CnX:
-      if (n_qubits >= 6 && n_qubits <= 8) {
+      if (n_qubits >= 6 && n_qubits <= 50) {
         // TODO We should be able to do better than this.
-        Circuit c = cnx_gray_decomp(n_qubits - 1);
-        replace_CX_with_TK2(c);
+        Eigen::Matrix2cd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
+        Circuit c = cnu_linear_depth_decomp(n_qubits - 1, x);
+        c.decompose_boxes();
+        decompose_multi_qubits_TK2().apply(c);
         return c;
       } else {
         // TODO We should be able to do better than this.
@@ -67,8 +70,15 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
     case OpType::CnRy:
       return decomposed_CnRy(op, n_qubits);
     case OpType::CnX:
-      if (n_qubits >= 6 && n_qubits <= 8) return cnx_gray_decomp(n_qubits - 1);
-      return cnx_normal_decomp(n_qubits - 1);
+      if (n_qubits >= 6 && n_qubits <= 50) {
+        Eigen::Matrix2cd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
+        Circuit c = cnu_linear_depth_decomp(n_qubits - 1, x);
+        c.decompose_boxes();
+        decompose_multi_qubits_CX().apply(c);
+        return c;
+      } else {
+        return cnx_normal_decomp(n_qubits - 1);
+      }
     default:
       return with_CX(as_gate_ptr(op));
   }

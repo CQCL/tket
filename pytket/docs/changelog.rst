@@ -23,6 +23,7 @@ Minor new features:
 * New pass and transform `DecomposeTK2` to decompose TK2 gates using the
   approximate KAK decomposition.
 * Pass and transform ``GlobalisePhasedX`` use fewer Rz rotations.
+* Improved decomposition for CnX gates.
 
 Fixes:
 
