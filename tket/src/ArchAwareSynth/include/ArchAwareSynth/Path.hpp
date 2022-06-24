@@ -132,6 +132,10 @@ class IterationOrder {
 /**
  * Find a Hamiltonian path in the architecture. Timeout is in ms.
  *
+ * The architecture is always treated as undirected, i.e. the path may traverse
+ * a connection in either direction even if only one direction is specified in
+ * the architecture.
+ *
  * @param arch architecture where the path is searched
  * @param timeout give the timeout for the search of the hamiltonpath,
  *                  default value is 10000
