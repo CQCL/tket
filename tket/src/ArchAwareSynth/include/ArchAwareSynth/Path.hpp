@@ -23,6 +23,12 @@ namespace aas {
 typedef Eigen::Matrix<unsigned, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>
     MatrixXu;
 
+class NoHamiltonPath : public std::logic_error {
+ public:
+  explicit NoHamiltonPath(const std::string &message)
+      : std::logic_error(message) {}
+};
+
 /**
  *  Holds distances & paths between nodes -- can optionally remove edges to form
  * a tree.
@@ -124,13 +130,17 @@ class IterationOrder {
 };
 
 /**
- * Find a Hamiltonian path in the architecture. Returns {} if no
- * Hamiltonian path is found within timeout. Timeout is in ms.
+ * Find a Hamiltonian path in the architecture. Timeout is in ms.
+ *
+ * The architecture is always treated as undirected, i.e. the path may traverse
+ * a connection in either direction even if only one direction is specified in
+ * the architecture.
  *
  * @param arch architecture where the path is searched
  * @param timeout give the timeout for the search of the hamiltonpath,
  *                  default value is 10000
  * @return ordered vector of nodes in the path
+ * @throws NoHamiltonPath if no Hamiltonian path is found within timeout
  */
 std::vector<Node> find_hampath(const Architecture &arch, long timeout = 10000);
 
