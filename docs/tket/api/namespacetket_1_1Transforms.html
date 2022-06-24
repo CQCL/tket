@@ -202,6 +202,12 @@ Functions</h2></td></tr>
 <tr class="separator:a6e2baa7e0e771b7c012c0bda1c921965"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2baef97e10facf80e00d737ed1d7fcb5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a2baef97e10facf80e00d737ed1d7fcb5">cnx_gray_decomp</a> (unsigned n)</td></tr>
 <tr class="separator:a2baef97e10facf80e00d737ed1d7fcb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77f8cd4bbbccb592ba5155f97cab33d3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a77f8cd4bbbccb592ba5155f97cab33d3">incrementer_linear_depth</a> (unsigned n, bool lsb=true)</td></tr>
+<tr class="memdesc:a77f8cd4bbbccb592ba5155f97cab33d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get an n-qubit incrementer circuit with linear depth and O(n^2) gate count.  <a href="namespacetket_1_1Transforms.html#a77f8cd4bbbccb592ba5155f97cab33d3">More...</a><br /></td></tr>
+<tr class="separator:a77f8cd4bbbccb592ba5155f97cab33d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9c3b984e31a8419bb61ac1ed4623eac3"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a9c3b984e31a8419bb61ac1ed4623eac3">cnu_linear_depth_decomp</a> (unsigned n, const Eigen::Matrix2cd &amp;u)</td></tr>
+<tr class="memdesc:a9c3b984e31a8419bb61ac1ed4623eac3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implement CnU gate with linear depth and O(n^2) gate count.  <a href="namespacetket_1_1Transforms.html#a9c3b984e31a8419bb61ac1ed4623eac3">More...</a><br /></td></tr>
+<tr class="separator:a9c3b984e31a8419bb61ac1ed4623eac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a70cf68af47c453c01462a54673baa33b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a70cf68af47c453c01462a54673baa33b">decompose_multi_qubits_TK2</a> ()</td></tr>
 <tr class="memdesc:a70cf68af47c453c01462a54673baa33b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decomposes all multi-qubit unitary gates into TK2 and single-qubit gates.  <a href="namespacetket_1_1Transforms.html#a70cf68af47c453c01462a54673baa33b">More...</a><br /></td></tr>
 <tr class="separator:a70cf68af47c453c01462a54673baa33b"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -703,6 +709,47 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="OptimisationPass_8cpp_source.html#l00056">56</a> of file <a class="el" href="OptimisationPass_8cpp_source.html">OptimisationPass.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a9c3b984e31a8419bb61ac1ed4623eac3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9c3b984e31a8419bb61ac1ed4623eac3">&#9670;&nbsp;</a></span>cnu_linear_depth_decomp()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::Transforms::cnu_linear_depth_decomp </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::Matrix2cd &amp;&#160;</td>
+          <td class="paramname"><em>u</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Implement CnU gate with linear depth and O(n^2) gate count. </p>
+<p><a href="https://arxiv.org/abs/2203.11882">https://arxiv.org/abs/2203.11882</a></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">n</td><td>number of controls </td></tr>
+    <tr><td class="paramname">u</td><td>the controlled 2x2 unitary matrix </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> containing CRx, Unitary1QBox, and one-qubit controlled Unitary1QBox </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="ControlledGates_8cpp_source.html#l00878">878</a> of file <a class="el" href="ControlledGates_8cpp_source.html">ControlledGates.cpp</a>.</p>
 
 </div>
 </div>
@@ -1593,6 +1640,47 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="ControlledGates_8cpp_source.html#l00191">191</a> of file <a class="el" href="ControlledGates_8cpp_source.html">ControlledGates.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a77f8cd4bbbccb592ba5155f97cab33d3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a77f8cd4bbbccb592ba5155f97cab33d3">&#9670;&nbsp;</a></span>incrementer_linear_depth()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::Transforms::incrementer_linear_depth </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>lsb</em> = <code>true</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get an n-qubit incrementer circuit with linear depth and O(n^2) gate count. </p>
+<p>There exists a global phase difference <a href="https://arxiv.org/abs/2203.11882">https://arxiv.org/abs/2203.11882</a></p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">n</td><td>number of qubits </td></tr>
+    <tr><td class="paramname">lsb</td><td>set to false if we don't want to toggle the least siginificant bit </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> containing CRx, X </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="ControlledGates_8cpp_source.html#l00860">860</a> of file <a class="el" href="ControlledGates_8cpp_source.html">ControlledGates.cpp</a>.</p>
 
 </div>
 </div>
