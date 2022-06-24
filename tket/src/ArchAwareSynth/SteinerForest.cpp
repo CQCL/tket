@@ -14,6 +14,7 @@
 
 #include "SteinerForest.hpp"
 
+#include <algorithm>
 #include <vector>
 
 #include "Architecture/Architecture.hpp"
@@ -395,7 +396,11 @@ class PhasePolySynthesizer {
 
   Circuit get_result_using_hampath() {
     std::vector<Node> hampath = find_hampath(arch);  // using default timeout
-    return get_result_from_hampath(hampath);
+    Circuit c0 = get_result_from_hampath(hampath);
+    // Sometimes the reversed path gives a better circuit. Try both!
+    std::reverse(hampath.begin(), hampath.end());
+    Circuit c1 = get_result_from_hampath(hampath);
+    return (c0.depth() < c1.depth()) ? c0 : c1;
   }
 
   Circuit get_result_standard() {
