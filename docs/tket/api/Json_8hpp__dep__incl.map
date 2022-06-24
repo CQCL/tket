@@ -1,52 +1,52 @@
 <map id="src/Utils/include/Utils/Json.hpp" name="src/Utils/include/Utils/Json.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="1903,5,2063,47"/>
-<area shape="rect" id="node2" href="$Architecture_8cpp.html" title=" " alt="" coords="4407,377,4641,404"/>
-<area shape="rect" id="node3" href="$Architecture_8hpp.html" title=" " alt="" coords="3900,273,4116,315"/>
-<area shape="rect" id="node7" href="$Placement_8hpp.html" title=" " alt="" coords="4119,563,4315,605"/>
-<area shape="rect" id="node8" href="$Placement_8cpp.html" title=" " alt="" coords="4774,675,4989,701"/>
-<area shape="rect" id="node11" href="$PassGenerators_8cpp.html" title=" " alt="" coords="2947,853,3192,880"/>
-<area shape="rect" id="node14" href="$RoutingMethod_8hpp.html" title=" " alt="" coords="3268,667,3481,709"/>
-<area shape="rect" id="node16" href="$RoutingMethodJson_8hpp.html" title=" " alt="" coords="1913,764,2153,805"/>
-<area shape="rect" id="node17" href="$CompilerPass_8cpp.html" title=" " alt="" coords="1839,853,2071,880"/>
-<area shape="rect" id="node18" href="$LexiRoute_8cpp.html" title=" " alt="" coords="3047,675,3244,701"/>
-<area shape="rect" id="node20" href="$Boxes_8cpp.html" title=" " alt="" coords="2369,474,2527,501"/>
-<area shape="rect" id="node21" href="$CircuitJson_8cpp.html" title=" " alt="" coords="1913,571,2100,597"/>
-<area shape="rect" id="node22" href="$CommandJson_8cpp.html" title=" " alt="" coords="2231,377,2443,404"/>
-<area shape="rect" id="node23" href="$Boxes_8hpp.html" title=" " alt="" coords="2068,370,2207,411"/>
-<area shape="rect" id="node24" href="$Circuit_8hpp.html" title=" " alt="" coords="2734,467,2877,508"/>
-<area shape="rect" id="node25" href="$PhasePoly_8hpp.html" title=" " alt="" coords="2481,563,2676,605"/>
-<area shape="rect" id="node26" href="$PhasePoly_8cpp.html" title=" " alt="" coords="831,675,1043,701"/>
-<area shape="rect" id="node27" href="$MeasurementSetup_8hpp.html" title=" " alt="" coords="2853,556,3057,612"/>
-<area shape="rect" id="node28" href="$OpJson_8cpp.html" title=" " alt="" coords="880,474,1043,501"/>
-<area shape="rect" id="node29" href="$Command_8hpp.html" title=" " alt="" coords="2277,273,2443,315"/>
-<area shape="rect" id="node30" href="$Conditional_8hpp.html" title=" " alt="" coords="1666,370,1841,411"/>
-<area shape="rect" id="node31" href="$Gate_8hpp.html" title=" " alt="" coords="1109,370,1272,411"/>
-<area shape="rect" id="node32" href="$ClassicalOps_8cpp.html" title=" " alt="" coords="371,474,555,501"/>
-<area shape="rect" id="node33" href="$OpPtr_8hpp.html" title=" " alt="" coords="1335,184,1486,225"/>
-<area shape="rect" id="node34" href="$Op_8hpp.html" title="Operations." alt="" coords="1641,273,1791,315"/>
-<area shape="rect" id="node35" href="$ClassicalOps_8hpp.html" title="Classical operations." alt="" coords="833,370,983,411"/>
-<area shape="rect" id="node36" href="$MetaOp_8hpp.html" title=" " alt="" coords="606,370,757,411"/>
-<area shape="rect" id="node37" href="$MetaOp_8cpp.html" title=" " alt="" coords="195,474,347,501"/>
-<area shape="rect" id="node38" href="$Op_8cpp.html" title=" " alt="" coords="1523,377,1642,404"/>
-<area shape="rect" id="node39" href="$OpJsonFactory_8cpp.html" title=" " alt="" coords="1277,474,1467,501"/>
-<area shape="rect" id="node40" href="$OpJsonFactory_8hpp.html" title=" " alt="" coords="1297,370,1447,411"/>
-<area shape="rect" id="node41" href="$EdgeType_8hpp.html" title=" " alt="" coords="245,95,413,136"/>
-<area shape="rect" id="node42" href="$OpType_8hpp.html" title=" " alt="" coords="440,273,595,315"/>
-<area shape="rect" id="node43" href="$CompilerPass_8hpp.html" title=" " alt="" coords="1803,95,2018,136"/>
-<area shape="rect" id="node44" href="$PassLibrary_8cpp.html" title=" " alt="" coords="1948,191,2164,218"/>
-<area shape="rect" id="node45" href="$EigenConfig_8hpp.html" title="Include this file rather than including the Eigen headers directly." alt="" coords="2441,95,2601,136"/>
-<area shape="rect" id="node46" href="$PauliStrings_8hpp.html" title=" " alt="" coords="2543,184,2703,225"/>
-<area shape="rect" id="node47" href="$PauliStrings_8cpp.html" title=" " alt="" coords="2671,281,2854,307"/>
-<area shape="rect" id="node48" href="$Expression_8hpp.html" title="Functions related to (possibly symbolic) phase values." alt="" coords="1663,184,1823,225"/>
-<area shape="rect" id="node49" href="$UnitID_8hpp.html" title="Named registers of arrays of (quantum or classical) nodes." alt="" coords="3217,95,3377,136"/>
-<area shape="rect" id="node50" href="$UnitID_8cpp.html" title=" " alt="" coords="4292,191,4439,218"/>
-<area shape="rect" id="node4" href="$Path_8hpp.html" title=" " alt="" coords="4331,660,4515,716"/>
-<area shape="rect" id="node5" href="$ArchitectureMapping_8hpp.html" title=" " alt="" coords="3807,370,4079,411"/>
-<area shape="rect" id="node6" href="$DeviceCharacterisation_8hpp.html" title=" " alt="" coords="3206,363,3413,419"/>
-<area shape="rect" id="node9" href="$Qubit__Placement_8cpp.html" title=" " alt="" coords="3899,667,4053,709"/>
-<area shape="rect" id="node10" href="$subgraph__mapping_8cpp.html" title=" " alt="" coords="4128,667,4307,709"/>
-<area shape="rect" id="node12" href="$LexicographicalComparison_8hpp.html" title=" " alt="" coords="3437,370,3731,411"/>
-<area shape="rect" id="node13" href="$MappingFrontier_8hpp.html" title=" " alt="" coords="3183,563,3401,605"/>
-<area shape="rect" id="node15" href="$MappingManager_8hpp.html" title=" " alt="" coords="3261,764,3488,805"/>
-<area shape="rect" id="node19" href="$Verification_8hpp.html" title=" " alt="" coords="3612,563,3799,605"/>
+<area shape="rect" id="node1" title=" " alt="" coords="1897,5,2057,47"/>
+<area shape="rect" id="node2" href="$Architecture_8cpp.html" title=" " alt="" coords="4533,377,4768,404"/>
+<area shape="rect" id="node3" href="$Architecture_8hpp.html" title=" " alt="" coords="4016,273,4232,315"/>
+<area shape="rect" id="node8" href="$Placement_8hpp.html" title=" " alt="" coords="4110,563,4306,605"/>
+<area shape="rect" id="node9" href="$Placement_8cpp.html" title=" " alt="" coords="3445,675,3659,701"/>
+<area shape="rect" id="node11" href="$PassGenerators_8cpp.html" title=" " alt="" coords="3268,853,3513,880"/>
+<area shape="rect" id="node14" href="$RoutingMethod_8hpp.html" title=" " alt="" coords="4461,667,4675,709"/>
+<area shape="rect" id="node16" href="$RoutingMethodJson_8hpp.html" title=" " alt="" coords="1781,764,2021,805"/>
+<area shape="rect" id="node17" href="$CompilerPass_8cpp.html" title=" " alt="" coords="1864,853,2096,880"/>
+<area shape="rect" id="node18" href="$LexiRoute_8cpp.html" title=" " alt="" coords="3059,675,3256,701"/>
+<area shape="rect" id="node20" href="$Boxes_8cpp.html" title=" " alt="" coords="2299,474,2456,501"/>
+<area shape="rect" id="node21" href="$CircuitJson_8cpp.html" title=" " alt="" coords="2248,571,2435,597"/>
+<area shape="rect" id="node22" href="$CommandJson_8cpp.html" title=" " alt="" coords="2298,377,2510,404"/>
+<area shape="rect" id="node23" href="$Boxes_8hpp.html" title=" " alt="" coords="2736,370,2875,411"/>
+<area shape="rect" id="node24" href="$Circuit_8hpp.html" title=" " alt="" coords="2889,467,3031,508"/>
+<area shape="rect" id="node25" href="$PhasePoly_8hpp.html" title=" " alt="" coords="2739,563,2933,605"/>
+<area shape="rect" id="node26" href="$PhasePoly_8cpp.html" title=" " alt="" coords="881,675,1093,701"/>
+<area shape="rect" id="node27" href="$MeasurementSetup_8hpp.html" title=" " alt="" coords="2459,556,2663,612"/>
+<area shape="rect" id="node28" href="$OpJson_8cpp.html" title=" " alt="" coords="931,474,1093,501"/>
+<area shape="rect" id="node29" href="$Command_8hpp.html" title=" " alt="" coords="2393,273,2559,315"/>
+<area shape="rect" id="node30" href="$Conditional_8hpp.html" title=" " alt="" coords="1846,370,2021,411"/>
+<area shape="rect" id="node31" href="$Gate_8hpp.html" title=" " alt="" coords="1312,370,1475,411"/>
+<area shape="rect" id="node32" href="$ClassicalOps_8cpp.html" title=" " alt="" coords="323,474,507,501"/>
+<area shape="rect" id="node33" href="$OpPtr_8hpp.html" title=" " alt="" coords="1377,184,1527,225"/>
+<area shape="rect" id="node34" href="$Op_8hpp.html" title="Operations." alt="" coords="1619,273,1770,315"/>
+<area shape="rect" id="node35" href="$ClassicalOps_8hpp.html" title="Classical operations." alt="" coords="910,370,1061,411"/>
+<area shape="rect" id="node36" href="$MetaOp_8hpp.html" title=" " alt="" coords="633,370,783,411"/>
+<area shape="rect" id="node37" href="$MetaOp_8cpp.html" title=" " alt="" coords="147,474,299,501"/>
+<area shape="rect" id="node38" href="$Op_8cpp.html" title=" " alt="" coords="1601,377,1719,404"/>
+<area shape="rect" id="node39" href="$OpJsonFactory_8cpp.html" title=" " alt="" coords="1417,474,1607,501"/>
+<area shape="rect" id="node40" href="$OpJsonFactory_8hpp.html" title=" " alt="" coords="1137,370,1287,411"/>
+<area shape="rect" id="node41" href="$EdgeType_8hpp.html" title=" " alt="" coords="144,95,312,136"/>
+<area shape="rect" id="node42" href="$OpType_8hpp.html" title=" " alt="" coords="859,273,1013,315"/>
+<area shape="rect" id="node43" href="$CompilerPass_8hpp.html" title=" " alt="" coords="2130,95,2345,136"/>
+<area shape="rect" id="node44" href="$PassLibrary_8cpp.html" title=" " alt="" coords="2040,191,2256,218"/>
+<area shape="rect" id="node45" href="$EigenConfig_8hpp.html" title="Include this file rather than including the Eigen headers directly." alt="" coords="2669,95,2829,136"/>
+<area shape="rect" id="node46" href="$PauliStrings_8hpp.html" title=" " alt="" coords="2787,184,2947,225"/>
+<area shape="rect" id="node47" href="$PauliStrings_8cpp.html" title=" " alt="" coords="2915,281,3098,307"/>
+<area shape="rect" id="node48" href="$Expression_8hpp.html" title="Functions related to (possibly symbolic) phase values." alt="" coords="1704,184,1864,225"/>
+<area shape="rect" id="node49" href="$UnitID_8hpp.html" title="Named registers of arrays of (quantum or classical) nodes." alt="" coords="3259,95,3419,136"/>
+<area shape="rect" id="node50" href="$UnitID_8cpp.html" title=" " alt="" coords="4445,191,4592,218"/>
+<area shape="rect" id="node4" href="$Path_8hpp.html" title=" " alt="" coords="4253,660,4437,716"/>
+<area shape="rect" id="node5" href="$SteinerForest_8cpp.html" title=" " alt="" coords="3808,370,3960,411"/>
+<area shape="rect" id="node6" href="$ArchitectureMapping_8hpp.html" title=" " alt="" coords="3984,370,4256,411"/>
+<area shape="rect" id="node7" href="$DeviceCharacterisation_8hpp.html" title=" " alt="" coords="3207,363,3414,419"/>
+<area shape="rect" id="node10" href="$Qubit__Placement_8cpp.html" title=" " alt="" coords="4075,667,4229,709"/>
+<area shape="rect" id="node12" href="$LexicographicalComparison_8hpp.html" title=" " alt="" coords="3438,370,3733,411"/>
+<area shape="rect" id="node13" href="$MappingFrontier_8hpp.html" title=" " alt="" coords="3160,563,3379,605"/>
+<area shape="rect" id="node15" href="$MappingManager_8hpp.html" title=" " alt="" coords="4455,764,4681,805"/>
+<area shape="rect" id="node19" href="$Verification_8hpp.html" title=" " alt="" coords="3628,563,3815,605"/>
 </map>

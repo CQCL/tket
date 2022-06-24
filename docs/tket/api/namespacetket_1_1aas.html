@@ -519,7 +519,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SteinerForest_8cpp_source.html#l00180">180</a> of file <a class="el" href="SteinerForest_8cpp_source.html">SteinerForest.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SteinerForest_8cpp_source.html#l00186">186</a> of file <a class="el" href="SteinerForest_8cpp_source.html">SteinerForest.cpp</a>.</p>
 
 </div>
 </div>
@@ -550,7 +550,8 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Find a Hamiltonian path in the architecture. </p>
-<p>Returns {} if no Hamiltonian path is found within timeout. Timeout is in ms.</p>
+<p>Timeout is in ms.</p>
+<p>The architecture is always treated as undirected, i.e. the path may traverse a connection in either direction even if only one direction is specified in the architecture.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">arch</td><td>architecture where the path is searched </td></tr>
@@ -559,6 +560,12 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>ordered vector of nodes in the path </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classtket_1_1aas_1_1NoHamiltonPath.html">NoHamiltonPath</a></td><td>if no Hamiltonian path is found within timeout </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p class="definition">Definition at line <a class="el" href="Path_8cpp_source.html#l00153">153</a> of file <a class="el" href="Path_8cpp_source.html">Path.cpp</a>.</p>
 
@@ -580,7 +587,7 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="SteinerForest_8cpp_source.html#l00020">20</a> of file <a class="el" href="SteinerForest_8cpp_source.html">SteinerForest.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SteinerForest_8cpp_source.html#l00026">26</a> of file <a class="el" href="SteinerForest_8cpp_source.html">SteinerForest.cpp</a>.</p>
 
 </div>
 </div>
@@ -634,7 +641,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>routed circuit </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="SteinerForest_8cpp_source.html#l00318">318</a> of file <a class="el" href="SteinerForest_8cpp_source.html">SteinerForest.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SteinerForest_8cpp_source.html#l00462">462</a> of file <a class="el" href="SteinerForest_8cpp_source.html">SteinerForest.cpp</a>.</p>
 
 </div>
 </div>
@@ -688,7 +695,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>routed circuit </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="SteinerForest_8cpp_source.html#l00264">264</a> of file <a class="el" href="SteinerForest_8cpp_source.html">SteinerForest.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SteinerForest_8cpp_source.html#l00270">270</a> of file <a class="el" href="SteinerForest_8cpp_source.html">SteinerForest.cpp</a>.</p>
 
 </div>
 </div>
@@ -741,7 +748,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="SteinerForest_8cpp_source.html#l00220">220</a> of file <a class="el" href="SteinerForest_8cpp_source.html">SteinerForest.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SteinerForest_8cpp_source.html#l00226">226</a> of file <a class="el" href="SteinerForest_8cpp_source.html">SteinerForest.cpp</a>.</p>
 
 </div>
 </div>

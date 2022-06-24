@@ -83,7 +83,7 @@ var searchData=
   ['nodelisttraversal_2ecpp_1505',['NodeListTraversal.cpp',['../NodeListTraversal_8cpp.html',1,'']]],
   ['nodelisttraversal_2ehpp_1506',['NodeListTraversal.hpp',['../NodeListTraversal_8hpp.html',1,'']]],
   ['nodemapping_1507',['NodeMapping',['../structtket_1_1BestTsaWithArch.html#a7a2a984b96f19b872162d425ff9e7067',1,'tket::BestTsaWithArch']]],
-  ['nodes_1508',['nodes',['../classtket_1_1aas_1_1SteinerTree.html#a915ae051c669fc4eb640a38e845e1a45',1,'tket::aas::SteinerTree::nodes()'],['../classtket_1_1graphs_1_1AbstractGraph.html#a9a9ac744aa2763fc45132a16b8f376f4',1,'tket::graphs::AbstractGraph::nodes()'],['../classtket_1_1graphs_1_1ColouringPriority.html#a0a2875acea0bebc5992d233c5ba9a1c9',1,'tket::graphs::ColouringPriority::Nodes()']]],
+  ['nodes_1508',['Nodes',['../classtket_1_1graphs_1_1ColouringPriority.html#a0a2875acea0bebc5992d233c5ba9a1c9',1,'tket::graphs::ColouringPriority::Nodes()'],['../classtket_1_1aas_1_1SteinerTree.html#a915ae051c669fc4eb640a38e845e1a45',1,'tket::aas::SteinerTree::nodes()'],['../classtket_1_1graphs_1_1AbstractGraph.html#a9a9ac744aa2763fc45132a16b8f376f4',1,'tket::graphs::AbstractGraph::nodes()']]],
   ['nodes_5f_1509',['nodes_',['../classtket_1_1graphs_1_1AbstractGraph.html#a0be1b923de1c7dfca3ec9b514c605834',1,'tket::graphs::AbstractGraph']]],
   ['nodes_5fat_5fdistance_1510',['nodes_at_distance',['../classtket_1_1graphs_1_1DirectedGraph.html#afe1dae97a811ca738f1fd68cc42b6438',1,'tket::graphs::DirectedGraph']]],
   ['nodes_5fdata_1511',['nodes_data',['../structtket_1_1WeightedSubgraphMonomorphism_1_1NodesRawData.html#aa2892667881a174d70f1a3ee3fb40a50',1,'tket::WeightedSubgraphMonomorphism::NodesRawData']]],
