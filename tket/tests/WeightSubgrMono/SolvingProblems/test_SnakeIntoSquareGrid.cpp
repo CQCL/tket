@@ -99,7 +99,7 @@ static void test(
     unsigned number_of_targets_to_test, unsigned number_of_targets_to_skip) {
   const auto solved_problems_map = get_data();
   ProblemGeneration::EncodedSquareGrid calc_problems;
-  unsigned timeout = short_test ? 1000 : 3000;
+  unsigned timeout = short_test ? 1000 : 10000;
   CheckedSolution::ProblemInformation info;
   info.existence = CheckedSolution::ProblemInformation::SolutionsExistence::
       KNOWN_TO_BE_SOLUBLE;
