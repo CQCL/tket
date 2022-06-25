@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-11 04:45:57</td>
+      <td>2022-06-25 10:39:34</td>
     </tr>
   </table>
 </div>
@@ -40,9 +41,15 @@
     </tr>
     <tr>
       <th scope="row">Lines:</th>
-      <td>0</td>
-      <td>3</td>
-      <td class="coverage-none">0.0%</td>
+      <td>2</td>
+      <td>5</td>
+      <td class="coverage-low">40.0%</td>
+    </tr>
+    <tr>
+      <th scope="row">Functions:</th>
+      <td>1</td>
+      <td>4</td>
+      <td class="coverage-low">25.0%</td>
     </tr>
     <tr>
       <th scope="row">Branches:</th>
@@ -52,10 +59,69 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l125">tket::aas::IterationOrder::get_edgelist()</a>
+      </td>
+      <td>
+        <a href="#l125">125</a>
+      </td>
+      <td>
+        <a href="#l125"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l118">tket::aas::IterationOrder::get_iterationorder()</a>
+      </td>
+      <td>
+        <a href="#l118">118</a>
+      </td>
+      <td>
+        <a href="#l118"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l28">tket::aas::NoHamiltonPath::NoHamiltonPath(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l28">28</a>
+      </td>
+      <td>
+        <a href="#l28"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l38">tket::aas::PathHandler::PathHandler()</a>
+      </td>
+      <td>
+        <a href="#l38">38</a>
+      </td>
+      <td>
+        <a href="#l38"> not called</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -271,7 +337,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">/**</span></td>
+      <td class="src "><span class="k">class</span> <span class="nc">NoHamiltonPath</span> <span class="o">:</span> <span class="k">public</span> <span class="n">std</span><span class="o">::</span><span class="n">logic_error</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -279,23 +345,23 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> *  Holds distances &amp; paths between nodes -- can optionally remove edges to form</span></td>
+      <td class="src "> <span class="k">public</span><span class="o">:</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l28" href="#l28">28</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm"> * a tree.</span></td>
+      <td class="linecount coveredLine">3</td>
+      <td class="src coveredLine">  <span class="k">explicit</span> <span class="n">NoHamiltonPath</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">message</span><span class="p">)</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l29" href="#l29">29</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm"> */</span></td>
+      <td class="linecount coveredLine">3</td>
+      <td class="src coveredLine">      <span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">logic_error</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="p">{}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -303,7 +369,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">class</span> <span class="nc">PathHandler</span> <span class="p">{</span></td>
+      <td class="src "><span class="p">};</span></td>
     </tr>
 
     <tr class="source-line">
@@ -311,15 +377,15 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "> <span class="k">public</span><span class="o">:</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l32" href="#l32">32</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">  <span class="n">PathHandler</span><span class="p">()</span> <span class="p">{}</span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -327,7 +393,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm"> *  Holds distances &amp; paths between nodes -- can optionally remove edges to form</span></td>
     </tr>
 
     <tr class="source-line">
@@ -335,7 +401,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="cm">/**</span></td>
+      <td class="src "><span class="cm"> * a tree.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -343,7 +409,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Initialises the pathhandler with a given architecture. Architecture</span></td>
+      <td class="src "><span class="cm"> */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -351,7 +417,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * initialisation assumes symmetric connectivity.</span></td>
+      <td class="src "><span class="k">class</span> <span class="nc">PathHandler</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -359,15 +425,15 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param arch architecture giving the undirected graph for the initialisation</span></td>
+      <td class="src "> <span class="k">public</span><span class="o">:</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l38" href="#l38">38</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   * graph</span></td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">  <span class="n">PathHandler</span><span class="p">()</span> <span class="p">{}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -375,7 +441,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -383,7 +449,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="k">explicit</span> <span class="n">PathHandler</span><span class="p">(</span><span class="k">const</span> <span class="n">Architecture</span> <span class="o">&amp;</span><span class="n">arch</span><span class="p">);</span></td>
+      <td class="src ">  <span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -391,7 +457,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm">   * Initialises the pathhandler with a given architecture. Architecture</span></td>
     </tr>
 
     <tr class="source-line">
@@ -399,7 +465,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="cm">/**</span></td>
+      <td class="src "><span class="cm">   * initialisation assumes symmetric connectivity.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -407,7 +473,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Initialises the pathhandler with a given connectivity matrix. This function</span></td>
+      <td class="src "><span class="cm">   * @param arch architecture giving the undirected graph for the initialisation</span></td>
     </tr>
 
     <tr class="source-line">
@@ -415,7 +481,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * should only be used in the aas code. This function interprets the matrix as</span></td>
+      <td class="src "><span class="cm">   * graph</span></td>
     </tr>
 
     <tr class="source-line">
@@ -423,7 +489,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * a directed graph.</span></td>
+      <td class="src "><span class="cm">   */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -431,7 +497,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param connectivity matrix with the different connections of the directed</span></td>
+      <td class="src ">  <span class="k">explicit</span> <span class="n">PathHandler</span><span class="p">(</span><span class="k">const</span> <span class="n">Architecture</span> <span class="o">&amp;</span><span class="n">arch</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -439,7 +505,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * graph</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -447,7 +513,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span></td>
+      <td class="src ">  <span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -455,7 +521,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="k">explicit</span> <span class="nf">PathHandler</span><span class="p">(</span><span class="k">const</span> <span class="n">MatrixXb</span> <span class="o">&amp;</span><span class="n">connectivity</span><span class="p">);</span></td>
+      <td class="src "><span class="cm">   * Initialises the pathhandler with a given connectivity matrix. This function</span></td>
     </tr>
 
     <tr class="source-line">
@@ -463,7 +529,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm">   * should only be used in the aas code. This function interprets the matrix as</span></td>
     </tr>
 
     <tr class="source-line">
@@ -471,7 +537,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="cm">/**</span></td>
+      <td class="src "><span class="cm">   * a directed graph.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -479,7 +545,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Returns a handler for a spanning tree of the architecture.</span></td>
+      <td class="src "><span class="cm">   * @param connectivity matrix with the different connections of the directed</span></td>
     </tr>
 
     <tr class="source-line">
@@ -487,7 +553,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span></td>
+      <td class="src "><span class="cm">   * graph</span></td>
     </tr>
 
     <tr class="source-line">
@@ -495,7 +561,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">PathHandler</span> <span class="nf">construct_acyclic_handler</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span></td>
+      <td class="src "><span class="cm">   */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -503,7 +569,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src ">  <span class="k">explicit</span> <span class="nf">PathHandler</span><span class="p">(</span><span class="k">const</span> <span class="n">MatrixXb</span> <span class="o">&amp;</span><span class="n">connectivity</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -511,7 +577,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="cm">/**</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -519,7 +585,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Find a path between two vertices in the architecture.</span></td>
+      <td class="src ">  <span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -527,7 +593,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param i start node for the path</span></td>
+      <td class="src "><span class="cm">   * Returns a handler for a spanning tree of the architecture.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -535,7 +601,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param j end node for the path</span></td>
+      <td class="src "><span class="cm">   */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -543,7 +609,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span></td>
+      <td class="src ">  <span class="n">PathHandler</span> <span class="nf">construct_acyclic_handler</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -551,7 +617,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span> <span class="n">find_path</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">j</span><span class="p">);</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -559,7 +625,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src ">  <span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -567,7 +633,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="cm">/**</span></td>
+      <td class="src "><span class="cm">   * Find a path between two vertices in the architecture.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -575,7 +641,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * get connectivity_matrix_ of the pathhandler</span></td>
+      <td class="src "><span class="cm">   * @param i start node for the path</span></td>
     </tr>
 
     <tr class="source-line">
@@ -583,7 +649,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @return connectivity_matrix_</span></td>
+      <td class="src "><span class="cm">   * @param j end node for the path</span></td>
     </tr>
 
     <tr class="source-line">
@@ -599,7 +665,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">MatrixXb</span> <span class="nf">get_connectivity_matrix</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span></td>
+      <td class="src ">  <span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span> <span class="n">find_path</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">j</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -623,7 +689,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * get distance_matrix_ of the pathhandler</span></td>
+      <td class="src "><span class="cm">   * get connectivity_matrix_ of the pathhandler</span></td>
     </tr>
 
     <tr class="source-line">
@@ -631,7 +697,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @return distance_matrix_</span></td>
+      <td class="src "><span class="cm">   * @return connectivity_matrix_</span></td>
     </tr>
 
     <tr class="source-line">
@@ -647,7 +713,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">MatrixXu</span> <span class="nf">get_distance_matrix</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span></td>
+      <td class="src ">  <span class="n">MatrixXb</span> <span class="nf">get_connectivity_matrix</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -671,7 +737,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * get path_matrix_ of the pathhandler</span></td>
+      <td class="src "><span class="cm">   * get distance_matrix_ of the pathhandler</span></td>
     </tr>
 
     <tr class="source-line">
@@ -679,7 +745,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @return path_matrix_</span></td>
+      <td class="src "><span class="cm">   * @return distance_matrix_</span></td>
     </tr>
 
     <tr class="source-line">
@@ -695,7 +761,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">MatrixXu</span> <span class="nf">get_path_matrix</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span></td>
+      <td class="src ">  <span class="n">MatrixXu</span> <span class="nf">get_distance_matrix</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -719,7 +785,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * get size of the pathhandler</span></td>
+      <td class="src "><span class="cm">   * get path_matrix_ of the pathhandler</span></td>
     </tr>
 
     <tr class="source-line">
@@ -727,7 +793,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @return size</span></td>
+      <td class="src "><span class="cm">   * @return path_matrix_</span></td>
     </tr>
 
     <tr class="source-line">
@@ -743,7 +809,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="kt">unsigned</span> <span class="nf">get_size</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span></td>
+      <td class="src ">  <span class="n">MatrixXu</span> <span class="nf">get_path_matrix</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -759,7 +825,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "> <span class="k">private</span><span class="o">:</span></td>
+      <td class="src ">  <span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -767,7 +833,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">MatrixXb</span> <span class="n">connectivity_matrix_</span><span class="p">;</span></td>
+      <td class="src "><span class="cm">   * get size of the pathhandler</span></td>
     </tr>
 
     <tr class="source-line">
@@ -775,7 +841,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">MatrixXu</span> <span class="n">distance_matrix_</span><span class="p">;</span></td>
+      <td class="src "><span class="cm">   * @return size</span></td>
     </tr>
 
     <tr class="source-line">
@@ -783,7 +849,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">MatrixXu</span> <span class="n">path_matrix_</span><span class="p">;</span></td>
+      <td class="src "><span class="cm">   */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -791,7 +857,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="kt">unsigned</span> <span class="n">size</span><span class="p">;</span></td>
+      <td class="src ">  <span class="kt">unsigned</span> <span class="nf">get_size</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -799,7 +865,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -807,7 +873,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "> <span class="k">private</span><span class="o">:</span></td>
     </tr>
 
     <tr class="source-line">
@@ -815,7 +881,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">/**</span></td>
+      <td class="src ">  <span class="n">MatrixXb</span> <span class="n">connectivity_matrix_</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -823,7 +889,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * class to calculate and store the iteration order needed for the cnot synth in</span></td>
+      <td class="src ">  <span class="n">MatrixXu</span> <span class="n">distance_matrix_</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -831,7 +897,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * the architecture aware synth code. The iteration order makes sure, that the</span></td>
+      <td class="src ">  <span class="n">MatrixXu</span> <span class="n">path_matrix_</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -839,7 +905,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * not yet iterated nodes are still connected.</span></td>
+      <td class="src ">  <span class="kt">unsigned</span> <span class="n">size</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -847,7 +913,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> */</span></td>
+      <td class="src "><span class="p">};</span></td>
     </tr>
 
     <tr class="source-line">
@@ -855,7 +921,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">class</span> <span class="nc">IterationOrder</span> <span class="p">{</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -863,7 +929,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "> <span class="k">public</span><span class="o">:</span></td>
+      <td class="src "><span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -871,7 +937,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">IterationOrder</span><span class="p">()</span> <span class="p">{}</span></td>
+      <td class="src "><span class="cm"> * class to calculate and store the iteration order needed for the cnot synth in</span></td>
     </tr>
 
     <tr class="source-line">
@@ -879,7 +945,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="cm">/**</span></td>
+      <td class="src "><span class="cm"> * the architecture aware synth code. The iteration order makes sure, that the</span></td>
     </tr>
 
     <tr class="source-line">
@@ -887,7 +953,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * construct and calculate the iterationorder.</span></td>
+      <td class="src "><span class="cm"> * not yet iterated nodes are still connected.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -895,7 +961,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @param arch given architecture</span></td>
+      <td class="src "><span class="cm"> */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -903,7 +969,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span></td>
+      <td class="src "><span class="k">class</span> <span class="nc">IterationOrder</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -911,7 +977,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="k">explicit</span> <span class="n">IterationOrder</span><span class="p">(</span><span class="k">const</span> <span class="n">Architecture</span> <span class="o">&amp;</span><span class="n">arch</span><span class="p">);</span></td>
+      <td class="src "> <span class="k">public</span><span class="o">:</span></td>
     </tr>
 
     <tr class="source-line">
@@ -919,7 +985,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src ">  <span class="n">IterationOrder</span><span class="p">()</span> <span class="p">{}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -935,7 +1001,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * give the in the constructur calculated iteration order</span></td>
+      <td class="src "><span class="cm">   * construct and calculate the iterationorder.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -943,7 +1009,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @return ordered vector of the architecutre in which they can be iterated.</span></td>
+      <td class="src "><span class="cm">   * @param arch given architecture</span></td>
     </tr>
 
     <tr class="source-line">
@@ -958,8 +1024,8 @@
       <td class="lineno"><a id="l112" href="#l112">112</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">get_iterationorder</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">iterationorder</span><span class="p">;</span> <span class="p">}</span></td>
+      <td class="linecount "></td>
+      <td class="src ">  <span class="k">explicit</span> <span class="n">IterationOrder</span><span class="p">(</span><span class="k">const</span> <span class="n">Architecture</span> <span class="o">&amp;</span><span class="n">arch</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -983,7 +1049,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * give the in the constructur calculated edges used for the iteration</span></td>
+      <td class="src "><span class="cm">   * give the in the constructur calculated iteration order</span></td>
     </tr>
 
     <tr class="source-line">
@@ -991,7 +1057,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @return vector of edges pf the architecutre which are used for the</span></td>
+      <td class="src "><span class="cm">   * @return ordered vector of the architecutre in which they can be iterated.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -999,23 +1065,23 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * iteration.</span></td>
+      <td class="src "><span class="cm">   */</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l118" href="#l118">118</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span></td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">get_iterationorder</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">iterationorder</span><span class="p">;</span> <span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l119" href="#l119">119</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="o">&gt;&gt;</span> <span class="n">get_edgelist</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">edgelist</span><span class="p">;</span> <span class="p">}</span></td>
+      <td class="linecount "></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -1023,7 +1089,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src ">  <span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1031,7 +1097,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "> <span class="k">private</span><span class="o">:</span></td>
+      <td class="src "><span class="cm">   * give the in the constructur calculated edges used for the iteration</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1039,7 +1105,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">iterationorder</span><span class="p">;</span></td>
+      <td class="src "><span class="cm">   * @return vector of edges pf the architecutre which are used for the</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1047,7 +1113,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="o">&gt;&gt;</span> <span class="n">edgelist</span><span class="p">;</span></td>
+      <td class="src "><span class="cm">   * iteration.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1055,15 +1121,15 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span></td>
+      <td class="src "><span class="cm">   */</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l125" href="#l125">125</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="o">&gt;&gt;</span> <span class="n">get_edgelist</span><span class="p">()</span> <span class="p">{</span> <span class="k">return</span> <span class="n">edgelist</span><span class="p">;</span> <span class="p">}</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1071,7 +1137,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">/**</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -1079,7 +1145,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * Find a Hamiltonian path in the architecture. Returns {} if no</span></td>
+      <td class="src "> <span class="k">private</span><span class="o">:</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1087,7 +1153,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * Hamiltonian path is found within timeout. Timeout is in ms.</span></td>
+      <td class="src ">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">iterationorder</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1095,7 +1161,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> *</span></td>
+      <td class="src ">  <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">Node</span><span class="p">,</span> <span class="n">Node</span><span class="o">&gt;&gt;</span> <span class="n">edgelist</span><span class="p">;</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1103,7 +1169,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * @param arch architecture where the path is searched</span></td>
+      <td class="src "><span class="p">};</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1111,7 +1177,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * @param timeout give the timeout for the search of the hamiltonpath,</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -1119,7 +1185,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> *                  default value is 10000</span></td>
+      <td class="src "><span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1127,7 +1193,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * @return ordered vector of nodes in the path</span></td>
+      <td class="src "><span class="cm"> * Find a Hamiltonian path in the architecture. Timeout is in ms.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1135,7 +1201,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> */</span></td>
+      <td class="src "><span class="cm"> *</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1143,7 +1209,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">find_hampath</span><span class="p">(</span><span class="k">const</span> <span class="n">Architecture</span> <span class="o">&amp;</span><span class="n">arch</span><span class="p">,</span> <span class="kt">long</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">);</span></td>
+      <td class="src "><span class="cm"> * The architecture is always treated as undirected, i.e. the path may traverse</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1151,7 +1217,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm"> * a connection in either direction even if only one direction is specified in</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1159,7 +1225,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">}</span>  <span class="c1">// namespace aas</span></td>
+      <td class="src "><span class="cm"> * the architecture.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -1167,11 +1233,91 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">}</span>  <span class="c1">// namespace tket</span></td>
+      <td class="src "><span class="cm"> *</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l139" href="#l139">139</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * @param arch architecture where the path is searched</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l140" href="#l140">140</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * @param timeout give the timeout for the search of the hamiltonpath,</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l141" href="#l141">141</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> *                  default value is 10000</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l142" href="#l142">142</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * @return ordered vector of nodes in the path</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l143" href="#l143">143</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * @throws NoHamiltonPath if no Hamiltonian path is found within timeout</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l144" href="#l144">144</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> */</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l145" href="#l145">145</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">Node</span><span class="o">&gt;</span> <span class="n">find_hampath</span><span class="p">(</span><span class="k">const</span> <span class="n">Architecture</span> <span class="o">&amp;</span><span class="n">arch</span><span class="p">,</span> <span class="kt">long</span> <span class="n">timeout</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">);</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l146" href="#l146">146</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l147" href="#l147">147</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span>  <span class="c1">// namespace aas</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l148" href="#l148">148</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span>  <span class="c1">// namespace tket</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l149" href="#l149">149</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -1180,11 +1326,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

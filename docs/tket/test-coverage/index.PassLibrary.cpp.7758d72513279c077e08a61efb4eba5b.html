@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-11 04:45:57</td>
+      <td>2022-06-25 10:39:34</td>
     </tr>
   </table>
 </div>
@@ -40,22 +41,505 @@
     </tr>
     <tr>
       <th scope="row">Lines:</th>
-      <td>246</td>
-      <td>249</td>
-      <td class="coverage-high">98.8%</td>
+      <td>270</td>
+      <td>273</td>
+      <td class="coverage-high">98.9%</td>
+    </tr>
+    <tr>
+      <th scope="row">Functions:</th>
+      <td>42</td>
+      <td>42</td>
+      <td class="coverage-high">100.0%</td>
     </tr>
     <tr>
       <th scope="row">Branches:</th>
-      <td>285</td>
-      <td>542</td>
-      <td class="coverage-low">52.6%</td>
+      <td>308</td>
+      <td>588</td>
+      <td class="coverage-low">52.4%</td>
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l34">std::shared_ptr&lt;tket::BasePass&gt; tket::gate_translation_pass&lt;tket::Transform&gt;(tket::Transform const&amp;, std::unordered_set&lt;tket::OpType, std::hash&lt;tket::OpType&gt;, std::equal_to&lt;tket::OpType&gt;, std::allocator&lt;tket::OpType&gt; &gt;, bool, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l34">34</a>
+      </td>
+      <td>
+        <a href="#l34"> called 7 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l138">tket::CommuteThroughMultis()</a>
+      </td>
+      <td>
+        <a href="#l138">138</a>
+      </td>
+      <td>
+        <a href="#l138"> called 7 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l139">tket::CommuteThroughMultis()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l139">139</a>
+      </td>
+      <td>
+        <a href="#l139"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l218">tket::ComposePhasePolyBoxes(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l218">218</a>
+      </td>
+      <td>
+        <a href="#l218"> called 23 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l151">tket::DecomposeArbitrarilyControlledGates()</a>
+      </td>
+      <td>
+        <a href="#l151">151</a>
+      </td>
+      <td>
+        <a href="#l151"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l152">tket::DecomposeArbitrarilyControlledGates()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l152">152</a>
+      </td>
+      <td>
+        <a href="#l152"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l249">tket::DecomposeBoxes()</a>
+      </td>
+      <td>
+        <a href="#l249">249</a>
+      </td>
+      <td>
+        <a href="#l249"> called 6 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l250">tket::DecomposeBoxes()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l250">250</a>
+      </td>
+      <td>
+        <a href="#l250"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l291">tket::DecomposeBridges()</a>
+      </td>
+      <td>
+        <a href="#l291">291</a>
+      </td>
+      <td>
+        <a href="#l291"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l292">tket::DecomposeBridges()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l292">292</a>
+      </td>
+      <td>
+        <a href="#l292"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l166">tket::DecomposeMultiQubitsCX()</a>
+      </td>
+      <td>
+        <a href="#l166">166</a>
+      </td>
+      <td>
+        <a href="#l166"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l167">tket::DecomposeMultiQubitsCX()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l167">167</a>
+      </td>
+      <td>
+        <a href="#l167"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l193">tket::DecomposeSingleQubitsTK1()</a>
+      </td>
+      <td>
+        <a href="#l193">193</a>
+      </td>
+      <td>
+        <a href="#l193"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l194">tket::DecomposeSingleQubitsTK1()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l194">194</a>
+      </td>
+      <td>
+        <a href="#l194"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l356">tket::DelayMeasures()</a>
+      </td>
+      <td>
+        <a href="#l356">356</a>
+      </td>
+      <td>
+        <a href="#l356"> called 12 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l357">tket::DelayMeasures()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l357">357</a>
+      </td>
+      <td>
+        <a href="#l357"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l306">tket::FlattenRegisters()</a>
+      </td>
+      <td>
+        <a href="#l306">306</a>
+      </td>
+      <td>
+        <a href="#l306"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l307">tket::FlattenRegisters()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l307">307</a>
+      </td>
+      <td>
+        <a href="#l307"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l309">tket::FlattenRegisters()::{lambda()#1}::operator()() const::{lambda(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;)#1}::operator()(tket::Circuit, tket::unit_bimaps_t) const</a>
+      </td>
+      <td>
+        <a href="#l309">309</a>
+      </td>
+      <td>
+        <a href="#l309"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l402">tket::NormaliseTK2()</a>
+      </td>
+      <td>
+        <a href="#l402">402</a>
+      </td>
+      <td>
+        <a href="#l402"> called 6 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l403">tket::NormaliseTK2()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l403">403</a>
+      </td>
+      <td>
+        <a href="#l403"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l103">tket::PeepholeOptimise2Q()</a>
+      </td>
+      <td>
+        <a href="#l103">103</a>
+      </td>
+      <td>
+        <a href="#l103"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l89">tket::RebaseTket()</a>
+      </td>
+      <td>
+        <a href="#l89">89</a>
+      </td>
+      <td>
+        <a href="#l89"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l96">tket::RebaseUFR()</a>
+      </td>
+      <td>
+        <a href="#l96">96</a>
+      </td>
+      <td>
+        <a href="#l96"> called 15 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l330">tket::RemoveBarriers()</a>
+      </td>
+      <td>
+        <a href="#l330">330</a>
+      </td>
+      <td>
+        <a href="#l330"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l331">tket::RemoveBarriers()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l331">331</a>
+      </td>
+      <td>
+        <a href="#l331"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l332">tket::RemoveBarriers()::{lambda()#1}::operator()() const::{lambda(tket::Circuit&amp;)#1}::operator()(tket::Circuit) const</a>
+      </td>
+      <td>
+        <a href="#l332">332</a>
+      </td>
+      <td>
+        <a href="#l332"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l372">tket::RemoveDiscarded()</a>
+      </td>
+      <td>
+        <a href="#l372">372</a>
+      </td>
+      <td>
+        <a href="#l372"> called 6 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l373">tket::RemoveDiscarded()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l373">373</a>
+      </td>
+      <td>
+        <a href="#l373"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l125">tket::RemoveRedundancies()</a>
+      </td>
+      <td>
+        <a href="#l125">125</a>
+      </td>
+      <td>
+        <a href="#l125"> called 12 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l126">tket::RemoveRedundancies()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l126">126</a>
+      </td>
+      <td>
+        <a href="#l126"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l384">tket::SimplifyMeasured()</a>
+      </td>
+      <td>
+        <a href="#l384">384</a>
+      </td>
+      <td>
+        <a href="#l384"> called 6 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l385">tket::SimplifyMeasured()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l385">385</a>
+      </td>
+      <td>
+        <a href="#l385"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l276">tket::SquashTK1()</a>
+      </td>
+      <td>
+        <a href="#l276">276</a>
+      </td>
+      <td>
+        <a href="#l276"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l277">tket::SquashTK1()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l277">277</a>
+      </td>
+      <td>
+        <a href="#l277"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l71">tket::SynthesiseHQS()</a>
+      </td>
+      <td>
+        <a href="#l71">71</a>
+      </td>
+      <td>
+        <a href="#l71"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l77">tket::SynthesiseOQC()</a>
+      </td>
+      <td>
+        <a href="#l77">77</a>
+      </td>
+      <td>
+        <a href="#l77"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l59">tket::SynthesiseTK()</a>
+      </td>
+      <td>
+        <a href="#l59">59</a>
+      </td>
+      <td>
+        <a href="#l59"> called 15 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l65">tket::SynthesiseTket()</a>
+      </td>
+      <td>
+        <a href="#l65">65</a>
+      </td>
+      <td>
+        <a href="#l65"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l83">tket::SynthesiseUMD()</a>
+      </td>
+      <td>
+        <a href="#l83">83</a>
+      </td>
+      <td>
+        <a href="#l83"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l422">tket::ZZPhaseToRz()</a>
+      </td>
+      <td>
+        <a href="#l422">422</a>
+      </td>
+      <td>
+        <a href="#l422"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l423">tket::ZZPhaseToRz()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l423">423</a>
+      </td>
+      <td>
+        <a href="#l423"> called 1 time</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -4545,12 +5029,424 @@
       <td class="lineno"><a id="l402" href="#l402">402</a></td>
       <td class="linebranch">
       </td>
+      <td class="linecount coveredLine">6</td>
+      <td class="src coveredLine"><span class="k">const</span> <span class="n">PassPtr</span> <span class="o">&amp;</span><span class="n">NormaliseTK2</span><span class="p">()</span> <span class="p">{</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l403" href="#l403">403</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">  <span class="k">static</span> <span class="k">const</span> <span class="n">PassPtr</span> <span class="n">pp</span><span class="p">([]()</span> <span class="p">{</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l404" href="#l404">404</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine">    <span class="n">Transform</span> <span class="n">t</span> <span class="o">=</span> <span class="n">Transforms</span><span class="o">::</span><span class="n">normalise_TK2</span><span class="p">();</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l405" href="#l405">405</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine">    <span class="n">PredicatePtrMap</span> <span class="n">no_precons</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l406" href="#l406">406</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l407" href="#l407">407</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">    <span class="c1">// GateSetPredicate not preserved because single-qubit gates may be added</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l408" href="#l408">408</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">    <span class="n">PredicateClassGuarantees</span> <span class="n">g_postcons</span> <span class="o">=</span> <span class="p">{</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l409" href="#l409">409</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine">        <span class="p">{</span><span class="k">typeid</span><span class="p">(</span><span class="n">GateSetPredicate</span><span class="p">),</span> <span class="n">Guarantee</span><span class="o">::</span><span class="n">Clear</span><span class="p">}};</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l410" href="#l410">410</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l411" href="#l411">411</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine">    <span class="n">PredicatePtr</span> <span class="n">normalisedpred</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">NormalisedTK2Predicate</span><span class="o">&gt;</span><span class="p">();</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l412" href="#l412">412</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">    <span class="n">PredicatePtrMap</span> <span class="n">spec_postcons</span> <span class="o">=</span> <span class="p">{</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l413" href="#l413">413</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">2/4</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+          <div class="takenBranch">&check; Branch 5 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 6 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">4</td>
+      <td class="src coveredLine">        <span class="n">CompilationUnit</span><span class="o">::</span><span class="n">make_type_pair</span><span class="p">(</span><span class="n">normalisedpred</span><span class="p">)};</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l414" href="#l414">414</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine">    <span class="n">PostConditions</span> <span class="n">postcon</span> <span class="o">=</span> <span class="p">{</span><span class="n">spec_postcons</span><span class="p">,</span> <span class="n">g_postcons</span><span class="p">,</span> <span class="n">Guarantee</span><span class="o">::</span><span class="n">Preserve</span><span class="p">};</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l415" href="#l415">415</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine">    <span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span> <span class="n">j</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l416" href="#l416">416</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">2/4</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+          <div class="takenBranch">&check; Branch 4 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 5 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">    <span class="n">j</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;NormaliseTK2&quot;</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l417" href="#l417">417</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine">    <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">StandardPass</span><span class="o">&gt;</span><span class="p">(</span><span class="n">no_precons</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">postcon</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l418" href="#l418">418</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">4/8</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 5 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
+          <div class="takenBranch">&check; Branch 6 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 12 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 13 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">6</td>
+      <td class="src coveredLine">  <span class="p">}());</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l419" href="#l419">419</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount coveredLine">6</td>
+      <td class="src coveredLine">  <span class="k">return</span> <span class="n">pp</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l420" href="#l420">420</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l421" href="#l421">421</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l422" href="#l422">422</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount coveredLine">3</td>
+      <td class="src coveredLine"><span class="k">const</span> <span class="n">PassPtr</span> <span class="o">&amp;</span><span class="n">ZZPhaseToRz</span><span class="p">()</span> <span class="p">{</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l423" href="#l423">423</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">  <span class="k">static</span> <span class="k">const</span> <span class="n">PassPtr</span> <span class="n">pp</span><span class="p">([]()</span> <span class="p">{</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l424" href="#l424">424</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine">    <span class="n">Transform</span> <span class="n">t</span> <span class="o">=</span> <span class="n">Transforms</span><span class="o">::</span><span class="n">ZZPhase_to_Rz</span><span class="p">();</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l425" href="#l425">425</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">    <span class="c1">// GateSetPredicate not preserved because ZZPhase gates may be converted to</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l426" href="#l426">426</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">    <span class="c1">// Rz gates</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l427" href="#l427">427</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">    <span class="n">PredicateClassGuarantees</span> <span class="n">g_postcons</span> <span class="o">=</span> <span class="p">{</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l428" href="#l428">428</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine">        <span class="p">{</span><span class="k">typeid</span><span class="p">(</span><span class="n">GateSetPredicate</span><span class="p">),</span> <span class="n">Guarantee</span><span class="o">::</span><span class="n">Clear</span><span class="p">}};</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l429" href="#l429">429</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 2 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine">    <span class="n">PostConditions</span> <span class="n">postcon</span> <span class="o">=</span> <span class="p">{{},</span> <span class="n">g_postcons</span><span class="p">,</span> <span class="n">Guarantee</span><span class="o">::</span><span class="n">Preserve</span><span class="p">};</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l430" href="#l430">430</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine">    <span class="n">PredicatePtrMap</span> <span class="n">precons</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l431" href="#l431">431</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">    <span class="c1">// record pass config</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l432" href="#l432">432</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine">    <span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span> <span class="n">j</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l433" href="#l433">433</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">2/4</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+          <div class="takenBranch">&check; Branch 4 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 5 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">    <span class="n">j</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&quot;ZZPhaseToRz&quot;</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l434" href="#l434">434</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine">    <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">make_shared</span><span class="o">&lt;</span><span class="n">StandardPass</span><span class="o">&gt;</span><span class="p">(</span><span class="n">precons</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">postcon</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l435" href="#l435">435</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">4/8</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 2 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
+          <div class="takenBranch">&check; Branch 6 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 12 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 13 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">3</td>
+      <td class="src coveredLine">  <span class="p">}());</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l436" href="#l436">436</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount coveredLine">3</td>
+      <td class="src coveredLine">  <span class="k">return</span> <span class="n">pp</span><span class="p">;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l437" href="#l437">437</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l438" href="#l438">438</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l439" href="#l439">439</a></td>
+      <td class="linebranch">
+      </td>
       <td class="linecount "></td>
       <td class="src "><span class="p">}</span>  <span class="c1">// namespace tket</span></td>
     </tr>
 
     <tr class="source-line">
-      <td class="lineno"><a id="l403" href="#l403">403</a></td>
+      <td class="lineno"><a id="l440" href="#l440">440</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -4559,11 +5455,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

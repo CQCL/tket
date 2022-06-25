@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-11 04:45:57</td>
+      <td>2022-06-25 10:39:34</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-low">44.2%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>28</td>
+      <td>68</td>
+      <td class="coverage-low">41.2%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>13</td>
       <td>34</td>
@@ -52,10 +59,773 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">std::shared_ptr&lt;tket::Op const&gt; tket::set_box_id&lt;tket::CircBox&gt;(tket::CircBox&amp;, boost::uuids::uuid)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">std::shared_ptr&lt;tket::Op const&gt; tket::set_box_id&lt;tket::CustomGate&gt;(tket::CustomGate&amp;, boost::uuids::uuid)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">std::shared_ptr&lt;tket::Op const&gt; tket::set_box_id&lt;tket::ExpBox&gt;(tket::ExpBox&amp;, boost::uuids::uuid)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">std::shared_ptr&lt;tket::Op const&gt; tket::set_box_id&lt;tket::PauliExpBox&gt;(tket::PauliExpBox&amp;, boost::uuids::uuid)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">std::shared_ptr&lt;tket::Op const&gt; tket::set_box_id&lt;tket::PhasePolyBox&gt;(tket::PhasePolyBox&amp;, boost::uuids::uuid)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">std::shared_ptr&lt;tket::Op const&gt; tket::set_box_id&lt;tket::ProjectorAssertionBox&gt;(tket::ProjectorAssertionBox&amp;, boost::uuids::uuid)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">std::shared_ptr&lt;tket::Op const&gt; tket::set_box_id&lt;tket::QControlBox&gt;(tket::QControlBox&amp;, boost::uuids::uuid)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">std::shared_ptr&lt;tket::Op const&gt; tket::set_box_id&lt;tket::StabiliserAssertionBox&gt;(tket::StabiliserAssertionBox&amp;, boost::uuids::uuid)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">std::shared_ptr&lt;tket::Op const&gt; tket::set_box_id&lt;tket::Unitary1qBox&gt;(tket::Unitary1qBox&amp;, boost::uuids::uuid)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">std::shared_ptr&lt;tket::Op const&gt; tket::set_box_id&lt;tket::Unitary2qBox&gt;(tket::Unitary2qBox&amp;, boost::uuids::uuid)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l105">std::shared_ptr&lt;tket::Op const&gt; tket::set_box_id&lt;tket::Unitary3qBox&gt;(tket::Unitary3qBox&amp;, boost::uuids::uuid)</a>
+      </td>
+      <td>
+        <a href="#l105">105</a>
+      </td>
+      <td>
+        <a href="#l105"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l43">tket::Box::Box(tket::Box const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l43">43</a>
+      </td>
+      <td>
+        <a href="#l43"> called 4309 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l38">tket::Box::Box(tket::OpType const&amp;, std::vector&lt;tket::EdgeType, std::allocator&lt;tket::EdgeType&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l38">38</a>
+      </td>
+      <td>
+        <a href="#l38"> called 6374 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l71">tket::Box::get_id() const</a>
+      </td>
+      <td>
+        <a href="#l71">71</a>
+      </td>
+      <td>
+        <a href="#l71"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l77">tket::Box::idgen()</a>
+      </td>
+      <td>
+        <a href="#l77">77</a>
+      </td>
+      <td>
+        <a href="#l77"> called 6374 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l65">tket::Box::to_circuit() const</a>
+      </td>
+      <td>
+        <a href="#l65">65</a>
+      </td>
+      <td>
+        <a href="#l65"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l156">tket::CircBox::generate_circuit() const</a>
+      </td>
+      <td>
+        <a href="#l156">156</a>
+      </td>
+      <td>
+        <a href="#l156"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l142">tket::CircBox::is_equal(tket::Op const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l142">142</a>
+      </td>
+      <td>
+        <a href="#l142"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l130">tket::CircBox::~CircBox()</a>
+      </td>
+      <td>
+        <a href="#l130">130</a>
+      </td>
+      <td>
+        <a href="#l130"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l488">tket::CompositeGateDef::get_args() const</a>
+      </td>
+      <td>
+        <a href="#l488">488</a>
+      </td>
+      <td>
+        <a href="#l488"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l489">tket::CompositeGateDef::get_def() const</a>
+      </td>
+      <td>
+        <a href="#l489">489</a>
+      </td>
+      <td>
+        <a href="#l489"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l487">tket::CompositeGateDef::get_name[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l487">487</a>
+      </td>
+      <td>
+        <a href="#l487"> called 13 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l490">tket::CompositeGateDef::n_args() const</a>
+      </td>
+      <td>
+        <a href="#l490">490</a>
+      </td>
+      <td>
+        <a href="#l490"> called 16 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l510">tket::CustomGate::get_gate() const</a>
+      </td>
+      <td>
+        <a href="#l510">510</a>
+      </td>
+      <td>
+        <a href="#l510"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l511">tket::CustomGate::get_params() const</a>
+      </td>
+      <td>
+        <a href="#l511">511</a>
+      </td>
+      <td>
+        <a href="#l511"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l377">tket::ExpBox::free_symbols() const</a>
+      </td>
+      <td>
+        <a href="#l377">377</a>
+      </td>
+      <td>
+        <a href="#l377"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l388">tket::ExpBox::get_matrix_and_phase() const</a>
+      </td>
+      <td>
+        <a href="#l388">388</a>
+      </td>
+      <td>
+        <a href="#l388"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l382">tket::ExpBox::is_equal(tket::Op const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l382">382</a>
+      </td>
+      <td>
+        <a href="#l382"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l372">tket::ExpBox::symbol_substitution(std::map&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt;, Teuchos::RCP&lt;SymEngine::Basic const&gt;, SymEngine::RCPBasicKeyLess, std::allocator&lt;std::pair&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt; const, Teuchos::RCP&lt;SymEngine::Basic const&gt; &gt; &gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l372">372</a>
+      </td>
+      <td>
+        <a href="#l372"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l370">tket::ExpBox::~ExpBox()</a>
+      </td>
+      <td>
+        <a href="#l370">370</a>
+      </td>
+      <td>
+        <a href="#l370"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l445">tket::PauliExpBox::get_paulis() const</a>
+      </td>
+      <td>
+        <a href="#l445">445</a>
+      </td>
+      <td>
+        <a href="#l445"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l448">tket::PauliExpBox::get_phase() const</a>
+      </td>
+      <td>
+        <a href="#l448">448</a>
+      </td>
+      <td>
+        <a href="#l448"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l439">tket::PauliExpBox::is_equal(tket::Op const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l439">439</a>
+      </td>
+      <td>
+        <a href="#l439"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l430">tket::PauliExpBox::~PauliExpBox()</a>
+      </td>
+      <td>
+        <a href="#l430">430</a>
+      </td>
+      <td>
+        <a href="#l430"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l618">tket::ProjectorAssertionBox::free_symbols() const</a>
+      </td>
+      <td>
+        <a href="#l618">618</a>
+      </td>
+      <td>
+        <a href="#l618"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l631">tket::ProjectorAssertionBox::get_expected_readouts() const</a>
+      </td>
+      <td>
+        <a href="#l631">631</a>
+      </td>
+      <td>
+        <a href="#l631"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l630">tket::ProjectorAssertionBox::get_matrix() const</a>
+      </td>
+      <td>
+        <a href="#l630">630</a>
+      </td>
+      <td>
+        <a href="#l630"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l623">tket::ProjectorAssertionBox::is_equal(tket::Op const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l623">623</a>
+      </td>
+      <td>
+        <a href="#l623"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l613">tket::ProjectorAssertionBox::symbol_substitution(std::map&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt;, Teuchos::RCP&lt;SymEngine::Basic const&gt;, SymEngine::RCPBasicKeyLess, std::allocator&lt;std::pair&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt; const, Teuchos::RCP&lt;SymEngine::Basic const&gt; &gt; &gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l613">613</a>
+      </td>
+      <td>
+        <a href="#l613"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l611">tket::ProjectorAssertionBox::~ProjectorAssertionBox()</a>
+      </td>
+      <td>
+        <a href="#l611">611</a>
+      </td>
+      <td>
+        <a href="#l611"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l578">tket::QControlBox::get_n_controls() const</a>
+      </td>
+      <td>
+        <a href="#l578">578</a>
+      </td>
+      <td>
+        <a href="#l578"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l577">tket::QControlBox::get_op() const</a>
+      </td>
+      <td>
+        <a href="#l577">577</a>
+      </td>
+      <td>
+        <a href="#l577"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l566">tket::QControlBox::is_equal(tket::Op const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l566">566</a>
+      </td>
+      <td>
+        <a href="#l566"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l556">tket::QControlBox::~QControlBox()</a>
+      </td>
+      <td>
+        <a href="#l556">556</a>
+      </td>
+      <td>
+        <a href="#l556"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l674">tket::StabiliserAssertionBox::free_symbols() const</a>
+      </td>
+      <td>
+        <a href="#l674">674</a>
+      </td>
+      <td>
+        <a href="#l674"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l687">tket::StabiliserAssertionBox::get_expected_readouts() const</a>
+      </td>
+      <td>
+        <a href="#l687">687</a>
+      </td>
+      <td>
+        <a href="#l687"> called 5 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l686">tket::StabiliserAssertionBox::get_stabilisers() const</a>
+      </td>
+      <td>
+        <a href="#l686">686</a>
+      </td>
+      <td>
+        <a href="#l686"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l679">tket::StabiliserAssertionBox::is_equal(tket::Op const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l679">679</a>
+      </td>
+      <td>
+        <a href="#l679"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l669">tket::StabiliserAssertionBox::symbol_substitution(std::map&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt;, Teuchos::RCP&lt;SymEngine::Basic const&gt;, SymEngine::RCPBasicKeyLess, std::allocator&lt;std::pair&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt; const, Teuchos::RCP&lt;SymEngine::Basic const&gt; &gt; &gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l669">669</a>
+      </td>
+      <td>
+        <a href="#l669"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l668">tket::StabiliserAssertionBox::~StabiliserAssertionBox()</a>
+      </td>
+      <td>
+        <a href="#l668">668</a>
+      </td>
+      <td>
+        <a href="#l668"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l188">tket::Unitary1qBox::free_symbols() const</a>
+      </td>
+      <td>
+        <a href="#l188">188</a>
+      </td>
+      <td>
+        <a href="#l188"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l199">tket::Unitary1qBox::get_matrix() const</a>
+      </td>
+      <td>
+        <a href="#l199">199</a>
+      </td>
+      <td>
+        <a href="#l199"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l201">tket::Unitary1qBox::get_unitary() const</a>
+      </td>
+      <td>
+        <a href="#l201">201</a>
+      </td>
+      <td>
+        <a href="#l201"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l193">tket::Unitary1qBox::is_equal(tket::Op const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l193">193</a>
+      </td>
+      <td>
+        <a href="#l193"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l183">tket::Unitary1qBox::symbol_substitution(std::map&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt;, Teuchos::RCP&lt;SymEngine::Basic const&gt;, SymEngine::RCPBasicKeyLess, std::allocator&lt;std::pair&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt; const, Teuchos::RCP&lt;SymEngine::Basic const&gt; &gt; &gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l183">183</a>
+      </td>
+      <td>
+        <a href="#l183"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l181">tket::Unitary1qBox::~Unitary1qBox()</a>
+      </td>
+      <td>
+        <a href="#l181">181</a>
+      </td>
+      <td>
+        <a href="#l181"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l251">tket::Unitary2qBox::free_symbols() const</a>
+      </td>
+      <td>
+        <a href="#l251">251</a>
+      </td>
+      <td>
+        <a href="#l251"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l262">tket::Unitary2qBox::get_matrix() const</a>
+      </td>
+      <td>
+        <a href="#l262">262</a>
+      </td>
+      <td>
+        <a href="#l262"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l264">tket::Unitary2qBox::get_unitary() const</a>
+      </td>
+      <td>
+        <a href="#l264">264</a>
+      </td>
+      <td>
+        <a href="#l264"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l256">tket::Unitary2qBox::is_equal(tket::Op const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l256">256</a>
+      </td>
+      <td>
+        <a href="#l256"> called 6 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l246">tket::Unitary2qBox::symbol_substitution(std::map&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt;, Teuchos::RCP&lt;SymEngine::Basic const&gt;, SymEngine::RCPBasicKeyLess, std::allocator&lt;std::pair&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt; const, Teuchos::RCP&lt;SymEngine::Basic const&gt; &gt; &gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l246">246</a>
+      </td>
+      <td>
+        <a href="#l246"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l244">tket::Unitary2qBox::~Unitary2qBox()</a>
+      </td>
+      <td>
+        <a href="#l244">244</a>
+      </td>
+      <td>
+        <a href="#l244"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l311">tket::Unitary3qBox::free_symbols() const</a>
+      </td>
+      <td>
+        <a href="#l311">311</a>
+      </td>
+      <td>
+        <a href="#l311"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l322">tket::Unitary3qBox::get_matrix() const</a>
+      </td>
+      <td>
+        <a href="#l322">322</a>
+      </td>
+      <td>
+        <a href="#l322"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l324">tket::Unitary3qBox::get_unitary() const</a>
+      </td>
+      <td>
+        <a href="#l324">324</a>
+      </td>
+      <td>
+        <a href="#l324"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l316">tket::Unitary3qBox::is_equal(tket::Op const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l316">316</a>
+      </td>
+      <td>
+        <a href="#l316"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l306">tket::Unitary3qBox::symbol_substitution(std::map&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt;, Teuchos::RCP&lt;SymEngine::Basic const&gt;, SymEngine::RCPBasicKeyLess, std::allocator&lt;std::pair&lt;Teuchos::RCP&lt;SymEngine::Basic const&gt; const, Teuchos::RCP&lt;SymEngine::Basic const&gt; &gt; &gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l306">306</a>
+      </td>
+      <td>
+        <a href="#l306"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l304">tket::Unitary3qBox::~Unitary3qBox()</a>
+      </td>
+      <td>
+        <a href="#l304">304</a>
+      </td>
+      <td>
+        <a href="#l304"> not called</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -366,7 +1136,7 @@
       <td class="lineno"><a id="l38" href="#l38">38</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">2466</td>
+      <td class="linecount coveredLine">6374</td>
       <td class="src coveredLine">  <span class="k">explicit</span> <span class="n">Box</span><span class="p">(</span><span class="k">const</span> <span class="n">OpType</span> <span class="o">&amp;</span><span class="n">type</span><span class="p">,</span> <span class="k">const</span> <span class="n">op_signature_t</span> <span class="o">&amp;</span><span class="n">signature</span> <span class="o">=</span> <span class="p">{})</span></td>
     </tr>
 
@@ -376,14 +1146,14 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/4</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 2466 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 6374 times.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
-          <div class="takenBranch">&check; Branch 6 taken 2466 times.</div>
+          <div class="takenBranch">&check; Branch 6 taken 6374 times.</div>
           <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">2466</td>
+      <td class="linecount coveredLine">6374</td>
       <td class="src coveredLine">      <span class="o">:</span> <span class="n">Op</span><span class="p">(</span><span class="n">type</span><span class="p">),</span> <span class="n">signature_</span><span class="p">(</span><span class="n">signature</span><span class="p">),</span> <span class="n">circ_</span><span class="p">(),</span> <span class="n">id_</span><span class="p">(</span><span class="n">idgen</span><span class="p">())</span> <span class="p">{</span></td>
     </tr>
 
@@ -393,16 +1163,16 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/6</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 2466 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 6374 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
-          <div class="takenBranch">&check; Branch 4 taken 2466 times.</div>
+          <div class="takenBranch">&check; Branch 4 taken 6374 times.</div>
           <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
           <div class="notTakenBranch">&cross; Branch 8 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">2466</td>
+      <td class="linecount coveredLine">6374</td>
       <td class="src coveredLine">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">is_box_type</span><span class="p">(</span><span class="n">type</span><span class="p">))</span> <span class="k">throw</span> <span class="n">NotValid</span><span class="p">();</span></td>
     </tr>
 
@@ -410,7 +1180,7 @@
       <td class="lineno"><a id="l41" href="#l41">41</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">2466</td>
+      <td class="linecount coveredLine">6374</td>
       <td class="src coveredLine">  <span class="p">}</span></td>
     </tr>
 
@@ -426,7 +1196,7 @@
       <td class="lineno"><a id="l43" href="#l43">43</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">402</td>
+      <td class="linecount coveredLine">4309</td>
       <td class="src coveredLine">  <span class="n">Box</span><span class="p">(</span><span class="k">const</span> <span class="n">Box</span> <span class="o">&amp;</span><span class="n">other</span><span class="p">)</span></td>
     </tr>
 
@@ -442,7 +1212,7 @@
       <td class="lineno"><a id="l45" href="#l45">45</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">402</td>
+      <td class="linecount coveredLine">4309</td>
       <td class="src coveredLine">        <span class="n">signature_</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">signature_</span><span class="p">),</span></td>
     </tr>
 
@@ -450,7 +1220,7 @@
       <td class="lineno"><a id="l46" href="#l46">46</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">402</td>
+      <td class="linecount coveredLine">4309</td>
       <td class="src coveredLine">        <span class="n">circ_</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">circ_</span><span class="p">),</span></td>
     </tr>
 
@@ -460,14 +1230,14 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/4</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 402 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 4309 times.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
-          <div class="takenBranch">&check; Branch 5 taken 402 times.</div>
+          <div class="takenBranch">&check; Branch 5 taken 4309 times.</div>
           <div class="notTakenBranch">&cross; Branch 6 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">402</td>
+      <td class="linecount coveredLine">4309</td>
       <td class="src coveredLine">        <span class="n">id_</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">id_</span><span class="p">)</span> <span class="p">{}</span></td>
     </tr>
 
@@ -707,7 +1477,7 @@
       <td class="lineno"><a id="l77" href="#l77">77</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">2466</td>
+      <td class="linecount coveredLine">6374</td>
       <td class="src coveredLine">  <span class="k">static</span> <span class="n">boost</span><span class="o">::</span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span> <span class="n">idgen</span><span class="p">()</span> <span class="p">{</span></td>
     </tr>
 
@@ -731,7 +1501,7 @@
       <td class="lineno"><a id="l80" href="#l80">80</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">2466</td>
+      <td class="linecount coveredLine">6374</td>
       <td class="src coveredLine">    <span class="k">return</span> <span class="nf">gen</span><span class="p">();</span></td>
     </tr>
 
@@ -5834,11 +6604,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-11 04:45:57</td>
+      <td>2022-06-25 10:39:34</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">97.8%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>13</td>
+      <td>13</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>380</td>
       <td>602</td>
@@ -52,10 +59,168 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l22">tket::LexiRoute::LexiRoute(std::shared_ptr&lt;tket::Architecture&gt; const&amp;, std::shared_ptr&lt;tket::MappingFrontier&gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l22">22</a>
+      </td>
+      <td>
+        <a href="#l22"> called 5725 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l37">tket::LexiRoute::assign_at_distance(tket::UnitID const&amp;, tket::Node const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l37">37</a>
+      </td>
+      <td>
+        <a href="#l37"> called 408 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l319">tket::LexiRoute::check_bridge(std::pair&lt;tket::Node, tket::Node&gt; const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l319">319</a>
+      </td>
+      <td>
+        <a href="#l319"> called 2757 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l276">tket::LexiRoute::get_candidate_swaps()</a>
+      </td>
+      <td>
+        <a href="#l276">276</a>
+      </td>
+      <td>
+        <a href="#l276"> called 2757 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l394">tket::LexiRoute::pair_distances(tket::Node const&amp;, tket::Node const&amp;, tket::Node const&amp;, tket::Node const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l394">394</a>
+      </td>
+      <td>
+        <a href="#l394"> called 40176 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l410">tket::LexiRoute::remove_swaps_decreasing(std::set&lt;std::pair&lt;tket::Node, tket::Node&gt;, std::less&lt;std::pair&lt;tket::Node, tket::Node&gt; &gt;, std::allocator&lt;std::pair&lt;tket::Node, tket::Node&gt; &gt; &gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l410">410</a>
+      </td>
+      <td>
+        <a href="#l410"> called 2757 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l199">tket::LexiRoute::set_interacting_uids(tket::LexiRoute::AssignedOnly, tket::LexiRoute::CheckRoutingValidity, tket::LexiRoute::CheckLabellingValidity)</a>
+      </td>
+      <td>
+        <a href="#l199">199</a>
+      </td>
+      <td>
+        <a href="#l199"> called 31278 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l461">tket::LexiRoute::solve(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l461">461</a>
+      </td>
+      <td>
+        <a href="#l461"> called 2760 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l563">tket::LexiRoute::solve(unsigned int)::{lambda(tket::Node const&amp;)#2}::operator()(tket::Node const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l563">563</a>
+      </td>
+      <td>
+        <a href="#l563"> called 302 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l538">tket::LexiRoute::solve(unsigned int)::{lambda(tket::Node const&amp;, tket::Node const&amp;)#1}::operator()(tket::Node const&amp;, tket::Node const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l538">538</a>
+      </td>
+      <td>
+        <a href="#l538"> called 7 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l450">tket::LexiRoute::solve_labelling()</a>
+      </td>
+      <td>
+        <a href="#l450">450</a>
+      </td>
+      <td>
+        <a href="#l450"> called 2965 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l106">tket::LexiRoute::update_labelling()</a>
+      </td>
+      <td>
+        <a href="#l106">106</a>
+      </td>
+      <td>
+        <a href="#l106"> called 218 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l303">tket::is_vertex_CX(tket::Circuit const&amp;, void* const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l303">303</a>
+      </td>
+      <td>
+        <a href="#l303"> called 1959 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -6540,11 +6705,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-11 04:45:57</td>
+      <td>2022-06-25 10:39:34</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">100.0%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>15</td>
+      <td>15</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>52</td>
       <td>96</td>
@@ -52,10 +59,190 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l23">tket::UnitID::repr[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l23">23</a>
+      </td>
+      <td>
+        <a href="#l23"> called 1816 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l97">tket::c_debug_default_name[abi:cxx11]()</a>
+      </td>
+      <td>
+        <a href="#l97">97</a>
+      </td>
+      <td>
+        <a href="#l97"> called 20 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l91">tket::c_debug_one_prefix[abi:cxx11]()</a>
+      </td>
+      <td>
+        <a href="#l91">91</a>
+      </td>
+      <td>
+        <a href="#l91"> called 17 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l85">tket::c_debug_zero_prefix[abi:cxx11]()</a>
+      </td>
+      <td>
+        <a href="#l85">85</a>
+      </td>
+      <td>
+        <a href="#l85"> called 25 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l73">tket::c_default_reg[abi:cxx11]()</a>
+      </td>
+      <td>
+        <a href="#l73">73</a>
+      </td>
+      <td>
+        <a href="#l73"> called 55221 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l53">tket::from_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, std::map&lt;tket::Qubit, tket::Qubit, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Qubit&gt; &gt; &gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l53">53</a>
+      </td>
+      <td>
+        <a href="#l53"> called 23 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l40">tket::from_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, tket::Bit&amp;)</a>
+      </td>
+      <td>
+        <a href="#l40">40</a>
+      </td>
+      <td>
+        <a href="#l40"> called 36 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l43">tket::from_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, tket::Node&amp;)</a>
+      </td>
+      <td>
+        <a href="#l43">43</a>
+      </td>
+      <td>
+        <a href="#l43"> called 866 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l37">tket::from_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, tket::Qubit&amp;)</a>
+      </td>
+      <td>
+        <a href="#l37">37</a>
+      </td>
+      <td>
+        <a href="#l37"> called 3345 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l79">tket::node_default_reg[abi:cxx11]()</a>
+      </td>
+      <td>
+        <a href="#l79">79</a>
+      </td>
+      <td>
+        <a href="#l79"> called 317322 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l67">tket::q_default_reg[abi:cxx11]()</a>
+      </td>
+      <td>
+        <a href="#l67">67</a>
+      </td>
+      <td>
+        <a href="#l67"> called 475771 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l45">tket::to_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, std::map&lt;tket::Qubit, tket::Qubit, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Qubit&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l45">45</a>
+      </td>
+      <td>
+        <a href="#l45"> called 41 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l39">tket::to_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, tket::Bit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l39">39</a>
+      </td>
+      <td>
+        <a href="#l39"> called 52 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l42">tket::to_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, tket::Node const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l42">42</a>
+      </td>
+      <td>
+        <a href="#l42"> called 6660 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l36">tket::to_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, tket::Qubit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l36">36</a>
+      </td>
+      <td>
+        <a href="#l36"> called 424 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -246,7 +433,7 @@
       <td class="lineno"><a id="l23" href="#l23">23</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">1584</td>
+      <td class="linecount coveredLine">1816</td>
       <td class="src coveredLine"><span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="n">UnitID</span><span class="o">::</span><span class="n">repr</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span></td>
     </tr>
 
@@ -256,12 +443,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 1584 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 1816 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">3168</td>
+      <td class="linecount coveredLine">3632</td>
       <td class="src coveredLine">  <span class="n">std</span><span class="o">::</span><span class="n">stringstream</span> <span class="n">str</span><span class="p">;</span></td>
     </tr>
 
@@ -271,12 +458,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 1584 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 1816 times.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">1584</td>
+      <td class="linecount coveredLine">1816</td>
       <td class="src coveredLine">  <span class="n">str</span> <span class="o">&lt;&lt;</span> <span class="n">data_</span><span class="o">-&gt;</span><span class="n">name_</span><span class="p">;</span></td>
     </tr>
 
@@ -286,12 +473,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 1583 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 1815 times.</div>
           <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">1584</td>
+      <td class="linecount coveredLine">1816</td>
       <td class="src coveredLine">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">data_</span><span class="o">-&gt;</span><span class="n">index_</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span> <span class="p">{</span></td>
     </tr>
 
@@ -301,16 +488,16 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/6</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 1583 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 1815 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
-          <div class="takenBranch">&check; Branch 6 taken 1583 times.</div>
+          <div class="takenBranch">&check; Branch 6 taken 1815 times.</div>
           <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
-          <div class="takenBranch">&check; Branch 9 taken 1583 times.</div>
+          <div class="takenBranch">&check; Branch 9 taken 1815 times.</div>
           <div class="notTakenBranch">&cross; Branch 10 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">1583</td>
+      <td class="linecount coveredLine">1815</td>
       <td class="src coveredLine">    <span class="n">str</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;[&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">data_</span><span class="o">-&gt;</span><span class="n">index_</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span></td>
     </tr>
 
@@ -321,11 +508,11 @@
         <summary class="linebranchSummary">2/2</summary>
         <div class="linebranchContents">
           <div class="takenBranch">&check; Branch 2 taken 97 times.</div>
-          <div class="takenBranch">&check; Branch 3 taken 1583 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 1815 times.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">1680</td>
+      <td class="linecount coveredLine">1912</td>
       <td class="src coveredLine">    <span class="k">for</span> <span class="p">(</span><span class="kt">unsigned</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">data_</span><span class="o">-&gt;</span><span class="n">index_</span><span class="p">.</span><span class="n">size</span><span class="p">();</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -362,12 +549,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 1583 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 1815 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">1583</td>
+      <td class="linecount coveredLine">1815</td>
       <td class="src coveredLine">    <span class="n">str</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;]&quot;</span><span class="p">;</span></td>
     </tr>
 
@@ -385,12 +572,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 1584 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 1816 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">3168</td>
+      <td class="linecount coveredLine">3632</td>
       <td class="src coveredLine">  <span class="k">return</span> <span class="n">str</span><span class="p">.</span><span class="n">str</span><span class="p">();</span></td>
     </tr>
 
@@ -721,7 +908,7 @@
       <td class="lineno"><a id="l67" href="#l67">67</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">404944</td>
+      <td class="linecount coveredLine">475771</td>
       <td class="src coveredLine"><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">q_default_reg</span><span class="p">()</span> <span class="p">{</span></td>
     </tr>
 
@@ -740,7 +927,7 @@
         <summary class="linebranchSummary">4/8</summary>
         <div class="linebranchContents">
           <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
-          <div class="takenBranch">&check; Branch 1 taken 404943 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 475770 times.</div>
           <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
           <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
           <div class="takenBranch">&check; Branch 6 taken 1 times.</div>
@@ -750,7 +937,7 @@
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">404944</td>
+      <td class="linecount coveredLine">475771</td>
       <td class="src coveredLine">      <span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;q&quot;</span><span class="p">);</span></td>
     </tr>
 
@@ -758,7 +945,7 @@
       <td class="lineno"><a id="l70" href="#l70">70</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">404944</td>
+      <td class="linecount coveredLine">475771</td>
       <td class="src coveredLine">  <span class="k">return</span> <span class="o">*</span><span class="n">regname</span><span class="p">;</span></td>
     </tr>
 
@@ -782,7 +969,7 @@
       <td class="lineno"><a id="l73" href="#l73">73</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">48173</td>
+      <td class="linecount coveredLine">55221</td>
       <td class="src coveredLine"><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">c_default_reg</span><span class="p">()</span> <span class="p">{</span></td>
     </tr>
 
@@ -801,7 +988,7 @@
         <summary class="linebranchSummary">4/8</summary>
         <div class="linebranchContents">
           <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
-          <div class="takenBranch">&check; Branch 1 taken 48172 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 55220 times.</div>
           <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
           <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
           <div class="takenBranch">&check; Branch 6 taken 1 times.</div>
@@ -811,7 +998,7 @@
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">48173</td>
+      <td class="linecount coveredLine">55221</td>
       <td class="src coveredLine">      <span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;c&quot;</span><span class="p">);</span></td>
     </tr>
 
@@ -819,7 +1006,7 @@
       <td class="lineno"><a id="l76" href="#l76">76</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">48173</td>
+      <td class="linecount coveredLine">55221</td>
       <td class="src coveredLine">  <span class="k">return</span> <span class="o">*</span><span class="n">regname</span><span class="p">;</span></td>
     </tr>
 
@@ -843,7 +1030,7 @@
       <td class="lineno"><a id="l79" href="#l79">79</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">318057</td>
+      <td class="linecount coveredLine">317322</td>
       <td class="src coveredLine"><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">node_default_reg</span><span class="p">()</span> <span class="p">{</span></td>
     </tr>
 
@@ -862,7 +1049,7 @@
         <summary class="linebranchSummary">4/8</summary>
         <div class="linebranchContents">
           <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
-          <div class="takenBranch">&check; Branch 1 taken 318056 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 317321 times.</div>
           <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
           <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
           <div class="takenBranch">&check; Branch 6 taken 1 times.</div>
@@ -872,7 +1059,7 @@
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">318057</td>
+      <td class="linecount coveredLine">317322</td>
       <td class="src coveredLine">      <span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;node&quot;</span><span class="p">);</span></td>
     </tr>
 
@@ -880,7 +1067,7 @@
       <td class="lineno"><a id="l82" href="#l82">82</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">318057</td>
+      <td class="linecount coveredLine">317322</td>
       <td class="src coveredLine">  <span class="k">return</span> <span class="o">*</span><span class="n">regname</span><span class="p">;</span></td>
     </tr>
 
@@ -1101,11 +1288,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

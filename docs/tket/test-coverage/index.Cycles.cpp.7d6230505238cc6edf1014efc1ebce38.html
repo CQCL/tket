@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-11 04:45:57</td>
+      <td>2022-06-25 10:39:34</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">90.1%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>14</td>
+      <td>16</td>
+      <td class="coverage-medium">87.5%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>161</td>
       <td>294</td>
@@ -52,10 +59,201 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l28">tket::Cycle::add_vertex_pair(std::pair&lt;void*, void*&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l28">28</a>
+      </td>
+      <td>
+        <a href="#l28"> called 44 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l32">tket::Cycle::get_frame() const</a>
+      </td>
+      <td>
+        <a href="#l32">32</a>
+      </td>
+      <td>
+        <a href="#l32"> called 778 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l173">tket::Cycle::merge(tket::Cycle&amp;)</a>
+      </td>
+      <td>
+        <a href="#l173">173</a>
+      </td>
+      <td>
+        <a href="#l173"> called 300 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l26">tket::Cycle::size() const</a>
+      </td>
+      <td>
+        <a href="#l26">26</a>
+      </td>
+      <td>
+        <a href="#l26"> called 854 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l59">tket::Cycle::update_boundary(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;, boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l59">59</a>
+      </td>
+      <td>
+        <a href="#l59"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l158">tket::Cycle::update_coms_indices(std::map&lt;unsigned int, unsigned int, std::less&lt;unsigned int&gt;, std::allocator&lt;std::pair&lt;unsigned int const, unsigned int&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l158">158</a>
+      </td>
+      <td>
+        <a href="#l158"> called 300 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l23">tket::CycleError::CycleError(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l23">23</a>
+      </td>
+      <td>
+        <a href="#l23"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l71">tket::CycleFinder::erase_keys(unsigned int const&amp;, std::set&lt;unsigned int, std::less&lt;unsigned int&gt;, std::allocator&lt;unsigned int&gt; &gt;&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l71">71</a>
+      </td>
+      <td>
+        <a href="#l71"> called 154 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l224">tket::CycleFinder::extend_cycles(tket::CutFrontier const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l224">224</a>
+      </td>
+      <td>
+        <a href="#l224"> called 204 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l244">tket::CycleFinder::get_cycles()</a>
+      </td>
+      <td>
+        <a href="#l244">244</a>
+      </td>
+      <td>
+        <a href="#l244"> called 19 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l245">tket::CycleFinder::get_cycles()::{lambda(std::shared_ptr&lt;tket::Op const&gt;)#1}::operator()(std::shared_ptr&lt;tket::Op const&gt;) const</a>
+      </td>
+      <td>
+        <a href="#l245">245</a>
+      </td>
+      <td>
+        <a href="#l245"> called 923 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l83">tket::CycleFinder::make_cycle(void* const&amp;, std::vector&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt;, std::allocator&lt;boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt; &gt; const&amp;, tket::CutFrontier const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l83">83</a>
+      </td>
+      <td>
+        <a href="#l83"> called 323 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l202">tket::CycleFinder::merge_cycles(unsigned int, std::set&lt;unsigned int, std::less&lt;unsigned int&gt;, std::allocator&lt;unsigned int&gt; &gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l202">202</a>
+      </td>
+      <td>
+        <a href="#l202"> called 170 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l133">tket::CycleFinder::order_keys(unsigned int&amp;, std::set&lt;unsigned int, std::less&lt;unsigned int&gt;, std::allocator&lt;unsigned int&gt; &gt;&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l133">133</a>
+      </td>
+      <td>
+        <a href="#l133"> called 170 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l36">tket::CycleFinder::unitid_from_unit_frontier(std::shared_ptr&lt;boost::multi_index::multi_index_container&lt;std::pair&lt;tket::UnitID, boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt;, boost::multi_index::indexed_by&lt;boost::multi_index::ordered_unique&lt;boost::multi_index::tag&lt;tket::TagKey, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt;, boost::multi_index::member&lt;std::pair&lt;tket::UnitID, boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt;, tket::UnitID, &amp;std::pair&lt;tket::UnitID, boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt;::first&gt;, mpl_::na&gt;, boost::multi_index::sequenced&lt;boost::multi_index::tag&lt;tket::TagSeq, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt; &gt;, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na, mpl_::na&gt;, std::allocator&lt;std::pair&lt;tket::UnitID, boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; &gt; &gt; &gt; &gt; const&amp;, boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l36">36</a>
+      </td>
+      <td>
+        <a href="#l36"> called 461 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l46">tket::CycleFinder::update_cycle_out_edges(tket::UnitID const&amp;, boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l46">46</a>
+      </td>
+      <td>
+        <a href="#l46"> called 461 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -462,12 +660,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 3 taken 946 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 948 times.</div>
           <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">946</td>
+      <td class="linecount coveredLine">948</td>
       <td class="src coveredLine">  <span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Edge</span><span class="p">,</span> <span class="n">UnitID</span><span class="o">&gt;&amp;</span> <span class="nl">pair</span> <span class="p">:</span> <span class="n">cycle_out_edges</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -477,14 +675,14 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/4</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 946 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 948 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
           <div class="takenBranch">&check; Branch 3 taken 461 times.</div>
-          <div class="takenBranch">&check; Branch 4 taken 485 times.</div>
+          <div class="takenBranch">&check; Branch 4 taken 487 times.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">946</td>
+      <td class="linecount coveredLine">948</td>
       <td class="src coveredLine">    <span class="k">if</span> <span class="p">(</span><span class="n">pair</span><span class="p">.</span><span class="n">second</span> <span class="o">==</span> <span class="n">uid</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -3283,11 +3481,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

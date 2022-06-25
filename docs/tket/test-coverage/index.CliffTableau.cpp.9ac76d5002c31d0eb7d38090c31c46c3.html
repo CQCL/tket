@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-11 04:45:57</td>
+      <td>2022-06-25 10:39:34</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-medium">75.2%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>22</td>
+      <td>24</td>
+      <td class="coverage-high">91.7%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>371</td>
       <td>705</td>
@@ -52,10 +59,289 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l58">tket::CliffTableau::CliffTableau(std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l58">58</a>
+      </td>
+      <td>
+        <a href="#l58"> called 110 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l46">tket::CliffTableau::CliffTableau(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l46">46</a>
+      </td>
+      <td>
+        <a href="#l46"> called 53 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l195">tket::CliffTableau::apply_CX_at_end(unsigned int, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l195">195</a>
+      </td>
+      <td>
+        <a href="#l195"> called 282 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l180">tket::CliffTableau::apply_CX_at_front(unsigned int, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l180">180</a>
+      </td>
+      <td>
+        <a href="#l180"> called 67 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l151">tket::CliffTableau::apply_S_at_end(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l151">151</a>
+      </td>
+      <td>
+        <a href="#l151"> called 349 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l142">tket::CliffTableau::apply_S_at_front(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l142">142</a>
+      </td>
+      <td>
+        <a href="#l142"> called 1063 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l170">tket::CliffTableau::apply_V_at_end(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l170">170</a>
+      </td>
+      <td>
+        <a href="#l170"> called 487 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l161">tket::CliffTableau::apply_V_at_front(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l161">161</a>
+      </td>
+      <td>
+        <a href="#l161"> called 519 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l391">tket::CliffTableau::apply_gate_at_end(tket::OpType, std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l391">391</a>
+      </td>
+      <td>
+        <a href="#l391"> called 489 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l304">tket::CliffTableau::apply_gate_at_end(tket::OpType, std::vector&lt;unsigned int, std::allocator&lt;unsigned int&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l304">304</a>
+      </td>
+      <td>
+        <a href="#l304"> called 747 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l296">tket::CliffTableau::apply_gate_at_front(tket::OpType, std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l296">296</a>
+      </td>
+      <td>
+        <a href="#l296"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l209">tket::CliffTableau::apply_gate_at_front(tket::OpType, std::vector&lt;unsigned int, std::allocator&lt;unsigned int&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l209">209</a>
+      </td>
+      <td>
+        <a href="#l209"> called 14 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l413">tket::CliffTableau::apply_pauli_at_end(tket::QubitPauliTensor const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l413">413</a>
+      </td>
+      <td>
+        <a href="#l413"> called 23 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l399">tket::CliffTableau::apply_pauli_at_front(tket::QubitPauliTensor const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l399">399</a>
+      </td>
+      <td>
+        <a href="#l399"> called 22 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l133">tket::CliffTableau::col_mult(Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, -1, 1, true&gt; const&amp;, Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, -1, 1, true&gt; const&amp;, bool, Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, -1, 1, true&gt;&amp;, Eigen::Matrix&lt;bool, -1, 1, 0, -1, 1&gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l133">133</a>
+      </td>
+      <td>
+        <a href="#l133"> called 3164 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l554">tket::CliffTableau::compose(tket::CliffTableau const&amp;, tket::CliffTableau const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l554">554</a>
+      </td>
+      <td>
+        <a href="#l554"> called 23 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l107">tket::CliffTableau::get_qubits() const</a>
+      </td>
+      <td>
+        <a href="#l107">107</a>
+      </td>
+      <td>
+        <a href="#l107"> called 80 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l103">tket::CliffTableau::get_xpauli(tket::Qubit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l103">103</a>
+      </td>
+      <td>
+        <a href="#l103"> called 393 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l99">tket::CliffTableau::get_zpauli(tket::Qubit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l99">99</a>
+      </td>
+      <td>
+        <a href="#l99"> called 550 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l527">tket::CliffTableau::operator==(tket::CliffTableau const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l527">527</a>
+      </td>
+      <td>
+        <a href="#l527"> called 10 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l117">tket::CliffTableau::row_mult(Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, 1, -1, false&gt; const&amp;, Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, 1, -1, false&gt; const&amp;, bool const&amp;, Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, 1, -1, false&gt; const&amp;, Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, 1, -1, false&gt; const&amp;, bool const&amp;, std::complex&lt;double&gt;, Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, 1, -1, false&gt;&amp;, Eigen::Block&lt;Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt;, 1, -1, false&gt;&amp;, bool&amp;)</a>
+      </td>
+      <td>
+        <a href="#l117">117</a>
+      </td>
+      <td>
+        <a href="#l117"> called 1486 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l539">tket::cphase_from_tableau(Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt; const&amp;, Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt; const&amp;, Eigen::Matrix&lt;bool, -1, 1, 0, -1, 1&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l539">539</a>
+      </td>
+      <td>
+        <a href="#l539"> called 138 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l74">tket::get_pauli(tket::Qubit const&amp;, boost::bimaps::bimap&lt;tket::Qubit, unsigned int, mpl_::na, mpl_::na, mpl_::na&gt; const&amp;, Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt; const&amp;, Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt; const&amp;, Eigen::Matrix&lt;bool, -1, 1, 0, -1, 1&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l74">74</a>
+      </td>
+      <td>
+        <a href="#l74"> called 943 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l519">tket::operator&lt;&lt;(std::ostream&amp;, tket::CliffTableau const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l519">519</a>
+      </td>
+      <td>
+        <a href="#l519"> not called</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -6844,11 +7130,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

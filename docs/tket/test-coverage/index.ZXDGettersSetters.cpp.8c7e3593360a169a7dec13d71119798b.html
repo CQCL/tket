@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-11 04:45:57</td>
+      <td>2022-06-25 10:39:34</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">94.1%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>39</td>
+      <td>40</td>
+      <td class="coverage-high">97.5%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>339</td>
       <td>557</td>
@@ -52,10 +59,465 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l22">tket::zx::WireProperties::operator==(tket::zx::WireProperties const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l22">22</a>
+      </td>
+      <td>
+        <a href="#l22"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l43">tket::zx::ZXDiagram::add_boundary(void*&amp;)</a>
+      </td>
+      <td>
+        <a href="#l43">43</a>
+      </td>
+      <td>
+        <a href="#l43"> called 122 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l89">tket::zx::ZXDiagram::adj_wires(void* const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l89">89</a>
+      </td>
+      <td>
+        <a href="#l89"> called 737 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l52">tket::zx::ZXDiagram::count_vertices(tket::zx::ZXType) const</a>
+      </td>
+      <td>
+        <a href="#l52">52</a>
+      </td>
+      <td>
+        <a href="#l52"> called 26 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l60">tket::zx::ZXDiagram::count_vertices(tket::zx::ZXType, tket::zx::QuantumType) const</a>
+      </td>
+      <td>
+        <a href="#l60">60</a>
+      </td>
+      <td>
+        <a href="#l60"> called 84 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l68">tket::zx::ZXDiagram::count_wires(tket::zx::ZXWireType) const</a>
+      </td>
+      <td>
+        <a href="#l68">68</a>
+      </td>
+      <td>
+        <a href="#l68"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l76">tket::zx::ZXDiagram::degree(void* const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l76">76</a>
+      </td>
+      <td>
+        <a href="#l76"> called 270 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l209">tket::zx::ZXDiagram::end_of(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;, void* const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l209">209</a>
+      </td>
+      <td>
+        <a href="#l209"> called 111 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l28">tket::zx::ZXDiagram::get_boundary(std::optional&lt;tket::zx::ZXType&gt;, std::optional&lt;tket::zx::QuantumType&gt;) const</a>
+      </td>
+      <td>
+        <a href="#l28">28</a>
+      </td>
+      <td>
+        <a href="#l28"> called 214 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l41">tket::zx::ZXDiagram::get_graph()</a>
+      </td>
+      <td>
+        <a href="#l41">41</a>
+      </td>
+      <td>
+        <a href="#l41"> called 29 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l146">tket::zx::ZXDiagram::get_name[abi:cxx11](void* const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l146">146</a>
+      </td>
+      <td>
+        <a href="#l146"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l166">tket::zx::ZXDiagram::get_qtype(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l166">166</a>
+      </td>
+      <td>
+        <a href="#l166"> called 2289 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l154">tket::zx::ZXDiagram::get_qtype(void* const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l154">154</a>
+      </td>
+      <td>
+        <a href="#l154"> called 1376 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l44">tket::zx::ZXDiagram::get_scalar() const</a>
+      </td>
+      <td>
+        <a href="#l44">44</a>
+      </td>
+      <td>
+        <a href="#l44"> called 80 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l142">tket::zx::ZXDiagram::get_vertex_ZXGen_ptr(void* const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l142">142</a>
+      </td>
+      <td>
+        <a href="#l142"> called 1920 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l162">tket::zx::ZXDiagram::get_wire_info(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l162">162</a>
+      </td>
+      <td>
+        <a href="#l162"> called 762 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l170">tket::zx::ZXDiagram::get_wire_type(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l170">170</a>
+      </td>
+      <td>
+        <a href="#l170"> called 1492 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l150">tket::zx::ZXDiagram::get_zxtype(void* const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l150">150</a>
+      </td>
+      <td>
+        <a href="#l150"> called 13148 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l231">tket::zx::ZXDiagram::is_pauli_spider(void* const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l231">231</a>
+      </td>
+      <td>
+        <a href="#l231"> called 34 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l239">tket::zx::ZXDiagram::is_proper_clifford_spider(void* const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l239">239</a>
+      </td>
+      <td>
+        <a href="#l239"> called 41 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l46">tket::zx::ZXDiagram::multiply_scalar(SymEngine::Expression const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l46">46</a>
+      </td>
+      <td>
+        <a href="#l46"> called 121 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l48">tket::zx::ZXDiagram::n_vertices() const</a>
+      </td>
+      <td>
+        <a href="#l48">48</a>
+      </td>
+      <td>
+        <a href="#l48"> called 46 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l50">tket::zx::ZXDiagram::n_wires() const</a>
+      </td>
+      <td>
+        <a href="#l50">50</a>
+      </td>
+      <td>
+        <a href="#l50"> called 29 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l80">tket::zx::ZXDiagram::neighbours(void* const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l80">80</a>
+      </td>
+      <td>
+        <a href="#l80"> called 1273 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l190">tket::zx::ZXDiagram::other_end(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;, void* const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l190">190</a>
+      </td>
+      <td>
+        <a href="#l190"> called 1598 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l158">tket::zx::ZXDiagram::set_vertex_ZXGen_ptr(void* const&amp;, std::shared_ptr&lt;tket::zx::ZXGen const&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l158">158</a>
+      </td>
+      <td>
+        <a href="#l158"> called 221 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l219">tket::zx::ZXDiagram::set_wire_info(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;, tket::zx::WireProperties const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l219">219</a>
+      </td>
+      <td>
+        <a href="#l219"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l223">tket::zx::ZXDiagram::set_wire_qtype(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;, tket::zx::QuantumType)</a>
+      </td>
+      <td>
+        <a href="#l223">223</a>
+      </td>
+      <td>
+        <a href="#l223"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l227">tket::zx::ZXDiagram::set_wire_type(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;, tket::zx::ZXWireType)</a>
+      </td>
+      <td>
+        <a href="#l227">227</a>
+      </td>
+      <td>
+        <a href="#l227"> called 135 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l174">tket::zx::ZXDiagram::source(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l174">174</a>
+      </td>
+      <td>
+        <a href="#l174"> called 5008 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l182">tket::zx::ZXDiagram::source_port(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l182">182</a>
+      </td>
+      <td>
+        <a href="#l182"> called 786 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l178">tket::zx::ZXDiagram::target(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l178">178</a>
+      </td>
+      <td>
+        <a href="#l178"> called 4951 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l186">tket::zx::ZXDiagram::target_port(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l186">186</a>
+      </td>
+      <td>
+        <a href="#l186"> called 800 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l331">tket::zx::ZXDiagram::to_graphviz_str[abi:cxx11](std::set&lt;void*, std::less&lt;void*&gt;, std::allocator&lt;void*&gt; &gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l331">331</a>
+      </td>
+      <td>
+        <a href="#l331"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l202">tket::zx::ZXDiagram::vertex_at_end(boost::detail::edge_desc_impl&lt;boost::bidirectional_tag, void*&gt; const&amp;, tket::zx::WireEnd) const</a>
+      </td>
+      <td>
+        <a href="#l202">202</a>
+      </td>
+      <td>
+        <a href="#l202"> called 12 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l120">tket::zx::ZXDiagram::wire_at_port(void* const&amp;, std::optional&lt;unsigned int&gt;) const</a>
+      </td>
+      <td>
+        <a href="#l120">120</a>
+      </td>
+      <td>
+        <a href="#l120"> called 32 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l108">tket::zx::ZXDiagram::wire_between(void* const&amp;, void* const&amp;, tket::zx::ZXDiagram::WireSearchOption) const</a>
+      </td>
+      <td>
+        <a href="#l108">108</a>
+      </td>
+      <td>
+        <a href="#l108"> called 336 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l99">tket::zx::ZXDiagram::wires_between(void* const&amp;, void* const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l99">99</a>
+      </td>
+      <td>
+        <a href="#l99"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l247">tket::zx::graphviz_vertex_props(std::shared_ptr&lt;tket::zx::ZXGen const&gt;)</a>
+      </td>
+      <td>
+        <a href="#l247">247</a>
+      </td>
+      <td>
+        <a href="#l247"> called 7 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l314">tket::zx::graphviz_wire_props(tket::zx::WireProperties const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l314">314</a>
+      </td>
+      <td>
+        <a href="#l314"> called 10 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -860,7 +1322,7 @@
       <td class="lineno"><a id="l80" href="#l80">80</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">1276</td>
+      <td class="linecount coveredLine">1273</td>
       <td class="src coveredLine"><span class="n">ZXVertVec</span> <span class="n">ZXDiagram</span><span class="o">::</span><span class="n">neighbours</span><span class="p">(</span><span class="k">const</span> <span class="n">ZXVert</span><span class="o">&amp;</span> <span class="n">v</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span></td>
     </tr>
 
@@ -870,12 +1332,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 1276 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 1273 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">2552</td>
+      <td class="linecount coveredLine">2546</td>
       <td class="src coveredLine">  <span class="n">ZXVertSeqSet</span> <span class="n">neis</span><span class="p">;</span></td>
     </tr>
 
@@ -885,32 +1347,32 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">14/22</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 1276 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 1273 times.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
-          <div class="takenBranch">&check; Branch 5 taken 2378 times.</div>
+          <div class="takenBranch">&check; Branch 5 taken 2372 times.</div>
           <div class="notTakenBranch">&cross; Branch 6 not taken.</div>
-          <div class="takenBranch">&check; Branch 7 taken 1102 times.</div>
-          <div class="takenBranch">&check; Branch 8 taken 1276 times.</div>
-          <div class="takenBranch">&check; Branch 10 taken 1102 times.</div>
+          <div class="takenBranch">&check; Branch 7 taken 1099 times.</div>
+          <div class="takenBranch">&check; Branch 8 taken 1273 times.</div>
+          <div class="takenBranch">&check; Branch 10 taken 1099 times.</div>
           <div class="notTakenBranch">&cross; Branch 11 not taken.</div>
-          <div class="takenBranch">&check; Branch 13 taken 3091 times.</div>
+          <div class="takenBranch">&check; Branch 13 taken 3065 times.</div>
           <div class="notTakenBranch">&cross; Branch 14 not taken.</div>
-          <div class="takenBranch">&check; Branch 15 taken 1989 times.</div>
-          <div class="takenBranch">&check; Branch 16 taken 1102 times.</div>
-          <div class="takenBranch">&check; Branch 18 taken 1989 times.</div>
+          <div class="takenBranch">&check; Branch 15 taken 1966 times.</div>
+          <div class="takenBranch">&check; Branch 16 taken 1099 times.</div>
+          <div class="takenBranch">&check; Branch 18 taken 1966 times.</div>
           <div class="notTakenBranch">&cross; Branch 19 not taken.</div>
-          <div class="takenBranch">&check; Branch 20 taken 1989 times.</div>
-          <div class="takenBranch">&check; Branch 21 taken 1102 times.</div>
-          <div class="takenBranch">&check; Branch 23 taken 1989 times.</div>
+          <div class="takenBranch">&check; Branch 20 taken 1966 times.</div>
+          <div class="takenBranch">&check; Branch 21 taken 1099 times.</div>
+          <div class="takenBranch">&check; Branch 23 taken 1966 times.</div>
           <div class="notTakenBranch">&cross; Branch 24 not taken.</div>
-          <div class="takenBranch">&check; Branch 26 taken 1989 times.</div>
+          <div class="takenBranch">&check; Branch 26 taken 1966 times.</div>
           <div class="notTakenBranch">&cross; Branch 27 not taken.</div>
-          <div class="takenBranch">&check; Branch 29 taken 1989 times.</div>
+          <div class="takenBranch">&check; Branch 29 taken 1966 times.</div>
           <div class="notTakenBranch">&cross; Branch 30 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">4367</td>
+      <td class="linecount coveredLine">4338</td>
       <td class="src coveredLine">  <span class="n">BGL_FORALL_OUTEDGES</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="o">*</span><span class="n">graph</span><span class="p">,</span> <span class="n">ZXGraph</span><span class="p">)</span> <span class="n">neis</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">target</span><span class="p">(</span><span class="n">w</span><span class="p">));</span></td>
     </tr>
 
@@ -920,32 +1382,32 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">14/22</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 1276 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 1273 times.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
-          <div class="takenBranch">&check; Branch 5 taken 2228 times.</div>
+          <div class="takenBranch">&check; Branch 5 taken 2147 times.</div>
           <div class="notTakenBranch">&cross; Branch 6 not taken.</div>
-          <div class="takenBranch">&check; Branch 7 taken 952 times.</div>
-          <div class="takenBranch">&check; Branch 8 taken 1276 times.</div>
-          <div class="takenBranch">&check; Branch 10 taken 952 times.</div>
+          <div class="takenBranch">&check; Branch 7 taken 874 times.</div>
+          <div class="takenBranch">&check; Branch 8 taken 1273 times.</div>
+          <div class="takenBranch">&check; Branch 10 taken 874 times.</div>
           <div class="notTakenBranch">&cross; Branch 11 not taken.</div>
-          <div class="takenBranch">&check; Branch 13 taken 2255 times.</div>
+          <div class="takenBranch">&check; Branch 13 taken 2108 times.</div>
           <div class="notTakenBranch">&cross; Branch 14 not taken.</div>
-          <div class="takenBranch">&check; Branch 15 taken 1303 times.</div>
-          <div class="takenBranch">&check; Branch 16 taken 952 times.</div>
-          <div class="takenBranch">&check; Branch 18 taken 1303 times.</div>
+          <div class="takenBranch">&check; Branch 15 taken 1234 times.</div>
+          <div class="takenBranch">&check; Branch 16 taken 874 times.</div>
+          <div class="takenBranch">&check; Branch 18 taken 1234 times.</div>
           <div class="notTakenBranch">&cross; Branch 19 not taken.</div>
-          <div class="takenBranch">&check; Branch 20 taken 1303 times.</div>
-          <div class="takenBranch">&check; Branch 21 taken 952 times.</div>
-          <div class="takenBranch">&check; Branch 23 taken 1303 times.</div>
+          <div class="takenBranch">&check; Branch 20 taken 1234 times.</div>
+          <div class="takenBranch">&check; Branch 21 taken 874 times.</div>
+          <div class="takenBranch">&check; Branch 23 taken 1234 times.</div>
           <div class="notTakenBranch">&cross; Branch 24 not taken.</div>
-          <div class="takenBranch">&check; Branch 26 taken 1303 times.</div>
+          <div class="takenBranch">&check; Branch 26 taken 1234 times.</div>
           <div class="notTakenBranch">&cross; Branch 27 not taken.</div>
-          <div class="takenBranch">&check; Branch 29 taken 1303 times.</div>
+          <div class="takenBranch">&check; Branch 29 taken 1234 times.</div>
           <div class="notTakenBranch">&cross; Branch 30 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">3531</td>
+      <td class="linecount coveredLine">3381</td>
       <td class="src coveredLine">  <span class="n">BGL_FORALL_INEDGES</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="o">*</span><span class="n">graph</span><span class="p">,</span> <span class="n">ZXGraph</span><span class="p">)</span> <span class="n">neis</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">source</span><span class="p">(</span><span class="n">w</span><span class="p">));</span></td>
     </tr>
 
@@ -953,7 +1415,7 @@
       <td class="lineno"><a id="l84" href="#l84">84</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">1276</td>
+      <td class="linecount coveredLine">1273</td>
       <td class="src coveredLine">  <span class="k">auto</span><span class="o">&amp;</span> <span class="n">ordered</span> <span class="o">=</span> <span class="n">neis</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="n">TagSeq</span><span class="o">&gt;</span><span class="p">();</span></td>
     </tr>
 
@@ -963,12 +1425,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 4 taken 1276 times.</div>
+          <div class="takenBranch">&check; Branch 4 taken 1273 times.</div>
           <div class="notTakenBranch">&cross; Branch 5 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">1276</td>
+      <td class="linecount coveredLine">1273</td>
       <td class="src coveredLine">  <span class="n">ZXVertVec</span> <span class="nf">neighbours</span><span class="p">(</span><span class="n">ordered</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">ordered</span><span class="p">.</span><span class="n">end</span><span class="p">());</span></td>
     </tr>
 
@@ -976,7 +1438,7 @@
       <td class="lineno"><a id="l86" href="#l86">86</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">2552</td>
+      <td class="linecount coveredLine">2546</td>
       <td class="src coveredLine">  <span class="k">return</span> <span class="n">neighbours</span><span class="p">;</span></td>
     </tr>
 
@@ -1000,7 +1462,7 @@
       <td class="lineno"><a id="l89" href="#l89">89</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">739</td>
+      <td class="linecount coveredLine">737</td>
       <td class="src coveredLine"><span class="n">WireVec</span> <span class="n">ZXDiagram</span><span class="o">::</span><span class="n">adj_wires</span><span class="p">(</span><span class="k">const</span> <span class="n">ZXVert</span><span class="o">&amp;</span> <span class="n">v</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span></td>
     </tr>
 
@@ -1008,7 +1470,7 @@
       <td class="lineno"><a id="l90" href="#l90">90</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">739</td>
+      <td class="linecount coveredLine">737</td>
       <td class="src coveredLine">  <span class="n">WireVec</span> <span class="n">adj</span><span class="p">;</span></td>
     </tr>
 
@@ -1018,30 +1480,30 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">13/20</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 739 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 737 times.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
-          <div class="takenBranch">&check; Branch 5 taken 1434 times.</div>
+          <div class="takenBranch">&check; Branch 5 taken 1430 times.</div>
           <div class="notTakenBranch">&cross; Branch 6 not taken.</div>
-          <div class="takenBranch">&check; Branch 7 taken 695 times.</div>
-          <div class="takenBranch">&check; Branch 8 taken 739 times.</div>
-          <div class="takenBranch">&check; Branch 10 taken 695 times.</div>
+          <div class="takenBranch">&check; Branch 7 taken 693 times.</div>
+          <div class="takenBranch">&check; Branch 8 taken 737 times.</div>
+          <div class="takenBranch">&check; Branch 10 taken 693 times.</div>
           <div class="notTakenBranch">&cross; Branch 11 not taken.</div>
-          <div class="takenBranch">&check; Branch 13 taken 1945 times.</div>
+          <div class="takenBranch">&check; Branch 13 taken 1928 times.</div>
           <div class="notTakenBranch">&cross; Branch 14 not taken.</div>
-          <div class="takenBranch">&check; Branch 15 taken 1250 times.</div>
-          <div class="takenBranch">&check; Branch 16 taken 695 times.</div>
-          <div class="takenBranch">&check; Branch 18 taken 1250 times.</div>
+          <div class="takenBranch">&check; Branch 15 taken 1235 times.</div>
+          <div class="takenBranch">&check; Branch 16 taken 693 times.</div>
+          <div class="takenBranch">&check; Branch 18 taken 1235 times.</div>
           <div class="notTakenBranch">&cross; Branch 19 not taken.</div>
-          <div class="takenBranch">&check; Branch 20 taken 1250 times.</div>
-          <div class="takenBranch">&check; Branch 21 taken 695 times.</div>
-          <div class="takenBranch">&check; Branch 23 taken 1250 times.</div>
+          <div class="takenBranch">&check; Branch 20 taken 1235 times.</div>
+          <div class="takenBranch">&check; Branch 21 taken 693 times.</div>
+          <div class="takenBranch">&check; Branch 23 taken 1235 times.</div>
           <div class="notTakenBranch">&cross; Branch 24 not taken.</div>
-          <div class="takenBranch">&check; Branch 26 taken 1250 times.</div>
+          <div class="takenBranch">&check; Branch 26 taken 1235 times.</div>
           <div class="notTakenBranch">&cross; Branch 27 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">2684</td>
+      <td class="linecount coveredLine">2665</td>
       <td class="src coveredLine">  <span class="n">BGL_FORALL_OUTEDGES</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="o">*</span><span class="n">graph</span><span class="p">,</span> <span class="n">ZXGraph</span><span class="p">)</span> <span class="n">adj</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">w</span><span class="p">);</span></td>
     </tr>
 
@@ -1051,28 +1513,28 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">12/18</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 739 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 737 times.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
-          <div class="takenBranch">&check; Branch 5 taken 1235 times.</div>
+          <div class="takenBranch">&check; Branch 5 taken 1179 times.</div>
           <div class="notTakenBranch">&cross; Branch 6 not taken.</div>
-          <div class="takenBranch">&check; Branch 7 taken 496 times.</div>
-          <div class="takenBranch">&check; Branch 8 taken 739 times.</div>
-          <div class="takenBranch">&check; Branch 10 taken 496 times.</div>
+          <div class="takenBranch">&check; Branch 7 taken 442 times.</div>
+          <div class="takenBranch">&check; Branch 8 taken 737 times.</div>
+          <div class="takenBranch">&check; Branch 10 taken 442 times.</div>
           <div class="notTakenBranch">&cross; Branch 11 not taken.</div>
-          <div class="takenBranch">&check; Branch 13 taken 1153 times.</div>
+          <div class="takenBranch">&check; Branch 13 taken 1050 times.</div>
           <div class="notTakenBranch">&cross; Branch 14 not taken.</div>
-          <div class="takenBranch">&check; Branch 15 taken 657 times.</div>
-          <div class="takenBranch">&check; Branch 16 taken 496 times.</div>
-          <div class="takenBranch">&check; Branch 18 taken 657 times.</div>
+          <div class="takenBranch">&check; Branch 15 taken 608 times.</div>
+          <div class="takenBranch">&check; Branch 16 taken 442 times.</div>
+          <div class="takenBranch">&check; Branch 18 taken 608 times.</div>
           <div class="notTakenBranch">&cross; Branch 19 not taken.</div>
-          <div class="takenBranch">&check; Branch 20 taken 657 times.</div>
-          <div class="takenBranch">&check; Branch 21 taken 496 times.</div>
-          <div class="takenBranch">&check; Branch 23 taken 657 times.</div>
+          <div class="takenBranch">&check; Branch 20 taken 608 times.</div>
+          <div class="takenBranch">&check; Branch 21 taken 442 times.</div>
+          <div class="takenBranch">&check; Branch 23 taken 608 times.</div>
           <div class="notTakenBranch">&cross; Branch 24 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">1892</td>
+      <td class="linecount coveredLine">1787</td>
       <td class="src coveredLine">  <span class="n">BGL_FORALL_INEDGES</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="o">*</span><span class="n">graph</span><span class="p">,</span> <span class="n">ZXGraph</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -1090,16 +1552,16 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">4/6</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 657 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 608 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
-          <div class="takenBranch">&check; Branch 3 taken 633 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 584 times.</div>
           <div class="takenBranch">&check; Branch 4 taken 24 times.</div>
-          <div class="takenBranch">&check; Branch 6 taken 633 times.</div>
+          <div class="takenBranch">&check; Branch 6 taken 584 times.</div>
           <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">657</td>
+      <td class="linecount coveredLine">608</td>
       <td class="src coveredLine">    <span class="k">if</span> <span class="p">(</span><span class="n">source</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">!=</span> <span class="n">v</span><span class="p">)</span> <span class="n">adj</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">w</span><span class="p">);</span></td>
     </tr>
 
@@ -1115,7 +1577,7 @@
       <td class="lineno"><a id="l96" href="#l96">96</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">739</td>
+      <td class="linecount coveredLine">737</td>
       <td class="src coveredLine">  <span class="k">return</span> <span class="n">adj</span><span class="p">;</span></td>
     </tr>
 
@@ -1236,7 +1698,7 @@
       <td class="lineno"><a id="l108" href="#l108">108</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">358</td>
+      <td class="linecount coveredLine">336</td>
       <td class="src coveredLine"><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">Wire</span><span class="o">&gt;</span> <span class="n">ZXDiagram</span><span class="o">::</span><span class="n">wire_between</span><span class="p">(</span></td>
     </tr>
 
@@ -1262,12 +1724,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 358 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 336 times.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">358</td>
+      <td class="linecount coveredLine">336</td>
       <td class="src coveredLine">  <span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="p">[</span><span class="n">wire</span><span class="p">,</span> <span class="n">exists</span><span class="p">]</span> <span class="o">=</span> <span class="n">boost</span><span class="o">::</span><span class="n">edge</span><span class="p">(</span><span class="n">va</span><span class="p">,</span> <span class="n">vb</span><span class="p">,</span> <span class="o">*</span><span class="n">graph</span><span class="p">);</span></td>
     </tr>
 
@@ -1277,12 +1739,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 0 taken 95 times.</div>
-          <div class="takenBranch">&check; Branch 1 taken 263 times.</div>
+          <div class="takenBranch">&check; Branch 0 taken 90 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 246 times.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">358</td>
+      <td class="linecount coveredLine">336</td>
       <td class="src coveredLine">  <span class="k">if</span> <span class="p">(</span><span class="n">exists</span><span class="p">)</span></td>
     </tr>
 
@@ -1292,12 +1754,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 95 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 90 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">95</td>
+      <td class="linecount coveredLine">90</td>
       <td class="src coveredLine">    <span class="k">return</span> <span class="n">wire</span><span class="p">;</span></td>
     </tr>
 
@@ -1307,12 +1769,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 0 taken 150 times.</div>
-          <div class="takenBranch">&check; Branch 1 taken 113 times.</div>
+          <div class="takenBranch">&check; Branch 0 taken 142 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 104 times.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">263</td>
+      <td class="linecount coveredLine">246</td>
       <td class="src coveredLine">  <span class="k">else</span> <span class="nf">if</span> <span class="p">(</span><span class="n">directed</span> <span class="o">==</span> <span class="n">WireSearchOption</span><span class="o">::</span><span class="n">UNDIRECTED</span><span class="p">)</span></td>
     </tr>
 
@@ -1322,12 +1784,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 150 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 142 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">150</td>
+      <td class="linecount coveredLine">142</td>
       <td class="src coveredLine">    <span class="k">return</span> <span class="n">wire_between</span><span class="p">(</span><span class="n">vb</span><span class="p">,</span> <span class="n">va</span><span class="p">,</span> <span class="n">WireSearchOption</span><span class="o">::</span><span class="n">DIRECTED</span><span class="p">);</span></td>
     </tr>
 
@@ -1343,7 +1805,7 @@
       <td class="lineno"><a id="l117" href="#l117">117</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">113</td>
+      <td class="linecount coveredLine">104</td>
       <td class="src coveredLine">    <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">nullopt</span><span class="p">;</span></td>
     </tr>
 
@@ -1618,7 +2080,7 @@
       <td class="lineno"><a id="l142" href="#l142">142</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">1921</td>
+      <td class="linecount coveredLine">1920</td>
       <td class="src coveredLine"><span class="n">ZXGen_ptr</span> <span class="n">ZXDiagram</span><span class="o">::</span><span class="n">get_vertex_ZXGen_ptr</span><span class="p">(</span><span class="k">const</span> <span class="n">ZXVert</span><span class="o">&amp;</span> <span class="n">v</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span></td>
     </tr>
 
@@ -1626,7 +2088,7 @@
       <td class="lineno"><a id="l143" href="#l143">143</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">1921</td>
+      <td class="linecount coveredLine">1920</td>
       <td class="src coveredLine">  <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">graph</span><span class="p">)[</span><span class="n">v</span><span class="p">].</span><span class="n">op</span><span class="p">;</span></td>
     </tr>
 
@@ -1682,7 +2144,7 @@
       <td class="lineno"><a id="l150" href="#l150">150</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">13223</td>
+      <td class="linecount coveredLine">13148</td>
       <td class="src coveredLine"><span class="n">ZXType</span> <span class="n">ZXDiagram</span><span class="o">::</span><span class="n">get_zxtype</span><span class="p">(</span><span class="k">const</span> <span class="n">ZXVert</span><span class="o">&amp;</span> <span class="n">v</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span></td>
     </tr>
 
@@ -1690,7 +2152,7 @@
       <td class="lineno"><a id="l151" href="#l151">151</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">13223</td>
+      <td class="linecount coveredLine">13148</td>
       <td class="src coveredLine">  <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">graph</span><span class="p">)[</span><span class="n">v</span><span class="p">].</span><span class="n">op</span><span class="o">-&gt;</span><span class="n">get_type</span><span class="p">();</span></td>
     </tr>
 
@@ -1842,7 +2304,7 @@
       <td class="lineno"><a id="l170" href="#l170">170</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">1493</td>
+      <td class="linecount coveredLine">1492</td>
       <td class="src coveredLine"><span class="n">ZXWireType</span> <span class="n">ZXDiagram</span><span class="o">::</span><span class="n">get_wire_type</span><span class="p">(</span><span class="k">const</span> <span class="n">Wire</span><span class="o">&amp;</span> <span class="n">w</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span></td>
     </tr>
 
@@ -1850,7 +2312,7 @@
       <td class="lineno"><a id="l171" href="#l171">171</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">1493</td>
+      <td class="linecount coveredLine">1492</td>
       <td class="src coveredLine">  <span class="k">return</span> <span class="p">(</span><span class="o">*</span><span class="n">graph</span><span class="p">)[</span><span class="n">w</span><span class="p">].</span><span class="n">type</span><span class="p">;</span></td>
     </tr>
 
@@ -1874,7 +2336,7 @@
       <td class="lineno"><a id="l174" href="#l174">174</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">5189</td>
+      <td class="linecount coveredLine">5008</td>
       <td class="src coveredLine"><span class="n">ZXVert</span> <span class="n">ZXDiagram</span><span class="o">::</span><span class="n">source</span><span class="p">(</span><span class="k">const</span> <span class="n">Wire</span><span class="o">&amp;</span> <span class="n">w</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span></td>
     </tr>
 
@@ -1882,7 +2344,7 @@
       <td class="lineno"><a id="l175" href="#l175">175</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">5189</td>
+      <td class="linecount coveredLine">5008</td>
       <td class="src coveredLine">  <span class="k">return</span> <span class="n">boost</span><span class="o">::</span><span class="n">source</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="o">*</span><span class="n">graph</span><span class="p">);</span></td>
     </tr>
 
@@ -1906,7 +2368,7 @@
       <td class="lineno"><a id="l178" href="#l178">178</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">5037</td>
+      <td class="linecount coveredLine">4951</td>
       <td class="src coveredLine"><span class="n">ZXVert</span> <span class="n">ZXDiagram</span><span class="o">::</span><span class="n">target</span><span class="p">(</span><span class="k">const</span> <span class="n">Wire</span><span class="o">&amp;</span> <span class="n">w</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span></td>
     </tr>
 
@@ -1914,7 +2376,7 @@
       <td class="lineno"><a id="l179" href="#l179">179</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">5037</td>
+      <td class="linecount coveredLine">4951</td>
       <td class="src coveredLine">  <span class="k">return</span> <span class="n">boost</span><span class="o">::</span><span class="n">target</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="o">*</span><span class="n">graph</span><span class="p">);</span></td>
     </tr>
 
@@ -2002,7 +2464,7 @@
       <td class="lineno"><a id="l190" href="#l190">190</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">1661</td>
+      <td class="linecount coveredLine">1598</td>
       <td class="src coveredLine"><span class="n">ZXVert</span> <span class="n">ZXDiagram</span><span class="o">::</span><span class="n">other_end</span><span class="p">(</span><span class="k">const</span> <span class="n">Wire</span><span class="o">&amp;</span> <span class="n">w</span><span class="p">,</span> <span class="k">const</span> <span class="n">ZXVert</span><span class="o">&amp;</span> <span class="n">u</span><span class="p">)</span> <span class="k">const</span> <span class="p">{</span></td>
     </tr>
 
@@ -2010,7 +2472,7 @@
       <td class="lineno"><a id="l191" href="#l191">191</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">1661</td>
+      <td class="linecount coveredLine">1598</td>
       <td class="src coveredLine">  <span class="n">ZXVert</span> <span class="n">s</span> <span class="o">=</span> <span class="n">source</span><span class="p">(</span><span class="n">w</span><span class="p">);</span></td>
     </tr>
 
@@ -2018,7 +2480,7 @@
       <td class="lineno"><a id="l192" href="#l192">192</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">1661</td>
+      <td class="linecount coveredLine">1598</td>
       <td class="src coveredLine">  <span class="n">ZXVert</span> <span class="n">t</span> <span class="o">=</span> <span class="n">target</span><span class="p">(</span><span class="n">w</span><span class="p">);</span></td>
     </tr>
 
@@ -2028,12 +2490,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 0 taken 1123 times.</div>
-          <div class="takenBranch">&check; Branch 1 taken 538 times.</div>
+          <div class="takenBranch">&check; Branch 0 taken 1109 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 489 times.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">1661</td>
+      <td class="linecount coveredLine">1598</td>
       <td class="src coveredLine">  <span class="k">if</span> <span class="p">(</span><span class="n">s</span> <span class="o">==</span> <span class="n">u</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -2041,7 +2503,7 @@
       <td class="lineno"><a id="l194" href="#l194">194</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">1123</td>
+      <td class="linecount coveredLine">1109</td>
       <td class="src coveredLine">    <span class="k">return</span> <span class="n">t</span><span class="p">;</span></td>
     </tr>
 
@@ -2051,12 +2513,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 0 taken 538 times.</div>
+          <div class="takenBranch">&check; Branch 0 taken 489 times.</div>
           <div class="notTakenBranch">&cross; Branch 1 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">538</td>
+      <td class="linecount coveredLine">489</td>
       <td class="src coveredLine">  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">t</span> <span class="o">==</span> <span class="n">u</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -2064,7 +2526,7 @@
       <td class="lineno"><a id="l196" href="#l196">196</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">538</td>
+      <td class="linecount coveredLine">489</td>
       <td class="src coveredLine">    <span class="k">return</span> <span class="n">s</span><span class="p">;</span></td>
     </tr>
 
@@ -4466,11 +4928,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

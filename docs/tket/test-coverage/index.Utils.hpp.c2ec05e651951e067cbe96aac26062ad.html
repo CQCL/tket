@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-11 04:45:57</td>
+      <td>2022-06-25 10:39:34</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">90.0%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>11</td>
+      <td>23</td>
+      <td class="coverage-low">47.8%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>22</td>
       <td>48</td>
@@ -52,10 +59,278 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l136">boost::adjacency_list&lt;boost::setS, boost::vecS, boost::undirectedS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; tket::graphs::utils::symmetrise&lt;boost::adjacency_list&lt;boost::setS, boost::vecS, boost::undirectedS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt;, boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l136">136</a>
+      </td>
+      <td>
+        <a href="#l136"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l136">boost::adjacency_list&lt;boost::setS, boost::vecS, boost::undirectedS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; tket::graphs::utils::symmetrise&lt;boost::adjacency_list&lt;boost::setS, boost::vecS, boost::undirectedS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt;, boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l136">136</a>
+      </td>
+      <td>
+        <a href="#l136"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l186">std::set&lt;boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::vertex_descriptor, std::less&lt;boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::vertex_descriptor&gt;, std::allocator&lt;boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::vertex_descriptor&gt; &gt; tket::graphs::utils::max_degree_nodes&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l186">186</a>
+      </td>
+      <td>
+        <a href="#l186"> called 20 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l197">std::set&lt;boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::vertex_descriptor, std::less&lt;boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::vertex_descriptor&gt;, std::allocator&lt;boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::vertex_descriptor&gt; &gt; tket::graphs::utils::min_degree_nodes&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l197">197</a>
+      </td>
+      <td>
+        <a href="#l197"> called 446 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l186">std::set&lt;boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::vertex_descriptor, std::less&lt;boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::vertex_descriptor&gt;, std::allocator&lt;boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::vertex_descriptor&gt; &gt; tket::graphs::utils::max_degree_nodes&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l186">186</a>
+      </td>
+      <td>
+        <a href="#l186"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l197">std::set&lt;boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::vertex_descriptor, std::less&lt;boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::vertex_descriptor&gt;, std::allocator&lt;boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::vertex_descriptor&gt; &gt; tket::graphs::utils::min_degree_nodes&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l197">197</a>
+      </td>
+      <td>
+        <a href="#l197"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l169">tket::graphs::utils::max_degree&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l169">169</a>
+      </td>
+      <td>
+        <a href="#l169"> called 554 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l169">tket::graphs::utils::max_degree&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l169">169</a>
+      </td>
+      <td>
+        <a href="#l169"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l192">tket::graphs::utils::max_degree_nodes&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l192">192</a>
+      </td>
+      <td>
+        <a href="#l192"> called 287 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l192">tket::graphs::utils::max_degree_nodes&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l192">192</a>
+      </td>
+      <td>
+        <a href="#l192"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l178">tket::graphs::utils::min_degree&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l178">178</a>
+      </td>
+      <td>
+        <a href="#l178"> called 67514 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l178">tket::graphs::utils::min_degree&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l178">178</a>
+      </td>
+      <td>
+        <a href="#l178"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l203">tket::graphs::utils::min_degree_nodes&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l203">203</a>
+      </td>
+      <td>
+        <a href="#l203"> called 33980 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l203">tket::graphs::utils::min_degree_nodes&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l203">203</a>
+      </td>
+      <td>
+        <a href="#l203"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l168">unsigned long tket::graphs::utils::max_degree&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l168">168</a>
+      </td>
+      <td>
+        <a href="#l168"> called 20 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l168">unsigned long tket::graphs::utils::max_degree&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l168">168</a>
+      </td>
+      <td>
+        <a href="#l168"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l177">unsigned long tket::graphs::utils::min_degree&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l177">177</a>
+      </td>
+      <td>
+        <a href="#l177"> called 446 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l177">unsigned long tket::graphs::utils::min_degree&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l177">177</a>
+      </td>
+      <td>
+        <a href="#l177"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l102">void tket::graphs::utils::remove_edge&lt;boost::adjacency_list&lt;boost::setS, boost::vecS, boost::undirectedS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;(boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::setS, boost::vecS, boost::undirectedS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::edge_descriptor, boost::adjacency_list&lt;boost::setS, boost::vecS, boost::undirectedS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt;&amp;, bool)</a>
+      </td>
+      <td>
+        <a href="#l102">102</a>
+      </td>
+      <td>
+        <a href="#l102"> called 51 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l122">void tket::graphs::utils::remove_edge_with_map&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt;, boost::bimaps::views::map_view&lt;boost::bimaps::relation::member_at::right, boost::bimaps::detail::bimap_core&lt;tket::Node, unsigned long, mpl_::na, mpl_::na, mpl_::na&gt; &gt; &gt;(boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::edge_descriptor, boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt;&amp;, boost::bimaps::views::map_view&lt;boost::bimaps::relation::member_at::right, boost::bimaps::detail::bimap_core&lt;tket::Node, unsigned long, mpl_::na, mpl_::na, mpl_::na&gt; &gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l122">122</a>
+      </td>
+      <td>
+        <a href="#l122"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l122">void tket::graphs::utils::remove_edge_with_map&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt;, boost::bimaps::views::map_view&lt;boost::bimaps::relation::member_at::right, boost::bimaps::detail::bimap_core&lt;tket::Qubit, unsigned long, mpl_::na, mpl_::na, mpl_::na&gt; &gt; &gt;(boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::edge_descriptor, boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt;&amp;, boost::bimaps::views::map_view&lt;boost::bimaps::relation::member_at::right, boost::bimaps::detail::bimap_core&lt;tket::Qubit, unsigned long, mpl_::na, mpl_::na, mpl_::na&gt; &gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l122">122</a>
+      </td>
+      <td>
+        <a href="#l122"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l94">void tket::graphs::utils::remove_vertex_with_map&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt;, boost::bimaps::views::map_view&lt;boost::bimaps::relation::member_at::right, boost::bimaps::detail::bimap_core&lt;tket::Node, unsigned long, mpl_::na, mpl_::na, mpl_::na&gt; &gt; &gt;(boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::vertex_descriptor, boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Node, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt;&amp;, boost::bimaps::views::map_view&lt;boost::bimaps::relation::member_at::right, boost::bimaps::detail::bimap_core&lt;tket::Node, unsigned long, mpl_::na, mpl_::na, mpl_::na&gt; &gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l94">94</a>
+      </td>
+      <td>
+        <a href="#l94"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l94">void tket::graphs::utils::remove_vertex_with_map&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt;, boost::bimaps::views::map_view&lt;boost::bimaps::relation::member_at::right, boost::bimaps::detail::bimap_core&lt;tket::Qubit, unsigned long, mpl_::na, mpl_::na, mpl_::na&gt; &gt; &gt;(boost::graph_traits&lt;std::remove_reference&lt;boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt; &gt;::type&gt;::vertex_descriptor, boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::bidirectionalS, tket::Qubit, tket::graphs::WeightedEdge, boost::no_property, boost::listS&gt;&amp;, boost::bimaps::views::map_view&lt;boost::bimaps::relation::member_at::right, boost::bimaps::detail::bimap_core&lt;tket::Qubit, unsigned long, mpl_::na, mpl_::na, mpl_::na&gt; &gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l94">94</a>
+      </td>
+      <td>
+        <a href="#l94"> called 1064 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -892,7 +1167,7 @@
       <td class="lineno"><a id="l102" href="#l102">102</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">50</td>
+      <td class="linecount coveredLine">51</td>
       <td class="src coveredLine"><span class="kr">inline</span> <span class="kt">void</span> <span class="n">remove_edge</span><span class="p">(</span></td>
     </tr>
 
@@ -910,12 +1185,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 50 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 51 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">50</td>
+      <td class="linecount coveredLine">51</td>
       <td class="src coveredLine">  <span class="n">detail</span><span class="o">::</span><span class="n">graph_utils_impl</span><span class="o">&lt;</span><span class="n">Graph</span><span class="o">&gt;</span> <span class="n">impl</span><span class="p">(</span><span class="n">graph</span><span class="p">);</span></td>
     </tr>
 
@@ -925,12 +1200,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 50 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 51 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">50</td>
+      <td class="linecount coveredLine">51</td>
       <td class="src coveredLine">  <span class="n">impl</span><span class="p">.</span><span class="n">remove_edge</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">remove_unused_vertices</span><span class="p">);</span></td>
     </tr>
 
@@ -938,7 +1213,7 @@
       <td class="lineno"><a id="l106" href="#l106">106</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">50</td>
+      <td class="linecount coveredLine">51</td>
       <td class="src coveredLine"><span class="p">}</span></td>
     </tr>
 
@@ -1874,11 +2149,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

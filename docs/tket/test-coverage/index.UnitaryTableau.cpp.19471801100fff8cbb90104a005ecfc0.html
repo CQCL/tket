@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-11 04:45:57</td>
+      <td>2022-06-25 10:39:34</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">91.5%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>27</td>
+      <td>27</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>433</td>
       <td>845</td>
@@ -52,10 +59,322 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l41">tket::UnitaryTableau::UnitaryTableau(Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt; const&amp;, Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt; const&amp;, Eigen::Matrix&lt;bool, -1, 1, 0, -1, 1&gt; const&amp;, Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt; const&amp;, Eigen::Matrix&lt;bool, -1, -1, 0, -1, -1&gt; const&amp;, Eigen::Matrix&lt;bool, -1, 1, 0, -1, 1&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l41">41</a>
+      </td>
+      <td>
+        <a href="#l41"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l33">tket::UnitaryTableau::UnitaryTableau(std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l33">33</a>
+      </td>
+      <td>
+        <a href="#l33"> called 13 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l21">tket::UnitaryTableau::UnitaryTableau(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l21">21</a>
+      </td>
+      <td>
+        <a href="#l21"> called 30 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l174">tket::UnitaryTableau::apply_CX_at_end(tket::Qubit const&amp;, tket::Qubit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l174">174</a>
+      </td>
+      <td>
+        <a href="#l174"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l166">tket::UnitaryTableau::apply_CX_at_front(tket::Qubit const&amp;, tket::Qubit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l166">166</a>
+      </td>
+      <td>
+        <a href="#l166"> called 15 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l151">tket::UnitaryTableau::apply_S_at_end(tket::Qubit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l151">151</a>
+      </td>
+      <td>
+        <a href="#l151"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l146">tket::UnitaryTableau::apply_S_at_front(tket::Qubit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l146">146</a>
+      </td>
+      <td>
+        <a href="#l146"> called 21 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l161">tket::UnitaryTableau::apply_V_at_end(tket::Qubit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l161">161</a>
+      </td>
+      <td>
+        <a href="#l161"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l156">tket::UnitaryTableau::apply_V_at_front(tket::Qubit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l156">156</a>
+      </td>
+      <td>
+        <a href="#l156"> called 18 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l270">tket::UnitaryTableau::apply_gate_at_end(tket::OpType, std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l270">270</a>
+      </td>
+      <td>
+        <a href="#l270"> called 127 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l181">tket::UnitaryTableau::apply_gate_at_front(tket::OpType, std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l181">181</a>
+      </td>
+      <td>
+        <a href="#l181"> called 24 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l388">tket::UnitaryTableau::apply_pauli_at_end(tket::QubitPauliTensor const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l388">388</a>
+      </td>
+      <td>
+        <a href="#l388"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l278">tket::UnitaryTableau::apply_pauli_at_front(tket::QubitPauliTensor const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l278">278</a>
+      </td>
+      <td>
+        <a href="#l278"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l402">tket::UnitaryTableau::compose(tket::UnitaryTableau const&amp;, tket::UnitaryTableau const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l402">402</a>
+      </td>
+      <td>
+        <a href="#l402"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l523">tket::UnitaryTableau::conjugate() const</a>
+      </td>
+      <td>
+        <a href="#l523">523</a>
+      </td>
+      <td>
+        <a href="#l523"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l481">tket::UnitaryTableau::dagger() const</a>
+      </td>
+      <td>
+        <a href="#l481">481</a>
+      </td>
+      <td>
+        <a href="#l481"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l136">tket::UnitaryTableau::get_qubits() const</a>
+      </td>
+      <td>
+        <a href="#l136">136</a>
+      </td>
+      <td>
+        <a href="#l136"> called 39 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l102">tket::UnitaryTableau::get_row_product(tket::QubitPauliTensor const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l102">102</a>
+      </td>
+      <td>
+        <a href="#l102"> called 18 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l76">tket::UnitaryTableau::get_xrow(tket::Qubit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l76">76</a>
+      </td>
+      <td>
+        <a href="#l76"> called 42 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l89">tket::UnitaryTableau::get_zrow(tket::Qubit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l89">89</a>
+      </td>
+      <td>
+        <a href="#l89"> called 34 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l547">tket::UnitaryTableau::operator==(tket::UnitaryTableau const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l547">547</a>
+      </td>
+      <td>
+        <a href="#l547"> called 10 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l519">tket::UnitaryTableau::transpose() const</a>
+      </td>
+      <td>
+        <a href="#l519">519</a>
+      </td>
+      <td>
+        <a href="#l519"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l579">tket::from_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, tket::UnitaryTableau&amp;)</a>
+      </td>
+      <td>
+        <a href="#l579">579</a>
+      </td>
+      <td>
+        <a href="#l579"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l464">tket::invert_cell_map()</a>
+      </td>
+      <td>
+        <a href="#l464">464</a>
+      </td>
+      <td>
+        <a href="#l464"> called 18 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l465">tket::invert_cell_map()::{lambda()#1}::operator()() const</a>
+      </td>
+      <td>
+        <a href="#l465">465</a>
+      </td>
+      <td>
+        <a href="#l465"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l530">tket::operator&lt;&lt;(std::ostream&amp;, tket::UnitaryTableau const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l530">530</a>
+      </td>
+      <td>
+        <a href="#l530"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l570">tket::to_json(nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, tket::UnitaryTableau const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l570">570</a>
+      </td>
+      <td>
+        <a href="#l570"> called 1 time</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -6741,11 +7060,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

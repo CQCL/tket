@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-11 04:45:57</td>
+      <td>2022-06-25 10:39:34</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-low">67.9%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>5</td>
+      <td>9</td>
+      <td class="coverage-low">55.6%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>11</td>
       <td>26</td>
@@ -52,10 +59,124 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l95">tket::BasePass::BasePass()</a>
+      </td>
+      <td>
+        <a href="#l95">95</a>
+      </td>
+      <td>
+        <a href="#l95"> called 118 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l132">tket::BasePass::BasePass(std::map&lt;std::type_index, std::shared_ptr&lt;tket::Predicate&gt;, std::less&lt;std::type_index&gt;, std::allocator&lt;std::pair&lt;std::type_index const, std::shared_ptr&lt;tket::Predicate&gt; &gt; &gt; &gt; const&amp;, tket::PostConditions const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l132">132</a>
+      </td>
+      <td>
+        <a href="#l132"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l129">tket::BasePass::~BasePass()</a>
+      </td>
+      <td>
+        <a href="#l129">129</a>
+      </td>
+      <td>
+        <a href="#l129"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l39">tket::IncompatibleCompilerPasses::IncompatibleCompilerPasses(std::type_index const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l39">39</a>
+      </td>
+      <td>
+        <a href="#l39"> called 6 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l68">tket::PostConditions::PostConditions(std::map&lt;std::type_index, std::shared_ptr&lt;tket::Predicate&gt;, std::less&lt;std::type_index&gt;, std::allocator&lt;std::pair&lt;std::type_index const, std::shared_ptr&lt;tket::Predicate&gt; &gt; &gt; &gt; const&amp;, std::map&lt;std::type_index, tket::Guarantee, std::less&lt;std::type_index&gt;, std::allocator&lt;std::pair&lt;std::type_index const, tket::Guarantee&gt; &gt; &gt; const&amp;, tket::Guarantee)</a>
+      </td>
+      <td>
+        <a href="#l68">68</a>
+      </td>
+      <td>
+        <a href="#l68"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l215">tket::RepeatPass::apply(tket::CompilationUnit&amp;, tket::SafetyMode, std::function&lt;void (tket::CompilationUnit const&amp;, nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)&gt; const&amp;, std::function&lt;void (tket::CompilationUnit const&amp;, nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l215">215</a>
+      </td>
+      <td>
+        <a href="#l215"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l188">tket::SequencePass::SequencePass()</a>
+      </td>
+      <td>
+        <a href="#l188">188</a>
+      </td>
+      <td>
+        <a href="#l188"> called 72 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l190">tket::SequencePass::apply(tket::CompilationUnit&amp;, tket::SafetyMode, std::function&lt;void (tket::CompilationUnit const&amp;, nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)&gt; const&amp;, std::function&lt;void (tket::CompilationUnit const&amp;, nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l190">190</a>
+      </td>
+      <td>
+        <a href="#l190"> called 103 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l168">tket::StandardPass::StandardPass(std::map&lt;std::type_index, std::shared_ptr&lt;tket::Predicate&gt;, std::less&lt;std::type_index&gt;, std::allocator&lt;std::pair&lt;std::type_index const, std::shared_ptr&lt;tket::Predicate&gt; &gt; &gt; &gt; const&amp;, tket::Transform const&amp;, tket::PostConditions const&amp;, nlohmann::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l168">168</a>
+      </td>
+      <td>
+        <a href="#l168"> not called</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -2347,11 +2468,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

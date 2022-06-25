@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-11 04:45:57</td>
+      <td>2022-06-25 10:39:34</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-high">93.2%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>15</td>
+      <td>16</td>
+      <td class="coverage-high">93.8%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>277</td>
       <td>472</td>
@@ -52,10 +59,201 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l310">tket::Monomorpher::map_cost(boost::bimaps::bimap&lt;tket::Qubit, tket::Node, mpl_::na, mpl_::na, mpl_::na&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l310">310</a>
+      </td>
+      <td>
+        <a href="#l310"> called 1138 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l329">tket::Monomorpher::map_cost(boost::bimaps::bimap&lt;tket::Qubit, tket::Node, mpl_::na, mpl_::na, mpl_::na&gt; const&amp;)::{lambda(unsigned int)#1}::operator()(unsigned int) const</a>
+      </td>
+      <td>
+        <a href="#l329">329</a>
+      </td>
+      <td>
+        <a href="#l329"> called 6188 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l362">tket::Monomorpher::place(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l362">362</a>
+      </td>
+      <td>
+        <a href="#l362"> called 18 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l40">tket::PlacementFrontier::PlacementFrontier(tket::Circuit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l40">40</a>
+      </td>
+      <td>
+        <a href="#l40"> called 60 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l62">tket::PlacementFrontier::next_slicefrontier()</a>
+      </td>
+      <td>
+        <a href="#l62">62</a>
+      </td>
+      <td>
+        <a href="#l62"> called 253 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l181">tket::Qubit tket::qubit_lines(tket::Circuit const&amp;)::{lambda(auto:1)#1}::operator()&lt;unsigned long&gt;(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l181">181</a>
+      </td>
+      <td>
+        <a href="#l181"> called 35 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l203">tket::best_nodes(tket::Architecture&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l203">203</a>
+      </td>
+      <td>
+        <a href="#l203"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l115">tket::generate_interaction_graph(tket::Circuit const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l115">115</a>
+      </td>
+      <td>
+        <a href="#l115"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l27">tket::interacting_qbs(tket::Circuit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l27">27</a>
+      </td>
+      <td>
+        <a href="#l27"> called 60 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l299">tket::line_placement(tket::Circuit const&amp;, tket::Architecture)</a>
+      </td>
+      <td>
+        <a href="#l299">299</a>
+      </td>
+      <td>
+        <a href="#l299"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l258">tket::lines_on_arc(tket::Architecture, std::vector&lt;std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt;, std::allocator&lt;std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; &gt; &gt;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l258">258</a>
+      </td>
+      <td>
+        <a href="#l258"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l262">tket::lines_on_arc(tket::Architecture, std::vector&lt;std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt;, std::allocator&lt;std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; &gt; &gt;, unsigned int)::{lambda(std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt;, std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt;)#1}::operator()(std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt;, std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt;) const</a>
+      </td>
+      <td>
+        <a href="#l262">262</a>
+      </td>
+      <td>
+        <a href="#l262"> called 2429 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l223">tket::map_lines(std::vector&lt;std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt;, std::allocator&lt;std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; &gt; &gt;&amp;, std::vector&lt;std::vector&lt;tket::Node, std::allocator&lt;tket::Node&gt; &gt;, std::allocator&lt;std::vector&lt;tket::Node, std::allocator&lt;tket::Node&gt; &gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l223">223</a>
+      </td>
+      <td>
+        <a href="#l223"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l80">tket::monomorph_interaction_graph(tket::Circuit const&amp;, unsigned int, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l80">80</a>
+      </td>
+      <td>
+        <a href="#l80"> called 52 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l239">tket::place_qubit_lines(std::vector&lt;std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt;, std::allocator&lt;std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; &gt; &gt; const&amp;, std::set&lt;tket::Node, std::less&lt;tket::Node&gt;, std::allocator&lt;tket::Node&gt; &gt;)</a>
+      </td>
+      <td>
+        <a href="#l239">239</a>
+      </td>
+      <td>
+        <a href="#l239"> called 8 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l167">tket::qubit_lines(tket::Circuit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l167">167</a>
+      </td>
+      <td>
+        <a href="#l167"> called 8 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -4098,7 +4296,7 @@
         </details>
       </td>
       <td class="linecount coveredLine">35</td>
-      <td class="src coveredLine">      <span class="n">arc</span><span class="p">,</span> <span class="n">q_graph</span><span class="p">,</span> <span class="n">config</span><span class="p">.</span><span class="n">vf2_max_matches</span><span class="p">,</span> <span class="n">config</span><span class="p">.</span><span class="n">timeout</span><span class="p">);</span></td>
+      <td class="src coveredLine">      <span class="n">arc</span><span class="p">,</span> <span class="n">q_graph</span><span class="p">,</span> <span class="n">config</span><span class="p">.</span><span class="n">monomorphism_max_matches</span><span class="p">,</span> <span class="n">config</span><span class="p">.</span><span class="n">timeout</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -4434,11 +4632,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

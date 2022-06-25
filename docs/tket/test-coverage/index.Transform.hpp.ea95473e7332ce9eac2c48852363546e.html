@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-11 04:45:57</td>
+      <td>2022-06-25 10:39:34</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-low">57.1%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>2</td>
+      <td>5</td>
+      <td class="coverage-low">40.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>1</td>
       <td>4</td>
@@ -52,10 +59,80 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l57">tket::Transform::Transform(std::function&lt;bool (tket::Circuit&amp;)&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l57">57</a>
+      </td>
+      <td>
+        <a href="#l57"> called 12911 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l58">tket::Transform::Transform(std::function&lt;bool (tket::Circuit&amp;)&gt; const&amp;)::{lambda(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;)#1}::operator()(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;) const</a>
+      </td>
+      <td>
+        <a href="#l58">58</a>
+      </td>
+      <td>
+        <a href="#l58"> called 13704 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l54">tket::Transform::Transform(std::function&lt;bool (tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;)&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l54">54</a>
+      </td>
+      <td>
+        <a href="#l54"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l69">tket::Transform::apply(tket::Circuit&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l69">69</a>
+      </td>
+      <td>
+        <a href="#l69"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l88">tket::Transforms::id::{lambda(tket::Circuit&amp;, std::shared_ptr&lt;tket::unit_bimaps_t&gt;)#1}::operator()(tket::Circuit, tket::unit_bimaps_t) const</a>
+      </td>
+      <td>
+        <a href="#l88">88</a>
+      </td>
+      <td>
+        <a href="#l88"> not called</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -518,7 +595,7 @@
       <td class="lineno"><a id="l57" href="#l57">57</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">13073</td>
+      <td class="linecount coveredLine">12911</td>
       <td class="src coveredLine">  <span class="k">explicit</span> <span class="nf">Transform</span><span class="p">(</span><span class="k">const</span> <span class="n">SimpleTransformation</span><span class="o">&amp;</span> <span class="n">trans</span><span class="p">)</span></td>
     </tr>
 
@@ -526,7 +603,7 @@
       <td class="lineno"><a id="l58" href="#l58">58</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">26938</td>
+      <td class="linecount coveredLine">26615</td>
       <td class="src coveredLine">      <span class="o">:</span> <span class="n">apply_fn</span><span class="p">([</span><span class="o">=</span><span class="p">](</span><span class="n">Circuit</span><span class="o">&amp;</span> <span class="n">circ</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">shared_ptr</span><span class="o">&lt;</span><span class="n">unit_bimaps_t</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -534,7 +611,7 @@
       <td class="lineno"><a id="l59" href="#l59">59</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">13865</td>
+      <td class="linecount coveredLine">13704</td>
       <td class="src coveredLine">          <span class="k">return</span> <span class="n">trans</span><span class="p">(</span><span class="n">circ</span><span class="p">);</span></td>
     </tr>
 
@@ -544,12 +621,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 13073 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 12911 times.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">13073</td>
+      <td class="linecount coveredLine">12911</td>
       <td class="src coveredLine">        <span class="p">})</span> <span class="p">{}</span></td>
     </tr>
 
@@ -819,11 +896,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

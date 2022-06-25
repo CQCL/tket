@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-11 04:45:57</td>
+      <td>2022-06-25 10:39:34</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-low">49.8%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>25</td>
+      <td>107</td>
+      <td class="coverage-low">23.4%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>106</td>
       <td>370</td>
@@ -52,10 +59,1202 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l504">tket::graphs::DirectedGraph&lt;tket::Node&gt;::add_connection(tket::Node const&amp;, tket::Node const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l504">504</a>
+      </td>
+      <td>
+        <a href="#l504"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l492">tket::graphs::DirectedGraph&lt;tket::Node&gt;::add_node(tket::Node const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l492">492</a>
+      </td>
+      <td>
+        <a href="#l492"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l436">tket::graphs::DirectedGraph&lt;tket::Node&gt;::get_diameter()</a>
+      </td>
+      <td>
+        <a href="#l436">436</a>
+      </td>
+      <td>
+        <a href="#l436"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l417">tket::graphs::DirectedGraph&lt;tket::Node&gt;::get_distance(tket::Node const&amp;, tket::Node const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l417">417</a>
+      </td>
+      <td>
+        <a href="#l417"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l398">tket::graphs::DirectedGraph&lt;tket::Node&gt;::get_distances(tket::Node const&amp;) const &amp;</a>
+      </td>
+      <td>
+        <a href="#l398">398</a>
+      </td>
+      <td>
+        <a href="#l398"> called 21992 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l410">tket::graphs::DirectedGraph&lt;tket::Node&gt;::get_distances(tket::Node const&amp;) const &amp;&amp;</a>
+      </td>
+      <td>
+        <a href="#l410">410</a>
+      </td>
+      <td>
+        <a href="#l410"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l467">tket::graphs::DirectedGraph&lt;tket::Node&gt;::get_undirected_connectivity() const &amp;</a>
+      </td>
+      <td>
+        <a href="#l467">467</a>
+      </td>
+      <td>
+        <a href="#l467"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l476">tket::graphs::DirectedGraph&lt;tket::Node&gt;::get_undirected_connectivity() const &amp;&amp;</a>
+      </td>
+      <td>
+        <a href="#l476">476</a>
+      </td>
+      <td>
+        <a href="#l476"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l522">tket::graphs::DirectedGraph&lt;tket::Node&gt;::invalidate_cache()</a>
+      </td>
+      <td>
+        <a href="#l522">522</a>
+      </td>
+      <td>
+        <a href="#l522"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l455">tket::graphs::DirectedGraph&lt;tket::Node&gt;::nodes_at_distance(tket::Node const&amp;, unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l455">455</a>
+      </td>
+      <td>
+        <a href="#l455"> called 19368 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l510">tket::graphs::DirectedGraph&lt;tket::Node&gt;::remove_connection(std::pair&lt;tket::Node, tket::Node&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l510">510</a>
+      </td>
+      <td>
+        <a href="#l510"> called 2 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l516">tket::graphs::DirectedGraph&lt;tket::Node&gt;::remove_connection(tket::Node const&amp;, tket::Node const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l516">516</a>
+      </td>
+      <td>
+        <a href="#l516"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l486">tket::graphs::DirectedGraph&lt;tket::Node&gt;::remove_node(tket::Node const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l486">486</a>
+      </td>
+      <td>
+        <a href="#l486"> called 448 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l498">tket::graphs::DirectedGraph&lt;tket::Node&gt;::remove_stray_nodes()</a>
+      </td>
+      <td>
+        <a href="#l498">498</a>
+      </td>
+      <td>
+        <a href="#l498"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l504">tket::graphs::DirectedGraph&lt;tket::Qubit&gt;::add_connection(tket::Qubit const&amp;, tket::Qubit const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l504">504</a>
+      </td>
+      <td>
+        <a href="#l504"> called 353 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l492">tket::graphs::DirectedGraph&lt;tket::Qubit&gt;::add_node(tket::Qubit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l492">492</a>
+      </td>
+      <td>
+        <a href="#l492"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l436">tket::graphs::DirectedGraph&lt;tket::Qubit&gt;::get_diameter()</a>
+      </td>
+      <td>
+        <a href="#l436">436</a>
+      </td>
+      <td>
+        <a href="#l436"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l417">tket::graphs::DirectedGraph&lt;tket::Qubit&gt;::get_distance(tket::Qubit const&amp;, tket::Qubit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l417">417</a>
+      </td>
+      <td>
+        <a href="#l417"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l398">tket::graphs::DirectedGraph&lt;tket::Qubit&gt;::get_distances(tket::Qubit const&amp;) const &amp;</a>
+      </td>
+      <td>
+        <a href="#l398">398</a>
+      </td>
+      <td>
+        <a href="#l398"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l410">tket::graphs::DirectedGraph&lt;tket::Qubit&gt;::get_distances(tket::Qubit const&amp;) const &amp;&amp;</a>
+      </td>
+      <td>
+        <a href="#l410">410</a>
+      </td>
+      <td>
+        <a href="#l410"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l467">tket::graphs::DirectedGraph&lt;tket::Qubit&gt;::get_undirected_connectivity() const &amp;</a>
+      </td>
+      <td>
+        <a href="#l467">467</a>
+      </td>
+      <td>
+        <a href="#l467"> called 85 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l476">tket::graphs::DirectedGraph&lt;tket::Qubit&gt;::get_undirected_connectivity() const &amp;&amp;</a>
+      </td>
+      <td>
+        <a href="#l476">476</a>
+      </td>
+      <td>
+        <a href="#l476"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l522">tket::graphs::DirectedGraph&lt;tket::Qubit&gt;::invalidate_cache()</a>
+      </td>
+      <td>
+        <a href="#l522">522</a>
+      </td>
+      <td>
+        <a href="#l522"> called 414 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l455">tket::graphs::DirectedGraph&lt;tket::Qubit&gt;::nodes_at_distance(tket::Qubit const&amp;, unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l455">455</a>
+      </td>
+      <td>
+        <a href="#l455"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l510">tket::graphs::DirectedGraph&lt;tket::Qubit&gt;::remove_connection(std::pair&lt;tket::Qubit, tket::Qubit&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l510">510</a>
+      </td>
+      <td>
+        <a href="#l510"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l516">tket::graphs::DirectedGraph&lt;tket::Qubit&gt;::remove_connection(tket::Qubit const&amp;, tket::Qubit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l516">516</a>
+      </td>
+      <td>
+        <a href="#l516"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l486">tket::graphs::DirectedGraph&lt;tket::Qubit&gt;::remove_node(tket::Qubit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l486">486</a>
+      </td>
+      <td>
+        <a href="#l486"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l498">tket::graphs::DirectedGraph&lt;tket::Qubit&gt;::remove_stray_nodes()</a>
+      </td>
+      <td>
+        <a href="#l498">498</a>
+      </td>
+      <td>
+        <a href="#l498"> called 60 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l74">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::DirectedGraphBase()</a>
+      </td>
+      <td>
+        <a href="#l74">74</a>
+      </td>
+      <td>
+        <a href="#l74"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l85">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::DirectedGraphBase(std::vector&lt;std::pair&lt;tket::Node, tket::Node&gt;, std::allocator&lt;std::pair&lt;tket::Node, tket::Node&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l85">85</a>
+      </td>
+      <td>
+        <a href="#l85"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l77">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::DirectedGraphBase(std::vector&lt;tket::Node, std::allocator&lt;tket::Node&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l77">77</a>
+      </td>
+      <td>
+        <a href="#l77"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l128">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::add_connection(tket::Node const&amp;, tket::Node const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l128">128</a>
+      </td>
+      <td>
+        <a href="#l128"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l109">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::add_node(tket::Node const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l109">109</a>
+      </td>
+      <td>
+        <a href="#l109"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l98">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::edge_exists(tket::Node const&amp;, tket::Node const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l98">98</a>
+      </td>
+      <td>
+        <a href="#l98"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l206">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::edges() const</a>
+      </td>
+      <td>
+        <a href="#l206">206</a>
+      </td>
+      <td>
+        <a href="#l206"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l359">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::from_vertices()</a>
+      </td>
+      <td>
+        <a href="#l359">359</a>
+      </td>
+      <td>
+        <a href="#l359"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l360">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::from_vertices() const</a>
+      </td>
+      <td>
+        <a href="#l360">360</a>
+      </td>
+      <td>
+        <a href="#l360"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l361">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::from_vertices(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l361">361</a>
+      </td>
+      <td>
+        <a href="#l361"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l212">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::get_all_edges_vec() const</a>
+      </td>
+      <td>
+        <a href="#l212">212</a>
+      </td>
+      <td>
+        <a href="#l212"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l163">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::get_connection_weight(tket::Node const&amp;, tket::Node const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l163">163</a>
+      </td>
+      <td>
+        <a href="#l163"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l178">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::get_degree(tket::Node const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l178">178</a>
+      </td>
+      <td>
+        <a href="#l178"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l238">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::get_distance(tket::Node const&amp;, tket::Node const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l238">238</a>
+      </td>
+      <td>
+        <a href="#l238"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l228">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::get_distances(tket::Node const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l228">228</a>
+      </td>
+      <td>
+        <a href="#l228"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l340">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::get_edges_it() const</a>
+      </td>
+      <td>
+        <a href="#l340">340</a>
+      </td>
+      <td>
+        <a href="#l340"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l303">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::get_neighbour_nodes(tket::Node const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l303">303</a>
+      </td>
+      <td>
+        <a href="#l303"> called 56706 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l353">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::get_node(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l353">353</a>
+      </td>
+      <td>
+        <a href="#l353"> called 201101 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l187">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::get_out_degree(tket::Node const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l187">187</a>
+      </td>
+      <td>
+        <a href="#l187"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l285">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::get_path(tket::Node const&amp;, tket::Node const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l285">285</a>
+      </td>
+      <td>
+        <a href="#l285"> called 309 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l295">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::get_path(tket::Node const&amp;, tket::Node const&amp;) const::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l295">295</a>
+      </td>
+      <td>
+        <a href="#l295"> called 930 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l223">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::get_undirected_connectivity() const</a>
+      </td>
+      <td>
+        <a href="#l223">223</a>
+      </td>
+      <td>
+        <a href="#l223"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l345">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::get_vertices_it() const</a>
+      </td>
+      <td>
+        <a href="#l345">345</a>
+      </td>
+      <td>
+        <a href="#l345"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l263">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::max_degree_nodes() const</a>
+      </td>
+      <td>
+        <a href="#l263">263</a>
+      </td>
+      <td>
+        <a href="#l263"> called 20 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l269">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::max_degree_nodes() const::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l269">269</a>
+      </td>
+      <td>
+        <a href="#l269"> called 131 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l274">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::min_degree_nodes() const</a>
+      </td>
+      <td>
+        <a href="#l274">274</a>
+      </td>
+      <td>
+        <a href="#l274"> called 446 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l280">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::min_degree_nodes() const::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l280">280</a>
+      </td>
+      <td>
+        <a href="#l280"> called 893 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l199">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::n_connected() const</a>
+      </td>
+      <td>
+        <a href="#l199">199</a>
+      </td>
+      <td>
+        <a href="#l199"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l201">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::n_connected() const::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l201">201</a>
+      </td>
+      <td>
+        <a href="#l201"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l196">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::n_connections() const</a>
+      </td>
+      <td>
+        <a href="#l196">196</a>
+      </td>
+      <td>
+        <a href="#l196"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l320">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::operator==(tket::graphs::DirectedGraphBase&lt;tket::Node&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l320">320</a>
+      </td>
+      <td>
+        <a href="#l320"> called 4 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l138">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::remove_connection(std::pair&lt;tket::Node, tket::Node&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l138">138</a>
+      </td>
+      <td>
+        <a href="#l138"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l154">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::remove_connection(tket::Node const&amp;, tket::Node const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l154">154</a>
+      </td>
+      <td>
+        <a href="#l154"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l116">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::remove_node(tket::Node const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l116">116</a>
+      </td>
+      <td>
+        <a href="#l116"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l250">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::remove_stray_nodes()</a>
+      </td>
+      <td>
+        <a href="#l250">250</a>
+      </td>
+      <td>
+        <a href="#l250"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l355">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::to_vertices()</a>
+      </td>
+      <td>
+        <a href="#l355">355</a>
+      </td>
+      <td>
+        <a href="#l355"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l356">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::to_vertices() const</a>
+      </td>
+      <td>
+        <a href="#l356">356</a>
+      </td>
+      <td>
+        <a href="#l356"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l357">tket::graphs::DirectedGraphBase&lt;tket::Node&gt;::to_vertices(tket::Node const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l357">357</a>
+      </td>
+      <td>
+        <a href="#l357"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l74">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::DirectedGraphBase()</a>
+      </td>
+      <td>
+        <a href="#l74">74</a>
+      </td>
+      <td>
+        <a href="#l74"> called 19 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l85">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::DirectedGraphBase(std::vector&lt;std::pair&lt;tket::Qubit, tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit, tket::Qubit&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l85">85</a>
+      </td>
+      <td>
+        <a href="#l85"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l77">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::DirectedGraphBase(std::vector&lt;tket::Qubit, std::allocator&lt;tket::Qubit&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l77">77</a>
+      </td>
+      <td>
+        <a href="#l77"> called 78 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l128">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::add_connection(tket::Qubit const&amp;, tket::Qubit const&amp;, unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l128">128</a>
+      </td>
+      <td>
+        <a href="#l128"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l109">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::add_node(tket::Qubit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l109">109</a>
+      </td>
+      <td>
+        <a href="#l109"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l98">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::edge_exists(tket::Qubit const&amp;, tket::Qubit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l98">98</a>
+      </td>
+      <td>
+        <a href="#l98"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l206">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::edges() const</a>
+      </td>
+      <td>
+        <a href="#l206">206</a>
+      </td>
+      <td>
+        <a href="#l206"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l359">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::from_vertices()</a>
+      </td>
+      <td>
+        <a href="#l359">359</a>
+      </td>
+      <td>
+        <a href="#l359"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l360">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::from_vertices() const</a>
+      </td>
+      <td>
+        <a href="#l360">360</a>
+      </td>
+      <td>
+        <a href="#l360"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l361">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::from_vertices(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l361">361</a>
+      </td>
+      <td>
+        <a href="#l361"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l212">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::get_all_edges_vec() const</a>
+      </td>
+      <td>
+        <a href="#l212">212</a>
+      </td>
+      <td>
+        <a href="#l212"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l163">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::get_connection_weight(tket::Qubit const&amp;, tket::Qubit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l163">163</a>
+      </td>
+      <td>
+        <a href="#l163"> called 10734 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l178">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::get_degree(tket::Qubit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l178">178</a>
+      </td>
+      <td>
+        <a href="#l178"> called 1367 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l238">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::get_distance(tket::Qubit const&amp;, tket::Qubit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l238">238</a>
+      </td>
+      <td>
+        <a href="#l238"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l228">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::get_distances(tket::Qubit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l228">228</a>
+      </td>
+      <td>
+        <a href="#l228"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l340">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::get_edges_it() const</a>
+      </td>
+      <td>
+        <a href="#l340">340</a>
+      </td>
+      <td>
+        <a href="#l340"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l303">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::get_neighbour_nodes(tket::Qubit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l303">303</a>
+      </td>
+      <td>
+        <a href="#l303"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l353">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::get_node(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l353">353</a>
+      </td>
+      <td>
+        <a href="#l353"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l187">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::get_out_degree(tket::Qubit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l187">187</a>
+      </td>
+      <td>
+        <a href="#l187"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l285">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::get_path(tket::Qubit const&amp;, tket::Qubit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l285">285</a>
+      </td>
+      <td>
+        <a href="#l285"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l295">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::get_path(tket::Qubit const&amp;, tket::Qubit const&amp;) const::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l295">295</a>
+      </td>
+      <td>
+        <a href="#l295"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l223">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::get_undirected_connectivity() const</a>
+      </td>
+      <td>
+        <a href="#l223">223</a>
+      </td>
+      <td>
+        <a href="#l223"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l345">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::get_vertices_it() const</a>
+      </td>
+      <td>
+        <a href="#l345">345</a>
+      </td>
+      <td>
+        <a href="#l345"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l263">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::max_degree_nodes() const</a>
+      </td>
+      <td>
+        <a href="#l263">263</a>
+      </td>
+      <td>
+        <a href="#l263"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l269">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::max_degree_nodes() const::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l269">269</a>
+      </td>
+      <td>
+        <a href="#l269"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l274">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::min_degree_nodes() const</a>
+      </td>
+      <td>
+        <a href="#l274">274</a>
+      </td>
+      <td>
+        <a href="#l274"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l280">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::min_degree_nodes() const::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l280">280</a>
+      </td>
+      <td>
+        <a href="#l280"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l199">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::n_connected() const</a>
+      </td>
+      <td>
+        <a href="#l199">199</a>
+      </td>
+      <td>
+        <a href="#l199"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l201">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::n_connected() const::{lambda(unsigned long)#1}::operator()(unsigned long) const</a>
+      </td>
+      <td>
+        <a href="#l201">201</a>
+      </td>
+      <td>
+        <a href="#l201"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l196">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::n_connections() const</a>
+      </td>
+      <td>
+        <a href="#l196">196</a>
+      </td>
+      <td>
+        <a href="#l196"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l320">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::operator==(tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt; const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l320">320</a>
+      </td>
+      <td>
+        <a href="#l320"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l138">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::remove_connection(std::pair&lt;tket::Qubit, tket::Qubit&gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l138">138</a>
+      </td>
+      <td>
+        <a href="#l138"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l154">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::remove_connection(tket::Qubit const&amp;, tket::Qubit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l154">154</a>
+      </td>
+      <td>
+        <a href="#l154"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l116">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::remove_node(tket::Qubit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l116">116</a>
+      </td>
+      <td>
+        <a href="#l116"> called 1064 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l250">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::remove_stray_nodes()</a>
+      </td>
+      <td>
+        <a href="#l250">250</a>
+      </td>
+      <td>
+        <a href="#l250"> called 60 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l355">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::to_vertices()</a>
+      </td>
+      <td>
+        <a href="#l355">355</a>
+      </td>
+      <td>
+        <a href="#l355"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l356">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::to_vertices() const</a>
+      </td>
+      <td>
+        <a href="#l356">356</a>
+      </td>
+      <td>
+        <a href="#l356"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l357">tket::graphs::DirectedGraphBase&lt;tket::Qubit&gt;::to_vertices(tket::Qubit const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l357">357</a>
+      </td>
+      <td>
+        <a href="#l357"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l43">tket::graphs::NodesNotConnected&lt;tket::Node&gt;::NodesNotConnected(tket::Node const&amp;, tket::Node const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l43">43</a>
+      </td>
+      <td>
+        <a href="#l43"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l43">tket::graphs::NodesNotConnected&lt;tket::Qubit&gt;::NodesNotConnected(tket::Qubit const&amp;, tket::Qubit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l43">43</a>
+      </td>
+      <td>
+        <a href="#l43"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l50">tket::graphs::WeightedEdge::WeightedEdge(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l50">50</a>
+      </td>
+      <td>
+        <a href="#l50"> not called</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -687,7 +1886,7 @@
       <td class="lineno"><a id="l77" href="#l77">77</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">64</td>
+      <td class="linecount coveredLine">78</td>
       <td class="src coveredLine">  <span class="k">explicit</span> <span class="n">DirectedGraphBase</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;&amp;</span> <span class="n">nodes</span><span class="p">)</span></td>
     </tr>
 
@@ -697,14 +1896,14 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/4</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 64 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 78 times.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
-          <div class="takenBranch">&check; Branch 6 taken 64 times.</div>
+          <div class="takenBranch">&check; Branch 6 taken 78 times.</div>
           <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">64</td>
+      <td class="linecount coveredLine">78</td>
       <td class="src coveredLine">      <span class="o">:</span> <span class="n">AbstractGraph</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">nodes</span><span class="p">),</span> <span class="n">graph</span><span class="p">()</span> <span class="p">{</span></td>
     </tr>
 
@@ -714,12 +1913,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 3 taken 1339 times.</div>
-          <div class="takenBranch">&check; Branch 4 taken 64 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 1440 times.</div>
+          <div class="takenBranch">&check; Branch 4 taken 78 times.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">1403</td>
+      <td class="linecount coveredLine">1518</td>
       <td class="src coveredLine">    <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="nl">node</span> <span class="p">:</span> <span class="n">nodes</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -729,12 +1928,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 1339 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 1440 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">1339</td>
+      <td class="linecount coveredLine">1440</td>
       <td class="src coveredLine">      <span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">);</span></td>
     </tr>
 
@@ -750,7 +1949,7 @@
       <td class="lineno"><a id="l82" href="#l82">82</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">64</td>
+      <td class="linecount coveredLine">78</td>
       <td class="src coveredLine">  <span class="p">}</span></td>
     </tr>
 
@@ -4218,7 +5417,7 @@
       <td class="lineno"><a id="l467" href="#l467">467</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">66</td>
+      <td class="linecount coveredLine">85</td>
       <td class="src coveredLine">  <span class="k">const</span> <span class="n">UndirectedConnGraph</span><span class="o">&amp;</span> <span class="n">get_undirected_connectivity</span><span class="p">()</span> <span class="k">const</span><span class="o">&amp;</span> <span class="p">{</span></td>
     </tr>
 
@@ -4236,12 +5435,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 64 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 83 times.</div>
           <div class="takenBranch">&check; Branch 2 taken 2 times.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">66</td>
+      <td class="linecount coveredLine">85</td>
       <td class="src coveredLine">    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">undir_graph</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -4251,12 +5450,12 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 64 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 83 times.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">64</td>
+      <td class="linecount coveredLine">83</td>
       <td class="src coveredLine">      <span class="n">undir_graph</span> <span class="o">=</span> <span class="n">Base</span><span class="o">::</span><span class="n">get_undirected_connectivity</span><span class="p">();</span></td>
     </tr>
 
@@ -4272,7 +5471,7 @@
       <td class="lineno"><a id="l472" href="#l472">472</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">66</td>
+      <td class="linecount coveredLine">85</td>
       <td class="src coveredLine">    <span class="k">return</span> <span class="n">undir_graph</span><span class="p">.</span><span class="n">value</span><span class="p">();</span></td>
     </tr>
 
@@ -4528,7 +5727,7 @@
       <td class="lineno"><a id="l504" href="#l504">504</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">264</td>
+      <td class="linecount coveredLine">353</td>
       <td class="src coveredLine">  <span class="kt">void</span> <span class="n">add_connection</span><span class="p">(</span><span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">node1</span><span class="p">,</span> <span class="k">const</span> <span class="n">T</span><span class="o">&amp;</span> <span class="n">node2</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -4536,7 +5735,7 @@
       <td class="lineno"><a id="l505" href="#l505">505</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">264</td>
+      <td class="linecount coveredLine">353</td>
       <td class="src coveredLine">    <span class="n">invalidate_cache</span><span class="p">();</span></td>
     </tr>
 
@@ -4544,7 +5743,7 @@
       <td class="lineno"><a id="l506" href="#l506">506</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">264</td>
+      <td class="linecount coveredLine">353</td>
       <td class="src coveredLine">    <span class="n">Base</span><span class="o">::</span><span class="n">add_connection</span><span class="p">(</span><span class="n">node1</span><span class="p">,</span> <span class="n">node2</span><span class="p">,</span> <span class="n">weight</span><span class="p">);</span></td>
     </tr>
 
@@ -4552,7 +5751,7 @@
       <td class="lineno"><a id="l507" href="#l507">507</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">264</td>
+      <td class="linecount coveredLine">353</td>
       <td class="src coveredLine">  <span class="p">}</span></td>
     </tr>
 
@@ -4672,7 +5871,7 @@
       <td class="lineno"><a id="l522" href="#l522">522</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">325</td>
+      <td class="linecount coveredLine">414</td>
       <td class="src coveredLine">  <span class="kr">inline</span> <span class="kt">void</span> <span class="n">invalidate_cache</span><span class="p">()</span> <span class="p">{</span></td>
     </tr>
 
@@ -4680,7 +5879,7 @@
       <td class="lineno"><a id="l523" href="#l523">523</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">325</td>
+      <td class="linecount coveredLine">414</td>
       <td class="src coveredLine">    <span class="n">distance_cache</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span></td>
     </tr>
 
@@ -4688,7 +5887,7 @@
       <td class="lineno"><a id="l524" href="#l524">524</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">325</td>
+      <td class="linecount coveredLine">414</td>
       <td class="src coveredLine">    <span class="n">undir_graph</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">nullopt</span><span class="p">;</span></td>
     </tr>
 
@@ -4696,7 +5895,7 @@
       <td class="lineno"><a id="l525" href="#l525">525</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">325</td>
+      <td class="linecount coveredLine">414</td>
       <td class="src coveredLine">  <span class="p">}</span></td>
     </tr>
 
@@ -4750,11 +5949,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>

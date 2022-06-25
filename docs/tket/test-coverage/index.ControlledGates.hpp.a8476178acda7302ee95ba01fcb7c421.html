@@ -9,11 +9,12 @@
   </head>
 
   <body>
-    <h1>GCC Code Coverage Report</h1>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
 
-    <hr/>
+      <hr/>
 
-    <div class="summary">
+      <div class="summary">
 <div>
   <table class="legend">
     <tr>
@@ -26,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-11 04:45:57</td>
+      <td>2022-06-25 10:39:34</td>
     </tr>
   </table>
 </div>
@@ -45,6 +46,12 @@
       <td class="coverage-none">0.0%</td>
     </tr>
     <tr>
+      <th scope="row">Functions:</th>
+      <td>0</td>
+      <td>1</td>
+      <td class="coverage-none">0.0%</td>
+    </tr>
+    <tr>
       <th scope="row">Branches:</th>
       <td>0</td>
       <td>0</td>
@@ -52,10 +59,36 @@
     </tr>
   </table>
 </div>
-    </div>
+      </div>
 
-    <hr/>
+      <hr/>
+    </header>
 
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l25">tket::Transforms::ControlDecompError::ControlDecompError(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l25">25</a>
+      </td>
+      <td>
+        <a href="#l25"> not called</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
 <div class="file-source">
   <table>
     <tr>
@@ -327,7 +360,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="n">Circuit</span> <span class="nf">cnx_normal_decomp</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">n</span><span class="p">);</span></td>
+      <td class="src "><span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -335,7 +368,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm"> * @brief Get an n-qubit incrementer circuit with linear depth and O(n^2) gate</span></td>
     </tr>
 
     <tr class="source-line">
@@ -343,7 +376,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="n">Circuit</span> <span class="nf">cnx_gray_decomp</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">n</span><span class="p">);</span></td>
+      <td class="src "><span class="cm"> * count. There exists a global phase difference</span></td>
     </tr>
 
     <tr class="source-line">
@@ -351,7 +384,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm"> * https://arxiv.org/abs/2203.11882</span></td>
     </tr>
 
     <tr class="source-line">
@@ -359,7 +392,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// does not use ancillae</span></td>
+      <td class="src "><span class="cm"> *</span></td>
     </tr>
 
     <tr class="source-line">
@@ -367,7 +400,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// Expects: CCX + any other gates</span></td>
+      <td class="src "><span class="cm"> * @param n number of qubits</span></td>
     </tr>
 
     <tr class="source-line">
@@ -375,7 +408,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// returns CX, H, T, Tdg + any previous gates</span></td>
+      <td class="src "><span class="cm"> * @param lsb set to false if we don&#39;t want to toggle the least siginificant bit</span></td>
     </tr>
 
     <tr class="source-line">
@@ -383,7 +416,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="n">Transform</span> <span class="nf">decomp_CCX</span><span class="p">();</span></td>
+      <td class="src "><span class="cm"> * @return Circuit containing CRx, X</span></td>
     </tr>
 
     <tr class="source-line">
@@ -391,7 +424,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm"> */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -399,7 +432,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="n">Circuit</span> <span class="nf">decomposed_CnRy</span><span class="p">(</span><span class="k">const</span> <span class="n">Op_ptr</span> <span class="n">op</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">arity</span><span class="p">);</span></td>
+      <td class="src "><span class="n">Circuit</span> <span class="nf">incrementer_linear_depth</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">n</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">lsb</span> <span class="o">=</span> <span class="nb">true</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -415,7 +448,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// converts arbitrarily controlled Ry gates. It does not use ancillae, so it</span></td>
+      <td class="src "><span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -423,7 +456,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// is not very depth-efficient Expects: CRys and any other gates returns Ry,</span></td>
+      <td class="src "><span class="cm"> * @brief Implement CnU gate with linear depth and O(n^2) gate count.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -431,7 +464,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// CX, H, T, Tdg + whatever other gates were there before</span></td>
+      <td class="src "><span class="cm"> * https://arxiv.org/abs/2203.11882</span></td>
     </tr>
 
     <tr class="source-line">
@@ -439,7 +472,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="n">Transform</span> <span class="nf">decomp_controlled_Rys</span><span class="p">();</span></td>
+      <td class="src "><span class="cm"> *</span></td>
     </tr>
 
     <tr class="source-line">
@@ -447,7 +480,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm"> * @param n number of controls</span></td>
     </tr>
 
     <tr class="source-line">
@@ -455,7 +488,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// does not use ancillae</span></td>
+      <td class="src "><span class="cm"> * @param u the controlled 2x2 unitary matrix</span></td>
     </tr>
 
     <tr class="source-line">
@@ -463,7 +496,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// Expects: any CnRys + CnXs + any other gates</span></td>
+      <td class="src "><span class="cm"> * @return Circuit containing CRx, Unitary1QBox, and one-qubit controlled</span></td>
     </tr>
 
     <tr class="source-line">
@@ -471,7 +504,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="c1">// returns Ry, CX, H, T, Tdg + any previous gates</span></td>
+      <td class="src "><span class="cm"> * Unitary1QBox</span></td>
     </tr>
 
     <tr class="source-line">
@@ -479,7 +512,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="n">Transform</span> <span class="nf">decomp_arbitrary_controlled_gates</span><span class="p">();</span></td>
+      <td class="src "><span class="cm"> */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -487,7 +520,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="n">Circuit</span> <span class="nf">cnu_linear_depth_decomp</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">n</span><span class="p">,</span> <span class="k">const</span> <span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix2cd</span><span class="o">&amp;</span> <span class="n">u</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -495,7 +528,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">}</span>  <span class="c1">// namespace Transforms</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -503,7 +536,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="n">Circuit</span> <span class="nf">cnx_normal_decomp</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">n</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -511,11 +544,187 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">}</span>  <span class="c1">// namespace tket</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l57" href="#l57">57</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="n">Circuit</span> <span class="nf">cnx_gray_decomp</span><span class="p">(</span><span class="kt">unsigned</span> <span class="n">n</span><span class="p">);</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l58" href="#l58">58</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l59" href="#l59">59</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// does not use ancillae</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l60" href="#l60">60</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// Expects: CCX + any other gates</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l61" href="#l61">61</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// returns CX, H, T, Tdg + any previous gates</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l62" href="#l62">62</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="n">Transform</span> <span class="nf">decomp_CCX</span><span class="p">();</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l63" href="#l63">63</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l64" href="#l64">64</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="n">Circuit</span> <span class="nf">decomposed_CnRy</span><span class="p">(</span><span class="k">const</span> <span class="n">Op_ptr</span> <span class="n">op</span><span class="p">,</span> <span class="kt">unsigned</span> <span class="n">arity</span><span class="p">);</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l65" href="#l65">65</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l66" href="#l66">66</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// converts arbitrarily controlled Ry gates. It does not use ancillae, so it</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l67" href="#l67">67</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// is not very depth-efficient Expects: CRys and any other gates returns Ry,</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l68" href="#l68">68</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// CX, H, T, Tdg + whatever other gates were there before</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l69" href="#l69">69</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="n">Transform</span> <span class="nf">decomp_controlled_Rys</span><span class="p">();</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l70" href="#l70">70</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l71" href="#l71">71</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// does not use ancillae</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l72" href="#l72">72</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// Expects: any CnRys + CnXs + any other gates</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l73" href="#l73">73</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// returns Ry, CX, H, T, Tdg + any previous gates</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l74" href="#l74">74</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="n">Transform</span> <span class="nf">decomp_arbitrary_controlled_gates</span><span class="p">();</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l75" href="#l75">75</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l76" href="#l76">76</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span>  <span class="c1">// namespace Transforms</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l77" href="#l77">77</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l78" href="#l78">78</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span>  <span class="c1">// namespace tket</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l79" href="#l79">79</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
@@ -524,11 +733,11 @@
 
   </table>
 </div>
-
-    <hr/>
+      <hr/>
+    </main>
 
     <footer>
-      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.0)</a>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.1)</a>
     </footer>
   </body>
 </html>
