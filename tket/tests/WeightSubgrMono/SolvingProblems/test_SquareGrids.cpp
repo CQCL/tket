@@ -259,7 +259,7 @@ SCENARIO("Medium square grid problems only", "[.long]") {
 
 SCENARIO("Monster square grid problems only", "[.long]") {
   const std::set<std::pair<unsigned, unsigned>> empty_problems;
-  test(empty_problems, get_monster_problems(), 0, 3, 3, 9999, 40000);
+  test(empty_problems, get_monster_problems(), 0, 3, 3, 9999, 100000);
 }
 
 }  // namespace WeightedSubgraphMonomorphism

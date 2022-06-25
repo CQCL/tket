@@ -377,12 +377,11 @@ SCENARIO(
     entry = -1;
   }
   TestParameters params;
-  params.timeout = 20000;
+  params.timeout = 30000;
   params.total_number_of_edges = 3250;
   params.total_number_of_vertices = 334;
 
-  // Currently, ~7 seconds; although only because of two nasty problems.
-  params.expected_max_total_time_ms = 20000;
+  params.expected_max_total_time_ms = 30000;
   params.expected_min_total_time_ms = 1000;
   const auto result = tester.test_all_against_all(params);
   CHECK(result.success_count == 2);
@@ -498,10 +497,10 @@ SCENARIO(
     }
   }
   TestParameters params;
-  params.timeout = 20000;
+  params.timeout = 100000;
   params.total_number_of_edges = 1081;
   params.total_number_of_vertices = 181;
-  params.expected_max_total_time_ms = 20000;
+  params.expected_max_total_time_ms = 100000;
   params.expected_min_total_time_ms = 1000;
   const auto result = tester.test_all_against_all(params);
   CHECK(result.success_count == 5);
