@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/EndToEndWrappers/SolutionWSM.hpp"
+#include "tkwsm/EndToEndWrappers/SolutionWSM.hpp"
 
 #include <sstream>
 
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
+#include "tkwsm/Common/GeneralUtils.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

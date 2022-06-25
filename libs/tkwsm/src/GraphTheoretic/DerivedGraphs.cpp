@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/GraphTheoretic/DerivedGraphs.hpp"
+#include "tkwsm/GraphTheoretic/DerivedGraphs.hpp"
 
-#include "WeightSubgrMono/GraphTheoretic/DerivedGraphsCalculator.hpp"
+#include "tkwsm/GraphTheoretic/DerivedGraphsCalculator.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

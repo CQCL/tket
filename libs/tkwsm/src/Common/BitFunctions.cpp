@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/Common/BitFunctions.hpp"
+#include "tkwsm/Common/BitFunctions.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

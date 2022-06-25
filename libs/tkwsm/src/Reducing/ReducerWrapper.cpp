@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/Reducing/ReducerWrapper.hpp"
+#include "tkwsm/Reducing/ReducerWrapper.hpp"
 
-#include "WeightSubgrMono/Searching/DomainsAccessor.hpp"
+#include "tkwsm/Searching/DomainsAccessor.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

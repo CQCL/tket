@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/WeightPruning/WeightChecker.hpp"
+#include "tkwsm/WeightPruning/WeightChecker.hpp"
 
 #include <algorithm>
 #include <tkassert/Assert.hpp>
 
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
-#include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
-#include "WeightSubgrMono/Searching/DomainsAccessor.hpp"
-#include "WeightSubgrMono/Searching/SearchBranch.hpp"
-#include "WeightSubgrMono/WeightPruning/WeightNogoodDetector.hpp"
+#include "tkwsm/Common/GeneralUtils.hpp"
+#include "tkwsm/GraphTheoretic/NeighboursData.hpp"
+#include "tkwsm/Searching/DomainsAccessor.hpp"
+#include "tkwsm/Searching/SearchBranch.hpp"
+#include "tkwsm/WeightPruning/WeightNogoodDetector.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

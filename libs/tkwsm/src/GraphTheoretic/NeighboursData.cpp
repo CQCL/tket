@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
+#include "tkwsm/GraphTheoretic/NeighboursData.hpp"
 
 #include <algorithm>
 #include <set>
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
+#include "tkwsm/Common/GeneralUtils.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

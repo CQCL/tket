@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/EndToEndWrappers/MainSolver.hpp"
+#include "tkwsm/EndToEndWrappers/MainSolver.hpp"
 
 #include <algorithm>
 #include <chrono>
 #include <numeric>
 #include <tkassert/Assert.hpp>
 
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
-#include "WeightSubgrMono/EndToEndWrappers/PreSearchComponents.hpp"
-#include "WeightSubgrMono/EndToEndWrappers/SearchComponents.hpp"
-#include "WeightSubgrMono/GraphTheoretic/DomainInitialiser.hpp"
-#include "WeightSubgrMono/WeightPruning/WeightChecker.hpp"
+#include "tkwsm/Common/GeneralUtils.hpp"
+#include "tkwsm/EndToEndWrappers/PreSearchComponents.hpp"
+#include "tkwsm/EndToEndWrappers/SearchComponents.hpp"
+#include "tkwsm/GraphTheoretic/DomainInitialiser.hpp"
+#include "tkwsm/WeightPruning/WeightChecker.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

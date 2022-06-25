@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/WeightPruning/WeightNogoodDetectorManager.hpp"
+#include "tkwsm/WeightPruning/WeightNogoodDetectorManager.hpp"
 
 #include <algorithm>
 
-#include "WeightSubgrMono/Common/DyadicFraction.hpp"
+#include "tkwsm/Common/DyadicFraction.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

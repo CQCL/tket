@@ -15,8 +15,8 @@
 #pragma once
 #include <tkrng/RNG.hpp>
 
-#include "WeightSubgrMono/Searching/ValueOrdering.hpp"
-#include "WeightSubgrMono/Searching/VariableOrdering.hpp"
+#include "tkwsm/Searching/ValueOrdering.hpp"
+#include "tkwsm/Searching/VariableOrdering.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

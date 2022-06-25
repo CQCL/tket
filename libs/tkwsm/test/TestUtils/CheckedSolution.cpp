@@ -15,10 +15,10 @@
 #include "CheckedSolution.hpp"
 
 #include <catch2/catch_test_macros.hpp>
+#include <tkwsm/Common/GeneralUtils.hpp>
+#include <tkwsm/EndToEndWrappers/MainSolver.hpp>
 
 #include "../TestUtils/TestSettings.hpp"
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
-#include "WeightSubgrMono/EndToEndWrappers/MainSolver.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

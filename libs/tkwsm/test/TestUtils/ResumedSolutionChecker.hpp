@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #pragma once
-#include "WeightSubgrMono/EndToEndWrappers/MainSolver.hpp"
+#include <tkwsm/EndToEndWrappers/MainSolver.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

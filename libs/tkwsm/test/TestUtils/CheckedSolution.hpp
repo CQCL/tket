@@ -14,8 +14,7 @@
 
 #pragma once
 #include <optional>
-
-#include "WeightSubgrMono/EndToEndWrappers/MainSolver.hpp"
+#include <tkwsm/EndToEndWrappers/MainSolver.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

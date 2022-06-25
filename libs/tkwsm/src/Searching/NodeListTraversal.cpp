@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/Searching/NodeListTraversal.hpp"
+#include "tkwsm/Searching/NodeListTraversal.hpp"
 
 #include <sstream>
 #include <tkassert/Assert.hpp>
 
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
-#include "WeightSubgrMono/Searching/NodesRawData.hpp"
+#include "tkwsm/Common/GeneralUtils.hpp"
+#include "tkwsm/Searching/NodesRawData.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

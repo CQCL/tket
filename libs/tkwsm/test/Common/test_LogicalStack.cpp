@@ -14,8 +14,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <tkrng/RNG.hpp>
-
-#include "WeightSubgrMono/Common/LogicalStack.hpp"
+#include <tkwsm/Common/LogicalStack.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

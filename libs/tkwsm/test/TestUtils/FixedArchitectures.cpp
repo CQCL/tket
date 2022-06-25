@@ -16,8 +16,7 @@
 
 #include <algorithm>
 #include <catch2/catch_test_macros.hpp>
-
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
+#include <tkwsm/Common/GeneralUtils.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

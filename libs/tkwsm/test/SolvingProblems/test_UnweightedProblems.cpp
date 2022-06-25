@@ -18,12 +18,12 @@
 #include <random>
 #include <sstream>
 #include <string>
+#include <tkwsm/Common/GeneralUtils.hpp>
 #include <utility>
 
 #include "../TestUtils/CheckedSolution.hpp"
 #include "../TestUtils/ResumedSolutionChecker.hpp"
 #include "../TestUtils/TestSettings.hpp"
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

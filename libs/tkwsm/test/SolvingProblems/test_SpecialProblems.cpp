@@ -21,12 +21,12 @@
 #include <sstream>
 #include <string>
 #include <tkrng/RNG.hpp>
+#include <tkwsm/Common/GeneralUtils.hpp>
 #include <utility>
 
 #include "../TestUtils/CheckedSolution.hpp"
 #include "../TestUtils/ResumedSolutionChecker.hpp"
 #include "../TestUtils/TestSettings.hpp"
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

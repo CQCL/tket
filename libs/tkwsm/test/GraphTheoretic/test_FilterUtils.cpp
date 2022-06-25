@@ -16,9 +16,8 @@
 #include <map>
 #include <sstream>
 #include <tkrng/RNG.hpp>
-
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
-#include "WeightSubgrMono/GraphTheoretic/FilterUtils.hpp"
+#include <tkwsm/Common/GeneralUtils.hpp>
+#include <tkwsm/GraphTheoretic/FilterUtils.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

@@ -14,10 +14,9 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <stdexcept>
-
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
-#include "WeightSubgrMono/GraphTheoretic/NearNeighboursData.hpp"
-#include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
+#include <tkwsm/Common/GeneralUtils.hpp>
+#include <tkwsm/GraphTheoretic/NearNeighboursData.hpp>
+#include <tkwsm/GraphTheoretic/NeighboursData.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

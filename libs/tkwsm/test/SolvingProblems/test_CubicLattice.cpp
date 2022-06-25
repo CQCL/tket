@@ -15,11 +15,11 @@
 #include <array>
 #include <catch2/catch_test_macros.hpp>
 #include <random>
+#include <tkwsm/Common/GeneralUtils.hpp>
 
 #include "../TestUtils/CheckedSolution.hpp"
 #include "../TestUtils/ResumedSolutionChecker.hpp"
 #include "../TestUtils/TestSettings.hpp"
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

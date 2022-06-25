@@ -13,8 +13,7 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
-
-#include "WeightSubgrMono/EndToEndWrappers/SolutionWSM.hpp"
+#include <tkwsm/EndToEndWrappers/SolutionWSM.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

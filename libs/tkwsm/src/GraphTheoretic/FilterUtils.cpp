@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/GraphTheoretic/FilterUtils.hpp"
+#include "tkwsm/GraphTheoretic/FilterUtils.hpp"
 
 #include <algorithm>
 #include <tkassert/Assert.hpp>

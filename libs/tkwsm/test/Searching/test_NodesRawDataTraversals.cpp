@@ -15,10 +15,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include <sstream>
 #include <tkrng/RNG.hpp>
-
-#include "WeightSubgrMono/Searching/DomainsAccessor.hpp"
-#include "WeightSubgrMono/Searching/NodeListTraversal.hpp"
-#include "WeightSubgrMono/Searching/NodesRawData.hpp"
+#include <tkwsm/Searching/DomainsAccessor.hpp>
+#include <tkwsm/Searching/NodeListTraversal.hpp>
+#include <tkwsm/Searching/NodesRawData.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

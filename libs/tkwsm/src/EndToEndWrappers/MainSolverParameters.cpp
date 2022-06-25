@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/EndToEndWrappers/MainSolverParameters.hpp"
+#include "tkwsm/EndToEndWrappers/MainSolverParameters.hpp"
 
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
+#include "tkwsm/Common/GeneralUtils.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

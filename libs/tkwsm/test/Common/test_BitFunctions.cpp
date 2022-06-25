@@ -14,8 +14,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <random>
-
-#include "WeightSubgrMono/Common/BitFunctions.hpp"
+#include <tkwsm/Common/BitFunctions.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

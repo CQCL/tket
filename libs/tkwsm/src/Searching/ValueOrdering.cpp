@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/Searching/ValueOrdering.hpp"
+#include "tkwsm/Searching/ValueOrdering.hpp"
 
 #include <algorithm>
 #include <tkassert/Assert.hpp>
 #include <tkrng/RNG.hpp>
 
-#include "WeightSubgrMono/GraphTheoretic/NeighboursData.hpp"
+#include "tkwsm/GraphTheoretic/NeighboursData.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

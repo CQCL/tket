@@ -13,8 +13,7 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
-
-#include "WeightSubgrMono/GraphTheoretic/GeneralStructs.hpp"
+#include <tkwsm/GraphTheoretic/GeneralStructs.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

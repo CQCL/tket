@@ -15,8 +15,7 @@
 #include <array>
 #include <catch2/catch_test_macros.hpp>
 #include <random>
-
-#include "WeightSubgrMono/Common/DyadicFraction.hpp"
+#include <tkwsm/Common/DyadicFraction.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

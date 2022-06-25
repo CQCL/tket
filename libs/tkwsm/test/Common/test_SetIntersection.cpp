@@ -16,8 +16,7 @@
 #include <numeric>
 #include <random>
 #include <tkrng/RNG.hpp>
-
-#include "WeightSubgrMono/Common/SetIntersection.hpp"
+#include <tkwsm/Common/SetIntersection.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

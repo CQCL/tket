@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #pragma once
-#include "WeightSubgrMono/GraphTheoretic/GeneralStructs.hpp"
+#include <tkwsm/GraphTheoretic/GeneralStructs.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

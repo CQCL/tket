@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "WeightSubgrMono/GraphTheoretic/GeneralStructs.hpp"
+#include "tkwsm/GraphTheoretic/GeneralStructs.hpp"
 
 #include <set>
 #include <sstream>

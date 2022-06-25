@@ -14,8 +14,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <stdexcept>
-
-#include "WeightSubgrMono/Searching/NodesRawData.hpp"
+#include <tkwsm/Searching/NodesRawData.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
