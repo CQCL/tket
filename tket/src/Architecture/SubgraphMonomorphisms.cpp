@@ -16,8 +16,7 @@
 
 #include <set>
 #include <tkassert/Assert.hpp>
-
-#include "WeightSubgrMono/EndToEndWrappers/MainSolver.hpp"
+#include <tkwsm/EndToEndWrappers/MainSolver.hpp>
 
 namespace tket {
 

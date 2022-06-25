@@ -12,9 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <tkwsm/EndToEndWrappers/MainSolver.hpp>
+
 #include "Placement/Placement.hpp"
 #include "RelabelledGraphWSM.hpp"
-#include "WeightSubgrMono/EndToEndWrappers/MainSolver.hpp"
 
 namespace tket {
 

@@ -41,7 +41,8 @@ endif()
 list(APPEND TKET_EXTRA_LIBS
     ${CONAN_LIBS_SYMENGINE}
     ${CONAN_LIBS_TKLOG}
-    ${CONAN_LIBS_TKASSERT})
+    ${CONAN_LIBS_TKASSERT}
+    ${CONAN_LIBS_TKWSM})
 
 pybind11_add_module(circuit
     binders/circuit/main.cpp
@@ -83,8 +84,8 @@ target_link_libraries(mapping PRIVATE
     tket-PauliGraph
     tket-Placement    
     tket-Transformations
-    tket-Utils
-    tket-WeightSubgrMono)
+    tket-Utils)
+target_link_libraries(circuit PRIVATE ${TKET_EXTRA_LIBS})
 
 pybind11_add_module(transform binders/transform.cpp)
 target_include_directories(transform PRIVATE binders/include)
@@ -100,8 +101,7 @@ target_link_libraries(transform PRIVATE
     tket-OpType
     tket-PauliGraph
     tket-Transformations
-    tket-Utils
-    tket-WeightSubgrMono)
+    tket-Utils)
 target_link_libraries(transform PRIVATE ${TKET_EXTRA_LIBS})
 if (WIN32)
     # For boost::uuid:
@@ -125,8 +125,7 @@ target_link_libraries(predicates PRIVATE
     tket-PauliGraph
     tket-Predicates
     tket-Transformations
-    tket-Utils
-    tket-WeightSubgrMono)
+    tket-Utils)
 target_link_libraries(predicates PRIVATE ${TKET_EXTRA_LIBS})
 if (WIN32)
     # For boost::uuid:
@@ -150,8 +149,7 @@ target_link_libraries(passes PRIVATE
     tket-PauliGraph
     tket-Predicates
     tket-Transformations
-    tket-Utils
-    tket-WeightSubgrMono)
+    tket-Utils)
 target_link_libraries(passes PRIVATE ${TKET_EXTRA_LIBS})
 if (WIN32)
     # For boost::uuid:
@@ -164,8 +162,7 @@ target_include_directories(architecture PRIVATE binders/include)
 target_link_libraries(architecture PRIVATE
     tket-Architecture
     tket-Graphs
-    tket-Utils
-    tket-WeightSubgrMono)
+    tket-Utils)
 target_link_libraries(architecture PRIVATE ${TKET_EXTRA_LIBS})
 
 
@@ -228,8 +225,7 @@ target_link_libraries(tailoring PRIVATE
     tket-Ops
     tket-OpType
     tket-PauliGraph
-    tket-Utils
-    tket-WeightSubgrMono)
+    tket-Utils)
 target_link_libraries(tailoring PRIVATE ${TKET_EXTRA_LIBS})
 if (WIN32)
     # For boost::uuid:

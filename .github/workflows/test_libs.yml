@@ -29,6 +29,8 @@ jobs:
             - 'libs/tkrng/**'
           tktokenswap:
             - 'libs/tktokenswap/**'
+          tkwsm:
+            - 'libs/tkwsm/**'
   test_libraries:
     name: test library
     needs: changes

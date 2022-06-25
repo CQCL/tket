@@ -63,7 +63,6 @@ target_link_libraries(test_tket PRIVATE
     tket-Simulation
     tket-Transformations
     tket-Utils
-    tket-WeightSubgrMono
     tket-ZX)
 
 target_link_libraries(test_tket PRIVATE
