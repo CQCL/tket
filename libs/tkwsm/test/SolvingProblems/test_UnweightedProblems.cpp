@@ -359,7 +359,7 @@ static void test(bool short_test) {
 }
 
 SCENARIO("Increasing graph sequences: short tests") { test(true); }
-SCENARIO("Increasing graph sequences: long tests", "[.long]") { test(false); }
+SCENARIO("Increasing graph sequences: long tests") { test(false); }
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

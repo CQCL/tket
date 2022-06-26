@@ -332,7 +332,7 @@ SCENARIO("Self-embed cubic lattices - quicker test") {
   test_cubic_lattices(k_values, true);
 }
 
-SCENARIO("Self-embed cubic lattices - slower test", "[.long]") {
+SCENARIO("Self-embed cubic lattices - slower test") {
   // k=3, V=343, E=882 is currently around 1.5 secs; slower than we'd like
   const std::vector<unsigned> k_values{3};
   test_cubic_lattices(k_values, false);

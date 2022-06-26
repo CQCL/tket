@@ -201,15 +201,13 @@ SCENARIO("embedding paths into square grids - quicker problems, fewer tests") {
   test(true, 150, 1, 0);
 }
 
-SCENARIO(
-    "embedding paths into square grids - quicker problems, more tests",
-    "[.long]") {
+SCENARIO("embedding paths into square grids - quicker problems, more tests") {
   // We test only quicker problems, but MORE of them;
   // so this is a "long" test.
   test(true, 1048, 100, 1);
 }
 
-SCENARIO("embedding paths into square grids - all slower problems", "[.long]") {
+SCENARIO("embedding paths into square grids - all slower problems") {
   // Test all slower problems, but MORE of them;
   // so this is a "long" test.
   test(false, 2729, 100, 0);

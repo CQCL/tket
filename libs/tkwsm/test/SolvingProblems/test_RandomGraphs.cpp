@@ -293,7 +293,7 @@ SCENARIO("embedding random graphs - smaller graphs, small weights") {
   CHECK(result.timeout_count == 0);
 }
 
-SCENARIO("embedding random graphs - medium graphs, small weights", "[.long]") {
+SCENARIO("embedding random graphs - medium graphs, small weights") {
   AllAgainstAllTester tester;
   tester.codes = {"10 20 1111", "10 30 2222",  "11 20 3333", "11 40 4444",
                   "15 30 5555", "16 50, 6666", "17 60 7777", "18 70 888"};
@@ -360,8 +360,7 @@ static AllAgainstAllTester get_large_graphs_small_weights_data() {
 }
 
 SCENARIO(
-    "embedding random graphs - 2 nasty problems: large graphs, small weights",
-    "[.long]") {
+    "embedding random graphs - 2 nasty problems: large graphs, small weights") {
   auto tester = get_large_graphs_small_weights_data();
   for (auto& entry : tester.expected_results) {
     if (entry < -1) {
@@ -390,8 +389,7 @@ SCENARIO(
 }
 
 SCENARIO(
-    "embedding random graphs - large graphs, small weights, shorter problems",
-    "[.long]") {
+    "embedding random graphs - large graphs, small weights, shorter problems") {
   auto tester = get_large_graphs_small_weights_data();
   for (auto& entry : tester.expected_results) {
     if (entry < -1 || entry == 619) {
@@ -456,8 +454,7 @@ static unsigned get_long_problem_value() {
 }
 
 SCENARIO(
-    "embedding random graphs - mixed sizes and densities: short problems",
-    "[.long]") {
+    "embedding random graphs - mixed sizes and densities: short problems") {
   const auto long_problem_value = get_long_problem_value();
   const auto medium_problem_values = get_medium_time_problem_values();
   auto tester = get_mixed_sizes_problems();
@@ -484,8 +481,7 @@ SCENARIO(
 }
 
 SCENARIO(
-    "embedding random graphs - mixed sizes and densities: longer problems",
-    "[.long]") {
+    "embedding random graphs - mixed sizes and densities: longer problems") {
   const auto long_problem_value = get_long_problem_value();
   const auto medium_problem_values = get_medium_time_problem_values();
   auto tester = get_mixed_sizes_problems();

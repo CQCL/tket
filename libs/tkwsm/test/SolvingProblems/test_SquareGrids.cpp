@@ -238,8 +238,8 @@ SCENARIO("Easy problems: tiny pattern square grids") {
 }
 
 SCENARIO(
-    "short-to-medium problems: reasonable size pattern and target square grids",
-    "[.long]") {
+    "short-to-medium problems: reasonable size pattern and target square "
+    "grids") {
   const std::set<std::pair<unsigned, unsigned>> empty_problems;
   auto problems_to_skip = get_tiny_pattern_longer_problems();
   for (auto problem : get_slower_problems()) {
@@ -252,12 +252,12 @@ SCENARIO(
   test(problems_to_skip, empty_problems, 20, 1000, 136, 5000, 5000);
 }
 
-SCENARIO("Medium square grid problems only", "[.long]") {
+SCENARIO("Medium square grid problems only") {
   const std::set<std::pair<unsigned, unsigned>> empty_problems;
   test(empty_problems, get_slower_problems(), 0, 7, 7, 9999, 20000);
 }
 
-SCENARIO("Monster square grid problems only", "[.long]") {
+SCENARIO("Monster square grid problems only") {
   const std::set<std::pair<unsigned, unsigned>> empty_problems;
   test(empty_problems, get_monster_problems(), 0, 3, 3, 9999, 100000);
 }
