@@ -34,11 +34,4 @@ class NotValid : public std::logic_error {
   explicit NotValid(const std::string &message) : std::logic_error(message) {}
 };
 
-/** Matrix not unitary */
-class NotUnitary : public std::logic_error {
- public:
-  NotUnitary() : std::logic_error("Not a unitary matrix") {}
-  explicit NotUnitary(const std::string &message) : std::logic_error(message) {}
-};
-
 }  // namespace tket

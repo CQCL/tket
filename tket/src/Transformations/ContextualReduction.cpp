@@ -17,6 +17,7 @@
 #include <algorithm>
 #include <optional>
 #include <sstream>
+#include <stdexcept>
 #include <tkassert/Assert.hpp>
 
 #include "Circuit/Circuit.hpp"
@@ -104,8 +105,8 @@ static std::optional<unsigned> unique_unit_row(
   }
   // If we get here there is a logical error or numerical instability.
   std::stringstream ss;
-  ss << U;
-  throw NotUnitary(ss.str());
+  ss << "Not unitary:" << std::endl << U;
+  throw std::logic_error(ss.str());
 }
 
 /**
