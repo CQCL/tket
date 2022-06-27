@@ -1,5 +1,0 @@
-<map id="tket::WeightedSubgraphMonomorphism::InitialisationTimeout" name="tket::WeightedSubgraphMonomorphism::InitialisationTimeout">
-<area shape="rect" id="node1" title="Initialisation of the data to start solving should be fast; if it is too slow (e.g...." alt="" coords="5,155,284,196"/>
-<area shape="rect" id="node2" title="STL class." alt="" coords="75,80,214,107"/>
-<area shape="rect" id="node3" title="STL class." alt="" coords="87,5,202,32"/>
-</map>

@@ -1,11 +1,19 @@
 var searchData=
 [
-  ['weightcalculator_2ecpp_3184',['WeightCalculator.cpp',['../WeightCalculator_8cpp.html',1,'']]],
-  ['weightcalculator_2ehpp_3185',['WeightCalculator.hpp',['../WeightCalculator_8hpp.html',1,'']]],
-  ['weightchecker_2ecpp_3186',['WeightChecker.cpp',['../WeightChecker_8cpp.html',1,'']]],
-  ['weightchecker_2ehpp_3187',['WeightChecker.hpp',['../WeightChecker_8hpp.html',1,'']]],
-  ['weightnogooddetector_2ecpp_3188',['WeightNogoodDetector.cpp',['../WeightNogoodDetector_8cpp.html',1,'']]],
-  ['weightnogooddetector_2ehpp_3189',['WeightNogoodDetector.hpp',['../WeightNogoodDetector_8hpp.html',1,'']]],
-  ['weightnogooddetectormanager_2ecpp_3190',['WeightNogoodDetectorManager.cpp',['../WeightNogoodDetectorManager_8cpp.html',1,'']]],
-  ['weightnogooddetectormanager_2ehpp_3191',['WeightNogoodDetectorManager.hpp',['../WeightNogoodDetectorManager_8hpp.html',1,'']]]
+  ['zxconverters_2ecpp_2780',['ZXConverters.cpp',['../ZXConverters_8cpp.html',1,'']]],
+  ['zxdconstructors_2ecpp_2781',['ZXDConstructors.cpp',['../ZXDConstructors_8cpp.html',1,'']]],
+  ['zxdexpansions_2ecpp_2782',['ZXDExpansions.cpp',['../ZXDExpansions_8cpp.html',1,'']]],
+  ['zxdformats_2ecpp_2783',['ZXDFormats.cpp',['../ZXDFormats_8cpp.html',1,'']]],
+  ['zxdgetterssetters_2ecpp_2784',['ZXDGettersSetters.cpp',['../ZXDGettersSetters_8cpp.html',1,'']]],
+  ['zxdiagram_2ehpp_2785',['ZXDiagram.hpp',['../ZXDiagram_8hpp.html',1,'']]],
+  ['zxdiagramimpl_2ehpp_2786',['ZXDiagramImpl.hpp',['../ZXDiagramImpl_8hpp.html',1,'']]],
+  ['zxdmanipulation_2ecpp_2787',['ZXDManipulation.cpp',['../ZXDManipulation_8cpp.html',1,'']]],
+  ['zxdsubdiagram_2ecpp_2788',['ZXDSubdiagram.cpp',['../ZXDSubdiagram_8cpp.html',1,'']]],
+  ['zxgenerator_2ecpp_2789',['ZXGenerator.cpp',['../ZXGenerator_8cpp.html',1,'']]],
+  ['zxgenerator_2ehpp_2790',['ZXGenerator.hpp',['../ZXGenerator_8hpp.html',1,'']]],
+  ['zxrwaxioms_2ecpp_2791',['ZXRWAxioms.cpp',['../ZXRWAxioms_8cpp.html',1,'']]],
+  ['zxrwcombinators_2ecpp_2792',['ZXRWCombinators.cpp',['../ZXRWCombinators_8cpp.html',1,'']]],
+  ['zxrwdecompositions_2ecpp_2793',['ZXRWDecompositions.cpp',['../ZXRWDecompositions_8cpp.html',1,'']]],
+  ['zxrwgraphlikeform_2ecpp_2794',['ZXRWGraphLikeForm.cpp',['../ZXRWGraphLikeForm_8cpp.html',1,'']]],
+  ['zxrwgraphlikesimplification_2ecpp_2795',['ZXRWGraphLikeSimplification.cpp',['../ZXRWGraphLikeSimplification_8cpp.html',1,'']]]
 ];

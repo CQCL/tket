@@ -1,7 +1,0 @@
-<map id="tket::WeightedSubgraphMonomorphism::NodesRawData" name="tket::WeightedSubgraphMonomorphism::NodesRawData">
-<area shape="rect" id="node1" title="This is the data structure containing all the data about nodes and domains necessary for searching,..." alt="" coords="1339,53,1617,94"/>
-<area shape="rect" id="node2" href="$classtket_1_1WeightedSubgraphMonomorphism_1_1LogicalStack.html" title=" " alt="" coords="873,5,1193,61"/>
-<area shape="rect" id="node3" title=" " alt="" coords="910,85,1157,141"/>
-<area shape="rect" id="node4" href="$structtket_1_1WeightedSubgraphMonomorphism_1_1NodesRawData_1_1DomainData.html" title="DomainData is &quot;vertical&quot;; each particular object is a &quot;vertical strand&quot; giving information about one ..." alt="" coords="481,93,760,134"/>
-<area shape="rect" id="node5" href="$classtket_1_1WeightedSubgraphMonomorphism_1_1LogicalStack.html" title=" " alt="" coords="5,85,384,141"/>
-</map>

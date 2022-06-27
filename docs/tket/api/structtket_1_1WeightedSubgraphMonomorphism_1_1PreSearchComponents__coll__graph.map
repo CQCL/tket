@@ -1,5 +1,0 @@
-<map id="tket::WeightedSubgraphMonomorphism::PreSearchComponents" name="tket::WeightedSubgraphMonomorphism::PreSearchComponents">
-<area shape="rect" id="node1" title="Collect together all the data and algorithm components that will be computed and needed BEFORE proper..." alt="" coords="460,39,739,80"/>
-<area shape="rect" id="node2" href="$classtket_1_1WeightedSubgraphMonomorphism_1_1NearNeighboursData.html" title=" " alt="" coords="5,5,284,47"/>
-<area shape="rect" id="node3" href="$classtket_1_1WeightedSubgraphMonomorphism_1_1NeighboursData.html" title="The main object used to search for neighbours of a vertex, check for existing edges,..." alt="" coords="5,71,284,112"/>
-</map>

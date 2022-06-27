@@ -12,7 +12,7 @@
 <area shape="rect" id="node9" href="dir_a39b5a8c0295e64a3c442c197fbd4463.html" title="Circuit" alt="" coords="273,255,345,303"/>
 <area shape="rect" id="edge31-headlabel" href="dir_000016_000010.html" title="12" alt="" coords="322,233,339,247"/>
 <area shape="rect" id="node10" href="dir_20f5b45d4775e5c08a69b04af73221b6.html" title="ZX" alt="" coords="691,255,763,303"/>
-<area shape="rect" id="edge33-headlabel" href="dir_000016_000073.html" title="3" alt="" coords="721,227,730,242"/>
+<area shape="rect" id="edge33-headlabel" href="dir_000016_000058.html" title="3" alt="" coords="721,227,730,242"/>
 <area shape="rect" id="node11" href="dir_63773285f7526e21f06e441f8ae620b0.html" title="Gate" alt="" coords="347,351,419,399"/>
 <area shape="rect" id="edge34-headlabel" href="dir_000016_000022.html" title="1" alt="" coords="388,325,397,340"/>
 <area shape="rect" id="edge18-headlabel" href="dir_000017_000055.html" title="4" alt="" coords="399,663,408,678"/>
@@ -21,7 +21,7 @@
 <area shape="rect" id="node8" href="dir_5e786c02a24d83e5297c99fc69782a73.html" title="PauliGraph" alt="" coords="421,255,513,303"/>
 <area shape="rect" id="edge20-headlabel" href="dir_000017_000040.html" title="1" alt="" coords="468,229,477,243"/>
 <area shape="rect" id="edge21-headlabel" href="dir_000017_000010.html" title="7" alt="" coords="361,245,370,260"/>
-<area shape="rect" id="edge22-headlabel" href="dir_000017_000073.html" title="1" alt="" coords="671,243,681,258"/>
+<area shape="rect" id="edge22-headlabel" href="dir_000017_000058.html" title="1" alt="" coords="671,243,681,258"/>
 <area shape="rect" id="edge1-headlabel" href="dir_000019_000055.html" title="2" alt="" coords="292,636,301,651"/>
 <area shape="rect" id="edge2-headlabel" href="dir_000019_000034.html" title="1" alt="" coords="230,421,239,436"/>
 <area shape="rect" id="edge3-headlabel" href="dir_000019_000040.html" title="2" alt="" coords="402,237,411,252"/>
@@ -39,7 +39,7 @@
 <area shape="rect" id="edge15-headlabel" href="dir_000010_000034.html" title="14" alt="" coords="242,426,259,441"/>
 <area shape="rect" id="edge16-headlabel" href="dir_000010_000037.html" title="12" alt="" coords="382,515,399,530"/>
 <area shape="rect" id="edge17-headlabel" href="dir_000010_000022.html" title="10" alt="" coords="352,324,369,338"/>
-<area shape="rect" id="edge23-headlabel" href="dir_000073_000055.html" title="15" alt="" coords="396,660,413,675"/>
+<area shape="rect" id="edge23-headlabel" href="dir_000058_000055.html" title="15" alt="" coords="396,660,413,675"/>
 <area shape="rect" id="edge24-headlabel" href="dir_000022_000055.html" title="17" alt="" coords="348,613,366,628"/>
 <area shape="rect" id="edge25-headlabel" href="dir_000022_000034.html" title="6" alt="" coords="277,438,286,453"/>
 <area shape="rect" id="edge26-headlabel" href="dir_000022_000037.html" title="10" alt="" coords="396,516,413,531"/>

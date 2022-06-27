@@ -1,7 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title="STL class." alt="" coords="5,1623,120,1649"/>
+<area shape="rect" id="node1" title="STL class." alt="" coords="5,1568,120,1595"/>
 <area shape="rect" id="node2" title="STL class." alt="" coords="178,1071,297,1097"/>
-<area shape="rect" id="node43" title="STL class." alt="" coords="168,2120,307,2147"/>
+<area shape="rect" id="node43" title="STL class." alt="" coords="168,1593,307,1620"/>
 <area shape="rect" id="node3" href="$classtket_1_1aas_1_1InvalidCostCalculation.html" title=" " alt="" coords="378,5,610,32"/>
 <area shape="rect" id="node4" href="$classtket_1_1aas_1_1InvalidRowOperation.html" title=" " alt="" coords="383,56,605,83"/>
 <area shape="rect" id="node5" href="$classtket_1_1aas_1_1NoHamiltonPath.html" title=" " alt="" coords="398,107,590,133"/>
@@ -43,6 +43,4 @@
 <area shape="rect" id="node42" href="$classtket_1_1zx_1_1ZXError.html" title="Error messages." alt="" coords="431,2040,557,2067"/>
 <area shape="rect" id="node41" href="$classtket_1_1SimpleOnly.html" title=" " alt="" coords="681,1989,812,2016"/>
 <area shape="rect" id="node44" href="$structtket_1_1GateUnitaryMatrixError.html" title="We do not wish to couple tightly to exception classes elsewhere." alt="" coords="391,2091,597,2117"/>
-<area shape="rect" id="node45" href="$structtket_1_1WeightedSubgraphMonomorphism_1_1InitialisationTimeout.html" title="Initialisation of the data to start solving should be fast; if it is too slow (e.g...." alt="" coords="355,2142,633,2183"/>
-<area shape="rect" id="node46" href="$structtket_1_1WeightedSubgraphMonomorphism_1_1IntegerOverflow.html" title="All edge weights are integer valued (no doubles anywhere), so calculations should be fully portable a..." alt="" coords="355,2207,633,2249"/>
 </map>

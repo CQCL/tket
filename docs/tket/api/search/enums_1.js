@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['basisorder_5135',['BasisOrder',['../namespacetket.html#a72f88f920d51eb69a8614990da593fa6',1,'tket']]],
-  ['boundarymerge_5136',['BoundaryMerge',['../classtket_1_1Circuit.html#afa505b94722dbd9406a8ec5c2eb1a326',1,'tket::Circuit']]]
+  ['basisorder_4515',['BasisOrder',['../namespacetket.html#a72f88f920d51eb69a8614990da593fa6',1,'tket']]],
+  ['boundarymerge_4516',['BoundaryMerge',['../classtket_1_1Circuit.html#afa505b94722dbd9406a8ec5c2eb1a326',1,'tket::Circuit']]]
 ];

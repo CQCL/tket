@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['type_5158',['Type',['../classtket_1_1WeightedSubgraphMonomorphism_1_1NearNeighboursData.html#a9b71d6dd0e42297918a04ed51ece765f',1,'tket::WeightedSubgraphMonomorphism::NearNeighboursData']]]
+  ['unittype_4537',['UnitType',['../namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9',1,'tket']]]
 ];
