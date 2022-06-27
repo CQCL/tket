@@ -31,7 +31,6 @@ add_library(tket-${COMP}
 list(APPEND DEPS_${COMP}
     Graphs
     Utils
-    WeightSubgrMono
     )
 
 
@@ -52,4 +51,5 @@ target_link_libraries(tket-${COMP} PUBLIC
     ${CONAN_LIBS_TKLOG}
     ${CONAN_LIBS_TKASSERT}
     ${CONAN_LIBS_TKRNG}
-    ${CONAN_LIBS_TKTOKENSWAP})
+    ${CONAN_LIBS_TKTOKENSWAP}
+    ${CONAN_LIBS_TKWSM})

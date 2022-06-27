@@ -34,8 +34,7 @@ static void test(
       pattern_arch_mapping, target_arch_mapping, parameters);
   CHECK(solutions.mappings.size() == expected_mappings.size());
 
-  // It's so small, it should be 0 time.
-  CHECK(solutions.time_taken_ms < 10);
+  CHECK(solutions.time_taken_ms < 1000);
 
   // We want a canonical string; we don't want to rely
   // on the order of the nodes and vertex labels.

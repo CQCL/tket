@@ -105,7 +105,6 @@ class CMakeBuild(build_ext):
                     "tket-Transformations",
                     "tket-ArchAwareSynth",
                     "tket-Predicates",
-                    "tket-WeightSubgrMono",
                 ],
             }
 

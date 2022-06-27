@@ -41,7 +41,6 @@ list(APPEND DEPS_${COMP}
     Placement
     Transformations
     Utils
-    WeightSubgrMono
     ZX)
 
 foreach(DEP ${DEPS_${COMP}})
@@ -61,4 +60,5 @@ target_link_libraries(tket-${COMP} PRIVATE
     ${CONAN_LIBS_SYMENGINE}
     ${CONAN_LIBS_TKLOG}
     ${CONAN_LIBS_TKASSERT}
-    ${CONAN_LIBS_TKTOKENSWAP})
+    ${CONAN_LIBS_TKTOKENSWAP}
+    ${CONAN_LIBS_TKWSM})

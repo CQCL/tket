@@ -34,8 +34,7 @@ list(APPEND DEPS_${COMP}
     Graphs
     Ops
     OpType
-    Utils
-    WeightSubgrMono)
+    Utils)
 
 foreach(DEP ${DEPS_${COMP}})
     target_include_directories(
@@ -56,4 +55,5 @@ target_link_libraries(tket-${COMP} PUBLIC
     ${CONAN_LIBS_TKASSERT}
     ${CONAN_LIBS_TKRNG}
     ${CONAN_LIBS_TKTOKENSWAP}
+    ${CONAN_LIBS_TKWSM}
     )

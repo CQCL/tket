@@ -15,10 +15,10 @@
 #pragma once
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
+#include <tkwsm/Common/GeneralUtils.hpp>
+#include <tkwsm/GraphTheoretic/GeneralStructs.hpp>
 
 #include "Placement/Placement.hpp"
-#include "WeightSubgrMono/Common/GeneralUtils.hpp"
-#include "WeightSubgrMono/GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
