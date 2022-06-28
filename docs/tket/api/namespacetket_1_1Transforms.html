@@ -389,7 +389,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ThreeQubitSquash_8cpp_source.html#l00107">107</a> of file <a class="el" href="ThreeQubitSquash_8cpp_source.html">ThreeQubitSquash.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ThreeQubitSquash_8cpp_source.html#l00108">108</a> of file <a class="el" href="ThreeQubitSquash_8cpp_source.html">ThreeQubitSquash.cpp</a>.</p>
 
 </div>
 </div>
@@ -566,7 +566,7 @@ Variables</h2></td></tr>
 <p>Absorb Rz gates into NPhasedX where possible. </p>
 <p>For any gate NPhasedX(𝛼, 𝛽) in the circuit, try to change 𝛽 to reduce the number of surrounding Rz gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00587">587</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00588">588</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
 
 </div>
 </div>
@@ -808,7 +808,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00302">302</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00303">303</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
 
 </div>
 </div>
@@ -828,7 +828,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00578">578</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00579">579</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
 
 </div>
 </div>
@@ -848,7 +848,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00582">582</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00583">583</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
 
 </div>
 </div>
@@ -1322,6 +1322,7 @@ template&lt;typename T &gt; </div>
 <p>Decompose each TK2 gate into two-qubit gates in a noise-aware way. Supported two-qubit gate fidelities will be used to return the optimal decomposition of each TK2 gate, taking noise into consideration.</p>
 <p>If no fidelities are provided, the decomposition will be exact, using CX gates.</p>
 <p>If the TK2 angles are symbolic values, the decomposition will be exact (i.e. not noise-aware). It is not possible in general to obtain optimal decompositions for arbitrary symbolic parameters, so consider substituting for concrete values if possible.</p>
+<p>All TK2 angles must be normalised to the Weyl chamber. This can be achieved using the <a class="el" href="namespacetket_1_1Transforms.html#af27a84ae14a0ac564832ac765e7599ac">normalise_TK2</a> transform.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">fid</td><td>The two-qubit gate fidelities (optional). </td></tr>
@@ -1749,7 +1750,7 @@ template&lt;typename T &gt; </div>
 
 <p>Normalises all TK2 gates so that <code><a class="el" href="classtket_1_1NormalisedTK2Predicate.html" title="Asserts that all TK2 gates are normalised.">NormalisedTK2Predicate</a></code> is satisfied. </p>
 
-<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00743">743</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00744">744</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
 
 </div>
 </div>
@@ -2611,7 +2612,7 @@ template&lt;typename T &gt; </div>
 <p>The circuit should comprise only CX and single-qubit gates. The transform may perform a combination of 2-qubit (KAK) and 3-qubit decompositions of subcircuits, but only does so if this reduces the CX count.</p>
 <dl class="section return"><dt>Returns</dt><dd><a class="el" href="classtket_1_1Transform.html" title="A transformation of a circuit that preserves its semantics.">Transform</a> implementing the squash </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="ThreeQubitSquash_8cpp_source.html#l00300">300</a> of file <a class="el" href="ThreeQubitSquash_8cpp_source.html">ThreeQubitSquash.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ThreeQubitSquash_8cpp_source.html#l00302">302</a> of file <a class="el" href="ThreeQubitSquash_8cpp_source.html">ThreeQubitSquash.cpp</a>.</p>
 
 </div>
 </div>
@@ -2631,7 +2632,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00350">350</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00351">351</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
 
 </div>
 </div>
@@ -2652,7 +2653,7 @@ template&lt;typename T &gt; </div>
 
 <p>Converts any ZZPhase with angle in (-1, 1) to two pi Rz gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00713">713</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BasicOptimisation_8cpp_source.html#l00714">714</a> of file <a class="el" href="BasicOptimisation_8cpp_source.html">BasicOptimisation.cpp</a>.</p>
 
 </div>
 </div>
