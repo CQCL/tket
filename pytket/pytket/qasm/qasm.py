@@ -855,13 +855,7 @@ def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
 
 
 def hqs_header(header: str) -> bool:
-    if header == "hqslib1":
-        return True
-
-    if header == "hqslib1_dev":
-        return True
-
-    return False
+    return header in ["hqslib1", "hqslib1_dev"]
 
 
 def circuit_to_qasm_io(
@@ -890,12 +884,9 @@ def circuit_to_qasm_io(
         include_gate_defs = {"measure", "reset", "barrier"}
         include_gate_defs.update(_load_include_module(header, False, True).keys())
 
-        split_header = header.split("_dev")
-        if len(split_header) > 1:
+        if header == "hqslib1_dev":
             stream_out.write(
-                'OPENQASM 2.0;\ninclude "{}_dev.inc";\ninclude "{}.inc";\n\n'.format(
-                    split_header[0], split_header[0]
-                )
+                'OPENQASM 2.0;\ninclude "hqslib1_dev.inc";\ninclude "hqslib1.inc";\n\n'
             )
         else:
             stream_out.write('OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header))
@@ -1071,11 +1062,11 @@ def circuit_to_qasm_io(
                 if param > 1:
                     param = -2 + param
             params = [param]
-        elif optype == OpType.Barrier:
-            if op.og_info == "":
+        elif optype == OpType.Barrier and hqs_header(header):
+            if op.data == "":
                 opstr = _tk_to_qasm_noparams[optype]
             else:
-                opstr = op.og_info
+                opstr = op.data
         elif optype in _tk_to_qasm_noparams:
             opstr = _tk_to_qasm_noparams[optype]
         elif optype in _tk_to_qasm_params:

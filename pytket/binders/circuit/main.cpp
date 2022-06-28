@@ -523,8 +523,8 @@ PYBIND11_MODULE(circuit, m) {
           py::init<OpType, op_signature_t, const std::string &>(),
           "Construct from number of bits, bitwidths of inputs and outputs, "
           "function name and module id.",
-          py::arg("type"), py::arg("signature"), py::arg("og_info"))
-      .def_property_readonly("og_info", &MetaOp::get_og_info, "Get og info");
+          py::arg("type"), py::arg("signature"), py::arg("data"))
+      .def_property_readonly("data", &MetaOp::get_data, "Get data from MetaOp");
 
   init_library(m);
   init_boxes(m);

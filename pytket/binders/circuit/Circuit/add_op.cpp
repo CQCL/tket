@@ -163,13 +163,14 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
       .def(
           "add_barrier",
           [](Circuit *circ, const std::vector<unsigned> &qubits,
-             const std::vector<unsigned> &bits, const std::string &og_info) {
-            circ->add_barrier(qubits, bits, og_info);
+             const std::vector<unsigned> &bits, const std::string &data) {
+            circ->add_barrier(qubits, bits, data);
             return circ;
           },
           "Append a Barrier on the given units"
-          "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubits"), py::arg("bits") = no_bits, py::arg("og_info") = "")
+          "\n\n:param data: additional data stored in the barrier"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("qubits"), py::arg("bits") = no_bits, py::arg("data") = "")
       .def(
           "add_circbox",
           [](Circuit *circ, const CircBox &box,
@@ -366,13 +367,14 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
       .def(
           "add_barrier",
           [](Circuit *circ, const unit_vector_t &units,
-             const std::string &og_info) {
-            circ->add_barrier(units, og_info);
+             const std::string &data) {
+            circ->add_barrier(units, data);
             return circ;
           },
           "Append a Barrier on the given units"
-          "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("units"), py::arg("og_info") = "")
+          "\n\n:param data: additional data stored in the barrier"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("units"), py::arg("data") = "")
       .def(
           "add_circbox",
           [](Circuit *circ, const CircBox &box, const unit_vector_t &args,
