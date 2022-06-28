@@ -20,8 +20,9 @@
 
 namespace tket {
 
-MetaOp::MetaOp(OpType type, op_signature_t signature)
-    : Op(type), signature_(signature) {
+MetaOp::MetaOp(
+    OpType type, op_signature_t signature, const std::string& _og_info)
+    : Op(type), signature_(signature), og_info_(_og_info) {
   if (!is_metaop_type(type)) throw NotValid();
 }
 
@@ -52,12 +53,24 @@ nlohmann::json MetaOp::serialize() const {
   nlohmann::json j;
   j["type"] = get_type();
   j["signature"] = get_signature();
+  if (get_type() == OpType::Barrier) {
+    j["og_info"] = get_og_info();
+  }
   return j;
 }
 
 Op_ptr MetaOp::deserialize(const nlohmann::json& j) {
   OpType optype = j.at("type").get<OpType>();
   op_signature_t sig = j.at("signature").get<op_signature_t>();
+  if (optype == OpType::Barrier) {
+    std::string og_info;
+    try {
+      og_info = j.at("og_info").get<std::string>();
+    } catch (const std::exception& e) {
+      og_info = "";
+    }
+    return std::make_shared<MetaOp>(optype, sig, og_info);
+  }
   return std::make_shared<MetaOp>(optype, sig);
 }
 

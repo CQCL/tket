@@ -23,6 +23,7 @@
 #include "Gate/OpPtrFunctions.hpp"
 #include "Gate/SymTable.hpp"
 #include "Ops/ClassicalOps.hpp"
+#include "Ops/MetaOp.hpp"
 #include "Ops/Op.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/Symbols.hpp"
@@ -516,6 +517,14 @@ PYBIND11_MODULE(circuit, m) {
           "free_symbols",
           [](const Command &com) { return com.get_op_ptr()->free_symbols(); },
           ":return: set of symbolic parameters for the command");
+
+  py::class_<MetaOp, std::shared_ptr<MetaOp>, Op>(m, "MetaOp", "TODO")
+      .def(
+          py::init<OpType, op_signature_t, const std::string &>(),
+          "Construct from number of bits, bitwidths of inputs and outputs, "
+          "function name and module id.",
+          py::arg("type"), py::arg("signature"), py::arg("og_info"))
+      .def_property_readonly("og_info", &MetaOp::get_og_info, "Get og info");
 
   init_library(m);
   init_boxes(m);

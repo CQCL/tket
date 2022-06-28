@@ -242,9 +242,9 @@ SCENARIO("Check converting gates to spiders") {
   }
   GIVEN("Barrier") {
     Circuit circ(1, 1);
-    circ.add_barrier({0}, {0});
-    circ.add_barrier({}, {0});
-    circ.add_barrier({0}, {});
+    circ.add_barrier(std::vector<unsigned>{0}, std::vector<unsigned>{0});
+    circ.add_barrier(std::vector<unsigned>{}, std::vector<unsigned>{0});
+    circ.add_barrier(std::vector<unsigned>{0}, std::vector<unsigned>{});
     ZXDiagram zx;
     boost::bimap<ZXVert, Vertex> bmap;
     std::tie(zx, bmap) = circuit_to_zx(circ);
@@ -618,18 +618,18 @@ SCENARIO("Check converting circuits to diagrams") {
   GIVEN("A circuit with spiderless ops") {
     Circuit circ(3, 2);
     circ.add_op<unsigned>(OpType::X, {2});
-    circ.add_barrier({0, 2}, {0, 1});
+    circ.add_barrier(std::vector<unsigned>{0, 2}, std::vector<unsigned>{0, 1});
     circ.add_op<unsigned>(OpType::noop, {0});
     circ.add_op<unsigned>(OpType::noop, {0});
     circ.add_barrier({0, 1});
     circ.add_op<unsigned>(OpType::noop, {1});
-    circ.add_barrier({}, {0});
+    circ.add_barrier(std::vector<unsigned>{}, std::vector<unsigned>{0});
     circ.add_op<unsigned>(OpType::SWAP, {0, 1});
     circ.add_op<unsigned>(OpType::SWAP, {0, 1});
     circ.add_op<unsigned>(OpType::SWAP, {0, 1});
     circ.add_op<unsigned>(OpType::X, {1});
     circ.add_op<unsigned>(OpType::Measure, {0, 0});
-    circ.add_barrier({1}, {0, 1});
+    circ.add_barrier(std::vector<unsigned>{1}, std::vector<unsigned>{0, 1});
     ZXDiagram zx;
     boost::bimap<ZXVert, Vertex> bmap;
     std::tie(zx, bmap) = circuit_to_zx(circ);
