@@ -109,7 +109,7 @@ class ClassicalExpBox : public Box {
  protected:
   // TODO decomposition TKET-1070
   void generate_circuit() const override {
-    throw NotValid(
+    throw std::logic_error(
         "ClassicalExpBox cannot be decomposed to Circuit. Try the "
         "DecomposeClassicalExp compiler pass.");
   };

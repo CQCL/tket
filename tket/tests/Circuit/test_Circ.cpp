@@ -2324,7 +2324,7 @@ SCENARIO("Decomposing a single qubit gate") {
     Circuit circ(1);
     Vertex box = circ.add_barrier(uvec{0});
     const Op_ptr g = (circ.get_Op_ptr_from_Vertex(box));
-    REQUIRE_THROWS_AS(op_to_tk1(g), NotValid);
+    REQUIRE_THROWS_AS(op_to_tk1(g), OpTypeNotSupported);
   }
 }
 

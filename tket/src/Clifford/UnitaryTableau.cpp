@@ -260,9 +260,8 @@ void UnitaryTableau::apply_gate_at_front(
       break;
     }
     default: {
-      throw NotValid(
-          optypeinfo().at(type).name +
-          " cannot be applied to a UnitaryTableau; it is not a Clifford gate");
+      throw OpTypeNotSupported(
+          "Cannot be applied to a UnitaryTableau: not a Clifford gate", type);
     }
   }
 }

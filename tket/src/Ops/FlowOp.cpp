@@ -19,7 +19,7 @@ namespace tket {
 FlowOp::FlowOp(OpType type, std::optional<std::string> label)
     : Op(type), label_(label) {
   if (!is_flowop_type(type)) {
-    throw NotValid();
+    throw OpTypeNotSupported(type);
   }
 }
 

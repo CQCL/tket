@@ -26,6 +26,7 @@
 #include "Gate/GatePtr.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
+#include "OpType/OpTypeInfo.hpp"
 #include "Ops/OpPtr.hpp"
 #include "OptimisationPass.hpp"
 #include "PhasedXFrontier.hpp"
@@ -634,7 +635,8 @@ static Circuit TK2_replacement(
       break;
     }
     default:
-      throw NotValid("Unrecognised target OpType in decompose_TK2");
+      throw OpTypeNotSupported(
+          "Unrecognised target OpType in decompose_TK2", best_optype);
   }
   return sub;
 }

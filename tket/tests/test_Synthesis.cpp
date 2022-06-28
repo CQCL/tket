@@ -1632,7 +1632,7 @@ SCENARIO("Test barrier blocks transforms successfully") {
     circ.add_op<unsigned>(OpType::U1, 0.5, {0});
     REQUIRE(!Transforms::remove_redundancies().apply(circ));
     REQUIRE_THROWS_AS(
-        Transforms::pairwise_pauli_gadgets().apply(circ), NotValid);
+        Transforms::pairwise_pauli_gadgets().apply(circ), OpTypeNotSupported);
   }
   GIVEN("Bigger circuit with barrier") {
     Circuit circ(3);

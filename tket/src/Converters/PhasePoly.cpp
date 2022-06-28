@@ -167,7 +167,8 @@ PhasePolyBox::PhasePolyBox(const Circuit& circ)
         break;
       }
       default: {
-        throw NotValid("Only CXs and Rzs allowed in Phase Polynomials");
+        throw OpTypeNotSupported(
+            "Only CXs and Rzs allowed in Phase Polynomials", ot);
       }
     }
   }

@@ -164,17 +164,18 @@ SCENARIO("Correct creation of UnitaryTableau") {
 SCENARIO("Error handling in UnitaryTableau generation") {
   GIVEN("Add a non-clifford gate at end") {
     UnitaryTableau tab(2);
-    REQUIRE_THROWS_AS(tab.apply_gate_at_end(OpType::T, {Qubit(0)}), NotValid);
+    REQUIRE_THROWS_AS(
+        tab.apply_gate_at_end(OpType::T, {Qubit(0)}), OpTypeNotSupported);
   }
   GIVEN("Add a non-clifford gate at front") {
     UnitaryTableau tab(2);
     REQUIRE_THROWS_AS(
-        tab.apply_gate_at_front(OpType::Tdg, {Qubit(0)}), NotValid);
+        tab.apply_gate_at_front(OpType::Tdg, {Qubit(0)}), OpTypeNotSupported);
   }
   GIVEN("Tableau from a non-Clifford circuit") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CH, {1, 0});
-    REQUIRE_THROWS_AS(circuit_to_unitary_tableau(circ), NotValid);
+    REQUIRE_THROWS_AS(circuit_to_unitary_tableau(circ), OpTypeNotSupported);
   }
 }
 

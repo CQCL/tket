@@ -288,7 +288,7 @@ void CliffTableau::apply_gate_at_front(
       break;
     }
     default: {
-      throw NotValid(optypeinfo().at(type).name + " is not a Clifford gate");
+      throw OpTypeNotSupported("Not a Clifford gate", type);
     }
   }
 }
@@ -383,7 +383,7 @@ void CliffTableau::apply_gate_at_end(
       break;
     }
     default: {
-      throw NotValid(optypeinfo().at(type).name + " is not a Clifford gate");
+      throw OpTypeNotSupported("Not a Clifford gate", type);
     }
   }
 }

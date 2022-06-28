@@ -30,6 +30,7 @@
 #include "OpPtr.hpp"
 #include "OpType/OpDesc.hpp"
 #include "OpType/OpTypeFunctions.hpp"
+#include "OpType/OpTypeInfo.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/Exceptions.hpp"
 #include "Utils/Expression.hpp"
@@ -54,14 +55,14 @@ class Op : public std::enable_shared_from_this<Op> {
   /**
    * Inverse (of a unitary operation)
    *
-   * @throw NotValid if operation is not unitary
+   * @throw OpTypeNotSupported if operation is not unitary
    */
-  virtual Op_ptr dagger() const { throw NotValid(); }
+  virtual Op_ptr dagger() const { throw OpTypeNotSupported(get_type()); }
 
   /**
    * Transpose of a unitary operation
    */
-  virtual Op_ptr transpose() const { throw NotValid(); };
+  virtual Op_ptr transpose() const { throw OpTypeNotSupported(get_type()); };
 
   /**
    * Operation with values for symbols substituted
@@ -75,13 +76,17 @@ class Op : public std::enable_shared_from_this<Op> {
       const SymEngine::map_basic_basic &sub_map) const = 0;
 
   /** Sequence of phase parameters, if applicable */
-  virtual std::vector<Expr> get_params() const { throw NotValid(); }
+  virtual std::vector<Expr> get_params() const {
+    throw OpTypeNotSupported(get_type());
+  }
 
   /** Sequence of phase parameters reduced to canonical range, if applicable */
-  virtual std::vector<Expr> get_params_reduced() const { throw NotValid(); }
+  virtual std::vector<Expr> get_params_reduced() const {
+    throw OpTypeNotSupported(get_type());
+  }
 
   /* Number of qubits */
-  virtual unsigned n_qubits() const { throw NotValid(); }
+  virtual unsigned n_qubits() const { throw OpTypeNotSupported(get_type()); }
 
   /** String representation */
   virtual std::string get_name(bool latex = false) const;
@@ -136,9 +141,11 @@ class Op : public std::enable_shared_from_this<Op> {
    * Test whether operation is identity up to a phase and return phase if so.
    *
    * @return phase, as multiple of pi, if operation is identity up to phase
-   * @throw NotValid if operation is not a \ref Gate
+   * @throw OpTypeNotSupported if operation is not a \ref Gate
    */
-  virtual std::optional<double> is_identity() const { throw NotValid(); }
+  virtual std::optional<double> is_identity() const {
+    throw OpTypeNotSupported(get_type());
+  }
 
   /**
    * Test whether operation is in the Clifford group.
@@ -157,9 +164,11 @@ class Op : public std::enable_shared_from_this<Op> {
    *
    * @pre No symbolic parameters.
    * @return unitary matrix (ILO-BE) which this Op represents
-   * @throw NotValid or OpTypeNotSupported upon error.
+   * @throw OpTypeNotSupported upon error.
    */
-  virtual Eigen::MatrixXcd get_unitary() const { throw NotValid(); }
+  virtual Eigen::MatrixXcd get_unitary() const {
+    throw OpTypeNotSupported(get_type());
+  }
 
   virtual nlohmann::json serialize() const {
     throw JsonError("JSON serialization not yet implemented for " + get_name());

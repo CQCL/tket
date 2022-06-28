@@ -783,7 +783,7 @@ Eigen::MatrixXcd Gate::get_unitary() const {
 Gate::Gate(OpType type, const std::vector<Expr>& params, unsigned n_qubits)
     : Op(type), params_(params), n_qubits_(n_qubits) {
   if (!is_gate_type(type)) {
-    throw NotValid();
+    throw OpTypeNotSupported(type);
   }
   if (params.size() != optypeinfo().at(type).n_params()) {
     throw InvalidParameterCount();
