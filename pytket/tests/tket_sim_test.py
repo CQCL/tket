@@ -110,9 +110,6 @@ def check_that_premultiplication_fails(
     with pytest.raises(RuntimeError) as e2:
         product = circ.get_unitary_times_other(matr)
     message = str(e2)
-    # This error message came from the tket_sim C++
-    assert "Error trying to simulate circuit" in message
-    assert "premultiplying M with" in message
     assert "M has wrong number of" in message
 
 

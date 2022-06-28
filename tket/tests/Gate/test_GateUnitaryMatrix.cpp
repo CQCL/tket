@@ -393,8 +393,7 @@ SCENARIO("Non-unitary op types cause not implemented exceptions") {
     try {
       GateUnitaryMatrix::get_unitary(type, 1, no_parameters);
       CHECK(false);
-    } catch (const GateUnitaryMatrixError& e) {
-      CHECK(e.cause == GateUnitaryMatrixError::Cause::GATE_NOT_IMPLEMENTED);
+    } catch (const OpTypeNotSupported& e) {
       CHECK_THAT(e.what(), ContainsSubstring(name));
     }
   }

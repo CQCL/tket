@@ -20,13 +20,6 @@
 
 namespace tket {
 
-/** Operation type not supported */
-class NotImplemented : public std::logic_error {
- public:
-  explicit NotImplemented(const std::string &message)
-      : std::logic_error(message) {}
-};
-
 /** Operation invalid */
 class NotValid : public std::logic_error {
  public:

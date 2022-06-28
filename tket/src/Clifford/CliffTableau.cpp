@@ -554,7 +554,7 @@ static std::vector<Complex> cphase_from_tableau(
 CliffTableau CliffTableau::compose(
     const CliffTableau &first, const CliffTableau &second) {
   if (first.qubits_ != second.qubits_)
-    throw NotImplemented(
+    throw std::logic_error(
         "Cannot compose Clifford Tableaus with different qubit maps");
   const unsigned n = first.size_;
   std::vector<Complex> first_x_cphase =

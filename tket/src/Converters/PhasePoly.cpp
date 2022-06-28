@@ -481,7 +481,9 @@ void CircToPhasePolyConversion::convert() {
       default: {
         throw OpTypeNotSupported(
             "Please rebase with the compiler pass RebaseUFR to only CX, Rz, H, "
-            "measure, reset, collapse, barrier gates. Found gate of different type", ot);
+            "measure, reset, collapse, barrier gates. Found gate of different "
+            "type",
+            ot);
       }
     }
   }
@@ -643,7 +645,9 @@ qubits states are reset to pre.
       default: {
         throw OpTypeNotSupported(
             "Please rebase with the compiler pass RebaseUFR to only CX, Rz, H, "
-            "measure, reset, collapse, barrier gates. Found gate of different type", ot);
+            "measure, reset, collapse, barrier gates. Found gate of different "
+            "type",
+            ot);
       }
     }
   }

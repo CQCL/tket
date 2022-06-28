@@ -14,10 +14,18 @@
 
 #pragma once
 
+#include <stdexcept>
+
 #include "Circuit/Circuit.hpp"
 #include "Utils/PauliStrings.hpp"
 
 namespace tket {
+
+class ImplicitPermutationNotAllowed : public std::logic_error {
+ public:
+  explicit ImplicitPermutationNotAllowed(const std::string& message)
+      : std::logic_error(message) {}
+};
 
 /**
  * Append a Pauli gadget to the end of a given circuit.

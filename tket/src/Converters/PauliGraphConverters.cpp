@@ -28,7 +28,7 @@ PauliGraph circuit_to_pauli_graph(const Circuit &circ) {
   for (const std::pair<const Qubit, Qubit> &pair :
        circ.implicit_qubit_permutation()) {
     if (pair.first != pair.second) {
-      throw NotImplemented(
+      throw ImplicitPermutationNotAllowed(
           "Cannot build a PauliGraph from circuits with implicit "
           "permutations");
     }
@@ -68,7 +68,8 @@ PauliGraph circuit_to_pauli_graph(const Circuit &circ) {
     } else
       throw OpTypeNotSupported(
           "Can only make a PauliGraph from a circuit of basic gates "
-          "and Paulis", od.type());
+          "and Paulis",
+          od.type());
   }
   return pg;
 }

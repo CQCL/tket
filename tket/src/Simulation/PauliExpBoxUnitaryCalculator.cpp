@@ -210,7 +210,7 @@ void PauliExpBoxUnitaryCalculator::fill_triplets(double phase) {
 std::vector<TripletCd> get_triplets(const PauliExpBox& box) {
   const auto phase_optional = eval_expr(box.get_phase());
   if (!phase_optional) {
-    throw NotImplemented(
+    throw SymbolsNotSupported(
         "PauliExpBoxUnitaryCalculator called "
         "with symbolic phase parameter");
   }

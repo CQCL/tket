@@ -43,6 +43,12 @@ class IncompatibleCompilerPasses : public std::logic_error {
             predicate_name(typeid1)) {}
 };
 
+class PassNotSerializable : public std::logic_error {
+ public:
+  explicit PassNotSerializable(const std::string& pass_name)
+      : std::logic_error("Pass not serializable: " + pass_name) {}
+};
+
 // dictate how a `CompilerPass` should affect a class of Predicates
 // PredicateClassGuarantees can't `Set` Predicates, they can only Clear or
 // Preserve

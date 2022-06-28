@@ -199,7 +199,7 @@ Transform synthesise_pauli_graph(
         break;
       }
       default:
-        throw NotImplemented("Unknown Pauli Synthesis Strategy");
+        TKET_ASSERT(!"Unknown Pauli Synthesis Strategy");
     }
     circ.add_phase(t);
     // always turn circuit into PauliGraph and back, so always return true

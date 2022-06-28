@@ -24,6 +24,7 @@
 #include "Circuit/DAGDefs.hpp"
 #include "Eigen/src/Core/Matrix.h"
 #include "OpType/OpType.hpp"
+#include "OpType/OpTypeInfo.hpp"
 #include "Ops/ClassicalOps.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Transform.hpp"
@@ -83,7 +84,7 @@ static std::optional<Eigen::MatrixXcd> op_unitary(Op_ptr op) {
     return op->get_unitary();
   } catch (NotValid &) {
     return std::nullopt;
-  } catch (NotImplemented &) {
+  } catch (OpTypeNotSupported &) {
     return std::nullopt;
   }
   // These cover the "expected" exceptions; anything else is unexpected.

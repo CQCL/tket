@@ -125,7 +125,7 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit &circ) {
             }
           } else
             throw OpTypeNotSupported(
-              "Cannot obtain matrix from op", o->get_type());
+                "Cannot obtain matrix from op", o->get_type());
         }
       }
     }

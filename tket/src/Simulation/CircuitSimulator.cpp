@@ -21,6 +21,7 @@
 #include "Gate/GateUnitaryMatrixError.hpp"
 #include "GateNodesBuffer.hpp"
 #include "Utils/Exceptions.hpp"
+#include "Utils/Expression.hpp"
 
 namespace tket {
 namespace tket_sim {
@@ -70,9 +71,11 @@ void apply_unitary(
        << ", premultiplying M with " << matr.rows() << " rows, " << matr.cols()
        << " cols: " << e.what();
     if (e.cause == GateUnitaryMatrixError::Cause::GATE_NOT_IMPLEMENTED) {
-      throw NotImplemented(ss.str());
+      throw CircuitInvalidity(ss.str());
+    } else if (e.cause == GateUnitaryMatrixError::Cause::SYMBOLIC_PARAMETERS) {
+      throw SymbolsNotSupported(ss.str());
     } else {
-      throw NotValid(ss.str());
+      throw e;
     }
   }
 }

@@ -771,12 +771,11 @@ Eigen::MatrixXcd Gate::get_unitary() const {
   } catch (const GateUnitaryMatrixError& e) {
     switch (e.cause) {
       case GateUnitaryMatrixError::Cause::GATE_NOT_IMPLEMENTED:
-        throw NotImplemented(e.what());
-      // Note that symbolic parameters
-      // are "not valid" rather than "not implemented"
-      // because the returned matrix is clearly numerical, not symbolic.
+        throw OpTypeNotSupported(get_type());
+      case GateUnitaryMatrixError::Cause::SYMBOLIC_PARAMETERS:
+        throw SymbolsNotSupported();
       default:
-        throw NotValid(e.what());
+        throw e;
     }
   }
 }

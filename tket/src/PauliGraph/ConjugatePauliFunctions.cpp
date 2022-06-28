@@ -135,7 +135,7 @@ void conjugate_PauliTensor(
       };
   if (op != OpType::CX) {
     throw OpTypeNotSupported(
-      "Conjugations of Pauli strings only defined for CXs", op);
+        "Conjugations of Pauli strings only defined for CXs", op);
   }
   QubitPauliMap::iterator it0 = qpt.string.map.find(q0);
   QubitPauliMap::iterator it1 = qpt.string.map.find(q1);

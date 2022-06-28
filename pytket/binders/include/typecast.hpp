@@ -142,7 +142,7 @@ struct type_caster<SymEngine::Expression> {
     else {
       std::stringstream err;
       err << "Unable to convert sympy expression " << repr(py_expr);
-      throw tket::NotImplemented(err.str());
+      throw std::logic_error(err.str());
     }
   }
   bool load(handle src, bool) {
@@ -226,7 +226,7 @@ struct type_caster<SymEngine::Expression> {
         } else if (name == "pi") {
           return sympy.attr("pi");
         } else {
-          throw tket::NotImplemented(
+          throw std::logic_error(
               "Unable to convert SymEngine constant " + name);
         }
       }
@@ -290,7 +290,7 @@ struct type_caster<SymEngine::Expression> {
       default: {
         std::stringstream err;
         err << "Unable to convert SymEngine expression " << e_->__str__();
-        throw tket::NotImplemented(err.str());
+        throw std::logic_error(err.str());
       }
     }
   }

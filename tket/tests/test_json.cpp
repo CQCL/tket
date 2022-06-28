@@ -536,7 +536,7 @@ SCENARIO("Test predicate serializations") {
     };
     PredicatePtr custom = std::make_shared<UserDefinedPredicate>(func);
     nlohmann::json j_custom = custom;
-    REQUIRE_THROWS_AS(j_custom.get<PredicatePtr>(), NotImplemented);
+    REQUIRE_THROWS_AS(j_custom.get<PredicatePtr>(), PredicateNotSerializable);
   }
 }
 
