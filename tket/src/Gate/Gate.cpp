@@ -160,7 +160,7 @@ Op_ptr Gate::dagger() const {
             OpType::PhasedISWAP, {params_[0], minus_times(params_[1])});
       }
     default: {
-      throw OpTypeNotSupported("Cannot compute dagger", optype);
+      throw BadOpType("Cannot compute dagger", optype);
     }
   }
 }
@@ -244,7 +244,7 @@ Op_ptr Gate::transpose() const {
     }
 
     default: {
-      throw OpTypeNotSupported("Cannot compute transpose", optype);
+      throw BadOpType("Cannot compute transpose", optype);
     }
   }
 }
@@ -603,7 +603,7 @@ std::vector<Expr> Gate::get_tk1_angles() const {
       return {params_.at(0), params_.at(1), params_.at(2), 0};
     }
     default: {
-      throw OpTypeNotSupported("Cannot compute TK1 angles", get_type());
+      throw BadOpType("Cannot compute TK1 angles", get_type());
     }
   }
 }
@@ -771,7 +771,7 @@ Eigen::MatrixXcd Gate::get_unitary() const {
   } catch (const GateUnitaryMatrixError& e) {
     switch (e.cause) {
       case GateUnitaryMatrixError::Cause::GATE_NOT_IMPLEMENTED:
-        throw OpTypeNotSupported(get_type());
+        throw BadOpType(get_type());
       case GateUnitaryMatrixError::Cause::SYMBOLIC_PARAMETERS:
         throw SymbolsNotSupported();
       default:
@@ -783,7 +783,7 @@ Eigen::MatrixXcd Gate::get_unitary() const {
 Gate::Gate(OpType type, const std::vector<Expr>& params, unsigned n_qubits)
     : Op(type), params_(params), n_qubits_(n_qubits) {
   if (!is_gate_type(type)) {
-    throw OpTypeNotSupported(type);
+    throw BadOpType(type);
   }
   if (params.size() != optypeinfo().at(type).n_params()) {
     throw InvalidParameterCount();

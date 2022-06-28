@@ -84,7 +84,7 @@ static std::optional<Eigen::MatrixXcd> op_unitary(Op_ptr op) {
     return op->get_unitary();
   } catch (NotValid &) {
     return std::nullopt;
-  } catch (OpTypeNotSupported &) {
+  } catch (BadOpType &) {
     return std::nullopt;
   }
   // These cover the "expected" exceptions; anything else is unexpected.

@@ -167,8 +167,7 @@ PhasePolyBox::PhasePolyBox(const Circuit& circ)
         break;
       }
       default: {
-        throw OpTypeNotSupported(
-            "Only CXs and Rzs allowed in Phase Polynomials", ot);
+        throw BadOpType("Only CXs and Rzs allowed in Phase Polynomials", ot);
       }
     }
   }
@@ -480,7 +479,7 @@ void CircToPhasePolyConversion::convert() {
         break;
       }
       default: {
-        throw OpTypeNotSupported(
+        throw BadOpType(
             "Please rebase with the compiler pass RebaseUFR to only CX, Rz, H, "
             "measure, reset, collapse, barrier gates. Found gate of different "
             "type",
@@ -644,7 +643,7 @@ qubits states are reset to pre.
         break;
       }
       default: {
-        throw OpTypeNotSupported(
+        throw BadOpType(
             "Please rebase with the compiler pass RebaseUFR to only CX, Rz, H, "
             "measure, reset, collapse, barrier gates. Found gate of different "
             "type",

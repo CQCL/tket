@@ -324,7 +324,7 @@ SCENARIO("Examples for is_singleq_unitary") {
 SCENARIO("Check exceptions in basic Op methods", "[ops]") {
   GIVEN("A non-single-qubit gate for get_tk1_angles") {
     const Op_ptr o = get_op_ptr(OpType::CX);
-    REQUIRE_THROWS_AS(as_gate_ptr(o)->get_tk1_angles(), OpTypeNotSupported);
+    REQUIRE_THROWS_AS(as_gate_ptr(o)->get_tk1_angles(), BadOpType);
   }
   GIVEN("An invalid port number for commuting_basis") {
     const Op_ptr o = get_op_ptr(OpType::Z);

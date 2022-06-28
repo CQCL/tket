@@ -145,7 +145,7 @@ static Eigen::MatrixXcd get_unitary_or_throw(
       ss << GateUnitaryMatrixUtils::get_error_prefix(
                 op_type, number_of_qubits, parameters)
          << "unrecognised Op type";
-      throw OpTypeNotSupported(ss.str(), op_type);
+      throw BadOpType(ss.str(), op_type);
     }
   }
 }

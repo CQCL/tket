@@ -30,7 +30,7 @@ using namespace Transforms;
 Circuit TK2_circ_from_multiq(const Op_ptr op) {
   OpDesc desc = op->get_desc();
   if (!desc.is_gate())
-    throw OpTypeNotSupported(
+    throw BadOpType(
         "Can only build replacement circuits for basic gates", desc.type());
   unsigned n_qubits = op->n_qubits();
   switch (desc.type()) {
@@ -62,7 +62,7 @@ Circuit TK2_circ_from_multiq(const Op_ptr op) {
 Circuit CX_circ_from_multiq(const Op_ptr op) {
   OpDesc desc = op->get_desc();
   if (!desc.is_gate())
-    throw OpTypeNotSupported(
+    throw BadOpType(
         "Can only build replacement circuits for basic gates", desc.type());
   unsigned n_qubits = op->n_qubits();
   switch (desc.type()) {
@@ -86,7 +86,7 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
 Circuit CX_ZX_circ_from_op(const Op_ptr op) {
   OpDesc desc = op->get_desc();
   if (!desc.is_gate())
-    throw OpTypeNotSupported(
+    throw BadOpType(
         "Can only build replacement circuits for basic gates", desc.type());
   switch (desc.type()) {
     case OpType::Z: {
@@ -264,7 +264,7 @@ Circuit CX_ZX_circ_from_op(const Op_ptr op) {
       return replacement;
     }
     default:
-      throw OpTypeNotSupported("Cannot find replacement circuit", desc.type());
+      throw BadOpType("Cannot find replacement circuit", desc.type());
   }
 }
 

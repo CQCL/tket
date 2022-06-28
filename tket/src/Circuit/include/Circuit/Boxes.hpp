@@ -38,7 +38,7 @@ class Box : public Op {
  public:
   explicit Box(const OpType &type, const op_signature_t &signature = {})
       : Op(type), signature_(signature), circ_(), id_(idgen()) {
-    if (!is_box_type(type)) throw OpTypeNotSupported(type);
+    if (!is_box_type(type)) throw BadOpType(type);
   }
 
   Box(const Box &other)

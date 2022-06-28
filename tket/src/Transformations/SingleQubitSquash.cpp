@@ -207,8 +207,7 @@ SingleQubitSquash::Condition SingleQubitSquash::get_condition(Vertex v) const {
   Op_ptr v_op = circ_.get_Op_ptr_from_Vertex(v);
   OpType v_type = v_op->get_type();
   if (v_type != OpType::Conditional) {
-    throw OpTypeNotSupported(
-        "Cannot get condition from non-conditional OpType", v_type);
+    throw BadOpType("Cannot get condition from non-conditional OpType", v_type);
   }
   const Conditional &cond_op = static_cast<const Conditional &>(*v_op);
   EdgeVec ins = circ_.get_in_edges(v);

@@ -245,7 +245,7 @@ static void check_correctness(const Circuit &c0, const CompilationUnit &cu) {
     RC_ASSERT(tket_sim::compare_statevectors_or_unitaries(
         u0, m_inv_fin * u1 * m_ini));
   } catch (const Unsupported &) {
-  } catch (const OpTypeNotSupported &) {
+  } catch (const BadOpType &) {
   }
   // If tket-sim doesn't recognise a gate, just ignore it.
   RC_ASSERT(sanity_check(c1));
@@ -385,7 +385,7 @@ bool check_initial_simplification() {
           RC_ASSERT(tket_sim::compare_statevectors_or_unitaries(
               s, s1, tket_sim::MatrixEquivalence::EQUAL_UP_TO_GLOBAL_PHASE));
         } catch (const Unsupported &) {
-        } catch (const OpTypeNotSupported &) {
+        } catch (const BadOpType &) {
         }
         // If tket-sim doesn't recognise a gate, just ignore it.
       });

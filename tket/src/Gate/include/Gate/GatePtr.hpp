@@ -26,7 +26,7 @@ typedef std::shared_ptr<const Gate> Gate_ptr;
 /**
  * Cast a general `Op` (of gate type) to a `Gate`.
  *
- * @throws OpTypeNotSupported if @p op is not a gate.
+ * @throws BadOpType if @p op is not a gate.
  */
 Gate_ptr as_gate_ptr(Op_ptr op);
 

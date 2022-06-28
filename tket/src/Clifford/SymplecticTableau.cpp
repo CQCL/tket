@@ -236,7 +236,7 @@ void SymplecticTableau::apply_gate(
       break;
     }
     default: {
-      throw OpTypeNotSupported(
+      throw BadOpType(
           "Cannot be applied to a SymplecticTableau: not a Clifford gate",
           type);
     }

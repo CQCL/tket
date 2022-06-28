@@ -354,7 +354,7 @@ QControlBox::QControlBox(const Op_ptr &op, unsigned n_controls)
   n_inner_qubits_ = inner_sig.size();
   if (std::count(inner_sig.begin(), inner_sig.end(), EdgeType::Quantum) !=
       n_inner_qubits_) {
-    throw OpTypeNotSupported(
+    throw BadOpType(
         "Quantum control of classical wires not supported", op_->get_type());
   }
   signature_ = op_signature_t(n_controls + n_inner_qubits_, EdgeType::Quantum);

@@ -48,13 +48,12 @@ struct OpTypeInfo {
 /** Information including name and shape of each operation type */
 const std::map<OpType, OpTypeInfo> &optypeinfo();
 
-/** Operation type not supported */
-class OpTypeNotSupported : public std::logic_error {
+/** Operation type not valid in the current context */
+class BadOpType : public std::logic_error {
  public:
-  OpTypeNotSupported(const std::string &message, OpType optype)
+  BadOpType(const std::string &message, OpType optype)
       : std::logic_error(message + ": " + optypeinfo().at(optype).name) {}
-  explicit OpTypeNotSupported(OpType optype)
-      : OpTypeNotSupported("Unsupported operation type", optype) {}
+  explicit BadOpType(OpType optype) : BadOpType("Bad operation type", optype) {}
 };
 
 }  // namespace tket

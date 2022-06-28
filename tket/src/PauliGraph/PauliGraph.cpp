@@ -242,7 +242,7 @@ void PauliGraph::apply_gate_at_end(
       break;
     }
     default: {
-      throw OpTypeNotSupported("Cannot add gate to PauliGraph", type);
+      throw BadOpType("Cannot add gate to PauliGraph", type);
     }
   }
 }

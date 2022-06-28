@@ -59,8 +59,7 @@ bool PQPSquasher::accepts(Gate_ptr gp) const {
 
 void PQPSquasher::append(Gate_ptr gp) {
   if (!accepts(gp)) {
-    throw OpTypeNotSupported(
-        "PQPSquasher: cannot append OpType", gp->get_type());
+    throw BadOpType("PQPSquasher: cannot append OpType", gp->get_type());
   }
   rotation_chain.push_back(gp);
 }

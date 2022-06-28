@@ -66,7 +66,7 @@ PauliGraph circuit_to_pauli_graph(const Circuit &circ) {
       }
       pg.apply_pauli_gadget_at_end(qpt, phase);
     } else
-      throw OpTypeNotSupported(
+      throw BadOpType(
           "Can only make a PauliGraph from a circuit of basic gates "
           "and Paulis",
           od.type());

@@ -35,7 +35,7 @@ StandardSquasher::StandardSquasher(
       phase_(0.) {
   for (OpType ot : singleqs_) {
     if (!is_single_qubit_type(ot))
-      throw OpTypeNotSupported(
+      throw BadOpType(
           "OpType given to standard_squash is not a single qubit gate", ot);
   }
 }
@@ -61,7 +61,7 @@ std::pair<Circuit, Gate_ptr> StandardSquasher::flush(
     OpType v_type = replacement.get_OpType_from_Vertex(rv);
     if (!is_boundary_q_type(v_type) &&
         singleqs_.find(v_type) == singleqs_.end()) {
-      throw OpTypeNotSupported(
+      throw BadOpType(
           "tk1_replacement given to standard_squash "
           "does not preserve gate set",
           v_type);

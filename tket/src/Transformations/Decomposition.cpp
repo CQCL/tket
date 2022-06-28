@@ -635,7 +635,7 @@ static Circuit TK2_replacement(
       break;
     }
     default:
-      throw OpTypeNotSupported(
+      throw BadOpType(
           "Unrecognised target OpType in decompose_TK2", best_optype);
   }
   return sub;

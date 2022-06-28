@@ -22,7 +22,7 @@ namespace tket {
 
 MetaOp::MetaOp(OpType type, op_signature_t signature)
     : Op(type), signature_(signature) {
-  if (!is_metaop_type(type)) throw OpTypeNotSupported(type);
+  if (!is_metaop_type(type)) throw BadOpType(type);
 }
 
 Op_ptr MetaOp::symbol_substitution(const SymEngine::map_basic_basic&) const {

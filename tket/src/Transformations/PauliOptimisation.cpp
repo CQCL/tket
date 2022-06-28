@@ -143,7 +143,7 @@ Transform pairwise_pauli_gadgets(CXConfigType cx_config) {
               "Cannot perform pairwise Pauli gadget optimisation "
               "using: " +
               op_ptr->get_name();
-          throw OpTypeNotSupported(type);
+          throw BadOpType(type);
         }
       }
       // Add Clifford gates to the back of the circuit to recreate the final
