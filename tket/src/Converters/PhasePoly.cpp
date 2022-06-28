@@ -15,6 +15,7 @@
 #include "PhasePoly.hpp"
 
 #include <algorithm>
+#include <stdexcept>
 #include <string>
 #include <tklog/TketLog.hpp>
 #include <vector>
@@ -151,7 +152,7 @@ PhasePolyBox::PhasePolyBox(const Circuit& circ)
 
   // check for classical bits
   if (newcirc.n_bits() != 0)
-    throw NotValid(
+    throw std::invalid_argument(
         "Cannot construct phase polynomial from classical controlled "
         "gates");
 

@@ -34,7 +34,6 @@
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
-#include "Utils/Exceptions.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 #include "Utils/PauliStrings.hpp"
 

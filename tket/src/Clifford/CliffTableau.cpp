@@ -14,10 +14,12 @@
 
 #include "CliffTableau.hpp"
 
+#include <stdexcept>
+
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeInfo.hpp"
-#include "Utils/Exceptions.hpp"
 #include "Utils/MatrixAnalysis.hpp"
+#include "tkassert/Assert.hpp"
 
 namespace tket {
 
@@ -444,7 +446,7 @@ void CliffTableau::apply_pauli_at_end(
   MatrixXb::RowXpr px = product_x.row(0);
   MatrixXb::RowXpr pz = product_z.row(0);
   if (pauli.coeff != 1. && pauli.coeff != -1.)
-    throw NotValid(
+    throw std::invalid_argument(
         "Can only apply Paulis with real unit coefficients to "
         "CliffTableaus");
   bool phase = (pauli.coeff == -1.) ^ (half_pis == 3);
@@ -639,11 +641,9 @@ CliffTableau CliffTableau::compose(
       result.zpauli_x, result.zpauli_z, result.zpauli_phase);
 
   for (unsigned i = 0; i < n; i++) {
-    if ((current_x_cphase[i] * xpauli_cphase[i]).imag() != 0)
-      throw NotValid("Error in Tableau phase calculations");
+    TKET_ASSERT((current_x_cphase[i] * xpauli_cphase[i]).imag() == 0);
     result.xpauli_phase(i) = (current_x_cphase[i] == -xpauli_cphase[i]);
-    if ((current_z_cphase[i] * zpauli_cphase[i]).imag() != 0)
-      throw NotValid("Error in Tableau phase calculations");
+    TKET_ASSERT((current_z_cphase[i] * zpauli_cphase[i]).imag() == 0);
     result.zpauli_phase(i) = (current_z_cphase[i] == -zpauli_cphase[i]);
   }
 

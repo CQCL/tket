@@ -15,7 +15,6 @@
 #pragma once
 #include "Converters/Gauss.hpp"
 #include "Path.hpp"
-#include "Utils/Exceptions.hpp"
 
 namespace tket {
 namespace aas {

@@ -18,7 +18,6 @@
 #include <tkassert/Assert.hpp>
 
 #include "Circuit/Boxes.hpp"
-#include "Utils/Exceptions.hpp"
 #include "Utils/PauliStrings.hpp"
 
 namespace tket {

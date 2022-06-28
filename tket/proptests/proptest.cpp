@@ -23,7 +23,6 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Transformations/ContextualReduction.hpp"
 #include "Transformations/Transform.hpp"
-#include "Utils/Exceptions.hpp"
 #include "rapidcheck.h"
 
 using namespace tket;

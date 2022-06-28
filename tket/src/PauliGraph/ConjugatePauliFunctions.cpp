@@ -18,7 +18,6 @@
 
 #include "OpType/OpTypeInfo.hpp"
 #include "PauliGraph/PauliGraph.hpp"
-#include "Utils/Exceptions.hpp"
 
 namespace tket {
 

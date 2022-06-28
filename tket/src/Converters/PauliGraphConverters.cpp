@@ -45,7 +45,7 @@ PauliGraph circuit_to_pauli_graph(const Circuit &circ) {
       std::vector<Pauli> paulis = peb.get_paulis();
       Expr phase = peb.get_phase();
       if (args.size() != paulis.size())
-        throw NotValid("Incorrect Pauli tensor size for qubit count");
+        throw std::logic_error("Incorrect Pauli tensor size for qubit count");
       QubitPauliTensor qpt;
       for (unsigned i = 0; i != args.size(); ++i) {
         switch (paulis[i]) {

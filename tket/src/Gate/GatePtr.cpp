@@ -19,7 +19,6 @@
 #include "Gate.hpp"
 #include "OpType/OpTypeInfo.hpp"
 #include "Ops/OpPtr.hpp"
-#include "Utils/Exceptions.hpp"
 
 namespace tket {
 

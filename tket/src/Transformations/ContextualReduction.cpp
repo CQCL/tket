@@ -28,7 +28,6 @@
 #include "Ops/ClassicalOps.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Transform.hpp"
-#include "Utils/Exceptions.hpp"
 #include "Utils/HelperFunctions.hpp"
 #include "Utils/UnitID.hpp"
 
@@ -82,12 +81,10 @@ Transform remove_discarded_ops() {
 static std::optional<Eigen::MatrixXcd> op_unitary(Op_ptr op) {
   try {
     return op->get_unitary();
-  } catch (NotValid &) {
-    return std::nullopt;
   } catch (BadOpType &) {
     return std::nullopt;
   }
-  // These cover the "expected" exceptions; anything else is unexpected.
+  // Any other exception is unexpected.
 }
 
 /**

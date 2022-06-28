@@ -32,7 +32,6 @@
 #include "OpType/OpTypeFunctions.hpp"
 #include "OpType/OpTypeInfo.hpp"
 #include "Utils/Constants.hpp"
-#include "Utils/Exceptions.hpp"
 #include "Utils/Expression.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/PauliStrings.hpp"

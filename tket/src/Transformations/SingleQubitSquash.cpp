@@ -14,6 +14,7 @@
 
 #include "SingleQubitSquash.hpp"
 
+#include "Circuit/Circuit.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Gate/Gate.hpp"
 
@@ -250,7 +251,7 @@ bool SingleQubitSquash::is_equal(
     return is_equal(circ, {gates.rbegin(), gates.rend()});
   }
   if (circ.n_qubits() != 1) {
-    throw NotValid("Only circuits with one qubit are supported");
+    throw CircuitInvalidity("Only circuits with one qubit are supported");
   }
 
   auto it1 = circ.begin();

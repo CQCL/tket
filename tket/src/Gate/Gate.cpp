@@ -15,6 +15,7 @@
 #include "Gate.hpp"
 
 #include <algorithm>
+#include <stdexcept>
 #include <tkrng/RNG.hpp>
 #include <vector>
 
@@ -590,9 +591,10 @@ std::vector<Expr> Gate::get_tk1_angles() const {
     }
     case OpType::NPhasedX: {
       if (n_qubits_ != 1) {
-        throw NotValid(
+        throw BadOpType(
             "OpType::NPhasedX can only be decomposed into a TK1 "
-            "if it acts on a single qubit");
+            "if it acts on a single qubit",
+            OpType::NPhasedX);
       }
       return {params_.at(1), params_.at(0), minus_times(params_.at(1)), 0};
     }
@@ -614,7 +616,7 @@ SymSet Gate::free_symbols() const { return expr_free_symbols(get_params()); }
 
 std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
   unsigned n_q = n_qubits();
-  if (i >= n_q) throw NotValid();
+  if (i >= n_q) throw std::domain_error("Qubit index out of range");
   switch (get_type()) {
     case OpType::XXPhase:
     case OpType::XXPhase3: {

@@ -16,6 +16,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <optional>
+#include <stdexcept>
 #include <unsupported/Eigen/MatrixFunctions>
 
 #include "../testutil.hpp"
@@ -328,7 +329,7 @@ SCENARIO("Check exceptions in basic Op methods", "[ops]") {
   }
   GIVEN("An invalid port number for commuting_basis") {
     const Op_ptr o = get_op_ptr(OpType::Z);
-    REQUIRE_THROWS_AS((o)->commuting_basis(1), NotValid);
+    REQUIRE_THROWS_AS((o)->commuting_basis(1), std::domain_error);
   }
   GIVEN("A parameterised gate in get_op_ptr(OpType)") {
     REQUIRE_THROWS_AS(get_op_ptr(OpType::U1), InvalidParameterCount);

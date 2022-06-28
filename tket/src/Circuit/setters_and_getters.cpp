@@ -16,6 +16,7 @@
 // ALL METHODS TO SET AND GET BASIC CIRCUIT INFORMATION//
 ////////////////////////////////////////////////////////
 
+#include <stdexcept>
 #include <tkassert/Assert.hpp>
 #include <tklog/TketLog.hpp>
 
@@ -25,7 +26,6 @@
 #include "OpType/OpDesc.hpp"
 #include "OpType/OpType.hpp"
 #include "Ops/OpPtr.hpp"
-#include "Utils/Exceptions.hpp"
 #include "Utils/GraphHeaders.hpp"
 
 namespace tket {
@@ -683,7 +683,7 @@ unsigned Circuit::qubit_index(
                                                : get_target_port(e);
     if (p == port) return i;
   }
-  throw NotValid("Invalid port for vertex");
+  throw std::domain_error("Invalid port for vertex");
 }
 
 std::optional<Pauli> Circuit::commuting_basis(

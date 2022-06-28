@@ -26,7 +26,7 @@ UnitaryTableauBox::UnitaryTableauBox(const UnitaryTableau& tab)
     qbs.insert(Qubit(i));
   }
   if (tab_qbs != qbs)
-    throw NotValid(
+    throw std::invalid_argument(
         "UnitaryTableauBox requires tableau qubits to have default, "
         "consecutive indexing");
 }

@@ -14,7 +14,10 @@
 
 #include "UnitaryTableau.hpp"
 
+#include <stdexcept>
+
 #include "OpType/OpTypeInfo.hpp"
+#include "tkassert/Assert.hpp"
 
 namespace tket {
 
@@ -48,7 +51,7 @@ UnitaryTableau::UnitaryTableau(
       (zx.rows() != n_qubits) || (zx.cols() != n_qubits) ||
       (zz.rows() != n_qubits) || (zz.cols() != n_qubits) ||
       (zph.size() != n_qubits))
-    throw NotValid(
+    throw std::invalid_argument(
         "Unitary tableau requires equally-sized square matrices and vectors");
   MatrixXb xmat(2 * n_qubits, n_qubits);
   xmat << xx, zx;
@@ -63,10 +66,11 @@ UnitaryTableau::UnitaryTableau(
       MatrixXb::Identity(n_qubits, n_qubits),
       MatrixXb::Zero(n_qubits, n_qubits);
   if (tab_.anticommuting_rows() != expected_anticommutes)
-    throw NotValid(
+    throw std::invalid_argument(
         "Rows of tableau do not (anti-)commute as expected for UnitaryTableau");
   if (tab_.rank() != 2 * n_qubits)
-    throw NotValid("Rows of UnitaryTableau are not linearly independent");
+    throw std::invalid_argument(
+        "Rows of UnitaryTableau are not linearly independent");
   qubits_ = boost::bimap<Qubit, unsigned>();
   for (unsigned i = 0; i < n_qubits; ++i) {
     qubits_.insert({Qubit(i), i});
@@ -308,7 +312,7 @@ void UnitaryTableau::apply_pauli_at_front(
   MatrixXb::RowXpr px = product_x.row(0);
   MatrixXb::RowXpr pz = product_z.row(0);
   if (pauli.coeff != 1. && pauli.coeff != -1.)
-    throw NotValid(
+    throw std::domain_error(
         "Can only apply Pauli gadgets with real unit coefficients to "
         "UnitaryTableaux");
   bool phase = (pauli.coeff == -1.) ^ (half_pis == 1);
@@ -392,7 +396,7 @@ void UnitaryTableau::apply_pauli_at_end(
     string.at(uqb) = pair.second;
   }
   if (pauli.coeff != 1. && pauli.coeff != -1.)
-    throw NotValid(
+    throw std::domain_error(
         "Can only apply Pauli gadgets with real unit coefficients to "
         "UnitaryTableaux");
   tab_.apply_pauli_gadget({string, pauli.coeff == 1.}, half_pis);
@@ -443,8 +447,7 @@ UnitaryTableau UnitaryTableau::compose(
   // Combine row lists and convert to PauliStabilisers
   PauliStabiliserList all_rows;
   for (const QubitPauliTensor& row : rows) {
-    if (row.coeff != 1. && row.coeff != -1.)
-      throw NotValid("Coefficient error in Tableau composition");
+    TKET_ASSERT(row.coeff == 1. || row.coeff == -1.);
     std::vector<Pauli> ps(nqb, Pauli::I);
     for (const std::pair<const Qubit, Pauli>& p : row.string.map) {
       unsigned q = result.qubits_.left.at(p.first);
@@ -578,22 +581,23 @@ void to_json(nlohmann::json& j, const UnitaryTableau& tab) {
 void from_json(const nlohmann::json& j, UnitaryTableau& tab) {
   j.at("tab").get_to(tab.tab_);
   if (tab.tab_.get_n_rows() != 2 * tab.tab_.get_n_qubits())
-    throw NotValid(
+    throw std::invalid_argument(
         "Size of tableau does not match requirements for UnitaryTableau.");
   qubit_vector_t qbs = j.at("qubits").get<qubit_vector_t>();
   unsigned nqbs = qbs.size();
   if (nqbs != tab.tab_.get_n_qubits())
-    throw NotValid(
+    throw std::invalid_argument(
         "Number of qubits in json UnitaryTableau does not match tableau size.");
   MatrixXb expected_anticommutes(2 * nqbs, 2 * nqbs);
   expected_anticommutes << MatrixXb::Zero(nqbs, nqbs),
       MatrixXb::Identity(nqbs, nqbs), MatrixXb::Identity(nqbs, nqbs),
       MatrixXb::Zero(nqbs, nqbs);
   if (tab.tab_.anticommuting_rows() != expected_anticommutes)
-    throw NotValid(
+    throw std::invalid_argument(
         "Rows of tableau do not (anti-)commute as expected for UnitaryTableau");
   if (tab.tab_.rank() != 2 * nqbs)
-    throw NotValid("Rows of UnitaryTableau are not linearly independent");
+    throw std::invalid_argument(
+        "Rows of UnitaryTableau are not linearly independent");
   tab.qubits_.clear();
   for (unsigned i = 0; i < nqbs; ++i) {
     tab.qubits_.insert({qbs.at(i), i});

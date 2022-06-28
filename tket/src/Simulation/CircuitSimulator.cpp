@@ -20,7 +20,6 @@
 #include "DecomposeCircuit.hpp"
 #include "Gate/GateUnitaryMatrixError.hpp"
 #include "GateNodesBuffer.hpp"
-#include "Utils/Exceptions.hpp"
 #include "Utils/Expression.hpp"
 
 namespace tket {

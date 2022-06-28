@@ -18,7 +18,9 @@
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
+#include "Circuit/Circuit.hpp"
 #include "OpType/OpType.hpp"
+#include "OpType/OpTypeInfo.hpp"
 #include "StandardSquash.hpp"
 #include "Utils/Expression.hpp"
 
@@ -263,7 +265,7 @@ void PhasedXFrontier::skip_global_gates(unsigned n) {
         unsigned in_edges = circ_.n_in_edges_of_type(v, EdgeType::Quantum);
         unsigned out_edges = circ_.n_out_edges_of_type(v, EdgeType::Quantum);
         if (in_edges != circ_.n_qubits() || out_edges != circ_.n_qubits()) {
-          throw NotValid("Found non-global NPhasedX gate");
+          throw CircuitInvalidity("Found non-global NPhasedX gate");
         }
         ++count;
         if (count == n) {
@@ -272,7 +274,7 @@ void PhasedXFrontier::skip_global_gates(unsigned n) {
       }
     }
     if (count < n) {
-      throw NotValid("Did not find expected global gates");
+      throw CircuitInvalidity("Did not find expected global gates");
     }
   }
 }
@@ -294,7 +296,7 @@ void PhasedXFrontier::insert_1_phasedx(unsigned i) {
   OptVertexVec vertices = get_all_beta_vertices();
 
   if (!vertices[i]) {
-    throw NotValid("No PhasedX found on qubit " + std::to_string(i));
+    throw CircuitInvalidity("No PhasedX found on qubit " + std::to_string(i));
   }
   Expr beta = betas[i];
 
@@ -343,7 +345,7 @@ void PhasedXFrontier::insert_1_phasedx(unsigned i) {
             }
           }
         } else {
-          throw NotValid("Encountered invalid beta angle OpType");
+          throw BadOpType("Encountered invalid beta angle OpType", type);
         }
       }
     } else {
