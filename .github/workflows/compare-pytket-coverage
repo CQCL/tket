@@ -41,9 +41,12 @@ def validate(cov_file):
 
 
 def get_rates(cov_root):
+    """ Returns line and branch rates up to 2 decimal places """
     assert "line-rate" in cov_root.attrib
     assert "branch-rate" in cov_root.attrib
-    return float(cov_root.attrib["line-rate"]), float(cov_root.attrib["branch-rate"])
+    line_rate = round(float(cov_root.attrib["line-rate"]), 2)
+    branch_rate = round(float(cov_root.attrib["branch-rate"]), 2)
+    return line_rate, branch_rate
 
 
 def compare(old_cov_file, new_cov_file):
@@ -52,18 +55,19 @@ def compare(old_cov_file, new_cov_file):
     new_cov = ET.parse(new_cov_file)
     new_cov_root = new_cov.getroot()
 
+    old_line_rate, old_branch_rate = get_rates(old_cov_root)
+    new_line_rate, new_branch_rate = get_rates(new_cov_root)
 
     print("Comparing pytket coverage:")
     print()
     print("Old:")
-    print(old_cov_root.attrib)
+    print(f"Line coverage: {old_line_rate}")
+    print(f"Branch coverage: {old_branch_rate}")
     print()
     print("New:")
-    print(new_cov_root.attrib)
+    print(f"Line coverage: {new_line_rate}")
+    print(f"Branch coverage: {new_branch_rate}")
     print()
-
-    old_line_rate, old_branch_rate = get_rates(old_cov_root)
-    new_line_rate, new_branch_rate = get_rates(new_cov_root)
 
     if new_line_rate < old_line_rate:
         sys.exit("Line coverage has decreased!")
