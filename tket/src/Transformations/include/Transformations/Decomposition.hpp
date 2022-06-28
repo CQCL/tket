@@ -124,6 +124,9 @@ struct TwoQbFidelities {
  * decompositions for arbitrary symbolic parameters, so consider substituting
  * for concrete values if possible.
  *
+ * All TK2 angles must be normalised to the Weyl chamber. This can be achieved
+ * using the \ref normalise_TK2 transform.
+ *
  * @param fid The two-qubit gate fidelities (optional).
  * @return Transform
  */

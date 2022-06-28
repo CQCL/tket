@@ -11,6 +11,10 @@ Minor new features:
 * Circuit to QASM converters with the "hqslib1" header now fix ZZPhase angles
   to be between -1 and 1 half-turns.
 
+Fixes:
+
+* Ensure TK2 angles are normalised before decomposing TK2 gates in passes.
+
 1.3.0 (June 2022)
 -----------------
 
