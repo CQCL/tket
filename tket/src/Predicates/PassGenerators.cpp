@@ -413,9 +413,8 @@ PassPtr aas_routing_pass(
           break;
         }
         default: {
-          throw NotImplemented(
-              "Invalid gate in input of aas routing: " +
-              com.get_op_ptr()->get_name());
+          throw OpTypeNotSupported(
+              "Invalid gate in input of AAS routing", ot);
         }
       }
     }

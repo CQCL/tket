@@ -1993,8 +1993,8 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
     Circuit circ(1);
     Vertex box = circ.add_barrier(uvec{0});
     const Op_ptr op = circ.get_Op_ptr_from_Vertex(box);
-    REQUIRE_THROWS_AS(CX_circ_from_multiq(op), NotImplemented);
-    REQUIRE_THROWS_AS(CX_ZX_circ_from_op(op), NotImplemented);
+    REQUIRE_THROWS_AS(CX_circ_from_multiq(op), OpTypeNotSupported);
+    REQUIRE_THROWS_AS(CX_ZX_circ_from_op(op), OpTypeNotSupported);
   }
 }
 

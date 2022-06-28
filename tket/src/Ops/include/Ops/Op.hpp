@@ -157,7 +157,7 @@ class Op : public std::enable_shared_from_this<Op> {
    *
    * @pre No symbolic parameters.
    * @return unitary matrix (ILO-BE) which this Op represents
-   * @throw NotValid or NotImplemented upon error.
+   * @throw NotValid or OpTypeNotSupported upon error.
    */
   virtual Eigen::MatrixXcd get_unitary() const { throw NotValid(); }
 

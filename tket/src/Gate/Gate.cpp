@@ -160,8 +160,7 @@ Op_ptr Gate::dagger() const {
             OpType::PhasedISWAP, {params_[0], minus_times(params_[1])});
       }
     default: {
-      throw NotImplemented(
-          "Cannot retrieve the dagger of OpType::" + get_desc().name());
+      throw OpTypeNotSupported("Cannot compute dagger", optype);
     }
   }
 }
@@ -245,8 +244,7 @@ Op_ptr Gate::transpose() const {
     }
 
     default: {
-      throw NotImplemented(
-          "Cannot retrieve the transpose of OpType::" + get_desc().name());
+      throw OpTypeNotSupported("Cannot compute transpose", optype);
     }
   }
 }
@@ -605,8 +603,7 @@ std::vector<Expr> Gate::get_tk1_angles() const {
       return {params_.at(0), params_.at(1), params_.at(2), 0};
     }
     default: {
-      throw NotImplemented(
-          "Cannot retrieve the TK1 angles of OpType::" + get_desc().name());
+      throw OpTypeNotSupported("Cannot compute TK1 angles", get_type());
     }
   }
 }

@@ -20,6 +20,7 @@
 #include "Decomposition.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Gate/GateUnitaryMatrix.hpp"
+#include "OpType/OpTypeInfo.hpp"
 #include "Transform.hpp"
 
 namespace tket {
@@ -29,9 +30,8 @@ using namespace Transforms;
 Circuit TK2_circ_from_multiq(const Op_ptr op) {
   OpDesc desc = op->get_desc();
   if (!desc.is_gate())
-    throw NotImplemented(
-        "Can only build replacement circuits for basic gates; given " +
-        desc.name());
+    throw OpTypeNotSupported(
+        "Can only build replacement circuits for basic gates", desc.type());
   unsigned n_qubits = op->n_qubits();
   switch (desc.type()) {
     case OpType::CnRy: {
@@ -62,9 +62,8 @@ Circuit TK2_circ_from_multiq(const Op_ptr op) {
 Circuit CX_circ_from_multiq(const Op_ptr op) {
   OpDesc desc = op->get_desc();
   if (!desc.is_gate())
-    throw NotImplemented(
-        "Can only build replacement circuits for basic gates; given " +
-        desc.name());
+    throw OpTypeNotSupported(
+        "Can only build replacement circuits for basic gates", desc.type());
   unsigned n_qubits = op->n_qubits();
   switch (desc.type()) {
     case OpType::CnRy:
@@ -87,9 +86,8 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
 Circuit CX_ZX_circ_from_op(const Op_ptr op) {
   OpDesc desc = op->get_desc();
   if (!desc.is_gate())
-    throw NotImplemented(
-        "Can only build replacement circuits for basic gates; given " +
-        desc.name());
+    throw OpTypeNotSupported(
+        "Can only build replacement circuits for basic gates", desc.type());
   switch (desc.type()) {
     case OpType::Z: {
       Circuit replacement(1);
@@ -266,8 +264,7 @@ Circuit CX_ZX_circ_from_op(const Op_ptr op) {
       return replacement;
     }
     default:
-      throw NotImplemented(
-          "Cannot find replacement circuit for OpType::" + desc.name());
+      throw OpTypeNotSupported("Cannot find replacement circuit", desc.type());
   }
 }
 

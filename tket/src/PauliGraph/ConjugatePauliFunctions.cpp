@@ -16,6 +16,7 @@
 
 #include <tkassert/Assert.hpp>
 
+#include "OpType/OpTypeInfo.hpp"
 #include "PauliGraph/PauliGraph.hpp"
 #include "Utils/Exceptions.hpp"
 
@@ -133,7 +134,8 @@ void conjugate_PauliTensor(
           {{Pauli::Z, Pauli::Z}, {Pauli::I, Pauli::Z, false}},
       };
   if (op != OpType::CX) {
-    throw NotImplemented("Conjugations of Pauli strings only defined for CXs");
+    throw OpTypeNotSupported(
+      "Conjugations of Pauli strings only defined for CXs", op);
   }
   QubitPauliMap::iterator it0 = qpt.string.map.find(q0);
   QubitPauliMap::iterator it1 = qpt.string.map.find(q1);
@@ -176,8 +178,8 @@ void conjugate_PauliTensor(
    *  always cancel out.
    */
   if (op != OpType::XXPhase3) {
-    throw NotImplemented(
-        "3qb-Conjugations of Pauli strings only defined for XXPhase3");
+    throw OpTypeNotSupported(
+        "3qb-Conjugations of Pauli strings only defined for XXPhase3", op);
   }
   Conjugations equiv = {{OpType::H, {q1}},      {OpType::CX, {q1, q2}},
                         {OpType::CX, {q1, q0}}, {OpType::H, {q0}},

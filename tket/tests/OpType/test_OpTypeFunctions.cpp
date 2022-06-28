@@ -18,7 +18,7 @@ SCENARIO("is_single_qubit_unitary_type <=> get_tk1_angles implemented") {
     bool is_single_qb_unitary = true;
     try {
       gp->get_tk1_angles();
-    } catch (const NotImplemented&) {
+    } catch (const OpTypeNotSupported&) {
       is_single_qb_unitary = false;
     }
     if (is_single_qb_unitary) {
