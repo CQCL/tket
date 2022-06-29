@@ -900,7 +900,7 @@ def circuit_to_qasm_io(
 
     range_preds = dict()
     for command in circ:
-        unchecked_op = False
+        checked_op = True
         op = command.op
         args = command.args
         optype, params = _get_optype_and_params(op)
@@ -1063,7 +1063,7 @@ def circuit_to_qasm_io(
                 opstr = _tk_to_qasm_noparams[optype]
             else:
                 opstr = op.data
-                unchecked_op = True
+                checked_op = False
         elif optype in _tk_to_qasm_noparams:
             opstr = _tk_to_qasm_noparams[optype]
         elif optype in _tk_to_qasm_params:
@@ -1072,7 +1072,7 @@ def circuit_to_qasm_io(
             raise QASMUnsupportedError(
                 "Cannot print command of type: {}".format(op.get_name())
             )
-        if opstr not in include_gate_defs or unchecked_op:
+        if checked_op and opstr not in include_gate_defs:
             raise QASMUnsupportedError(
                 "Gate of type {} is not defined in header {}.inc".format(opstr, header)
             )
