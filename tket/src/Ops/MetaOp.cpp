@@ -14,14 +14,16 @@
 
 #include "MetaOp.hpp"
 
+#include <typeinfo>
+
 #include "OpType/EdgeType.hpp"
 #include "OpType/OpType.hpp"
 #include "Utils/Json.hpp"
 
 namespace tket {
 
-MetaOp::MetaOp(OpType type, op_signature_t signature)
-    : Op(type), signature_(signature) {
+MetaOp::MetaOp(OpType type, op_signature_t signature, const std::string& _data)
+    : Op(type), signature_(signature), data_(_data) {
   if (!is_metaop_type(type)) throw NotValid();
 }
 
@@ -52,13 +54,20 @@ nlohmann::json MetaOp::serialize() const {
   nlohmann::json j;
   j["type"] = get_type();
   j["signature"] = get_signature();
+  j["data"] = get_data();
   return j;
 }
 
 Op_ptr MetaOp::deserialize(const nlohmann::json& j) {
   OpType optype = j.at("type").get<OpType>();
   op_signature_t sig = j.at("signature").get<op_signature_t>();
-  return std::make_shared<MetaOp>(optype, sig);
+  std::string data;
+  try {
+    data = j.at("data").get<std::string>();
+  } catch (const nlohmann::json::out_of_range& e) {
+    data = "";
+  }
+  return std::make_shared<MetaOp>(optype, sig, data);
 }
 
 bool MetaOp::is_clifford() const { return true; }

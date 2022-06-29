@@ -894,8 +894,9 @@ class Circuit {
 
   Vertex add_barrier(
       const std::vector<unsigned> &qubits,
-      const std::vector<unsigned> &bits = {});
-  Vertex add_barrier(const unit_vector_t &args);
+      const std::vector<unsigned> &bits = {}, const std::string &_data = "");
+
+  Vertex add_barrier(const unit_vector_t &args, const std::string &_data = "");
 
   /**
    * Add a postfix to a classical register name if the register exists

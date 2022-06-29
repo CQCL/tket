@@ -258,6 +258,28 @@ def test_hqs_conditional() -> None:
         assert "Range can only be bounded on one side" in str(errorinfo.value)
 
 
+def test_barrier() -> None:
+    c = Circuit(3, 3)
+    c.H(0)
+    c.H(2)
+    c.add_barrier([0], [0], "comment")
+
+    result = """OPENQASM 2.0;\ninclude "hqslib1_dev.inc";\n\nqreg q[3];
+creg c[3];\nh q[0];\nh q[2];\ncomment q[0],c[0];\n"""
+    assert result == circuit_to_qasm_str(c, header="hqslib1_dev")
+
+
+def test_barrier_2() -> None:
+    c = Circuit(3, 3)
+    c.H(0)
+    c.H(2)
+    c.add_barrier([0], [0], "different_comment )@#-(")
+
+    result = """OPENQASM 2.0;\ninclude "hqslib1_dev.inc";\n\nqreg q[3];
+creg c[3];\nh q[0];\nh q[2];\ndifferent_comment )@#-( q[0],c[0];\n"""
+    assert result == circuit_to_qasm_str(c, header="hqslib1_dev")
+
+
 def test_hqs_conditional_params() -> None:
     # https://github.com/CQCL/tket/issues/17
     c = Circuit(1, 1)
