@@ -884,12 +884,7 @@ def circuit_to_qasm_io(
         include_gate_defs = {"measure", "reset", "barrier"}
         include_gate_defs.update(_load_include_module(header, False, True).keys())
 
-        if header == "hqslib1_dev":
-            stream_out.write(
-                'OPENQASM 2.0;\ninclude "hqslib1_dev.inc";\ninclude "hqslib1.inc";\n\n'
-            )
-        else:
-            stream_out.write('OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header))
+        stream_out.write('OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header))
 
         qregs = _retrieve_registers(circ.qubits, QubitRegister)
         cregs = _retrieve_registers(circ.bits, BitRegister)
@@ -905,6 +900,7 @@ def circuit_to_qasm_io(
 
     range_preds = dict()
     for command in circ:
+        unchecked_op = False
         op = command.op
         args = command.args
         optype, params = _get_optype_and_params(op)
@@ -1062,11 +1058,12 @@ def circuit_to_qasm_io(
                 if param > 1:
                     param = -2 + param
             params = [param]
-        elif optype == OpType.Barrier and hqs_header(header):
+        elif optype == OpType.Barrier and header == "hqslib1_dev":
             if op.data == "":
                 opstr = _tk_to_qasm_noparams[optype]
             else:
                 opstr = op.data
+                unchecked_op = True
         elif optype in _tk_to_qasm_noparams:
             opstr = _tk_to_qasm_noparams[optype]
         elif optype in _tk_to_qasm_params:
@@ -1075,7 +1072,7 @@ def circuit_to_qasm_io(
             raise QASMUnsupportedError(
                 "Cannot print command of type: {}".format(op.get_name())
             )
-        if opstr not in include_gate_defs and optype != OpType.Barrier:
+        if opstr not in include_gate_defs or unchecked_op:
             raise QASMUnsupportedError(
                 "Gate of type {} is not defined in header {}.inc".format(opstr, header)
             )

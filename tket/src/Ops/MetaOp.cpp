@@ -54,24 +54,21 @@ nlohmann::json MetaOp::serialize() const {
   nlohmann::json j;
   j["type"] = get_type();
   j["signature"] = get_signature();
-  if (get_type() == OpType::Barrier) {
-    j["data"] = get_data();
-  }
+  j["data"] = get_data();
   return j;
 }
 
 Op_ptr MetaOp::deserialize(const nlohmann::json& j) {
   OpType optype = j.at("type").get<OpType>();
   op_signature_t sig = j.at("signature").get<op_signature_t>();
-  if (optype == OpType::Barrier) {
-    std::string data;
-    try {
-      data = j.at("data").get<std::string>();
-    } catch (const nlohmann::json::out_of_range& e) {
-      data = "";
-    }
-    return std::make_shared<MetaOp>(optype, sig, data);
+  std::string data;
+  try {
+    data = j.at("data").get<std::string>();
+  } catch (const nlohmann::json::out_of_range& e) {
+    data = "";
   }
+  return std::make_shared<MetaOp>(optype, sig, data);
+
   return std::make_shared<MetaOp>(optype, sig);
 }
 

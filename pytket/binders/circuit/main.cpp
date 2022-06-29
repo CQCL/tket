@@ -518,11 +518,14 @@ PYBIND11_MODULE(circuit, m) {
           [](const Command &com) { return com.get_op_ptr()->free_symbols(); },
           ":return: set of symbolic parameters for the command");
 
-  py::class_<MetaOp, std::shared_ptr<MetaOp>, Op>(m, "MetaOp", "TODO")
+  py::class_<MetaOp, std::shared_ptr<MetaOp>, Op>(
+      m, "MetaOp", "Meta operation, for example used as barrier")
       .def(
           py::init<OpType, op_signature_t, const std::string &>(),
-          "Construct from number of bits, bitwidths of inputs and outputs, "
-          "function name and module id.",
+          "Construct MetaOp with optype, signature and additional data string"
+          "\n\n:param type: type for the meta op"
+          "\n:param signature: signature for the op"
+          "\n:param data: additional string stored in the op",
           py::arg("type"), py::arg("signature"), py::arg("data"))
       .def_property_readonly("data", &MetaOp::get_data, "Get data from MetaOp");
 
