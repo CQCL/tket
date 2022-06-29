@@ -58,7 +58,7 @@ class MetaOp : public Op {
   /**
    * additional data given by the user, can be passed on to backend
    */
-  const std::string data_; 
+  const std::string data_;
 };
 
 }  // namespace tket
