@@ -48,9 +48,9 @@ class TketConan(ConanFile):
         "tkwsm/0.1.0@tket/stable",
     )
 
+    # List of components in a topological sort according to dependencies:
     comps = [
         "Utils",
-        "ZX",
         "OpType",
         "Clifford",
         "Ops",
@@ -62,12 +62,13 @@ class TketConan(ConanFile):
         "Simulation",
         "Diagonalisation",
         "Characterisation",
+        "ZX",
         "Converters",
-        "Mapping",
         "Placement",
+        "ArchAwareSynth",
+        "Mapping",
         "MeasurementSetup",
         "Transformations",
-        "ArchAwareSynth",
         "Predicates",
     ]
 
@@ -103,6 +104,10 @@ class TketConan(ConanFile):
         self.copy("*.lib", dst="lib", keep_path=False)
         self.copy("*.so", dst="lib", keep_path=False)
         self.copy("*.dylib", dst="lib", keep_path=False)
+        self.copy("*.a", dst="lib", keep_path=False)
 
     def package_info(self):
-        self.cpp_info.libs = [f"tket-{comp}" for comp in self.comps]
+        # These must be ordered "top to bottom", so that when building statically
+        # unresolved symbols in libraries earlier in the list get resolved by later
+        # libraries.
+        self.cpp_info.libs = [f"tket-{comp}" for comp in reversed(self.comps)]
