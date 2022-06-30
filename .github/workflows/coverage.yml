@@ -30,6 +30,7 @@ jobs:
         filters: |
           tket:
             - 'tket/**'
+            - '.github/workflows/coverage.yml'
 
   generate_coverage:
     name: Generate coverage report
@@ -104,7 +105,7 @@ jobs:
     - name: Build coverage report
       run: |
         mkdir test-coverage
-        gcovr --print-summary --html --html-details -r ./tket/src/ --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/tket/ -o test-coverage/index.html > test-coverage/summary.txt
+        gcovr --print-summary --html --html-details -r ./tket/src/ --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/tket/ -o test-coverage/index.html --decisions -v > test-coverage/summary.txt
     - name: Upload artefact
       uses: actions/upload-artifact@v3
       with:
