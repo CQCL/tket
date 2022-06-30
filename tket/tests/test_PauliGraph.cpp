@@ -997,7 +997,8 @@ SCENARIO("Measure handling in PauliGraph") {
     circ.add_op<unsigned>(OpType::Rz, 0.2, {0});
     circ.add_op<unsigned>(OpType::Rz, 0.3, {1});
     circ.add_op<unsigned>(OpType::Measure, {1, 0});
-    REQUIRE_THROWS_AS(circuit_to_pauli_graph(circ), NotImplemented);
+    REQUIRE_THROWS_AS(
+        circuit_to_pauli_graph(circ), MidCircuitMeasurementNotAllowed);
   }
 }
 
@@ -1006,7 +1007,8 @@ SCENARIO("Error handling with implicit permutations") {
   circ.add_op<unsigned>(OpType::CX, {0, 1});
   circ.add_op<unsigned>(OpType::CX, {1, 0});
   Transforms::clifford_simp().apply(circ);
-  REQUIRE_THROWS_AS(circuit_to_pauli_graph(circ), NotImplemented);
+  REQUIRE_THROWS_AS(
+      circuit_to_pauli_graph(circ), ImplicitPermutationNotAllowed);
 }
 
 }  // namespace test_PauliGraph

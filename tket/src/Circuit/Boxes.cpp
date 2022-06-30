@@ -22,6 +22,7 @@
 #include "Circuit/AssertionSynthesis.hpp"
 #include "Command.hpp"
 #include "Gate/Rotation.hpp"
+#include "OpType/OpTypeInfo.hpp"
 #include "Ops/OpJsonFactory.hpp"
 #include "Ops/OpPtr.hpp"
 #include "ThreeQubitConversion.hpp"
@@ -353,7 +354,8 @@ QControlBox::QControlBox(const Op_ptr &op, unsigned n_controls)
   n_inner_qubits_ = inner_sig.size();
   if (std::count(inner_sig.begin(), inner_sig.end(), EdgeType::Quantum) !=
       n_inner_qubits_) {
-    throw NotImplemented("Quantum control of classical wires not supported");
+    throw BadOpType(
+        "Quantum control of classical wires not supported", op_->get_type());
   }
   signature_ = op_signature_t(n_controls + n_inner_qubits_, EdgeType::Quantum);
 }

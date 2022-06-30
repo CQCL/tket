@@ -703,7 +703,7 @@ class Circuit {
    * @param port port index
    *
    * @return qubit index
-   * @throw NotValid if port doesn't correspond to a quantum wire
+   * @throw std::domain_error if port doesn't correspond to a quantum wire
    */
   unsigned qubit_index(
       const Vertex &vert, PortType port_type, port_t port) const;

@@ -368,8 +368,7 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "DecomposeBoxes") {
       pp = DecomposeBoxes();
     } else if (passname == "DecomposeClassicalExp") {
-      throw NotImplemented(
-          "Deserialization of DecomposeClassicalExp not yet implemented.");
+      throw PassNotSerializable(passname);
     } else if (passname == "DecomposeMultiQubitsCX") {
       pp = DecomposeMultiQubitsCX();
     } else if (passname == "DecomposeSingleQubitsTK1") {
@@ -399,8 +398,7 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "FlattenRegisters") {
       pp = FlattenRegisters();
     } else if (passname == "SquashCustom") {
-      throw NotImplemented(
-          "Deserialization of SquashCustom not yet implemented.");
+      throw PassNotSerializable(passname);
     } else if (passname == "DelayMeasures") {
       pp = DelayMeasures();
     } else if (passname == "ZZPhaseToRz") {
@@ -414,8 +412,7 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "ComposePhasePolyBoxes") {
       pp = ComposePhasePolyBoxes(content.at("min_size").get<unsigned>());
     } else if (passname == "RebaseCustom") {
-      throw NotImplemented(
-          "Deserialization of RebaseCustom not yet implemented.");
+      throw PassNotSerializable(passname);
     } else if (passname == "EulerAngleReduction") {
       OpType p = content.at("euler_p").get<OpType>();
       OpType q = content.at("euler_q").get<OpType>();
@@ -524,8 +521,7 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     const nlohmann::json& content = j.at("RepeatPass");
     pp = std::make_shared<RepeatPass>(content.at("body").get<PassPtr>());
   } else if (classname == "RepeatWithMetricPass") {
-    throw NotImplemented(
-        "Deserialization of RepeatWithMetricPasses not yet implemented.");
+    throw PassNotSerializable(classname);
   } else if (classname == "RepeatUntilSatisfiedPass") {
     const nlohmann::json& content = j.at("RepeatUntilSatisfiedPass");
     PassPtr body = content.at("body").get<PassPtr>();

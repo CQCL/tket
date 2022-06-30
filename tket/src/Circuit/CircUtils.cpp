@@ -35,9 +35,7 @@ namespace tket {
 Eigen::Matrix2cd get_matrix(const Circuit &circ, const Vertex &vert) {
   const Op_ptr op = circ.get_Op_ptr_from_Vertex(vert);
   if (op->get_type() != OpType::TK1) {
-    throw NotImplemented(
-        "Cannot obtain matrix from gate: " + op->get_name() +
-        ". Try rebasing to tket's internal representation.");
+    throw BadOpType("Cannot compute matrix from gate", op->get_type());
   }
   std::vector<Expr> ps = op->get_params();
   ps.push_back(0);
@@ -126,8 +124,7 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit &circ) {
                   Eigen::kroneckerProduct(Eigen::Matrix2cd::Identity(), mat);
             }
           } else
-            throw NotImplemented(
-                "Cannot obtain matrix from op " + o->get_name());
+            throw BadOpType("Cannot obtain matrix from op", o->get_type());
         }
       }
     }

@@ -15,6 +15,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <numeric>
 #include <optional>
+#include <stdexcept>
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
@@ -1632,7 +1633,7 @@ SCENARIO("Test barrier blocks transforms successfully") {
     circ.add_op<unsigned>(OpType::U1, 0.5, {0});
     REQUIRE(!Transforms::remove_redundancies().apply(circ));
     REQUIRE_THROWS_AS(
-        Transforms::pairwise_pauli_gadgets().apply(circ), NotValid);
+        Transforms::pairwise_pauli_gadgets().apply(circ), BadOpType);
   }
   GIVEN("Bigger circuit with barrier") {
     Circuit circ(3);
@@ -1798,7 +1799,8 @@ SCENARIO("Testing decompose_TK2") {
     for (auto angles : params) {
       Circuit c(2);
       c.add_op<unsigned>(OpType::TK2, angles, {0, 1});
-      REQUIRE_THROWS_AS(Transforms::decompose_TK2().apply(c), NotValid);
+      REQUIRE_THROWS_AS(
+          Transforms::decompose_TK2().apply(c), std::domain_error);
     }
   }
 

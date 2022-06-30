@@ -800,8 +800,7 @@ void from_json(const nlohmann::json& j, PredicatePtr& pred_ptr) {
   } else if (classname == "CliffordCircuitPredicate") {
     pred_ptr = std::make_shared<CliffordCircuitPredicate>();
   } else if (classname == "UserDefinedPredicate") {
-    throw NotImplemented(
-        "Deserialization of UserDefinedPredicates not yet implemented.");
+    throw PredicateNotSerializable(classname);
   } else if (classname == "DefaultRegisterPredicate") {
     pred_ptr = std::make_shared<DefaultRegisterPredicate>();
   } else if (classname == "MaxNQubitsPredicate") {

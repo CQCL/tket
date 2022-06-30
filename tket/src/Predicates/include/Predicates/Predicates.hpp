@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #pragma once
+#include <string>
 #include <typeindex>
 
 #include "Architecture/Architecture.hpp"
@@ -36,6 +37,12 @@ class UnsatisfiedPredicate : public std::logic_error {
   explicit UnsatisfiedPredicate(const std::string& pred_name)
       : std::logic_error(
             "Predicate requirements are not satisfied: " + pred_name) {}
+};
+
+class PredicateNotSerializable : public std::logic_error {
+ public:
+  explicit PredicateNotSerializable(const std::string& pred_name)
+      : std::logic_error("Predicate not serializable: " + pred_name) {}
 };
 
 const std::string& predicate_name(std::type_index idx);

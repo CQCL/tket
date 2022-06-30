@@ -14,9 +14,8 @@
 
 #include "GateNodesBuffer.hpp"
 
+#include <stdexcept>
 #include <tkassert/Assert.hpp>
-
-#include "Utils/Exceptions.hpp"
 
 namespace tket {
 namespace tket_sim {
@@ -34,7 +33,7 @@ struct GateNodesBuffer::Impl {
         number_of_qubits(get_number_of_qubits(matr.rows())),
         global_phase(0.0) {
     if (matr.cols() == 0) {
-      throw NotValid("Matrix has zero cols");
+      throw std::invalid_argument("Matrix has zero cols");
     }
   }
 

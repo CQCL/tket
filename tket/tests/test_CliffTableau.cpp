@@ -193,18 +193,19 @@ SCENARIO("Error handling in Tableau generation") {
   GIVEN("Add a non-clifford gate at end") {
     CliffTableau tab(2);
     REQUIRE_THROWS_AS(
-        tab.apply_gate_at_end(OpType::T, std::vector<unsigned>({0})), NotValid);
+        tab.apply_gate_at_end(OpType::T, std::vector<unsigned>({0})),
+        BadOpType);
   }
   GIVEN("Add a non-clifford gate at front") {
     CliffTableau tab(2);
     REQUIRE_THROWS_AS(
         tab.apply_gate_at_front(OpType::Tdg, std::vector<unsigned>({0})),
-        NotValid);
+        BadOpType);
   }
   GIVEN("Tableau from a non-Clifford circuit") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CH, {1, 0});
-    REQUIRE_THROWS_AS(circuit_to_tableau(circ), NotValid);
+    REQUIRE_THROWS_AS(circuit_to_tableau(circ), BadOpType);
   }
 }
 

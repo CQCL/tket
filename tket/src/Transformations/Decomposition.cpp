@@ -18,6 +18,7 @@
 #include <optional>
 // replace with c++20 <ranges> when available
 #include <boost/range/adaptor/filtered.hpp>
+#include <stdexcept>
 
 #include "Architecture/Architecture.hpp"
 #include "BasicOptimisation.hpp"
@@ -26,6 +27,7 @@
 #include "Gate/GatePtr.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
+#include "OpType/OpTypeInfo.hpp"
 #include "Ops/OpPtr.hpp"
 #include "OptimisationPass.hpp"
 #include "PhasedXFrontier.hpp"
@@ -478,7 +480,7 @@ static void best_noise_aware_decomposition(
       if (n_zz > 0) {
         double gate_fid = (*fid.ZZPhase_fidelity)(angles[n_zz - 1]);
         if (gate_fid < 0 || gate_fid > 1) {
-          throw NotValid(
+          throw std::domain_error(
               "ZZPhase_fidelity returned a value outside of [0, 1].");
         }
         zz_fid *= gate_fid;
@@ -555,7 +557,7 @@ static void best_exact_decomposition(
 static Circuit TK2_replacement(
     const std::array<Expr, 3> &angles, const TwoQbFidelities &fid) {
   if (!in_weyl_chamber(angles)) {
-    throw NotValid("TK2 params are not normalised to Weyl chamber.");
+    throw std::domain_error("TK2 params are not normalised to Weyl chamber.");
   }
   OpType best_optype = OpType::CX;  // default to using CX
   unsigned n_gates = 3;             // default to 3x CX
@@ -603,7 +605,7 @@ static Circuit TK2_replacement(
           break;
         }
         default:
-          throw NotValid("Number of CX invalid in decompose_TK2");
+          TKET_ASSERT(!"Number of CX invalid in decompose_TK2");
       }
       if (best_optype == OpType::ZZMax) {
         decompose_CX_to_HQS2().apply(sub);
@@ -629,12 +631,13 @@ static Circuit TK2_replacement(
           break;
         }
         default:
-          throw NotValid("Number of ZZPhase invalid in decompose_TK2");
+          TKET_ASSERT(!"Number of ZZPhase invalid in decompose_TK2");
       }
       break;
     }
     default:
-      throw NotValid("Unrecognised target OpType in decompose_TK2");
+      throw BadOpType(
+          "Unrecognised target OpType in decompose_TK2", best_optype);
   }
   return sub;
 }
@@ -643,17 +646,17 @@ Transform decompose_TK2() { return decompose_TK2({}); }
 Transform decompose_TK2(const TwoQbFidelities &fid) {
   if (fid.ZZMax_fidelity) {
     if (*fid.ZZMax_fidelity < 0 || *fid.ZZMax_fidelity > 1) {
-      throw NotValid("ZZMax fidelity must be between 0 and 1.");
+      throw std::domain_error("ZZMax fidelity must be between 0 and 1.");
     }
   }
   if (fid.CX_fidelity) {
     if (*fid.CX_fidelity < 0 || *fid.CX_fidelity > 1) {
-      throw NotValid("CX fidelity must be between 0 and 1.");
+      throw std::domain_error("CX fidelity must be between 0 and 1.");
     }
   }
   if (fid.ZZMax_fidelity && fid.ZZPhase_fidelity) {
     if (*fid.ZZMax_fidelity < (*fid.ZZPhase_fidelity)(.5)) {
-      throw NotValid(
+      throw std::domain_error(
           "The ZZMax fidelity cannot be smaller than the ZZPhase(0.5) "
           "fidelity");
     }
@@ -1485,7 +1488,7 @@ Transform globalise_PhasedX(bool squash) {
             success = true;
             break;
           default:
-            throw NotValid("Invalid strategy in replace_non_global_phasedx");
+            TKET_ASSERT(!"Invalid strategy in replace_non_global_phasedx");
         }
       }
       if (v) {

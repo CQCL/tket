@@ -78,13 +78,13 @@ void PauliGraph::apply_gate_at_end(
   for (const UnitID &arg : args) {
     if (arg.type() == UnitType::Qubit) {
       if (measures_.left.find(Qubit(arg)) != measures_.left.end()) {
-        throw NotImplemented(
+        throw MidCircuitMeasurementNotAllowed(
             "PauliGraph does not support mid-circuit measurements "
             "- cannot add gate after measure on qubit " +
             arg.repr());
       }
     } else if (measures_.right.find(Bit(arg)) != measures_.right.end()) {
-      throw NotImplemented(
+      throw MidCircuitMeasurementNotAllowed(
           "PauliGraph does not support mid-circuit measurements - "
           "cannot add gate after measure to bit " +
           arg.repr());
@@ -242,7 +242,7 @@ void PauliGraph::apply_gate_at_end(
       break;
     }
     default: {
-      throw NotImplemented("Cannot add gate to PauliGraph: " + gate.get_name());
+      throw BadOpType("Cannot add gate to PauliGraph", type);
     }
   }
 }

@@ -17,6 +17,7 @@
 #include "Converters/Converters.hpp"
 #include "Converters/PauliGadget.hpp"
 #include "Decomposition.hpp"
+#include "OpType/OpTypeInfo.hpp"
 #include "OptimisationPass.hpp"
 #include "PauliGraph/PauliGraph.hpp"
 #include "Transform.hpp"
@@ -142,7 +143,7 @@ Transform pairwise_pauli_gadgets(CXConfigType cx_config) {
               "Cannot perform pairwise Pauli gadget optimisation "
               "using: " +
               op_ptr->get_name();
-          throw NotValid(error_gate);
+          throw BadOpType(type);
         }
       }
       // Add Clifford gates to the back of the circuit to recreate the final
@@ -199,7 +200,7 @@ Transform synthesise_pauli_graph(
         break;
       }
       default:
-        throw NotImplemented("Unknown Pauli Synthesis Strategy");
+        TKET_ASSERT(!"Unknown Pauli Synthesis Strategy");
     }
     circ.add_phase(t);
     // always turn circuit into PauliGraph and back, so always return true

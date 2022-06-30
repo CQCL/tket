@@ -15,6 +15,7 @@
 #include "PhasePoly.hpp"
 
 #include <algorithm>
+#include <stdexcept>
 #include <string>
 #include <tklog/TketLog.hpp>
 #include <vector>
@@ -151,7 +152,7 @@ PhasePolyBox::PhasePolyBox(const Circuit& circ)
 
   // check for classical bits
   if (newcirc.n_bits() != 0)
-    throw NotValid(
+    throw std::invalid_argument(
         "Cannot construct phase polynomial from classical controlled "
         "gates");
 
@@ -167,7 +168,7 @@ PhasePolyBox::PhasePolyBox(const Circuit& circ)
         break;
       }
       default: {
-        throw NotValid("Only CXs and Rzs allowed in Phase Polynomials");
+        throw BadOpType("Only CXs and Rzs allowed in Phase Polynomials", ot);
       }
     }
   }
@@ -479,10 +480,11 @@ void CircToPhasePolyConversion::convert() {
         break;
       }
       default: {
-        throw NotImplemented(
+        throw BadOpType(
             "Please rebase with the compiler pass RebaseUFR to only CX, Rz, H, "
-            "measure, reset, collapse, barrier gates. Found gate of type: " +
-            com.get_op_ptr()->get_name());
+            "measure, reset, collapse, barrier gates. Found gate of different "
+            "type",
+            ot);
       }
     }
   }
@@ -642,10 +644,11 @@ qubits states are reset to pre.
         break;
       }
       default: {
-        throw NotImplemented(
+        throw BadOpType(
             "Please rebase with the compiler pass RebaseUFR to only CX, Rz, H, "
-            "measure, reset, collapse, barrier gates. Found gate of type: " +
-            com.get_op_ptr()->get_name());
+            "measure, reset, collapse, barrier gates. Found gate of different "
+            "type",
+            ot);
       }
     }
   }

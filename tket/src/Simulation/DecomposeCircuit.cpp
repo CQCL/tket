@@ -23,7 +23,6 @@
 #include "Gate/GateUnitaryMatrix.hpp"
 #include "GateNodesBuffer.hpp"
 #include "PauliExpBoxUnitaryCalculator.hpp"
-#include "Utils/Exceptions.hpp"
 
 namespace tket {
 namespace tket_sim {
@@ -96,7 +95,7 @@ static bool fill_triplets_directly_from_box(
 static void add_global_phase(const Circuit& circ, GateNodesBuffer& buffer) {
   const auto global_phase = eval_expr(circ.get_phase());
   if (!global_phase) {
-    throw NotImplemented("Circuit has symbolic global phase");
+    throw SymbolsNotSupported("Circuit has symbolic global phase");
   }
   const double phase_value = global_phase.value();
   buffer.add_global_phase(phase_value);
@@ -109,7 +108,7 @@ static void throw_with_op_error_message(
   ss << "Subcircuit\n"
      << circ << "\nwith " << qmap.size() << " qubits, has op " << op_name
      << ". " << extra_message;
-  throw NotImplemented(ss.str());
+  throw CircuitInvalidity(ss.str());
 }
 
 static void fill_qubit_indices(

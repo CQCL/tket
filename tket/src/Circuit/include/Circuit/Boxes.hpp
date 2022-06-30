@@ -19,6 +19,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <memory>
 
+#include "OpType/OpTypeInfo.hpp"
 #include "Ops/Op.hpp"
 #include "Utils/BiMapHeaders.hpp"
 #include "Utils/EigenConfig.hpp"
@@ -37,7 +38,7 @@ class Box : public Op {
  public:
   explicit Box(const OpType &type, const op_signature_t &signature = {})
       : Op(type), signature_(signature), circ_(), id_(idgen()) {
-    if (!is_box_type(type)) throw NotValid();
+    if (!is_box_type(type)) throw BadOpType(type);
   }
 
   Box(const Box &other)

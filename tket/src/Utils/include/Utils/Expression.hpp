@@ -218,4 +218,15 @@ bool equiv_0(const Expr& e, unsigned n = 2, double tol = EPS);
 std::optional<unsigned> equiv_Clifford(
     const Expr& e, unsigned n = 2, double tol = EPS);
 
+/**
+ * Exception indicating that symbolic values are not supported.
+ */
+class SymbolsNotSupported : public std::logic_error {
+ public:
+  explicit SymbolsNotSupported(const std::string& message)
+      : std::logic_error(message) {}
+  SymbolsNotSupported()
+      : SymbolsNotSupported("Symbolic values not supported") {}
+};
+
 }  // namespace tket

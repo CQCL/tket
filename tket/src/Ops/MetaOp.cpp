@@ -24,7 +24,7 @@ namespace tket {
 
 MetaOp::MetaOp(OpType type, op_signature_t signature, const std::string& _data)
     : Op(type), signature_(signature), data_(_data) {
-  if (!is_metaop_type(type)) throw NotValid();
+  if (!is_metaop_type(type)) throw BadOpType(type);
 }
 
 Op_ptr MetaOp::symbol_substitution(const SymEngine::map_basic_basic&) const {
