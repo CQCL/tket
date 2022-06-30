@@ -1,7 +1,7 @@
 <map id="src/ArchAwareSynth/include" name="src/ArchAwareSynth/include">
 <area shape="rect" id="node2" href="dir_0685beb5b038ecb562006b44ee82e092.html" title="ArchAwareSynth" alt="" coords="144,63,273,111"/>
 <area shape="rect" id="node3" href="dir_a7363e98f9e0bdd87618633653859815.html" title="Utils" alt="" coords="168,447,240,495"/>
-<area shape="rect" id="edge11-headlabel" href="dir_000003_000055.html" title="5" alt="" coords="159,421,168,436"/>
+<area shape="rect" id="edge11-headlabel" href="dir_000003_000055.html" title="4" alt="" coords="159,421,168,436"/>
 <area shape="rect" id="node4" href="dir_56a38258b01f57376a0eb0ddf1115d22.html" title="Placement" alt="" coords="204,159,295,207"/>
 <area shape="rect" id="edge12-headlabel" href="dir_000003_000043.html" title="1" alt="" coords="235,131,245,146"/>
 <area shape="rect" id="node5" href="dir_a39b5a8c0295e64a3c442c197fbd4463.html" title="Circuit" alt="" coords="122,255,194,303"/>
@@ -16,7 +16,7 @@
 <area shape="rect" id="edge2-headlabel" href="dir_000043_000010.html" title="1" alt="" coords="194,240,204,255"/>
 <area shape="rect" id="edge3-headlabel" href="dir_000043_000004.html" title="3" alt="" coords="362,231,371,246"/>
 <area shape="rect" id="edge4-headlabel" href="dir_000043_000025.html" title="4" alt="" coords="307,323,316,338"/>
-<area shape="rect" id="edge5-headlabel" href="dir_000010_000055.html" title="50" alt="" coords="194,419,211,434"/>
+<area shape="rect" id="edge5-headlabel" href="dir_000010_000055.html" title="49" alt="" coords="194,419,211,434"/>
 <area shape="rect" id="edge6-headlabel" href="dir_000004_000055.html" title="8" alt="" coords="256,457,265,472"/>
 <area shape="rect" id="edge7-headlabel" href="dir_000004_000025.html" title="4" alt="" coords="357,337,367,352"/>
 <area shape="rect" id="edge8-headlabel" href="dir_000016_000055.html" title="6" alt="" coords="181,419,190,434"/>

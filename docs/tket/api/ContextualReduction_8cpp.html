@@ -83,15 +83,16 @@ $(function() {
 <code>#include &lt;algorithm&gt;</code><br />
 <code>#include &lt;optional&gt;</code><br />
 <code>#include &lt;sstream&gt;</code><br />
+<code>#include &lt;stdexcept&gt;</code><br />
 <code>#include &lt;tkassert/Assert.hpp&gt;</code><br />
 <code>#include &quot;<a class="el" href="Circuit_8hpp_source.html">Circuit/Circuit.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="DAGDefs_8hpp_source.html">Circuit/DAGDefs.hpp</a>&quot;</code><br />
 <code>#include &quot;Eigen/src/Core/Matrix.h&quot;</code><br />
 <code>#include &quot;<a class="el" href="OpType_8hpp_source.html">OpType/OpType.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="OpTypeInfo_8hpp_source.html">OpType/OpTypeInfo.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="ClassicalOps_8hpp_source.html">Ops/ClassicalOps.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="OpPtr_8hpp_source.html">Ops/OpPtr.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="Transform_8hpp_source.html">Transform.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Exceptions_8hpp_source.html">Utils/Exceptions.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="HelperFunctions_8hpp_source.html">Utils/HelperFunctions.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="UnitID_8hpp_source.html">Utils/UnitID.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -99,56 +100,56 @@ Include dependency graph for ContextualReduction.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="ContextualReduction_8cpp__incl.png" border="0" usemap="#src_2Transformations_2ContextualReduction_8cpp" alt=""/></div>
 <map name="src_2Transformations_2ContextualReduction_8cpp" id="src_2Transformations_2ContextualReduction_8cpp">
-<area shape="rect" title=" " alt="" coords="2172,5,2362,47"/>
-<area shape="rect" href="ContextualReduction_8hpp.html" title=" " alt="" coords="2043,95,2230,121"/>
-<area shape="rect" href="Circuit_8hpp.html" title=" " alt="" coords="1936,244,2075,271"/>
-<area shape="rect" title=" " alt="" coords="3160,319,3246,345"/>
-<area shape="rect" title=" " alt="" coords="2295,707,2370,733"/>
-<area shape="rect" title=" " alt="" coords="3143,632,3218,659"/>
-<area shape="rect" title=" " alt="" coords="3270,319,3416,345"/>
-<area shape="rect" href="OpPtr_8hpp.html" title=" " alt="" coords="356,550,442,577"/>
-<area shape="rect" href="Exceptions_8hpp.html" title=" " alt="" coords="26,550,180,577"/>
-<area shape="rect" href="UnitID_8hpp.html" title="Named registers of arrays of (quantum or classical) nodes." alt="" coords="2454,550,2579,577"/>
-<area shape="rect" href="DAGDefs_8hpp.html" title=" " alt="" coords="2099,393,2208,420"/>
-<area shape="rect" href="OpType_8hpp.html" title=" " alt="" coords="306,393,404,420"/>
-<area shape="rect" href="Transform_8hpp.html" title=" " alt="" coords="872,169,987,196"/>
-<area shape="rect" title=" " alt="" coords="3379,95,3552,121"/>
-<area shape="rect" href="ClassicalOps_8hpp.html" title="Classical operations." alt="" coords="992,393,1155,420"/>
-<area shape="rect" href="HelperFunctions_8hpp.html" title=" " alt="" coords="3556,468,3746,495"/>
-<area shape="rect" title=" " alt="" coords="60,707,146,733"/>
-<area shape="rect" title=" " alt="" coords="205,319,292,345"/>
-<area shape="rect" title=" " alt="" coords="2539,468,2582,495"/>
-<area shape="rect" title=" " alt="" coords="3250,632,3300,659"/>
-<area shape="rect" title=" " alt="" coords="334,632,411,659"/>
-<area shape="rect" title=" " alt="" coords="1506,550,1582,577"/>
-<area shape="rect" title=" " alt="" coords="1780,632,1839,659"/>
-<area shape="rect" title=" " alt="" coords="2800,632,2939,659"/>
-<area shape="rect" title=" " alt="" coords="1062,319,1154,345"/>
-<area shape="rect" title=" " alt="" coords="2657,468,2781,495"/>
-<area shape="rect" title=" " alt="" coords="1606,550,1666,577"/>
-<area shape="rect" title=" " alt="" coords="2217,550,2280,577"/>
-<area shape="rect" href="Boxes_8hpp.html" title=" " alt="" coords="878,393,968,420"/>
-<area shape="rect" href="Json_8hpp.html" title=" " alt="" coords="1062,632,1173,659"/>
-<area shape="rect" href="Constants_8hpp.html" title="Generally useful typedefs and constants." alt="" coords="1332,550,1482,577"/>
-<area shape="rect" href="Command_8hpp.html" title=" " alt="" coords="2095,319,2212,345"/>
-<area shape="rect" href="GraphHeaders_8hpp.html" title=" " alt="" coords="2337,468,2514,495"/>
-<area shape="rect" href="Conditional_8hpp.html" title=" " alt="" coords="1230,393,1354,420"/>
-<area shape="rect" href="OpPtrFunctions_8hpp.html" title=" " alt="" coords="418,319,601,345"/>
-<area shape="rect" href="SequencedContainers_8hpp.html" title=" " alt="" coords="1280,319,1505,345"/>
-<area shape="rect" title=" " alt="" coords="902,468,1053,495"/>
-<area shape="rect" title=" " alt="" coords="458,468,684,495"/>
-<area shape="rect" title=" " alt="" coords="709,468,878,495"/>
-<area shape="rect" href="Op_8hpp.html" title="Operations." alt="" coords="1281,468,1378,495"/>
-<area shape="rect" href="BiMapHeaders_8hpp.html" title=" " alt="" coords="1868,632,2013,659"/>
-<area shape="rect" title=" " alt="" coords="169,632,256,659"/>
-<area shape="rect" title=" " alt="" coords="2570,632,2761,659"/>
-<area shape="rect" title=" " alt="" coords="2487,632,2546,659"/>
-<area shape="rect" title=" " alt="" coords="2370,632,2412,659"/>
-<area shape="rect" title=" " alt="" coords="2096,468,2211,495"/>
-<area shape="rect" href="EdgeType_8hpp.html" title=" " alt="" coords="1808,468,1920,495"/>
-<area shape="rect" title=" " alt="" coords="3734,543,3888,584"/>
-<area shape="rect" title=" " alt="" coords="3556,550,3623,577"/>
-<area shape="rect" title=" " alt="" coords="3648,550,3710,577"/>
+<area shape="rect" title=" " alt="" coords="3149,5,3339,47"/>
+<area shape="rect" href="ContextualReduction_8hpp.html" title=" " alt="" coords="2851,95,3037,121"/>
+<area shape="rect" href="Circuit_8hpp.html" title=" " alt="" coords="2424,244,2563,271"/>
+<area shape="rect" title=" " alt="" coords="3368,319,3453,345"/>
+<area shape="rect" title=" " alt="" coords="2507,781,2581,808"/>
+<area shape="rect" title=" " alt="" coords="3232,625,3307,651"/>
+<area shape="rect" title=" " alt="" coords="3477,319,3624,345"/>
+<area shape="rect" href="OpTypeInfo_8hpp.html" title=" " alt="" coords="1427,543,1602,569"/>
+<area shape="rect" href="OpType_8hpp.html" title=" " alt="" coords="221,625,320,651"/>
+<area shape="rect" title=" " alt="" coords="2907,543,2994,569"/>
+<area shape="rect" href="OpPtr_8hpp.html" title=" " alt="" coords="395,543,480,569"/>
+<area shape="rect" href="UnitID_8hpp.html" title="Named registers of arrays of (quantum or classical) nodes." alt="" coords="2757,543,2883,569"/>
+<area shape="rect" href="DAGDefs_8hpp.html" title=" " alt="" coords="2240,393,2349,420"/>
+<area shape="rect" href="Transform_8hpp.html" title=" " alt="" coords="2436,169,2551,196"/>
+<area shape="rect" title=" " alt="" coords="3800,95,3973,121"/>
+<area shape="rect" href="ClassicalOps_8hpp.html" title="Classical operations." alt="" coords="165,393,328,420"/>
+<area shape="rect" href="HelperFunctions_8hpp.html" title=" " alt="" coords="4007,543,4196,569"/>
+<area shape="rect" title=" " alt="" coords="294,781,381,808"/>
+<area shape="rect" title=" " alt="" coords="443,319,530,345"/>
+<area shape="rect" title=" " alt="" coords="1804,468,1847,495"/>
+<area shape="rect" title=" " alt="" coords="2544,625,2595,651"/>
+<area shape="rect" title=" " alt="" coords="541,625,619,651"/>
+<area shape="rect" title=" " alt="" coords="758,543,834,569"/>
+<area shape="rect" title=" " alt="" coords="2201,625,2260,651"/>
+<area shape="rect" title=" " alt="" coords="3069,625,3208,651"/>
+<area shape="rect" title=" " alt="" coords="2998,319,3090,345"/>
+<area shape="rect" title=" " alt="" coords="1871,468,1995,495"/>
+<area shape="rect" title=" " alt="" coords="2297,543,2357,569"/>
+<area shape="rect" title=" " alt="" coords="3019,707,3082,733"/>
+<area shape="rect" href="Boxes_8hpp.html" title=" " alt="" coords="1262,393,1351,420"/>
+<area shape="rect" href="Json_8hpp.html" title=" " alt="" coords="639,707,750,733"/>
+<area shape="rect" href="Constants_8hpp.html" title="Generally useful typedefs and constants." alt="" coords="2432,543,2581,569"/>
+<area shape="rect" href="Command_8hpp.html" title=" " alt="" coords="2755,319,2872,345"/>
+<area shape="rect" href="GraphHeaders_8hpp.html" title=" " alt="" coords="2019,468,2197,495"/>
+<area shape="rect" href="Conditional_8hpp.html" title=" " alt="" coords="809,393,933,420"/>
+<area shape="rect" href="OpPtrFunctions_8hpp.html" title=" " alt="" coords="195,468,378,495"/>
+<area shape="rect" href="SequencedContainers_8hpp.html" title=" " alt="" coords="2455,319,2681,345"/>
+<area shape="rect" title=" " alt="" coords="1527,468,1678,495"/>
+<area shape="rect" title=" " alt="" coords="1083,468,1309,495"/>
+<area shape="rect" title=" " alt="" coords="1334,468,1503,495"/>
+<area shape="rect" href="Op_8hpp.html" title="Operations." alt="" coords="910,468,1007,495"/>
+<area shape="rect" href="BiMapHeaders_8hpp.html" title=" " alt="" coords="2299,625,2445,651"/>
+<area shape="rect" href="EdgeType_8hpp.html" title=" " alt="" coords="1849,625,1961,651"/>
+<area shape="rect" title=" " alt="" coords="2753,625,2943,651"/>
+<area shape="rect" title=" " alt="" coords="2669,625,2728,651"/>
+<area shape="rect" title=" " alt="" coords="2477,625,2520,651"/>
+<area shape="rect" title=" " alt="" coords="2424,468,2539,495"/>
+<area shape="rect" title=" " alt="" coords="4094,617,4247,659"/>
+<area shape="rect" title=" " alt="" coords="4272,625,4339,651"/>
+<area shape="rect" title=" " alt="" coords="4007,625,4070,651"/>
 </map>
 </div>
 </div>

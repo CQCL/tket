@@ -137,13 +137,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Let U be the unitary matrix which represents the given circuit using ILO-BE convention. </p>
-<p>Replace the given M with UM. <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0cbbe0321e0c40dfa77a159ef6bfad6b" title="Measure a qubit, producing a classical output.">OpType::Measure</a> is ignored if it occurs. Note that U is not calculated explicitly and sparse matrices are used, so it is quicker than calling calc_unitary if M is, e.g., a column vector. </p><dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classtket_1_1NotImplemented.html" title="Operation type not supported.">NotImplemented</a></td><td>if any unimplemented gate occurs. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>Replace the given M with UM. <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0cbbe0321e0c40dfa77a159ef6bfad6b" title="Measure a qubit, producing a classical output.">OpType::Measure</a> is ignored if it occurs. Note that U is not calculated explicitly and sparse matrices are used, so it is quicker than calling calc_unitary if M is, e.g., a column vector. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">circ</td><td>The circuit to simulate. </td></tr>
     <tr><td class="paramname">matr</td><td>The matrix M which will be premultiplied by the unitary matrix. </td></tr>
@@ -190,13 +184,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Calculate the unitary matrix of the circuit applied to the state |00...0&gt;, using ILO-BE convention. </p>
-<p>(Note: if any <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0cbbe0321e0c40dfa77a159ef6bfad6b" title="Measure a qubit, producing a classical output.">OpType::Measure</a> or <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a48656da7a6e48c6887d94f4c69c731b6" title="No-op that must be preserved by compilation.">OpType::Barrier</a> occur, they are simply ignored - the same as a noop). </p><dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classtket_1_1NotImplemented.html" title="Operation type not supported.">NotImplemented</a></td><td>if any unimplemented gate occurs. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
+<p>(Note: if any <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0cbbe0321e0c40dfa77a159ef6bfad6b" title="Measure a qubit, producing a classical output.">OpType::Measure</a> or <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a48656da7a6e48c6887d94f4c69c731b6" title="No-op that must be preserved by compilation.">OpType::Barrier</a> occur, they are simply ignored - the same as a noop). </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">circ</td><td>The circuit to simulate. </td></tr>
     <tr><td class="paramname">abs_epsilon</td><td>Used to decide if an entry of a sparse matrix is too small, i.e. if std::abs(z) &lt;= abs_epsilon then we treat z as zero exactly in any intermediate sparse matrices (although not in the final dense result). </td></tr>
@@ -205,7 +193,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CircuitSimulator_8cpp_source.html#l00080">80</a> of file <a class="el" href="CircuitSimulator_8cpp_source.html">CircuitSimulator.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircuitSimulator_8cpp_source.html#l00082">82</a> of file <a class="el" href="CircuitSimulator_8cpp_source.html">CircuitSimulator.cpp</a>.</p>
 
 </div>
 </div>
@@ -242,13 +230,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Calculates the unitary matrix of the circuit, using ILO-BE convention. </p>
-<p><a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0cbbe0321e0c40dfa77a159ef6bfad6b" title="Measure a qubit, producing a classical output.">OpType::Measure</a> is ignored if it occurs. </p><dl class="exception"><dt>Exceptions</dt><dd>
-  <table class="exception">
-    <tr><td class="paramname"><a class="el" href="classtket_1_1NotImplemented.html" title="Operation type not supported.">NotImplemented</a></td><td>if any unimplemented gate occurs. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
+<p><a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0cbbe0321e0c40dfa77a159ef6bfad6b" title="Measure a qubit, producing a classical output.">OpType::Measure</a> is ignored if it occurs. </p><dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">circ</td><td>The circuit to simulate. </td></tr>
     <tr><td class="paramname">abs_epsilon</td><td>Used to decide if an entry of a sparse matrix is too small, i.e. if std::abs(z) &lt;= abs_epsilon then we treat z as zero exactly in any intermediate sparse matrices (although not in the final dense result). </td></tr>

@@ -183,7 +183,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00198">198</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00200">200</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
 
 </div>
 </div>
@@ -206,7 +206,7 @@ Static Public Member Functions</h2></td></tr>
 <p>Whether there are further non-trivial intervals ahead. </p>
 <p>Useful to know if a certain computation can be deferred until later. </p>
 
-<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00280">280</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00282">282</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
 
 </div>
 </div>
@@ -230,7 +230,7 @@ Static Public Member Functions</h2></td></tr>
 <p>To get around this issue, we recommend using the <code>decompose_nphasedx</code> transform first, so that there are no NPhasedX gates left in the input circuit. This of course is not possible if one wants to preserve some of the existing structure of the circuit.</p>
 <dl class="section return"><dt>Returns</dt><dd>OptEdgeVec The edges with target the β-angle gates. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00083">83</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00085">85</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
 
 </div>
 </div>
@@ -253,7 +253,7 @@ Static Public Member Functions</h2></td></tr>
 <p>If a qubit has no β-angle gate (or it is shadowed), return std::nullopt.</p>
 <dl class="section return"><dt>Returns</dt><dd>OptVertexVec The vertices of all β-angle gates. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00109">109</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00111">111</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
 
 </div>
 </div>
@@ -276,7 +276,7 @@ Static Public Member Functions</h2></td></tr>
 <p>If a qubit has no β-angle gate, its β-angle is 0. Note that some gates might be "shadowed" and thus appear as 0 even though a β-angle gate exists (see <code>get_all_beta_edges</code>)l</p>
 <dl class="section return"><dt>Returns</dt><dd>std::vector&lt;Expr&gt; The vector of β-angles. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00123">123</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00125">125</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
 
 </div>
 </div>
@@ -306,7 +306,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>OptEdge The edge with target the current β-angle gate. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00069">69</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00071">71</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
 
 </div>
 </div>
@@ -335,7 +335,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00291">291</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00293">293</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
 
 </div>
 </div>
@@ -359,7 +359,7 @@ Static Public Member Functions</h2></td></tr>
 <p>PhX(α, β) = Rz(β + 1/2) PhX(1/2, 0) Rz(α) PhX(-1/2, 0) Rz(-β - 1/2)</p>
 <p>ie the PhX gates can be made global. </p>
 
-<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00376">376</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00378">378</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
 
 </div>
 </div>
@@ -380,7 +380,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Whether the frontier has reached the end of the circuit. </p>
 
-<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00043">43</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00045">45</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
 
 </div>
 </div>
@@ -417,7 +417,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00170">170</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00172">172</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
 
 </div>
 </div>
@@ -446,7 +446,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00136">136</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00138">138</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
 
 </div>
 </div>
@@ -475,7 +475,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00144">144</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00146">146</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
 
 </div>
 </div>
@@ -504,7 +504,7 @@ Static Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>std::set&lt;unsigned&gt; Indices of the qubits whose end target is <code>v</code>. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00053">53</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00055">55</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
 
 </div>
 </div>
@@ -532,7 +532,7 @@ Static Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00253">253</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00255">255</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
 
 </div>
 </div>
@@ -553,7 +553,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Squash the current intervals on each qubit. </p>
 
-<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00063">63</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasedXFrontier_8cpp_source.html#l00065">65</a> of file <a class="el" href="PhasedXFrontier_8cpp_source.html">PhasedXFrontier.cpp</a>.</p>
 
 </div>
 </div>
