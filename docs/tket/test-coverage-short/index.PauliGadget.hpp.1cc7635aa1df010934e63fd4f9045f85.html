@@ -23,11 +23,11 @@
     </tr>
     <tr>
       <th scope="row">File:</th>
-      <td>Utils/include/Utils/Exceptions.hpp</td>
+      <td>Converters/include/Converters/PauliGadget.hpp</td>
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-29 14:39:00</td>
+      <td>2022-06-30 12:51:03</td>
     </tr>
   </table>
 </div>
@@ -41,15 +41,15 @@
     </tr>
     <tr>
       <th scope="row">Lines:</th>
-      <td>3</td>
-      <td>5</td>
-      <td class="coverage-low">60.0%</td>
+      <td>2</td>
+      <td>2</td>
+      <td class="coverage-high">100.0%</td>
     </tr>
     <tr>
       <th scope="row">Functions:</th>
-      <td>2</td>
-      <td>4</td>
-      <td class="coverage-low">50.0%</td>
+      <td>1</td>
+      <td>1</td>
+      <td class="coverage-high">100.0%</td>
     </tr>
     <tr>
       <th scope="row">Branches:</th>
@@ -75,46 +75,13 @@
     </tr>
     <tr>
       <td>
-        <a href="#l26">tket::NotImplemented::NotImplemented(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;)</a>
+        <a href="#l26">tket::ImplicitPermutationNotAllowed::ImplicitPermutationNotAllowed(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;)</a>
       </td>
       <td>
         <a href="#l26">26</a>
       </td>
       <td>
-        <a href="#l26"> called 12 times</a>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <a href="#l41">tket::NotUnitary::NotUnitary(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;)</a>
-      </td>
-      <td>
-        <a href="#l41">41</a>
-      </td>
-      <td>
-        <a href="#l41"> not called</a>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <a href="#l33">tket::NotValid::NotValid()</a>
-      </td>
-      <td>
-        <a href="#l33">33</a>
-      </td>
-      <td>
-        <a href="#l33"> not called</a>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <a href="#l34">tket::NotValid::NotValid(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;)</a>
-      </td>
-      <td>
-        <a href="#l34">34</a>
-      </td>
-      <td>
-        <a href="#l34"> called 14 times</a>
+        <a href="#l26"> called 1 time</a>
       </td>
     </tr>
   </table>
@@ -265,7 +232,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;exception&gt;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;stdexcept&gt;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -273,7 +240,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;stdexcept&gt;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -281,7 +248,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Circuit/Circuit.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -289,7 +256,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/PauliStrings.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -297,7 +264,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">namespace</span> <span class="n">tket</span> <span class="p">{</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -305,7 +272,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="k">namespace</span> <span class="n">tket</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -313,7 +280,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">/** Operation type not supported */</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -321,7 +288,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">class</span> <span class="nc">NotImplemented</span> <span class="o">:</span> <span class="k">public</span> <span class="n">std</span><span class="o">::</span><span class="n">logic_error</span> <span class="p">{</span></td>
+      <td class="src "><span class="k">class</span> <span class="nc">ImplicitPermutationNotAllowed</span> <span class="o">:</span> <span class="k">public</span> <span class="n">std</span><span class="o">::</span><span class="n">logic_error</span> <span class="p">{</span></td>
     </tr>
 
     <tr class="source-line">
@@ -336,15 +303,15 @@
       <td class="lineno"><a id="l26" href="#l26">26</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">12</td>
-      <td class="src coveredLine">  <span class="k">explicit</span> <span class="n">NotImplemented</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">message</span><span class="p">)</span></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine">  <span class="k">explicit</span> <span class="n">ImplicitPermutationNotAllowed</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span> <span class="n">message</span><span class="p">)</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l27" href="#l27">27</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">12</td>
+      <td class="linecount coveredLine">1</td>
       <td class="src coveredLine">      <span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">logic_error</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="p">{}</span></td>
     </tr>
 
@@ -369,7 +336,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">/** Operation invalid */</span></td>
+      <td class="src "><span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -377,7 +344,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">class</span> <span class="nc">NotValid</span> <span class="o">:</span> <span class="k">public</span> <span class="n">std</span><span class="o">::</span><span class="n">logic_error</span> <span class="p">{</span></td>
+      <td class="src "><span class="cm"> * Append a Pauli gadget to the end of a given circuit.</span></td>
     </tr>
 
     <tr class="source-line">
@@ -385,23 +352,23 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "> <span class="k">public</span><span class="o">:</span></td>
+      <td class="src "><span class="cm"> * Automatically uses Snake CX configuration</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l33" href="#l33">33</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">  <span class="n">NotValid</span><span class="p">()</span> <span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">logic_error</span><span class="p">(</span><span class="s">&quot;Not a valid operation&quot;</span><span class="p">)</span> <span class="p">{}</span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> *</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l34" href="#l34">34</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">14</td>
-      <td class="src coveredLine">  <span class="k">explicit</span> <span class="n">NotValid</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">message</span><span class="p">)</span> <span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">logic_error</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="p">{}</span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * @param circ circuit to append to</span></td>
     </tr>
 
     <tr class="source-line">
@@ -409,7 +376,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span></td>
+      <td class="src "><span class="cm"> * @param pauli Pauli operators and their respective qubits</span></td>
     </tr>
 
     <tr class="source-line">
@@ -417,7 +384,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm"> * @param angle angle in half-turns</span></td>
     </tr>
 
     <tr class="source-line">
@@ -425,7 +392,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">/** Matrix not unitary */</span></td>
+      <td class="src "><span class="cm"> * @param cx_config which type of CX configuration to decompose into</span></td>
     </tr>
 
     <tr class="source-line">
@@ -433,7 +400,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">class</span> <span class="nc">NotUnitary</span> <span class="o">:</span> <span class="k">public</span> <span class="n">std</span><span class="o">::</span><span class="n">logic_error</span> <span class="p">{</span></td>
+      <td class="src "><span class="cm"> */</span></td>
     </tr>
 
     <tr class="source-line">
@@ -441,7 +408,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "> <span class="k">public</span><span class="o">:</span></td>
+      <td class="src "><span class="kt">void</span> <span class="nf">append_single_pauli_gadget</span><span class="p">(</span></td>
     </tr>
 
     <tr class="source-line">
@@ -449,15 +416,15 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src ">  <span class="n">NotUnitary</span><span class="p">()</span> <span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">logic_error</span><span class="p">(</span><span class="s">&quot;Not a unitary matrix&quot;</span><span class="p">)</span> <span class="p">{}</span></td>
+      <td class="src ">    <span class="n">Circuit</span><span class="o">&amp;</span> <span class="n">circ</span><span class="p">,</span> <span class="k">const</span> <span class="n">QubitPauliTensor</span><span class="o">&amp;</span> <span class="n">pauli</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">angle</span><span class="p">,</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l41" href="#l41">41</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine">  <span class="k">explicit</span> <span class="n">NotUnitary</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="n">string</span> <span class="o">&amp;</span><span class="n">message</span><span class="p">)</span> <span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">logic_error</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="p">{}</span></td>
+      <td class="linecount "></td>
+      <td class="src ">    <span class="n">CXConfigType</span> <span class="n">cx_config</span> <span class="o">=</span> <span class="n">CXConfigType</span><span class="o">::</span><span class="n">Snake</span><span class="p">);</span></td>
     </tr>
 
     <tr class="source-line">
@@ -465,7 +432,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span></td>
+      <td class="src "></td>
     </tr>
 
     <tr class="source-line">
@@ -473,7 +440,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm">/**</span></td>
     </tr>
 
     <tr class="source-line">
@@ -481,11 +448,163 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">}</span>  <span class="c1">// namespace tket</span></td>
+      <td class="src "><span class="cm"> * Append a pair of Pauli gadgets to the end of a given circuit.</span></td>
     </tr>
 
     <tr class="source-line">
       <td class="lineno"><a id="l45" href="#l45">45</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * (shallow) Uses an adapted arrangement of CX that gives balanced trees</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l46" href="#l46">46</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * over the matching qubits to improve depth. Better performance</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l47" href="#l47">47</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * is not guaranteed as CXs may not align for cancellation and</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l48" href="#l48">48</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * it can be harder to route.</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l49" href="#l49">49</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * (!shallow) Uses the original method with naive arrangement of CXs.</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l50" href="#l50">50</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> *</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l51" href="#l51">51</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * @param circ circuit to append to</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l52" href="#l52">52</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * @param pauli0 first Pauli string</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l53" href="#l53">53</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * @param angle0 angle for \p pauli0 (half-turns)</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l54" href="#l54">54</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * @param pauli1 second Pauli string</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l55" href="#l55">55</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * @param angle1 angle for \p pauli1 (half-turns)</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l56" href="#l56">56</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * @param cx_config which type of CX configuration to decompose into</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l57" href="#l57">57</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> */</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l58" href="#l58">58</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="kt">void</span> <span class="nf">append_pauli_gadget_pair</span><span class="p">(</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l59" href="#l59">59</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">    <span class="n">Circuit</span><span class="o">&amp;</span> <span class="n">circ</span><span class="p">,</span> <span class="n">QubitPauliTensor</span> <span class="n">pauli0</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">angle0</span><span class="p">,</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l60" href="#l60">60</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">    <span class="n">QubitPauliTensor</span> <span class="n">pauli1</span><span class="p">,</span> <span class="n">Expr</span> <span class="n">angle1</span><span class="p">,</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l61" href="#l61">61</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src ">    <span class="n">CXConfigType</span> <span class="n">cx_config</span> <span class="o">=</span> <span class="n">CXConfigType</span><span class="o">::</span><span class="n">Snake</span><span class="p">);</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l62" href="#l62">62</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l63" href="#l63">63</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span>  <span class="c1">// namespace tket</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l64" href="#l64">64</a></td>
       <td class="linebranch">
       </td>
       <td class="linecount "></td>

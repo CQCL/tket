@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2022-06-29 14:39:00</td>
+      <td>2022-06-30 12:51:03</td>
     </tr>
   </table>
 </div>
@@ -81,7 +81,7 @@
         <a href="#l25">25</a>
       </td>
       <td>
-        <a href="#l25"> called 188586 times</a>
+        <a href="#l25"> called 188578 times</a>
       </td>
     </tr>
   </table>
@@ -256,7 +256,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Ops/OpPtr.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;OpType/OpTypeInfo.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -264,7 +264,7 @@
       <td class="linebranch">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Utils/Exceptions.hpp&quot;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span> <span class="cpf">&quot;Ops/OpPtr.hpp&quot;</span><span class="cp"></span></td>
     </tr>
 
     <tr class="source-line">
@@ -295,7 +295,7 @@
       <td class="lineno"><a id="l25" href="#l25">25</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">188586</td>
+      <td class="linecount coveredLine">188578</td>
       <td class="src coveredLine"><span class="n">Gate_ptr</span> <span class="n">as_gate_ptr</span><span class="p">(</span><span class="n">Op_ptr</span> <span class="n">op</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -303,7 +303,7 @@
       <td class="lineno"><a id="l26" href="#l26">26</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">188586</td>
+      <td class="linecount coveredLine">188578</td>
       <td class="src coveredLine">  <span class="n">Gate_ptr</span> <span class="n">gp</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">dynamic_pointer_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="n">Gate</span><span class="o">&gt;</span><span class="p">(</span><span class="n">op</span><span class="p">);</span></td>
     </tr>
 
@@ -314,11 +314,11 @@
         <summary class="linebranchSummary">2/2</summary>
         <div class="linebranchContents">
           <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
-          <div class="takenBranch">&check; Branch 2 taken 188585 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 188577 times.</div>
         </div>
         </details>
       </td>
-      <td class="linecount coveredLine">188586</td>
+      <td class="linecount coveredLine">188578</td>
       <td class="src coveredLine">  <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">gp</span><span class="p">)</span> <span class="p">{</span></td>
     </tr>
 
@@ -328,15 +328,15 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/4</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
-          <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
-          <div class="takenBranch">&check; Branch 6 taken 1 times.</div>
-          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
+          <div class="takenBranch">&check; Branch 5 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 6 not taken.</div>
+          <div class="takenBranch">&check; Branch 8 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 9 not taken.</div>
         </div>
         </details>
       </td>
       <td class="linecount coveredLine">1</td>
-      <td class="src coveredLine">    <span class="k">throw</span> <span class="n">NotValid</span><span class="p">(</span><span class="s">&quot;Operation is not a gate&quot;</span><span class="p">);</span></td>
+      <td class="src coveredLine">    <span class="k">throw</span> <span class="n">BadOpType</span><span class="p">(</span><span class="s">&quot;Operation is not a gate&quot;</span><span class="p">,</span> <span class="n">op</span><span class="o">-&gt;</span><span class="n">get_type</span><span class="p">());</span></td>
     </tr>
 
     <tr class="source-line">
@@ -351,7 +351,7 @@
       <td class="lineno"><a id="l30" href="#l30">30</a></td>
       <td class="linebranch">
       </td>
-      <td class="linecount coveredLine">188585</td>
+      <td class="linecount coveredLine">188577</td>
       <td class="src coveredLine">  <span class="k">return</span> <span class="n">gp</span><span class="p">;</span></td>
     </tr>
 
