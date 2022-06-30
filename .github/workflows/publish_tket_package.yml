@@ -70,8 +70,8 @@ jobs:
       run: |
         $${{ matrix.lib }}_ver = conan inspect --raw version recipes/tket/conanfile.py
         echo "LIB_VER=${${{ matrix.lib }}_ver}" >> $env:GITHUB_ENV
-    - name: upload package (dry run)
-      run: conan upload tket/${{ env.LIB_VER }}@tket/stable --all -r=tket-conan --skip-upload
+    - name: upload package
+      run: conan upload tket/${{ env.LIB_VER }}@tket/stable --all -r=tket-conan
 
   macos_m1:
     name: build and publish tket (MacOS M1)
@@ -101,5 +101,5 @@ jobs:
       run: |
         lib_ver=$(conan inspect --raw version recipes/tket/conanfile.py)
         echo "LIB_VER=${lib_ver}" >> $GITHUB_ENV
-    - name: upload package (dry run)
-      run: conan upload tket/${{ env.LIB_VER }}@tket/stable --all -r=tket-conan --skip-upload
+    - name: upload package
+      run: conan upload tket/${{ env.LIB_VER }}@tket/stable --all -r=tket-conan
