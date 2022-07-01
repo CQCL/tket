@@ -56,7 +56,14 @@ endif()
 
 pybind11_add_module(mapping binders/mapping.cpp)
 target_include_directories(mapping PRIVATE binders/include)
-target_link_libraries(mapping PRIVATE ${CONAN_LIBS})
+# For some reason it seems to be necessary to put symengine first here, or we
+# get linker errors.
+target_link_libraries(mapping PRIVATE
+    ${CONAN_LIBS_SYMENGINE}
+    ${CONAN_LIBS_TKET}
+    ${CONAN_LIBS_TKLOG}
+    ${CONAN_LIBS_TKASSERT}
+    ${CONAN_LIBS_TKRNG})
 
 pybind11_add_module(transform binders/transform.cpp)
 target_include_directories(transform PRIVATE binders/include)
