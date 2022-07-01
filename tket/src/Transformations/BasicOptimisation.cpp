@@ -724,7 +724,7 @@ Transform ZZPhase_to_Rz() {
         TKET_ASSERT(params.size() == 1);
         // evaluate
         double param_value = eval_expr(params[0]).value();
-        if (abs(param_value) == 1.0) {
+        if (std::abs(param_value) == 1.0) {
           success = true;
           // basic optimisation, replace ZZPhase with two Rz(1)
           Circuit replacement(2);

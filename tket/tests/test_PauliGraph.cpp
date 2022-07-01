@@ -708,7 +708,7 @@ SCENARIO("Conjugating Cliffords through Pauli tensors") {
       REQUIRE(it != qpt.string.map.end());
       THEN("X becomes Z") {
         REQUIRE(it->second == Pauli::Z);
-        REQUIRE(abs(qpt.coeff - 1.) < EPS);
+        REQUIRE(std::abs(qpt.coeff - 1.) < EPS);
       }
     }
     WHEN("Commuting a X through qb0") {
@@ -718,7 +718,7 @@ SCENARIO("Conjugating Cliffords through Pauli tensors") {
       REQUIRE(it != qpt.string.map.end());
       THEN("X remains X") {
         REQUIRE(it->second == Pauli::X);
-        REQUIRE(abs(qpt.coeff - 1.) < EPS);
+        REQUIRE(std::abs(qpt.coeff - 1.) < EPS);
       }
     }
     WHEN("Commuting a X through qb1") {
@@ -728,7 +728,7 @@ SCENARIO("Conjugating Cliffords through Pauli tensors") {
       REQUIRE(it != qpt.string.map.end());
       THEN("Y becomes -Y") {
         REQUIRE(it->second == Pauli::Y);
-        REQUIRE(abs(qpt.coeff + 1.) < EPS);
+        REQUIRE(std::abs(qpt.coeff + 1.) < EPS);
       }
     }
     WHEN("Commuting a CX through qb0-qb1") {
@@ -741,7 +741,7 @@ SCENARIO("Conjugating Cliffords through Pauli tensors") {
       THEN("XY becomes YZ") {
         REQUIRE(it0->second == Pauli::Y);
         REQUIRE(it1->second == Pauli::Z);
-        REQUIRE(abs(qpt.coeff - 1.) < EPS);
+        REQUIRE(std::abs(qpt.coeff - 1.) < EPS);
       }
     }
     WHEN("Commuting an XXPhase3 through qb0-qb1-qb2") {
@@ -757,7 +757,7 @@ SCENARIO("Conjugating Cliffords through Pauli tensors") {
         REQUIRE(it0->second == Pauli::X);
         REQUIRE(it1->second == Pauli::Z);
         REQUIRE(it2->second == Pauli::Y);
-        REQUIRE(abs(qpt.coeff + 1.) < EPS);
+        REQUIRE(std::abs(qpt.coeff + 1.) < EPS);
       }
     }
   }
@@ -775,7 +775,7 @@ SCENARIO("Conjugating Cliffords through Pauli tensors") {
         REQUIRE(it0->second == Pauli::X);
         REQUIRE(it1->second == Pauli::X);
         REQUIRE(it2->second == Pauli::X);
-        REQUIRE(abs(qpt.coeff - 1.) < EPS);
+        REQUIRE(std::abs(qpt.coeff - 1.) < EPS);
       }
     }
   }

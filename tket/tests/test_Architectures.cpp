@@ -97,7 +97,9 @@ SCENARIO("Testing SquareGrid") {
       int row_neigh = neigh.index()[0], col_neigh = neigh.index()[1],
           l_neigh = neigh.index()[2];
       REQUIRE(
-          abs(row - row_neigh) + abs(col - col_neigh) + abs(l - l_neigh) == 1);
+          std::abs(row - row_neigh) + std::abs(col - col_neigh) +
+              std::abs(l - l_neigh) ==
+          1);
     }
   }
 }
