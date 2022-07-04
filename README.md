@@ -140,18 +140,6 @@ conan create --profile=tket recipes/pybind11
 
 where the first line serves to remove any version already installed.
 
-### Building symengine
-
-The `symengine` dependency is built from a local conan recipe. Run:
-
-```shell
-conan create --profile=tket recipes/symengine
-```
-
-to build it. If you are using a conan configuration supported by the CI
-(see above under "Build tools"), this is unnecessary as a pre-built package
-will be downloaded from the `tket-conan` repository when you build `tket`.
-
 ### TKET libraries
 
 Some TKET functionality has been separated out into self-contained libraries,

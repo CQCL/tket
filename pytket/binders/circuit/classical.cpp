@@ -15,6 +15,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include <boost/lexical_cast.hpp>
+
 #include "Circuit/ClassicalExpBox.hpp"
 #include "Circuit/Conditional.hpp"
 #include "Ops/ClassicalOps.hpp"
