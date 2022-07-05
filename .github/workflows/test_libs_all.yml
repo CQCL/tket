@@ -3,12 +3,15 @@ on:
   schedule:
     # 03:00 every Wednesday morning
     - cron: '0 3 * * 3'
+  push:
+    branches:
+      - test-win22-libs
 jobs:
   test_libraries:
     name: test library
     strategy:
       matrix:
-        os: ['ubuntu-20.04', 'macos-11', 'windows-2022']
+        os: ['windows-2022']
         lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm']
     runs-on: ${{ matrix.os }}
     env:
@@ -46,30 +49,30 @@ jobs:
     - name: run ${{ matrix.lib }} tests
       working-directory: ./build/test-${{ matrix.lib }}/package/bin
       run: ./test-${{ matrix.lib }}
-  macos-m1:
-    name: test library (macos-m1)
-    runs-on: [self-hosted, macos, M1]
-    strategy:
-      matrix:
-        lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm']
-    env:
-      CONAN_REVISIONS_ENABLED: 1
-    steps:
-    - uses: actions/checkout@v3
-    - name: install conan
-      run: pip install -U conan
-    - name: create profile
-      run: conan profile new tket --detect --force
-    - name: add remote
-      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
-    - name: build ${{ matrix.lib }}
-      run: conan create --profile=tket libs/${{ matrix.lib }} --build=missing
-    - name: build ${{ matrix.lib }} tests
-      run: |
-        conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --profile=tket
-        conan build libs/${{ matrix.lib }}/test --configure --build-folder=build/test-${{ matrix.lib }} --source-folder=libs/${{ matrix.lib }}/test
-        conan build libs/${{ matrix.lib }}/test --build --build-folder=build/test-${{ matrix.lib }}
-        conan package libs/${{ matrix.lib }}/test --build-folder=build/test-${{ matrix.lib }} --package-folder build/test-${{ matrix.lib }}/package --source-folder=libs/${{ matrix.lib }}/test
-    - name: run ${{ matrix.lib }} tests
-      working-directory: ./build/test-${{ matrix.lib }}/package/bin
-      run: ./test-${{ matrix.lib }}
+  # macos-m1:
+  #   name: test library (macos-m1)
+  #   runs-on: [self-hosted, macos, M1]
+  #   strategy:
+  #     matrix:
+  #       lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm']
+  #   env:
+  #     CONAN_REVISIONS_ENABLED: 1
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: install conan
+  #     run: pip install -U conan
+  #   - name: create profile
+  #     run: conan profile new tket --detect --force
+  #   - name: add remote
+  #     run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
+  #   - name: build ${{ matrix.lib }}
+  #     run: conan create --profile=tket libs/${{ matrix.lib }} --build=missing
+  #   - name: build ${{ matrix.lib }} tests
+  #     run: |
+  #       conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --profile=tket
+  #       conan build libs/${{ matrix.lib }}/test --configure --build-folder=build/test-${{ matrix.lib }} --source-folder=libs/${{ matrix.lib }}/test
+  #       conan build libs/${{ matrix.lib }}/test --build --build-folder=build/test-${{ matrix.lib }}
+  #       conan package libs/${{ matrix.lib }}/test --build-folder=build/test-${{ matrix.lib }} --package-folder build/test-${{ matrix.lib }}/package --source-folder=libs/${{ matrix.lib }}/test
+  #   - name: run ${{ matrix.lib }} tests
+  #     working-directory: ./build/test-${{ matrix.lib }}/package/bin
+  #     run: ./test-${{ matrix.lib }}
