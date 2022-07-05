@@ -42,6 +42,7 @@ jobs:
       run: conan create --profile=tket libs/${{ matrix.lib }} --build=missing
     - name: build ${{ matrix.lib }} tests
       run: |
+        conan install catch2/3.0.1@ --profile=tket --build=missing
         conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --profile=tket
         conan build libs/${{ matrix.lib }}/test --configure --build-folder=build/test-${{ matrix.lib }} --source-folder=libs/${{ matrix.lib }}/test
         conan build libs/${{ matrix.lib }}/test --build --build-folder=build/test-${{ matrix.lib }}
