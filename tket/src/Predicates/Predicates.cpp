@@ -18,6 +18,7 @@
 #include "Mapping/Verification.hpp"
 #include "OpType/OpTypeFunctions.hpp"
 #include "Placement/Placement.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"
 

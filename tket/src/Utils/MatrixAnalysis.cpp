@@ -507,29 +507,4 @@ std::vector<TripletCd> get_triplets(
   return triplets;
 }
 
-bool in_weyl_chamber(const std::array<Expr, 3> &k) {
-  bool is_symbolic = true;
-  double last_val = .5;
-  for (unsigned i = 0; i < k.size(); ++i) {
-    std::optional<double> eval = eval_expr_mod(k[i], 4);
-    if (eval) {
-      is_symbolic = false;
-      if (i + 1 == k.size()) {
-        double abs_eval = std::min(*eval, -(*eval) + 4);
-        if (abs_eval > last_val) {
-          return false;
-        }
-      } else {
-        if (*eval > last_val) {
-          return false;
-        }
-      }
-      last_val = *eval;
-    } else if (!is_symbolic) {
-      return false;
-    }
-  }
-  return true;
-}
-
 }  // namespace tket
