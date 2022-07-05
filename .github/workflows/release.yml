@@ -276,37 +276,6 @@ jobs:
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
 
-  test_macos_wheels_10_15:
-    name: Test macos wheels on 10.15
-    needs: build_macos_wheels
-    runs-on: macos-10.15
-    env:
-      PYTKET_SKIP_REGISTRATION: "true"
-    strategy:
-      matrix:
-        python-version: ['3.8', '3.9', '3.10']
-    steps:
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Download wheels
-      uses: actions/download-artifact@v3
-      with:
-        name: MacOS_wheels
-        path: wheelhouse/
-    - uses: actions/checkout@v3
-      with:
-        path: tket
-    - name: Install wheel
-      run: |
-        pip install $GITHUB_WORKSPACE/wheelhouse/${{ matrix.python-version }}.*/pytket-*.whl
-    - name: Run tests
-      run: |
-        cd tket/pytket/tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/ --doctest-modules
-
   test_macos_M1_wheels:
     name: Test macos (M1) wheels
     needs: build_macos_M1_wheels
