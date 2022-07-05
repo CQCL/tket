@@ -15,9 +15,9 @@
 #pragma once
 
 #include <memory>
+#include <tkhilbert/MatrixAnalysis.hpp>
 
 #include "GateNode.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 namespace tket_sim {

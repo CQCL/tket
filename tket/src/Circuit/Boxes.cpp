@@ -17,6 +17,7 @@
 #include <memory>
 #include <numeric>
 #include <tkassert/Assert.hpp>
+#include <tkhilbert/EigenConfig.hpp>
 
 #include "CircUtils.hpp"
 #include "Circuit/AssertionSynthesis.hpp"
@@ -26,7 +27,6 @@
 #include "Ops/OpJsonFactory.hpp"
 #include "Ops/OpPtr.hpp"
 #include "ThreeQubitConversion.hpp"
-#include "Utils/EigenConfig.hpp"
 #include "Utils/Expression.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/PauliStrings.hpp"

@@ -20,9 +20,9 @@
  */
 
 #include <cstdlib>
+#include <tkhilbert/EigenConfig.hpp>
 
 #include "Circuit/Circuit.hpp"
-#include "Utils/EigenConfig.hpp"
 
 namespace tket {
 

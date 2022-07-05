@@ -14,8 +14,9 @@
 
 #include "ZX/Flow.hpp"
 
+#include <tkhilbert/MatrixAnalysis.hpp>
+
 #include "Utils/GraphHeaders.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

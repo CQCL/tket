@@ -14,6 +14,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <numeric>
+#include <tkhilbert/MatrixAnalysis.hpp>
 
 #include "Circuit/Boxes.hpp"
 #include "Circuit/CircPool.hpp"
@@ -24,7 +25,6 @@
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 #include "testutil.hpp"
 
 namespace tket {

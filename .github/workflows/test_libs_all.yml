@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-20.04', 'macos-11', 'windows-2019']
-        lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm']
+        lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm', 'tkhilbert']
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
@@ -51,7 +51,7 @@ jobs:
     runs-on: [self-hosted, macos, M1]
     strategy:
       matrix:
-        lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm']
+        lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm', 'tkhilbert']
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:

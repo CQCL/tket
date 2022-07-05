@@ -21,7 +21,6 @@ endif()
 add_library(tket-${COMP}
     UnitID.cpp
     HelperFunctions.cpp
-    MatrixAnalysis.cpp
     PauliStrings.cpp
     CosSinDecomposition.cpp
     Expression.cpp)

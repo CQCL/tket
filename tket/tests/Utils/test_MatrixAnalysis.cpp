@@ -14,9 +14,8 @@
 
 #include <algorithm>
 #include <catch2/catch_test_macros.hpp>
+#include <tkhilbert/MatrixAnalysis.hpp>
 #include <vector>
-
-#include "Utils/MatrixAnalysis.hpp"
 
 // Element[n] = 2^n
 static std::vector<unsigned> get_powers_of_two() {

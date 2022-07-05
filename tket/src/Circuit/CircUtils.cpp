@@ -16,6 +16,8 @@
 
 #include <cmath>
 #include <complex>
+#include <tkhilbert/EigenConfig.hpp>
+#include <tkhilbert/MatrixAnalysis.hpp>
 #include <vector>
 
 #include "CircPool.hpp"
@@ -25,9 +27,7 @@
 #include "Gate/Rotation.hpp"
 #include "OpType/OpType.hpp"
 #include "Ops/Op.hpp"
-#include "Utils/EigenConfig.hpp"
 #include "Utils/Expression.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket {

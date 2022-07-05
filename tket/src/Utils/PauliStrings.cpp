@@ -19,11 +19,11 @@
 #include <stdexcept>
 #include <string>
 #include <tkassert/Assert.hpp>
+#include <tkhilbert/Constants.hpp>
+#include <tkhilbert/EigenConfig.hpp>
 #include <utility>
 #include <vector>
 
-#include "Utils/Constants.hpp"
-#include "Utils/EigenConfig.hpp"
 #include "Utils/Json.hpp"
 
 namespace tket {

@@ -19,6 +19,8 @@
 // replace with c++20 <ranges> when available
 #include <boost/range/adaptor/filtered.hpp>
 #include <stdexcept>
+#include <tkhilbert/Constants.hpp>
+#include <tkhilbert/MatrixAnalysis.hpp>
 
 #include "Architecture/Architecture.hpp"
 #include "BasicOptimisation.hpp"
@@ -34,9 +36,7 @@
 #include "Rebase.hpp"
 #include "Replacement.hpp"
 #include "Transform.hpp"
-#include "Utils/Constants.hpp"
 #include "Utils/Expression.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

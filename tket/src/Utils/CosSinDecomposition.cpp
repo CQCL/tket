@@ -15,11 +15,10 @@
 #include "CosSinDecomposition.hpp"
 
 #include <cmath>
+#include <tkhilbert/Constants.hpp>
+#include <tkhilbert/EigenConfig.hpp>
+#include <tkhilbert/MatrixAnalysis.hpp>
 #include <tklog/TketLog.hpp>
-
-#include "Constants.hpp"
-#include "EigenConfig.hpp"
-#include "MatrixAnalysis.hpp"
 
 namespace tket {
 

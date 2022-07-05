@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
+#include <tkhilbert/EigenConfig.hpp>
 #include <utility>
 
 #include "Circuit/CircUtils.hpp"
@@ -25,7 +26,6 @@
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/PhaseOptimisation.hpp"
 #include "Transformations/Transform.hpp"
-#include "Utils/EigenConfig.hpp"
 #include "testutil.hpp"
 
 namespace tket {

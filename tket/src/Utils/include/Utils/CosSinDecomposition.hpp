@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "EigenConfig.hpp"
+#include <tkhilbert/EigenConfig.hpp>
 
 namespace tket {
 

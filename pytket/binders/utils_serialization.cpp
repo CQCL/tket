@@ -16,8 +16,8 @@
 #include <pybind11/pybind11.h>
 
 #include <complex>
+#include <tkhilbert/EigenConfig.hpp>
 
-#include "Utils/Json.hpp"
 #include "binder_json.hpp"
 
 namespace py = pybind11;

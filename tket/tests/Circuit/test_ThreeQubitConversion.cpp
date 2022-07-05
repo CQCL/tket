@@ -15,6 +15,8 @@
 #include <array>
 #include <catch2/catch_test_macros.hpp>
 #include <cmath>
+#include <tkhilbert/Constants.hpp>
+#include <tkhilbert/EigenConfig.hpp>
 
 #include "../Simulation/ComparisonFunctions.hpp"
 #include "Circuit/Boxes.hpp"
@@ -25,8 +27,6 @@
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/ThreeQubitSquash.hpp"
 #include "Transformations/Transform.hpp"
-#include "Utils/Constants.hpp"
-#include "Utils/EigenConfig.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket {
