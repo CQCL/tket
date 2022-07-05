@@ -238,23 +238,6 @@ Eigen::PermutationMatrix<Eigen::Dynamic> lift_perm(
   return pm;
 }
 
-static Eigen::PermutationMatrix<Eigen::Dynamic> qubit_permutation(
-    const qubit_map_t &qmap) {
-  std::map<Qubit, unsigned> q_indices;
-  std::map<unsigned, unsigned> uq_map;
-  unsigned qi = 0;
-  for (const std::pair<const Qubit, Qubit> &pair : qmap) {
-    q_indices.insert({pair.first, qi});
-    ++qi;
-  }
-  for (const std::pair<const Qubit, Qubit> &pair : qmap) {
-    unsigned in = q_indices[pair.first];
-    unsigned out = q_indices[pair.second];
-    uq_map.insert({in, out});
-  }
-  return lift_perm(uq_map);
-}
-
 static const Eigen::PermutationMatrix<4, 4> SWAP = qubit_permutation(2);
 
 Eigen::Matrix4cd reverse_indexing(const Eigen::Matrix4cd &m) {
@@ -282,8 +265,19 @@ Eigen::VectorXcd reverse_indexing(const Eigen::VectorXcd &v) {
 
 Eigen::MatrixXcd apply_qubit_permutation(
     const Eigen::MatrixXcd &m, const qubit_map_t &perm) {
-  Eigen::PermutationMatrix<Eigen::Dynamic> perm_m = qubit_permutation(perm);
-  return perm_m * m;
+  std::map<Qubit, unsigned> q_indices;
+  std::map<unsigned, unsigned> uq_map;
+  unsigned qi = 0;
+  for (const std::pair<const Qubit, Qubit> &pair : perm) {
+    q_indices.insert({pair.first, qi});
+    ++qi;
+  }
+  for (const std::pair<const Qubit, Qubit> &pair : perm) {
+    unsigned in = q_indices[pair.first];
+    unsigned out = q_indices[pair.second];
+    uq_map.insert({in, out});
+  }
+  return lift_perm(uq_map) * m;
 }
 
 double trace_fidelity(double a, double b, double c) {
