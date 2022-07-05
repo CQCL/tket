@@ -263,23 +263,6 @@ Eigen::VectorXcd reverse_indexing(const Eigen::VectorXcd &v) {
   return perm * v;
 }
 
-Eigen::MatrixXcd apply_qubit_permutation(
-    const Eigen::MatrixXcd &m, const qubit_map_t &perm) {
-  std::map<Qubit, unsigned> q_indices;
-  std::map<unsigned, unsigned> uq_map;
-  unsigned qi = 0;
-  for (const std::pair<const Qubit, Qubit> &pair : perm) {
-    q_indices.insert({pair.first, qi});
-    ++qi;
-  }
-  for (const std::pair<const Qubit, Qubit> &pair : perm) {
-    unsigned in = q_indices[pair.first];
-    unsigned out = q_indices[pair.second];
-    uq_map.insert({in, out});
-  }
-  return lift_perm(uq_map) * m;
-}
-
 double trace_fidelity(double a, double b, double c) {
   constexpr double g = PI / 2;
   a *= g;

@@ -18,7 +18,6 @@
 #include <vector>
 
 #include "EigenConfig.hpp"
-#include "UnitID.hpp"
 #include "Utils/Constants.hpp"
 
 namespace tket {
@@ -64,9 +63,6 @@ Eigen::Matrix4cd reverse_indexing(const Eigen::Matrix4cd &m);
 Matrix8cd reverse_indexing(const Matrix8cd &m);
 Eigen::MatrixXcd reverse_indexing(const Eigen::MatrixXcd &m);
 Eigen::VectorXcd reverse_indexing(const Eigen::VectorXcd &v);
-
-Eigen::MatrixXcd apply_qubit_permutation(
-    const Eigen::MatrixXcd &m, const qubit_map_t &perm);
 
 std::pair<MatrixXb, MatrixXb> binary_LLT_decomposition(const MatrixXb &a);
 std::vector<std::pair<unsigned, unsigned>> gaussian_elimination_col_ops(
