@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <tkhilbert/Constants.hpp>
 #include <utility>
 
 #include "GateUnitaryMatrixImplementations.hpp"
 #include "GateUnitaryMatrixUtils.hpp"
-#include "Utils/Constants.hpp"
 
 // This file is for gates with unitary matrices
 // computed using other ("primitive") gates.

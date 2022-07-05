@@ -20,6 +20,9 @@
 #include <optional>
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
+#include <tkhilbert/Constants.hpp>
+#include <tkhilbert/EigenConfig.hpp>
+#include <tkhilbert/MatrixAnalysis.hpp>
 
 #include "CircUtils.hpp"
 #include "Circuit.hpp"
@@ -27,10 +30,7 @@
 #include "Gate/GatePtr.hpp"
 #include "Gate/Rotation.hpp"
 #include "OpType/OpType.hpp"
-#include "Utils/Constants.hpp"
 #include "Utils/CosSinDecomposition.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket {

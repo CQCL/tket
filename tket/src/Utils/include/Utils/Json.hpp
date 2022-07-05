@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include <complex>
 #include <exception>
 #include <optional>
 
@@ -37,19 +36,7 @@ class JsonError : public std::logic_error {
 
 }  // namespace tket
 
-// no default serialization for complex types
 namespace std {
-
-template <class T>
-void to_json(nlohmann::json& j, const std::complex<T>& p) {
-  j = nlohmann::json{p.real(), p.imag()};
-}
-
-template <class T>
-void from_json(const nlohmann::json& j, std::complex<T>& p) {
-  p.real(j.at(0));
-  p.imag(j.at(1));
-}
 
 // no default serialization for std::optional types
 template <class T>

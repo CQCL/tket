@@ -17,6 +17,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <optional>
 #include <stdexcept>
+#include <tkhilbert/Constants.hpp>
 #include <unsupported/Eigen/MatrixFunctions>
 
 #include "../testutil.hpp"
@@ -31,7 +32,6 @@
 #include "Predicates/PassLibrary.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Transformations/OptimisationPass.hpp"
-#include "Utils/Constants.hpp"
 
 namespace tket {
 namespace test_Ops {

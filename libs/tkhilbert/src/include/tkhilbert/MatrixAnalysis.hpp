@@ -15,10 +15,10 @@
 #pragma once
 
 #include <array>
+#include <tkhilbert/Constants.hpp>
 #include <vector>
 
 #include "EigenConfig.hpp"
-#include "Utils/Constants.hpp"
 
 namespace tket {
 

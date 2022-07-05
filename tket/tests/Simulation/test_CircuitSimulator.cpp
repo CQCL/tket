@@ -18,6 +18,7 @@
 #include <catch2/catch_approx.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
+#include <tkhilbert/MatrixAnalysis.hpp>
 
 #include "../Gate/GatesData.hpp"
 #include "../testutil.hpp"
@@ -29,7 +30,6 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Transform.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 namespace test_CircuitSimulator {

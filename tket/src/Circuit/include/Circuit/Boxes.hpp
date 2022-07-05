@@ -18,13 +18,13 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <memory>
+#include <tkhilbert/EigenConfig.hpp>
+#include <tkhilbert/MatrixAnalysis.hpp>
 
 #include "OpType/OpTypeInfo.hpp"
 #include "Ops/Op.hpp"
 #include "Utils/BiMapHeaders.hpp"
-#include "Utils/EigenConfig.hpp"
 #include "Utils/Json.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket {

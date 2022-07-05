@@ -13,12 +13,13 @@
 // limitations under the License.
 
 #pragma once
+#include <tkhilbert/MatrixAnalysis.hpp>
+
 #include "Circuit/Boxes.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Utils/HelperFunctions.hpp"
 #include "Utils/Json.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 namespace tket {
 
 /**

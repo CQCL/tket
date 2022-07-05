@@ -31,6 +31,8 @@ jobs:
             - 'libs/tktokenswap/**'
           tkwsm:
             - 'libs/tkwsm/**'
+          tkhilbert:
+            - 'libs/tkhilbert/**'
   test_libraries:
     name: test library
     needs: changes

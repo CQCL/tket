@@ -15,12 +15,12 @@
 #include "testutil.hpp"
 
 #include <catch2/catch_test_macros.hpp>
+#include <tkhilbert/EigenConfig.hpp>
+#include <tkhilbert/MatrixAnalysis.hpp>
 
 #include "Circuit/Circuit.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

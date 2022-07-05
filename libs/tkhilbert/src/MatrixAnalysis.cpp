@@ -24,7 +24,7 @@
 #include <utility>
 #include <vector>
 
-#include "Utils/EigenConfig.hpp"
+#include "EigenConfig.hpp"
 
 namespace tket {
 

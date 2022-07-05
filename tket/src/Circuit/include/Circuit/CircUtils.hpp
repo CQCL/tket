@@ -14,10 +14,11 @@
 
 #pragma once
 
+#include <tkhilbert/EigenConfig.hpp>
+
 #include "Circuit.hpp"
 #include "DAGDefs.hpp"
 #include "Gate/GatePtr.hpp"
-#include "Utils/EigenConfig.hpp"
 #include "Utils/PauliStrings.hpp"
 
 namespace tket {

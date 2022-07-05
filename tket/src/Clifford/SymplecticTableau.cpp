@@ -15,9 +15,9 @@
 #include "SymplecticTableau.hpp"
 
 #include <stdexcept>
+#include <tkhilbert/EigenConfig.hpp>
 
 #include "OpType/OpTypeInfo.hpp"
-#include "Utils/EigenConfig.hpp"
 
 namespace tket {
 

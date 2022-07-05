@@ -12,20 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#pragma once
+#include <iostream>
 
-#include <tkhilbert/MatrixAnalysis.hpp>
+#include "tkhilbert/MatrixAnalysis.hpp"
 
-namespace tket {
-class PauliExpBox;
-namespace tket_sim {
-namespace internal {
+using namespace tket;
 
-/** Returns the triplets which make up the sparse unitary matrix
- *  of the given box, in ILO-BE convention.
- */
-std::vector<TripletCd> get_triplets(const PauliExpBox& box);
-
-}  // namespace internal
-}  // namespace tket_sim
-}  // namespace tket
+int main() {
+  // ...
+  return 0;
+}

@@ -16,6 +16,8 @@
 
 #include <optional>
 #include <tkassert/Assert.hpp>
+#include <tkhilbert/EigenConfig.hpp>
+#include <tkhilbert/MatrixAnalysis.hpp>
 
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Characterisation/ErrorTypes.hpp"
@@ -28,8 +30,6 @@
 #include "Gate/GatePtr.hpp"
 #include "Gate/Rotation.hpp"
 #include "Transform.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

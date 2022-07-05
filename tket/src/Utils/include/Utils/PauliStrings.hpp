@@ -17,11 +17,11 @@
 #include <map>
 #include <set>
 #include <string>
+#include <tkhilbert/Constants.hpp>
+#include <tkhilbert/EigenConfig.hpp>
 #include <utility>
 #include <vector>
 
-#include "Utils/Constants.hpp"
-#include "Utils/EigenConfig.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/UnitID.hpp"
 namespace tket {

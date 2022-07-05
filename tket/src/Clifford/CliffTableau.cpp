@@ -15,10 +15,10 @@
 #include "CliffTableau.hpp"
 
 #include <stdexcept>
+#include <tkhilbert/MatrixAnalysis.hpp>
 
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeInfo.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 #include "tkassert/Assert.hpp"
 
 namespace tket {

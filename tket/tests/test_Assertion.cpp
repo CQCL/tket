@@ -14,12 +14,12 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <stdexcept>
+#include <tkhilbert/MatrixAnalysis.hpp>
 
 #include "Circuit/AssertionSynthesis.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/PassLibrary.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 #include "Utils/PauliStrings.hpp"
 #include "testutil.hpp"
 namespace tket {

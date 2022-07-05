@@ -17,6 +17,7 @@
 #include <map>
 #include <set>
 #include <sstream>
+#include <tkhilbert/MatrixAnalysis.hpp>
 
 #include "../testutil.hpp"
 #include "Circuit/CircUtils.hpp"
@@ -28,7 +29,6 @@
 #include "Gate/Rotation.hpp"
 #include "GatesData.hpp"
 #include "Simulation/CircuitSimulator.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 
 using Catch::Matchers::ContainsSubstring;
 
