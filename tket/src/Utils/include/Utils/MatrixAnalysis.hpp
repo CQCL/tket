@@ -67,8 +67,6 @@ Eigen::VectorXcd reverse_indexing(const Eigen::VectorXcd &v);
 
 Eigen::MatrixXcd apply_qubit_permutation(
     const Eigen::MatrixXcd &m, const qubit_map_t &perm);
-Eigen::VectorXcd apply_qubit_permutation(
-    const Eigen::VectorXcd &v, const qubit_map_t &perm);
 
 std::pair<MatrixXb, MatrixXb> binary_LLT_decomposition(const MatrixXb &a);
 std::vector<std::pair<unsigned, unsigned>> gaussian_elimination_col_ops(

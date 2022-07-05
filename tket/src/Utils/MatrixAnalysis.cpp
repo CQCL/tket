@@ -286,12 +286,6 @@ Eigen::MatrixXcd apply_qubit_permutation(
   return perm_m * m;
 }
 
-Eigen::VectorXcd apply_qubit_permutation(
-    const Eigen::VectorXcd &v, const qubit_map_t &perm) {
-  Eigen::PermutationMatrix<Eigen::Dynamic> perm_m = qubit_permutation(perm);
-  return perm_m * v;
-}
-
 double trace_fidelity(double a, double b, double c) {
   constexpr double g = PI / 2;
   a *= g;
