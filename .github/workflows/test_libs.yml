@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - develop
+      - test-feature-tkhilbert.1
   pull_request:
     branches:
       - develop
@@ -36,11 +37,11 @@ jobs:
   test_libraries:
     name: test library
     needs: changes
-    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    # if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     strategy:
       matrix:
         os: ['ubuntu-20.04', 'macos-11', 'windows-2019']
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+        lib: ['tkhilbert']
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
@@ -80,11 +81,11 @@ jobs:
   macos-m1:
     name: test library (macos-m1)
     needs: changes
-    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    # if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     runs-on: [self-hosted, macos, M1]
     strategy:
       matrix:
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+        lib: ['tkhilbert']
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
@@ -109,10 +110,10 @@ jobs:
   generate_coverage:
     name: Generate coverage report
     needs: changes
-    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    # if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     strategy:
       matrix:
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+        lib: ['tkhilbert']
     runs-on: 'ubuntu-20.04'
     env:
       CONAN_REVISIONS_ENABLED: 1
@@ -172,37 +173,37 @@ jobs:
         if [[ -f summary.txt ]] ; then
           ./.github/workflows/compare-coverage summary.txt ${{ matrix.lib }}-coverage/summary.txt
         fi
-  publish_coverage:
-    name: Publish coverage
-    needs: [changes, generate_coverage]
-    if: ${{ github.event_name == 'push' && needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
-    strategy:
-      matrix:
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
-    concurrency: gh_pages
-    runs-on: ubuntu-20.04
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        ref: gh-pages
-    - name: download artefact
-      uses: actions/download-artifact@v3
-      with:
-        name: ${{ matrix.lib }}_coverage
-        path: ${{ matrix.lib }}-coverage/
-    - name: configure git
-      run: |
-        git config --global user.email "tket-bot@cambridgequantum.com"
-        git config --global user.name  "«$GITHUB_WORKFLOW» github action"
-    - name: pull latest
-      run: git pull
-    - name: remove old report
-      run: git rm -r docs/${{ matrix.lib }}/test-coverage
-    - name: add report to repository
-      run: |
-        mkdir -p docs/${{ matrix.lib }}
-        mv ${{ matrix.lib }}-coverage docs/${{ matrix.lib }}/test-coverage
-        git add -f docs/${{ matrix.lib }}/test-coverage
-        git commit --allow-empty -m "Add generated coverage report."
-    - name: publish report
-      run: git push origin gh-pages:gh-pages
+  # publish_coverage:
+  #   name: Publish coverage
+  #   needs: [changes, generate_coverage]
+  #   if: ${{ github.event_name == 'push' && needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+  #   strategy:
+  #     matrix:
+  #       lib: ${{ fromJson(needs.changes.outputs.libs) }}
+  #   concurrency: gh_pages
+  #   runs-on: ubuntu-20.04
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #     with:
+  #       ref: gh-pages
+  #   - name: download artefact
+  #     uses: actions/download-artifact@v3
+  #     with:
+  #       name: ${{ matrix.lib }}_coverage
+  #       path: ${{ matrix.lib }}-coverage/
+  #   - name: configure git
+  #     run: |
+  #       git config --global user.email "tket-bot@cambridgequantum.com"
+  #       git config --global user.name  "«$GITHUB_WORKFLOW» github action"
+  #   - name: pull latest
+  #     run: git pull
+  #   - name: remove old report
+  #     run: git rm -r docs/${{ matrix.lib }}/test-coverage
+  #   - name: add report to repository
+  #     run: |
+  #       mkdir -p docs/${{ matrix.lib }}
+  #       mv ${{ matrix.lib }}-coverage docs/${{ matrix.lib }}/test-coverage
+  #       git add -f docs/${{ matrix.lib }}/test-coverage
+  #       git commit --allow-empty -m "Add generated coverage report."
+  #   - name: publish report
+  #     run: git push origin gh-pages:gh-pages
