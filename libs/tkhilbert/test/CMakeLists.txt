@@ -30,7 +30,9 @@ conan_basic_setup()
 
 add_definitions(-DALL_LOGS)
 
-add_executable(test-tkhilbert test_hilbert.cpp)
+add_executable(test-tkhilbert
+    test_MatrixAnalysis.cpp
+    test_CosSinDecomposition.cpp)
 
 target_include_directories(test-tkhilbert PRIVATE )
 
