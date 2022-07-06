@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - develop
+      - test-feature-tkhilbert.1.1
   pull_request:
     branches:
       - develop
@@ -36,11 +37,11 @@ jobs:
   build_libraries:
     name: build library
     needs: changes
-    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    # if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     strategy:
       matrix:
         os: ['ubuntu-20.04', 'macos-11', 'windows-2019']
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+        lib: ['tkhilbert']
         build_type: ['Release', 'Debug']
         shared: ['True', 'False']
     runs-on: ${{ matrix.os }}
@@ -105,11 +106,11 @@ jobs:
   macos-m1:
     name: build library (macos-m1)
     needs: changes
-    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    # if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     runs-on: [self-hosted, macos, M1]
     strategy:
       matrix:
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+        lib: ['tkhilbert']
         build_type: ['Release', 'Debug']
         shared: ['True', 'False']
     env:
@@ -139,11 +140,11 @@ jobs:
   manylinux:
     name: build library (manylinux)
     needs: changes
-    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    # if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     runs-on: ubuntu-20.04
     strategy:
       matrix:
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+        lib: ['tkhilbert']
     env:
       UPLOAD_PACKAGE: "NO"
     steps:
