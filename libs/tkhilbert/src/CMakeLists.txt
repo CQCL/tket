@@ -36,7 +36,9 @@ if(APPLE)
     set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
 endif()
 
-add_library(tkhilbert MatrixAnalysis.cpp)
+add_library(tkhilbert
+    MatrixAnalysis.cpp
+    CosSinDecomposition.cpp)
 target_include_directories(tkhilbert PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/tkhilbert)
 target_include_directories(tkhilbert INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 

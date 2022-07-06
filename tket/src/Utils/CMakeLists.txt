@@ -22,7 +22,6 @@ add_library(tket-${COMP}
     UnitID.cpp
     HelperFunctions.cpp
     PauliStrings.cpp
-    CosSinDecomposition.cpp
     Expression.cpp)
 
 list(APPEND DEPS_${COMP})

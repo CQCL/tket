@@ -31,7 +31,12 @@ class TkhilbertConan(ConanFile):
     default_options = {"shared": False, "fPIC": True, "profile_coverage": False}
     generators = "cmake"
     exports_sources = "src/*"
-    requires = ["nlohmann_json/3.10.5", "tkassert/0.1.0@tket/stable", "eigen/3.4.0"]
+    requires = [
+        "nlohmann_json/3.10.5",
+        "tklog/0.1.1@tket/stable",
+        "tkassert/0.1.0@tket/stable",
+        "eigen/3.4.0",
+    ]
 
     def config_options(self):
         if self.settings.os == "Windows":

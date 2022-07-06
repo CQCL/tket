@@ -15,10 +15,10 @@
 #include <catch2/catch_test_macros.hpp>
 #include <cstdlib>
 #include <tkhilbert/Constants.hpp>
+#include <tkhilbert/CosSinDecomposition.hpp>
 #include <tkhilbert/MatrixAnalysis.hpp>
 
 #include "../testutil.hpp"
-#include "Utils/CosSinDecomposition.hpp"
 
 namespace tket {
 namespace test_CosSinDecomposition {
