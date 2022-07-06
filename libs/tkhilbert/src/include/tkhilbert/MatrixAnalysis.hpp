@@ -168,4 +168,18 @@ double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx);
  */
 double trace_fidelity(double a, double b, double c);
 
+/**
+ * Generate a random unitary matrix of a given size.
+ *
+ * Results are _not_ distributed uniformly in the Haar measure, so statistical
+ * properties should not be relied upon. (However, all regions of positive
+ * Haar measure have positive probability.)
+ *
+ * @param n matrix dimension
+ * @param seed RNG seed
+ *
+ * @return unitary matrix generated from the seed
+ */
+Eigen::MatrixXcd random_unitary(unsigned n, int seed);
+
 }  // namespace tket

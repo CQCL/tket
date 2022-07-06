@@ -18,8 +18,6 @@
 #include <tkhilbert/CosSinDecomposition.hpp>
 #include <tkhilbert/MatrixAnalysis.hpp>
 
-#include "../testutil.hpp"
-
 namespace tket {
 namespace test_CosSinDecomposition {
 
@@ -33,7 +31,7 @@ static bool cs_matrices_ok(const Eigen::MatrixXd &c, const Eigen::MatrixXd &s) {
     if (s(i, i) < 0) return false;
   }
   for (unsigned i = 0; i + 1 < n; i++) {
-    if (c(i, i) > c(i + 1, i + 1) + ERR_EPS) return false;
+    if (c(i, i) > c(i + 1, i + 1) + 1e-10) return false;
   }
   return true;
 }

@@ -116,18 +116,4 @@ bool matrices_are_equal(const Matr1& mat1, const Matr2& mat2) {
   return true;
 }
 
-/**
- * Generate a random unitary matrix of a given size.
- *
- * Results are _not_ distributed uniformly in the Haar measure, so statistical
- * properties should not be relied upon. (However, all regions of positive
- * Haar measure have positive probability.)
- *
- * @param n matrix dimension
- * @param seed RNG seed
- *
- * @return unitary matrix generated from the seed
- */
-Eigen::MatrixXcd random_unitary(unsigned n, int seed);
-
 }  // namespace tket
