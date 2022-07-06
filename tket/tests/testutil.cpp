@@ -99,12 +99,4 @@ void check_command_types(
   }
 }
 
-Eigen::MatrixXcd random_unitary(unsigned n, int seed) {
-  std::srand(seed);
-  Eigen::MatrixXcd A = Eigen::MatrixXcd::Random(n, n);
-  Eigen::MatrixXcd H = A + A.adjoint();
-  // H is Hermitian, so exp(iH) is unitary.
-  return (i_ * H).exp();
-}
-
 }  // namespace tket
