@@ -14,6 +14,7 @@
 
 #include "MatrixAnalysis.hpp"
 
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <limits>
@@ -206,7 +207,9 @@ std::vector<std::pair<unsigned, unsigned>> gaussian_elimination_row_ops(
 
 static Eigen::PermutationMatrix<Eigen::Dynamic> qubit_permutation(
     unsigned n_qubits) {
-  Eigen::PermutationMatrix<Eigen::Dynamic> perm(1u << n_qubits);
+  uint64_t dim = 1;
+  dim <<= n_qubits;
+  Eigen::PermutationMatrix<Eigen::Dynamic> perm(dim);
   for (unsigned i = 0; i < (1u << n_qubits); i++) {
     unsigned rev = 0;
     unsigned forwards = i;
@@ -223,7 +226,9 @@ static Eigen::PermutationMatrix<Eigen::Dynamic> qubit_permutation(
 Eigen::PermutationMatrix<Eigen::Dynamic> lift_perm(
     const std::map<unsigned, unsigned> &p) {
   unsigned n = p.size();
-  Eigen::PermutationMatrix<Eigen::Dynamic> pm(1u << n);
+  uint64_t dim = 1;
+  dim <<= n;
+  Eigen::PermutationMatrix<Eigen::Dynamic> pm(dim);
   for (unsigned i = 0; i < (1u << n); ++i) {
     unsigned target = 0;
     unsigned mask = 1u << n;
