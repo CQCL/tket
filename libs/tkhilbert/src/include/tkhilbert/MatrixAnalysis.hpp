@@ -15,9 +15,9 @@
 #pragma once
 
 #include <array>
-#include <tkhilbert/Constants.hpp>
 #include <vector>
 
+#include "Constants.hpp"
 #include "EigenConfig.hpp"
 
 namespace tket {
