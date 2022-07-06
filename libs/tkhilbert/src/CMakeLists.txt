@@ -45,7 +45,7 @@ target_include_directories(tkhilbert INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/inclu
 target_link_libraries(tkhilbert PRIVATE ${CONAN_LIBS})
 
 if(MSVC)
-  target_compile_options(tkhilbert PRIVATE /W4 /WX /wd4127 /wd4244 /wd4267 /wd5054)
+  target_compile_options(tkhilbert PRIVATE /W4 /WX /wd4127 /wd4244 /wd4267 /wd5054 /bigobj)
 else()
   target_compile_options(tkhilbert PRIVATE -Wall -Wextra -Wpedantic -Werror)
 endif()
