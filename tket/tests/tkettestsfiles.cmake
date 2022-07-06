@@ -20,9 +20,7 @@ set(TEST_SOURCES
     # We should test simpler modules (e.g. Op, Circuit) before
     # the more complicated things that rely on them (e.g. Routing,
     # Transform) to help identify exactly where stuff breaks
-    ${TKET_TESTS_DIR}/Utils/test_CosSinDecomposition.cpp
     ${TKET_TESTS_DIR}/Utils/test_HelperFunctions.cpp
-    ${TKET_TESTS_DIR}/Utils/test_MatrixAnalysis.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphColouring.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindComponents.cpp
     ${TKET_TESTS_DIR}/Graphs/test_GraphFindMaxClique.cpp
