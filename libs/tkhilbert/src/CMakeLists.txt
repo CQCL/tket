@@ -42,7 +42,7 @@ add_library(tkhilbert
 target_include_directories(tkhilbert PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/tkhilbert)
 target_include_directories(tkhilbert INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_link_libraries(tkhilbert PRIVATE ${CONAN_LIBS})
+target_link_libraries(tkhilbert PRIVATE ${CONAN_LIBS_TKLOG} ${CONAN_LIBS_TKASSERT})
 
 if(MSVC)
   target_compile_options(tkhilbert PRIVATE /W4 /WX /wd4127 /wd4244 /wd4267 /wd5054)
