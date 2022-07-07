@@ -19,6 +19,12 @@ import pickle
 
 from pytket.circuit import (  # type: ignore
     Circuit,
+    CircuitInequality,
+    CircuitInvalidity,
+    Unsupported,
+    MissingVertex,
+    MissingEdge,
+    SimpleOnly,
     Op,
     OpType,
     Command,
@@ -61,6 +67,16 @@ curr_file_path = Path(__file__).resolve().parent
 
 with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
     schema = json.load(f)
+
+
+def test_exceptions() -> None:
+    c = Circuit(2)
+    with pytest.raises(CircuitInvalidity):
+        c.add_gate(OpType.Barrier, [0,1])
+    # with pytest.raises(Unsupported):
+    #     c2 = Circuit()
+    #     c2.add_c_register("q", 2)
+    #     c.append(c2)
 
 
 def test_op_free_symbols() -> None:
