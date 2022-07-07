@@ -72,7 +72,7 @@ with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
 def test_exceptions() -> None:
     c = Circuit(2)
     with pytest.raises(CircuitInvalidity):
-        c.add_gate(OpType.Barrier, [0,1])
+        c.add_gate(OpType.Barrier, [0, 1])
     # with pytest.raises(Unsupported):
     #     c2 = Circuit()
     #     c2.add_c_register("q", 2)
