@@ -21,6 +21,7 @@
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 
+#include "CircPool.hpp"
 #include "CircUtils.hpp"
 #include "Circuit.hpp"
 #include "Circuit/Command.hpp"
@@ -61,6 +62,38 @@ static Circuit two_qubit_diag_adjoint_plex(const Eigen::Matrix4cd &D) {
   circ.add_op<unsigned>(OpType::CX, {1, 0});
   circ.add_op<unsigned>(OpType::Rz, t3, {0});
   circ.add_op<unsigned>(OpType::CX, {2, 0});
+  return circ;
+}
+
+// Return a 3-qubit circuit implementing the unitary
+//     [ D     ]
+//     [    D* ]
+// using 1-qubit and 4 TK2 operations, where D is a 4x4 diagonal unitary matrix.
+// The circuit consists of Rz operations on qubit 0 and TK2 operations.
+static Circuit two_qubit_diag_adjoint_plex_tk(const Eigen::Matrix4cd &D) {
+  // Compute angles a_i such that D_ii = e^{-i pi/2 a_i}.
+  static const double f = -2 / PI;
+  double a0 = f * std::arg(D(0, 0));
+  double a1 = f * std::arg(D(1, 1));
+  double a2 = f * std::arg(D(2, 2));
+  double a3 = f * std::arg(D(3, 3));
+  double t0 = (a0 + a1 + a2 + a3) / 4;
+  double t1 = (a0 + a1 - a2 - a3) / 4;
+  double t2 = (a0 - a1 - a2 + a3) / 4;
+  double t3 = (a0 - a1 + a2 - a3) / 4;
+  Circuit circ(3);
+  circ.add_op<unsigned>(OpType::Rz, t0, {0});
+  circ.append_with_map(
+      CircPool::CX_using_TK2(), {{Qubit(0), Qubit(1)}, {Qubit(1), Qubit(0)}});
+  circ.add_op<unsigned>(OpType::Rz, t1, {0});
+  circ.append_with_map(
+      CircPool::CX_using_TK2(), {{Qubit(0), Qubit(2)}, {Qubit(1), Qubit(0)}});
+  circ.add_op<unsigned>(OpType::Rz, t2, {0});
+  circ.append_with_map(
+      CircPool::CX_using_TK2(), {{Qubit(0), Qubit(1)}, {Qubit(1), Qubit(0)}});
+  circ.add_op<unsigned>(OpType::Rz, t3, {0});
+  circ.append_with_map(
+      CircPool::CX_using_TK2(), {{Qubit(0), Qubit(2)}, {Qubit(1), Qubit(0)}});
   return circ;
 }
 
@@ -120,11 +153,40 @@ static std::pair<Circuit, Complex> two_qubit_plex(
   }
 }
 
+// Return a 3-qubit circuit which implements the unitary
+//     [ U0    ]
+//     [    U1 ]
+// where U0 and U1 are 4x4 unitaries.
+static Circuit two_qubit_plex_tk(
+    const Eigen::Matrix4cd &U0, const Eigen::Matrix4cd &U1) {
+  // 1. Decompose U0 U1* as L T L* where L and T are unitary and T is diagonal.
+  Eigen::Matrix4cd U = U0 * U1.adjoint();
+  Eigen::ComplexSchur<Eigen::Matrix4cd> schur(U);
+  Eigen::Matrix4cd L = schur.matrixU();
+  Eigen::Matrix4cd T = schur.matrixT();
+  // By construction T is unitary and upper-triangular, hence diagonal.
+  TKET_ASSERT(T.isDiagonal());
+  // 2. Let D = sqrt(T)
+  Eigen::Matrix4cd D = Eigen::Matrix4cd::Zero();
+  for (unsigned i = 0; i < 4; i++) {
+    D(i, i) = sqrt(T(i, i));
+  }
+  // 3. Compute R such that U0 = L D R and U1 = L D* R.
+  Eigen::Matrix4cd R = D * L.adjoint() * U1;
+  // 4. Construct the circuit.
+  Circuit circ(3);
+  unit_map_t qm{{Qubit(0), Qubit(1)}, {Qubit(1), Qubit(2)}};
+  circ.append_with_map(two_qubit_canonical(R), qm);
+  circ.append(two_qubit_diag_adjoint_plex_tk(D));
+  circ.append_with_map(two_qubit_canonical(L), qm);
+  return circ;
+}
+
 // Return a 3-qubit circuit implementing the unitary
 //     [ C  -S ]
 //     [ DS DC ]
-// using H, Ry and CX operations, where C and S are 4x4 real diagonal matrices,
-// C^2 + S^2 = I, and D = diag(1,-1,1,-1).
+// using TK2 and 1-qubit operations, where C and S are 4x4 real diagonal
+// matrices, C^2 + S^2 = I, and D = diag(1,-1,1,-1).
 //
 // Note that
 //     [ C  -S ] = U [ C -S ]
@@ -151,6 +213,45 @@ static Circuit two_qubit_modified_cossin_circ(
   circ.add_op<unsigned>(OpType::CX, {2, 0});
   circ.add_op<unsigned>(OpType::Ry, -t2, {0});
   circ.add_op<unsigned>(OpType::CX, {1, 0});
+  circ.add_op<unsigned>(OpType::H, {0});
+  circ.add_op<unsigned>(OpType::Ry, t3, {0});
+  return circ;
+}
+
+// Return a 3-qubit circuit implementing the unitary
+//     [ C  -S ]
+//     [ DS DC ]
+// using TK2 and 1-qubit operations, where C and S are 4x4 real diagonal
+// matrices, C^2 + S^2 = I, and D = diag(1,-1,1,-1).
+//
+// Note that
+//     [ C  -S ] = U [ C -S ]
+//     [ DS DC ]     [ S  C ]
+// where U represents a CZ on qubits 0 and 2. We convert the CZ operations to CX
+// by adding Hadamards and simplifying H Ry(t) H to Ry(-t).
+static Circuit two_qubit_modified_cossin_circ_tk(
+    const Eigen::Matrix4d &C, const Eigen::Matrix4d &S) {
+  // Compute angles a_i such that C_ii = cos(pi/2 a_i) and S_ii = sin(pi/2 a_i).
+  static const double f = 2 / PI;
+  double a0 = f * atan2(S(0, 0), C(0, 0));
+  double a1 = f * atan2(S(1, 1), C(1, 1));
+  double a2 = f * atan2(S(2, 2), C(2, 2));
+  double a3 = f * atan2(S(3, 3), C(3, 3));
+  double t0 = (a0 + a1 + a2 + a3) / 4;
+  double t1 = (a0 + a1 - a2 - a3) / 4;
+  double t2 = (a0 - a1 - a2 + a3) / 4;
+  double t3 = (a0 - a1 + a2 - a3) / 4;
+  Circuit circ(3);
+  circ.add_op<unsigned>(OpType::Ry, t0, {0});
+  circ.add_op<unsigned>(OpType::H, {0});
+  circ.append_with_map(
+      CircPool::CX_using_TK2(), {{Qubit(0), Qubit(1)}, {Qubit(1), Qubit(0)}});
+  circ.add_op<unsigned>(OpType::Ry, -t1, {0});
+  circ.append_with_map(
+      CircPool::CX_using_TK2(), {{Qubit(0), Qubit(2)}, {Qubit(1), Qubit(0)}});
+  circ.add_op<unsigned>(OpType::Ry, -t2, {0});
+  circ.append_with_map(
+      CircPool::CX_using_TK2(), {{Qubit(0), Qubit(1)}, {Qubit(1), Qubit(0)}});
   circ.add_op<unsigned>(OpType::H, {0});
   circ.add_op<unsigned>(OpType::Ry, t3, {0});
   return circ;
@@ -328,6 +429,27 @@ Circuit three_qubit_synthesis(const Eigen::MatrixXcd &U) {
   l1.col(2) *= z1;
   l1.col(3) *= -z0;
   circ.append(two_qubit_plex(l0, l1, false).first);
+  return circ;
+}
+
+Circuit three_qubit_tk_synthesis(const Eigen::MatrixXcd &U) {
+  if (U.rows() != 8 || U.cols() != 8) {
+    throw std::invalid_argument("Wrong-size matrix for three-qubit synthesis");
+  }
+
+  std::optional<Circuit> c_special = special_3q_synth(U);
+  if (c_special) return *c_special;
+
+  auto [l0, l1, r0, r1, c, s] = CS_decomp(U);
+  Circuit circ(3);
+  circ.append(two_qubit_plex_tk(r0, r1));
+  circ.append(two_qubit_modified_cossin_circ_tk(c, s));
+  // We chopped off the last CZ (on qubits 0 and 2) from the circuit
+  // implementing the CS decomposition. Account for this by changing the signs
+  // of columns 1 and 3 of l1.
+  l1.col(1) *= -1;
+  l1.col(3) *= -1;
+  circ.append(two_qubit_plex_tk(l0, l1));
   return circ;
 }
 

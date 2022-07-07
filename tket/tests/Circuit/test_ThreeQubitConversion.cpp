@@ -50,8 +50,22 @@ static void check_three_qubit_synthesis(const Eigen::MatrixXcd &U) {
   CHECK(n_cx <= 20);
   Eigen::MatrixXcd U1 = tket_sim::get_unitary(c);
   CHECK(tket_sim::compare_statevectors_or_unitaries(U, U1));
-  Eigen::MatrixXcd U2 = get_3q_unitary(c);
-  CHECK(tket_sim::compare_statevectors_or_unitaries(U, U2));
+}
+
+static void check_three_qubit_tk_synthesis(const Eigen::MatrixXcd &U) {
+  Circuit c = three_qubit_tk_synthesis(U);
+  unsigned n_tk2 = 0;
+  for (const Command &cmd : c) {
+    OpType optype = cmd.get_op_ptr()->get_type();
+    if (optype == OpType::TK2) {
+      n_tk2++;
+    } else {
+      CHECK(cmd.get_args().size() == 1);
+    }
+  }
+  CHECK(n_tk2 <= 15);
+  Eigen::MatrixXcd U1 = tket_sim::get_unitary(c);
+  CHECK(tket_sim::compare_statevectors_or_unitaries(U, U1));
 }
 
 SCENARIO("Three-qubit circuits") {
@@ -123,6 +137,7 @@ SCENARIO("Three-qubit circuits") {
     U(7, 6) = {0.32103151296141164, 0.21632916190339818};
     U(7, 7) = {-0.04551679980729478, 0.12225020102655798};
     check_three_qubit_synthesis(U);
+    check_three_qubit_tk_synthesis(U);
   }
   GIVEN("Round trip from a small circuit") {
     Circuit c(3);
@@ -132,6 +147,7 @@ SCENARIO("Three-qubit circuits") {
     c.add_op<unsigned>(OpType::CX, {1, 2});
     auto u = tket_sim::get_unitary(c);
     check_three_qubit_synthesis(u);
+    check_three_qubit_tk_synthesis(u);
   }
   GIVEN("Round trip from a larger circuit") {
     Circuit c(3);
@@ -197,6 +213,7 @@ SCENARIO("Three-qubit circuits") {
     c.add_op<unsigned>(OpType::CX, {0, 2});
     auto u = tket_sim::get_unitary(c);
     check_three_qubit_synthesis(u);
+    check_three_qubit_tk_synthesis(u);
   }
 }
 

@@ -32,6 +32,18 @@ namespace tket {
 Circuit three_qubit_synthesis(const Eigen::MatrixXcd &U);
 
 /**
+ * Synthesise a 3-qubit circuit from an arbitrary 8x8 unitary.
+ *
+ * The returned circuit consists of TK2 and 1-qubit gates only. It contains a
+ * maximum of 15 TK2 gates.
+ *
+ * @param U unitary matrix in \ref BasisOrder::ilo
+ *
+ * @return circuit implementing the unitary
+ */
+Circuit three_qubit_tk_synthesis(const Eigen::MatrixXcd &U);
+
+/**
  * Convert a 3-qubit circuit to its corresponding unitary matrix.
  *
  * @param c pure quantum circuit with 3 qubits
