@@ -40,6 +40,16 @@ add_executable(test-tkwsm
     GraphTheoretic/test_FilterUtils.cpp
     GraphTheoretic/test_GeneralStructs.cpp
     GraphTheoretic/test_NeighboursData.cpp
+    InitPlacement/test_InitialPlacementProblems.cpp
+    InitPlacement/test_MonteCarloCompleteTargetSolution.cpp
+    InitPlacement/test_PrunedTargetEdges.cpp
+    InitPlacement/test_WeightedBinaryTree.cpp
+    InitPlacement/test_WeightedSquareGrid.cpp
+    InitPlacement/PlacementCostModelInterface.cpp
+    InitPlacement/TestUtilsIQP.cpp
+    InitPlacement/TestWeightedGraphData.cpp
+    InitPlacement/WeightedBinaryTree.cpp
+    InitPlacement/WeightedSquareGrid.cpp
     Searching/test_NodesRawData.cpp
     Searching/test_NodesRawDataTraversals.cpp
     SolvingProblems/test_CubicLattice.cpp
