@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
+#include <tkhilbert/EigenConfig.hpp>
 
 #include "Circuit/Circuit.hpp"
 #include "Predicates/CompilationUnit.hpp"
@@ -22,7 +23,6 @@
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/ContextualReduction.hpp"
 #include "Transformations/Transform.hpp"
-#include "Utils/EigenConfig.hpp"
 
 namespace tket {
 namespace test_ContextOpt {

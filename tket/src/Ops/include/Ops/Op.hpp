@@ -24,6 +24,7 @@
 #include <ostream>
 #include <stdexcept>
 #include <string>
+#include <tkhilbert/Constants.hpp>
 #include <utility>
 #include <vector>
 
@@ -31,7 +32,6 @@
 #include "OpType/OpDesc.hpp"
 #include "OpType/OpTypeFunctions.hpp"
 #include "OpType/OpTypeInfo.hpp"
-#include "Utils/Constants.hpp"
 #include "Utils/Expression.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/PauliStrings.hpp"

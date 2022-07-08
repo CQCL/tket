@@ -13,9 +13,10 @@
 // limitations under the License.
 
 #pragma once
+#include <tkhilbert/MatrixAnalysis.hpp>
+
 #include "Architecture/Architecture.hpp"
 #include "Placement/Placement.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"
 namespace tket {
 namespace aas {

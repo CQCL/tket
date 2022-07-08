@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "Utils/MatrixAnalysis.hpp"
+#include <tkhilbert/MatrixAnalysis.hpp>
 
 namespace tket {
 class Circuit;

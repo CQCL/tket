@@ -14,8 +14,9 @@
 
 #pragma once
 
+#include <tkhilbert/MatrixAnalysis.hpp>
+
 #include "OpType/OpType.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 class Gate;

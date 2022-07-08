@@ -21,6 +21,7 @@
 #include "Gate/GateUnitaryMatrixError.hpp"
 #include "GateNodesBuffer.hpp"
 #include "Utils/Expression.hpp"
+#include "Utils/UnitID.hpp"
 
 namespace tket {
 namespace tket_sim {
@@ -53,7 +54,22 @@ static void apply_unitary_may_throw(
   }
   internal::GateNodesBuffer buffer(matr, abs_epsilon);
   internal::decompose_circuit(circ, buffer, abs_epsilon);
-  matr = apply_qubit_permutation(matr, circ.implicit_qubit_permutation());
+
+  // Apply qubit permutation:
+  const qubit_map_t perm = circ.implicit_qubit_permutation();
+  std::map<Qubit, unsigned> q_indices;
+  std::map<unsigned, unsigned> uq_map;
+  unsigned qi = 0;
+  for (const std::pair<const Qubit, Qubit>& pair : perm) {
+    q_indices.insert({pair.first, qi});
+    ++qi;
+  }
+  for (const std::pair<const Qubit, Qubit>& pair : perm) {
+    unsigned in = q_indices[pair.first];
+    unsigned out = q_indices[pair.second];
+    uq_map.insert({in, out});
+  }
+  matr = lift_perm(uq_map) * matr;
 }
 
 void apply_unitary(

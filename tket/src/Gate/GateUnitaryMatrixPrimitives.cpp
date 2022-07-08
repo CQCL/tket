@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <tkhilbert/Constants.hpp>
 #include <unsupported/Eigen/KroneckerProduct>
 
 #include "GateUnitaryMatrixImplementations.hpp"
-#include "Utils/Constants.hpp"
 
 // This file is for gates with unitary matrices which serve as
 // building blocks for others ("composite gates").

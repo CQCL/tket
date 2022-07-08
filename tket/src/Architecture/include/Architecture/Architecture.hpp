@@ -18,6 +18,8 @@
 #include <numeric>
 #include <set>
 #include <string>
+#include <tkhilbert/EigenConfig.hpp>
+#include <tkhilbert/MatrixAnalysis.hpp>
 #include <tklog/TketLog.hpp>
 #include <utility>
 #include <vector>
@@ -25,9 +27,7 @@
 #include "Graphs/CompleteGraph.hpp"
 #include "Graphs/DirectedGraph.hpp"
 #include "Utils/BiMapHeaders.hpp"
-#include "Utils/EigenConfig.hpp"
 #include "Utils/Json.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket {

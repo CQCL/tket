@@ -15,12 +15,12 @@
 #include "testutil.hpp"
 
 #include <catch2/catch_test_macros.hpp>
+#include <tkhilbert/EigenConfig.hpp>
+#include <tkhilbert/MatrixAnalysis.hpp>
 
 #include "Circuit/Circuit.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 
@@ -97,14 +97,6 @@ void check_command_types(
     REQUIRE_NOTHROW(coms[nn].to_str());
     REQUIRE(coms[nn].get_op_ptr()->get_type() == expected_types[nn]);
   }
-}
-
-Eigen::MatrixXcd random_unitary(unsigned n, int seed) {
-  std::srand(seed);
-  Eigen::MatrixXcd A = Eigen::MatrixXcd::Random(n, n);
-  Eigen::MatrixXcd H = A + A.adjoint();
-  // H is Hermitian, so exp(iH) is unitary.
-  return (i_ * H).exp();
 }
 
 }  // namespace tket

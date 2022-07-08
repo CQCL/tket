@@ -14,11 +14,9 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <cstdlib>
-
-#include "../testutil.hpp"
-#include "Utils/Constants.hpp"
-#include "Utils/CosSinDecomposition.hpp"
-#include "Utils/MatrixAnalysis.hpp"
+#include <tkhilbert/Constants.hpp>
+#include <tkhilbert/CosSinDecomposition.hpp>
+#include <tkhilbert/MatrixAnalysis.hpp>
 
 namespace tket {
 namespace test_CosSinDecomposition {
@@ -33,7 +31,7 @@ static bool cs_matrices_ok(const Eigen::MatrixXd &c, const Eigen::MatrixXd &s) {
     if (s(i, i) < 0) return false;
   }
   for (unsigned i = 0; i + 1 < n; i++) {
-    if (c(i, i) > c(i + 1, i + 1) + ERR_EPS) return false;
+    if (c(i, i) > c(i + 1, i + 1) + 1e-10) return false;
   }
   return true;
 }

@@ -22,9 +22,9 @@
 #include <map>
 #include <optional>
 #include <set>
+#include <tkhilbert/Constants.hpp>
 #include <vector>
 
-#include "Constants.hpp"
 #include "Json.hpp"
 #include "Symbols.hpp"
 

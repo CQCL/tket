@@ -17,10 +17,8 @@
 #include <array>
 #include <vector>
 
+#include "Constants.hpp"
 #include "EigenConfig.hpp"
-#include "UnitID.hpp"
-#include "Utils/Constants.hpp"
-#include "Utils/Expression.hpp"
 
 namespace tket {
 
@@ -65,11 +63,6 @@ Eigen::Matrix4cd reverse_indexing(const Eigen::Matrix4cd &m);
 Matrix8cd reverse_indexing(const Matrix8cd &m);
 Eigen::MatrixXcd reverse_indexing(const Eigen::MatrixXcd &m);
 Eigen::VectorXcd reverse_indexing(const Eigen::VectorXcd &v);
-
-Eigen::MatrixXcd apply_qubit_permutation(
-    const Eigen::MatrixXcd &m, const qubit_map_t &perm);
-Eigen::VectorXcd apply_qubit_permutation(
-    const Eigen::VectorXcd &v, const qubit_map_t &perm);
 
 std::pair<MatrixXb, MatrixXb> binary_LLT_decomposition(const MatrixXb &a);
 std::vector<std::pair<unsigned, unsigned>> gaussian_elimination_col_ops(
@@ -175,11 +168,18 @@ double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx);
  */
 double trace_fidelity(double a, double b, double c);
 
-/** Whether a triplet of TK2 angles are normalised.
+/**
+ * Generate a random unitary matrix of a given size.
  *
- * Numerical values must be in the Weyl chamber, ie 1/2 >= k_x >= k_y >= |k_z|.
- * Symbolic values must come before any numerical value in the array.
+ * Results are _not_ distributed uniformly in the Haar measure, so statistical
+ * properties should not be relied upon. (However, all regions of positive
+ * Haar measure have positive probability.)
+ *
+ * @param n matrix dimension
+ * @param seed RNG seed
+ *
+ * @return unitary matrix generated from the seed
  */
-bool in_weyl_chamber(const std::array<Expr, 3> &k);
+Eigen::MatrixXcd random_unitary(unsigned n, int seed);
 
 }  // namespace tket

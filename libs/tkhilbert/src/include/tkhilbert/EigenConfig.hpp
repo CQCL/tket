@@ -19,7 +19,8 @@
  * @brief Include this file rather than including the Eigen headers directly
  */
 
-#include "Utils/Json.hpp"
+#include <complex>
+#include <nlohmann/json.hpp>
 
 #if !defined(_MSC_VER)
 #pragma GCC diagnostic push
@@ -41,6 +42,22 @@
 #if !defined(_MSC_VER)
 #pragma GCC diagnostic pop
 #endif
+
+// no default serialization for complex types
+namespace std {
+
+template <class T>
+void to_json(nlohmann::json& j, const std::complex<T>& p) {
+  j = nlohmann::json{p.real(), p.imag()};
+}
+
+template <class T>
+void from_json(const nlohmann::json& j, std::complex<T>& p) {
+  p.real(j.at(0));
+  p.imag(j.at(1));
+}
+
+}  // namespace std
 
 namespace Eigen {
 

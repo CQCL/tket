@@ -14,6 +14,7 @@
 
 #include "MatrixAnalysis.hpp"
 
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <limits>
@@ -24,7 +25,7 @@
 #include <utility>
 #include <vector>
 
-#include "Utils/EigenConfig.hpp"
+#include "EigenConfig.hpp"
 
 namespace tket {
 
@@ -206,7 +207,9 @@ std::vector<std::pair<unsigned, unsigned>> gaussian_elimination_row_ops(
 
 static Eigen::PermutationMatrix<Eigen::Dynamic> qubit_permutation(
     unsigned n_qubits) {
-  Eigen::PermutationMatrix<Eigen::Dynamic> perm(1u << n_qubits);
+  uint64_t dim = 1;
+  dim <<= n_qubits;
+  Eigen::PermutationMatrix<Eigen::Dynamic> perm(dim);
   for (unsigned i = 0; i < (1u << n_qubits); i++) {
     unsigned rev = 0;
     unsigned forwards = i;
@@ -223,7 +226,9 @@ static Eigen::PermutationMatrix<Eigen::Dynamic> qubit_permutation(
 Eigen::PermutationMatrix<Eigen::Dynamic> lift_perm(
     const std::map<unsigned, unsigned> &p) {
   unsigned n = p.size();
-  Eigen::PermutationMatrix<Eigen::Dynamic> pm(1u << n);
+  uint64_t dim = 1;
+  dim <<= n;
+  Eigen::PermutationMatrix<Eigen::Dynamic> pm(dim);
   for (unsigned i = 0; i < (1u << n); ++i) {
     unsigned target = 0;
     unsigned mask = 1u << n;
@@ -236,23 +241,6 @@ Eigen::PermutationMatrix<Eigen::Dynamic> lift_perm(
     pm.indices()[i] = target;
   }
   return pm;
-}
-
-static Eigen::PermutationMatrix<Eigen::Dynamic> qubit_permutation(
-    const qubit_map_t &qmap) {
-  std::map<Qubit, unsigned> q_indices;
-  std::map<unsigned, unsigned> uq_map;
-  unsigned qi = 0;
-  for (const std::pair<const Qubit, Qubit> &pair : qmap) {
-    q_indices.insert({pair.first, qi});
-    ++qi;
-  }
-  for (const std::pair<const Qubit, Qubit> &pair : qmap) {
-    unsigned in = q_indices[pair.first];
-    unsigned out = q_indices[pair.second];
-    uq_map.insert({in, out});
-  }
-  return lift_perm(uq_map);
 }
 
 static const Eigen::PermutationMatrix<4, 4> SWAP = qubit_permutation(2);
@@ -278,18 +266,6 @@ Eigen::VectorXcd reverse_indexing(const Eigen::VectorXcd &v) {
   unsigned n_qubits = get_number_of_qubits(dim);
   Eigen::PermutationMatrix<Eigen::Dynamic> perm = qubit_permutation(n_qubits);
   return perm * v;
-}
-
-Eigen::MatrixXcd apply_qubit_permutation(
-    const Eigen::MatrixXcd &m, const qubit_map_t &perm) {
-  Eigen::PermutationMatrix<Eigen::Dynamic> perm_m = qubit_permutation(perm);
-  return perm_m * m;
-}
-
-Eigen::VectorXcd apply_qubit_permutation(
-    const Eigen::VectorXcd &v, const qubit_map_t &perm) {
-  Eigen::PermutationMatrix<Eigen::Dynamic> perm_m = qubit_permutation(perm);
-  return perm_m * v;
 }
 
 double trace_fidelity(double a, double b, double c) {
@@ -507,29 +483,12 @@ std::vector<TripletCd> get_triplets(
   return triplets;
 }
 
-bool in_weyl_chamber(const std::array<Expr, 3> &k) {
-  bool is_symbolic = true;
-  double last_val = .5;
-  for (unsigned i = 0; i < k.size(); ++i) {
-    std::optional<double> eval = eval_expr_mod(k[i], 4);
-    if (eval) {
-      is_symbolic = false;
-      if (i + 1 == k.size()) {
-        double abs_eval = std::min(*eval, -(*eval) + 4);
-        if (abs_eval > last_val) {
-          return false;
-        }
-      } else {
-        if (*eval > last_val) {
-          return false;
-        }
-      }
-      last_val = *eval;
-    } else if (!is_symbolic) {
-      return false;
-    }
-  }
-  return true;
+Eigen::MatrixXcd random_unitary(unsigned n, int seed) {
+  std::srand(seed);
+  Eigen::MatrixXcd A = Eigen::MatrixXcd::Random(n, n);
+  Eigen::MatrixXcd H = A + A.adjoint();
+  // H is Hermitian, so exp(iH) is unitary.
+  return (i_ * H).exp();
 }
 
 }  // namespace tket

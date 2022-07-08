@@ -31,6 +31,8 @@ jobs:
             - 'libs/tktokenswap/conanfile.py'
           tkwsm:
             - 'libs/tkwsm/conanfile.py'
+          tkhilbert:
+            - 'libs/tkhilbert/conanfile.py'
   build_libraries:
     name: build library
     needs: changes

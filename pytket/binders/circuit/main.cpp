@@ -17,6 +17,7 @@
 #include <pybind11/stl.h>
 
 #include <sstream>
+#include <tkhilbert/Constants.hpp>
 
 #include "Circuit/Command.hpp"
 #include "Gate/Gate.hpp"
@@ -25,7 +26,6 @@
 #include "Ops/ClassicalOps.hpp"
 #include "Ops/MetaOp.hpp"
 #include "Ops/Op.hpp"
-#include "Utils/Constants.hpp"
 #include "Utils/Symbols.hpp"
 #include "binder_json.hpp"
 #include "binder_utils.hpp"

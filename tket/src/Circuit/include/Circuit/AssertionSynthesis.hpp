@@ -14,9 +14,10 @@
 
 #pragma once
 
+#include <tkhilbert/EigenConfig.hpp>
+#include <tkhilbert/MatrixAnalysis.hpp>
+
 #include "Circuit.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

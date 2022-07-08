@@ -18,12 +18,12 @@
 
 #include <numeric>
 #include <optional>
+#include <tkhilbert/EigenConfig.hpp>
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "OpType/OpType.hpp"
 #include "Transform.hpp"
-#include "Utils/EigenConfig.hpp"
 #include "Utils/HelperFunctions.hpp"
 
 namespace tket {

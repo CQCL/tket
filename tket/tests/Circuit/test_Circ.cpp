@@ -16,6 +16,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <memory>
 #include <sstream>
+#include <tkhilbert/MatrixAnalysis.hpp>
 #include <unsupported/Eigen/MatrixFunctions>
 #include <vector>
 
@@ -34,7 +35,6 @@
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 #include "Utils/PauliStrings.hpp"
 
 namespace tket {
