@@ -85,5 +85,19 @@ VertexRelabelling::VertexRelabelling(GraphEdgeWeights edges_and_weights)
   }
 }
 
+unsigned VertexRelabelling::get_new_label(VertexWSM v) const {
+  if (old_to_new_vertex_labels.empty()) {
+    return v;
+  }
+  return old_to_new_vertex_labels.at(v);
+}
+
+VertexWSM VertexRelabelling::get_old_label(unsigned v) const {
+  if (new_to_old_vertex_labels.empty()) {
+    return v;
+  }
+  return new_to_old_vertex_labels.at(v);
+}
+
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

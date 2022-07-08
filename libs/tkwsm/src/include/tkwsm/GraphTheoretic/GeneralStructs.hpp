@@ -42,6 +42,16 @@ typedef std::map<VertexWSM, std::set<VertexWSM>> PossibleAssignments;
 /** A string representation of a graph with edge weights. */
 std::string str(const GraphEdgeWeights& gdata);
 
+/** Simply return the maximum weight occurring in the data. */
+WeightWSM get_max_weight(const GraphEdgeWeights& graph_data);
+
+/** Do a detailed check, including overflow checks,
+ * that the assignments PV->TV are valid, and return the scalar product.
+ */
+WeightWSM get_checked_scalar_product(
+    const GraphEdgeWeights& pdata, const GraphEdgeWeights& tdata,
+    const std::vector<std::pair<VertexWSM, VertexWSM>>& solution);
+
 /** A string representation of a list of edges. */
 std::string str(const std::vector<EdgeWSM>&);
 
@@ -52,12 +62,33 @@ std::string str(const std::vector<EdgeWSM>&);
  */
 EdgeWSM get_edge(VertexWSM v1, VertexWSM v2);
 
+struct GetVerticesOptions {
+  // Do we allow (v1,v2) to have v1 >= v2?
+  bool allow_edge_vertices_not_in_order = false;
+
+  // Do we allow edges (v,v)?
+  bool allow_loops = false;
+
+  // Do we allow both (v1,v2) AND (v2,v1) to occur
+  // (as long as they have the same weight)?
+  bool allow_duplicate_edges = false;
+
+  bool allow_zero_weights = true;
+};
+
 /** Get the nonisolated vertices (i.e., vertices appearing in the edges).
  * @param edges_and_weights The graph (with edge weights, which are ignored).
+ * @param options More details of what to allow or forbid in the data.
  * @return A list of all nonisolated vertices (i.e., vertices appearing in the
  * edges), unique and sorted.
  */
-std::vector<VertexWSM> get_vertices(const GraphEdgeWeights& edges_and_weights);
+std::vector<VertexWSM> get_vertices(
+    const GraphEdgeWeights& edges_and_weights,
+    const GetVerticesOptions& options = {});
+
+/** No checks on the edges and weights; simply counts how many distinct vertices
+ * occur in the edges. */
+unsigned get_number_of_vertices(const GraphEdgeWeights& edges_and_weights);
 
 /** For use in reducing a search node, or individual Domain(pv). */
 enum class ReductionResult {
