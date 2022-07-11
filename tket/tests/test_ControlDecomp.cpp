@@ -181,7 +181,7 @@ SCENARIO("Test decomposition using TK2") {
     Circuit decomposed_circ = TK2_circ_from_multiq(op);
     auto u = tket_sim::get_unitary(decomposed_circ);
     REQUIRE((get_CnX_matrix(6) - u).cwiseAbs().sum() < ERR_EPS);
-    REQUIRE(decomposed_circ.count_gates(OpType::TK2) == 72);
+    REQUIRE(decomposed_circ.count_gates(OpType::TK2) == 61);
   }
 }
 

@@ -393,6 +393,14 @@ Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma);
 Circuit tk1_to_tk1(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 /**
+ * @brief Implement controlled 2x2 unitary using CU3 and U1
+ *
+ * @param u 2x2 unitary
+ * @return Circuit
+ */
+Circuit cu_to_cu3(const Eigen::Matrix2cd &u);
+
+/**
  * @brief Get an n-qubit incrementer circuit with linear depth and O(n^2) gate
  * count. There exists a global phase difference
  * https://arxiv.org/abs/2203.11882
@@ -409,8 +417,7 @@ Circuit incrementer_linear_depth(unsigned n, bool lsb = true);
  *
  * @param n number of controls
  * @param u the controlled 2x2 unitary matrix
- * @return Circuit containing CRx, Unitary1QBox, and one-qubit controlled
- * Unitary1QBox
+ * @return Circuit containing CRx, TK1, U1, U3, and CU3
  */
 Circuit cnu_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd &u);
 

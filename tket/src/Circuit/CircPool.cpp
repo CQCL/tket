@@ -1310,6 +1310,28 @@ Circuit tk1_to_PhasedXRz(
   return c;
 }
 
+Circuit cu_to_cu3(const Eigen::Matrix2cd &u) {
+  Circuit c(2);
+  std::vector<double> tk1_angles = tk1_angles_from_unitary(u);
+  Expr theta = tk1_angles[1];
+  Expr phi = tk1_angles[0] - 0.5;
+  Expr lambda = tk1_angles[2] + 0.5;
+  Expr t = tk1_angles[3] - 0.5 * (tk1_angles[0] + tk1_angles[2]);
+  c.add_op<unsigned>(OpType::U1, t, {0});
+  c.add_op<unsigned>(OpType::CU3, {theta, phi, lambda}, {0, 1});
+  return c;
+}
+
+static void add_cu_using_cu3(
+    const unsigned &ctrl, const unsigned &trgt, Circuit &circ,
+    const Eigen::Matrix2cd &u) {
+  unit_map_t unit_map;
+  unit_map.insert({Qubit(0), Qubit(ctrl)});
+  unit_map.insert({Qubit(1), Qubit(trgt)});
+  Circuit cnu_circ = cu_to_cu3(u);
+  circ.append_with_map(cnu_circ, unit_map);
+}
+
 // Add pn to qubits {1,...,n}, assume n > 1
 static void add_pn(Circuit &circ, unsigned n, bool inverse) {
   TKET_ASSERT(n > 1);
@@ -1329,10 +1351,7 @@ static void add_pn_unitary(
   for (unsigned i = 2; i < n + 1; i++) {
     Eigen::Matrix2cd m = nth_root(u, 1 << (n - i + 1));
     if (inverse) m.adjointInPlace();
-    Unitary1qBox ub(m);
-    Op_ptr op = std::make_shared<Unitary1qBox>(ub);
-    QControlBox qcb(op);
-    circ.add_box(qcb, {i - 1, n});
+    add_cu_using_cu3(i - 1, n, circ, m);
   }
 }
 
@@ -1378,15 +1397,15 @@ Circuit cnu_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd &u) {
   Circuit circ(n + 1);
 
   if (n == 0) {
-    Unitary1qBox ub(u);
-    circ.add_box(ub, {0});
+    // Synthesis U using tk1 and phase
+    std::vector<double> tk1_angles = tk1_angles_from_unitary(u);
+    circ.add_op<unsigned>(
+        OpType::TK1, {tk1_angles[0], tk1_angles[1], tk1_angles[2]}, {0});
+    circ.add_phase(tk1_angles[3]);
     return circ;
   }
   if (n == 1) {
-    Unitary1qBox ub(u);
-    Op_ptr op = std::make_shared<Unitary1qBox>(ub);
-    QControlBox qcb(op);
-    circ.add_box(qcb, {0, 1});
+    add_cu_using_cu3(0, 1, circ, u);
     return circ;
   }
 
@@ -1394,11 +1413,7 @@ Circuit cnu_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd &u) {
   add_pn_unitary(circ, u, n, false);
   // Add CU to {0, n}
   Eigen::Matrix2cd m = nth_root(u, 1 << (n - 1));
-  Unitary1qBox ub(m);
-  Op_ptr op = std::make_shared<Unitary1qBox>(ub);
-  QControlBox qcb(op);
-  circ.add_box(qcb, {0, n});
-
+  add_cu_using_cu3(0, n, circ, m);
   // Add incrementer (without toggling q0) to {0,...,n-1}
   Circuit qn = incrementer_linear_depth(n, false);
   Circuit qn_dag = qn.dagger();
