@@ -96,7 +96,7 @@ static bool check_incrementer_linear_depth(
       circ.add_op<unsigned>(OpType::X, {i});
     }
   }
-  Circuit inc = Transforms::incrementer_linear_depth(n);
+  Circuit inc = CircPool::incrementer_linear_depth(n);
   circ.append(inc);
 
   unsigned long correct_out_long = in_bits.to_ulong() + 1UL;
@@ -462,7 +462,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
 
 SCENARIO("Test linear depth incrementer") {
   GIVEN("0 qb") {
-    Circuit circ = Transforms::incrementer_linear_depth(0);
+    Circuit circ = CircPool::incrementer_linear_depth(0);
     REQUIRE(circ.n_qubits() == 0);
   }
   GIVEN("1 qb") {
@@ -517,7 +517,7 @@ SCENARIO(
   GIVEN("Test CnX unitary for 0 to 9 controls") {
     for (unsigned n = 0; n < 10; ++n) {
       Eigen::MatrixXcd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
-      Circuit circ = Transforms::cnu_linear_depth_decomp(n, x);
+      Circuit circ = CircPool::cnu_linear_depth_decomp(n, x);
       const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
       REQUIRE(m.isApprox(get_CnX_matrix(n), ERR_EPS));
     }
@@ -530,7 +530,7 @@ SCENARIO("Test a CnU is decomposed correctly using the linear depth method") {
       Eigen::Matrix2cd U = random_unitary(2, i);
       std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
       for (auto n : test_ns) {
-        Circuit circ = Transforms::cnu_linear_depth_decomp(n, U);
+        Circuit circ = CircPool::cnu_linear_depth_decomp(n, U);
         const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
         REQUIRE(m.isApprox(get_CnU_matrix(n, U), ERR_EPS));
       }

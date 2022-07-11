@@ -44,7 +44,7 @@ Circuit TK2_circ_from_multiq(const Op_ptr op) {
       if (n_qubits >= 6 && n_qubits <= 50) {
         // TODO We should be able to do better than this.
         Eigen::Matrix2cd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
-        Circuit c = cnu_linear_depth_decomp(n_qubits - 1, x);
+        Circuit c = CircPool::cnu_linear_depth_decomp(n_qubits - 1, x);
         c.decompose_boxes();
         decompose_multi_qubits_TK2().apply(c);
         return c;
@@ -71,7 +71,7 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
     case OpType::CnX:
       if (n_qubits >= 6 && n_qubits <= 50) {
         Eigen::Matrix2cd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
-        Circuit c = cnu_linear_depth_decomp(n_qubits - 1, x);
+        Circuit c = CircPool::cnu_linear_depth_decomp(n_qubits - 1, x);
         c.decompose_boxes();
         decompose_multi_qubits_CX().apply(c);
         return c;

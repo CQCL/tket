@@ -532,4 +532,14 @@ bool in_weyl_chamber(const std::array<Expr, 3> &k) {
   return true;
 }
 
+Eigen::Matrix2cd nth_root(const Eigen::Matrix2cd &u, unsigned n) {
+  Eigen::ComplexEigenSolver<Eigen::Matrix2cd> eigen_solver(u);
+  return std::pow(eigen_solver.eigenvalues()[0], 1. / n) *
+             eigen_solver.eigenvectors().col(0) *
+             eigen_solver.eigenvectors().col(0).adjoint() +
+         std::pow(eigen_solver.eigenvalues()[1], 1. / n) *
+             eigen_solver.eigenvectors().col(1) *
+             eigen_solver.eigenvectors().col(1).adjoint();
+}
+
 }  // namespace tket
