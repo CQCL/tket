@@ -247,6 +247,25 @@ SCENARIO("Unitary from circuits") {
     c.add_op<unsigned>(OpType::CX, {2, 1});
     check_3q_unitary(c);
   }
+  GIVEN("Circuit with TK2 gates") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::S, {1});
+    c.add_op<unsigned>(OpType::T, {2});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {0, 1});
+    c.add_op<unsigned>(OpType::TK2, {0.7, 0.8, 0.9}, {0, 2});
+    c.add_op<unsigned>(OpType::S, {0});
+    c.add_op<unsigned>(OpType::T, {1});
+    c.add_op<unsigned>(OpType::H, {2});
+    c.add_op<unsigned>(OpType::TK2, {0.5, 0.6, 0.7}, {1, 2});
+    c.add_op<unsigned>(OpType::TK2, {0.2, 0.3, 0.4}, {1, 0});
+    c.add_op<unsigned>(OpType::T, {0});
+    c.add_op<unsigned>(OpType::H, {1});
+    c.add_op<unsigned>(OpType::S, {2});
+    c.add_op<unsigned>(OpType::TK2, {0.3, 0.4, 0.5}, {2, 0});
+    c.add_op<unsigned>(OpType::TK2, {0.4, 0.5, 0.6}, {2, 1});
+    check_3q_unitary(c);
+  }
 }
 
 static bool check_3q_squash(const Circuit &c) {

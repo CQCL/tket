@@ -48,7 +48,7 @@ Circuit three_qubit_tk_synthesis(const Eigen::MatrixXcd &U);
  *
  * @param c pure quantum circuit with 3 qubits
  *
- * @pre \p c is composed of CX and single-qubit gates only
+ * @pre \p c is composed of 1- and 2-qubit gates only
  * @pre \p c has no symbolic parameters
  *
  * @return 8x8 unitary matrix in \ref BasisOrder::ilo

@@ -470,10 +470,14 @@ Eigen::MatrixXcd get_3q_unitary(const Circuit &c) {
   for (const Command &cmd : c) {
     qubit_vector_t qbs = cmd.get_qubits();
     Op_ptr op = cmd.get_op_ptr();
+    Gate_ptr gate = as_gate_ptr(op);
+    if (!gate) {
+      throw CircuitInvalidity("Circuit in get_3q_unitary not unitary");
+    }
     Eigen::MatrixXcd M = Eigen::MatrixXcd::Zero(8, 8);
     switch (qbs.size()) {
       case 1: {
-        std::vector<Expr> angles = as_gate_ptr(op)->get_tk1_angles();
+        std::vector<Expr> angles = gate->get_tk1_angles();
         Eigen::Matrix2cd u = get_matrix_from_tk1_angles(angles);
         // Construct the 8x8 matrix representing u.
         unsigned i = idx[qbs[0]];
@@ -502,58 +506,20 @@ Eigen::MatrixXcd get_3q_unitary(const Circuit &c) {
         break;
       }
       case 2: {
-        if (op->get_type() != OpType::CX) {
-          throw CircuitInvalidity(
-              "Circuit in get_3q_unitary contains non-CX 2-qubit gates");
-        }
-        unsigned i = idx[qbs[0]];
-        unsigned j = idx[qbs[1]];
-        // Construct the 8x8 matrix representing CX.
-        switch (i) {
-          case 0:
-            switch (j) {
-              case 1:
-                M(0, 0) = M(1, 1) = M(2, 2) = M(3, 3) = M(4, 6) = M(5, 7) =
-                    M(6, 4) = M(7, 5) = 1;
-                break;
-              case 2:
-                M(0, 0) = M(1, 1) = M(2, 2) = M(3, 3) = M(4, 5) = M(5, 4) =
-                    M(6, 7) = M(7, 6) = 1;
-                break;
-              default:
-                TKET_ASSERT(!"Invalid index");
-            }
-            break;
-          case 1:
-            switch (j) {
-              case 0:
-                M(0, 0) = M(1, 1) = M(2, 6) = M(3, 7) = M(4, 4) = M(5, 5) =
-                    M(6, 2) = M(7, 3) = 1;
-                break;
-              case 2:
-                M(0, 0) = M(1, 1) = M(2, 3) = M(3, 2) = M(4, 4) = M(5, 5) =
-                    M(6, 7) = M(7, 6) = 1;
-                break;
-              default:
-                TKET_ASSERT(!"Invalid index");
-            }
-            break;
-          case 2:
-            switch (j) {
-              case 0:
-                M(0, 0) = M(1, 5) = M(2, 2) = M(3, 7) = M(4, 4) = M(5, 1) =
-                    M(6, 6) = M(7, 3) = 1;
-                break;
-              case 1:
-                M(0, 0) = M(1, 3) = M(2, 2) = M(3, 1) = M(4, 4) = M(5, 7) =
-                    M(6, 6) = M(7, 5) = 1;
-                break;
-              default:
-                TKET_ASSERT(!"Invalid index");
-            }
-            break;
-          default:
-            TKET_ASSERT(!"Invalid index");
+        Eigen::Matrix4cd m = gate->get_unitary();
+        // Note reversal of indices here:
+        unsigned i = 2 - idx[qbs[0]];
+        unsigned j = 2 - idx[qbs[1]];
+        // Construct the 8x8 matrix representing the gate.
+        // Let k be the untouched index, so that {i,j,k} = {0,1,2}:
+        unsigned k = 3 - i - j;
+        unsigned t = 1 << k;
+        for (unsigned s0 = 0; s0 < 4; s0++) {
+          unsigned s0_ = ((s0 >> 1) << i) + ((s0 & 1) << j);
+          for (unsigned s1 = 0; s1 < 4; s1++) {
+            unsigned s1_ = ((s1 >> 1) << i) + ((s1 & 1) << j);
+            M(s0_, s1_) = M(s0_ + t, s1_ + t) = m(s0, s1);
+          }
         }
         break;
       }
