@@ -19,7 +19,7 @@ than a dataclass
 
 from json import dumps, loads
 
-from hypothesis import given
+from hypothesis import given, settings
 import pytest  # type: ignore
 
 from pytket.backends.backendinfo import BackendInfo, fully_connected_backendinfo
