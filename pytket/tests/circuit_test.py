@@ -19,12 +19,7 @@ import pickle
 
 from pytket.circuit import (  # type: ignore
     Circuit,
-    CircuitInequality,
     CircuitInvalidity,
-    Unsupported,
-    MissingVertex,
-    MissingEdge,
-    SimpleOnly,
     Op,
     OpType,
     Command,
@@ -69,15 +64,15 @@ with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
     schema = json.load(f)
 
 
-def test_exceptions() -> None:
+def test_raise_circuitinvalidity() -> None:
     c = Circuit(2)
     with pytest.raises(CircuitInvalidity):
         c.add_gate(OpType.Barrier, [0, 1])
-    # with pytest.raises(Unsupported):
-    #     c2 = Circuit()
-    #     c2.add_c_register("q", 2)
-    #     c.append(c2)
-
+    with pytest.raises(CircuitInvalidity):
+        c.get_q_register("c")
+    with pytest.raises(CircuitInvalidity):
+        kwargs = {"tests": 1}
+        c.add_gate(OpType.CX, [0,1], **kwargs)
 
 def test_op_free_symbols() -> None:
     c = Circuit(2)
@@ -539,7 +534,7 @@ def test_qubit_to_bit_map() -> None:
 def test_barrier_errors() -> None:
     c = Circuit(2)
     c.add_barrier([0, 1])
-    with pytest.raises(RuntimeError) as err:
+    with pytest.raises(CircuitInvalidity) as err:
         c.add_gate(OpType.Barrier, [], [0, 1])
     assert "Please use `add_barrier`" in str(err.value)
 
@@ -848,10 +843,10 @@ def test_getting_registers() -> None:
     assert q_regs[0] == QubitRegister("q", 2)
     q_err_msg = "Cannot find quantum register with name"
     c_err_msg = "Cannot find classical register with name"
-    with pytest.raises(RuntimeError) as e:
+    with pytest.raises(CircuitInvalidity) as e:
         c.get_c_register("q")
     assert c_err_msg in str(e.value)
-    with pytest.raises(RuntimeError) as e:
+    with pytest.raises(CircuitInvalidity) as e:
         c.get_q_register("c")
     assert q_err_msg in str(e.value)
     assert c.get_c_register("c").name == "c"
@@ -879,7 +874,7 @@ def test_getting_registers() -> None:
 
 def test_measuring_registers() -> None:
     c = Circuit()
-    with pytest.raises(RuntimeError) as e:
+    with pytest.raises(CircuitInvalidity) as e:
         qreg = QubitRegister("qr", 2)
         c.measure_register(qreg, "cr")
     assert "The given QubitRegister is not in use" in str(e.value)
