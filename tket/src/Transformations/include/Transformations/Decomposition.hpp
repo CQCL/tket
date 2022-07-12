@@ -93,21 +93,6 @@ Transform decompose_ZX_to_HQS1();
 Transform decompose_MolmerSorensen();
 
 /**
- * @brief A simple struct to store some two-qubit gate fidelities.
- *
- * We currently support CX, ZZMax and ZZPhase.
- *
- * This is meant to be easily extensible when further gate types will be
- * supported.
- *
- */
-struct TwoQbFidelities {
-  std::optional<double> CX_fidelity;
-  std::optional<double> ZZMax_fidelity;
-  std::optional<std::function<double(double)>> ZZPhase_fidelity;
-};
-
-/**
  * @brief Decomposes each TK2 gate into two-qubit gates.
  *
  * We currently support CX, ZZMax and ZZPhase.

@@ -431,6 +431,138 @@ SCENARIO("Testing two qubit decomposition with fidelity tradeoff") {
   }
 }
 
+SCENARIO("KAK Decomposition, various target gate sets") {
+  GIVEN("A simple circuit") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(tket::OpType::Rz, -1.4, {0});
+    circ.add_op<unsigned>(tket::OpType::Ry, 1., {1});
+    circ.add_op<unsigned>(tket::OpType::Rz, 1.8, {0});
+    circ.add_op<unsigned>(tket::OpType::CX, {1, 0});
+    circ.add_op<unsigned>(tket::OpType::Rz, 0.5, {0});
+    circ.add_op<unsigned>(tket::OpType::Rx, 1.5, {0});
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::Rz, 1.2, {0});
+
+    WHEN("Decomposing to TK2") {
+      Transforms::two_qubit_squash(OpType::TK2).apply(circ);
+      REQUIRE(circ.count_gates(OpType::TK2) == 1);
+      REQUIRE(circ.count_gates(OpType::CX) == 0);
+    }
+    WHEN("Decomposing to CX") {
+      Transforms::two_qubit_squash(OpType::CX).apply(circ);
+      REQUIRE(circ.count_gates(OpType::CX) == 1);
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+    }
+  }
+  GIVEN("A slightly more complex circuit") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(tket::OpType::Rz, -1.4, {0});
+    circ.add_op<unsigned>(tket::OpType::Ry, 1., {1});
+    circ.add_op<unsigned>(tket::OpType::Rz, 1.8, {0});
+    circ.add_op<unsigned>(tket::OpType::ZZMax, {1, 0});
+    circ.add_op<unsigned>(tket::OpType::Rx, 0.4, {0});
+    circ.add_op<unsigned>(tket::OpType::ZZMax, {1, 0});
+    circ.add_op<unsigned>(tket::OpType::Rz, 1.2, {0});
+    circ.add_op<unsigned>(tket::OpType::Ry, 0.4, {0});
+    circ.add_op<unsigned>(tket::OpType::CX, {1, 0});
+    circ.add_op<unsigned>(tket::OpType::Rz, 1.2, {0});
+    circ.add_op<unsigned>(tket::OpType::ZZPhase, 0.4, {1, 0});
+    circ.add_op<unsigned>(tket::OpType::Rz, 1.2, {0});
+    circ.add_op<unsigned>(tket::OpType::Ry, 0.4, {0});
+    circ.add_op<unsigned>(tket::OpType::CX, {1, 0});
+    circ.add_op<unsigned>(tket::OpType::Rz, 1.2, {0});
+    circ.add_op<unsigned>(tket::OpType::Rx, 1.8, {0});
+    circ.add_op<unsigned>(tket::OpType::Rx, 1.8, {1});
+    circ.add_op<unsigned>(tket::OpType::ZZPhase, 0.2, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::XXPhase, 0.4, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::YYPhase, 0.6, {0, 1});
+    WHEN("Decomposing to TK2") {
+      REQUIRE(Transforms::two_qubit_squash(OpType::TK2).apply(circ));
+      REQUIRE(circ.count_gates(OpType::TK2) == 1);
+      REQUIRE(circ.count_gates(OpType::CX) == 0);
+    }
+    WHEN("Decomposing to CX") {
+      REQUIRE(Transforms::two_qubit_squash(OpType::CX).apply(circ));
+      REQUIRE(circ.count_gates(OpType::CX) == 3);
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+    }
+    WHEN("Decomposing to CX, bad fidelity") {
+      Circuit orig = circ;
+      REQUIRE(Transforms::two_qubit_squash(OpType::CX, 0.6).apply(circ));
+      REQUIRE(circ.count_gates(OpType::CX) == 0);
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+      circ = orig;
+      REQUIRE(Transforms::two_qubit_squash(OpType::CX, 0.8).apply(circ));
+      REQUIRE(circ.count_gates(OpType::CX) == 1);
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+      circ = orig;
+      REQUIRE(Transforms::two_qubit_squash(OpType::CX, 0.85).apply(circ));
+      REQUIRE(circ.count_gates(OpType::CX) == 2);
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+      circ = orig;
+      REQUIRE(Transforms::two_qubit_squash(OpType::CX, 0.9).apply(circ));
+      REQUIRE(circ.count_gates(OpType::CX) == 3);
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+    }
+  }
+  GIVEN("Circuit with nothing to replace") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::V, {0});
+    circ.add_op<unsigned>(tket::OpType::S, {1});
+    circ.add_op<unsigned>(tket::OpType::CX, {1, 2});
+    circ.add_op<unsigned>(tket::OpType::Rz, 0.4, {1});
+    circ.add_op<unsigned>(tket::OpType::PhasedX, {0.4, 0.32}, {1});
+    circ.add_op<unsigned>(tket::OpType::CX, {2, 3});
+    circ.add_op<unsigned>(tket::OpType::PhasedX, {0.23, 0.52}, {1});
+    circ.add_op<unsigned>(tket::OpType::CX, {1, 3});
+    WHEN("Decomposing to TK2") {
+      REQUIRE(!Transforms::two_qubit_squash(OpType::TK2).apply(circ));
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+      REQUIRE(circ.count_gates(OpType::CX) == 4);
+    }
+    WHEN("Decomposing to CX") {
+      REQUIRE(!Transforms::two_qubit_squash(OpType::CX).apply(circ));
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+      REQUIRE(circ.count_gates(OpType::CX) == 4);
+    }
+  }
+  GIVEN("Circuit with a bit of redundancy") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::CX, {2, 3});
+    circ.add_op<unsigned>(tket::OpType::CX, {1, 3});
+    WHEN("Decomposing to TK2") {
+      REQUIRE(Transforms::two_qubit_squash(OpType::TK2).apply(circ));
+      REQUIRE(circ.count_gates(OpType::TK2) == 1);
+      REQUIRE(circ.count_gates(OpType::CX) == 2);
+    }
+    WHEN("Decomposing to CX") {
+      REQUIRE(Transforms::two_qubit_squash(OpType::CX).apply(circ));
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+      REQUIRE(circ.count_gates(OpType::CX) == 2);
+    }
+  }
+  GIVEN("Circuit with exotic two-qubit gates") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(tket::OpType::ZZPhase, 0.34, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::CX, {2, 3});
+    circ.add_op<unsigned>(tket::OpType::CX, {1, 3});
+    WHEN("Decomposing to TK2") {
+      REQUIRE(Transforms::two_qubit_squash(OpType::TK2).apply(circ));
+      REQUIRE(circ.count_gates(OpType::TK2) == 1);
+      REQUIRE(circ.count_gates(OpType::CX) == 2);
+    }
+    WHEN("Decomposing to CX") {
+      REQUIRE(Transforms::two_qubit_squash(OpType::CX).apply(circ));
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+      REQUIRE(circ.count_gates(OpType::CX) == 3);
+    }
+  }
+}
+
 SCENARIO("KAK Decomposition around symbolic gates") {
   GIVEN("Inefficient two-qubit circuit with symbolic gates") {
     Circuit circ(4);
