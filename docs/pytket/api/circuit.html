@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pytket.circuit &mdash; pytket 1.3.0 documentation</title>
+  <title>pytket.circuit &mdash; pytket 1.4.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -32,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> pytket
           </a>
               <div class="version">
-                1.3
+                1.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -1213,6 +1213,54 @@ Every backend and matrix-based box has a BasisOrder option which can toggle betw
 <dd class="field-odd"><p>the list of pauli stabilisers</p>
 </dd>
 </dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.circuit.WASMOp">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.circuit.</span></span><span class="sig-name descname"><span class="pre">WASMOp</span></span><a class="headerlink" href="#pytket.circuit.WASMOp" title="Permalink to this definition"></a></dt>
+<dd><p>An op holding an external classical call, defined by the external module id, the name of the function and the arguments. External calls can only act on entire registers (which will be interpreted as fixed-width integers).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.WASMOp.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.WASMOp" title="pytket.circuit.WASMOp"><span class="pre">pytket.circuit.WASMOp</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_bits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_inputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_outputs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">wasm_uid</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.circuit.WASMOp.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Construct from number of bits, bitwidths of inputs and outputs, function name and module id.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.circuit.WASMOp.func_name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">func_name</span></span><a class="headerlink" href="#pytket.circuit.WASMOp.func_name" title="Permalink to this definition"></a></dt>
+<dd><p>Name of function.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.circuit.WASMOp.input_widths">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">input_widths</span></span><a class="headerlink" href="#pytket.circuit.WASMOp.input_widths" title="Permalink to this definition"></a></dt>
+<dd><p>Widths of input integers.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.circuit.WASMOp.n_i32">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_i32</span></span><a class="headerlink" href="#pytket.circuit.WASMOp.n_i32" title="Permalink to this definition"></a></dt>
+<dd><p>Number of integers acted on.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.circuit.WASMOp.num_bits">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_bits</span></span><a class="headerlink" href="#pytket.circuit.WASMOp.num_bits" title="Permalink to this definition"></a></dt>
+<dd><p>Number of bits interacted with.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.circuit.WASMOp.output_widths">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">output_widths</span></span><a class="headerlink" href="#pytket.circuit.WASMOp.output_widths" title="Permalink to this definition"></a></dt>
+<dd><p>Widths of output integers.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.circuit.WASMOp.wasm_uid">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wasm_uid</span></span><a class="headerlink" href="#pytket.circuit.WASMOp.wasm_uid" title="Permalink to this definition"></a></dt>
+<dd><p>Wasm module id.</p>
 </dd></dl>
 
 </dd></dl>

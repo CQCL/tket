@@ -77,3 +77,6 @@ pytket.circuit
 .. autoclass:: pytket._tket.circuit.StabiliserAssertionBox
     :special-members:
     :members:
+.. autoclass:: pytket._tket.circuit.WASMOp
+    :special-members:
+    :members:

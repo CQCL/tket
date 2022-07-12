@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pytket.passes &mdash; pytket 1.3.0 documentation</title>
+  <title>pytket.passes &mdash; pytket 1.4.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -32,7 +32,7 @@
             <a href="index.html" class="icon icon-home"> pytket
           </a>
               <div class="version">
-                1.3
+                1.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -493,7 +493,7 @@
 <p>Gate fidelities can be passed as keyword arguments to perform noise-aware decompositions. If the fidelities of several gate types are provided, the best will be chosen.</p>
 <p>We currently support <cite>CX_fidelity</cite>, <cite>ZZMax_fidelity</cite> and <cite>ZZPhase_fidelity</cite>. If provided, the <cite>CX</cite> and <cite>ZZMax</cite> fidelities must be given by a single floating point fidelity. The <cite>ZZPhase</cite> fidelity is given as a lambda float -&gt; float, mapping a ZZPhase angle parameter to its fidelity. These parameters will be used to return the optimal decomposition of each TK2 gate, taking noise into consideration.</p>
 <p>If no fidelities are provided, the TK2 gates will be decomposed exactly using CX gates.</p>
-<p>All TK2 gate parameters must be normalised to the Weyl chamber.</p>
+<p>All TK2 gate parameters must be normalised, i.e. they must satisfy <cite>NormalisedTK2Predicate</cite>.</p>
 <p>If the TK2 angles are symbolic values, the decomposition will be exact (i.e. not noise-aware). It is not possible in general to obtain optimal decompositions for arbitrary symbolic parameters, so consider substituting for concrete values if possible.</p>
 </dd></dl>
 
@@ -629,6 +629,21 @@
 <dd class="field-even"><p>a pass to relabel <code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code> Qubits to <code class="xref py py-class docutils literal notranslate"><span class="pre">Architecture</span></code> Nodes</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pytket.passes.NormaliseTK2">
+<span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">NormaliseTK2</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.NormaliseTK2" title="Permalink to this definition"></a></dt>
+<dd><p>Normalises all TK2 gates.</p>
+<p>TK2 gates have three angles in the interval [0, 4], but these can always be normalised to be within the so-called Weyl chamber by adding single-qubit gates.</p>
+<dl class="simple">
+<dt>More precisely, the three angles a, b, c of TK2(a, b, c) are normalised exactly when the two following conditions are met:</dt><dd><ul class="simple">
+<li><p>numerical values must be in the Weyl chamber, ie <cite>1/2 &gt;= a &gt;= b &gt;= |c|</cite>,</p></li>
+<li><p>symbolic values must come before any numerical value in the array.</p></li>
+</ul>
+</dd>
+</dl>
+<p>After this pass, all TK2 angles will be normalised and the circuit will satisfy <cite>NormalisedTK2Predicate</cite>.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -847,6 +862,13 @@
 <dd class="field-odd"><p><strong>allow_swaps</strong> – whether to allow implicit wire swaps</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pytket.passes.ZZPhaseToRz">
+<span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">ZZPhaseToRz</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.ZZPhaseToRz" title="Permalink to this definition"></a></dt>
+<dd><p>Converts ZZPhase gates with angle pi or -pi to two Rz gates withangle pi.
+:return: a pass to convert ZZPhase gates to Rz</p>
 </dd></dl>
 
 <section id="module-pytket.passes.script">

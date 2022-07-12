@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Index &mdash; pytket 1.3.0 documentation</title>
+  <title>Index &mdash; pytket 1.4.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -28,7 +28,7 @@
             <a href="index.html" class="icon icon-home"> pytket
           </a>
               <div class="version">
-                1.3
+                1.4
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -183,6 +183,8 @@
 </li>
         <li><a href="circuit.html#pytket.circuit.Unitary3qBox.__init__">(pytket.circuit.Unitary3qBox method)</a>
 </li>
+        <li><a href="circuit.html#pytket.circuit.WASMOp.__init__">(pytket.circuit.WASMOp method)</a>
+</li>
         <li><a href="mapping.html#pytket.mapping.AASLabellingMethod.__init__">(pytket.mapping.AASLabellingMethod method)</a>
 </li>
         <li><a href="mapping.html#pytket.mapping.AASRouteRoutingMethod.__init__">(pytket.mapping.AASRouteRoutingMethod method)</a>
@@ -262,6 +264,8 @@
         <li><a href="predicates.html#pytket.predicates.NoFastFeedforwardPredicate.__init__">(pytket.predicates.NoFastFeedforwardPredicate method)</a>
 </li>
         <li><a href="predicates.html#pytket.predicates.NoMidMeasurePredicate.__init__">(pytket.predicates.NoMidMeasurePredicate method)</a>
+</li>
+        <li><a href="predicates.html#pytket.predicates.NormalisedTK2Predicate.__init__">(pytket.predicates.NormalisedTK2Predicate method)</a>
 </li>
         <li><a href="predicates.html#pytket.predicates.NoSymbolsPredicate.__init__">(pytket.predicates.NoSymbolsPredicate method)</a>
 </li>
@@ -944,6 +948,8 @@
 </li>
       <li><a href="architecture.html#pytket.architecture.FullyConnected">FullyConnected (class in pytket.architecture)</a>
 </li>
+      <li><a href="circuit.html#pytket.circuit.WASMOp.func_name">func_name (pytket.circuit.WASMOp property)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -1172,10 +1178,12 @@
 </li>
       <li><a href="predicates.html#pytket.predicates.CompilationUnit.initial_map">initial_map (pytket.predicates.CompilationUnit property)</a>
 </li>
-      <li><a href="partition.html#pytket.partition.MeasurementBitMap.invert">invert (pytket.partition.MeasurementBitMap property)</a>
+      <li><a href="circuit.html#pytket.circuit.WASMOp.input_widths">input_widths (pytket.circuit.WASMOp property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="partition.html#pytket.partition.MeasurementBitMap.invert">invert (pytket.partition.MeasurementBitMap property)</a>
+</li>
       <li><a href="zx.html#pytket.zx.Rewrite.io_extension">io_extension() (pytket.zx.Rewrite static method)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.Op.is_clifford_type">is_clifford_type() (pytket.circuit.Op method)</a>
@@ -1341,6 +1349,8 @@
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.n_gates_of_type">n_gates_of_type() (pytket.circuit.Circuit method)</a>
 </li>
+      <li><a href="circuit.html#pytket.circuit.WASMOp.n_i32">n_i32 (pytket.circuit.WASMOp property)</a>
+</li>
       <li><a href="backends.html#pytket.backends.backendinfo.BackendInfo.n_nodes">n_nodes (pytket.backends.backendinfo.BackendInfo property)</a>
 </li>
       <li><a href="utils.html#pytket.utils.OutcomeArray.n_outcomes">n_outcomes (pytket.utils.OutcomeArray property)</a>
@@ -1431,9 +1441,19 @@
 </li>
       <li><a href="predicates.html#pytket.predicates.NoMidMeasurePredicate">NoMidMeasurePredicate (class in pytket.predicates)</a>
 </li>
+      <li><a href="predicates.html#pytket.predicates.NormalisedTK2Predicate">NormalisedTK2Predicate (class in pytket.predicates)</a>
+</li>
+      <li><a href="passes.html#pytket.passes.NormaliseTK2">NormaliseTK2() (in module pytket.passes)</a>
+
+      <ul>
+        <li><a href="transform.html#pytket.transform.Transform.NormaliseTK2">(pytket.transform.Transform static method)</a>
+</li>
+      </ul></li>
       <li><a href="predicates.html#pytket.predicates.NoSymbolsPredicate">NoSymbolsPredicate (class in pytket.predicates)</a>
 </li>
       <li><a href="predicates.html#pytket.predicates.NoWireSwapsPredicate">NoWireSwapsPredicate (class in pytket.predicates)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.WASMOp.num_bits">num_bits (pytket.circuit.WASMOp property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1459,10 +1479,10 @@
 </li>
       <li><a href="transform.html#pytket.transform.Transform.OptimiseCliffords">OptimiseCliffords() (pytket.transform.Transform static method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="transform.html#pytket.transform.Transform.OptimisePauliGadgets">OptimisePauliGadgets() (pytket.transform.Transform static method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="passes.html#pytket.passes.OptimisePhaseGadgets">OptimisePhaseGadgets() (in module pytket.passes)</a>
 
       <ul>
@@ -1480,6 +1500,8 @@
       <li><a href="zx.html#pytket.zx.ZXDiagram.other_end">other_end() (pytket.zx.ZXDiagram method)</a>
 </li>
       <li><a href="utils.html#pytket.utils.OutcomeArray">OutcomeArray (class in pytket.utils)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.WASMOp.output_widths">output_widths (pytket.circuit.WASMOp property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -2311,6 +2333,10 @@
 <h2 id="W">W</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="circuit.html#pytket.circuit.WASMOp.wasm_uid">wasm_uid (pytket.circuit.WASMOp property)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.WASMOp">WASMOp (class in pytket.circuit)</a>
+</li>
       <li><a href="transform.html#pytket.transform.Transform.while_repeat">while_repeat() (pytket.transform.Transform static method)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.Conditional.width">width (pytket.circuit.Conditional property)</a>
@@ -2319,10 +2345,10 @@
         <li><a href="utils.html#pytket.utils.OutcomeArray.width">(pytket.utils.OutcomeArray property)</a>
 </li>
       </ul></li>
-      <li><a href="zx.html#pytket.zx.ZXDiagram.wire_at_port">wire_at_port() (pytket.zx.ZXDiagram method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="zx.html#pytket.zx.ZXDiagram.wire_at_port">wire_at_port() (pytket.zx.ZXDiagram method)</a>
+</li>
       <li><a href="zx.html#pytket.zx.ZXDiagram.wire_between">wire_between() (pytket.zx.ZXDiagram method)</a>
 </li>
       <li><a href="zx.html#pytket.zx.ZXDiagram.wires">wires (pytket.zx.ZXDiagram property)</a>
@@ -2377,10 +2403,10 @@
 </li>
       <li><a href="zx.html#pytket.zx.ZXType">ZXType (class in pytket.zx)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="zx.html#pytket.zx.ZXVert">ZXVert (class in pytket.zx)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="zx.html#pytket.zx.ZXWire">ZXWire (class in pytket.zx)</a>
 </li>
       <li><a href="zx.html#pytket.zx.ZXWireType">ZXWireType (class in pytket.zx)</a>
@@ -2389,6 +2415,12 @@
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.ZZPhase">ZZPhase() (pytket.circuit.Circuit method)</a>
 </li>
+      <li><a href="passes.html#pytket.passes.ZZPhaseToRz">ZZPhaseToRz() (in module pytket.passes)</a>
+
+      <ul>
+        <li><a href="transform.html#pytket.transform.Transform.ZZPhaseToRz">(pytket.transform.Transform static method)</a>
+</li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
