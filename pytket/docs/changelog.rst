@@ -1,7 +1,17 @@
 Changelog
 =========
 
-1.4.0 (July 2022)
+x.y.z (unreleased)
+------------------
+
+Minor new features:
+
+* ``Transform.ThreeQubitSquash()`` can now use TK2 gates as an alternative to CX
+  gates.
+* ``Unitary3qBox.get_circuit()`` decomposes the circuit using (at most 15) TK2
+  gates.
+
+1.4.1 (July 2022)
 -----------------
 
 Minor new features:
