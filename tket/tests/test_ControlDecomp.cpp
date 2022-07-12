@@ -12,14 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <boost/dynamic_bitset.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <numeric>
 
 #include "Circuit/CircPool.hpp"
+#include "Gate/GateUnitaryMatrix.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/ControlledGates.hpp"
 #include "Transformations/OptimisationPass.hpp"
+#include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
 #include "testutil.hpp"
 
@@ -84,24 +87,101 @@ static bool check_incrementer_borrow_1_qubit(const unsigned n) {
   return correct;
 }
 
-SCENARIO("Test C3X and C4X decomposition") {
-  GIVEN("A C3X gates") {
-    Circuit circ(4);
-    circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3});
-    auto u1 = tket_sim::get_unitary(circ);
-    auto u2 = tket_sim::get_unitary(CircPool::C3X_normal_decomp());
-    REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
-    Transforms::synthesise_tket().apply(circ);
-    REQUIRE(circ.count_gates(OpType::CX) == 14);
+static bool check_incrementer_linear_depth(
+    const unsigned n, const unsigned number) {
+  boost::dynamic_bitset<> in_bits(n, number);
+  Circuit circ(n);
+  for (unsigned i = 0; i < n; i++) {
+    if (in_bits[i]) {
+      circ.add_op<unsigned>(OpType::X, {i});
+    }
   }
-  GIVEN("A C4X gates") {
-    Circuit circ(5);
-    circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4});
-    auto u1 = tket_sim::get_unitary(circ);
-    auto u2 = tket_sim::get_unitary(CircPool::C4X_normal_decomp());
-    REQUIRE((u1 - u2).cwiseAbs().sum() < ERR_EPS);
-    Transforms::synthesise_tket().apply(circ);
-    REQUIRE(circ.count_gates(OpType::CX) == 36);
+  Circuit inc = Transforms::incrementer_linear_depth(n);
+  circ.append(inc);
+
+  unsigned long correct_out_long = in_bits.to_ulong() + 1UL;
+  boost::dynamic_bitset<> correct_out_bits(n, correct_out_long);
+
+  // Get the index of the entry that should have a "1" (with a phase difference)
+  unsigned sv_set_idx = 0;
+  for (unsigned i = 0; i < correct_out_bits.size(); i++) {
+    if (correct_out_bits[i] == 1) {
+      sv_set_idx = sv_set_idx + (1 << (n - i - 1));
+    }
+  }
+  const StateVector sv = tket_sim::get_statevector(circ);
+  for (unsigned i = 0; i < sv.size(); ++i) {
+    if (i == sv_set_idx) {
+      if (std::abs(std::abs(sv[i]) - 1) >= ERR_EPS) return false;
+    } else {
+      if (std::abs(sv[i]) >= ERR_EPS) return false;
+    }
+  }
+  return true;
+}
+
+// Explicitly construct CnU matrix
+static Eigen::MatrixXcd get_CnU_matrix(
+    unsigned n_controls, const Eigen::Matrix2cd& U) {
+  unsigned m_size = pow(2, n_controls + 1);
+  Eigen::MatrixXcd correct_matrix = Eigen::MatrixXcd::Identity(m_size, m_size);
+  correct_matrix(m_size - 2, m_size - 2) = U(0, 0);
+  correct_matrix(m_size - 2, m_size - 1) = U(0, 1);
+  correct_matrix(m_size - 1, m_size - 2) = U(1, 0);
+  correct_matrix(m_size - 1, m_size - 1) = U(1, 1);
+  return correct_matrix;
+}
+
+static Eigen::MatrixXcd get_CnX_matrix(unsigned n_controls) {
+  Eigen::Matrix2cd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
+  return get_CnU_matrix(n_controls, x);
+}
+
+SCENARIO("Test decomposition using CX") {
+  GIVEN("A C3X gate") {
+    const Op_ptr op = get_op_ptr(OpType::CnX, std::vector<Expr>(), 4);
+    Circuit decomposed_circ = CX_circ_from_multiq(op);
+    auto u = tket_sim::get_unitary(decomposed_circ);
+    REQUIRE((get_CnX_matrix(3) - u).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(decomposed_circ.count_gates(OpType::CX) == 14);
+  }
+  GIVEN("A C4X gate") {
+    const Op_ptr op = get_op_ptr(OpType::CnX, std::vector<Expr>(), 5);
+    Circuit decomposed_circ = CX_circ_from_multiq(op);
+    auto u = tket_sim::get_unitary(decomposed_circ);
+    REQUIRE((get_CnX_matrix(4) - u).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(decomposed_circ.count_gates(OpType::CX) == 36);
+  }
+  GIVEN("A C6X gate") {
+    const Op_ptr op = get_op_ptr(OpType::CnX, std::vector<Expr>(), 7);
+    Circuit decomposed_circ = CX_circ_from_multiq(op);
+    auto u = tket_sim::get_unitary(decomposed_circ);
+    REQUIRE((get_CnX_matrix(6) - u).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(decomposed_circ.count_gates(OpType::CX) == 120);
+  }
+}
+
+SCENARIO("Test decomposition using TK2") {
+  GIVEN("A C3X gate") {
+    const Op_ptr op = get_op_ptr(OpType::CnX, std::vector<Expr>(), 4);
+    Circuit decomposed_circ = TK2_circ_from_multiq(op);
+    auto u = tket_sim::get_unitary(decomposed_circ);
+    REQUIRE((get_CnX_matrix(3) - u).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(decomposed_circ.count_gates(OpType::TK2) == 14);
+  }
+  GIVEN("A C4X gate") {
+    const Op_ptr op = get_op_ptr(OpType::CnX, std::vector<Expr>(), 5);
+    Circuit decomposed_circ = TK2_circ_from_multiq(op);
+    auto u = tket_sim::get_unitary(decomposed_circ);
+    REQUIRE((get_CnX_matrix(4) - u).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(decomposed_circ.count_gates(OpType::TK2) == 36);
+  }
+  GIVEN("A C6X gate") {
+    const Op_ptr op = get_op_ptr(OpType::CnX, std::vector<Expr>(), 7);
+    Circuit decomposed_circ = TK2_circ_from_multiq(op);
+    auto u = tket_sim::get_unitary(decomposed_circ);
+    REQUIRE((get_CnX_matrix(6) - u).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(decomposed_circ.count_gates(OpType::TK2) == 72);
   }
 }
 
@@ -380,19 +460,80 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
   }
 }
 
+SCENARIO("Test linear depth incrementer") {
+  GIVEN("0 qb") {
+    Circuit circ = Transforms::incrementer_linear_depth(0);
+    REQUIRE(circ.n_qubits() == 0);
+  }
+  GIVEN("1 qb") {
+    REQUIRE(check_incrementer_linear_depth(1, 0));
+    REQUIRE(check_incrementer_linear_depth(1, 1));
+  }
+  GIVEN("2 qbs") {
+    REQUIRE(check_incrementer_linear_depth(2, 0));
+    REQUIRE(check_incrementer_linear_depth(2, 1));
+    REQUIRE(check_incrementer_linear_depth(2, 2));
+    REQUIRE(check_incrementer_linear_depth(2, 3));
+  }
+  GIVEN("3 qbs") {
+    REQUIRE(check_incrementer_linear_depth(3, 0));
+    REQUIRE(check_incrementer_linear_depth(3, 1));
+    REQUIRE(check_incrementer_linear_depth(3, 5));
+    REQUIRE(check_incrementer_linear_depth(3, 7));
+  }
+  GIVEN("4 qbs") {
+    REQUIRE(check_incrementer_linear_depth(4, 0));
+    REQUIRE(check_incrementer_linear_depth(4, 1));
+    REQUIRE(check_incrementer_linear_depth(4, 10));
+    REQUIRE(check_incrementer_linear_depth(4, 15));
+  }
+  GIVEN("5 qbs") {
+    REQUIRE(check_incrementer_linear_depth(5, 0));
+    REQUIRE(check_incrementer_linear_depth(5, 1));
+    REQUIRE(check_incrementer_linear_depth(5, 26));
+    REQUIRE(check_incrementer_linear_depth(5, 31));
+  }
+  GIVEN("8 qbs") {
+    REQUIRE(check_incrementer_linear_depth(8, 0));
+    REQUIRE(check_incrementer_linear_depth(8, 1));
+    REQUIRE(check_incrementer_linear_depth(8, 100));
+    REQUIRE(check_incrementer_linear_depth(8, 255));
+  }
+}
+
 SCENARIO("Test a CnX is decomposed correctly when bootstrapped", "[.long]") {
   GIVEN("Test CnX unitary for 3 to 9 controls") {
     for (unsigned n = 3; n < 10; ++n) {
       Circuit circ = Transforms::cnx_normal_decomp(n);
       const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
-      unsigned m_size = pow(2, n + 1);
-      Eigen::MatrixXcd correct_matrix =
-          Eigen::MatrixXcd::Identity(m_size, m_size);
-      correct_matrix(m_size - 2, m_size - 1) = 1;
-      correct_matrix(m_size - 1, m_size - 2) = 1;
-      correct_matrix(m_size - 2, m_size - 2) = 0;
-      correct_matrix(m_size - 1, m_size - 1) = 0;
-      REQUIRE(m.isApprox(correct_matrix, ERR_EPS));
+      REQUIRE(m.isApprox(get_CnX_matrix(n), ERR_EPS));
+    }
+  }
+}
+
+SCENARIO(
+    "Test a CnX is decomposed correctly using the linear depth method",
+    "[.long]") {
+  GIVEN("Test CnX unitary for 0 to 9 controls") {
+    for (unsigned n = 0; n < 10; ++n) {
+      Eigen::MatrixXcd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
+      Circuit circ = Transforms::cnu_linear_depth_decomp(n, x);
+      const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+      REQUIRE(m.isApprox(get_CnX_matrix(n), ERR_EPS));
+    }
+  }
+}
+
+SCENARIO("Test a CnU is decomposed correctly using the linear depth method") {
+  GIVEN("Test CnU unitary for n={0,1,2,3,5} controls") {
+    for (unsigned i = 0; i < 100; i++) {
+      Eigen::Matrix2cd U = random_unitary(2, i);
+      std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
+      for (auto n : test_ns) {
+        Circuit circ = Transforms::cnu_linear_depth_decomp(n, U);
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, U), ERR_EPS));
+      }
     }
   }
 }
@@ -409,14 +550,7 @@ SCENARIO("Test a CnX is decomposed correctly using the Gray code method") {
     for (unsigned n = 2; n < 8; ++n) {
       Circuit circ = Transforms::cnx_gray_decomp(n);
       const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
-      unsigned m_size = pow(2, n + 1);
-      Eigen::MatrixXcd correct_matrix =
-          Eigen::MatrixXcd::Identity(m_size, m_size);
-      correct_matrix(m_size - 2, m_size - 1) = 1;
-      correct_matrix(m_size - 1, m_size - 2) = 1;
-      correct_matrix(m_size - 2, m_size - 2) = 0;
-      correct_matrix(m_size - 1, m_size - 1) = 0;
-      REQUIRE(m.isApprox(correct_matrix, ERR_EPS));
+      REQUIRE(m.isApprox(get_CnX_matrix(n), ERR_EPS));
       switch (n) {
         case 2: {
           REQUIRE(circ.count_gates(OpType::CX) <= 6);

@@ -35,9 +35,7 @@ namespace tket {
 Eigen::Matrix2cd get_matrix(const Circuit &circ, const Vertex &vert) {
   const Op_ptr op = circ.get_Op_ptr_from_Vertex(vert);
   if (op->get_type() != OpType::TK1) {
-    throw NotImplemented(
-        "Cannot obtain matrix from gate: " + op->get_name() +
-        ". Try rebasing to tket's internal representation.");
+    throw BadOpType("Cannot compute matrix from gate", op->get_type());
   }
   std::vector<Expr> ps = op->get_params();
   ps.push_back(0);
@@ -126,8 +124,7 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit &circ) {
                   Eigen::kroneckerProduct(Eigen::Matrix2cd::Identity(), mat);
             }
           } else
-            throw NotImplemented(
-                "Cannot obtain matrix from op " + o->get_name());
+            throw BadOpType("Cannot obtain matrix from op", o->get_type());
         }
       }
     }
@@ -167,7 +164,7 @@ Circuit two_qubit_canonical(const Eigen::Matrix4cd &U) {
   result.add_op<unsigned>(
       OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
 
-  result.add_op<unsigned>(OpType::TK2, {a, b, c}, {0, 1});
+  result.append(CircPool::TK2_using_normalised_TK2(a, b, c));
 
   angles_q0 = tk1_angles_from_unitary(K1a);
   angles_q1 = tk1_angles_from_unitary(K1b);
@@ -418,7 +415,9 @@ Circuit with_TK2(Gate_ptr op) {
     double alpha = std::get<0>(A);
     double beta = std::get<1>(A);
     double gamma = std::get<2>(A);
-    c.add_op<unsigned>(OpType::TK2, {alpha, beta, gamma}, {0, 1});
+
+    c.append(CircPool::TK2_using_normalised_TK2(alpha, beta, gamma));
+
     c.add_op<unsigned>(
         OpType::TK1, {angles_K1a.begin(), angles_K1a.end() - 1}, {0});
     c.add_op<unsigned>(

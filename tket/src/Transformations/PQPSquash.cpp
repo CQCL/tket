@@ -20,6 +20,7 @@
 #include "Circuit/DAGDefs.hpp"
 #include "Decomposition.hpp"
 #include "Gate/Rotation.hpp"
+#include "OpType/OpTypeInfo.hpp"
 #include "Transform.hpp"
 #include "Utils/Expression.hpp"
 
@@ -58,7 +59,7 @@ bool PQPSquasher::accepts(Gate_ptr gp) const {
 
 void PQPSquasher::append(Gate_ptr gp) {
   if (!accepts(gp)) {
-    throw NotValid("PQPSquasher: cannot append OpType");
+    throw BadOpType("PQPSquasher: cannot append OpType", gp->get_type());
   }
   rotation_chain.push_back(gp);
 }

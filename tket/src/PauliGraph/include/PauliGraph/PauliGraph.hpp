@@ -15,6 +15,7 @@
 #pragma once
 
 #include <fstream>
+#include <stdexcept>
 
 #include "Clifford/CliffTableau.hpp"
 #include "Utils/Expression.hpp"
@@ -44,6 +45,12 @@ typedef sequence_set_t<PauliEdge> PauliEdgeSet;
 typedef std::list<std::pair<OpType, qubit_vector_t>> Conjugations;
 
 class Circuit;
+
+class MidCircuitMeasurementNotAllowed : public std::logic_error {
+ public:
+  explicit MidCircuitMeasurementNotAllowed(const std::string &message)
+      : std::logic_error(message) {}
+};
 
 /**
  * Dependency graph of a circuit wrt Pauli Gadgets.

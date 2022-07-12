@@ -14,9 +14,9 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <sstream>
+#include <tkrng/RNG.hpp>
 
 #include "Architecture/BestTsaWithArch.hpp"
-#include "Utils/RNG.hpp"
 
 using std::vector;
 

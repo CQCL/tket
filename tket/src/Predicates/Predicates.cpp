@@ -18,6 +18,7 @@
 #include "Mapping/Verification.hpp"
 #include "OpType/OpTypeFunctions.hpp"
 #include "Placement/Placement.hpp"
+#include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket {
@@ -67,6 +68,7 @@ const std::string& predicate_name(std::type_index idx) {
       SET_PRED_NAME(NoMidMeasurePredicate),
       SET_PRED_NAME(NoSymbolsPredicate),
       SET_PRED_NAME(GlobalPhasedXPredicate),
+      SET_PRED_NAME(NormalisedTK2Predicate),
       SET_PRED_NAME(NoWireSwapsPredicate),
       SET_PRED_NAME(PlacementPredicate),
       SET_PRED_NAME(UserDefinedPredicate)};
@@ -656,6 +658,37 @@ std::string GlobalPhasedXPredicate::to_string() const {
   return auto_name(*this);
 }
 
+bool NormalisedTK2Predicate::verify(const Circuit& circ) const {
+  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+    Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    bool conditional = op->get_type() == OpType::Conditional;
+    if (conditional) {
+      const Conditional& cond = static_cast<const Conditional&>(*op);
+      op = cond.get_op();
+    }
+    if (op->get_type() == OpType::TK2) {
+      auto params = op->get_params();
+      TKET_ASSERT(params.size() == 3);
+      if (!in_weyl_chamber({params[0], params[1], params[2]})) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
+bool NormalisedTK2Predicate::implies(const Predicate& other) const {
+  return auto_implication(*this, other);
+}
+
+PredicatePtr NormalisedTK2Predicate::meet(const Predicate& other) const {
+  return auto_meet(*this, other);
+}
+
+std::string NormalisedTK2Predicate::to_string() const {
+  return auto_name(*this);
+}
+
 void to_json(nlohmann::json& j, const PredicatePtr& pred_ptr) {
   if (std::shared_ptr<GateSetPredicate> cast_pred =
           std::dynamic_pointer_cast<GateSetPredicate>(pred_ptr)) {
@@ -731,6 +764,10 @@ void to_json(nlohmann::json& j, const PredicatePtr& pred_ptr) {
       std::shared_ptr<GlobalPhasedXPredicate> cast_pred =
           std::dynamic_pointer_cast<GlobalPhasedXPredicate>(pred_ptr)) {
     j["type"] = "GlobalPhasedXPredicate";
+  } else if (
+      std::shared_ptr<NormalisedTK2Predicate> cast_pred =
+          std::dynamic_pointer_cast<NormalisedTK2Predicate>(pred_ptr)) {
+    j["type"] = "NormalisedTK2Predicate";
   } else {
     throw JsonError("Cannot serialize PredicatePtr of unknown type.");
   }
@@ -763,8 +800,7 @@ void from_json(const nlohmann::json& j, PredicatePtr& pred_ptr) {
   } else if (classname == "CliffordCircuitPredicate") {
     pred_ptr = std::make_shared<CliffordCircuitPredicate>();
   } else if (classname == "UserDefinedPredicate") {
-    throw NotImplemented(
-        "Deserialization of UserDefinedPredicates not yet implemented.");
+    throw PredicateNotSerializable(classname);
   } else if (classname == "DefaultRegisterPredicate") {
     pred_ptr = std::make_shared<DefaultRegisterPredicate>();
   } else if (classname == "MaxNQubitsPredicate") {
@@ -778,6 +814,8 @@ void from_json(const nlohmann::json& j, PredicatePtr& pred_ptr) {
     pred_ptr = std::make_shared<NoSymbolsPredicate>();
   } else if (classname == "GlobalPhasedXPredicate") {
     pred_ptr = std::make_shared<GlobalPhasedXPredicate>();
+  } else if (classname == "NormalisedTK2Predicate") {
+    pred_ptr = std::make_shared<NormalisedTK2Predicate>();
   } else {
     throw JsonError("Cannot load PredicatePtr of unknown type.");
   }

@@ -1,6 +1,20 @@
 Changelog
 =========
 
+1.4.0 (July 2022)
+-----------------
+
+Minor new features:
+
+* New ``NormalisedTK2Predicate`` predicate and ``NormaliseTK2`` pass.
+* New ``ZZPhaseToRz`` pass.
+* Circuit to QASM converters with the "hqslib1" header now fix ZZPhase angles
+  to be between -1 and 1 half-turns.
+
+Fixes:
+
+* Ensure TK2 angles are normalised before decomposing TK2 gates in passes.
+
 1.3.0 (June 2022)
 -----------------
 
@@ -13,6 +27,7 @@ Minor new features:
 * New pass and transform `DecomposeTK2` to decompose TK2 gates using the
   approximate KAK decomposition.
 * Pass and transform ``GlobalisePhasedX`` use fewer Rz rotations.
+* Improved decomposition for CnX gates.
 
 Fixes:
 

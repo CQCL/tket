@@ -28,7 +28,7 @@ PauliGraph circuit_to_pauli_graph(const Circuit &circ) {
   for (const std::pair<const Qubit, Qubit> &pair :
        circ.implicit_qubit_permutation()) {
     if (pair.first != pair.second) {
-      throw NotImplemented(
+      throw ImplicitPermutationNotAllowed(
           "Cannot build a PauliGraph from circuits with implicit "
           "permutations");
     }
@@ -45,7 +45,7 @@ PauliGraph circuit_to_pauli_graph(const Circuit &circ) {
       std::vector<Pauli> paulis = peb.get_paulis();
       Expr phase = peb.get_phase();
       if (args.size() != paulis.size())
-        throw NotValid("Incorrect Pauli tensor size for qubit count");
+        throw std::logic_error("Incorrect Pauli tensor size for qubit count");
       QubitPauliTensor qpt;
       for (unsigned i = 0; i != args.size(); ++i) {
         switch (paulis[i]) {
@@ -66,9 +66,10 @@ PauliGraph circuit_to_pauli_graph(const Circuit &circ) {
       }
       pg.apply_pauli_gadget_at_end(qpt, phase);
     } else
-      throw NotImplemented(
+      throw BadOpType(
           "Can only make a PauliGraph from a circuit of basic gates "
-          "and Paulis");
+          "and Paulis",
+          od.type());
   }
   return pg;
 }

@@ -17,11 +17,11 @@
 /////////////////////////////////////////////////////
 
 #include <memory>
+#include <tklog/TketLog.hpp>
 
 #include "Circuit.hpp"
 #include "Gate/Gate.hpp"
 #include "Ops/ClassicalOps.hpp"
-#include "Utils/TketLog.hpp"
 #include "Utils/UnitID.hpp"
 namespace tket {
 

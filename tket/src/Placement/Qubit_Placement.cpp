@@ -369,7 +369,7 @@ std::vector<MapCost> Monomorpher::place(unsigned max_return) {
   }
 
   std::vector<qubit_bimap_t> potential_maps = monomorphism_edge_break(
-      arc, q_graph, config.vf2_max_matches, config.timeout);
+      arc, q_graph, config.monomorphism_max_matches, config.timeout);
   std::vector<MapCost> map_costs;
   for (unsigned i = 0; i < potential_maps.size(); i++) {
     qubit_bimap_t& chosen = potential_maps[i];

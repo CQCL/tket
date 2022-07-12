@@ -17,15 +17,15 @@
 #include <memory>
 
 #include "Gate.hpp"
+#include "OpType/OpTypeInfo.hpp"
 #include "Ops/OpPtr.hpp"
-#include "Utils/Exceptions.hpp"
 
 namespace tket {
 
 Gate_ptr as_gate_ptr(Op_ptr op) {
   Gate_ptr gp = std::dynamic_pointer_cast<const Gate>(op);
   if (!gp) {
-    throw NotValid("Operation is not a gate");
+    throw BadOpType("Operation is not a gate", op->get_type());
   }
   return gp;
 }

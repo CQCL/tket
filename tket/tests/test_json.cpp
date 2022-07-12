@@ -474,6 +474,7 @@ SCENARIO("Test predicate serializations") {
   BASICPREDJSONTEST(NoMidMeasurePredicate)
   BASICPREDJSONTEST(NoSymbolsPredicate)
   BASICPREDJSONTEST(GlobalPhasedXPredicate)
+  BASICPREDJSONTEST(NormalisedTK2Predicate)
 #undef BASICPREDJSONTEST
   GIVEN("GateSetPredicate") {
     OpTypeSet ops = {OpType::X, OpType::V, OpType::Rz, OpType::ZZMax};
@@ -535,7 +536,7 @@ SCENARIO("Test predicate serializations") {
     };
     PredicatePtr custom = std::make_shared<UserDefinedPredicate>(func);
     nlohmann::json j_custom = custom;
-    REQUIRE_THROWS_AS(j_custom.get<PredicatePtr>(), NotImplemented);
+    REQUIRE_THROWS_AS(j_custom.get<PredicatePtr>(), PredicateNotSerializable);
   }
 }
 
@@ -583,6 +584,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(DelayMeasures, DelayMeasures())
   COMPPASSJSONTEST(RemoveDiscarded, RemoveDiscarded())
   COMPPASSJSONTEST(SimplifyMeasured, SimplifyMeasured())
+  COMPPASSJSONTEST(ZZPhaseToRz, ZZPhaseToRz())
   COMPPASSJSONTEST(RemoveBarriers, RemoveBarriers())
   COMPPASSJSONTEST(ComposePhasePolyBoxes, ComposePhasePolyBoxes())
   COMPPASSJSONTEST(DecomposeBridges, DecomposeBridges())

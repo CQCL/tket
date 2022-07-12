@@ -18,20 +18,6 @@
 
 namespace tket {
 
-template <typename GraphP, typename GraphT>
-template <typename CorrespondenceMap1To2, typename CorrespondenceMap2To1>
-bool vf2_match_add_callback<GraphP, GraphT>::operator()(
-    const CorrespondenceMap1To2 &f, const CorrespondenceMap2To1 &) {
-  qubit_bimap_t new_node_map;
-  BGL_FORALL_VERTICES_T(v, pattern_graph_, GraphP) {
-    Qubit qb = pattern_graph_[v];
-    Node node = target_graph_[get(f, v)];
-    new_node_map.insert({qb, node});
-  }
-  n_maps_.push_back(new_node_map);
-  return (n_maps_.size() < max);
-}
-
 namespace aas {
 
 // The idiomatic way to initialise a PathHandler, and assumes the architecture
@@ -165,24 +151,29 @@ std::list<unsigned> PathHandler::find_path(unsigned i, unsigned j) {
 }
 
 std::vector<Node> find_hampath(const Architecture &arch, long timeout) {
-  using ArchitectureConn = Architecture::UndirectedConnGraph;
-  ArchitectureConn undirected_target = arch.get_undirected_connectivity();
   unsigned n_nodes = arch.n_nodes();
-
-  std::vector<std::pair<Node, Node>> line_nodes(n_nodes - 1);
-  for (unsigned n = 0; n != n_nodes - 1; ++n) {
-    line_nodes[n] = {Node(n), Node(n + 1)};
+  std::vector<Qubit> arch_qubits;
+  for (unsigned i = 0; i < n_nodes; i++) {
+    arch_qubits.push_back(Qubit(i));
   }
-  Architecture line_arch(line_nodes);
-  ArchitectureConn undirected_pattern = line_arch.get_undirected_connectivity();
-  std::vector<qubit_bimap_t> all_maps;
-  vf2_match_add_callback<ArchitectureConn, ArchitectureConn> callback(
-      all_maps, undirected_pattern, undirected_target, 1);
-  bool found_monomorphism = boost::vf2_subgraph_mono(
-      undirected_pattern, undirected_target, callback, timeout);
+  QubitGraph q_graph(arch_qubits);
+  for (unsigned i = 0; i != n_nodes - 1; ++i) {
+    q_graph.add_connection(Qubit(i), Qubit(i + 1));
+  }
+
+  Architecture::UndirectedConnGraph undirected_target =
+      arch.get_undirected_connectivity();
+  QubitGraph::UndirectedConnGraph undirected_pattern =
+      q_graph.get_undirected_connectivity();
+  std::vector<qubit_bimap_t> all_maps = get_unweighted_subgraph_monomorphisms(
+      undirected_pattern, undirected_target, 1, timeout);
 
   /* Architecture has no hampath, sad. */
-  if (!found_monomorphism) return {};
+  if (all_maps.empty()) {
+    throw NoHamiltonPath(
+        "[AAS]: no Hamilton path found in the given architecture, CNOT "
+        "synthesis stopped. Please try an alternative CNotSynthType.");
+  }
 
   /* Left: line, Right: input architecture. */
   const qubit_bimap_t &qmap = all_maps[0];

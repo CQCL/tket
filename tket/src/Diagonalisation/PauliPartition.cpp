@@ -15,10 +15,10 @@
 #include "PauliPartition.hpp"
 
 #include <numeric>
+#include <tkassert/Assert.hpp>
 
 #include "Graphs/AdjacencyData.hpp"
 #include "Graphs/GraphColouring.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/GraphHeaders.hpp"
 
 namespace tket {

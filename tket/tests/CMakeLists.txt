@@ -43,28 +43,4 @@ include(tkettestsfiles.cmake)
 
 add_executable(test_tket ${TESTUTILS_SOURCES} ${TEST_SOURCES})
 
-target_link_libraries(test_tket PRIVATE
-    tket-ArchAwareSynth
-    tket-Architecture
-    tket-Characterisation
-    tket-Circuit
-    tket-Clifford
-    tket-Converters
-    tket-Diagonalisation
-    tket-Gate
-    tket-Graphs
-    tket-MeasurementSetup
-    tket-Ops
-    tket-OpType
-    tket-PauliGraph
-    tket-Predicates
-    tket-Placement
-    tket-TokenSwapping
-    tket-Mapping
-    tket-Simulation
-    tket-Transformations
-    tket-Utils
-    tket-ZX)
-
-target_link_libraries(test_tket PRIVATE
-    ${CONAN_LIBS_FMT} ${CONAN_LIBS_SPDLOG} ${CONAN_LIBS_SYMENGINE} ${CONAN_LIBS_CATCH2})
+target_link_libraries(test_tket PRIVATE ${CONAN_LIBS})

@@ -34,6 +34,8 @@
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <tkassert/Assert.hpp>
+#include <tklog/TketLog.hpp>
 #include <type_traits>
 #include <unordered_map>
 #include <utility>
@@ -44,12 +46,10 @@
 #include "Conditional.hpp"
 #include "DAGDefs.hpp"
 #include "Gate/OpPtrFunctions.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/GraphHeaders.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/SequencedContainers.hpp"
-#include "Utils/TketLog.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket {
@@ -703,7 +703,7 @@ class Circuit {
    * @param port port index
    *
    * @return qubit index
-   * @throw NotValid if port doesn't correspond to a quantum wire
+   * @throw std::domain_error if port doesn't correspond to a quantum wire
    */
   unsigned qubit_index(
       const Vertex &vert, PortType port_type, port_t port) const;
@@ -894,8 +894,9 @@ class Circuit {
 
   Vertex add_barrier(
       const std::vector<unsigned> &qubits,
-      const std::vector<unsigned> &bits = {});
-  Vertex add_barrier(const unit_vector_t &args);
+      const std::vector<unsigned> &bits = {}, const std::string &_data = "");
+
+  Vertex add_barrier(const unit_vector_t &args, const std::string &_data = "");
 
   /**
    * Add a postfix to a classical register name if the register exists

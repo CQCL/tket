@@ -22,7 +22,9 @@
 #include <numeric>
 #include <set>
 #include <string>
+#include <tkassert/Assert.hpp>
 
+#include "BasicOptimisation.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/DAGDefs.hpp"
@@ -32,7 +34,6 @@
 #include "OpType/OpType.hpp"
 #include "OptimisationPass.hpp"
 #include "Transform.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/GraphHeaders.hpp"
 
 namespace tket {
@@ -119,6 +120,7 @@ static Circuit candidate_sub(const Circuit &circ) {
     // TODO: for now we decompose all the way to CX. In the future, it's worth
     // considering keeping TK2, and decomposing to CX (or other gates) later
     // when necessary.
+    normalise_TK2().apply(repl);
     decompose_TK2().apply(repl);
     clifford_simp(false).apply(repl);
     return repl;

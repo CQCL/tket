@@ -149,7 +149,7 @@ std::optional<unsigned> equiv_Clifford(const Expr& e, unsigned n, double tol) {
   if (!eval) return std::nullopt;
   double v_mod_n = eval.value();
   unsigned nearest = lround(v_mod_n * 2);
-  if (abs(v_mod_n - (nearest * 0.5)) < tol)
+  if (std::abs(v_mod_n - (nearest * 0.5)) < tol)
     return nearest;
   else
     return std::nullopt;

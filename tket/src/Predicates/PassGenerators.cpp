@@ -413,9 +413,7 @@ PassPtr aas_routing_pass(
           break;
         }
         default: {
-          throw NotImplemented(
-              "Invalid gate in input of aas routing: " +
-              com.get_op_ptr()->get_name());
+          throw BadOpType("Invalid gate in input of AAS routing", ot);
         }
       }
     }
@@ -551,7 +549,8 @@ PassPtr KAKDecomposition(double cx_fidelity) {
 PassPtr DecomposeTK2() { return DecomposeTK2({}); }
 PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid) {
   Transform t = Transforms::decompose_TK2(fid);
-  const PredicatePtrMap no_precons;
+  PredicatePtr normalised_tk2 = std::make_shared<NormalisedTK2Predicate>();
+  PredicatePtrMap precons{CompilationUnit::make_type_pair(normalised_tk2)};
   PredicateClassGuarantees preserve_all;
   PostConditions postcons{{}, preserve_all, Guarantee::Preserve};
   nlohmann::json j;
@@ -561,7 +560,7 @@ PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid) {
   fid_json["ZZPhase"] = "SERIALIZATION OF FUNCTIONS IS NOT SUPPORTED";
   fid_json["ZZMax"] = fid.ZZMax_fidelity;
   j["fidelities"] = fid_json;
-  return std::make_shared<StandardPass>(no_precons, t, postcons, j);
+  return std::make_shared<StandardPass>(precons, t, postcons, j);
 }
 
 PassPtr ThreeQubitSquash(bool allow_swaps) {

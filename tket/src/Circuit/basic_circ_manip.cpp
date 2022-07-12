@@ -87,16 +87,18 @@ Vertex Circuit::add_op<unsigned>(
 }
 
 Vertex Circuit::add_barrier(
-    const std::vector<unsigned>& qubits, const std::vector<unsigned>& bits) {
+    const std::vector<unsigned>& qubits, const std::vector<unsigned>& bits,
+    const std::string& _data) {
   op_signature_t sig(qubits.size(), EdgeType::Quantum);
   op_signature_t cl_sig(bits.size(), EdgeType::Classical);
   sig.insert(sig.end(), cl_sig.begin(), cl_sig.end());
   std::vector<unsigned> args = qubits;
   args.insert(args.end(), bits.begin(), bits.end());
-  return add_op(std::make_shared<MetaOp>(OpType::Barrier, sig), args);
+  return add_op(std::make_shared<MetaOp>(OpType::Barrier, sig, _data), args);
 }
 
-Vertex Circuit::add_barrier(const unit_vector_t& args) {
+Vertex Circuit::add_barrier(
+    const unit_vector_t& args, const std::string& _data) {
   op_signature_t sig;
   for (const UnitID& arg : args) {
     if (arg.type() == UnitType::Qubit) {
@@ -105,7 +107,7 @@ Vertex Circuit::add_barrier(const unit_vector_t& args) {
       sig.push_back(EdgeType::Classical);
     }
   }
-  return add_op(std::make_shared<MetaOp>(OpType::Barrier, sig), args);
+  return add_op(std::make_shared<MetaOp>(OpType::Barrier, sig, _data), args);
 }
 
 std::string Circuit::get_next_c_reg_name(const std::string& reg_name) {

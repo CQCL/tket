@@ -23,6 +23,7 @@
 #include "Gate/OpPtrFunctions.hpp"
 #include "Gate/SymTable.hpp"
 #include "Ops/ClassicalOps.hpp"
+#include "Ops/MetaOp.hpp"
 #include "Ops/Op.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/Symbols.hpp"
@@ -516,6 +517,17 @@ PYBIND11_MODULE(circuit, m) {
           "free_symbols",
           [](const Command &com) { return com.get_op_ptr()->free_symbols(); },
           ":return: set of symbolic parameters for the command");
+
+  py::class_<MetaOp, std::shared_ptr<MetaOp>, Op>(
+      m, "MetaOp", "Meta operation, for example used as barrier")
+      .def(
+          py::init<OpType, op_signature_t, const std::string &>(),
+          "Construct MetaOp with optype, signature and additional data string"
+          "\n\n:param type: type for the meta op"
+          "\n:param signature: signature for the op"
+          "\n:param data: additional string stored in the op",
+          py::arg("type"), py::arg("signature"), py::arg("data"))
+      .def_property_readonly("data", &MetaOp::get_data, "Get data from MetaOp");
 
   init_library(m);
   init_boxes(m);

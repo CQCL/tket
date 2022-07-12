@@ -14,9 +14,10 @@
 
 #include "SymplecticTableau.hpp"
 
+#include <stdexcept>
+
 #include "OpType/OpTypeInfo.hpp"
 #include "Utils/EigenConfig.hpp"
-#include "Utils/Exceptions.hpp"
 
 namespace tket {
 
@@ -67,10 +68,10 @@ SymplecticTableau::SymplecticTableau(
       zmat_(zmat),
       phase_(phase) {
   if (zmat.rows() != n_rows_ || phase_.size() != n_rows_)
-    throw NotValid(
+    throw std::invalid_argument(
         "Tableau must have the same number of rows in each component.");
   if (zmat.cols() != n_qubits_)
-    throw NotValid(
+    throw std::invalid_argument(
         "Tableau must have the same number of columns in x and z components.");
 }
 
@@ -86,7 +87,7 @@ SymplecticTableau::SymplecticTableau(const PauliStabiliserList &rows) {
   for (unsigned i = 0; i < n_rows_; ++i) {
     const PauliStabiliser &stab = rows[i];
     if (stab.string.size() != n_qubits_)
-      throw NotValid(
+      throw std::invalid_argument(
           "Tableau must have the same number of qubits in each row.");
     for (unsigned q = 0; q < n_qubits_; ++q) {
       const Pauli &p = stab.string[q];
@@ -236,10 +237,9 @@ void SymplecticTableau::apply_gate(
       break;
     }
     default: {
-      throw NotValid(
-          optypeinfo().at(type).name +
-          " cannot be applied to a SymplecticTableau; it is not a Clifford "
-          "gate");
+      throw BadOpType(
+          "Cannot be applied to a SymplecticTableau: not a Clifford gate",
+          type);
     }
   }
 }
@@ -247,7 +247,7 @@ void SymplecticTableau::apply_gate(
 void SymplecticTableau::apply_pauli_gadget(
     const PauliStabiliser &pauli, unsigned half_pis) {
   if (pauli.string.size() != n_qubits_) {
-    throw NotValid(
+    throw std::invalid_argument(
         "Cannot apply pauli gadget to SymplecticTableau; string and tableau "
         "have different numbers of qubits");
   }

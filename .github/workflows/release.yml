@@ -66,10 +66,10 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect --force
+        conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
-        conan install --profile=tket boost/1.79.0@ --build=missing
-        conan create --profile=tket recipes/tket
+        conan create --profile=tket recipes/tket --build=missing
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
     - name: Build wheel (3.8)
@@ -109,10 +109,10 @@ jobs:
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
         conan profile new tket --detect --force
+        conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
-        conan install --profile=tket boost/1.79.0@ --build=missing
-        conan create --profile=tket recipes/tket
+        conan create --profile=tket recipes/tket --build=missing
         conan create --profile=tket recipes/pybind11
         .github/workflows/build_macos_m1_wheel
         pyenv shell tket-3.9
@@ -157,6 +157,7 @@ jobs:
       run: |
         pip install conan
         conan profile new tket --detect
+        conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
@@ -248,37 +249,6 @@ jobs:
     name: Test macos wheels
     needs: build_macos_wheels
     runs-on: macos-11
-    env:
-      PYTKET_SKIP_REGISTRATION: "true"
-    strategy:
-      matrix:
-        python-version: ['3.8', '3.9', '3.10']
-    steps:
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Download wheels
-      uses: actions/download-artifact@v3
-      with:
-        name: MacOS_wheels
-        path: wheelhouse/
-    - uses: actions/checkout@v3
-      with:
-        path: tket
-    - name: Install wheel
-      run: |
-        pip install $GITHUB_WORKSPACE/wheelhouse/${{ matrix.python-version }}.*/pytket-*.whl
-    - name: Run tests
-      run: |
-        cd tket/pytket/tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/ --doctest-modules
-
-  test_macos_wheels_10_15:
-    name: Test macos wheels on 10.15
-    needs: build_macos_wheels
-    runs-on: macos-10.15
     env:
       PYTKET_SKIP_REGISTRATION: "true"
     strategy:

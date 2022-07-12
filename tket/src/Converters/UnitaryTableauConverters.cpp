@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <stdexcept>
+
 #include "Converters.hpp"
 
 namespace tket {
@@ -79,7 +81,7 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
       }
     }
     if (leading_val_to_col.size() == i)
-      throw NotValid("Stabilisers are not mutually independent");
+      throw std::invalid_argument("Stabilisers are not mutually independent");
   }
 
   /*

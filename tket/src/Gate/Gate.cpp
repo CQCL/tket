@@ -15,6 +15,8 @@
 #include "Gate.hpp"
 
 #include <algorithm>
+#include <stdexcept>
+#include <tkrng/RNG.hpp>
 #include <vector>
 
 #include "GateUnitaryMatrix.hpp"
@@ -25,7 +27,6 @@
 #include "OpType/OpTypeInfo.hpp"
 #include "Ops/Op.hpp"
 #include "Utils/Expression.hpp"
-#include "Utils/RNG.hpp"
 #include "symengine/eval_double.h"
 
 namespace tket {
@@ -160,8 +161,7 @@ Op_ptr Gate::dagger() const {
             OpType::PhasedISWAP, {params_[0], minus_times(params_[1])});
       }
     default: {
-      throw NotImplemented(
-          "Cannot retrieve the dagger of OpType::" + get_desc().name());
+      throw BadOpType("Cannot compute dagger", optype);
     }
   }
 }
@@ -185,6 +185,7 @@ Op_ptr Gate::transpose() const {
     case OpType::CSWAP:
     case OpType::BRIDGE:
     case OpType::S:
+    case OpType::Sdg:
     case OpType::T:
     case OpType::V:
     case OpType::Vdg:
@@ -244,8 +245,7 @@ Op_ptr Gate::transpose() const {
     }
 
     default: {
-      throw NotImplemented(
-          "Cannot retrieve the transpose of OpType::" + get_desc().name());
+      throw BadOpType("Cannot compute transpose", optype);
     }
   }
 }
@@ -591,9 +591,10 @@ std::vector<Expr> Gate::get_tk1_angles() const {
     }
     case OpType::NPhasedX: {
       if (n_qubits_ != 1) {
-        throw NotValid(
+        throw BadOpType(
             "OpType::NPhasedX can only be decomposed into a TK1 "
-            "if it acts on a single qubit");
+            "if it acts on a single qubit",
+            OpType::NPhasedX);
       }
       return {params_.at(1), params_.at(0), minus_times(params_.at(1)), 0};
     }
@@ -604,8 +605,7 @@ std::vector<Expr> Gate::get_tk1_angles() const {
       return {params_.at(0), params_.at(1), params_.at(2), 0};
     }
     default: {
-      throw NotImplemented(
-          "Cannot retrieve the TK1 angles of OpType::" + get_desc().name());
+      throw BadOpType("Cannot compute TK1 angles", get_type());
     }
   }
 }
@@ -616,7 +616,7 @@ SymSet Gate::free_symbols() const { return expr_free_symbols(get_params()); }
 
 std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
   unsigned n_q = n_qubits();
-  if (i >= n_q) throw NotValid();
+  if (i >= n_q) throw std::domain_error("Qubit index out of range");
   switch (get_type()) {
     case OpType::XXPhase:
     case OpType::XXPhase3: {
@@ -773,12 +773,11 @@ Eigen::MatrixXcd Gate::get_unitary() const {
   } catch (const GateUnitaryMatrixError& e) {
     switch (e.cause) {
       case GateUnitaryMatrixError::Cause::GATE_NOT_IMPLEMENTED:
-        throw NotImplemented(e.what());
-      // Note that symbolic parameters
-      // are "not valid" rather than "not implemented"
-      // because the returned matrix is clearly numerical, not symbolic.
+        throw BadOpType(get_type());
+      case GateUnitaryMatrixError::Cause::SYMBOLIC_PARAMETERS:
+        throw SymbolsNotSupported();
       default:
-        throw NotValid(e.what());
+        throw e;
     }
   }
 }
@@ -786,7 +785,7 @@ Eigen::MatrixXcd Gate::get_unitary() const {
 Gate::Gate(OpType type, const std::vector<Expr>& params, unsigned n_qubits)
     : Op(type), params_(params), n_qubits_(n_qubits) {
   if (!is_gate_type(type)) {
-    throw NotValid();
+    throw BadOpType(type);
   }
   if (params.size() != optypeinfo().at(type).n_params()) {
     throw InvalidParameterCount();
