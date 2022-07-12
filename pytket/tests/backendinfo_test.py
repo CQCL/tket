@@ -165,6 +165,7 @@ def test_to_json() -> None:
 
 
 @given(st.backendinfo())
+@settings(deadline=None)
 def test_backendinfo_serialization(backinfo: BackendInfo) -> None:
     serializable = backinfo.to_dict()
     assert BackendInfo.from_dict(serializable) == backinfo
