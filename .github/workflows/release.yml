@@ -347,7 +347,7 @@ jobs:
   publish_to_pypi:
     name: Publish to pypi
     if: github.event_name == 'release'
-    needs: [test_linux_wheels, test_macos_wheels, test_macos_wheels_10_15, test_macos_M1_wheels, test_Windows_wheels]
+    needs: [test_linux_wheels, test_macos_wheels, test_macos_M1_wheels, test_Windows_wheels]
     runs-on: ubuntu-20.04
     steps:
     - name: Download all wheels
