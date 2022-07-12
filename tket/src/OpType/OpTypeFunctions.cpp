@@ -104,6 +104,17 @@ const OpTypeSet& all_projective_types() {
   return *gates;
 }
 
+const OpTypeSet& all_controlled_gate_types() {
+  static const OpTypeSet optypes{
+      OpType::CX,    OpType::CCX, OpType::CnX,  OpType::CSX,
+      OpType::CSXdg, OpType::CV,  OpType::CVdg, OpType::CRx,
+      OpType::CnRy,  OpType::CRy, OpType::CY,   OpType::CRz,
+      OpType::CZ,    OpType::CH,  OpType::CU1,  OpType::CU3};
+  static std::unique_ptr<const OpTypeSet> gates =
+      std::make_unique<const OpTypeSet>(optypes);
+  return *gates;
+}
+
 bool is_metaop_type(OpType optype) {
   static const OpTypeSet metaops = {
       OpType::Input,   OpType::Output, OpType::ClInput, OpType::ClOutput,
@@ -220,4 +231,7 @@ bool is_classical_type(OpType optype) {
   return find_in_set(optype, classical_gates);
 }
 
+bool is_controlled_gate_type(OpType optype) {
+  return find_in_set(optype, all_controlled_gate_types());
+}
 }  // namespace tket
