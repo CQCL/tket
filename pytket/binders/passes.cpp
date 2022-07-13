@@ -347,7 +347,7 @@ PYBIND11_MODULE(passes, m) {
       " gates on the same set of qubits are replaced by a single TK2 gate. "
       "When decomposing to CX, the substitution is only performed if it "
       "results in a reduction of the number of CX gates, or if at least "
-      "one of the two-qubit is not a CX.\n\n"
+      "one of the two-qubit gates is not a CX.\n\n"
       ":param decompose_to: OpType to decompose to. Either TK2 or CX.\n"
       ":param cx_fidelity: Estimated CX gate fidelity, used when "
       "decompose_to=CX.\n",

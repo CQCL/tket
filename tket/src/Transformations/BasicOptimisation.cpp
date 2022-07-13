@@ -415,11 +415,11 @@ Transform two_qubit_squash(OpType decompose_to, double cx_fidelity) {
         const Op_ptr o = circ.get_Op_ptr_from_Vertex(*v);
         OpType type = o->get_type();
         unsigned n_ins = circ.n_in_edges_of_type(*v, EdgeType::Quantum);
+        // Measures, resets, outputs, barriers, symbolic gates, and many-qubit
+        // gates close interactions
         if (is_projective_type(type) || is_final_q_type(type) ||
             type == OpType::Barrier || n_ins > 2 ||
             !o->free_symbols().empty()) {
-          // Measures, resets, outputs, barriers, symbolic gates, and
-          // many-qubit gates close interactions
           for (port_t port = 0; port < n_ins; port++) {
             Qubit q = v_to_qb.at({*v, port});
             int i = current_interaction[q];
@@ -477,8 +477,6 @@ Transform two_qubit_squash(OpType decompose_to, double cx_fidelity) {
               current_interaction[i_vec[i1].q1] = -1;
             }
             // Add new interaction
-            // "
-            // << q1.repr() << ")" << std::endl;
             Interaction new_i(q0, q1);
             new_i.e0 = current_edge_on_qb[q0];
             new_i.e1 = current_edge_on_qb[q1];

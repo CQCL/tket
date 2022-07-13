@@ -125,7 +125,7 @@ PassPtr gen_user_defined_swap_decomp_pass(const Circuit& replacement_circ);
  * When decomposing to TK2 gates, any sequence of two or more two-qubit gates
  * on the same set of qubits are replaced by a single TK2 gate. When decomposing
  * to CX, the substitution is only performed if it results in a reduction of the
- * number of CX gates, or if at least one of the two-qubit is not a CX.
+ * number of CX gates, or if at least one of the two-qubit gates is not a CX.
  *
  * @param decompose_to OpType to decompose to. Either TK2 or CX.
  * @param cx_fidelity Estimated CX gate fidelity, used when decompose_to=CX.
