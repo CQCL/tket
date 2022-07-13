@@ -52,7 +52,7 @@ Transform commute_and_combine_HQS2();
 /**
  * @brief Squash sequences of two-qubit operations into minimal form.
  *
- * Squash together sequences of single and two-qubit gates
+ * Squash together sequences of single- and two-qubit gates
  * into minimal form. Can decompose to TK2 or CX gates.
  *
  * Two-qubit operations can always be expressed in a minimal form of
