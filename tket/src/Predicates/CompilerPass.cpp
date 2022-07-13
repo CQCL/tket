@@ -359,8 +359,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     std::string passname = content.at("name").get<std::string>();
     if (passname == "KAKDecomposition") {
       double cx_fidelity = content.at("fidelity").get<double>();
-      OpType decompose_to = content.at("decompose_to").get<OpType>();
-      pp = KAKDecomposition(decompose_to, cx_fidelity);
+      OpType target_2qb_gate = content.at("target_2qb_gate").get<OpType>();
+      pp = KAKDecomposition(target_2qb_gate, cx_fidelity);
     } else if (passname == "ThreeQubitSquash") {
       pp = ThreeQubitSquash(content.at("allow_swaps").get<bool>());
     } else if (passname == "CommuteThroughMultis") {

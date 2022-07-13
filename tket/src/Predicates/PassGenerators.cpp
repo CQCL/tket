@@ -523,8 +523,8 @@ PassPtr gen_user_defined_swap_decomp_pass(const Circuit& replacement_circ) {
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
-PassPtr KAKDecomposition(OpType decompose_to, double cx_fidelity) {
-  Transform t = Transforms::two_qubit_squash(decompose_to, cx_fidelity);
+PassPtr KAKDecomposition(OpType target_2qb_gate, double cx_fidelity) {
+  Transform t = Transforms::two_qubit_squash(target_2qb_gate, cx_fidelity);
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtrMap precons{CompilationUnit::make_type_pair(ccontrol_pred)};
   PredicateClassGuarantees g_postcons = {
@@ -535,7 +535,7 @@ PassPtr KAKDecomposition(OpType decompose_to, double cx_fidelity) {
   // record pass config
   nlohmann::json j;
   j["name"] = "KAKDecomposition";
-  j["decompose_to"] = decompose_to;
+  j["target_2qb_gate"] = target_2qb_gate;
   j["fidelity"] = cx_fidelity;
 
   return std::make_shared<StandardPass>(precons, t, postcon, j);

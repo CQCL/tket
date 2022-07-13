@@ -378,19 +378,19 @@ Transform commute_and_combine_HQS2() {
 }
 
 // TODO:: Work around classically controlled stuff
-Transform two_qubit_squash(OpType decompose_to, double cx_fidelity) {
+Transform two_qubit_squash(OpType target_2qb_gate, double cx_fidelity) {
   const std::set<OpType> accepted_ots{OpType::CX, OpType::TK2};
-  if (!accepted_ots.contains(decompose_to)) {
+  if (!accepted_ots.contains(target_2qb_gate)) {
     throw BadOpType(
         "KAKDecomposition currently supports CX and TK2. "
         "Cannot decompose to",
-        decompose_to);
+        target_2qb_gate);
   }
   if (cx_fidelity < 0 || cx_fidelity > 1) {
     throw std::invalid_argument("The CX fidelity must be between 0 and 1.");
   }
 
-  return Transform([decompose_to, cx_fidelity](Circuit &circ) {
+  return Transform([target_2qb_gate, cx_fidelity](Circuit &circ) {
     bool success = false;
     VertexList bin;
     // Get map from vertex/port to qubit number
@@ -427,7 +427,7 @@ Transform two_qubit_squash(OpType decompose_to, double cx_fidelity) {
               if (i_vec[i].count >= 2) {
                 // Replace subcircuit
                 success |= replace_two_qubit_interaction(
-                    circ, i_vec[i], current_edge_on_qb, bin, decompose_to,
+                    circ, i_vec[i], current_edge_on_qb, bin, target_2qb_gate,
                     cx_fidelity);
               }
               current_interaction[i_vec[i].q0] = -1;
@@ -458,7 +458,7 @@ Transform two_qubit_squash(OpType decompose_to, double cx_fidelity) {
               if (i_vec[i0].count >= 2) {
                 // Replace subcircuit
                 success |= replace_two_qubit_interaction(
-                    circ, i_vec[i0], current_edge_on_qb, bin, decompose_to,
+                    circ, i_vec[i0], current_edge_on_qb, bin, target_2qb_gate,
                     cx_fidelity);
               }
               current_interaction[i_vec[i0].q0] = -1;
@@ -470,7 +470,7 @@ Transform two_qubit_squash(OpType decompose_to, double cx_fidelity) {
                 // Replace subcircuit
 
                 success |= replace_two_qubit_interaction(
-                    circ, i_vec[i1], current_edge_on_qb, bin, decompose_to,
+                    circ, i_vec[i1], current_edge_on_qb, bin, target_2qb_gate,
                     cx_fidelity);
               }
               current_interaction[i_vec[i1].q0] = -1;

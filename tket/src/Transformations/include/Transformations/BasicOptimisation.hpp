@@ -70,12 +70,12 @@ Transform commute_and_combine_HQS2();
  * to CX, the substitution is only performed if it results in a reduction of the
  * number of CX gates, or if at least one of the two-qubit gates is not a CX.
  *
- * @param decompose_to OpType to decompose to. Either TK2 or CX.
- * @param cx_fidelity Estimated CX gate fidelity, used when decompose_to=CX.
+ * @param target_2qb_gate OpType to decompose to. Either TK2 or CX.
+ * @param cx_fidelity Estimated CX gate fidelity, used when target_2qb_gate=CX.
  * @return Transform
  */
 Transform two_qubit_squash(
-    OpType decompose_to = OpType::CX, double cx_fidelity = 1.);
+    OpType target_2qb_gate = OpType::CX, double cx_fidelity = 1.);
 
 // 1qb squashing into -Rz-Rx-Rz- or -Rx-Rz-Rx- form
 // Expects: Rx, Rz, and any multi-qubit gates
