@@ -109,7 +109,7 @@ PassPtr gen_user_defined_swap_decomp_pass(const Circuit& replacement_circ);
 /**
  * @brief Squash sequences of two-qubit operations into minimal form.
  *
- * A pass that squashes together sequences of single and two-qubit gates
+ * A pass that squashes together sequences of single- and two-qubit gates
  * into minimal form. Can decompose to TK2 or CX gates.
  *
  * Two-qubit operations can always be expressed in a minimal form of
