@@ -311,7 +311,7 @@ PYBIND11_MODULE(transform, m) {
       .def_static(
           "KAKDecomposition", &Transforms::two_qubit_squash,
           "Squash sequences of two-qubit operations into minimal form.\n\n"
-          "Squash together sequences of single and two-qubit gates "
+          "Squash together sequences of single- and two-qubit gates "
           "into minimal form. Can decompose to TK2 or CX gates.\n\n"
           "Two-qubit operations can always be expressed in a minimal form of "
           "maximum three CXs, or as a single TK2 gate (a result also known "
