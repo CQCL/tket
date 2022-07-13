@@ -382,7 +382,7 @@ Transform two_qubit_squash(OpType decompose_to, double cx_fidelity) {
   const std::set<OpType> accepted_ots{OpType::CX, OpType::TK2};
   if (!accepted_ots.contains(decompose_to)) {
     throw BadOpType(
-        "KAKDecomposition currently supports CX and TK2."
+        "KAKDecomposition currently supports CX and TK2. "
         "Cannot decompose to",
         decompose_to);
   }
