@@ -50,8 +50,9 @@ jobs:
     - name: checkout gcovr repo
       uses: actions/checkout@v2
       with:
-        repository: gcovr/gcovr.git
-        token: ${{ secrets.GITHUB_TOKEN }}
+        repository: gcovr/gcovr
+        token: ${{ secrets.GH_PAT }}
+        path: gcovr
     - name: Get current time
       uses: srfrnk/current-time@v1.1.0
       id: current_time
