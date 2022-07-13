@@ -300,17 +300,19 @@ static bool replace_two_qubit_interaction(
       break;
     }
   }
-  if (target == OpType::CX) {
-    unsigned nb_2qb_old = subc.count_gates(target);
-    unsigned nb_2qb_new = replacement.count_gates(target);
-    substitute |= nb_2qb_new < nb_2qb_old;
-  } else if (target == OpType::TK2) {
-    unsigned cnt_2qb = 0;
-    for (Vertex v : subc.vertices_in_order()) {
-      unsigned n_ins = subc.n_in_edges_of_type(v, EdgeType::Quantum);
-      cnt_2qb += n_ins == 2;
+  if (!substitute) {
+    if (target == OpType::CX) {
+      unsigned nb_2qb_old = subc.count_gates(target);
+      unsigned nb_2qb_new = replacement.count_gates(target);
+      substitute |= nb_2qb_new < nb_2qb_old;
+    } else if (target == OpType::TK2) {
+      unsigned cnt_2qb = 0;
+      for (Vertex v : subc.vertices_in_order()) {
+        unsigned n_ins = subc.n_in_edges_of_type(v, EdgeType::Quantum);
+        cnt_2qb += n_ins == 2;
+      }
+      substitute |= cnt_2qb >= 2;
     }
-    substitute |= cnt_2qb >= 2;
   }
 
   if (substitute) {
