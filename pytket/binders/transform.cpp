@@ -322,7 +322,7 @@ PYBIND11_MODULE(transform, m) {
           "supported. In this case, `cx_fidelity` can be provided to perform "
           "approximate decompositions to CX gates.\n\n"
           "When decomposing to TK2 gates, any sequence of two or more two-qubit"
-          " gates on the same set of qubits are replaced by a single TK2 gate. "
+          " gates on the same set of qubits is replaced by a single TK2 gate. "
           "When decomposing to CX, the substitution is only performed if it "
           "results in a reduction of the number of CX gates, or if at least "
           "one of the two-qubit passes is not a CX.\n\n"
