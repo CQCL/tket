@@ -45,7 +45,13 @@ jobs:
     - uses: actions/checkout@v3
       with:
         fetch-depth: '0'
+        persist-credentials: false
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - name: checkout gcovr repo
+      uses: actions/checkout@v2
+      with:
+        repository: gcovr/gcovr.git
+        token: ${{ secrets.GITHUB_TOKEN }}
     - name: Get current time
       uses: srfrnk/current-time@v1.1.0
       id: current_time
@@ -101,11 +107,11 @@ jobs:
       working-directory: ./build/tket-tests/package/bin
       run: ./test_tket "[long],~[long]"
     - name: Install gcovr
-      run: pip install gcovr~=5.1
+      run: pip install -e gcovr/
     - name: Build coverage report
       run: |
         mkdir test-coverage
-        gcovr --print-summary --html --html-details -r ./tket/src/ --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/tket/ -o test-coverage/index.html --decisions -v > test-coverage/summary.txt
+        gcovr --print-summary --html --html-details -r ./tket/src/ --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/tket/ -o test-coverage/index.html --decisions -v --gcov-executable gcov-10 > test-coverage/summary.txt
     - name: Upload artefact
       uses: actions/upload-artifact@v3
       with:
