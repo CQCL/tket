@@ -24,7 +24,7 @@ from pytket._tket.circuit import (  # type: ignore
 from pytket.circuit.logic_exp import (
     BitLogicExp,
     Constant,
-    ConstPredicate,
+    RegPredicate,
     RegEq,
     RegNeq,
     RegGeq,
@@ -36,16 +36,16 @@ from pytket.circuit.logic_exp import (
 
 
 def _add_condition(
-    circ: Circuit, condition: Union[ConstPredicate, Bit, BitLogicExp]
+    circ: Circuit, condition: Union[RegPredicate, Bit, BitLogicExp]
 ) -> Tuple[Bit, bool]:
     """Add a condition expression to a circuit using classical expression boxes,
     rangepredicates and conditionals. Return predicate bit and value of said bit.
     """
     if isinstance(condition, Bit):
         return condition, True
-    elif isinstance(condition, ConstPredicate):
+    elif isinstance(condition, RegPredicate):
         pred_exp, pred_val = condition.args
-        # ConstPredicate constructor should ensure arg order
+        # RegPredicate constructor should ensure arg order
         assert isinstance(pred_val, Constant)
     elif isinstance(condition, BitLogicExp):
         pred_val = 1
@@ -53,7 +53,7 @@ def _add_condition(
     else:
         raise ValueError(
             f"Condition {condition} must be of type Bit, "
-            "BitLogicExp or ConstPredicate"
+            "BitLogicExp or RegPredicate"
         )
 
     next_index = (
