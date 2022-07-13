@@ -350,22 +350,21 @@ class RegRsh(BinaryOp, RegLogicExp):
     op = RegWiseOp.RSH
 
 
-class ConstPredicate(BinaryOp):
-    """A binary predicate where at least one of the arguments is constant."""
+class RegPredicate(BinaryOp):
+    """A binary predicate where the arguments are either registers or constants."""
 
-    def __init__(self, exp: Union[LogicExp, Variable], const: Constant) -> None:
-        super().__init__(exp, const)
-        assert isinstance(exp, (LogicExp, Bit, BitRegister))
-        assert isinstance(const, Constant)
+    def __init__(self, lhs: Union[LogicExp, Variable, Constant], rhs: Union[LogicExp, Variable, Constant]) -> None:
+        super().__init__(lhs, rhs)
+        assert isinstance(lhs, (LogicExp, Bit, BitRegister, Constant))
+        assert isinstance(rhs, (LogicExp, Bit, BitRegister, Constant))
 
-
-class Eq(ConstPredicate):
+class Eq(RegPredicate):
     @staticmethod
     def _const_eval(args: List[Constant]) -> Constant:
         return args[0] == args[1]
 
 
-class Neq(ConstPredicate):
+class Neq(RegPredicate):
     @staticmethod
     def _const_eval(args: List[Constant]) -> Constant:
         return 1 - Eq._const_eval(args)
@@ -387,7 +386,7 @@ class RegNeq(Neq, RegLogicExp):
     op = RegWiseOp.NEQ
 
 
-class RegLt(ConstPredicate, RegLogicExp):
+class RegLt(RegPredicate, RegLogicExp):
     op = RegWiseOp.LT
 
     @staticmethod
@@ -395,7 +394,7 @@ class RegLt(ConstPredicate, RegLogicExp):
         return args[0] < args[1]
 
 
-class RegGt(ConstPredicate, RegLogicExp):
+class RegGt(RegPredicate, RegLogicExp):
     op = RegWiseOp.GT
 
     @staticmethod
@@ -403,7 +402,7 @@ class RegGt(ConstPredicate, RegLogicExp):
         return args[0] > args[1]
 
 
-class RegLeq(ConstPredicate, RegLogicExp):
+class RegLeq(RegPredicate, RegLogicExp):
     op = RegWiseOp.LEQ
 
     @staticmethod
@@ -411,7 +410,7 @@ class RegLeq(ConstPredicate, RegLogicExp):
         return args[0] <= args[1]
 
 
-class RegGeq(ConstPredicate, RegLogicExp):
+class RegGeq(RegPredicate, RegLogicExp):
     op = RegWiseOp.GEQ
 
     @staticmethod
@@ -420,43 +419,43 @@ class RegGeq(ConstPredicate, RegLogicExp):
 
 
 # utility to define register comparison methods
-def gen_const_regpredicate(
+def gen_regpredicate(
     op: Ops,
-) -> Callable[[Union[RegLogicExp, BitRegister], Constant], ConstPredicate]:
+) -> Callable[[Union[RegLogicExp, BitRegister], Constant], RegPredicate]:
     def const_predicate(
         register: Union[RegLogicExp, BitRegister], value: Constant
-    ) -> ConstPredicate:
-        return cast(Type[ConstPredicate], LogicExp.factory(op))(register, value)
+    ) -> RegPredicate:
+        return cast(Type[RegPredicate], LogicExp.factory(op))(register, value)
 
     return const_predicate
 
 
-reg_eq = gen_const_regpredicate(RegWiseOp.EQ)
+reg_eq = gen_regpredicate(RegWiseOp.EQ)
 reg_eq.__doc__ = """Function to express a BitRegister equality predicate, i.e.
     for a register ``r``, ``(r == 5)`` is expressed as ``reg_eq(r, 5)``"""
-reg_neq = gen_const_regpredicate(RegWiseOp.NEQ)
+reg_neq = gen_regpredicate(RegWiseOp.NEQ)
 reg_neq.__doc__ = """Function to express a BitRegister inequality predicate, i.e.
     for a register ``r``, ``(r != 5)`` is expressed as ``reg_neq(r, 5)``"""
-reg_lt = gen_const_regpredicate(RegWiseOp.LT)
+reg_lt = gen_regpredicate(RegWiseOp.LT)
 reg_lt.__doc__ = """Function to express a BitRegister less than predicate, i.e.
     for a register ``r``, ``(r < 5)`` is expressed as ``reg_lt(r, 5)``"""
-reg_gt = gen_const_regpredicate(RegWiseOp.GT)
+reg_gt = gen_regpredicate(RegWiseOp.GT)
 reg_gt.__doc__ = """Function to express a BitRegister greater than predicate, i.e.
     for a register ``r``, ``(r > 5)`` is expressed as ``reg_gt(r, 5)``"""
-reg_leq = gen_const_regpredicate(RegWiseOp.LEQ)
+reg_leq = gen_regpredicate(RegWiseOp.LEQ)
 reg_leq.__doc__ = """Function to express a BitRegister less than or equal to predicate,
     i.e. for a register ``r``, ``(r <= 5)`` is expressed as ``reg_leq(r, 5)``"""
-reg_geq = gen_const_regpredicate(RegWiseOp.GEQ)
+reg_geq = gen_regpredicate(RegWiseOp.GEQ)
 reg_geq.__doc__ = """Function to express a BitRegister greater than or equal to
     predicate, i.e. for a register ``r``, ``(r >= 5)`` is expressed as
     ``reg_geq(r, 5)``"""
 
 
-def if_bit(bit: Union[Bit, BitLogicExp]) -> ConstPredicate:
+def if_bit(bit: Union[Bit, BitLogicExp]) -> RegPredicate:
     """Equivalent of ``if bit:``."""
     return BitEq(bit, 1)
 
 
-def if_not_bit(bit: Union[Bit, BitLogicExp]) -> ConstPredicate:
+def if_not_bit(bit: Union[Bit, BitLogicExp]) -> RegPredicate:
     """Equivalent of ``if not bit:``."""
     return BitEq(bit, 0)
