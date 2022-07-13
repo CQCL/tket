@@ -52,8 +52,7 @@ def _add_condition(
         pred_exp = condition
     else:
         raise ValueError(
-            f"Condition {condition} must be of type Bit, "
-            "BitLogicExp or RegPredicate"
+            f"Condition {condition} must be of type Bit, " "BitLogicExp or RegPredicate"
         )
 
     next_index = (
