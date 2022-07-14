@@ -576,25 +576,31 @@ Circuit with_CX(Gate_ptr op) {
   (((n) == 2) ? OpType::CX : ((n) == 3) ? OpType::CCX : OpType::CnX)
 
 /**
- * Construct a circuit representing CnU1 using U1, CX, CCX and CnX gates.
+ * Construct a circuit representing CnU1.
  */
 static Circuit CnU1(unsigned n_controls, Expr lambda) {
   // CnU1(x) decomposes recursively as:
   // C{n-1}U1(x/2)[ctrls]; U1(x/2)[tgt]; CnX; U1(-x/2)[tgt]; CnX
   // We don't actually use recursion; just iterate starting with the first U1:
-  Circuit c(n_controls + 1);
-  Expr x = lambda / (1u << n_controls);
-  c.add_op<unsigned>(OpType::U1, x, {0});
-  std::vector<unsigned> cnx_qbs = {0};
-  for (unsigned i = 0; i < n_controls; i++) {
-    cnx_qbs.push_back(i + 1);
-    c.add_op<unsigned>(OpType::U1, x, {i + 1});
-    c.add_op<unsigned>(CNXTYPE(i + 2), cnx_qbs);
-    c.add_op<unsigned>(OpType::U1, -x, {i + 1});
-    c.add_op<unsigned>(CNXTYPE(i + 2), cnx_qbs);
-    x *= 2;
+  if (eval_expr(lambda) == std::nullopt) {
+    Circuit c(n_controls + 1);
+    Expr x = lambda / (1u << n_controls);
+    c.add_op<unsigned>(OpType::U1, x, {0});
+    std::vector<unsigned> cnx_qbs = {0};
+    for (unsigned i = 0; i < n_controls; i++) {
+      cnx_qbs.push_back(i + 1);
+      c.add_op<unsigned>(OpType::U1, x, {i + 1});
+      c.add_op<unsigned>(CNXTYPE(i + 2), cnx_qbs);
+      c.add_op<unsigned>(OpType::U1, -x, {i + 1});
+      c.add_op<unsigned>(CNXTYPE(i + 2), cnx_qbs);
+      x *= 2;
+    }
+    return c;
+  } else {
+    // If lambda is not a symbol, use cnu decomposition
+    Eigen::Matrix2cd u1 = Gate(OpType::U1, {lambda}, 1).get_unitary();
+    return CircPool::cnu_linear_depth_decomp(n_controls, u1);
   }
-  return c;
 }
 
 Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
@@ -976,8 +982,7 @@ Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
 
   // 4. implement the conditional phase as a CnU1 gate
   if (!equiv_0(c1.get_phase())) {
-    Eigen::Matrix2cd u1 = Gate(OpType::U1, {c1.get_phase()}, 1).get_unitary();
-    Circuit cnu1_circ = CircPool::cnu_linear_depth_decomp(n_controls - 1, u1);
+    Circuit cnu1_circ = CnU1(n_controls - 1, c1.get_phase());
     c2.append(cnu1_circ);
   }
   return c2;
