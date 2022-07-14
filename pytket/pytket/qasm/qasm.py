@@ -59,7 +59,7 @@ from pytket.circuit.decompose_classical import int_to_bools
 from pytket.circuit.logic_exp import (
     BitLogicExp,
     BitWiseOp,
-    Predicate,
+    PredicateExp,
     LogicExp,
     RegEq,
     RegLogicExp,
@@ -455,7 +455,7 @@ class CircuitTransformer(Transformer):
     def neg(self, tree: List[Union[Token, LogicExp]]) -> RegNeg:
         return RegNeg(self._get_logic_args(tree)[0][0])
 
-    def cond(self, tree: List[Token]) -> Predicate:
+    def cond(self, tree: List[Token]) -> PredicateExp:
         if tree[1].type == "IARG":
             arg = Bit(*_extract_reg(tree[1]))
         else:
@@ -463,7 +463,7 @@ class CircuitTransformer(Transformer):
 
         op_enum = BitWiseOp if isinstance(arg, Bit) else RegWiseOp
         comp = cast(
-            Type[Predicate],
+            Type[PredicateExp],
             LogicExp.factory(
                 cast(
                     Union[BitWiseOp, RegWiseOp],
@@ -474,7 +474,7 @@ class CircuitTransformer(Transformer):
         return comp(arg, int(tree[3].value))
 
     def ifc(self, tree: Sequence) -> Iterable[CommandDict]:
-        condition = cast(Predicate, tree[0])
+        condition = cast(PredicateExp, tree[0])
 
         var, val = condition.args
         condition_bits = []

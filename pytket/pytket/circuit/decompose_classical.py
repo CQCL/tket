@@ -292,7 +292,7 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
             op = op.op
             optype = op.type
 
-        if optype == OpType.RangeRegPredicate:
+        if optype == OpType.RangePredicate:
             target = args[-1]
             newcirc.add_bit(target, reject_dups=False)
             temp_reg = temp_reg_in_args(args)

@@ -46,7 +46,7 @@ from pytket.circuit.logic_exp import (
     BinaryOp,
     BitLogicExp,
     BitWiseOp,
-    Predicate,
+    PredicateExp,
     LogicExp,
     RegEq,
     RegGeq,
@@ -251,7 +251,7 @@ def primitive_bit_logic_exps(
     exp_type = LogicExp.factory(op)
     args: List[Bit] = [draw(bits)]
     if issubclass(exp_type, BinaryOp):
-        if issubclass(exp_type, Predicate):
+        if issubclass(exp_type, PredicateExp):
             const_compare = draw(binary_digits)
             args.append(const_compare)
         else:
@@ -442,8 +442,8 @@ def bit_const_predicates(
     draw: Callable,
     operators: SearchStrategy[Callable] = strategies.sampled_from([if_bit, if_not_bit]),
     exp: SearchStrategy[BitLogicExp] = composite_bit_logic_exps(),
-) -> Predicate:
-    return cast(Predicate, draw(operators)(draw(exp)))
+) -> PredicateExp:
+    return cast(PredicateExp, draw(operators)(draw(exp)))
 
 
 @strategies.composite
@@ -454,14 +454,14 @@ def reg_const_predicates(
         [reg_eq, reg_neq, reg_lt, reg_gt, reg_leq, reg_geq]
     ),
     constants: SearchStrategy[int] = uint32,
-) -> Predicate:
-    return cast(Predicate, draw(operators)(draw(exp), draw(constants)))
+) -> PredicateExp:
+    return cast(PredicateExp, draw(operators)(draw(exp), draw(constants)))
 
 
 @given(condition=strategies.one_of(bit_const_predicates(), reg_const_predicates()))
 @settings(print_blob=True, deadline=None)
-def test_regpredicate(condition: Predicate) -> None:
-    assert isinstance(condition, Predicate)
+def test_regpredicate(condition: PredicateExp) -> None:
+    assert isinstance(condition, PredicateExp)
     # test serialization round trip here
     # as condition should be the most nested structure
     assert LogicExp.from_dict(condition.to_dict()) == condition
