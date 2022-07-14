@@ -534,20 +534,20 @@ SCENARIO("KAK Decomposition, various target gate sets") {
     circ.add_op<unsigned>(tket::OpType::PhasedX, {0.23, 0.52}, {1});
     circ.add_op<unsigned>(tket::OpType::CX, {1, 3});
     WHEN("Decomposing to TK2") {
-      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(circ);
+      Circuit circ_orig = circ;
       REQUIRE(!Transforms::two_qubit_squash(OpType::TK2).apply(circ));
-      Eigen::MatrixXcd u_res = tket_sim::get_unitary(circ);
+      Circuit circ_res = circ;
       REQUIRE(circ.count_gates(OpType::TK2) == 0);
       REQUIRE(circ.count_gates(OpType::CX) == 4);
-      REQUIRE(u_res.isApprox(u_orig));
+      REQUIRE(circ_orig == circ_res);
     }
     WHEN("Decomposing to CX") {
-      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(circ);
+      Circuit circ_orig = circ;
       REQUIRE(!Transforms::two_qubit_squash(OpType::CX).apply(circ));
-      Eigen::MatrixXcd u_res = tket_sim::get_unitary(circ);
+      Circuit circ_res = circ;
       REQUIRE(circ.count_gates(OpType::TK2) == 0);
       REQUIRE(circ.count_gates(OpType::CX) == 4);
-      REQUIRE(u_res.isApprox(u_orig));
+      REQUIRE(circ_orig == circ_res);
     }
   }
   GIVEN("Circuit with a bit of redundancy") {
