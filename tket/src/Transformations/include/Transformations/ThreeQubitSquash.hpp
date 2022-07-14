@@ -29,10 +29,10 @@ namespace Transforms {
  * will only squash subcircuits that reduce the count of the relevant 2-qubit
  * gate.
  *
- * @param target_2q_gate Target 2-qubit gate (either CX or TK2)
+ * @param target_2qb_gate Target 2-qubit gate (either CX or TK2)
  * @return Transform implementing the squash
  */
-Transform three_qubit_squash(OpType target_2q_gate = OpType::CX);
+Transform three_qubit_squash(OpType target_2qb_gate = OpType::CX);
 
 }  // namespace Transforms
 

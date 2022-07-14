@@ -270,16 +270,16 @@ SCENARIO("Unitary from circuits") {
 }
 
 static bool check_3q_squash(
-    const Circuit &c, OpType target_2q_gate = OpType::CX) {
+    const Circuit &c, OpType target_2qb_gate = OpType::CX) {
   OpType other_type = OpType::TK2;
-  if (target_2q_gate == OpType::TK2) {
+  if (target_2qb_gate == OpType::TK2) {
     other_type = OpType::CX;
   }
-  unsigned n_2q = c.count_gates(target_2q_gate);
+  unsigned n_2q = c.count_gates(target_2qb_gate);
   Eigen::MatrixXcd U = tket_sim::get_unitary(c);
   Circuit c1 = c;
-  bool success = Transforms::three_qubit_squash(target_2q_gate).apply(c1);
-  unsigned n_2q1 = c1.count_gates(target_2q_gate);
+  bool success = Transforms::three_qubit_squash(target_2qb_gate).apply(c1);
+  unsigned n_2q1 = c1.count_gates(target_2qb_gate);
   unsigned n_other = c1.count_gates(other_type);
   CHECK(n_other == 0);
   if (success) {

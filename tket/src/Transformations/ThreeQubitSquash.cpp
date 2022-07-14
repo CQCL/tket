@@ -108,24 +108,24 @@ class QInteraction {
 typedef std::unique_ptr<QInteraction> iptr;
 
 // Candidate substitution for a 2- or 3-qubit circuit.
-static Circuit candidate_sub(const Circuit &circ, OpType target_2q_gate) {
+static Circuit candidate_sub(const Circuit &circ, OpType target_2qb_gate) {
   unsigned n_qb = circ.n_qubits();
   if (n_qb == 2) {
     Circuit repl = two_qubit_canonical(get_matrix_from_2qb_circ(circ));
-    if (target_2q_gate == OpType::CX) {
+    if (target_2qb_gate == OpType::CX) {
       clifford_simp(false).apply(repl);
     }
     return repl;
   } else {
     TKET_ASSERT(n_qb == 3);
-    if (target_2q_gate == OpType::CX) {
+    if (target_2qb_gate == OpType::CX) {
       Circuit repl = three_qubit_synthesis(get_3q_unitary(circ));
       normalise_TK2().apply(repl);
       decompose_TK2().apply(repl);
       clifford_simp(false).apply(repl);
       return repl;
     } else {
-      TKET_ASSERT(target_2q_gate == OpType::TK2);
+      TKET_ASSERT(target_2qb_gate == OpType::TK2);
       Circuit repl = three_qubit_tk_synthesis(get_3q_unitary(circ));
       squash_1qb_to_tk1().apply(repl);
       return repl;
@@ -138,9 +138,9 @@ static Circuit candidate_sub(const Circuit &circ, OpType target_2q_gate) {
 class QISystem {
  public:
   // Construct an empty system.
-  explicit QISystem(Circuit &circ, OpType target_2q_gate)
+  explicit QISystem(Circuit &circ, OpType target_2qb_gate)
       : circ_(circ),
-        target_2q_gate_(target_2q_gate),
+        target_2qb_gate_(target_2qb_gate),
         bin_(),
         interactions_(),
         idx_(0) {}
@@ -217,9 +217,9 @@ class QISystem {
       case 3: {
         Subcircuit sub = I->subcircuit();
         Circuit subc = circ_.subcircuit(sub);
-        Circuit replacement = candidate_sub(subc, target_2q_gate_);
-        if (replacement.count_gates(target_2q_gate_) <
-            subc.count_gates(target_2q_gate_)) {
+        Circuit replacement = candidate_sub(subc, target_2qb_gate_);
+        if (replacement.count_gates(target_2qb_gate_) <
+            subc.count_gates(target_2qb_gate_)) {
           // 1. Collect data needed later to reconstruct the list of out-edges:
           std::vector<std::pair<Vertex, port_t>> out_vertex_ports;
           for (const Edge &e : outs) {
@@ -304,18 +304,18 @@ class QISystem {
 
  private:
   Circuit &circ_;
-  OpType target_2q_gate_;
+  OpType target_2qb_gate_;
   VertexList bin_;
   std::map<int, iptr> interactions_;
   int idx_;
 };
 
-Transform three_qubit_squash(OpType target_2q_gate) {
-  return Transform([target_2q_gate](Circuit &circ) {
+Transform three_qubit_squash(OpType target_2qb_gate) {
+  return Transform([target_2qb_gate](Circuit &circ) {
     bool changed = false;
 
     // Step through the vertices in topological order.
-    QISystem Is(circ, target_2q_gate);  // set of "live" interactions
+    QISystem Is(circ, target_2qb_gate);  // set of "live" interactions
     for (const Vertex &v : circ.vertices_in_order()) {
       const EdgeVec v_q_ins = circ.get_in_edges_of_type(v, EdgeType::Quantum);
       const EdgeVec v_q_outs = circ.get_out_edges_of_type(v, EdgeType::Quantum);
@@ -354,7 +354,7 @@ Transform three_qubit_squash(OpType target_2q_gate) {
       }
 
       // The circuit should contain only 1-qubit and CX gates.
-      if ((n_q_ins == 2 && optype != target_2q_gate) || (n_q_ins > 2)) {
+      if ((n_q_ins == 2 && optype != target_2qb_gate) || (n_q_ins > 2)) {
         throw std::invalid_argument(
             "Three-qubit squash requires circuits with 1-qubit and target "
             "2-qubit gates only");
