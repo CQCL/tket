@@ -62,16 +62,13 @@ ReductionResult DerivedGraphsReducer::reduce_with_derived_data(
     const DerivedGraphStructs::NeighboursAndCounts&
         target_derived_neighbours_data,
     VertexWSM root_pattern_vertex, DomainsAccessor& accessor,
-    std::set<VertexWSM>&) {
+    boost::dynamic_bitset<>& work_bitset) {
   // If we do create a new assignment, we will continue
   // so that this assignment at least is fully processed.
   // This is simpler than trying to split the work up
   // and resume halfway through (although, really, that's what we should do
   // to squeeze the maximum performance from lazy evaluation).
   bool found_new_assignment = false;
-
-  TemporaryRefactorCode();
-  boost::dynamic_bitset<> work_bitset;
 
   for (const std::pair<VertexWSM, DerivedGraphStructs::Count>& p_entry :
        pattern_derived_neighbours_data) {
@@ -84,11 +81,11 @@ ReductionResult DerivedGraphsReducer::reduce_with_derived_data(
         continue;
       }
       work_bitset.resize(domain.size());
+      work_bitset.reset();
     }
     // This is the edge weight of PV--(root PV) in the derived graph.
     const DerivedGraphStructs::Count& p_count = p_entry.second;
-
-    work_bitset.reset();
+    
     for(const auto& entry : target_derived_neighbours_data) {
       if(entry.second >= p_count) {
         TKET_ASSERT(!work_bitset.test_set(entry.first));
@@ -115,7 +112,7 @@ ReductionResult DerivedGraphsReducer::reduce_with_derived_data(
 
 ReductionResult DerivedGraphsReducer::reduce(
     std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,
-    std::set<VertexWSM>& work_set) {
+    boost::dynamic_bitset<>& work_set) {
   const auto pattern_vdata =
       m_derived_pattern_graphs.get_data(assignment.first);
   const auto target_vdata = m_derived_target_graphs.get_data(assignment.second);

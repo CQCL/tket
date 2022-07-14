@@ -25,7 +25,7 @@ bool ReducerInterface::check(std::pair<VertexWSM, VertexWSM> /*assignment*/) {
 
 ReductionResult ReducerInterface::reduce(
     std::pair<VertexWSM, VertexWSM> /*assignment*/,
-    DomainsAccessor& /*accessor*/, std::set<VertexWSM>& /*work_set*/) {
+    DomainsAccessor& /*accessor*/, boost::dynamic_bitset<>& /*work_set*/) {
   return ReductionResult::SUCCESS;
 }
 
@@ -59,7 +59,7 @@ bool ReducerWrapper::check(std::pair<VertexWSM, VertexWSM> assignment) {
 }
 
 ReductionResult ReducerWrapper::reduce(
-    DomainsAccessor& accessor, std::set<VertexWSM>& work_set) {
+    DomainsAccessor& accessor, boost::dynamic_bitset<>& work_set) {
   auto result = ReductionResult::SUCCESS;
   for (const std::vector<std::pair<VertexWSM, VertexWSM>>& new_assignments =
            accessor.get_new_assignments();

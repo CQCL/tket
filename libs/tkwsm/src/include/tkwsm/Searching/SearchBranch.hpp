@@ -120,7 +120,7 @@ class SearchBranch {
   std::vector<DistancesReducer> m_distance_reducers;
   std::vector<ReducerWrapper> m_reducer_wrappers;
 
-  std::set<VertexWSM> m_work_set_for_reducers;
+  boost::dynamic_bitset<> m_work_set_for_reducers;
 
   /** Every pv->tv assignment in here has previously passed all
    * the simple checks for validity, so we need not repeat.

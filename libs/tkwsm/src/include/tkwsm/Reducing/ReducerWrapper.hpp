@@ -69,7 +69,7 @@ class ReducerInterface {
    */
   virtual ReductionResult reduce(
       std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,
-      std::set<VertexWSM>& work_set);
+      boost::dynamic_bitset<>& work_set);
 
   virtual ~ReducerInterface() = default;
 
@@ -126,9 +126,6 @@ class ReducerInterface {
    * reduced to a singleton.
    * @return True if there is no need to reduce Domain(pv2).
    */
-  //static bool other_vertex_reduction_can_be_skipped_by_symmetry(
-  //    const std::set<VertexWSM>& other_domain, const DomainsAccessor& accessor,
-  //    VertexWSM this_vertex, VertexWSM other_vertex);
   static bool other_vertex_reduction_can_be_skipped_by_symmetry(
       const boost::dynamic_bitset<>& other_domain, const DomainsAccessor& accessor,
       VertexWSM this_vertex, VertexWSM other_vertex);
@@ -174,7 +171,7 @@ class ReducerWrapper {
    * assignments occurring.
    */
   ReductionResult reduce(
-      DomainsAccessor& accessor, std::set<VertexWSM>& work_set);
+      DomainsAccessor& accessor, boost::dynamic_bitset<>& work_set);
 
  private:
   ReducerInterface& m_reducer;
