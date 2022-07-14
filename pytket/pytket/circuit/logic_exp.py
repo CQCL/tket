@@ -351,16 +351,8 @@ class RegRsh(BinaryOp, RegLogicExp):
 
 
 class Predicate(BinaryOp):
-    """A binary predicate where the arguments are either Bits, BitRegisters, or constants."""
-
-    def __init__(
-        self,
-        lhs: Union[LogicExp, Variable, Constant],
-        rhs: Union[LogicExp, Variable, Constant],
-    ) -> None:
-        super().__init__(lhs, rhs)
-        assert isinstance(lhs, (LogicExp, Bit, BitRegister, Constant))
-        assert isinstance(rhs, (LogicExp, Bit, BitRegister, Constant))
+    """A binary predicate where the arguments are either Bits, BitRegisters, or Constants."""
+    ...
 
 
 class Eq(RegPredicate):
