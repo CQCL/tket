@@ -62,7 +62,6 @@ add_library(tkwsm
   Reducing/DerivedGraphsReducer.cpp
   Reducing/DistancesReducer.cpp
   Reducing/HallSetReduction.cpp
-  Reducing/NeighboursReducer.cpp
   Reducing/ReducerWrapper.cpp
   Searching/DomainsAccessor.cpp
   Searching/NodeListTraversal.cpp

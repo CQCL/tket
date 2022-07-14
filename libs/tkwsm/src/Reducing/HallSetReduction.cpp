@@ -74,7 +74,7 @@ ReductionResult HallSetReduction::reduce(DomainsAccessor& accessor) {
 
     const auto search_result =
         partition.search_for_hall_set(accessor, m_union_of_domains);
-        //partition.search_for_hall_set(accessor);
+        
     if (search_result == Partition::SearchResult::NOGOOD) {
       return ReductionResult::NOGOOD;
     }
@@ -142,8 +142,12 @@ ReductionResult HallSetReduction::within_reduce_loop_handle_hall_set_reduction(
     DomainsAccessor& accessor, Partition& partition,
     ReusableStorageId partition_id) {
   // First, erase the TV from all other domains in this partition.
+  m_union_of_domains_complement = m_union_of_domains;
+  m_union_of_domains_complement.flip();
+
   const auto reduction_data =
-      partition.reduce_with_hall_set(accessor, m_union_of_domains);
+      partition.reduce_with_hall_set(accessor, m_union_of_domains,
+            m_union_of_domains_complement, m_domain_mask_workset);
 
   if (reduction_data.result_to_return == ReductionResult::NOGOOD) {
     return ReductionResult::NOGOOD;
@@ -342,7 +346,9 @@ HallSetReduction::Partition::search_for_hall_set(
 HallSetReduction::Partition::HallSetReductionData
 HallSetReduction::Partition::reduce_with_hall_set(
     DomainsAccessor& accessor,
-    const boost::dynamic_bitset<>& union_of_domains) {
+    const boost::dynamic_bitset<>& union_of_domains,
+    const boost::dynamic_bitset<>& union_of_domains_complement,
+    boost::dynamic_bitset<>& domain_mask_workset) {
     
   const unsigned number_of_pv = union_of_domains.count();
   TKET_ASSERT(number_of_pv > 1);
@@ -362,21 +368,13 @@ HallSetReduction::Partition::reduce_with_hall_set(
       domains_data.size() - number_of_pv;
   unsigned number_of_newly_assigned_vertices = 0;
 
-  // TODO: avoid copy! Use workset!
-  TemporaryRefactorCode();
-  auto union_of_domains_complement = union_of_domains;
-  union_of_domains_complement.flip();
-
-  // TODO: avoid copy!
-  boost::dynamic_bitset<> union_of_domains_complement_copy;
-
   for (unsigned ii = 0; ii < number_of_vertices_to_reduce; ++ii) {
 
-    union_of_domains_complement_copy = union_of_domains_complement;
-
-    // TODO: make an intersect function WITHOUT doing a swap!
+    // TODO: make an intersect function WITHOUT doing a swap,
+    // to avoid this copy.
+    domain_mask_workset = union_of_domains_complement;    
     const auto intersect_result = accessor.intersect_domain_with_swap(
-      domains_data[ii].pv, union_of_domains_complement_copy);
+      domains_data[ii].pv, domain_mask_workset);
 
     if (intersect_result.reduction_result == ReductionResult::NOGOOD) {
       reduction_data.result_to_return = ReductionResult::NOGOOD;

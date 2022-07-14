@@ -102,11 +102,6 @@ class HallSetReduction {
     enum class SearchResult { NOGOOD, NO_HALL_SET, HALL_SET };
 
     // Assume already sorted, and only called with nonempty data.
-    /*
-    SearchResult search_for_hall_set(
-        const DomainsAccessor& accessor,
-        std::set<VertexWSM>& union_of_domains_work_set) const;
-    */
    SearchResult search_for_hall_set(
         const DomainsAccessor& accessor,
         boost::dynamic_bitset<>& union_of_domains_work_set) const;
@@ -124,7 +119,10 @@ class HallSetReduction {
     // by construction the ONLY PV which have domains intersecting the
     // given union_of_domains).
     HallSetReductionData reduce_with_hall_set(
-        DomainsAccessor& accessor, const boost::dynamic_bitset<>& union_of_domains);
+        DomainsAccessor& accessor,
+        const boost::dynamic_bitset<>& union_of_domains,
+        const boost::dynamic_bitset<>& union_of_domains_complement,
+        boost::dynamic_bitset<>& domain_mask_workset);
 
     // Moves the smallest domain sizes to the BACK (so we can pop them off;
     // this also removes size 1 domains, treated as a separate case,
@@ -135,6 +133,15 @@ class HallSetReduction {
   const unsigned m_max_number_of_consecutive_failed_attempts;
   bool m_awaiting_initial_fill;
   boost::dynamic_bitset<> m_union_of_domains;
+
+  // Ugly; should refactor to avoid these
+  // (need a better domain intersection function).
+  // We reuse these instead of reallocating new objects each time.
+  // Note that UNLIKE std::set, copying, clearing, refilling
+  // dynamic_bitsets is quite fast (because they're basically
+  // just vectors).
+  boost::dynamic_bitset<> m_union_of_domains_complement;
+  boost::dynamic_bitset<> m_domain_mask_workset;
 
   std::set<ReusableStorageId> m_partition_ids;
 
