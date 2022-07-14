@@ -339,7 +339,8 @@ PYBIND11_MODULE(transform, m) {
       .def_static(
           "ThreeQubitSquash", &Transforms::three_qubit_squash,
           "Squash three-qubit subcircuits into subcircuits having fewer "
-          "2-qubit gates of the target type (default CX), when possible.",
+          "2-qubit gates of the target type, when possible. The supported "
+          "target types are CX (default) and TK2.",
           py::arg("target_2qb_gate") = OpType::CX)
       .def_static(
           "CommuteSQThroughSWAP",
