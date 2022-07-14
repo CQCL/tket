@@ -119,15 +119,16 @@ static Circuit candidate_sub(const Circuit &circ, OpType target_2qb_gate) {
     return repl;
   } else {
     TKET_ASSERT(n_qb == 3);
+    Eigen::MatrixXcd U = get_3q_unitary(circ);
     if (target_2qb_gate == OpType::CX) {
-      Circuit repl = three_qubit_synthesis(get_3q_unitary(circ));
+      Circuit repl = three_qubit_synthesis(U);
       normalise_TK2().apply(repl);
       decompose_TK2().apply(repl);
       clifford_simp(false).apply(repl);
       return repl;
     } else {
       TKET_ASSERT(target_2qb_gate == OpType::TK2);
-      Circuit repl = three_qubit_tk_synthesis(get_3q_unitary(circ));
+      Circuit repl = three_qubit_tk_synthesis(U);
       squash_1qb_to_tk1().apply(repl);
       return repl;
     }
