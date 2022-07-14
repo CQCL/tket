@@ -820,50 +820,6 @@ struct CnGateBlock {
     other.ops.clear();
   }
 
-  std::string repr() const {
-    std::stringstream str;
-    if (!ops.empty()) {
-      str << "([" << *ops[0];
-      for (unsigned i = 1; i < ops.size(); i++) {
-        str << ", " << *ops[i];
-      }
-      str << "]";
-    } else {
-      str << "[]";
-    }
-    str << ", " << target_qubit << ", ";
-    if (!control_qubits.empty()) {
-      str << "{";
-      for (auto it = control_qubits.begin(); it != control_qubits.end(); it++) {
-        str << *it;
-        if (it != --control_qubits.end()) {
-          str << ", ";
-        }
-      }
-      str << "}";
-    } else {
-      str << "{}";
-    }
-    str << ", ";
-    if (!color) {
-      str << "Null, ";
-    } else if (color.value() == Pauli::X) {
-      str << "X, ";
-    } else if (color.value() == Pauli::Z) {
-      str << "Z, ";
-    } else if (color.value() == Pauli::Y) {
-      str << "Y, ";
-    } else {
-      str << "I, ";
-    }
-    if (is_symmetric) {
-      str << "true)";
-    } else {
-      str << "false)";
-    }
-    return str.str();
-  }
-
   Eigen::Matrix2cd get_target_unitary() const {
     Eigen::Matrix2cd m = Eigen::Matrix2cd::Identity();
     for (const Op_ptr &op : ops) {
