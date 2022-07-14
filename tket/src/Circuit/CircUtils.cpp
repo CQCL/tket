@@ -597,7 +597,7 @@ static Circuit CnU1(unsigned n_controls, Expr lambda) {
   return c;
 }
 
-Circuit with_controls(const Circuit &c, unsigned n_controls) {
+Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
   if (c.n_bits() != 0 || !c.is_simple()) {
     throw CircuitInvalidity("Only default qubit register allowed");
   }
@@ -703,6 +703,336 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
   }
 
   return c2;
+}
+
+// Return the target unitary given a Cn* gate where n >= 0
+Eigen::Matrix2cd get_target_op_matrix(const Op_ptr &op) {
+  OpType optype = op->get_type();
+  Eigen::Matrix2cd m;
+  switch (optype) {
+    case OpType::CX:
+    case OpType::CCX:
+    case OpType::CnX:
+      return Gate(OpType::X, {}, 1).get_unitary();
+    case OpType::CSX:
+      return Gate(OpType::SX, {}, 1).get_unitary();
+    case OpType::CSXdg:
+      return Gate(OpType::SXdg, {}, 1).get_unitary();
+    case OpType::CV:
+      return Gate(OpType::V, {}, 1).get_unitary();
+    case OpType::CVdg:
+      return Gate(OpType::Vdg, {}, 1).get_unitary();
+    case OpType::CRx:
+      return Gate(OpType::Rx, op->get_params(), 1).get_unitary();
+    case OpType::CnRy:
+    case OpType::CRy:
+      return Gate(OpType::Ry, op->get_params(), 1).get_unitary();
+    case OpType::CY:
+      return Gate(OpType::Y, {}, 1).get_unitary();
+    case OpType::CRz:
+      return Gate(OpType::Rz, op->get_params(), 1).get_unitary();
+    case OpType::CZ:
+      return Gate(OpType::Z, {}, 1).get_unitary();
+    case OpType::CH:
+      return Gate(OpType::H, {}, 1).get_unitary();
+    case OpType::CU1:
+      return Gate(OpType::U1, op->get_params(), 1).get_unitary();
+    case OpType::CU3:
+      return Gate(OpType::U3, op->get_params(), 1).get_unitary();
+    default:
+      if (!is_gate_type(optype) || op->n_qubits() != 1) {
+        throw CircuitInvalidity(
+            "Cannot get the target unitary of " + op->get_name());
+      }
+      return as_gate_ptr(op)->get_unitary();
+  }
+}
+
+// A gate block containing Cn* gates that can be merged as a single CnU gate
+struct CnGateBlock {
+  enum class MergeMode { append, prepend };
+  CnGateBlock(const Command &command) {
+    Op_ptr op = command.get_op_ptr();
+    ops.push_back(op);
+    unit_vector_t args = command.get_args();
+    for (unsigned i = 0; i < args.size() - 1; i++) {
+      control_qubits.insert(args[i].index()[0]);
+    }
+    target_qubit = args.back().index()[0];
+    is_symmetric =
+        (op->get_type() == OpType::CZ || op->get_type() == OpType::CU1);
+    color = as_gate_ptr(ops[0])->commuting_basis(args.size() - 1);
+  }
+
+  // Check whether commute with another CnGateBlock
+  bool commutes_with(const CnGateBlock &other) {
+    if (target_qubit == other.target_qubit) {
+      return (
+          (color == other.color && color != std::nullopt) ||
+          color == Pauli::I || other.color == Pauli::I);
+    }
+    if (control_qubits.find(other.target_qubit) != control_qubits.end() &&
+        other.color != Pauli::Z && other.color != Pauli::I) {
+      return false;
+    }
+    if (other.control_qubits.find(target_qubit) != other.control_qubits.end() &&
+        color != Pauli::Z && color != Pauli::I) {
+      return false;
+    }
+    return true;
+  }
+
+  // Check whether can be merged with another CnGateBlock
+  bool is_mergeable_with(const CnGateBlock &other) {
+    // check if sizes match
+    if (control_qubits.size() != other.control_qubits.size()) {
+      return false;
+    }
+    // check if they act on the same set of qubits
+    std::set<unsigned> args_a = control_qubits;
+    args_a.insert(target_qubit);
+    std::set<unsigned> args_b = other.control_qubits;
+    args_b.insert(other.target_qubit);
+    if (args_a != args_b) {
+      return false;
+    }
+    // false if target don't match and none of them is symmetric
+    if (target_qubit != other.target_qubit && !is_symmetric &&
+        !other.is_symmetric) {
+      return false;
+    }
+    return true;
+  }
+
+  // Merge with another CnGateBlock
+  void merge(CnGateBlock &other, const MergeMode &mode) {
+    if (mode == MergeMode::append) {
+      ops.insert(ops.end(), other.ops.begin(), other.ops.end());
+    } else {
+      ops.insert(ops.begin(), other.ops.begin(), other.ops.end());
+    }
+    color = (color != other.color) ? std::nullopt : color;
+    if (is_symmetric && !other.is_symmetric) {
+      target_qubit = other.target_qubit;
+      is_symmetric = false;
+    }
+    // empty the other CnGateBlock
+    other.ops.clear();
+  }
+
+  std::string repr() const {
+    std::stringstream str;
+    if (!ops.empty()) {
+      str << "([" << *ops[0];
+      for (unsigned i = 1; i < ops.size(); i++) {
+        str << ", " << *ops[i];
+      }
+      str << "]";
+    } else {
+      str << "[]";
+    }
+    str << ", " << target_qubit << ", ";
+    if (!control_qubits.empty()) {
+      str << "{";
+      for (auto it = control_qubits.begin(); it != control_qubits.end(); it++) {
+        str << *it;
+        if (it != --control_qubits.end()) {
+          str << ", ";
+        }
+      }
+      str << "}";
+    } else {
+      str << "{}";
+    }
+    str << ", ";
+    if (!color) {
+      str << "Null, ";
+    } else if (color.value() == Pauli::X) {
+      str << "X, ";
+    } else if (color.value() == Pauli::Z) {
+      str << "Z, ";
+    } else if (color.value() == Pauli::Y) {
+      str << "Y, ";
+    } else {
+      str << "I, ";
+    }
+    if (is_symmetric) {
+      str << "true)";
+    } else {
+      str << "false)";
+    }
+    return str.str();
+  }
+
+  Eigen::Matrix2cd get_target_unitary() const {
+    Eigen::Matrix2cd m = Eigen::Matrix2cd::Identity();
+    for (const Op_ptr &op : ops) {
+      m = get_target_op_matrix(op) * m;
+    }
+    return m;
+  }
+
+  // ops in the block
+  std::vector<Op_ptr> ops;
+  // target qubit index
+  unsigned target_qubit;
+  // control indices
+  std::set<unsigned> control_qubits;
+  // whether the target can act on any of its qubits
+  bool is_symmetric;
+  // color of the target qubit
+  std::optional<Pauli> color;
+};
+
+// Construct a controlled version of a given circuit
+// with the assumption that the circuit does not have symbols.
+Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
+  if (c.n_bits() != 0 || !c.is_simple()) {
+    throw CircuitInvalidity("Only default qubit register allowed");
+  }
+  if (c.has_implicit_wireswaps()) {
+    throw CircuitInvalidity("Circuit has implicit wireswaps");
+  }
+
+  // Dispose of the trivial case
+  if (n_controls == 0) {
+    return c;
+  }
+  // 1. Rebase to Cn* gates (n=0 for single qubit gates)
+  Circuit c1(c);
+  VertexList bin;
+  BGL_FORALL_VERTICES(v, c1.dag, DAG) {
+    Op_ptr op = c1.get_Op_ptr_from_Vertex(v);
+    OpType optype = op->get_type();
+    if (is_gate_type(optype)) {
+      if (is_projective_type(optype)) {
+        throw CircuitInvalidity("Projective operations present");
+      }
+      if (is_box_type(optype)) {
+        throw CircuitInvalidity("Undecomposed boxes present");
+      }
+      if (is_single_qubit_type(optype) || is_controlled_gate_type(optype)) {
+        continue;
+      }
+      Circuit replacement = with_CX(as_gate_ptr(op));
+      c1.substitute(replacement, v, Circuit::VertexDeletion::No);
+      bin.push_back(v);
+    } else if (optype != OpType::Input && optype != OpType::Output) {
+      throw CircuitInvalidity(
+          "Cannot construct the controlled version of " + op->get_name());
+    }
+  }
+  c1.remove_vertices(
+      bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+
+  // 2. try to partitioning the circuit into blocks of Cn* gates such that
+  // the gates in each block can be merged into a single CnU gate
+  std::vector<Command> commands = c1.get_commands();
+  std::vector<CnGateBlock> blocks;
+
+  for (const Command &c : commands) {
+    blocks.push_back(CnGateBlock(c));
+  }
+
+  // iterate the blocks from left to right
+  for (unsigned i = 0; i < blocks.size() - 1; i++) {
+    CnGateBlock &b = blocks[i];
+    if (b.ops.empty()) {
+      continue;
+    }
+    // try to merge b to a block on the right
+    for (unsigned j = i + 1; j < blocks.size(); j++) {
+      CnGateBlock &candidate = blocks[j];
+      if (candidate.ops.empty()) {
+        continue;
+      }
+      if (b.is_mergeable_with(candidate)) {
+        candidate.merge(b, CnGateBlock::MergeMode::prepend);
+        break;
+      }
+      if (!b.commutes_with(candidate)) {
+        break;
+      }
+    }
+  }
+
+  // iterate the blocks from right to left
+  for (unsigned i = blocks.size() - 1; i > 0; i--) {
+    CnGateBlock &b = blocks[i];
+    if (b.ops.empty()) {
+      continue;
+    }
+    // try to merge b to a block on the left
+    // iterate from i-1 to 0
+    for (unsigned j = i; j-- > 0;) {
+      CnGateBlock &candidate = blocks[j];
+      if (candidate.ops.empty()) {
+        continue;
+      }
+      if (b.is_mergeable_with(candidate)) {
+        candidate.merge(b, CnGateBlock::MergeMode::append);
+        break;
+      }
+      if (!b.commutes_with(candidate)) {
+        break;
+      }
+    }
+  }
+  // 3. Add each block to c2 either as a CnX gate or a CnU decomposition
+  Circuit c2(n_controls + c1.n_qubits());
+  const static Eigen::Matrix2cd X = Gate(OpType::X, {}, 1).get_unitary();
+
+  for (const CnGateBlock &b : blocks) {
+    if (b.ops.empty()) {
+      continue;
+    }
+    // Computes the target unitary
+    Eigen::Matrix2cd m = b.get_target_unitary();
+    if (m.isApprox(Eigen::Matrix2cd::Identity(), EPS)) {
+      continue;
+    }
+    if (m.isApprox(X, EPS)) {
+      qubit_vector_t new_args;
+      for (unsigned i = 0; i < n_controls; i++) {
+        new_args.push_back(Qubit(i));
+      }
+      for (const unsigned i : b.control_qubits) {
+        new_args.push_back(Qubit(i + n_controls));
+      }
+      new_args.push_back(Qubit(b.target_qubit + n_controls));
+      c2.add_op<Qubit>(OpType::CnX, new_args);
+    } else {
+      unit_map_t unit_map;
+      for (unsigned i = 0; i < n_controls; i++) {
+        unit_map.insert({Qubit(i), Qubit(i)});
+      }
+      unsigned control_index = n_controls;
+      for (const unsigned i : b.control_qubits) {
+        unit_map.insert({Qubit(control_index++), Qubit(i + n_controls)});
+      }
+      unit_map.insert(
+          {Qubit(control_index), Qubit(b.target_qubit + n_controls)});
+      Circuit cnu_circ = CircPool::cnu_linear_depth_decomp(
+          b.control_qubits.size() + n_controls, m);
+      c2.append_with_map(cnu_circ, unit_map);
+    }
+  }
+
+  // 4. implement the conditional phase as a CnU1 gate
+  if (!equiv_0(c1.get_phase())) {
+    Eigen::Matrix2cd u1 = Gate(OpType::U1, {c1.get_phase()}, 1).get_unitary();
+    Circuit cnu1_circ = CircPool::cnu_linear_depth_decomp(n_controls - 1, u1);
+    c2.append(cnu1_circ);
+  }
+  return c2;
+}
+
+Circuit with_controls(const Circuit &c, unsigned n_controls) {
+  if (c.is_symbolic()) {
+    return with_controls_symbolic(c, n_controls);
+  } else {
+    return with_controls_numerical(c, n_controls);
+  }
 }
 
 #undef CNXTYPE
