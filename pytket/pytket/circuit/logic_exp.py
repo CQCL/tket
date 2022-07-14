@@ -352,7 +352,6 @@ class RegRsh(BinaryOp, RegLogicExp):
 
 class Predicate(BinaryOp):
     """A binary predicate where the arguments are either Bits, BitRegisters, or Constants."""
-    ...
 
 
 class Eq(RegPredicate):
