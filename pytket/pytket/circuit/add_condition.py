@@ -46,7 +46,7 @@ def _add_condition(
     elif isinstance(condition, Predicate):
         pred_exp, pred_val = condition.args
         # Predicate constructor should ensure arg order
-        if isinstance(pred_val, Constant):
+        if not isinstance(pred_val, Constant):
             raise NotImplementedError
     elif isinstance(condition, BitLogicExp):
         pred_val = 1
