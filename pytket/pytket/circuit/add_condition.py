@@ -52,7 +52,8 @@ def _add_condition(
         # Predicate constructor should ensure arg order
         if not isinstance(pred_val, Constant):
             raise NonConstError(
-                "Condition expressions must be of type `Predicate` with a constant second operand."
+                "Condition expressions must be of type `Predicate`\
+                with a constant second operand."
             )
     elif isinstance(condition, BitLogicExp):
         pred_val = 1
