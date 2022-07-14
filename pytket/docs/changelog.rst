@@ -6,6 +6,7 @@ x.y.z (unreleased)
 
 Minor new features:
 
+* Add support for TK2 gate in ``KAKDecomposition``.
 * ``Transform.ThreeQubitSquash()`` can now use TK2 gates as an alternative to CX
   gates.
 * ``Unitary3qBox.get_circuit()`` decomposes the circuit using (at most 15) TK2

@@ -358,7 +358,9 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     const nlohmann::json& content = j.at("StandardPass");
     std::string passname = content.at("name").get<std::string>();
     if (passname == "KAKDecomposition") {
-      pp = KAKDecomposition(content.at("fidelity").get<double>());
+      double cx_fidelity = content.at("fidelity").get<double>();
+      OpType target_2qb_gate = content.at("target_2qb_gate").get<OpType>();
+      pp = KAKDecomposition(target_2qb_gate, cx_fidelity);
     } else if (passname == "ThreeQubitSquash") {
       pp = ThreeQubitSquash(content.at("allow_swaps").get<bool>());
     } else if (passname == "CommuteThroughMultis") {
@@ -373,6 +375,14 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = DecomposeMultiQubitsCX();
     } else if (passname == "DecomposeSingleQubitsTK1") {
       pp = DecomposeSingleQubitsTK1();
+    } else if (passname == "DecomposeTK2") {
+      Transforms::TwoQbFidelities fid;
+      fid.CX_fidelity =
+          content.at("fidelities").at("CX").get<std::optional<double>>();
+      fid.ZZMax_fidelity =
+          content.at("fidelities").at("ZZMax").get<std::optional<double>>();
+      fid.ZZPhase_fidelity = std::nullopt;
+      pp = DecomposeTK2(fid);
     } else if (passname == "PeepholeOptimise2Q") {
       pp = PeepholeOptimise2Q();
     } else if (passname == "FullPeepholeOptimise") {

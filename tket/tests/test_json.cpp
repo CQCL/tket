@@ -588,7 +588,9 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(RemoveBarriers, RemoveBarriers())
   COMPPASSJSONTEST(ComposePhasePolyBoxes, ComposePhasePolyBoxes())
   COMPPASSJSONTEST(DecomposeBridges, DecomposeBridges())
-  COMPPASSJSONTEST(KAKDecomposition, KAKDecomposition(0.98))
+  COMPPASSJSONTEST(KAKDecomposition, KAKDecomposition(OpType::CX, 0.98))
+  COMPPASSJSONTEST(
+      DecomposeTK2, DecomposeTK2({0.98, std::nullopt, std::nullopt}))
   COMPPASSJSONTEST(ThreeQubitSquash, ThreeQubitSquash(false))
   COMPPASSJSONTEST(
       EulerAngleReduction, gen_euler_pass(OpType::Rx, OpType::Ry, false))
