@@ -350,7 +350,7 @@ class RegRsh(BinaryOp, RegLogicExp):
     op = RegWiseOp.RSH
 
 
-class RegPredicate(BinaryOp):
+class Predicate(BinaryOp):
     """A binary predicate where the arguments are either registers or constants."""
 
     def __init__(
