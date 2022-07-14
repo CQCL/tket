@@ -1,6 +1,13 @@
 Changelog
 =========
 
+x.y.z (unreleased)
+------------------
+
+Minor new features:
+
+* Add support for TK2 gate in ``KAKDecomposition``.
+
 1.4.0 (July 2022)
 -----------------
 

@@ -523,16 +523,10 @@ PassPtr gen_user_defined_swap_decomp_pass(const Circuit& replacement_circ) {
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
-PassPtr KAKDecomposition(double cx_fidelity) {
-  Transform t = Transforms::two_qubit_squash(cx_fidelity);
+PassPtr KAKDecomposition(OpType target_2qb_gate, double cx_fidelity) {
+  Transform t = Transforms::two_qubit_squash(target_2qb_gate, cx_fidelity);
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
-  OpTypeSet ots{all_single_qubit_types()};
-  ots.insert(OpType::SWAP);
-  ots.insert(OpType::CX);
-  PredicatePtr gate_pred = std::make_shared<GateSetPredicate>(ots);
-  PredicatePtrMap precons{
-      CompilationUnit::make_type_pair(ccontrol_pred),
-      CompilationUnit::make_type_pair(gate_pred)};
+  PredicatePtrMap precons{CompilationUnit::make_type_pair(ccontrol_pred)};
   PredicateClassGuarantees g_postcons = {
       {typeid(DirectednessPredicate), Guarantee::Clear},
       {typeid(CliffordCircuitPredicate), Guarantee::Clear}};
@@ -541,6 +535,7 @@ PassPtr KAKDecomposition(double cx_fidelity) {
   // record pass config
   nlohmann::json j;
   j["name"] = "KAKDecomposition";
+  j["target_2qb_gate"] = target_2qb_gate;
   j["fidelity"] = cx_fidelity;
 
   return std::make_shared<StandardPass>(precons, t, postcon, j);
