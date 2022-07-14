@@ -125,6 +125,7 @@ static Circuit candidate_sub(const Circuit &circ, OpType target_2qb_gate) {
       normalise_TK2().apply(repl);
       decompose_TK2().apply(repl);
       clifford_simp(false).apply(repl);
+      squash_1qb_to_tk1().apply(repl);
       return repl;
     } else {
       TKET_ASSERT(target_2qb_gate == OpType::TK2);
