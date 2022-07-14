@@ -354,13 +354,13 @@ class Predicate(BinaryOp):
     """A binary predicate where the arguments are either Bits, BitRegisters, or Constants."""
 
 
-class Eq(RegPredicate):
+class Eq(Predicate):
     @staticmethod
     def _const_eval(args: List[Constant]) -> Constant:
         return args[0] == args[1]
 
 
-class Neq(RegPredicate):
+class Neq(Predicate):
     @staticmethod
     def _const_eval(args: List[Constant]) -> Constant:
         return 1 - Eq._const_eval(args)
@@ -382,7 +382,7 @@ class RegNeq(Neq, RegLogicExp):
     op = RegWiseOp.NEQ
 
 
-class RegLt(RegPredicate, RegLogicExp):
+class RegLt(Predicate, RegLogicExp):
     op = RegWiseOp.LT
 
     @staticmethod
@@ -390,7 +390,7 @@ class RegLt(RegPredicate, RegLogicExp):
         return args[0] < args[1]
 
 
-class RegGt(RegPredicate, RegLogicExp):
+class RegGt(Predicate, RegLogicExp):
     op = RegWiseOp.GT
 
     @staticmethod
@@ -398,7 +398,7 @@ class RegGt(RegPredicate, RegLogicExp):
         return args[0] > args[1]
 
 
-class RegLeq(RegPredicate, RegLogicExp):
+class RegLeq(Predicate, RegLogicExp):
     op = RegWiseOp.LEQ
 
     @staticmethod
@@ -406,7 +406,7 @@ class RegLeq(RegPredicate, RegLogicExp):
         return args[0] <= args[1]
 
 
-class RegGeq(RegPredicate, RegLogicExp):
+class RegGeq(Predicate, RegLogicExp):
     op = RegWiseOp.GEQ
 
     @staticmethod
@@ -417,11 +417,11 @@ class RegGeq(RegPredicate, RegLogicExp):
 # utility to define register comparison methods
 def gen_regpredicate(
     op: Ops,
-) -> Callable[[Union[RegLogicExp, BitRegister], Constant], RegPredicate]:
+) -> Callable[[Union[RegLogicExp, BitRegister], Constant], Predicate]:
     def const_predicate(
         register: Union[RegLogicExp, BitRegister], value: Constant
-    ) -> RegPredicate:
-        return cast(Type[RegPredicate], LogicExp.factory(op))(register, value)
+    ) -> Predicate:
+        return cast(Type[Predicate], LogicExp.factory(op))(register, value)
 
     return const_predicate
 
@@ -447,11 +447,11 @@ reg_geq.__doc__ = """Function to express a BitRegister greater than or equal to
     ``reg_geq(r, 5)``"""
 
 
-def if_bit(bit: Union[Bit, BitLogicExp]) -> RegPredicate:
+def if_bit(bit: Union[Bit, BitLogicExp]) -> Predicate:
     """Equivalent of ``if bit:``."""
     return BitEq(bit, 1)
 
 
-def if_not_bit(bit: Union[Bit, BitLogicExp]) -> RegPredicate:
+def if_not_bit(bit: Union[Bit, BitLogicExp]) -> Predicate:
     """Equivalent of ``if not bit:``."""
     return BitEq(bit, 0)
