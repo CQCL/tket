@@ -1514,9 +1514,9 @@ Functions</h2></td></tr>
 <tr class="separator:a11e148349270e1d6b8367dfaef31327a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6661ec3354e36f7c23bb2cf07e5a9fab"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6661ec3354e36f7c23bb2cf07e5a9fab">gen_user_defined_swap_decomp_pass</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;replacement_circ)</td></tr>
 <tr class="separator:a6661ec3354e36f7c23bb2cf07e5a9fab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4efeea4f6c332895a01188032ad3886b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a4efeea4f6c332895a01188032ad3886b">KAKDecomposition</a> (double cx_fidelity=1.)</td></tr>
-<tr class="memdesc:a4efeea4f6c332895a01188032ad3886b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pass to decompose sequences of two-qubit operations into optimal gate sequence.  <a href="namespacetket.html#a4efeea4f6c332895a01188032ad3886b">More...</a><br /></td></tr>
-<tr class="separator:a4efeea4f6c332895a01188032ad3886b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ade68b3fcb9ea8ccb42d4c4d0ae7ee042"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ade68b3fcb9ea8ccb42d4c4d0ae7ee042">KAKDecomposition</a> (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> target_2qb_gate=<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>, double cx_fidelity=1.)</td></tr>
+<tr class="memdesc:ade68b3fcb9ea8ccb42d4c4d0ae7ee042"><td class="mdescLeft">&#160;</td><td class="mdescRight">Squash sequences of two-qubit operations into minimal form.  <a href="namespacetket.html#ade68b3fcb9ea8ccb42d4c4d0ae7ee042">More...</a><br /></td></tr>
+<tr class="separator:ade68b3fcb9ea8ccb42d4c4d0ae7ee042"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e0a8c445be5d4b55630420a73917b8f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8e0a8c445be5d4b55630420a73917b8f">DecomposeTK2</a> (const <a class="el" href="structtket_1_1Transforms_1_1TwoQbFidelities.html">Transforms::TwoQbFidelities</a> &amp;fid)</td></tr>
 <tr class="memdesc:a8e0a8c445be5d4b55630420a73917b8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decomposes each TK2 gate into two-qubit gates.  <a href="namespacetket.html#a8e0a8c445be5d4b55630420a73917b8f">More...</a><br /></td></tr>
 <tr class="separator:a8e0a8c445be5d4b55630420a73917b8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1730,9 +1730,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a56887ab1e1830c705857d396f22d1572"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="namespacetket.html#aee60c42e3c64cd55862f6217cb41a07e">TripletCd</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a56887ab1e1830c705857d396f22d1572">get_triplets</a> (const Eigen::MatrixXcd &amp;matr, double abs_epsilon=<a class="el" href="namespacetket.html#a9cdfe3f23ec01d10a956474db74c9fc1">EPS</a>)</td></tr>
 <tr class="memdesc:a56887ab1e1830c705857d396f22d1572"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a matrix M into a list of tuples (i,j,z), meaning that M(i,j)=z, used in sparse representations of M.  <a href="namespacetket.html#a56887ab1e1830c705857d396f22d1572">More...</a><br /></td></tr>
 <tr class="separator:a56887ab1e1830c705857d396f22d1572"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8046b338319706de1f6d3ab983d26069"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8046b338319706de1f6d3ab983d26069">get_CX_fidelity</a> (const std::array&lt; double, 3 &gt; &amp;k, unsigned nb_cx)</td></tr>
-<tr class="memdesc:a8046b338319706de1f6d3ab983d26069"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given TK2 angles, computes the fidelity that can be achieved using nb_cx CX gates.  <a href="namespacetket.html#a8046b338319706de1f6d3ab983d26069">More...</a><br /></td></tr>
-<tr class="separator:a8046b338319706de1f6d3ab983d26069"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a89bcfd90ad10c2d13072a0f184871a4a"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a89bcfd90ad10c2d13072a0f184871a4a">trace_fidelity</a> (double a, double b, double c)</td></tr>
 <tr class="memdesc:a89bcfd90ad10c2d13072a0f184871a4a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Similarity measure of TK2(a, b, c) to SU(4) identity.  <a href="namespacetket.html#a89bcfd90ad10c2d13072a0f184871a4a">More...</a><br /></td></tr>
 <tr class="separator:a89bcfd90ad10c2d13072a0f184871a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -6311,7 +6308,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00549">549</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00544">544</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -6345,7 +6342,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>PassPtr </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00550">550</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00545">545</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -7684,7 +7681,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00584">584</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00579">579</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -7803,7 +7800,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00727">727</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00722">722</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8128,7 +8125,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00604">604</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00599">599</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8148,7 +8145,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00628">628</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00623">623</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8332,7 +8329,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00703">703</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00698">698</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8362,7 +8359,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00684">684</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00679">679</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8422,7 +8419,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00650">650</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00645">645</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8568,47 +8565,6 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a8046b338319706de1f6d3ab983d26069"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8046b338319706de1f6d3ab983d26069">&#9670;&nbsp;</a></span>get_CX_fidelity()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">double tket::get_CX_fidelity </td>
-          <td>(</td>
-          <td class="paramtype">const std::array&lt; double, 3 &gt; &amp;&#160;</td>
-          <td class="paramname"><em>k</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">unsigned&#160;</td>
-          <td class="paramname"><em>nb_cx</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Given TK2 angles, computes the fidelity that can be achieved using nb_cx CX gates. </p>
-<p>returns average fidelity of the decomposition of the information content with nb_cx CNOTS.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">k</td><td>The TK2 angles. </td></tr>
-    <tr><td class="paramname">nb_cx</td><td>The number of CX gates to be used for decomposition. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>The fidelity. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00309">309</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
-
-</div>
-</div>
 <a id="aec3e2d82f066cf17f135d74751ab4eb8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aec3e2d82f066cf17f135d74751ab4eb8">&#9670;&nbsp;</a></span>get_frame_sizes()</h2>
 
@@ -8656,7 +8612,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>KAK decomposition </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00331">331</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00308">308</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -8817,7 +8773,7 @@ circuit has no symbolic parameters</dd></dl>
 <p>Returns 2^n, but throws if n is too large (causes overflow). </p>
 <p>(Warning: simply taking 1&lt;&lt;n and testing against zero can give incorrect results with large n). </p>
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00445">445</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00422">422</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -8860,7 +8816,7 @@ circuit has no symbolic parameters</dd></dl>
 <p>We have a matrix size, which should be 2^n. </p>
 <p>Return n, or throw if invalid. </p>
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00459">459</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00436">436</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -8988,7 +8944,7 @@ circuit has no symbolic parameters</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00470">470</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00447">447</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -9018,7 +8974,7 @@ circuit has no symbolic parameters</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00477">477</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00454">454</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -9058,7 +9014,7 @@ circuit has no symbolic parameters</dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A vector of (i,j,z) tuples, meaning that M(i,j)=z. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00497">497</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00474">474</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -9091,7 +9047,7 @@ circuit has no symbolic parameters</dd></dl>
 <p>abs_epsilon is used to decide if a near-zero entry should be set to zero exactly. </p>
 <p>Thus, if std::abs(z) &lt;= abs_epsilon, then z is treated as zero. </p>
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00482">482</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00459">459</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -9200,7 +9156,7 @@ circuit has no symbolic parameters</dd></dl>
 <p>If squash=true (default), the <code><a class="el" href="namespacetket.html#aeefc21d2bb61add1f89468ef9e61ee3a" title="Turns all PhasedX and NPhasedX gates into global gates.">GlobalisePhasedX()</a>.apply</code> method will always return true. For squash=false, <code>apply()</code> will return true if the circuit was changed and false otherwise.</p>
 <p>It is not recommended to use this pass with symbolic expressions, as in certain cases a blow-up in symbolic expression sizes may occur. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00744">744</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00739">739</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -9389,7 +9345,7 @@ circuit has no symbolic parameters</dd></dl>
 <p>Whether a triplet of TK2 angles are normalised. </p>
 <p>Numerical values must be in the Weyl chamber, ie 1/2 &gt;= k_x &gt;= k_y &gt;= |k_z|. Symbolic values must come before any numerical value in the array. </p>
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00510">510</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00487">487</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -10095,8 +10051,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a4efeea4f6c332895a01188032ad3886b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4efeea4f6c332895a01188032ad3886b">&#9670;&nbsp;</a></span>KAKDecomposition()</h2>
+<a id="ade68b3fcb9ea8ccb42d4c4d0ae7ee042"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade68b3fcb9ea8ccb42d4c4d0ae7ee042">&#9670;&nbsp;</a></span>KAKDecomposition()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -10104,15 +10060,36 @@ template&lt;class T &gt; </div>
         <tr>
           <td class="memname"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> tket::KAKDecomposition </td>
           <td>(</td>
-          <td class="paramtype">double&#160;</td>
-          <td class="paramname"><em>cx_fidelity</em> = <code>1.</code></td><td>)</td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a>&#160;</td>
+          <td class="paramname"><em>target_2qb_gate</em> = <code><a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a></code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>cx_fidelity</em> = <code>1.</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Pass to decompose sequences of two-qubit operations into optimal gate sequence. </p>
-<p>Generate a KAK decomposition pass that can decompose any two-qubit subcircuit into &lt;= 3 CX + local operations. If an estimate for the CX gate fidelity cx_fidelity is given, the decomposition will trade off the accuracy of the circuit approximation against the loss in circuit fidelity induced by additional noisy CX gates. This will result in an output circuit that is not necessarily equivalent to the input, but that maximises expected circuit fidelity </p>
+<p>Squash sequences of two-qubit operations into minimal form. </p>
+<p>A pass that squashes together sequences of single- and two-qubit gates into minimal form. Can decompose to TK2 or CX gates.</p>
+<p>Two-qubit operations can always be expressed in a minimal form of maximum three CXs, or as a single TK2 gate (a result also known as the KAK or Cartan decomposition).</p>
+<p>It is in general recommended to squash to TK2 gates, and to then use the <code>DecomposeTK2</code> pass for noise-aware decompositions to other gatesets. For backward compatibility, decompositions to CX are also supported. In this case, <code>cx_fidelity</code> can be provided to perform approximate decompositions to CX.</p>
+<p>When decomposing to TK2 gates, any sequence of two or more two-qubit gates on the same set of qubits are replaced by a single TK2 gate. When decomposing to CX, the substitution is only performed if it results in a reduction of the number of CX gates, or if at least one of the two-qubit gates is not a CX.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">target_2qb_gate</td><td>OpType to decompose to. Either TK2 or CX. </td></tr>
+    <tr><td class="paramname">cx_fidelity</td><td>Estimated CX gate fidelity, used when target_2qb_gate=CX. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>PassPtr </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00526">526</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
@@ -10134,7 +10111,7 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00423">423</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00400">400</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -10411,7 +10388,7 @@ template&lt;typename T &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00328">328</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00305">305</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
 
 </div>
 </div>
@@ -11555,7 +11532,7 @@ template&lt;typename T &gt; </div>
 
 <p>Builds a sequence of PauliSimp (gen_synthesise_pauli_graph) and FullPeepholeOptimise. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00738">738</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00733">733</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -12450,7 +12427,7 @@ template&lt;typename BoxT &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00566">566</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00561">561</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
