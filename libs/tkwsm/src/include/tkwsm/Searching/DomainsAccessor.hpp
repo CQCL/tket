@@ -15,7 +15,7 @@
 #pragma once
 #include <optional>
 #include <string>
-
+#include <boost/dynamic_bitset.hpp>
 #include "../GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
@@ -62,7 +62,17 @@ class DomainsAccessor {
    * @param pv A vertex in the pattern graph.
    * @return The domain of pv in the current search node.
    */
-  const std::set<VertexWSM>& get_domain(VertexWSM pv) const;
+  /////const std::set<VertexWSM>& get_domain(VertexWSM pv) const;
+
+  /** Return Domain(pv) in the current node, i.e. the set of all target
+   * vertices which pv could be mapped to, as we extend the current mapping.
+   * @param pv A vertex in the pattern graph.
+   * @return The domain of pv in the current search node.
+   */
+  const boost::dynamic_bitset<>& get_domain(VertexWSM pv) const;
+
+  /** The number of TV currently in Domain(PV). */
+  std::size_t get_domain_size(VertexWSM pv) const;
 
   /** Returns true if Domain(pv) is different in the current search node
    * and the previous node. */
@@ -139,33 +149,6 @@ class DomainsAccessor {
    */
   bool alldiff_reduce_current_node(std::size_t n_assignments_already_processed);
 
-  /** Directly overwrite the domain in the current node with the new set.
-   * The caller is responsible for calculating set intersections etc.
-   * correctly to fill "new domain".
-   *
-   * It would be cleaner to have more specific functions like "intersect the
-   * current domain with this set", etc. - alteration rather than crude
-   * overwriting - but there were some ad-hoc operations which wouldn't
-   * fit into a clean interface, so just have this single function.
-   *
-   * The new domain should be a subset of the old domain,
-   * but this is not fully checked - only cheap partial checks are done.
-   * Updates new assignments if necessary.
-   *
-   * We are happy to alter "new domain" (it is work data, i.e.
-   * "dummy" reusable data).
-   *
-   * For extra performance, we do set::swap instead of copying.
-   * Note that we might NOT update the domain if the new domain is empty
-   * (a nogood); we do not waste time manipulating an invalid node.
-   * @param pv The pattern vertex.
-   * @param new_domain The new set which the domain will change to (via a
-   * set::swap).
-   * @return The result of overwriting the domain.
-   */
-  ReductionResult overwrite_domain_with_set_swap(
-      VertexWSM pv, std::set<VertexWSM>& new_domain);
-
   struct IntersectionResult {
     ReductionResult reduction_result;
 
@@ -175,21 +158,22 @@ class DomainsAccessor {
     bool changed;
   };
 
-  /** We erase all of the given TV from Dom(PV).
-   * Similarly to "overwrite_domain_with_set_swap", we check for and update
-   * new assignments if necessary.
+  /** Simply intersect Domain(PV) with the specified set of TV, represented
+   * by a bitset. For speed, uses the "swap" function (similar to vector::swap
+   * and set::swap - time O(1), no copies) - which thus alters domain_mask.
+   * We should have an intersect function WITHOUT doing this -
+   * the operator -= function should work.
+   * We check for and update new assignments if necessary.
    * @param pattern_v The pattern vertex.
-   * @param forbidden_target_vertices A set of target vertices which must NOT
-   * occur in the new domain; all will be erased.
+   * @param domain_mask A set of target vertices to intersect with the domain; will be altered.
    * @return The result of changing the domain.
    */
-  IntersectionResult intersect_domain_with_complement_set(
+  IntersectionResult intersect_domain_with_swap(
       VertexWSM pattern_v,
-      const std::set<VertexWSM>& forbidden_target_vertices);
+      boost::dynamic_bitset<>& domain_mask);
 
  private:
   NodesRawData& m_raw_data;
-  std::set<VertexWSM>& get_domain_nonconst(VertexWSM pv);
 };
 
 }  // namespace WeightedSubgraphMonomorphism

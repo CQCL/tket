@@ -36,7 +36,8 @@ SearchBranch::SearchBranch(
       m_extra_statistics(extra_statistics),
       m_derived_graphs_reducer(m_pattern_ndata, m_target_ndata),
       m_neighbours_reducer(m_pattern_ndata, m_target_ndata),
-      m_nodes_raw_data_wrapper(initial_domains),
+      m_nodes_raw_data_wrapper(initial_domains,
+          m_target_ndata.get_number_of_nonisolated_vertices()),
       m_domains_accessor(m_nodes_raw_data_wrapper),
       m_node_list_traversal(m_nodes_raw_data_wrapper) {
   m_extra_statistics.number_of_pattern_vertices =
@@ -77,6 +78,7 @@ const DomainsAccessor& SearchBranch::get_domains_accessor() const {
 DomainsAccessor& SearchBranch::get_domains_accessor_nonconst() {
   return m_domains_accessor;
 }
+
 
 std::set<VertexWSM> SearchBranch::get_used_target_vertices() const {
   return m_node_list_traversal.get_used_target_vertices();
@@ -163,6 +165,7 @@ bool SearchBranch::perform_weight_nogood_check_in_reduce_loop(
 
   if (m_weight_checker_ptr) {
     m_impossible_target_vertices.clear();
+
     const WeightWSM max_extra_scalar_product =
         parameters.max_weight - scalar_product;
 
@@ -171,6 +174,7 @@ bool SearchBranch::perform_weight_nogood_check_in_reduce_loop(
 
     const auto number_of_pv =
         m_domains_accessor.get_number_of_pattern_vertices();
+
     for (VertexWSM tv : m_impossible_target_vertices) {
       // This is rare. Crudely treat as a list of assignments.
       // We want to pass them all in now, though, even if we're at a nogood;
@@ -261,11 +265,13 @@ bool SearchBranch::perform_main_reduce_loop(
     // (i.e., is more likely to detect a possible reduction).
     // The standard reducers ONLY work with actual ASSIGNMENTS;
     // it makes no difference if a domain has size 2 or 100.
+    //*
     const auto hall_set_result =
         m_hall_set_reduction.reduce(m_domains_accessor);
     if (hall_set_result == ReductionResult::NOGOOD) {
       return false;
     }
+    
     TKET_ASSERT(num_assignments_alldiff_processed <= new_assignments.size());
     if (num_assignments_alldiff_processed == new_assignments.size()) {
       TKET_ASSERT(hall_set_result == ReductionResult::SUCCESS);

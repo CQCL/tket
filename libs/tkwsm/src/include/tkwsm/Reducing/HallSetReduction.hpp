@@ -15,6 +15,7 @@
 #pragma once
 #include "tkwsm/Common/ReusableStorage.hpp"
 #include "tkwsm/GraphTheoretic/GeneralStructs.hpp"
+#include <boost/dynamic_bitset.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
@@ -101,9 +102,14 @@ class HallSetReduction {
     enum class SearchResult { NOGOOD, NO_HALL_SET, HALL_SET };
 
     // Assume already sorted, and only called with nonempty data.
+    /*
     SearchResult search_for_hall_set(
         const DomainsAccessor& accessor,
         std::set<VertexWSM>& union_of_domains_work_set) const;
+    */
+   SearchResult search_for_hall_set(
+        const DomainsAccessor& accessor,
+        boost::dynamic_bitset<>& union_of_domains_work_set) const;
 
     struct HallSetReductionData {
       ReductionResult result_to_return;
@@ -118,7 +124,7 @@ class HallSetReduction {
     // by construction the ONLY PV which have domains intersecting the
     // given union_of_domains).
     HallSetReductionData reduce_with_hall_set(
-        DomainsAccessor& accessor, const std::set<VertexWSM>& union_of_domains);
+        DomainsAccessor& accessor, const boost::dynamic_bitset<>& union_of_domains);
 
     // Moves the smallest domain sizes to the BACK (so we can pop them off;
     // this also removes size 1 domains, treated as a separate case,
@@ -128,7 +134,7 @@ class HallSetReduction {
 
   const unsigned m_max_number_of_consecutive_failed_attempts;
   bool m_awaiting_initial_fill;
-  std::set<VertexWSM> m_union_of_domains;
+  boost::dynamic_bitset<> m_union_of_domains;
 
   std::set<ReusableStorageId> m_partition_ids;
 

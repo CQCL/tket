@@ -21,6 +21,10 @@
 #include "tkwsm/GraphTheoretic/NeighboursData.hpp"
 #include "tkwsm/Searching/DomainsAccessor.hpp"
 
+//#include "WeightSubgrMono/Searching/NodesRawData.hpp"
+
+#include "WeightSubgrMono/Common/TemporaryRefactorCode.hpp"
+
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
@@ -33,6 +37,7 @@ bool NeighboursReducer::check(std::pair<VertexWSM, VertexWSM> assignment) {
          m_target_ndata.get_degree(assignment.second);
 }
 
+
 ReductionResult NeighboursReducer::reduce(
     std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,
     std::set<VertexWSM>& work_set) {
@@ -41,18 +46,27 @@ ReductionResult NeighboursReducer::reduce(
           m_target_ndata.get_neighbours_and_weights(assignment.second);
   auto result = ReductionResult::SUCCESS;
 
+  TemporaryRefactorCode();
+  boost::dynamic_bitset<> work_bitset;
+
+
   for (const std::pair<VertexWSM, WeightWSM>& p_neighbour_entry :
        m_pattern_ndata.get_neighbours_and_weights(assignment.first)) {
     const VertexWSM& p_neighbour = p_neighbour_entry.first;
-    const std::set<VertexWSM>& domain = accessor.get_domain(p_neighbour);
+
+    const boost::dynamic_bitset<>& bitset_domain = accessor.get_domain(p_neighbour);
     if (other_vertex_reduction_can_be_skipped_by_symmetry(
-            domain, accessor, assignment.first, p_neighbour)) {
+            bitset_domain, accessor, assignment.first, p_neighbour)) {
       continue;
     }
-    fill_intersection_ignoring_second_elements(
-        domain, target_neighbours_and_weights, work_set);
 
-    switch (accessor.overwrite_domain_with_set_swap(p_neighbour, work_set)) {
+    work_bitset.resize(bitset_domain.size());
+    work_bitset.reset();
+    for(const auto& tv_weight_pair : target_neighbours_and_weights) {
+      TKET_ASSERT(!work_bitset.test_set(tv_weight_pair.first));
+    }
+
+    switch (accessor.intersect_domain_with_swap(p_neighbour, work_bitset).reduction_result) {
       case ReductionResult::SUCCESS:
         break;
       case ReductionResult::NOGOOD:

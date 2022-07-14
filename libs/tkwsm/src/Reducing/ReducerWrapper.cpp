@@ -30,7 +30,7 @@ ReductionResult ReducerInterface::reduce(
 }
 
 bool ReducerInterface::other_vertex_reduction_can_be_skipped_by_symmetry(
-    const std::set<VertexWSM>& other_domain, const DomainsAccessor& accessor,
+    const boost::dynamic_bitset<>& other_domain, const DomainsAccessor& accessor,
     VertexWSM this_vertex, VertexWSM other_vertex) {
   // If this other pv was already assigned in a previous node
   // (i.e., its domain was the same as now), then the reducer
@@ -44,7 +44,7 @@ bool ReducerInterface::other_vertex_reduction_can_be_skipped_by_symmetry(
   // but that information is not available (although it could be deduced
   // using some labour).
   // Instead, we decide by using vertex numbers.
-  return other_domain.size() == 1 &&
+  return other_domain.count() == 1 &&
          (!accessor.domain_created_in_current_node(other_vertex) ||
           other_vertex < this_vertex);
 }

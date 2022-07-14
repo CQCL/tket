@@ -19,6 +19,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <boost/dynamic_bitset.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
@@ -110,6 +111,21 @@ typedef std::map<VertexWSM, VertexWSM> Assignments;
 
 /** A string representation of some assignments. */
 std::string str(const Assignments&);
+
+/** Mainly used for checking if a bitset, representing a domain,
+ * has 0, 1 or more bits set to true; this is a bit faster than count().
+ */
+struct BitsetInformation {
+  bool empty;
+
+  /** This will be nonnull if and only if the bitset has EXACTLY one bit set,
+   * and then will contain the value.
+   */
+  std::optional<VertexWSM> single_element;
+
+  explicit BitsetInformation(const boost::dynamic_bitset<>& domain);
+};
+
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

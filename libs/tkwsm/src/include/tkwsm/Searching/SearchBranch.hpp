@@ -86,6 +86,7 @@ class SearchBranch {
    * future search.
    */
   std::set<VertexWSM> get_used_target_vertices() const;
+  ////boost::dynamic_bitset<> get_used_target_vertices() const;
 
   void activate_weight_checker(WeightWSM total_p_edge_weights);
 
@@ -134,6 +135,7 @@ class SearchBranch {
   std::unique_ptr<WeightChecker> m_weight_checker_ptr;
 
   std::set<VertexWSM> m_impossible_target_vertices;
+  ////boost::dynamic_bitset<> m_impossible_target_vertices;
 
   bool perform_single_assignment_checks_in_reduce_loop(
       std::size_t num_assignments_alldiff_processed);

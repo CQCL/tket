@@ -56,7 +56,7 @@ class DistancesReducer : public ReducerInterface {
   // of the union at the end
   // (concatenating N vectors into a single set is not
   // particularly slow, but it's good if we can avoid it).
-  std::vector<std::vector<VertexWSM>> m_work_vectors_list;
+  //std::vector<std::vector<VertexWSM>> m_work_vectors_list;
 };
 
 }  // namespace WeightedSubgraphMonomorphism

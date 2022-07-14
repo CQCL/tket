@@ -14,7 +14,7 @@
 
 #pragma once
 #include <optional>
-
+#include <boost/dynamic_bitset.hpp>
 #include "../GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
@@ -126,8 +126,11 @@ class ReducerInterface {
    * reduced to a singleton.
    * @return True if there is no need to reduce Domain(pv2).
    */
+  //static bool other_vertex_reduction_can_be_skipped_by_symmetry(
+  //    const std::set<VertexWSM>& other_domain, const DomainsAccessor& accessor,
+  //    VertexWSM this_vertex, VertexWSM other_vertex);
   static bool other_vertex_reduction_can_be_skipped_by_symmetry(
-      const std::set<VertexWSM>& other_domain, const DomainsAccessor& accessor,
+      const boost::dynamic_bitset<>& other_domain, const DomainsAccessor& accessor,
       VertexWSM this_vertex, VertexWSM other_vertex);
 };
 

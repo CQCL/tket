@@ -41,7 +41,8 @@ class ValueOrdering {
    * @return The chosen TV from Dom(PV).
    */
   VertexWSM get_target_value(
-      const std::set<VertexWSM>& possible_values,
+      //const std::set<VertexWSM>& possible_values,
+      const boost::dynamic_bitset<>& possible_values,
       const NeighboursData& target_ndata, RNG& rng);
 
  private:
@@ -59,7 +60,8 @@ class ValueOrdering {
 
   // Fills m_entries_for_high_degree_vertices.
   void fill_entries_for_high_degree_vertices(
-      const std::set<VertexWSM>& possible_values,
+      //const std::set<VertexWSM>& possible_values,
+      const boost::dynamic_bitset<>& possible_values,
       const NeighboursData& target_ndata);
 
   // Once fill_entries_for_high_degree_vertices has been called,

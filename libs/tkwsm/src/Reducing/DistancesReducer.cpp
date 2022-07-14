@@ -23,6 +23,8 @@
 #include "tkwsm/GraphTheoretic/NeighboursData.hpp"
 #include "tkwsm/Searching/DomainsAccessor.hpp"
 
+#include "WeightSubgrMono/Common/TemporaryRefactorCode.hpp"
+
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
@@ -34,9 +36,6 @@ DistancesReducer::DistancesReducer(
       m_target_near_ndata(target_near_ndata),
       m_distance(distance) {
   TKET_ASSERT(m_distance > 1);
-
-  // Ensure that we never need to resize again.
-  m_work_vectors_list.resize(m_distance - 1);
 }
 
 bool DistancesReducer::check(std::pair<VertexWSM, VertexWSM> assignment) {
@@ -45,9 +44,10 @@ bool DistancesReducer::check(std::pair<VertexWSM, VertexWSM> assignment) {
       m_target_near_ndata.get_degree_counts(assignment.second, m_distance));
 }
 
+
 ReductionResult DistancesReducer::reduce(
     std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,
-    std::set<VertexWSM>& work_set) {
+    std::set<VertexWSM>&) {
   const auto& pv_at_distance_d = m_pattern_near_ndata.get_vertices_at_distance(
       assignment.first, m_distance);
 
@@ -56,66 +56,45 @@ ReductionResult DistancesReducer::reduce(
     return ReductionResult::SUCCESS;
   }
 
-  // To save space, we don't explicitly construct the union
-  // {v : dist(TV,v) <= j}, which could be large.
-  // For each PV' with  dist(PV, PV')=d,  we intersect Dom(PV')
-  // with the disjoint UNION of  A(1), A(2), ..., A(d),
-  // where A(j) = {v : dist(TV,v)=j}.
-  // We build it up by combining
-  //    Dom(PV') intersect A(j)   (which are disjoint), directly.
+  TemporaryRefactorCode();
+  boost::dynamic_bitset<> work_bitset;
+  
   const std::vector<std::pair<VertexWSM, WeightWSM>>& tv_neighbours =
       m_target_ndata.get_neighbours_and_weights(assignment.second);
 
   auto result = ReductionResult::SUCCESS;
 
   for (VertexWSM new_pv : pv_at_distance_d) {
-    const std::set<VertexWSM>& current_domain = accessor.get_domain(new_pv);
-    if (other_vertex_reduction_can_be_skipped_by_symmetry(
-            current_domain, accessor, assignment.first, new_pv)) {
-      continue;
+    {
+      const auto& current_domain = accessor.get_domain(assignment.first);
+      if (other_vertex_reduction_can_be_skipped_by_symmetry(
+              current_domain, accessor, assignment.first, new_pv)) {
+        continue;
+      }
+      work_bitset.resize(current_domain.size());
     }
+    work_bitset.reset();
     // This is for d=1, obviously a special case.
-    fill_intersection_ignoring_second_elements(
-        current_domain, tv_neighbours, work_set);
+    for(const auto& entry : tv_neighbours) {
+      // TODO: store bitsets!
+      TKET_ASSERT(entry.first < work_bitset.size());
+      TKET_ASSERT(!work_bitset.test_set(entry.first));
+    }
 
-    auto size_so_far = work_set.size();
-    unsigned next_work_vector_index = 0;
-
-    // Add all the other intersected sets.
     for (unsigned jj = 2; jj <= m_distance; ++jj) {
       const auto& new_tv_list =
           m_target_near_ndata.get_vertices_at_distance(assignment.second, jj);
-
-      // The constructor already resized the vectors_list,
-      // to ensure a valid index.
-      std::vector<VertexWSM>& work_vector =
-          m_work_vectors_list[next_work_vector_index];
-
-      fill_intersection(current_domain, new_tv_list, work_vector);
-      if (!work_vector.empty()) {
-        // If it was empty, just reuse for the next distance.
-        size_so_far += work_vector.size();
-        ++next_work_vector_index;
+      
+      if(new_tv_list.empty()) {
+        break;
+      }
+      for(auto tv : new_tv_list) {
+        TKET_ASSERT(tv<work_bitset.size());
+        TKET_ASSERT(!work_bitset.test_set(tv));
       }
     }
-    if (size_so_far == current_domain.size()) {
-      // No change!
-      continue;
-    }
 
-    if (size_so_far == 0) {
-      return ReductionResult::NOGOOD;
-    }
-
-    // Now, take the union of all the disjoint sets.
-    for (unsigned index = 0; index < next_work_vector_index; ++index) {
-      for (VertexWSM tv : m_work_vectors_list[index]) {
-        work_set.insert(tv);
-      }
-    }
-    // Now "m_work_vector" is the final intersection,
-    // although NOT sorted; but that doesn't matter.
-    switch (accessor.overwrite_domain_with_set_swap(new_pv, work_set)) {
+    switch (accessor.intersect_domain_with_swap(new_pv, work_bitset).reduction_result) {
       case ReductionResult::NEW_ASSIGNMENTS:
         // Normally we would return now,
         // BUT the assignment PV->TV hasn't been fully processed
@@ -126,14 +105,14 @@ ReductionResult DistancesReducer::reduce(
         result = ReductionResult::NEW_ASSIGNMENTS;
         break;
       case ReductionResult::NOGOOD:
-        // We should already have handled nogoods.
-        TKET_ASSERT(false);
+        return ReductionResult::NOGOOD;
       case ReductionResult::SUCCESS:
         break;
     }
   }
   return result;
 }
+
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

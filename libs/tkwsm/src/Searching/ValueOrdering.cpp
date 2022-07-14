@@ -83,12 +83,14 @@ ValueOrdering::ValueOrdering() {
 }
 
 void ValueOrdering::fill_entries_for_high_degree_vertices(
-    const std::set<VertexWSM>& possible_values,
+    const boost::dynamic_bitset<>& possible_values,
     const NeighboursData& target_ndata) {
   // Multipass algorithm; simple and efficient enough.
   // Pass one: find the max degree.
   size_t max_degree = 0;
-  for (VertexWSM tv : possible_values) {
+  for (auto tv = possible_values.find_first();
+            tv < possible_values.size();
+            tv = possible_values.find_next(tv)) {
     max_degree = std::max(max_degree, target_ndata.get_degree(tv));
   }
   TKET_ASSERT(max_degree > 0);
@@ -97,7 +99,9 @@ void ValueOrdering::fill_entries_for_high_degree_vertices(
   for (HighDegreeVerticesData& entry : m_entries_for_high_degree_vertices) {
     entry.vertices.clear();
   }
-  for (VertexWSM tv : possible_values) {
+  for (auto tv = possible_values.find_first();
+            tv < possible_values.size();
+            tv = possible_values.find_next(tv)) {
     const auto degree = target_ndata.get_degree(tv);
     if (degree + m_entries_for_high_degree_vertices.size() > max_degree) {
       const auto index = max_degree - degree;
@@ -150,9 +154,11 @@ VertexWSM ValueOrdering::get_random_choice_from_data(RNG& rng) const {
 }
 
 VertexWSM ValueOrdering::get_target_value(
-    const std::set<VertexWSM>& possible_values,
+    const boost::dynamic_bitset<>& possible_values,
     const NeighboursData& target_ndata, RNG& rng) {
-  TKET_ASSERT(possible_values.size() >= 2);
+  const BitsetInformation bitset_info(possible_values);
+  // Not size 0 or 1.
+  TKET_ASSERT(!bitset_info.empty && !bitset_info.single_element);
   fill_entries_for_high_degree_vertices(possible_values, target_ndata);
   return get_random_choice_from_data(rng);
 }

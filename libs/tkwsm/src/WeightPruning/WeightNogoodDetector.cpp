@@ -92,17 +92,22 @@ bool WeightNogoodDetector::fill_t_weight_lower_bounds_for_p_edges_containing_pv(
   for (unsigned pv = 0; pv < accessor.get_number_of_pattern_vertices(); ++pv) {
     WeightWSM weight;
     set_maximum(weight);
-    const std::set<VertexWSM>& domain = accessor.get_domain(pv);
-    TKET_ASSERT(!domain.empty());
-    for (VertexWSM tv : domain) {
-      const auto weight_opt_for_tv = get_min_weight_for_tv(tv);
+    const auto& domain = accessor.get_domain(pv);
+    bool tv_found = false;
+    for (auto tv = domain.find_first();
+              tv < domain.size();
+              tv = domain.find_next(tv)) {
+      tv_found = true;
+      const VertexWSM tv_again = static_cast<VertexWSM>(tv);
+      const auto weight_opt_for_tv = get_min_weight_for_tv(tv_again);
       if (weight_opt_for_tv) {
         weight = std::min(weight, weight_opt_for_tv.value());
       } else {
-        m_invalid_target_vertices.insert(tv);
-        m_valid_target_vertices.erase(tv);
+        m_invalid_target_vertices.insert(tv_again);
+        m_valid_target_vertices.erase(tv_again);
       }
     }
+
     if (is_maximum(weight)) {
       // A nogood found already!
       return false;
@@ -127,7 +132,7 @@ WeightNogoodDetector::get_extra_scalar_product_lower_bound(
   // the edge will be counted twice.
   // To solve this: only add the data when pv1 < pv2.
   for (VertexWSM pv1 : accessor.get_unassigned_pattern_vertices_superset()) {
-    if (accessor.get_domain(pv1).size() == 1) {
+    if (accessor.get_domain_size(pv1) == 1) {
       // It's assigned.
       continue;
     }
@@ -148,6 +153,45 @@ WeightNogoodDetector::get_extra_scalar_product_lower_bound(
       const VertexWSM& pv2 = pv2_weight_pair.first;
       const WeightWSM& p_weight = pv2_weight_pair.second;
       WeightWSM t_weight_estimate = minimum_t_weight;
+
+      const BitsetInformation bitset_info(accessor.get_domain(pv2));
+      if (bitset_info.single_element) {
+        // This other p-vertex PV2 is assigned already.
+        // So let's check the other t-weight estimate, it may be better.
+        const VertexWSM& tv2 = bitset_info.single_element.value();
+
+        // We already know that this edge contains pv1,
+        // so DEFINITELY has t-weight >= this current estimate.
+        // But we also know that it will be assigned to a target edge
+        // containing tv2, which has t_weight >= the other value.
+        const auto other_tv_weight_bound_opt = get_min_weight_for_tv(tv2);
+
+        if (!other_tv_weight_bound_opt) {
+          // We're at a nogood!
+          // (This COULD actually happen. It means that TV2 is invalid,
+          // and in fact always was;
+          // but we didn't realise this at the time we made the assignment).
+          m_invalid_target_vertices.insert(tv2);
+          return {};
+        }
+
+        // We take the MAX to get a valid LOWER bound
+        // as LARGE as possible.
+        t_weight_estimate =
+            std::max(t_weight_estimate, other_tv_weight_bound_opt.value());
+      } else {
+        // pv2 is ALSO unassigned. Beware of double counting!
+        if (pv1 > pv2) {
+          continue;
+        }
+        // We'll do BOTH pv1--pv2 and pv2--pv1 NOW.
+        // If pv2 produces a larger value, we can use that instead.
+        t_weight_estimate =
+            std::max(t_weight_estimate, get_t_weight_lower_bound(pv2));
+      }
+
+
+      /*
       const std::set<VertexWSM>& domain2 = accessor.get_domain(pv2);
       if (domain2.size() == 1) {
         // This other p-vertex PV2 is assigned already.
@@ -183,6 +227,7 @@ WeightNogoodDetector::get_extra_scalar_product_lower_bound(
         t_weight_estimate =
             std::max(t_weight_estimate, get_t_weight_lower_bound(pv2));
       }
+      */
       weight_lower_bound += p_weight * t_weight_estimate;
       if (weight_lower_bound > max_extra_scalar_product) {
         return {};
