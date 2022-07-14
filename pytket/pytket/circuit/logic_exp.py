@@ -350,20 +350,20 @@ class RegRsh(BinaryOp, RegLogicExp):
     op = RegWiseOp.RSH
 
 
-class Predicate(BinaryOp):
+class RegPredicate(BinaryOp):
     """
     A binary predicate where the arguments are either
     Bits, BitRegisters, or Constants.
     """
 
 
-class Eq(Predicate):
+class Eq(RegPredicate):
     @staticmethod
     def _const_eval(args: List[Constant]) -> Constant:
         return args[0] == args[1]
 
 
-class Neq(Predicate):
+class Neq(RegPredicate):
     @staticmethod
     def _const_eval(args: List[Constant]) -> Constant:
         return 1 - Eq._const_eval(args)
@@ -385,7 +385,7 @@ class RegNeq(Neq, RegLogicExp):
     op = RegWiseOp.NEQ
 
 
-class RegLt(Predicate, RegLogicExp):
+class RegLt(RegPredicate, RegLogicExp):
     op = RegWiseOp.LT
 
     @staticmethod
@@ -393,7 +393,7 @@ class RegLt(Predicate, RegLogicExp):
         return args[0] < args[1]
 
 
-class RegGt(Predicate, RegLogicExp):
+class RegGt(RegPredicate, RegLogicExp):
     op = RegWiseOp.GT
 
     @staticmethod
@@ -401,7 +401,7 @@ class RegGt(Predicate, RegLogicExp):
         return args[0] > args[1]
 
 
-class RegLeq(Predicate, RegLogicExp):
+class RegLeq(RegPredicate, RegLogicExp):
     op = RegWiseOp.LEQ
 
     @staticmethod
@@ -409,7 +409,7 @@ class RegLeq(Predicate, RegLogicExp):
         return args[0] <= args[1]
 
 
-class RegGeq(Predicate, RegLogicExp):
+class RegGeq(RegPredicate, RegLogicExp):
     op = RegWiseOp.GEQ
 
     @staticmethod
@@ -420,11 +420,11 @@ class RegGeq(Predicate, RegLogicExp):
 # utility to define register comparison methods
 def gen_regpredicate(
     op: Ops,
-) -> Callable[[Union[RegLogicExp, BitRegister], Constant], Predicate]:
+) -> Callable[[Union[RegLogicExp, BitRegister], Constant], RegPredicate]:
     def const_predicate(
         register: Union[RegLogicExp, BitRegister], value: Constant
-    ) -> Predicate:
-        return cast(Type[Predicate], LogicExp.factory(op))(register, value)
+    ) -> RegPredicate:
+        return cast(Type[RegPredicate], LogicExp.factory(op))(register, value)
 
     return const_predicate
 
@@ -450,11 +450,11 @@ reg_geq.__doc__ = """Function to express a BitRegister greater than or equal to
     ``reg_geq(r, 5)``"""
 
 
-def if_bit(bit: Union[Bit, BitLogicExp]) -> Predicate:
+def if_bit(bit: Union[Bit, BitLogicExp]) -> RegPredicate:
     """Equivalent of ``if bit:``."""
     return BitEq(bit, 1)
 
 
-def if_not_bit(bit: Union[Bit, BitLogicExp]) -> Predicate:
+def if_not_bit(bit: Union[Bit, BitLogicExp]) -> RegPredicate:
     """Equivalent of ``if not bit:``."""
     return BitEq(bit, 0)
