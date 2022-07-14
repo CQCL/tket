@@ -35,6 +35,10 @@ from pytket.circuit.logic_exp import (
 )
 
 
+class NonConstError(Exception):
+    """A custom exception class for non constant predicate argument."""
+
+
 def _add_condition(
     circ: Circuit, condition: Union[Predicate, Bit, BitLogicExp]
 ) -> Tuple[Bit, bool]:
@@ -47,7 +51,9 @@ def _add_condition(
         pred_exp, pred_val = condition.args
         # Predicate constructor should ensure arg order
         if not isinstance(pred_val, Constant):
-            raise NotImplementedError
+            raise NonConstError(
+                "Condition expressions must be of type `Predicate` with a constant second operand."
+            )
     elif isinstance(condition, BitLogicExp):
         pred_val = 1
         pred_exp = condition
