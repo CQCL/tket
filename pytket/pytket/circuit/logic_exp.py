@@ -458,3 +458,7 @@ def if_bit(bit: Union[Bit, BitLogicExp]) -> PredicateExp:
 def if_not_bit(bit: Union[Bit, BitLogicExp]) -> PredicateExp:
     """Equivalent of ``if not bit:``."""
     return BitEq(bit, 0)
+
+
+#  ConstPredicate is deprecated in favour of PredicateExp
+ConstPredicate = PredicateExp
