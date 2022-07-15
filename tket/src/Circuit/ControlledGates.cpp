@@ -37,7 +37,6 @@ typedef std::vector<std::pair<Edge, Vertex>>
     candidate_t;  // each CnX candidate to decompose needs a spare wire to put
                   // some extra controls on
 
-static Circuit lemma54(const Expr& angle);  // refers to rule lemma 5.4 in paper
 static Circuit lemma72(unsigned control_m);  // rule lemma 7.2
 static void lemma73(
     Circuit& circ, const std::pair<Edge, Vertex>& pairy);  // rule lemma 7.3
@@ -332,21 +331,6 @@ Circuit CnX_normal_decomp(unsigned n) {
 
   circ.add_phase(std::pow(0.5, n + 1));
   return circ;
-}
-
-/* assumes vert is controlled Ry with 1 control */
-/* decomposes CRy into 2 CXs and 2 Ry gates */
-static Circuit lemma54(const Expr& angle) {
-  Circuit new_circ(2);
-  std::vector<Expr> A_params = {angle / 2.};
-  std::vector<Expr> B_params = {-angle / 2.};
-  const Op_ptr A = get_op_ptr(OpType::Ry, A_params);
-  const Op_ptr B = get_op_ptr(OpType::Ry, B_params);
-  new_circ.add_op<unsigned>(A, {1});
-  new_circ.add_op<unsigned>(OpType::CX, {0, 1});
-  new_circ.add_op<unsigned>(B, {1});
-  new_circ.add_op<unsigned>(OpType::CX, {0, 1});
-  return new_circ;
 }
 
 // unsigned -> which column the change is in
@@ -663,18 +647,15 @@ static void lemma79(
     candidate_t& CCX_candidates) {
   replacement.add_blank_wires(N);
 
-  std::vector<Expr> A_params = {angle / 2.};
-  std::vector<Expr> B_params = {-angle / 2.};
-  const Op_ptr A = get_op_ptr(OpType::CnRy, A_params, 2);
-  const Op_ptr B = get_op_ptr(OpType::CnRy, B_params, 2);
-
-  Vertex vA = replacement.add_op<unsigned>(A, {N - 2, N - 1});  // A
+  Vertex vA = replacement.add_op<unsigned>(
+      OpType::CRy, {angle / 2.}, {N - 2, N - 1});  // A
   std::vector<unsigned> cnx_qbs(N - 1);
   std::iota(cnx_qbs.begin(), --cnx_qbs.end(), 0);
   cnx_qbs[N - 2] = N - 1;
   const Op_ptr cnx = get_op_ptr(OpType::CnX, std::vector<Expr>{}, N - 1);
   Vertex firstCnX = replacement.add_op<unsigned>(cnx, cnx_qbs);
-  Vertex vB = replacement.add_op<unsigned>(B, {N - 2, N - 1});  // B
+  Vertex vB = replacement.add_op<unsigned>(
+      OpType::CRy, {-angle / 2.}, {N - 2, N - 1});  // B
   CCX_candidates.push_back(
       {boost::edge(vA, vB, replacement.dag).first, firstCnX});
   Vertex secondCnX = replacement.add_op<unsigned>(cnx, cnx_qbs);
@@ -699,7 +680,7 @@ Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity) {
       break;
     }
     case 2: {
-      rep = lemma54(angle);
+      rep = CircPool::CRy_using_CX(angle);
       break;
     }
     case 3:
@@ -722,9 +703,9 @@ Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity) {
       for (auto xnext = x; x != xend; x = xnext) {
         ++xnext;
         OpType type = rep.get_OpType_from_Vertex(*x);
-        if (type == OpType::CnRy) {
+        if (type == OpType::Ry) {
           Expr x_angle = rep.get_Op_ptr_from_Vertex(*x)->get_params()[0];
-          Circuit new_circ = lemma54(x_angle);
+          Circuit new_circ = CircPool::CRy_using_CX(x_angle);
           Subcircuit sub{rep.get_in_edges(*x), rep.get_all_out_edges(*x), {*x}};
           rep.substitute(new_circ, sub, Circuit::VertexDeletion::Yes);
         }
