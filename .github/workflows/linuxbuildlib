@@ -28,9 +28,9 @@ export CONAN_CMD=${PYBIN}/conan
 
 ${CONAN_CMD} profile new tket --detect
 
-${CONAN_CMD} remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
+${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
 
-${CONAN_CMD} user -p ${JFROG_ARTIFACTORY_TOKEN_1} -r tket-conan ${JFROG_ARTIFACTORY_USER_1}
+${CONAN_CMD} user -p ${JFROG_ARTIFACTORY_TOKEN_2} -r tket-libs ${JFROG_ARTIFACTORY_USER_2}
 
 LIB_VER=$(${CONAN_CMD} inspect --raw version ${TKLIB})
 
@@ -39,7 +39,7 @@ ${CONAN_CMD} create --profile=tket -o ${TKLIB}:shared=True ${TKLIB} tket/stable
 
 if [ ${UPLOAD_PACKAGE} == "YES" ]
 then
-    ${CONAN_CMD} upload ${TKLIB}/${LIB_VER}@tket/stable --all -r=tket-conan
+    ${CONAN_CMD} upload ${TKLIB}/${LIB_VER}@tket/stable --all -r=tket-libs
 else
-    ${CONAN_CMD} upload ${TKLIB}/${LIB_VER}@tket/stable --all -r=tket-conan --skip-upload
+    ${CONAN_CMD} upload ${TKLIB}/${LIB_VER}@tket/stable --all -r=tket-libs --skip-upload
 fi

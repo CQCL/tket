@@ -68,7 +68,7 @@ jobs:
         conan profile new tket --detect --force
         conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
-        conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
         conan create --profile=tket recipes/tket --build=missing
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
@@ -111,7 +111,7 @@ jobs:
         conan profile new tket --detect --force
         conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
-        conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
         conan create --profile=tket recipes/tket --build=missing
         conan create --profile=tket recipes/pybind11
         .github/workflows/build_macos_m1_wheel
@@ -162,7 +162,7 @@ jobs:
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: add remote
-      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Cache tket build
       id: cache-tket
       uses: actions/cache@v3

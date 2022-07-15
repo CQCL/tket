@@ -63,7 +63,7 @@ jobs:
       if: matrix.os == 'ubuntu-20.04'
       run: conan profile update settings.compiler.libcxx=libstdc++11 tket
     - name: add remote
-      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: build ${{ matrix.lib }}
       run: conan create --profile=tket libs/${{ matrix.lib }} --build=missing
     - name: build ${{ matrix.lib }} tests
@@ -92,7 +92,7 @@ jobs:
     - name: create profile
       run: conan profile new tket --detect --force
     - name: add remote
-      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
     - name: build ${{ matrix.lib }}
       run: conan create --profile=tket libs/${{ matrix.lib }} --build=missing
     - name: build ${{ matrix.lib }} tests
@@ -133,7 +133,7 @@ jobs:
     - name: set libcxx
       run: conan profile update settings.compiler.libcxx=libstdc++11 tket
     - name: add remote
-      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: set Debug in profile
       run: conan profile update settings.build_type=Debug tket
     - name: build ${{ matrix.lib }}
