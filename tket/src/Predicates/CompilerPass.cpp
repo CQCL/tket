@@ -382,7 +382,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       fid.ZZMax_fidelity =
           content.at("fidelities").at("ZZMax").get<std::optional<double>>();
       fid.ZZPhase_fidelity = std::nullopt;
-      pp = DecomposeTK2(fid);
+      bool allow_swaps = content.at("allow_swaps").get<bool>();
+      pp = DecomposeTK2(fid, allow_swaps);
     } else if (passname == "PeepholeOptimise2Q") {
       pp = PeepholeOptimise2Q();
     } else if (passname == "FullPeepholeOptimise") {

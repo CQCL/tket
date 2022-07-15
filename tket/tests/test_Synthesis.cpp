@@ -1916,6 +1916,52 @@ SCENARIO("Testing decompose_TK2") {
   }
 }
 
+SCENARIO("DecomposeTK2, implicit swaps") {
+  Circuit c(2);
+  unsigned n_noswap = 0, n_swap = 0;
+  GIVEN("A swap") {
+    c.add_op<unsigned>(OpType::SWAP, {0, 1});
+    n_noswap = 3;
+    n_swap = 0;
+  }
+  GIVEN("A 3-CX swap") {
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::CX, {1, 0});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    n_noswap = 3;
+    n_swap = 0;
+  }
+  GIVEN("2-CX") {
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::CX, {1, 0});
+    n_noswap = 2;
+    n_swap = 1;
+  }
+
+  (Transforms::synthesise_tk() >> Transforms::two_qubit_squash(OpType::TK2))
+      .apply(c);
+
+  Circuit c_res = c;
+  Transforms::decompose_TK2(false).apply(c_res);
+  REQUIRE(c_res.count_gates(OpType::CX) == n_noswap);
+
+  c_res = c;
+  Transforms::TwoQbFidelities fid;
+  fid.ZZMax_fidelity = 1.;
+  Transforms::decompose_TK2(fid, false).apply(c_res);
+  REQUIRE(c_res.count_gates(OpType::ZZMax) == n_noswap);
+  REQUIRE(c_res.count_gates(OpType::CX) == 0);
+
+  c_res = c;
+  Transforms::decompose_TK2(true).apply(c_res);
+  REQUIRE(c_res.count_gates(OpType::CX) == n_swap);
+
+  c_res = c;
+  Transforms::decompose_TK2(fid, true).apply(c_res);
+  REQUIRE(c_res.count_gates(OpType::ZZMax) == n_swap);
+  REQUIRE(c_res.count_gates(OpType::CX) == 0);
+}
+
 SCENARIO("Testing absorb_Rz_NPhasedX") {
   Circuit circ(3);
   Expr exp_beta;

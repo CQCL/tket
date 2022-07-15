@@ -668,8 +668,60 @@ static Circuit TK2_replacement(
   return sub;
 }
 
-Transform decompose_TK2() { return decompose_TK2({}); }
-Transform decompose_TK2(const TwoQbFidelities &fid) {
+static unsigned count_two_qb_gates(const Circuit &c) {
+  unsigned cnt = 0;
+  for (OpType ot : {OpType::CX, OpType::ZZMax, OpType::ZZPhase}) {
+    cnt += c.count_gates(ot);
+  }
+  return cnt;
+}
+
+static bool inner_decompose_TK2(
+    const TwoQbFidelities &fid, Circuit &circ, bool allow_swaps) {
+  bool success = false;
+
+  VertexList bin;
+  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+    if (circ.get_OpType_from_Vertex(v) != OpType::TK2) continue;
+
+    success = true;
+    auto params = circ.get_Op_ptr_from_Vertex(v)->get_params();
+    TKET_ASSERT(params.size() == 3);
+    std::array<Expr, 3> angles{params[0], params[1], params[2]};
+
+    Circuit sub = TK2_replacement(angles, fid);
+    if (allow_swaps) {
+      // Swapped circuit
+      Circuit swap_circ(2);
+      for (unsigned i = 0; i < 3; ++i) {
+        params[i] += 0.5;
+      }
+      swap_circ.add_op<unsigned>(OpType::TK2, params, {0, 1});
+      normalise_TK2().apply(swap_circ);
+      inner_decompose_TK2(fid, swap_circ, false);
+
+      const unsigned n_2qb = count_two_qb_gates(sub);
+      const unsigned new_n_2qb = count_two_qb_gates(swap_circ);
+      if (new_n_2qb < n_2qb) {
+        // Replace TK2 with implicit swap
+        swap_circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+        swap_circ.replace_SWAPs();
+        sub = swap_circ;
+      }
+    }
+    bin.push_back(v);
+    circ.substitute(sub, v, Circuit::VertexDeletion::No);
+  }
+  circ.remove_vertices(
+      bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+
+  return success;
+}
+
+Transform decompose_TK2(bool allow_swaps) {
+  return decompose_TK2({}, allow_swaps);
+}
+Transform decompose_TK2(const TwoQbFidelities &fid, bool allow_swaps) {
   if (fid.ZZMax_fidelity) {
     if (*fid.ZZMax_fidelity < 0 || *fid.ZZMax_fidelity > 1) {
       throw std::domain_error("ZZMax fidelity must be between 0 and 1.");
@@ -687,26 +739,8 @@ Transform decompose_TK2(const TwoQbFidelities &fid) {
           "fidelity");
     }
   }
-  return Transform([fid](Circuit &circ) {
-    bool success = false;
-
-    VertexList bin;
-    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-      if (circ.get_OpType_from_Vertex(v) != OpType::TK2) continue;
-
-      success = true;
-      auto params = circ.get_Op_ptr_from_Vertex(v)->get_params();
-      TKET_ASSERT(params.size() == 3);
-      std::array<Expr, 3> angles{params[0], params[1], params[2]};
-
-      Circuit sub = TK2_replacement(angles, fid);
-      bin.push_back(v);
-      circ.substitute(sub, v, Circuit::VertexDeletion::No);
-    }
-    circ.remove_vertices(
-        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
-
-    return success;
+  return Transform([fid, allow_swaps](Circuit &circ) {
+    return inner_decompose_TK2(fid, circ, allow_swaps);
   });
 }
 

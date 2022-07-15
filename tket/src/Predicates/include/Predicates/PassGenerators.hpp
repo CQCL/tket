@@ -155,6 +155,9 @@ PassPtr KAKDecomposition(
  * a lambda float -> float, mapping a ZZPhase angle parameter to its fidelity.
  * These parameters will be used to return the optimal decomposition of each TK2
  * gate, taking noise into consideration.
+
+ * Using the `allow_swaps=true` (default) option, qubits will be swapped when
+ * convenient to reduce the two-qubit gate count of the decomposed TK2.
  *
  * If the TK2 angles are symbolic values, the decomposition will be exact
  * (i.e. not noise-aware). It is not possible in general to obtain optimal
@@ -162,10 +165,12 @@ PassPtr KAKDecomposition(
  * for concrete values if possible.
  *
  * @param fid The two-qubit gate fidelities (optional).
+ * @param allow_swaps Allow implicit swaps (default = true).
  * @return PassPtr
  */
-PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid);
-PassPtr DecomposeTK2();
+PassPtr DecomposeTK2(
+    const Transforms::TwoQbFidelities& fid, bool allow_swaps = true);
+PassPtr DecomposeTK2(bool allow_swaps = true);
 
 /**
  * Resynthesize and squash three-qubit interactions.
