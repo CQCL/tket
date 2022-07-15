@@ -101,6 +101,9 @@ Transform decompose_MolmerSorensen();
  * two-qubit gate fidelities will be used to return the optimal decomposition of
  * each TK2 gate, taking noise into consideration.
  *
+ * Using the `allow_swaps=true` (default) option, qubits will be swapped when
+ * convenient to reduce the two-qubit gate count of the decomposed TK2.
+ *
  * If no fidelities are provided, the decomposition will be exact, using CX
  * gates.
  *
@@ -113,10 +116,11 @@ Transform decompose_MolmerSorensen();
  * using the \ref normalise_TK2 transform.
  *
  * @param fid The two-qubit gate fidelities (optional).
+ * @param allow_swaps Allow implicit swaps (default = true).
  * @return Transform
  */
-Transform decompose_TK2(const TwoQbFidelities& fid);
-Transform decompose_TK2();
+Transform decompose_TK2(const TwoQbFidelities& fid, bool allow_swaps = true);
+Transform decompose_TK2(bool allow_swaps = true);
 
 /**
  * @brief Synthesise ZZPhase gates from CX and Rz, as well as XX/YYPhase.

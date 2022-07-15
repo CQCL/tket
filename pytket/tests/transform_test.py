@@ -167,6 +167,21 @@ def test_KAK() -> None:
     assert c.n_gates_of_type(OpType.CX) == 8
 
 
+def test_DecomposeTK2() -> None:
+    c = Circuit(2).add_gate(OpType.TK2, [0.5, 0.5, 0.5], [0, 1])
+    Transform.DecomposeTK2(False).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 3
+
+    c = Circuit(2).add_gate(OpType.TK2, [0.5, 0.5, 0.5], [0, 1])
+    Transform.DecomposeTK2(True).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 0
+
+    c = Circuit(2).add_gate(OpType.TK2, [0.5, 0.5, 0.5], [0, 1])
+    Transform.DecomposeTK2(False, ZZMax_fidelity=0.8).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 0
+    assert c.n_gates_of_type(OpType.ZZMax_fidelity) == 3
+
+
 def test_fidelity_KAK() -> None:
     c = get_KAK_test_circuit()
     Transform.KAKDecomposition(cx_fidelity=0.6).apply(c)

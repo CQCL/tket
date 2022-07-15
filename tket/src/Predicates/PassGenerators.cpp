@@ -524,8 +524,10 @@ PassPtr gen_user_defined_swap_decomp_pass(const Circuit& replacement_circ) {
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
-PassPtr KAKDecomposition(OpType target_2qb_gate, double cx_fidelity) {
-  Transform t = Transforms::two_qubit_squash(target_2qb_gate, cx_fidelity);
+PassPtr KAKDecomposition(
+    OpType target_2qb_gate, double cx_fidelity, bool allow_swaps) {
+  Transform t =
+      Transforms::two_qubit_squash(target_2qb_gate, cx_fidelity, allow_swaps);
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtrMap precons{CompilationUnit::make_type_pair(ccontrol_pred)};
   PredicateClassGuarantees g_postcons = {
@@ -538,19 +540,21 @@ PassPtr KAKDecomposition(OpType target_2qb_gate, double cx_fidelity) {
   j["name"] = "KAKDecomposition";
   j["target_2qb_gate"] = target_2qb_gate;
   j["fidelity"] = cx_fidelity;
+  j["allow_swaps"] = allow_swaps;
 
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
-PassPtr DecomposeTK2() { return DecomposeTK2({}); }
-PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid) {
-  Transform t = Transforms::decompose_TK2(fid);
+PassPtr DecomposeTK2(bool allow_swaps) { return DecomposeTK2({}, allow_swaps); }
+PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid, bool allow_swaps) {
+  Transform t = Transforms::decompose_TK2(fid, allow_swaps);
   PredicatePtr normalised_tk2 = std::make_shared<NormalisedTK2Predicate>();
   PredicatePtrMap precons{CompilationUnit::make_type_pair(normalised_tk2)};
   PredicateClassGuarantees preserve_all;
   PostConditions postcons{{}, preserve_all, Guarantee::Preserve};
   nlohmann::json j;
   j["name"] = "DecomposeTK2";
+  j["allow_swaps"] = allow_swaps;
   nlohmann::json fid_json;
   fid_json["CX"] = fid.CX_fidelity;
   fid_json["ZZPhase"] = "SERIALIZATION OF FUNCTIONS IS NOT SUPPORTED";
@@ -560,7 +564,7 @@ PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid) {
 }
 
 PassPtr ThreeQubitSquash(bool allow_swaps) {
-  Transform t = Transforms::two_qubit_squash() >>
+  Transform t = Transforms::two_qubit_squash(allow_swaps) >>
                 Transforms::three_qubit_squash() >>
                 Transforms::clifford_simp(allow_swaps);
   OpTypeSet ots{all_single_qubit_types()};

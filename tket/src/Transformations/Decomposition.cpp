@@ -467,7 +467,7 @@ static double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx) {
 // Try to decompose a TK2 gate using different gate sets, find the one with
 // the highest fidelity.
 // If no fidelities are provided, (best_optype, n_gates) is left unchanged.
-static void best_noise_aware_decomposition(
+static double best_noise_aware_decomposition(
     const std::array<double, 3> &angles, const TwoQbFidelities &fid,
     OpType &best_optype, unsigned &n_gates) {
   double max_fid = 0.;
@@ -519,6 +519,8 @@ static void best_noise_aware_decomposition(
       }
     }
   }
+
+  return max_fid;
 }
 
 // Try to decompose a TK2 gate exactly using different gate sets.
@@ -563,6 +565,45 @@ static void best_exact_decomposition(
   }
 }
 
+// Given a 2-qb circuit with a single TK2, returns a tuple (pre, angles, post)
+// where pre/post are the parts of the circuit that come before/after the TK2
+// gate and angles are the 3 angles of the TK2 gate
+static auto get_TK2_angles(const Circuit &circ) {
+  TKET_ASSERT(circ.n_qubits() == 2);
+  Circuit pre(2), post(2);
+  std::array<Expr, 3> angles;
+  bool found_TK2 = false;
+
+  Circuit::SliceIterator slice_iter = circ.slice_begin();
+  for (const Command &cmd : circ) {
+    Op_ptr op = cmd.get_op_ptr();
+    if (op->get_type() == OpType::TK2) {
+      if (found_TK2) {
+        throw std::invalid_argument(
+            "Found more than one TK2 in get_TK2_angles");
+      } else {
+        auto params = op->get_params();
+        TKET_ASSERT(params.size() == 3);
+        angles = {params[0], params[1], params[2]};
+        found_TK2 = true;
+      }
+    } else {
+      auto qubits = cmd.get_qubits();
+      if (found_TK2) {
+        post.add_op<Qubit>(op, qubits);
+      } else {
+        pre.add_op<Qubit>(op, qubits);
+      }
+    }
+  }
+  if (!found_TK2) {
+    throw std::invalid_argument("Not found any TK2 in get_TK2_angles");
+  }
+  pre.add_phase(circ.get_phase());
+
+  return std::make_tuple(pre, angles, post);
+}
+
 /**
  * @brief TK2 expressed (approximately) as CX/ZZMax or ZZPhase.
  *
@@ -578,25 +619,51 @@ static void best_exact_decomposition(
  *
  * @param angles The TK2 parameters
  * @param fid The two-qubit gate fidelities
+ * @param allow_swaps Whether implicit swaps are allowed.
  * @return Circuit TK2-equivalent circuit
  */
 static Circuit TK2_replacement(
-    const std::array<Expr, 3> &angles, const TwoQbFidelities &fid) {
+    std::array<Expr, 3> angles, const TwoQbFidelities &fid, bool allow_swaps) {
   if (!in_weyl_chamber(angles)) {
     throw std::domain_error("TK2 params are not normalised to Weyl chamber.");
   }
   OpType best_optype = OpType::CX;  // default to using CX
   unsigned n_gates = 3;             // default to 3x CX
+  bool implicit_swap = false;       // default to no implicit swap
+
+  // Only used when allow_swaps == true.
+  Circuit pre, post;
+  std::array<Expr, 3> angles_swapped;
+  if (allow_swaps) {
+    // Swapped circuit
+    Circuit swap_circ(2);
+    angles_swapped = angles;
+    for (unsigned i = 0; i < 3; ++i) {
+      angles_swapped[i] += 0.5;
+    }
+    swap_circ.add_op<unsigned>(
+        OpType::TK2, {angles_swapped[0], angles_swapped[1], angles_swapped[2]},
+        {0, 1});
+    swap_circ.add_phase(0.25);
+    normalise_TK2().apply(swap_circ);
+    std::tie(pre, angles_swapped, post) = get_TK2_angles(swap_circ);
+  }
 
   // Try to evaluate exprs to doubles.
   std::array<double, 3> angles_eval;
+  std::array<double, 3> angles_eval_swapped;
   unsigned last_angle = 0;
-  for (const Expr &e : angles) {
-    std::optional<double> eval = eval_expr_mod(e);
+  for (; last_angle < 3; ++last_angle) {
+    std::optional<double> eval = eval_expr_mod(angles[last_angle]);
     if (eval) {
-      angles_eval[last_angle++] = *eval;
+      angles_eval[last_angle] = *eval;
     } else {
       break;
+    }
+    if (allow_swaps) {
+      eval = eval_expr_mod(angles_swapped[last_angle]);
+      TKET_ASSERT(eval);
+      angles_eval_swapped[last_angle] = *eval;
     }
   }
 
@@ -604,10 +671,36 @@ static Circuit TK2_replacement(
     // Not all angles could be resolved numerically.
     // For symbolic angles, we can only provide an exact decomposition.
     best_exact_decomposition(angles, fid, best_optype, n_gates);
+    if (allow_swaps) {
+      OpType best_optype_swapped = OpType::CX;  // default to using CX
+      unsigned n_gates_swapped = 3;             // default to 3x CX
+      best_exact_decomposition(
+          angles_swapped, fid, best_optype_swapped, n_gates_swapped);
+      if (n_gates_swapped < n_gates) {
+        n_gates = n_gates_swapped;
+        best_optype = best_optype_swapped;
+        angles = angles_swapped;
+        implicit_swap = true;
+      }
+    }
   } else {
     // For non-symbolic angles, we can find the optimal number of gates
     // using the gate fidelities provided.
-    best_noise_aware_decomposition(angles_eval, fid, best_optype, n_gates);
+    double max_fid =
+        best_noise_aware_decomposition(angles_eval, fid, best_optype, n_gates);
+    if (allow_swaps) {
+      OpType best_optype_swapped = OpType::CX;  // default to using CX
+      unsigned n_gates_swapped = 3;             // default to 3x CX
+      double max_fid_swapped = best_noise_aware_decomposition(
+          angles_eval_swapped, fid, best_optype_swapped, n_gates_swapped);
+      if (max_fid_swapped > max_fid ||
+          ((max_fid_swapped - max_fid) < EPS && n_gates_swapped < n_gates)) {
+        n_gates = n_gates_swapped;
+        best_optype = best_optype_swapped;
+        angles = angles_swapped;
+        implicit_swap = true;
+      }
+    }
   }
 
   // Build circuit for substitution.
@@ -665,11 +758,22 @@ static Circuit TK2_replacement(
       throw BadOpType(
           "Unrecognised target OpType in decompose_TK2", best_optype);
   }
+
+  if (implicit_swap) {
+    Circuit swap(2);
+    swap.add_op<unsigned>(OpType::SWAP, {0, 1});
+    sub = pre >> sub >> post >> swap;
+    sub.replace_SWAPs();
+  }
+
   return sub;
 }
 
-Transform decompose_TK2() { return decompose_TK2({}); }
-Transform decompose_TK2(const TwoQbFidelities &fid) {
+Transform decompose_TK2(bool allow_swaps) {
+  return decompose_TK2({}, allow_swaps);
+}
+
+Transform decompose_TK2(const TwoQbFidelities &fid, bool allow_swaps) {
   if (fid.ZZMax_fidelity) {
     if (*fid.ZZMax_fidelity < 0 || *fid.ZZMax_fidelity > 1) {
       throw std::domain_error("ZZMax fidelity must be between 0 and 1.");
@@ -687,7 +791,7 @@ Transform decompose_TK2(const TwoQbFidelities &fid) {
           "fidelity");
     }
   }
-  return Transform([fid](Circuit &circ) {
+  return Transform([fid, allow_swaps](Circuit &circ) {
     bool success = false;
 
     VertexList bin;
@@ -699,7 +803,7 @@ Transform decompose_TK2(const TwoQbFidelities &fid) {
       TKET_ASSERT(params.size() == 3);
       std::array<Expr, 3> angles{params[0], params[1], params[2]};
 
-      Circuit sub = TK2_replacement(angles, fid);
+      Circuit sub = TK2_replacement(angles, fid, allow_swaps);
       bin.push_back(v);
       circ.substitute(sub, v, Circuit::VertexDeletion::No);
     }

@@ -70,12 +70,19 @@ Transform commute_and_combine_HQS2();
  * to CX, the substitution is only performed if it results in a reduction of the
  * number of CX gates, or if at least one of the two-qubit gates is not a CX.
  *
+ * Using the `allow_swaps=true` (default) option, qubits will be swapped when
+ * convenient to further reduce the two-qubit gate count (only applicable
+ * when decomposing to CX gates).
+ *
  * @param target_2qb_gate OpType to decompose to. Either TK2 or CX.
  * @param cx_fidelity Estimated CX gate fidelity, used when target_2qb_gate=CX.
+ * @param allow_swaps Whether to allow implicit wire swaps.
  * @return Transform
  */
 Transform two_qubit_squash(
-    OpType target_2qb_gate = OpType::CX, double cx_fidelity = 1.);
+    OpType target_2qb_gate = OpType::CX, double cx_fidelity = 1.,
+    bool allow_swaps = true);
+Transform two_qubit_squash(bool allow_swaps);
 
 // 1qb squashing into -Rz-Rx-Rz- or -Rx-Rz-Rx- form
 // Expects: Rx, Rz, and any multi-qubit gates
