@@ -131,8 +131,10 @@ class SearchBranch {
 
   std::unique_ptr<WeightChecker> m_weight_checker_ptr;
 
+  // It's very tempting to use boost::dynamic_bitset<> here;
+  // however, impossible_target_vertices are actually very rare
+  // so it's not so important.
   std::set<VertexWSM> m_impossible_target_vertices;
-  ////boost::dynamic_bitset<> m_impossible_target_vertices;
 
   bool perform_single_assignment_checks_in_reduce_loop(
       std::size_t num_assignments_alldiff_processed);

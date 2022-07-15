@@ -16,7 +16,6 @@
 
 #include <tkassert/Assert.hpp>
 
-#include "tkwsm/Common/SetIntersection.hpp"
 #include "tkwsm/GraphTheoretic/FilterUtils.hpp"
 #include "tkwsm/GraphTheoretic/NeighboursData.hpp"
 #include "tkwsm/Searching/DomainsAccessor.hpp"

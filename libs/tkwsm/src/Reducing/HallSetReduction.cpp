@@ -17,7 +17,6 @@
 #include <tkassert/Assert.hpp>
 
 #include "tkwsm/Common/GeneralUtils.hpp"
-#include "tkwsm/Common/SetIntersection.hpp"
 #include "tkwsm/Searching/DomainsAccessor.hpp"
 
 namespace tket {

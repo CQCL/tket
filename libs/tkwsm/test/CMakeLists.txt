@@ -35,7 +35,6 @@ add_executable(test-tkwsm
     Common/test_DyadicFraction.cpp
     Common/test_GeneralUtils.cpp
     Common/test_LogicalStack.cpp
-    Common/test_SetIntersection.cpp
     EndToEndWrappers/test_SolutionWSM.cpp
     GraphTheoretic/test_FilterUtils.cpp
     GraphTheoretic/test_GeneralStructs.cpp

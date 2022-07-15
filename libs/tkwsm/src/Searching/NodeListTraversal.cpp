@@ -20,8 +20,6 @@
 #include "tkwsm/Common/GeneralUtils.hpp"
 #include "tkwsm/Searching/NodesRawData.hpp"
 
-#include "WeightSubgrMono/Common/TemporaryRefactorCode.hpp"
-
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
