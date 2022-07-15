@@ -27,9 +27,8 @@ class NeighboursData;
 
 class NearNeighboursData {
  public:
-  enum class Type { PATTERN_GRAPH, TARGET_GRAPH };
 
-  NearNeighboursData(const NeighboursData& ndata, Type type);
+  explicit NearNeighboursData(const NeighboursData& ndata);
 
   std::size_t get_number_of_vertices() const;
 
@@ -74,7 +73,6 @@ class NearNeighboursData {
 
  private:
   const NeighboursData& m_ndata;
-  const Type m_type;
 
   /** In each vector, element[i] is the data for distance i+1.
    * Some of this data is needed for pattern graphs but not

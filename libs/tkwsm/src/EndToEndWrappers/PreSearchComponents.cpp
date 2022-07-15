@@ -21,9 +21,8 @@ PreSearchComponents::PreSearchComponents(
     const NeighboursData& pattern_nd, const NeighboursData& target_nd)
     : pattern_ndata(pattern_nd),
       target_ndata(target_nd),
-      pattern_near_ndata(
-          pattern_ndata, NearNeighboursData::Type::PATTERN_GRAPH),
-      target_near_ndata(target_ndata, NearNeighboursData::Type::TARGET_GRAPH) {}
+      pattern_near_ndata(pattern_ndata),
+      target_near_ndata(target_ndata) {}
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

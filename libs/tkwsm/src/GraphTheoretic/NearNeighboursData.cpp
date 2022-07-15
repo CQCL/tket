@@ -22,8 +22,8 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-NearNeighboursData::NearNeighboursData(const NeighboursData& ndata, Type type)
-    : m_ndata(ndata), m_type(type) {
+NearNeighboursData::NearNeighboursData(const NeighboursData& ndata)
+    : m_ndata(ndata) {
   m_data.resize(ndata.get_number_of_nonisolated_vertices());
   m_degree_counts_work_vector.reserve(m_data.size());
 }
@@ -219,6 +219,9 @@ const FilterUtils::DegreeCounts& NearNeighboursData::get_degree_counts_up_to_dis
 
 std::size_t NearNeighboursData::get_n_vertices_up_to_distance(
     VertexWSM v, unsigned max_distance) {
+  if(max_distance == 0) {
+    return 0;
+  }
   // PERFORMANCE NOTE: should we cache? We suspect that
   // this is fast enough that it's not worth caching.
   return get_vertices_up_to_distance(v, max_distance).count();
@@ -226,6 +229,9 @@ std::size_t NearNeighboursData::get_n_vertices_up_to_distance(
 
 
 std::size_t NearNeighboursData::get_n_vertices_at_exact_distance(VertexWSM v, unsigned distance) {
+  if(distance == 0) {
+    return 0;
+  }
   // PERFORMANCE NOTE: should we cache? Probably not worth it.
   return get_vertices_at_exact_distance(v, distance).count();
 }
