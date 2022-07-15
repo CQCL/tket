@@ -381,7 +381,7 @@ SCENARIO(
   params.total_number_of_vertices = 334;
 
   params.expected_max_total_time_ms = 60000;
-  params.expected_min_total_time_ms = 1000;
+  params.expected_min_total_time_ms = 1;
   const auto result = tester.test_all_against_all(params);
   CHECK(result.success_count == 2);
   CHECK(result.failure_count == 0);
@@ -404,7 +404,7 @@ SCENARIO(
 
   // test coverage takes longer than normal running.
   params.expected_max_total_time_ms = 20 * 1000;
-  params.expected_min_total_time_ms = 100;
+  params.expected_min_total_time_ms = 10;
   const auto result = tester.test_all_against_all(params);
   CHECK(result.success_count == 68);
   CHECK(result.failure_count == 0);
