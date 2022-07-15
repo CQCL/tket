@@ -69,7 +69,7 @@ jobs:
         ${conan_cmd} profile update settings.build_type=Debug tket
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: add remote
-      run: ${CONAN_CMD} remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
+      run: ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Install ninja and ccache
       run: |
         sudo apt-get update

@@ -64,7 +64,7 @@ jobs:
       if: github.event_name == 'schedule'
       run: ${CONAN_CMD} profile update options.tket-tests:full=True tket
     - name: add remote
-      run: ${CONAN_CMD} remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
+      run: ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Install ninja and ccache
       run: sudo apt-get install ninja-build ccache
     - name: Build tket
@@ -197,7 +197,7 @@ jobs:
       if: github.event_name == 'schedule'
       run: conan profile update options.tket-tests:full=True tket
     - name: add remote
-      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
     - name: Build tket
       run: conan create --profile=tket recipes/tket --build=missing
     - name: Build and run tket tests
@@ -290,7 +290,7 @@ jobs:
       if: github.event_name == 'schedule'
       run: conan profile update options.tket-tests:full=True tket
     - name: add remote
-      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
     - name: Build tket
       run: conan create --profile=tket recipes/tket --build=missing
     - name: Build and run tket tests
@@ -393,7 +393,7 @@ jobs:
       if: github.event_name == 'schedule'
       run: conan profile update options.tket-tests:full=True tket
     - name: add remote
-      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Cache tket build
       id: cache-tket
       uses: actions/cache@v3
