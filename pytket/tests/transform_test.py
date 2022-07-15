@@ -211,6 +211,15 @@ def test_three_qubit_squash() -> None:
     assert c.n_gates_of_type(OpType.CX) <= 14
 
 
+def test_three_qubit_squash_tk() -> None:
+    c = Circuit(3)
+    for i in range(50):
+        c.Rz(0.125, i % 3)
+        c.add_gate(OpType.TK2, [0.1, 0.2, 0.3], [(i + 2) % 3, (i + 1) % 3])
+    assert Transform.ThreeQubitSquash(OpType.TK2).apply(c)
+    assert c.n_gates_of_type(OpType.TK2) <= 15
+
+
 def test_basic_rebases() -> None:
     c = get_test_circuit()
     Transform.RebaseToTket().apply(c)
