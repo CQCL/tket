@@ -98,45 +98,51 @@ bool DomainsAccessor::alldiff_reduce_current_node(
       }
 
       NodesRawData::DomainData& data_for_this_pv = m_raw_data.domains_data[pv];
-
-      TemporaryRefactorCode();
       auto& existing_domain_bitset = data_for_this_pv.entries.top().domain;
       
-      // We cannot immediately erase, since the domain might be shared
-      // across several nodes.
+      // Check if erasing TV would make a nogood or assignment.
+      // So we need to know a few vertices tv1, tv2, ...
+      {
+        const auto tv1 = existing_domain_bitset.find_first();
+        // It must currently be nonempty.
+        TKET_ASSERT(tv1 < existing_domain_bitset.size());
 
-      if(!existing_domain_bitset.test(assignment.second)) {
-        // TV is not present in the domain; nothing to change.
-        continue;
-      }
-      
-      // TODO: slightly faster to use find_first(), find_next directly,
-      // rather than count().
-      switch(existing_domain_bitset.count()) {
-        case 0:
-        case 1:
-          // Erasing TV would make a nogood.
-          return false;
-        case 2: {
-          // Erasing TV would make a new assignment.
-          // Fill that assignment.
-          VertexWSM tv_other = existing_domain_bitset.find_first();
-          if (tv_other == assignment.second) {
-            tv_other = existing_domain_bitset.find_next(tv_other);
-          }
-          TKET_ASSERT(tv_other < existing_domain_bitset.size());
-          TKET_ASSERT(tv_other != assignment.second);
-          new_assignments.emplace_back(pv, tv_other);
+        if(!existing_domain_bitset.test(assignment.second)) {
+          // TV is not present in the domain; nothing to change.
+          continue;
         }
-        default:
-          break;
+        // Does it have 1 or 2 elements currently?
+        const auto tv2 = existing_domain_bitset.find_next(tv1);
+        if(tv2 < existing_domain_bitset.size()) {
+          // It has at least 2 vertices. Does it have another?
+          const auto tv3 = existing_domain_bitset.find_next(tv2);
+          if(tv3 >= existing_domain_bitset.size()) {
+            // It has EXACTLY 2 vertices: tv1, tv2.
+            // One of them must be the TV we're erasing.
+            // The other will form a new assignment.
+            VertexWSM tv_other = tv1;
+            if(tv_other == assignment.second) {
+              tv_other = tv2;
+            }
+            TKET_ASSERT(tv_other != assignment.second);
+            new_assignments.emplace_back(pv, tv_other);
+          }
+        } else {
+          // It has EXACTLY one vertex: tv1.
+          // It MUST equal TV, and then erasing it would make a nogood.
+          TKET_ASSERT(tv1 == assignment.second);
+          return false;
+        }
       }
+
       // Now, we've taken care of everything EXCEPT
-      // erasing TV from the domain.
+      // erasing TV from the domain (which we KNOW is present).
+      // But we cannot immediately erase, since the domain might be shared
+      // across several nodes.
       if (data_for_this_pv.entries.top().node_index ==
           m_raw_data.current_node_index()) {
         // Erase in-place.
-        existing_domain_bitset.set(assignment.second, false);
+        TKET_ASSERT(existing_domain_bitset.test_set(assignment.second, false));
       } else {
         // We must make a new domain and copy the data across.
         data_for_this_pv.entries.push();
