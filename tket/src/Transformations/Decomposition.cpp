@@ -1550,6 +1550,40 @@ bool all_equal(const std::vector<T> &vs) {
   return true;
 }
 
+/* naive decomposition - there are cases we can do better if we can eg. ignore
+ * phase */
+Transform decomp_CCX() {
+  return Transform([](Circuit &circ) {
+    const Op_ptr ccx = get_op_ptr(OpType::CCX);
+    return circ.substitute_all(CircPool::CCX_normal_decomp(), ccx);
+  });
+}
+
+Transform decomp_controlled_Rys() {
+  return Transform([](Circuit &circ) {
+    bool success = decomp_CCX().apply(circ);
+    auto [vit, vend] = boost::vertices(circ.dag);
+    for (auto next = vit; vit != vend; vit = next) {
+      ++next;
+      Vertex v = *vit;
+      const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+      unsigned arity = circ.n_in_edges(v);
+      if (op->get_type() == OpType::CnRy) {
+        success = true;
+        Circuit rep = CircPool::decomposed_CnRy(op, arity);
+        EdgeVec inedges = circ.get_in_edges(v);
+        Subcircuit final_sub{inedges, circ.get_all_out_edges(v), {v}};
+        circ.substitute(rep, final_sub, Circuit::VertexDeletion::Yes);
+      }
+    }
+    return success;
+  });
+}
+
+Transform decomp_arbitrary_controlled_gates() {
+  return decomp_controlled_Rys() >> decomp_CCX();
+}
+
 }  // namespace Transforms
 
 }  // namespace tket

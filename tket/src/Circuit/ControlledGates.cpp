@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ControlledGates.hpp"
-
 #include <math.h>
 
 #include <numeric>
@@ -21,14 +19,14 @@
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/DAGDefs.hpp"
+#include "Gate/Rotation.hpp"
 #include "OpType/OpType.hpp"
-#include "Transform.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/HelperFunctions.hpp"
 
 namespace tket {
 
-namespace Transforms {
+namespace CircPool {
 
 /* all of these methods are from https://arxiv.org/pdf/quant-ph/9503016.pdf
 or
@@ -52,9 +50,8 @@ Circuit incrementer_borrow_1_qubit(unsigned n) {
   bool is_odd = n % 2;
   Circuit circ(n + 1);
   if (n < 6) {
-    if (n > 4)
-      circ.append_qubits(CircPool::C4X_normal_decomp(), {0, 1, 2, 3, 4});
-    if (n > 3) circ.append_qubits(CircPool::C3X_normal_decomp(), {0, 1, 2, 3});
+    if (n > 4) circ.append_qubits(C4X_normal_decomp(), {0, 1, 2, 3, 4});
+    if (n > 3) circ.append_qubits(C3X_normal_decomp(), {0, 1, 2, 3});
     if (n > 2) circ.add_op<unsigned>(OpType::CCX, {0, 1, 2});
     if (n > 1) circ.add_op<unsigned>(OpType::CX, {0, 1});
     if (n > 0) circ.add_op<unsigned>(OpType::X, {0});
@@ -83,10 +80,10 @@ Circuit incrementer_borrow_1_qubit(unsigned n) {
   Circuit cnx_top;
   std::vector<unsigned> cnx1_qbs;
   if (k == 3) {  // code is unreachable if k<3
-    cnx_top = CircPool::C3X_normal_decomp();
+    cnx_top = C3X_normal_decomp();
     cnx1_qbs = {0, 1, 2, n};
   } else if (k == 4) {
-    cnx_top = CircPool::C4X_normal_decomp();
+    cnx_top = C4X_normal_decomp();
     cnx1_qbs = {0, 1, 2, 3, n};
   } else {
     cnx_top = lemma72(k);  // k controls on cnx
@@ -112,18 +109,15 @@ Circuit incrementer_borrow_1_qubit(unsigned n) {
   } else {
     if (j == 4) {  // code is unreachable if j<4
       bottom_incrementer.add_blank_wires(4);
-      bottom_incrementer.append_qubits(
-          CircPool::C3X_normal_decomp(), {0, 1, 2, 3});
+      bottom_incrementer.append_qubits(C3X_normal_decomp(), {0, 1, 2, 3});
       bottom_incrementer.add_op<unsigned>(OpType::CCX, {0, 1, 2});
       bottom_incrementer.add_op<unsigned>(OpType::CX, {0, 1});
       bottom_incrementer.add_op<unsigned>(OpType::X, {0});
       bot_qbs = {n, n - 3, n - 2, n - 1};
     } else if (j == 5) {
       bottom_incrementer.add_blank_wires(5);
-      bottom_incrementer.append_qubits(
-          CircPool::C4X_normal_decomp(), {0, 1, 2, 3, 4});
-      bottom_incrementer.append_qubits(
-          CircPool::C3X_normal_decomp(), {0, 1, 2, 3});
+      bottom_incrementer.append_qubits(C4X_normal_decomp(), {0, 1, 2, 3, 4});
+      bottom_incrementer.append_qubits(C3X_normal_decomp(), {0, 1, 2, 3});
       bottom_incrementer.add_op<unsigned>(OpType::CCX, {0, 1, 2});
       bottom_incrementer.add_op<unsigned>(OpType::CX, {0, 1});
       bottom_incrementer.add_op<unsigned>(OpType::X, {0});
@@ -193,9 +187,8 @@ Circuit incrementer_borrow_n_qubits(unsigned n) {
   Circuit circ(N);
   /* deal with small cases where borrowing qubits is unnecessary */
   if (n < 6) {
-    if (n > 4)
-      circ.append_qubits(CircPool::C4X_normal_decomp(), {1, 3, 5, 7, 9});
-    if (n > 3) circ.append_qubits(CircPool::C3X_normal_decomp(), {1, 3, 5, 7});
+    if (n > 4) circ.append_qubits(C4X_normal_decomp(), {1, 3, 5, 7, 9});
+    if (n > 3) circ.append_qubits(C3X_normal_decomp(), {1, 3, 5, 7});
     if (n > 2) circ.add_op<unsigned>(OpType::CCX, {1, 3, 5});
     if (n > 1) circ.add_op<unsigned>(OpType::CX, {1, 3});
     if (n > 0) circ.add_op<unsigned>(OpType::X, {1});
@@ -213,7 +206,7 @@ Circuit incrementer_borrow_n_qubits(unsigned n) {
 
   for (unsigned i = 2; i < N; ++(++i)) {
     std::vector<unsigned> ladder_down_qbs = {i - 2, i - 1, i};
-    circ.append_qubits(CircPool::ladder_down(), ladder_down_qbs);
+    circ.append_qubits(ladder_down(), ladder_down_qbs);
   }
   circ.add_op<unsigned>(OpType::CX, {N - 2, N - 1});
   for (unsigned i = N - 2; i > 1; --(--i)) {
@@ -223,12 +216,12 @@ Circuit incrementer_borrow_n_qubits(unsigned n) {
 
   for (unsigned i = 2; i < N; ++(++i)) {
     std::vector<unsigned> ladder_down_2_qbs = {i - 2, i - 1, i};
-    circ.append_qubits(CircPool::ladder_down_2(), ladder_down_2_qbs);
+    circ.append_qubits(ladder_down_2(), ladder_down_2_qbs);
   }
   circ.add_op<unsigned>(OpType::CX, {N - 2, N - 1});
   for (unsigned i = N - 2; i > 1; --(--i)) {
     std::vector<unsigned> ladder_up_qbs = {i - 2, i - 1, i};
-    circ.append_qubits(CircPool::ladder_up(), ladder_up_qbs);
+    circ.append_qubits(ladder_up(), ladder_up_qbs);
   }
   for (unsigned i = 1; i < N; ++(++i))
     circ.add_op<unsigned>(OpType::CX, {0, i});
@@ -244,19 +237,19 @@ Circuit cnx_normal_decomp(unsigned n) {
                      // when bootstrapping
   switch (n) {
     case 0: {
-      return CircPool::X();
+      return X();
     }
     case 1: {
-      return CircPool::CX();
+      return CX();
     }
     case 2: {
-      return CircPool::CCX_normal_decomp();
+      return CCX_normal_decomp();
     }
     case 3: {
-      return CircPool::C3X_normal_decomp();
+      return C3X_normal_decomp();
     }
     case 4: {
-      return CircPool::C4X_normal_decomp();
+      return C4X_normal_decomp();
     }
     case 5: {
       insert_c4xs = true;
@@ -276,7 +269,7 @@ Circuit cnx_normal_decomp(unsigned n) {
   circ.add_op<unsigned>(OpType::H, {n});
   Vertex cnx1;
   if (insert_c4xs)
-    circ.append_qubits(CircPool::C4X_normal_decomp(), {cnx_qbs});
+    circ.append_qubits(C4X_normal_decomp(), {cnx_qbs});
   else {
     cnx1 = circ.add_op<unsigned>(
         OpType::CnX,
@@ -291,7 +284,7 @@ Circuit cnx_normal_decomp(unsigned n) {
   circ.add_op<unsigned>(OpType::T, {n});
   Vertex cnx2;
   if (insert_c4xs)
-    circ.append_qubits(CircPool::C4X_normal_decomp(), {cnx_qbs});
+    circ.append_qubits(C4X_normal_decomp(), {cnx_qbs});
   else {
     cnx2 = circ.add_op<unsigned>(OpType::CnX, {cnx_qbs});
   }
@@ -334,7 +327,9 @@ Circuit cnx_normal_decomp(unsigned n) {
   Expr ang = z_rots[n - 2]->get_params()[0];
   circ.add_op<unsigned>(get_op_ptr(OpType::Rz, -ang), {0});
 
-  decomp_CCX().apply(circ);
+  const Op_ptr ccx = get_op_ptr(OpType::CCX);
+  circ.substitute_all(CCX_normal_decomp(), ccx);
+
   circ.add_phase(std::pow(0.5, n + 1));
   return circ;
 }
@@ -441,9 +436,8 @@ static Circuit lemma71(
       OpType optype = rep.get_OpType_from_Vertex(v);
       if (optype == OpType::CRy || optype == OpType::CU1) {
         Expr v_angle = rep.get_Op_ptr_from_Vertex(v)->get_params()[0];
-        Circuit replacement = (optype == OpType::CRy)
-                                  ? CircPool::CRy_using_CX(v_angle)
-                                  : CircPool::CU1_using_CX(v_angle);
+        Circuit replacement = (optype == OpType::CRy) ? CRy_using_CX(v_angle)
+                                                      : CU1_using_CX(v_angle);
         Subcircuit sub{rep.get_in_edges(v), rep.get_all_out_edges(v), {v}};
         rep.substitute(replacement, sub, Circuit::VertexDeletion::No);
         bin.insert(v);
@@ -541,9 +535,9 @@ static void lemma73(Circuit& circ, const std::pair<Edge, Vertex>& pairy) {
 
   Circuit a_replacement;
   if (m1 == 1) {
-    a_replacement = CircPool::CX();
+    a_replacement = CX();
   } else if (m1 == 2) {
-    a_replacement = CircPool::CCX();
+    a_replacement = CCX();
   } else
     a_replacement = lemma72(m1);  // returns circuit of size 2*m1 - 1
   new_circ.cut_insert(a_replacement, cut1);
@@ -554,9 +548,9 @@ static void lemma73(Circuit& circ, const std::pair<Edge, Vertex>& pairy) {
 
   Circuit b_replacement;
   if (m2 == 1) {
-    b_replacement = CircPool::CX();
+    b_replacement = CX();
   } else if (m2 == 2) {
-    b_replacement = CircPool::CCX();
+    b_replacement = CCX();
   } else
     b_replacement = lemma72(m2);  // returns circuit of size 2*m2 - 1
 
@@ -650,11 +644,10 @@ static void lemma73(Circuit& circ, const std::pair<Edge, Vertex>& pairy) {
           {*vit}};
       if (normal_decomp_vertices.find(*vit) == normal_decomp_vertices.end()) {
         new_circ.substitute(
-            CircPool::CCX_modulo_phase_shift(), sub,
-            Circuit::VertexDeletion::Yes);
+            CCX_modulo_phase_shift(), sub, Circuit::VertexDeletion::Yes);
       } else {
         new_circ.substitute(
-            CircPool::CCX_normal_decomp(), sub, Circuit::VertexDeletion::Yes);
+            CCX_normal_decomp(), sub, Circuit::VertexDeletion::Yes);
       }
     }
   }
@@ -687,15 +680,6 @@ static void lemma79(
   Vertex secondCnX = replacement.add_op<unsigned>(cnx, cnx_qbs);
   Edge out_edge_spare = replacement.get_nth_out_edge(vB, 0);
   CCX_candidates.push_back({out_edge_spare, secondCnX});
-}
-
-/* naive decomposition - there are cases we can do better if we can eg. ignore
- * phase */
-Transform decomp_CCX() {
-  return Transform([](Circuit& circ) {
-    const Op_ptr ccx = get_op_ptr(OpType::CCX);
-    return circ.substitute_all(CircPool::CCX_normal_decomp(), ccx);
-  });
 }
 
 Circuit decomposed_CnRy(const Op_ptr op, unsigned arity) {
@@ -751,49 +735,24 @@ Circuit decomposed_CnRy(const Op_ptr op, unsigned arity) {
   return rep;
 }
 
-Transform decomp_controlled_Rys() {
-  return Transform([](Circuit& circ) {
-    bool success = decomp_CCX().apply(circ);
-    auto [vit, vend] = boost::vertices(circ.dag);
-    for (auto next = vit; vit != vend; vit = next) {
-      ++next;
-      Vertex v = *vit;
-      const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-      unsigned arity = circ.n_in_edges(v);
-      if (op->get_type() == OpType::CnRy) {
-        success = true;
-        Circuit rep = decomposed_CnRy(op, arity);
-        EdgeVec inedges = circ.get_in_edges(v);
-        Subcircuit final_sub{inedges, circ.get_all_out_edges(v), {v}};
-        circ.substitute(rep, final_sub, Circuit::VertexDeletion::Yes);
-      }
-    }
-    return success;
-  });
-}
-
-Transform decomp_arbitrary_controlled_gates() {
-  return decomp_controlled_Rys() >> decomp_CCX();
-}
-
 // decompose CnX gate using lemma 7.1
 // `n` = no. of controls
 Circuit cnx_gray_decomp(unsigned n) {
   switch (n) {
     case 0: {
-      return CircPool::X();
+      return X();
     }
     case 1: {
-      return CircPool::CX();
+      return CX();
     }
     case 2: {
-      return CircPool::CCX_normal_decomp();
+      return CCX_normal_decomp();
     }
     case 3: {
-      return CircPool::C3X_normal_decomp();
+      return C3X_normal_decomp();
     }
     case 4: {
-      return CircPool::C4X_normal_decomp();
+      return C4X_normal_decomp();
     }
     default: {
       Circuit circ(n + 1);
@@ -805,6 +764,124 @@ Circuit cnx_gray_decomp(unsigned n) {
   }
 }
 
-}  // namespace Transforms
+Circuit cu_to_cu3(const Eigen::Matrix2cd& u) {
+  Circuit c(2);
+  std::vector<double> tk1_angles = tk1_angles_from_unitary(u);
+  Expr theta = tk1_angles[1];
+  Expr phi = tk1_angles[0] - 0.5;
+  Expr lambda = tk1_angles[2] + 0.5;
+  Expr t = tk1_angles[3] - 0.5 * (tk1_angles[0] + tk1_angles[2]);
+  c.add_op<unsigned>(OpType::U1, t, {0});
+  c.add_op<unsigned>(OpType::CU3, {theta, phi, lambda}, {0, 1});
+  return c;
+}
+
+static void add_cu_using_cu3(
+    const unsigned& ctrl, const unsigned& trgt, Circuit& circ,
+    const Eigen::Matrix2cd& u) {
+  unit_map_t unit_map;
+  unit_map.insert({Qubit(0), Qubit(ctrl)});
+  unit_map.insert({Qubit(1), Qubit(trgt)});
+  Circuit cnu_circ = cu_to_cu3(u);
+  circ.append_with_map(cnu_circ, unit_map);
+}
+
+// Add pn to qubits {1,...,n}, assume n > 1
+static void add_pn(Circuit& circ, unsigned n, bool inverse) {
+  TKET_ASSERT(n > 1);
+  // pn is self commute
+  for (unsigned i = 2; i < n + 1; i++) {
+    int d = 1 << (n - i + 1);
+    d = inverse ? -1 * d : d;
+    circ.add_op<unsigned>(OpType::CRx, (double)1 / d, {i - 1, n});
+  }
+}
+
+// Add pn(u) to qubits {1,...,n}, assume n > 1
+static void add_pn_unitary(
+    Circuit& circ, const Eigen::Matrix2cd& u, unsigned n, bool inverse) {
+  TKET_ASSERT(n > 1);
+  // pn_(u) is self commute
+  for (unsigned i = 2; i < n + 1; i++) {
+    Eigen::Matrix2cd m = nth_root(u, 1 << (n - i + 1));
+    if (inverse) m.adjointInPlace();
+    add_cu_using_cu3(i - 1, n, circ, m);
+  }
+}
+
+// Add an incrementer without toggling the least significant bit
+// Apply to qubits {0,...,n-1}, assume n > 1
+static void add_qn(Circuit& circ, unsigned n) {
+  TKET_ASSERT(n > 1);
+  for (unsigned i = n - 1; i > 1; i--) {
+    int d = 1 << (i - 1);
+    add_pn(circ, i, false);
+    circ.add_op<unsigned>(OpType::CRx, (double)1 / d, {0, i});
+  }
+  circ.add_op<unsigned>(OpType::CRx, 1, {0, 1});
+  for (unsigned i = 2; i < n; i++) {
+    add_pn(circ, i, true);
+  }
+}
+
+// https://arxiv.org/abs/2203.11882 Equation 5
+Circuit incrementer_linear_depth(unsigned n, bool lsb) {
+  if (n == 0) {
+    return Circuit();
+  }
+  Circuit circ(n);
+  if (n > 1) {
+    add_qn(circ, n);
+  }
+  if (lsb) {
+    // Some optimisations might have better handlings for X gates
+    // so use X instead of Rx(1)
+    circ.add_op<unsigned>(OpType::X, {0});
+    circ.add_phase(-0.5);
+  }
+  return circ;
+}
+
+// https://arxiv.org/abs/2203.11882 Equation 3
+Circuit cnu_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
+  if (!is_unitary(u)) {
+    throw CircuitInvalidity(
+        "Matrix for the controlled operation must be unitary");
+  }
+  Circuit circ(n + 1);
+
+  if (n == 0) {
+    // Synthesis U using tk1 and phase
+    std::vector<double> tk1_angles = tk1_angles_from_unitary(u);
+    circ.add_op<unsigned>(
+        OpType::TK1, {tk1_angles[0], tk1_angles[1], tk1_angles[2]}, {0});
+    circ.add_phase(tk1_angles[3]);
+    return circ;
+  }
+  if (n == 1) {
+    add_cu_using_cu3(0, 1, circ, u);
+    return circ;
+  }
+
+  // Add pn(u) to qubits {1,...,n}
+  add_pn_unitary(circ, u, n, false);
+  // Add CU to {0, n}
+  Eigen::Matrix2cd m = nth_root(u, 1 << (n - 1));
+  add_cu_using_cu3(0, n, circ, m);
+  // Add incrementer (without toggling q0) to {0,...,n-1}
+  Circuit qn = incrementer_linear_depth(n, false);
+  Circuit qn_dag = qn.dagger();
+  circ.append(qn);
+
+  // Add pn(u).dagger to qubits {1,...,n}
+  add_pn_unitary(circ, u, n, true);
+
+  // Add incrementer inverse (without toggling q0) to {0,...,n-1}
+  circ.append(qn_dag);
+
+  return circ;
+}
+
+}  // namespace CircPool
 
 }  // namespace tket

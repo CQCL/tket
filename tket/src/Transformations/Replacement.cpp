@@ -16,7 +16,6 @@
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
-#include "ControlledGates.hpp"
 #include "Decomposition.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Gate/GateUnitaryMatrix.hpp"
@@ -36,7 +35,7 @@ Circuit TK2_circ_from_multiq(const Op_ptr op) {
   switch (desc.type()) {
     case OpType::CnRy: {
       // TODO We should be able to do better than this.
-      Circuit c = decomposed_CnRy(op, n_qubits);
+      Circuit c = CircPool::decomposed_CnRy(op, n_qubits);
       replace_CX_with_TK2(c);
       return c;
     }
@@ -49,7 +48,7 @@ Circuit TK2_circ_from_multiq(const Op_ptr op) {
         return c;
       } else {
         // TODO We should be able to do better than this.
-        Circuit c = cnx_normal_decomp(n_qubits - 1);
+        Circuit c = CircPool::cnx_normal_decomp(n_qubits - 1);
         replace_CX_with_TK2(c);
         return c;
       }
@@ -66,7 +65,7 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
   unsigned n_qubits = op->n_qubits();
   switch (desc.type()) {
     case OpType::CnRy:
-      return decomposed_CnRy(op, n_qubits);
+      return CircPool::decomposed_CnRy(op, n_qubits);
     case OpType::CnX:
       if (n_qubits >= 6 && n_qubits <= 50) {
         Eigen::Matrix2cd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
@@ -74,7 +73,7 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
         decompose_multi_qubits_CX().apply(c);
         return c;
       } else {
-        return cnx_normal_decomp(n_qubits - 1);
+        return CircPool::cnx_normal_decomp(n_qubits - 1);
       }
     default:
       return with_CX(as_gate_ptr(op));

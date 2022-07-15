@@ -231,6 +231,21 @@ Transform decompose_NPhasedX();
  */
 Transform globalise_PhasedX(bool squash = true);
 
+// does not use ancillae
+// Expects: CCX + any other gates
+// returns CX, H, T, Tdg + any previous gates
+Transform decomp_CCX();
+
+// converts arbitrarily controlled Ry gates. It does not use ancillae, so it
+// is not very depth-efficient Expects: CRys and any other gates returns Ry,
+// CX, H, T, Tdg + whatever other gates were there before
+Transform decomp_controlled_Rys();
+
+// does not use ancillae
+// Expects: any CnRys + CnXs + any other gates
+// returns Ry, CX, H, T, Tdg + any previous gates
+Transform decomp_arbitrary_controlled_gates();
+
 }  // namespace Transforms
 
 }  // namespace tket

@@ -392,6 +392,12 @@ Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 Circuit tk1_to_tk1(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
+class ControlDecompError : public std::logic_error {
+ public:
+  explicit ControlDecompError(const std::string &message)
+      : std::logic_error(message) {}
+};
+
 /**
  * @brief Implement controlled 2x2 unitary using CU3 and U1
  *
@@ -420,6 +426,16 @@ Circuit incrementer_linear_depth(unsigned n, bool lsb = true);
  * @return Circuit containing CRx, TK1, U1, U3, and CU3
  */
 Circuit cnu_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd &u);
+
+Circuit incrementer_borrow_1_qubit(unsigned n);
+
+Circuit incrementer_borrow_n_qubits(unsigned n);
+
+Circuit cnx_normal_decomp(unsigned n);
+
+Circuit cnx_gray_decomp(unsigned n);
+
+Circuit decomposed_CnRy(const Op_ptr op, unsigned arity);
 
 }  // namespace CircPool
 

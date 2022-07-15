@@ -20,7 +20,7 @@
 #include "Gate/GateUnitaryMatrix.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
-#include "Transformations/ControlledGates.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
@@ -34,7 +34,7 @@ static bool approx_equal(const Complex& c1, const Complex& c2) {
 }
 
 static bool check_incrementer_borrow_n_qubits(const unsigned n) {
-  Circuit inc = Transforms::incrementer_borrow_n_qubits(n);
+  Circuit inc = CircPool::incrementer_borrow_n_qubits(n);
   bool correct = true;
   const StateVector sv = tket_sim::get_statevector(inc);
   for (unsigned i = 0; i < sv.size(); ++i) {
@@ -61,7 +61,7 @@ static bool check_incrementer_borrow_n_qubits(const unsigned n) {
 }
 
 static bool check_incrementer_borrow_1_qubit(const unsigned n) {
-  Circuit inc = Transforms::incrementer_borrow_1_qubit(n);
+  Circuit inc = CircPool::incrementer_borrow_1_qubit(n);
   REQUIRE(inc.n_vertices() - inc.n_gates() == (n + 1) * 2);
   Transforms::synthesise_tket().apply(inc);
   const StateVector sv = tket_sim::get_statevector(inc);
@@ -309,11 +309,11 @@ SCENARIO("Test switch statement long", "[.long]") {
 
 SCENARIO("Test incrementer using n borrowed qubits") {
   GIVEN("0 qbs") {
-    Circuit inc = Transforms::incrementer_borrow_n_qubits(0);
+    Circuit inc = CircPool::incrementer_borrow_n_qubits(0);
     REQUIRE(inc.n_vertices() == 0);
   }
   GIVEN("A 1qb incrementer") {
-    Circuit inc = Transforms::incrementer_borrow_n_qubits(1);
+    Circuit inc = CircPool::incrementer_borrow_n_qubits(1);
     REQUIRE(inc.n_gates() == 1);
     REQUIRE(inc.count_gates(OpType::X) == 1);
   }
@@ -325,7 +325,7 @@ SCENARIO("Test incrementer using n borrowed qubits") {
     // tket_sim doesn't support computing a unitary from a 12 qubits circuit
     // hence we only test that the incrementer can be constructed as intended.
     for (unsigned n = 6; n < 10; ++n) {
-      Circuit inc = Transforms::incrementer_borrow_n_qubits(n);
+      Circuit inc = CircPool::incrementer_borrow_n_qubits(n);
       REQUIRE(inc.n_qubits() == 2 * n);
       REQUIRE(inc.count_gates(OpType::CCX) == (n - 1) * 4);
       REQUIRE(Transforms::synthesise_tket().apply(inc));
@@ -337,7 +337,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
   GIVEN("Check the top incrementer is mapped correctly") {
     const unsigned k = 3;
     Circuit inc(2 * k);
-    Circuit top_incrementer = Transforms::incrementer_borrow_n_qubits(k);
+    Circuit top_incrementer = CircPool::incrementer_borrow_n_qubits(k);
     std::vector<unsigned> top_qbs(2 * k);
     for (unsigned i = 0; i != k; ++i) {
       top_qbs[2 * i] = i + k;  // garbage qubits
@@ -361,7 +361,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
       "odd qb no") {
     const unsigned j = 3;
     Circuit inc(2 * j);
-    Circuit bottom_incrementer = Transforms::incrementer_borrow_n_qubits(j);
+    Circuit bottom_incrementer = CircPool::incrementer_borrow_n_qubits(j);
     std::vector<unsigned> bot_qbs(2 * j);
     for (unsigned i = 0; i != j; ++i) {
       bot_qbs[2 * i] = i;  // 0,2,4...n-1 //garbage qubits
@@ -395,7 +395,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
     for (unsigned i = k; i != n; ++i) {
       inc.add_op<unsigned>(OpType::X, {i});
     }
-    Circuit bottom_incrementer = Transforms::incrementer_borrow_n_qubits(
+    Circuit bottom_incrementer = CircPool::incrementer_borrow_n_qubits(
         j - 1);  // insert incrementer over remaining qubits
     std::vector<unsigned> bot_qbs(2 * j - 2);
     for (unsigned i = 0; i != j - 1; ++i) {
@@ -420,13 +420,13 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
     REQUIRE(correct);
   }
   GIVEN("A 0 qubit incrementer") {
-    Circuit inc = Transforms::incrementer_borrow_1_qubit(0);
+    Circuit inc = CircPool::incrementer_borrow_1_qubit(0);
     REQUIRE(inc.n_qubits() == 1);
     REQUIRE(inc.n_vertices() == 2);
     REQUIRE(inc.n_gates() == 0);
   }
   GIVEN("A 1 qubit incrementer") {
-    Circuit inc = Transforms::incrementer_borrow_1_qubit(1);
+    Circuit inc = CircPool::incrementer_borrow_1_qubit(1);
     REQUIRE(inc.n_qubits() == 2);
     REQUIRE(inc.n_vertices() == 5);
     REQUIRE(inc.n_gates() == 1);
@@ -504,7 +504,7 @@ SCENARIO("Test linear depth incrementer") {
 SCENARIO("Test a CnX is decomposed correctly when bootstrapped", "[.long]") {
   GIVEN("Test CnX unitary for 3 to 9 controls") {
     for (unsigned n = 3; n < 10; ++n) {
-      Circuit circ = Transforms::cnx_normal_decomp(n);
+      Circuit circ = CircPool::cnx_normal_decomp(n);
       const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
       REQUIRE(m.isApprox(get_CnX_matrix(n), ERR_EPS));
     }
@@ -540,15 +540,15 @@ SCENARIO("Test a CnU is decomposed correctly using the linear depth method") {
 
 SCENARIO("Test a CnX is decomposed correctly using the Gray code method") {
   GIVEN("Test CnX unitary for 0 to 8 controls") {
-    Circuit circ_x = Transforms::cnx_gray_decomp(0);
+    Circuit circ_x = CircPool::cnx_gray_decomp(0);
     REQUIRE(circ_x.n_gates() == 1);
     REQUIRE(circ_x.count_gates(OpType::X) == 1);
-    Circuit circ_cx = Transforms::cnx_gray_decomp(1);
+    Circuit circ_cx = CircPool::cnx_gray_decomp(1);
     REQUIRE(circ_cx.n_gates() == 1);
     REQUIRE(circ_cx.count_gates(OpType::CX) == 1);
 
     for (unsigned n = 2; n < 8; ++n) {
-      Circuit circ = Transforms::cnx_gray_decomp(n);
+      Circuit circ = CircPool::cnx_gray_decomp(n);
       const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
       REQUIRE(m.isApprox(get_CnX_matrix(n), ERR_EPS));
       switch (n) {
