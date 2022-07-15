@@ -404,7 +404,7 @@ class ControlDecompError : public std::logic_error {
  * @param u 2x2 unitary
  * @return Circuit
  */
-Circuit cu_to_cu3(const Eigen::Matrix2cd &u);
+Circuit CU_to_CU3(const Eigen::Matrix2cd &u);
 
 /**
  * @brief Get an n-qubit incrementer circuit with linear depth and O(n^2) gate
@@ -425,17 +425,17 @@ Circuit incrementer_linear_depth(unsigned n, bool lsb = true);
  * @param u the controlled 2x2 unitary matrix
  * @return Circuit containing CRx, TK1, U1, U3, and CU3
  */
-Circuit cnu_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd &u);
+Circuit CnU_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd &u);
 
 Circuit incrementer_borrow_1_qubit(unsigned n);
 
 Circuit incrementer_borrow_n_qubits(unsigned n);
 
-Circuit cnx_normal_decomp(unsigned n);
+Circuit CnX_normal_decomp(unsigned n);
 
-Circuit cnx_gray_decomp(unsigned n);
+Circuit CnX_gray_decomp(unsigned n);
 
-Circuit decomposed_CnRy(const Op_ptr op, unsigned arity);
+Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity);
 
 }  // namespace CircPool
 

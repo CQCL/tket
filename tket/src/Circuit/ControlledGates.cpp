@@ -231,7 +231,7 @@ Circuit incrementer_borrow_n_qubits(unsigned n) {
 // decompose CnX gate using
 // https://algassert.com/circuits/2015/06/22/Using-Quantum-Gates-instead-of-Ancilla-Bits.html
 // `n` = no. of controls
-Circuit cnx_normal_decomp(unsigned n) {
+Circuit CnX_normal_decomp(unsigned n) {
   /* handle low qb edge cases */
   bool insert_c4xs;  // dictate whether to add C4Xs or n>4 controlled Xs
                      // when bootstrapping
@@ -682,7 +682,7 @@ static void lemma79(
   CCX_candidates.push_back({out_edge_spare, secondCnX});
 }
 
-Circuit decomposed_CnRy(const Op_ptr op, unsigned arity) {
+Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity) {
   if (op->get_type() != OpType::CnRy) {
     throw CircuitInvalidity("Operation not CnRy");
   }
@@ -737,7 +737,7 @@ Circuit decomposed_CnRy(const Op_ptr op, unsigned arity) {
 
 // decompose CnX gate using lemma 7.1
 // `n` = no. of controls
-Circuit cnx_gray_decomp(unsigned n) {
+Circuit CnX_gray_decomp(unsigned n) {
   switch (n) {
     case 0: {
       return X();
@@ -764,7 +764,7 @@ Circuit cnx_gray_decomp(unsigned n) {
   }
 }
 
-Circuit cu_to_cu3(const Eigen::Matrix2cd& u) {
+Circuit CU_to_CU3(const Eigen::Matrix2cd& u) {
   Circuit c(2);
   std::vector<double> tk1_angles = tk1_angles_from_unitary(u);
   Expr theta = tk1_angles[1];
@@ -782,7 +782,7 @@ static void add_cu_using_cu3(
   unit_map_t unit_map;
   unit_map.insert({Qubit(0), Qubit(ctrl)});
   unit_map.insert({Qubit(1), Qubit(trgt)});
-  Circuit cnu_circ = cu_to_cu3(u);
+  Circuit cnu_circ = CU_to_CU3(u);
   circ.append_with_map(cnu_circ, unit_map);
 }
 
@@ -843,7 +843,7 @@ Circuit incrementer_linear_depth(unsigned n, bool lsb) {
 }
 
 // https://arxiv.org/abs/2203.11882 Equation 3
-Circuit cnu_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
+Circuit CnU_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
   if (!is_unitary(u)) {
     throw CircuitInvalidity(
         "Matrix for the controlled operation must be unitary");

@@ -599,7 +599,7 @@ static Circuit CnU1(unsigned n_controls, Expr lambda) {
   } else {
     // If lambda is not a symbol, use cnu decomposition
     Eigen::Matrix2cd u1 = Gate(OpType::U1, {lambda}, 1).get_unitary();
-    return CircPool::cnu_linear_depth_decomp(n_controls, u1);
+    return CircPool::CnU_linear_depth_decomp(n_controls, u1);
   }
 }
 
@@ -974,7 +974,7 @@ Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
       }
       unit_map.insert(
           {Qubit(control_index), Qubit(b.target_qubit + n_controls)});
-      Circuit cnu_circ = CircPool::cnu_linear_depth_decomp(
+      Circuit cnu_circ = CircPool::CnU_linear_depth_decomp(
           b.control_qubits.size() + n_controls, m);
       c2.append_with_map(cnu_circ, unit_map);
     }

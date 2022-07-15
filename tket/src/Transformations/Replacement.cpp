@@ -35,7 +35,7 @@ Circuit TK2_circ_from_multiq(const Op_ptr op) {
   switch (desc.type()) {
     case OpType::CnRy: {
       // TODO We should be able to do better than this.
-      Circuit c = CircPool::decomposed_CnRy(op, n_qubits);
+      Circuit c = CircPool::CnRy_normal_decomp(op, n_qubits);
       replace_CX_with_TK2(c);
       return c;
     }
@@ -43,12 +43,12 @@ Circuit TK2_circ_from_multiq(const Op_ptr op) {
       if (n_qubits >= 6 && n_qubits <= 50) {
         // TODO We should be able to do better than this.
         Eigen::Matrix2cd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
-        Circuit c = CircPool::cnu_linear_depth_decomp(n_qubits - 1, x);
+        Circuit c = CircPool::CnU_linear_depth_decomp(n_qubits - 1, x);
         decompose_multi_qubits_TK2().apply(c);
         return c;
       } else {
         // TODO We should be able to do better than this.
-        Circuit c = CircPool::cnx_normal_decomp(n_qubits - 1);
+        Circuit c = CircPool::CnX_normal_decomp(n_qubits - 1);
         replace_CX_with_TK2(c);
         return c;
       }
@@ -65,15 +65,15 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
   unsigned n_qubits = op->n_qubits();
   switch (desc.type()) {
     case OpType::CnRy:
-      return CircPool::decomposed_CnRy(op, n_qubits);
+      return CircPool::CnRy_normal_decomp(op, n_qubits);
     case OpType::CnX:
       if (n_qubits >= 6 && n_qubits <= 50) {
         Eigen::Matrix2cd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
-        Circuit c = CircPool::cnu_linear_depth_decomp(n_qubits - 1, x);
+        Circuit c = CircPool::CnU_linear_depth_decomp(n_qubits - 1, x);
         decompose_multi_qubits_CX().apply(c);
         return c;
       } else {
-        return CircPool::cnx_normal_decomp(n_qubits - 1);
+        return CircPool::CnX_normal_decomp(n_qubits - 1);
       }
     default:
       return with_CX(as_gate_ptr(op));

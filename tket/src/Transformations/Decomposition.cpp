@@ -1570,7 +1570,7 @@ Transform decomp_controlled_Rys() {
       unsigned arity = circ.n_in_edges(v);
       if (op->get_type() == OpType::CnRy) {
         success = true;
-        Circuit rep = CircPool::decomposed_CnRy(op, arity);
+        Circuit rep = CircPool::CnRy_normal_decomp(op, arity);
         EdgeVec inedges = circ.get_in_edges(v);
         Subcircuit final_sub{inedges, circ.get_all_out_edges(v), {v}};
         circ.substitute(rep, final_sub, Circuit::VertexDeletion::Yes);

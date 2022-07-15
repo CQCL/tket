@@ -504,7 +504,7 @@ SCENARIO("Test linear depth incrementer") {
 SCENARIO("Test a CnX is decomposed correctly when bootstrapped", "[.long]") {
   GIVEN("Test CnX unitary for 3 to 9 controls") {
     for (unsigned n = 3; n < 10; ++n) {
-      Circuit circ = CircPool::cnx_normal_decomp(n);
+      Circuit circ = CircPool::CnX_normal_decomp(n);
       const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
       REQUIRE(m.isApprox(get_CnX_matrix(n), ERR_EPS));
     }
@@ -517,7 +517,7 @@ SCENARIO(
   GIVEN("Test CnX unitary for 0 to 9 controls") {
     for (unsigned n = 0; n < 10; ++n) {
       Eigen::MatrixXcd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
-      Circuit circ = CircPool::cnu_linear_depth_decomp(n, x);
+      Circuit circ = CircPool::CnU_linear_depth_decomp(n, x);
       const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
       REQUIRE(m.isApprox(get_CnX_matrix(n), ERR_EPS));
     }
@@ -530,7 +530,7 @@ SCENARIO("Test a CnU is decomposed correctly using the linear depth method") {
       Eigen::Matrix2cd U = random_unitary(2, i);
       std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
       for (auto n : test_ns) {
-        Circuit circ = CircPool::cnu_linear_depth_decomp(n, U);
+        Circuit circ = CircPool::CnU_linear_depth_decomp(n, U);
         const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
         REQUIRE(m.isApprox(get_CnU_matrix(n, U), ERR_EPS));
       }
@@ -540,15 +540,15 @@ SCENARIO("Test a CnU is decomposed correctly using the linear depth method") {
 
 SCENARIO("Test a CnX is decomposed correctly using the Gray code method") {
   GIVEN("Test CnX unitary for 0 to 8 controls") {
-    Circuit circ_x = CircPool::cnx_gray_decomp(0);
+    Circuit circ_x = CircPool::CnX_gray_decomp(0);
     REQUIRE(circ_x.n_gates() == 1);
     REQUIRE(circ_x.count_gates(OpType::X) == 1);
-    Circuit circ_cx = CircPool::cnx_gray_decomp(1);
+    Circuit circ_cx = CircPool::CnX_gray_decomp(1);
     REQUIRE(circ_cx.n_gates() == 1);
     REQUIRE(circ_cx.count_gates(OpType::CX) == 1);
 
     for (unsigned n = 2; n < 8; ++n) {
-      Circuit circ = CircPool::cnx_gray_decomp(n);
+      Circuit circ = CircPool::CnX_gray_decomp(n);
       const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
       REQUIRE(m.isApprox(get_CnX_matrix(n), ERR_EPS));
       switch (n) {
