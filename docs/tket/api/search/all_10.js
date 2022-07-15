@@ -69,7 +69,7 @@ var searchData=
   ['permutation_5ft_1504',['permutation_t',['../namespacetket.html#a720e4604980f5d33b43ec549c38ed872',1,'tket']]],
   ['permute_5fboundary_5foutput_1505',['permute_boundary_output',['../classtket_1_1Circuit.html#a95d374878c6b1932d1ff272486461b00',1,'tket::Circuit']]],
   ['permute_5fsubcircuit_5fq_5fout_5fhole_1506',['permute_subcircuit_q_out_hole',['../structtket_1_1MappingFrontier.html#a8f422a377bfb753f4d0ba417149f5c8c',1,'tket::MappingFrontier']]],
-  ['phase_1507',['Phase',['../classtket_1_1Circuit.html#a80fa413c88ea82abce86d16c8f220559a5e35d7fff7b903516cba242ff68fc6d3',1,'tket::Circuit::Phase()'],['../structtket_1_1InteractionPoint.html#aca22004d177d64d8c888cebfdfa970f7',1,'tket::InteractionPoint::phase()'],['../structtket_1_1RevInteractionPoint.html#acb7b5530e0fe9c7582d9443bc69d7efd',1,'tket::RevInteractionPoint::phase()']]],
+  ['phase_1507',['phase',['../structtket_1_1InteractionPoint.html#aca22004d177d64d8c888cebfdfa970f7',1,'tket::InteractionPoint::phase()'],['../structtket_1_1RevInteractionPoint.html#acb7b5530e0fe9c7582d9443bc69d7efd',1,'tket::RevInteractionPoint::phase()'],['../classtket_1_1Circuit.html#a80fa413c88ea82abce86d16c8f220559a5e35d7fff7b903516cba242ff68fc6d3',1,'tket::Circuit::Phase()']]],
   ['phase_5fdiff_1508',['phase_diff',['../namespacestd__clifford__decomp.html#a8bc87ef17ae9e79ec600badceeb87ce4',1,'std_clifford_decomp']]],
   ['phase_5fgadget_1509',['phase_gadget',['../namespacetket.html#a64338a10354fa6c0943251f9056f8f98',1,'tket']]],
   ['phase_5fpoly_5fsynthesis_1510',['phase_poly_synthesis',['../namespacetket_1_1aas.html#a7dcc277d91b50f17effa5fc5a1036af3',1,'tket::aas']]],
