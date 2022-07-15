@@ -123,31 +123,28 @@ bool NodeListTraversal::move_up() {
 // Also handles the new assignment PV->y, if necessary,
 // for the CURRENT node (not new node).
 static bool when_moving_down_check_current_domain_size(
-    const std::set<VertexWSM>& existing_domain, NodesRawData& raw_data,
+    const boost::dynamic_bitset<>& existing_domain, NodesRawData& raw_data,
     VertexWSM p_vertex, VertexWSM t_vertex) {
-  switch (existing_domain.size()) {
-    case 0:
-      TKET_ASSERT(false);
-      return false;
-    case 1:
-      // Already Dom(PV) = {TV}, so it will become a nogood.
-      raw_data.get_current_node_nonconst().nogood = true;
-      return false;
-    case 2: {
-      // Dom(PV) = {TV, y}, so it will become Dom(PV) = {y}
-      // at this node, so we need a new assignment PV->y.
-      // The elements of a set of size 2 can be found using
-      // cbegin and crbegin.
-      VertexWSM tv_other = *existing_domain.cbegin();
-      if (tv_other == t_vertex) {
-        tv_other = *existing_domain.crbegin();
-      }
-      raw_data.get_current_node_nonconst().new_assignments.emplace_back(
-          p_vertex, tv_other);
-      break;
+  
+  const auto tv1 = existing_domain.find_first();
+  TKET_ASSERT(tv1 < existing_domain.size());
+
+  const auto tv2 = existing_domain.find_next(tv1);
+  if(tv2 >= existing_domain.size()) {
+    // Already Dom(PV) = {TV}, so it will become a nogood.
+    TKET_ASSERT(tv1 == t_vertex);
+    raw_data.get_current_node_nonconst().nogood = true;
+    return false;
+  }  
+  const auto tv3 = existing_domain.find_next(tv2);
+  if(tv3 >= existing_domain.size()) {
+    // There are exactly two t-vertices, so a new assignment is needed.
+    VertexWSM tv_other = tv1;
+    if(tv_other == t_vertex) {
+      tv_other = tv2;
     }
-    default:
-      break;
+    raw_data.get_current_node_nonconst().new_assignments.emplace_back(
+          p_vertex, tv_other);
   }
   return true;
 }
@@ -194,14 +191,8 @@ void NodeListTraversal::move_down(VertexWSM p_vertex, VertexWSM t_vertex) {
   NodesRawData::DomainData& data_for_this_pv =
       m_raw_data.domains_data.at(p_vertex);
 
-  {
-    std::set<VertexWSM> existing_domain;
-    TemporaryRefactorCode::set_domain_from_bitset(existing_domain, data_for_this_pv.entries.top().domain);
-
-    existing_node_valid = when_moving_down_check_current_domain_size(
-        existing_domain, m_raw_data, p_vertex, t_vertex);
-  }
-
+  existing_node_valid = when_moving_down_check_current_domain_size(
+        data_for_this_pv.entries.top().domain, m_raw_data, p_vertex, t_vertex); 
 
   // Next, we need to erase TV from the existing domain.
   if (existing_node_valid) {

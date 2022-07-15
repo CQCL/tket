@@ -20,8 +20,6 @@
 #include "tkwsm/Common/SetIntersection.hpp"
 #include "tkwsm/Searching/DomainsAccessor.hpp"
 
-#include "WeightSubgrMono/Common/TemporaryRefactorCode.hpp"
-
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
