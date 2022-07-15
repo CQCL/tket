@@ -11,7 +11,7 @@ the end of the circuit. Where ``kwargs`` are indicated in these methods, the
 following keyword arguments are supported:
 
 - ``opgroup`` (:py:class:`str`): name of the associated operation group, if any
-- ``condition`` (:py:class:`Bit`, :py:class:`BitLogicExp` or :py:class:`ConstPredicate`): classical condition for applying operation
+- ``condition`` (:py:class:`Bit`, :py:class:`BitLogicExp` or :py:class:`Predicate`): classical condition for applying operation
 - ``condition_bits`` (list of :py:class:`Bit`): classical bits on which to condition operation
 - ``condition_value`` (:py:class:`int`): required value of condition bits (little-endian), defaulting to all-1s if not specified
 
