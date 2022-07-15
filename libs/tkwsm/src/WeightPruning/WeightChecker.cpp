@@ -24,6 +24,9 @@
 #include "tkwsm/Searching/SearchBranch.hpp"
 #include "tkwsm/WeightPruning/WeightNogoodDetector.hpp"
 
+#include "WeightSubgrMono/Common/TemporaryRefactorCode.hpp"
+
+
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
@@ -83,7 +86,9 @@ bool WeightChecker::check(
 
   // Finally, we use the detector; check if it's initialised.
   if (!m_detector_ptr) {
-    const auto used_tv = m_search_branch.get_used_target_vertices();
+    std::set<VertexWSM> used_tv;
+    TemporaryRefactorCode::set_domain_from_bitset(used_tv, 
+          m_search_branch.get_used_target_vertices());
     m_tv_data.initial_number_of_tv = used_tv.size();
 
     m_detector_ptr = std::make_unique<WeightNogoodDetector>(

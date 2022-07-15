@@ -44,7 +44,7 @@ static unsigned get_final_node_index_for_shared_domain(
 }
 
 
-std::set<VertexWSM> NodeListTraversal::get_used_target_vertices() const {
+boost::dynamic_bitset<> NodeListTraversal::get_used_target_vertices() const {
   boost::dynamic_bitset<> target_vertices(m_raw_data.number_of_tv);
 
   // Examine all PV.
@@ -81,9 +81,7 @@ std::set<VertexWSM> NodeListTraversal::get_used_target_vertices() const {
       target_vertices |= domain_data.entries[entries_index].domain;
     }
   }
-  std::set<VertexWSM> target_vertices_set;
-  TemporaryRefactorCode::set_domain_from_bitset(target_vertices_set, target_vertices);
-  return target_vertices_set;
+  return target_vertices;
 }
 
 

@@ -78,7 +78,7 @@ DomainsAccessor& SearchBranch::get_domains_accessor_nonconst() {
 }
 
 
-std::set<VertexWSM> SearchBranch::get_used_target_vertices() const {
+boost::dynamic_bitset<> SearchBranch::get_used_target_vertices() const {
   return m_node_list_traversal.get_used_target_vertices();
 }
 

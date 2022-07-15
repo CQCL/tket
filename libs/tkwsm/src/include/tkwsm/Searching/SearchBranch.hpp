@@ -84,8 +84,7 @@ class SearchBranch {
    * @return The set of all target vertices which might still occur during the
    * future search.
    */
-  std::set<VertexWSM> get_used_target_vertices() const;
-  ////boost::dynamic_bitset<> get_used_target_vertices() const;
+  boost::dynamic_bitset<> get_used_target_vertices() const;
 
   void activate_weight_checker(WeightWSM total_p_edge_weights);
 

@@ -34,14 +34,13 @@ class ValueOrdering {
   /** Choose TV with larger degrees, with some randomness (e.g.,
    * "Solution-Biased Search").
    * @param possible_values The domain of the pattern vertex PV. This MUST have
-   * size>1.
+   * at least one TV.
    * @param target_ndata Data about graphs, etc. etc. (and also RNG) to assist
    * with the decision.
    * @param rng A random number generator.
    * @return The chosen TV from Dom(PV).
    */
   VertexWSM get_target_value(
-      //const std::set<VertexWSM>& possible_values,
       const boost::dynamic_bitset<>& possible_values,
       const NeighboursData& target_ndata, RNG& rng);
 
@@ -60,7 +59,6 @@ class ValueOrdering {
 
   // Fills m_entries_for_high_degree_vertices.
   void fill_entries_for_high_degree_vertices(
-      //const std::set<VertexWSM>& possible_values,
       const boost::dynamic_bitset<>& possible_values,
       const NeighboursData& target_ndata);
 

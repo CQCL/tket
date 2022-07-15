@@ -62,13 +62,6 @@ class DomainsAccessor {
    * @param pv A vertex in the pattern graph.
    * @return The domain of pv in the current search node.
    */
-  /////const std::set<VertexWSM>& get_domain(VertexWSM pv) const;
-
-  /** Return Domain(pv) in the current node, i.e. the set of all target
-   * vertices which pv could be mapped to, as we extend the current mapping.
-   * @param pv A vertex in the pattern graph.
-   * @return The domain of pv in the current search node.
-   */
   const boost::dynamic_bitset<>& get_domain(VertexWSM pv) const;
 
   /** The number of TV currently in Domain(PV). */
