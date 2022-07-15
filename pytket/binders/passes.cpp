@@ -360,8 +360,8 @@ PYBIND11_MODULE(passes, m) {
       py::arg("cx_fidelity"));
   m.def(
       "DecomposeTK2",
-      [](const py::kwargs &kwargs) {
-        return DecomposeTK2(get_fidelities(kwargs));
+      [](bool allow_swaps, const py::kwargs &kwargs) {
+        return DecomposeTK2(get_fidelities(kwargs), allow_swaps);
       },
       "Decompose each TK2 gate into two-qubit gates."
       "\n\nGate fidelities can be passed as keyword arguments to perform "
@@ -377,11 +377,16 @@ PYBIND11_MODULE(passes, m) {
       "If no fidelities are provided, the TK2 gates will be decomposed "
       "exactly using CX gates.\n\n"
       "All TK2 gate parameters must be normalised, i.e. they must satisfy "
-      "`NormalisedTK2Predicate`."
-      "\n\nIf the TK2 angles are symbolic values, the decomposition will "
+      "`NormalisedTK2Predicate`.\n\n"
+      "Using the `allow_swaps=true` (default) option, qubits will be swapped "
+      "when convenient to reduce the two-qubit gate count of the decomposed "
+      "TK2.\n\n"
+      "If the TK2 angles are symbolic values, the decomposition will "
       "be exact (i.e. not noise-aware). It is not possible in general "
       "to obtain optimal decompositions for arbitrary symbolic parameters, "
-      "so consider substituting for concrete values if possible.");
+      "so consider substituting for concrete values if possible."
+      "\n\n:param allow_swaps: Whether to allow implicit wire swaps.",
+      py::arg("allow_swaps") = bool);
   m.def(
       "NormaliseTK2", &NormaliseTK2,
       "Normalises all TK2 gates.\n\n"

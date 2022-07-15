@@ -207,8 +207,9 @@ PYBIND11_MODULE(transform, m) {
           "Decomposes all Boxed operations into elementary gates.")
       .def_static(
           "DecomposeTK2",
-          [](const py::kwargs &kwargs) {
-            return Transforms::decompose_TK2(get_fidelities(kwargs));
+          [](bool allow_swaps, const py::kwargs &kwargs) {
+            return Transforms::decompose_TK2(
+                get_fidelities(kwargs), allow_swaps);
           },
           "Decompose each TK2 gate into two-qubit gates."
           "\n\nWe currently support CX, ZZMax and ZZPhase."
@@ -229,10 +230,15 @@ PYBIND11_MODULE(transform, m) {
           "angle parameter to its fidelity. These parameters will be used "
           "to return the optimal decomposition of each TK2 gate, taking "
           "noise into consideration.\n\n"
+          "Using the `allow_swaps=true` (default) option, qubits will be "
+          "swapped when convenient to reduce the two-qubit gate count of the "
+          "decomposed TK2.\n\n"
           "If the TK2 angles are symbolic values, the decomposition will "
           "be exact (i.e. not noise-aware). It is not possible in general "
           "to obtain optimal decompositions for arbitrary symbolic parameters, "
-          "so consider substituting for concrete values if possible.")
+          "so consider substituting for concrete values if possible."
+          "\n\n:param allow_swaps: Whether to allow implicit wire swaps.",
+          py::arg("allow_swaps") = true)
       .def_static(
           "NormaliseTK2", &Transforms::normalise_TK2,
           "Normalises all TK2 gates.\n\n"
