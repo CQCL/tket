@@ -97,6 +97,7 @@ class ZXDiagramPybind {
 };
 
 void ZXDiagramPybind::init_zxdiagram(py::module& m) {
+  py::register_exception<ZXError>(m, "ZXError");
   py::class_<ZXDiagram, std::shared_ptr<ZXDiagram>>(
       m, "ZXDiagram",
       "Undirected graphs for mixed process ZX diagrams. The boundary is an "
@@ -309,7 +310,15 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "undirected edges of the graph.",
           py::arg("w"), py::arg("v"))
       .def(
-          "check_validity", &ZXDiagram::check_validity,
+	   "check_validity",
+	   [](const ZXDiagram& diag) {
+	     try {
+	       return diag.check_validity();
+	     }
+	     catch (const std::exception& e) {
+	       throw ZXError(e.what());
+	     }
+	   },
           "Performs a check for the internal validity of the "
           ":py:class:`ZXDiagram` and raises an exception if it is invalid.\n"
           "- Inputs/Outputs must have degree 1 and all exist within the "
