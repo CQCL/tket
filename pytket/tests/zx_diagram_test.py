@@ -20,6 +20,7 @@ from pytket.pauli import Pauli, QubitPauliString  # type: ignore
 from pytket.utils.results import compare_unitaries
 from pytket.zx import (  # type: ignore
     ZXDiagram,
+    ZXError,
     ZXType,
     QuantumType,
     ZXWireType,
@@ -50,7 +51,7 @@ def test_generator_creation() -> None:
     spid_gen = diag.get_vertex_ZXGen(z_spid)
     assert repr(spid_gen) == "Q-Z(0.3)"
 
-    pytest.raises(RuntimeError, diag.add_vertex, ZXType.Triangle, 0.3)
+    pytest.raises(ZXError, diag.add_vertex, ZXType.Triangle, 0.3)
 
     tri = diag.add_vertex(ZXType.Triangle, QuantumType.Classical)
     tri_gen = diag.get_vertex_ZXGen(tri)
@@ -63,9 +64,9 @@ def test_diagram_creation() -> None:
     x_spid = diag.add_vertex(ZXType.XSpider, 3.4)
     z_spid2 = diag.add_vertex(ZXType.ZSpider, 6.7, QuantumType.Classical)
 
-    pytest.raises(RuntimeError, diag.add_vertex, ZXType.ZXBox, 3.0)
+    pytest.raises(ZXError, diag.add_vertex, ZXType.ZXBox, 3.0)
 
-    with pytest.raises(RuntimeError) as errorinfo:
+    with pytest.raises(ZXError) as errorinfo:
         diag.check_validity()
     assert "Boundary vertex does not have degree 1" in str(errorinfo.value)
 
@@ -74,7 +75,7 @@ def test_diagram_creation() -> None:
     diag.add_wire(z_spid, x_spid)
     diag.add_wire(x_spid, z_spid, ZXWireType.H)
     extra = diag.add_wire(diag.get_boundary()[1], z_spid)
-    with pytest.raises(RuntimeError) as errorinfo:
+    with pytest.raises(ZXError) as errorinfo:
         diag.check_validity()
     assert "Boundary vertex does not have degree 1" in str(errorinfo.value)
 
@@ -82,21 +83,21 @@ def test_diagram_creation() -> None:
     diag.check_validity()
 
     wrong_port = diag.add_wire(u=z_spid2, v=x_spid, u_port=0)
-    with pytest.raises(RuntimeError) as errorinfo:
+    with pytest.raises(ZXError) as errorinfo:
         diag.check_validity()
     assert "Wire at a named port of an undirected vertex" in str(errorinfo.value)
     diag.remove_wire(wrong_port)
 
     tri = diag.add_vertex(ZXType.Triangle)
     diag.add_wire(u=tri, v=z_spid, u_port=0)
-    with pytest.raises(RuntimeError) as errorinfo:
+    with pytest.raises(ZXError) as errorinfo:
         diag.check_validity()
     assert "Not all ports of a directed vertex have wires connected" in str(
         errorinfo.value
     )
 
     no_port = diag.add_wire(z_spid, tri)
-    with pytest.raises(RuntimeError) as errorinfo:
+    with pytest.raises(ZXError) as errorinfo:
         diag.check_validity()
     assert "Wire at an unnamed port of a directed vertex" in str(errorinfo.value)
     diag.remove_wire(no_port)
@@ -104,7 +105,7 @@ def test_diagram_creation() -> None:
     diag.check_validity()
 
     extra_port = diag.add_wire(u=tri, v=z_spid, u_port=1)
-    with pytest.raises(RuntimeError) as errorinfo:
+    with pytest.raises(ZXError) as errorinfo:
         diag.check_validity()
     assert "Multiple wires on the same port of a vertex" in str(errorinfo.value)
     diag.remove_wire(extra_port)
@@ -120,7 +121,7 @@ def test_diagram_creation() -> None:
     diag.add_wire(u=box, v=z_spid2, u_port=1)
     diag.add_wire(u=box, v=x_spid, u_port=2)
     wrong_qtype = diag.add_wire(u=box, v=z_spid2, u_port=3)
-    with pytest.raises(RuntimeError) as errorinfo:
+    with pytest.raises(ZXError) as errorinfo:
         diag.check_validity()
     assert "QuantumType of wire is incompatible with the given port" in str(
         errorinfo.value
