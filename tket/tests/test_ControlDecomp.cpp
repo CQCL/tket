@@ -538,6 +538,73 @@ SCENARIO("Test a CnU is decomposed correctly using the linear depth method") {
   }
 }
 
+SCENARIO("Test a CnU is decomposed correctly using the grey code method") {
+  GIVEN("Test CnU unitary for n={0,1,2,3,5} controls") {
+    for (unsigned i = 0; i < 100; i++) {
+      Eigen::Matrix2cd U = random_unitary(2, i);
+      std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
+      for (auto n : test_ns) {
+        Circuit circ = CircPool::CnU_gray_code_decomp(n, U);
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, U), ERR_EPS));
+      }
+    }
+  }
+}
+
+SCENARIO(
+    "Test controlled rotation gates are decomposed correctly using the grey "
+    "code method") {
+  GIVEN("Test CnRy for n={0,1,2,3,5} controls") {
+    const Eigen::Matrix2cd ry = Gate(OpType::Ry, {Expr(3.1)}, 1).get_unitary();
+    for (unsigned i = 0; i < 100; i++) {
+      std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
+      for (auto n : test_ns) {
+        Circuit circ = CircPool::CnU_gray_code_decomp(
+            n, as_gate_ptr(get_op_ptr(OpType::Ry, 3.1)));
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, ry), ERR_EPS));
+      }
+    }
+  }
+  GIVEN("Test CnRx for n={0,1,2,3,5} controls") {
+    const Eigen::Matrix2cd rx = Gate(OpType::Rx, {Expr(0.1)}, 1).get_unitary();
+    for (unsigned i = 0; i < 100; i++) {
+      std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
+      for (auto n : test_ns) {
+        Circuit circ = CircPool::CnU_gray_code_decomp(
+            n, as_gate_ptr(get_op_ptr(OpType::Rx, 0.1)));
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, rx), ERR_EPS));
+      }
+    }
+  }
+  GIVEN("Test CnRz for n={0,1,2,3,5} controls") {
+    const Eigen::Matrix2cd rz = Gate(OpType::Rz, {Expr(2.7)}, 1).get_unitary();
+    for (unsigned i = 0; i < 100; i++) {
+      std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
+      for (auto n : test_ns) {
+        Circuit circ = CircPool::CnU_gray_code_decomp(
+            n, as_gate_ptr(get_op_ptr(OpType::Rz, 2.7)));
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, rz), ERR_EPS));
+      }
+    }
+  }
+  GIVEN("Test CnU1 for n={0,1,2,3,5} controls") {
+    const Eigen::Matrix2cd u1 = Gate(OpType::U1, {Expr(1.5)}, 1).get_unitary();
+    for (unsigned i = 0; i < 100; i++) {
+      std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
+      for (auto n : test_ns) {
+        Circuit circ = CircPool::CnU_gray_code_decomp(
+            n, as_gate_ptr(get_op_ptr(OpType::U1, 1.5)));
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, u1), ERR_EPS));
+      }
+    }
+  }
+}
+
 SCENARIO("Test a CnX is decomposed correctly using the Gray code method") {
   GIVEN("Test CnX unitary for 0 to 8 controls") {
     Circuit circ_x = CircPool::CnX_gray_decomp(0);

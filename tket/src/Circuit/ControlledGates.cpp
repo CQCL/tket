@@ -18,7 +18,9 @@
 #include <optional>
 
 #include "Circuit/CircPool.hpp"
+#include "Circuit/CircUtils.hpp"
 #include "Circuit/DAGDefs.hpp"
+#include "Gate/GatePtr.hpp"
 #include "Gate/Rotation.hpp"
 #include "OpType/OpType.hpp"
 #include "Utils/EigenConfig.hpp"
@@ -351,39 +353,21 @@ static unsigned find_first_differing_val(
 // optimal decomposition of CnRy and CnZ for 2 < n < 8 according to 1995
 // paper... can do better with ZH calculus?
 static Circuit lemma71(
-    unsigned arity, const Expr& angle, const OpType& cr_type) {
+    unsigned arity, const Circuit& v_rep, const Circuit& v_dg_rep) {
   unsigned m_controls = arity - 1;
   if (m_controls < 2)
     throw Unsupported(
         "No point using Lemma 7.1 to decompose a gate with less than 2 "
         "controls");
-  if (m_controls > 7)
-    throw Unsupported(
-        "Using Lemma 7.1 to decompose a gate with more than 7 controls "
-        "is inefficient");
-  if (cr_type != OpType::CRy && cr_type != OpType::CU1)
-    throw Unsupported(
-        "The implementation currently only supports CU1 and CRy ");
 
   GrayCode gc = gen_graycode(m_controls);
-  unsigned n_square_roots = m_controls - 1;
 
   Circuit rep(arity);
-  Expr param;
-  std::optional<double> reduced = eval_expr_mod(angle, 4);
-  if (reduced)
-    param = reduced.value();
-  else
-    param = angle;
-
-  param = param / (1 << (n_square_roots));
-
-  const Op_ptr V_op = get_op_ptr(cr_type, param);
-  const Op_ptr V_dg = get_op_ptr(cr_type, -param);
 
   unsigned control_qb = 0;
   unsigned last = 0;
-  rep.add_op<unsigned>(V_op, {0, m_controls});
+  rep.append_with_map(
+      v_rep, {{Qubit(0), Qubit(0)}, {Qubit(1), Qubit(m_controls)}});
   // we ignore the 0...0 term, and the first one is always trivial
   // so start from 2
   for (unsigned i = 2; i < gc.size(); ++i) {
@@ -402,28 +386,24 @@ static Circuit lemma71(
     }
 
     if ((i % 2) == 0) {
-      rep.add_op<unsigned>(V_dg, {last, m_controls});
+      rep.append_with_map(
+          v_dg_rep, {{Qubit(0), Qubit(last)}, {Qubit(1), Qubit(m_controls)}});
     } else
-      rep.add_op<unsigned>(V_op, {last, m_controls});
+      rep.append_with_map(
+          v_rep, {{Qubit(0), Qubit(last)}, {Qubit(1), Qubit(m_controls)}});
     control_qb = last;
   }
-  unsigned correct_gate_count =
-      ((1 << m_controls) - 1) + ((1 << m_controls) - 2);
-  if (rep.n_gates() != correct_gate_count)
-    throw ControlDecompError("Error in Lemma 7.1: Gate count is incorrect");
   auto [vit, vend] = boost::vertices(rep.dag);
   VertexSet bin;
   for (auto next = vit; vit != vend; vit = next) {
     ++next;
     Vertex v = *vit;
     if (!bin.contains(v)) {
-      OpType optype = rep.get_OpType_from_Vertex(v);
-      if (optype == OpType::CRy || optype == OpType::CU1) {
-        Expr v_angle = rep.get_Op_ptr_from_Vertex(v)->get_params()[0];
-        Circuit replacement = (optype == OpType::CRy) ? CRy_using_CX(v_angle)
-                                                      : CU1_using_CX(v_angle);
-        Subcircuit sub{rep.get_in_edges(v), rep.get_all_out_edges(v), {v}};
-        rep.substitute(replacement, sub, Circuit::VertexDeletion::No);
+      Op_ptr op = rep.get_Op_ptr_from_Vertex(v);
+      OpType optype = op->get_type();
+      if (is_multi_qubit_type(optype) && optype != OpType::CX) {
+        Circuit replacement = with_CX(as_gate_ptr(op));
+        rep.substitute(replacement, v, Circuit::VertexDeletion::No);
         bin.insert(v);
       }
     }
@@ -663,6 +643,78 @@ static void lemma79(
   CCX_candidates.push_back({out_edge_spare, secondCnX});
 }
 
+Circuit CnU_gray_code_decomp(unsigned n, const Eigen::Matrix2cd& u) {
+  if (n == 0) {
+    // Synthesis U using tk1 and phase
+    Circuit cnu_circ(1);
+    std::vector<double> tk1_angles = tk1_angles_from_unitary(u);
+    cnu_circ.add_op<unsigned>(
+        OpType::TK1, {tk1_angles[0], tk1_angles[1], tk1_angles[2]}, {0});
+    cnu_circ.add_phase(tk1_angles[3]);
+    return cnu_circ;
+  }
+  if (n == 1) {
+    return CU_to_CU3(u);
+  }
+
+  Eigen::Matrix2cd v_matrix = nth_root(u, 1 << (n - 1));
+  Eigen::Matrix2cd v_matrix_dag = v_matrix.adjoint();
+  Circuit v_rep = CU_to_CU3(v_matrix);
+  Circuit v_dg_rep = CU_to_CU3(v_matrix_dag);
+  return lemma71(n + 1, v_rep, v_dg_rep);
+}
+
+Circuit CnU_gray_code_decomp(unsigned n, const Gate_ptr& gate) {
+  OpType cu_type;
+  switch (gate->get_type()) {
+    case OpType::Rx: {
+      cu_type = OpType::CRx;
+      break;
+    }
+    case OpType::Ry: {
+      cu_type = OpType::CRy;
+      break;
+    }
+    case OpType::Rz: {
+      cu_type = OpType::CRz;
+      break;
+    }
+    case OpType::U1: {
+      cu_type = OpType::CU1;
+      break;
+    }
+    default: {
+      throw Unsupported(
+          "The implementation currently only supports Rx, Ry, Rz, U1");
+    }
+  }
+  if (n == 0) {
+    Circuit cnu_circ(1);
+    cnu_circ.add_op<unsigned>(gate, {0});
+    return cnu_circ;
+  }
+
+  Expr angle = gate->get_params()[0];
+  if (n == 1) {
+    Circuit cnu_circ(2);
+    cnu_circ.add_op<unsigned>(cu_type, angle, {0, 1});
+    return cnu_circ;
+  }
+  Expr param;
+  std::optional<double> reduced = eval_expr_mod(angle, 4);
+  if (reduced)
+    param = reduced.value();
+  else
+    param = angle;
+
+  param = param / (1 << (n - 1));
+  Circuit v_rep(2);
+  Circuit v_dg_rep(2);
+  v_rep.add_op<unsigned>(cu_type, param, {0, 1});
+  v_dg_rep.add_op<unsigned>(cu_type, -param, {0, 1});
+  return lemma71(n + 1, v_rep, v_dg_rep);
+}
+
 Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity) {
   if (op->get_type() != OpType::CnRy) {
     throw CircuitInvalidity("Operation not CnRy");
@@ -689,7 +741,8 @@ Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity) {
     case 6:
     case 7:
     case 8: {
-      rep = lemma71(arity, angle, OpType::CRy);
+      rep = CnU_gray_code_decomp(
+          arity - 1, as_gate_ptr(get_op_ptr(OpType::Ry, angle)));
       break;
     }
     default: {
@@ -738,7 +791,8 @@ Circuit CnX_gray_decomp(unsigned n) {
     default: {
       Circuit circ(n + 1);
       circ.add_op<unsigned>(OpType::H, {n});
-      circ.append(lemma71(n + 1, 1.0, OpType::CU1));
+      circ.append(
+          CnU_gray_code_decomp(n, as_gate_ptr(get_op_ptr(OpType::U1, 1.0))));
       circ.add_op<unsigned>(OpType::H, {n});
       return circ;
     }

@@ -15,6 +15,7 @@
 #pragma once
 
 #include "Circuit.hpp"
+#include "Gate/GatePtr.hpp"
 #include "Utils/Expression.hpp"
 
 namespace tket {
@@ -423,7 +424,7 @@ Circuit incrementer_linear_depth(unsigned n, bool lsb = true);
  *
  * @param n number of controls
  * @param u the controlled 2x2 unitary matrix
- * @return Circuit containing CRx, TK1, U1, U3, and CU3
+ * @return Circuit containing CRx, TK1, U1, and CU3
  */
 Circuit CnU_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd &u);
 
@@ -436,6 +437,27 @@ Circuit CnX_normal_decomp(unsigned n);
 Circuit CnX_gray_decomp(unsigned n);
 
 Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity);
+
+/**
+ * @brief Given a 2x2 numerical unitary matrix U and the number of control
+ * qubits n return the decomposed CnU gate
+ *
+ * @param n
+ * @param gate
+ * @return Circuit containing CX, CRx, CRy, CRz, CU1, TK1, U1, and CU3
+ */
+Circuit CnU_gray_code_decomp(unsigned n, const Gate_ptr &gate);
+
+/**
+ * @brief Given a gate and the number of control qubits n,
+ * return the n-qubit controlled version of that gate using the grey code
+ * decomposition method. This method can handle gates with symbolic parameters
+ *
+ * @param n
+ * @param u
+ * @return Circuit containing CX, TK1, U1, and CU3
+ */
+Circuit CnU_gray_code_decomp(unsigned n, const Eigen::Matrix2cd &u);
 
 }  // namespace CircPool
 
