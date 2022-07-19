@@ -19,6 +19,7 @@
 #include <sstream>
 
 #include "Circuit/Command.hpp"
+#include "Circuit/Circuit.hpp"
 #include "Gate/Gate.hpp"
 #include "Gate/OpPtrFunctions.hpp"
 #include "Gate/SymTable.hpp"
@@ -44,6 +45,7 @@ void init_library(py::module &m);
 
 PYBIND11_MODULE(circuit, m) {
   init_unitid(m);
+  py::register_exception<CircuitInvalidity>(m, "CircuitInvalidity");
   py::class_<Op, std::shared_ptr<Op>>(
       m, "Op", "Encapsulates operation information")
       .def_static(
