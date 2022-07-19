@@ -359,7 +359,12 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
       .def(
           "add_vertex",
           [](ZXDiagram& diag, ZXGen_ptr gen) {
-            return ZXVertWrapper(diag.add_vertex(gen));
+	    try {
+	      return ZXVertWrapper(diag.add_vertex(gen));
+	    }
+	    catch (const std::exception& e) {
+	      throw ZXError(e.what());
+	    }
           },
           "Adds a new vertex to the diagram for an arbitrary "
           ":py:class:`ZXGen`.\n\n"
@@ -369,7 +374,12 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
       .def(
           "add_vertex",
           [](ZXDiagram& diag, ZXType type, QuantumType qtype) {
-            return ZXVertWrapper(diag.add_vertex(type, qtype));
+	    try {
+	      return ZXVertWrapper(diag.add_vertex(type, qtype));
+	    }
+	    catch (const std::exception& e) {
+	      throw ZXError(e.what());
+	    }
           },
           "Adds a new vertex to the diagram for an unparameterised, doubleable "
           "generator type.\n\n"
@@ -382,7 +392,12 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "add_vertex",
           [](ZXDiagram& diag, ZXType type, const Expr& param,
              QuantumType qtype) {
-            return ZXVertWrapper(diag.add_vertex(type, param, qtype));
+	    try {
+	      return ZXVertWrapper(diag.add_vertex(type, param, qtype));
+	    }
+	    catch (const std::exception& e) {
+	      throw ZXError(e.what());
+	    }
           },
           "Adds a new vertex to the diagram for a parameterised, doubleable "
           "generator type.\n\n"
