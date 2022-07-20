@@ -15,6 +15,7 @@
 import copy
 from typing import cast, Dict, TYPE_CHECKING, Union, List, Optional, Set, Any
 import numpy as np
+import numpy.typing as npt
 from sympy import Symbol, sympify, Expr, re, im  # type: ignore
 from pytket.pauli import QubitPauliString, pauli_string_mult  # type: ignore
 from pytket.circuit import Qubit  # type: ignore
@@ -276,7 +277,7 @@ class QubitPauliOperator:
 
     def dot_state(
         self, state: np.ndarray, qubits: Optional[List[Qubit]] = None
-    ) -> np.ndarray:
+    ) -> npt.NDArray[np.complex64]:
         """Applies the operator to the given state, mapping qubits to indexes
         according to ``qubits``.
 
@@ -294,10 +295,12 @@ class QubitPauliOperator:
         :rtype: numpy.ndarray
         """
         indexed_state = [state, qubits] if qubits else [state]
-        return sum(
-            complex(coeff) * pauli.dot_state(*indexed_state)
-            for pauli, coeff in self._dict.items()
-        )  # type: ignore
+        return cast(npt.NDArray[np.complex64],
+                    sum(
+                        complex(coeff) * pauli.dot_state(*indexed_state)
+                        for pauli, coeff in self._dict.items()
+                    )
+                )
 
     def state_expectation(
         self, state: np.ndarray, qubits: Optional[List[Qubit]] = None
@@ -319,9 +322,11 @@ class QubitPauliOperator:
         :rtype: complex
         """
         indexed_state = [state, qubits] if qubits else [state]
-        return sum(
-            complex(coeff) * pauli.state_expectation(*indexed_state)
-            for pauli, coeff in self._dict.items()
+        return complex(
+            sum(
+                complex(coeff) * pauli.state_expectation(*indexed_state)
+                for pauli, coeff in self._dict.items()
+            )
         )
 
     def compress(self, abs_tol: float = 1e-10) -> None:
