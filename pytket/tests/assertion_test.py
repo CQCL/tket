@@ -16,6 +16,7 @@ import numpy as np
 import pytest  # type: ignore
 
 from pytket.circuit import (  # type: ignore
+    CircuitInvalidity,
     ProjectorAssertionBox,
     StabiliserAssertionBox,
     Circuit,
@@ -55,7 +56,7 @@ def test_assertion_init() -> None:
         ]
     )
     p_box = ProjectorAssertionBox(P)
-    with pytest.raises(RuntimeError) as errorinfo:
+    with pytest.raises(CircuitInvalidity) as errorinfo:
         circ.add_assertion(p_box, [0, 1])
     assert "ancilla" in str(errorinfo.value)
     circ.add_assertion(p_box, [0, 1], ancilla=2)
