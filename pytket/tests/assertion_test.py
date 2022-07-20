@@ -56,7 +56,7 @@ def test_assertion_init() -> None:
         ]
     )
     p_box = ProjectorAssertionBox(P)
-    with pytest.raises(CircuitInvalidity) as errorinfo:
+    with pytest.raises(RuntimeError) as errorinfo:
         circ.add_assertion(p_box, [0, 1])
     assert "ancilla" in str(errorinfo.value)
     circ.add_assertion(p_box, [0, 1], ancilla=2)
