@@ -12,9 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import TYPE_CHECKING, Dict, List, Tuple, Union
+from typing import cast, TYPE_CHECKING, Dict, List, Tuple, Union
 
 import numpy as np
+import numpy.typing as npt
 from pytket.circuit import BasisOrder  # type: ignore
 
 if TYPE_CHECKING:
@@ -195,7 +196,7 @@ def _assert_compatible_state_permutation(
 
 def permute_qubits_in_statevector(
     state: np.ndarray, permutation: Tuple[int, ...]
-) -> np.ndarray:
+) -> npt.NDArray:
     """Rearranges a statevector according to a permutation of the qubit indices.
 
     :param state: Original statevector.
@@ -208,7 +209,7 @@ def permute_qubits_in_statevector(
     """
     _assert_compatible_state_permutation(state, permutation)
     permuter = BitPermuter(permutation)
-    return state[permuter.permute_all()]
+    return cast(npt.NDArray, state[permuter.permute_all()])
 
 
 def permute_basis_indexing(
