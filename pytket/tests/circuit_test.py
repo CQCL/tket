@@ -72,9 +72,10 @@ def test_raise_circuitinvalidity() -> None:
         c.get_q_register("c")
     with pytest.raises(CircuitInvalidity):
         kwargs = {"tests": 1}
-        c.add_gate(OpType.CX, [0,1], **kwargs)
+        c.add_gate(OpType.CX, [0, 1], **kwargs)
     with pytest.raises(CircuitInvalidity):
-        c.rename_units({Qubit(0) : Qubit("a"), Qubit(1) : Qubit("a")})
+        c.rename_units({Qubit(0): Qubit("a"), Qubit(1): Qubit("a")})
+
 
 def test_op_free_symbols() -> None:
     c = Circuit(2)
