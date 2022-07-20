@@ -18,8 +18,8 @@
 
 #include <sstream>
 
-#include "Circuit/Command.hpp"
 #include "Circuit/Circuit.hpp"
+#include "Circuit/Command.hpp"
 #include "Gate/Gate.hpp"
 #include "Gate/OpPtrFunctions.hpp"
 #include "Gate/SymTable.hpp"
