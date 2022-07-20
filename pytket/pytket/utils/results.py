@@ -208,7 +208,7 @@ def permute_qubits_in_statevector(
     """
     _assert_compatible_state_permutation(state, permutation)
     permuter = BitPermuter(permutation)
-    return cast(np.ndarray, state[permuter.permute_all()])
+    return state[permuter.permute_all()]
 
 
 def permute_basis_indexing(
