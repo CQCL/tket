@@ -295,12 +295,13 @@ class QubitPauliOperator:
         :rtype: numpy.ndarray
         """
         indexed_state = [state, qubits] if qubits else [state]
-        return cast(npt.NDArray[np.complex64],
-                    sum(
-                        complex(coeff) * pauli.dot_state(*indexed_state)
-                        for pauli, coeff in self._dict.items()
-                    )
-                )
+        return cast(
+            npt.NDArray[np.complex64],
+            sum(
+                complex(coeff) * pauli.dot_state(*indexed_state)
+                for pauli, coeff in self._dict.items()
+            ),
+        )
 
     def state_expectation(
         self, state: np.ndarray, qubits: Optional[List[Qubit]] = None
