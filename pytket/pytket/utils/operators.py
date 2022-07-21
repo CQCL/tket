@@ -294,10 +294,13 @@ class QubitPauliOperator:
         :rtype: numpy.ndarray
         """
         indexed_state = [state, qubits] if qubits else [state]
-        return sum(
-            complex(coeff) * pauli.dot_state(*indexed_state)
-            for pauli, coeff in self._dict.items()
-        )  # type: ignore
+        return cast(
+            np.ndarray,
+            sum(
+                complex(coeff) * pauli.dot_state(*indexed_state)
+                for pauli, coeff in self._dict.items()
+            ),
+        )
 
     def state_expectation(
         self, state: np.ndarray, qubits: Optional[List[Qubit]] = None
@@ -319,9 +322,12 @@ class QubitPauliOperator:
         :rtype: complex
         """
         indexed_state = [state, qubits] if qubits else [state]
-        return sum(
-            complex(coeff) * pauli.state_expectation(*indexed_state)
-            for pauli, coeff in self._dict.items()
+        return cast(
+            complex,
+            sum(
+                complex(coeff) * pauli.state_expectation(*indexed_state)
+                for pauli, coeff in self._dict.items()
+            ),
         )
 
     def compress(self, abs_tol: float = 1e-10) -> None:
