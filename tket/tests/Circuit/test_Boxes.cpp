@@ -639,16 +639,16 @@ SCENARIO("QControlBox", "[boxes]") {
     Circuit c0(3);
     c0.add_op<unsigned>(OpType::X, {0});
     c0.add_op<unsigned>(OpType::CU1, 0.33, {0, 1});
-    c0.add_op<unsigned>(OpType::Z, {0});
+    c0.add_op<unsigned>(OpType::T, {0});
     c0.add_op<unsigned>(OpType::CCX, {0, 1, 2});
     c0.add_op<unsigned>(OpType::CU1, -0.33, {1, 0});
-    // This circuit can be reduced to XZ[0,1] and CCX[0,1,2]
+    // This circuit can be reduced to XT[0,1] and CCX[0,1,2]
     const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0);
     CircBox cbox(c0);
     Op_ptr op = std::make_shared<CircBox>(cbox);
     QControlBox qcbox(op);
     std::shared_ptr<Circuit> c = qcbox.to_circuit();
-    // C(XZ) should be translated into a U1 gate and a CU3 gate
+    // C(XT) should be translated into a U1 gate and a CU3 gate
     // CCX should become C3X
     std::vector<OpType> expected_optypes{OpType::U1, OpType::CU3, OpType::CnX};
     auto cmds = c->get_commands();

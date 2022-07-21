@@ -579,27 +579,12 @@ Circuit with_CX(Gate_ptr op) {
  * Construct a circuit representing CnU1.
  */
 static Circuit CnU1(unsigned n_controls, Expr lambda) {
-  // CnU1(x) decomposes recursively as:
-  // C{n-1}U1(x/2)[ctrls]; U1(x/2)[tgt]; CnX; U1(-x/2)[tgt]; CnX
-  // We don't actually use recursion; just iterate starting with the first U1:
-  if (eval_expr(lambda) == std::nullopt) {
-    Circuit c(n_controls + 1);
-    Expr x = lambda / (1u << n_controls);
-    c.add_op<unsigned>(OpType::U1, x, {0});
-    std::vector<unsigned> cnx_qbs = {0};
-    for (unsigned i = 0; i < n_controls; i++) {
-      cnx_qbs.push_back(i + 1);
-      c.add_op<unsigned>(OpType::U1, x, {i + 1});
-      c.add_op<unsigned>(CNXTYPE(i + 2), cnx_qbs);
-      c.add_op<unsigned>(OpType::U1, -x, {i + 1});
-      c.add_op<unsigned>(CNXTYPE(i + 2), cnx_qbs);
-      x *= 2;
-    }
-    return c;
+  Gate_ptr u1_gate = as_gate_ptr(get_op_ptr(OpType::U1, lambda));
+  if (eval_expr(lambda) == std::nullopt || n_controls == 3 || n_controls == 4) {
+    return CircPool::CnU_gray_code_decomp(n_controls, u1_gate);
   } else {
-    // If lambda is not a symbol, use cnu decomposition
-    Eigen::Matrix2cd u1 = Gate(OpType::U1, {lambda}, 1).get_unitary();
-    return CircPool::CnU_linear_depth_decomp(n_controls, u1);
+    return CircPool::CnU_linear_depth_decomp(
+        n_controls, u1_gate->get_unitary());
   }
 }
 
@@ -940,7 +925,7 @@ Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
       }
     }
   }
-  // 3. Add each block to c2 either as a CnX gate or a CnU decomposition
+  // 3. Add each block to c2 either as a CnX, a CnSU(2) or a CnU decomposition
   Circuit c2(n_controls + c1.n_qubits());
   const static Eigen::Matrix2cd X = Gate(OpType::X, {}, 1).get_unitary();
 
@@ -963,21 +948,53 @@ Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
       }
       new_args.push_back(Qubit(b.target_qubit + n_controls));
       c2.add_op<Qubit>(OpType::CnX, new_args);
-    } else {
-      unit_map_t unit_map;
-      for (unsigned i = 0; i < n_controls; i++) {
-        unit_map.insert({Qubit(i), Qubit(i)});
-      }
-      unsigned control_index = n_controls;
-      for (const unsigned i : b.control_qubits) {
-        unit_map.insert({Qubit(control_index++), Qubit(i + n_controls)});
-      }
-      unit_map.insert(
-          {Qubit(control_index), Qubit(b.target_qubit + n_controls)});
-      Circuit cnu_circ = CircPool::CnU_linear_depth_decomp(
-          b.control_qubits.size() + n_controls, m);
-      c2.append_with_map(cnu_circ, unit_map);
+      continue;
     }
+
+    unit_map_t unit_map;
+    for (unsigned i = 0; i < n_controls; i++) {
+      unit_map.insert({Qubit(i), Qubit(i)});
+    }
+    unsigned control_index = n_controls;
+    for (const unsigned i : b.control_qubits) {
+      unit_map.insert({Qubit(control_index++), Qubit(i + n_controls)});
+    }
+    unit_map.insert({Qubit(control_index), Qubit(b.target_qubit + n_controls)});
+
+    unsigned total_controls = b.control_qubits.size() + n_controls;
+
+    Circuit replacement;
+
+    // Check if the matrix is SU(2)
+    if (m.determinant() == 1.) {
+      // if 2<n<9, we use gray code decomposition method
+      if (total_controls > 2 && total_controls < 5) {
+        replacement = CircPool::CnU_gray_code_decomp(total_controls, m);
+      } else if (total_controls >= 5 && total_controls < 9) {
+        replacement = CircPool::CnU_linear_depth_decomp(total_controls, m);
+      } else {
+        // Compute the SU(2) angles from the TK1 angles
+        std::vector<double> angles = tk1_angles_from_unitary(m);
+        if (equiv_val(angles[3], 1., 2)) {
+          // if the phase is odd, it can be absorbed into the first Rz rotation
+          angles[0] = angles[0] + 2;
+        } else if (!equiv_0(angles[3], 2)) {
+          throw std::logic_error("tk1 angles is not SU(2)");
+        }
+        // convert tk1 angles to zyz angles
+        std::vector<double> zyz_angles = {
+            angles[0] - 0.5, angles[1], angles[2] + 0.5};
+        replacement = CircPool::CnSU2_linear_decomp(
+            total_controls, zyz_angles[0], zyz_angles[1], zyz_angles[2]);
+      }
+    } else {
+      if (total_controls == 3 || total_controls == 4) {
+        replacement = CircPool::CnU_gray_code_decomp(total_controls, m);
+      } else {
+        replacement = CircPool::CnU_linear_depth_decomp(total_controls, m);
+      }
+    }
+    c2.append_with_map(replacement, unit_map);
   }
 
   // 4. implement the conditional phase as a CnU1 gate
