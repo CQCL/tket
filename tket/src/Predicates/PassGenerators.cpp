@@ -70,6 +70,38 @@ PassPtr gen_rebase_pass(
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
+PassPtr gen_rebase_pass_via_tk2(
+    const OpTypeSet& allowed_gates,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk1_replacement,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk2_replacement) {
+  Transform t = Transforms::rebase_factory_via_tk2(
+      allowed_gates, tk1_replacement, tk2_replacement);
+
+  PredicatePtrMap precons;
+  OpTypeSet all_types(allowed_gates);
+  all_types.insert(OpType::Measure);
+  all_types.insert(OpType::Collapse);
+  all_types.insert(OpType::Reset);
+  PredicatePtr postcon1 = std::make_shared<GateSetPredicate>(all_types);
+  PredicatePtr postcon2 = std::make_shared<MaxTwoQubitGatesPredicate>();
+  std::pair<const std::type_index, PredicatePtr> pair2 =
+      CompilationUnit::make_type_pair(postcon1);
+  PredicatePtrMap s_postcons{pair2, CompilationUnit::make_type_pair(postcon2)};
+  PredicateClassGuarantees g_postcons{{pair2.first, Guarantee::Clear}};
+  PostConditions pc = {s_postcons, g_postcons, Guarantee::Preserve};
+  // record pass config
+  nlohmann::json j;
+  j["name"] = "RebaseCustomViaTK2";
+  j["basis_allowed"] = allowed_gates;
+  j["basis_tk1_replacement"] =
+      "SERIALIZATION OF FUNCTIONS IS NOT YET SUPPORTED";
+  j["basis_tk2_replacement"] =
+      "SERIALIZATION OF FUNCTIONS IS NOT YET SUPPORTED";
+  return std::make_shared<StandardPass>(precons, t, pc, j);
+}
+
 PassPtr gen_squash_pass(
     const OpTypeSet& singleqs,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&

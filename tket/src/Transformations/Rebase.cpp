@@ -14,6 +14,7 @@
 
 #include "Rebase.hpp"
 
+#include <tkassert/Assert.hpp>
 #include <tklog/TketLog.hpp>
 
 #include "BasicOptimisation.hpp"
@@ -27,22 +28,6 @@
 namespace tket {
 
 namespace Transforms {
-
-static bool standard_rebase(
-    Circuit& circ, const OpTypeSet& allowed_gates,
-    const Circuit& cx_replacement,
-    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
-        tk1_replacement);
-
-Transform rebase_factory(
-    const OpTypeSet& allowed_gates, const Circuit& cx_replacement,
-    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
-        tk1_replacement) {
-  return Transform([=](Circuit& circ) {
-    return standard_rebase(
-        circ, allowed_gates, cx_replacement, tk1_replacement);
-  });
-}
 
 static bool standard_rebase(
     Circuit& circ, const OpTypeSet& allowed_gates,
@@ -107,6 +92,121 @@ static bool standard_rebase(
   circ.remove_vertices(
       bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
   return success;
+}
+
+static bool standard_rebase_via_tk2(
+    Circuit& circ, const OpTypeSet& allowed_gates,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk1_replacement,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk2_replacement) {
+  bool success = false;
+  VertexList bin;
+
+  // 1. Replace all multi-qubit gates outside the target gateset to TK2.
+  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+    Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    unsigned n_qubits = circ.n_in_edges_of_type(v, EdgeType::Quantum);
+    if (n_qubits <= 1) continue;
+    bool conditional = op->get_type() == OpType::Conditional;
+    if (conditional) {
+      const Conditional& cond = static_cast<const Conditional&>(*op);
+      op = cond.get_op();
+    }
+    OpType type = op->get_type();
+    if (allowed_gates.contains(type) || type == OpType::TK2 ||
+        type == OpType::Barrier)
+      continue;
+    // need to convert
+    Circuit replacement = TK2_circ_from_multiq(op);
+    if (conditional) {
+      circ.substitute_conditional(replacement, v, Circuit::VertexDeletion::No);
+    } else {
+      circ.substitute(replacement, v, Circuit::VertexDeletion::No);
+    }
+    bin.push_back(v);
+    success = true;
+  }
+
+  // 2. If TK2 is not in the target gateset, decompose TK2 gates.
+  if (!allowed_gates.contains(OpType::TK2)) {
+    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+      Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+      bool conditional = op->get_type() == OpType::Conditional;
+      if (conditional) {
+        const Conditional& cond = static_cast<const Conditional&>(*op);
+        op = cond.get_op();
+      }
+      if (op->get_type() == OpType::TK2) {
+        std::vector<Expr> params = op->get_params();
+        TKET_ASSERT(params.size() == 3);
+        Circuit replacement = tk2_replacement(params[0], params[1], params[2]);
+        remove_redundancies().apply(replacement);
+        if (conditional) {
+          circ.substitute_conditional(
+              replacement, v, Circuit::VertexDeletion::No);
+        } else {
+          circ.substitute(replacement, v, Circuit::VertexDeletion::No);
+        }
+        bin.push_back(v);
+        success = true;
+      }
+    }
+  }
+
+  // 3. Replace single-qubit gates by converting to TK1 and replacing.
+  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+    if (circ.n_in_edges_of_type(v, EdgeType::Quantum) != 1) continue;
+    Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    bool conditional = op->get_type() == OpType::Conditional;
+    if (conditional) {
+      const Conditional& cond = static_cast<const Conditional&>(*op);
+      op = cond.get_op();
+    }
+    OpType type = op->get_type();
+    if (!is_gate_type(type) || is_projective_type(type) ||
+        allowed_gates.contains(type))
+      continue;
+    // need to convert
+    std::vector<Expr> tk1_angles = as_gate_ptr(op)->get_tk1_angles();
+    Circuit replacement =
+        tk1_replacement(tk1_angles[0], tk1_angles[1], tk1_angles[2]);
+    remove_redundancies().apply(replacement);
+    if (conditional) {
+      circ.substitute_conditional(replacement, v, Circuit::VertexDeletion::No);
+    } else {
+      circ.substitute(replacement, v, Circuit::VertexDeletion::No);
+    }
+    circ.add_phase(tk1_angles[3]);
+    bin.push_back(v);
+    success = true;
+  }
+
+  circ.remove_vertices(
+      bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+  return success;
+}
+
+Transform rebase_factory(
+    const OpTypeSet& allowed_gates, const Circuit& cx_replacement,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk1_replacement) {
+  return Transform([=](Circuit& circ) {
+    return standard_rebase(
+        circ, allowed_gates, cx_replacement, tk1_replacement);
+  });
+}
+
+Transform rebase_factory_via_tk2(
+    const OpTypeSet& allowed_gates,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk1_replacement,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk2_replacement) {
+  return Transform([=](Circuit& circ) {
+    return standard_rebase_via_tk2(
+        circ, allowed_gates, tk1_replacement, tk2_replacement);
+  });
 }
 
 Transform rebase_tket() {
