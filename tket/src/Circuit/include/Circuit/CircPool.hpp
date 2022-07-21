@@ -459,6 +459,19 @@ Circuit CnU_gray_code_decomp(unsigned n, const Gate_ptr &gate);
  */
 Circuit CnU_gray_code_decomp(unsigned n, const Eigen::Matrix2cd &u);
 
+/**
+ * @brief Linear decomposition method for n-qubit controlled SU(2) gate
+ * expressed as Rz(alpha)Ry(theta)Rz(beta) (multiplication order).
+ * Implements lemma 7.9 in https://arxiv.org/abs/quant-ph/9503016
+ * @param n
+ * @param alpha
+ * @param theta
+ * @param beta
+ * @return Circuit
+ */
+Circuit CnSU2_linear_decomp(
+    unsigned n, const Expr &alpha, const Expr &theta, const Expr &beta);
+
 }  // namespace CircPool
 
 }  // namespace tket

@@ -622,25 +622,58 @@ static void lemma73(Circuit& circ, const std::pair<Edge, Vertex>& pairy) {
 }
 
 // N must be >= 3
+// Assume the unitary is not identity
+// Linear decomposition for multi-controlled special unitaries
 static void lemma79(
-    Circuit& replacement, unsigned N, const Expr& angle,
-    candidate_t& CCX_candidates) {
+    Circuit& replacement, unsigned N, const Expr& alpha, const Expr& theta,
+    const Expr& beta, candidate_t& CCX_candidates) {
   replacement.add_blank_wires(N);
 
-  Vertex vA = replacement.add_op<unsigned>(
-      OpType::CRy, {angle / 2.}, {N - 2, N - 1});  // A
+  // Add Controlled C
+  if (!equiv_0(beta - alpha, 8)) {
+    replacement.add_op<unsigned>(
+        OpType::CRz, {(beta - alpha) / 2.}, {N - 2, N - 1});
+  }
+  // Add the first CnX
   std::vector<unsigned> cnx_qbs(N - 1);
   std::iota(cnx_qbs.begin(), --cnx_qbs.end(), 0);
   cnx_qbs[N - 2] = N - 1;
   const Op_ptr cnx = get_op_ptr(OpType::CnX, std::vector<Expr>{}, N - 1);
   Vertex firstCnX = replacement.add_op<unsigned>(cnx, cnx_qbs);
-  Vertex vB = replacement.add_op<unsigned>(
-      OpType::CRy, {-angle / 2.}, {N - 2, N - 1});  // B
-  CCX_candidates.push_back(
-      {boost::edge(vA, vB, replacement.dag).first, firstCnX});
+
+  // Add Controlled B
+  VertexVec vBs;
+  if (!equiv_0(alpha + beta, 8)) {
+    Vertex vB1 = replacement.add_op<unsigned>(
+        OpType::CRz, {(-alpha - beta) / 2.}, {N - 2, N - 1});
+    vBs.push_back(vB1);
+  }
+  if (!equiv_0(theta, 8)) {
+    Vertex vB2 = replacement.add_op<unsigned>(
+        OpType::CRy, {-theta / 2.}, {N - 2, N - 1});
+    vBs.push_back(vB2);
+  }
+  // At least one of vB1 and vB2 should be set, otherwise it implies that the
+  // SU(2) is identity
+  if (vBs.empty()) {
+    throw ControlDecompError(
+        "Unknown error in Lemma 7.9: identity not rejected");
+  }
+
+  // Add the second CnX
   Vertex secondCnX = replacement.add_op<unsigned>(cnx, cnx_qbs);
-  Edge out_edge_spare = replacement.get_nth_out_edge(vB, 0);
-  CCX_candidates.push_back({out_edge_spare, secondCnX});
+
+  // Add Controlled A
+  if (!equiv_0(theta, 8)) {
+    replacement.add_op<unsigned>(OpType::CRy, {theta / 2.}, {N - 2, N - 1});
+  }
+  if (!equiv_0(alpha, 4)) {
+    replacement.add_op<unsigned>(OpType::CRz, {alpha}, {N - 2, N - 1});
+  }
+  Edge first_e = replacement.get_nth_in_edge(vBs[0], 0);
+  Edge second_e = replacement.get_nth_out_edge(vBs.back(), 0);
+  CCX_candidates.push_back({first_e, firstCnX});
+  CCX_candidates.push_back({second_e, secondCnX});
 }
 
 Circuit CnU_gray_code_decomp(unsigned n, const Eigen::Matrix2cd& u) {
@@ -746,21 +779,19 @@ Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity) {
       break;
     }
     default: {
-      candidate_t ct;
-      lemma79(rep, arity, angle, ct);
-      if (ct.size() != 2)
-        throw ControlDecompError(
-            "Unknown error in controlled gate decomposition");
-      for (const std::pair<Edge, Vertex>& pairy : ct) lemma73(rep, pairy);
+      rep = CnSU2_linear_decomp(arity - 1, 0., angle, 0.);
       auto [x, xend] = boost::vertices(rep.dag);
       for (auto xnext = x; x != xend; x = xnext) {
         ++xnext;
         OpType type = rep.get_OpType_from_Vertex(*x);
-        if (type == OpType::Ry) {
+        if (type == OpType::CRy) {
           Expr x_angle = rep.get_Op_ptr_from_Vertex(*x)->get_params()[0];
           Circuit new_circ = CircPool::CRy_using_CX(x_angle);
           Subcircuit sub{rep.get_in_edges(*x), rep.get_all_out_edges(*x), {*x}};
           rep.substitute(new_circ, sub, Circuit::VertexDeletion::Yes);
+        } else if (type == OpType::CRz) {
+          throw ControlDecompError(
+              "Error in Lemma 7.9: Y rotation isn't recognized");
         }
       }
       break;
@@ -914,6 +945,114 @@ Circuit CnU_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
   // Add incrementer inverse (without toggling q0) to {0,...,n-1}
   circ.append(qn_dag);
 
+  return circ;
+}
+
+Circuit CnSU2_linear_decomp(
+    unsigned n, const Expr& alpha, const Expr& theta, const Expr& beta) {
+  // W == I iff one of the following two conditions is met
+  // 1. t/2 is even, and (a + b)/2 is even
+  // 2. t/2 is odd, and (a + b)/2 is odd
+  // check if SU(2) is identity
+  if ((equiv_0(theta / 2., 2) && equiv_0((alpha + beta) / 2., 2)) ||
+      (equiv_val(theta / 2., 1., 2) && equiv_val((alpha + beta) / 2., 1., 2))) {
+    return Circuit(n + 1);
+  }
+
+  Circuit circ;
+
+  if (n == 0) {
+    // add tk1
+    circ.add_blank_wires(1);
+    circ.add_op<unsigned>(OpType::TK1, {alpha + 0.5, theta, beta - 0.5}, {0});
+    return circ;
+  }
+
+  // SU(2) matrix W expressed as Rz(a)Ry(t)Rz(b)
+  Expr a = alpha;
+  Expr b = beta;
+  Expr t = theta;
+
+  // Lemma 4.3: W = A*X*B*X*C
+  // By lemma 5.4, C is identity iff W can be expressed as Rz(a')Ry(t')Rz(a')
+  // We handle the following two cases
+  // if (a-b)/2 is even, a' = (a + b)/2, t' = t
+  // if (a-b)/2 is odd, a' = (a + b)/2, t' = - t
+  if (equiv_0((a - b) / 2., 2)) {
+    a = (a + b) / 2.;
+    b = a;
+  } else if (equiv_val((a - b) / 2., 1., 2)) {
+    a = (a + b) / 2.;
+    b = a;
+    t = -t;
+  }
+
+  // We test whether W can be expressed as a single Ry(t'')
+  if (equiv_0((a - b) / 2., 2)) {
+    if (equiv_val((a + b) / 2., 1., 2)) {
+      // if (a-b)/2 is even, and (a+b)/2 is odd, t'' = 2-t
+      a = 0.;
+      b = 0.;
+      t = 2. - t;
+    } else if (equiv_0((a + b) / 2., 2)) {
+      // if (a-b)/2 is even, and (a+b)/2 is even, t'' = t
+      a = 0.;
+      b = 0.;
+    }
+  } else if (equiv_val((a - b) / 2., 1., 2)) {
+    if (equiv_val((a + b) / 2., 1., 2)) {
+      // if (a-b)/2 is odd, and (a+b)/2 is odd, t'' = 2-t
+      a = 0.;
+      b = 0.;
+      t = 2. + t;
+    } else if (equiv_0((a + b) / 2., 2)) {
+      // if (a-b)/2 is odd, and (a+b)/2 is even, t'' = -t
+      a = 0.;
+      b = 0.;
+      t = -t;
+    }
+  }
+  if (n == 1) {
+    circ.add_blank_wires(2);
+    if (!equiv_0(b - a, 8)) {
+      circ.add_op<unsigned>(OpType::Rz, {(b - a) / 2.}, {1});
+    }
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    if (!equiv_0(a + b, 8)) {
+      circ.add_op<unsigned>(OpType::Rz, {(-a - b) / 2.}, {1});
+    }
+    if (!equiv_0(t, 8)) {
+      circ.add_op<unsigned>(OpType::Ry, {-t / 2.}, {1});
+    }
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    if (!equiv_0(t, 8)) {
+      circ.add_op<unsigned>(OpType::Ry, {t / 2.}, {1});
+    }
+    if (!equiv_0(a, 4)) {
+      circ.add_op<unsigned>(OpType::Rz, {a}, {1});
+    }
+    return circ;
+  }
+  // Using lemma 7.9 for n >= 2
+  candidate_t ct;
+  lemma79(circ, n + 1, a, t, b, ct);
+  for (const std::pair<Edge, Vertex>& pairy : ct) {
+    Vertex original_cnx = pairy.second;
+    unsigned cnx_arity = circ.n_in_edges(original_cnx);
+    switch (cnx_arity) {
+      case 2: {
+        circ.dag[original_cnx] = {get_op_ptr(OpType::CX)};
+        break;
+      }
+      case 3: {
+        circ.dag[original_cnx] = {get_op_ptr(OpType::CCX)};
+        break;
+      }
+      default: {
+        lemma73(circ, pairy);
+      }
+    }
+  }
   return circ;
 }
 

@@ -18,6 +18,7 @@
 
 #include "Circuit/CircPool.hpp"
 #include "Gate/GateUnitaryMatrix.hpp"
+#include "Gate/SymTable.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/Decomposition.hpp"
@@ -545,6 +546,118 @@ SCENARIO("Test a CnU is decomposed correctly using the grey code method") {
       std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
       for (auto n : test_ns) {
         Circuit circ = CircPool::CnU_gray_code_decomp(n, U);
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, U), ERR_EPS));
+      }
+    }
+  }
+}
+
+static Eigen::MatrixXcd get_su2_matrix(
+    const Expr& alpha, const Expr& theta, const Expr& beta) {
+  Circuit c1 = Circuit(1);
+  c1.add_op<unsigned>(OpType::Rz, beta, {0});
+  c1.add_op<unsigned>(OpType::Ry, theta, {0});
+  c1.add_op<unsigned>(OpType::Rz, alpha, {0});
+  return tket_sim::get_unitary(c1);
+}
+
+SCENARIO("Test CnSU2_linear_decomp") {
+  GIVEN("Test identity") {
+    std::vector<std::vector<Expr>> rotations = {
+        {0, 0, 4}, {0, 0, 0}, {1, 4, 3}, {1, 0, 7}, {1, 6, 1}, {1.5, -6, 4.5}};
+    std::vector<unsigned> test_ns = {0, 1, 2, 3, 4, 5};
+    for (auto n : test_ns) {
+      for (auto angles : rotations) {
+        Circuit circ =
+            CircPool::CnSU2_linear_decomp(n, angles[0], angles[1], angles[2]);
+        const Eigen::MatrixXcd U =
+            get_su2_matrix(angles[0], angles[1], angles[2]);
+        REQUIRE(U.isApprox(Eigen::Matrix2cd::Identity(), ERR_EPS));
+        REQUIRE(circ.n_gates() == 0);
+      }
+    }
+  }
+  GIVEN("Test Y rotation") {
+    std::vector<std::vector<Expr>> rotations = {
+        {0, 0.377, 0}, {3, 4.2, -1}, {2, 1.1, 0}, {5, -0.5, -1}, {4, 1.2, 0}};
+    std::vector<unsigned> test_ns = {0, 1, 2, 3, 4, 5};
+    for (auto n : test_ns) {
+      for (auto angles : rotations) {
+        Circuit circ =
+            CircPool::CnSU2_linear_decomp(n, angles[0], angles[1], angles[2]);
+        const Eigen::MatrixXcd U =
+            get_su2_matrix(angles[0], angles[1], angles[2]);
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, U), ERR_EPS));
+        // check the method detects pure ry
+        if (n == 1) {
+          REQUIRE(circ.n_gates() == 4);
+          REQUIRE(circ.count_gates(OpType::CX) == 2);
+          REQUIRE(circ.count_gates(OpType::Ry) == 2);
+        } else if (n == 2) {
+          REQUIRE(circ.n_gates() == 4);
+          REQUIRE(circ.count_gates(OpType::CX) == 2);
+          REQUIRE(circ.count_gates(OpType::CRy) == 2);
+        }
+      }
+    }
+  }
+  GIVEN("Test rotations where W=AXBX") {
+    std::vector<std::vector<Expr>> rotations = {
+        {3.7, 0.377, -0.3}, {3.4, 4.2, -2.6}};
+    std::vector<unsigned> test_ns = {0, 1, 2, 3, 4, 5};
+    for (auto n : test_ns) {
+      for (auto angles : rotations) {
+        Circuit circ =
+            CircPool::CnSU2_linear_decomp(n, angles[0], angles[1], angles[2]);
+        const Eigen::MatrixXcd U =
+            get_su2_matrix(angles[0], angles[1], angles[2]);
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, U), ERR_EPS));
+        if (n == 1) {
+          REQUIRE(circ.n_gates() == 6);
+          REQUIRE(circ.count_gates(OpType::CX) == 2);
+          REQUIRE(circ.count_gates(OpType::Ry) == 2);
+          REQUIRE(circ.count_gates(OpType::Rz) == 2);
+        } else if (n == 2) {
+          REQUIRE(circ.n_gates() == 6);
+          REQUIRE(circ.count_gates(OpType::CX) == 2);
+          REQUIRE(circ.count_gates(OpType::CRy) == 2);
+          REQUIRE(circ.count_gates(OpType::CRz) == 2);
+        }
+      }
+    }
+  }
+  GIVEN("Test symbolic rotations") {
+    Sym a = SymTable::fresh_symbol("a");
+    Expr ea(a);
+    Sym b = SymTable::fresh_symbol("b");
+    Expr eb(b);
+    Sym c = SymTable::fresh_symbol("c");
+    Expr ec(c);
+    std::map<Sym, double, SymEngine::RCPBasicKeyLess> symbol_map = {
+        {a, 0.3112}, {b, 1.178}, {c, -0.911}};
+    std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
+    for (auto n : test_ns) {
+      Circuit circ = CircPool::CnSU2_linear_decomp(n, ea, eb, ec);
+      const Eigen::MatrixXcd U =
+          get_su2_matrix(symbol_map[a], symbol_map[b], symbol_map[c]);
+      circ.symbol_substitution(symbol_map);
+      const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+      REQUIRE(m.isApprox(get_CnU_matrix(n, U), ERR_EPS));
+    }
+  }
+  GIVEN("Test arbitrary rotations") {
+    std::vector<std::vector<Expr>> rotations = {
+        {3.3, 0.377, -0.11}, {1.3, 0, 0.13}};
+    std::vector<unsigned> test_ns = {0, 1, 2, 3, 4, 5};
+    for (auto n : test_ns) {
+      for (auto angles : rotations) {
+        Circuit circ =
+            CircPool::CnSU2_linear_decomp(n, angles[0], angles[1], angles[2]);
+        const Eigen::MatrixXcd U =
+            get_su2_matrix(angles[0], angles[1], angles[2]);
         const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
         REQUIRE(m.isApprox(get_CnU_matrix(n, U), ERR_EPS));
       }
