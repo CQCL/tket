@@ -302,29 +302,6 @@ double trace_fidelity(double a, double b, double c) {
   return (4. + trace_sq) / 20.;
 }
 
-/**
- * returns average fidelity of the decomposition of the information
- * content with nb_cx CNOTS.
- */
-double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx) {
-  TKET_ASSERT(nb_cx < 4);
-  auto [a, b, c] = k;
-
-  // gate fidelity achievable with 0,...,3 cnots
-  // this is fully determined by the information content k and is optimal
-  // see PhysRevA 71.062331 (2005) for more details on this
-  switch (nb_cx) {
-    case 0:
-      return trace_fidelity(a, b, c);
-    case 1:
-      return trace_fidelity(0.5 - a, b, c);
-    case 2:
-      return trace_fidelity(0, 0, c);
-    default:
-      return 1.;
-  }
-}
-
 inline double mod(double d, double max) { return d - max * floor(d / max); }
 
 std::tuple<Eigen::Matrix4cd, std::array<double, 3>, Eigen::Matrix4cd>

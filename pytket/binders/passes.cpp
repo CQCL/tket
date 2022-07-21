@@ -332,24 +332,32 @@ PYBIND11_MODULE(passes, m) {
   /* Pass library */
   m.def(
       "KAKDecomposition", &KAKDecomposition,
-      "Construct an optimisation pass that performs a Cartan/KAK "
-      "Decomposition "
-      "for 2 qubit gate sequences, well explained in Robert Tucci "
-      "(https://arxiv.org/abs/quant-ph/0507171). "
-      "Given a circuit with CXs, SWAPs and any single-qubit gates, "
-      "produces a circuit with the same gates. "
-      "The optional parameter `cx_fidelity` must be between 0 and 1 and "
-      "should be the estimated CX gate fidelity of the noisy quantum "
-      "hardware to be compiled for. It is used to trade off decomposition "
-      "accuracy for smaller CX gate count. "
-      "If `cx_fidelity` < 1, the resulting decomposition will optimise "
-      "the expected circuit fidelity. In this case, the output circuit "
-      "will not be logically equivalent."
-      "This will not preserve CX orientation."
-      "\n\n:param cx_fidelity: The estimated gate fidelity"
-      "\n:return: a KAK Decomposition pass using the given CX gate "
-      "fidelity",
-      py::arg("cx_fidelity") = 1.);
+      "Squash sequences of two-qubit operations into minimal form.\n\n"
+      "Pass to squash together sequences of single- and two-qubit gates "
+      "into minimal form. Can decompose to TK2 or CX gates.\n\n"
+      "Two-qubit operations can always be expressed in a minimal form of "
+      "maximum three CXs, or as a single TK2 gate (a result also known "
+      "as the KAK or Cartan decomposition).\n\n"
+      "It is in general recommended to squash to TK2 gates, and to then use"
+      " the `DecomposeTK2` pass for noise-aware decompositions to other "
+      "gatesets. For backward compatibility, decompositions to CX are also "
+      "supported. In this case, `cx_fidelity` can be provided to perform "
+      "approximate decompositions to CX gates.\n\n"
+      "When decomposing to TK2 gates, any sequence of two or more two-qubit"
+      " gates on the same set of qubits are replaced by a single TK2 gate. "
+      "When decomposing to CX, the substitution is only performed if it "
+      "results in a reduction of the number of CX gates, or if at least "
+      "one of the two-qubit gates is not a CX.\n\n"
+      ":param target_2qb_gate: OpType to decompose to. Either TK2 or CX.\n"
+      ":param cx_fidelity: Estimated CX gate fidelity, used when "
+      "target_2qb_gate=CX.\n",
+      py::arg("target_2qb_gate") = OpType::CX, py::arg("cx_fidelity") = 1.);
+  m.def(
+      "KAKDecomposition",
+      [](double cx_fidelity) {
+        return KAKDecomposition(OpType::CX, cx_fidelity);
+      },
+      py::arg("cx_fidelity"));
   m.def(
       "DecomposeTK2",
       [](const py::kwargs &kwargs) {

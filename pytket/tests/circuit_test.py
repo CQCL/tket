@@ -559,6 +559,7 @@ def test_circuit_pickle_roundtrip(circuit: Circuit) -> None:
 
 
 @given(st.circuits())
+@settings(deadline=None)
 def test_circuit_from_to_serializable(circuit: Circuit) -> None:
     serializable_form = circuit.to_dict()
     validate(instance=serializable_form, schema=schema)

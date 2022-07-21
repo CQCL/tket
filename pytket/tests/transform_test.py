@@ -211,6 +211,15 @@ def test_three_qubit_squash() -> None:
     assert c.n_gates_of_type(OpType.CX) <= 14
 
 
+def test_three_qubit_squash_tk() -> None:
+    c = Circuit(3)
+    for i in range(50):
+        c.Rz(0.125, i % 3)
+        c.add_gate(OpType.TK2, [0.1, 0.2, 0.3], [(i + 2) % 3, (i + 1) % 3])
+    assert Transform.ThreeQubitSquash(OpType.TK2).apply(c)
+    assert c.n_gates_of_type(OpType.TK2) <= 15
+
+
 def test_basic_rebases() -> None:
     c = get_test_circuit()
     Transform.RebaseToTket().apply(c)
@@ -1063,6 +1072,15 @@ def test_auto_squash() -> None:
     with pytest.raises(NoAutoRebase) as tk_err:
         _ = auto_squash_pass({OpType.H, OpType.T})
     assert "TK1" in str(tk_err.value)
+
+
+def test_tk2_decompositions() -> None:
+    # TKET-2326
+    c = circuit_from_qasm(
+        Path(__file__).resolve().parent / "qasm_test_files" / "test19.qasm"
+    )
+    FullPeepholeOptimise().apply(c)
+    assert c.depth() <= 29
 
 
 if __name__ == "__main__":

@@ -143,16 +143,6 @@ std::vector<TripletCd> get_triplets(
 std::vector<TripletCd> get_triplets(
     const Eigen::MatrixXcd &matr, double abs_epsilon = EPS);
 
-// TODO: move get_CX_fidelity to Decomposition.cpp when no longer needed here
-/** Given TK2 angles, computes the fidelity that can be achieved using
- *  nb_cx CX gates.
- *
- *  @param k The TK2 angles.
- *  @param nb_cx The number of CX gates to be used for decomposition.
- *  @return The fidelity.
- */
-double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx);
-
 /** Similarity measure of TK2(a, b, c) to SU(4) identity
  *
  * This computes the fidelity between TK2(a, b, c) and the 2-qubit identity.

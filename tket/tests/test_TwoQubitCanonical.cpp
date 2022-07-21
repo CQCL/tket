@@ -17,6 +17,8 @@
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Command.hpp"
 #include "Gate/Rotation.hpp"
+#include "Predicates/CompilationUnit.hpp"
+#include "Predicates/PassGenerators.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/BasicOptimisation.hpp"
@@ -431,6 +433,171 @@ SCENARIO("Testing two qubit decomposition with fidelity tradeoff") {
   }
 }
 
+SCENARIO("KAK Decomposition, various target gate sets") {
+  GIVEN("A simple circuit") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(tket::OpType::Rz, -1.4, {0});
+    circ.add_op<unsigned>(tket::OpType::Ry, 1., {1});
+    circ.add_op<unsigned>(tket::OpType::Rz, 1.8, {0});
+    circ.add_op<unsigned>(tket::OpType::CX, {1, 0});
+    circ.add_op<unsigned>(tket::OpType::Rz, 0.5, {0});
+    circ.add_op<unsigned>(tket::OpType::Rx, 1.5, {0});
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::Rz, 1.2, {0});
+
+    WHEN("Decomposing to TK2") {
+      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(circ);
+      Transforms::two_qubit_squash(OpType::TK2).apply(circ);
+      Eigen::MatrixXcd u_res = tket_sim::get_unitary(circ);
+      REQUIRE(circ.count_gates(OpType::TK2) == 1);
+      REQUIRE(circ.count_gates(OpType::CX) == 0);
+      REQUIRE(u_res.isApprox(u_orig));
+    }
+    WHEN("Decomposing to CX") {
+      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(circ);
+      Transforms::two_qubit_squash(OpType::CX).apply(circ);
+      Eigen::MatrixXcd u_res = tket_sim::get_unitary(circ);
+      REQUIRE(circ.count_gates(OpType::CX) == 1);
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+      REQUIRE(u_res.isApprox(u_orig));
+    }
+  }
+  GIVEN("A slightly more complex circuit") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(tket::OpType::Rz, -1.4, {0});
+    circ.add_op<unsigned>(tket::OpType::Ry, 1., {1});
+    circ.add_op<unsigned>(tket::OpType::Rz, 1.8, {0});
+    circ.add_op<unsigned>(tket::OpType::ZZMax, {1, 0});
+    circ.add_op<unsigned>(tket::OpType::Rx, 0.4, {0});
+    circ.add_op<unsigned>(tket::OpType::ZZMax, {1, 0});
+    circ.add_op<unsigned>(tket::OpType::Rz, 1.2, {0});
+    circ.add_op<unsigned>(tket::OpType::Ry, 0.4, {0});
+    circ.add_op<unsigned>(tket::OpType::CX, {1, 0});
+    circ.add_op<unsigned>(tket::OpType::Rz, 1.2, {0});
+    circ.add_op<unsigned>(tket::OpType::ZZPhase, 0.4, {1, 0});
+    circ.add_op<unsigned>(tket::OpType::Rz, 1.2, {0});
+    circ.add_op<unsigned>(tket::OpType::Ry, 0.4, {0});
+    circ.add_op<unsigned>(tket::OpType::CX, {1, 0});
+    circ.add_op<unsigned>(tket::OpType::Rz, 1.2, {0});
+    circ.add_op<unsigned>(tket::OpType::Rx, 1.8, {0});
+    circ.add_op<unsigned>(tket::OpType::Rx, 1.8, {1});
+    circ.add_op<unsigned>(tket::OpType::ZZPhase, 0.2, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::XXPhase, 0.4, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::YYPhase, 0.6, {0, 1});
+    WHEN("Decomposing to TK2") {
+      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(circ);
+      REQUIRE(Transforms::two_qubit_squash(OpType::TK2).apply(circ));
+      Eigen::MatrixXcd u_res = tket_sim::get_unitary(circ);
+      REQUIRE(circ.count_gates(OpType::TK2) == 1);
+      REQUIRE(circ.count_gates(OpType::CX) == 0);
+      REQUIRE(u_res.isApprox(u_orig));
+    }
+    WHEN("Decomposing to CX") {
+      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(circ);
+      REQUIRE(Transforms::two_qubit_squash(OpType::CX).apply(circ));
+      Eigen::MatrixXcd u_res = tket_sim::get_unitary(circ);
+      REQUIRE(circ.count_gates(OpType::CX) == 3);
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+      REQUIRE(u_res.isApprox(u_orig));
+    }
+    WHEN("Decomposing to CX, bad fidelity") {
+      Circuit orig = circ;
+      REQUIRE(Transforms::two_qubit_squash(OpType::CX, 0.6).apply(circ));
+      REQUIRE(circ.count_gates(OpType::CX) == 0);
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+
+      circ = orig;
+      REQUIRE(Transforms::two_qubit_squash(OpType::CX, 0.8).apply(circ));
+      REQUIRE(circ.count_gates(OpType::CX) == 1);
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+
+      circ = orig;
+      REQUIRE(Transforms::two_qubit_squash(OpType::CX, 0.85).apply(circ));
+      REQUIRE(circ.count_gates(OpType::CX) == 2);
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+
+      circ = orig;
+      REQUIRE(Transforms::two_qubit_squash(OpType::CX, 0.9).apply(circ));
+      REQUIRE(circ.count_gates(OpType::CX) == 3);
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+    }
+  }
+  GIVEN("Circuit with nothing to replace") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::V, {0});
+    circ.add_op<unsigned>(tket::OpType::S, {1});
+    circ.add_op<unsigned>(tket::OpType::CX, {1, 2});
+    circ.add_op<unsigned>(tket::OpType::Rz, 0.4, {1});
+    circ.add_op<unsigned>(tket::OpType::PhasedX, {0.4, 0.32}, {1});
+    circ.add_op<unsigned>(tket::OpType::CX, {2, 3});
+    circ.add_op<unsigned>(tket::OpType::PhasedX, {0.23, 0.52}, {1});
+    circ.add_op<unsigned>(tket::OpType::CX, {1, 3});
+    WHEN("Decomposing to TK2") {
+      Circuit circ_orig = circ;
+      REQUIRE(!Transforms::two_qubit_squash(OpType::TK2).apply(circ));
+      Circuit circ_res = circ;
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+      REQUIRE(circ.count_gates(OpType::CX) == 4);
+      REQUIRE(circ_orig == circ_res);
+    }
+    WHEN("Decomposing to CX") {
+      Circuit circ_orig = circ;
+      REQUIRE(!Transforms::two_qubit_squash(OpType::CX).apply(circ));
+      Circuit circ_res = circ;
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+      REQUIRE(circ.count_gates(OpType::CX) == 4);
+      REQUIRE(circ_orig == circ_res);
+    }
+  }
+  GIVEN("Circuit with a bit of redundancy") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::CX, {2, 3});
+    circ.add_op<unsigned>(tket::OpType::CX, {1, 3});
+    WHEN("Decomposing to TK2") {
+      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(circ);
+      REQUIRE(Transforms::two_qubit_squash(OpType::TK2).apply(circ));
+      Eigen::MatrixXcd u_res = tket_sim::get_unitary(circ);
+      REQUIRE(circ.count_gates(OpType::TK2) == 1);
+      REQUIRE(circ.count_gates(OpType::CX) == 2);
+      REQUIRE(u_res.isApprox(u_orig));
+    }
+    WHEN("Decomposing to CX") {
+      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(circ);
+      REQUIRE(Transforms::two_qubit_squash(OpType::CX).apply(circ));
+      Eigen::MatrixXcd u_res = tket_sim::get_unitary(circ);
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+      REQUIRE(circ.count_gates(OpType::CX) == 2);
+      REQUIRE(u_res.isApprox(u_orig));
+    }
+  }
+  GIVEN("Circuit with exotic two-qubit gates") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(tket::OpType::ZZPhase, 0.34, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::CX, {2, 3});
+    circ.add_op<unsigned>(tket::OpType::CX, {1, 3});
+    WHEN("Decomposing to TK2") {
+      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(circ);
+      REQUIRE(Transforms::two_qubit_squash(OpType::TK2).apply(circ));
+      Eigen::MatrixXcd u_res = tket_sim::get_unitary(circ);
+      REQUIRE(circ.count_gates(OpType::TK2) == 1);
+      REQUIRE(circ.count_gates(OpType::CX) == 2);
+      REQUIRE(u_res.isApprox(u_orig));
+    }
+    WHEN("Decomposing to CX") {
+      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(circ);
+      REQUIRE(Transforms::two_qubit_squash(OpType::CX).apply(circ));
+      Eigen::MatrixXcd u_res = tket_sim::get_unitary(circ);
+      REQUIRE(circ.count_gates(OpType::TK2) == 0);
+      REQUIRE(circ.count_gates(OpType::CX) == 3);
+      REQUIRE(u_res.isApprox(u_orig));
+    }
+  }
+}
+
 SCENARIO("KAK Decomposition around symbolic gates") {
   GIVEN("Inefficient two-qubit circuit with symbolic gates") {
     Circuit circ(4);
@@ -638,6 +805,53 @@ SCENARIO("Test decomposition into 2-CX circuit plus diagonal") {
       Eigen::Matrix4cd iH = i_ * (A + A.transpose());
       Eigen::Matrix4cd U = (iH).exp();
       check_decompose_2cx_plus_diag(U);
+    }
+  }
+}
+
+SCENARIO("KAKDecomposition pass") {
+  GIVEN("A simple circuit with many gate types") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::CZ, {1, 2});
+    c.add_op<unsigned>(OpType::S, {0});
+    c.add_op<unsigned>(OpType::V, {1});
+    c.add_op<unsigned>(OpType::Ry, 0.2, {1});
+    c.add_op<unsigned>(OpType::ZZPhase, 0.4, {1, 2});
+    THEN("Then KAKDecomposition() can be applied") {
+      CompilationUnit cu(c);
+      REQUIRE(KAKDecomposition()->apply(cu));
+      Circuit c_res = cu.get_circ_ref();
+      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(c);
+      Eigen::MatrixXcd u_res = tket_sim::get_unitary(c_res);
+      REQUIRE(u_res.isApprox(u_orig));
+    }
+    THEN("Then KAKDecomposition(OpType::TK2) can be applied") {
+      CompilationUnit cu(c);
+      REQUIRE(KAKDecomposition(OpType::TK2)->apply(cu));
+      Circuit c_res = cu.get_circ_ref();
+      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(c);
+      Eigen::MatrixXcd u_res = tket_sim::get_unitary(c_res);
+      REQUIRE(u_res.isApprox(u_orig));
+    }
+  }
+  GIVEN("A simple circuit with classical control") {
+    Circuit c(3, 1);
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::CZ, {1, 2});
+    c.add_op<unsigned>(OpType::S, {0});
+    c.add_op<unsigned>(OpType::V, {1});
+    c.add_op<unsigned>(OpType::Ry, 0.2, {1});
+    c.add_op<unsigned>(OpType::ZZPhase, 1.2, {1, 2});
+    c.add_conditional_gate<unsigned>(OpType::Rx, {0.1}, {1}, {0}, 1);
+    THEN("Then KAKDecomposition() cannot be applied") {
+      CompilationUnit cu(c);
+      REQUIRE_THROWS_AS(KAKDecomposition()->apply(cu), UnsatisfiedPredicate);
+    }
+    THEN("Then KAKDecomposition(OpType::TK2) cannot be applied") {
+      CompilationUnit cu(c);
+      REQUIRE_THROWS_AS(
+          KAKDecomposition(OpType::TK2)->apply(cu), UnsatisfiedPredicate);
     }
   }
 }

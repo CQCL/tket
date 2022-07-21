@@ -6,6 +6,17 @@ x.y.z (unreleased)
 
 Minor new features:
 
+* Add support for TK2 gate in ``KAKDecomposition``.
+* ``Transform.ThreeQubitSquash()`` can now use TK2 gates as an alternative to CX
+  gates.
+* ``Unitary3qBox.get_circuit()`` decomposes the circuit using (at most 15) TK2
+  gates.
+
+1.4.1 (July 2022)
+-----------------
+
+Minor new features:
+
 * New ``NormalisedTK2Predicate`` predicate and ``NormaliseTK2`` pass.
 * New ``ZZPhaseToRz`` pass.
 * Circuit to QASM converters with the "hqslib1" header now fix ZZPhase angles

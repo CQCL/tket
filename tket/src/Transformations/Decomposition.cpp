@@ -438,6 +438,32 @@ static double get_ZZPhase_fidelity(
   }
 }
 
+/** Given TK2 angles, computes the fidelity that can be achieved using
+ *  nb_cx CX gates.
+ *
+ *  @param k The TK2 angles.
+ *  @param nb_cx The number of CX gates to be used for decomposition.
+ *  @return The fidelity.
+ */
+static double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx) {
+  TKET_ASSERT(nb_cx < 4);
+  auto [a, b, c] = k;
+
+  // gate fidelity achievable with 0,...,3 cnots
+  // this is fully determined by the information content k and is optimal
+  // see PhysRevA 71.062331 (2005) for more details on this
+  switch (nb_cx) {
+    case 0:
+      return trace_fidelity(a, b, c);
+    case 1:
+      return trace_fidelity(0.5 - a, b, c);
+    case 2:
+      return trace_fidelity(0, 0, c);
+    default:
+      return 1.;
+  }
+}
+
 // Try to decompose a TK2 gate using different gate sets, find the one with
 // the highest fidelity.
 // If no fidelities are provided, (best_optype, n_gates) is left unchanged.
