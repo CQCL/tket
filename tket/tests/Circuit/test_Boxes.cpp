@@ -678,7 +678,7 @@ SCENARIO("QControlBox", "[boxes]") {
     c0.add_op<unsigned>(OpType::Z, {0});
     c0.add_op<unsigned>(OpType::CZ, {0, 1});
     const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0);
-    REQUIRE(U0.isApprox(Eigen::Matrix2cd::Identity(), ERR_EPS));
+    REQUIRE(U0.isApprox(Eigen::Matrix4cd::Identity(), ERR_EPS));
     CircBox cbox(c0);
     Op_ptr op = std::make_shared<CircBox>(cbox);
     QControlBox qcbox(op);
