@@ -446,18 +446,18 @@ Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity);
  * @param gate
  * @return Circuit containing CX, CRx, CRy, CRz, CU1, TK1, U1, and CU3
  */
-Circuit CnU_gray_code_decomp(unsigned n, const Gate_ptr &gate);
+Circuit CnU_gray_code_decomp(unsigned n, const Eigen::Matrix2cd &u);
 
 /**
  * @brief Given a gate and the number of control qubits n,
- * return the n-qubit controlled version of that gate using the grey code
+ * return the n-qubit controlled version of that gate using the gray code
  * decomposition method. This method can handle gates with symbolic parameters
  *
  * @param n
  * @param u
  * @return Circuit containing CX, TK1, U1, and CU3
  */
-Circuit CnU_gray_code_decomp(unsigned n, const Eigen::Matrix2cd &u);
+Circuit CnU_gray_code_decomp(unsigned n, const Gate_ptr &gate);
 
 /**
  * @brief Linear decomposition method for n-qubit controlled SU(2) gate

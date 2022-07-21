@@ -588,7 +588,7 @@ static Circuit CnU1(unsigned n_controls, Expr lambda) {
   }
 }
 
-Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
+static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
   if (c.n_bits() != 0 || !c.is_simple()) {
     throw CircuitInvalidity("Only default qubit register allowed");
   }
@@ -697,7 +697,7 @@ Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
 }
 
 // Return the target unitary given a Cn* gate where n >= 0
-Eigen::Matrix2cd get_target_op_matrix(const Op_ptr &op) {
+static Eigen::Matrix2cd get_target_op_matrix(const Op_ptr &op) {
   OpType optype = op->get_type();
   Eigen::Matrix2cd m;
   switch (optype) {
@@ -833,7 +833,7 @@ struct CnGateBlock {
 
 // Construct a controlled version of a given circuit
 // with the assumption that the circuit does not have symbols.
-Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
+static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
   if (c.n_bits() != 0 || !c.is_simple()) {
     throw CircuitInvalidity("Only default qubit register allowed");
   }
@@ -872,7 +872,7 @@ Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
   c1.remove_vertices(
       bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
 
-  // 2. try to partitioning the circuit into blocks of Cn* gates such that
+  // 2. try to partition the circuit into blocks of Cn* gates such that
   // the gates in each block can be merged into a single CnU gate
   std::vector<Command> commands = c1.get_commands();
   std::vector<CnGateBlock> blocks;
@@ -925,7 +925,8 @@ Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
       }
     }
   }
-  // 3. Add each block to c2 either as a CnX, a CnSU(2) or a CnU decomposition
+  // 3. Add each block to c2 either as a CnX, a CnSU(2) decomposition or a CnU
+  // decomposition
   Circuit c2(n_controls + c1.n_qubits());
   const static Eigen::Matrix2cd X = Gate(OpType::X, {}, 1).get_unitary();
 
@@ -967,7 +968,6 @@ Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
 
     // Check if the matrix is SU(2)
     if (m.determinant() == 1.) {
-      // if 2<n<9, we use gray code decomposition method
       if (total_controls > 2 && total_controls < 5) {
         replacement = CircPool::CnU_gray_code_decomp(total_controls, m);
       } else if (total_controls >= 5 && total_controls < 9) {
@@ -979,7 +979,8 @@ Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
           // if the phase is odd, it can be absorbed into the first Rz rotation
           angles[0] = angles[0] + 2;
         } else if (!equiv_0(angles[3], 2)) {
-          throw std::logic_error("tk1 angles is not SU(2)");
+          // because it's SU(2), the phase must be integers
+          throw std::logic_error("tk1 angles don't imply SU(2)");
         }
         // convert tk1 angles to zyz angles
         std::vector<double> zyz_angles = {
