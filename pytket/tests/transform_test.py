@@ -1074,6 +1074,15 @@ def test_auto_squash() -> None:
     assert "TK1" in str(tk_err.value)
 
 
+def test_tk2_decompositions():
+    # TKET-2326
+    c = circuit_from_qasm(
+        Path(__file__).resolve().parent / "qasm_test_files" / "test19.qasm"
+    )
+    FullPeepholeOptimise().apply(c)
+    assert c.depth() <= 29
+
+
 if __name__ == "__main__":
     test_remove_redundancies()
     test_reduce_singles()
