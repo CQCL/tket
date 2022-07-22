@@ -977,16 +977,24 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
                   "The given QubitRegister is not in use, please use "
                   "add_q_register to add it to the circuit first.");
             }
-            circ->add_c_register(creg_name, qreg.size());
+            opt_reg_info_t creg_info = circ->get_reg_info(creg_name);
+            if (creg_info == std::nullopt) {
+              circ->add_c_register(creg_name, qreg.size());
+            } else if (circ->get_reg(creg_name).size() != qreg.size()) {
+              throw CircuitInvalidity(
+                  "The given classical register already exists, "
+                  "but its size doesn't match the given QubitRegister.");
+            }
             for (unsigned i = 0; i < qreg.size(); i++) {
               circ->add_measure(qreg[i], Bit(creg_name, i));
             }
             return circ;
           },
           "Appends a measure gate to all qubits in the given register, storing "
-          "the results in a newly created classical register."
+          "the results in the given classical register with matching indices."
+          "The classical register will be created if it doesn't exist."
           "\n\n:param qreg: the QubitRegister to be measured"
-          "\n:param creg_name: the name of the BitRegister to be created"
+          "\n:param creg_name: the name of the BitRegister to store the results"
           "\n:return: the new :py:class:`Circuit`")
       .def(
           "H",
