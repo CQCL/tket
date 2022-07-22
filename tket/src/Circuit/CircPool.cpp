@@ -16,6 +16,7 @@
 
 #include <tkassert/Assert.hpp>
 
+#include "Circuit.hpp"
 #include "OpType/OpType.hpp"
 #include "Utils/Expression.hpp"
 
@@ -947,6 +948,23 @@ Circuit TK2_using_ZZPhase(
   c.append(XXPhase_using_ZZPhase(alpha));
   c.append(YYPhase_using_ZZPhase(beta));
   c.add_op<unsigned>(OpType::ZZPhase, gamma, {0, 1});
+  return c;
+}
+
+Circuit TK2_using_ZZMax(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c = TK2_using_CX_optimal(alpha, beta, gamma);
+  // Find the CX gates and replace them with ZZMax.
+  VertexSet bin;
+  BGL_FORALL_VERTICES(v, c.dag, DAG) {
+    Op_ptr op = c.get_Op_ptr_from_Vertex(v);
+    if (op->get_type() == OpType::CX) {
+      c.substitute(CX_using_ZZMax(), v, Circuit::VertexDeletion::No);
+      bin.insert(v);
+    }
+  }
+  c.remove_vertices(
+      bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
   return c;
 }
 

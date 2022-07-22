@@ -359,6 +359,13 @@ Circuit approx_TK2_using_2xZZPhase(const Expr &alpha, const Expr &beta);
 Circuit TK2_using_ZZPhase(
     const Expr &alpha, const Expr &beta, const Expr &gamma);
 
+/**
+ * @brief Equivalent to TK2(α, β, γ), using up to 3 ZZMax gates.
+ *
+ * @return Circuit equivalent to TK2(α, β, γ).
+ */
+Circuit TK2_using_ZZMax(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
 /** Equivalent to XXPhase3, using three TK2 gates */
 Circuit XXPhase3_using_TK2(const Expr &alpha);
 
