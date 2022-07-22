@@ -804,6 +804,7 @@ struct CnGateBlock {
     }
     color = (color != other.color) ? std::nullopt : color;
     if (is_symmetric && !other.is_symmetric) {
+      control_qubits = other.control_qubits;
       target_qubit = other.target_qubit;
       is_symmetric = false;
     }

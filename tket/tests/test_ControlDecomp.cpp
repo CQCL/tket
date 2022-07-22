@@ -539,7 +539,9 @@ SCENARIO("Test a CnU is decomposed correctly using the linear depth method") {
   }
 }
 
-SCENARIO("Test a CnU is decomposed correctly using the grey code method") {
+SCENARIO(
+    "Test a CnU is decomposed correctly using the gray code method",
+    "[.long]") {
   GIVEN("Test CnU unitary for n={0,1,2,3,5} controls") {
     for (unsigned i = 0; i < 100; i++) {
       Eigen::Matrix2cd U = random_unitary(2, i);
@@ -666,8 +668,9 @@ SCENARIO("Test CnSU2_linear_decomp") {
 }
 
 SCENARIO(
-    "Test controlled rotation gates are decomposed correctly using the grey "
-    "code method") {
+    "Test controlled rotation gates are decomposed correctly using the gray "
+    "code method",
+    "[.long]") {
   GIVEN("Test CnRy for n={0,1,2,3,5} controls") {
     const Eigen::Matrix2cd ry = Gate(OpType::Ry, {Expr(3.1)}, 1).get_unitary();
     for (unsigned i = 0; i < 100; i++) {

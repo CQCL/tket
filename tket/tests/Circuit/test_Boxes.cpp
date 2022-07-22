@@ -666,7 +666,27 @@ SCENARIO("QControlBox", "[boxes]") {
     }
     REQUIRE(U.isApprox(V));
   }
-
+  GIVEN("controlled CircBox with large n=6") {
+    Circuit c0(3);
+    c0.add_op<unsigned>(OpType::TK1, {0.55, 0.22, 0.98}, {0});
+    c0.add_op<unsigned>(OpType::CZ, {0, 1});
+    c0.add_op<unsigned>(OpType::X, {0});
+    c0.add_op<unsigned>(OpType::CX, {1, 0});
+    c0.add_op<unsigned>(OpType::Rx, 0.7, {0});
+    const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0);
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op, 6);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(512, 512);
+    for (unsigned i = 0; i < 8; i++) {
+      for (unsigned j = 0; j < 8; j++) {
+        V(504 + i, 504 + j) = U0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+  }
   GIVEN("controlled CircBox with gates merged to identity") {
     Circuit c0(2);
     c0.add_op<unsigned>(OpType::Z, {0});
