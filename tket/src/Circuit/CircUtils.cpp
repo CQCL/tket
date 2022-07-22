@@ -552,7 +552,7 @@ Circuit with_CX(Gate_ptr op) {
     case OpType::ZZPhase:
       return CircPool::ZZPhase_using_CX(params[0]);
     case OpType::TK2:
-      return CircPool::TK2_using_CX(params[0], params[1], params[2]);
+      return CircPool::TK2_using_CX_general(params[0], params[1], params[2]);
     case OpType::XXPhase3:
       return CircPool::XXPhase3_using_CX(params[0]);
     case OpType::ESWAP:
