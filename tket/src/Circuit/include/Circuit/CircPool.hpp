@@ -312,7 +312,7 @@ Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma);
  *
  * @return Circuit Equivalent circuit to TK2(α, β, γ).
  */
-Circuit TK2_using_CX_general(
+Circuit TK2_using_CX_optimal(
     const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 /**

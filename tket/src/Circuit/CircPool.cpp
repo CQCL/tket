@@ -913,7 +913,7 @@ Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
   }
 }
 
-Circuit TK2_using_CX_general(
+Circuit TK2_using_CX_optimal(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
   Circuit c = TK2_using_normalised_TK2(alpha, beta, gamma);
   // Find the TK2 vertex and replace it.
