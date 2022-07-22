@@ -523,7 +523,8 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "RebaseCustom", &gen_rebase_pass,
-      "Construct a custom rebase pass. This pass:\n(1) decomposes "
+      "Construct a custom rebase pass, given user-defined rebases for TK1 and "
+      "CX. This pass:\n(1) decomposes "
       "multi-qubit gates not in the set of gate types `gateset` to CX "
       "gates;\n(2) if CX is not in `gateset`, replaces CX gates with "
       "`cx_replacement`;\n(3) converts any single-qubit gates not in the "
@@ -542,6 +543,28 @@ PYBIND11_MODULE(passes, m) {
       "\n:return: a pass that rebases to the given gate set",
       py::arg("gateset"), py::arg("cx_replacement"),
       py::arg("tk1_replacement"));
+
+  m.def(
+      "RebaseCustom", &gen_rebase_pass_via_tk2,
+      "Construct a custom rebase pass, given user-defined rebases for TK1 and "
+      "TK2. This pass:"
+      "\n\n"
+      "1. decomposes multi-qubit gates not in the set of gate types `gateset` "
+      "to TK2 gates;\n"
+      "2. if TK2 is not in `gateset`, replaces TK2(a,b,c) gates via the "
+      "`tk2_replacement` function;\n"
+      "3. converts any single-qubit gates not in the gate type set to TK1;\n"
+      "4. if TK2 is not in `gateset`. applies the `tk1_replacement` function "
+      "to each TK1(a,b,c)."
+      "\n\n"
+      ":param gateset: the allowed operations in the rebased circuit\n"
+      ":param tk1_replacement: a function which, given the parameters (a,b,c) "
+      "of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
+      "desired basis\n"
+      ":param tk2_replacement: a function which, given the parameters (a,b,c) "
+      "of an XXPhase(a)YYPhase(b)ZZPhase(c) triple, returns an equivalent "
+      "circuit in the desired basis\n"
+      ":return: a pass that rebases to the given gate set");
 
   m.def(
       "EulerAngleReduction", &gen_euler_pass,
