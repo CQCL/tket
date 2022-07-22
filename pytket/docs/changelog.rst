@@ -11,6 +11,7 @@ Minor new features:
   gates.
 * ``Unitary3qBox.get_circuit()`` decomposes the circuit using (at most 15) TK2
   gates.
+* ``measure_register`` now allows using an existing classical register
 
 1.4.1 (July 2022)
 -----------------
