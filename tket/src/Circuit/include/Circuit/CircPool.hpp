@@ -306,6 +306,16 @@ Circuit TK2_using_3xCX(const Expr &alpha, const Expr &beta, const Expr &gamma);
 Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 /**
+ * @brief Equivalent to TK2(α, β, γ) with minimal number of CX gates.
+ *
+ * A TK2-equivalent circuit with as few CX gates as possible (0, 1, 2 or 3 CX).
+ *
+ * @return Circuit Equivalent circuit to TK2(α, β, γ).
+ */
+Circuit TK2_using_CX_general(
+    const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+/**
  * @brief Equivalent to TK2(α, 0, 0), using 1 ZZPhase gate.
  *
  * Using 1 ZZPhase gate we can implement any gate of the form TK2(α, 0, 0).

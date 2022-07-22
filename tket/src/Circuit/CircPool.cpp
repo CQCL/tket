@@ -14,6 +14,9 @@
 
 #include "CircPool.hpp"
 
+#include <tkassert/Assert.hpp>
+
+#include "OpType/OpType.hpp"
 #include "Utils/Expression.hpp"
 
 namespace tket {
@@ -908,6 +911,23 @@ Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
   } else {
     return TK2_using_3xCX(alpha, beta, gamma);
   }
+}
+
+Circuit TK2_using_CX_general(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c = TK2_using_normalised_TK2(alpha, beta, gamma);
+  // Find the TK2 vertex and replace it.
+  BGL_FORALL_VERTICES(v, c.dag, DAG) {
+    Op_ptr op = c.get_Op_ptr_from_Vertex(v);
+    if (op->get_type() == OpType::TK2) {
+      std::vector<Expr> params = op->get_params();
+      TKET_ASSERT(params.size() == 3);
+      Circuit rep = TK2_using_CX(params[0], params[1], params[2]);
+      c.substitute(rep, v, Circuit::VertexDeletion::Yes);
+      break;
+    }
+  }
+  return c;
 }
 
 Circuit approx_TK2_using_1xZZPhase(const Expr &alpha) {
