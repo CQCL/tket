@@ -37,11 +37,10 @@ void init_library(py::module &m) {
       "_CX_using_TK2", &CircPool::CX_using_TK2,
       "Equivalent to CX, using a TK2 and single-qubit gates");
   library_m.def(
-      "_TK2_using_CX", &CircPool::TK2_using_CX,
+      "_TK2_using_CX", &CircPool::TK2_using_CX_general,
       "Given expressions α, β and γ, return circuit equivalent to "
       "TK2(α, β, γ) using up to 3 CX and single-qubit gates.\n\n"
-      "The parameters must be normalised to the Weyl chamber, i.e. it must "
-      "hold 0.5 ≥ 𝛼 ≥ 𝛽 ≥ |𝛾|.");
+      "The decomposition minimizes the number of CX gates.");
   library_m.def(
       "_approx_TK2_using_1xCX", &CircPool::approx_TK2_using_1xCX,
       "Best approximation of TK2 using 1 CX gate and single-qubit gates, using "
