@@ -225,6 +225,9 @@ void init_library(py::module &m) {
       "Approximate equivalent to TK2, using 2 ZZPhase gates and single-qubit "
       "gates. Only requires the first two angles of the TK2 gate.");
   library_m.def(
+      "_TK2_using_ZZMax", &CircPool::TK2_using_ZZMax,
+      "Equivalent to TK2, using up to 3 ZZMax gates.");
+  library_m.def(
       "_XXPhase3_using_TK2", &CircPool::XXPhase3_using_TK2,
       "Equivalent to XXPhase3, using three TK2 gates");
   library_m.def(
