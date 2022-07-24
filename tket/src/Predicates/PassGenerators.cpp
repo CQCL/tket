@@ -751,4 +751,16 @@ PassPtr GlobalisePhasedX(bool squash) {
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
+PassPtr CustomPass(std::function<Circuit(const Circuit&)> transform) {
+  Transform t{[transform](Circuit& circ) {
+    circ = transform(circ);
+    return true;
+  }};
+  PredicatePtrMap precons;
+  PostConditions postcons;
+  nlohmann::json j;
+  j["name"] = "CustomPass";
+  return std::make_shared<StandardPass>(precons, t, postcons, j);
+}
+
 }  // namespace tket

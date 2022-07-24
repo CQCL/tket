@@ -11,6 +11,8 @@ Minor new features:
   gates.
 * ``Unitary3qBox.get_circuit()`` decomposes the circuit using (at most 15) TK2
   gates.
+* New ``CustomPass()`` accepting a user-supplied circuit transformation
+  function.
 
 1.4.1 (July 2022)
 -----------------
