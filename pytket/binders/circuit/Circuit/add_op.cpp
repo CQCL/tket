@@ -511,11 +511,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             } else {
               ancilla_ = Qubit(ancilla.value());
             }
-	    try {
-	      circ->add_assertion(box, qubits_, ancilla_, name);
-	    } catch (const std::exception& e) {
-	      throw CircuitInvalidity(e.what());
-	    }
+            try {
+              circ->add_assertion(box, qubits_, ancilla_, name);
+            } catch (const std::exception &e) {
+              throw CircuitInvalidity(e.what());
+            }
             return circ;
           },
           "Append a :py:class:`ProjectorAssertionBox` to the circuit."
@@ -532,12 +532,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
              const std::vector<Qubit> &qubits,
              const std::optional<Qubit> &ancilla,
              const std::optional<std::string> &name) -> Circuit * {
-	     try {
-	       circ->add_assertion(box, qubits, ancilla, name);
-	     } catch (const std::exception& e) {
-	       throw CircuitInvalidity(e.what());
-	     }
-	     return circ;
+            try {
+              circ->add_assertion(box, qubits, ancilla, name);
+            } catch (const std::exception &e) {
+              throw CircuitInvalidity(e.what());
+            }
+            return circ;
           },
           "Append a :py:class:`ProjectorAssertionBox` to the circuit."
           "\n\n:param box: ProjectorAssertionBox to append"
@@ -557,11 +557,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
               qubits_.push_back(Qubit(qubits[i]));
             }
             Qubit ancilla_(ancilla);
-	    try {
-	      circ->add_assertion(box, qubits_, ancilla_, name);
-	    } catch (const std::exception& e) {
-	      throw CircuitInvalidity(e.what());
-	    }
+            try {
+              circ->add_assertion(box, qubits_, ancilla_, name);
+            } catch (const std::exception &e) {
+              throw CircuitInvalidity(e.what());
+            }
             return circ;
           },
           "Append a :py:class:`StabiliserAssertionBox` to the circuit."
@@ -577,12 +577,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           [](Circuit *circ, const StabiliserAssertionBox &box,
              const std::vector<Qubit> &qubits, const Qubit &ancilla,
              const std::optional<std::string> &name) -> Circuit * {
-	     try {
-	       circ->add_assertion(box, qubits, ancilla, name);
-	     } catch (const std::exception& e) {
-	       throw CircuitInvalidity(e.what());
-	     }
-	     return circ;
+            try {
+              circ->add_assertion(box, qubits, ancilla, name);
+            } catch (const std::exception &e) {
+              throw CircuitInvalidity(e.what());
+            }
+            return circ;
           },
           "Append a :py:class:`StabiliserAssertionBox` to the circuit."
           "\n\n:param box: StabiliserAssertionBox to append"
@@ -993,11 +993,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
                   "The given QubitRegister is not in use, please use "
                   "add_q_register to add it to the circuit first.");
             }
-	    try {
-	      circ->add_c_register(creg_name, qreg.size());
-	    } catch (const std::exception& e) {
-	      throw CircuitInvalidity(e.what());
-	    }
+            try {
+              circ->add_c_register(creg_name, qreg.size());
+            } catch (const std::exception &e) {
+              throw CircuitInvalidity(e.what());
+            }
             for (unsigned i = 0; i < qreg.size(); i++) {
               circ->add_measure(qreg[i], Bit(creg_name, i));
             }

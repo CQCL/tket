@@ -124,12 +124,12 @@ void init_circuit(py::module &m) {
       .def(
           "get_unitary_times_other",
           [](const Circuit &circ, Eigen::MatrixXcd matr) {
-	    try {
-	      tket_sim::apply_unitary(circ, matr);
-	      return matr;
-	    } catch (const std::exception& e) {
-	      throw CircuitInvalidity(e.what());
-	    }
+            try {
+              tket_sim::apply_unitary(circ, matr);
+              return matr;
+            } catch (const std::exception &e) {
+              throw CircuitInvalidity(e.what());
+            }
           },
           "Calculate UM, where U is the numerical unitary matrix of "
           "the circuit, with ILO-BE convention, and M is another matrix. "
