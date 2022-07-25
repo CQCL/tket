@@ -756,9 +756,10 @@ PassPtr CustomPass(
     std::function<Circuit(const Circuit&)> transform,
     const std::string& label) {
   Transform t{[transform](Circuit& circ) {
-    Circuit circ_in = circ;
-    circ = transform(circ);
-    return circ != circ_in;
+    Circuit circ_out = transform(circ);
+    bool success = circ_out != circ;
+    circ = circ_out;
+    return success;
   }};
   PredicatePtrMap precons;
   PostConditions postcons;
