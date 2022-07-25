@@ -511,7 +511,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             } else {
               ancilla_ = Qubit(ancilla.value());
             }
-            circ->add_assertion(box, qubits_, ancilla_, name);
+	    try {
+	      circ->add_assertion(box, qubits_, ancilla_, name);
+	    } catch (const std::exception& e) {
+	      throw CircuitInvalidity(e.what());
+	    }
             return circ;
           },
           "Append a :py:class:`ProjectorAssertionBox` to the circuit."
@@ -528,8 +532,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
              const std::vector<Qubit> &qubits,
              const std::optional<Qubit> &ancilla,
              const std::optional<std::string> &name) -> Circuit * {
-            circ->add_assertion(box, qubits, ancilla, name);
-            return circ;
+	     try {
+	       circ->add_assertion(box, qubits, ancilla, name);
+	     } catch (const std::exception& e) {
+	       throw CircuitInvalidity(e.what());
+	     }
+	     return circ;
           },
           "Append a :py:class:`ProjectorAssertionBox` to the circuit."
           "\n\n:param box: ProjectorAssertionBox to append"
@@ -549,7 +557,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
               qubits_.push_back(Qubit(qubits[i]));
             }
             Qubit ancilla_(ancilla);
-            circ->add_assertion(box, qubits_, ancilla_, name);
+	    try {
+	      circ->add_assertion(box, qubits_, ancilla_, name);
+	    } catch (const std::exception& e) {
+	      throw CircuitInvalidity(e.what());
+	    }
             return circ;
           },
           "Append a :py:class:`StabiliserAssertionBox` to the circuit."
@@ -565,8 +577,12 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           [](Circuit *circ, const StabiliserAssertionBox &box,
              const std::vector<Qubit> &qubits, const Qubit &ancilla,
              const std::optional<std::string> &name) -> Circuit * {
-            circ->add_assertion(box, qubits, ancilla, name);
-            return circ;
+	     try {
+	       circ->add_assertion(box, qubits, ancilla, name);
+	     } catch (const std::exception& e) {
+	       throw CircuitInvalidity(e.what());
+	     }
+	     return circ;
           },
           "Append a :py:class:`StabiliserAssertionBox` to the circuit."
           "\n\n:param box: StabiliserAssertionBox to append"
