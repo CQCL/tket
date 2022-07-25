@@ -977,7 +977,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
                   "The given QubitRegister is not in use, please use "
                   "add_q_register to add it to the circuit first.");
             }
-            circ->add_c_register(creg_name, qreg.size());
+	    try {
+	      circ->add_c_register(creg_name, qreg.size());
+	    } catch (const std::exception& e) {
+	      throw CircuitInvalidity(e.what());
+	    }
             for (unsigned i = 0; i < qreg.size(); i++) {
               circ->add_measure(qreg[i], Bit(creg_name, i));
             }
