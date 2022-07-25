@@ -49,6 +49,7 @@ from pytket.circuit import (  # type: ignore
     Bit,
     BitRegister,
     Circuit,
+    CircuitInvalidity,
     Op,
     OpType,
     Qubit,
@@ -775,6 +776,8 @@ def circuit_from_qasm(
             circ = circuit_from_qasm_io(f)
         except QASMParseError as e:
             raise QASMParseError(e.msg, e.line, str(input_file))
+        except RuntimeError as e:
+            raise CircuitInvalidity(str(e.args[0]))
     return circ
 
 

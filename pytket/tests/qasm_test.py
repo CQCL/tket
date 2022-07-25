@@ -20,6 +20,7 @@ import pytest  # type: ignore
 
 from pytket.circuit import (  # type: ignore
     Circuit,
+    CircuitInvalidity,
     OpType,
     fresh_symbol,
     Qubit,
@@ -84,7 +85,7 @@ def test_qasm_correct() -> None:
 
 
 def test_qasm_qubit() -> None:
-    with pytest.raises(RuntimeError) as errorinfo:
+    with pytest.raises(CircuitInvalidity) as errorinfo:
         fname = str(curr_file_path / "qasm_test_files/test2.qasm")
         circuit_from_qasm(fname)
     assert "Circuit does not contain unit with id: q[4]" in str(errorinfo.value)
