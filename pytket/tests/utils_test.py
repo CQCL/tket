@@ -18,7 +18,12 @@ from pytket.backends.backend import Backend
 from hypothesis import strategies, given, settings, HealthCheck
 from hypothesis.strategies._internal import SearchStrategy
 
-from pytket.circuit import Qubit, Circuit, OpType  # type: ignore
+from pytket.circuit import (  # type: ignore
+    Qubit,
+    Circuit,
+    CircuitInvalidity,
+    OpType
+)
 from pytket.pauli import Pauli, QubitPauliString  # type: ignore
 from pytket.partition import PauliPartitionStrat, GraphColourMethod  # type: ignore
 from pytket.transform import Transform  # type: ignore
@@ -67,7 +72,7 @@ def test_append_measurements() -> None:
 def test_append_measurements_err0() -> None:
     c = Circuit(2)
     qps = QubitPauliString(Qubit(2), Pauli.X)
-    with pytest.raises(RuntimeError) as ex:
+    with pytest.raises(CircuitInvalidity) as ex:
         append_pauli_measurement(qps, c)
     assert "Circuit does not contain unit with id: q[2]" in str(ex.value)
 

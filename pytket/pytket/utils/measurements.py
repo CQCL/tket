@@ -13,7 +13,11 @@
 # limitations under the License.
 
 from typing import Iterable
-from pytket.circuit import Circuit, Bit  # type: ignore
+from pytket.circuit import (  # type: ignore
+    Circuit,
+    CircuitInvalidity,
+    Bit,
+)
 from pytket.pauli import Pauli, QubitPauliString  # type: ignore
 from .operators import QubitPauliOperator
 
@@ -29,13 +33,16 @@ def append_pauli_measurement(pauli_string: QubitPauliString, circ: Circuit) -> N
     """
     measured_qbs = []
     for qb, p in pauli_string.map.items():
-        if p == Pauli.I:
-            continue
-        measured_qbs.append(qb)
-        if p == Pauli.X:
-            circ.H(qb)
-        elif p == Pauli.Y:
-            circ.Rx(0.5, qb)
+        try:
+            if p == Pauli.I:
+                continue
+            measured_qbs.append(qb)
+            if p == Pauli.X:
+                circ.H(qb)
+            elif p == Pauli.Y:
+                circ.Rx(0.5, qb)
+        except RuntimeError as e:
+            raise CircuitInvalidity(str(e.args[0]))
     for b_idx, qb in enumerate(measured_qbs):
         unit = Bit(b_idx)
         circ.add_bit(unit, False)
