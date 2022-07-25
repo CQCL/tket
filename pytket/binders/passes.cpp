@@ -799,8 +799,9 @@ PYBIND11_MODULE(passes, m) {
       "\n\n"
       ":param transform: function taking a :py:class:`Circuit` as an argument "
       "and returning a new transformed circuit"
+      ":param label: optional label for the pass"
       "\n:return: a pass to perform the transformation",
-      py::arg("transform"));
+      py::arg("transform"), py::arg("label") = "");
 }
 
 }  // namespace tket

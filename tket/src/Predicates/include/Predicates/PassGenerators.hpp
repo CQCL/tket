@@ -274,12 +274,15 @@ PassPtr GlobalisePhasedX(bool squash = true);
  * Generate a custom pass
  *
  * @param transform circuit transformation function
+ * @param label optional user-defined label for the pass
  *
  * It is the caller's responsibility to provide a valid transform: there are no
  * checks on this.
  *
  * @return compilation pass that applies the supplied transform
  */
-PassPtr CustomPass(std::function<Circuit(const Circuit&)> transform);
+PassPtr CustomPass(
+    std::function<Circuit(const Circuit&)> transform,
+    const std::string& label = "");
 
 }  // namespace tket

@@ -16,6 +16,7 @@
 
 #include <memory>
 #include <sstream>
+#include <string>
 
 #include "ArchAwareSynth/SteinerForest.hpp"
 #include "Circuit/CircPool.hpp"
@@ -751,7 +752,9 @@ PassPtr GlobalisePhasedX(bool squash) {
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
-PassPtr CustomPass(std::function<Circuit(const Circuit&)> transform) {
+PassPtr CustomPass(
+    std::function<Circuit(const Circuit&)> transform,
+    const std::string& label) {
   Transform t{[transform](Circuit& circ) {
     Circuit circ_in = circ;
     circ = transform(circ);
@@ -761,6 +764,7 @@ PassPtr CustomPass(std::function<Circuit(const Circuit&)> transform) {
   PostConditions postcons;
   nlohmann::json j;
   j["name"] = "CustomPass";
+  j["label"] = label;
   return std::make_shared<StandardPass>(precons, t, postcons, j);
 }
 

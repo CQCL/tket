@@ -1098,11 +1098,14 @@ def test_custom_pass() -> None:
             c1.add_gate(op.type, params, cmd.args)
         return c1
 
-    p = CustomPass(transform)
+    p = CustomPass(transform, label="ignore_small_angles")
     c = Circuit(2).H(0).CX(0, 1).Rz(0.001, 0).Rz(0.001, 1).CX(0, 1).H(0)
     seq = SequencePass([RemoveRedundancies(), p, RemoveRedundancies()])
     seq.apply(c)
     assert c.n_gates == 0
+
+    p_json = p.to_dict()
+    assert p_json["StandardPass"]["label"] == "ignore_small_angles"
 
 
 if __name__ == "__main__":
