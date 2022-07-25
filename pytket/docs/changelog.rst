@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.4.2 (July 2022)
+-----------------
+
+Fixes:
+
+* Relax assertion to avoid crash due to rounding errors.
+
 1.4.0 (July 2022)
 -----------------
 
