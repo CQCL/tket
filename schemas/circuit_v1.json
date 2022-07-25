@@ -267,6 +267,10 @@
         ]
       }
     },
+    "data": {
+      "type": "string",
+      "description": "additional string stored in the op"
+    },
     "operation": {
       "type": "object",
       "description": "A representation of the operation performed.",
