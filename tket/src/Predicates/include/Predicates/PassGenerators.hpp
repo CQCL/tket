@@ -278,8 +278,6 @@ PassPtr GlobalisePhasedX(bool squash = true);
  * It is the caller's responsibility to provide a valid transform: there are no
  * checks on this.
  *
- * The `apply()` method of the generated pass will always return true.
- *
  * @return compilation pass that applies the supplied transform
  */
 PassPtr CustomPass(std::function<Circuit(const Circuit&)> transform);

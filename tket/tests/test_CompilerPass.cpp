@@ -1269,7 +1269,7 @@ SCENARIO("CustomPass") {
     c.add_op<unsigned>(OpType::H, {0});
     c.add_op<unsigned>(OpType::CX, {0, 1});
     CompilationUnit cu(c);
-    REQUIRE(pp->apply(cu));
+    REQUIRE_FALSE(pp->apply(cu));
     REQUIRE(cu.get_circ_ref() == c);
   }
   GIVEN("Custom pass that ignores ops with small params") {

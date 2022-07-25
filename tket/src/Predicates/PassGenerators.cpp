@@ -753,8 +753,9 @@ PassPtr GlobalisePhasedX(bool squash) {
 
 PassPtr CustomPass(std::function<Circuit(const Circuit&)> transform) {
   Transform t{[transform](Circuit& circ) {
+    Circuit circ_in = circ;
     circ = transform(circ);
-    return true;
+    return circ != circ_in;
   }};
   PredicatePtrMap precons;
   PostConditions postcons;
