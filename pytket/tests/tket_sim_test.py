@@ -13,7 +13,10 @@
 # limitations under the License.
 
 import pytest  # type: ignore
-from pytket.circuit import Circuit  # type: ignore
+from pytket.circuit import (  # type: ignore
+    Circuit,
+    CircuitInvalidity
+)
 from enum import Enum  # type: ignore
 import numpy as np
 import math  # type: ignore
@@ -107,7 +110,7 @@ def check_that_premultiplication_fails(
         product = unitary @ matr
     check_matmul_failure_exception_string(str(e1.value))
 
-    with pytest.raises(RuntimeError) as e2:
+    with pytest.raises(CircuitInvalidity) as e2:
         product = circ.get_unitary_times_other(matr)
     message = str(e2)
     assert "M has wrong number of" in message
