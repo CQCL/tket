@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include "OpType/OpType.hpp"
 #include "Transform.hpp"
 
 namespace tket {
@@ -21,15 +22,17 @@ namespace tket {
 namespace Transforms {
 
 /**
- * Squash sequences of 3-qubit instructions into their canonical 20-CX form.
+ * Squash sequences of 3-qubit instructions into a canonical form.
  *
- * The circuit should comprise only CX and single-qubit gates. The transform
- * may perform a combination of 2-qubit (KAK) and 3-qubit decompositions of
- * subcircuits, but only does so if this reduces the CX count.
+ * The circuit should comprise only 1- and 2-qubit gates, with the 2-qubit gates
+ * being either all CX or all TK2; this is also the target gate. The transform
+ * will only squash subcircuits that reduce the count of the relevant 2-qubit
+ * gate.
  *
+ * @param target_2qb_gate Target 2-qubit gate (either CX or TK2)
  * @return Transform implementing the squash
  */
-Transform three_qubit_squash();
+Transform three_qubit_squash(OpType target_2qb_gate = OpType::CX);
 
 }  // namespace Transforms
 
