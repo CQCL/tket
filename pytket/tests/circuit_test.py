@@ -891,7 +891,7 @@ def test_measuring_registers() -> None:
     assert str(commands[0]) == "Measure qr[0] --> cr[0];"
     assert str(commands[1]) == "Measure qr[1] --> cr[1];"
     qreg2 = c.add_q_register("qr2", 2)
-    with pytest.raises(RuntimeError) as e:
+    with pytest.raises(CircuitInvalidity) as e:
         c.measure_register(qreg2, "cr")
     assert 'A register with name "cr" already exists' in str(e.value)
 
