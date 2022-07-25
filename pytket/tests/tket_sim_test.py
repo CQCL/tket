@@ -13,10 +13,7 @@
 # limitations under the License.
 
 import pytest  # type: ignore
-from pytket.circuit import (  # type: ignore
-    Circuit,
-    CircuitInvalidity
-)
+from pytket.circuit import Circuit, CircuitInvalidity  # type: ignore
 from enum import Enum  # type: ignore
 import numpy as np
 import math  # type: ignore
