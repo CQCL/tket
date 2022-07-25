@@ -6,7 +6,7 @@ Changelog
 
 Fixes:
 
-* Relax assertion to avoid crash due to rounding errors.
+* Relax assertion in replace_TK2_2CX to avoid crash due to rounding errors.
 
 1.4.0 (July 2022)
 -----------------
