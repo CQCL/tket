@@ -21,6 +21,7 @@
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Command.hpp"
 #include "Circuit/ThreeQubitConversion.hpp"
+#include "OpType/OpType.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/ThreeQubitSquash.hpp"
@@ -50,8 +51,22 @@ static void check_three_qubit_synthesis(const Eigen::MatrixXcd &U) {
   CHECK(n_cx <= 20);
   Eigen::MatrixXcd U1 = tket_sim::get_unitary(c);
   CHECK(tket_sim::compare_statevectors_or_unitaries(U, U1));
-  Eigen::MatrixXcd U2 = get_3q_unitary(c);
-  CHECK(tket_sim::compare_statevectors_or_unitaries(U, U2));
+}
+
+static void check_three_qubit_tk_synthesis(const Eigen::MatrixXcd &U) {
+  Circuit c = three_qubit_tk_synthesis(U);
+  unsigned n_tk2 = 0;
+  for (const Command &cmd : c) {
+    OpType optype = cmd.get_op_ptr()->get_type();
+    if (optype == OpType::TK2) {
+      n_tk2++;
+    } else {
+      CHECK(cmd.get_args().size() == 1);
+    }
+  }
+  CHECK(n_tk2 <= 15);
+  Eigen::MatrixXcd U1 = tket_sim::get_unitary(c);
+  CHECK(tket_sim::compare_statevectors_or_unitaries(U, U1));
 }
 
 SCENARIO("Three-qubit circuits") {
@@ -123,6 +138,7 @@ SCENARIO("Three-qubit circuits") {
     U(7, 6) = {0.32103151296141164, 0.21632916190339818};
     U(7, 7) = {-0.04551679980729478, 0.12225020102655798};
     check_three_qubit_synthesis(U);
+    check_three_qubit_tk_synthesis(U);
   }
   GIVEN("Round trip from a small circuit") {
     Circuit c(3);
@@ -132,6 +148,7 @@ SCENARIO("Three-qubit circuits") {
     c.add_op<unsigned>(OpType::CX, {1, 2});
     auto u = tket_sim::get_unitary(c);
     check_three_qubit_synthesis(u);
+    check_three_qubit_tk_synthesis(u);
   }
   GIVEN("Round trip from a larger circuit") {
     Circuit c(3);
@@ -197,6 +214,7 @@ SCENARIO("Three-qubit circuits") {
     c.add_op<unsigned>(OpType::CX, {0, 2});
     auto u = tket_sim::get_unitary(c);
     check_three_qubit_synthesis(u);
+    check_three_qubit_tk_synthesis(u);
   }
 }
 
@@ -230,16 +248,42 @@ SCENARIO("Unitary from circuits") {
     c.add_op<unsigned>(OpType::CX, {2, 1});
     check_3q_unitary(c);
   }
+  GIVEN("Circuit with TK2 gates") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::S, {1});
+    c.add_op<unsigned>(OpType::T, {2});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {0, 1});
+    c.add_op<unsigned>(OpType::TK2, {0.7, 0.8, 0.9}, {0, 2});
+    c.add_op<unsigned>(OpType::S, {0});
+    c.add_op<unsigned>(OpType::T, {1});
+    c.add_op<unsigned>(OpType::H, {2});
+    c.add_op<unsigned>(OpType::TK2, {0.5, 0.6, 0.7}, {1, 2});
+    c.add_op<unsigned>(OpType::TK2, {0.2, 0.3, 0.4}, {1, 0});
+    c.add_op<unsigned>(OpType::T, {0});
+    c.add_op<unsigned>(OpType::H, {1});
+    c.add_op<unsigned>(OpType::S, {2});
+    c.add_op<unsigned>(OpType::TK2, {0.3, 0.4, 0.5}, {2, 0});
+    c.add_op<unsigned>(OpType::TK2, {0.4, 0.5, 0.6}, {2, 1});
+    check_3q_unitary(c);
+  }
 }
 
-static bool check_3q_squash(const Circuit &c) {
-  unsigned n_cx = c.count_gates(OpType::CX);
+static bool check_3q_squash(
+    const Circuit &c, OpType target_2qb_gate = OpType::CX) {
+  OpType other_type = OpType::TK2;
+  if (target_2qb_gate == OpType::TK2) {
+    other_type = OpType::CX;
+  }
+  unsigned n_2q = c.count_gates(target_2qb_gate);
   Eigen::MatrixXcd U = tket_sim::get_unitary(c);
   Circuit c1 = c;
-  bool success = Transforms::three_qubit_squash().apply(c1);
-  unsigned n_cx1 = c1.count_gates(OpType::CX);
+  bool success = Transforms::three_qubit_squash(target_2qb_gate).apply(c1);
+  unsigned n_2q1 = c1.count_gates(target_2qb_gate);
+  unsigned n_other = c1.count_gates(other_type);
+  CHECK(n_other == 0);
   if (success) {
-    CHECK(n_cx1 < n_cx);
+    CHECK(n_2q1 < n_2q);
     Eigen::MatrixXcd U1 = tket_sim::get_unitary(c1);
     CHECK(tket_sim::compare_statevectors_or_unitaries(U, U1));
   } else {
@@ -252,26 +296,36 @@ SCENARIO("Three-qubit squash") {
   GIVEN("Empty circuit") {
     Circuit c(2);
     CHECK_FALSE(check_3q_squash(c));
+    CHECK_FALSE(check_3q_squash(c, OpType::TK2));
   }
   GIVEN("1-qubit circuit, 1 gate") {
     Circuit c(1);
     c.add_op<unsigned>(OpType::H, {0});
     CHECK_FALSE(check_3q_squash(c));
+    CHECK_FALSE(check_3q_squash(c, OpType::TK2));
   }
   GIVEN("1-qubit circuit, 2 gates") {
     Circuit c(1);
     c.add_op<unsigned>(OpType::H, {0});
     c.add_op<unsigned>(OpType::Rz, 0.25, {0});
     CHECK_FALSE(check_3q_squash(c));
+    CHECK_FALSE(check_3q_squash(c, OpType::TK2));
   }
-  GIVEN("2-qubit circuit that cannot be squashed") {
+  GIVEN("2-qubit CX circuit that cannot be squashed") {
     Circuit c(2);
     c.add_op<unsigned>(OpType::H, {0});
     c.add_op<unsigned>(OpType::Rz, 0.25, {0});
     c.add_op<unsigned>(OpType::CX, {0, 1});
     CHECK_FALSE(check_3q_squash(c));
   }
-  GIVEN("2-qubit circuit that can be squashed") {
+  GIVEN("2-qubit TK2 circuit that cannot be squashed") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::Rz, 0.25, {0});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {0, 1});
+    CHECK_FALSE(check_3q_squash(c, OpType::TK2));
+  }
+  GIVEN("2-qubit CX circuit that can be squashed") {
     Circuit c(2);
     c.add_op<unsigned>(OpType::H, {0});
     c.add_op<unsigned>(OpType::Rz, 0.25, {0});
@@ -287,7 +341,17 @@ SCENARIO("Three-qubit squash") {
     c.add_op<unsigned>(OpType::CX, {1, 0});
     CHECK(check_3q_squash(c));
   }
-  GIVEN("3-qubit circuit that cannot be squashed") {
+  GIVEN("2-qubit TK2 circuit that can be squashed") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::Rz, 0.25, {0});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {0, 1});
+    c.add_op<unsigned>(OpType::H, {1});
+    c.add_op<unsigned>(OpType::Rz, 0.25, {0});
+    c.add_op<unsigned>(OpType::TK2, {0.2, 0.3, 0.4}, {0, 1});
+    CHECK(check_3q_squash(c, OpType::TK2));
+  }
+  GIVEN("3-qubit CX circuit that cannot be squashed") {
     Circuit c(3);
     c.add_op<unsigned>(OpType::H, {0});
     c.add_op<unsigned>(OpType::CX, {0, 1});
@@ -299,7 +363,15 @@ SCENARIO("Three-qubit squash") {
     c.add_op<unsigned>(OpType::CX, {1, 0});
     CHECK_FALSE(check_3q_squash(c));
   }
-  GIVEN("Three-qubit circuit that can be squashed") {
+  GIVEN("3-qubit TK2 circuit that cannot be squashed") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {0, 1});
+    c.add_op<unsigned>(OpType::Rz, 0.25, {2});
+    c.add_op<unsigned>(OpType::TK2, {0.2, 0.3, 0.4}, {2, 0});
+    CHECK_FALSE(check_3q_squash(c, OpType::TK2));
+  }
+  GIVEN("Three-qubit CX circuit that can be squashed") {
     Circuit c(3);
     for (unsigned i = 0; i < 21; i++) {
       c.add_op<unsigned>(OpType::H, {i % 3});
@@ -308,7 +380,17 @@ SCENARIO("Three-qubit squash") {
     }
     CHECK(check_3q_squash(c));
   }
-  GIVEN("A complex circuit that can be squashed") {
+  GIVEN("Three-qubit TK2 circuit that can be squashed") {
+    Circuit c(3);
+    for (unsigned i = 0; i < 16; i++) {
+      c.add_op<unsigned>(OpType::H, {i % 3});
+      c.add_op<unsigned>(
+          OpType::TK2, {0.1 * i, 0.2 * i, 0.3 * i}, {i % 3, (i + 1) % 3});
+      c.add_op<unsigned>(OpType::Rz, 0.25, {(i + 1) % 3});
+    }
+    CHECK(check_3q_squash(c, OpType::TK2));
+  }
+  GIVEN("A complex CX circuit that can be squashed") {
     Circuit c2q(2);
     for (unsigned i = 0; i < 4; i++) {
       c2q.add_op<unsigned>(OpType::Rz, 0.25, {i % 2});
@@ -329,7 +411,30 @@ SCENARIO("Three-qubit squash") {
     Transforms::decomp_boxes().apply(c);
     CHECK(check_3q_squash(c));
   }
-  GIVEN("A circuit with measurements") {
+  GIVEN("A complex TK2 circuit that can be squashed") {
+    Circuit c2q(2);
+    for (unsigned i = 0; i < 4; i++) {
+      c2q.add_op<unsigned>(OpType::Rz, 0.25, {i % 2});
+      c2q.add_op<unsigned>(
+          OpType::TK2, {0.1 * i, 0.2 * i, 0.3 * i}, {i % 2, (i + 1) % 2});
+    }
+    CircBox c2qbox(c2q);
+    Circuit c3q(3);
+    for (unsigned i = 0; i < 16; i++) {
+      c3q.add_op<unsigned>(OpType::Rz, 0.25, {i % 3});
+      c3q.add_op<unsigned>(
+          OpType::TK2, {0.1 * i, 0.2 * i, 0.3 * i}, {i % 3, (i + 1) % 3});
+    }
+    CircBox c3qbox(c3q);
+    Circuit c(5);
+    c.add_box(c2qbox, {1, 3});
+    c.add_box(c3qbox, {3, 0, 2});
+    c.add_box(c2qbox, {4, 2});
+    c.add_box(c3qbox, {4, 3, 0});
+    Transforms::decomp_boxes().apply(c);
+    CHECK(check_3q_squash(c, OpType::TK2));
+  }
+  GIVEN("A CX circuit with measurements") {
     Circuit c(3, 3);
     for (unsigned i = 0; i < 22; i++) {
       c.add_op<unsigned>(OpType::H, {i % 3});
@@ -341,6 +446,20 @@ SCENARIO("Three-qubit squash") {
     }
     CHECK(Transforms::three_qubit_squash().apply(c));
     CHECK(c.count_gates(OpType::CX) <= 20);
+  }
+  GIVEN("A TK2 circuit with measurements") {
+    Circuit c(3, 3);
+    for (unsigned i = 0; i < 22; i++) {
+      c.add_op<unsigned>(OpType::H, {i % 3});
+      c.add_op<unsigned>(
+          OpType::TK2, {0.1 * i, 0.2 * i, 0.3 * i}, {i % 3, (i + 1) % 3});
+      c.add_op<unsigned>(OpType::Rz, 0.25, {(i + 1) % 3});
+    }
+    for (unsigned q = 0; q < 3; q++) {
+      c.add_op<unsigned>(OpType::Measure, {q, q});
+    }
+    CHECK(Transforms::three_qubit_squash(OpType::TK2).apply(c));
+    CHECK(c.count_gates(OpType::TK2) <= 16);
   }
   GIVEN("A circuit with classical control") {
     Circuit c(3, 1);
@@ -389,7 +508,7 @@ SCENARIO("Three-qubit squash") {
 }
 
 SCENARIO("Special cases") {
-  GIVEN("A 3-qubit circuit with no interaction between qb 0 and qbs 1,2") {
+  GIVEN("A 3-qubit CX circuit with no interaction between qb 0 and qbs 1,2") {
     Circuit c(3);
     c.add_op<unsigned>(OpType::U3, {0.6, 0.7, 0.8}, {0});
     c.add_op<unsigned>(OpType::Rz, 0.1, {1});
@@ -413,7 +532,31 @@ SCENARIO("Special cases") {
     Eigen::Matrix U1 = tket_sim::get_unitary(c1);
     CHECK(U.isApprox(U1));
   }
-  GIVEN("A 3-qubit circuit with no interaction between qb 1 and qbs 0,2") {
+  GIVEN("A 3-qubit TK2 circuit with no interaction between qb 0 and qbs 1,2") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::U3, {0.6, 0.7, 0.8}, {0});
+    c.add_op<unsigned>(OpType::Rz, 0.1, {1});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {1, 2});
+    c.add_op<unsigned>(OpType::Rz, 0.2, {2});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {2, 1});
+    c.add_op<unsigned>(OpType::Rz, 0.3, {1});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {1, 2});
+    c.add_op<unsigned>(OpType::Rz, 0.4, {2});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {2, 1});
+    Eigen::MatrixXcd U = tket_sim::get_unitary(c);
+    Circuit c1 = three_qubit_tk_synthesis(U);
+    REQUIRE(c1.count_gates(OpType::TK2) <= 1);
+    for (const Command &com : c1) {
+      qubit_vector_t qbs = com.get_qubits();
+      if (qbs.size() == 2) {
+        CHECK(qbs[0] != Qubit(0));
+        CHECK(qbs[1] != Qubit(0));
+      }
+    }
+    Eigen::Matrix U1 = tket_sim::get_unitary(c1);
+    CHECK(U.isApprox(U1));
+  }
+  GIVEN("A 3-qubit CX circuit with no interaction between qb 1 and qbs 0,2") {
     Circuit c(3);
     c.add_op<unsigned>(OpType::U3, {0.6, 0.7, 0.8}, {1});
     c.add_op<unsigned>(OpType::Rz, 0.1, {0});
@@ -437,7 +580,31 @@ SCENARIO("Special cases") {
     Eigen::Matrix U1 = tket_sim::get_unitary(c1);
     CHECK(U.isApprox(U1));
   }
-  GIVEN("A 3-qubit circuit with no interaction between qb 0 and qbs 1,2") {
+  GIVEN("A 3-qubit TK2 circuit with no interaction between qb 1 and qbs 0,2") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::U3, {0.6, 0.7, 0.8}, {1});
+    c.add_op<unsigned>(OpType::Rz, 0.1, {0});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {0, 2});
+    c.add_op<unsigned>(OpType::Rz, 0.2, {2});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {2, 0});
+    c.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {0, 2});
+    c.add_op<unsigned>(OpType::Rz, 0.4, {2});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {2, 0});
+    Eigen::MatrixXcd U = tket_sim::get_unitary(c);
+    Circuit c1 = three_qubit_tk_synthesis(U);
+    REQUIRE(c1.count_gates(OpType::TK2) <= 1);
+    for (const Command &com : c1) {
+      qubit_vector_t qbs = com.get_qubits();
+      if (qbs.size() == 2) {
+        CHECK(qbs[0] != Qubit(1));
+        CHECK(qbs[1] != Qubit(1));
+      }
+    }
+    Eigen::Matrix U1 = tket_sim::get_unitary(c1);
+    CHECK(U.isApprox(U1));
+  }
+  GIVEN("A 3-qubit CX circuit with no interaction between qb 0 and qbs 1,2") {
     Circuit c(3);
     c.add_op<unsigned>(OpType::U3, {0.6, 0.7, 0.8}, {2});
     c.add_op<unsigned>(OpType::Rz, 0.1, {1});
@@ -451,6 +618,30 @@ SCENARIO("Special cases") {
     Eigen::MatrixXcd U = tket_sim::get_unitary(c);
     Circuit c1 = three_qubit_synthesis(U);
     REQUIRE(c1.count_gates(OpType::CX) <= 3);
+    for (const Command &com : c1) {
+      qubit_vector_t qbs = com.get_qubits();
+      if (qbs.size() == 2) {
+        CHECK(qbs[0] != Qubit(2));
+        CHECK(qbs[1] != Qubit(2));
+      }
+    }
+    Eigen::Matrix U1 = tket_sim::get_unitary(c1);
+    CHECK(U.isApprox(U1));
+  }
+  GIVEN("A 3-qubit TK2 circuit with no interaction between qb 0 and qbs 1,2") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::U3, {0.6, 0.7, 0.8}, {2});
+    c.add_op<unsigned>(OpType::Rz, 0.1, {1});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {1, 0});
+    c.add_op<unsigned>(OpType::Rz, 0.2, {0});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {0, 1});
+    c.add_op<unsigned>(OpType::Rz, 0.3, {1});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {1, 0});
+    c.add_op<unsigned>(OpType::Rz, 0.4, {0});
+    c.add_op<unsigned>(OpType::TK2, {0.1, 0.2, 0.3}, {0, 1});
+    Eigen::MatrixXcd U = tket_sim::get_unitary(c);
+    Circuit c1 = three_qubit_tk_synthesis(U);
+    REQUIRE(c1.count_gates(OpType::TK2) <= 1);
     for (const Command &com : c1) {
       qubit_vector_t qbs = com.get_qubits();
       if (qbs.size() == 2) {

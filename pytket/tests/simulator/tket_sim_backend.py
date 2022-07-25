@@ -58,7 +58,6 @@ _GATE_SET = {
     OpType.Rx,
     OpType.S,
     OpType.T,
-    OpType.S,
     OpType.X,
     OpType.H,
 }

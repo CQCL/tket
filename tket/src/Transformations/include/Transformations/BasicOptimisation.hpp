@@ -48,7 +48,34 @@ Transform commute_and_combine_HQS2();
 // fidelity, assuming perfect local operations (i.e. with fidelity 1.).
 // Expects: CX and any single qubit gates
 // Produces: CX and single TK1 qubit gates
-Transform two_qubit_squash(double cx_fidelity = 1.);
+
+/**
+ * @brief Squash sequences of two-qubit operations into minimal form.
+ *
+ * Squash together sequences of single- and two-qubit gates
+ * into minimal form. Can decompose to TK2 or CX gates.
+ *
+ * Two-qubit operations can always be expressed in a minimal form of
+ * maximum three CXs, or as a single TK2 gate (a result also known
+ * as the KAK or Cartan decomposition).
+ *
+ * It is in general recommended to squash to TK2 gates, and to then use the
+ * `DecomposeTK2` pass for noise-aware decompositions to other gatesets.
+ * For backward compatibility, decompositions to CX are also supported. In this
+ * case, `cx_fidelity` can be provided to perform approximate decompositions to
+ * CX.
+ *
+ * When decomposing to TK2 gates, any sequence of two or more two-qubit gates
+ * on the same set of qubits are replaced by a single TK2 gate. When decomposing
+ * to CX, the substitution is only performed if it results in a reduction of the
+ * number of CX gates, or if at least one of the two-qubit gates is not a CX.
+ *
+ * @param target_2qb_gate OpType to decompose to. Either TK2 or CX.
+ * @param cx_fidelity Estimated CX gate fidelity, used when target_2qb_gate=CX.
+ * @return Transform
+ */
+Transform two_qubit_squash(
+    OpType target_2qb_gate = OpType::CX, double cx_fidelity = 1.);
 
 // 1qb squashing into -Rz-Rx-Rz- or -Rx-Rz-Rx- form
 // Expects: Rx, Rz, and any multi-qubit gates

@@ -107,18 +107,32 @@ PassPtr gen_decompose_routing_gates_to_cxs_pass(
 PassPtr gen_user_defined_swap_decomp_pass(const Circuit& replacement_circ);
 
 /**
- * Pass to decompose sequences of two-qubit operations into optimal gate
- * sequence
+ * @brief Squash sequences of two-qubit operations into minimal form.
  *
- * Generate a KAK decomposition pass that can decompose any two-qubit subcircuit
- * into <= 3 CX + local operations.
- * If an estimate for the CX gate fidelity cx_fidelity is given, the
- * decomposition will trade off the accuracy of the circuit approximation
- * against the loss in circuit fidelity induced by additional noisy CX gates.
- * This will result in an output circuit that is not necessarily equivalent to
- * the input, but that maximises expected circuit fidelity
+ * A pass that squashes together sequences of single- and two-qubit gates
+ * into minimal form. Can decompose to TK2 or CX gates.
+ *
+ * Two-qubit operations can always be expressed in a minimal form of
+ * maximum three CXs, or as a single TK2 gate (a result also known
+ * as the KAK or Cartan decomposition).
+ *
+ * It is in general recommended to squash to TK2 gates, and to then use the
+ * `DecomposeTK2` pass for noise-aware decompositions to other gatesets.
+ * For backward compatibility, decompositions to CX are also supported. In this
+ * case, `cx_fidelity` can be provided to perform approximate decompositions to
+ * CX.
+ *
+ * When decomposing to TK2 gates, any sequence of two or more two-qubit gates
+ * on the same set of qubits are replaced by a single TK2 gate. When decomposing
+ * to CX, the substitution is only performed if it results in a reduction of the
+ * number of CX gates, or if at least one of the two-qubit gates is not a CX.
+ *
+ * @param target_2qb_gate OpType to decompose to. Either TK2 or CX.
+ * @param cx_fidelity Estimated CX gate fidelity, used when target_2qb_gate=CX.
+ * @return PassPtr
  */
-PassPtr KAKDecomposition(double cx_fidelity = 1.);
+PassPtr KAKDecomposition(
+    OpType target_2qb_gate = OpType::CX, double cx_fidelity = 1.);
 
 /**
  * @brief Decomposes each TK2 gate into two-qubit gates.
