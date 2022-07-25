@@ -11,6 +11,8 @@ Minor new features:
   gates.
 * ``Unitary3qBox.get_circuit()`` decomposes the circuit using (at most 15) TK2
   gates.
+* Provide an additional ``RebaseCustom`` constructor that takes a
+  TK2-replacement instead of a CX-replacement function.
 
 1.4.1 (July 2022)
 -----------------
