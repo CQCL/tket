@@ -18,12 +18,7 @@ from pytket.backends.backend import Backend
 from hypothesis import strategies, given, settings, HealthCheck
 from hypothesis.strategies._internal import SearchStrategy
 
-from pytket.circuit import (  # type: ignore
-    Qubit,
-    Circuit,
-    CircuitInvalidity,
-    OpType
-)
+from pytket.circuit import Qubit, Circuit, CircuitInvalidity, OpType  # type: ignore
 from pytket.pauli import Pauli, QubitPauliString  # type: ignore
 from pytket.partition import PauliPartitionStrat, GraphColourMethod  # type: ignore
 from pytket.transform import Transform  # type: ignore
