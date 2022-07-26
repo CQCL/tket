@@ -789,6 +789,19 @@ PYBIND11_MODULE(passes, m) {
       "ZZPhaseToRz", &ZZPhaseToRz,
       "Converts ZZPhase gates with angle pi or -pi to two Rz gates with"
       "angle pi.\n:return: a pass to convert ZZPhase gates to Rz");
+
+  m.def(
+      "CustomPass", &CustomPass,
+      "Generate a custom pass from a user-provided circuit transfomation "
+      "function."
+      "\n\n"
+      "It is the caller's responsibility to provide a valid transform."
+      "\n\n"
+      ":param transform: function taking a :py:class:`Circuit` as an argument "
+      "and returning a new transformed circuit"
+      ":param label: optional label for the pass"
+      "\n:return: a pass to perform the transformation",
+      py::arg("transform"), py::arg("label") = "");
 }
 
 }  // namespace tket

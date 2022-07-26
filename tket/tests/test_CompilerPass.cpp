@@ -14,9 +14,11 @@
 
 #include <algorithm>
 #include <catch2/catch_test_macros.hpp>
+#include <vector>
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/Circuit.hpp"
+#include "Circuit/Command.hpp"
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "OpType/OpType.hpp"
@@ -31,6 +33,7 @@
 #include "Transformations/ContextualReduction.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
+#include "Utils/UnitID.hpp"
 #include "testutil.hpp"
 namespace tket {
 namespace test_CompilerPass {
@@ -1252,6 +1255,66 @@ SCENARIO("ThreeQubitSquah") {
     REQUIRE(ThreeQubitSquash()->apply(cu));
     const Circuit& c1 = cu.get_circ_ref();
     REQUIRE(c1.get_commands().empty());
+  }
+}
+
+SCENARIO("CustomPass") {
+  GIVEN("Identity transform") {
+    auto transform = [](const Circuit& c) {
+      Circuit c1 = c;
+      return c1;
+    };
+    PassPtr pp = CustomPass(transform);
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    CompilationUnit cu(c);
+    REQUIRE_FALSE(pp->apply(cu));
+    REQUIRE(cu.get_circ_ref() == c);
+  }
+  GIVEN("Custom pass that ignores ops with small params") {
+    auto transform = [](const Circuit& c) {
+      Circuit c1;
+      for (const Qubit& qb : c.all_qubits()) {
+        c1.add_qubit(qb);
+      }
+      for (const Bit& cb : c.all_bits()) {
+        c1.add_bit(cb);
+      }
+      for (const Command& cmd : c.get_commands()) {
+        Op_ptr op = cmd.get_op_ptr();
+        unit_vector_t args = cmd.get_args();
+        std::vector<Expr> params = op->get_params();
+        if (params.empty() ||
+            std::any_of(params.begin(), params.end(), [](const Expr& e) {
+              return !approx_0(e, 0.01);
+            })) {
+          c1.add_op<UnitID>(op, args);
+        }
+      }
+      return c1;
+    };
+    PassPtr pp = CustomPass(transform);
+    THEN("The pass eliminates small-angle rotations") {
+      Circuit c(2);
+      c.add_op<unsigned>(OpType::Rx, 0.001, {0});
+      c.add_op<unsigned>(OpType::CZ, {0, 1});
+      CompilationUnit cu(c);
+      REQUIRE(pp->apply(cu));
+      REQUIRE(cu.get_circ_ref().n_gates() == 1);
+    }
+    AND_WHEN("The pass is followed by RemoveRedundancies") {
+      SequencePass seq({pp, RemoveRedundancies()});
+      THEN("It can reduce circuits even further") {
+        Circuit c(1);
+        c.add_op<unsigned>(OpType::Rx, 0.25, {0});
+        c.add_op<unsigned>(OpType::Rz, 0.001, {0});
+        c.add_op<unsigned>(OpType::Rx, 0.25, {0});
+        CompilationUnit cu(c);
+        REQUIRE(seq.apply(cu));
+        REQUIRE(cu.get_circ_ref().n_gates() == 1);
+      }
+    }
   }
 }
 

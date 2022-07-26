@@ -15,6 +15,7 @@
 #pragma once
 
 #include "ArchAwareSynth/SteinerForest.hpp"
+#include "Circuit/Circuit.hpp"
 #include "CompilerPass.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/RoutingMethod.hpp"
@@ -268,5 +269,20 @@ PassPtr PauliSquash(Transforms::PauliSynthStrat strat, CXConfigType cx_config);
  * in certain cases a blow-up in symbolic expression sizes may occur.
  */
 PassPtr GlobalisePhasedX(bool squash = true);
+
+/**
+ * Generate a custom pass
+ *
+ * @param transform circuit transformation function
+ * @param label optional user-defined label for the pass
+ *
+ * It is the caller's responsibility to provide a valid transform: there are no
+ * checks on this.
+ *
+ * @return compilation pass that applies the supplied transform
+ */
+PassPtr CustomPass(
+    std::function<Circuit(const Circuit&)> transform,
+    const std::string& label = "");
 
 }  // namespace tket

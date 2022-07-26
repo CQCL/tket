@@ -223,7 +223,9 @@ static void replace_TK2_2CX(Circuit &circ) {
     if (circ.get_OpType_from_Vertex(v) != OpType::TK2) continue;
     auto params = circ.get_Op_ptr_from_Vertex(v)->get_params();
     TKET_ASSERT(params.size() == 3);
-    TKET_ASSERT(equiv_0(params[2], 4, 1e-9));
+    // We need to have a fairly high tolerance in the assertion below, since in
+    // practice rounding errors can accumulate:
+    TKET_ASSERT(equiv_0(params[2], 4, 1e-6));
     Circuit sub = CircPool::approx_TK2_using_2xCX(params[0], params[1]);
     bin.push_back(v);
     circ.substitute(sub, v, Circuit::VertexDeletion::No);

@@ -11,7 +11,23 @@ Minor new features:
   gates.
 * ``Unitary3qBox.get_circuit()`` decomposes the circuit using (at most 15) TK2
   gates.
+* New ``CustomPass()`` accepting a user-supplied circuit transformation
+  function.
 * ``measure_register`` now allows using an existing classical register
+
+1.4.3 (July 2022)
+-----------------
+
+Fixes:
+
+* Further relax assertion in ``replace_TK2_2CX``.
+
+1.4.2 (July 2022)
+-----------------
+
+Fixes:
+
+* Relax assertion in replace_TK2_2CX to avoid crash due to rounding errors.
 
 1.4.1 (July 2022)
 -----------------
