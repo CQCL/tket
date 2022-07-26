@@ -13,6 +13,7 @@ Minor new features:
   gates.
 * New ``CustomPass()`` accepting a user-supplied circuit transformation
   function.
+* ``measure_register`` now allows using an existing classical register
 
 1.4.3 (July 2022)
 -----------------
