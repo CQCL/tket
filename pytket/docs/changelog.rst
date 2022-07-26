@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.4.3 (July 2022)
+-----------------
+
+Fixes:
+
+* Further relax assertion in ``replace_TK2_2CX``.
+
 1.4.2 (July 2022)
 -----------------
 
