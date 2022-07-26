@@ -32,6 +32,8 @@ from pytket.passes import (  # type: ignore
     CustomRoutingPass,
     PlacementPass,
     CXMappingPass,
+    CustomPass,
+    SequencePass,
     auto_rebase_pass,
     auto_squash_pass,
 )
@@ -1078,6 +1080,29 @@ def test_tk2_decompositions() -> None:
     )
     FullPeepholeOptimise().apply(c)
     assert c.depth() <= 29
+
+
+def test_custom_pass() -> None:
+    def transform(c: "Circuit") -> "Circuit":
+        c1 = Circuit()
+        for q_reg in c.q_registers:
+            c1.add_q_register(q_reg.name, q_reg.size)
+        for c_reg in c.c_registers:
+            c1.add_c_register(c_reg.name, c_reg.size)
+        for cmd in c.get_commands():
+            op = cmd.op
+            params = [param if abs(param) >= 0.01 else 0 for param in op.params]
+            c1.add_gate(op.type, params, cmd.args)
+        return c1
+
+    p = CustomPass(transform, label="ignore_small_angles")
+    c = Circuit(2).H(0).CX(0, 1).Rz(0.001, 0).Rz(0.001, 1).CX(0, 1).H(0)
+    seq = SequencePass([RemoveRedundancies(), p, RemoveRedundancies()])
+    seq.apply(c)
+    assert c.n_gates == 0
+
+    p_json = p.to_dict()
+    assert p_json["StandardPass"]["label"] == "ignore_small_angles"
 
 
 if __name__ == "__main__":

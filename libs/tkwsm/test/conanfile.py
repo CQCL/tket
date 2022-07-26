@@ -27,7 +27,7 @@ class TestTkwsmConan(ConanFile):
     default_options = {"with_coverage": False}
     generators = "cmake"
     exports_sources = "*"
-    requires = ["tkwsm/0.1.0", "catch2/3.0.1"]
+    requires = ["tkwsm/0.1.0", "catch2/3.1.0"]
 
     _cmake = None
 
