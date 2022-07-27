@@ -66,7 +66,7 @@ jobs:
     - name: Install ninja and ccache
       run: sudo apt-get install ninja-build ccache
     - name: Build tket
-      run: ${CONAN_CMD} create --profile=tket recipes/tket
+      run: ${CONAN_CMD} create --profile=tket recipes/tket tket/stable
     - name: Install runtime test requirements
       run: |
         sudo apt-get install texlive texlive-latex-extra latexmk
@@ -197,7 +197,7 @@ jobs:
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
     - name: Build tket
-      run: conan create --profile=tket recipes/tket --build=missing
+      run: conan create --profile=tket recipes/tket tket/stable --build=missing
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
@@ -290,7 +290,7 @@ jobs:
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
     - name: Build tket
-      run: conan create --profile=tket recipes/tket --build=missing
+      run: conan create --profile=tket recipes/tket tket/stable --build=missing
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
@@ -400,7 +400,7 @@ jobs:
         key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-19
     - name: Build tket
       if: steps.cache-tket.outputs.cache-hit != 'true'
-      run: conan create --profile=tket recipes/tket
+      run: conan create --profile=tket recipes/tket tket/stable
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
