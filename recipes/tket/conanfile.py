@@ -36,7 +36,7 @@ class TketConan(ConanFile):
     exports_sources = ["../../tket/src/*", "!*/build/*"]
     requires = (
         # tk* libraries may come from remote:
-        # https://tket.jfrog.io/artifactory/api/conan/tket-conan
+        # https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
         "boost/1.79.0",
         "symengine/0.9.0",
         "eigen/3.4.0",
