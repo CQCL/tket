@@ -55,7 +55,7 @@ jobs:
       if: github.event_name == 'schedule'
       run: conan profile update options.tket-tests:full=True tket
     - name: add remote
-      run: conan remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: install tex components
       run: |
         sudo apt install texlive texlive-latex-extra latexmk
