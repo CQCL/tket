@@ -952,7 +952,7 @@ Transform decompose_cliffords_std() {
         TKET_ASSERT(params.size() == 3);
         // TODO: Maybe handle TK2 gates natively within clifford_simp?
         Circuit replacement =
-            CircPool::TK2_using_CX_optimal(params[0], params[1], params[2]);
+            CircPool::TK2_using_CX(params[0], params[1], params[2]);
         decompose_cliffords_std().apply(replacement);
         bin.push_back(v);
         circ.substitute(replacement, v, Circuit::VertexDeletion::No);

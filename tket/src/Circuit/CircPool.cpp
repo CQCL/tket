@@ -900,7 +900,8 @@ Circuit TK2_using_3xCX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
   return c;
 }
 
-Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+Circuit normalised_TK2_using_CX(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
   // only handle TK2 if normalised to Weyl chamber
   if (equiv_0(alpha, 4) && equiv_0(beta, 4) && equiv_0(gamma, 4)) {
     return Circuit(2);
@@ -914,8 +915,7 @@ Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
   }
 }
 
-Circuit TK2_using_CX_optimal(
-    const Expr &alpha, const Expr &beta, const Expr &gamma) {
+Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
   Circuit c = TK2_using_normalised_TK2(alpha, beta, gamma);
   // Find the TK2 vertex and replace it.
   BGL_FORALL_VERTICES(v, c.dag, DAG) {
@@ -923,7 +923,7 @@ Circuit TK2_using_CX_optimal(
     if (op->get_type() == OpType::TK2) {
       std::vector<Expr> params = op->get_params();
       TKET_ASSERT(params.size() == 3);
-      Circuit rep = TK2_using_CX(params[0], params[1], params[2]);
+      Circuit rep = normalised_TK2_using_CX(params[0], params[1], params[2]);
       c.substitute(rep, v, Circuit::VertexDeletion::Yes);
       break;
     }
@@ -953,7 +953,7 @@ Circuit TK2_using_ZZPhase(
 
 Circuit TK2_using_ZZMax(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
-  Circuit c = TK2_using_CX_optimal(alpha, beta, gamma);
+  Circuit c = TK2_using_CX(alpha, beta, gamma);
   // Find the CX gates and replace them with ZZMax.
   VertexSet bin;
   BGL_FORALL_VERTICES(v, c.dag, DAG) {

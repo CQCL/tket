@@ -37,7 +37,7 @@ void init_library(py::module &m) {
       "_CX_using_TK2", &CircPool::CX_using_TK2,
       "Equivalent to CX, using a TK2 and single-qubit gates");
   library_m.def(
-      "_TK2_using_CX", &CircPool::TK2_using_CX_optimal,
+      "_TK2_using_CX", &CircPool::TK2_using_CX,
       "Given expressions α, β and γ, return circuit equivalent to "
       "TK2(α, β, γ) using up to 3 CX and single-qubit gates.\n\n"
       "The decomposition minimizes the number of CX gates.");
