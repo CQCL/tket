@@ -121,7 +121,7 @@ def auto_rebase_pass(gateset: Set[OpType]) -> RebaseCustom:
     """
     tk1 = get_TK1_decomposition_function(gateset)
     try:
-        return RebaseCustom(gateset, tk1, get_tk2_decomposition(gateset))
+        return RebaseCustom(gateset, get_tk2_decomposition(gateset), tk1)
     except NoAutoRebase:
         pass
     try:

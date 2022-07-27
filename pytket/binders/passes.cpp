@@ -561,12 +561,12 @@ PYBIND11_MODULE(passes, m) {
       "to each TK1(a,b,c)."
       "\n\n"
       ":param gateset: the allowed operations in the rebased circuit\n"
-      ":param tk1_replacement: a function which, given the parameters (a,b,c) "
-      "of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
-      "desired basis\n"
       ":param tk2_replacement: a function which, given the parameters (a,b,c) "
       "of an XXPhase(a)YYPhase(b)ZZPhase(c) triple, returns an equivalent "
       "circuit in the desired basis\n"
+      ":param tk1_replacement: a function which, given the parameters (a,b,c) "
+      "of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
+      "desired basis\n"
       ":return: a pass that rebases to the given gate set");
 
   m.def(

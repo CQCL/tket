@@ -417,7 +417,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     circ.add_op<unsigned>(OpType::H, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     PassPtr pp = gen_rebase_pass_via_tk2(
-        allowed_gates, tk1_replacement, tk2_replacement);
+        allowed_gates, tk2_replacement, tk1_replacement);
 
     CompilationUnit cu(circ);
     CHECK(pp->apply(cu));

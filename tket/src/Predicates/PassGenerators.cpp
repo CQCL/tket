@@ -74,9 +74,9 @@ PassPtr gen_rebase_pass(
 PassPtr gen_rebase_pass_via_tk2(
     const OpTypeSet& allowed_gates,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
-        tk1_replacement,
+        tk2_replacement,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
-        tk2_replacement) {
+        tk1_replacement) {
   Transform t = Transforms::rebase_factory_via_tk2(
       allowed_gates, tk1_replacement, tk2_replacement);
 

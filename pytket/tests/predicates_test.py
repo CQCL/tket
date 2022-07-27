@@ -187,8 +187,8 @@ def test_rebase_pass_generation_via_TK2() -> None:
             OpType.YYPhase,
             OpType.ZZPhase,
         },
-        tk1,
         tk2,
+        tk1,
     )
 
     circ = Circuit(3).H(0).CX(0, 1).H(1).CX(1, 2)
