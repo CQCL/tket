@@ -31,6 +31,22 @@ PassPtr gen_rebase_pass(
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement);
 
+/**
+ * Generate a rebase pass give standard replacements for TK1 and TK2 gates.
+ *
+ * @param[in] allowed_gates set of target gates
+ * @param[in] tk2_replacement circuit to replace a given TK2 gate
+ * @param[in] tk1_replacement circuit to replace a given TK1 gate
+ *
+ * @return rebase pass
+ */
+PassPtr gen_rebase_pass_via_tk2(
+    const OpTypeSet& allowed_gates,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk2_replacement,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk1_replacement);
+
 /* a wrapper method for the squash_factory in Transforms */
 PassPtr gen_squash_pass(
     const OpTypeSet& singleqs,

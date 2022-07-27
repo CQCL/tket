@@ -14,6 +14,10 @@
 
 #include "CircPool.hpp"
 
+#include <tkassert/Assert.hpp>
+
+#include "Circuit.hpp"
+#include "OpType/OpType.hpp"
 #include "Utils/Expression.hpp"
 
 namespace tket {
@@ -896,7 +900,8 @@ Circuit TK2_using_3xCX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
   return c;
 }
 
-Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+Circuit normalised_TK2_using_CX(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
   // only handle TK2 if normalised to Weyl chamber
   if (equiv_0(alpha, 4) && equiv_0(beta, 4) && equiv_0(gamma, 4)) {
     return Circuit(2);
@@ -908,6 +913,22 @@ Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
   } else {
     return TK2_using_3xCX(alpha, beta, gamma);
   }
+}
+
+Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c = TK2_using_normalised_TK2(alpha, beta, gamma);
+  // Find the TK2 vertex and replace it.
+  BGL_FORALL_VERTICES(v, c.dag, DAG) {
+    Op_ptr op = c.get_Op_ptr_from_Vertex(v);
+    if (op->get_type() == OpType::TK2) {
+      std::vector<Expr> params = op->get_params();
+      TKET_ASSERT(params.size() == 3);
+      Circuit rep = normalised_TK2_using_CX(params[0], params[1], params[2]);
+      c.substitute(rep, v, Circuit::VertexDeletion::Yes);
+      break;
+    }
+  }
+  return c;
 }
 
 Circuit approx_TK2_using_1xZZPhase(const Expr &alpha) {
@@ -927,6 +948,23 @@ Circuit TK2_using_ZZPhase(
   c.append(XXPhase_using_ZZPhase(alpha));
   c.append(YYPhase_using_ZZPhase(beta));
   c.add_op<unsigned>(OpType::ZZPhase, gamma, {0, 1});
+  return c;
+}
+
+Circuit TK2_using_ZZMax(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c = TK2_using_CX(alpha, beta, gamma);
+  // Find the CX gates and replace them with ZZMax.
+  VertexSet bin;
+  BGL_FORALL_VERTICES(v, c.dag, DAG) {
+    Op_ptr op = c.get_Op_ptr_from_Vertex(v);
+    if (op->get_type() == OpType::CX) {
+      c.substitute(CX_using_ZZMax(), v, Circuit::VertexDeletion::No);
+      bin.insert(v);
+    }
+  }
+  c.remove_vertices(
+      bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
   return c;
 }
 

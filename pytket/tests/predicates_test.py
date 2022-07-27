@@ -95,8 +95,10 @@ import numpy as np
 
 from pytket.qasm import circuit_to_qasm_str
 import pytest  # type: ignore
+from sympy import Expr  # type: ignore
+from typing import Dict, Any, List, Union
 
-from typing import Dict, Any, List
+Param = Union[float, "Expr"]
 
 circ2 = Circuit(1)
 circ2.Rx(0.25, 0)
@@ -161,6 +163,39 @@ def test_rebase_pass_generation() -> None:
     assert seq.apply(cu)
     coms = cu.circuit.get_commands()
     assert str(coms) == "[TK1(0.5, 1, 0.5) q[0];, TK1(0.5, 1, 3.5) q[1];]"
+
+
+def test_rebase_pass_generation_via_TK2() -> None:
+    def tk1(a: Param, b: Param, c: Param) -> "Circuit":
+        circ = Circuit(1)
+        circ.Rz(c, 0).Rx(b, 0).Rz(a, 0)
+        return circ
+
+    def tk2(a: Param, b: Param, c: Param) -> "Circuit":
+        circ = Circuit(2)
+        circ.add_gate(OpType.ZZPhase, c, [0, 1])
+        circ.add_gate(OpType.YYPhase, b, [0, 1])
+        circ.add_gate(OpType.XXPhase, a, [0, 1])
+        return circ
+
+    rebase_pass = RebaseCustom(
+        {
+            OpType.Rx,
+            OpType.Ry,
+            OpType.Rz,
+            OpType.XXPhase,
+            OpType.YYPhase,
+            OpType.ZZPhase,
+        },
+        tk2,
+        tk1,
+    )
+
+    circ = Circuit(3).H(0).CX(0, 1).H(1).CX(1, 2)
+    rebase_pass.apply(circ)
+    assert circ.n_gates_of_type(OpType.XXPhase) == 2
+    assert circ.n_gates_of_type(OpType.YYPhase) == 0
+    assert circ.n_gates_of_type(OpType.ZZPhase) == 0
 
 
 def test_custom_combinator_generation() -> None:
