@@ -67,10 +67,10 @@ jobs:
       run: sudo apt-get install ninja-build ccache
     - name: build tket
       run: |
-        conan install recipes/tket --install-folder=build/tket --profile=tket
+        conan install recipes/tket tket/stable --install-folder=build/tket --profile=tket
         conan build recipes/tket --configure --build-folder=build/tket --source-folder=tket/src
         conan build recipes/tket --build --build-folder=build/tket
-        conan export-pkg recipes/tket -f --build-folder=build/tket --source-folder=tket/src
+        conan export-pkg recipes/tket tket/stable -f --build-folder=build/tket --source-folder=tket/src
     - name: build tket tests
       run: |
         conan install recipes/tket-tests --install-folder=build/tket-tests --profile=tket
