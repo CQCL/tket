@@ -536,13 +536,13 @@ PYBIND11_MODULE(passes, m) {
       "4. applies the `tk1_replacement` function to each of these triples "
       ":math:`(a,b,c)` to generate replacement circuits."
       "\n\n"
-      ":param gateset: The allowed operations in the rebased circuit."
-      "\n:param cx_replacement: The equivalent circuit to replace a CX "
-      "gate using two qubit gates from the desired basis (can use any single "
-      "qubit OpTypes)."
-      "\n:param tk1_replacement: A function which, given the parameters of "
-      "an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
-      "desired basis."
+      ":param gateset: the allowed operations in the rebased circuit"
+      "\n:param cx_replacement: the equivalent circuit to replace a CX gate "
+      "using two qubit gates from the desired basis (can use any single qubit "
+      "OpTypes)"
+      "\n:param tk1_replacement: a function which, given the parameters of an "
+      "Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the desired "
+      "basis"
       "\n:return: a pass that rebases to the given gate set",
       py::arg("gateset"), py::arg("cx_replacement"),
       py::arg("tk1_replacement"));
