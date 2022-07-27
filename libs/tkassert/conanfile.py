@@ -18,7 +18,7 @@ from conans.errors import ConanInvalidConfiguration
 
 class TkassertConan(ConanFile):
     name = "tkassert"
-    version = "0.1.0"
+    version = "0.1.1"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
     description = "Assertions"
@@ -31,7 +31,7 @@ class TkassertConan(ConanFile):
     default_options = {"shared": False, "fPIC": True, "profile_coverage": False}
     generators = "cmake"
     exports_sources = "src/*"
-    requires = ["tklog/0.1.1@tket/stable"]
+    requires = ["tklog/0.1.2@tket/stable"]
 
     def config_options(self):
         if self.settings.os == "Windows":
