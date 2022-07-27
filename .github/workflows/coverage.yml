@@ -76,10 +76,10 @@ jobs:
         sudo apt-get install ninja-build ccache
     - name: Build tket
       run: |
-        ${CONAN_CMD} install recipes/tket --install-folder=build/tket --profile=tket -o tket:profile_coverage=True
+        ${CONAN_CMD} install recipes/tket tket/stable --install-folder=build/tket --profile=tket -o tket:profile_coverage=True
         ${CONAN_CMD} build recipes/tket --configure --build-folder=build/tket --source-folder=tket/src
         ${CONAN_CMD} build recipes/tket --build --build-folder=build/tket
-        ${CONAN_CMD} export-pkg recipes/tket -f --build-folder=build/tket --source-folder=tket/src
+        ${CONAN_CMD} export-pkg recipes/tket tket/stable -f --build-folder=build/tket --source-folder=tket/src
     - name: Build tket tests
       run: |
         ${CONAN_CMD} install recipes/tket-tests --install-folder=build/tket-tests --profile=tket -o tket-tests:with_coverage=True
