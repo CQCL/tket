@@ -678,7 +678,7 @@ static void lemma79(
 
 Circuit CnU_gray_code_decomp(unsigned n, const Eigen::Matrix2cd& u) {
   if (n == 0) {
-    // Synthesis U using tk1 and phase
+    // Synthesise U using tk1 and phase
     Circuit cnu_circ(1);
     std::vector<double> tk1_angles = tk1_angles_from_unitary(u);
     cnu_circ.add_op<unsigned>(
@@ -698,29 +698,20 @@ Circuit CnU_gray_code_decomp(unsigned n, const Eigen::Matrix2cd& u) {
 }
 
 Circuit CnU_gray_code_decomp(unsigned n, const Gate_ptr& gate) {
-  OpType cu_type;
-  switch (gate->get_type()) {
-    case OpType::Rx: {
-      cu_type = OpType::CRx;
-      break;
-    }
-    case OpType::Ry: {
-      cu_type = OpType::CRy;
-      break;
-    }
-    case OpType::Rz: {
-      cu_type = OpType::CRz;
-      break;
-    }
-    case OpType::U1: {
-      cu_type = OpType::CU1;
-      break;
-    }
-    default: {
-      throw Unsupported(
-          "The implementation currently only supports Rx, Ry, Rz, U1");
-    }
+  static const std::map<OpType, OpType> cu_type_map = {
+      {OpType::Rx, OpType::CRx},
+      {OpType::Ry, OpType::CRy},
+      {OpType::Rz, OpType::CRz},
+      {OpType::U1, OpType::CU1}};
+
+  auto it = cu_type_map.find(gate->get_type());
+  if (it == cu_type_map.end()) {
+    throw Unsupported(
+        "The implementation currently only supports Rx, Ry, Rz, U1");
   }
+
+  const OpType& cu_type = it->second;
+
   if (n == 0) {
     Circuit cnu_circ(1);
     cnu_circ.add_op<unsigned>(gate, {0});
