@@ -169,9 +169,10 @@ def test_global_phasedx() -> None:
 
 
 def test_KAK() -> None:
-    c = get_KAK_test_circuit()
-    Transform.KAKDecomposition().apply(c)
-    assert c.n_gates_of_type(OpType.CX) == 4
+    for allow_swaps, n_cx in [(False, 8), (True, 4)]:
+        c = get_KAK_test_circuit()
+        Transform.KAKDecomposition(allow_swaps=allow_swaps).apply(c)
+        assert c.n_gates_of_type(OpType.CX) == n_cx
 
 
 def test_DecomposeTK2() -> None:
