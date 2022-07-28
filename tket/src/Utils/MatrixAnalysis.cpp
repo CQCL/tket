@@ -510,6 +510,11 @@ bool in_weyl_chamber(const std::array<Expr, 3> &k) {
 }
 
 Eigen::Matrix2cd nth_root(const Eigen::Matrix2cd &u, unsigned n) {
+  if (u.isApprox(Eigen::Matrix2cd::Identity(), EPS)) {
+    return Eigen::Matrix2cd::Identity();
+  } else if (n == 0) {
+    throw std::invalid_argument("Non-identity matrix does not have a 0th root");
+  }
   Eigen::ComplexEigenSolver<Eigen::Matrix2cd> eigen_solver(u);
   return std::pow(eigen_solver.eigenvalues()[0], 1. / n) *
              eigen_solver.eigenvectors().col(0) *
