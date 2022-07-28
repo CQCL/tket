@@ -887,7 +887,7 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
   }
 
   // iterate the blocks from left to right
-  for (unsigned i = 0; i < blocks.size() - 1; i++) {
+  for (unsigned i = 0; i + 1 < blocks.size(); i++) {
     CnGateBlock &b = blocks[i];
     if (b.ops.empty()) {
       continue;
@@ -909,7 +909,7 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
   }
 
   // iterate the blocks from right to left
-  for (unsigned i = blocks.size() - 1; i > 0; i--) {
+  for (unsigned i = blocks.size(); i-- > 1;) {
     CnGateBlock &b = blocks[i];
     if (b.ops.empty()) {
       continue;

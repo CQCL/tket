@@ -611,6 +611,25 @@ SCENARIO("QControlBox", "[boxes]") {
     }
     REQUIRE(U.isApprox(V));
   }
+
+  GIVEN("controlled empty CircBox") {
+    Circuit c0(2);
+    c0.add_phase(0.3);
+    const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0);
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(8, 8);
+    for (unsigned i = 0; i < 4; i++) {
+      for (unsigned j = 0; j < 4; j++) {
+        V(4 + i, 4 + j) = U0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+  }
+
   GIVEN("2-controlled CircBox") {
     Circuit c0(2);
     c0.add_op<unsigned>(OpType::H, {0});
