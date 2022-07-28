@@ -413,7 +413,7 @@ Circuit CU_to_CU3(const Eigen::Matrix2cd &u);
  * https://arxiv.org/abs/2203.11882
  *
  * @param n number of qubits
- * @param lsb set to false if we don't want to toggle the least siginificant bit
+ * @param lsb set to false if we don't want to toggle the least significant bit
  * @return Circuit containing CRx, X
  */
 Circuit incrementer_linear_depth(unsigned n, bool lsb = true);

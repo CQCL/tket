@@ -752,7 +752,7 @@ struct CnGateBlock {
     target_qubit = args.back().index()[0];
     is_symmetric =
         (op->get_type() == OpType::CZ || op->get_type() == OpType::CU1);
-    color = as_gate_ptr(ops[0])->commuting_basis(args.size() - 1);
+    color = as_gate_ptr(op)->commuting_basis(args.size() - 1);
   }
 
   // Check whether commute with another CnGateBlock
@@ -762,7 +762,7 @@ struct CnGateBlock {
           (color == other.color && color != std::nullopt) ||
           color == Pauli::I || other.color == Pauli::I);
     }
-    if (control_qubits.find(other.target_qubit) != control_qubits.end() &&
+    if (control_qubits.contains(other.target_qubit) &&
         other.color != Pauli::Z && other.color != Pauli::I) {
       return false;
     }
