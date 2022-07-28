@@ -745,6 +745,7 @@ static Eigen::Matrix2cd get_target_op_matrix(const Op_ptr &op) {
 struct CnGateBlock {
   enum class MergeMode { append, prepend };
   CnGateBlock(const Command &command) {
+    // Assumes the color of the target is not identity
     Op_ptr op = command.get_op_ptr();
     ops.push_back(op);
     unit_vector_t args = command.get_args();
@@ -756,21 +757,19 @@ struct CnGateBlock {
     is_symmetric =
         (op->get_type() == OpType::CZ || op->get_type() == OpType::CU1);
     color = as_gate_ptr(op)->commuting_basis(args.size() - 1);
+    TKET_ASSERT(color != Pauli::I);
   }
 
   // Check whether commute with another CnGateBlock
   bool commutes_with(const CnGateBlock &other) {
     if (target_qubit == other.target_qubit) {
-      return (
-          (color == other.color && color != std::nullopt) ||
-          color == Pauli::I || other.color == Pauli::I);
+      return (color == other.color && color != std::nullopt);
     }
     if (control_qubits.contains(other.target_qubit) &&
-        other.color != Pauli::Z && other.color != Pauli::I) {
+        other.color != Pauli::Z) {
       return false;
     }
-    if (other.control_qubits.find(target_qubit) != other.control_qubits.end() &&
-        color != Pauli::Z && color != Pauli::I) {
+    if (other.control_qubits.contains(target_qubit) && color != Pauli::Z) {
       return false;
     }
     return true;
@@ -882,7 +881,9 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
   std::vector<CnGateBlock> blocks;
 
   for (const Command &c : commands) {
-    blocks.push_back(CnGateBlock(c));
+    if (c.get_op_ptr()->get_type() != OpType::noop) {
+      blocks.push_back(CnGateBlock(c));
+    }
   }
 
   // iterate the blocks from left to right
