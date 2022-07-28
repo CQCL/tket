@@ -14,6 +14,8 @@ Minor new features:
 * New ``CustomPass()`` accepting a user-supplied circuit transformation
   function.
 * ``measure_register`` now allows using an existing classical register
+* New ``allow_swaps`` flag in ``KAKDecomposition`` and ``DecomposeTK2`` to
+  decompose two-qubit operations up to implicit wire swaps.
 
 1.4.3 (July 2022)
 -----------------
