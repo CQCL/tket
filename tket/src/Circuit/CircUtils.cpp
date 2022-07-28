@@ -580,6 +580,8 @@ Circuit with_CX(Gate_ptr op) {
  */
 static Circuit CnU1(unsigned n_controls, Expr lambda) {
   Gate_ptr u1_gate = as_gate_ptr(get_op_ptr(OpType::U1, lambda));
+  // Use the gray code method if lambda contains symbols
+  // The gray code decomp also produces less CXs when n_controls is 3 or 4
   if (eval_expr(lambda) == std::nullopt || n_controls == 3 || n_controls == 4) {
     return CircPool::CnU_gray_code_decomp(n_controls, u1_gate);
   } else {
@@ -746,6 +748,7 @@ struct CnGateBlock {
     Op_ptr op = command.get_op_ptr();
     ops.push_back(op);
     unit_vector_t args = command.get_args();
+    TKET_ASSERT(!args.empty());
     for (unsigned i = 0; i < args.size() - 1; i++) {
       control_qubits.insert(args[i].index()[0]);
     }
@@ -969,6 +972,9 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
 
     // Check if the matrix is SU(2)
     if (m.determinant() == 1.) {
+      // We have three functions that can decompose a multi-controlled SU(2).
+      // The choice is based on the average number of CXs they produce for a
+      // random n-controlled SU(2) gate.
       if (total_controls > 2 && total_controls < 5) {
         replacement = CircPool::CnU_gray_code_decomp(total_controls, m);
       } else if (total_controls >= 5 && total_controls < 9) {
@@ -979,9 +985,9 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
         if (equiv_val(angles[3], 1., 2)) {
           // if the phase is odd, it can be absorbed into the first Rz rotation
           angles[0] = angles[0] + 2;
-        } else if (!equiv_0(angles[3], 2)) {
+        } else {
           // because it's SU(2), the phase must be integers
-          throw std::logic_error("tk1 angles don't imply SU(2)");
+          TKET_ASSERT(equiv_0(angles[3], 2));
         }
         // convert tk1 angles to zyz angles
         std::vector<double> zyz_angles = {
@@ -990,6 +996,7 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
             total_controls, zyz_angles[0], zyz_angles[1], zyz_angles[2]);
       }
     } else {
+      // The gray code method produces less CXs when total_controls is 3 or 4
       if (total_controls == 3 || total_controls == 4) {
         replacement = CircPool::CnU_gray_code_decomp(total_controls, m);
       } else {
