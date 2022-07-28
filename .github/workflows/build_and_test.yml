@@ -17,11 +17,14 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check_tket_version:
+  check_changes:
     name: Check tket library version
     runs-on: ubuntu-20.04
     outputs:
       tket_changed: ${{ steps.filter.outputs.tket }}
+      tket_tests_changed: ${{ steps.filter.outputs.tket_tests }}
+      tket_proptests_changed: ${{ steps.filter.outputs.tket_proptests }}
+      pytket_changed: ${{ steps.filter.outputs.pytket }}
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v3
@@ -34,6 +37,12 @@ jobs:
         filters: |
           tket:
             - '{tket/src/**,recipes/tket/conanfile.py}'
+          tket_tests:
+            - '{tket/tests/**,recipes/tket-tests/conanfile.py}'
+          tket_proptests:
+            - '{tket/proptests/**,recipes/tket-proptests/conanfile.py}'
+          pytket:
+            - 'pytket/**'
     - name: parse version from conanfile
       run: |
         pip install conan
@@ -48,7 +57,7 @@ jobs:
 
   linux:
     name: Build and test (Linux)
-    needs: check_tket_version
+    needs: check_changes
     runs-on: ubuntu-20.04
     env:
       CC: gcc-10
@@ -97,7 +106,7 @@ jobs:
     - name: Install ninja and ccache
       run: sudo apt-get install ninja-build ccache
     - name: Build tket
-      if: needs.check_tket_version.outputs.tket_changed == 'true'
+      if: needs.check_changes.outputs.tket_changed == 'true'
       run: ${CONAN_CMD} create --profile=tket recipes/tket tket/stable
     - name: check that version is consistent
       if: github.event_name == 'pull_request'
@@ -108,67 +117,70 @@ jobs:
         mkdir -p ~/texmf/tex/latex
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
     - name: Build and run tket tests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
       run: ${CONAN_CMD} create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_proptests_changed == 'true'
       run: ${CONAN_CMD} create --profile=tket recipes/tket-proptests
     - name: Install pybind11
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
       run: ${CONAN_CMD} create --profile=tket recipes/pybind11
     - name: Set up Python 3.8
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       uses: actions/setup-python@v3
       with:
         python-version: '3.8'
     - name: Build pytket (3.8)
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         cd pytket
         pip install -e . -v
     - name: Test pytket (3.8)
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         cd pytket/tests
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
     - name: Set up Python 3.9
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       uses: actions/setup-python@v3
       with:
         python-version: '3.9'
     - name: Build pytket (3.9)
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         cd pytket
         pip install -e . -v
     - name: Test building docs
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       timeout-minutes: 20
       run: |
         pip install -r pytket/docs/requirements.txt
         ./.github/workflows/build-docs
     - name: Test pytket (3.9)
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         cd pytket/tests
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
     - name: Set up Python 3.10
-      if: github.event_name == 'schedule'
+      if: github.event_name == 'schedule' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       uses: actions/setup-python@v3
       with:
         python-version: '3.10'
     - name: Build pytket (3.10)
-      if: github.event_name == 'schedule'
+      if: github.event_name == 'schedule' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         cd pytket
         pip install -e . -v
     - name: Test pytket (3.10)
-      if: github.event_name == 'schedule'
+      if: github.event_name == 'schedule' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         cd pytket/tests
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Upload pytket coverage artefact
-      if: github.event_name == 'pull_request' || github.event_name == 'push'
+      if: (github.event_name == 'pull_request' || github.event_name == 'push') && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       uses: actions/upload-artifact@v3
       with:
         name: pytket_test_coverage
@@ -176,7 +188,7 @@ jobs:
 
   macos:
     name: Build and test (MacOS)
-    needs: check_tket_version
+    needs: check_changes
     runs-on: macos-11
     env:
       CONAN_REVISIONS_ENABLED: 1
@@ -232,66 +244,69 @@ jobs:
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
     - name: Build tket
-      if: needs.check_tket_version.outputs.tket_changed == 'true'
+      if: needs.check_changes.outputs.tket_changed == 'true'
       run: conan create --profile=tket recipes/tket tket/stable --build=missing
     - name: Build and run tket tests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_proptests_changed == 'true'
       run: |
         conan install --profile=tket rapidcheck/cci.20210702@ --build=missing
         conan create --profile=tket recipes/tket-proptests
     - name: Install pybind11
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
       run: conan create --profile=tket recipes/pybind11
     - name: Set up Python 3.8
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       uses: actions/setup-python@v3
       with:
         python-version: '3.8'
     - name: Build pytket (3.8)
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         cd pytket
         pip install -e . -v
     - name: Test pytket (3.8)
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         cd pytket/tests
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Set up Python 3.9
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       uses: actions/setup-python@v3
       with:
         python-version: '3.9'
     - name: Build pytket (3.9)
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         cd pytket
         pip install -e . -v
     - name: Test pytket (3.9)
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         cd pytket/tests
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Run mypy
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         pip install -U mypy
         cd pytket
         mypy --config-file=mypy.ini --no-incremental -p pytket -p tests
     - name: Set up Python 3.10
-      if: github.event_name == 'schedule'
+      if: github.event_name == 'schedule' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       uses: actions/setup-python@v3
       with:
         python-version: '3.10'
     - name: Build pytket (3.10)
-      if: github.event_name == 'schedule'
+      if: github.event_name == 'schedule' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         cd pytket
         pip install -e . -v
     - name: Test pytket (3.10)
-      if: github.event_name == 'schedule'
+      if: github.event_name == 'schedule' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         cd pytket/tests
         pip install -r requirements.txt
@@ -299,7 +314,7 @@ jobs:
 
   macos-m1:
     name: Build and test (MacOS M1)
-    needs: check_tket_version
+    needs: check_changes
     runs-on: [self-hosted, macos, M1]
     if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository
     defaults:
@@ -327,16 +342,19 @@ jobs:
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
     - name: Build tket
-      if: needs.check_tket_version.outputs.tket_changed == 'true'
+      if: needs.check_changes.outputs.tket_changed == 'true'
       run: conan create --profile=tket recipes/tket tket/stable --build=missing
     - name: Build and run tket tests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_proptests_changed == 'true'
       run: conan create --profile=tket recipes/tket-proptests
     - name: Install pybind11
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
       run: conan create --profile=tket recipes/pybind11
     - name: Build pytket (3.8)
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
@@ -345,7 +363,7 @@ jobs:
         pip uninstall -y pytket
         pip install -e . -v
     - name: Test pytket (3.8)
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
@@ -353,7 +371,7 @@ jobs:
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Build pytket (3.9)
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.9
@@ -362,7 +380,7 @@ jobs:
         pip uninstall -y pytket
         pip install -e . -v
     - name: Test pytket (3.9)
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.9
@@ -370,7 +388,7 @@ jobs:
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Build pytket (3.10)
-      if: github.event_name == 'schedule'
+      if: github.event_name == 'schedule' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.10
@@ -379,7 +397,7 @@ jobs:
         pip uninstall -y pytket
         pip install -e . -v
     - name: Test pytket (3.10)
-      if: github.event_name == 'schedule'
+      if: github.event_name == 'schedule' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.10
@@ -389,7 +407,7 @@ jobs:
 
   windows:
     name: Build and test (Windows)
-    needs: check_tket_version
+    needs: check_changes
     runs-on: windows-2019
     env:
       CONAN_REVISIONS_ENABLED: 1
@@ -413,21 +431,24 @@ jobs:
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Build tket
-      if: needs.check_tket_version.outputs.tket_changed == 'true'
+      if: needs.check_changes.outputs.tket_changed == 'true'
       run: conan create --profile=tket recipes/tket tket/stable
     - name: Build and run tket tests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_proptests_changed == 'true'
       run: conan create --profile=tket recipes/tket-proptests
     - name: Install pybind11
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
       run: conan create --profile=tket recipes/pybind11
     - name: Set up Python 3.8
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       uses: actions/setup-python@v3
       with:
         python-version: '3.8'
     - name: Build and test pytket (3.8)
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         cd pytket
         pip install -e . -v
@@ -435,12 +456,12 @@ jobs:
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Set up Python 3.9
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       uses: actions/setup-python@v3
       with:
         python-version: '3.9'
     - name: Build and test pytket (3.9)
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       run: |
         cd pytket
         pip install -e . -v
@@ -448,7 +469,7 @@ jobs:
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Set up Python 3.10
-      if: github.event_name == 'schedule'
+      if: github.event_name == 'schedule' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
       uses: actions/setup-python@v3
       with:
         python-version: '3.10'
@@ -463,9 +484,9 @@ jobs:
 
   publish_pytket_coverage:
     name: Publish pytket coverage
-    needs: linux
+    needs: [linux, check_changes]
     concurrency: gh_pages
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v3
@@ -492,8 +513,8 @@ jobs:
 
   check_pytket_coverage:
     name: Check pytket line and branch coverage
-    needs: linux
-    if: github.event_name == 'pull_request'
+    needs: [linux, check_changes]
+    if: github.event_name == 'pull_request' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true')
     runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v3
