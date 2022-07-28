@@ -953,7 +953,7 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
         new_args.push_back(Qubit(i + n_controls));
       }
       new_args.push_back(Qubit(b.target_qubit + n_controls));
-      c2.add_op<Qubit>(OpType::CnX, new_args);
+      c2.add_op<Qubit>(CNXTYPE(new_args.size()), new_args);
       continue;
     }
 

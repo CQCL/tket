@@ -451,7 +451,7 @@ SCENARIO("QControlBox", "[boxes]") {
     QControlBox qcbox(op);
     std::shared_ptr<Circuit> c = qcbox.to_circuit();
     Circuit expected(2);
-    expected.add_op<unsigned>(OpType::CnX, {0, 1});
+    expected.add_op<unsigned>(OpType::CX, {0, 1});
     REQUIRE(*c == expected);
   }
   GIVEN("controlled CX") {
@@ -459,7 +459,7 @@ SCENARIO("QControlBox", "[boxes]") {
     QControlBox qcbox(op);
     std::shared_ptr<Circuit> c = qcbox.to_circuit();
     Circuit expected(3);
-    expected.add_op<unsigned>(OpType::CnX, {0, 1, 2});
+    expected.add_op<unsigned>(OpType::CCX, {0, 1, 2});
     REQUIRE(*c == expected);
   }
   GIVEN("controlled CCX") {
@@ -590,7 +590,7 @@ SCENARIO("QControlBox", "[boxes]") {
     QControlBox qcbox(op, 2);
     std::shared_ptr<Circuit> c = qcbox.to_circuit();
     Circuit expected(3);
-    expected.add_op<unsigned>(OpType::CnX, {0, 1, 2});
+    expected.add_op<unsigned>(OpType::CCX, {0, 1, 2});
     REQUIRE(*c == expected);
   }
   GIVEN("controlled CircBox") {
