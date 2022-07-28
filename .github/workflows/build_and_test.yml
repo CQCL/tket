@@ -20,6 +20,8 @@ jobs:
   check_tket_version:
     name: Check tket library version
     runs-on: ubuntu-20.04
+    outputs:
+      tket_changed: ${{ steps.filter.outputs.tket }}
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-python@v3
@@ -46,6 +48,7 @@ jobs:
 
   linux:
     name: Build and test (Linux)
+    needs: check_tket_version
     runs-on: ubuntu-20.04
     env:
       CC: gcc-10
@@ -94,6 +97,7 @@ jobs:
     - name: Install ninja and ccache
       run: sudo apt-get install ninja-build ccache
     - name: Build tket
+      if: needs.check_tket_version.outputs.tket_changed == 'true'
       run: ${CONAN_CMD} create --profile=tket recipes/tket tket/stable
     - name: check that version is consistent
       if: github.event_name == 'pull_request'
@@ -170,9 +174,9 @@ jobs:
         name: pytket_test_coverage
         path: pytket/tests/htmlcov
 
-
   macos:
     name: Build and test (MacOS)
+    needs: check_tket_version
     runs-on: macos-11
     env:
       CONAN_REVISIONS_ENABLED: 1
@@ -228,6 +232,7 @@ jobs:
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
     - name: Build tket
+      if: needs.check_tket_version.outputs.tket_changed == 'true'
       run: conan create --profile=tket recipes/tket tket/stable --build=missing
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests
@@ -294,6 +299,7 @@ jobs:
 
   macos-m1:
     name: Build and test (MacOS M1)
+    needs: check_tket_version
     runs-on: [self-hosted, macos, M1]
     if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository
     defaults:
@@ -321,6 +327,7 @@ jobs:
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
     - name: Build tket
+      if: needs.check_tket_version.outputs.tket_changed == 'true'
       run: conan create --profile=tket recipes/tket tket/stable --build=missing
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests
@@ -382,6 +389,7 @@ jobs:
 
   windows:
     name: Build and test (Windows)
+    needs: check_tket_version
     runs-on: windows-2019
     env:
       CONAN_REVISIONS_ENABLED: 1
@@ -405,6 +413,7 @@ jobs:
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Build tket
+      if: needs.check_tket_version.outputs.tket_changed == 'true'
       run: conan create --profile=tket recipes/tket tket/stable
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests
