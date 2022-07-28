@@ -106,8 +106,9 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit &circ) {
         case OpType::TK2: {
           auto params = o->get_params();
           TKET_ASSERT(params.size() == 3);
-          v_to_op[it->first] = get_matrix_from_2qb_circ(
-              CircPool::TK2_using_CX(params[0], params[1], params[2]));
+          v_to_op[it->first] =
+              get_matrix_from_2qb_circ(CircPool::normalised_TK2_using_CX(
+                  params[0], params[1], params[2]));
           break;
         }
         default: {

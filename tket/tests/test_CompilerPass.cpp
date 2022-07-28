@@ -33,6 +33,7 @@
 #include "Transformations/ContextualReduction.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
+#include "Utils/Expression.hpp"
 #include "Utils/UnitID.hpp"
 #include "testutil.hpp"
 namespace tket {
@@ -392,6 +393,37 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     std::vector<PassPtr> passes = {
         DecomposeBoxes(), RebaseTket(), gen_default_mapping_pass(grid, true)};
     REQUIRE_NOTHROW(SequencePass(passes));
+  }
+  GIVEN("TK1 and TK2 replacement functions") {
+    auto tk1_replacement = [](const Expr& a, const Expr& b, const Expr& c) {
+      Circuit circ(1);
+      circ.add_op<unsigned>(OpType::Rz, c, {0});
+      circ.add_op<unsigned>(OpType::Rx, b, {0});
+      circ.add_op<unsigned>(OpType::Rz, a, {0});
+      return circ;
+    };
+    auto tk2_replacement = [](const Expr& a, const Expr& b, const Expr& c) {
+      Circuit circ(2);
+      circ.add_op<unsigned>(OpType::ZZPhase, c, {0, 1});
+      circ.add_op<unsigned>(OpType::YYPhase, b, {0, 1});
+      circ.add_op<unsigned>(OpType::XXPhase, a, {0, 1});
+      return circ;
+    };
+    OpTypeSet allowed_gates = {OpType::Rx,      OpType::Ry,
+                               OpType::Rz,      OpType::XXPhase,
+                               OpType::YYPhase, OpType::ZZPhase};
+
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    PassPtr pp = gen_rebase_pass_via_tk2(
+        allowed_gates, tk2_replacement, tk1_replacement);
+
+    CompilationUnit cu(circ);
+    CHECK(pp->apply(cu));
+    CHECK(cu.get_circ_ref().count_gates(OpType::XXPhase) == 1);
+    CHECK(cu.get_circ_ref().count_gates(OpType::YYPhase) == 0);
+    CHECK(cu.get_circ_ref().count_gates(OpType::ZZPhase) == 0);
   }
 }
 

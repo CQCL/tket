@@ -1056,14 +1056,11 @@ def test_auto_rebase() -> None:
 
     for gateset, cx_circ, TK1_func in pass_params:
         rebase = auto_rebase_pass(gateset)
-        assert rebase.to_dict() == RebaseCustom(gateset, cx_circ, TK1_func).to_dict()
-
         c2 = circ.copy()
         assert rebase.apply(c2)
 
-    with pytest.raises(NoAutoRebase) as cx_err:
-        _ = auto_rebase_pass({OpType.ZZPhase, OpType.TK1})
-    assert "CX" in str(cx_err.value)
+    rebase = auto_rebase_pass({OpType.ZZPhase, OpType.TK1})
+    assert rebase.apply(circ)
 
     with pytest.raises(NoAutoRebase) as cx_err:
         _ = auto_rebase_pass({OpType.CX, OpType.H, OpType.T})
