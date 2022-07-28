@@ -282,7 +282,6 @@ static bool replace_two_qubit_interaction(
   decompose_multi_qubits_TK2().apply(replacement);
   Eigen::Matrix4cd mat = get_matrix_from_2qb_circ(replacement);
   replacement = two_qubit_canonical(mat);
-  normalise_TK2().apply(replacement);
   TwoQbFidelities fid;
   fid.CX_fidelity = cx_fidelity;
   if (target != OpType::TK2) {

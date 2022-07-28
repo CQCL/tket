@@ -63,17 +63,21 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit& circ);
 /**
  * Convert a 4x4 unitary matrix optimally to a corresponding circuit
  *
- * This will express `U` using a single TK2 gate. See `decompose_TK2` to
- * decompose this gate further into other primitives.
+ * This will express `U` using CX gates or a single TK2 gate.
+ * See also `decompose_TK2` to decompose the TK2 gate further into other
+ * primitives.
  *
  * @param U unitary matrix
+ * @param target_2qb_gate whether to decompose to TK2 or CX (default: TK2)
  *
  * @pre \p U is in \ref BasisOrder::ilo
- * @post circuit consists of one TK2 and single-qubit gates
+ * @post circuit consists of one TK2 and single-qubit gates, or of up to 3 CX
+ * and single-qubit gates.
  *
- * @return circuit implementing U with minimal error
+ * @return circuit implementing U exactly.
  */
-Circuit two_qubit_canonical(const Eigen::Matrix4cd& U);
+Circuit two_qubit_canonical(
+    const Eigen::Matrix4cd& U, OpType target_2qb_gate = OpType::TK2);
 
 /**
  * Decompose a unitary matrix into a 2-CX circuit following a diagonal operator.

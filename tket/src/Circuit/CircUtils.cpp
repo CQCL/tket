@@ -140,10 +140,14 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit &circ) {
   return std::exp(i_ * PI * eval_expr(circ.get_phase()).value()) * m;
 }
 
-Circuit two_qubit_canonical(const Eigen::Matrix4cd &U) {
+Circuit two_qubit_canonical(const Eigen::Matrix4cd &U, OpType target_2qb_gate) {
   if (!is_unitary(U)) {
     throw std::invalid_argument(
         "Non-unitary matrix passed to two_qubit_canonical");
+  }
+
+  if (!std::set<OpType>{OpType::CX, OpType::TK2}.contains(target_2qb_gate)) {
+    throw std::invalid_argument("Target_2qb_gate must be CX or TK2");
   }
 
   auto [K1, A, K2] = get_information_content(U);
@@ -165,7 +169,11 @@ Circuit two_qubit_canonical(const Eigen::Matrix4cd &U) {
   result.add_op<unsigned>(
       OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
 
-  result.append(CircPool::TK2_using_normalised_TK2(a, b, c));
+  if (target_2qb_gate == OpType::CX) {
+    result.append(CircPool::TK2_using_CX(a, b, c));
+  } else {
+    result.append(CircPool::TK2_using_normalised_TK2(a, b, c));
+  }
 
   angles_q0 = tk1_angles_from_unitary(K1a);
   angles_q1 = tk1_angles_from_unitary(K1b);
