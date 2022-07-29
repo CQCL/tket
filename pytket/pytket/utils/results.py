@@ -161,6 +161,26 @@ def probs_from_state(
     }
 
 
+def int_dist_from_state(state: np.ndarray, min_p: float = 1e-10) -> Dict[int, float]:
+    """
+    Converts statevector to the probability distribution over
+    its indices. Ignores probabilities lower than `min_p`.
+
+    :param state: A statevector.
+    :type state: np.ndarray
+    :param min_p: Minimum probability to include in result
+    :type min_p: float
+    :return: Probability distribution over the vector's indices.
+    :rtype: Dict[int, float]
+    """
+    probs = state.real**2 + state.imag**2
+    probs /= sum(probs)
+    ignore = probs < min_p
+    probs[ignore] = 0
+    probs /= sum(probs)
+    return {i: p for i, p in enumerate(probs) if not ignore[i]}
+
+
 def get_n_qb_from_statevector(state: np.ndarray) -> int:
     """Given a statevector, returns the number of qubits described
 

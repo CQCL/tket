@@ -33,6 +33,7 @@ from pytket.utils.results import (
     get_n_qb_from_statevector,
     probs_from_counts,
     probs_from_state,
+    int_dist_from_state,
     permute_basis_indexing,
     compare_statevectors,
 )
@@ -109,6 +110,12 @@ def test_state_to_probs() -> None:
     assert np.isclose(probs[(0, 0)], 0.5)
     assert np.isclose(probs[(0, 1)], 0.5)
 
+def test_state_to_int_dist() -> None:
+    state = np.asarray([0.5 - 0.5j, 0.5 + 0.5j, 1e-5, 0.999e-5])
+    probs = int_dist_from_state(state)
+    assert len(probs) == 2
+    assert np.isclose(probs[0], 0.5)
+    assert np.isclose(probs[1], 0.5)
 
 def test_n_qb_from_statevector() -> None:
     state = np.asarray([0.5, 0.5, 0.5, 0.5])
