@@ -191,12 +191,12 @@ jobs:
       with:
         name: pytket_test_coverage
         path: pytket/tests/htmlcov
-    - name: Upload tket package
+    - name: Save tket conan package
       if: github.event_name == 'push' && github.event.push.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_package_exists == 'false'
-      run: |
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
-        conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
-        conan upload tket/$${{ needs.check_changes.outputs.tket_ver }}@tket/stable --all -r=tket-libs
+      uses: actions/upload-artifact@v3
+      with:
+        name: linux_tket_package
+        path: ~/.conan/data/tket
 
   macos:
     name: Build and test (MacOS)
@@ -323,6 +323,12 @@ jobs:
         cd pytket/tests
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
+    - name: Save tket conan package
+      if: github.event_name == 'push' && github.event.push.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_package_exists == 'false'
+      uses: actions/upload-artifact@v3
+      with:
+        name: macos_tket_package
+        path: ~/.conan/data/tket
 
   macos-m1:
     name: Build and test (MacOS M1)
@@ -442,6 +448,20 @@ jobs:
       run: conan profile update options.tket-tests:full=True tket
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+    - name: normalize line endings in conanfile and src directory
+      if: needs.check_changes.outputs.tket_package_exists == 'false'
+      # This is necessary to ensure consistent revisions across platforms.
+      # Conan's revision hash is composed of hashes of all the exported files,
+      # so we must normalize the line endings in these.
+      run: |
+        $conanfile ='recipes/tket/conanfile.py'
+        $normalized_file = [IO.File]::ReadAllText($conanfile) -replace "`r`n", "`n"
+        [IO.File]::WriteAllText($conanfile, $normalized_file)
+        $src_files = Get-ChildItem "tket/src" -File -Recurse
+        foreach ($f in $src_files) {
+          $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
+          [IO.File]::WriteAllText($f, $normalized_file)
+        }
     - name: Build tket
       if: needs.check_changes.outputs.tket_package_exists == 'false'
       run: conan create --profile=tket recipes/tket tket/stable
@@ -493,6 +513,93 @@ jobs:
         cd tests
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
+    - name: Save tket conan package
+      if: github.event_name == 'push' && github.event.push.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_package_exists == 'false'
+      uses: actions/upload-artifact@v3
+      with:
+        name: windows_tket_package
+        path: ~/.conan/data/tket
+
+  linux_upload_package:
+    name: Publish linux tket package
+    runs-on: ubuntu-20.04
+    if: github.event_name == 'push' && github.event.push.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_package_exists == 'false'
+    needs: [linux, macos, macos-m1, windows, check_changes]
+    steps:
+    - name: Download package
+      uses: actions/download-artifact@v3
+      with:
+        name: linux_tket_package
+        path: ~/.conan/data/tket
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+    - name: Upload package
+      run: |
+        pip install conan
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+        conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+        conan upload tket/$${{ needs.check_changes.outputs.tket_ver }}@tket/stable --all -r=tket-libs
+
+  macos_upload_package:
+    name: Publish MacOS tket package
+    runs-on: macos-11
+    if: github.event_name == 'push' && github.event.push.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_package_exists == 'false'
+    needs: [linux, macos, macos-m1, windows, check_changes]
+    steps:
+    - name: Download package
+      uses: actions/download-artifact@v3
+      with:
+        name: macos_tket_package
+        path: ~/.conan/data/tket
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+    - name: Upload package
+      run: |
+        pip install conan
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+        conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+        conan upload tket/$${{ needs.check_changes.outputs.tket_ver }}@tket/stable --all -r=tket-libs
+
+  macos_m1_upload_package:
+    name: Publish MacOS M1 tket package
+    runs-on: [self-hosted, macos, M1]
+    if: github.event_name == 'push' && github.event.push.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_package_exists == 'false'
+    needs: [linux, macos, macos-m1, windows, check_changes]
+    steps:
+    - name: Upload package
+      run: |
+        eval "$(pyenv init -)"
+        pyenv shell tket-3.10
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+        conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+        conan upload tket/$${{ needs.check_changes.outputs.tket_ver }}@tket/stable --all -r=tket-libs
+        conan user -c
+
+  windows_upload_package:
+    name: Publish Windows tket package
+    runs-on: windows-2019
+    if: github.event_name == 'push' && github.event.push.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_package_exists == 'false'
+    needs: [linux, macos, macos-m1, windows, check_changes]
+    steps:
+    - name: Download package
+      uses: actions/download-artifact@v3
+      with:
+        name: windows_tket_package
+        path: ~/.conan/data/tket
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+    - name: Upload package
+      run: |
+        pip install conan
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+        conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+        conan upload tket/$${{ needs.check_changes.outputs.tket_ver }}@tket/stable --all -r=tket-libs
 
   publish_pytket_coverage:
     name: Publish pytket coverage
