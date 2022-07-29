@@ -106,9 +106,15 @@ static const std::vector<Eigen::Matrix4cd> &get_conj_unitaries() {
     c3.add_op<unsigned>(OpType::CX, {0, 1});
     Circuit c4(2);
     c4.add_op<unsigned>(OpType::CX, {1, 0});
-    return {
-        get_matrix_from_2qb_circ(c1), get_matrix_from_2qb_circ(c2),
-        get_matrix_from_2qb_circ(c3), get_matrix_from_2qb_circ(c4)};
+    Circuit c5(2);
+    c5.add_op<unsigned>(OpType::CX, {0, 1});
+    c5.add_op<unsigned>(OpType::CX, {1, 0});
+    Circuit c6(2);
+    c6.add_op<unsigned>(OpType::CX, {1, 0});
+    c6.add_op<unsigned>(OpType::CX, {0, 1});
+    return {get_matrix_from_2qb_circ(c1), get_matrix_from_2qb_circ(c2),
+            get_matrix_from_2qb_circ(c3), get_matrix_from_2qb_circ(c4),
+            get_matrix_from_2qb_circ(c5), get_matrix_from_2qb_circ(c6)};
   };
 
   static const std::vector<Eigen::Matrix4cd> vec = make_conj_unitaries();
@@ -148,8 +154,8 @@ static std::pair<Circuit, Complex> two_qubit_plex(
 
   // We try conjugating the L and R circuits to see if we can reduce CX count.
   std::optional<Circuit> best_circ;
-  Complex best_z0;
-  unsigned best_n_cx;
+  Complex best_z0 = 0;
+  unsigned best_n_cx = 0;
   for (const Eigen::Matrix4cd &u_conj : get_conj_unitaries()) {
     // 4. Decompose R into a 2-CX circuit followed by a diagonal.
     auto u_conj_adj = u_conj.adjoint();
