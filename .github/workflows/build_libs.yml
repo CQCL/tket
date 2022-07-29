@@ -134,6 +134,8 @@ jobs:
     - name: upload package
       if: github.event_name == 'push'
       run: conan upload ${{ matrix.lib }}/${LIB_VER}@tket/stable --all -r=tket-libs
+    - name: unauthenticate
+      run: conan user -c
   manylinux:
     name: build library (manylinux)
     needs: changes
