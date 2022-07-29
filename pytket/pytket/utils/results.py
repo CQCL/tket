@@ -171,7 +171,7 @@ def probs_from_state(
     :rtype: Dict[Tuple[int], float]
     """
     width = get_n_qb_from_statevector(state)
-    probs = _compute_probs_from_state(state)
+    probs = _compute_probs_from_state(state, min_p)
     return {_index_to_readout(i, width): p for i, p in enumerate(probs) if p != 0}
 
 
@@ -187,7 +187,7 @@ def int_dist_from_state(state: np.ndarray, min_p: float = 1e-10) -> Dict[int, fl
     :return: Probability distribution over the vector's indices.
     :rtype: Dict[int, float]
     """
-    probs = _compute_probs_from_state(state)
+    probs = _compute_probs_from_state(state, min_p)
     return {i: p for i, p in enumerate(probs) if p != 0}
 
 
