@@ -97,6 +97,29 @@ static Circuit two_qubit_diag_adjoint_plex_tk(const Eigen::Matrix4cd &D) {
   return circ;
 }
 
+static const std::vector<Eigen::Matrix4cd> &get_conj_unitaries() {
+  static const std::vector<Eigen::Matrix4cd> vec = ([]() {
+    Circuit c1(2);
+    Circuit c2(2);
+    c2.add_op<unsigned>(OpType::SWAP, {0, 1});
+    Circuit c3(2);
+    c3.add_op<unsigned>(OpType::CX, {0, 1});
+    Circuit c4(2);
+    c4.add_op<unsigned>(OpType::CX, {1, 0});
+    Circuit c5(2);
+    c5.add_op<unsigned>(OpType::CX, {0, 1});
+    c5.add_op<unsigned>(OpType::CX, {1, 0});
+    Circuit c6(2);
+    c6.add_op<unsigned>(OpType::CX, {1, 0});
+    c6.add_op<unsigned>(OpType::CX, {0, 1});
+    return std::vector<Eigen::Matrix4cd>{
+        get_matrix_from_2qb_circ(c1), get_matrix_from_2qb_circ(c2),
+        get_matrix_from_2qb_circ(c3), get_matrix_from_2qb_circ(c4),
+        get_matrix_from_2qb_circ(c5), get_matrix_from_2qb_circ(c6)};
+  })();
+  return vec;
+}
+
 // Return a 3-qubit circuit and a unit complex number z which together implement
 // the unitary
 //     [ U0    ]
@@ -127,30 +150,44 @@ static std::pair<Circuit, Complex> two_qubit_plex(
   }
   // 3. Compute R such that U0 = L D R and U1 = L D* R.
   Eigen::Matrix4cd R = D * L.adjoint() * U1;
-  // 4. Decompose R into a 2-CX circuit followed by a diagonal.
-  auto [R_circ, w0] = decompose_2cx_DV(R);
-  Complex w1 = std::conj(w0);
-  // 5. Construct the circuit.
-  // The diagonal from R's decomposition commutes forward through the controls
-  // on qubits 1 and 2, so can be absorbed into L.
-  Circuit circ(3);
-  unit_map_t qm;
-  qm.insert({Qubit(0), Qubit(1)});
-  qm.insert({Qubit(1), Qubit(2)});
-  circ.append_with_map(R_circ, qm);
-  circ.append(two_qubit_diag_adjoint_plex(D));
-  L.col(0) *= w0;
-  L.col(1) *= w1;
-  L.col(2) *= w1;
-  L.col(3) *= w0;
-  if (extract_final_diagonal) {
-    auto [L_circ, z0] = decompose_2cx_DV(L);
+
+  // We try conjugating the L and R circuits to see if we can reduce CX count.
+  std::optional<Circuit> best_circ;
+  std::optional<Complex> best_z0;
+  std::optional<unsigned> best_n_cx;
+  for (const Eigen::Matrix4cd &u_conj : get_conj_unitaries()) {
+    // 4. Decompose R into a 2-CX circuit followed by a diagonal.
+    auto u_conj_adj = u_conj.adjoint();
+    auto [R_circ, w0] = decompose_2cx_DV(u_conj * R);
+    Eigen::Vector4cd w = {w0, std::conj(w0), std::conj(w0), w0};
+    auto wD = w.asDiagonal();
+
+    // 5. Construct the circuit.
+    // The diagonal from R's decomposition commutes forward through the controls
+    // on qubits 1 and 2, so can be absorbed into L.
+    Circuit circ(3);
+    unit_map_t qm{{Qubit(0), Qubit(1)}, {Qubit(1), Qubit(2)}};
+    circ.append_with_map(R_circ, qm);
+    circ.append(two_qubit_diag_adjoint_plex(u_conj * D * u_conj_adj));
+    Complex z0;
+    Circuit L_circ;
+    if (extract_final_diagonal) {
+      std::tie(L_circ, z0) = decompose_2cx_DV(L * u_conj_adj * wD);
+    } else {
+      L_circ = two_qubit_canonical(L * u_conj_adj * wD, OpType::CX);
+      z0 = 1.;
+    }
     circ.append_with_map(L_circ, qm);
-    return {circ, z0};
-  } else {
-    circ.append_with_map(two_qubit_canonical(L), qm);
-    return {circ, 1};
+
+    unsigned n_cx = circ.count_gates(OpType::CX);
+    if (!best_circ || best_n_cx > n_cx) {
+      best_circ = circ;
+      best_z0 = z0;
+      best_n_cx = n_cx;
+    }
   }
+  TKET_ASSERT(best_circ);
+  return {*best_circ, *best_z0};
 }
 
 // Return a 3-qubit circuit which implements the unitary
