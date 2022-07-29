@@ -153,8 +153,8 @@ static std::pair<Circuit, Complex> two_qubit_plex(
 
   // We try conjugating the L and R circuits to see if we can reduce CX count.
   std::optional<Circuit> best_circ;
-  Complex best_z0;
-  unsigned best_n_cx;
+  std::optional<Complex> best_z0;
+  std::optional<unsigned> best_n_cx;
   for (const Eigen::Matrix4cd &u_conj : get_conj_unitaries()) {
     // 4. Decompose R into a 2-CX circuit followed by a diagonal.
     auto u_conj_adj = u_conj.adjoint();
@@ -187,7 +187,7 @@ static std::pair<Circuit, Complex> two_qubit_plex(
     }
   }
   TKET_ASSERT(best_circ);
-  return {*best_circ, best_z0};
+  return {*best_circ, *best_z0};
 }
 
 // Return a 3-qubit circuit which implements the unitary
