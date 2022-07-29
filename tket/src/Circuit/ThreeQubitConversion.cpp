@@ -97,16 +97,21 @@ static Circuit two_qubit_diag_adjoint_plex_tk(const Eigen::Matrix4cd &D) {
   return circ;
 }
 
-static std::vector<Circuit> &get_conj_circs() {
-  Circuit c1(2);
-  Circuit c2(2);
-  c2.add_op<unsigned>(OpType::SWAP, {0, 1});
-  Circuit c3(2);
-  c3.add_op<unsigned>(OpType::CX, {0, 1});
-  Circuit c4(2);
-  c4.add_op<unsigned>(OpType::CX, {1, 0});
+static const std::vector<Eigen::Matrix4cd> &get_conj_unitaries() {
+  auto make_conj_unitaries = []() -> std::vector<Eigen::Matrix4cd> {
+    Circuit c1(2);
+    Circuit c2(2);
+    c2.add_op<unsigned>(OpType::SWAP, {0, 1});
+    Circuit c3(2);
+    c3.add_op<unsigned>(OpType::CX, {0, 1});
+    Circuit c4(2);
+    c4.add_op<unsigned>(OpType::CX, {1, 0});
+    return {
+        get_matrix_from_2qb_circ(c1), get_matrix_from_2qb_circ(c2),
+        get_matrix_from_2qb_circ(c3), get_matrix_from_2qb_circ(c4)};
+  };
 
-  static std::vector<Circuit> vec{c1, c2, c3, c4};
+  static const std::vector<Eigen::Matrix4cd> vec = make_conj_unitaries();
   return vec;
 }
 
@@ -144,12 +149,13 @@ static std::pair<Circuit, Complex> two_qubit_plex(
   // We try conjugating the L and R circuits to see if we can reduce CX count.
   std::optional<Circuit> best_circ;
   Complex best_z0;
-  for (const Circuit &conj : get_conj_circs()) {
+  unsigned best_n_cx;
+  for (const Eigen::Matrix4cd &u_conj : get_conj_unitaries()) {
     // 4. Decompose R into a 2-CX circuit followed by a diagonal.
-    auto u_conj = get_matrix_from_2qb_circ(conj);
+    auto u_conj_adj = u_conj.adjoint();
     auto [R_circ, w0] = decompose_2cx_DV(u_conj * R);
-    Complex w1 = std::conj(w0);
-    Eigen::Matrix4cd wD = (Eigen::Vector4cd{w0, w1, w1, w0}).asDiagonal();
+    Eigen::Vector4cd w = {w0, std::conj(w0), std::conj(w0), w0};
+    auto wD = w.asDiagonal();
 
     // 5. Construct the circuit.
     // The diagonal from R's decomposition commutes forward through the controls
@@ -157,21 +163,22 @@ static std::pair<Circuit, Complex> two_qubit_plex(
     Circuit circ(3);
     unit_map_t qm{{Qubit(0), Qubit(1)}, {Qubit(1), Qubit(2)}};
     circ.append_with_map(R_circ, qm);
-    circ.append(two_qubit_diag_adjoint_plex(u_conj * D * u_conj.adjoint()));
+    circ.append(two_qubit_diag_adjoint_plex(u_conj * D * u_conj_adj));
     Complex z0;
     Circuit L_circ;
     if (extract_final_diagonal) {
-      std::tie(L_circ, z0) = decompose_2cx_DV(L * u_conj.adjoint() * wD);
+      std::tie(L_circ, z0) = decompose_2cx_DV(L * u_conj_adj * wD);
     } else {
-      L_circ = two_qubit_canonical(L * u_conj.adjoint() * wD, OpType::CX);
+      L_circ = two_qubit_canonical(L * u_conj_adj * wD, OpType::CX);
       z0 = 1.;
     }
     circ.append_with_map(L_circ, qm);
 
-    if (!best_circ ||
-        best_circ->count_gates(OpType::CX) > circ.count_gates(OpType::CX)) {
+    unsigned n_cx = circ.count_gates(OpType::CX);
+    if (!best_circ || best_n_cx > n_cx) {
       best_circ = circ;
       best_z0 = z0;
+      best_n_cx = n_cx;
     }
   }
   TKET_ASSERT(best_circ);

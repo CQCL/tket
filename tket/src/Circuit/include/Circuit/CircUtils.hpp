@@ -71,10 +71,10 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit& circ);
  * @param target_2qb_gate whether to decompose to TK2 or CX (default: TK2)
  *
  * @pre \p U is in \ref BasisOrder::ilo
- * @post circuit consists of one TK2 and single-qubit gates, or of up to 3 CX
- * and single-qubit gates.
+ * @post Circuit consists of one normalised TK2 and single-qubit gates, or of
+ * up to 3 CX and single-qubit gates.
  *
- * @return circuit implementing U exactly.
+ * @return circuit implementing U exactly
  */
 Circuit two_qubit_canonical(
     const Eigen::Matrix4cd& U, OpType target_2qb_gate = OpType::TK2);
