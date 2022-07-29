@@ -136,6 +136,26 @@ def _reverse_bits_of_index(index: int, width: int) -> int:
     return permuter.permute(index)
 
 
+def _compute_probs_from_state(state: np.ndarray, min_p: float = 1e-10) -> np.ndarray:
+    """
+    Converts statevector to a probability vector.
+    Set probabilities lower than `min_p` to 0.
+
+    :param state: A statevector.
+    :type state: np.ndarray
+    :param min_p: Minimum probability to include in result
+    :type min_p: float
+    :return: Probability vector.
+    :rtype: np.ndarray
+    """
+    probs = state.real**2 + state.imag**2
+    probs /= sum(probs)
+    ignore = probs < min_p
+    probs[ignore] = 0
+    probs /= sum(probs)
+    return probs
+
+
 def probs_from_state(
     state: np.ndarray, min_p: float = 1e-10
 ) -> Dict[Tuple[int, ...], float]:
@@ -151,14 +171,8 @@ def probs_from_state(
     :rtype: Dict[Tuple[int], float]
     """
     width = get_n_qb_from_statevector(state)
-    probs = state.real**2 + state.imag**2
-    probs /= sum(probs)
-    ignore = probs < min_p
-    probs[ignore] = 0
-    probs /= sum(probs)
-    return {
-        _index_to_readout(i, width): p for i, p in enumerate(probs) if not ignore[i]
-    }
+    probs = _compute_probs_from_state(state)
+    return {_index_to_readout(i, width): p for i, p in enumerate(probs) if p != 0}
 
 
 def int_dist_from_state(state: np.ndarray, min_p: float = 1e-10) -> Dict[int, float]:
@@ -173,12 +187,8 @@ def int_dist_from_state(state: np.ndarray, min_p: float = 1e-10) -> Dict[int, fl
     :return: Probability distribution over the vector's indices.
     :rtype: Dict[int, float]
     """
-    probs = state.real**2 + state.imag**2
-    probs /= sum(probs)
-    ignore = probs < min_p
-    probs[ignore] = 0
-    probs /= sum(probs)
-    return {i: p for i, p in enumerate(probs) if not ignore[i]}
+    probs = _compute_probs_from_state(state)
+    return {i: p for i, p in enumerate(probs) if p != 0}
 
 
 def get_n_qb_from_statevector(state: np.ndarray) -> int:
