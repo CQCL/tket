@@ -30,8 +30,9 @@ ReductionResult ReducerInterface::reduce(
 }
 
 bool ReducerInterface::other_vertex_reduction_can_be_skipped_by_symmetry(
-    const boost::dynamic_bitset<>& other_domain, const DomainsAccessor& accessor,
-    VertexWSM this_vertex, VertexWSM other_vertex) {
+    const boost::dynamic_bitset<>& other_domain,
+    const DomainsAccessor& accessor, VertexWSM this_vertex,
+    VertexWSM other_vertex) {
   // If this other pv was already assigned in a previous node
   // (i.e., its domain was the same as now), then the reducer
   // already reduced this domain when that node was reduced

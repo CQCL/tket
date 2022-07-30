@@ -21,17 +21,13 @@
 #include "tkwsm/Common/GeneralUtils.hpp"
 #include "tkwsm/Common/TemporaryRefactorCode.hpp"
 
-#include "WeightSubgrMono/Common/TemporaryRefactorCode.hpp"
-
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-
 NodesRawData::NodesRawData(
     const DomainInitialiser::InitialDomains& initial_domains,
-    std::size_t num_tv) 
-    : number_of_tv(num_tv) 
-      {
+    std::size_t num_tv)
+    : number_of_tv(num_tv) {
   nodes_data.push();
   auto& node = nodes_data.top();
   node.nogood = false;
@@ -49,12 +45,12 @@ NodesRawData::NodesRawData(
     TKET_ASSERT(initial_domains[pv].size() == num_tv);
 
     const BitsetInformation bitset_info(initial_domains[pv]);
-    if(bitset_info.empty) {
+    if (bitset_info.empty) {
       std::stringstream ss;
       ss << "NodesRawData: Domain(" << pv << ") is empty!";
       throw std::runtime_error(ss.str());
     }
-    if(bitset_info.single_element) {
+    if (bitset_info.single_element) {
       node.new_assignments.emplace_back(pv, bitset_info.single_element.value());
     } else {
       node.unassigned_vertices_superset.push_back(pv);
@@ -96,8 +92,8 @@ std::string NodesRawData::DomainData::str() const {
 
   for (unsigned ii = 0; ii < size; ++ii) {
     TemporaryRefactorCode::set_domain_from_bitset(dom_temp, entries[ii].domain);
-    ss << "\n  node_index=" << entries[ii].node_index << ", Dom: "
-       << tket::WeightedSubgraphMonomorphism::str(dom_temp);
+    ss << "\n  node_index=" << entries[ii].node_index
+       << ", Dom: " << tket::WeightedSubgraphMonomorphism::str(dom_temp);
   }
   ss << "\n";
   return ss.str();
@@ -111,7 +107,6 @@ NodesRawDataWrapper::NodesRawDataWrapper(
 const NodesRawData& NodesRawDataWrapper::get_raw_data_for_debug() const {
   return m_raw_data;
 }
-
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

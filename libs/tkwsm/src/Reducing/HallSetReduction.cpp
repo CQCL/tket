@@ -71,7 +71,7 @@ ReductionResult HallSetReduction::reduce(DomainsAccessor& accessor) {
 
     const auto search_result =
         partition.search_for_hall_set(accessor, m_union_of_domains);
-        
+
     if (search_result == Partition::SearchResult::NOGOOD) {
       return ReductionResult::NOGOOD;
     }
@@ -142,9 +142,9 @@ ReductionResult HallSetReduction::within_reduce_loop_handle_hall_set_reduction(
   m_union_of_domains_complement = m_union_of_domains;
   m_union_of_domains_complement.flip();
 
-  const auto reduction_data =
-      partition.reduce_with_hall_set(accessor, m_union_of_domains,
-            m_union_of_domains_complement, m_domain_mask_workset);
+  const auto reduction_data = partition.reduce_with_hall_set(
+      accessor, m_union_of_domains, m_union_of_domains_complement,
+      m_domain_mask_workset);
 
   if (reduction_data.result_to_return == ReductionResult::NOGOOD) {
     return ReductionResult::NOGOOD;
@@ -342,11 +342,9 @@ HallSetReduction::Partition::search_for_hall_set(
 
 HallSetReduction::Partition::HallSetReductionData
 HallSetReduction::Partition::reduce_with_hall_set(
-    DomainsAccessor& accessor,
-    const boost::dynamic_bitset<>& union_of_domains,
+    DomainsAccessor& accessor, const boost::dynamic_bitset<>& union_of_domains,
     const boost::dynamic_bitset<>& union_of_domains_complement,
     boost::dynamic_bitset<>& domain_mask_workset) {
-    
   const unsigned number_of_pv = union_of_domains.count();
   TKET_ASSERT(number_of_pv > 1);
   TKET_ASSERT(number_of_pv < domains_data.size());
@@ -359,26 +357,24 @@ HallSetReduction::Partition::reduce_with_hall_set(
   // Note that all OTHER vertices will have domains
   // disjoint from the Hall set at the end, so there's no point in keeping
   // the Hall set in THIS partition.
-  reduction_data.should_move_hall_pv_to_another_partition =
-      number_of_pv > 2;
+  reduction_data.should_move_hall_pv_to_another_partition = number_of_pv > 2;
   const unsigned number_of_vertices_to_reduce =
       domains_data.size() - number_of_pv;
   unsigned number_of_newly_assigned_vertices = 0;
 
   for (unsigned ii = 0; ii < number_of_vertices_to_reduce; ++ii) {
-
     // TODO: make an intersect function WITHOUT doing a swap,
     // to avoid this copy.
-    domain_mask_workset = union_of_domains_complement;    
+    domain_mask_workset = union_of_domains_complement;
     const auto intersect_result = accessor.intersect_domain_with_swap(
-      domains_data[ii].pv, domain_mask_workset);
+        domains_data[ii].pv, domain_mask_workset);
 
     if (intersect_result.reduction_result == ReductionResult::NOGOOD) {
       reduction_data.result_to_return = ReductionResult::NOGOOD;
       return reduction_data;
     }
     // Conveniently, the old domain size is already stored.
-    if(intersect_result.changed) {
+    if (intersect_result.changed) {
       reduction_data.changed = true;
       domains_data[ii].domain_size = intersect_result.new_domain_size;
     }
@@ -400,8 +396,7 @@ HallSetReduction::Partition::reduce_with_hall_set(
   // after removing the newly assigned ones (and the old Hall set, which will
   // be removed whatever happens)?
   reduction_data.should_erase_this_partition =
-      domains_data.size() - number_of_pv -
-          number_of_newly_assigned_vertices <
+      domains_data.size() - number_of_pv - number_of_newly_assigned_vertices <
       3;
 
   return reduction_data;

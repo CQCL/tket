@@ -88,9 +88,8 @@ void ValueOrdering::fill_entries_for_high_degree_vertices(
   // Multipass algorithm; simple and efficient enough.
   // Pass one: find the max degree.
   size_t max_degree = 0;
-  for (auto tv = possible_values.find_first();
-            tv < possible_values.size();
-            tv = possible_values.find_next(tv)) {
+  for (auto tv = possible_values.find_first(); tv < possible_values.size();
+       tv = possible_values.find_next(tv)) {
     max_degree = std::max(max_degree, target_ndata.get_degree(tv));
   }
   TKET_ASSERT(max_degree > 0);
@@ -99,9 +98,8 @@ void ValueOrdering::fill_entries_for_high_degree_vertices(
   for (HighDegreeVerticesData& entry : m_entries_for_high_degree_vertices) {
     entry.vertices.clear();
   }
-  for (auto tv = possible_values.find_first();
-            tv < possible_values.size();
-            tv = possible_values.find_next(tv)) {
+  for (auto tv = possible_values.find_first(); tv < possible_values.size();
+       tv = possible_values.find_next(tv)) {
     const auto degree = target_ndata.get_degree(tv);
     if (degree + m_entries_for_high_degree_vertices.size() > max_degree) {
       const auto index = max_degree - degree;

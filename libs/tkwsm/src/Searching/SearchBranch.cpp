@@ -35,8 +35,8 @@ SearchBranch::SearchBranch(
       m_target_ndata(target_ndata),
       m_extra_statistics(extra_statistics),
       m_derived_graphs_reducer(m_pattern_ndata, m_target_ndata),
-      m_nodes_raw_data_wrapper(initial_domains,
-          m_target_ndata.get_number_of_nonisolated_vertices()),
+      m_nodes_raw_data_wrapper(
+          initial_domains, m_target_ndata.get_number_of_nonisolated_vertices()),
       m_domains_accessor(m_nodes_raw_data_wrapper),
       m_node_list_traversal(m_nodes_raw_data_wrapper) {
   m_extra_statistics.number_of_pattern_vertices =
@@ -52,13 +52,13 @@ SearchBranch::SearchBranch(
   // In what order should we do reduction/checks?
   // The simplest/cheapest first? Most powerful?
   // Seems a difficult question...
-   m_reducer_wrappers.reserve(max_distance_reduction_value + 1);
-  ///m_reducer_wrappers.emplace_back(m_neighbours_reducer);
+  m_reducer_wrappers.reserve(max_distance_reduction_value + 1);
+  /// m_reducer_wrappers.emplace_back(m_neighbours_reducer);
   m_reducer_wrappers.emplace_back(m_derived_graphs_reducer);
   m_distance_reducers.reserve(max_distance_reduction_value);
-    
+
   for (unsigned distance = 1; distance <= max_distance_reduction_value;
-        ++distance) {
+       ++distance) {
     m_distance_reducers.emplace_back(
         pattern_near_ndata, m_target_ndata, target_near_ndata, distance);
   }
@@ -76,7 +76,6 @@ const DomainsAccessor& SearchBranch::get_domains_accessor() const {
 DomainsAccessor& SearchBranch::get_domains_accessor_nonconst() {
   return m_domains_accessor;
 }
-
 
 boost::dynamic_bitset<> SearchBranch::get_used_target_vertices() const {
   return m_node_list_traversal.get_used_target_vertices();
@@ -269,7 +268,7 @@ bool SearchBranch::perform_main_reduce_loop(
     if (hall_set_result == ReductionResult::NOGOOD) {
       return false;
     }
-    
+
     TKET_ASSERT(num_assignments_alldiff_processed <= new_assignments.size());
     if (num_assignments_alldiff_processed == new_assignments.size()) {
       TKET_ASSERT(hall_set_result == ReductionResult::SUCCESS);

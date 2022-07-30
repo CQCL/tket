@@ -13,9 +13,10 @@
 // limitations under the License.
 
 #pragma once
+#include <boost/dynamic_bitset.hpp>
+
 #include "tkwsm/Common/ReusableStorage.hpp"
 #include "tkwsm/GraphTheoretic/GeneralStructs.hpp"
-#include <boost/dynamic_bitset.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
@@ -102,7 +103,7 @@ class HallSetReduction {
     enum class SearchResult { NOGOOD, NO_HALL_SET, HALL_SET };
 
     // Assume already sorted, and only called with nonempty data.
-   SearchResult search_for_hall_set(
+    SearchResult search_for_hall_set(
         const DomainsAccessor& accessor,
         boost::dynamic_bitset<>& union_of_domains_work_set) const;
 

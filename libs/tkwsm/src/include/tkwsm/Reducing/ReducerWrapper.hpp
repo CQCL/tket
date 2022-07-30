@@ -13,8 +13,9 @@
 // limitations under the License.
 
 #pragma once
-#include <optional>
 #include <boost/dynamic_bitset.hpp>
+#include <optional>
+
 #include "../GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
@@ -127,8 +128,9 @@ class ReducerInterface {
    * @return True if there is no need to reduce Domain(pv2).
    */
   static bool other_vertex_reduction_can_be_skipped_by_symmetry(
-      const boost::dynamic_bitset<>& other_domain, const DomainsAccessor& accessor,
-      VertexWSM this_vertex, VertexWSM other_vertex);
+      const boost::dynamic_bitset<>& other_domain,
+      const DomainsAccessor& accessor, VertexWSM this_vertex,
+      VertexWSM other_vertex);
 };
 
 /** A class to wrap a raw Reducer object, and keep track of which assignments

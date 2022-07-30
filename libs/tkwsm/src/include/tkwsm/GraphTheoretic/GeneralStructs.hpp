@@ -14,12 +14,12 @@
 
 #pragma once
 #include <algorithm>
+#include <boost/dynamic_bitset.hpp>
 #include <cstdint>
 #include <map>
 #include <set>
 #include <string>
 #include <vector>
-#include <boost/dynamic_bitset.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
@@ -125,7 +125,6 @@ struct BitsetInformation {
 
   explicit BitsetInformation(const boost::dynamic_bitset<>& domain);
 };
-
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

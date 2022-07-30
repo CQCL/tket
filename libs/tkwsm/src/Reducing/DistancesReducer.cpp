@@ -37,27 +37,29 @@ DistancesReducer::DistancesReducer(
 
 bool DistancesReducer::check(std::pair<VertexWSM, VertexWSM> assignment) {
   return FilterUtils::compatible_sorted_degree_counts(
-      m_pattern_near_ndata.get_degree_counts_at_exact_distance(assignment.first, m_distance),
-      m_target_near_ndata.get_degree_counts_up_to_distance(assignment.second, m_distance));
+      m_pattern_near_ndata.get_degree_counts_at_exact_distance(
+          assignment.first, m_distance),
+      m_target_near_ndata.get_degree_counts_up_to_distance(
+          assignment.second, m_distance));
 }
-
 
 ReductionResult DistancesReducer::reduce(
     std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,
     boost::dynamic_bitset<>& work_bitset) {
-
   auto result = ReductionResult::SUCCESS;
 
-  const boost::dynamic_bitset<>& pv_at_distance_d = m_pattern_near_ndata.get_vertices_at_exact_distance(
-       assignment.first, m_distance);
+  const boost::dynamic_bitset<>& pv_at_distance_d =
+      m_pattern_near_ndata.get_vertices_at_exact_distance(
+          assignment.first, m_distance);
 
-  for(auto new_pv = pv_at_distance_d.find_first();
-            new_pv < pv_at_distance_d.size();
-            new_pv = pv_at_distance_d.find_next(new_pv)) {
+  for (auto new_pv = pv_at_distance_d.find_first();
+       new_pv < pv_at_distance_d.size();
+       new_pv = pv_at_distance_d.find_next(new_pv)) {
+    work_bitset = m_target_near_ndata.get_vertices_up_to_distance(
+        assignment.second, m_distance);
 
-    work_bitset = m_target_near_ndata.get_vertices_up_to_distance(assignment.second, m_distance);
-
-    switch (accessor.intersect_domain_with_swap(new_pv, work_bitset).reduction_result) {
+    switch (accessor.intersect_domain_with_swap(new_pv, work_bitset)
+                .reduction_result) {
       case ReductionResult::NEW_ASSIGNMENTS:
         // Normally we would return now,
         // BUT the assignment PV->TV hasn't been fully processed
@@ -75,7 +77,6 @@ ReductionResult DistancesReducer::reduce(
   }
   return result;
 }
-
 
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

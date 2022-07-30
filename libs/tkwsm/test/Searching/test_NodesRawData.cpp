@@ -21,7 +21,7 @@ namespace WeightedSubgraphMonomorphism {
 
 SCENARIO("Test search node string functions") {
   DomainInitialiser::InitialDomains initial_domains(4);
-  for(auto& domain_bitset : initial_domains) {
+  for (auto& domain_bitset : initial_domains) {
     domain_bitset.resize(100);
   }
   initial_domains[0].set(0);

@@ -50,19 +50,19 @@ std::optional<WeightCalculator::Result> WeightCalculator::operator()(
 
       const auto& other_domain = accessor.get_domain(other_pv);
       const auto first_tv = other_domain.find_first();
-      if(first_tv >= other_domain.size()) {
+      if (first_tv >= other_domain.size()) {
         // Empty domain; a nogood!
         return {};
       }
       const auto second_tv = other_domain.find_next(first_tv);
-      if(second_tv >= other_domain.size() &&
+      if (second_tv >= other_domain.size() &&
           m_p_vertices_seen.count(other_pv) == 0) {
         // The domain has size exactly 1,
         // so we have an assigned edge.
         // But we also haven't seen both vertices yet,
         // so the edge cannot have been added already.
         const auto t_edge_weight_opt =
-              target_ndata.get_edge_weight_opt(tv, first_tv);
+            target_ndata.get_edge_weight_opt(tv, first_tv);
         if (!t_edge_weight_opt) {
           return {};
         }

@@ -51,7 +51,6 @@ bool DomainInitialiser::degree_sequence_initialisation(
   const auto number_of_tv =
       target_neighbours_data.get_number_of_nonisolated_vertices();
 
-
   // Now get the target degree sequences.
   // For each PV, its domain will be all those TV
   // with a compatible degree sequence.
@@ -130,17 +129,16 @@ bool DomainInitialiser::distance_counts_reduction(
     return true;
   }
   // Easier to build the TV list up, then erase them in a separate pass.
-  boost::dynamic_bitset<> tv_to_erase(target_near_neighbours_data.get_number_of_vertices());
+  boost::dynamic_bitset<> tv_to_erase(
+      target_near_neighbours_data.get_number_of_vertices());
 
   for (unsigned pv = 0; pv < initial_domains.size(); ++pv) {
     boost::dynamic_bitset<>& domain = initial_domains[pv];
     tv_to_erase.reset();
 
     // Find which TV to erase.
-    for (auto tv = domain.find_first();
-              tv < domain.size();
-              tv = domain.find_next(tv)) {
-
+    for (auto tv = domain.find_first(); tv < domain.size();
+         tv = domain.find_next(tv)) {
       // If f is a valid monomorphism then
       //    dist(PV, PV')=d   ==>   dist(f(PV), f(PV')) <= d.
       // Now TV=f(PV) is the value to be checked;
@@ -149,10 +147,11 @@ bool DomainInitialiser::distance_counts_reduction(
       // dist(TV, TV') <= d.
       //
       // Notice, that we may break off early; because everything
-      // is calculated lazily, it may save time.      
+      // is calculated lazily, it may save time.
       for (unsigned distance = 2; distance <= max_path_length; ++distance) {
         const auto number_of_pv_at_distance_d =
-            pattern_near_neighbours_data.get_n_vertices_at_exact_distance(pv, distance);
+            pattern_near_neighbours_data.get_n_vertices_at_exact_distance(
+                pv, distance);
 
         if (number_of_pv_at_distance_d > 0) {
           const auto number_of_tv_at_distance_le_d =

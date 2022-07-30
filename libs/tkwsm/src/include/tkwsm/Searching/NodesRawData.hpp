@@ -13,15 +13,14 @@
 // limitations under the License.
 
 #pragma once
+#include <boost/dynamic_bitset.hpp>
 #include <string>
 
 #include "../Common/LogicalStack.hpp"
 #include "../GraphTheoretic/DomainInitialiser.hpp"
-#include <boost/dynamic_bitset.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
-
 
 // The "logical" data structure for a search tree would be a std::vector
 // of "node" objects, with each node containing an object like
@@ -141,8 +140,7 @@ struct NodesRawData {
   // HOWEVER, the "number_of_tv" is set simply by looking at the max TV
   // occurring; so it's possible that some unused TV, e.g. M, from the end of
   // {0,1,2,...,M} might get removed and not included in this.
-  //const std::size_t number_of_tv;
-
+  // const std::size_t number_of_tv;
 
   const NodeData& get_current_node() const;
   NodeData& get_current_node_nonconst();

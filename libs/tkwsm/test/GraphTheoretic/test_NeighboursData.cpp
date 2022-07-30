@@ -15,9 +15,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include <stdexcept>
 #include <tkwsm/Common/GeneralUtils.hpp>
+#include <tkwsm/Common/TemporaryRefactorCode.hpp>
 #include <tkwsm/GraphTheoretic/NearNeighboursData.hpp>
 #include <tkwsm/GraphTheoretic/NeighboursData.hpp>
-#include <tkwsm/Common/TemporaryRefactorCode.hpp>
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
@@ -100,7 +100,8 @@ SCENARIO("test neighbours_data on cycles") {
         continue;
       }
       std::set<VertexWSM> v_set_at_distance;
-      TemporaryRefactorCode::set_domain_from_bitset(v_set_at_distance, v_at_distance);
+      TemporaryRefactorCode::set_domain_from_bitset(
+          v_set_at_distance, v_at_distance);
       CHECK(v_set_at_distance.size() == 2);
       for (auto v : v_set_at_distance) {
         const unsigned route1_dist = ((cycle_length + ii) - v) % cycle_length;

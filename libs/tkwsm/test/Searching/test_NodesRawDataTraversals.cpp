@@ -86,9 +86,8 @@ SCENARIO("Test detailed complete search") {
     for (unsigned pv = 0; pv < raw_data.domains_data.size(); ++pv) {
       ss << pv << ":";
       const auto& domain = accessor.get_domain(pv);
-      for (auto tv = domain.find_first();
-                tv < domain.size();
-                tv = domain.find_next(tv)) {
+      for (auto tv = domain.find_first(); tv < domain.size();
+           tv = domain.find_next(tv)) {
         ss << tv;
       }
       const auto size = raw_data.domains_data[pv].entries.size();

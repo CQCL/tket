@@ -13,9 +13,10 @@
 // limitations under the License.
 
 #pragma once
+#include <boost/dynamic_bitset.hpp>
 #include <optional>
 #include <string>
-#include <boost/dynamic_bitset.hpp>
+
 #include "../GraphTheoretic/GeneralStructs.hpp"
 
 namespace tket {
@@ -158,12 +159,12 @@ class DomainsAccessor {
    * the operator -= function should work.
    * We check for and update new assignments if necessary.
    * @param pattern_v The pattern vertex.
-   * @param domain_mask A set of target vertices to intersect with the domain; will be altered.
+   * @param domain_mask A set of target vertices to intersect with the domain;
+   * will be altered.
    * @return The result of changing the domain.
    */
   IntersectionResult intersect_domain_with_swap(
-      VertexWSM pattern_v,
-      boost::dynamic_bitset<>& domain_mask);
+      VertexWSM pattern_v, boost::dynamic_bitset<>& domain_mask);
 
  private:
   NodesRawData& m_raw_data;

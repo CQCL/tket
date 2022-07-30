@@ -27,7 +27,6 @@ class NeighboursData;
 
 class NearNeighboursData {
  public:
-
   explicit NearNeighboursData(const NeighboursData& ndata);
 
   std::size_t get_number_of_vertices() const;
@@ -48,7 +47,7 @@ class NearNeighboursData {
   const boost::dynamic_bitset<>& get_vertices_up_to_distance(
       VertexWSM v, unsigned distance);
 
-/** Returns information about the degrees of vertices at
+  /** Returns information about the degrees of vertices at
    * the given distance from the root vertex.
    * Requires the distance to be >= 1.
    */
@@ -61,7 +60,6 @@ class NearNeighboursData {
    */
   const FilterUtils::DegreeCounts& get_degree_counts_up_to_distance(
       VertexWSM v, unsigned distance);
-
 
   /** The number of vertices V' with 1 <= Dist(V,V') <= distance.
    * Thus, does NOT include the vertex v itself
@@ -78,13 +76,13 @@ class NearNeighboursData {
    * Some of this data is needed for pattern graphs but not
    * target graphs, or vice versa; but for simplicity don't bother
    * separating them out carefully by intended use.
-  */
-  struct VertexData {    
+   */
+  struct VertexData {
     // This will be the "primary" data, i.e. everything else is
     // calculated from it.
     std::vector<boost::dynamic_bitset<>> vertices_at_exact_distance;
     std::vector<boost::dynamic_bitset<>> vertices_up_to_distance;
-    //std::vector<std::size_t> n_vertices_up_to_distance;
+    // std::vector<std::size_t> n_vertices_up_to_distance;
     std::vector<FilterUtils::DegreeCounts> degree_counts_for_exact_distance;
     std::vector<FilterUtils::DegreeCounts> degree_counts_up_to_max_distance;
   };

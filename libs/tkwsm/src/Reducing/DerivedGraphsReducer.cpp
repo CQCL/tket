@@ -20,7 +20,6 @@
 #include "tkwsm/GraphTheoretic/NeighboursData.hpp"
 #include "tkwsm/Searching/DomainsAccessor.hpp"
 
-
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
@@ -52,7 +51,6 @@ bool DerivedGraphsReducer::check(std::pair<VertexWSM, VertexWSM> assignment) {
              *target_vdata.d3_sorted_counts_iter);
 }
 
-
 ReductionResult DerivedGraphsReducer::reduce_with_derived_data(
     const DerivedGraphStructs::NeighboursAndCounts&
         pattern_derived_neighbours_data,
@@ -82,14 +80,15 @@ ReductionResult DerivedGraphsReducer::reduce_with_derived_data(
     }
     // This is the edge weight of PV--(root PV) in the derived graph.
     const DerivedGraphStructs::Count& p_count = p_entry.second;
-    
-    for(const auto& entry : target_derived_neighbours_data) {
-      if(entry.second >= p_count) {
+
+    for (const auto& entry : target_derived_neighbours_data) {
+      if (entry.second >= p_count) {
         TKET_ASSERT(!work_bitset.test_set(entry.first));
       }
     }
 
-    switch (accessor.intersect_domain_with_swap(pv, work_bitset).reduction_result) {
+    switch (
+        accessor.intersect_domain_with_swap(pv, work_bitset).reduction_result) {
       case ReductionResult::NOGOOD:
         return ReductionResult::NOGOOD;
       case ReductionResult::NEW_ASSIGNMENTS:
@@ -104,8 +103,6 @@ ReductionResult DerivedGraphsReducer::reduce_with_derived_data(
   }
   return ReductionResult::SUCCESS;
 }
-
-
 
 ReductionResult DerivedGraphsReducer::reduce(
     std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,

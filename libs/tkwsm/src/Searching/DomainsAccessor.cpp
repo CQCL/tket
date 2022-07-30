@@ -17,6 +17,7 @@
 #include <sstream>
 #include <tkassert/Assert.hpp>
 
+#include "WeightSubgrMono/Common/TemporaryRefactorCode.hpp"
 #include "tkwsm/Common/GeneralUtils.hpp"
 #include "tkwsm/Common/TemporaryRefactorCode.hpp"
 #include "tkwsm/Searching/NodesRawData.hpp"
@@ -35,16 +36,13 @@ bool DomainsAccessor::current_node_is_valid() const {
   return !m_raw_data.nodes_data.top().nogood;
 }
 
-
 const boost::dynamic_bitset<>& DomainsAccessor::get_domain(VertexWSM pv) const {
   return m_raw_data.domains_data.at(pv).entries.top().domain;
 }
 
-
 std::size_t DomainsAccessor::get_domain_size(VertexWSM pv) const {
   return m_raw_data.domains_data.at(pv).entries.top().domain.count();
 }
-
 
 bool DomainsAccessor::domain_created_in_current_node(VertexWSM pv) const {
   return m_raw_data.domains_data.at(pv).entries.top().node_index ==
@@ -96,7 +94,7 @@ bool DomainsAccessor::alldiff_reduce_current_node(
 
       NodesRawData::DomainData& data_for_this_pv = m_raw_data.domains_data[pv];
       auto& existing_domain_bitset = data_for_this_pv.entries.top().domain;
-      
+
       // Check if erasing TV would make a nogood or assignment.
       // So we need to know a few vertices tv1, tv2, ...
       {
@@ -104,21 +102,21 @@ bool DomainsAccessor::alldiff_reduce_current_node(
         // It must currently be nonempty.
         TKET_ASSERT(tv1 < existing_domain_bitset.size());
 
-        if(!existing_domain_bitset.test(assignment.second)) {
+        if (!existing_domain_bitset.test(assignment.second)) {
           // TV is not present in the domain; nothing to change.
           continue;
         }
         // Does it have 1 or 2 elements currently?
         const auto tv2 = existing_domain_bitset.find_next(tv1);
-        if(tv2 < existing_domain_bitset.size()) {
+        if (tv2 < existing_domain_bitset.size()) {
           // It has at least 2 vertices. Does it have another?
           const auto tv3 = existing_domain_bitset.find_next(tv2);
-          if(tv3 >= existing_domain_bitset.size()) {
+          if (tv3 >= existing_domain_bitset.size()) {
             // It has EXACTLY 2 vertices: tv1, tv2.
             // One of them must be the TV we're erasing.
             // The other will form a new assignment.
             VertexWSM tv_other = tv1;
-            if(tv_other == assignment.second) {
+            if (tv_other == assignment.second) {
               tv_other = tv2;
             }
             TKET_ASSERT(tv_other != assignment.second);
@@ -147,26 +145,24 @@ bool DomainsAccessor::alldiff_reduce_current_node(
             m_raw_data.current_node_index();
         data_for_this_pv.entries.top().domain =
             data_for_this_pv.entries.one_below_top().domain;
-        TKET_ASSERT(data_for_this_pv.entries.top().domain.test_set(assignment.second, false));
+        TKET_ASSERT(data_for_this_pv.entries.top().domain.test_set(
+            assignment.second, false));
       }
     }
   }
   return true;
 }
 
-
 // TODO: make another version NOT using a swap!
 DomainsAccessor::IntersectionResult DomainsAccessor::intersect_domain_with_swap(
-      VertexWSM pv,
-      boost::dynamic_bitset<>& domain_mask) {
-  
+    VertexWSM pv, boost::dynamic_bitset<>& domain_mask) {
   auto& data_for_this_pv = m_raw_data.domains_data.at(pv);
   domain_mask &= get_domain(pv);
 
   IntersectionResult result;
   result.new_domain_size = domain_mask.count();
   result.changed = get_domain_size(pv) != result.new_domain_size;
-  if(!result.changed) {
+  if (!result.changed) {
     result.reduction_result = ReductionResult::SUCCESS;
     return result;
   }
@@ -177,12 +173,14 @@ DomainsAccessor::IntersectionResult DomainsAccessor::intersect_domain_with_swap(
   if (result.new_domain_size == 1) {
     result.reduction_result = ReductionResult::NEW_ASSIGNMENTS;
     auto& current_node = m_raw_data.get_current_node_nonconst();
-    current_node.new_assignments.emplace_back(pv, VertexWSM(domain_mask.find_first()));
+    current_node.new_assignments.emplace_back(
+        pv, VertexWSM(domain_mask.find_first()));
   } else {
     result.reduction_result = ReductionResult::SUCCESS;
   }
-  
-  if (data_for_this_pv.entries.top().node_index != m_raw_data.current_node_index()) {
+
+  if (data_for_this_pv.entries.top().node_index !=
+      m_raw_data.current_node_index()) {
     // We need to make a new domain object; it's shared.
     data_for_this_pv.entries.push();
     data_for_this_pv.entries.top().node_index = m_raw_data.current_node_index();
@@ -190,7 +188,6 @@ DomainsAccessor::IntersectionResult DomainsAccessor::intersect_domain_with_swap(
   data_for_this_pv.entries.top().domain.swap(domain_mask);
   return result;
 }
-
 
 std::string DomainsAccessor::str(bool full) const {
   std::stringstream ss;
@@ -214,13 +211,11 @@ std::string DomainsAccessor::str(bool full) const {
   for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
     ss << "\n  DOM(" << pv << "): ";
     const auto& dom_data = m_raw_data.domains_data[pv].entries.top();
-    ss << "(since index " << dom_data.node_index
-       << "): ";
-    
+    ss << "(since index " << dom_data.node_index << "): ";
+
     // temporary hack! Remove!
     std::set<VertexWSM> domain_set;
-    TemporaryRefactorCode::set_domain_from_bitset(domain_set,
-      dom_data.domain);
+    TemporaryRefactorCode::set_domain_from_bitset(domain_set, dom_data.domain);
     ss << tket::WeightedSubgraphMonomorphism::str(domain_set);
   }
   ss << "\n";

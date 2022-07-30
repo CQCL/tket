@@ -224,14 +224,14 @@ BitsetInformation::BitsetInformation(const boost::dynamic_bitset<>& domain) {
   // NOTE: we really do want auto here.
   // If no bit is set, this value will be the max value
   // of whatever type find_first() returns...
-  //which is very incovenient to find without auto...
+  // which is very incovenient to find without auto...
   auto first_val = domain.find_first();
-  if(first_val >= domain.size()) {
+  if (first_val >= domain.size()) {
     empty = true;
     return;
   }
   empty = false;
-  if(domain.find_next(first_val) >= domain.size()) {
+  if (domain.find_next(first_val) >= domain.size()) {
     // It has exactly one bit.
     single_element = static_cast<VertexWSM>(first_val);
   }
