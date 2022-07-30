@@ -18,7 +18,7 @@ from conans.errors import ConanInvalidConfiguration
 
 class TkwsmConan(ConanFile):
     name = "tkwsm"
-    version = "0.1.1"
+    version = "0.2.0"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
     description = "Weighted-subgraph-monomorphism algorithms library"
