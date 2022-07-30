@@ -35,7 +35,7 @@ SearchBranch::SearchBranch(
       m_target_ndata(target_ndata),
       m_extra_statistics(extra_statistics),
       m_derived_graphs_reducer(m_pattern_ndata, m_target_ndata),
-      m_neighbours_reducer(m_pattern_ndata, m_target_ndata),
+      //m_neighbours_reducer(m_pattern_ndata, m_target_ndata),
       m_nodes_raw_data_wrapper(initial_domains,
           m_target_ndata.get_number_of_nonisolated_vertices()),
       m_domains_accessor(m_nodes_raw_data_wrapper),
@@ -52,23 +52,21 @@ SearchBranch::SearchBranch(
   // In what order should we do reduction/checks?
   // The simplest/cheapest first? Most powerful?
   // Seems a difficult question...
-  m_reducer_wrappers.emplace_back(m_neighbours_reducer);
+   m_reducer_wrappers.reserve(max_distance_reduction_value + 1);
+  ///m_reducer_wrappers.emplace_back(m_neighbours_reducer);
   m_reducer_wrappers.emplace_back(m_derived_graphs_reducer);
-
-  if (max_distance_reduction_value >= 2) {
-    m_distance_reducers.reserve(max_distance_reduction_value - 1);
-    m_reducer_wrappers.reserve(max_distance_reduction_value - 1);
-    for (unsigned distance = 2; distance <= max_distance_reduction_value;
-         ++distance) {
-      m_distance_reducers.emplace_back(
-          pattern_near_ndata, m_target_ndata, target_near_ndata, distance);
-    }
-    // Now that all the reducer objects are stored
-    // (the vector will not be resized),
-    // we can safely take references to them.
-    for (DistancesReducer& reducer : m_distance_reducers) {
-      m_reducer_wrappers.emplace_back(reducer);
-    }
+  m_distance_reducers.reserve(max_distance_reduction_value);
+    
+  for (unsigned distance = 1; distance <= max_distance_reduction_value;
+        ++distance) {
+    m_distance_reducers.emplace_back(
+        pattern_near_ndata, m_target_ndata, target_near_ndata, distance);
+  }
+  // Now that all the reducer objects are stored
+  // (the vector will not be resized),
+  // we can safely take references to them.
+  for (DistancesReducer& reducer : m_distance_reducers) {
+    m_reducer_wrappers.emplace_back(reducer);
   }
 }
 

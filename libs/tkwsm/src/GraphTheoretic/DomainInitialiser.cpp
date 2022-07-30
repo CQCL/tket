@@ -125,12 +125,11 @@ bool DomainInitialiser::distance_counts_reduction(
       // dist(TV, TV') <= d.
       for (unsigned distance = 2; distance <= max_path_length; ++distance) {
         const auto number_of_pv_at_distance_d =
-            pattern_near_neighbours_data.get_vertices_at_distance(pv, distance)
-                .size();
+            pattern_near_neighbours_data.get_n_vertices_at_exact_distance(pv, distance);
 
         if (number_of_pv_at_distance_d > 0) {
           const auto number_of_tv_at_distance_le_d =
-              target_near_neighbours_data.get_n_vertices_at_max_distance(
+              target_near_neighbours_data.get_n_vertices_up_to_distance(
                   tv, distance);
           if (number_of_pv_at_distance_d > number_of_tv_at_distance_le_d) {
             tv_to_erase.push_back(tv);

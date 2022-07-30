@@ -31,6 +31,8 @@ class NearNeighboursData {
 
   NearNeighboursData(const NeighboursData& ndata, Type type);
 
+  std::size_t get_number_of_vertices() const;
+
   /** Calculated lazily, on demand; returns a sorted list of vertices
    * exactly at distance d from v. We must have d >= 2
    * (neighbours with d=1 come from the NeighboursData object instead).
@@ -40,49 +42,64 @@ class NearNeighboursData {
    * vertices at distance exactly d from v. The reference may be invalidated, of
    * course, if further non-const calls are made to this class.
    */
-  const std::vector<VertexWSM>& get_vertices_at_distance(
+  const boost::dynamic_bitset<>& get_vertices_at_exact_distance(
       VertexWSM v, unsigned distance);
 
-  /** Returns information about the degrees of vertices up to
+  /** Not including the input vertex itself, i.e. 1 <= dist(u,v) <= d. */
+  const boost::dynamic_bitset<>& get_vertices_up_to_distance(
+      VertexWSM v, unsigned distance);
+
+/** Returns information about the degrees of vertices at
    * the given distance from the root vertex.
-   * If this is a pattern graph, returns data for vertices EXACTLY at
-   * the specified distance; if a target graph, for vertices at
-   * or closer than the given distance.
-   * Requires the distance to be >= 2.
+   * Requires the distance to be >= 1.
    */
-  const FilterUtils::DegreeCounts& get_degree_counts(
+  const FilterUtils::DegreeCounts& get_degree_counts_at_exact_distance(
       VertexWSM v, unsigned distance);
 
-  /** Cached. Does NOT include the vertex v itself. */
-  std::size_t get_n_vertices_at_max_distance(VertexWSM v, unsigned distance);
+  /** If combining all the vertices up to the given distance
+   * (not including v itself) into a single set of vertices,
+   * return a complete count of all the vertex degrees.
+   */
+  const FilterUtils::DegreeCounts& get_degree_counts_up_to_distance(
+      VertexWSM v, unsigned distance);
+
+
+  /** The number of vertices V' with 1 <= Dist(V,V') <= distance.
+   * Thus, does NOT include the vertex v itself
+   * (more convenient for applications).
+   */
+  std::size_t get_n_vertices_up_to_distance(VertexWSM v, unsigned distance);
+
+  std::size_t get_n_vertices_at_exact_distance(VertexWSM v, unsigned distance);
 
  private:
   const NeighboursData& m_ndata;
   const Type m_type;
 
-  struct VertexData {
-    /** element[i] is all the vertices at distance i+2, sorted by vertex number.
-     * We don't list immediate neighbours, to save space,
-     * since they're already stored in the NeighboursData object.
-     */
-    std::vector<std::vector<VertexWSM>> vertices_at_distance;
-    std::vector<std::size_t> n_vertices_at_max_distance;
-
-    /** Element[i] is for distance i+2.
-     * If a pattern graph, includes vertices at distance EXACTLY i+2;
-     * but if a target graph, includes vertices at distance <= i+2.
-     */
-    std::vector<FilterUtils::DegreeCounts> degree_counts_for_distance;
+  /** In each vector, element[i] is the data for distance i+1.
+   * Some of this data is needed for pattern graphs but not
+   * target graphs, or vice versa; but for simplicity don't bother
+   * separating them out carefully by intended use.
+  */
+  struct VertexData {    
+    // This will be the "primary" data, i.e. everything else is
+    // calculated from it.
+    std::vector<boost::dynamic_bitset<>> vertices_at_exact_distance;
+    std::vector<boost::dynamic_bitset<>> vertices_up_to_distance;
+    //std::vector<std::size_t> n_vertices_up_to_distance;
+    std::vector<FilterUtils::DegreeCounts> degree_counts_for_exact_distance;
+    std::vector<FilterUtils::DegreeCounts> degree_counts_up_to_max_distance;
   };
 
-  // Element[i] gives data for vertex i.
-  // Lazy initialisation, but will be resized correctly upon construction.
+  // Element[v] gives data for vertex v. Lazy initialisation.
   std::vector<VertexData> m_data;
 
-  std::set<VertexWSM> m_vertices_workset;
-
-  // Will be used to fill "degree_counts_at_distance".
-  std::map<std::size_t, std::size_t> m_work_map;
+  // Will be used to fill the degree_counts.
+  // The maximum size this can reach is the number of vertices.
+  // Seems crude, but actually clearing and refilling this is
+  // probably faster than using a std::map, over time.
+  // (std::set and std::map are a LOT slower than std::vector!)
+  std::vector<std::size_t> m_degree_counts_work_vector;
 };
 
 }  // namespace WeightedSubgraphMonomorphism
