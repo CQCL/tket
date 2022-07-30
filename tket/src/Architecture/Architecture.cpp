@@ -185,7 +185,7 @@ MatrixXb Architecture::get_connectivity() const {
   for (unsigned i = 0; i != n; ++i) {
     for (unsigned j = 0; j != n; ++j) {
       connectivity(i, j) =
-          edge_exists(Node(i), Node(j)) | edge_exists(Node(j), Node(i));
+          edge_exists(Node(i), Node(j)) || edge_exists(Node(j), Node(i));
     }
   }
   return connectivity;
