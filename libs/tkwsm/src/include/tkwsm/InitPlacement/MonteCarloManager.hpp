@@ -22,6 +22,40 @@ namespace tket {
 namespace WeightedSubgraphMonomorphism {
 namespace InitialPlacement {
 
+struct MonteCarloManagerParameters {
+  // How many iterations do we demand as a minimum before we can reset?
+  unsigned min_iterations_for_change = 20;
+
+  // There are 2 types of progress possible
+  // (i.e., a changed solution is accepted):
+  //  "weak progress" means that we have just decreased the current cost,
+  //    EVEN THOUGH the cost might still be higher than the
+  //    best one found so far.
+  // "record breaker" means that we really have found a new cost lower than
+  //    the previous all-time lowest cost.
+
+  // The "per kilo fractions" are x/1024 for an integer x
+  // (i.e., "per 1024" rather than "per 100", for percentages).
+  // This is because dividing by 1024 might be a bit faster than
+  // dividing by 100 (and definitely won't be slower!)
+  // (Apparently int division can be surprisingly slower than
+  // int multiplication or addition).
+
+  // How many extra iterations without any progress do we allow,
+  // as a fraction of the existing number, before we demand a reset?
+  unsigned per_kilo_fraction_of_allowed_extra_iterations_without_weak_progress =
+      500;
+
+  // How many extra iterations without any new reocrd breaker do we allow,
+  // as a fraction of the existing number, before we demand a reset?
+  unsigned
+      per_kilo_fraction_of_allowed_extra_iterations_without_record_breakers =
+          1000;
+
+  unsigned max_runs_without_record_breaking = 10;
+  unsigned max_runs_without_progress = 10;
+};
+
 /** For use in MonteCarloCompleteTargetSolution.
  * Even for a simplified jumping algorithm, simpler than simulated annealing
  * because we only allow improving moves, it's still unclear how to choose
@@ -36,42 +70,10 @@ class MonteCarloManager {
   /** It should be clear by now that all these values are rather arbitrary!
    * We need to do more experiments to find the best values.
    */
-  struct Parameters {
-    // How many iterations do we demand as a minimum before we can reset?
-    unsigned min_iterations_for_change = 20;
 
-    // There are 2 types of progress possible
-    // (i.e., a changed solution is accepted):
-    //  "weak progress" means that we have just decreased the current cost,
-    //    EVEN THOUGH the cost might still be higher than the
-    //    best one found so far.
-    // "record breaker" means that we really have found a new cost lower than
-    //    the previous all-time lowest cost.
-
-    // The "per kilo fractions" are x/1024 for an integer x
-    // (i.e., "per 1024" rather than "per 100", for percentages).
-    // This is because dividing by 1024 might be a bit faster than
-    // dividing by 100 (and definitely won't be slower!)
-    // (Apparently int division can be surprisingly slower than
-    // int multiplication or addition).
-
-    // How many extra iterations without any progress do we allow,
-    // as a fraction of the existing number, before we demand a reset?
-    std::uint64_t
-        per_kilo_fraction_of_allowed_extra_iterations_without_weak_progress =
-            500;
-
-    // How many extra iterations without any new reocrd breaker do we allow,
-    // as a fraction of the existing number, before we demand a reset?
-    std::uint64_t
-        per_kilo_fraction_of_allowed_extra_iterations_without_record_breakers =
-            1000;
-
-    unsigned max_runs_without_record_breaking = 10;
-    unsigned max_runs_without_progress = 10;
-  };
-
-  explicit MonteCarloManager(const Parameters& parameters = {});
+  explicit MonteCarloManager(
+      const MonteCarloManagerParameters& parameters =
+          MonteCarloManagerParameters());
 
   enum class Action {
     CONTINUE_WITH_CURRENT_SOLUTION,
@@ -91,7 +93,7 @@ class MonteCarloManager {
   Action register_failure(unsigned iteration);
 
  private:
-  const Parameters m_parameters;
+  const MonteCarloManagerParameters m_parameters;
 
   unsigned m_runs_without_record_breaking;
   unsigned m_runs_without_progress;
@@ -102,9 +104,9 @@ class MonteCarloManager {
   unsigned m_next_iteration_to_reset_if_no_progress;
   unsigned m_next_iteration_to_reset_if_no_record_breaker;
 
-  void update_after_reset(std::uint64_t iteration);
+  void update_after_reset(unsigned iteration);
 
-  void update_after_weak_progress(std::uint64_t iteration);
+  void update_after_weak_progress(unsigned iteration);
 };
 
 }  // namespace InitialPlacement

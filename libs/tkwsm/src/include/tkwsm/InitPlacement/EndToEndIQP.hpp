@@ -59,18 +59,18 @@ struct IQPResult {
   // For testing, can be useful to have the timings and other information,
   // broken down into the different phases.
 
-  unsigned mcct_time_ms = 0;
+  unsigned long long mcct_time_ms = 0;
   unsigned mcct_iterations = 0;
   WeightWSM mcct_scalar_product = 0;
 
-  unsigned wsm_init_time_ms = 0;
-  unsigned wsm_solve_time_ms = 0;
+  unsigned long long wsm_init_time_ms = 0;
+  unsigned long long wsm_solve_time_ms = 0;
   unsigned wsm_number_of_pruned_tv = 0;
   unsigned wsm_number_of_pruned_t_edges = 0;
   unsigned wsm_iterations = 0;
   std::optional<WeightWSM> wsm_scalar_product_opt;
 
-  unsigned total_time_ms = 0;
+  unsigned long long total_time_ms = 0;
 };
 
 }  // namespace InitialPlacement

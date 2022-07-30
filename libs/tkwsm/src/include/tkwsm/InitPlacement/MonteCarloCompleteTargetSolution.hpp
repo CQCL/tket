@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #pragma once
+#include <cstdint>
 #include <optional>
 #include <tkrng/RNG.hpp>
 
@@ -68,7 +69,7 @@ class MonteCarloCompleteTargetSolution {
   // The FIRST is a collection of random bits, used to sort (to generate
   // random permutations quickly).
   // The SECOND is the actual target vertex TV to which PV is assigned.
-  std::vector<std::pair<unsigned, unsigned>> m_random_bits_and_tv;
+  std::vector<std::pair<std::uint64_t, unsigned>> m_random_bits_and_tv;
 
   // Element[PV] is the TV it is assigned to.
   std::vector<unsigned> m_best_assignments;

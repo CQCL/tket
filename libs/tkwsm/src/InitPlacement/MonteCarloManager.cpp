@@ -20,14 +20,15 @@ namespace tket {
 namespace WeightedSubgraphMonomorphism {
 namespace InitialPlacement {
 
-MonteCarloManager::MonteCarloManager(const Parameters& parameters)
+MonteCarloManager::MonteCarloManager(
+    const MonteCarloManagerParameters& parameters)
     : m_parameters(parameters),
       m_runs_without_record_breaking(0),
       m_runs_without_progress(0) {
   set_maximum(m_best_cost);
 }
 
-void MonteCarloManager::update_after_reset(std::uint64_t iteration) {
+void MonteCarloManager::update_after_reset(unsigned iteration) {
   unsigned max_extra_iters_without_record_breaker =
       (iteration *
        m_parameters
@@ -41,7 +42,7 @@ void MonteCarloManager::update_after_reset(std::uint64_t iteration) {
   update_after_weak_progress(iteration);
 }
 
-void MonteCarloManager::update_after_weak_progress(std::uint64_t iteration) {
+void MonteCarloManager::update_after_weak_progress(unsigned iteration) {
   unsigned max_extra_iters_for_no_progress =
       (iteration *
        m_parameters

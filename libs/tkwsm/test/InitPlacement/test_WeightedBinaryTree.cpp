@@ -64,7 +64,7 @@ SCENARIO("Paths and token swaps on small fixed binary tree") {
     REQUIRE(tokens_map.at(entry.second) == entry.first);
   }
 
-  const std::vector<std::pair<unsigned, unsigned>> gates{
+  const std::vector<std::pair<VertexWSM, VertexWSM>> gates{
       {2, 3}, {1, 5}, {2, 4}, {3, 0}, {4, 2}, {1, 2}};
 
   // clang-format off

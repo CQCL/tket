@@ -93,8 +93,8 @@ static std::vector<WeightWSM> get_interpolated_weights(
 
 PatternGraphData::PatternGraphData(
     const std::vector<std::pair<VertexWSM, VertexWSM>>& gate_sequence,
-    const PatternGraphData::Input& input) {
-  if (input.method == Input::ReorderingMethod::ORIGINAL_ORDER) {
+    const PatternGraphDataInput& input) {
+  if (input.method == PatternGraphDataInput::ReorderingMethod::ORIGINAL_ORDER) {
     // Just use the index in gate_sequence for the time.
     const std::vector<WeightWSM> weights = get_interpolated_weights(
         input.initial_gate_weight, input.final_gate_weight,
@@ -175,7 +175,7 @@ std::string PatternGraphData::str() const {
 
 TargetGraphData::TargetGraphData(DebugNoInputData) {}
 
-void TargetGraphData::Input::check_validity() const {
+void TargetGraphDataInput::check_validity() const {
   if (new_weight_multiplier <= 2 || max_number_of_new_edge_generations < 1 ||
       max_weight_multiplier < 2 || max_edge_density_percentage == 0 ||
       max_largest_to_smallest_final_weight_ratio < 2) {
@@ -264,7 +264,8 @@ static void get_next_edge_weights_to_add(
 }
 
 TargetGraphData::TargetGraphData(
-    GraphEdgeWeights original_target_weights, const Input& input) {
+    GraphEdgeWeights original_target_weights,
+    const TargetGraphDataInput& input) {
   try {
     input.check_validity();
     if (original_target_weights.empty()) {
@@ -382,17 +383,6 @@ WeightWSM TargetGraphData::get_edge_weight(VertexWSM tv1, VertexWSM tv2) const {
     return weight_opt.value();
   }
   return implicit_weight;
-}
-
-static std::vector<WeightWSM> get_sorted_weights(
-    const GraphEdgeWeights& edges_and_weights) {
-  std::vector<WeightWSM> weights;
-  weights.reserve(edges_and_weights.size());
-  for (const auto& entry : edges_and_weights) {
-    weights.emplace_back(entry.second);
-  }
-  std::sort(weights.begin(), weights.end());
-  return weights;
 }
 
 }  // namespace InitialPlacement

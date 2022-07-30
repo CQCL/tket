@@ -93,10 +93,8 @@ bool WeightNogoodDetector::fill_t_weight_lower_bounds_for_p_edges_containing_pv(
     WeightWSM weight;
     set_maximum(weight);
     const auto& domain = accessor.get_domain(pv);
-    bool tv_found = false;
     for (auto tv = domain.find_first(); tv < domain.size();
          tv = domain.find_next(tv)) {
-      tv_found = true;
       const VertexWSM tv_again = static_cast<VertexWSM>(tv);
       const auto weight_opt_for_tv = get_min_weight_for_tv(tv_again);
       if (weight_opt_for_tv) {

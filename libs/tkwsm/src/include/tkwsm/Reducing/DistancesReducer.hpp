@@ -31,8 +31,7 @@ class DistancesReducer : public ReducerInterface {
  public:
   DistancesReducer(
       NearNeighboursData& pattern_near_ndata,
-      const NeighboursData& target_ndata, NearNeighboursData& target_near_ndata,
-      unsigned distance);
+      NearNeighboursData& target_near_ndata, unsigned distance);
 
   virtual bool check(std::pair<VertexWSM, VertexWSM> assignment) override;
 
@@ -42,7 +41,6 @@ class DistancesReducer : public ReducerInterface {
 
  private:
   NearNeighboursData& m_pattern_near_ndata;
-  const NeighboursData& m_target_ndata;
   NearNeighboursData& m_target_near_ndata;
 
   // A bit crude to store the distance and have separate objects,

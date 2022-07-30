@@ -96,7 +96,7 @@ class WeightedBinaryTree : public PlacementCostModelInterface {
   mutable Path m_tail_path_work_vector;
 
   // Choose a path between the VERTICES v1, v2, and fill m_path_work_vector.
-  void fill_path(unsigned vertex1, unsigned vertex2) const;
+  void fill_path(VertexWSM vertex1, VertexWSM vertex2) const;
 
   virtual const Path& get_path_to_use(
       VertexWSM vertex1, VertexWSM vertex2) const override;

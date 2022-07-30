@@ -66,7 +66,6 @@ static GraphEdgeWeights get_only_used_target_edges(
 
 static unsigned get_max_number_of_new_target_edges(
     const NeighboursData& explicit_target_ndata,
-    unsigned number_of_current_used_target_vertices,
     unsigned number_of_current_used_target_edges,
     const TargetEdgePruningParameters& parameters) {
   const unsigned total_number_of_possible_tv =
@@ -81,15 +80,14 @@ static unsigned get_max_number_of_new_target_edges(
   unsigned max_target_edges =
       number_of_current_used_target_edges +
       (parameters.max_additional_number_of_target_edges_factor_per_kilo *
-       std::uint64_t(number_of_current_used_target_edges)) /
-          std::uint64_t(1024);
+       number_of_current_used_target_edges) /
+          1024;
 
   const unsigned min_unused_target_edges =
       (parameters.min_implicit_unused_number_of_target_edges_factor_per_kilo *
-       std::uint64_t(
            number_of_complete_target_edges -
-           number_of_current_used_target_edges)) /
-      std::uint64_t(1024);
+       number_of_current_used_target_edges) /
+      1024;
 
   const unsigned max_edges_from_this_constraint =
       number_of_complete_target_edges - min_unused_target_edges;
@@ -111,7 +109,6 @@ typedef std::vector<std::pair<WeightWSM, std::pair<VertexWSM, VertexWSM>>>
 // Get all extra t-edges, both explcit and implicit, between TWO used TV.
 static void get_extra_edges_adjoining_two_used_tv_unsorted(
     const NeighboursData& explicit_target_ndata,
-    WeightWSM implicit_target_weight,
     const std::vector<unsigned>& original_used_tv_sorted,
     const GraphEdgeWeights& new_target_graph_data,
     WeightAndTEdgeList& explicit_t_edges_data_joining_two_tv,
@@ -187,8 +184,7 @@ GraphEdgeWeights get_new_target_graph_data(
 
   // How many target edges do we want at the end?
   unsigned max_number_of_new_target_edges = get_max_number_of_new_target_edges(
-      explicit_target_ndata, assigned_target_vertices.size(),
-      new_target_graph_data.size(), parameters);
+      explicit_target_ndata, new_target_graph_data.size(), parameters);
 
   if (max_number_of_new_target_edges == 0) {
     return new_target_graph_data;
@@ -209,9 +205,8 @@ GraphEdgeWeights get_new_target_graph_data(
   std::vector<std::pair<VertexWSM, VertexWSM>> implicit_t_edges_joining_two_tv;
 
   get_extra_edges_adjoining_two_used_tv_unsorted(
-      explicit_target_ndata, implicit_target_weight, original_used_tv,
-      new_target_graph_data, explicit_t_edges_data_joining_two_tv,
-      implicit_t_edges_joining_two_tv);
+      explicit_target_ndata, original_used_tv, new_target_graph_data,
+      explicit_t_edges_data_joining_two_tv, implicit_t_edges_joining_two_tv);
 
   // Add the explicit two vertex edges first, in order of increasing weight.
   std::sort(

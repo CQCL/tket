@@ -31,7 +31,7 @@ struct TargetEdgePruningParameters {
    * then our final target graph will have up to
    *   14*(1 + (512/1024)) = 21  edges.
    */
-  std::uint64_t max_additional_number_of_target_edges_factor_per_kilo = 1024;
+  unsigned max_additional_number_of_target_edges_factor_per_kilo = 1024;
 
   /** As a fraction x/1024, what is the minimum number of target edges
    * which we want to leave still unused at the end, as a fraction
@@ -47,8 +47,7 @@ struct TargetEdgePruningParameters {
    * Thus, since our input solution uses 18 target edges, we could add
    * up to  54-18=36 new target edges (but we might add fewer).
    */
-  std::uint64_t min_implicit_unused_number_of_target_edges_factor_per_kilo =
-      500;
+  unsigned min_implicit_unused_number_of_target_edges_factor_per_kilo = 500;
 };
 
 /** Once we've found some solution (not necessarily optimal) to a WSM

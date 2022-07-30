@@ -60,7 +60,7 @@ SearchBranch::SearchBranch(
   for (unsigned distance = 1; distance <= max_distance_reduction_value;
        ++distance) {
     m_distance_reducers.emplace_back(
-        pattern_near_ndata, m_target_ndata, target_near_ndata, distance);
+        pattern_near_ndata, target_near_ndata, distance);
   }
   // Now that all the reducer objects are stored
   // (the vector will not be resized),

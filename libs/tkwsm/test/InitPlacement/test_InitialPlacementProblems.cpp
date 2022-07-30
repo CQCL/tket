@@ -106,10 +106,10 @@ SCENARIO("IQP for 10x10 square grid; 30 and 90 logical qubits") {
 
   // We must construct the pattern graph.
   // Obviously a lot more testing and experimentation should be done.
-  PatternGraphData::Input pgd_input;
+  PatternGraphDataInput pgd_input;
   pgd_input.initial_gate_weight = 1000;
   pgd_input.final_gate_weight = 10;
-  pgd_input.method = PatternGraphData::Input::ReorderingMethod::ORIGINAL_ORDER;
+  pgd_input.method = PatternGraphDataInput::ReorderingMethod::ORIGINAL_ORDER;
 
   // Note that the MCCT solution (found in ~10ms) is optimal for the
   // internally generated WSM problem, but it takes ~13 seconds for
@@ -280,10 +280,10 @@ SCENARIO("Binary tree with ~30 vertices; almost full embedding") {
   // tree.try_random_placements(gates);
 
   // Solve with IQP.
-  PatternGraphData::Input pgd_input;
+  PatternGraphDataInput pgd_input;
   pgd_input.initial_gate_weight = 100;
   pgd_input.final_gate_weight = 20;
-  pgd_input.method = PatternGraphData::Input::ReorderingMethod::ORIGINAL_ORDER;
+  pgd_input.method = PatternGraphDataInput::ReorderingMethod::ORIGINAL_ORDER;
   const PatternGraphData p_graph_data(gates, pgd_input);
   CHECK(get_number_of_vertices(p_graph_data.pattern_graph_weights) == 27);
 
@@ -340,13 +340,13 @@ SCENARIO("Binary tree with ~100 vertices, ~30 logical qubits") {
     }
     ++ii;
   }
-  PatternGraphData::Input pgd_input;
+  PatternGraphDataInput pgd_input;
   pgd_input.initial_gate_weight = 100;
   pgd_input.final_gate_weight = 20;
 
   // We'll try time-slicing and see what difference it makes.
   pgd_input.method =
-      PatternGraphData::Input::ReorderingMethod::TIME_SLICES_OF_PARALLEL_GATES;
+      PatternGraphDataInput::ReorderingMethod::TIME_SLICES_OF_PARALLEL_GATES;
   const PatternGraphData p_graph_data(gates, pgd_input);
   CHECK(gates.size() == 200);
   CHECK(get_number_of_vertices(p_graph_data.pattern_graph_weights) == 31);
