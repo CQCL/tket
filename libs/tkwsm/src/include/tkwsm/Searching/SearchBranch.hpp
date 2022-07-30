@@ -19,7 +19,6 @@
 #include "../Reducing/DerivedGraphsReducer.hpp"
 #include "../Reducing/DistancesReducer.hpp"
 #include "../Reducing/HallSetReduction.hpp"
-#include "../Reducing/NeighboursReducer.hpp"
 #include "../Reducing/ReducerWrapper.hpp"
 #include "DomainsAccessor.hpp"
 #include "NodeListTraversal.hpp"
@@ -109,7 +108,6 @@ class SearchBranch {
   DerivedGraphsReducer m_derived_graphs_reducer;
   const WeightCalculator m_weight_calculator;
   HallSetReduction m_hall_set_reduction;
-  ////NeighboursReducer m_neighbours_reducer;
 
   NodesRawDataWrapper m_nodes_raw_data_wrapper;
   DomainsAccessor m_domains_accessor;

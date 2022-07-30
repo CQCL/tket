@@ -42,26 +42,23 @@ NodesRawData::NodesRawData(
   domains_data.resize(initial_domains.size());
 
   for (unsigned pv = 0; pv < initial_domains.size(); ++pv) {
-    const std::set<VertexWSM>& domain_set = initial_domains[pv];
     auto& domain_data = domains_data[pv];
     domain_data.entries.push();
     domain_data.entries[0].node_index = 0;
+    domain_data.entries[0].domain = initial_domains[pv];
+    TKET_ASSERT(initial_domains[pv].size() == num_tv);
 
-    TemporaryRefactorCode::set_bitset(domain_set, domain_data.entries[0].domain, number_of_tv);
-    
-    switch (domain_set.size()) {
-      case 0: {
-        std::stringstream ss;
-        ss << "NodesRawData: Domain(" << pv << ") is empty!";
-        throw std::runtime_error(ss.str());
-      }
-      case 1:
-        node.new_assignments.emplace_back(pv, *domain_set.cbegin());
-        break;
-      default:
-        node.unassigned_vertices_superset.push_back(pv);
+    const BitsetInformation bitset_info(initial_domains[pv]);
+    if(bitset_info.empty) {
+      std::stringstream ss;
+      ss << "NodesRawData: Domain(" << pv << ") is empty!";
+      throw std::runtime_error(ss.str());
     }
-    TKET_ASSERT(*domain_set.crbegin() < number_of_tv);
+    if(bitset_info.single_element) {
+      node.new_assignments.emplace_back(pv, bitset_info.single_element.value());
+    } else {
+      node.unassigned_vertices_superset.push_back(pv);
+    }
   }
 }
 

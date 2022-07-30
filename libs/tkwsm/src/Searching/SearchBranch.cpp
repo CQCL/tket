@@ -35,7 +35,6 @@ SearchBranch::SearchBranch(
       m_target_ndata(target_ndata),
       m_extra_statistics(extra_statistics),
       m_derived_graphs_reducer(m_pattern_ndata, m_target_ndata),
-      //m_neighbours_reducer(m_pattern_ndata, m_target_ndata),
       m_nodes_raw_data_wrapper(initial_domains,
           m_target_ndata.get_number_of_nonisolated_vertices()),
       m_domains_accessor(m_nodes_raw_data_wrapper),
@@ -44,9 +43,10 @@ SearchBranch::SearchBranch(
       m_pattern_ndata.get_number_of_nonisolated_vertices();
   m_extra_statistics.number_of_target_vertices =
       m_target_ndata.get_number_of_nonisolated_vertices();
+
   m_extra_statistics.initial_number_of_possible_assignments = 0;
-  for (const std::set<VertexWSM>& entry : initial_domains) {
-    m_extra_statistics.initial_number_of_possible_assignments += entry.size();
+  for (const boost::dynamic_bitset<>& domain : initial_domains) {
+    m_extra_statistics.initial_number_of_possible_assignments += domain.count();
   }
 
   // In what order should we do reduction/checks?
