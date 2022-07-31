@@ -362,7 +362,7 @@ SCENARIO("Binary tree with ~100 vertices, ~30 logical qubits") {
   // p_graph_data was constructed by REORDERING the input gates
   // into time slices of parallel gates.
   run_end_to_end_IQP_and_check_solution(
-      gates, p_graph_data.pattern_graph_weights, tree, 11310);
+      gates, p_graph_data.pattern_graph_weights, tree, 13193);
 
   // Now, some results found with try_random_placements.
   std::vector<CostedIQPSolution> costed_solutions_original_gates(3);
@@ -401,7 +401,7 @@ SCENARIO("Binary tree with ~100 vertices, ~30 logical qubits") {
 
   run_end_to_end_IQP_and_check_solution(
       time_sliced_reordered_gates, p_graph_data.pattern_graph_weights, tree,
-      11417);
+      13098);
 
   std::vector<CostedIQPSolution> costed_solutions_reordered_gates(3);
 

@@ -113,7 +113,7 @@ SCENARIO("Test adding unsued edges to simple random graphs with assignments") {
 
       CHECK(pattern_graph_data.size() == 15);
       CHECK(explicit_target_graph_data.size() == 10);
-      CHECK(new_target_graph_data.size() == 23);
+      CHECK(new_target_graph_data.size() == 18);
 
       test_validity_of_new_graph_data(
           pattern_ndata, explicit_target_ndata, implicit_target_weight,
@@ -130,7 +130,7 @@ SCENARIO("Test adding unsued edges to simple random graphs with assignments") {
           assigned_target_vertices, parameters);
 
       CHECK(explicit_target_graph_data.size() == 15);
-      CHECK(new_target_graph_data.size() == 23);
+      CHECK(new_target_graph_data.size() == 18);
 
       test_validity_of_new_graph_data(
           pattern_ndata, explicit_target_ndata, implicit_target_weight,
