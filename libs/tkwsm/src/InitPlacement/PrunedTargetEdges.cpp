@@ -77,15 +77,19 @@ static unsigned get_max_number_of_new_target_edges(
   if (number_of_complete_target_edges == number_of_current_used_target_edges) {
     return 0;
   }
+
   unsigned max_target_edges =
       number_of_current_used_target_edges +
-      (parameters.max_additional_number_of_target_edges_factor_per_kilo *
-       number_of_current_used_target_edges) /
+      get_product_or_throw(
+          parameters.max_additional_number_of_target_edges_factor_per_kilo,
+          number_of_current_used_target_edges) /
           1024;
 
   const unsigned min_unused_target_edges =
-      (parameters.min_implicit_unused_number_of_target_edges_factor_per_kilo *
-           number_of_complete_target_edges -
+      (get_product_or_throw(
+           parameters
+               .min_implicit_unused_number_of_target_edges_factor_per_kilo,
+           number_of_complete_target_edges) -
        number_of_current_used_target_edges) /
       1024;
 
