@@ -139,8 +139,7 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps) {
   // Expects: CX and any single-qubit gates,
   // but does not break if it encounters others
   Transform t = Transforms::clifford_simp(allow_swaps);
-  PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
-  PredicatePtrMap precons = {CompilationUnit::make_type_pair(ccontrol_pred)};
+  PredicatePtrMap precons;
   PredicateClassGuarantees g_postcons;
   if (allow_swaps) {
     g_postcons = {
@@ -148,10 +147,7 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps) {
         {typeid(NoWireSwapsPredicate), Guarantee::Clear},
         {typeid(DirectednessPredicate), Guarantee::Clear}};
   }
-  OpTypeSet ots2 = {OpType::CX, OpType::TK1};
-  PredicatePtr outp_gates = std::make_shared<GateSetPredicate>(ots2);
-  PredicatePtrMap spec_postcons = {CompilationUnit::make_type_pair(outp_gates)};
-  PostConditions postcon{spec_postcons, g_postcons, Guarantee::Preserve};
+  PostConditions postcon{{}, g_postcons, Guarantee::Preserve};
 
   // record pass config
   nlohmann::json j;
