@@ -591,6 +591,7 @@ PassPtr ThreeQubitSquash(bool allow_swaps) {
                 Transforms::three_qubit_squash() >>
                 Transforms::clifford_simp(allow_swaps);
   OpTypeSet ots{all_single_qubit_types()};
+  ots.insert(all_classical_types().begin(), all_classical_types().end());
   ots.insert(OpType::CX);
   PredicatePtr gate_pred = std::make_shared<GateSetPredicate>(ots);
   PredicatePtrMap precons{CompilationUnit::make_type_pair(gate_pred)};
