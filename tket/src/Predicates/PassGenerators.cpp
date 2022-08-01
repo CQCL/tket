@@ -611,6 +611,7 @@ PassPtr FullPeepholeOptimise(bool allow_swaps) {
       OpType::Reset};
   PredicatePtrMap precons = {};
   PredicatePtr out_gateset = std::make_shared<GateSetPredicate>(after_set);
+  after_set.insert(all_classical_types().begin(), all_classical_types().end());
   PredicatePtr max2qb = std::make_shared<MaxTwoQubitGatesPredicate>();
   PredicatePtrMap postcon_spec = {
       CompilationUnit::make_type_pair(out_gateset),
