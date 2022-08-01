@@ -17,6 +17,10 @@ Minor new features:
 * Provide an additional ``RebaseCustom`` constructor that takes a
   TK2-replacement instead of a CX-replacement function.
 
+Fixes:
+
+* ``FullPeepholeOptimise`` failure on conditional circuits.
+
 1.4.3 (July 2022)
 -----------------
 
