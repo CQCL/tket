@@ -23,6 +23,7 @@
 #include "Mapping/LexiRoute.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
+#include "Ops/ClassicalOps.hpp"
 #include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/CompilerPass.hpp"
@@ -438,13 +439,6 @@ SCENARIO("Construct sequence pass") {
     CompilationUnit cu(circ);
     REQUIRE_NOTHROW(sequence->apply(cu));
   }
-  WHEN("Apply to invalid CompilationUnit") {
-    Circuit circ(2, 1);
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
-    CompilationUnit cu(circ);
-    REQUIRE_THROWS_AS(sequence->apply(cu), UnsatisfiedPredicate);
-  }
 }
 
 SCENARIO("Construct invalid sequence passes from vector") {
@@ -715,6 +709,27 @@ SCENARIO("PeepholeOptimise2Q and FullPeepholeOptimise") {
     Circuit circ1 = circ;
     CompilationUnit cu1(circ1);
     REQUIRE(FullPeepholeOptimise()->apply(cu1));
+  }
+  GIVEN("A circuit with classical operations.") {
+    Circuit circ(2, 1);
+    circ.add_op<unsigned>(OpType::ZZMax, {1, 0});
+    circ.add_op<unsigned>(OpType::Reset, {1});
+    circ.add_conditional_gate<unsigned>(OpType::Z, {}, {0}, {0}, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::U1, 0.2, {0});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    circ.add_op<unsigned>(ClassicalX(), {0});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::V, {0});
+    circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::U1, 0.4, {1});
+    circ.add_op<unsigned>(ClassicalX(), {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    CompilationUnit cu(circ);
+    REQUIRE(FullPeepholeOptimise()->apply(cu, SafetyMode::Audit));
   }
   GIVEN("A symbolic circuit") {
     Sym a = SymEngine::symbol("alpha");
