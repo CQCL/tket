@@ -558,8 +558,7 @@ PassPtr gen_user_defined_swap_decomp_pass(const Circuit& replacement_circ) {
 
 PassPtr KAKDecomposition(OpType target_2qb_gate, double cx_fidelity) {
   Transform t = Transforms::two_qubit_squash(target_2qb_gate, cx_fidelity);
-  PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
-  PredicatePtrMap precons{CompilationUnit::make_type_pair(ccontrol_pred)};
+  PredicatePtrMap precons;
   PredicateClassGuarantees g_postcons = {
       {typeid(DirectednessPredicate), Guarantee::Clear},
       {typeid(CliffordCircuitPredicate), Guarantee::Clear}};
