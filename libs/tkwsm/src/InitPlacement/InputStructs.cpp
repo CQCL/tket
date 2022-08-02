@@ -345,18 +345,6 @@ TargetGraphData::TargetGraphData(
   }
 }
 
-std::string TargetGraphData::str() const {
-  std::stringstream ss;
-  ss << "TargetGraphData: implicit_weight " << implicit_weight
-     << ", explicit_target_graph_weights:\n"
-     << tket::WeightedSubgraphMonomorphism::str(explicit_target_graph_weights)
-     << "\nexplicit edge density "
-     << (explicit_target_graph_weights.size() * 200) /
-            (sorted_vertices.size() * (sorted_vertices.size() - 1))
-     << "%";
-  return ss.str();
-}
-
 WeightWSM TargetGraphData::get_edge_weight(VertexWSM tv1, VertexWSM tv2) const {
   const auto edge = get_edge(tv1, tv2);
   const auto weight_opt =

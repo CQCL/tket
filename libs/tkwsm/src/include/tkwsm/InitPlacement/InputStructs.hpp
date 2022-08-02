@@ -152,8 +152,6 @@ struct TargetGraphData {
 
   explicit TargetGraphData(DebugNoInputData dummy_object);
 
-  std::string str() const;
-
   WeightWSM get_edge_weight(VertexWSM tv1, VertexWSM tv2) const;
 };
 
