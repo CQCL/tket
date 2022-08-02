@@ -189,25 +189,6 @@ IQPResult::IQPResult(
   }
 }
 
-std::string IQPResult::debug_str_without_assignments() const {
-  std::stringstream ss;
-  ss << "IQPResult: mcct_time_ms=" << mcct_time_ms
-     << "; wsm_init_time_ms=" << wsm_init_time_ms
-     << "; wsm_solve_time_ms=" << wsm_solve_time_ms
-     << "\nTOTAL time ms = " << total_time_ms
-     << "; MCCTS_number_of_iterations=" << mcct_iterations
-     << "; mcct_scalar_product=" << mcct_scalar_product
-     << "; wsm_number_of_pruned_tv=" << wsm_number_of_pruned_tv
-     << "\nwsm_number_of_pruned_t_edges=" << wsm_number_of_pruned_t_edges
-     << "; wsm_iterations=" << wsm_iterations << "; wsm_scalar_product_opt=";
-  if (wsm_scalar_product_opt) {
-    ss << wsm_scalar_product_opt.value();
-  } else {
-    ss << "NULL";
-  }
-  return ss.str();
-}
-
 }  // namespace InitialPlacement
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

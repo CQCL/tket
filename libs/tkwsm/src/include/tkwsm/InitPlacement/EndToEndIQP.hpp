@@ -51,11 +51,6 @@ struct IQPResult {
    */
   std::vector<std::pair<VertexWSM, VertexWSM>> initial_qubit_placement;
 
-  /** For testing, get a string printout of all data EXCEPT the assignments
-   * in initial_qubit_placement.
-   */
-  std::string debug_str_without_assignments() const;
-
   // For testing, can be useful to have the timings and other information,
   // broken down into the different phases.
 

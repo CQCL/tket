@@ -53,13 +53,6 @@ void run_end_to_end_IQP_and_check_solution(
       pattern_graph, placement_cost_model.get_graph_data(), timeout_ms,
       iqp_parameters);
 
-  if (verbose) {
-    std::cerr << "\nFINISHED: IQP results: "
-              << iqp_result.debug_str_without_assignments()
-              << "\nPlacement (for "
-              << iqp_result.initial_qubit_placement.size()
-              << " PV): " << str(iqp_result.initial_qubit_placement) << "\n";
-  }
   // It should be sorted by PV.
   for (unsigned ii = 1; ii < iqp_result.initial_qubit_placement.size(); ++ii) {
     REQUIRE(
