@@ -60,8 +60,6 @@ class SolutionJumper {
    */
   WeightWSM reset_and_get_new_scalar_product();
 
-  std::string str() const;
-
   /** Suppose that currently PV1 -> TV1, and we want to change to PV1->TV2.
    * If TV2 is unoccupied, nothing else needs to change.
    * If instead TV2 is occupied (by PV2), i.e. we already have PV2->TV2,

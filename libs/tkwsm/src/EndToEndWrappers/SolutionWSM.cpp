@@ -30,8 +30,7 @@ static void check_assignments_for_value_clashes(
   for (const std::pair<VertexWSM, VertexWSM>& entry : solution.assignments) {
     const auto value_opt = get_optional_value(assignments_map, entry.first);
     if (value_opt) {
-      ss << "\nRepeated PV: seen " << entry.first << "->" << entry.second
-         << " and " << entry.first << "->" << value_opt.value();
+      ss << "\nRepeated PV";
     }
     assignments_map[entry.first] = entry.second;
 
@@ -81,8 +80,7 @@ std::string SolutionWSM::get_errors(
     }
     if (pattern_edges_and_weights.count(
             std::make_pair(p_edge.second, p_edge.first)) != 0) {
-      ss << "\nRepeated pattern edge: (" << p_edge.first << ","
-         << p_edge.second << ") and reversed edge both present.";
+      ss << "\nRepeated pattern edge";
     }
     p_vertices_used.insert(p_edge.first);
     p_vertices_used.insert(p_edge.second);

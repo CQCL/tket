@@ -84,11 +84,7 @@ WeightWSM get_scalar_product_upper_bound_for_complete_target_graph(
       get_product_or_throw(number_of_tv, std::size_t(number_of_tv - 1)) / 2;
 
   if (pattern_ndata.get_number_of_nonisolated_vertices() > number_of_tv) {
-    std::stringstream ss;
-    ss << "Trivially impossible WSM problem: "
-       << pattern_ndata.get_number_of_nonisolated_vertices() << " pv, but only "
-       << number_of_tv << " tv.";
-    throw std::runtime_error(ss.str());
+    throw std::runtime_error("not enough target vertices");
   }
   TKET_ASSERT(
       total_number_of_target_edges >= pattern_ndata.get_number_of_edges());

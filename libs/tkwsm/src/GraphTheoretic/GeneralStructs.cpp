@@ -58,15 +58,10 @@ std::vector<VertexWSM> get_vertices(
           get_optional_value(edges_and_weights, reversed_edge);
       if (reversed_weight_opt) {
         if (reversed_weight_opt.value() != weight) {
-          std::stringstream ss;
-          ss << "Reversed edge (" << v2 << "," << v1
-             << ") has different weight " << reversed_weight_opt.value();
-          throw std::runtime_error(ss.str());
+          throw std::runtime_error("reversed edge has different weight");
         }
         if (!options.allow_duplicate_edges) {
-          std::stringstream ss;
-          ss << "contains reversed edge (" << v2 << "," << v1 << ")";
-          throw std::runtime_error(ss.str());
+          throw std::runtime_error("duplicate edges not allowed");
         }
       }
       if (!options.allow_edge_vertices_not_in_order && v2 < v1) {

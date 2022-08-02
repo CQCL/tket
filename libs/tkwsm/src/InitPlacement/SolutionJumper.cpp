@@ -198,37 +198,15 @@ void SolutionJumper::check_validity() const {
     return;
   }
   for (unsigned pv = 0; pv < m_assigned_target_vertices.size(); ++pv) {
-    if (m_source_pattern_vertices.at(m_assigned_target_vertices[pv]) != pv) {
-      throw std::runtime_error(str());
-    }
+    TKET_ASSERT(
+        m_source_pattern_vertices.at(m_assigned_target_vertices[pv]) == pv);
   }
   for (unsigned tv = 0; tv < m_source_pattern_vertices.size(); ++tv) {
     const auto pv = m_source_pattern_vertices[tv];
-    if (pv < m_assigned_target_vertices.size() &&
-        m_assigned_target_vertices[pv] != tv) {
-      throw std::runtime_error(str());
-    }
+    TKET_ASSERT(
+        pv >= m_assigned_target_vertices.size() ||
+        m_assigned_target_vertices[pv] == tv);
   }
-}
-
-std::string SolutionJumper::str() const {
-  std::stringstream ss;
-  const auto sc_prod = get_scalar_product_with_complete_target(
-      m_pattern_ndata, m_target_ndata, m_implicit_target_weight,
-      get_assignments());
-
-  ss << m_pattern_ndata.get_number_of_nonisolated_vertices() << " pv, "
-     << m_target_ndata.get_number_of_nonisolated_vertices() << " tv;\nass: "
-     << tket::WeightedSubgraphMonomorphism::str(m_assigned_target_vertices, 50)
-     << "\nreverse ass: "
-     << tket::WeightedSubgraphMonomorphism::str(m_source_pattern_vertices, 50)
-     << "\nsc.prod: " << sc_prod << "; contribs: ";
-
-  for (unsigned pv = 0;
-       pv < m_pattern_ndata.get_number_of_nonisolated_vertices(); ++pv) {
-    ss << "\nPV=" << pv << ": " << m_scalar_product_contributions[pv];
-  }
-  return ss.str();
 }
 
 WeightWSM
