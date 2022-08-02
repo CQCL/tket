@@ -838,6 +838,12 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
 
     REQUIRE(test_unitary_comparison(circ, result));
   }
+  GIVEN("Unsatisfied NoClassicalControlPredicate") {
+    Circuit c(1, 1);
+    c.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {0}, 1);
+    CompilationUnit cu(c);
+    REQUIRE_THROWS_AS(ComposePhasePolyBoxes()->apply(cu), UnsatisfiedPredicate);
+  }
   GIVEN("NoWireSwapsPredicate for ComposePhasePolyBoxes") {
     Circuit circ(5);
     add_2qb_gates(circ, OpType::CX, {{0, 3}, {1, 4}});
@@ -1259,6 +1265,12 @@ SCENARIO("ThreeQubitSquah") {
     const Circuit& c1 = cu.get_circ_ref();
     REQUIRE(c1.count_gates(OpType::CX) <= 19);
     REQUIRE(test_statevector_comparison(c, c1));
+  }
+  GIVEN("Unsatisfied gateset") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::CH, {0, 1});
+    CompilationUnit cu(c);
+    REQUIRE_THROWS_AS(ThreeQubitSquash()->apply(cu), UnsatisfiedPredicate);
   }
   GIVEN("A 3-qubit circuit that is non-trivially the identity") {
     Circuit c(3);
