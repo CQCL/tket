@@ -105,16 +105,7 @@ void MonteCarloCompleteTargetSolution::reset_target_vertices() {
   }
 
   auto& assignments = m_solution_jumper.get_assignments_to_overwrite();
-  if (assignments.size() * 4 < m_random_bits_and_tv.size()) {
-    // Apparently partial sort can be significantly slower than std::sort
-    // for many elements, so only use it if we have many more TV than PV.
-    std::partial_sort(
-        m_random_bits_and_tv.begin(),
-        m_random_bits_and_tv.begin() + assignments.size(),
-        m_random_bits_and_tv.end());
-  } else {
-    std::sort(m_random_bits_and_tv.begin(), m_random_bits_and_tv.end());
-  }
+  std::sort(m_random_bits_and_tv.begin(), m_random_bits_and_tv.end());
 
   for (unsigned pv = 0; pv < assignments.size(); ++pv) {
     assignments[pv] = m_random_bits_and_tv[pv].second;
