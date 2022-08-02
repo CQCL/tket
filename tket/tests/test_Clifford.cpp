@@ -32,6 +32,15 @@
 namespace tket {
 namespace test_Clifford {
 
+bool circuit_has_vertex(const Circuit& c, const Vertex& v) {
+  V_iterator vi, vi_end;
+  for (boost::tie(vi, vi_end) = boost::vertices(c.dag); vi != vi_end;
+       ++vi) {
+    if (*vi == v) break;
+  }
+  return !(vi == vi_end);
+}
+
 SCENARIO("Test decomposition into Clifford gates", "[transform]") {
   GIVEN(
       "STD FORM: A TK1 instance for each set of parameters fitting "
@@ -565,8 +574,10 @@ SCENARIO("Test clifford reduction") {
 
     REQUIRE(Transforms::clifford_reduction().apply(cond_circ));
     cond_circ.assert_valid();
-    // TODO:: Check the vertices still exits
     VertexList bin = {v1, v2, v3, v4, v5};
+    for (const Vertex& v : bin) {
+      REQUIRE(circuit_has_vertex(cond_circ, v));
+    }
     cond_circ.remove_vertices(
         bin, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);
     cond_circ.remove_blank_wires();
@@ -750,8 +761,10 @@ SCENARIO("Testing full clifford_simp") {
 
     REQUIRE(Transforms::clifford_reduction().apply(cond_circ));
     cond_circ.assert_valid();
-    // TODO:: Check the vertices still exits
     VertexList bin = {v1, v2};
+    for (const Vertex& v : bin) {
+      REQUIRE(circuit_has_vertex(cond_circ, v));
+    }
     cond_circ.remove_vertices(
         bin, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);
     cond_circ.remove_blank_wires();
