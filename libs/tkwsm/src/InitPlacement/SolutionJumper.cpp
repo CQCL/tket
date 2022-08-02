@@ -74,22 +74,14 @@ WeightWSM SolutionJumper::reset_and_get_new_scalar_product() {
 
   for (unsigned pv = 0; pv < m_assigned_target_vertices.size(); ++pv) {
     const auto tv = m_assigned_target_vertices[pv];
-    try {
-      if (tv >= m_source_pattern_vertices.size()) {
-        throw std::runtime_error("PV assigned to invalid TV");
-      }
-      auto& pv_to_set = m_source_pattern_vertices[tv];
-      if (pv_to_set < m_assigned_target_vertices.size()) {
-        throw std::runtime_error("PV assigned to multiple TV");
-      }
-      pv_to_set = pv;
-    } catch (const std::exception& e) {
-      std::stringstream ss;
-      ss << "We have " << m_assigned_target_vertices.size() << " PV, "
-         << m_source_pattern_vertices.size() << " TV. Trying to assign " << pv
-         << " -> " << tv << ": " << e.what();
-      throw std::runtime_error(ss.str());
+    if (tv >= m_source_pattern_vertices.size()) {
+      throw std::runtime_error("PV assigned to invalid TV");
     }
+    auto& pv_to_set = m_source_pattern_vertices[tv];
+    if (pv_to_set < m_assigned_target_vertices.size()) {
+      throw std::runtime_error("PV assigned to multiple TV");
+    }
+    pv_to_set = pv;
   }
 
   // We have to recalculate all the contributions
