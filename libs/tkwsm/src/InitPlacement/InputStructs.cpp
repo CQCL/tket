@@ -155,24 +155,6 @@ PatternGraphData::PatternGraphData(
   }
 }
 
-std::string PatternGraphData::str() const {
-  std::stringstream ss;
-  ss << "PatternGraphData: final time " << final_time << "; ";
-  if (reordered_gates.empty()) {
-    ss << "no reordering";
-  } else {
-    ss << "reordered gates (edge,time):\n[ ";
-    for (const auto& entry : reordered_gates) {
-      ss << entry.time << ":(" << entry.gate.first << "," << entry.gate.second
-         << ") ";
-    }
-    ss << "]";
-  }
-  ss << "\nEdge weights: "
-     << tket::WeightedSubgraphMonomorphism::str(pattern_graph_weights);
-  return ss.str();
-}
-
 TargetGraphData::TargetGraphData(DebugNoInputData) {}
 
 void TargetGraphDataInput::check_validity() const {

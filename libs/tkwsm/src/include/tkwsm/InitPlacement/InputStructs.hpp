@@ -68,8 +68,6 @@ struct PatternGraphData {
    * anything).
    */
   explicit PatternGraphData(DebugNoInputData dummy_object);
-
-  std::string str() const;
 };
 
 struct TargetGraphDataInput {
