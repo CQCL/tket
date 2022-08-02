@@ -860,6 +860,34 @@ SCENARIO("KAKDecomposition pass") {
       REQUIRE(u_res.isApprox(u_orig));
     }
   }
+  GIVEN("A circuit with multi-qubit gates") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::V, {0});
+    c.add_op<unsigned>(OpType::CRy, 0.5, {2, 1});
+    c.add_op<unsigned>(OpType::CnX, {0, 2, 1});
+    c.add_op<unsigned>(OpType::CH, {0, 1});
+    c.add_op<unsigned>(OpType::Tdg, {0});
+    c.add_op<unsigned>(OpType::CnX, {1, 0});
+    c.add_op<unsigned>(OpType::BRIDGE, {1, 0, 2});
+    c.add_op<unsigned>(OpType::SX, {1});
+    c.add_op<unsigned>(OpType::V, {1});
+    THEN("Then KAKDecomposition() can be applied") {
+      CompilationUnit cu(c);
+      REQUIRE(KAKDecomposition()->apply(cu));
+      Circuit c_res = cu.get_circ_ref();
+      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(c);
+      Eigen::MatrixXcd u_res = tket_sim::get_unitary(c_res);
+      REQUIRE(u_res.isApprox(u_orig));
+    }
+    THEN("Then KAKDecomposition(OpType::TK2) can be applied") {
+      CompilationUnit cu(c);
+      REQUIRE(KAKDecomposition(OpType::TK2)->apply(cu));
+      Circuit c_res = cu.get_circ_ref();
+      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(c);
+      Eigen::MatrixXcd u_res = tket_sim::get_unitary(c_res);
+      REQUIRE(u_res.isApprox(u_orig));
+    }
+  }
 }
 
 }  // namespace test_TwoQubitCanonical
