@@ -121,16 +121,6 @@ std::optional<WeightWSM> NeighboursData::get_edge_weight_opt(
   return {};
 }
 
-bool NeighboursData::binary_search(
-    VertexWSM v, const std::vector<std::pair<VertexWSM, WeightWSM>>& list) {
-  const auto citer = std::lower_bound(
-      list.cbegin(), list.cend(), std::make_pair(v, WeightWSM(0)));
-  if (citer == list.cend()) {
-    return false;
-  }
-  return citer->first == v;
-}
-
 std::size_t NeighboursData::get_degree(VertexWSM v) const {
   if (v >= m_neighbours_and_weights.size()) {
     return 0;
