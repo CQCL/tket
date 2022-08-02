@@ -24,7 +24,9 @@ MonteCarloManager::MonteCarloManager(
     const MonteCarloManagerParameters& parameters)
     : m_parameters(parameters),
       m_runs_without_record_breaking(0),
-      m_runs_without_progress(0) {
+      m_runs_without_progress(0),
+      m_next_iteration_to_reset_if_no_progress(0),
+      m_next_iteration_to_reset_if_no_record_breaker(0) {
   set_maximum(m_best_cost);
 }
 
