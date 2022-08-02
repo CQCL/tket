@@ -40,7 +40,7 @@ class TketConan(ConanFile):
         "boost/1.80.0",
         "symengine/0.9.0@tket/stable",
         "eigen/3.4.0",
-        "nlohmann_json/3.10.5",
+        "nlohmann_json/3.11.2",
         "tklog/0.1.2@tket/stable",
         "tkassert/0.1.1@tket/stable",
         "tkrng/0.1.2@tket/stable",
