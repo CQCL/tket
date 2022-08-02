@@ -117,13 +117,6 @@ class DomainsAccessor {
    */
   DomainsAccessor& set_total_p_edge_weights(WeightWSM value);
 
-  /** For testing/debugging, a string representation.
-   * @param full True if we should print more verbose data, false if we just
-   * want the basic data.
-   * @return A human readable string for debugging.
-   */
-  std::string str(bool full = false) const;
-
   /** Assuming that the caller has already processed the given number
    * of new assignments in this current node (without clearing the
    * new assignments list - which stores them in order of creation),

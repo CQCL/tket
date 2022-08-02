@@ -188,39 +188,6 @@ DomainsAccessor::IntersectionResult DomainsAccessor::intersect_domain_with_swap(
   return result;
 }
 
-std::string DomainsAccessor::str(bool full) const {
-  std::stringstream ss;
-  if (full) {
-    ss << "\n@@@@@ ALL NODES: (curr.node index="
-       << m_raw_data.current_node_index() << ")";
-    for (unsigned node_index = 0; node_index < m_raw_data.nodes_data.size();
-         ++node_index) {
-      const auto& node = m_raw_data.nodes_data[node_index];
-      ss << "\n+++ node " << node_index << ":" << node.str();
-    }
-    ss << "\nDOMAINS: ";
-    for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
-      ss << "\nDOM(" << pv << "):" << m_raw_data.domains_data[pv].str();
-    }
-    ss << "\n";
-    return ss.str();
-  }
-  ss << "\ncurr.node index=" << m_raw_data.current_node_index()
-     << "; DOMAINS: ";
-  for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
-    ss << "\n  DOM(" << pv << "): ";
-    const auto& dom_data = m_raw_data.domains_data[pv].entries.top();
-    ss << "(since index " << dom_data.node_index << "): ";
-
-    // temporary hack! Remove!
-    std::set<VertexWSM> domain_set;
-    TemporaryRefactorCode::set_domain_from_bitset(domain_set, dom_data.domain);
-    ss << tket::WeightedSubgraphMonomorphism::str(domain_set);
-  }
-  ss << "\n";
-  return ss.str();
-}
-
 const std::vector<VertexWSM>&
 DomainsAccessor::get_unassigned_pattern_vertices_superset() const {
   const auto& candidate =
