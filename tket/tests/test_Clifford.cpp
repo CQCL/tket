@@ -34,8 +34,7 @@ namespace test_Clifford {
 
 bool circuit_has_vertex(const Circuit& c, const Vertex& v) {
   V_iterator vi, vi_end;
-  for (boost::tie(vi, vi_end) = boost::vertices(c.dag); vi != vi_end;
-       ++vi) {
+  for (boost::tie(vi, vi_end) = boost::vertices(c.dag); vi != vi_end; ++vi) {
     if (*vi == v) break;
   }
   return !(vi == vi_end);
