@@ -19,16 +19,6 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-bool ReducerInterface::check(std::pair<VertexWSM, VertexWSM> /*assignment*/) {
-  return true;
-}
-
-ReductionResult ReducerInterface::reduce(
-    std::pair<VertexWSM, VertexWSM> /*assignment*/,
-    DomainsAccessor& /*accessor*/, boost::dynamic_bitset<>& /*work_set*/) {
-  return ReductionResult::SUCCESS;
-}
-
 bool ReducerInterface::other_vertex_reduction_can_be_skipped_by_symmetry(
     const boost::dynamic_bitset<>& other_domain,
     const DomainsAccessor& accessor, VertexWSM this_vertex,

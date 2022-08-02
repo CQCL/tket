@@ -51,7 +51,7 @@ class ReducerInterface {
    * erased from EVERY Domain(PV) in EVERY node of EVERY search, not just the
    * current node).
    */
-  virtual bool check(std::pair<VertexWSM, VertexWSM> assignment);
+  virtual bool check(std::pair<VertexWSM, VertexWSM> assignment) = 0;
 
   /** Given that PV->TV is a new assignment, reduces the domains
    * of all affected vertices. Breaks off early
@@ -70,7 +70,7 @@ class ReducerInterface {
    */
   virtual ReductionResult reduce(
       std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,
-      boost::dynamic_bitset<>& work_set);
+      boost::dynamic_bitset<>& work_set) = 0;
 
   virtual ~ReducerInterface() = default;
 
