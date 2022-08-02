@@ -143,9 +143,7 @@ SCENARIO(
   }
 }
 
-SCENARIO(
-    "Monte Carlo solutions for random complete target graph: large",
-    "[.long]") {
+SCENARIO("Monte Carlo solutions for random complete target graph: large") {
   RNG rng;
   std::vector<MCCTSolution> solutions(3);
   const auto pattern_graph_data = get_graph_data(rng, 50, 300, 1000, 2000);
