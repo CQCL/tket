@@ -400,6 +400,9 @@ Transform two_qubit_squash(OpType target_2qb_gate, double cx_fidelity) {
     std::map<Qubit, int> current_interaction;
     for (const Qubit &qb : circ.all_qubits()) {
       for (const VertPort &vp : circ.unit_path(qb)) {
+        Op_ptr myop = circ.get_Op_ptr_from_Vertex(vp.first);
+        std::cout << "\nInsert: " << *myop << ", port: " << vp.second
+                  << ", qubit: " << qb.repr() << "\n";
         v_to_qb.insert({vp, qb});
       }
       Vertex input = circ.get_in(qb);
@@ -415,6 +418,7 @@ Transform two_qubit_squash(OpType target_2qb_gate, double cx_fidelity) {
         const Op_ptr o = circ.get_Op_ptr_from_Vertex(*v);
         OpType type = o->get_type();
         unsigned n_ins = circ.n_in_edges_of_type(*v, EdgeType::Quantum);
+        std::cout << "\nCheck: " << *o << "\n";
         // Ignore classical ops
         if (is_classical_type(type)) {
           continue;
@@ -427,7 +431,9 @@ Transform two_qubit_squash(OpType target_2qb_gate, double cx_fidelity) {
           EdgeVec q_edges = circ.get_in_edges_of_type(*v, EdgeType::Quantum);
           for (const Edge &q_edge : q_edges) {
             const port_t port = circ.get_target_port(q_edge);
+            std::cout << "\nFind: " << *o << ", port: " << port << "\n";
             Qubit q = v_to_qb.at({*v, port});
+            std::cout << "\nFound qubit: " << q.repr() << "\n";
             int i = current_interaction[q];
             if (i != -1) {
               if (i_vec[i].count >= 2) {
@@ -436,18 +442,25 @@ Transform two_qubit_squash(OpType target_2qb_gate, double cx_fidelity) {
                     circ, i_vec[i], current_edge_on_qb, bin, target_2qb_gate,
                     cx_fidelity);
               }
+              std::cout << "\nDEBUG 1\n";
               current_interaction[i_vec[i].q0] = -1;
               current_interaction[i_vec[i].q1] = -1;
+              std::cout << "\nDEBUG 2\n";
             }
             if (!is_final_q_type(type)) {
+              std::cout << "\nDEBUG 3\n";
               current_edge_on_qb[q] =
                   circ.get_next_edge(*v, current_edge_on_qb[q]);
+              std::cout << "\nDEBUG 4\n";
             }
           }
         } else if (circ.n_in_edges_of_type(*v, EdgeType::Quantum) == 2) {
           // Check for 2qb gate
+          std::cout << "\nDEBUG 5\n";
           Qubit q0 = v_to_qb.at({*v, 0});
+          std::cout << "\nDEBUG 6\n";
           Qubit q1 = v_to_qb.at({*v, 1});
+          std::cout << "\nDEBUG 7\n";
           int i0 = current_interaction[q0];
           int i1 = current_interaction[q1];
           // If they are already interacting, extend it
@@ -500,7 +513,9 @@ Transform two_qubit_squash(OpType target_2qb_gate, double cx_fidelity) {
           // We don't care about single-qubit vertices, so just update edges
           // and add vertices if interactions exist
           for (port_t i = 0; i < circ.n_in_edges(*v); i++) {
+            std::cout << "\nDEBUG 8\n";
             Qubit q = v_to_qb.at({*v, i});
+            std::cout << "\nDEBUG 9\n";
             current_edge_on_qb[q] =
                 circ.get_next_edge(*v, current_edge_on_qb[q]);
             int inter = current_interaction[q];
