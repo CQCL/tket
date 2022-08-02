@@ -16,6 +16,8 @@ Minor new features:
 * ``measure_register`` now allows using an existing classical register
 * Provide an additional ``RebaseCustom`` constructor that takes a
   TK2-replacement instead of a CX-replacement function.
+* New ``int_dist_from_state`` function in ``pytket.utils.results`` to convert
+  a statevector to the probability distribution over its indices.
 
 Fixes:
 
