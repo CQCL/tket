@@ -230,7 +230,7 @@ PYBIND11_MODULE(transform, m) {
           "angle parameter to its fidelity. These parameters will be used "
           "to return the optimal decomposition of each TK2 gate, taking "
           "noise into consideration.\n\n"
-          "Using the `allow_swaps=true` (default) option, qubits will be "
+          "Using the `allow_swaps=True` (default) option, qubits will be "
           "swapped when convenient to reduce the two-qubit gate count of the "
           "decomposed TK2.\n\n"
           "If the TK2 angles are symbolic values, the decomposition will "
