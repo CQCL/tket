@@ -18,6 +18,9 @@ Minor new features:
   TK2-replacement instead of a CX-replacement function.
 * New ``int_dist_from_state`` function in ``pytket.utils.results`` to convert
   a statevector to the probability distribution over its indices.
+* The precondition for ``CliffordSimp`` and ``KAKDecomposition`` has been relaxed
+  to accept classical controlled operations. ``ThreeQubitSquash`` and ``FullPeepholeOptimise``
+  now accept classical operations.
 
 Fixes:
 
