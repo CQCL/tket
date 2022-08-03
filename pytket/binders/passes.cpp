@@ -450,10 +450,10 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "FullPeepholeOptimise", &FullPeepholeOptimise,
       "Performs peephole optimisation including resynthesis of 2- and 3-qubit "
-      "gate sequences, and converts to a circuit containing only CX and TK1 "
-      "gates."
+      "gate sequences, and converts to a circuit containing only the given "
+      "2-qubit gate (which may be CX or TK2) and TK1 gates."
       "\n\n:param allow_swaps: whether to allow implicit wire swaps",
-      py::arg("allow_swaps") = true);
+      py::arg("allow_swaps") = true, py::arg("target_2qb_gate") = OpType::CX);
   m.def("RebaseTket", &RebaseTket, "Converts all gates to CX and TK1.");
   m.def(
       "RemoveRedundancies", &RemoveRedundancies,
