@@ -17,6 +17,7 @@
 
 #include "Circuit/CircUtils.hpp"
 #include "CircuitsForTesting.hpp"
+#include "Ops/ClassicalOps.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/CliffordOptimisation.hpp"
@@ -30,6 +31,14 @@
 
 namespace tket {
 namespace test_Clifford {
+
+bool circuit_has_vertex(const Circuit& c, const Vertex& v) {
+  V_iterator vi, vi_end;
+  for (boost::tie(vi, vi_end) = boost::vertices(c.dag); vi != vi_end; ++vi) {
+    if (*vi == v) break;
+  }
+  return !(vi == vi_end);
+}
 
 SCENARIO("Test decomposition into Clifford gates", "[transform]") {
   GIVEN(
@@ -531,6 +540,48 @@ SCENARIO("Test clifford reduction") {
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     REQUIRE_FALSE(Transforms::clifford_reduction(true).apply(circ));
   }
+  GIVEN("Circuit with conditional and classical gates") {
+    Circuit orig_circ(2, 1);
+    orig_circ.add_op<unsigned>(OpType::CX, {0, 1});
+    orig_circ.add_op<unsigned>(OpType::U1, 0.2, {0});
+    orig_circ.add_op<unsigned>(OpType::CX, {1, 0});
+    orig_circ.add_op<unsigned>(OpType::CX, {1, 0});
+    orig_circ.add_op<unsigned>(OpType::CX, {0, 1});
+    orig_circ.add_op<unsigned>(OpType::V, {0});
+    orig_circ.add_op<unsigned>(OpType::CX, {0, 1});
+    orig_circ.add_op<unsigned>(OpType::U1, 0.4, {1});
+    orig_circ.add_op<unsigned>(OpType::CX, {0, 1});
+
+    Circuit cond_circ(2, 1);
+    Vertex v1 =
+        cond_circ.add_conditional_gate<unsigned>(OpType::Z, {}, {0}, {0}, 1);
+    cond_circ.add_op<unsigned>(OpType::CX, {0, 1});
+    cond_circ.add_op<unsigned>(OpType::U1, 0.2, {0});
+    cond_circ.add_op<unsigned>(OpType::CX, {1, 0});
+    Vertex v2 = cond_circ.add_op<unsigned>(ClassicalX(), {0});
+    cond_circ.add_op<unsigned>(OpType::CX, {1, 0});
+    Vertex v3 = cond_circ.add_conditional_gate<unsigned>(
+        OpType::CX, {}, {0, 1}, {0}, 1);
+    cond_circ.add_op<unsigned>(OpType::CX, {0, 1});
+    cond_circ.add_op<unsigned>(OpType::V, {0});
+    Vertex v4 =
+        cond_circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
+    cond_circ.add_op<unsigned>(OpType::CX, {0, 1});
+    cond_circ.add_op<unsigned>(OpType::U1, 0.4, {1});
+    Vertex v5 = cond_circ.add_op<unsigned>(ClassicalX(), {0});
+    cond_circ.add_op<unsigned>(OpType::CX, {0, 1});
+
+    REQUIRE(Transforms::clifford_reduction().apply(cond_circ));
+    cond_circ.assert_valid();
+    VertexList bin = {v1, v2, v3, v4, v5};
+    for (const Vertex& v : bin) {
+      REQUIRE(circuit_has_vertex(cond_circ, v));
+    }
+    cond_circ.remove_vertices(
+        bin, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);
+    cond_circ.remove_blank_wires();
+    REQUIRE(test_unitary_comparison(orig_circ, cond_circ));
+  }
 }
 
 SCENARIO("Test clifford replacements that allow for SWAPs") {
@@ -688,6 +739,35 @@ SCENARIO("Testing full clifford_simp") {
     circ.add_op<unsigned>(OpType::TK2, {0.5, 0, 0}, {0, 1});
     REQUIRE(Transforms::clifford_simp().apply(circ));
     REQUIRE(circ.count_gates(OpType::CX) == 1);
+  }
+  GIVEN("A circuit with classical ops") {
+    Circuit orig_circ(3, 1);
+    orig_circ.add_op<unsigned>(OpType::CX, {0, 1});
+    orig_circ.add_op<unsigned>(OpType::S, {1});
+    orig_circ.add_op<unsigned>(OpType::CX, {2, 1});
+    orig_circ.add_op<unsigned>(OpType::Rx, 0.3, {1});
+    orig_circ.add_op<unsigned>(OpType::CX, {0, 1});
+
+    Circuit cond_circ(3, 1);
+    Vertex v1 =
+        cond_circ.add_conditional_gate<unsigned>(OpType::Z, {}, {0}, {0}, 1);
+    cond_circ.add_op<unsigned>(OpType::CX, {0, 1});
+    cond_circ.add_op<unsigned>(OpType::S, {1});
+    Vertex v2 = cond_circ.add_op<unsigned>(ClassicalX(), {0});
+    cond_circ.add_op<unsigned>(OpType::CX, {2, 1});
+    cond_circ.add_op<unsigned>(OpType::Rx, 0.3, {1});
+    cond_circ.add_op<unsigned>(OpType::CX, {0, 1});
+
+    REQUIRE(Transforms::clifford_reduction().apply(cond_circ));
+    cond_circ.assert_valid();
+    VertexList bin = {v1, v2};
+    for (const Vertex& v : bin) {
+      REQUIRE(circuit_has_vertex(cond_circ, v));
+    }
+    cond_circ.remove_vertices(
+        bin, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);
+    cond_circ.remove_blank_wires();
+    REQUIRE(test_unitary_comparison(orig_circ, cond_circ));
   }
 }
 

@@ -382,7 +382,6 @@ Transform two_qubit_squash(bool allow_swaps) {
   return two_qubit_squash(OpType::CX, 1., allow_swaps);
 }
 
-// TODO:: Work around classically controlled stuff
 Transform two_qubit_squash(
     OpType target_2qb_gate, double cx_fidelity, bool allow_swaps) {
   const std::set<OpType> accepted_ots{OpType::CX, OpType::TK2};
@@ -421,12 +420,21 @@ Transform two_qubit_squash(
         const Op_ptr o = circ.get_Op_ptr_from_Vertex(*v);
         OpType type = o->get_type();
         unsigned n_ins = circ.n_in_edges_of_type(*v, EdgeType::Quantum);
-        // Measures, resets, outputs, barriers, symbolic gates, and many-qubit
-        // gates close interactions
-        if (is_projective_type(type) || is_final_q_type(type) ||
-            type == OpType::Barrier || n_ins > 2 ||
-            !o->free_symbols().empty()) {
-          for (port_t port = 0; port < n_ins; port++) {
+        // Ignore classical ops
+        if (is_classical_type(type)) {
+          continue;
+        } else if (
+            is_projective_type(type) || is_final_q_type(type) ||
+            type == OpType::Barrier || type == OpType::Conditional ||
+            n_ins > 2 || !o->free_symbols().empty()) {
+          // Measures, resets, outputs, barriers, symbolic gates, conditionals
+          // and many-qubit gates close interactions
+          EdgeVec q_edges = circ.get_in_edges_of_type(*v, EdgeType::Quantum);
+          std::vector<port_t> q_ports;
+          for (const Edge &e : q_edges) {
+            q_ports.push_back(circ.get_target_port(e));
+          }
+          for (const port_t &port : q_ports) {
             Qubit q = v_to_qb.at({*v, port});
             int i = current_interaction[q];
             if (i != -1) {

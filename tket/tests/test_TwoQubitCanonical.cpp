@@ -17,6 +17,7 @@
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Command.hpp"
 #include "Gate/Rotation.hpp"
+#include "Ops/ClassicalOps.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Simulation/CircuitSimulator.hpp"
@@ -679,6 +680,30 @@ SCENARIO("KAK Decomposition around symbolic gates") {
   }
 }
 
+SCENARIO("two_qubit_squash with classical ops") {
+  GIVEN("Circuit with conditional gates") {
+    Circuit circ(2, 1);
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    Vertex v =
+        circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    REQUIRE(Transforms::two_qubit_squash(OpType::CX).apply(circ));
+    REQUIRE(circ.n_gates() == 1);
+    REQUIRE(circ.get_commands()[0].get_vertex() == v);
+  }
+  GIVEN("Circuit with conditional gates") {
+    Circuit circ(2, 1);
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    Vertex v = circ.add_op<unsigned>(ClassicalX(), {0});
+    circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    REQUIRE(Transforms::two_qubit_squash(OpType::CX).apply(circ));
+    REQUIRE(circ.n_gates() == 1);
+    REQUIRE(circ.get_commands()[0].get_vertex() == v);
+  }
+}
+
 SCENARIO("Test qubit reversal") {
   GIVEN("A 4x4 matrix") {
     Eigen::Matrix4cd test, correct;
@@ -884,23 +909,32 @@ SCENARIO("KAKDecomposition pass") {
       REQUIRE(u_res.isApprox(u_orig));
     }
   }
-  GIVEN("A simple circuit with classical control") {
-    Circuit c(3, 1);
-    c.add_op<unsigned>(OpType::CX, {0, 1});
-    c.add_op<unsigned>(OpType::CZ, {1, 2});
-    c.add_op<unsigned>(OpType::S, {0});
+  GIVEN("A circuit with multi-qubit gates") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::V, {0});
+    c.add_op<unsigned>(OpType::CRy, 0.5, {2, 1});
+    c.add_op<unsigned>(OpType::CnX, {0, 2, 1});
+    c.add_op<unsigned>(OpType::CH, {0, 1});
+    c.add_op<unsigned>(OpType::Tdg, {0});
+    c.add_op<unsigned>(OpType::CnX, {1, 0});
+    c.add_op<unsigned>(OpType::BRIDGE, {1, 0, 2});
+    c.add_op<unsigned>(OpType::SX, {1});
     c.add_op<unsigned>(OpType::V, {1});
-    c.add_op<unsigned>(OpType::Ry, 0.2, {1});
-    c.add_op<unsigned>(OpType::ZZPhase, 1.2, {1, 2});
-    c.add_conditional_gate<unsigned>(OpType::Rx, {0.1}, {1}, {0}, 1);
-    THEN("Then KAKDecomposition() cannot be applied") {
+    THEN("Then KAKDecomposition() can be applied") {
       CompilationUnit cu(c);
-      REQUIRE_THROWS_AS(KAKDecomposition()->apply(cu), UnsatisfiedPredicate);
+      REQUIRE(KAKDecomposition()->apply(cu));
+      Circuit c_res = cu.get_circ_ref();
+      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(c);
+      Eigen::MatrixXcd u_res = tket_sim::get_unitary(c_res);
+      REQUIRE(u_res.isApprox(u_orig));
     }
-    THEN("Then KAKDecomposition(OpType::TK2) cannot be applied") {
+    THEN("Then KAKDecomposition(OpType::TK2) can be applied") {
       CompilationUnit cu(c);
-      REQUIRE_THROWS_AS(
-          KAKDecomposition(OpType::TK2)->apply(cu), UnsatisfiedPredicate);
+      REQUIRE(KAKDecomposition(OpType::TK2)->apply(cu));
+      Circuit c_res = cu.get_circ_ref();
+      Eigen::MatrixXcd u_orig = tket_sim::get_unitary(c);
+      Eigen::MatrixXcd u_res = tket_sim::get_unitary(c_res);
+      REQUIRE(u_res.isApprox(u_orig));
     }
   }
 }

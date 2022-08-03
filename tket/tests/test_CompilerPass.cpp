@@ -23,6 +23,7 @@
 #include "Mapping/LexiRoute.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
+#include "Ops/ClassicalOps.hpp"
 #include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/CompilerPass.hpp"
@@ -438,13 +439,6 @@ SCENARIO("Construct sequence pass") {
     CompilationUnit cu(circ);
     REQUIRE_NOTHROW(sequence->apply(cu));
   }
-  WHEN("Apply to invalid CompilationUnit") {
-    Circuit circ(2, 1);
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
-    CompilationUnit cu(circ);
-    REQUIRE_THROWS_AS(sequence->apply(cu), UnsatisfiedPredicate);
-  }
 }
 
 SCENARIO("Construct invalid sequence passes from vector") {
@@ -716,6 +710,27 @@ SCENARIO("PeepholeOptimise2Q and FullPeepholeOptimise") {
     CompilationUnit cu1(circ1);
     REQUIRE(FullPeepholeOptimise()->apply(cu1));
   }
+  GIVEN("A circuit with classical operations.") {
+    Circuit circ(2, 1);
+    circ.add_op<unsigned>(OpType::ZZMax, {1, 0});
+    circ.add_op<unsigned>(OpType::Reset, {1});
+    circ.add_conditional_gate<unsigned>(OpType::Z, {}, {0}, {0}, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::U1, 0.2, {0});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    circ.add_op<unsigned>(ClassicalX(), {0});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::V, {0});
+    circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::U1, 0.4, {1});
+    circ.add_op<unsigned>(ClassicalX(), {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    CompilationUnit cu(circ);
+    REQUIRE(FullPeepholeOptimise()->apply(cu, SafetyMode::Audit));
+  }
   GIVEN("A symbolic circuit") {
     Sym a = SymEngine::symbol("alpha");
     Circuit circ(2);
@@ -822,6 +837,12 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     Circuit result = cu.get_circ_ref();
 
     REQUIRE(test_unitary_comparison(circ, result));
+  }
+  GIVEN("Unsatisfied NoClassicalControlPredicate") {
+    Circuit c(1, 1);
+    c.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {0}, 1);
+    CompilationUnit cu(c);
+    REQUIRE_THROWS_AS(ComposePhasePolyBoxes()->apply(cu), UnsatisfiedPredicate);
   }
   GIVEN("NoWireSwapsPredicate for ComposePhasePolyBoxes") {
     Circuit circ(5);
@@ -1244,6 +1265,12 @@ SCENARIO("ThreeQubitSquah") {
     const Circuit& c1 = cu.get_circ_ref();
     REQUIRE(c1.count_gates(OpType::CX) <= 19);
     REQUIRE(test_statevector_comparison(c, c1));
+  }
+  GIVEN("Unsatisfied gateset") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::CH, {0, 1});
+    CompilationUnit cu(c);
+    REQUIRE_THROWS_AS(ThreeQubitSquash()->apply(cu), UnsatisfiedPredicate);
   }
   GIVEN("A 3-qubit circuit that is non-trivially the identity") {
     Circuit c(3);
