@@ -139,8 +139,7 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps) {
   // Expects: CX and any single-qubit gates,
   // but does not break if it encounters others
   Transform t = Transforms::clifford_simp(allow_swaps);
-  PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
-  PredicatePtrMap precons = {CompilationUnit::make_type_pair(ccontrol_pred)};
+  PredicatePtrMap precons;
   PredicateClassGuarantees g_postcons;
   if (allow_swaps) {
     g_postcons = {
@@ -148,10 +147,7 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps) {
         {typeid(NoWireSwapsPredicate), Guarantee::Clear},
         {typeid(DirectednessPredicate), Guarantee::Clear}};
   }
-  OpTypeSet ots2 = {OpType::CX, OpType::TK1};
-  PredicatePtr outp_gates = std::make_shared<GateSetPredicate>(ots2);
-  PredicatePtrMap spec_postcons = {CompilationUnit::make_type_pair(outp_gates)};
-  PostConditions postcon{spec_postcons, g_postcons, Guarantee::Preserve};
+  PostConditions postcon{{}, g_postcons, Guarantee::Preserve};
 
   // record pass config
   nlohmann::json j;
@@ -558,8 +554,7 @@ PassPtr gen_user_defined_swap_decomp_pass(const Circuit& replacement_circ) {
 
 PassPtr KAKDecomposition(OpType target_2qb_gate, double cx_fidelity) {
   Transform t = Transforms::two_qubit_squash(target_2qb_gate, cx_fidelity);
-  PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
-  PredicatePtrMap precons{CompilationUnit::make_type_pair(ccontrol_pred)};
+  PredicatePtrMap precons;
   PredicateClassGuarantees g_postcons = {
       {typeid(DirectednessPredicate), Guarantee::Clear},
       {typeid(CliffordCircuitPredicate), Guarantee::Clear}};
@@ -596,6 +591,7 @@ PassPtr ThreeQubitSquash(bool allow_swaps) {
                 Transforms::three_qubit_squash() >>
                 Transforms::clifford_simp(allow_swaps);
   OpTypeSet ots{all_single_qubit_types()};
+  ots.insert(all_classical_types().begin(), all_classical_types().end());
   ots.insert(OpType::CX);
   PredicatePtr gate_pred = std::make_shared<GateSetPredicate>(ots);
   PredicatePtrMap precons{CompilationUnit::make_type_pair(gate_pred)};
@@ -614,6 +610,7 @@ PassPtr FullPeepholeOptimise(bool allow_swaps) {
       OpType::TK1, OpType::CX, OpType::Measure, OpType::Collapse,
       OpType::Reset};
   PredicatePtrMap precons = {};
+  after_set.insert(all_classical_types().begin(), all_classical_types().end());
   PredicatePtr out_gateset = std::make_shared<GateSetPredicate>(after_set);
   PredicatePtr max2qb = std::make_shared<MaxTwoQubitGatesPredicate>();
   PredicatePtrMap postcon_spec = {
