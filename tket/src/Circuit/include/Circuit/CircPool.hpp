@@ -417,14 +417,6 @@ class ControlDecompError : public std::logic_error {
 };
 
 /**
- * @brief Implement controlled 2x2 unitary using CU3 and U1
- *
- * @param u 2x2 unitary
- * @return Circuit
- */
-Circuit CU_to_CU3(const Eigen::Matrix2cd &u);
-
-/**
  * @brief Get an n-qubit incrementer circuit with linear depth and O(n^2) gate
  * count. There exists a global phase difference
  * https://arxiv.org/abs/2203.11882

@@ -676,6 +676,18 @@ static void lemma79(
   CCX_candidates.push_back({second_e, secondCnX});
 }
 
+static Circuit CU_to_CU3(const Eigen::Matrix2cd& u) {
+  Circuit c(2);
+  std::vector<double> tk1_angles = tk1_angles_from_unitary(u);
+  Expr theta = tk1_angles[1];
+  Expr phi = tk1_angles[0] - 0.5;
+  Expr lambda = tk1_angles[2] + 0.5;
+  Expr t = tk1_angles[3] - 0.5 * (tk1_angles[0] + tk1_angles[2]);
+  c.add_op<unsigned>(OpType::U1, t, {0});
+  c.add_op<unsigned>(OpType::CU3, {theta, phi, lambda}, {0, 1});
+  return c;
+}
+
 Circuit CnU_gray_code_decomp(unsigned n, const Eigen::Matrix2cd& u) {
   if (n == 0) {
     // Synthesise U using tk1 and phase
@@ -819,18 +831,6 @@ Circuit CnX_gray_decomp(unsigned n) {
       return circ;
     }
   }
-}
-
-Circuit CU_to_CU3(const Eigen::Matrix2cd& u) {
-  Circuit c(2);
-  std::vector<double> tk1_angles = tk1_angles_from_unitary(u);
-  Expr theta = tk1_angles[1];
-  Expr phi = tk1_angles[0] - 0.5;
-  Expr lambda = tk1_angles[2] + 0.5;
-  Expr t = tk1_angles[3] - 0.5 * (tk1_angles[0] + tk1_angles[2]);
-  c.add_op<unsigned>(OpType::U1, t, {0});
-  c.add_op<unsigned>(OpType::CU3, {theta, phi, lambda}, {0, 1});
-  return c;
 }
 
 static void add_cu_using_cu3(
