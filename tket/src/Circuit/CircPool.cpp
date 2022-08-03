@@ -1077,8 +1077,7 @@ Circuit NPhasedX_using_PhasedX(
 
 Circuit TK2_using_normalised_TK2(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
-  auto [pre, normalised_exprs, post] =
-      normalise_TK2_angles(alpha, beta, gamma);
+  auto [pre, normalised_exprs, post] = normalise_TK2_angles(alpha, beta, gamma);
   auto [alpha_norm, beta_norm, gamma_norm] = normalised_exprs;
 
   Circuit res(2);
