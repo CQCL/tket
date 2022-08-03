@@ -383,7 +383,7 @@ PYBIND11_MODULE(passes, m) {
       "exactly using CX gates.\n\n"
       "All TK2 gate parameters must be normalised, i.e. they must satisfy "
       "`NormalisedTK2Predicate`.\n\n"
-      "Using the `allow_swaps=true` (default) option, qubits will be swapped "
+      "Using the `allow_swaps=True` (default) option, qubits will be swapped "
       "when convenient to reduce the two-qubit gate count of the decomposed "
       "TK2.\n\n"
       "If the TK2 angles are symbolic values, the decomposition will "
