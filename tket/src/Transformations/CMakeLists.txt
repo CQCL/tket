@@ -27,7 +27,6 @@ add_library(tket-${COMP}
     CliffordReductionPass.cpp
     OptimisationPass.cpp
     PhaseOptimisation.cpp
-    ControlledGates.cpp
     Decomposition.cpp
     Replacement.cpp
     MeasurePass.cpp

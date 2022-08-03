@@ -18,9 +18,10 @@
 
 #include "Circuit/CircPool.hpp"
 #include "Gate/GateUnitaryMatrix.hpp"
+#include "Gate/SymTable.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
-#include "Transformations/ControlledGates.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
@@ -34,7 +35,7 @@ static bool approx_equal(const Complex& c1, const Complex& c2) {
 }
 
 static bool check_incrementer_borrow_n_qubits(const unsigned n) {
-  Circuit inc = Transforms::incrementer_borrow_n_qubits(n);
+  Circuit inc = CircPool::incrementer_borrow_n_qubits(n);
   bool correct = true;
   const StateVector sv = tket_sim::get_statevector(inc);
   for (unsigned i = 0; i < sv.size(); ++i) {
@@ -61,7 +62,7 @@ static bool check_incrementer_borrow_n_qubits(const unsigned n) {
 }
 
 static bool check_incrementer_borrow_1_qubit(const unsigned n) {
-  Circuit inc = Transforms::incrementer_borrow_1_qubit(n);
+  Circuit inc = CircPool::incrementer_borrow_1_qubit(n);
   REQUIRE(inc.n_vertices() - inc.n_gates() == (n + 1) * 2);
   Transforms::synthesise_tket().apply(inc);
   const StateVector sv = tket_sim::get_statevector(inc);
@@ -96,7 +97,7 @@ static bool check_incrementer_linear_depth(
       circ.add_op<unsigned>(OpType::X, {i});
     }
   }
-  Circuit inc = Transforms::incrementer_linear_depth(n);
+  Circuit inc = CircPool::incrementer_linear_depth(n);
   circ.append(inc);
 
   unsigned long correct_out_long = in_bits.to_ulong() + 1UL;
@@ -181,7 +182,7 @@ SCENARIO("Test decomposition using TK2") {
     Circuit decomposed_circ = TK2_circ_from_multiq(op);
     auto u = tket_sim::get_unitary(decomposed_circ);
     REQUIRE((get_CnX_matrix(6) - u).cwiseAbs().sum() < ERR_EPS);
-    REQUIRE(decomposed_circ.count_gates(OpType::TK2) == 72);
+    REQUIRE(decomposed_circ.count_gates(OpType::TK2) == 61);
   }
 }
 
@@ -309,11 +310,11 @@ SCENARIO("Test switch statement long", "[.long]") {
 
 SCENARIO("Test incrementer using n borrowed qubits") {
   GIVEN("0 qbs") {
-    Circuit inc = Transforms::incrementer_borrow_n_qubits(0);
+    Circuit inc = CircPool::incrementer_borrow_n_qubits(0);
     REQUIRE(inc.n_vertices() == 0);
   }
   GIVEN("A 1qb incrementer") {
-    Circuit inc = Transforms::incrementer_borrow_n_qubits(1);
+    Circuit inc = CircPool::incrementer_borrow_n_qubits(1);
     REQUIRE(inc.n_gates() == 1);
     REQUIRE(inc.count_gates(OpType::X) == 1);
   }
@@ -325,7 +326,7 @@ SCENARIO("Test incrementer using n borrowed qubits") {
     // tket_sim doesn't support computing a unitary from a 12 qubits circuit
     // hence we only test that the incrementer can be constructed as intended.
     for (unsigned n = 6; n < 10; ++n) {
-      Circuit inc = Transforms::incrementer_borrow_n_qubits(n);
+      Circuit inc = CircPool::incrementer_borrow_n_qubits(n);
       REQUIRE(inc.n_qubits() == 2 * n);
       REQUIRE(inc.count_gates(OpType::CCX) == (n - 1) * 4);
       REQUIRE(Transforms::synthesise_tket().apply(inc));
@@ -337,7 +338,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
   GIVEN("Check the top incrementer is mapped correctly") {
     const unsigned k = 3;
     Circuit inc(2 * k);
-    Circuit top_incrementer = Transforms::incrementer_borrow_n_qubits(k);
+    Circuit top_incrementer = CircPool::incrementer_borrow_n_qubits(k);
     std::vector<unsigned> top_qbs(2 * k);
     for (unsigned i = 0; i != k; ++i) {
       top_qbs[2 * i] = i + k;  // garbage qubits
@@ -361,7 +362,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
       "odd qb no") {
     const unsigned j = 3;
     Circuit inc(2 * j);
-    Circuit bottom_incrementer = Transforms::incrementer_borrow_n_qubits(j);
+    Circuit bottom_incrementer = CircPool::incrementer_borrow_n_qubits(j);
     std::vector<unsigned> bot_qbs(2 * j);
     for (unsigned i = 0; i != j; ++i) {
       bot_qbs[2 * i] = i;  // 0,2,4...n-1 //garbage qubits
@@ -395,7 +396,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
     for (unsigned i = k; i != n; ++i) {
       inc.add_op<unsigned>(OpType::X, {i});
     }
-    Circuit bottom_incrementer = Transforms::incrementer_borrow_n_qubits(
+    Circuit bottom_incrementer = CircPool::incrementer_borrow_n_qubits(
         j - 1);  // insert incrementer over remaining qubits
     std::vector<unsigned> bot_qbs(2 * j - 2);
     for (unsigned i = 0; i != j - 1; ++i) {
@@ -420,13 +421,13 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
     REQUIRE(correct);
   }
   GIVEN("A 0 qubit incrementer") {
-    Circuit inc = Transforms::incrementer_borrow_1_qubit(0);
+    Circuit inc = CircPool::incrementer_borrow_1_qubit(0);
     REQUIRE(inc.n_qubits() == 1);
     REQUIRE(inc.n_vertices() == 2);
     REQUIRE(inc.n_gates() == 0);
   }
   GIVEN("A 1 qubit incrementer") {
-    Circuit inc = Transforms::incrementer_borrow_1_qubit(1);
+    Circuit inc = CircPool::incrementer_borrow_1_qubit(1);
     REQUIRE(inc.n_qubits() == 2);
     REQUIRE(inc.n_vertices() == 5);
     REQUIRE(inc.n_gates() == 1);
@@ -462,7 +463,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
 
 SCENARIO("Test linear depth incrementer") {
   GIVEN("0 qb") {
-    Circuit circ = Transforms::incrementer_linear_depth(0);
+    Circuit circ = CircPool::incrementer_linear_depth(0);
     REQUIRE(circ.n_qubits() == 0);
   }
   GIVEN("1 qb") {
@@ -504,7 +505,7 @@ SCENARIO("Test linear depth incrementer") {
 SCENARIO("Test a CnX is decomposed correctly when bootstrapped", "[.long]") {
   GIVEN("Test CnX unitary for 3 to 9 controls") {
     for (unsigned n = 3; n < 10; ++n) {
-      Circuit circ = Transforms::cnx_normal_decomp(n);
+      Circuit circ = CircPool::CnX_normal_decomp(n);
       const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
       REQUIRE(m.isApprox(get_CnX_matrix(n), ERR_EPS));
     }
@@ -517,7 +518,7 @@ SCENARIO(
   GIVEN("Test CnX unitary for 0 to 9 controls") {
     for (unsigned n = 0; n < 10; ++n) {
       Eigen::MatrixXcd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
-      Circuit circ = Transforms::cnu_linear_depth_decomp(n, x);
+      Circuit circ = CircPool::CnU_linear_depth_decomp(n, x);
       const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
       REQUIRE(m.isApprox(get_CnX_matrix(n), ERR_EPS));
     }
@@ -530,7 +531,7 @@ SCENARIO("Test a CnU is decomposed correctly using the linear depth method") {
       Eigen::Matrix2cd U = random_unitary(2, i);
       std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
       for (auto n : test_ns) {
-        Circuit circ = Transforms::cnu_linear_depth_decomp(n, U);
+        Circuit circ = CircPool::CnU_linear_depth_decomp(n, U);
         const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
         REQUIRE(m.isApprox(get_CnU_matrix(n, U), ERR_EPS));
       }
@@ -538,17 +539,199 @@ SCENARIO("Test a CnU is decomposed correctly using the linear depth method") {
   }
 }
 
+SCENARIO(
+    "Test a CnU is decomposed correctly using the gray code method",
+    "[.long]") {
+  GIVEN("Test CnU unitary for n={0,1,2,3,5} controls") {
+    for (unsigned i = 0; i < 100; i++) {
+      Eigen::Matrix2cd U = random_unitary(2, i);
+      std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
+      for (auto n : test_ns) {
+        Circuit circ = CircPool::CnU_gray_code_decomp(n, U);
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, U), ERR_EPS));
+      }
+    }
+  }
+}
+
+static Eigen::MatrixXcd get_su2_matrix(
+    const Expr& alpha, const Expr& theta, const Expr& beta) {
+  Circuit c1 = Circuit(1);
+  c1.add_op<unsigned>(OpType::Rz, beta, {0});
+  c1.add_op<unsigned>(OpType::Ry, theta, {0});
+  c1.add_op<unsigned>(OpType::Rz, alpha, {0});
+  return tket_sim::get_unitary(c1);
+}
+
+SCENARIO("Test CnSU2_linear_decomp") {
+  GIVEN("Test identity") {
+    std::vector<std::vector<Expr>> rotations = {
+        {0, 0, 4}, {0, 0, 0}, {1, 4, 3}, {1, 0, 7}, {1, 6, 1}, {1.5, -6, 4.5}};
+    std::vector<unsigned> test_ns = {0, 1, 2, 3, 4, 5};
+    for (auto n : test_ns) {
+      for (auto angles : rotations) {
+        Circuit circ =
+            CircPool::CnSU2_linear_decomp(n, angles[0], angles[1], angles[2]);
+        const Eigen::MatrixXcd U =
+            get_su2_matrix(angles[0], angles[1], angles[2]);
+        REQUIRE(U.isApprox(Eigen::Matrix2cd::Identity(), ERR_EPS));
+        REQUIRE(circ.n_gates() == 0);
+      }
+    }
+  }
+  GIVEN("Test Y rotation") {
+    std::vector<std::vector<Expr>> rotations = {
+        {0, 0.377, 0}, {3, 4.2, -1}, {2, 1.1, 0}, {5, -0.5, -1}, {4, 1.2, 0}};
+    std::vector<unsigned> test_ns = {0, 1, 2, 3, 4, 5};
+    for (auto n : test_ns) {
+      for (auto angles : rotations) {
+        Circuit circ =
+            CircPool::CnSU2_linear_decomp(n, angles[0], angles[1], angles[2]);
+        const Eigen::MatrixXcd U =
+            get_su2_matrix(angles[0], angles[1], angles[2]);
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, U), ERR_EPS));
+        // check the method detects pure ry
+        if (n == 1) {
+          REQUIRE(circ.n_gates() == 4);
+          REQUIRE(circ.count_gates(OpType::CX) == 2);
+          REQUIRE(circ.count_gates(OpType::Ry) == 2);
+        } else if (n == 2) {
+          REQUIRE(circ.n_gates() == 4);
+          REQUIRE(circ.count_gates(OpType::CX) == 2);
+          REQUIRE(circ.count_gates(OpType::CRy) == 2);
+        }
+      }
+    }
+  }
+  GIVEN("Test rotations where W=AXBX") {
+    std::vector<std::vector<Expr>> rotations = {
+        {3.7, 0.377, -0.3}, {3.4, 4.2, -2.6}};
+    std::vector<unsigned> test_ns = {0, 1, 2, 3, 4, 5};
+    for (auto n : test_ns) {
+      for (auto angles : rotations) {
+        Circuit circ =
+            CircPool::CnSU2_linear_decomp(n, angles[0], angles[1], angles[2]);
+        const Eigen::MatrixXcd U =
+            get_su2_matrix(angles[0], angles[1], angles[2]);
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, U), ERR_EPS));
+        if (n == 1) {
+          REQUIRE(circ.n_gates() == 6);
+          REQUIRE(circ.count_gates(OpType::CX) == 2);
+          REQUIRE(circ.count_gates(OpType::Ry) == 2);
+          REQUIRE(circ.count_gates(OpType::Rz) == 2);
+        } else if (n == 2) {
+          REQUIRE(circ.n_gates() == 6);
+          REQUIRE(circ.count_gates(OpType::CX) == 2);
+          REQUIRE(circ.count_gates(OpType::CRy) == 2);
+          REQUIRE(circ.count_gates(OpType::CRz) == 2);
+        }
+      }
+    }
+  }
+  GIVEN("Test symbolic rotations") {
+    Sym a = SymTable::fresh_symbol("a");
+    Expr ea(a);
+    Sym b = SymTable::fresh_symbol("b");
+    Expr eb(b);
+    Sym c = SymTable::fresh_symbol("c");
+    Expr ec(c);
+    std::map<Sym, double, SymEngine::RCPBasicKeyLess> symbol_map = {
+        {a, 0.3112}, {b, 1.178}, {c, -0.911}};
+    std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
+    for (auto n : test_ns) {
+      Circuit circ = CircPool::CnSU2_linear_decomp(n, ea, eb, ec);
+      const Eigen::MatrixXcd U =
+          get_su2_matrix(symbol_map[a], symbol_map[b], symbol_map[c]);
+      circ.symbol_substitution(symbol_map);
+      const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+      REQUIRE(m.isApprox(get_CnU_matrix(n, U), ERR_EPS));
+    }
+  }
+  GIVEN("Test arbitrary rotations") {
+    std::vector<std::vector<Expr>> rotations = {
+        {3.3, 0.377, -0.11}, {1.3, 0, 0.13}};
+    std::vector<unsigned> test_ns = {0, 1, 2, 3, 4, 5};
+    for (auto n : test_ns) {
+      for (auto angles : rotations) {
+        Circuit circ =
+            CircPool::CnSU2_linear_decomp(n, angles[0], angles[1], angles[2]);
+        const Eigen::MatrixXcd U =
+            get_su2_matrix(angles[0], angles[1], angles[2]);
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, U), ERR_EPS));
+      }
+    }
+  }
+}
+
+SCENARIO(
+    "Test controlled rotation gates are decomposed correctly using the gray "
+    "code method",
+    "[.long]") {
+  GIVEN("Test CnRy for n={0,1,2,3,5} controls") {
+    const Eigen::Matrix2cd ry = Gate(OpType::Ry, {Expr(3.1)}, 1).get_unitary();
+    for (unsigned i = 0; i < 100; i++) {
+      std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
+      for (auto n : test_ns) {
+        Circuit circ = CircPool::CnU_gray_code_decomp(
+            n, as_gate_ptr(get_op_ptr(OpType::Ry, 3.1)));
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, ry), ERR_EPS));
+      }
+    }
+  }
+  GIVEN("Test CnRx for n={0,1,2,3,5} controls") {
+    const Eigen::Matrix2cd rx = Gate(OpType::Rx, {Expr(0.1)}, 1).get_unitary();
+    for (unsigned i = 0; i < 100; i++) {
+      std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
+      for (auto n : test_ns) {
+        Circuit circ = CircPool::CnU_gray_code_decomp(
+            n, as_gate_ptr(get_op_ptr(OpType::Rx, 0.1)));
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, rx), ERR_EPS));
+      }
+    }
+  }
+  GIVEN("Test CnRz for n={0,1,2,3,5} controls") {
+    const Eigen::Matrix2cd rz = Gate(OpType::Rz, {Expr(2.7)}, 1).get_unitary();
+    for (unsigned i = 0; i < 100; i++) {
+      std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
+      for (auto n : test_ns) {
+        Circuit circ = CircPool::CnU_gray_code_decomp(
+            n, as_gate_ptr(get_op_ptr(OpType::Rz, 2.7)));
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, rz), ERR_EPS));
+      }
+    }
+  }
+  GIVEN("Test CnU1 for n={0,1,2,3,5} controls") {
+    const Eigen::Matrix2cd u1 = Gate(OpType::U1, {Expr(1.5)}, 1).get_unitary();
+    for (unsigned i = 0; i < 100; i++) {
+      std::vector<unsigned> test_ns = {0, 1, 2, 3, 5};
+      for (auto n : test_ns) {
+        Circuit circ = CircPool::CnU_gray_code_decomp(
+            n, as_gate_ptr(get_op_ptr(OpType::U1, 1.5)));
+        const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
+        REQUIRE(m.isApprox(get_CnU_matrix(n, u1), ERR_EPS));
+      }
+    }
+  }
+}
+
 SCENARIO("Test a CnX is decomposed correctly using the Gray code method") {
   GIVEN("Test CnX unitary for 0 to 8 controls") {
-    Circuit circ_x = Transforms::cnx_gray_decomp(0);
+    Circuit circ_x = CircPool::CnX_gray_decomp(0);
     REQUIRE(circ_x.n_gates() == 1);
     REQUIRE(circ_x.count_gates(OpType::X) == 1);
-    Circuit circ_cx = Transforms::cnx_gray_decomp(1);
+    Circuit circ_cx = CircPool::CnX_gray_decomp(1);
     REQUIRE(circ_cx.n_gates() == 1);
     REQUIRE(circ_cx.count_gates(OpType::CX) == 1);
 
     for (unsigned n = 2; n < 8; ++n) {
-      Circuit circ = Transforms::cnx_gray_decomp(n);
+      Circuit circ = CircPool::CnX_gray_decomp(n);
       const Eigen::MatrixXcd m = tket_sim::get_unitary(circ);
       REQUIRE(m.isApprox(get_CnX_matrix(n), ERR_EPS));
       switch (n) {
