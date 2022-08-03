@@ -36,10 +36,12 @@ Transform peephole_optimise_2q();
  * Peephole optimisation including resynthesis of three-qubit gate sequences.
  *
  * @param allow_swaps whether to allow introduction of implicit wire swaps
+ * @param target_2qb_gate target 2-qubut gate (CX or TK2)
  *
- * Produces: CX, TK1.
+ * Produces: (CX or TK2) and TK1.
  */
-Transform full_peephole_optimise(bool allow_swaps = true);
+Transform full_peephole_optimise(
+    bool allow_swaps = true, OpType target_2qb_gate = OpType::CX);
 
 // kitchen sink optimisation - phase gadget resynthesis, two-qubit Cartan
 // forms, Clifford Expects: Any gates Produces: CX, TK1
