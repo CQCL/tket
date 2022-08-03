@@ -353,6 +353,7 @@ SCENARIO("Testing two-qubit canonical forms") {
     Circuit circ(2);
     add_2qb_gates(circ, OpType::CX, {{1, 0}, {0, 1}, {1, 0}});
     REQUIRE(Transforms::two_qubit_squash().apply(circ));
+    REQUIRE(circ.n_gates() == 0);
   }
 
   GIVEN("A swap cannot be simplified") {

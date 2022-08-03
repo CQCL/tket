@@ -177,4 +177,24 @@ Circuit with_CX(Gate_ptr op);
  */
 Circuit with_controls(const Circuit& c, unsigned n_controls = 1);
 
+/**
+ * @brief Get normalised TK2 angles and local change of basis for normalisation
+ *
+ * Given any TK2 angles, return the equivalent normalised TK2 angles as well
+ * as the two change of basis circuits `pre` and `post` so that
+ *
+ *          TK2(a, b, c) = post * TK2(a', b', c') * pre
+ *
+ * where a, b, c are the TK2 angles and a', b', c' are the equivalent normalised
+ * angles.
+ *
+ * @param a first TK2 parameter
+ * @param b second TK2 parameter
+ * @param c third TK2 parameter
+ * @return std::tuple<Circuit, std::array<Expr, 3>, Circuit> pre circuit,
+ *  normalised TK2 angles and post circuit (in this order)
+ */
+std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
+    Expr a, Expr b, Expr c);
+
 }  // namespace tket

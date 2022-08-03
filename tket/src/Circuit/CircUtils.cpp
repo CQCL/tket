@@ -719,4 +719,137 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
 
 #undef CNXTYPE
 
+std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
+    Expr a, Expr b, Expr c) {
+  std::optional<double> a_eval = eval_expr_mod(a, 4);
+  std::optional<double> b_eval = eval_expr_mod(b, 4);
+  std::optional<double> c_eval = eval_expr_mod(c, 4);
+
+  Circuit pre(2), post(2);
+
+  // Add ot.dagger() at beggining and ot at end.
+  auto conj = [&pre, &post](OpType ot) {
+    Op_ptr op = get_op_ptr(ot);
+    Op_ptr opdg = op->dagger();
+    pre.add_op<unsigned>(opdg, {0});
+    pre.add_op<unsigned>(opdg, {1});
+    // These get undaggered at the end
+    post.add_op<unsigned>(opdg, {0});
+    post.add_op<unsigned>(opdg, {1});
+  };
+
+  // Step 1: For non-symbolic: a, b, c ∈ [0, 1] ∪ [3, 4].
+  if (a_eval && *a_eval > 1. && *a_eval <= 3.) {
+    a -= 2;
+    *a_eval -= 2;
+    pre.add_phase(1);
+    *a_eval = fmodn(*a_eval, 4);
+  }
+  if (b_eval && *b_eval > 1. && *b_eval <= 3.) {
+    b -= 2;
+    *b_eval -= 2;
+    pre.add_phase(1);
+    *b_eval = fmodn(*b_eval, 4);
+  }
+  if (c_eval && *c_eval > 1. && *c_eval <= 3.) {
+    c -= 2;
+    *c_eval -= 2;
+    pre.add_phase(1);
+    *c_eval = fmodn(*c_eval, 4);
+  }
+
+  // Step 2: Make sure that symbolic expressions come before non-symbolics.
+  if (a_eval && !b_eval) {
+    // Swap XX and YY.
+    conj(OpType::S);
+    std::swap(a, b);
+    std::swap(a_eval, b_eval);
+  } else if (a_eval && !c_eval) {
+    // Swap XX and ZZ.
+    conj(OpType::H);
+    std::swap(a, c);
+    std::swap(a_eval, c_eval);
+  }
+  if (b_eval && !c_eval) {
+    // Swap YY and ZZ.
+    conj(OpType::V);
+    std::swap(b, c);
+    std::swap(b_eval, c_eval);
+  }
+
+  // Step 3: Order non-symbolic expressions in decreasing order.
+  auto val_in_weyl = [](double r) {
+    // Value of r once projected into Weyl chamber.
+    return std::min(fmodn(r, 1), 1 - fmodn(r, 1));
+  };
+  if (a_eval && b_eval && val_in_weyl(*a_eval) < val_in_weyl(*b_eval)) {
+    // Swap XX and YY.
+    conj(OpType::S);
+    std::swap(a, b);
+    std::swap(a_eval, b_eval);
+  }
+  if (b_eval && c_eval && val_in_weyl(*b_eval) < val_in_weyl(*c_eval)) {
+    // Swap YY and ZZ.
+    conj(OpType::V);
+    std::swap(b, c);
+    std::swap(b_eval, c_eval);
+  }
+  if (a_eval && b_eval && val_in_weyl(*a_eval) < val_in_weyl(*b_eval)) {
+    // Swap XX and YY.
+    conj(OpType::S);
+    std::swap(a, b);
+    std::swap(a_eval, b_eval);
+  }
+
+  // Step 4: Project into Weyl chamber.
+  if (a_eval && *a_eval > 1.) {
+    a -= 3.;
+    *a_eval -= 3;
+    post.add_op<unsigned>(OpType::X, {0});
+    post.add_op<unsigned>(OpType::X, {1});
+    pre.add_phase(0.5);
+  }
+  if (b_eval && *b_eval > 1.) {
+    b -= 3.;
+    *b_eval -= 3;
+    post.add_op<unsigned>(OpType::Y, {0});
+    post.add_op<unsigned>(OpType::Y, {1});
+    pre.add_phase(0.5);
+  }
+  if (c_eval && *c_eval > 1.) {
+    c -= 3.;
+    *c_eval -= 3;
+    post.add_op<unsigned>(OpType::Z, {0});
+    post.add_op<unsigned>(OpType::Z, {1});
+    pre.add_phase(0.5);
+  }
+  if (a_eval && *a_eval > .5) {
+    a = 1. - a;
+    *a_eval = 1. - *a_eval;
+    b = 1. - b;
+    *b_eval = 1. - *b_eval;
+    pre.add_op<unsigned>(OpType::Z, {0});
+    post.add_op<unsigned>(OpType::Z, {1});
+  }
+  if (b_eval && *b_eval > .5) {
+    b = 1 - b;
+    *b_eval = 1. - *b_eval;
+    c = 1 - c;
+    *c_eval = 1. - *c_eval;
+    pre.add_op<unsigned>(OpType::X, {0});
+    post.add_op<unsigned>(OpType::X, {1});
+  }
+  if (c_eval && *c_eval > .5) {
+    c -= 1;
+    *c_eval -= 1.;
+    post.add_op<unsigned>(OpType::Z, {0});
+    post.add_op<unsigned>(OpType::Z, {1});
+    pre.add_phase(-0.5);
+  }
+  // Cheeky way of reversing order of ops.
+  post = post.dagger();
+
+  return {pre, {a, b, c}, post};
+}
+
 }  // namespace tket

@@ -16,6 +16,7 @@
 
 #include <tkassert/Assert.hpp>
 
+#include "CircUtils.hpp"
 #include "Circuit.hpp"
 #include "OpType/OpType.hpp"
 #include "Utils/Expression.hpp"
@@ -1072,139 +1073,18 @@ Circuit NPhasedX_using_PhasedX(
   return c;
 }
 
-Circuit TK2_using_normalised_TK2(Expr ea, Expr eb, Expr ec) {
-  std::optional<double> a = eval_expr_mod(ea, 4);
-  std::optional<double> b = eval_expr_mod(eb, 4);
-  std::optional<double> c = eval_expr_mod(ec, 4);
-
+Circuit TK2_using_normalised_TK2(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
   Circuit pre(2), post(2);
+  std::array<Expr, 3> normalised_exprs;
+  std::tie(pre, normalised_exprs, post) =
+      normalise_TK2_angles(alpha, beta, gamma);
+  auto [alpha_norm, beta_norm, gamma_norm] = normalised_exprs;
 
-  // Add ot.dagger() at beggining and ot at end.
-  auto conj = [&pre, &post](OpType ot) {
-    Op_ptr op = get_op_ptr(ot);
-    Op_ptr opdg = op->dagger();
-    pre.add_op<unsigned>(opdg, {0});
-    pre.add_op<unsigned>(opdg, {1});
-    // These get undaggered at the end
-    post.add_op<unsigned>(opdg, {0});
-    post.add_op<unsigned>(opdg, {1});
-  };
-
-  // Step 1: For non-symbolic: a, b, c ∈ [0, 1] ∪ [3, 4].
-  if (a && *a > 1. && *a <= 3.) {
-    ea -= 2;
-    *a -= 2;
-    pre.add_phase(1);
-    *a = fmodn(*a, 4);
-  }
-  if (b && *b > 1. && *b <= 3.) {
-    eb -= 2;
-    *b -= 2;
-    pre.add_phase(1);
-    *b = fmodn(*b, 4);
-  }
-  if (c && *c > 1. && *c <= 3.) {
-    ec -= 2;
-    *c -= 2;
-    pre.add_phase(1);
-    *c = fmodn(*c, 4);
-  }
-
-  // Step 2: Make sure that symbolic expressions come before non-symbolics.
-  if (a && !b) {
-    // Swap XX and YY.
-    conj(OpType::S);
-    std::swap(ea, eb);
-    std::swap(a, b);
-  } else if (a && !c) {
-    // Swap XX and ZZ.
-    conj(OpType::H);
-    std::swap(ea, ec);
-    std::swap(a, c);
-  }
-  if (b && !c) {
-    // Swap YY and ZZ.
-    conj(OpType::V);
-    std::swap(eb, ec);
-    std::swap(b, c);
-  }
-
-  // Step 3: Order non-symbolic expressions in decreasing order.
-  auto val_in_weyl = [](double r) {
-    // Value of r once projected into Weyl chamber.
-    return std::min(fmodn(r, 1), 1 - fmodn(r, 1));
-  };
-  if (a && b && val_in_weyl(*a) < val_in_weyl(*b)) {
-    // Swap XX and YY.
-    conj(OpType::S);
-    std::swap(ea, eb);
-    std::swap(a, b);
-  }
-  if (b && c && val_in_weyl(*b) < val_in_weyl(*c)) {
-    // Swap YY and ZZ.
-    conj(OpType::V);
-    std::swap(eb, ec);
-    std::swap(b, c);
-  }
-  if (a && b && val_in_weyl(*a) < val_in_weyl(*b)) {
-    // Swap XX and YY.
-    conj(OpType::S);
-    std::swap(ea, eb);
-    std::swap(a, b);
-  }
-
-  // Step 4: Project into Weyl chamber.
-  if (a && *a > 1.) {
-    ea -= 3.;
-    *a -= 3;
-    post.add_op<unsigned>(OpType::X, {0});
-    post.add_op<unsigned>(OpType::X, {1});
-    pre.add_phase(0.5);
-  }
-  if (b && *b > 1.) {
-    eb -= 3.;
-    *b -= 3;
-    post.add_op<unsigned>(OpType::Y, {0});
-    post.add_op<unsigned>(OpType::Y, {1});
-    pre.add_phase(0.5);
-  }
-  if (c && *c > 1.) {
-    ec -= 3.;
-    *c -= 3;
-    post.add_op<unsigned>(OpType::Z, {0});
-    post.add_op<unsigned>(OpType::Z, {1});
-    pre.add_phase(0.5);
-  }
-  if (a && *a > .5) {
-    ea = 1. - ea;
-    *a = 1. - *a;
-    eb = 1. - eb;
-    *b = 1. - *b;
-    pre.add_op<unsigned>(OpType::Z, {0});
-    post.add_op<unsigned>(OpType::Z, {1});
-  }
-  if (b && *b > .5) {
-    eb = 1 - eb;
-    *b = 1. - *b;
-    ec = 1 - ec;
-    *c = 1. - *c;
-    pre.add_op<unsigned>(OpType::X, {0});
-    post.add_op<unsigned>(OpType::X, {1});
-  }
-  if (c && *c > .5) {
-    ec -= 1;
-    *c -= 1.;
-    post.add_op<unsigned>(OpType::Z, {0});
-    post.add_op<unsigned>(OpType::Z, {1});
-    pre.add_phase(-0.5);
-  }
-  // Cheeky way of reversing order of ops.
-  post = post.dagger();
-
-  // Step 5: Assemble!
   Circuit res(2);
   res.append(pre);
-  res.add_op<unsigned>(OpType::TK2, {ea, eb, ec}, {0, 1});
+  res.add_op<unsigned>(
+      OpType::TK2, {alpha_norm, beta_norm, gamma_norm}, {0, 1});
   res.append(post);
 
   return res;

@@ -565,45 +565,6 @@ static void best_exact_decomposition(
   }
 }
 
-// Given a 2-qb circuit with a single TK2, returns a tuple (pre, angles, post)
-// where pre/post are the parts of the circuit that come before/after the TK2
-// gate and angles are the 3 angles of the TK2 gate
-static auto get_TK2_angles(const Circuit &circ) {
-  TKET_ASSERT(circ.n_qubits() == 2);
-  Circuit pre(2), post(2);
-  std::array<Expr, 3> angles;
-  bool found_TK2 = false;
-
-  Circuit::SliceIterator slice_iter = circ.slice_begin();
-  for (const Command &cmd : circ) {
-    Op_ptr op = cmd.get_op_ptr();
-    if (op->get_type() == OpType::TK2) {
-      if (found_TK2) {
-        throw std::invalid_argument(
-            "Found more than one TK2 in get_TK2_angles");
-      } else {
-        auto params = op->get_params();
-        TKET_ASSERT(params.size() == 3);
-        angles = {params[0], params[1], params[2]};
-        found_TK2 = true;
-      }
-    } else {
-      auto qubits = cmd.get_qubits();
-      if (found_TK2) {
-        post.add_op<Qubit>(op, qubits);
-      } else {
-        pre.add_op<Qubit>(op, qubits);
-      }
-    }
-  }
-  if (!found_TK2) {
-    throw std::invalid_argument("Not found any TK2 in get_TK2_angles");
-  }
-  pre.add_phase(circ.get_phase());
-
-  return std::make_tuple(pre, angles, post);
-}
-
 /**
  * @brief TK2 expressed (approximately) as CX/ZZMax or ZZPhase.
  *
@@ -641,12 +602,9 @@ static Circuit TK2_replacement(
     for (unsigned i = 0; i < 3; ++i) {
       angles_swapped[i] += 0.5;
     }
-    swap_circ.add_op<unsigned>(
-        OpType::TK2, {angles_swapped[0], angles_swapped[1], angles_swapped[2]},
-        {0, 1});
-    swap_circ.add_phase(0.25);
-    normalise_TK2().apply(swap_circ);
-    std::tie(pre, angles_swapped, post) = get_TK2_angles(swap_circ);
+    std::tie(pre, angles_swapped, post) = normalise_TK2_angles(
+        angles_swapped[0], angles_swapped[1], angles_swapped[2]);
+    pre.add_phase(0.25);
   }
 
   // Try to evaluate exprs to doubles.
