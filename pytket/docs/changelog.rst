@@ -21,6 +21,7 @@ Minor new features:
 * The precondition for ``CliffordSimp`` and ``KAKDecomposition`` has been relaxed
   to accept classical controlled operations. ``ThreeQubitSquash`` and ``FullPeepholeOptimise``
   now accept classical operations.
+* Improve ``QControlBox`` decomposition.
 * Add support for TK2 gate in ``FullPeepholeOptimise``.
 
 Fixes:

@@ -16,6 +16,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <vector>
 
+#include "../testutil.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 
 // Element[n] = 2^n
@@ -83,5 +84,33 @@ SCENARIO("Powers of two") {
   }
 }
 
+SCENARIO("Test nth root of a 2x2 unitary") {
+  GIVEN("Identity") {
+    Eigen::Matrix2cd m = Eigen::Matrix2cd::Identity();
+    Eigen::Matrix2cd root1 = nth_root(m, 1);
+    REQUIRE(root1.isApprox(Eigen::Matrix2cd::Identity(), ERR_EPS));
+    Eigen::Matrix2cd root0 = nth_root(m, 0);
+    REQUIRE(root0.isApprox(Eigen::Matrix2cd::Identity(), ERR_EPS));
+  }
+
+  GIVEN("Random unitary 0th root") {
+    Eigen::Matrix2cd m = random_unitary(2, 1);
+    REQUIRE_THROWS(nth_root(m, 0));
+  }
+
+  GIVEN("Random unitary") {
+    for (unsigned i = 0; i < 100; i++) {
+      Eigen::Matrix2cd m = random_unitary(2, i);
+      for (unsigned n = 1; n < 10; n++) {
+        Eigen::Matrix2cd root = nth_root(m, n);
+        Eigen::Matrix2cd u = Eigen::Matrix2cd::Identity();
+        for (unsigned k = 0; k < n; k++) {
+          u = root * u;
+        }
+        REQUIRE(u.isApprox(m, ERR_EPS));
+      }
+    }
+  }
+}
 }  // namespace test_MatrixAnalysis
 }  // namespace tket

@@ -20,7 +20,6 @@
 #include "PassGenerators.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Transformations/BasicOptimisation.hpp"
-#include "Transformations/ControlledGates.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/MeasurePass.hpp"
 #include "Transformations/OptimisationPass.hpp"

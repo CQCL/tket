@@ -24,7 +24,6 @@
 #include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/Combinator.hpp"
 #include "Transformations/ContextualReduction.hpp"
-#include "Transformations/ControlledGates.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/PauliOptimisation.hpp"
