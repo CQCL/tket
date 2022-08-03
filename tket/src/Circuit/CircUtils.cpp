@@ -769,7 +769,10 @@ struct CnGateBlock {
     is_symmetric =
         (op->get_type() == OpType::CZ || op->get_type() == OpType::CU1);
     color = as_gate_ptr(op)->commuting_basis(args.size() - 1);
-    TKET_ASSERT(color != Pauli::I);
+    if (color == Pauli::I) {
+      throw std::invalid_argument(
+          "CnGateBlock doesn't accept multi-controlled identity gate.");
+    }
   }
 
   // Check whether commute with another CnGateBlock
