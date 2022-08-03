@@ -172,4 +172,9 @@ double trace_fidelity(double a, double b, double c);
  */
 bool in_weyl_chamber(const std::array<Expr, 3> &k);
 
+/**
+ * @brief Get an nth root of a 2x2 unitary matrix.
+ */
+Eigen::Matrix2cd nth_root(const Eigen::Matrix2cd &u, unsigned n);
+
 }  // namespace tket

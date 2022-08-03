@@ -18,8 +18,10 @@
 
 #include "CircUtils.hpp"
 #include "Circuit.hpp"
+#include "Gate/Rotation.hpp"
 #include "OpType/OpType.hpp"
 #include "Utils/Expression.hpp"
+#include "Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

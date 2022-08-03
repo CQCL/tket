@@ -15,6 +15,7 @@
 #pragma once
 
 #include "Circuit.hpp"
+#include "Gate/GatePtr.hpp"
 #include "Utils/Expression.hpp"
 
 namespace tket {
@@ -409,6 +410,75 @@ Circuit tk1_to_rzh(const Expr &alpha, const Expr &beta, const Expr &gamma);
 Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 Circuit tk1_to_tk1(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+class ControlDecompError : public std::logic_error {
+ public:
+  explicit ControlDecompError(const std::string &message)
+      : std::logic_error(message) {}
+};
+
+/**
+ * @brief Get an n-qubit incrementer circuit with linear depth and O(n^2) gate
+ * count. There exists a global phase difference
+ * https://arxiv.org/abs/2203.11882
+ *
+ * @param n number of qubits
+ * @param lsb set to false if we don't want to toggle the least significant bit
+ * @return Circuit containing CRx, X
+ */
+Circuit incrementer_linear_depth(unsigned n, bool lsb = true);
+
+/**
+ * @brief Implement CnU gate with linear depth and O(n^2) gate count.
+ * https://arxiv.org/abs/2203.11882
+ *
+ * @param n number of controls
+ * @param u the controlled 2x2 unitary matrix
+ * @return Circuit containing CRx, TK1, U1, and CU3
+ */
+Circuit CnU_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd &u);
+
+Circuit incrementer_borrow_1_qubit(unsigned n);
+
+Circuit incrementer_borrow_n_qubits(unsigned n);
+
+Circuit CnX_normal_decomp(unsigned n);
+
+Circuit CnX_gray_decomp(unsigned n);
+
+Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity);
+
+/**
+ * @brief Given a 2x2 numerical unitary matrix U and the number of control
+ * qubits n return the decomposed CnU gate
+ * @param n
+ * @param u
+ * @return Circuit containing CX, TK1, U1, and CU3
+ */
+Circuit CnU_gray_code_decomp(unsigned n, const Eigen::Matrix2cd &u);
+
+/**
+ * @brief Given a gate and the number of control qubits n,
+ * return the n-qubit controlled version of that gate using the gray code
+ * decomposition method. This method can handle gates with symbolic parameters
+ * @param n
+ * @param gate
+ * @return Circuit containing CX, CRx, CRy, CRz, CU1, TK1, U1, and CU3
+ */
+Circuit CnU_gray_code_decomp(unsigned n, const Gate_ptr &gate);
+
+/**
+ * @brief Linear decomposition method for n-qubit controlled SU(2) gate
+ * expressed as Rz(alpha)Ry(theta)Rz(beta) (multiplication order).
+ * Implements lemma 7.9 in https://arxiv.org/abs/quant-ph/9503016
+ * @param n
+ * @param alpha
+ * @param theta
+ * @param beta
+ * @return Circuit
+ */
+Circuit CnSU2_linear_decomp(
+    unsigned n, const Expr &alpha, const Expr &theta, const Expr &beta);
 
 }  // namespace CircPool
 

@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ControlledGates.hpp"
-
 #include <math.h>
 
 #include <numeric>
 #include <optional>
 
 #include "Circuit/CircPool.hpp"
+#include "Circuit/CircUtils.hpp"
 #include "Circuit/DAGDefs.hpp"
+#include "Gate/GatePtr.hpp"
+#include "Gate/Rotation.hpp"
 #include "OpType/OpType.hpp"
-#include "Transform.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/HelperFunctions.hpp"
 
 namespace tket {
 
-namespace Transforms {
+namespace CircPool {
 
 /* all of these methods are from https://arxiv.org/pdf/quant-ph/9503016.pdf
 or
@@ -39,7 +39,6 @@ typedef std::vector<std::pair<Edge, Vertex>>
     candidate_t;  // each CnX candidate to decompose needs a spare wire to put
                   // some extra controls on
 
-static Circuit lemma54(const Expr& angle);  // refers to rule lemma 5.4 in paper
 static Circuit lemma72(unsigned control_m);  // rule lemma 7.2
 static void lemma73(
     Circuit& circ, const std::pair<Edge, Vertex>& pairy);  // rule lemma 7.3
@@ -52,9 +51,8 @@ Circuit incrementer_borrow_1_qubit(unsigned n) {
   bool is_odd = n % 2;
   Circuit circ(n + 1);
   if (n < 6) {
-    if (n > 4)
-      circ.append_qubits(CircPool::C4X_normal_decomp(), {0, 1, 2, 3, 4});
-    if (n > 3) circ.append_qubits(CircPool::C3X_normal_decomp(), {0, 1, 2, 3});
+    if (n > 4) circ.append_qubits(C4X_normal_decomp(), {0, 1, 2, 3, 4});
+    if (n > 3) circ.append_qubits(C3X_normal_decomp(), {0, 1, 2, 3});
     if (n > 2) circ.add_op<unsigned>(OpType::CCX, {0, 1, 2});
     if (n > 1) circ.add_op<unsigned>(OpType::CX, {0, 1});
     if (n > 0) circ.add_op<unsigned>(OpType::X, {0});
@@ -83,10 +81,10 @@ Circuit incrementer_borrow_1_qubit(unsigned n) {
   Circuit cnx_top;
   std::vector<unsigned> cnx1_qbs;
   if (k == 3) {  // code is unreachable if k<3
-    cnx_top = CircPool::C3X_normal_decomp();
+    cnx_top = C3X_normal_decomp();
     cnx1_qbs = {0, 1, 2, n};
   } else if (k == 4) {
-    cnx_top = CircPool::C4X_normal_decomp();
+    cnx_top = C4X_normal_decomp();
     cnx1_qbs = {0, 1, 2, 3, n};
   } else {
     cnx_top = lemma72(k);  // k controls on cnx
@@ -112,18 +110,15 @@ Circuit incrementer_borrow_1_qubit(unsigned n) {
   } else {
     if (j == 4) {  // code is unreachable if j<4
       bottom_incrementer.add_blank_wires(4);
-      bottom_incrementer.append_qubits(
-          CircPool::C3X_normal_decomp(), {0, 1, 2, 3});
+      bottom_incrementer.append_qubits(C3X_normal_decomp(), {0, 1, 2, 3});
       bottom_incrementer.add_op<unsigned>(OpType::CCX, {0, 1, 2});
       bottom_incrementer.add_op<unsigned>(OpType::CX, {0, 1});
       bottom_incrementer.add_op<unsigned>(OpType::X, {0});
       bot_qbs = {n, n - 3, n - 2, n - 1};
     } else if (j == 5) {
       bottom_incrementer.add_blank_wires(5);
-      bottom_incrementer.append_qubits(
-          CircPool::C4X_normal_decomp(), {0, 1, 2, 3, 4});
-      bottom_incrementer.append_qubits(
-          CircPool::C3X_normal_decomp(), {0, 1, 2, 3});
+      bottom_incrementer.append_qubits(C4X_normal_decomp(), {0, 1, 2, 3, 4});
+      bottom_incrementer.append_qubits(C3X_normal_decomp(), {0, 1, 2, 3});
       bottom_incrementer.add_op<unsigned>(OpType::CCX, {0, 1, 2});
       bottom_incrementer.add_op<unsigned>(OpType::CX, {0, 1});
       bottom_incrementer.add_op<unsigned>(OpType::X, {0});
@@ -193,9 +188,8 @@ Circuit incrementer_borrow_n_qubits(unsigned n) {
   Circuit circ(N);
   /* deal with small cases where borrowing qubits is unnecessary */
   if (n < 6) {
-    if (n > 4)
-      circ.append_qubits(CircPool::C4X_normal_decomp(), {1, 3, 5, 7, 9});
-    if (n > 3) circ.append_qubits(CircPool::C3X_normal_decomp(), {1, 3, 5, 7});
+    if (n > 4) circ.append_qubits(C4X_normal_decomp(), {1, 3, 5, 7, 9});
+    if (n > 3) circ.append_qubits(C3X_normal_decomp(), {1, 3, 5, 7});
     if (n > 2) circ.add_op<unsigned>(OpType::CCX, {1, 3, 5});
     if (n > 1) circ.add_op<unsigned>(OpType::CX, {1, 3});
     if (n > 0) circ.add_op<unsigned>(OpType::X, {1});
@@ -213,7 +207,7 @@ Circuit incrementer_borrow_n_qubits(unsigned n) {
 
   for (unsigned i = 2; i < N; ++(++i)) {
     std::vector<unsigned> ladder_down_qbs = {i - 2, i - 1, i};
-    circ.append_qubits(CircPool::ladder_down(), ladder_down_qbs);
+    circ.append_qubits(ladder_down(), ladder_down_qbs);
   }
   circ.add_op<unsigned>(OpType::CX, {N - 2, N - 1});
   for (unsigned i = N - 2; i > 1; --(--i)) {
@@ -223,12 +217,12 @@ Circuit incrementer_borrow_n_qubits(unsigned n) {
 
   for (unsigned i = 2; i < N; ++(++i)) {
     std::vector<unsigned> ladder_down_2_qbs = {i - 2, i - 1, i};
-    circ.append_qubits(CircPool::ladder_down_2(), ladder_down_2_qbs);
+    circ.append_qubits(ladder_down_2(), ladder_down_2_qbs);
   }
   circ.add_op<unsigned>(OpType::CX, {N - 2, N - 1});
   for (unsigned i = N - 2; i > 1; --(--i)) {
     std::vector<unsigned> ladder_up_qbs = {i - 2, i - 1, i};
-    circ.append_qubits(CircPool::ladder_up(), ladder_up_qbs);
+    circ.append_qubits(ladder_up(), ladder_up_qbs);
   }
   for (unsigned i = 1; i < N; ++(++i))
     circ.add_op<unsigned>(OpType::CX, {0, i});
@@ -238,25 +232,25 @@ Circuit incrementer_borrow_n_qubits(unsigned n) {
 // decompose CnX gate using
 // https://algassert.com/circuits/2015/06/22/Using-Quantum-Gates-instead-of-Ancilla-Bits.html
 // `n` = no. of controls
-Circuit cnx_normal_decomp(unsigned n) {
+Circuit CnX_normal_decomp(unsigned n) {
   /* handle low qb edge cases */
   bool insert_c4xs;  // dictate whether to add C4Xs or n>4 controlled Xs
                      // when bootstrapping
   switch (n) {
     case 0: {
-      return CircPool::X();
+      return X();
     }
     case 1: {
-      return CircPool::CX();
+      return CX();
     }
     case 2: {
-      return CircPool::CCX_normal_decomp();
+      return CCX_normal_decomp();
     }
     case 3: {
-      return CircPool::C3X_normal_decomp();
+      return C3X_normal_decomp();
     }
     case 4: {
-      return CircPool::C4X_normal_decomp();
+      return C4X_normal_decomp();
     }
     case 5: {
       insert_c4xs = true;
@@ -276,7 +270,7 @@ Circuit cnx_normal_decomp(unsigned n) {
   circ.add_op<unsigned>(OpType::H, {n});
   Vertex cnx1;
   if (insert_c4xs)
-    circ.append_qubits(CircPool::C4X_normal_decomp(), {cnx_qbs});
+    circ.append_qubits(C4X_normal_decomp(), {cnx_qbs});
   else {
     cnx1 = circ.add_op<unsigned>(
         OpType::CnX,
@@ -291,7 +285,7 @@ Circuit cnx_normal_decomp(unsigned n) {
   circ.add_op<unsigned>(OpType::T, {n});
   Vertex cnx2;
   if (insert_c4xs)
-    circ.append_qubits(CircPool::C4X_normal_decomp(), {cnx_qbs});
+    circ.append_qubits(C4X_normal_decomp(), {cnx_qbs});
   else {
     cnx2 = circ.add_op<unsigned>(OpType::CnX, {cnx_qbs});
   }
@@ -334,24 +328,11 @@ Circuit cnx_normal_decomp(unsigned n) {
   Expr ang = z_rots[n - 2]->get_params()[0];
   circ.add_op<unsigned>(get_op_ptr(OpType::Rz, -ang), {0});
 
-  decomp_CCX().apply(circ);
+  const Op_ptr ccx = get_op_ptr(OpType::CCX);
+  circ.substitute_all(CCX_normal_decomp(), ccx);
+
   circ.add_phase(std::pow(0.5, n + 1));
   return circ;
-}
-
-/* assumes vert is controlled Ry with 1 control */
-/* decomposes CRy into 2 CXs and 2 Ry gates */
-static Circuit lemma54(const Expr& angle) {
-  Circuit new_circ(2);
-  std::vector<Expr> A_params = {angle / 2.};
-  std::vector<Expr> B_params = {-angle / 2.};
-  const Op_ptr A = get_op_ptr(OpType::Ry, A_params);
-  const Op_ptr B = get_op_ptr(OpType::Ry, B_params);
-  new_circ.add_op<unsigned>(A, {1});
-  new_circ.add_op<unsigned>(OpType::CX, {0, 1});
-  new_circ.add_op<unsigned>(B, {1});
-  new_circ.add_op<unsigned>(OpType::CX, {0, 1});
-  return new_circ;
 }
 
 // unsigned -> which column the change is in
@@ -372,39 +353,21 @@ static unsigned find_first_differing_val(
 // optimal decomposition of CnRy and CnZ for 2 < n < 8 according to 1995
 // paper... can do better with ZH calculus?
 static Circuit lemma71(
-    unsigned arity, const Expr& angle, const OpType& cr_type) {
+    unsigned arity, const Circuit& v_rep, const Circuit& v_dg_rep) {
   unsigned m_controls = arity - 1;
   if (m_controls < 2)
     throw Unsupported(
         "No point using Lemma 7.1 to decompose a gate with less than 2 "
         "controls");
-  if (m_controls > 7)
-    throw Unsupported(
-        "Using Lemma 7.1 to decompose a gate with more than 7 controls "
-        "is inefficient");
-  if (cr_type != OpType::CRy && cr_type != OpType::CU1)
-    throw Unsupported(
-        "The implementation currently only supports CU1 and CRy ");
 
   GrayCode gc = gen_graycode(m_controls);
-  unsigned n_square_roots = m_controls - 1;
 
   Circuit rep(arity);
-  Expr param;
-  std::optional<double> reduced = eval_expr_mod(angle, 4);
-  if (reduced)
-    param = reduced.value();
-  else
-    param = angle;
-
-  param = param / (1 << (n_square_roots));
-
-  const Op_ptr V_op = get_op_ptr(cr_type, param);
-  const Op_ptr V_dg = get_op_ptr(cr_type, -param);
 
   unsigned control_qb = 0;
   unsigned last = 0;
-  rep.add_op<unsigned>(V_op, {0, m_controls});
+  rep.append_with_map(
+      v_rep, {{Qubit(0), Qubit(0)}, {Qubit(1), Qubit(m_controls)}});
   // we ignore the 0...0 term, and the first one is always trivial
   // so start from 2
   for (unsigned i = 2; i < gc.size(); ++i) {
@@ -423,29 +386,24 @@ static Circuit lemma71(
     }
 
     if ((i % 2) == 0) {
-      rep.add_op<unsigned>(V_dg, {last, m_controls});
+      rep.append_with_map(
+          v_dg_rep, {{Qubit(0), Qubit(last)}, {Qubit(1), Qubit(m_controls)}});
     } else
-      rep.add_op<unsigned>(V_op, {last, m_controls});
+      rep.append_with_map(
+          v_rep, {{Qubit(0), Qubit(last)}, {Qubit(1), Qubit(m_controls)}});
     control_qb = last;
   }
-  unsigned correct_gate_count =
-      ((1 << m_controls) - 1) + ((1 << m_controls) - 2);
-  if (rep.n_gates() != correct_gate_count)
-    throw ControlDecompError("Error in Lemma 7.1: Gate count is incorrect");
   auto [vit, vend] = boost::vertices(rep.dag);
   VertexSet bin;
   for (auto next = vit; vit != vend; vit = next) {
     ++next;
     Vertex v = *vit;
     if (!bin.contains(v)) {
-      OpType optype = rep.get_OpType_from_Vertex(v);
-      if (optype == OpType::CRy || optype == OpType::CU1) {
-        Expr v_angle = rep.get_Op_ptr_from_Vertex(v)->get_params()[0];
-        Circuit replacement = (optype == OpType::CRy)
-                                  ? CircPool::CRy_using_CX(v_angle)
-                                  : CircPool::CU1_using_CX(v_angle);
-        Subcircuit sub{rep.get_in_edges(v), rep.get_all_out_edges(v), {v}};
-        rep.substitute(replacement, sub, Circuit::VertexDeletion::No);
+      Op_ptr op = rep.get_Op_ptr_from_Vertex(v);
+      OpType optype = op->get_type();
+      if (is_multi_qubit_type(optype) && optype != OpType::CX) {
+        Circuit replacement = with_CX(as_gate_ptr(op));
+        rep.substitute(replacement, v, Circuit::VertexDeletion::No);
         bin.insert(v);
       }
     }
@@ -541,9 +499,9 @@ static void lemma73(Circuit& circ, const std::pair<Edge, Vertex>& pairy) {
 
   Circuit a_replacement;
   if (m1 == 1) {
-    a_replacement = CircPool::CX();
+    a_replacement = CX();
   } else if (m1 == 2) {
-    a_replacement = CircPool::CCX();
+    a_replacement = CCX();
   } else
     a_replacement = lemma72(m1);  // returns circuit of size 2*m1 - 1
   new_circ.cut_insert(a_replacement, cut1);
@@ -554,9 +512,9 @@ static void lemma73(Circuit& circ, const std::pair<Edge, Vertex>& pairy) {
 
   Circuit b_replacement;
   if (m2 == 1) {
-    b_replacement = CircPool::CX();
+    b_replacement = CX();
   } else if (m2 == 2) {
-    b_replacement = CircPool::CCX();
+    b_replacement = CCX();
   } else
     b_replacement = lemma72(m2);  // returns circuit of size 2*m2 - 1
 
@@ -650,11 +608,10 @@ static void lemma73(Circuit& circ, const std::pair<Edge, Vertex>& pairy) {
           {*vit}};
       if (normal_decomp_vertices.find(*vit) == normal_decomp_vertices.end()) {
         new_circ.substitute(
-            CircPool::CCX_modulo_phase_shift(), sub,
-            Circuit::VertexDeletion::Yes);
+            CCX_modulo_phase_shift(), sub, Circuit::VertexDeletion::Yes);
       } else {
         new_circ.substitute(
-            CircPool::CCX_normal_decomp(), sub, Circuit::VertexDeletion::Yes);
+            CCX_normal_decomp(), sub, Circuit::VertexDeletion::Yes);
       }
     }
   }
@@ -665,40 +622,136 @@ static void lemma73(Circuit& circ, const std::pair<Edge, Vertex>& pairy) {
 }
 
 // N must be >= 3
+// Assume the unitary is not identity
+// Linear decomposition for multi-controlled special unitaries
 static void lemma79(
-    Circuit& replacement, unsigned N, const Expr& angle,
-    candidate_t& CCX_candidates) {
+    Circuit& replacement, unsigned N, const Expr& alpha, const Expr& theta,
+    const Expr& beta, candidate_t& CCX_candidates) {
   replacement.add_blank_wires(N);
 
-  std::vector<Expr> A_params = {angle / 2.};
-  std::vector<Expr> B_params = {-angle / 2.};
-  const Op_ptr A = get_op_ptr(OpType::CnRy, A_params, 2);
-  const Op_ptr B = get_op_ptr(OpType::CnRy, B_params, 2);
-
-  Vertex vA = replacement.add_op<unsigned>(A, {N - 2, N - 1});  // A
+  // Add Controlled C
+  if (!equiv_0(beta - alpha, 8)) {
+    replacement.add_op<unsigned>(
+        OpType::CRz, {(beta - alpha) / 2.}, {N - 2, N - 1});
+  }
+  // Add the first CnX
   std::vector<unsigned> cnx_qbs(N - 1);
   std::iota(cnx_qbs.begin(), --cnx_qbs.end(), 0);
   cnx_qbs[N - 2] = N - 1;
   const Op_ptr cnx = get_op_ptr(OpType::CnX, std::vector<Expr>{}, N - 1);
   Vertex firstCnX = replacement.add_op<unsigned>(cnx, cnx_qbs);
-  Vertex vB = replacement.add_op<unsigned>(B, {N - 2, N - 1});  // B
-  CCX_candidates.push_back(
-      {boost::edge(vA, vB, replacement.dag).first, firstCnX});
+
+  // Add Controlled B
+  VertexVec vBs;
+  if (!equiv_0(alpha + beta, 8)) {
+    Vertex vB1 = replacement.add_op<unsigned>(
+        OpType::CRz, {(-alpha - beta) / 2.}, {N - 2, N - 1});
+    vBs.push_back(vB1);
+  }
+  if (!equiv_0(theta, 8)) {
+    Vertex vB2 = replacement.add_op<unsigned>(
+        OpType::CRy, {-theta / 2.}, {N - 2, N - 1});
+    vBs.push_back(vB2);
+  }
+  // At least one of vB1 and vB2 should be set, otherwise it implies that the
+  // SU(2) is identity
+  if (vBs.empty()) {
+    throw ControlDecompError(
+        "Unknown error in Lemma 7.9: identity not rejected");
+  }
+
+  // Add the second CnX
   Vertex secondCnX = replacement.add_op<unsigned>(cnx, cnx_qbs);
-  Edge out_edge_spare = replacement.get_nth_out_edge(vB, 0);
-  CCX_candidates.push_back({out_edge_spare, secondCnX});
+
+  // Add Controlled A
+  if (!equiv_0(theta, 8)) {
+    replacement.add_op<unsigned>(OpType::CRy, {theta / 2.}, {N - 2, N - 1});
+  }
+  if (!equiv_0(alpha, 4)) {
+    replacement.add_op<unsigned>(OpType::CRz, {alpha}, {N - 2, N - 1});
+  }
+  Edge first_e = replacement.get_nth_in_edge(vBs[0], 0);
+  Edge second_e = replacement.get_nth_out_edge(vBs.back(), 0);
+  CCX_candidates.push_back({first_e, firstCnX});
+  CCX_candidates.push_back({second_e, secondCnX});
 }
 
-/* naive decomposition - there are cases we can do better if we can eg. ignore
- * phase */
-Transform decomp_CCX() {
-  return Transform([](Circuit& circ) {
-    const Op_ptr ccx = get_op_ptr(OpType::CCX);
-    return circ.substitute_all(CircPool::CCX_normal_decomp(), ccx);
-  });
+static Circuit CU_to_CU3(const Eigen::Matrix2cd& u) {
+  Circuit c(2);
+  std::vector<double> tk1_angles = tk1_angles_from_unitary(u);
+  Expr theta = tk1_angles[1];
+  Expr phi = tk1_angles[0] - 0.5;
+  Expr lambda = tk1_angles[2] + 0.5;
+  Expr t = tk1_angles[3] - 0.5 * (tk1_angles[0] + tk1_angles[2]);
+  c.add_op<unsigned>(OpType::U1, t, {0});
+  c.add_op<unsigned>(OpType::CU3, {theta, phi, lambda}, {0, 1});
+  return c;
 }
 
-Circuit decomposed_CnRy(const Op_ptr op, unsigned arity) {
+Circuit CnU_gray_code_decomp(unsigned n, const Eigen::Matrix2cd& u) {
+  if (n == 0) {
+    // Synthesise U using tk1 and phase
+    Circuit cnu_circ(1);
+    std::vector<double> tk1_angles = tk1_angles_from_unitary(u);
+    cnu_circ.add_op<unsigned>(
+        OpType::TK1, {tk1_angles[0], tk1_angles[1], tk1_angles[2]}, {0});
+    cnu_circ.add_phase(tk1_angles[3]);
+    return cnu_circ;
+  }
+  if (n == 1) {
+    return CU_to_CU3(u);
+  }
+
+  Eigen::Matrix2cd v_matrix = nth_root(u, 1 << (n - 1));
+  Eigen::Matrix2cd v_matrix_dag = v_matrix.adjoint();
+  Circuit v_rep = CU_to_CU3(v_matrix);
+  Circuit v_dg_rep = CU_to_CU3(v_matrix_dag);
+  return lemma71(n + 1, v_rep, v_dg_rep);
+}
+
+Circuit CnU_gray_code_decomp(unsigned n, const Gate_ptr& gate) {
+  static const std::map<OpType, OpType> cu_type_map = {
+      {OpType::Rx, OpType::CRx},
+      {OpType::Ry, OpType::CRy},
+      {OpType::Rz, OpType::CRz},
+      {OpType::U1, OpType::CU1}};
+
+  auto it = cu_type_map.find(gate->get_type());
+  if (it == cu_type_map.end()) {
+    throw Unsupported(
+        "The implementation currently only supports Rx, Ry, Rz, U1");
+  }
+
+  const OpType& cu_type = it->second;
+
+  if (n == 0) {
+    Circuit cnu_circ(1);
+    cnu_circ.add_op<unsigned>(gate, {0});
+    return cnu_circ;
+  }
+
+  Expr angle = gate->get_params()[0];
+  if (n == 1) {
+    Circuit cnu_circ(2);
+    cnu_circ.add_op<unsigned>(cu_type, angle, {0, 1});
+    return cnu_circ;
+  }
+  Expr param;
+  std::optional<double> reduced = eval_expr_mod(angle, 4);
+  if (reduced)
+    param = reduced.value();
+  else
+    param = angle;
+
+  param = param / (1 << (n - 1));
+  Circuit v_rep(2);
+  Circuit v_dg_rep(2);
+  v_rep.add_op<unsigned>(cu_type, param, {0, 1});
+  v_dg_rep.add_op<unsigned>(cu_type, -param, {0, 1});
+  return lemma71(n + 1, v_rep, v_dg_rep);
+}
+
+Circuit CnRy_normal_decomp(const Op_ptr op, unsigned arity) {
   if (op->get_type() != OpType::CnRy) {
     throw CircuitInvalidity("Operation not CnRy");
   }
@@ -715,7 +768,7 @@ Circuit decomposed_CnRy(const Op_ptr op, unsigned arity) {
       break;
     }
     case 2: {
-      rep = lemma54(angle);
+      rep = CircPool::CRy_using_CX(angle);
       break;
     }
     case 3:
@@ -724,25 +777,24 @@ Circuit decomposed_CnRy(const Op_ptr op, unsigned arity) {
     case 6:
     case 7:
     case 8: {
-      rep = lemma71(arity, angle, OpType::CRy);
+      rep = CnU_gray_code_decomp(
+          arity - 1, as_gate_ptr(get_op_ptr(OpType::Ry, angle)));
       break;
     }
     default: {
-      candidate_t ct;
-      lemma79(rep, arity, angle, ct);
-      if (ct.size() != 2)
-        throw ControlDecompError(
-            "Unknown error in controlled gate decomposition");
-      for (const std::pair<Edge, Vertex>& pairy : ct) lemma73(rep, pairy);
+      rep = CnSU2_linear_decomp(arity - 1, 0., angle, 0.);
       auto [x, xend] = boost::vertices(rep.dag);
       for (auto xnext = x; x != xend; x = xnext) {
         ++xnext;
         OpType type = rep.get_OpType_from_Vertex(*x);
-        if (type == OpType::CnRy) {
+        if (type == OpType::CRy) {
           Expr x_angle = rep.get_Op_ptr_from_Vertex(*x)->get_params()[0];
-          Circuit new_circ = lemma54(x_angle);
+          Circuit new_circ = CircPool::CRy_using_CX(x_angle);
           Subcircuit sub{rep.get_in_edges(*x), rep.get_all_out_edges(*x), {*x}};
           rep.substitute(new_circ, sub, Circuit::VertexDeletion::Yes);
+        } else if (type == OpType::CRz) {
+          throw ControlDecompError(
+              "Error in Lemma 7.9: Y rotation isn't recognized");
         }
       }
       break;
@@ -751,68 +803,44 @@ Circuit decomposed_CnRy(const Op_ptr op, unsigned arity) {
   return rep;
 }
 
-Transform decomp_controlled_Rys() {
-  return Transform([](Circuit& circ) {
-    bool success = decomp_CCX().apply(circ);
-    auto [vit, vend] = boost::vertices(circ.dag);
-    for (auto next = vit; vit != vend; vit = next) {
-      ++next;
-      Vertex v = *vit;
-      const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-      unsigned arity = circ.n_in_edges(v);
-      if (op->get_type() == OpType::CnRy) {
-        success = true;
-        Circuit rep = decomposed_CnRy(op, arity);
-        EdgeVec inedges = circ.get_in_edges(v);
-        Subcircuit final_sub{inedges, circ.get_all_out_edges(v), {v}};
-        circ.substitute(rep, final_sub, Circuit::VertexDeletion::Yes);
-      }
-    }
-    return success;
-  });
-}
-
-Transform decomp_arbitrary_controlled_gates() {
-  return decomp_controlled_Rys() >> decomp_CCX();
-}
-
 // decompose CnX gate using lemma 7.1
 // `n` = no. of controls
-Circuit cnx_gray_decomp(unsigned n) {
+Circuit CnX_gray_decomp(unsigned n) {
   switch (n) {
     case 0: {
-      return CircPool::X();
+      return X();
     }
     case 1: {
-      return CircPool::CX();
+      return CX();
     }
     case 2: {
-      return CircPool::CCX_normal_decomp();
+      return CCX_normal_decomp();
     }
     case 3: {
-      return CircPool::C3X_normal_decomp();
+      return C3X_normal_decomp();
     }
     case 4: {
-      return CircPool::C4X_normal_decomp();
+      return C4X_normal_decomp();
     }
     default: {
       Circuit circ(n + 1);
       circ.add_op<unsigned>(OpType::H, {n});
-      circ.append(lemma71(n + 1, 1.0, OpType::CU1));
+      circ.append(
+          CnU_gray_code_decomp(n, as_gate_ptr(get_op_ptr(OpType::U1, 1.0))));
       circ.add_op<unsigned>(OpType::H, {n});
       return circ;
     }
   }
 }
 
-static Eigen::Matrix2cd nth_root(const Eigen::Matrix2cd& u, unsigned n) {
-  Eigen::ComplexEigenSolver<Eigen::Matrix2cd> eigen_solver(u);
-  return std::pow(eigen_solver.eigenvalues()[0], 1. / n) *
-             eigen_solver.eigenvectors().col(0) *
-             eigen_solver.eigenvectors().col(0).adjoint() +
-         std::pow(eigen_solver.eigenvalues()[1], 1. / n) *
-             eigen_solver.eigenvectors().col(1) *
-             eigen_solver.eigenvectors().col(1).adjoint();
+static void add_cu_using_cu3(
+    const unsigned& ctrl, const unsigned& trgt, Circuit& circ,
+    const Eigen::Matrix2cd& u) {
+  unit_map_t unit_map;
+  unit_map.insert({Qubit(0), Qubit(ctrl)});
+  unit_map.insert({Qubit(1), Qubit(trgt)});
+  Circuit cnu_circ = CU_to_CU3(u);
+  circ.append_with_map(cnu_circ, unit_map);
 }
 
 // Add pn to qubits {1,...,n}, assume n > 1
@@ -834,10 +862,7 @@ static void add_pn_unitary(
   for (unsigned i = 2; i < n + 1; i++) {
     Eigen::Matrix2cd m = nth_root(u, 1 << (n - i + 1));
     if (inverse) m.adjointInPlace();
-    Unitary1qBox ub(m);
-    Op_ptr op = std::make_shared<Unitary1qBox>(ub);
-    QControlBox qcb(op);
-    circ.add_box(qcb, {i - 1, n});
+    add_cu_using_cu3(i - 1, n, circ, m);
   }
 }
 
@@ -875,7 +900,7 @@ Circuit incrementer_linear_depth(unsigned n, bool lsb) {
 }
 
 // https://arxiv.org/abs/2203.11882 Equation 3
-Circuit cnu_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
+Circuit CnU_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
   if (!is_unitary(u)) {
     throw CircuitInvalidity(
         "Matrix for the controlled operation must be unitary");
@@ -883,15 +908,15 @@ Circuit cnu_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
   Circuit circ(n + 1);
 
   if (n == 0) {
-    Unitary1qBox ub(u);
-    circ.add_box(ub, {0});
+    // Synthesis U using tk1 and phase
+    std::vector<double> tk1_angles = tk1_angles_from_unitary(u);
+    circ.add_op<unsigned>(
+        OpType::TK1, {tk1_angles[0], tk1_angles[1], tk1_angles[2]}, {0});
+    circ.add_phase(tk1_angles[3]);
     return circ;
   }
   if (n == 1) {
-    Unitary1qBox ub(u);
-    Op_ptr op = std::make_shared<Unitary1qBox>(ub);
-    QControlBox qcb(op);
-    circ.add_box(qcb, {0, 1});
+    add_cu_using_cu3(0, 1, circ, u);
     return circ;
   }
 
@@ -899,11 +924,7 @@ Circuit cnu_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
   add_pn_unitary(circ, u, n, false);
   // Add CU to {0, n}
   Eigen::Matrix2cd m = nth_root(u, 1 << (n - 1));
-  Unitary1qBox ub(m);
-  Op_ptr op = std::make_shared<Unitary1qBox>(ub);
-  QControlBox qcb(op);
-  circ.add_box(qcb, {0, n});
-
+  add_cu_using_cu3(0, n, circ, m);
   // Add incrementer (without toggling q0) to {0,...,n-1}
   Circuit qn = incrementer_linear_depth(n, false);
   Circuit qn_dag = qn.dagger();
@@ -918,6 +939,114 @@ Circuit cnu_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
   return circ;
 }
 
-}  // namespace Transforms
+Circuit CnSU2_linear_decomp(
+    unsigned n, const Expr& alpha, const Expr& theta, const Expr& beta) {
+  // W == I iff one of the following two conditions is met
+  // 1. t/2 is even, and (a + b)/2 is even
+  // 2. t/2 is odd, and (a + b)/2 is odd
+  // check if SU(2) is identity
+  if ((equiv_0(theta / 2., 2) && equiv_0((alpha + beta) / 2., 2)) ||
+      (equiv_val(theta / 2., 1., 2) && equiv_val((alpha + beta) / 2., 1., 2))) {
+    return Circuit(n + 1);
+  }
+
+  Circuit circ;
+
+  if (n == 0) {
+    // add tk1
+    circ.add_blank_wires(1);
+    circ.add_op<unsigned>(OpType::TK1, {alpha + 0.5, theta, beta - 0.5}, {0});
+    return circ;
+  }
+
+  // SU(2) matrix W expressed as Rz(a)Ry(t)Rz(b)
+  Expr a = alpha;
+  Expr b = beta;
+  Expr t = theta;
+
+  // Lemma 4.3: W = A*X*B*X*C
+  // By lemma 5.4, C is identity iff W can be expressed as Rz(a')Ry(t')Rz(a')
+  // We handle the following two cases
+  // if (a-b)/2 is even, a' = (a + b)/2, t' = t
+  // if (a-b)/2 is odd, a' = (a + b)/2, t' = - t
+  if (equiv_0((a - b) / 2., 2)) {
+    a = (a + b) / 2.;
+    b = a;
+  } else if (equiv_val((a - b) / 2., 1., 2)) {
+    a = (a + b) / 2.;
+    b = a;
+    t = -t;
+  }
+
+  // We test whether W can be expressed as a single Ry(t'')
+  if (equiv_0((a - b) / 2., 2)) {
+    if (equiv_val((a + b) / 2., 1., 2)) {
+      // if (a-b)/2 is even, and (a+b)/2 is odd, t'' = 2-t
+      a = 0.;
+      b = 0.;
+      t = 2. - t;
+    } else if (equiv_0((a + b) / 2., 2)) {
+      // if (a-b)/2 is even, and (a+b)/2 is even, t'' = t
+      a = 0.;
+      b = 0.;
+    }
+  } else if (equiv_val((a - b) / 2., 1., 2)) {
+    if (equiv_val((a + b) / 2., 1., 2)) {
+      // if (a-b)/2 is odd, and (a+b)/2 is odd, t'' = 2-t
+      a = 0.;
+      b = 0.;
+      t = 2. + t;
+    } else if (equiv_0((a + b) / 2., 2)) {
+      // if (a-b)/2 is odd, and (a+b)/2 is even, t'' = -t
+      a = 0.;
+      b = 0.;
+      t = -t;
+    }
+  }
+  if (n == 1) {
+    circ.add_blank_wires(2);
+    if (!equiv_0(b - a, 8)) {
+      circ.add_op<unsigned>(OpType::Rz, {(b - a) / 2.}, {1});
+    }
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    if (!equiv_0(a + b, 8)) {
+      circ.add_op<unsigned>(OpType::Rz, {(-a - b) / 2.}, {1});
+    }
+    if (!equiv_0(t, 8)) {
+      circ.add_op<unsigned>(OpType::Ry, {-t / 2.}, {1});
+    }
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    if (!equiv_0(t, 8)) {
+      circ.add_op<unsigned>(OpType::Ry, {t / 2.}, {1});
+    }
+    if (!equiv_0(a, 4)) {
+      circ.add_op<unsigned>(OpType::Rz, {a}, {1});
+    }
+    return circ;
+  }
+  // Using lemma 7.9 for n >= 2
+  candidate_t ct;
+  lemma79(circ, n + 1, a, t, b, ct);
+  for (const std::pair<Edge, Vertex>& pairy : ct) {
+    Vertex original_cnx = pairy.second;
+    unsigned cnx_arity = circ.n_in_edges(original_cnx);
+    switch (cnx_arity) {
+      case 2: {
+        circ.dag[original_cnx] = {get_op_ptr(OpType::CX)};
+        break;
+      }
+      case 3: {
+        circ.dag[original_cnx] = {get_op_ptr(OpType::CCX)};
+        break;
+      }
+      default: {
+        lemma73(circ, pairy);
+      }
+    }
+  }
+  return circ;
+}
+
+}  // namespace CircPool
 
 }  // namespace tket
