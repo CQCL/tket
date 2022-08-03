@@ -16,6 +16,7 @@
 
 #include <memory>
 #include <sstream>
+#include <string>
 
 #include "ArchAwareSynth/SteinerForest.hpp"
 #include "Circuit/CircPool.hpp"
@@ -70,6 +71,38 @@ PassPtr gen_rebase_pass(
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
+PassPtr gen_rebase_pass_via_tk2(
+    const OpTypeSet& allowed_gates,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk2_replacement,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk1_replacement) {
+  Transform t = Transforms::rebase_factory_via_tk2(
+      allowed_gates, tk1_replacement, tk2_replacement);
+
+  PredicatePtrMap precons;
+  OpTypeSet all_types(allowed_gates);
+  all_types.insert(OpType::Measure);
+  all_types.insert(OpType::Collapse);
+  all_types.insert(OpType::Reset);
+  PredicatePtr postcon1 = std::make_shared<GateSetPredicate>(all_types);
+  PredicatePtr postcon2 = std::make_shared<MaxTwoQubitGatesPredicate>();
+  std::pair<const std::type_index, PredicatePtr> pair2 =
+      CompilationUnit::make_type_pair(postcon1);
+  PredicatePtrMap s_postcons{pair2, CompilationUnit::make_type_pair(postcon2)};
+  PredicateClassGuarantees g_postcons{{pair2.first, Guarantee::Clear}};
+  PostConditions pc = {s_postcons, g_postcons, Guarantee::Preserve};
+  // record pass config
+  nlohmann::json j;
+  j["name"] = "RebaseCustomViaTK2";
+  j["basis_allowed"] = allowed_gates;
+  j["basis_tk1_replacement"] =
+      "SERIALIZATION OF FUNCTIONS IS NOT YET SUPPORTED";
+  j["basis_tk2_replacement"] =
+      "SERIALIZATION OF FUNCTIONS IS NOT YET SUPPORTED";
+  return std::make_shared<StandardPass>(precons, t, pc, j);
+}
+
 PassPtr gen_squash_pass(
     const OpTypeSet& singleqs,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
@@ -106,8 +139,7 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps) {
   // Expects: CX and any single-qubit gates,
   // but does not break if it encounters others
   Transform t = Transforms::clifford_simp(allow_swaps);
-  PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
-  PredicatePtrMap precons = {CompilationUnit::make_type_pair(ccontrol_pred)};
+  PredicatePtrMap precons;
   PredicateClassGuarantees g_postcons;
   if (allow_swaps) {
     g_postcons = {
@@ -115,10 +147,7 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps) {
         {typeid(NoWireSwapsPredicate), Guarantee::Clear},
         {typeid(DirectednessPredicate), Guarantee::Clear}};
   }
-  OpTypeSet ots2 = {OpType::CX, OpType::TK1};
-  PredicatePtr outp_gates = std::make_shared<GateSetPredicate>(ots2);
-  PredicatePtrMap spec_postcons = {CompilationUnit::make_type_pair(outp_gates)};
-  PostConditions postcon{spec_postcons, g_postcons, Guarantee::Preserve};
+  PostConditions postcon{{}, g_postcons, Guarantee::Preserve};
 
   // record pass config
   nlohmann::json j;
@@ -525,8 +554,7 @@ PassPtr gen_user_defined_swap_decomp_pass(const Circuit& replacement_circ) {
 
 PassPtr KAKDecomposition(OpType target_2qb_gate, double cx_fidelity) {
   Transform t = Transforms::two_qubit_squash(target_2qb_gate, cx_fidelity);
-  PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
-  PredicatePtrMap precons{CompilationUnit::make_type_pair(ccontrol_pred)};
+  PredicatePtrMap precons;
   PredicateClassGuarantees g_postcons = {
       {typeid(DirectednessPredicate), Guarantee::Clear},
       {typeid(CliffordCircuitPredicate), Guarantee::Clear}};
@@ -563,6 +591,7 @@ PassPtr ThreeQubitSquash(bool allow_swaps) {
                 Transforms::three_qubit_squash() >>
                 Transforms::clifford_simp(allow_swaps);
   OpTypeSet ots{all_single_qubit_types()};
+  ots.insert(all_classical_types().begin(), all_classical_types().end());
   ots.insert(OpType::CX);
   PredicatePtr gate_pred = std::make_shared<GateSetPredicate>(ots);
   PredicatePtrMap precons{CompilationUnit::make_type_pair(gate_pred)};
@@ -581,6 +610,7 @@ PassPtr FullPeepholeOptimise(bool allow_swaps) {
       OpType::TK1, OpType::CX, OpType::Measure, OpType::Collapse,
       OpType::Reset};
   PredicatePtrMap precons = {};
+  after_set.insert(all_classical_types().begin(), all_classical_types().end());
   PredicatePtr out_gateset = std::make_shared<GateSetPredicate>(after_set);
   PredicatePtr max2qb = std::make_shared<MaxTwoQubitGatesPredicate>();
   PredicatePtrMap postcon_spec = {
@@ -749,6 +779,23 @@ PassPtr GlobalisePhasedX(bool squash) {
   j["name"] = "GlobalisePhasedX";
   j["squash"] = squash;
   return std::make_shared<StandardPass>(precons, t, postcon, j);
+}
+
+PassPtr CustomPass(
+    std::function<Circuit(const Circuit&)> transform,
+    const std::string& label) {
+  Transform t{[transform](Circuit& circ) {
+    Circuit circ_out = transform(circ);
+    bool success = circ_out != circ;
+    circ = circ_out;
+    return success;
+  }};
+  PredicatePtrMap precons;
+  PostConditions postcons;
+  nlohmann::json j;
+  j["name"] = "CustomPass";
+  j["label"] = label;
+  return std::make_shared<StandardPass>(precons, t, postcons, j);
 }
 
 }  // namespace tket

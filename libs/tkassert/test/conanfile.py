@@ -18,7 +18,7 @@ import platform
 
 class TestTkassertConan(ConanFile):
     name = "test-tkassert"
-    version = "0.1.0"
+    version = "0.1.1"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
     description = "Unit tests for tkassert"
@@ -27,7 +27,7 @@ class TestTkassertConan(ConanFile):
     default_options = {"with_coverage": False}
     generators = "cmake"
     exports_sources = "*"
-    requires = ["tkassert/0.1.0", "catch2/3.0.1"]
+    requires = ["tkassert/0.1.1", "catch2/3.1.0"]
 
     _cmake = None
 

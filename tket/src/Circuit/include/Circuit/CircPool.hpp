@@ -283,8 +283,8 @@ Circuit approx_TK2_using_2xCX(const Expr &alpha, const Expr &beta);
  * @brief Equivalent to TK2(α, β, γ), using 3 CX gates.
  *
  * This is an exact 3 CX decomposition of the TK2(α, β, γ) gate.
- * Prefer using `TK2_using_CX` unless you wish to explicitly use 3 CX or if
- * α, β and γ are not normalised to the Weyl chamber.
+ * Prefer using `normalised_TK2_using_CX` unless you wish to explicitly use 3 CX
+ * or if α, β and γ are not normalised to the Weyl chamber.
  *
  * @return Circuit Equivalent circuit to TK2(α, β, γ).
  */
@@ -301,6 +301,16 @@ Circuit TK2_using_3xCX(const Expr &alpha, const Expr &beta, const Expr &gamma);
  * In cases where hardware gate fidelities are known, it might be sensible to
  * use TK2 decompositions that are inexact but less noisy. See DecomposeTK2
  * pass and transform.
+ *
+ * @return Circuit Equivalent circuit to TK2(α, β, γ).
+ */
+Circuit normalised_TK2_using_CX(
+    const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+/**
+ * @brief Equivalent to TK2(α, β, γ) with minimal number of CX gates.
+ *
+ * A TK2-equivalent circuit with as few CX gates as possible (0, 1, 2 or 3 CX).
  *
  * @return Circuit Equivalent circuit to TK2(α, β, γ).
  */
@@ -349,6 +359,13 @@ Circuit approx_TK2_using_2xZZPhase(const Expr &alpha, const Expr &beta);
  */
 Circuit TK2_using_ZZPhase(
     const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+/**
+ * @brief Equivalent to TK2(α, β, γ), using up to 3 ZZMax gates.
+ *
+ * @return Circuit equivalent to TK2(α, β, γ).
+ */
+Circuit TK2_using_ZZMax(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 /** Equivalent to XXPhase3, using three TK2 gates */
 Circuit XXPhase3_using_TK2(const Expr &alpha);

@@ -15,6 +15,7 @@
 #pragma once
 
 #include "ArchAwareSynth/SteinerForest.hpp"
+#include "Circuit/Circuit.hpp"
 #include "CompilerPass.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/RoutingMethod.hpp"
@@ -27,6 +28,22 @@ namespace tket {
 /* a wrapper method for the rebase_factory in Transforms */
 PassPtr gen_rebase_pass(
     const OpTypeSet& allowed_gates, const Circuit& cx_replacement,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk1_replacement);
+
+/**
+ * Generate a rebase pass give standard replacements for TK1 and TK2 gates.
+ *
+ * @param[in] allowed_gates set of target gates
+ * @param[in] tk2_replacement circuit to replace a given TK2 gate
+ * @param[in] tk1_replacement circuit to replace a given TK1 gate
+ *
+ * @return rebase pass
+ */
+PassPtr gen_rebase_pass_via_tk2(
+    const OpTypeSet& allowed_gates,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk2_replacement,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement);
 
@@ -268,5 +285,20 @@ PassPtr PauliSquash(Transforms::PauliSynthStrat strat, CXConfigType cx_config);
  * in certain cases a blow-up in symbolic expression sizes may occur.
  */
 PassPtr GlobalisePhasedX(bool squash = true);
+
+/**
+ * Generate a custom pass
+ *
+ * @param transform circuit transformation function
+ * @param label optional user-defined label for the pass
+ *
+ * It is the caller's responsibility to provide a valid transform: there are no
+ * checks on this.
+ *
+ * @return compilation pass that applies the supplied transform
+ */
+PassPtr CustomPass(
+    std::function<Circuit(const Circuit&)> transform,
+    const std::string& label = "");
 
 }  // namespace tket

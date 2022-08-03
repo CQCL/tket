@@ -106,8 +106,9 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit &circ) {
         case OpType::TK2: {
           auto params = o->get_params();
           TKET_ASSERT(params.size() == 3);
-          v_to_op[it->first] = get_matrix_from_2qb_circ(
-              CircPool::TK2_using_CX(params[0], params[1], params[2]));
+          v_to_op[it->first] =
+              get_matrix_from_2qb_circ(CircPool::normalised_TK2_using_CX(
+                  params[0], params[1], params[2]));
           break;
         }
         default: {
@@ -139,7 +140,7 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit &circ) {
   return std::exp(i_ * PI * eval_expr(circ.get_phase()).value()) * m;
 }
 
-Circuit two_qubit_canonical(const Eigen::Matrix4cd &U) {
+Circuit two_qubit_canonical(const Eigen::Matrix4cd &U, OpType target_2qb_gate) {
   if (!is_unitary(U)) {
     throw std::invalid_argument(
         "Non-unitary matrix passed to two_qubit_canonical");
@@ -164,7 +165,16 @@ Circuit two_qubit_canonical(const Eigen::Matrix4cd &U) {
   result.add_op<unsigned>(
       OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
 
-  result.append(CircPool::TK2_using_normalised_TK2(a, b, c));
+  switch (target_2qb_gate) {
+    case OpType::TK2:
+      result.append(CircPool::TK2_using_normalised_TK2(a, b, c));
+      break;
+    case OpType::CX:
+      result.append(CircPool::TK2_using_CX(a, b, c));
+      break;
+    default:
+      throw std::invalid_argument("target_2qb_gate must be CX or TK2.");
+  }
 
   angles_q0 = tk1_angles_from_unitary(K1a);
   angles_q1 = tk1_angles_from_unitary(K1b);
@@ -223,7 +233,9 @@ static void replace_TK2_2CX(Circuit &circ) {
     if (circ.get_OpType_from_Vertex(v) != OpType::TK2) continue;
     auto params = circ.get_Op_ptr_from_Vertex(v)->get_params();
     TKET_ASSERT(params.size() == 3);
-    TKET_ASSERT(equiv_0(params[2], 4, 1e-9));
+    // We need to have a fairly high tolerance in the assertion below, since in
+    // practice rounding errors can accumulate:
+    TKET_ASSERT(equiv_0(params[2], 4, 1e-6));
     Circuit sub = CircPool::approx_TK2_using_2xCX(params[0], params[1]);
     bin.push_back(v);
     circ.substitute(sub, v, Circuit::VertexDeletion::No);

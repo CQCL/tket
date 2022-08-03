@@ -110,7 +110,7 @@ PathHandler PathHandler::construct_acyclic_handler() const {
   while (!current_layer_vertices.empty()) {
     for (unsigned vert : current_layer_vertices) {
       for (unsigned j = 0; j != n; ++j) {
-        if ((distance_matrix_(vert, j) == 1) & (!vertices_in_tree[j])) {
+        if ((distance_matrix_(vert, j) == 1) && (!vertices_in_tree[j])) {
           // if first encounter of vertex, add to next layer
           if (parents_neighbours[j] == empty_pair) {
             next_layer_vertices.push_back(j);

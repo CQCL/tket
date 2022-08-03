@@ -45,6 +45,9 @@ const OpTypeSet &all_projective_types();
 /** Set of all controlled gates*/
 const OpTypeSet &all_controlled_gate_types();
 
+/** Set of all classical gates */
+const OpTypeSet &all_classical_types();
+
 /** Test for initial, final and barrier "ops" */
 bool is_metaop_type(OpType optype);
 

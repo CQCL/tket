@@ -352,7 +352,7 @@ class Circuit {
     CommandIterator &operator++();
   };
 
-  const CommandIterator begin() const;
+  CommandIterator begin() const;
   const CommandIterator end() const;
   static const CommandIterator nullcit;
 
