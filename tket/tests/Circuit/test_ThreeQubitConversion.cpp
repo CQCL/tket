@@ -38,7 +38,6 @@ static void check_three_qubit_synthesis(const Eigen::MatrixXcd &U) {
       OpType::TK1, OpType::H,   OpType::Ry, OpType::Rz, OpType::V, OpType::Vdg,
       OpType::S,   OpType::Sdg, OpType::X,  OpType::Y,  OpType::Z};
   Circuit c = three_qubit_synthesis(U);
-  Transforms::decompose_TK2().apply(c);
   unsigned n_cx = 0;
   for (const Command &cmd : c) {
     OpType optype = cmd.get_op_ptr()->get_type();
@@ -49,6 +48,7 @@ static void check_three_qubit_synthesis(const Eigen::MatrixXcd &U) {
     }
   }
   CHECK(n_cx <= 20);
+  CHECK(c.count_gates(OpType::TK2) == 0);
   Eigen::MatrixXcd U1 = tket_sim::get_unitary(c);
   CHECK(tket_sim::compare_statevectors_or_unitaries(U, U1));
 }
@@ -149,6 +149,16 @@ SCENARIO("Three-qubit circuits") {
     auto u = tket_sim::get_unitary(c);
     check_three_qubit_synthesis(u);
     check_three_qubit_tk_synthesis(u);
+  }
+  GIVEN("Using conjugations to save a CX") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::H, {1});
+    c.add_op<unsigned>(OpType::CX, {1, 2});
+    auto u = tket_sim::get_unitary(c);
+    c = three_qubit_synthesis(u);
+    REQUIRE(c.count_gates(OpType::CX) < 20);
   }
   GIVEN("Round trip from a larger circuit") {
     Circuit c(3);
