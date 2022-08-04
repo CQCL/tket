@@ -24,6 +24,7 @@ Minor new features:
 * Improve ``QControlBox`` decomposition.
 * New ``allow_swaps`` flag in ``KAKDecomposition`` and ``DecomposeTK2`` to
   decompose two-qubit operations up to implicit wire swaps.
+* Add support for TK2 gate in ``FullPeepholeOptimise``.
 
 Fixes:
 

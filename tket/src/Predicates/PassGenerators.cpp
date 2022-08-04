@@ -609,10 +609,10 @@ PassPtr ThreeQubitSquash(bool allow_swaps) {
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
-PassPtr FullPeepholeOptimise(bool allow_swaps) {
+PassPtr FullPeepholeOptimise(bool allow_swaps, OpType target_2qb_gate) {
   OpTypeSet after_set = {
-      OpType::TK1, OpType::CX, OpType::Measure, OpType::Collapse,
-      OpType::Reset};
+      OpType::TK1, OpType::Measure, OpType::Collapse, OpType::Reset};
+  after_set.insert(target_2qb_gate);
   PredicatePtrMap precons = {};
   after_set.insert(all_classical_types().begin(), all_classical_types().end());
   PredicatePtr out_gateset = std::make_shared<GateSetPredicate>(after_set);
@@ -626,8 +626,10 @@ PassPtr FullPeepholeOptimise(bool allow_swaps) {
   nlohmann::json j;
   j["name"] = "FullPeepholeOptimise";
   j["allow_swaps"] = allow_swaps;
+  j["target_2qb_gate"] = target_2qb_gate;
   return std::make_shared<StandardPass>(
-      precons, Transforms::full_peephole_optimise(allow_swaps), postcon, j);
+      precons, Transforms::full_peephole_optimise(allow_swaps, target_2qb_gate),
+      postcon, j);
 }
 
 PassPtr gen_optimise_phase_gadgets(CXConfigType cx_config) {

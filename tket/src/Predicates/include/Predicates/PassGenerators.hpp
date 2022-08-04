@@ -208,11 +208,14 @@ PassPtr ThreeQubitSquash(bool allow_swaps = true);
 
 /**
  * Performs peephole optimisation including resynthesis of 2- and 3-qubit gate
- * sequences, and converts to a circuit containing only CX and TK1 gates.
+ * sequences, and converts to a circuit containing a given 2-qubit gate and TK1
+ * gates.
  *
+ * @param target_2qb_gate target 2-qubit gate (CX or TK2)
  * @param allow_swaps whether to allow introduction of implicit swaps
  */
-PassPtr FullPeepholeOptimise(bool allow_swaps = true);
+PassPtr FullPeepholeOptimise(
+    bool allow_swaps = true, OpType target_2qb_gate = OpType::CX);
 
 /* generates an optimisation pass that converts a circuit into phase
 gadgets and optimises them using techniques from

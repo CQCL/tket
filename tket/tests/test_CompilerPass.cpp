@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <catch2/catch_test_macros.hpp>
+#include <tkrng/RNG.hpp>
 #include <vector>
 
 #include "Circuit/CircPool.hpp"
@@ -768,6 +769,57 @@ SCENARIO("PeepholeOptimise2Q and FullPeepholeOptimise") {
     CompilationUnit cu(circ);
     REQUIRE(FullPeepholeOptimise()->apply(cu));
     REQUIRE(test_unitary_comparison(circ, cu.get_circ_ref()));
+  }
+}
+
+SCENARIO("FullPeepholeOptimise with various options") {
+  GIVEN("Large 'random' circuit") {
+    Circuit circ(4);
+    RNG rng;
+    for (unsigned i = 0; i < 100; i++) {
+      unsigned a = rng.get_size_t(3);
+      unsigned b = rng.get_size_t(3);
+      unsigned c = rng.get_size_t(3);
+      unsigned d = rng.get_size_t(3);
+      circ.add_op<unsigned>(OpType::H, {a});
+      circ.add_op<unsigned>(OpType::T, {b});
+      if (c != d) {
+        circ.add_op<unsigned>(OpType::CZ, {c, d});
+      }
+    }
+
+    CompilationUnit cu_swaps_cx(circ);
+    CompilationUnit cu_swaps_tk2(circ);
+    CompilationUnit cu_noswaps_cx(circ);
+    CompilationUnit cu_noswaps_tk2(circ);
+    FullPeepholeOptimise(true, OpType::CX)->apply(cu_swaps_cx);
+    FullPeepholeOptimise(true, OpType::TK2)->apply(cu_swaps_tk2);
+    FullPeepholeOptimise(false, OpType::CX)->apply(cu_noswaps_cx);
+    FullPeepholeOptimise(false, OpType::TK2)->apply(cu_noswaps_tk2);
+    Circuit compiled_circ_swaps_cx = cu_swaps_cx.get_circ_ref();
+    Circuit compiled_circ_swaps_tk2 = cu_swaps_tk2.get_circ_ref();
+    Circuit compiled_circ_noswaps_cx = cu_noswaps_cx.get_circ_ref();
+    Circuit compiled_circ_noswaps_tk2 = cu_noswaps_tk2.get_circ_ref();
+    unsigned n_gates_swaps_cx = compiled_circ_swaps_cx.n_gates();
+    unsigned n_cx_swaps_cx = compiled_circ_swaps_cx.count_gates(OpType::CX);
+    unsigned n_tk1_swaps_cx = compiled_circ_swaps_cx.count_gates(OpType::TK1);
+    unsigned n_gates_swaps_tk2 = compiled_circ_swaps_tk2.n_gates();
+    unsigned n_tk2_swaps_tk2 = compiled_circ_swaps_tk2.count_gates(OpType::TK2);
+    unsigned n_tk1_swaps_tk2 = compiled_circ_swaps_tk2.count_gates(OpType::TK1);
+    unsigned n_gates_noswaps_cx = compiled_circ_noswaps_cx.n_gates();
+    unsigned n_cx_noswaps_cx = compiled_circ_noswaps_cx.count_gates(OpType::CX);
+    unsigned n_tk1_noswaps_cx =
+        compiled_circ_noswaps_cx.count_gates(OpType::TK1);
+    unsigned n_gates_noswaps_tk2 = compiled_circ_noswaps_tk2.n_gates();
+    unsigned n_tk2_noswaps_tk2 =
+        compiled_circ_noswaps_tk2.count_gates(OpType::TK2);
+    unsigned n_tk1_noswaps_tk2 =
+        compiled_circ_noswaps_tk2.count_gates(OpType::TK1);
+
+    CHECK(n_gates_swaps_cx == n_cx_swaps_cx + n_tk1_swaps_cx);
+    CHECK(n_gates_swaps_tk2 == n_tk2_swaps_tk2 + n_tk1_swaps_tk2);
+    CHECK(n_gates_noswaps_cx == n_cx_noswaps_cx + n_tk1_noswaps_cx);
+    CHECK(n_gates_noswaps_tk2 == n_tk2_noswaps_tk2 + n_tk1_noswaps_tk2);
   }
 }
 
