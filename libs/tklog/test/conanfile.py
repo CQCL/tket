@@ -18,7 +18,7 @@ import platform
 
 class TestTklogConan(ConanFile):
     name = "test-tklog"
-    version = "0.1.0"
+    version = "0.1.1"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
     description = "Unit tests for tklog"
@@ -27,7 +27,7 @@ class TestTklogConan(ConanFile):
     default_options = {"with_coverage": False}
     generators = "cmake"
     exports_sources = "*"
-    requires = ["tklog/0.1.1", "catch2/3.0.1"]
+    requires = ["tklog/0.1.2", "catch2/3.1.0"]
 
     _cmake = None
 

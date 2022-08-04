@@ -804,7 +804,7 @@ Circuit::CommandIterator::CommandIterator(const Circuit& circ)
   }
 }
 
-const Circuit::CommandIterator Circuit::begin() const {
+Circuit::CommandIterator Circuit::begin() const {
   return CommandIterator(*this);
 }
 

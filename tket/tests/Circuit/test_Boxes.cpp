@@ -569,6 +569,22 @@ SCENARIO("QControlBox", "[boxes]") {
     V(7, 7) = exp(-i_ * PI / 6.);
     REQUIRE(U.isApprox(V));
   }
+  GIVEN("controlled TK2") {
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::TK2, {0.3, 0.4, 0.8}, {0, 1});
+    Op_ptr op = c0.get_commands()[0].get_op_ptr();
+    const Eigen::MatrixXcd U0 = as_gate_ptr(op)->get_unitary();
+    QControlBox qcbox(op);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(8, 8);
+    for (unsigned i = 0; i < 4; i++) {
+      for (unsigned j = 0; j < 4; j++) {
+        V(4 + i, 4 + j) = U0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+  }
   GIVEN("2-controlled X") {
     Op_ptr op = get_op_ptr(OpType::X);
     QControlBox qcbox(op, 2);
@@ -595,6 +611,121 @@ SCENARIO("QControlBox", "[boxes]") {
     }
     REQUIRE(U.isApprox(V));
   }
+
+  GIVEN("controlled empty CircBox") {
+    Circuit c0(2);
+    c0.add_phase(0.3);
+    const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0);
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(8, 8);
+    for (unsigned i = 0; i < 4; i++) {
+      for (unsigned j = 0; j < 4; j++) {
+        V(4 + i, 4 + j) = U0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+  }
+
+  GIVEN("2-controlled CircBox") {
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::H, {0});
+    c0.add_op<unsigned>(OpType::Rz, 0.5, {0});
+    c0.add_op<unsigned>(OpType::CX, {0, 1});
+    c0.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    c0.add_op<unsigned>(OpType::CX, {0, 1});
+    // Should be reduced to a single 1-q unitary
+    const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0);
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op, 2);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    // The 2-controlled 1-q unitary should be decomposed into 8 gates
+    REQUIRE(c->n_gates() == 8);
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(16, 16);
+    for (unsigned i = 0; i < 4; i++) {
+      for (unsigned j = 0; j < 4; j++) {
+        V(12 + i, 12 + j) = U0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+  }
+  GIVEN("controlled CircBox with gates merged") {
+    Circuit c0(3);
+    c0.add_op<unsigned>(OpType::X, {0});
+    c0.add_op<unsigned>(OpType::CU1, 0.33, {0, 1});
+    c0.add_op<unsigned>(OpType::T, {0});
+    c0.add_op<unsigned>(OpType::CCX, {0, 1, 2});
+    c0.add_op<unsigned>(OpType::CU1, -0.33, {1, 0});
+    // This circuit can be reduced to XT[0,1] and CCX[0,1,2]
+    const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0);
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    // C(XT) should be translated into a U1 gate and a CU3 gate
+    // CCX should become C3X
+    std::vector<OpType> expected_optypes{OpType::U1, OpType::CU3, OpType::CnX};
+    auto cmds = c->get_commands();
+    REQUIRE(cmds.size() == 3);
+    for (unsigned i = 0; i < expected_optypes.size(); ++i) {
+      REQUIRE(cmds[i].get_op_ptr()->get_type() == expected_optypes[i]);
+    }
+    REQUIRE(equiv_0(c->get_phase()));
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(16, 16);
+    for (unsigned i = 0; i < 8; i++) {
+      for (unsigned j = 0; j < 8; j++) {
+        V(8 + i, 8 + j) = U0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+  }
+  GIVEN("controlled CircBox with large n=6") {
+    Circuit c0(3);
+    c0.add_op<unsigned>(OpType::TK1, {0.55, 0.22, 0.98}, {0});
+    c0.add_op<unsigned>(OpType::CZ, {0, 1});
+    c0.add_op<unsigned>(OpType::X, {0});
+    c0.add_op<unsigned>(OpType::CX, {1, 0});
+    c0.add_op<unsigned>(OpType::Rx, 0.7, {0});
+    const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0);
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op, 6);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(512, 512);
+    for (unsigned i = 0; i < 8; i++) {
+      for (unsigned j = 0; j < 8; j++) {
+        V(504 + i, 504 + j) = U0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+  }
+  GIVEN("controlled CircBox with gates merged to identity") {
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::Z, {0});
+    c0.add_op<unsigned>(OpType::CX, {0, 1});
+    c0.add_op<unsigned>(OpType::X, {1});
+    c0.add_op<unsigned>(OpType::CX, {0, 1});
+    c0.add_op<unsigned>(OpType::X, {1});
+    c0.add_op<unsigned>(OpType::CZ, {0, 1});
+    c0.add_op<unsigned>(OpType::Z, {0});
+    c0.add_op<unsigned>(OpType::CZ, {0, 1});
+    const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0);
+    REQUIRE(U0.isApprox(Eigen::Matrix4cd::Identity(), ERR_EPS));
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    REQUIRE(c->n_gates() == 0);
+    REQUIRE(equiv_0(c->get_phase()));
+  }
+
   GIVEN("controlled Unitary1qBox") {
     Circuit c0(1);
     c0.add_op<unsigned>(OpType::TK1, {0.6, 0.7, 0.8}, {0});

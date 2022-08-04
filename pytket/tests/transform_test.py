@@ -32,6 +32,8 @@ from pytket.passes import (  # type: ignore
     CustomRoutingPass,
     PlacementPass,
     CXMappingPass,
+    CustomPass,
+    SequencePass,
     auto_rebase_pass,
     auto_squash_pass,
 )
@@ -125,6 +127,13 @@ def get_KAK_test_fidelity_circuit() -> Circuit:
     return c
 
 
+def get_KAK_test_fidelity_circuit2() -> Circuit:
+    c = Circuit(2)
+    c.add_gate(OpType.TK2, [0.4, 0.2, -0.15], [0, 1])
+    c.add_gate(OpType.TK2, [0.0, 0.0, 0.0], [0, 1])
+    return c
+
+
 def test_remove_redundancies() -> None:
     c = get_test_circuit()
     c.CX(0, 1)
@@ -160,9 +169,25 @@ def test_global_phasedx() -> None:
 
 
 def test_KAK() -> None:
-    c = get_KAK_test_circuit()
-    Transform.KAKDecomposition().apply(c)
-    assert c.n_gates_of_type(OpType.CX) == 8
+    for allow_swaps, n_cx in [(False, 8), (True, 4)]:
+        c = get_KAK_test_circuit()
+        Transform.KAKDecomposition(allow_swaps=allow_swaps).apply(c)
+        assert c.n_gates_of_type(OpType.CX) == n_cx
+
+
+def test_DecomposeTK2() -> None:
+    c = Circuit(2).add_gate(OpType.TK2, [0.5, 0.5, 0.5], [0, 1])
+    Transform.DecomposeTK2(False).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 3
+
+    c = Circuit(2).add_gate(OpType.TK2, [0.5, 0.5, 0.5], [0, 1])
+    Transform.DecomposeTK2(True).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 0
+
+    c = Circuit(2).add_gate(OpType.TK2, [0.5, 0.5, 0.5], [0, 1])
+    Transform.DecomposeTK2(False, ZZMax_fidelity=0.8).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 0
+    assert c.n_gates_of_type(OpType.ZZMax) == 3
 
 
 def test_fidelity_KAK() -> None:
@@ -186,18 +211,36 @@ def test_fidelity_KAK_pass() -> None:
 
 def test_fidelity_KAK2() -> None:
     c = get_KAK_test_fidelity_circuit()
-    Transform.KAKDecomposition(cx_fidelity=0.6).apply(c)
+    Transform.KAKDecomposition(cx_fidelity=0.6, allow_swaps=False).apply(c)
     assert c.n_gates_of_type(OpType.CX) == 0
 
     c = get_KAK_test_fidelity_circuit()
-    Transform.KAKDecomposition(cx_fidelity=0.7).apply(c)
+    Transform.KAKDecomposition(cx_fidelity=0.7, allow_swaps=False).apply(c)
     assert c.n_gates_of_type(OpType.CX) == 1
 
     c = get_KAK_test_fidelity_circuit()
-    Transform.KAKDecomposition(cx_fidelity=0.94).apply(c)
+    Transform.KAKDecomposition(cx_fidelity=0.94, allow_swaps=False).apply(c)
     assert c.n_gates_of_type(OpType.CX) == 2
 
     c = get_KAK_test_fidelity_circuit()
+    Transform.KAKDecomposition(cx_fidelity=0.99, allow_swaps=False).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 3
+
+
+def test_fidelity_KAK3() -> None:
+    c = get_KAK_test_fidelity_circuit2()
+    Transform.KAKDecomposition(cx_fidelity=0.6).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 0
+
+    c = get_KAK_test_fidelity_circuit2()
+    Transform.KAKDecomposition(cx_fidelity=0.85).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 1
+
+    c = get_KAK_test_fidelity_circuit2()
+    Transform.KAKDecomposition(cx_fidelity=0.9).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 2
+
+    c = get_KAK_test_fidelity_circuit2()
     Transform.KAKDecomposition(cx_fidelity=0.99).apply(c)
     assert c.n_gates_of_type(OpType.CX) == 3
 
@@ -209,6 +252,15 @@ def test_three_qubit_squash() -> None:
         c.CX((i + 2) % 3, (i + 1) % 3)
     assert Transform.ThreeQubitSquash().apply(c)
     assert c.n_gates_of_type(OpType.CX) <= 14
+
+
+def test_three_qubit_squash_tk() -> None:
+    c = Circuit(3)
+    for i in range(50):
+        c.Rz(0.125, i % 3)
+        c.add_gate(OpType.TK2, [0.1, 0.2, 0.3], [(i + 2) % 3, (i + 1) % 3])
+    assert Transform.ThreeQubitSquash(OpType.TK2).apply(c)
+    assert c.n_gates_of_type(OpType.TK2) <= 15
 
 
 def test_basic_rebases() -> None:
@@ -1004,14 +1056,11 @@ def test_auto_rebase() -> None:
 
     for gateset, cx_circ, TK1_func in pass_params:
         rebase = auto_rebase_pass(gateset)
-        assert rebase.to_dict() == RebaseCustom(gateset, cx_circ, TK1_func).to_dict()
-
         c2 = circ.copy()
         assert rebase.apply(c2)
 
-    with pytest.raises(NoAutoRebase) as cx_err:
-        _ = auto_rebase_pass({OpType.ZZPhase, OpType.TK1})
-    assert "CX" in str(cx_err.value)
+    rebase = auto_rebase_pass({OpType.ZZPhase, OpType.TK1})
+    assert rebase.apply(circ)
 
     with pytest.raises(NoAutoRebase) as cx_err:
         _ = auto_rebase_pass({OpType.CX, OpType.H, OpType.T})
@@ -1072,6 +1121,29 @@ def test_tk2_decompositions() -> None:
     )
     FullPeepholeOptimise().apply(c)
     assert c.depth() <= 29
+
+
+def test_custom_pass() -> None:
+    def transform(c: "Circuit") -> "Circuit":
+        c1 = Circuit()
+        for q_reg in c.q_registers:
+            c1.add_q_register(q_reg.name, q_reg.size)
+        for c_reg in c.c_registers:
+            c1.add_c_register(c_reg.name, c_reg.size)
+        for cmd in c.get_commands():
+            op = cmd.op
+            params = [param if abs(param) >= 0.01 else 0 for param in op.params]
+            c1.add_gate(op.type, params, cmd.args)
+        return c1
+
+    p = CustomPass(transform, label="ignore_small_angles")
+    c = Circuit(2).H(0).CX(0, 1).Rz(0.001, 0).Rz(0.001, 1).CX(0, 1).H(0)
+    seq = SequencePass([RemoveRedundancies(), p, RemoveRedundancies()])
+    seq.apply(c)
+    assert c.n_gates == 0
+
+    p_json = p.to_dict()
+    assert p_json["StandardPass"]["label"] == "ignore_small_angles"
 
 
 if __name__ == "__main__":

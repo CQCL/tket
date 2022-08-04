@@ -1,6 +1,35 @@
 Changelog
 =========
 
+1.5.0 (August 2022)
+-------------------
+
+Minor new features:
+
+* Add support for TK2 gate in ``KAKDecomposition``.
+* ``Transform.ThreeQubitSquash()`` can now use TK2 gates as an alternative to CX
+  gates.
+* ``Unitary3qBox.get_circuit()`` decomposes the circuit using (at most 15) TK2
+  gates.
+* New ``CustomPass()`` accepting a user-supplied circuit transformation
+  function.
+* ``measure_register`` now allows using an existing classical register
+* Provide an additional ``RebaseCustom`` constructor that takes a
+  TK2-replacement instead of a CX-replacement function.
+* New ``int_dist_from_state`` function in ``pytket.utils.results`` to convert
+  a statevector to the probability distribution over its indices.
+* The precondition for ``CliffordSimp`` and ``KAKDecomposition`` has been relaxed
+  to accept classical controlled operations. ``ThreeQubitSquash`` and ``FullPeepholeOptimise``
+  now accept classical operations.
+* Improve ``QControlBox`` decomposition.
+* New ``allow_swaps`` flag in ``KAKDecomposition`` and ``DecomposeTK2`` to
+  decompose two-qubit operations up to implicit wire swaps.
+* Add support for TK2 gate in ``FullPeepholeOptimise``.
+
+Fixes:
+
+* ``FullPeepholeOptimise`` failure on conditional circuits.
+
 1.4.3 (July 2022)
 -----------------
 
@@ -15,7 +44,7 @@ Fixes:
 
 * Relax assertion in replace_TK2_2CX to avoid crash due to rounding errors.
 
-1.4.0 (July 2022)
+1.4.1 (July 2022)
 -----------------
 
 Minor new features:

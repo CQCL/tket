@@ -332,28 +332,41 @@ PYBIND11_MODULE(passes, m) {
   /* Pass library */
   m.def(
       "KAKDecomposition", &KAKDecomposition,
-      "Construct an optimisation pass that performs a Cartan/KAK "
-      "Decomposition "
-      "for 2 qubit gate sequences, well explained in Robert Tucci "
-      "(https://arxiv.org/abs/quant-ph/0507171). "
-      "Given a circuit with CXs, SWAPs and any single-qubit gates, "
-      "produces a circuit with the same gates. "
-      "The optional parameter `cx_fidelity` must be between 0 and 1 and "
-      "should be the estimated CX gate fidelity of the noisy quantum "
-      "hardware to be compiled for. It is used to trade off decomposition "
-      "accuracy for smaller CX gate count. "
-      "If `cx_fidelity` < 1, the resulting decomposition will optimise "
-      "the expected circuit fidelity. In this case, the output circuit "
-      "will not be logically equivalent."
-      "This will not preserve CX orientation."
-      "\n\n:param cx_fidelity: The estimated gate fidelity"
-      "\n:return: a KAK Decomposition pass using the given CX gate "
-      "fidelity",
-      py::arg("cx_fidelity") = 1.);
+      "Squash sequences of two-qubit operations into minimal form.\n\n"
+      "Pass to squash together sequences of single- and two-qubit gates "
+      "into minimal form. Can decompose to TK2 or CX gates.\n\n"
+      "Two-qubit operations can always be expressed in a minimal form of "
+      "maximum three CXs, or as a single TK2 gate (a result also known "
+      "as the KAK or Cartan decomposition).\n\n"
+      "It is in general recommended to squash to TK2 gates, and to then use"
+      " the `DecomposeTK2` pass for noise-aware decompositions to other "
+      "gatesets. For backward compatibility, decompositions to CX are also "
+      "supported. In this case, `cx_fidelity` can be provided to perform "
+      "approximate decompositions to CX gates.\n\n"
+      "When decomposing to TK2 gates, any sequence of two or more two-qubit"
+      " gates on the same set of qubits are replaced by a single TK2 gate. "
+      "When decomposing to CX, the substitution is only performed if it "
+      "results in a reduction of the number of CX gates, or if at least "
+      "one of the two-qubit gates is not a CX.\n\n"
+      "Using the `allow_swaps=True` (default) option, qubits will be "
+      "swapped when convenient to further reduce the two-qubit gate count "
+      "(only applicable when decomposing to CX gates).\n\n"
+      ":param target_2qb_gate: OpType to decompose to. Either TK2 or CX.\n"
+      ":param cx_fidelity: Estimated CX gate fidelity, used when "
+      "target_2qb_gate=CX.\n"
+      ":param allow_swaps: Whether to allow implicit wire swaps.",
+      py::arg("target_2qb_gate") = OpType::CX, py::arg("cx_fidelity") = 1.,
+      py::arg("allow_swaps") = true);
+  m.def(
+      "KAKDecomposition",
+      [](double cx_fidelity) {
+        return KAKDecomposition(OpType::CX, cx_fidelity);
+      },
+      py::arg("cx_fidelity"));
   m.def(
       "DecomposeTK2",
-      [](const py::kwargs &kwargs) {
-        return DecomposeTK2(get_fidelities(kwargs));
+      [](bool allow_swaps, const py::kwargs &kwargs) {
+        return DecomposeTK2(get_fidelities(kwargs), allow_swaps);
       },
       "Decompose each TK2 gate into two-qubit gates."
       "\n\nGate fidelities can be passed as keyword arguments to perform "
@@ -369,11 +382,16 @@ PYBIND11_MODULE(passes, m) {
       "If no fidelities are provided, the TK2 gates will be decomposed "
       "exactly using CX gates.\n\n"
       "All TK2 gate parameters must be normalised, i.e. they must satisfy "
-      "`NormalisedTK2Predicate`."
-      "\n\nIf the TK2 angles are symbolic values, the decomposition will "
+      "`NormalisedTK2Predicate`.\n\n"
+      "Using the `allow_swaps=True` (default) option, qubits will be swapped "
+      "when convenient to reduce the two-qubit gate count of the decomposed "
+      "TK2.\n\n"
+      "If the TK2 angles are symbolic values, the decomposition will "
       "be exact (i.e. not noise-aware). It is not possible in general "
       "to obtain optimal decompositions for arbitrary symbolic parameters, "
-      "so consider substituting for concrete values if possible.");
+      "so consider substituting for concrete values if possible."
+      "\n\n:param allow_swaps: Whether to allow implicit wire swaps.",
+      py::arg("allow_swaps") = true);
   m.def(
       "NormaliseTK2", &NormaliseTK2,
       "Normalises all TK2 gates.\n\n"
@@ -442,10 +460,10 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "FullPeepholeOptimise", &FullPeepholeOptimise,
       "Performs peephole optimisation including resynthesis of 2- and 3-qubit "
-      "gate sequences, and converts to a circuit containing only CX and TK1 "
-      "gates."
+      "gate sequences, and converts to a circuit containing only the given "
+      "2-qubit gate (which may be CX or TK2) and TK1 gates."
       "\n\n:param allow_swaps: whether to allow implicit wire swaps",
-      py::arg("allow_swaps") = true);
+      py::arg("allow_swaps") = true, py::arg("target_2qb_gate") = OpType::CX);
   m.def("RebaseTket", &RebaseTket, "Converts all gates to CX and TK1.");
   m.def(
       "RemoveRedundancies", &RemoveRedundancies,
@@ -515,25 +533,51 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "RebaseCustom", &gen_rebase_pass,
-      "Construct a custom rebase pass. This pass:\n(1) decomposes "
-      "multi-qubit gates not in the set of gate types `gateset` to CX "
-      "gates;\n(2) if CX is not in `gateset`, replaces CX gates with "
-      "`cx_replacement`;\n(3) converts any single-qubit gates not in the "
-      "gate type set to the form "
+      "Construct a custom rebase pass, given user-defined rebases for TK1 and "
+      "CX. This pass:"
+      "\n\n"
+      "1. decomposes multi-qubit gates not in the set of gate types `gateset` "
+      "to CX gates;\n"
+      "2. if CX is not in `gateset`, replaces CX gates with `cx_replacement`;\n"
+      "3. converts any single-qubit gates not in the gate type set to the form "
       ":math:`\\mathrm{Rz}(a)\\mathrm{Rx}(b)\\mathrm{Rz}(c)` (in "
       "matrix-multiplication order, i.e. reverse order in the "
-      "circuit);\n(4) applies the `tk1_replacement` function to each of "
-      "these triples :math:`(a,b,c)` to generate replacement circuits."
-      "\n\n:param gateset: The allowed operations in the rebased circuit."
-      "\n:param cx_replacement: The equivalent circuit to replace a CX "
-      "gate using two qubit gates from the desired basis (can use any single "
-      "qubit OpTypes)."
-      "\n:param tk1_replacement: A function which, given the parameters of "
-      "an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
-      "desired basis."
+      "circuit);\n"
+      "4. applies the `tk1_replacement` function to each of these triples "
+      ":math:`(a,b,c)` to generate replacement circuits."
+      "\n\n"
+      ":param gateset: the allowed operations in the rebased circuit"
+      "\n:param cx_replacement: the equivalent circuit to replace a CX gate "
+      "using two qubit gates from the desired basis (can use any single qubit "
+      "OpTypes)"
+      "\n:param tk1_replacement: a function which, given the parameters of an "
+      "Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the desired "
+      "basis"
       "\n:return: a pass that rebases to the given gate set",
       py::arg("gateset"), py::arg("cx_replacement"),
       py::arg("tk1_replacement"));
+
+  m.def(
+      "RebaseCustom", &gen_rebase_pass_via_tk2,
+      "Construct a custom rebase pass, given user-defined rebases for TK1 and "
+      "TK2. This pass:"
+      "\n\n"
+      "1. decomposes multi-qubit gates not in the set of gate types `gateset` "
+      "to TK2 gates;\n"
+      "2. if TK2 is not in `gateset`, replaces TK2(a,b,c) gates via the "
+      "`tk2_replacement` function;\n"
+      "3. converts any single-qubit gates not in the gate type set to TK1;\n"
+      "4. if TK2 is not in `gateset`. applies the `tk1_replacement` function "
+      "to each TK1(a,b,c)."
+      "\n\n"
+      ":param gateset: the allowed operations in the rebased circuit\n"
+      ":param tk2_replacement: a function which, given the parameters (a,b,c) "
+      "of an XXPhase(a)YYPhase(b)ZZPhase(c) triple, returns an equivalent "
+      "circuit in the desired basis\n"
+      ":param tk1_replacement: a function which, given the parameters (a,b,c) "
+      "of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
+      "desired basis\n"
+      ":return: a pass that rebases to the given gate set");
 
   m.def(
       "EulerAngleReduction", &gen_euler_pass,
@@ -781,6 +825,19 @@ PYBIND11_MODULE(passes, m) {
       "ZZPhaseToRz", &ZZPhaseToRz,
       "Converts ZZPhase gates with angle pi or -pi to two Rz gates with"
       "angle pi.\n:return: a pass to convert ZZPhase gates to Rz");
+
+  m.def(
+      "CustomPass", &CustomPass,
+      "Generate a custom pass from a user-provided circuit transfomation "
+      "function."
+      "\n\n"
+      "It is the caller's responsibility to provide a valid transform."
+      "\n\n"
+      ":param transform: function taking a :py:class:`Circuit` as an argument "
+      "and returning a new transformed circuit"
+      ":param label: optional label for the pass"
+      "\n:return: a pass to perform the transformation",
+      py::arg("transform"), py::arg("label") = "");
 }
 
 }  // namespace tket

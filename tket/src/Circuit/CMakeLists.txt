@@ -34,7 +34,8 @@ add_library(tket-${COMP}
     CircPool.cpp
     DAGProperties.cpp
     OpJson.cpp
-    Conditional.cpp)
+    Conditional.cpp
+    ControlledGates.cpp)
 
 list(APPEND DEPS_${COMP}
     Gate

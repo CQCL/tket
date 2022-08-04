@@ -174,5 +174,31 @@ SCENARIO("TK2_using_normalised_TK2") {
   }
 }
 
+SCENARIO("TK2_using_ZZMax") {
+  double a, b, c;
+  GIVEN("General angles") {
+    a = 1.2;
+    b = 2.3;
+    c = 3.4;
+  }
+  GIVEN("c = 0") {
+    a = 0.3;
+    b = 1.2;
+    c = 0.;
+  }
+  GIVEN("b = c = 0") {
+    a = -1.9;
+    b = c = 0.;
+  }
+  GIVEN("a = b = c = 0") { a = b = c = 0.; }
+  Circuit circ(2);
+  Circuit orig(2);
+  orig.add_op<unsigned>(OpType::TK2, {a, b, c}, {0, 1});
+  Circuit res = CircPool::TK2_using_ZZMax(a, b, c);
+  Eigen::Matrix4cd u_orig = tket_sim::get_unitary(orig);
+  Eigen::Matrix4cd u_res = tket_sim::get_unitary(res);
+  CHECK(u_res.isApprox(u_orig));
+}
+
 }  // namespace test_CircPool
 }  // namespace tket

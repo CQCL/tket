@@ -14,13 +14,17 @@
 
 #include <algorithm>
 #include <catch2/catch_test_macros.hpp>
+#include <tkrng/RNG.hpp>
+#include <vector>
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/Circuit.hpp"
+#include "Circuit/Command.hpp"
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
+#include "Ops/ClassicalOps.hpp"
 #include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/CompilerPass.hpp"
@@ -31,6 +35,8 @@
 #include "Transformations/ContextualReduction.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
+#include "Utils/Expression.hpp"
+#include "Utils/UnitID.hpp"
 #include "testutil.hpp"
 namespace tket {
 namespace test_CompilerPass {
@@ -390,6 +396,37 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
         DecomposeBoxes(), RebaseTket(), gen_default_mapping_pass(grid, true)};
     REQUIRE_NOTHROW(SequencePass(passes));
   }
+  GIVEN("TK1 and TK2 replacement functions") {
+    auto tk1_replacement = [](const Expr& a, const Expr& b, const Expr& c) {
+      Circuit circ(1);
+      circ.add_op<unsigned>(OpType::Rz, c, {0});
+      circ.add_op<unsigned>(OpType::Rx, b, {0});
+      circ.add_op<unsigned>(OpType::Rz, a, {0});
+      return circ;
+    };
+    auto tk2_replacement = [](const Expr& a, const Expr& b, const Expr& c) {
+      Circuit circ(2);
+      circ.add_op<unsigned>(OpType::ZZPhase, c, {0, 1});
+      circ.add_op<unsigned>(OpType::YYPhase, b, {0, 1});
+      circ.add_op<unsigned>(OpType::XXPhase, a, {0, 1});
+      return circ;
+    };
+    OpTypeSet allowed_gates = {OpType::Rx,      OpType::Ry,
+                               OpType::Rz,      OpType::XXPhase,
+                               OpType::YYPhase, OpType::ZZPhase};
+
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    PassPtr pp = gen_rebase_pass_via_tk2(
+        allowed_gates, tk2_replacement, tk1_replacement);
+
+    CompilationUnit cu(circ);
+    CHECK(pp->apply(cu));
+    CHECK(cu.get_circ_ref().count_gates(OpType::XXPhase) == 1);
+    CHECK(cu.get_circ_ref().count_gates(OpType::YYPhase) == 0);
+    CHECK(cu.get_circ_ref().count_gates(OpType::ZZPhase) == 0);
+  }
 }
 
 SCENARIO("Construct sequence pass") {
@@ -402,13 +439,6 @@ SCENARIO("Construct sequence pass") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     CompilationUnit cu(circ);
     REQUIRE_NOTHROW(sequence->apply(cu));
-  }
-  WHEN("Apply to invalid CompilationUnit") {
-    Circuit circ(2, 1);
-    circ.add_op<unsigned>(OpType::H, {0});
-    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
-    CompilationUnit cu(circ);
-    REQUIRE_THROWS_AS(sequence->apply(cu), UnsatisfiedPredicate);
   }
 }
 
@@ -681,6 +711,27 @@ SCENARIO("PeepholeOptimise2Q and FullPeepholeOptimise") {
     CompilationUnit cu1(circ1);
     REQUIRE(FullPeepholeOptimise()->apply(cu1));
   }
+  GIVEN("A circuit with classical operations.") {
+    Circuit circ(2, 1);
+    circ.add_op<unsigned>(OpType::ZZMax, {1, 0});
+    circ.add_op<unsigned>(OpType::Reset, {1});
+    circ.add_conditional_gate<unsigned>(OpType::Z, {}, {0}, {0}, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::U1, 0.2, {0});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    circ.add_op<unsigned>(ClassicalX(), {0});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::V, {0});
+    circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::U1, 0.4, {1});
+    circ.add_op<unsigned>(ClassicalX(), {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    CompilationUnit cu(circ);
+    REQUIRE(FullPeepholeOptimise()->apply(cu, SafetyMode::Audit));
+  }
   GIVEN("A symbolic circuit") {
     Sym a = SymEngine::symbol("alpha");
     Circuit circ(2);
@@ -718,6 +769,57 @@ SCENARIO("PeepholeOptimise2Q and FullPeepholeOptimise") {
     CompilationUnit cu(circ);
     REQUIRE(FullPeepholeOptimise()->apply(cu));
     REQUIRE(test_unitary_comparison(circ, cu.get_circ_ref()));
+  }
+}
+
+SCENARIO("FullPeepholeOptimise with various options") {
+  GIVEN("Large 'random' circuit") {
+    Circuit circ(4);
+    RNG rng;
+    for (unsigned i = 0; i < 100; i++) {
+      unsigned a = rng.get_size_t(3);
+      unsigned b = rng.get_size_t(3);
+      unsigned c = rng.get_size_t(3);
+      unsigned d = rng.get_size_t(3);
+      circ.add_op<unsigned>(OpType::H, {a});
+      circ.add_op<unsigned>(OpType::T, {b});
+      if (c != d) {
+        circ.add_op<unsigned>(OpType::CZ, {c, d});
+      }
+    }
+
+    CompilationUnit cu_swaps_cx(circ);
+    CompilationUnit cu_swaps_tk2(circ);
+    CompilationUnit cu_noswaps_cx(circ);
+    CompilationUnit cu_noswaps_tk2(circ);
+    FullPeepholeOptimise(true, OpType::CX)->apply(cu_swaps_cx);
+    FullPeepholeOptimise(true, OpType::TK2)->apply(cu_swaps_tk2);
+    FullPeepholeOptimise(false, OpType::CX)->apply(cu_noswaps_cx);
+    FullPeepholeOptimise(false, OpType::TK2)->apply(cu_noswaps_tk2);
+    Circuit compiled_circ_swaps_cx = cu_swaps_cx.get_circ_ref();
+    Circuit compiled_circ_swaps_tk2 = cu_swaps_tk2.get_circ_ref();
+    Circuit compiled_circ_noswaps_cx = cu_noswaps_cx.get_circ_ref();
+    Circuit compiled_circ_noswaps_tk2 = cu_noswaps_tk2.get_circ_ref();
+    unsigned n_gates_swaps_cx = compiled_circ_swaps_cx.n_gates();
+    unsigned n_cx_swaps_cx = compiled_circ_swaps_cx.count_gates(OpType::CX);
+    unsigned n_tk1_swaps_cx = compiled_circ_swaps_cx.count_gates(OpType::TK1);
+    unsigned n_gates_swaps_tk2 = compiled_circ_swaps_tk2.n_gates();
+    unsigned n_tk2_swaps_tk2 = compiled_circ_swaps_tk2.count_gates(OpType::TK2);
+    unsigned n_tk1_swaps_tk2 = compiled_circ_swaps_tk2.count_gates(OpType::TK1);
+    unsigned n_gates_noswaps_cx = compiled_circ_noswaps_cx.n_gates();
+    unsigned n_cx_noswaps_cx = compiled_circ_noswaps_cx.count_gates(OpType::CX);
+    unsigned n_tk1_noswaps_cx =
+        compiled_circ_noswaps_cx.count_gates(OpType::TK1);
+    unsigned n_gates_noswaps_tk2 = compiled_circ_noswaps_tk2.n_gates();
+    unsigned n_tk2_noswaps_tk2 =
+        compiled_circ_noswaps_tk2.count_gates(OpType::TK2);
+    unsigned n_tk1_noswaps_tk2 =
+        compiled_circ_noswaps_tk2.count_gates(OpType::TK1);
+
+    CHECK(n_gates_swaps_cx == n_cx_swaps_cx + n_tk1_swaps_cx);
+    CHECK(n_gates_swaps_tk2 == n_tk2_swaps_tk2 + n_tk1_swaps_tk2);
+    CHECK(n_gates_noswaps_cx == n_cx_noswaps_cx + n_tk1_noswaps_cx);
+    CHECK(n_gates_noswaps_tk2 == n_tk2_noswaps_tk2 + n_tk1_noswaps_tk2);
   }
 }
 
@@ -787,6 +889,12 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     Circuit result = cu.get_circ_ref();
 
     REQUIRE(test_unitary_comparison(circ, result));
+  }
+  GIVEN("Unsatisfied NoClassicalControlPredicate") {
+    Circuit c(1, 1);
+    c.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {0}, 1);
+    CompilationUnit cu(c);
+    REQUIRE_THROWS_AS(ComposePhasePolyBoxes()->apply(cu), UnsatisfiedPredicate);
   }
   GIVEN("NoWireSwapsPredicate for ComposePhasePolyBoxes") {
     Circuit circ(5);
@@ -1210,6 +1318,12 @@ SCENARIO("ThreeQubitSquah") {
     REQUIRE(c1.count_gates(OpType::CX) <= 19);
     REQUIRE(test_statevector_comparison(c, c1));
   }
+  GIVEN("Unsatisfied gateset") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::CH, {0, 1});
+    CompilationUnit cu(c);
+    REQUIRE_THROWS_AS(ThreeQubitSquash()->apply(cu), UnsatisfiedPredicate);
+  }
   GIVEN("A 3-qubit circuit that is non-trivially the identity") {
     Circuit c(3);
     c.add_op<unsigned>(OpType::U3, {1.5, 0, 1.5}, {0});
@@ -1252,6 +1366,66 @@ SCENARIO("ThreeQubitSquah") {
     REQUIRE(ThreeQubitSquash()->apply(cu));
     const Circuit& c1 = cu.get_circ_ref();
     REQUIRE(c1.get_commands().empty());
+  }
+}
+
+SCENARIO("CustomPass") {
+  GIVEN("Identity transform") {
+    auto transform = [](const Circuit& c) {
+      Circuit c1 = c;
+      return c1;
+    };
+    PassPtr pp = CustomPass(transform);
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    CompilationUnit cu(c);
+    REQUIRE_FALSE(pp->apply(cu));
+    REQUIRE(cu.get_circ_ref() == c);
+  }
+  GIVEN("Custom pass that ignores ops with small params") {
+    auto transform = [](const Circuit& c) {
+      Circuit c1;
+      for (const Qubit& qb : c.all_qubits()) {
+        c1.add_qubit(qb);
+      }
+      for (const Bit& cb : c.all_bits()) {
+        c1.add_bit(cb);
+      }
+      for (const Command& cmd : c.get_commands()) {
+        Op_ptr op = cmd.get_op_ptr();
+        unit_vector_t args = cmd.get_args();
+        std::vector<Expr> params = op->get_params();
+        if (params.empty() ||
+            std::any_of(params.begin(), params.end(), [](const Expr& e) {
+              return !approx_0(e, 0.01);
+            })) {
+          c1.add_op<UnitID>(op, args);
+        }
+      }
+      return c1;
+    };
+    PassPtr pp = CustomPass(transform);
+    THEN("The pass eliminates small-angle rotations") {
+      Circuit c(2);
+      c.add_op<unsigned>(OpType::Rx, 0.001, {0});
+      c.add_op<unsigned>(OpType::CZ, {0, 1});
+      CompilationUnit cu(c);
+      REQUIRE(pp->apply(cu));
+      REQUIRE(cu.get_circ_ref().n_gates() == 1);
+    }
+    AND_WHEN("The pass is followed by RemoveRedundancies") {
+      SequencePass seq({pp, RemoveRedundancies()});
+      THEN("It can reduce circuits even further") {
+        Circuit c(1);
+        c.add_op<unsigned>(OpType::Rx, 0.25, {0});
+        c.add_op<unsigned>(OpType::Rz, 0.001, {0});
+        c.add_op<unsigned>(OpType::Rx, 0.25, {0});
+        CompilationUnit cu(c);
+        REQUIRE(seq.apply(cu));
+        REQUIRE(cu.get_circ_ref().n_gates() == 1);
+      }
+    }
   }
 }
 

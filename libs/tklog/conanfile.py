@@ -18,7 +18,7 @@ from conans.errors import ConanInvalidConfiguration
 
 class TklogConan(ConanFile):
     name = "tklog"
-    version = "0.1.1"
+    version = "0.1.2"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
     description = "Simple logging library"

@@ -183,7 +183,7 @@ Op_ptr Unitary3qBox::transpose() const {
 }
 
 void Unitary3qBox::generate_circuit() const {
-  circ_ = std::make_shared<Circuit>(three_qubit_synthesis(m_));
+  circ_ = std::make_shared<Circuit>(three_qubit_tk_synthesis(m_));
 }
 
 ExpBox::ExpBox(const Eigen::Matrix4cd &A, double t, BasisOrder basis)

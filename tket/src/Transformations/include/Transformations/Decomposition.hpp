@@ -93,21 +93,6 @@ Transform decompose_ZX_to_HQS1();
 Transform decompose_MolmerSorensen();
 
 /**
- * @brief A simple struct to store some two-qubit gate fidelities.
- *
- * We currently support CX, ZZMax and ZZPhase.
- *
- * This is meant to be easily extensible when further gate types will be
- * supported.
- *
- */
-struct TwoQbFidelities {
-  std::optional<double> CX_fidelity;
-  std::optional<double> ZZMax_fidelity;
-  std::optional<std::function<double(double)>> ZZPhase_fidelity;
-};
-
-/**
  * @brief Decomposes each TK2 gate into two-qubit gates.
  *
  * We currently support CX, ZZMax and ZZPhase.
@@ -115,6 +100,9 @@ struct TwoQbFidelities {
  * Decompose each TK2 gate into two-qubit gates in a noise-aware way. Supported
  * two-qubit gate fidelities will be used to return the optimal decomposition of
  * each TK2 gate, taking noise into consideration.
+ *
+ * Using the `allow_swaps=true` (default) option, qubits will be swapped when
+ * convenient to reduce the two-qubit gate count of the decomposed TK2.
  *
  * If no fidelities are provided, the decomposition will be exact, using CX
  * gates.
@@ -128,10 +116,11 @@ struct TwoQbFidelities {
  * using the \ref normalise_TK2 transform.
  *
  * @param fid The two-qubit gate fidelities (optional).
+ * @param allow_swaps Allow implicit swaps (default = true).
  * @return Transform
  */
-Transform decompose_TK2(const TwoQbFidelities& fid);
-Transform decompose_TK2();
+Transform decompose_TK2(const TwoQbFidelities& fid, bool allow_swaps = true);
+Transform decompose_TK2(bool allow_swaps = true);
 
 /**
  * @brief Synthesise ZZPhase gates from CX and Rz, as well as XX/YYPhase.
@@ -230,6 +219,21 @@ Transform decompose_NPhasedX();
  * certain cases a blow-up in symbolic expression sizes may occur.
  */
 Transform globalise_PhasedX(bool squash = true);
+
+// does not use ancillae
+// Expects: CCX + any other gates
+// returns CX, H, T, Tdg + any previous gates
+Transform decomp_CCX();
+
+// converts arbitrarily controlled Ry gates. It does not use ancillae, so it
+// is not very depth-efficient Expects: CRys and any other gates returns Ry,
+// CX, H, T, Tdg + whatever other gates were there before
+Transform decomp_controlled_Rys();
+
+// does not use ancillae
+// Expects: any CnRys + CnXs + any other gates
+// returns Ry, CX, H, T, Tdg + any previous gates
+Transform decomp_arbitrary_controlled_gates();
 
 }  // namespace Transforms
 

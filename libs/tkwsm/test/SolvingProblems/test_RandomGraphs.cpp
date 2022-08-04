@@ -376,11 +376,11 @@ SCENARIO(
     entry = -1;
   }
   TestParameters params;
-  params.timeout = 30000;
+  params.timeout = 60000;
   params.total_number_of_edges = 3250;
   params.total_number_of_vertices = 334;
 
-  params.expected_max_total_time_ms = 30000;
+  params.expected_max_total_time_ms = 60000;
   params.expected_min_total_time_ms = 1000;
   const auto result = tester.test_all_against_all(params);
   CHECK(result.success_count == 2);

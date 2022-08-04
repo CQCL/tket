@@ -14,6 +14,8 @@
 
 #include "OptimisationPass.hpp"
 
+#include <stdexcept>
+
 #include "BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
@@ -22,6 +24,7 @@
 #include "Combinator.hpp"
 #include "Decomposition.hpp"
 #include "Gate/GatePtr.hpp"
+#include "OpType/OpType.hpp"
 #include "PhaseOptimisation.hpp"
 #include "Rebase.hpp"
 #include "ThreeQubitSquash.hpp"
@@ -37,11 +40,23 @@ Transform peephole_optimise_2q() {
       synthesise_tket());
 }
 
-Transform full_peephole_optimise(bool allow_swaps) {
-  return (
-      synthesise_tket() >> two_qubit_squash() >> clifford_simp(allow_swaps) >>
-      synthesise_tket() >> three_qubit_squash() >> clifford_simp(allow_swaps) >>
-      synthesise_tket());
+Transform full_peephole_optimise(bool allow_swaps, OpType target_2qb_gate) {
+  switch (target_2qb_gate) {
+    case OpType::CX:
+      return (
+          synthesise_tket() >> two_qubit_squash(allow_swaps) >>
+          clifford_simp(allow_swaps) >> synthesise_tket() >>
+          three_qubit_squash() >> clifford_simp(allow_swaps) >>
+          synthesise_tket());
+    case OpType::TK2:
+      return (
+          synthesise_tk() >> two_qubit_squash(OpType::TK2) >>
+          clifford_simp(false) >> two_qubit_squash(OpType::TK2) >>
+          synthesise_tk() >> three_qubit_squash(OpType::TK2) >>
+          clifford_simp(allow_swaps) >> synthesise_tk());
+    default:
+      throw std::invalid_argument("Invalid target 2-qubit gate");
+  }
 }
 
 Transform canonical_hyper_clifford_squash() {

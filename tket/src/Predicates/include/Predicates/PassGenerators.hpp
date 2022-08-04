@@ -15,6 +15,7 @@
 #pragma once
 
 #include "ArchAwareSynth/SteinerForest.hpp"
+#include "Circuit/Circuit.hpp"
 #include "CompilerPass.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/RoutingMethod.hpp"
@@ -27,6 +28,22 @@ namespace tket {
 /* a wrapper method for the rebase_factory in Transforms */
 PassPtr gen_rebase_pass(
     const OpTypeSet& allowed_gates, const Circuit& cx_replacement,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk1_replacement);
+
+/**
+ * Generate a rebase pass give standard replacements for TK1 and TK2 gates.
+ *
+ * @param[in] allowed_gates set of target gates
+ * @param[in] tk2_replacement circuit to replace a given TK2 gate
+ * @param[in] tk1_replacement circuit to replace a given TK1 gate
+ *
+ * @return rebase pass
+ */
+PassPtr gen_rebase_pass_via_tk2(
+    const OpTypeSet& allowed_gates,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk2_replacement,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement);
 
@@ -107,18 +124,38 @@ PassPtr gen_decompose_routing_gates_to_cxs_pass(
 PassPtr gen_user_defined_swap_decomp_pass(const Circuit& replacement_circ);
 
 /**
- * Pass to decompose sequences of two-qubit operations into optimal gate
- * sequence
+ * @brief Squash sequences of two-qubit operations into minimal form.
  *
- * Generate a KAK decomposition pass that can decompose any two-qubit subcircuit
- * into <= 3 CX + local operations.
- * If an estimate for the CX gate fidelity cx_fidelity is given, the
- * decomposition will trade off the accuracy of the circuit approximation
- * against the loss in circuit fidelity induced by additional noisy CX gates.
- * This will result in an output circuit that is not necessarily equivalent to
- * the input, but that maximises expected circuit fidelity
+ * A pass that squashes together sequences of single- and two-qubit gates
+ * into minimal form. Can decompose to TK2 or CX gates.
+ *
+ * Two-qubit operations can always be expressed in a minimal form of
+ * maximum three CXs, or as a single TK2 gate (a result also known
+ * as the KAK or Cartan decomposition).
+ *
+ * It is in general recommended to squash to TK2 gates, and to then use the
+ * `DecomposeTK2` pass for noise-aware decompositions to other gatesets.
+ * For backward compatibility, decompositions to CX are also supported. In this
+ * case, `cx_fidelity` can be provided to perform approximate decompositions to
+ * CX.
+ *
+ * When decomposing to TK2 gates, any sequence of two or more two-qubit gates
+ * on the same set of qubits are replaced by a single TK2 gate. When decomposing
+ * to CX, the substitution is only performed if it results in a reduction of the
+ * number of CX gates, or if at least one of the two-qubit gates is not a CX.
+ *
+ * Using the `allow_swaps=true` (default) option, qubits will be swapped when
+ * convenient to further reduce the two-qubit gate count (only applicable
+ * when decomposing to CX gates).
+ *
+ * @param target_2qb_gate OpType to decompose to. Either TK2 or CX.
+ * @param cx_fidelity Estimated CX gate fidelity, used when target_2qb_gate=CX.
+ * @param allow_swaps Whether to allow implicit wire swaps.
+ * @return PassPtr
  */
-PassPtr KAKDecomposition(double cx_fidelity = 1.);
+PassPtr KAKDecomposition(
+    OpType target_2qb_gate = OpType::CX, double cx_fidelity = 1.,
+    bool allow_swaps = true);
 
 /**
  * @brief Decomposes each TK2 gate into two-qubit gates.
@@ -141,6 +178,9 @@ PassPtr KAKDecomposition(double cx_fidelity = 1.);
  * a lambda float -> float, mapping a ZZPhase angle parameter to its fidelity.
  * These parameters will be used to return the optimal decomposition of each TK2
  * gate, taking noise into consideration.
+
+ * Using the `allow_swaps=true` (default) option, qubits will be swapped when
+ * convenient to reduce the two-qubit gate count of the decomposed TK2.
  *
  * If the TK2 angles are symbolic values, the decomposition will be exact
  * (i.e. not noise-aware). It is not possible in general to obtain optimal
@@ -148,10 +188,12 @@ PassPtr KAKDecomposition(double cx_fidelity = 1.);
  * for concrete values if possible.
  *
  * @param fid The two-qubit gate fidelities (optional).
+ * @param allow_swaps Allow implicit swaps (default = true).
  * @return PassPtr
  */
-PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid);
-PassPtr DecomposeTK2();
+PassPtr DecomposeTK2(
+    const Transforms::TwoQbFidelities& fid, bool allow_swaps = true);
+PassPtr DecomposeTK2(bool allow_swaps = true);
 
 /**
  * Resynthesize and squash three-qubit interactions.
@@ -166,11 +208,14 @@ PassPtr ThreeQubitSquash(bool allow_swaps = true);
 
 /**
  * Performs peephole optimisation including resynthesis of 2- and 3-qubit gate
- * sequences, and converts to a circuit containing only CX and TK1 gates.
+ * sequences, and converts to a circuit containing a given 2-qubit gate and TK1
+ * gates.
  *
+ * @param target_2qb_gate target 2-qubit gate (CX or TK2)
  * @param allow_swaps whether to allow introduction of implicit swaps
  */
-PassPtr FullPeepholeOptimise(bool allow_swaps = true);
+PassPtr FullPeepholeOptimise(
+    bool allow_swaps = true, OpType target_2qb_gate = OpType::CX);
 
 /* generates an optimisation pass that converts a circuit into phase
 gadgets and optimises them using techniques from
@@ -254,5 +299,20 @@ PassPtr PauliSquash(Transforms::PauliSynthStrat strat, CXConfigType cx_config);
  * in certain cases a blow-up in symbolic expression sizes may occur.
  */
 PassPtr GlobalisePhasedX(bool squash = true);
+
+/**
+ * Generate a custom pass
+ *
+ * @param transform circuit transformation function
+ * @param label optional user-defined label for the pass
+ *
+ * It is the caller's responsibility to provide a valid transform: there are no
+ * checks on this.
+ *
+ * @return compilation pass that applies the supplied transform
+ */
+PassPtr CustomPass(
+    std::function<Circuit(const Circuit&)> transform,
+    const std::string& label = "");
 
 }  // namespace tket

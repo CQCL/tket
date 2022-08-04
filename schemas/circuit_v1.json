@@ -280,6 +280,10 @@
           "minimum": 0,
           "description": "Number of qubits acted on. Required of signature not set."
         },
+        "data": {
+          "type": "string",
+          "description": "additional string stored in the op"
+        },
         "params": {
           "type": "array",
           "description": "Expressions corresponding to parameter values of the operation, if it has parameters.",
