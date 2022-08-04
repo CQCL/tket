@@ -144,12 +144,18 @@ PassPtr gen_user_defined_swap_decomp_pass(const Circuit& replacement_circ);
  * to CX, the substitution is only performed if it results in a reduction of the
  * number of CX gates, or if at least one of the two-qubit gates is not a CX.
  *
+ * Using the `allow_swaps=true` (default) option, qubits will be swapped when
+ * convenient to further reduce the two-qubit gate count (only applicable
+ * when decomposing to CX gates).
+ *
  * @param target_2qb_gate OpType to decompose to. Either TK2 or CX.
  * @param cx_fidelity Estimated CX gate fidelity, used when target_2qb_gate=CX.
+ * @param allow_swaps Whether to allow implicit wire swaps.
  * @return PassPtr
  */
 PassPtr KAKDecomposition(
-    OpType target_2qb_gate = OpType::CX, double cx_fidelity = 1.);
+    OpType target_2qb_gate = OpType::CX, double cx_fidelity = 1.,
+    bool allow_swaps = true);
 
 /**
  * @brief Decomposes each TK2 gate into two-qubit gates.
@@ -172,6 +178,9 @@ PassPtr KAKDecomposition(
  * a lambda float -> float, mapping a ZZPhase angle parameter to its fidelity.
  * These parameters will be used to return the optimal decomposition of each TK2
  * gate, taking noise into consideration.
+
+ * Using the `allow_swaps=true` (default) option, qubits will be swapped when
+ * convenient to reduce the two-qubit gate count of the decomposed TK2.
  *
  * If the TK2 angles are symbolic values, the decomposition will be exact
  * (i.e. not noise-aware). It is not possible in general to obtain optimal
@@ -179,10 +188,12 @@ PassPtr KAKDecomposition(
  * for concrete values if possible.
  *
  * @param fid The two-qubit gate fidelities (optional).
+ * @param allow_swaps Allow implicit swaps (default = true).
  * @return PassPtr
  */
-PassPtr DecomposeTK2(const Transforms::TwoQbFidelities& fid);
-PassPtr DecomposeTK2();
+PassPtr DecomposeTK2(
+    const Transforms::TwoQbFidelities& fid, bool allow_swaps = true);
+PassPtr DecomposeTK2(bool allow_swaps = true);
 
 /**
  * Resynthesize and squash three-qubit interactions.

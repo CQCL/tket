@@ -257,7 +257,7 @@ struct Interaction {
 
 static bool replace_two_qubit_interaction(
     Circuit &circ, Interaction &i, std::map<Qubit, Edge> &current_edges,
-    VertexList &bin, OpType target, double cx_fidelity) {
+    VertexList &bin, OpType target, double cx_fidelity, bool allow_swaps) {
   EdgeVec in_edges = {i.e0, i.e1};
   EdgeVec out_edges = {current_edges[i.q0], current_edges[i.q1]};
   Edge next0, next1;
@@ -285,7 +285,7 @@ static bool replace_two_qubit_interaction(
   TwoQbFidelities fid;
   fid.CX_fidelity = cx_fidelity;
   if (target != OpType::TK2) {
-    decompose_TK2(fid).apply(replacement);
+    decompose_TK2(fid, allow_swaps).apply(replacement);
   }
   squash_1qb_to_tk1().apply(replacement);
 
@@ -378,7 +378,12 @@ Transform commute_and_combine_HQS2() {
   });
 }
 
-Transform two_qubit_squash(OpType target_2qb_gate, double cx_fidelity) {
+Transform two_qubit_squash(bool allow_swaps) {
+  return two_qubit_squash(OpType::CX, 1., allow_swaps);
+}
+
+Transform two_qubit_squash(
+    OpType target_2qb_gate, double cx_fidelity, bool allow_swaps) {
   const std::set<OpType> accepted_ots{OpType::CX, OpType::TK2};
   if (!accepted_ots.contains(target_2qb_gate)) {
     throw BadOpType(
@@ -390,7 +395,7 @@ Transform two_qubit_squash(OpType target_2qb_gate, double cx_fidelity) {
     throw std::invalid_argument("The CX fidelity must be between 0 and 1.");
   }
 
-  return Transform([target_2qb_gate, cx_fidelity](Circuit &circ) {
+  return Transform([target_2qb_gate, cx_fidelity, allow_swaps](Circuit &circ) {
     bool success = false;
     VertexList bin;
     // Get map from vertex/port to qubit number
@@ -437,7 +442,7 @@ Transform two_qubit_squash(OpType target_2qb_gate, double cx_fidelity) {
                 // Replace subcircuit
                 success |= replace_two_qubit_interaction(
                     circ, i_vec[i], current_edge_on_qb, bin, target_2qb_gate,
-                    cx_fidelity);
+                    cx_fidelity, allow_swaps);
               }
               current_interaction[i_vec[i].q0] = -1;
               current_interaction[i_vec[i].q1] = -1;
@@ -468,7 +473,7 @@ Transform two_qubit_squash(OpType target_2qb_gate, double cx_fidelity) {
                 // Replace subcircuit
                 success |= replace_two_qubit_interaction(
                     circ, i_vec[i0], current_edge_on_qb, bin, target_2qb_gate,
-                    cx_fidelity);
+                    cx_fidelity, allow_swaps);
               }
               current_interaction[i_vec[i0].q0] = -1;
               current_interaction[i_vec[i0].q1] = -1;
@@ -480,7 +485,7 @@ Transform two_qubit_squash(OpType target_2qb_gate, double cx_fidelity) {
 
                 success |= replace_two_qubit_interaction(
                     circ, i_vec[i1], current_edge_on_qb, bin, target_2qb_gate,
-                    cx_fidelity);
+                    cx_fidelity, allow_swaps);
               }
               current_interaction[i_vec[i1].q0] = -1;
               current_interaction[i_vec[i1].q1] = -1;

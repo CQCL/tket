@@ -127,6 +127,13 @@ def get_KAK_test_fidelity_circuit() -> Circuit:
     return c
 
 
+def get_KAK_test_fidelity_circuit2() -> Circuit:
+    c = Circuit(2)
+    c.add_gate(OpType.TK2, [0.4, 0.2, -0.15], [0, 1])
+    c.add_gate(OpType.TK2, [0.0, 0.0, 0.0], [0, 1])
+    return c
+
+
 def test_remove_redundancies() -> None:
     c = get_test_circuit()
     c.CX(0, 1)
@@ -162,9 +169,25 @@ def test_global_phasedx() -> None:
 
 
 def test_KAK() -> None:
-    c = get_KAK_test_circuit()
-    Transform.KAKDecomposition().apply(c)
-    assert c.n_gates_of_type(OpType.CX) == 8
+    for allow_swaps, n_cx in [(False, 8), (True, 4)]:
+        c = get_KAK_test_circuit()
+        Transform.KAKDecomposition(allow_swaps=allow_swaps).apply(c)
+        assert c.n_gates_of_type(OpType.CX) == n_cx
+
+
+def test_DecomposeTK2() -> None:
+    c = Circuit(2).add_gate(OpType.TK2, [0.5, 0.5, 0.5], [0, 1])
+    Transform.DecomposeTK2(False).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 3
+
+    c = Circuit(2).add_gate(OpType.TK2, [0.5, 0.5, 0.5], [0, 1])
+    Transform.DecomposeTK2(True).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 0
+
+    c = Circuit(2).add_gate(OpType.TK2, [0.5, 0.5, 0.5], [0, 1])
+    Transform.DecomposeTK2(False, ZZMax_fidelity=0.8).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 0
+    assert c.n_gates_of_type(OpType.ZZMax) == 3
 
 
 def test_fidelity_KAK() -> None:
@@ -188,18 +211,36 @@ def test_fidelity_KAK_pass() -> None:
 
 def test_fidelity_KAK2() -> None:
     c = get_KAK_test_fidelity_circuit()
-    Transform.KAKDecomposition(cx_fidelity=0.6).apply(c)
+    Transform.KAKDecomposition(cx_fidelity=0.6, allow_swaps=False).apply(c)
     assert c.n_gates_of_type(OpType.CX) == 0
 
     c = get_KAK_test_fidelity_circuit()
-    Transform.KAKDecomposition(cx_fidelity=0.7).apply(c)
+    Transform.KAKDecomposition(cx_fidelity=0.7, allow_swaps=False).apply(c)
     assert c.n_gates_of_type(OpType.CX) == 1
 
     c = get_KAK_test_fidelity_circuit()
-    Transform.KAKDecomposition(cx_fidelity=0.94).apply(c)
+    Transform.KAKDecomposition(cx_fidelity=0.94, allow_swaps=False).apply(c)
     assert c.n_gates_of_type(OpType.CX) == 2
 
     c = get_KAK_test_fidelity_circuit()
+    Transform.KAKDecomposition(cx_fidelity=0.99, allow_swaps=False).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 3
+
+
+def test_fidelity_KAK3() -> None:
+    c = get_KAK_test_fidelity_circuit2()
+    Transform.KAKDecomposition(cx_fidelity=0.6).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 0
+
+    c = get_KAK_test_fidelity_circuit2()
+    Transform.KAKDecomposition(cx_fidelity=0.85).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 1
+
+    c = get_KAK_test_fidelity_circuit2()
+    Transform.KAKDecomposition(cx_fidelity=0.9).apply(c)
+    assert c.n_gates_of_type(OpType.CX) == 2
+
+    c = get_KAK_test_fidelity_circuit2()
     Transform.KAKDecomposition(cx_fidelity=0.99).apply(c)
     assert c.n_gates_of_type(OpType.CX) == 3
 
