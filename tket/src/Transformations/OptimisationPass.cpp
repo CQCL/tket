@@ -39,9 +39,9 @@ Transform peephole_optimise_2q() {
 
 Transform full_peephole_optimise(bool allow_swaps) {
   return (
-      synthesise_tket() >> two_qubit_squash() >> clifford_simp(allow_swaps) >>
-      synthesise_tket() >> three_qubit_squash() >> clifford_simp(allow_swaps) >>
-      synthesise_tket());
+      synthesise_tket() >> two_qubit_squash(allow_swaps) >>
+      clifford_simp(allow_swaps) >> synthesise_tket() >> three_qubit_squash() >>
+      clifford_simp(allow_swaps) >> synthesise_tket());
 }
 
 Transform canonical_hyper_clifford_squash() {
