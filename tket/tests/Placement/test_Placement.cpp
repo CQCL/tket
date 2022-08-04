@@ -614,6 +614,18 @@ SCENARIO(
     }
     REQUIRE(test_m.at(all_qs[3]) == uid0);
   }
+  GIVEN("A circuit with no two-qubit gates.") {
+    Circuit test_circ(4);
+    test_circ.add_op<unsigned>(OpType::T, {0});
+    test_circ.add_op<unsigned>(OpType::X, {1});
+    test_circ.add_op<unsigned>(OpType::H, {2});
+    test_circ.add_op<unsigned>(OpType::S, {3});
+    const qubit_mapping_t test_m = test_p.get_placement_map(test_circ);
+    REQUIRE(test_m.at(Qubit(0)) == Node("unplaced", 0));
+    REQUIRE(test_m.at(Qubit(1)) == Node("unplaced", 1));
+    REQUIRE(test_m.at(Qubit(2)) == Node("unplaced", 2));
+    REQUIRE(test_m.at(Qubit(3)) == Node("unplaced", 3));
+  }
 }
 
 SCENARIO(
