@@ -373,8 +373,8 @@ class DirectedGraphBase : public AbstractGraph<T> {
 };
 
 /**
- * DirectedGraph instances are directed graphs. It is a wrapper around a
- * BGL graph that provides a clean class API, taking care of mapping all BGL
+ * DirectedGraph instances are loop-free directed graphs. It is a wrapper around
+ * a BGL graph that provides a clean class API, taking care of mapping all BGL
  * vertices and edge pointers to nodes, respectively pairs of nodes.
  *
  * The vertices and edges can be given weights of type double if desired, and
