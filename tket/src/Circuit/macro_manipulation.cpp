@@ -19,6 +19,7 @@
 #include <memory>
 #include <tklog/TketLog.hpp>
 
+#include "CircUtils.hpp"
 #include "Circuit.hpp"
 #include "Gate/Gate.hpp"
 #include "Ops/ClassicalOps.hpp"
@@ -631,12 +632,8 @@ Circuit Circuit::conditional_circuit(
 
 bool Circuit::substitute_box_vertex(
     Vertex& vert, VertexDeletion vertex_deletion) {
-  Op_ptr op = get_Op_ptr_from_Vertex(vert);
-  bool conditional = op->get_type() == OpType::Conditional;
-  if (conditional) {
-    const Conditional& cond = static_cast<const Conditional&>(*op);
-    op = cond.get_op();
-  }
+  bool conditional = get_OpType_from_Vertex(vert) == OpType::Conditional;
+  Op_ptr op = unwrap_conditional(get_Op_ptr_from_Vertex(vert));
   if (!op->get_desc().is_box()) return false;
   if (op->get_type() == OpType::ClassicalExpBox) return false;
   const Box& b = static_cast<const Box&>(*op);

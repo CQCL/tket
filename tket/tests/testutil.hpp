@@ -130,4 +130,18 @@ bool matrices_are_equal(const Matr1& mat1, const Matr2& mat2) {
  */
 Eigen::MatrixXcd random_unitary(unsigned n, int seed);
 
+/**
+ * @brief Check all conditional circuits are correct
+ *
+ * Condition `circ` on every classical bitstring and each time check if the
+ * resulting quantum circuit corresponds to `expcircs[bitstring]`.
+ *
+ * Note this only handles conditional ops that are controlled on a single bit.
+ *
+ * @param circ The circuit with conditional operations
+ * @param expcircs The pure quantum circuits that result from fixing bitstrings
+ */
+void check_all_conditional_circs(
+    const Circuit& circ, const std::vector<Circuit>& expcircs);
+
 }  // namespace tket

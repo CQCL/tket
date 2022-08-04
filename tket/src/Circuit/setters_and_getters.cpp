@@ -20,6 +20,7 @@
 #include <tkassert/Assert.hpp>
 #include <tklog/TketLog.hpp>
 
+#include "CircUtils.hpp"
 #include "Circuit.hpp"
 #include "DAGDefs.hpp"
 #include "DAGProperties.hpp"
@@ -697,20 +698,14 @@ unsigned Circuit::qubit_index(
 
 std::optional<Pauli> Circuit::commuting_basis(
     const Vertex &vert, PortType port_type, port_t port) const {
-  Op_ptr op = get_Op_ptr_from_Vertex(vert);
-  if (op->get_type() == OpType::Conditional) {
-    op = static_cast<const Conditional &>(*op).get_op();
-  }
+  Op_ptr op = unwrap_conditional(get_Op_ptr_from_Vertex(vert));
   return op->commuting_basis(qubit_index(vert, port_type, port));
 }
 
 bool Circuit::commutes_with_basis(
     const Vertex &vert, const std::optional<Pauli> &colour, PortType port_type,
     port_t port) const {
-  Op_ptr op = get_Op_ptr_from_Vertex(vert);
-  if (op->get_type() == OpType::Conditional) {
-    op = static_cast<const Conditional &>(*op).get_op();
-  }
+  Op_ptr op = unwrap_conditional(get_Op_ptr_from_Vertex(vert));
   return op->commutes_with_basis(colour, qubit_index(vert, port_type, port));
 }
 

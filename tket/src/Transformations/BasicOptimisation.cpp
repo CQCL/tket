@@ -267,10 +267,20 @@ struct Interaction {
 };
 
 static bool replace_two_qubit_interaction(
-    Circuit &circ, Interaction &i, std::map<Qubit, Edge> &current_edges,
-    VertexList &bin, OpType target, double cx_fidelity, bool allow_swaps) {
+    Circuit &circ, const Interaction &i, std::map<Qubit, Edge> &current_edges,
+    const Condition &cond, VertexList &bin, OpType target, double cx_fidelity,
+    bool allow_swaps) {
   EdgeVec in_edges = {i.e0, i.e1};
   EdgeVec out_edges = {current_edges[i.q0], current_edges[i.q1]};
+  VertexSet vertices = i.vertices;
+  EdgeVec cin_edges, cout_edges;
+  if (cond) {
+    for (VertPort vp : cond->first) {
+      Edge e = circ.get_nth_out_edge(vp.first, vp.second);
+      cin_edges.push_back(e);
+      cout_edges.push_back(e);
+    }
+  }
   Edge next0, next1;
   bool q0_is_out = is_final_q_type(
       circ.get_OpType_from_Vertex(circ.target(current_edges[i.q0])));
@@ -285,11 +295,19 @@ static bool replace_two_qubit_interaction(
         circ.target(current_edges[i.q1]), current_edges[i.q1]);
   }
   // Circuit to (potentially) substitute
-  Subcircuit sub = {in_edges, out_edges, i.vertices};
+  Subcircuit sub = {in_edges, out_edges, cin_edges, cout_edges, {}, vertices};
   Circuit subc = circ.subcircuit(sub);
 
+  // Remove conditions in subc
+  Circuit replacement(subc.all_qubits(), {});
+  replacement.add_phase(subc.get_phase());
+  for (const Command &cmd : subc) {
+    Op_ptr op = unwrap_conditional(cmd.get_op_ptr());
+    replacement.add_op(op, cmd.get_qubits());
+  }
+  unsigned nb_2qb_old = replacement.count_gates(target);
+
   // Try to simplify using KAK
-  Circuit replacement = subc;
   decompose_multi_qubits_TK2().apply(replacement);
   Eigen::Matrix4cd mat = get_matrix_from_2qb_circ(replacement);
   replacement = two_qubit_canonical(mat);
@@ -304,7 +322,8 @@ static bool replace_two_qubit_interaction(
   bool substitute = false;
   for (Vertex v : subc.vertices_in_order()) {
     unsigned n_ins = subc.n_in_edges_of_type(v, EdgeType::Quantum);
-    if (n_ins == 2 && subc.get_OpType_from_Vertex(v) != target) {
+    Op_ptr op = unwrap_conditional(subc.get_Op_ptr_from_Vertex(v));
+    if (n_ins == 2 && op->get_type() != target) {
       // Old circuit has non-target gates => we need to substitute
       substitute = true;
       break;
@@ -312,7 +331,6 @@ static bool replace_two_qubit_interaction(
   }
   if (!substitute) {
     if (target == OpType::CX) {
-      unsigned nb_2qb_old = subc.count_gates(target);
       unsigned nb_2qb_new = replacement.count_gates(target);
       substitute |= nb_2qb_new < nb_2qb_old;
     } else if (target == OpType::TK2) {
@@ -328,18 +346,39 @@ static bool replace_two_qubit_interaction(
   if (substitute) {
     // Substitute interaction with new circuit
     bin.insert(bin.end(), sub.verts.begin(), sub.verts.end());
-    circ.substitute(replacement, sub, Circuit::VertexDeletion::No);
+    Circuit replacement_cond(subc.all_qubits(), subc.all_bits());
+    if (cond) {
+      unit_vector_t bits(cond->first.size());
+      for (unsigned i = 0; i < bits.size(); ++i) {
+        bits[i] = Bit(i);
+      }
+      // Add a classically-controlled phase
+      // TODO: use Phase OpType when available
+      replacement_cond.add_conditional_gate(
+          OpType::U1, {2 * replacement.get_phase()},
+          {replacement.all_qubits()[0]}, bits, cond->second);
+      replacement_cond.add_conditional_gate(
+          OpType::Rz, {-2 * replacement.get_phase()},
+          {replacement.all_qubits()[0]}, bits, cond->second);
+      for (const Command &cmd : replacement) {
+        Op_ptr op = cmd.get_op_ptr();
+        replacement_cond.add_conditional_gate(
+            op->get_type(), op->get_params(), cmd.get_args(), bits,
+            cond->second);
+      }
+    } else {
+      replacement_cond.append(replacement);
+    }
+    circ.substitute(replacement_cond, sub, Circuit::VertexDeletion::No);
     if (!q0_is_out) {
       current_edges[i.q0] = circ.get_last_edge(circ.source(next0), next0);
     }
     if (!q1_is_out) {
       current_edges[i.q1] = circ.get_last_edge(circ.source(next1), next1);
     }
-    return true;
-  } else {
-    // Leave circuit untouched
-    return false;
   }
+
+  return substitute;
 }
 
 Transform commute_and_combine_HQS2() {
@@ -413,6 +452,7 @@ Transform two_qubit_squash(
     std::map<VertPort, Qubit> v_to_qb;
     std::map<Qubit, Edge> current_edge_on_qb;
     std::vector<Interaction> i_vec;
+    std::vector<Condition> i_conds;
     std::map<Qubit, int> current_interaction;
     for (const Qubit &qb : circ.all_qubits()) {
       for (const VertPort &vp : circ.unit_path(qb)) {
@@ -423,109 +463,126 @@ Transform two_qubit_squash(
       current_edge_on_qb[qb] = e;
       current_interaction[qb] = -1;
     }
+
+    // Get qubits of a vertex `v`
+    auto get_qubits = [&v_to_qb, &circ](Vertex v) {
+      EdgeVec q_edges = circ.get_in_edges_of_type(v, EdgeType::Quantum);
+      qubit_vector_t qubits;
+      for (const Edge &e : q_edges) {
+        qubits.push_back(v_to_qb.at({v, circ.get_target_port(e)}));
+      }
+      return qubits;
+    };
+
+    // Reset all interactions on qubits of `v`
+    auto reset_interactions = [&](Vertex v) {
+      for (const Qubit &q : get_qubits(v)) {
+        int i = current_interaction[q];
+        if (i != -1) {
+          if (i_vec[i].count >= 2) {
+            // Try replacing subcircuit
+            success |= replace_two_qubit_interaction(
+                circ, i_vec[i], current_edge_on_qb, i_conds[i], bin,
+                target_2qb_gate, cx_fidelity, allow_swaps);
+          }
+          // Reset interaction
+          current_interaction[i_vec[i].q0] = -1;
+          current_interaction[i_vec[i].q1] = -1;
+        }
+      }
+    };
+
+    // Extend all interactions on qubits of `v`
+    auto extend_interactions = [&](Vertex v) {
+      std::set<int> interactions;
+      qubit_vector_t qubits = get_qubits(v);
+      for (const Qubit &q : qubits) {
+        int inter = current_interaction[q];
+        if (inter != -1) {
+          interactions.insert(inter);
+        }
+      }
+      for (int inter : interactions) {
+        i_vec[inter].vertices.insert(v);
+        unsigned n_qubits = qubits.size();
+        if (n_qubits == 2) {
+          ++i_vec[inter].count;
+        }
+      }
+    };
+
     SliceVec slices = circ.get_slices();
     slices.insert(slices.begin(), circ.q_inputs());
     slices.push_back(circ.q_outputs());
     for (SliceVec::iterator s = slices.begin(); s != slices.end(); ++s) {
       for (Slice::iterator v = s->begin(); v != s->end(); ++v) {
-        const Op_ptr o = circ.get_Op_ptr_from_Vertex(*v);
-        OpType type = o->get_type();
-        unsigned n_ins = circ.n_in_edges_of_type(*v, EdgeType::Quantum);
-        // Ignore classical ops
-        if (is_classical_type(type)) {
-          continue;
-        } else if (
-            is_projective_type(type) || is_final_q_type(type) ||
-            type == OpType::Barrier || type == OpType::Conditional ||
-            n_ins > 2 || !o->free_symbols().empty()) {
-          // Measures, resets, outputs, barriers, symbolic gates, conditionals
-          // and many-qubit gates close interactions
-          EdgeVec q_edges = circ.get_in_edges_of_type(*v, EdgeType::Quantum);
-          std::vector<port_t> q_ports;
-          for (const Edge &e : q_edges) {
-            q_ports.push_back(circ.get_target_port(e));
-          }
-          for (const port_t &port : q_ports) {
-            Qubit q = v_to_qb.at({*v, port});
-            int i = current_interaction[q];
-            if (i != -1) {
-              if (i_vec[i].count >= 2) {
-                // Replace subcircuit
-                success |= replace_two_qubit_interaction(
-                    circ, i_vec[i], current_edge_on_qb, bin, target_2qb_gate,
-                    cx_fidelity, allow_swaps);
-              }
-              current_interaction[i_vec[i].q0] = -1;
-              current_interaction[i_vec[i].q1] = -1;
-            }
-            if (!is_final_q_type(type)) {
-              current_edge_on_qb[q] =
-                  circ.get_next_edge(*v, current_edge_on_qb[q]);
-            }
-          }
-        } else if (circ.n_in_edges_of_type(*v, EdgeType::Quantum) == 2) {
-          // Check for 2qb gate
-          Qubit q0 = v_to_qb.at({*v, 0});
-          Qubit q1 = v_to_qb.at({*v, 1});
-          int i0 = current_interaction[q0];
-          int i1 = current_interaction[q1];
-          // If they are already interacting, extend it
-          if (i0 != -1 && i0 == i1) {
-            i_vec[i0].count++;
-            i_vec[i0].vertices.insert(*v);
-            current_edge_on_qb[q0] =
-                circ.get_next_edge(*v, current_edge_on_qb[q0]);
-            current_edge_on_qb[q1] =
-                circ.get_next_edge(*v, current_edge_on_qb[q1]);
-          } else {
-            // End any other interactions on q0
-            if (i0 != -1) {
-              if (i_vec[i0].count >= 2) {
-                // Replace subcircuit
-                success |= replace_two_qubit_interaction(
-                    circ, i_vec[i0], current_edge_on_qb, bin, target_2qb_gate,
-                    cx_fidelity, allow_swaps);
-              }
-              current_interaction[i_vec[i0].q0] = -1;
-              current_interaction[i_vec[i0].q1] = -1;
-            }
-            // End any other interactions on q1
-            if (i1 != -1) {
-              if (i_vec[i1].count >= 2) {
-                // Replace subcircuit
+        const Condition cond = get_condition(circ, *v);
+        const Op_ptr op = unwrap_conditional(circ.get_Op_ptr_from_Vertex(*v));
+        const OpType type = op->get_type();
+        const qubit_vector_t qubits = get_qubits(*v);
+        const unsigned n_qubits = qubits.size();
 
-                success |= replace_two_qubit_interaction(
-                    circ, i_vec[i1], current_edge_on_qb, bin, target_2qb_gate,
-                    cx_fidelity, allow_swaps);
-              }
-              current_interaction[i_vec[i1].q0] = -1;
-              current_interaction[i_vec[i1].q1] = -1;
-            }
-            // Add new interaction
-            Interaction new_i(q0, q1);
-            new_i.e0 = current_edge_on_qb[q0];
-            new_i.e1 = current_edge_on_qb[q1];
-            new_i.count = 1;
-            new_i.vertices = {*v};
-            current_interaction[q0] = i_vec.size();
-            current_interaction[q1] = i_vec.size();
-            i_vec.push_back(new_i);
-            current_edge_on_qb[q0] =
-                circ.get_next_edge(*v, current_edge_on_qb[q0]);
-            current_edge_on_qb[q1] =
-                circ.get_next_edge(*v, current_edge_on_qb[q1]);
-          }
+        if (is_projective_type(type) || is_final_q_type(type) ||
+            type == OpType::Barrier || !op->free_symbols().empty()) {
+          // Measures, resets, outputs, barriers, symbolic gates close
+          // interactions
+          reset_interactions(*v);
         } else {
-          // We don't care about single-qubit vertices, so just update edges
-          // and add vertices if interactions exist
-          for (port_t i = 0; i < circ.n_in_edges(*v); i++) {
-            Qubit q = v_to_qb.at({*v, i});
+          switch (n_qubits) {
+            case 0: {
+              // Ignore non-quantum ops
+              break;
+            }
+            case 1: {
+              // For one-qb ops: extend if condition matches, reset otherwise.
+              const int inter = current_interaction[qubits[0]];
+              if (inter != -1 && i_conds[inter] == cond) {
+                extend_interactions(*v);
+              } else {
+                reset_interactions(*v);
+              }
+              break;
+            }
+            case 2: {
+              // For two-qb ops: extend if same interaction, reset otherwise.
+              const int i0 = current_interaction[qubits[0]];
+              const int i1 = current_interaction[qubits[1]];
+
+              // If they are already interacting, extend it
+              if (i0 != -1 && i0 == i1 && i_conds[i0] == cond) {
+                extend_interactions(*v);
+              } else {
+                // Remove old interactions
+                reset_interactions(*v);
+
+                // Create new interaction
+                Interaction new_i(qubits[0], qubits[1]);
+                new_i.e0 = current_edge_on_qb[qubits[0]];
+                new_i.e1 = current_edge_on_qb[qubits[1]];
+                new_i.count = 1;
+                new_i.vertices = {*v};
+
+                // Add new interaction
+                current_interaction[qubits[0]] = i_vec.size();
+                current_interaction[qubits[1]] = i_vec.size();
+                i_vec.push_back(new_i);
+                i_conds.push_back(cond);
+              }
+              break;
+            }
+            default: {
+              // Multi-qb ops close interactions
+              reset_interactions(*v);
+              break;
+            }
+          }
+        }
+
+        // Move on to next edge on each qubit
+        if (!circ.detect_final_Op(*v)) {
+          for (const Qubit &q : qubits) {
             current_edge_on_qb[q] =
                 circ.get_next_edge(*v, current_edge_on_qb[q]);
-            int inter = current_interaction[q];
-            if (inter != -1) {
-              i_vec[inter].vertices.insert(*v);
-            }
           }
         }
       }
@@ -815,10 +872,7 @@ Transform normalise_TK2() {
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
       Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
       bool conditional = op->get_type() == OpType::Conditional;
-      if (conditional) {
-        const Conditional &cond = static_cast<const Conditional &>(*op);
-        op = cond.get_op();
-      }
+      op = unwrap_conditional(op);
       if (op->get_type() == OpType::TK2) {
         auto params = op->get_params();
         TKET_ASSERT(params.size() == 3);

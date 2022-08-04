@@ -17,6 +17,7 @@
 #include <memory>
 #include <optional>
 
+#include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Gate/GatePtr.hpp"
 
@@ -85,9 +86,6 @@ class AbstractSquasher {
  * @brief Squashes single qubit gates using given Squasher.
  */
 class SingleQubitSquash {
- private:
-  using Condition = std::optional<std::pair<std::list<VertPort>, unsigned>>;
-
  public:
   /**
    * @brief Construct a new Single Qubit Squash object.
@@ -152,9 +150,6 @@ class SingleQubitSquash {
   // whether the sub circuit is shorter than chain
   bool sub_is_better(
       const Circuit &sub, const std::vector<Gate_ptr> chain) const;
-
-  // returns a description of the condition of current vertex
-  Condition get_condition(Vertex v) const;
 
   // simple utils respecting reversed boolean
   Vertex next_vertex(const Edge &e) const;

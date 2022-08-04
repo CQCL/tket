@@ -883,6 +883,152 @@ SCENARIO("Test decomposition into 2-CX circuit plus diagonal") {
   }
 }
 
+static unsigned count_gates_unwrap_conditionals(
+    const Circuit &circ, const OpType &type) {
+  unsigned counter = 0;
+  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+    Op_ptr op = unwrap_conditional(circ.get_Op_ptr_from_Vertex(v));
+    if (op->get_type() == type) {
+      ++counter;
+    }
+  }
+  return counter;
+}
+
+SCENARIO("Classical control") {
+  Circuit circ;
+  std::vector<Circuit> exp_circs;
+  unsigned n_cx, n_tk2;
+  GIVEN("A circuit with classical control (1)") {
+    circ = Circuit(2, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+
+    // Expected results
+    Circuit circ_0(2);
+    circ_0.add_op<unsigned>(OpType::CX, {0, 1});
+    Circuit circ_1(2);
+    exp_circs = {circ_0, circ_1};
+    n_cx = 2;
+    n_tk2 = 2;
+  }
+  GIVEN("A circuit with classical control (2)") {
+    circ = Circuit(2, 1);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
+
+    // Expected results
+    Circuit circ_0(2);
+    circ_0.add_op<unsigned>(OpType::CX, {0, 1});
+    Circuit circ_1(2);
+    circ_1.add_op<unsigned>(OpType::CX, {0, 1});
+    exp_circs = {circ_0, circ_1};
+    n_cx = 2;
+    n_tk2 = 2;
+  }
+  GIVEN("A circuit with classical control (3)") {
+    circ = Circuit(2, 1);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.2}, {1}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+
+    circ.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::H, {}, {1}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
+
+    // Expected results
+    Circuit circ_0(2);
+    circ_0.add_op<unsigned>(OpType::H, {0});
+    circ_0.add_op<unsigned>(OpType::H, {1});
+    circ_0.add_op<unsigned>(OpType::CX, {0, 1});
+
+    Circuit circ_1(2);
+    circ_1.add_op<unsigned>(OpType::ZZPhase, 0.2, {0, 1});
+    exp_circs = {circ_0, circ_1};
+    n_cx = 3;
+    n_tk2 = 2;
+  }
+  GIVEN("A circuit with classical control (3)") {
+    circ = Circuit(3, 2);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.2}, {1}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {1}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {1.6}, {1}, {1}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {1}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {1}, 0);
+
+    circ.add_conditional_gate<unsigned>(OpType::ZZMax, {}, {0, 2}, {1}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.6}, {0}, {1}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::ZZMax, {}, {0, 2}, {1}, 1);
+
+    circ.add_conditional_gate<unsigned>(OpType::ZZMax, {}, {1, 2}, {1}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rx, {0.6}, {1}, {1}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::ZZMax, {}, {1, 2}, {1}, 1);
+
+    // Expected results
+    Circuit circ_00(3);
+    circ_00.add_op<unsigned>(OpType::H, {0});
+    circ_00.add_op<unsigned>(OpType::H, {0});
+
+    Circuit circ_01(3);
+    circ_01.add_op<unsigned>(OpType::ZZPhase, 0.2, {0, 1});
+    circ_01.add_op<unsigned>(OpType::H, {0});
+
+    Circuit circ_10(3);
+    circ_10.add_op<unsigned>(OpType::ZZPhase, 1.6, {0, 1});
+    circ_10.add_op<unsigned>(OpType::H, {0});
+
+    circ_10.add_op<unsigned>(OpType::ZZMax, {0, 2});
+    circ_10.add_op<unsigned>(OpType::Rx, 0.6, {0});
+    circ_10.add_op<unsigned>(OpType::ZZMax, {0, 2});
+
+    circ_10.add_op<unsigned>(OpType::ZZMax, {1, 2});
+    circ_10.add_op<unsigned>(OpType::Rx, 0.6, {1});
+    circ_10.add_op<unsigned>(OpType::ZZMax, {1, 2});
+
+    Circuit circ_11(3);
+    circ_11.add_op<unsigned>(OpType::ZZPhase, 0.2, {0, 1});
+    circ_11.add_op<unsigned>(OpType::ZZPhase, 1.6, {0, 1});
+
+    circ_11.add_op<unsigned>(OpType::ZZMax, {0, 2});
+    circ_11.add_op<unsigned>(OpType::Rx, 0.6, {0});
+    circ_11.add_op<unsigned>(OpType::ZZMax, {0, 2});
+
+    circ_11.add_op<unsigned>(OpType::ZZMax, {1, 2});
+    circ_11.add_op<unsigned>(OpType::Rx, 0.6, {1});
+    circ_11.add_op<unsigned>(OpType::ZZMax, {1, 2});
+
+    exp_circs = {circ_00, circ_01, circ_10, circ_11};
+    n_cx = 8;
+    n_tk2 = 4;
+  }
+
+  Circuit orig = circ;
+  REQUIRE(Transforms::two_qubit_squash(OpType::CX).apply(circ));
+  check_all_conditional_circs(circ, exp_circs);
+  REQUIRE(count_gates_unwrap_conditionals(circ, OpType::CX) == n_cx);
+  REQUIRE(count_gates_unwrap_conditionals(circ, OpType::TK2) == 0);
+
+  circ = orig;
+  REQUIRE(Transforms::two_qubit_squash(OpType::TK2).apply(circ));
+  check_all_conditional_circs(circ, exp_circs);
+  REQUIRE(count_gates_unwrap_conditionals(circ, OpType::TK2) == n_tk2);
+  REQUIRE(count_gates_unwrap_conditionals(circ, OpType::CX) == 0);
+}
+
 SCENARIO("KAKDecomposition pass") {
   GIVEN("A simple circuit with many gate types") {
     Circuit c(3);

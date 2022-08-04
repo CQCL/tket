@@ -202,4 +202,26 @@ std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
  */
 void remove_noops(Circuit& circ);
 
+using Condition = std::optional<std::pair<std::list<VertPort>, unsigned>>;
+
+/**
+ * @brief Get a description of the condition of vertex v.
+ *
+ * If the OpType of `v` is not OpType::Conditional, then returns std::nullopt
+ *
+ * Note that this does not support recursive conditional OpTypes.
+ *
+ * @param circ the circuit of `v`
+ * @param v the vertex
+ * @return Condition the condition of v
+ */
+Condition get_condition(const Circuit& circ, Vertex v);
+
+/**
+ * @brief Return op or the underlying op if it is an OpType::Conditional.
+ *
+ * Note that this does not support recursive conditional OpTypes.
+ */
+Op_ptr unwrap_conditional(Op_ptr op);
+
 }  // namespace tket

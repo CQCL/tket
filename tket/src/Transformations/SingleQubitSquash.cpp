@@ -14,6 +14,7 @@
 
 #include "SingleQubitSquash.hpp"
 
+#include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Gate/Gate.hpp"
@@ -72,21 +73,14 @@ bool SingleQubitSquash::squash_between(const Edge &in, const Edge &out) {
   bool success = false;
   Condition condition = std::nullopt;
   while (true) {
-    Op_ptr v_op = circ_.get_Op_ptr_from_Vertex(v);
+    Op_ptr v_op = unwrap_conditional(circ_.get_Op_ptr_from_Vertex(v));
     OpType v_type = v_op->get_type();
     bool move_to_next_vertex = false;
     bool reset_search = false;
-    Condition this_condition = std::nullopt;
 
-    if (v_type == OpType::Conditional) {
-      // => deal with conditional case
-      this_condition = get_condition(v);
-      v_op = static_cast<const Conditional &>(*v_op).get_op();
-      v_type = v_op->get_type();
-
-      if (single_chain.empty()) {
-        condition = this_condition;
-      }
+    Condition this_condition = get_condition(circ_, v);
+    if (single_chain.empty()) {
+      condition = this_condition;
     }
 
     bool is_squashable = circ_.n_in_edges_of_type(v, EdgeType::Quantum) == 1 &&
@@ -201,25 +195,6 @@ bool SingleQubitSquash::sub_is_better(
   const unsigned n_gates = sub.n_gates();
   return n_gates < chain.size() ||
          (n_gates == chain.size() && !is_equal(sub, chain, reversed_));
-}
-
-// returns a description of the condition of current vertex
-SingleQubitSquash::Condition SingleQubitSquash::get_condition(Vertex v) const {
-  Op_ptr v_op = circ_.get_Op_ptr_from_Vertex(v);
-  OpType v_type = v_op->get_type();
-  if (v_type != OpType::Conditional) {
-    throw BadOpType("Cannot get condition from non-conditional OpType", v_type);
-  }
-  const Conditional &cond_op = static_cast<const Conditional &>(*v_op);
-  EdgeVec ins = circ_.get_in_edges(v);
-  Condition cond = std::pair<std::list<VertPort>, unsigned>();
-  for (port_t p = 0; p < cond_op.get_width(); ++p) {
-    Edge in_p = ins.at(p);
-    VertPort vp = {circ_.source(in_p), circ_.get_source_port(in_p)};
-    cond->first.push_back(vp);
-  }
-  cond->second = cond_op.get_value();
-  return cond;
 }
 
 // simple utils respecting reversed boolean

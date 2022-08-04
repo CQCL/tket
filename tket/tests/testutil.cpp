@@ -107,4 +107,37 @@ Eigen::MatrixXcd random_unitary(unsigned n, int seed) {
   return (i_ * H).exp();
 }
 
+void check_all_conditional_circs(
+    const Circuit& circ, const std::vector<Circuit>& expcircs) {
+  if (expcircs.size() != (1 << circ.n_bits())) {
+    throw std::invalid_argument("Must pass 2^n_bits expected circuits");
+  }
+  for (unsigned i = 0; i < (1 << circ.n_bits()); ++i) {
+    Circuit condcirc(circ.all_qubits(), {});
+    condcirc.add_phase(circ.get_phase());
+    for (const Command& cmd : circ) {
+      Op_ptr op = cmd.get_op_ptr();
+      if (op->get_type() == OpType::Conditional) {
+        const Conditional& cond = static_cast<const Conditional&>(*op);
+        if (cond.get_width() != 1) {
+          throw std::runtime_error(
+              "Only conditionals with one bit are supported");
+        }
+        // Only support single bit controls
+        unsigned b = cmd.get_args()[0].index()[0];
+        // Get b-th bit
+        unsigned val = (i >> b) % 2;
+        if (val == cond.get_value()) {
+          condcirc.add_op(cond.get_op(), cmd.get_qubits());
+        }
+      } else {
+        condcirc.add_op(op, cmd.get_qubits());
+      }
+    }
+    auto u = tket_sim::get_unitary(condcirc);
+    auto exp_u = tket_sim::get_unitary(expcircs[i]);
+    REQUIRE(u.isApprox(exp_u));
+  }
+}
+
 }  // namespace tket

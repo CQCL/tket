@@ -1201,4 +1201,31 @@ void remove_noops(Circuit &circ) {
       bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
 }
 
+Condition get_condition(const Circuit &circ, Vertex v) {
+  Op_ptr v_op = circ.get_Op_ptr_from_Vertex(v);
+  OpType v_type = v_op->get_type();
+  if (v_type != OpType::Conditional) {
+    return std::nullopt;
+  }
+  const Conditional &cond_op = static_cast<const Conditional &>(*v_op);
+  EdgeVec ins = circ.get_in_edges(v);
+  Condition cond = std::pair<std::list<VertPort>, unsigned>();
+  for (port_t p = 0; p < cond_op.get_width(); ++p) {
+    Edge in_p = ins.at(p);
+    VertPort vp = {circ.source(in_p), circ.get_source_port(in_p)};
+    cond->first.push_back(vp);
+  }
+  cond->second = cond_op.get_value();
+  return cond;
+}
+
+Op_ptr unwrap_conditional(Op_ptr op) {
+  OpType type = op->get_type();
+  if (type == OpType::Conditional) {
+    const Conditional &cond_op = static_cast<const Conditional &>(*op);
+    op = cond_op.get_op();
+  }
+  return op;
+}
+
 }  // namespace tket

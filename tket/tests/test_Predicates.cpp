@@ -16,6 +16,7 @@
 #include <memory>
 
 #include "Circuit/Boxes.hpp"
+#include "Circuit/CircUtils.hpp"
 #include "Gate/SymTable.hpp"
 #include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
@@ -199,10 +200,10 @@ SCENARIO("Test out basic Predicate useage") {
       REQUIRE(u_res.isApprox(u_orig));
     }
     WHEN("Conditional TK2 gate") {
+      Circuit cond_circ = circ;
       Vertex v = circ.add_conditional_gate<unsigned>(
           OpType::TK2, {0.12, -0.3, 0.1}, {0, 1}, {0}, 1);
       Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-      Circuit cond_circ(2);
       cond_circ.add_op<unsigned>(
           static_cast<const Conditional &>(*op).get_op(), {0, 1});
       auto cond_u_orig = tket_sim::get_unitary(cond_circ);
@@ -214,13 +215,11 @@ SCENARIO("Test out basic Predicate useage") {
       circ = cu.get_circ_ref();
       REQUIRE(pp->verify(circ));
       REQUIRE(circ.count_gates(OpType::TK2) == 2);
-      cond_circ = Circuit(2);
+      cond_circ = Circuit(3);
+      cond_circ.add_phase(circ.get_phase());
       for (auto cmd : circ.get_commands()) {
-        Op_ptr op = cmd.get_op_ptr();
-        if (op->get_type() == OpType::Conditional) {
-          op = static_cast<const Conditional &>(*op).get_op();
-          cond_circ.add_op(op, cmd.get_qubits());
-        }
+        Op_ptr op = unwrap_conditional(cmd.get_op_ptr());
+        cond_circ.add_op(op, cmd.get_qubits());
       }
       auto cond_u_res = tket_sim::get_unitary(cond_circ);
       REQUIRE(cond_u_res.isApprox(cond_u_orig));

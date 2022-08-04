@@ -38,13 +38,10 @@ static bool standard_rebase(
   VertexList bin;
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    bool conditional = op->get_type() == OpType::Conditional;
+    op = unwrap_conditional(op);
     unsigned n_qubits = circ.n_in_edges_of_type(v, EdgeType::Quantum);
     if (n_qubits <= 1) continue;
-    bool conditional = op->get_type() == OpType::Conditional;
-    if (conditional) {
-      const Conditional& cond = static_cast<const Conditional&>(*op);
-      op = cond.get_op();
-    }
     OpType type = op->get_type();
     if (allowed_gates.find(type) != allowed_gates.end() || type == OpType::CX ||
         type == OpType::Barrier)
@@ -67,10 +64,7 @@ static bool standard_rebase(
     if (circ.n_in_edges_of_type(v, EdgeType::Quantum) != 1) continue;
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     bool conditional = op->get_type() == OpType::Conditional;
-    if (conditional) {
-      const Conditional& cond = static_cast<const Conditional&>(*op);
-      op = cond.get_op();
-    }
+    op = unwrap_conditional(op);
     OpType type = op->get_type();
     if (!is_gate_type(type) || is_projective_type(type) ||
         allowed_gates.find(type) != allowed_gates.end())
@@ -109,10 +103,7 @@ static bool standard_rebase_via_tk2(
     unsigned n_qubits = circ.n_in_edges_of_type(v, EdgeType::Quantum);
     if (n_qubits <= 1) continue;
     bool conditional = op->get_type() == OpType::Conditional;
-    if (conditional) {
-      const Conditional& cond = static_cast<const Conditional&>(*op);
-      op = cond.get_op();
-    }
+    op = unwrap_conditional(op);
     OpType type = op->get_type();
     if (allowed_gates.contains(type) || type == OpType::TK2 ||
         type == OpType::Barrier)
@@ -133,10 +124,7 @@ static bool standard_rebase_via_tk2(
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
       Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
       bool conditional = op->get_type() == OpType::Conditional;
-      if (conditional) {
-        const Conditional& cond = static_cast<const Conditional&>(*op);
-        op = cond.get_op();
-      }
+      op = unwrap_conditional(op);
       if (op->get_type() == OpType::TK2) {
         std::vector<Expr> params = op->get_params();
         TKET_ASSERT(params.size() == 3);
@@ -159,10 +147,7 @@ static bool standard_rebase_via_tk2(
     if (circ.n_in_edges_of_type(v, EdgeType::Quantum) != 1) continue;
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     bool conditional = op->get_type() == OpType::Conditional;
-    if (conditional) {
-      const Conditional& cond = static_cast<const Conditional&>(*op);
-      op = cond.get_op();
-    }
+    op = unwrap_conditional(op);
     OpType type = op->get_type();
     if (!is_gate_type(type) || is_projective_type(type) ||
         allowed_gates.contains(type))

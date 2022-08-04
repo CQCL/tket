@@ -14,6 +14,7 @@
 
 #include "Predicates.hpp"
 
+#include "Circuit/CircUtils.hpp"
 #include "Gate/Gate.hpp"
 #include "Mapping/Verification.hpp"
 #include "OpType/OpTypeFunctions.hpp"
@@ -82,14 +83,10 @@ const std::string& predicate_name(std::type_index idx) {
 
 bool GateSetPredicate::verify(const Circuit& circ) const {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-    Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    Op_ptr op = unwrap_conditional(circ.get_Op_ptr_from_Vertex(v));
     OpDesc desc = op->get_desc();
     if (desc.is_meta()) continue;
     OpType type = op->get_type();
-    if (type == OpType::Conditional) {
-      const Conditional& cond = static_cast<const Conditional&>(*op);
-      type = cond.get_op()->get_type();
-    }
     if (!find_in_set(type, allowed_types_)) return false;
   }
   return true;
@@ -660,12 +657,7 @@ std::string GlobalPhasedXPredicate::to_string() const {
 
 bool NormalisedTK2Predicate::verify(const Circuit& circ) const {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-    Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-    bool conditional = op->get_type() == OpType::Conditional;
-    if (conditional) {
-      const Conditional& cond = static_cast<const Conditional&>(*op);
-      op = cond.get_op();
-    }
+    Op_ptr op = unwrap_conditional(circ.get_Op_ptr_from_Vertex(v));
     if (op->get_type() == OpType::TK2) {
       auto params = op->get_params();
       TKET_ASSERT(params.size() == 3);
