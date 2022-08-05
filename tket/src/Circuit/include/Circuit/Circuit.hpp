@@ -538,6 +538,17 @@ class Circuit {
       const Vertex &vert) const;
 
   /**
+   * @brief Get the linear edge corresponding to `e`
+   *
+   * If `e` is linear, return itself, otherwise (if `e` is Boolean), return
+   * the corresponding Classical edge.
+   *
+   * EdgeType::Classical and EdgeType::Quantum are linear types (and thus left
+   * unchanged), whereas EdgeType::Boolean is not.
+   */
+  Edge get_linear_edge(const Edge &e) const;
+
+  /**
    * Outward edges for all types, ordered by port number
    * For classical ports, the Classical output is given, followed by any
    * Boolean outputs
