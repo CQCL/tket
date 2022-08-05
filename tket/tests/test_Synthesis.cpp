@@ -2186,5 +2186,31 @@ SCENARIO("Restricting ZZPhase gate angles.") {
 
   REQUIRE(comparison == c);
 }
+
+SCENARIO("Playing with swaps") {
+  GIVEN("CX") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    REQUIRE(circ.n_vertices() == 5);
+    circ.to_graphviz_file("initial_circuit_0.dot");
+    Transforms::playing_with_swaps().apply(circ);
+    circ.to_graphviz_file("final_circuit_0.dot");
+    REQUIRE(circ.n_vertices() == 4);
+  }
+  GIVEN("H CX H") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::H, {1});
+    REQUIRE(circ.n_vertices() == 9);
+    circ.to_graphviz_file("initial_circuit_1.dot");
+    Transforms::playing_with_swaps().apply(circ);
+    circ.to_graphviz_file("final_circuit_1.dot");
+    REQUIRE(circ.n_vertices() == 8);
+  }
+}
+
 }  // namespace test_Synthesis
 }  // namespace tket

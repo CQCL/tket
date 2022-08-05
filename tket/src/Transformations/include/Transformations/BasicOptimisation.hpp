@@ -137,6 +137,8 @@ Transform ZZPhase_to_Rz();
  */
 Transform normalise_TK2();
 
+Transform playing_with_swaps();
+
 }  // namespace Transforms
 
 }  // namespace tket

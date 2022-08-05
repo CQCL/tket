@@ -40,6 +40,7 @@ static bool remove_redundancy(
     Circuit &circ, const Vertex &vert, VertexList &bin,
     std::set<IVertex> &new_affected_verts, IndexMap &im);
 static bool commute_singles_to_front(Circuit &circ);
+static bool remove_all_cx(Circuit &circ);
 
 Transform remove_redundancies() { return Transform(redundancy_removal); }
 
@@ -834,6 +835,31 @@ Transform normalise_TK2() {
 
     return success;
   });
+}
+
+Transform playing_with_swaps() {
+  return Transform(remove_all_cx);
+}
+
+static bool remove_all_cx(Circuit &circ) {
+  bool success = false;
+  for(const Qubit &q : circ.all_qubits()) {
+    Vertex current = circ.get_in(q);
+    Edge edge = circ.get_nth_out_edge(current, 0);
+    Vertex next = circ.target(edge);
+    while (!is_final_q_type(circ.get_OpType_from_Vertex(next))) {
+      current = next;
+      std::tie(next, edge) = circ.get_next_pair(next, edge);
+      const Op_ptr op = circ.get_Op_ptr_from_Vertex(current);
+      if (op->get_type() == OpType::CX) {
+        circ.remove_vertex(
+          current, Circuit::GraphRewiring::Yes,
+          Circuit::VertexDeletion::Yes);
+          success = true;
+      }
+    }
+  }
+  return success;
 }
 
 }  // namespace Transforms
