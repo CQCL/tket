@@ -494,6 +494,110 @@ op_signature_t StabiliserAssertionBox::get_signature() const {
   return qubs;
 }
 
+std::vector<transposition_t> ToffoliBox::cycle_to_transposition(
+    const cycle_t &cycle) {
+  // TODO: naively just do 0th entry with each other entry
+  // can this be improved?
+  auto it = cycle.begin();
+  std::vector<bool> first = *it;
+  ++it;
+  std::vector<transposition_t> transpositions;
+  while (it != cycle.end()) {
+    transpositions.push_back({first, *it});
+    ++it;
+  }
+  return transpositions;
+}
+
+std::vector<transposition_t> ToffoliBox::get_transpositions() {
+  std::vector<transposition_t> transpositions;
+  for (const cycle_t &cycle : this->cycles_) {
+    transposition_t transposition = this->cycle_to_transposition(cycle);
+    transpositions.reserve(transpositions.size() + cycle.size() - 1);
+    transpositions.insert(
+        transpositions.end(), transposition.begin(), transposition.end());
+  }
+  return transpositions;
+}
+
+// TODO: check every vector is the same size
+ToffoliBox::ToffoliBox(
+    std::map<std::vector<bool>, std::vector<bool>> &_permutation) {
+  // Convert passed permutation to cycles
+  while (!_permutation.empty()) {
+    auto it = _permutation.first();
+    cycle_t cycle = {it->first};
+    while (it->first != cycle[0]) {
+      cycle.push_back(it->second);
+      it = _permutation.find(it->second);
+      if (it == _permutation.end()) {
+        throw std::invalid_argument("Permutation is not complete.")
+      }
+    }
+    if (cycle.size() > 1) {
+      this->cycles_.push_back(cycle);
+    }
+    // TODO: what's quicker, deleting entries or adding to set for look up?
+    for (const std::vector<bool> &bitstring : cycle) {
+      _permutation.erase(bitstring);
+    }
+  }
+}
+
+void ToffoliBox::add_bitstring_circuit(
+    const std::vector<bool> &bitstring, const unsigned &target) {
+  // flip qubits that need to be state 0
+  Circuit x_circuit(n_qubits);
+  std::vector<unsigned> controls;
+  for (unsigned i = 0; i < bitstring; i++) {
+    if (!bitstring[i] && i != target) {
+      x_circuit.add_op<unsigned>(OpType::X, {i});
+      controls.push_back(i);
+    }
+  }
+  this->circuit_.add_circuit(x_circuit);
+  this->circuit_.add_op<unsigned>(OpType::CnX, controls + target);
+  this->circuit_.add_circuit(x_circuit);
+}
+
+void ToffoliBox::generate_circuit() const {
+  // This decomposition is as described on page 191, section 4.5.2 "Single qubit
+  // and CNOT gates are universal" of Nielsen & Chuang
+  std::vector<transposition_t> transpositions = this->get_transpositions();
+  if (!transpositions.empty()) {
+    size_t n_qubits = transpositions[0].first.size();
+    this->circuit_ = Circuit(n_qubits);
+    for (const transposition_t &transposition : transpositions) {
+      TKET_ASSERT(transposition.first.size() == n_qubits);
+      TKET_ASSERT(transposition.second.size() == n_qubits);
+      // find a sequence of bitstrings one flip away from eachother
+      std::vector<std::pair<std::vector<bool>, unsigned>> bitstrings;
+      std::vector<bool> last_bitstring = transposition.first;
+      for (unsigned i = 0; i < transposition.first.size(); i++) {
+        // if different, update last bitstring with entry
+        if (transposition.first[i] != transposition.second[i]) {
+          last_bitstring[i] = !last_bitstring[i];
+          bitstrings.push_back({last_bitstring, i});
+        }
+      }
+      std::vector<std::vector<bool>>::const_iterator it = bitstrings.begin();
+      while (it != bitstrings.end()) {
+        this->add_bitstring_circuit(it->first, it->second);
+        ++it;
+      }
+      // as one past end & don't want to undo gate
+      std::advance(it, -2);
+      // uncompute basis flips
+      while (it != bitstrings.begin()) {
+        this->add_bitstring_circuit(it->first, it->second);
+        --it;
+      }
+    }
+  } else {
+    this->circuit_ = Circuit();
+  }
+}
+
 nlohmann::json core_box_json(const Box &box) {
   nlohmann::json j;
   j["type"] = box.get_type();
