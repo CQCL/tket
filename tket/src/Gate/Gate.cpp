@@ -629,7 +629,7 @@ static std::optional<Pauli> tk1_commuting_basis(std::vector<Expr> params) {
   const bool p0_is_zero = equiv_0(params[0], 2);
   const bool p1_is_zero = equiv_0(params[1], 2);
   const bool p2_is_zero = equiv_0(params[2], 2);
-  if (p1_is_zero && equiv_expr(params[0], -params[2])) {
+  if (p1_is_zero && equiv_expr(params[0], -params[2], 2)) {
     return Pauli::I;
   } else if (p1_is_zero) {
     return Pauli::Z;
