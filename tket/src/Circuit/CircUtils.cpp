@@ -1174,4 +1174,31 @@ std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
   return {pre, {a, b, c}, post};
 }
 
+void remove_noops(Circuit &circ) {
+  auto all_zeros = [](const std::vector<Expr> &exprs) {
+    for (const Expr &e : exprs) {
+      if (!equiv_0(e, 4)) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  std::set<OpType> supported_ops{
+      OpType::U1, OpType::U2, OpType::U3, OpType::TK1, OpType::TK2};
+  VertexSet bin;
+  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+    Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    if (supported_ops.contains(op->get_type())) {
+      if (all_zeros(op->get_params())) {
+        circ.remove_vertex(
+            v, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+        bin.insert(v);
+      }
+    }
+  }
+  circ.remove_vertices(
+      bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+}
+
 }  // namespace tket
