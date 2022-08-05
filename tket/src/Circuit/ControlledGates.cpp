@@ -685,6 +685,7 @@ static Circuit CU_to_CU3(const Eigen::Matrix2cd& u) {
   Expr t = tk1_angles[3] - 0.5 * (tk1_angles[0] + tk1_angles[2]);
   c.add_op<unsigned>(OpType::U1, t, {0});
   c.add_op<unsigned>(OpType::CU3, {theta, phi, lambda}, {0, 1});
+  remove_noops(c);
   return c;
 }
 

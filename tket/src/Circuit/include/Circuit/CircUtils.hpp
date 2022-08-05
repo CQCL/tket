@@ -197,4 +197,9 @@ Circuit with_controls(const Circuit& c, unsigned n_controls = 1);
 std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
     Expr a, Expr b, Expr c);
 
+/**
+ * @brief Remove standard gates with 0 angle
+ */
+void remove_noops(Circuit& circ);
+
 }  // namespace tket
