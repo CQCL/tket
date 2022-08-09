@@ -17,16 +17,17 @@
 #include <algorithm>
 #include <optional>
 #include <sstream>
+#include <stdexcept>
+#include <tkassert/Assert.hpp>
 
 #include "Circuit/Circuit.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Eigen/src/Core/Matrix.h"
 #include "OpType/OpType.hpp"
+#include "OpType/OpTypeInfo.hpp"
 #include "Ops/ClassicalOps.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Transform.hpp"
-#include "Utils/Assert.hpp"
-#include "Utils/Exceptions.hpp"
 #include "Utils/HelperFunctions.hpp"
 #include "Utils/UnitID.hpp"
 
@@ -80,12 +81,10 @@ Transform remove_discarded_ops() {
 static std::optional<Eigen::MatrixXcd> op_unitary(Op_ptr op) {
   try {
     return op->get_unitary();
-  } catch (NotValid &) {
-    return std::nullopt;
-  } catch (NotImplemented &) {
+  } catch (BadOpType &) {
     return std::nullopt;
   }
-  // These cover the "expected" exceptions; anything else is unexpected.
+  // Any other exception is unexpected.
 }
 
 /**
@@ -104,8 +103,8 @@ static std::optional<unsigned> unique_unit_row(
   }
   // If we get here there is a logical error or numerical instability.
   std::stringstream ss;
-  ss << U;
-  throw NotUnitary(ss.str());
+  ss << "Not unitary:" << std::endl << U;
+  throw std::logic_error(ss.str());
 }
 
 /**

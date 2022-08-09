@@ -15,6 +15,7 @@
 #include "CompilerPass.hpp"
 
 #include <memory>
+#include <tklog/TketLog.hpp>
 
 #include "Mapping/RoutingMethodJson.hpp"
 #include "PassGenerators.hpp"
@@ -22,7 +23,6 @@
 #include "Transformations/ContextualReduction.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Utils/Json.hpp"
-#include "Utils/TketLog.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket {
@@ -358,7 +358,10 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     const nlohmann::json& content = j.at("StandardPass");
     std::string passname = content.at("name").get<std::string>();
     if (passname == "KAKDecomposition") {
-      pp = KAKDecomposition(content.at("fidelity").get<double>());
+      double cx_fidelity = content.at("fidelity").get<double>();
+      OpType target_2qb_gate = content.at("target_2qb_gate").get<OpType>();
+      bool allow_swaps = content.at("allow_swaps").get<bool>();
+      pp = KAKDecomposition(target_2qb_gate, cx_fidelity, allow_swaps);
     } else if (passname == "ThreeQubitSquash") {
       pp = ThreeQubitSquash(content.at("allow_swaps").get<bool>());
     } else if (passname == "CommuteThroughMultis") {
@@ -368,12 +371,20 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "DecomposeBoxes") {
       pp = DecomposeBoxes();
     } else if (passname == "DecomposeClassicalExp") {
-      throw NotImplemented(
-          "Deserialization of DecomposeClassicalExp not yet implemented.");
+      throw PassNotSerializable(passname);
     } else if (passname == "DecomposeMultiQubitsCX") {
       pp = DecomposeMultiQubitsCX();
     } else if (passname == "DecomposeSingleQubitsTK1") {
       pp = DecomposeSingleQubitsTK1();
+    } else if (passname == "DecomposeTK2") {
+      Transforms::TwoQbFidelities fid;
+      fid.CX_fidelity =
+          content.at("fidelities").at("CX").get<std::optional<double>>();
+      fid.ZZMax_fidelity =
+          content.at("fidelities").at("ZZMax").get<std::optional<double>>();
+      fid.ZZPhase_fidelity = std::nullopt;
+      bool allow_swaps = content.at("allow_swaps").get<bool>();
+      pp = DecomposeTK2(fid, allow_swaps);
     } else if (passname == "PeepholeOptimise2Q") {
       pp = PeepholeOptimise2Q();
     } else if (passname == "FullPeepholeOptimise") {
@@ -399,10 +410,11 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "FlattenRegisters") {
       pp = FlattenRegisters();
     } else if (passname == "SquashCustom") {
-      throw NotImplemented(
-          "Deserialization of SquashCustom not yet implemented.");
+      throw PassNotSerializable(passname);
     } else if (passname == "DelayMeasures") {
       pp = DelayMeasures();
+    } else if (passname == "ZZPhaseToRz") {
+      pp = ZZPhaseToRz();
     } else if (passname == "RemoveDiscarded") {
       pp = RemoveDiscarded();
     } else if (passname == "SimplifyMeasured") {
@@ -412,8 +424,7 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "ComposePhasePolyBoxes") {
       pp = ComposePhasePolyBoxes(content.at("min_size").get<unsigned>());
     } else if (passname == "RebaseCustom") {
-      throw NotImplemented(
-          "Deserialization of RebaseCustom not yet implemented.");
+      throw PassNotSerializable(passname);
     } else if (passname == "EulerAngleReduction") {
       OpType p = content.at("euler_p").get<OpType>();
       OpType q = content.at("euler_q").get<OpType>();
@@ -522,8 +533,7 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     const nlohmann::json& content = j.at("RepeatPass");
     pp = std::make_shared<RepeatPass>(content.at("body").get<PassPtr>());
   } else if (classname == "RepeatWithMetricPass") {
-    throw NotImplemented(
-        "Deserialization of RepeatWithMetricPasses not yet implemented.");
+    throw PassNotSerializable(classname);
   } else if (classname == "RepeatUntilSatisfiedPass") {
     const nlohmann::json& content = j.at("RepeatUntilSatisfiedPass");
     PassPtr body = content.at("body").get<PassPtr>();

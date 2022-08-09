@@ -90,6 +90,10 @@ class DirectedGraphBase : public AbstractGraph<T> {
       if (!node_exists(node2)) {
         add_node(node2);
       }
+      if (node1 == node2) {
+        throw std::invalid_argument(
+            "An edge can not be added from a node to itself.");
+      }
       add_connection(node1, node2);
     }
   }
@@ -129,6 +133,10 @@ class DirectedGraphBase : public AbstractGraph<T> {
     if (!node_exists(node1) || !node_exists(node2)) {
       throw NodeDoesNotExistError(
           "The nodes passed to DirectedGraph::add_connection must exist");
+    }
+    if (node1 == node2) {
+      throw std::invalid_argument(
+          "A connection can not be added between a node to itself.");
     }
     boost::add_edge(
         to_vertices(node1), to_vertices(node2), WeightedEdge(weight), graph);
@@ -365,8 +373,8 @@ class DirectedGraphBase : public AbstractGraph<T> {
 };
 
 /**
- * DirectedGraph instances are directed graphs. It is a wrapper around a
- * BGL graph that provides a clean class API, taking care of mapping all BGL
+ * DirectedGraph instances are loop-free directed graphs. It is a wrapper around
+ * a BGL graph that provides a clean class API, taking care of mapping all BGL
  * vertices and edge pointers to nodes, respectively pairs of nodes.
  *
  * The vertices and edges can be given weights of type double if desired, and

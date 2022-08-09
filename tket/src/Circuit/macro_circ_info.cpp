@@ -16,11 +16,12 @@
 // ALL METHODS TO OBTAIN COMPLEX GRAPH INFORMATIION//
 ////////////////////////////////////////////////////
 
+#include <tklog/TketLog.hpp>
+
 #include "Circuit.hpp"
 #include "OpType/OpType.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Utils/GraphHeaders.hpp"
-#include "Utils/TketLog.hpp"
 
 namespace tket {
 
@@ -803,7 +804,7 @@ Circuit::CommandIterator::CommandIterator(const Circuit& circ)
   }
 }
 
-const Circuit::CommandIterator Circuit::begin() const {
+Circuit::CommandIterator Circuit::begin() const {
   return CommandIterator(*this);
 }
 

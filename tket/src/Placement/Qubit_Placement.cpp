@@ -166,6 +166,9 @@ QubitGraph generate_interaction_graph(
 
 QubitLineList qubit_lines(const Circuit& circ) {
   const QubitGraph q_graph = generate_interaction_graph(circ);
+  if (q_graph.get_all_edges_vec().size() == 0) {
+    return {};
+  }
   std::set<Qubit> all_qb;
   for (const Qubit& qb : circ.all_qubits()) {
     all_qb.insert(qb);
@@ -194,7 +197,6 @@ QubitLineList qubit_lines(const Circuit& circ) {
   for (const Qubit& qb : circ.all_qubits()) {
     if (all_qb.find(qb) != all_qb.end()) found_lines.push_back({qb});
   }
-  // print_qubitlines(found_lines);
   return found_lines;
 }
 
@@ -369,7 +371,7 @@ std::vector<MapCost> Monomorpher::place(unsigned max_return) {
   }
 
   std::vector<qubit_bimap_t> potential_maps = monomorphism_edge_break(
-      arc, q_graph, config.vf2_max_matches, config.timeout);
+      arc, q_graph, config.monomorphism_max_matches, config.timeout);
   std::vector<MapCost> map_costs;
   for (unsigned i = 0; i < potential_maps.size(); i++) {
     qubit_bimap_t& chosen = potential_maps[i];

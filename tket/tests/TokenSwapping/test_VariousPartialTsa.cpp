@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <tkrng/RNG.hpp>
+#include <tktokenswap/CyclesPartialTsa.hpp>
+#include <tktokenswap/RiverFlowPathFinder.hpp>
+#include <tktokenswap/TrivialTSA.hpp>
 
 #include "TestUtils/ArchitectureEdgesReimplementation.hpp"
 #include "TestUtils/DebugFunctions.hpp"
 #include "TestUtils/PartialTsaTesting.hpp"
 #include "TestUtils/ProblemGeneration.hpp"
-#include "TokenSwapping/CyclesPartialTsa.hpp"
-#include "TokenSwapping/RiverFlowPathFinder.hpp"
-#include "TokenSwapping/TrivialTSA.hpp"
-#include "Utils/RNG.hpp"
 
 using std::vector;
 

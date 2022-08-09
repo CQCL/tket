@@ -14,10 +14,12 @@
 
 #include "CliffTableau.hpp"
 
+#include <stdexcept>
+
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeInfo.hpp"
-#include "Utils/Exceptions.hpp"
 #include "Utils/MatrixAnalysis.hpp"
+#include "tkassert/Assert.hpp"
 
 namespace tket {
 
@@ -288,7 +290,7 @@ void CliffTableau::apply_gate_at_front(
       break;
     }
     default: {
-      throw NotValid(optypeinfo().at(type).name + " is not a Clifford gate");
+      throw BadOpType("Not a Clifford gate", type);
     }
   }
 }
@@ -383,7 +385,7 @@ void CliffTableau::apply_gate_at_end(
       break;
     }
     default: {
-      throw NotValid(optypeinfo().at(type).name + " is not a Clifford gate");
+      throw BadOpType("Not a Clifford gate", type);
     }
   }
 }
@@ -444,7 +446,7 @@ void CliffTableau::apply_pauli_at_end(
   MatrixXb::RowXpr px = product_x.row(0);
   MatrixXb::RowXpr pz = product_z.row(0);
   if (pauli.coeff != 1. && pauli.coeff != -1.)
-    throw NotValid(
+    throw std::invalid_argument(
         "Can only apply Paulis with real unit coefficients to "
         "CliffTableaus");
   bool phase = (pauli.coeff == -1.) ^ (half_pis == 3);
@@ -554,7 +556,7 @@ static std::vector<Complex> cphase_from_tableau(
 CliffTableau CliffTableau::compose(
     const CliffTableau &first, const CliffTableau &second) {
   if (first.qubits_ != second.qubits_)
-    throw NotImplemented(
+    throw std::logic_error(
         "Cannot compose Clifford Tableaus with different qubit maps");
   const unsigned n = first.size_;
   std::vector<Complex> first_x_cphase =
@@ -639,11 +641,9 @@ CliffTableau CliffTableau::compose(
       result.zpauli_x, result.zpauli_z, result.zpauli_phase);
 
   for (unsigned i = 0; i < n; i++) {
-    if ((current_x_cphase[i] * xpauli_cphase[i]).imag() != 0)
-      throw NotValid("Error in Tableau phase calculations");
+    TKET_ASSERT((current_x_cphase[i] * xpauli_cphase[i]).imag() == 0);
     result.xpauli_phase(i) = (current_x_cphase[i] == -xpauli_cphase[i]);
-    if ((current_z_cphase[i] * zpauli_cphase[i]).imag() != 0)
-      throw NotValid("Error in Tableau phase calculations");
+    TKET_ASSERT((current_z_cphase[i] * zpauli_cphase[i]).imag() == 0);
     result.zpauli_phase(i) = (current_z_cphase[i] == -zpauli_cphase[i]);
   }
 

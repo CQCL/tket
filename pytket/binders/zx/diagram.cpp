@@ -36,6 +36,7 @@ class ZXVertWrapper {
   ZXVert v_;
 
  public:
+  ZXVertWrapper() : v_() {}
   ZXVertWrapper(const ZXVert& v) : v_(v) {}
   bool operator==(const ZXVertWrapper& other) const {
     return this->v_ == other.v_;
@@ -48,23 +49,46 @@ class ZXVertWrapper {
   operator const ZXVert&() const { return v_; }
 };
 
-std::pair<ZXDiagram, std::map<UnitID, ZXVertWrapper>> wrapped_circuit_to_zx(
-    const Circuit& circ) {
+std::pair<ZXDiagram, std::map<UnitID, std::pair<ZXVertWrapper, ZXVertWrapper>>>
+wrapped_circuit_to_zx(const Circuit& circ) {
   ZXDiagram zxd;
   boost::bimap<ZXVert, Vertex> bmap;
   std::tie(zxd, bmap) = circuit_to_zx(circ);
-  std::map<UnitID, ZXVertWrapper> ret_map;
+  std::map<UnitID, std::pair<ZXVertWrapper, ZXVertWrapper>> ret_map;
   for (auto it = bmap.left.begin(); it != bmap.left.end(); it++) {
     OpType io_type = circ.get_OpType_from_Vertex(it->second);
     if (io_type == OpType::Input || io_type == OpType::ClInput) {
-      ret_map.insert(
-          {circ.get_id_from_in(it->second), ZXVertWrapper(it->first)});
+      UnitID uid = circ.get_id_from_in(it->second);
+      auto found = ret_map.find(uid);
+      if (found == ret_map.end())
+        ret_map.insert({uid, {ZXVertWrapper(it->first), ZXVertWrapper()}});
+      else
+        found->second.first = ZXVertWrapper(it->first);
     } else {
-      ret_map.insert(
-          {circ.get_id_from_out(it->second), ZXVertWrapper(it->first)});
+      UnitID uid = circ.get_id_from_out(it->second);
+      auto found = ret_map.find(uid);
+      if (found == ret_map.end())
+        ret_map.insert({uid, {ZXVertWrapper(), ZXVertWrapper(it->first)}});
+      else
+        found->second.second = ZXVertWrapper(it->first);
     }
   }
   return {std::move(zxd), std::move(ret_map)};
+}
+
+std::pair<Circuit, std::map<ZXVertWrapper, UnitID>> wrapped_zx_to_circuit(
+    const ZXDiagram& diag) {
+  Circuit circ = zx_to_circuit(diag);
+  std::map<ZXVertWrapper, UnitID> ret_map;
+  ZXVertVec ins = diag.get_boundary(ZXType::Input);
+  for (unsigned i = 0; i < ins.size(); ++i) {
+    ret_map.insert({ins[i], Qubit(i)});
+  }
+  ZXVertVec outs = diag.get_boundary(ZXType::Output);
+  for (unsigned i = 0; i < outs.size(); ++i) {
+    ret_map.insert({outs[i], Qubit(i)});
+  }
+  return {std::move(circ), std::move(ret_map)};
 }
 
 class ZXDiagramPybind {
@@ -404,6 +428,14 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "remove_wire",
           (void(ZXDiagram::*)(const Wire&)) & ZXDiagram::remove_wire,
           "Removes the given wire from the diagram.", py::arg("w"))
+      .def(
+          "to_circuit", &wrapped_zx_to_circuit,
+          "Extracts a unitary diagram in MBQC form as a Circuit following the "
+          "routine by Backens et al. (\"There and back again: A circuit "
+          "extraction tale\").\n\n"
+          ":return: A pair of the generated :py:class:`Circuit`, and a map "
+          "from each boundary vertex in the :py:class:`ZXDiagram` to its "
+          "corresponding :py:class:`UnitID` in the :py:class:`Circuit`.")
       .def(
           "to_doubled_diagram", &ZXDiagram::to_doubled_diagram,
           "Expands any quantum vertices into pairs of classical vertices "

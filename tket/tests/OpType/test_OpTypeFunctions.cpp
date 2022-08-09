@@ -1,4 +1,4 @@
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include "Gate/GatePtr.hpp"
 #include "OpType/OpTypeFunctions.hpp"
@@ -18,7 +18,7 @@ SCENARIO("is_single_qubit_unitary_type <=> get_tk1_angles implemented") {
     bool is_single_qb_unitary = true;
     try {
       gp->get_tk1_angles();
-    } catch (const NotImplemented&) {
+    } catch (const BadOpType&) {
       is_single_qb_unitary = false;
     }
     if (is_single_qb_unitary) {

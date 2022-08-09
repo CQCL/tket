@@ -24,6 +24,7 @@ add_library(tket-${COMP}
     ZXDFormats.cpp
     ZXDGettersSetters.cpp
     ZXDManipulation.cpp
+    ZXDSubdiagram.cpp
     ZXGenerator.cpp
     ZXRWCombinators.cpp
     ZXRWAxioms.cpp
@@ -48,4 +49,4 @@ target_include_directories(tket-${COMP}
     ${TKET_${COMP}_INCLUDE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})

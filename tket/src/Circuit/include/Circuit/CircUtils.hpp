@@ -52,7 +52,7 @@ Eigen::Matrix2cd get_matrix_from_circ(const Circuit& circ);
  *
  * @param circ circuit
  *
- * @pre \p circ is composed of CX and single-qubit gates only
+ * @pre \p circ is composed of CX, TK2 and single-qubit gates only
  * @pre circuit has no symbolic parameters
  * @post matrix is in \ref BasisOrder::ilo
  *
@@ -63,21 +63,21 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit& circ);
 /**
  * Convert a 4x4 unitary matrix optimally to a corresponding circuit
  *
- * If cx_fidelity = 1 (the default), the decomposition is equivalent
- * to the input circuit circ and is optimal in the number of CX gates.
- * For cx_fidelity < 1, the decomposed circuit might not be equivalent,
- * but it will minimise overall circuit fidelity assuming a fidelity of
- * cx_fidelity for CX gates and a fidelity of 1. for single-qubit ops.
+ * This will express `U` using CX gates or a single TK2 gate.
+ * See also `decompose_TK2` to decompose the TK2 gate further into other
+ * primitives.
  *
  * @param U unitary matrix
- * @param cx_fidelity fidelity of CX gate
+ * @param target_2qb_gate whether to decompose to TK2 or CX (default: TK2)
  *
  * @pre \p U is in \ref BasisOrder::ilo
- * @post circuit consists of CX and TK1 gates only
+ * @post Circuit consists of one normalised TK2 and single-qubit gates, or of
+ * up to 3 CX and single-qubit gates.
  *
- * @return circuit implementing U with minimal error
+ * @return circuit implementing U exactly
  */
-Circuit two_qubit_canonical(const Eigen::Matrix4cd& U, double cx_fidelity = 1.);
+Circuit two_qubit_canonical(
+    const Eigen::Matrix4cd& U, OpType target_2qb_gate = OpType::TK2);
 
 /**
  * Decompose a unitary matrix into a 2-CX circuit following a diagonal operator.
@@ -85,7 +85,7 @@ Circuit two_qubit_canonical(const Eigen::Matrix4cd& U, double cx_fidelity = 1.);
  * Given an arbitrary unitary 4x4 matrix, this method returns a circuit C and a
  * complex number z such that |z|=1 and U = VD where V is the unitary
  * implemented by the circuit and D = diag(z, z*, z*, z). The circuit C consists
- * of CX and TK1 gates only and has at most 2 CX gates.
+ * of CX and single-qubit gates and has at most 2 CX gates.
  *
  * @param U unitary matrix
  *
@@ -99,7 +99,7 @@ std::pair<Circuit, Complex> decompose_2cx_VD(const Eigen::Matrix4cd& U);
  * Given an arbitrary unitary 4x4 matrix, this method returns a circuit C and a
  * complex number z such that |z|=1 and U = DV where V is the unitary
  * implemented by the circuit and D = diag(z, z*, z*, z). The circuit C consists
- * of CX and TK1 gates only and has at most 2 CX gates.
+ * of CX and single-qubit gates and has at most 2 CX gates.
  *
  * @param U unitary matrix
  *
@@ -176,5 +176,25 @@ Circuit with_CX(Gate_ptr op);
  *  of \p c in the same order
  */
 Circuit with_controls(const Circuit& c, unsigned n_controls = 1);
+
+/**
+ * @brief Get normalised TK2 angles and local change of basis for normalisation
+ *
+ * Given any TK2 angles, return the equivalent normalised TK2 angles as well
+ * as the two change of basis circuits `pre` and `post` so that
+ *
+ *          TK2(a, b, c) = post * TK2(a', b', c') * pre
+ *
+ * where a, b, c are the TK2 angles and a', b', c' are the equivalent normalised
+ * angles.
+ *
+ * @param a first TK2 parameter
+ * @param b second TK2 parameter
+ * @param c third TK2 parameter
+ * @return std::tuple<Circuit, std::array<Expr, 3>, Circuit> pre circuit,
+ *  normalised TK2 angles and post circuit (in this order)
+ */
+std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
+    Expr a, Expr b, Expr c);
 
 }  // namespace tket

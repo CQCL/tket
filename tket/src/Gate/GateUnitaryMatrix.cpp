@@ -16,6 +16,7 @@
 
 #include <cmath>
 #include <sstream>
+#include <tkassert/Assert.hpp>
 
 #include "Gate/Gate.hpp"
 #include "GateUnitaryMatrixError.hpp"
@@ -23,7 +24,7 @@
 #include "GateUnitaryMatrixUtils.hpp"
 #include "GateUnitaryMatrixVariableQubits.hpp"
 #include "GateUnitarySparseMatrix.hpp"
-#include "Utils/Assert.hpp"
+#include "OpType/OpTypeInfo.hpp"
 
 // This is just for the main Gate -> matrix function, so the only part
 // which actually uses the rest of tket. This is nothing but a wrapper around
@@ -144,8 +145,7 @@ static Eigen::MatrixXcd get_unitary_or_throw(
       ss << GateUnitaryMatrixUtils::get_error_prefix(
                 op_type, number_of_qubits, parameters)
          << "unrecognised Op type";
-      throw GateUnitaryMatrixError(
-          ss.str(), GateUnitaryMatrixError::Cause::GATE_NOT_IMPLEMENTED);
+      throw BadOpType(ss.str(), op_type);
     }
   }
 }

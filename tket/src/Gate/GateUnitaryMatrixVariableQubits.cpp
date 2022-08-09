@@ -14,8 +14,9 @@
 
 #include "GateUnitaryMatrixVariableQubits.hpp"
 
+#include <tkassert/Assert.hpp>
+
 #include "GateUnitaryMatrixImplementations.hpp"
-#include "Utils/Assert.hpp"
 
 namespace tket {
 namespace internal {

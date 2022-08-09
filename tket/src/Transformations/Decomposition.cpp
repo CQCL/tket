@@ -18,6 +18,7 @@
 #include <optional>
 // replace with c++20 <ranges> when available
 #include <boost/range/adaptor/filtered.hpp>
+#include <stdexcept>
 
 #include "Architecture/Architecture.hpp"
 #include "BasicOptimisation.hpp"
@@ -26,12 +27,16 @@
 #include "Gate/GatePtr.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
+#include "OpType/OpTypeInfo.hpp"
 #include "Ops/OpPtr.hpp"
+#include "OptimisationPass.hpp"
 #include "PhasedXFrontier.hpp"
 #include "Rebase.hpp"
 #include "Replacement.hpp"
 #include "Transform.hpp"
+#include "Utils/Constants.hpp"
 #include "Utils/Expression.hpp"
+#include "Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 
@@ -419,15 +424,391 @@ Transform decompose_MolmerSorensen() {
   });
 }
 
+static double get_ZZPhase_fidelity(
+    const std::array<double, 3> &k, unsigned nb_cx) {
+  switch (nb_cx) {
+    case 0:
+      return trace_fidelity(k[0], k[1], k[2]);
+    case 1:
+      return trace_fidelity(0, k[1], k[2]);
+    case 2:
+      return trace_fidelity(0, 0, k[2]);
+    default:
+      return 1.;
+  }
+}
+
+/** Given TK2 angles, computes the fidelity that can be achieved using
+ *  nb_cx CX gates.
+ *
+ *  @param k The TK2 angles.
+ *  @param nb_cx The number of CX gates to be used for decomposition.
+ *  @return The fidelity.
+ */
+static double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx) {
+  TKET_ASSERT(nb_cx < 4);
+  auto [a, b, c] = k;
+
+  // gate fidelity achievable with 0,...,3 cnots
+  // this is fully determined by the information content k and is optimal
+  // see PhysRevA 71.062331 (2005) for more details on this
+  switch (nb_cx) {
+    case 0:
+      return trace_fidelity(a, b, c);
+    case 1:
+      return trace_fidelity(0.5 - a, b, c);
+    case 2:
+      return trace_fidelity(0, 0, c);
+    default:
+      return 1.;
+  }
+}
+
+// Try to decompose a TK2 gate using different gate sets, find the one with
+// the highest fidelity.
+// If no fidelities are provided, (best_optype, n_gates) is left unchanged.
+static double best_noise_aware_decomposition(
+    const std::array<double, 3> &angles, const TwoQbFidelities &fid,
+    OpType &best_optype, unsigned &n_gates) {
+  double max_fid = 0.;
+
+  // Try decomposition using CX or equivalent gates.
+  double cx_fid = std::max(
+      fid.CX_fidelity ? fid.CX_fidelity.value() : 0.,
+      fid.ZZMax_fidelity ? fid.ZZMax_fidelity.value() : 0.);
+  bool zzmax_is_better = false;
+  if (cx_fid < EPS) {
+    if (!fid.ZZPhase_fidelity) {
+      // No fidelity is defined, so default to CX
+      cx_fid = 1.;
+    }
+  } else {
+    zzmax_is_better = fid.CX_fidelity < fid.ZZMax_fidelity;
+  }
+  if (cx_fid > EPS) {
+    for (unsigned n_cx = 0; n_cx <= 3; ++n_cx) {
+      double ncx_fid = get_CX_fidelity(angles, n_cx) * pow(cx_fid, n_cx);
+      if (ncx_fid > max_fid) {
+        max_fid = ncx_fid;
+        best_optype = zzmax_is_better ? OpType::ZZMax : OpType::CX;
+        n_gates = n_cx;
+      }
+    }
+  }
+
+  // Try decomposition using ZZPhase(α)
+  if (fid.ZZPhase_fidelity) {
+    double zz_fid = 1.;
+    // If ZZMax is available, ZZPhase is only interesting when used once.
+    // (two ZZPhase can always be written using two ZZmax)
+    unsigned max_nzz = fid.ZZMax_fidelity ? 1 : 3;
+    for (unsigned n_zz = 0; n_zz <= max_nzz; ++n_zz) {
+      if (n_zz > 0) {
+        double gate_fid = (*fid.ZZPhase_fidelity)(angles[n_zz - 1]);
+        if (gate_fid < 0 || gate_fid > 1) {
+          throw std::domain_error(
+              "ZZPhase_fidelity returned a value outside of [0, 1].");
+        }
+        zz_fid *= gate_fid;
+      }
+      double nzz_fid = get_ZZPhase_fidelity(angles, n_zz) * zz_fid;
+      if (nzz_fid > max_fid) {
+        max_fid = nzz_fid;
+        best_optype = OpType::ZZPhase;
+        n_gates = n_zz;
+      }
+    }
+  }
+
+  return max_fid;
+}
+
+// Try to decompose a TK2 gate exactly using different gate sets.
+// The fidelities are used as an indication of which gate set is usable, but
+// the actual values of the fidelities will be ignored.
+//
+// Relies on default values of best_optype and n_gates if no optimisation can be
+// performed.
+static void best_exact_decomposition(
+    const std::array<Expr, 3> &angles, const TwoQbFidelities &fid,
+    OpType &best_optype, unsigned &n_gates) {
+  // Prefer CX/ZZMax when possible.
+  if (fid.CX_fidelity || fid.ZZMax_fidelity) {
+    bool zzmax_is_better =
+        !fid.CX_fidelity || fid.CX_fidelity < fid.ZZMax_fidelity;
+    best_optype = zzmax_is_better ? OpType::ZZMax : OpType::CX;
+  } else if (fid.ZZPhase_fidelity) {
+    // Only ZZPhase has fidelity, so use ZZPhase.
+    best_optype = OpType::ZZPhase;
+  }
+
+  if (best_optype == OpType::CX || best_optype == OpType::ZZMax) {
+    // Reduce n_gates if possible.
+    if (equiv_0(angles[2], 4)) {
+      n_gates = 2;
+    }
+  } else if (best_optype == OpType::ZZPhase) {
+    // Reduce n_gates if possible.
+    if (equiv_0(angles[2], 4)) {
+      n_gates = 2;
+      if (equiv_0(angles[1], 4)) {
+        n_gates = 1;
+      }
+    }
+  }
+
+  // Finally, handle the only case where ZZPhase is preferable over ZZMax.
+  if (fid.ZZPhase_fidelity && equiv_0(angles[2], 4) && equiv_0(angles[1], 4) &&
+      n_gates > 1) {
+    n_gates = 1;
+    best_optype = OpType::ZZPhase;
+  }
+}
+
+/**
+ * @brief TK2 expressed (approximately) as CX/ZZMax or ZZPhase.
+ *
+ * This is the core logic of how to decompose a TK2 gate into other two-qubit
+ * gates, taking hardware fidelities into account for optimal approximate
+ * decompositions.
+ *
+ * Decomposes to whatever gate type has non-nullopt fidelity. If there are
+ * multiple options, choose the best one. Defaults to CX if no fidelities are
+ * provided.
+ *
+ * Symbolic parameters are supported. In that case, decompositions are exact.
+ *
+ * @param angles The TK2 parameters
+ * @param fid The two-qubit gate fidelities
+ * @param allow_swaps Whether implicit swaps are allowed.
+ * @return Circuit TK2-equivalent circuit
+ */
+static Circuit TK2_replacement(
+    std::array<Expr, 3> angles, const TwoQbFidelities &fid, bool allow_swaps) {
+  if (!in_weyl_chamber(angles)) {
+    throw std::domain_error("TK2 params are not normalised to Weyl chamber.");
+  }
+  OpType best_optype = OpType::CX;  // default to using CX
+  unsigned n_gates = 3;             // default to 3x CX
+  bool implicit_swap = false;       // default to no implicit swap
+
+  // Only used when allow_swaps == true.
+  Circuit pre, post;
+  std::array<Expr, 3> angles_swapped;
+  if (allow_swaps) {
+    // Swapped circuit
+    Circuit swap_circ(2);
+    angles_swapped = angles;
+    for (unsigned i = 0; i < 3; ++i) {
+      angles_swapped[i] += 0.5;
+    }
+    std::tie(pre, angles_swapped, post) = normalise_TK2_angles(
+        angles_swapped[0], angles_swapped[1], angles_swapped[2]);
+    pre.add_phase(0.25);
+  }
+
+  // Try to evaluate exprs to doubles.
+  std::array<double, 3> angles_eval;
+  std::array<double, 3> angles_eval_swapped;
+  unsigned last_angle = 0;
+  for (; last_angle < 3; ++last_angle) {
+    std::optional<double> eval = eval_expr_mod(angles[last_angle]);
+    if (eval) {
+      angles_eval[last_angle] = *eval;
+    } else {
+      break;
+    }
+    if (allow_swaps) {
+      eval = eval_expr_mod(angles_swapped[last_angle]);
+      TKET_ASSERT(eval);
+      angles_eval_swapped[last_angle] = *eval;
+    }
+  }
+
+  if (last_angle <= 2) {
+    // Not all angles could be resolved numerically.
+    // For symbolic angles, we can only provide an exact decomposition.
+    best_exact_decomposition(angles, fid, best_optype, n_gates);
+    if (allow_swaps) {
+      OpType best_optype_swapped = OpType::CX;  // default to using CX
+      unsigned n_gates_swapped = 3;             // default to 3x CX
+      best_exact_decomposition(
+          angles_swapped, fid, best_optype_swapped, n_gates_swapped);
+      if (n_gates_swapped < n_gates) {
+        n_gates = n_gates_swapped;
+        best_optype = best_optype_swapped;
+        angles = angles_swapped;
+        implicit_swap = true;
+      }
+    }
+  } else {
+    // For non-symbolic angles, we can find the optimal number of gates
+    // using the gate fidelities provided.
+    double max_fid =
+        best_noise_aware_decomposition(angles_eval, fid, best_optype, n_gates);
+    if (allow_swaps) {
+      OpType best_optype_swapped = OpType::CX;  // default to using CX
+      unsigned n_gates_swapped = 3;             // default to 3x CX
+      double max_fid_swapped = best_noise_aware_decomposition(
+          angles_eval_swapped, fid, best_optype_swapped, n_gates_swapped);
+      if (max_fid_swapped > max_fid ||
+          ((max_fid_swapped - max_fid) < EPS && n_gates_swapped < n_gates)) {
+        n_gates = n_gates_swapped;
+        best_optype = best_optype_swapped;
+        angles = angles_swapped;
+        implicit_swap = true;
+      }
+    }
+  }
+
+  // Build circuit for substitution.
+  Circuit sub(2);
+  switch (best_optype) {
+    case OpType::ZZMax:
+    case OpType::CX: {
+      switch (n_gates) {
+        case 0:
+          break;
+        case 1: {
+          sub.append(CircPool::approx_TK2_using_1xCX());
+          break;
+        }
+        case 2: {
+          sub.append(CircPool::approx_TK2_using_2xCX(angles[0], angles[1]));
+          break;
+        }
+        case 3: {
+          sub.append(CircPool::TK2_using_3xCX(angles[0], angles[1], angles[2]));
+          break;
+        }
+        default:
+          TKET_ASSERT(!"Number of CX invalid in decompose_TK2");
+      }
+      if (best_optype == OpType::ZZMax) {
+        decompose_CX_to_HQS2().apply(sub);
+      }
+      break;
+    }
+    case OpType::ZZPhase: {
+      switch (n_gates) {
+        case 0:
+          break;
+        case 1: {
+          sub.append(CircPool::approx_TK2_using_1xZZPhase(angles[0]));
+          break;
+        }
+        case 2: {
+          sub.append(
+              CircPool::approx_TK2_using_2xZZPhase(angles[0], angles[1]));
+          break;
+        }
+        case 3: {
+          sub.append(
+              CircPool::TK2_using_ZZPhase(angles[0], angles[1], angles[2]));
+          break;
+        }
+        default:
+          TKET_ASSERT(!"Number of ZZPhase invalid in decompose_TK2");
+      }
+      break;
+    }
+    default:
+      throw BadOpType(
+          "Unrecognised target OpType in decompose_TK2", best_optype);
+  }
+
+  if (implicit_swap) {
+    Circuit swap(2);
+    swap.add_op<unsigned>(OpType::SWAP, {0, 1});
+    sub = pre >> sub >> post >> swap;
+    sub.replace_SWAPs();
+  }
+
+  return sub;
+}
+
+Transform decompose_TK2(bool allow_swaps) {
+  return decompose_TK2({}, allow_swaps);
+}
+
+Transform decompose_TK2(const TwoQbFidelities &fid, bool allow_swaps) {
+  if (fid.ZZMax_fidelity) {
+    if (*fid.ZZMax_fidelity < 0 || *fid.ZZMax_fidelity > 1) {
+      throw std::domain_error("ZZMax fidelity must be between 0 and 1.");
+    }
+  }
+  if (fid.CX_fidelity) {
+    if (*fid.CX_fidelity < 0 || *fid.CX_fidelity > 1) {
+      throw std::domain_error("CX fidelity must be between 0 and 1.");
+    }
+  }
+  if (fid.ZZMax_fidelity && fid.ZZPhase_fidelity) {
+    if (*fid.ZZMax_fidelity < (*fid.ZZPhase_fidelity)(.5)) {
+      throw std::domain_error(
+          "The ZZMax fidelity cannot be smaller than the ZZPhase(0.5) "
+          "fidelity");
+    }
+  }
+  return Transform([fid, allow_swaps](Circuit &circ) {
+    bool success = false;
+
+    VertexList bin;
+    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+      if (circ.get_OpType_from_Vertex(v) != OpType::TK2) continue;
+
+      success = true;
+      auto params = circ.get_Op_ptr_from_Vertex(v)->get_params();
+      TKET_ASSERT(params.size() == 3);
+      std::array<Expr, 3> angles{params[0], params[1], params[2]};
+
+      Circuit sub = TK2_replacement(angles, fid, allow_swaps);
+      bin.push_back(v);
+      circ.substitute(sub, v, Circuit::VertexDeletion::No);
+    }
+    circ.remove_vertices(
+        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+
+    return success;
+  });
+}
+
 Transform decompose_ZZPhase() {
   return Transform([](Circuit &circ) {
     bool success = decompose_PhaseGadgets().apply(circ);
+    VertexList bin;
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-      if (circ.get_OpType_from_Vertex(v) == OpType::PhaseGadget) {
-        const Op_ptr g = circ.get_Op_ptr_from_Vertex(v);
-        circ.dag[v] = {get_op_ptr(OpType::ZZPhase, g->get_params()[0])};
+      switch (circ.get_OpType_from_Vertex(v)) {
+        case OpType::PhaseGadget: {
+          success = true;
+          const Op_ptr g = circ.get_Op_ptr_from_Vertex(v);
+          TKET_ASSERT(g->get_params().size() == 1);
+          circ.dag[v] = {get_op_ptr(OpType::ZZPhase, g->get_params()[0])};
+          break;
+        }
+        case OpType::XXPhase: {
+          success = true;
+          const Op_ptr g = circ.get_Op_ptr_from_Vertex(v);
+          TKET_ASSERT(g->get_params().size() == 1);
+          Circuit sub = CircPool::XXPhase_using_ZZPhase(g->get_params()[0]);
+          circ.substitute(sub, v, Circuit::VertexDeletion::No);
+          bin.push_back(v);
+          break;
+        }
+        case OpType::YYPhase: {
+          success = true;
+          const Op_ptr g = circ.get_Op_ptr_from_Vertex(v);
+          TKET_ASSERT(g->get_params().size() == 1);
+          Circuit sub = CircPool::YYPhase_using_ZZPhase(g->get_params()[0]);
+          circ.substitute(sub, v, Circuit::VertexDeletion::No);
+          bin.push_back(v);
+          break;
+        }
+        default:
+          break;
       }
     }
+    circ.remove_vertices(
+        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
     return success;
   });
 }
@@ -628,6 +1009,16 @@ Transform decompose_cliffords_std() {
         circ.substitute(replacement, sub, Circuit::VertexDeletion::No);
         circ.add_phase(tk1_param_exprs[3]);
         success = true;
+      } else if (type == OpType::TK2 && op->is_clifford()) {
+        auto params = op->get_params();
+        TKET_ASSERT(params.size() == 3);
+        // TODO: Maybe handle TK2 gates natively within clifford_simp?
+        Circuit replacement =
+            CircPool::TK2_using_CX(params[0], params[1], params[2]);
+        decompose_cliffords_std().apply(replacement);
+        bin.push_back(v);
+        circ.substitute(replacement, v, Circuit::VertexDeletion::No);
+        success = true;
       }
     }
     circ.remove_vertices(
@@ -811,8 +1202,8 @@ static void swap_sub(
     Subcircuit &sub, const std::pair<port_t, port_t> &port_comp) {
   std::pair<port_t, port_t> comp = {0, 1};
   // Ports only come in 2 cases, {0,1} or {1,0}. if {0,1} (first case),
-  // swap_circ_1 leaves a CX{0,1} next to current CX{0,1}, if not we can assume
-  // second case.
+  // swap_circ_1 leaves a CX{0,1} next to current CX{0,1}, if not we can
+  // assume second case.
   if (port_comp == comp)
     circ.substitute(swap_circ_1, sub, Circuit::VertexDeletion::Yes);
   else
@@ -844,8 +1235,8 @@ Transform decompose_SWAP_to_CX(const Architecture &arc) {
 
     for (std::pair<Vertex, bool> v : bin) {
       success = true;
-      // Get predecessor vertices and successor vertices and find subcircuit for
-      // replacement
+      // Get predecessor vertices and successor vertices and find subcircuit
+      // for replacement
       VertexVec preds = circ.get_predecessors(v.first);
       VertexVec succs = circ.get_successors(v.first);
       EdgeVec in_edges = circ.get_in_edges(v.first);
@@ -869,11 +1260,10 @@ Transform decompose_SWAP_to_CX(const Architecture &arc) {
              circ.get_target_port(out_edges[1])});
       } else if (v.second) {
         // We assume in general that a CX gate saving is desired over H gate
-        // savings. If SWAP doesn't lend itself to annihlation though, the SWAP
-        // is inserted to reduce number of H gates added in a 'directed' CX
-        // decomposition.
-        // SWAP_using_CX_1 is added if the backwards direction is available on
-        // the architecture
+        // savings. If SWAP doesn't lend itself to annihlation though, the
+        // SWAP is inserted to reduce number of H gates added in a 'directed'
+        // CX decomposition. SWAP_using_CX_1 is added if the backwards
+        // direction is available on the architecture
         circ.substitute(
             CircPool::SWAP_using_CX_1(), sub, Circuit::VertexDeletion::Yes);
       } else {
@@ -915,8 +1305,8 @@ Transform decompose_BRIDGE_to_CX() {
         };
 
     for (std::pair<Vertex, bool> v : bin) {
-      // Get predecessor vertices and successor vertices and find subcircuit for
-      // replacement
+      // Get predecessor vertices and successor vertices and find subcircuit
+      // for replacement
       success = true;
       VertexVec preds = circ.get_predecessors(v.first);
       VertexVec succs = circ.get_successors(v.first);
@@ -1186,7 +1576,7 @@ Transform globalise_PhasedX(bool squash) {
             success = true;
             break;
           default:
-            throw NotValid("Invalid strategy in replace_non_global_phasedx");
+            TKET_ASSERT(!"Invalid strategy in replace_non_global_phasedx");
         }
       }
       if (v) {
@@ -1194,6 +1584,9 @@ Transform globalise_PhasedX(bool squash) {
       }
     }
     TKET_ASSERT(frontier.is_finished());
+
+    success |= absorb_Rz_NPhasedX().apply(circ);
+
     return success;
   });
 }
@@ -1243,6 +1636,40 @@ bool all_equal(const std::vector<T> &vs) {
     }
   }
   return true;
+}
+
+/* naive decomposition - there are cases we can do better if we can eg. ignore
+ * phase */
+Transform decomp_CCX() {
+  return Transform([](Circuit &circ) {
+    const Op_ptr ccx = get_op_ptr(OpType::CCX);
+    return circ.substitute_all(CircPool::CCX_normal_decomp(), ccx);
+  });
+}
+
+Transform decomp_controlled_Rys() {
+  return Transform([](Circuit &circ) {
+    bool success = decomp_CCX().apply(circ);
+    auto [vit, vend] = boost::vertices(circ.dag);
+    for (auto next = vit; vit != vend; vit = next) {
+      ++next;
+      Vertex v = *vit;
+      const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+      unsigned arity = circ.n_in_edges(v);
+      if (op->get_type() == OpType::CnRy) {
+        success = true;
+        Circuit rep = CircPool::CnRy_normal_decomp(op, arity);
+        EdgeVec inedges = circ.get_in_edges(v);
+        Subcircuit final_sub{inedges, circ.get_all_out_edges(v), {v}};
+        circ.substitute(rep, final_sub, Circuit::VertexDeletion::Yes);
+      }
+    }
+    return success;
+  });
+}
+
+Transform decomp_arbitrary_controlled_gates() {
+  return decomp_controlled_Rys() >> decomp_CCX();
 }
 
 }  // namespace Transforms

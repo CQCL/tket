@@ -17,7 +17,7 @@
 #include <Transformations/CliffordOptimisation.hpp>
 #include <Transformations/OptimisationPass.hpp>
 #include <Transformations/Transform.hpp>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <vector>
 
 #include "OpType/OpType.hpp"

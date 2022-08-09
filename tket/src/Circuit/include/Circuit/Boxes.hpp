@@ -19,6 +19,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <memory>
 
+#include "OpType/OpTypeInfo.hpp"
 #include "Ops/Op.hpp"
 #include "Utils/BiMapHeaders.hpp"
 #include "Utils/EigenConfig.hpp"
@@ -37,7 +38,7 @@ class Box : public Op {
  public:
   explicit Box(const OpType &type, const op_signature_t &signature = {})
       : Op(type), signature_(signature), circ_(), id_(idgen()) {
-    if (!is_box_type(type)) throw NotValid();
+    if (!is_box_type(type)) throw BadOpType(type);
   }
 
   Box(const Box &other)
@@ -515,12 +516,10 @@ class CustomGate : public Box {
       const SymEngine::map_basic_basic &sub_map) const override;
 
   /**
-   * Equality check between two CustomGate instances
+   * Equality check between two CustomGate instances.
+   * This does more than simply checking id_.
    */
-  bool is_equal(const Op &op_other) const override {
-    const CustomGate &other = dynamic_cast<const CustomGate &>(op_other);
-    return this->id_ == other.id_;
-  }
+  bool is_equal(const Op &op_other) const override;
 
   static Op_ptr from_json(const nlohmann::json &j);
 

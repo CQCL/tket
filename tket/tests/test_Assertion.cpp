@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <stdexcept>
 
 #include "Circuit/AssertionSynthesis.hpp"
 #include "Circuit/Circuit.hpp"
@@ -210,9 +211,11 @@ SCENARIO("Testing stabiliser based assertion") {
     }
     WHEN("Identity") {
       REQUIRE_THROWS_AS(
-          PauliStabiliser({Pauli::I, Pauli::I, Pauli::I}, true), NotValid);
+          PauliStabiliser({Pauli::I, Pauli::I, Pauli::I}, true),
+          std::invalid_argument);
       REQUIRE_THROWS_AS(
-          PauliStabiliser({Pauli::I, Pauli::I, Pauli::I}, false), NotValid);
+          PauliStabiliser({Pauli::I, Pauli::I, Pauli::I}, false),
+          std::invalid_argument);
     }
   }
 }

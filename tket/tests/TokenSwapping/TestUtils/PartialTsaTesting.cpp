@@ -14,14 +14,14 @@
 
 #include "PartialTsaTesting.hpp"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <tktokenswap/DistanceFunctions.hpp>
+#include <tktokenswap/RiverFlowPathFinder.hpp>
+#include <tktokenswap/VertexSwapResult.hpp>
 
 #include "Architecture/DistancesFromArchitecture.hpp"
 #include "Architecture/NeighboursFromArchitecture.hpp"
 #include "TestStatsStructs.hpp"
-#include "TokenSwapping/DistanceFunctions.hpp"
-#include "TokenSwapping/RiverFlowPathFinder.hpp"
-#include "TokenSwapping/VertexSwapResult.hpp"
 
 using std::vector;
 

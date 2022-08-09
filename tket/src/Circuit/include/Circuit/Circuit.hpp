@@ -34,6 +34,8 @@
 #include <ostream>
 #include <sstream>
 #include <string>
+#include <tkassert/Assert.hpp>
+#include <tklog/TketLog.hpp>
 #include <type_traits>
 #include <unordered_map>
 #include <utility>
@@ -44,12 +46,10 @@
 #include "Conditional.hpp"
 #include "DAGDefs.hpp"
 #include "Gate/OpPtrFunctions.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/GraphHeaders.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/SequencedContainers.hpp"
-#include "Utils/TketLog.hpp"
 #include "Utils/UnitID.hpp"
 
 namespace tket {
@@ -352,7 +352,7 @@ class Circuit {
     CommandIterator &operator++();
   };
 
-  const CommandIterator begin() const;
+  CommandIterator begin() const;
   const CommandIterator end() const;
   static const CommandIterator nullcit;
 
@@ -696,6 +696,44 @@ class Circuit {
   bool detect_singleq_unitary_op(const Vertex &vert) const;
 
   /**
+   * Index of qubit for operation at a given vertex port
+   *
+   * @param vert vertex
+   * @param port_type type of specified port
+   * @param port port index
+   *
+   * @return qubit index
+   * @throw std::domain_error if port doesn't correspond to a quantum wire
+   */
+  unsigned qubit_index(
+      const Vertex &vert, PortType port_type, port_t port) const;
+
+  /**
+   * Which Pauli, if any, commutes with the operation at a given vertex and port
+   *
+   * @param vert vertex
+   * @param port_type type of specified port
+   * @param port port number at which Pauli should commute
+   * @return a Pauli that commutes with the given operation
+   * @retval std::nullopt no Pauli commutes (or operation is not a gate)
+   * @retval Pauli::I every Pauli commutes
+   */
+  std::optional<Pauli> commuting_basis(
+      const Vertex &vert, PortType port_type, port_t port) const;
+
+  /**
+   * Whether the operation at a vertex commutes with a Pauli at the given port
+   *
+   * @param vert vertex
+   * @param colour Pauli operation type
+   * @param port_type type of specified port
+   * @param port port number at which Pauli may commute
+   */
+  bool commutes_with_basis(
+      const Vertex &vert, const std::optional<Pauli> &colour,
+      PortType port_type, port_t port) const;
+
+  /**
    * Convert all quantum and classical bits to use default registers.
    *
    * @return mapping from old to new unit IDs
@@ -856,8 +894,9 @@ class Circuit {
 
   Vertex add_barrier(
       const std::vector<unsigned> &qubits,
-      const std::vector<unsigned> &bits = {});
-  Vertex add_barrier(const unit_vector_t &args);
+      const std::vector<unsigned> &bits = {}, const std::string &_data = "");
+
+  Vertex add_barrier(const unit_vector_t &args, const std::string &_data = "");
 
   /**
    * Add a postfix to a classical register name if the register exists

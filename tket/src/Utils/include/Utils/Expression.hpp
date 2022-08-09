@@ -123,6 +123,17 @@ Expr cos_halfpi_times(const Expr& e);
 Expr sin_halfpi_times(const Expr& e);
 
 /**
+ * Return -e
+ *
+ * Expanding e after multiplying by -1 may reduce its size, especially when
+ * `minus_times` is applied repeatedly and should cancel out.
+ *
+ * @param e expression
+ * @return Expr -e
+ */
+Expr minus_times(const Expr& e);
+
+/**
  * Test if an expression is approximately zero
  *
  * @param e expression
@@ -206,5 +217,16 @@ bool equiv_0(const Expr& e, unsigned n = 2, double tol = EPS);
  */
 std::optional<unsigned> equiv_Clifford(
     const Expr& e, unsigned n = 2, double tol = EPS);
+
+/**
+ * Exception indicating that symbolic values are not supported.
+ */
+class SymbolsNotSupported : public std::logic_error {
+ public:
+  explicit SymbolsNotSupported(const std::string& message)
+      : std::logic_error(message) {}
+  SymbolsNotSupported()
+      : SymbolsNotSupported("Symbolic values not supported") {}
+};
 
 }  // namespace tket

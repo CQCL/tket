@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <boost/range/join.hpp>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <iostream>
 
 #include "Architecture/Architecture.hpp"
@@ -474,6 +474,7 @@ SCENARIO("Test predicate serializations") {
   BASICPREDJSONTEST(NoMidMeasurePredicate)
   BASICPREDJSONTEST(NoSymbolsPredicate)
   BASICPREDJSONTEST(GlobalPhasedXPredicate)
+  BASICPREDJSONTEST(NormalisedTK2Predicate)
 #undef BASICPREDJSONTEST
   GIVEN("GateSetPredicate") {
     OpTypeSet ops = {OpType::X, OpType::V, OpType::Rz, OpType::ZZMax};
@@ -535,7 +536,7 @@ SCENARIO("Test predicate serializations") {
     };
     PredicatePtr custom = std::make_shared<UserDefinedPredicate>(func);
     nlohmann::json j_custom = custom;
-    REQUIRE_THROWS_AS(j_custom.get<PredicatePtr>(), NotImplemented);
+    REQUIRE_THROWS_AS(j_custom.get<PredicatePtr>(), PredicateNotSerializable);
   }
 }
 
@@ -583,10 +584,13 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(DelayMeasures, DelayMeasures())
   COMPPASSJSONTEST(RemoveDiscarded, RemoveDiscarded())
   COMPPASSJSONTEST(SimplifyMeasured, SimplifyMeasured())
+  COMPPASSJSONTEST(ZZPhaseToRz, ZZPhaseToRz())
   COMPPASSJSONTEST(RemoveBarriers, RemoveBarriers())
   COMPPASSJSONTEST(ComposePhasePolyBoxes, ComposePhasePolyBoxes())
   COMPPASSJSONTEST(DecomposeBridges, DecomposeBridges())
-  COMPPASSJSONTEST(KAKDecomposition, KAKDecomposition(0.98))
+  COMPPASSJSONTEST(KAKDecomposition, KAKDecomposition(OpType::CX, 0.98))
+  COMPPASSJSONTEST(
+      DecomposeTK2, DecomposeTK2({0.98, std::nullopt, std::nullopt}, false))
   COMPPASSJSONTEST(ThreeQubitSquash, ThreeQubitSquash(false))
   COMPPASSJSONTEST(
       EulerAngleReduction, gen_euler_pass(OpType::Rx, OpType::Ry, false))

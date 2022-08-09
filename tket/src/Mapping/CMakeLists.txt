@@ -46,9 +46,8 @@ list(APPEND DEPS_${COMP}
     OpType
     PauliGraph
     Placement
-    TokenSwapping
-    ZX
-    Utils)
+    Utils
+    ZX)
 
 foreach(DEP ${DEPS_${COMP}})
     target_include_directories(
@@ -63,7 +62,7 @@ target_include_directories(tket-${COMP}
     ${TKET_${COMP}_INCLUDE_DIR}
     ${TKET_${COMP}_INCLUDE_DIR}/${COMP})
 
-target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS_SYMENGINE})
+target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})
 
 if (WIN32)
     # For boost::uuid:

@@ -16,9 +16,8 @@
 
 #include <cstddef>
 #include <map>
+#include <tkrng/RNG.hpp>
 #include <vector>
-
-#include "Utils/RNG.hpp"
 
 namespace tket {
 namespace graphs {

@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <boost/graph/adjacency_list.hpp>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <iostream>
 #include <vector>
 
@@ -58,6 +58,14 @@ SCENARIO("Correct creation of DirectedGraph graphs") {
     CHECK(uidgraph.edge_exists(Qubit(6), Qubit(2)));
     CHECK(uidgraph.edge_exists(Qubit(2), Qubit(1)));
     CHECK(uidgraph.edge_exists(Qubit(1), Qubit(0)));
+  }
+  GIVEN("Construct qubit graph with invalid edges.") {
+    using Conn = DirectedGraph<Qubit>::Connection;
+    std::vector<Conn> edges{{Qubit(0), Qubit(0)}};
+    CHECK_THROWS(DirectedGraph<Qubit>(edges));
+    edges = {{Qubit(0), Qubit(1)}};
+    DirectedGraph<Qubit> uidgraph(edges);
+    CHECK_THROWS(uidgraph.add_connection(Qubit(0), Qubit(0)));
   }
   GIVEN("Construct graph using member functions") {
     std::vector<Node> uids = {Node(4), Node(1), Node(0), Node(1231)};

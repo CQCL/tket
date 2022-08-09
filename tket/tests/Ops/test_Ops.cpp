@@ -14,8 +14,9 @@
 
 #include <symengine/eval.h>
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <optional>
+#include <stdexcept>
 #include <unsupported/Eigen/MatrixFunctions>
 
 #include "../testutil.hpp"
@@ -324,11 +325,11 @@ SCENARIO("Examples for is_singleq_unitary") {
 SCENARIO("Check exceptions in basic Op methods", "[ops]") {
   GIVEN("A non-single-qubit gate for get_tk1_angles") {
     const Op_ptr o = get_op_ptr(OpType::CX);
-    REQUIRE_THROWS_AS(as_gate_ptr(o)->get_tk1_angles(), NotImplemented);
+    REQUIRE_THROWS_AS(as_gate_ptr(o)->get_tk1_angles(), BadOpType);
   }
   GIVEN("An invalid port number for commuting_basis") {
     const Op_ptr o = get_op_ptr(OpType::Z);
-    REQUIRE_THROWS_AS((o)->commuting_basis(1), NotValid);
+    REQUIRE_THROWS_AS((o)->commuting_basis(1), std::domain_error);
   }
   GIVEN("A parameterised gate in get_op_ptr(OpType)") {
     REQUIRE_THROWS_AS(get_op_ptr(OpType::U1), InvalidParameterCount);

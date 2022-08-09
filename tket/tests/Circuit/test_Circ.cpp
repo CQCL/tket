@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include <boost/graph/graph_traits.hpp>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <memory>
 #include <sstream>
 #include <unsupported/Eigen/MatrixFunctions>
@@ -34,7 +34,6 @@
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
-#include "Utils/Exceptions.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 #include "Utils/PauliStrings.hpp"
 
@@ -1993,8 +1992,8 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
     Circuit circ(1);
     Vertex box = circ.add_barrier(uvec{0});
     const Op_ptr op = circ.get_Op_ptr_from_Vertex(box);
-    REQUIRE_THROWS_AS(CX_circ_from_multiq(op), NotImplemented);
-    REQUIRE_THROWS_AS(CX_ZX_circ_from_op(op), NotImplemented);
+    REQUIRE_THROWS_AS(CX_circ_from_multiq(op), BadOpType);
+    REQUIRE_THROWS_AS(CX_ZX_circ_from_op(op), BadOpType);
   }
 }
 
@@ -2324,7 +2323,7 @@ SCENARIO("Decomposing a single qubit gate") {
     Circuit circ(1);
     Vertex box = circ.add_barrier(uvec{0});
     const Op_ptr g = (circ.get_Op_ptr_from_Vertex(box));
-    REQUIRE_THROWS_AS(op_to_tk1(g), NotValid);
+    REQUIRE_THROWS_AS(op_to_tk1(g), BadOpType);
   }
 }
 
@@ -2788,6 +2787,32 @@ SCENARIO("Vertices in order") {
     CHECK(t_pos < cz_pos);
     CHECK(cy_pos < s_pos);
     CHECK(cy_pos < cz_pos);
+  }
+}
+
+SCENARIO("Checking circuit graphviz output") {
+  GIVEN("A simple circuit") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+
+    auto out = c.to_graphviz_str();
+    std::string exp_out =
+        "digraph G {\n"
+        "{ rank = same\n"
+        "0 2 }\n"
+        "{ rank = same\n"
+        "1 3 }\n"
+        "0 [label = \"Input, 0\"];\n"
+        "1 [label = \"Output, 1\"];\n"
+        "2 [label = \"Input, 2\"];\n"
+        "3 [label = \"Output, 3\"];\n"
+        "4 [label = \"CX, 4\"];\n"
+        "0 -> 4 [label =  \"0, 0\"];\n"
+        "4 -> 1 [label =  \"0, 0\"];\n"
+        "2 -> 4 [label =  \"0, 1\"];\n"
+        "4 -> 3 [label =  \"1, 0\"];\n"
+        "}";
+    REQUIRE(out == exp_out);
   }
 }
 

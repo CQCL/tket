@@ -21,7 +21,9 @@ namespace tket {
 
 class MetaOp : public Op {
  public:
-  explicit MetaOp(OpType type, op_signature_t signature = {});
+  explicit MetaOp(
+      OpType type, op_signature_t signature = {},
+      const std::string &_data = "");
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &sub_map) const override;
@@ -31,6 +33,8 @@ class MetaOp : public Op {
   unsigned n_qubits() const override;
 
   op_signature_t get_signature() const override;
+
+  std::string get_data() const { return data_; }
 
   bool is_clifford() const override;
 
@@ -51,6 +55,10 @@ class MetaOp : public Op {
  private:
   op_signature_t
       signature_; /**< Types of inputs, when not deducible from op type */
+  /**
+   * additional data given by the user, can be passed on to backend
+   */
+  const std::string data_;
 };
 
 }  // namespace tket

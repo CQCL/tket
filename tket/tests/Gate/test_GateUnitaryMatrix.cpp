@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 #include <map>
 #include <set>
 #include <sstream>
@@ -29,7 +30,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 
-using Catch::Matchers::Contains;
+using Catch::Matchers::ContainsSubstring;
 
 namespace tket {
 namespace test_GateUnitaryMatrix {
@@ -345,10 +346,14 @@ SCENARIO("Invalid numbers of arguments cause exceptions") {
             } catch (const GateUnitaryMatrixError& e) {
               CHECK(e.cause == GateUnitaryMatrixError::Cause::INPUT_ERROR);
               if (type != OpType::CnX && type != OpType::CnRy) {
-                CHECK_THAT(e.what(), Contains(name));
+                CHECK_THAT(e.what(), ContainsSubstring(name));
               }
-              CHECK_THAT(e.what(), Contains(std::to_string(number_of_qubits)));
-              CHECK_THAT(e.what(), Contains(std::to_string(parameters.size())));
+              CHECK_THAT(
+                  e.what(),
+                  ContainsSubstring(std::to_string(number_of_qubits)));
+              CHECK_THAT(
+                  e.what(),
+                  ContainsSubstring(std::to_string(parameters.size())));
               did_throw = true;
             }
             CHECK(expect_throw == did_throw);
@@ -388,9 +393,8 @@ SCENARIO("Non-unitary op types cause not implemented exceptions") {
     try {
       GateUnitaryMatrix::get_unitary(type, 1, no_parameters);
       CHECK(false);
-    } catch (const GateUnitaryMatrixError& e) {
-      CHECK(e.cause == GateUnitaryMatrixError::Cause::GATE_NOT_IMPLEMENTED);
-      CHECK_THAT(e.what(), Contains(name));
+    } catch (const BadOpType& e) {
+      CHECK_THAT(e.what(), ContainsSubstring(name));
     }
   }
 }

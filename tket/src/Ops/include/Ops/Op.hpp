@@ -30,8 +30,8 @@
 #include "OpPtr.hpp"
 #include "OpType/OpDesc.hpp"
 #include "OpType/OpTypeFunctions.hpp"
+#include "OpType/OpTypeInfo.hpp"
 #include "Utils/Constants.hpp"
-#include "Utils/Exceptions.hpp"
 #include "Utils/Expression.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/PauliStrings.hpp"
@@ -46,9 +46,6 @@ class InvalidParameterCount : public std::logic_error {
       : std::logic_error("Gate has an invalid number of parameters") {}
 };
 
-/** A specific entry or exit port of an op */
-typedef unsigned port_t;
-
 /**
  * Abstract class representing an operation type
  */
@@ -57,14 +54,14 @@ class Op : public std::enable_shared_from_this<Op> {
   /**
    * Inverse (of a unitary operation)
    *
-   * @throw NotValid if operation is not unitary
+   * @throw BadOpType if operation is not unitary
    */
-  virtual Op_ptr dagger() const { throw NotValid(); }
+  virtual Op_ptr dagger() const { throw BadOpType(get_type()); }
 
   /**
    * Transpose of a unitary operation
    */
-  virtual Op_ptr transpose() const { throw NotValid(); };
+  virtual Op_ptr transpose() const { throw BadOpType(get_type()); };
 
   /**
    * Operation with values for symbols substituted
@@ -78,13 +75,15 @@ class Op : public std::enable_shared_from_this<Op> {
       const SymEngine::map_basic_basic &sub_map) const = 0;
 
   /** Sequence of phase parameters, if applicable */
-  virtual std::vector<Expr> get_params() const { throw NotValid(); }
+  virtual std::vector<Expr> get_params() const { throw BadOpType(get_type()); }
 
   /** Sequence of phase parameters reduced to canonical range, if applicable */
-  virtual std::vector<Expr> get_params_reduced() const { throw NotValid(); }
+  virtual std::vector<Expr> get_params_reduced() const {
+    throw BadOpType(get_type());
+  }
 
   /* Number of qubits */
-  virtual unsigned n_qubits() const { throw NotValid(); }
+  virtual unsigned n_qubits() const { throw BadOpType(get_type()); }
 
   /** String representation */
   virtual std::string get_name(bool latex = false) const;
@@ -102,31 +101,29 @@ class Op : public std::enable_shared_from_this<Op> {
   virtual SymSet free_symbols() const = 0;
 
   /**
-   * Which Pauli, if any, commutes with the operation at a given port
+   * Which Pauli, if any, commutes with the operation at a given qubit
    *
-   * @param port port number at which Pauli should commute
+   * @param i qubit number at which Pauli should commute
    * @return A Pauli that commutes with the given operation
-   * @retval std::nullopt no Pauli commutes
+   * @retval std::nullopt no Pauli commutes (or operation not a gate)
    * @retval Pauli::I any Pauli commutes
-   * @throw NotValid if operation is not a gate
    */
-  virtual std::optional<Pauli> commuting_basis(port_t port) const {
-    (void)port;
-    throw NotValid();
+  virtual std::optional<Pauli> commuting_basis(unsigned i) const {
+    (void)i;
+    return std::nullopt;
   }
 
   /**
-   * Whether the operation commutes with the given Pauli at the given port
+   * Whether the operation commutes with the given Pauli at the given qubit
    *
    * @param colour Pauli operation type
-   * @param port operation port
-   * @throw NotValid if operation is not a gate
+   * @param i operation qubit index
    */
   virtual bool commutes_with_basis(
-      const std::optional<Pauli> &colour, port_t port) const {
+      const std::optional<Pauli> &colour, unsigned i) const {
     (void)colour;
-    (void)port;
-    throw NotValid();
+    (void)i;
+    return false;
   }
 
   /**
@@ -141,9 +138,11 @@ class Op : public std::enable_shared_from_this<Op> {
    * Test whether operation is identity up to a phase and return phase if so.
    *
    * @return phase, as multiple of pi, if operation is identity up to phase
-   * @throw NotValid if operation is not a \ref Gate
+   * @throw BadOpType if operation is not a \ref Gate
    */
-  virtual std::optional<double> is_identity() const { throw NotValid(); }
+  virtual std::optional<double> is_identity() const {
+    throw BadOpType(get_type());
+  }
 
   /**
    * Test whether operation is in the Clifford group.
@@ -162,9 +161,9 @@ class Op : public std::enable_shared_from_this<Op> {
    *
    * @pre No symbolic parameters.
    * @return unitary matrix (ILO-BE) which this Op represents
-   * @throw NotValid or NotImplemented upon error.
+   * @throw BadOpType upon error.
    */
-  virtual Eigen::MatrixXcd get_unitary() const { throw NotValid(); }
+  virtual Eigen::MatrixXcd get_unitary() const { throw BadOpType(get_type()); }
 
   virtual nlohmann::json serialize() const {
     throw JsonError("JSON serialization not yet implemented for " + get_name());

@@ -20,10 +20,10 @@
 #include <map>
 #include <optional>
 #include <sstream>
+#include <tkassert/Assert.hpp>
 #include <utility>
 #include <vector>
 
-#include "Utils/Assert.hpp"
 #include "Utils/EigenConfig.hpp"
 
 namespace tket {
@@ -292,173 +292,21 @@ Eigen::VectorXcd apply_qubit_permutation(
   return perm_m * v;
 }
 
-/**
- * returns average fidelity of the decomposition of the information
- * content with nb_cx CNOTS.
- */
-static double get_CX_fidelity(
-    const std::tuple<double, double, double> &k, unsigned nb_cx) {
-  auto fidelity = [](double a, double b, double c) {
-    double trace_sq = 16. * (pow(cos(a) * cos(b) * cos(c), 2) +
-                             pow(sin(a) * sin(b) * sin(c), 2));
-    return (4. + trace_sq) / 20.;
-  };
-
-  TKET_ASSERT(nb_cx < 4);
-  auto [a, b, c] = k;
-  constexpr double g = -PI / 2;
+double trace_fidelity(double a, double b, double c) {
+  constexpr double g = PI / 2;
   a *= g;
   b *= g;
   c *= g;
-
-  // gate fidelity achievable with 0,...,3 cnots
-  // this is fully determined by the information content k and is optimal
-  // see PhysRevA 71.062331 (2005) for more details on this
-  switch (nb_cx) {
-    case 0:
-      return fidelity(a, b, c);
-    case 1:
-      return fidelity(PI / 4 - a, b, c);
-    case 2:
-      return fidelity(0, 0, c);
-    case 3:
-      return 1.;
-  }
-  // never happens
-  return -1.;
-}
-
-std::vector<std::tuple<Eigen::Matrix2cd, Eigen::Matrix2cd>> expgate_as_CX(
-    const std::tuple<double, double, double> &k, double cx_fidelity) {
-  using Mat2 = Eigen::Matrix2cd;
-
-  if (cx_fidelity < 0 || cx_fidelity - 1 > EPS) {
-    throw std::invalid_argument(
-        "Expected CX fidelity cx_fidelity must be between 0 and 1");
-  }
-
-  auto [k_a, k_b, k_c] = k;
-  constexpr double g = -PI / 2;
-  k_a *= g;
-  k_b *= g;
-  k_c *= g;
-  Mat2 PauliX, PauliY, PauliZ;
-  PauliX << 0, 1, 1, 0;
-  PauliY << 0, -i_, i_, 0;
-  PauliZ << 1, 0, 0, -1;
-
-  unsigned nb_cx = 0;
-  double best_fid = 0.;
-
-  for (int nb_cx_try = 0; nb_cx_try < 4; ++nb_cx_try) {
-    double circuit_fid = get_CX_fidelity(k, nb_cx_try);
-    double tentative_fid = circuit_fid * pow(cx_fidelity, nb_cx_try);
-    if (tentative_fid - best_fid > EPS) {
-      best_fid = tentative_fid;
-      nb_cx = nb_cx_try;
-    }
-  }
-
-  Mat2 cx_K1a, cx_K1b, cx_K2a, cx_K2b;
-  // cnot KAK decomposition
-  cx_K1a << 1. - i_, 1. - i_, -1. - i_, 1. + i_;
-  cx_K1a /= 2.;
-  cx_K1b << -i_, 1., -1., i_;
-  cx_K1b /= sqrt(2.);
-  cx_K2a << i_, i_, i_, -i_;
-  cx_K2a /= sqrt(2.);
-  cx_K2b << 0., -1., 1., 0.;
-
-  auto Rz = [](const double theta) {
-    Mat2 mat;
-    mat << exp(-i_ * theta / 2.), 0, 0, exp(i_ * theta / 2.);
-    return mat;
-  };
-  auto Rx = [](const double theta) {
-    Mat2 mat;
-    mat << cos(theta / 2.), -i_ * sin(theta / 2.), -i_ * sin(theta / 2.),
-        cos(theta / 2.);
-    return mat;
-  };
-
-  TKET_ASSERT(nb_cx < 4);
-  switch (nb_cx) {
-    case 0:
-      return {};
-    case 1: {
-      // obtained from considering the KAK decomposition of CNOT
-      const Complex phase_fix = 1. / sqrt(2.) * (1. + i_);
-      return {
-          {phase_fix * cx_K2a.adjoint(), cx_K2b.adjoint()},
-          {cx_K1a.adjoint(), cx_K1b.adjoint()}};
-    }
-    case 2: {
-      // this was adapted from the qiskit implementation
-      // by taking the KAK decomposition of the CNOT
-      // alternatively, the same result can be obtained with arXiv
-      // quant-ph/0307177
-      Mat2 a1, b1, a2, b2;
-      a1 << i_, i_, -1, 1.;    // K12l
-      b1 << i_, 1., -1., -i_;  // K12r
-      a2 << -i_ * exp(-i_ * k_b), exp(-i_ * k_b), -i_ * exp(i_ * k_b),
-          -exp(i_ * k_b);  // K11l
-      b2 << i_ * exp(-i_ * k_b), -exp(-i_ * k_b), exp(i_ * k_b),
-          -i_ * exp(i_ * k_b);  // K11r
-      a1 /= (1. + i_);
-      b1 /= sqrt(2.);
-      a2 /= (1. + i_);
-      b2 /= sqrt(2);
-      const Complex phase_fix = -i_;
-      // clang-format off
-            return {{phase_fix * cx_K2a.adjoint() * a1, cx_K2b.adjoint() * b1},
-                    {cx_K2a.adjoint() * a2.adjoint() *
-                            Rz(-2 * k_a) * a2 * cx_K1a.adjoint(),
-                    cx_K2b.adjoint() * i_ * PauliZ * b2.adjoint() *
-                            Rz(2 * k_b) * b2 * cx_K1b.adjoint()},
-                    {a1.adjoint() * cx_K1a.adjoint(),
-                            b1.adjoint() * i_ * PauliZ * cx_K1b.adjoint()}};
-      // clang-format on
-    }
-    case 3: {
-      // this is taken from arXiv quant-ph/0307177
-      // note that a slight adjustment to u2 was necessary (not sure why)
-      // Also our notation: exp(i H) vs their exp(-i H),
-      // hence the additional PauliZ multiplications for u2 and Pzw = PauliZ * w
-      Mat2 u2, v2, u3, v3, Pzw, w_inv;
-      u2 << 1, 1, i_, -i_;
-      u2 *= 1. / sqrt(2.) * Rx(2 * k_a - PI);
-      v2 = Rz(-2 * k_c);
-      u3 = -i_ / sqrt(2.) * (PauliX + PauliZ);
-      v3 = Rz(-2. * k_b);
-      Pzw << 1, -i_, i_, -1;
-      Pzw /= sqrt(2.);
-      w_inv << 1, i_, i_, 1;
-      w_inv /= sqrt(2.);
-      return {
-          {Mat2::Identity(), Mat2::Identity()},
-          {u2 * PauliZ, v2},
-          {u3, v3},
-          {Pzw, w_inv}};
-    }
-  }
-  // never happens
-  return {};
+  double trace_sq = 16. * (pow(cos(a) * cos(b) * cos(c), 2) +
+                           pow(sin(a) * sin(b) * sin(c), 2));
+  return (4. + trace_sq) / 20.;
 }
 
 inline double mod(double d, double max) { return d - max * floor(d / max); }
 
-// computes the distance of the exponent r
-// from the Weyl chamber - used for sorting ExpGate components
-static double dist_from_weyl(double r) {
-  const double opt1 = mod(r, PI / 2);
-  const double opt2 = PI / 2 - opt1;
-  return std::min(opt1, opt2);
-}
-
-std::tuple<
-    Eigen::Matrix4cd, std::tuple<double, double, double>, Eigen::Matrix4cd>
+std::tuple<Eigen::Matrix4cd, std::array<double, 3>, Eigen::Matrix4cd>
 get_information_content(const Eigen::Matrix4cd &X) {
-  using ExpGate = std::tuple<double, double, double>;
+  using ExpGate = std::array<double, 3>;
   using Mat4 = Eigen::Matrix4cd;
   using Vec4 = Eigen::Vector4cd;
 
@@ -525,86 +373,25 @@ get_information_content(const Eigen::Matrix4cd &X) {
   basis_change << 1, 1, -1, -1, -1, 1, -1, 1, 1, -1, -1, 1, 1, 1, 1,
       1;  // k3 = 0 always
   Eigen::Vector3d k =
-      (.25 * basis_change * thetas).head<3>().unaryExpr([](double d) {
-        return mod(d, 2 * PI);
+      (-.5 * basis_change * thetas / PI).head<3>().unaryExpr([](double d) {
+        return mod(d, 4);
       });
 
-  // move k into Weyl chamber ie pi/4 >= k_x >= k_y >= |k_z|
-  //   1. permutate ks
-  //   2. modulo pi/2 and pi/4
-  std::vector<int> ind_order{0, 1, 2};
-  std::sort(ind_order.begin(), ind_order.end(), [&k](int i, int j) {
-    return dist_from_weyl(k(i)) > dist_from_weyl(k(j));
-  });
-  const Eigen::Vector3i build_perm(ind_order.data());
-  Eigen::PermutationMatrix<3> P_small(build_perm);
-  P_small = P_small.transpose().eval();
-
-  k = P_small * k;  // now k is sorted
-
-  // store resulting permutation of thetas in P
-  Mat4 P = Mat4::Zero();
-  P.block<3, 3>(0, 0) << P_small.toDenseMatrix().cast<std::complex<double>>();
-  P(3, 3) = 1;
-  P = (0.25 * basis_change.transpose() * P * basis_change).eval();
-
-  // we need to ensure that det(P * Q) == 1 so that K1,K2 \in SU(2) x SU(2)
-  if (P_small.determinant() * Q2.determinant().real() < 0) {
+  // we need to ensure that det(Q) == 1 so that K1,K2 \in SU(2) x SU(2)
+  if (Q2.determinant().real() < 0) {
     Q2.row(3) = -Q2.row(3);
     Q1 = Xprime * Q2.transpose() * eigs_sqrt_inv;
   }
 
   // these are our local operations (left and right)
-  Mat4 K1 = MagicM * Q1 * P.transpose() * MagicM.adjoint();
-  Mat4 K2 = MagicM * P * Q2 * MagicM.adjoint();
-
-  // last minute adjustments (modulos and reflections to be in Weyl chamber)
-  const Eigen::Matrix4cd s_xx = Eigen::kroneckerProduct(PauliX, PauliX);
-  const Eigen::Matrix4cd s_yy = Eigen::kroneckerProduct(PauliY, PauliY);
-  const Eigen::Matrix4cd s_zz = Eigen::kroneckerProduct(PauliZ, PauliZ);
-  const Eigen::Matrix4cd s_zi =
-      Eigen::kroneckerProduct(PauliZ, Eigen::Matrix2cd::Identity());
-  const Eigen::Matrix4cd s_iz =
-      Eigen::kroneckerProduct(Eigen::Matrix2cd::Identity(), PauliZ);
-  const Eigen::Matrix4cd s_xi =
-      Eigen::kroneckerProduct(PauliX, Eigen::Matrix2cd::Identity());
-  const Eigen::Matrix4cd s_ix =
-      Eigen::kroneckerProduct(Eigen::Matrix2cd::Identity(), PauliX);
-  if (k(0) > PI / 2) {
-    k(0) -= 1.5 * PI;
-    K1 *= -i_ * s_xx;
-  }
-  if (k(1) > PI / 2) {
-    k(1) -= 1.5 * PI;
-    K1 *= -i_ * s_yy;
-  }
-  if (k(2) > PI / 2) {
-    k(2) -= 1.5 * PI;
-    K1 *= -i_ * s_zz;
-  }
-  if (k(0) > PI / 4) {
-    k(0) = PI / 2 - k(0);
-    k(1) = PI / 2 - k(1);
-    K1 *= s_iz;
-    K2 = s_zi * K2;
-  }
-  if (k(1) > PI / 4) {
-    k(1) = PI / 2 - k(1);
-    k(2) = PI / 2 - k(2);
-    K1 *= s_ix;
-    K2 = s_xi * K2;
-  }
-  if (k(2) > PI / 4) {
-    k(2) -= PI / 2;
-    K1 *= i_ * s_zz;
-  }
+  Mat4 K1 = MagicM * Q1 * MagicM.adjoint();
+  Mat4 K2 = MagicM * Q2 * MagicM.adjoint();
 
   // fix phase
   K1 *= norm_X;
 
   // Finally, we got our ks
-  constexpr double f = -2 / PI;
-  ExpGate A(f * k(0), f * k(1), f * k(2));
+  ExpGate A{k(0), k(1), k(2)};
 
   // K1,K2 in SU(2)xSU(2), A = Exp(i aσ_XX + i bσ_YY + i cσ_ZZ)
   return std::tuple<Mat4, ExpGate, Mat4>{K1, A, K2};
@@ -695,6 +482,46 @@ std::vector<TripletCd> get_triplets(
     }
   }
   return triplets;
+}
+
+bool in_weyl_chamber(const std::array<Expr, 3> &k) {
+  bool is_symbolic = true;
+  double last_val = .5;
+  for (unsigned i = 0; i < k.size(); ++i) {
+    std::optional<double> eval = eval_expr_mod(k[i], 4);
+    if (eval) {
+      is_symbolic = false;
+      if (i + 1 == k.size()) {
+        double abs_eval = std::min(*eval, -(*eval) + 4);
+        if (abs_eval > last_val) {
+          return false;
+        }
+      } else {
+        if (*eval > last_val) {
+          return false;
+        }
+      }
+      last_val = *eval;
+    } else if (!is_symbolic) {
+      return false;
+    }
+  }
+  return true;
+}
+
+Eigen::Matrix2cd nth_root(const Eigen::Matrix2cd &u, unsigned n) {
+  if (u.isApprox(Eigen::Matrix2cd::Identity(), EPS)) {
+    return Eigen::Matrix2cd::Identity();
+  } else if (n == 0) {
+    throw std::invalid_argument("Non-identity matrix does not have a 0th root");
+  }
+  Eigen::ComplexEigenSolver<Eigen::Matrix2cd> eigen_solver(u);
+  return std::pow(eigen_solver.eigenvalues()[0], 1. / n) *
+             eigen_solver.eigenvectors().col(0) *
+             eigen_solver.eigenvectors().col(0).adjoint() +
+         std::pow(eigen_solver.eigenvalues()[1], 1. / n) *
+             eigen_solver.eigenvectors().col(1) *
+             eigen_solver.eigenvectors().col(1).adjoint();
 }
 
 }  // namespace tket

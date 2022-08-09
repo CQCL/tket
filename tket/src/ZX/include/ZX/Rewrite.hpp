@@ -74,6 +74,17 @@ class Rewrite {
    */
   static Rewrite basic_wires();
 
+  /**
+   * Expands every generator into ZSpiders, XSpiders, and a combination of Basic
+   * and Hadamard edges.
+   */
+  static Rewrite rebase_to_zx();
+
+  /**
+   * Expands every generator into MBQC vertices.
+   */
+  static Rewrite rebase_to_mbqc();
+
   //////////
   // Axioms//
   //////////
@@ -155,6 +166,8 @@ class Rewrite {
 
   static bool decompose_boxes_fun(ZXDiagram& diag);
   static bool basic_wires_fun(ZXDiagram& diag);
+  static bool rebase_to_zx_fun(ZXDiagram& diag);
+  static bool rebase_to_mbqc_fun(ZXDiagram& diag);
   static bool red_to_green_fun(ZXDiagram& diag);
   static bool spider_fusion_fun(ZXDiagram& diag);
   static bool self_loop_removal_fun(ZXDiagram& diag);

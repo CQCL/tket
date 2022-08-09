@@ -38,9 +38,9 @@ copyright = "2022, Cambridge Quantum Computing Ltd"
 author = "Cambridge Quantum Computing Ltd"
 
 # The short X.Y version
-version = "1.2"
+version = "1.5"
 # The full version, including alpha/beta/rc tags
-release = "1.2.2"
+release = "1.5.0"
 
 
 # -- General configuration ---------------------------------------------------
@@ -76,7 +76,7 @@ master_doc = "index"
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = "en"
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.

@@ -14,11 +14,11 @@
 
 #include "BestTsaTester.hpp"
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <tktokenswap/VertexMappingFunctions.hpp>
+#include <tktokenswap/VertexSwapResult.hpp>
 
 #include "Architecture/BestTsaWithArch.hpp"
-#include "TokenSwapping/VertexMappingFunctions.hpp"
-#include "TokenSwapping/VertexSwapResult.hpp"
 
 using std::vector;
 

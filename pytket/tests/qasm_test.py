@@ -258,6 +258,28 @@ def test_hqs_conditional() -> None:
         assert "Range can only be bounded on one side" in str(errorinfo.value)
 
 
+def test_barrier() -> None:
+    c = Circuit(3, 3)
+    c.H(0)
+    c.H(2)
+    c.add_barrier([0], [0], "comment")
+
+    result = """OPENQASM 2.0;\ninclude "hqslib1_dev.inc";\n\nqreg q[3];
+creg c[3];\nh q[0];\nh q[2];\ncomment q[0],c[0];\n"""
+    assert result == circuit_to_qasm_str(c, header="hqslib1_dev")
+
+
+def test_barrier_2() -> None:
+    c = Circuit(3, 3)
+    c.H(0)
+    c.H(2)
+    c.add_barrier([0], [0], "different_comment )@#-(")
+
+    result = """OPENQASM 2.0;\ninclude "hqslib1_dev.inc";\n\nqreg q[3];
+creg c[3];\nh q[0];\nh q[2];\ndifferent_comment )@#-( q[0],c[0];\n"""
+    assert result == circuit_to_qasm_str(c, header="hqslib1_dev")
+
+
 def test_hqs_conditional_params() -> None:
     # https://github.com/CQCL/tket/issues/17
     c = Circuit(1, 1)
@@ -352,10 +374,23 @@ def test_new_qelib1_aliases() -> None:
 
 
 def test_h1_rzz() -> None:
-    c = Circuit(2)
-    c.add_gate(OpType.ZZPhase, [0.1], [0, 1])
+    c = (
+        Circuit(2)
+        .ZZPhase(0.3, 0, 1)
+        .ZZPhase(2.4, 0, 1)
+        .ZZPhase(1.4, 0, 1)
+        .ZZPhase(1.0, 0, 1)
+        .ZZPhase(-2.3, 0, 1)
+        .ZZPhase(-1.4, 0, 1)
+        .ZZPhase(-1.0, 0, 1)
+    )
     assert "rzz" in circuit_to_qasm_str(c, header="qelib1")
-    assert "RZZ" in circuit_to_qasm_str(c, header="hqslib1")
+    hqs_qasm_str = circuit_to_qasm_str(c, header="hqslib1")
+    assert "RZZ" in hqs_qasm_str
+
+    with open(str(curr_file_path / "qasm_test_files/zzphase.qasm"), "r") as f:
+        fread_str = str(f.read())
+        assert str(hqs_qasm_str) == fread_str
 
 
 def test_extended_qasm() -> None:
@@ -445,3 +480,4 @@ if __name__ == "__main__":
     test_output_error_modes()
     test_builtin_gates()
     test_new_qelib1_aliases()
+    test_h1_rzz()

@@ -14,7 +14,7 @@
 
 #include "CircuitsForTesting.hpp"
 
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
 
 namespace tket {
 

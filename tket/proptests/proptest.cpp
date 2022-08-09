@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <cmath>
+
 #include "Architecture/Architecture.hpp"
 #include "Circuit/Circuit.hpp"
 #include "ComparisonFunctions.hpp"
@@ -21,7 +23,6 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Transformations/ContextualReduction.hpp"
 #include "Transformations/Transform.hpp"
-#include "Utils/Exceptions.hpp"
 #include "rapidcheck.h"
 
 using namespace tket;
@@ -41,6 +42,7 @@ using namespace tket;
   DO(DecomposeMultiQubitsCX)              \
   DO(DecomposeSingleQubitsTK1)            \
   DO(DecomposeBoxes)                      \
+  DO(DecomposeTK2)                        \
   DO(ComposePhasePolyBoxes)               \
   DO(SquashTK1)                           \
   DO(RebaseTket)                          \
@@ -48,7 +50,8 @@ using namespace tket;
   DO(FlattenRegisters)                    \
   DO(RemoveBarriers)                      \
   DO(DelayMeasures)                       \
-  DO(GlobalisePhasedX)
+  DO(GlobalisePhasedX)                    \
+  DO(NormaliseTK2)
 
 // Map from PassPtr to readable name
 static const std::map<PassPtr, std::string> passes = {
@@ -241,11 +244,9 @@ static void check_correctness(const Circuit &c0, const CompilationUnit &cu) {
     RC_ASSERT(tket_sim::compare_statevectors_or_unitaries(
         u0, m_inv_fin * u1 * m_ini));
   } catch (const Unsupported &) {
-  } catch (const NotImplemented &) {
+  } catch (const BadOpType &) {
   }
   // If tket-sim doesn't recognise a gate, just ignore it.
-  // If a gate is unknown, which exception SHOULD it be:
-  // "Unsupported" or "NotImplemented" ?
   RC_ASSERT(sanity_check(c1));
 }
 
@@ -383,11 +384,9 @@ bool check_initial_simplification() {
           RC_ASSERT(tket_sim::compare_statevectors_or_unitaries(
               s, s1, tket_sim::MatrixEquivalence::EQUAL_UP_TO_GLOBAL_PHASE));
         } catch (const Unsupported &) {
-        } catch (const NotImplemented &) {
+        } catch (const BadOpType &) {
         }
         // If tket-sim doesn't recognise a gate, just ignore it.
-        // But if a gate is unknown, which exception SHOULD it be:
-        // "Unsupported" or "NotImplemented" ?
       });
 }
 

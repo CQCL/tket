@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 
 #include "ArchAwareSynth/Path.hpp"
 
@@ -779,8 +779,7 @@ SCENARIO("Check Hamiltonian path construction is correct") {
   GIVEN("3 edge star Architecture") {
     Architecture arch(
         {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(1), Node(3)}});
-    std::vector<Node> ham = aas::find_hampath(arch);
-    REQUIRE(ham.empty());
+    REQUIRE_THROWS_AS(aas::find_hampath(arch), aas::NoHamiltonPath);
   }
   GIVEN("5 edge cycle Architecture") {
     Architecture arch(
@@ -798,8 +797,7 @@ SCENARIO("Check Hamiltonian path construction is correct") {
          {Node(0), Node(3)},
          {Node(0), Node(4)},
          {Node(0), Node(5)}});
-    std::vector<Node> ham = aas::find_hampath(arch);
-    REQUIRE(ham.empty());
+    REQUIRE_THROWS_AS(aas::find_hampath(arch), aas::NoHamiltonPath);
   }
   GIVEN("8 edge line Architecture") {
     Architecture arch(

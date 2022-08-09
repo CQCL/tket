@@ -46,7 +46,7 @@ from pytket.circuit.logic_exp import (
     BinaryOp,
     BitLogicExp,
     BitWiseOp,
-    ConstPredicate,
+    PredicateExp,
     LogicExp,
     RegEq,
     RegGeq,
@@ -251,7 +251,7 @@ def primitive_bit_logic_exps(
     exp_type = LogicExp.factory(op)
     args: List[Bit] = [draw(bits)]
     if issubclass(exp_type, BinaryOp):
-        if issubclass(exp_type, ConstPredicate):
+        if issubclass(exp_type, PredicateExp):
             const_compare = draw(binary_digits)
             args.append(const_compare)
         else:
@@ -442,8 +442,8 @@ def bit_const_predicates(
     draw: Callable,
     operators: SearchStrategy[Callable] = strategies.sampled_from([if_bit, if_not_bit]),
     exp: SearchStrategy[BitLogicExp] = composite_bit_logic_exps(),
-) -> ConstPredicate:
-    return cast(ConstPredicate, draw(operators)(draw(exp)))
+) -> PredicateExp:
+    return cast(PredicateExp, draw(operators)(draw(exp)))
 
 
 @strategies.composite
@@ -454,14 +454,14 @@ def reg_const_predicates(
         [reg_eq, reg_neq, reg_lt, reg_gt, reg_leq, reg_geq]
     ),
     constants: SearchStrategy[int] = uint32,
-) -> ConstPredicate:
-    return cast(ConstPredicate, draw(operators)(draw(exp), draw(constants)))
+) -> PredicateExp:
+    return cast(PredicateExp, draw(operators)(draw(exp), draw(constants)))
 
 
 @given(condition=strategies.one_of(bit_const_predicates(), reg_const_predicates()))
 @settings(print_blob=True, deadline=None)
-def test_const_predicate(condition: ConstPredicate) -> None:
-    assert isinstance(condition, ConstPredicate)
+def test_regpredicate(condition: PredicateExp) -> None:
+    assert isinstance(condition, PredicateExp)
     # test serialization round trip here
     # as condition should be the most nested structure
     assert LogicExp.from_dict(condition.to_dict()) == condition
@@ -780,6 +780,58 @@ def test_conditional_classicals() -> None:
     b = c.add_c_register("b", 2)
     c.add_c_and(b[0], b[1], b[1], condition=b[0])
     assert str(c.get_commands()[0]) == "IF ([b[0]] == 1) THEN AND b[0], b[1];"
+
+
+def test_conditional_wasm() -> None:
+    c = Circuit(0, 6)
+    b = c.add_c_register("b", 2)
+    c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], condition=b[0])
+
+    assert c.depth() == 1
+    assert str(c.get_commands()[0]) == "IF ([b[0]] == 1) THEN WASM c[0], c[1];"
+
+
+def test_conditional_wasm_ii() -> None:
+    c = Circuit(0, 6)
+    b = c.add_c_register("b", 2)
+    c._add_wasm("funcname", "wasmfileuid", [b], [], condition=b[0])
+
+    assert c.depth() == 1
+    assert str(c.get_commands()[0]) == "IF ([b[0]] == 1) THEN WASM b[0], b[1];"
+
+
+def test_conditional_wasm_iii() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+
+    c = Circuit(6, 6)
+    c0 = c.add_c_register("c0", 3)
+    c1 = c.add_c_register("c1", 4)
+    c2 = c.add_c_register("c2", 5)
+
+    b = c.add_c_register("b", 2)
+
+    c.add_wasm_to_reg("funcname", w, [c0, c1], [c2], condition=b[0])
+    c.add_wasm_to_reg("funcname2", w, [c2], [c2], condition=b[1])
+
+    assert c.depth() == 2
+    assert (
+        str(c.get_commands()[0])
+        == "IF ([b[0]] == 1) THEN WASM c0[0], c0[1], c0[2], c1[0], c1[1], c1[2], c1[3], c2[0], c2[1], c2[2], c2[3], c2[4];"
+    )
+    assert (
+        str(c.get_commands()[1])
+        == "IF ([b[1]] == 1) THEN WASM c2[0], c2[1], c2[2], c2[3], c2[4], c2[0], c2[1], c2[2], c2[3], c2[4];"
+    )
+
+
+def test_conditional_wasm_iv() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(0, 6)
+    b = c.add_c_register("controlreg", 2)
+    c.add_wasm("funcname", w, [1], [1], [Bit(0), Bit(1)], condition=b[0])
+
+    assert c.depth() == 1
+    assert str(c.get_commands()[0]) == "IF ([controlreg[0]] == 1) THEN WASM c[0], c[1];"
 
 
 def test_arithmetic_ops() -> None:

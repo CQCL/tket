@@ -16,15 +16,16 @@
 
 #include <memory>
 #include <numeric>
+#include <tkassert/Assert.hpp>
 
 #include "CircUtils.hpp"
 #include "Circuit/AssertionSynthesis.hpp"
 #include "Command.hpp"
 #include "Gate/Rotation.hpp"
+#include "OpType/OpTypeInfo.hpp"
 #include "Ops/OpJsonFactory.hpp"
 #include "Ops/OpPtr.hpp"
 #include "ThreeQubitConversion.hpp"
-#include "Utils/Assert.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/Expression.hpp"
 #include "Utils/Json.hpp"
@@ -182,7 +183,7 @@ Op_ptr Unitary3qBox::transpose() const {
 }
 
 void Unitary3qBox::generate_circuit() const {
-  circ_ = std::make_shared<Circuit>(three_qubit_synthesis(m_));
+  circ_ = std::make_shared<Circuit>(three_qubit_tk_synthesis(m_));
 }
 
 ExpBox::ExpBox(const Eigen::Matrix4cd &A, double t, BasisOrder basis)
@@ -287,12 +288,27 @@ bool CompositeGateDef::operator==(const CompositeGateDef &other) const {
 
 CustomGate::CustomGate(
     const composite_def_ptr_t &gate, const std::vector<Expr> &params)
-    : Box(OpType::CustomGate, gate->signature()), gate_(gate), params_(params) {
+    : Box(OpType::CustomGate), gate_(gate), params_(params) {
+  if (!gate) {
+    throw std::runtime_error(
+        "Null CompositeGateDef pointer passed to CustomGate");
+  }
+  signature_ = gate->signature();
+
   if (params_.size() != gate_->n_args()) throw InvalidParameterCount();
 }
 
 CustomGate::CustomGate(const CustomGate &other)
     : Box(other), gate_(other.gate_), params_(other.params_) {}
+
+bool CustomGate::is_equal(const Op &op_other) const {
+  const CustomGate &other = dynamic_cast<const CustomGate &>(op_other);
+  if (this->id_ == other.id_) {
+    return true;
+  }
+  TKET_ASSERT(gate_ && other.gate_);
+  return params_ == other.params_ && *gate_ == *other.gate_;
+}
 
 Op_ptr CustomGate::symbol_substitution(
     const SymEngine::map_basic_basic &sub_map) const {
@@ -338,7 +354,8 @@ QControlBox::QControlBox(const Op_ptr &op, unsigned n_controls)
   n_inner_qubits_ = inner_sig.size();
   if (std::count(inner_sig.begin(), inner_sig.end(), EdgeType::Quantum) !=
       n_inner_qubits_) {
-    throw NotImplemented("Quantum control of classical wires not supported");
+    throw BadOpType(
+        "Quantum control of classical wires not supported", op_->get_type());
   }
   signature_ = op_signature_t(n_controls + n_inner_qubits_, EdgeType::Quantum);
 }

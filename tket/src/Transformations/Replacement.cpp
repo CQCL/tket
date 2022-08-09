@@ -16,9 +16,10 @@
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
-#include "ControlledGates.hpp"
 #include "Decomposition.hpp"
 #include "Gate/GatePtr.hpp"
+#include "Gate/GateUnitaryMatrix.hpp"
+#include "OpType/OpTypeInfo.hpp"
 #include "Transform.hpp"
 
 namespace tket {
@@ -28,26 +29,26 @@ using namespace Transforms;
 Circuit TK2_circ_from_multiq(const Op_ptr op) {
   OpDesc desc = op->get_desc();
   if (!desc.is_gate())
-    throw NotImplemented(
-        "Can only build replacement circuits for basic gates; given " +
-        desc.name());
+    throw BadOpType(
+        "Can only build replacement circuits for basic gates", desc.type());
   unsigned n_qubits = op->n_qubits();
   switch (desc.type()) {
     case OpType::CnRy: {
       // TODO We should be able to do better than this.
-      Circuit c = decomposed_CnRy(op, n_qubits);
+      Circuit c = CircPool::CnRy_normal_decomp(op, n_qubits);
       replace_CX_with_TK2(c);
       return c;
     }
     case OpType::CnX:
-      if (n_qubits >= 6 && n_qubits <= 8) {
+      if (n_qubits >= 6 && n_qubits <= 50) {
         // TODO We should be able to do better than this.
-        Circuit c = cnx_gray_decomp(n_qubits - 1);
-        replace_CX_with_TK2(c);
+        Eigen::Matrix2cd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
+        Circuit c = CircPool::CnU_linear_depth_decomp(n_qubits - 1, x);
+        decompose_multi_qubits_TK2().apply(c);
         return c;
       } else {
         // TODO We should be able to do better than this.
-        Circuit c = cnx_normal_decomp(n_qubits - 1);
+        Circuit c = CircPool::CnX_normal_decomp(n_qubits - 1);
         replace_CX_with_TK2(c);
         return c;
       }
@@ -59,16 +60,21 @@ Circuit TK2_circ_from_multiq(const Op_ptr op) {
 Circuit CX_circ_from_multiq(const Op_ptr op) {
   OpDesc desc = op->get_desc();
   if (!desc.is_gate())
-    throw NotImplemented(
-        "Can only build replacement circuits for basic gates; given " +
-        desc.name());
+    throw BadOpType(
+        "Can only build replacement circuits for basic gates", desc.type());
   unsigned n_qubits = op->n_qubits();
   switch (desc.type()) {
     case OpType::CnRy:
-      return decomposed_CnRy(op, n_qubits);
+      return CircPool::CnRy_normal_decomp(op, n_qubits);
     case OpType::CnX:
-      if (n_qubits >= 6 && n_qubits <= 8) return cnx_gray_decomp(n_qubits - 1);
-      return cnx_normal_decomp(n_qubits - 1);
+      if (n_qubits >= 6 && n_qubits <= 50) {
+        Eigen::Matrix2cd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
+        Circuit c = CircPool::CnU_linear_depth_decomp(n_qubits - 1, x);
+        decompose_multi_qubits_CX().apply(c);
+        return c;
+      } else {
+        return CircPool::CnX_normal_decomp(n_qubits - 1);
+      }
     default:
       return with_CX(as_gate_ptr(op));
   }
@@ -77,9 +83,8 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
 Circuit CX_ZX_circ_from_op(const Op_ptr op) {
   OpDesc desc = op->get_desc();
   if (!desc.is_gate())
-    throw NotImplemented(
-        "Can only build replacement circuits for basic gates; given " +
-        desc.name());
+    throw BadOpType(
+        "Can only build replacement circuits for basic gates", desc.type());
   switch (desc.type()) {
     case OpType::Z: {
       Circuit replacement(1);
@@ -256,8 +261,7 @@ Circuit CX_ZX_circ_from_op(const Op_ptr op) {
       return replacement;
     }
     default:
-      throw NotImplemented(
-          "Cannot find replacement circuit for OpType::" + desc.name());
+      throw BadOpType("Cannot find replacement circuit", desc.type());
   }
 }
 

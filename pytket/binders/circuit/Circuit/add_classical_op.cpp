@@ -76,6 +76,9 @@ void init_circuit_add_classical_op(
        "applied to inputs :math:`(a_i)`."
        "\n:param args: bits to which the transform is applied"
        "\n:param name: operation name"
+       "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+       " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+       " `condition_value`"
        "\n:return: the new :py:class:`Circuit`",
        py::arg("values"), py::arg("args"),
        py::arg("name") = "ClassicalTransform")
@@ -97,12 +100,13 @@ void init_circuit_add_classical_op(
              const std::string &wasm_uid,
              const std::vector<unsigned> &i32list_i,
              const std::vector<unsigned> &i32list_o,
-             const std::vector<unsigned> &args) -> Circuit & {
+             const std::vector<unsigned> &args,
+             const py::kwargs &kwargs) -> Circuit * {
             unsigned n_args = args.size();
             std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
                 n_args, i32list_i, i32list_o, funcname, wasm_uid);
-            circ.add_op(op, args);
-            return circ;
+
+            return add_gate_method<unsigned>(&circ, op, args, kwargs);
           },
           "Add a classical function call from a wasm file to the circuit. "
           "\n\n:param funcname: name of the function that is called"
@@ -112,6 +116,9 @@ void init_circuit_add_classical_op(
           "\n:param i32list_o: list of the number of bits in the output "
           "variables"
           "\n:param args: vector of circuit bits the wasm op should be added to"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("funcname"), py::arg("wasm_uid"), py::arg("i32list_i"),
           py::arg("i32list_o"), py::arg("args"))
@@ -121,21 +128,35 @@ void init_circuit_add_classical_op(
              const std::string &wasm_uid,
              const std::vector<unsigned> &i32list_i,
              const std::vector<unsigned> &i32list_o,
-             const std::vector<Bit> &args) -> Circuit & {
+             const std::vector<Bit> &args,
+             const py::kwargs &kwargs) -> Circuit * {
             unsigned n_args = args.size();
             std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
                 n_args, i32list_i, i32list_o, funcname, wasm_uid);
-            circ.add_op(op, args);
-            return circ;
+
+            return add_gate_method<Bit>(&circ, op, args, kwargs);
           },
-          "See :py:meth:`add_wasm`.", py::arg("funcname"), py::arg("wasm_uid"),
-          py::arg("i32list_i"), py::arg("i32list_o"), py::arg("args"))
+          "Add a classical function call from a wasm file to the circuit. "
+          "\n\n:param funcname: name of the function that is called"
+          "\n:param wasm_uid: unit id to identify the wasm file"
+          "\n:param i32list_i: list of the number of bits in the input "
+          "variables"
+          "\n:param i32list_o: list of the number of bits in the output "
+          "variables"
+          "\n:param args: vector of circuit bits the wasm op should be added to"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("funcname"), py::arg("wasm_uid"), py::arg("i32list_i"),
+          py::arg("i32list_o"), py::arg("args"))
       .def(
           "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
              const std::string &wasm_uid,
              const std::vector<BitRegister> &list_reg_in,
-             const std::vector<BitRegister> &list_reg_out) -> Circuit & {
+             const std::vector<BitRegister> &list_reg_out,
+             const py::kwargs &kwargs) -> Circuit * {
             unsigned n_args = 0;
 
             for (auto r : list_reg_in) {
@@ -173,11 +194,22 @@ void init_circuit_add_classical_op(
 
             std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
                 n_args, i32list_i, i32list_o, funcname, wasm_uid);
-            circ.add_op(op, args);
-            return circ;
+
+            return add_gate_method<Bit>(&circ, op, args, kwargs);
           },
-          "See :py:meth:`add_wasm`.", py::arg("funcname"), py::arg("wasm_uid"),
-          py::arg("list_reg_in"), py::arg("list_reg_out"))
+          "Add a classical function call from a wasm file to the circuit. "
+          "\n\n:param funcname: name of the function that is called"
+          "\n:param wasm_uid: unit id to identify the wasm file"
+          "\n:param list_reg_in: list of the classical registers in the "
+          "circuit used as inputs"
+          "\n:param list_reg_out: list of the classical registers in the "
+          "circuit used as outputs"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("funcname"), py::arg("wasm_uid"), py::arg("list_reg_in"),
+          py::arg("list_reg_out"))
       .def(
           "add_c_setbits",
           [](Circuit &circ, const std::vector<bool> &values,
@@ -188,6 +220,9 @@ void init_circuit_add_classical_op(
           "Appends an operation to set some bit values."
           "\n\n:param values: values to set"
           "\n:param args: bits to set"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("values"), py::arg("args"))
       .def(
@@ -231,6 +266,9 @@ void init_circuit_add_classical_op(
           "Appends a classical copy operation"
           "\n\n:param args_in: source bits"
           "\n:param args_out: destination bits"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("args_in"), py::arg("args_out"))
       .def(
@@ -286,6 +324,9 @@ void init_circuit_add_classical_op(
           "\n:param args_in: input bits for the predicate"
           "\n:param arg_out: output bit, distinct from all inputs",
           "\n:param name: operation name"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("values"), py::arg("args_in"), py::arg("arg_out"),
           py::arg("name") = "ExplicitPredicate")
@@ -327,6 +368,9 @@ void init_circuit_add_classical_op(
           "\n:param args_in: input bits, excluding the modified bit"
           "\n:param arg_out: modified bit",
           "\n:param name: operation name"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("values"), py::arg("args_in"), py::arg("arg_inout"),
           py::arg("name") = "ExplicitModifier")
@@ -367,6 +411,9 @@ void init_circuit_add_classical_op(
           "\n\n:param arg0_in: first input bit"
           "\n:param arg1_in: second input bit"
           "\n:param arg_out: output bit"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("arg0_in"), py::arg("arg1_in"), py::arg("arg_out"))
       .def(
@@ -411,6 +458,9 @@ void init_circuit_add_classical_op(
           "\n\n:param arg0_in: first input bit"
           "\n:param arg1_in: second input bit"
           "\n:param arg_out: output bit"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("arg0_in"), py::arg("arg1_in"), py::arg("arg_out"))
       .def(
@@ -455,6 +505,9 @@ void init_circuit_add_classical_op(
           "\n\n:param arg0_in: first input bit"
           "\n:param arg1_in: second input bit"
           "\n:param arg_out: output bit"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("arg0_in"), py::arg("arg1_in"), py::arg("arg_out"))
       .def(
@@ -487,6 +540,9 @@ void init_circuit_add_classical_op(
           "Appends a NOT operation to the end of the circuit."
           "\n\n:param arg_in: input bit"
           "\n:param arg_out: output bit"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("arg_in"), py::arg("arg_out"))
       .def(
@@ -513,6 +569,9 @@ void init_circuit_add_classical_op(
           "\n:param maxval: upper bound of input in little-endian encoding"
           "\n:param args_in: input bits"
           "\n:param arg_out: output bit (distinct from input bits)"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("minval"), py::arg("maxval"), py::arg("args_in"),
           py::arg("arg_out"))
@@ -533,6 +592,9 @@ void init_circuit_add_classical_op(
           "\n:param maxval: upper bound of input in little-endian encoding"
           "\n:param args_in: input bits"
           "\n:param arg_out: output bit (distinct from input bits)"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("minval"), py::arg("maxval"), py::arg("args_in"),
           py::arg("arg_out"))
@@ -560,6 +622,9 @@ void init_circuit_add_classical_op(
           "\n\n:param reg0_in: first input register"
           "\n:param reg1_in: second input register"
           "\n:param reg_out: output register"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("reg0_in"), py::arg("reg1_in"), py::arg("reg_out"))
       .def(
@@ -586,6 +651,9 @@ void init_circuit_add_classical_op(
           "\n\n:param reg0_in: first input register"
           "\n:param reg1_in: second input register"
           "\n:param reg_out: output register"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("reg0_in"), py::arg("reg1_in"), py::arg("reg_out"))
       .def(
@@ -612,6 +680,9 @@ void init_circuit_add_classical_op(
           "\n\n:param reg0_in: first input register"
           "\n:param reg1_in: second input register"
           "\n:param reg_out: output register"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("reg0_in"), py::arg("reg1_in"), py::arg("reg_out"))
       .def(
@@ -628,6 +699,9 @@ void init_circuit_add_classical_op(
           "each register, up to the size of the smallest register."
           "\n\n:param reg_in: input register"
           "\n:param reg_out: name of output register"
+          "\n:param kwargs: additional arguments passed to `add_gate_method` ."
+          " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
+          " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("reg_in"), py::arg("reg_out"));
 }

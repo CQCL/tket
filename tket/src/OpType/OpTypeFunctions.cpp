@@ -96,9 +96,32 @@ const OpTypeSet& all_single_qubit_types() {
   return *gates;
 }
 
+const OpTypeSet& all_classical_types() {
+  static const OpTypeSet optypes = {
+      OpType::ClassicalTransform, OpType::SetBits,
+      OpType::CopyBits,           OpType::RangePredicate,
+      OpType::ExplicitPredicate,  OpType::ExplicitModifier,
+      OpType::MultiBit,           OpType::WASM,
+  };
+  static std::unique_ptr<const OpTypeSet> gates =
+      std::make_unique<const OpTypeSet>(optypes);
+  return *gates;
+}
+
 const OpTypeSet& all_projective_types() {
   static const OpTypeSet optypes{
       OpType::Measure, OpType::Collapse, OpType::Reset};
+  static std::unique_ptr<const OpTypeSet> gates =
+      std::make_unique<const OpTypeSet>(optypes);
+  return *gates;
+}
+
+const OpTypeSet& all_controlled_gate_types() {
+  static const OpTypeSet optypes{
+      OpType::CX,    OpType::CCX, OpType::CnX,  OpType::CSX,
+      OpType::CSXdg, OpType::CV,  OpType::CVdg, OpType::CRx,
+      OpType::CnRy,  OpType::CRy, OpType::CY,   OpType::CRz,
+      OpType::CZ,    OpType::CH,  OpType::CU1,  OpType::CU3};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -211,13 +234,10 @@ bool is_projective_type(OpType optype) {
 }
 
 bool is_classical_type(OpType optype) {
-  static const OpTypeSet classical_gates = {
-      OpType::ClassicalTransform, OpType::SetBits,
-      OpType::CopyBits,           OpType::RangePredicate,
-      OpType::ExplicitPredicate,  OpType::ExplicitModifier,
-      OpType::MultiBit,           OpType::WASM,
-  };
-  return find_in_set(optype, classical_gates);
+  return find_in_set(optype, all_classical_types());
 }
 
+bool is_controlled_gate_type(OpType optype) {
+  return find_in_set(optype, all_controlled_gate_types());
+}
 }  // namespace tket

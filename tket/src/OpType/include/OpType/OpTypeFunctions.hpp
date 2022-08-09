@@ -42,6 +42,12 @@ const OpTypeSet &all_single_qubit_unitary_types();
 /** Set of all measurement and reset gates */
 const OpTypeSet &all_projective_types();
 
+/** Set of all controlled gates*/
+const OpTypeSet &all_controlled_gate_types();
+
+/** Set of all classical gates */
+const OpTypeSet &all_classical_types();
+
 /** Test for initial, final and barrier "ops" */
 bool is_metaop_type(OpType optype);
 
@@ -92,6 +98,9 @@ bool is_projective_type(OpType optype);
 
 /** Test for purely classical gates derived from ClassicalOp */
 bool is_classical_type(OpType optype);
+
+/** Test for controlled gates */
+bool is_controlled_gate_type(OpType optype);
 
 /** Whether a given operation type belongs to a given set */
 bool find_in_set(const OpType &val, const OpTypeSet &set);

@@ -14,12 +14,14 @@
 
 #include "FlowOp.hpp"
 
+#include "OpType/OpTypeInfo.hpp"
+
 namespace tket {
 
 FlowOp::FlowOp(OpType type, std::optional<std::string> label)
     : Op(type), label_(label) {
   if (!is_flowop_type(type)) {
-    throw NotValid();
+    throw BadOpType(type);
   }
 }
 
@@ -45,7 +47,7 @@ op_signature_t FlowOp::get_signature() const {
   if (sig)
     return *sig;
   else
-    throw NotValid();
+    throw BadOpType(get_type());
 }
 
 std::string FlowOp::get_name(bool latex) const {

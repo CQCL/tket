@@ -12,16 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <numeric>
 #include <optional>
+#include <stdexcept>
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "CircuitsForTesting.hpp"
 #include "Gate/Rotation.hpp"
 #include "OpType/OpType.hpp"
+#include "OpType/OpTypeFunctions.hpp"
 #include "Ops/MetaOp.hpp"
+#include "Predicates/CompilationUnit.hpp"
+#include "Predicates/CompilerPass.hpp"
+#include "Predicates/PassLibrary.hpp"
+#include "Predicates/Predicates.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/BasicOptimisation.hpp"
@@ -33,6 +39,7 @@
 #include "Transformations/Rebase.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
+#include "Utils/Expression.hpp"
 #include "testutil.hpp"
 
 /* This test file covers decomposition, basic optimisation and synthesis passes.
@@ -808,6 +815,14 @@ SCENARIO("Testing general 1qb squash") {
   }
 }
 
+SCENARIO("Decomposing TK1 into Rx, Ry") {
+  Circuit circ(1);
+  circ.add_op<unsigned>(OpType::TK1, {0.2, 0.2, 0.3}, {0});
+  Transforms::decompose_XY().apply(circ);
+  REQUIRE(circ.count_gates(OpType::Rx) == 2);
+  REQUIRE(circ.count_gates(OpType::Ry) == 3);
+}
+
 SCENARIO("Squishing a circuit into U3 and CNOTs") {
   GIVEN("A series of one-qubit gates and CNOTs") {
     Circuit test1(4);
@@ -1038,8 +1053,8 @@ SCENARIO("Testing globalise_PhasedX") {
       THEN("The correct gates are introduced") {
         REQUIRE(circ.count_gates(OpType::PhasedX) == 0);
         REQUIRE(circ.count_gates(OpType::NPhasedX) == 2);
-        REQUIRE(circ.count_gates(OpType::Rz) == 6);
-        REQUIRE(circ.n_gates() == 8);
+        REQUIRE(circ.count_gates(OpType::Rz) == 4);
+        REQUIRE(circ.n_gates() == 6);
       }
       THEN("The unitaries are equal") {
         auto new_u = tket_sim::get_unitary(circ);
@@ -1064,7 +1079,7 @@ SCENARIO("Testing globalise_PhasedX") {
       THEN("The correct gates are introduced") {
         REQUIRE(tmp_circ.count_gates(OpType::PhasedX) == 0);
         REQUIRE(tmp_circ.count_gates(OpType::NPhasedX) == 4);
-        REQUIRE(tmp_circ.count_gates(OpType::Rz) == 22);
+        REQUIRE(tmp_circ.count_gates(OpType::Rz) == 15);
       }
       THEN("The unitaries are equal") {
         auto new_u = tket_sim::get_unitary(tmp_circ);
@@ -1077,7 +1092,7 @@ SCENARIO("Testing globalise_PhasedX") {
       THEN("The correct gates are introduced") {
         REQUIRE(tmp_circ.count_gates(OpType::PhasedX) == 0);
         REQUIRE(tmp_circ.count_gates(OpType::NPhasedX) == 7);
-        REQUIRE(tmp_circ.count_gates(OpType::Rz) == 18);
+        REQUIRE(tmp_circ.count_gates(OpType::Rz) == 14);
       }
       THEN("The unitaries are equal") {
         auto new_u = tket_sim::get_unitary(tmp_circ);
@@ -1120,7 +1135,6 @@ SCENARIO("Testing globalise_PhasedX") {
         REQUIRE(tmp_circ.count_gates(OpType::PhasedX) == 0);
         REQUIRE(tmp_circ.count_gates(OpType::NPhasedX) == 5);
       }
-      tmp_circ.to_graphviz_file("tmp_circ");
     }
   }
 }
@@ -1619,7 +1633,7 @@ SCENARIO("Test barrier blocks transforms successfully") {
     circ.add_op<unsigned>(OpType::U1, 0.5, {0});
     REQUIRE(!Transforms::remove_redundancies().apply(circ));
     REQUIRE_THROWS_AS(
-        Transforms::pairwise_pauli_gadgets().apply(circ), NotValid);
+        Transforms::pairwise_pauli_gadgets().apply(circ), BadOpType);
   }
   GIVEN("Bigger circuit with barrier") {
     Circuit circ(3);
@@ -1697,6 +1711,39 @@ SCENARIO("Check the identification of ZZPhase gates works correctly") {
   }
 }
 
+SCENARIO("Decomposition of XXPhase and YYPhase into ZZPhase") {
+  unsigned exp_n_zzphase;
+  Circuit c;
+  GIVEN("A circuit with a single XXPhase") {
+    c = Circuit(2);
+    c.add_op<unsigned>(OpType::XXPhase, 0.3, {0, 1});
+    exp_n_zzphase = 1;
+  }
+  GIVEN("A circuit with a single YYPhase") {
+    c = Circuit(2);
+    c.add_op<unsigned>(OpType::YYPhase, 0.3, {0, 1});
+    exp_n_zzphase = 1;
+  }
+  GIVEN("A circuit with 1x XXPhase, 2x YYPhase and 1xZZPhase") {
+    c = Circuit(3);
+    c.add_op<unsigned>(OpType::XXPhase, 0.3, {0, 1});
+    c.add_op<unsigned>(OpType::YYPhase, 0.7, {1, 2});
+    c.add_op<unsigned>(OpType::ZZPhase, 0.88, {0, 2});
+    c.add_op<unsigned>(OpType::YYPhase, 0.38, {0, 2});
+    exp_n_zzphase = 4;
+  }
+  GIVEN("A XXPhase(a) symbolic circ") {
+    c = Circuit(2);
+    Sym a = SymEngine::symbol("alpha");
+    Expr alpha(a);
+    c.add_op<unsigned>(OpType::XXPhase, alpha, {0, 1});
+    exp_n_zzphase = 1;
+  }
+  REQUIRE(Transforms::decompose_ZZPhase().apply(c));
+  REQUIRE(c.count_gates(OpType::ZZPhase) == exp_n_zzphase);
+  REQUIRE(!Transforms::decompose_ZZPhase().apply(c));
+}
+
 SCENARIO("Test TK1 gate decomp for some gates") {
   std::vector<Expr> pars = {
       0.3, 0.7, 0.8};  // no ops required >3 params currently
@@ -1728,5 +1775,416 @@ SCENARIO("Test TK1 gate decomp for some gates") {
   }
 }
 
+SCENARIO("Testing decompose_TK2") {
+  GIVEN("Parameterless decompose_TK2") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::TK2, {0.3, 0.1, 0.}, {0, 1});
+    REQUIRE(Transforms::decompose_TK2().apply(c));
+    REQUIRE(c.count_gates(OpType::CX) == 2);
+    REQUIRE(c.count_gates(OpType::TK2) == 0);
+    REQUIRE(!Transforms::decompose_TK2().apply(c));
+  }
+
+  // some useful symbolics
+  Sym a = SymEngine::symbol("alpha");
+  Expr alpha(a);
+  Sym b = SymEngine::symbol("beta");
+  Expr beta(b);
+  Sym c = SymEngine::symbol("gamma");
+  Expr gamma(c);
+
+  GIVEN("Not in Weyl chamber error") {
+    std::vector<std::vector<Expr>> params{
+        {0.1, 0.3, 0.}, {0.6, 0, 0}, {0.4, 0.1, -0.2}, {0.2, alpha, 0}};
+    for (auto angles : params) {
+      Circuit c(2);
+      c.add_op<unsigned>(OpType::TK2, angles, {0, 1});
+      REQUIRE_THROWS_AS(
+          Transforms::decompose_TK2().apply(c), std::domain_error);
+    }
+  }
+
+  std::vector<std::vector<Expr>> params;
+  std::vector<unsigned> exp_n_cx(4, 0);
+  std::vector<unsigned> exp_n_zzmax(4, 0);
+  std::vector<unsigned> exp_n_zzphase(4, 0);
+  Transforms::TwoQbFidelities fid;
+  bool is_symbolic = false;
+  double eps = ERR_EPS;
+
+  GIVEN("A bunch of TK2 gates, no fidelities") {
+    params = {{.5, 0., 0.}, {.4, 0., 0.}, {.2, .2, 0.}, {0.2, 0.1, 0.08}};
+    exp_n_cx = {1, 2, 2, 3};
+  }
+  GIVEN("A bunch of TK2 gates, perfect ZZMax fidelities") {
+    fid.ZZMax_fidelity = 1.;
+    params = {
+        {0., 0., 0.},
+        {.5, 0., 0.},
+        {.4, 0., 0.},
+        {.2, .2, 0.},
+        {0.2, 0.1, 0.1}};
+    exp_n_zzmax = {0, 1, 2, 2, 3};
+    exp_n_zzphase = std::vector<unsigned>(exp_n_zzmax.size(), 0);
+    exp_n_cx = std::vector<unsigned>(exp_n_zzmax.size(), 0);
+  }
+  GIVEN("A bunch of TK2 gates, ZZMax vs ZZPhase fidelities") {
+    fid.ZZMax_fidelity = .99;
+    fid.ZZPhase_fidelity = [](double angle) { return 1 - angle / 10.; };
+    params = {
+        {.5, 0., 0.},      // use single ZZMax
+        {.48, 0., 0.},     // use single ZZMax (approx)
+        {.4, 0., 0.},      // use two ZZMax
+        {0.4, 0.1, 0.},    // use two ZZMax
+        {0.4, 0.1, 0.01},  // use two ZZMax (approx)
+        {.4, 0.3, 0.2},    // use three ZZMax
+        {.1, 0., 0.},      // use single ZZPhase
+        {0.05, 0.01, 0},   // use identity (approx)
+        {0.1, 0.01, 0},    // use single ZZPhase (approx)
+        {0.3, 0.01, 0},    // use two ZZMax
+        {0.49, 0.01, 0},   // use single ZZMax (approx)
+        {0.1, 0.1, 0},     // use two ZZMax
+    };
+    exp_n_zzmax = {1, 1, 2, 2, 2, 3, 0, 0, 0, 2, 1, 2};
+    exp_n_zzphase = {0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0};
+    exp_n_cx = std::vector<unsigned>(exp_n_zzmax.size(), 0);
+    eps = 0.98;
+  }
+  GIVEN("Force use ZZPhase") {
+    fid.ZZPhase_fidelity = [](double) { return 1.; };
+    params = {{0., 0., 0.}, {0.3, 0., 0.}, {0.4, 0.3, 0.}, {0.4, 0.4, -0.3}};
+    exp_n_zzphase = {0, 1, 2, 3};
+  }
+  GIVEN("Symbolic cases") {
+    is_symbolic = true;
+    params = {
+        {alpha, 0., 0.},
+        {alpha, beta, gamma},
+        {alpha, 0.2, 0},
+        {alpha, 0.1, 0.05}};
+    GIVEN("Using default") { exp_n_cx = {2, 3, 2, 3}; }
+    GIVEN("Using CX") {
+      fid.CX_fidelity = 1.;
+      exp_n_cx = {2, 3, 2, 3};
+    }
+    GIVEN("Using ZZMax") {
+      fid.ZZMax_fidelity = 1.;
+      exp_n_zzmax = {2, 3, 2, 3};
+    }
+    GIVEN("Force use ZZPhase") {
+      fid.ZZPhase_fidelity = [](double) { return 1.; };
+      exp_n_zzphase = {1, 3, 2, 3};
+    }
+    GIVEN("Either ZZMax or ZZPhase") {
+      fid.ZZPhase_fidelity = [](double) { return 1.; };
+      fid.ZZMax_fidelity = 1.;
+      exp_n_zzphase = {1, 0, 0, 0};
+      exp_n_zzmax = {0, 3, 2, 3};
+    }
+  }
+
+  Eigen::MatrixXcd u1, u2;
+  for (unsigned i = 0; i < params.size(); ++i) {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::TK2, params[i], {0, 1});
+
+    Circuit c1 = c;
+    REQUIRE(Transforms::decompose_TK2(fid).apply(c));
+    Circuit c2 = c;
+
+    if (is_symbolic) {
+      // Substitute "arbitrary" values for symbols in both circuits
+      const SymSet symbols = c.free_symbols();
+      symbol_map_t smap;
+      unsigned i = 0;
+      for (const Sym &s : symbols) {
+        smap[s] = PI * (i + 1) / ((i + 2) * (i + 3));
+        i++;
+      }
+      c1.symbol_substitution(smap);
+      c2.symbol_substitution(smap);
+    }
+
+    u1 = tket_sim::get_unitary(c1);
+    u2 = tket_sim::get_unitary(c2);
+
+    REQUIRE(u1.isApprox(u2, eps));
+    REQUIRE(c.count_gates(OpType::CX) == exp_n_cx[i]);
+    REQUIRE(c.count_gates(OpType::ZZMax) == exp_n_zzmax[i]);
+    REQUIRE(c.count_gates(OpType::ZZPhase) == exp_n_zzphase[i]);
+    REQUIRE(!Transforms::decompose_TK2().apply(c));
+  }
+}
+
+SCENARIO("DecomposeTK2, implicit swaps") {
+  Circuit c(2);
+  unsigned n_noswap = 0, n_swap = 0;
+  GIVEN("A swap") {
+    c.add_op<unsigned>(OpType::SWAP, {0, 1});
+    n_noswap = 3;
+    n_swap = 0;
+  }
+  GIVEN("A 3-CX swap") {
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::CX, {1, 0});
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    n_noswap = 3;
+    n_swap = 0;
+  }
+  GIVEN("2-CX") {
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::CX, {1, 0});
+    n_noswap = 2;
+    n_swap = 1;
+  }
+  GIVEN("TK2(0.5, 0.5, 0)") {
+    c.add_op<unsigned>(OpType::TK2, {0.5, 0.5, 0}, {0, 1});
+    n_noswap = 2;
+    n_swap = 1;
+  }
+  GIVEN("TK2(0.5, 0.5, 3.91667)") {
+    c.add_op<unsigned>(OpType::TK2, {0.5, 0.5, 3.91667}, {0, 1});
+    n_noswap = 3;
+    n_swap = 2;
+  }
+
+  (Transforms::synthesise_tk() >> Transforms::two_qubit_squash(OpType::TK2))
+      .apply(c);
+
+  Circuit c_res = c;
+  StateVector s0 = tket_sim::get_statevector(c_res);
+  Transforms::decompose_TK2(false).apply(c_res);
+  StateVector s1 = tket_sim::get_statevector(c_res);
+  REQUIRE(c_res.count_gates(OpType::CX) == n_noswap);
+  REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
+
+  c_res = c;
+  Transforms::TwoQbFidelities fid;
+  fid.ZZMax_fidelity = 1.;
+  s0 = tket_sim::get_statevector(c_res);
+  Transforms::decompose_TK2(fid, false).apply(c_res);
+  s1 = tket_sim::get_statevector(c_res);
+  REQUIRE(c_res.count_gates(OpType::ZZMax) == n_noswap);
+  REQUIRE(c_res.count_gates(OpType::CX) == 0);
+  REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
+
+  c_res = c;
+  s0 = tket_sim::get_statevector(c_res);
+  Transforms::decompose_TK2(true).apply(c_res);
+  s1 = tket_sim::get_statevector(c_res);
+  REQUIRE(c_res.count_gates(OpType::CX) == n_swap);
+  REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
+
+  c_res = c;
+  s0 = tket_sim::get_statevector(c_res);
+  Transforms::decompose_TK2(fid, true).apply(c_res);
+  s1 = tket_sim::get_statevector(c_res);
+  REQUIRE(c_res.count_gates(OpType::ZZMax) == n_swap);
+  REQUIRE(c_res.count_gates(OpType::CX) == 0);
+  REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
+}
+
+SCENARIO("Testing absorb_Rz_NPhasedX") {
+  Circuit circ(3);
+  Expr exp_beta;
+  unsigned exp_n_rz;
+  Vertex nphasedx;
+  GIVEN("All Rz can be absorbed") {
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, 0.3, {i});
+    }
+    nphasedx = circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.}, {0, 1, 2});
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, -0.3, {i});
+    }
+    exp_beta = -0.3;
+    exp_n_rz = 0;
+  }
+  GIVEN("All Rz can be absorbed, add to existing beta") {
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, 0.3, {i});
+    }
+    nphasedx = circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.2}, {0, 1, 2});
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, -0.3, {i});
+    }
+    exp_beta = 0.2 - 0.3;
+    exp_n_rz = 0;
+  }
+  GIVEN("3 Rz can be absorbed") {
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, 0.3, {i});
+    }
+    nphasedx = circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.2}, {0, 1, 2});
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, i * 0.2, {i});
+    }
+    exp_beta = 0.2 - 0.3;
+    exp_n_rz = 3;
+  }
+  GIVEN("Only act on a subset") {
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, 0.3, {i});
+    }
+    circ.add_op<unsigned>(OpType::Rz, 0.4, {2});
+    nphasedx = circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.2}, {0, 1});
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, i * 0.2, {i});
+    }
+    exp_beta = 0.2 - 0.3;
+    exp_n_rz = 3;
+  }
+  GIVEN("3 Rz can be absorbed, 3 must be created") {
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Rz, 0.3, {i});
+    }
+    nphasedx = circ.add_op<unsigned>(OpType::NPhasedX, {0.5, 0.2}, {0, 1, 2});
+    exp_beta = 0.2 - 0.3;
+    exp_n_rz = 3;
+  }
+  GIVEN("A more random configuration") {
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.6, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.899, {2});
+    nphasedx =
+        circ.add_op<unsigned>(OpType::NPhasedX, {0.213, 0.212231}, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::Rz, -0.6, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.1244, {2});
+    exp_beta = 0.212231 - 0.6;
+    exp_n_rz = 4;
+  }
+  GIVEN("beta should be zero") {
+    circ.add_op<unsigned>(OpType::Rz, 0.6, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.6, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.899, {2});
+    nphasedx =
+        circ.add_op<unsigned>(OpType::NPhasedX, {0.213, 0.212231}, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::Rz, 0.6, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.1244, {2});
+    exp_beta = 0.212231;
+    exp_n_rz = 4;
+  }
+
+  if (circ.get_commands().size()) {
+    auto orig_u = tket_sim::get_unitary(circ);
+    REQUIRE(Transforms::absorb_Rz_NPhasedX().apply(circ));
+    auto new_u = tket_sim::get_unitary(circ);
+
+    REQUIRE(!Transforms::absorb_Rz_NPhasedX().apply(circ));
+    REQUIRE(circ.count_gates(OpType::NPhasedX) == 1);
+    REQUIRE(circ.count_gates(OpType::Rz) == exp_n_rz);
+    Expr beta = circ.get_Op_ptr_from_Vertex(nphasedx)->get_params().at(1);
+    REQUIRE(equiv_expr(beta, exp_beta, 4));
+    REQUIRE(new_u.isApprox(orig_u));
+  }
+
+  GIVEN("A circuit with multiple NPhasedX gates") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.6, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.899, {2});
+    circ.add_op<unsigned>(OpType::NPhasedX, {0.213, 0.212231}, {0, 1});
+    circ.add_op<unsigned>(OpType::Rz, -0.3, {0});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::Rz, -0.3, {1});
+    circ.add_op<unsigned>(OpType::NPhasedX, {0.323, 0.231}, {1, 2});
+    circ.add_op<unsigned>(OpType::Rz, 0.298, {2});
+    circ.add_op<unsigned>(OpType::CX, {0, 2});
+    circ.add_op<unsigned>(OpType::Rz, 0.198, {1});
+    circ.add_op<unsigned>(OpType::NPhasedX, {0.123, 0.345}, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+
+    auto orig_u = tket_sim::get_unitary(circ);
+    REQUIRE(Transforms::absorb_Rz_NPhasedX().apply(circ));
+    auto new_u = tket_sim::get_unitary(circ);
+
+    REQUIRE(circ.count_gates(OpType::NPhasedX) == 3);
+    REQUIRE(new_u.isApprox(orig_u));
+  }
+  GIVEN("A circuit with nothing to do") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::NPhasedX, {0.213, 0.212231}, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::Rz, -0.3, {0});
+    REQUIRE(!Transforms::absorb_Rz_NPhasedX().apply(circ));
+  }
+  GIVEN("A circuit with symbolics") {
+    Sym asym = SymEngine::symbol("a");
+    Sym bsym = SymEngine::symbol("b");
+    Expr a(asym), b(bsym);
+
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::Rz, -a, {0});
+    circ.add_op<unsigned>(OpType::Rz, -a, {1});
+    Vertex nphasedx =
+        circ.add_op<unsigned>(OpType::NPhasedX, {0.213, b}, {0, 1});
+    circ.add_op<unsigned>(OpType::Rz, a, {0});
+
+    REQUIRE(Transforms::absorb_Rz_NPhasedX().apply(circ));
+    Expr beta = circ.get_Op_ptr_from_Vertex(nphasedx)->get_params().at(1);
+    REQUIRE(equiv_expr(beta, a + b));
+  }
+}
+
+// Verify preconditions and postconditions for pass applied to circuit
+static void check_conditions(PassPtr pp, const Circuit &c) {
+  CompilationUnit cu(c);
+  pp->apply(cu);
+  const Circuit c1 = cu.get_circ_ref();
+  PassConditions pcons = pp->get_conditions();
+  PredicatePtrMap precons = pcons.first;
+  PredicatePtrMap postcons = pcons.second.specific_postcons_;
+  for (auto precon : precons) {
+    PredicatePtr pred = precon.second;
+    CHECK(pred->verify(c));
+  }
+  for (auto postcon : postcons) {
+    PredicatePtr pred = postcon.second;
+    CHECK(pred->verify(c1));
+  }
+}
+
+SCENARIO("Synthesis with conditional gates") {
+  // https://github.com/CQCL/tket/issues/394
+  Circuit c(3);
+  c.add_c_register("c", 3);
+  c.add_op<unsigned>(OpType::H, {0});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  c.add_measure(0, 0);
+  c.add_measure(1, 1);
+  c.add_conditional_gate<unsigned>(OpType::U1, {0.25}, {1}, {0}, 1);
+  c.add_conditional_gate<unsigned>(OpType::CnRy, {0.25}, {0, 1, 2}, {0, 1}, 0);
+  c.add_measure(2, 2);
+  check_conditions(SynthesiseHQS(), c);
+  check_conditions(SynthesiseOQC(), c);
+  check_conditions(SynthesiseTK(), c);
+  check_conditions(SynthesiseTket(), c);
+  check_conditions(SynthesiseUMD(), c);
+}
+
+SCENARIO("Restricting ZZPhase gate angles.") {
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::ZZPhase, 0.5, {0, 1});
+  c.add_op<unsigned>(OpType::ZZPhase, 1.4, {0, 1});
+  c.add_op<unsigned>(OpType::ZZPhase, 1.0, {1, 0});
+  c.add_op<unsigned>(OpType::ZZPhase, -0.5, {0, 1});
+  c.add_op<unsigned>(OpType::ZZPhase, -1.3, {0, 1});
+  c.add_op<unsigned>(OpType::ZZPhase, -1.0, {0, 1});
+
+  REQUIRE(Transforms::ZZPhase_to_Rz().apply(c));
+  check_conditions(ZZPhaseToRz(), c);
+
+  Circuit comparison(2);
+  comparison.add_op<unsigned>(OpType::ZZPhase, 0.5, {0, 1});
+  comparison.add_op<unsigned>(OpType::ZZPhase, 1.4, {0, 1});
+  comparison.add_op<unsigned>(OpType::Rz, 1.0, {0});
+  comparison.add_op<unsigned>(OpType::Rz, 1.0, {1});
+  comparison.add_op<unsigned>(OpType::ZZPhase, -0.5, {0, 1});
+  comparison.add_op<unsigned>(OpType::ZZPhase, -1.3, {0, 1});
+  comparison.add_op<unsigned>(OpType::Rz, 1.0, {0});
+  comparison.add_op<unsigned>(OpType::Rz, 1.0, {1});
+
+  REQUIRE(comparison == c);
+}
 }  // namespace test_Synthesis
 }  // namespace tket

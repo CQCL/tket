@@ -19,11 +19,11 @@ than a dataclass
 
 from json import dumps, loads
 
-from hypothesis import given
+from hypothesis import given, settings
 import pytest  # type: ignore
 
 from pytket.backends.backendinfo import BackendInfo, fully_connected_backendinfo
-from pytket.architecture import SquareGrid, FullyConnected  # type: ignore
+from pytket.architecture import SquareGrid, RingArch, FullyConnected  # type: ignore
 from pytket.circuit import OpType, Node  # type: ignore
 
 import strategies as st  # type: ignore
@@ -105,12 +105,29 @@ def test_misc() -> None:
         bi.add_misc(key, otherval)
 
 
-def test_serialization() -> None:
+def test_serialization_squaregrid() -> None:
     bi = BackendInfo(
         "name",
         "device_name",
         "version",
         SquareGrid(3, 4),
+        {OpType.CX, OpType.Rx},
+        True,
+        True,
+        True,
+    )
+    bi_dict = bi.to_dict()
+    bi2 = BackendInfo.from_dict(bi_dict)
+
+    assert bi == bi2
+
+
+def test_serialization_ringarch() -> None:
+    bi = BackendInfo(
+        "name",
+        "device_name",
+        "version",
+        RingArch(3),
         {OpType.CX, OpType.Rx},
         True,
         True,
@@ -148,6 +165,7 @@ def test_to_json() -> None:
 
 
 @given(st.backendinfo())
+@settings(deadline=None)
 def test_backendinfo_serialization(backinfo: BackendInfo) -> None:
     serializable = backinfo.to_dict()
     assert BackendInfo.from_dict(serializable) == backinfo
@@ -161,6 +179,10 @@ def test_fullyconnected() -> None:
     assert bi.n_nodes == 10
     assert type(bi.architecture) == FullyConnected
 
+    # https://github.com/CQCL/tket/issues/390
+    d = bi.to_dict()
+    assert BackendInfo.from_dict(d) == bi
+
 
 if __name__ == "__main__":
     test_nodes()
@@ -168,6 +190,7 @@ if __name__ == "__main__":
     test_default_no_reset()
     test_default_no_midcircuit_meas()
     test_misc()
-    test_serialization()
+    test_serialization_squaregrid()
+    test_serialization_ringarch()
     test_fullyconnected()
-    test_gate_errors_options
+    test_gate_errors_options()

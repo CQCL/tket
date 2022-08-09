@@ -12,14 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_string.hpp>
 
 #include "../testutil.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Eigen/src/Core/Matrix.h"
+#include "Gate/SymTable.hpp"
 #include "Simulation/CircuitSimulator.hpp"
+
+using Catch::Matchers::StartsWith;
 
 namespace tket {
 namespace test_Boxes {
@@ -565,6 +569,22 @@ SCENARIO("QControlBox", "[boxes]") {
     V(7, 7) = exp(-i_ * PI / 6.);
     REQUIRE(U.isApprox(V));
   }
+  GIVEN("controlled TK2") {
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::TK2, {0.3, 0.4, 0.8}, {0, 1});
+    Op_ptr op = c0.get_commands()[0].get_op_ptr();
+    const Eigen::MatrixXcd U0 = as_gate_ptr(op)->get_unitary();
+    QControlBox qcbox(op);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(8, 8);
+    for (unsigned i = 0; i < 4; i++) {
+      for (unsigned j = 0; j < 4; j++) {
+        V(4 + i, 4 + j) = U0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+  }
   GIVEN("2-controlled X") {
     Op_ptr op = get_op_ptr(OpType::X);
     QControlBox qcbox(op, 2);
@@ -591,6 +611,121 @@ SCENARIO("QControlBox", "[boxes]") {
     }
     REQUIRE(U.isApprox(V));
   }
+
+  GIVEN("controlled empty CircBox") {
+    Circuit c0(2);
+    c0.add_phase(0.3);
+    const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0);
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(8, 8);
+    for (unsigned i = 0; i < 4; i++) {
+      for (unsigned j = 0; j < 4; j++) {
+        V(4 + i, 4 + j) = U0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+  }
+
+  GIVEN("2-controlled CircBox") {
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::H, {0});
+    c0.add_op<unsigned>(OpType::Rz, 0.5, {0});
+    c0.add_op<unsigned>(OpType::CX, {0, 1});
+    c0.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    c0.add_op<unsigned>(OpType::CX, {0, 1});
+    // Should be reduced to a single 1-q unitary
+    const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0);
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op, 2);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    // The 2-controlled 1-q unitary should be decomposed into 8 gates
+    REQUIRE(c->n_gates() == 8);
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(16, 16);
+    for (unsigned i = 0; i < 4; i++) {
+      for (unsigned j = 0; j < 4; j++) {
+        V(12 + i, 12 + j) = U0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+  }
+  GIVEN("controlled CircBox with gates merged") {
+    Circuit c0(3);
+    c0.add_op<unsigned>(OpType::X, {0});
+    c0.add_op<unsigned>(OpType::CU1, 0.33, {0, 1});
+    c0.add_op<unsigned>(OpType::T, {0});
+    c0.add_op<unsigned>(OpType::CCX, {0, 1, 2});
+    c0.add_op<unsigned>(OpType::CU1, -0.33, {1, 0});
+    // This circuit can be reduced to XT[0,1] and CCX[0,1,2]
+    const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0);
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    // C(XT) should be translated into a U1 gate and a CU3 gate
+    // CCX should become C3X
+    std::vector<OpType> expected_optypes{OpType::U1, OpType::CU3, OpType::CnX};
+    auto cmds = c->get_commands();
+    REQUIRE(cmds.size() == 3);
+    for (unsigned i = 0; i < expected_optypes.size(); ++i) {
+      REQUIRE(cmds[i].get_op_ptr()->get_type() == expected_optypes[i]);
+    }
+    REQUIRE(equiv_0(c->get_phase()));
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(16, 16);
+    for (unsigned i = 0; i < 8; i++) {
+      for (unsigned j = 0; j < 8; j++) {
+        V(8 + i, 8 + j) = U0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+  }
+  GIVEN("controlled CircBox with large n=6") {
+    Circuit c0(3);
+    c0.add_op<unsigned>(OpType::TK1, {0.55, 0.22, 0.98}, {0});
+    c0.add_op<unsigned>(OpType::CZ, {0, 1});
+    c0.add_op<unsigned>(OpType::X, {0});
+    c0.add_op<unsigned>(OpType::CX, {1, 0});
+    c0.add_op<unsigned>(OpType::Rx, 0.7, {0});
+    const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0);
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op, 6);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(512, 512);
+    for (unsigned i = 0; i < 8; i++) {
+      for (unsigned j = 0; j < 8; j++) {
+        V(504 + i, 504 + j) = U0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+  }
+  GIVEN("controlled CircBox with gates merged to identity") {
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::Z, {0});
+    c0.add_op<unsigned>(OpType::CX, {0, 1});
+    c0.add_op<unsigned>(OpType::X, {1});
+    c0.add_op<unsigned>(OpType::CX, {0, 1});
+    c0.add_op<unsigned>(OpType::X, {1});
+    c0.add_op<unsigned>(OpType::CZ, {0, 1});
+    c0.add_op<unsigned>(OpType::Z, {0});
+    c0.add_op<unsigned>(OpType::CZ, {0, 1});
+    const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0);
+    REQUIRE(U0.isApprox(Eigen::Matrix4cd::Identity(), ERR_EPS));
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    REQUIRE(c->n_gates() == 0);
+    REQUIRE(equiv_0(c->get_phase()));
+  }
+
   GIVEN("controlled Unitary1qBox") {
     Circuit c0(1);
     c0.add_op<unsigned>(OpType::TK1, {0.6, 0.7, 0.8}, {0});
@@ -820,6 +955,78 @@ SCENARIO("Checking equality", "[boxes]") {
       PhasePolyBox ppbox2(u);
       REQUIRE(ppbox != ppbox2);
     }
+  }
+  GIVEN("CustomGate") {
+    Circuit setup(1);
+    Sym a = SymTable::fresh_symbol("a");
+    Expr ea(a);
+
+    // "random" 1qb gate.
+    const double param1 = 1.23323;
+    const double param2 = 0.42323;
+    const double param3 = 0.34212;
+    const std::string name1{"gate name1"};
+    const std::string name2{"gate name2"};
+    setup.add_op<unsigned>(OpType::TK1, {ea, param1, param2}, {0});
+
+    composite_def_ptr_t def1 = CompositeGateDef::define_gate(name1, setup, {a});
+    composite_def_ptr_t def2 = CompositeGateDef::define_gate(name2, setup, {a});
+    const CustomGate g1(def1, {param3});
+    const CustomGate g1_repeated(def1, {param3});
+    const CustomGate g1_wrong(def1, {param1});
+    const CustomGate g2(def2, {param3});
+
+    // Check that all IDs are different.
+    const std::set<boost::uuids::uuid> ids{
+        g1.get_id(), g1_repeated.get_id(), g1_wrong.get_id(), g2.get_id()};
+    CHECK(ids.size() == 4);
+    CHECK(g1 == g1);
+    CHECK(g1 == g1_repeated);
+    CHECK(g1 != g2);
+    CHECK(g1 != g1_wrong);
+    CHECK(g1_repeated != g1_wrong);
+    CHECK_THROWS_AS(CustomGate(nullptr, {param3}), std::runtime_error);
+  }
+}
+
+SCENARIO("Checking box names", "[boxes]") {
+  GIVEN("CustomGate without parameters") {
+    Circuit setup(1);
+    setup.add_op<unsigned>(OpType::TK1, {0.3333, 1.111, 0.5555}, {0});
+    const std::string name("gate without params");
+    composite_def_ptr_t def = CompositeGateDef::define_gate(name, setup, {});
+    CustomGate g(def, {});
+    CHECK(g.get_name() == name);
+  }
+  GIVEN("CustomGate with 1 parameter") {
+    Circuit setup(1);
+    Sym a = SymTable::fresh_symbol("a");
+    Expr ea(a);
+    setup.add_op<unsigned>(OpType::TK1, {ea, 0.3333, 1.111}, {0});
+    const std::string prefix("gate with params");
+    composite_def_ptr_t def = CompositeGateDef::define_gate(prefix, setup, {a});
+    CustomGate g(def, {0.4444});
+
+    // Of course, 0.4444 is NOT exactly represented by a double,
+    // so it might print something like 0.4443999... or 0.4440000...1.
+    // This test will still pass even if so.
+    CHECK_THAT(g.get_name(), StartsWith(prefix + "(0.444"));
+  }
+  GIVEN("CustomGate with 3 parameters") {
+    Circuit setup(1);
+    Sym a = SymTable::fresh_symbol("a");
+    Sym b = SymTable::fresh_symbol("b");
+    Sym c = SymTable::fresh_symbol("c");
+    Expr ea(a);
+    Expr eb(b);
+    Expr ec(c);
+    setup.add_op<unsigned>(OpType::TK1, {ea, eb, ec}, {0});
+    const std::string prefix("gate with 3 params");
+    composite_def_ptr_t def =
+        CompositeGateDef::define_gate(prefix, setup, {a, b, c});
+    CustomGate g(def, {0.1111, 0.2222, 0.4444});
+    const std::string name = g.get_name();
+    CHECK(name == "gate with 3 params(0.1111,0.2222,0.4444)");
   }
 }
 

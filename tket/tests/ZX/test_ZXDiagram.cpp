@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers.hpp>
 #include <fstream>
 
 #include "ZX/ZXDiagram.hpp"
@@ -255,6 +256,144 @@ SCENARIO("Check that diagram conversions achieve the correct form") {
     }
   }
 }
+
+SCENARIO("Subdiagram substitutions") {
+  GIVEN("Euler exchange") {
+    ZXDiagram diag(1, 1, 0, 0);
+    ZXVert in = diag.get_boundary(ZXType::Input).at(0);
+    ZXVert out = diag.get_boundary(ZXType::Output).at(0);
+    ZXVert za = diag.add_vertex(ZXType::ZSpider, 0.5);
+    ZXVert x = diag.add_vertex(ZXType::XSpider, 0.5);
+    ZXVert zb = diag.add_vertex(ZXType::ZSpider, 0.5);
+    Wire iw = diag.add_wire(in, za);
+    diag.add_wire(za, x);
+    diag.add_wire(x, zb);
+    Wire ow = diag.add_wire(zb, out, ZXWireType::H);
+
+    ZXDiagram to_insert(1, 1, 0, 0);
+    ZXVert in_in = to_insert.get_boundary(ZXType::Input).at(0);
+    ZXVert in_out = to_insert.get_boundary(ZXType::Output).at(0);
+    ZXVert xa = to_insert.add_vertex(ZXType::XSpider, 1.5);
+    ZXVert z = to_insert.add_vertex(ZXType::ZSpider, 1.5);
+    ZXVert xb = to_insert.add_vertex(ZXType::XSpider, 1.5);
+    to_insert.add_wire(in_in, xa, ZXWireType::H);
+    to_insert.add_wire(xa, z);
+    to_insert.add_wire(z, xb);
+    to_insert.add_wire(xb, in_out, ZXWireType::H);
+
+    ZXDiagram::Subdiagram sub{
+        {{iw, WireEnd::Target}, {ow, WireEnd::Source}}, {za, x, zb}};
+    REQUIRE_NOTHROW(sub.check_validity(diag));
+    REQUIRE_NOTHROW(sub.to_diagram(diag).check_validity());
+    REQUIRE_NOTHROW(diag.substitute(to_insert, sub));
+    REQUIRE_NOTHROW(diag.check_validity());
+    CHECK(diag.n_vertices() == 5);
+    CHECK(diag.n_wires() == 4);
+    iw = diag.adj_wires(in).at(0);
+    CHECK(diag.get_wire_type(iw) == ZXWireType::H);
+    CHECK(diag.get_zxtype(diag.other_end(iw, in)) == ZXType::XSpider);
+    ow = diag.adj_wires(out).at(0);
+    CHECK(diag.get_wire_type(ow) == ZXWireType::Basic);
+    CHECK(diag.get_zxtype(diag.other_end(ow, out)) == ZXType::XSpider);
+  }
+  GIVEN("A subdiagram with a self-edge") {
+    ZXDiagram diag(1, 1, 0, 1);
+    ZXVert x = diag.add_vertex(ZXType::XSpider, 1., QuantumType::Classical);
+    Wire wi =
+        diag.add_wire(diag.get_boundary(ZXType::Input).at(0), x, ZXWireType::H);
+    Wire woq = diag.add_wire(x, diag.get_boundary(ZXType::Output).at(0));
+    Wire woc = diag.add_wire(
+        x, diag.get_boundary(ZXType::Output).at(1), ZXWireType::Basic,
+        QuantumType::Classical);
+    Wire wloop = diag.add_wire(x, x, ZXWireType::Basic, QuantumType::Classical);
+
+    ZXDiagram to_insert(1, 1, 1, 2);
+    ZXVert z_inner =
+        to_insert.add_vertex(ZXType::ZSpider, 1., QuantumType::Classical);
+    to_insert.add_wire(to_insert.get_boundary(ZXType::Input).at(0), z_inner);
+    to_insert.add_wire(
+        to_insert.get_boundary(ZXType::Input).at(1), z_inner, ZXWireType::Basic,
+        QuantumType::Classical);
+    to_insert.add_wire(to_insert.get_boundary(ZXType::Output).at(0), z_inner);
+    to_insert.add_wire(
+        to_insert.get_boundary(ZXType::Output).at(1), z_inner,
+        ZXWireType::Basic, QuantumType::Classical);
+    to_insert.add_wire(
+        to_insert.get_boundary(ZXType::Output).at(2), z_inner, ZXWireType::H,
+        QuantumType::Classical);
+
+    ZXDiagram::Subdiagram sub{
+        {{wi, WireEnd::Target},
+         {woq, WireEnd::Source},
+         {wloop, WireEnd::Source},
+         {wloop, WireEnd::Target},
+         {woc, WireEnd::Source}},
+        {x}};
+    REQUIRE_NOTHROW(sub.check_validity(diag));
+    REQUIRE_NOTHROW(diag.substitute(to_insert, sub));
+    REQUIRE_NOTHROW(diag.check_validity());
+    CHECK(diag.n_vertices() == 4);
+    CHECK(diag.n_wires() == 4);
+    woc = diag.adj_wires(diag.get_boundary(ZXType::Output).at(1)).at(0);
+    CHECK(diag.get_wire_type(woc) == ZXWireType::H);
+    ZXVert z = diag.other_end(woc, diag.get_boundary(ZXType::Output).at(1));
+    CHECK(diag.get_zxtype(z) == ZXType::ZSpider);
+    wloop = diag.wires_between(z, z).at(0);
+    CHECK(diag.get_wire_type(wloop) == ZXWireType::Basic);
+    CHECK(diag.get_qtype(wloop) == QuantumType::Classical);
+  }
+  GIVEN("Replacing a ZXBox") {
+    ZXDiagram inner(1, 2, 0, 0);
+    ZXVert inner_z = inner.add_vertex(ZXType::ZSpider, 0.3);
+    inner.add_wire(inner.get_boundary().at(0), inner_z);
+    inner.add_wire(inner.get_boundary().at(1), inner_z, ZXWireType::H);
+    inner.add_wire(inner.get_boundary().at(2), inner_z);
+
+    ZXDiagram diag(1, 1, 0, 0);
+    ZXVert outer_z = diag.add_vertex(ZXType::ZSpider, 0.7);
+    ZXVert box = diag.add_vertex(std::make_shared<const ZXBox>(inner));
+    Wire wi = diag.add_wire(
+        diag.get_boundary(ZXType::Input).at(0), box, ZXWireType::Basic,
+        QuantumType::Quantum, std::nullopt, 0);
+    Wire wo = diag.add_wire(
+        diag.get_boundary(ZXType::Output).at(0), box, ZXWireType::Basic,
+        QuantumType::Quantum, std::nullopt, 1);
+    Wire wz = diag.add_wire(
+        outer_z, box, ZXWireType::H, QuantumType::Quantum, std::nullopt, 2);
+
+    ZXDiagram::Subdiagram sub{
+        {{wi, WireEnd::Target}, {wo, WireEnd::Target}, {wz, WireEnd::Target}},
+        {box}};
+    REQUIRE_NOTHROW(sub.check_validity(diag));
+    REQUIRE_NOTHROW(diag.substitute(inner, sub));
+    REQUIRE_NOTHROW(diag.check_validity());
+    CHECK(
+        diag.get_wire_type(
+            diag.adj_wires(diag.get_boundary(ZXType::Output).at(0)).at(0)) ==
+        ZXWireType::H);
+    CHECK(diag.get_wire_type(diag.adj_wires(outer_z).at(0)) == ZXWireType::H);
+  }
+  GIVEN("Substitution yields a wireloop") {
+    ZXDiagram identity(1, 1, 0, 0);
+    identity.add_wire(
+        identity.get_boundary(ZXType::Input).at(0),
+        identity.get_boundary(ZXType::Output).at(0));
+
+    ZXDiagram loop;
+    ZXVert z = loop.add_vertex(ZXType::ZSpider);
+    Wire wloop = loop.add_wire(z, z);
+
+    ZXDiagram::Subdiagram sub{
+        {{wloop, WireEnd::Source}, {wloop, WireEnd::Target}}, {z}};
+    REQUIRE_NOTHROW(sub.check_validity(loop));
+    REQUIRE_NOTHROW(loop.substitute(identity, sub));
+    REQUIRE_NOTHROW(loop.check_validity());
+    CHECK(loop.n_vertices() == 0);
+    CHECK(loop.n_wires() == 0);
+    CHECK(loop.get_scalar() == 4.);
+  }
+}
+
 }  // namespace test_ZXDiagram
 }  // namespace zx
 }  // namespace tket

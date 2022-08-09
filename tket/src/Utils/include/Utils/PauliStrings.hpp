@@ -22,7 +22,6 @@
 
 #include "Utils/Constants.hpp"
 #include "Utils/EigenConfig.hpp"
-#include "Utils/Exceptions.hpp"
 #include "Utils/Json.hpp"
 #include "Utils/UnitID.hpp"
 namespace tket {

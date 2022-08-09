@@ -15,11 +15,11 @@
 #include "RandomGraphGeneration.hpp"
 
 #include <algorithm>
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
+#include <tkrng/RNG.hpp>
 
 #include "EdgeSequence.hpp"
 #include "Graphs/AdjacencyData.hpp"
-#include "Utils/RNG.hpp"
 
 using std::vector;
 

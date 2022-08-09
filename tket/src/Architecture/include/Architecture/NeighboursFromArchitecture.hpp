@@ -14,8 +14,9 @@
 
 #pragma once
 
+#include <tktokenswap/NeighboursInterface.hpp>
+
 #include "ArchitectureMapping.hpp"
-#include "TokenSwapping/NeighboursInterface.hpp"
 
 namespace tket {
 

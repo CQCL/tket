@@ -1,7 +1,11 @@
 # These are test-only dependencies.
 
 pytest
+pytest-cov
 pytest-benchmark
 hypothesis
 docker
 jsonschema
+quimb
+opt_einsum
+autoray

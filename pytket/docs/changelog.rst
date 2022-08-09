@@ -1,14 +1,81 @@
 Changelog
 =========
 
-x.y.z (unreleased)
-------------------
+1.5.0 (August 2022)
+-------------------
 
 Minor new features:
 
-* New ``circuit_to_zx`` function to convert ``Circuit`` to ``ZXDiagram``.
+* Add support for TK2 gate in ``KAKDecomposition``.
+* ``Transform.ThreeQubitSquash()`` can now use TK2 gates as an alternative to CX
+  gates.
+* ``Unitary3qBox.get_circuit()`` decomposes the circuit using (at most 15) TK2
+  gates.
+* New ``CustomPass()`` accepting a user-supplied circuit transformation
+  function.
+* ``measure_register`` now allows using an existing classical register
+* Provide an additional ``RebaseCustom`` constructor that takes a
+  TK2-replacement instead of a CX-replacement function.
+* New ``int_dist_from_state`` function in ``pytket.utils.results`` to convert
+  a statevector to the probability distribution over its indices.
+* The precondition for ``CliffordSimp`` and ``KAKDecomposition`` has been relaxed
+  to accept classical controlled operations. ``ThreeQubitSquash`` and ``FullPeepholeOptimise``
+  now accept classical operations.
+* Improve ``QControlBox`` decomposition.
+* New ``allow_swaps`` flag in ``KAKDecomposition`` and ``DecomposeTK2`` to
+  decompose two-qubit operations up to implicit wire swaps.
+* Add support for TK2 gate in ``FullPeepholeOptimise``.
+
+Fixes:
+
+* ``FullPeepholeOptimise`` failure on conditional circuits.
+
+1.4.3 (July 2022)
+-----------------
+
+Fixes:
+
+* Further relax assertion in ``replace_TK2_2CX``.
+
+1.4.2 (July 2022)
+-----------------
+
+Fixes:
+
+* Relax assertion in replace_TK2_2CX to avoid crash due to rounding errors.
+
+1.4.1 (July 2022)
+-----------------
+
+Minor new features:
+
+* New ``NormalisedTK2Predicate`` predicate and ``NormaliseTK2`` pass.
+* New ``ZZPhaseToRz`` pass.
+* Circuit to QASM converters with the "hqslib1" header now fix ZZPhase angles
+  to be between -1 and 1 half-turns.
+
+Fixes:
+
+* Ensure TK2 angles are normalised before decomposing TK2 gates in passes.
+
+1.3.0 (June 2022)
+-----------------
+
+Minor new features:
+
+* New ``circuit_to_zx`` function to convert ``Circuit`` to ``ZXDiagram``, and
+  ``to_circuit`` to extract from a unitary diagram.
 * New ``to_graphviz_str`` method for ``ZXDiagram`` to generate a source string
   that can be rendered by the ``graphviz`` package.
+* New pass and transform `DecomposeTK2` to decompose TK2 gates using the
+  approximate KAK decomposition.
+* Pass and transform ``GlobalisePhasedX`` use fewer Rz rotations.
+* Improved decomposition for CnX gates.
+
+Fixes:
+
+* Fix serialization of `BackendInfo` for `RingArch` and `FullyConnected`
+  architectures.
 
 1.2.2 (May 2022)
 ----------------

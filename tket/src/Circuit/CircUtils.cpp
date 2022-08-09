@@ -35,9 +35,7 @@ namespace tket {
 Eigen::Matrix2cd get_matrix(const Circuit &circ, const Vertex &vert) {
   const Op_ptr op = circ.get_Op_ptr_from_Vertex(vert);
   if (op->get_type() != OpType::TK1) {
-    throw NotImplemented(
-        "Cannot obtain matrix from gate: " + op->get_name() +
-        ". Try rebasing to tket's internal representation.");
+    throw BadOpType("Cannot compute matrix from gate", op->get_type());
   }
   std::vector<Expr> ps = op->get_params();
   ps.push_back(0);
@@ -105,6 +103,14 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit &circ) {
           }
           break;
         }
+        case OpType::TK2: {
+          auto params = o->get_params();
+          TKET_ASSERT(params.size() == 3);
+          v_to_op[it->first] =
+              get_matrix_from_2qb_circ(CircPool::normalised_TK2_using_CX(
+                  params[0], params[1], params[2]));
+          break;
+        }
         default: {
           if (o->get_desc().is_gate() && circ.n_in_edges(it->first) == 1 &&
               circ.n_out_edges(it->first) == 1) {
@@ -119,8 +125,7 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit &circ) {
                   Eigen::kroneckerProduct(Eigen::Matrix2cd::Identity(), mat);
             }
           } else
-            throw NotImplemented(
-                "Cannot obtain matrix from op " + o->get_name());
+            throw BadOpType("Cannot obtain matrix from op", o->get_type());
         }
       }
     }
@@ -135,8 +140,7 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit &circ) {
   return std::exp(i_ * PI * eval_expr(circ.get_phase()).value()) * m;
 }
 
-// TODO all cnots are in one direction: freedom to choose the optimal one
-Circuit two_qubit_canonical(const Eigen::Matrix4cd &U, double cx_fidelity) {
+Circuit two_qubit_canonical(const Eigen::Matrix4cd &U, OpType target_2qb_gate) {
   if (!is_unitary(U)) {
     throw std::invalid_argument(
         "Non-unitary matrix passed to two_qubit_canonical");
@@ -146,9 +150,7 @@ Circuit two_qubit_canonical(const Eigen::Matrix4cd &U, double cx_fidelity) {
 
   K1 /= pow(K1.determinant(), 0.25);
   K2 /= pow(K2.determinant(), 0.25);
-
-  // Decompose Exp term
-  auto gates = expgate_as_CX(A, cx_fidelity);
+  auto [a, b, c] = A;
 
   // Decompose single qubits
   auto [K1a, K1b] = kronecker_decomposition(K1);
@@ -156,36 +158,30 @@ Circuit two_qubit_canonical(const Eigen::Matrix4cd &U, double cx_fidelity) {
 
   Circuit result(2);
 
-  if (gates.empty()) {
-    std::vector<double> angles_q0 = tk1_angles_from_unitary(K1a * K2a);
-    result.add_op<unsigned>(
-        OpType::TK1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
-    std::vector<double> angles_q1 = tk1_angles_from_unitary(K1b * K2b);
-    result.add_op<unsigned>(
-        OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
+  std::vector<double> angles_q0 = tk1_angles_from_unitary(K2a);
+  std::vector<double> angles_q1 = tk1_angles_from_unitary(K2b);
+  result.add_op<unsigned>(
+      OpType::TK1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
+  result.add_op<unsigned>(
+      OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
+
+  switch (target_2qb_gate) {
+    case OpType::TK2:
+      result.append(CircPool::TK2_using_normalised_TK2(a, b, c));
+      break;
+    case OpType::CX:
+      result.append(CircPool::TK2_using_CX(a, b, c));
+      break;
+    default:
+      throw std::invalid_argument("target_2qb_gate must be CX or TK2.");
   }
-  for (auto it = gates.begin(); it != gates.end(); ++it) {
-    auto [ga, gb] = *it;
-    if (it == gates.begin()) {
-      // begin of circuit -> merge with K2
-      ga = ga * K2a;
-      gb = gb * K2b;
-    }
-    if (it + 1 == gates.end()) {
-      // end of circuit -> merge with K1
-      ga = K1a * ga;
-      gb = K1b * gb;
-    }
-    std::vector<double> angles_q0 = tk1_angles_from_unitary(ga);
-    result.add_op<unsigned>(
-        OpType::TK1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
-    std::vector<double> angles_q1 = tk1_angles_from_unitary(gb);
-    result.add_op<unsigned>(
-        OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
-    if (it + 1 != gates.end()) {
-      result.add_op<unsigned>(OpType::CX, {0, 1});
-    }
-  }
+
+  angles_q0 = tk1_angles_from_unitary(K1a);
+  angles_q1 = tk1_angles_from_unitary(K1b);
+  result.add_op<unsigned>(
+      OpType::TK1, {angles_q0.begin(), angles_q0.end() - 1}, {0});
+  result.add_op<unsigned>(
+      OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
 
   // this fixes phase if decomposition is exact
   Eigen::Matrix4cd reminder = get_matrix_from_2qb_circ(result).adjoint() * U;
@@ -212,10 +208,11 @@ static std::pair<Eigen::Matrix4cd, Complex> decompose_VD(
               u(0, 1) * u(3, 2);
   // Now we want to find z such that |z|=1 and (az* - bz) is real.
   // The numerical stability of this function is a concern when a is close to
-  // -b*. This problem can be demonstrated in artificially constructed examples
-  // (passing unitaries very close to, but not quite, the identity to the
-  // functions below). In these cases the product VD (or DV) may not approximate
-  // U to within Eigen's default tolerance. Is there a way to dodge this issue?
+  // -b*. This problem can be demonstrated in artificially constructed
+  // examples (passing unitaries very close to, but not quite, the identity to
+  // the functions below). In these cases the product VD (or DV) may not
+  // approximate U to within Eigen's default tolerance. Is there a way to
+  // dodge this issue?
   Complex w = a + std::conj(b);
   double d = std::abs(w);
   // If w = 0 then we can set z = 1.
@@ -230,10 +227,28 @@ static std::pair<Eigen::Matrix4cd, Complex> decompose_VD(
   return {V, z0};
 }
 
+static void replace_TK2_2CX(Circuit &circ) {
+  VertexList bin;
+  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+    if (circ.get_OpType_from_Vertex(v) != OpType::TK2) continue;
+    auto params = circ.get_Op_ptr_from_Vertex(v)->get_params();
+    TKET_ASSERT(params.size() == 3);
+    // We need to have a fairly high tolerance in the assertion below, since in
+    // practice rounding errors can accumulate:
+    TKET_ASSERT(equiv_0(params[2], 4, 1e-6));
+    Circuit sub = CircPool::approx_TK2_using_2xCX(params[0], params[1]);
+    bin.push_back(v);
+    circ.substitute(sub, v, Circuit::VertexDeletion::No);
+  }
+  TKET_ASSERT(bin.size() == 1);
+  circ.remove_vertices(
+      bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+}
+
 std::pair<Circuit, Complex> decompose_2cx_VD(const Eigen::Matrix4cd &U) {
   auto [V, z0] = decompose_VD(U);
   Circuit circ = two_qubit_canonical(V);
-  TKET_ASSERT(circ.count_gates(OpType::CX) <= 2);
+  replace_TK2_2CX(circ);
   return {circ, z0};
 }
 
@@ -241,7 +256,7 @@ std::pair<Circuit, Complex> decompose_2cx_DV(const Eigen::Matrix4cd &U) {
   auto [V, z0] = decompose_VD(U.adjoint());
   V.adjointInPlace();
   Circuit circ = two_qubit_canonical(V);
-  TKET_ASSERT(circ.count_gates(OpType::CX) <= 2);
+  replace_TK2_2CX(circ);
   return {circ, std::conj(z0)};
 }
 
@@ -412,7 +427,9 @@ Circuit with_TK2(Gate_ptr op) {
     double alpha = std::get<0>(A);
     double beta = std::get<1>(A);
     double gamma = std::get<2>(A);
-    c.add_op<unsigned>(OpType::TK2, {alpha, beta, gamma}, {0, 1});
+
+    c.append(CircPool::TK2_using_normalised_TK2(alpha, beta, gamma));
+
     c.add_op<unsigned>(
         OpType::TK1, {angles_K1a.begin(), angles_K1a.end() - 1}, {0});
     c.add_op<unsigned>(
@@ -571,28 +588,21 @@ Circuit with_CX(Gate_ptr op) {
   (((n) == 2) ? OpType::CX : ((n) == 3) ? OpType::CCX : OpType::CnX)
 
 /**
- * Construct a circuit representing CnU1 using U1, CX, CCX and CnX gates.
+ * Construct a circuit representing CnU1.
  */
 static Circuit CnU1(unsigned n_controls, Expr lambda) {
-  // CnU1(x) decomposes recursively as:
-  // C{n-1}U1(x/2)[ctrls]; U1(x/2)[tgt]; CnX; U1(-x/2)[tgt]; CnX
-  // We don't actually use recursion; just iterate starting with the first U1:
-  Circuit c(n_controls + 1);
-  Expr x = lambda / (1u << n_controls);
-  c.add_op<unsigned>(OpType::U1, x, {0});
-  std::vector<unsigned> cnx_qbs = {0};
-  for (unsigned i = 0; i < n_controls; i++) {
-    cnx_qbs.push_back(i + 1);
-    c.add_op<unsigned>(OpType::U1, x, {i + 1});
-    c.add_op<unsigned>(CNXTYPE(i + 2), cnx_qbs);
-    c.add_op<unsigned>(OpType::U1, -x, {i + 1});
-    c.add_op<unsigned>(CNXTYPE(i + 2), cnx_qbs);
-    x *= 2;
+  Gate_ptr u1_gate = as_gate_ptr(get_op_ptr(OpType::U1, lambda));
+  // Use the gray code method if lambda contains symbols
+  // The gray code decomp also produces less CXs when n_controls is 3 or 4
+  if (eval_expr(lambda) == std::nullopt || n_controls == 3 || n_controls == 4) {
+    return CircPool::CnU_gray_code_decomp(n_controls, u1_gate);
+  } else {
+    return CircPool::CnU_linear_depth_decomp(
+        n_controls, u1_gate->get_unitary());
   }
-  return c;
 }
 
-Circuit with_controls(const Circuit &c, unsigned n_controls) {
+static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
   if (c.n_bits() != 0 || !c.is_simple()) {
     throw CircuitInvalidity("Only default qubit register allowed");
   }
@@ -676,8 +686,8 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
         // Operation is U3(theta, phi, lambda) + phase t.
         // First absorb t in the overall phase.
         a += t;
-        // Construct a multi-controlled U3, by extending the standard CU3-to-CX
-        // decomposition.
+        // Construct a multi-controlled U3, by extending the standard
+        // CU3-to-CX decomposition.
         Qubit target = new_args[n_controls];
         Circuit cnu1 = CnU1(n_controls - 1, 0.5 * (lambda + phi));
         c2.append(cnu1);
@@ -700,6 +710,467 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
   return c2;
 }
 
+// Return the target unitary given a Cn* gate where n >= 0
+static Eigen::Matrix2cd get_target_op_matrix(const Op_ptr &op) {
+  OpType optype = op->get_type();
+  Eigen::Matrix2cd m;
+  switch (optype) {
+    case OpType::CX:
+    case OpType::CCX:
+    case OpType::CnX:
+      return Gate(OpType::X, {}, 1).get_unitary();
+    case OpType::CSX:
+      return Gate(OpType::SX, {}, 1).get_unitary();
+    case OpType::CSXdg:
+      return Gate(OpType::SXdg, {}, 1).get_unitary();
+    case OpType::CV:
+      return Gate(OpType::V, {}, 1).get_unitary();
+    case OpType::CVdg:
+      return Gate(OpType::Vdg, {}, 1).get_unitary();
+    case OpType::CRx:
+      return Gate(OpType::Rx, op->get_params(), 1).get_unitary();
+    case OpType::CnRy:
+    case OpType::CRy:
+      return Gate(OpType::Ry, op->get_params(), 1).get_unitary();
+    case OpType::CY:
+      return Gate(OpType::Y, {}, 1).get_unitary();
+    case OpType::CRz:
+      return Gate(OpType::Rz, op->get_params(), 1).get_unitary();
+    case OpType::CZ:
+      return Gate(OpType::Z, {}, 1).get_unitary();
+    case OpType::CH:
+      return Gate(OpType::H, {}, 1).get_unitary();
+    case OpType::CU1:
+      return Gate(OpType::U1, op->get_params(), 1).get_unitary();
+    case OpType::CU3:
+      return Gate(OpType::U3, op->get_params(), 1).get_unitary();
+    default:
+      if (!is_gate_type(optype) || op->n_qubits() != 1) {
+        throw CircuitInvalidity(
+            "Cannot get the target unitary of " + op->get_name());
+      }
+      return as_gate_ptr(op)->get_unitary();
+  }
+}
+
+// A gate block containing Cn* gates that can be merged as a single CnU gate
+struct CnGateBlock {
+  enum class MergeMode { append, prepend };
+  CnGateBlock(const Command &command) {
+    // Assumes the color of the target is not identity
+    Op_ptr op = command.get_op_ptr();
+    ops.push_back(op);
+    unit_vector_t args = command.get_args();
+    TKET_ASSERT(!args.empty());
+    for (unsigned i = 0; i < args.size() - 1; i++) {
+      control_qubits.insert(args[i].index()[0]);
+    }
+    target_qubit = args.back().index()[0];
+    is_symmetric =
+        (op->get_type() == OpType::CZ || op->get_type() == OpType::CU1);
+    color = as_gate_ptr(op)->commuting_basis(args.size() - 1);
+    if (color == Pauli::I) {
+      throw std::invalid_argument(
+          "CnGateBlock doesn't accept multi-controlled identity gate.");
+    }
+  }
+
+  // Check whether commute with another CnGateBlock
+  bool commutes_with(const CnGateBlock &other) {
+    if (target_qubit == other.target_qubit) {
+      return (color == other.color && color != std::nullopt);
+    }
+    if (control_qubits.contains(other.target_qubit) &&
+        other.color != Pauli::Z) {
+      return false;
+    }
+    if (other.control_qubits.contains(target_qubit) && color != Pauli::Z) {
+      return false;
+    }
+    return true;
+  }
+
+  // Check whether can be merged with another CnGateBlock
+  bool is_mergeable_with(const CnGateBlock &other) {
+    // check if sizes match
+    if (control_qubits.size() != other.control_qubits.size()) {
+      return false;
+    }
+    // check if they act on the same set of qubits
+    std::set<unsigned> args_a = control_qubits;
+    args_a.insert(target_qubit);
+    std::set<unsigned> args_b = other.control_qubits;
+    args_b.insert(other.target_qubit);
+    if (args_a != args_b) {
+      return false;
+    }
+    // false if target don't match and none of them is symmetric
+    if (target_qubit != other.target_qubit && !is_symmetric &&
+        !other.is_symmetric) {
+      return false;
+    }
+    return true;
+  }
+
+  // Merge with another CnGateBlock
+  void merge(CnGateBlock &other, const MergeMode &mode) {
+    if (mode == MergeMode::append) {
+      ops.insert(ops.end(), other.ops.begin(), other.ops.end());
+    } else {
+      ops.insert(ops.begin(), other.ops.begin(), other.ops.end());
+    }
+    color = (color != other.color) ? std::nullopt : color;
+    if (is_symmetric && !other.is_symmetric) {
+      control_qubits = other.control_qubits;
+      target_qubit = other.target_qubit;
+      is_symmetric = false;
+    }
+    // empty the other CnGateBlock
+    other.ops.clear();
+  }
+
+  Eigen::Matrix2cd get_target_unitary() const {
+    Eigen::Matrix2cd m = Eigen::Matrix2cd::Identity();
+    for (const Op_ptr &op : ops) {
+      m = get_target_op_matrix(op) * m;
+    }
+    return m;
+  }
+
+  // ops in the block
+  std::vector<Op_ptr> ops;
+  // target qubit index
+  unsigned target_qubit;
+  // control indices
+  std::set<unsigned> control_qubits;
+  // whether the target can act on any of its qubits
+  bool is_symmetric;
+  // color of the target qubit
+  std::optional<Pauli> color;
+};
+
+// Construct a controlled version of a given circuit
+// with the assumption that the circuit does not have symbols.
+static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
+  if (c.n_bits() != 0 || !c.is_simple()) {
+    throw CircuitInvalidity("Only default qubit register allowed");
+  }
+  if (c.has_implicit_wireswaps()) {
+    throw CircuitInvalidity("Circuit has implicit wireswaps");
+  }
+
+  // Dispose of the trivial case
+  if (n_controls == 0) {
+    return c;
+  }
+  // 1. Rebase to Cn* gates (n=0 for single qubit gates)
+  Circuit c1(c);
+  VertexList bin;
+  BGL_FORALL_VERTICES(v, c1.dag, DAG) {
+    Op_ptr op = c1.get_Op_ptr_from_Vertex(v);
+    OpType optype = op->get_type();
+    if (is_gate_type(optype)) {
+      if (is_projective_type(optype)) {
+        throw CircuitInvalidity("Projective operations present");
+      }
+      if (is_box_type(optype)) {
+        throw CircuitInvalidity("Undecomposed boxes present");
+      }
+      if (is_single_qubit_type(optype) || is_controlled_gate_type(optype)) {
+        continue;
+      }
+      Circuit replacement = with_CX(as_gate_ptr(op));
+      c1.substitute(replacement, v, Circuit::VertexDeletion::No);
+      bin.push_back(v);
+    } else if (optype != OpType::Input && optype != OpType::Output) {
+      throw CircuitInvalidity(
+          "Cannot construct the controlled version of " + op->get_name());
+    }
+  }
+  c1.remove_vertices(
+      bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+
+  // 2. try to partition the circuit into blocks of Cn* gates such that
+  // the gates in each block can be merged into a single CnU gate
+  std::vector<Command> commands = c1.get_commands();
+  std::vector<CnGateBlock> blocks;
+
+  for (const Command &c : commands) {
+    if (c.get_op_ptr()->get_type() != OpType::noop) {
+      blocks.push_back(CnGateBlock(c));
+    }
+  }
+
+  // iterate the blocks from left to right
+  for (unsigned i = 0; i + 1 < blocks.size(); i++) {
+    CnGateBlock &b = blocks[i];
+    if (b.ops.empty()) {
+      continue;
+    }
+    // try to merge b to a block on the right
+    for (unsigned j = i + 1; j < blocks.size(); j++) {
+      CnGateBlock &candidate = blocks[j];
+      if (candidate.ops.empty()) {
+        continue;
+      }
+      if (b.is_mergeable_with(candidate)) {
+        candidate.merge(b, CnGateBlock::MergeMode::prepend);
+        break;
+      }
+      if (!b.commutes_with(candidate)) {
+        break;
+      }
+    }
+  }
+
+  // iterate the blocks from right to left
+  for (unsigned i = blocks.size(); i-- > 1;) {
+    CnGateBlock &b = blocks[i];
+    if (b.ops.empty()) {
+      continue;
+    }
+    // try to merge b to a block on the left
+    // iterate from i-1 to 0
+    for (unsigned j = i; j-- > 0;) {
+      CnGateBlock &candidate = blocks[j];
+      if (candidate.ops.empty()) {
+        continue;
+      }
+      if (b.is_mergeable_with(candidate)) {
+        candidate.merge(b, CnGateBlock::MergeMode::append);
+        break;
+      }
+      if (!b.commutes_with(candidate)) {
+        break;
+      }
+    }
+  }
+  // 3. Add each block to c2 either as a CnX, a CnSU(2) decomposition or a CnU
+  // decomposition
+  Circuit c2(n_controls + c1.n_qubits());
+  const static Eigen::Matrix2cd X = Gate(OpType::X, {}, 1).get_unitary();
+
+  for (const CnGateBlock &b : blocks) {
+    if (b.ops.empty()) {
+      continue;
+    }
+    // Computes the target unitary
+    Eigen::Matrix2cd m = b.get_target_unitary();
+    if (m.isApprox(Eigen::Matrix2cd::Identity(), EPS)) {
+      continue;
+    }
+    if (m.isApprox(X, EPS)) {
+      qubit_vector_t new_args;
+      for (unsigned i = 0; i < n_controls; i++) {
+        new_args.push_back(Qubit(i));
+      }
+      for (const unsigned i : b.control_qubits) {
+        new_args.push_back(Qubit(i + n_controls));
+      }
+      new_args.push_back(Qubit(b.target_qubit + n_controls));
+      c2.add_op<Qubit>(CNXTYPE(new_args.size()), new_args);
+      continue;
+    }
+
+    unit_map_t unit_map;
+    for (unsigned i = 0; i < n_controls; i++) {
+      unit_map.insert({Qubit(i), Qubit(i)});
+    }
+    unsigned control_index = n_controls;
+    for (const unsigned i : b.control_qubits) {
+      unit_map.insert({Qubit(control_index++), Qubit(i + n_controls)});
+    }
+    unit_map.insert({Qubit(control_index), Qubit(b.target_qubit + n_controls)});
+
+    unsigned total_controls = b.control_qubits.size() + n_controls;
+
+    Circuit replacement;
+
+    // Check if the matrix is SU(2)
+    if (m.determinant() == 1.) {
+      // We have three functions that can decompose a multi-controlled SU(2).
+      // The choice is based on the average number of CXs they produce for a
+      // random n-controlled SU(2) gate.
+      if (total_controls > 2 && total_controls < 5) {
+        replacement = CircPool::CnU_gray_code_decomp(total_controls, m);
+      } else if (total_controls >= 5 && total_controls < 9) {
+        replacement = CircPool::CnU_linear_depth_decomp(total_controls, m);
+      } else {
+        // Compute the SU(2) angles from the TK1 angles
+        std::vector<double> angles = tk1_angles_from_unitary(m);
+        if (equiv_val(angles[3], 1., 2)) {
+          // if the phase is odd, it can be absorbed into the first Rz rotation
+          angles[0] = angles[0] + 2;
+        } else {
+          // because it's SU(2), the phase must be integers
+          TKET_ASSERT(equiv_0(angles[3], 2));
+        }
+        // convert tk1 angles to zyz angles
+        std::vector<double> zyz_angles = {
+            angles[0] - 0.5, angles[1], angles[2] + 0.5};
+        replacement = CircPool::CnSU2_linear_decomp(
+            total_controls, zyz_angles[0], zyz_angles[1], zyz_angles[2]);
+      }
+    } else {
+      // The gray code method produces less CXs when total_controls is 3 or 4
+      if (total_controls == 3 || total_controls == 4) {
+        replacement = CircPool::CnU_gray_code_decomp(total_controls, m);
+      } else {
+        replacement = CircPool::CnU_linear_depth_decomp(total_controls, m);
+      }
+    }
+    c2.append_with_map(replacement, unit_map);
+  }
+
+  // 4. implement the conditional phase as a CnU1 gate
+  if (!equiv_0(c1.get_phase())) {
+    Circuit cnu1_circ = CnU1(n_controls - 1, c1.get_phase());
+    c2.append(cnu1_circ);
+  }
+  return c2;
+}
+
+Circuit with_controls(const Circuit &c, unsigned n_controls) {
+  if (c.is_symbolic()) {
+    return with_controls_symbolic(c, n_controls);
+  } else {
+    return with_controls_numerical(c, n_controls);
+  }
+}
+
 #undef CNXTYPE
+
+std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
+    Expr a, Expr b, Expr c) {
+  std::optional<double> a_eval = eval_expr_mod(a, 4);
+  std::optional<double> b_eval = eval_expr_mod(b, 4);
+  std::optional<double> c_eval = eval_expr_mod(c, 4);
+
+  Circuit pre(2), post(2);
+
+  // Add ot.dagger() at beggining and ot at end.
+  auto conj = [&pre, &post](OpType ot) {
+    Op_ptr op = get_op_ptr(ot);
+    Op_ptr opdg = op->dagger();
+    pre.add_op<unsigned>(opdg, {0});
+    pre.add_op<unsigned>(opdg, {1});
+    // These get undaggered at the end
+    post.add_op<unsigned>(opdg, {0});
+    post.add_op<unsigned>(opdg, {1});
+  };
+
+  // Step 1: For non-symbolic: a, b, c ∈ [0, 1] ∪ [3, 4].
+  if (a_eval && *a_eval > 1. && *a_eval <= 3.) {
+    a -= 2;
+    *a_eval -= 2;
+    pre.add_phase(1);
+    *a_eval = fmodn(*a_eval, 4);
+  }
+  if (b_eval && *b_eval > 1. && *b_eval <= 3.) {
+    b -= 2;
+    *b_eval -= 2;
+    pre.add_phase(1);
+    *b_eval = fmodn(*b_eval, 4);
+  }
+  if (c_eval && *c_eval > 1. && *c_eval <= 3.) {
+    c -= 2;
+    *c_eval -= 2;
+    pre.add_phase(1);
+    *c_eval = fmodn(*c_eval, 4);
+  }
+
+  // Step 2: Make sure that symbolic expressions come before non-symbolics.
+  if (a_eval && !b_eval) {
+    // Swap XX and YY.
+    conj(OpType::S);
+    std::swap(a, b);
+    std::swap(a_eval, b_eval);
+  } else if (a_eval && !c_eval) {
+    // Swap XX and ZZ.
+    conj(OpType::H);
+    std::swap(a, c);
+    std::swap(a_eval, c_eval);
+  }
+  if (b_eval && !c_eval) {
+    // Swap YY and ZZ.
+    conj(OpType::V);
+    std::swap(b, c);
+    std::swap(b_eval, c_eval);
+  }
+
+  // Step 3: Order non-symbolic expressions in decreasing order.
+  auto val_in_weyl = [](double r) {
+    // Value of r once projected into Weyl chamber.
+    return std::min(fmodn(r, 1), 1 - fmodn(r, 1));
+  };
+  if (a_eval && b_eval && val_in_weyl(*a_eval) < val_in_weyl(*b_eval)) {
+    // Swap XX and YY.
+    conj(OpType::S);
+    std::swap(a, b);
+    std::swap(a_eval, b_eval);
+  }
+  if (b_eval && c_eval && val_in_weyl(*b_eval) < val_in_weyl(*c_eval)) {
+    // Swap YY and ZZ.
+    conj(OpType::V);
+    std::swap(b, c);
+    std::swap(b_eval, c_eval);
+  }
+  if (a_eval && b_eval && val_in_weyl(*a_eval) < val_in_weyl(*b_eval)) {
+    // Swap XX and YY.
+    conj(OpType::S);
+    std::swap(a, b);
+    std::swap(a_eval, b_eval);
+  }
+
+  // Step 4: Project into Weyl chamber.
+  if (a_eval && *a_eval > 1.) {
+    a -= 3.;
+    *a_eval -= 3;
+    post.add_op<unsigned>(OpType::X, {0});
+    post.add_op<unsigned>(OpType::X, {1});
+    pre.add_phase(0.5);
+  }
+  if (b_eval && *b_eval > 1.) {
+    b -= 3.;
+    *b_eval -= 3;
+    post.add_op<unsigned>(OpType::Y, {0});
+    post.add_op<unsigned>(OpType::Y, {1});
+    pre.add_phase(0.5);
+  }
+  if (c_eval && *c_eval > 1.) {
+    c -= 3.;
+    *c_eval -= 3;
+    post.add_op<unsigned>(OpType::Z, {0});
+    post.add_op<unsigned>(OpType::Z, {1});
+    pre.add_phase(0.5);
+  }
+  if (a_eval && *a_eval > .5) {
+    a = 1. - a;
+    *a_eval = 1. - *a_eval;
+    b = 1. - b;
+    *b_eval = 1. - *b_eval;
+    pre.add_op<unsigned>(OpType::Z, {0});
+    post.add_op<unsigned>(OpType::Z, {1});
+  }
+  if (b_eval && *b_eval > .5) {
+    b = 1 - b;
+    *b_eval = 1. - *b_eval;
+    c = 1 - c;
+    *c_eval = 1. - *c_eval;
+    pre.add_op<unsigned>(OpType::X, {0});
+    post.add_op<unsigned>(OpType::X, {1});
+  }
+  if (c_eval && *c_eval > .5) {
+    c -= 1;
+    *c_eval -= 1.;
+    post.add_op<unsigned>(OpType::Z, {0});
+    post.add_op<unsigned>(OpType::Z, {1});
+    pre.add_phase(-0.5);
+  }
+  // Cheeky way of reversing order of ops.
+  post = post.dagger();
+
+  return {pre, {a, b, c}, post};
+}
 
 }  // namespace tket

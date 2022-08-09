@@ -559,6 +559,7 @@ def test_circuit_pickle_roundtrip(circuit: Circuit) -> None:
 
 
 @given(st.circuits())
+@settings(deadline=None)
 def test_circuit_from_to_serializable(circuit: Circuit) -> None:
     serializable_form = circuit.to_dict()
     validate(instance=serializable_form, schema=schema)
@@ -869,16 +870,21 @@ def test_measuring_registers() -> None:
     assert "The given QubitRegister is not in use" in str(e.value)
     qreg = c.add_q_register("qr", 2)
     c.measure_register(qreg, "cr")
+    qreg2 = c.add_q_register("qr2", 2)
+    c.measure_register(qreg2, "cr")
+
     assert len(c.bits) == 2
-    assert c.n_qubits == 2
+    assert c.n_qubits == 4
     commands = c.get_commands()
-    assert len(commands) == 2
+    assert len(commands) == 4
     assert str(commands[0]) == "Measure qr[0] --> cr[0];"
     assert str(commands[1]) == "Measure qr[1] --> cr[1];"
-    qreg2 = c.add_q_register("qr2", 2)
+    assert str(commands[2]) == "Measure qr2[0] --> cr[0];"
+    assert str(commands[3]) == "Measure qr2[1] --> cr[1];"
+    qreg3 = c.add_q_register("qr3", 3)
     with pytest.raises(RuntimeError) as e:
-        c.measure_register(qreg2, "cr")
-    assert 'A register with name "cr" already exists' in str(e.value)
+        c.measure_register(qreg3, "cr")
+    assert "size doesn't match the given QubitRegister" in str(e.value)
 
 
 def test_zzmax() -> None:

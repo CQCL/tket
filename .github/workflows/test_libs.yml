@@ -1,0 +1,206 @@
+name: test libraries
+on:
+  push:
+    branches:
+      - develop
+  pull_request:
+    branches:
+      - develop
+jobs:
+  changes:
+    runs-on: ubuntu-20.04
+    outputs:
+      tklog: ${{ steps.filter.outputs.tklog }}
+      tkassert: ${{ steps.filter.outputs.tkassert }}
+      tkrng: ${{ steps.filter.outputs.tkrng }}
+      libs: ${{ steps.filter.outputs.changes }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        base: ${{ github.ref }}
+        filters: |
+          tklog:
+            - 'libs/tklog/**'
+          tkassert:
+            - 'libs/tkassert/**'
+          tkrng:
+            - 'libs/tkrng/**'
+          tktokenswap:
+            - 'libs/tktokenswap/**'
+          tkwsm:
+            - 'libs/tkwsm/**'
+  test_libraries:
+    name: test library
+    needs: changes
+    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    strategy:
+      matrix:
+        os: ['ubuntu-20.04', 'macos-11', 'windows-2019']
+        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+    runs-on: ${{ matrix.os }}
+    env:
+      CONAN_REVISIONS_ENABLED: 1
+    steps:
+    - uses: actions/checkout@v3
+    - name: set compiler
+      if: matrix.os == 'ubuntu-20.04'
+      run: |
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
+        sudo update-alternatives --set gcc /usr/bin/gcc-10
+        sudo update-alternatives --set g++ /usr/bin/g++-10
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.9'
+    - name: install conan
+      run: pip install conan
+    - name: create profile
+      run: conan profile new tket --detect
+    - name: set libcxx
+      if: matrix.os == 'ubuntu-20.04'
+      run: conan profile update settings.compiler.libcxx=libstdc++11 tket
+    - name: add remote
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+    - name: build ${{ matrix.lib }}
+      run: conan create --profile=tket libs/${{ matrix.lib }} --build=missing
+    - name: build ${{ matrix.lib }} tests
+      run: |
+        conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --profile=tket
+        conan build libs/${{ matrix.lib }}/test --configure --build-folder=build/test-${{ matrix.lib }} --source-folder=libs/${{ matrix.lib }}/test
+        conan build libs/${{ matrix.lib }}/test --build --build-folder=build/test-${{ matrix.lib }}
+        conan package libs/${{ matrix.lib }}/test --build-folder=build/test-${{ matrix.lib }} --package-folder build/test-${{ matrix.lib }}/package --source-folder=libs/${{ matrix.lib }}/test
+    - name: run ${{ matrix.lib }} tests
+      working-directory: ./build/test-${{ matrix.lib }}/package/bin
+      run: ./test-${{ matrix.lib }}
+  macos-m1:
+    name: test library (macos-m1)
+    needs: changes
+    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    runs-on: [self-hosted, macos, M1]
+    strategy:
+      matrix:
+        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+    env:
+      CONAN_REVISIONS_ENABLED: 1
+    steps:
+    - uses: actions/checkout@v3
+    - name: install conan
+      run: pip install -U conan
+    - name: create profile
+      run: conan profile new tket --detect --force
+    - name: add remote
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
+    - name: build ${{ matrix.lib }}
+      run: conan create --profile=tket libs/${{ matrix.lib }} --build=missing
+    - name: build ${{ matrix.lib }} tests
+      run: |
+        conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --profile=tket
+        conan build libs/${{ matrix.lib }}/test --configure --build-folder=build/test-${{ matrix.lib }} --source-folder=libs/${{ matrix.lib }}/test
+        conan build libs/${{ matrix.lib }}/test --build --build-folder=build/test-${{ matrix.lib }}
+        conan package libs/${{ matrix.lib }}/test --build-folder=build/test-${{ matrix.lib }} --package-folder build/test-${{ matrix.lib }}/package --source-folder=libs/${{ matrix.lib }}/test
+    - name: run ${{ matrix.lib }} tests
+      working-directory: ./build/test-${{ matrix.lib }}/package/bin
+      run: ./test-${{ matrix.lib }}
+  generate_coverage:
+    name: Generate coverage report
+    needs: changes
+    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    strategy:
+      matrix:
+        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+    runs-on: 'ubuntu-20.04'
+    env:
+      CONAN_REVISIONS_ENABLED: 1
+    steps:
+    - uses: actions/checkout@v3
+    - name: set compiler
+      run: |
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
+        sudo update-alternatives --set gcc /usr/bin/gcc-10
+        sudo update-alternatives --set g++ /usr/bin/g++-10
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.9'
+    - name: install conan
+      run: pip install conan
+    - name: create profile
+      run: conan profile new tket --detect
+    - name: set libcxx
+      run: conan profile update settings.compiler.libcxx=libstdc++11 tket
+    - name: add remote
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+    - name: set Debug in profile
+      run: conan profile update settings.build_type=Debug tket
+    - name: build ${{ matrix.lib }}
+      run: |
+        conan install libs/${{ matrix.lib }} --install-folder=build/${{ matrix.lib }} --profile=tket -o ${{ matrix.lib }}:profile_coverage=True
+        conan build libs/${{ matrix.lib }} --configure --build-folder=build/${{ matrix.lib }} --source-folder=libs/${{ matrix.lib }}
+        conan build libs/${{ matrix.lib }} --build --build-folder=build/${{ matrix.lib }}
+        conan export-pkg libs/${{ matrix.lib }} -f --build-folder=build/${{ matrix.lib }} --source-folder=libs/${{ matrix.lib }}
+    - name: build ${{ matrix.lib }} tests
+      run: |
+        conan install libs/${{ matrix.lib }}/test --install-folder=build/${{ matrix.lib }}-tests --profile=tket -o test-${{ matrix.lib }}:with_coverage=True
+        conan build libs/${{ matrix.lib }}/test --configure --build-folder=build/${{ matrix.lib }}-tests --source-folder=libs/${{ matrix.lib }}/test
+        conan build libs/${{ matrix.lib }}/test --build --build-folder=build/${{ matrix.lib }}-tests
+        conan package libs/${{ matrix.lib }}/test --build-folder=build/${{ matrix.lib }}-tests --package-folder build/${{ matrix.lib }}-tests/package --source-folder=libs/${lib}/test
+    - name: run ${{ matrix.lib }} tests
+      working-directory: ./build/${{ matrix.lib }}-tests/package/bin
+      run: ./test-${{ matrix.lib }}
+    - name: install gcovr
+      run: pip install gcovr~=5.1
+    - name: build coverage report
+      run: |
+        mkdir ${{ matrix.lib }}-coverage
+        gcovr --print-summary --html --html-details -r ./libs/${{ matrix.lib }}/src/ --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/${{ matrix.lib }}/ -o ${{ matrix.lib }}-coverage/index.html > ${{ matrix.lib }}-coverage/summary.txt
+    - name: upload artefact
+      uses: actions/upload-artifact@v3
+      with:
+        name: ${{ matrix.lib }}_coverage
+        path: ${{ matrix.lib }}-coverage/
+    - name: check coverage against latest published data from develop
+      if: github.event_name == 'pull_request'
+      run: |
+        # File may not exist if this is the very first time, so don't error.
+        wget https://cqcl.github.io/tket/${{ matrix.lib }}/test-coverage/summary.txt || true
+        if [[ -f summary.txt ]] ; then
+          ./.github/workflows/compare-coverage summary.txt ${{ matrix.lib }}-coverage/summary.txt
+        fi
+  publish_coverage:
+    name: Publish coverage
+    needs: [changes, generate_coverage]
+    if: ${{ github.event_name == 'push' && needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    strategy:
+      matrix:
+        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+    concurrency: gh_pages
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: gh-pages
+    - name: download artefact
+      uses: actions/download-artifact@v3
+      with:
+        name: ${{ matrix.lib }}_coverage
+        path: ${{ matrix.lib }}-coverage/
+    - name: configure git
+      run: |
+        git config --global user.email "tket-bot@cambridgequantum.com"
+        git config --global user.name  "«$GITHUB_WORKFLOW» github action"
+    - name: pull latest
+      run: git pull
+    - name: remove old report
+      run: git rm -r docs/${{ matrix.lib }}/test-coverage
+    - name: add report to repository
+      run: |
+        mkdir -p docs/${{ matrix.lib }}
+        mv ${{ matrix.lib }}-coverage docs/${{ matrix.lib }}/test-coverage
+        git add -f docs/${{ matrix.lib }}/test-coverage
+        git commit --allow-empty -m "Add generated coverage report."
+    - name: publish report
+      run: git push origin gh-pages:gh-pages

@@ -16,11 +16,12 @@
 
 #include <map>
 #include <sstream>
+#include <stdexcept>
 #include <string>
+#include <tkassert/Assert.hpp>
 #include <utility>
 #include <vector>
 
-#include "Utils/Assert.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/Json.hpp"
@@ -517,12 +518,12 @@ PauliStabiliser::PauliStabiliser(
     const std::vector<Pauli> string, const bool coeff)
     : string(string), coeff(coeff) {
   if (string.size() == 0) {
-    throw NotValid("Pauli stabiliser cannot be empty.");
+    throw std::invalid_argument("Pauli stabiliser cannot be empty.");
   }
   if (std::adjacent_find(string.begin(), string.end(), std::not_equal_to<>()) ==
           string.end() &&
       string[0] == Pauli::I) {
-    throw NotValid("Pauli stabiliser cannot be identity.");
+    throw std::invalid_argument("Pauli stabiliser cannot be identity.");
   }
 }
 

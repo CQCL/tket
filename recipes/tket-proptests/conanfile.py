@@ -29,7 +29,7 @@ class TketProptestsConan(ConanFile):
     exports_sources = "../../tket/proptests/*"
     requires = (
         "tket/1.0.1",
-        "rapidcheck/cci.20210702",
+        "rapidcheck/cci.20220514",
     )
 
     def build(self):

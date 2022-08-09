@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <random>
 
 #include "../testutil.hpp"
@@ -614,6 +614,18 @@ SCENARIO(
     }
     REQUIRE(test_m.at(all_qs[3]) == uid0);
   }
+  GIVEN("A circuit with no two-qubit gates.") {
+    Circuit test_circ(4);
+    test_circ.add_op<unsigned>(OpType::T, {0});
+    test_circ.add_op<unsigned>(OpType::X, {1});
+    test_circ.add_op<unsigned>(OpType::H, {2});
+    test_circ.add_op<unsigned>(OpType::S, {3});
+    const qubit_mapping_t test_m = test_p.get_placement_map(test_circ);
+    REQUIRE(test_m.at(Qubit(0)) == Node("unplaced", 0));
+    REQUIRE(test_m.at(Qubit(1)) == Node("unplaced", 1));
+    REQUIRE(test_m.at(Qubit(2)) == Node("unplaced", 2));
+    REQUIRE(test_m.at(Qubit(3)) == Node("unplaced", 3));
+  }
 }
 
 SCENARIO(
@@ -677,14 +689,14 @@ SCENARIO(
     PlacementConfig pc;
     pc.depth_limit = 5;
     pc.max_interaction_edges = arc.n_connections();
-    pc.vf2_max_matches = 10000000;
+    pc.monomorphism_max_matches = 10000000;
     pc.arc_contraction_ratio = 10;
     pc.timeout = 1000;
 
     GraphPlacement placer(arc);
     placer.set_config(pc);
     std::vector<qubit_mapping_t> all_maps = placer.get_all_placement_maps(circ);
-    REQUIRE(all_maps.size() < pc.vf2_max_matches);
+    REQUIRE(all_maps.size() < pc.monomorphism_max_matches);
   }
 }
 

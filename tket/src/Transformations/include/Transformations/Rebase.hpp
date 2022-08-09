@@ -29,6 +29,13 @@ Transform rebase_factory(
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
         tk1_replacement);
 
+Transform rebase_factory_via_tk2(
+    const OpTypeSet& allowed_gates,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk1_replacement,
+    const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
+        tk2_replacement);
+
 // Multiqs: CX
 // Singleqs: TK1
 Transform rebase_tket();
@@ -57,6 +64,18 @@ Transform rebase_UFR();
 // Multiqs: ECR
 // Singleqs: Rz, SX
 Transform rebase_OQC();
+
+// Multiqs: ZZMax
+// Singleqs: Rz, PhasedX
+Transform rebase_HQS();
+
+// Multiqs: TK2
+// Singleqs: TK1
+Transform rebase_TK();
+
+// Multiqs: XXPhase
+// Singleqs: Rz, PhasedX
+Transform rebase_UMD();
 
 }  // namespace Transforms
 

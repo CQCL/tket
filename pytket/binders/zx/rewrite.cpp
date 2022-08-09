@@ -57,6 +57,13 @@ void init_rewrite(py::module &m) {
           "basic_wires", &Rewrite::basic_wires,
           "Replaces every Hadamard wire by an explicit Hbox node.")
       .def_static(
+          "rebase_to_zx", &Rewrite::rebase_to_zx,
+          "Expands every generator into ZSpiders, XSpiders, and a combination "
+          "of Basic and Hadamard edges.")
+      .def_static(
+          "rebase_to_mbqc", &Rewrite::rebase_to_mbqc,
+          "Expands every generator into MBQC vertices.")
+      .def_static(
           "red_to_green", &Rewrite::red_to_green,
           "Converts all red spiders (XSpider) to green (ZSpider) with "
           "Hadamards around them. The Hadamards are applied by flipping the "

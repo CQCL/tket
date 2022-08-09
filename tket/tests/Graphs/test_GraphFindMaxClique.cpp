@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <set>
+#include <tkrng/RNG.hpp>
 
 #include "Graphs/AdjacencyData.hpp"
 #include "Graphs/GraphRoutines.hpp"
 #include "Graphs/LargeCliquesResult.hpp"
-#include "Utils/RNG.hpp"
 
 using std::set;
 using std::vector;

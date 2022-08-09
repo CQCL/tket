@@ -15,8 +15,7 @@
 #include "BitOperations.hpp"
 
 #include <stdexcept>
-
-#include "Utils/Assert.hpp"
+#include <tkassert/Assert.hpp>
 
 namespace tket {
 namespace tket_sim {

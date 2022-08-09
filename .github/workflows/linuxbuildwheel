@@ -27,8 +27,9 @@ export CONAN_REVISIONS_ENABLED=1
 cd /tket
 
 ${CONAN_CMD} profile new tket --detect
+${CONAN_CMD} profile update options.tklog:shared=True tket
 ${CONAN_CMD} profile update options.tket:shared=True tket
-${CONAN_CMD} remote add tket-conan https://tket.jfrog.io/artifactory/api/conan/tket-conan --force
+${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
 ${CONAN_CMD} create --profile=tket --test-folder=None recipes/tket
 ${CONAN_CMD} create --profile=tket --test-folder=None recipes/pybind11
 
