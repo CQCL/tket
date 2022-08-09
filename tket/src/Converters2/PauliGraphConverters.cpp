@@ -285,6 +285,14 @@ std::vector<PGOp_ptr> op_to_pgops(const Op_ptr& op, const unit_vector_t& args, P
         return {std::make_shared<const PGCliffordRot>(z0 * z1, 1), std::make_shared<const PGCliffordRot>(x0 * x1, 1), std::make_shared<const PGCliffordRot>(-1. * z0 * x0 * z1 * x1, 1)};
       }
     }
+    case OpType::T: {
+      Qubit q(args.front());
+      return {std::make_shared<const PGRotation>(stab_to_tensor(pg.final_.get_pauli(pg.final_rows_.left.at(std::pair<Qubit, TableauRowType>{q, TableauRowType::ZRow})), pg.final_cols_), 0.25)};
+    }
+    case OpType::Tdg: {
+      Qubit q(args.front());
+      return {std::make_shared<const PGRotation>(stab_to_tensor(pg.final_.get_pauli(pg.final_rows_.left.at(std::pair<Qubit, TableauRowType>{q, TableauRowType::ZRow})), pg.final_cols_), -0.25)};
+    }
     case OpType::Rz: {
       Qubit q(args.front());
       const Gate& g = dynamic_cast<const Gate&>(*op);

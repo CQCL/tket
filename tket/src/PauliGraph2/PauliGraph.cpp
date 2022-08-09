@@ -322,16 +322,16 @@ void PauliGraph::to_graphviz(std::ostream &out) const {
   }
 
   for (const PGVert& sv : start_line_.get<TagSeq>()) {
-    out << 0 << " --> " << index_map.at(sv) << ";\n";
+    out << 0 << " -> " << index_map.at(sv) << ";\n";
   }
   for (const PGVert& ev : end_line_.get<TagSeq>()) {
-    out << index_map.at(ev) << " --> 1;\n";
+    out << index_map.at(ev) << " -> 1;\n";
   }
-  if (start_line_.empty()) out << "0 --> 1;\n";
+  if (start_line_.empty()) out << "0 -> 1;\n";
   BGL_FORALL_EDGES(e, graph_, PGDAG) {
     PGVert vs = source(e);
     PGVert vt = target(e);
-    out << index_map.at(vs) << " --> " << index_map.at(vt) << ";\n";
+    out << index_map.at(vs) << " -> " << index_map.at(vt) << ";\n";
   }
 
   out << "}";

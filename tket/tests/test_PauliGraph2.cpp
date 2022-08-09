@@ -44,11 +44,168 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
     PauliGraph pg = circuit_to_pauli_graph2(circ);
     REQUIRE(pg.n_vertices() == 4);
+  }
+GIVEN("A 2qb circuit with no interaction") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Rx, 0.6, {0});
+    circ.add_op<unsigned>(OpType::Ry, 1.2, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Ry, 0.2, {1});
+    circ.add_op<unsigned>(OpType::Rx, 1.6, {1});
+    circ.add_op<unsigned>(OpType::Rz, 1.3, {1});
+    PauliGraph pg = circuit_to_pauli_graph2(circ);
+    REQUIRE(pg.n_vertices() == 7);
+  }
+  GIVEN("A 2qb circuit with some anti-commuting interaction") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Ry, 0.2, {1});
+    circ.add_op<unsigned>(OpType::XXPhase, 1.1, {0, 1});
+    PauliGraph pg = circuit_to_pauli_graph2(circ);
+    REQUIRE(pg.n_vertices() == 3);
+  }
+  GIVEN("A 2qb circuit with some commuting interaction") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.2, {1});
+    circ.add_op<unsigned>(OpType::ZZPhase, 1.1, {0, 1});
+    PauliGraph pg = circuit_to_pauli_graph2(circ);
+    REQUIRE(pg.n_vertices() == 3);
+  }
+  GIVEN("A 2qb circuit a Clifford-angled ZZPhase") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.2, {1});
+    circ.add_op<unsigned>(OpType::ZZPhase, 0.5, {0, 1});
+    PauliGraph pg = circuit_to_pauli_graph2(circ);
+    REQUIRE(pg.n_vertices() == 3);
+  }
+  GIVEN("A 1qb circuit with stuff to merge") {
+    Circuit circ(1);
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Rz, 1.3, {0});
+    circ.add_op<unsigned>(OpType::Rx, 0.6, {0});
+    circ.add_op<unsigned>(OpType::Rz, 1.1, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    PauliGraph pg = circuit_to_pauli_graph2(circ);
+    REQUIRE(pg.n_vertices() == 5);
+  }
+  GIVEN("A 2qb circuit with stuff to merge") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.2, {1});
+    circ.add_op<unsigned>(OpType::ZZPhase, 1.1, {0, 1});
+    circ.add_op<unsigned>(OpType::Rz, 0.8, {0});
+    circ.add_op<unsigned>(OpType::ZZPhase, 1.6, {1, 0});
+    PauliGraph pg = circuit_to_pauli_graph2(circ);
+    REQUIRE(pg.n_vertices() == 5);
+  }
+  GIVEN("A circuit with Cliffords and non-Cliffords") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Rz, 0.4, {0});
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::Rz, 1.1, {0});
+    circ.add_op<unsigned>(OpType::Rz, 1.8, {1});
+    PauliGraph pg = circuit_to_pauli_graph2(circ);
+    REQUIRE(pg.n_vertices() == 4);
+  }
+  GIVEN("A dense example") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {2});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {3});
+    circ.add_op<unsigned>(OpType::Ry, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Ry, 0.3, {1});
+    circ.add_op<unsigned>(OpType::Ry, 0.3, {2});
+    circ.add_op<unsigned>(OpType::Ry, 0.3, {3});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {1});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {2});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {3});
+    circ.add_op<unsigned>(OpType::Ry, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Ry, 0.3, {1});
+    circ.add_op<unsigned>(OpType::Ry, 0.3, {2});
+    circ.add_op<unsigned>(OpType::Ry, 0.3, {3});
+    PauliGraph pg = circuit_to_pauli_graph2(circ);
+    REQUIRE(pg.n_vertices() == 16);
+  }
+  GIVEN("A more interesting example (tof_3)") {
+    Circuit circ(5);
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::H, {4});
+    circ.add_op<unsigned>(OpType::CX, {1, 4});
+    circ.add_op<unsigned>(OpType::Tdg, {4});
+    circ.add_op<unsigned>(OpType::CX, {0, 4});
+    circ.add_op<unsigned>(OpType::T, {4});
+    circ.add_op<unsigned>(OpType::CX, {1, 4});
+    circ.add_op<unsigned>(OpType::Tdg, {4});
+    circ.add_op<unsigned>(OpType::CX, {0, 4});
+    circ.add_op<unsigned>(OpType::T, {4});
+    circ.add_op<unsigned>(OpType::T, {1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::T, {0});
+    circ.add_op<unsigned>(OpType::Tdg, {1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::H, {4});
+    circ.add_op<unsigned>(OpType::H, {4});
+    circ.add_op<unsigned>(OpType::H, {4});
+    circ.add_op<unsigned>(OpType::CX, {4, 3});
+    circ.add_op<unsigned>(OpType::Tdg, {3});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::T, {3});
+    circ.add_op<unsigned>(OpType::CX, {4, 3});
+    circ.add_op<unsigned>(OpType::Tdg, {3});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::T, {3});
+    circ.add_op<unsigned>(OpType::T, {4});
+    circ.add_op<unsigned>(OpType::CX, {2, 4});
+    circ.add_op<unsigned>(OpType::T, {2});
+    circ.add_op<unsigned>(OpType::Tdg, {4});
+    circ.add_op<unsigned>(OpType::CX, {2, 4});
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::H, {3});
+    circ.add_op<unsigned>(OpType::H, {4});
+    circ.add_op<unsigned>(OpType::CX, {1, 4});
+    circ.add_op<unsigned>(OpType::Tdg, {4});
+    circ.add_op<unsigned>(OpType::CX, {0, 4});
+    circ.add_op<unsigned>(OpType::T, {4});
+    circ.add_op<unsigned>(OpType::CX, {1, 4});
+    circ.add_op<unsigned>(OpType::Tdg, {4});
+    circ.add_op<unsigned>(OpType::CX, {0, 4});
+    circ.add_op<unsigned>(OpType::T, {4});
+    circ.add_op<unsigned>(OpType::T, {1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::T, {0});
+    circ.add_op<unsigned>(OpType::Tdg, {1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::H, {4});
+    circ.add_op<unsigned>(OpType::H, {4});
+    circ.add_op<unsigned>(OpType::H, {4});
+    PauliGraph pg = circuit_to_pauli_graph2(circ);
+    REQUIRE(pg.n_vertices() == 21);
+  }
+  GIVEN("A circuit with a PauliExpBox") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::ZZPhase, 0.2, {0, 1});
+    circ.add_op<unsigned>(OpType::Vdg, {0});
+    circ.add_op<unsigned>(OpType::H, {1});
+    PauliExpBox peb({Pauli::Y, Pauli::X}, 0.333);
+    circ.add_box(peb, {0, 1});
+    PauliGraph pg = circuit_to_pauli_graph2(circ);
+    REQUIRE(pg.n_vertices() == 2);
     THEN("Print diagram to file") {
       std::ofstream dot_file("pauligraph.dot");
       pg.to_graphviz(dot_file);
       dot_file.close();
-      // remove("pauligraph.dot");
+      remove("pauligraph.dot");
     }
   }
 }
