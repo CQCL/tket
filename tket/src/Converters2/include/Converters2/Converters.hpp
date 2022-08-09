@@ -19,14 +19,14 @@
 
 namespace tket {
 
-pg::PauliGraph circuit_to_pauli_graph(const Circuit& circ);
+pg::PauliGraph circuit_to_pauli_graph2(const Circuit& circ);
 
 /**
  * Synthesises a circuit equivalent to the PauliGraph by building each
  * pauli gadget individually in the order given by TopSortIterator.
  * The tableau is then synthesised at the end.
  */
-Circuit pauli_graph_to_circuit_individual(const pg::PauliGraph& pg, CXConfigType cx_config = CXConfigType::Snake);
+Circuit pauli_graph2_to_circuit_individual(const pg::PauliGraph& pg, CXConfigType cx_config = CXConfigType::Snake);
 
 /**
  * Synthesises a circuit equivalent to the PauliGraph by building pairs of
@@ -35,7 +35,7 @@ Circuit pauli_graph_to_circuit_individual(const pg::PauliGraph& pg, CXConfigType
  * The tableau is then synthesised at the end.
  */
 
-Circuit pauli_graph_to_circuit_pairwise(
+Circuit pauli_graph2_to_circuit_pairwise(
     const pg::PauliGraph &pg, CXConfigType cx_config = CXConfigType::Snake);
 
 /**
@@ -44,7 +44,7 @@ Circuit pauli_graph_to_circuit_pairwise(
  * diagonalizing each gadget in a set.
  * The tableau is then synthesised at the end.
  */
-Circuit pauli_graph_to_circuit_sets(
+Circuit pauli_graph2_to_circuit_sets(
     const pg::PauliGraph &pg, CXConfigType cx_config = CXConfigType::Snake);
 
 namespace pg {

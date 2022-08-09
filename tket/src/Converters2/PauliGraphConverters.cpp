@@ -589,7 +589,7 @@ std::vector<PGOp_ptr> solve_qubit_with_gadgets(const QubitPauliTensor& zrow, con
   }
 }
 
-PauliGraph circuit_to_pauli_graph(const Circuit& circ) {
+PauliGraph circuit_to_pauli_graph2(const Circuit& circ) {
   PauliGraph res(circ.all_qubits(), circ.all_bits());
   for (const Command& com : circ) {
     unit_vector_t args = com.get_args();
@@ -642,7 +642,7 @@ PauliGraph circuit_to_pauli_graph(const Circuit& circ) {
 //   }
 // }
 
-// Circuit pauli_graph_to_circuit_individual(const PauliGraph& pg, CXConfigType cx_config) {
+// Circuit pauli_graph2_to_circuit_individual(const PauliGraph& pg, CXConfigType cx_config) {
 //   Circuit circ;
 //   for (tableau_col_index_t::left_const_iterator it = pg.initial_cols_.left.begin(); it != pg.initial_cols_.left.end(); ++it) {
 //     circ.add_qubit(it->first);

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <catch2/catch.hpp>
+#include <catch2/catch_test_macros.hpp>
 #include <fstream>
 
 #include "Converters2/Converters.hpp"
@@ -24,7 +24,7 @@ namespace test_PauliGraph2 {
 
 using namespace pg;
 
-SCENARIO("Correct creation of PauliGraphs") {
+SCENARIO("Correct creation of refactored PauliGraphs") {
   GIVEN("A Clifford circuit") {
     Circuit circ(3);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
@@ -33,7 +33,7 @@ SCENARIO("Correct creation of PauliGraphs") {
     circ.add_op<unsigned>(OpType::CX, {1, 2});
     circ.add_op<unsigned>(OpType::Vdg, {1});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
-    PauliGraph pg = circuit_to_pauli_graph(circ);
+    PauliGraph pg = circuit_to_pauli_graph2(circ);
     REQUIRE(pg.n_vertices() == 0);
   }
   GIVEN("A 1qb circuit") {
@@ -42,7 +42,7 @@ SCENARIO("Correct creation of PauliGraphs") {
     circ.add_op<unsigned>(OpType::Rx, 0.6, {0});
     circ.add_op<unsigned>(OpType::Ry, 1.2, {0});
     circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
-    PauliGraph pg = circuit_to_pauli_graph(circ);
+    PauliGraph pg = circuit_to_pauli_graph2(circ);
     REQUIRE(pg.n_vertices() == 4);
     THEN("Print diagram to file") {
       std::ofstream dot_file("pauligraph.dot");

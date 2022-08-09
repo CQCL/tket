@@ -32,12 +32,12 @@ class Circuit;
 class Op;
 typedef std::shared_ptr<const Op> Op_ptr;
 
-pg::PauliGraph circuit_to_pauli_graph(const Circuit &circ);
-Circuit pauli_graph_to_circuit_individual(
+pg::PauliGraph circuit_to_pauli_graph2(const Circuit &circ);
+Circuit pauli_graph2_to_circuit_individual(
     const pg::PauliGraph &pg, CXConfigType cx_config);
-Circuit pauli_graph_to_circuit_pairwise(
+Circuit pauli_graph2_to_circuit_pairwise(
     const pg::PauliGraph &pg, CXConfigType cx_config);
-Circuit pauli_graph_to_circuit_sets(
+Circuit pauli_graph2_to_circuit_sets(
     const pg::PauliGraph &pg, CXConfigType cx_config);
 std::vector<pg::PGOp_ptr> op_to_pgops(const Op_ptr& op, const unit_vector_t& args, pg::PauliGraph& pg, bool allow_tableau);
 
@@ -275,12 +275,12 @@ class PauliGraph {
 
   unsigned n_vertices() const;
 
-  friend PauliGraph tket::circuit_to_pauli_graph(const tket::Circuit &circ);
-  friend tket::Circuit tket::pauli_graph_to_circuit_individual(
+  friend PauliGraph tket::circuit_to_pauli_graph2(const tket::Circuit &circ);
+  friend tket::Circuit tket::pauli_graph2_to_circuit_individual(
       const PauliGraph &pg, CXConfigType cx_config);
-  friend tket::Circuit tket::pauli_graph_to_circuit_pairwise(
+  friend tket::Circuit tket::pauli_graph2_to_circuit_pairwise(
       const PauliGraph &pg, CXConfigType cx_config);
-  friend tket::Circuit tket::pauli_graph_to_circuit_sets(
+  friend tket::Circuit tket::pauli_graph2_to_circuit_sets(
       const PauliGraph &pg, CXConfigType cx_config);
   friend std::vector<PGOp_ptr> tket::op_to_pgops(const tket::Op_ptr& op, const unit_vector_t& args, PauliGraph& pg, bool allow_tableau);
 
