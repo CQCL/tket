@@ -70,6 +70,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/test_UnitaryTableau.cpp
     ${TKET_TESTS_DIR}/test_PhasePolynomials.cpp
     ${TKET_TESTS_DIR}/test_PauliGraph.cpp
+    ${TKET_TESTS_DIR}/test_PauliGraph2.cpp
     ${TKET_TESTS_DIR}/test_Architectures.cpp
     ${TKET_TESTS_DIR}/test_ArchitectureAwareSynthesis.cpp
     ${TKET_TESTS_DIR}/Placement/test_Placement.cpp

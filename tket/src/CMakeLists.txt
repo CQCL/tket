@@ -68,6 +68,7 @@ list(APPEND TKET_COMPS
     Graphs
     Gate
     PauliGraph
+    PauliGraph2
     Circuit
     Architecture
     Simulation
@@ -75,6 +76,7 @@ list(APPEND TKET_COMPS
     Characterisation
     ZX
     Converters
+    Converters2
     Placement
     ArchAwareSynth
     Mapping    

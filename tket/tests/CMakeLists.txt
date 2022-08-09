@@ -50,6 +50,7 @@ target_link_libraries(test_tket PRIVATE
     tket-Circuit
     tket-Clifford
     tket-Converters
+    tket-Converters2
     tket-Diagonalisation
     tket-Gate
     tket-Graphs
@@ -57,6 +58,7 @@ target_link_libraries(test_tket PRIVATE
     tket-Ops
     tket-OpType
     tket-PauliGraph
+    tket-PauliGraph2
     tket-Predicates
     tket-Placement
     tket-TokenSwapping

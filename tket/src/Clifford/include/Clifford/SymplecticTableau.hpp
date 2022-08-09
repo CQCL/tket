@@ -20,9 +20,16 @@
 
 namespace tket {
 
-// Forward declare friend UnitaryTableau and Circuit for converters
+// Forward declare classes for friend converters
 class UnitaryTableau;
 class Circuit;
+namespace pg {
+class PauliGraph;
+class PGOp;
+typedef std::shared_ptr<const PGOp> PGOp_ptr;
+}
+class Op;
+typedef std::shared_ptr<const Op> Op_ptr;
 
 /**
  * Boolean encoding of Pauli
@@ -73,10 +80,11 @@ class SymplecticTableau {
    * mutual commutativity of terms is also provided.
    *
    * This serves as a base class for:
-   * - StabTableau where each row represents a stabilizer of a given state.
    * - UnitaryTableau where there is both a Z row and an X row for each input
    * describing the Pauli string formed when pushing a Z or X on the input
    * through to the outputs.
+   * Future possible subclasses include:
+   * - StabTableau where each row represents a stabilizer of a given state.
    * - IsometryTableau is a generalisation of StabTableau and UnitaryTableau
    * that can represent Clifford isometries by a Z and X row per input and a
    * spare row per free stabilizer.
@@ -189,6 +197,7 @@ class SymplecticTableau {
 
   friend class UnitaryTableau;
   friend Circuit unitary_tableau_to_circuit(const UnitaryTableau &tab);
+  friend std::vector<pg::PGOp_ptr> op_to_pgops(const Op_ptr& op, const unit_vector_t& args, pg::PauliGraph& pg, bool allow_tableau);
   friend std::ostream &operator<<(std::ostream &os, const UnitaryTableau &tab);
 
   friend void to_json(nlohmann::json &j, const SymplecticTableau &tab);
