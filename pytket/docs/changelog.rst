@@ -1,6 +1,14 @@
 Changelog
 =========
 
+x.y.z (unreleased)
+------------------
+
+Fixes:
+
+* Squash two-qubit circuits properly in ``FullPeepholeOptimise`` for parameter
+  `target_2qb_gate=OpType.TK2`.
+
 1.5.0 (August 2022)
 -------------------
 
