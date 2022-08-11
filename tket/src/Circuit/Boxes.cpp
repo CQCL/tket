@@ -772,177 +772,39 @@ void ToffoliBox::generate_circuit() const {
     return;
   }
 
-  // Now we have ordered transpositions, produced front->middle and middle->back gray codes for each
-  // transposition and add to circuit
+  // Now we have ordered transpositions, produced front->middle and middle->back
+  // gray codes for each transposition and add to circuit
   unsigned n_qubits = ordered_transpositions[0].first.size();
   this->circ = std::make_shared<Circuit>(n_qubits);
-  for(const transposition_t& transposition : ordered_transpositions){
+  for (const transposition_t &transposition : ordered_transpositions) {
     TKET_ASSERT(transposition.first.size() == n_qubits);
     TKET_ASSERT(transposition.middle.size() == n_qubits);
     TKET_ASSERT(transposition.last.size() == n_qubits);
     // get bitstrings for first -> middle
-    std::vector<std::pair<bool>, unsigned>> all_gray_code_entries;
+    std::vector < std::pair<bool>, unsigned >> all_gray_code_entries;
     std::vector<bool> bitstring = transposition.first;
-    for(unsigned i=0; i<transposition.first.size(); i++){
-      if(transposition.first[i] != transposition.middle[i]){
+    for (unsigned i = 0; i < transposition.first.size(); i++) {
+      if (transposition.first[i] != transposition.middle[i]) {
         bitstring[i] = !bitstring[i];
         all_gray_code_entries.push_back({bitstring, i});
-        // this->circuit_->append(this->get_bitstring_circuit(bitstring, i));
       }
     }
     // get bitstrings for middle -> last;
     bitstring = transposition.middle;
-    for(unsigned i=0; i<transposition.middle.size(); i++){
-      if(transposition.middle[i] != transposition.last[i]){
+    for (unsigned i = 0; i < transposition.middle.size(); i++) {
+      if (transposition.middle[i] != transposition.last[i]) {
         bitstring[i] = !bitstring[i];
         all_gray_code_entries.push_back({bitstring, i});
-        // this->circuit_->append(this->get_bitstring_circuit(bitstring, i));
       }
     }
     // don't want to add transformation for reaching final, so pop_back
-    
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  std::set<std::vector<gray_code_t>> all_cycle_gray_codes;
-  for (const ToffoliBox::cycle_transposition_t &single_cycle_transpositions :
-       transpositions) {
-    TKET_ASSERT(single_cycle_transpositions.size() > 0);
-    size_t n_qubits = single_cycle_transpositions.begin()->first.size();
-    std::vector<gray_code_t> single_cycle_gray_codes;
-    // each transposition is converted into a gray code
-    for (const ToffoliBox::transposition_t &transposition :
-         single_cycle_transpositions) {
-      TKET_ASSERT(transposition.first.size() == n_qubits);
-      TKET_ASSERT(transposition.second.size() == n_qubits);
-      // for first to middle, find graycode sequence and add
-      std::vector<bool> bitstring = transposition.first;
-      for (unsigned i = 0; i < transposition.first.size(); i++) {
-        // if different, update last bitstring with entry
-        if (transposition.first[i] != transposition.middle[i]) {
-          bitstring[i] = !bitstring[i];
-          this->circuit_->append(this->get_bitstring_circuit(bitstring, i));
-        }
-      }
-      // for middle to last, don't want circuit producing last bitstring, so produce an option as a target
-      std::vector<bool> target = get_single_
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-      gray_code_t gray_code = {{bitstrings[0]}, bitstrings};
-      // => first bitstring has alternative, which could lead to later
-      // optimisations
-      if (bitstrings.size() > 1) {
-        std::pair<std::vector<bool>, unsigned> first = bitstrings[0];
-        unsigned second_target = bitstrings[1].second;
-        first[second_target] = !first[second_target];
-        first[first.second] = !first[first.second];
-        gray_code.first.insert(first);
-      }
-
-      single_cycle_gray_codes.push_back(gray_code);
+    all_gray_code_entries.pop_back();
+    for (const std::pair<std::vector<bool>, unsigned> &entry :
+         all_gray_code_entries) {
+      this->circuit_->append(
+          this->get_bitstring_circuit(entry.first, entry.second));
     }
-    all_cycle_gray_codes.push_back(single_cycle_gray_codes);
   }
-
-  gray_code_t concatenated_gray_codes =
-      this->order_cycle_graycodes(all_cycle_gray_codes);
-
-  TKET_ASSERT(!concatenated_gray_codes.empty());
-  this->circuit_ =
-      std::make_shared<Circuit>(concatenated_gray_codes[0].first.size());
-  for (const std::pair<std::vector<bool>, unsigned> &bitstring :
-       concatenated_gray_codes) {
-    this->circ_->append(
-        this->get_bitstring_circuit(bitstring.first, bitstring.second));
-  }
-
-  // std::vector<std::vector<std::pair<std::vector<bool>, unsigned>>>
-  // reordered_bitstrings =  this->reorder_bitstrings(all_bitstrings); for(const
-  // std::vector<std::pair<std::vector<bool>, unsigned>>& bitstrings :
-  // reordered_bitstrings){
-  // }
-  // if (!transpositions.empty()) {
-  //   size_t n_qubits = transpositions.begin()->first.size();
-  //   this->circ_ = std::make_shared<Circuit>(n_qubits);
-  //   for (const ToffoliBox::transposition_t &transposition : transpositions) {
-  //     TKET_ASSERT(transposition.first.size() == n_qubits);
-  //     TKET_ASSERT(transposition.second.size() == n_qubits);
-  //     std::cout << "Transposition to convert: " << std::endl;
-  //     for(auto b : transposition.first){
-  //       std::cout << b;
-  //     }
-  //     std::cout << " | ";
-  //     for(auto b : transposition.second){
-  //       std::cout << b;
-  //     }
-  //     std::cout << std::endl;
-  //     // find a sequence of bitstrings one flip away from eachother
-  //     std::vector<std::pair<std::vector<bool>, unsigned>> bitstrings;
-  //     std::vector<bool> last_bitstring = transposition.first;
-  //     for (unsigned i = 0; i < transposition.first.size(); i++) {
-  //       // if different, update last bitstring with entry
-  //       if (transposition.first[i] != transposition.second[i]) {
-  //         last_bitstring[i] = !last_bitstring[i];
-  //         bitstrings.push_back({last_bitstring, i});
-  //       }
-  //     }
-  //     std::cout << "Bitstrings produced: " << std::endl;
-  //     for(auto bs : bitstrings){
-  //       for(auto bo : bs.first){
-  //         std::cout << bo;
-  //       }
-  //       std::cout << " | " << bs.second << std::endl;
-  //     }
-  //     std::vector<std::pair<std::vector<bool>, unsigned>>::const_iterator it
-  //     =
-  //         bitstrings.begin();
-  //     while (it != bitstrings.end()) {
-  //       this->circ_->append(this->get_bitstring_circuit(it->first,
-  //       it->second));
-  //       ++it;
-  //     }
-  //     // as one past end & don't want to undo gate
-  //     std::vector<
-  //         std::pair<std::vector<bool>, unsigned>>::const_reverse_iterator jt
-  //         = bitstrings.rbegin();
-  //     std::advance(jt, 1);
-  //     // uncompute basis flips
-  //     while (jt != bitstrings.rend()) {
-  //       this->circ_->append(this->get_bitstring_circuit(jt->first,
-  //       jt->second));
-  //       ++jt;
-  //     }
-  //   }
-  //   std::cout << "Finished making circuit! " << std::endl;
-  // } else {
-  //   this->circ_ = std::make_shared<Circuit>();
-  // }
 }
 
 nlohmann::json core_box_json(const Box &box) {
