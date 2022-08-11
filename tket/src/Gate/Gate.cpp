@@ -773,11 +773,13 @@ std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
 
 bool Gate::commutes_with_basis(
     const std::optional<Pauli>& colour, unsigned i) const {
-  if (colour == Pauli::I) return true;
   const std::optional<Pauli> my_colour = commuting_basis(i);
-  if (!colour && !my_colour) return false;
-  if (my_colour == Pauli::I || my_colour == colour) return true;
-  return false;
+  if (!colour || !my_colour) {
+    // Nothing can commute with std::nullopt
+    return false;
+  } else {
+    return colour == Pauli::I || my_colour == Pauli::I || colour == my_colour;
+  }
 }
 
 op_signature_t Gate::get_signature() const {

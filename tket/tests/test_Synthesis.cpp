@@ -188,6 +188,11 @@ SCENARIO("Check commutation through multiqubit ops") {
 
     REQUIRE(circ == solution);
   }
+  GIVEN("A bridge") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::BRIDGE, {1, 2, 0});
+    REQUIRE_FALSE(Transforms::commute_through_multis().apply(circ));
+  }
 }
 
 SCENARIO(
