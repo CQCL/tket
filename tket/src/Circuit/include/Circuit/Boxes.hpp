@@ -710,8 +710,26 @@ class StabiliserAssertionBox : public Box {
 
 class ToffoliBox : public Box {
  public:
-  typedef std::vector<std::vector<bool>> cycle_t;
-  typedef std::pair<std::vector<bool>, std::vector<bool>> transposition_t;
+  typedef std::vector<std::vector<bool>> cycle_permutation_t;
+
+  struct transposition_t {
+    std::vector<bool> first;
+    std::vector<bool> middle;
+    std::vector<bool> last;
+  }
+
+  typedef std::vector<transposition_t>
+      cycle_transposition_t;
+
+  // typedef std::pair<std::vector<bool>, std::vector<bool>> transposition_t;
+
+  // typedef gray_code_t std::vector<std::pair<std::vector<bool>, unsigned>>;
+
+  // struct gray_code_t {
+  //   std::set<std::pair<std::vector<bool>, unsigned>> first;
+  //   std::vector<std::pair<std::vector<bool>, unsigned>> bitstrings;
+  // };
+
   /**
    * Construct from a map between input and output basis states.
    * Map entries should produce a cycle, i.e. if A maps to B but B
@@ -725,20 +743,28 @@ class ToffoliBox : public Box {
    *
    */
   explicit ToffoliBox(
-      const std::map<std::vector<bool>, std::vector<bool>> &_permutation);
+      std::map<std::vector<bool>, std::vector<bool>> &_permutation);
+
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &) const override {
+    return Op_ptr();
+  }
+
+  SymSet free_symbols() const override { return {}; }
 
  protected:
   void generate_circuit() const override;
 
  private:
-  std::vector<transposition_t> cycle_to_transposition(const cycle_t &cycle);
+  std::vector<transposition_t> cycle_to_transposition(
+      const cycle_t &cycle) const;
 
-  std::vector<transposition_t> get_transpositions();
+  std::vector<transposition_t> get_transpositions() const;
 
-  void add_bitstring_circuit(
-      const std::vector<bool> &bitstring, const unsigned &target);
+  Circuit get_bitstring_circuit(
+      const std::vector<bool> &bitstring, const unsigned &target) const;
 
   std::vector<cycle_t> cycles_;
-}
+};
 
 }  // namespace tket

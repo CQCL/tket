@@ -989,6 +989,86 @@ SCENARIO("Checking equality", "[boxes]") {
   }
 }
 
+SCENARIO("ToffoliBox", "[boxes]") {
+  std::cout << "\n\nToffoliBox tests!" << std::endl;
+  GIVEN("No permutation.") {
+    std::map<std::vector<bool>, std::vector<bool>> permutation = {};
+    ToffoliBox tb(permutation);
+    std::vector<Command> tb_circuit_commands = tb.to_circuit()->get_commands();
+    REQUIRE(tb_circuit_commands.size() == 0);
+  }
+  GIVEN("Single qubit basis state permutation") {
+    std::map<std::vector<bool>, std::vector<bool>> permutation;
+    permutation[{0}] = {1};
+    permutation[{1}] = {0};
+    ToffoliBox tb(permutation);
+    std::vector<Command> tb_circuit_commands = tb.to_circuit()->get_commands();
+    REQUIRE(tb_circuit_commands.size() == 1);
+    Command com = tb_circuit_commands[0];
+    REQUIRE(com.get_qubits().size() == 1);
+    REQUIRE(com.get_op_ptr()->get_type() == OpType::X);
+  }
+  GIVEN("Two qubit basis state permutation, one two states cycle") {
+    std::map<std::vector<bool>, std::vector<bool>> permutation;
+    permutation[{0, 0}] = {1, 1};
+    permutation[{1, 1}] = {0, 0};
+    ToffoliBox tb(permutation);
+
+    Circuit comparison_circuit(2);
+    comparison_circuit.add_op<unsigned>(OpType::X, {1});
+    comparison_circuit.add_op<unsigned>(OpType::CnX, {1, 0});
+    comparison_circuit.add_op<unsigned>(OpType::X, {1});
+    comparison_circuit.add_op<unsigned>(OpType::CnX, {0, 1});
+    comparison_circuit.add_op<unsigned>(OpType::X, {1});
+    comparison_circuit.add_op<unsigned>(OpType::CnX, {1, 0});
+    comparison_circuit.add_op<unsigned>(OpType::X, {1});
+    REQUIRE(*tb.to_circuit() == comparison_circuit);
+  }
+  GIVEN("Two qubit basis state permutation, two two states cycle") {
+    std::map<std::vector<bool>, std::vector<bool>> permutation;
+    permutation[{0, 0}] = {1, 1};
+    permutation[{1, 1}] = {0, 0};
+    permutation[{0, 1}] = {1, 0};
+    permutation[{1, 0}] = {0, 1};
+    ToffoliBox tb(permutation);
+
+    Circuit comparison_circuit(2);
+    comparison_circuit.add_op<unsigned>(OpType::X, {1});
+    comparison_circuit.add_op<unsigned>(OpType::CnX, {1, 0});
+    comparison_circuit.add_op<unsigned>(OpType::X, {1});
+    comparison_circuit.add_op<unsigned>(OpType::CnX, {0, 1});
+    comparison_circuit.add_op<unsigned>(OpType::X, {1});
+    comparison_circuit.add_op<unsigned>(OpType::CnX, {1, 0});
+    comparison_circuit.add_op<unsigned>(OpType::X, {1});
+    comparison_circuit.add_op<unsigned>(OpType::CnX, {1, 0});
+    comparison_circuit.add_op<unsigned>(OpType::CnX, {0, 1});
+    comparison_circuit.add_op<unsigned>(OpType::CnX, {1, 0});
+    REQUIRE(*tb.to_circuit() == comparison_circuit);
+  }
+  GIVEN("Two qubit basis state permutation, two two states cycle") {
+    std::map<std::vector<bool>, std::vector<bool>> permutation;
+    permutation[{0, 0}] = {1, 1};
+    permutation[{1, 1}] = {0, 1};
+    permutation[{0, 1}] = {1, 0};
+    permutation[{1, 0}] = {0, 0};
+    ToffoliBox tb(permutation);
+    std::cout << *tb.to_circuit() << std::endl;
+
+    // Circuit comparison_circuit(2);
+    // comparison_circuit.add_op<unsigned>(OpType::X, {1});
+    // comparison_circuit.add_op<unsigned>(OpType::CnX, {1,0});
+    // comparison_circuit.add_op<unsigned>(OpType::X, {1});
+    // comparison_circuit.add_op<unsigned>(OpType::CnX, {0,1});
+    // comparison_circuit.add_op<unsigned>(OpType::X, {1});
+    // comparison_circuit.add_op<unsigned>(OpType::CnX, {1,0});
+    // comparison_circuit.add_op<unsigned>(OpType::X, {1});
+    // comparison_circuit.add_op<unsigned>(OpType::CnX, {1,0});
+    // comparison_circuit.add_op<unsigned>(OpType::CnX, {0,1});
+    // comparison_circuit.add_op<unsigned>(OpType::CnX, {1,0});
+    // REQUIRE(*tb.to_circuit() == comparison_circuit);
+  }
+}
+
 SCENARIO("Checking box names", "[boxes]") {
   GIVEN("CustomGate without parameters") {
     Circuit setup(1);
