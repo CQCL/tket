@@ -327,7 +327,14 @@ get_information_content(const Eigen::Matrix4cd &X) {
 
   // change to magic basis and make sure U in SU(4)
   const auto norm_X = pow(X.determinant(), 0.25);
-  const Mat4 Xprime = MagicM.adjoint() * X * MagicM / norm_X;
+  Mat4 Xprime = MagicM.adjoint() * X * MagicM / norm_X;
+
+  // rounding Xprime makes it easier to get Clifford angles later on
+  Xprime = Xprime.unaryExpr([](Complex x) {
+    double real_x = (std::abs(x.real()) < EPS) ? 0. : x.real();
+    double imag_x = (std::abs(x.imag()) < EPS) ? 0. : x.imag();
+    return real_x + imag_x * i_;
+  });
 
   // Find a common eigendecomposition of Re( X'.adjoint * X' ) and Im(
   // X'.adjoint * X' ) Use pseudorandom linear comb to avoid issues with
