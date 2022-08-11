@@ -716,19 +716,9 @@ class ToffoliBox : public Box {
     std::vector<bool> first;
     std::vector<bool> middle;
     std::vector<bool> last;
-  }
+  };
 
-  typedef std::vector<transposition_t>
-      cycle_transposition_t;
-
-  // typedef std::pair<std::vector<bool>, std::vector<bool>> transposition_t;
-
-  // typedef gray_code_t std::vector<std::pair<std::vector<bool>, unsigned>>;
-
-  // struct gray_code_t {
-  //   std::set<std::pair<std::vector<bool>, unsigned>> first;
-  //   std::vector<std::pair<std::vector<bool>, unsigned>> bitstrings;
-  // };
+  typedef std::vector<transposition_t> cycle_transposition_t;
 
   /**
    * Construct from a map between input and output basis states.
@@ -757,14 +747,14 @@ class ToffoliBox : public Box {
 
  private:
   std::vector<transposition_t> cycle_to_transposition(
-      const cycle_t &cycle) const;
+      const cycle_permutation_t &cycle) const;
 
-  std::vector<transposition_t> get_transpositions() const;
+  std::set<cycle_transposition_t> get_transpositions() const;
 
   Circuit get_bitstring_circuit(
       const std::vector<bool> &bitstring, const unsigned &target) const;
 
-  std::vector<cycle_t> cycles_;
+  std::set<cycle_permutation_t> cycles_;
 };
 
 }  // namespace tket
