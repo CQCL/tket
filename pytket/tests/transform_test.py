@@ -1120,7 +1120,7 @@ def test_tk2_decompositions() -> None:
         Path(__file__).resolve().parent / "qasm_test_files" / "test19.qasm"
     )
     FullPeepholeOptimise().apply(c)
-    assert c.depth() <= 29
+    assert c.depth() <= 30
 
 
 def test_custom_pass() -> None:
