@@ -329,7 +329,8 @@ get_information_content(const Eigen::Matrix4cd &X) {
   const auto norm_X = pow(X.determinant(), 0.25);
   Mat4 Xprime = MagicM.adjoint() * X * MagicM / norm_X;
 
-  // rounding Xprime makes it easier to get Clifford angles later on
+  // rounding Xprime seems to let SelfAdjointEigenSolver
+  // get simpler eigenvectors
   Xprime = Xprime.unaryExpr([](Complex x) {
     double real_x = (std::abs(x.real()) < EPS) ? 0. : x.real();
     double imag_x = (std::abs(x.imag()) < EPS) ? 0. : x.imag();
