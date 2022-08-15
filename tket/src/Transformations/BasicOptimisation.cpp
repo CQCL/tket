@@ -279,7 +279,7 @@ static bool replace_two_qubit_interaction(
 
   // Try to simplify using KAK
   Circuit replacement = subc;
-  decompose_multi_qubits_CX().apply(replacement);
+  decompose_multi_qubits_TK2().apply(replacement);
   Eigen::Matrix4cd mat = get_matrix_from_2qb_circ(replacement);
   replacement = two_qubit_canonical(mat);
   TwoQbFidelities fid;

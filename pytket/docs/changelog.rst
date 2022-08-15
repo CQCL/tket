@@ -4,11 +4,14 @@ Changelog
 x.y.z (unreleased)
 ------------------
 
+Minor new features:
+
+* Improve ``FullPeepholeOptimise`` performance.
+
 Fixes:
 
 * Squash two-qubit circuits properly in ``FullPeepholeOptimise`` for parameter
   `target_2qb_gate=OpType.TK2`.
-* Fix ``FullPeepholeOptimise`` performance regression.
 
 1.5.0 (August 2022)
 -------------------

@@ -327,15 +327,7 @@ get_information_content(const Eigen::Matrix4cd &X) {
 
   // change to magic basis and make sure U in SU(4)
   const auto norm_X = pow(X.determinant(), 0.25);
-  Mat4 Xprime = MagicM.adjoint() * X * MagicM / norm_X;
-
-  // rounding Xprime seems to let SelfAdjointEigenSolver
-  // get simpler eigenvectors
-  Xprime = Xprime.unaryExpr([](Complex x) {
-    double real_x = (std::abs(x.real()) < EPS) ? 0. : x.real();
-    double imag_x = (std::abs(x.imag()) < EPS) ? 0. : x.imag();
-    return real_x + imag_x * i_;
-  });
+  const Mat4 Xprime = MagicM.adjoint() * X * MagicM / norm_X;
 
   // Find a common eigendecomposition of Re( X'.adjoint * X' ) and Im(
   // X'.adjoint * X' ) Use pseudorandom linear comb to avoid issues with
@@ -349,8 +341,13 @@ get_information_content(const Eigen::Matrix4cd &X) {
   while (true) {
     r += 1 / PI;
     if (r >= 1) r -= 1;
-    Eigen::SelfAdjointEigenSolver<Eigen::Matrix4d> ces(
-        r * X2real + (1 - r) * X2imag);
+    Eigen::Matrix4d to_solve = r * X2real + (1 - r) * X2imag;
+    // For Clifford matrix, SelfAdjointEigenSolver seems to have a higher chance
+    // to produce eigenvectors that eventually lead to non-clifford angles when
+    // there are rounding errors.
+    to_solve = to_solve.unaryExpr(
+        [](double x) { return (std::abs(x) < EPS) ? 0. : x; });
+    Eigen::SelfAdjointEigenSolver<Eigen::Matrix4d> ces(to_solve);
     eigv = ces.eigenvectors().cast<Complex>();
     eigs = (eigv.transpose() * Xprime.transpose() * Xprime * eigv).diagonal();
 
