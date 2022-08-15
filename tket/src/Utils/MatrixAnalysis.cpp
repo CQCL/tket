@@ -346,7 +346,7 @@ get_information_content(const Eigen::Matrix4cd &X) {
     // to produce eigenvectors that eventually lead to non-clifford angles when
     // there are rounding errors.
     to_solve = to_solve.unaryExpr(
-        [](double x) { return (std::abs(x) < EPS) ? 0. : x; });
+        [](double x) { return (std::abs(x) < 1e-14) ? 0. : x; });
     Eigen::SelfAdjointEigenSolver<Eigen::Matrix4d> ces(to_solve);
     eigv = ces.eigenvectors().cast<Complex>();
     eigs = (eigv.transpose() * Xprime.transpose() * Xprime * eigv).diagonal();
