@@ -938,50 +938,5 @@ SCENARIO("KAKDecomposition pass") {
     }
   }
 }
-
-SCENARIO("Test decompose Clifford circuit") {
-  GIVEN("Circuit 1") {
-    Circuit circ(2);
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    circ.add_op<unsigned>(OpType::TK1, {0, 0.5, 0}, {0});
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    Transforms::two_qubit_squash(OpType::CX).apply(circ);
-    REQUIRE(circ.n_gates() == 4);
-    REQUIRE(circ.count_gates(OpType::CX) == 1);
-    for (auto com : circ.get_commands()) {
-      REQUIRE(com.get_op_ptr()->is_clifford());
-    }
-  }
-  GIVEN("Circuit 2") {
-    Circuit circ(2);
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    circ.add_op<unsigned>(OpType::TK1, {0.5, 1, 0.5}, {0});
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    circ.add_op<unsigned>(OpType::TK1, {0.5, 1, 0.5}, {0});
-    circ.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 0.5}, {1});
-    Transforms::two_qubit_squash(OpType::CX).apply(circ);
-    REQUIRE(circ.n_gates() == 1);
-    REQUIRE(circ.count_gates(OpType::TK1) == 1);
-    auto commands = circ.get_commands();
-    REQUIRE(commands[0].get_op_ptr()->is_clifford());
-  }
-  GIVEN("Circuit 3") {
-    Circuit circ(2);
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    circ.add_op<unsigned>(OpType::TK1, {0, 0.5, 0}, {0});
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    circ.add_op<unsigned>(OpType::TK1, {0, 1.5, 0}, {0});
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    circ.add_op<unsigned>(OpType::TK1, {0, 2.5, 0}, {0});
-    circ.add_op<unsigned>(OpType::TK1, {0.5, 0.5, 0.5}, {1});
-    Transforms::two_qubit_squash(OpType::CX).apply(circ);
-    REQUIRE(circ.n_gates() == 5);
-    REQUIRE(circ.count_gates(OpType::CX) == 1);
-    for (auto com : circ.get_commands()) {
-      REQUIRE(com.get_op_ptr()->is_clifford());
-    }
-  }
-}
-
 }  // namespace test_TwoQubitCanonical
 }  // namespace tket
