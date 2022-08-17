@@ -203,7 +203,9 @@ Transform squash_1qb_to_pqp(const OpType &q, const OpType &p, bool strict) {
 Transform squash_1qb_to_tk1() {
   return Transforms::decompose_ZY() >>
          squash_1qb_to_pqp(OpType::Ry, OpType::Rz, true) >>
-         Transforms::decompose_ZYZ_to_TK1();
+         Transforms::decompose_ZX() >>
+         squash_1qb_to_pqp(OpType::Rx, OpType::Rz, true) >>
+         Transforms::decompose_ZXZ_to_TK1();
 }
 
 static bool fixup_angles(

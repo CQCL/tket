@@ -51,6 +51,11 @@ Transform decompose_single_qubits_TK1();
  */
 Transform decompose_ZYZ_to_TK1();
 
+/**
+ * Starting with Rz, Rx and multi-qubit gates, replace all singles with TK1.
+ */
+Transform decompose_ZXZ_to_TK1();
+
 // converts all single-qubit gates into Rz and Rx gates
 // Expects: any gates
 // Produces: Rz, Rx and any multi-qubit gates
