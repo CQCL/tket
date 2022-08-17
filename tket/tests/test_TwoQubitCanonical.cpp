@@ -938,6 +938,5 @@ SCENARIO("KAKDecomposition pass") {
     }
   }
 }
-
 }  // namespace test_TwoQubitCanonical
 }  // namespace tket

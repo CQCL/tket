@@ -4,6 +4,10 @@ Changelog
 x.y.z (unreleased)
 ------------------
 
+Minor new features:
+
+* Improve ``FullPeepholeOptimise`` performance.
+
 Fixes:
 
 * Squash two-qubit circuits properly in ``FullPeepholeOptimise`` for parameter

@@ -332,7 +332,15 @@ get_information_content(const Eigen::Matrix4cd &X) {
   // Find a common eigendecomposition of Re( X'.adjoint * X' ) and Im(
   // X'.adjoint * X' ) Use pseudorandom linear comb to avoid issues with
   // multiplicities > 1
-  const Mat4 X2 = Xprime.transpose() * Xprime;
+  Mat4 X2 = Xprime.transpose() * Xprime;
+  // For Clifford matrix, SelfAdjointEigenSolver seems to have a higher chance
+  // to produce eigenvectors that eventually lead to non-clifford angles when
+  // there are rounding errors.
+  X2 = X2.unaryExpr([](Complex x) {
+    double real_x = (std::abs(x.real()) < 1e-14) ? 0. : x.real();
+    double imag_x = (std::abs(x.imag()) < 1e-14) ? 0. : x.imag();
+    return real_x + imag_x * i_;
+  });
   const Eigen::Matrix4d X2real = X2.real();
   const Eigen::Matrix4d X2imag = X2.imag();
   Mat4 eigv;
@@ -344,7 +352,7 @@ get_information_content(const Eigen::Matrix4cd &X) {
     Eigen::SelfAdjointEigenSolver<Eigen::Matrix4d> ces(
         r * X2real + (1 - r) * X2imag);
     eigv = ces.eigenvectors().cast<Complex>();
-    eigs = (eigv.transpose() * Xprime.transpose() * Xprime * eigv).diagonal();
+    eigs = (eigv.transpose() * X2 * eigv).diagonal();
 
     if (std::abs((X2 - eigv * eigs.asDiagonal() * eigv.adjoint()).sum()) <
         EPS) {
