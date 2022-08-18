@@ -501,11 +501,11 @@ bool in_weyl_chamber(const std::array<Expr, 3> &k) {
       is_symbolic = false;
       if (i + 1 == k.size()) {
         double abs_eval = std::min(*eval, -(*eval) + 4);
-        if (abs_eval > last_val) {
+        if (abs_eval - last_val > EPS) {
           return false;
         }
       } else {
-        if (*eval > last_val) {
+        if (*eval - last_val > EPS) {
           return false;
         }
       }
