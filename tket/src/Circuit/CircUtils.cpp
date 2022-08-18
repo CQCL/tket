@@ -1153,7 +1153,7 @@ std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
     pre.add_op<unsigned>(OpType::Z, {0});
     post.add_op<unsigned>(OpType::Z, {1});
   }
-  if (b_eval && *b_eval > .5) {
+  if (b_eval && (*b_eval > .5)) {
     b = 1 - b;
     *b_eval = 1. - *b_eval;
     c = 1 - c;
