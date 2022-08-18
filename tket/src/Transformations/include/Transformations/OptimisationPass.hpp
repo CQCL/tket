@@ -35,6 +35,8 @@ Transform peephole_optimise_2q();
 /**
  * Peephole optimisation including resynthesis of three-qubit gate sequences.
  *
+ * The allow_swaps parameter has no effect when the target gate is TK2.
+ *
  * @param allow_swaps whether to allow introduction of implicit wire swaps
  * @param target_2qb_gate target 2-qubut gate (CX or TK2)
  *
