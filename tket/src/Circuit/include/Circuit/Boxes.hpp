@@ -749,7 +749,7 @@ class ToffoliBox : public Box {
   std::vector<transposition_t> cycle_to_transposition(
       const cycle_permutation_t &cycle) const;
 
-  std::set<cycle_transposition_t> get_transpositions() const;
+  std::deque<cycle_transposition_t> get_transpositions() const;
 
   Circuit get_bitstring_circuit(
       const std::vector<bool> &bitstring, const unsigned &target) const;

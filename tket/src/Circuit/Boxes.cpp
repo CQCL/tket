@@ -563,12 +563,13 @@ ToffoliBox::cycle_transposition_t ToffoliBox::cycle_to_transposition(
   return transpositions0;
 }
 
-std::set<ToffoliBox::cycle_transposition_t> ToffoliBox::get_transpositions()
+std::deque<ToffoliBox::cycle_transposition_t> ToffoliBox::get_transpositions()
     const {
-  std::set<ToffoliBox::cycle_transposition_t> transpositions;
+  std::deque<ToffoliBox::cycle_transposition_t> transpositions;
   for (const cycle_permutation_t &cycle : this->cycles_) {
     // each cycle is costed via Hamming distance to reudce number of operations
-    transpositions.insert(this->cycle_to_transposition(cycle));
+    transpositions.insert(
+        transpositions.end(), this->cycle_to_transposition(cycle));
   }
   return transpositions;
 }
@@ -670,7 +671,7 @@ std::pair<std::vector<bool>, std::vector<bool>> merge_transpositions(
 }
 
 ToffoliBox::cycle_transposition_t merge_cycles(
-    std::set<ToffoliBox::cycle_transposition_t> &cycle_transpositions) {
+    std::deque<ToffoliBox::cycle_transposition_t> &cycle_transpositions) {
   // TODO: For comparison, use bool from construction to choose how cycle is
   // made
 
@@ -678,7 +679,7 @@ ToffoliBox::cycle_transposition_t merge_cycles(
   // A transposition is defined as a {first, middle, last} struct
 
   /** STEP 1:
-   * Taking each transposition in the a cycle pairwise, produce an option of
+   * Taking each transposition in the a cycle pairwise, produce options for the
    * first step of gray code based on a last->middle of the first entry in the
    * pair, and first->middle of the second entry in the pair for all that match.
    * Then, produce a new option of match->middle of the first and match->middle
@@ -688,17 +689,28 @@ ToffoliBox::cycle_transposition_t merge_cycles(
    * sequence of transpositions that implement the same cycle, but with fewer
    * quantum gates.
    */
-  for (auto &cycle : cycle_transpositions) {
-    auto it = cycle.begin();
-    auto jt = it;
-    ++jt;
-    while (jt != cycle.end()) {
+  // for (auto it = cycle_transpositions.begin(); it !=
+  // cycle_transpositions.end();
+  //      ++it) {
+  //   // }
+  // NOTE TO SELF / TODO: std::set< iterators automatically const, so replace
+  // std::set< with suitable other container
+  for (ToffoliBox::cycle_transposition_t &cycle : cycle_transpositions) {
+    unsigned i = 0, j = 1;
+    // ToffoliBox::cycle_transposition_t cycle = *it;
+    while (j <= cycle.size()) {
+      ToffoliBox::transposition_t transposition_i = cycle[i];
+      ToffoliBox::transposition_t transposition_j = cycle[j];
       std::pair<std::vector<bool>, std::vector<bool>> update =
-          merge_transpositions(it->last, it->middle, jt->first, jt->middle);
-      *it->last = update.first;
-      *jt->first = update.second;
-      ++it;
-      ++jt;
+          merge_transpositions(
+              transposition_i.last, transposition_i.middle,
+              transposition_j.first, transposition_j.middle);
+
+      cycle[i].last = update.first;
+      cycle[j].first = update.second;
+
+      ++i;
+      ++j;
     }
   }
 
@@ -722,11 +734,13 @@ ToffoliBox::cycle_transposition_t merge_cycles(
       // TODO: instead of trying one then the other, try both and pick ones with
       // best hamming distance to indivdual middles
       std::pair<std::vector<bool>, std::vector<bool>> output =
-          merge_transpositions(jt->last, jt->middle, it->first, it->middle);
+          merge_transpositions(
+              jt->rbegin()->last, jt->rbegin()->middle, it->begin()->first,
+              it->begin()->middle);
       // => cycle it can be added to back of cycle jt with cancellations
-      if (output.first != jt->last) {
-        jt->last = pair.first;
-        it->first = pair.second;
+      if (output.first != jt->rbegin()->last) {
+        jt->rbegin()->last = output.first;
+        it->begin()->first = output.second;
         // combine cycle transpositions
         jt->insert(jt->end(), it->begin(), it->end());
         // n.b. jt after it, so it now == jt != cycle_transpositions.end()
@@ -734,13 +748,14 @@ ToffoliBox::cycle_transposition_t merge_cycles(
         it = cycle_transpositions.erase(it);
       } else {
         // try adding cycle jt to back of cycle it
-        output =
-            merge_transpositions(it->last, it->middle, jt->first, jt->middle);
+        output = merge_transpositions(
+            it->rbegin()->last, it->rbegin()->middle, jt->begin()->first,
+            jt->begin()->middle);
         // => cycle jt can be added to back of cycle it with
         // cancellations
-        if (output.first != it->last) {
-          it->last = pair.first;
-          jt->first = pair.second;
+        if (output.first != it->rbegin()->last) {
+          it->rbegin()->last = output.first;
+          jt->begin()->first = output.second;
           // combine cycle transpositions
           // such new information is held in jt
           jt->insert(jt->begin(), it->rbegin(), it->rend());
@@ -761,8 +776,8 @@ ToffoliBox::cycle_transposition_t merge_cycles(
    * The remaining non-joined "cycles" cannot gain gate cancellations via better
    * merging, so just merge in order of iteration and return.
    */
-  cycle_transpostion_t output;
-  for (const cycle_transposition_t &cycle : cycle_transpositions) {
+  ToffoliBox::cycle_transposition_t output;
+  for (const ToffoliBox::cycle_transposition_t &cycle : cycle_transpositions) {
     output.insert(output.end(), cycle.begin(), cycle.end());
   }
   return output;
@@ -771,11 +786,11 @@ ToffoliBox::cycle_transposition_t merge_cycles(
 void ToffoliBox::generate_circuit() const {
   // This decomposition is as described on page 191, section 4.5.2 "Single qubit
   // and CNOT gates are universal" of Nielsen & Chuang
-  std::set<ToffoliBox::cycle_transposition_t> cycle_transpositions =
+  std::deque<ToffoliBox::cycle_transposition_t> cycle_transpositions =
       this->get_transpositions();
   // optionally, order the transpositions and cycles to allow gate cancellation
   ToffoliBox::cycle_transposition_t ordered_transpositions =
-      this->merge_cycles(cycle_transpositions);
+      merge_cycles(cycle_transpositions);
 
   if (ordered_transpositions.empty()) {
     this->circ_ = std::make_shared<Circuit>();
@@ -785,13 +800,13 @@ void ToffoliBox::generate_circuit() const {
   // Now we have ordered transpositions, produced front->middle and middle->back
   // gray codes for each transposition and add to circuit
   unsigned n_qubits = ordered_transpositions[0].first.size();
-  this->circ = std::make_shared<Circuit>(n_qubits);
+  this->circ_ = std::make_shared<Circuit>(n_qubits);
   for (const transposition_t &transposition : ordered_transpositions) {
     TKET_ASSERT(transposition.first.size() == n_qubits);
     TKET_ASSERT(transposition.middle.size() == n_qubits);
     TKET_ASSERT(transposition.last.size() == n_qubits);
     // get bitstrings for first -> middle
-    std::vector<std::pair<bool>, unsigned> all_gray_code_entries;
+    std::vector<std::pair<std::vector<bool>, unsigned>> all_gray_code_entries;
     std::vector<bool> bitstring = transposition.first;
     for (unsigned i = 0; i < transposition.first.size(); i++) {
       if (transposition.first[i] != transposition.middle[i]) {
@@ -812,7 +827,7 @@ void ToffoliBox::generate_circuit() const {
     // add all the gray code entries as bitstring circuits
     for (const std::pair<std::vector<bool>, unsigned> &entry :
          all_gray_code_entries) {
-      this->circuit_->append(
+      this->circ_->append(
           this->get_bitstring_circuit(entry.first, entry.second));
     }
   }
