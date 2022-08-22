@@ -35,7 +35,8 @@ add_library(tket-${COMP}
     SingleQubitSquash.cpp
     PhasedXFrontier.cpp
     PQPSquash.cpp
-    StandardSquash.cpp)
+    StandardSquash.cpp
+    PostRoutingOptimisation.cpp)
 
 list(APPEND DEPS_${COMP}
     Architecture
