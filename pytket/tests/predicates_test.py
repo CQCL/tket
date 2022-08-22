@@ -1110,6 +1110,7 @@ def test_rz_phasedX_squash() -> None:
     assert cmds[-1].op.type == OpType.Rz
     assert cmds[-2].op.type == OpType.Rz
 
+
 def test_predicate_serialization() -> None:
     arc = Architecture([(0, 2), (1, 2)])
 
