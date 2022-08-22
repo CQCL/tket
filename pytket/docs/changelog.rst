@@ -7,6 +7,8 @@ x.y.z (unreleased)
 Minor new features:
 
 * Improve ``FullPeepholeOptimise`` performance.
+* Add ``SquashRzPhasedX`` pass to squash single qubit gates into
+  ``Rz`` and ``PhasedX`` gates while trying to commute ``Rz``s to the back. 
 
 Fixes:
 
