@@ -112,6 +112,7 @@ jobs:
     - name: Install ninja and ccache
       run: sudo apt-get install ninja-build ccache
     - name: Build tket
+      if: needs.check_changes.outputs.tket_changed == 'true'
       run: ${CONAN_CMD} create --profile=tket recipes/tket tket/stable
     - name: check that version is consistent
       if: github.event_name == 'pull_request'
@@ -192,6 +193,7 @@ jobs:
   macos:
     name: Build and test (MacOS)
     runs-on: macos-11
+    needs: check_changes
     env:
       CONAN_REVISIONS_ENABLED: 1
       PYTKET_SKIP_REGISTRATION: "true"
@@ -246,6 +248,7 @@ jobs:
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
     - name: Build tket
+      if: needs.check_changes.outputs.tket_changed == 'true'
       run: conan create --profile=tket recipes/tket tket/stable --build=missing
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests
@@ -313,6 +316,7 @@ jobs:
   macos-m1:
     name: Build and test (MacOS M1)
     runs-on: [self-hosted, macos, M1]
+    needs: check_changes
     if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository
     defaults:
       run:
@@ -339,6 +343,7 @@ jobs:
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
     - name: Build tket
+      if: needs.check_changes.outputs.tket_changed == 'true'
       run: conan create --profile=tket recipes/tket tket/stable --build=missing
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests
@@ -401,6 +406,7 @@ jobs:
   windows:
     name: Build and test (Windows)
     runs-on: windows-2019
+    needs: check_changes
     env:
       CONAN_REVISIONS_ENABLED: 1
       PYTKET_SKIP_REGISTRATION: "true"
@@ -423,6 +429,7 @@ jobs:
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Build tket
+      if: needs.check_changes.outputs.tket_changed == 'true'
       run: conan create --profile=tket recipes/tket tket/stable
     - name: Build and run tket tests
       run: conan create --profile=tket recipes/tket-tests
