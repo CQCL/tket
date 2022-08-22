@@ -1,6 +1,19 @@
 Changelog
 =========
 
+1.5.1 (August 2022)
+-------------------
+
+Minor new features:
+
+* Improve ``FullPeepholeOptimise`` performance.
+
+Fixes:
+
+* Squash two-qubit circuits properly in ``FullPeepholeOptimise`` for parameter
+  `target_2qb_gate=OpType.TK2`.
+* Floating point inaccuracies in ``NormalisedTK2Predicate``.
+
 1.5.0 (August 2022)
 -------------------
 
