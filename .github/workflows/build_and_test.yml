@@ -121,8 +121,10 @@ jobs:
         mkdir -p ~/texmf/tex/latex
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
     - name: Build and run tket tests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
       run: ${CONAN_CMD} create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_proptests_changed == 'true'
       run: ${CONAN_CMD} create --profile=tket recipes/tket-proptests
     - name: Install pybind11
       run: ${CONAN_CMD} create --profile=tket recipes/pybind11
@@ -249,8 +251,10 @@ jobs:
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: conan create --profile=tket recipes/tket tket/stable --build=missing
     - name: Build and run tket tests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_proptests_changed == 'true'
       run: |
         conan install --profile=tket rapidcheck/cci.20210702@ --build=missing
         conan create --profile=tket recipes/tket-proptests
@@ -344,8 +348,10 @@ jobs:
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: conan create --profile=tket recipes/tket tket/stable --build=missing
     - name: Build and run tket tests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_proptests_changed == 'true'
       run: conan create --profile=tket recipes/tket-proptests
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
@@ -430,8 +436,10 @@ jobs:
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: conan create --profile=tket recipes/tket tket/stable
     - name: Build and run tket tests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
       run: conan create --profile=tket recipes/tket-tests
     - name: Build and run tket proptests
+      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_proptests_changed == 'true'
       run: conan create --profile=tket recipes/tket-proptests
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
