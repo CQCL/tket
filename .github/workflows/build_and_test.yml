@@ -17,10 +17,54 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check_changes:
+    name: Check tket library version
+    runs-on: ubuntu-22.04
+    outputs:
+      tket_changed: ${{ steps.filter.outputs.tket }}
+      tket_tests_changed: ${{ steps.filter.outputs.tket_tests }}
+      tket_proptests_changed: ${{ steps.filter.outputs.tket_proptests }}
+      pytket_changed: ${{ steps.filter.outputs.pytket }}
+      tket_ver: ${{ steps.tket_ver.outputs.tket_ver }}
+      tket_package_exists: ${{ steps.tket_package_exists.outputs.tket_package_exists }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v3
+      with:
+        python-version: '3.10'
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        base: ${{ github.ref }}
+        filters: |
+          tket:
+            - '{tket/src/**,recipes/tket/conanfile.py}'
+          tket_tests:
+            - '{tket/tests/**,recipes/tket-tests/conanfile.py}'
+          tket_proptests:
+            - '{tket/proptests/**,recipes/tket-proptests/conanfile.py}'
+          pytket:
+            - 'pytket/**'
+    - name: parse version from conanfile
+      id: tket_ver
+      run: |
+        pip install conan
+        tket_ver=$(conan inspect --raw version recipes/tket/conanfile.py)
+        echo "::set-output name=tket_ver::${tket_ver}"
+    - name: See if version exists on remote
+      id: tket_package_exists
+      run: |
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+        tket_package_exists=`conan search -r tket-libs "tket/${{ steps.tket_ver.outputs.tket_ver }}@tket/stable" > /dev/null 2>&1 && echo true || echo false`
+        echo "::set-output name=tket_package_exists::${tket_package_exists}"
+    - name: Check tket version bump
+      run: |
+        if [ ${{ steps.filter.outputs.tket == 'true' }} && ${{ steps.test_package_exists.outputs.tket_package_exists == 'true' }} ] ; then exit 1 ; fi
 
   linux:
     name: Build and test (Linux)
     runs-on: ubuntu-22.04
+    needs: check_changes
     env:
       CONAN_REVISIONS_ENABLED: 1
       PYTKET_SKIP_REGISTRATION: "true"
@@ -67,6 +111,9 @@ jobs:
       run: sudo apt-get install ninja-build ccache
     - name: Build tket
       run: ${CONAN_CMD} create --profile=tket recipes/tket tket/stable
+    - name: check that version is consistent
+      if: github.event_name == 'pull_request'
+      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Install runtime test requirements
       run: |
         sudo apt-get install texlive texlive-latex-extra latexmk
