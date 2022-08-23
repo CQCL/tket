@@ -733,29 +733,33 @@ ToffoliBox::cycle_transposition_t merge_cycles(
       // try adding cycle it to back of cycle jt
       // TODO: instead of trying one then the other, try both and pick ones with
       // best hamming distance to indivdual middles
+      auto jt_rbegin = jt->rbegin();
+      auto it_begin = it->begin();
       std::pair<std::vector<bool>, std::vector<bool>> output =
           merge_transpositions(
-              jt->rbegin()->last, jt->rbegin()->middle, it->begin()->first,
-              it->begin()->middle);
+              jt_rbegin->last, jt_rbegin->middle, it_begin->first,
+              it_begin->middle);
       // => cycle it can be added to back of cycle jt with cancellations
-      if (output.first != jt->rbegin()->last) {
-        jt->rbegin()->last = output.first;
-        it->begin()->first = output.second;
+      if (output.first != jt_rbegin->last) {
+        jt_rbegin->last = output.first;
+        it_begin->first = output.second;
         // combine cycle transpositions
         jt->insert(jt->end(), it->begin(), it->end());
         // n.b. jt after it, so it now == jt != cycle_transpositions.end()
         // but we increment jt immediately after
         it = cycle_transpositions.erase(it);
       } else {
+        auto jt_begin = jt->begin();
+        auto it_rbegin = it->rbegin();
         // try adding cycle jt to back of cycle it
         output = merge_transpositions(
-            it->rbegin()->last, it->rbegin()->middle, jt->begin()->first,
-            jt->begin()->middle);
+            it_rbegin->last, it_rbegin->middle, jt_begin->first,
+            jt_begin->middle);
         // => cycle jt can be added to back of cycle it with
         // cancellations
-        if (output.first != it->rbegin()->last) {
-          it->rbegin()->last = output.first;
-          jt->begin()->first = output.second;
+        if (output.first != it_rbegin->last) {
+          it_rbegin->last = output.first;
+          jt_begin->first = output.second;
           // combine cycle transpositions
           // such new information is held in jt
           jt->insert(jt->begin(), it->rbegin(), it->rend());
