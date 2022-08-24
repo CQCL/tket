@@ -494,11 +494,9 @@ op_signature_t StabiliserAssertionBox::get_signature() const {
   return qubs;
 }
 
-// TODO: check every vector is the same size
 ToffoliBox::ToffoliBox(
-    std::map<std::vector<bool>, std::vector<bool>> &_permutation, bool reorder)
+    std::map<std::vector<bool>, std::vector<bool>> &_permutation)
     : Box(OpType::ToffoliBox) {
-  this->reorder_ = reorder;
   // Convert passed permutation to cycles
   while (!_permutation.empty()) {
     auto it = _permutation.begin();
@@ -514,7 +512,6 @@ ToffoliBox::ToffoliBox(
     if (cycle.size() > 1) {
       this->cycles_.insert(cycle);
     }
-    // TODO: what's quicker, deleting entries or adding to set for look up?
     for (const std::vector<bool> &bitstring : cycle) {
       _permutation.erase(bitstring);
     }
@@ -537,7 +534,6 @@ unsigned get_hamming_distance(
 
 ToffoliBox::cycle_transposition_t ToffoliBox::cycle_to_transposition(
     const cycle_permutation_t &cycle) const {
-  // TODO: note that cycles can start at any point, use this aswell..
   // use summation of the hamming distance to decide between two basic options
   // iterate through cycle_permutation_t object pairwise and produce two cheap
   // transpositions options
@@ -559,8 +555,6 @@ ToffoliBox::cycle_transposition_t ToffoliBox::cycle_to_transposition(
     ++it;
     ++jt;
   }
-  std::cout << accumulated_hamming_distance0 << " "
-            << accumulated_hamming_distance1 << std::endl;
   if (accumulated_hamming_distance0 > accumulated_hamming_distance1) {
     return transpositions1;
   }
@@ -580,12 +574,6 @@ std::deque<ToffoliBox::cycle_transposition_t> ToffoliBox::get_transpositions()
 
 Circuit ToffoliBox::get_bitstring_circuit(
     const std::vector<bool> &bitstring, const unsigned &target) const {
-  std::cout << "Get bitstring circuit: ";
-  for (auto b : bitstring) {
-    std::cout << b << " ";
-  }
-  std::cout << " : " << target << std::endl;
-
   // flip qubits that need to be state 0
   unsigned n_qubits = bitstring.size();
   Circuit x_circuit(n_qubits);
@@ -626,211 +614,12 @@ std::set<std::pair<std::vector<bool>, unsigned>> get_single_gray_code_step(
   return output;
 }
 
-// By examining possibly matching gray code steps, determines whether
-// transposition B can be added to back of transposition A, with
-// cancellation of gates
-std::pair<std::vector<bool>, std::vector<bool>> merge_transpositions(
-    const std::vector<bool> &a_last, const std::vector<bool> &a_middle,
-    const std::vector<bool> &b_first, const std::vector<bool> &b_middle) {
-
-  // get max hamming distance as upper bound on search
-  unsigned hamming_distance_a = get_hamming_distance(a_last, a_middle);
-  // if true, then a_middle->a_last will add no gates to circuit, so cannot
-  // optimise over it
-  if(hamming_distance_a < 2){
-    return {a_last, b_first};
-  }
-  // unsigned hamming_distance_b = get_hamming_distance(b_first, b_middle);
-  // get sets of possible gray codes
-  std::set<std::pair<std::vector<bool>, unsigned>> transposition_a_graycodes =
-      get_single_gray_code_step(a_last, a_middle);
-  std::set<std::pair<std::vector<bool>, unsigned>> transposition_b_graycodes =
-      get_single_gray_code_step(b_first, b_middle);
-  // find intersection of sets
-  std::set<std::pair<std::vector<bool>, unsigned>> intersection;
-  std::set_intersection(
-      transposition_a_graycodes.begin(), transposition_a_graycodes.end(),
-      transposition_b_graycodes.begin(), transposition_b_graycodes.end(),
-      std::inserter(intersection, intersection.begin()));
-  std::cout << "TRANSPOSITION A" << std::endl;
-  for (auto x : transposition_a_graycodes) {
-    for (auto b : x.first) {
-      std::cout << b;
-    }
-    std::cout << " " << x.second << std::endl;
-  }
-  std::cout << "TRANSPOSITION B" << std::endl;
-  for (auto x : transposition_b_graycodes) {
-    for (auto b : x.first) {
-      std::cout << b;
-    }
-    std::cout << " " << x.second << std::endl;
-  }
-  std::cout << "INTERSECTION" << std::endl;
-  for (auto x : intersection) {
-    for (auto b : x.first) {
-      std::cout << b;
-    }
-    std::cout << " " << x.second << std::endl;
-  }
-  // if they intersect then there are some gray code steps that can be cancelled
-  if (!intersection.empty()) {
-    // find which sequence of gray code steps is best by generating the next
-    // steps for each and comparing
-      while(true){
-      // construct a new set of intersections by finding the set of next gray
-      // code bitstrings for every bitstring in the intersection
-      std::set<std::pair<std::vector<bool>, unsigned>> new_intersections = {};
-      for (const std::pair<std::vector<bool>, unsigned> &step : intersection) {
-        // number of returned steps is empty if the target has already been
-        // reached n.b, all instances of transposition_
-        transposition_a_graycodes =
-            get_single_gray_code_step(step.first, a_middle);
-        transposition_b_graycodes =
-            get_single_gray_code_step(step.first, b_middle);
-        std::set_intersection(
-            transposition_a_graycodes.begin(), transposition_a_graycodes.end(),
-            transposition_b_graycodes.begin(), transposition_b_graycodes.end(),
-            std::inserter(new_intersections, new_intersections.begin()));
-      }
-      // if there are none, then pick a bitstring from previous set (i.e. break
-      // and preserve it)
-      if (new_intersections.empty()) {
-        break;
-      }
-      // else, update intersections set and repeat until no matches are found
-      intersection = new_intersections;
-    }
-    // assue all gray code bitstrings in intersection grant equal cancellations,
-    // so just pick first
-    std::pair<std::vector<bool>, unsigned> match = *intersection.begin();
-    return {match.first, match.first};
-  } else {
-    return {a_last, b_first};
-  }
-}
-
-ToffoliBox::cycle_transposition_t merge_cycles(
-    std::deque<ToffoliBox::cycle_transposition_t> &cycle_transpositions) {
-  // TODO: For comparison, use bool from construction to choose how cycle is
-  // made
-
-  // There are multiple gray code possible between transpositions.
-  // A transposition is defined as a {first, middle, last} struct
-
-  /** STEP 1:
-   * Taking each transposition in a cycle pairwise, produce options for the
-   * first step of gray code based on a last->middle of the first entry in the
-   * pair, and first->middle of the second entry in the pair for all that match.
-   * Then, produce a new option of match->middle of the first and match->middle
-   * of the second. Repeat until there is one match left (or take one of the
-   * "equal" matches), set the first transposition to {first, middle, match},
-   * set the second transposition to {match, middle, last} This produces a
-   * sequence of transpositions that implement the same cycle, but with fewer
-   * quantum gates.
-   */
-  std::cout << "Start Step 1 of merge_cycles" << std::endl;
-  for (ToffoliBox::cycle_transposition_t &cycle : cycle_transpositions) {
-    unsigned i = 0, j = 1;
-    while (j < cycle.size()) {
-      ToffoliBox::transposition_t transposition_i = cycle[i];
-      ToffoliBox::transposition_t transposition_j = cycle[j];
-      // TODO: This may not work... try first though
-      std::pair<std::vector<bool>, std::vector<bool>> update =
-          merge_transpositions(
-              transposition_i.last, transposition_i.middle,
-              transposition_j.first, transposition_j.middle);
-
-      cycle[i].last = update.first;
-      cycle[j].first = update.second;
-
-      ++i;
-      ++j;
-    }
-  }
-  std::cout << "Start Step 2 of merge_cycles" << std::endl;
-  /** STEP 2:
-   * A cycle is defined by the {first, middle} of its first transposition and
-   * then {middle, last} of its final transposition.
-   * Go through ordered pairs pt0, pt1 of cycles.
-   * Generate range of first step of gray code for pt0 last->middle and pt1
-   * first->middle. If any match, produce options as in STEP 1. Repeat until
-   * best chosen set pt0 last transposition last to match, set pt1 first
-   * transposition to match. Combine into new cycle, correct iterators,
-   * continue.
-   */
-  auto it = cycle_transpositions.begin();
-  while (it != cycle_transpositions.end()) {
-    // it and jt are cycle_transposition_t objects
-    auto jt = it;
-    ++jt;
-    while (jt != cycle_transpositions.end()) {
-      // try adding cycle it to back of cycle jt
-      // TODO: instead of trying one then the other, try both and pick ones with
-      // best hamming distance to indivdual middles
-      auto jt_rbegin = jt->rbegin();
-      auto it_begin = it->begin();
-      std::pair<std::vector<bool>, std::vector<bool>> output =
-          merge_transpositions(
-              jt_rbegin->last, jt_rbegin->middle, it_begin->first,
-              it_begin->middle);
-      // => cycle it can be added to back of cycle jt with cancellations
-      if (output.first != jt_rbegin->last) {
-        jt_rbegin->last = output.first;
-        it_begin->first = output.second;
-        // combine cycle transpositions
-        jt->insert(jt->end(), it->begin(), it->end());
-        // n.b. jt after it, so it now == jt != cycle_transpositions.end()
-        // but we increment jt immediately after
-        it = cycle_transpositions.erase(it);
-      } else {
-        auto jt_begin = jt->begin();
-        auto it_rbegin = it->rbegin();
-        // try adding cycle jt to back of cycle it
-        output = merge_transpositions(
-            it_rbegin->last, it_rbegin->middle, jt_begin->first,
-            jt_begin->middle);
-        // => cycle jt can be added to back of cycle it with
-        // cancellations
-        if (output.first != it_rbegin->last) {
-          it_rbegin->last = output.first;
-          jt_begin->first = output.second;
-          // combine cycle transpositions
-          // such new information is held in jt
-          jt->insert(jt->begin(), it->rbegin(), it->rend());
-          // n.b. jt after it, so now it == jt != cycle_transpositions.end()
-          // but we increment jt immediately after
-          it = cycle_transpositions.erase(it);
-        }
-      }
-      // else can't be merged with cancellations so try next cycle
-      ++jt;
-    }
-    // try another starting cycle (n.b. it may have been added to and increment
-    // via erase)
-    ++it;
-  }
-  std::cout << "Start Step 3 of merge_cycles" << std::endl;
-
-  /** STEP 3:
-   * The remaining non-joined "cycles" cannot gain gate cancellations via better
-   * merging, so just merge in order of iteration and return.
-   */
-  ToffoliBox::cycle_transposition_t output;
-  for (const ToffoliBox::cycle_transposition_t &cycle : cycle_transpositions) {
-    output.insert(output.end(), cycle.begin(), cycle.end());
-  }
-  std::cout << "Finish merge_cycles" << std::endl;
-  return output;
-}
 ToffoliBox::gray_code_t transposition_to_gray_code(
     const ToffoliBox::transposition_t &transposition) {
-  std::cout << "transposition to gray code!" << std::endl;
   unsigned first_middle_hamming_distance =
       get_hamming_distance(transposition.first, transposition.middle);
   unsigned middle_last_hamming_distance =
       get_hamming_distance(transposition.middle, transposition.last);
-  std::cout << first_middle_hamming_distance << " " << middle_last_hamming_distance << std::endl;
   ToffoliBox::gray_code_t all_gray_code_entries;
   // => that some optimisation is done to middle_last, so must go via
   // transposition.last bitstring to allow proper cancellation
@@ -850,10 +639,6 @@ ToffoliBox::gray_code_t transposition_to_gray_code(
     for (unsigned i = 0; i < transposition.first.size(); i++) {
       if (transposition.first[i] != transposition.last[i]) {
         initial[i] = !initial[i];
-        // for(auto b : bitstring){
-        //   std::cout << b << " ";
-        // }
-        // std::cout << " : " << i << std::endl;
         all_gray_code_entries.push_back({initial, i});
       }
     }
@@ -861,20 +646,13 @@ ToffoliBox::gray_code_t transposition_to_gray_code(
   }
   // with the right middle bitstring now guaranteed, go from this bitstring to
   // middle
-  // std::cout << "done first to last " << std::endl;
   std::vector<bool> bitstring = initial;
   for (unsigned i = 0; i < transposition.first.size(); i++) {
     if (initial[i] != transposition.middle[i]) {
       bitstring[i] = !bitstring[i];
-      // for(auto b : bitstring){
-      //   std::cout << b << " ";
-      // }
-      // std::cout << " : " << i << std::endl;
       all_gray_code_entries.push_back({bitstring, i});
     }
   }
-  // std::cout << "done first to middle" << std::endl;
-
   // now do the last->middle in reverse to guarantee right
   // gray code path is taken
   initial = transposition.last;
@@ -888,15 +666,10 @@ ToffoliBox::gray_code_t transposition_to_gray_code(
     for (unsigned i = 0; i < transposition.first.size(); i++) {
       if (initial[i] != transposition.first[i]) {
         initial[i] = !initial[i];
-        // for(auto b : bitstring){
-        //   std::cout << b << " ";
-        // }
-        // std::cout << " : " << i << std::endl;
         reverse_gray_code_entries.push_back({initial, i});
       }
     }
   }
-  std::cout << "done last to first" << std::endl;
   // and then go from bitstring to middle
   bitstring = initial;
   for (unsigned i = 0; i < transposition.middle.size(); i++) {
@@ -905,46 +678,13 @@ ToffoliBox::gray_code_t transposition_to_gray_code(
       reverse_gray_code_entries.push_back({bitstring, i});
     }
   }
-
-  std::cout << "done last to middle " << std::endl;
-  // // get bitstrings for first -> middle
-  // // ToffoliBox::gray_code_t all_gray_code_entries;
-  // std::vector<bool> bitstring = transposition.first;
-  // for (unsigned i = 0; i < transposition.first.size(); i++) {
-  //   if (transposition.first[i] != transposition.middle[i]) {
-  //     bitstring[i] = !bitstring[i];
-  //     for(auto b : bitstring){
-  //       std::cout << b << " ";
-  //     }
-  //     std::cout << " : " << i << std::endl;
-  //     all_gray_code_entries.push_back({bitstring, i});
-  //   }
-  // }
-
-  // std::cout << "Got First->Middle graycodes " << counter << std::endl;
-
-  // get bitstrings for middle -> last;
-  // to make sure the changes match where necessary, go from last->middle and
-  // reverse (due to indexing)
-  // bitstring = transposition.last;
-  // ToffoliBox::gray_code_t reverse_gray_code_entries;
-  // for (unsigned i = 0; i < transposition.middle.size(); i++) {
-  //   if (transposition.middle[i] != transposition.last[i]) {
-  //     bitstring[i] = !bitstring[i];
-  //     reverse_gray_code_entries.push_back({bitstring, i});
-  //   }
-  // }
-  // std::cout << "Got Middle->Last graycodes " << counter << std::endl;
   // don't want to add transformation for reaching final -> so pop_back
-  if(!reverse_gray_code_entries.empty()){
-
+  if (!reverse_gray_code_entries.empty()) {
     reverse_gray_code_entries.pop_back();
   }
   all_gray_code_entries.insert(
       all_gray_code_entries.end(), reverse_gray_code_entries.rbegin(),
       reverse_gray_code_entries.rend());
-
-  std::cout << "got all gray code? " << std::endl;
   return all_gray_code_entries;
 }
 
@@ -953,44 +693,16 @@ void ToffoliBox::generate_circuit() const {
   // qubit and CNOT gates are universal" of Nielsen & Chuang
   std::deque<ToffoliBox::cycle_transposition_t> cycle_transpositions =
       this->get_transpositions();
-  std::cout << "Got Transpositions. " << std::endl;
-
-  for (auto t : cycle_transpositions) {
-    std::cout << "New cycle: " << std::endl;
-    for (unsigned i = 0; i < t.size(); i++) {
-      std::cout << i << std::endl;
-      std::cout << "First: ";
-      for (auto b : t[i].first) {
-        std::cout << b << " ";
-      }
-      std::cout << "\nMiddle: ";
-      for (auto b : t[i].middle) {
-        std::cout << b << " ";
-      }
-      std::cout << "\nLast: ";
-      for (auto b : t[i].last) {
-        std::cout << b << " ";
-      }
-      std::cout << std::endl;
-    }
-  }
   // optionally, order the transpositions and cycles to allow gate
   // cancellation
 
   ToffoliBox::cycle_transposition_t ordered_transpositions;
-  if (this->reorder_) {
-    ordered_transpositions = merge_cycles(cycle_transpositions);
-  } else {
-    for (auto &transpositions : cycle_transpositions) {
-      ordered_transpositions.insert(
-          ordered_transpositions.end(), transpositions.begin(),
-          transpositions.end());
-    }
+  for (auto &transpositions : cycle_transpositions) {
+    ordered_transpositions.insert(
+        ordered_transpositions.end(), transpositions.begin(),
+        transpositions.end());
   }
 
-  std::cout << "Merge Cycles. " << std::endl;
-  std::cout << "number of transpositions: " << ordered_transpositions.size()
-            << std::endl;
   if (ordered_transpositions.empty()) {
     this->circ_ = std::make_shared<Circuit>();
     return;
@@ -999,27 +711,12 @@ void ToffoliBox::generate_circuit() const {
   // Now we have ordered transpositions, produced front->middle and
   // middle->back gray codes for each transposition and add to circuit
   unsigned n_qubits = ordered_transpositions[0].first.size();
-  std::cout << "n_qubits: " << n_qubits << std::endl;
   this->circ_ = std::make_shared<Circuit>(n_qubits);
   unsigned counter = 0;
   for (const transposition_t &transposition : ordered_transpositions) {
     TKET_ASSERT(transposition.first.size() == n_qubits);
     TKET_ASSERT(transposition.middle.size() == n_qubits);
     TKET_ASSERT(transposition.last.size() == n_qubits);
-    std::cout << "\nNew transposition!" << std::endl;
-    std::cout << "First: ";
-    for (auto b : transposition.first) {
-      std::cout << b << " ";
-    }
-    std::cout << "\nMiddle: ";
-    for (auto b : transposition.middle) {
-      std::cout << b << " ";
-    }
-    std::cout << "\nLast: ";
-    for (auto b : transposition.last) {
-      std::cout << b << " ";
-    }
-    std::cout << std::endl;
     ToffoliBox::gray_code_t all_gray_code_entries =
         transposition_to_gray_code(transposition);
     for (const std::pair<std::vector<bool>, unsigned> &entry :
@@ -1027,8 +724,6 @@ void ToffoliBox::generate_circuit() const {
       this->circ_->append(
           this->get_bitstring_circuit(entry.first, entry.second));
     }
-
-    std::cout << "Add circuits" << counter << std::endl;
     counter++;
   }
 }
