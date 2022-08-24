@@ -2240,9 +2240,14 @@ SCENARIO("Test decompose_ZXZ_to_TK1") {
   }
 
   auto u0 = tket_sim::get_unitary(circ);
-  Transforms::decompose_ZXZ_to_TK1().apply(circ);
+  REQUIRE(Transforms::decompose_ZXZ_to_TK1().apply(circ));
   auto u1 = tket_sim::get_unitary(circ);
 
+  REQUIRE(circ.count_gates(OpType::TK1) == 5);
+  REQUIRE(circ.count_gates(OpType::CX) == 1);
+  REQUIRE(circ.count_gates(OpType::CZ) == 1);
+  REQUIRE(circ.n_gates() == 10);
+  
   REQUIRE(u1.isApprox(u1));
 }
 
@@ -2301,6 +2306,11 @@ SCENARIO("Test decompose_ZYZ_to_TK1") {
   auto u0 = tket_sim::get_unitary(circ);
   Transforms::decompose_ZYZ_to_TK1().apply(circ);
   auto u1 = tket_sim::get_unitary(circ);
+
+  REQUIRE(circ.count_gates(OpType::TK1) == 5);
+  REQUIRE(circ.count_gates(OpType::CX) == 1);
+  REQUIRE(circ.count_gates(OpType::CZ) == 1);
+  REQUIRE(circ.n_gates() == 10);
 
   REQUIRE(u1.isApprox(u1));
 }
