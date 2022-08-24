@@ -335,11 +335,22 @@ get_information_content(const Eigen::Matrix4cd &X) {
   Mat4 X2 = Xprime.transpose() * Xprime;
   // For Clifford matrix, SelfAdjointEigenSolver seems to have a higher chance
   // to produce eigenvectors that eventually lead to non-clifford angles when
-  // there are rounding errors.
-  X2 = X2.unaryExpr([](Complex x) {
-    double real_x = (std::abs(x.real()) < 1e-14) ? 0. : x.real();
-    double imag_x = (std::abs(x.imag()) < 1e-14) ? 0. : x.imag();
-    return real_x + imag_x * i_;
+  // there are rounding errors. In this case, the matrix X2 should consist of
+  // 0, 1, -1, i and -i entries only, so clamp to these values.
+  X2 = X2.unaryExpr([](Complex x) -> Complex {
+    if (std::abs(x) < EPS) {
+      return 0.;
+    } else if (std::abs(x - 1.) < EPS) {
+      return 1.;
+    } else if (std::abs(x + 1.) < EPS) {
+      return -1.;
+    } else if (std::abs(x - i_) < EPS) {
+      return i_;
+    } else if (std::abs(x + i_) < EPS) {
+      return -i_;
+    } else {
+      return x;
+    }
   });
   const Eigen::Matrix4d X2real = X2.real();
   const Eigen::Matrix4d X2imag = X2.imag();
