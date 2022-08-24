@@ -338,15 +338,15 @@ get_information_content(const Eigen::Matrix4cd &X) {
   // there are rounding errors. In this case, the matrix X2 should consist of
   // 0, 1, -1, i and -i entries only, so clamp to these values.
   X2 = X2.unaryExpr([](Complex x) -> Complex {
-    if (std::abs(x) < EPS) {
+    if (std::abs(x) < 1e-14) {
       return 0.;
-    } else if (std::abs(x - 1.) < EPS) {
+    } else if (std::abs(x - 1.) < 1e-14) {
       return 1.;
-    } else if (std::abs(x + 1.) < EPS) {
+    } else if (std::abs(x + 1.) < 1e-14) {
       return -1.;
-    } else if (std::abs(x - i_) < EPS) {
+    } else if (std::abs(x - i_) < 1e-14) {
       return i_;
-    } else if (std::abs(x + i_) < EPS) {
+    } else if (std::abs(x + i_) < 1e-14) {
       return -i_;
     } else {
       return x;
