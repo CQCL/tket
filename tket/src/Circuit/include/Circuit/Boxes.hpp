@@ -412,7 +412,7 @@ class ExpBox : public Box {
 class PauliExpBox : public Box {
  public:
   /**
-   * The operation implements the unitary operator
+   * The operation implements the unitary` operator
    * \f$ e^{-\frac12 i \pi t \sigma_0 \otimes \sigma_1 \otimes \cdots} \f$
    * where \f$ \sigma_i \in \{I,X,Y,Z\} \f$ are the Pauli operators.
    */
@@ -749,7 +749,7 @@ class ToffoliBox : public Box {
 
  private:
   std::vector<transposition_t> cycle_to_transposition(
-      const cycle_permutation_t &cycle) const;
+      cycle_permutation_t cycle) const;
 
   std::deque<cycle_transposition_t> get_transpositions() const;
 

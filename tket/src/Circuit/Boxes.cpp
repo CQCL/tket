@@ -533,32 +533,36 @@ unsigned get_hamming_distance(
 }
 
 ToffoliBox::cycle_transposition_t ToffoliBox::cycle_to_transposition(
-    const cycle_permutation_t &cycle) const {
-  // use summation of the hamming distance to decide between two basic options
-  // iterate through cycle_permutation_t object pairwise and produce two cheap
-  // transpositions options
-  cycle_permutation_t::const_iterator it = cycle.begin();
-  std::vector<bool> first = *it;
-  ++it;
-  cycle_permutation_t::const_iterator jt = cycle.begin();
-  // also cost transposition options as they are produced
-  unsigned accumulated_hamming_distance0 = 0;
-  unsigned accumulated_hamming_distance1 = 0;
-  ToffoliBox::cycle_transposition_t transpositions0, transpositions1;
-  while (it != cycle.end()) {
-    transpositions0.push_back({first, *it, first});
-    transpositions1.push_back({*jt, *it, *jt});
-
-    accumulated_hamming_distance0 += get_hamming_distance(first, *it);
-    accumulated_hamming_distance1 += get_hamming_distance(*jt, *it);
-
-    ++it;
-    ++jt;
+    cycle_permutation_t cycle) const {
+  /**
+   * A cycle can start at any element
+   * A transposition for a cycle can always be constructed by pairing the
+   * starting element with the others in cycle order
+   * This also gives opportunities to produce gray codes with matching elements
+   * that can be cancelled
+   *
+   * For each element in a cycle, produce a sequence of transpositions and
+   * compare total Haming distance Return the transposition with smallest
+   * Hamming distance
+   *
+   */
+  cycle_transposition_t best_transposition;
+  unsigned best_hamming_distance = 0;
+  for (unsigned i = 0; i < cycle.size(); i++) {
+    unsigned accumulated_hamming_distance = 0;
+    cycle_transposition_t transposition;
+    for (unsigned j = 1; j < cycle.size(); j++) {
+      transposition.push_back({cycle[i], cycle[j], cycle[i]});
+      accumulated_hamming_distance += get_hamming_distance(cycle[i], cycle[j]);
+    }
+    if (best_transposition.empty() ||
+        accumulated_hamming_distance < best_hamming_distance) {
+      best_transposition = transposition;
+      best_hamming_distance = accumulated_hamming_distance;
+    }
+    std::rotate(cycle.begin(), cycle.begin() + 1, cycle.end());
   }
-  if (accumulated_hamming_distance0 > accumulated_hamming_distance1) {
-    return transpositions1;
-  }
-  return transpositions0;
+  return best_transposition;
 }
 
 std::deque<ToffoliBox::cycle_transposition_t> ToffoliBox::get_transpositions()
@@ -596,23 +600,6 @@ Circuit ToffoliBox::get_bitstring_circuit(
   return return_circuit;
 }
 
-// for a gray code being produced between two bitstrings, work out a selection
-// of next steps
-std::set<std::pair<std::vector<bool>, unsigned>> get_single_gray_code_step(
-    const std::vector<bool> &start, const std::vector<bool> &end) {
-  if (start.size() != end.size()) {
-    throw std::invalid_argument("Bitstrings must have identical length.");
-  }
-  std::set<std::pair<std::vector<bool>, unsigned>> output;
-  for (unsigned i = 0; i < start.size(); i++) {
-    if (start[i] != end[i]) {
-      std::vector<bool> entry = start;
-      entry[i] = !entry[i];
-      output.insert({entry, i});
-    }
-  }
-  return output;
-}
 
 ToffoliBox::gray_code_t transposition_to_gray_code(
     const ToffoliBox::transposition_t &transposition) {
@@ -696,12 +683,7 @@ void ToffoliBox::generate_circuit() const {
   // optionally, order the transpositions and cycles to allow gate
   // cancellation
 
-  ToffoliBox::cycle_transposition_t ordered_transpositions;
-  for (auto &transpositions : cycle_transpositions) {
-    ordered_transpositions.insert(
-        ordered_transpositions.end(), transpositions.begin(),
-        transpositions.end());
-  }
+  ToffoliBox::cycle_transposistion_t ordered_transpositions = merge_cycles(cycle_transpositions);
 
   if (ordered_transpositions.empty()) {
     this->circ_ = std::make_shared<Circuit>();
@@ -712,7 +694,6 @@ void ToffoliBox::generate_circuit() const {
   // middle->back gray codes for each transposition and add to circuit
   unsigned n_qubits = ordered_transpositions[0].first.size();
   this->circ_ = std::make_shared<Circuit>(n_qubits);
-  unsigned counter = 0;
   for (const transposition_t &transposition : ordered_transpositions) {
     TKET_ASSERT(transposition.first.size() == n_qubits);
     TKET_ASSERT(transposition.middle.size() == n_qubits);
@@ -724,7 +705,6 @@ void ToffoliBox::generate_circuit() const {
       this->circ_->append(
           this->get_bitstring_circuit(entry.first, entry.second));
     }
-    counter++;
   }
 }
 
