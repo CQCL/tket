@@ -720,6 +720,8 @@ class ToffoliBox : public Box {
 
   typedef std::vector<transposition_t> cycle_transposition_t;
 
+  typedef std::vector<std::pair<std::vector<bool>, unsigned>> gray_code_t;
+
   /**
    * Construct from a map between input and output basis states.
    * Map entries should produce a cycle, i.e. if A maps to B but B
@@ -733,7 +735,8 @@ class ToffoliBox : public Box {
    *
    */
   explicit ToffoliBox(
-      std::map<std::vector<bool>, std::vector<bool>> &_permutation);
+      std::map<std::vector<bool>, std::vector<bool>> &_permutation,
+      bool reorder = true);
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
@@ -755,6 +758,8 @@ class ToffoliBox : public Box {
       const std::vector<bool> &bitstring, const unsigned &target) const;
 
   std::set<cycle_permutation_t> cycles_;
+
+  bool reorder_;
 };
 
 }  // namespace tket

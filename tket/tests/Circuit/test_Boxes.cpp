@@ -990,7 +990,6 @@ SCENARIO("Checking equality", "[boxes]") {
 }
 
 SCENARIO("ToffoliBox", "[boxes]") {
-  std::cout << "\n\nToffoliBox tests!" << std::endl;
   GIVEN("No permutation.") {
     std::map<std::vector<bool>, std::vector<bool>> permutation = {};
     ToffoliBox tb(permutation);
@@ -998,6 +997,7 @@ SCENARIO("ToffoliBox", "[boxes]") {
     REQUIRE(tb_circuit_commands.size() == 0);
   }
   GIVEN("Single qubit basis state permutation") {
+    std::cout << "\nQBSP" << std::endl;
     std::map<std::vector<bool>, std::vector<bool>> permutation;
     permutation[{0}] = {1};
     permutation[{1}] = {0};
@@ -1013,7 +1013,6 @@ SCENARIO("ToffoliBox", "[boxes]") {
     permutation[{0, 0}] = {1, 1};
     permutation[{1, 1}] = {0, 0};
     ToffoliBox tb(permutation);
-
     Circuit comparison_circuit(2);
     comparison_circuit.add_op<unsigned>(OpType::X, {1});
     comparison_circuit.add_op<unsigned>(OpType::CnX, {1, 0});
@@ -1022,7 +1021,18 @@ SCENARIO("ToffoliBox", "[boxes]") {
     comparison_circuit.add_op<unsigned>(OpType::X, {1});
     comparison_circuit.add_op<unsigned>(OpType::CnX, {1, 0});
     comparison_circuit.add_op<unsigned>(OpType::X, {1});
-    REQUIRE(*tb.to_circuit() == comparison_circuit);
+
+    std::map<std::vector<bool>, std::vector<bool>> permutation2;
+    permutation2[{0, 0}] = {1, 1};
+    permutation2[{1, 1}] = {0, 0};
+    ToffoliBox tb2(permutation2, false);
+
+    const auto optimised_unitary = tket_sim::get_unitary(*tb.to_circuit());
+    const auto nonoptimised_unitary = tket_sim::get_unitary(*tb2.to_circuit());
+    const auto basic_unitary = tket_sim::get_unitary(comparison_circuit);
+
+    CHECK(optimised_unitary.isApprox(basic_unitary));
+    CHECK(nonoptimised_unitary.isApprox(basic_unitary));
   }
   GIVEN("Two qubit basis state permutation, two two states cycle") {
     std::map<std::vector<bool>, std::vector<bool>> permutation;
@@ -1045,27 +1055,64 @@ SCENARIO("ToffoliBox", "[boxes]") {
     comparison_circuit.add_op<unsigned>(OpType::CnX, {1, 0});
     REQUIRE(*tb.to_circuit() == comparison_circuit);
   }
-  GIVEN("Two qubit basis state permutation, two two states cycle") {
+  GIVEN("Two qubit basis state permutation, one four states cycle") {
     std::map<std::vector<bool>, std::vector<bool>> permutation;
     permutation[{0, 0}] = {1, 1};
     permutation[{1, 1}] = {0, 1};
     permutation[{0, 1}] = {1, 0};
     permutation[{1, 0}] = {0, 0};
-    ToffoliBox tb(permutation);
-    std::cout << *tb.to_circuit() << std::endl;
+    ToffoliBox tb1(permutation);
 
-    // Circuit comparison_circuit(2);
-    // comparison_circuit.add_op<unsigned>(OpType::X, {1});
-    // comparison_circuit.add_op<unsigned>(OpType::CnX, {1,0});
-    // comparison_circuit.add_op<unsigned>(OpType::X, {1});
-    // comparison_circuit.add_op<unsigned>(OpType::CnX, {0,1});
-    // comparison_circuit.add_op<unsigned>(OpType::X, {1});
-    // comparison_circuit.add_op<unsigned>(OpType::CnX, {1,0});
-    // comparison_circuit.add_op<unsigned>(OpType::X, {1});
-    // comparison_circuit.add_op<unsigned>(OpType::CnX, {1,0});
-    // comparison_circuit.add_op<unsigned>(OpType::CnX, {0,1});
-    // comparison_circuit.add_op<unsigned>(OpType::CnX, {1,0});
-    // REQUIRE(*tb.to_circuit() == comparison_circuit);
+    permutation = {};
+    permutation[{0, 0}] = {1, 1};
+    permutation[{1, 1}] = {0, 1};
+    permutation[{0, 1}] = {1, 0};
+    permutation[{1, 0}] = {0, 0};
+    ToffoliBox tb2(permutation, false);
+
+    Circuit circ1 = *tb1.to_circuit();
+    Circuit circ2 = *tb2.to_circuit();
+
+    const auto optimised_unitary = tket_sim::get_unitary(circ1);
+    const auto nonoptimised_unitary = tket_sim::get_unitary(circ2);
+    CHECK(nonoptimised_unitary.isApprox(optimised_unitary));
+
+
+
+    Circuit comparison_circuit1(2);
+    comparison_circuit1.add_op<unsigned>(OpType::X, {0});
+    comparison_circuit1.add_op<unsigned>(OpType::CnX, {0, 1});
+    comparison_circuit1.add_op<unsigned>(OpType::X, {0});
+    comparison_circuit1.add_op<unsigned>(OpType::CnX, {1, 0});
+    comparison_circuit1.add_op<unsigned>(OpType::X, {1});
+    comparison_circuit1.add_op<unsigned>(OpType::CnX, {1, 0});
+    comparison_circuit1.add_op<unsigned>(OpType::X, {1});
+    REQUIRE(circ1 == comparison_circuit1);
+  }
+  GIVEN("Four qubit basis state permutation, one large cycle"){
+    std::cout << "\n\n\n\nTEST OF INTEREST" << std::endl;
+    std::map<std::vector<bool>, std::vector<bool>> permutation1, permutation2;
+    permutation1[{0, 0, 0, 0}] = {1, 1, 0, 0};
+    permutation1[{1, 1, 0, 0}] = {1, 1, 0, 1};
+    permutation1[{1, 1, 0, 1}] = {0, 0, 0, 1};
+    permutation1[{0, 0, 0, 1}] = {1, 1, 1, 0};
+    permutation1[{1, 1, 1, 0}] = {0, 0, 1, 1};
+    permutation1[{0, 0, 1, 1}] = {1, 0, 0, 1};
+    permutation1[{1, 0, 0, 1}] = {1, 0, 1, 0};
+    permutation1[{1, 0, 1, 0}] = {0, 0, 0, 0};
+
+    permutation2 = permutation1;
+    ToffoliBox tb1(permutation1);
+    ToffoliBox tb2(permutation2, false);
+
+    Circuit circ1 = *tb1.to_circuit();
+    Circuit circ2 = *tb2.to_circuit();
+
+    const auto optimised_unitary = tket_sim::get_unitary(circ1);
+    const auto nonoptimised_unitary = tket_sim::get_unitary(circ2);
+    CHECK(nonoptimised_unitary.isApprox(optimised_unitary));
+    REQUIRE(circ1.count_gates(OpType::CnX) == 19);
+    REQUIRE(circ2.count_gates(OpType::CnX) == 23);
   }
 }
 
