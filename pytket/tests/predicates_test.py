@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from math import fabs
 from pytket.circuit import Circuit, OpType, Op, PauliExpBox, Unitary2qBox, Node, Qubit  # type: ignore
 from pytket.pauli import Pauli  # type: ignore
 from pytket.passes import (  # type: ignore
