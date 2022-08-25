@@ -92,7 +92,7 @@ std::pair<Circuit, Gate_ptr> RzPhasedXSquasher::flush(
   return {replacement, rz3_gate};
 }
 
-Transform squash_1qb_to_Rz_phasedX() {
+Transform squash_1qb_to_Rz_PhasedX() {
   return Transform([](Circuit &circ) {
     bool reverse = false;
     bool success = decompose_ZX().apply(circ);

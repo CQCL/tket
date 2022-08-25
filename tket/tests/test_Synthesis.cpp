@@ -2231,15 +2231,15 @@ SCENARIO("Test squash Rz PhasedX") {
     const Eigen::MatrixXcd u = tket_sim::get_unitary(c);
 
     WHEN("Squash forwards") {
-      AND_WHEN("Use squash_1qb_to_Rz_phasedX") {
+      AND_WHEN("Use squash_1qb_to_Rz_PhasedX") {
         bool reverse = false;
         auto squasher =
             std::make_unique<Transforms::RzPhasedXSquasher>(reverse);
         Transforms::decompose_ZX().apply(c);
         SingleQubitSquash(std::move(squasher), c, reverse).squash();
       }
-      AND_WHEN("Use squash_1qb_to_Rz_phasedX") {
-        Transforms::squash_1qb_to_Rz_phasedX().apply(c);
+      AND_WHEN("Use squash_1qb_to_Rz_PhasedX") {
+        Transforms::squash_1qb_to_Rz_PhasedX().apply(c);
       }
       AND_WHEN("Use SquashRzPhasedX") {
         CompilationUnit cu(c);
@@ -2288,7 +2288,7 @@ SCENARIO("Test squash Rz PhasedX") {
     Circuit c(1);
     c.add_op<unsigned>(OpType::Rx, 0.77, {0});
     const Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    Transforms::squash_1qb_to_Rz_phasedX().apply(c);
+    Transforms::squash_1qb_to_Rz_PhasedX().apply(c);
     REQUIRE(c.count_gates(OpType::PhasedX) == 1);
     REQUIRE(c.n_gates() == 1);
     const Eigen::MatrixXcd v = tket_sim::get_unitary(c);
@@ -2301,7 +2301,7 @@ SCENARIO("Test squash Rz PhasedX") {
     c.add_op<unsigned>(OpType::Rx, 1.3, {0});
     c.add_op<unsigned>(OpType::Rz, 0.6, {0});
     const Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    Transforms::squash_1qb_to_Rz_phasedX().apply(c);
+    Transforms::squash_1qb_to_Rz_PhasedX().apply(c);
     REQUIRE(c.count_gates(OpType::PhasedX) == 1);
     REQUIRE(c.n_gates() == 1);
     const Eigen::MatrixXcd v = tket_sim::get_unitary(c);
@@ -2312,7 +2312,7 @@ SCENARIO("Test squash Rz PhasedX") {
     Circuit c(1);
     c.add_op<unsigned>(OpType::Rz, 0.77, {0});
     const Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    Transforms::squash_1qb_to_Rz_phasedX().apply(c);
+    Transforms::squash_1qb_to_Rz_PhasedX().apply(c);
     REQUIRE(c.count_gates(OpType::Rz) == 1);
     REQUIRE(c.n_gates() == 1);
     const Eigen::MatrixXcd v = tket_sim::get_unitary(c);
@@ -2334,7 +2334,7 @@ SCENARIO("Test squash Rz PhasedX") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
 
     Circuit circ2(circ);
-    Transforms::squash_1qb_to_Rz_phasedX().apply(circ2);
+    Transforms::squash_1qb_to_Rz_PhasedX().apply(circ2);
     auto cmds = circ2.get_commands();
     REQUIRE(cmds.size() == 3);
     REQUIRE(cmds[0].get_op_ptr()->get_type() == OpType::PhasedX);

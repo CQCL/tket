@@ -141,7 +141,7 @@ Transform normalise_TK2();
  * @brief Squash single qubit gates into PhasedX and Rz gates.
  * Commute Rzs to the back if possible.
  */
-Transform squash_1qb_to_Rz_phasedX();
+Transform squash_1qb_to_Rz_PhasedX();
 
 }  // namespace Transforms
 
