@@ -761,6 +761,11 @@ class Circuit {
   void remove_blank_wires();
 
   /**
+   * Remove all gates in the circuits that are identities
+   */
+  void remove_noops();
+
+  /**
    * Append an operation to the circuit.
    *
    * Appends vertex to the end of the given paths. Assumes the units already

@@ -210,7 +210,7 @@ SCENARIO("Test remove_noops") {
     circ.add_op<unsigned>(OpType::TK1, {0., 0., 0.}, {0});
     circ.add_op<unsigned>(OpType::TK2, {0., 0., 0.}, {0, 1});
 
-    remove_noops(circ);
+    circ.remove_noops();
 
     REQUIRE(circ == Circuit(2));
   }
@@ -228,7 +228,7 @@ SCENARIO("Test remove_noops") {
     circ.add_op<unsigned>(OpType::TK2, {0.1, 0.3, 2.1}, {0, 1});
     circ2.add_op<unsigned>(OpType::TK2, {0.1, 0.3, 2.1}, {0, 1});
 
-    remove_noops(circ);
+    circ.remove_noops();
 
     REQUIRE(circ == circ2);
   }
