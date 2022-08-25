@@ -495,9 +495,10 @@ op_signature_t StabiliserAssertionBox::get_signature() const {
 }
 
 ToffoliBox::ToffoliBox(
-    std::map<std::vector<bool>, std::vector<bool>> &_permutation)
+    std::map<std::vector<bool>, std::vector<bool>> &_permutation, bool reorder)
     : Box(OpType::ToffoliBox) {
   // Convert passed permutation to cycles
+  this->reorder_ = reorder;
   while (!_permutation.empty()) {
     auto it = _permutation.begin();
     cycle_permutation_t cycle = {it->first};
@@ -549,31 +550,11 @@ ToffoliBox::cycle_transposition_t ToffoliBox::cycle_to_transposition(
   cycle_transposition_t best_transposition;
   unsigned best_hamming_distance = 0;
 
-  // std::cout << "Getting transposition! " << cycle.size()
-  //           << " the cycle: " << std::endl;
-  // for (auto x : cycle) {
-  //   for (auto b : x) {
-  //     std::cout << b;
-  //   }
-  //   std::cout << std::endl;
-  // }
-
   for (unsigned i = 0; i < cycle.size(); i++) {
     unsigned accumulated_hamming_distance = 0;
     cycle_transposition_t transposition;
     for (unsigned j = 1; j < cycle.size(); j++) {
       transposition.push_back({cycle[0], cycle[j], cycle[0]});
-
-      // std::cout << "cycle 0 ";
-      // for (auto b : cycle[0]) {
-      //   std::cout << b;
-      // }
-      // std::cout << "\ncycle j ";
-      // for (auto b : cycle[j]) {
-      //   std::cout << b;
-      // }
-      // std::cout << std::endl;
-
       accumulated_hamming_distance += get_hamming_distance(cycle[0], cycle[j]);
     }
     if (best_transposition.empty() ||
@@ -586,13 +567,13 @@ ToffoliBox::cycle_transposition_t ToffoliBox::cycle_to_transposition(
   return best_transposition;
 }
 
-std::deque<ToffoliBox::cycle_transposition_t> ToffoliBox::get_transpositions()
+std::vector<ToffoliBox::cycle_transposition_t> ToffoliBox::get_transpositions()
     const {
-  std::deque<ToffoliBox::cycle_transposition_t> transpositions;
+  std::vector<ToffoliBox::cycle_transposition_t> transpositions;
   for (const cycle_permutation_t &cycle : this->cycles_) {
-    // each cycle is costed via Hamming distance to reudce number of operations
-    transpositions.insert(
-        transpositions.end(), this->cycle_to_transposition(cycle));
+    // each cycle is costed via `````Hamming distance to reudce number of
+    // operations
+    transpositions.push_back(this->cycle_to_transposition(cycle));
   }
   return transpositions;
 }
@@ -697,10 +678,10 @@ ToffoliBox::gray_code_t transposition_to_gray_code(
 
 //
 ToffoliBox::cycle_transposition_t merge_cycles(
-    std::deque<ToffoliBox::cycle_transposition_t> &cycle_transpositions) {
-      std::cout << "\n\nMerge cycles! " << std::endl;
+    std::vector<ToffoliBox::cycle_transposition_t> &cycle_transpositions) {
   ToffoliBox::cycle_transposition_t return_transposition;
-  for (ToffoliBox::cycle_transposition_t &cycle : cycle_transpositions) {
+  for (unsigned k = 0; k < cycle_transpositions.size(); k++) {
+    ToffoliBox::cycle_transposition_t cycle = cycle_transpositions[k];
     unsigned i = 0, j = 1;
     while (j < cycle.size()) {
       ToffoliBox::transposition_t transposition_i = cycle[i];
@@ -708,69 +689,54 @@ ToffoliBox::cycle_transposition_t merge_cycles(
 
       std::vector<bool> transposition_j_first = transposition_j.first;
       std::vector<bool> transposition_i_last = transposition_i.last;
-      std::vector<bool> starting_point = transposition_i_last;
+      std::vector<bool> transposition_i_first = transposition_i.first;
 
-      TKET_ASSERT(starting_point == transposition_j.first);
+      TKET_ASSERT(transposition_i_last == transposition_j.first);
       std::vector<bool> i_middle = transposition_i.middle;
       std::vector<bool> j_middle = transposition_j.middle;
 
       TKET_ASSERT(i_middle.size() == transposition_i.last.size());
       TKET_ASSERT(j_middle.size() == transposition_i.last.size());
+      // if a transposition has already been reduced, still need to make sure we
+      // uncompute it
+      if (transposition_i_first != transposition_i_last) {
+        unsigned middle_last_distance =
+            get_hamming_distance(i_middle, transposition_i_last);
+        unsigned middle_first_distance =
+            get_hamming_distance(i_middle, transposition_i_first);
+        // this => the reduced transposition is on a good gray code between the
+        // new "first" and target
+        if (middle_first_distance < middle_last_distance &&
+            middle_first_distance > 1) {
+          transposition_i_last = transposition_i_first;
+          std::vector<bool> starting_point = transposition_i_last;
+          for (unsigned k = 0; k < i_middle.size(); k++) {
+            if (i_middle[k] == j_middle[k] &&
+                get_hamming_distance(starting_point, i_middle) > 1) {
+              starting_point[k] = i_middle[k];
+            }
+          }
 
-      for (unsigned k = 0; k < i_middle.size(); k++) {
-        if (i_middle[k] == j_middle[k] && get_hamming_distance(starting_point, transposition_i_last) > 2) {
-          starting_point[k] = i_middle[k];
-          // TODO: Move this logic out of loop as it gives extra checking
-          // Keep here for now for safety only
-          // if(starting_point == transposition_j_first){
-          //   starting_point[k] = !starting_point[k];
-          //   break;
-          // }
-          // if (get_hamming_distance(starting_point, transposition_i_last) < 2) {
-          //   starting_point[k] = !starting_point[k];
-          //   break;
-          // }
+          cycle_transpositions[k][i].last = starting_point;
+          cycle_transpositions[k][j].first = starting_point;
         }
-      }
+      } else {  // else in this case just find any good transposition
+        std::vector<bool> starting_point = transposition_i_last;
+        for (unsigned k = 0; k < i_middle.size(); k++) {
+          if (i_middle[k] == j_middle[k] &&
+              get_hamming_distance(starting_point, i_middle) > 1) {
+            starting_point[k] = i_middle[k];
+          }
+        }
 
-      std::cout << "\nTransposition " << i << std::endl;
-      std::cout << "First ";
-      for(auto b : transposition_i.first){
-        std::cout << b;
+        cycle[i].last = starting_point;
+        cycle[j].first = starting_point;
       }
-      std::cout << "\nMiddle: ";
-      for(auto b : transposition_i.middle){
-        std::cout << b;
-      }
-      std::cout << "\nFinal: ";
-      for(auto b : transposition_i.last){
-        std::cout << b;
-      }
-      std::cout << "\nTransposition " << j << std::endl;
-      std::cout << "First ";
-      for(auto b : transposition_j.first){
-        std::cout << b;
-      }
-      std::cout << "\nMiddle: ";
-      for(auto b : transposition_j.middle){
-        std::cout << b;
-      }
-      std::cout << "\nFinal: ";
-      for(auto b : transposition_j.last){
-        std::cout << b;
-      }
-      std::cout << "\nNew Outer: ";
-      for(auto b : starting_point){
-        std::cout << b;
-      }
-      std::cout << std::endl;
-
-      cycle[i].last = starting_point;
-      cycle[j].first = starting_point;
 
       ++i;
       ++j;
     }
+
     return_transposition.insert(
         return_transposition.end(), cycle.begin(), cycle.end());
   }
@@ -781,40 +747,21 @@ ToffoliBox::cycle_transposition_t merge_cycles(
 void ToffoliBox::generate_circuit() const {
   // This decomposition is as described on page 191, section 4.5.2 "Single
   // qubit and CNOT gates are universal" of Nielsen & Chuang
-  std::deque<ToffoliBox::cycle_transposition_t> cycle_transpositions =
+  std::vector<ToffoliBox::cycle_transposition_t> cycle_transpositions =
       this->get_transpositions();
 
-  // for (auto c : cycle_transpositions) {
-  //   std::cout << "cycle: " << std::endl;
-  //   for (auto x : c) {
-  //     std::cout << "transposition:" << std::endl;
-  //     for (auto b : x.first) {
-  //       std::cout << b;
-  //     }
-  //     std::cout << std::endl;
-  //     for (auto b : x.middle) {
-  //       std::cout << b;
-  //     }
-  //     std::cout << std::endl;
-  //     for (auto b : x.last) {
-  //       std::cout << b;
-  //     }
-  //     std::cout << std::endl;
-  //   }
-  // }
-  
   // optionally, order the transpositions and cycles to allow gate
   // cancellation
-  cycle_transposition_t ordered_transpositions =
-  merge_cycles(cycle_transpositions);
-
-  // cycle_transposition_t ordered_transpositions;
-  // for (auto &transpositions : cycle_transpositions) {
-  //   ordered_transpositions.insert(
-  //       ordered_transpositions.end(), transpositions.begin(),
-  //       transpositions.end());
-  // }
-  
+  cycle_transposition_t ordered_transpositions;
+  if (this->reorder_) {
+    ordered_transpositions = merge_cycles(cycle_transpositions);
+  } else {
+    for (auto &transpositions : cycle_transpositions) {
+      ordered_transpositions.insert(
+          ordered_transpositions.end(), transpositions.begin(),
+          transpositions.end());
+    }
+  }
 
   if (ordered_transpositions.empty()) {
     this->circ_ = std::make_shared<Circuit>();

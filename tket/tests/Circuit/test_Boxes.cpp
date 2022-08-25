@@ -1076,19 +1076,55 @@ SCENARIO("ToffoliBox", "[boxes]") {
     comparison_circuit.add_op<unsigned>(OpType::CnX, {1, 0});
     comparison_circuit.add_op<unsigned>(OpType::X, {1});
 
-    const auto optimised_unitary = tket_sim::get_unitary(*tb.to_circuit());
+    const auto optimised_unitary = tket_sim::get_unitary(circ);
     const auto basic_unitary = tket_sim::get_unitary(comparison_circuit);
+    REQUIRE(circ.count_gates(OpType::CnX) == 3);
 
     CHECK(optimised_unitary.isApprox(basic_unitary));
   }
+  GIVEN("Three qubit basis state permutation, one four state cycle") {
+    std::map<std::vector<bool>, std::vector<bool>> permutation;
+    permutation[{0, 0, 1}] = {1, 1, 0};
+    permutation[{1, 1, 0}] = {0, 1, 0};
+    permutation[{0, 1, 0}] = {1, 0, 1};
+    permutation[{1, 0, 1}] = {0, 0, 1};
+
+    ToffoliBox tb(permutation);
+    Circuit circ = *tb.to_circuit();
+    const auto matrix = tket_sim::get_unitary(circ);
+
+    std::map<std::vector<bool>, std::vector<bool>> permutation1;
+    permutation1[{0, 0, 1}] = {1, 1, 0};
+    permutation1[{1, 1, 0}] = {0, 1, 0};
+    permutation1[{0, 1, 0}] = {1, 0, 1};
+    permutation1[{1, 0, 1}] = {0, 0, 1};
+
+    ToffoliBox tb1(permutation1, false);
+
+    Circuit circ1 = *tb1.to_circuit();
+    const auto matrix1 = tket_sim::get_unitary(circ1);
+    REQUIRE(circ.count_gates(OpType::CnX) == 5);
+    REQUIRE(circ1.count_gates(OpType::CnX) == 9);
+
+    REQUIRE(matrix1(6, 1).real() == 1);
+    REQUIRE(matrix1(6, 6).real() == 0);
+    REQUIRE(matrix1(1, 1).real() == 0);
+    REQUIRE(matrix1(2, 6).real() == 1);
+    REQUIRE(matrix1(2, 2).real() == 0);
+    REQUIRE(matrix1(5, 2).real() == 1);
+    REQUIRE(matrix1(5, 5).real() == 0);
+    REQUIRE(matrix1(1, 5).real() == 1);
+
+    REQUIRE(matrix(6, 1).real() == 1);
+    REQUIRE(matrix(6, 6).real() == 0);
+    REQUIRE(matrix(1, 1).real() == 0);
+    REQUIRE(matrix(2, 6).real() == 1);
+    REQUIRE(matrix(2, 2).real() == 0);
+    REQUIRE(matrix(5, 2).real() == 1);
+    REQUIRE(matrix(5, 5).real() == 0);
+    REQUIRE(matrix(1, 5).real() == 1);
+  }
   GIVEN("Four qubit basis state permutation, one large cycle") {
-
-
-  Eigen::MatrixXcd correct_matrix = Eigen::MatrixXcd::Identity(16, 16);
-  correct_matrix(m_size - 2, m_size - 2) = U(0, 0);
-  correct_matrix(m_size - 2, m_size - 1) = U(0, 1);
-  correct_matrix(m_size - 1, m_size - 2) = U(1, 0);
-  correct_matrix(m_size - 1, m_size - 1) = U(1, 1);
     std::map<std::vector<bool>, std::vector<bool>> permutation;
     permutation[{0, 0, 0, 0}] = {1, 1, 0, 0};
     permutation[{1, 1, 0, 0}] = {1, 1, 0, 1};
@@ -1102,128 +1138,26 @@ SCENARIO("ToffoliBox", "[boxes]") {
     ToffoliBox tb(permutation);
 
     Circuit circ = *tb.to_circuit();
+    const auto matrix = tket_sim::get_unitary(circ);
 
-    std::cout << circ << std::endl;
-    std::cout << tket_sim::get_unitary(circ) << std::endl;
+    REQUIRE(matrix(12, 0).real() == 1);
+    REQUIRE(matrix(0, 0).real() == 0);
+    REQUIRE(matrix(12, 12).real() == 0);
+    REQUIRE(matrix(13, 12).real() == 1);
+    REQUIRE(matrix(13, 13).real() == 0);
+    REQUIRE(matrix(1, 13).real() == 1);
+    REQUIRE(matrix(1, 1).real() == 0);
+    REQUIRE(matrix(14, 1).real() == 1);
+    REQUIRE(matrix(14, 14).real() == 0);
+    REQUIRE(matrix(3, 14).real() == 1);
+    REQUIRE(matrix(3, 3).real() == 0);
+    REQUIRE(matrix(9, 3).real() == 1);
+    REQUIRE(matrix(9, 9).real() == 0);
+    REQUIRE(matrix(10, 9).real() == 1);
+    REQUIRE(matrix(10, 10).real() == 0);
+    REQUIRE(matrix(0, 10).real() == 1);
 
-    // REQUIRE(circ.count_gates(OpType::CnX) == 23);
-
-/**
- * 
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0)
-(0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0)
-(1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0)
-(0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0)
-
-
-
-
-
-
-
-
-
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0)
-(0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0) (0,0)
-(1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0) (0,0) (0,0) (0,0)
-(0,0) (1,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0)
-(0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (0,0) (1,0)
-
- */
-    /**
-     * X q[1];
-CnX q[0], q[1], q[3], q[2];
-X q[1];
-X q[1];
-CnX q[0], q[1], q[2], q[3];
-X q[1];
-X q[1];
-CnX q[0], q[1], q[3], q[2];
-X q[1];
-X q[2];
-X q[1];
-CnX q[1], q[2], q[3], q[0];
-X q[0];
-X q[1];
-X q[2];
-X q[1];
-X q[2];
-CnX q[0], q[1], q[2], q[3];
-X q[0];
-X q[1];
-X q[2];
-X q[1];
-X q[2];
-CnX q[1], q[2], q[3], q[0];
-X q[1];
-X q[2];
-X q[2];
-CnX q[0], q[2], q[3], q[1];
-X q[2];
-X q[2];
-CnX q[0], q[1], q[2], q[3];
-X q[2];
-X q[2];
-CnX q[0], q[2], q[3], q[1];
-X q[2];
-X q[2];
-CnX q[0], q[2], q[3], q[1];
-X q[1];
-X q[2];
-X q[2];
-CnX q[1], q[2], q[3], q[0];
-X q[1];
-X q[2];
-X q[2];
-CnX q[0], q[2], q[3], q[1];
-X q[2];
-CnX q[0], q[1], q[3], q[2];
-CnX q[0], q[1], q[2], q[3];
-CnX q[0], q[1], q[3], q[2];
-X q[2];
-CnX q[0], q[2], q[3], q[1];
-X q[1];
-X q[2];
-X q[2];
-CnX q[1], q[2], q[3], q[0];
-X q[0];
-X q[1];
-X q[2];
-X q[1];
-CnX q[0], q[1], q[3], q[2];
-X q[0];
-X q[1];
-X q[2];
-X q[1];
-CnX q[1], q[2], q[3], q[0];
-X q[1];
-X q[2];
-Phase (in half-turns): 0.0
-     */
-
+    REQUIRE(circ.count_gates(OpType::CnX) == 13);
   }
 }
 

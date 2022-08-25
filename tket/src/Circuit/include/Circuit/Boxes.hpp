@@ -735,7 +735,8 @@ class ToffoliBox : public Box {
    *
    */
   explicit ToffoliBox(
-      std::map<std::vector<bool>, std::vector<bool>> &_permutation);
+      std::map<std::vector<bool>, std::vector<bool>> &_permutation,
+      bool reorder = true);
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
@@ -751,12 +752,14 @@ class ToffoliBox : public Box {
   std::vector<transposition_t> cycle_to_transposition(
       cycle_permutation_t cycle) const;
 
-  std::deque<cycle_transposition_t> get_transpositions() const;
+  std::vector<cycle_transposition_t> get_transpositions() const;
 
   Circuit get_bitstring_circuit(
       const std::vector<bool> &bitstring, const unsigned &target) const;
 
   std::set<cycle_permutation_t> cycles_;
+
+  bool reorder_;
 };
 
 }  // namespace tket
