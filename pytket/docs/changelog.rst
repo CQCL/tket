@@ -1,14 +1,20 @@
 Changelog
 =========
 
+x.y.z (unreleased)
+------------------
+
+Minor new features:
+
+* Add ``SquashRzPhasedX`` pass to squash single qubit gates into
+  ``Rz`` and ``PhasedX`` gates while trying to commute ``Rz``s to the back. 
+
 1.5.1 (August 2022)
 -------------------
 
 Minor new features:
 
 * Improve ``FullPeepholeOptimise`` performance.
-* Add ``SquashRzPhasedX`` pass to squash single qubit gates into
-  ``Rz`` and ``PhasedX`` gates while trying to commute ``Rz``s to the back. 
 
 Fixes:
 
