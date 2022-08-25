@@ -55,15 +55,15 @@ void Circuit::remove_blank_wires() {
 
 void Circuit::remove_noops() {
   VertexSet bin;
-  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-    Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
-    if (op->is_identity()) {
-      circ.remove_vertex(
+  BGL_FORALL_VERTICES(v, dag, DAG) {
+    Op_ptr op = get_Op_ptr_from_Vertex(v);
+    if (op->get_desc().is_gate() && op->is_identity()) {
+      remove_vertex(
           v, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
       bin.insert(v);
     }
   }
-  circ.remove_vertices(
+  remove_vertices(
       bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
 }
 
