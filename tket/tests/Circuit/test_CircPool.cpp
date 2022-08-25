@@ -205,7 +205,7 @@ SCENARIO("Test remove_noops") {
   GIVEN("A circuit with noops") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::U1, 0., {0});
-    circ.add_op<unsigned>(OpType::U2, {0., 0.}, {0});
+    circ.add_op<unsigned>(OpType::Rx, 0., {0});
     circ.add_op<unsigned>(OpType::U3, {0., 0., 0.}, {0});
     circ.add_op<unsigned>(OpType::TK1, {0., 0., 0.}, {0});
     circ.add_op<unsigned>(OpType::TK2, {0., 0., 0.}, {0, 1});
@@ -217,7 +217,7 @@ SCENARIO("Test remove_noops") {
   GIVEN("A circuit with mix of ops and noops") {
     Circuit circ(2), circ2(2);
     circ.add_op<unsigned>(OpType::U1, 0., {0});
-    circ.add_op<unsigned>(OpType::U2, {0., 0.}, {0});
+    circ.add_op<unsigned>(OpType::Rx, 0., {0});
     circ.add_op<unsigned>(OpType::U2, {0., 1.2}, {0});
     circ2.add_op<unsigned>(OpType::U2, {0., 1.2}, {0});
     circ.add_op<unsigned>(OpType::U3, {0., 0., 0.}, {0});

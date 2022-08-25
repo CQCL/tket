@@ -57,9 +57,11 @@ void Circuit::remove_noops() {
   VertexSet bin;
   BGL_FORALL_VERTICES(v, dag, DAG) {
     Op_ptr op = get_Op_ptr_from_Vertex(v);
-    if (op->get_desc().is_gate() && op->is_identity()) {
+    std::optional<double> phase;
+    if (op->get_desc().is_gate() && (phase = op->is_identity())) {
       remove_vertex(
           v, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+      add_phase(*phase);
       bin.insert(v);
     }
   }
