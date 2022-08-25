@@ -69,7 +69,7 @@ jobs:
         conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
-        conan create --profile=tket recipes/tket --build=missing
+        conan create --profile=tket recipes/tket tket/stable --build=missing
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
     - name: Build wheel (3.8)
@@ -112,7 +112,7 @@ jobs:
         conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
-        conan create --profile=tket recipes/tket --build=missing
+        conan create --profile=tket recipes/tket tket/stable --build=missing
         conan create --profile=tket recipes/pybind11
         .github/workflows/build_macos_m1_wheel
         pyenv shell tket-3.9
@@ -133,25 +133,6 @@ jobs:
     - uses: actions/checkout@v3
       with:
         fetch-depth: '0'
-    - name: Hash tket source
-      id: hash_tket_source
-      run: |
-        Function Get-FolderHash
-        {
-            param ($folder)
-            $files = dir $folder -Recurse |? { -not $_.psiscontainer }
-            $allBytes = new-object System.Collections.Generic.List[byte]
-            foreach ($file in $files)
-            {
-                $allBytes.AddRange([System.IO.File]::ReadAllBytes($file.FullName))
-                $allBytes.AddRange([System.Text.Encoding]::UTF8.GetBytes($file.Name))
-            }
-            $hasher = [System.Security.Cryptography.MD5]::Create()
-            $ret = [string]::Join("",$($hasher.ComputeHash($allBytes.ToArray()) | %{"{0:x2}" -f $_}))
-            return $ret
-        }
-        $tket_hash = Get-FolderHash tket
-        echo "::set-output name=tket_hash::${tket_hash}"
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Install conan
       run: |
@@ -163,15 +144,8 @@ jobs:
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
-    - name: Cache tket build
-      id: cache-tket
-      uses: actions/cache@v3
-      with:
-        path: C:\Users\runneradmin\.conan\data\tket
-        key: ${{ runner.os }}-tket-tket-${{ steps.hash_tket_source.outputs.tket_hash }}-12
     - name: Build tket
-      if: steps.cache-tket.outputs.cache-hit != 'true'
-      run: conan create --profile=tket recipes/tket
+      run: conan create --profile=tket recipes/tket tket/stable
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
     - name: Set up Python 3.8
