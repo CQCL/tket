@@ -731,8 +731,8 @@ class ToffoliBox : public Box {
    * If each basis state is not the same size will throw an
    * invalid_argument error.
    *
-   * @param permutation map between basis states
-   *
+   * @param _permutation map between basis states
+   * @param reorder if true does additional optimisation to reudce CnX count
    */
   explicit ToffoliBox(
       std::map<std::vector<bool>, std::vector<bool>> &_permutation,
