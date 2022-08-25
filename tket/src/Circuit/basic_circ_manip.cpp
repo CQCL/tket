@@ -67,7 +67,6 @@ void Circuit::remove_noops() {
       bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
 }
 
-
 std::ostream& operator<<(std::ostream& out, const Circuit& circ) {
   for (const Command& com : circ) out << com << std::endl;
   out << "Phase (in half-turns): " << circ.get_phase() << std::endl;
