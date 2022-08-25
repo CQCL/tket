@@ -165,7 +165,10 @@ the CI, and on merge to `develop` the new version will be uploaded. Then it will
 be possible to update conan requirements to use the new version.
 
 A new version of TKET is uploaded to our conan repo with each push to `develop`
-that changes the core library. This process is managed by CI workflows.
+that changes the core library. This process is managed by CI workflows. If you
+are making changes only to TKET tests or pytket, you do not need to build TKET
+locally: the right version should be downloaded automatically from the conan
+repo.
 
 ### Building tket
 
