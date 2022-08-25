@@ -191,7 +191,7 @@ jobs:
         name: pytket_test_coverage
         path: pytket/tests/htmlcov
     - name: Upload package
-      if: github.event_name == 'push' && github.event.push.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
+      if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
         conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --all -r=tket-libs
@@ -322,7 +322,7 @@ jobs:
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Upload package
-      if: github.event_name == 'push' && github.event.push.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
+      if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
         conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --all -r=tket-libs
@@ -419,7 +419,7 @@ jobs:
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Upload package
-      if: github.event_name == 'push' && github.event.push.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
+      if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
         conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --all -r=tket-libs
@@ -515,7 +515,7 @@ jobs:
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Upload package
-      if: github.event_name == 'push' && github.event.push.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
+      if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
         conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --all -r=tket-libs
