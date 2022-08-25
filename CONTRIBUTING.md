@@ -69,3 +69,7 @@ If you make any changes in `thet/src`, you should bump the version number of
 `requires` field in `recipes/tket-test/conanfile.py`,
 `recipes/tket-proptests/conanfile.py` and `pytket/conanfile.txt` so that they
 match the new version. (This is checked on the CI for all PRs to `develop`.)
+Follow the "sematic versioning" convention: any backwards-incompatible changes
+to the C++ API require a major version bump; new API features that maintain
+backwards compatibility require a minor version bump; internal improvements and
+bugfixes require a patch version bump.
