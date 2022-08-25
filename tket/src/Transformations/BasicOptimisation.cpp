@@ -218,7 +218,6 @@ static bool commute_singles_to_front(Circuit &circ) {
       const Op_ptr curr_op = circ.get_Op_ptr_from_Vertex(current_v);
       // if current vertex is a multiqubit gate
       if (circ.n_in_edges_of_type(current_v, EdgeType::Quantum) > 1) {
-        // need gate check to access commuting_basis
         while (circ.n_in_edges_of_type(prev_v, EdgeType::Quantum) == 1 &&
                ends_commute(circ, current_e)) {
           // subsequent op on qubit path is a single qubit gate
@@ -226,12 +225,11 @@ static bool commute_singles_to_front(Circuit &circ) {
           success = true;
           EdgeVec rewire_edges;
           op_signature_t edge_types;
-          Edge rewire_edge = circ.get_last_edge(current_v, current_e);
           for (const Edge &e : circ.get_in_edges(prev_v)) {
             EdgeType type = circ.get_edgetype(e);
             Edge boundary_edge;
             if (type == EdgeType::Quantum) {
-              boundary_edge = rewire_edge;
+              boundary_edge = circ.get_last_edge(current_v, current_e);
             } else {
               // There should not be any Classical edges for conditional ops
               TKET_ASSERT(type == EdgeType::Boolean);
