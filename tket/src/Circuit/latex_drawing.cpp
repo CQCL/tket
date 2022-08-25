@@ -35,6 +35,7 @@ void add_latex_for_command(LatexContext& context, const Command& command) {
   std::vector<LineBufferInfo>& lines = context.lines;
   unit_vector_t args = command.get_args();
   const Op_ptr op = command.get_op_ptr();
+  // TODO:: ADD CnZ, CnY
   switch (op->get_type()) {
     case OpType::CnRy:
     case OpType::CnX: {

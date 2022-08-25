@@ -82,6 +82,10 @@ Vertex Circuit::add_op<unsigned>(
     return add_op(get_op_ptr(OpType::Ry, gate->get_params()), arg_ids);
   } else if (optype == OpType::CnX && args.size() == 1) {
     return add_op(get_op_ptr(OpType::X), arg_ids);
+  } else if (optype == OpType::CnZ && args.size() == 1) {
+    return add_op(get_op_ptr(OpType::Z), arg_ids);
+  } else if (optype == OpType::CnY && args.size() == 1) {
+    return add_op(get_op_ptr(OpType::Y), arg_ids);
   }
   return add_op(gate, arg_ids, opgroup);
 }
