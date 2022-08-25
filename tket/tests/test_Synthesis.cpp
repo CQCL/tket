@@ -2350,7 +2350,6 @@ SCENARIO("Test decompose_ZYZ_to_TK1") {
   Transforms::decompose_ZYZ_to_TK1().apply(circ);
   auto u1 = tket_sim::get_unitary(circ);
 
-  std::cout << circ << std::endl;
   REQUIRE(circ.count_gates(OpType::TK1) == tk1_count);
   REQUIRE(circ.n_gates() == total_count);
 
