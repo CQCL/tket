@@ -105,7 +105,8 @@ Transform decompose_MolmerSorensen();
  * convenient to reduce the two-qubit gate count of the decomposed TK2.
  *
  * If no fidelities are provided, the decomposition will be exact, using CX
- * gates.
+ * gates. For equal fidelities, ZZPhase will be prefered over ZZMax and CX if
+ * it requires fewer gates.
  *
  * If the TK2 angles are symbolic values, the decomposition will be exact
  * (i.e. not noise-aware). It is not possible in general to obtain optimal

@@ -512,7 +512,9 @@ static double best_noise_aware_decomposition(
         zz_fid *= gate_fid;
       }
       double nzz_fid = get_ZZPhase_fidelity(angles, n_zz) * zz_fid;
-      if (nzz_fid > max_fid) {
+      // Use ZZPhase if fidelity is greater or it is equal but uses fewer gates
+      if (nzz_fid - max_fid > EPS ||
+          (nzz_fid - max_fid > -EPS && n_zz < n_gates)) {
         max_fid = nzz_fid;
         best_optype = OpType::ZZPhase;
         n_gates = n_zz;

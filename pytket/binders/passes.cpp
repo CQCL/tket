@@ -380,7 +380,9 @@ PYBIND11_MODULE(passes, m) {
       "to return the optimal decomposition of each TK2 gate, taking "
       "noise into consideration.\n\n"
       "If no fidelities are provided, the TK2 gates will be decomposed "
-      "exactly using CX gates.\n\n"
+      "exactly using CX gates. For equal fidelities, ZZPhase will be prefered "
+      "over ZZMax and CX if the decomposition results in fewer two-qubit "
+      "gates.\n\n"
       "All TK2 gate parameters must be normalised, i.e. they must satisfy "
       "`NormalisedTK2Predicate`.\n\n"
       "Using the `allow_swaps=True` (default) option, qubits will be swapped "
@@ -461,7 +463,8 @@ PYBIND11_MODULE(passes, m) {
       "FullPeepholeOptimise", &FullPeepholeOptimise,
       "Performs peephole optimisation including resynthesis of 2- and 3-qubit "
       "gate sequences, and converts to a circuit containing only the given "
-      "2-qubit gate (which may be CX or TK2) and TK1 gates."
+      "2-qubit gate (which may be CX or TK2) and TK1 gates.\n\n"
+      "The `allow_swaps` parameter has no effect when the target gate is TK2."
       "\n\n:param allow_swaps: whether to allow implicit wire swaps",
       py::arg("allow_swaps") = true, py::arg("target_2qb_gate") = OpType::CX);
   m.def("RebaseTket", &RebaseTket, "Converts all gates to CX and TK1.");

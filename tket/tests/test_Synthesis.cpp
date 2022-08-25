@@ -1775,6 +1775,32 @@ SCENARIO("Test TK1 gate decomp for some gates") {
   }
 }
 
+SCENARIO("Testing in_weyl_chamber") {
+  GIVEN("Normalised angles (1)") { REQUIRE(in_weyl_chamber({0.5, 0.5, 0})); }
+  GIVEN("Normalised angles (2)") { REQUIRE(in_weyl_chamber({0.5, 0.3, 0})); }
+  GIVEN("Normalised angles (2)") { REQUIRE(in_weyl_chamber({0.3, 0.3, -0.2})); }
+  GIVEN("Non normalised angles (1)") {
+    REQUIRE_FALSE(in_weyl_chamber({0.3, 0.3, -0.31}));
+  }
+  GIVEN("Non normalised angles (2)") {
+    REQUIRE_FALSE(in_weyl_chamber({0.2, 0.3, 0}));
+  }
+  GIVEN("Non normalised angles (3)") {
+    REQUIRE_FALSE(in_weyl_chamber({1, 0, 0}));
+  }
+  GIVEN("Non normalised angles (4)") {
+    REQUIRE_FALSE(in_weyl_chamber({0, 0, 0.1}));
+  }
+  GIVEN("A close to invalid TK2") {
+    Circuit c = CircPool::TK2_using_normalised_TK2(
+        3.48828125, 0.51171875000000022, 0.48828124999999983);
+    Vertex tk2 = *c.get_gates_of_type(OpType::TK2).begin();
+    Op_ptr op = c.get_Op_ptr_from_Vertex(tk2);
+    auto params = op->get_params();
+    REQUIRE(in_weyl_chamber({params[0], params[1], params[2]}));
+  }
+}
+
 SCENARIO("Testing decompose_TK2") {
   GIVEN("Parameterless decompose_TK2") {
     Circuit c(2);
@@ -1782,6 +1808,30 @@ SCENARIO("Testing decompose_TK2") {
     REQUIRE(Transforms::decompose_TK2().apply(c));
     REQUIRE(c.count_gates(OpType::CX) == 2);
     REQUIRE(c.count_gates(OpType::TK2) == 0);
+    REQUIRE(!Transforms::decompose_TK2().apply(c));
+  }
+  GIVEN("Prioritise ZZPhase over ZZMax for equal fidelity (1)") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::TK2, {0.3, 0., 0.}, {0, 1});
+    Transforms::TwoQbFidelities fid;
+    fid.ZZPhase_fidelity = [](double x) { return 1.; };
+    fid.ZZMax_fidelity = 1.;
+    REQUIRE(Transforms::decompose_TK2(fid).apply(c));
+    REQUIRE(c.count_gates(OpType::ZZPhase) == 1);
+    REQUIRE(c.count_gates(OpType::TK2) == 0);
+    REQUIRE(c.count_gates(OpType::ZZMax) == 0);
+    REQUIRE(!Transforms::decompose_TK2().apply(c));
+  }
+  GIVEN("Prioritise ZZPhase over ZZMax for equal fidelity (2)") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::TK2, {0.3, 0., 0.}, {0, 1});
+    Transforms::TwoQbFidelities fid;
+    fid.ZZPhase_fidelity = [](double x) { return .9; };
+    fid.ZZMax_fidelity = .9;
+    REQUIRE(Transforms::decompose_TK2(fid).apply(c));
+    REQUIRE(c.count_gates(OpType::ZZPhase) == 1);
+    REQUIRE(c.count_gates(OpType::TK2) == 0);
+    REQUIRE(c.count_gates(OpType::ZZMax) == 0);
     REQUIRE(!Transforms::decompose_TK2().apply(c));
   }
 
