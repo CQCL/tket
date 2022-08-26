@@ -425,6 +425,15 @@ std::vector<std::optional<Edge>> Circuit::get_linear_out_edges(
   return outedges;
 }
 
+Edge Circuit::get_linear_edge(const Edge &e) const {
+  if (get_edgetype(e) == EdgeType::Boolean) {
+    Edge linear_edge = get_nth_out_edge(source(e), get_source_port(e));
+    return linear_edge;
+  } else {
+    return e;
+  }
+}
+
 EdgeVec Circuit::get_all_out_edges(const Vertex &vert) const {
   std::vector<std::optional<Edge>> lin_outs = get_linear_out_edges(vert);
   std::vector<EdgeVec> b_bundles = get_b_out_bundles(vert);

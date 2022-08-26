@@ -707,6 +707,7 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
     c2.append(cnu1);
   }
 
+  c2.remove_noops();
   return c2;
 }
 

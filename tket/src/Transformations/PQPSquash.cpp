@@ -70,8 +70,9 @@ std::pair<Circuit, Gate_ptr> PQPSquasher::flush(
   OpType p = p_, q = q_;
 
   if (smart_squash_ && commutation_colour.has_value()) {
-    Gate P(p_, {0}, 1);
-    Gate Q(q_, {0}, 1);
+    // Using an arbitrary non-zero angle to obtain the commutation for p_/q_.
+    Gate P(p_, {0.123}, 1);
+    Gate Q(q_, {0.123}, 1);
     if (P.commutes_with_basis(commutation_colour, 0)) {
       commute_through = true;
     } else if (Q.commutes_with_basis(commutation_colour, 0)) {
