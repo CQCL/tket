@@ -193,6 +193,16 @@ SCENARIO("Check commutation through multiqubit ops") {
     circ.add_op<unsigned>(OpType::BRIDGE, {1, 2, 0});
     REQUIRE_FALSE(Transforms::commute_through_multis().apply(circ));
   }
+  GIVEN("A circuit with a conditional measure") {
+    Circuit circ(2, 3);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Measure, {}, {1, 0}, {2}, 1);
+    Circuit orig = circ;
+
+    REQUIRE(!Transforms::commute_through_multis().apply(circ));
+    REQUIRE(orig == circ);
+  }
 }
 
 SCENARIO(
