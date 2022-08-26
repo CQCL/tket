@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.5.2 (August 2022)
+-------------------
+
+Minor new features:
+
+* Prefer `ZZPhase` in ``DecomposeTK2`` if it results in the same fidelity but
+  fewer two-qubit gates.
+
 1.5.1 (August 2022)
 -------------------
 

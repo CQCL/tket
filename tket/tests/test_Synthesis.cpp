@@ -1810,6 +1810,30 @@ SCENARIO("Testing decompose_TK2") {
     REQUIRE(c.count_gates(OpType::TK2) == 0);
     REQUIRE(!Transforms::decompose_TK2().apply(c));
   }
+  GIVEN("Prioritise ZZPhase over ZZMax for equal fidelity (1)") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::TK2, {0.3, 0., 0.}, {0, 1});
+    Transforms::TwoQbFidelities fid;
+    fid.ZZPhase_fidelity = [](double x) { return 1.; };
+    fid.ZZMax_fidelity = 1.;
+    REQUIRE(Transforms::decompose_TK2(fid).apply(c));
+    REQUIRE(c.count_gates(OpType::ZZPhase) == 1);
+    REQUIRE(c.count_gates(OpType::TK2) == 0);
+    REQUIRE(c.count_gates(OpType::ZZMax) == 0);
+    REQUIRE(!Transforms::decompose_TK2().apply(c));
+  }
+  GIVEN("Prioritise ZZPhase over ZZMax for equal fidelity (2)") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::TK2, {0.3, 0., 0.}, {0, 1});
+    Transforms::TwoQbFidelities fid;
+    fid.ZZPhase_fidelity = [](double x) { return .9; };
+    fid.ZZMax_fidelity = .9;
+    REQUIRE(Transforms::decompose_TK2(fid).apply(c));
+    REQUIRE(c.count_gates(OpType::ZZPhase) == 1);
+    REQUIRE(c.count_gates(OpType::TK2) == 0);
+    REQUIRE(c.count_gates(OpType::ZZMax) == 0);
+    REQUIRE(!Transforms::decompose_TK2().apply(c));
+  }
 
   // some useful symbolics
   Sym a = SymEngine::symbol("alpha");
