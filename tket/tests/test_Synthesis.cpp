@@ -2281,5 +2281,149 @@ SCENARIO("Restricting ZZPhase gate angles.") {
 
   REQUIRE(comparison == c);
 }
+
+SCENARIO("Test decompose_ZXZ_to_TK1") {
+  Circuit circ;
+  unsigned tk1_count, total_count;
+  GIVEN("A simple ZZ circuit") {
+    circ = Circuit(1);
+    circ.add_op<unsigned>(OpType::Rz, 0.234, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.434, {0});
+    tk1_count = 1;
+    total_count = 1;
+  }
+  GIVEN("A simple XX circuit") {
+    circ = Circuit(1);
+    circ.add_op<unsigned>(OpType::Rx, 0.234, {0});
+    circ.add_op<unsigned>(OpType::Rx, 0.434, {0});
+    tk1_count = 2;
+    total_count = 2;
+  }
+  GIVEN("A simple ZXZ circuit") {
+    circ = Circuit(1);
+    circ.add_op<unsigned>(OpType::Rz, 0.234, {0});
+    circ.add_op<unsigned>(OpType::Rx, 1.334, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.434, {0});
+    tk1_count = 1;
+    total_count = 1;
+  }
+  GIVEN("A simple ZXZ circuit with global phases") {
+    circ = Circuit(1);
+    circ.add_op<unsigned>(OpType::Rz, 2.234, {0});
+    circ.add_op<unsigned>(OpType::Rx, 3.334, {0});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    tk1_count = 1;
+    total_count = 1;
+  }
+  GIVEN("A circuit with irreducible gates") {
+    circ = Circuit(2);
+    circ.add_op<unsigned>(OpType::Rz, 2.234, {0});
+    circ.add_op<unsigned>(OpType::Rx, 3.334, {0});
+    circ.add_op<unsigned>(OpType::V, {0});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    circ.add_op<unsigned>(OpType::Rz, 12.23, {1});
+    circ.add_op<unsigned>(OpType::Sdg, {1});
+    circ.add_op<unsigned>(OpType::Rx, 22.22, {1});
+    tk1_count = 4;
+    total_count = 6;
+  }
+  GIVEN("A circuit with irreducible gates and blocking multiqb gates") {
+    circ = Circuit(2);
+    circ.add_op<unsigned>(OpType::Rz, 2.234, {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Rx, 3.334, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.123, {0});
+    circ.add_op<unsigned>(OpType::V, {0});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    circ.add_op<unsigned>(OpType::Rz, 12.23, {1});
+    circ.add_op<unsigned>(OpType::T, {0});
+    circ.add_op<unsigned>(OpType::T, {1});
+    circ.add_op<unsigned>(OpType::Sdg, {1});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    circ.add_op<unsigned>(OpType::CZ, {0, 1});
+    circ.add_op<unsigned>(OpType::Rx, 22.22, {1});
+    circ.add_op<unsigned>(OpType::Rx, 3.334, {0});
+    tk1_count = 7;
+    total_count = 13;
+  }
+
+  auto u0 = tket_sim::get_unitary(circ);
+  REQUIRE(Transforms::decompose_ZXZ_to_TK1().apply(circ));
+  auto u1 = tket_sim::get_unitary(circ);
+
+  REQUIRE(circ.count_gates(OpType::TK1) == tk1_count);
+  REQUIRE(circ.n_gates() == total_count);
+
+  REQUIRE(u1.isApprox(u1));
+}
+
+SCENARIO("Test decompose_ZYZ_to_TK1") {
+  Circuit circ;
+  unsigned tk1_count, total_count;
+  GIVEN("A simple YY circuit") {
+    circ = Circuit(1);
+    circ.add_op<unsigned>(OpType::Ry, 0.234, {0});
+    circ.add_op<unsigned>(OpType::Ry, 0.434, {0});
+    tk1_count = 2;
+    total_count = 2;
+  }
+  GIVEN("A simple ZYZ circuit") {
+    circ = Circuit(1);
+    circ.add_op<unsigned>(OpType::Rz, 0.234, {0});
+    circ.add_op<unsigned>(OpType::Ry, 1.334, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.434, {0});
+    tk1_count = 1;
+    total_count = 1;
+  }
+  GIVEN("A simple ZYZ circuit with global phases") {
+    circ = Circuit(1);
+    circ.add_op<unsigned>(OpType::Rz, 2.234, {0});
+    circ.add_op<unsigned>(OpType::Ry, 3.334, {0});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    tk1_count = 1;
+    total_count = 1;
+  }
+  GIVEN("A circuit with irreducible gates") {
+    circ = Circuit(2);
+    circ.add_op<unsigned>(OpType::Rz, 2.234, {0});
+    circ.add_op<unsigned>(OpType::Ry, 3.334, {0});
+    circ.add_op<unsigned>(OpType::V, {0});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    circ.add_op<unsigned>(OpType::Rz, 12.23, {1});
+    circ.add_op<unsigned>(OpType::Sdg, {1});
+    circ.add_op<unsigned>(OpType::Ry, 22.22, {1});
+    tk1_count = 4;
+    total_count = 6;
+  }
+  GIVEN("A circuit with irreducible gates and blocking multiqb gates") {
+    circ = Circuit(2);
+    circ.add_op<unsigned>(OpType::Rz, 2.234, {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Ry, 3.334, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.123, {0});
+    circ.add_op<unsigned>(OpType::V, {0});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    circ.add_op<unsigned>(OpType::Rz, 12.23, {1});
+    circ.add_op<unsigned>(OpType::T, {0});
+    circ.add_op<unsigned>(OpType::T, {1});
+    circ.add_op<unsigned>(OpType::Sdg, {1});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    circ.add_op<unsigned>(OpType::CZ, {0, 1});
+    circ.add_op<unsigned>(OpType::Ry, 22.22, {1});
+    circ.add_op<unsigned>(OpType::Ry, 3.334, {0});
+    tk1_count = 7;
+    total_count = 13;
+  }
+
+  auto u0 = tket_sim::get_unitary(circ);
+  Transforms::decompose_ZYZ_to_TK1().apply(circ);
+  auto u1 = tket_sim::get_unitary(circ);
+
+  REQUIRE(circ.count_gates(OpType::TK1) == tk1_count);
+  REQUIRE(circ.n_gates() == total_count);
+
+  REQUIRE(u1.isApprox(u1));
+}
+
 }  // namespace test_Synthesis
 }  // namespace tket
