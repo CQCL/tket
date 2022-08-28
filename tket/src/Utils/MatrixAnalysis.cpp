@@ -372,6 +372,12 @@ get_information_content(const Eigen::Matrix4cd &X) {
     }
   }
 
+  std::cout << "============ Eigendecomposition =============" << std::endl;
+  std::cout << "eigvals = " << std::endl << eigs << std::endl;
+  std::cout << "eigvecs =" << std::endl;
+  std::cout << eigv << std::endl;
+  std::cout << "=============================================" << std::endl;
+
   Eigen::Vector4d thetas =
       eigs.unaryExpr([](const Complex lambda) { return std::arg(lambda) / 2.; })
           .real();
