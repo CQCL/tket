@@ -51,7 +51,7 @@ class NodeListTraversal {
   explicit NodeListTraversal(NodesRawDataWrapper& raw_data_wrapper);
 
   /** Simply return all TVs which occur in some domain, somewhere. */
-  std::set<VertexWSM> get_used_target_vertices() const;
+  boost::dynamic_bitset<> get_used_target_vertices() const;
 
   /** Keep popping back the internal nodes data UNTIL it reaches
    * an apparently valid node (i.e., a "good" node, i.e. a node which is

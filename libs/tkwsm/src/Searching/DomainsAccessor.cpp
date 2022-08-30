@@ -18,7 +18,7 @@
 #include <tkassert/Assert.hpp>
 
 #include "tkwsm/Common/GeneralUtils.hpp"
-#include "tkwsm/Common/SetIntersection.hpp"
+#include "tkwsm/Common/TemporaryRefactorCode.hpp"
 #include "tkwsm/Searching/NodesRawData.hpp"
 
 namespace tket {
@@ -35,18 +35,17 @@ bool DomainsAccessor::current_node_is_valid() const {
   return !m_raw_data.nodes_data.top().nogood;
 }
 
-const std::set<VertexWSM>& DomainsAccessor::get_domain(VertexWSM pv) const {
-  const auto& data = m_raw_data.domains_data.at(pv);
-  return data.entries.top().domain;
+const boost::dynamic_bitset<>& DomainsAccessor::get_domain(VertexWSM pv) const {
+  return m_raw_data.domains_data.at(pv).entries.top().domain;
+}
+
+std::size_t DomainsAccessor::get_domain_size(VertexWSM pv) const {
+  return m_raw_data.domains_data.at(pv).entries.top().domain.count();
 }
 
 bool DomainsAccessor::domain_created_in_current_node(VertexWSM pv) const {
   return m_raw_data.domains_data.at(pv).entries.top().node_index ==
          m_raw_data.current_node_index();
-}
-
-std::set<VertexWSM>& DomainsAccessor::get_domain_nonconst(VertexWSM pv) {
-  return m_raw_data.domains_data.at(pv).entries.top().domain;
 }
 
 const std::vector<std::pair<VertexWSM, VertexWSM>>&
@@ -91,31 +90,53 @@ bool DomainsAccessor::alldiff_reduce_current_node(
       if (pv == assignment.first) {
         continue;
       }
+
       NodesRawData::DomainData& data_for_this_pv = m_raw_data.domains_data[pv];
-      std::set<VertexWSM>& existing_domain =
-          data_for_this_pv.entries.top().domain;
-      auto iter = existing_domain.find(assignment.second);
-      if (iter == existing_domain.end()) {
-        continue;
-      }
-      if (existing_domain.size() == 1) {
-        // Erasing TV would make a nogood.
-        return false;
-      }
-      if (existing_domain.size() == 2) {
-        // Erasing TV would make a new assignment.
-        VertexWSM tv_other = *existing_domain.cbegin();
-        if (tv_other == assignment.second) {
-          tv_other = *existing_domain.crbegin();
+      auto& existing_domain_bitset = data_for_this_pv.entries.top().domain;
+
+      // Check if erasing TV would make a nogood or assignment.
+      // So we need to know a few vertices tv1, tv2, ...
+      {
+        const auto tv1 = existing_domain_bitset.find_first();
+        // It must currently be nonempty.
+        TKET_ASSERT(tv1 < existing_domain_bitset.size());
+
+        if (!existing_domain_bitset.test(assignment.second)) {
+          // TV is not present in the domain; nothing to change.
+          continue;
         }
-        new_assignments.emplace_back(pv, tv_other);
+        // Does it have 1 or 2 elements currently?
+        const auto tv2 = existing_domain_bitset.find_next(tv1);
+        if (tv2 < existing_domain_bitset.size()) {
+          // It has at least 2 vertices. Does it have another?
+          const auto tv3 = existing_domain_bitset.find_next(tv2);
+          if (tv3 >= existing_domain_bitset.size()) {
+            // It has EXACTLY 2 vertices: tv1, tv2.
+            // One of them must be the TV we're erasing.
+            // The other will form a new assignment.
+            VertexWSM tv_other = tv1;
+            if (tv_other == assignment.second) {
+              tv_other = tv2;
+            }
+            TKET_ASSERT(tv_other != assignment.second);
+            new_assignments.emplace_back(pv, tv_other);
+          }
+        } else {
+          // It has EXACTLY one vertex: tv1.
+          // It MUST equal TV, and then erasing it would make a nogood.
+          TKET_ASSERT(tv1 == assignment.second);
+          return false;
+        }
       }
+
       // Now, we've taken care of everything EXCEPT
-      // erasing TV from the domain.
+      // erasing TV from the domain (which we KNOW is present).
+      // But we cannot immediately erase, since the domain might be shared
+      // across several nodes.
       if (data_for_this_pv.entries.top().node_index ==
           m_raw_data.current_node_index()) {
         // Erase in-place.
-        existing_domain.erase(iter);
+        TKET_ASSERT(existing_domain_bitset.test_set(assignment.second, false));
       } else {
         // We must make a new domain and copy the data across.
         data_for_this_pv.entries.push();
@@ -123,153 +144,48 @@ bool DomainsAccessor::alldiff_reduce_current_node(
             m_raw_data.current_node_index();
         data_for_this_pv.entries.top().domain =
             data_for_this_pv.entries.one_below_top().domain;
-        TKET_ASSERT(
-            data_for_this_pv.entries.top().domain.erase(assignment.second) ==
-            1);
+        TKET_ASSERT(data_for_this_pv.entries.top().domain.test_set(
+            assignment.second, false));
       }
     }
   }
   return true;
 }
 
-ReductionResult DomainsAccessor::overwrite_domain_with_set_swap(
-    VertexWSM pv, std::set<VertexWSM>& new_domain) {
-  if (new_domain.empty()) {
-    return ReductionResult::NOGOOD;
-  }
+// TODO: make another version NOT using a swap!
+DomainsAccessor::IntersectionResult DomainsAccessor::intersect_domain_with_swap(
+    VertexWSM pv, boost::dynamic_bitset<>& domain_mask) {
   auto& data_for_this_pv = m_raw_data.domains_data.at(pv);
-  auto& existing_domain_data = data_for_this_pv.entries.top();
-  std::set<VertexWSM>& existing_domain = existing_domain_data.domain;
+  domain_mask &= get_domain(pv);
 
-  // We should do a detailed assert that "new_domain" is a subset
-  // of "existing_domain", but this is expensive; thus we do a very
-  // cheap assert.
-  TKET_ASSERT(existing_domain.size() >= new_domain.size());
-  TKET_ASSERT(existing_domain.count(*new_domain.cbegin()) != 0);
-
-  if (existing_domain.size() == new_domain.size()) {
-    // No change, no action required (even if the new domain has size 1;
-    // it's not a NEW assignment).
-    return ReductionResult::SUCCESS;
-  }
-  auto result = ReductionResult::SUCCESS;
-
-  if (new_domain.size() == 1) {
-    result = ReductionResult::NEW_ASSIGNMENTS;
-    auto& current_node = m_raw_data.get_current_node_nonconst();
-    current_node.new_assignments.emplace_back(pv, *new_domain.cbegin());
-  }
-  // We must be careful; "existing_domain" might be shared with previous nodes.
-  if (existing_domain_data.node_index == m_raw_data.current_node_index()) {
-    // We can just overwrite the domain in-place; the caller will do that.
-    existing_domain.swap(new_domain);
-  } else {
-    // We need to make a new domain object.
-    data_for_this_pv.entries.push();
-    data_for_this_pv.entries.top().node_index = m_raw_data.current_node_index();
-    data_for_this_pv.entries.top().domain.swap(new_domain);
-  }
-  return result;
-}
-
-DomainsAccessor::IntersectionResult
-DomainsAccessor::intersect_domain_with_complement_set(
-    VertexWSM pattern_v, const std::set<VertexWSM>& forbidden_target_vertices) {
   IntersectionResult result;
-  {
-    const std::set<VertexWSM>& current_domain = get_domain(pattern_v);
-
-    if (disjoint(current_domain, forbidden_target_vertices)) {
-      result.changed = false;
-      result.new_domain_size = current_domain.size();
-      result.reduction_result = ReductionResult::SUCCESS;
-      return result;
-    }
+  result.new_domain_size = domain_mask.count();
+  result.changed = get_domain_size(pv) != result.new_domain_size;
+  if (!result.changed) {
+    result.reduction_result = ReductionResult::SUCCESS;
+    return result;
   }
-  // The domain definitely is changing.
-  result.changed = true;
-  auto& data_for_this_pv = m_raw_data.domains_data.at(pattern_v);
-  if (data_for_this_pv.entries.top().node_index ==
-      m_raw_data.current_node_index()) {
-    // Domain is not shared; we can simply overwrite.
-    std::set<VertexWSM>& domain = data_for_this_pv.entries.top().domain;
-
-    for (VertexWSM tv : forbidden_target_vertices) {
-      if (domain.erase(tv) == 1 && domain.empty()) {
-        result.reduction_result = ReductionResult::NOGOOD;
-        return result;
-      }
-    }
+  if (result.new_domain_size == 0) {
+    result.reduction_result = ReductionResult::NOGOOD;
+    return result;
+  }
+  if (result.new_domain_size == 1) {
+    result.reduction_result = ReductionResult::NEW_ASSIGNMENTS;
+    auto& current_node = m_raw_data.get_current_node_nonconst();
+    current_node.new_assignments.emplace_back(
+        pv, VertexWSM(domain_mask.find_first()));
   } else {
-    // Shared domain; copy on write:
+    result.reduction_result = ReductionResult::SUCCESS;
+  }
+
+  if (data_for_this_pv.entries.top().node_index !=
+      m_raw_data.current_node_index()) {
+    // We need to make a new domain object; it's shared.
     data_for_this_pv.entries.push();
     data_for_this_pv.entries.top().node_index = m_raw_data.current_node_index();
-
-    const std::set<VertexWSM>& old_domain =
-        data_for_this_pv.entries.one_below_top().domain;
-    std::set<VertexWSM>& new_domain = data_for_this_pv.entries.top().domain;
-
-    // Is it quicker to build it up as here, or copy then grind it down?
-    // Depends on all the sizes, and how many end up being erased...
-    new_domain.clear();
-
-    for (VertexWSM old_tv : old_domain) {
-      if (forbidden_target_vertices.count(old_tv) == 0) {
-        new_domain.insert(old_tv);
-      }
-    }
-
-    if (new_domain.empty()) {
-      // The caller will move up, no further action here.
-      result.reduction_result = ReductionResult::NOGOOD;
-      return result;
-    }
   }
-
-  // At this stage, we've created and filled the new domain object
-  // (necessarily different from the old one).
-  const std::set<VertexWSM>& domain = data_for_this_pv.entries.top().domain;
-  result.new_domain_size = domain.size();
-  TKET_ASSERT(!domain.empty());
-  if (domain.size() > 1) {
-    result.reduction_result = ReductionResult::SUCCESS;
-  } else {
-    // domain size 1, so a new assignment (as we KNOW that the domain has
-    // changed).
-    m_raw_data.get_current_node_nonconst().new_assignments.emplace_back(
-        pattern_v, *domain.cbegin());
-    result.reduction_result = ReductionResult::NEW_ASSIGNMENTS;
-  }
+  data_for_this_pv.entries.top().domain.swap(domain_mask);
   return result;
-}
-
-std::string DomainsAccessor::str(bool full) const {
-  std::stringstream ss;
-  if (full) {
-    ss << "\n@@@@@ ALL NODES: (curr.node index="
-       << m_raw_data.current_node_index() << ")";
-    for (unsigned node_index = 0; node_index < m_raw_data.nodes_data.size();
-         ++node_index) {
-      const auto& node = m_raw_data.nodes_data[node_index];
-      ss << "\n+++ node " << node_index << ":" << node.str();
-    }
-    ss << "\nDOMAINS: ";
-    for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
-      ss << "\nDOM(" << pv << "):" << m_raw_data.domains_data[pv].str();
-    }
-    ss << "\n";
-    return ss.str();
-  }
-  ss << "\ncurr.node index=" << m_raw_data.current_node_index()
-     << "; DOMAINS: ";
-  for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
-    ss << "\n  DOM(" << pv << "): ";
-    const auto& dom_data = m_raw_data.domains_data[pv].entries.top();
-    ss << "(since index " << dom_data.node_index
-       << "): " << tket::WeightedSubgraphMonomorphism::str(dom_data.domain);
-  }
-  ss << "\n";
-  return ss.str();
 }
 
 const std::vector<VertexWSM>&

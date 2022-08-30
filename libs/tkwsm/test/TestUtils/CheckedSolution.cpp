@@ -189,7 +189,7 @@ static void check_solver_object(
 
   for (const auto& solution : solution_data.solutions) {
     const auto errors = solution.get_errors(pdata, tdata);
-    CHECK("" == errors);
+    REQUIRE("" == errors);
     if (!errors.empty()) {
       ++stats.failure_count;
       return;
@@ -215,7 +215,6 @@ static void solve_problem(
   const MainSolver solver(pdata, tdata, solver_params);
   check_solver_object(
       solver, pdata, tdata, info, solver_params, stats, checked_solution, os);
-
   const auto& extra_statistics = solver.get_solution_data().extra_statistics;
   if (!extra_statistics.impossible_target_vertices.empty()) {
     checked_solution.impossible_target_vertices =
@@ -295,8 +294,6 @@ CheckedSolution::CheckedSolution(
   REQUIRE(
       solver_params.for_multiple_full_solutions_the_max_number_to_obtain == 0);
   const auto& os = TestSettings::get().os;
-  const auto orig_init_time = stats.total_init_time_ms;
-  const auto orig_search_time = stats.total_search_time_ms;
   solve_problem(pdata, tdata, info, solver_params, stats, *this, os);
 }
 

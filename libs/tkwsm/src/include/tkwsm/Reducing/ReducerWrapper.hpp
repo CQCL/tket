@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #pragma once
+#include <boost/dynamic_bitset.hpp>
 #include <optional>
 
 #include "../GraphTheoretic/GeneralStructs.hpp"
@@ -50,7 +51,7 @@ class ReducerInterface {
    * erased from EVERY Domain(PV) in EVERY node of EVERY search, not just the
    * current node).
    */
-  virtual bool check(std::pair<VertexWSM, VertexWSM> assignment);
+  virtual bool check(std::pair<VertexWSM, VertexWSM> assignment) = 0;
 
   /** Given that PV->TV is a new assignment, reduces the domains
    * of all affected vertices. Breaks off early
@@ -69,7 +70,7 @@ class ReducerInterface {
    */
   virtual ReductionResult reduce(
       std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,
-      std::set<VertexWSM>& work_set);
+      boost::dynamic_bitset<>& work_set) = 0;
 
   virtual ~ReducerInterface() = default;
 
@@ -127,8 +128,9 @@ class ReducerInterface {
    * @return True if there is no need to reduce Domain(pv2).
    */
   static bool other_vertex_reduction_can_be_skipped_by_symmetry(
-      const std::set<VertexWSM>& other_domain, const DomainsAccessor& accessor,
-      VertexWSM this_vertex, VertexWSM other_vertex);
+      const boost::dynamic_bitset<>& other_domain,
+      const DomainsAccessor& accessor, VertexWSM this_vertex,
+      VertexWSM other_vertex);
 };
 
 /** A class to wrap a raw Reducer object, and keep track of which assignments
@@ -171,7 +173,7 @@ class ReducerWrapper {
    * assignments occurring.
    */
   ReductionResult reduce(
-      DomainsAccessor& accessor, std::set<VertexWSM>& work_set);
+      DomainsAccessor& accessor, boost::dynamic_bitset<>& work_set);
 
  private:
   ReducerInterface& m_reducer;

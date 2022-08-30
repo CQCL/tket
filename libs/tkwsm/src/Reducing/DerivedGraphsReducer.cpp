@@ -16,7 +16,6 @@
 
 #include <tkassert/Assert.hpp>
 
-#include "tkwsm/Common/SetIntersection.hpp"
 #include "tkwsm/GraphTheoretic/FilterUtils.hpp"
 #include "tkwsm/GraphTheoretic/NeighboursData.hpp"
 #include "tkwsm/Searching/DomainsAccessor.hpp"
@@ -58,7 +57,7 @@ ReductionResult DerivedGraphsReducer::reduce_with_derived_data(
     const DerivedGraphStructs::NeighboursAndCounts&
         target_derived_neighbours_data,
     VertexWSM root_pattern_vertex, DomainsAccessor& accessor,
-    std::set<VertexWSM>& work_set) {
+    boost::dynamic_bitset<>& work_bitset) {
   // If we do create a new assignment, we will continue
   // so that this assignment at least is fully processed.
   // This is simpler than trying to split the work up
@@ -70,36 +69,26 @@ ReductionResult DerivedGraphsReducer::reduce_with_derived_data(
        pattern_derived_neighbours_data) {
     // This PV is a neighbour of the root PV, in some derived graph.
     const VertexWSM& pv = p_entry.first;
-
-    // This is Dom(pv), which we're reducing.
-    const std::set<VertexWSM>& domain = accessor.get_domain(pv);
-
-    if (other_vertex_reduction_can_be_skipped_by_symmetry(
-            domain, accessor, root_pattern_vertex, pv)) {
-      continue;
+    {
+      const auto& domain = accessor.get_domain(pv);
+      if (other_vertex_reduction_can_be_skipped_by_symmetry(
+              domain, accessor, root_pattern_vertex, pv)) {
+        continue;
+      }
+      work_bitset.resize(domain.size());
+      work_bitset.reset();
     }
-
     // This is the edge weight of PV--(root PV) in the derived graph.
     const DerivedGraphStructs::Count& p_count = p_entry.second;
 
-    fill_intersection(
-        domain, target_derived_neighbours_data, work_set,
-        // How do we convert a (Vertex, edge weight) pair into a vertex?
-        [](const std::pair<VertexWSM, DerivedGraphStructs::Count>& pair) {
-          return pair.first;
-        },
+    for (const auto& entry : target_derived_neighbours_data) {
+      if (entry.second >= p_count) {
+        TKET_ASSERT(!work_bitset.test_set(entry.first));
+      }
+    }
 
-        // To get the next pair (tv2, count)  after tv1
-        // (a kind of "lower bound" function),
-        // we add the extra condition that count >= p-count.
-        // (Since the lexicographic ordering is being used).
-        // (Since, edges in the derived p-graph must map to edges with equal
-        // or greater counts in the target graph).
-        // Luckily, this fits in exactly with the general framework
-        // of the fast set intersection.
-        [p_count](VertexWSM tv) { return std::make_pair(tv, p_count); });
-
-    switch (accessor.overwrite_domain_with_set_swap(pv, work_set)) {
+    switch (
+        accessor.intersect_domain_with_swap(pv, work_bitset).reduction_result) {
       case ReductionResult::NOGOOD:
         return ReductionResult::NOGOOD;
       case ReductionResult::NEW_ASSIGNMENTS:
@@ -117,7 +106,7 @@ ReductionResult DerivedGraphsReducer::reduce_with_derived_data(
 
 ReductionResult DerivedGraphsReducer::reduce(
     std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,
-    std::set<VertexWSM>& work_set) {
+    boost::dynamic_bitset<>& work_set) {
   const auto pattern_vdata =
       m_derived_pattern_graphs.get_data(assignment.first);
   const auto target_vdata = m_derived_target_graphs.get_data(assignment.second);
