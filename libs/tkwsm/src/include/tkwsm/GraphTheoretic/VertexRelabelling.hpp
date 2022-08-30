@@ -44,8 +44,6 @@ struct VertexRelabelling {
 
   explicit VertexRelabelling(GraphEdgeWeights edges_and_weights);
 
-  // TODO....refactor, use these more!!!!!!
-
   unsigned get_new_label(VertexWSM v) const;
 
   VertexWSM get_old_label(unsigned v) const;

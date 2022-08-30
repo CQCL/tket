@@ -134,10 +134,6 @@ class SolutionJumper {
     WeightWSM contribution;
 
     // IF we are in case C (the "dependent" case),
-    // this gives the additional necessary data.
-    // std::optional<CommonEdgeDataForCaseC> data_for_case_c;
-
-    // IF we are in case C (the "dependent" case),
     // this gives PV' which is adjacent to the original PV,
     // and currently
     std::optional<unsigned> case_c_other_pv_opt;

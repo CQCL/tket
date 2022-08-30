@@ -82,7 +82,6 @@ class NearNeighboursData {
     // calculated from it.
     std::vector<boost::dynamic_bitset<>> vertices_at_exact_distance;
     std::vector<boost::dynamic_bitset<>> vertices_up_to_distance;
-    // std::vector<std::size_t> n_vertices_up_to_distance;
     std::vector<FilterUtils::DegreeCounts> degree_counts_for_exact_distance;
     std::vector<FilterUtils::DegreeCounts> degree_counts_up_to_max_distance;
   };
