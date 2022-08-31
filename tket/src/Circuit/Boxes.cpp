@@ -499,7 +499,7 @@ ToffoliBox::ToffoliBox(
     std::map<std::vector<bool>, std::vector<bool>> _permutation)
     : Box(OpType::ToffoliBox), n_qubits_(_n_qubits) {
   // TODO: Currently this consumes the permutation to produce the cycles
-  // Note that _permutation is passed by copy. 
+  // Note that _permutation is passed by copy.
   // Potentially update in future
 
   // Convert passed permutation to cycles
