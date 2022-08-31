@@ -324,6 +324,9 @@ PYBIND11_MODULE(circuit, m) {
           "QControlBox", OpType::QControlBox,
           "An arbitrary n-controlled operation")
       .value(
+          "ToffoliBox", OpType::ToffoliBox,
+          "A permutation of classical basis states")
+      .value(
           "CustomGate", OpType::CustomGate,
           ":math:`(\\alpha, \\beta, \\ldots) \\mapsto` A user-defined "
           "operation, based on a :py:class:`Circuit` :math:`C` with "

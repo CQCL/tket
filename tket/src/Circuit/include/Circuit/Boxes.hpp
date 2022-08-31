@@ -708,4 +708,65 @@ class StabiliserAssertionBox : public Box {
   mutable std::vector<bool> expected_readouts_;
 };
 
+class ToffoliBox : public Box {
+ public:
+  /**
+   * Construct from a map between input and output basis states.
+   * Every basis state changed by the permutation should
+   * be in the provided map.A invalid_argument error is thrown
+   * if this is not true.
+   * Any basis state not in a permutation cycle will be assumed to
+   * take the identity.
+   * If each basis state is not the same size will throw an
+   * invalid_argument error.
+   *
+   * @param _n_qubits number of qubits permuted
+   * @param _permutation map between basis states
+   */
+  explicit ToffoliBox(
+      unsigned _n_qubits,
+      std::map<std::vector<bool>, std::vector<bool>> _permutation);
+
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &) const override {
+    return Op_ptr();
+  }
+
+  SymSet free_symbols() const override { return {}; }
+
+ protected:
+  void generate_circuit() const override;
+
+ private:
+  typedef std::vector<std::vector<bool>> cycle_permutation_t;
+
+  struct transposition_t {
+    std::vector<bool> first;
+    std::vector<bool> middle;
+    std::vector<bool> last;
+  };
+
+  typedef std::vector<transposition_t> cycle_transposition_t;
+
+  typedef std::vector<std::pair<std::vector<bool>, unsigned>> gray_code_t;
+
+  std::vector<transposition_t> cycle_to_transposition(
+      cycle_permutation_t cycle) const;
+
+  std::vector<cycle_transposition_t> get_transpositions() const;
+
+  Circuit get_bitstring_circuit(
+      const std::vector<bool> &bitstring, const unsigned &target) const;
+
+  gray_code_t transposition_to_gray_code(
+      const ToffoliBox::transposition_t &transposition) const;
+
+  cycle_transposition_t merge_cycles(
+      std::vector<ToffoliBox::cycle_transposition_t> &cycle_transpositions)
+      const;
+
+  unsigned n_qubits_;
+  std::set<cycle_permutation_t> cycles_;
+};
+
 }  // namespace tket
