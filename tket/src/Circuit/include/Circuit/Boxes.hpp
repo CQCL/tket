@@ -725,7 +725,7 @@ class ToffoliBox : public Box {
    */
   explicit ToffoliBox(
       unsigned _n_qubits,
-      std::map<std::vector<bool>, std::vector<bool>> &_permutation);
+      std::map<std::vector<bool>, std::vector<bool>> _permutation);
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {

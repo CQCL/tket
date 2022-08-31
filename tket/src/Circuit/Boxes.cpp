@@ -496,8 +496,12 @@ op_signature_t StabiliserAssertionBox::get_signature() const {
 
 ToffoliBox::ToffoliBox(
     unsigned _n_qubits,
-    std::map<std::vector<bool>, std::vector<bool>> &_permutation)
+    std::map<std::vector<bool>, std::vector<bool>> _permutation)
     : Box(OpType::ToffoliBox), n_qubits_(_n_qubits) {
+  // TODO: Currently this consumes the permutation to produce the cycles
+  // Note that _permutation is passed by copy. 
+  // Potentially update in future
+
   // Convert passed permutation to cycles
   while (!_permutation.empty()) {
     auto it = _permutation.begin();
