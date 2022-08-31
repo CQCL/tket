@@ -133,10 +133,10 @@ void init_boxes(py::module &m) {
       "An operation that constructs a circuit to implement the specified "
       "permutation of classical basis states.")
       .def(
-          py::init<std::map<std::vector<bool>, std::vector<bool>> &, bool>(),
-          "Construct from the cycle of basis states described by the "
-          "permutation provided.",
-          py::arg("permutation"), py::arg("reorder"))
+          py::init<
+              unsigned, std::map<std::vector<bool>, std::vector<bool>> &>(),
+          "Construct from a permutation of basis states.", py::arg("n_qubits"),
+          py::arg("permutation"))
       .def(
           "get_circuit", [](ToffoliBox &tbox) { return *tbox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box");

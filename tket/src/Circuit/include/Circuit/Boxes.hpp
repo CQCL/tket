@@ -412,7 +412,7 @@ class ExpBox : public Box {
 class PauliExpBox : public Box {
  public:
   /**
-   * The operation implements the unitary` operator
+   * The operation implements the unitary operator
    * \f$ e^{-\frac12 i \pi t \sigma_0 \otimes \sigma_1 \otimes \cdots} \f$
    * where \f$ \sigma_i \in \{I,X,Y,Z\} \f$ are the Pauli operators.
    */
@@ -710,33 +710,21 @@ class StabiliserAssertionBox : public Box {
 
 class ToffoliBox : public Box {
  public:
-  typedef std::vector<std::vector<bool>> cycle_permutation_t;
-
-  struct transposition_t {
-    std::vector<bool> first;
-    std::vector<bool> middle;
-    std::vector<bool> last;
-  };
-
-  typedef std::vector<transposition_t> cycle_transposition_t;
-
-  typedef std::vector<std::pair<std::vector<bool>, unsigned>> gray_code_t;
-
   /**
    * Construct from a map between input and output basis states.
-   * Map entries should produce a cycle, i.e. if A maps to B but B
-   * B has no entry then it will throw an invalid_argument error.
+   * Every basis state changed by the permutation should
+   * be in the provided map.A invalid_argument error is thrown
+   * if this is not true.
    * Any basis state not in a permutation cycle will be assumed to
    * take the identity.
    * If each basis state is not the same size will throw an
    * invalid_argument error.
    *
    * @param _permutation map between basis states
-   * @param reorder if true does additional optimisation to reudce CnX count
    */
   explicit ToffoliBox(
-      std::map<std::vector<bool>, std::vector<bool>> &_permutation,
-      bool reorder = true);
+      unsigned _n_qubits,
+      std::map<std::vector<bool>, std::vector<bool>> &_permutation);
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
@@ -749,6 +737,18 @@ class ToffoliBox : public Box {
   void generate_circuit() const override;
 
  private:
+  typedef std::vector<std::vector<bool>> cycle_permutation_t;
+
+  struct transposition_t {
+    std::vector<bool> first;
+    std::vector<bool> middle;
+    std::vector<bool> last;
+  };
+
+  typedef std::vector<transposition_t> cycle_transposition_t;
+
+  typedef std::vector<std::pair<std::vector<bool>, unsigned>> gray_code_t;
+
   std::vector<transposition_t> cycle_to_transposition(
       cycle_permutation_t cycle) const;
 
@@ -757,9 +757,15 @@ class ToffoliBox : public Box {
   Circuit get_bitstring_circuit(
       const std::vector<bool> &bitstring, const unsigned &target) const;
 
-  std::set<cycle_permutation_t> cycles_;
+  gray_code_t transposition_to_gray_code(
+      const ToffoliBox::transposition_t &transposition) const;
 
-  bool reorder_;
+  cycle_transposition_t merge_cycles(
+      std::vector<ToffoliBox::cycle_transposition_t> &cycle_transpositions)
+      const;
+
+  unsigned n_qubits_;
+  std::set<cycle_permutation_t> cycles_;
 };
 
 }  // namespace tket
