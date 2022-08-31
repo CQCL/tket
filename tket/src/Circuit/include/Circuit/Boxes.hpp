@@ -720,6 +720,7 @@ class ToffoliBox : public Box {
    * If each basis state is not the same size will throw an
    * invalid_argument error.
    *
+   * @param _n_qubits number of qubits permuted
    * @param _permutation map between basis states
    */
   explicit ToffoliBox(
