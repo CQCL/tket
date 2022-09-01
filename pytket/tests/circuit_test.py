@@ -411,6 +411,9 @@ def test_boxes() -> None:
     unitary = tb.get_circuit().get_unitary()
     comparison = np.asarray([[0, 0, 0, 1], [0, 1, 0, 0], [0, 0, 1, 0], [1, 0, 0, 0]])
     assert np.allclose(unitary, comparison)
+    d.add_toffolibox(tb, [0,1])
+    assert d.n_gates == 8
+
 
 
 def test_u1q_stability() -> None:
