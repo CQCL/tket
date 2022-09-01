@@ -50,7 +50,7 @@ std::vector<qubit_bimap_t> monomorphism_edge_break(
                               .count();
     if (search_timeout <= 0) search_timeout = 1;
 
-    std::vector<qubit_bimap_t> all_maps = get_unweighted_subgraph_monomorphisms(
+    std::vector<qubit_bimap_t> all_maps = get_weighted_subgraph_monomorphisms(
         undirected_pattern, undirected_target, max_matches, timeout);
     std::sort(all_maps.begin(), all_maps.end());
 

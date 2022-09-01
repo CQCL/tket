@@ -123,7 +123,7 @@ static void write_solver_solutions(
   }
 }
 
-std::vector<qubit_bimap_t> get_unweighted_subgraph_monomorphisms(
+std::vector<qubit_bimap_t> get_weighted_subgraph_monomorphisms(
     const QubitGraph::UndirectedConnGraph& pattern_graph,
     const Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
     unsigned timeout_ms) {

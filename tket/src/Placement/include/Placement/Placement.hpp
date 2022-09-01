@@ -172,7 +172,7 @@ std::vector<qubit_bimap_t> monomorphism_edge_break(
  * to embed the pattern graph into the target graph.
  * Note that graph edge weights are IGNORED by this function.
  */
-std::vector<qubit_bimap_t> get_unweighted_subgraph_monomorphisms(
+std::vector<qubit_bimap_t> get_weighted_subgraph_monomorphisms(
     const QubitGraph::UndirectedConnGraph& pattern_graph,
     const Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
     unsigned timeout_ms);

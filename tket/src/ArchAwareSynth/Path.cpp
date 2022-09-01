@@ -165,7 +165,7 @@ std::vector<Node> find_hampath(const Architecture &arch, long timeout) {
       arch.get_undirected_connectivity();
   QubitGraph::UndirectedConnGraph undirected_pattern =
       q_graph.get_undirected_connectivity();
-  std::vector<qubit_bimap_t> all_maps = get_unweighted_subgraph_monomorphisms(
+  std::vector<qubit_bimap_t> all_maps = get_weighted_subgraph_monomorphisms(
       undirected_pattern, undirected_target, 1, timeout);
 
   /* Architecture has no hampath, sad. */
