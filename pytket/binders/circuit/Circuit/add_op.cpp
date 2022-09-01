@@ -468,10 +468,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("pauliexpbox"), py::arg("qubits"))
       .def(
           "add_toffolibox",
-          [](Circuit *circ, const ToffoliBox &box,
-             const std::vector<unsigned> &qubits, const py::kwargs &kwargs) {
-            return add_box_method<unsigned>(
-                circ, std::make_shared<ToffoliBox>(box), qubits, kwargs);
+          [](Circuit *circ, const ToffoliBox &box, const qubit_vector_t &qubits,
+             const py::kwargs &kwargs) {
+            return add_box_method<UnitID>(
+                circ, std::make_shared<ToffoliBox>(box),
+                {qubits.begin(), qubits.end()}, kwargs);
           },
           "Append a :py:class:`ToffoliBox` to the "
           "circuit.\n\n:param toffolibox: The box to append\n:param "

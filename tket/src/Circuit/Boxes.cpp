@@ -531,6 +531,9 @@ ToffoliBox::ToffoliBox(
   }
 }
 
+ToffoliBox::ToffoliBox(const ToffoliBox &other)
+    : Box(other), n_qubits_(other.n_qubits_), cycles_(other.cycles_) {}
+
 unsigned get_hamming_distance(
     const std::vector<bool> &a, const std::vector<bool> &b) {
   if (a.size() != b.size()) {

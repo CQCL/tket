@@ -727,6 +727,13 @@ class ToffoliBox : public Box {
       unsigned _n_qubits,
       std::map<std::vector<bool>, std::vector<bool>> _permutation);
 
+  /**
+   * Copy constructor
+   */
+  ToffoliBox(const ToffoliBox &other);
+
+  ~ToffoliBox() override {}
+
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
     return Op_ptr();
