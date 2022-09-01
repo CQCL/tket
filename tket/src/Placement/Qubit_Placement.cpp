@@ -101,7 +101,7 @@ QubitGraph monomorph_interaction_graph(
           qb2 = Qubit(pair.first);
       }
       if (!q_graph.edge_exists(qb1, qb2) && !q_graph.edge_exists(qb2, qb1)) {
-        q_graph.add_connection(qb1, qb2, slice + 1);
+        q_graph.add_connection(qb1, qb2, depth_limit - slice - 1);
         count_edges++;
       }
     }
