@@ -723,7 +723,7 @@ class ToffoliBox : public Box {
    * @param _n_qubits number of qubits permuted
    * @param _permutation map between basis states
    */
-  explicit ToffoliBox(
+  ToffoliBox(
       unsigned _n_qubits,
       std::map<std::vector<bool>, std::vector<bool>> _permutation);
 
