@@ -1181,6 +1181,9 @@ Condition get_condition(const Circuit &circ, Vertex v) {
     return std::nullopt;
   }
   const Conditional &cond_op = static_cast<const Conditional &>(*v_op);
+  if (cond_op.get_op()->get_type() == OpType::Conditional) {
+    throw NestedConditional();
+  }
   EdgeVec ins = circ.get_in_edges(v);
   Condition cond = std::pair<std::list<VertPort>, unsigned>();
   for (port_t p = 0; p < cond_op.get_width(); ++p) {
@@ -1193,8 +1196,7 @@ Condition get_condition(const Circuit &circ, Vertex v) {
 }
 
 Op_ptr unwrap_conditional(Op_ptr op) {
-  OpType type = op->get_type();
-  if (type == OpType::Conditional) {
+  while (op->get_type() == OpType::Conditional) {
     const Conditional &cond_op = static_cast<const Conditional &>(*op);
     op = cond_op.get_op();
   }

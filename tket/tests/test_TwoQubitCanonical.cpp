@@ -958,7 +958,7 @@ SCENARIO("Classical control") {
     n_cx = 3;
     n_tk2 = 2;
   }
-  GIVEN("A circuit with classical control (3)") {
+  GIVEN("A circuit with classical control (4)") {
     circ = Circuit(3, 2);
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
     circ.add_conditional_gate<unsigned>(OpType::Rz, {0.2}, {1}, {0}, 1);

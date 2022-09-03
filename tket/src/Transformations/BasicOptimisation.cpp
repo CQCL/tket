@@ -273,12 +273,11 @@ static bool replace_two_qubit_interaction(
   EdgeVec in_edges = {i.e0, i.e1};
   EdgeVec out_edges = {current_edges[i.q0], current_edges[i.q1]};
   VertexSet vertices = i.vertices;
-  EdgeVec cin_edges, cout_edges;
+  EdgeVec c_edges;
   if (cond) {
     for (VertPort vp : cond->first) {
       Edge e = circ.get_nth_out_edge(vp.first, vp.second);
-      cin_edges.push_back(e);
-      cout_edges.push_back(e);
+      c_edges.push_back(e);
     }
   }
   Edge next0, next1;
@@ -295,7 +294,7 @@ static bool replace_two_qubit_interaction(
         circ.target(current_edges[i.q1]), current_edges[i.q1]);
   }
   // Circuit to (potentially) substitute
-  Subcircuit sub = {in_edges, out_edges, cin_edges, cout_edges, {}, vertices};
+  Subcircuit sub = {in_edges, out_edges, c_edges, c_edges, {}, vertices};
   Circuit subc = circ.subcircuit(sub);
 
   // Remove conditions in subc
@@ -353,13 +352,14 @@ static bool replace_two_qubit_interaction(
         bits[i] = Bit(i);
       }
       // Add a classically-controlled phase
-      // TODO: use Phase OpType when available
+      // TODO: investigate adding Phase OpType instead (see TKET-2429)
+      Expr replacement_phase = replacement.get_phase();
       replacement_cond.add_conditional_gate(
-          OpType::U1, {2 * replacement.get_phase()},
-          {replacement.all_qubits()[0]}, bits, cond->second);
+          OpType::U1, {2 * replacement_phase}, {replacement.all_qubits()[0]},
+          bits, cond->second);
       replacement_cond.add_conditional_gate(
-          OpType::Rz, {-2 * replacement.get_phase()},
-          {replacement.all_qubits()[0]}, bits, cond->second);
+          OpType::Rz, {-2 * replacement_phase}, {replacement.all_qubits()[0]},
+          bits, cond->second);
       for (const Command &cmd : replacement) {
         Op_ptr op = cmd.get_op_ptr();
         replacement_cond.add_conditional_gate(

@@ -2830,5 +2830,23 @@ SCENARIO("Testing get_linear_edge") {
   REQUIRE(circ.get_linear_edge(quantum_edge) == quantum_edge);
 }
 
+SCENARIO("Testing get_condition and unwrap_conditional") {
+  Circuit circ(1, 2);
+  Op_ptr op = get_op_ptr(OpType::Rx, 0.2, 1);
+  Vertex v1 =
+      circ.add_conditional_gate<unsigned>(OpType::Rx, {0.2}, {0}, {0}, 1);
+  Op_ptr cond = std::make_shared<Conditional>(op, 1, 1);
+  Op_ptr cond2 = std::make_shared<Conditional>(cond, 1, 1);
+  Vertex v2 = circ.add_op<unsigned>(cond2, {0, 1, 0});
+
+  REQUIRE(
+      get_condition(circ, v1) == std::make_pair<std::list<VertPort>, unsigned>(
+                                     {{circ.c_inputs()[0], 0}}, 1));
+  REQUIRE(*unwrap_conditional(circ.get_Op_ptr_from_Vertex(v1)) == *op);
+
+  REQUIRE_THROWS_AS(get_condition(circ, v2), NestedConditional);
+  REQUIRE(*unwrap_conditional(circ.get_Op_ptr_from_Vertex(v2)) == *op);
+}
+
 }  // namespace test_Circ
 }  // namespace tket

@@ -197,7 +197,13 @@ Circuit with_controls(const Circuit& c, unsigned n_controls = 1);
 std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
     Expr a, Expr b, Expr c);
 
-using Condition = std::optional<std::pair<std::list<VertPort>, unsigned>>;
+class NestedConditional : public std::logic_error {
+ public:
+  NestedConditional()
+      : std::logic_error("Unable to handle nested conditionals") {}
+};
+
+typedef std::optional<std::pair<std::list<VertPort>, unsigned>> Condition;
 
 /**
  * @brief Get a description of the condition of vertex v.
@@ -208,6 +214,7 @@ using Condition = std::optional<std::pair<std::list<VertPort>, unsigned>>;
  *
  * @param circ the circuit of `v`
  * @param v the vertex
+ * @throws NestedConditional An unsupported nested conditional was found.
  * @return Condition the condition of v
  */
 Condition get_condition(const Circuit& circ, Vertex v);
@@ -215,7 +222,8 @@ Condition get_condition(const Circuit& circ, Vertex v);
 /**
  * @brief Return op or the underlying op if it is an OpType::Conditional.
  *
- * Note that this does not support recursive conditional OpTypes.
+ * Unwraps nested conditionals recursively as long as the underlying op is an
+ * OpType::Conditional.
  */
 Op_ptr unwrap_conditional(Op_ptr op);
 
