@@ -62,7 +62,7 @@ static Circuit multi_controlled_to_2q(
       }
       break;
     default:
-      throw BadOpType("The operation is not multi-controlled");
+      throw BadOpType("The operation is not multi-controlled", optype);
   }
 
   if (two_q_type == OpType::CX) {
@@ -70,7 +70,7 @@ static Circuit multi_controlled_to_2q(
   } else if (two_q_type == OpType::TK2) {
     decompose_multi_qubits_TK2().apply(c);
   } else {
-    throw BadOpType("The target 2-q gate can only be CX or TK2");
+    throw BadOpType("The target 2-q gate can only be CX or TK2", optype);
   }
   return c;
 }
@@ -80,7 +80,6 @@ Circuit TK2_circ_from_multiq(const Op_ptr op) {
   if (!desc.is_gate())
     throw BadOpType(
         "Can only build replacement circuits for basic gates", desc.type());
-  unsigned n_qubits = op->n_qubits();
   switch (desc.type()) {
     case OpType::CnRy:
     case OpType::CnX:
@@ -98,7 +97,6 @@ Circuit CX_circ_from_multiq(const Op_ptr op) {
   if (!desc.is_gate())
     throw BadOpType(
         "Can only build replacement circuits for basic gates", desc.type());
-  unsigned n_qubits = op->n_qubits();
   switch (desc.type()) {
     case OpType::CnRy:
     case OpType::CnX:

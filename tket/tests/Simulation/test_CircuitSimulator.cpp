@@ -467,6 +467,26 @@ SCENARIO("Unitaries for controlled operations") {
     V(14, 15) = V(15, 14) = 1.;
     REQUIRE(U.isApprox(V));
   }
+  GIVEN("CnY") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::CnY, {0, 1, 2, 3});
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(circ);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(16, 16);
+    V(14, 14) = V(15, 15) = 0.;
+    V(14, 15) = -i_;
+    V(15, 14) = i_;
+    REQUIRE(U.isApprox(V));
+  }
+  GIVEN("CnZ") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::CnZ, {0, 1, 2, 3});
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(circ);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(16, 16);
+    V(14, 14) = 1.;
+    V(15, 15) = -1.;
+    V(14, 15) = V(15, 14) = 0.;
+    REQUIRE(U.isApprox(V));
+  }
   GIVEN("CnRy") {
     double a = 0.125;
     Circuit circ(2);
