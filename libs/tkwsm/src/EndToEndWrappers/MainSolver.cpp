@@ -376,9 +376,9 @@ void MainSolver::add_solution_from_final_node(
   assignments.reserve(number_of_pv);
 
   for (unsigned pv = 0; pv < number_of_pv; ++pv) {
-    const std::set<VertexWSM>& domain = accessor.get_domain(pv);
-    TKET_ASSERT(domain.size() == 1);
-    assignments.emplace_back(pv, *domain.cbegin());
+    const BitsetInformation bitset_information(accessor.get_domain(pv));
+    TKET_ASSERT(bitset_information.single_element);
+    assignments.emplace_back(pv, bitset_information.single_element.value());
   }
   m_solution_data.solutions.back().scalar_product = scalar_product;
 
@@ -413,7 +413,7 @@ bool MainSolver::move_down_from_reduced_node(
     const VertexWSM& next_pv = next_var_result.variable_opt.value();
 
     // Now choose a value (i.e., some TV in Domain(PV)).
-    // Thus the new assignment is next_pv -> next_tv.
+    // Thus the new assignment will be next_pv -> next_tv.
     const VertexWSM next_tv =
         m_search_components_ptr->value_ordering.get_target_value(
             m_search_branch_ptr->get_domains_accessor().get_domain(next_pv),

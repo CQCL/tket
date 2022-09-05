@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #pragma once
+#include <boost/dynamic_bitset.hpp>
 #include <string>
 
 #include "../Common/LogicalStack.hpp"
@@ -66,7 +67,7 @@ struct NodesRawData {
    */
   struct DomainData {
     struct Entry {
-      std::set<VertexWSM> domain;
+      boost::dynamic_bitset<> domain;
 
       // The index in the std::vector of node objects
       // when this new domain was first set (i.e., changed from
@@ -127,7 +128,19 @@ struct NodesRawData {
   LogicalStack<NodeData> nodes_data;
 
   explicit NodesRawData(
-      const DomainInitialiser::InitialDomains& initial_domains);
+      const DomainInitialiser::InitialDomains& initial_domains,
+      std::size_t number_of_tv);
+
+  const std::size_t number_of_tv;
+
+  // The TV in "initial_domains" passed into the constructor
+  // already have been relabelled to be {0,1,2,...,M} for some M.
+  // But some might be unused. We COULD relabel AGAIN, but completely unused
+  // TV are quite rare, so it's not worth the extra complication.
+  // HOWEVER, the "number_of_tv" is set simply by looking at the max TV
+  // occurring; so it's possible that some unused TV, e.g. M, from the end of
+  // {0,1,2,...,M} might get removed and not included in this.
+  // const std::size_t number_of_tv;
 
   const NodeData& get_current_node() const;
   NodeData& get_current_node_nonconst();
@@ -141,7 +154,8 @@ struct NodesRawData {
 class NodesRawDataWrapper {
  public:
   explicit NodesRawDataWrapper(
-      const DomainInitialiser::InitialDomains& initial_domains);
+      const DomainInitialiser::InitialDomains& initial_domains,
+      std::size_t number_of_tv);
 
   /** For debugging and testing, it's helpful to access the raw data.
    * @return A const reference to the internal NodesRawData object.

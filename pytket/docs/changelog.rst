@@ -1,13 +1,15 @@
 Changelog
 =========
 
-x.y.z (unreleased)
-------------------
+1.5.2 (August 2022)
+-------------------
 
 Minor new features:
 
 * Prefer `ZZPhase` in ``DecomposeTK2`` if it results in the same fidelity but
   fewer two-qubit gates.
+* New ``ToffoliBox`` for constructing circuits that implement permutations of
+  basis states.
 
 * Add ``SquashRzPhasedX`` pass to squash single qubit gates into
   ``Rz`` and ``PhasedX`` gates while trying to commute ``Rz``s to the back. 

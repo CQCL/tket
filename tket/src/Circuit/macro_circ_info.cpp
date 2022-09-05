@@ -143,9 +143,7 @@ Circuit Circuit::subcircuit(const Subcircuit& sc) const {
       port_t in_port = get_source_port(e);
       OpType type = sub.get_OpType_from_Vertex(sub_source);
       if (is_initial_q_type(type) || type == OpType::ClInput) {
-        // For Quantum and Classical edges, boundary_edge == *it;
-        // for Boolean, this gives the corresponding Classical
-        Edge boundary_edge = this->get_nth_out_edge(source, in_port);
+        Edge boundary_edge = get_linear_edge(e);
         // Multiple inputs might be mapped to the same source
         // so need to distinguish them.
         sub_source = in_boundary_map.at(boundary_edge);
