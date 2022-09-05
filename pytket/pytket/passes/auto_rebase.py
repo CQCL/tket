@@ -141,7 +141,7 @@ def auto_squash_pass(gateset: Set[OpType]) -> Union[SquashCustom, SquashRzPhased
     :return: Squash to target gateset
     :rtype: SquashCustom
     """
-    if gateset == {OpType.Rz, OpType.PhasedX}:
+    if {OpType.Rz, OpType.PhasedX} <= gateset:
         return SquashRzPhasedX()
 
     return SquashCustom(gateset, get_TK1_decomposition_function(gateset))

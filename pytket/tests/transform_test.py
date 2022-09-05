@@ -1106,7 +1106,7 @@ def test_auto_squash() -> None:
                 except (RuntimeError, TypeError):
                     params.append(0.1)
         squash = auto_squash_pass(gateset)
-        if gateset == {OpType.PhasedX, OpType.Rz}:
+        if {OpType.PhasedX, OpType.Rz} <= gateset:
             assert squash.to_dict() == SquashRzPhasedX().to_dict()
         else:
             assert squash.to_dict() == SquashCustom(gateset, TK1_func).to_dict()
