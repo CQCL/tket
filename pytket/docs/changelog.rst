@@ -1,6 +1,15 @@
 Changelog
 =========
 
+x.y.z (unreleased)
+------------------
+
+Minor new features:
+
+* New ``OpType.CnY`` and ``OpType.CnZ``.
+* Update ``DecomposeArbitrarilyControlledGates`` pass to decompose ``CnX``,
+  ``CnY``, and ``CnZ`` gates.
+
 1.5.2 (August 2022)
 -------------------
 
