@@ -727,19 +727,36 @@ class ToffoliBox : public Box {
       unsigned _n_qubits,
       std::map<std::vector<bool>, std::vector<bool>> _permutation);
 
+  ToffoliBox(
+      unsigned _n_qubits,
+      const std::set<std::vector<std::vector<bool>>> &_cycles);
+
   /**
    * Copy constructor
    */
   ToffoliBox(const ToffoliBox &other);
-
-  ~ToffoliBox() override {}
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
     return Op_ptr();
   }
 
+  /** Get the Pauli string */
+  unsigned get_n_qubits() const { return n_qubits_; }
+
+  /** Get the phase parameter */
+
+  std::set<std::vector<std::vector<bool>>> get_cycles() const {
+    return cycles_;
+  }
+
   SymSet free_symbols() const override { return {}; }
+
+  op_signature_t get_signature() const override;
+
+  static Op_ptr from_json(const nlohmann::json &j);
+
+  static nlohmann::json to_json(const Op_ptr &op);
 
  protected:
   void generate_circuit() const override;
