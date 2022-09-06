@@ -727,6 +727,18 @@ class ToffoliBox : public Box {
       unsigned _n_qubits,
       std::map<std::vector<bool>, std::vector<bool>> _permutation);
 
+  /**
+   * Construct from a cycle of basis states.
+   * Any basis state not in a permutation cycle will be assumed to
+   * take the identity.
+   * The first element in the cycle is mapped to the second, second
+   * to third and so on. The final element is mapped to the first.
+   * If each basis state is not the same size will throw an
+   * invalid_argument error.
+   *
+   * @param _n_qubits number of qubits permuted
+   * @param _cycles basis states being peruted
+   */
   ToffoliBox(
       unsigned _n_qubits,
       const std::set<std::vector<std::vector<bool>>> &_cycles);

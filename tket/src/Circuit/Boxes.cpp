@@ -993,4 +993,5 @@ REGISTER_OPFACTORY(CustomGate, CustomGate)
 REGISTER_OPFACTORY(QControlBox, QControlBox)
 REGISTER_OPFACTORY(ProjectorAssertionBox, ProjectorAssertionBox)
 REGISTER_OPFACTORY(StabiliserAssertionBox, StabiliserAssertionBox)
+REGISTER_OPFACTORY(ToffoliBox, ToffoliBox)
 }  // namespace tket
