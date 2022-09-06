@@ -776,5 +776,36 @@ SCENARIO("Test a CnX is decomposed correctly using the Gray code method") {
   }
 }
 
+SCENARIO("Test decomp_arbitrary_controlled_gates") {
+  GIVEN("Circuit with multi-controlled gates") {
+    Circuit circ(3);
+
+    circ.add_op<unsigned>(OpType::CnRy, 0.33, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::CnY, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::CnZ, {1, 0, 2});
+    circ.add_op<unsigned>(OpType::CnX, {0, 2, 1});
+    circ.add_op<unsigned>(OpType::CCX, {2, 1, 0});
+    auto u = tket_sim::get_unitary(circ);
+    REQUIRE(Transforms::decomp_arbitrary_controlled_gates().apply(circ));
+    REQUIRE(circ.count_gates(OpType::CnRy) == 0);
+    REQUIRE(circ.count_gates(OpType::CnY) == 0);
+    REQUIRE(circ.count_gates(OpType::CnZ) == 0);
+    REQUIRE(circ.count_gates(OpType::CnX) == 0);
+    REQUIRE(circ.count_gates(OpType::CCX) == 0);
+    auto v = tket_sim::get_unitary(circ);
+    REQUIRE((u - v).cwiseAbs().sum() < ERR_EPS);
+  }
+
+  GIVEN("Circuit without multi-controlled gates") {
+    Circuit circ(3);
+
+    circ.add_op<unsigned>(OpType::CRy, 0.33, {0, 1});
+    circ.add_op<unsigned>(OpType::CRz, 0.5, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::Rx, 0.7, {0});
+    REQUIRE(!Transforms::decomp_arbitrary_controlled_gates().apply(circ));
+  }
+}
+
 }  // namespace test_ControlDecomp
 }  // namespace tket
