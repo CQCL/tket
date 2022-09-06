@@ -893,6 +893,14 @@ def test_zzmax() -> None:
     assert c.depth() == 1
 
 
+def test_multi_controlled_gates() -> None:
+    c = Circuit(5)
+    c.add_gate(OpType.CnX, [0, 1, 2])
+    c.add_gate(OpType.CnY, [0, 1, 2])
+    c.add_gate(OpType.CnZ, [0, 1, 2])
+    assert c.depth() == 3
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
@@ -904,3 +912,4 @@ if __name__ == "__main__":
     test_phase()
     test_clifford_checking()
     test_measuring_registers()
+    test_multi_controlled_gates()
