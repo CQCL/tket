@@ -2818,5 +2818,19 @@ SCENARIO("Checking circuit graphviz output") {
   }
 }
 
+SCENARIO("Testing get_linear_edge") {
+  Circuit circ(1, 1);
+  Vertex v =
+      circ.add_conditional_gate<unsigned>(OpType::Rx, {0.2}, {0}, {0}, 1);
+  Edge boolean_edge = circ.get_nth_in_edge(v, 0);
+  Vertex c_out = circ.c_outputs()[0];
+  Edge classical_edge = circ.get_nth_in_edge(c_out, 0);
+  Edge quantum_edge = circ.get_nth_in_edge(v, 1);
+
+  REQUIRE(circ.get_linear_edge(boolean_edge) == classical_edge);
+  REQUIRE(circ.get_linear_edge(classical_edge) == classical_edge);
+  REQUIRE(circ.get_linear_edge(quantum_edge) == quantum_edge);
+}
+
 }  // namespace test_Circ
 }  // namespace tket

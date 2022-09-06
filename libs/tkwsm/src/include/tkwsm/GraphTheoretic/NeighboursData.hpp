@@ -111,15 +111,6 @@ class NeighboursData {
    */
   std::vector<WeightWSM> get_weights_expensive() const;
 
-  /** Convenience function: for neighbours and weights, already sorted by
-   * vertex, do a binary search to see if the given vertex lies within it.
-   * @param v A vertex.
-   * @param list A list of (vertex,edge weight) pairs, sorted by vertex number.
-   * @return true if v occurs in the list; false if not.
-   */
-  static bool binary_search(
-      VertexWSM v, const std::vector<std::pair<VertexWSM, WeightWSM>>& list);
-
  private:
   // Element[i] gives all neighbouring vertices and edge weights
   // for vertex i, sorted by the neighbouring vertex numerical value.

@@ -51,6 +51,11 @@ Transform decompose_single_qubits_TK1();
  */
 Transform decompose_ZYZ_to_TK1();
 
+/**
+ * Starting with Rz, Rx and multi-qubit gates, replace all singles with TK1.
+ */
+Transform decompose_ZXZ_to_TK1();
+
 // converts all single-qubit gates into Rz and Rx gates
 // Expects: any gates
 // Produces: Rz, Rx and any multi-qubit gates
@@ -105,7 +110,8 @@ Transform decompose_MolmerSorensen();
  * convenient to reduce the two-qubit gate count of the decomposed TK2.
  *
  * If no fidelities are provided, the decomposition will be exact, using CX
- * gates.
+ * gates. For equal fidelities, ZZPhase will be prefered over ZZMax and CX if
+ * it requires fewer gates.
  *
  * If the TK2 angles are symbolic values, the decomposition will be exact
  * (i.e. not noise-aware). It is not possible in general to obtain optimal

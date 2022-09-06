@@ -51,7 +51,7 @@ class DerivedGraphsReducer : public ReducerInterface {
 
   virtual ReductionResult reduce(
       std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,
-      std::set<VertexWSM>& work_set) override;
+      boost::dynamic_bitset<>& work_set) override;
 
  private:
   // The m_calculator object is shared between the m_derived_pattern_graphs
@@ -68,7 +68,7 @@ class DerivedGraphsReducer : public ReducerInterface {
       const DerivedGraphStructs::NeighboursAndCounts&
           target_derived_neighbours_data,
       VertexWSM root_pattern_vertex, DomainsAccessor& accessor,
-      std::set<VertexWSM>& work_set);
+      boost::dynamic_bitset<>& work_set);
 };
 
 }  // namespace WeightedSubgraphMonomorphism

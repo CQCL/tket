@@ -15,6 +15,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <stdexcept>
 #include <tkwsm/Common/GeneralUtils.hpp>
+#include <tkwsm/Common/TemporaryRefactorCode.hpp>
 #include <tkwsm/GraphTheoretic/NearNeighboursData.hpp>
 #include <tkwsm/GraphTheoretic/NeighboursData.hpp>
 
@@ -71,12 +72,11 @@ SCENARIO("test neighbours_data on cycles") {
   }
 
   // Also, test near neighbours.
-  NearNeighboursData near_neighbours_data(
-      ndata, NearNeighboursData::Type::PATTERN_GRAPH);
+  NearNeighboursData near_neighbours_data(ndata);
   for (VertexWSM ii = 0; ii < cycle_length; ++ii) {
     for (unsigned distance = 0; distance <= 8; ++distance) {
       const auto count_within_d =
-          near_neighbours_data.get_n_vertices_at_max_distance(ii, distance);
+          near_neighbours_data.get_n_vertices_up_to_distance(ii, distance);
       switch (distance) {
         case 0:
           CHECK(count_within_d == 0);
@@ -92,14 +92,18 @@ SCENARIO("test neighbours_data on cycles") {
         continue;
       }
       const auto& v_at_distance =
-          near_neighbours_data.get_vertices_at_distance(ii, distance);
-      CHECK(is_sorted_and_unique(v_at_distance));
+          near_neighbours_data.get_vertices_at_exact_distance(ii, distance);
+      REQUIRE(v_at_distance.size() == number_of_vertices);
+
       if (distance > 2) {
-        CHECK(v_at_distance.empty());
+        CHECK(v_at_distance.none());
         continue;
       }
-      CHECK(v_at_distance.size() == 2);
-      for (auto v : v_at_distance) {
+      std::set<VertexWSM> v_set_at_distance;
+      TemporaryRefactorCode::set_domain_from_bitset(
+          v_set_at_distance, v_at_distance);
+      CHECK(v_set_at_distance.size() == 2);
+      for (auto v : v_set_at_distance) {
         const unsigned route1_dist = ((cycle_length + ii) - v) % cycle_length;
         const unsigned route2_dist =
             (cycle_length - route1_dist) % cycle_length;

@@ -35,39 +35,38 @@ SearchBranch::SearchBranch(
       m_target_ndata(target_ndata),
       m_extra_statistics(extra_statistics),
       m_derived_graphs_reducer(m_pattern_ndata, m_target_ndata),
-      m_neighbours_reducer(m_pattern_ndata, m_target_ndata),
-      m_nodes_raw_data_wrapper(initial_domains),
+      m_nodes_raw_data_wrapper(
+          initial_domains, m_target_ndata.get_number_of_nonisolated_vertices()),
       m_domains_accessor(m_nodes_raw_data_wrapper),
       m_node_list_traversal(m_nodes_raw_data_wrapper) {
   m_extra_statistics.number_of_pattern_vertices =
       m_pattern_ndata.get_number_of_nonisolated_vertices();
   m_extra_statistics.number_of_target_vertices =
       m_target_ndata.get_number_of_nonisolated_vertices();
+
   m_extra_statistics.initial_number_of_possible_assignments = 0;
-  for (const std::set<VertexWSM>& entry : initial_domains) {
-    m_extra_statistics.initial_number_of_possible_assignments += entry.size();
+  for (const boost::dynamic_bitset<>& domain : initial_domains) {
+    m_extra_statistics.initial_number_of_possible_assignments += domain.count();
   }
 
   // In what order should we do reduction/checks?
   // The simplest/cheapest first? Most powerful?
   // Seems a difficult question...
-  m_reducer_wrappers.emplace_back(m_neighbours_reducer);
+  m_reducer_wrappers.reserve(max_distance_reduction_value + 1);
+  /// m_reducer_wrappers.emplace_back(m_neighbours_reducer);
   m_reducer_wrappers.emplace_back(m_derived_graphs_reducer);
+  m_distance_reducers.reserve(max_distance_reduction_value);
 
-  if (max_distance_reduction_value >= 2) {
-    m_distance_reducers.reserve(max_distance_reduction_value - 1);
-    m_reducer_wrappers.reserve(max_distance_reduction_value - 1);
-    for (unsigned distance = 2; distance <= max_distance_reduction_value;
-         ++distance) {
-      m_distance_reducers.emplace_back(
-          pattern_near_ndata, m_target_ndata, target_near_ndata, distance);
-    }
-    // Now that all the reducer objects are stored
-    // (the vector will not be resized),
-    // we can safely take references to them.
-    for (DistancesReducer& reducer : m_distance_reducers) {
-      m_reducer_wrappers.emplace_back(reducer);
-    }
+  for (unsigned distance = 1; distance <= max_distance_reduction_value;
+       ++distance) {
+    m_distance_reducers.emplace_back(
+        pattern_near_ndata, target_near_ndata, distance);
+  }
+  // Now that all the reducer objects are stored
+  // (the vector will not be resized),
+  // we can safely take references to them.
+  for (DistancesReducer& reducer : m_distance_reducers) {
+    m_reducer_wrappers.emplace_back(reducer);
   }
 }
 
@@ -78,7 +77,7 @@ DomainsAccessor& SearchBranch::get_domains_accessor_nonconst() {
   return m_domains_accessor;
 }
 
-std::set<VertexWSM> SearchBranch::get_used_target_vertices() const {
+boost::dynamic_bitset<> SearchBranch::get_used_target_vertices() const {
   return m_node_list_traversal.get_used_target_vertices();
 }
 
@@ -163,6 +162,7 @@ bool SearchBranch::perform_weight_nogood_check_in_reduce_loop(
 
   if (m_weight_checker_ptr) {
     m_impossible_target_vertices.clear();
+
     const WeightWSM max_extra_scalar_product =
         parameters.max_weight - scalar_product;
 
@@ -171,6 +171,7 @@ bool SearchBranch::perform_weight_nogood_check_in_reduce_loop(
 
     const auto number_of_pv =
         m_domains_accessor.get_number_of_pattern_vertices();
+
     for (VertexWSM tv : m_impossible_target_vertices) {
       // This is rare. Crudely treat as a list of assignments.
       // We want to pass them all in now, though, even if we're at a nogood;
@@ -261,11 +262,13 @@ bool SearchBranch::perform_main_reduce_loop(
     // (i.e., is more likely to detect a possible reduction).
     // The standard reducers ONLY work with actual ASSIGNMENTS;
     // it makes no difference if a domain has size 2 or 100.
+    //*
     const auto hall_set_result =
         m_hall_set_reduction.reduce(m_domains_accessor);
     if (hall_set_result == ReductionResult::NOGOOD) {
       return false;
     }
+
     TKET_ASSERT(num_assignments_alldiff_processed <= new_assignments.size());
     if (num_assignments_alldiff_processed == new_assignments.size()) {
       TKET_ASSERT(hall_set_result == ReductionResult::SUCCESS);

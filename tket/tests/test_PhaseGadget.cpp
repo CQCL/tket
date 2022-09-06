@@ -132,7 +132,7 @@ SCENARIO("Full optimise_via_PhaseGadget") {
     const auto s0 = tket_sim::get_unitary(circ);
     Transforms::optimise_via_PhaseGadget(CXConfigType::Tree).apply(circ);
     REQUIRE(circ.count_gates(OpType::CX) == 12);
-    REQUIRE(circ.depth() == 13);
+    REQUIRE(circ.depth() <= 14);
     const auto s1 = tket_sim::get_unitary(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
   }
@@ -225,9 +225,9 @@ SCENARIO("Identifying and synthesising Pauli gadgets") {
     Vertex v = *circ.get_gates_of_type(OpType::TK1).begin();
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     std::vector<Expr> angles = op->get_params();
-    REQUIRE(test_equiv_0(angles[0] - 0.5));
-    REQUIRE(test_equiv_0(angles[1] + 0.5));
-    REQUIRE(test_equiv_0(angles[2] + 0.5 - alpha));
+    REQUIRE(test_equiv_0(angles[0] - 0.5, 4));
+    REQUIRE(test_equiv_0(angles[1] + 0.5, 4));
+    REQUIRE(test_equiv_0(angles[2] + 0.5 - alpha, 4));
   }
   GIVEN("A pair of Pauli gadgets") {
     auto circ = get_test_circ();

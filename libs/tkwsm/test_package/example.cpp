@@ -21,12 +21,17 @@ using namespace WeightedSubgraphMonomorphism;
 
 int main() {
   DomainInitialiser::InitialDomains initial_domains(4);
-  initial_domains[0] = {0, 1};
-  initial_domains[3] = {2};
-  initial_domains[1] = {17};
-  initial_domains[2] = {77, 88};
+  for (auto& domain_bitset : initial_domains) {
+    domain_bitset.resize(100);
+  }
+  initial_domains[0].set(0);
+  initial_domains[0].set(1);
+  initial_domains[3].set(2);
+  initial_domains[1].set(17);
+  initial_domains[2].set(77);
+  initial_domains[2].set(88);
 
-  NodesRawData nodes_raw_data(initial_domains);
+  NodesRawData nodes_raw_data(initial_domains, 100);
   std::cout << nodes_raw_data.nodes_data[0].str() << std::endl;
 
   return 0;

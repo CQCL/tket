@@ -1009,6 +1009,136 @@ SCENARIO("Checking equality", "[boxes]") {
   }
 }
 
+SCENARIO("ToffoliBox", "[boxes]") {
+  GIVEN("No permutation.") {
+    std::map<std::vector<bool>, std::vector<bool>> permutation = {};
+    ToffoliBox tb(0, permutation);
+    std::vector<Command> tb_circuit_commands = tb.to_circuit()->get_commands();
+    REQUIRE(tb_circuit_commands.size() == 0);
+  }
+  GIVEN("Single qubit basis state permutation") {
+    std::map<std::vector<bool>, std::vector<bool>> permutation;
+    permutation[{0}] = {1};
+    permutation[{1}] = {0};
+    ToffoliBox tb(1, permutation);
+    std::vector<Command> tb_circuit_commands = tb.to_circuit()->get_commands();
+    REQUIRE(tb_circuit_commands.size() == 1);
+    Command com = tb_circuit_commands[0];
+    REQUIRE(com.get_qubits().size() == 1);
+    REQUIRE(com.get_op_ptr()->get_type() == OpType::X);
+  }
+  GIVEN("Two qubit basis state permutation, one two states cycle") {
+    std::map<std::vector<bool>, std::vector<bool>> permutation;
+    permutation[{0, 0}] = {1, 1};
+    permutation[{1, 1}] = {0, 0};
+    ToffoliBox tb(2, permutation);
+
+    const auto matrix = tket_sim::get_unitary(*tb.to_circuit());
+
+    REQUIRE(matrix(3, 0).real() == 1);
+    REQUIRE(matrix(3, 3).real() == 0);
+    REQUIRE(matrix(0, 0).real() == 0);
+    REQUIRE(matrix(0, 3).real() == 1);
+  }
+  GIVEN("Two qubit basis state permutation, two two states cycle") {
+    std::map<std::vector<bool>, std::vector<bool>> permutation;
+    permutation[{0, 0}] = {1, 1};
+    permutation[{1, 1}] = {0, 0};
+    permutation[{0, 1}] = {1, 0};
+    permutation[{1, 0}] = {0, 1};
+    ToffoliBox tb(2, permutation);
+
+    const auto matrix = tket_sim::get_unitary(*tb.to_circuit());
+    REQUIRE(matrix(3, 0).real() == 1);
+    REQUIRE(matrix(3, 3).real() == 0);
+    REQUIRE(matrix(0, 0).real() == 0);
+    REQUIRE(matrix(0, 3).real() == 1);
+    REQUIRE(matrix(2, 1).real() == 1);
+    REQUIRE(matrix(2, 2).real() == 0);
+    REQUIRE(matrix(1, 1).real() == 0);
+    REQUIRE(matrix(1, 2).real() == 1);
+  }
+  GIVEN("Two qubit basis state permutation, one four states cycle") {
+    std::map<std::vector<bool>, std::vector<bool>> permutation;
+    permutation[{0, 0}] = {1, 1};
+    permutation[{1, 1}] = {0, 1};
+    permutation[{0, 1}] = {1, 0};
+    permutation[{1, 0}] = {0, 0};
+    ToffoliBox tb(2, permutation);
+
+    Circuit circ = *tb.to_circuit();
+
+    const auto matrix = tket_sim::get_unitary(circ);
+    REQUIRE(circ.count_gates(OpType::CnX) == 3);
+
+    REQUIRE(matrix(3, 0).real() == 1);
+    REQUIRE(matrix(3, 3).real() == 0);
+    REQUIRE(matrix(0, 0).real() == 0);
+    REQUIRE(matrix(1, 3).real() == 1);
+    REQUIRE(matrix(1, 1).real() == 0);
+    REQUIRE(matrix(2, 1).real() == 1);
+    REQUIRE(matrix(2, 2).real() == 0);
+    REQUIRE(matrix(0, 2).real() == 1);
+  }
+  GIVEN("Three qubit basis state permutation, one four state cycle") {
+    std::map<std::vector<bool>, std::vector<bool>> permutation;
+    permutation[{0, 0, 1}] = {1, 1, 0};
+    permutation[{1, 1, 0}] = {0, 1, 0};
+    permutation[{0, 1, 0}] = {1, 0, 1};
+    permutation[{1, 0, 1}] = {0, 0, 1};
+
+    ToffoliBox tb(3, permutation);
+    Circuit circ = *tb.to_circuit();
+    const auto matrix = tket_sim::get_unitary(circ);
+
+    REQUIRE(circ.count_gates(OpType::CnX) == 5);
+
+    REQUIRE(matrix(6, 1).real() == 1);
+    REQUIRE(matrix(6, 6).real() == 0);
+    REQUIRE(matrix(1, 1).real() == 0);
+    REQUIRE(matrix(2, 6).real() == 1);
+    REQUIRE(matrix(2, 2).real() == 0);
+    REQUIRE(matrix(5, 2).real() == 1);
+    REQUIRE(matrix(5, 5).real() == 0);
+    REQUIRE(matrix(1, 5).real() == 1);
+  }
+  GIVEN("Four qubit basis state permutation, one large cycle") {
+    std::map<std::vector<bool>, std::vector<bool>> permutation;
+    permutation[{0, 0, 0, 0}] = {1, 1, 0, 0};
+    permutation[{1, 1, 0, 0}] = {1, 1, 0, 1};
+    permutation[{1, 1, 0, 1}] = {0, 0, 0, 1};
+    permutation[{0, 0, 0, 1}] = {1, 1, 1, 0};
+    permutation[{1, 1, 1, 0}] = {0, 0, 1, 1};
+    permutation[{0, 0, 1, 1}] = {1, 0, 0, 1};
+    permutation[{1, 0, 0, 1}] = {1, 0, 1, 0};
+    permutation[{1, 0, 1, 0}] = {0, 0, 0, 0};
+
+    ToffoliBox tb(4, permutation);
+
+    Circuit circ = *tb.to_circuit();
+    const auto matrix = tket_sim::get_unitary(circ);
+
+    REQUIRE(matrix(12, 0).real() == 1);
+    REQUIRE(matrix(0, 0).real() == 0);
+    REQUIRE(matrix(12, 12).real() == 0);
+    REQUIRE(matrix(13, 12).real() == 1);
+    REQUIRE(matrix(13, 13).real() == 0);
+    REQUIRE(matrix(1, 13).real() == 1);
+    REQUIRE(matrix(1, 1).real() == 0);
+    REQUIRE(matrix(14, 1).real() == 1);
+    REQUIRE(matrix(14, 14).real() == 0);
+    REQUIRE(matrix(3, 14).real() == 1);
+    REQUIRE(matrix(3, 3).real() == 0);
+    REQUIRE(matrix(9, 3).real() == 1);
+    REQUIRE(matrix(9, 9).real() == 0);
+    REQUIRE(matrix(10, 9).real() == 1);
+    REQUIRE(matrix(10, 10).real() == 0);
+    REQUIRE(matrix(0, 10).real() == 1);
+
+    REQUIRE(circ.count_gates(OpType::CnX) == 13);
+  }
+}
+
 SCENARIO("Checking box names", "[boxes]") {
   GIVEN("CustomGate without parameters") {
     Circuit setup(1);

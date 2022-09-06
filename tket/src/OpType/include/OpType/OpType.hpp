@@ -621,6 +621,11 @@ enum class OpType {
   StabiliserAssertionBox,
 
   /**
+   * See \ref ToffoliBox
+   */
+  ToffoliBox,
+
+  /**
    * See \ref UnitaryTableauBox
    */
   UnitaryTableauBox

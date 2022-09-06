@@ -27,20 +27,20 @@ namespace WeightedSubgraphMonomorphism {
 // This provides another way to test directly.
 SCENARIO("Test detailed complete search") {
   DomainInitialiser::InitialDomains initial_domains(3);
-  const unsigned number_of_tv = 3;
   const unsigned percentage_for_tv_in_domain = 30;
   RNG rng;
 
   for (unsigned pv = 0; pv < initial_domains.size(); ++pv) {
-    for (unsigned tv = 0; tv < number_of_tv; ++tv) {
-      initial_domains[pv].insert(pv);
-      initial_domains[pv].insert(pv + 1);
+    initial_domains[pv].resize(4);
+    for (unsigned tv = 0; tv < 3; ++tv) {
+      initial_domains[pv].set(pv);
+      initial_domains[pv].set(pv + 1);
       if (rng.check_percentage(percentage_for_tv_in_domain)) {
-        initial_domains[pv].insert(tv);
+        initial_domains[pv].set(tv);
       }
     }
   }
-  NodesRawDataWrapper wrapper(initial_domains);
+  NodesRawDataWrapper wrapper(initial_domains, 4);
   DomainsAccessor accessor(wrapper);
   NodeListTraversal traversal(wrapper);
 
@@ -55,7 +55,7 @@ SCENARIO("Test detailed complete search") {
       unsigned pv_to_assign = 0;
       bool move_up = true;
       for (; pv_to_assign < initial_domains.size(); ++pv_to_assign) {
-        const auto size = accessor.get_domain(pv_to_assign).size();
+        const auto size = accessor.get_domain_size(pv_to_assign);
         if (size == 0) {
           break;
         }
@@ -73,7 +73,8 @@ SCENARIO("Test detailed complete search") {
         }
         continue;
       }
-      const auto tv = *accessor.get_domain(pv_to_assign).cbegin();
+      const auto tv = accessor.get_domain(pv_to_assign).find_first();
+
       ss << "d" << pv_to_assign << tv;
       accessor.clear_new_assignments();
       traversal.move_down(pv_to_assign, tv);
@@ -85,10 +86,10 @@ SCENARIO("Test detailed complete search") {
     for (unsigned pv = 0; pv < raw_data.domains_data.size(); ++pv) {
       ss << pv << ":";
       const auto& domain = accessor.get_domain(pv);
-      for (auto tv : accessor.get_domain(pv)) {
+      for (auto tv = domain.find_first(); tv < domain.size();
+           tv = domain.find_next(tv)) {
         ss << tv;
       }
-      // const auto size = raw_data.domains_data[pv].entries_back_index+1;
       const auto size = raw_data.domains_data[pv].entries.size();
       REQUIRE(size > 0);
       const auto& last_entry = raw_data.domains_data[pv].entries[size - 1];
