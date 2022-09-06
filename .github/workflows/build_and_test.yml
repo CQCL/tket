@@ -20,7 +20,7 @@ jobs:
 
   linux:
     name: Build and test (Linux)
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env:
       CC: gcc-10
       CXX: g++-10
@@ -454,7 +454,7 @@ jobs:
     needs: linux
     concurrency: gh_pages
     if: github.event_name == 'push'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
       with:
@@ -482,7 +482,7 @@ jobs:
     name: Check pytket line and branch coverage
     needs: linux
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
     - name: Download artefact

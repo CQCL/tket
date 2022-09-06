@@ -10,7 +10,7 @@ jobs:
     name: build and publish tket
     strategy:
       matrix:
-        os: ['ubuntu-20.04', 'macos-11', 'windows-2019']
+        os: ['ubuntu-22.04', 'macos-11', 'windows-2019']
         build_type: ['Release', 'Debug']
         shared: ['True', 'False']
         exclude:
@@ -37,7 +37,7 @@ jobs:
           [IO.File]::WriteAllText($f, $normalized_file)
         }
     - name: set compiler
-      if: matrix.os == 'ubuntu-20.04'
+      if: matrix.os == 'ubuntu-22.04'
       run: |
         sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
         sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
@@ -52,7 +52,7 @@ jobs:
     - name: create profile
       run: conan profile new tket --detect
     - name: set libcxx
-      if: matrix.os == 'ubuntu-20.04'
+      if: matrix.os == 'ubuntu-22.04'
       run: conan profile update settings.compiler.libcxx=libstdc++11 tket
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
