@@ -29,8 +29,6 @@ jobs:
     needs: changes
     if: needs.changes.outputs.tket == 'true'
     env:
-      CC: gcc-10
-      CXX: g++-10
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
