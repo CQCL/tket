@@ -586,7 +586,9 @@ Circuit with_CX(Gate_ptr op) {
 
 #define CNXTYPE(n) \
   (((n) == 2) ? OpType::CX : ((n) == 3) ? OpType::CCX : OpType::CnX)
-
+#define CNZTYPE(n) (((n) == 2) ? OpType::CZ : OpType::CnZ)
+#define CNYTYPE(n) (((n) == 2) ? OpType::CY : OpType::CnY)
+#define CNRYTYPE(n) (((n) == 2) ? OpType::CRy : OpType::CnRy)
 /**
  * Construct a circuit representing CnU1.
  */
@@ -615,6 +617,10 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
     return c;
   }
 
+  static const OpTypeSet multiq_gate_set = {
+      OpType::CX, OpType::CCX, OpType::CnX, OpType::CRy, OpType::CnRy,
+      OpType::CZ, OpType::CnZ, OpType::CY,  OpType::CnY};
+
   unsigned c_n_qubits = c.n_qubits();
 
   // 1. Rebase to {CX, CCX, CnX, CnRy} and single-qubit gates
@@ -633,8 +639,7 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
       if (is_single_qubit_type(optype)) {
         continue;
       }
-      if (optype == OpType::CX || optype == OpType::CCX ||
-          optype == OpType::CnX || optype == OpType::CnRy) {
+      if (multiq_gate_set.find(optype) != multiq_gate_set.end()) {
         continue;
       }
       Circuit replacement = with_CX(as_gate_ptr(op));
@@ -674,8 +679,19 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
         c2.add_op<Qubit>(CNXTYPE(n_new_args), new_args);
         break;
       case OpType::Ry:
+      case OpType::CRy:
       case OpType::CnRy:
-        c2.add_op<Qubit>(OpType::CnRy, params, new_args);
+        c2.add_op<Qubit>(CNRYTYPE(n_new_args), params, new_args);
+        break;
+      case OpType::Z:
+      case OpType::CZ:
+      case OpType::CnZ:
+        c2.add_op<Qubit>(CNZTYPE(n_new_args), new_args);
+        break;
+      case OpType::Y:
+      case OpType::CY:
+      case OpType::CnY:
+        c2.add_op<Qubit>(CNYTYPE(n_new_args), new_args);
         break;
       default: {
         std::vector<Expr> tk1_angles = as_gate_ptr(op)->get_tk1_angles();
@@ -734,10 +750,12 @@ static Eigen::Matrix2cd get_target_op_matrix(const Op_ptr &op) {
     case OpType::CRy:
       return Gate(OpType::Ry, op->get_params(), 1).get_unitary();
     case OpType::CY:
+    case OpType::CnY:
       return Gate(OpType::Y, {}, 1).get_unitary();
     case OpType::CRz:
       return Gate(OpType::Rz, op->get_params(), 1).get_unitary();
     case OpType::CZ:
+    case OpType::CnZ:
       return Gate(OpType::Z, {}, 1).get_unitary();
     case OpType::CH:
       return Gate(OpType::H, {}, 1).get_unitary();
@@ -768,7 +786,8 @@ struct CnGateBlock {
     }
     target_qubit = args.back().index()[0];
     is_symmetric =
-        (op->get_type() == OpType::CZ || op->get_type() == OpType::CU1);
+        (op->get_type() == OpType::CZ || op->get_type() == OpType::CnZ ||
+         op->get_type() == OpType::CU1);
     color = as_gate_ptr(op)->commuting_basis(args.size() - 1);
     if (color == Pauli::I) {
       throw std::invalid_argument(
@@ -946,10 +965,11 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
       }
     }
   }
-  // 3. Add each block to c2 either as a CnX, a CnSU(2) decomposition or a CnU
-  // decomposition
+  // 3. Add each block to c2 either as a CnX, CnZ, CnY or a CnU decomposition
   Circuit c2(n_controls + c1.n_qubits());
   const static Eigen::Matrix2cd X = Gate(OpType::X, {}, 1).get_unitary();
+  const static Eigen::Matrix2cd Y = Gate(OpType::Y, {}, 1).get_unitary();
+  const static Eigen::Matrix2cd Z = Gate(OpType::Z, {}, 1).get_unitary();
 
   for (const CnGateBlock &b : blocks) {
     if (b.ops.empty()) {
@@ -960,7 +980,7 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
     if (m.isApprox(Eigen::Matrix2cd::Identity(), EPS)) {
       continue;
     }
-    if (m.isApprox(X, EPS)) {
+    std::function<qubit_vector_t()> get_args = [&]() {
       qubit_vector_t new_args;
       for (unsigned i = 0; i < n_controls; i++) {
         new_args.push_back(Qubit(i));
@@ -969,10 +989,23 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
         new_args.push_back(Qubit(i + n_controls));
       }
       new_args.push_back(Qubit(b.target_qubit + n_controls));
+      return new_args;
+    };
+    if (m.isApprox(X, EPS)) {
+      qubit_vector_t new_args = get_args();
       c2.add_op<Qubit>(CNXTYPE(new_args.size()), new_args);
       continue;
     }
-
+    if (m.isApprox(Y, EPS)) {
+      qubit_vector_t new_args = get_args();
+      c2.add_op<Qubit>(CNYTYPE(new_args.size()), new_args);
+      continue;
+    }
+    if (m.isApprox(Z, EPS)) {
+      qubit_vector_t new_args = get_args();
+      c2.add_op<Qubit>(CNZTYPE(new_args.size()), new_args);
+      continue;
+    }
     unit_map_t unit_map;
     for (unsigned i = 0; i < n_controls; i++) {
       unit_map.insert({Qubit(i), Qubit(i)});
@@ -1040,6 +1073,9 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
 }
 
 #undef CNXTYPE
+#undef CNZTYPE
+#undef CNYTYPE
+#undef CNRYTYPE
 
 std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
     Expr a, Expr b, Expr c) {

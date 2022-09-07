@@ -1801,7 +1801,18 @@ Transform decomp_controlled_Rys() {
 }
 
 Transform decomp_arbitrary_controlled_gates() {
-  return decomp_controlled_Rys() >> decomp_CCX();
+  static const std::set<OpType> cn_gate_set = {
+      OpType::CCX, OpType::CnX, OpType::CnRy, OpType::CnZ, OpType::CnY};
+  std::set<OpType> all_gates;
+  std::copy(
+      all_gate_types().begin(), all_gate_types().end(),
+      std::inserter(all_gates, all_gates.end()));
+  OpTypeSet allowed_gate_set;
+  std::set_difference(
+      all_gates.begin(), all_gates.end(), cn_gate_set.begin(),
+      cn_gate_set.end(),
+      std::inserter(allowed_gate_set, allowed_gate_set.begin()));
+  return rebase_factory(allowed_gate_set, CircPool::CX(), CircPool::tk1_to_tk1);
 }
 
 }  // namespace Transforms
