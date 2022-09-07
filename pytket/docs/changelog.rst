@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.6.0 (September 2022)
+----------------------
+
+* New ``ToffoliBox`` for constructing circuits that implement permutations of
+  basis states.
+
 1.5.2 (August 2022)
 -------------------
 

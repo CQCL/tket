@@ -124,6 +124,7 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
        {"ProjectorAssertionBox", "ProjectorAssertionBox", {}, std::nullopt}},
       {OpType::StabiliserAssertionBox,
        {"StabiliserAssertionBox", "StabiliserAssertionBox", {}, std::nullopt}},
+      {OpType::ToffoliBox, {"ToffoliBox", "ToffoliBox", {}, std::nullopt}},
       {OpType::ClassicalTransform,
        {"ClassicalTransform", "ClassicalTransform", {}, std::nullopt}},
       {OpType::WASM, {"WASM", "WASM", {}, std::nullopt}},

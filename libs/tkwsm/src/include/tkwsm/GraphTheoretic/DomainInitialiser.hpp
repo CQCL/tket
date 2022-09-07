@@ -33,7 +33,7 @@ class DomainInitialiser {
   /** Element[pv] is Domain(pv), i.e. the set of all target vertices
    * which pv could map to.
    */
-  typedef std::vector<std::set<VertexWSM>> InitialDomains;
+  typedef std::vector<boost::dynamic_bitset<>> InitialDomains;
 
   /** Fill initial_domains, using the different filters to try to make domains
    * small; the whole purpose of this class. The necessary data about the

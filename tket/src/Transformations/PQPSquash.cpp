@@ -70,8 +70,9 @@ std::pair<Circuit, Gate_ptr> PQPSquasher::flush(
   OpType p = p_, q = q_;
 
   if (smart_squash_ && commutation_colour.has_value()) {
-    Gate P(p_, {0}, 1);
-    Gate Q(q_, {0}, 1);
+    // Using an arbitrary non-zero angle to obtain the commutation for p_/q_.
+    Gate P(p_, {0.123}, 1);
+    Gate Q(q_, {0.123}, 1);
     if (P.commutes_with_basis(commutation_colour, 0)) {
       commute_through = true;
     } else if (Q.commutes_with_basis(commutation_colour, 0)) {
@@ -200,10 +201,18 @@ Transform squash_1qb_to_pqp(const OpType &q, const OpType &p, bool strict) {
       [=](Circuit &circ) { return squash_to_pqp(circ, q, p, strict); });
 }
 
+// To squash to TK1:
+// - we first decompose to ZYZ. Doing this was found to reduce the size of
+//   symbolic expressions
+// - we then redecompose to ZXZ, so that we can commute Rz or Rx rotation past
+//   multi-qubit gates (most usual multi-qb gates commute with X or Z)
+// - Rz and Rx rotations can then be straight-forwardly combined into TK1s.
 Transform squash_1qb_to_tk1() {
   return Transforms::decompose_ZY() >>
          squash_1qb_to_pqp(OpType::Ry, OpType::Rz, true) >>
-         Transforms::decompose_ZYZ_to_TK1();
+         Transforms::decompose_ZX() >>
+         squash_1qb_to_pqp(OpType::Rx, OpType::Rz, true) >>
+         Transforms::decompose_ZXZ_to_TK1();
 }
 
 static bool fixup_angles(

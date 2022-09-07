@@ -194,6 +194,17 @@ Transform commute_through_multis() {
   return Transform(commute_singles_to_front);
 }
 
+// whether source and target commute
+static bool ends_commute(const Circuit &circ, const Edge &e) {
+  const std::pair<port_t, port_t> ports = circ.get_ports(e);
+  const Vertex source = circ.source(e);
+  const Vertex target = circ.target(e);
+
+  auto colour = circ.commuting_basis(target, PortType::Target, ports.second);
+  return circ.commutes_with_basis(
+      source, colour, PortType::Source, ports.first);
+}
+
 // moves single qubit operations past multiqubit operations they commute with,
 // towards front of circuit (hardcoded)
 static bool commute_singles_to_front(Circuit &circ) {
@@ -206,33 +217,33 @@ static bool commute_singles_to_front(Circuit &circ) {
     while (!is_initial_q_type(circ.get_OpType_from_Vertex(current_v))) {
       const Op_ptr curr_op = circ.get_Op_ptr_from_Vertex(current_v);
       // if current vertex is a multiqubit gate
-      if (circ.n_in_edges_of_type(current_v, EdgeType::Quantum) > 1 &&
-          curr_op->get_desc().is_gate()) {
-        // need gate check to access commuting_basis
-        const std::pair<port_t, port_t> ports = circ.get_ports(current_e);
-      check_prev_commutes:
-        const Op_ptr prev_op = circ.get_Op_ptr_from_Vertex(prev_v);
-        // if previous vertex is single qubit gate
-        if (prev_op->get_desc().is_gate() &&
-            circ.n_in_edges_of_type(prev_v, EdgeType::Quantum) == 1) {
-          const std::optional<Pauli> prev_colour =
-              circ.commuting_basis(prev_v, PortType::Target, ports.second);
-
-          if (circ.commutes_with_basis(
-                  current_v, prev_colour, PortType::Source, ports.first)) {
-            // subsequent op on qubit path is a single qubit gate
-            // and commutes with current multi qubit gate
-            success = true;
-            circ.remove_vertex(
-                prev_v, Circuit::GraphRewiring::Yes,
-                Circuit::VertexDeletion::No);
-            Edge rewire_edge = circ.get_nth_in_edge(current_v, ports.first);
-            circ.rewire(prev_v, {rewire_edge}, {EdgeType::Quantum});
-            current_e = circ.get_nth_out_edge(current_v, ports.first);
-            prev_v = circ.target(current_e);
-            // check if new previous gate can be commuted through too
-            goto check_prev_commutes;
+      if (circ.n_in_edges_of_type(current_v, EdgeType::Quantum) > 1) {
+        while (circ.n_in_edges_of_type(prev_v, EdgeType::Quantum) == 1 &&
+               ends_commute(circ, current_e)) {
+          // subsequent op on qubit path is a single qubit gate
+          // and commutes with current multi qubit gate
+          success = true;
+          EdgeVec rewire_edges;
+          op_signature_t edge_types;
+          for (const Edge &e : circ.get_in_edges(prev_v)) {
+            EdgeType type = circ.get_edgetype(e);
+            Edge boundary_edge;
+            if (type == EdgeType::Quantum) {
+              boundary_edge = circ.get_last_edge(current_v, current_e);
+            } else {
+              // There should not be any Classical edges for conditional ops
+              TKET_ASSERT(type == EdgeType::Boolean);
+              boundary_edge = circ.get_linear_edge(e);
+            }
+            rewire_edges.push_back(boundary_edge);
+            edge_types.push_back(type);
           }
+          const port_t backup_port = circ.get_source_port(current_e);
+          circ.remove_vertex(
+              prev_v, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+          circ.rewire(prev_v, rewire_edges, edge_types);
+          current_e = circ.get_nth_out_edge(current_v, backup_port);
+          prev_v = circ.target(current_e);
         }
       }
       // move to next vertex (towards input)
@@ -287,7 +298,6 @@ static bool replace_two_qubit_interaction(
   if (target != OpType::TK2) {
     decompose_TK2(fid, allow_swaps).apply(replacement);
   }
-  squash_1qb_to_tk1().apply(replacement);
 
   // Whether to substitute old circuit with new
   bool substitute = false;
@@ -521,6 +531,10 @@ Transform two_qubit_squash(
     }
     circ.remove_vertices(
         bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+
+    if (success) {
+      squash_1qb_to_tk1().apply(circ);
+    }
     return success;
   });
 }

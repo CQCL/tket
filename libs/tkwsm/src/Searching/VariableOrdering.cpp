@@ -36,7 +36,7 @@ VariableOrdering::Result VariableOrdering::get_variable(
   // a bad idea; it's faster and simpler just to consider all
   // unassigned vertices equally.
   for (VertexWSM pv : accessor.get_unassigned_pattern_vertices_superset()) {
-    const auto domain_size = accessor.get_domain(pv).size();
+    const auto domain_size = accessor.get_domain_size(pv);
     if (domain_size == 0) {
       result.empty_domain = true;
       return result;

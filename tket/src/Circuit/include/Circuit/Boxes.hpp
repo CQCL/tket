@@ -708,4 +708,103 @@ class StabiliserAssertionBox : public Box {
   mutable std::vector<bool> expected_readouts_;
 };
 
+class ToffoliBox : public Box {
+ public:
+  /**
+   * A cycle is a vector of basis states such that the first
+   * is mapped to the second, the second to the third, etc,
+   * with the final mapped to the first. The ordering is unique but the
+   * vector can be rotated without effecting the meaning.
+   */
+  typedef std::vector<std::vector<bool>> cycle_permutation_t;
+  /**
+   * Construct from a map between input and output basis states.
+   * Every basis state changed by the permutation should
+   * be in the provided map.A invalid_argument error is thrown
+   * if this is not true.
+   * Any basis state not in a permutation cycle will be assumed to
+   * take the identity.
+   * If each basis state is not the same size will throw an
+   * invalid_argument error.
+   *
+   * @param _n_qubits number of qubits permuted
+   * @param _permutation map between basis states
+   */
+  ToffoliBox(
+      unsigned _n_qubits,
+      std::map<std::vector<bool>, std::vector<bool>> _permutation);
+
+  /**
+   * Construct from a cycle of basis states.
+   * Any basis state not in a permutation cycle will be assumed to
+   * take the identity.
+   * The first element in the cycle is mapped to the second, second
+   * to third and so on. The final element is mapped to the first.
+   * If each basis state is not the same size will throw an
+   * invalid_argument error.
+   *
+   * @param _n_qubits number of qubits permuted
+   * @param _cycles basis states being peruted
+   */
+  ToffoliBox(unsigned _n_qubits, const std::set<cycle_permutation_t> &_cycles);
+
+  /**
+   * Copy constructor
+   */
+  ToffoliBox(const ToffoliBox &other);
+
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &) const override {
+    return Op_ptr();
+  }
+
+  /** Get the number of qubits */
+  unsigned get_n_qubits() const { return n_qubits_; }
+
+  /** Get cycles of basis states for ToffoliBox */
+  std::set<std::vector<std::vector<bool>>> get_cycles() const {
+    return cycles_;
+  }
+
+  SymSet free_symbols() const override { return {}; }
+
+  op_signature_t get_signature() const override;
+
+  static Op_ptr from_json(const nlohmann::json &j);
+
+  static nlohmann::json to_json(const Op_ptr &op);
+
+ protected:
+  void generate_circuit() const override;
+
+ private:
+  struct transposition_t {
+    std::vector<bool> first;
+    std::vector<bool> middle;
+    std::vector<bool> last;
+  };
+
+  typedef std::vector<transposition_t> cycle_transposition_t;
+
+  typedef std::vector<std::pair<std::vector<bool>, unsigned>> gray_code_t;
+
+  std::vector<transposition_t> cycle_to_transposition(
+      cycle_permutation_t cycle) const;
+
+  std::vector<cycle_transposition_t> get_transpositions() const;
+
+  Circuit get_bitstring_circuit(
+      const std::vector<bool> &bitstring, const unsigned &target) const;
+
+  gray_code_t transposition_to_gray_code(
+      const ToffoliBox::transposition_t &transposition) const;
+
+  cycle_transposition_t merge_cycles(
+      std::vector<ToffoliBox::cycle_transposition_t> &cycle_transpositions)
+      const;
+
+  unsigned n_qubits_;
+  std::set<cycle_permutation_t> cycles_;
+};
+
 }  // namespace tket
