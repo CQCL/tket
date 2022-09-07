@@ -711,6 +711,13 @@ class StabiliserAssertionBox : public Box {
 class ToffoliBox : public Box {
  public:
   /**
+   * A cycle is a vector of basis states such that the first
+   * is mapped to the second, the second to the third, etc,
+   * with the final mapped to the first. The ordering is unique but the
+   * vector can be rotated without effecting the meaning.
+   */
+  typedef std::vector<std::vector<bool>> cycle_permutation_t;
+  /**
    * Construct from a map between input and output basis states.
    * Every basis state changed by the permutation should
    * be in the provided map.A invalid_argument error is thrown
@@ -723,23 +730,54 @@ class ToffoliBox : public Box {
    * @param _n_qubits number of qubits permuted
    * @param _permutation map between basis states
    */
-  explicit ToffoliBox(
+  ToffoliBox(
       unsigned _n_qubits,
       std::map<std::vector<bool>, std::vector<bool>> _permutation);
+
+  /**
+   * Construct from a cycle of basis states.
+   * Any basis state not in a permutation cycle will be assumed to
+   * take the identity.
+   * The first element in the cycle is mapped to the second, second
+   * to third and so on. The final element is mapped to the first.
+   * If each basis state is not the same size will throw an
+   * invalid_argument error.
+   *
+   * @param _n_qubits number of qubits permuted
+   * @param _cycles basis states being peruted
+   */
+  ToffoliBox(unsigned _n_qubits, const std::set<cycle_permutation_t> &_cycles);
+
+  /**
+   * Copy constructor
+   */
+  ToffoliBox(const ToffoliBox &other);
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
     return Op_ptr();
   }
 
+  /** Get the number of qubits */
+  unsigned get_n_qubits() const { return n_qubits_; }
+
+  /** Get cycles of basis states for ToffoliBox */
+  std::set<std::vector<std::vector<bool>>> get_cycles() const {
+    return cycles_;
+  }
+
   SymSet free_symbols() const override { return {}; }
+
+  op_signature_t get_signature() const override;
+
+  static Op_ptr from_json(const nlohmann::json &j);
+
+  static nlohmann::json to_json(const Op_ptr &op);
 
  protected:
   void generate_circuit() const override;
 
  private:
-  typedef std::vector<std::vector<bool>> cycle_permutation_t;
-
   struct transposition_t {
     std::vector<bool> first;
     std::vector<bool> middle;
