@@ -116,7 +116,6 @@ jobs:
         cat test-coverage/summary.txt
     - name: Build coverage report
       run: |
-        mkdir test-coverage
         gcovr --print-summary --html --html-details -r ./tket/src/ --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/tket/ -o test-coverage/index.html --decisions --gcov-executable gcov-10 > test-coverage/summary-decisions.txt
         cat test-coverage/summary-decisions.txt
     - name: Upload artefact
