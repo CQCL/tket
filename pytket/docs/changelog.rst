@@ -10,6 +10,11 @@ Minor new features:
 * Update ``DecomposeArbitrarilyControlledGates`` pass to decompose ``CnX``,
   ``CnY``, and ``CnZ`` gates.
 
+Fixes:
+
+* ``Circuit.get_unitary()`` and ``Circuit.get_statevector()`` now throw an error
+  when the circuit contains measurements.
+
 1.6.0 (September 2022)
 ----------------------
 
