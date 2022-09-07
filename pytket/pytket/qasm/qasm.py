@@ -389,13 +389,7 @@ class CircuitTransformer(Transformer):
             if opstr in treat_as_barrier:
                 params = [p[1:-4] for p in params]
                 op["type"] = "Barrier"
-                param_sorted = ""
-                first_elem = True
-                for par in params:
-                    if not first_elem:
-                        param_sorted += ","
-                    first_elem = False
-                    param_sorted += par
+                param_sorted = ",".join(params)
 
                 op["data"] = f"{opstr}({param_sorted})"
 
