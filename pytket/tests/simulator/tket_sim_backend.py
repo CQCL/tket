@@ -63,6 +63,13 @@ _GATE_SET = {
 }
 
 
+def _remove_measurements(circ: Circuit) -> Circuit:
+    """Return the circuit with measurements removed"""
+    circ_dict = circ.to_dict()
+    new_cmds = [x for x in circ_dict["commands"] if x["op"]["type"] != "Measure"]
+    circ_dict["commands"] = new_cmds
+    return Circuit.from_dict(circ_dict)
+
 class TketSimBackend(Backend):
     """Backend for running simulations with tket_sim."""
 
@@ -71,6 +78,13 @@ class TketSimBackend(Backend):
     _supports_state = True
     _supports_expectation = False
     _persistent_handles = False
+
+    def __init__(self, ignore_measures: bool = False):
+        """TketSim will throw an error if the circuit contains measurements.
+        Setting `ignore_measures` to true allows the measurements to be ignored,
+        but this should only be done for testing purposes."""
+        super().__init__()
+        self._ignore_measures = ignore_measures
 
     @property
     def _result_id_type(self) -> _ResultIdTuple:
@@ -115,6 +129,8 @@ class TketSimBackend(Backend):
 
         handle_list = []
         for circuit in circuits:
+            if self._ignore_measures:
+                circuit = _remove_measurements(circuit)
             state = circuit.get_statevector()
             handle = ResultHandle(str(uuid4()))
             res = BackendResult(q_bits=sorted(circuit.qubits), state=state)
@@ -198,6 +214,8 @@ class TketSimShotBackend(TketSimBackend):
                 c0, ppcirc = prepare_circuit(circuit, allow_classical=False)
             else:
                 c0, ppcirc = circuit, None
+            if self._ignore_measures:
+                c0 = _remove_measurements(c0)
             sim = TketSimWrapper(c0)
             state = sim.get_state(basis=BasisOrder.dlo)
             choices, probs = zip(*probs_from_state(state).items())

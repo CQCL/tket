@@ -169,7 +169,7 @@ def test_permute_state_err3() -> None:
 def test_permute_basis_indexing() -> None:
     dimensions = 3
     bases = 1 << dimensions
-    matrix = np.arange(bases**2).reshape((bases, bases))
+    matrix = np.arange(bases ** 2).reshape((bases, bases))
     new_matrix = permute_basis_indexing(matrix, (1, 2, 0))
     assert np.array_equal(new_matrix, matrix[[0, 4, 1, 5, 2, 6, 3, 7], :])
 
@@ -260,7 +260,7 @@ def test_small_pauli_partition_expectation() -> None:
     qps1 = QubitPauliString(Qubit(0), Pauli.Z)
     qps2 = QubitPauliString(Qubit(1), Pauli.Z)
     op = QubitPauliOperator({qps1: 0.5, qps2: 1.0})
-    backend = TketSimShotBackend()
+    backend = TketSimShotBackend(ignore_measures=True)
     n_shots = 10000
     strats = [
         None,
@@ -284,7 +284,10 @@ def test_medium_pauli_partition_expectation() -> None:
     qps3 = QubitPauliString({Qubit(1): Pauli.X, Qubit(3): Pauli.X})
 
     op = QubitPauliOperator({qps1: 0.5, qps2: 0.8, qps3: -10.2})
-    backends = [TketSimShotBackend(), TketSimBackend()]
+    backends = [
+        TketSimShotBackend(ignore_measures=True),
+        TketSimBackend(ignore_measures=True),
+    ]
     n_shots_list = [10000, None]
     strats = [
         None,
@@ -315,7 +318,10 @@ def test_large_pauli_partition_expectation() -> None:
     op = QubitPauliOperator(
         {qps1: 0.3, qps2: -0.7j, qps3: 0.9, qps4: 0.83, qps5: 0.5, qps6: 0.5}
     )
-    backends = [TketSimShotBackend(), TketSimBackend()]
+    backends = [
+        TketSimShotBackend(ignore_measures=True),
+        TketSimBackend(ignore_measures=True),
+    ]
     n_shots_list = [10000, None]
     strats = [
         None,
@@ -378,7 +384,7 @@ def test_inversion_pauli_partition_expectation() -> None:
             qps8: 0.8,
         }
     )
-    backend = TketSimShotBackend()
+    backend = TketSimShotBackend(ignore_measures=True)
     n_shots = 10000
     strats = [
         None,
