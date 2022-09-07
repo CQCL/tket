@@ -673,6 +673,17 @@ void init_circuit(py::module &m) {
           py::arg("box"), py::arg("opgroup"))
       .def(
           "substitute_named",
+          [](Circuit &circ, const ToffoliBox &box, const std::string opgroup) {
+            return circ.substitute_named(box, opgroup);
+          },
+          "Substitute all ops with the given name for the given box."
+          "The replacement boxes retain the same name.\n\n"
+          ":param box: the replacement ToffoliBox\n"
+          ":param opgroup: the name of the operations group to replace\n"
+          ":return: whether any replacements were made",
+          py::arg("box"), py::arg("opgroup"))
+      .def(
+          "substitute_named",
           [](Circuit &circ, const QControlBox &box, const std::string opgroup) {
             return circ.substitute_named(box, opgroup);
           },
