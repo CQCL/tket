@@ -966,7 +966,6 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
     }
   }
   // 3. Add each block to c2 either as a CnX, CnZ, CnY or a CnU decomposition
-  // decomposition
   Circuit c2(n_controls + c1.n_qubits());
   const static Eigen::Matrix2cd X = Gate(OpType::X, {}, 1).get_unitary();
   const static Eigen::Matrix2cd Y = Gate(OpType::Y, {}, 1).get_unitary();
