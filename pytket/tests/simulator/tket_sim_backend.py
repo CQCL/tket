@@ -70,6 +70,7 @@ def _remove_measurements(circ: Circuit) -> Circuit:
     circ_dict["commands"] = new_cmds
     return Circuit.from_dict(circ_dict)
 
+
 class TketSimBackend(Backend):
     """Backend for running simulations with tket_sim."""
 
