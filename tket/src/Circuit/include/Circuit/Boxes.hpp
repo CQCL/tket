@@ -758,11 +758,10 @@ class ToffoliBox : public Box {
     return Op_ptr();
   }
 
-  /** Get the Pauli string */
+  /** Get the number of qubits */
   unsigned get_n_qubits() const { return n_qubits_; }
 
-  /** Get the phase parameter */
-
+  /** Get cycles of basis states for ToffoliBox */
   std::set<std::vector<std::vector<bool>>> get_cycles() const {
     return cycles_;
   }
