@@ -711,6 +711,13 @@ class StabiliserAssertionBox : public Box {
 class ToffoliBox : public Box {
  public:
   /**
+   * A cycle is a vector of basis states such that the first
+   * is mapped to the second, the second to the third, etc,
+   * with the final mapped to the first. The ordering is unique but the
+   * vector can be rotated without effecting the meaning.
+   */
+  typedef std::vector<std::vector<bool>> cycle_permutation_t;
+  /**
    * Construct from a map between input and output basis states.
    * Every basis state changed by the permutation should
    * be in the provided map.A invalid_argument error is thrown
@@ -739,9 +746,7 @@ class ToffoliBox : public Box {
    * @param _n_qubits number of qubits permuted
    * @param _cycles basis states being peruted
    */
-  ToffoliBox(
-      unsigned _n_qubits,
-      const std::set<std::vector<std::vector<bool>>> &_cycles);
+  ToffoliBox(unsigned _n_qubits, const std::set<cycle_permutation_t> &_cycles);
 
   /**
    * Copy constructor
@@ -774,8 +779,6 @@ class ToffoliBox : public Box {
   void generate_circuit() const override;
 
  private:
-  typedef std::vector<std::vector<bool>> cycle_permutation_t;
-
   struct transposition_t {
     std::vector<bool> first;
     std::vector<bool> middle;
