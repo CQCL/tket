@@ -25,7 +25,8 @@ using Connection = Architecture::Connection;
 
 // confirm all weight i+1 edges are broken before any weight i edge
 bool check_edge_break_order(
-    const Architecture& arc, const QubitGraph& qg, const qubit_bimap_t& map) {
+    const Architecture& arc, const QubitGraph& qg,
+    const boost::bimap<Qubit, Node>& map) {
   std::vector<unsigned> mapped_edge_weights, unmapped_edge_weights;
   for (auto [q1, q2] : qg.get_all_edges_vec()) {
     const unsigned weight = qg.get_connection_weight(q1, q2);
@@ -66,25 +67,25 @@ SCENARIO("Small monomorphisms. place_qubit") {
     }
     QubitGraph qg(qbs);
     qg.add_connection(qbs[0], qbs[1], 1);
-    std::vector<qubit_bimap_t> result =
+    std::vector<boost::bimap<Qubit, Node>> result =
         monomorphism_edge_break(arc, qg, 10, 60000);
     REQUIRE(result[0].size() == 2);
     // REQUIRE(result.first.size()==boost::num_vertices(inter));
     for (const auto& [qb, n] : result[0].left) {
       REQUIRE(qb == node_to_qubit[n]);
     }
-    for (const qubit_bimap_t& map : result) {
+    for (const boost::bimap<Qubit, Node>& map : result) {
       REQUIRE(check_edge_break_order(arc, qg, map));
     }
 
     WHEN("The architecture has no edges, but two nodes") {
       arc.remove_connection({Node(0), Node(1)});
-      std::vector<qubit_bimap_t> result2 =
+      std::vector<boost::bimap<Qubit, Node>> result2 =
           monomorphism_edge_break(arc, qg, 10, 60000);
       THEN(
           "Interaction edge broken, both nodes removed, and an empty "
           "map returned.") {
-        for (const qubit_bimap_t& map : result2) {
+        for (const boost::bimap<Qubit, Node>& map : result2) {
           REQUIRE(map.empty());
         }
       }
@@ -104,22 +105,22 @@ SCENARIO("Small monomorphisms. place_qubit") {
     qg.add_connection(qbs[2], qbs[0], 1);
     qg.add_connection(qbs[1], qbs[3], 1);
 
-    std::vector<qubit_bimap_t> result =
+    std::vector<boost::bimap<Qubit, Node>> result =
         monomorphism_edge_break(arc, qg, 10, 60000);
     // REQUIRE(result.second==0);
     REQUIRE(result[0].size() == qg.n_nodes());
     for (const auto& [qb, n] : result[0].left) {
       REQUIRE(qb == node_to_qubit[n]);
     }
-    for (const qubit_bimap_t& map : result) {
+    for (const boost::bimap<Qubit, Node>& map : result) {
       REQUIRE(check_edge_break_order(arc, qg, map));
     }
 
     WHEN("Remove an edge") {
       arc.remove_connection({Node(1), Node(2)});
-      std::vector<qubit_bimap_t> result2 =
+      std::vector<boost::bimap<Qubit, Node>> result2 =
           monomorphism_edge_break(arc, qg, 10, 60000);
-      for (const qubit_bimap_t& map : result2) {
+      for (const boost::bimap<Qubit, Node>& map : result2) {
         REQUIRE(check_edge_break_order(arc, qg, map));
       }
 
@@ -133,11 +134,11 @@ SCENARIO("Small monomorphisms. place_qubit") {
     }
     WHEN("Remove a different edge") {
       qg.remove_connection({qbs[2], qbs[0]});
-      std::vector<qubit_bimap_t> result2 =
+      std::vector<boost::bimap<Qubit, Node>> result2 =
           monomorphism_edge_break(arc, qg, 10, 60000);
       // REQUIRE(result2.second==0);
       REQUIRE(result2[0].size() == qg.n_nodes());
-      for (const qubit_bimap_t& map : result2) {
+      for (const boost::bimap<Qubit, Node>& map : result2) {
         REQUIRE(check_edge_break_order(arc, qg, map));
       }
       for (const auto& [qb, n] : result2[0].left) {
@@ -158,9 +159,9 @@ SCENARIO("Small monomorphisms. place_qubit") {
       }
     }
 
-    std::vector<qubit_bimap_t> result =
+    std::vector<boost::bimap<Qubit, Node>> result =
         monomorphism_edge_break(arc, qg, 10, 60000);
-    for (const qubit_bimap_t& map : result) {
+    for (const boost::bimap<Qubit, Node>& map : result) {
       REQUIRE(check_edge_break_order(arc, qg, map));
     }
   }
@@ -176,8 +177,8 @@ SCENARIO("Check Monomorpher satisfies correct placement conditions") {
       add_2qb_gates(test_circ, OpType::CX, {{2, 0}, {0, 1}});
 
       Monomorpher morph(test_circ, arc, {}, {3, arc.n_connections()});
-      qubit_mapping_t map = morph.place(1)[0].map;
-      // qubit_mapping_t expected_map = {{2, 0}, {0, 1}, {1, 2}};
+      std::map<Qubit, Node> map = morph.place(1)[0].map;
+      // std::map<Qubit, Node> expected_map = {{2, 0}, {0, 1}, {1, 2}};
       // print_map(map);
       THEN(
           "All qubits are placed, with the connecting qubit on "
@@ -196,8 +197,8 @@ SCENARIO("Check Monomorpher satisfies correct placement conditions") {
       // test_circ.add_op<unsigned>(OpType::CX, {0, 1});
 
       Monomorpher morph(test_circ, arc, {}, {3, arc.n_connections()});
-      qubit_mapping_t map = morph.place(1)[0].map;
-      // qubit_mapping_t expected_map = {{2, 0}, {0, 1}, {1, 2}};
+      std::map<Qubit, Node> map = morph.place(1)[0].map;
+      // std::map<Qubit, Node> expected_map = {{2, 0}, {0, 1}, {1, 2}};
       // print_map(map);
       THEN(
           "All qubits are placed, with the connecting qubit on "
@@ -222,8 +223,8 @@ SCENARIO("Check Monomorpher satisfies correct placement conditions") {
       // test_circ.add_op<unsigned>(OpType::CX, {0, 1});
 
       Monomorpher morph(test_circ, arc, {}, {4, 5});
-      qubit_mapping_t map = morph.place(1)[0].map;
-      // qubit_mapping_t expected_map = {{2, 0}, {0, 1}, {1, 2}};
+      std::map<Qubit, Node> map = morph.place(1)[0].map;
+      // std::map<Qubit, Node> expected_map = {{2, 0}, {0, 1}, {1, 2}};
       THEN("Only 3 qubits are placed, and the correct one is removed") {
         REQUIRE(map.size() == 3);
         REQUIRE(map.find(Qubit(q_default_reg(), 2)) == map.end());
@@ -241,7 +242,7 @@ SCENARIO("Check Monomorpher satisfies correct placement conditions") {
       }
 
       Monomorpher morph(test_circ, arc, {{}, link_errors}, {4, 5});
-      qubit_mapping_t map = morph.place(1)[0].map;
+      std::map<Qubit, Node> map = morph.place(1)[0].map;
       REQUIRE(map.size() == 3);
 
       THEN("The chosen map satisfies directionality") {
@@ -267,7 +268,7 @@ SCENARIO("Check Monomorpher satisfies correct placement conditions") {
       }
 
       Monomorpher morph(test_circ, arc, {{}, link_errors}, {4, 5});
-      qubit_mapping_t map = morph.place(1)[0].map;
+      std::map<Qubit, Node> map = morph.place(1)[0].map;
       THEN("The circuit is placed on the best edge.") {
         qubit_vector_t qbs = test_circ.all_qubits();
         REQUIRE(map.size() == 2);
@@ -289,7 +290,7 @@ SCENARIO("Check Monomorpher satisfies correct placement conditions") {
       }
 
       Monomorpher morph(test_circ, arc, {{}, link_errors}, {4, 5});
-      qubit_mapping_t map = morph.place(1)[0].map;
+      std::map<Qubit, Node> map = morph.place(1)[0].map;
       THEN("The circuit is placed on the best edge.") {
         REQUIRE(map.size() == 2);
         qubit_vector_t qbs = test_circ.all_qubits();
@@ -329,7 +330,7 @@ SCENARIO("Check Monomorpher satisfies correct placement conditions") {
       node_errors.insert({Node(1), gd_single_error});
 
       Monomorpher morph(test_circ, arc, {node_errors, link_errors}, {4, 5});
-      qubit_mapping_t map = morph.place(1)[0].map;
+      std::map<Qubit, Node> map = morph.place(1)[0].map;
       THEN("The circuit is placed on the best edge.") {
         qubit_vector_t qbs = test_circ.all_qubits();
         REQUIRE(map.size() == 2);
@@ -364,7 +365,7 @@ SCENARIO("Check Monomorpher satisfies correct placement conditions") {
       THEN("The circuit is placed on the best edge.") {
         Monomorpher morph(
             test_circ, arc, {{}, link_errors, readout_errors}, {4, 5});
-        qubit_mapping_t map = morph.place(1)[0].map;
+        std::map<Qubit, Node> map = morph.place(1)[0].map;
         qubit_vector_t qbs = test_circ.all_qubits();
 
         REQUIRE(map.size() == 3);
@@ -381,7 +382,7 @@ SCENARIO("Check Monomorpher satisfies correct placement conditions") {
         THEN("CX errors are preferentially considered.") {
           Monomorpher morph(
               test_circ, arc, {{}, link_errors, readout_errors}, {4, 5});
-          qubit_mapping_t map = morph.place(1)[0].map;
+          std::map<Qubit, Node> map = morph.place(1)[0].map;
           qubit_vector_t qbs = test_circ.all_qubits();
 
           REQUIRE(map.size() == 3);
@@ -403,7 +404,7 @@ SCENARIO("Check Monomorpher satisfies correct placement conditions") {
         THEN("CX errors are preferentially considered.") {
           Monomorpher morph(
               test_circ, arc, {{}, link_errors, readout_errors2}, {4, 5});
-          qubit_mapping_t map = morph.place(1)[0].map;
+          std::map<Qubit, Node> map = morph.place(1)[0].map;
           qubit_vector_t qbs = test_circ.all_qubits();
 
           REQUIRE(map.size() == 3);
@@ -450,7 +451,7 @@ SCENARIO(
     Architecture test_arc({{0, 1}, {1, 0}});
     QubitGraph q_graph =
         monomorph_interaction_graph(test_circ, test_arc.n_connections(), 5);
-    std::vector<qubit_bimap_t> potential_maps =
+    std::vector<boost::bimap<Qubit, Node>> potential_maps =
         monomorphism_edge_break(test_arc, q_graph, 10000, 60000);
     REQUIRE(potential_maps.size() > 0);
   }
@@ -482,7 +483,7 @@ SCENARIO(
                            {9, 2}, {2, 9}, {7, 9}, {9, 7}});
     QubitGraph q_graph =
         monomorph_interaction_graph(test_circ, test_arc.n_connections(), 5);
-    std::vector<qubit_bimap_t> potential_maps =
+    std::vector<boost::bimap<Qubit, Node>> potential_maps =
         monomorphism_edge_break(test_arc, q_graph, 10000, 60000);
     REQUIRE(potential_maps.size() > 0);
   }
@@ -494,7 +495,7 @@ SCENARIO("Test NaivePlacement class") {
       "nodes.") {
     Circuit test_circ(7);
     NaivePlacement np(test_arc);
-    qubit_mapping_t p = np.get_placement_map(test_circ);
+    std::map<Qubit, Node> p = np.get_placement_map(test_circ);
     REQUIRE(p[Qubit(0)] == Node(0));
     REQUIRE(p[Qubit(1)] == Node(1));
     REQUIRE(p[Qubit(2)] == Node(2));
@@ -506,7 +507,7 @@ SCENARIO("Test NaivePlacement class") {
   GIVEN("No Qubits placed in Circuit, less qubits than architecture nodes.") {
     Circuit test_circ(6);
     NaivePlacement np(test_arc);
-    qubit_mapping_t p = np.get_placement_map(test_circ);
+    std::map<Qubit, Node> p = np.get_placement_map(test_circ);
     REQUIRE(p[Qubit(0)] == Node(0));
     REQUIRE(p[Qubit(1)] == Node(1));
     REQUIRE(p[Qubit(2)] == Node(2));
@@ -522,7 +523,7 @@ SCENARIO("Test NaivePlacement class") {
     test_circ.add_qubit(Node(1));
     test_circ.add_qubit(Node(2));
     NaivePlacement np(test_arc);
-    qubit_mapping_t p = np.get_placement_map(test_circ);
+    std::map<Qubit, Node> p = np.get_placement_map(test_circ);
 
     REQUIRE(p[Qubit(0)] == Node(3));
     REQUIRE(p[Qubit(1)] == Node(4));
@@ -538,7 +539,7 @@ SCENARIO("Test NaivePlacement class") {
     test_circ.add_qubit(Node(1));
     test_circ.add_qubit(Node(2));
     NaivePlacement np(test_arc);
-    qubit_mapping_t p = np.get_placement_map(test_circ);
+    std::map<Qubit, Node> p = np.get_placement_map(test_circ);
 
     REQUIRE(p[Qubit(0)] == Node(3));
     REQUIRE(p[Qubit(1)] == Node(4));
@@ -574,7 +575,7 @@ SCENARIO(
     Circuit test_circ(4);
     add_2qb_gates(test_circ, OpType::CX, {{0, 1}, {2, 1}, {3, 1}});
 
-    const qubit_mapping_t test_m = test_p.get_placement_map(test_circ);
+    const std::map<Qubit, Node> test_m = test_p.get_placement_map(test_circ);
     const qubit_vector_t all_qs = test_circ.all_qubits();
     for (unsigned nn = 0; nn < expected_qubits.size(); ++nn) {
       REQUIRE(test_m.at(all_qs[nn]) == expected_qubits[nn]);
@@ -607,7 +608,7 @@ SCENARIO(
     Circuit test_circ(4);
     add_2qb_gates(test_circ, OpType::CX, {{0, 1}, {2, 1}, {3, 1}});
 
-    const qubit_mapping_t test_m = test_p.get_placement_map(test_circ);
+    const std::map<Qubit, Node> test_m = test_p.get_placement_map(test_circ);
     const qubit_vector_t all_qs = test_circ.all_qubits();
     for (unsigned nn = 0; nn <= 2; ++nn) {
       REQUIRE(test_m.at(all_qs[nn]) == Node(nn + 1));
@@ -620,7 +621,7 @@ SCENARIO(
     test_circ.add_op<unsigned>(OpType::X, {1});
     test_circ.add_op<unsigned>(OpType::H, {2});
     test_circ.add_op<unsigned>(OpType::S, {3});
-    const qubit_mapping_t test_m = test_p.get_placement_map(test_circ);
+    const std::map<Qubit, Node> test_m = test_p.get_placement_map(test_circ);
     REQUIRE(test_m.at(Qubit(0)) == Node("unplaced", 0));
     REQUIRE(test_m.at(Qubit(1)) == Node("unplaced", 1));
     REQUIRE(test_m.at(Qubit(2)) == Node("unplaced", 2));
@@ -662,7 +663,7 @@ SCENARIO(
         test_circ, OpType::CX,
         {{0, 1}, {2, 1}, {3, 1}, {2, 5}, {3, 4}, {0, 5}});
 
-    const qubit_mapping_t test_m = test_p.get_placement_map(test_circ);
+    const std::map<Qubit, Node> test_m = test_p.get_placement_map(test_circ);
     const qubit_vector_t all_qs = test_circ.all_qubits();
     REQUIRE(test_m.at(all_qs[4]) == uid0);
     const std::vector<std::pair<unsigned, unsigned>> mapping{
@@ -695,7 +696,8 @@ SCENARIO(
 
     GraphPlacement placer(arc);
     placer.set_config(pc);
-    std::vector<qubit_mapping_t> all_maps = placer.get_all_placement_maps(circ);
+    std::vector<std::map<Qubit, Node>> all_maps =
+        placer.get_all_placement_maps(circ);
     REQUIRE(all_maps.size() < pc.monomorphism_max_matches);
   }
 }
@@ -731,7 +733,7 @@ SCENARIO(
         {{0, 1}, {2, 1}, {3, 1}, {2, 5}, {3, 4}, {0, 5}});
 
     qubit_vector_t pre_place = test_circ.all_qubits();
-    qubit_mapping_t test_m = test_p.get_placement_map(test_circ);
+    std::map<Qubit, Node> test_m = test_p.get_placement_map(test_circ);
     qubit_vector_t all_qs = test_circ.all_qubits();
     REQUIRE(pre_place == all_qs);
   }

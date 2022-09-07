@@ -67,7 +67,7 @@ void amend_config_from_kwargs(GraphPlacement &pobj, py::kwargs kwargs) {
   pobj.set_config(config_);
 }
 
-void place_with_map(Circuit &circ, qubit_mapping_t &qmap) {
+void place_with_map(Circuit &circ, std::map<Qubit, Node> &qmap) {
   Architecture arc;
   Placement plobj(arc);
   plobj.place_with_map(circ, qmap);
@@ -79,7 +79,7 @@ void place_fully_connected(
     throw std::logic_error(
         "Circuit has more qubits than the FullyConnected graph has nodes");
   }
-  qubit_mapping_t qmap;
+  std::map<Qubit, Node> qmap;
   unsigned index = 0;
   for (const Qubit &q : circ.all_qubits()) {
     qmap[q] = Node("fcNode", index);
@@ -112,7 +112,7 @@ PYBIND11_MODULE(placement, m) {
               py::arg("circuit"))
             .def_static(
               "place_with_map",
-              [](Circuit &circ, qubit_mapping_t& qmap) {
+              [](Circuit &circ, std::map<Qubit, Node>& qmap) {
                 return Placement::place_with_map(circ, qmap);
               },
               "Relabels Circuit Qubits to Architecture Nodes using given map. "

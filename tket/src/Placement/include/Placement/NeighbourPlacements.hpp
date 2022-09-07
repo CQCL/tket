@@ -39,7 +39,7 @@ class NeighbourPlacements {
   using NodeSwap = std::pair<Node, Node>;
   using NodeSwapVec = std::vector<NodeSwap>;
   struct Result {
-    qubit_mapping_t map;
+    std::map<Qubit, Node> map;
     NodeSwapVec swaps;
   };
   using ResultVec = std::vector<Result>;
@@ -50,7 +50,8 @@ class NeighbourPlacements {
    * @param arc The architecture defining the allowed swaps.
    * @param init_map The initial Qubit => Node map.
    */
-  NeighbourPlacements(const Architecture& arc, const qubit_mapping_t& init_map);
+  NeighbourPlacements(
+      const Architecture& arc, const std::map<Qubit, Node>& init_map);
 
   /**
    * @brief Generate `n` distinct placement maps using `dist` swaps for each map
@@ -91,7 +92,7 @@ class NeighbourPlacements {
   Result convert_to_res(const SwapVec& swaps);
 
   Architecture arc_;
-  qubit_mapping_t init_map_;
+  std::map<Qubit, Node> init_map_;
   boost::bimap<unsigned, Node> u_to_node_;
   RNG rng_;
 };

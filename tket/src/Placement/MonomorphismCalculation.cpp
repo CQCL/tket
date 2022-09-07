@@ -21,11 +21,10 @@ namespace tket {
 
 using namespace WeightedSubgraphMonomorphism;
 
-using RelabelledPatternGraph =
-    RelabelledGraphWSM<Qubit, QubitGraph::UndirectedConnGraph>;
+using RelabelledPatternGraph = RelabelledGraphWSM<Qubit, QubitGraph>;
 using RelabelledTargetGraph =
     RelabelledGraphWSM<Node, Architecture::UndirectedConnGraph>;
-using BimapValue = qubit_bimap_t::value_type;
+using BimapValue = boost::bimap<Qubit, Node>::value_type;
 
 // Where should isolated pattern vertices be assigned?
 // They might NOT have been isolated originally; it may be
@@ -33,7 +32,8 @@ using BimapValue = qubit_bimap_t::value_type;
 // Thus, we still want them connected to useful target components,
 // so assign to nonisolated target vertices first.
 static void assign_isolated_pattern_vertices(
-    qubit_bimap_t& map, const RelabelledPatternGraph& relabelled_pattern_graph,
+    boost::bimap<Qubit, Node>& map,
+    const RelabelledPatternGraph& relabelled_pattern_graph,
     const RelabelledTargetGraph& relabelled_target_graph) {
   if (relabelled_pattern_graph.get_relabelled_isolated_vertices().empty()) {
     return;
@@ -95,7 +95,7 @@ static void assign_isolated_pattern_vertices(
 }
 
 static void write_solver_solutions(
-    std::vector<qubit_bimap_t>& all_maps,
+    std::vector<boost::bimap<Qubit, Node>>& all_maps,
     const std::vector<SolutionWSM>& solutions,
     const RelabelledPatternGraph& relabelled_pattern_graph,
     const RelabelledTargetGraph& relabelled_target_graph) {
@@ -123,11 +123,12 @@ static void write_solver_solutions(
   }
 }
 
-std::vector<qubit_bimap_t> get_weighted_subgraph_monomorphisms(
-    const QubitGraph::UndirectedConnGraph& pattern_graph,
+std::vector<boost::bimap<Qubit, Node>>
+GraphPlacement::get_weighted_subgraph_monomorphisms(
+    const QubitGraph& pattern_graph,
     const Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
-    unsigned timeout_ms) {
-  std::vector<qubit_bimap_t> all_maps;
+    unsigned timeout_ms) const {
+  std::vector<boost::bimap<Qubit, Node>> all_maps;
 
   const RelabelledPatternGraph relabelled_pattern_graph(pattern_graph);
   const RelabelledTargetGraph relabelled_target_graph(target_graph);
