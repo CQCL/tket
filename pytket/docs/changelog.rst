@@ -10,6 +10,12 @@ Minor new features:
 * Update ``DecomposeArbitrarilyControlledGates`` pass to decompose ``CnX``,
   ``CnY``, and ``CnZ`` gates.
 
+1.6.0 (September 2022)
+----------------------
+
+* New ``ToffoliBox`` for constructing circuits that implement permutations of
+  basis states.
+
 1.5.2 (August 2022)
 -------------------
 
@@ -17,8 +23,6 @@ Minor new features:
 
 * Prefer `ZZPhase` in ``DecomposeTK2`` if it results in the same fidelity but
   fewer two-qubit gates.
-* New ``ToffoliBox`` for constructing circuits that implement permutations of
-  basis states.
 
 1.5.1 (August 2022)
 -------------------
