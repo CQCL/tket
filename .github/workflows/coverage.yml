@@ -47,12 +47,6 @@ jobs:
         fetch-depth: '0'
         persist-credentials: false
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: checkout gcovr repo
-      uses: actions/checkout@v2
-      with:
-        repository: gcovr/gcovr
-        token: ${{ secrets.GH_PAT }}
-        path: gcovr
     - name: Get current time
       uses: srfrnk/current-time@v1.1.0
       id: current_time
@@ -108,7 +102,7 @@ jobs:
       working-directory: ./build/tket-tests/package/bin
       run: ./test_tket "[long],~[long]"
     - name: Install gcovr
-      run: pip install -e gcovr/
+      run: pip install gcovr~=5.2
     - name: Build publishable coverage report
       run: |
         mkdir test-coverage
