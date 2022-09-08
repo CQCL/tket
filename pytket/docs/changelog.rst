@@ -24,6 +24,9 @@ Minor new features:
 * Prefer `ZZPhase` in ``DecomposeTK2`` if it results in the same fidelity but
   fewer two-qubit gates.
 
+* Add ``SquashRzPhasedX`` pass to squash single qubit gates into
+  ``Rz`` and ``PhasedX`` gates while trying to commute ``Rz``s to the back. 
+
 1.5.1 (August 2022)
 -------------------
 

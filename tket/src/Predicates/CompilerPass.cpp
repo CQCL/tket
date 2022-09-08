@@ -407,6 +407,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = SynthesiseUMD();
     } else if (passname == "SquashTK1") {
       pp = SquashTK1();
+    } else if (passname == "SquashRzPhasedX") {
+      pp = SquashRzPhasedX();
     } else if (passname == "FlattenRegisters") {
       pp = FlattenRegisters();
     } else if (passname == "SquashCustom") {

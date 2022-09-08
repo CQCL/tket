@@ -38,6 +38,7 @@
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
 #include "Transformations/Replacement.hpp"
+#include "Transformations/RzPhasedXSquash.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Expression.hpp"
 #include "testutil.hpp"
@@ -2282,6 +2283,144 @@ SCENARIO("Restricting ZZPhase gate angles.") {
   REQUIRE(comparison == c);
 }
 
+SCENARIO("Test squash Rz PhasedX") {
+  GIVEN("A simple circuit") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::CZ, {0, 1});
+    c.add_op<unsigned>(OpType::Rz, 0.8, {0});
+    c.add_op<unsigned>(OpType::Rz, 0.7, {1});
+    c.add_op<unsigned>(OpType::CZ, {0, 1});
+    c.add_op<unsigned>(OpType::Ry, 0.4, {0});
+    c.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    c.add_op<unsigned>(OpType::Rx, 0.11, {0});
+    c.add_op<unsigned>(OpType::CZ, {0, 1});
+    c.add_op<unsigned>(OpType::Rz, 0.5, {0});
+    c.add_op<unsigned>(OpType::Rz, 0.5, {1});
+    const Eigen::MatrixXcd u = tket_sim::get_unitary(c);
+
+    WHEN("Squash forwards") {
+      AND_WHEN("Use squash_1qb_to_Rz_PhasedX") {
+        bool reverse = false;
+        auto squasher =
+            std::make_unique<Transforms::RzPhasedXSquasher>(reverse);
+        Transforms::decompose_ZX().apply(c);
+        SingleQubitSquash(std::move(squasher), c, reverse).squash();
+      }
+      AND_WHEN("Use squash_1qb_to_Rz_PhasedX") {
+        Transforms::squash_1qb_to_Rz_PhasedX().apply(c);
+      }
+      AND_WHEN("Use SquashRzPhasedX") {
+        CompilationUnit cu(c);
+        SquashRzPhasedX()->apply(cu);
+        c = cu.get_circ_ref();
+      }
+      const Eigen::MatrixXcd v = tket_sim::get_unitary(c);
+      REQUIRE(u.isApprox(v, ERR_EPS));
+      std::vector<VertPort> q0_path = c.unit_path(Qubit(0));
+      std::vector<VertPort> q1_path = c.unit_path(Qubit(1));
+      REQUIRE(
+          c.get_OpType_from_Vertex(q0_path[q0_path.size() - 2].first) ==
+          OpType::Rz);
+      REQUIRE(c.get_OpType_from_Vertex(q0_path[4].first) == OpType::PhasedX);
+      REQUIRE(
+          c.get_OpType_from_Vertex(q1_path[q1_path.size() - 2].first) ==
+          OpType::Rz);
+      REQUIRE(c.count_gates(OpType::Rz) == 2);
+      REQUIRE(c.count_gates(OpType::PhasedX) == 1);
+      REQUIRE(c.count_gates(OpType::CZ) == 3);
+      REQUIRE(c.count_gates(OpType::CX) == 1);
+      REQUIRE(c.n_gates() == 7);
+    }
+
+    WHEN("Squash backwards") {
+      bool reverse = true;
+      auto squasher = std::make_unique<Transforms::RzPhasedXSquasher>(reverse);
+      Transforms::decompose_ZX().apply(c);
+      SingleQubitSquash(std::move(squasher), c, reverse).squash();
+      const Eigen::MatrixXcd v = tket_sim::get_unitary(c);
+      REQUIRE(u.isApprox(v, ERR_EPS));
+      std::vector<VertPort> q0_path = c.unit_path(Qubit(0));
+      std::vector<VertPort> q1_path = c.unit_path(Qubit(1));
+      REQUIRE(c.get_OpType_from_Vertex(q0_path[1].first) == OpType::Rz);
+      REQUIRE(c.get_OpType_from_Vertex(q0_path[5].first) == OpType::PhasedX);
+      REQUIRE(c.get_OpType_from_Vertex(q1_path[2].first) == OpType::Rz);
+      REQUIRE(c.count_gates(OpType::Rz) == 2);
+      REQUIRE(c.count_gates(OpType::PhasedX) == 1);
+      REQUIRE(c.count_gates(OpType::CZ) == 3);
+      REQUIRE(c.count_gates(OpType::CX) == 1);
+      REQUIRE(c.n_gates() == 7);
+    }
+  }
+  GIVEN("Special case: a Rx gate") {
+    // Test there is no leftover Rz
+    Circuit c(1);
+    c.add_op<unsigned>(OpType::Rx, 0.77, {0});
+    const Eigen::MatrixXcd u = tket_sim::get_unitary(c);
+    Transforms::squash_1qb_to_Rz_PhasedX().apply(c);
+    REQUIRE(c.count_gates(OpType::PhasedX) == 1);
+    REQUIRE(c.n_gates() == 1);
+    const Eigen::MatrixXcd v = tket_sim::get_unitary(c);
+    REQUIRE(u.isApprox(v, ERR_EPS));
+  }
+  GIVEN("Special case: a decomposed phased X") {
+    // Test there is no leftover Rz
+    Circuit c(1);
+    c.add_op<unsigned>(OpType::Rz, -0.6, {0});
+    c.add_op<unsigned>(OpType::Rx, 1.3, {0});
+    c.add_op<unsigned>(OpType::Rz, 0.6, {0});
+    const Eigen::MatrixXcd u = tket_sim::get_unitary(c);
+    Transforms::squash_1qb_to_Rz_PhasedX().apply(c);
+    REQUIRE(c.count_gates(OpType::PhasedX) == 1);
+    REQUIRE(c.n_gates() == 1);
+    const Eigen::MatrixXcd v = tket_sim::get_unitary(c);
+    REQUIRE(u.isApprox(v, ERR_EPS));
+  }
+  GIVEN("Special case: a Rz gate") {
+    // Test there is no PhasedX
+    Circuit c(1);
+    c.add_op<unsigned>(OpType::Rz, 0.77, {0});
+    const Eigen::MatrixXcd u = tket_sim::get_unitary(c);
+    Transforms::squash_1qb_to_Rz_PhasedX().apply(c);
+    REQUIRE(c.count_gates(OpType::Rz) == 1);
+    REQUIRE(c.n_gates() == 1);
+    const Eigen::MatrixXcd v = tket_sim::get_unitary(c);
+    REQUIRE(u.isApprox(v, ERR_EPS));
+  }
+
+  GIVEN("A symbolic circuit") {
+    Sym a = SymEngine::symbol("alpha");
+    Expr alpha(a);
+    Sym b = SymEngine::symbol("beta");
+    Expr beta(b);
+    Sym c = SymEngine::symbol("gamma");
+    Expr gamma(c);
+
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::PhaseGadget, beta, {0});
+    circ.add_op<unsigned>(OpType::Rz, alpha, {0});
+    circ.add_op<unsigned>(OpType::PhasedX, {gamma, beta}, {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+
+    Circuit circ2(circ);
+    Transforms::squash_1qb_to_Rz_PhasedX().apply(circ2);
+    auto cmds = circ2.get_commands();
+    REQUIRE(cmds.size() == 3);
+    REQUIRE(cmds[0].get_op_ptr()->get_type() == OpType::PhasedX);
+    REQUIRE(cmds[1].get_op_ptr()->get_type() == OpType::CX);
+    REQUIRE(cmds[2].get_op_ptr()->get_type() == OpType::Rz);
+
+    symbol_map_t symbol_map;
+    symbol_map[a] = Expr(0.3);
+    symbol_map[b] = Expr(0.5);
+    symbol_map[c] = Expr(1.);
+    circ.symbol_substitution(symbol_map);
+    circ2.symbol_substitution(symbol_map);
+    const Eigen::MatrixXcd u = tket_sim::get_unitary(circ);
+    const Eigen::MatrixXcd v = tket_sim::get_unitary(circ2);
+    REQUIRE(u.isApprox(v, ERR_EPS));
+  }
+}
 SCENARIO("Test decompose_ZXZ_to_TK1") {
   Circuit circ;
   unsigned tk1_count, total_count;
