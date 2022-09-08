@@ -145,13 +145,36 @@ SCENARIO("Simple circuits produce the correct statevectors") {
   }
 }
 
+SCENARIO("Simulate circuit with unsupported operations") {
+  GIVEN("Circuit with measurements") {
+    Circuit circ(1, 1);
+    circ.add_op<unsigned>(OpType::Measure, {0, 0});
+    REQUIRE_THROWS_MATCHES(
+        tket_sim::get_unitary(circ), Unsupported,
+        MessageContains("Unsupported OpType Measure"));
+  }
+  GIVEN("Circuit with resets") {
+    Circuit circ(1, 1);
+    circ.add_op<unsigned>(OpType::Reset, {0});
+    REQUIRE_THROWS_MATCHES(
+        tket_sim::get_unitary(circ), Unsupported,
+        MessageContains("Unsupported OpType Reset"));
+  }
+  GIVEN("Circuit with conditionals") {
+    Circuit circ(1, 1);
+    circ.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {0}, 1);
+    REQUIRE_THROWS_MATCHES(
+        tket_sim::get_unitary(circ), Unsupported,
+        MessageContains("Unsupported OpType Conditional"));
+  }
+}
+
 SCENARIO("Ignored op types don't affect get unitary") {
   Circuit circ1(3);
   // circ2 will add the same ops as circ1, but with extra ops
   Circuit circ2(3, 2);
 
   circ1.add_op<unsigned>(OpType::H, {0});
-  circ2.add_op<unsigned>(OpType::Measure, {0, 1});
   circ2.add_op<unsigned>(OpType::H, {0});
 
   circ1.add_op<unsigned>(OpType::CZ, {0, 1});
@@ -163,7 +186,6 @@ SCENARIO("Ignored op types don't affect get unitary") {
   circ2.add_op<unsigned>(OpType::noop, {2});
   circ2.add_op<unsigned>(OpType::Ry, 2.1, {2});
 
-  circ2.add_op<unsigned>(OpType::Measure, {2, 0});
   REQUIRE(matrices_are_equal(
       tket_sim::get_statevector(circ1), tket_sim::get_statevector(circ2)));
   REQUIRE(matrices_are_equal(
