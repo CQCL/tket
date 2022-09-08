@@ -958,7 +958,7 @@ SCENARIO("Classical control") {
     n_cx = 3;
     n_tk2 = 2;
   }
-  GIVEN("A circuit with classical control (4)") {
+  /*GIVEN("A circuit with classical control (4)") {
     circ = Circuit(3, 2);
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
     circ.add_conditional_gate<unsigned>(OpType::Rz, {0.2}, {1}, {0}, 1);
@@ -1014,7 +1014,7 @@ SCENARIO("Classical control") {
     exp_circs = {circ_00, circ_01, circ_10, circ_11};
     n_cx = 8;
     n_tk2 = 4;
-  }
+  }*/
 
   Circuit orig = circ;
   REQUIRE(Transforms::two_qubit_squash(OpType::CX).apply(circ));
