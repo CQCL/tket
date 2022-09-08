@@ -46,6 +46,7 @@ class TketConan(ConanFile):
         "tkrng/0.1.2@tket/stable",
         "tktokenswap/0.1.1@tket/stable",
         "tkwsm/0.1.1@tket/stable",
+        "ceres-solver/2.1.0",
     )
 
     # List of components in a topological sort according to dependencies:

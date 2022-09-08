@@ -1,9 +1,13 @@
 #include "PostRoutingOptimisation.hpp"
 #include <algorithm>
 
+
+#include <string.h>
+
 namespace tket {
 
 // Make into a class and store circuit, architecture and partition size as members?
+
 
 Circuit optimise(Circuit &circ, Architecture &arch, unsigned int k) {
   PartitionVec post_synthesis;
@@ -166,5 +170,157 @@ Subcircuit get_max_partition(Circuit &circ, qubit_vector_t &qubits) {
 }
 
 Partition synthesise(Partition &partition) { return partition; }
+
+std::vector<double> optimise_u3_gates(
+  int indexA, int indexB, Eigen::MatrixXcd &U, Eigen::MatrixXcd &T) {
+  // Set up problem
+  f.open("output.txt");
+  ceres::Problem problem;
+  double parameters[6] = {0.1, 0.0, 0.0, 0.0, 0.0, 0.0};
+  ceres::CostFunction* cost_function = new CircuitCostFunction(indexA, indexB, U, T);
+  problem.AddResidualBlock(cost_function, nullptr, parameters);
+  
+  // Setting range of 0 to 2pi for possible angles
+  for (int i=0; i<6; i++) {
+    problem.SetParameterLowerBound(parameters, i, 0);
+    problem.SetParameterUpperBound(parameters, i, 2*M_PI);
+  }
+  
+  // Solve for optimal U3 gates
+  ceres::Solver::Options options;
+  options.minimizer_progress_to_stdout = true;
+  ceres::Solver::Summary summary;
+  Solve(options, &problem, &summary);
+
+  f << summary.BriefReport() << "\n";
+  f.close();
+
+  std::vector<double> result(std::begin(parameters), std::end(parameters));
+  return result;
+}
+
+CircuitCostFunction::CircuitCostFunction(int indexA, int indexB, 
+  Eigen::MatrixXcd U, Eigen::MatrixXcd T) {
+  this->size = log2(T.cols());
+  this->indexA = indexA;
+  this->indexB = indexB;
+  this->U = U;
+  this->T = T;
+}
+
+bool CircuitCostFunction::Evaluate(double const* const* parameters,
+  double* residuals, double** jacobians) const {
+  f << "x1: " << parameters[0][0] << "\n";
+  f << "y1: " << parameters[0][1] << "\n";
+  f << "z1: " << parameters[0][2] << "\n";
+  f << "x2: " << parameters[0][3] << "\n";
+  f << "y2: " << parameters[0][4] << "\n";
+  f << "z2: " << parameters[0][5] << "\n";
+  
+  std::vector<double> jacs = evaluate_distance(parameters[0]);
+
+  residuals[0] = jacs[6];
+
+  f << "distance: " << residuals[0] << "\n";
+
+  if (jacobians != nullptr && jacobians[0] != nullptr) {
+    for (int i=0; i<6; i++) {
+      jacobians[0][i] = jacs[i];
+      f << "Jacobian " << i << ": " << jacobians[0][i] << "\n";
+    }
+  }
+  
+  return true;
+}
+
+std::vector<double> CircuitCostFunction::evaluate_distance(const double* p) const {
+  std::vector<Eigen::MatrixXcd> A = u3_matrices(p[0], p[1], p[2]);
+  std::vector<Eigen::MatrixXcd> B = u3_matrices(p[3], p[4], p[5]);
+  Eigen::MatrixXcd C = A[0]*B[0]*U;
+
+  std::complex<double> S = T.cwiseProduct(C.conjugate()).sum();
+  double dsq = 1 - std::abs(S)/T.cols();
+  
+  f << "S: " << S << "\n";
+  f << "dsq: " << dsq << "\n";
+
+  std::vector<Eigen::MatrixXcd> ju;
+  std::vector<std::complex<double>> jus;
+  std::vector<double> jacs;
+
+  for(int i=0; i<3; i++) {
+    place(A[i+1], indexA);
+    ju.push_back(T.cwiseProduct(A[i+1].conjugate()));
+  }
+
+  for(int i=0; i<3; i++) {
+    place(B[i+1], indexB);
+    ju.push_back(T.cwiseProduct(B[i+1].conjugate()));
+  }
+
+  for(int i=0; i<6; i++) {
+    jus.push_back(ju[i].sum());
+  }
+
+  f << "JUS 0:\n" << jus[0] << "\n";
+  f << "JUS 1:\n" << jus[1] << "\n";
+  f << "JUS 2:\n" << jus[1] << "\n";
+
+  for(int i=0; i<6; i++) {
+    jacs.push_back(-(S.real()*jus[i].real() + S.imag()*jus[i].imag())*T.cols() / std::abs(S));
+    f << "jacs[i]: " << jacs[i] << "\n";
+  }
+
+  jacs.push_back(dsq);
+  
+  return jacs;
+}
+
+std::vector<Eigen::MatrixXcd> CircuitCostFunction::u3_matrices(double x, double y, double z) const {
+  std::complex<double> i(0, 1);
+  double ct = std::cos(x/2);
+  double st = std::sin(x/2);
+  double cp = std::cos(y);
+  double sp = std::sin(y);
+  double cl = std::cos(z);
+  double sl = std::sin(z);
+
+  Eigen::MatrixXcd U(2,2), J1(2,2), J2(2,2), J3(2,2);
+  
+  U(0, 0) = ct;
+  U(0, 1) = -st * (cl + i * sl);
+  U(1, 0) = st * (cp + i * sp);
+  U(1, 1) = ct * (cl * cp - sl * sp + i * cl * sp + i * sl * cp);
+
+  J1(0, 0) = -0.5*st;
+  J1(0, 1) = -0.5*ct * (cl + i * sl);
+  J1(1, 0) = 0.5*ct * (cp + i * sp);
+  J1(1, 1) = -0.5*st * (cl * cp - sl * sp + i * cl * sp + i * sl * cp);
+
+  J2(0, 0) = 0;
+  J2(0, 1) = 0;
+  J2(1, 0) = st *(-sp + i * cp);
+  J2(1, 1) = ct *(cl * -sp - sl * cp + i * cl * cp + i * sl * -sp);
+
+  J3(0, 0) = 0;
+  J3(0, 1) = -st *(-sl + i * cl);
+  J3(1, 0) = 0;
+  J3(1, 1) = ct *(-sl * cp - cl * sp + i * -sl * sp + i * cl * cp);
+
+  std::vector<Eigen::MatrixXcd> v;
+  v.push_back(U);
+  v.push_back(J1);
+  v.push_back(J2);
+  v.push_back(J3);
+
+  return v;
+}
+
+void CircuitCostFunction::place(Eigen::MatrixXcd u, int pos) const {
+  Eigen::MatrixXcd below = Eigen::MatrixXcd::Identity(std::pow(2, (size-(pos+1))), std::pow(2, (size-(pos+1))));
+  Eigen::MatrixXcd above = Eigen::MatrixXcd::Identity(std::pow(2, pos), std::pow(2, pos));
+
+  kroneckerProduct(below, kroneckerProduct(u, above).eval()).eval();
+}
 
 } // namespace tket
