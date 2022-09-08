@@ -58,15 +58,14 @@ def compare(summary, summary1):
     lpercent, fpercent, bpercent = get_percentages(summary)
     lpercent1, fpercent1, bpercent1 = get_percentages(summary1)
 
-    # Ignore branch coverage since it includes compiler-generated branches beyond our
-    # control.
-    # TODO: Maybe use the `--decisions` flag (available in gcovr 5.1) to mitigate this
-    # issue, but this seems to throw an error.
     if lpercent1 < lpercent:
         print("Percentage line coverage has decreased.")
         exit(1)
     if fpercent1 < fpercent:
         print("Percentage function coverage has decreased.")
+        exit(1)
+    if bpercent1 < bpercent:
+        print("Percentage branch coverage has decreased.")
         exit(1)
 
 
