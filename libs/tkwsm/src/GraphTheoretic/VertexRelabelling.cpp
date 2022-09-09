@@ -30,9 +30,7 @@ VertexRelabelling::VertexRelabelling(GraphEdgeWeights edges_and_weights)
     const VertexWSM& v1 = entry.first.first;
     const VertexWSM& v2 = entry.first.second;
     if (v1 == v2) {
-      throw std::runtime_error(
-          std::string("Loop found in graph; not allowed: v=") +
-          std::to_string(v1));
+      throw std::runtime_error("Loop found in graph.");
     }
     old_to_new_vertex_labels[v1];
     old_to_new_vertex_labels[v2];
@@ -41,17 +39,12 @@ VertexRelabelling::VertexRelabelling(GraphEdgeWeights edges_and_weights)
     if (weight_opt) {
       const WeightWSM other_weight = weight_opt.value();
       if (entry.second != other_weight) {
-        std::stringstream ss;
-        ss << "Edge (" << v1 << "," << v2 << ") has weight " << entry.second
-           << ", differs from edge (" << v2 << "," << v1 << ") with weight "
-           << other_weight;
-        throw std::runtime_error(ss.str());
+        throw std::runtime_error("reversed edge has different weight");
       }
     }
   }
   if (old_to_new_vertex_labels.empty()) {
-    throw std::runtime_error(
-        "VertexRelabelling WSM: input graph has no edges!");
+    throw std::runtime_error("Input graph has no edges");
   }
   number_of_vertices = old_to_new_vertex_labels.size();
   TKET_ASSERT(number_of_vertices >= 2);
@@ -83,6 +76,20 @@ VertexRelabelling::VertexRelabelling(GraphEdgeWeights edges_and_weights)
         old_to_new_vertex_labels.at(old_v1),
         old_to_new_vertex_labels.at(old_v2))] = entry.second;
   }
+}
+
+unsigned VertexRelabelling::get_new_label(VertexWSM v) const {
+  if (old_to_new_vertex_labels.empty()) {
+    return v;
+  }
+  return old_to_new_vertex_labels.at(v);
+}
+
+VertexWSM VertexRelabelling::get_old_label(unsigned v) const {
+  if (new_to_old_vertex_labels.empty()) {
+    return v;
+  }
+  return new_to_old_vertex_labels.at(v);
 }
 
 }  // namespace WeightedSubgraphMonomorphism

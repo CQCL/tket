@@ -47,32 +47,30 @@ std::optional<WeightCalculator::Result> WeightCalculator::operator()(
     for (const std::pair<VertexWSM, WeightWSM>& entry :
          pattern_ndata.get_neighbours_and_weights(pv)) {
       const VertexWSM& other_pv = entry.first;
-      const std::set<VertexWSM>& other_domain = accessor.get_domain(other_pv);
-      switch (other_domain.size()) {
-        case 0:
+
+      const auto& other_domain = accessor.get_domain(other_pv);
+      const auto first_tv = other_domain.find_first();
+      if (first_tv >= other_domain.size()) {
+        // Empty domain; a nogood!
+        return {};
+      }
+      const auto second_tv = other_domain.find_next(first_tv);
+      if (second_tv >= other_domain.size() &&
+          m_p_vertices_seen.count(other_pv) == 0) {
+        // The domain has size exactly 1,
+        // so we have an assigned edge.
+        // But we also haven't seen both vertices yet,
+        // so the edge cannot have been added already.
+        const auto t_edge_weight_opt =
+            target_ndata.get_edge_weight_opt(tv, first_tv);
+        if (!t_edge_weight_opt) {
           return {};
-        case 1: {
-          // We have an assigned edge.
-          if (m_p_vertices_seen.count(other_pv) != 0) {
-            // We've already seen both vertices,
-            // so the edge must already have been added.
-            break;
-          }
-          const VertexWSM& other_tv = *other_domain.cbegin();
-          const auto t_edge_weight_opt =
-              target_ndata.get_edge_weight_opt(tv, other_tv);
-          if (!t_edge_weight_opt) {
-            return {};
-          }
-          result.scalar_product += entry.second * t_edge_weight_opt.value();
-          if (result.scalar_product > max_scalar_product) {
-            return {};
-          }
-          result.total_extra_p_edge_weights += entry.second;
-          break;
         }
-        default:
-          break;
+        result.scalar_product += entry.second * t_edge_weight_opt.value();
+        if (result.scalar_product > max_scalar_product) {
+          return {};
+        }
+        result.total_extra_p_edge_weights += entry.second;
       }
     }
   }

@@ -263,6 +263,136 @@ Transform decompose_ZYZ_to_TK1() {
   });
 }
 
+static Circuit tk1_angles_to_circ(Expr a, Expr b, Expr c) {
+  Circuit circ(1);
+
+  std::optional<double> ea = eval_expr(a);
+  std::optional<double> eb = eval_expr(b);
+  std::optional<double> ec = eval_expr(c);
+
+  // Remove global phases
+  if (ea && *ea >= 2) {
+    a -= 2;
+    circ.add_phase(1);
+  }
+  if (eb && *eb >= 2) {
+    b -= 2;
+    circ.add_phase(1);
+  }
+  if (ec && *ec >= 2) {
+    c -= 2;
+    circ.add_phase(1);
+  }
+
+  if (!equiv_0(a, 2) || !equiv_0(b, 2) || !equiv_0(c, 2)) {
+    circ.add_op<unsigned>(OpType::TK1, {c, b, a}, {0});
+  }
+
+  return circ;
+}
+
+Transform decompose_ZXZ_to_TK1() {
+  return Transform([](Circuit &circ) {
+    bool success = false;
+    VertexList bin;
+    VertexVec inputs = circ.q_inputs();
+    for (VertexVec::iterator i = inputs.begin(); i != inputs.end(); ++i) {
+      Edge e = circ.get_nth_out_edge(*i, 0);
+      Vertex v = circ.target(e);
+      // Angles for current TK1
+      std::array<Expr, 3> curr_angles;
+      // Index from 0 <= curr_ind <= 2 into `curr_angles` collecting TK1 angles
+      unsigned curr_ind = 0;
+      // The beginning edge of a sequence of Rx and Rz gates
+      std::optional<Edge> first_edge;
+      // Vertices of the Rx/Rz sequence. Empty iff first_edge == std::nullopt
+      VertexSet curr_vs;
+      while (true) {
+        Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+        bool repeat_loop = false;
+        bool substitute_vertex = false;
+        TKET_ASSERT(curr_ind < 3);
+        switch (op->get_type()) {
+          case OpType::Rz: {
+            if (curr_ind == 1) {
+              curr_angles[curr_ind++] = 0;
+            }
+            TKET_ASSERT(op->get_params().size() == 1);
+            curr_angles[curr_ind++] = op->get_params().at(0);
+            substitute_vertex = true;
+            break;
+          }
+          case OpType::Rx: {
+            if (curr_ind != 1) {
+              curr_angles[curr_ind++] = 0;
+            }
+            TKET_ASSERT(op->get_params().size() == 1);
+            if (curr_ind < 3) {
+              curr_angles[curr_ind++] = op->get_params().at(0);
+              substitute_vertex = true;
+            } else {
+              repeat_loop = true;
+            }
+            break;
+          }
+          default: {
+            while (curr_ind < 3) {
+              curr_angles[curr_ind++] = 0;
+            }
+          }
+        }
+        if (substitute_vertex) {
+          curr_vs.insert(v);
+          if (!first_edge) {
+            first_edge = e;
+          }
+        }
+        // Substitute sequence of RzRxRz with TK1
+        auto substitute = [&]() {
+          if (first_edge) {
+            success = true;
+            Circuit sub = tk1_angles_to_circ(
+                curr_angles[0], curr_angles[1], curr_angles[2]);
+            Subcircuit hole{{*first_edge}, {e}, curr_vs};
+            // Backup
+            port_t backup_p = circ.get_target_port(e);
+            // Substitute
+            circ.substitute(sub, hole, Circuit::VertexDeletion::No);
+            // Restore
+            e = circ.get_nth_in_edge(v, backup_p);
+            // Reset all tracking variables
+            bin.insert(bin.end(), curr_vs.begin(), curr_vs.end());
+            std::fill(curr_angles.begin(), curr_angles.end(), 0);
+            curr_vs.clear();
+            first_edge.reset();
+          }
+          curr_ind = 0;
+        };
+        // Depending on `substitute_vertex`, we either place the TK1 before
+        // moving the edge forward or after
+        if (curr_ind == 3 && !substitute_vertex) {
+          substitute();
+        }
+        if (is_final_q_type(op->get_type())) {
+          TKET_ASSERT(!substitute_vertex);
+          break;
+        }
+        if (!repeat_loop) {
+          // Move edge forward
+          e = circ.get_next_edge(v, e);
+          v = circ.target(e);
+        }
+        if (curr_ind == 3 && substitute_vertex) {
+          substitute();
+        }
+      }
+    }
+    circ.remove_vertices(
+        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+    return success;
+  });
+}
+
 Transform decompose_ZX() { return Transform(convert_to_zxz); }
 
 Transform decompose_ZY() { return Transform(convert_to_zyz); }
@@ -1671,7 +1801,18 @@ Transform decomp_controlled_Rys() {
 }
 
 Transform decomp_arbitrary_controlled_gates() {
-  return decomp_controlled_Rys() >> decomp_CCX();
+  static const std::set<OpType> cn_gate_set = {
+      OpType::CCX, OpType::CnX, OpType::CnRy, OpType::CnZ, OpType::CnY};
+  std::set<OpType> all_gates;
+  std::copy(
+      all_gate_types().begin(), all_gate_types().end(),
+      std::inserter(all_gates, all_gates.end()));
+  OpTypeSet allowed_gate_set;
+  std::set_difference(
+      all_gates.begin(), all_gates.end(), cn_gate_set.begin(),
+      cn_gate_set.end(),
+      std::inserter(allowed_gate_set, allowed_gate_set.begin()));
+  return rebase_factory(allowed_gate_set, CircPool::CX(), CircPool::tk1_to_tk1);
 }
 
 }  // namespace Transforms

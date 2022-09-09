@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
+#include <cstddef>
 #include <map>
 #include <sstream>
 #include <tkrng/RNG.hpp>
@@ -56,8 +57,9 @@ SCENARIO("Test random degree sequences for compatibility") {
     degree_counts_map.clear();
     for (unsigned number_of_degrees = 1 + (ii / divisor); number_of_degrees > 0;
          --number_of_degrees) {
-      degree_counts_map[1 + rng.get_size_t(max_degree_minus_1)] +=
-          1 + rng.get_size_t(max_count_minus_1);
+      size_t a0 = rng.get_size_t(max_degree_minus_1);
+      size_t a1 = rng.get_size_t(max_count_minus_1);
+      degree_counts_map[1 + a0] += 1 + a1;
     }
     unsigned size = 0;
     for (const auto& entry : degree_counts_map) {

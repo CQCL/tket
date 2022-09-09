@@ -18,6 +18,7 @@
 #include <tkassert/Assert.hpp>
 
 #include "tkwsm/Common/GeneralUtils.hpp"
+#include "tkwsm/Common/TemporaryRefactorCode.hpp"
 #include "tkwsm/GraphTheoretic/NeighboursData.hpp"
 #include "tkwsm/Searching/DomainsAccessor.hpp"
 #include "tkwsm/Searching/SearchBranch.hpp"
@@ -52,7 +53,7 @@ bool WeightChecker::check(
   std::size_t current_number_of_unassigned_vertices = 0;
 
   for (VertexWSM pv : accessor.get_unassigned_pattern_vertices_superset()) {
-    switch (accessor.get_domain(pv).size()) {
+    switch (accessor.get_domain_size(pv)) {
       // TODO: make a test case for this; but it's fiddly.
       // GCOVR_EXCL_START
       case 0:
@@ -82,7 +83,9 @@ bool WeightChecker::check(
 
   // Finally, we use the detector; check if it's initialised.
   if (!m_detector_ptr) {
-    const auto used_tv = m_search_branch.get_used_target_vertices();
+    std::set<VertexWSM> used_tv;
+    TemporaryRefactorCode::set_domain_from_bitset(
+        used_tv, m_search_branch.get_used_target_vertices());
     m_tv_data.initial_number_of_tv = used_tv.size();
 
     m_detector_ptr = std::make_unique<WeightNogoodDetector>(

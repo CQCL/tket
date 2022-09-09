@@ -128,6 +128,18 @@ void init_boxes(py::module &m) {
       .def(
           "get_phase", &PauliExpBox::get_phase,
           ":return: the corresponding phase parameter");
+  py::class_<ToffoliBox, std::shared_ptr<ToffoliBox>, Op>(
+      m, "ToffoliBox",
+      "An operation that constructs a circuit to implement the specified "
+      "permutation of classical basis states.")
+      .def(
+          py::init<
+              unsigned, std::map<std::vector<bool>, std::vector<bool>> &>(),
+          "Construct from a permutation of basis states.", py::arg("n_qubits"),
+          py::arg("permutation"))
+      .def(
+          "get_circuit", [](ToffoliBox &tbox) { return *tbox.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box");
   py::class_<QControlBox, std::shared_ptr<QControlBox>, Op>(
       m, "QControlBox",
       "A user-defined controlled operation specified by an "

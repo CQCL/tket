@@ -107,6 +107,18 @@ Eigen::MatrixXcd random_unitary(unsigned n, int seed) {
   return (i_ * H).exp();
 }
 
+bool ExceptionMessageContainsMatcher::match(std::exception const& ex) const {
+  return std::string(ex.what()).find(substring) != std::string::npos;
+}
+
+std::string ExceptionMessageContainsMatcher::describe() const {
+  return "exception message should contain \"" + substring + "\"";
+}
+
+ExceptionMessageContainsMatcher MessageContains(std::string const& substring) {
+  return ExceptionMessageContainsMatcher(substring);
+}
+
 void check_all_conditional_circs(
     const Circuit& circ, const std::vector<Circuit>& expcircs) {
   if (expcircs.size() != (1 << circ.n_bits())) {

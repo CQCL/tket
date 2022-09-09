@@ -137,52 +137,64 @@ static Eigen::MatrixXcd get_CnX_matrix(unsigned n_controls) {
   Eigen::Matrix2cd x = GateUnitaryMatrix::get_unitary(OpType::X, 1, {});
   return get_CnU_matrix(n_controls, x);
 }
+static Eigen::MatrixXcd get_CnY_matrix(unsigned n_controls) {
+  Eigen::Matrix2cd y = GateUnitaryMatrix::get_unitary(OpType::Y, 1, {});
+  return get_CnU_matrix(n_controls, y);
+}
+static Eigen::MatrixXcd get_CnZ_matrix(unsigned n_controls) {
+  Eigen::Matrix2cd z = GateUnitaryMatrix::get_unitary(OpType::Z, 1, {});
+  return get_CnU_matrix(n_controls, z);
+}
 
 SCENARIO("Test decomposition using CX") {
-  GIVEN("A C3X gate") {
-    const Op_ptr op = get_op_ptr(OpType::CnX, std::vector<Expr>(), 4);
-    Circuit decomposed_circ = CX_circ_from_multiq(op);
-    auto u = tket_sim::get_unitary(decomposed_circ);
-    REQUIRE((get_CnX_matrix(3) - u).cwiseAbs().sum() < ERR_EPS);
-    REQUIRE(decomposed_circ.count_gates(OpType::CX) == 14);
+  OpType cntype;
+  std::function<Eigen::MatrixXcd(unsigned)> matrix_func;
+  WHEN("CnX") {
+    cntype = OpType::CnX;
+    matrix_func = get_CnX_matrix;
   }
-  GIVEN("A C4X gate") {
-    const Op_ptr op = get_op_ptr(OpType::CnX, std::vector<Expr>(), 5);
-    Circuit decomposed_circ = CX_circ_from_multiq(op);
-    auto u = tket_sim::get_unitary(decomposed_circ);
-    REQUIRE((get_CnX_matrix(4) - u).cwiseAbs().sum() < ERR_EPS);
-    REQUIRE(decomposed_circ.count_gates(OpType::CX) == 36);
+  WHEN("CnY") {
+    cntype = OpType::CnY;
+    matrix_func = get_CnY_matrix;
   }
-  GIVEN("A C6X gate") {
-    const Op_ptr op = get_op_ptr(OpType::CnX, std::vector<Expr>(), 7);
+  WHEN("CnZ") {
+    cntype = OpType::CnZ;
+    matrix_func = get_CnZ_matrix;
+  }
+  std::vector<std::pair<unsigned, unsigned>> n_ctr_2q_count{
+      {3, 14}, {4, 36}, {6, 120}};
+  for (auto pair : n_ctr_2q_count) {
+    const Op_ptr op = get_op_ptr(cntype, std::vector<Expr>(), pair.first + 1);
     Circuit decomposed_circ = CX_circ_from_multiq(op);
     auto u = tket_sim::get_unitary(decomposed_circ);
-    REQUIRE((get_CnX_matrix(6) - u).cwiseAbs().sum() < ERR_EPS);
-    REQUIRE(decomposed_circ.count_gates(OpType::CX) == 120);
+    REQUIRE((matrix_func(pair.first) - u).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(decomposed_circ.count_gates(OpType::CX) == pair.second);
   }
 }
 
 SCENARIO("Test decomposition using TK2") {
-  GIVEN("A C3X gate") {
-    const Op_ptr op = get_op_ptr(OpType::CnX, std::vector<Expr>(), 4);
-    Circuit decomposed_circ = TK2_circ_from_multiq(op);
-    auto u = tket_sim::get_unitary(decomposed_circ);
-    REQUIRE((get_CnX_matrix(3) - u).cwiseAbs().sum() < ERR_EPS);
-    REQUIRE(decomposed_circ.count_gates(OpType::TK2) == 14);
+  OpType cntype;
+  std::function<Eigen::MatrixXcd(unsigned)> matrix_func;
+  WHEN("CnX") {
+    cntype = OpType::CnX;
+    matrix_func = get_CnX_matrix;
   }
-  GIVEN("A C4X gate") {
-    const Op_ptr op = get_op_ptr(OpType::CnX, std::vector<Expr>(), 5);
-    Circuit decomposed_circ = TK2_circ_from_multiq(op);
-    auto u = tket_sim::get_unitary(decomposed_circ);
-    REQUIRE((get_CnX_matrix(4) - u).cwiseAbs().sum() < ERR_EPS);
-    REQUIRE(decomposed_circ.count_gates(OpType::TK2) == 36);
+  WHEN("CnY") {
+    cntype = OpType::CnY;
+    matrix_func = get_CnY_matrix;
   }
-  GIVEN("A C6X gate") {
-    const Op_ptr op = get_op_ptr(OpType::CnX, std::vector<Expr>(), 7);
+  WHEN("CnZ") {
+    cntype = OpType::CnZ;
+    matrix_func = get_CnZ_matrix;
+  }
+  std::vector<std::pair<unsigned, unsigned>> n_ctr_2q_count{
+      {3, 14}, {4, 36}, {6, 61}};
+  for (auto pair : n_ctr_2q_count) {
+    const Op_ptr op = get_op_ptr(cntype, std::vector<Expr>(), pair.first + 1);
     Circuit decomposed_circ = TK2_circ_from_multiq(op);
     auto u = tket_sim::get_unitary(decomposed_circ);
-    REQUIRE((get_CnX_matrix(6) - u).cwiseAbs().sum() < ERR_EPS);
-    REQUIRE(decomposed_circ.count_gates(OpType::TK2) == 61);
+    REQUIRE((matrix_func(pair.first) - u).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(decomposed_circ.count_gates(OpType::TK2) == pair.second);
   }
 }
 
@@ -761,6 +773,37 @@ SCENARIO("Test a CnX is decomposed correctly using the Gray code method") {
         }
       }
     }
+  }
+}
+
+SCENARIO("Test decomp_arbitrary_controlled_gates") {
+  GIVEN("Circuit with multi-controlled gates") {
+    Circuit circ(3);
+
+    circ.add_op<unsigned>(OpType::CnRy, 0.33, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::CnY, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::CnZ, {1, 0, 2});
+    circ.add_op<unsigned>(OpType::CnX, {0, 2, 1});
+    circ.add_op<unsigned>(OpType::CCX, {2, 1, 0});
+    auto u = tket_sim::get_unitary(circ);
+    REQUIRE(Transforms::decomp_arbitrary_controlled_gates().apply(circ));
+    REQUIRE(circ.count_gates(OpType::CnRy) == 0);
+    REQUIRE(circ.count_gates(OpType::CnY) == 0);
+    REQUIRE(circ.count_gates(OpType::CnZ) == 0);
+    REQUIRE(circ.count_gates(OpType::CnX) == 0);
+    REQUIRE(circ.count_gates(OpType::CCX) == 0);
+    auto v = tket_sim::get_unitary(circ);
+    REQUIRE((u - v).cwiseAbs().sum() < ERR_EPS);
+  }
+
+  GIVEN("Circuit without multi-controlled gates") {
+    Circuit circ(3);
+
+    circ.add_op<unsigned>(OpType::CRy, 0.33, {0, 1});
+    circ.add_op<unsigned>(OpType::CRz, 0.5, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::Rx, 0.7, {0});
+    REQUIRE(!Transforms::decomp_arbitrary_controlled_gates().apply(circ));
   }
 }
 

@@ -31,6 +31,7 @@ from pytket.circuit import (  # type: ignore
     PauliExpBox,
     QControlBox,
     PhasePolyBox,
+    ToffoliBox,
     CustomGateDef,
     CustomGate,
     Qubit,
@@ -403,6 +404,15 @@ def test_boxes() -> None:
     boxes = (cbox, mbox, u2qbox, u3qbox, ebox, pbox, qcbox)
     assert all(box == box for box in boxes)
     assert all(isinstance(box, Op) for box in boxes)
+
+    permutation = {(0, 0): (1, 1), (1, 1): (0, 0)}
+    tb = ToffoliBox(2, permutation)
+    assert tb.type == OpType.ToffoliBox
+    unitary = tb.get_circuit().get_unitary()
+    comparison = np.asarray([[0, 0, 0, 1], [0, 1, 0, 0], [0, 0, 1, 0], [1, 0, 0, 0]])
+    assert np.allclose(unitary, comparison)
+    d.add_toffolibox(tb, [0, 1])
+    assert d.n_gates == 8
 
 
 def test_u1q_stability() -> None:
@@ -893,6 +903,14 @@ def test_zzmax() -> None:
     assert c.depth() == 1
 
 
+def test_multi_controlled_gates() -> None:
+    c = Circuit(5)
+    c.add_gate(OpType.CnX, [0, 1, 2])
+    c.add_gate(OpType.CnY, [0, 1, 2])
+    c.add_gate(OpType.CnZ, [0, 1, 2])
+    assert c.depth() == 3
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
@@ -904,3 +922,4 @@ if __name__ == "__main__":
     test_phase()
     test_clifford_checking()
     test_measuring_registers()
+    test_multi_controlled_gates()

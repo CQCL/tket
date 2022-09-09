@@ -31,6 +31,8 @@ GateUnitaryMatrixVariableQubits::GateUnitaryMatrixVariableQubits(
       number_of_parameters = 1;
       break;
     case OpType::CnX:
+    case OpType::CnZ:
+    case OpType::CnY:
       break;
     case OpType::NPhasedX:
       number_of_parameters = 2;
@@ -55,8 +57,16 @@ Eigen::MatrixXcd GateUnitaryMatrixVariableQubits::get_dense_unitary(
   TKET_ASSERT(parameters.size() == number_of_parameters);
   switch (parameters.size()) {
     case 0:
-      TKET_ASSERT(op_type == OpType::CnX);
-      return GateUnitaryMatrixImplementations::CnX(number_of_qubits);
+      TKET_ASSERT(
+          op_type == OpType::CnX || op_type == OpType::CnZ ||
+          op_type == OpType::CnY);
+      if (op_type == OpType::CnX) {
+        return GateUnitaryMatrixImplementations::CnX(number_of_qubits);
+      } else if (op_type == OpType::CnZ) {
+        return GateUnitaryMatrixImplementations::CnZ(number_of_qubits);
+      } else {
+        return GateUnitaryMatrixImplementations::CnY(number_of_qubits);
+      }
     case 1:
       if (op_type == OpType::CnRy) {
         return GateUnitaryMatrixImplementations::CnRy(

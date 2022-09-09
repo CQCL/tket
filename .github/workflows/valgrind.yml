@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   changes:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       tket: ${{ steps.filter.outputs.tket }}
     steps:
@@ -25,12 +25,10 @@ jobs:
           tket:
             - 'tket/**'
   check:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     needs: changes
     if: needs.changes.outputs.tket == 'true'
     env:
-      CC: gcc-10
-      CXX: g++-10
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3

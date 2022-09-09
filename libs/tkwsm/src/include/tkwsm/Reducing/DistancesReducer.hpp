@@ -31,32 +31,22 @@ class DistancesReducer : public ReducerInterface {
  public:
   DistancesReducer(
       NearNeighboursData& pattern_near_ndata,
-      const NeighboursData& target_ndata, NearNeighboursData& target_near_ndata,
-      unsigned distance);
+      NearNeighboursData& target_near_ndata, unsigned distance);
 
   virtual bool check(std::pair<VertexWSM, VertexWSM> assignment) override;
 
   virtual ReductionResult reduce(
       std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,
-      std::set<VertexWSM>& work_set) override;
+      boost::dynamic_bitset<>& work_set) override;
 
  private:
   NearNeighboursData& m_pattern_near_ndata;
-  const NeighboursData& m_target_ndata;
   NearNeighboursData& m_target_near_ndata;
 
   // A bit crude to store the distance and have separate objects,
   // but all the heavy data is stored elsewhere and accessed by reference,
   // so actually not inefficient, and it fits the framework better.
   const unsigned m_distance;
-
-  // We fill the elements with the domain intersections for distance=j,
-  // for each j<=d.
-  // So, by checking sizes, we might not have to create a single set
-  // of the union at the end
-  // (concatenating N vectors into a single set is not
-  // particularly slow, but it's good if we can avoid it).
-  std::vector<std::vector<VertexWSM>> m_work_vectors_list;
 };
 
 }  // namespace WeightedSubgraphMonomorphism

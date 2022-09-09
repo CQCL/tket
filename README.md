@@ -39,13 +39,13 @@ The codebase is split into two main projects:
 The following compiler toolchains are used to build tket on the CI and are
 therefore known to work:
 
-* Linux: gcc-10
+* Linux: gcc-11
 * MacOS: apple-clang 13
 * Windows: MSVC 19
 
 It is recommended that you use these versions to build locally, as code may
 depend on the features they support. The compiler version can be controlled by
-setting `CC` and `CXX` in your environment (e.g. `CC=gcc-10` and `CXX=g++-10`),
+setting `CC` and `CXX` in your environment (e.g. `CC=gcc-11` and `CXX=g++-11`),
 or on Debian-based Linux systems using `update-alternatives`.
 
 You should also have Python (3.8, 3.9 or 3.10) and `pip` installed. We use

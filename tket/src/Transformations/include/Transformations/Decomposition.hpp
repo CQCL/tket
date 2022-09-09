@@ -51,6 +51,11 @@ Transform decompose_single_qubits_TK1();
  */
 Transform decompose_ZYZ_to_TK1();
 
+/**
+ * Starting with Rz, Rx and multi-qubit gates, replace all singles with TK1.
+ */
+Transform decompose_ZXZ_to_TK1();
+
 // converts all single-qubit gates into Rz and Rx gates
 // Expects: any gates
 // Produces: Rz, Rx and any multi-qubit gates
@@ -232,8 +237,8 @@ Transform decomp_CCX();
 Transform decomp_controlled_Rys();
 
 // does not use ancillae
-// Expects: any CnRys + CnXs + any other gates
-// returns Ry, CX, H, T, Tdg + any previous gates
+// Expects: CCX, CnX, CnY, CnZ, CnRy and any other gates
+// returns CX and single-qubit gate + any previous gates
 Transform decomp_arbitrary_controlled_gates();
 
 }  // namespace Transforms

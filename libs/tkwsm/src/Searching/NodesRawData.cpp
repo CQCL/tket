@@ -19,12 +19,15 @@
 #include <tkassert/Assert.hpp>
 
 #include "tkwsm/Common/GeneralUtils.hpp"
+#include "tkwsm/Common/TemporaryRefactorCode.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
 NodesRawData::NodesRawData(
-    const DomainInitialiser::InitialDomains& initial_domains) {
+    const DomainInitialiser::InitialDomains& initial_domains,
+    std::size_t num_tv)
+    : number_of_tv(num_tv) {
   nodes_data.push();
   auto& node = nodes_data.top();
   node.nogood = false;
@@ -35,23 +38,22 @@ NodesRawData::NodesRawData(
   domains_data.resize(initial_domains.size());
 
   for (unsigned pv = 0; pv < initial_domains.size(); ++pv) {
-    const std::set<VertexWSM>& domain = initial_domains[pv];
     auto& domain_data = domains_data[pv];
     domain_data.entries.push();
-    domain_data.entries[0].domain = domain;
     domain_data.entries[0].node_index = 0;
+    domain_data.entries[0].domain = initial_domains[pv];
+    TKET_ASSERT(initial_domains[pv].size() == num_tv);
 
-    switch (domain.size()) {
-      case 0: {
-        std::stringstream ss;
-        ss << "NodesRawData: Domain(" << pv << ") is empty!";
-        throw std::runtime_error(ss.str());
-      }
-      case 1:
-        node.new_assignments.emplace_back(pv, *domain.cbegin());
-        break;
-      default:
-        node.unassigned_vertices_superset.push_back(pv);
+    const BitsetInformation bitset_info(initial_domains[pv]);
+    if (bitset_info.empty) {
+      std::stringstream ss;
+      ss << "NodesRawData: Domain(" << pv << ") is empty!";
+      throw std::runtime_error(ss.str());
+    }
+    if (bitset_info.single_element) {
+      node.new_assignments.emplace_back(pv, bitset_info.single_element.value());
+    } else {
+      node.unassigned_vertices_superset.push_back(pv);
     }
   }
 }
@@ -85,17 +87,22 @@ std::string NodesRawData::NodeData::str() const {
 std::string NodesRawData::DomainData::str() const {
   std::stringstream ss;
   const unsigned size = entries.size();
+
+  std::set<VertexWSM> dom_temp;
+
   for (unsigned ii = 0; ii < size; ++ii) {
-    ss << "\n  node_index=" << entries[ii].node_index << ", Dom: "
-       << tket::WeightedSubgraphMonomorphism::str(entries[ii].domain);
+    TemporaryRefactorCode::set_domain_from_bitset(dom_temp, entries[ii].domain);
+    ss << "\n  node_index=" << entries[ii].node_index
+       << ", Dom: " << tket::WeightedSubgraphMonomorphism::str(dom_temp);
   }
   ss << "\n";
   return ss.str();
 }
 
 NodesRawDataWrapper::NodesRawDataWrapper(
-    const DomainInitialiser::InitialDomains& initial_domains)
-    : m_raw_data(initial_domains) {}
+    const DomainInitialiser::InitialDomains& initial_domains,
+    std::size_t number_of_tv)
+    : m_raw_data(initial_domains, number_of_tv) {}
 
 const NodesRawData& NodesRawDataWrapper::get_raw_data_for_debug() const {
   return m_raw_data;
