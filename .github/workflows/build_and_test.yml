@@ -354,6 +354,8 @@ jobs:
       run: conan profile update options.tket-tests:full=True tket
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
+    - name: Remove tket package from local cache
+      run: conan remove -f 'tket/*'
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: conan create --profile=tket recipes/tket tket/stable --build=missing
