@@ -64,7 +64,7 @@ with a set of style requirements (listed in `pytket/.pylintrc`). You should run
 
 ## Version numbers
 
-If you make any changes in `thet/src`, you should bump the version number of
+If you make any changes in `tket/src`, you should bump the version number of
 `tket` in `recipes/tket/conanfile.py`, and also the `tket` versions in the
 `requires` field in `recipes/tket-test/conanfile.py`,
 `recipes/tket-proptests/conanfile.py` and `pytket/conanfile.txt` so that they
