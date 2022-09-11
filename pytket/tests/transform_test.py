@@ -35,6 +35,7 @@ from pytket.passes import (  # type: ignore
     CXMappingPass,
     CustomPass,
     SequencePass,
+    SynthesiseTket,
     auto_rebase_pass,
     auto_squash_pass,
 )
@@ -1148,6 +1149,25 @@ def test_custom_pass() -> None:
 
     p_json = p.to_dict()
     assert p_json["StandardPass"]["label"] == "ignore_small_angles"
+
+
+def test_circuit_with_conditionals() -> None:
+    # https://github.com/CQCL/tket/issues/514
+    c = Circuit(3, 3)
+    c.H(1).CX(1, 2).CX(0, 1)
+    c.Measure(0, 0)
+    c.Measure(1, 1)
+    c.X(2, condition_bits=[0, 1], condition_value=1)
+
+    assert SynthesiseTket().apply(c)
+    cmds = c.get_commands()
+    assert len(cmds) <= 6
+
+    arch = Architecture([(0, 1), (0, 2), (1, 2)])
+    placement = Placement(arch)
+    p = CXMappingPass(arch, placement, delay_measures=False)
+    p.apply(c)
+    assert c.n_gates_of_type(OpType.Conditional) == 1
 
 
 if __name__ == "__main__":
