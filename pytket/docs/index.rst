@@ -57,7 +57,7 @@ This prints out a summary of readouts (the final values of the classical bits) a
     {(0, 0): 49, (1, 0): 51}
 
 See the `Getting Started`_ page for a basic tutorial on using
-``pytket``. To get more in depth on features, see the `examples`_. See the `Pytket User Manual <https://cqcl.github.io/pytket/manual/index.html>`_ for an extensive introduction to ``pytket`` functionaliy and how to use it.
+``pytket``. To get more in depth on features, see the `examples`_. See the `Pytket User Manual <https://cqcl.github.io/pytket/manual/index.html>`_ for an extensive introduction to ``pytket`` functionality and how to use it.
 
 Extensions
 ~~~~~~~~~~
