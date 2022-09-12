@@ -336,10 +336,6 @@ class CircuitTransformer(Transformer):
             args = next_tree
             pars = []
 
-        params = [
-            f"({par})/pi" for par in pars
-        ]  # do we want to do this for all parameters?
-
         treat_as_barrier = [
             "sleep",
             "order2",
@@ -384,10 +380,14 @@ class CircuitTransformer(Transformer):
         # other opaque gates, which are not handled as barrier
         # ["RZZ", "Rxxyyzz", "Rxxyyzz_zphase", "cu", "cp", "rccx", "rc3x", "c3sqrtx"]
 
+        if opstr in treat_as_barrier:
+            params = [f"{par}" for par in pars]
+        else:
+            params = [f"({par})/pi" for par in pars]
+
         if opstr in self.gate_dict:
             op: Dict[str, Any] = {}
             if opstr in treat_as_barrier:
-                params = [p[1:-4] for p in params]
                 op["type"] = "Barrier"
                 param_sorted = ",".join(params)
 
