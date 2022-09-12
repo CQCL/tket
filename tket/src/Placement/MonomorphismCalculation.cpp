@@ -24,7 +24,7 @@ using namespace WeightedSubgraphMonomorphism;
 // using RelabelledPatternGraph = RelabelledGraphWSM<Qubit, QubitGraph>;
 
 using RelabelledPatternGraph =
-    RelabelledGraphWSM<Qubit, Architecture::UndirectedConnGraph>;
+    RelabelledGraphWSM<Qubit, QubitGraph::UndirectedConnGraph>;
 using RelabelledTargetGraph =
     RelabelledGraphWSM<Node, Architecture::UndirectedConnGraph>;
 using BimapValue = boost::bimap<Qubit, Node>::value_type;
@@ -126,11 +126,10 @@ static void write_solver_solutions(
   }
 }
 
-std::vector<boost::bimap<Qubit, Node>>
-GraphPlacement::get_weighted_subgraph_monomorphisms(
+std::vector<boost::bimap<Qubit, Node>> get_weighted_subgraph_monomorphisms(
     const QubitGraph::UndirectedConnGraph& pattern_graph,
     const Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
-    unsigned timeout_ms) const {
+    unsigned timeout_ms) {
   std::vector<boost::bimap<Qubit, Node>> all_maps;
 
   const RelabelledPatternGraph relabelled_pattern_graph(pattern_graph);

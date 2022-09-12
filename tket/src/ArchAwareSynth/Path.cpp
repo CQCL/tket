@@ -179,7 +179,7 @@ std::vector<Node> find_hampath(const Architecture &arch, long timeout) {
   /* Left: line, Right: input architecture. */
   const boost::bimap<Qubit, Node> &qmap = all_maps[0];
   std::vector<Node> hampath;
-  for (l_const_iterator_t it = qmap.left.begin(); it != qmap.left.end(); ++it) {
+  for (auto it = qmap.left.begin(); it != qmap.left.end(); ++it) {
     hampath.push_back(it->second);
   }
   return hampath;

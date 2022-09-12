@@ -177,23 +177,24 @@ PassPtr gen_rename_qubits_pass(const std::map<Qubit, Qubit>& qm) {
   return std::make_shared<StandardPass>(precons, t, postcons, j);
 }
 
-PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
+PassPtr gen_placement_pass(const Placement::Ptr& placement_ptr) {
   Transform::Transformation trans = [=](Circuit& circ,
                                         std::shared_ptr<unit_bimaps_t> maps) {
     // Fall back to line placement if graph placement fails
-    bool changed;
-    try {
-      changed = placement_ptr->place(circ, maps);
-    } catch (const std::runtime_error& e) {
-      std::stringstream ss;
-      ss << "PlacementPass failed with message: " << e.what()
-         << " Fall back to LinePlacement.";
-      tket_log()->warn(ss.str());
-      PlacementPtr line_placement_ptr = std::make_shared<LinePlacement>(
-          placement_ptr->get_architecture_ref());
-      changed = line_placement_ptr->place(circ, maps);
-    }
-    return changed;
+    // bool changed;
+    // try {
+    //   changed = placement_ptr->place(circ, maps);
+    // } catch (const std::runtime_error& e) {
+    //   std::stringstream ss;
+    //   ss << "PlacementPass failed with message: " << e.what()
+    //      << " Fall back to LinePlacement.";
+    //   tket_log()->warn(ss.str());
+    //   Placement::Ptr line_placement_ptr = std::make_shared<LinePlacement>(
+    //       placement_ptr->get_architecture_ref());
+    //   changed = line_placement_ptr->place(circ, maps);
+    // }
+    // return changed;
+    return placement_ptr->place(circ, maps);
   };
   Transform t = Transform(trans);
   PredicatePtr twoqbpred = std::make_shared<MaxTwoQubitGatesPredicate>();
@@ -217,7 +218,7 @@ PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
 PassPtr gen_naive_placement_pass(const Architecture& arc) {
   Transform::Transformation trans = [=](Circuit& circ,
                                         std::shared_ptr<unit_bimaps_t> maps) {
-    NaivePlacement np(arc);
+    Placement np(arc);
     return np.place(circ, maps);
   };
   Transform t = Transform(trans);
@@ -236,7 +237,7 @@ PassPtr gen_naive_placement_pass(const Architecture& arc) {
 }
 
 PassPtr gen_full_mapping_pass(
-    const Architecture& arc, const PlacementPtr& placement_ptr,
+    const Architecture& arc, const Placement::Ptr& placement_ptr,
     const std::vector<RoutingMethodPtr>& config) {
   std::vector<PassPtr> vpp = {
       gen_placement_pass(placement_ptr), gen_routing_pass(arc, config),
@@ -246,7 +247,7 @@ PassPtr gen_full_mapping_pass(
 
 PassPtr gen_default_mapping_pass(const Architecture& arc, bool delay_measures) {
   PassPtr return_pass = gen_full_mapping_pass(
-      arc, std::make_shared<GraphPlacement>(arc),
+      arc, std::make_shared<GraphPlacement>(arc, 100, 100),
       {std::make_shared<LexiLabellingMethod>(),
        std::make_shared<LexiRouteRoutingMethod>()});
   if (delay_measures) {
@@ -256,7 +257,7 @@ PassPtr gen_default_mapping_pass(const Architecture& arc, bool delay_measures) {
 }
 
 PassPtr gen_cx_mapping_pass(
-    const Architecture& arc, const PlacementPtr& placement_ptr,
+    const Architecture& arc, const Placement::Ptr& placement_ptr,
     const std::vector<RoutingMethodPtr>& config, bool directed_cx,
     bool delay_measures) {
   OpTypeSet gate_set = all_single_qubit_types();
@@ -352,7 +353,7 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
   // record pass config
   nlohmann::json j;
   j["name"] = "PlacementPass";
-  PlacementPtr pp = std::make_shared<GraphPlacement>(arc);
+  Placement::Ptr pp = std::make_shared<GraphPlacement>(arc, 100, 100);
   j["params"]["placement"] = pp;
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }

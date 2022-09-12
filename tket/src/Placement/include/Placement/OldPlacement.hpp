@@ -50,9 +50,9 @@ typedef qubit_vector_t QubitLine;
 typedef std::vector<QubitLine>
     QubitLineList;  // Used in placement of qubits methods
 
-typedef std::shared_ptr<Placement> PlacementPtr;
+typedef std::shared_ptr<Placement> Placement::Ptr;
 
-JSON_DECL(PlacementPtr)
+JSON_DECL(Placement::Ptr)
 
 class QubitGraphInvalidity : public std::logic_error {
  public:
@@ -385,8 +385,8 @@ class NoiseAwarePlacement : public Placement {
       const Circuit& circ_) const override;
 
  private:
-  friend void to_json(nlohmann::json& j, const PlacementPtr& placement_ptr);
-  friend void from_json(const nlohmann::json& j, PlacementPtr& placement_ptr);
+  friend void to_json(nlohmann::json& j, const Placement::Ptr& placement_ptr);
+  friend void from_json(const nlohmann::json& j, Placement::Ptr& placement_ptr);
 
   PlacementConfig config_;
   DeviceCharacterisation characterisation_;

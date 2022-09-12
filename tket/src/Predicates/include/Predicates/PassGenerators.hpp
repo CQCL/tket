@@ -62,18 +62,18 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps = true);
  */
 PassPtr gen_rename_qubits_pass(const std::map<Qubit, Qubit>& qm);
 
-PassPtr gen_placement_pass(const PlacementPtr& placement_ptr);
+PassPtr gen_placement_pass(const Placement::Ptr& placement_ptr);
 
 PassPtr gen_naive_placement_pass(const Architecture& arc);
 /* This higher order function generates a Routing pass using the
 std::vector<RoutingMethodPtr> object */
 PassPtr gen_full_mapping_pass(
-    const Architecture& arc, const PlacementPtr& placement_ptr,
+    const Architecture& arc, const Placement::Ptr& placement_ptr,
     const std::vector<RoutingMethodPtr>& config);
 PassPtr gen_default_mapping_pass(
     const Architecture& arc, bool delay_measures = true);
 PassPtr gen_cx_mapping_pass(
-    const Architecture& arc, const PlacementPtr& placement_ptr,
+    const Architecture& arc, const Placement::Ptr& placement_ptr,
     const std::vector<RoutingMethodPtr>& config, bool directed_cx,
     bool delay_measures);
 PassPtr gen_routing_pass(

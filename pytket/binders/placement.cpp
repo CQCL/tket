@@ -135,12 +135,12 @@ PYBIND11_MODULE(placement, m) {
                  "to " CLSOBJS(Node),
                  py::arg("circuit"))
             .def(
-                "to_dict", [](const PlacementPtr &placement) { return json(placement); },
+                "to_dict", [](const Placement::Ptr &placement) { return json(placement); },
                 "Return a JSON serializable dict representation of "
                 "the Placement.\n"
                 ":return: dict representing the Placement.")
             .def_static(
-                "from_dict", [](const json &j) { return j.get<PlacementPtr>(); },
+                "from_dict", [](const json &j) { return j.get<Placement::Ptr>(); },
                 "Construct Placement instance from JSON serializable "
                 "dict representation of the Placement.");
 

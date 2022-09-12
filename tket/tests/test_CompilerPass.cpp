@@ -261,7 +261,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
 
     CompilationUnit cu(circ, preds);
 
-    PlacementPtr pp = std::make_shared<GraphPlacement>(grid);
+    Placement::Ptr pp = std::make_shared<GraphPlacement>(grid);
     PassPtr cp_route = gen_full_mapping_pass(
         grid, pp,
         {std::make_shared<LexiLabellingMethod>(),
@@ -599,7 +599,7 @@ SCENARIO("gen_placement_pass test") {
     Circuit circ(4);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {2, 1}, {2, 3}});
     Architecture arc({{0, 1}, {1, 2}, {3, 2}});
-    PlacementPtr plptr = std::make_shared<Placement>(arc);
+    Placement::Ptr plptr = std::make_shared<Placement>(arc);
     PassPtr pp_place = gen_placement_pass(plptr);
     CompilationUnit cu(circ);
     pp_place->apply(cu);
@@ -613,7 +613,7 @@ SCENARIO("gen_placement_pass test") {
     Circuit circ(4);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {2, 1}, {2, 3}});
     Architecture arc({{0, 1}, {1, 2}, {3, 2}});
-    PlacementPtr plptr = std::make_shared<GraphPlacement>(arc);
+    Placement::Ptr plptr = std::make_shared<GraphPlacement>(arc);
     PassPtr pp_place = gen_placement_pass(plptr);
     CompilationUnit cu(circ);
     pp_place->apply(cu);
@@ -1206,7 +1206,7 @@ SCENARIO("Commute measurements to the end of a circuit") {
     test.add_op<unsigned>(OpType::CX, {0, 2});
 
     Architecture line({{0, 1}, {1, 2}, {2, 3}});
-    PlacementPtr pp = std::make_shared<LinePlacement>(line);
+    Placement::Ptr pp = std::make_shared<LinePlacement>(line);
     PassPtr route_pass = gen_full_mapping_pass(
         line, pp,
         {std::make_shared<LexiLabellingMethod>(),
@@ -1269,7 +1269,7 @@ SCENARIO("CX mapping pass") {
     Architecture line({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
 
     // Noise-aware placement and rebase
-    PlacementPtr placer = std::make_shared<NoiseAwarePlacement>(line);
+    Placement::Ptr placer = std::make_shared<NoiseAwarePlacement>(line);
     Circuit cx(2);
     cx.add_op<unsigned>(OpType::CX, {0, 1});
     OpTypeSet gateset = all_single_qubit_types();

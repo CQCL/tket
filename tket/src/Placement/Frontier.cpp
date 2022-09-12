@@ -16,7 +16,7 @@
 
 namespace tket {
 
-Placement::Frontier::Frontier(const Circuit& _circ) : circ(_circ) {
+GraphPlacement::Frontier::Frontier(const Circuit& _circ) : circ(_circ) {
   VertexVec input_slice;
   quantum_in_edges = std::make_shared<unit_frontier_t>();
   boolean_in_edges = std::make_shared<b_frontier_t>();
@@ -38,7 +38,7 @@ Placement::Frontier::Frontier(const Circuit& _circ) : circ(_circ) {
   quantum_out_edges = next_cut.u_frontier;
 }
 
-void Placement::Frontier::next_slicefrontier() {
+void GraphPlacement::Frontier::next_slicefrontier() {
   quantum_in_edges = std::make_shared<unit_frontier_t>();
   boolean_in_edges = std::make_shared<b_frontier_t>();
   for (const std::pair<UnitID, Edge>& pair : quantum_out_edges->get<TagKey>()) {

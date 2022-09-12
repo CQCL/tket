@@ -24,26 +24,6 @@ class Placement {
  public:
   typedef std::shared_ptr<Placement> Ptr;
 
-  struct Frontier {
-    // set of 2qb vertices which need to be solved for
-    std::shared_ptr<Slice> slice;
-    // Quantum Edges coming in to vertices in slice, indexed by qubit
-    std::shared_ptr<unit_frontier_t> quantum_in_edges;
-    // Quantum Edges leaving vertices in slice, indexed by qubit
-    std::shared_ptr<unit_frontier_t> quantum_out_edges;
-    // Boolean edges coming in to vertices in slice. Guarantees that all edges
-    // into every vertex in slice is represented in next_cut
-    std::shared_ptr<b_frontier_t> boolean_in_edges;
-
-    // reference to circuit that it acts on
-    const Circuit& circ;
-
-    // initialise at front of circuit
-    explicit Frontier(const Circuit& _circ);
-    // move to next slice
-    void next_slicefrontier();
-  };
-
   /**
    *
    */
@@ -58,9 +38,26 @@ class Placement {
    * Reassigns some UnitID in circ_ as UnitID arc_
    *
    * @param circ_ Circuit to be relabelled
+   * @param compilation_map For tracking changes during compilation
    *
+   * @return true iff circuit or maps are modified
    */
-  bool place(Circuit& circ_) const;
+  bool place(
+      Circuit& circ_,
+      std::shared_ptr<unit_bimaps_t> compilation_map = nullptr) const;
+
+  /**
+   * Reassigns some UnitID in circ_ as UnitID arc_, according to given map.
+   *
+   * @param circ_ Circuit to be relabelled
+   * @param map_ relabelling
+   * @param compilation_map For tracking changes during compilation
+   *
+   * @return true iff circuit or maps were modified
+   */
+  static bool place_with_map(
+      Circuit& circ, std::map<Qubit, Node>& map_,
+      std::shared_ptr<unit_bimaps_t> compilation_map = nullptr);
 
   /**
    *
@@ -79,6 +76,7 @@ class Placement {
    * For some Circuit, returns maps between Circuit UnitID and
    * Architecture UnitID that can be used for reassigning UnitID in
    * Circuit. Maps expected to give similiar performance for given method.
+   * For Placement this naively assigns every Qubit to some Node.
    *
    * @param circ_ Circuit relabelling map is constructed from
    *
@@ -86,6 +84,17 @@ class Placement {
    */
   virtual std::vector<std::map<UnitID, UnitID>> get_all_placement_maps(
       const Circuit& circ_) const;
+
+  /**
+   * Returns a reference to held Architecture.
+   * Used to know Architecture properties to set predicates
+   * during compilation.
+   *
+   * @return Architecture
+   */
+  const Architecture& get_architecture_ref() { return arc_; }
+
+  virtual ~Placement(){};
 
  protected:
   Architecture arc_;
@@ -105,6 +114,30 @@ class GraphPlacement : public Placement {
     UnitID node0;
     UnitID node1;
     unsigned weight;
+  };
+
+  /**
+   * Holds information for slice wise iteration of Circuit
+   * @param _circ Circuit to iterate through
+   */
+  struct Frontier {
+    // set of 2qb vertices which need to be solved for
+    std::shared_ptr<Slice> slice;
+    // Quantum Edges coming in to vertices in slice, indexed by qubit
+    std::shared_ptr<unit_frontier_t> quantum_in_edges;
+    // Quantum Edges leaving vertices in slice, indexed by qubit
+    std::shared_ptr<unit_frontier_t> quantum_out_edges;
+    // Boolean edges coming in to vertices in slice. Guarantees that all edges
+    // into every vertex in slice is represented in next_cut
+    std::shared_ptr<b_frontier_t> boolean_in_edges;
+
+    // reference to circuit that it acts on
+    const Circuit& circ;
+
+    // initialise at front of circuit
+    explicit Frontier(const Circuit& _circ);
+    // move to next slice
+    void next_slicefrontier();
   };
 
   static const std::vector<WeightedEdge> default_weighting(
@@ -135,6 +168,16 @@ class GraphPlacement : public Placement {
   std::vector<std::map<UnitID, UnitID>> get_all_placement_maps(
       const Circuit& circ_) const override;
 
+  /**
+   * @return maximum matches found during placement
+   */
+  unsigned get_maximum_matches() const { return this->maximum_matches_; }
+
+  /**
+   * @return maximum time (ms)
+   */
+  unsigned get_timeout() const { return this->timeout_; }
+
  protected:
   const std::function<std::vector<WeightedEdge>(const Circuit&)>
       weight_pattern_graph_;
@@ -143,15 +186,18 @@ class GraphPlacement : public Placement {
 
   QubitGraph construct_pattern_graph(
       const std::vector<WeightedEdge>& edges) const;
-
-  /** Solves the pure unweighted subgraph monomorphism problem, trying
-   * to embed the pattern graph into the target graph.
-   * Note that graph edge weights are IGNORED by this function.
-   */
-  std::vector<boost::bimap<Qubit, Node>> get_weighted_subgraph_monomorphisms(
-      const QubitGraph::UndirectedConnGraph& pattern_graph,
-      const Architecture::UndirectedConnGraph& target_graph,
-      unsigned max_matches, unsigned timeout_ms) const;
 };
+
+/** Solves the pure unweighted subgraph monomorphism problem, trying
+ * to embed the pattern graph into the target graph.
+ * Note that graph edge weights are IGNORED by this function.
+ */
+std::vector<boost::bimap<Qubit, Node>> get_weighted_subgraph_monomorphisms(
+    const QubitGraph::UndirectedConnGraph& pattern_graph,
+    const Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
+    unsigned timeout_ms);
+
+void to_json(nlohmann::json& j, const Placement::Ptr& placement_ptr);
+void from_json(const nlohmann::json& j, Placement::Ptr& placement_ptr);
 
 }  // namespace tket

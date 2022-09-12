@@ -18,13 +18,22 @@
 
 namespace tket {
 
-bool Placement::place(Circuit& circ_) const {
+bool Placement::place(
+    Circuit& circ_, std::shared_ptr<unit_bimaps_t> compilation_map) const {
   std::map<UnitID, UnitID> map_ = this->get_placement_map(circ_);
   std::map<Qubit, Node> recast_map;
   for (const auto& entry : map_) {
     recast_map.insert({Qubit(entry.first), Node(entry.second)});
   }
-  return circ_.rename_units(recast_map);
+  return this->place_with_map(circ_, recast_map, compilation_map);
+}
+
+bool Placement::place_with_map(
+    Circuit& circ_, std::map<Qubit, Node>& map_,
+    std::shared_ptr<unit_bimaps_t> compilation_map) {
+  bool changed = circ_.rename_units(map_);
+  changed |= update_maps(compilation_map, map_, map_);
+  return changed;
 }
 
 std::map<UnitID, UnitID> Placement::get_placement_map(
@@ -42,13 +51,43 @@ std::map<UnitID, UnitID> Placement::get_placement_map(
 }
 
 std::vector<std::map<UnitID, UnitID>> Placement::get_all_placement_maps(
-    const Circuit& /*circ_*/) const {
-  return {};
+    const Circuit& circ_) const {
+  std::map<UnitID, UnitID> placement;
+  qubit_vector_t to_place;
+  std::vector<Node> placed;
+
+  // Find which/if any qubits need placing
+  for (const Qubit& q : circ_.all_qubits()) {
+    Node n(q);
+    if (!this->arc_.node_exists(n)) {
+      to_place.push_back(n);
+    } else {
+      placed.push_back(n);
+      // if already placed, make sure qubit retains placement
+      placement.insert({n, n});
+    }
+  }
+  // avoid doing std::set_difference unless qubits need to be placed
+  unsigned n_placed = to_place.size();
+  if (n_placed > 0) {
+    std::vector<Node> difference,
+        architecture_nodes = this->arc_.get_all_nodes_vec();
+    std::set_difference(
+        architecture_nodes.begin(), architecture_nodes.end(), placed.begin(),
+        placed.end(), std::inserter(difference, difference.begin()));
+    // should always be enough remaining qubits to assign unplaced qubits to
+    TKET_ASSERT(difference.size() >= n_placed);
+    for (unsigned i = 0; i < n_placed; i++) {
+      // naively assign each qubit to some free node
+      placement.insert({to_place[i], difference[i]});
+    }
+  }
+  return {placement};
 }
 
 const std::vector<GraphPlacement::WeightedEdge>
 GraphPlacement::default_weighting(const Circuit& circuit) {
-  Placement::Frontier frontier(circuit);
+  GraphPlacement::Frontier frontier(circuit);
   unsigned max_gates = 100, max_depth = 100, gate_counter = 0;
   std::vector<GraphPlacement::WeightedEdge> weights;
   for (unsigned i = 0;
@@ -78,7 +117,6 @@ GraphPlacement::default_weighting(const Circuit& circuit) {
 
         bool match_weight = false;
         for (WeightedEdge& weighted_edge : weights) {
-          //   std::pair<UnitID, UnitID> uids = uid_w.first;
           if ((weighted_edge.node0 == uid_0 && weighted_edge.node1 == uid_1) ||
               (weighted_edge.node0 == uid_1 && weighted_edge.node1 == uid_0)) {
             // actually update the weight here, i.e. this is the "magic"
@@ -136,7 +174,7 @@ std::vector<std::map<UnitID, UnitID>> GraphPlacement::get_all_placement_maps(
   Architecture::UndirectedConnGraph target_graph =
       this->arc_.get_undirected_connectivity();
   std::vector<boost::bimap<Qubit, Node>> all_bimaps =
-      this->get_weighted_subgraph_monomorphisms(
+      get_weighted_subgraph_monomorphisms(
           pattern_graph, target_graph, this->maximum_matches_, this->timeout_);
   std::vector<std::map<Qubit, Node>> all_qmaps;
   for (boost::bimap<Qubit, Node>& bm : all_bimaps) {
@@ -152,5 +190,29 @@ std::vector<std::map<UnitID, UnitID>> GraphPlacement::get_all_placement_maps(
     }
   }
   return all_uidmap;
+}
+
+void to_json(nlohmann::json& j, const Placement::Ptr& placement_ptr) {
+  j["architecture"] = placement_ptr->get_architecture_ref();
+  if (std::shared_ptr<GraphPlacement> cast_placer =
+          std::dynamic_pointer_cast<GraphPlacement>(placement_ptr)) {
+    j["type"] = "GraphPlacement";
+    j["matches"] = cast_placer->get_maximum_matches();
+    j["timeout"] = cast_placer->get_timeout();
+  } else {
+    j["type"] = "Placement";
+  }
+}
+
+void from_json(const nlohmann::json& j, Placement::Ptr& placement_ptr) {
+  std::string classname = j.at("type").get<std::string>();
+  Architecture arc = j.at("architecture").get<Architecture>();
+  if (classname == "GraphPlacement") {
+    unsigned matches = j.at("matches").get<unsigned>();
+    unsigned timeout = j.at("timeout").get<unsigned>();
+    placement_ptr = std::make_shared<GraphPlacement>(arc, matches, timeout);
+  } else {
+    placement_ptr = std::make_shared<Placement>(arc);
+  }
 }
 }  // namespace tket

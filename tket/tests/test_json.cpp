@@ -545,9 +545,9 @@ SCENARIO("Test compiler pass serializations") {
   RoutingMethodPtr rmp = std::make_shared<LexiRouteRoutingMethod>(80);
   std::vector<RoutingMethodPtr> rcon = {rmp};
   PlacementConfig plcon(5, 20, 100000, 10, 1000);
-  PlacementPtr place = std::make_shared<GraphPlacement>(arc, plcon);
+  Placement::Ptr place = std::make_shared<GraphPlacement>(arc, plcon);
   std::map<Qubit, Qubit> qmap = {{Qubit(0), Node(1)}, {Qubit(3), Node(2)}};
-  PlacementPtr na_place = std::make_shared<NoiseAwarePlacement>(arc, plcon);
+  Placement::Ptr na_place = std::make_shared<NoiseAwarePlacement>(arc, plcon);
 #define COMPPASSJSONTEST(passname, pass)               \
   GIVEN(#passname) {                                   \
     Circuit circ = CircuitsForTesting::get().uccsd;    \

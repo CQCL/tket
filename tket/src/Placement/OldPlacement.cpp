@@ -40,7 +40,7 @@ bool PlacementConfig::operator==(const PlacementConfig &other) const {
          (this->timeout == other.timeout);
 }
 
-void to_json(nlohmann::json &j, const PlacementPtr &placement_ptr) {
+void to_json(nlohmann::json &j, const Placement::Ptr &placement_ptr) {
   j["architecture"] = placement_ptr->get_architecture_ref();
   if (std::shared_ptr<GraphPlacement> cast_placer =
           std::dynamic_pointer_cast<GraphPlacement>(placement_ptr)) {
@@ -61,7 +61,7 @@ void to_json(nlohmann::json &j, const PlacementPtr &placement_ptr) {
   }
 }
 
-void from_json(const nlohmann::json &j, PlacementPtr &placement_ptr) {
+void from_json(const nlohmann::json &j, Placement::Ptr &placement_ptr) {
   std::string classname = j.at("type").get<std::string>();
   Architecture arc = j.at("architecture").get<Architecture>();
   if (classname == "GraphPlacement") {
