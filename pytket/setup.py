@@ -243,7 +243,7 @@ setup(
     long_description=open("package.md", "r").read(),
     long_description_content_type="text/markdown",
     license="Apache 2",
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages() + ["pytket.qasm.includes"],
     install_requires=[
         "sympy ~=1.6",
         "numpy >=1.21.4, <2.0",
