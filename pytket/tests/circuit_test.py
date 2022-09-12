@@ -508,6 +508,13 @@ def test_str() -> None:
     assert op.__str__() == "SXdg"
 
 
+def test_repr() -> None:
+    c = Circuit(2).Rx(0.3, 0).CX(0, 1)
+    c.qubit_create(Qubit(1))
+    c.qubit_discard(Qubit(0))
+    assert c.__repr__() == "[Create q[1]; Rx(0.3) q[0]; CX q[0], q[1]; Discard q[0]; ]"
+
+
 def test_qubit_to_bit_map() -> None:
     c = Circuit()
     a = [Qubit("a", i) for i in range(4)]

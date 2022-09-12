@@ -94,8 +94,14 @@ void init_circuit(py::module &m) {
           [](const Circuit &circ) {
             std::stringstream ss;
             ss << "[";
+            for (auto q : circ.created_qubits()) {
+              ss << "Create " << q.repr() << "; ";
+            }
             for (auto com : circ.get_commands()) {
               ss << com.to_str() << " ";
+            }
+            for (auto q : circ.discarded_qubits()) {
+              ss << "Discard " << q.repr() << "; ";
             }
             ss << "]";
             return ss.str();
