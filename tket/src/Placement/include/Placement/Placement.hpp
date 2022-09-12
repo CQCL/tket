@@ -154,7 +154,6 @@ class GraphPlacement : public Placement {
   }
 
   /**
-   *
    * For some Circuit, returns maps between Circuit UnitID and
    * Architecture UnitID that can be used for reassigning UnitID in
    * Circuit. Maps are constructed by running a Weighted Subgraph Monomorphism

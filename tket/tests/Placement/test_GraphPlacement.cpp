@@ -19,5 +19,5 @@
 #include "Placement/Placement.hpp"
 
 namespace tket {
-
+    
 }  // namespace tket
