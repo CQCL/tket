@@ -157,7 +157,7 @@ Op_ptr Gate::dagger() const {
             optype, {minus_times(params_[0]), params_[1]}, n_qubits_);
       }
     case OpType::PhasedISWAP:
-      // PhasedISWAP(a,b).dagger() == PhasedISWAP(a,-b)
+      // PhasedISWAP(a,b).dagger() == PhasedISWAP(a, -b)
       {
         return get_op_ptr(
             OpType::PhasedISWAP, {params_[0], minus_times(params_[1])});
