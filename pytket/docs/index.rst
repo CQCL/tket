@@ -5,7 +5,7 @@ pytket
    :width: 200px
    :align: right
 
-``pytket`` is a python module for interfacing with tket, a quantum computing toolkit and optimising compiler developed by Quantinuum. We currently support circuits and device architectures from
+``pytket`` is a python module for interfacing with tket, a quantum computing toolkit and optimising compiler developed by `Quantinuum`_. We currently support circuits and device architectures from
 `numerous providers <https://github.com/CQCL/pytket-extensions>`_, allowing the
 tket tools to be used in conjunction with projects on their platforms.
 
