@@ -177,7 +177,7 @@ repo.
 At this point you can run:
 
 ```shell
-conan create --profile=tket recipes/tket
+conan create --profile=tket recipes/tket tket/stable
 ```
 
 to build the tket library.
