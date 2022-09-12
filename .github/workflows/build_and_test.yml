@@ -57,6 +57,10 @@ jobs:
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
         tket_package_exists=`conan search -r tket-libs "tket/${{ steps.tket_ver.outputs.tket_ver }}@tket/stable" > /dev/null 2>&1 && echo true || echo false`
         echo "::set-output name=tket_package_exists::${tket_package_exists}"
+    - name: debug
+      run: |
+        echo ${{ steps.filter.outputs.tket }}
+        echo ${{ steps.test_package_exists.outputs.tket_package_exists }}
     - name: Check tket version bump
       if: steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
       run: exit 1
