@@ -528,6 +528,17 @@ SCENARIO("Testing successors and predecessors on valid circuits") {
   REQUIRE(circ.get_predecessors(pg) == correct);
 }
 
+SCENARIO("Testing getter methods for created and discarded qubits") {
+  Circuit circ(2);
+  circ.qubit_create(Qubit(0));
+  circ.qubit_discard(Qubit(0));
+  circ.qubit_create(Qubit(1));
+  qubit_vector_t created = {Qubit(0), Qubit(1)};
+  qubit_vector_t discarded = {Qubit(0)};
+  REQUIRE(circ.created_qubits() == created);
+  REQUIRE(circ.discarded_qubits() == discarded);
+}
+
 SCENARIO("Exception handling in get_(next/last)_q_edge") {
   Circuit circ(2);
   Vertex cx = circ.add_op<unsigned>(OpType::CX, {0, 1});
