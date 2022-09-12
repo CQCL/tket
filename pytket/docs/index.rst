@@ -5,7 +5,7 @@ pytket
    :width: 200px
    :align: right
 
-``pytket`` is a python module for interfacing with tket, a quantum computing toolkit and optimsing compiler developed by `Quantinuum <https://www.quantinuum.com/>`_  . We currently support circuits and device architectures from
+``pytket`` is a python module for interfacing with tket, a quantum computing toolkit and optimising compiler developed by Quantinuum. We currently support circuits and device architectures from
 `numerous providers <https://github.com/CQCL/pytket-extensions>`_, allowing the
 tket tools to be used in conjunction with projects on their platforms.
 
@@ -26,7 +26,7 @@ Windows. To install, run
     4. ``OPENBLAS="$(brew --prefix openblas)" pip install scipy``;
     5. ``pip install pytket``.
 
-If you have issues installing ``pytket`` we have `installation troubleshooting <https://cqcl.github.io/tket/pytket/api/install.html>`_ page.
+If you have issues installing ``pytket`` please visit the `installation troubleshooting <https://cqcl.github.io/tket/pytket/api/install.html>`_ page.
 
 To use ``pytket``, you can simply import the appropriate modules into your python code or in an interactive Python notebook. We can build circuits directly using the ``pytket`` interface by creating a blank circuit and adding gates in the order we want to apply them.
 
@@ -48,7 +48,7 @@ Some of the extension modules define :py:class:`Backend` s, allowing the circuit
 
     backend = AerBackend()                            # connect to the backend
     compiled_circ = b.get_compiled_circuit(circ)      # compile the circuit to satisfy the backend's requirements
-    handle = backend.process_circuit(compiled, 100)   # submit the job to run the circuit 100 times
+    handle = backend.process_circuit(compiled_circ, 100)   # submit the job to run the circuit 100 times
     counts = backend.get_result(handle).get_counts()  # retrieve and summarise the results
     print(counts)
 
@@ -99,7 +99,7 @@ If you have problems with the use of tket or you think that you have found a bug
 - We have a slack channel for community discussion and support. You can join by following `this link <https://tketusers.slack.com/join/shared_invite/zt-18qmsamj9-UqQFVdkRzxnXCcKtcarLRA#/shared-invite/email>`_
 - You can join the `tket-users mailing list <https://list.cambridgequantum.com/cgi-bin/mailman/listinfo/tket-users>`_. If you have questions or ideas and wishes for new features you can send an email to the list and ask for help. You can also join the list to get the newest information and get in contact with other users of tket.
 - Write an email to tket-support@cambridgequantum.com and ask for help with your problem.
-- You can write a bug report on `github <https://github.com/CQCL/pytket/issues>`_ with details of the problem and we will pick that up. You can also have a look on that page so see if your problem has already been reported by someone else.
+- You can write a bug report on `github <https://github.com/CQCL/tket/issues>`_ with details of the problem and we will pick that up. You can also have a look on that page so see if your problem has already been reported by someone else.
 
 We are really thankful for all help to fix bugs in tket. Usually you will get an answer from someone in the development team of tket soon.
 
