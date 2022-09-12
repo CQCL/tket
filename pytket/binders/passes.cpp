@@ -420,7 +420,8 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "DecomposeArbitrarilyControlledGates",
       &DecomposeArbitrarilyControlledGates,
-      "Decomposes CnX and CnRy gates into Ry, CX, H, T and Tdg gates.");
+      "Decomposes CCX, CnX, CnY, CnZ, and CnRy gates into "
+      "CX and single-qubit gates.");
   m.def(
       "DecomposeBoxes", &DecomposeBoxes,
       "Replaces all boxes by their decomposition into circuits.");
@@ -494,6 +495,10 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "SquashTK1", &SquashTK1,
       "Squash sequences of single-qubit gates to TK1 gates.");
+  m.def(
+      "SquashRzPhasedX", &SquashRzPhasedX,
+      "Squash single qubit gates into PhasedX and Rz gates. "
+      "Commute Rz gates to the back if possible.");
   m.def(
       "FlattenRegisters", &FlattenRegisters,
       "Merges all quantum and classical registers into their "

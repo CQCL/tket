@@ -19,6 +19,7 @@
  * @brief Utilities for the test programs
  */
 
+#include <catch2/matchers/catch_matchers.hpp>
 #include <cstdlib>
 
 #include "Circuit/Circuit.hpp"
@@ -129,5 +130,20 @@ bool matrices_are_equal(const Matr1& mat1, const Matr2& mat2) {
  * @return unitary matrix generated from the seed
  */
 Eigen::MatrixXcd random_unitary(unsigned n, int seed);
+
+class ExceptionMessageContainsMatcher
+    : public Catch::Matchers::MatcherBase<std::exception> {
+  std::string substring;
+
+ public:
+  ExceptionMessageContainsMatcher(std::string const& substring)
+      : substring(substring) {}
+  bool match(std::exception const& ex) const override;
+  std::string describe() const override;
+};
+
+// Creates a matcher that checks whether the message of a std derived exception
+// constains a substring
+ExceptionMessageContainsMatcher MessageContains(std::string const& substring);
 
 }  // namespace tket

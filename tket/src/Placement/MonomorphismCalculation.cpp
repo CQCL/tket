@@ -123,6 +123,10 @@ static void write_solver_solutions(
   }
 }
 
+/**
+ * \cond Somehow doxygen 1.9.1 complains about this. Tell it to be quiet.
+ */
+
 std::vector<qubit_bimap_t> get_unweighted_subgraph_monomorphisms(
     const QubitGraph::UndirectedConnGraph& pattern_graph,
     const Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
@@ -175,5 +179,9 @@ std::vector<qubit_bimap_t> get_unweighted_subgraph_monomorphisms(
 
   return all_maps;
 }
+
+/**
+ * \endcond
+ */
 
 }  // namespace tket

@@ -1,6 +1,21 @@
 Changelog
 =========
 
+1.6.1 (September 2022)
+----------------------
+
+Minor new features:
+
+* New ``OpType.CnY`` and ``OpType.CnZ``.
+* Update ``DecomposeArbitrarilyControlledGates`` pass to decompose ``CnX``,
+  ``CnY``, and ``CnZ`` gates.
+
+Fixes:
+
+* ``Circuit.get_unitary()`` and ``Circuit.get_statevector()`` now throw an error
+  when the circuit contains measurements.
+* Fix critical issue with compilation of circuits containing conditional gates.
+
 1.6.0 (September 2022)
 ----------------------
 
@@ -14,6 +29,9 @@ Minor new features:
 
 * Prefer `ZZPhase` in ``DecomposeTK2`` if it results in the same fidelity but
   fewer two-qubit gates.
+
+* Add ``SquashRzPhasedX`` pass to squash single qubit gates into
+  ``Rz`` and ``PhasedX`` gates while trying to commute ``Rz``s to the back. 
 
 1.5.1 (August 2022)
 -------------------

@@ -38,6 +38,12 @@ static OpType get_primitive_type(OpType type_without_controls) {
     case OpType::CCX:
       return OpType::X;
 
+    case OpType::CnZ:
+      return OpType::Z;
+
+    case OpType::CnY:
+      return OpType::Y;
+
     case OpType::CnRy:
       return OpType::Ry;
 
