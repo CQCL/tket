@@ -52,7 +52,7 @@ jobs:
         tket_ver=$(conan inspect --raw version recipes/tket/conanfile.py)
         echo "::set-output name=tket_ver::${tket_ver}"
     - name: See if version exists on remote
-      id: tket_package_exists
+      id: test_package_exists
       run: |
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
         tket_package_exists=`conan search -r tket-libs "tket/${{ steps.tket_ver.outputs.tket_ver }}@tket/stable" > /dev/null 2>&1 && echo true || echo false`
