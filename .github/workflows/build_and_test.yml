@@ -59,7 +59,7 @@ jobs:
         echo "::set-output name=tket_package_exists::${tket_package_exists}"
     - name: Check tket version bump
       run: |
-        if [[ ${{ steps.filter.outputs.tket }} == 'true' && ${{ steps.test_package_exists.outputs.tket_package_exists }} == 'true' ]] ; then exit 1 ; fi
+        if [[ ${{ steps.filter.outputs.tket == 'true' }} && ${{ steps.test_package_exists.outputs.tket_package_exists == 'true' }} ]] ; then exit 1 ; fi
 
   linux:
     name: Build and test (Linux)
