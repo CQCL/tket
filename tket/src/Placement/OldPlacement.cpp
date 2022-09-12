@@ -13,15 +13,14 @@
 // limitations under the License.
 
 #include "Placement.hpp"
-
 #include "Utils/HelperFunctions.hpp"
 #include "Utils/Json.hpp"
 
 namespace tket {
 
-// qubit_mapping_t -> std::map<Qubit, Node>
+// std::map<Qubit, Node> -> std::map<Qubit, Node>
 // qubit_map_t -> std::map<Qubit, Qubit>
-// qubit_bimap_t -> boost::bimap<Qubit ArcVertex>
+// boost::bimap<Qubit, Node>  -> boost::bimap<Qubit ArcVertex>
 
 PlacementConfig::PlacementConfig(
     unsigned _depth_limit, unsigned _max_interaction_edges,
@@ -107,7 +106,8 @@ const std::string &Placement::unplaced_reg() {
 }
 
 void fill_partial_mapping(
-    const qubit_vector_t &current_qubits, qubit_mapping_t &partial_mapping) {
+    const qubit_vector_t &current_qubits,
+    std::map<Qubit, Node> &partial_mapping) {
   unsigned up_nu = 0;
   for (Qubit q : current_qubits) {
     if (partial_mapping.find(q) == partial_mapping.end()) {
@@ -130,12 +130,12 @@ void fill_partial_mapping(
 // Default placement methods
 bool Placement::place(
     Circuit &circ_, std::shared_ptr<unit_bimaps_t> maps) const {
-  qubit_mapping_t map_ = get_placement_map(circ_);
+  std::map<Qubit, Node> map_ = get_placement_map(circ_);
   return place_with_map(circ_, map_, maps);
 }
 
 bool Placement::place_with_map(
-    Circuit &circ_, qubit_mapping_t &map_,
+    Circuit &circ_, std::map<Qubit, Node> &map_,
     std::shared_ptr<unit_bimaps_t> maps) {
   qubit_vector_t circ_qbs = circ_.all_qubits();
   fill_partial_mapping(circ_qbs, map_);
@@ -144,24 +144,25 @@ bool Placement::place_with_map(
   return changed;
 }
 
-qubit_mapping_t Placement::get_placement_map(const Circuit &circ_) const {
-  qubit_mapping_t out_map;
+std::map<Qubit, Node> Placement::get_placement_map(const Circuit &circ_) const {
+  std::map<Qubit, Node> out_map;
   fill_partial_mapping(circ_.all_qubits(), out_map);
   return out_map;
 }
 
-std::vector<qubit_mapping_t> Placement::get_all_placement_maps(
+std::vector<std::map<Qubit, Node>> Placement::get_all_placement_maps(
     const Circuit &circ_) const {
   return {get_placement_map(circ_)};
 }
 
-qubit_mapping_t NaivePlacement::get_placement_map(const Circuit &circ_) const {
+std::map<Qubit, Node> NaivePlacement::get_placement_map(
+    const Circuit &circ_) const {
   return get_all_placement_maps(circ_).at(0);
 }
 
-std::vector<qubit_mapping_t> NaivePlacement::get_all_placement_maps(
+std::vector<std::map<Qubit, Node>> NaivePlacement::get_all_placement_maps(
     const Circuit &circ_) const {
-  qubit_mapping_t placement;
+  std::map<Qubit, Node> placement;
   qubit_vector_t to_place;
   std::vector<Node> placed;
 
@@ -194,13 +195,14 @@ std::vector<qubit_mapping_t> NaivePlacement::get_all_placement_maps(
   return {placement};
 }
 
-qubit_mapping_t LinePlacement::get_placement_map(const Circuit &circ_) const {
+std::map<Qubit, Node> LinePlacement::get_placement_map(
+    const Circuit &circ_) const {
   return get_all_placement_maps(circ_).at(0);
 }
 
-std::vector<qubit_mapping_t> LinePlacement::get_all_placement_maps(
+std::vector<std::map<Qubit, Node>> LinePlacement::get_all_placement_maps(
     const Circuit &circ_) const {
-  qubit_mapping_t partial_map;
+  std::map<Qubit, Node> partial_map;
   QubitLineList qb_lines = qubit_lines(circ_);
   if (!qb_lines.empty()) {
     partial_map = lines_on_arc(arc_, qb_lines, circ_.n_qubits());
@@ -209,48 +211,49 @@ std::vector<qubit_mapping_t> LinePlacement::get_all_placement_maps(
   return {partial_map};
 }
 
-qubit_mapping_t GraphPlacement::get_placement_map(const Circuit &circ_) const {
+std::map<Qubit, Node> GraphPlacement::get_placement_map(
+    const Circuit &circ_) const {
   QubitGraph q_graph = monomorph_interaction_graph(
       circ_, arc_.n_connections(), config_.depth_limit);
-  std::vector<qubit_bimap_t> all_bimaps = monomorphism_edge_break(
+  std::vector<boost::bimap<Qubit, Node>> all_bimaps = monomorphism_edge_break(
       arc_, q_graph, config_.monomorphism_max_matches, config_.timeout);
-  qubit_mapping_t out_map = bimap_to_map(all_bimaps[0].left);
+  std::map<Qubit, Node> out_map = bimap_to_map(all_bimaps[0].left);
   fill_partial_mapping(circ_.all_qubits(), out_map);
   return out_map;
 }
 
-std::vector<qubit_mapping_t> GraphPlacement::get_all_placement_maps(
+std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
     const Circuit &circ_) const {
   QubitGraph q_graph = monomorph_interaction_graph(
       circ_, arc_.n_connections(), config_.depth_limit);
-  std::vector<qubit_bimap_t> all_bimaps = monomorphism_edge_break(
+  std::vector<boost::bimap<Qubit, Node>> all_bimaps = monomorphism_edge_break(
       arc_, q_graph, config_.monomorphism_max_matches, config_.timeout);
-  std::vector<qubit_mapping_t> all_qmaps;
+  std::vector<std::map<Qubit, Node>> all_qmaps;
   qubit_vector_t all_qbs = circ_.all_qubits();
-  for (qubit_bimap_t bm : all_bimaps) {
-    qubit_mapping_t qm = bimap_to_map(bm.left);
+  for (boost::bimap<Qubit, Node> bm : all_bimaps) {
+    std::map<Qubit, Node> qm = bimap_to_map(bm.left);
     fill_partial_mapping(all_qbs, qm);
     all_qmaps.push_back(qm);
   }
   return all_qmaps;
 }
 
-qubit_mapping_t NoiseAwarePlacement::get_placement_map(
+std::map<Qubit, Node> NoiseAwarePlacement::get_placement_map(
     const Circuit &circ_) const {
   return get_all_placement_maps(circ_)[0];
 }
 
-std::vector<qubit_mapping_t> NoiseAwarePlacement::get_all_placement_maps(
+std::vector<std::map<Qubit, Node>> NoiseAwarePlacement::get_all_placement_maps(
     const Circuit &circ_) const {
   // Set up default placements configuation
   // Place according to configuration
   Monomorpher placer(circ_, arc_, characterisation_, config_);
   std::vector<MapCost> results = placer.place(config_.depth_limit * 2);
   std::sort(results.begin(), results.end());
-  std::vector<qubit_mapping_t> output;
+  std::vector<std::map<Qubit, Node>> output;
   qubit_vector_t all_qbs = circ_.all_qubits();
   for (const MapCost &map_c : results) {
-    qubit_mapping_t map_ = map_c.map;
+    std::map<Qubit, Node> map_ = map_c.map;
     fill_partial_mapping(all_qbs, map_);
     output.push_back(map_c.map);
   }

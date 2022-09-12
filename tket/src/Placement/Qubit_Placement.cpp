@@ -222,9 +222,9 @@ node_set_t best_nodes(Architecture& arc, unsigned n_remove) {
 }
 
 // map qubit lines to node lines, erasing qubit lines as it goes
-qubit_mapping_t map_lines(
+std::map<Qubit, Node> map_lines(
     QubitLineList& qb_lines, const std::vector<node_vector_t>& node_lines) {
-  qubit_mapping_t outmap;
+  std::map<Qubit, Node> outmap;
 
   // go through all node lines
   for (unsigned i = 0; i < node_lines.size(); i++) {
@@ -238,9 +238,9 @@ qubit_mapping_t map_lines(
 }
 
 // trivially place qubit lines on to available nodes, return map
-qubit_mapping_t place_qubit_lines(
+std::map<Qubit, Node> place_qubit_lines(
     const QubitLineList& qb_lines, node_set_t available_nodes) {
-  qubit_mapping_t outmap;
+  std::map<Qubit, Node> outmap;
 
   node_set_t::iterator node_it = available_nodes.begin();
   for (const QubitLine& line : qb_lines) {
@@ -257,7 +257,7 @@ qubit_mapping_t place_qubit_lines(
 
 // Determine intial qubit placement by requesting lines of architecture to place
 // lines of qubits on
-qubit_mapping_t lines_on_arc(
+std::map<Qubit, Node> lines_on_arc(
     Architecture arc, QubitLineList qb_lines, unsigned n_qubits) {
   unsigned difference = arc.n_nodes() - n_qubits;
   // sort from longest to shortest
@@ -284,24 +284,26 @@ qubit_mapping_t lines_on_arc(
   std::vector<node_vector_t> node_lines = arc.get_lines(lengths);
 
   // map qubit lines to node lines to some extent
-  qubit_mapping_t outmap = map_lines(qb_lines, node_lines);
-  for (qubit_mapping_t::iterator it = outmap.begin(); it != outmap.end();
+  std::map<Qubit, Node> outmap = map_lines(qb_lines, node_lines);
+  for (std::map<Qubit, Node>::iterator it = outmap.begin(); it != outmap.end();
        ++it) {
     unused_nodes.erase(it->second);
   }
   // map remain remaining qubit lines trivially
-  qubit_mapping_t remainder_map = place_qubit_lines(qb_lines, unused_nodes);
+  std::map<Qubit, Node> remainder_map =
+      place_qubit_lines(qb_lines, unused_nodes);
   outmap.insert(remainder_map.begin(), remainder_map.end());
 
   return outmap;
 }
 
-// Uses line placement method to produce a suitable qubit_mapping_t for initial
-// placement Note that arc is passed by value, since this function modifies it.
-qubit_mapping_t line_placement(const Circuit& circ, Architecture arc) {
+// Uses line placement method to produce a suitable std::map<Qubit, Node> for
+// initial placement Note that arc is passed by value, since this function
+// modifies it.
+std::map<Qubit, Node> line_placement(const Circuit& circ, Architecture arc) {
   QubitLineList qb_lines = qubit_lines(circ);
   if (qb_lines.empty()) {
-    return qubit_mapping_t();
+    return std::map<Qubit, Node>();
   } else {
     unsigned n_qb = circ.n_qubits();
     return lines_on_arc(arc, qb_lines, n_qb);
@@ -309,7 +311,7 @@ qubit_mapping_t line_placement(const Circuit& circ, Architecture arc) {
 }
 
 // calculate a cost value for map being considered
-double Monomorpher::map_cost(const qubit_bimap_t& n_map) {
+double Monomorpher::map_cost(const boost::bimap<Qubit, Node>& n_map) {
   double cost = 0.0;
   const int approx_depth = circ.n_gates() / circ.n_qubits() + 1;
   // constants for scaling single qubit error
@@ -370,13 +372,14 @@ std::vector<MapCost> Monomorpher::place(unsigned max_return) {
     best_nodes(arc, arc.n_nodes() - interacting_nodes);
   }
 
-  std::vector<qubit_bimap_t> potential_maps = monomorphism_edge_break(
-      arc, q_graph, config.monomorphism_max_matches, config.timeout);
+  std::vector<boost::bimap<Qubit, Node> > potential_maps =
+      monomorphism_edge_break(
+          arc, q_graph, config.monomorphism_max_matches, config.timeout);
   std::vector<MapCost> map_costs;
   for (unsigned i = 0; i < potential_maps.size(); i++) {
-    qubit_bimap_t& chosen = potential_maps[i];
+    boost::bimap<Qubit, Node>& chosen = potential_maps[i];
     double cost = map_cost(chosen);
-    qubit_mapping_t converted_map;
+    std::map<Qubit, Node> converted_map;
     for (auto [qb, node] : chosen.left) {
       converted_map[qb] = node;
     }

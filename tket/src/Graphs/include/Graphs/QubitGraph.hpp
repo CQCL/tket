@@ -17,12 +17,12 @@
 
 #include "Utils/GraphHeaders.hpp"
 
-namespace tket{
+namespace tket{ 
 
 /**
-   * Instance of DirectedGraph to hold dependencies between Qubit UnitID
-   * objects as given from some Circuit
-   */
+ * Instance of DirectedGraph to hold dependencies between Qubit UnitID
+ * objects as given from some Circuit
+  */
   class QubitGraph : public graphs::DirectedGraph<Qubit> {
   private:
     using Base = graphs::DirectedGraph<Qubit>;

@@ -28,7 +28,7 @@
 
 namespace tket {
 
-std::vector<qubit_bimap_t> monomorphism_edge_break(
+std::vector<boost::bimap<Qubit, Node> > monomorphism_edge_break(
     const Architecture& arc, const QubitGraph& q_graph, unsigned max_matches,
     unsigned timeout) {
   if (q_graph.n_nodes() > arc.n_nodes()) {
@@ -50,8 +50,9 @@ std::vector<qubit_bimap_t> monomorphism_edge_break(
                               .count();
     if (search_timeout <= 0) search_timeout = 1;
 
-    std::vector<qubit_bimap_t> all_maps = get_weighted_subgraph_monomorphisms(
-        undirected_pattern, undirected_target, max_matches, timeout);
+    std::vector<boost::bimap<Qubit, Node> > all_maps =
+        get_weighted_subgraph_monomorphisms(
+            undirected_pattern, undirected_target, max_matches, timeout);
     std::sort(all_maps.begin(), all_maps.end());
 
     if (std::chrono::steady_clock::now() >= end_time) {

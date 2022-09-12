@@ -127,17 +127,6 @@ struct PlacementFrontier {
   void next_slicefrontier();
 };
 
-// Class for storing interaction graph.
-// Interacting qubits have an edge between them.
-class QubitGraph : public graphs::DirectedGraph<Qubit> {
- private:
-  using Base = graphs::DirectedGraph<Qubit>;
-
- public:
-  QubitGraph() : Base() {}
-  explicit QubitGraph(const qubit_vector_t& _qubits) : Base(_qubits) {}
-};
-
 /* ACTUALLY PLACEMENT METHODS */
 
 // generate interaction graph of circuit
