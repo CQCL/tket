@@ -1,11 +1,11 @@
 pytket
 ======
 
-.. image:: CQCLogo.png
+.. image:: Quantinuum_logo.png
    :width: 120px
    :align: right
 
-``pytket`` is a python module for interfacing with tket, a quantum computing toolkit and optimsing compiler developed b . We currently support circuits and device architectures from
+``pytket`` is a python module for interfacing with tket, a quantum computing toolkit and optimsing compiler developed by `Quantinuum <https://www.quantinuum.com/>`_  . We currently support circuits and device architectures from
 `numerous providers <https://github.com/CQCL/pytket-extensions>`_, allowing the
 tket tools to be used in conjunction with projects on their platforms.
 
@@ -32,11 +32,11 @@ To use ``pytket``, you can simply import the appropriate modules into your pytho
 
     from pytket import Circuit
 
-    c = Circuit(2,2) # define a circuit with 2 qubits and 2 bits
-    c.H(0)           # add a Hadamard gate to qubit 0
-    c.Rz(0.25, 0)    # add an Rz gate of angle 0.25*pi to qubit 0
-    c.CX(1,0)        # add a CX gate with control qubit 1 and target qubit 0
-    c.measure_all()  # measure qubits 0 and 1, recording the results in bits 0 and 1
+    circ = Circuit(2,2) # define a circuit with 2 qubits and 2 bits
+    circ.H(0)           # add a Hadamard gate to qubit 0
+    circ.Rz(0.25, 0)    # add an Rz gate of angle 0.25*pi to qubit 0
+    circ.CX(1,0)        # add a CX gate with control qubit 1 and target qubit 0
+    circ.measure_all()  # measure qubits 0 and 1, recording the results in bits 0 and 1
 
 Some of the extension modules define :py:class:`Backend` s, allowing the circuits to be run on simulators or real quantum hardware. For example, ``pytket-qiskit`` grants access to the :py:class:`AerBackend` simulator which can sample from measurements.
 
@@ -44,10 +44,10 @@ Some of the extension modules define :py:class:`Backend` s, allowing the circuit
 
     from pytket.extensions.qiskit import AerBackend
 
-    b = AerBackend()                            # connect to the backend
-    compiled = b.get_compiled_circuit(c)        # compile the circuit to satisfy the backend's requirements
-    handle = b.process_circuit(compiled, 100)   # submit the job to run the circuit 100 times
-    counts = b.get_result(handle).get_counts()  # retrieve and summarise the results
+    backend = AerBackend()                            # connect to the backend
+    compiled_circ = b.get_compiled_circuit(circ)      # compile the circuit to satisfy the backend's requirements
+    handle = backend.process_circuit(compiled, 100)   # submit the job to run the circuit 100 times
+    counts = backend.get_result(handle).get_counts()  # retrieve and summarise the results
     print(counts)
 
 This prints out a summary of readouts (the final values of the classical bits) and their frequencies.
