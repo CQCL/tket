@@ -76,34 +76,6 @@ To install the ``pytket-quantinuum`` package use the following command.
 The extensions supported by tket are described
 `here <https://cqcl.github.io/pytket-extensions/api/index.html>`_.
 
-.. note::
-    The syntax for importing backends from extension modules has changed
-    slightly in version 0.8 of ``pytket``. When importing ``FooBackend``,
-    instead of doing
-
-    ``from pytket.backends.something import FooBackend``
-
-    you should now do
-
-    ``from pytket.extensions.bar import FooBackend``
-
-    where ``FooBackend`` is defined in the ``pytket-bar`` extension module.
-
-    This may entail some changes to existing code. For example, you should
-    change
-
-    ``from pytket.backends.ibm import AerBackend``
-
-    to
-
-    ``from pytket.extensions.qiskit import AerBackend``
-
-    because ``AerBackend`` is defined in the ``pytket-qiskit`` module.
-
-    (In many cases, ``something`` and ``bar`` are identical, and you just need
-    to change ``backends`` to ``extensions``. For example,
-    ``pytket.backends.aqt`` becomes ``pytket.extensions.aqt``.)
-
 How to cite
 ~~~~~~~~~~~
 
@@ -125,7 +97,7 @@ If you have problems with the use of tket or you think that you have found a bug
 - We have a slack channel for community discussion and support. You can join by following `this link <https://tketusers.slack.com/join/shared_invite/zt-18qmsamj9-UqQFVdkRzxnXCcKtcarLRA#/shared-invite/email>`_
 - You can join the `tket-users mailing list <https://list.cambridgequantum.com/cgi-bin/mailman/listinfo/tket-users>`_. If you have questions or ideas and wishes for new features you can send an email to the list and ask for help. You can also join the list to get the newest information and get in contact with other users of tket.
 - Write an email to tket-support@cambridgequantum.com and ask for help with your problem.
-- You can write a bug report on the `CQC github <https://github.com/CQCL/pytket/issues>`_ with details of the problem and we will pick that up. You can also have a look on that page so see if your problem has already been reported by someone else.
+- You can write a bug report on `github <https://github.com/CQCL/pytket/issues>`_ with details of the problem and we will pick that up. You can also have a look on that page so see if your problem has already been reported by someone else.
 
 We are really thankful for all help to fix bugs in tket. Usually you will get an answer from someone in the development team of tket soon.
 
