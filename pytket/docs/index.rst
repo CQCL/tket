@@ -70,6 +70,7 @@ methods to the ``pytket`` package to convert between the circuit
 representations, or some new backends to submit circuits to within ``pytket``.
 
 Extensions are separate python packages can be installed using ``pip``. The installation command is ``pip install pytket-X`` where ``X`` is the name of the extension.
+
 To install the ``pytket-quantinuum`` package use the following command.
 ::
     
