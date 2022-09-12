@@ -12,24 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #pragma once
 
 #include "Utils/GraphHeaders.hpp"
 
-namespace tket{ 
+namespace tket {
 
 /**
  * Instance of DirectedGraph to hold dependencies between Qubit UnitID
  * objects as given from some Circuit
-  */
-  class QubitGraph : public graphs::DirectedGraph<Qubit> {
-  private:
-    using Base = graphs::DirectedGraph<Qubit>;
+ */
+class QubitGraph : public graphs::DirectedGraph<Qubit> {
+ private:
+  using Base = graphs::DirectedGraph<Qubit>;
 
-  public:
-    QubitGraph() : Base() {}
-    explicit QubitGraph(const qubit_vector_t& _qubits) : Base(_qubits) {}
-  };
+ public:
+  QubitGraph() : Base() {}
+  explicit QubitGraph(const qubit_vector_t& _qubits) : Base(_qubits) {}
+};
 
-} // namespace tket
+}  // namespace tket

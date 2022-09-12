@@ -21,7 +21,10 @@ namespace tket {
 
 using namespace WeightedSubgraphMonomorphism;
 
-using RelabelledPatternGraph = RelabelledGraphWSM<Qubit, QubitGraph>;
+// using RelabelledPatternGraph = RelabelledGraphWSM<Qubit, QubitGraph>;
+
+using RelabelledPatternGraph =
+    RelabelledGraphWSM<Qubit, Architecture::UndirectedConnGraph>;
 using RelabelledTargetGraph =
     RelabelledGraphWSM<Node, Architecture::UndirectedConnGraph>;
 using BimapValue = boost::bimap<Qubit, Node>::value_type;
@@ -125,7 +128,7 @@ static void write_solver_solutions(
 
 std::vector<boost::bimap<Qubit, Node>>
 GraphPlacement::get_weighted_subgraph_monomorphisms(
-    const QubitGraph& pattern_graph,
+    const QubitGraph::UndirectedConnGraph& pattern_graph,
     const Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
     unsigned timeout_ms) const {
   std::vector<boost::bimap<Qubit, Node>> all_maps;

@@ -129,7 +129,10 @@ QubitGraph GraphPlacement::construct_pattern_graph(
 std::vector<std::map<UnitID, UnitID>> GraphPlacement::get_all_placement_maps(
     const Circuit& circ_) const {
   std::vector<WeightedEdge> weighted_edges = this->weight_pattern_graph_(circ_);
-  QubitGraph pattern_graph = this->construct_pattern_graph(weighted_edges);
+  QubitGraph pattern_qubit_graph =
+      this->construct_pattern_graph(weighted_edges);
+  QubitGraph::UndirectedConnGraph pattern_graph =
+      pattern_qubit_graph.get_undirected_connectivity();
   Architecture::UndirectedConnGraph target_graph =
       this->arc_.get_undirected_connectivity();
   std::vector<boost::bimap<Qubit, Node>> all_bimaps =

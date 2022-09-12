@@ -12,11 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 #include "Placement/Placement.hpp"
 
-
-namespace tket{
+namespace tket {
 
 Placement::Frontier::Frontier(const Circuit& _circ) : circ(_circ) {
   VertexVec input_slice;
@@ -57,4 +55,4 @@ void Placement::Frontier::next_slicefrontier() {
   slice = next_cut.slice;
   quantum_out_edges = next_cut.u_frontier;
 }
-} // namespace tket
+}  // namespace tket

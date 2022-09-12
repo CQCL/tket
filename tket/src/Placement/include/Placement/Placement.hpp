@@ -149,7 +149,7 @@ class GraphPlacement : public Placement {
    * Note that graph edge weights are IGNORED by this function.
    */
   std::vector<boost::bimap<Qubit, Node>> get_weighted_subgraph_monomorphisms(
-      const QubitGraph& pattern_graph,
+      const QubitGraph::UndirectedConnGraph& pattern_graph,
       const Architecture::UndirectedConnGraph& target_graph,
       unsigned max_matches, unsigned timeout_ms) const;
 };
