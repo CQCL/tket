@@ -302,6 +302,12 @@ void init_circuit(py::module &m) {
           "qubits", &Circuit::all_qubits,
           "A list of all qubit ids in the circuit")
       .def_property_readonly(
+          "created_qubits", &Circuit::created_qubits,
+          "A list of qubits whose input is a Create operation")
+      .def_property_readonly(
+          "discarded_qubits", &Circuit::discarded_qubits,
+          "A list of qubits whose output is a Discard operation")
+      .def_property_readonly(
           "bits", &Circuit::all_bits,
           "A list of all classical bit ids in the circuit")
       .def_property_readonly(

@@ -651,6 +651,10 @@ def test_circuit_with_qubit_creations_and_discards() -> None:
     assert circt_dict2["created_qubits"] == [Qubit(0).to_list()]
     assert circt_dict2["discarded_qubits"] == [Qubit(0).to_list(), Qubit(1).to_list()]
     assert circ != circ2
+    assert len(circ.created_qubits) == 0
+    assert len(circ.discarded_qubits) == 0
+    assert circ2.created_qubits == [Qubit(0)]
+    assert circ2.discarded_qubits == [Qubit(0), Qubit(1)]
 
 
 def with_empty_qubit(op: Op) -> CircBox:
