@@ -5,15 +5,16 @@ pytket
    :width: 120px
    :align: right
 
-``pytket`` is a python module for interfacing with `CQC`_ tket, a set of quantum
-programming tools. We currently support circuits and device architectures from
+``pytket`` is a python module for interfacing with tket, a quantum computing toolkit and optimsing compiler developed b . We currently support circuits and device architectures from
 `numerous providers <https://github.com/CQCL/pytket-extensions>`_, allowing the
 tket tools to be used in conjunction with projects on their platforms.
 
 ``pytket`` is available for Python 3.8, 3.9 and 3.10, on Linux, MacOS and
 Windows. To install, run
 
-``pip install pytket``
+::
+
+    pip install pytket
 
 .. note::
     On M1-based Macs running in native (arm64) mode, this command may fail
@@ -30,6 +31,7 @@ To use ``pytket``, you can simply import the appropriate modules into your pytho
 ::
 
     from pytket import Circuit
+
     c = Circuit(2,2) # define a circuit with 2 qubits and 2 bits
     c.H(0)           # add a Hadamard gate to qubit 0
     c.Rz(0.25, 0)    # add an Rz gate of angle 0.25*pi to qubit 0
@@ -41,6 +43,7 @@ Some of the extension modules define :py:class:`Backend` s, allowing the circuit
 ::
 
     from pytket.extensions.qiskit import AerBackend
+
     b = AerBackend()                            # connect to the backend
     compiled = b.get_compiled_circuit(c)        # compile the circuit to satisfy the backend's requirements
     handle = b.process_circuit(compiled, 100)   # submit the job to run the circuit 100 times
@@ -64,8 +67,13 @@ additional separate module for each. Each one of these adds either some new
 methods to the ``pytket`` package to convert between the circuit
 representations, or some new backends to submit circuits to within ``pytket``.
 
-Extension modules can be installed using ``pip``. The extensions supported by
-CQC are described
+Extensions are separate python packages can be installed using ``pip``. The installation command is ``pip install pytket-X`` where ``X`` is the name of the extension.
+To install the ``pytket-quantinuum`` package use the following command.
+::
+    
+    pip install pytket-quantinuum
+
+The extensions supported by tket are described
 `here <https://cqcl.github.io/pytket-extensions/api/index.html>`_.
 
 .. note::
@@ -114,6 +122,7 @@ User Support
 
 If you have problems with the use of tket or you think that you have found a bug there are several ways to contact us:
 
+- We have a slack channel for community discussion and support. You can join by following `this link <https://tketusers.slack.com/join/shared_invite/zt-18qmsamj9-UqQFVdkRzxnXCcKtcarLRA#/shared-invite/email>`_
 - You can join the `tket-users mailing list <https://list.cambridgequantum.com/cgi-bin/mailman/listinfo/tket-users>`_. If you have questions or ideas and wishes for new features you can send an email to the list and ask for help. You can also join the list to get the newest information and get in contact with other users of tket.
 - Write an email to tket-support@cambridgequantum.com and ask for help with your problem.
 - You can write a bug report on the `CQC github <https://github.com/CQCL/pytket/issues>`_ with details of the problem and we will pick that up. You can also have a look on that page so see if your problem has already been reported by someone else.
@@ -127,7 +136,7 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
 
 .. _Getting Started: getting_started.html
 .. _examples: https://github.com/CQCL/pytket/tree/main/examples
-.. _CQC: https://cambridgequantum.com
+.. _Quantinuum: https://www.quantinuum.com/
 
 .. toctree::
     :caption: Introduction:
