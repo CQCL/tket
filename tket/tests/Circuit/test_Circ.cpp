@@ -1080,6 +1080,36 @@ SCENARIO("circuit equality ", "[equality]") {
 
     REQUIRE(test1 == test2);
   }
+
+  GIVEN("Circuits with mismatched created qubits") {
+    Circuit test1(2);
+    Circuit test2(2);
+    test1.qubit_create(Qubit(0));
+    REQUIRE(test1 != test2);
+    REQUIRE_THROWS_MATCHES(
+        test1.circuit_equality(test2), CircuitInequality,
+        MessageContains("Circuit created qubits do not match."));
+  }
+  GIVEN("Circuits with mismatched discarded qubits") {
+    Circuit test1(2);
+    Circuit test2(2);
+    test1.qubit_discard(Qubit(0));
+    REQUIRE(test1 != test2);
+    REQUIRE_THROWS_MATCHES(
+        test1.circuit_equality(test2), CircuitInequality,
+        MessageContains("Circuit discarded qubits do not match."));
+  }
+  GIVEN("Circuits with matched qubit boundary types") {
+    Circuit test1(2);
+    Circuit test2(2);
+    test1.qubit_create(Qubit(0));
+    test1.qubit_discard(Qubit(0));
+    test1.qubit_create(Qubit(1));
+    test2.qubit_create(Qubit(0));
+    test2.qubit_discard(Qubit(0));
+    test2.qubit_create(Qubit(1));
+    REQUIRE(test1 == test2);
+  }
 }
 
 SCENARIO("Test that subcircuits are correctly generated") {
