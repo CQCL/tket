@@ -36,6 +36,8 @@ void to_json(nlohmann::json& j, const Circuit& circ) {
   for (const Command& com : circ) {
     j["commands"].push_back(com);
   }
+  j["created_qubits"] = circ.created_qubits();
+  j["discarded_qubits"] = circ.discarded_qubits();
 }
 
 void from_json(const nlohmann::json& j, Circuit& circ) {
@@ -60,6 +62,20 @@ void from_json(const nlohmann::json& j, Circuit& circ) {
   }
   const auto& imp_perm = j.at("implicit_permutation").get<qubit_map_t>();
   circ.permute_boundary_output(imp_perm);
+  // Check if key exists to work with circuits serialised using older tket
+  // versions
+  if (j.contains("created_qubits")) {
+    for (const auto& j_q : j.at("created_qubits")) {
+      const auto& q = j_q.get<Qubit>();
+      circ.qubit_create(q);
+    }
+  }
+  if (j.contains("discarded_qubits")) {
+    for (const auto& j_q : j.at("discarded_qubits")) {
+      const auto& q = j_q.get<Qubit>();
+      circ.qubit_discard(q);
+    }
+  }
 }
 
 }  // namespace tket
