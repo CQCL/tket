@@ -69,7 +69,7 @@ jobs:
         conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
-        conan create --profile=tket recipes/tket tket/stable --build=missing
+        conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
     - name: Build wheel (3.8)
@@ -112,7 +112,7 @@ jobs:
         conan profile update options.tklog:shared=True tket
         conan profile update options.tket:shared=True tket
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
-        conan create --profile=tket recipes/tket tket/stable --build=missing
+        conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
         conan create --profile=tket recipes/pybind11
         .github/workflows/build_macos_m1_wheel
         pyenv shell tket-3.9
