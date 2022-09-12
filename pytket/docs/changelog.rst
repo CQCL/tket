@@ -1,8 +1,8 @@
 Changelog
 =========
 
-x.y.z (unreleased)
-------------------
+1.6.1 (September 2022)
+----------------------
 
 Minor new features:
 
@@ -14,6 +14,7 @@ Fixes:
 
 * ``Circuit.get_unitary()`` and ``Circuit.get_statevector()`` now throw an error
   when the circuit contains measurements.
+* Fix critical issue with compilation of circuits containing conditional gates.
 
 1.6.0 (September 2022)
 ----------------------
