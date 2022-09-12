@@ -266,8 +266,9 @@ First create a `build` folder in the project root. Then proceed as follows.
 4. To export to `conan` cache (necessary to build pytket):
 
    ```shell
-   conan export-pkg recipes/tket -f --build-folder=build --source-folder=tket/src
+   conan export-pkg recipes/tket tket/${VERSION}@tket/stable -f --build-folder=build --source-folder=tket/src
    ```
+   where `${VERSION}` is the tket library version, e.g. `1.0.3`.
 
 ## Test coverage
 
