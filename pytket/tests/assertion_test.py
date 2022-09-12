@@ -96,7 +96,7 @@ def test_assertion() -> None:
     circ.add_assertion(p_box, [0, 1, 3], name="|111>")
     circ.add_assertion(p_box, [1, 3, 4], name="|110>")
 
-    b = TketSimShotBackend()
+    b = TketSimShotBackend(ignore_measures=True)
     circ_compiled = b.get_compiled_circuit(circ)
     h = b.process_circuit(circ_compiled, n_shots=5)
     r = b.get_result(h)

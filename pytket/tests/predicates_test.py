@@ -26,6 +26,7 @@ from pytket.passes import (  # type: ignore
     RepeatPass,
     DecomposeMultiQubitsCX,
     SquashTK1,
+    SquashRzPhasedX,
     RepeatWithMetricPass,
     RebaseCustom,
     EulerAngleReduction,
@@ -1089,6 +1090,24 @@ def test_three_qubit_squash() -> None:
     c.measure_all()
     assert ThreeQubitSquash().apply(c)
     assert c.n_gates_of_type(OpType.CX) <= 18
+
+
+def test_rz_phasedX_squash() -> None:
+    c = Circuit(2)
+    c.Rz(0.3, 0)
+    c.Rz(0.7, 1)
+    c.ZZMax(0, 1)
+    c.ZZMax(1, 0)
+    c.add_gate(OpType.PhasedX, [0.2, 1.3], [0])
+    c.add_gate(OpType.PhasedX, [0.5, 1.7], [1])
+    c.ZZMax(0, 1)
+    c.ZZMax(1, 0)
+
+    assert SquashRzPhasedX().apply(c)
+    assert c.n_gates_of_type(OpType.Rz) == 2
+    cmds = c.get_commands()
+    assert cmds[-1].op.type == OpType.Rz
+    assert cmds[-2].op.type == OpType.Rz
 
 
 def test_predicate_serialization() -> None:

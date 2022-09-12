@@ -8,7 +8,7 @@ on:
       - develop
 jobs:
   changes:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       tklog: ${{ steps.filter.outputs.tklog }}
       tkassert: ${{ steps.filter.outputs.tkassert }}
@@ -37,20 +37,13 @@ jobs:
     if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     strategy:
       matrix:
-        os: ['ubuntu-20.04', 'macos-11', 'windows-2019']
+        os: ['ubuntu-22.04', 'macos-11', 'windows-2019']
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
-    - name: set compiler
-      if: matrix.os == 'ubuntu-20.04'
-      run: |
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
-        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
-        sudo update-alternatives --set gcc /usr/bin/gcc-10
-        sudo update-alternatives --set g++ /usr/bin/g++-10
     - name: Set up Python 3.9
       uses: actions/setup-python@v3
       with:
@@ -60,7 +53,7 @@ jobs:
     - name: create profile
       run: conan profile new tket --detect
     - name: set libcxx
-      if: matrix.os == 'ubuntu-20.04'
+      if: matrix.os == 'ubuntu-22.04'
       run: conan profile update settings.compiler.libcxx=libstdc++11 tket
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
@@ -111,17 +104,11 @@ jobs:
     strategy:
       matrix:
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
-    - name: set compiler
-      run: |
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
-        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
-        sudo update-alternatives --set gcc /usr/bin/gcc-10
-        sudo update-alternatives --set g++ /usr/bin/g++-10
     - name: Set up Python 3.9
       uses: actions/setup-python@v3
       with:
@@ -178,7 +165,7 @@ jobs:
       matrix:
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
     concurrency: gh_pages
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
       with:
