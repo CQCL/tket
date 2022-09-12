@@ -1,6 +1,18 @@
 Changelog
 =========
 
+x.y.z (unreleased)
+------------------
+
+Minor new features:
+
+* New ``Circuit`` properties ``created_qubits`` and ``discarded_qubits``.
+
+Fixes:
+
+* Circuit equality check now takes into account qubit creations and qubit discards.
+* Created qubits and discarded qubits are now shown in ``Circuit.__repr__`` and ``Circuit.to_dict``.
+
 1.6.1 (September 2022)
 ----------------------
 

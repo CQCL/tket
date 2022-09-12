@@ -142,6 +142,9 @@ SCENARIO("Test Circuit serialization") {
     c.add_barrier({q[0], a});
     // phase
     c.add_phase(0.3);
+    c.qubit_create(q[0]);
+    c.qubit_create(q[1]);
+    c.qubit_discard(a);
     REQUIRE(check_circuit(c));
   }
 
