@@ -20,6 +20,10 @@ namespace tket {
 
 bool Placement::place(
     Circuit& circ_, std::shared_ptr<unit_bimaps_t> compilation_map) const {
+  if (circ_.n_qubits() > this->architecture_.n_nodes()) {
+    throw std::invalid_argument(
+        "Circuit has more qubits than Architecture has nodes.");
+  }
   std::map<Qubit, Node> map_ = this->get_placement_map(circ_);
   return this->place_with_map(circ_, map_, compilation_map);
 }
@@ -54,7 +58,7 @@ std::vector<std::map<Qubit, Node>> Placement::get_all_placement_maps(
   // Find which/if any qubits need placing
   for (const Qubit& q : circ_.all_qubits()) {
     Node n(q);
-    if (!this->arc_.node_exists(n)) {
+    if (!this->architecture_.node_exists(n)) {
       to_place.push_back(n);
     } else {
       placed.push_back(n);
@@ -66,7 +70,7 @@ std::vector<std::map<Qubit, Node>> Placement::get_all_placement_maps(
   unsigned n_placed = to_place.size();
   if (n_placed > 0) {
     std::vector<Node> difference,
-        architecture_nodes = this->arc_.get_all_nodes_vec();
+        architecture_nodes = this->architecture_.get_all_nodes_vec();
     std::set_difference(
         architecture_nodes.begin(), architecture_nodes.end(), placed.begin(),
         placed.end(), std::inserter(difference, difference.begin()));
@@ -120,12 +124,12 @@ GraphPlacement::default_weighting(const Circuit& circuit) {
               (weighted_edge.node0 == uid_1 && weighted_edge.node1 == uid_0)) {
             // actually update the weight here, i.e. this is the "magic"
             match_weight = true;
-            weighted_edge.weight += (max_depth - i);
+            weighted_edge.weight += unsigned(max_depth - i);
             break;
           }
         }
         if (!match_weight) {
-          weights.push_back({uid_0, uid_1, max_depth - i});
+          weights.push_back({uid_0, uid_1, unsigned(max_depth - i)});
         }
         gate_counter++;
       }
@@ -134,7 +138,14 @@ GraphPlacement::default_weighting(const Circuit& circuit) {
             "Can only weight for Circuits with maximum two qubit gates.");
       }
     }
+    frontier.next_slicefrontier();
   }
+  // std::cout << "Found weights: " << std::endl;
+  // for (auto w : weights) {
+  //   std::cout << w.node0.repr() << " " << w.node1.repr() << " " << w.weight
+  //             << std::endl;
+  // }
+  // std::cout << "Returning weights." << std::endl;
   return weights;
 }
 
@@ -144,17 +155,17 @@ QubitGraph GraphPlacement::construct_pattern_graph(
   for (const WeightedEdge& weighted_edge : edges) {
     Node node0 = Node(weighted_edge.node0);
     Node node1 = Node(weighted_edge.node1);
-    bool e_01_exists = q_graph.edge_exists(node0, node1);
-    bool e_10_exists = q_graph.edge_exists(node1, node0);
-    if (e_01_exists || e_10_exists) {
-      throw std::invalid_argument(
-          "Graph can only have on edge between a pair of Node.");
-    }
     if (!q_graph.node_exists(node0)) {
       q_graph.add_node(node0);
     }
     if (!q_graph.node_exists(node1)) {
       q_graph.add_node(node1);
+    }
+    bool e_01_exists = q_graph.edge_exists(node0, node1);
+    bool e_10_exists = q_graph.edge_exists(node1, node0);
+    if (e_01_exists || e_10_exists) {
+      throw std::invalid_argument(
+          "Graph can only have a single edge between a pair of Node.");
     }
     if (weighted_edge.weight > 0) {
       q_graph.add_connection(node0, node1, weighted_edge.weight);
@@ -165,13 +176,17 @@ QubitGraph GraphPlacement::construct_pattern_graph(
 
 std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
     const Circuit& circ_) const {
+  if (circ_.n_qubits() > this->architecture_.n_nodes()) {
+    throw std::invalid_argument(
+        "Circuit has more qubits than Architecture has nodes.");
+  }
   std::vector<WeightedEdge> weighted_edges = this->weight_pattern_graph_(circ_);
   QubitGraph pattern_qubit_graph =
       this->construct_pattern_graph(weighted_edges);
   QubitGraph::UndirectedConnGraph pattern_graph =
       pattern_qubit_graph.get_undirected_connectivity();
   Architecture::UndirectedConnGraph target_graph =
-      this->arc_.get_undirected_connectivity();
+      this->architecture_.get_undirected_connectivity();
   std::vector<boost::bimap<Qubit, Node>> all_bimaps =
       get_weighted_subgraph_monomorphisms(
           pattern_graph, target_graph, this->maximum_matches_, this->timeout_);
@@ -179,15 +194,6 @@ std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
   for (boost::bimap<Qubit, Node>& bm : all_bimaps) {
     all_qmaps.push_back(bimap_to_map(bm.left));
   }
-  //   TODO: Update this to convert to UnitID to start with, this is
-  //   unncessary...
-  // std::vector<std::map<UnitID, UnitID>> all_uidmap;
-  // for (const auto& map : all_qmaps) {
-  //   std::map<UnitID, UnitID> uid_map;
-  //   for (const auto& q_n : map) {
-  //     uid_map.insert({UnitID(q_n.first), UnitID(q_n.second)});
-  //   }
-  // }
   return all_qmaps;
 }
 

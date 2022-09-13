@@ -27,7 +27,8 @@ class Placement {
   /**
    *
    */
-  explicit Placement(const Architecture& _arc) : arc_(_arc) {}
+  explicit Placement(const Architecture& _architecture)
+      : architecture_(_architecture) {}
 
   /**
    *
@@ -35,7 +36,7 @@ class Placement {
   Placement(){};
 
   /**
-   * Reassigns some UnitID in circ_ as UnitID arc_
+   * Reassigns some UnitID in circ_ as UnitID in architecture_
    *
    * @param circ_ Circuit to be relabelled
    * @param compilation_map For tracking changes during compilation
@@ -47,7 +48,8 @@ class Placement {
       std::shared_ptr<unit_bimaps_t> compilation_map = nullptr) const;
 
   /**
-   * Reassigns some UnitID in circ_ as UnitID arc_, according to given map.
+   * Reassigns some UnitID in circ_ as UnitID in architecture_, according to
+   * given map.
    *
    * @param circ_ Circuit to be relabelled
    * @param map_ relabelling
@@ -92,12 +94,12 @@ class Placement {
    *
    * @return Architecture
    */
-  const Architecture& get_architecture_ref() { return arc_; }
+  const Architecture& get_architecture_ref() { return architecture_; }
 
   virtual ~Placement(){};
 
  protected:
-  Architecture arc_;
+  Architecture architecture_;
 };
 
 JSON_DECL(Placement::Ptr);
@@ -144,14 +146,14 @@ class GraphPlacement : public Placement {
       const Circuit& circuit);
 
   explicit GraphPlacement(
-      const Architecture& _arc, unsigned _maximum_matches = 100,
+      const Architecture& _architecture, unsigned _maximum_matches = 100,
       unsigned _timeout = 100,
       const std::function<std::vector<WeightedEdge>(const Circuit&)>
           _weight_pattern_graph = default_weighting)
       : weight_pattern_graph_(_weight_pattern_graph),
         maximum_matches_(_maximum_matches),
         timeout_(_timeout) {
-    arc_ = _arc;
+    architecture_ = _architecture;
   }
 
   /**
