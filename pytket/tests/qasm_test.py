@@ -476,6 +476,31 @@ def test_include_loading(fi: Path) -> None:
         assert bytes(defs_string, "utf-8") == bytes(fil_content, "utf-8")
 
 
+def test_custom_gate_with_barrier() -> None:
+    c = circuit_from_qasm_str(
+        """
+    OPENQASM 2.0;
+    include "qelib1.inc";
+
+    gate my_gate q
+    {
+        barrier q;
+    }
+
+    qreg r[1];
+    my_gate r[0];
+    """
+    )
+    cmds = c.get_commands()
+    assert len(cmds) == 1
+    op = cmds[0].op
+    assert op.type == OpType.CustomGate
+    opcirc = op.get_circuit()
+    opcmds = opcirc.get_commands()
+    assert len(opcmds) == 1
+    assert opcmds[0].op.type == OpType.Barrier
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
