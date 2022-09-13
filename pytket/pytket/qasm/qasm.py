@@ -335,6 +335,7 @@ class CircuitTransformer(Transformer):
         except StopIteration:
             args = next_tree
             pars = []
+        args = list(args)
         params = [f"({par})/pi" for par in pars]
         if opstr in self.gate_dict:
             gdef = self.gate_dict[opstr]
@@ -360,10 +361,8 @@ class CircuitTransformer(Transformer):
             # Operations needing special handling:
             if optype.startswith("Cn"):
                 # n-controlled rotations have variable signature
-                args = list(args)
                 op["n_qb"] = len(args)
             elif optype == "Barrier":
-                args = list(args)
                 op["signature"] = ["Q"] * len(args)
 
         for arg in zip(*self.unroll_all_args(args)):
