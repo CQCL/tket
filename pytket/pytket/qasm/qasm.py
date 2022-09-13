@@ -380,6 +380,8 @@ class CircuitTransformer(Transformer):
         # other opaque gates, which are not handled as barrier
         # ["RZZ", "Rxxyyzz", "Rxxyyzz_zphase", "cu", "cp", "rccx", "rc3x", "c3sqrtx"]
 
+        args = list(args)
+
         if opstr in treat_as_barrier:
             params = [f"{par}" for par in pars]
         else:
@@ -393,7 +395,6 @@ class CircuitTransformer(Transformer):
 
                 op["data"] = f"{opstr}({param_sorted})"
 
-                args = list(args)
                 op["signature"] = [arg[0] for arg in args]
 
             else:
@@ -420,7 +421,7 @@ class CircuitTransformer(Transformer):
             if optype.startswith("Cn"):
                 # n-controlled rotation are only gates supported
                 # via this function without fixed signature
-                args = list(args)
+                # args = list(args)
                 op["n_qb"] = len(args)
 
         for arg in zip(*self.unroll_all_args(args)):
@@ -1088,8 +1089,6 @@ def circuit_to_qasm_io(
         if optype == OpType.CustomGate:
             if op.gate.name not in include_gate_defs:
                 # unroll custom gate
-                # TODO when opaque gates are supported, make sure they are not
-                # unrolled here
                 def_circ = op.get_circuit()
 
                 if def_circ.n_gates == 0:
