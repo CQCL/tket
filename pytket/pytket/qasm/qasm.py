@@ -357,11 +357,14 @@ class CircuitTransformer(Transformer):
             op = {"type": optype}
             if params:
                 op["params"] = params
+            # Operations needing special handling:
             if optype.startswith("Cn"):
-                # n-controlled rotation are only gates supported
-                # via this function without fixed signature
+                # n-controlled rotations have variable signature
                 args = list(args)
                 op["n_qb"] = len(args)
+            elif optype == "Barrier":
+                args = list(args)
+                op["signature"] = ["Q"] * len(args)
 
         for arg in zip(*self.unroll_all_args(args)):
             yield {"args": list(arg), "op": op}
