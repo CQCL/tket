@@ -105,8 +105,7 @@ SCENARIO("Base Placement class") {
     Architecture architecture(edges);
     Circuit circuit(7);
     Placement placement(architecture);
-    std::map<Qubit, Node> placement_map =
-        placement.get_placement_map(test_circ);
+    std::map<Qubit, Node> placement_map = placement.get_placement_map(circuit);
     REQUIRE(placement_map[Qubit(0)] == Node(0));
     REQUIRE(placement_map[Qubit(1)] == Node(1));
     REQUIRE(placement_map[Qubit(2)] == Node(2));
