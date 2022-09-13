@@ -443,6 +443,17 @@ def test_alternate_encoding() -> None:
         assert c.n_gates == 6
 
 
+def test_opaque_gates() -> None:
+    # test opaque handled as barrier
+    input_qasm = """OPENQASM 2.0;\ninclude "hqslib1_dev.inc";\n\nqreg q[4];
+order2() q[0],q[2];\nrz(1.5*pi) q[3];\nsleep(1) q[0];\nrx(0.0375*pi) q[3];
+cu1(0.8*pi) q[0],q[1];\nsleep(1,2) q[3];\n"""
+    c = circuit_from_qasm_str(input_qasm)
+
+    result_circ_qasm = circuit_to_qasm_str(c, "hqslib1_dev")
+    assert input_qasm == result_circ_qasm
+
+
 @pytest.mark.parametrize("fi", _get_files())
 def test_include_loading(fi: Path) -> None:
     # If this test fails, you may have updated
@@ -506,3 +517,4 @@ if __name__ == "__main__":
     test_builtin_gates()
     test_new_qelib1_aliases()
     test_h1_rzz()
+    test_opaque_gates()
