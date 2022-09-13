@@ -7,6 +7,7 @@ x.y.z (unreleased)
 Minor new features:
 
 * New ``Circuit`` properties ``created_qubits`` and ``discarded_qubits``.
+* Barrier operations inside QASM custom gates are now accepted.
 
 Fixes:
 
