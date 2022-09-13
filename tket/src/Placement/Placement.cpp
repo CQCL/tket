@@ -20,12 +20,8 @@ namespace tket {
 
 bool Placement::place(
     Circuit& circ_, std::shared_ptr<unit_bimaps_t> compilation_map) const {
-  std::map<UnitID, UnitID> map_ = this->get_placement_map(circ_);
-  std::map<Qubit, Node> recast_map;
-  for (const auto& entry : map_) {
-    recast_map.insert({Qubit(entry.first), Node(entry.second)});
-  }
-  return this->place_with_map(circ_, recast_map, compilation_map);
+  std::map<Qubit, Node> map_ = this->get_placement_map(circ_);
+  return this->place_with_map(circ_, map_, compilation_map);
 }
 
 bool Placement::place_with_map(
@@ -36,9 +32,8 @@ bool Placement::place_with_map(
   return changed;
 }
 
-std::map<UnitID, UnitID> Placement::get_placement_map(
-    const Circuit& circ_) const {
-  std::vector<std::map<UnitID, UnitID>> all_maps =
+std::map<Qubit, Node> Placement::get_placement_map(const Circuit& circ_) const {
+  std::vector<std::map<Qubit, Node>> all_maps =
       this->get_all_placement_maps(circ_);
   // basic handling to avoid segmentation faults, as placement method may not
   // return any valid map
@@ -50,9 +45,9 @@ std::map<UnitID, UnitID> Placement::get_placement_map(
   }
 }
 
-std::vector<std::map<UnitID, UnitID>> Placement::get_all_placement_maps(
+std::vector<std::map<Qubit, Node>> Placement::get_all_placement_maps(
     const Circuit& circ_) const {
-  std::map<UnitID, UnitID> placement;
+  std::map<Qubit, Node> placement;
   qubit_vector_t to_place;
   std::vector<Node> placed;
 
@@ -76,7 +71,11 @@ std::vector<std::map<UnitID, UnitID>> Placement::get_all_placement_maps(
         architecture_nodes.begin(), architecture_nodes.end(), placed.begin(),
         placed.end(), std::inserter(difference, difference.begin()));
     // should always be enough remaining qubits to assign unplaced qubits to
-    TKET_ASSERT(difference.size() >= n_placed);
+    if (difference.size() < n_placed) {
+      throw std::invalid_argument(
+          "There are more unplaced Qubit in Circuit then there are free Nodes "
+          "in Architecture.");
+    }
     for (unsigned i = 0; i < n_placed; i++) {
       // naively assign each qubit to some free node
       placement.insert({to_place[i], difference[i]});
@@ -164,7 +163,7 @@ QubitGraph GraphPlacement::construct_pattern_graph(
   return q_graph;
 }
 
-std::vector<std::map<UnitID, UnitID>> GraphPlacement::get_all_placement_maps(
+std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
     const Circuit& circ_) const {
   std::vector<WeightedEdge> weighted_edges = this->weight_pattern_graph_(circ_);
   QubitGraph pattern_qubit_graph =
@@ -182,14 +181,14 @@ std::vector<std::map<UnitID, UnitID>> GraphPlacement::get_all_placement_maps(
   }
   //   TODO: Update this to convert to UnitID to start with, this is
   //   unncessary...
-  std::vector<std::map<UnitID, UnitID>> all_uidmap;
-  for (const auto& map : all_qmaps) {
-    std::map<UnitID, UnitID> uid_map;
-    for (const auto& q_n : map) {
-      uid_map.insert({UnitID(q_n.first), UnitID(q_n.second)});
-    }
-  }
-  return all_uidmap;
+  // std::vector<std::map<UnitID, UnitID>> all_uidmap;
+  // for (const auto& map : all_qmaps) {
+  //   std::map<UnitID, UnitID> uid_map;
+  //   for (const auto& q_n : map) {
+  //     uid_map.insert({UnitID(q_n.first), UnitID(q_n.second)});
+  //   }
+  // }
+  return all_qmaps;
 }
 
 void to_json(nlohmann::json& j, const Placement::Ptr& placement_ptr) {

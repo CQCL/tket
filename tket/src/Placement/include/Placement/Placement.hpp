@@ -69,7 +69,7 @@ class Placement {
    *
    * @return Map between Circuit and Architecture UnitID
    */
-  std::map<UnitID, UnitID> get_placement_map(const Circuit& circ_) const;
+  std::map<Qubit, Node> get_placement_map(const Circuit& circ_) const;
 
   /**
    *
@@ -82,7 +82,7 @@ class Placement {
    *
    * @return Map between Circuit and Architecture UnitID
    */
-  virtual std::vector<std::map<UnitID, UnitID>> get_all_placement_maps(
+  virtual std::vector<std::map<Qubit, Node>> get_all_placement_maps(
       const Circuit& circ_) const;
 
   /**
@@ -144,7 +144,8 @@ class GraphPlacement : public Placement {
       const Circuit& circuit);
 
   explicit GraphPlacement(
-      const Architecture& _arc, unsigned _maximum_matches, unsigned _timeout,
+      const Architecture& _arc, unsigned _maximum_matches = 100,
+      unsigned _timeout = 100,
       const std::function<std::vector<WeightedEdge>(const Circuit&)>
           _weight_pattern_graph = default_weighting)
       : weight_pattern_graph_(_weight_pattern_graph),
@@ -164,7 +165,7 @@ class GraphPlacement : public Placement {
    *
    * @return Map between Circuit and Architecture UnitID
    */
-  std::vector<std::map<UnitID, UnitID>> get_all_placement_maps(
+  std::vector<std::map<Qubit, Node>> get_all_placement_maps(
       const Circuit& circ_) const override;
 
   /**
