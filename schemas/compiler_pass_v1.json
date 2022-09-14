@@ -494,6 +494,7 @@
               "allow_classical",
               "create_all_qubits"
             ],
+            "$comment": "TODO We need to make sure that the optional parameter must be x_circuit",
             "maxProperties": 4
           }
         },
