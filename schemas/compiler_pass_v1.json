@@ -614,6 +614,42 @@
               "x_circuit"
             ]
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "enum": [
+                  "CommuteThroughMultis",
+                  "DecomposeArbitrarilyControlledGates",
+                  "DecomposeBoxes",
+                  "DecomposeMultiQubitsCX",
+                  "DecomposeSingleQubitsTK1",
+                  "PeepholeOptimise2Q",
+                  "RebaseTket",
+                  "RebaseUFR",
+                  "RemoveRedundancies",
+                  "SynthesiseHQS",
+                  "SynthesiseTK",
+                  "SynthesiseTket",
+                  "SynthesiseOQC",
+                  "SynthesiseUMD",
+                  "SquashTK1",
+                  "SquashRzPhasedX",
+                  "FlattenRegisters",
+                  "DelayMeasures",
+                  "ZZPhaseToRz",
+                  "RemoveDiscarded",
+                  "SimplifyMeasured",
+                  "RemoveBarriers",
+                  "DecomposeBridges"
+                ]
+              }
+            }
+          },
+          "then": {
+            "maxProperties": 1
+          }
         }
       ],
       "additionalProperties": false
