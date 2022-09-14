@@ -388,7 +388,9 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "PeepholeOptimise2Q") {
       pp = PeepholeOptimise2Q();
     } else if (passname == "FullPeepholeOptimise") {
-      pp = FullPeepholeOptimise();
+      OpType target_2qb_gate = content.at("target_2qb_gate").get<OpType>();
+      bool allow_swaps = content.at("allow_swaps").get<bool>();
+      pp = FullPeepholeOptimise(allow_swaps, target_2qb_gate);
     } else if (passname == "RebaseTket") {
       pp = RebaseTket();
     } else if (passname == "RebaseUFR") {
