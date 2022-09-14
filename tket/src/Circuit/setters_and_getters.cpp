@@ -127,6 +127,26 @@ qubit_vector_t Circuit::all_qubits() const {
   return all_qbs;
 }
 
+qubit_vector_t Circuit::created_qubits() const {
+  qubit_vector_t all_created_qbs;
+  for (const Qubit &q : all_qubits()) {
+    if (is_created(q)) {
+      all_created_qbs.push_back(q);
+    }
+  }
+  return all_created_qbs;
+}
+
+qubit_vector_t Circuit::discarded_qubits() const {
+  qubit_vector_t all_discarded_qbs;
+  for (const Qubit &q : all_qubits()) {
+    if (is_discarded(q)) {
+      all_discarded_qbs.push_back(q);
+    }
+  }
+  return all_discarded_qbs;
+}
+
 bit_vector_t Circuit::all_bits() const {
   bit_vector_t all_bs;
   for (auto [it, end] = boundary.get<TagType>().equal_range(UnitType::Bit);

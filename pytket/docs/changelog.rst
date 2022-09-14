@@ -6,6 +6,19 @@ x.y.z (unreleased)
 
 Minor new features:
 
+* New ``Circuit`` properties ``created_qubits`` and ``discarded_qubits``.
+* Barrier operations inside QASM custom gates are now accepted.
+
+Fixes:
+
+* Circuit equality check now takes into account qubit creations and qubit discards.
+* Created qubits and discarded qubits are now shown in ``Circuit.__repr__`` and ``Circuit.to_dict``.
+
+1.6.1 (September 2022)
+----------------------
+
+Minor new features:
+
 * New ``OpType.CnY`` and ``OpType.CnZ``.
 * Update ``DecomposeArbitrarilyControlledGates`` pass to decompose ``CnX``,
   ``CnY``, and ``CnZ`` gates.
@@ -14,6 +27,7 @@ Fixes:
 
 * ``Circuit.get_unitary()`` and ``Circuit.get_statevector()`` now throw an error
   when the circuit contains measurements.
+* Fix critical issue with compilation of circuits containing conditional gates.
 
 1.6.0 (September 2022)
 ----------------------

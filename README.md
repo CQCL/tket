@@ -140,7 +140,7 @@ conan create --profile=tket recipes/pybind11
 
 where the first line serves to remove any version already installed.
 
-### TKET libraries
+### TKET libraries and conan packages
 
 Some TKET functionality has been separated out into self-contained libraries,
 as a way to modularize and reduce average build times. These are in
@@ -164,6 +164,12 @@ number and make a PR with that change only: the component will then be tested on
 the CI, and on merge to `develop` the new version will be uploaded. Then it will
 be possible to update conan requirements to use the new version.
 
+A new version of TKET is uploaded to our conan repo with each push to `develop`
+that changes the core library. This process is managed by CI workflows. If you
+are making changes only to TKET tests or pytket, you do not need to build TKET
+locally: the right version should be downloaded automatically from the conan
+repo.
+
 ### Building tket
 
 #### Method 1
@@ -171,7 +177,7 @@ be possible to update conan requirements to use the new version.
 At this point you can run:
 
 ```shell
-conan create --profile=tket recipes/tket
+conan create --profile=tket recipes/tket tket/stable
 ```
 
 to build the tket library.
@@ -260,8 +266,9 @@ First create a `build` folder in the project root. Then proceed as follows.
 4. To export to `conan` cache (necessary to build pytket):
 
    ```shell
-   conan export-pkg recipes/tket -f --build-folder=build --source-folder=tket/src
+   conan export-pkg recipes/tket tket/${VERSION}@tket/stable -f --build-folder=build --source-folder=tket/src
    ```
+   where `${VERSION}` is the tket library version, e.g. `1.0.3`.
 
 ## Test coverage
 
