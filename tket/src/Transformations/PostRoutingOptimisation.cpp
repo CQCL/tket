@@ -1,6 +1,9 @@
 #include "PostRoutingOptimisation.hpp"
 #include <algorithm>
+#include <queue>
+#include <random>
 
+#include <chrono>
 
 #include <string.h>
 
@@ -169,16 +172,90 @@ Subcircuit get_max_partition(Circuit &circ, qubit_vector_t &qubits) {
   return sub;
 }
 
-Partition synthesise(Partition &partition) { return partition; }
+Partition synthesise(Partition &partition) {
+  // define queue for A* search
+  auto compare_node = [](std::vector<node> lhs, std::vector<node> rhs) { 
+    return lhs.cost_estimate > rhs.cost_estimate;
+  };
+  std::priority_queue<std::vector<node>, std::vector<std::vector<node>>, 
+    decltype(compare_node)> param_queue(compare_node);
+  // add initial u3 gates
+  Cicuit initial(partition.second.size());
+  // while head distance is less than threshold
+  // for each connected pair
+  // generate successor
+  // evaluate successor
+  // calculate f(n) = cnot count +  9.3623 * distance
+  // insert node in queue
+
+  return partition;
+}
+
+std::vector<double> optimise_circuit(
+  int indexA, int indexB, Eigen::MatrixXcd &U, Eigen::MatrixXcd &T) {
+  double lower_bound = 0;
+  double upper_bound = 2*M_PI;
+  std::uniform_real_distribution<double> unif(lower_bound,upper_bound), adj(0, 0.1);
+  std::default_random_engine re;
+  double best_cost = 10.0;
+  std::vector<double> best_params;
+
+  f.open("output.txt");
+  // temporary algorithm: evaluate 1000 starting points, choose 10 best,
+  // choose 10 points near each best and optimise each
+  // TODO: add fun techniques to improve optimisation :)
+  auto compare = [](std::vector<double> lhs, std::vector<double> rhs) { 
+    return lhs[6] > rhs[6];
+  };
+  std::priority_queue<std::vector<double>, std::vector<std::vector<double>>, 
+    decltype(compare)> param_queue(compare);
+    
+  auto start = std::chrono::high_resolution_clock::now();
+  for(int i=0; i<1000; i++) {
+    std::vector<double> p;
+    for(int j=0; j<6; j++) {
+      p.push_back(unif(re));
+    }
+    Eigen::MatrixXcd A = evaluate_u3(p[0], p[1], p[2], indexA, T.cols());
+    Eigen::MatrixXcd B = evaluate_u3(p[3], p[4], p[5], indexB, T.cols());
+    p.push_back(evaluate_distance(A*B*U, T));
+    param_queue.push(p);
+  }
+  auto stop = std::chrono::high_resolution_clock::now();
+  auto duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+  f << "duration: " << duration.count()/1000000.0 << std::endl;
+
+  start = std::chrono::high_resolution_clock::now();
+  for(int i=0; i<10; i++) {
+    std::vector<double> initial = param_queue.top();
+    param_queue.pop();
+    for(int j=0; j<10; j++) {
+      double parameters[6];
+      for(int k=0; k<6; k++) {
+        parameters[k] = initial[k] + (adj(re) - 0.05);
+      }
+      std::vector<double> result = optimise_u3_gates(indexA, indexB, U, T, parameters);
+      if (result[6] < best_cost) { 
+        best_cost = result[6];
+        best_params = result;
+      }
+    }
+  }
+  stop = std::chrono::high_resolution_clock::now();
+  duration = std::chrono::duration_cast<std::chrono::microseconds>(stop - start);
+  f << "duration: " << duration.count()/1000000.0 << std::endl;
+  f.close();
+  return best_params;
+}
 
 std::vector<double> optimise_u3_gates(
-  int indexA, int indexB, Eigen::MatrixXcd &U, Eigen::MatrixXcd &T) {
+  int indexA, int indexB, Eigen::MatrixXcd &U, Eigen::MatrixXcd &T, double parameters[6]) {
   // Set up problem
-  f.open("output.txt");
   ceres::Problem problem;
-  double parameters[6] = {0.1, 0.0, 0.0, 0.0, 0.0, 0.0};
   ceres::CostFunction* cost_function = new CircuitCostFunction(indexA, indexB, U, T);
-  problem.AddResidualBlock(cost_function, nullptr, parameters);
+  std::vector<ceres::ResidualBlockId> residual_block_ids;
+  ceres::ResidualBlockId block_id = problem.AddResidualBlock(cost_function, nullptr, parameters);
+  residual_block_ids.push_back(block_id);
   
   // Setting range of 0 to 2pi for possible angles
   for (int i=0; i<6; i++) {
@@ -188,14 +265,28 @@ std::vector<double> optimise_u3_gates(
   
   // Solve for optimal U3 gates
   ceres::Solver::Options options;
-  options.minimizer_progress_to_stdout = true;
+  options.minimizer_progress_to_stdout = false;
+  options.linear_solver_type = ceres::DENSE_QR;
+  options.function_tolerance = 5e-16;
+  options.gradient_tolerance = 1e-15;
+  // options.num_threads = num_threads;
+  // options.max_num_iterations = max_iters;
+
   ceres::Solver::Summary summary;
   Solve(options, &problem, &summary);
 
-  f << summary.BriefReport() << "\n";
-  f.close();
+  //f << summary.BriefReport() << "\n";
 
-  std::vector<double> result(std::begin(parameters), std::end(parameters));
+  std::vector<double> result;
+  for(int i=0; i<6; i++)
+    result.push_back(parameters[i]);
+  
+  double total_cost;
+  std::vector<double> residuals;
+  ceres::Problem::EvaluateOptions evaluate;
+  evaluate.residual_blocks = residual_block_ids;
+  problem.Evaluate(evaluate, &total_cost, &residuals, nullptr, nullptr);
+  result.push_back(total_cost);
   return result;
 }
 
@@ -210,51 +301,41 @@ CircuitCostFunction::CircuitCostFunction(int indexA, int indexB,
 
 bool CircuitCostFunction::Evaluate(double const* const* parameters,
   double* residuals, double** jacobians) const {
-  f << "x1: " << parameters[0][0] << "\n";
-  f << "y1: " << parameters[0][1] << "\n";
-  f << "z1: " << parameters[0][2] << "\n";
-  f << "x2: " << parameters[0][3] << "\n";
-  f << "y2: " << parameters[0][4] << "\n";
-  f << "z2: " << parameters[0][5] << "\n";
-  
-  std::vector<double> jacs = evaluate_distance(parameters[0]);
-
+  std::vector<double> jacs = evaluate_jacs(parameters[0]);
   residuals[0] = jacs[6];
-
-  f << "distance: " << residuals[0] << "\n";
-
+  
   if (jacobians != nullptr && jacobians[0] != nullptr) {
     for (int i=0; i<6; i++) {
       jacobians[0][i] = jacs[i];
-      f << "Jacobian " << i << ": " << jacobians[0][i] << "\n";
     }
   }
   
   return true;
 }
 
-std::vector<double> CircuitCostFunction::evaluate_distance(const double* p) const {
-  std::vector<Eigen::MatrixXcd> A = u3_matrices(p[0], p[1], p[2]);
-  std::vector<Eigen::MatrixXcd> B = u3_matrices(p[3], p[4], p[5]);
+std::vector<double> CircuitCostFunction::evaluate_jacs(const double* p) const {
+  std::vector<Eigen::MatrixXcd> A = jac_matrices(p[0], p[1], p[2]);
+  std::vector<Eigen::MatrixXcd> B = jac_matrices(p[3], p[4], p[5]);
+  
+  for(int i=0; i<4; i++) {
+    A[i] = place(A[i], indexA, size);
+    B[i] = place(B[i], indexB, size);
+  }
+
   Eigen::MatrixXcd C = A[0]*B[0]*U;
 
   std::complex<double> S = T.cwiseProduct(C.conjugate()).sum();
   double dsq = 1 - std::abs(S)/T.cols();
-  
-  f << "S: " << S << "\n";
-  f << "dsq: " << dsq << "\n";
 
   std::vector<Eigen::MatrixXcd> ju;
   std::vector<std::complex<double>> jus;
   std::vector<double> jacs;
 
   for(int i=0; i<3; i++) {
-    place(A[i+1], indexA);
     ju.push_back(T.cwiseProduct(A[i+1].conjugate()));
   }
 
   for(int i=0; i<3; i++) {
-    place(B[i+1], indexB);
     ju.push_back(T.cwiseProduct(B[i+1].conjugate()));
   }
 
@@ -262,13 +343,8 @@ std::vector<double> CircuitCostFunction::evaluate_distance(const double* p) cons
     jus.push_back(ju[i].sum());
   }
 
-  f << "JUS 0:\n" << jus[0] << "\n";
-  f << "JUS 1:\n" << jus[1] << "\n";
-  f << "JUS 2:\n" << jus[1] << "\n";
-
   for(int i=0; i<6; i++) {
     jacs.push_back(-(S.real()*jus[i].real() + S.imag()*jus[i].imag())*T.cols() / std::abs(S));
-    f << "jacs[i]: " << jacs[i] << "\n";
   }
 
   jacs.push_back(dsq);
@@ -276,7 +352,7 @@ std::vector<double> CircuitCostFunction::evaluate_distance(const double* p) cons
   return jacs;
 }
 
-std::vector<Eigen::MatrixXcd> CircuitCostFunction::u3_matrices(double x, double y, double z) const {
+std::vector<Eigen::MatrixXcd> CircuitCostFunction::jac_matrices(double x, double y, double z) const {
   std::complex<double> i(0, 1);
   double ct = std::cos(x/2);
   double st = std::sin(x/2);
@@ -315,12 +391,4 @@ std::vector<Eigen::MatrixXcd> CircuitCostFunction::u3_matrices(double x, double 
 
   return v;
 }
-
-void CircuitCostFunction::place(Eigen::MatrixXcd u, int pos) const {
-  Eigen::MatrixXcd below = Eigen::MatrixXcd::Identity(std::pow(2, (size-(pos+1))), std::pow(2, (size-(pos+1))));
-  Eigen::MatrixXcd above = Eigen::MatrixXcd::Identity(std::pow(2, pos), std::pow(2, pos));
-
-  kroneckerProduct(below, kroneckerProduct(u, above).eval()).eval();
-}
-
 } // namespace tket

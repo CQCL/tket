@@ -229,19 +229,29 @@ SCENARIO("Testing optimise_u3_gates") {
     std::complex<double> zero(0, 0);
     std::complex<double> one(1, 0);
     std::complex<double> mone(-1, 0);
+    std::complex<double> i(0, 1);
     Eigen::MatrixXcd U = Eigen::MatrixXcd::Identity(8, 8);
-    Eigen::MatrixXcd T(8, 8);
+    Eigen::MatrixXcd T1(8, 8), T2(8, 8);
 
-    T << zero, mone, zero, zero, zero, zero, zero, zero,
-          one, zero, zero, zero, zero, zero, zero, zero,
-         zero, zero, zero, mone, zero, zero, zero, zero,
-         zero, zero,  one, zero, zero, zero, zero, zero,
-         zero, zero, zero, zero, zero, mone, zero, zero,
-         zero, zero, zero, zero,  one, zero, zero, zero,
-         zero, zero, zero, zero, zero, zero, zero, mone,
-         zero, zero, zero, zero, zero, zero,  one, zero;
+    T1 << zero, mone, zero, zero, zero, zero, zero, zero,
+           one, zero, zero, zero, zero, zero, zero, zero,
+          zero, zero, zero, mone, zero, zero, zero, zero,
+          zero, zero,  one, zero, zero, zero, zero, zero,
+          zero, zero, zero, zero, zero, mone, zero, zero,
+          zero, zero, zero, zero,  one, zero, zero, zero,
+          zero, zero, zero, zero, zero, zero, zero, mone,
+          zero, zero, zero, zero, zero, zero,  one, zero;
 
-    optimise_u3_gates(0, 2, U, T);
+    T2 << -0.365, -0.198 + 0.028 * i, 0, 0, -0.766 + 0.223 * i, -0.397 + 0.18 * i, 0, 0,
+          0.083 - 0.181 * i, -0.104 + 0.35 * i, 0, 0, 0.063 - 0.431 * i, -0.004 + 0.798 * i, 0, 0,
+          0, 0, -0.365, -0.198 + 0.028 * i, 0, 0, -0.766 + 0.223 * i, -0.397 + 0.18 * i,
+          0, 0, 0.083 - 0.181 * i, -0.104 + 0.35 * i, 0, 0, 0.063 - 0.431 * i, -0.004 + 0.798 * i,
+          0.226 - 0.765 * i,  0.063 - 0.431 * i, 0, 0, -0.002 + 0.365 * i,  0.027 + 0.198 * i, 0, 0,
+          0.329 + 0.286 * i, -0.67 - 0.434 * i, 0, 0, -0.181 - 0.084 * i,  0.35 + 0.105 * i, 0, 0,
+          0, 0, 0.226 - 0.765 * i,  0.063 - 0.431 * i, 0, 0, -0.002 + 0.365 * i,  0.027 + 0.198 * i,
+          0, 0, 0.329 + 0.286 * i, -0.67 - 0.434 * i, 0, 0, -0.181 - 0.084 * i,  0.35 + 0.105 * i;
+
+    optimise_circuit(0, 2, U, T2);
   }
 }
 }  // namespace test_PostRoutingOptimisation
