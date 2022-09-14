@@ -5,7 +5,26 @@
   "description": "Serialization of a pytket predicate v1",
   "properties": {
     "type": {
-      "type":"string" ,
+      "type":"string",
+      "enum":[
+        "GateSetPredicate",
+        "PlacementPredicate",
+        "ConnectivityPredicate",
+        "DirectednessPredicate",
+        "MaxNQubitsPredicate",
+        "NoClassicalControlPredicate",
+        "NoFastFeedforwardPredicate",
+        "NoClassicalBitsPredicate",
+        "NoWireSwapsPredicate",
+        "MaxTwoQubitGatesPredicate",
+        "CliffordCircuitPredicate",
+        "DefaultRegisterPredicate",
+        "NoBarriersPredicate",
+        "NoMidMeasurePredicate",
+        "NoSymbolsPredicate",
+        "GlobalPhasedXPredicate",
+        "NormalisedTK2Predicate"
+      ],
       "description": "The subclass of \"Predicate\" implemented."
     },
     "allowed_types": {
@@ -51,7 +70,8 @@
       "then": {
         "required": [
           "allowed_types"
-        ]
+        ],
+        "maxProperties": 2
       }
     },
     {
@@ -65,7 +85,8 @@
       "then": {
         "required": [
           "node_set"
-        ]
+        ],
+        "maxProperties": 2
       }
     },
     {
@@ -79,7 +100,8 @@
       "then": {
         "required": [
           "architecture"
-        ]
+        ],
+        "maxProperties": 2
       }
     },
     {
@@ -93,7 +115,8 @@
       "then": {
         "required": [
           "architecture"
-        ]
+        ],
+        "maxProperties": 2
       }
     },
     {
@@ -107,7 +130,8 @@
       "then": {
         "required": [
           "n_qubits"
-        ]
+        ],
+        "maxProperties": 2
       }
     },
     {
@@ -121,7 +145,34 @@
       "then": {
         "required": [
           "custom"
-        ]
+        ],
+        "maxProperties": 2
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "$comment": "List all non-parametrized predicates",
+            "enum": [
+              "NoClassicalControlPredicate",
+              "NoFastFeedforwardPredicate",
+              "NoClassicalBitsPredicate",
+              "NoWireSwapsPredicate",
+              "MaxTwoQubitGatesPredicate",
+              "CliffordCircuitPredicate",
+              "DefaultRegisterPredicate",
+              "NoBarriersPredicate",
+              "NoMidMeasurePredicate",
+              "NoSymbolsPredicate",
+              "GlobalPhasedXPredicate",
+              "NormalisedTK2Predicate"
+            ]
+          }
+        }
+      },
+      "then": {
+        "maxProperties": 1
       }
     }
   ],
