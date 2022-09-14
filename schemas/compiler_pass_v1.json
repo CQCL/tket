@@ -112,7 +112,56 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "The name of the compiler pass. Matches the name of the pytket method used to generate it."
+          "enum": [
+            "RebaseCustom",
+            "CommuteThroughMultis",
+            "DecomposeArbitrarilyControlledGates",
+            "DecomposeBoxes",
+            "DecomposeMultiQubitsCX",
+            "DecomposeSingleQubitsTK1",
+            "PeepholeOptimise2Q",
+            "RebaseTket",
+            "RebaseUFR",
+            "RemoveRedundancies",
+            "SynthesiseHQS",
+            "SynthesiseTK",
+            "SynthesiseTket",
+            "SynthesiseOQC",
+            "SynthesiseUMD",
+            "SquashTK1",
+            "SquashRzPhasedX",
+            "FlattenRegisters",
+            "DelayMeasures",
+            "ZZPhaseToRz",
+            "RemoveDiscarded",
+            "SimplifyMeasured",
+            "RemoveBarriers",
+            "DecomposeBridges",
+            "KAKDecomposition",
+            "ThreeQubitSquash",
+            "FullPeepholeOptimise",
+            "ComposePhasePolyBoxes",
+            "EulerAngleReduction",
+            "RoutingPass",
+            "PlacementPass",
+            "NaivePlacementPass",
+            "RenameQubitsPass",
+            "CliffordSimp",
+            "DecomposeSwapsToCXs",
+            "DecomposeSwapsToCircuit",
+            "OptimisePhaseGadgets",
+            "OptimisePairwiseGadgets",
+            "PauliSimp",
+            "GuidedPauliSimp",
+            "SimplifyInitial",
+            "FullMappingPass",
+            "DefaultMappingPass",
+            "CXMappingPass",
+            "PauliSquash",
+            "ContextSimp",
+            "DecomposeTK2"
+          ],
+          "description": "The name of the compiler pass. Matches the name of the pytket method used to generate it. List all the passes as enum."
         },
         "basis_allowed": {
           "type": "array",
@@ -270,7 +319,8 @@
               "basis_allowed",
               "basis_cx_replacement",
               "basis_tk1_replacement"
-            ]
+            ],
+            "maxProperties": 4
           }
         },
         {
@@ -285,7 +335,8 @@
             "required": [
               "basis_singleqs",
               "basis_tk1_replacement"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -301,7 +352,8 @@
               "euler_p",
               "euler_q",
               "euler_strict"
-            ]
+            ],
+            "maxProperties": 4
           }
         },
         {
@@ -317,7 +369,8 @@
               "fidelity",
               "allow_swaps",
               "target_2qb_gate"
-            ]
+            ],
+            "maxProperties": 4
           }
         },
         {
@@ -332,7 +385,8 @@
             "required": [
               "allow_swaps",
               "target_2qb_gate"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -346,7 +400,8 @@
           "then": {
             "required": [
               "min_size"
-            ]
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -360,7 +415,8 @@
           "then": {
             "required": [
               "allow_swaps"
-            ]
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -374,7 +430,8 @@
           "then": {
             "required": [
               "allow_swaps"
-            ]
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -388,7 +445,8 @@
           "then": {
             "required": [
               "cx_config"
-            ]
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -403,7 +461,8 @@
             "required": [
               "pauli_synth_strat",
               "cx_config"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -418,7 +477,8 @@
             "required": [
               "pauli_synth_strat",
               "cx_config"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -433,7 +493,8 @@
             "required": [
               "allow_classical",
               "create_all_qubits"
-            ]
+            ],
+            "maxProperties": 4
           }
         },
         {
@@ -447,7 +508,8 @@
           "then": {
             "required": [
               "qubit_map"
-            ]
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -461,7 +523,8 @@
           "then": {
             "required": [
               "placement"
-            ]
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -475,7 +538,8 @@
           "then": {
             "required": [
               "architecture"
-            ]
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -490,7 +554,8 @@
             "required": [
               "architecture",
               "routing_config"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -503,8 +568,10 @@
           },
           "then": {
             "required": [
-              "architecture"
-            ]
+              "architecture",
+              "routing_config"
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -519,7 +586,8 @@
             "required": [
               "architecture",
               "directed"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -533,7 +601,8 @@
           "then": {
             "required": [
               "swap_replacement"
-            ]
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -549,7 +618,8 @@
               "architecture",
               "placement",
               "routing_config"
-            ]
+            ],
+            "maxProperties": 4
           }
         },
         {
@@ -564,7 +634,8 @@
             "required": [
               "architecture",
               "delay_measures"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -582,7 +653,8 @@
               "routing_config",
               "directed",
               "delay_measures"
-            ]
+            ],
+            "maxProperties": 6
           }
         },
         {
@@ -597,7 +669,8 @@
             "required": [
               "pauli_synth_strat",
               "cx_config"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -612,13 +685,15 @@
             "required": [
               "allow_classical",
               "x_circuit"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
           "if": {
             "properties": {
               "name": {
+                "$comment": "List all non-parametrized passes",
                 "enum": [
                   "CommuteThroughMultis",
                   "DecomposeArbitrarilyControlledGates",
@@ -668,7 +743,8 @@
       },
       "required": [
         "sequence"
-      ]
+      ],
+      "additionalProperties": false
     },
     "RepeatPass": {
       "type": "object",
@@ -681,7 +757,8 @@
       },
       "required": [
         "body"
-      ]
+      ],
+      "additionalProperties": false
     },
     "RepeatWithMetricPass": {
       "type": "object",
@@ -699,7 +776,8 @@
       "required": [
         "body",
         "metric"
-      ]
+      ],
+      "additionalProperties": false
     },
     "RepeatUntilSatisfiedPass": {
       "type": "object",
@@ -717,7 +795,8 @@
       "required": [
         "body",
         "predicate"
-      ]
+      ],
+      "additionalProperties": false
     },
     "routingmethod": {
       "type": "object",
