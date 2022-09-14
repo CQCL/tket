@@ -339,7 +339,7 @@ jobs:
     name: Publish pytket coverage
     needs: build_test
     concurrency: gh_pages
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
