@@ -235,6 +235,22 @@
         },
         "routing_config": {
           "$ref": "#definitions/routing_config"
+        },
+        "fidelities": {
+          "type": "object",
+          "description": "Gate fidelities in \"DecomposeTK2\".",
+          "properties": {
+            "CX": {
+              "type": ["number", "null"],
+              "minimum": 0,
+              "maximum": 1
+            },
+            "ZZMax": {
+              "type": ["number", "null"],
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
         }
       },
       "required": [
@@ -298,7 +314,38 @@
           },
           "then": {
             "required": [
-              "fidelity"
+              "fidelity",
+              "allow_swaps",
+              "target_2qb_gate"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "FullPeepholeOptimise"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "allow_swaps",
+              "target_2qb_gate"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "ComposePhasePolyBoxes"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "min_size"
             ]
           }
         },
