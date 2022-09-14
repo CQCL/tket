@@ -268,7 +268,7 @@ std::string RepeatPass::to_string() const {
 nlohmann::json RepeatPass::get_config() const {
   nlohmann::json j;
   j["pass_class"] = "RepeatPass";
-  j["RepeatClass"]["body"] = pass_;
+  j["RepeatPass"]["body"] = pass_;
   return j;
 }
 
