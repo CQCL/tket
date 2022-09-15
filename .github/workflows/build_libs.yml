@@ -97,7 +97,7 @@ jobs:
     name: build library (macos-m1)
     needs: changes
     if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
-    runs-on: [self-hosted, macos, M1]
+    runs-on: ['self-hosted', 'macOS', 'ARM64']
     strategy:
       matrix:
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
