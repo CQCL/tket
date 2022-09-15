@@ -18,11 +18,32 @@ from jsonschema import RefResolver, Draft7Validator, ValidationError  # type: ig
 from pathlib import Path
 from typing import Any, Dict, List
 
-from pytket.circuit import Node, Circuit, Qubit  # type: ignore
-from pytket.passes import BasePass  # type: ignore
+from pytket.circuit import Node, Circuit, Qubit, OpType  # type: ignore
 from pytket.predicates import Predicate  # type: ignore
 from pytket.architecture import Architecture  # type: ignore
-from pytket.placement import Placement  # type: ignore
+from pytket.placement import Placement, GraphPlacement  # type: ignore
+from pytket._tket.circuit import _library  # type: ignore
+
+from pytket.passes import (  # type: ignore
+    BasePass,
+    SequencePass,
+    RemoveRedundancies,
+    RepeatUntilSatisfiedPass,
+    CommuteThroughMultis,
+    RepeatWithMetricPass,
+    RebaseCustom,
+    CXMappingPass,
+    FullMappingPass,
+    DefaultMappingPass,
+    AASRouting,
+    SquashCustom,
+)
+from pytket.mapping import (  # type: ignore
+    LexiLabellingMethod,
+    LexiRouteRoutingMethod,
+    MultiGateReorderRoutingMethod,
+    BoxDecompositionRoutingMethod,
+)
 
 
 def standard_pass_dict(content: Dict[str, Any]) -> Dict[str, Any]:
@@ -502,3 +523,186 @@ def test_invalid_predicate_deserialisation() -> None:
         check_predicate_serialisation(p)
     err_msg = "too many properties"
     assert err_msg in str(e.value)
+
+
+def check_arc_dict(arc: Architecture, d: dict) -> bool:
+    links = [
+        {"link": [n1.to_list(), n2.to_list()], "weight": 1} for n1, n2 in arc.coupling
+    ]
+
+    if d["links"] != links:
+        return False
+    else:
+        nodes = [Node(n[0], n[1]) for n in d["nodes"]]
+        return set(nodes) == set(arc.nodes)
+
+
+def test_pass_deserialisation_only() -> None:
+    # SquashCustom
+    def sq(a: float, b: float, c: float) -> Circuit:
+        circ = Circuit(1)
+        if c != 0:
+            circ.Rz(c, 0)
+        if b != 0:
+            circ.Rx(b, 0)
+        if a != 0:
+            circ.Rz(a, 0)
+        return circ
+
+    squash_pass = SquashCustom({OpType.Rz, OpType.Rx, OpType.Ry}, sq)
+    assert squash_pass.to_dict()["StandardPass"]["name"] == "SquashCustom"
+    assert set(squash_pass.to_dict()["StandardPass"]["basis_singleqs"]) == {
+        "Rz",
+        "Rx",
+        "Ry",
+    }
+    # RebaseCustom
+    cx = Circuit(2)
+    cx.CX(0, 1)
+    pz_rebase = RebaseCustom(
+        {OpType.CX, OpType.PhasedX, OpType.Rz}, cx, _library._TK1_to_TK1
+    )
+    assert pz_rebase.to_dict()["StandardPass"]["name"] == "RebaseCustom"
+    assert set(pz_rebase.to_dict()["StandardPass"]["basis_allowed"]) == {
+        "CX",
+        "PhasedX",
+        "Rz",
+    }
+    assert cx.to_dict() == pz_rebase.to_dict()["StandardPass"]["basis_cx_replacement"]
+
+    # FullMappingPass
+    arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
+    placer = GraphPlacement(arc)
+    fm_pass = FullMappingPass(
+        arc,
+        placer,
+        config=[
+            LexiLabellingMethod(),
+            LexiRouteRoutingMethod(),
+            MultiGateReorderRoutingMethod(),
+            BoxDecompositionRoutingMethod(),
+        ],
+    )
+    assert fm_pass.to_dict()["pass_class"] == "SequencePass"
+    p_pass = fm_pass.get_sequence()[0]
+    r_pass = fm_pass.get_sequence()[1]
+    np_pass = fm_pass.get_sequence()[2]
+    assert np_pass.to_dict()["StandardPass"]["name"] == "NaivePlacementPass"
+    assert r_pass.to_dict()["StandardPass"]["name"] == "RoutingPass"
+    assert p_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"
+    assert check_arc_dict(arc, r_pass.to_dict()["StandardPass"]["architecture"])
+    assert p_pass.to_dict()["StandardPass"]["placement"]["type"] == "GraphPlacement"
+    assert r_pass.to_dict()["StandardPass"]["routing_config"] == [
+        {"name": "LexiLabellingMethod"},
+        {
+            "name": "LexiRouteRoutingMethod",
+            "depth": 10,
+        },
+        {
+            "name": "MultiGateReorderRoutingMethod",
+            "depth": 10,
+            "size": 10,
+        },
+        {"name": "BoxDecompositionRoutingMethod"},
+    ]
+    assert r_pass.to_dict()["StandardPass"]["routing_config"][3] == {
+        "name": "BoxDecompositionRoutingMethod"
+    }
+    # DefaultMappingPass
+    dm_pass = DefaultMappingPass(arc)
+    assert dm_pass.to_dict()["pass_class"] == "SequencePass"
+    p_pass = dm_pass.get_sequence()[0].get_sequence()[0]
+    r_pass = dm_pass.get_sequence()[0].get_sequence()[1]
+    np_pass = dm_pass.get_sequence()[0].get_sequence()[2]
+    d_pass = dm_pass.get_sequence()[1]
+    assert d_pass.to_dict()["StandardPass"]["name"] == "DelayMeasures"
+    assert p_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"
+    assert np_pass.to_dict()["StandardPass"]["name"] == "NaivePlacementPass"
+    assert r_pass.to_dict()["StandardPass"]["name"] == "RoutingPass"
+    assert check_arc_dict(arc, r_pass.to_dict()["StandardPass"]["architecture"])
+    assert p_pass.to_dict()["StandardPass"]["placement"]["type"] == "GraphPlacement"
+    # DefaultMappingPass with delay_measures=False
+    dm_pass = DefaultMappingPass(arc, False)
+    assert dm_pass.to_dict()["pass_class"] == "SequencePass"
+    assert len(dm_pass.get_sequence()) == 3
+    p_pass = dm_pass.get_sequence()[0]
+    r_pass = dm_pass.get_sequence()[1]
+    np_pass = dm_pass.get_sequence()[2]
+    assert p_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"
+    assert r_pass.to_dict()["StandardPass"]["name"] == "RoutingPass"
+    assert np_pass.to_dict()["StandardPass"]["name"] == "NaivePlacementPass"
+    assert check_arc_dict(arc, r_pass.to_dict()["StandardPass"]["architecture"])
+    assert p_pass.to_dict()["StandardPass"]["placement"]["type"] == "GraphPlacement"
+    # AASRouting
+    aas_pass = AASRouting(arc, lookahead=2)
+    assert aas_pass.to_dict()["pass_class"] == "SequencePass"
+    comppba_plac_pass = aas_pass.get_sequence()[0]
+    aasrou_pass = aas_pass.get_sequence()[1]
+    assert aasrou_pass.to_dict()["StandardPass"]["name"] == "AASRoutingPass"
+    assert check_arc_dict(arc, aasrou_pass.to_dict()["StandardPass"]["architecture"])
+    assert (
+        comppba_plac_pass.get_sequence()[0].to_dict()["StandardPass"]["name"]
+        == "ComposePhasePolyBoxes"
+    )
+    assert (
+        comppba_plac_pass.get_sequence()[1].to_dict()["StandardPass"]["name"]
+        == "PlacementPass"
+    )
+    # CXMappingPass
+    cxm_pass = CXMappingPass(arc, placer, directed_cx=True, delay_measures=True)
+    assert cxm_pass.to_dict()["pass_class"] == "SequencePass"
+    p0 = cxm_pass.get_sequence()[0]
+    p1 = cxm_pass.get_sequence()[1]
+    assert p0.to_dict()["pass_class"] == "SequencePass"
+    assert p1.to_dict()["StandardPass"]["name"] == "DecomposeSwapsToCXs"
+    assert p1.to_dict()["StandardPass"]["directed"] == True
+    p00 = p0.get_sequence()[0]
+    p01 = p0.get_sequence()[1]
+    assert p00.to_dict()["pass_class"] == "SequencePass"
+    assert p01.to_dict()["StandardPass"]["name"] == "RebaseCustom"
+    assert p01.to_dict()["StandardPass"]["basis_cx_replacement"] == cx.to_dict()
+    p000 = p00.get_sequence()[0]
+    p001 = p00.get_sequence()[1]
+    assert p000.to_dict()["pass_class"] == "SequencePass"
+    assert p001.to_dict()["StandardPass"]["name"] == "DelayMeasures"
+    p0000 = p000.get_sequence()[0]
+    p0001 = p000.get_sequence()[1]
+    assert p0000.to_dict()["StandardPass"]["name"] == "RebaseCustom"
+    assert p0001.to_dict()["pass_class"] == "SequencePass"
+    p00010 = p0001.get_sequence()[0]
+    p00011 = p0001.get_sequence()[1]
+    assert p00010.to_dict()["StandardPass"]["name"] == "PlacementPass"
+    assert p00011.to_dict()["StandardPass"]["name"] == "RoutingPass"
+    assert check_arc_dict(arc, p00011.to_dict()["StandardPass"]["architecture"])
+    # RepeatWithMetricPass
+    def number_of_CX(circ: Circuit) -> object:
+        return circ.n_gates_of_type(OpType.CX)
+
+    rp = RepeatWithMetricPass(
+        SequencePass([CommuteThroughMultis(), RemoveRedundancies()]), number_of_CX
+    )
+    assert rp.to_dict()["pass_class"] == "RepeatWithMetricPass"
+    sps = rp.get_pass().get_sequence()
+    assert sps[0].to_dict()["StandardPass"]["name"] == "CommuteThroughMultis"
+    assert sps[1].to_dict()["StandardPass"]["name"] == "RemoveRedundancies"
+    cx = Circuit(2)
+    cx.CX(0, 1)
+    cx.CX(1, 0)
+    assert number_of_CX(cx) == rp.get_metric()(cx)
+
+    # RepeatUntilSatisfiedPass
+    def no_CX(circ: Circuit) -> object:
+        return circ.n_gates_of_type(OpType.CX) == 0
+
+    rp = RepeatUntilSatisfiedPass(
+        SequencePass([CommuteThroughMultis(), RemoveRedundancies()]), no_CX
+    )
+    assert rp.to_dict()["pass_class"] == "RepeatUntilSatisfiedPass"
+    sps = rp.get_pass().get_sequence()
+    assert sps[0].to_dict()["StandardPass"]["name"] == "CommuteThroughMultis"
+    assert sps[1].to_dict()["StandardPass"]["name"] == "RemoveRedundancies"
+    assert rp.get_predicate().__repr__() == "UserDefinedPredicate"
+    assert (
+        rp.to_dict()["RepeatUntilSatisfiedPass"]["predicate"]["type"]
+        == "UserDefinedPredicate"
+    )
