@@ -281,7 +281,7 @@ jobs:
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
-        OPENBLAS="$(brew --prefix openblas)" pip install -U scipy
+        PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
         cd pytket
         pip uninstall -y pytket
         pip install -e . -v
@@ -298,7 +298,7 @@ jobs:
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.9
-        OPENBLAS="$(brew --prefix openblas)" pip install -U scipy
+        PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
         cd pytket
         pip uninstall -y pytket
         pip install -e . -v
@@ -315,7 +315,7 @@ jobs:
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.10
-        OPENBLAS="$(brew --prefix openblas)" pip install -U scipy
+        PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
         cd pytket
         pip uninstall -y pytket
         pip install -e . -v

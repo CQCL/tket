@@ -270,6 +270,7 @@ jobs:
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-${{ matrix.python-version }}
+        PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
         pip uninstall -y pytket
         pip install $GITHUB_WORKSPACE/wheelhouse/${{ matrix.python-version }}.*/pytket-*.whl
     - name: Run tests
