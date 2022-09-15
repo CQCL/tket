@@ -15,7 +15,6 @@
 from pytket.circuit import Circuit, OpType, Op, PauliExpBox, Unitary2qBox, Node, Qubit  # type: ignore
 from pytket.pauli import Pauli  # type: ignore
 from pytket.passes import (  # type: ignore
-    BasePass,
     SequencePass,
     RemoveRedundancies,
     SynthesiseTket,
@@ -38,23 +37,12 @@ from pytket.passes import (  # type: ignore
     FullMappingPass,
     DefaultMappingPass,
     AASRouting,
-    ComposePhasePolyBoxes,
     DecomposeSwapsToCXs,
     DecomposeSwapsToCircuit,
     PauliSimp,
-    KAKDecomposition,
     ThreeQubitSquash,
-    DecomposeArbitrarilyControlledGates,
-    DecomposeBoxes,
-    PeepholeOptimise2Q,
-    FullPeepholeOptimise,
     RebaseTket,
-    FlattenRegisters,
     SquashCustom,
-    DelayMeasures,
-    CliffordSimp,
-    OptimisePhaseGadgets,
-    GuidedPauliSimp,
     RemoveDiscarded,
     SimplifyMeasured,
     SimplifyInitial,
@@ -67,20 +55,8 @@ from pytket.predicates import (  # type: ignore
     GateSetPredicate,
     NoClassicalControlPredicate,
     DirectednessPredicate,
-    NoFastFeedforwardPredicate,
-    NoClassicalBitsPredicate,
-    NoWireSwapsPredicate,
-    MaxTwoQubitGatesPredicate,
-    PlacementPredicate,
-    ConnectivityPredicate,
-    CliffordCircuitPredicate,
-    DefaultRegisterPredicate,
-    MaxNQubitsPredicate,
     NoBarriersPredicate,
-    NoMidMeasurePredicate,
-    NoSymbolsPredicate,
     CompilationUnit,
-    UserDefinedPredicate,
 )
 from pytket.mapping import (  # type: ignore
     LexiLabellingMethod,
@@ -619,42 +595,6 @@ def test_squash_chains() -> None:
     ]
 
 
-def test_library_pass_config() -> None:
-    assert KAKDecomposition().to_dict()["StandardPass"]["name"] == "KAKDecomposition"
-    assert ThreeQubitSquash().to_dict()["StandardPass"]["name"] == "ThreeQubitSquash"
-    assert (
-        CommuteThroughMultis().to_dict()["StandardPass"]["name"]
-        == "CommuteThroughMultis"
-    )
-    assert (
-        DecomposeArbitrarilyControlledGates().to_dict()["StandardPass"]["name"]
-        == "DecomposeArbitrarilyControlledGates"
-    )
-    assert DecomposeBoxes().to_dict()["StandardPass"]["name"] == "DecomposeBoxes"
-    assert (
-        DecomposeMultiQubitsCX().to_dict()["StandardPass"]["name"]
-        == "DecomposeMultiQubitsCX"
-    )
-    assert (
-        PeepholeOptimise2Q().to_dict()["StandardPass"]["name"] == "PeepholeOptimise2Q"
-    )
-    assert (
-        FullPeepholeOptimise().to_dict()["StandardPass"]["name"]
-        == "FullPeepholeOptimise"
-    )
-    assert RebaseTket().to_dict()["StandardPass"]["name"] == "RebaseTket"
-    assert (
-        RemoveRedundancies().to_dict()["StandardPass"]["name"] == "RemoveRedundancies"
-    )
-    assert SynthesiseHQS().to_dict()["StandardPass"]["name"] == "SynthesiseHQS"
-    assert SynthesiseTket().to_dict()["StandardPass"]["name"] == "SynthesiseTket"
-    assert SynthesiseOQC().to_dict()["StandardPass"]["name"] == "SynthesiseOQC"
-    assert SynthesiseUMD().to_dict()["StandardPass"]["name"] == "SynthesiseUMD"
-    assert FlattenRegisters().to_dict()["StandardPass"]["name"] == "FlattenRegisters"
-    assert DelayMeasures().to_dict()["StandardPass"]["name"] == "DelayMeasures"
-    assert ZZPhaseToRz().to_dict()["StandardPass"]["name"] == "ZZPhaseToRz"
-
-
 def check_arc_dict(arc: Architecture, d: dict) -> bool:
     links = [
         {"link": [n1.to_list(), n2.to_list()], "weight": 1} for n1, n2 in arc.coupling
@@ -698,36 +638,11 @@ def test_generated_pass_config() -> None:
         "PhasedX",
         "Rz",
     }
-
     assert cx.to_dict() == pz_rebase.to_dict()["StandardPass"]["basis_cx_replacement"]
-    # EulerAngleReduction
-    euler_pass = EulerAngleReduction(OpType.Ry, OpType.Rx)
-    assert euler_pass.to_dict()["StandardPass"]["name"] == "EulerAngleReduction"
-    assert euler_pass.to_dict()["StandardPass"]["euler_q"] == "Ry"
-    assert euler_pass.to_dict()["StandardPass"]["euler_p"] == "Rx"
-    # RoutingPass
-    arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
-    r_pass = RoutingPass(arc)
-    assert r_pass.to_dict()["StandardPass"]["name"] == "RoutingPass"
-    assert check_arc_dict(arc, r_pass.to_dict()["StandardPass"]["architecture"])
-    # PlacementPass
-    placer = GraphPlacement(arc)
-    p_pass = PlacementPass(placer)
-    assert p_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"
-    assert p_pass.to_dict()["StandardPass"]["placement"]["type"] == "GraphPlacement"
-    assert p_pass.to_dict()["StandardPass"]["placement"]["config"]["depth_limit"] == 5
-    # NaivePlacementPass
-    np_pass = NaivePlacementPass(arc)
-    assert np_pass.to_dict()["StandardPass"]["name"] == "NaivePlacementPass"
-    assert check_arc_dict(arc, np_pass.to_dict()["StandardPass"]["architecture"])
-    # RenameQubitsPass
-    qm = {Qubit("a", 0): Qubit("b", 1), Qubit("a", 1): Qubit("b", 0)}
-    rn_pass = RenameQubitsPass(qm)
-    assert rn_pass.to_dict()["StandardPass"]["name"] == "RenameQubitsPass"
-    assert rn_pass.to_dict()["StandardPass"]["qubit_map"] == [
-        [k.to_list(), v.to_list()] for k, v in qm.items()
-    ]
+
     # FullMappingPass
+    arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
+    placer = GraphPlacement(arc)
     fm_pass = FullMappingPass(
         arc,
         placer,
@@ -791,27 +706,18 @@ def test_generated_pass_config() -> None:
     # AASRouting
     aas_pass = AASRouting(arc, lookahead=2)
     assert aas_pass.to_dict()["pass_class"] == "SequencePass"
-    aas_pass_0 = aas_pass.get_sequence()[0]
-    assert aas_pass_0.to_dict()["pass_class"] == "SequencePass"
+    comppba_plac_pass = aas_pass.get_sequence()[0]
     aasrou_pass = aas_pass.get_sequence()[1]
     assert aasrou_pass.to_dict()["StandardPass"]["name"] == "AASRoutingPass"
     assert check_arc_dict(arc, aasrou_pass.to_dict()["StandardPass"]["architecture"])
-    aas_pass_00 = aas_pass_0.get_sequence()[0]
-    assert aas_pass_00.to_dict()["pass_class"] == "SequencePass"
-    aaspla_pass = aas_pass_0.get_sequence()[1]
-    assert aaspla_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"
-    rebase_pass = aas_pass_00.get_sequence()[0]
-    assert rebase_pass.to_dict()["StandardPass"]["name"] == "RebaseUFR"
-    comppb_pass = aas_pass_00.get_sequence()[1]
-    assert comppb_pass.to_dict()["StandardPass"]["name"] == "ComposePhasePolyBoxes"
-    # ComposePhasePolyBoxes
-    ppb_pass = ComposePhasePolyBoxes(min_size=3)
-    assert ppb_pass.to_dict()["pass_class"] == "SequencePass"
-    ppb_pass_0 = ppb_pass.get_sequence()[0]
-    ppb_pass_1 = ppb_pass.get_sequence()[1]
-    assert ppb_pass_0.to_dict()["StandardPass"]["name"] == "RebaseUFR"
-    assert ppb_pass_1.to_dict()["StandardPass"]["name"] == "ComposePhasePolyBoxes"
-    assert ppb_pass_1.to_dict()["StandardPass"]["min_size"] == 3
+    assert (
+        comppba_plac_pass.get_sequence()[0].to_dict()["StandardPass"]["name"]
+        == "ComposePhasePolyBoxes"
+    )
+    assert (
+        comppba_plac_pass.get_sequence()[1].to_dict()["StandardPass"]["name"]
+        == "PlacementPass"
+    )
     # CXMappingPass
     cxm_pass = CXMappingPass(arc, placer, directed_cx=True, delay_measures=True)
     assert cxm_pass.to_dict()["pass_class"] == "SequencePass"
@@ -838,51 +744,9 @@ def test_generated_pass_config() -> None:
     assert p00010.to_dict()["StandardPass"]["name"] == "PlacementPass"
     assert p00011.to_dict()["StandardPass"]["name"] == "RoutingPass"
     assert check_arc_dict(arc, p00011.to_dict()["StandardPass"]["architecture"])
-    # CliffordSimp
-    clifford_pass = CliffordSimp(allow_swaps=False)
-    assert clifford_pass.to_dict()["StandardPass"]["name"] == "CliffordSimp"
-    assert clifford_pass.to_dict()["StandardPass"]["allow_swaps"] == False
-    # DecomposeSwapsToCXs
-    swap_cx_pass = DecomposeSwapsToCXs(arc)
-    assert swap_cx_pass.to_dict()["StandardPass"]["name"] == "DecomposeSwapsToCXs"
-    assert swap_cx_pass.to_dict()["StandardPass"]["directed"] == False
-    # DecomposeSwapsToCircuit
-    repcirc = Circuit(2)
-    repcirc.X(0)
-    repcirc.CX(0, 1)
-    repcirc.CX(1, 0)
-    repcirc.CX(0, 1)
-    repcirc.X(1)
-    swap_circ_pass = DecomposeSwapsToCircuit(repcirc)
-    assert swap_circ_pass.to_dict()["StandardPass"]["name"] == "DecomposeSwapsToCircuit"
-    assert (
-        swap_circ_pass.to_dict()["StandardPass"]["swap_replacement"]
-        == repcirc.to_dict()
-    )
-    # OptimisePhaseGadgets
-    pg_pass = OptimisePhaseGadgets(CXConfigType.Tree)
-    assert pg_pass.to_dict()["StandardPass"]["name"] == "OptimisePhaseGadgets"
-    assert pg_pass.to_dict()["StandardPass"]["cx_config"] == "Tree"
-    # PauliSimp
-    pauli_pass = PauliSimp()
-    assert pauli_pass.to_dict()["StandardPass"]["name"] == "PauliSimp"
-    assert pauli_pass.to_dict()["StandardPass"]["cx_config"] == "Snake"
-    assert pauli_pass.to_dict()["StandardPass"]["pauli_synth_strat"] == "Sets"
-    # GuidedPauliSimp
-    gpauli_pass = GuidedPauliSimp()
-    assert gpauli_pass.to_dict()["StandardPass"]["name"] == "GuidedPauliSimp"
-    assert gpauli_pass.to_dict()["StandardPass"]["cx_config"] == "Snake"
-    assert gpauli_pass.to_dict()["StandardPass"]["pauli_synth_strat"] == "Sets"
 
 
 def test_repeat_pass_config() -> None:
-    # RepeatPass
-    rp = RepeatPass(SequencePass([CommuteThroughMultis(), RemoveRedundancies()]))
-    assert rp.to_dict()["pass_class"] == "RepeatPass"
-    sps = rp.get_pass().get_sequence()
-    assert sps[0].to_dict()["StandardPass"]["name"] == "CommuteThroughMultis"
-    assert sps[1].to_dict()["StandardPass"]["name"] == "RemoveRedundancies"
-
     # RepeatWithMetricPass
     def number_of_CX(circ: Circuit) -> object:
         return circ.n_gates_of_type(OpType.CX)
@@ -914,19 +778,6 @@ def test_repeat_pass_config() -> None:
     assert (
         rp.to_dict()["RepeatUntilSatisfiedPass"]["predicate"]["type"]
         == "UserDefinedPredicate"
-    )
-
-    rp = RepeatUntilSatisfiedPass(
-        SequencePass([CommuteThroughMultis(), RemoveRedundancies()]), nccp
-    )
-    assert rp.to_dict()["pass_class"] == "RepeatUntilSatisfiedPass"
-    sps = rp.get_pass().get_sequence()
-    assert sps[0].to_dict()["StandardPass"]["name"] == "CommuteThroughMultis"
-    assert sps[1].to_dict()["StandardPass"]["name"] == "RemoveRedundancies"
-    assert rp.get_predicate().__repr__() == "NoClassicalControlPredicate"
-    assert (
-        rp.to_dict()["RepeatUntilSatisfiedPass"]["predicate"]["type"]
-        == "NoClassicalControlPredicate"
     )
 
 
@@ -1110,79 +961,6 @@ def test_rz_phasedX_squash() -> None:
     assert cmds[-2].op.type == OpType.Rz
 
 
-def test_predicate_serialization() -> None:
-    arc = Architecture([(0, 2), (1, 2)])
-
-    pred = GateSetPredicate({OpType.X, OpType.Z})
-    assert pred.to_dict() == {"type": "GateSetPredicate", "allowed_types": ["X", "Z"]}
-    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
-
-    pred = NoClassicalControlPredicate()
-    assert pred.to_dict() == {"type": "NoClassicalControlPredicate"}
-    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
-
-    pred = DirectednessPredicate(arc)
-    assert pred.to_dict() == {
-        "type": "DirectednessPredicate",
-        "architecture": arc.to_dict(),
-    }
-    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
-
-    pred = NoFastFeedforwardPredicate()
-    assert pred.to_dict() == {"type": "NoFastFeedforwardPredicate"}
-    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
-
-    pred = NoClassicalBitsPredicate()
-    assert pred.to_dict() == {"type": "NoClassicalBitsPredicate"}
-    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
-
-    pred = NoWireSwapsPredicate()
-    assert pred.to_dict() == {"type": "NoWireSwapsPredicate"}
-    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
-
-    pred = MaxTwoQubitGatesPredicate()
-    assert pred.to_dict() == {"type": "MaxTwoQubitGatesPredicate"}
-    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
-
-    pred = PlacementPredicate(arc)
-    assert pred.to_dict() == {
-        "type": "PlacementPredicate",
-        "node_set": arc.to_dict()["nodes"],
-    }
-    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
-
-    pred = ConnectivityPredicate(arc)
-    assert pred.to_dict() == {
-        "type": "ConnectivityPredicate",
-        "architecture": arc.to_dict(),
-    }
-    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
-
-    pred = CliffordCircuitPredicate()
-    assert pred.to_dict() == {"type": "CliffordCircuitPredicate"}
-    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
-
-    pred = DefaultRegisterPredicate()
-    assert pred.to_dict() == {"type": "DefaultRegisterPredicate"}
-    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
-
-    pred = MaxNQubitsPredicate(10)
-    assert pred.to_dict() == {"type": "MaxNQubitsPredicate", "n_qubits": 10}
-    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
-
-    pred = NoBarriersPredicate()
-    assert pred.to_dict() == {"type": "NoBarriersPredicate"}
-    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
-
-    pred = NoMidMeasurePredicate()
-    assert pred.to_dict() == {"type": "NoMidMeasurePredicate"}
-    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
-
-    pred = NoSymbolsPredicate()
-    assert pred.to_dict() == {"type": "NoSymbolsPredicate"}
-    pred.from_dict(pred.to_dict()).to_dict() == pred.to_dict()
-
-
 if __name__ == "__main__":
     test_predicate_generation()
     test_compilation_unit_generation()
@@ -1195,11 +973,9 @@ if __name__ == "__main__":
     test_decompose_routing_gates_to_cxs()
     test_user_defined_swap_decomp()
     test_squash_chains()
-    test_library_pass_config()
     test_generated_pass_config()
     test_repeat_pass_config()
     test_apply_pass_with_callbacks()
     test_remove_barriers()
     test_RebaseOQC_and_SynthesiseOQC()
     test_ZZPhaseToRz()
-    test_predicate_serialization()
