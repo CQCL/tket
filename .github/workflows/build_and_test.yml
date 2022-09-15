@@ -66,14 +66,14 @@ jobs:
     needs: check_changes
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-11', 'windows-2019']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2019']
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: Check C++ code formatting
-      if: matrix.os == 'macos-11' && github.event_name == 'pull_request'
+      if: matrix.os == 'macos-12' && github.event_name == 'pull_request'
       run: |
         brew update
         brew install clang-format@14
@@ -90,7 +90,7 @@ jobs:
         restore-keys: |
           ${{ github.job }}-${{ runner.os }}-ccache-
     - name: Cache conan data
-      if: matrix.os == 'macos-11'
+      if: matrix.os == 'macos-12'
       uses: actions/cache@v3
       with:
         path: ~/.conan
@@ -206,7 +206,7 @@ jobs:
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules
     - name: Run mypy
-      if: matrix.os == 'macos-11' && github.event_name == 'pull_request'
+      if: matrix.os == 'macos-12' && github.event_name == 'pull_request'
       run: |
         pip install -U mypy
         cd pytket

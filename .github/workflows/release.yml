@@ -38,7 +38,7 @@ jobs:
 
   build_macos_wheels:
     name: Build macos wheels
-    runs-on: macos-11
+    runs-on: macos-12
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
@@ -219,7 +219,7 @@ jobs:
   test_macos_wheels:
     name: Test macos wheels
     needs: build_macos_wheels
-    runs-on: macos-11
+    runs-on: macos-12
     env:
       PYTKET_SKIP_REGISTRATION: "true"
     strategy:
