@@ -37,7 +37,7 @@ class TketConan(ConanFile):
     requires = (
         # tk* libraries may come from remote:
         # https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
-        "boost/1.79.0",
+        "boost/1.80.0",
         "symengine/0.9.0",
         "eigen/3.4.0",
         "nlohmann_json/3.10.5",
