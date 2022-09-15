@@ -93,12 +93,9 @@ jobs:
 
   build_macos_M1_wheels:
     name: Build macos (M1) wheels
-    runs-on: [self-hosted, macos, M1]
+    runs-on: ['self-hosted', 'macOS', 'ARM64']
     env:
       CONAN_REVISIONS_ENABLED: 1
-    defaults:
-      run:
-        shell: "/usr/bin/arch -arch arm64e /bin/bash {0}"
     steps:
     - uses: actions/checkout@v3
       with:
@@ -253,10 +250,7 @@ jobs:
   test_macos_M1_wheels:
     name: Test macos (M1) wheels
     needs: build_macos_M1_wheels
-    runs-on: [self-hosted, macos, M1]
-    defaults:
-      run:
-        shell: "/usr/bin/arch -arch arm64e /bin/bash {0}"
+    runs-on: ['self-hosted', 'macOS', 'ARM64']
     env:
       PRIVATE_PYPI_PASS: ${{ secrets.PRIVATE_PYPI_PASS }}
       PYTKET_SKIP_REGISTRATION: "true"

@@ -75,7 +75,7 @@ jobs:
         exclude:
           - build_type: 'Debug'
             shared: 'True'
-    runs-on: [self-hosted, macos, M1]
+    runs-on: ['self-hosted', 'macOS', 'ARM64']
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:

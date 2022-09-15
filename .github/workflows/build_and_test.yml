@@ -241,12 +241,9 @@ jobs:
 
   macos-m1:
     name: Build and test (MacOS M1)
-    runs-on: [self-hosted, macos, M1]
+    runs-on: ['self-hosted', 'macOS', 'ARM64']
     needs: check_changes
     if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository
-    defaults:
-      run:
-        shell: "/usr/bin/arch -arch arm64e /bin/bash {0}"
     env:
       CONAN_REVISIONS_ENABLED: 1
       PYTKET_SKIP_REGISTRATION: "true"

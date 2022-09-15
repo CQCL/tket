@@ -41,7 +41,7 @@ jobs:
       run: ./test-${{ matrix.lib }}
   macos-m1:
     name: test library (macos-m1)
-    runs-on: [self-hosted, macos, M1]
+    runs-on: ['self-hosted', 'macOS', 'ARM64']
     strategy:
       matrix:
         lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm']
