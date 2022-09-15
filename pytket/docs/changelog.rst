@@ -13,6 +13,7 @@ Fixes:
 
 * Circuit equality check now takes into account qubit creations and qubit discards.
 * Created qubits and discarded qubits are now shown in ``Circuit.__repr__`` and ``Circuit.to_dict``.
+* Allow symbolic operations in initial simplification.
 
 1.6.1 (September 2022)
 ----------------------
