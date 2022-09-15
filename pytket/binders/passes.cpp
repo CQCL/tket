@@ -98,16 +98,6 @@ static PassPtr gen_default_aas_routing_pass(
   return gen_full_mapping_pass_phase_poly(arc, lookahead, cnotsynthtype);
 }
 
-static PassPtr gen_composephasepolybox_pass(py::kwargs kwargs) {
-  unsigned min_size = 0;
-
-  if (kwargs.contains("min_size")) {
-    min_size = py::cast<unsigned>(kwargs["min_size"]);
-  }
-
-  return RebaseUFR() >> ComposePhasePolyBoxes(min_size);
-}
-
 const PassPtr &DecomposeClassicalExp() {
   // a special box decomposer for Circuits containing
   // ClassicalExpBox<py::object>
@@ -687,7 +677,7 @@ PYBIND11_MODULE(passes, m) {
       py::arg("arc"));
 
   m.def(
-      "ComposePhasePolyBoxes", &gen_composephasepolybox_pass,
+      "ComposePhasePolyBoxes", &ComposePhasePolyBoxes,
       "Pass to convert a given :py:class:`Circuit` to the CX, Rz, H gateset "
       "and compose "
       "phase polynomial boxes from the groups of the CX+Rz gates."
