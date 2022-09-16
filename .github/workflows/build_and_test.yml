@@ -107,20 +107,12 @@ jobs:
         cd tket && doxygen
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.1
-    - name: Set up conan profile
-      run: conan profile new tket --detect --force
-    - name: Fix up libcxx in profile
-      if: matrix.os == 'ubuntu-22.04'
-      run: conan profile update settings.compiler.libcxx=libstdc++11 tket
-    - name: Set profile options
-      run: |
-        conan profile update options.tklog:shared=True tket
-        conan profile update options.tket:shared=True tket
+    - name: Set up conan
+      shell: bash
+      run: ./.github/workflows/conan-setup
     - name: set option to run full test suite
       if: github.event_name == 'schedule'
       run: conan profile update options.tket-tests:full=True tket
-    - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
     - name: normalize line endings in conanfile and src directory
       if: matrix.os == 'windows-2022' && needs.check_changes.outputs.tket_package_exists == 'false'
       # This is necessary to ensure consistent revisions across platforms.
@@ -178,6 +170,9 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.1
+    - name: Set up conan
+      shell: bash
+      run: ./.github/workflows/conan-setup
     - name: Download tket conan package
       uses: actions/download-artifact@v3
       with:
@@ -238,18 +233,14 @@ jobs:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up conan
-      id: conan
+      shell: bash
       run: |
-        conan profile new tket --detect --force
-        conan profile update options.tklog:shared=True tket
-        conan profile update options.tket:shared=True tket
+        ./.github/workflows/conan-setup
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
     - name: set option to run full test suite
       if: github.event_name == 'schedule'
       run: conan profile update options.tket-tests:full=True tket
-    - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
