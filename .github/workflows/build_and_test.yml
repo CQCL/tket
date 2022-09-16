@@ -114,7 +114,7 @@ jobs:
       if: github.event_name == 'schedule'
       run: conan profile update options.tket-tests:full=True tket
     - name: normalize line endings in conanfile and src directory
-      if: matrix.os == 'windows-2022' && needs.check_changes.outputs.tket_package_exists == 'false'
+      if: matrix.os == 'windows-2022'
       # This is necessary to ensure consistent revisions across platforms.
       # Conan's revision hash is composed of hashes of all the exported files,
       # so we must normalize the line endings in these.
