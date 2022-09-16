@@ -37,7 +37,7 @@ jobs:
     if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-11', 'windows-2019']
+        os: ['ubuntu-22.04', 'macos-11', 'windows-2022']
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
         build_type: ['Release', 'Debug']
         shared: ['True', 'False']
@@ -47,7 +47,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: normalize line endings in conanfile and src directory
-      if: matrix.os == 'windows-2019'
+      if: matrix.os == 'windows-2022'
       # This is necessary to ensure consistent revisions across platforms.
       # Conan's revision hash is composed of hashes all the exported files, so
       # we must normalize the line endings in these.
@@ -78,12 +78,12 @@ jobs:
     - name: authenticate to repository
       run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
     - name: get version
-      if: matrix.os != 'windows-2019'
+      if: matrix.os != 'windows-2022'
       run: |
         lib_ver=$(conan inspect --raw version libs/${{ matrix.lib }}/conanfile.py)
         echo "LIB_VER=${lib_ver}" >> $GITHUB_ENV
     - name: get version
-      if: matrix.os == 'windows-2019'
+      if: matrix.os == 'windows-2022'
       run: |
         $${{ matrix.lib }}_ver = conan inspect --raw version libs/${{ matrix.lib }}/conanfile.py
         echo "LIB_VER=${${{ matrix.lib }}_ver}" >> $env:GITHUB_ENV
