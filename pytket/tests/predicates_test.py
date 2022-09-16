@@ -69,7 +69,7 @@ import numpy as np
 
 from pytket.qasm import circuit_to_qasm_str
 import pytest  # type: ignore
-from sympy import Expr  # type: ignore
+from sympy import Symbol, Expr  # type: ignore
 from typing import Dict, Any, List, Union
 
 Param = Union[float, "Expr"]
@@ -706,6 +706,17 @@ def test_simplify_initial_3() -> None:
     assert SimplifyInitial(create_all_qubits=True, remove_redundancies=True).apply(c1)
     c1_cmds = c1.get_commands()
     assert len(c1_cmds) == 0
+
+
+def test_simplify_initial_symbolic() -> None:
+    # Symbolic circuits should be left alone, no error
+    c = Circuit(1)
+    c.qubit_create(Qubit(0))
+    c.Rx(Symbol("a"), 0)  # type: ignore
+    c.measure_all()
+    c1 = c.copy()
+    SimplifyInitial(allow_classical=False).apply(c)
+    assert c1 == c
 
 
 def test_ZZPhaseToRz() -> None:
