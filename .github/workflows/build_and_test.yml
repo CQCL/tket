@@ -198,7 +198,7 @@ jobs:
         pip install -r requirements.txt
         pytest --ignore=simulator/ --doctest-modules --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
     - name: Test pytket
-      if: (matrix.os != 'ubuntu-22.04' || matrix.pyver != '3.8') && github.event_name == 'push'
+      if: matrix.os != 'ubuntu-22.04' || matrix.pyver != '3.8' || github.event_name != 'push'
       run: |
         cd pytket/tests
         pip install -r requirements.txt
