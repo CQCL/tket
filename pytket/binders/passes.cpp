@@ -685,7 +685,8 @@ PYBIND11_MODULE(passes, m) {
       "polynominal box: groups with a smaller number of CX gates are not "
       "affected by this transformation\n"
       "\n:param \\**kwargs: parameters for composition (described above)"
-      "\n:return: a pass to perform the composition");
+      "\n:return: a pass to perform the composition",
+      py::arg("min_size") = 0);
 
   m.def(
       "CXMappingPass", &gen_cx_mapping_pass_kwargs,
