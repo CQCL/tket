@@ -66,7 +66,7 @@ jobs:
     needs: check_changes
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-11', 'windows-2019']
+        os: ['ubuntu-22.04', 'macos-11', 'windows-2022']
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
@@ -122,7 +122,7 @@ jobs:
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
     - name: normalize line endings in conanfile and src directory
-      if: matrix.os == 'windows-2019' && needs.check_changes.outputs.tket_package_exists == 'false'
+      if: matrix.os == 'windows-2022' && needs.check_changes.outputs.tket_package_exists == 'false'
       # This is necessary to ensure consistent revisions across platforms.
       # Conan's revision hash is composed of hashes of all the exported files,
       # so we must normalize the line endings in these.

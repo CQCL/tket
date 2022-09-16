@@ -123,7 +123,7 @@ jobs:
 
   build_Windows_wheels:
     name: Build Windows wheels
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
@@ -284,7 +284,7 @@ jobs:
   test_Windows_wheels:
     name: Test Windows wheels
     needs: build_Windows_wheels
-    runs-on: windows-2019
+    runs-on: windows-2022
     env:
       PYTKET_SKIP_REGISTRATION: "true"
     strategy:
