@@ -2379,6 +2379,19 @@ SCENARIO("Test squash Rz PhasedX") {
     REQUIRE(u.isApprox(v, ERR_EPS));
   }
 }
+
+// https://github.com/CQCL/tket/issues/535
+SCENARIO("squash_1qb_to_Rz_PhasedX should preserve phase") {
+  Circuit circ(1);
+  circ.add_op<unsigned>(OpType::H, {0});
+  circ.add_op<unsigned>(OpType::H, {0});
+  const Eigen::MatrixXcd u = tket_sim::get_unitary(circ);
+  Transforms::squash_1qb_to_Rz_PhasedX().apply(circ);
+  const Eigen::MatrixXcd v = tket_sim::get_unitary(circ);
+  REQUIRE(u.isApprox(v, ERR_EPS));
+  REQUIRE(equiv_0(circ.get_phase()));
+}
+
 SCENARIO("Test decompose_ZXZ_to_TK1") {
   Circuit circ;
   unsigned tk1_count, total_count;
