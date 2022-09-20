@@ -39,6 +39,7 @@ std::pair<Circuit, Gate_ptr> RzPhasedXSquasher::flush(
   // through.
   TKET_ASSERT(pair.second == nullptr || pair.second->get_type() == OpType::Rz);
   Circuit replacement(1);
+  replacement.add_phase(pair.first.get_phase());
 
   // 1. Recover the angles of RzRxRz and the leftover Rz from PQPSquasher
   std::vector<Command> coms = pair.first.get_commands();
