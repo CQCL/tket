@@ -164,7 +164,7 @@ jobs:
     needs: build_test_tket
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-11', 'windows-2022']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
         pyver: ['3.8', '3.9', '3.10']
     runs-on: ${{ matrix.os }}
     env:
