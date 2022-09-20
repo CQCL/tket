@@ -62,14 +62,13 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: '3.8'
+    - name: Install conan
+      uses: turtlebrowser/get-conan@v1.1
+    - name: Set up conan
+      shell: bash
+      run: ./.github/workflows/conan-setup
     - name: Build tket C++
-      run: |
-        pip install conan
-        conan profile new tket --detect --force
-        conan profile update options.tklog:shared=True tket
-        conan profile update options.tket:shared=True tket
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
-        conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
+      run: conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
     - name: Build wheel (3.8)
@@ -101,14 +100,13 @@ jobs:
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+    - name: Set up conan
+      shell: bash
+      run: ./.github/workflows/conan-setup
     - name: Build wheels
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
-        conan profile new tket --detect --force
-        conan profile update options.tklog:shared=True tket
-        conan profile update options.tket:shared=True tket
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
         conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
         conan create --profile=tket recipes/pybind11
         .github/workflows/build_macos_m1_wheel
@@ -132,11 +130,10 @@ jobs:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Install conan
-      run: |
-        pip install conan
-        conan profile new tket --detect
-        conan profile update options.tklog:shared=True tket
-        conan profile update options.tket:shared=True tket
+      uses: turtlebrowser/get-conan@v1.1
+    - name: Set up conan
+      shell: bash
+      run: ./.github/workflows/conan-setup
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: add remote
