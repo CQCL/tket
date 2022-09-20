@@ -95,7 +95,6 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/test_SteinerTree.cpp
     ${TKET_TESTS_DIR}/test_SteinerForest.cpp
     ${TKET_TESTS_DIR}/test_wasm.cpp
-    ${TKET_TESTS_DIR}/test_PostRoutingOptimisation.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXDiagram.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXAxioms.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXSimp.cpp
@@ -103,4 +102,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/ZX/test_Flow.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXConverters.cpp
     ${TKET_TESTS_DIR}/ZX/test_ZXExtraction.cpp
+    ${TKET_TESTS_DIR}/NumericalOptimiser/test_NumericalOptimiser.cpp
+    ${TKET_TESTS_DIR}/NumericalOptimiser/test_PartitionCircuit.cpp
+    ${TKET_TESTS_DIR}/NumericalOptimiser/test_CeresSolver.cpp
 )

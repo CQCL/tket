@@ -77,6 +77,7 @@ list(APPEND TKET_COMPS
     Placement
     ArchAwareSynth
     Mapping    
+    NumericalOptimiser
     MeasurementSetup
     Transformations    
     Predicates

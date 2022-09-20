@@ -68,6 +68,7 @@ class TketConan(ConanFile):
         "Placement",
         "ArchAwareSynth",
         "Mapping",
+        "NumericalOptimiser",
         "MeasurementSetup",
         "Transformations",
         "Predicates",

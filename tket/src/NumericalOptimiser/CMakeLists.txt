@@ -14,42 +14,24 @@
 
 project(tket-${COMP})
 
-if (NOT ${COMP} STREQUAL "Transformations")
+if (NOT ${COMP} STREQUAL "NumericalOptimiser")
     message(FATAL_ERROR "Unexpected component name.")
 endif()
 
 add_library(tket-${COMP}
-    Combinator.cpp
-    Rebase.cpp
-    BasicOptimisation.cpp
-    PauliOptimisation.cpp
-    CliffordOptimisation.cpp
-    CliffordReductionPass.cpp
-    OptimisationPass.cpp
-    PhaseOptimisation.cpp
-    Decomposition.cpp
-    Replacement.cpp
-    MeasurePass.cpp
-    ContextualReduction.cpp
-    ThreeQubitSquash.cpp
-    SingleQubitSquash.cpp
-    PhasedXFrontier.cpp
-    PQPSquash.cpp
-    StandardSquash.cpp)
+    NumericalOptimiser.cpp
+    PartitionCircuit.cpp
+    CeresSolver.cpp)
 
 list(APPEND DEPS_${COMP}
-    Architecture
-    Characterisation
-    Circuit
-    Clifford
-    Converters
-    Gate
-    Graphs
-    Ops
-    OpType
-    PauliGraph
     Utils
-    ZX)
+    OpType
+    Ops
+    Graphs
+    Gate
+    Circuit
+    Architecture
+    Simulation)
 
 foreach(DEP ${DEPS_${COMP}})
     target_include_directories(
