@@ -89,7 +89,7 @@ std::vector<std::map<Qubit, Node>> Placement::get_all_placement_maps(
 }
 
 const std::vector<GraphPlacement::WeightedEdge>
-GraphPlacement::default_weighting(const Circuit& circuit) {
+GraphPlacement::default_pattern_weighting(const Circuit& circuit) {
   GraphPlacement::Frontier frontier(circuit);
   unsigned max_gates = 100, max_depth = 100, gate_counter = 0;
   std::vector<GraphPlacement::WeightedEdge> weights;
@@ -149,6 +149,25 @@ GraphPlacement::default_weighting(const Circuit& circuit) {
   return weights;
 }
 
+const std::vector<GraphPlacement::WeightedEdge>
+GraphPlacement::default_target_weighting(Architecture& passed_architecture) {
+  std::vector<Node> all_nodes = passed_architecture.get_all_nodes_vec();
+  std::vector<GraphPlacement::WeightedEdge> weights;
+  unsigned diameter = passed_architecture.get_diameter();
+  auto it = all_nodes.begin();
+  while (it != all_nodes.end()) {
+    auto jt = it;
+    ++jt;
+    while (jt != all_nodes.end()) {
+      unsigned distance = passed_architecture.get_distance(*it, *jt);
+      weights.push_back({*it, *jt, unsigned(diameter - distance)});
+      ++jt;
+    }
+    ++it;
+  }
+  return weights;
+}
+
 QubitGraph GraphPlacement::construct_pattern_graph(
     const std::vector<WeightedEdge>& edges) const {
   QubitGraph q_graph;
@@ -174,15 +193,41 @@ QubitGraph GraphPlacement::construct_pattern_graph(
   return q_graph;
 }
 
+Architecture GraphPlacement::construct_target_graph(
+    const std::vector<WeightedEdge>& edges) const {
+  Architecture architecture;
+  for (const WeightedEdge& weighted_edge : edges) {
+    Node node0 = Node(weighted_edge.node0);
+    Node node1 = Node(weighted_edge.node1);
+    if (!architecture.node_exists(node0)) {
+      architecture.add_node(node0);
+    }
+    if (!architecture.node_exists(node1)) {
+      architecture.add_node(node1);
+    }
+    bool e_01_exists = architecture.edge_exists(node0, node1);
+    bool e_10_exists = architecture.edge_exists(node1, node0);
+    if (e_01_exists || e_10_exists) {
+      throw std::invalid_argument(
+          "Graph can only have a single edge between a pair of Node.");
+    }
+    if (weighted_edge.weight > 0) {
+      architecture.add_connection(node0, node1, weighted_edge.weight);
+    }
+  }
+  return architecture;
+}
+
 std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
     const Circuit& circ_) const {
   if (circ_.n_qubits() > this->architecture_.n_nodes()) {
     throw std::invalid_argument(
         "Circuit has more qubits than Architecture has nodes.");
   }
-  std::vector<WeightedEdge> weighted_edges = this->weight_pattern_graph_(circ_);
+  std::vector<WeightedEdge> weighted_pattern_edges =
+      this->weight_pattern_graph_(circ_);
   QubitGraph pattern_qubit_graph =
-      this->construct_pattern_graph(weighted_edges);
+      this->construct_pattern_graph(weighted_pattern_edges);
   QubitGraph::UndirectedConnGraph pattern_graph =
       pattern_qubit_graph.get_undirected_connectivity();
   Architecture::UndirectedConnGraph target_graph =

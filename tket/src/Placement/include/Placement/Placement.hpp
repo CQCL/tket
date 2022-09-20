@@ -142,18 +142,33 @@ class GraphPlacement : public Placement {
     void next_slicefrontier();
   };
 
-  static const std::vector<WeightedEdge> default_weighting(
+  static const std::vector<WeightedEdge> default_pattern_weighting(
       const Circuit& circuit);
+  static const std::vector<WeightedEdge> default_target_weighting(
+      Architecture& passed_architecture);
 
   explicit GraphPlacement(
       const Architecture& _architecture, unsigned _maximum_matches = 100,
       unsigned _timeout = 100,
       const std::function<std::vector<WeightedEdge>(const Circuit&)>
-          _weight_pattern_graph = default_weighting)
+          _weight_pattern_graph = default_pattern_weighting,
+      const std::function<std::vector<WeightedEdge>(Architecture&)>
+          _weight_target_graph = default_target_weighting)
       : weight_pattern_graph_(_weight_pattern_graph),
+        weight_target_graph_(_weight_target_graph),
         maximum_matches_(_maximum_matches),
         timeout_(_timeout) {
+    // TODO: weight_target_graph is not const as it caches all distances
+    // This is arguably beneficial as this will be done at some point
+    // However it means we need to copy _architecture before it's used.
+    // And additionally as we are finding new weights we don't just mutate
+    // architecture_ but assign a new object to it.
+    // Meaning, this logic seems contrived but maybe it's fine? A second opinion
+    // is welcomed. We're going to copy _architecture either way.
     architecture_ = _architecture;
+    std::vector<WeightedEdge> weighted_target_edges =
+        this->weight_target_graph_(architecture_);
+    architecture_ = this->construct_target_graph(weighted_target_edges);
   }
 
   /**
@@ -183,10 +198,15 @@ class GraphPlacement : public Placement {
  protected:
   const std::function<std::vector<WeightedEdge>(const Circuit&)>
       weight_pattern_graph_;
+  const std::function<std::vector<WeightedEdge>(Architecture&)>
+      weight_target_graph_;
   unsigned maximum_matches_;
   unsigned timeout_;
 
   QubitGraph construct_pattern_graph(
+      const std::vector<WeightedEdge>& edges) const;
+
+  Architecture construct_target_graph(
       const std::vector<WeightedEdge>& edges) const;
 };
 
