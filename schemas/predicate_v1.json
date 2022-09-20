@@ -1,0 +1,180 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://cambridgequantum.com/schemas/tket/predicate_v1.json",
+  "type": "object",
+  "description": "Serialization of a pytket predicate v1",
+  "properties": {
+    "type": {
+      "type":"string",
+      "enum":[
+        "GateSetPredicate",
+        "PlacementPredicate",
+        "ConnectivityPredicate",
+        "DirectednessPredicate",
+        "MaxNQubitsPredicate",
+        "NoClassicalControlPredicate",
+        "NoFastFeedforwardPredicate",
+        "NoClassicalBitsPredicate",
+        "NoWireSwapsPredicate",
+        "MaxTwoQubitGatesPredicate",
+        "CliffordCircuitPredicate",
+        "DefaultRegisterPredicate",
+        "NoBarriersPredicate",
+        "NoMidMeasurePredicate",
+        "NoSymbolsPredicate",
+        "GlobalPhasedXPredicate",
+        "NormalisedTK2Predicate"
+      ],
+      "description": "The subclass of \"Predicate\" implemented."
+    },
+    "allowed_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "The set of allowed \"OpType\"s for a \"GateSetPredicate\"."
+    },
+    "node_set": {
+      "type": "array",
+      "items": {
+        "$ref": "circuit_v1.json#/definitions/unitid"
+      },
+      "description": "The set of allowed node names for a \"PlacementPredicate\"."
+    },
+    "architecture": {
+      "$ref": "architecture_v1.json#",
+      "description": "The coupling map required by \"ConnectivityPredicate\" or \"DirectednessPredicate\"."
+    },
+    "n_qubits": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "The maximum number of qubits supported by \"MaxNQubitsPredicate\"."
+    },
+    "custom": {
+      "type": "string",
+      "description": "The python dill string of a custom predicate function for \"UserDefinedPredicate\"."
+    }
+  },
+  "required": [
+    "type"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "GateSetPredicate"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "allowed_types"
+        ],
+        "maxProperties": 2
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "PlacementPredicate"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "node_set"
+        ],
+        "maxProperties": 2
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "ConnectivityPredicate"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "architecture"
+        ],
+        "maxProperties": 2
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "DirectednessPredicate"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "architecture"
+        ],
+        "maxProperties": 2
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "MaxNQubitsPredicate"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "n_qubits"
+        ],
+        "maxProperties": 2
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "UserDefinedPredicate"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "custom"
+        ],
+        "maxProperties": 2
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "$comment": "List all non-parametrized predicates",
+            "enum": [
+              "NoClassicalControlPredicate",
+              "NoFastFeedforwardPredicate",
+              "NoClassicalBitsPredicate",
+              "NoWireSwapsPredicate",
+              "MaxTwoQubitGatesPredicate",
+              "CliffordCircuitPredicate",
+              "DefaultRegisterPredicate",
+              "NoBarriersPredicate",
+              "NoMidMeasurePredicate",
+              "NoSymbolsPredicate",
+              "GlobalPhasedXPredicate",
+              "NormalisedTK2Predicate"
+            ]
+          }
+        }
+      },
+      "then": {
+        "maxProperties": 1
+      }
+    }
+  ],
+  "additionalProperties": false
+}
