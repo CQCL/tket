@@ -66,14 +66,14 @@ jobs:
     needs: check_changes
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-11', 'windows-2022']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: Check C++ code formatting
-      if: matrix.os == 'macos-11' && github.event_name == 'pull_request'
+      if: matrix.os == 'macos-12' && github.event_name == 'pull_request'
       run: |
         brew update
         brew install clang-format@14
@@ -90,7 +90,7 @@ jobs:
         restore-keys: |
           ${{ github.job }}-${{ runner.os }}-ccache-
     - name: Cache conan data
-      if: matrix.os == 'macos-11'
+      if: matrix.os == 'macos-12'
       uses: actions/cache@v3
       with:
         path: ~/.conan
@@ -164,7 +164,7 @@ jobs:
     needs: build_test_tket
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-11', 'windows-2022']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
         pyver: ['3.8', '3.9', '3.10']
     runs-on: ${{ matrix.os }}
     env:
@@ -210,7 +210,7 @@ jobs:
         pip install -r pytket/docs/requirements.txt
         ./.github/workflows/build-docs
     - name: Run mypy
-      if: matrix.os == 'macos-11' && matrix.pyver == '3.9' && github.event_name == 'pull_request'
+      if: matrix.os == 'macos-12' && matrix.pyver == '3.9' && github.event_name == 'pull_request'
       run: |
         pip install -U mypy
         cd pytket
