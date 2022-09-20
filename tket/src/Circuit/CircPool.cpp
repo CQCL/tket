@@ -777,6 +777,7 @@ Circuit CU3_using_CX(const Expr &theta, const Expr &phi, const Expr &lambda) {
   c.add_op<unsigned>(OpType::U3, {-theta / 2, 0., -(lambda + phi) / 2}, {1});
   c.add_op<unsigned>(OpType::CX, {0, 1});
   c.add_op<unsigned>(OpType::U3, {theta / 2, phi, 0.}, {1});
+  c.remove_noops();
   return c;
 }
 
@@ -1013,6 +1014,7 @@ Circuit ESWAP_using_CX(const Expr &alpha) {
   c.add_op<unsigned>(OpType::X, {1});
   c.add_op<unsigned>(OpType::S, {1});
   c.add_phase(-0.5);
+  c.remove_noops();
   return c;
 }
 
@@ -1040,6 +1042,7 @@ Circuit FSim_using_CX(const Expr &alpha, const Expr &beta) {
   c.add_op<unsigned>(OpType::U3, {0.5, 0.5 - 0.5 * beta, 1}, {0});
   c.add_op<unsigned>(OpType::U3, {0.5, -0.5 - 0.5 * beta, 0.5}, {1});
   c.add_phase(0.5 * alpha + 0.25 * beta);
+  c.remove_noops();
   return c;
 }
 
@@ -1150,6 +1153,7 @@ Circuit tk1_to_rzsx(const Expr &alpha, const Expr &beta, const Expr &gamma) {
     correction_phase = -0.5;
   }
   c.add_phase(correction_phase);
+  c.remove_noops();
   return c;
 }
 
@@ -1192,6 +1196,7 @@ Circuit tk1_to_rzh(const Expr &alpha, const Expr &beta, const Expr &gamma) {
     c.add_op<unsigned>(OpType::H, {0});
     c.add_op<unsigned>(OpType::Rz, alpha, {0});
   }
+  c.remove_noops();
   return c;
 }
 

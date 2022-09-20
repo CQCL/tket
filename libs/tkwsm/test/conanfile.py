@@ -18,7 +18,7 @@ import platform
 
 class TestTkwsmConan(ConanFile):
     name = "test-tkwsm"
-    version = "0.1.1"
+    version = "0.2.0"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
     description = "Unit tests for tkwsm"
@@ -27,7 +27,7 @@ class TestTkwsmConan(ConanFile):
     default_options = {"with_coverage": False}
     generators = "cmake"
     exports_sources = "*"
-    requires = ["tkwsm/0.1.1", "catch2/3.1.0"]
+    requires = ["tkwsm/0.2.1", "catch2/3.1.0"]
 
     _cmake = None
 

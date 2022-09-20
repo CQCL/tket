@@ -287,7 +287,6 @@ static bool replace_two_qubit_interaction(
   if (target != OpType::TK2) {
     decompose_TK2(fid, allow_swaps).apply(replacement);
   }
-  squash_1qb_to_tk1().apply(replacement);
 
   // Whether to substitute old circuit with new
   bool substitute = false;
@@ -521,6 +520,10 @@ Transform two_qubit_squash(
     }
     circ.remove_vertices(
         bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+
+    if (success) {
+      squash_1qb_to_tk1().apply(circ);
+    }
     return success;
   });
 }

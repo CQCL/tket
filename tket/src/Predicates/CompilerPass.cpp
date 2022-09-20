@@ -268,7 +268,7 @@ std::string RepeatPass::to_string() const {
 nlohmann::json RepeatPass::get_config() const {
   nlohmann::json j;
   j["pass_class"] = "RepeatPass";
-  j["RepeatClass"]["body"] = pass_;
+  j["RepeatPass"]["body"] = pass_;
   return j;
 }
 
@@ -388,7 +388,9 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "PeepholeOptimise2Q") {
       pp = PeepholeOptimise2Q();
     } else if (passname == "FullPeepholeOptimise") {
-      pp = FullPeepholeOptimise();
+      OpType target_2qb_gate = content.at("target_2qb_gate").get<OpType>();
+      bool allow_swaps = content.at("allow_swaps").get<bool>();
+      pp = FullPeepholeOptimise(allow_swaps, target_2qb_gate);
     } else if (passname == "RebaseTket") {
       pp = RebaseTket();
     } else if (passname == "RebaseUFR") {
@@ -407,6 +409,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = SynthesiseUMD();
     } else if (passname == "SquashTK1") {
       pp = SquashTK1();
+    } else if (passname == "SquashRzPhasedX") {
+      pp = SquashRzPhasedX();
     } else if (passname == "FlattenRegisters") {
       pp = FlattenRegisters();
     } else if (passname == "SquashCustom") {

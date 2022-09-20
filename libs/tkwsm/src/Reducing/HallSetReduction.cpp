@@ -17,7 +17,6 @@
 #include <tkassert/Assert.hpp>
 
 #include "tkwsm/Common/GeneralUtils.hpp"
-#include "tkwsm/Common/SetIntersection.hpp"
 #include "tkwsm/Searching/DomainsAccessor.hpp"
 
 namespace tket {
@@ -72,6 +71,7 @@ ReductionResult HallSetReduction::reduce(DomainsAccessor& accessor) {
 
     const auto search_result =
         partition.search_for_hall_set(accessor, m_union_of_domains);
+
     if (search_result == Partition::SearchResult::NOGOOD) {
       return ReductionResult::NOGOOD;
     }
@@ -139,8 +139,12 @@ ReductionResult HallSetReduction::within_reduce_loop_handle_hall_set_reduction(
     DomainsAccessor& accessor, Partition& partition,
     ReusableStorageId partition_id) {
   // First, erase the TV from all other domains in this partition.
-  const auto reduction_data =
-      partition.reduce_with_hall_set(accessor, m_union_of_domains);
+  m_union_of_domains_complement = m_union_of_domains;
+  m_union_of_domains_complement.flip();
+
+  const auto reduction_data = partition.reduce_with_hall_set(
+      accessor, m_union_of_domains, m_union_of_domains_complement,
+      m_domain_mask_workset);
 
   if (reduction_data.result_to_return == ReductionResult::NOGOOD) {
     return ReductionResult::NOGOOD;
@@ -153,7 +157,7 @@ ReductionResult HallSetReduction::within_reduce_loop_handle_hall_set_reduction(
 
     auto& new_partition = m_partitions_storage.get_nonconst_object(new_id);
     new_partition.attempt_count = 0;
-    new_partition.domains_data.resize(m_union_of_domains.size());
+    new_partition.domains_data.resize(m_union_of_domains.count());
 
     // CARE! The old partition reference might now be invalid!
     // So we have to get it again.
@@ -173,7 +177,7 @@ ReductionResult HallSetReduction::within_reduce_loop_handle_hall_set_reduction(
     auto& old_partition_again =
         m_partitions_storage.get_nonconst_object(partition_id);
     old_partition_again.domains_data.resize(
-        old_partition_again.domains_data.size() - m_union_of_domains.size());
+        old_partition_again.domains_data.size() - m_union_of_domains.count());
   }
   return reduction_data.result_to_return;
 }
@@ -221,7 +225,7 @@ HallSetReduction::Partition::FillResult
 HallSetReduction::Partition::initial_fill(const DomainsAccessor& accessor) {
   domains_data.clear();
   for (VertexWSM pv : accessor.get_unassigned_pattern_vertices_superset()) {
-    const auto domain_size = accessor.get_domain(pv).size();
+    const auto domain_size = accessor.get_domain_size(pv);
     if (domain_size == 0) {
       return FillResult::NOGOOD;
     }
@@ -246,7 +250,7 @@ HallSetReduction::Partition::FillResult HallSetReduction::Partition::refill(
     const DomainsAccessor& accessor) {
   bool changed = false;
   for (auto& entry : domains_data) {
-    const auto new_domain_size = accessor.get_domain(entry.pv).size();
+    const auto new_domain_size = accessor.get_domain_size(entry.pv);
     if (new_domain_size == 0) {
       return FillResult::NOGOOD;
     }
@@ -276,7 +280,7 @@ HallSetReduction::Partition::FillResult HallSetReduction::Partition::refill(
 HallSetReduction::Partition::SearchResult
 HallSetReduction::Partition::search_for_hall_set(
     const DomainsAccessor& accessor,
-    std::set<VertexWSM>& union_of_domains_work_set) const {
+    boost::dynamic_bitset<>& union_of_domains) const {
   TKET_ASSERT(domains_data.size() > 2);
 
   // Note that only PV in this partition have domains which intersect
@@ -288,7 +292,8 @@ HallSetReduction::Partition::search_for_hall_set(
     // Even the smallest domain is too big to get a Hall set or nogood.
     return SearchResult::NO_HALL_SET;
   }
-  union_of_domains_work_set = accessor.get_domain(domains_data.back().pv);
+
+  union_of_domains = accessor.get_domain(domains_data.back().pv);
 
   for (std::size_t next_size = 2; next_size < domains_data.size();
        ++next_size) {
@@ -298,7 +303,7 @@ HallSetReduction::Partition::search_for_hall_set(
     // lower bound on the union size. So, maybe we can prove
     // that ALL unions will be too big, for the order
     // in which we add them, and thus break out early).
-    auto union_size_lower_bound = union_of_domains_work_set.size();
+    std::size_t union_size_lower_bound = union_of_domains.count();
     bool should_add_pv = false;
 
     // If we kept on adding PVs from this point, how big would the union
@@ -323,13 +328,12 @@ HallSetReduction::Partition::search_for_hall_set(
 
     // Now, actually add the next PV.
     const VertexWSM& next_pv = domains_data[domains_data.size() - next_size].pv;
-    for (VertexWSM tv : accessor.get_domain(next_pv)) {
-      union_of_domains_work_set.insert(tv);
-    }
-    if (union_of_domains_work_set.size() < next_size) {
+    union_of_domains |= accessor.get_domain(next_pv);
+    const auto union_size = union_of_domains.count();
+    if (union_size < next_size) {
       return SearchResult::NOGOOD;
     }
-    if (union_of_domains_work_set.size() == next_size) {
+    if (union_size == next_size) {
       return SearchResult::HALL_SET;
     }
   }
@@ -338,9 +342,12 @@ HallSetReduction::Partition::search_for_hall_set(
 
 HallSetReduction::Partition::HallSetReductionData
 HallSetReduction::Partition::reduce_with_hall_set(
-    DomainsAccessor& accessor, const std::set<VertexWSM>& union_of_domains) {
-  TKET_ASSERT(union_of_domains.size() > 1);
-  TKET_ASSERT(union_of_domains.size() < domains_data.size());
+    DomainsAccessor& accessor, const boost::dynamic_bitset<>& union_of_domains,
+    const boost::dynamic_bitset<>& union_of_domains_complement,
+    boost::dynamic_bitset<>& domain_mask_workset) {
+  const unsigned number_of_pv = union_of_domains.count();
+  TKET_ASSERT(number_of_pv > 1);
+  TKET_ASSERT(number_of_pv < domains_data.size());
 
   HallSetReductionData reduction_data;
   reduction_data.changed = false;
@@ -350,22 +357,24 @@ HallSetReduction::Partition::reduce_with_hall_set(
   // Note that all OTHER vertices will have domains
   // disjoint from the Hall set at the end, so there's no point in keeping
   // the Hall set in THIS partition.
-  reduction_data.should_move_hall_pv_to_another_partition =
-      union_of_domains.size() > 2;
+  reduction_data.should_move_hall_pv_to_another_partition = number_of_pv > 2;
   const unsigned number_of_vertices_to_reduce =
-      domains_data.size() - union_of_domains.size();
+      domains_data.size() - number_of_pv;
   unsigned number_of_newly_assigned_vertices = 0;
 
   for (unsigned ii = 0; ii < number_of_vertices_to_reduce; ++ii) {
-    const auto intersect_result = accessor.intersect_domain_with_complement_set(
-        domains_data[ii].pv, union_of_domains);
+    // TODO: make an intersect function WITHOUT doing a swap,
+    // to avoid this copy.
+    domain_mask_workset = union_of_domains_complement;
+    const auto intersect_result = accessor.intersect_domain_with_swap(
+        domains_data[ii].pv, domain_mask_workset);
 
     if (intersect_result.reduction_result == ReductionResult::NOGOOD) {
       reduction_data.result_to_return = ReductionResult::NOGOOD;
       return reduction_data;
     }
     // Conveniently, the old domain size is already stored.
-    if (intersect_result.new_domain_size != domains_data[ii].domain_size) {
+    if (intersect_result.changed) {
       reduction_data.changed = true;
       domains_data[ii].domain_size = intersect_result.new_domain_size;
     }
@@ -387,8 +396,7 @@ HallSetReduction::Partition::reduce_with_hall_set(
   // after removing the newly assigned ones (and the old Hall set, which will
   // be removed whatever happens)?
   reduction_data.should_erase_this_partition =
-      domains_data.size() - union_of_domains.size() -
-          number_of_newly_assigned_vertices <
+      domains_data.size() - number_of_pv - number_of_newly_assigned_vertices <
       3;
 
   return reduction_data;

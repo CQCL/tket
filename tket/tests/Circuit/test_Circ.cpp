@@ -528,6 +528,17 @@ SCENARIO("Testing successors and predecessors on valid circuits") {
   REQUIRE(circ.get_predecessors(pg) == correct);
 }
 
+SCENARIO("Testing getter methods for created and discarded qubits") {
+  Circuit circ(2);
+  circ.qubit_create(Qubit(0));
+  circ.qubit_discard(Qubit(0));
+  circ.qubit_create(Qubit(1));
+  qubit_vector_t created = {Qubit(0), Qubit(1)};
+  qubit_vector_t discarded = {Qubit(0)};
+  REQUIRE(circ.created_qubits() == created);
+  REQUIRE(circ.discarded_qubits() == discarded);
+}
+
 SCENARIO("Exception handling in get_(next/last)_q_edge") {
   Circuit circ(2);
   Vertex cx = circ.add_op<unsigned>(OpType::CX, {0, 1});
@@ -1078,6 +1089,36 @@ SCENARIO("circuit equality ", "[equality]") {
 
     test1.add_qubit(Qubit(3));
 
+    REQUIRE(test1 == test2);
+  }
+
+  GIVEN("Circuits with mismatched created qubits") {
+    Circuit test1(2);
+    Circuit test2(2);
+    test1.qubit_create(Qubit(0));
+    REQUIRE(test1 != test2);
+    REQUIRE_THROWS_MATCHES(
+        test1.circuit_equality(test2), CircuitInequality,
+        MessageContains("Circuit created qubits do not match."));
+  }
+  GIVEN("Circuits with mismatched discarded qubits") {
+    Circuit test1(2);
+    Circuit test2(2);
+    test1.qubit_discard(Qubit(0));
+    REQUIRE(test1 != test2);
+    REQUIRE_THROWS_MATCHES(
+        test1.circuit_equality(test2), CircuitInequality,
+        MessageContains("Circuit discarded qubits do not match."));
+  }
+  GIVEN("Circuits with matched qubit boundary types") {
+    Circuit test1(2);
+    Circuit test2(2);
+    test1.qubit_create(Qubit(0));
+    test1.qubit_discard(Qubit(0));
+    test1.qubit_create(Qubit(1));
+    test2.qubit_create(Qubit(0));
+    test2.qubit_discard(Qubit(0));
+    test2.qubit_create(Qubit(1));
     REQUIRE(test1 == test2);
   }
 }
@@ -2481,6 +2522,8 @@ SCENARIO("Confirm that LaTeX output compiles", "[latex][.long]") {
   c.add_conditional_gate<unsigned>(OpType::CCX, {}, {2, 4, 3}, {0}, 0);
   c.add_conditional_gate<unsigned>(OpType::CSWAP, {}, {3, 4, 2}, {}, 0);
   c.add_conditional_gate<unsigned>(OpType::CnX, {}, {0, 1, 2, 4, 3}, {}, 0);
+  c.add_conditional_gate<unsigned>(OpType::CnY, {}, {0, 1, 2, 4, 3}, {}, 0);
+  c.add_conditional_gate<unsigned>(OpType::CnZ, {}, {0, 1, 2, 4, 3}, {}, 0);
   c.add_conditional_gate<unsigned>(
       OpType::CnRy, {-0.57}, {0, 3, 2, 4, 1}, {}, 0);
   c.add_conditional_gate<unsigned>(OpType::CH, {}, {1, 0}, {}, 0);
@@ -2814,6 +2857,20 @@ SCENARIO("Checking circuit graphviz output") {
         "}";
     REQUIRE(out == exp_out);
   }
+}
+
+SCENARIO("Testing get_linear_edge") {
+  Circuit circ(1, 1);
+  Vertex v =
+      circ.add_conditional_gate<unsigned>(OpType::Rx, {0.2}, {0}, {0}, 1);
+  Edge boolean_edge = circ.get_nth_in_edge(v, 0);
+  Vertex c_out = circ.c_outputs()[0];
+  Edge classical_edge = circ.get_nth_in_edge(c_out, 0);
+  Edge quantum_edge = circ.get_nth_in_edge(v, 1);
+
+  REQUIRE(circ.get_linear_edge(boolean_edge) == classical_edge);
+  REQUIRE(circ.get_linear_edge(classical_edge) == classical_edge);
+  REQUIRE(circ.get_linear_edge(quantum_edge) == quantum_edge);
 }
 
 }  // namespace test_Circ

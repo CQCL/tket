@@ -66,11 +66,11 @@ SCENARIO("Test Op serialization") {
     const OpTypeSet metaops = {
         OpType::Input, OpType::Output, OpType::ClInput, OpType::ClOutput,
         OpType::Barrier};
-    const OpTypeSet boxes = {OpType::CircBox,      OpType::Unitary1qBox,
-                             OpType::Unitary2qBox, OpType::Unitary3qBox,
-                             OpType::ExpBox,       OpType::PauliExpBox,
-                             OpType::CustomGate,   OpType::CliffBox,
-                             OpType::PhasePolyBox, OpType::QControlBox};
+    const OpTypeSet boxes = {
+        OpType::CircBox,      OpType::Unitary1qBox, OpType::Unitary2qBox,
+        OpType::Unitary3qBox, OpType::ExpBox,       OpType::PauliExpBox,
+        OpType::ToffoliBox,   OpType::CustomGate,   OpType::CliffBox,
+        OpType::PhasePolyBox, OpType::QControlBox};
 
     std::set<std::string> type_names;
     for (auto type :
@@ -142,6 +142,9 @@ SCENARIO("Test Circuit serialization") {
     c.add_barrier({q[0], a});
     // phase
     c.add_phase(0.3);
+    c.qubit_create(q[0]);
+    c.qubit_create(q[1]);
+    c.qubit_discard(a);
     REQUIRE(check_circuit(c));
   }
 
@@ -263,6 +266,24 @@ SCENARIO("Test Circuit serialization") {
     REQUIRE(p_b.get_paulis() == pbox.get_paulis());
     REQUIRE(p_b.get_phase() == pbox.get_phase());
     REQUIRE(p_b == pbox);
+  }
+
+  GIVEN("ToffoliBoxes") {
+    Circuit c(2, 2, "toffolibox");
+    std::map<std::vector<bool>, std::vector<bool>> permutation;
+    permutation[{0, 0}] = {1, 1};
+    permutation[{1, 1}] = {0, 0};
+    ToffoliBox tbox(2, permutation);
+    c.add_box(tbox, {0, 1});
+    nlohmann::json j_tbox = c;
+    const Circuit new_c = j_tbox.get<Circuit>();
+
+    const auto& t_b =
+        static_cast<const ToffoliBox&>(*new_c.get_commands()[0].get_op_ptr());
+
+    REQUIRE(t_b.get_cycles() == tbox.get_cycles());
+    REQUIRE(t_b.get_n_qubits() == tbox.get_n_qubits());
+    REQUIRE(t_b == tbox);
   }
 
   GIVEN("CustomGate") {
@@ -580,6 +601,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(SynthesiseOQC, SynthesiseOQC())
   COMPPASSJSONTEST(SynthesiseUMD, SynthesiseUMD())
   COMPPASSJSONTEST(SquashTK1, SquashTK1())
+  COMPPASSJSONTEST(SquashRzPhasedX, SquashRzPhasedX())
   COMPPASSJSONTEST(FlattenRegisters, FlattenRegisters())
   COMPPASSJSONTEST(DelayMeasures, DelayMeasures())
   COMPPASSJSONTEST(RemoveDiscarded, RemoveDiscarded())

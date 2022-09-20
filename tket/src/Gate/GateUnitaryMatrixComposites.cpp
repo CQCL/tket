@@ -106,5 +106,17 @@ Eigen::MatrixXcd GateUnitaryMatrixImplementations::CnX(
       X(), number_of_qubits);
 }
 
+Eigen::MatrixXcd GateUnitaryMatrixImplementations::CnZ(
+    unsigned int number_of_qubits) {
+  return GateUnitaryMatrixUtils::get_multi_controlled_gate_dense_unitary(
+      Z(), number_of_qubits);
+}
+
+Eigen::MatrixXcd GateUnitaryMatrixImplementations::CnY(
+    unsigned int number_of_qubits) {
+  return GateUnitaryMatrixUtils::get_multi_controlled_gate_dense_unitary(
+      Y(), number_of_qubits);
+}
+
 }  // namespace internal
 }  // namespace tket

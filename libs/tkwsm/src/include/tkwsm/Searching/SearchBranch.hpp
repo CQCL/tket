@@ -19,7 +19,6 @@
 #include "../Reducing/DerivedGraphsReducer.hpp"
 #include "../Reducing/DistancesReducer.hpp"
 #include "../Reducing/HallSetReduction.hpp"
-#include "../Reducing/NeighboursReducer.hpp"
 #include "../Reducing/ReducerWrapper.hpp"
 #include "DomainsAccessor.hpp"
 #include "NodeListTraversal.hpp"
@@ -85,7 +84,7 @@ class SearchBranch {
    * @return The set of all target vertices which might still occur during the
    * future search.
    */
-  std::set<VertexWSM> get_used_target_vertices() const;
+  boost::dynamic_bitset<> get_used_target_vertices() const;
 
   void activate_weight_checker(WeightWSM total_p_edge_weights);
 
@@ -108,7 +107,6 @@ class SearchBranch {
   DerivedGraphsReducer m_derived_graphs_reducer;
   const WeightCalculator m_weight_calculator;
   HallSetReduction m_hall_set_reduction;
-  NeighboursReducer m_neighbours_reducer;
 
   NodesRawDataWrapper m_nodes_raw_data_wrapper;
   DomainsAccessor m_domains_accessor;
@@ -121,7 +119,7 @@ class SearchBranch {
   std::vector<DistancesReducer> m_distance_reducers;
   std::vector<ReducerWrapper> m_reducer_wrappers;
 
-  std::set<VertexWSM> m_work_set_for_reducers;
+  boost::dynamic_bitset<> m_work_set_for_reducers;
 
   /** Every pv->tv assignment in here has previously passed all
    * the simple checks for validity, so we need not repeat.
@@ -133,6 +131,9 @@ class SearchBranch {
 
   std::unique_ptr<WeightChecker> m_weight_checker_ptr;
 
+  // It's very tempting to use boost::dynamic_bitset<> here;
+  // however, impossible_target_vertices are actually very rare
+  // so it's not so important.
   std::set<VertexWSM> m_impossible_target_vertices;
 
   bool perform_single_assignment_checks_in_reduce_loop(

@@ -423,6 +423,8 @@ class Circuit {
   VertexVec c_outputs() const;
 
   qubit_vector_t all_qubits() const;
+  qubit_vector_t created_qubits() const;
+  qubit_vector_t discarded_qubits() const;
   bit_vector_t all_bits() const;
   unit_vector_t all_units() const;
 
@@ -536,6 +538,17 @@ class Circuit {
    */
   std::vector<std::optional<Edge>> get_linear_out_edges(
       const Vertex &vert) const;
+
+  /**
+   * @brief Get the linear edge corresponding to `e`
+   *
+   * If `e` is linear, return itself, otherwise (if `e` is Boolean), return
+   * the corresponding Classical edge.
+   *
+   * EdgeType::Classical and EdgeType::Quantum are linear types (and thus left
+   * unchanged), whereas EdgeType::Boolean is not.
+   */
+  Edge get_linear_edge(const Edge &e) const;
 
   /**
    * Outward edges for all types, ordered by port number
@@ -748,6 +761,11 @@ class Circuit {
 
   // O(V), `V` the number of vertices
   void remove_blank_wires();
+
+  /**
+   * Remove all gates in the circuits that are identities
+   */
+  void remove_noops();
 
   /**
    * Append an operation to the circuit.

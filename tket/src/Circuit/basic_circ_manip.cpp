@@ -53,6 +53,22 @@ void Circuit::remove_blank_wires() {
   remove_vertices(bin, GraphRewiring::No, VertexDeletion::Yes);
 }
 
+void Circuit::remove_noops() {
+  VertexSet bin;
+  BGL_FORALL_VERTICES(v, dag, DAG) {
+    Op_ptr op = get_Op_ptr_from_Vertex(v);
+    std::optional<double> phase;
+    if (op->get_desc().is_gate() && (phase = op->is_identity())) {
+      remove_vertex(
+          v, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+      add_phase(*phase);
+      bin.insert(v);
+    }
+  }
+  remove_vertices(
+      bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+}
+
 std::ostream& operator<<(std::ostream& out, const Circuit& circ) {
   for (const Command& com : circ) out << com << std::endl;
   out << "Phase (in half-turns): " << circ.get_phase() << std::endl;
@@ -82,6 +98,10 @@ Vertex Circuit::add_op<unsigned>(
     return add_op(get_op_ptr(OpType::Ry, gate->get_params()), arg_ids);
   } else if (optype == OpType::CnX && args.size() == 1) {
     return add_op(get_op_ptr(OpType::X), arg_ids);
+  } else if (optype == OpType::CnZ && args.size() == 1) {
+    return add_op(get_op_ptr(OpType::Z), arg_ids);
+  } else if (optype == OpType::CnY && args.size() == 1) {
+    return add_op(get_op_ptr(OpType::Y), arg_ids);
   }
   return add_op(gate, arg_ids, opgroup);
 }

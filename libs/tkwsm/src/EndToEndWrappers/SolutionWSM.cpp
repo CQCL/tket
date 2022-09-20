@@ -30,8 +30,7 @@ static void check_assignments_for_value_clashes(
   for (const std::pair<VertexWSM, VertexWSM>& entry : solution.assignments) {
     const auto value_opt = get_optional_value(assignments_map, entry.first);
     if (value_opt) {
-      ss << "\nRepeated PV: seen " << entry.first << "->" << entry.second
-         << " and " << entry.first << "->" << value_opt.value();
+      ss << "\nRepeated PV";
     }
     assignments_map[entry.first] = entry.second;
 
@@ -70,52 +69,47 @@ std::string SolutionWSM::get_errors(
   std::set<VertexWSM>& p_vertices_used = work_set;
   p_vertices_used.clear();
 
-  try {
-    for (const auto& p_edge_data : pattern_edges_and_weights) {
-      const WeightWSM& p_edge_weight = p_edge_data.second;
-      total_expected_p_edge_weight =
-          get_sum_or_throw(total_expected_p_edge_weight, p_edge_weight);
+  for (const auto& p_edge_data : pattern_edges_and_weights) {
+    const WeightWSM& p_edge_weight = p_edge_data.second;
+    total_expected_p_edge_weight =
+        get_sum_or_throw(total_expected_p_edge_weight, p_edge_weight);
 
-      const EdgeWSM& p_edge = p_edge_data.first;
-      if (p_edge.first == p_edge.second) {
-        ss << "\nInvalid loop at PV=" << p_edge.first;
-      }
-      if (pattern_edges_and_weights.count(
-              std::make_pair(p_edge.second, p_edge.first)) != 0) {
-        ss << "\nRepeated pattern edge: (" << p_edge.first << ","
-           << p_edge.second << ") and reversed edge both present.";
-      }
-      p_vertices_used.insert(p_edge.first);
-      p_vertices_used.insert(p_edge.second);
-      const auto tv1_opt = get_optional_value(assignments_map, p_edge.first);
-      const auto tv2_opt = get_optional_value(assignments_map, p_edge.second);
-      if (!tv1_opt || !tv2_opt) {
-        ss << "\nP-edge (" << p_edge.first << "," << p_edge.second
-           << ") has unassigned vertices";
-        break;
-      }
-      const auto tv1 = tv1_opt.value();
-      const auto tv2 = tv2_opt.value();
-      if (tv1 == tv2) {
-        ss << "\nP vertices " << p_edge.first << "," << p_edge.second
-           << " both map to " << tv1;
-        break;
-      }
-      const auto t_edge = get_edge(tv1, tv2);
-      const auto t_weight_opt =
-          get_optional_value(target_edges_and_weights, t_edge);
-      if (!t_weight_opt) {
-        ss << "\nP-edge [" << p_edge.first << "," << p_edge.second
-           << "] maps to nonexistent target edge [" << tv1 << "," << tv2 << "]";
-        break;
-      }
-      const auto extra_sc_product =
-          get_product_or_throw(p_edge_weight, t_weight_opt.value());
-      expected_scalar_product =
-          get_sum_or_throw(expected_scalar_product, extra_sc_product);
+    const EdgeWSM& p_edge = p_edge_data.first;
+    if (p_edge.first == p_edge.second) {
+      ss << "\nInvalid loop at PV=" << p_edge.first;
     }
-  } catch (const IntegerOverflow& overflow) {
-    ss << "\nInteger overflow occurred " << overflow.what();
+    if (pattern_edges_and_weights.count(
+            std::make_pair(p_edge.second, p_edge.first)) != 0) {
+      ss << "\nRepeated pattern edge";
+    }
+    p_vertices_used.insert(p_edge.first);
+    p_vertices_used.insert(p_edge.second);
+    const auto tv1_opt = get_optional_value(assignments_map, p_edge.first);
+    const auto tv2_opt = get_optional_value(assignments_map, p_edge.second);
+    if (!tv1_opt || !tv2_opt) {
+      ss << "\nP-edge (" << p_edge.first << "," << p_edge.second
+         << ") has unassigned vertices";
+      break;
+    }
+    const auto tv1 = tv1_opt.value();
+    const auto tv2 = tv2_opt.value();
+    if (tv1 == tv2) {
+      ss << "\nP vertices " << p_edge.first << "," << p_edge.second
+         << " both map to " << tv1;
+      break;
+    }
+    const auto t_edge = get_edge(tv1, tv2);
+    const auto t_weight_opt =
+        get_optional_value(target_edges_and_weights, t_edge);
+    if (!t_weight_opt) {
+      ss << "\nP-edge [" << p_edge.first << "," << p_edge.second
+         << "] maps to nonexistent target edge [" << tv1 << "," << tv2 << "]";
+      break;
+    }
+    const auto extra_sc_product =
+        get_product_or_throw(p_edge_weight, t_weight_opt.value());
+    expected_scalar_product =
+        get_sum_or_throw(expected_scalar_product, extra_sc_product);
   }
   if (expected_scalar_product != scalar_product ||
       total_expected_p_edge_weight != total_p_edges_weight) {

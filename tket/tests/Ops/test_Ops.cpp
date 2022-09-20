@@ -82,6 +82,9 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     const Op_ptr cnx = (get_op_ptr(OpType::CnX));
     CHECK(cnx->get_name() == "CnX");
     REQUIRE(*cnx->transpose() == *cnx);
+    const Op_ptr cnz = (get_op_ptr(OpType::CnZ));
+    CHECK(cnz->get_name() == "CnZ");
+    REQUIRE(*cnz->transpose() == *cnz);
     const Op_ptr bridge = (get_op_ptr(OpType::BRIDGE));
     CHECK(bridge->get_name() == "BRIDGE");
     REQUIRE(*bridge->transpose() == *bridge);
@@ -333,6 +336,57 @@ SCENARIO("Check exceptions in basic Op methods", "[ops]") {
   }
   GIVEN("A parameterised gate in get_op_ptr(OpType)") {
     REQUIRE_THROWS_AS(get_op_ptr(OpType::U1), InvalidParameterCount);
+  }
+}
+
+SCENARIO("Commutation relations") {
+  GIVEN("An arbitary TK1") {
+    Op_ptr op = get_op_ptr(OpType::TK1, std::vector<Expr>{0.2, 0.4, 0.4});
+    REQUIRE(op->commuting_basis(0) == std::nullopt);
+  }
+  GIVEN("An X-commuting TK1") {
+    Op_ptr op = get_op_ptr(OpType::TK1, std::vector<Expr>{0., 0.4, 0.});
+    REQUIRE(op->commuting_basis(0) == Pauli::X);
+  }
+  GIVEN("A Z-commuting TK1") {
+    Op_ptr op = get_op_ptr(OpType::TK1, std::vector<Expr>{0.3, 2., 0.2});
+    REQUIRE(op->commuting_basis(0) == Pauli::Z);
+  }
+  GIVEN("An I-commuting TK1") {
+    Op_ptr op = get_op_ptr(OpType::TK1, std::vector<Expr>{0.3, 0., -0.3});
+    REQUIRE(op->commuting_basis(0) == Pauli::I);
+  }
+  GIVEN("A noop TK1") {
+    Op_ptr op = get_op_ptr(OpType::TK1, std::vector<Expr>{0., 0., 0.});
+    REQUIRE(op->commuting_basis(0) == Pauli::I);
+  }
+  GIVEN("A noop") {
+    Op_ptr op = get_op_ptr(OpType::noop);
+    REQUIRE(op->commuting_basis(0) == Pauli::I);
+  }
+  GIVEN("A PhasedX") {
+    Op_ptr op = get_op_ptr(OpType::PhasedX, std::vector<Expr>{0.2, 0.3});
+    REQUIRE(op->commuting_basis(0) == std::nullopt);
+  }
+  GIVEN("A PhasedX that is a Rx") {
+    Op_ptr op = get_op_ptr(OpType::PhasedX, std::vector<Expr>{0.2, 0.});
+    REQUIRE(op->commuting_basis(0) == Pauli::X);
+  }
+  GIVEN("A PhasedX that is a noop") {
+    Op_ptr op = get_op_ptr(OpType::PhasedX, std::vector<Expr>{0., 0.4});
+    REQUIRE(op->commuting_basis(0) == Pauli::I);
+  }
+  GIVEN("A Rz that is a noop") {
+    Op_ptr op = get_op_ptr(OpType::Rz, 0.);
+    REQUIRE(op->commuting_basis(0) == Pauli::I);
+  }
+  GIVEN("A Rx that is a global phase") {
+    Op_ptr op = get_op_ptr(OpType::Rx, 2.);
+    REQUIRE(op->commuting_basis(0) == Pauli::I);
+  }
+  GIVEN("A Rx") {
+    Op_ptr op = get_op_ptr(OpType::Rx, 2.32);
+    REQUIRE(op->commuting_basis(0) == Pauli::X);
   }
 }
 

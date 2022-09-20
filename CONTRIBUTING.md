@@ -61,3 +61,15 @@ mypy --config-file=mypy.ini -p pytket -p tests
 We use [pylint](https://pypi.org/project/pylint/) on the CI to check compliance
 with a set of style requirements (listed in `pytket/.pylintrc`). You should run
 `pylint` over any changed files before submitting a PR, to catch any issues.
+
+## Version numbers
+
+If you make any changes in `tket/src`, you should bump the version number of
+`tket` in `recipes/tket/conanfile.py`, and also the `tket` versions in the
+`requires` field in `recipes/tket-test/conanfile.py`,
+`recipes/tket-proptests/conanfile.py` and `pytket/conanfile.txt` so that they
+match the new version. (This is checked on the CI for all PRs to `develop`.)
+Follow the "semantic versioning" convention: any backwards-incompatible changes
+to the C++ API require a major version bump; new API features that maintain
+backwards compatibility require a minor version bump; internal improvements and
+bugfixes require a patch version bump.

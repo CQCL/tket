@@ -8,7 +8,7 @@ on:
       - develop
 jobs:
   changes:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     outputs:
       tklog: ${{ steps.filter.outputs.tklog }}
       tkassert: ${{ steps.filter.outputs.tkassert }}
@@ -37,20 +37,13 @@ jobs:
     if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     strategy:
       matrix:
-        os: ['ubuntu-20.04', 'macos-11', 'windows-2019']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
-    - name: set compiler
-      if: matrix.os == 'ubuntu-20.04'
-      run: |
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
-        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
-        sudo update-alternatives --set gcc /usr/bin/gcc-10
-        sudo update-alternatives --set g++ /usr/bin/g++-10
     - name: Set up Python 3.9
       uses: actions/setup-python@v3
       with:
@@ -60,7 +53,7 @@ jobs:
     - name: create profile
       run: conan profile new tket --detect
     - name: set libcxx
-      if: matrix.os == 'ubuntu-20.04'
+      if: matrix.os == 'ubuntu-22.04'
       run: conan profile update settings.compiler.libcxx=libstdc++11 tket
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
@@ -79,7 +72,7 @@ jobs:
     name: test library (macos-m1)
     needs: changes
     if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
-    runs-on: [self-hosted, macos, M1]
+    runs-on: ['self-hosted', 'macOS', 'ARM64']
     strategy:
       matrix:
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
@@ -111,17 +104,11 @@ jobs:
     strategy:
       matrix:
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
-    runs-on: 'ubuntu-20.04'
+    runs-on: 'ubuntu-22.04'
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
-    - name: set compiler
-      run: |
-        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
-        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
-        sudo update-alternatives --set gcc /usr/bin/gcc-10
-        sudo update-alternatives --set g++ /usr/bin/g++-10
     - name: Set up Python 3.9
       uses: actions/setup-python@v3
       with:
@@ -173,12 +160,12 @@ jobs:
   publish_coverage:
     name: Publish coverage
     needs: [changes, generate_coverage]
-    if: ${{ github.event_name == 'push' && needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     strategy:
       matrix:
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
     concurrency: gh_pages
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
       with:
