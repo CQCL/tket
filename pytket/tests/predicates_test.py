@@ -795,8 +795,6 @@ if __name__ == "__main__":
     test_decompose_routing_gates_to_cxs()
     test_user_defined_swap_decomp()
     test_squash_chains()
-    test_generated_pass_config()
-    test_repeat_pass_config()
     test_apply_pass_with_callbacks()
     test_remove_barriers()
     test_RebaseOQC_and_SynthesiseOQC()
