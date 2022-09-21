@@ -382,7 +382,7 @@ SCENARIO("Test basic functionality of CompilationUnit") {
 
 SCENARIO("Test PlacementPredicate") {
   GIVEN(
-      "Does the GraphPlacement class correctly modify Circuits and return "
+      "Does the Placement class correctly modify Circuits and return "
       "maps?") {
     Architecture test_arc({{0, 1}, {1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 5}});
 
@@ -399,24 +399,24 @@ SCENARIO("Test PlacementPredicate") {
       base_p.place(test_circ);
       REQUIRE(placement_pred->verify(test_circ));
     }
-    WHEN("Line Placement") {
-      LinePlacement line_p(test_arc);
-      REQUIRE(!placement_pred->verify(test_circ));
-      line_p.place(test_circ);
-      REQUIRE(placement_pred->verify(test_circ));
-    }
+    // WHEN("Line Placement") {
+    //   LinePlacement line_p(test_arc);
+    //   REQUIRE(!placement_pred->verify(test_circ));
+    //   line_p.place(test_circ);
+    //   REQUIRE(placement_pred->verify(test_circ));
+    // }
     WHEN("Graph Placement") {
       GraphPlacement graph_p(test_arc);
       REQUIRE(!placement_pred->verify(test_circ));
       graph_p.place(test_circ);
       REQUIRE(placement_pred->verify(test_circ));
     }
-    WHEN("Noise Placement") {
-      NoiseAwarePlacement noise_p(test_arc);
-      REQUIRE(!placement_pred->verify(test_circ));
-      noise_p.place(test_circ);
-      REQUIRE(placement_pred->verify(test_circ));
-    }
+    // WHEN("Noise Placement") {
+    //   NoiseAwarePlacement noise_p(test_arc);
+    //   REQUIRE(!placement_pred->verify(test_circ));
+    //   noise_p.place(test_circ);
+    //   REQUIRE(placement_pred->verify(test_circ));
+    // }
   }
 }
 

@@ -166,7 +166,7 @@ GraphPlacement::default_target_weighting(Architecture& passed_architecture) {
 QubitGraph GraphPlacement::construct_pattern_graph(
     const std::vector<WeightedEdge>& edges, unsigned max_out_degree) const {
   QubitGraph q_graph;
-
+  // Note that edges are in weight order, so this adds higher weight edges first
   for (const WeightedEdge& weighted_edge : edges) {
     Node node0 = Node(weighted_edge.node0);
     Node node1 = Node(weighted_edge.node1);
@@ -182,6 +182,8 @@ QubitGraph GraphPlacement::construct_pattern_graph(
       throw std::invalid_argument(
           "Graph can only have a single edge between a pair of Node.");
     }
+    // TODO: add termination condition for for loop if all node out degrees are
+    // reached
     if (weighted_edge.weight > 0 &&
         q_graph.get_out_degree(node0) < max_out_degree &&
         q_graph.get_out_degree(node1) < max_out_degree) {
@@ -260,7 +262,7 @@ std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
    */
 
   std::vector<WeightedEdge> weighted_pattern_edges =
-      this->weight_pattern_graph_(circ_);
+      this->default_pattern_weighting(circ_);
 
   if (weighted_pattern_edges.empty()) {
     return {{}};
@@ -305,9 +307,15 @@ std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
 
   std::vector<std::map<Qubit, Node>> all_qmaps;
   unsigned counter = 0;
+
   for (auto it = all_bimaps.begin();
        it != all_bimaps.end() && counter < matches; ++it) {
     // TODO: clean up the solution by removing low cost nodes/unconnected nodes
+    // Start with basic heuristic:
+    // If a Qubit->Node mapping leaves a Qubit on a node where it's adjacent to
+    // more Nodes it doesn't have an interaction with than Nodes it does
+    // then unassign it
+
     all_qmaps.push_back(bimap_to_map(it->left));
     ++counter;
   }

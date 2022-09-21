@@ -144,24 +144,12 @@ class GraphPlacement : public Placement {
     void next_slicefrontier();
   };
 
-  static const std::vector<WeightedEdge> default_pattern_weighting(
-      const Circuit& circuit);
-  static const std::vector<WeightedEdge> default_target_weighting(
-      Architecture& passed_architecture);
-
   explicit GraphPlacement(
       const Architecture& _architecture, unsigned _maximum_matches = 2000,
-      unsigned _timeout = 100,
-      const std::function<std::vector<WeightedEdge>(const Circuit&)>
-          _weight_pattern_graph = default_pattern_weighting,
-      const std::function<std::vector<WeightedEdge>(Architecture&)>
-          _weight_target_graph = default_target_weighting)
-      : weight_pattern_graph_(_weight_pattern_graph),
-        weight_target_graph_(_weight_target_graph),
-        maximum_matches_(_maximum_matches),
-        timeout_(_timeout) {
+      unsigned _timeout = 100)
+      : maximum_matches_(_maximum_matches), timeout_(_timeout) {
     architecture_ = _architecture;
-    this->weighted_target_edges = this->weight_target_graph_(architecture_);
+    this->weighted_target_edges = this->default_target_weighting(architecture_);
 
     this->extended_target_graphs = {
         this->construct_target_graph(weighted_target_edges, 0)
@@ -193,16 +181,17 @@ class GraphPlacement : public Placement {
   unsigned get_timeout() const { return this->timeout_; }
 
  protected:
-  const std::function<std::vector<WeightedEdge>(const Circuit&)>
-      weight_pattern_graph_;
-  const std::function<std::vector<WeightedEdge>(Architecture&)>
-      weight_target_graph_;
   unsigned maximum_matches_;
   unsigned timeout_;
   std::vector<WeightedEdge> weighted_target_edges;
 
   //   we can use a vector as we index by incrementing size
   std::vector<Architecture::UndirectedConnGraph> extended_target_graphs;
+
+  const std::vector<WeightedEdge> default_pattern_weighting(
+      const Circuit& circuit);
+  const std::vector<WeightedEdge> default_target_weighting(
+      Architecture& passed_architecture);
 
   QubitGraph construct_pattern_graph(
       const std::vector<WeightedEdge>& edges, unsigned max_out_degree) const;
