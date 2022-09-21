@@ -223,9 +223,6 @@ jobs:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
-      with:
-        fetch-depth: '0'
-    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up conan
       shell: bash
       run: |
