@@ -266,13 +266,9 @@ std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
     return {{}};
   }
 
-  // We constuct a starting pattern graph which covers all edges (up to max
-  // depth)
-  QubitGraph pattern_qubit_graph =
-      this->construct_pattern_graph(weighted_pattern_edges, n_qubits - 1);
-  QubitGraph::UndirectedConnGraph pattern_graph =
-      pattern_qubit_graph.get_undirected_connectivity();
-
+  // We store pattern graphs as they're constructed, and check each of them in
+  // less complex order when a new target graph is constructed
+  std::vector<QubitGraph::UndirectedConnGraph> all_pattern_graphs;
   std::vector<boost::bimap<Qubit, Node>> all_bimaps;
   unsigned incrementer = 0;
   while (all_bimaps.empty()) {
@@ -289,33 +285,30 @@ std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
     }
     TKET_ASSERT(extended_target_graphs.size() > incrementer);
 
-    all_bimaps = get_weighted_subgraph_monomorphisms(
-        pattern_graph, extended_target_graphs[incrementer],
-        this->maximum_matches_, this->timeout_);
-
-    if (all_bimaps.empty()) {
-      // We try a smaller pattern graph with some capping on the total out
-      // degree for each node
-      pattern_graph =
-          this->construct_pattern_graph(
-                  weighted_pattern_edges, n_qubits - incrementer - 1)
-              .get_undirected_connectivity();
+    // For each increment we construct a smaller pattern graph
+    all_pattern_graphs.push_back(
+        this->construct_pattern_graph(
+                weighted_pattern_edges, n_qubits - incrementer - 1)
+            .get_undirected_connectivity());
+    // For each pattern graph constructed, we attempt to find
+    // a subgraph monomorphism for the new target graph
+    // From more full to elss full
+    auto it = all_pattern_graphs.begin();
+    while (it != all_pattern_graphs.end() && all_bimaps.empty()) {
       all_bimaps = get_weighted_subgraph_monomorphisms(
-          pattern_graph, extended_target_graphs[incrementer],
-          this->maximum_matches_, this->timeout_);
+          *it, extended_target_graphs[incrementer], this->maximum_matches_,
+          this->timeout_);
+      ++it;
     }
     incrementer++;
   }
 
   std::vector<std::map<Qubit, Node>> all_qmaps;
   unsigned counter = 0;
-  // auto it = all_bimaps.begin();
   for (auto it = all_bimaps.begin();
        it != all_bimaps.end() && counter < matches; ++it) {
-    // while (it != all_bimaps.end() && counter < matches) {
     // TODO: clean up the solution by removing low cost nodes/unconnected nodes
     all_qmaps.push_back(bimap_to_map(it->left));
-    // ++it;
     ++counter;
   }
   return all_qmaps;
