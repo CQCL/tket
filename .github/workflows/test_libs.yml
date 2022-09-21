@@ -143,7 +143,7 @@ jobs:
     - name: build coverage report
       run: |
         mkdir ${{ matrix.lib }}-coverage
-        gcovr --print-summary --html --html-details -r ./libs/${{ matrix.lib }}/src/ --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/${{ matrix.lib }}/ -o ${{ matrix.lib }}-coverage/index.html > ${{ matrix.lib }}-coverage/summary.txt
+        gcovr --print-summary --html --html-details -r ./libs/${{ matrix.lib }}/src/ --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/${{ matrix.lib }}/ -o ${{ matrix.lib }}-coverage/index.html --decisions > ${{ matrix.lib }}-coverage/summary.txt
     - name: upload artefact
       uses: actions/upload-artifact@v3
       with:
