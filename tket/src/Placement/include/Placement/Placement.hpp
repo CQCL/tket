@@ -44,8 +44,7 @@ class Placement {
    * @return true iff circuit or maps are modified
    */
   bool place(
-      Circuit& circ_,
-      std::shared_ptr<unit_bimaps_t> compilation_map = nullptr) const;
+      Circuit& circ_, std::shared_ptr<unit_bimaps_t> compilation_map = nullptr);
 
   /**
    * Reassigns some UnitID in circ_ as UnitID in architecture_, according to
@@ -71,7 +70,7 @@ class Placement {
    *
    * @return Map between Circuit and Architecture UnitID
    */
-  std::map<Qubit, Node> get_placement_map(const Circuit& circ_) const;
+  std::map<Qubit, Node> get_placement_map(const Circuit& circ_);
 
   /**
    *
@@ -81,11 +80,12 @@ class Placement {
    * For Placement this naively assigns every Qubit to some Node.
    *
    * @param circ_ Circuit relabelling map is constructed from
+   * @param matches Maximum number of mappings to return
    *
    * @return Map between Circuit and Architecture UnitID
    */
   virtual std::vector<std::map<Qubit, Node>> get_all_placement_maps(
-      const Circuit& circ_) const;
+      const Circuit& circ_, unsigned /*matches*/);
 
   /**
    * Returns a reference to held Architecture.
@@ -111,11 +111,13 @@ class GraphPlacement : public Placement {
    * @param node0 UnitID for first node in edge
    * @param node1 UnitID for second node in edge
    * @param weight Unsigned giving a weight for implied edge
+   * @param distance Distance between Node on some graph
    */
   struct WeightedEdge {
     UnitID node0;
     UnitID node1;
     unsigned weight;
+    unsigned distance;
   };
 
   /**
@@ -148,7 +150,7 @@ class GraphPlacement : public Placement {
       Architecture& passed_architecture);
 
   explicit GraphPlacement(
-      const Architecture& _architecture, unsigned _maximum_matches = 10000000,
+      const Architecture& _architecture, unsigned _maximum_matches = 2000,
       unsigned _timeout = 100,
       const std::function<std::vector<WeightedEdge>(const Circuit&)>
           _weight_pattern_graph = default_pattern_weighting,
@@ -158,32 +160,27 @@ class GraphPlacement : public Placement {
         weight_target_graph_(_weight_target_graph),
         maximum_matches_(_maximum_matches),
         timeout_(_timeout) {
-    // TODO: weight_target_graph is not const as it caches all distances
-    // This is arguably beneficial as this will be done at some point
-    // However it means we need to copy _architecture before it's used.
-    // And additionally as we are finding new weights we don't just mutate
-    // architecture_ but assign a new object to it.
-    // Meaning, this logic seems contrived but maybe it's fine? A second opinion
-    // is welcomed. We're going to copy _architecture either way.
     architecture_ = _architecture;
-    this->weighted_target_edges =
-        this->weight_target_graph_(architecture_);
-    // architecture_ = this->construct_target_graph(weighted_target_edges);
+    this->weighted_target_edges = this->weight_target_graph_(architecture_);
+
+    this->extended_target_graphs = {
+        this->construct_target_graph(weighted_target_edges, 0)
+            .get_undirected_connectivity()};
   }
 
   /**
    * For some Circuit, returns maps between Circuit UnitID and
    * Architecture UnitID that can be used for reassigning UnitID in
    * Circuit. Maps are constructed by running a Weighted Subgraph Monomorphism
-   * for the given problem and returning maximum_matches_ number of
+   * for the given problem and returning up to matches number of
    * potential solutions, ranked.
    *
    * @param circ_ Circuit relabelling map is constructed from
-   *
+   * @param matches Maximum number of matches found during WSM.
    * @return Map between Circuit and Architecture UnitID
    */
   std::vector<std::map<Qubit, Node>> get_all_placement_maps(
-      const Circuit& circ_) const override;
+      const Circuit& circ_, unsigned matches) override;
 
   /**
    * @return maximum matches found during placement
@@ -204,11 +201,14 @@ class GraphPlacement : public Placement {
   unsigned timeout_;
   std::vector<WeightedEdge> weighted_target_edges;
 
+  //   we can use a vector as we index by incrementing size
+  std::vector<Architecture::UndirectedConnGraph> extended_target_graphs;
+
   QubitGraph construct_pattern_graph(
-      const std::vector<WeightedEdge>& edges) const;
+      const std::vector<WeightedEdge>& edges, unsigned max_out_degree) const;
 
   Architecture construct_target_graph(
-      const std::vector<WeightedEdge>& edges) const;
+      const std::vector<WeightedEdge>& edges, unsigned distance) const;
 };
 
 /** Solves the pure unweighted subgraph monomorphism problem, trying
@@ -216,7 +216,7 @@ class GraphPlacement : public Placement {
  * Note that graph edge weights are IGNORED by this function.
  */
 std::vector<boost::bimap<Qubit, Node>> get_weighted_subgraph_monomorphisms(
-QubitGraph::UndirectedConnGraph& pattern_graph,
+    QubitGraph::UndirectedConnGraph& pattern_graph,
     Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
     unsigned timeout_ms);
 

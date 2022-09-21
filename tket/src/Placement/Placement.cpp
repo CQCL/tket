@@ -19,7 +19,7 @@
 namespace tket {
 
 bool Placement::place(
-    Circuit& circ_, std::shared_ptr<unit_bimaps_t> compilation_map) const {
+    Circuit& circ_, std::shared_ptr<unit_bimaps_t> compilation_map) {
   if (circ_.n_qubits() > this->architecture_.n_nodes()) {
     throw std::invalid_argument(
         "Circuit has more qubits than Architecture has nodes.");
@@ -36,9 +36,9 @@ bool Placement::place_with_map(
   return changed;
 }
 
-std::map<Qubit, Node> Placement::get_placement_map(const Circuit& circ_) const {
+std::map<Qubit, Node> Placement::get_placement_map(const Circuit& circ_) {
   std::vector<std::map<Qubit, Node>> all_maps =
-      this->get_all_placement_maps(circ_);
+      this->get_all_placement_maps(circ_, 1);
   // basic handling to avoid segmentation faults, as placement method may not
   // return any valid map
   auto it = all_maps.begin();
@@ -50,7 +50,7 @@ std::map<Qubit, Node> Placement::get_placement_map(const Circuit& circ_) const {
 }
 
 std::vector<std::map<Qubit, Node>> Placement::get_all_placement_maps(
-    const Circuit& circ_) const {
+    const Circuit& circ_, unsigned /*matches*/) {
   std::map<Qubit, Node> placement;
   qubit_vector_t to_place;
   std::vector<Node> placed;
@@ -129,7 +129,7 @@ GraphPlacement::default_pattern_weighting(const Circuit& circuit) {
           }
         }
         if (!match_weight) {
-          weights.push_back({uid_0, uid_1, unsigned(max_depth - i)});
+          weights.push_back({uid_0, uid_1, unsigned(max_depth - i), 0});
         }
         gate_counter++;
       }
@@ -140,12 +140,6 @@ GraphPlacement::default_pattern_weighting(const Circuit& circuit) {
     }
     frontier.next_slicefrontier();
   }
-  // std::cout << "Found weights: " << std::endl;
-  // for (auto w : weights) {
-  //   std::cout << w.node0.repr() << " " << w.node1.repr() << " " << w.weight
-  //             << std::endl;
-  // }
-  // std::cout << "Returning weights." << std::endl;
   return weights;
 }
 
@@ -160,7 +154,8 @@ GraphPlacement::default_target_weighting(Architecture& passed_architecture) {
     ++jt;
     while (jt != all_nodes.end()) {
       unsigned distance = passed_architecture.get_distance(*it, *jt);
-      weights.push_back({*it, *jt, unsigned(diameter + 1 - distance)});
+      weights.push_back(
+          {*it, *jt, unsigned(diameter + 1 - distance), distance});
       ++jt;
     }
     ++it;
@@ -169,8 +164,9 @@ GraphPlacement::default_target_weighting(Architecture& passed_architecture) {
 }
 
 QubitGraph GraphPlacement::construct_pattern_graph(
-    const std::vector<WeightedEdge>& edges) const {
+    const std::vector<WeightedEdge>& edges, unsigned max_out_degree) const {
   QubitGraph q_graph;
+
   for (const WeightedEdge& weighted_edge : edges) {
     Node node0 = Node(weighted_edge.node0);
     Node node1 = Node(weighted_edge.node1);
@@ -186,7 +182,9 @@ QubitGraph GraphPlacement::construct_pattern_graph(
       throw std::invalid_argument(
           "Graph can only have a single edge between a pair of Node.");
     }
-    if (weighted_edge.weight > 0) {
+    if (weighted_edge.weight > 0 &&
+        q_graph.get_out_degree(node0) < max_out_degree &&
+        q_graph.get_out_degree(node1) < max_out_degree) {
       q_graph.add_connection(node0, node1, weighted_edge.weight);
     }
   }
@@ -194,8 +192,7 @@ QubitGraph GraphPlacement::construct_pattern_graph(
 }
 
 Architecture GraphPlacement::construct_target_graph(
-    const std::vector<WeightedEdge>& edges, unsignend ) const {
-      std::cout << "construct target graph " << std::endl;
+    const std::vector<WeightedEdge>& edges, unsigned distance) const {
   Architecture architecture;
   for (const WeightedEdge& weighted_edge : edges) {
     Node node0 = Node(weighted_edge.node0);
@@ -212,7 +209,7 @@ Architecture GraphPlacement::construct_target_graph(
       throw std::invalid_argument(
           "Graph can only have a single edge between a pair of Node.");
     }
-    if (weighted_edge.weight > 0) {
+    if (weighted_edge.weight > 0 && weighted_edge.distance <= distance + 1) {
       architecture.add_connection(node0, node1, weighted_edge.weight);
     }
   }
@@ -220,32 +217,106 @@ Architecture GraphPlacement::construct_target_graph(
 }
 
 std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
-    const Circuit& circ_) const {
+    const Circuit& circ_, unsigned matches) {
   if (circ_.n_qubits() > this->architecture_.n_nodes()) {
     throw std::invalid_argument(
         "Circuit has more qubits than Architecture has nodes.");
   }
-  if(circ_.n_qubits() == 0){
+  unsigned n_qubits = circ_.n_qubits();
+  if (n_qubits == 0) {
     return {{}};
   }
+
+  /** The weighted subgraph monomorphism tool from TK-WSM is efficient at
+   * returning nothing when no subgraph monomorphism can be found. The otherside
+   * to this is that it typically finds no "partial" solutions.
+   *
+   * Therefore, to provide "good" program to physical qubit assignments we
+   * must emulate finding partial solutions with the TK-WSM.
+   *
+   * At GraphPlacement object construction potential target graph edges are
+   * weighted from the given Architecture At get_all_placement_maps calls
+   * potential pattern graph edges are weighted from the given Circuit
+   *
+   * From these edges, weighted pattern graphs and weighted target graphs are
+   * constructed until solutions are found. The approach is to move from optimal
+   * solutions to partial assumptive solutions.
+   *
+   * As we know TK-WSM will quickly return false if a subgraph monomorphism is
+   * impossible to find, so we can use it to build pattern and target graphs
+   * that are valid.
+   *
+   * As finding the distance between all pairs of Nodes in an Architecture is
+   * expensive, we cache the constructed target graphs.
+   *
+   *
+   *
+   * Finally, for each returned assignment, we remove assignments that do not
+   * have interactions with all their neighbours. This allows Routing to
+   * dynamically assign them at point they are encountered.
+   *
+   * Also note that given the symmetry of typical architecture graphs, at the
+   * point a solution is found there are often many valid assignments.
+   */
+
   std::vector<WeightedEdge> weighted_pattern_edges =
       this->weight_pattern_graph_(circ_);
+
+  if (weighted_pattern_edges.empty()) {
+    return {{}};
+  }
+
+  // We constuct a starting pattern graph which covers all edges (up to max
+  // depth)
   QubitGraph pattern_qubit_graph =
-      this->construct_pattern_graph(weighted_pattern_edges);
+      this->construct_pattern_graph(weighted_pattern_edges, n_qubits - 1);
   QubitGraph::UndirectedConnGraph pattern_graph =
       pattern_qubit_graph.get_undirected_connectivity();
-  // We construct the smallest target graph with enough high out-degree nodes to 
-  // allow some subgraph monomorphism to be found
-  unsigned max_q_graph_out_degree = pattern_qubit_graph.get_out_degree(pattern_qubit_graph.max_degree_nodes[0]);
-  Architecture architecture = this->construct_target_graph(this->weighted_target_edges, max_q_graph_out_degree);
-  Architecture::UndirectedConnGraph target_graph =
-      architecture.get_undirected_connectivity();
-  std::vector<boost::bimap<Qubit, Node>> all_bimaps =
-      get_weighted_subgraph_monomorphisms(
-          pattern_graph, target_graph, this->maximum_matches_, this->timeout_);
+
+  std::vector<boost::bimap<Qubit, Node>> all_bimaps;
+  unsigned incrementer = 0;
+  while (all_bimaps.empty()) {
+    /**
+     * Note that this is the while loop condition as this will always terminate
+     * As eventually an edge will be added between every Node on the
+     * Architecture, meaning a solution will be found.
+     */
+    if (extended_target_graphs.size() <= incrementer) {
+      extended_target_graphs.push_back(
+          this->construct_target_graph(this->weighted_target_edges, incrementer)
+              .get_undirected_connectivity());
+      TKET_ASSERT(extended_target_graphs.size() - 1 == incrementer);
+    }
+    TKET_ASSERT(extended_target_graphs.size() > incrementer);
+
+    all_bimaps = get_weighted_subgraph_monomorphisms(
+        pattern_graph, extended_target_graphs[incrementer],
+        this->maximum_matches_, this->timeout_);
+
+    if (all_bimaps.empty()) {
+      // We try a smaller pattern graph with some capping on the total out
+      // degree for each node
+      pattern_graph =
+          this->construct_pattern_graph(
+                  weighted_pattern_edges, n_qubits - incrementer - 1)
+              .get_undirected_connectivity();
+      all_bimaps = get_weighted_subgraph_monomorphisms(
+          pattern_graph, extended_target_graphs[incrementer],
+          this->maximum_matches_, this->timeout_);
+    }
+    incrementer++;
+  }
+
   std::vector<std::map<Qubit, Node>> all_qmaps;
-  for (boost::bimap<Qubit, Node>& bm : all_bimaps) {
-    all_qmaps.push_back(bimap_to_map(bm.left));
+  unsigned counter = 0;
+  // auto it = all_bimaps.begin();
+  for (auto it = all_bimaps.begin();
+       it != all_bimaps.end() && counter < matches; ++it) {
+    // while (it != all_bimaps.end() && counter < matches) {
+    // TODO: clean up the solution by removing low cost nodes/unconnected nodes
+    all_qmaps.push_back(bimap_to_map(it->left));
+    // ++it;
+    ++counter;
   }
   return all_qmaps;
 }

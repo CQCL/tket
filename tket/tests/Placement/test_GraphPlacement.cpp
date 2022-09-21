@@ -99,8 +99,10 @@ SCENARIO("Base GraphPlacement class") {
     add_2qb_gates(circuit, OpType::CX, {{0, 1}, {0, 2}, {0, 3}, {0, 4}});
     GraphPlacement placement(architecture);
     std::vector<std::map<Qubit, Node>> placement_maps =
-        placement.get_all_placement_maps(circuit);
+        placement.get_all_placement_maps(circuit, 25);
     // any permutation of Qubits 1,2,3,4 on Nodes 1,2,3,4 give identical results
+    // n.b. this is fewer than 25, as there should only be 24 matches in this
+    // case
     REQUIRE(placement_maps.size() == 24);
     for (const std::map<Qubit, Node>& map : placement_maps) {
       REQUIRE(map.at(Qubit(0)) == Node(0));
@@ -109,7 +111,6 @@ SCENARIO("Base GraphPlacement class") {
   GIVEN(
       "Six qubit connected CX circuit, six qubit Architecture, exact "
       "isomorphism, GraphPlacement::get_placement_map") {
-    std::cout << "\n\nPenultimate test" << std::endl;
     /**
      * Architecture graph:
      * 5    4
@@ -134,9 +135,10 @@ SCENARIO("Base GraphPlacement class") {
         circuit, OpType::CX, {{0, 1}, {1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 5}});
     GraphPlacement placement(architecture);
     std::vector<std::map<Qubit, Node>> placement_maps =
-        placement.get_all_placement_maps(circuit);
+        placement.get_all_placement_maps(circuit, 3);
     // 0 and 4 can be swapped without impacting results, giving two maps
-    // REQUIRE(placement_maps.size() == 2);
+    // n.b. this is fewer than 3 as there should only be 2 matches in this case
+    REQUIRE(placement_maps.size() == 2);
     std::map<Qubit, Node> placement_map = placement_maps[0];
     REQUIRE(placement_map[Qubit(0)] == Node(4));
     REQUIRE(placement_map[Qubit(1)] == Node(1));
@@ -151,7 +153,6 @@ SCENARIO("Base GraphPlacement class") {
   GIVEN(
       "Nine qubit disconnected CX circuit, 15 qubit Architecture with multiple "
       "mappings, no exact isomorphism, GraphPlacement::get_placement_map.") {
-    std::cout << "\n\nFinal test" << std::endl;
     /**
      * Architecture graph:
      * 0 -- 1 -- 2 -- 3 -- 4 -- 5
@@ -185,10 +186,15 @@ SCENARIO("Base GraphPlacement class") {
         {{8, 0}, {5, 1}, {4, 7}, {0, 6}, {1, 3}, {0, 2}, {7, 0}});
     GraphPlacement placement(architecture);
     std::map<Qubit, Node> placement_map = placement.get_placement_map(circuit);
-    std::cout << "Return Placement Map! " << std::endl;
-    for (auto x : placement_map) {
-      std::cout << x.first.repr() << " " << x.second.repr() << std::endl;
-    }
+    REQUIRE(placement_map[Qubit(0)] == Node(17));
+    REQUIRE(placement_map[Qubit(1)] == Node(13));
+    REQUIRE(placement_map[Qubit(2)] == Node(18));
+    REQUIRE(placement_map[Qubit(3)] == Node(10));
+    REQUIRE(placement_map[Qubit(4)] == Node(15));
+    REQUIRE(placement_map[Qubit(5)] == Node(14));
+    REQUIRE(placement_map[Qubit(6)] == Node(4));
+    REQUIRE(placement_map[Qubit(7)] == Node(16));
+    REQUIRE(placement_map[Qubit(8)] == Node(11));
   }
 }
 
