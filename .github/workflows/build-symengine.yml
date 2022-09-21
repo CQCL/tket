@@ -11,6 +11,7 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+        build_type: ['Release', 'Debug']
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
@@ -35,7 +36,7 @@ jobs:
           [IO.File]::WriteAllText($f, $normalized_file)
         }
     - name: Build symengine
-      run: conan create --profile=tket recipes/symengine/all symengine/0.9.0@tket/stable
+      run: conan create --profile=tket -s build_type=${{ matrix.build_type }} recipes/symengine/all symengine/0.9.0@tket/stable
     - name: authenticate to repository
       run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
     - name: upload package
@@ -44,6 +45,9 @@ jobs:
   build_macos_arm64:
     name: Build on MacOS ARM64
     runs-on: ['self-hosted', 'macOS', 'ARM64']
+    strategy:
+      matrix:
+        build_type: ['Release', 'Debug']
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
@@ -53,7 +57,9 @@ jobs:
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
     - name: Build symengine
-      run: conan create --profile=tket recipes/symengine/all symengine/0.9.0@tket/stable
+      run: |
+        conan remove -f symengine/*
+        conan create --profile=tket -s build_type=${{ matrix.build_type }} recipes/symengine/all symengine/0.9.0@tket/stable --build=missing
     - name: authenticate to repository
       run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
     - name: upload package
