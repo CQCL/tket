@@ -47,7 +47,7 @@ jobs:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up Python 3.8
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.8'
     - name: Install conan
@@ -62,13 +62,13 @@ jobs:
     - name: Build wheel (3.8)
       run: .github/workflows/build_macos_wheel
     - name: Set up Python 3.9
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9'
     - name: Build wheel (3.9)
       run: .github/workflows/build_macos_wheel
     - name: Set up Python 3.10
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.10'
     - name: Build wheel (3.10)
@@ -131,7 +131,7 @@ jobs:
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
     - name: Set up Python 3.8
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.8'
     - name: Build wheel (3.8)
@@ -144,7 +144,7 @@ jobs:
         name: Windows_wheels
         path: wheelhouse/
     - name: Set up Python 3.9
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9'
     - name: Build wheel (3.9)
@@ -157,7 +157,7 @@ jobs:
         name: Windows_wheels
         path: wheelhouse/
     - name: Set up Python 3.10
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.10'
     - name: Build wheel (3.10)
@@ -179,7 +179,7 @@ jobs:
         python-version: ['3.8', '3.9', '3.10']
     steps:
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Download wheels
@@ -208,7 +208,7 @@ jobs:
         python-version: ['3.8', '3.9', '3.10']
     steps:
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Download wheels
@@ -270,7 +270,7 @@ jobs:
         python-version: ['3.8', '3.9', '3.10']
     steps:
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Download wheels
@@ -320,7 +320,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.9
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9'
     - name: Download wheels

@@ -29,10 +29,10 @@ jobs:
       tket_package_exists: ${{ steps.tket_package_exists.outputs.tket_package_exists }}
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-python@v3
+    - uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-    - uses: dorny/paths-filter@v2
+    - uses: dorny/paths-filter@v2.10.2
       id: filter
       with:
         base: ${{ github.ref }}
@@ -176,7 +176,7 @@ jobs:
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.pyver }}
     - name: Build pytket
