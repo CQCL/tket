@@ -339,16 +339,13 @@ SymplecticTableau SymplecticTableau::conjugate() const {
   return conj;
 }
 
-void SymplecticTableau::gaussian_form() const {
+void SymplecticTableau::gaussian_form() {
   MatrixXb fullmat(n_rows_, 2 * n_qubits_);
   fullmat << xmat_, zmat_;
   std::vector<std::pair<unsigned, unsigned>> row_ops =
       gaussian_elimination_row_ops(fullmat);
   for (const std::pair<unsigned, unsigned> &op : row_ops) {
-    row_mult(
-        xmat_.row(op.first), zmat_.row(op.first), phase_(op.first),
-        xmat_.row(op.second), zmat_.row(op.second), phase_(op.second),
-        xmat_.row(op.second), zmat_.row(op.second), phase_(op.second));
+    row_mult(op.first, op.second);
   }
 }
 

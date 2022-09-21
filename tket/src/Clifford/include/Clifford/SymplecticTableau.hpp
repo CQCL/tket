@@ -161,7 +161,7 @@ class SymplecticTableau {
    * settings where row multiplications are free actions, e.g. ok in
    * CoherentTableau, not ok in UnitaryTableau
    */
-  void gaussian_form() const;
+  void gaussian_form();
 
  private:
   /**

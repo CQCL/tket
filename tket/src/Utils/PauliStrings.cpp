@@ -452,7 +452,7 @@ QubitPauliTensor QubitPauliTensor::operator*(
   return result;
 }
 
-void QubitPauliTensor::transpose() const {
+void QubitPauliTensor::transpose() {
   for (const std::pair<const Qubit, Pauli> &pair : string.map) {
     if (pair.second == Pauli::Y) coeff *= -1.;
   }

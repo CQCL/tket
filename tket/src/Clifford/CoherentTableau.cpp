@@ -14,6 +14,10 @@
 
 #include "CoherentTableau.hpp"
 
+#include <boost/foreach.hpp>
+
+#include "OpType/OpTypeInfo.hpp"
+
 namespace tket {
 
 static SymplecticTableau id_tab(unsigned n) {
@@ -93,19 +97,22 @@ CoherentTableau::CoherentTableau(const std::list<row_tensor_t>& rows)
   MatrixXb xmat = MatrixXb::Zero(n_rows, n_qbs);
   MatrixXb zmat = MatrixXb::Zero(n_rows, n_qbs);
   VectorXb phase = VectorXb::Zero(n_rows);
-  for (unsigned r = 0; r < n_rows; ++r) {
-    const row_tensor_t& row = rows.at(r);
+  unsigned r = 0;
+  for (const row_tensor_t& row : rows) {
     for (const std::pair<const Qubit, Pauli>& qb : row.first.string.map) {
-      unsigned c = col_index_.at({qb.first, TableauSegment::Input});
+      unsigned c =
+          col_index_.left.at(col_key_t{qb.first, TableauSegment::Input});
       if (qb.second == Pauli::X || qb.second == Pauli::Y) xmat(r, c) = true;
       if (qb.second == Pauli::Z || qb.second == Pauli::Y) zmat(r, c) = true;
     }
     for (const std::pair<const Qubit, Pauli>& qb : row.second.string.map) {
-      unsigned c = col_index_.at({qb.first, TableauSegment::Output});
+      unsigned c =
+          col_index_.left.at(col_key_t{qb.first, TableauSegment::Output});
       if (qb.second == Pauli::X || qb.second == Pauli::Y) xmat(r, c) = true;
       if (qb.second == Pauli::Z || qb.second == Pauli::Y) zmat(r, c) = true;
     }
     phase(r) = (row.first.coeff == -1.) ^ (row.second.coeff == -1.);
+    ++r;
   }
   tab_ = SymplecticTableau(xmat, zmat, phase);
 }
@@ -116,8 +123,8 @@ unsigned CoherentTableau::get_n_boundaries() const { return col_index_.size(); }
 
 unsigned CoherentTableau::get_n_inputs() const {
   unsigned n = 0;
-  for (const std::pair<const std::pair<Qubit, TableauSegment>, unsigned>&
-           entry : col_index_.left) {
+  BOOST_FOREACH (
+      tableau_col_index_t::left_const_reference entry, col_index_.left) {
     if (entry.first.second == TableauSegment::Input) ++n;
   }
   return n;
@@ -125,20 +132,19 @@ unsigned CoherentTableau::get_n_inputs() const {
 
 unsigned CoherentTableau::get_n_outputs() const {
   unsigned n = 0;
-  for (const std::pair<const std::pair<Qubit, TableauSegment>, unsigned>&
-           entry : col_index_.left) {
+  BOOST_FOREACH (
+      tableau_col_index_t::left_const_reference entry, col_index_.left) {
     if (entry.first.second == TableauSegment::Output) ++n;
   }
   return n;
 }
 
-row_tensor_t CoherentTableau::stab_to_row_tensor(
+CoherentTableau::row_tensor_t CoherentTableau::stab_to_row_tensor(
     const PauliStabiliser& stab) const {
   QubitPauliMap in_qpm, out_qpm;
-  double coeff = 1.;
   for (unsigned i = 0; i < stab.string.size(); ++i) {
     Pauli p = stab.string.at(i);
-    std::pair<Qubit, TableauSegment> col = col_index_.right.at(i);
+    col_key_t col = col_index_.right.at(i);
     if (p != Pauli::I) {
       if (col.second == TableauSegment::Input)
         in_qpm.insert({col.first, p});
@@ -154,8 +160,8 @@ row_tensor_t CoherentTableau::stab_to_row_tensor(
 PauliStabiliser CoherentTableau::row_tensor_to_stab(
     const row_tensor_t& ten) const {
   std::vector<Pauli> ps;
-  for (unsigned i = 0; i < col_index.size(); ++i) {
-    std::pair<Qubit, TableauSegment> qb = col_index.right.at(i);
+  for (unsigned i = 0; i < col_index_.size(); ++i) {
+    col_key_t qb = col_index_.right.at(i);
     if (qb.second == TableauSegment::Input)
       ps.push_back(ten.first.string.get(qb.first));
     else
@@ -164,35 +170,35 @@ PauliStabiliser CoherentTableau::row_tensor_to_stab(
   return PauliStabiliser(ps, (ten.first.coeff * ten.second.coeff == 1.));
 }
 
-row_tensor_t CoherentTableau::get_row(unsigned i) const {
+CoherentTableau::row_tensor_t CoherentTableau::get_row(unsigned i) const {
   return stab_to_row_tensor(tab_.get_pauli(i));
 }
 
-row_tensor_t CoherentTableau::get_row_product(
+CoherentTableau::row_tensor_t CoherentTableau::get_row_product(
     const std::vector<unsigned>& rows) const {
   row_tensor_t result = {{}, {}};
-  for (unsigned i = 0; i < get_n_rows(); ++i) {
+  for (unsigned i : rows) {
     row_tensor_t row_i = get_row(i);
     result.first = result.first * row_i.first;
-    result.second = result.second * row_t.second;
+    result.second = result.second * row_i.second;
   }
   return result;
 }
 
 void CoherentTableau::apply_S(const Qubit& qb, TableauSegment seg) {
-  unsigned col = col_index_.left.at({qb, seg});
+  unsigned col = col_index_.left.at(col_key_t{qb, seg});
   tab_.apply_S(col);
 }
 
 void CoherentTableau::apply_V(const Qubit& qb, TableauSegment seg) {
-  unsigned col = col_index_.left.at({qb, seg});
+  unsigned col = col_index_.left.at(col_key_t{qb, seg});
   tab_.apply_V(col);
 }
 
 void CoherentTableau::apply_CX(
     const Qubit& control, const Qubit& target, TableauSegment seg) {
-  unsigned uc = col_index_.left.at({control, seg});
-  unsigned ut = col_index_.left.at({target, seg});
+  unsigned uc = col_index_.left.at(col_key_t{control, seg});
+  unsigned ut = col_index_.left.at(col_key_t{target, seg});
   tab_.apply_CX(uc, ut);
 }
 
@@ -287,11 +293,11 @@ void CoherentTableau::apply_pauli(
     const QubitPauliTensor& pauli, unsigned half_pis, TableauSegment seg) {
   PauliStabiliser ps;
   if (seg == TableauSegment::Input) {
-    tr = pauli;
+    QubitPauliTensor tr = pauli;
     tr.transpose();
-    ps = row_tableau_to_stab({tr, {}});
+    ps = row_tensor_to_stab({tr, {}});
   } else {
-    ps = row_tableau_to_stab({{}, pauli});
+    ps = row_tensor_to_stab({{}, pauli});
   }
   tab_.apply_pauli_gadget(ps, half_pis);
 }
@@ -302,7 +308,7 @@ void CoherentTableau::post_select(const Qubit& qb, TableauSegment seg) {
   // after gaussian elimination Check for the deterministic cases
   unsigned n_rows = get_n_rows();
   unsigned n_cols = get_n_boundaries();
-  unsigned col = col_index_.left.at({qb, seg});
+  unsigned col = col_index_.left.at(col_key_t{qb, seg});
   for (unsigned r = 0; r < n_rows; ++r) {
     if (tab_.zmat_(r, col)) {
       bool only_z = true;
@@ -331,10 +337,7 @@ void CoherentTableau::post_select(const Qubit& qb, TableauSegment seg) {
     if (tab_.xmat_(r, col)) {
       if (x_row) {
         // Already found another row with an X, so combine them
-        tab_.row_mult(
-            tab_.xmat_.row(*x_row), tab_.zmat_.row(*x_row), tab_.phase_(*x_row),
-            tab_.xmat_.row(r), tab_.zmat_.row(r), tab_.phase_(r),
-            tab_.xmat_.row(r), tab_.zmat_.row(r), tab_.phase_(r));
+        tab_.row_mult(*x_row, r);
       } else {
         // This is the first row with an X
         // Continue searching the rest to make it unique
@@ -350,16 +353,14 @@ void CoherentTableau::post_select(const Qubit& qb, TableauSegment seg) {
 }
 
 void CoherentTableau::discard_qubit(const Qubit& qb, TableauSegment seg) {
+  unsigned col = col_index_.left.at(col_key_t{qb, seg});
   // Isolate a single row with an X (if one exists)
   std::optional<unsigned> x_row = std::nullopt;
-  for (unsigned r = 0; r < n_rows; ++r) {
+  for (unsigned r = 0; r < get_n_rows(); ++r) {
     if (tab_.xmat_(r, col)) {
       if (x_row) {
         // Already found another row with an X, so combine them
-        tab_.row_mult(
-            tab_.xmat_.row(*x_row), tab_.zmat_.row(*x_row), tab_.phase_(*x_row),
-            tab_.xmat_.row(r), tab_.zmat_.row(r), tab_.phase_(r),
-            tab_.xmat_.row(r), tab_.zmat_.row(r), tab_.phase_(r));
+        tab_.row_mult(*x_row, r);
       } else {
         // This is the first row with an X
         // Continue searching the rest to make it unique
@@ -373,14 +374,11 @@ void CoherentTableau::discard_qubit(const Qubit& qb, TableauSegment seg) {
   }
   // Isolate a single row with a Z (if one exists)
   std::optional<unsigned> z_row = std::nullopt;
-  for (unsigned r = 0; r < n_rows; ++r) {
+  for (unsigned r = 0; r < get_n_rows(); ++r) {
     if (tab_.zmat_(r, col)) {
       if (z_row) {
         // Already found another row with a Z, so combine them
-        tab_.row_mult(
-            tab_.xmat_.row(*z_row), tab_.zmat_.row(*z_row), tab_.phase_(*z_row),
-            tab_.xmat_.row(r), tab_.zmat_.row(r), tab_.phase_(r),
-            tab_.xmat_.row(r), tab_.zmat_.row(r), tab_.phase_(r));
+        tab_.row_mult(*z_row, r);
       } else {
         // This is the first row with a Z
         // Continue searching the rest to make it unique
@@ -418,8 +416,12 @@ void CoherentTableau::remove_col(unsigned col) {
   tab_.xmat_.conservativeResize(n_rows, n_cols - 1);
   tab_.zmat_.conservativeResize(n_rows, n_cols - 1);
   col_index_.right.erase(col);
-  if (n_cols > 1)
-    col_index_.right.replace_key(col_index_.right.find(n_cols - 1), col);
+  if (n_cols > 1) {
+    tableau_col_index_t::right_iterator it = col_index_.right.find(n_cols - 1);
+    col_key_t last = it->second;
+    col_index_.right.erase(it);
+    col_index_.insert({last, col});
+  }
 }
 
 CoherentTableau CoherentTableau::compose(
@@ -449,32 +451,34 @@ CoherentTableau CoherentTableau::compose(
   CoherentTableau combined(fullx, fullz, fullph, 0);
   // For each connecting pair of qubits, compose via a Bell post-selection
   for (unsigned i = 0; i < f_cols; ++i) {
-    std::pair<Qubit, TableauSegment> ind = first_qubits_to_names.right.at(i);
+    col_key_t ind = first_qubits_to_names.right.at(i);
     if (ind.second == TableauSegment::Output) {
-      auto found =
-          second_qubits_to_names.left.find({ind.first, TableauSegment::Input});
+      auto found = second_qubits_to_names.left.find(
+          col_key_t{ind.first, TableauSegment::Input});
       if (found != second_qubits_to_names.left.end()) {
         // Found a matching pair
         Qubit f_qb(i), s_qb(found->second);
         combined.apply_CX(f_qb, s_qb);
-        combined.apply_gate(OpType::H, f_qb);
+        combined.apply_gate(OpType::H, {f_qb});
         combined.post_select(f_qb);
         combined.post_select(s_qb);
       }
     }
   }
   // Rename qubits to original names
-  col_index_t new_index;
-  for (const std::pair<const std::pair<Qubit, TableauSegment>, unsigned>& col :
-       combined.col_index_.left) {
+  tableau_col_index_t new_index;
+  BOOST_FOREACH (
+      tableau_col_index_t::left_const_reference col, combined.col_index_.left) {
     bool success = false;
     unsigned qb_num = col.first.first.index().at(0);
     auto found = first_qubits_to_names.right.find(qb_num);
     if (found != first_qubits_to_names.right.end()) {
-      success = new_index.insert({found->first, col.second});
+      success = new_index.insert({found->second, col.second}).second;
     } else {
-      success = new_index.insert(
-          {second_qubits_to_names.right.at(qb_num), col.second});
+      success =
+          new_index
+              .insert({second_qubits_to_names.right.at(qb_num), col.second})
+              .second;
     }
     if (!success)
       throw std::logic_error(
@@ -485,9 +489,9 @@ CoherentTableau CoherentTableau::compose(
 }
 
 std::ostream& operator<<(std::ostream& os, const CoherentTableau& tab) {
-  for (unsigned i = 0; i < get_n_rows(); ++i) {
-    row_tensor_t row = get_row(i);
-    os << row.first.repr() << "\t->\t" << row.second.repr();
+  for (unsigned i = 0; i < tab.get_n_rows(); ++i) {
+    CoherentTableau::row_tensor_t row = tab.get_row(i);
+    os << row.first.to_str() << "\t->\t" << row.second.to_str();
   }
   return os;
 }
@@ -504,8 +508,8 @@ void from_json(const nlohmann::json& j, CoherentTableau::TableauSegment& seg) {
 
 void to_json(nlohmann::json& j, const CoherentTableau& tab) {
   j["tab"] = tab.tab_;
-  std::vector<std::pair<Qubit, TableauSegment>> qbs;
-  for (unsigned i = 0; i < get_n_boundaries(); ++i) {
+  std::vector<CoherentTableau::col_key_t> qbs;
+  for (unsigned i = 0; i < tab.get_n_boundaries(); ++i) {
     qbs.push_back(tab.col_index_.right.at(i));
   }
   j["qubits"] = qbs;
@@ -513,15 +517,15 @@ void to_json(nlohmann::json& j, const CoherentTableau& tab) {
 
 void from_json(const nlohmann::json& j, CoherentTableau& tab) {
   j.at("tab").get_to(tab.tab_);
-  std::vector<std::pair<Qubit, TableauSegment>> qbs =
-      j.at("qubits").get<std::vector<std::pair<Qubit, TableauSegment>>>();
+  std::vector<CoherentTableau::col_key_t> qbs =
+      j.at("qubits").get<std::vector<CoherentTableau::col_key_t>>();
   if (qbs.size() != tab.tab_.get_n_qubits())
     throw std::invalid_argument(
         "Number of qubits in json CoherentTableau does not match tableau "
         "size.");
   tab.col_index_.clear();
   for (unsigned i = 0; i < qbs.size(); ++i) {
-    tab_col_index_.insert({qbs.at(i), i});
+    tab.col_index_.insert({qbs.at(i), i});
   }
 }
 

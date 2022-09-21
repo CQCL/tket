@@ -44,9 +44,9 @@ class CoherentTableau {
    * order.
    */
  public:
-  static enum class TableauSegment { Input, Output };
-  typedef boost::bimap<std::pair<Qubit, TableauSegment>, unsigned>
-      tableau_col_index_t;
+  enum class TableauSegment { Input, Output };
+  typedef std::pair<Qubit, TableauSegment> col_key_t;
+  typedef boost::bimap<col_key_t, unsigned> tableau_col_index_t;
   typedef std::pair<QubitPauliTensor, QubitPauliTensor> row_tensor_t;
   /**
    * Construct the tableau for the identity unitary over n qubits (given default
@@ -204,8 +204,8 @@ class CoherentTableau {
    */
   tableau_col_index_t col_index_;
 
-  QubitPauliTensor stab_to_tensor(const PauliStabiliser& stab) const;
-  PauliStabiliser tensor_to_stab(const QubitPauliTensor& ten) const;
+  row_tensor_t stab_to_row_tensor(const PauliStabiliser& stab) const;
+  PauliStabiliser row_tensor_to_stab(const row_tensor_t& ten) const;
 
   /**
    * Removes a column from the tableau.
