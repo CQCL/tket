@@ -21,12 +21,9 @@
 namespace tket {
 
 SCENARIO("Base GraphPlacement class") {
-  GIVEN("Empty Circuit, Empty Architecture, GraphPlacement::Place.") {
+  GIVEN("Empty Architecture, GraphPlacement::GraphPlacement.") {
     Architecture architecture;
-    Circuit circuit;
-    GraphPlacement placement(architecture);
-    placement.place(circuit);
-    REQUIRE(circuit.n_qubits() == 0);
+    REQUIRE_THROWS_AS(GraphPlacement(architecture), std::logic_error);
   }
   GIVEN("Empty circuit, two qubit Architecture, GraphPlacement::Place.") {
     std::vector<std::pair<unsigned, unsigned>> edges = {{0, 1}};
@@ -112,6 +109,7 @@ SCENARIO("Base GraphPlacement class") {
   GIVEN(
       "Six qubit connected CX circuit, six qubit Architecture, exact "
       "isomorphism, GraphPlacement::get_placement_map") {
+    std::cout << "\n\nPenultimate test" << std::endl;
     /**
      * Architecture graph:
      * 5    4
@@ -153,6 +151,7 @@ SCENARIO("Base GraphPlacement class") {
   GIVEN(
       "Nine qubit disconnected CX circuit, 15 qubit Architecture with multiple "
       "mappings, no exact isomorphism, GraphPlacement::get_placement_map.") {
+    std::cout << "\n\nFinal test" << std::endl;
     /**
      * Architecture graph:
      * 0 -- 1 -- 2 -- 3 -- 4 -- 5

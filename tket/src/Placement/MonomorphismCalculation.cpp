@@ -21,8 +21,6 @@ namespace tket {
 
 using namespace WeightedSubgraphMonomorphism;
 
-// using RelabelledPatternGraph = RelabelledGraphWSM<Qubit, QubitGraph>;
-
 using RelabelledPatternGraph =
     RelabelledGraphWSM<Qubit, QubitGraph::UndirectedConnGraph>;
 using RelabelledTargetGraph =
@@ -104,14 +102,15 @@ static void write_solver_solutions(
     const RelabelledTargetGraph& relabelled_target_graph) {
   TKET_ASSERT(all_maps.empty());
   all_maps.resize(solutions.size());
-  const WeightWSM expected_weight =
-      relabelled_pattern_graph.get_relabelled_edges_and_weights().size();
+//   const WeightWSM expected_weight =
+//       relabelled_pattern_graph.get_relabelled_edges_and_weights().size();
 
   for (unsigned ii = 0; ii < solutions.size(); ++ii) {
     const auto& solution = solutions[ii];
     auto& map = all_maps[ii];
-    TKET_ASSERT(solution.scalar_product == expected_weight);
-    TKET_ASSERT(solution.total_p_edges_weight == expected_weight);
+    std::cout << "Solution: " << ii << " Weight: " << solution.scalar_product << std::endl;
+    // TKET_ASSERT(solution.scalar_product == expected_weight);
+    // TKET_ASSERT(solution.total_p_edges_weight == expected_weight);
     for (const auto& relabelled_pv_tv : solution.assignments) {
       map.insert(BimapValue(
           relabelled_pattern_graph.get_original_vertices().at(
@@ -127,8 +126,8 @@ static void write_solver_solutions(
 }
 
 std::vector<boost::bimap<Qubit, Node>> get_weighted_subgraph_monomorphisms(
-    const QubitGraph::UndirectedConnGraph& pattern_graph,
-    const Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
+    QubitGraph::UndirectedConnGraph& pattern_graph,
+    Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
     unsigned timeout_ms) {
   std::vector<boost::bimap<Qubit, Node>> all_maps;
 
@@ -164,6 +163,16 @@ std::vector<boost::bimap<Qubit, Node>> get_weighted_subgraph_monomorphisms(
   solver_parameters.for_multiple_full_solutions_the_max_number_to_obtain =
       max_matches;
   solver_parameters.timeout_ms = timeout_ms;
+
+  
+// std::cout << "What does WSM get? Pattern Graph. " << std::endl;
+//   for(auto x : relabelled_pattern_graph.get_relabelled_edges_and_weights()){
+//     std::cout << x.first.first << " " << x.first.second << " " << x.second << std::endl;
+//   }
+//   std::cout << "Target Graph: " << std::endl;
+//   for(auto x : relabelled_target_graph.get_relabelled_edges_and_weights()){
+//     std::cout << x.first.first << " " << x.first.second << " " << x.second << std::endl;
+//   }
 
   const MainSolver main_solver(
       relabelled_pattern_graph.get_relabelled_edges_and_weights(),

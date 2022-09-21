@@ -148,7 +148,7 @@ class GraphPlacement : public Placement {
       Architecture& passed_architecture);
 
   explicit GraphPlacement(
-      const Architecture& _architecture, unsigned _maximum_matches = 100,
+      const Architecture& _architecture, unsigned _maximum_matches = 10000000,
       unsigned _timeout = 100,
       const std::function<std::vector<WeightedEdge>(const Circuit&)>
           _weight_pattern_graph = default_pattern_weighting,
@@ -166,9 +166,9 @@ class GraphPlacement : public Placement {
     // Meaning, this logic seems contrived but maybe it's fine? A second opinion
     // is welcomed. We're going to copy _architecture either way.
     architecture_ = _architecture;
-    std::vector<WeightedEdge> weighted_target_edges =
+    this->weighted_target_edges =
         this->weight_target_graph_(architecture_);
-    architecture_ = this->construct_target_graph(weighted_target_edges);
+    // architecture_ = this->construct_target_graph(weighted_target_edges);
   }
 
   /**
@@ -202,6 +202,7 @@ class GraphPlacement : public Placement {
       weight_target_graph_;
   unsigned maximum_matches_;
   unsigned timeout_;
+  std::vector<WeightedEdge> weighted_target_edges;
 
   QubitGraph construct_pattern_graph(
       const std::vector<WeightedEdge>& edges) const;
@@ -215,8 +216,8 @@ class GraphPlacement : public Placement {
  * Note that graph edge weights are IGNORED by this function.
  */
 std::vector<boost::bimap<Qubit, Node>> get_weighted_subgraph_monomorphisms(
-    const QubitGraph::UndirectedConnGraph& pattern_graph,
-    const Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
+QubitGraph::UndirectedConnGraph& pattern_graph,
+    Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
     unsigned timeout_ms);
 
 void to_json(nlohmann::json& j, const Placement::Ptr& placement_ptr);

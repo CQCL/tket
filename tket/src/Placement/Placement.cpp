@@ -160,7 +160,7 @@ GraphPlacement::default_target_weighting(Architecture& passed_architecture) {
     ++jt;
     while (jt != all_nodes.end()) {
       unsigned distance = passed_architecture.get_distance(*it, *jt);
-      weights.push_back({*it, *jt, unsigned(diameter - distance)});
+      weights.push_back({*it, *jt, unsigned(diameter + 1 - distance)});
       ++jt;
     }
     ++it;
@@ -194,7 +194,8 @@ QubitGraph GraphPlacement::construct_pattern_graph(
 }
 
 Architecture GraphPlacement::construct_target_graph(
-    const std::vector<WeightedEdge>& edges) const {
+    const std::vector<WeightedEdge>& edges, unsignend ) const {
+      std::cout << "construct target graph " << std::endl;
   Architecture architecture;
   for (const WeightedEdge& weighted_edge : edges) {
     Node node0 = Node(weighted_edge.node0);
@@ -224,14 +225,21 @@ std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
     throw std::invalid_argument(
         "Circuit has more qubits than Architecture has nodes.");
   }
+  if(circ_.n_qubits() == 0){
+    return {{}};
+  }
   std::vector<WeightedEdge> weighted_pattern_edges =
       this->weight_pattern_graph_(circ_);
   QubitGraph pattern_qubit_graph =
       this->construct_pattern_graph(weighted_pattern_edges);
   QubitGraph::UndirectedConnGraph pattern_graph =
       pattern_qubit_graph.get_undirected_connectivity();
+  // We construct the smallest target graph with enough high out-degree nodes to 
+  // allow some subgraph monomorphism to be found
+  unsigned max_q_graph_out_degree = pattern_qubit_graph.get_out_degree(pattern_qubit_graph.max_degree_nodes[0]);
+  Architecture architecture = this->construct_target_graph(this->weighted_target_edges, max_q_graph_out_degree);
   Architecture::UndirectedConnGraph target_graph =
-      this->architecture_.get_undirected_connectivity();
+      architecture.get_undirected_connectivity();
   std::vector<boost::bimap<Qubit, Node>> all_bimaps =
       get_weighted_subgraph_monomorphisms(
           pattern_graph, target_graph, this->maximum_matches_, this->timeout_);

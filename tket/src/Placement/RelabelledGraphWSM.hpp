@@ -29,7 +29,7 @@ namespace WeightedSubgraphMonomorphism {
 template <class VertexType, class GraphType>
 class RelabelledGraphWSM {
  public:
-  explicit RelabelledGraphWSM(const GraphType& graph) {
+  explicit RelabelledGraphWSM(GraphType& graph) {
     // Get the new vertex integer labels.
     m_original_vertices.reserve(boost::num_vertices(graph));
     {
@@ -49,9 +49,12 @@ class RelabelledGraphWSM {
     const auto edge_iter_pair = boost::edges(graph);
     for (auto citer = edge_iter_pair.first; citer != edge_iter_pair.second;
          ++citer) {
-      m_relabelled_edges_and_weights[get_edge(
+      
+      auto edge = get_edge(
           get_relabelled_vertex(graph[boost::source(*citer, graph)]),
-          get_relabelled_vertex(graph[boost::target(*citer, graph)]))] = 1;
+          get_relabelled_vertex(graph[boost::target(*citer, graph)]));
+      // std::cout << graph[edge].weight << std::endl;
+      m_relabelled_edges_and_weights[edge] = unsigned(graph[*citer].weight);
     }
     // Now, classify the vertices into isolated and nonisolated categories
     for (const auto& relabelled_edge_entry : m_relabelled_edges_and_weights) {
