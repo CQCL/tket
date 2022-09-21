@@ -174,8 +174,6 @@ jobs:
     name: Test linux wheels
     needs: build_Linux_wheels
     runs-on: ubuntu-22.04
-    env:
-      PYTKET_SKIP_REGISTRATION: "true"
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10']
@@ -205,8 +203,6 @@ jobs:
     name: Test macos wheels
     needs: build_macos_wheels
     runs-on: macos-12
-    env:
-      PYTKET_SKIP_REGISTRATION: "true"
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10']
@@ -238,7 +234,6 @@ jobs:
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     env:
       PRIVATE_PYPI_PASS: ${{ secrets.PRIVATE_PYPI_PASS }}
-      PYTKET_SKIP_REGISTRATION: "true"
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10']
@@ -270,8 +265,6 @@ jobs:
     name: Test Windows wheels
     needs: build_Windows_wheels
     runs-on: windows-2022
-    env:
-      PYTKET_SKIP_REGISTRATION: "true"
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10']
