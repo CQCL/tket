@@ -89,14 +89,6 @@ jobs:
         key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
           ${{ github.job }}-${{ runner.os }}-ccache-
-    - name: Cache conan data
-      if: matrix.os == 'macos-12'
-      uses: actions/cache@v3
-      with:
-        path: ~/.conan
-        key: ${{ github.job }}-${{ runner.os }}-conan-${{ steps.current_time.outputs.formattedTime }}
-        restore-keys: |
-          ${{ github.job }}-${{ runner.os }}-conan-
     - name: apt update
       if: matrix.os == 'ubuntu-22.04'
       run: sudo apt update
