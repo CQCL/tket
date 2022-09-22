@@ -17,7 +17,7 @@ jobs:
       tket: ${{ steps.filter.outputs.tket }}
     steps:
     - uses: actions/checkout@v3
-    - uses: dorny/paths-filter@v2
+    - uses: dorny/paths-filter@v2.10.2
       id: filter
       with:
         base: ${{ github.ref }}
@@ -32,13 +32,17 @@ jobs:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
-    - name: cache ccache data
-      uses: actions/cache@v3
+    - name: Get current time
+      uses: srfrnk/current-time@v1.1.0
+      id: current_time
       with:
-        path: ~/.ccache
-        key: ${{ runner.os }}-tket-ccache-${{ steps.current_time.outputs.formattedTime }}
+        format: YYYYMMDDHHmmss
+    - name: Use ccache
+      uses: hendrikmuhs/ccache-action@v1.2.2
+      with:
+        key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
-          ${{ runner.os }}-tket-ccache-
+          ${{ github.job }}-${{ runner.os }}-ccache-
     - name: apt update
       run: sudo apt update
     - name: Install conan
@@ -56,8 +60,6 @@ jobs:
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
     - name: install valgrind
       run: sudo apt install valgrind
-    - name: install ninja and ccache
-      run: sudo apt-get install ninja-build ccache
     - name: build tket
       run: |
         conan install recipes/tket tket/stable --install-folder=build/tket --profile=tket
