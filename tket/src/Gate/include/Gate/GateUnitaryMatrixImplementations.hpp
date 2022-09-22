@@ -112,6 +112,10 @@ struct GateUnitaryMatrixImplementations {
 
   static Eigen::MatrixXcd CnX(unsigned int number_of_qubits);
 
+  static Eigen::MatrixXcd CnZ(unsigned int number_of_qubits);
+
+  static Eigen::MatrixXcd CnY(unsigned int number_of_qubits);
+
   static Eigen::MatrixXcd PhaseGadget(
       unsigned int number_of_qubits, double alpha);
 

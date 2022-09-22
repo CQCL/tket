@@ -482,8 +482,7 @@ PassPtr aas_routing_pass(
 PassPtr gen_full_mapping_pass_phase_poly(
     const Architecture& arc, const unsigned lookahead,
     const aas::CNotSynthType cnotsynthtype) {
-  return RebaseUFR() >> ComposePhasePolyBoxes() >>
-         gen_placement_pass_phase_poly(arc) >>
+  return ComposePhasePolyBoxes() >> gen_placement_pass_phase_poly(arc) >>
          aas_routing_pass(arc, lookahead, cnotsynthtype);
 }
 

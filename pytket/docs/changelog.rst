@@ -1,6 +1,43 @@
 Changelog
 =========
 
+x.y.z (unreleased)
+------------------
+
+Minor new features:
+
+* New ``Circuit`` properties ``created_qubits`` and ``discarded_qubits``.
+* Barrier operations inside QASM custom gates are now accepted.
+
+Fixes:
+
+* Circuit equality check now takes into account qubit creations and qubit discards.
+* Created qubits and discarded qubits are now shown in ``Circuit.__repr__`` and ``Circuit.to_dict``.
+* Allow symbolic operations in initial simplification.
+* Fix the json schema for compiler passes.
+* Fix ``SquashRzPhasedX`` so it now preserves phase.
+
+1.6.1 (September 2022)
+----------------------
+
+Minor new features:
+
+* New ``OpType.CnY`` and ``OpType.CnZ``.
+* Update ``DecomposeArbitrarilyControlledGates`` pass to decompose ``CnX``,
+  ``CnY``, and ``CnZ`` gates.
+
+Fixes:
+
+* ``Circuit.get_unitary()`` and ``Circuit.get_statevector()`` now throw an error
+  when the circuit contains measurements.
+* Fix critical issue with compilation of circuits containing conditional gates.
+
+1.6.0 (September 2022)
+----------------------
+
+* New ``ToffoliBox`` for constructing circuits that implement permutations of
+  basis states.
+
 1.5.2 (August 2022)
 -------------------
 
@@ -8,8 +45,9 @@ Minor new features:
 
 * Prefer `ZZPhase` in ``DecomposeTK2`` if it results in the same fidelity but
   fewer two-qubit gates.
-* New ``ToffoliBox`` for constructing circuits that implement permutations of
-  basis states.
+
+* Add ``SquashRzPhasedX`` pass to squash single qubit gates into
+  ``Rz`` and ``PhasedX`` gates while trying to commute ``Rz``s to the back. 
 
 1.5.1 (August 2022)
 -------------------
