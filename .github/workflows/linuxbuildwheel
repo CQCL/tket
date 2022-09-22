@@ -30,7 +30,7 @@ ${CONAN_CMD} profile new tket --detect
 ${CONAN_CMD} profile update options.tklog:shared=True tket
 ${CONAN_CMD} profile update options.tket:shared=True tket
 ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
-${CONAN_CMD} create --profile=tket --test-folder=None recipes/tket
+${CONAN_CMD} create --profile=tket --test-folder=None recipes/tket tket/stable
 ${CONAN_CMD} create --profile=tket --test-folder=None recipes/pybind11
 
 cd /tket/pytket
@@ -47,5 +47,5 @@ do
     export PYVER=`${PYEX} -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'`
     ${PYEX} -m pip install -U pip build
     ${PYEX} -m build --outdir "tmpwheel_${PYVER}"
-    auditwheel repair "tmpwheel_${PYVER}/pytket-"*".whl" -w "audited/${PYVER}/"
+    LD_LIBRARY_PATH=./pytket/_tket auditwheel repair "tmpwheel_${PYVER}/pytket-"*".whl" -w "audited/${PYVER}/"
 done

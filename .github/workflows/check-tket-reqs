@@ -1,0 +1,31 @@
+#!/usr/bin/env python
+
+# Check that the expected tket version requirement is present for:
+# - tket-tests
+# - tket-proptests
+# - pytket
+# Usage: check-tket-reqs <version>
+# E.g.: check-tket-reqs 1.0.2
+
+import json
+import os
+import subprocess
+import sys
+
+version = sys.argv[1]
+
+jsondump = "conaninfo.json"
+for path in [
+    os.path.join(".", "recipes", "tket-tests", "conanfile.py"),
+    os.path.join(".", "recipes", "tket-proptests", "conanfile.py"),
+    os.path.join(".", "pytket", "conanfile.txt"),
+]:
+    subprocess.run(["conan", "info", "--path", "--json", jsondump, path])
+    with open(jsondump) as f:
+        info = json.load(f)
+    os.remove(jsondump)
+    assert any(
+        comp["reference"].startswith("conanfile")
+        and f"tket/{version}@tket/stable" in comp["requires"]
+        for comp in info
+    )

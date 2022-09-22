@@ -215,6 +215,16 @@ bool Circuit::circuit_equality(
     if (throw_error && !check) {
       throw CircuitInequality(std::string("Circuit bits do not match."));
     }
+    check &= (this->created_qubits() == other.created_qubits());
+    if (throw_error && !check) {
+      throw CircuitInequality(
+          std::string("Circuit created qubits do not match."));
+    }
+    check &= (this->discarded_qubits() == other.discarded_qubits());
+    if (throw_error && !check) {
+      throw CircuitInequality(
+          std::string("Circuit discarded qubits do not match."));
+    }
   }
 
   if (except.count(Check::ImplicitPermutation) == 0) {
