@@ -237,8 +237,8 @@ Transform decomp_CCX();
 Transform decomp_controlled_Rys();
 
 // does not use ancillae
-// Expects: CCX, CnX, CnY, CnZ, CnRy and any other gates
-// returns CX and single-qubit gate + any previous gates
+// Expects: any CnRys + CnXs + any other gates
+// returns Ry, CX, H, T, Tdg + any previous gates
 Transform decomp_arbitrary_controlled_gates();
 
 }  // namespace Transforms

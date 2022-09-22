@@ -38,9 +38,9 @@ copyright = "2022, Cambridge Quantum Computing Ltd"
 author = "Cambridge Quantum Computing Ltd"
 
 # The short X.Y version
-version = "1.6"
+version = "1.5"
 # The full version, including alpha/beta/rc tags
-release = "1.6.1"
+release = "1.5.2"
 
 
 # -- General configuration ---------------------------------------------------
@@ -223,7 +223,6 @@ custom_internal_mapping = {
     "tket::Unitary1qBox": "pytket._tket.circuit.Unitary1qBox",
     "tket::Unitary2qBox": "pytket._tket.circuit.Unitary2qBox",
     "tket::PauliExpBox": "pytket._tket.circuit.PauliExpBox",
-    "tket::ToffoliBox": "pytket._tket.circuit.ToffoliBox",
     "tket::OpType": "pytket._tket.circuit.OpType",
     "tket::CompilationUnit": "pytket._tket.predicates.CompilationUnit",
     "tket::CompositeGateDef": "pytket._tket.circuit.CustomGateDef",

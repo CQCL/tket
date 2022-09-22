@@ -498,6 +498,10 @@ ToffoliBox::ToffoliBox(
     unsigned _n_qubits,
     std::map<std::vector<bool>, std::vector<bool>> _permutation)
     : Box(OpType::ToffoliBox), n_qubits_(_n_qubits) {
+  // TODO: Currently this consumes the permutation to produce the cycles
+  // Note that _permutation is passed by copy.
+  // Potentially update in future
+
   // Convert passed permutation to cycles
   while (!_permutation.empty()) {
     auto it = _permutation.begin();
@@ -526,13 +530,6 @@ ToffoliBox::ToffoliBox(
     }
   }
 }
-
-ToffoliBox::ToffoliBox(const ToffoliBox &other)
-    : Box(other), n_qubits_(other.n_qubits_), cycles_(other.cycles_) {}
-
-ToffoliBox::ToffoliBox(
-    unsigned _n_qubits, const std::set<cycle_permutation_t> &_cycles)
-    : Box(OpType::ToffoliBox), n_qubits_(_n_qubits), cycles_(_cycles) {}
 
 unsigned get_hamming_distance(
     const std::vector<bool> &a, const std::vector<bool> &b) {
@@ -757,11 +754,6 @@ ToffoliBox::cycle_transposition_t ToffoliBox::merge_cycles(
   return return_transposition;
 }
 
-op_signature_t ToffoliBox::get_signature() const {
-  op_signature_t qubs(this->n_qubits_, EdgeType::Quantum);
-  return qubs;
-}
-
 void ToffoliBox::generate_circuit() const {
   // This decomposition is as described on page 191, section 4.5.2 "Single
   // qubit and CNOT gates are universal" of Nielsen & Chuang
@@ -890,23 +882,6 @@ Op_ptr PauliExpBox::from_json(const nlohmann::json &j) {
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
 }
 
-nlohmann::json ToffoliBox::to_json(const Op_ptr &op) {
-  const auto &box = static_cast<const ToffoliBox &>(*op);
-  nlohmann::json j = core_box_json(box);
-  j["cycles"] = box.get_cycles();
-  j["n_qubits"] = box.get_n_qubits();
-  return j;
-}
-
-Op_ptr ToffoliBox::from_json(const nlohmann::json &j) {
-  ToffoliBox box = ToffoliBox(
-      j.at("n_qubits").get<unsigned>(),
-      j.at("cycles").get<std::set<ToffoliBox::cycle_permutation_t>>());
-  return set_box_id(
-      box,
-      boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
-}
-
 void to_json(nlohmann::json &j, const composite_def_ptr_t &cdef) {
   j["name"] = cdef->get_name();
   j["definition"] = *cdef->get_def();
@@ -993,5 +968,4 @@ REGISTER_OPFACTORY(CustomGate, CustomGate)
 REGISTER_OPFACTORY(QControlBox, QControlBox)
 REGISTER_OPFACTORY(ProjectorAssertionBox, ProjectorAssertionBox)
 REGISTER_OPFACTORY(StabiliserAssertionBox, StabiliserAssertionBox)
-REGISTER_OPFACTORY(ToffoliBox, ToffoliBox)
 }  // namespace tket

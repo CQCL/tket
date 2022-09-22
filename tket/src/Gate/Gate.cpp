@@ -51,9 +51,7 @@ Op_ptr Gate::dagger() const {
     case OpType::BRIDGE: {
       return get_op_ptr(optype);
     }
-    case OpType::CnX:
-    case OpType::CnZ:
-    case OpType::CnY: {
+    case OpType::CnX: {
       return get_op_ptr(optype, std::vector<Expr>(), n_qubits_);
     }
     case OpType::S: {
@@ -217,8 +215,7 @@ Op_ptr Gate::transpose() const {
     case OpType::CnRy: {
       return get_op_ptr(optype, minus_times(params_[0]), n_qubits_);
     }
-    case OpType::CnX:
-    case OpType::CnZ: {
+    case OpType::CnX: {
       return get_op_ptr(optype, std::vector<Expr>(), n_qubits_);
     }
     case OpType::U2: {
@@ -711,8 +708,7 @@ std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
     case OpType::CU1:
     case OpType::PhaseGadget:
     case OpType::ZZMax:
-    case OpType::ZZPhase:
-    case OpType::CnZ: {
+    case OpType::ZZPhase: {
       return Pauli::Z;
     }
     case OpType::NPhasedX: {
@@ -762,8 +758,7 @@ std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
     }
     case OpType::CY:
     case OpType::CRy:
-    case OpType::CnRy:
-    case OpType::CnY: {
+    case OpType::CnRy: {
       if (i == n_q - 1) {
         return Pauli::Y;
       } else {

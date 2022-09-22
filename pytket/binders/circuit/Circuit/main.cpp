@@ -94,14 +94,8 @@ void init_circuit(py::module &m) {
           [](const Circuit &circ) {
             std::stringstream ss;
             ss << "[";
-            for (auto q : circ.created_qubits()) {
-              ss << "Create " << q.repr() << "; ";
-            }
             for (auto com : circ.get_commands()) {
               ss << com.to_str() << " ";
-            }
-            for (auto q : circ.discarded_qubits()) {
-              ss << "Discard " << q.repr() << "; ";
             }
             ss << "]";
             return ss.str();
@@ -307,12 +301,6 @@ void init_circuit(py::module &m) {
       .def_property_readonly(
           "qubits", &Circuit::all_qubits,
           "A list of all qubit ids in the circuit")
-      .def_property_readonly(
-          "created_qubits", &Circuit::created_qubits,
-          "A list of qubits whose input is a Create operation")
-      .def_property_readonly(
-          "discarded_qubits", &Circuit::discarded_qubits,
-          "A list of qubits whose output is a Discard operation")
       .def_property_readonly(
           "bits", &Circuit::all_bits,
           "A list of all classical bit ids in the circuit")
@@ -680,17 +668,6 @@ void init_circuit(py::module &m) {
           "Substitute all ops with the given name for the given box."
           "The replacement boxes retain the same name.\n\n"
           ":param box: the replacement PauliExpBox\n"
-          ":param opgroup: the name of the operations group to replace\n"
-          ":return: whether any replacements were made",
-          py::arg("box"), py::arg("opgroup"))
-      .def(
-          "substitute_named",
-          [](Circuit &circ, const ToffoliBox &box, const std::string opgroup) {
-            return circ.substitute_named(box, opgroup);
-          },
-          "Substitute all ops with the given name for the given box."
-          "The replacement boxes retain the same name.\n\n"
-          ":param box: the replacement ToffoliBox\n"
           ":param opgroup: the name of the operations group to replace\n"
           ":return: whether any replacements were made",
           py::arg("box"), py::arg("opgroup"))

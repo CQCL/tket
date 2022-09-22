@@ -423,8 +423,6 @@ class Circuit {
   VertexVec c_outputs() const;
 
   qubit_vector_t all_qubits() const;
-  qubit_vector_t created_qubits() const;
-  qubit_vector_t discarded_qubits() const;
   bit_vector_t all_bits() const;
   unit_vector_t all_units() const;
 

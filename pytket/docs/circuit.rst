@@ -57,9 +57,6 @@ pytket.circuit
 .. autoclass:: pytket._tket.circuit.PauliExpBox
     :special-members:
     :members:
-.. autoclass:: pytket._tket.circuit.ToffoliBox
-    :special-members:
-    :members:
 .. autoclass:: pytket._tket.circuit.QControlBox
     :special-members:
     :members:

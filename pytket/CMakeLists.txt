@@ -38,17 +38,6 @@ else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 endif()
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    # Suppress warnings coming from headers in pybind11_json/0.2.12:
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-redundant-move")
-endif()
-
-if (UNIX)
-    # Allow binder libraries to load other shared libraries from same directory.
-    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-    set(CMAKE_INSTALL_RPATH "\${ORIGIN}")
-endif()
-
 pybind11_add_module(circuit
     binders/circuit/main.cpp
     binders/circuit/unitid.cpp

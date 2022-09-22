@@ -80,60 +80,61 @@ class CMakeBuild(build_ext):
             with Pool(num_jobs) as pool:
                 _future = list(pool.map(self.build_extension, self.extensions))
 
-        # Hack to put required shared libraries alongside the extension libraries
-        needed_libs = {
-            "tklog": ["tklog"],
-            "tket": [
-                "tket-Utils",
-                "tket-ZX",
-                "tket-OpType",
-                "tket-Clifford",
-                "tket-Ops",
-                "tket-Graphs",
-                "tket-Gate",
-                "tket-PauliGraph",
-                "tket-Circuit",
-                "tket-Architecture",
-                "tket-Simulation",
-                "tket-Diagonalisation",
-                "tket-Characterisation",
-                "tket-Converters",
-                "tket-Placement",
-                "tket-Mapping",
-                "tket-MeasurementSetup",
-                "tket-Transformations",
-                "tket-ArchAwareSynth",
-                "tket-Predicates",
-            ],
-        }
+        if platform.system() in ["Darwin", "Windows"]:
+            # Hack to put required shared libraries alongside the extension libraries
+            needed_libs = {
+                "tklog": ["tklog"],
+                "tket": [
+                    "tket-Utils",
+                    "tket-ZX",
+                    "tket-OpType",
+                    "tket-Clifford",
+                    "tket-Ops",
+                    "tket-Graphs",
+                    "tket-Gate",
+                    "tket-PauliGraph",
+                    "tket-Circuit",
+                    "tket-Architecture",
+                    "tket-Simulation",
+                    "tket-Diagonalisation",
+                    "tket-Characterisation",
+                    "tket-Converters",
+                    "tket-Placement",
+                    "tket-Mapping",
+                    "tket-MeasurementSetup",
+                    "tket-Transformations",
+                    "tket-ArchAwareSynth",
+                    "tket-Predicates",
+                ],
+            }
 
-        conan_tket_profile = os.getenv("CONAN_TKET_PROFILE", default="tket")
-        jsondump = "conaninfo.json"
-        subprocess.run(
-            [
-                "conan",
-                "info",
-                "--profile",
-                conan_tket_profile,
-                "--path",
-                "--json",
-                jsondump,
-                ".",
-            ],
-            cwd=extsource,
-        )
-        with open(jsondump) as f:
-            conaninfo = dict([(comp["reference"], comp) for comp in json.load(f)])
-        os.remove(jsondump)
-        reqinfo = conaninfo["conanfile.txt"]["requires"]
+            conan_tket_profile = os.getenv("CONAN_TKET_PROFILE", default="tket")
+            jsondump = "conaninfo.json"
+            subprocess.run(
+                [
+                    "conan",
+                    "info",
+                    "--profile",
+                    conan_tket_profile,
+                    "--path",
+                    "--json",
+                    jsondump,
+                    ".",
+                ],
+                cwd=extsource,
+            )
+            with open(jsondump) as f:
+                conaninfo = dict([(comp["reference"], comp) for comp in json.load(f)])
+            os.remove(jsondump)
+            reqinfo = conaninfo["conanfile.txt"]["requires"]
 
-        for comp, libs in needed_libs.items():
-            reqs = [req for req in reqinfo if req.startswith(comp + "/")]
-            assert len(reqs) == 1
-            req = reqs[0]
-            directory = conaninfo[req]["package_folder"]
-            for lib in libs:
-                shutil.copy(os.path.join(directory, "lib", libfile(lib)), extdir)
+            for comp, libs in needed_libs.items():
+                reqs = [req for req in reqinfo if req.startswith(comp + "/")]
+                assert len(reqs) == 1
+                req = reqs[0]
+                directory = conaninfo[req]["package_folder"]
+                for lib in libs:
+                    shutil.copy(os.path.join(directory, "lib", libfile(lib)), extdir)
 
     def cmake_config(self, extdir, extsource):
 
@@ -243,7 +244,7 @@ setup(
     long_description=open("package.md", "r").read(),
     long_description_content_type="text/markdown",
     license="Apache 2",
-    packages=setuptools.find_packages() + ["pytket.qasm.includes"],
+    packages=setuptools.find_packages(),
     install_requires=[
         "sympy ~=1.6",
         "numpy >=1.21.4, <2.0",

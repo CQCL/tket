@@ -407,8 +407,6 @@ PYBIND11_MODULE(circuit, m) {
           ":math:`(\\alpha)` := n-controlled "
           ":math:`\\mathrm{Ry}(\\alpha)` gate.")
       .value("CnX", OpType::CnX, "n-controlled X gate.")
-      .value("CnY", OpType::CnY, "n-controlled Y gate.")
-      .value("CnZ", OpType::CnZ, "n-controlled Z gate.")
       .value(
           "ZZMax", OpType::ZZMax,
           ":math:`e^{-\\frac{i\\pi}{4}(\\mathrm{Z} \\otimes "

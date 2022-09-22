@@ -47,12 +47,6 @@ PassPtr ComposePhasePolyBoxes(unsigned min_size = 0);
 /** Squash sequences of single-qubit gates to TK1 gates. */
 const PassPtr &SquashTK1();
 
-/**
- * @brief Squash single qubit gates into PhasedX and Rz gates.
- * Commute Rzs to the back if possible.
- */
-const PassPtr &SquashRzPhasedX();
-
 const PassPtr &RebaseTket();
 const PassPtr &RebaseUFR();
 

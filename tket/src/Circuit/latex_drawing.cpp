@@ -37,9 +37,7 @@ void add_latex_for_command(LatexContext& context, const Command& command) {
   const Op_ptr op = command.get_op_ptr();
   switch (op->get_type()) {
     case OpType::CnRy:
-    case OpType::CnX:
-    case OpType::CnY:
-    case OpType::CnZ: {
+    case OpType::CnX: {
       int target_index = line_ids.at(args.back());
       args.pop_back();
       for (const UnitID& u : args) {
@@ -53,14 +51,8 @@ void add_latex_for_command(LatexContext& context, const Command& command) {
             << "\\gate{\\text{"
             << get_op_ptr(OpType::Ry, op->get_params())->get_name(true)
             << "}} & ";
-      } else if (op->get_type() == OpType::CnX) {
-        lines.at(target_index).buffer << "\\targ{} & ";
-      } else if (op->get_type() == OpType::CnY) {
-        lines.at(target_index).buffer << "\\gate{\\text{"
-                                      << get_op_ptr(OpType::Y)->get_name(true)
-                                      << "}} & ";
       } else {
-        lines.at(target_index).buffer << "\\control{} & ";
+        lines.at(target_index).buffer << "\\targ{} & ";
       }
       lines.at(target_index).depth++;
       break;

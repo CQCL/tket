@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Set, Callable, Dict, FrozenSet, Union
+from typing import Set, Callable, Dict, FrozenSet
 from pytket.circuit import Circuit, OpType  # type: ignore
 from pytket._tket.circuit import _library  # type: ignore
-from pytket.passes import RebaseCustom, SquashCustom, SquashRzPhasedX  # type: ignore
+from pytket.passes import RebaseCustom, SquashCustom  # type: ignore
 
 from ._decompositions import Param, _TK1_to_X_SX_Rz, _TK1_to_RxRy, _TK1_to_U
 
@@ -132,7 +132,7 @@ def auto_rebase_pass(gateset: Set[OpType]) -> RebaseCustom:
         )
 
 
-def auto_squash_pass(gateset: Set[OpType]) -> Union[SquashCustom, SquashRzPhasedX]:
+def auto_squash_pass(gateset: Set[OpType]) -> SquashCustom:
     """Attempt to generate a squash pass automatically for the given target
     single qubit gateset.
 
@@ -141,7 +141,4 @@ def auto_squash_pass(gateset: Set[OpType]) -> Union[SquashCustom, SquashRzPhased
     :return: Squash to target gateset
     :rtype: SquashCustom
     """
-    if {OpType.Rz, OpType.PhasedX} <= gateset:
-        return SquashRzPhasedX()
-
     return SquashCustom(gateset, get_TK1_decomposition_function(gateset))

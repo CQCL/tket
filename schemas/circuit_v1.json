@@ -591,21 +591,6 @@
           "if": {
             "properties": {
               "type": {
-                "const": "ToffoliBox"
-              }
-            }
-          },
-          "then": {
-            "required": [
-              "cycles",
-              "n_qubits"
-            ]
-          }
-        },
-        {
-          "if": {
-            "properties": {
-              "type": {
                 "const": "PhasePolyBox"
               }
             }

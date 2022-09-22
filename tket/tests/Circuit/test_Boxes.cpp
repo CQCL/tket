@@ -480,26 +480,6 @@ SCENARIO("QControlBox", "[boxes]") {
     expected.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4});
     REQUIRE(*c == expected);
   }
-  GIVEN("controlled CnY") {
-    Circuit c0(4);
-    c0.add_op<unsigned>(OpType::CnY, {0, 1, 2, 3});
-    Op_ptr op = c0.get_commands()[0].get_op_ptr();
-    QControlBox qcbox(op);
-    std::shared_ptr<Circuit> c = qcbox.to_circuit();
-    Circuit expected(5);
-    expected.add_op<unsigned>(OpType::CnY, {0, 1, 2, 3, 4});
-    REQUIRE(*c == expected);
-  }
-  GIVEN("controlled CnZ") {
-    Circuit c0(4);
-    c0.add_op<unsigned>(OpType::CnZ, {0, 1, 2, 3});
-    Op_ptr op = c0.get_commands()[0].get_op_ptr();
-    QControlBox qcbox(op);
-    std::shared_ptr<Circuit> c = qcbox.to_circuit();
-    Circuit expected(5);
-    expected.add_op<unsigned>(OpType::CnZ, {0, 1, 2, 3, 4});
-    REQUIRE(*c == expected);
-  }
   GIVEN("controlled Rz") {
     double a = 0.125;
     Circuit c0(1);
@@ -681,7 +661,7 @@ SCENARIO("QControlBox", "[boxes]") {
     c0.add_op<unsigned>(OpType::T, {0});
     c0.add_op<unsigned>(OpType::CCX, {0, 1, 2});
     c0.add_op<unsigned>(OpType::CU1, -0.33, {1, 0});
-    // This circuit can be reduced to XT[0] and CCX[0,1,2]
+    // This circuit can be reduced to XT[0,1] and CCX[0,1,2]
     const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0);
     CircBox cbox(c0);
     Op_ptr op = std::make_shared<CircBox>(cbox);

@@ -541,16 +541,6 @@ enum class OpType {
   CnX,
 
   /**
-   * Multiply-controlled \ref OpType::Z
-   */
-  CnZ,
-
-  /**
-   * Multiply-controlled \ref OpType::Y
-   */
-  CnY,
-
-  /**
    * See \ref CircBox
    */
   CircBox,

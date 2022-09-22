@@ -335,79 +335,18 @@ class CircuitTransformer(Transformer):
         except StopIteration:
             args = next_tree
             pars = []
-
-        treat_as_barrier = [
-            "sleep",
-            "order2",
-            "order3",
-            "order4",
-            "order5",
-            "order6",
-            "order7",
-            "order8",
-            "order9",
-            "order10",
-            "order11",
-            "order12",
-            "order13",
-            "order14",
-            "order15",
-            "order16",
-            "order17",
-            "order18",
-            "order19",
-            "order20",
-            "group2",
-            "group3",
-            "group4",
-            "group5",
-            "group6",
-            "group7",
-            "group8",
-            "group9",
-            "group10",
-            "group11",
-            "group12",
-            "group13",
-            "group14",
-            "group15",
-            "group16",
-            "group17",
-            "group18",
-            "group19",
-            "group20",
-        ]
-        # other opaque gates, which are not handled as barrier
-        # ["RZZ", "Rxxyyzz", "Rxxyyzz_zphase", "cu", "cp", "rccx", "rc3x", "c3sqrtx"]
-
-        args = list(args)
-
-        if opstr in treat_as_barrier:
-            params = [f"{par}" for par in pars]
-        else:
-            params = [f"({par})/pi" for par in pars]
-
+        params = [f"({par})/pi" for par in pars]
         if opstr in self.gate_dict:
-            op: Dict[str, Any] = {}
-            if opstr in treat_as_barrier:
-                op["type"] = "Barrier"
-                param_sorted = ",".join(params)
-
-                op["data"] = f"{opstr}({param_sorted})"
-
-                op["signature"] = [arg[0] for arg in args]
-
-            else:
-                gdef = self.gate_dict[opstr]
-                op["type"] = "CustomGate"
-                box = {
-                    "type": "CustomGate",
-                    "id": str(uuid.uuid4()),
-                    "gate": gdef,
-                }
-                box["params"] = params
-                op["box"] = box
-                params = []  # to stop duplication in to op
+            gdef = self.gate_dict[opstr]
+            op: Dict[str, Any] = {"type": "CustomGate"}
+            box = {
+                "type": "CustomGate",
+                "id": str(uuid.uuid4()),
+                "gate": gdef,
+            }
+            box["params"] = params
+            op["box"] = box
+            params = []  # to stop duplication in to op
         else:
             try:
                 optype = _all_string_maps[opstr]
@@ -418,12 +357,11 @@ class CircuitTransformer(Transformer):
             op = {"type": optype}
             if params:
                 op["params"] = params
-            # Operations needing special handling:
             if optype.startswith("Cn"):
-                # n-controlled rotations have variable signature
+                # n-controlled rotation are only gates supported
+                # via this function without fixed signature
+                args = list(args)
                 op["n_qb"] = len(args)
-            elif optype == "Barrier":
-                op["signature"] = ["Q"] * len(args)
 
         for arg in zip(*self.unroll_all_args(args)):
             yield {"args": list(arg), "op": op}
@@ -1090,6 +1028,8 @@ def circuit_to_qasm_io(
         if optype == OpType.CustomGate:
             if op.gate.name not in include_gate_defs:
                 # unroll custom gate
+                # TODO when opaque gates are supported, make sure they are not
+                # unrolled here
                 def_circ = op.get_circuit()
 
                 if def_circ.n_gates == 0:

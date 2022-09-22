@@ -82,9 +82,6 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     const Op_ptr cnx = (get_op_ptr(OpType::CnX));
     CHECK(cnx->get_name() == "CnX");
     REQUIRE(*cnx->transpose() == *cnx);
-    const Op_ptr cnz = (get_op_ptr(OpType::CnZ));
-    CHECK(cnz->get_name() == "CnZ");
-    REQUIRE(*cnz->transpose() == *cnz);
     const Op_ptr bridge = (get_op_ptr(OpType::BRIDGE));
     CHECK(bridge->get_name() == "BRIDGE");
     REQUIRE(*bridge->transpose() == *bridge);

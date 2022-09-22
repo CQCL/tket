@@ -8,7 +8,7 @@ on:
       - develop
 jobs:
   changes:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     outputs:
       tklog: ${{ steps.filter.outputs.tklog }}
       tkassert: ${{ steps.filter.outputs.tkassert }}
@@ -16,7 +16,7 @@ jobs:
       libs: ${{ steps.filter.outputs.changes }}
     steps:
     - uses: actions/checkout@v3
-    - uses: dorny/paths-filter@v2.10.2
+    - uses: dorny/paths-filter@v2
       id: filter
       with:
         base: ${{ github.ref }}
@@ -37,7 +37,7 @@ jobs:
     if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+        os: ['ubuntu-20.04', 'macos-11', 'windows-2019']
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
         build_type: ['Release', 'Debug']
         shared: ['True', 'False']
@@ -47,7 +47,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: normalize line endings in conanfile and src directory
-      if: matrix.os == 'windows-2022'
+      if: matrix.os == 'windows-2019'
       # This is necessary to ensure consistent revisions across platforms.
       # Conan's revision hash is composed of hashes all the exported files, so
       # we must normalize the line endings in these.
@@ -60,8 +60,15 @@ jobs:
           $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
           [IO.File]::WriteAllText($f, $normalized_file)
         }
+    - name: set compiler
+      if: matrix.os == 'ubuntu-20.04'
+      run: |
+        sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100
+        sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-10 100
+        sudo update-alternatives --set gcc /usr/bin/gcc-10
+        sudo update-alternatives --set g++ /usr/bin/g++-10
     - name: Set up Python 3.9
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v3
       with:
         python-version: '3.9'
     - name: install conan
@@ -69,7 +76,7 @@ jobs:
     - name: create profile
       run: conan profile new tket --detect
     - name: set libcxx
-      if: matrix.os == 'ubuntu-22.04'
+      if: matrix.os == 'ubuntu-20.04'
       run: conan profile update settings.compiler.libcxx=libstdc++11 tket
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
@@ -78,12 +85,12 @@ jobs:
     - name: authenticate to repository
       run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
     - name: get version
-      if: matrix.os != 'windows-2022'
+      if: matrix.os != 'windows-2019'
       run: |
         lib_ver=$(conan inspect --raw version libs/${{ matrix.lib }}/conanfile.py)
         echo "LIB_VER=${lib_ver}" >> $GITHUB_ENV
     - name: get version
-      if: matrix.os == 'windows-2022'
+      if: matrix.os == 'windows-2019'
       run: |
         $${{ matrix.lib }}_ver = conan inspect --raw version libs/${{ matrix.lib }}/conanfile.py
         echo "LIB_VER=${${{ matrix.lib }}_ver}" >> $env:GITHUB_ENV
@@ -97,7 +104,7 @@ jobs:
     name: build library (macos-m1)
     needs: changes
     if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
+    runs-on: [self-hosted, macos, M1]
     strategy:
       matrix:
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
@@ -127,13 +134,11 @@ jobs:
     - name: upload package
       if: github.event_name == 'push'
       run: conan upload ${{ matrix.lib }}/${LIB_VER}@tket/stable --all -r=tket-libs
-    - name: unauthenticate
-      run: conan user -c
   manylinux:
     name: build library (manylinux)
     needs: changes
     if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         lib: ${{ fromJson(needs.changes.outputs.libs) }}

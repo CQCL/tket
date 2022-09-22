@@ -345,8 +345,7 @@ SCENARIO("Invalid numbers of arguments cause exceptions") {
                   type, number_of_qubits, parameters);
             } catch (const GateUnitaryMatrixError& e) {
               CHECK(e.cause == GateUnitaryMatrixError::Cause::INPUT_ERROR);
-              if (type != OpType::CnX && type != OpType::CnRy &&
-                  type != OpType::CnY && type != OpType::CnZ) {
+              if (type != OpType::CnX && type != OpType::CnRy) {
                 CHECK_THAT(e.what(), ContainsSubstring(name));
               }
               CHECK_THAT(

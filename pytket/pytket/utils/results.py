@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import TYPE_CHECKING, Dict, List, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Tuple, Union, cast
 
 import numpy as np
 from pytket.circuit import BasisOrder  # type: ignore
@@ -238,7 +238,7 @@ def permute_qubits_in_statevector(
     """
     _assert_compatible_state_permutation(state, permutation)
     permuter = BitPermuter(permutation)
-    return state[permuter.permute_all()]
+    return cast(np.ndarray, state[permuter.permute_all()])
 
 
 def permute_basis_indexing(

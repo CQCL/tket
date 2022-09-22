@@ -25,7 +25,7 @@ using RelabelledPatternGraph =
     RelabelledGraphWSM<Qubit, QubitGraph::UndirectedConnGraph>;
 using RelabelledTargetGraph =
     RelabelledGraphWSM<Node, Architecture::UndirectedConnGraph>;
-using BimapValue = qubit_bimap_t::value_type;
+using BimapValue = boost::bimap<Qubit, Node>::value_type;
 
 // Where should isolated pattern vertices be assigned?
 // They might NOT have been isolated originally; it may be
@@ -33,7 +33,8 @@ using BimapValue = qubit_bimap_t::value_type;
 // Thus, we still want them connected to useful target components,
 // so assign to nonisolated target vertices first.
 static void assign_isolated_pattern_vertices(
-    qubit_bimap_t& map, const RelabelledPatternGraph& relabelled_pattern_graph,
+    boost::bimap<Qubit, Node>& map,
+    const RelabelledPatternGraph& relabelled_pattern_graph,
     const RelabelledTargetGraph& relabelled_target_graph) {
   if (relabelled_pattern_graph.get_relabelled_isolated_vertices().empty()) {
     return;
@@ -95,20 +96,17 @@ static void assign_isolated_pattern_vertices(
 }
 
 static void write_solver_solutions(
-    std::vector<qubit_bimap_t>& all_maps,
+    std::vector<boost::bimap<Qubit, Node>>& all_maps,
     const std::vector<SolutionWSM>& solutions,
     const RelabelledPatternGraph& relabelled_pattern_graph,
     const RelabelledTargetGraph& relabelled_target_graph) {
   TKET_ASSERT(all_maps.empty());
-  all_maps.resize(solutions.size());
-  const WeightWSM expected_weight =
-      relabelled_pattern_graph.get_relabelled_edges_and_weights().size();
+  std::vector<unsigned> reordering;
 
   for (unsigned ii = 0; ii < solutions.size(); ++ii) {
+    TKET_ASSERT(reordering.size() == all_maps.size());
     const auto& solution = solutions[ii];
-    auto& map = all_maps[ii];
-    TKET_ASSERT(solution.scalar_product == expected_weight);
-    TKET_ASSERT(solution.total_p_edges_weight == expected_weight);
+    boost::bimap<Qubit, Node> map;
     for (const auto& relabelled_pv_tv : solution.assignments) {
       map.insert(BimapValue(
           relabelled_pattern_graph.get_original_vertices().at(
@@ -120,18 +118,32 @@ static void write_solver_solutions(
         map, relabelled_pattern_graph, relabelled_target_graph);
     TKET_ASSERT(
         map.size() == relabelled_pattern_graph.get_original_vertices().size());
+
+    // TODO: this is to construct all_maps with maps in decreasing weight
+    // Adding them in order as constructed probably makes sense, but theres
+    // definitely a much neater way of doing this
+    // Suggestions welcome!
+    unsigned size = reordering.size(), i = 0;
+    while (i < size && reordering.size() == size) {
+      if (solution.scalar_product > reordering[i]) {
+        reordering.insert(reordering.begin() + i, solution.scalar_product);
+        all_maps.insert(all_maps.begin() + i, map);
+        break;
+      }
+      i++;
+    }
+    if (size == reordering.size()) {
+      reordering.push_back(solution.scalar_product);
+      all_maps.push_back(map);
+    }
   }
 }
 
-/**
- * \cond Somehow doxygen 1.9.1 complains about this. Tell it to be quiet.
- */
-
-std::vector<qubit_bimap_t> get_unweighted_subgraph_monomorphisms(
-    const QubitGraph::UndirectedConnGraph& pattern_graph,
-    const Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
+std::vector<boost::bimap<Qubit, Node>> get_weighted_subgraph_monomorphisms(
+    QubitGraph::UndirectedConnGraph& pattern_graph,
+    Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
     unsigned timeout_ms) {
-  std::vector<qubit_bimap_t> all_maps;
+  std::vector<boost::bimap<Qubit, Node>> all_maps;
 
   const RelabelledPatternGraph relabelled_pattern_graph(pattern_graph);
   const RelabelledTargetGraph relabelled_target_graph(target_graph);
@@ -179,9 +191,5 @@ std::vector<qubit_bimap_t> get_unweighted_subgraph_monomorphisms(
 
   return all_maps;
 }
-
-/**
- * \endcond
- */
 
 }  // namespace tket

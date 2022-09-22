@@ -435,18 +435,4 @@ const PassPtr &ZZPhaseToRz() {
   return pp;
 }
 
-const PassPtr &SquashRzPhasedX() {
-  static const PassPtr pp([]() {
-    Transform t = Transforms::squash_1qb_to_Rz_PhasedX();
-    PredicatePtrMap s_ps;
-    PredicateClassGuarantees g_postcons{
-        {typeid(GateSetPredicate), Guarantee::Clear}};
-    PostConditions postcon{s_ps, g_postcons, Guarantee::Preserve};
-    nlohmann::json j;
-    j["name"] = "SquashRzPhasedX";
-    return std::make_shared<StandardPass>(s_ps, t, postcon, j);
-  }());
-  return pp;
-}
-
 }  // namespace tket
