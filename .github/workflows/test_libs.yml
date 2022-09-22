@@ -32,7 +32,7 @@ jobs:
           tkwsm:
             - 'libs/tkwsm/**'
           gh_actions:
-            - '/.github/workflows/test_libs.yml'
+            - '.github/workflows/test_libs.yml'
   test_libraries:
     name: test library
     needs: changes
