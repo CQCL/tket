@@ -91,10 +91,11 @@ std::vector<std::map<Qubit, Node>> Placement::get_all_placement_maps(
 const std::vector<GraphPlacement::WeightedEdge>
 GraphPlacement::default_pattern_weighting(const Circuit& circuit) {
   GraphPlacement::Frontier frontier(circuit);
-  unsigned max_gates = 100, max_depth = 100, gate_counter = 0;
+  unsigned gate_counter = 0;
   std::vector<GraphPlacement::WeightedEdge> weights;
   for (unsigned i = 0;
-       i < max_depth && gate_counter < max_gates && !frontier.slice->empty();
+       i < this->maximum_pattern_depth_ &&
+       gate_counter < this->maximum_pattern_gates_ && !frontier.slice->empty();
        i++) {
     for (const Vertex& vert : *frontier.slice) {
       EdgeVec q_out_edges =
@@ -124,12 +125,13 @@ GraphPlacement::default_pattern_weighting(const Circuit& circuit) {
               (weighted_edge.node0 == uid_1 && weighted_edge.node1 == uid_0)) {
             // actually update the weight here, i.e. this is the "magic"
             match_weight = true;
-            weighted_edge.weight += unsigned(max_depth - i);
+            weighted_edge.weight += unsigned(this->maximum_pattern_depth_ - i);
             break;
           }
         }
         if (!match_weight) {
-          weights.push_back({uid_0, uid_1, unsigned(max_depth - i), 0});
+          weights.push_back(
+              {uid_0, uid_1, unsigned(this->maximum_pattern_depth_ - i), 0});
         }
         gate_counter++;
       }
@@ -272,7 +274,7 @@ std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
   // less complex order when a new target graph is constructed
   std::vector<QubitGraph::UndirectedConnGraph> all_pattern_graphs;
   std::vector<boost::bimap<Qubit, Node>> all_bimaps;
-  unsigned incrementer = 0;
+  unsigned incrementer = 0, last_edges = 0;
   while (all_bimaps.empty()) {
     /**
      * Note that this is the while loop condition as this will always terminate
@@ -288,18 +290,26 @@ std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
     TKET_ASSERT(extended_target_graphs.size() > incrementer);
 
     // For each increment we construct a smaller pattern graph
-    all_pattern_graphs.push_back(
+    QubitGraph::UndirectedConnGraph pattern_graph =
         this->construct_pattern_graph(
                 weighted_pattern_edges, n_qubits - incrementer - 1)
-            .get_undirected_connectivity());
+            .get_undirected_connectivity();
+    // It's possible that no edges are removed, so only add new graph if it
+    // has a different number of edges (i.e. is different)
+    unsigned n_edges = boost::num_edges(pattern_graph);
+    if (last_edges != n_edges) {
+      all_pattern_graphs.push_back(pattern_graph);
+      last_edges = n_edges;
+    }
     // For each pattern graph constructed, we attempt to find
     // a subgraph monomorphism for the new target graph
-    // From more full to elss full
+    // From more full to less full
     auto it = all_pattern_graphs.begin();
     while (it != all_pattern_graphs.end() && all_bimaps.empty()) {
       all_bimaps = get_weighted_subgraph_monomorphisms(
           *it, extended_target_graphs[incrementer], this->maximum_matches_,
           this->timeout_);
+
       ++it;
     }
     incrementer++;
@@ -315,7 +325,6 @@ std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
     // If a Qubit->Node mapping leaves a Qubit on a node where it's adjacent to
     // more Nodes it doesn't have an interaction with than Nodes it does
     // then unassign it
-
     all_qmaps.push_back(bimap_to_map(it->left));
     ++counter;
   }

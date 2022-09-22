@@ -146,11 +146,14 @@ class GraphPlacement : public Placement {
 
   explicit GraphPlacement(
       const Architecture& _architecture, unsigned _maximum_matches = 2000,
-      unsigned _timeout = 100)
-      : maximum_matches_(_maximum_matches), timeout_(_timeout) {
+      unsigned _timeout = 100, unsigned _maximum_pattern_gates = 100,
+      unsigned _maximum_pattern_depth = 100)
+      : maximum_matches_(_maximum_matches),
+        timeout_(_timeout),
+        maximum_pattern_gates_(_maximum_pattern_gates),
+        maximum_pattern_depth_(_maximum_pattern_depth) {
     architecture_ = _architecture;
     this->weighted_target_edges = this->default_target_weighting(architecture_);
-
     this->extended_target_graphs = {
         this->construct_target_graph(weighted_target_edges, 0)
             .get_undirected_connectivity()};
@@ -183,6 +186,8 @@ class GraphPlacement : public Placement {
  protected:
   unsigned maximum_matches_;
   unsigned timeout_;
+  unsigned maximum_pattern_gates_;
+  unsigned maximum_pattern_depth_;
   std::vector<WeightedEdge> weighted_target_edges;
 
   //   we can use a vector as we index by incrementing size
