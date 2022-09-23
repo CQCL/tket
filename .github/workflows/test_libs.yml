@@ -42,18 +42,20 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
-      - name: Set the matrix to test all the libraries
-        id: set-matrix
+      - name: Set LIBS_TO_TEST to all the libraries
         # Test all libraries if the test_libs.yml file was modified
         if: ${{ contains(needs.changes.outputs.libs, 'gh_actions') }}
         run: |
           sudo apt-get -y install jq
-          echo "::set-output name=matrix::$(jq -n '$ARGS.positional' --args ${ALL_LIBS[@]})"
-      - name: Set the matrix to test the modified libraries only
-        id: set-matrix
+          echo "LIBS_TO_TEST=$(jq -n '$ARGS.positional' --args ${ALL_LIBS[@]})" >> $GITHUB_ENV
+      - name: Set LIBS_TO_TEST to the modified libraries only
         if: ${{ ! contains(needs.changes.outputs.libs, 'gh_actions') }}
-        outputs:
-          matrix: ${{ needs.changes.outputs.libs }}
+        run: |
+          echo "LIBS_TO_TEST=${{ toJSON(needs.changes.outputs.libs) }}" >> $GITHUB_ENV
+      - name: Set libs matrix
+        id: set-matrix
+        run: |
+          echo "::set-output name=matrix::$LIBS_TO_TEST"
   test_libraries:
     name: test library
     needs: set_libs_matrix
