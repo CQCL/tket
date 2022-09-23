@@ -145,7 +145,7 @@ class GraphPlacement : public Placement {
   };
 
   explicit GraphPlacement(
-      const Architecture& _architecture, unsigned _maximum_matches = 100000,
+      const Architecture& _architecture, unsigned _maximum_matches = 2000,
       unsigned _timeout = 100, unsigned _maximum_pattern_gates = 100,
       unsigned _maximum_pattern_depth = 100)
       : maximum_matches_(_maximum_matches),
