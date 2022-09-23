@@ -40,7 +40,7 @@ jobs:
     needs: changes
     runs-on: ubuntu-22.04
     outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      libs: ${{ steps.set-matrix.outputs.matrix }}
     steps:
       - name: Set LIBS_TO_TEST to all the libraries
         # Test all libraries if the test_libs.yml file was modified
@@ -58,11 +58,11 @@ jobs:
   test_libraries:
     name: test library
     needs: set_libs_matrix
-    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    if: ${{ needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
     strategy:
       matrix:
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
-        lib: ${{ fromJSON(needs.set_libs_matrix.outputs.matrix) }}
+        lib: ${{ fromJSON(needs.set_libs_matrix.libs) }}
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
@@ -94,12 +94,12 @@ jobs:
       run: ./test-${{ matrix.lib }}
   macos-m1:
     name: test library (macos-m1)
-    needs: changes
-    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    needs: set_libs_matrix
+    if: ${{ needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     strategy:
       matrix:
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+        lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
@@ -123,11 +123,11 @@ jobs:
       run: ./test-${{ matrix.lib }}
   generate_coverage:
     name: Generate coverage report
-    needs: changes
-    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    needs: set_libs_matrix
+    if: ${{ needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
     strategy:
       matrix:
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+        lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     runs-on: 'ubuntu-22.04'
     env:
       CONAN_REVISIONS_ENABLED: 1
@@ -183,11 +183,11 @@ jobs:
         fi
   publish_coverage:
     name: Publish coverage
-    needs: [changes, generate_coverage]
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    needs: [set_libs_matrix, generate_coverage]
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
     strategy:
       matrix:
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+        lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     concurrency: gh_pages
     runs-on: ubuntu-22.04
     steps:
