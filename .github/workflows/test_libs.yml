@@ -60,6 +60,7 @@ jobs:
     needs: set_libs_matrix
     if: ${{ needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
     strategy:
+      fail-fast: false
       matrix:
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
         lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
@@ -98,6 +99,7 @@ jobs:
     if: ${{ needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     strategy:
+      fail-fast: false
       matrix:
         lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     env:
