@@ -247,7 +247,7 @@ PassPtr gen_full_mapping_pass(
 
 PassPtr gen_default_mapping_pass(const Architecture& arc, bool delay_measures) {
   PassPtr return_pass = gen_full_mapping_pass(
-      arc, std::make_shared<GraphPlacement>(arc, 100, 100),
+      arc, std::make_shared<GraphPlacement>(arc),
       {std::make_shared<LexiLabellingMethod>(),
        std::make_shared<LexiRouteRoutingMethod>()});
   if (delay_measures) {
