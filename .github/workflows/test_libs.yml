@@ -46,8 +46,7 @@ jobs:
         # Test all libraries if the test_libs.yml file was modified
         if: ${{ contains(needs.changes.outputs.libs, 'gh_actions') }}
         run: |
-          sudo apt-get -y install jq
-          echo "LIBS_TO_TEST=$(jq -n '$ARGS.positional' --args ${ALL_LIBS[@]})" >> $GITHUB_ENV
+          echo "LIBS_TO_TEST=${{ toJSON(env.ALL_LIBS) }}" >> $GITHUB_ENV
       - name: Set LIBS_TO_TEST to the modified libraries only
         if: ${{ ! contains(needs.changes.outputs.libs, 'gh_actions') }}
         run: |
