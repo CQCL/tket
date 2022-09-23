@@ -64,7 +64,7 @@ jobs:
     strategy:
       matrix:
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
-        lib: ${{ fromJson(needs.set_libs_matrix.outputs.matrix) }}
+        lib: ${{ fromJSON(needs.set_libs_matrix.outputs.matrix) }}
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
