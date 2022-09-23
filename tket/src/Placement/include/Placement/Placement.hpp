@@ -145,13 +145,14 @@ class GraphPlacement : public Placement {
   };
 
   explicit GraphPlacement(
-      const Architecture& _architecture, unsigned _maximum_matches = 2000,
+      const Architecture& _architecture, unsigned _maximum_matches = 100000,
       unsigned _timeout = 100, unsigned _maximum_pattern_gates = 100,
       unsigned _maximum_pattern_depth = 100)
       : maximum_matches_(_maximum_matches),
         timeout_(_timeout),
         maximum_pattern_gates_(_maximum_pattern_gates),
         maximum_pattern_depth_(_maximum_pattern_depth) {
+        std::cout << "ya in gp " << maximum_matches_ << std::endl;
     architecture_ = _architecture;
     this->weighted_target_edges = this->default_target_weighting(architecture_);
     this->extended_target_graphs = {
