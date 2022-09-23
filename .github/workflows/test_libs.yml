@@ -7,7 +7,7 @@ on:
     branches:
       - develop
 env:
-  ALL_LIBS: ["tklog" "tkassert" "tkrng" "tktokenswap" "tkwsm"]
+  ALL_LIBS: ("tklog" "tkassert" "tkrng" "tktokenswap" "tkwsm")
 jobs:
   changes:
     runs-on: ubuntu-22.04
