@@ -6,6 +6,8 @@ on:
   pull_request:
     branches:
       - develop
+env:
+  ALL_LIBS: ("tklog" "tkassert" "tkrng" "tktokenswap" "tkwsm")
 jobs:
   changes:
     runs-on: ubuntu-22.04
@@ -33,14 +35,34 @@ jobs:
             - 'libs/tkwsm/**'
           gh_actions:
             - '.github/workflows/test_libs.yml'
+  set_libs_matrix:
+    name: Set the libs strategy matrix
+    needs: changes
+    runs-on: ubuntu-22.04
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Set the matrix to test all the libraries
+        id: set-matrix
+        # Test all libraries if the test_libs.yml file was modified
+        if: ${{ contains(needs.changes.outputs.libs, 'gh_actions') }}
+        run: |
+          sudo apt-get -y install jq
+          echo "::set-output name=matrix::$(jq -n '$ARGS.positional' --args ${ALL_LIBS[@]})"
+      - name: Set the matrix to test the modified libraries only
+        id: set-matrix
+        if: ${{ ! contains(needs.changes.outputs.libs, 'gh_actions') }}
+        outputs:
+          matrix: ${{ needs.changes.outputs.libs }}
   test_libraries:
     name: test library
-    needs: changes
+    needs: set_libs_matrix
+    runs-on: ubuntu-22.04
     if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     strategy:
       matrix:
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+        lib: ${{ fromJson(needs.set_libs_matrix.outputs.matrix) }}
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
