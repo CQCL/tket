@@ -99,7 +99,7 @@ static void write_solver_solutions(
     std::vector<boost::bimap<Qubit, Node>>& all_maps,
     const std::vector<SolutionWSM>& solutions,
     const RelabelledPatternGraph& relabelled_pattern_graph,
-    const RelabelledTargetGraph& relabelled_target_graph) {
+    const RelabelledTargetGraph& relabelled_target_graph, bool return_best) {
   TKET_ASSERT(all_maps.empty());
   std::vector<unsigned> reordering;
 
@@ -119,10 +119,6 @@ static void write_solver_solutions(
     TKET_ASSERT(
         map.size() == relabelled_pattern_graph.get_original_vertices().size());
 
-    // TODO: this is to construct all_maps with maps in decreasing weight
-    // Adding them in order as constructed probably makes sense, but theres
-    // definitely a much neater way of doing this
-    // Suggestions welcome!
     unsigned size = reordering.size(), i = 0;
     while (i < size && reordering.size() == size) {
       if (solution.scalar_product > reordering[i]) {
@@ -137,6 +133,17 @@ static void write_solver_solutions(
       all_maps.push_back(map);
     }
   }
+  // in some cases we only want maps which are costed best and identically
+  if (return_best && !reordering.empty()) {
+    WeightWSM best = reordering[0];
+    auto it = reordering.begin();
+    auto jt = all_maps.begin();
+    while (*it == best) {
+      ++it;
+      ++jt;
+    }
+    all_maps.erase(jt, all_maps.end());
+  }
 }
 /**
  * \cond Somehow doxygen 1.9.1 complains about this. Tell it to be quiet.
@@ -145,7 +152,7 @@ static void write_solver_solutions(
 std::vector<boost::bimap<Qubit, Node>> get_weighted_subgraph_monomorphisms(
     QubitGraph::UndirectedConnGraph& pattern_graph,
     Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
-    unsigned timeout_ms) {
+    unsigned timeout_ms, bool return_best) {
   std::vector<boost::bimap<Qubit, Node>> all_maps;
 
   const RelabelledPatternGraph relabelled_pattern_graph(pattern_graph);
@@ -190,7 +197,7 @@ std::vector<boost::bimap<Qubit, Node>> get_weighted_subgraph_monomorphisms(
 
   write_solver_solutions(
       all_maps, solution_data.solutions, relabelled_pattern_graph,
-      relabelled_target_graph);
+      relabelled_target_graph, return_best);
 
   return all_maps;
 }

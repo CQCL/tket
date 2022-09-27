@@ -15,6 +15,7 @@
 #pragma once
 
 #include "Architecture/Architecture.hpp"
+#include "Characterisation/DeviceCharacterisation.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Graphs/QubitGraph.hpp"
 
@@ -152,7 +153,6 @@ class GraphPlacement : public Placement {
         timeout_(_timeout),
         maximum_pattern_gates_(_maximum_pattern_gates),
         maximum_pattern_depth_(_maximum_pattern_depth) {
-        std::cout << "ya in gp " << maximum_matches_ << std::endl;
     architecture_ = _architecture;
     this->weighted_target_edges = this->default_target_weighting(architecture_);
     this->extended_target_graphs = {
@@ -184,11 +184,27 @@ class GraphPlacement : public Placement {
    */
   unsigned get_timeout() const { return this->timeout_; }
 
+  /**
+   * @return maximum gates to construct pattern graph from
+   */
+  unsigned get_maximum_pattern_gates() const {
+    return this->maximum_pattern_gates_;
+  }
+
+  /**
+   * @return maximum depth to search to find gates to construct pattern graph
+   * from
+   */
+  unsigned get_maximum_pattern_depth() const {
+    return this->maximum_pattern_depth_;
+  }
+
  protected:
   unsigned maximum_matches_;
   unsigned timeout_;
   unsigned maximum_pattern_gates_;
   unsigned maximum_pattern_depth_;
+
   std::vector<WeightedEdge> weighted_target_edges;
 
   //   we can use a vector as we index by incrementing size
@@ -204,6 +220,12 @@ class GraphPlacement : public Placement {
 
   Architecture construct_target_graph(
       const std::vector<WeightedEdge>& edges, unsigned distance) const;
+
+  std::vector<boost::bimap<Qubit, Node>>
+  get_all_weighted_subgraph_monomorphisms(
+      const Circuit& circ_,
+      const std::vector<WeightedEdge>& weighted_pattern_edges,
+      bool return_best);
 };
 
 /** Solves the pure unweighted subgraph monomorphism problem, trying
@@ -213,7 +235,70 @@ class GraphPlacement : public Placement {
 std::vector<boost::bimap<Qubit, Node>> get_weighted_subgraph_monomorphisms(
     QubitGraph::UndirectedConnGraph& pattern_graph,
     Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
-    unsigned timeout_ms);
+    unsigned timeout_ms, bool return_best);
+
+class NoiseAwarePlacement : public GraphPlacement {
+ public:
+  NoiseAwarePlacement(
+      const Architecture& _architecture, unsigned _maximum_matches = 2000,
+      unsigned _timeout = 100, unsigned _maximum_pattern_gates = 100,
+      unsigned _maximum_pattern_depth = 100,
+      std::optional<avg_node_errors_t> _node_errors = std::nullopt,
+      std::optional<avg_link_errors_t> _link_errors = std::nullopt,
+      std::optional<avg_readout_errors_t> _readout_errors = std::nullopt)
+      : GraphPlacement(
+            _architecture, _maximum_matches, _timeout, _maximum_pattern_gates,
+            _maximum_pattern_depth) {
+    architecture_ = _architecture;
+    this->weighted_target_edges = this->default_target_weighting(architecture_);
+    this->extended_target_graphs = {
+        this->construct_target_graph(weighted_target_edges, 0)
+            .get_undirected_connectivity()};
+    characterisation_ = {
+        _node_errors ? *_node_errors : avg_node_errors_t(),
+        _link_errors ? *_link_errors : avg_link_errors_t(),
+        _readout_errors ? *_readout_errors : avg_readout_errors_t()};
+  }
+
+  /**
+   * For some Circuit, returns maps between Circuit UnitID and
+   * Architecture UnitID that can be used for reassigning UnitID in
+   * Circuit. Maps are constructed by running a Weighted Subgraph Monomorphism
+   * for the given problem and returning up to matches number of
+   * potential solutions, ranked. Additionally, the top
+   * x mappings with identical WSM score is costed
+   * depending on passed Device characteristics, effecting
+   * the ranking.
+   *
+   * @param circ_ Circuit relabelling map is constructed from
+   * @param matches Maximum number of matches found during WSM.
+   * @return Map between Circuit and Architecture UnitID
+   */
+  std::vector<std::map<Qubit, Node>> get_all_placement_maps(
+      const Circuit& circ_, unsigned matches) override;
+
+  /**
+   * @return maximum depth to search to find gates to construct pattern graph
+   * from
+   */
+  DeviceCharacterisation get_characterisation() const {
+    return this->characterisation_;
+  }
+  void set_characterisation(const DeviceCharacterisation& characterisation) {
+    this->characterisation_ = characterisation;
+  }
+
+ private:
+  DeviceCharacterisation characterisation_;
+
+  std::vector<std::map<Qubit, Node>> rank_maps(
+      const std::vector<boost::bimap<Qubit, Node>>& placement_maps,
+      const Circuit& circ_,
+      const std::vector<WeightedEdge>& pattern_edges) const;
+  double cost_placement(
+      const boost::bimap<Qubit, Node>& map, const Circuit& circ_,
+      const QubitGraph& q_graph) const;
+};
 
 void to_json(nlohmann::json& j, const Placement::Ptr& placement_ptr);
 void from_json(const nlohmann::json& j, Placement::Ptr& placement_ptr);

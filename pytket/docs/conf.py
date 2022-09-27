@@ -40,7 +40,7 @@ author = "Cambridge Quantum Computing Ltd"
 # The short X.Y version
 version = "1.6"
 # The full version, including alpha/beta/rc tags
-release = "1.6.1"
+release = "1.6.9"
 
 
 # -- General configuration ---------------------------------------------------

@@ -21,6 +21,8 @@ endif()
 add_library(tket-${COMP}
     Frontier.cpp
     Placement.cpp
+    GraphPlacement.cpp
+    NoiseAwarePlacement.cpp
     PlacementGraphClasses.cpp
     NeighbourPlacements.cpp
     MonomorphismCalculation.cpp)

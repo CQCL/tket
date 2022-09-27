@@ -411,12 +411,16 @@ SCENARIO("Test PlacementPredicate") {
       graph_p.place(test_circ);
       REQUIRE(placement_pred->verify(test_circ));
     }
-    // WHEN("Noise Placement") {
-    //   NoiseAwarePlacement noise_p(test_arc);
-    //   REQUIRE(!placement_pred->verify(test_circ));
-    //   noise_p.place(test_circ);
-    //   REQUIRE(placement_pred->verify(test_circ));
-    // }
+    WHEN("Noise Placement") {
+      std::cout << "Can it construct" << std::endl;
+      NoiseAwarePlacement noise_p(test_arc);
+      std::cout << "can it verify" << std::endl;
+      REQUIRE(!placement_pred->verify(test_circ));
+      std::cout << "can it place" << std::endl;
+      noise_p.place(test_circ);
+      std::cout << "can it verify again" << std::endl;
+      REQUIRE(placement_pred->verify(test_circ));
+    }
   }
 }
 
