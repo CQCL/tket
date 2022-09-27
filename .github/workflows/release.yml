@@ -306,7 +306,7 @@ jobs:
         mkdir dist
         for w in `find wheelhouse/ -type f -name "*.whl"` ; do cp $w dist/ ; done
     - name: Publish wheels
-      uses: pypa/gh-action-pypi-publish@release/v1.5.1
+      uses: pypa/gh-action-pypi-publish@release/v1
       with:
         user: __token__
         password: ${{ secrets.PYPI_PYTKET_API_TOKEN }}
