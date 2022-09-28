@@ -599,16 +599,16 @@ SCENARIO("gen_placement_pass test") {
     Circuit circ(4);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {2, 1}, {2, 3}});
     Architecture arc({{0, 1}, {1, 2}, {3, 2}});
-    Placement::Ptr plptr = std::make_shared<GraphPlacement>(arc);
+    Placement::Ptr plptr = std::make_shared<Placement>(arc);
     PassPtr pp_place = gen_placement_pass(plptr);
     CompilationUnit cu(circ);
     pp_place->apply(cu);
     Circuit res(cu.get_circ_ref());
-
-    // qubit_vector_t all_res_qbs = res.all_qubits();
-    // for (unsigned nn = 0; nn <= 3; ++nn) {
-    //   REQUIRE(all_res_qbs[nn] == Qubit(nn));
-    // }
+    qubit_vector_t all_res_qbs = res.all_qubits();
+    REQUIRE(all_res_qbs[0] == Node(0));
+    REQUIRE(all_res_qbs[1] == Node(1));
+    REQUIRE(all_res_qbs[2] == Node(2));
+    REQUIRE(all_res_qbs[3] == Node(3));
   }
   GIVEN("A simple circuit and device and GraphPlacement.") {
     Circuit circ(4);
@@ -655,15 +655,14 @@ SCENARIO("gen_placement_pass test") {
     CompilationUnit line_cu((Circuit(circ)));
     line_place->apply(line_cu);
     // Get a fall back placement from a graph placement
-    // PlacementConfig config(5, line_arc.n_connections(), 10000, 10, 0);
-    PassPtr graph_fall_back_place =
-        gen_placement_pass(std::make_shared<GraphPlacement>(line_arc));
+    PassPtr graph_fall_back_place = gen_placement_pass(
+        std::make_shared<GraphPlacement>(line_arc, 1000000, 0));
     CompilationUnit graph_fall_back_cu((Circuit(circ)));
     graph_fall_back_place->apply(graph_fall_back_cu);
     // Get a fall back placement from a noise -
     // aware placement
-    PassPtr noise_fall_back_place =
-        gen_placement_pass(std::make_shared<NoiseAwarePlacement>(line_arc));
+    PassPtr noise_fall_back_place = gen_placement_pass(
+        std::make_shared<NoiseAwarePlacement>(line_arc, 1000000, 0));
     CompilationUnit noise_fall_back_cu((Circuit(circ)));
     noise_fall_back_place->apply(noise_fall_back_cu);
 

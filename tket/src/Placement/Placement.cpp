@@ -18,15 +18,15 @@
 
 namespace tket {
 
-
-const std::string &Placement::unplaced_reg() {
+const std::string& Placement::unplaced_reg() {
   static std::unique_ptr<const std::string> regname =
       std::make_unique<const std::string>("unplaced");
   return *regname;
 }
 
 void fill_partial_mapping(
-    const qubit_vector_t &current_qubits, qubit_mapping_t &partial_mapping) {
+    const qubit_vector_t& current_qubits,
+    std::map<Qubit, Node>& partial_mapping) {
   unsigned up_nu = 0;
   for (Qubit q : current_qubits) {
     if (partial_mapping.find(q) == partial_mapping.end()) {
@@ -67,11 +67,14 @@ bool Placement::place_with_map(
 std::map<Qubit, Node> Placement::get_placement_map(const Circuit& circ_) {
   std::vector<std::map<Qubit, Node>> all_maps =
       this->get_all_placement_maps(circ_, 1);
+
   // basic handling to avoid segmentation faults, as placement method may not
   // return any valid map
   auto it = all_maps.begin();
   if (it != all_maps.end()) {
-    return *it;
+    std::map<Qubit, Node> map = *it;
+    fill_partial_mapping(circ_.all_qubits(), map);
+    return map;
   } else {
     return {};
   }

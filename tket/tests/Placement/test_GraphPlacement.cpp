@@ -39,7 +39,7 @@ SCENARIO("Base GraphPlacement class") {
     Circuit circuit(1);
     GraphPlacement placement(architecture);
     placement.place(circuit);
-    REQUIRE(circuit.all_qubits()[0] == Qubit(0));
+    REQUIRE(circuit.all_qubits()[0] == Qubit(Placement::unplaced_reg(), 0));
   }
   GIVEN(
       "Two qubit unconnected circuit, two qubit Architecture, "
@@ -49,8 +49,8 @@ SCENARIO("Base GraphPlacement class") {
     Circuit circuit(2);
     GraphPlacement placement(architecture);
     placement.place(circuit);
-    REQUIRE(circuit.all_qubits()[0] == Qubit(0));
-    REQUIRE(circuit.all_qubits()[1] == Qubit(1));
+    REQUIRE(circuit.all_qubits()[0] == Qubit(Placement::unplaced_reg(), 0));
+    REQUIRE(circuit.all_qubits()[1] == Qubit(Placement::unplaced_reg(), 1));
   }
   GIVEN(
       "Three qubit unconnected circuit, two qubit Architecture, "

@@ -41,7 +41,7 @@ SCENARIO("Base NoiseAwarePlacement class") {
     Circuit circuit(1);
     NoiseAwarePlacement placement(architecture);
     placement.place(circuit);
-    REQUIRE(circuit.all_qubits()[0] == Qubit(0));
+    REQUIRE(circuit.all_qubits()[0] == Qubit(Placement::unplaced_reg(), 0));
   }
   GIVEN(
       "Two qubit unconnected circuit, two qubit Architecture, "
@@ -51,8 +51,8 @@ SCENARIO("Base NoiseAwarePlacement class") {
     Circuit circuit(2);
     NoiseAwarePlacement placement(architecture);
     placement.place(circuit);
-    REQUIRE(circuit.all_qubits()[0] == Qubit(0));
-    REQUIRE(circuit.all_qubits()[1] == Qubit(1));
+    REQUIRE(circuit.all_qubits()[0] == Qubit(Placement::unplaced_reg(), 0));
+    REQUIRE(circuit.all_qubits()[1] == Qubit(Placement::unplaced_reg(), 1));
   }
   GIVEN(
       "Three qubit unconnected circuit, two qubit Architecture, "

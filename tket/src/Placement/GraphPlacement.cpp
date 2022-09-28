@@ -12,8 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <chrono>
+
 #include "Placement/Placement.hpp"
 #include "Utils/HelperFunctions.hpp"
+
+typedef std::chrono::steady_clock Clock;
 
 namespace tket {
 
@@ -154,6 +158,8 @@ GraphPlacement::get_all_weighted_subgraph_monomorphisms(
     const Circuit& circ_,
     const std::vector<GraphPlacement::WeightedEdge>& weighted_pattern_edges,
     bool return_best) {
+  // we routinely check time, and throw a runtime_error if breached
+  const auto init_start = Clock::now();
   if (circ_.n_qubits() > this->architecture_.n_nodes()) {
     throw std::invalid_argument(
         "Circuit has more qubits than Architecture has nodes.");
@@ -198,12 +204,25 @@ GraphPlacement::get_all_weighted_subgraph_monomorphisms(
     return {{}};
   }
 
+  if (std::chrono::duration_cast<std::chrono::milliseconds>(
+          Clock::now() - init_start)
+          .count() > this->timeout_) {
+    throw std::runtime_error(
+        "GraphPlacement execution time has exceeded allowed limits.");
+  }
   // We store pattern graphs as they're constructed, and check each of them in
   // less complex order when a new target graph is constructed
   std::vector<QubitGraph::UndirectedConnGraph> all_pattern_graphs;
   std::vector<boost::bimap<Qubit, Node>> all_bimaps;
   unsigned incrementer = 0, last_edges = 0;
   while (all_bimaps.empty()) {
+    // we check timeout not reached regularly
+    if (std::chrono::duration_cast<std::chrono::milliseconds>(
+            Clock::now() - init_start)
+            .count() > this->timeout_) {
+      throw std::runtime_error(
+          "GraphPlacement execution time has exceeded allowed limits.");
+    }
     /**
      * Note that this is the while loop condition as this will always terminate
      * As eventually an edge will be added between every Node on the
@@ -236,7 +255,11 @@ GraphPlacement::get_all_weighted_subgraph_monomorphisms(
     while (it != all_pattern_graphs.end() && all_bimaps.empty()) {
       all_bimaps = get_weighted_subgraph_monomorphisms(
           *it, extended_target_graphs[incrementer], this->maximum_matches_,
-          this->timeout_, return_best);
+          this->timeout_ -
+              std::chrono::duration_cast<std::chrono::milliseconds>(
+                  Clock::now() - init_start)
+                  .count(),
+          return_best);
 
       ++it;
     }

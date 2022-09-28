@@ -19,7 +19,7 @@
 #include "Placement/Placement.hpp"
 
 namespace tket {
-    SCENARIO("LinePlacement class") {
+SCENARIO("LinePlacement class") {
   GIVEN("Empty Circuit, Empty Architecture, LinePlacement::Place.") {
     Architecture architecture;
     REQUIRE_THROWS_AS(LinePlacement(architecture), std::logic_error);
@@ -38,7 +38,7 @@ namespace tket {
     Circuit circuit(1);
     LinePlacement placement(architecture);
     placement.place(circuit);
-    REQUIRE(circuit.all_qubits()[0] == Qubit(0));
+    REQUIRE(circuit.all_qubits()[0] == Qubit(Placement::unplaced_reg(), 0));
   }
   GIVEN(
       "Two qubit unconnected circuit, two qubit Architecture, "
@@ -48,8 +48,8 @@ namespace tket {
     Circuit circuit(2);
     LinePlacement placement(architecture);
     placement.place(circuit);
-    REQUIRE(circuit.all_qubits()[0] == Qubit(0));
-    REQUIRE(circuit.all_qubits()[1] == Qubit(1));
+    REQUIRE(circuit.all_qubits()[0] == Qubit(Placement::unplaced_reg(), 0));
+    REQUIRE(circuit.all_qubits()[1] == Qubit(Placement::unplaced_reg(), 1));
   }
   GIVEN(
       "Three qubit unconnected circuit, two qubit Architecture, "
@@ -73,7 +73,8 @@ namespace tket {
     REQUIRE(map[Qubit(1)] == Node(1));
   }
   GIVEN(
-      "Five qubit connected CX circuit, five qubit Architecture, LinePlacement::get_placement_map") {
+      "Five qubit connected CX circuit, five qubit Architecture, "
+      "LinePlacement::get_placement_map") {
     /**
      * Architecture graph:
      *      4
@@ -96,20 +97,21 @@ namespace tket {
     Circuit circuit(5);
     add_2qb_gates(circuit, OpType::CX, {{0, 1}, {0, 2}, {0, 3}, {0, 4}});
     LinePlacement placement(architecture);
-    std::map<Qubit, Node> map =
-        placement.get_placement_map(circuit);
+    std::map<Qubit, Node> map = placement.get_placement_map(circuit);
     REQUIRE(map[Qubit(0)] == Node(0));
     REQUIRE(map[Qubit(1)] == Node(3));
     REQUIRE(map[Qubit(2)] == Node(4));
-    REQUIRE(map.find(Qubit(3)) == map.end());
-    REQUIRE(map.find(Qubit(4)) == map.end());
+    REQUIRE(map[Qubit(3)] == Qubit(Placement::unplaced_reg(), 0));
+    REQUIRE(map[Qubit(4)] == Qubit(Placement::unplaced_reg(), 1));
   }
-  GIVEN("A four qubit circuit, four qubit architecture, LinePlacement::get_placement_map.") {
+  GIVEN(
+      "A four qubit circuit, four qubit architecture, "
+      "LinePlacement::get_placement_map.") {
     /**
      * Architecture graph:
      * 0 -- 1 -- 2 -- 3
      */
-    std::vector<std::pair<unsigned, unsigned>> edges = {{0, 1}, {1, 2}, {2,3}};
+    std::vector<std::pair<unsigned, unsigned>> edges = {{0, 1}, {1, 2}, {2, 3}};
     Architecture architecture(edges);
     /**
      * Qubit interaction graph:
@@ -124,7 +126,7 @@ namespace tket {
     REQUIRE(map[Qubit(0)] == Node(1));
     REQUIRE(map[Qubit(1)] == Node(2));
     REQUIRE(map[Qubit(2)] == Node(3));
-    REQUIRE(map.find(Qubit(3)) == map.end());
+    REQUIRE(map[Qubit(3)] == Qubit(Placement::unplaced_reg(), 0));
   }
 }
-}
+}  // namespace tket
