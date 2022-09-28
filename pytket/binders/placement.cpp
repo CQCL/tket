@@ -29,45 +29,6 @@ using json = nlohmann::json;
 
 namespace tket {
 
-// void amend_config_from_kwargs(NoiseAwarePlacement &pobj, py::kwargs kwargs) {
-//   PlacementConfig config_ = pobj.get_config();
-
-//   if (kwargs.contains("depth_limit"))
-//     config_.depth_limit = py::cast<unsigned>(kwargs["depth_limit"]);
-//   if (kwargs.contains("max_interaction_edges"))
-//     config_.max_interaction_edges =
-//         py::cast<unsigned>(kwargs["max_interaction_edges"]);
-//   if (kwargs.contains("max_matches"))
-//     config_.monomorphism_max_matches =
-//         py::cast<unsigned>(kwargs["max_matches"]);
-//   if (kwargs.contains("contraction_ratio"))
-//     config_.arc_contraction_ratio =
-//         py::cast<unsigned>(kwargs["contraction_ratio"]);
-//   if (kwargs.contains("timeout"))
-//     config_.timeout = py::cast<unsigned>(kwargs["timeout"]);
-
-//   pobj.set_config(config_);
-// }
-
-// void amend_config_from_kwargs(GraphPlacement &pobj, py::kwargs kwargs) {
-//   PlacementConfig config_ = pobj.get_config();
-
-//   if (kwargs.contains("depth_limit"))
-//     config_.depth_limit = py::cast<unsigned>(kwargs["depth_limit"]);
-//   if (kwargs.contains("max_interaction_edges"))
-//     config_.max_interaction_edges =
-//         py::cast<unsigned>(kwargs["max_interaction_edges"]);
-//   if (kwargs.contains("max_matches"))
-//     config_.monomorphism_max_matches =
-//         py::cast<unsigned>(kwargs["max_matches"]);
-//   if (kwargs.contains("contraction_ratio"))
-//     config_.arc_contraction_ratio =
-//         py::cast<unsigned>(kwargs["contraction_ratio"]);
-//   if (kwargs.contains("timeout"))
-//     config_.timeout = py::cast<unsigned>(kwargs["timeout"]);
-//   pobj.set_config(config_);
-// }
-
 void place_with_map(Circuit &circ, std::map<Qubit, Node> &qmap) {
   Architecture arc;
   Placement plobj(arc);
@@ -196,18 +157,6 @@ PYBIND11_MODULE(placement, m) {
       .def("__repr__", [](const Placement &) {
         return "<tket::GraphPlacement>";
       });
-  // .def(
-  //     "modify_config",
-  //     [](GraphPlacement &pobj, py::kwargs kwargs) {
-  //       amend_config_from_kwargs(pobj, kwargs);
-  //     },
-  //     "Overides default Placement parameters to given values. Timeout is "
-  //     "in milliseconds"
-  //     "\n:param \\**kwargs: Parameters for placement: "
-  //     "(int)depth_limit=5, (int)max_interaction_edges=edges in "
-  //     "the "
-  //     "device graph, (int)max_matches=10000, "
-  //     "(int)contraction_ratio=10, (int)timeout=60000.");
 
   py::class_<
       NoiseAwarePlacement, std::shared_ptr<NoiseAwarePlacement>, Placement>(
@@ -245,18 +194,6 @@ PYBIND11_MODULE(placement, m) {
           "__repr__",
           [](const Placement &) {
     return "<tket::NoiseAwarePlacement>"; });
-  //     .def(
-  //         "modify_config",
-  //         [](NoiseAwarePlacement &pobj, py::kwargs kwargs) {
-  //           amend_config_from_kwargs(pobj, kwargs);
-  //         },
-  //         "Overides default Placement parameters to given values. Timeout is
-  //         " "in milliseconds"
-  //         "\n:param \\**kwargs: Parameters for placement: "
-  //         "(int)depth_limit=5, (int)max_interaction_edges=edges in "
-  //         "the "
-  //         "device graph, (int)max_matches=10000, "
-  //         "(int)contraction_ratio=10, (int)timeout=60000.");
 
   m.def(
       "place_with_map", &place_with_map,
