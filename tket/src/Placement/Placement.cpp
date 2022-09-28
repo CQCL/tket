@@ -20,7 +20,6 @@ namespace tket {
 
 bool Placement::place(
     Circuit& circ_, std::shared_ptr<unit_bimaps_t> compilation_map) {
-  std::cout << "HERE" << std::endl;
   if (circ_.n_qubits() > this->architecture_.n_nodes()) {
     throw std::invalid_argument(
         "Circuit has more qubits than Architecture has nodes.");
@@ -38,10 +37,8 @@ bool Placement::place_with_map(
 }
 
 std::map<Qubit, Node> Placement::get_placement_map(const Circuit& circ_) {
-  std::cout << "Get placement map" << std::endl;
   std::vector<std::map<Qubit, Node>> all_maps =
       this->get_all_placement_maps(circ_, 1);
-  std::cout << "Got maps, number: " << all_maps.size() << std::endl;
   // basic handling to avoid segmentation faults, as placement method may not
   // return any valid map
   auto it = all_maps.begin();

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include "Placement/Placement.hpp"
-
 #include "Utils/HelperFunctions.hpp"
 
 namespace tket {
@@ -150,8 +149,11 @@ Architecture GraphPlacement::construct_target_graph(
   return architecture;
 }
 
-
-std::vector<boost::bimap<Qubit, Node>> GraphPlacement::get_all_weighted_subgraph_monomorphisms(const Circuit& circ_, const std::vector<GraphPlacement::WeightedEdge>& weighted_pattern_edges, bool return_best){
+std::vector<boost::bimap<Qubit, Node>>
+GraphPlacement::get_all_weighted_subgraph_monomorphisms(
+    const Circuit& circ_,
+    const std::vector<GraphPlacement::WeightedEdge>& weighted_pattern_edges,
+    bool return_best) {
   if (circ_.n_qubits() > this->architecture_.n_nodes()) {
     throw std::invalid_argument(
         "Circuit has more qubits than Architecture has nodes.");
@@ -247,19 +249,21 @@ std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
     const Circuit& circ_, unsigned matches) {
   std::vector<WeightedEdge> weighted_pattern_edges =
       this->default_pattern_weighting(circ_);
-    std::vector<boost::bimap<Qubit, Node>> all_bimaps = this->get_all_weighted_subgraph_monomorphisms(circ_, weighted_pattern_edges, false);
-    std::vector<std::map<Qubit, Node>> all_qmaps;
-    unsigned counter = 0;
-    for (auto it = all_bimaps.begin();
-        it != all_bimaps.end() && counter < matches; ++it) {
-        // TODO: clean up the solution by removing low cost nodes/unconnected nodes
-        // Start with basic heuristic:
-        // If a Qubit->Node mapping leaves a Qubit on a node where it's adjacent to
-        // more Nodes it doesn't have an interaction with than Nodes it does
-        // then unassign it
-        all_qmaps.push_back(bimap_to_map(it->left));
-        ++counter;
-    }
-    return all_qmaps;
+  std::vector<boost::bimap<Qubit, Node>> all_bimaps =
+      this->get_all_weighted_subgraph_monomorphisms(
+          circ_, weighted_pattern_edges, false);
+  std::vector<std::map<Qubit, Node>> all_qmaps;
+  unsigned counter = 0;
+  for (auto it = all_bimaps.begin();
+       it != all_bimaps.end() && counter < matches; ++it) {
+    // TODO: clean up the solution by removing low cost nodes/unconnected nodes
+    // Start with basic heuristic:
+    // If a Qubit->Node mapping leaves a Qubit on a node where it's adjacent to
+    // more Nodes it doesn't have an interaction with than Nodes it does
+    // then unassign it
+    all_qmaps.push_back(bimap_to_map(it->left));
+    ++counter;
+  }
+  return all_qmaps;
 }
-} // namespace tket
+}  // namespace tket
