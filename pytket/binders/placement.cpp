@@ -145,20 +145,27 @@ PYBIND11_MODULE(placement, m) {
                 "Construct Placement instance from JSON serializable "
                 "dict representation of the Placement.");
 
-  // py::class_<LinePlacement, std::shared_ptr<LinePlacement>, Placement>(
-  //     m, "LinePlacement",
-  //     "The LinePlacement class, contains methods for getting maps "
-  //     "between Circuit Qubits and Architecture Nodes and for relabelling "
-  //     "Circuit Qubits.")
-  //     .def(
-  //         py::init<Architecture &>(),
-  //         "The constructor for a LinePlacement object. The Architecture "
-  //         "object describes the connectivity "
-  //         "between qubits.\n\n:param arc: An Architecture object.",
-  //         py::arg("arc"))
-  //     .def("__repr__", [](const Placement &) {
-  //       return "<tket::LinePlacement>";
-  //     });
+  py::class_<LinePlacement, std::shared_ptr<LinePlacement>, Placement>(
+      m, "LinePlacement",
+      "The LinePlacement class, contains methods for getting maps "
+      "between Circuit Qubits and Architecture Nodes and for relabelling "
+      "Circuit Qubits.") unsigned
+      _maximum_pattern_gates = 100,
+      unsigned _maximum_pattern_depth =
+          100.def(
+              py::init<Architecture &>(),
+              "The constructor for a LinePlacement object. The Architecture "
+              "object describes the connectivity "
+              "between qubits.\n\n:param arc: An Architecture object."
+              "\n:param maximum_line_gates: maximum number of gates used to "
+              "construct lines."
+              "\n:param maximum_line_depth: maximum depth gates are used to "
+              "construct lines.",
+              py::arg("arc"), py::arg("maximum_line_gates") = 100,
+              py::arg("maximum_line_depth") = 100)
+              .def("__repr__", [](const Placement &) {
+                return "<tket::LinePlacement>";
+              });
 
   py::class_<GraphPlacement, std::shared_ptr<GraphPlacement>, Placement>(
       m, "GraphPlacement",

@@ -181,19 +181,19 @@ PassPtr gen_placement_pass(const Placement::Ptr& placement_ptr) {
   Transform::Transformation trans = [=](Circuit& circ,
                                         std::shared_ptr<unit_bimaps_t> maps) {
     // Fall back to line placement if graph placement fails
-    // bool changed;
-    // try {
-    //   changed = placement_ptr->place(circ, maps);
-    // } catch (const std::runtime_error& e) {
-    //   std::stringstream ss;
-    //   ss << "PlacementPass failed with message: " << e.what()
-    //      << " Fall back to LinePlacement.";
-    //   tket_log()->warn(ss.str());
-    //   Placement::Ptr line_placement_ptr = std::make_shared<LinePlacement>(
-    //       placement_ptr->get_architecture_ref());
-    //   changed = line_placement_ptr->place(circ, maps);
-    // }
-    // return changed;
+    bool changed;
+    try {
+      changed = placement_ptr->place(circ, maps);
+    } catch (const std::runtime_error& e) {
+      std::stringstream ss;
+      ss << "PlacementPass failed with message: " << e.what()
+         << " Fall back to LinePlacement.";
+      tket_log()->warn(ss.str());
+      Placement::Ptr line_placement_ptr = std::make_shared<LinePlacement>(
+          placement_ptr->get_architecture_ref());
+      changed = line_placement_ptr->place(circ, maps);
+    }
+    return changed;
     return placement_ptr->place(circ, maps);
   };
   Transform t = Transform(trans);

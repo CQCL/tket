@@ -237,6 +237,37 @@ std::vector<boost::bimap<Qubit, Node>> get_weighted_subgraph_monomorphisms(
     Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
     unsigned timeout_ms, bool return_best);
 
+class LinePlacement : public GraphPlacement {
+ public:
+  explicit LinePlacement(
+      const Architecture& _architecture, unsigned _maximum_pattern_gates = 100,
+      unsigned _maximum_pattern_depth = 100)
+      : GraphPlacement(
+            _architecture, 0, 0, _maximum_pattern_gates,
+            _maximum_pattern_depth) {
+    architecture_ = _architecture;
+  }
+  /**
+   * For some Circuit, returns maps between Circuit UnitID and
+   * Architecture UnitID that can be used for reassigning UnitID in
+   * Circuit. Maps are constructed by converting qubit interactions
+   * into a sequence of lines and assigning them to a
+   * Hamiltonian path of the target graph.
+   *
+   * @param circ_ Circuit relabelling map is constructed from
+   * @param matches Maximum number of matches found during WSM.
+   * @return Map between Circuit and Architecture UnitID
+   */
+  std::vector<std::map<Qubit, Node>> get_all_placement_maps(
+      const Circuit& circ_, unsigned /*matches*/) override;
+
+ private:
+  std::vector<qubit_vector_t> interactions_to_lines(const Circuit& circ_);
+
+  std::map<Qubit, Node> assign_lines_to_target_graph(
+      std::vector<qubit_vector_t>& line_pattern, unsigned n_qubits);
+};
+
 class NoiseAwarePlacement : public GraphPlacement {
  public:
   NoiseAwarePlacement(

@@ -22,6 +22,7 @@ add_library(tket-${COMP}
     Frontier.cpp
     Placement.cpp
     GraphPlacement.cpp
+    LinePlacement.cpp
     NoiseAwarePlacement.cpp
     PlacementGraphClasses.cpp
     NeighbourPlacements.cpp

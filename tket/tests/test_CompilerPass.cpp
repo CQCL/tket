@@ -644,36 +644,35 @@ SCENARIO("gen_placement_pass test") {
         gen_placement_pass(std::make_shared<GraphPlacement>(line_arc));
     CompilationUnit graph_cu((Circuit(circ)));
     graph_place->apply(graph_cu);
-    // Get a noise-aware placement
-    // PassPtr noise_place =
-    //     gen_placement_pass(std::make_shared<NoiseAwarePlacement>(line_arc));
-    // CompilationUnit noise_cu((Circuit(circ)));
-    // noise_place->apply(noise_cu);
-    // // Get a line placement
-    // PassPtr line_place =
-    //     gen_placement_pass(std::make_shared<LinePlacement>(line_arc));
-    // CompilationUnit line_cu((Circuit(circ)));
-    // line_place->apply(line_cu);
+    // Get a noise - aware placement
+    PassPtr noise_place =
+        gen_placement_pass(std::make_shared<NoiseAwarePlacement>(line_arc));
+    CompilationUnit noise_cu((Circuit(circ)));
+    noise_place->apply(noise_cu);
+    // Get a line placement
+    PassPtr line_place =
+        gen_placement_pass(std::make_shared<LinePlacement>(line_arc));
+    CompilationUnit line_cu((Circuit(circ)));
+    line_place->apply(line_cu);
     // Get a fall back placement from a graph placement
     // PlacementConfig config(5, line_arc.n_connections(), 10000, 10, 0);
-    // PassPtr graph_fall_back_place =
-    //     gen_placement_pass(std::make_shared<GraphPlacement>(line_arc));
-    // CompilationUnit graph_fall_back_cu((Circuit(circ)));
-    // graph_fall_back_place->apply(graph_fall_back_cu);
-    // Get a fall back placement from a noise-aware placement
-    // PassPtr noise_fall_back_place = gen_placement_pass(
-    //     std::make_shared<NoiseAwarePlacement>(line_arc, config));
-    // CompilationUnit noise_fall_back_cu((Circuit(circ)));
-    // noise_fall_back_place->apply(noise_fall_back_cu);
+    PassPtr graph_fall_back_place =
+        gen_placement_pass(std::make_shared<GraphPlacement>(line_arc));
+    CompilationUnit graph_fall_back_cu((Circuit(circ)));
+    graph_fall_back_place->apply(graph_fall_back_cu);
+    // Get a fall back placement from a noise -
+    // aware placement
+    PassPtr noise_fall_back_place =
+        gen_placement_pass(std::make_shared<NoiseAwarePlacement>(line_arc));
+    CompilationUnit noise_fall_back_cu((Circuit(circ)));
+    noise_fall_back_place->apply(noise_fall_back_cu);
 
-    // REQUIRE(graph_cu.get_final_map_ref() != line_cu.get_final_map_ref());
-    // REQUIRE(noise_cu.get_final_map_ref() != line_cu.get_final_map_ref());
-    // REQUIRE(
-    //     graph_fall_back_cu.get_final_map_ref() ==
-    //     line_cu.get_final_map_ref());
-    // REQUIRE(
-    //     noise_fall_back_cu.get_final_map_ref() ==
-    //     line_cu.get_final_map_ref());
+    REQUIRE(graph_cu.get_final_map_ref() != line_cu.get_final_map_ref());
+    REQUIRE(noise_cu.get_final_map_ref() != line_cu.get_final_map_ref());
+    REQUIRE(
+        graph_fall_back_cu.get_final_map_ref() == line_cu.get_final_map_ref());
+    REQUIRE(
+        noise_fall_back_cu.get_final_map_ref() == line_cu.get_final_map_ref());
   }
 }
 
@@ -1272,7 +1271,6 @@ SCENARIO("CX mapping pass") {
     Architecture line({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
 
     // Noise-aware placement and rebase
-    // Placement::Ptr placer = std::make_shared<NoiseAwarePlacement>(line);
     Placement::Ptr placer = std::make_shared<GraphPlacement>(line);
     Circuit cx(2);
     cx.add_op<unsigned>(OpType::CX, {0, 1});

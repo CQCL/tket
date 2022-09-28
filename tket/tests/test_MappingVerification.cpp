@@ -26,20 +26,18 @@ SCENARIO(
     "respects_connectivity_constraints method.",
     "[routing]") {
   Architecture arc({{1, 0}, {1, 2}});
+  GIVEN("A simple CX circuit and a line_placement map.") {
+    Circuit circ(5);
+    add_2qb_gates(circ, OpType::CX, {{0, 1}, {0, 3}, {2, 4}, {1, 4}, {0, 4}});
+    Architecture test_arc({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
+    LinePlacement lp_obj(test_arc);
+    lp_obj.place(circ);
+    MappingManager mm(std::make_shared<Architecture>(test_arc));
 
-  // GIVEN("A simple CX circuit and a line_placement map.") {
-  //   Circuit circ(5);
-  //   add_2qb_gates(circ, OpType::CX, {{0, 1}, {0, 3}, {2, 4}, {1, 4}, {0,
-  //   4}}); Architecture test_arc({{0, 1}, {1, 2}, {2, 3}, {3, 4}});
-  //   LinePlacement lp_obj(test_arc);
-  //   lp_obj.place(circ);
-  //   MappingManager mm(std::make_shared<Architecture>(test_arc));
-
-  //   REQUIRE(
-  //       mm.route_circuit(circ,
-  //       {std::make_shared<LexiRouteRoutingMethod>()}));
-  //   CHECK(respects_connectivity_constraints(circ, test_arc, false));
-  // }
+    REQUIRE(
+        mm.route_circuit(circ, {std::make_shared<LexiRouteRoutingMethod>()}));
+    CHECK(respects_connectivity_constraints(circ, test_arc, false));
+  }
   GIVEN("A failing case, undirected") {
     Circuit circ(3);
     circ.add_op<unsigned>(OpType::CX, {0, 2});

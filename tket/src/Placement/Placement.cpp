@@ -98,6 +98,12 @@ void to_json(nlohmann::json& j, const Placement::Ptr& placement_ptr) {
     j["maximum_pattern_gates"] = cast_placer->get_maximum_pattern_gates();
     j["maximum_pattern_depth"] = cast_placer->get_maximum_pattern_depth();
   } else if (
+      std::shared_ptr<LinePlacement> cast_placer =
+          std::dynamic_pointer_cast<LinePlacement>(placement_ptr)) {
+    j["type"] = "LinePlacement";
+    j["maximum_pattern_gates"] = cast_placer->get_maximum_pattern_gates();
+    j["maximum_pattern_depth"] = cast_placer->get_maximum_pattern_depth();
+  } else if (
       std::shared_ptr<NoiseAwarePlacement> cast_placer =
           std::dynamic_pointer_cast<NoiseAwarePlacement>(placement_ptr)) {
     j["type"] = "NoiseAwarePlacement";
@@ -122,6 +128,11 @@ void from_json(const nlohmann::json& j, Placement::Ptr& placement_ptr) {
     unsigned max_pattern_depth = j.at("maximum_pattern_depth").get<unsigned>();
     placement_ptr = std::make_shared<GraphPlacement>(
         arc, matches, timeout, max_pattern_gates, max_pattern_depth);
+  } else if (classname == "LinePlacement") {
+    unsigned max_pattern_gates = j.at("maximum_pattern_gates").get<unsigned>();
+    unsigned max_pattern_depth = j.at("maximum_pattern_depth").get<unsigned>();
+    placement_ptr = std::make_shared<LinePlacement>(
+        arc, max_pattern_gates, max_pattern_depth);
   } else if (classname == "NoiseAwarePlacement") {
     unsigned matches = j.at("matches").get<unsigned>();
     unsigned timeout = j.at("timeout").get<unsigned>();
