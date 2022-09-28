@@ -293,13 +293,13 @@ SCENARIO("Base NoiseAwarePlacement class") {
 
     readout_error_t single_readout_error_0(0.05), single_readout_error_1(0.9);
     avg_readout_errors_t readout_node_errors;
-    readout_node_errors[Node(0)] = single_readout_error_0;
+    readout_node_errors[Node(0)] = single_readout_error_1;
     readout_node_errors[Node(1)] = single_readout_error_0;
-    readout_node_errors[Node(2)] = single_readout_error_1;
+    readout_node_errors[Node(2)] = single_readout_error_0;
     readout_node_errors[Node(3)] = single_readout_error_1;
-    readout_node_errors[Node(4)] = single_readout_error_1;
+    readout_node_errors[Node(4)] = single_readout_error_0;
     readout_node_errors[Node(5)] = single_readout_error_1;
-    readout_node_errors[Node(6)] = single_readout_error_0;
+    readout_node_errors[Node(6)] = single_readout_error_1;
     readout_node_errors[Node(7)] = single_readout_error_0;
 
     DeviceCharacterisation characterisation_link_node_readout(
@@ -393,20 +393,20 @@ SCENARIO("Base NoiseAwarePlacement class") {
     REQUIRE(map[Qubit(5)] == Node(4));
 
     // now make the middle segment better, such that there is a single best map
-
-    std::cout << "\n\n\n\n\n\n\n\n\nFINAL: " << std::endl;
     gate_error_t double_gate_error_2(0.05);
     op_link_errors[{Node(4), Node(5)}] = double_gate_error_2;
     DeviceCharacterisation characterisation_link_middle({}, op_link_errors);
     placement.set_characterisation(characterisation_link_middle);
 
     maps = placement.get_all_placement_maps(circuit, 100);
-    std::cout << maps.size() << std::endl;
-    for(auto x : maps[0]){
-      std::cout << x.first.repr() << " " << x.second.repr() << std::endl;
-    }
-
-
+    REQUIRE(maps.size() == 1);
+    map = maps[0];
+    REQUIRE(map[Qubit(0)] == Node(3));
+    REQUIRE(map[Qubit(1)] == Node(4));
+    REQUIRE(map[Qubit(2)] == Node(5));
+    REQUIRE(map[Qubit(3)] == Node(0));
+    REQUIRE(map[Qubit(4)] == Node(1));
+    REQUIRE(map[Qubit(5)] == Node(2));
   }
 }
 }  // namespace tket

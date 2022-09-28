@@ -29,31 +29,26 @@ double NoiseAwarePlacement::cost_placement(
   constexpr double c1 = 0.5;
   constexpr double d1 = 1 - 1 / c1;
   for (auto [qb, node] : map) {
-    std::cout << node.repr() << std::endl;
     node_set_t neighbours = this->architecture_.get_neighbour_nodes(node);
     double edge_sum = 1.0;
     for (const Node& neighbour : neighbours) {
-      std::cout << neighbour.repr() << std::endl;
       double fwd_edge_weighting = 1.0, bck_edge_weighting = 1.0;
       // check if neighbour node is mapped
       auto nei_qb_it = map.right.find(neighbour);
       if (nei_qb_it == map.right.end()) continue;
 
       auto place_interactions_boost = [&](unsigned edge_v) {
-        std::cout << "PIB: " << -1 * (edge_v - this->maximum_pattern_depth_) << std::endl;
-        return -1 * (edge_v - this->maximum_pattern_depth_);
+        return this->maximum_pattern_depth_ - edge_v + 1;
       };
 
       // check if either directed interaction exists
       // if edge is used by interaction in mapping, weight edge higher
       unsigned edge_val = q_graph.get_connection_weight(qb, nei_qb_it->second);
       if (edge_val) {
-        std::cout << "Forwards edge val: " << edge_val << std::endl;
         fwd_edge_weighting += place_interactions_boost(edge_val);
       } else {
         edge_val = q_graph.get_connection_weight(nei_qb_it->second, qb);
         if (edge_val) {
-          std::cout << "Backwards edge val: " << edge_val << std::endl;
           bck_edge_weighting += place_interactions_boost(edge_val);
         }
       }
@@ -61,27 +56,18 @@ double NoiseAwarePlacement::cost_placement(
           this->characterisation_.get_error({node, neighbour});
       gate_error_t bck_error =
           this->characterisation_.get_error({neighbour, node});
-      // if (fwd_error) {
-        edge_sum += fwd_edge_weighting * fwd_error;
-        std::cout << "Forwards: " << fwd_error << " " << fwd_edge_weighting << " " << edge_sum << " " << fwd_edge_weighting * fwd_error << std::endl;
-      // }
-      // if (bck_error) {
-        edge_sum += bck_edge_weighting * bck_error;
-        std::cout << "Backwards: " << bck_error << " " << bck_edge_weighting << " " << edge_sum << " " << bck_edge_weighting * bck_error << std::endl;
-      // }
+      edge_sum += fwd_edge_weighting * (1.0 - fwd_error);
+      edge_sum += bck_edge_weighting * (1.0 - bck_error);
     }
-    std::cout << edge_sum << std::endl;
     // bigger edge sum -> smaller cost
     cost += 1.0 / (edge_sum);
     // add error rate of node
     gate_error_t single_error = this->characterisation_.get_error(node);
-    if (single_error) {
-      cost += d1 + 1.0 / (single_error + c1);
-    }
+    cost += d1 + 1.0 / ((1.0 - single_error) + c1);
     readout_error_t readout_error =
         this->characterisation_.get_readout_error(node);
     if (readout_error) {
-      cost += (d1 + 1.0 / (readout_error + c1)) / (approx_depth * 20);
+      cost += (d1 + 1.0 / ((1.0 - readout_error) + c1)) / (approx_depth * 20);
     }
   }
   return cost;
@@ -99,12 +85,7 @@ std::vector<std::map<Qubit, Node>> NoiseAwarePlacement::rank_maps(
       this->construct_pattern_graph(pattern_edges, circ_.n_qubits());
   for (const boost::bimap<Qubit, Node>& map : placement_maps) {
     double cost = this->cost_placement(map, circ_, q_graph);
-    std::cout << cost << std::endl;
-    for(auto x : bimap_to_map(map.left)){
-      std::cout << x.first.repr() << " " << x.second.repr() << std::endl;
-    }
-    std::cout << std::endl;
-    if (return_placement_maps.empty() || cost > best_cost) {
+    if (return_placement_maps.empty() || cost < best_cost) {
       best_cost = cost;
       return_placement_maps = {bimap_to_map(map.left)};
     } else if (cost == best_cost) {
