@@ -81,7 +81,6 @@ class Placement {
    * For Placement this naively assigns every Qubit to some Node.
    *
    * @param circ_ Circuit relabelling map is constructed from
-   * @param matches Maximum number of mappings to return
    *
    * @return Map between Circuit and Architecture UnitID
    */
