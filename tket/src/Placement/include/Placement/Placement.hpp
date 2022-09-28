@@ -99,6 +99,8 @@ class Placement {
 
   virtual ~Placement(){};
 
+  static const std::string& unplaced_reg();
+
  protected:
   Architecture architecture_;
 };
