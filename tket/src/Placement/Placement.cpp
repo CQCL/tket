@@ -18,6 +18,34 @@
 
 namespace tket {
 
+
+const std::string &Placement::unplaced_reg() {
+  static std::unique_ptr<const std::string> regname =
+      std::make_unique<const std::string>("unplaced");
+  return *regname;
+}
+
+void fill_partial_mapping(
+    const qubit_vector_t &current_qubits, qubit_mapping_t &partial_mapping) {
+  unsigned up_nu = 0;
+  for (Qubit q : current_qubits) {
+    if (partial_mapping.find(q) == partial_mapping.end()) {
+      partial_mapping.insert({q, Node(Placement::unplaced_reg(), up_nu)});
+      up_nu++;
+    }
+  }
+
+  if (std::any_of(
+          partial_mapping.begin(), partial_mapping.end(),
+          [&current_qubits](auto x) {
+            return std::find(
+                       current_qubits.begin(), current_qubits.end(), x.first) ==
+                   current_qubits.end();
+          })) {
+    tket_log()->warn("Mapping contains qubits not present in circuit");
+  }
+}
+
 bool Placement::place(
     Circuit& circ_, std::shared_ptr<unit_bimaps_t> compilation_map) {
   if (circ_.n_qubits() > this->architecture_.n_nodes()) {
