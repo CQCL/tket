@@ -289,6 +289,7 @@ std::string MaxTwoQubitGatesPredicate::to_string() const {
 
 bool PlacementPredicate::verify(const Circuit& circ) const {
   for (const Qubit& qb : circ.all_qubits()) {
+    if (qb.reg_name() == Placement::unplaced_reg()) continue;
     if (nodes_.find(Node(qb)) == nodes_.end()) return false;
   }
   return true;
