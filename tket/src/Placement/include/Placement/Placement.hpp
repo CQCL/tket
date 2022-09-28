@@ -25,15 +25,9 @@ class Placement {
  public:
   typedef std::shared_ptr<Placement> Ptr;
 
-  /**
-   *
-   */
   explicit Placement(const Architecture& _architecture)
       : architecture_(_architecture) {}
 
-  /**
-   *
-   */
   Placement(){};
 
   /**
@@ -51,7 +45,7 @@ class Placement {
    * Reassigns some UnitID in circ_ as UnitID in architecture_, according to
    * given map.
    *
-   * @param circ_ Circuit to be relabelled
+   * @param circ Circuit to be relabelled
    * @param map_ relabelling
    * @param compilation_map For tracking changes during compilation
    *
@@ -256,7 +250,6 @@ class LinePlacement : public GraphPlacement {
    * Hamiltonian path of the target graph.
    *
    * @param circ_ Circuit relabelling map is constructed from
-   * @param matches Maximum number of matches found during WSM.
    * @return Map between Circuit and Architecture UnitID
    */
   std::vector<std::map<Qubit, Node>> get_all_placement_maps(
@@ -316,6 +309,7 @@ class NoiseAwarePlacement : public GraphPlacement {
   DeviceCharacterisation get_characterisation() const {
     return this->characterisation_;
   }
+
   void set_characterisation(const DeviceCharacterisation& characterisation) {
     this->characterisation_ = characterisation;
   }
