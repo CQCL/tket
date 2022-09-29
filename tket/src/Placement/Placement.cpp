@@ -42,7 +42,8 @@ void fill_partial_mapping(
                        current_qubits.begin(), current_qubits.end(), x.first) ==
                    current_qubits.end();
           })) {
-    tket_log()->warn("Mapping contains qubits not present in circuit");
+    tket_log()->warn(
+        "Placement map has some Qubit not present in the Circuit.");
   }
 }
 
@@ -120,22 +121,10 @@ std::vector<std::map<Qubit, Node>> Placement::get_all_placement_maps(
 }
 
 void to_json(nlohmann::json& j, const Placement::Ptr& placement_ptr) {
+  // n.b. due to inheritance NoiseAwarePlacement and LinePlacement
+  // need to be cast before GraphPlacement
   j["architecture"] = placement_ptr->get_architecture_ref();
-  if (std::shared_ptr<GraphPlacement> cast_placer =
-          std::dynamic_pointer_cast<GraphPlacement>(placement_ptr)) {
-    j["type"] = "GraphPlacement";
-    j["matches"] = cast_placer->get_maximum_matches();
-    j["timeout"] = cast_placer->get_timeout();
-    j["maximum_pattern_gates"] = cast_placer->get_maximum_pattern_gates();
-    j["maximum_pattern_depth"] = cast_placer->get_maximum_pattern_depth();
-  } else if (
-      std::shared_ptr<LinePlacement> cast_placer =
-          std::dynamic_pointer_cast<LinePlacement>(placement_ptr)) {
-    j["type"] = "LinePlacement";
-    j["maximum_pattern_gates"] = cast_placer->get_maximum_pattern_gates();
-    j["maximum_pattern_depth"] = cast_placer->get_maximum_pattern_depth();
-  } else if (
-      std::shared_ptr<NoiseAwarePlacement> cast_placer =
+  if (std::shared_ptr<NoiseAwarePlacement> cast_placer =
           std::dynamic_pointer_cast<NoiseAwarePlacement>(placement_ptr)) {
     j["type"] = "NoiseAwarePlacement";
     j["matches"] = cast_placer->get_maximum_matches();
@@ -143,7 +132,20 @@ void to_json(nlohmann::json& j, const Placement::Ptr& placement_ptr) {
     j["maximum_pattern_gates"] = cast_placer->get_maximum_pattern_gates();
     j["maximum_pattern_depth"] = cast_placer->get_maximum_pattern_depth();
     j["characterisation"] = cast_placer->get_characterisation();
-
+  } else if (
+      std::shared_ptr<LinePlacement> cast_placer =
+          std::dynamic_pointer_cast<LinePlacement>(placement_ptr)) {
+    j["type"] = "LinePlacement";
+    j["maximum_pattern_gates"] = cast_placer->get_maximum_pattern_gates();
+    j["maximum_pattern_depth"] = cast_placer->get_maximum_pattern_depth();
+  } else if (
+      std::shared_ptr<GraphPlacement> cast_placer =
+          std::dynamic_pointer_cast<GraphPlacement>(placement_ptr)) {
+    j["type"] = "GraphPlacement";
+    j["matches"] = cast_placer->get_maximum_matches();
+    j["timeout"] = cast_placer->get_timeout();
+    j["maximum_pattern_gates"] = cast_placer->get_maximum_pattern_gates();
+    j["maximum_pattern_depth"] = cast_placer->get_maximum_pattern_depth();
   } else {
     j["type"] = "Placement";
   }

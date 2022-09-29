@@ -640,8 +640,8 @@ SCENARIO("gen_placement_pass test") {
     }
     Architecture line_arc(edges);
     // Get a graph placement
-    PassPtr graph_place =
-        gen_placement_pass(std::make_shared<GraphPlacement>(line_arc));
+    PassPtr graph_place = gen_placement_pass(
+        std::make_shared<GraphPlacement>(line_arc, 100, 100000));
     CompilationUnit graph_cu((Circuit(circ)));
     graph_place->apply(graph_cu);
     // Get a noise - aware placement

@@ -120,7 +120,7 @@ static void write_solver_solutions(
         map.size() == relabelled_pattern_graph.get_original_vertices().size());
 
     unsigned size = reordering.size(), i = 0;
-    while (i < size && reordering.size() == size) {
+    while (i < reordering.size() && reordering.size() == size) {
       if (solution.scalar_product > reordering[i]) {
         reordering.insert(reordering.begin() + i, solution.scalar_product);
         all_maps.insert(all_maps.begin() + i, map);
@@ -138,7 +138,7 @@ static void write_solver_solutions(
     WeightWSM best = reordering[0];
     auto it = reordering.begin();
     auto jt = all_maps.begin();
-    while (*it == best) {
+    while (*it == best && it != reordering.end()) {
       ++it;
       ++jt;
     }
@@ -187,18 +187,14 @@ std::vector<boost::bimap<Qubit, Node>> get_weighted_subgraph_monomorphisms(
   solver_parameters.for_multiple_full_solutions_the_max_number_to_obtain =
       max_matches;
   solver_parameters.timeout_ms = timeout_ms;
-
   const MainSolver main_solver(
       relabelled_pattern_graph.get_relabelled_edges_and_weights(),
       relabelled_target_graph.get_relabelled_edges_and_weights(),
       solver_parameters);
-
   const auto& solution_data = main_solver.get_solution_data();
-
   write_solver_solutions(
       all_maps, solution_data.solutions, relabelled_pattern_graph,
       relabelled_target_graph, return_best);
-
   return all_maps;
 }
 /**
