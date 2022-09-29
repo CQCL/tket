@@ -88,8 +88,11 @@ SCENARIO("USER SEG") {
               std::make_shared<LexiRouteRoutingMethod>()});
     CompilationUnit cu(circ);
     r_p->apply(cu);
-    std::cout << "Trying to cout circuit: " << std::endl;
-    std::cout << cu.get_circ_ref() << std::endl;
+    // cu.get_circ_ref().to_graphviz_file("Users/silasdilkes/code/user_segfault/test.dot");
+
+    cu.get_circ_ref().to_graphviz_file("whatthefuck.dot");
+    // std::cout << "Trying to cout circuit: " << std::endl;
+    // std::cout << cu.get_circ_ref() << std::endl;
   }
 }
 
