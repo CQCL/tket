@@ -110,23 +110,21 @@ PYBIND11_MODULE(placement, m) {
       m, "LinePlacement",
       "The LinePlacement class, contains methods for getting maps "
       "between Circuit Qubits and Architecture Nodes and for relabelling "
-      "Circuit Qubits.") unsigned
-      _maximum_pattern_gates = 100,
-      unsigned _maximum_pattern_depth =
-          100.def(
-              py::init<Architecture &>(),
-              "The constructor for a LinePlacement object. The Architecture "
-              "object describes the connectivity "
-              "between qubits.\n\n:param arc: An Architecture object."
-              "\n:param maximum_line_gates: maximum number of gates used to "
-              "construct lines."
-              "\n:param maximum_line_depth: maximum depth gates are used to "
-              "construct lines.",
-              py::arg("arc"), py::arg("maximum_line_gates") = 100,
-              py::arg("maximum_line_depth") = 100)
-              .def("__repr__", [](const Placement &) {
-                return "<tket::LinePlacement>";
-              });
+      "Circuit Qubits.")
+      .def(
+          py::init<Architecture &, unsigned, unsigned>(),
+          "The constructor for a LinePlacement object. The Architecture "
+          "object describes the connectivity "
+          "between qubits.\n\n:param arc: An Architecture object."
+          "\n:param maximum_line_gates: maximum number of gates used to "
+          "construct lines."
+          "\n:param maximum_line_depth: maximum depth gates are used to "
+          "construct lines.",
+          py::arg("arc"), py::arg("maximum_line_gates") = 100,
+          py::arg("maximum_line_depth") = 100)
+      .def("__repr__", [](const Placement &) {
+        return "<tket::LinePlacement>";
+      });
 
   py::class_<GraphPlacement, std::shared_ptr<GraphPlacement>, Placement>(
       m, "GraphPlacement",
@@ -167,19 +165,25 @@ PYBIND11_MODULE(placement, m) {
       "to find the best placement map.")
       .def(
           py::init<
-              Architecture &,unsigned, unsigned, unsigned, unsigned avg_node_errors_t, avg_link_errors_t,
-              avg_readout_errors_t>(),
-          "The constructor for a NoiseAwarePlacement object. The Architecture
-          " "object describes the connectivity between qubits. " "The
-          dictionaries passed as parameters indicate the average " "gate
-          errors " "for single- and two-qubit gates as well as readout
-          errors. " "If no error is given for a given node or pair of nodes,
-          the " "fidelity is assumed to be 1."
+              Architecture &, unsigned, unsigned, unsigned, unsigned,
+              avg_node_errors_t, avg_link_errors_t, avg_readout_errors_t>(),
+          "The constructor for a NoiseAwarePlacement object. The Architecture"
+          " object describes the connectivity between qubits. "
+          "The dictionaries passed as parameters indicate the average "
+          "gate errors for single- and two-qubit gates as well as readout"
+          "errors.  If no error is given for a given node or pair of nodes,"
+          "the fidelity is assumed to be 1."
           "\n\n:param arc: An Architecture object\n"
-          ":param maximum_matches: The total number of weighted subgraph monomorphisms that can be found before matches are returned.\n"
-          ":param timeout: Total time in seconds before stopping search for monomorphisms.\n"
-          ":param maximum_pattern_gates: The upper bound on the number of circuit gates used to construct the pattern graph for finding subgraph monomorphisms.\n"
-          ":param maximum_pattern_depth: The upper bound on the circuit depth gates are added to the pattern graph to for finding subgraph monomorphisms.\n"
+          ":param maximum_matches: The total number of weighted subgraph "
+          "monomorphisms that can be found before matches are returned.\n"
+          ":param timeout: Total time in seconds before stopping search for "
+          "monomorphisms.\n"
+          ":param maximum_pattern_gates: The upper bound on the number of "
+          "circuit gates used to construct the pattern graph for finding "
+          "subgraph monomorphisms.\n"
+          ":param maximum_pattern_depth: The upper bound on the circuit depth "
+          "gates are added to the pattern graph to for finding subgraph "
+          "monomorphisms.\n"
           ":param node_errors: a dictionary mapping nodes in the "
           "architecture to average single-qubit gate errors\n"
           ":param link_errors: a dictionary mapping pairs of nodes in the "
@@ -187,13 +191,14 @@ PYBIND11_MODULE(placement, m) {
           ":param readout_errors: a dictionary mapping nodes in the "
           "architecture to average measurement readout errors.",
           py::arg("arc"), py::arg("maximum_matches") = 1000,
-          py::arg("timeout") = 1000, py::arg("maximum_pattern_gates") = 100, py::arg("maximum_pattern_depth") = 100, py::arg("node_errors") = py::dict(),
+          py::arg("timeout") = 1000, py::arg("maximum_pattern_gates") = 100,
+          py::arg("maximum_pattern_depth") = 100,
+          py::arg("node_errors") = py::dict(),
           py::arg("link_errors") = py::dict(),
-          py::arg("readout_errors") = py::dict(),)
-      .def(
-          "__repr__",
-          [](const Placement &) {
-    return "<tket::NoiseAwarePlacement>"; });
+          py::arg("readout_errors") = py::dict())
+      .def("__repr__", [](const Placement &) {
+        return "<tket::NoiseAwarePlacement>";
+      });
 
   m.def(
       "place_with_map", &place_with_map,
