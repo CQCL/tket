@@ -88,6 +88,7 @@ SCENARIO("USER SEG") {
               std::make_shared<LexiRouteRoutingMethod>()});
     CompilationUnit cu(circ);
     r_p->apply(cu);
+    std::cout << "Trying to cout circuit: " << std::endl;
     std::cout << cu.get_circ_ref() << std::endl;
   }
 }
