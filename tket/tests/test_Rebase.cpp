@@ -179,9 +179,6 @@ SCENARIO("Building rebases with rebase_factory") {
       u.add_op<unsigned>(OpType::TK1, params, {0});
       return u;
     };
-    auto blanker = [](const Expr&, const Expr&, const Expr&) {
-      return Circuit(1);
-    };
     OpTypeSet gateset = {OpType::TK1, OpType::CX};
     Transform t = Transforms::rebase_factory(gateset, blank, tk1_map);
     REQUIRE(t.apply(c));

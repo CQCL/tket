@@ -493,8 +493,6 @@ struct EquivalenceData {
 
 SCENARIO("Trivial unitary matrix identities") {
   GIVEN("Fixed ops, special cases of ops with parameters") {
-    const auto& gates_data = internal::GatesData::get();
-
     // KEY: number of qubits, for an op taking no parameters
     // VALUE: (this op) -> (data about another op taking parameters,
     //                      which should be equivalent)

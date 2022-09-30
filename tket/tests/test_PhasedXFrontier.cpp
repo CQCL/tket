@@ -30,7 +30,7 @@ SCENARIO("PhasedXFrontier: move frontier forward") {
     Circuit circ(2);
     Vertex v1 = circ.add_op<unsigned>(OpType::PhasedX, {0.3, 0.5}, {0});
     Vertex v2 = circ.add_op<unsigned>(OpType::PhasedX, {0.2, 0.3}, {1});
-    Vertex v3 = circ.add_op<unsigned>(OpType::PhasedX, {0.3, 0.5}, {0});
+    circ.add_op<unsigned>(OpType::PhasedX, {0.3, 0.5}, {0});
     Vertex cx = circ.add_op<unsigned>(OpType::CX, {0, 1});
     Vertex v4 = circ.add_op<unsigned>(OpType::PhasedX, {0.3, 0.5}, {0});
 

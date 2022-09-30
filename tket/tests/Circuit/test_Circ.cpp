@@ -175,8 +175,7 @@ SCENARIO("Creating gates via Qubits and Registers") {
     Vertex h = circ.add_conditional_gate<UnitID>(
         OpType::H, {}, {qreg[0]}, {creg[0]}, 1);
     Vertex m = circ.add_measure(Qubit(qreg[0]), Bit(creg[0]));
-    Vertex y = circ.add_conditional_gate<UnitID>(
-        OpType::Y, {}, {qreg[1]}, {creg[0]}, 1);
+    circ.add_conditional_gate<UnitID>(OpType::Y, {}, {qreg[1]}, {creg[0]}, 1);
     Vertex m2 = circ.add_conditional_gate<UnitID>(
         OpType::Measure, {}, {qreg[1], creg[0]}, {creg[0], creg[1]}, 3);
     REQUIRE(circ.n_qubits() == 2);
@@ -415,8 +414,7 @@ SCENARIO("Verifying controls_from_c_frontier") {
 SCENARIO("Verifying bits_from_c_frontier") {
   Circuit test(2, 2);
   Vertex m = test.add_op<unsigned>(OpType::Measure, {0, 0});
-  Vertex h =
-      test.add_conditional_gate<unsigned>(OpType::H, {}, uvec{1}, {0}, 1);
+  test.add_conditional_gate<unsigned>(OpType::H, {}, uvec{1}, {0}, 1);
   Qubit q0(0);
   Qubit q1(1);
   Bit b0(0);
@@ -888,8 +886,8 @@ SCENARIO("Test that subsituting edge cases works correctly") {
       Vertex b4 = test2.add_vertex(OpType::Output);
       test2.boundary.insert({qb0, b1, b3});
       test2.boundary.insert({qb1, b2, b4});
-      Edge e1 = test2.add_edge({b1, 0}, {b4, 0}, EdgeType::Quantum);
-      Edge e2 = test2.add_edge({b2, 0}, {b3, 0}, EdgeType::Quantum);
+      test2.add_edge({b1, 0}, {b4, 0}, EdgeType::Quantum);
+      test2.add_edge({b2, 0}, {b3, 0}, EdgeType::Quantum);
 
       test.substitute(test2, sub);
       REQUIRE(test.get_successors(test.get_in(qb0))[0] == test.get_out(qb1));
@@ -1251,13 +1249,13 @@ SCENARIO("Test depth_by_type method") {
   }
   GIVEN("Product state with classical wires") {
     Circuit circ(4, 2);
-    Vertex x = circ.add_op<unsigned>(OpType::X, {0});
-    Vertex cx = circ.add_op<unsigned>(OpType::CX, {0, 1});
-    Vertex m = circ.add_measure(1, 1);
-    Vertex y = circ.add_op<unsigned>(OpType::Y, {2});
-    Vertex s = circ.add_op<unsigned>(OpType::S, {2});
-    Vertex t = circ.add_op<unsigned>(OpType::T, {2});
-    Vertex cx2 = circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::X, {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_measure(1, 1);
+    circ.add_op<unsigned>(OpType::Y, {2});
+    circ.add_op<unsigned>(OpType::S, {2});
+    circ.add_op<unsigned>(OpType::T, {2});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
     REQUIRE(circ.depth_by_type(OpType::CX) == 1);
   }
   GIVEN("Interacting via classical effects") {
@@ -1302,13 +1300,13 @@ SCENARIO("Test next slice") {
     Circuit circ(4);
     Vertex v1 = circ.add_op<unsigned>(OpType::X, {0});
     Vertex v8 = circ.add_op<unsigned>(OpType::S, {3});
-    Vertex v9 = circ.add_op<unsigned>(OpType::T, {3});
-    Vertex v2 = circ.add_op<unsigned>(OpType::CX, {0, 1});
-    Vertex v3 = circ.add_op<unsigned>(OpType::CY, {2, 3});
-    Vertex v4 = circ.add_op<unsigned>(OpType::H, {0});
-    Vertex v5 = circ.add_op<unsigned>(OpType::CZ, {0, 2});
-    Vertex v6 = circ.add_op<unsigned>(OpType::Y, {0});
-    Vertex v7 = circ.add_op<unsigned>(OpType::CX, {3, 1});
+    circ.add_op<unsigned>(OpType::T, {3});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CY, {2, 3});
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::CZ, {0, 2});
+    circ.add_op<unsigned>(OpType::Y, {0});
+    circ.add_op<unsigned>(OpType::CX, {3, 1});
 
     auto frontier = std::make_shared<unit_frontier_t>();
     for (const Qubit& q : circ.all_qubits()) {
@@ -1336,8 +1334,8 @@ SCENARIO("Test next quantum slice") {
         circ.add_conditional_gate<unsigned>(OpType::Rx, {0.6}, {1}, {0}, 1);
     Vertex v3 =
         circ.add_conditional_gate<unsigned>(OpType::Ry, {0.6}, {2}, {0}, 1);
-    Vertex v4 = circ.add_op<unsigned>(OpType::S, {2});
-    Vertex v5 = circ.add_op<unsigned>(OpType::T, {1});
+    circ.add_op<unsigned>(OpType::S, {2});
+    circ.add_op<unsigned>(OpType::T, {1});
 
     auto frontier = std::make_shared<unit_frontier_t>();
     for (const Qubit& q : circ.all_qubits()) {
@@ -1501,8 +1499,8 @@ SCENARIO("Test Command Iterator") {
   GIVEN("A 2qubit circuit") {
     Circuit circ(2);
     Vertex v = circ.add_op<unsigned>(OpType::X, {0});
-    Vertex v2 = circ.add_op<unsigned>(OpType::CX, {0, 1});
-    Vertex v3 = circ.add_op<unsigned>(OpType::Z, {1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Z, {1});
     const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     const Op_ptr op2 = get_op_ptr(OpType::CX);
     const Op_ptr op3 = get_op_ptr(OpType::Z);
@@ -1521,11 +1519,11 @@ SCENARIO("Test Command Iterator") {
 
   GIVEN("A 3-qb circuit") {
     Circuit circ(3);
-    auto v1 = circ.add_op<unsigned>(OpType::CX, {0, 2});
-    auto v2 = circ.add_op<unsigned>(OpType::CZ, {1, 2});
-    auto v3 = circ.add_op<unsigned>(OpType::Rz, 0.3, {1});
-    auto v4 = circ.add_op<unsigned>(OpType::S, {0});
-    auto v5 = circ.add_op<unsigned>(OpType::Tdg, {2});
+    circ.add_op<unsigned>(OpType::CX, {0, 2});
+    circ.add_op<unsigned>(OpType::CZ, {1, 2});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {1});
+    circ.add_op<unsigned>(OpType::S, {0});
+    circ.add_op<unsigned>(OpType::Tdg, {2});
     OpTypeSet allowed_ops = {OpType::CX, OpType::CZ,  OpType::Rz,
                              OpType::S,  OpType::Tdg, OpType::Output};
     std::vector<Command> comvec;
