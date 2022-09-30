@@ -150,11 +150,18 @@ class Backend(ABC):
         will be suitable to run on this backend with as few preconditions as
         possible.
 
+        This is a an abstract method which os implemented in the backend itself, so
+        the details of which passes are applied may vary.
+
         :param optimisation_level: The level of optimisation to perform during
-            compilation. Level 0 just solves the device constraints without
-            optimising. Level 1 additionally performs some light optimisations.
-            Level 2 adds more intensive optimisations that can increase compilation
-            time for large circuits. Defaults to 1.
+            compilation.
+
+            - Level 0 does the minimum required to solves the device constraints,
+              without any optimisation.
+            - Level 1 (the default) additionally performs some light optimisations.
+            - Level 2 adds more intensive optimisations that can increase compilation
+              time but should give the best results from execution.
+
         :type optimisation_level: int, optional
         :return: Compilation pass guaranteeing required predicates.
         :rtype: BasePass
@@ -165,7 +172,7 @@ class Backend(ABC):
         self, circuit: Circuit, optimisation_level: int = 1
     ) -> Circuit:
         """
-        Return a single circuit compiled with default_compilation_pass. See
+        Return a single circuit compiled with :py:meth:`default_compilation_pass`. See
         :py:meth:`Backend.get_compiled_circuits`.
         """
         return_circuit = circuit.copy()
@@ -175,7 +182,7 @@ class Backend(ABC):
     def get_compiled_circuits(
         self, circuits: Sequence[Circuit], optimisation_level: int = 1
     ) -> List[Circuit]:
-        """Compile a sequence of circuits with default_compilation_pass
+        """Compile a sequence of circuits with :py:meth:`default_compilation_pass`
         and return the list of compiled circuits (does not act in place).
 
         As well as applying a degree of optimisation (controlled by the
@@ -197,10 +204,8 @@ class Backend(ABC):
         :param circuits: The circuits to compile.
         :type circuit: Sequence[Circuit]
         :param optimisation_level: The level of optimisation to perform during
-            compilation. Level 0 just solves the device constraints without
-            optimising. Level 1 additionally performs some light optimisations.
-            Level 2 adds more intensive optimisations that can increase compilation
-            time for large circuits. Defaults to 1.
+            compilation. See :py:meth:`default_compilation_pass` for a description of
+            the different levels (0, 1 or 2). Defaults to 1.
         :type optimisation_level: int, optional
         :return: Compiled circuits.
         :rtype: List[Circuit]
