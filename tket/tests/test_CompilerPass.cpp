@@ -645,8 +645,8 @@ SCENARIO("gen_placement_pass test") {
     CompilationUnit graph_cu((Circuit(circ)));
     graph_place->apply(graph_cu);
     // Get a noise - aware placement
-    PassPtr noise_place =
-        gen_placement_pass(std::make_shared<NoiseAwarePlacement>(line_arc));
+    PassPtr noise_place = gen_placement_pass(
+        std::make_shared<NoiseAwarePlacement>(line_arc, 10, 1000000));
     CompilationUnit noise_cu((Circuit(circ)));
     noise_place->apply(noise_cu);
     // Get a line placement
