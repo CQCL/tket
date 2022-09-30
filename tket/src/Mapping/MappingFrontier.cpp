@@ -155,6 +155,9 @@ MappingFrontier::MappingFrontier(const MappingFrontier& mapping_frontier)
   for (const Node& node : mapping_frontier.ancilla_nodes_) {
     this->ancilla_nodes_.insert(node);
   }
+  for (const Node& node : mapping_frontier.original_ancilla_nodes_) {
+    this->original_ancilla_nodes_.insert(node);
+  }
 }
 
 void MappingFrontier::advance_next_2qb_slice(unsigned max_advance) {
@@ -581,7 +584,6 @@ bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
     this->add_ancilla(uid_1);
     uid1_in_it = this->linear_boundary->find(uid_1);
   }
-
   // update held ancillas
   // the location/id of the "ancilla node" changes when a SWAP occurs
   Node n0 = Node(uid_0);
@@ -607,10 +609,13 @@ bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
       this->circuit_.get_nth_out_edge(vp0.first, vp0.second),
       this->circuit_.get_nth_out_edge(vp1.first, vp1.second)};
 
-  // If the immediate vertex before the new vertex is the same SWAP, this
-  // implies a rut has been hit In which case return false that SWAP can't be
-  // added Can safely do this check here after relabelling as adding/updating
-  // ancillas => fresh SWAP
+  /**
+   * If the immediate vertex before the new vertex is the same SWAP, this
+   * implies a rut has been hit
+   * In which case return false, saying that SWAP can't be added
+   * Can safely do this check here after relabelling as
+   * adding/updating ancillas => fresh SWAP
+   */
   Vertex source0 = this->circuit_.source(predecessors[0]);
   Vertex source1 = this->circuit_.source(predecessors[1]);
   if (source0 == source1) {
@@ -653,7 +658,6 @@ bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
   this->circuit_.boundary.get<TagID>().insert({uid_1, uid1_in, uid0_out});
 
   std::map<Node, Node> final_map = {{n0, n1}, {n1, n0}};
-
   update_maps(this->bimaps_, {}, final_map);
   return true;
 }
@@ -703,6 +707,7 @@ void MappingFrontier::add_ancilla(const UnitID& ancilla) {
   this->bimaps_->initial.insert({qb, qb});
   this->bimaps_->final.insert({qb, qb});
   this->ancilla_nodes_.insert(Node(ancilla));
+  this->original_ancilla_nodes_.insert(Node(ancilla));
   UnitID uid_ancilla(ancilla);
 
   unit_map_t update_map;
@@ -713,50 +718,52 @@ void MappingFrontier::add_ancilla(const UnitID& ancilla) {
 
 void MappingFrontier::merge_ancilla(
     const UnitID& merge, const UnitID& ancilla) {
-  // get output and input vertices
-  Vertex merge_v_in = this->circuit_.get_in(merge);
-  Vertex merge_v_out = this->circuit_.get_out(merge);
-  Vertex ancilla_v_out = this->circuit_.get_out(ancilla);
-  // find source vertex & port of merge_v_out
-  // output vertex, so can assume single edge
-  Edge merge_out_edge = this->circuit_.get_nth_out_edge(merge_v_in, 0);
-  Edge ancilla_in_edge = this->circuit_.get_nth_in_edge(ancilla_v_out, 0);
-  // Find port number
-  port_t merge_target_port = this->circuit_.get_target_port(merge_out_edge);
-  port_t ancilla_source_port = this->circuit_.get_source_port(ancilla_in_edge);
-  // Find vertices
-  Vertex merge_v_target = this->circuit_.target(merge_out_edge);
-  Vertex ancilla_v_source = this->circuit_.source(ancilla_in_edge);
+  // "front" meaning causally ahead
+  auto rewire = [&](const UnitID& front, const UnitID& back) {
+    // get output and input vertices
+    Vertex back_v_in = this->circuit_.get_in(back);
+    Vertex back_v_out = this->circuit_.get_out(back);
+    Vertex front_v_out = this->circuit_.get_out(front);
+    // find source vertex & port of merge_v_out
+    // output vertex, so can assume single edge
+    Edge back_out_edge = this->circuit_.get_nth_out_edge(back_v_in, 0);
+    Edge front_in_edge = this->circuit_.get_nth_in_edge(front_v_out, 0);
+    // Find port number
+    port_t back_target_port = this->circuit_.get_target_port(back_out_edge);
+    port_t front_source_port = this->circuit_.get_source_port(front_in_edge);
+    // Find vertices
+    Vertex back_v_target = this->circuit_.target(back_out_edge);
+    Vertex front_v_source = this->circuit_.source(front_in_edge);
+    // remove and replace edges
+    this->circuit_.remove_edge(back_out_edge);
+    this->circuit_.remove_edge(front_in_edge);
+    this->circuit_.add_edge(
+        {front_v_source, front_source_port}, {back_v_target, back_target_port},
+        EdgeType::Quantum);
 
-  // remove and replace edges
-  this->circuit_.remove_edge(merge_out_edge);
-  this->circuit_.remove_edge(ancilla_in_edge);
-  this->circuit_.add_edge(
-      {ancilla_v_source, ancilla_source_port},
-      {merge_v_target, merge_target_port}, EdgeType::Quantum);
+    // instead of manually updating all boundaries, we change which output
+    // vertex the qubit paths to
+    Edge back_in_edge = this->circuit_.get_nth_in_edge(back_v_out, 0);
+    port_t back_source_port = this->circuit_.get_source_port(back_in_edge);
+    Vertex back_v_source = this->circuit_.source(back_in_edge);
 
-  // instead of manually updating all boundaries, we change which output
-  // vertex the qubit paths to
-  Edge merge_in_edge = this->circuit_.get_nth_in_edge(merge_v_out, 0);
-  port_t merge_source_port = this->circuit_.get_source_port(merge_in_edge);
-  Vertex merge_v_source = this->circuit_.source(merge_in_edge);
+    this->circuit_.remove_edge(back_in_edge);
+    this->circuit_.add_edge(
+        {back_v_source, back_source_port}, {front_v_out, 0}, EdgeType::Quantum);
 
-  this->circuit_.remove_edge(merge_in_edge);
-  this->circuit_.add_edge(
-      {merge_v_source, merge_source_port}, {ancilla_v_out, 0},
-      EdgeType::Quantum);
+    // remove empty vertex wire, relabel dag vertices
+    this->circuit_.dag[back_v_in].op = get_op_ptr(OpType::noop);
+    this->circuit_.dag[back_v_out].op = get_op_ptr(OpType::noop);
+    this->circuit_.remove_vertex(
+        back_v_in, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+    this->circuit_.remove_vertex(
+        back_v_out, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
 
-  // remove empty vertex wire, relabel dag vertices
-  this->circuit_.dag[merge_v_in].op = get_op_ptr(OpType::noop);
-  this->circuit_.dag[merge_v_out].op = get_op_ptr(OpType::noop);
-  this->circuit_.remove_vertex(
-      merge_v_in, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
-  this->circuit_.remove_vertex(
-      merge_v_out, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+    // Can now just erase "merge" qubit from the circuit
+    this->circuit_.boundary.get<TagID>().erase(back);
+  };
 
-  // Can now just erase "merge" qubit from the circuit
-  this->circuit_.boundary.get<TagID>().erase(merge);
-
+  rewire(ancilla, merge);
   // Update the qubit mappings
   // let's call the arguments ancilla_node and merge_node
   // e.g. before merge:
@@ -767,7 +774,6 @@ void MappingFrontier::merge_ancilla(
   //  final := {merge_q:ancilla_node}
   // Basically, in both qubit maps, erase the entry with qubit merge_q
   // then replace the entry ancilla_q -> x with the merge_q -> x
-
   auto merge_it = this->bimaps_->initial.right.find(merge);
   TKET_ASSERT(merge_it != this->bimaps_->initial.right.end());
   UnitID merge_q = merge_it->second;
@@ -784,6 +790,90 @@ void MappingFrontier::merge_ancilla(
   UnitID init_ancilla_node = init_it->second;
   this->bimaps_->initial.left.erase(init_it);
   this->bimaps_->initial.left.insert({merge_q, init_ancilla_node});
+}
+
+void MappingFrontier::merge_unassigned_with_ancilla(
+    const UnitID& unassigned, const UnitID& ancilla) {
+  // get output and input vertices
+  Vertex unassigned_v_in = this->circuit_.get_in(unassigned);
+  Vertex unassigned_v_out = this->circuit_.get_out(unassigned);
+  Vertex ancilla_v_in = this->circuit_.get_in(ancilla);
+  Vertex ancilla_v_out = this->circuit_.get_out(ancilla);
+
+  std::cout << this->circuit_.n_out_edges(ancilla_v_in) << " "
+            << this->circuit_.n_in_edges(ancilla_v_out) << std::endl;
+  // get target vertex of ancilla_v_in
+  Edge ancilla_out_edge = this->circuit_.get_nth_out_edge(ancilla_v_in, 0);
+  Vertex ancilla_v_target = this->circuit_.target(ancilla_out_edge);
+  port_t ancilla_target_port = this->circuit_.get_target_port(ancilla_out_edge);
+
+  // get target vertex & port of unassigned_v_in
+  Edge unassigned_out_edge =
+      this->circuit_.get_nth_out_edge(unassigned_v_in, 0);
+  Vertex unassigned_v_target = this->circuit_.target(unassigned_out_edge);
+  port_t unassigned_target_port =
+      this->circuit_.get_target_port(unassigned_out_edge);
+
+  // remove the edge between unassigned input and its target
+  this->circuit_.remove_edge(unassigned_out_edge);
+  // remove the edge between ancilla input and its target
+  this->circuit_.remove_edge(ancilla_out_edge);
+  // add an edge between ancilla input vertex and unassigned input target
+  this->circuit_.add_edge(
+      {ancilla_v_in, 0}, {unassigned_v_target, unassigned_target_port},
+      EdgeType::Quantum);
+
+  // get source vertex & port of unassigned_v_out
+  Edge unassigned_in_edge = this->circuit_.get_nth_in_edge(unassigned_v_out, 0);
+  Vertex unassigned_v_source = this->circuit_.source(unassigned_in_edge);
+  port_t unassigned_source_port =
+      this->circuit_.get_source_port(unassigned_in_edge);
+
+  // remove the edge between the unassigned output and its source
+  this->circuit_.remove_edge(unassigned_in_edge);
+
+  // add an edge between the unassigned output source and the ancilla output
+  // vertex
+  this->circuit_.add_edge(
+      {unassigned_v_source, unassigned_source_port},
+      {ancilla_v_target, ancilla_target_port}, EdgeType::Quantum);
+
+  // the input and output vertices to the unassigned wire should now have no
+  TKET_ASSERT(this->circuit_.n_out_edges(ancilla_v_in) == 1);
+  TKET_ASSERT(this->circuit_.n_in_edges(ancilla_v_out) == 1);
+  TKET_ASSERT(this->circuit_.n_out_edges(unassigned_v_in) == 0);
+  TKET_ASSERT(this->circuit_.n_in_edges(unassigned_v_out) == 0);
+
+  // remove empty vertex wire, relabel dag vertices
+  this->circuit_.dag[unassigned_v_in].op = get_op_ptr(OpType::noop);
+  this->circuit_.dag[unassigned_v_out].op = get_op_ptr(OpType::noop);
+  this->circuit_.remove_vertex(
+      unassigned_v_in, Circuit::GraphRewiring::No,
+      Circuit::VertexDeletion::Yes);
+  this->circuit_.remove_vertex(
+      unassigned_v_out, Circuit::GraphRewiring::No,
+      Circuit::VertexDeletion::Yes);
+
+  // Can now just erase the ancilla qubit from the circuit
+  this->circuit_.boundary.get<TagID>().erase(unassigned);
+
+  // get iterators for erasing
+  auto ancilla_final_it = this->bimaps_->final.left.find(ancilla);
+  auto ancilla_initial_it = this->bimaps_->initial.left.find(ancilla);
+  auto unassigned_final_it = this->bimaps_->final.left.find(unassigned);
+  auto unassigned_initial_it = this->bimaps_->initial.left.find(unassigned);
+  // get new entries
+  std::pair<UnitID, UnitID> new_initial_entry = {unassigned, ancilla};
+  std::pair<UnitID, UnitID> new_final_entry = {
+      unassigned, ancilla_final_it->second};
+  // erase entries
+  this->bimaps_->final.left.erase(ancilla_final_it);
+  this->bimaps_->initial.left.erase(ancilla_initial_it);
+  this->bimaps_->final.left.erase(unassigned_final_it);
+  this->bimaps_->initial.left.erase(unassigned_initial_it);
+  // add new entries
+  this->bimaps_->initial.left.insert(new_initial_entry);
+  this->bimaps_->final.left.insert(new_final_entry);
 }
 
 bool MappingFrontier::valid_boundary_operation(

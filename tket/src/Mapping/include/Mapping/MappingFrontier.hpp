@@ -62,6 +62,8 @@ struct MappingFrontier {
 
   std::set<Node> ancilla_nodes_;
 
+  std::set<Node> original_ancilla_nodes_;
+
   std::shared_ptr<unit_bimaps_t> bimaps_;
 
   MappingFrontier(Circuit& _circuit);
@@ -174,6 +176,19 @@ struct MappingFrontier {
    */
   void merge_ancilla(const UnitID& merge, const UnitID& ancilla);
 
+  /**
+   * merge_unassigned_with_ancilla
+   * Rewires this->circuit_.dag such that out wire to ancilla Input vertex
+   * is mapped to the target of the unassigned Input vertex, and such that
+   * the output of the source of the unassigned Output vertex is mapped
+   * to the ancilla Output vertex. Relabels the unassigned UnitID with the
+   * ancilla UnitID and removes unused vertices and UnitID from this->circuit_.
+   *
+   * @param unassigned UnitID to which ancilla path is added
+   * @param ancilla UnitID of ancilla operations
+   */
+  void merge_unassigned_with_ancilla(
+      const UnitID& unassigned, const UnitID& ancilla);
   /**
    * Assigns the linear_boundary_ attribute to that passed to method.
    *

@@ -101,14 +101,13 @@ bool MappingManager::route_circuit_with_maps(
     // find next routed/unrouted boundary given updates
     mapping_frontier->advance_frontier_boundary(this->architecture_);
   }
+
   // there may still be some unlabelled qubits
   if (label_isolated_qubits) {
     circuit_modified = true;
-
     unit_map_t placement;
     qubit_vector_t to_place;
     std::vector<Node> placed;
-
     // Find which/if any qubits need placing
     for (const Qubit& q : mapping_frontier->circuit_.all_qubits()) {
       Node n(q);
@@ -118,12 +117,12 @@ bool MappingManager::route_circuit_with_maps(
         // has more qubits than the architecture has nodes, which is bad instead
         // at least assign any unlabelled qubits to any ancilla nodes to prevent
         // this
-        if (mapping_frontier->ancilla_nodes_.size() > 0) {
+        if (mapping_frontier->original_ancilla_nodes_.size() > 0) {
           circuit_modified = true;
-          Node ancilla = *mapping_frontier->ancilla_nodes_.begin();
-          mapping_frontier->merge_ancilla(q, ancilla);
-          mapping_frontier->ancilla_nodes_.erase(
-              mapping_frontier->ancilla_nodes_.begin());
+          Node ancilla = *mapping_frontier->original_ancilla_nodes_.begin();
+          mapping_frontier->merge_unassigned_with_ancilla(q, ancilla);
+          mapping_frontier->original_ancilla_nodes_.erase(
+              mapping_frontier->original_ancilla_nodes_.begin());
           placed.push_back(n);
         } else {
           to_place.push_back(n);
@@ -151,12 +150,10 @@ bool MappingManager::route_circuit_with_maps(
             mapping_frontier->get_qubit_from_circuit_uid(to_place[i]),
             difference[i]);
       }
-
       mapping_frontier->update_linear_boundary_uids(placement);
       mapping_frontier->circuit_.rename_units(placement);
     }
   }
-
   return circuit_modified;
 }
 }  // namespace tket
