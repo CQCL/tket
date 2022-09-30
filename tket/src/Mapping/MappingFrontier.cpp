@@ -800,8 +800,6 @@ void MappingFrontier::merge_unassigned_with_ancilla(
   Vertex ancilla_v_in = this->circuit_.get_in(ancilla);
   Vertex ancilla_v_out = this->circuit_.get_out(ancilla);
 
-  std::cout << this->circuit_.n_out_edges(ancilla_v_in) << " "
-            << this->circuit_.n_in_edges(ancilla_v_out) << std::endl;
   // get target vertex of ancilla_v_in
   Edge ancilla_out_edge = this->circuit_.get_nth_out_edge(ancilla_v_in, 0);
   Vertex ancilla_v_target = this->circuit_.target(ancilla_out_edge);
