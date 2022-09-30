@@ -201,8 +201,26 @@ def test_add_wasm_to_reg() -> None:
 
     c.add_wasm_to_reg("multi", w, [c0, c1], [c2])
     c.add_wasm_to_reg("add_one", w, [c2], [c2])
+    c.add_wasm_to_reg("no_return", w, [c2], [])
+    c.add_wasm_to_reg("no_parameters", w, [], [c2])
 
-    assert c.depth() == 2
+    assert c.depth() == 3
+
+
+def test_wasmfilehandler_repr() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+    assert (
+        repr(w)
+        == """Functions in wasm file with the uid 332940d7bf36f2a17ef59ddf13a042ce:
+function 'add_one' with 1 i32 parameter(s) and 1 i32 return value(s)
+function 'multi' with 2 i32 parameter(s) and 1 i32 return value(s)
+function 'add_two' with 1 i32 parameter(s) and 1 i32 return value(s)
+function 'add_eleven' with 1 i32 parameter(s) and 1 i32 return value(s)
+function 'no_return' with 1 i32 parameter(s) and 0 i32 return value(s)
+function 'no_parameters' with 0 i32 parameter(s) and 1 i32 return value(s)
+unusable function with unvalid parameter or result type: 'add_something' 
+"""
+    )
 
 
 def gen_reg(
