@@ -2787,7 +2787,8 @@ SCENARIO("Vertices in order") {
     VertexVec vertices = c.vertices_in_order();
     unsigned n_vertices = vertices.size();
     CHECK(n_vertices == 3 + 6 + 3);
-    unsigned h_pos, cx_pos, t_pos, cy_pos, s_pos, cz_pos;
+    unsigned h_pos = 0, cx_pos = 0, t_pos = 0, cy_pos = 0, s_pos = 0,
+             cz_pos = 0;
     unsigned n_inp = 0, n_out = 0;
     for (unsigned i = 0; i < n_vertices; i++) {
       OpType optype = c.get_OpType_from_Vertex(vertices[i]);
