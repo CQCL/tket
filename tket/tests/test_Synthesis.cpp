@@ -169,25 +169,44 @@ SCENARIO("Check commutation through multiqubit ops") {
 
     circ.add_barrier({0, 1});
 
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    circ.add_op<unsigned>(OpType::Rz, 0.142, {0});
+
+    circ.add_barrier({0, 1});
+
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0}, 0);
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0}, 1);
-    circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
     circ.add_op<unsigned>(OpType::X, {0});
 
     REQUIRE(Transforms::commute_through_multis().apply(circ));
 
     Circuit solution(2, 1);
-    solution.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
-    solution.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
+
+    circ.add_barrier({0, 1});
+
+    circ.add_op<unsigned>(OpType::Rz, 0.142, {0});
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
 
     solution.add_barrier({0, 1});
 
-    solution.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
     solution.add_op<unsigned>(OpType::X, {0});
     solution.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0}, 0);
     solution.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0}, 1);
 
     REQUIRE(circ == solution);
+  }
+  GIVEN("A circuit with classical control (2)") {
+    Circuit circ(3, 3);
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_measure(0, 0);
+    circ.add_measure(1, 1);
+    circ.add_conditional_gate<unsigned>(OpType::X, {}, {2}, {0, 1}, 1);
+
+    Circuit old_circ = circ;
+    REQUIRE(!Transforms::commute_through_multis().apply(circ));
+    REQUIRE(old_circ == circ);
   }
   GIVEN("A bridge") {
     Circuit circ(3);

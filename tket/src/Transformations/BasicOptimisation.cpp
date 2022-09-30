@@ -200,6 +200,13 @@ static bool ends_commute(const Circuit &circ, const Edge &e) {
   const Vertex source = circ.source(e);
   const Vertex target = circ.target(e);
 
+  // We currently do not support commuting multi-qubit gates
+  // TODO: It would be useful to support commuting single-qubit gates with
+  // classical conditioning
+  if (circ.n_in_edges(source) > 1 && circ.n_in_edges(target) > 1) {
+    return false;
+  }
+
   auto colour = circ.commuting_basis(target, PortType::Target, ports.second);
   return circ.commutes_with_basis(
       source, colour, PortType::Source, ports.first);
