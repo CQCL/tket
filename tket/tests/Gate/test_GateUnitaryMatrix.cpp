@@ -153,7 +153,7 @@ static bool test_op_with_parameters(
   // GateUnitaryMatrix functions, so we demand equality.
   CHECK(matrices_are_equal(unitary, gate.get_unitary()));
   REQUIRE(unitary.cols() >= 2);
-  REQUIRE(unitary.cols() == (1ULL << qubits.size()));
+  REQUIRE(unitary.cols() == (1L << qubits.size()));
 
   success &= check_is_unitary(name, current_values, qubits.size(), unitary, ss);
 

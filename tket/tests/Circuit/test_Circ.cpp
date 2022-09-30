@@ -50,8 +50,8 @@ SCENARIO(
     "Check that a Circuit with no edges can be constructed", "[edgeless]") {
   GIVEN("n vertices") {
     Circuit no_edges;
-    int n = 3;
-    for (int i = 0; i < n; ++i) {
+    unsigned n = 3;
+    for (unsigned i = 0; i < n; ++i) {
       no_edges.add_vertex(OpType::H);
     }
     REQUIRE(no_edges.n_vertices() == n);
@@ -627,19 +627,19 @@ SCENARIO(
   GIVEN("Viable small circuits of single-qubit gates") {
     Circuit test(1);
     test.add_op<unsigned>(OpType::H, {0});
-    int num_ins_1 = test.n_units();
-    int depth1 = test.depth();
+    unsigned num_ins_1 = test.n_units();
+    unsigned depth1 = test.depth();
     Circuit test2(1);
     test2.add_op<unsigned>(OpType::X, {0});
     test2.add_op<unsigned>(OpType::Y, {0});
     test2.rename_units<Qubit, Qubit>({{Qubit(0), Qubit("a")}});
-    int num_ins_2 = test2.n_units();
-    int depth2 = test2.depth();
+    unsigned num_ins_2 = test2.n_units();
+    unsigned depth2 = test2.depth();
     test.copy_graph(test2);
     REQUIRE(
         test.n_units() ==
         num_ins_1 + num_ins_2);  // test no. of inputs/outputs is conserved
-    int max_depth = (depth1 > depth2) ? depth1 : depth2;
+    unsigned max_depth = (depth1 > depth2) ? depth1 : depth2;
     REQUIRE(
         test.depth() ==
         max_depth);  // test depth function works for combined circuit
@@ -657,8 +657,8 @@ SCENARIO(
     test.add_op<unsigned>(OpType::CZ, {1, 0});
     test.add_op<unsigned>(OpType::CRz, 0.5, {1, 0});
 
-    int num_ins_1 = test.n_units();
-    int depth1 = test.depth();
+    unsigned num_ins_1 = test.n_units();
+    unsigned depth1 = test.depth();
     // circuit 2
     Circuit test2(4);
     test2.add_op<unsigned>(OpType::X, {0});
@@ -672,9 +672,9 @@ SCENARIO(
          {Qubit(2), Qubit("a", 2)},
          {Qubit(3), Qubit("a", 3)}});
 
-    int num_ins_2 = test2.n_units();
-    int depth2 = test2.depth();
-    int max_depth = (depth1 > depth2) ? depth1 : depth2;
+    unsigned num_ins_2 = test2.n_units();
+    unsigned depth2 = test2.depth();
+    unsigned max_depth = (depth1 > depth2) ? depth1 : depth2;
     Circuit test3 = test * test2;
     REQUIRE(test3.n_units() == num_ins_1 + num_ins_2);
     REQUIRE(test3.depth() == max_depth);
@@ -822,7 +822,7 @@ SCENARIO(
     Vertex x2 = test2.add_op<unsigned>(OpType::X, {1});
     test2.add_op<unsigned>(OpType::SWAP, {0, 1});
     add_1qb_gates(test2, OpType::X, {0, 1});
-    int depth_before = test2.depth();
+    unsigned depth_before = test2.depth();
     WHEN("The substitution is accurately performed") {
       Edge e1 = test2.get_nth_in_edge(x1, 0);
       Edge e2 = test2.get_nth_in_edge(x2, 0);

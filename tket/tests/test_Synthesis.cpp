@@ -935,7 +935,7 @@ SCENARIO("Test commutation through CXsw", "[transform]") {
     // an isomorphism)
     SliceVec circslice = circ.get_slices();
     SliceVec newcircslice = new_circ.get_slices();
-    for (int i = 0; i < circslice.size(); ++i) {
+    for (unsigned i = 0; i < circslice.size(); ++i) {
       Slice::iterator k = newcircslice[i].begin();
       for (Slice::iterator j = circslice[i].begin(); j != circslice[i].end();
            ++j) {
