@@ -181,13 +181,13 @@ SCENARIO("Check commutation through multiqubit ops") {
     REQUIRE(Transforms::commute_through_multis().apply(circ));
 
     Circuit solution(2, 1);
-    circ.add_op<unsigned>(OpType::CX, {0, 1});
-    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
+    solution.add_op<unsigned>(OpType::CX, {0, 1});
+    solution.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
 
-    circ.add_barrier({0, 1});
+    solution.add_barrier({0, 1});
 
-    circ.add_op<unsigned>(OpType::Rz, 0.142, {0});
-    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    solution.add_op<unsigned>(OpType::Rz, 0.142, {0});
+    solution.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
 
     solution.add_barrier({0, 1});
 
