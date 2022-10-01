@@ -94,8 +94,6 @@ def get_pauli_expectation_value(
     :return: :math:`\\left<\\psi | P | \\psi \\right>`
     :rtype: float
     """
-    if not pauli:
-        return 1
     if not n_shots:
         if not backend.valid_circuit(state_circuit):
             state_circuit = backend.get_compiled_circuit(state_circuit)

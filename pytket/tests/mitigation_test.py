@@ -25,6 +25,7 @@ from typing import List, Dict, Counter, Tuple
 from pytket.utils.outcomearray import OutcomeArray
 from math import ceil
 from pytket.backends.backendresult import BackendResult
+import pytest
 
 
 def test_spam_integration() -> None:
@@ -161,6 +162,10 @@ def test_spam_integration() -> None:
         ).get_counts(),
         bellres_counts,
     )
+    with pytest.raises(ValueError) as e:
+        _ = spam.correct_counts(bellres, rbell_parallel_measures, method="invalid")
+        assert "Method" in str(e.value)
+
     assert check_correction(
         spam.correct_counts(
             bellres,
