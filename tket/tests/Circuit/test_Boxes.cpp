@@ -45,6 +45,10 @@ SCENARIO("CircBox requires simple circuits", "[boxes]") {
 
 SCENARIO("Using Boxes", "[boxes]") {
   GIVEN("CircBox manipulation") {
+    // Empty box
+    CircBox cb;
+    Circuit empty;
+    REQUIRE(*(cb.to_circuit()) == empty);
     // Small box
     Circuit u(2);
     u.add_op<unsigned>(OpType::Ry, -0.75, {0});
@@ -157,6 +161,10 @@ SCENARIO("Using Boxes", "[boxes]") {
     Circuit empty1(1);
     empty1.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
     REQUIRE(*(Unitary1qBox().to_circuit()) == empty1);
+    REQUIRE(Unitary1qBox().get_unitary() == tket_sim::get_unitary(empty1));
+    REQUIRE(Unitary1qBox().get_unitary() == Unitary1qBox().get_matrix());
+    REQUIRE(
+        Unitary1qBox().dagger()->get_unitary() == Unitary1qBox().get_unitary());
     Circuit empty2(2);
     empty2.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
     empty2.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
@@ -164,6 +172,10 @@ SCENARIO("Using Boxes", "[boxes]") {
     empty2.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
     empty2.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
     REQUIRE(*(Unitary2qBox().to_circuit()) == empty2);
+    REQUIRE(Unitary2qBox().get_unitary() == tket_sim::get_unitary(empty2));
+    REQUIRE(Unitary2qBox().get_unitary() == Unitary2qBox().get_matrix());
+    REQUIRE(
+        Unitary2qBox().dagger()->get_unitary() == Unitary2qBox().get_unitary());
     Circuit empty3(3);
     empty3.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
     empty3.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
@@ -172,6 +184,10 @@ SCENARIO("Using Boxes", "[boxes]") {
     empty3.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
     empty3.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {2});
     REQUIRE(*(Unitary3qBox().to_circuit()) == empty3);
+    REQUIRE(Unitary3qBox().get_unitary() == tket_sim::get_unitary(empty3));
+    REQUIRE(Unitary3qBox().get_unitary() == Unitary3qBox().get_matrix());
+    REQUIRE(
+        Unitary3qBox().dagger()->get_unitary() == Unitary3qBox().get_unitary());
   }
   GIVEN("little-endian representation") {
     Eigen::Matrix4cd m0;
@@ -185,6 +201,14 @@ SCENARIO("Using Boxes", "[boxes]") {
     REQUIRE((m0 - m1).cwiseAbs().sum() < ERR_EPS);
   }
   GIVEN("ExpBox manipulation") {
+    // empty
+    Circuit empty(2);
+    empty.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
+    empty.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
+    empty.add_op<unsigned>(OpType::TK2, {0, 0, 0}, {0, 1});
+    empty.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
+    empty.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
+    REQUIRE(*(ExpBox().to_circuit()) == empty);
     // random hermitian matrix
     Eigen::Matrix4cd A;
     A << 0., 1., 2., 3., 1., 2., 3. * i_, 4., 2., -3. * i_, 3, 2. - 3. * i_, 3.,
@@ -201,11 +225,21 @@ SCENARIO("Using Boxes", "[boxes]") {
 }
 
 SCENARIO("Pauli gadgets", "[boxes]") {
+  GIVEN("Basis Circuit check") {
+    PauliExpBox pbox({Pauli::X}, 1.0);
+    Circuit comp(1);
+    comp.add_op<unsigned>(OpType::H, {0});
+    comp.add_op<unsigned>(OpType::Rz, 1.0, {0});
+    comp.add_op<unsigned>(OpType::H, {0});
+    REQUIRE(*(pbox.to_circuit()) == comp);
+  }
   GIVEN("X") {
     // ---PauliExpBox([X], t)----Rx(-t)--- should be the identity
     double t = 1.687029013593215;
     Circuit c(1);
-    PauliExpBox pbox({Pauli::X}, t);
+    std::vector<Pauli> pauli_x = {Pauli::X};
+    PauliExpBox pbox(pauli_x, t);
+    REQUIRE(pbox.get_paulis() == pauli_x);
     c.add_box(pbox, uvec{0});
     c.add_op<unsigned>(OpType::Rx, -t, {0});
     Eigen::Matrix2Xcd u = tket_sim::get_unitary(c);
@@ -473,6 +507,8 @@ SCENARIO("QControlBox", "[boxes]") {
   GIVEN("controlled X") {
     Op_ptr op = get_op_ptr(OpType::X);
     QControlBox qcbox(op);
+    REQUIRE(qcbox.get_op() == op);
+    REQUIRE(qcbox.get_n_controls() == 1);
     std::shared_ptr<Circuit> c = qcbox.to_circuit();
     Circuit expected(2);
     expected.add_op<unsigned>(OpType::CX, {0, 1});
@@ -1056,6 +1092,9 @@ SCENARIO("ToffoliBox", "[boxes]") {
     permutation[{0, 0}] = {1, 1};
     permutation[{1, 1}] = {0, 0};
     ToffoliBox tb(2, permutation);
+
+    std::set<std::vector<std::vector<bool>>> cycle = {{{0, 0}, {1, 1}}};
+    REQUIRE(tb.get_cycles() == cycle);
 
     const auto matrix = tket_sim::get_unitary(*tb.to_circuit());
 
