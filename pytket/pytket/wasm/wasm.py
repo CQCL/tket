@@ -31,16 +31,18 @@ class WasmFileHandler:
         if not exists(self._filepath):
             raise ValueError("wasm file not found at given path")
 
-        with open(self._filepath, "rb") as wasm_file:
-            self._wasm_file_encoded = base64.b64encode(wasm_file.read())
+        with open(self._filepath, "rb") as file:
+            wasm_file: bytes = file.read()
+
+        self._wasm_file_encoded = base64.b64encode(wasm_file)
 
         self._wasmuid = hashlib.md5(self._wasm_file_encoded).hexdigest()
 
         # check if the file is valid to run
-        if not Module.validate(Store(), base64.decodebytes(self._wasm_file_encoded)):
+        if not Module.validate(Store(), wasm_file):
             raise ValueError("wasm file not valid")
 
-        wasm_module = Module(Store(), base64.decodebytes(self._wasm_file_encoded))
+        wasm_module = Module(Store(), wasm_file)
 
         instance = Instance(wasm_module)
 
