@@ -136,10 +136,8 @@ class WasmFileHandler:
         :param number_of_returns: number of i32 return values of the function
         :type number_of_returns: int
         :return: true if the signature and the name of the function is correct"""
-        if (
+        return (
             (function_name in self._functions)
             and (self._functions[function_name][0] == number_of_parameters)
             and (self._functions[function_name][1] == number_of_returns)
-        ):
-            return True
-        return False
+        )
