@@ -17,6 +17,27 @@
 
 namespace tket {
 
+NoiseAwarePlacement::NoiseAwarePlacement(
+    const Architecture& _architecture, unsigned _maximum_matches,
+    unsigned _timeout, unsigned _maximum_pattern_gates,
+    unsigned _maximum_pattern_depth,
+    std::optional<avg_node_errors_t> _node_errors,
+    std::optional<avg_link_errors_t> _link_errors,
+    std::optional<avg_readout_errors_t> _readout_errors)
+    : GraphPlacement(
+          _architecture, _maximum_matches, _timeout, _maximum_pattern_gates,
+          _maximum_pattern_depth) {
+  architecture_ = _architecture;
+  this->weighted_target_edges = this->default_target_weighting(architecture_);
+  this->extended_target_graphs = {
+      this->construct_target_graph(weighted_target_edges, 0)
+          .get_undirected_connectivity()};
+  characterisation_ = {
+      _node_errors ? *_node_errors : avg_node_errors_t(),
+      _link_errors ? *_link_errors : avg_link_errors_t(),
+      _readout_errors ? *_readout_errors : avg_readout_errors_t()};
+}
+
 double NoiseAwarePlacement::cost_placement(
     const boost::bimap<Qubit, Node>& map, const Circuit& circ_,
     const QubitGraph& q_graph) const {

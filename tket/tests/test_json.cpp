@@ -554,9 +554,11 @@ SCENARIO("Test compiler pass serializations") {
   Architecture arc = SquareGrid(2, 4, 2);
   RoutingMethodPtr rmp = std::make_shared<LexiRouteRoutingMethod>(80);
   std::vector<RoutingMethodPtr> rcon = {rmp};
-  Placement::Ptr place = std::make_shared<GraphPlacement>(arc);
+  Placement::Ptr ga_place = std::make_shared<GraphPlacement>(arc);
+  Placement::Ptr place = std::make_shared<Placement>(arc);
   std::map<Qubit, Qubit> qmap = {{Qubit(0), Node(1)}, {Qubit(3), Node(2)}};
   Placement::Ptr na_place = std::make_shared<NoiseAwarePlacement>(arc);
+
 #define COMPPASSJSONTEST(passname, pass)               \
   GIVEN(#passname) {                                   \
     Circuit circ = CircuitsForTesting::get().uccsd;    \
@@ -630,7 +632,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(PlacementPass, gen_placement_pass(place))
   // TKET-1419
   COMPPASSJSONTEST(NoiseAwarePlacement, gen_placement_pass(na_place))
-  COMPPASSJSONTEST(GraphPlacement, gen_placement_pass(place))
+  COMPPASSJSONTEST(GraphPlacement, gen_placement_pass(ga_place))
 #undef COMPPASSJSONTEST
   GIVEN("RoutingPass") {
     // Can only be applied to placed circuits

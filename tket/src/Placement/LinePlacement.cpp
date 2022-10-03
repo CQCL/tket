@@ -17,6 +17,14 @@
 
 namespace tket {
 
+LinePlacement::LinePlacement(
+    const Architecture& _architecture, unsigned _maximum_pattern_gates,
+    unsigned _maximum_pattern_depth)
+    : GraphPlacement(
+          _architecture, 0, 0, _maximum_pattern_gates, _maximum_pattern_depth) {
+  architecture_ = _architecture;
+}
+
 std::vector<qubit_vector_t> LinePlacement::interactions_to_lines(
     const Circuit& circ_) {
   qubit_vector_t all_qubits_v = circ_.all_qubits();

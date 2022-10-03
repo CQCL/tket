@@ -21,6 +21,22 @@ typedef std::chrono::steady_clock Clock;
 
 namespace tket {
 
+GraphPlacement::GraphPlacement(
+    const Architecture& _architecture, unsigned _maximum_matches,
+    unsigned _timeout, unsigned _maximum_pattern_gates,
+    unsigned _maximum_pattern_depth)
+
+    : maximum_matches_(_maximum_matches),
+      timeout_(_timeout),
+      maximum_pattern_gates_(_maximum_pattern_gates),
+      maximum_pattern_depth_(_maximum_pattern_depth) {
+  architecture_ = _architecture;
+  this->weighted_target_edges = this->default_target_weighting(architecture_);
+  this->extended_target_graphs = {
+      this->construct_target_graph(weighted_target_edges, 0)
+          .get_undirected_connectivity()};
+}
+
 const std::vector<GraphPlacement::WeightedEdge>
 GraphPlacement::default_pattern_weighting(const Circuit& circuit) {
   GraphPlacement::Frontier frontier(circuit);

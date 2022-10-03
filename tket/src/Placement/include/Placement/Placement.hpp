@@ -25,8 +25,7 @@ class Placement {
  public:
   typedef std::shared_ptr<Placement> Ptr;
 
-  explicit Placement(const Architecture& _architecture)
-      : architecture_(_architecture) {}
+  explicit Placement(const Architecture& _architecture);
 
   Placement(){};
 
@@ -143,18 +142,7 @@ class GraphPlacement : public Placement {
   explicit GraphPlacement(
       const Architecture& _architecture, unsigned _maximum_matches = 2000,
       unsigned _timeout = 100, unsigned _maximum_pattern_gates = 100,
-      unsigned _maximum_pattern_depth = 100)
-      : maximum_matches_(_maximum_matches),
-        timeout_(_timeout),
-        maximum_pattern_gates_(_maximum_pattern_gates),
-        maximum_pattern_depth_(_maximum_pattern_depth) {
-    architecture_ = _architecture;
-    this->weighted_target_edges = this->default_target_weighting(architecture_);
-    this->extended_target_graphs = {
-        this->construct_target_graph(weighted_target_edges, 0)
-            .get_undirected_connectivity()};
-  }
-
+      unsigned _maximum_pattern_depth = 100);
   /**
    * For some Circuit, returns maps between Circuit UnitID and
    * Architecture UnitID that can be used for reassigning UnitID in
@@ -236,12 +224,7 @@ class LinePlacement : public GraphPlacement {
  public:
   explicit LinePlacement(
       const Architecture& _architecture, unsigned _maximum_pattern_gates = 100,
-      unsigned _maximum_pattern_depth = 100)
-      : GraphPlacement(
-            _architecture, 0, 0, _maximum_pattern_gates,
-            _maximum_pattern_depth) {
-    architecture_ = _architecture;
-  }
+      unsigned _maximum_pattern_depth = 100);
   /**
    * For some Circuit, returns maps between Circuit UnitID and
    * Architecture UnitID that can be used for reassigning UnitID in
@@ -264,26 +247,13 @@ class LinePlacement : public GraphPlacement {
 
 class NoiseAwarePlacement : public GraphPlacement {
  public:
-  NoiseAwarePlacement(
+  explicit NoiseAwarePlacement(
       const Architecture& _architecture, unsigned _maximum_matches = 2000,
       unsigned _timeout = 100, unsigned _maximum_pattern_gates = 100,
       unsigned _maximum_pattern_depth = 100,
       std::optional<avg_node_errors_t> _node_errors = std::nullopt,
       std::optional<avg_link_errors_t> _link_errors = std::nullopt,
-      std::optional<avg_readout_errors_t> _readout_errors = std::nullopt)
-      : GraphPlacement(
-            _architecture, _maximum_matches, _timeout, _maximum_pattern_gates,
-            _maximum_pattern_depth) {
-    architecture_ = _architecture;
-    this->weighted_target_edges = this->default_target_weighting(architecture_);
-    this->extended_target_graphs = {
-        this->construct_target_graph(weighted_target_edges, 0)
-            .get_undirected_connectivity()};
-    characterisation_ = {
-        _node_errors ? *_node_errors : avg_node_errors_t(),
-        _link_errors ? *_link_errors : avg_link_errors_t(),
-        _readout_errors ? *_readout_errors : avg_readout_errors_t()};
-  }
+      std::optional<avg_readout_errors_t> _readout_errors = std::nullopt);
 
   /**
    * For some Circuit, returns maps between Circuit UnitID and

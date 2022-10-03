@@ -27,6 +27,24 @@ static std::optional<typename T::mapped_type> maybe_get(
                                  : std::nullopt;
 }
 
+DeviceCharacterisation::DeviceCharacterisation(
+    avg_node_errors_t _node_errors, avg_link_errors_t _link_errors,
+    avg_readout_errors_t _readout_errors)
+    : default_node_errors_(_node_errors),
+      default_link_errors_(_link_errors),
+      default_readout_errors_(_readout_errors),
+      op_node_errors_(),
+      op_link_errors_() {}
+
+DeviceCharacterisation::DeviceCharacterisation(
+    op_node_errors_t _node_errors, op_link_errors_t _link_errors,
+    avg_readout_errors_t _readout_errors)
+    : default_node_errors_(),
+      default_link_errors_(),
+      default_readout_errors_(_readout_errors),
+      op_node_errors_(_node_errors),
+      op_link_errors_(_link_errors) {}
+
 // single-qubit case
 gate_error_t DeviceCharacterisation::get_error(const Node& n) const {
   std::optional<gate_error_t> maybe_err = maybe_get(default_node_errors_, n);
