@@ -18,6 +18,9 @@ QGate["E"](0)
 QGate["V"](1)
 QGate["E"]*(2)
 QGate["multinot"](0,1) with controls=[+2,-3]
+QGate["multinot"](0) with controls=[+1]
+QGate["multinot"](0) with controls=[+1,-2]
+QGate["multinot"](0) with controls=[+1,-2,+3]
 QGate["swap"](1,2) with nocontrol
 QGate["swap"](2,3) with controls=[+0]
 QGate["W"](1,2)
@@ -26,6 +29,9 @@ QGate["V"](1)
 QGate["W"](1,2)
 QGate["swap"](2,3) with controls=[+0]
 QGate["swap"](1,2) with nocontrol
+QGate["multinot"](0) with controls=[+1,-2,+3]
+QGate["multinot"](0) with controls=[+1,-2]
+QGate["multinot"](0) with controls=[+1]
 QGate["multinot"](0,1) with controls=[+2,-3]
 QGate["E"](2)
 QGate["V"]*(1)

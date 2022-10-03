@@ -29,12 +29,9 @@ namespace test_ClassicalOps {
 SCENARIO("Check that classical bundles work as expected") {
   GIVEN("Out bundles on a trivial circuit") {
     Circuit circ(3, 1);
-    Vertex cx =
-        circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
-    Vertex cz =
-        circ.add_conditional_gate<unsigned>(OpType::CZ, {}, {1, 2}, {0}, 1);
-    Vertex h =
-        circ.add_conditional_gate<unsigned>(OpType::H, {}, uvec{0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::CZ, {}, {1, 2}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::H, {}, uvec{0}, {0}, 0);
     circ.assert_valid();
     std::vector<EdgeVec> out_c_edges =
         circ.get_b_out_bundles(circ.c_inputs()[0]);
@@ -50,8 +47,7 @@ SCENARIO("Check that classical bundles work as expected") {
     Circuit circ(2, 3);
     Vertex cx =
         circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0, 1}, 2);
-    Vertex h =
-        circ.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {0, 1}, 3);
+    circ.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {0, 1}, 3);
     circ.assert_valid();
     EdgeVec in_c_edges = circ.get_in_edges_of_type(cx, EdgeType::Boolean);
     REQUIRE(in_c_edges.size() == 2);
@@ -296,7 +292,7 @@ SCENARIO(
     "controls") {
   GIVEN("Circuit to run pairwise Transforms on") {
     Circuit circ(4, 1);
-    Vertex cx1 = circ.add_op<unsigned>(OpType::CX, {0, 3});
+    circ.add_op<unsigned>(OpType::CX, {0, 3});
     circ.add_op<unsigned>(OpType::H, {1});
     circ.add_op<unsigned>(OpType::CZ, {0, 3});
     circ.add_op<unsigned>(OpType::CX, {3, 2});
@@ -396,8 +392,7 @@ SCENARIO("Classical wires for appending circuits") {
     circ.add_op<unsigned>(OpType::Y, {0});
 
     Circuit circ2(1, 2);
-    Vertex z =
-        circ2.add_conditional_gate<unsigned>(OpType::Z, {}, uvec{0}, {0}, 1);
+    circ2.add_conditional_gate<unsigned>(OpType::Z, {}, uvec{0}, {0}, 1);
     WHEN("Append with an invalid cmap") {
       REQUIRE_THROWS_AS(
           circ.append_qubits(circ2, {0}, {0, 0}), CircuitInvalidity);
@@ -422,9 +417,8 @@ SCENARIO("Reverse slicing of mixed circuits") {
   }
   GIVEN("A circuit with classically-controlled gates") {
     Circuit circ(2, 1);
-    Vertex x = circ.add_op<unsigned>(OpType::X, {0});
-    Vertex y =
-        circ.add_conditional_gate<unsigned>(OpType::Y, {}, uvec{1}, {0}, 1);
+    circ.add_op<unsigned>(OpType::X, {0});
+    circ.add_conditional_gate<unsigned>(OpType::Y, {}, uvec{1}, {0}, 1);
     circ.assert_valid();
     REQUIRE_NOTHROW(circ.get_reverse_slices());
   }
@@ -460,13 +454,13 @@ SCENARIO("Pure classical operations") {
     circ.add_op<unsigned>(OpType::H, {0});
     Vertex v_and_ttop_0 = circ.add_op<unsigned>(and_ttop, {0, 1, 2});
     Vertex v_and_ttop_1 = circ.add_op<unsigned>(and_ttop, {1, 2, 3});
-    Vertex v_rpop = circ.add_op<unsigned>(rpop, {0, 1, 2, 3});
-    Vertex v_andop = circ.add_op<unsigned>(AndOp(), {2, 3, 0});
+    circ.add_op<unsigned>(rpop, {0, 1, 2, 3});
+    circ.add_op<unsigned>(AndOp(), {2, 3, 0});
     Vertex v_orop = circ.add_op<unsigned>(OrOp(), {0, 1, 2});
-    Vertex v_notop = circ.add_op<unsigned>(NotOp(), {2, 3});
-    Vertex v_clx = circ.add_op<unsigned>(ClassicalX(), {1});
-    Vertex v_clcx = circ.add_op<unsigned>(ClassicalCX(), {0, 1});
-    Vertex v_andwop = circ.add_op<unsigned>(AndWithOp(), {2, 3});
+    circ.add_op<unsigned>(NotOp(), {2, 3});
+    circ.add_op<unsigned>(ClassicalX(), {1});
+    circ.add_op<unsigned>(ClassicalCX(), {0, 1});
+    circ.add_op<unsigned>(AndWithOp(), {2, 3});
     Vertex v_orwop = circ.add_op<unsigned>(OrWithOp(), {1, 0});
     circ.assert_valid();
     REQUIRE(circ.get_commands().size() == 11);

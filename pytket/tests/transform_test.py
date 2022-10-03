@@ -1067,6 +1067,10 @@ def test_auto_rebase() -> None:
         _ = auto_rebase_pass({OpType.CX, OpType.H, OpType.T})
     assert "TK1" in str(cx_err.value)
 
+    with pytest.raises(NoAutoRebase) as err:
+        _ = auto_rebase_pass({OpType.CY, OpType.TK1})
+    assert "No known decomposition" in str(err.value)
+
 
 def test_auto_squash() -> None:
     pass_params = [

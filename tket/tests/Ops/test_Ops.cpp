@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <symengine/eval.h>
-
 #include <catch2/catch_test_macros.hpp>
 #include <optional>
 #include <stdexcept>
@@ -32,6 +30,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Utils/Constants.hpp"
+#include "Utils/Expression.hpp"
 
 namespace tket {
 namespace test_Ops {

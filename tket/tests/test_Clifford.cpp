@@ -187,7 +187,7 @@ SCENARIO("valid_insertion_point returns space-like interaction points") {
   Vertex cx1 = circ.add_op<unsigned>(OpType::CX, {0, 1});
   Vertex cx2 = circ.add_op<unsigned>(OpType::CX, {2, 3});
   Vertex cx3 = circ.add_op<unsigned>(OpType::CX, {1, 2});
-  Vertex cx4 = circ.add_op<unsigned>(OpType::CX, {1, 2});
+  circ.add_op<unsigned>(OpType::CX, {1, 2});
   CliffordReductionPassTester clifford_pass(circ);
 
   auto e1 = circ.get_nth_out_edge(cx1, 1);       // edge cx1 - cx3

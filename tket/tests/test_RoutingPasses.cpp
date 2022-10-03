@@ -300,7 +300,7 @@ SCENARIO("Routing preserves the number of qubits in given instance of CnX op") {
   Circuit c(3);
   c.add_op<unsigned>(OpType::CnX, {2, 1});
   CompilationUnit cu(c);
-  bool applied = pass->apply(cu);
+  pass->apply(cu);
   const Circuit &c1 = cu.get_circ_ref();
   REQUIRE(c.n_qubits() == c1.n_qubits());
 }

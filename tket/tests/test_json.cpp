@@ -541,7 +541,7 @@ SCENARIO("Test predicate serializations") {
     REQUIRE(j_max == j_loaded_max);
   }
   GIVEN("UserDefinedPredicate") {
-    std::function<bool(const Circuit&)> func = [](const Circuit& c) {
+    std::function<bool(const Circuit&)> func = [](const Circuit&) {
       return false;
     };
     PredicatePtr custom = std::make_shared<UserDefinedPredicate>(func);
