@@ -223,7 +223,6 @@ SCENARIO("Decompose some circuits with CCX gates") {
 SCENARIO("Test switch statement") {
   Circuit test(1);
   test.add_op<unsigned>(OpType::Ry, 1.95, {0});
-  const Eigen::Matrix2cd correct_block = tket_sim::get_unitary(test);
   GIVEN("A circuit and a CnRy(Pi/2)") {
     Circuit circ;
     const double p = 0.5;
@@ -280,7 +279,6 @@ SCENARIO("Test switch statement long", "[.long]") {
   const Eigen::Matrix2cd correct_block = tket_sim::get_unitary(test);
   GIVEN("A circuit and a CnRy(Pi/2)") {
     Circuit circ;
-    const double p = 0.5;
     WHEN("N-qubit CnRy gates") {
       THEN("Test with params nonzero") {
         for (unsigned N = 4; N < 10; ++N) {

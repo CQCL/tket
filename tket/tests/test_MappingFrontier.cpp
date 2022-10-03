@@ -29,14 +29,14 @@ SCENARIO("Test MappingFrontier initialisation, advance_frontier_boundary.") {
 
     std::vector<Qubit> qubits = circ.all_qubits();
 
-    Vertex v1 = circ.add_op<UnitID>(OpType::X, {qubits[0]});
-    Vertex v8 = circ.add_op<UnitID>(OpType::S, {qubits[3]});
+    circ.add_op<UnitID>(OpType::X, {qubits[0]});
+    circ.add_op<UnitID>(OpType::S, {qubits[3]});
     Vertex v9 = circ.add_op<UnitID>(OpType::T, {qubits[3]});
     Vertex v2 = circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[1]});
     Vertex v3 = circ.add_op<UnitID>(OpType::CY, {qubits[2], qubits[3]});
     Vertex v4 = circ.add_op<UnitID>(OpType::H, {qubits[0]});
     Vertex v5 = circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[2]});
-    Vertex v6 = circ.add_op<UnitID>(OpType::Y, {qubits[0]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[0]});
     Vertex v7 = circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[1]});
 
     std::vector<Node> nodes = {Node(0), Node(1), Node(2), Node(3)};
@@ -106,7 +106,7 @@ SCENARIO("Test MappingFrontier initialisation, advance_frontier_boundary.") {
     Circuit circ(3, 1);
     std::vector<Qubit> qubits = circ.all_qubits();
     // All gates are physically permitted
-    Vertex v0 = circ.add_op<unsigned>(OpType::Measure, {0, 0});
+    circ.add_op<unsigned>(OpType::Measure, {0, 0});
     Vertex v1 =
         circ.add_conditional_gate<unsigned>(OpType::Rx, {0.6}, {0}, {0}, 1);
     Vertex v2 =
@@ -136,20 +136,17 @@ SCENARIO("Test MappingFrontier initialisation, advance_frontier_boundary.") {
       "multiple inputs, conditional 2-qubit gates.") {
     Circuit circ(4, 4);
 
-    Vertex v0 =
-        circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0, 1}, 1);
-    Vertex v1 = circ.add_conditional_gate<unsigned>(OpType::Y, {}, {1}, {1}, 0);
-    Vertex v2 = circ.add_op<unsigned>(OpType::CX, {1, 2});
-    Vertex v3 = circ.add_measure(2, 2);
-    Vertex v4 = circ.add_op<unsigned>(OpType::CX, {3, 2});
-    Vertex v5 = circ.add_measure(3, 3);
-    Vertex v6 =
-        circ.add_conditional_gate<unsigned>(OpType::Z, {}, {3}, {1, 2}, 0);
-    Vertex v7 = circ.add_measure(3, 3);
-    Vertex v8 = circ.add_barrier(
+    circ.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0, 1}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Y, {}, {1}, {1}, 0);
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_measure(2, 2);
+    circ.add_op<unsigned>(OpType::CX, {3, 2});
+    circ.add_measure(3, 3);
+    circ.add_conditional_gate<unsigned>(OpType::Z, {}, {3}, {1, 2}, 0);
+    circ.add_measure(3, 3);
+    circ.add_barrier(
         {Qubit(0), Qubit(1), Qubit(2), Qubit(3), Bit(1), Bit(2), Bit(3)});
-    Vertex v9 =
-        circ.add_conditional_gate<unsigned>(OpType::Z, {}, {3}, {1, 2}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::Z, {}, {3}, {1, 2}, 0);
 
     std::vector<Node> nodes = {Node(0), Node(1), Node(2), Node(3)};
     Architecture arc(
@@ -239,15 +236,15 @@ SCENARIO("Test MappingFrontier get_frontier_subcircuit.") {
     circ.add_q_register("test_nodes", 4);
     std::vector<Qubit> qubits = circ.all_qubits();
 
-    Vertex v1 = circ.add_op<UnitID>(OpType::X, {qubits[0]});
-    Vertex v8 = circ.add_op<UnitID>(OpType::S, {qubits[3]});
-    Vertex v9 = circ.add_op<UnitID>(OpType::T, {qubits[3]});
-    Vertex v2 = circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[1]});
-    Vertex v3 = circ.add_op<UnitID>(OpType::CY, {qubits[2], qubits[3]});
-    Vertex v4 = circ.add_op<UnitID>(OpType::H, {qubits[0]});
-    Vertex v5 = circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[2]});
-    Vertex v6 = circ.add_op<UnitID>(OpType::Y, {qubits[0]});
-    Vertex v7 = circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[1]});
+    circ.add_op<UnitID>(OpType::X, {qubits[0]});
+    circ.add_op<UnitID>(OpType::S, {qubits[3]});
+    circ.add_op<UnitID>(OpType::T, {qubits[3]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[1]});
+    circ.add_op<UnitID>(OpType::CY, {qubits[2], qubits[3]});
+    circ.add_op<UnitID>(OpType::H, {qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[2]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[0]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[1]});
 
     std::vector<Node> nodes = {Node(0), Node(1), Node(2), Node(3)};
 
@@ -297,15 +294,15 @@ SCENARIO("Test MappingFrontier get_frontier_subcircuit.") {
         {Qubit(0), q0}, {Qubit(1), q1}, {Qubit(2), q2}, {Qubit(3), q3}};
     circ.rename_units(new_units);
 
-    Vertex v1 = circ.add_op<UnitID>(OpType::X, {qubits[0]});
-    Vertex v8 = circ.add_op<UnitID>(OpType::S, {qubits[3]});
-    Vertex v9 = circ.add_op<UnitID>(OpType::T, {qubits[3]});
-    Vertex v2 = circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[1]});
-    Vertex v3 = circ.add_op<UnitID>(OpType::CY, {qubits[2], qubits[3]});
-    Vertex v4 = circ.add_op<UnitID>(OpType::H, {qubits[0]});
-    Vertex v5 = circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[2]});
-    Vertex v6 = circ.add_op<UnitID>(OpType::Y, {qubits[0]});
-    Vertex v7 = circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[1]});
+    circ.add_op<UnitID>(OpType::X, {qubits[0]});
+    circ.add_op<UnitID>(OpType::S, {qubits[3]});
+    circ.add_op<UnitID>(OpType::T, {qubits[3]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[1]});
+    circ.add_op<UnitID>(OpType::CY, {qubits[2], qubits[3]});
+    circ.add_op<UnitID>(OpType::H, {qubits[0]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[2]});
+    circ.add_op<UnitID>(OpType::Y, {qubits[0]});
+    circ.add_op<UnitID>(OpType::CX, {qubits[3], qubits[1]});
 
     std::vector<Node> nodes = {Node(0), Node(1), Node(2), Node(3)};
 
@@ -502,11 +499,11 @@ SCENARIO("Test permute_subcircuit_q_out_hole.") {
     Qubit q2("test_nodes", 2);
     Qubit q3("test_nodes", 3);
 
-    Vertex v1 = circ.add_op<UnitID>(OpType::X, {q0});
-    Vertex v2 = circ.add_op<UnitID>(OpType::CX, {q0, q1});
-    Vertex v3 = circ.add_op<UnitID>(OpType::CY, {q2, q3});
-    Vertex v5 = circ.add_op<UnitID>(OpType::CZ, {q0, q2});
-    Vertex v7 = circ.add_op<UnitID>(OpType::CX, {q3, q1});
+    circ.add_op<UnitID>(OpType::X, {q0});
+    circ.add_op<UnitID>(OpType::CX, {q0, q1});
+    circ.add_op<UnitID>(OpType::CY, {q2, q3});
+    circ.add_op<UnitID>(OpType::CZ, {q0, q2});
+    circ.add_op<UnitID>(OpType::CX, {q3, q1});
 
     std::vector<Node> nodes = {Node(0), Node(1), Node(2), Node(3)};
 
