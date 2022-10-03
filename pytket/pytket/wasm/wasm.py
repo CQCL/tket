@@ -36,10 +36,12 @@ class WasmFileHandler:
 
         self._wasmuid = hashlib.md5(self._wasm_file_encoded).hexdigest()
 
+        # check if the file is valid to run
+        if not Module.validate(Store(), open(self._filepath, "rb").read()):
+            raise ValueError("wasm file not valid")
+
         wasm_module = Module(Store(), open(self._filepath, "rb").read())
-
-        assert Module.validate(Store(), open(self._filepath, "rb").read())
-
+        
         instance = Instance(wasm_module)
 
         # stores the names of the functions mapped
@@ -48,13 +50,13 @@ class WasmFileHandler:
 
         # contains the list of functions that are not allowed
         # to use in pytket (because of types that are not i32)
-        self._invalid_functions = []
+        self._unsupported_function = []
 
         self._wasm_file = base64.decodebytes(self._wasm_file_encoded)
 
         for wasm_obj in instance.exports:
             if len(wasm_obj) > 1 and isinstance(wasm_obj[1], Function):
-                valid_function = True
+                supported_function = True
                 wasm_function = wasm_obj[1]
 
                 # the direct evaluation of the types converts to python
@@ -79,7 +81,7 @@ class WasmFileHandler:
                     # special handling for no parameters
                     for t in wasm_parameter:
                         if t != "I32":
-                            valid_function = False
+                            supported_function = False
 
                     wasm_results = (
                         str(wasm_function.type)
@@ -94,18 +96,18 @@ class WasmFileHandler:
 
                     for t in wasm_results:
                         if t != "I32":
-                            valid_function = False
+                            supported_function = False
 
-                    if valid_function:
+                    if supported_function:
                         self._functions[wasm_obj[0]] = (
                             len(wasm_parameter),
                             len(wasm_results),
                         )
                 else:
-                    valid_function = False
+                    supported_function = False
 
-                if not valid_function:
-                    self._invalid_functions.append(wasm_obj[0])
+                if not supported_function:
+                    self._unsupported_function.append(wasm_obj[0])
 
     def __str__(self) -> str:
         """str representation of the wasm file"""
@@ -118,9 +120,9 @@ class WasmFileHandler:
             result += f"function '{x}' with {self._functions[x][0]} i32 parameter(s)"
             result += f" and {self._functions[x][1]} i32 return value(s)\n"
 
-        for x in self._invalid_functions:
+        for x in self._unsupported_function:
             result += (
-                f"unusable function with unvalid parameter or result type: '{x}' \n"
+                f"unsupported function with unvalid parameter or result type: '{x}' \n"
             )
 
         return result
