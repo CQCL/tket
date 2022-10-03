@@ -64,6 +64,16 @@ SCENARIO("Base Placement class") {
     REQUIRE_THROWS_AS(placement.place(circuit), std::invalid_argument);
   }
   GIVEN(
+      "Three qubit unconnected circuit, two qubit Architecture, "
+      "Placement::get_all_placement_maps") {
+    std::vector<std::pair<unsigned, unsigned>> edges = {{0, 1}};
+    Architecture architecture(edges);
+    Circuit circuit(3);
+    Placement placement(architecture);
+    REQUIRE_THROWS_AS(
+        placement.get_all_placement_maps(circuit, 100), std::invalid_argument);
+  }
+  GIVEN(
       "Two qubit connected circuit, three qubit Architecture, "
       "Placement::Place") {
     std::vector<std::pair<unsigned, unsigned>> edges = {{0, 1}, {1, 2}};

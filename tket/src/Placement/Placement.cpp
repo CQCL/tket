@@ -124,7 +124,13 @@ void to_json(nlohmann::json& j, const Placement::Ptr& placement_ptr) {
   // n.b. due to inheritance NoiseAwarePlacement and LinePlacement
   // need to be cast before GraphPlacement
   j["architecture"] = placement_ptr->get_architecture_ref();
-  if (std::shared_ptr<NoiseAwarePlacement> cast_placer =
+  if (std::shared_ptr<LinePlacement> cast_placer =
+          std::dynamic_pointer_cast<LinePlacement>(placement_ptr)) {
+    j["type"] = "LinePlacement";
+    j["maximum_pattern_gates"] = cast_placer->get_maximum_pattern_gates();
+    j["maximum_pattern_depth"] = cast_placer->get_maximum_pattern_depth();
+  } else if (
+      std::shared_ptr<NoiseAwarePlacement> cast_placer =
           std::dynamic_pointer_cast<NoiseAwarePlacement>(placement_ptr)) {
     j["type"] = "NoiseAwarePlacement";
     j["matches"] = cast_placer->get_maximum_matches();
@@ -132,12 +138,6 @@ void to_json(nlohmann::json& j, const Placement::Ptr& placement_ptr) {
     j["maximum_pattern_gates"] = cast_placer->get_maximum_pattern_gates();
     j["maximum_pattern_depth"] = cast_placer->get_maximum_pattern_depth();
     j["characterisation"] = cast_placer->get_characterisation();
-  } else if (
-      std::shared_ptr<LinePlacement> cast_placer =
-          std::dynamic_pointer_cast<LinePlacement>(placement_ptr)) {
-    j["type"] = "LinePlacement";
-    j["maximum_pattern_gates"] = cast_placer->get_maximum_pattern_gates();
-    j["maximum_pattern_depth"] = cast_placer->get_maximum_pattern_depth();
   } else if (
       std::shared_ptr<GraphPlacement> cast_placer =
           std::dynamic_pointer_cast<GraphPlacement>(placement_ptr)) {
@@ -164,8 +164,9 @@ void from_json(const nlohmann::json& j, Placement::Ptr& placement_ptr) {
   } else if (classname == "LinePlacement") {
     unsigned max_pattern_gates = j.at("maximum_pattern_gates").get<unsigned>();
     unsigned max_pattern_depth = j.at("maximum_pattern_depth").get<unsigned>();
-    placement_ptr = std::make_shared<LinePlacement>(
+    std::shared_ptr<LinePlacement> lp = std::make_shared<LinePlacement>(
         arc, max_pattern_gates, max_pattern_depth);
+    placement_ptr = lp;
   } else if (classname == "NoiseAwarePlacement") {
     unsigned matches = j.at("matches").get<unsigned>();
     unsigned timeout = j.at("timeout").get<unsigned>();

@@ -196,6 +196,24 @@ SCENARIO("Base GraphPlacement class") {
     REQUIRE(placement_map[Qubit(7)] == Node(16));
     REQUIRE(placement_map[Qubit(8)] == Node(11));
   }
+  GIVEN(
+      "Large Architecture, large complex circuit, small timeout, "
+      "Placement::get_all_placement_maps runtime_error.") {
+    SquareGrid architecture(20, 20);
+    Circuit circuit(10);
+    std::vector<std::pair<unsigned, unsigned>> cx_gates;
+    for (unsigned i = 0; i < 10; i++) {
+      for (unsigned j = 0; j < 10; j++) {
+        if (i != j) {
+          cx_gates.push_back({i, j});
+        }
+      }
+    }
+    add_2qb_gates(circuit, OpType::CX, cx_gates);
+    GraphPlacement placement(architecture, 100000, 1);
+    REQUIRE_THROWS_AS(
+        placement.get_all_placement_maps(circuit, 100000), std::runtime_error);
+  }
 }
 
 }  // namespace tket
