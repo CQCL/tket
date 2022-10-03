@@ -569,6 +569,7 @@ SCENARIO("Test compiler pass serializations") {
   PlacementPtr place = std::make_shared<GraphPlacement>(arc, plcon);
   std::map<Qubit, Qubit> qmap = {{Qubit(0), Node(1)}, {Qubit(3), Node(2)}};
   PlacementPtr na_place = std::make_shared<NoiseAwarePlacement>(arc, plcon);
+  PlacementPtr la_place = std::make_shared<LinePlacement>(arc);
 #define COMPPASSJSONTEST(passname, pass)               \
   GIVEN(#passname) {                                   \
     Circuit circ = CircuitsForTesting::get().uccsd;    \
@@ -643,6 +644,7 @@ SCENARIO("Test compiler pass serializations") {
   // TKET-1419
   COMPPASSJSONTEST(NoiseAwarePlacement, gen_placement_pass(na_place))
   COMPPASSJSONTEST(NaivePlacementPass, gen_naive_placement_pass(arc))
+  COMPPASSJSONTEST(LinePlacement, gen_placement_pass(la_place))
 #undef COMPPASSJSONTEST
   GIVEN("RoutingPass") {
     // Can only be applied to placed circuits
