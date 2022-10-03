@@ -370,17 +370,6 @@ SCENARIO("Test Circuit serialization") {
   }
 }
 
-// SCENARIO("Test config serializations") {
-//   GIVEN("PlacementConfig") {
-//     PlacementConfig orig(5, 20, 100000, 10, 1);
-//     nlohmann::json j_config = orig;
-//     PlacementConfig loaded = j_config.get<PlacementConfig>();
-//     REQUIRE(orig == loaded);
-//     nlohmann::json j_loaded = loaded;
-//     REQUIRE(j_config == j_loaded);
-//   }
-// }
-
 SCENARIO("Test device serializations") {
   GIVEN("Architecture") {
     Architecture arc({{0, 1}, {1, 2}});
@@ -406,43 +395,43 @@ SCENARIO("Test device serializations") {
     nlohmann::json j_loaded_full = loaded_full;
     CHECK(j_full == j_loaded_full);
   }
-  // GIVEN("DeviceCharacterisation") {
-  //   Architecture ring = RingArch(3);
-  //   node_vector_t nodes = ring.get_all_nodes_vec();
-  //   op_errors_t node_err0{{{OpType::X, 0.3}, {OpType::Y, 0.4}}};
-  //   op_errors_t node_err1{{{OpType::X, 0.2}, {OpType::Y, 0.5}}};
-  //   op_node_errors_t ne{
-  //       {nodes.at(0), node_err0},
-  //       {nodes.at(1), node_err1},
-  //       {nodes.at(2), node_err1}};
-  //   op_errors_t link_err0{{{OpType::CX, 0.1}}};
-  //   op_errors_t link_err1{{{OpType::CX, 0.1}, {OpType::CZ, 0.2}}};
-  //   op_link_errors_t le{
-  //       {{nodes.at(0), nodes.at(1)}, link_err0},
-  //       {{nodes.at(1), nodes.at(2)}, link_err1},
-  //       {{nodes.at(0), nodes.at(2)}, link_err0}};
-  //   avg_readout_errors_t roe{
-  //       {nodes.at(0), 0.02}, {nodes.at(1), 0.01}, {nodes.at(2), 0.98}};
-  //   DeviceCharacterisation op_dc{ne, le, roe};
-  //   nlohmann::json j_op_dc = op_dc;
-  //   DeviceCharacterisation loaded_op_dc =
-  //   j_op_dc.get<DeviceCharacterisation>(); CHECK(op_dc == loaded_op_dc);
-  //   nlohmann::json j_loaded_op_dc = loaded_op_dc;
-  //   CHECK(j_op_dc == j_loaded_op_dc);
-  //   avg_node_errors_t avg_ne{
-  //       {nodes.at(0), 0.}, {nodes.at(1), 0.1}, {nodes.at(2), 0.2}};
-  //   avg_link_errors_t avg_le{
-  //       {{nodes.at(0), nodes.at(1)}, 0.},
-  //       {{nodes.at(1), nodes.at(2)}, 0.1},
-  //       {{nodes.at(1), nodes.at(2)}, 0.9}};
-  //   DeviceCharacterisation avg_dc{avg_ne, avg_le, roe};
-  //   nlohmann::json j_avg_dc = avg_dc;
-  //   DeviceCharacterisation loaded_avg_dc =
-  //       j_avg_dc.get<DeviceCharacterisation>();
-  //   CHECK(avg_dc == loaded_avg_dc);
-  //   nlohmann::json j_loaded_avg_dc = loaded_avg_dc;
-  //   CHECK(j_avg_dc == j_loaded_avg_dc);
-  // }
+  GIVEN("DeviceCharacterisation") {
+    Architecture ring = RingArch(3);
+    node_vector_t nodes = ring.get_all_nodes_vec();
+    op_errors_t node_err0{{{OpType::X, 0.3}, {OpType::Y, 0.4}}};
+    op_errors_t node_err1{{{OpType::X, 0.2}, {OpType::Y, 0.5}}};
+    op_node_errors_t ne{
+        {nodes.at(0), node_err0},
+        {nodes.at(1), node_err1},
+        {nodes.at(2), node_err1}};
+    op_errors_t link_err0{{{OpType::CX, 0.1}}};
+    op_errors_t link_err1{{{OpType::CX, 0.1}, {OpType::CZ, 0.2}}};
+    op_link_errors_t le{
+        {{nodes.at(0), nodes.at(1)}, link_err0},
+        {{nodes.at(1), nodes.at(2)}, link_err1},
+        {{nodes.at(0), nodes.at(2)}, link_err0}};
+    avg_readout_errors_t roe{
+        {nodes.at(0), 0.02}, {nodes.at(1), 0.01}, {nodes.at(2), 0.98}};
+    DeviceCharacterisation op_dc{ne, le, roe};
+    nlohmann::json j_op_dc = op_dc;
+    DeviceCharacterisation loaded_op_dc = j_op_dc.get<DeviceCharacterisation>();
+    CHECK(op_dc == loaded_op_dc);
+    nlohmann::json j_loaded_op_dc = loaded_op_dc;
+    CHECK(j_op_dc == j_loaded_op_dc);
+    avg_node_errors_t avg_ne{
+        {nodes.at(0), 0.}, {nodes.at(1), 0.1}, {nodes.at(2), 0.2}};
+    avg_link_errors_t avg_le{
+        {{nodes.at(0), nodes.at(1)}, 0.},
+        {{nodes.at(1), nodes.at(2)}, 0.1},
+        {{nodes.at(1), nodes.at(2)}, 0.9}};
+    DeviceCharacterisation avg_dc{avg_ne, avg_le, roe};
+    nlohmann::json j_avg_dc = avg_dc;
+    DeviceCharacterisation loaded_avg_dc =
+        j_avg_dc.get<DeviceCharacterisation>();
+    CHECK(avg_dc == loaded_avg_dc);
+    nlohmann::json j_loaded_avg_dc = loaded_avg_dc;
+    CHECK(j_avg_dc == j_loaded_avg_dc);
+  }
 }
 
 SCENARIO("Test RoutingMethod serializations") {
