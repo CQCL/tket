@@ -214,6 +214,81 @@ SCENARIO("Base GraphPlacement class") {
     REQUIRE_THROWS_AS(
         placement.get_all_placement_maps(circuit, 100000), std::runtime_error);
   }
+  GIVEN(
+      "9 Qubit Circuit, 9 Qubit Architecture, "
+      "GraphPlacement::get_placement_map, increasing number of edges in "
+      "pattern graph until subgraph monomorphism found.") {
+    /**
+     * Architecture graph:
+     *      2         6
+     *      |         |
+     * 0 -- 1 -- 4 -- 5 -- 8
+     *      |         |
+     *      3         7
+     */
+    std::vector<std::pair<unsigned, unsigned>> edges = {
+        {0, 1}, {1, 2}, {1, 3}, {1, 4}, {4, 5}, {5, 6}, {5, 7}, {5, 8}};
+    Architecture architecture(edges);
+    /**
+     * Qubit interaction graph:
+     *      2         6
+     *      |         |
+     * 0 -- 1 -- 4 -- 5 -- 8
+     *      |         |
+     *      3         7
+     */
+    Circuit circuit(9);
+    add_2qb_gates(circuit, OpType::CX, edges);
+
+    // only allow 1 edge in pattern graph, don't find solutions
+    GraphPlacement placement(architecture, 1000, 100, 1, 1);
+    std::vector<std::map<Qubit, Node>> placement_maps =
+        placement.get_all_placement_maps(circuit, 1000);
+    REQUIRE(placement_maps.size() == 16);
+    std::map<Qubit, Node> map = placement_maps[0];
+    REQUIRE(map[Qubit(0)] == Node(2));
+    REQUIRE(map[Qubit(1)] == Node(1));
+    REQUIRE(map.find(Qubit(2)) == map.end());
+    REQUIRE(map.find(Qubit(3)) == map.end());
+    REQUIRE(map.find(Qubit(4)) == map.end());
+    REQUIRE(map.find(Qubit(5)) == map.end());
+    REQUIRE(map.find(Qubit(6)) == map.end());
+    REQUIRE(map.find(Qubit(7)) == map.end());
+    REQUIRE(map.find(Qubit(8)) == map.end());
+
+    // allow more edges in pattern graph, find better solutions
+    placement = GraphPlacement(architecture, 1000, 100, 3, 3);
+    placement_maps = placement.get_all_placement_maps(circuit, 1000);
+    REQUIRE(placement_maps.size() == 48);
+    map = placement_maps[0];
+    REQUIRE(map[Qubit(0)] == Node(7));
+    REQUIRE(map[Qubit(1)] == Node(5));
+    REQUIRE(map[Qubit(2)] == Node(6));
+    REQUIRE(map[Qubit(3)] == Node(4));
+    REQUIRE(map.find(Qubit(4)) == map.end());
+    REQUIRE(map.find(Qubit(5)) == map.end());
+    REQUIRE(map.find(Qubit(6)) == map.end());
+    REQUIRE(map.find(Qubit(7)) == map.end());
+    REQUIRE(map.find(Qubit(8)) == map.end());
+
+    // allow 9 edges in pattern graph, find full solutions
+    placement = GraphPlacement(architecture, 1000, 100, 9, 9);
+    placement_maps = placement.get_all_placement_maps(circuit, 1000);
+    REQUIRE(placement_maps.size() == 72);
+    map = placement_maps[0];
+    REQUIRE(map[Qubit(0)] == Node(6));
+    REQUIRE(map[Qubit(1)] == Node(5));
+    REQUIRE(map[Qubit(2)] == Node(8));
+    REQUIRE(map[Qubit(3)] == Node(7));
+    REQUIRE(map[Qubit(4)] == Node(4));
+    REQUIRE(map[Qubit(5)] == Node(1));
+    REQUIRE(map[Qubit(6)] == Node(0));
+    REQUIRE(map[Qubit(7)] == Node(3));
+    REQUIRE(map[Qubit(8)] == Node(2));
+    for (std::map<Qubit, Node>& pmap : placement_maps) {
+      REQUIRE(pmap[Qubit(4)] == Node(4));
+    }
+  }
 }
 
 }  // namespace tket
