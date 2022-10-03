@@ -65,6 +65,10 @@ SCENARIO("Using Boxes", "[boxes]") {
     c0.add_op<unsigned>(OpType::CX, {1, 2});
     REQUIRE(c0.n_gates() == 5);
     CircBox c0box(c0);
+    // Basic utility methods
+    REQUIRE(c0box.n_qubits() == 3);
+    REQUIRE(c0box.n_boolean() == 0);
+    REQUIRE(c0box.n_classical() == 0);
     // Put them in a bigger circuit
     Circuit d(4, 3);
     d.add_box(c0box, {1, 2, 0});
@@ -148,6 +152,26 @@ SCENARIO("Using Boxes", "[boxes]") {
     Eigen::MatrixXcd d1m = tket_sim::get_unitary(d1);
     // check it's the identity
     REQUIRE((d1m - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
+  }
+  GIVEN("Unitary Box Identity constructors") {
+    Circuit empty1(1);
+    empty1.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
+    REQUIRE(*(Unitary1qBox().to_circuit()) == empty1);
+    Circuit empty2(2);
+    empty2.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
+    empty2.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
+    empty2.add_op<unsigned>(OpType::TK2, {0, 0, 0}, {0, 1});
+    empty2.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
+    empty2.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
+    REQUIRE(*(Unitary2qBox().to_circuit()) == empty2);
+    Circuit empty3(3);
+    empty3.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
+    empty3.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
+    empty3.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {2});
+    empty3.add_op<unsigned>(OpType::TK2, {0, 0, 0}, {1, 2});
+    empty3.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
+    empty3.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {2});
+    REQUIRE(*(Unitary3qBox().to_circuit()) == empty3);
   }
   GIVEN("little-endian representation") {
     Eigen::Matrix4cd m0;
