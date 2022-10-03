@@ -171,8 +171,7 @@ unit_regex = re.compile(r"([a-z][a-zA-Z0-9_]*)\[([\d]+)\]")
 
 def _extract_reg(var: Token) -> Tuple[str, int]:
     match = unit_regex.match(var.value)
-    if match is None:
-        raise QASMParseError(f"Not a valid (qu)bit identifier: {var.value}", var.line)
+    assert match is not None
     return match.group(1), int(match.group(2))
 
 
