@@ -184,7 +184,7 @@ SCENARIO("Base GraphPlacement class") {
     add_2qb_gates(
         circuit, OpType::CX,
         {{8, 0}, {5, 1}, {4, 7}, {0, 6}, {1, 3}, {0, 2}, {7, 0}});
-    GraphPlacement placement(architecture);
+    GraphPlacement placement(architecture, 2000, 200000);
     std::map<Qubit, Node> placement_map = placement.get_placement_map(circuit);
     REQUIRE(placement_map[Qubit(0)] == Node(17));
     REQUIRE(placement_map[Qubit(1)] == Node(13));
