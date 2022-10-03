@@ -370,7 +370,7 @@ function 'add_two' with 1 i32 parameter(s) and 1 i32 return value(s)
 function 'add_eleven' with 1 i32 parameter(s) and 1 i32 return value(s)
 function 'no_return' with 1 i32 parameter(s) and 0 i32 return value(s)
 function 'no_parameters' with 0 i32 parameter(s) and 1 i32 return value(s)
-unusable function with unvalid parameter or result type: 'add_something' 
+unsupported function with unvalid parameter or result type: 'add_something' 
 """
     )
 

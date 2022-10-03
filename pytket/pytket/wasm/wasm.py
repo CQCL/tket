@@ -37,11 +37,11 @@ class WasmFileHandler:
         self._wasmuid = hashlib.md5(self._wasm_file_encoded).hexdigest()
 
         # check if the file is valid to run
-        if not Module.validate(Store(), open(self._filepath, "rb").read()):
+        if not Module.validate(Store(), base64.decodebytes(self._wasm_file_encoded)):
             raise ValueError("wasm file not valid")
 
-        wasm_module = Module(Store(), open(self._filepath, "rb").read())
-        
+        wasm_module = Module(Store(), base64.decodebytes(self._wasm_file_encoded))
+
         instance = Instance(wasm_module)
 
         # stores the names of the functions mapped
