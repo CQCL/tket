@@ -146,12 +146,15 @@ class Backend(ABC):
     @abstractmethod
     def default_compilation_pass(self, optimisation_level: int = 1) -> BasePass:
         """
-        A suggested compilation pass that will guarantee the resulting circuit
-        will be suitable to run on this backend with as few preconditions as
-        possible.
+        A suggested compilation pass that will will, if possible, produce an equivalent
+        circuit suitable for running on this backend.
 
-        This is a an abstract method which os implemented in the backend itself, so
-        the details of which passes are applied may vary.
+        At a minimum it will ensure that compatible gates are used and that all two-
+        qubit interactions are compatible with the backend's qubit architecture. At
+        higher optimisation levels, further optimisations may be applied.
+
+        This is a an abstract method which is implemented in the backend itself, and so
+        is tailored to the backend's requirements.
 
         :param optimisation_level: The level of optimisation to perform during
             compilation.
