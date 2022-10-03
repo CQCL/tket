@@ -386,7 +386,7 @@ SCENARIO(
 
   GIVEN("A circuit with Z basis operations at the end") {
     Circuit test1(4, 4);
-    Vertex h0 = test1.add_op<unsigned>(OpType::H, {0});
+    test1.add_op<unsigned>(OpType::H, {0});
     test1.add_op<unsigned>(OpType::X, {1});
     test1.add_op<unsigned>(OpType::Y, {2});
     test1.add_op<unsigned>(OpType::Z, {3});
@@ -399,7 +399,7 @@ SCENARIO(
 
     CHECK_FALSE(Transforms::remove_redundancies().apply(test1));
     WHEN("Measurements are added") {
-      Vertex measure0 = test1.add_measure(0, 0);
+      test1.add_measure(0, 0);
       test1.add_measure(1, 1);
       test1.add_measure(2, 2);
       THEN("Redundant gates before a measurement are removed.") {
@@ -935,7 +935,7 @@ SCENARIO("Test commutation through CXsw", "[transform]") {
     // an isomorphism)
     SliceVec circslice = circ.get_slices();
     SliceVec newcircslice = new_circ.get_slices();
-    for (int i = 0; i < circslice.size(); ++i) {
+    for (unsigned i = 0; i < circslice.size(); ++i) {
       Slice::iterator k = newcircslice[i].begin();
       for (Slice::iterator j = circslice[i].begin(); j != circslice[i].end();
            ++j) {
@@ -1818,7 +1818,7 @@ SCENARIO("Testing decompose_TK2") {
     Circuit c(2);
     c.add_op<unsigned>(OpType::TK2, {0.3, 0., 0.}, {0, 1});
     Transforms::TwoQbFidelities fid;
-    fid.ZZPhase_fidelity = [](double x) { return 1.; };
+    fid.ZZPhase_fidelity = [](double) { return 1.; };
     fid.ZZMax_fidelity = 1.;
     REQUIRE(Transforms::decompose_TK2(fid).apply(c));
     REQUIRE(c.count_gates(OpType::ZZPhase) == 1);
@@ -1830,7 +1830,7 @@ SCENARIO("Testing decompose_TK2") {
     Circuit c(2);
     c.add_op<unsigned>(OpType::TK2, {0.3, 0., 0.}, {0, 1});
     Transforms::TwoQbFidelities fid;
-    fid.ZZPhase_fidelity = [](double x) { return .9; };
+    fid.ZZPhase_fidelity = [](double) { return .9; };
     fid.ZZMax_fidelity = .9;
     REQUIRE(Transforms::decompose_TK2(fid).apply(c));
     REQUIRE(c.count_gates(OpType::ZZPhase) == 1);
@@ -2379,6 +2379,19 @@ SCENARIO("Test squash Rz PhasedX") {
     REQUIRE(u.isApprox(v, ERR_EPS));
   }
 }
+
+// https://github.com/CQCL/tket/issues/535
+SCENARIO("squash_1qb_to_Rz_PhasedX should preserve phase") {
+  Circuit circ(1);
+  circ.add_op<unsigned>(OpType::H, {0});
+  circ.add_op<unsigned>(OpType::H, {0});
+  const Eigen::MatrixXcd u = tket_sim::get_unitary(circ);
+  Transforms::squash_1qb_to_Rz_PhasedX().apply(circ);
+  const Eigen::MatrixXcd v = tket_sim::get_unitary(circ);
+  REQUIRE(u.isApprox(v, ERR_EPS));
+  REQUIRE(equiv_0(circ.get_phase()));
+}
+
 SCENARIO("Test decompose_ZXZ_to_TK1") {
   Circuit circ;
   unsigned tk1_count, total_count;

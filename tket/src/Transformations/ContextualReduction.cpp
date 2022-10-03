@@ -19,6 +19,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
+#include <tklog/TketLog.hpp>
 
 #include "Circuit/Circuit.hpp"
 #include "Circuit/DAGDefs.hpp"
@@ -82,6 +83,15 @@ static std::optional<Eigen::MatrixXcd> op_unitary(Op_ptr op) {
   try {
     return op->get_unitary();
   } catch (BadOpType &) {
+    std::stringstream ss;
+    ss << "Attempting to compute unitary for invalid type: " << op->get_name();
+    tket_log()->warn(ss.str());
+    return std::nullopt;
+  } catch (SymbolsNotSupported &) {
+    std::stringstream ss;
+    ss << "Attempting to compute unitary for symbolic operation: "
+       << op->get_name();
+    tket_log()->warn(ss.str());
     return std::nullopt;
   }
   // Any other exception is unexpected.

@@ -345,7 +345,6 @@ SCENARIO("Degree helper functions 2") {
   using Edge = std::pair<int, int>;
 
   enum { A, B, C, D, E, N };
-  const char* name = "ABCDE";
   Edge edge_array[] = {{A, B}, {A, D}, {C, A}, {D, C},
                        {C, E}, {B, D}, {D, E}, {A, E}};
   const int num_vertices = N;
@@ -380,7 +379,6 @@ SCENARIO("Test symmetrise") {
   using Edge = std::pair<int, int>;
 
   enum { A, B, C, D, E, N };
-  const char* name = "ABCDE";
   Edge edge_array[] = {{A, B}, {A, D}, {C, A}, {D, C},
                        {C, E}, {B, D}, {D, E}, {A, E}};
   const int num_vertices = N;

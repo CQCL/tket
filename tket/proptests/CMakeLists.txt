@@ -31,9 +31,9 @@ include(${CONANBUILDINFO_FILE})
 conan_basic_setup()
 
 IF (WIN32)
-    # /Zc:__cplusplus flag needed for C++20 support: see
-    # https://github.com/emil-e/rapidcheck/issues/266
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /Zc:__cplusplus")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX /EHsc")
+ELSE()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wunreachable-code -Wunused")
 ENDIF()
 
 add_executable(proptest
