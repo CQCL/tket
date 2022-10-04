@@ -185,8 +185,9 @@ class CoherentTableau {
   static CoherentTableau compose(
       const CoherentTableau& first, const CoherentTableau& second);
 
-  friend CoherentTableau circuit_to_partial_tableau(const Circuit& circ);
-  friend Circuit partial_tableau_to_circuit(const CoherentTableau& circ);
+  friend CoherentTableau circuit_to_coherent_tableau(const Circuit& circ);
+  friend std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
+      const CoherentTableau& circ);
 
   friend void to_json(nlohmann::json& j, const CoherentTableau& tab);
   friend void from_json(const nlohmann::json& j, CoherentTableau& tab);

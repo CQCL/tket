@@ -20,7 +20,8 @@
 
 namespace tket {
 
-// Forward declare friend UnitaryTableau and Circuit for converters
+// Forward declare friend classes for converters
+class CoherentTableau;
 class UnitaryTableau;
 class Circuit;
 
@@ -200,6 +201,8 @@ class SymplecticTableau {
   friend class UnitaryTableau;
   friend class CoherentTableau;
   friend Circuit unitary_tableau_to_circuit(const UnitaryTableau &tab);
+  friend std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
+      const CoherentTableau &tab);
   friend std::ostream &operator<<(std::ostream &os, const UnitaryTableau &tab);
 
   friend void to_json(nlohmann::json &j, const SymplecticTableau &tab);
