@@ -151,6 +151,11 @@ PARAM_COMMANDS = {
     "cu3": OpType.CU3,
 }
 
+DEFINITION_COMMANDS = {
+    "ecr": OpType.ECR
+}
+
+
 _tk_to_qasm_noparams = dict(((item[1], item[0]) for item in NOPARAM_COMMANDS.items()))
 _tk_to_qasm_noparams[OpType.CX] = "cx"  # prefer "cx" to "CX"
 _tk_to_qasm_params = dict(((item[1], item[0]) for item in PARAM_COMMANDS.items()))
@@ -1123,10 +1128,14 @@ def circuit_to_qasm_io(
             else:
                 opstr = op.data
                 checked_op = False
+
         elif optype in _tk_to_qasm_noparams:
             opstr = _tk_to_qasm_noparams[optype]
         elif optype in _tk_to_qasm_params:
             opstr = _tk_to_qasm_params[optype]
+        elif optype in _tk_to_qasm_definition:
+            
+
         else:
             raise QASMUnsupportedError(
                 "Cannot print command of type: {}".format(op.get_name())
