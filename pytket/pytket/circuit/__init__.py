@@ -63,8 +63,8 @@ def overload_add_wasm(  # type: ignore
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmFileHandler,
-    list_i: List[int],
-    list_o: List[int],
+    list_i: List[List[int]],
+    list_o: List[List[int]],
     args: Union[List[int], List[Bit]],
     **kwargs,
 ) -> Circuit:
@@ -79,20 +79,7 @@ def overload_add_wasm(  # type: ignore
      `condition_value`
     \n:return: the new :py:class:`Circuit`"""
 
-    for x in list_i:
-        if x > 32:
-            raise ValueError("only functions with i32 type are allowed")
-
-    for x in list_o:
-        if x > 32:
-            raise ValueError("only functions with i32 type are allowed")
-
-    if filehandler.check_function(funcname, len(list_i), len(list_o)):
-        return self._add_wasm(
-            funcname, str(filehandler), list_i, list_o, args, **kwargs
-        )
-
-    raise ValueError(f"{funcname} not found, check {repr(filehandler)}")
+    return self._add_wasm(funcname, str(filehandler), list_i, list_o, args, **kwargs)
 
 
 setattr(Circuit, "add_wasm", overload_add_wasm)
@@ -119,10 +106,7 @@ def overload_add_wasm_to_reg(  # type: ignore
      `condition_value`
     \n:return: the new :py:class:`Circuit`"""
 
-    if filehandler.check_function(funcname, len(list_i), len(list_o)):
-        return self._add_wasm(funcname, str(filehandler), list_i, list_o, **kwargs)
-
-    raise ValueError(f"{funcname} not found, check {repr(filehandler)}")
+    return self._add_wasm(funcname, str(filehandler), list_i, list_o, **kwargs)
 
 
 setattr(Circuit, "add_wasm_to_reg", overload_add_wasm_to_reg)
