@@ -1022,7 +1022,7 @@ SCENARIO("Empty Circuit test") {
     circ.add_blank_wires(4);
     Architecture arc({{0, 1}, {1, 2}, {2, 3}});
     MappingManager mm(std::make_shared<Architecture>(arc));
-    REQUIRE(!mm.route_circuit(
+    REQUIRE(mm.route_circuit(
         circ,
         {
             std::make_shared<LexiLabellingMethod>(),
@@ -1044,7 +1044,7 @@ SCENARIO("Routing on circuit with no multi-qubit gates") {
     unsigned orig_vertices = circ.n_vertices();
     Architecture arc({{0, 1}, {1, 2}, {2, 3}});
     MappingManager mm(std::make_shared<Architecture>(arc));
-    REQUIRE(!mm.route_circuit(
+    REQUIRE(mm.route_circuit(
         circ,
         {
             std::make_shared<LexiLabellingMethod>(),
@@ -1199,7 +1199,7 @@ SCENARIO("Empty circuits, with and without blank wires") {
     Circuit circ(6);
     RingArch arc(6);
     MappingManager mm(std::make_shared<Architecture>(arc));
-    REQUIRE(!mm.route_circuit(
+    REQUIRE(mm.route_circuit(
         circ,
         {
             std::make_shared<LexiLabellingMethod>(),
@@ -1209,7 +1209,7 @@ SCENARIO("Empty circuits, with and without blank wires") {
     REQUIRE(circ.depth() == 0);
     REQUIRE(circ.n_gates() == 0);
     REQUIRE(circ.n_qubits() == 6);
-    REQUIRE(!respects_connectivity_constraints(circ, arc, true));
+    REQUIRE(respects_connectivity_constraints(circ, arc, true));
   }
   GIVEN("An empty circuit with some qubits with labelling") {
     Circuit circ(6);
@@ -1553,14 +1553,14 @@ SCENARIO("Unlabelled qubits should be assigned to ancilla qubits.") {
       {std::make_shared<LexiLabellingMethod>(),
        std::make_shared<LexiRouteRoutingMethod>()},
       maps, true);
-  REQUIRE(maps->initial.left.find(Qubit(0))->second == Node(0));
-  REQUIRE(maps->initial.left.find(Qubit(1))->second == Node(3));
-  REQUIRE(maps->initial.left.find(Qubit(2))->second == Node(2));
-  REQUIRE(maps->initial.left.find(Qubit(3))->second == Node(1));
-  REQUIRE(maps->final.left.find(Qubit(0))->second == Node(0));
-  REQUIRE(maps->final.left.find(Qubit(1))->second == Node(2));
-  REQUIRE(maps->final.left.find(Qubit(2))->second == Node(3));
-  REQUIRE(maps->final.left.find(Qubit(3))->second == Node(1));
+  REQUIRE(maps->initial.left.find(Qubit(0))->second == Node(1));
+  REQUIRE(maps->initial.left.find(Qubit(1))->second == Node(2));
+  REQUIRE(maps->initial.left.find(Qubit(2))->second == Node(3));
+  REQUIRE(maps->initial.left.find(Qubit(3))->second == Node(0));
+  REQUIRE(maps->final.left.find(Qubit(0))->second == Node(1));
+  REQUIRE(maps->final.left.find(Qubit(1))->second == Node(3));
+  REQUIRE(maps->final.left.find(Qubit(2))->second == Node(2));
+  REQUIRE(maps->final.left.find(Qubit(3))->second == Node(0));
 }
 SCENARIO("Lexi relabel with partially mapped circuit") {
   GIVEN("With an unplaced qubit") {
