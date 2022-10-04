@@ -35,7 +35,7 @@ set(Boost_NO_BOOST_CMAKE ON)
 if (WIN32)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /WX")
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wunreachable-code -Wunused")
 endif()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

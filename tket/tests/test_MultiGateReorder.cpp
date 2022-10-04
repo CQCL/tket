@@ -359,7 +359,7 @@ SCENARIO("Test MappingManager with MultiGateReorderRoutingMethod") {
     std::vector<RoutingMethodPtr> vrm = {
         std::make_shared<MultiGateReorderRoutingMethod>(),
         std::make_shared<LexiRouteRoutingMethod>(10)};
-    bool res = mm.route_circuit(circ, vrm);
+    mm.route_circuit(circ, vrm);
     PredicatePtr routed_correctly =
         std::make_shared<ConnectivityPredicate>(architecture);
     REQUIRE(routed_correctly->verify(circ));
