@@ -161,9 +161,128 @@ def test_wasm_3() -> None:
 
     c = Circuit(0, 6)
 
-    c.add_wasm("funcname", w, [1], [1], [Bit(0), Bit(1)])
+    c.add_wasm("add_one", w, [1], [1], [Bit(0), Bit(1)])
 
     assert c.depth() == 1
+
+
+def test_wasm_4() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+
+    c = Circuit(0, 3)
+
+    with pytest.raises(ValueError):
+        c.add_wasm("add_one", w, [1, 1], [1], [Bit(0), Bit(1), Bit(2)])
+
+
+def test_wasm_5() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+
+    c = Circuit(0, 3)
+
+    with pytest.raises(ValueError):
+        c.add_wasm("add_one", w, [1], [1, 1], [Bit(0), Bit(1), Bit(2)])
+
+
+def test_wasm_6() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+
+    c = Circuit(0, 35)
+
+    with pytest.raises(ValueError):
+        c.add_wasm(
+            "add_one",
+            w,
+            [34],
+            [1],
+            [
+                Bit(0),
+                Bit(1),
+                Bit(2),
+                Bit(3),
+                Bit(4),
+                Bit(5),
+                Bit(6),
+                Bit(7),
+                Bit(8),
+                Bit(9),
+                Bit(10),
+                Bit(11),
+                Bit(12),
+                Bit(13),
+                Bit(14),
+                Bit(15),
+                Bit(16),
+                Bit(17),
+                Bit(18),
+                Bit(19),
+                Bit(20),
+                Bit(21),
+                Bit(22),
+                Bit(23),
+                Bit(24),
+                Bit(25),
+                Bit(26),
+                Bit(27),
+                Bit(28),
+                Bit(29),
+                Bit(30),
+                Bit(31),
+                Bit(32),
+                Bit(33),
+                Bit(34),
+            ],
+        )
+
+
+def test_wasm_7() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+
+    c = Circuit(0, 35)
+    with pytest.raises(ValueError):
+        c.add_wasm(
+            "add_one",
+            w,
+            [1],
+            [34],
+            [
+                Bit(0),
+                Bit(1),
+                Bit(2),
+                Bit(3),
+                Bit(4),
+                Bit(5),
+                Bit(6),
+                Bit(7),
+                Bit(8),
+                Bit(9),
+                Bit(10),
+                Bit(11),
+                Bit(12),
+                Bit(13),
+                Bit(14),
+                Bit(15),
+                Bit(16),
+                Bit(17),
+                Bit(18),
+                Bit(19),
+                Bit(20),
+                Bit(21),
+                Bit(22),
+                Bit(23),
+                Bit(24),
+                Bit(25),
+                Bit(26),
+                Bit(27),
+                Bit(28),
+                Bit(29),
+                Bit(30),
+                Bit(31),
+                Bit(32),
+                Bit(33),
+                Bit(34),
+            ],
+        )
 
 
 def test_wasm_handler() -> None:
@@ -171,6 +290,57 @@ def test_wasm_handler() -> None:
 
     with pytest.raises(ValueError):
         w2 = wasm.WasmFileHandler("testfile-2.wasm")
+
+
+def test_wasm_function_check() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+
+    assert not w.check_function("add_one", 0, 0)
+    assert not w.check_function("add_three", 0, 0)
+
+
+def test_wasm_function_check_2() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(6, 6)
+    c0 = c.add_c_register("c0", 3)
+    c1 = c.add_c_register("c1", 4)
+    c2 = c.add_c_register("c2", 5)
+
+    with pytest.raises(ValueError):
+        c.add_wasm_to_reg("add_three", w, [c0, c1], [c2])
+
+
+def test_wasm_function_check_3() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(6, 6)
+    c0 = c.add_c_register("c0", 3)
+    c1 = c.add_c_register("c1", 4)
+    c2 = c.add_c_register("c2", 5)
+
+    with pytest.raises(ValueError):
+        c.add_wasm_to_reg("add_one", w, [c0, c1], [c2])
+
+
+def test_wasm_function_check_4() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(20, 20)
+    c0 = c.add_c_register("c0", 10)
+    c1 = c.add_c_register("c1", 4)
+    c2 = c.add_c_register("c2", 5)
+
+    with pytest.raises(ValueError):
+        c.add_wasm_to_reg("add_one", w, [c0, c1], [c2])
+
+
+def test_wasm_function_check_5() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(20, 20)
+    c0 = c.add_c_register("c0", 53)
+    c1 = c.add_c_register("c1", 4)
+    c2 = c.add_c_register("c2", 5)
+
+    with pytest.raises(ValueError):
+        c.add_wasm_to_reg("add_one", w, [c0], [c1, c2])
 
 
 def test_add_wasm_to_reg() -> None:
@@ -181,10 +351,28 @@ def test_add_wasm_to_reg() -> None:
     c1 = c.add_c_register("c1", 4)
     c2 = c.add_c_register("c2", 5)
 
-    c.add_wasm_to_reg("funcname", w, [c0, c1], [c2])
-    c.add_wasm_to_reg("funcname2", w, [c2], [c2])
+    c.add_wasm_to_reg("multi", w, [c0, c1], [c2])
+    c.add_wasm_to_reg("add_one", w, [c2], [c2])
+    c.add_wasm_to_reg("no_return", w, [c2], [])
+    c.add_wasm_to_reg("no_parameters", w, [], [c2])
 
-    assert c.depth() == 2
+    assert c.depth() == 3
+
+
+def test_wasmfilehandler_repr() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+    assert (
+        repr(w)
+        == """Functions in wasm file with the uid 332940d7bf36f2a17ef59ddf13a042ce:
+function 'add_one' with 1 i32 parameter(s) and 1 i32 return value(s)
+function 'multi' with 2 i32 parameter(s) and 1 i32 return value(s)
+function 'add_two' with 1 i32 parameter(s) and 1 i32 return value(s)
+function 'add_eleven' with 1 i32 parameter(s) and 1 i32 return value(s)
+function 'no_return' with 1 i32 parameter(s) and 0 i32 return value(s)
+function 'no_parameters' with 0 i32 parameter(s) and 1 i32 return value(s)
+unsupported function with unvalid parameter or result type: 'add_something' 
+"""
+    )
 
 
 def gen_reg(
@@ -810,8 +998,8 @@ def test_conditional_wasm_iii() -> None:
 
     b = c.add_c_register("b", 2)
 
-    c.add_wasm_to_reg("funcname", w, [c0, c1], [c2], condition=b[0])
-    c.add_wasm_to_reg("funcname2", w, [c2], [c2], condition=b[1])
+    c.add_wasm_to_reg("multi", w, [c0, c1], [c2], condition=b[0])
+    c.add_wasm_to_reg("add_one", w, [c2], [c2], condition=b[1])
 
     assert c.depth() == 2
     assert (
@@ -828,7 +1016,7 @@ def test_conditional_wasm_iv() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
     c = Circuit(0, 6)
     b = c.add_c_register("controlreg", 2)
-    c.add_wasm("funcname", w, [1], [1], [Bit(0), Bit(1)], condition=b[0])
+    c.add_wasm("add_two", w, [1], [1], [Bit(0), Bit(1)], condition=b[0])
 
     assert c.depth() == 1
     assert str(c.get_commands()[0]) == "IF ([controlreg[0]] == 1) THEN WASM c[0], c[1];"
