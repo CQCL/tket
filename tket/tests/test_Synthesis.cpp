@@ -208,6 +208,25 @@ SCENARIO("Check commutation through multiqubit ops") {
     REQUIRE(!Transforms::commute_through_multis().apply(circ));
     REQUIRE(old_circ == circ);
   }
+  GIVEN("A circuit with classical control (3)") {
+    Circuit circ(3, 3);
+    circ.add_measure(0, 0);
+    circ.add_measure(1, 1);
+    circ.add_conditional_gate<unsigned>(OpType::ZZMax, {}, {0, 2}, {0, 1}, 1);
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Z, {2});
+
+    Circuit solution(3, 3);
+    solution.add_measure(0, 0);
+    solution.add_measure(1, 1);
+    solution.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    solution.add_op<unsigned>(OpType::Z, {2});
+    solution.add_conditional_gate<unsigned>(
+        OpType::ZZMax, {}, {0, 2}, {0, 1}, 1);
+
+    REQUIRE(Transforms::commute_through_multis().apply(circ));
+    REQUIRE(solution == circ);
+  }
   GIVEN("A bridge") {
     Circuit circ(3);
     circ.add_op<unsigned>(OpType::BRIDGE, {1, 2, 0});
