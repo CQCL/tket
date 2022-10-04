@@ -74,9 +74,13 @@ from strategies import reg_name_regex, binary_digits, uint32  # type: ignore
 
 curr_file_path = Path(__file__).resolve().parent
 
-import platform
+import platform, sys
 
-skip_wasm_tests: bool = platform.processor() == "arm"
+skip_wasm_tests: bool = (
+    platform.processor() == "arm"
+    and sys.version[0] == 3
+    and (sys.version[1] == 8 or sys.version[1] == 10)
+)
 
 REASON = "Wasm checks can't run on M1 mac with python 3.8 or 3.10"
 
