@@ -16,15 +16,13 @@ from os.path import exists
 import base64
 import hashlib
 
-from wasmer import Store, Module, Instance, Function  # type: ignore
-
 
 class WasmFileHandler:
     """Add a wasm file to your workflow, stores a copy of the file and
     checks the function signatures of the file. Offers function to add
     a wasm op to a circuit"""
 
-    def __init__(self, filepath: str):
+    def __init__(self, filepath: str, check_file: bool = True):
         """construct a wasm file handler"""
         self._filepath = filepath
 
@@ -38,13 +36,7 @@ class WasmFileHandler:
 
         self._wasmuid = hashlib.md5(self._wasm_file_encoded).hexdigest()
 
-        # check if the file is valid to run
-        if not Module.validate(Store(), wasm_file):
-            raise ValueError("wasm file not valid")
-
-        wasm_module = Module(Store(), wasm_file)
-
-        instance = Instance(wasm_module)
+        self._check_file = check_file
 
         # stores the names of the functions mapped
         #  to the number of parameters and the number of return values
@@ -54,62 +46,84 @@ class WasmFileHandler:
         # to use in pytket (because of types that are not i32)
         self._unsupported_function = []
 
-        self._wasm_file = base64.decodebytes(self._wasm_file_encoded)
+        try:
+            from wasmer import Store, Module, Instance, Function  # type: ignore
+        except ImportError:
+            self._check_file = False
+            raise Warning(
+                """On M1 Mac the check of the wasm file is not avilable in python
+                3.8 and 3.10, check_file parameter is set to false automatically.
+                Please use python 3.9 if you want to use the check"""
+            )
 
-        for wasm_obj in instance.exports:
-            if len(wasm_obj) > 1 and isinstance(wasm_obj[1], Function):
-                supported_function = True
-                wasm_function = wasm_obj[1]
+        # only run the wasmer import and so on if the check is requested to run
+        if self._check_file:
 
-                # the direct evaluation of the types converts to python
-                #  ints which remove the information if we are working
-                #  with i32 or i64, so we are unfortunately required
-                #  with the str version of the signature in the wasm file
-                if (
-                    (len(str(wasm_function.type).split("FunctionType(params: [")) == 2)
-                    and (len(str(wasm_function.type).split("], results: [")) == 2)
-                    and (len(str(wasm_function.type).split("])")) == 2)
-                ):
-                    wasm_parameter = (
-                        str(wasm_function.type)
-                        .split("FunctionType(params: [")[1]
-                        .split("], results: [")[0]
-                        .split(", ")
-                    )
+            # check if the file is valid to run
+            if not Module.validate(Store(), wasm_file):
+                raise ValueError("wasm file not valid")
 
-                    if wasm_parameter == [""]:
-                        wasm_parameter = []
+            wasm_module = Module(Store(), wasm_file)
 
-                    # special handling for no parameters
-                    for t in wasm_parameter:
-                        if t != "I32":
-                            supported_function = False
+            instance = Instance(wasm_module)
 
-                    wasm_results = (
-                        str(wasm_function.type)
-                        .split("], results: [")[1]
-                        .split("])")[0]
-                        .split(", ")
-                    )
+            for wasm_obj in instance.exports:
+                if len(wasm_obj) > 1 and isinstance(wasm_obj[1], Function):
+                    supported_function = True
+                    wasm_function = wasm_obj[1]
 
-                    # special handling for void return
-                    if wasm_results == [""]:
-                        wasm_results = []
-
-                    for t in wasm_results:
-                        if t != "I32":
-                            supported_function = False
-
-                    if supported_function:
-                        self._functions[wasm_obj[0]] = (
-                            len(wasm_parameter),
-                            len(wasm_results),
+                    # the direct evaluation of the types converts to python
+                    #  ints which remove the information if we are working
+                    #  with i32 or i64, so we are unfortunately required
+                    #  with the str version of the signature in the wasm file
+                    if (
+                        (
+                            len(str(wasm_function.type).split("FunctionType(params: ["))
+                            == 2
                         )
-                else:
-                    supported_function = False
+                        and (len(str(wasm_function.type).split("], results: [")) == 2)
+                        and (len(str(wasm_function.type).split("])")) == 2)
+                    ):
+                        wasm_parameter = (
+                            str(wasm_function.type)
+                            .split("FunctionType(params: [")[1]
+                            .split("], results: [")[0]
+                            .split(", ")
+                        )
 
-                if not supported_function:
-                    self._unsupported_function.append(wasm_obj[0])
+                        if wasm_parameter == [""]:
+                            wasm_parameter = []
+
+                        # special handling for no parameters
+                        for t in wasm_parameter:
+                            if t != "I32":
+                                supported_function = False
+
+                        wasm_results = (
+                            str(wasm_function.type)
+                            .split("], results: [")[1]
+                            .split("])")[0]
+                            .split(", ")
+                        )
+
+                        # special handling for void return
+                        if wasm_results == [""]:
+                            wasm_results = []
+
+                        for t in wasm_results:
+                            if t != "I32":
+                                supported_function = False
+
+                        if supported_function:
+                            self._functions[wasm_obj[0]] = (
+                                len(wasm_parameter),
+                                len(wasm_results),
+                            )
+                    else:
+                        supported_function = False
+
+                    if not supported_function:
+                        self._unsupported_function.append(wasm_obj[0])
 
     def __str__(self) -> str:
         """str representation of the wasm file"""
@@ -140,6 +154,8 @@ class WasmFileHandler:
         :param number_of_returns: number of i32 return values of the function
         :type number_of_returns: int
         :return: true if the signature and the name of the function is correct"""
+        if not self._check_file:
+            return True
         return (
             (function_name in self._functions)
             and (self._functions[function_name][0] == number_of_parameters)

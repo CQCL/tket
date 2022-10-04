@@ -74,6 +74,11 @@ from strategies import reg_name_regex, binary_digits, uint32  # type: ignore
 
 curr_file_path = Path(__file__).resolve().parent
 
+import platform
+
+skip_wasm_tests: bool = platform.processor() == "arm"
+
+REASON = "Wasm checks can't run on M1 mac with python 3.8 or 3.10"
 
 with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
     schema = json.load(f)
@@ -156,6 +161,7 @@ def test_wasm_2() -> None:
     assert c.depth() == 1
 
 
+@pytest.mark.skipif(skip_wasm_tests, reason=REASON)
 def test_wasm_3() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
 
@@ -166,6 +172,7 @@ def test_wasm_3() -> None:
     assert c.depth() == 1
 
 
+@pytest.mark.skipif(skip_wasm_tests, reason=REASON)
 def test_wasm_4() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
 
@@ -175,6 +182,7 @@ def test_wasm_4() -> None:
         c.add_wasm("add_one", w, [1, 1], [1], [Bit(0), Bit(1), Bit(2)])
 
 
+@pytest.mark.skipif(skip_wasm_tests, reason=REASON)
 def test_wasm_5() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
 
@@ -184,6 +192,7 @@ def test_wasm_5() -> None:
         c.add_wasm("add_one", w, [1], [1, 1], [Bit(0), Bit(1), Bit(2)])
 
 
+@pytest.mark.skipif(skip_wasm_tests, reason=REASON)
 def test_wasm_6() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
 
@@ -235,6 +244,7 @@ def test_wasm_6() -> None:
         )
 
 
+@pytest.mark.skipif(skip_wasm_tests, reason=REASON)
 def test_wasm_7() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
 
@@ -292,6 +302,7 @@ def test_wasm_handler() -> None:
         w2 = wasm.WasmFileHandler("testfile-2.wasm")
 
 
+@pytest.mark.skipif(skip_wasm_tests, reason=REASON)
 def test_wasm_function_check() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
 
@@ -299,6 +310,7 @@ def test_wasm_function_check() -> None:
     assert not w.check_function("add_three", 0, 0)
 
 
+@pytest.mark.skipif(skip_wasm_tests, reason=REASON)
 def test_wasm_function_check_2() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
     c = Circuit(6, 6)
@@ -310,6 +322,7 @@ def test_wasm_function_check_2() -> None:
         c.add_wasm_to_reg("add_three", w, [c0, c1], [c2])
 
 
+@pytest.mark.skipif(skip_wasm_tests, reason=REASON)
 def test_wasm_function_check_3() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
     c = Circuit(6, 6)
@@ -321,6 +334,7 @@ def test_wasm_function_check_3() -> None:
         c.add_wasm_to_reg("add_one", w, [c0, c1], [c2])
 
 
+@pytest.mark.skipif(skip_wasm_tests, reason=REASON)
 def test_wasm_function_check_4() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
     c = Circuit(20, 20)
@@ -332,6 +346,7 @@ def test_wasm_function_check_4() -> None:
         c.add_wasm_to_reg("add_one", w, [c0, c1], [c2])
 
 
+@pytest.mark.skipif(skip_wasm_tests, reason=REASON)
 def test_wasm_function_check_5() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
     c = Circuit(20, 20)
@@ -359,6 +374,7 @@ def test_add_wasm_to_reg() -> None:
     assert c.depth() == 3
 
 
+@pytest.mark.skipif(skip_wasm_tests, reason=REASON)
 def test_wasmfilehandler_repr() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
     assert (
