@@ -235,17 +235,11 @@ static bool commute_singles_to_front(Circuit &circ) {
           for (const Edge &e : circ.get_in_edges(prev_v)) {
             EdgeType type = circ.get_edgetype(e);
             Edge boundary_edge;
-            if (type == EdgeType::Quantum) {
-              boundary_edge = circ.get_last_edge(current_v, current_e);
-            } else {
-              if (type != EdgeType::Boolean) {
-                // There should not be any Classical edges for conditional ops
-                TKET_ASSERT(type == EdgeType::Classical);
-                throw CircuitInvalidity(
-                    "Malformed conditional operation: found Classical wire");
-              }
-              boundary_edge = circ.get_linear_edge(e);
-            }
+            // Currently, only purely-quantum operations can be commuted
+            // through. This is guaranteed by `ends_commute`. It follows that
+            // any wire out of `prev_v` must be EdgeType::Quantum.
+            TKET_ASSERT(type == EdgeType::Quantum);
+            boundary_edge = circ.get_last_edge(current_v, current_e);
             rewire_edges.push_back(boundary_edge);
             edge_types.push_back(type);
           }
