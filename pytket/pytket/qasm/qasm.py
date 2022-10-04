@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from dataclasses import dataclass
+from inspect import CO_VARARGS
 import io
 import os
 import re
@@ -130,6 +131,27 @@ NOPARAM_COMMANDS = {
     "ecr": OpType.ECR,
 }
 
+
+# TO ADD:
+# V
+# Vdg
+# TK1
+# TK2
+# CV
+# CVdg
+# CSXdg
+# BRIDGE
+# ISWAP
+# PhasedISWAP
+# YYPhase
+# XXPhase3
+# ZZMax
+# ESwap
+# FSim
+# ISwapMAx
+
+
+
 PARAM_COMMANDS = {
     "p": OpType.U1,  # alias. https://github.com/Qiskit/qiskit-terra/pull/4765
     "u": OpType.U3,  # alias. https://github.com/Qiskit/qiskit-terra/pull/4765
@@ -151,9 +173,6 @@ PARAM_COMMANDS = {
     "cu3": OpType.CU3,
 }
 
-DEFINITION_COMMANDS = {
-    "ecr": OpType.ECR
-}
 
 
 _tk_to_qasm_noparams = dict(((item[1], item[0]) for item in NOPARAM_COMMANDS.items()))
