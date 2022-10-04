@@ -101,7 +101,7 @@ static void write_solver_solutions(
     const RelabelledPatternGraph& relabelled_pattern_graph,
     const RelabelledTargetGraph& relabelled_target_graph, bool return_best) {
   TKET_ASSERT(all_maps.empty());
-  std::vector<std::pair<unsigned, boost::bimap<Qubit, Node>>> cost_maps;
+  std::vector<std::pair<WeightWSM, boost::bimap<Qubit, Node>>> cost_maps;
 
   for (unsigned ii = 0; ii < solutions.size(); ++ii) {
     const auto& solution = solutions[ii];
@@ -117,18 +117,17 @@ static void write_solver_solutions(
         map, relabelled_pattern_graph, relabelled_target_graph);
     TKET_ASSERT(
         map.size() == relabelled_pattern_graph.get_original_vertices().size());
-
     cost_maps.push_back({solution.scalar_product, map});
   }
   if (cost_maps.empty()) return;
   std::sort(
       cost_maps.begin(), cost_maps.end(),
-      [](const std::pair<unsigned, boost::bimap<Qubit, Node>>& lhs,
-         const std::pair<unsigned, boost::bimap<Qubit, Node>>& rhs) {
+      [](const std::pair<WeightWSM, boost::bimap<Qubit, Node>>& lhs,
+         const std::pair<WeightWSM, boost::bimap<Qubit, Node>>& rhs) {
         return lhs.first > rhs.first;
       });
-  unsigned best = cost_maps.begin()->first;
-  for (const std::pair<unsigned, boost::bimap<Qubit, Node>>& map : cost_maps) {
+  WeightWSM best = cost_maps.begin()->first;
+  for (const std::pair<WeightWSM, boost::bimap<Qubit, Node>>& map : cost_maps) {
     if (return_best && map.first != best) break;
     all_maps.push_back(map.second);
   }
