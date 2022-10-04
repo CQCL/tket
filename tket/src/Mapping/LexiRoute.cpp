@@ -34,6 +34,87 @@ LexiRoute::LexiRoute(
   }
 }
 
+void LexiRoute::reassign_node(
+    const Node& pre_assigned, const UnitID& assignee) {
+  // A "reassignable" node has no releveant use for the purposes of
+  // routing But we assign at the start to avoid causal constraints from
+  // Barriers and other classical controlled but not quantum vertices We
+  // find a replacement Node first
+  std::vector<Qubit> all_qubits_v =
+      this->mapping_frontier_->circuit_.all_qubits();
+
+  std::set<Node> all_nodes_s;
+  for (const Qubit& qubit : all_qubits_v) {
+    all_nodes_s.insert(Node(this->labelling_[qubit]));
+  }
+  for (const Node& node : this->architecture_->nodes()) {
+    // => node is available
+    if (all_nodes_s.find(node) == all_nodes_s.end()) {
+      this->labelling_[assignee] = pre_assigned;
+      this->labelling_[pre_assigned] = node;
+
+      auto it = this->mapping_frontier_->reassignable_nodes_.find(pre_assigned);
+      this->mapping_frontier_->reassignable_nodes_.erase(it);
+      this->mapping_frontier_->reassignable_nodes_.insert(node);
+
+      auto assignee_boundary_it =
+          this->mapping_frontier_->linear_boundary->get<TagKey>().find(
+              assignee);
+      auto pre_assigned_boundary_it =
+          this->mapping_frontier_->linear_boundary->get<TagKey>().find(
+              pre_assigned);
+
+      this->mapping_frontier_->linear_boundary->replace(
+          pre_assigned_boundary_it, {node, pre_assigned_boundary_it->second});
+      this->mapping_frontier_->linear_boundary->replace(
+          assignee_boundary_it, {pre_assigned, assignee_boundary_it->second});
+      unit_map_t relabel0 = {{UnitID(pre_assigned), UnitID(node)}};
+      unit_map_t relabel1 = {{UnitID(assignee), UnitID(pre_assigned)}};
+      this->mapping_frontier_->circuit_.rename_units(relabel0);
+      this->mapping_frontier_->circuit_.rename_units(relabel1);
+
+      // assignee should now point to preserved node in initial
+      // preserved node should now point to node in initial
+
+      auto initial_assignee_it =
+          this->mapping_frontier_->bimaps_->initial.left.find(assignee);
+      auto initial_pre_assigned_it =
+          this->mapping_frontier_->bimaps_->initial.right.find(pre_assigned);
+
+      UnitID preserved_orig = initial_pre_assigned_it->second;
+      std::pair<UnitID, UnitID> initial_replacement_0 = {
+          assignee, pre_assigned};
+      std::pair<UnitID, UnitID> initial_replacement_1 = {preserved_orig, node};
+
+      this->mapping_frontier_->bimaps_->initial.left.erase(initial_assignee_it);
+      this->mapping_frontier_->bimaps_->initial.right.erase(
+          initial_pre_assigned_it);
+
+      this->mapping_frontier_->bimaps_->initial.left.insert(
+          initial_replacement_0);
+      this->mapping_frontier_->bimaps_->initial.left.insert(
+          initial_replacement_1);
+
+      auto final_assignee_it =
+          this->mapping_frontier_->bimaps_->final.left.find(assignee);
+      auto final_preserved_orig_it =
+          this->mapping_frontier_->bimaps_->final.left.find(preserved_orig);
+
+      // if placing, can assume its not been swapped yet
+      std::pair<UnitID, UnitID> final_replacement_0 = {assignee, pre_assigned};
+      std::pair<UnitID, UnitID> final_replacement_1 = {preserved_orig, node};
+
+      this->mapping_frontier_->bimaps_->final.left.erase(final_assignee_it);
+      this->mapping_frontier_->bimaps_->final.left.erase(
+          final_preserved_orig_it);
+
+      this->mapping_frontier_->bimaps_->final.left.insert(final_replacement_0);
+      this->mapping_frontier_->bimaps_->final.left.insert(final_replacement_1);
+      break;
+    }
+  }
+}
+
 bool LexiRoute::assign_at_distance(
     const UnitID& assignee, const Node& root, unsigned distances) {
   node_set_t valid_nodes;
@@ -53,94 +134,9 @@ bool LexiRoute::assign_at_distance(
     // If it's reassignable then we can use the Node, we just need to reassign
     // the original one
     // to another free architecture node
-    auto jt = this->mapping_frontier_->reassignable_nodes_.find(Node(*it));
-    if (jt != this->mapping_frontier_->reassignable_nodes_.end()) {
-      // A "reassignable" node has no releveant use for the purposes of
-      // routing But we assign at the start to avoid causal constraints from
-      // Barriers and other classical controlled but not quantum vertices We
-      // find a replacement Node first
-      std::vector<Qubit> all_qubits_v =
-          this->mapping_frontier_->circuit_.all_qubits();
-
-      std::set<Node> all_nodes_s;
-      for (const Qubit& qubit : all_qubits_v) {
-        all_nodes_s.insert(Node(this->labelling_[qubit]));
-      }
-      for (const Node& node : this->architecture_->nodes()) {
-        Node preserved_node = Node(*it);
-        // => node is available
-        if (all_nodes_s.find(node) == all_nodes_s.end()) {
-          this->labelling_[assignee] = preserved_node;
-          this->labelling_[preserved_node] = node;
-
-          this->mapping_frontier_->reassignable_nodes_.erase(jt);
-          this->mapping_frontier_->reassignable_nodes_.insert(node);
-
-          auto assignee_boundary_it =
-              this->mapping_frontier_->linear_boundary->get<TagKey>().find(
-                  assignee);
-          auto preserved_node_boundary_it =
-              this->mapping_frontier_->linear_boundary->get<TagKey>().find(
-                  preserved_node);
-
-          this->mapping_frontier_->linear_boundary->replace(
-              preserved_node_boundary_it,
-              {node, preserved_node_boundary_it->second});
-          this->mapping_frontier_->linear_boundary->replace(
-              assignee_boundary_it,
-              {preserved_node, assignee_boundary_it->second});
-          unit_map_t relabel0 = {{UnitID(preserved_node), UnitID(node)}};
-          unit_map_t relabel1 = {{UnitID(assignee), UnitID(preserved_node)}};
-          this->mapping_frontier_->circuit_.rename_units(relabel0);
-          this->mapping_frontier_->circuit_.rename_units(relabel1);
-
-          // assignee should now point to preserved node in initial
-          // preserved node should now point to node in initial
-
-          auto initial_assignee_it =
-              this->mapping_frontier_->bimaps_->initial.left.find(assignee);
-          auto initial_preserved_node_it =
-              this->mapping_frontier_->bimaps_->initial.right.find(
-                  preserved_node);
-
-          UnitID preserved_orig = initial_preserved_node_it->second;
-          std::pair<UnitID, UnitID> initial_replacement_0 = {
-              assignee, preserved_node};
-          std::pair<UnitID, UnitID> initial_replacement_1 = {
-              preserved_orig, node};
-
-          this->mapping_frontier_->bimaps_->initial.left.erase(
-              initial_assignee_it);
-          this->mapping_frontier_->bimaps_->initial.right.erase(
-              initial_preserved_node_it);
-
-          this->mapping_frontier_->bimaps_->initial.left.insert(
-              initial_replacement_0);
-          this->mapping_frontier_->bimaps_->initial.left.insert(
-              initial_replacement_1);
-
-          auto final_assignee_it =
-              this->mapping_frontier_->bimaps_->final.left.find(assignee);
-          auto final_preserved_orig_it =
-              this->mapping_frontier_->bimaps_->final.left.find(preserved_orig);
-
-          // if placing, can assume its not been swapped yet
-          std::pair<UnitID, UnitID> final_replacement_0 = {
-              assignee, preserved_node};
-          std::pair<UnitID, UnitID> final_replacement_1 = {
-              preserved_orig, node};
-
-          this->mapping_frontier_->bimaps_->final.left.erase(final_assignee_it);
-          this->mapping_frontier_->bimaps_->final.left.erase(
-              final_preserved_orig_it);
-
-          this->mapping_frontier_->bimaps_->final.left.insert(
-              final_replacement_0);
-          this->mapping_frontier_->bimaps_->final.left.insert(
-              final_replacement_1);
-          break;
-        }
-      }
+    if (this->mapping_frontier_->reassignable_nodes_.find(Node(*it)) !=
+        this->mapping_frontier_->reassignable_nodes_.end()) {
+      this->reassign_node(Node(*it), assignee);
     }
     // If the node to be assigned holds an ancilla
     else if (
@@ -178,93 +174,9 @@ bool LexiRoute::assign_at_distance(
       }
     }
 
-    auto jt = this->mapping_frontier_->reassignable_nodes_.find(preserved_node);
-    if (jt != this->mapping_frontier_->reassignable_nodes_.end()) {
-      // A "reassignable" node has no releveant use for the purposes of
-      // routing But we assign at the start to avoid causal constraints from
-      // Barriers and other classical controlled but not quantum vertices We
-      // find a replacement Node first
-      std::vector<Qubit> all_qubits_v =
-          this->mapping_frontier_->circuit_.all_qubits();
-
-      std::set<Node> all_nodes_s;
-      for (const Qubit& qubit : all_qubits_v) {
-        all_nodes_s.insert(Node(this->labelling_[qubit]));
-      }
-      for (const Node& node : this->architecture_->nodes()) {
-        // => node is available
-        if (all_nodes_s.find(node) == all_nodes_s.end()) {
-          this->labelling_[assignee] = preserved_node;
-          this->labelling_[preserved_node] = node;
-
-          this->mapping_frontier_->reassignable_nodes_.erase(jt);
-          this->mapping_frontier_->reassignable_nodes_.insert(node);
-
-          auto assignee_boundary_it =
-              this->mapping_frontier_->linear_boundary->get<TagKey>().find(
-                  assignee);
-          auto preserved_node_boundary_it =
-              this->mapping_frontier_->linear_boundary->get<TagKey>().find(
-                  preserved_node);
-
-          this->mapping_frontier_->linear_boundary->replace(
-              preserved_node_boundary_it,
-              {node, preserved_node_boundary_it->second});
-          this->mapping_frontier_->linear_boundary->replace(
-              assignee_boundary_it,
-              {preserved_node, assignee_boundary_it->second});
-          unit_map_t relabel0 = {{UnitID(preserved_node), UnitID(node)}};
-          unit_map_t relabel1 = {{UnitID(assignee), UnitID(preserved_node)}};
-          this->mapping_frontier_->circuit_.rename_units(relabel0);
-          this->mapping_frontier_->circuit_.rename_units(relabel1);
-
-          // assignee should now point to preserved node in initial
-          // preserved node should now point to node in initial
-
-          auto initial_assignee_it =
-              this->mapping_frontier_->bimaps_->initial.left.find(assignee);
-          auto initial_preserved_node_it =
-              this->mapping_frontier_->bimaps_->initial.right.find(
-                  preserved_node);
-
-          UnitID preserved_orig = initial_preserved_node_it->second;
-          std::pair<UnitID, UnitID> initial_replacement_0 = {
-              assignee, preserved_node};
-          std::pair<UnitID, UnitID> initial_replacement_1 = {
-              preserved_orig, node};
-
-          this->mapping_frontier_->bimaps_->initial.left.erase(
-              initial_assignee_it);
-          this->mapping_frontier_->bimaps_->initial.right.erase(
-              initial_preserved_node_it);
-
-          this->mapping_frontier_->bimaps_->initial.left.insert(
-              initial_replacement_0);
-          this->mapping_frontier_->bimaps_->initial.left.insert(
-              initial_replacement_1);
-
-          auto final_assignee_it =
-              this->mapping_frontier_->bimaps_->final.left.find(assignee);
-          auto final_preserved_orig_it =
-              this->mapping_frontier_->bimaps_->final.left.find(preserved_orig);
-
-          // if placing, can assume its not been swapped yet
-          std::pair<UnitID, UnitID> final_replacement_0 = {
-              assignee, preserved_node};
-          std::pair<UnitID, UnitID> final_replacement_1 = {
-              preserved_orig, node};
-
-          this->mapping_frontier_->bimaps_->final.left.erase(final_assignee_it);
-          this->mapping_frontier_->bimaps_->final.left.erase(
-              final_preserved_orig_it);
-
-          this->mapping_frontier_->bimaps_->final.left.insert(
-              final_replacement_0);
-          this->mapping_frontier_->bimaps_->final.left.insert(
-              final_replacement_1);
-          break;
-        }
-      }
+    if (this->mapping_frontier_->reassignable_nodes_.find(preserved_node) !=
+        this->mapping_frontier_->reassignable_nodes_.end()) {
+      this->reassign_node(preserved_node, assignee);
     } else if (
         this->mapping_frontier_->ancilla_nodes_.find(preserved_node) !=
         this->mapping_frontier_->ancilla_nodes_.end()) {
