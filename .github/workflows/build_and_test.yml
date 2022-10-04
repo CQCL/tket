@@ -260,8 +260,8 @@ jobs:
         pyenv shell tket-3.8
         PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
         cd pytket
-        pip install wasmer==1.1.0
-        pip install wasmer_compiler_cranelift==1.1.0
+        pip install wasmer==1.0.0
+        pip install wasmer_compiler_cranelift==1.0.0
         pip uninstall -y pytket
         pip install -e . -v
     - name: Test pytket (3.8)
