@@ -20,7 +20,7 @@ import shutil
 
 class TketConan(ConanFile):
     name = "tket"
-    version = "1.0.13"
+    version = "1.0.14"
     license = "CQC Proprietary"
     homepage = "https://github.com/CQCL/tket"
     url = "https://github.com/conan-io/conan-center-index"
