@@ -122,6 +122,8 @@ jobs:
     - name: Set up conan
       shell: bash
       run: ./.github/workflows/conan-setup
+    - name: set CONAN_CMD variable
+      run: |
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: add remote
