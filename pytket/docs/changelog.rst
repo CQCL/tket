@@ -8,6 +8,7 @@ Minor new features:
 
 * New ``Circuit`` properties ``created_qubits`` and ``discarded_qubits``.
 * Barrier operations inside QASM custom gates are now accepted.
+* Added wasm functions will be checked if the signatures are supported
 
 Fixes:
 

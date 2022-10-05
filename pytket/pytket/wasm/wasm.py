@@ -45,17 +45,12 @@ class WasmFileHandler:
     def __init__(self, filepath: str, check_file: bool = True):
         """construct a wasm file handler
         :param filepath: path to the wasm file
-        :type filepath: str
-        :param check_file: If this parameter is set to True the wasm
-        file will be checked if the funtion signatures are supported.
-        This check is currently NOT supported on M1 mac in
-        python 3.8 and 3.10.
-        :type check_file: bool"""
+        :type filepath: str"""
 
         self._filepath = filepath
 
-        self._function_signatures: list = []
-        self._function_names: list = []
+        function_signatures: list = []
+        function_names: list = []
 
         if not exists(self._filepath):
             raise ValueError("wasm file not found at given path")
@@ -77,87 +72,72 @@ class WasmFileHandler:
         # to use in pytket (because of types that are not i32)
         self._unsupported_function = []
 
-        # only run the wasmer import and so on if the check is requested to run
-        if self._check_file:
+        mod_iter = iter(decode_module(self._wasm_file))
+        _, _ = next(mod_iter)
 
-            mod_iter = iter(decode_module(self._wasm_file))
-            _, _ = next(mod_iter)
-
-            for _, cur_sec_data in mod_iter:
-                # read in list of function signatures
-                if cur_sec_data.id == SEC_TYPE:
-                    for idx, entry in enumerate(cur_sec_data.payload.entries):
-                        self._function_signatures.append({})
-                        self._function_signatures[idx]["parameter_types"] = [
-                            self.type_lookup[pt] for pt in entry.param_types
-                        ]
-                        if entry.return_count > 1:
-                            if (
-                                isinstance(entry.return_type, list)
-                                and len(entry.return_type) == entry.return_count
-                            ):
-                                self._function_signatures[idx]["return_types"] = [
-                                    self.type_lookup[rt] for rt in entry.return_type
-                                ]
-                            elif isinstance(entry.return_type, int):
-                                self._function_signatures[idx]["return_types"] = [
-                                    self.type_lookup[entry.return_type]
-                                ] * entry.return_count
-                            else:
-                                raise ValueError(
-                                    f"Only parameter and return values of i32 types are"
-                                    + f"allowed, found type: {entry.return_type}"
-                                )
-                        elif entry.return_count == 1:
-                            self._function_signatures[idx]["return_types"] = [
+        for _, cur_sec_data in mod_iter:
+            # read in list of function signatures
+            if cur_sec_data.id == SEC_TYPE:
+                for idx, entry in enumerate(cur_sec_data.payload.entries):
+                    function_signatures.append({})
+                    function_signatures[idx]["parameter_types"] = [
+                        self.type_lookup[pt] for pt in entry.param_types
+                    ]
+                    if entry.return_count > 1:
+                        if (
+                            isinstance(entry.return_type, list)
+                            and len(entry.return_type) == entry.return_count
+                        ):
+                            function_signatures[idx]["return_types"] = [
+                                self.type_lookup[rt] for rt in entry.return_type
+                            ]
+                        elif isinstance(entry.return_type, int):
+                            function_signatures[idx]["return_types"] = [
                                 self.type_lookup[entry.return_type]
-                            ]
+                            ] * entry.return_count
                         else:
-                            self._function_signatures[idx]["return_types"] = []
-
-                # read in list of function names
-                elif cur_sec_data.id == SEC_EXPORT:
-                    for entry in cur_sec_data.payload.entries:
-                        if entry.kind == 0:
-                            self._function_names.append(
-                                entry.field_str.tobytes().decode()
+                            raise ValueError(
+                                f"Only parameter and return values of i32 types are"
+                                + f"allowed, found type: {entry.return_type}"
                             )
+                    elif entry.return_count == 1:
+                        function_signatures[idx]["return_types"] = [
+                            self.type_lookup[entry.return_type]
+                        ]
+                    else:
+                        function_signatures[idx]["return_types"] = []
 
-                # read in map of function signatures to function names
-                elif cur_sec_data.id == SEC_FUNCTION:
-                    self._function_types = cur_sec_data.payload.types
+            # read in list of function names
+            elif cur_sec_data.id == SEC_EXPORT:
+                for entry in cur_sec_data.payload.entries:
+                    if entry.kind == 0:
+                        function_names.append(entry.field_str.tobytes().decode())
 
-            for i, x in enumerate(self._function_names):
+            # read in map of function signatures to function names
+            elif cur_sec_data.id == SEC_FUNCTION:
+                self._function_types = cur_sec_data.payload.types
 
-                # check for only i32 type in parameters and return values
-                supported_function = True
-                for t in self._function_signatures[self._function_types[i]][
-                    "parameter_types"
-                ]:
-                    if t != "i32":
-                        supported_function = False
-                for t in self._function_signatures[self._function_types[i]][
-                    "return_types"
-                ]:
-                    if t != "i32":
-                        supported_function = False
+        for i, x in enumerate(function_names):
 
-                if supported_function:
-                    self._functions[x] = (
-                        len(
-                            self._function_signatures[self._function_types[i]][
-                                "parameter_types"
-                            ]
-                        ),
-                        len(
-                            self._function_signatures[self._function_types[i]][
-                                "return_types"
-                            ]
-                        ),
-                    )
+            # check for only i32 type in parameters and return values
+            supported_function = True
+            for t in function_signatures[self._function_types[i]]["parameter_types"]:
+                if t != "i32":
+                    supported_function = False
+            for t in function_signatures[self._function_types[i]]["return_types"]:
+                if t != "i32":
+                    supported_function = False
 
-                if not supported_function:
-                    self._unsupported_function.append(x)
+            if supported_function:
+                self._functions[x] = (
+                    len(
+                        function_signatures[self._function_types[i]]["parameter_types"]
+                    ),
+                    len(function_signatures[self._function_types[i]]["return_types"]),
+                )
+
+            if not supported_function:
+                self._unsupported_function.append(x)
 
     def __str__(self) -> str:
         """str representation of the wasm file"""
@@ -188,8 +168,7 @@ class WasmFileHandler:
         :param number_of_returns: number of i32 return values of the function
         :type number_of_returns: int
         :return: true if the signature and the name of the function is correct"""
-        if not self._check_file:
-            return True
+
         return (
             (function_name in self._functions)
             and (self._functions[function_name][0] == number_of_parameters)

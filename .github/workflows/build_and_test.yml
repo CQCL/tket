@@ -254,7 +254,7 @@ jobs:
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
     - name: Build pytket (3.8)
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'push'
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
@@ -263,7 +263,7 @@ jobs:
         pip uninstall -y pytket
         pip install -e . -v
     - name: Test pytket (3.8)
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'push'
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
