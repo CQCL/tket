@@ -162,6 +162,86 @@ SCENARIO("Check commutation through multiqubit ops") {
       }
     }
   }
+  GIVEN("A circuit with classical control") {
+    Circuit circ(2, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
+
+    circ.add_barrier({0, 1});
+
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    circ.add_op<unsigned>(OpType::Rz, 0.142, {0});
+
+    circ.add_barrier({0, 1});
+
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0}, 1);
+    circ.add_op<unsigned>(OpType::X, {0});
+
+    REQUIRE(Transforms::commute_through_multis().apply(circ));
+
+    Circuit solution(2, 1);
+    solution.add_op<unsigned>(OpType::CX, {0, 1});
+    solution.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
+
+    solution.add_barrier({0, 1});
+
+    solution.add_op<unsigned>(OpType::Rz, 0.142, {0});
+    solution.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+
+    solution.add_barrier({0, 1});
+
+    solution.add_op<unsigned>(OpType::X, {0});
+    solution.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0}, 0);
+    solution.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0}, 1);
+
+    REQUIRE(circ == solution);
+  }
+  GIVEN("A circuit with classical control (2)") {
+    Circuit circ(3, 3);
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_measure(0, 0);
+    circ.add_measure(1, 1);
+    circ.add_conditional_gate<unsigned>(OpType::X, {}, {2}, {0, 1}, 1);
+
+    Circuit old_circ = circ;
+    REQUIRE(!Transforms::commute_through_multis().apply(circ));
+    REQUIRE(old_circ == circ);
+  }
+  GIVEN("A circuit with classical control (3)") {
+    Circuit circ(3, 3);
+    circ.add_measure(0, 0);
+    circ.add_measure(1, 1);
+    circ.add_conditional_gate<unsigned>(OpType::ZZMax, {}, {0, 2}, {0, 1}, 1);
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Z, {2});
+
+    Circuit solution(3, 3);
+    solution.add_measure(0, 0);
+    solution.add_measure(1, 1);
+    solution.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    solution.add_op<unsigned>(OpType::Z, {2});
+    solution.add_conditional_gate<unsigned>(
+        OpType::ZZMax, {}, {0, 2}, {0, 1}, 1);
+
+    REQUIRE(Transforms::commute_through_multis().apply(circ));
+    REQUIRE(solution == circ);
+  }
+  GIVEN("A bridge") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::BRIDGE, {1, 2, 0});
+    REQUIRE_FALSE(Transforms::commute_through_multis().apply(circ));
+  }
+  GIVEN("A circuit with a conditional measure") {
+    Circuit circ(2, 3);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Measure, {}, {1, 0}, {2}, 1);
+    Circuit orig = circ;
+
+    REQUIRE(!Transforms::commute_through_multis().apply(circ));
+    REQUIRE(orig == circ);
+  }
 }
 
 SCENARIO(
@@ -386,7 +466,7 @@ SCENARIO(
 
   GIVEN("A circuit with Z basis operations at the end") {
     Circuit test1(4, 4);
-    Vertex h0 = test1.add_op<unsigned>(OpType::H, {0});
+    test1.add_op<unsigned>(OpType::H, {0});
     test1.add_op<unsigned>(OpType::X, {1});
     test1.add_op<unsigned>(OpType::Y, {2});
     test1.add_op<unsigned>(OpType::Z, {3});
@@ -399,7 +479,7 @@ SCENARIO(
 
     CHECK_FALSE(Transforms::remove_redundancies().apply(test1));
     WHEN("Measurements are added") {
-      Vertex measure0 = test1.add_measure(0, 0);
+      test1.add_measure(0, 0);
       test1.add_measure(1, 1);
       test1.add_measure(2, 2);
       THEN("Redundant gates before a measurement are removed.") {
@@ -935,7 +1015,7 @@ SCENARIO("Test commutation through CXsw", "[transform]") {
     // an isomorphism)
     SliceVec circslice = circ.get_slices();
     SliceVec newcircslice = new_circ.get_slices();
-    for (int i = 0; i < circslice.size(); ++i) {
+    for (unsigned i = 0; i < circslice.size(); ++i) {
       Slice::iterator k = newcircslice[i].begin();
       for (Slice::iterator j = circslice[i].begin(); j != circslice[i].end();
            ++j) {
@@ -1818,7 +1898,7 @@ SCENARIO("Testing decompose_TK2") {
     Circuit c(2);
     c.add_op<unsigned>(OpType::TK2, {0.3, 0., 0.}, {0, 1});
     Transforms::TwoQbFidelities fid;
-    fid.ZZPhase_fidelity = [](double x) { return 1.; };
+    fid.ZZPhase_fidelity = [](double) { return 1.; };
     fid.ZZMax_fidelity = 1.;
     REQUIRE(Transforms::decompose_TK2(fid).apply(c));
     REQUIRE(c.count_gates(OpType::ZZPhase) == 1);
@@ -1830,7 +1910,7 @@ SCENARIO("Testing decompose_TK2") {
     Circuit c(2);
     c.add_op<unsigned>(OpType::TK2, {0.3, 0., 0.}, {0, 1});
     Transforms::TwoQbFidelities fid;
-    fid.ZZPhase_fidelity = [](double x) { return .9; };
+    fid.ZZPhase_fidelity = [](double) { return .9; };
     fid.ZZMax_fidelity = .9;
     REQUIRE(Transforms::decompose_TK2(fid).apply(c));
     REQUIRE(c.count_gates(OpType::ZZPhase) == 1);

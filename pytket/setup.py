@@ -237,7 +237,11 @@ setup(
     author="TKET development team",
     author_email="tket-support@cambridgequantum.com",
     python_requires=">=3.8",
-    url="https://cqcl.github.io/tket/pytket/api/",
+    project_urls={
+        "Documentation": "https://cqcl.github.io/tket/pytket/api/index.html",
+        "Source": "https://github.com/CQCL/tket",
+        "Tracker": "https://github.com/CQCL/tket/issues",
+    },
     description="Python module for interfacing with the CQC tket library of quantum "
     "software",
     long_description=open("package.md", "r").read(),
@@ -254,6 +258,7 @@ setup(
         "jinja2 ~= 3.0",
         "types-pkg_resources",
         "typing-extensions ~= 4.2",
+        "qwasm ~= 1.0",
     ],
     ext_modules=[
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders

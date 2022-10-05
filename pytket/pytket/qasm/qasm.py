@@ -171,8 +171,7 @@ unit_regex = re.compile(r"([a-z][a-zA-Z0-9_]*)\[([\d]+)\]")
 
 def _extract_reg(var: Token) -> Tuple[str, int]:
     match = unit_regex.match(var.value)
-    if match is None:
-        raise QASMParseError(f"Not a valid (qu)bit identifier: {var.value}", var.line)
+    assert match is not None
     return match.group(1), int(match.group(2))
 
 
@@ -1056,13 +1055,13 @@ def circuit_to_qasm_io(
 
         if optype == OpType.ClassicalExpBox:
             out_args = args[op.get_n_i() :]
-            if (
+            if len(out_args) == 1:
+                stream_out.write(f"{out_args[0]} = {str(op.get_exp())};\n")
+            elif (
                 out_args
                 == list(cregs[out_args[0].reg_name])[: op.get_n_io() + op.get_n_o()]
             ):
                 stream_out.write(f"{out_args[0].reg_name} = {str(op.get_exp())};\n")
-            elif len(out_args) == 1:
-                stream_out.write(f"{out_args[0]} = {str(op.get_exp())};\n")
             else:
                 raise QASMUnsupportedError(
                     f"ClassicalExpBox only supported"
