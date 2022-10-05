@@ -237,7 +237,11 @@ setup(
     author="TKET development team",
     author_email="tket-support@cambridgequantum.com",
     python_requires=">=3.8",
-    url="https://cqcl.github.io/tket/pytket/api/",
+    project_urls={
+        "Documentation": "https://cqcl.github.io/tket/pytket/api/index.html",
+        "Source": "https://github.com/CQCL/tket",
+        "Tracker": "https://github.com/CQCL/tket/issues",
+    },
     description="Python module for interfacing with the CQC tket library of quantum "
     "software",
     long_description=open("package.md", "r").read(),
