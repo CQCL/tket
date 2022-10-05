@@ -124,7 +124,7 @@ static void write_solver_solutions(
       cost_maps.begin(), cost_maps.end(),
       [](const std::pair<WeightWSM, boost::bimap<Qubit, Node>>& lhs,
          const std::pair<WeightWSM, boost::bimap<Qubit, Node>>& rhs) {
-        return lhs.first > rhs.first;
+        return lhs.first >= rhs.first;
       });
   WeightWSM best = cost_maps.begin()->first;
   for (const std::pair<WeightWSM, boost::bimap<Qubit, Node>>& map : cost_maps) {
