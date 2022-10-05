@@ -254,6 +254,7 @@ setup(
         "jinja2 ~= 3.0",
         "types-pkg_resources",
         "typing-extensions ~= 4.2",
+        "qwasm ~= 1.0",
     ],
     ext_modules=[
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders
