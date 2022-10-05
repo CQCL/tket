@@ -1452,6 +1452,17 @@ SCENARIO("Test conditional_circuit method") {
     args = {Bit(0), Bit(2), Qubit(1), Bit(1)};
     CHECK(coms[2].get_args() == args);
   }
+  GIVEN("A circuit with a phase") {
+    Circuit circ(1);
+    circ.add_op<unsigned>(OpType::Rx, 0.3, {0});
+    circ.add_phase(0.23);
+    Circuit cond_circ = circ.conditional_circuit({Bit(0)}, 1);
+    Circuit exp_circ(1, 1);
+    exp_circ.add_conditional_gate<unsigned>(OpType::Rx, {0.3}, {0}, {0}, 1);
+    exp_circ.add_conditional_gate<unsigned>(OpType::U1, {0.46}, {0}, {0}, 1);
+    exp_circ.add_conditional_gate<unsigned>(OpType::Rz, {-0.46}, {0}, {0}, 1);
+    REQUIRE(cond_circ == exp_circ);
+  }
 }
 
 SCENARIO("Test append method") {
