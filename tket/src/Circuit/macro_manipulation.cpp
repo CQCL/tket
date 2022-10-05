@@ -629,7 +629,7 @@ Circuit Circuit::conditional_circuit(
 
   // Add the classically-controlled phase
   // TODO: investigate adding Phase OpType instead (see TKET-2429)
-  Expr phase = cond_circ.get_phase();
+  Expr phase = get_phase();
   if (!equiv_0(phase) && cond_circ.n_qubits() < 1) {
     throw CircuitInvalidity(
         "Cannot add conditional phase to circuit without qubits");
