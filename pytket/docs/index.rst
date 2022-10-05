@@ -1,9 +1,18 @@
 pytket
 ======
 
+.. raw:: html
+
+    <embed>
+    <div style="width:100%; display:flex; align-items:center; justify-content:end; transform: translateY(-85px); margin-bottom: -75px">
+        <img src="_images/Quantinuum_logo.png" width="100" height="100"></img>
+    </div>
+    </embed>
+
 .. image:: Quantinuum_logo.png
-   :width: 160px
-   :align: right
+   :width: 0px
+   :height: 0px
+   :align: right 
 
 ``pytket`` is a python module for interfacing with tket, a quantum computing toolkit and optimising compiler developed by `Quantinuum`_. We currently support circuits and device architectures from
 `numerous providers <https://github.com/CQCL/pytket-extensions>`_, allowing the

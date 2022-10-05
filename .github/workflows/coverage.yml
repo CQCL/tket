@@ -78,6 +78,7 @@ jobs:
         ${CONAN_CMD} build recipes/tket-tests --build --build-folder=build/tket-tests
         ${CONAN_CMD} package recipes/tket-tests/ --build-folder=build/tket-tests --package-folder build/tket-tests/package --source-folder=tket/tests
     - name: Install runtime test requirements
+      if: github.event_name == 'schedule'
       run: |
         sudo apt-get update
         sudo apt-get install texlive texlive-latex-extra latexmk
