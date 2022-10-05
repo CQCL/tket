@@ -261,13 +261,28 @@ void MappingFrontier::advance_next_2qb_slice(unsigned max_advance) {
 void MappingFrontier::advance_frontier_boundary(
     const ArchitecturePtr& architecture) {
   bool boundary_updated = false;
+  // std::cout << "\n\nADVANCE FRONTIER BOUNDARY" << std::endl;
   do {
+    // std::cout << "\nNEW DO" << std::endl;
     // next_cut.slice vertices in_edges from this->linear_boundary
     boundary_updated = false;
     std::shared_ptr<unit_frontier_t> l_frontier_edges =
         frontier_convert_vertport_to_edge(
             this->circuit_, this->linear_boundary);
 
+    // for (auto it =
+    //          this->linear_boundary->get<TagKey>().begin();
+    //      it != this->linear_boundary->get<TagKey>().end();
+    //      ++it) {
+
+    //   Edge e0 = this->circuit_.get_nth_out_edge(
+    //       it->second.first, it->second.second);
+    //   Vertex v0 = this->circuit_.target(e0);
+    //   // should never be input vertex, so can always use in_edges
+    //   Op_ptr op = this->circuit_.get_Op_ptr_from_Vertex(v0);
+    //     std::cout << it->first.repr() << " " << op->get_name() <<  " " << v0
+    //     << " " << e0 << std::endl;
+    //   }
     CutFrontier next_cut =
         this->circuit_.next_cut(l_frontier_edges, this->boolean_boundary);
     // For each vertex in a slice, if its physically permitted, update
@@ -481,6 +496,7 @@ void MappingFrontier::update_bimaps(UnitID qubit, UnitID node) {
 
 void MappingFrontier::update_linear_boundary_uids(
     const unit_map_t& relabelled_uids) {
+  std::cout << "should never go here" << std::endl;
   for (const std::pair<const UnitID, UnitID>& label : relabelled_uids) {
     // implies new labelling
     if (label.first != label.second) {
@@ -493,9 +509,6 @@ void MappingFrontier::update_linear_boundary_uids(
             this->linear_boundary->get<TagKey>().end()) {
           // erase, assume updated already
           this->linear_boundary->erase(label.first);
-          // } else if (
-          //     this->reassignable_nodes_.find(Node(label.second)) ==
-          //     this->reassignable_nodes_.end()) {
         } else {
           auto current_label_it =
               this->linear_boundary->get<TagKey>().find(label.first);
@@ -764,7 +777,12 @@ void MappingFrontier::merge_ancilla(
     this->circuit_.remove_vertex(
         back_v_out, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
 
-    // Can now just erase "merge" qubit from the circuit
+    // // Can now just erase "merge" qubit from the circuit
+    // std::cout << "BACK: " << back.repr() << std::endl;
+    // for(auto x : this->circuit_.boundary.get<TagID>()){
+    //   std::cout << x.id_.repr() << " " << x.in_ << " " << x.out_ <<
+    //   std::endl;
+    // }
     this->circuit_.boundary.get<TagID>().erase(back);
   };
 

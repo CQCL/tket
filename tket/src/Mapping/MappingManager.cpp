@@ -129,7 +129,8 @@ bool MappingManager::route_circuit_with_maps(
     mapping_frontier = std::make_shared<MappingFrontier>(circuit);
   }
   mapping_frontier->reassignable_nodes_ = reassignable_nodes;
-
+  std::cout << "Number of reassignable nodes: " << reassignable_nodes.size()
+            << std::endl;
   // updates routed/un-routed boundary
   mapping_frontier->advance_frontier_boundary(this->architecture_);
   auto check_finish = [&mapping_frontier]() {
@@ -179,7 +180,7 @@ bool MappingManager::route_circuit_with_maps(
     // find next routed/unrouted boundary given updates
     mapping_frontier->advance_frontier_boundary(this->architecture_);
   }
-
+  std::cout << "DONE" << std::endl;
   // // there may still be some unlabelled qubits
   // if (label_isolated_qubits) {
   //   circuit_modified = true;
