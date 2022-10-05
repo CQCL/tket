@@ -496,7 +496,6 @@ void MappingFrontier::update_bimaps(UnitID qubit, UnitID node) {
 
 void MappingFrontier::update_linear_boundary_uids(
     const unit_map_t& relabelled_uids) {
-  std::cout << "should never go here" << std::endl;
   for (const std::pair<const UnitID, UnitID>& label : relabelled_uids) {
     // implies new labelling
     if (label.first != label.second) {
@@ -813,88 +812,6 @@ void MappingFrontier::merge_ancilla(
   UnitID init_ancilla_node = init_it->second;
   this->bimaps_->initial.left.erase(init_it);
   this->bimaps_->initial.left.insert({merge_q, init_ancilla_node});
-}
-
-void MappingFrontier::merge_unassigned_with_ancilla(
-    const UnitID& unassigned, const UnitID& ancilla) {
-  // get output and input vertices
-  Vertex unassigned_v_in = this->circuit_.get_in(unassigned);
-  Vertex unassigned_v_out = this->circuit_.get_out(unassigned);
-  Vertex ancilla_v_in = this->circuit_.get_in(ancilla);
-  Vertex ancilla_v_out = this->circuit_.get_out(ancilla);
-
-  // get target vertex of ancilla_v_in
-  Edge ancilla_out_edge = this->circuit_.get_nth_out_edge(ancilla_v_in, 0);
-  Vertex ancilla_v_target = this->circuit_.target(ancilla_out_edge);
-  port_t ancilla_target_port = this->circuit_.get_target_port(ancilla_out_edge);
-
-  // get target vertex & port of unassigned_v_in
-  Edge unassigned_out_edge =
-      this->circuit_.get_nth_out_edge(unassigned_v_in, 0);
-  Vertex unassigned_v_target = this->circuit_.target(unassigned_out_edge);
-  port_t unassigned_target_port =
-      this->circuit_.get_target_port(unassigned_out_edge);
-
-  // remove the edge between unassigned input and its target
-  this->circuit_.remove_edge(unassigned_out_edge);
-  // remove the edge between ancilla input and its target
-  this->circuit_.remove_edge(ancilla_out_edge);
-  // add an edge between ancilla input vertex and unassigned input target
-  this->circuit_.add_edge(
-      {ancilla_v_in, 0}, {unassigned_v_target, unassigned_target_port},
-      EdgeType::Quantum);
-
-  // get source vertex & port of unassigned_v_out
-  Edge unassigned_in_edge = this->circuit_.get_nth_in_edge(unassigned_v_out, 0);
-  Vertex unassigned_v_source = this->circuit_.source(unassigned_in_edge);
-  port_t unassigned_source_port =
-      this->circuit_.get_source_port(unassigned_in_edge);
-
-  // remove the edge between the unassigned output and its source
-  this->circuit_.remove_edge(unassigned_in_edge);
-
-  // add an edge between the unassigned output source and the ancilla output
-  // vertex
-  this->circuit_.add_edge(
-      {unassigned_v_source, unassigned_source_port},
-      {ancilla_v_target, ancilla_target_port}, EdgeType::Quantum);
-
-  // the input and output vertices to the unassigned wire should now have no
-  TKET_ASSERT(this->circuit_.n_out_edges(ancilla_v_in) == 1);
-  TKET_ASSERT(this->circuit_.n_in_edges(ancilla_v_out) == 1);
-  TKET_ASSERT(this->circuit_.n_out_edges(unassigned_v_in) == 0);
-  TKET_ASSERT(this->circuit_.n_in_edges(unassigned_v_out) == 0);
-
-  // remove empty vertex wire, relabel dag vertices
-  this->circuit_.dag[unassigned_v_in].op = get_op_ptr(OpType::noop);
-  this->circuit_.dag[unassigned_v_out].op = get_op_ptr(OpType::noop);
-  this->circuit_.remove_vertex(
-      unassigned_v_in, Circuit::GraphRewiring::No,
-      Circuit::VertexDeletion::Yes);
-  this->circuit_.remove_vertex(
-      unassigned_v_out, Circuit::GraphRewiring::No,
-      Circuit::VertexDeletion::Yes);
-
-  // Can now just erase the ancilla qubit from the circuit
-  this->circuit_.boundary.get<TagID>().erase(unassigned);
-
-  // get iterators for erasing
-  auto ancilla_final_it = this->bimaps_->final.left.find(ancilla);
-  auto ancilla_initial_it = this->bimaps_->initial.left.find(ancilla);
-  auto unassigned_final_it = this->bimaps_->final.left.find(unassigned);
-  auto unassigned_initial_it = this->bimaps_->initial.left.find(unassigned);
-  // get new entries
-  std::pair<UnitID, UnitID> new_initial_entry = {unassigned, ancilla};
-  std::pair<UnitID, UnitID> new_final_entry = {
-      unassigned, ancilla_final_it->second};
-  // erase entries
-  this->bimaps_->final.left.erase(ancilla_final_it);
-  this->bimaps_->initial.left.erase(ancilla_initial_it);
-  this->bimaps_->final.left.erase(unassigned_final_it);
-  this->bimaps_->initial.left.erase(unassigned_initial_it);
-  // add new entries
-  this->bimaps_->initial.left.insert(new_initial_entry);
-  this->bimaps_->final.left.insert(new_final_entry);
 }
 
 bool MappingFrontier::valid_boundary_operation(
