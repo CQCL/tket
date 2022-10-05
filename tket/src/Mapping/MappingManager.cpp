@@ -22,16 +22,15 @@ MappingManager::MappingManager(const ArchitecturePtr& _architecture)
     : architecture_(_architecture) {}
 
 bool MappingManager::route_circuit(
-    Circuit& circuit, const std::vector<RoutingMethodPtr>& routing_methods,
-    bool label_isolated_qubits) const {
+    Circuit& circuit,
+    const std::vector<RoutingMethodPtr>& routing_methods) const {
   return this->route_circuit_with_maps(
-      circuit, routing_methods, std::make_shared<unit_bimaps_t>(),
-      label_isolated_qubits);
+      circuit, routing_methods, std::make_shared<unit_bimaps_t>());
 }
 
 bool MappingManager::route_circuit_with_maps(
     Circuit& circuit, const std::vector<RoutingMethodPtr>& routing_methods,
-    std::shared_ptr<unit_bimaps_t> maps, bool /*label_isolated_qubits*/) const {
+    std::shared_ptr<unit_bimaps_t> maps) const {
   if (circuit.n_qubits() > this->architecture_->n_nodes()) {
     std::string error_string =
         "Circuit has" + std::to_string(circuit.n_qubits()) +

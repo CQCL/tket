@@ -155,9 +155,6 @@ MappingFrontier::MappingFrontier(const MappingFrontier& mapping_frontier)
   for (const Node& node : mapping_frontier.ancilla_nodes_) {
     this->ancilla_nodes_.insert(node);
   }
-  for (const Node& node : mapping_frontier.original_ancilla_nodes_) {
-    this->original_ancilla_nodes_.insert(node);
-  }
 }
 
 void MappingFrontier::advance_next_2qb_slice(unsigned max_advance) {
@@ -261,28 +258,12 @@ void MappingFrontier::advance_next_2qb_slice(unsigned max_advance) {
 void MappingFrontier::advance_frontier_boundary(
     const ArchitecturePtr& architecture) {
   bool boundary_updated = false;
-  // std::cout << "\n\nADVANCE FRONTIER BOUNDARY" << std::endl;
   do {
-    // std::cout << "\nNEW DO" << std::endl;
     // next_cut.slice vertices in_edges from this->linear_boundary
     boundary_updated = false;
     std::shared_ptr<unit_frontier_t> l_frontier_edges =
         frontier_convert_vertport_to_edge(
             this->circuit_, this->linear_boundary);
-
-    // for (auto it =
-    //          this->linear_boundary->get<TagKey>().begin();
-    //      it != this->linear_boundary->get<TagKey>().end();
-    //      ++it) {
-
-    //   Edge e0 = this->circuit_.get_nth_out_edge(
-    //       it->second.first, it->second.second);
-    //   Vertex v0 = this->circuit_.target(e0);
-    //   // should never be input vertex, so can always use in_edges
-    //   Op_ptr op = this->circuit_.get_Op_ptr_from_Vertex(v0);
-    //     std::cout << it->first.repr() << " " << op->get_name() <<  " " << v0
-    //     << " " << e0 << std::endl;
-    //   }
     CutFrontier next_cut =
         this->circuit_.next_cut(l_frontier_edges, this->boolean_boundary);
     // For each vertex in a slice, if its physically permitted, update
@@ -724,7 +705,6 @@ void MappingFrontier::add_ancilla(const UnitID& ancilla) {
   this->bimaps_->initial.insert({qb, qb});
   this->bimaps_->final.insert({qb, qb});
   this->ancilla_nodes_.insert(Node(ancilla));
-  this->original_ancilla_nodes_.insert(Node(ancilla));
   UnitID uid_ancilla(ancilla);
 
   unit_map_t update_map;
@@ -776,12 +756,6 @@ void MappingFrontier::merge_ancilla(
     this->circuit_.remove_vertex(
         back_v_out, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
 
-    // // Can now just erase "merge" qubit from the circuit
-    // std::cout << "BACK: " << back.repr() << std::endl;
-    // for(auto x : this->circuit_.boundary.get<TagID>()){
-    //   std::cout << x.id_.repr() << " " << x.in_ << " " << x.out_ <<
-    //   std::endl;
-    // }
     this->circuit_.boundary.get<TagID>().erase(back);
   };
 

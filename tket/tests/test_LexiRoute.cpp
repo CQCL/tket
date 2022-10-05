@@ -1005,10 +1005,8 @@ SCENARIO(
 
     MappingManager mm(std::make_shared<Architecture>(test_arc));
     REQUIRE(!mm.route_circuit(
-        test_circuit,
-        {std::make_shared<LexiLabellingMethod>(),
-         std::make_shared<LexiRouteRoutingMethod>()},
-        false));
+        test_circuit, {std::make_shared<LexiLabellingMethod>(),
+                       std::make_shared<LexiRouteRoutingMethod>()}));
 
     qubit_vector_t all_qs_post_solve = test_circuit.all_qubits();
     REQUIRE(all_qs_post_place == all_qs_post_solve);
@@ -1023,12 +1021,10 @@ SCENARIO("Empty Circuit test") {
     Architecture arc({{0, 1}, {1, 2}, {2, 3}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
-        circ,
-        {
-            std::make_shared<LexiLabellingMethod>(),
-            std::make_shared<LexiRouteRoutingMethod>(),
-        },
-        false));
+        circ, {
+                  std::make_shared<LexiLabellingMethod>(),
+                  std::make_shared<LexiRouteRoutingMethod>(),
+              }));
     REQUIRE(circ.n_gates() == 0);
   }
 }
@@ -1045,12 +1041,10 @@ SCENARIO("Routing on circuit with no multi-qubit gates") {
     Architecture arc({{0, 1}, {1, 2}, {2, 3}});
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
-        circ,
-        {
-            std::make_shared<LexiLabellingMethod>(),
-            std::make_shared<LexiRouteRoutingMethod>(),
-        },
-        false));
+        circ, {
+                  std::make_shared<LexiLabellingMethod>(),
+                  std::make_shared<LexiRouteRoutingMethod>(),
+              }));
     REQUIRE(orig_vertices - 8 == circ.n_gates());
   }
 }
@@ -1200,12 +1194,10 @@ SCENARIO("Empty circuits, with and without blank wires") {
     RingArch arc(6);
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(
-        circ,
-        {
-            std::make_shared<LexiLabellingMethod>(),
-            std::make_shared<LexiRouteRoutingMethod>(),
-        },
-        false));
+        circ, {
+                  std::make_shared<LexiLabellingMethod>(),
+                  std::make_shared<LexiRouteRoutingMethod>(),
+              }));
     REQUIRE(circ.depth() == 0);
     REQUIRE(circ.n_gates() == 0);
     REQUIRE(circ.n_qubits() == 6);
@@ -1228,10 +1220,8 @@ SCENARIO("Empty circuits, with and without blank wires") {
     RingArch arc(6);
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(!mm.route_circuit(
-        circ,
-        {std::make_shared<LexiLabellingMethod>(),
-         std::make_shared<LexiRouteRoutingMethod>()},
-        false));
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
     REQUIRE(circ.depth() == 0);
     REQUIRE(circ.n_gates() == 0);
     REQUIRE(circ.n_qubits() == 0);
@@ -1271,7 +1261,6 @@ SCENARIO("Initial map should contain all data qubits") {
       REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
       REQUIRE(maps->final.left.find(q) != maps->final.left.end());
     }
-
     REQUIRE(check_permutation(circ, maps));
   }
   GIVEN("An example circuit with remap") {
@@ -1552,7 +1541,7 @@ SCENARIO("Unlabelled qubits should be assigned to ancilla qubits.") {
       c,
       {std::make_shared<LexiLabellingMethod>(),
        std::make_shared<LexiRouteRoutingMethod>()},
-      maps, true);
+      maps);
   REQUIRE(maps->initial.left.find(Qubit(0))->second == Node(1));
   REQUIRE(maps->initial.left.find(Qubit(1))->second == Node(2));
   REQUIRE(maps->initial.left.find(Qubit(2))->second == Node(3));
