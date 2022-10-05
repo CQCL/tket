@@ -428,7 +428,7 @@ def test_opaque() -> None:
     )
     with pytest.raises(QASMUnsupportedError) as e:
         circuit_to_qasm_str(c)
-    assert "CustomGate myopaq has empty definition"
+    assert "CustomGate myopaq has empty definition" in str(e.value)
 
 
 def test_alternate_encoding() -> None:
@@ -441,6 +441,17 @@ def test_alternate_encoding() -> None:
             circuit_from_qasm(fil)
         c = circuit_from_qasm(fil, encoding=enc)
         assert c.n_gates == 6
+
+
+def test_opaque_gates() -> None:
+    # test opaque handled as barrier
+    input_qasm = """OPENQASM 2.0;\ninclude "hqslib1_dev.inc";\n\nqreg q[4];
+order2() q[0],q[2];\nrz(1.5*pi) q[3];\nsleep(1) q[0];\nrx(0.0375*pi) q[3];
+cu1(0.8*pi) q[0],q[1];\nsleep(1,2) q[3];\n"""
+    c = circuit_from_qasm_str(input_qasm)
+
+    result_circ_qasm = circuit_to_qasm_str(c, "hqslib1_dev")
+    assert input_qasm == result_circ_qasm
 
 
 @pytest.mark.parametrize("fi", _get_files())
@@ -465,6 +476,31 @@ def test_include_loading(fi: Path) -> None:
         assert bytes(defs_string, "utf-8") == bytes(fil_content, "utf-8")
 
 
+def test_custom_gate_with_barrier() -> None:
+    c = circuit_from_qasm_str(
+        """
+    OPENQASM 2.0;
+    include "qelib1.inc";
+
+    gate my_gate q
+    {
+        barrier q;
+    }
+
+    qreg r[1];
+    my_gate r[0];
+    """
+    )
+    cmds = c.get_commands()
+    assert len(cmds) == 1
+    op = cmds[0].op
+    assert op.type == OpType.CustomGate
+    opcirc = op.get_circuit()
+    opcmds = opcirc.get_commands()
+    assert len(opcmds) == 1
+    assert opcmds[0].op.type == OpType.Barrier
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
@@ -481,3 +517,4 @@ if __name__ == "__main__":
     test_builtin_gates()
     test_new_qelib1_aliases()
     test_h1_rzz()
+    test_opaque_gates()

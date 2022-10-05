@@ -171,8 +171,7 @@ unit_regex = re.compile(r"([a-z][a-zA-Z0-9_]*)\[([\d]+)\]")
 
 def _extract_reg(var: Token) -> Tuple[str, int]:
     match = unit_regex.match(var.value)
-    if match is None:
-        raise QASMParseError(f"Not a valid (qu)bit identifier: {var.value}", var.line)
+    assert match is not None
     return match.group(1), int(match.group(2))
 
 
@@ -335,18 +334,79 @@ class CircuitTransformer(Transformer):
         except StopIteration:
             args = next_tree
             pars = []
-        params = [f"({par})/pi" for par in pars]
+
+        treat_as_barrier = [
+            "sleep",
+            "order2",
+            "order3",
+            "order4",
+            "order5",
+            "order6",
+            "order7",
+            "order8",
+            "order9",
+            "order10",
+            "order11",
+            "order12",
+            "order13",
+            "order14",
+            "order15",
+            "order16",
+            "order17",
+            "order18",
+            "order19",
+            "order20",
+            "group2",
+            "group3",
+            "group4",
+            "group5",
+            "group6",
+            "group7",
+            "group8",
+            "group9",
+            "group10",
+            "group11",
+            "group12",
+            "group13",
+            "group14",
+            "group15",
+            "group16",
+            "group17",
+            "group18",
+            "group19",
+            "group20",
+        ]
+        # other opaque gates, which are not handled as barrier
+        # ["RZZ", "Rxxyyzz", "Rxxyyzz_zphase", "cu", "cp", "rccx", "rc3x", "c3sqrtx"]
+
+        args = list(args)
+
+        if opstr in treat_as_barrier:
+            params = [f"{par}" for par in pars]
+        else:
+            params = [f"({par})/pi" for par in pars]
+
         if opstr in self.gate_dict:
-            gdef = self.gate_dict[opstr]
-            op: Dict[str, Any] = {"type": "CustomGate"}
-            box = {
-                "type": "CustomGate",
-                "id": str(uuid.uuid4()),
-                "gate": gdef,
-            }
-            box["params"] = params
-            op["box"] = box
-            params = []  # to stop duplication in to op
+            op: Dict[str, Any] = {}
+            if opstr in treat_as_barrier:
+                op["type"] = "Barrier"
+                param_sorted = ",".join(params)
+
+                op["data"] = f"{opstr}({param_sorted})"
+
+                op["signature"] = [arg[0] for arg in args]
+
+            else:
+                gdef = self.gate_dict[opstr]
+                op["type"] = "CustomGate"
+                box = {
+                    "type": "CustomGate",
+                    "id": str(uuid.uuid4()),
+                    "gate": gdef,
+                }
+                box["params"] = params
+                op["box"] = box
+                params = []  # to stop duplication in to op
         else:
             try:
                 optype = _all_string_maps[opstr]
@@ -357,11 +417,12 @@ class CircuitTransformer(Transformer):
             op = {"type": optype}
             if params:
                 op["params"] = params
+            # Operations needing special handling:
             if optype.startswith("Cn"):
-                # n-controlled rotation are only gates supported
-                # via this function without fixed signature
-                args = list(args)
+                # n-controlled rotations have variable signature
                 op["n_qb"] = len(args)
+            elif optype == "Barrier":
+                op["signature"] = ["Q"] * len(args)
 
         for arg in zip(*self.unroll_all_args(args)):
             yield {"args": list(arg), "op": op}
@@ -994,13 +1055,13 @@ def circuit_to_qasm_io(
 
         if optype == OpType.ClassicalExpBox:
             out_args = args[op.get_n_i() :]
-            if (
+            if len(out_args) == 1:
+                stream_out.write(f"{out_args[0]} = {str(op.get_exp())};\n")
+            elif (
                 out_args
                 == list(cregs[out_args[0].reg_name])[: op.get_n_io() + op.get_n_o()]
             ):
                 stream_out.write(f"{out_args[0].reg_name} = {str(op.get_exp())};\n")
-            elif len(out_args) == 1:
-                stream_out.write(f"{out_args[0]} = {str(op.get_exp())};\n")
             else:
                 raise QASMUnsupportedError(
                     f"ClassicalExpBox only supported"
@@ -1028,8 +1089,6 @@ def circuit_to_qasm_io(
         if optype == OpType.CustomGate:
             if op.gate.name not in include_gate_defs:
                 # unroll custom gate
-                # TODO when opaque gates are supported, make sure they are not
-                # unrolled here
                 def_circ = op.get_circuit()
 
                 if def_circ.n_gates == 0:

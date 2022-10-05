@@ -51,14 +51,14 @@ SCENARIO(
   const auto get_comparison = [](Edge& e) {
     return Cycle(
         {{e, e}, {e, e}, {e, e}}, {
-                                      {OpType::Input, {}},
-                                      {OpType::H, {0}},
-                                      {OpType::Input, {}},
-                                      {OpType::H, {1}},
-                                      {OpType::CX, {0, 1}},
-                                      {OpType::Input, {}},
-                                      {OpType::H, {2}},
-                                      {OpType::CX, {0, 2}},
+                                      {OpType::Input, {}, {}},
+                                      {OpType::H, {0}, {}},
+                                      {OpType::Input, {}, {}},
+                                      {OpType::H, {1}, {}},
+                                      {OpType::CX, {0, 1}, {}},
+                                      {OpType::Input, {}, {}},
+                                      {OpType::H, {2}, {}},
+                                      {OpType::CX, {0, 2}, {}},
                                   });
   };
   GIVEN("A circuit with one expected cycle.") {
@@ -80,11 +80,11 @@ SCENARIO(
     const auto comparison_0 = get_comparison(e);
     const Cycle comparison_1(
         {{e, e}, {e, e}, {e, e}}, {
-                                      {OpType::H, {0}},
-                                      {OpType::H, {1}},
-                                      {OpType::CX, {1, 0}},
-                                      {OpType::H, {2}},
-                                      {OpType::CX, {1, 2}},
+                                      {OpType::H, {0}, {}},
+                                      {OpType::H, {1}, {}},
+                                      {OpType::CX, {1, 0}, {}},
+                                      {OpType::H, {2}, {}},
+                                      {OpType::CX, {1, 2}, {}},
                                   });
 
     std::vector<Cycle> cycles = fr_tester.get_cycles(circ);

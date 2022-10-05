@@ -1,19 +1,29 @@
 pytket
 ======
 
-.. image:: CQCLogo.png
-   :width: 120px
-   :align: right
+.. raw:: html
 
-``pytket`` is a python module for interfacing with `CQC`_ tket, a set of quantum
-programming tools. We currently support circuits and device architectures from
+    <embed>
+    <div style="width:100%; display:flex; align-items:center; justify-content:end; transform: translateY(-85px); margin-bottom: -75px">
+        <img src="_images/Quantinuum_logo.png" width="100" height="100"></img>
+    </div>
+    </embed>
+
+.. image:: Quantinuum_logo.png
+   :width: 0px
+   :height: 0px
+   :align: right 
+
+``pytket`` is a python module for interfacing with tket, a quantum computing toolkit and optimising compiler developed by `Quantinuum`_. We currently support circuits and device architectures from
 `numerous providers <https://github.com/CQCL/pytket-extensions>`_, allowing the
 tket tools to be used in conjunction with projects on their platforms.
 
 ``pytket`` is available for Python 3.8, 3.9 and 3.10, on Linux, MacOS and
 Windows. To install, run
 
-``pip install pytket``
+::
+
+    pip install pytket
 
 .. note::
     On M1-based Macs running in native (arm64) mode, this command may fail
@@ -25,26 +35,30 @@ Windows. To install, run
     4. ``OPENBLAS="$(brew --prefix openblas)" pip install scipy``;
     5. ``pip install pytket``.
 
+If you have issues installing ``pytket`` please visit the `installation troubleshooting <https://cqcl.github.io/tket/pytket/api/install.html>`_ page.
+
 To use ``pytket``, you can simply import the appropriate modules into your python code or in an interactive Python notebook. We can build circuits directly using the ``pytket`` interface by creating a blank circuit and adding gates in the order we want to apply them.
 
 ::
 
     from pytket import Circuit
-    c = Circuit(2,2) # define a circuit with 2 qubits and 2 bits
-    c.H(0)           # add a Hadamard gate to qubit 0
-    c.Rz(0.25, 0)    # add an Rz gate of angle 0.25*pi to qubit 0
-    c.CX(1,0)        # add a CX gate with control qubit 1 and target qubit 0
-    c.measure_all()  # measure qubits 0 and 1, recording the results in bits 0 and 1
+
+    circ = Circuit(2,2) # define a circuit with 2 qubits and 2 bits
+    circ.H(0)           # add a Hadamard gate to qubit 0
+    circ.Rz(0.25, 0)    # add an Rz gate of angle 0.25*pi to qubit 0
+    circ.CX(1,0)        # add a CX gate with control qubit 1 and target qubit 0
+    circ.measure_all()  # measure qubits 0 and 1, recording the results in bits 0 and 1
 
 Some of the extension modules define :py:class:`Backend` s, allowing the circuits to be run on simulators or real quantum hardware. For example, ``pytket-qiskit`` grants access to the :py:class:`AerBackend` simulator which can sample from measurements.
 
 ::
 
     from pytket.extensions.qiskit import AerBackend
-    b = AerBackend()                            # connect to the backend
-    compiled = b.get_compiled_circuit(c)        # compile the circuit to satisfy the backend's requirements
-    handle = b.process_circuit(compiled, 100)   # submit the job to run the circuit 100 times
-    counts = b.get_result(handle).get_counts()  # retrieve and summarise the results
+
+    backend = AerBackend()                                 # connect to the backend
+    compiled_circ = b.get_compiled_circuit(circ)           # compile the circuit to satisfy the backend's requirements
+    handle = backend.process_circuit(compiled_circ, 100)   # submit the job to run the circuit 100 times
+    counts = backend.get_result(handle).get_counts()       # retrieve and summarise the results
     print(counts)
 
 This prints out a summary of readouts (the final values of the classical bits) and their frequencies.
@@ -54,7 +68,7 @@ This prints out a summary of readouts (the final values of the classical bits) a
     {(0, 0): 49, (1, 0): 51}
 
 See the `Getting Started`_ page for a basic tutorial on using
-``pytket``. To get more in depth on features, see the `examples`_. See the `Pytket User Manual <https://cqcl.github.io/pytket/manual/index.html>`_ for an extensive introduction to ``pytket`` functionaliy and how to use it.
+``pytket``. To get more in depth on features, see the `examples`_. See the `Pytket User Manual <https://cqcl.github.io/pytket/manual/index.html>`_ for an extensive introduction to ``pytket`` functionality and how to use it.
 
 Extensions
 ~~~~~~~~~~
@@ -64,37 +78,15 @@ additional separate module for each. Each one of these adds either some new
 methods to the ``pytket`` package to convert between the circuit
 representations, or some new backends to submit circuits to within ``pytket``.
 
-Extension modules can be installed using ``pip``. The extensions supported by
-CQC are described
+Extensions are separate python packages can be installed using ``pip``. The installation command is ``pip install pytket-X`` where ``X`` is the name of the extension.
+
+To install the ``pytket-quantinuum`` package use the following command.
+::
+    
+    pip install pytket-quantinuum
+
+The extensions supported by tket are described
 `here <https://cqcl.github.io/pytket-extensions/api/index.html>`_.
-
-.. note::
-    The syntax for importing backends from extension modules has changed
-    slightly in version 0.8 of ``pytket``. When importing ``FooBackend``,
-    instead of doing
-
-    ``from pytket.backends.something import FooBackend``
-
-    you should now do
-
-    ``from pytket.extensions.bar import FooBackend``
-
-    where ``FooBackend`` is defined in the ``pytket-bar`` extension module.
-
-    This may entail some changes to existing code. For example, you should
-    change
-
-    ``from pytket.backends.ibm import AerBackend``
-
-    to
-
-    ``from pytket.extensions.qiskit import AerBackend``
-
-    because ``AerBackend`` is defined in the ``pytket-qiskit`` module.
-
-    (In many cases, ``something`` and ``bar`` are identical, and you just need
-    to change ``backends`` to ``extensions``. For example,
-    ``pytket.backends.aqt`` becomes ``pytket.extensions.aqt``.)
 
 How to cite
 ~~~~~~~~~~~
@@ -114,9 +106,10 @@ User Support
 
 If you have problems with the use of tket or you think that you have found a bug there are several ways to contact us:
 
+- We have a slack channel for community discussion and support. You can join by following `this link <https://tketusers.slack.com/join/shared_invite/zt-18qmsamj9-UqQFVdkRzxnXCcKtcarLRA#/shared-invite/email>`_
 - You can join the `tket-users mailing list <https://list.cambridgequantum.com/cgi-bin/mailman/listinfo/tket-users>`_. If you have questions or ideas and wishes for new features you can send an email to the list and ask for help. You can also join the list to get the newest information and get in contact with other users of tket.
 - Write an email to tket-support@cambridgequantum.com and ask for help with your problem.
-- You can write a bug report on the `CQC github <https://github.com/CQCL/pytket/issues>`_ with details of the problem and we will pick that up. You can also have a look on that page so see if your problem has already been reported by someone else.
+- You can write a bug report on `github <https://github.com/CQCL/tket/issues>`_ with details of the problem and we will pick that up. You can also have a look on that page so see if your problem has already been reported by someone else.
 
 We are really thankful for all help to fix bugs in tket. Usually you will get an answer from someone in the development team of tket soon.
 
@@ -127,7 +120,7 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
 
 .. _Getting Started: getting_started.html
 .. _examples: https://github.com/CQCL/pytket/tree/main/examples
-.. _CQC: https://cambridgequantum.com
+.. _Quantinuum: https://www.quantinuum.com/
 
 .. toctree::
     :caption: Introduction:
@@ -144,6 +137,7 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     
     Manual <https://cqcl.github.io/pytket/manual/index.html>
     Extensions <https://cqcl.github.io/pytket-extensions/api/index.html>
+    Example notebooks <https://github.com/CQCL/pytket/tree/main/examples#pytket-examples>
 
 .. toctree::
     :caption: API Reference:

@@ -1,6 +1,23 @@
 Changelog
 =========
 
+1.7.0 (October 2022)
+--------------------
+
+Minor new features:
+
+* New ``Circuit`` properties ``created_qubits`` and ``discarded_qubits``.
+* Barrier operations inside QASM custom gates are now accepted.
+* Added wasm functions will be checked if the signatures are supported
+
+Fixes:
+
+* Circuit equality check now takes into account qubit creations and qubit discards.
+* Created qubits and discarded qubits are now shown in ``Circuit.__repr__`` and ``Circuit.to_dict``.
+* Allow symbolic operations in initial simplification.
+* Fix the json schema for compiler passes.
+* Fix ``SquashRzPhasedX`` so it now preserves phase.
+
 1.6.1 (September 2022)
 ----------------------
 

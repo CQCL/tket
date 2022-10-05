@@ -40,7 +40,7 @@ The following compiler toolchains are used to build tket on the CI and are
 therefore known to work:
 
 * Linux: gcc-11
-* MacOS: apple-clang 13
+* MacOS: apple-clang 14
 * Windows: MSVC 19
 
 It is recommended that you use these versions to build locally, as code may
@@ -177,7 +177,7 @@ repo.
 At this point you can run:
 
 ```shell
-conan create --profile=tket recipes/tket
+conan create --profile=tket recipes/tket tket/stable
 ```
 
 to build the tket library.
@@ -266,8 +266,9 @@ First create a `build` folder in the project root. Then proceed as follows.
 4. To export to `conan` cache (necessary to build pytket):
 
    ```shell
-   conan export-pkg recipes/tket -f --build-folder=build --source-folder=tket/src
+   conan export-pkg recipes/tket tket/${VERSION}@tket/stable -f --build-folder=build --source-folder=tket/src
    ```
+   where `${VERSION}` is the tket library version, e.g. `1.0.3`.
 
 ## Test coverage
 

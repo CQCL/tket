@@ -46,8 +46,6 @@ SCENARIO("Small sets of Gadgets are partitioned correctly") {
   GIVEN("Two anti-commuting gadgets") {
     /* We know the correct order, as QubitOperator orders
     lexicographically */
-    double a = 0.3;
-    double b = 53.1;
     Qubit q0(0);
     Qubit q1(1);
     Qubit q2(2);
@@ -69,10 +67,6 @@ SCENARIO("Small sets of Gadgets are partitioned correctly") {
     }
   }
   GIVEN("Three partitions of four gadgets") {
-    double a = 0.3;
-    double b = 53.1;
-    double c = 1145;
-    double d = 0.11111117;
     QubitPauliString qp_map0(Qubit(0), Pauli::I);
     QubitPauliString qp_map1(Qubit(0), Pauli::X);
     QubitPauliString qp_map2(Qubit(0), Pauli::Y);

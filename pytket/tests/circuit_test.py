@@ -508,6 +508,13 @@ def test_str() -> None:
     assert op.__str__() == "SXdg"
 
 
+def test_repr() -> None:
+    c = Circuit(2).Rx(0.3, 0).CX(0, 1)
+    c.qubit_create(Qubit(1))
+    c.qubit_discard(Qubit(0))
+    assert c.__repr__() == "[Create q[1]; Rx(0.3) q[0]; CX q[0], q[1]; Discard q[0]; ]"
+
+
 def test_qubit_to_bit_map() -> None:
     c = Circuit()
     a = [Qubit("a", i) for i in range(4)]
@@ -630,12 +637,31 @@ def test_commands_of_type() -> None:
     assert len(cmds_Rx) == 0
 
 
-def test_cempty_circuit() -> None:
+def test_empty_circuit() -> None:
     circ = Circuit(0)
     circt_dict = circ.to_dict()
     assert type(circt_dict) == type({})
     assert len(circt_dict) > 0
     assert Circuit(0) == Circuit(0)
+
+
+def test_circuit_with_qubit_creations_and_discards() -> None:
+    circ = Circuit(2)
+    circt_dict = circ.to_dict()
+    assert len(circt_dict["created_qubits"]) == 0
+    assert len(circt_dict["discarded_qubits"]) == 0
+    circ2 = circ.copy()
+    circ2.qubit_create(Qubit(0))
+    circ2.qubit_discard(Qubit(0))
+    circ2.qubit_discard(Qubit(1))
+    circt_dict2 = circ2.to_dict()
+    assert circt_dict2["created_qubits"] == [Qubit(0).to_list()]
+    assert circt_dict2["discarded_qubits"] == [Qubit(0).to_list(), Qubit(1).to_list()]
+    assert circ != circ2
+    assert len(circ.created_qubits) == 0
+    assert len(circ.discarded_qubits) == 0
+    assert circ2.created_qubits == [Qubit(0)]
+    assert circ2.discarded_qubits == [Qubit(0), Qubit(1)]
 
 
 def with_empty_qubit(op: Op) -> CircBox:
