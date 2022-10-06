@@ -102,9 +102,10 @@ static void write_solver_solutions(
     const RelabelledTargetGraph& relabelled_target_graph, bool return_best) {
   TKET_ASSERT(all_maps.empty());
   std::vector<unsigned> reordering;
+  reordering.reserve(solutions.size());
+  all_maps.reserve(solutions.size());
 
   for (unsigned ii = 0; ii < solutions.size(); ++ii) {
-    TKET_ASSERT(reordering.size() == all_maps.size());
     const auto& solution = solutions[ii];
     boost::bimap<Qubit, Node> map;
     for (const auto& relabelled_pv_tv : solution.assignments) {
@@ -122,6 +123,7 @@ static void write_solver_solutions(
     unsigned size = reordering.size(), i = 0;
     while (i < reordering.size() && reordering.size() == size) {
       if (solution.scalar_product > reordering[i]) {
+        TKET_ASSERT(reordering.size() >= i);
         reordering.insert(reordering.begin() + i, solution.scalar_product);
         all_maps.insert(all_maps.begin() + i, map);
         break;
@@ -129,20 +131,20 @@ static void write_solver_solutions(
       i++;
     }
     if (size == reordering.size()) {
-      reordering.push_back(solution.scalar_product);
-      all_maps.push_back(map);
+      reordering.insert(reordering.end(), solution.scalar_product);
+      all_maps.insert(all_maps.end(), map);
     }
   }
   // in some cases we only want maps which are costed best and identically
   if (return_best && !reordering.empty()) {
-    WeightWSM best = reordering[0];
     auto it = reordering.begin();
+    WeightWSM best = *it;
     auto jt = all_maps.begin();
     while (*it == best && it != reordering.end()) {
       ++it;
       ++jt;
     }
-    all_maps.erase(jt, all_maps.end());
+    if (jt != all_maps.end()) all_maps.erase(jt, all_maps.end());
   }
 }
 /**
