@@ -1,7 +1,7 @@
 Changelog
 =========
 
-1.7.0 (October 2022)
+1.7.3 (October 2022)
 --------------------
 
 Minor new features:
