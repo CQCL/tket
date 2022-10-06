@@ -4,6 +4,10 @@ Changelog
 x.y.z (unreleased)
 ------------------
 
+Minor new features:
+
+* ``KAKDecomposition`` and ``CommuteThroughMultis`` support classically-controlled gates.
+
 Fixes:
 * 1-qubit squashing handles conditional gates properly
 
