@@ -27,6 +27,7 @@
 #include "OpType/OpTypeInfo.hpp"
 #include "Ops/Op.hpp"
 #include "Utils/Expression.hpp"
+#include "Utils/PauliStrings.hpp"
 #include "symengine/eval_double.h"
 
 namespace tket {
@@ -92,6 +93,7 @@ Op_ptr Gate::dagger() const {
     case OpType::CSXdg: {
       return get_op_ptr(OpType::CSX);
     }
+    case OpType::Phase:
     case OpType::CRz:
     case OpType::CRx:
     case OpType::CRy:
@@ -171,6 +173,7 @@ Op_ptr Gate::dagger() const {
 Op_ptr Gate::transpose() const {
   OpType optype = get_type();
   switch (optype) {
+    case OpType::Phase:
     case OpType::H:
     case OpType::X:
     case OpType::Z:
@@ -337,6 +340,13 @@ std::optional<double> Gate::is_identity() const {
   static const std::optional<double> notid;
   const std::vector<Expr>& params = get_params();
   switch (get_type()) {
+    case OpType::Phase: {
+      // This is _always_ the identity up to phase, but the method does not
+      // allow us to return a symbolic phase, so we must reject in that case.
+      std::optional<double> eval = eval_expr(params[0]);
+      if (!eval) return notid;
+      return eval.value();
+    }
     case OpType::Rx:
     case OpType::Ry:
     case OpType::Rz:
@@ -676,6 +686,9 @@ std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
   unsigned n_q = n_qubits();
   if (i >= n_q) throw std::domain_error("Qubit index out of range");
   switch (get_type()) {
+    case OpType::Phase: {
+      return Pauli::I;
+    }
     case OpType::X:
     case OpType::V:
     case OpType::Vdg:

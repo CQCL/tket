@@ -1657,9 +1657,6 @@ Vertex Circuit::add_op(
     const Op_ptr &op, const std::vector<ID> &args,
     std::optional<std::string> opgroup) {
   static_assert(std::is_base_of<UnitID, ID>::value);
-  if (args.empty()) {
-    throw CircuitInvalidity("An operation must act on at least one wire");
-  }
   op_signature_t sig = op->get_signature();
   if (sig.size() != args.size()) {
     throw CircuitInvalidity(
