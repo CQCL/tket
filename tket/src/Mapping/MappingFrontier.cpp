@@ -591,6 +591,18 @@ bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
   bool uid1_ancilla =
       this->ancilla_nodes_.find(n1) != this->ancilla_nodes_.end();
 
+  // In this case we can still use the node, but we need to make sure that
+  // the wire it's on won't be reassigned
+  // This could reduce performance, but the "reassignable_nodes_" case
+  // deals with Qubit wires that have no multi-qubit quantum operations,
+  // so in practice this won't change the results for a meaningful circuit
+  if (this->reassignable_nodes_.find(n0) != this->reassignable_nodes_.end()) {
+    this->reassignable_nodes_.erase(n0);
+  }
+  if (this->reassignable_nodes_.find(n1) != this->reassignable_nodes_.end()) {
+    this->reassignable_nodes_.erase(n1);
+  }
+
   if (uid0_ancilla && !uid1_ancilla) {
     this->ancilla_nodes_.erase(n0);
     this->ancilla_nodes_.insert(n1);
@@ -675,6 +687,16 @@ void MappingFrontier::add_bridge(
     central_in_it = this->linear_boundary->find(central);
   }
 
+  Node central_node = Node(central);
+  // In this case we can still use the node, but we need to make sure that
+  // the wire it's on won't be reassigned
+  // This could reduce performance, but the "reassignable_nodes_" case
+  // deals with Qubit wires that have no multi-qubit quantum operations,
+  // so in practice this won't change the results for a meaningful circuit
+  if (this->reassignable_nodes_.find(central_node) !=
+      this->reassignable_nodes_.end()) {
+    this->reassignable_nodes_.erase(central_node);
+  }
   VertPort vp_control = control_in_it->second;
   VertPort vp_central = central_in_it->second;
   VertPort vp_target = target_in_it->second;
