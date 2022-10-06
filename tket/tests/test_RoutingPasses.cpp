@@ -304,7 +304,25 @@ SCENARIO("Routing preserves the number of qubits in given instance of CnX op") {
   const Circuit &c1 = cu.get_circ_ref();
   REQUIRE(c.n_qubits() == c1.n_qubits());
 }
+SCENARIO(
+    "Default mapping pass deals with circuits with only single qubit gates.") {
+  std::vector<std::pair<unsigned, unsigned>> edges = {{0, 1}};
+  Architecture architecture(edges);
 
+  Circuit circuit(1);
+  circuit.add_op<unsigned>(OpType::S, {0});
+  PassPtr pass = gen_default_mapping_pass(architecture, true);
+  CompilationUnit cu(circuit);
+  bool applied = pass->apply(cu);
+  REQUIRE(applied);
+
+  const unit_bimap_t &initial_map = cu.get_initial_map_ref();
+  const unit_bimap_t &final_map = cu.get_final_map_ref();
+  REQUIRE(initial_map.left.size() == 1);
+  REQUIRE(final_map.left.size() == 1);
+  REQUIRE(initial_map.left.find(Qubit(0))->second == Node(0));
+  REQUIRE(final_map.left.find(Qubit(0))->second == Node(0));
+}
 SCENARIO("Default mapping pass delays measurements") {
   std::vector<std::pair<Node, Node>> cons;
   cons.push_back({Node("x", 0), Node("x", 2)});
@@ -470,4 +488,5 @@ SCENARIO(
     REQUIRE(circ.count_gates(OpType::SWAP) == 0);
   }
 }
+
 }  // namespace tket

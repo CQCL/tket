@@ -24,8 +24,14 @@ MappingManager::MappingManager(const ArchitecturePtr& _architecture)
 bool MappingManager::route_circuit(
     Circuit& circuit,
     const std::vector<RoutingMethodPtr>& routing_methods) const {
+  // we make bimaps if not present
+  unit_bimaps_t maps;
+  for (const Qubit& qubit : circuit.all_qubits()) {
+    maps.initial.left.insert({qubit, qubit});
+    maps.final.left.insert({qubit, qubit});
+  }
   return this->route_circuit_with_maps(
-      circuit, routing_methods, std::make_shared<unit_bimaps_t>());
+      circuit, routing_methods, std::make_shared<unit_bimaps_t>(maps));
 }
 
 bool MappingManager::route_circuit_with_maps(
@@ -109,14 +115,15 @@ bool MappingManager::route_circuit_with_maps(
     circuit.rename_units(relabelling_map);
     // relabel maps
     for (const std::pair<const Qubit, Node>& q_n : relabelling_map) {
-      auto q_initial_it = maps->initial.left.find(q_n.first);
-      auto q_final_it = maps->final.left.find(q_n.first);
-      if (q_initial_it != maps->initial.left.end())
-        maps->initial.left.erase(q_initial_it);
-      if (q_final_it != maps->final.left.end())
-        maps->final.left.erase(q_final_it);
-      maps->initial.left.insert(q_n);
-      maps->final.left.insert(q_n);
+      auto q_initial_it = maps->initial.right.find(q_n.first);
+      TKET_ASSERT(q_initial_it != maps->initial.right.end());
+      UnitID original_first = q_initial_it->second;
+      auto q_final_it = maps->final.left.find(original_first);
+      TKET_ASSERT(q_final_it != maps->final.left.end());
+      maps->initial.right.erase(q_initial_it);
+      maps->final.left.erase(q_final_it);
+      maps->initial.left.insert({original_first, q_n.second});
+      maps->final.left.insert({original_first, q_n.second});
     }
   }
   // mapping_frontier tracks boundary between routed & un-routed in circuit
