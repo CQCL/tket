@@ -1,6 +1,12 @@
 Changelog
 =========
 
+x.y.z (unreleased)
+------------------
+
+Fixes:
+* 1-qubit squashing handles conditional gates properly
+
 1.7.0 (October 2022)
 --------------------
 
