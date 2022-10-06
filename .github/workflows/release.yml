@@ -122,10 +122,10 @@ jobs:
     - name: Set up conan
       shell: bash
       run: ./.github/workflows/conan-setup
+    - name: set CONAN_CMD variable
+      run: |
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
-    - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Build tket
       run: conan create --profile=tket recipes/tket tket/stable
     - name: Install pybind11
