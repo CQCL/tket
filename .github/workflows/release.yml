@@ -38,7 +38,7 @@ jobs:
 
   build_macos_wheels:
     name: Build macos wheels
-    runs-on: macos-12
+    runs-on: macos-11
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
