@@ -1463,6 +1463,11 @@ SCENARIO("Test conditional_circuit method") {
     exp_circ.add_conditional_gate<unsigned>(OpType::Rz, {-0.46}, {0}, {0}, 1);
     REQUIRE(cond_circ == exp_circ);
   }
+  GIVEN("No support for no-qubit circuit") {
+    Circuit circ;
+    circ.add_phase(0.2);
+    REQUIRE_THROWS_AS(circ.conditional_circuit({Bit(0)}, 1), CircuitInvalidity);
+  }
 }
 
 SCENARIO("Test append method") {
