@@ -121,10 +121,10 @@ ExceptionMessageContainsMatcher MessageContains(std::string const& substring) {
 
 void check_all_conditional_circs(
     const Circuit& circ, const std::vector<Circuit>& expcircs) {
-  if (expcircs.size() != (1 << circ.n_bits())) {
+  if (expcircs.size() != (1u << circ.n_bits())) {
     throw std::invalid_argument("Must pass 2^n_bits expected circuits");
   }
-  for (unsigned i = 0; i < (1 << circ.n_bits()); ++i) {
+  for (unsigned i = 0; i < (1u << circ.n_bits()); ++i) {
     Circuit condcirc(circ.all_qubits(), {});
     condcirc.add_phase(circ.get_phase());
     for (const Command& cmd : circ) {
