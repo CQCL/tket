@@ -187,11 +187,11 @@ SCENARIO("Base GraphPlacement class") {
     GraphPlacement placement(architecture, 2000, 200000);
     std::map<Qubit, Node> placement_map = placement.get_placement_map(circuit);
     REQUIRE(placement_map[Qubit(0)] == Node(17));
-    REQUIRE(placement_map[Qubit(1)] == Node(1));
+    REQUIRE(placement_map[Qubit(1)] == Node(13));
     REQUIRE(placement_map[Qubit(2)] == Node(18));
-    REQUIRE(placement_map[Qubit(3)] == Node(0));
+    REQUIRE(placement_map[Qubit(3)] == Node(10));
     REQUIRE(placement_map[Qubit(4)] == Node(15));
-    REQUIRE(placement_map[Qubit(5)] == Node(2));
+    REQUIRE(placement_map[Qubit(5)] == Node(14));
     REQUIRE(placement_map[Qubit(6)] == Node(4));
     REQUIRE(placement_map[Qubit(7)] == Node(16));
     REQUIRE(placement_map[Qubit(8)] == Node(11));
