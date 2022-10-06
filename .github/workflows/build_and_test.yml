@@ -58,7 +58,7 @@ jobs:
         tket_package_exists=`conan search -r tket-libs "tket/${{ steps.tket_ver.outputs.tket_ver }}@tket/stable" > /dev/null 2>&1 && echo true || echo false`
         echo "::set-output name=tket_package_exists::${tket_package_exists}"
     - name: Check tket version bump
-      if: github.event_name == 'pull_request' && steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
+      if: github.event_name == 'pull_request' && github.ref == 'refs/heads/develop' && steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
       run: exit 1
 
   build_test_tket:
@@ -129,7 +129,7 @@ jobs:
       if: matrix.os == 'ubuntu-22.04' && github.event_name == 'pull_request'
       run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Install runtime test requirements
-      if: matrix.os == 'ubuntu-22.04' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true')
+      if: matrix.os == 'ubuntu-22.04' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true') && github.event_name == 'schedule'
       run: |
         sudo apt install texlive texlive-latex-extra latexmk
         mkdir -p ~/texmf/tex/latex
@@ -188,7 +188,7 @@ jobs:
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-        pytest --ignore=simulator/ --doctest-modules --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
+        pytest --ignore=simulator/ --doctest-modules --hypothesis-seed=1 --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
     - name: Test pytket
       if: matrix.os != 'ubuntu-22.04' || matrix.pyver != '3.8'
       run: |
