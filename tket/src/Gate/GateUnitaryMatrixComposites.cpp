@@ -77,7 +77,8 @@ Eigen::Matrix4cd GateUnitaryMatrixImplementations::PhasedISWAP(
   return matr;
 }
 
-Eigen::Matrix<std::complex<double>, 1, 1> GateUnitaryMatrixImplementations::Phase(double alpha) {
+Eigen::Matrix<std::complex<double>, 1, 1>
+GateUnitaryMatrixImplementations::Phase(double alpha) {
   return Eigen::Matrix<std::complex<double>, 1, 1>(std::exp(i_ * PI * alpha));
 }
 
