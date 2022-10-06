@@ -1463,9 +1463,31 @@ SCENARIO("Test conditional_circuit method") {
     exp_circ.add_conditional_gate<unsigned>(OpType::Rz, {-0.46}, {0}, {0}, 1);
     REQUIRE(cond_circ == exp_circ);
   }
+  GIVEN("A circuit with a symbolic phase") {
+    Circuit circ(1);
+    circ.add_op<unsigned>(OpType::Rx, 0.3, {0});
+    Sym a = SymEngine::symbol("alpha");
+    Expr alpha(a);
+    circ.add_phase(alpha);
+    Circuit cond_circ = circ.conditional_circuit({Bit(0)}, 1);
+    Circuit exp_circ(1, 1);
+    exp_circ.add_conditional_gate<unsigned>(OpType::Rx, {0.3}, {0}, {0}, 1);
+    exp_circ.add_conditional_gate<unsigned>(
+        OpType::U1, {2 * alpha}, {0}, {0}, 1);
+    exp_circ.add_conditional_gate<unsigned>(
+        OpType::Rz, {-2 * alpha}, {0}, {0}, 1);
+    REQUIRE(cond_circ == exp_circ);
+  }
   GIVEN("No support for no-qubit circuit") {
     Circuit circ;
     circ.add_phase(0.2);
+    REQUIRE_THROWS_AS(circ.conditional_circuit({Bit(0)}, 1), CircuitInvalidity);
+  }
+  GIVEN("No support for no-qubit circuit (symbolic)") {
+    Circuit circ;
+    Sym a = SymEngine::symbol("alpha");
+    Expr alpha(a);
+    circ.add_phase(alpha);
     REQUIRE_THROWS_AS(circ.conditional_circuit({Bit(0)}, 1), CircuitInvalidity);
   }
 }
