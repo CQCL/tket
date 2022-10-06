@@ -37,7 +37,7 @@ namespace Transforms {
 
 static bool redundancy_removal(Circuit &circ);
 static bool remove_redundancy(
-    Circuit &circ, const Vertex &vert, VertexList &bin,
+    Circuit &circ, const Vertex &vert, VertexSet &bin,
     std::set<IVertex> &new_affected_verts, IndexMap &im);
 static bool commute_singles_to_front(Circuit &circ);
 
@@ -55,7 +55,7 @@ static bool redundancy_removal(Circuit &circ) {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     old_affected_verts.insert({im.at(v), v});
   }
-  VertexList bin;
+  VertexSet bin;
   while (found_redundancy) {
     std::set<IVertex> new_affected_verts;
     for (const IVertex &p : old_affected_verts) {
@@ -73,33 +73,30 @@ static bool redundancy_removal(Circuit &circ) {
 // called by the previous method. This should generally not be called
 // independently
 static bool remove_redundancy(
-    Circuit &circ, const Vertex &vert, VertexList &bin,
+    Circuit &circ, const Vertex &vert, VertexSet &bin,
     std::set<IVertex> &new_affected_verts, IndexMap &im) {
   const Op_ptr op = circ.get_Op_ptr_from_Vertex(vert);
   const OpDesc desc = op->get_desc();
   if (!desc.is_gate()) return false;
-  if (circ.n_out_edges(vert) == 0 || circ.n_in_edges(vert) == 0) {
-    return false;  // either a boundary vert or we have already removed it
+
+  if (bin.contains(vert)) {
+    return false;  // we have already removed it
   }
 
   auto remove_single_vertex = [&bin, &circ, &new_affected_verts,
                                &im](const Vertex &v_remove) {
-    bin.push_back(v_remove);
+    bin.insert(v_remove);
     for (const Vertex &l : circ.get_predecessors(v_remove)) {
       new_affected_verts.insert({im.at(l), l});
     }
     circ.remove_vertex(
         v_remove, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
   };
-  // remove 0 angle rotations from circuit
+  // remove identities from circuit
   std::optional<double> a = op->is_identity();
   if (a) {
     remove_single_vertex(vert);
     circ.add_phase(a.value());
-    return true;
-  } else if (desc.type() == OpType::noop) {
-    // remove "noop" gates from circuit
-    remove_single_vertex(vert);
     return true;
   }
   VertexVec kids = circ.get_successors(vert);
@@ -145,8 +142,8 @@ static bool remove_redundancy(
       // Rotation gates are covered by the rotation gate combiner, everything
       // else in this.
       if (*b_op->dagger() == *op) {
-        bin.push_back(vert);
-        bin.push_back(b);
+        bin.insert(vert);
+        bin.insert(b);
         VertexVec last_verts = circ.get_predecessors(vert);
         for (const Vertex &l : last_verts) {
           new_affected_verts.insert({im.at(l), l});
@@ -169,12 +166,12 @@ static bool remove_redundancy(
           }
           circ.remove_vertex(
               b, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-          bin.push_back(b);
+          bin.insert(b);
           std::vector<Expr> params_new = {expr1 + expr2};
           Op_ptr op_new = get_op_ptr(desc.type(), params_new, ins.size());
           std::optional<double> a = op_new->is_identity();
           if (a) {
-            bin.push_back(vert);
+            bin.insert(vert);
             circ.remove_vertex(
                 vert, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
             circ.add_phase(a.value());
