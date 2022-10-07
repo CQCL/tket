@@ -67,7 +67,8 @@ Op_ptr Box::deserialize(const nlohmann::json &j) {
   return OpJsonFactory::from_json(j.at("box"));
 }
 
-  CircBox::CircBox(const Circuit &circ, const nlohmann::json &meta) : Box(OpType::CircBox, {}, meta) {
+CircBox::CircBox(const Circuit &circ, const nlohmann::json &meta)
+    : Box(OpType::CircBox, {}, meta) {
   if (!circ.is_simple()) throw SimpleOnly();
   signature_ = op_signature_t(circ.n_qubits(), EdgeType::Quantum);
   op_signature_t bits(circ.n_bits(), EdgeType::Classical);

@@ -78,7 +78,8 @@ class Gate : public Op {
   bool is_equal(const Op &other) const override;
 
   Gate(
-      OpType type, const std::vector<Expr> &params = {}, unsigned n_qubits = 0, nlohmann::json meta = {});
+      OpType type, const std::vector<Expr> &params = {}, unsigned n_qubits = 0,
+      nlohmann::json meta = {});
 
   Gate();
 

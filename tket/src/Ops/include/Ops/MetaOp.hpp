@@ -22,8 +22,8 @@ namespace tket {
 class MetaOp : public Op {
  public:
   explicit MetaOp(
-      OpType type, op_signature_t signature = {},
-      const std::string &_data = "", const nlohmann::json &meta = {});
+      OpType type, op_signature_t signature = {}, const std::string &_data = "",
+      const nlohmann::json &meta = {});
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &sub_map) const override;

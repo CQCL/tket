@@ -40,8 +40,10 @@ class ClassicalExpBox : public Box {
    * @param exp expression stored
    * @param meta metadata as JSON object
    */
-  explicit ClassicalExpBox(unsigned n_i, unsigned n_io, unsigned n_o, T exp, const nlohmann::json &meta)
-    : Box(OpType::ClassicalExpBox, meta),
+  explicit ClassicalExpBox(
+      unsigned n_i, unsigned n_io, unsigned n_o, T exp,
+      const nlohmann::json &meta)
+      : Box(OpType::ClassicalExpBox, meta),
         n_i_(n_i),
         n_io_(n_io),
         n_o_(n_o),

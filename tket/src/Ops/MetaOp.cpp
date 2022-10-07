@@ -22,8 +22,10 @@
 
 namespace tket {
 
-MetaOp::MetaOp(OpType type, op_signature_t signature, const std::string& _data, const nlohmann::json &meta)
-  : Op(type, meta), signature_(signature), data_(_data) {
+MetaOp::MetaOp(
+    OpType type, op_signature_t signature, const std::string& _data,
+    const nlohmann::json& meta)
+    : Op(type, meta), signature_(signature), data_(_data) {
   if (!is_metaop_type(type)) throw BadOpType(type);
 }
 

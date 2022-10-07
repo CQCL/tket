@@ -15,8 +15,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <optional>
 #include <stdexcept>
-#include <unsupported/Eigen/MatrixFunctions>
 #include <typeinfo>
+#include <unsupported/Eigen/MatrixFunctions>
 
 #include "../testutil.hpp"
 #include "Circuit/Boxes.hpp"
@@ -291,7 +291,6 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     REQUIRE(h->get_meta().is_null() == true);
   }
 
- 
   GIVEN("Operations whose parameters have different domains") {
     Op_ptr op2 = get_op_ptr(OpType::U1, 6.4);
     Op_ptr op4 = get_op_ptr(OpType::CnRy, 6.4);

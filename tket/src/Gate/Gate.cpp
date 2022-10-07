@@ -846,7 +846,9 @@ Eigen::MatrixXcd Gate::get_unitary() const {
   }
 }
 
-  Gate::Gate(OpType type, const std::vector<Expr>& params, unsigned n_qubits, nlohmann::json meta)
+Gate::Gate(
+    OpType type, const std::vector<Expr>& params, unsigned n_qubits,
+    nlohmann::json meta)
     : Op(type, meta), params_(params), n_qubits_(n_qubits) {
   if (!is_gate_type(type)) {
     throw BadOpType(type);

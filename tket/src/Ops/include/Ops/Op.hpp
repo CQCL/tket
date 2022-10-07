@@ -190,7 +190,8 @@ class Op : public std::enable_shared_from_this<Op> {
   virtual bool is_equal(const Op &) const { return true; }
 
  protected:
-  explicit Op(const OpType &type, const nlohmann::json &meta = {}) : desc_(type), type_(type), meta_(meta) {}
+  explicit Op(const OpType &type, const nlohmann::json &meta = {})
+      : desc_(type), type_(type), meta_(meta) {}
   const OpDesc desc_; /**< Operation descriptor */
   const OpType type_; /**< Operation type */
  private:
