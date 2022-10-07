@@ -58,11 +58,12 @@ static bool redundancy_removal(Circuit &circ) {
   VertexSet bin;
   while (found_redundancy) {
     std::set<IVertex> new_affected_verts;
+    bool removed = false;
     for (const IVertex &p : old_affected_verts) {
-      remove_redundancy(circ, p.second, bin, new_affected_verts, im);
+      removed |= remove_redundancy(circ, p.second, bin, new_affected_verts, im);
     }
-    found_redundancy = new_affected_verts.size() != 0;
-    success |= found_redundancy;
+    found_redundancy = removed;
+    success |= removed;
     old_affected_verts = new_affected_verts;
   }
   circ.remove_vertices(
