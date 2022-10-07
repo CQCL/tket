@@ -40,6 +40,7 @@ class ClassicalOp : public Op {
    * @param n_io number of input/output bits
    * @param n_o number of output-only bits
    * @param name name of operation
+   * @param meta metadata as JSON object.
    */
   ClassicalOp(
       OpType type, unsigned n_i, unsigned n_io, unsigned n_o,

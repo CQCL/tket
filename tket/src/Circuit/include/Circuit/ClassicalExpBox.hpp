@@ -38,6 +38,7 @@ class ClassicalExpBox : public Box {
    * @param n_io number of input/output bits
    * @param n_o number of output-only bits
    * @param exp expression stored
+   * @param meta metadata as JSON object
    */
   explicit ClassicalExpBox(unsigned n_i, unsigned n_io, unsigned n_o, T exp, const nlohmann::json &meta)
     : Box(OpType::ClassicalExpBox, meta),
