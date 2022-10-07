@@ -101,9 +101,7 @@ static void write_solver_solutions(
     const RelabelledPatternGraph& relabelled_pattern_graph,
     const RelabelledTargetGraph& relabelled_target_graph, bool return_best) {
   TKET_ASSERT(all_maps.empty());
-  std::vector<unsigned> reordering;
-  reordering.reserve(solutions.size());
-  all_maps.reserve(solutions.size());
+  std::vector<unsigned> reordering = {};
 
   for (unsigned ii = 0; ii < solutions.size(); ++ii) {
     const auto& solution = solutions[ii];
@@ -119,32 +117,35 @@ static void write_solver_solutions(
         map, relabelled_pattern_graph, relabelled_target_graph);
     TKET_ASSERT(
         map.size() == relabelled_pattern_graph.get_original_vertices().size());
-
-    unsigned size = reordering.size(), i = 0;
-    while (i < reordering.size() && reordering.size() == size) {
+    unsigned original_size = reordering.size();
+    for (unsigned i = 0;
+         i < reordering.size() && reordering.size() == original_size; i++) {
+      TKET_ASSERT(all_maps.size() == reordering.size());
       if (solution.scalar_product > reordering[i]) {
         TKET_ASSERT(reordering.size() >= i);
-        reordering.insert(reordering.begin() + i, solution.scalar_product);
-        all_maps.insert(all_maps.begin() + i, map);
-        break;
+        TKET_ASSERT(all_maps.size() >= i);
+        auto it = reordering.begin() + i;
+        reordering.insert(it, solution.scalar_product);
+        auto jt = all_maps.begin() + i;
+        all_maps.insert(jt, map);
       }
-      i++;
     }
-    if (size == reordering.size()) {
-      reordering.insert(reordering.end(), solution.scalar_product);
-      all_maps.insert(all_maps.end(), map);
+    // implies that solution.scalar_product was smallest so far, so add to end
+    if (original_size == reordering.size()) {
+      reordering.push_back(solution.scalar_product);
+      all_maps.push_back(map);
     }
   }
   // in some cases we only want maps which are costed best and identically
   if (return_best && !reordering.empty()) {
-    auto it = reordering.begin();
-    WeightWSM best = *it;
-    auto jt = all_maps.begin();
-    while (*it == best && it != reordering.end()) {
-      ++it;
-      ++jt;
+    TKET_ASSERT(reordering.size() == all_maps.size());
+    WeightWSM best = reordering[0];
+    for (unsigned i = 0; i < reordering.size(); i++) {
+      if (reordering[i] != best) {
+        all_maps.resize(i);
+        break;
+      }
     }
-    if (jt != all_maps.end()) all_maps.erase(jt, all_maps.end());
   }
 }
 /**
