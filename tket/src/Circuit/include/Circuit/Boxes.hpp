@@ -36,8 +36,8 @@ class Circuit;
  */
 class Box : public Op {
  public:
-  explicit Box(const OpType &type, const op_signature_t &signature = {})
-      : Op(type), signature_(signature), circ_(), id_(idgen()) {
+  explicit Box(const OpType &type, const op_signature_t &signature = {}, const nlohmann::json &meta = {})
+    : Op(type, meta), signature_(signature), circ_(), id_(idgen()) {
     if (!is_box_type(type)) throw BadOpType(type);
   }
 
@@ -116,7 +116,7 @@ class CircBox : public Box {
   /**
    * Construct from a given circuit. The circuit must be simple.
    */
-  explicit CircBox(const Circuit &circ);
+  explicit CircBox(const Circuit &circ, const nlohmann::json &meta = {});
 
   /**
    * Construct from the empty circuit
