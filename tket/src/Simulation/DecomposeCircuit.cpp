@@ -144,9 +144,6 @@ static void decompose_circuit_recursive(
     }
     const OpDesc desc = current_op->get_desc();
     args = command.get_args();
-    if (args.empty()) {
-      throw_with_op_error_message(desc.name(), qmap, circ, "No args!");
-    }
     fill_qubit_indices(args, qmap, node);
     if (desc.is_gate()) {
       const Gate* gate = dynamic_cast<const Gate*>(current_op.get());
