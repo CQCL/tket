@@ -43,7 +43,7 @@ class ClassicalOp : public Op {
    */
   ClassicalOp(
       OpType type, unsigned n_i, unsigned n_io, unsigned n_o,
-      const std::string &name = "");
+      const std::string &name = "", const nlohmann::json &meta = {});
 
   // Trivial overrides
   Op_ptr symbol_substitution(
