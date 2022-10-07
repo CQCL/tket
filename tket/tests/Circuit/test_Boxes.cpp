@@ -28,6 +28,17 @@ using Catch::Matchers::StartsWith;
 namespace tket {
 namespace test_Boxes {
 
+SCENARIO("Attributes retrieval.") {
+  GIVEN("Metadata retrieval from  CircBox.") {
+    nlohmann::json j;
+    j["Test"] = "tag";
+    Circuit u(2);
+    u.add_op<unsigned>(OpType::Ry, -0.75, {0});
+    const CircBox ubox(u, j);
+    REQUIRE(ubox.get_meta() == j);
+  }
+}
+
 SCENARIO("CircBox requires simple circuits", "[boxes]") {
   Circuit circ(2);
   circ.add_op<unsigned>(OpType::Y, {0});

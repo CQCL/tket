@@ -27,6 +27,12 @@ namespace tket {
 namespace test_ClassicalOps {
 
 SCENARIO("Check that classical bundles work as expected") {
+  GIVEN("Metadata retrieval from ClassicalOps.") {
+    nlohmann::json j;
+    j["Test"] = "tag";
+    ClassicalOp clas_op = ClassicalOp(OpType::H, 0, 0, 0, "", j);
+    REQUIRE(clas_op.get_meta() == j);
+  }
   GIVEN("Out bundles on a trivial circuit") {
     Circuit circ(3, 1);
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 0);

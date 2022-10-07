@@ -16,11 +16,13 @@
 #include <optional>
 #include <stdexcept>
 #include <unsupported/Eigen/MatrixFunctions>
+#include <typeinfo>
 
 #include "../testutil.hpp"
 #include "Circuit/Boxes.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
+#include "Gate/Gate.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Gate/SymTable.hpp"
 #include "OpType/OpType.hpp"
@@ -284,6 +286,12 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     REQUIRE(h->get_params() == rhs);
   }
 
+  GIVEN("An empty metadata retrieval from the defaulted value.") {
+    const Op_ptr h = (get_op_ptr(OpType::H));
+    REQUIRE(h->get_meta().is_null() == true);
+  }
+
+ 
   GIVEN("Operations whose parameters have different domains") {
     Op_ptr op2 = get_op_ptr(OpType::U1, 6.4);
     Op_ptr op4 = get_op_ptr(OpType::CnRy, 6.4);
