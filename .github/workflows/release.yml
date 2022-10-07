@@ -38,7 +38,7 @@ jobs:
 
   build_macos_wheels:
     name: Build macos wheels
-    runs-on: macos-12
+    runs-on: macos-11
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
@@ -202,10 +202,11 @@ jobs:
   test_macos_wheels:
     name: Test macos wheels
     needs: build_macos_wheels
-    runs-on: macos-12
     strategy:
       matrix:
+        os: ['macos-11', 'macos-12']
         python-version: ['3.8', '3.9', '3.10']
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
