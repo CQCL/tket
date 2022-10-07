@@ -95,6 +95,7 @@ jobs:
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
+        conan remove -f 'tket/*'
         conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
         conan create --profile=tket recipes/pybind11
         .github/workflows/build_macos_m1_wheel
