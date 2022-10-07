@@ -97,6 +97,12 @@ class Op : public std::enable_shared_from_this<Op> {
   /** Get operation type */
   OpType get_type() const { return type_; }
 
+  /** Get metadata as JSON object */
+  nlohmann::json get_meta() const { return meta_; }
+
+  /** Set metadata JSON object */
+  // void set_meta(const nlohmann::json &meta) { meta_ = meta; }
+
   /** Set of all free symbols occurring in operation parameters. */
   virtual SymSet free_symbols() const = 0;
 
@@ -184,9 +190,11 @@ class Op : public std::enable_shared_from_this<Op> {
   virtual bool is_equal(const Op &) const { return true; }
 
  protected:
-  explicit Op(const OpType &type) : desc_(type), type_(type) {}
+  explicit Op(const OpType &type, const nlohmann::json &meta = {}) : desc_(type), type_(type), meta_(meta) {}
   const OpDesc desc_; /**< Operation descriptor */
   const OpType type_; /**< Operation type */
+ private:
+  const nlohmann::json meta_;
 };
 
 // friend to stream op (print)
