@@ -340,6 +340,9 @@ std::optional<double> Gate::is_identity() const {
   static const std::optional<double> notid;
   const std::vector<Expr>& params = get_params();
   switch (get_type()) {
+    case OpType::noop: {
+      return 0.;
+    }
     case OpType::Phase: {
       // This is _always_ the identity up to phase, but the method does not
       // allow us to return a symbolic phase, so we must reject in that case.
