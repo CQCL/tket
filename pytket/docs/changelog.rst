@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.8.0 (unreleased)
+------------------
+
+Minor new features:
+
+* New ``OpType::Phase`` 0-qubit gate affecting global phase.
+
 1.7.3 (October 2022)
 --------------------
 
