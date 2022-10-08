@@ -58,7 +58,7 @@ jobs:
         tket_package_exists=`conan search -r tket-libs "tket/${{ steps.tket_ver.outputs.tket_ver }}@tket/stable" > /dev/null 2>&1 && echo true || echo false`
         echo "::set-output name=tket_package_exists::${tket_package_exists}"
     - name: Check tket version bump
-      if: github.event_name == 'pull_request' && github.ref == 'refs/heads/develop' && steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
+      if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop' && steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
       run: exit 1
 
   build_test_tket:
@@ -232,11 +232,11 @@ jobs:
     - name: set option to run full test suite
       if: github.event_name == 'schedule'
       run: conan profile update options.tket-tests:full=True tket
+    - name: Remove tket package from cache
+      run: conan remove -f 'tket/*'
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
-      run: |
-        conan remove -f 'tket/*'
-        conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
+      run: conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
     - name: Build and run tket tests
       if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
       run: conan create --profile=tket recipes/tket-tests
