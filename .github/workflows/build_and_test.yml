@@ -232,11 +232,11 @@ jobs:
     - name: set option to run full test suite
       if: github.event_name == 'schedule'
       run: conan profile update options.tket-tests:full=True tket
+    - name: Remove tket package from cache
+      run: conan remove -f 'tket/*'
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
-      run: |
-        conan remove -f 'tket/*'
-        conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
+      run: conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
     - name: Build and run tket tests
       if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
       run: conan create --profile=tket recipes/tket-tests
