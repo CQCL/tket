@@ -37,8 +37,6 @@ jobs:
     needs: changes
     if: needs.changes.outputs.tket == 'true' || github.event_name == 'schedule'
     runs-on: ubuntu-22.04
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: Get current time

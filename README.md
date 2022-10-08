@@ -88,12 +88,6 @@ Add the `tket.libs` repository to your remotes:
 conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
 ```
 
-Enable revisions:
-
-```shell
-conan config set general.revisions_enabled=1
-```
-
 We want to build tket and tklog as shared rather than static libraries, so set
 this in the profile:
 

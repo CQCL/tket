@@ -42,8 +42,6 @@ jobs:
         build_type: ['Release', 'Debug']
         shared: ['True', 'False']
     runs-on: ${{ matrix.os }}
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: normalize line endings in conanfile and src directory
@@ -103,8 +101,6 @@ jobs:
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
         build_type: ['Release', 'Debug']
         shared: ['True', 'False']
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: install conan

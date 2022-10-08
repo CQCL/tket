@@ -22,7 +22,6 @@ export PYBIN=/opt/python/cp39-cp39/bin
 ${PYBIN}/pip install conan
 
 export CONAN_CMD=${PYBIN}/conan
-export CONAN_REVISIONS_ENABLED=1
 
 cd /tket
 

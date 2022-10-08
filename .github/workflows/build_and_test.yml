@@ -68,8 +68,6 @@ jobs:
       matrix:
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
     runs-on: ${{ matrix.os }}
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: Check C++ code formatting
@@ -159,8 +157,6 @@ jobs:
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
         pyver: ['3.8', '3.9', '3.10']
     runs-on: ${{ matrix.os }}
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: Install conan
@@ -219,8 +215,6 @@ jobs:
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     needs: check_changes
     if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: Set up conan

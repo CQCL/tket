@@ -13,8 +13,6 @@ jobs:
         os: ['ubuntu-22.04', 'macos-11', 'macos-12', 'windows-2022']
         build_type: ['Release', 'Debug']
     runs-on: ${{ matrix.os }}
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: Install conan
@@ -48,8 +46,6 @@ jobs:
     strategy:
       matrix:
         build_type: ['Release', 'Debug']
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: Set up conan profile

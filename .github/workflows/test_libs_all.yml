@@ -11,8 +11,6 @@ jobs:
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
         lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm']
     runs-on: ${{ matrix.os }}
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.9
@@ -45,8 +43,6 @@ jobs:
     strategy:
       matrix:
         lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm']
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: install conan

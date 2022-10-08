@@ -28,8 +28,6 @@ jobs:
     runs-on: ubuntu-22.04
     needs: changes
     if: needs.changes.outputs.tket == 'true'
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: Get current time

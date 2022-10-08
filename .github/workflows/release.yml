@@ -39,8 +39,6 @@ jobs:
   build_macos_wheels:
     name: Build macos wheels
     runs-on: macos-11
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
       with:
@@ -81,8 +79,6 @@ jobs:
   build_macos_M1_wheels:
     name: Build macos (M1) wheels
     runs-on: ['self-hosted', 'macOS', 'ARM64']
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
       with:
@@ -111,8 +107,6 @@ jobs:
   build_Windows_wheels:
     name: Build Windows wheels
     runs-on: windows-2022
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
       with:

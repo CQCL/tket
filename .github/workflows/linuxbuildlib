@@ -19,8 +19,6 @@ set -evu
 # Choose a Python to install conan
 export PYBIN=/opt/python/cp39-cp39/bin
 
-export CONAN_REVISIONS_ENABLED=1
-
 ${PYBIN}/pip install --upgrade pip
 ${PYBIN}/pip install --upgrade conan
 
