@@ -54,8 +54,9 @@ jobs:
     - name: See if version exists on remote
       id: test_package_exists
       run: |
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
-        tket_package_exists=`conan search -r tket-libs "tket/${{ steps.tket_ver.outputs.tket_ver }}@tket/stable" > /dev/null 2>&1 && echo true || echo false`
+        conan remote clean
+        conan remote add tket-vlibs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-vlibs
+        tket_package_exists=`conan search -r tket-vlibs "tket/${{ steps.tket_ver.outputs.tket_ver }}@tket/stable" > /dev/null 2>&1 && echo true || echo false`
         echo "::set-output name=tket_package_exists::${tket_package_exists}"
     - name: Check tket version bump
       if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop' && steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
@@ -148,8 +149,8 @@ jobs:
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
-        conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
-        conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --all -r=tket-libs
+        conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-vlibs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+        conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --all -r=tket-vlibs
 
   build_test:
     name: Build and test
@@ -299,8 +300,8 @@ jobs:
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
-        conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
-        conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --all -r=tket-libs
+        conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-vlibs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+        conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --all -r=tket-vlibs
         conan user -c
 
 

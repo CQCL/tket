@@ -48,11 +48,13 @@ jobs:
       if: matrix.os == 'ubuntu-22.04'
       run: conan profile update settings.compiler.libcxx=libstdc++11 tket
     - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      run: |
+        conan remote clean
+        conan remote add tket-vlibs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-vlibs
     - name: build tket
       run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o tket:shared=${{ matrix.shared }} recipes/tket tket/stable --build=missing
     - name: authenticate to repository
-      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-vlibs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
     - name: get version
       if: matrix.os != 'windows-2022'
       run: |
@@ -64,7 +66,7 @@ jobs:
         $${{ matrix.lib }}_ver = conan inspect --raw version recipes/tket/conanfile.py
         echo "LIB_VER=${${{ matrix.lib }}_ver}" >> $env:GITHUB_ENV
     - name: upload package
-      run: conan upload tket/${{ env.LIB_VER }}@tket/stable --all -r=tket-libs
+      run: conan upload tket/${{ env.LIB_VER }}@tket/stable --all -r=tket-vlibs
 
   macos_m1:
     name: build and publish tket (MacOS M1)
@@ -85,16 +87,18 @@ jobs:
     - name: create profile
       run: conan profile new tket --detect --force
     - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
+      run: |
+        conan remote clean
+        conan remote add tket-vlibs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-vlibs --force
     - name: build tket
       run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o tket:shared=${{ matrix.shared }} recipes/tket tket/stable --build=missing
     - name: authenticate to repository
-      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-vlibs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
     - name: get version
       run: |
         lib_ver=$(conan inspect --raw version recipes/tket/conanfile.py)
         echo "LIB_VER=${lib_ver}" >> $GITHUB_ENV
     - name: upload package
-      run: conan upload tket/${{ env.LIB_VER }}@tket/stable --all -r=tket-libs
+      run: conan upload tket/${{ env.LIB_VER }}@tket/stable --all -r=tket-vlibs
     - name: unauthenticate
       run: conan user -c

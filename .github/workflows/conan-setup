@@ -6,4 +6,5 @@ if [ "$(uname -s)" == "Linux" ]; then
 fi
 conan profile update options.tklog:shared=True tket
 conan profile update options.tket:shared=True tket
-conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
+conan remote clean
+conan remote add tket-vlibs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-vlibs --force

@@ -82,10 +82,11 @@ recommended in the warning message:
 conan profile update settings.compiler.libcxx=libstdc++11 tket
 ```
 
-Add the `tket.libs` repository to your remotes:
+Set the `tket-vlibs` repository as your remote:
 
 ```shell
-conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+conan remote clean
+conan remote add tket-vlibs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-vlibs
 ```
 
 Enable revisions:

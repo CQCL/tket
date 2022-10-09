@@ -72,11 +72,13 @@ jobs:
       if: matrix.os == 'ubuntu-22.04'
       run: conan profile update settings.compiler.libcxx=libstdc++11 tket
     - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      run: |
+        conan remote clean
+        conan remote add tket-vlibs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-vlibs
     - name: build ${{ matrix.lib }}
       run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o ${{ matrix.lib }}:shared=${{ matrix.shared }} libs/${{ matrix.lib }} tket/stable --build=missing
     - name: authenticate to repository
-      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-vlibs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
     - name: get version
       if: matrix.os != 'windows-2022'
       run: |
@@ -89,10 +91,10 @@ jobs:
         echo "LIB_VER=${${{ matrix.lib }}_ver}" >> $env:GITHUB_ENV
     - name: upload package (dry run)
       if: github.event_name == 'pull_request'
-      run: conan upload ${{ matrix.lib }}/${{ env.LIB_VER }}@tket/stable --all -r=tket-libs --skip-upload
+      run: conan upload ${{ matrix.lib }}/${{ env.LIB_VER }}@tket/stable --all -r=tket-vlibs --skip-upload
     - name: upload package
       if: github.event_name == 'push'
-      run: conan upload ${{ matrix.lib }}/${{ env.LIB_VER }}@tket/stable --all -r=tket-libs
+      run: conan upload ${{ matrix.lib }}/${{ env.LIB_VER }}@tket/stable --all -r=tket-vlibs
   macos-m1:
     name: build library (macos-m1)
     needs: changes
@@ -112,21 +114,23 @@ jobs:
     - name: create profile
       run: conan profile new tket --detect --force
     - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
+      run: |
+        conan remote clean
+        conan remote add tket-vlibs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-vlibs --force
     - name: build ${{ matrix.lib }}
       run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o ${{ matrix.lib }}:shared=${{ matrix.shared }} libs/${{ matrix.lib }} tket/stable --build=missing
     - name: authenticate to repository
-      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-vlibs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
     - name: get version
       run: |
         lib_ver=$(conan inspect --raw version libs/${{ matrix.lib }}/conanfile.py)
         echo "LIB_VER=${lib_ver}" >> $GITHUB_ENV
     - name: upload package (dry run)
       if: github.event_name == 'pull_request'
-      run: conan upload ${{ matrix.lib }}/${LIB_VER}@tket/stable --all -r=tket-libs --skip-upload
+      run: conan upload ${{ matrix.lib }}/${LIB_VER}@tket/stable --all -r=tket-vlibs --skip-upload
     - name: upload package
       if: github.event_name == 'push'
-      run: conan upload ${{ matrix.lib }}/${LIB_VER}@tket/stable --all -r=tket-libs
+      run: conan upload ${{ matrix.lib }}/${LIB_VER}@tket/stable --all -r=tket-vlibs
     - name: unauthenticate
       run: conan user -c
   manylinux:
