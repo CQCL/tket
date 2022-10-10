@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -ex
+
 conan profile new tket --detect --force
 if [ "$(uname -s)" == "Linux" ]; then
     conan profile update settings.compiler.libcxx=libstdc++11 tket
