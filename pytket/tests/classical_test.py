@@ -74,7 +74,6 @@ from strategies import reg_name_regex, binary_digits, uint32  # type: ignore
 
 curr_file_path = Path(__file__).resolve().parent
 
-
 with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
     schema = json.load(f)
 

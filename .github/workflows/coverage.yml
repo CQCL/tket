@@ -64,7 +64,9 @@ jobs:
         ${conan_cmd} profile update settings.build_type=Debug tket
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: add remote
-      run: ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      run: |
+        ${CONAN_CMD} remote clean
+        ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Build tket
       run: |
         ${CONAN_CMD} install recipes/tket tket/stable --install-folder=build/tket --profile=tket -o tket:profile_coverage=True
@@ -78,6 +80,7 @@ jobs:
         ${CONAN_CMD} build recipes/tket-tests --build --build-folder=build/tket-tests
         ${CONAN_CMD} package recipes/tket-tests/ --build-folder=build/tket-tests --package-folder build/tket-tests/package --source-folder=tket/tests
     - name: Install runtime test requirements
+      if: github.event_name == 'schedule'
       run: |
         sudo apt-get update
         sudo apt-get install texlive texlive-latex-extra latexmk

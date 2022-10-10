@@ -38,15 +38,10 @@ jobs:
 
   build_macos_wheels:
     name: Build macos wheels
-    runs-on: macos-12
+    runs-on: macos-11
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
-    - name: Set xcode version
-      if: matrix.os == 'macos-12'
-      uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: '13.4.1'
     - uses: actions/checkout@v3
       with:
         fetch-depth: '0'
@@ -100,6 +95,7 @@ jobs:
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
+        conan remove -f 'tket/*'
         conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
         conan create --profile=tket recipes/pybind11
         .github/workflows/build_macos_m1_wheel
@@ -127,10 +123,10 @@ jobs:
     - name: Set up conan
       shell: bash
       run: ./.github/workflows/conan-setup
+    - name: set CONAN_CMD variable
+      run: |
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
-    - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Build tket
       run: conan create --profile=tket recipes/tket tket/stable
     - name: Install pybind11
@@ -207,16 +203,12 @@ jobs:
   test_macos_wheels:
     name: Test macos wheels
     needs: build_macos_wheels
-    runs-on: macos-12
     strategy:
       matrix:
+        os: ['macos-11', 'macos-12']
         python-version: ['3.8', '3.9', '3.10']
+    runs-on: ${{ matrix.os }}
     steps:
-    - name: Set xcode version
-      if: matrix.os == 'macos-12'
-      uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: '13.4.1'
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v4
       with:
