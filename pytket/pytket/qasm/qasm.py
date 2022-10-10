@@ -153,11 +153,15 @@ NOPARAM_COMMANDS = {
 # ISWAP
 # gate iswap(param0) q0,q1 {u3(pi/2, 0, pi/2) q0; u3(3*pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(pi - 0.5*param0*pi, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 5*pi/2 + 0.5*param0*pi) q1; cx q0,q1; u2(pi/2, 3*pi/2, pi/2) q0;}
 # PhasedISWAP
-# gate phasediswpa
+# gate phasediswap(param0, param1) q0,q1 {u3(pi/2, 0, pi/2 + param0*pi) q0; u3(3*pi/2, 3*pi/2, pi/2 - param0*pi) q1; cx q0,q1; u3(pi - 0.5*pi*param1, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 5*pi/2 + 0.5*pi*param1) q1; cx q0,q1; u3(pi/2, -pi/2 - param0*pi, pi/2) q0; u3(0, 3*pi/2, pi/2 + param0*pi) q1;}
 # YYPhase
+# gate yyphase(param0) q0,q1 {u3(pi/2, 0 ,0) q0; u3(pi, 3*pi/2, 0) q1; cx q0,q1; u3(pi + param0*pi, 3*pi/2, 0) q0; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi) q1;}
 # XXPhase3
+# gate xxphase3(param0) q0,q1,q2 {rxx(param0) q0,q1; rxx(param0) q1,q2; rxx(param0) q0,q2;}
 # ZZMax
+# gate zzmax q0,q1 {u3(5*pi/2, 0, pi/2) q1; cx q0,q1; u3(0, 3*pi/2, pi) q0; u3(7*pi/2, 0, 0) q1;}
 # ESwap
+# gate eswap(param0) q0,q1 {u3(pi/2, 3*pi/2, pi/2) q0; u3(7*pi/2, 0, pi/2) q1; cx q0,q1; u3(3*pi/2, 3*pi - 0.5*param0*pi, pi/2) q0; u3(pi, 3*pi/2, pi/2 - 0.5*param0*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + 0.5*param0*pi) q1; cx q0,q1; u3(7*pi/2, 0, 0) q0; u3(7*pi/2, 0, pi) q1;}
 # FSim
 # ISwapMAx
 
