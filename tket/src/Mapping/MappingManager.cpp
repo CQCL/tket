@@ -96,7 +96,7 @@ bool MappingManager::route_circuit_with_maps(
         subarch_nodes.begin(), subarch_nodes.end(),
         std::back_inserter(subarch_nodes_v));
     // as we produce a subarch, these "bad" nodes may in practice be fine
-    // in practice, we allow these single qubit assignments to be overwritten by
+    // However we allow these single qubit assignments to be overwritten by
     // dynamic assignment
     Architecture subarc = this->architecture_->create_subarch(subarch_nodes_v);
     std::set<Node> nodes = subarc.remove_worst_nodes(to_assign.size());
