@@ -139,15 +139,21 @@ NOPARAM_COMMANDS = {
 # Vdg = Rx(-1/2pi)
 # gate vdg q0 {rx(-pi/2) q0;}
 # TK1(a,b,c) = Rz(a)Rx(b)Rz(y)
-# gate tk1(param0, param1, param2) q0 {rz(param0) q0; rx(param1) q0; rz(param2) q0;}
+# gate tk1(param0, param1, param2) q0 {rz(param0*pi) q0; rx(param1*pi) q0; rz(param2*pi) q0;}
 # TK2(a,b,c) = XXPhase(a)YYPhase(b)ZZPhase(c)
-gate tk2 
-# CV = 
+# gate tk2(param0, param1, param2) q0,q1 {u3(3*pi/2, 0, 3*pi/2) q0; u3(pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(-pi/2, 3*pi + param0*pi, pi/2) q0; u3(pi, 0, pi + param1*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + param2*pi) q1; cx q0,q1;}
+# CV 
+# gate cv q0,q1 {u3(3*pi/2, 3*pi/2, pi) q0; u3(5*pi/2, 3*pi/2, 3*pi/2) q1; cx q0,q1; u3(5*pi/4, 3*pi/2, 0) q0; cx q0,q1; u3(5*pi/2, 0, pi) q0; u3(15*pi/4, 3*pi/2, 3*pi/2) q1}
 # CVdg
+# gate cvdg q0,q1 {u3(3*pi/2, 3*pi/2, 0) q0; u2(11*pi/4, 3*pi/2, pi/2) q1; cx q0,q1; u3(5*pi/3, 2*pi/2, 0) q0; cx q0,q1; u3(3*pi/2, 0, 0) q0}
 # CSXdg
-# BRIDGE = CX
+# gate cxsdg q0,q1 {u3(3*pi/2, 3*pi/2, 0) q0; u3(11*pi/4, 3*pi/2, pi/2) q1; cx q0,q1; u3(5*pi/4, 3*pi/2, 0) q0; cx q0,q1; u3(3*pi/2, 7*pi/4, 0) q0}
+# BRIDGE 
+# gate bridge q0,q1,q2 {cx q0,q1; cx q1,q2; cx q0,q1; cx q1,q2;}
 # ISWAP
+# gate iswap(param0) q0,q1 {u3(pi/2, 0, pi/2) q0; u3(3*pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(pi - 0.5*param0*pi, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 5*pi/2 + 0.5*param0*pi) q1; cx q0,q1; u2(pi/2, 3*pi/2, pi/2) q0;}
 # PhasedISWAP
+# gate phasediswpa
 # YYPhase
 # XXPhase3
 # ZZMax
