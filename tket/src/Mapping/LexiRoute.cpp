@@ -296,6 +296,9 @@ bool LexiRoute::update_labelling() {
 
         auto initial_assignee_it =
             this->mapping_frontier_->bimaps_->initial.right.find(pair.first);
+        TKET_ASSERT(
+            initial_assignee_it !=
+            this->mapping_frontier_->bimaps_->intial.right.end());
         UnitID original = initial_assignee_it->second;
         this->mapping_frontier_->bimaps_->initial.right.erase(
             initial_assignee_it);
