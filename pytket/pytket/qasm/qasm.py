@@ -132,15 +132,20 @@ NOPARAM_COMMANDS = {
 }
 
 
+
 # TO ADD:
-# V
-# Vdg
-# TK1
-# TK2
-# CV
+# V = Rx(1/2pi)
+# gate v q0 {rx(pi/2) q0;}
+# Vdg = Rx(-1/2pi)
+# gate vdg q0 {rx(-pi/2) q0;}
+# TK1(a,b,c) = Rz(a)Rx(b)Rz(y)
+# gate tk1(param0, param1, param2) q0 {rz(param0) q0; rx(param1) q0; rz(param2) q0;}
+# TK2(a,b,c) = XXPhase(a)YYPhase(b)ZZPhase(c)
+gate tk2 
+# CV = 
 # CVdg
 # CSXdg
-# BRIDGE
+# BRIDGE = CX
 # ISWAP
 # PhasedISWAP
 # YYPhase
