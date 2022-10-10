@@ -130,45 +130,6 @@ NOPARAM_COMMANDS = {
     "cswap": OpType.CSWAP,
     "ecr": OpType.ECR,
 }
-
-
-
-# TO ADD:
-# V = Rx(1/2pi)
-# gate v q0 {rx(pi/2) q0;}
-# Vdg = Rx(-1/2pi)
-# gate vdg q0 {rx(-pi/2) q0;}
-# TK1(a,b,c) = Rz(a)Rx(b)Rz(y)
-# gate tk1(param0, param1, param2) q0 {rz(param0*pi) q0; rx(param1*pi) q0; rz(param2*pi) q0;}
-# TK2(a,b,c) = XXPhase(a)YYPhase(b)ZZPhase(c)
-# gate tk2(param0, param1, param2) q0,q1 {u3(3*pi/2, 0, 3*pi/2) q0; u3(pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(-pi/2, 3*pi + param0*pi, pi/2) q0; u3(pi, 0, pi + param1*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + param2*pi) q1; cx q0,q1;}
-# CV 
-# gate cv q0,q1 {u3(3*pi/2, 3*pi/2, pi) q0; u3(5*pi/2, 3*pi/2, 3*pi/2) q1; cx q0,q1; u3(5*pi/4, 3*pi/2, 0) q0; cx q0,q1; u3(5*pi/2, 0, pi) q0; u3(15*pi/4, 3*pi/2, 3*pi/2) q1;}
-# CVdg
-# gate cvdg q0,q1 {u3(3*pi/2, 3*pi/2, 0) q0; u2(11*pi/4, 3*pi/2, pi/2) q1; cx q0,q1; u3(5*pi/3, 2*pi/2, 0) q0; cx q0,q1; u3(3*pi/2, 0, 0) q0}
-# CSXdg
-# gate cxsdg q0,q1 {u3(3*pi/2, 3*pi/2, 0) q0; u3(11*pi/4, 3*pi/2, pi/2) q1; cx q0,q1; u3(5*pi/4, 3*pi/2, 0) q0; cx q0,q1; u3(3*pi/2, 7*pi/4, 0) q0}
-# BRIDGE 
-# gate bridge q0,q1,q2 {cx q0,q1; cx q1,q2; cx q0,q1; cx q1,q2;}
-# ISWAP
-# gate iswap(param0) q0,q1 {u3(pi/2, 0, pi/2) q0; u3(3*pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(pi - 0.5*param0*pi, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 5*pi/2 + 0.5*param0*pi) q1; cx q0,q1; u2(pi/2, 3*pi/2, pi/2) q0;}
-# PhasedISWAP
-# gate phasediswap(param0, param1) q0,q1 {u3(pi/2, 0, pi/2 + param0*pi) q0; u3(3*pi/2, 3*pi/2, pi/2 - param0*pi) q1; cx q0,q1; u3(pi - 0.5*pi*param1, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 5*pi/2 + 0.5*pi*param1) q1; cx q0,q1; u3(pi/2, -pi/2 - param0*pi, pi/2) q0; u3(0, 3*pi/2, pi/2 + param0*pi) q1;}
-# YYPhase
-# gate yyphase(param0) q0,q1 {u3(pi/2, 0 ,0) q0; u3(pi, 3*pi/2, 0) q1; cx q0,q1; u3(pi + param0*pi, 3*pi/2, 0) q0; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi) q1;}
-# XXPhase3
-# gate xxphase3(param0) q0,q1,q2 {rxx(param0) q0,q1; rxx(param0) q1,q2; rxx(param0) q0,q2;}
-# ZZMax
-# gate zzmax q0,q1 {u3(5*pi/2, 0, pi/2) q1; cx q0,q1; u3(0, 3*pi/2, pi) q0; u3(7*pi/2, 0, 0) q1;}
-# ESwap
-# gate eswap(param0) q0,q1 {u3(pi/2, 3*pi/2, pi/2) q0; u3(7*pi/2, 0, pi/2) q1; cx q0,q1; u3(3*pi/2, 3*pi - 0.5*param0*pi, pi/2) q0; u3(pi, 3*pi/2, pi/2 - 0.5*param0*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + 0.5*param0*pi) q1; cx q0,q1; u3(7*pi/2, 0, 0) q0; u3(7*pi/2, 0, pi) q1;}
-# FSim
-# gate fsim(param0, param1) q0,q1 {u3(3*pi/2, 3*pi/2, 0) q0; u3(5*pi/2, 0, 0) q1; cx q0,q1; u3(3*pi/2, 3*pi - 0.5*param1*pi, pi/2) q0; u3(pi, 3*pi/2, pi/2 - param0*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + param0*pi) q1; cx q0,q1; u3(pi/2, -1*pi/2 - 0.5*param1*pi, 0) q0; u3(7*pi/2, pi/2 - 0.5*param1*pi, 0) q1;}
-# ISwapMAx
-# gate iswapmax q0,q1 {u3(pi/2, pi, pi/2) q0; u3(3*pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(3*pi/2, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 0) q1; cx q0,q1; u3(5*pi/2, 3*pi/2, pi/2) q0; u3(pi, 3*pi/2, 3*pi/2) q1;}
-
-
-
 PARAM_COMMANDS = {
     "p": OpType.U1,  # alias. https://github.com/Qiskit/qiskit-terra/pull/4765
     "u": OpType.U3,  # alias. https://github.com/Qiskit/qiskit-terra/pull/4765
@@ -191,43 +152,42 @@ PARAM_COMMANDS = {
 }
 
 NOPARAM_EXTRA_COMMANDS = {
-
     "v": OpType.V,
     "vdg": OpType.Vdg,
     "cv": OpType.CV,
     "cvdg": OpType.CVdg,
     "csxdg": OpType.CSXdg,
     "bridge": OpType.BRIDGE,
-    "zzmax": OpType.ZZMax, 
-    "iswapmax": OpType.ISWAPMax
+    "zzmax": OpType.ZZMax,
+    "iswapmax": OpType.ISWAPMax,
 }
 
 PARAM_EXTRA_COMMANDS = {
-    "tk1": OpType.TK1, 
+    "tk1": OpType.TK1,
     "tk2": OpType.TK2,
     "iswap": OpType.ISWAP,
     "phasediswap": OpType.PhasedISWAP,
     "yyphase": OpType.YYPhase,
     "xxphase3": OpType.XXPhase3,
     "eswap": OpType.ESWAP,
-    "fsim": OpType.FSim
+    "fsim": OpType.FSim,
 }
 
 EXTRA_COMMANDS_GATE_DEFINITIONS = {
-    OpType.TK1 = "gate tk1(param0, param1, param2) q0 {rz(param0*pi) q0; rx(param1*pi) q0; rz(param2*pi) q0;}",
-    OpType.TK2 = "gate tk2(param0, param1, param2) q0,q1 {u3(3*pi/2, 0, 3*pi/2) q0; u3(pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(-pi/2, 3*pi + param0*pi, pi/2) q0; u3(pi, 0, pi + param1*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + param2*pi) q1; cx q0,q1;}",
-    OpType.CV = "gate cv q0,q1 {u3(3*pi/2, 3*pi/2, pi) q0; u3(5*pi/2, 3*pi/2, 3*pi/2) q1; cx q0,q1; u3(5*pi/4, 3*pi/2, 0) q0; cx q0,q1; u3(5*pi/2, 0, pi) q0; u3(15*pi/4, 3*pi/2, 3*pi/2) q1;}",
-    OpType.CVdg = "gate cvdg q0,q1 {u3(3*pi/2, 3*pi/2, 0) q0; u2(11*pi/4, 3*pi/2, pi/2) q1; cx q0,q1; u3(5*pi/3, 2*pi/2, 0) q0; cx q0,q1; u3(3*pi/2, 0, 0) q0};",
-    OpType.CSXdg = "gate cxsdg q0,q1 {u3(3*pi/2, 3*pi/2, 0) q0; u3(11*pi/4, 3*pi/2, pi/2) q1; cx q0,q1; u3(5*pi/4, 3*pi/2, 0) q0; cx q0,q1; u3(3*pi/2, 7*pi/4, 0) q0;}",
-    OpType.BRIDGE = "gate bridge q0,q1,q2 {cx q0,q1; cx q1,q2; cx q0,q1; cx q1,q2;}",
-    OpType.ISWAP = "gate iswap(param0) q0,q1 {u3(pi/2, 0, pi/2) q0; u3(3*pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(pi - 0.5*param0*pi, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 5*pi/2 + 0.5*param0*pi) q1; cx q0,q1; u2(pi/2, 3*pi/2, pi/2) q0;}",
-    OpType.PhasedISWAP = "gate phasediswap(param0, param1) q0,q1 {u3(pi/2, 0, pi/2 + param0*pi) q0; u3(3*pi/2, 3*pi/2, pi/2 - param0*pi) q1; cx q0,q1; u3(pi - 0.5*pi*param1, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 5*pi/2 + 0.5*pi*param1) q1; cx q0,q1; u3(pi/2, -pi/2 - param0*pi, pi/2) q0; u3(0, 3*pi/2, pi/2 + param0*pi) q1;}",
-    OpType.YYPhase = "gate yyphase(param0) q0,q1 {u3(pi/2, 0 ,0) q0; u3(pi, 3*pi/2, 0) q1; cx q0,q1; u3(pi + param0*pi, 3*pi/2, 0) q0; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi) q1;}",
-    OpType.XXPhase3 = "gate xxphase3(param0) q0,q1,q2 {rxx(param0) q0,q1; rxx(param0) q1,q2; rxx(param0) q0,q2;}",
-    OpType.ZZMax = "gate zzmax q0,q1 {u3(5*pi/2, 0, pi/2) q1; cx q0,q1; u3(0, 3*pi/2, pi) q0; u3(7*pi/2, 0, 0) q1;}",
-    OpType.ESWAP = "gate eswap(param0) q0,q1 {u3(pi/2, 3*pi/2, pi/2) q0; u3(7*pi/2, 0, pi/2) q1; cx q0,q1; u3(3*pi/2, 3*pi - 0.5*param0*pi, pi/2) q0; u3(pi, 3*pi/2, pi/2 - 0.5*param0*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + 0.5*param0*pi) q1; cx q0,q1; u3(7*pi/2, 0, 0) q0; u3(7*pi/2, 0, pi) q1;}",
-    OpType.FSim = "gate fsim(param0, param1) q0,q1 {u3(3*pi/2, 3*pi/2, 0) q0; u3(5*pi/2, 0, 0) q1; cx q0,q1; u3(3*pi/2, 3*pi - 0.5*param1*pi, pi/2) q0; u3(pi, 3*pi/2, pi/2 - param0*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + param0*pi) q1; cx q0,q1; u3(pi/2, -1*pi/2 - 0.5*param1*pi, 0) q0; u3(7*pi/2, pi/2 - 0.5*param1*pi, 0) q1;}",
-    OpType.ISWAPMax = "gate iswapmax q0,q1 {u3(pi/2, pi, pi/2) q0; u3(3*pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(3*pi/2, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 0) q1; cx q0,q1; u3(5*pi/2, 3*pi/2, pi/2) q0; u3(pi, 3*pi/2, 3*pi/2) q1;}"
+    OpType.TK1: "gate tk1(param0, param1, param2) q0 {rz(param0*pi) q0; rx(param1*pi) q0; rz(param2*pi) q0;}",
+    OpType.TK2: "gate tk2(param0, param1, param2) q0,q1 {u3(3*pi/2, 0, 3*pi/2) q0; u3(pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(-pi/2, 3*pi + param0*pi, pi/2) q0; u3(pi, 0, pi + param1*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + param2*pi) q1; cx q0,q1;}",
+    OpType.CV: "gate cv q0,q1 {u3(3*pi/2, 3*pi/2, pi) q0; u3(5*pi/2, 3*pi/2, 3*pi/2) q1; cx q0,q1; u3(5*pi/4, 3*pi/2, 0) q0; cx q0,q1; u3(5*pi/2, 0, pi) q0; u3(15*pi/4, 3*pi/2, 3*pi/2) q1;}",
+    OpType.CVdg: "gate cvdg q0,q1 {u3(3*pi/2, 3*pi/2, 0) q0; u2(11*pi/4, 3*pi/2, pi/2) q1; cx q0,q1; u3(5*pi/3, 2*pi/2, 0) q0; cx q0,q1; u3(3*pi/2, 0, 0) q0};",
+    OpType.CSXdg: "gate cxsdg q0,q1 {u3(3*pi/2, 3*pi/2, 0) q0; u3(11*pi/4, 3*pi/2, pi/2) q1; cx q0,q1; u3(5*pi/4, 3*pi/2, 0) q0; cx q0,q1; u3(3*pi/2, 7*pi/4, 0) q0;}",
+    OpType.BRIDGE: "gate bridge q0,q1,q2 {cx q0,q1; cx q1,q2; cx q0,q1; cx q1,q2;}",
+    OpType.ISWAP: "gate iswap(param0) q0,q1 {u3(pi/2, 0, pi/2) q0; u3(3*pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(pi - 0.5*param0*pi, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 5*pi/2 + 0.5*param0*pi) q1; cx q0,q1; u2(pi/2, 3*pi/2, pi/2) q0;}",
+    OpType.PhasedISWAP: "gate phasediswap(param0, param1) q0,q1 {u3(pi/2, 0, pi/2 + param0*pi) q0; u3(3*pi/2, 3*pi/2, pi/2 - param0*pi) q1; cx q0,q1; u3(pi - 0.5*pi*param1, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 5*pi/2 + 0.5*pi*param1) q1; cx q0,q1; u3(pi/2, -pi/2 - param0*pi, pi/2) q0; u3(0, 3*pi/2, pi/2 + param0*pi) q1;}",
+    OpType.YYPhase: "gate yyphase(param0) q0,q1 {u3(pi/2, 0 ,0) q0; u3(pi, 3*pi/2, 0) q1; cx q0,q1; u3(pi + param0*pi, 3*pi/2, 0) q0; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi) q1;}",
+    OpType.XXPhase3: "gate xxphase3(param0) q0,q1,q2 {rxx(param0) q0,q1; rxx(param0) q1,q2; rxx(param0) q0,q2;}",
+    OpType.ZZMax: "gate zzmax q0,q1 {u3(5*pi/2, 0, pi/2) q1; cx q0,q1; u3(0, 3*pi/2, pi) q0; u3(7*pi/2, 0, 0) q1;}",
+    OpType.ESWAP: "gate eswap(param0) q0,q1 {u3(pi/2, 3*pi/2, pi/2) q0; u3(7*pi/2, 0, pi/2) q1; cx q0,q1; u3(3*pi/2, 3*pi - 0.5*param0*pi, pi/2) q0; u3(pi, 3*pi/2, pi/2 - 0.5*param0*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + 0.5*param0*pi) q1; cx q0,q1; u3(7*pi/2, 0, 0) q0; u3(7*pi/2, 0, pi) q1;}",
+    OpType.FSim: "gate fsim(param0, param1) q0,q1 {u3(3*pi/2, 3*pi/2, 0) q0; u3(5*pi/2, 0, 0) q1; cx q0,q1; u3(3*pi/2, 3*pi - 0.5*param1*pi, pi/2) q0; u3(pi, 3*pi/2, pi/2 - param0*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + param0*pi) q1; cx q0,q1; u3(pi/2, -1*pi/2 - 0.5*param1*pi, 0) q0; u3(7*pi/2, pi/2 - 0.5*param1*pi, 0) q1;}",
+    OpType.ISWAPMax: "gate iswapmax q0,q1 {u3(pi/2, pi, pi/2) q0; u3(3*pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(3*pi/2, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 0) q1; cx q0,q1; u3(5*pi/2, 3*pi/2, pi/2) q0; u3(pi, 3*pi/2, 3*pi/2) q1;}",
 }
 
 
@@ -236,14 +196,16 @@ _tk_to_qasm_noparams[OpType.CX] = "cx"  # prefer "cx" to "CX"
 _tk_to_qasm_params = dict(((item[1], item[0]) for item in PARAM_COMMANDS.items()))
 _tk_to_qasm_params[OpType.U3] = "u3"  # prefer "u3" to "U"
 _tk_to_qasm_params[OpType.Rz] = "rz"  # prefer "rz" to "Rz"
+_tk_to_qasm_extra_noparams =dict(((item[1], item[0]) for item in NOPARAM_EXTRA_COMMANDS.items()))
+_tk_to_qasm_extra_params = dict(((item[1], item[0]) for item in PARAM_EXTRA_COMMANDS.items()))
 
 _classical_gatestr_map = {"AND": "&", "OR": "|", "XOR": "^"}
 
 
-_all_known_gates = set(NOPARAM_COMMANDS.keys()).union(PARAM_COMMANDS.keys())
+_all_known_gates = set(NOPARAM_COMMANDS.keys()).union(PARAM_COMMANDS.keys(), PARAM_EXTRA_COMMANDS.keys(), NOPARAM_EXTRA_COMMANDS.keys())
 _all_string_maps = {
     key: val.name
-    for key, val in chain(PARAM_COMMANDS.items(), NOPARAM_COMMANDS.items())
+    for key, val in chain(PARAM_COMMANDS.items(), NOPARAM_COMMANDS.items(), PARAM_EXTRA_COMMANDS.items(), NOPARAM_EXTRA_COMMANDS.items())
 }
 
 unit_regex = re.compile(r"([a-z][a-zA-Z0-9_]*)\[([\d]+)\]")
@@ -985,7 +947,7 @@ def _parse_range(minval: int, maxval: int) -> Tuple[str, int]:
 
 def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
     optype = op.type
-    params = op.params if optype in _tk_to_qasm_params else None
+    params = op.params if optype in _tk_to_qasm_params or _tk_to_qasm_extra_params else None
     if optype == OpType.TK1:
         # convert to U3
         optype = OpType.U3
@@ -1024,6 +986,8 @@ def circuit_to_qasm_io(
     if include_gate_defs is None:
         include_gate_defs = {"measure", "reset", "barrier"}
         include_gate_defs.update(_load_include_module(header, False, True).keys())
+        include_gate_defs.update(NOPARAM_EXTRA_COMMANDS.keys())
+        include_gate_defs.update(PARAM_EXTRA_COMMANDS.keys())
 
         stream_out.write('OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header))
 
@@ -1039,6 +1003,7 @@ def circuit_to_qasm_io(
         cregs = {}
         qregs = {}
 
+    added_gate_definitions = set()
     range_preds = dict()
     for command in circ:
         checked_op = True
@@ -1208,9 +1173,24 @@ def circuit_to_qasm_io(
             opstr = _tk_to_qasm_noparams[optype]
         elif optype in _tk_to_qasm_params:
             opstr = _tk_to_qasm_params[optype]
-        elif optype in _tk_to_qasm_definition:
-            
-
+        elif optype in _tk_to_qasm_extra_noparams:
+            opstr = _tk_to_qasm_extra_noparams[optype]
+            n_added = len(added_gate_definitions)
+            added_gate_definitions.add(opstr)
+            # implies gate not used yet so need to add definition for it
+            if len(added_gate_definitions) != n_added:
+                gate_def = EXTRA_COMMANDS_GATE_DEFINITIONS[optype]
+                stream_out.write(gate_def)
+                stream_out.write("\n")
+        elif optype in _tk_to_qasm_extra_params:
+            opstr = _tk_to_qasm_extra_params[optype]
+            n_added = len(added_gate_definitions)
+            added_gate_definitions.add(opstr)
+            # implies gate not used yet so need to add definition for it
+            if len(added_gate_definitions) != n_added:
+                gate_def = EXTRA_COMMANDS_GATE_DEFINITIONS[optype]
+                stream_out.write(gate_def)
+                stream_out.write("\n")
         else:
             raise QASMUnsupportedError(
                 "Cannot print command of type: {}".format(op.get_name())
