@@ -36,105 +36,106 @@ LexiRoute::LexiRoute(
 
 void LexiRoute::reassign_node(
     const Node& pre_assigned, const UnitID& assignee) {
-  // A "reassignable" node has no releveant use for the purposes of
-  // routing But we assign at the start to avoid causal constraints from
-  // Barriers and other classical controlled but not quantum vertices We
-  // find a replacement Node first
+  /**
+   * A "reassignable" node has no relevant use for the purposes of
+   * routing.
+   * But we assign at the start to avoid causal constraints from
+   * Barriers and other classical controlled but not quantum vertices
+   * We find a replacement Node first.
+   */
+
+  // find all Nodes that have been used to label0
   std::set<Node> all_nodes_s;
   for (const std::pair<const UnitID, UnitID>& p : this->labelling_) {
     all_nodes_s.insert(Node(p.second));
   }
-  for (const Node& node : this->architecture_->nodes()) {
-    // => node is available
-    if (all_nodes_s.find(node) == all_nodes_s.end()) {
-      bool found_match = false;
-      for (const std::pair<const UnitID, UnitID>& x : this->labelling_) {
-        if (x.second == pre_assigned) {
-          this->labelling_[x.first] = node;
-          found_match = true;
-          break;
-        }
-      }
-      TKET_ASSERT(found_match);
-      this->labelling_[assignee] = pre_assigned;
-      auto it = this->mapping_frontier_->reassignable_nodes_.find(pre_assigned);
-      this->mapping_frontier_->reassignable_nodes_.erase(it);
-      this->mapping_frontier_->reassignable_nodes_.insert(node);
-
-      auto assignee_boundary_it =
-          this->mapping_frontier_->linear_boundary->get<TagKey>().find(
-              assignee);
-      auto pre_assigned_boundary_it =
-          this->mapping_frontier_->linear_boundary->get<TagKey>().find(
-              pre_assigned);
-
-      this->mapping_frontier_->linear_boundary->replace(
-          pre_assigned_boundary_it, {node, pre_assigned_boundary_it->second});
-      this->mapping_frontier_->linear_boundary->replace(
-          assignee_boundary_it, {pre_assigned, assignee_boundary_it->second});
-      unit_map_t relabel0 = {{UnitID(pre_assigned), UnitID(node)}};
-      unit_map_t relabel1 = {{UnitID(assignee), UnitID(pre_assigned)}};
-      this->mapping_frontier_->circuit_.rename_units(relabel0);
-      this->mapping_frontier_->circuit_.rename_units(relabel1);
-
-      // assignee should now point to preserved node in initial
-      // preserved node should now point to node in initial
-      auto initial_assignee_it =
-          this->mapping_frontier_->bimaps_->initial.right.find(assignee);
-      auto initial_pre_assigned_it =
-          this->mapping_frontier_->bimaps_->initial.right.find(pre_assigned);
-
-      TKET_ASSERT(
-          initial_assignee_it !=
-          this->mapping_frontier_->bimaps_->initial.right.end());
-      TKET_ASSERT(
-          initial_pre_assigned_it !=
-          this->mapping_frontier_->bimaps_->initial.right.end());
-
-      UnitID preserved_orig_0 = initial_assignee_it->second;
-      UnitID preserved_orig_1 = initial_pre_assigned_it->second;
-      std::pair<UnitID, UnitID> initial_replacement_0 = {
-          preserved_orig_0, pre_assigned};
-      std::pair<UnitID, UnitID> initial_replacement_1 = {
-          preserved_orig_1, node};
-
-      this->mapping_frontier_->bimaps_->initial.right.erase(
-          initial_assignee_it);
-      this->mapping_frontier_->bimaps_->initial.right.erase(
-          initial_pre_assigned_it);
-
-      this->mapping_frontier_->bimaps_->initial.left.insert(
-          initial_replacement_0);
-      this->mapping_frontier_->bimaps_->initial.left.insert(
-          initial_replacement_1);
-
-      auto final_assignee_it =
-          this->mapping_frontier_->bimaps_->final.left.find(preserved_orig_0);
-      auto final_pre_assigned_it =
-          this->mapping_frontier_->bimaps_->final.left.find(preserved_orig_1);
-
-      TKET_ASSERT(
-          final_assignee_it !=
-          this->mapping_frontier_->bimaps_->final.left.end());
-      TKET_ASSERT(
-          final_pre_assigned_it !=
-          this->mapping_frontier_->bimaps_->final.left.end());
-
-      // if placing, can assume its not been swapped yet
-      std::pair<UnitID, UnitID> final_replacement_0 = {
-          preserved_orig_0, pre_assigned};
-      std::pair<UnitID, UnitID> final_replacement_1 = {preserved_orig_1, node};
-
-      this->mapping_frontier_->bimaps_->final.left.erase(final_assignee_it);
-      this->mapping_frontier_->bimaps_->final.left.erase(final_pre_assigned_it);
-
-      this->mapping_frontier_->bimaps_->final.left.insert(final_replacement_0);
-      this->mapping_frontier_->bimaps_->final.left.insert(final_replacement_1);
-
-      this->assigned_nodes_.insert(node);
+  std::set<Node> architecture_nodes = this->architecture_->nodes();
+  auto jt = std::find_if(
+      architecture_nodes.begin(), architecture_nodes.end(),
+      [all_nodes_s](const Node& node) {
+        return all_nodes_s.find(node) == all_nodes_s.end();
+      });
+  TKET_ASSERT(jt != architecture_nodes.end());
+  Node node = *jt;
+  bool found_match = false;
+  for (const std::pair<const UnitID, UnitID>& x : this->labelling_) {
+    if (x.second == pre_assigned) {
+      this->labelling_[x.first] = node;
+      found_match = true;
       break;
     }
   }
+  TKET_ASSERT(found_match);
+  this->labelling_[assignee] = pre_assigned;
+  auto it = this->mapping_frontier_->reassignable_nodes_.find(pre_assigned);
+  this->mapping_frontier_->reassignable_nodes_.erase(it);
+  this->mapping_frontier_->reassignable_nodes_.insert(node);
+
+  auto assignee_boundary_it =
+      this->mapping_frontier_->linear_boundary->get<TagKey>().find(assignee);
+  auto pre_assigned_boundary_it =
+      this->mapping_frontier_->linear_boundary->get<TagKey>().find(
+          pre_assigned);
+
+  this->mapping_frontier_->linear_boundary->replace(
+      pre_assigned_boundary_it, {node, pre_assigned_boundary_it->second});
+  this->mapping_frontier_->linear_boundary->replace(
+      assignee_boundary_it, {pre_assigned, assignee_boundary_it->second});
+  unit_map_t relabel0 = {{UnitID(pre_assigned), UnitID(node)}};
+  unit_map_t relabel1 = {{UnitID(assignee), UnitID(pre_assigned)}};
+  this->mapping_frontier_->circuit_.rename_units(relabel0);
+  this->mapping_frontier_->circuit_.rename_units(relabel1);
+
+  // assignee should now point to preserved node in initial
+  // preserved node should now point to node in initial
+  auto initial_assignee_it =
+      this->mapping_frontier_->bimaps_->initial.right.find(assignee);
+  auto initial_pre_assigned_it =
+      this->mapping_frontier_->bimaps_->initial.right.find(pre_assigned);
+
+  TKET_ASSERT(
+      initial_assignee_it !=
+      this->mapping_frontier_->bimaps_->initial.right.end());
+  TKET_ASSERT(
+      initial_pre_assigned_it !=
+      this->mapping_frontier_->bimaps_->initial.right.end());
+
+  UnitID preserved_orig_0 = initial_assignee_it->second;
+  UnitID preserved_orig_1 = initial_pre_assigned_it->second;
+  std::pair<UnitID, UnitID> initial_replacement_0 = {
+      preserved_orig_0, pre_assigned};
+  std::pair<UnitID, UnitID> initial_replacement_1 = {preserved_orig_1, node};
+
+  this->mapping_frontier_->bimaps_->initial.right.erase(initial_assignee_it);
+  this->mapping_frontier_->bimaps_->initial.right.erase(
+      initial_pre_assigned_it);
+
+  this->mapping_frontier_->bimaps_->initial.left.insert(initial_replacement_0);
+  this->mapping_frontier_->bimaps_->initial.left.insert(initial_replacement_1);
+
+  auto final_assignee_it =
+      this->mapping_frontier_->bimaps_->final.left.find(preserved_orig_0);
+  auto final_pre_assigned_it =
+      this->mapping_frontier_->bimaps_->final.left.find(preserved_orig_1);
+
+  TKET_ASSERT(
+      final_assignee_it != this->mapping_frontier_->bimaps_->final.left.end());
+  TKET_ASSERT(
+      final_pre_assigned_it !=
+      this->mapping_frontier_->bimaps_->final.left.end());
+
+  // if placing, can assume its not been swapped yet
+  std::pair<UnitID, UnitID> final_replacement_0 = {
+      preserved_orig_0, pre_assigned};
+  std::pair<UnitID, UnitID> final_replacement_1 = {preserved_orig_1, node};
+
+  this->mapping_frontier_->bimaps_->final.left.erase(final_assignee_it);
+  this->mapping_frontier_->bimaps_->final.left.erase(final_pre_assigned_it);
+
+  this->mapping_frontier_->bimaps_->final.left.insert(final_replacement_0);
+  this->mapping_frontier_->bimaps_->final.left.insert(final_replacement_1);
+
+  this->assigned_nodes_.insert(node);
 }
 
 void LexiRoute::assign_valid_node(
@@ -298,7 +299,7 @@ bool LexiRoute::update_labelling() {
             this->mapping_frontier_->bimaps_->initial.right.find(pair.first);
         TKET_ASSERT(
             initial_assignee_it !=
-            this->mapping_frontier_->bimaps_->intial.right.end());
+            this->mapping_frontier_->bimaps_->initial.right.end());
         UnitID original = initial_assignee_it->second;
         this->mapping_frontier_->bimaps_->initial.right.erase(
             initial_assignee_it);
