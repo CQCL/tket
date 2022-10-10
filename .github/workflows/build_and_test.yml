@@ -54,6 +54,7 @@ jobs:
     - name: See if version exists on remote
       id: test_package_exists
       run: |
+        conan remote clean
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
         tket_package_exists=`conan search -r tket-libs "tket/${{ steps.tket_ver.outputs.tket_ver }}@tket/stable" > /dev/null 2>&1 && echo true || echo false`
         echo "::set-output name=tket_package_exists::${tket_package_exists}"
@@ -127,7 +128,9 @@ jobs:
       run: conan install --profile=tket tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable
     - name: check that version is consistent
       if: matrix.os == 'ubuntu-22.04' && github.event_name == 'pull_request'
-      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
+      run: |
+        conan create --profile=tket recipes/pybind11
+        ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Install runtime test requirements
       if: matrix.os == 'ubuntu-22.04' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true') && github.event_name == 'schedule'
       run: |
