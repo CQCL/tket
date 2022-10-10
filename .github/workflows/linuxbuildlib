@@ -28,6 +28,7 @@ export CONAN_CMD=${PYBIN}/conan
 
 ${CONAN_CMD} profile new tket --detect
 
+${CONAN_CMD} remote clean
 ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
 
 ${CONAN_CMD} user -p ${JFROG_ARTIFACTORY_TOKEN_2} -r tket-libs ${JFROG_ARTIFACTORY_USER_2}
