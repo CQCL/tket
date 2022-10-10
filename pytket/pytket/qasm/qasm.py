@@ -163,7 +163,9 @@ NOPARAM_COMMANDS = {
 # ESwap
 # gate eswap(param0) q0,q1 {u3(pi/2, 3*pi/2, pi/2) q0; u3(7*pi/2, 0, pi/2) q1; cx q0,q1; u3(3*pi/2, 3*pi - 0.5*param0*pi, pi/2) q0; u3(pi, 3*pi/2, pi/2 - 0.5*param0*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + 0.5*param0*pi) q1; cx q0,q1; u3(7*pi/2, 0, 0) q0; u3(7*pi/2, 0, pi) q1;}
 # FSim
+# gate fsim(param0, param1) q0,q1 {u3(3*pi/2, 3*pi/2, 0) q0; u3(5*pi/2, 0, 0) q1; cx q0,q1; u3(3*pi/2, 3*pi - 0.5*param1*pi, pi/2) q0; u3(pi, 3*pi/2, pi/2 - param0*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + param0*pi) q1; cx q0,q1; u3(pi/2, -1*pi/2 - 0.5*param1*pi, 0) q0; u3(7*pi/2, pi/2 - 0.5*param1*pi, 0) q1;}
 # ISwapMAx
+# gate iswapmax q0,q1 {u3(pi/2, pi, pi/2) q0; u3(3*pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(3*pi/2, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 0) q1; cx q0,q1; u3(5*pi/2, 3*pi/2, pi/2) q0; u3(pi, 3*pi/2, 3*pi/2) q1;}
 
 
 
