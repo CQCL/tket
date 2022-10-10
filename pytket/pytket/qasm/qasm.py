@@ -13,7 +13,6 @@
 # limitations under the License.
 
 from dataclasses import dataclass
-from inspect import CO_VARARGS
 import io
 import os
 import re
@@ -202,7 +201,7 @@ _tk_to_qasm_extra_params = dict(((item[1], item[0]) for item in PARAM_EXTRA_COMM
 _classical_gatestr_map = {"AND": "&", "OR": "|", "XOR": "^"}
 
 
-_all_known_gates = set(NOPARAM_COMMANDS.keys()).union(PARAM_COMMANDS.keys(), PARAM_EXTRA_COMMANDS.keys(), NOPARAM_EXTRA_COMMANDS.keys())
+_all_known_gates = set(NOPARAM_COMMANDS.keys()).union(PARAM_COMMANDS.keys()).union(PARAM_EXTRA_COMMANDS.keys()).union(NOPARAM_EXTRA_COMMANDS.keys())
 _all_string_maps = {
     key: val.name
     for key, val in chain(PARAM_COMMANDS.items(), NOPARAM_COMMANDS.items(), PARAM_EXTRA_COMMANDS.items(), NOPARAM_EXTRA_COMMANDS.items())
