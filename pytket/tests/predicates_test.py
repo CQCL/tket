@@ -49,6 +49,7 @@ from pytket.passes import (  # type: ignore
     PauliSquash,
     auto_rebase_pass,
     ZZPhaseToRz,
+    CnXPairwiseDecomposition,
 )
 from pytket.predicates import (  # type: ignore
     GateSetPredicate,
@@ -763,6 +764,15 @@ def test_three_qubit_squash() -> None:
     c.measure_all()
     assert ThreeQubitSquash().apply(c)
     assert c.n_gates_of_type(OpType.CX) <= 18
+
+
+def test_cnx_pairwise_decomp() -> None:
+    c = Circuit(6).add_gate(OpType.CnX, [], [0, 1, 2, 3, 4, 5])
+    c.add_gate(OpType.CnX, [], [1, 2, 3, 4, 5, 0])
+    c.add_gate(OpType.CnX, [], [3, 1, 4, 5, 0, 2])
+    CnXPairwiseDecomposition().apply(c)
+    DecomposeMultiQubitsCX().apply(c)
+    assert c.n_gates_of_type(OpType.CX) < 217
 
 
 def test_rz_phasedX_squash() -> None:
