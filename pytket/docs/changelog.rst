@@ -1,6 +1,13 @@
 Changelog
 =========
 
+x.y.z (unreleased)
+------------------
+Minor new features:
+
+* New ``CnXPairwiseDecomposition`` pass.
+
+
 1.7.3 (October 2022)
 --------------------
 
