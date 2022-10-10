@@ -449,4 +449,18 @@ const PassPtr &SquashRzPhasedX() {
   return pp;
 }
 
+const PassPtr &CnXPairwiseDecomposition() {
+  static const PassPtr pp([]() {
+    Transform t = Transforms::cnx_pairwise_decomposition();
+    PredicatePtrMap s_ps;
+    PredicateClassGuarantees g_postcons{
+        {typeid(GateSetPredicate), Guarantee::Clear}};
+    PostConditions postcon{s_ps, g_postcons, Guarantee::Preserve};
+    nlohmann::json j;
+    j["name"] = "CnXPairwiseDecomposition";
+    return std::make_shared<StandardPass>(s_ps, t, postcon, j);
+  }());
+  return pp;
+}
+
 }  // namespace tket
