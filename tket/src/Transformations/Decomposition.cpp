@@ -1907,7 +1907,7 @@ Transform cnx_pairwise_decomposition() {
 
     // For the rest of CnX, we reorder the control qubits of each pair
     // to maximise the chance of gate cancelling.
-    for (; itr + 1 < cnx_indices.size(); itr++) {
+    for (; itr + 1 < cnx_indices.size(); itr += 2) {
       Command &cmd1 = commands[cnx_indices[itr]];
       Command &cmd2 = commands[cnx_indices[itr + 1]];
 

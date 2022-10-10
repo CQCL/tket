@@ -872,6 +872,23 @@ SCENARIO("Test cnx_pairwise_decomposition") {
         OpType::CnX, {}, {3, 1, 4, 5, 0, 2}, {0}, 1);
     REQUIRE(Transforms::cnx_pairwise_decomposition().apply(circ));
   }
+
+  GIVEN("Circuit with a few more CnX") {
+    Circuit circ(6);
+    circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4, 5});
+    circ.add_op<unsigned>(OpType::CnX, {1, 2, 3, 4, 5, 0});
+    circ.add_op<unsigned>(OpType::CnX, {2, 3, 4, 5, 0, 1});
+    circ.add_op<unsigned>(OpType::CnX, {3, 4, 5, 0, 1, 2});
+    circ.add_op<unsigned>(OpType::CnX, {4, 5, 0, 1, 2, 3});
+    circ.add_op<unsigned>(OpType::CnX, {5, 0, 1, 2, 3, 4});
+    auto u = tket_sim::get_unitary(circ);
+    REQUIRE(Transforms::cnx_pairwise_decomposition().apply(circ));
+    REQUIRE(Transforms::decompose_multi_qubits_CX().apply(circ));
+    auto v = tket_sim::get_unitary(circ);
+    REQUIRE((u - v).cwiseAbs().sum() < ERR_EPS);
+    // The CX count would normally be 480
+    REQUIRE(circ.count_gates(OpType::CX) < 409);
+  }
 }
 
 }  // namespace test_ControlDecomp
