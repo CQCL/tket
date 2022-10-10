@@ -293,19 +293,20 @@ bool LexiRoute::update_labelling() {
         TKET_ASSERT(
             this->mapping_frontier_->reassignable_nodes_.find(preserved_node) ==
             this->mapping_frontier_->reassignable_nodes_.end());
-        auto initial_assignee_it =
-            this->mapping_frontier_->bimaps_->initial.left.find(pair.first);
 
-        this->mapping_frontier_->bimaps_->initial.left.erase(
+        auto initial_assignee_it =
+            this->mapping_frontier_->bimaps_->initial.right.find(pair.first);
+        UnitID original = initial_assignee_it->second;
+        this->mapping_frontier_->bimaps_->initial.right.erase(
             initial_assignee_it);
         this->mapping_frontier_->bimaps_->initial.left.insert(
-            {pair.first, preserved_node});
+            {original, preserved_node});
 
         auto final_assignee_it =
-            this->mapping_frontier_->bimaps_->final.left.find(pair.first);
+            this->mapping_frontier_->bimaps_->final.left.find(original);
         this->mapping_frontier_->bimaps_->final.left.erase(final_assignee_it);
         this->mapping_frontier_->bimaps_->final.left.insert(
-            {pair.first, preserved_node});
+            {original, preserved_node});
         uid_0_exist = true;
 
         // update circuit with new labelling
