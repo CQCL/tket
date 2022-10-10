@@ -76,7 +76,9 @@ void LexiRoute::reassign_node(
   auto pre_assigned_boundary_it =
       this->mapping_frontier_->linear_boundary->get<TagKey>().find(
           pre_assigned);
-
+  auto end_it = this->mapping_frontier_->linear_boundary->get<TagKey>().end();
+  TKET_ASSERT(assignee_boundary_it != end_it);
+  TKET_ASSERT(pre_assigned_boundary_it != end_it);
   this->mapping_frontier_->linear_boundary->replace(
       pre_assigned_boundary_it, {node, pre_assigned_boundary_it->second});
   this->mapping_frontier_->linear_boundary->replace(
@@ -220,7 +222,8 @@ bool LexiRoute::assign_at_distance(
   node_set_t valid_nodes;
   for (const Node& neighbour :
        this->architecture_->nodes_at_distance(root, distances)) {
-    // A node is unassigned if it's empty or holding an ancilla
+    // A node is unassigned if it's empty or holding an ancilla, or can be
+    // reassigned
     if (this->mapping_frontier_->reassignable_nodes_.find(neighbour) !=
             this->mapping_frontier_->reassignable_nodes_.end() ||
         this->assigned_nodes_.find(neighbour) == this->assigned_nodes_.end() ||
