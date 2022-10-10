@@ -52,7 +52,7 @@ void LexiRoute::reassign_node(
   std::set<Node> architecture_nodes = this->architecture_->nodes();
   auto jt = std::find_if(
       architecture_nodes.begin(), architecture_nodes.end(),
-      [all_nodes_s](const Node& node) {
+      [&all_nodes_s](const Node& node) {
         return all_nodes_s.find(node) == all_nodes_s.end();
       });
   TKET_ASSERT(jt != architecture_nodes.end());
