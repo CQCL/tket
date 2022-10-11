@@ -863,14 +863,39 @@ def circuit_from_qasm_wasm(
 def circuit_to_qasm(circ: Circuit, output_file: str, header: str = "qelib1") -> None:
     """A method to generate a qasm file from a tket Circuit"""
     with open(output_file, "w") as out:
-        circuit_to_qasm_io(circ, out, header=header)
+        s = circuit_to_qasm_str(circ, header)
+        out.write(s)
+
+
+def _filtered_qasm_str(qasm: str) -> str:
+    # remove any c registers starting with _TEMP_BIT_NAME
+    # that are not being used somewhere else
+    lines = qasm.splitlines()
+    def_matcher = re.compile(r"creg ({}[^\]]*)\[".format(_TEMP_BIT_NAME))
+    arg_matcher = re.compile(r"({}[^\]]*)\[".format(_TEMP_BIT_NAME))
+    unused_regs = dict()
+    for i, line in enumerate(lines):
+        if reg := def_matcher.match(line):
+            # Mark a reg temporarily as unused
+            unused_regs[reg.group(1)] = i
+        elif args := arg_matcher.findall(line):
+            # If the line contains scratch bits that are used as arguments
+            # mark these regs as used
+            for arg in args:
+                if arg in unused_regs:
+                    unused_regs.pop(arg)
+    # remove unused reg defs
+    redundant_lines = sorted(unused_regs.values(), reverse=True)
+    for line_index in redundant_lines:
+        del lines[line_index]
+    return "\n".join(lines)
 
 
 def circuit_to_qasm_str(circ: Circuit, header: str = "qelib1") -> str:
     """A method to generate a qasm str from a tket Circuit"""
     buffer = io.StringIO()
     circuit_to_qasm_io(circ, buffer, header=header)
-    return buffer.getvalue()
+    return _filtered_qasm_str(buffer)
 
 
 TypeReg = TypeVar("TypeReg", BitRegister, QubitRegister)

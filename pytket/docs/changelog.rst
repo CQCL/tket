@@ -1,6 +1,14 @@
 Changelog
 =========
 
+x.y.z (unreleased)
+------------------
+
+Fixes:
+
+* Remove unused ``tk_SCRATCH_BIT`` register from qasm output.
+
+
 1.7.3 (October 2022)
 --------------------
 
