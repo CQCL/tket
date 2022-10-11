@@ -1857,8 +1857,8 @@ static void substitute_cnx(
 
 Transform cnx_pairwise_decomposition() {
   return Transform([](Circuit &circ) {
-    commute_through_multis().apply(circ);
-    remove_redundancies().apply(circ);
+    bool success = commute_through_multis().apply(circ);
+    success |= remove_redundancies().apply(circ);
 
     // Cache CnX decompositions
     std::map<int, Circuit> cnx_cache;
@@ -1980,8 +1980,9 @@ Transform cnx_pairwise_decomposition() {
 
     circ.remove_vertices(
         bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
-    remove_redundancies().apply(circ);
-    return !bin.empty();
+    success |= remove_redundancies().apply(circ);
+    success |= !bin.empty();
+    return success;
   });
 }
 
