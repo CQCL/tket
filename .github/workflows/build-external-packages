@@ -30,12 +30,12 @@ do
     done
 done
 
-conan remote remove conan-center
-
 for PACKAGE in ${PACKAGES}
 do
     echo "Uploading:" ${PACKAGE} "..."
     conan upload ${PACKAGE} --all -r=tket-libs
 done
+
+conan remote remove conan-center
 
 echo "Done."
