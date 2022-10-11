@@ -53,7 +53,7 @@ You should also have Python (3.8, 3.9 or 3.10) and `pip` installed. We use
 with `pip`:
 
 ```shell
-pip install cmake conan
+pip install cmake conan~=1.53
 ```
 
 It is recommended that you also install `ninja` and `ccache` to speed up the
