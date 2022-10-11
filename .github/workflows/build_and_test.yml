@@ -48,7 +48,7 @@ jobs:
     - name: parse version from conanfile
       id: tket_ver
       run: |
-        pip install conan ~= 1.53
+        pip install conan~=1.53
         tket_ver=$(conan inspect --raw version recipes/tket/conanfile.py)
         echo "::set-output name=tket_ver::${tket_ver}"
     - name: See if version exists on remote
