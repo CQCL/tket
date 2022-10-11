@@ -571,6 +571,21 @@ def test_pass_deserialisation_only() -> None:
     }
     assert cx.to_dict() == pz_rebase.to_dict()["StandardPass"]["basis_cx_replacement"]
 
+    # RebaseCustomViaTK2
+    rebase = RebaseCustom(
+        {OpType.XXPhase, OpType.YYPhase, OpType.ZZPhase, OpType.Rx, OpType.Rz},
+        lambda a, b, c: Circuit(2).ZZPhase(c).YYPhase(b).XXPhase(a),
+        lambda a, b, c: Circuit(1).Rz(c).Rx(b).Rz(a),
+    )
+    assert rebase.to_dict()["StandardPass"]["name"] == "RebaseCustomViaTK2"
+    assert set(rebase.to_dict()["StandardPass"]["basis_allowed"]) == {
+        "XXPhase",
+        "YYPhase",
+        "ZZPhase",
+        "Rx",
+        "Rz",
+    }
+
     # FullMappingPass
     arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
     placer = GraphPlacement(arc)
