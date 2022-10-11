@@ -22,7 +22,7 @@ export PYBIN=/opt/python/cp39-cp39/bin
 export CONAN_REVISIONS_ENABLED=1
 
 ${PYBIN}/pip install --upgrade pip
-${PYBIN}/pip install --upgrade conan
+${PYBIN}/pip install conan~=1.53
 
 export CONAN_CMD=${PYBIN}/conan
 

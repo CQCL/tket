@@ -55,7 +55,7 @@ jobs:
     - name: Install conan
       id: conan
       run: |
-        pip install conan
+        pip install conan~=1.53
         conan_cmd=/home/runner/.local/bin/conan
         ${conan_cmd} profile new tket --detect
         ${conan_cmd} profile update settings.compiler.libcxx=libstdc++11 tket
