@@ -19,7 +19,7 @@ set -evu
 # Choose a Python to install conan
 export PYBIN=/opt/python/cp39-cp39/bin
 
-${PYBIN}/pip install conan
+${PYBIN}/pip install conan ~= 1.53
 
 export CONAN_CMD=${PYBIN}/conan
 export CONAN_REVISIONS_ENABLED=1

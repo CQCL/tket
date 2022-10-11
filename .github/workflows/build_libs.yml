@@ -65,7 +65,7 @@ jobs:
       with:
         python-version: '3.9'
     - name: install conan
-      run: pip install conan
+      run: pip install conan ~= 1.53
     - name: create profile
       run: conan profile new tket --detect
     - name: set libcxx
@@ -110,7 +110,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install conan
-      run: pip install -U conan
+      run: pip install conan ~= 1.53
     - name: create profile
       run: conan profile new tket --detect --force
     - name: add remote
