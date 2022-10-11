@@ -102,6 +102,7 @@ struct GateUnitaryMatrixImplementations {
   static Eigen::Matrix4cd TK2(double alpha, double beta, double gamma);
   static Matrix8cd XXPhase3(double alpha);
 
+  static Eigen::Matrix<std::complex<double>, 1, 1> Phase(double alpha);
   static Eigen::Matrix2cd PhasedX(double alpha, double beta);
   static Eigen::MatrixXcd NPhasedX(
       unsigned int number_of_qubits, double alpha, double beta);
