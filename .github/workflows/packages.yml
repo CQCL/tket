@@ -64,6 +64,9 @@ jobs:
 
   build_manylinux:
     name: Build on manylinux
+    strategy:
+      matrix:
+        manylinux: ['manylinux2014_x86_64', 'manylinux_2_28_x86_64']
     runs-on: 'ubuntu-22.04'
     steps:
 
@@ -71,7 +74,7 @@ jobs:
 
     - name: Set up container
       run: |
-        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:latest /bin/bash
+        docker create --name linux_build -i -v /:/host quay.io/pypa/${{ matrix.manylinux }}:latest /bin/bash
         docker cp . linux_build:/tket/
 
     - name: Install and upload packages
