@@ -42,7 +42,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Get current time
-      uses: srfrnk/current-time@v1.1.0
+      uses: josStorer/get-current-time@v2.0.1
       id: current_time
       with:
         format: YYYYMMDDHHmmss
