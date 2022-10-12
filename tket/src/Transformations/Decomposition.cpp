@@ -1817,19 +1817,20 @@ Transform decomp_arbitrary_controlled_gates() {
 
 static void substitute_cnx(
     const Command &cmd, const std::optional<qubit_vector_t> &new_args,
-    const bool &as_dagger, Circuit &circ, std::map<int, Circuit> &cnx_cache) {
+    const bool &as_dagger, Circuit &circ,
+    std::map<unsigned, Circuit> &cnx_cache) {
   Circuit cnx;
   qubit_vector_t original_args = cmd.get_qubits();
   bool conditional = cmd.get_op_ptr()->get_type() == OpType::Conditional;
 
   // Compute the decomposition
-  auto cache = cnx_cache.find(original_args.size());
+  auto cache = cnx_cache.find((unsigned)original_args.size());
   if (cache != cnx_cache.end()) {
     cnx = cache->second;
   } else {
     cnx = multi_controlled_to_2q(
         get_op_ptr(OpType::CnX, std::vector<Expr>(), original_args.size()));
-    cnx_cache.insert({original_args.size(), cnx});
+    cnx_cache.insert({(unsigned)original_args.size(), cnx});
   }
 
   // Reorder the replacement circuit by renaming the qubits
@@ -1861,7 +1862,7 @@ Transform cnx_pairwise_decomposition() {
     success |= remove_redundancies().apply(circ);
 
     // Cache CnX decompositions
-    std::map<int, Circuit> cnx_cache;
+    std::map<unsigned, Circuit> cnx_cache;
     // Replaced vertices to delete at the end
     VertexList bin;
 
