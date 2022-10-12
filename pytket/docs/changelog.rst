@@ -1,12 +1,13 @@
 Changelog
 =========
 
-x.y.z (unreleased)
+1.8.0 (unreleased)
 ------------------
+
 Minor new features:
 
+* New ``OpType::Phase`` 0-qubit gate affecting global phase.
 * New ``CnXPairwiseDecomposition`` pass.
-
 
 1.7.3 (October 2022)
 --------------------

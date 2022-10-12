@@ -171,7 +171,6 @@ void LiftedBitsResult::set(
     const std::vector<unsigned>& qubits, unsigned full_number_of_qubits) {
   TKET_ASSERT(full_number_of_qubits >= qubits.size());
   TKET_ASSERT(full_number_of_qubits < 32);
-  TKET_ASSERT(!qubits.empty());
 
   translated_bits.assign(get_matrix_size(qubits.size()), 0);
 

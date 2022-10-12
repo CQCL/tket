@@ -404,7 +404,11 @@ Circuit with_TK2(Gate_ptr op) {
   std::vector<Expr> params = op->get_params();
   unsigned n = op->n_qubits();
   if (n == 0) {
-    return Circuit();
+    Circuit c(0);
+    if (op->get_type() == OpType::Phase) {
+      c.add_phase(op->get_params()[0]);
+    }
+    return c;
   } else if (n == 1) {
     Circuit c(1);
     c.add_op(op, std::vector<unsigned>{0});
@@ -505,7 +509,11 @@ Circuit with_CX(Gate_ptr op) {
   std::vector<Expr> params = op->get_params();
   unsigned n = op->n_qubits();
   if (n == 0) {
-    return Circuit();
+    Circuit c(0);
+    if (op->get_type() == OpType::Phase) {
+      c.add_phase(op->get_params()[0]);
+    }
+    return c;
   } else if (n == 1) {
     Circuit c(1);
     c.add_op(op, std::vector<unsigned>{0});

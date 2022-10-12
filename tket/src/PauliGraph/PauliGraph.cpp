@@ -15,6 +15,7 @@
 #include "PauliGraph.hpp"
 
 #include "Gate/Gate.hpp"
+#include "OpType/OpType.hpp"
 #include "Utils/GraphHeaders.hpp"
 
 namespace tket {
@@ -108,7 +109,9 @@ void PauliGraph::apply_gate_at_end(
     case OpType::CX:
     case OpType::CY:
     case OpType::CZ:
-    case OpType::SWAP: {
+    case OpType::SWAP:
+    case OpType::noop:
+    case OpType::Phase: {
       cliff_.apply_gate_at_end(type, qbs);
       break;
     }

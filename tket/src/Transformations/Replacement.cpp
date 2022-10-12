@@ -16,9 +16,11 @@
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
+#include "Circuit/Circuit.hpp"
 #include "Decomposition.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Gate/GateUnitaryMatrix.hpp"
+#include "OpType/OpType.hpp"
 #include "OpType/OpTypeInfo.hpp"
 #include "Transform.hpp"
 
@@ -116,6 +118,11 @@ Circuit CX_ZX_circ_from_op(const Op_ptr op) {
     throw BadOpType(
         "Can only build replacement circuits for basic gates", desc.type());
   switch (desc.type()) {
+    case OpType::Phase: {
+      Circuit replacement(0);
+      replacement.add_phase(op->get_params()[0]);
+      return replacement;
+    }
     case OpType::Z: {
       Circuit replacement(1);
       replacement.add_op<unsigned>(OpType::Rz, 1., {0});

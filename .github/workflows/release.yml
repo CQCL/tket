@@ -52,6 +52,8 @@ jobs:
         python-version: '3.8'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.1
+      with:
+        version: '1.53.0'
     - name: Set up conan
       shell: bash
       run: ./.github/workflows/conan-setup
@@ -120,6 +122,8 @@ jobs:
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.1
+      with:
+        version: '1.53.0'
     - name: Set up conan
       shell: bash
       run: ./.github/workflows/conan-setup
