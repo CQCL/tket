@@ -895,7 +895,7 @@ def circuit_to_qasm_str(circ: Circuit, header: str = "qelib1") -> str:
     """A method to generate a qasm str from a tket Circuit"""
     buffer = io.StringIO()
     circuit_to_qasm_io(circ, buffer, header=header)
-    return _filtered_qasm_str(buffer)
+    return _filtered_qasm_str(buffer.getvalue())
 
 
 TypeReg = TypeVar("TypeReg", BitRegister, QubitRegister)
