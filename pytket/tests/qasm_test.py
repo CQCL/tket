@@ -18,6 +18,7 @@ from pathlib import Path
 
 import pytest  # type: ignore
 
+from pytket._tket.circuit import _TEMP_BIT_NAME  # type: ignore
 from pytket.circuit import (  # type: ignore
     Circuit,
     OpType,
@@ -501,6 +502,45 @@ def test_custom_gate_with_barrier() -> None:
     assert opcmds[0].op.type == OpType.Barrier
 
 
+def test_scratch_bits_filtering() -> None:
+    # test removing unused scratch register
+    c = Circuit(1)
+    a = c.add_c_register("a", 2)
+    b = c.add_c_register("b", 3)
+    c.add_c_copybits([b[1]], [a[1]], condition=reg_neq(b, 2))
+    assert c.get_c_register(_TEMP_BIT_NAME)
+    qstr = circuit_to_qasm_str(c, "hqslib1")
+    assert _TEMP_BIT_NAME not in qstr
+    # test keeping used
+    c = Circuit(1)
+    a = c.add_c_register("a", 4)
+    b = c.add_c_register("b", 3)
+    c.X(0, condition=(a[0] ^ b[0]))
+    assert c.get_c_register(_TEMP_BIT_NAME)
+    qstr = circuit_to_qasm_str(c, "hqslib1")
+    assert _TEMP_BIT_NAME in qstr
+    # test multiple scratch registers
+    c = circuit_from_qasm_str(
+        f"""
+    OPENQASM 2.0;
+    include "hqslib1.inc";
+    qreg q[1];
+    creg a[1];
+    creg b[1];
+    creg d[2];
+    creg {_TEMP_BIT_NAME}[100];
+    creg {_TEMP_BIT_NAME}_1[100];
+    {_TEMP_BIT_NAME}[0] = (a[0] ^ b[0]);
+    if({_TEMP_BIT_NAME}[0]==1) x q[0];
+    """
+    )
+    assert c.get_c_register(_TEMP_BIT_NAME)
+    assert c.get_c_register(f"{_TEMP_BIT_NAME}_1")
+    qstr = circuit_to_qasm_str(c, "hqslib1")
+    assert _TEMP_BIT_NAME in qstr
+    assert f"{_TEMP_BIT_NAME}_1" not in qstr
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
@@ -518,3 +558,4 @@ if __name__ == "__main__":
     test_new_qelib1_aliases()
     test_h1_rzz()
     test_opaque_gates()
+    test_scratch_bits_filtering()
