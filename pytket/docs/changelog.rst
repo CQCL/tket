@@ -1,13 +1,13 @@
 Changelog
 =========
 
-x.y.z (unreleased)
+1.8.0 (unreleased)
 ------------------
 
-Fixes:
+Minor new features:
 
-* Remove unused ``tk_SCRATCH_BIT`` register from qasm output.
-
+* New ``OpType::Phase`` 0-qubit gate affecting global phase.
+* Remove unused ``tk_SCRATCH_BIT`` registers from qasm output.
 
 1.7.3 (October 2022)
 --------------------

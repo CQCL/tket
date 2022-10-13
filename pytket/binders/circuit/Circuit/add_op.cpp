@@ -1395,7 +1395,13 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "Appends a CSWAP gate on the wires for the specified "
           "control and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("control"), py::arg("target_0"), py::arg("target_1"));
+          py::arg("control"), py::arg("target_0"), py::arg("target_1"))
+      .def(
+          "Phase",
+          [](Circuit *circ, const Expr &angle, const py::kwargs &kwargs) {
+            return add_gate_method_oneparam<UnitID>(
+                circ, OpType::Phase, angle, {}, kwargs);
+          });
 }
 
 }  // namespace tket

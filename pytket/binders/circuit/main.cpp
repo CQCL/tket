@@ -97,6 +97,10 @@ PYBIND11_MODULE(circuit, m) {
       "tket " CLSOBJS(Circuit) ".",
       py::arithmetic())
       .value(
+          "Phase", OpType::Phase,
+          "Global phase: :math:`(\\alpha) \\mapsto \\left[ \\begin{array}{c} "
+          "e^{i\\pi\\alpha} \\end{array} \\right]`")
+      .value(
           "Z", OpType::Z,
           "Pauli Z: :math:`\\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & "
           "-1 \\end{array} \\right]`")
