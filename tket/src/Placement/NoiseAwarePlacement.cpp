@@ -18,12 +18,12 @@
 namespace tket {
 
 NoiseAwarePlacement::NoiseAwarePlacement(
-    const Architecture& _architecture, unsigned _maximum_matches,
-    unsigned _timeout, unsigned _maximum_pattern_gates,
-    unsigned _maximum_pattern_depth,
+    const Architecture& _architecture,
     std::optional<avg_node_errors_t> _node_errors,
     std::optional<avg_link_errors_t> _link_errors,
-    std::optional<avg_readout_errors_t> _readout_errors)
+    std::optional<avg_readout_errors_t> _readout_errors,
+    unsigned _maximum_matches, unsigned _timeout,
+    unsigned _maximum_pattern_gates, unsigned _maximum_pattern_depth)
     : GraphPlacement(
           _architecture, _maximum_matches, _timeout, _maximum_pattern_gates,
           _maximum_pattern_depth) {

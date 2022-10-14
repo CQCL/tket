@@ -234,10 +234,11 @@ def test_routing_and_placement_pass() -> None:
     pl = Placement(arc)
     routing = RoutingPass(arc)
     placement = PlacementPass(pl)
-    # nplacement = NaivePlacementPass(arc)
+    nplacement = NaivePlacementPass(arc)
     cu = CompilationUnit(circ.copy())
     assert placement.apply(cu)
     assert routing.apply(cu)
+    assert nplacement.apply(cu)
     arcnodes = arc.nodes
     expected_map = {
         q[0]: arcnodes[0],

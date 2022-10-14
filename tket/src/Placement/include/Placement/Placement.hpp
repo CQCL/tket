@@ -17,7 +17,7 @@
 #include "Architecture/Architecture.hpp"
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Circuit/Circuit.hpp"
-#include "Graphs/QubitGraph.hpp"
+#include "Placement/QubitGraph.hpp"
 
 namespace tket {
 
@@ -140,9 +140,9 @@ class GraphPlacement : public Placement {
   };
 
   explicit GraphPlacement(
-      const Architecture& _architecture, unsigned _maximum_matches = 2000,
-      unsigned _timeout = 100, unsigned _maximum_pattern_gates = 100,
-      unsigned _maximum_pattern_depth = 100);
+      const Architecture& _architecture, unsigned maximum_matches = 2000,
+      unsigned timeout = 100, unsigned maximum_pattern_gates = 100,
+      unsigned maximum_pattern_depth = 100);
   /**
    * For some Circuit, returns maps between Circuit UnitID and
    * Architecture UnitID that can be used for reassigning UnitID in
@@ -248,12 +248,13 @@ class LinePlacement : public GraphPlacement {
 class NoiseAwarePlacement : public GraphPlacement {
  public:
   explicit NoiseAwarePlacement(
-      const Architecture& _architecture, unsigned _maximum_matches = 2000,
-      unsigned _timeout = 100, unsigned _maximum_pattern_gates = 100,
-      unsigned _maximum_pattern_depth = 100,
+      const Architecture& _architecture,
       std::optional<avg_node_errors_t> _node_errors = std::nullopt,
       std::optional<avg_link_errors_t> _link_errors = std::nullopt,
-      std::optional<avg_readout_errors_t> _readout_errors = std::nullopt);
+      std::optional<avg_readout_errors_t> _readout_errors = std::nullopt,
+      unsigned _maximum_matches = 2000, unsigned _timeout = 100,
+      unsigned _maximum_pattern_gates = 100,
+      unsigned _maximum_pattern_depth = 100);
 
   /**
    * For some Circuit, returns maps between Circuit UnitID and

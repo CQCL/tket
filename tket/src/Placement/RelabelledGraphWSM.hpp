@@ -29,7 +29,7 @@ namespace WeightedSubgraphMonomorphism {
 template <class VertexType, class GraphType>
 class RelabelledGraphWSM {
  public:
-  explicit RelabelledGraphWSM(GraphType& graph) {
+  explicit RelabelledGraphWSM(const GraphType& graph) {
     // Get the new vertex integer labels.
     m_original_vertices.reserve(boost::num_vertices(graph));
     {

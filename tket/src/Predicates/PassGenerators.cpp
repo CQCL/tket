@@ -311,7 +311,9 @@ PassPtr gen_routing_pass(
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
-PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
+PassPtr gen_placement_pass_phase_poly(
+    const Architecture& arc, unsigned maximum_matches, unsigned timeout,
+    unsigned maximum_pattern_gates, unsigned maximum_pattern_depth) {
   Transform::Transformation trans = [=](Circuit& circ,
                                         std::shared_ptr<unit_bimaps_t> maps) {
     if (arc.n_nodes() < circ.n_qubits()) {
@@ -353,7 +355,9 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
   // record pass config
   nlohmann::json j;
   j["name"] = "PlacementPass";
-  Placement::Ptr pp = std::make_shared<GraphPlacement>(arc, 100, 100);
+  Placement::Ptr pp = std::make_shared<GraphPlacement>(
+      arc, maximum_matches, timeout, maximum_pattern_gates,
+      maximum_pattern_depth);
   j["params"]["placement"] = pp;
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
@@ -481,8 +485,15 @@ PassPtr aas_routing_pass(
 
 PassPtr gen_full_mapping_pass_phase_poly(
     const Architecture& arc, const unsigned lookahead,
-    const aas::CNotSynthType cnotsynthtype) {
-  return ComposePhasePolyBoxes() >> gen_placement_pass_phase_poly(arc) >>
+    const aas::CNotSynthType cnotsynthtype,
+    unsigned graph_placement_maximum_matches, unsigned graph_placement_timeout,
+    unsigned graph_placement_maximum_pattern_gates,
+    unsigned graph_placement_maximum_pattern_depth) {
+  return ComposePhasePolyBoxes() >>
+         gen_placement_pass_phase_poly(
+             arc, graph_placement_maximum_matches, graph_placement_timeout,
+             graph_placement_maximum_pattern_gates,
+             graph_placement_maximum_pattern_depth) >>
          aas_routing_pass(arc, lookahead, cnotsynthtype);
 }
 

@@ -64,6 +64,7 @@ PYBIND11_MODULE(placement, m) {
                  py::arg("arc"))
             .def("__repr__",
                  [](const Placement &) { return "<tket::Placement>"; })
+            .
             .def("place",
               [](Placement &placement, Circuit &circ) {
                 return placement.place(circ);
@@ -118,11 +119,13 @@ PYBIND11_MODULE(placement, m) {
           "object describes the connectivity "
           "between qubits. In this class, a reduced qubit interaction"
           "subgraph is constructed where each node has maximum outdegree 2"
-          "and does not construct a circle (i.e. lines)".
-          "To place the Circuit, a Hamiltonian Path is found in the Architecture"
+          "and does not construct a circle (i.e. lines)."
+          "To place the Circuit, a Hamiltonian Path is found in the "
+          "Architecture"
           "and this subgraph of lines is assigned along it."
           "\n\n:param arc: An Architecture object."
-          "\n:param maximum_line_gates: maximum number of gates in the circuit considered "
+          "\n:param maximum_line_gates: maximum number of gates in the circuit "
+          "considered "
           "when constructing lines for assigning to the graph"
           "\n:param maximum_line_depth: maximum depth of circuit considered "
           "when constructing lines for assigning to the graph",
@@ -171,8 +174,8 @@ PYBIND11_MODULE(placement, m) {
       "to find the best placement map.")
       .def(
           py::init<
-              Architecture &, unsigned, unsigned, unsigned, unsigned,
-              avg_node_errors_t, avg_link_errors_t, avg_readout_errors_t>(),
+              Architecture &, avg_node_errors_t, avg_link_errors_t,
+              avg_readout_errors_t, unsigned, unsigned, unsigned, unsigned>(),
           "The constructor for a NoiseAwarePlacement object. The Architecture"
           " object describes the connectivity between qubits. "
           "The dictionaries passed as parameters indicate the average "
@@ -180,6 +183,12 @@ PYBIND11_MODULE(placement, m) {
           "errors.  If no error is given for a given node or pair of nodes,"
           "the fidelity is assumed to be 1."
           "\n\n:param arc: An Architecture object\n"
+          ":param node_errors: a dictionary mapping nodes in the "
+          "architecture to average single-qubit gate errors\n"
+          ":param link_errors: a dictionary mapping pairs of nodes in the "
+          "architecture to average two-qubit gate errors\n"
+          ":param readout_errors: a dictionary mapping nodes in the "
+          "architecture to average measurement readout errors.\n"
           ":param maximum_matches: The total number of weighted subgraph "
           "monomorphisms that can be found before matches are returned.\n"
           ":param timeout: Total time in seconds before stopping search for "
@@ -189,19 +198,13 @@ PYBIND11_MODULE(placement, m) {
           "subgraph monomorphisms.\n"
           ":param maximum_pattern_depth: The upper bound on the circuit depth "
           "gates are added to the pattern graph to for finding subgraph "
-          "monomorphisms.\n"
-          ":param node_errors: a dictionary mapping nodes in the "
-          "architecture to average single-qubit gate errors\n"
-          ":param link_errors: a dictionary mapping pairs of nodes in the "
-          "architecture to average two-qubit gate errors\n"
-          ":param readout_errors: a dictionary mapping nodes in the "
-          "architecture to average measurement readout errors.",
-          py::arg("arc"), py::arg("maximum_matches") = 1000,
-          py::arg("timeout") = 1000, py::arg("maximum_pattern_gates") = 100,
-          py::arg("maximum_pattern_depth") = 100,
-          py::arg("node_errors") = py::dict(),
+          "monomorphisms.",
+          py::arg("arc"), py::arg("node_errors") = py::dict(),
           py::arg("link_errors") = py::dict(),
-          py::arg("readout_errors") = py::dict())
+          py::arg("readout_errors") = py::dict(),
+          py::arg("maximum_matches") = 1000, py::arg("timeout") = 1000,
+          py::arg("maximum_pattern_gates") = 100,
+          py::arg("maximum_pattern_depth") = 100)
       .def("__repr__", [](const Placement &) {
         return "<tket::NoiseAwarePlacement>";
       });

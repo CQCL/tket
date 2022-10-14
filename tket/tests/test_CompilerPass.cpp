@@ -645,8 +645,13 @@ SCENARIO("gen_placement_pass test") {
     CompilationUnit graph_cu((Circuit(circ)));
     graph_place->apply(graph_cu);
     // Get a noise - aware placement
-    PassPtr noise_place = gen_placement_pass(
-        std::make_shared<NoiseAwarePlacement>(line_arc, 10, 1000000));
+    avg_node_errors_t empty_node_errors = {};
+    avg_readout_errors_t empty_readout_errors = {};
+    avg_link_errors_t empty_link_errors = {};
+    PassPtr noise_place =
+        gen_placement_pass(std::make_shared<NoiseAwarePlacement>(
+            line_arc, empty_node_errors, empty_link_errors,
+            empty_readout_errors, 10, 1000000));
     CompilationUnit noise_cu((Circuit(circ)));
     noise_place->apply(noise_cu);
     // Get a line placement
@@ -661,8 +666,10 @@ SCENARIO("gen_placement_pass test") {
     graph_fall_back_place->apply(graph_fall_back_cu);
     // Get a fall back placement from a noise -
     // aware placement
-    PassPtr noise_fall_back_place = gen_placement_pass(
-        std::make_shared<NoiseAwarePlacement>(line_arc, 1000000, 0));
+    PassPtr noise_fall_back_place =
+        gen_placement_pass(std::make_shared<NoiseAwarePlacement>(
+            line_arc, empty_node_errors, empty_link_errors,
+            empty_readout_errors, 1000000, 0));
     CompilationUnit noise_fall_back_cu((Circuit(circ)));
     noise_fall_back_place->apply(noise_fall_back_cu);
 

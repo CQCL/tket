@@ -79,10 +79,6 @@ std::map<Qubit, Node> LinePlacement::assign_lines_to_target_graph(
     n_unused_nodes++;
     line_pattern.pop_back();
   }
-  // We want to find a useable subgraph of the Architecture for assigning these
-  // Qubit Note that this currently requires removing Nodes from the
-  // Architecture so we produce a copy
-  // TODO: see TKET-2494
   Architecture copy = this->architecture_;
   node_set_t all_architecture_nodes = this->architecture_.nodes();
   node_set_t bad_nodes;

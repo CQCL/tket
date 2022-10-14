@@ -177,9 +177,13 @@ void from_json(const nlohmann::json& j, Placement::Ptr& placement_ptr) {
     unsigned max_pattern_depth = j.at("maximum_pattern_depth").get<unsigned>();
     DeviceCharacterisation characterisation =
         j.at("characterisation").get<DeviceCharacterisation>();
+    avg_node_errors_t empty_node_errors = {};
+    avg_readout_errors_t empty_readout_errors = {};
+    avg_link_errors_t empty_link_errors = {};
     std::shared_ptr<NoiseAwarePlacement> nap =
         std::make_shared<NoiseAwarePlacement>(
-            arc, matches, timeout, max_pattern_gates, max_pattern_depth);
+            arc, empty_node_errors, empty_link_errors, empty_readout_errors,
+            matches, timeout, max_pattern_gates, max_pattern_depth);
     nap->set_characterisation(characterisation);
     placement_ptr = nap;
   } else {

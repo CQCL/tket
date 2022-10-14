@@ -106,7 +106,11 @@ PassPtr aas_routing_pass(
  */
 PassPtr gen_full_mapping_pass_phase_poly(
     const Architecture& arc, const unsigned lookahead = 1,
-    const aas::CNotSynthType cnotsynthtype = aas::CNotSynthType::Rec);
+    const aas::CNotSynthType cnotsynthtype = aas::CNotSynthType::Rec,
+    unsigned graph_placement_maximum_matches = 2000,
+    unsigned graph_placement_timeout = 100,
+    unsigned graph_placement_maximum_pattern_gates = 100,
+    unsigned graph_placement_maximum_pattern_depth = 100);
 
 /**
  * pass to place all not yet placed qubits of the circuit to the given
@@ -114,7 +118,10 @@ PassPtr gen_full_mapping_pass_phase_poly(
  * @param arc achitecture to place the circuit on
  * @return passpointer to perfomr the mapping
  */
-PassPtr gen_placement_pass_phase_poly(const Architecture& arc);
+PassPtr gen_placement_pass_phase_poly(
+    const Architecture& arc, unsigned _maximum_matches = 2000,
+    unsigned _timeout = 100, unsigned _maximum_pattern_gates = 100,
+    unsigned _maximum_pattern_depth = 100);
 
 PassPtr gen_decompose_routing_gates_to_cxs_pass(
     const Architecture& arc = Architecture(), bool directed = false);
