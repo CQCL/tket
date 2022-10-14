@@ -167,7 +167,6 @@ void MappingFrontier::advance_next_2qb_slice(unsigned max_advance) {
       *(this->circuit_
             .next_cut(current_frontier, std::make_shared<b_frontier_t>())
             .slice);
-
   do {
     // each do section first finds the next set of edges after the held set
     // for edges with target vertices with all their edges presented in the
