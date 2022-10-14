@@ -479,25 +479,24 @@ void MappingFrontier::update_linear_boundary_uids(
     const unit_map_t& relabelled_uids) {
   for (const std::pair<const UnitID, UnitID>& label : relabelled_uids) {
     // implies new labelling
-    if (label.first != label.second) {
+    if (label.first != label.second &&
+        this->reassignable_nodes_.find(Node(label.second)) ==
+            this->reassignable_nodes_.end()) {
       // by type, label.first already assumed in circuit
       // this condition means label.second also in circuit
       // implies that a merging is done -> remove first qubit
-      if (this->reassignable_nodes_.find(Node(label.second)) ==
-          this->reassignable_nodes_.end()) {
-        if (this->linear_boundary->get<TagKey>().find(label.second) !=
-            this->linear_boundary->get<TagKey>().end()) {
-          // erase, assume updated already
-          this->linear_boundary->erase(label.first);
-        } else {
-          auto current_label_it =
-              this->linear_boundary->get<TagKey>().find(label.first);
-          // relabel "label.first" with "label.second"
-          this->linear_boundary->replace(
-              current_label_it, {label.second, current_label_it->second});
-          unit_map_t relabel = {label};
-          this->circuit_.rename_units(relabel);
-        }
+      if (this->linear_boundary->get<TagKey>().find(label.second) !=
+          this->linear_boundary->get<TagKey>().end()) {
+        // erase, assume updated already
+        this->linear_boundary->erase(label.first);
+      } else {
+        auto current_label_it =
+            this->linear_boundary->get<TagKey>().find(label.first);
+        // relabel "label.first" with "label.second"
+        this->linear_boundary->replace(
+            current_label_it, {label.second, current_label_it->second});
+        unit_map_t relabel = {label};
+        this->circuit_.rename_units(relabel);
       }
     }
   }
