@@ -93,9 +93,10 @@ PYBIND11_MODULE(placement, m) {
                  "are Architecture appropriate for the given Circuit. Each map is "
                  "estimated to given a similar SWAP overheard after routing. "
                  "\n\n:param circuit: The circuit the maps are designed for."
+                 "\n:param matches: The maximum number of maps returned by the method."
                  "\n:return: list of dictionaries mapping " CLSOBJS(Qubit) " "
                  "to " CLSOBJS(Node),
-                 py::arg("circuit"), py::arg("matches"))
+                 py::arg("circuit"), py::arg("matches")=100)
             .def(
                 "to_dict", [](const Placement::Ptr &placement) { return json(placement); },
                 "Return a JSON serializable dict representation of "
@@ -115,11 +116,16 @@ PYBIND11_MODULE(placement, m) {
           py::init<Architecture &, unsigned, unsigned>(),
           "The constructor for a LinePlacement object. The Architecture "
           "object describes the connectivity "
-          "between qubits.\n\n:param arc: An Architecture object."
-          "\n:param maximum_line_gates: maximum number of gates used to "
-          "construct lines."
-          "\n:param maximum_line_depth: maximum depth gates are used to "
-          "construct lines.",
+          "between qubits. In this class, a reduced qubit interaction"
+          "subgraph is constructed where each node has maximum outdegree 2"
+          "and does not construct a circle (i.e. lines)".
+          "To place the Circuit, a Hamiltonian Path is found in the Architecture"
+          "and this subgraph of lines is assigned along it."
+          "\n\n:param arc: An Architecture object."
+          "\n:param maximum_line_gates: maximum number of gates in the circuit considered "
+          "when constructing lines for assigning to the graph"
+          "\n:param maximum_line_depth: maximum depth of circuit considered "
+          "when constructing lines for assigning to the graph",
           py::arg("arc"), py::arg("maximum_line_gates") = 100,
           py::arg("maximum_line_depth") = 100)
       .def("__repr__", [](const Placement &) {
