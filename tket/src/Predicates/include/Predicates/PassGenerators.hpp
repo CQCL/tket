@@ -128,6 +128,18 @@ PassPtr gen_full_mapping_pass_phase_poly(
  * pass to place all not yet placed qubits of the circuit to the given
  * architecture for the architecture aware synthesis.
  * @param arc achitecture to place the circuit on
+ * @param _maximum_matches parameter effecting the number of
+ * matches found during the GraphPlacement substep
+ * @param _timeout timeout for finding subgraph monomorphisms
+ * during the GraphPlacement substep
+ * @param _maximum_pattern_gates parameter effecting the size
+ * of the target graph, constructed from a phase polynomial, during
+ * the GraphPlacement substep, by restricting the number of gates in
+ * the phase polynomial used
+ * @param _maximum_pattern_depth parameter effecting
+ * the size of the target graph, constructed from a phase polynomial,
+ * during the GraphPlacement substep, by restricting the depth of gates
+ * in the phase polynomial that are added to the target graph
  * @return passpointer to perfomr the mapping
  */
 PassPtr gen_placement_pass_phase_poly(
