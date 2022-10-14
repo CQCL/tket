@@ -443,14 +443,10 @@ bool LexiRoute::set_interacting_uids(
   }
   // this should have left early when first found
   if (route_check == CheckRoutingValidity::Yes) {
-    if (all_placed) {
-      if (interacting_uids_.size() > 0) {
-        return true;
-      }
-      return false;
-    } else {
-      return false;
+    if (all_placed && interacting_uids_.size() > 0) {
+      return true;
     }
+    return false;
   }
   // => either route_check true and all_placed so valid
   // or !route_check and !label_check so return true and discard
