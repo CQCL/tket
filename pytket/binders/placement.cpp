@@ -64,7 +64,6 @@ PYBIND11_MODULE(placement, m) {
                  py::arg("arc"))
             .def("__repr__",
                  [](const Placement &) { return "<tket::Placement>"; })
-            .
             .def("place",
               [](Placement &placement, Circuit &circ) {
                 return placement.place(circ);
@@ -161,9 +160,20 @@ PYBIND11_MODULE(placement, m) {
           py::arg("arc"), py::arg("maximum_matches") = 1000,
           py::arg("timeout") = 1000, py::arg("maximum_pattern_gates") = 100,
           py::arg("maximum_pattern_depth") = 100)
-      .def("__repr__", [](const Placement &) {
-        return "<tket::GraphPlacement>";
-      });
+      .def(
+          "__repr__",
+          [](const Placement &) { return "<tket::GraphPlacement>"; })
+      .def(
+          "modify_config",
+          [](GraphPlacement& /*pobj*/, py::kwargs /*kwargs*/) {
+            std::cout << "GraphPlacement.modify_config no longer changes the "
+                         "parameters for finding solutions. Please create a "
+                         "new GraphPlacement object with the desired changes."
+                      << std::endl;
+            return;
+          },
+          "Deprecated and no longer modifies paramters for finding solutions. "
+          "Please create a new GraphPlacement object instead");
 
   py::class_<
       NoiseAwarePlacement, std::shared_ptr<NoiseAwarePlacement>, Placement>(
@@ -205,9 +215,20 @@ PYBIND11_MODULE(placement, m) {
           py::arg("maximum_matches") = 1000, py::arg("timeout") = 1000,
           py::arg("maximum_pattern_gates") = 100,
           py::arg("maximum_pattern_depth") = 100)
-      .def("__repr__", [](const Placement &) {
-        return "<tket::NoiseAwarePlacement>";
-      });
+      .def(
+          "__repr__",
+          [](const Placement &) { return "<tket::NoiseAwarePlacement>"; })
+      .def(
+          "modify_config",
+          [](NoiseAwarePlacement& /*pobj*/, py::kwargs /*kwargs*/) {
+            std::cout << "NoiseAwarePlacement.modify_config no longer changes "
+                         "the parameters for finding solutions. Please create "
+                         "a new GraphPlacement object with the desired changes."
+                      << std::endl;
+            return;
+          },
+          "Deprecated and no longer modifies paramters for finding solutions. "
+          "Please create a new NoiseAwarePlacement object instead");
 
   m.def(
       "place_with_map", &place_with_map,
