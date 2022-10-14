@@ -17,7 +17,9 @@
 #include "Converters/Converters.hpp"
 #include "Converters/PauliGadget.hpp"
 #include "Decomposition.hpp"
+#include "OpType/OpType.hpp"
 #include "OpType/OpTypeInfo.hpp"
+#include "Ops/Op.hpp"
 #include "OptimisationPass.hpp"
 #include "PauliGraph/PauliGraph.hpp"
 #include "Transform.hpp"
@@ -134,16 +136,17 @@ Transform pairwise_pauli_gadgets(CXConfigType cx_config) {
           pauli_gadgets.push_back({rx_pauli[q], angle});
           break;
         }
+        case OpType::noop:
+        case OpType::Phase:
         case OpType::Measure:
         case OpType::Collapse:
         case OpType::Reset:
           break;
         default: {
           std::string error_gate =
-              "Cannot perform pairwise Pauli gadget optimisation "
-              "using: " +
+              "Cannot perform pairwise Pauli gadget optimisation using: " +
               op_ptr->get_name();
-          throw BadOpType(type);
+          throw BadOpType(error_gate, type);
         }
       }
       // Add Clifford gates to the back of the circuit to recreate the final

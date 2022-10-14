@@ -286,7 +286,8 @@ void CliffTableau::apply_gate_at_front(
       apply_CX_at_front(qbs.at(0), qbs.at(2));
       break;
     }
-    case OpType::noop: {
+    case OpType::noop:
+    case OpType::Phase: {
       break;
     }
     default: {
@@ -381,7 +382,8 @@ void CliffTableau::apply_gate_at_end(
       apply_CX_at_end(qbs.at(0), qbs.at(2));
       break;
     }
-    case OpType::noop: {
+    case OpType::noop:
+    case OpType::Phase: {
       break;
     }
     default: {
