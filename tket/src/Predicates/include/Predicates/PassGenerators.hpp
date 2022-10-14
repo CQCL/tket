@@ -102,6 +102,18 @@ PassPtr aas_routing_pass(
  * @param lookahead parameter for the recursion depth in the algorithm, the
  * value should be > 0
  * @param cnotsynthtype parameter for the type of cnot synth
+ * @param graph_placement_maximum_matches parameter effecting the number of
+ * matches found during the GraphPlacement substep
+ * @param graph_placement_timeout timeout for finding subgraph monomorphisms
+ * during the GraphPlacement substep
+ * @param graph_placement_maximum_pattern_gates parameter effecting the size
+ * of the target graph, constructed from a phase polynomial, during
+ * the GraphPlacement substep, by restricting the number of gates in
+ * the phase polynomial used
+ * @param graph_placement_maximum_pattern_depth parameter effecting
+ * the size of the target graph, constructed from a phase polynomial,
+ * during the GraphPlacement substep, by restricting the depth of gates
+ * in the phase polynomial that are added to the target graph
  * @return passpointer to perform architecture aware synthesis
  */
 PassPtr gen_full_mapping_pass_phase_poly(
@@ -109,8 +121,8 @@ PassPtr gen_full_mapping_pass_phase_poly(
     const aas::CNotSynthType cnotsynthtype = aas::CNotSynthType::Rec,
     unsigned graph_placement_maximum_matches = 2000,
     unsigned graph_placement_timeout = 100,
-    unsigned graph_placement_maximum_pattern_gates = 100,
-    unsigned graph_placement_maximum_pattern_depth = 100);
+    unsigned graph_placement_maximum_pattern_gates = 2000,
+    unsigned graph_placement_maximum_pattern_depth = 2000);
 
 /**
  * pass to place all not yet placed qubits of the circuit to the given
