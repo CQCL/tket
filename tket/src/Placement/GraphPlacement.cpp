@@ -38,7 +38,7 @@ GraphPlacement::GraphPlacement(
 }
 
 const std::vector<GraphPlacement::WeightedEdge>
-GraphPlacement::default_pattern_weighting(const Circuit& circuit) {
+GraphPlacement::default_pattern_weighting(const Circuit& circuit) const {
   GraphPlacement::Frontier frontier(circuit);
   unsigned gate_counter = 0;
   std::vector<GraphPlacement::WeightedEdge> weights;
@@ -95,7 +95,8 @@ GraphPlacement::default_pattern_weighting(const Circuit& circuit) {
 }
 
 const std::vector<GraphPlacement::WeightedEdge>
-GraphPlacement::default_target_weighting(Architecture& passed_architecture) {
+GraphPlacement::default_target_weighting(
+    Architecture& passed_architecture) const {
   std::vector<Node> all_nodes = passed_architecture.get_all_nodes_vec();
   std::vector<GraphPlacement::WeightedEdge> weights;
   unsigned diameter = passed_architecture.get_diameter();
@@ -171,7 +172,7 @@ std::vector<boost::bimap<Qubit, Node>>
 GraphPlacement::get_all_weighted_subgraph_monomorphisms(
     const Circuit& circ_,
     const std::vector<GraphPlacement::WeightedEdge>& weighted_pattern_edges,
-    bool return_best) {
+    bool return_best) const {
   // we routinely check time, and throw a runtime_error if breached
   const auto init_start = Clock::now();
   if (circ_.n_qubits() > this->architecture_.n_nodes()) {
@@ -283,7 +284,7 @@ GraphPlacement::get_all_weighted_subgraph_monomorphisms(
 }
 
 std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
-    const Circuit& circ_, unsigned matches) {
+    const Circuit& circ_, unsigned matches) const {
   std::vector<WeightedEdge> weighted_pattern_edges =
       this->default_pattern_weighting(circ_);
   std::vector<boost::bimap<Qubit, Node>> all_bimaps =

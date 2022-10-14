@@ -104,6 +104,11 @@ def test_placements_serialization() -> None:
     assert GraphPlacement.from_dict(graph_pl_serial).to_dict() == graph_pl_serial
     assert NoiseAwarePlacement.from_dict(noise_pl_serial).to_dict() == noise_pl_serial
 
+def test_placement_config() -> None:
+    test_coupling = [(0, 1)]
+    test_architecture = Architecture(test_coupling)
+    test_pl = GraphPlacement(test_architecture)
+    assert test_pl.modify_config() == None
 
 def test_convert_index_mapping() -> None:
     test_circuit = Circuit(6)
@@ -240,3 +245,4 @@ if __name__ == "__main__":
     test_place_with_map_twice()
     test_big_placement()
     test_place_fully_connected()
+    test_placement_config()

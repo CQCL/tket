@@ -26,7 +26,7 @@ LinePlacement::LinePlacement(
 }
 
 std::vector<qubit_vector_t> LinePlacement::interactions_to_lines(
-    const Circuit& circ_) {
+    const Circuit& circ_) const {
   qubit_vector_t all_qubits_v = circ_.all_qubits();
   std::vector<WeightedEdge> pattern_weighting =
       this->default_pattern_weighting(circ_);
@@ -68,7 +68,7 @@ std::vector<qubit_vector_t> LinePlacement::interactions_to_lines(
 }
 
 std::map<Qubit, Node> LinePlacement::assign_lines_to_target_graph(
-    std::vector<qubit_vector_t>& line_pattern, unsigned n_qubits) {
+    std::vector<qubit_vector_t>& line_pattern, unsigned n_qubits) const {
   unsigned n_unused_nodes = this->architecture_.n_nodes() - n_qubits;
   // Sort lines from longest to shortest
   std::sort(
@@ -118,7 +118,7 @@ std::map<Qubit, Node> LinePlacement::assign_lines_to_target_graph(
 }
 
 std::vector<std::map<Qubit, Node>> LinePlacement::get_all_placement_maps(
-    const Circuit& circ_, unsigned /*matches*/) {
+    const Circuit& circ_, unsigned /*matches*/) const {
   std::vector<qubit_vector_t> qb_lines = this->interactions_to_lines(circ_);
   if (!qb_lines.empty()) {
     return {this->assign_lines_to_target_graph(qb_lines, circ_.n_qubits())};

@@ -51,7 +51,7 @@ Placement::Placement(const Architecture& _architecture)
     : architecture_(_architecture){};
 
 bool Placement::place(
-    Circuit& circ_, std::shared_ptr<unit_bimaps_t> compilation_map) {
+    Circuit& circ_, std::shared_ptr<unit_bimaps_t> compilation_map) const {
   if (circ_.n_qubits() > this->architecture_.n_nodes()) {
     throw std::invalid_argument(
         "Circuit has more qubits than Architecture has nodes.");
@@ -68,7 +68,7 @@ bool Placement::place_with_map(
   return changed;
 }
 
-std::map<Qubit, Node> Placement::get_placement_map(const Circuit& circ_) {
+std::map<Qubit, Node> Placement::get_placement_map(const Circuit& circ_) const {
   std::vector<std::map<Qubit, Node>> all_maps =
       this->get_all_placement_maps(circ_, 1);
 
@@ -85,7 +85,7 @@ std::map<Qubit, Node> Placement::get_placement_map(const Circuit& circ_) {
 }
 
 std::vector<std::map<Qubit, Node>> Placement::get_all_placement_maps(
-    const Circuit& circ_, unsigned /*matches*/) {
+    const Circuit& circ_, unsigned /*matches*/) const {
   std::map<Qubit, Node> placement;
   qubit_vector_t to_place;
   std::vector<Node> placed;

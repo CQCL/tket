@@ -117,7 +117,7 @@ std::vector<std::map<Qubit, Node>> NoiseAwarePlacement::rank_maps(
 }
 
 std::vector<std::map<Qubit, Node>> NoiseAwarePlacement::get_all_placement_maps(
-    const Circuit& circ_, unsigned matches) {
+    const Circuit& circ_, unsigned matches) const {
   std::vector<WeightedEdge> weighted_pattern_edges =
       this->default_pattern_weighting(circ_);
   std::vector<boost::bimap<Qubit, Node>> placement_maps =

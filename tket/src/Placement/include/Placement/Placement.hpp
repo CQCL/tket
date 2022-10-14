@@ -38,7 +38,8 @@ class Placement {
    * @return true iff circuit or maps are modified
    */
   bool place(
-      Circuit& circ_, std::shared_ptr<unit_bimaps_t> compilation_map = nullptr);
+      Circuit& circ_,
+      std::shared_ptr<unit_bimaps_t> compilation_map = nullptr) const;
 
   /**
    * Reassigns some UnitID in circ_ as UnitID in architecture_, according to
@@ -64,7 +65,7 @@ class Placement {
    *
    * @return Map between Circuit and Architecture UnitID
    */
-  std::map<Qubit, Node> get_placement_map(const Circuit& circ_);
+  std::map<Qubit, Node> get_placement_map(const Circuit& circ_) const;
 
   /**
    *
@@ -78,7 +79,7 @@ class Placement {
    * @return Map between Circuit and Architecture UnitID
    */
   virtual std::vector<std::map<Qubit, Node>> get_all_placement_maps(
-      const Circuit& circ_, unsigned /*matches*/);
+      const Circuit& circ_, unsigned /*matches*/) const;
 
   /**
    * Returns a reference to held Architecture.
@@ -155,7 +156,7 @@ class GraphPlacement : public Placement {
    * @return Map between Circuit and Architecture UnitID
    */
   std::vector<std::map<Qubit, Node>> get_all_placement_maps(
-      const Circuit& circ_, unsigned matches) override;
+      const Circuit& circ_, unsigned matches) const override;
 
   /**
    * @return maximum matches found during placement
@@ -188,15 +189,15 @@ class GraphPlacement : public Placement {
   unsigned maximum_pattern_gates_;
   unsigned maximum_pattern_depth_;
 
-  std::vector<WeightedEdge> weighted_target_edges;
+  mutable std::vector<WeightedEdge> weighted_target_edges;
 
   //   we can use a vector as we index by incrementing size
-  std::vector<Architecture::UndirectedConnGraph> extended_target_graphs;
+  mutable std::vector<Architecture::UndirectedConnGraph> extended_target_graphs;
 
   const std::vector<WeightedEdge> default_pattern_weighting(
-      const Circuit& circuit);
+      const Circuit& circuit) const;
   const std::vector<WeightedEdge> default_target_weighting(
-      Architecture& passed_architecture);
+      Architecture& passed_architecture) const;
 
   QubitGraph construct_pattern_graph(
       const std::vector<WeightedEdge>& edges, unsigned max_out_degree) const;
@@ -208,7 +209,7 @@ class GraphPlacement : public Placement {
   get_all_weighted_subgraph_monomorphisms(
       const Circuit& circ_,
       const std::vector<WeightedEdge>& weighted_pattern_edges,
-      bool return_best);
+      bool return_best) const;
 };
 
 /** Solves the pure unweighted subgraph monomorphism problem, trying
@@ -236,13 +237,13 @@ class LinePlacement : public GraphPlacement {
    * @return Map between Circuit and Architecture UnitID
    */
   std::vector<std::map<Qubit, Node>> get_all_placement_maps(
-      const Circuit& circ_, unsigned /*matches*/) override;
+      const Circuit& circ_, unsigned /*matches*/) const override;
 
  private:
-  std::vector<qubit_vector_t> interactions_to_lines(const Circuit& circ_);
+  std::vector<qubit_vector_t> interactions_to_lines(const Circuit& circ_) const;
 
   std::map<Qubit, Node> assign_lines_to_target_graph(
-      std::vector<qubit_vector_t>& line_pattern, unsigned n_qubits);
+      std::vector<qubit_vector_t>& line_pattern, unsigned n_qubits) const;
 };
 
 class NoiseAwarePlacement : public GraphPlacement {
@@ -271,7 +272,7 @@ class NoiseAwarePlacement : public GraphPlacement {
    * @return Map between Circuit and Architecture UnitID
    */
   std::vector<std::map<Qubit, Node>> get_all_placement_maps(
-      const Circuit& circ_, unsigned matches) override;
+      const Circuit& circ_, unsigned matches) const override;
 
   /**
    * @return maximum depth to search to find gates to construct pattern graph

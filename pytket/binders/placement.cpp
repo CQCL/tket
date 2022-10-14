@@ -65,7 +65,7 @@ PYBIND11_MODULE(placement, m) {
             .def("__repr__",
                  [](const Placement &) { return "<tket::Placement>"; })
             .def("place",
-              [](Placement &placement, Circuit &circ) {
+              [](const Placement &placement, Circuit &circ) {
                 return placement.place(circ);
               },
               "Relabels Circuit Qubits to Architecture Nodes and 'unplaced'. For "
@@ -144,7 +144,22 @@ PYBIND11_MODULE(placement, m) {
               const Architecture &, unsigned, unsigned, unsigned, unsigned>(),
           "The constructor for a GraphPlacement object. The Architecture "
           "object describes the connectivity "
-          "between qubits.\n\n:param arc: An Architecture object.\n"
+          "between qubits. To find a qubit to node assignment, this method "
+          "constructs a pattern graph where vertices are Circuit qubits and "
+          "edges mean a pair of qubits have an interaction in the circuit, "
+          "and then tries to find a weighted subgraph monomorphsim to the "
+          "architecture connectivity, or target, graph. Edges in the pattern "
+          "graph are weighted by the circuit depth the interaction between a "
+          "pair of qubit occurs at. "
+          "The number of edges added to the pattern graph is effected by the "
+          "maximum_pattern_gates and maximum_pattern_depth arguments. "
+          "If no subgraph monomorphism can be found, "
+          "Lower edge weights are removed from the pattern graph, are more "
+          "edges "
+          "are added to the target graph. Edges added to the pattern graph are "
+          "weighted lower to reflect what the distance between the Nodes they  "
+          "are added between was on the original target graph. "
+          "\n\n:param arc: An Architecture object.\n"
           ":param maximum_matches: The total number of weighted subgraph "
           "monomorphisms that can be found before matches are "
           "returned.\n"
@@ -165,7 +180,7 @@ PYBIND11_MODULE(placement, m) {
           [](const Placement &) { return "<tket::GraphPlacement>"; })
       .def(
           "modify_config",
-          [](GraphPlacement& /*pobj*/, py::kwargs /*kwargs*/) {
+          [](GraphPlacement & /*pobj*/, py::kwargs /*kwargs*/) {
             std::cout << "GraphPlacement.modify_config no longer changes the "
                          "parameters for finding solutions. Please create a "
                          "new GraphPlacement object with the desired changes."
@@ -220,7 +235,7 @@ PYBIND11_MODULE(placement, m) {
           [](const Placement &) { return "<tket::NoiseAwarePlacement>"; })
       .def(
           "modify_config",
-          [](NoiseAwarePlacement& /*pobj*/, py::kwargs /*kwargs*/) {
+          [](NoiseAwarePlacement & /*pobj*/, py::kwargs /*kwargs*/) {
             std::cout << "NoiseAwarePlacement.modify_config no longer changes "
                          "the parameters for finding solutions. Please create "
                          "a new GraphPlacement object with the desired changes."
