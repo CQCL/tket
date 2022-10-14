@@ -30,6 +30,7 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
 
   // OpTypeInfo: name, latex_name, param_mod, signature
   static const std::map<OpType, OpTypeInfo> typeinfo{
+      {OpType::Phase, {"Phase", "Phase", {2}, noargs}},
       {OpType::Z, {"Z", "$Z$", {}, singleq}},
       {OpType::X, {"X", "$X$", {}, singleq}},
       {OpType::Y, {"Y", "$Y$", {}, singleq}},

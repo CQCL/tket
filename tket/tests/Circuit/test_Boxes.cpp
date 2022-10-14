@@ -16,6 +16,7 @@
 #include <catch2/matchers/catch_matchers_string.hpp>
 
 #include "../testutil.hpp"
+#include "Circuit/Boxes.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Converters/PhasePoly.hpp"
@@ -892,6 +893,18 @@ SCENARIO("QControlBox", "[boxes]") {
         V(4 + i, 4 + j) = U(i, j);
       }
     }
+    REQUIRE(U1.isApprox(V));
+  }
+  GIVEN("controlled phase") {
+    Op_ptr op = get_op_ptr(OpType::Phase, 0.25);
+    QControlBox qcbox(op);
+    Circuit c(1);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_box(qcbox, {0});
+    std::shared_ptr<Circuit> c1 = qcbox.to_circuit();
+    Eigen::MatrixXcd U1 = tket_sim::get_unitary(*c1);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(2, 2);
+    V(1, 1) = std::exp(i_ * PI * 0.25);
     REQUIRE(U1.isApprox(V));
   }
 }

@@ -17,30 +17,49 @@
 set -evu
 
 # Choose a Python to install conan
-export PYBIN=/opt/python/cp39-cp39/bin
+export PYBIN=/opt/python/cp310-cp310/bin
 
-export CONAN_REVISIONS_ENABLED=1
-
-${PYBIN}/pip install --upgrade pip
 ${PYBIN}/pip install conan~=1.53
 
 export CONAN_CMD=${PYBIN}/conan
 
+export CONAN_REVISIONS_ENABLED=1
+
+cd /tket
+
 ${CONAN_CMD} profile new tket --detect
 
 ${CONAN_CMD} remote clean
+${CONAN_CMD} remote add conan-center https://center.conan.io --force
+
+# Edit this list as required:
+PACKAGES="b2/4.9.2@ \
+          boost/1.80.0@ \
+          bzip2/1.0.8@ \
+          eigen/3.4.0@ \
+          gmp/6.2.1@ \
+          libbacktrace/cci.20210118@ \
+          libiconv/1.17@ \
+          nlohmann_json/3.11.2@ \
+          pybind11_json/0.2.12@ \
+          symengine/0.9.0@ \
+          zlib/1.2.12@"
+
+for PACKAGE in ${PACKAGES}
+do
+    echo "Installing:" ${PACKAGE} "..."
+    ${CONAN_CMD} remove -f ${PACKAGE} || true
+    ${CONAN_CMD} install ${PACKAGE} --profile=tket -s build_type=Release --build=missing --update -r=conan-center
+done
+
 ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
 
 ${CONAN_CMD} user -p ${JFROG_ARTIFACTORY_TOKEN_2} -r tket-libs ${JFROG_ARTIFACTORY_USER_2}
 
-LIB_VER=$(${CONAN_CMD} inspect --raw version ${TKLIB})
+for PACKAGE in ${PACKAGES}
+do
+    echo "Uploading:" ${PACKAGE} "..."
+    ${CONAN_CMD} upload ${PACKAGE} --all -r=tket-libs
+done
 
-${CONAN_CMD} create --profile=tket -o ${TKLIB}:shared=False ${TKLIB} tket/stable
-${CONAN_CMD} create --profile=tket -o ${TKLIB}:shared=True ${TKLIB} tket/stable
-
-if [ ${UPLOAD_PACKAGE} == "YES" ]
-then
-    ${CONAN_CMD} upload ${TKLIB}/${LIB_VER}@tket/stable --all -r=tket-libs
-else
-    ${CONAN_CMD} upload ${TKLIB}/${LIB_VER}@tket/stable --all -r=tket-libs --skip-upload
-fi
+echo "Done."
