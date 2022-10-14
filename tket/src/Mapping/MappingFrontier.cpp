@@ -27,9 +27,8 @@ UnitID get_unitid_from_unit_frontier(
     const std::shared_ptr<unit_vertport_frontier_t>& u_frontier,
     const VertPort& vp) {
   auto it = u_frontier->get<TagValue>().find(vp);
-  if (it != u_frontier->get<TagValue>().end()) return it->first;
-  throw MappingFrontierError(
-      std::string("Edge provided not in unit_frontier_t object."));
+  TKET_ASSERT(it != u_frontier->get<TagValue>().end());
+  return it->first;
 }
 
 /**
@@ -454,23 +453,19 @@ Subcircuit MappingFrontier::get_frontier_subcircuit(
 
 UnitID MappingFrontier::get_qubit_from_circuit_uid(const UnitID& uid) {
   auto it = this->bimaps_->initial.right.find(uid);
-  if (it == this->bimaps_->initial.right.end()) {
-    throw MappingFrontierError("UnitID not found in initial map.");
-  }
+  TKET_ASSERT(it != this->bimaps_->initial.right.end());
   return it->second;
 }
 
 void MappingFrontier::update_bimaps(UnitID qubit, UnitID node) {
   // Update initial map
   auto init_it = this->bimaps_->initial.left.find(qubit);
-  if (init_it == this->bimaps_->initial.left.end())
-    throw MappingFrontierError("Qubit not found in initial map.");
+  TKET_ASSERT(init_it != this->bimaps_->initial.left.end());
   this->bimaps_->initial.left.erase(init_it);
   this->bimaps_->initial.left.insert({qubit, node});
   // Update final map
   auto final_it = this->bimaps_->final.left.find(qubit);
-  if (final_it == this->bimaps_->final.left.end())
-    throw MappingFrontierError("Qubit not found in final map.");
+  TKET_ASSERT(final_it != this->bimaps_->final.left.end());
   this->bimaps_->final.left.erase(final_it);
   this->bimaps_->final.left.insert({qubit, node});
 }
@@ -506,7 +501,6 @@ void MappingFrontier::permute_subcircuit_q_out_hole(
     const unit_map_t& final_permutation, Subcircuit& subcircuit) {
   EdgeVec new_q_out_hole;
   int i = 0;
-  // Change to iterate through final permutation first?
   if (this->linear_boundary->size() != final_permutation.size()) {
     throw MappingFrontierError(
         "Number of Qubits in mapping permutation does not match number of "
