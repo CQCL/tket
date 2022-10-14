@@ -181,10 +181,12 @@ PYBIND11_MODULE(placement, m) {
       .def(
           "modify_config",
           [](GraphPlacement & /*pobj*/, py::kwargs /*kwargs*/) {
-            std::cout << "GraphPlacement.modify_config no longer changes the "
-                         "parameters for finding solutions. Please create a "
-                         "new GraphPlacement object with the desired changes."
-                      << std::endl;
+            PyErr_WarnEx(
+                PyExc_DeprecationWarning,
+                "GraphPlacement.modify_config no longer changes the parameters "
+                "for finding solutions. Please create a new GraphPlacement "
+                "object with the changed parameters.",
+                1);
             return;
           },
           "Deprecated and no longer modifies paramters for finding solutions. "
@@ -236,10 +238,12 @@ PYBIND11_MODULE(placement, m) {
       .def(
           "modify_config",
           [](NoiseAwarePlacement & /*pobj*/, py::kwargs /*kwargs*/) {
-            std::cout << "NoiseAwarePlacement.modify_config no longer changes "
-                         "the parameters for finding solutions. Please create "
-                         "a new GraphPlacement object with the desired changes."
-                      << std::endl;
+            PyErr_WarnEx(
+                PyExc_DeprecationWarning,
+                "NoiseAwarePlacement.modify_config no longer changes the "
+                "parameters for finding solutions. Please create a new "
+                "NoiseAwarePlacement object with the changed parameters.",
+                1);
             return;
           },
           "Deprecated and no longer modifies paramters for finding solutions. "

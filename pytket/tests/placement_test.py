@@ -28,6 +28,9 @@ from pytket.passes import PauliSimp, DefaultMappingPass  # type: ignore
 from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
 from pytket.qasm import circuit_from_qasm  # type: ignore
 
+import warnings
+
+warnings.simplefilter("ignore")
 import json
 
 
@@ -104,11 +107,13 @@ def test_placements_serialization() -> None:
     assert GraphPlacement.from_dict(graph_pl_serial).to_dict() == graph_pl_serial
     assert NoiseAwarePlacement.from_dict(noise_pl_serial).to_dict() == noise_pl_serial
 
+
 def test_placement_config() -> None:
     test_coupling = [(0, 1)]
     test_architecture = Architecture(test_coupling)
     test_pl = GraphPlacement(test_architecture)
     assert test_pl.modify_config() == None
+
 
 def test_convert_index_mapping() -> None:
     test_circuit = Circuit(6)
