@@ -39,7 +39,25 @@
       },
       "then": {
         "required": [
-          "config"
+          "matches",
+          "timeout",
+          "maximum_pattern_gates",
+          "maximum_pattern_depth"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "LinePlacement"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "maximum_pattern_gates",
+          "maximum_pattern_depth"
         ]
       }
     },
@@ -53,7 +71,10 @@
       },
       "then": {
         "required": [
-          "config",
+          "matches",
+          "timeout",
+          "maximum_pattern_gates",
+          "maximum_pattern_depth",
           "characterisation"
         ]
       }

@@ -40,20 +40,11 @@ class DeviceCharacterisation {
  public:
   DeviceCharacterisation(
       avg_node_errors_t _node_errors = {}, avg_link_errors_t _link_errors = {},
-      avg_readout_errors_t _readout_errors = {})
-      : default_node_errors_(_node_errors),
-        default_link_errors_(_link_errors),
-        default_readout_errors_(_readout_errors),
-        op_node_errors_(),
-        op_link_errors_() {}
+      avg_readout_errors_t _readout_errors = {});
+
   explicit DeviceCharacterisation(
       op_node_errors_t _node_errors, op_link_errors_t _link_errors = {},
-      avg_readout_errors_t _readout_errors = {})
-      : default_node_errors_(),
-        default_link_errors_(),
-        default_readout_errors_(_readout_errors),
-        op_node_errors_(_node_errors),
-        op_link_errors_(_link_errors) {}
+      avg_readout_errors_t _readout_errors = {});
 
   // get device gate errors, preferring OpType-specific over default values over
   // 0. error

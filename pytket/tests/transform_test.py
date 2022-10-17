@@ -1021,8 +1021,7 @@ def test_CXMappingPass_terminates() -> None:
             [26, 25],
         ]
     )
-    placer = NoiseAwarePlacement(arc)
-    placer.modify_config(timeout=10000)
+    placer = NoiseAwarePlacement(arc, timeout=10000)
     p = CXMappingPass(arc, placer, directed_cx=False, delay_measures=False)
     res = p.apply(c)
     assert res
