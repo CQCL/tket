@@ -203,6 +203,10 @@ def test_custom_combinator_generation() -> None:
 
 
 def test_routing_and_placement_pass() -> None:
+    # Qubit interaction graph:
+    # 1 -- 0 -- 3
+    #  \   |
+    #   `  4 -- 2
     circ = Circuit()
     q = circ.add_q_register("q", 5)
     circ.CX(0, 1)
@@ -214,6 +218,12 @@ def test_routing_and_placement_pass() -> None:
     circ.X(2)
     circ.CX(1, 4)
     circ.CX(0, 4)
+    # Architecture graph:
+    # f2
+    # |
+    # b1 -- b0
+    # |
+    # b2 -- a0 -- f0
     n0 = Node("b", 0)
     n1 = Node("b", 1)
     n2 = Node("b", 2)
@@ -229,24 +239,18 @@ def test_routing_and_placement_pass() -> None:
     assert placement.apply(cu)
     assert routing.apply(cu)
     assert nplacement.apply(cu)
-    expected_map = {q[0]: n1, q[1]: n0, q[2]: n2, q[3]: n5, q[4]: n3}
-    assert cu.initial_map == expected_map
-
-    cu1 = CompilationUnit(circ.copy())
-    assert nplacement.apply(cu1)
     arcnodes = arc.nodes
-    expected_nmap = {
+    expected_map = {
         q[0]: arcnodes[0],
         q[1]: arcnodes[1],
         q[2]: arcnodes[2],
         q[3]: arcnodes[3],
         q[4]: arcnodes[4],
     }
-    assert cu1.initial_map == expected_nmap
+    assert cu.initial_map == expected_map
+
     # check composition works ok
-    seq_pass = SequencePass(
-        [SynthesiseTket(), placement, routing, nplacement, SynthesiseUMD()]
-    )
+    seq_pass = SequencePass([SynthesiseTket(), placement, routing, SynthesiseUMD()])
     cu2 = CompilationUnit(circ.copy())
     assert seq_pass.apply(cu2)
     assert cu2.initial_map == expected_map

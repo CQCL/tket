@@ -996,7 +996,7 @@ SCENARIO(
     Architecture test_arc({{0, 1}, {1, 2}, {2, 3}, {3, 0}});
     Placement test_p(test_arc);
 
-    qubit_mapping_t map_;
+    std::map<Qubit, Node> map_;
     for (unsigned nn = 0; nn <= 3; ++nn) {
       map_[Qubit(nn)] = Node(nn);
     }
@@ -1564,7 +1564,7 @@ SCENARIO("Lexi relabel with partially mapped circuit") {
       maps->final.insert({u, u});
     }
     Placement pl(arc);
-    qubit_mapping_t partial_map;
+    std::map<Qubit, Node> partial_map;
     partial_map.insert({Qubit(0), Node(0)});
     partial_map.insert({Qubit(1), Node(1)});
     pl.place_with_map(c, partial_map, maps);

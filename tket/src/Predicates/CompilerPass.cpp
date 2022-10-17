@@ -440,7 +440,7 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = gen_routing_pass(arc, con);
 
     } else if (passname == "PlacementPass") {
-      pp = gen_placement_pass(content.at("placement").get<PlacementPtr>());
+      pp = gen_placement_pass(content.at("placement").get<Placement::Ptr>());
     } else if (passname == "NaivePlacementPass") {
       pp = gen_naive_placement_pass(
           content.at("architecture").get<Architecture>());
@@ -491,7 +491,7 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "FullMappingPass") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
-      PlacementPtr place = content.at("placement").get<PlacementPtr>();
+      Placement::Ptr place = content.at("placement").get<Placement::Ptr>();
       std::vector<RoutingMethodPtr> config = content.at("routing_config");
 
       pp = gen_full_mapping_pass(arc, place, config);
@@ -503,7 +503,7 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "CXMappingPass") {
       // SEQUENCE PASS - DESERIALIZABLE ONLY
       Architecture arc = content.at("architecture").get<Architecture>();
-      PlacementPtr place = content.at("placement").get<PlacementPtr>();
+      Placement::Ptr place = content.at("placement").get<Placement::Ptr>();
       std::vector<RoutingMethodPtr> config = content.at("routing_config");
       bool directed_cx = content.at("directed").get<bool>();
       bool delay_measures = content.at("delay_measures").get<bool>();

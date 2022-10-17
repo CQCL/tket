@@ -177,7 +177,7 @@ PassPtr gen_rename_qubits_pass(const std::map<Qubit, Qubit>& qm) {
   return std::make_shared<StandardPass>(precons, t, postcons, j);
 }
 
-PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
+PassPtr gen_placement_pass(const Placement::Ptr& placement_ptr) {
   Transform::Transformation trans = [=](Circuit& circ,
                                         std::shared_ptr<unit_bimaps_t> maps) {
     // Fall back to line placement if graph placement fails
@@ -189,11 +189,12 @@ PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
       ss << "PlacementPass failed with message: " << e.what()
          << " Fall back to LinePlacement.";
       tket_log()->warn(ss.str());
-      PlacementPtr line_placement_ptr = std::make_shared<LinePlacement>(
+      Placement::Ptr line_placement_ptr = std::make_shared<LinePlacement>(
           placement_ptr->get_architecture_ref());
       changed = line_placement_ptr->place(circ, maps);
     }
     return changed;
+    return placement_ptr->place(circ, maps);
   };
   Transform t = Transform(trans);
   PredicatePtr twoqbpred = std::make_shared<MaxTwoQubitGatesPredicate>();
@@ -217,7 +218,7 @@ PassPtr gen_placement_pass(const PlacementPtr& placement_ptr) {
 PassPtr gen_naive_placement_pass(const Architecture& arc) {
   Transform::Transformation trans = [=](Circuit& circ,
                                         std::shared_ptr<unit_bimaps_t> maps) {
-    NaivePlacement np(arc);
+    Placement np(arc);
     return np.place(circ, maps);
   };
   Transform t = Transform(trans);
@@ -236,7 +237,7 @@ PassPtr gen_naive_placement_pass(const Architecture& arc) {
 }
 
 PassPtr gen_full_mapping_pass(
-    const Architecture& arc, const PlacementPtr& placement_ptr,
+    const Architecture& arc, const Placement::Ptr& placement_ptr,
     const std::vector<RoutingMethodPtr>& config) {
   std::vector<PassPtr> vpp = {
       gen_placement_pass(placement_ptr), gen_routing_pass(arc, config),
@@ -256,7 +257,7 @@ PassPtr gen_default_mapping_pass(const Architecture& arc, bool delay_measures) {
 }
 
 PassPtr gen_cx_mapping_pass(
-    const Architecture& arc, const PlacementPtr& placement_ptr,
+    const Architecture& arc, const Placement::Ptr& placement_ptr,
     const std::vector<RoutingMethodPtr>& config, bool directed_cx,
     bool delay_measures) {
   OpTypeSet gate_set = all_single_qubit_types();
@@ -310,7 +311,9 @@ PassPtr gen_routing_pass(
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
 
-PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
+PassPtr gen_placement_pass_phase_poly(
+    const Architecture& arc, unsigned maximum_matches, unsigned timeout,
+    unsigned maximum_pattern_gates, unsigned maximum_pattern_depth) {
   Transform::Transformation trans = [=](Circuit& circ,
                                         std::shared_ptr<unit_bimaps_t> maps) {
     if (arc.n_nodes() < circ.n_qubits()) {
@@ -352,7 +355,9 @@ PassPtr gen_placement_pass_phase_poly(const Architecture& arc) {
   // record pass config
   nlohmann::json j;
   j["name"] = "PlacementPass";
-  PlacementPtr pp = std::make_shared<GraphPlacement>(arc);
+  Placement::Ptr pp = std::make_shared<GraphPlacement>(
+      arc, maximum_matches, timeout, maximum_pattern_gates,
+      maximum_pattern_depth);
   j["params"]["placement"] = pp;
   return std::make_shared<StandardPass>(precons, t, pc, j);
 }
@@ -480,8 +485,15 @@ PassPtr aas_routing_pass(
 
 PassPtr gen_full_mapping_pass_phase_poly(
     const Architecture& arc, const unsigned lookahead,
-    const aas::CNotSynthType cnotsynthtype) {
-  return ComposePhasePolyBoxes() >> gen_placement_pass_phase_poly(arc) >>
+    const aas::CNotSynthType cnotsynthtype,
+    unsigned graph_placement_maximum_matches, unsigned graph_placement_timeout,
+    unsigned graph_placement_maximum_pattern_gates,
+    unsigned graph_placement_maximum_pattern_depth) {
+  return ComposePhasePolyBoxes() >>
+         gen_placement_pass_phase_poly(
+             arc, graph_placement_maximum_matches, graph_placement_timeout,
+             graph_placement_maximum_pattern_gates,
+             graph_placement_maximum_pattern_depth) >>
          aas_routing_pass(arc, lookahead, cnotsynthtype);
 }
 

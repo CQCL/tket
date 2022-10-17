@@ -29,45 +29,7 @@ using json = nlohmann::json;
 
 namespace tket {
 
-void amend_config_from_kwargs(NoiseAwarePlacement &pobj, py::kwargs kwargs) {
-  PlacementConfig config_ = pobj.get_config();
-
-  if (kwargs.contains("depth_limit"))
-    config_.depth_limit = py::cast<unsigned>(kwargs["depth_limit"]);
-  if (kwargs.contains("max_interaction_edges"))
-    config_.max_interaction_edges =
-        py::cast<unsigned>(kwargs["max_interaction_edges"]);
-  if (kwargs.contains("max_matches"))
-    config_.monomorphism_max_matches =
-        py::cast<unsigned>(kwargs["max_matches"]);
-  if (kwargs.contains("contraction_ratio"))
-    config_.arc_contraction_ratio =
-        py::cast<unsigned>(kwargs["contraction_ratio"]);
-  if (kwargs.contains("timeout"))
-    config_.timeout = py::cast<unsigned>(kwargs["timeout"]);
-
-  pobj.set_config(config_);
-}
-void amend_config_from_kwargs(GraphPlacement &pobj, py::kwargs kwargs) {
-  PlacementConfig config_ = pobj.get_config();
-
-  if (kwargs.contains("depth_limit"))
-    config_.depth_limit = py::cast<unsigned>(kwargs["depth_limit"]);
-  if (kwargs.contains("max_interaction_edges"))
-    config_.max_interaction_edges =
-        py::cast<unsigned>(kwargs["max_interaction_edges"]);
-  if (kwargs.contains("max_matches"))
-    config_.monomorphism_max_matches =
-        py::cast<unsigned>(kwargs["max_matches"]);
-  if (kwargs.contains("contraction_ratio"))
-    config_.arc_contraction_ratio =
-        py::cast<unsigned>(kwargs["contraction_ratio"]);
-  if (kwargs.contains("timeout"))
-    config_.timeout = py::cast<unsigned>(kwargs["timeout"]);
-  pobj.set_config(config_);
-}
-
-void place_with_map(Circuit &circ, qubit_mapping_t &qmap) {
+void place_with_map(Circuit &circ, std::map<Qubit, Node> &qmap) {
   Architecture arc;
   Placement plobj(arc);
   plobj.place_with_map(circ, qmap);
@@ -79,7 +41,7 @@ void place_fully_connected(
     throw std::logic_error(
         "Circuit has more qubits than the FullyConnected graph has nodes");
   }
-  qubit_mapping_t qmap;
+  std::map<Qubit, Node> qmap;
   unsigned index = 0;
   for (const Qubit &q : circ.all_qubits()) {
     qmap[q] = Node("fcNode", index);
@@ -112,7 +74,7 @@ PYBIND11_MODULE(placement, m) {
               py::arg("circuit"))
             .def_static(
               "place_with_map",
-              [](Circuit &circ, qubit_mapping_t& qmap) {
+              [](Circuit &circ, std::map<Qubit, Node>& qmap) {
                 return Placement::place_with_map(circ, qmap);
               },
               "Relabels Circuit Qubits to Architecture Nodes using given map. "
@@ -131,16 +93,17 @@ PYBIND11_MODULE(placement, m) {
                  "are Architecture appropriate for the given Circuit. Each map is "
                  "estimated to given a similar SWAP overheard after routing. "
                  "\n\n:param circuit: The circuit the maps are designed for."
+                 "\n:param matches: The maximum number of maps returned by the method."
                  "\n:return: list of dictionaries mapping " CLSOBJS(Qubit) " "
                  "to " CLSOBJS(Node),
-                 py::arg("circuit"))
+                 py::arg("circuit"), py::arg("matches")=100)
             .def(
-                "to_dict", [](const PlacementPtr &placement) { return json(placement); },
+                "to_dict", [](const Placement::Ptr &placement) { return json(placement); },
                 "Return a JSON serializable dict representation of "
                 "the Placement.\n"
                 ":return: dict representing the Placement.")
             .def_static(
-                "from_dict", [](const json &j) { return j.get<PlacementPtr>(); },
+                "from_dict", [](const json &j) { return j.get<Placement::Ptr>(); },
                 "Construct Placement instance from JSON serializable "
                 "dict representation of the Placement.");
 
@@ -150,11 +113,23 @@ PYBIND11_MODULE(placement, m) {
       "between Circuit Qubits and Architecture Nodes and for relabelling "
       "Circuit Qubits.")
       .def(
-          py::init<Architecture &>(),
+          py::init<Architecture &, unsigned, unsigned>(),
           "The constructor for a LinePlacement object. The Architecture "
           "object describes the connectivity "
-          "between qubits.\n\n:param arc: An Architecture object.",
-          py::arg("arc"))
+          "between qubits. In this class, a reduced qubit interaction "
+          "subgraph is constructed where each node has maximum outdegree 2 "
+          "and does not construct a circle (i.e. lines). "
+          "To place the Circuit, a Hamiltonian Path is found in the "
+          "Architecture "
+          "and this subgraph of lines is assigned along it."
+          "\n\n:param arc: An Architecture object."
+          "\n:param maximum_line_gates: maximum number of gates in the circuit "
+          "considered "
+          "when constructing lines for assigning to the graph"
+          "\n:param maximum_line_depth: maximum depth of circuit considered "
+          "when constructing lines for assigning to the graph",
+          py::arg("arc"), py::arg("maximum_line_gates") = 100,
+          py::arg("maximum_line_depth") = 100)
       .def("__repr__", [](const Placement &) {
         return "<tket::LinePlacement>";
       });
@@ -165,26 +140,58 @@ PYBIND11_MODULE(placement, m) {
       "between Circuit Qubits and Architecture Nodes and for relabelling "
       "Circuit Qubits.")
       .def(
-          py::init<Architecture &>(),
+          py::init<
+              const Architecture &, unsigned, unsigned, unsigned, unsigned>(),
           "The constructor for a GraphPlacement object. The Architecture "
           "object describes the connectivity "
-          "between qubits.\n\n:param arc: An Architecture object.",
-          py::arg("arc"))
+          "between qubits. To find a qubit to node assignment, this method "
+          "constructs a pattern graph where vertices are Circuit qubits and "
+          "edges mean a pair of qubits have an interaction in the circuit, "
+          "and then tries to find a weighted subgraph monomorphsim to the "
+          "architecture connectivity, or target, graph. Edges in the pattern "
+          "graph are weighted by the circuit depth at which the interaction "
+          "between a "
+          "pair of qubit occurs. "
+          "The number of edges added to the pattern graph is effected by the "
+          "maximum_pattern_gates and maximum_pattern_depth arguments. "
+          "If no subgraph monomorphism can be found, "
+          "lower edge weights are removed from the pattern graph, are more "
+          "edges "
+          "are added to the target graph. Edges added to the pattern graph are "
+          "weighted lower to reflect what the distance between the Nodes they  "
+          "are added between was on the original target graph. "
+          "\n\n:param arc: An Architecture object.\n"
+          ":param maximum_matches: The total number of weighted subgraph "
+          "monomorphisms that can be found before matches are "
+          "returned.\n"
+          ":param timeout: Total time in seconds before stopping "
+          "search for monomorphisms.\n"
+          ":param maximum_pattern_gates: The upper bound on the number of "
+          "circuit gates used to construct the pattern graph for finding "
+          "subgraph monomorphisms.\n"
+          ":param maximum_pattern_depth: The upper bound on the circuit depth "
+          "gates "
+          "are added to the pattern graph to for finding subgraph "
+          "monomorphisms.",
+          py::arg("arc"), py::arg("maximum_matches") = 1000,
+          py::arg("timeout") = 1000, py::arg("maximum_pattern_gates") = 100,
+          py::arg("maximum_pattern_depth") = 100)
       .def(
           "__repr__",
           [](const Placement &) { return "<tket::GraphPlacement>"; })
       .def(
           "modify_config",
-          [](GraphPlacement &pobj, py::kwargs kwargs) {
-            amend_config_from_kwargs(pobj, kwargs);
+          [](GraphPlacement & /*pobj*/, py::kwargs /*kwargs*/) {
+            PyErr_WarnEx(
+                PyExc_DeprecationWarning,
+                "GraphPlacement.modify_config no longer changes the parameters "
+                "for finding solutions. Please create a new GraphPlacement "
+                "object with the changed parameters.",
+                1);
+            return;
           },
-          "Overides default Placement parameters to given values. Timeout is "
-          "in milliseconds"
-          "\n:param \\**kwargs: Parameters for placement: "
-          "(int)depth_limit=5, (int)max_interaction_edges=edges in "
-          "the "
-          "device graph, (int)max_matches=10000, "
-          "(int)contraction_ratio=10, (int)timeout=60000.");
+          "Deprecated and no longer modifies parameters for finding solutions. "
+          "Please create a new GraphPlacement object instead");
 
   py::class_<
       NoiseAwarePlacement, std::shared_ptr<NoiseAwarePlacement>, Placement>(
@@ -196,39 +203,52 @@ PYBIND11_MODULE(placement, m) {
       .def(
           py::init<
               Architecture &, avg_node_errors_t, avg_link_errors_t,
-              avg_readout_errors_t>(),
-          "The constructor for a NoiseAwarePlacement object. The Architecture "
-          "object describes the connectivity between qubits. "
+              avg_readout_errors_t, unsigned, unsigned, unsigned, unsigned>(),
+          "The constructor for a NoiseAwarePlacement object. The Architecture"
+          " object describes the connectivity between qubits. "
           "The dictionaries passed as parameters indicate the average "
-          "gate errors "
-          "for single- and two-qubit gates as well as readout errors. "
-          "If no error is given for a given node or pair of nodes, the "
-          "fidelity is assumed to be 1."
+          "gate errors for single- and two-qubit gates as well as readout"
+          "errors.  If no error is given for a given node or pair of nodes,"
+          "the fidelity is assumed to be 1."
           "\n\n:param arc: An Architecture object\n"
           ":param node_errors: a dictionary mapping nodes in the "
           "architecture to average single-qubit gate errors\n"
           ":param link_errors: a dictionary mapping pairs of nodes in the "
           "architecture to average two-qubit gate errors\n"
           ":param readout_errors: a dictionary mapping nodes in the "
-          "architecture to average measurement readout errors.",
+          "architecture to average measurement readout errors.\n"
+          ":param maximum_matches: The total number of weighted subgraph "
+          "monomorphisms that can be found before matches are returned.\n"
+          ":param timeout: Total time in seconds before stopping search for "
+          "monomorphisms.\n"
+          ":param maximum_pattern_gates: The upper bound on the number of "
+          "circuit gates used to construct the pattern graph for finding "
+          "subgraph monomorphisms.\n"
+          ":param maximum_pattern_depth: The upper bound on the circuit depth "
+          "gates are added to the pattern graph to for finding subgraph "
+          "monomorphisms.",
           py::arg("arc"), py::arg("node_errors") = py::dict(),
           py::arg("link_errors") = py::dict(),
-          py::arg("readout_errors") = py::dict())
+          py::arg("readout_errors") = py::dict(),
+          py::arg("maximum_matches") = 1000, py::arg("timeout") = 1000,
+          py::arg("maximum_pattern_gates") = 100,
+          py::arg("maximum_pattern_depth") = 100)
       .def(
           "__repr__",
           [](const Placement &) { return "<tket::NoiseAwarePlacement>"; })
       .def(
           "modify_config",
-          [](NoiseAwarePlacement &pobj, py::kwargs kwargs) {
-            amend_config_from_kwargs(pobj, kwargs);
+          [](NoiseAwarePlacement & /*pobj*/, py::kwargs /*kwargs*/) {
+            PyErr_WarnEx(
+                PyExc_DeprecationWarning,
+                "NoiseAwarePlacement.modify_config no longer changes the "
+                "parameters for finding solutions. Please create a new "
+                "NoiseAwarePlacement object with the changed parameters.",
+                1);
+            return;
           },
-          "Overides default Placement parameters to given values. Timeout is "
-          "in milliseconds"
-          "\n:param \\**kwargs: Parameters for placement: "
-          "(int)depth_limit=5, (int)max_interaction_edges=edges in "
-          "the "
-          "device graph, (int)max_matches=10000, "
-          "(int)contraction_ratio=10, (int)timeout=60000.");
+          "Deprecated and no longer modifies paramters for finding solutions. "
+          "Please create a new NoiseAwarePlacement object instead");
 
   m.def(
       "place_with_map", &place_with_map,
