@@ -109,10 +109,13 @@ def test_placements_serialization() -> None:
 
 
 def test_placement_config() -> None:
-    test_coupling = [(0, 1)]
+    test_coupling = [(0, 1), (1, 2), (2, 3)]
     test_architecture = Architecture(test_coupling)
     test_pl = GraphPlacement(test_architecture)
-    assert test_pl.modify_config() == None
+    c = Circuit(4).CX(0, 1).CX(1, 2).CX(2, 3)
+    pm = test_pl.get_placement_map(c)
+    assert test_pl.modify_config() is None
+    assert test_pl.get_placement_map(c) == pm
 
 
 def test_convert_index_mapping() -> None:
