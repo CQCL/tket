@@ -156,6 +156,10 @@ class Backend(ABC):
         This is a an abstract method which is implemented in the backend itself, and so
         is tailored to the backend's requirements.
 
+        The default passes for Quantinuum and IBM Backends are documented in these pages
+        Quantinuum - https://cqcl.github.io/pytket-quantinuum/api/index.html#default-compilation
+        IBM - https://cqcl.github.io/pytket-qiskit/api/index.html#default-compilation
+
         :param optimisation_level: The level of optimisation to perform during
             compilation.
 
