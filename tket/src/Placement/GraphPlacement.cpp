@@ -294,6 +294,13 @@ std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
   unsigned counter = 0;
   for (auto it = all_bimaps.begin();
        it != all_bimaps.end() && counter < matches; ++it) {
+    /**
+     * See TKET-2525
+     * TODO: WSM only finds full solutions
+     * We can improve performance by leaving some Qubits
+     * "unassigned" and allow routing
+     * to dynamically assign thme.
+     */
     all_qmaps.push_back(bimap_to_map(it->left));
     ++counter;
   }

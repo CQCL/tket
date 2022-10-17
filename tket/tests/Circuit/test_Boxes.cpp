@@ -159,33 +159,15 @@ SCENARIO("Using Boxes", "[boxes]") {
     REQUIRE((d1m - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
   }
   GIVEN("Unitary Box Identity constructors") {
-    Circuit empty1(1);
-    empty1.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
-    REQUIRE(*(Unitary1qBox().to_circuit()) == empty1);
-    REQUIRE(Unitary1qBox().get_unitary() == tket_sim::get_unitary(empty1));
+    REQUIRE(Unitary1qBox().to_circuit());
     REQUIRE(Unitary1qBox().get_unitary() == Unitary1qBox().get_matrix());
     REQUIRE(
         Unitary1qBox().dagger()->get_unitary() == Unitary1qBox().get_unitary());
-    Circuit empty2(2);
-    empty2.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
-    empty2.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
-    empty2.add_op<unsigned>(OpType::TK2, {0, 0, 0}, {0, 1});
-    empty2.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
-    empty2.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
-    REQUIRE(*(Unitary2qBox().to_circuit()) == empty2);
-    REQUIRE(Unitary2qBox().get_unitary() == tket_sim::get_unitary(empty2));
+    REQUIRE(Unitary2qBox().to_circuit());
     REQUIRE(Unitary2qBox().get_unitary() == Unitary2qBox().get_matrix());
     REQUIRE(
         Unitary2qBox().dagger()->get_unitary() == Unitary2qBox().get_unitary());
-    Circuit empty3(3);
-    empty3.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
-    empty3.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
-    empty3.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {2});
-    empty3.add_op<unsigned>(OpType::TK2, {0, 0, 0}, {1, 2});
-    empty3.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
-    empty3.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {2});
-    REQUIRE(*(Unitary3qBox().to_circuit()) == empty3);
-    REQUIRE(Unitary3qBox().get_unitary() == tket_sim::get_unitary(empty3));
+    REQUIRE(Unitary3qBox().to_circuit());
     REQUIRE(Unitary3qBox().get_unitary() == Unitary3qBox().get_matrix());
     REQUIRE(
         Unitary3qBox().dagger()->get_unitary() == Unitary3qBox().get_unitary());
