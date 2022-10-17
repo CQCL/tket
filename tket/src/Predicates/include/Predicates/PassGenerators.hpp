@@ -104,8 +104,8 @@ PassPtr aas_routing_pass(
  * @param cnotsynthtype parameter for the type of cnot synth
  * @param graph_placement_maximum_matches parameter effecting the number of
  * matches found during the GraphPlacement substep
- * @param graph_placement_timeout timeout for finding subgraph monomorphisms
- * during the GraphPlacement substep
+ * @param graph_placement_timeout timeout (ms) for finding subgraph
+ * monomorphisms during the GraphPlacement substep
  * @param graph_placement_maximum_pattern_gates parameter affecting the size
  * of the target graph, constructed from a phase polynomial, during
  * the GraphPlacement substep, by restricting the number of gates in
@@ -130,7 +130,7 @@ PassPtr gen_full_mapping_pass_phase_poly(
  * @param arc achitecture to place the circuit on
  * @param _maximum_matches parameter effecting the number of
  * matches found during the GraphPlacement substep
- * @param _timeout timeout for finding subgraph monomorphisms
+ * @param _timeout timeout (ms) for finding subgraph monomorphisms
  * during the GraphPlacement substep
  * @param _maximum_pattern_gates parameter effecting the size
  * of the target graph, constructed from a phase polynomial, during
