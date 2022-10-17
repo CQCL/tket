@@ -195,16 +195,30 @@ _tk_to_qasm_noparams[OpType.CX] = "cx"  # prefer "cx" to "CX"
 _tk_to_qasm_params = dict(((item[1], item[0]) for item in PARAM_COMMANDS.items()))
 _tk_to_qasm_params[OpType.U3] = "u3"  # prefer "u3" to "U"
 _tk_to_qasm_params[OpType.Rz] = "rz"  # prefer "rz" to "Rz"
-_tk_to_qasm_extra_noparams =dict(((item[1], item[0]) for item in NOPARAM_EXTRA_COMMANDS.items()))
-_tk_to_qasm_extra_params = dict(((item[1], item[0]) for item in PARAM_EXTRA_COMMANDS.items()))
+_tk_to_qasm_extra_noparams = dict(
+    ((item[1], item[0]) for item in NOPARAM_EXTRA_COMMANDS.items())
+)
+_tk_to_qasm_extra_params = dict(
+    ((item[1], item[0]) for item in PARAM_EXTRA_COMMANDS.items())
+)
 
 _classical_gatestr_map = {"AND": "&", "OR": "|", "XOR": "^"}
 
 
-_all_known_gates = set(NOPARAM_COMMANDS.keys()).union(PARAM_COMMANDS.keys()).union(PARAM_EXTRA_COMMANDS.keys()).union(NOPARAM_EXTRA_COMMANDS.keys())
+_all_known_gates = (
+    set(NOPARAM_COMMANDS.keys())
+    .union(PARAM_COMMANDS.keys())
+    .union(PARAM_EXTRA_COMMANDS.keys())
+    .union(NOPARAM_EXTRA_COMMANDS.keys())
+)
 _all_string_maps = {
     key: val.name
-    for key, val in chain(PARAM_COMMANDS.items(), NOPARAM_COMMANDS.items(), PARAM_EXTRA_COMMANDS.items(), NOPARAM_EXTRA_COMMANDS.items())
+    for key, val in chain(
+        PARAM_COMMANDS.items(),
+        NOPARAM_COMMANDS.items(),
+        PARAM_EXTRA_COMMANDS.items(),
+        NOPARAM_EXTRA_COMMANDS.items(),
+    )
 }
 
 unit_regex = re.compile(r"([a-z][a-zA-Z0-9_]*)\[([\d]+)\]")
@@ -946,7 +960,11 @@ def _parse_range(minval: int, maxval: int) -> Tuple[str, int]:
 
 def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
     optype = op.type
-    params = op.params if optype in _tk_to_qasm_params or _tk_to_qasm_extra_params else None
+    params = (
+        op.params
+        if optype in (_tk_to_qasm_params or _tk_to_qasm_extra_params)
+        else None
+    )
     if optype == OpType.TK1:
         # convert to U3
         optype = OpType.U3
