@@ -1835,6 +1835,9 @@ static void substitute_cnx(
 
   // Reorder the replacement circuit by renaming the qubits
   if (new_args != std::nullopt) {
+    // The cnx circuit must only use default registers for this renaming to
+    // work.
+    TKET_ASSERT(cnx.is_simple());
     unit_map_t qmap;
     for (unsigned i = 0; i + 1 < new_args.value().size(); i++) {
       auto it =
@@ -1927,18 +1930,31 @@ Transform cnx_pairwise_decomposition() {
         // CliffordSimp), when they have args: [a,b,c] and [c,a,b]
         std::set<Qubit> args1_set(args1.begin(), args1.end());
         std::set<Qubit> args2_set(args2.begin(), args2.end());
+        // Check if they are acting on the same set of qubits
         if (args1_set == args2_set) {
-          // If they have the same target
+          // If they have the same target, we decompose them as CCX.dagger and
+          // CCX
           if (new_args1.back() == new_args2.back()) {
             cmd1_as_dagger = true;
             new_args2 = new_args1;
           } else {
+            // We find qubits a,b,c
+            // such that the first CCX acts on [a,b,c]
+            // and the second CCX acts on [c,a,b] without changing the semantics
             Qubit a = (args1[0] == args2.back()) ? args1[1] : args1[0];
             new_args1 = {a, args2.back(), args1.back()};
             new_args2 = {args1.back(), a, args2.back()};
           }
         }
+        // If the two CCX gates are not acting on the same set of qubits
+        // we don't change ther arguments, and decompose them as they are.
       } else {
+        // The more general case
+        // we try to reorder the control args of the two gates to maximise
+        // cancellation. The idea is to move the common control qubits to the
+        // end of the control qubit lists e.g. C4X [q0, q1, q2, q3, q4] and C4X
+        // [q1, q2, q4, q7, q6] will be reordered as C4X [q0, q3, q1, q2, q4]
+        // and C4X [q4, q7, q1, q2, q6]
         qubit_vector_t common_ctrls;
         qubit_vector_t ctrl_args1 = args1;
         qubit_vector_t ctrl_args2 = args2;
