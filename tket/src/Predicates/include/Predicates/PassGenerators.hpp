@@ -110,7 +110,7 @@ PassPtr aas_routing_pass(
  * of the target graph, constructed from a phase polynomial, during
  * the GraphPlacement substep, by restricting the number of gates in
  * the phase polynomial used
- * @param graph_placement_maximum_pattern_depth parameter effecting
+ * @param graph_placement_maximum_pattern_depth parameter affecting
  * the size of the target graph, constructed from a phase polynomial,
  * during the GraphPlacement substep, by restricting the depth of gates
  * in the phase polynomial that are added to the target graph
