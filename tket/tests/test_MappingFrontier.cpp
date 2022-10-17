@@ -750,6 +750,7 @@ SCENARIO("Test MappingFrontier::add_swap") {
       {qubits[3], nodes[3]}};
   circ.rename_units(rename_map);
   MappingFrontier mf(circ);
+
   REQUIRE(mf.add_swap(nodes[0], nodes[1]));
 
   std::vector<Command> commands = mf.circuit_.get_commands();
@@ -809,6 +810,34 @@ SCENARIO("Test MappingFrontier::add_swap") {
   REQUIRE(!mf.add_swap(nodes[0], new_node));
 }
 
+SCENARIO("Test MappingFrontier::add_swap, reassignable nodes.") {
+  std::vector<Node> nodes = {
+      Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
+      Node("node_test", 3)};
+  Circuit circ(5);
+  std::vector<Qubit> qubits = circ.all_qubits();
+  circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[1]});
+  circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[2]});
+  circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+  circ.add_op<UnitID>(OpType::H, {qubits[4]});
+
+  std::map<UnitID, UnitID> rename_map = {
+      {qubits[0], nodes[0]},
+      {qubits[1], nodes[1]},
+      {qubits[2], nodes[2]},
+      {qubits[3], nodes[3]}};
+  circ.rename_units(rename_map);
+
+  MappingFrontier mf0(circ);
+  mf0.reassignable_nodes_ = {Node(qubits[4])};
+  REQUIRE(mf0.add_swap(qubits[4], nodes[0]));
+  REQUIRE(mf0.reassignable_nodes_.size() == 0);
+
+  MappingFrontier mf1(circ);
+  mf1.reassignable_nodes_ = {Node(qubits[4])};
+  mf1.add_swap(nodes[1], qubits[4]);
+  REQUIRE(mf1.reassignable_nodes_.size() == 0);
+}
 SCENARIO("Test MappingFrontier::add_swap, classical wires edge case") {
   std::vector<Node> nodes = {
       Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
@@ -866,6 +895,27 @@ SCENARIO("Test MappingFrontier::add_bridge") {
   uids = {nodes[1], nodes[3]};
   REQUIRE(cx_c.get_args() == uids);
   REQUIRE(*cx_c.get_op_ptr() == *get_op_ptr(OpType::CZ));
+}
+SCENARIO("Test MappingFrontier::add_bridge with reassignable central node") {
+  std::vector<Node> nodes = {
+      Node("test_node", 0), Node("test_node", 1), Node("test_node", 2),
+      Node("node_test", 3)};
+  Circuit circ(5);
+  std::vector<Qubit> qubits = circ.all_qubits();
+  circ.add_op<UnitID>(OpType::CX, {qubits[0], qubits[1]});
+  circ.add_op<UnitID>(OpType::CX, {qubits[1], qubits[2]});
+  circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[3]});
+  circ.add_op<UnitID>(OpType::H, {qubits[4]});
+  std::map<UnitID, UnitID> rename_map = {
+      {qubits[0], nodes[0]},
+      {qubits[1], nodes[1]},
+      {qubits[2], nodes[2]},
+      {qubits[3], nodes[3]}};
+  circ.rename_units(rename_map);
+  MappingFrontier mf(circ);
+  mf.reassignable_nodes_ = {Node(qubits[4])};
+  mf.add_bridge(nodes[0], qubits[4], nodes[1]);
+  REQUIRE(mf.reassignable_nodes_.size() == 0);
 }
 SCENARIO("Test MappingFrontier set_linear_boundary") {
   std::vector<Node> nodes = {

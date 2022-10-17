@@ -45,13 +45,11 @@ class MappingManager {
    * @param circuit Circuit to be routed
    * @param routing_methods Ranked RoutingMethod objects to use for routing
    * segments.
-   * @param label_isolated_qubits will not label qubits without gates or only
-   * single qubit gates on them if this is set false
    * @return True if circuit is modified
    */
   bool route_circuit(
-      Circuit& circuit, const std::vector<RoutingMethodPtr>& routing_methods,
-      bool label_isolated_qubits = true) const;
+      Circuit& circuit,
+      const std::vector<RoutingMethodPtr>& routing_methods) const;
 
   /**
    * route_circuit_maps
@@ -65,15 +63,11 @@ class MappingManager {
    * @param routing_methods Ranked RoutingMethod objects to use for routing
    * segments.
    * @param maps For tracking placed and permuted qubits during Compilation
-   * @param label_isolated_qubits will not label qubits without gates or only
-   * single qubit gates on them if this is set false
-   *
    * @return True if circuit is modified
    */
   bool route_circuit_with_maps(
       Circuit& circuit, const std::vector<RoutingMethodPtr>& routing_methods,
-      std::shared_ptr<unit_bimaps_t> maps,
-      bool label_isolated_qubits = true) const;
+      std::shared_ptr<unit_bimaps_t> maps) const;
 
  private:
   ArchitecturePtr architecture_;
