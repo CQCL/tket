@@ -106,7 +106,7 @@ PassPtr aas_routing_pass(
  * matches found during the GraphPlacement substep
  * @param graph_placement_timeout timeout for finding subgraph monomorphisms
  * during the GraphPlacement substep
- * @param graph_placement_maximum_pattern_gates parameter effecting the size
+ * @param graph_placement_maximum_pattern_gates parameter affecting the size
  * of the target graph, constructed from a phase polynomial, during
  * the GraphPlacement substep, by restricting the number of gates in
  * the phase polynomial used
