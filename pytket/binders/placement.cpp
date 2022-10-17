@@ -149,12 +149,13 @@ PYBIND11_MODULE(placement, m) {
           "edges mean a pair of qubits have an interaction in the circuit, "
           "and then tries to find a weighted subgraph monomorphsim to the "
           "architecture connectivity, or target, graph. Edges in the pattern "
-          "graph are weighted by the circuit depth at which the interaction between a "
+          "graph are weighted by the circuit depth at which the interaction "
+          "between a "
           "pair of qubit occurs. "
           "The number of edges added to the pattern graph is effected by the "
           "maximum_pattern_gates and maximum_pattern_depth arguments. "
           "If no subgraph monomorphism can be found, "
-          "Lower edge weights are removed from the pattern graph, are more "
+          "lower edge weights are removed from the pattern graph, are more "
           "edges "
           "are added to the target graph. Edges added to the pattern graph are "
           "weighted lower to reflect what the distance between the Nodes they  "
@@ -189,7 +190,7 @@ PYBIND11_MODULE(placement, m) {
                 1);
             return;
           },
-          "Deprecated and no longer modifies paramters for finding solutions. "
+          "Deprecated and no longer modifies parameters for finding solutions. "
           "Please create a new GraphPlacement object instead");
 
   py::class_<
