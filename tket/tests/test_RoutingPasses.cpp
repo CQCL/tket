@@ -489,8 +489,8 @@ SCENARIO(
   }
 }
 
-SCENARIO("Test various large, unplaced, circuits with boolean depedencies") {
-  GIVEN("Case 1") {
+SCENARIO("Test various large, unplaced, circuits with conditional gates.") {
+  GIVEN("10x10x0 qubit Square Grid Architecture, 45 qubits, 5 bits.") {
     SquareGrid architecture(10, 10);
     Circuit circ(45, 5);
     std::vector<std::pair<unsigned, unsigned>> edges_0;
@@ -528,7 +528,7 @@ SCENARIO("Test various large, unplaced, circuits with boolean depedencies") {
     REQUIRE(
         respects_connectivity_constraints(circ, architecture, false, false));
   }
-  GIVEN("Case 2") {
+  GIVEN("39 qubit Ring Architecture, 23 qubits, 10 bits.") {
     RingArch architecture(39);
     Circuit circ(23, 10);
     std::vector<std::pair<unsigned, unsigned>> edges_0;
@@ -559,6 +559,51 @@ SCENARIO("Test various large, unplaced, circuits with boolean depedencies") {
     circ.add_conditional_gate<unsigned>(OpType::S, {}, {1}, {4, 5, 6, 7}, 1);
     circ.add_barrier(barrier_args);
     add_2qb_gates(circ, OpType::ZZMax, edges_0);
+    MappingManager mm(std::make_shared<Architecture>(architecture));
+    REQUIRE(mm.route_circuit(
+        circ, {std::make_shared<LexiLabellingMethod>(),
+               std::make_shared<LexiRouteRoutingMethod>()}));
+    REQUIRE(respects_connectivity_constraints(circ, architecture, false, true));
+    Transforms::decompose_SWAP_to_CX().apply(circ);
+    REQUIRE(respects_connectivity_constraints(circ, architecture, false, true));
+    Transforms::decompose_BRIDGE_to_CX().apply(circ);
+    REQUIRE(
+        respects_connectivity_constraints(circ, architecture, false, false));
+  }
+  GIVEN("3x3x5 qubit Square Grid Architecture, 14 qubits, 4 bits.") {
+    SquareGrid architecture(3, 3, 5);
+    Circuit circ(14, 4);
+    std::vector<std::pair<unsigned, unsigned>> edges_0;
+    for (unsigned i = 2; i < 10; i++) {
+      edges_0.push_back({i, i + 1});
+      if (10 - i != i - 2) {
+        edges_0.push_back({10 - i, i - 2});
+      }
+      edges_0.push_back({i + 1, i});
+    }
+    add_2qb_gates(circ, OpType::CX, edges_0);
+    std::vector<unsigned> barrier_args(10);
+    std::iota(barrier_args.begin(), barrier_args.end(), 1);
+    circ.add_barrier(barrier_args);
+    add_2qb_gates(circ, OpType::ZZMax, edges_0);
+    circ.add_measure(Qubit(q_default_reg(), 9), Bit(c_default_reg(), 0));
+    circ.add_measure(Qubit(q_default_reg(), 12), Bit(c_default_reg(), 1));
+    circ.add_measure(Qubit(q_default_reg(), 10), Bit(c_default_reg(), 2));
+    circ.add_measure(Qubit(q_default_reg(), 11), Bit(c_default_reg(), 3));
+    circ.add_conditional_gate<unsigned>(OpType::CZ, {}, {5, 10}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {7, 2}, {1, 0}, 1);
+    circ.add_conditional_gate<unsigned>(
+        OpType::CZ, {}, {1, 3}, {2, 1, 0, 3}, 1);
+    circ.add_barrier(barrier_args);
+    circ.add_conditional_gate<unsigned>(OpType::CZ, {}, {9, 8}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {8, 7}, {1, 0}, 1);
+    circ.add_barrier(barrier_args);
+    circ.add_conditional_gate<unsigned>(
+        OpType::CZ, {}, {7, 6}, {2, 1, 0, 3}, 1);
+    circ.add_barrier(barrier_args);
+    circ.add_conditional_gate<unsigned>(OpType::CZ, {}, {11, 0}, {0}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {12, 3}, {1, 0}, 1);
+    add_2qb_gates(circ, OpType::CX, edges_0);
     MappingManager mm(std::make_shared<Architecture>(architecture));
     REQUIRE(mm.route_circuit(
         circ, {std::make_shared<LexiLabellingMethod>(),
