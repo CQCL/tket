@@ -215,13 +215,13 @@ class LogicExp:
             return cls.factory(op)(*args)  # type: ignore
 
     def _rename_args_recursive(
-        self, map: Dict[Bit, Bit], renamed_regs: Set[str]
+        self, cmap: Dict[Bit, Bit], renamed_regs: Set[str]
     ) -> bool:
         success = False
         for i, arg in enumerate(self.args):
             if isinstance(arg, Bit):
-                if arg in map:
-                    self.args[i] = map[arg]
+                if arg in cmap:
+                    self.args[i] = cmap[arg]
                     success = True
             elif isinstance(arg, BitRegister):
                 if arg.name in renamed_regs:
@@ -231,15 +231,15 @@ class LogicExp:
                         """in a register-wise logic expression."""
                     )
             elif isinstance(arg, LogicExp):
-                success |= arg._rename_args_recursive(map, renamed_regs)
+                success |= arg._rename_args_recursive(cmap, renamed_regs)
         return success
 
-    def rename_args(self, map: Dict[Bit, Bit]) -> bool:
+    def rename_args(self, cmap: Dict[Bit, Bit]) -> bool:
         """Rename the Bits according to a Bit map. Raise ValueError if
         a bit is being used in a register-wise expression.
         """
-        renamed_regs = set([key.reg_name for key in map.keys()])
-        return self._rename_args_recursive(map, renamed_regs)
+        renamed_regs = set([key.reg_name for key in cmap.keys()])
+        return self._rename_args_recursive(cmap, renamed_regs)
 
 
 class BitLogicExp(LogicExp):
