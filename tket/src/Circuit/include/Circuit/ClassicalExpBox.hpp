@@ -24,11 +24,11 @@
 namespace tket {
 
 // Used as an intermediate class in between ClassicalExpBox and Box
-class ClassicalExpBoxPyBase : public Box {
+class ClassicalExpBoxBase : public Box {
  public:
-  ClassicalExpBoxPyBase() : Box(OpType::ClassicalExpBox) {}
-  ClassicalExpBoxPyBase(const ClassicalExpBoxPyBase &other) : Box(other) {}
-  ~ClassicalExpBoxPyBase() override {}
+  ClassicalExpBoxBase() : Box(OpType::ClassicalExpBox) {}
+  ClassicalExpBoxBase(const ClassicalExpBoxBase &other) : Box(other) {}
+  ~ClassicalExpBoxBase() override {}
 
   /**
    * @brief Rename the units in the logic expression according to the
@@ -50,7 +50,7 @@ class ClassicalExpBoxPyBase : public Box {
  */
 
 template <typename T>
-class ClassicalExpBox : public ClassicalExpBoxPyBase {
+class ClassicalExpBox : public ClassicalExpBoxBase {
  public:
   /**
    * Construct a ClassicalExpBox of specified shape with expression
@@ -74,7 +74,7 @@ class ClassicalExpBox : public ClassicalExpBoxPyBase {
    * Copy constructor
    */
   ClassicalExpBox(const ClassicalExpBox &other)
-      : ClassicalExpBoxPyBase(other),
+      : ClassicalExpBoxBase(other),
         n_i_(other.n_i_),
         n_io_(other.n_io_),
         n_o_(other.n_o_),
