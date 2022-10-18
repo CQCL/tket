@@ -6,7 +6,6 @@ creg a[2];
 creg b[3];
 creg c[4];
 creg d[1];
-creg tk_SCRATCH_BIT[6];
 c = 2;
 c = a;
 if(b!=2) c[1] = b[1] & a[1];

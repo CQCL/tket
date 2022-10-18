@@ -9,6 +9,11 @@ Minor new features:
 * New ``OpType::Phase`` 0-qubit gate affecting global phase.
 * New ``CnXPairwiseDecomposition`` pass.
 
+Fixes:
+
+* Remove unused ``tk_SCRATCH_BIT`` registers from qasm output.
+* Update the ``LogicExp`` in every ``ClassicalExpBox`` when calling ``Circuit.rename_units``.
+
 1.7.3 (October 2022)
 --------------------
 

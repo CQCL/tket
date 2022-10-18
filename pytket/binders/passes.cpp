@@ -55,7 +55,7 @@ Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
 }
 
 static PassPtr gen_cx_mapping_pass_kwargs(
-    const Architecture &arc, const PlacementPtr &placer, py::kwargs kwargs) {
+    const Architecture &arc, const Placement::Ptr &placer, py::kwargs kwargs) {
   std::vector<RoutingMethodPtr> config = {
       std::make_shared<LexiLabellingMethod>(),
       std::make_shared<LexiRouteRoutingMethod>()};

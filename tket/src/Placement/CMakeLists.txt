@@ -19,9 +19,11 @@ if (NOT ${COMP} STREQUAL "Placement")
 endif()
 
 add_library(tket-${COMP}
-    Qubit_Placement.cpp
-    subgraph_mapping.cpp
+    Frontier.cpp
     Placement.cpp
+    GraphPlacement.cpp
+    LinePlacement.cpp
+    NoiseAwarePlacement.cpp
     PlacementGraphClasses.cpp
     NeighbourPlacements.cpp
     MonomorphismCalculation.cpp)
