@@ -557,8 +557,8 @@ SCENARIO("Test compiler pass serializations") {
   Placement::Ptr ga_place = std::make_shared<GraphPlacement>(arc);
   Placement::Ptr place = std::make_shared<Placement>(arc);
   std::map<Qubit, Qubit> qmap = {{Qubit(0), Node(1)}, {Qubit(3), Node(2)}};
-  PlacementPtr na_place = std::make_shared<NoiseAwarePlacement>(arc, plcon);
-  PlacementPtr la_place = std::make_shared<LinePlacement>(arc);
+  Placement::Ptr na_place = std::make_shared<NoiseAwarePlacement>(arc);
+  Placement::Ptr la_place = std::make_shared<LinePlacement>(arc);
 #define COMPPASSJSONTEST(passname, pass)               \
   GIVEN(#passname) {                                   \
     Circuit circ = CircuitsForTesting::get().uccsd;    \
