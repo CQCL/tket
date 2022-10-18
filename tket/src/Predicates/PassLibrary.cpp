@@ -167,10 +167,12 @@ const PassPtr &DecomposeMultiQubitsCX() {
     Transform t = Transforms::decompose_multi_qubits_CX();
     /* Spits out CX + any single qb gates */
     OpTypeSet ots = {OpType::CX};
+    op_signature_t noargs = {};
     op_signature_t singleq = {EdgeType::Quantum};
     ots.insert(all_projective_types().begin(), all_projective_types().end());
     for (const std::pair<const OpType, OpTypeInfo> &ott : optypeinfo()) {
-      if (!ott.second.signature || *ott.second.signature == singleq)
+      if (!ott.second.signature || *ott.second.signature == singleq ||
+          *ott.second.signature == noargs)
         ots.insert(ott.first);
     }
     PredicatePtrMap precons;

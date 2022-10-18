@@ -866,6 +866,30 @@ def circuit_to_qasm(circ: Circuit, output_file: str, header: str = "qelib1") -> 
         circuit_to_qasm_io(circ, out, header=header)
 
 
+def _filtered_qasm_str(qasm: str) -> str:
+    # remove any c registers starting with _TEMP_BIT_NAME
+    # that are not being used somewhere else
+    lines = qasm.split("\n")
+    def_matcher = re.compile(r"creg ({}[^\]]*)\[".format(_TEMP_BIT_NAME))
+    arg_matcher = re.compile(r"({}[^\]]*)\[".format(_TEMP_BIT_NAME))
+    unused_regs = dict()
+    for i, line in enumerate(lines):
+        if reg := def_matcher.match(line):
+            # Mark a reg temporarily as unused
+            unused_regs[reg.group(1)] = i
+        elif args := arg_matcher.findall(line):
+            # If the line contains scratch bits that are used as arguments
+            # mark these regs as used
+            for arg in args:
+                if arg in unused_regs:
+                    unused_regs.pop(arg)
+    # remove unused reg defs
+    redundant_lines = sorted(unused_regs.values(), reverse=True)
+    for line_index in redundant_lines:
+        del lines[line_index]
+    return "\n".join(lines)
+
+
 def circuit_to_qasm_str(circ: Circuit, header: str = "qelib1") -> str:
     """A method to generate a qasm str from a tket Circuit"""
     buffer = io.StringIO()
@@ -926,6 +950,9 @@ def circuit_to_qasm_io(
     include_gate_defs: Optional[Set[str]] = None,
 ) -> None:
     """A method to generate a qasm text stream from a tket Circuit"""
+    # Write to a buffer since the output qasm might need additional filtering.
+    # e.g. remove unused tket scratch bits.
+    buffer = io.StringIO()
     if any(
         circ.n_gates_of_type(typ)
         for typ in (
@@ -945,15 +972,15 @@ def circuit_to_qasm_io(
         include_gate_defs = {"measure", "reset", "barrier"}
         include_gate_defs.update(_load_include_module(header, False, True).keys())
 
-        stream_out.write('OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header))
+        buffer.write('OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header))
 
         qregs = _retrieve_registers(circ.qubits, QubitRegister)
         cregs = _retrieve_registers(circ.bits, BitRegister)
 
         for reg in qregs.values():
-            stream_out.write(f"qreg {reg.name}[{reg.size}];\n")
+            buffer.write(f"qreg {reg.name}[{reg.size}];\n")
         for reg in cregs.values():
-            stream_out.write(f"creg {reg.name}[{reg.size}];\n")
+            buffer.write(f"creg {reg.name}[{reg.size}];\n")
     else:
         # gate definition, no header necessary for file
         cregs = {}
@@ -1003,7 +1030,7 @@ def circuit_to_qasm_io(
                         "OpenQASM conditions must be a single classical register"
                     )
 
-            stream_out.write(f"if({variable}{comparator}{value}) ")
+            buffer.write(f"if({variable}{comparator}{value}) ")
             args = args[op.width :]
             op = op.op
             optype, params = _get_optype_and_params(op)
@@ -1014,10 +1041,10 @@ def circuit_to_qasm_io(
             # check if whole register can be set at once
             if bits == tuple(cregs[creg_name]):
                 value = int("".join(map(str, map(int, vals[::-1]))), 2)
-                stream_out.write(f"{creg_name} = {value};\n")
+                buffer.write(f"{creg_name} = {value};\n")
             else:
                 for bit, value in zip(bits, vals):
-                    stream_out.write(f"{bit} = {int(value)};\n")
+                    buffer.write(f"{bit} = {int(value)};\n")
             continue
         if optype == OpType.CopyBits:
             l_args = args[op.n_inputs :]
@@ -1027,10 +1054,10 @@ def circuit_to_qasm_io(
 
             # check if whole register can be set at once
             if l_args == list(cregs[l_name]) or r_args == list(cregs[r_name]):
-                stream_out.write(f"{l_name} = {r_name};\n")
+                buffer.write(f"{l_name} = {r_name};\n")
             else:
                 for bit_l, bit_r in zip(l_args, r_args):
-                    stream_out.write(f"{bit_l} = {bit_r};\n")
+                    buffer.write(f"{bit_l} = {bit_r};\n")
             continue
         if optype == OpType.MultiBit:
             op = op.basic_op
@@ -1048,20 +1075,20 @@ def circuit_to_qasm_io(
             opstr = str(op)
             if opstr not in _classical_gatestr_map:
                 raise QASMUnsupportedError(f"Classical gate {opstr} not supported.")
-            stream_out.write(
+            buffer.write(
                 f"{args[-1]} = {args[0]} {_classical_gatestr_map[opstr]} {args[1]};\n"
             )
             continue
 
         if optype == OpType.ClassicalExpBox:
             out_args = args[op.get_n_i() :]
-            if (
+            if len(out_args) == 1:
+                buffer.write(f"{out_args[0]} = {str(op.get_exp())};\n")
+            elif (
                 out_args
                 == list(cregs[out_args[0].reg_name])[: op.get_n_io() + op.get_n_o()]
             ):
-                stream_out.write(f"{out_args[0].reg_name} = {str(op.get_exp())};\n")
-            elif len(out_args) == 1:
-                stream_out.write(f"{out_args[0]} = {str(op.get_exp())};\n")
+                buffer.write(f"{out_args[0].reg_name} = {str(op.get_exp())};\n")
             else:
                 raise QASMUnsupportedError(
                     f"ClassicalExpBox only supported"
@@ -1083,8 +1110,8 @@ def circuit_to_qasm_io(
                         QASMUnsupportedError("WASM ops must act on entire registers.")
                     reglist.append(regname)
             if outputs:
-                stream_out.write(f"{', '.join(outputs)} = ")
-            stream_out.write(f"{op.func_name}({', '.join(inputs)});\n")
+                buffer.write(f"{', '.join(outputs)} = ")
+            buffer.write(f"{op.func_name}({', '.join(inputs)});\n")
             continue
         if optype == OpType.CustomGate:
             if op.gate.name not in include_gate_defs:
@@ -1099,7 +1126,7 @@ def circuit_to_qasm_io(
                 def_circ.rename_units(dict(zip(def_circ.qubits, args)))
                 def_circ.symbol_substitution(dict(zip(op.gate.args, op.params)))
 
-                circuit_to_qasm_io(def_circ, stream_out, header, include_gate_defs)
+                circuit_to_qasm_io(def_circ, buffer, header, include_gate_defs)
                 continue
             else:
                 opstr = op.gate.name
@@ -1135,9 +1162,9 @@ def circuit_to_qasm_io(
             raise QASMUnsupportedError(
                 "Gate of type {} is not defined in header {}.inc".format(opstr, header)
             )
-        stream_out.write(opstr)
+        buffer.write(opstr)
         if params is not None:
-            stream_out.write("(")
+            buffer.write("(")
             for i in range(len(params)):
                 reduced = True
                 try:
@@ -1147,24 +1174,26 @@ def circuit_to_qasm_io(
                     p = params[i]
                 if i < len(params) - 1:
                     if reduced:
-                        stream_out.write("{}*pi,".format(p))
+                        buffer.write("{}*pi,".format(p))
                     else:
-                        stream_out.write("({})*pi,".format(p))
+                        buffer.write("({})*pi,".format(p))
 
                 else:
                     if reduced:
-                        stream_out.write("{}*pi)".format(p))
+                        buffer.write("{}*pi)".format(p))
                     else:
-                        stream_out.write("({})*pi)".format(p))
-        stream_out.write(" ")
+                        buffer.write("({})*pi)".format(p))
+        buffer.write(" ")
         if optype == OpType.Measure:  # assume written to only 1 bit
-            stream_out.write(
+            buffer.write(
                 "{q} -> {c};\n".format(q=args[0].__repr__(), c=args[1].__repr__())
             )
         else:
             for i in range(len(args)):
-                stream_out.write(args[i].__repr__())
+                buffer.write(args[i].__repr__())
                 if i < len(args) - 1:
-                    stream_out.write(",")
+                    buffer.write(",")
                 else:
-                    stream_out.write(";\n")
+                    buffer.write(";\n")
+
+    stream_out.write(_filtered_qasm_str(buffer.getvalue()))

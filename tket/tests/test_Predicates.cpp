@@ -382,7 +382,7 @@ SCENARIO("Test basic functionality of CompilationUnit") {
 
 SCENARIO("Test PlacementPredicate") {
   GIVEN(
-      "Does the GraphPlacement class correctly modify Circuits and return "
+      "Does the Placement class correctly modify Circuits and return "
       "maps?") {
     Architecture test_arc({{0, 1}, {1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 5}});
 

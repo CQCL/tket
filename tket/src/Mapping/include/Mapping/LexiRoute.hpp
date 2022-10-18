@@ -168,6 +168,16 @@ class LexiRoute {
    */
   void remove_swaps_decreasing(swap_set_t& swaps);
 
+  /**
+   * In some cases, we may want to assign an unlabelled Qubit
+   * to a Node that's already been used (but can reasonably be reassigned)
+   *
+   * @param pre_assigned Node to reassign
+   * @param assigned Node to newly assign
+   */
+  void reassign_node(const Node& pre_assigned, const UnitID& asignee);
+
+  void assign_valid_node(const UnitID& assignee, const UnitID& replacement);
   // Architecture all new physical operations must respect
   ArchitecturePtr architecture_;
   //   Contains circuit for finding SWAP from and non-routed/routed boundary

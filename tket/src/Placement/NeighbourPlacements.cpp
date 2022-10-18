@@ -23,7 +23,7 @@
 namespace tket {
 
 NeighbourPlacements::NeighbourPlacements(
-    const Architecture& arc, const qubit_mapping_t& init_map)
+    const Architecture& arc, const std::map<Qubit, Node>& init_map)
     : arc_(arc), init_map_(init_map), u_to_node_(), rng_() {
   auto nodes = arc_.get_all_nodes_vec();
   for (unsigned i = 0; i < nodes.size(); ++i) {
@@ -41,19 +41,20 @@ NeighbourPlacements::ResultVec NeighbourPlacements::get(
   for (auto [k, v] : init_map_) {
     keys.push_back(k);
   }
-  auto map_compare = [&keys](
-                         const qubit_mapping_t& a, const qubit_mapping_t& b) {
-    for (auto k : keys) {
-      if (a.at(k) < b.at(k)) {
-        return true;
-      } else if (a.at(k) > b.at(k)) {
+  auto map_compare =
+      [&keys](const std::map<Qubit, Node>& a, const std::map<Qubit, Node>& b) {
+        for (auto k : keys) {
+          if (a.at(k) < b.at(k)) {
+            return true;
+          } else if (a.at(k) > b.at(k)) {
+            return false;
+          }
+        }
         return false;
-      }
-    }
-    return false;
-  };
+      };
   // set of all generated placement maps
-  std::set<qubit_mapping_t, decltype(map_compare)> placements(map_compare);
+  std::set<std::map<Qubit, Node>, decltype(map_compare)> placements(
+      map_compare);
 
   ResultVec resvec;
   for (unsigned i = 0; i < n; ++i) {
@@ -126,7 +127,7 @@ NeighbourPlacements::Result NeighbourPlacements::convert_to_res(
     node_swaps.push_back({u_to_node_.left.at(u1), u_to_node_.left.at(u2)});
   }
 
-  qubit_bimap_t qubit_to_node;
+  boost::bimap<Qubit, Node> qubit_to_node;
   qubit_to_node.left.insert(init_map_.begin(), init_map_.end());
   for (auto [n1, n2] : node_swaps) {
     const Qubit q1 = qubit_to_node.right.at(n1);
@@ -136,7 +137,7 @@ NeighbourPlacements::Result NeighbourPlacements::convert_to_res(
     qubit_to_node.left.insert({q1, n2});
     qubit_to_node.left.insert({q2, n1});
   }
-  qubit_mapping_t map;
+  std::map<Qubit, Node> map;
   for (auto [k, v] : qubit_to_node.left) {
     map.insert({k, v});
   }

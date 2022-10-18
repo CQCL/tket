@@ -26,7 +26,6 @@ SCENARIO(
     "respects_connectivity_constraints method.",
     "[routing]") {
   Architecture arc({{1, 0}, {1, 2}});
-
   GIVEN("A simple CX circuit and a line_placement map.") {
     Circuit circ(5);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {0, 3}, {2, 4}, {1, 4}, {0, 4}});

@@ -29,6 +29,7 @@ from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabelling
 from pytket.qasm import circuit_from_qasm  # type: ignore
 
 import json
+import pytest
 
 
 def test_placements() -> None:
@@ -57,17 +58,23 @@ def test_placements() -> None:
     line_pl.place(line_placed)
     graph_pl.place(graph_placed)
 
-    assert line_placed.qubits[0] == line_map[circ_qbs[0]]
-    assert line_placed.qubits[1] == line_map[circ_qbs[1]]
-    assert line_placed.qubits[2] == line_map[circ_qbs[2]]
+    assert line_map[Qubit(0)] == Node(3)
+    assert line_map[Qubit(1)] == Node(1)
+    assert line_map[Qubit(2)] == Node("unplaced", 0)
+    assert line_map[Qubit(3)] == Node("unplaced", 1)
+    assert line_map[Qubit(4)] == Node(4)
+    assert line_map[Qubit(5)] == Node(5)
 
     assert base_placed.qubits[0] == base_map[circ_qbs[0]]
     assert base_placed.qubits[1] == base_map[circ_qbs[1]]
     assert base_placed.qubits[2] == base_map[circ_qbs[2]]
 
-    assert graph_placed.qubits[0] == graph_map[circ_qbs[0]]
-    assert graph_placed.qubits[1] == graph_map[circ_qbs[1]]
-    assert graph_placed.qubits[2] == graph_map[circ_qbs[2]]
+    assert graph_map[Qubit(0)] == Node(2)
+    assert graph_map[Qubit(1)] == Node(1)
+    assert graph_map[Qubit(2)] == Node(3)
+    assert graph_map[Qubit(3)] == Node(0)
+    assert graph_map[Qubit(4)] == Node(4)
+    assert graph_map[Qubit(5)] == Node(5)
 
     assert circ_qbs != base_placed.qubits
     assert circ_qbs != line_placed.qubits
@@ -100,31 +107,14 @@ def test_placements_serialization() -> None:
 
 
 def test_placement_config() -> None:
-    test_coupling = [(0, 1), (1, 2), (1, 3), (4, 1), (4, 5)]
+    test_coupling = [(0, 1), (1, 2), (2, 3)]
     test_architecture = Architecture(test_coupling)
     test_pl = GraphPlacement(test_architecture)
-    test_circuit = Circuit(6)
-    test_circuit.CX(0, 1)
-    test_circuit.CX(2, 3)
-    test_circuit.CX(4, 3)
-    test_circuit.CX(2, 4)
-    test_circuit.CX(3, 5)
-    test_circuit.CX(0, 5)
-    circ1 = test_circuit.copy()
-    circ2 = test_circuit.copy()
-    map1 = test_pl.get_placement_map(test_circuit)
-    test_pl.place(circ1)
-    test_pl.modify_config(
-        max_matches=1, depth_limit=0, max_interaction_edges=2, timeout=100
-    )
-    map2 = test_pl.get_placement_map(test_circuit)
-    test_pl.place(circ2)
-    assert map1 != map2
-
-    mm = MappingManager(test_architecture)
-    mm.route_circuit(circ1, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
-    mm.route_circuit(circ2, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
-    assert circ1.n_gates < circ2.n_gates
+    c = Circuit(4).CX(0, 1).CX(1, 2).CX(2, 3)
+    pm = test_pl.get_placement_map(c)
+    with pytest.deprecated_call():
+        test_pl.modify_config()
+    assert test_pl.get_placement_map(c) == pm
 
 
 def test_convert_index_mapping() -> None:
@@ -157,7 +147,7 @@ def test_convert_index_mapping() -> None:
     assert new_circ_qbs[2] == Node(2)
     assert new_circ_qbs[3] == Node(3)
     assert new_circ_qbs[4] == Node(4)
-    assert new_circ_qbs[5] == Qubit("unplaced", 0)
+    assert new_circ_qbs[5] == Qubit(5)
 
     index_map_0 = {0: 5, 1: 4, 2: 0, 3: 1, 4: 3, 5: 2}
     index_map_1 = {0: 1, 1: 2, 2: 0, 3: 4, 4: 3, 5: 5}
@@ -185,9 +175,9 @@ def test_place_with_map_twice() -> None:
 
     assert all(qb.reg_name == "q" for qb in c.qubits)
     place_with_map(c, uid_map)
-    assert all(qb.reg_name in ["node", "unplaced"] for qb in c.qubits)
+    assert all(qb.reg_name in ["node", "q"] for qb in c.qubits)
     place_with_map(c, uid_map)
-    assert all(qb.reg_name == "unplaced" for qb in c.qubits)
+    assert all(qb.reg_name in ["node", "q"] for qb in c.qubits)
 
 
 def test_place_fully_connected() -> None:
@@ -258,8 +248,8 @@ def test_big_placement() -> None:
 if __name__ == "__main__":
     test_placements()
     test_placements_serialization()
-    test_placement_config()
     test_convert_index_mapping()
     test_place_with_map_twice()
     test_big_placement()
     test_place_fully_connected()
+    test_placement_config()

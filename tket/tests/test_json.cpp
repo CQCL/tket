@@ -370,17 +370,6 @@ SCENARIO("Test Circuit serialization") {
   }
 }
 
-SCENARIO("Test config serializations") {
-  GIVEN("PlacementConfig") {
-    PlacementConfig orig(5, 20, 100000, 10, 1);
-    nlohmann::json j_config = orig;
-    PlacementConfig loaded = j_config.get<PlacementConfig>();
-    REQUIRE(orig == loaded);
-    nlohmann::json j_loaded = loaded;
-    REQUIRE(j_config == j_loaded);
-  }
-}
-
 SCENARIO("Test device serializations") {
   GIVEN("Architecture") {
     Architecture arc({{0, 1}, {1, 2}});
@@ -565,8 +554,8 @@ SCENARIO("Test compiler pass serializations") {
   Architecture arc = SquareGrid(2, 4, 2);
   RoutingMethodPtr rmp = std::make_shared<LexiRouteRoutingMethod>(80);
   std::vector<RoutingMethodPtr> rcon = {rmp};
-  PlacementConfig plcon(5, 20, 100000, 10, 1000);
-  PlacementPtr place = std::make_shared<GraphPlacement>(arc, plcon);
+  Placement::Ptr ga_place = std::make_shared<GraphPlacement>(arc);
+  Placement::Ptr place = std::make_shared<Placement>(arc);
   std::map<Qubit, Qubit> qmap = {{Qubit(0), Node(1)}, {Qubit(3), Node(2)}};
   PlacementPtr na_place = std::make_shared<NoiseAwarePlacement>(arc, plcon);
   PlacementPtr la_place = std::make_shared<LinePlacement>(arc);
@@ -645,6 +634,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(NoiseAwarePlacement, gen_placement_pass(na_place))
   COMPPASSJSONTEST(NaivePlacementPass, gen_naive_placement_pass(arc))
   COMPPASSJSONTEST(LinePlacement, gen_placement_pass(la_place))
+  COMPPASSJSONTEST(GraphPlacement, gen_placement_pass(ga_place))
 #undef COMPPASSJSONTEST
   GIVEN("RoutingPass") {
     // Can only be applied to placed circuits
