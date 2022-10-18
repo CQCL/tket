@@ -185,6 +185,7 @@ def test_custom_gate() -> None:
     fname = str(curr_file_path / "qasm_test_files/test6.qasm")
     c = circuit_from_qasm(fname)
     assert str(c.get_commands()) == "[mygate(alpha,0.2) q[0], q[1];]"
+
     with open(curr_file_path / "qasm_test_files/test6_output.qasm") as f:
         # test custom gates are unrolled
         assert circuit_to_qasm_str(c) == f.read()
@@ -506,11 +507,26 @@ def test_non_lib_gates() -> None:
     c.add_gate(OpType.ESWAP, [0.7], [0, 1])
     c.add_gate(OpType.FSim, [0.3, 0.4], [1, 2])
     c.add_gate(OpType.ISWAPMax, [1, 2])
+    # add copies
+    c.add_gate(OpType.TK2, [0.3, 0.6, 0.8], [2, 1])
+    c.add_gate(OpType.CV, [1, 0])
+    c.add_gate(OpType.CVdg, [1, 0])
+    c.add_gate(OpType.BRIDGE, [0, 2, 1])
+    c.add_gate(OpType.ISWAP, [0.7], [1, 2])
+    c.add_gate(OpType.PhasedISWAP, [0.1, 0.2], [2, 1])
+    c.add_gate(OpType.YYPhase, [0.4], [1, 2])
+    c.add_gate(OpType.XXPhase3, [0.5], [2, 1, 0])
+    c.add_gate(OpType.ZZMax, [1, 2])
+    c.add_gate(OpType.ESWAP, [0.8], [2, 1])
+    c.add_gate(OpType.FSim, [0.9, 0.2], [0, 2])
+    c.add_gate(OpType.ISWAPMax, [0, 2])
 
     qs = circuit_to_qasm_str(c)
     c2 = circuit_from_qasm_str(qs)
     qs2 = circuit_to_qasm_str(c2)
     assert qs == qs2
+
+
 def test_scratch_bits_filtering() -> None:
     # test removing unused scratch register
     c = Circuit(1)
