@@ -23,13 +23,36 @@
 
 namespace tket {
 
+// Used as an intermediate class in between ClassicalExpBox and Box
+class ClassicalExpBoxBase : public Box {
+ public:
+  ClassicalExpBoxBase() : Box(OpType::ClassicalExpBox) {}
+  ClassicalExpBoxBase(const ClassicalExpBoxBase &other) : Box(other) {}
+  ~ClassicalExpBoxBase() override {}
+
+  /**
+   * @brief Rename the units in the logic expression according to the
+   * given Bit map. We can still mutate python objects even though the
+   * function is const.
+   *
+   * @param bm
+   * @return bool
+   */
+  virtual bool rename_units(const std::map<Bit, Bit> &bm) const {
+    (void)bm;
+    return false;
+  }
+};
+
 /**
  * Holding box for abstract expressions on Bits
- * Templated by type which holds expression
+ * Templated by type T which holds expression.
+ * T must implement the functions listed in
+ * https://pybind11.readthedocs.io/en/stable/reference.html#_CPPv4I0E10object_api
  */
 
 template <typename T>
-class ClassicalExpBox : public Box {
+class ClassicalExpBox : public ClassicalExpBoxBase {
  public:
   /**
    * Construct a ClassicalExpBox of specified shape with expression
@@ -40,11 +63,7 @@ class ClassicalExpBox : public Box {
    * @param exp expression stored
    */
   explicit ClassicalExpBox(unsigned n_i, unsigned n_io, unsigned n_o, T exp)
-      : Box(OpType::ClassicalExpBox),
-        n_i_(n_i),
-        n_io_(n_io),
-        n_o_(n_o),
-        exp_(exp) {
+      : n_i_(n_i), n_io_(n_io), n_o_(n_o), exp_(exp) {
     for (unsigned i = 0; i < n_i; i++) {
       sig_.push_back(EdgeType::Boolean);
     }
@@ -57,7 +76,7 @@ class ClassicalExpBox : public Box {
    * Copy constructor
    */
   ClassicalExpBox(const ClassicalExpBox &other)
-      : Box(other),
+      : ClassicalExpBoxBase(other),
         n_i_(other.n_i_),
         n_io_(other.n_io_),
         n_o_(other.n_o_),
@@ -101,6 +120,16 @@ class ClassicalExpBox : public Box {
            (n_o_ == other_box.n_o_) && (sig_ == other_box.sig_) &&
            (exp_.equal(other_box.exp_));
   }
+  /**
+   * @brief Rename the units in the logic expression according to the
+   * given Bit map. Invokes the python function rename_args.
+   *
+   * @param bm
+   * @return bool
+   */
+  bool rename_units(const std::map<Bit, Bit> &bm) const override {
+    return (bool)exp_.attr("rename_args")(bm);
+  }
 
   static Op_ptr from_json(const nlohmann::json &j);
 
@@ -113,13 +142,8 @@ class ClassicalExpBox : public Box {
         "ClassicalExpBox cannot be decomposed to Circuit. Try the "
         "DecomposeClassicalExp compiler pass.");
   };
-  ClassicalExpBox()
-      : Box(OpType::ClassicalExpBox),
-        n_i_(0),
-        n_io_(0),
-        n_o_(0),
-        exp_(),
-        sig_() {}
+
+  ClassicalExpBox() : n_i_(0), n_io_(0), n_o_(0), exp_(), sig_() {}
 
  private:
   const unsigned n_i_;

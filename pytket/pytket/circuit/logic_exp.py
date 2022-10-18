@@ -214,6 +214,33 @@ class LogicExp:
         else:
             return cls.factory(op)(*args)  # type: ignore
 
+    def _rename_args_recursive(
+        self, cmap: Dict[Bit, Bit], renamed_regs: Set[str]
+    ) -> bool:
+        success = False
+        for i, arg in enumerate(self.args):
+            if isinstance(arg, Bit):
+                if arg in cmap:
+                    self.args[i] = cmap[arg]
+                    success = True
+            elif isinstance(arg, BitRegister):
+                if arg.name in renamed_regs:
+                    raise ValueError(
+                        f"""Can't rename bits in {arg.__repr__()} """
+                        """because the register is being used """
+                        """in a register-wise logic expression."""
+                    )
+            elif isinstance(arg, LogicExp):
+                success |= arg._rename_args_recursive(cmap, renamed_regs)
+        return success
+
+    def rename_args(self, cmap: Dict[Bit, Bit]) -> bool:
+        """Rename the Bits according to a Bit map. Raise ValueError if
+        a bit is being used in a register-wise expression.
+        """
+        renamed_regs = set([key.reg_name for key in cmap.keys()])
+        return self._rename_args_recursive(cmap, renamed_regs)
+
 
 class BitLogicExp(LogicExp):
     """Expression acting only on Bit or Constant types."""
