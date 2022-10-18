@@ -1,13 +1,26 @@
 Changelog
 =========
 
-x.y.z (unreleased)
+1.8.0 (unreleased)
 ------------------
+
+Minor new features:
+
+* New ``OpType::Phase`` 0-qubit gate affecting global phase.
+
+Fixes:
+
+* Remove unused ``tk_SCRATCH_BIT`` registers from qasm output.
+* Update the ``LogicExp`` in every ``ClassicalExpBox`` when calling ``Circuit.rename_units``.
+
+1.7.3 (October 2022)
+--------------------
 
 Minor new features:
 
 * New ``Circuit`` properties ``created_qubits`` and ``discarded_qubits``.
 * Barrier operations inside QASM custom gates are now accepted.
+* Added wasm functions will be checked if the signatures are supported
 
 Fixes:
 

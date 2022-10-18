@@ -17,7 +17,7 @@ jobs:
       tket: ${{ steps.filter.outputs.tket }}
     steps:
     - uses: actions/checkout@v3
-    - uses: dorny/paths-filter@v2.10.2
+    - uses: dorny/paths-filter@v2.11.1
       id: filter
       with:
         base: ${{ github.ref }}
@@ -33,12 +33,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Get current time
-      uses: srfrnk/current-time@v1.1.0
+      uses: josStorer/get-current-time@v2.0.2
       id: current_time
       with:
         format: YYYYMMDDHHmmss
     - name: Use ccache
-      uses: hendrikmuhs/ccache-action@v1.2.2
+      uses: hendrikmuhs/ccache-action@v1.2.3
       with:
         key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
@@ -47,17 +47,14 @@ jobs:
       run: sudo apt update
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.1
+      with:
+        version: '1.53.0'
     - name: Set up conan
       shell: bash
       run: ./.github/workflows/conan-setup
     - name: set option to run full test suite
       if: github.event_name == 'schedule'
       run: conan profile update options.tket-tests:full=True tket
-    - name: install tex components
-      run: |
-        sudo apt install texlive texlive-latex-extra latexmk
-        mkdir -p ~/texmf/tex/latex
-        wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
     - name: install valgrind
       run: sudo apt install valgrind
     - name: build tket

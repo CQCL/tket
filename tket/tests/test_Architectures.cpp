@@ -158,6 +158,24 @@ SCENARIO("connectivity") {
   }
 }
 
+SCENARIO("Test Architecture utility methods.") {
+  GIVEN("Architecture::valid_operation, invalid and valid.") {
+    std::vector<std::pair<unsigned, unsigned>> edges = {{0, 1}, {1, 2}};
+    Architecture architecture(edges);
+    REQUIRE(!architecture.valid_operation({Node("test", 0)}));
+    REQUIRE(architecture.valid_operation({Node(0)}));
+    REQUIRE(architecture.valid_operation({Node(0), Node(1)}));
+    REQUIRE(!architecture.valid_operation({Node(0), Node(2)}));
+    REQUIRE(!architecture.valid_operation({Node(0), Node(1), Node(2)}));
+  }
+  GIVEN("Architecture::create_subarch") {
+    std::vector<std::pair<unsigned, unsigned>> edges = {{0, 1}, {1, 2}};
+    Architecture architecture(edges);
+    Architecture subarc =
+        architecture.create_subarch({Node(0), Node(1), Node(5)});
+    REQUIRE(subarc.get_all_edges_vec().size() == 1);
+  }
+}
 }  // namespace test_Architectures
 }  // namespace graphs
 }  // namespace tket

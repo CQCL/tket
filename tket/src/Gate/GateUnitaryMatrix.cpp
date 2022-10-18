@@ -115,6 +115,7 @@ static Eigen::MatrixXcd get_unitary_or_throw(
     CASE_RETURN_0P(Sycamore)
     CASE_RETURN_0P(ISWAPMax)
 #undef CASE_RETURN_0P
+    CASE_RETURN_1P(Phase)
     CASE_RETURN_1P(Rx)
     CASE_RETURN_1P(Ry)
     CASE_RETURN_1P(Rz)
