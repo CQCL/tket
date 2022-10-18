@@ -147,6 +147,9 @@ void SymplecticTableau::apply_V(unsigned qb) {
 }
 
 void SymplecticTableau::apply_CX(unsigned qc, unsigned qt) {
+  if (qc == qt)
+    throw std::logic_error(
+        "Attempting to apply a CX with equal control and target in a tableau");
   for (unsigned i = 0; i < n_rows_; ++i) {
     phase_(i) = phase_(i) ^ (xmat_(i, qc) && zmat_(i, qt) &&
                              !(xmat_(i, qt) ^ zmat_(i, qc)));
@@ -340,8 +343,9 @@ SymplecticTableau SymplecticTableau::conjugate() const {
 }
 
 void SymplecticTableau::gaussian_form() {
-  MatrixXb fullmat(n_rows_, 2 * n_qubits_);
-  fullmat << xmat_, zmat_;
+  MatrixXb fullmat = MatrixXb::Zero(n_rows_, 2 * n_qubits_);
+  fullmat(Eigen::all, Eigen::seq(0, Eigen::last, 2)) = xmat_;
+  fullmat(Eigen::all, Eigen::seq(1, Eigen::last, 2)) = zmat_;
   std::vector<std::pair<unsigned, unsigned>> row_ops =
       gaussian_elimination_row_ops(fullmat);
   for (const std::pair<unsigned, unsigned> &op : row_ops) {

@@ -229,6 +229,7 @@ void CoherentTableau::apply_gate(
     case OpType::Sdg: {
       apply_S(qbs.at(0), seg);
       apply_S(qbs.at(0), seg);
+      apply_S(qbs.at(0), seg);
       break;
     }
     case OpType::V: {
@@ -236,6 +237,7 @@ void CoherentTableau::apply_gate(
       break;
     }
     case OpType::Vdg: {
+      apply_V(qbs.at(0), seg);
       apply_V(qbs.at(0), seg);
       apply_V(qbs.at(0), seg);
       break;
@@ -279,6 +281,43 @@ void CoherentTableau::apply_gate(
       break;
     }
     case OpType::noop: {
+      break;
+    }
+    case OpType::Reset: {
+      if (seg == TableauSegment::Input) {
+        post_select(qbs.at(0), TableauSegment::Input);
+        unsigned col = get_n_boundaries();
+        unsigned rows = get_n_rows();
+        // reinsert qubit initialised to maximally mixed state (no coherent
+        // stabilizers)
+        col_index_.insert({{qbs.at(0), TableauSegment::Input}, col});
+        tab_.xmat_.conservativeResize(rows, col + 1);
+        tab_.xmat_.col(col) = MatrixXb::Zero(rows, 1);
+        tab_.zmat_.conservativeResize(rows, col + 1);
+        tab_.zmat_.col(col) = MatrixXb::Zero(rows, 1);
+        ++tab_.n_qubits_;
+      } else {
+        discard_qubit(qbs.at(0), TableauSegment::Output);
+        unsigned col = get_n_boundaries();
+        unsigned rows = get_n_rows();
+        // reinsert qubit initialised to |0> (add a Z stabilizer)
+        col_index_.insert({{qbs.at(0), TableauSegment::Output}, col});
+        tab_.xmat_.conservativeResize(rows + 1, col + 1);
+        tab_.xmat_.col(col) = MatrixXb::Zero(rows + 1, 1);
+        tab_.xmat_.row(rows) = MatrixXb::Zero(1, col + 1);
+        tab_.zmat_.conservativeResize(rows + 1, col + 1);
+        tab_.zmat_.col(col) = MatrixXb::Zero(rows + 1, 1);
+        tab_.zmat_.row(rows) = MatrixXb::Zero(1, col + 1);
+        tab_.zmat_(rows, col) = true;
+        tab_.phase_.conservativeResize(rows + 1);
+        tab_.phase_(rows) = false;
+        ++tab_.n_rows_;
+        ++tab_.n_qubits_;
+      }
+      break;
+    }
+    case OpType::Collapse: {
+      collapse_qubit(qbs.at(0), seg);
       break;
     }
     default: {
@@ -386,17 +425,39 @@ void CoherentTableau::discard_qubit(const Qubit& qb, TableauSegment seg) {
       }
     }
   }
-  if (x_row) {
+  if (z_row) {
     // Remove the Z stabilizer
-    remove_row(*x_row);
+    remove_row(*z_row);
   }
   remove_col(col);
+}
+
+void CoherentTableau::collapse_qubit(const Qubit& qb, TableauSegment seg) {
+  unsigned col = col_index_.left.at(col_key_t{qb, seg});
+  // Isolate a single row with an X (if one exists)
+  std::optional<unsigned> x_row = std::nullopt;
+  for (unsigned r = 0; r < get_n_rows(); ++r) {
+    if (tab_.xmat_(r, col)) {
+      if (x_row) {
+        // Already found another row with an X, so combine them
+        tab_.row_mult(*x_row, r);
+      } else {
+        // This is the first row with an X
+        // Continue searching the rest to make it unique
+        x_row = r;
+      }
+    }
+  }
+  if (x_row) {
+    // Remove the X stabilizer
+    remove_row(*x_row);
+  }
 }
 
 void CoherentTableau::remove_row(unsigned row) {
   unsigned n_rows = get_n_rows();
   unsigned n_cols = get_n_boundaries();
-  if (n_rows > 1) {
+  if (row < n_rows - 1) {
     tab_.xmat_.row(row) = tab_.xmat_.row(n_rows - 1);
     tab_.zmat_.row(row) = tab_.zmat_.row(n_rows - 1);
     tab_.phase_(row) = tab_.phase_(n_rows - 1);
@@ -404,25 +465,62 @@ void CoherentTableau::remove_row(unsigned row) {
   tab_.xmat_.conservativeResize(n_rows - 1, n_cols);
   tab_.zmat_.conservativeResize(n_rows - 1, n_cols);
   tab_.phase_.conservativeResize(n_rows - 1);
+  --tab_.n_rows_;
 }
 
 void CoherentTableau::remove_col(unsigned col) {
   unsigned n_rows = get_n_rows();
   unsigned n_cols = get_n_boundaries();
-  if (n_cols > 1) {
+  if (col < n_cols - 1) {
     tab_.xmat_.col(col) = tab_.xmat_.col(n_cols - 1);
     tab_.zmat_.col(col) = tab_.zmat_.col(n_cols - 1);
   }
   tab_.xmat_.conservativeResize(n_rows, n_cols - 1);
   tab_.zmat_.conservativeResize(n_rows, n_cols - 1);
   col_index_.right.erase(col);
-  if (n_cols > 1) {
+  if (col < n_cols - 1) {
     tableau_col_index_t::right_iterator it = col_index_.right.find(n_cols - 1);
     col_key_t last = it->second;
     col_index_.right.erase(it);
     col_index_.insert({last, col});
   }
+  --tab_.n_qubits_;
 }
+
+void CoherentTableau::canonical_column_order() {
+  std::set<Qubit> ins;
+  std::set<Qubit> outs;
+  BOOST_FOREACH (
+      tableau_col_index_t::left_const_reference entry, col_index_.left) {
+    if (entry.first.second == TableauSegment::Input)
+      ins.insert(entry.first.first);
+    else
+      outs.insert(entry.first.first);
+  }
+  tableau_col_index_t new_index;
+  unsigned i = 0;
+  for (const Qubit& q : ins) {
+    new_index.insert({{q, TableauSegment::Input}, i});
+    ++i;
+  }
+  for (const Qubit& q : outs) {
+    new_index.insert({{q, TableauSegment::Output}, i});
+    ++i;
+  }
+  unsigned n_rows = get_n_rows();
+  MatrixXb xmat = MatrixXb::Zero(n_rows, i);
+  MatrixXb zmat = MatrixXb::Zero(n_rows, i);
+  for (unsigned j = 0; j < i; ++j) {
+    col_key_t key = new_index.right.at(j);
+    unsigned c = col_index_.left.at(key);
+    xmat.col(j) = tab_.xmat_.col(c);
+    zmat.col(j) = tab_.zmat_.col(c);
+  }
+  tab_ = SymplecticTableau(xmat, zmat, tab_.phase_);
+  col_index_ = new_index;
+}
+
+void CoherentTableau::gaussian_form() { tab_.gaussian_form(); }
 
 CoherentTableau CoherentTableau::compose(
     const CoherentTableau& first, const CoherentTableau& second) {
@@ -491,9 +589,13 @@ CoherentTableau CoherentTableau::compose(
 std::ostream& operator<<(std::ostream& os, const CoherentTableau& tab) {
   for (unsigned i = 0; i < tab.get_n_rows(); ++i) {
     CoherentTableau::row_tensor_t row = tab.get_row(i);
-    os << row.first.to_str() << "\t->\t" << row.second.to_str();
+    os << row.first.to_str() << "\t->\t" << row.second.to_str() << std::endl;
   }
   return os;
+}
+
+bool CoherentTableau::operator==(const CoherentTableau& other) const {
+  return (col_index_ == other.col_index_) && (tab_ == other.tab_);
 }
 
 void to_json(nlohmann::json& j, const CoherentTableau::TableauSegment& seg) {

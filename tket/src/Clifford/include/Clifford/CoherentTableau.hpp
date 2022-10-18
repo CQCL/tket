@@ -168,10 +168,29 @@ class CoherentTableau {
       const Qubit& qb, TableauSegment seg = TableauSegment::Output);
 
   /**
+   * Performs the effect of an OpType::Collapse gate on the qubit.
+   * I.e. non-destructively measure the qubit in the Z basis and ignore the
+   * result.
+   */
+  void collapse_qubit(
+      const Qubit& qb, TableauSegment seg = TableauSegment::Output);
+
+  /**
    * Removes a row from the tableau.
    * The final row is shifted into its place.
    */
   void remove_row(unsigned row);
+
+  /**
+   * Permutes columns into a canonical order: inputs before outputs, subordered
+   * in ILO.
+   */
+  void canonical_column_order();
+
+  /**
+   * Reduces the underlying SymplecticTableau to its Gaussian/row-echelon form.
+   */
+  void gaussian_form();
 
   /**
    * Combine two tableaux in sequence/parallel.
@@ -193,6 +212,7 @@ class CoherentTableau {
   friend void from_json(const nlohmann::json& j, CoherentTableau& tab);
 
   friend std::ostream& operator<<(std::ostream& os, const CoherentTableau& tab);
+  bool operator==(const CoherentTableau& other) const;
 
  private:
   /**

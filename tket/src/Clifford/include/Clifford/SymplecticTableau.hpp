@@ -155,12 +155,12 @@ class SymplecticTableau {
   unsigned rank() const;
 
   /**
-   * Applies row-wise gaussian elimination over the entire tableau, first by the
-   * X matrix and then by the Z matrix, reducing the combined boolean matrix to
-   * reduced row echelon form.
-   * Users of this class should only apply this in
-   * settings where row multiplications are free actions, e.g. ok in
-   * CoherentTableau, not ok in UnitaryTableau
+   * Applies row-wise gaussian elimination over the entire tableau, in qubit
+   * order, subdivided by X first and then Z, reducing the combined boolean
+   * matrix to reduced row echelon form.
+   * Users of this class should only apply this in settings where row
+   * multiplications are free actions, e.g. ok in CoherentTableau, not ok in
+   * UnitaryTableau
    */
   void gaussian_form();
 
