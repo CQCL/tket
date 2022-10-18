@@ -28,10 +28,8 @@ from pytket.passes import PauliSimp, DefaultMappingPass  # type: ignore
 from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
 from pytket.qasm import circuit_from_qasm  # type: ignore
 
-import warnings
-
-warnings.simplefilter("ignore")
 import json
+import pytest
 
 
 def test_placements() -> None:
@@ -114,7 +112,8 @@ def test_placement_config() -> None:
     test_pl = GraphPlacement(test_architecture)
     c = Circuit(4).CX(0, 1).CX(1, 2).CX(2, 3)
     pm = test_pl.get_placement_map(c)
-    assert test_pl.modify_config() is None
+    with pytest.deprecated_call():
+        test_pl.modify_config()
     assert test_pl.get_placement_map(c) == pm
 
 
