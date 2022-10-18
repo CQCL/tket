@@ -80,7 +80,7 @@ jobs:
         brew install clang-format@14
         git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
     - name: Get current time
-      uses: josStorer/get-current-time@v2.0.1
+      uses: josStorer/get-current-time@v2.0.2
       id: current_time
       with:
         format: YYYYMMDDHHmmss
