@@ -1023,7 +1023,7 @@ def _get_gate_circuit(
 
 
 def _write_gate_definition(
-    stream_out: TextIO,
+    buffer: TextIO,
     n_qubits: int,
     opstr: str,
     optype: OpType,
@@ -1031,38 +1031,26 @@ def _write_gate_definition(
     include_gate_defs: Set[str],
     params: Optional[List[float]] = None,
 ):
-    # # create Circuit for constructing qasm from
-    # gate_circ = Circuit()
-    # get unique qubit ID for definition
     qubit_args = [Qubit(opstr + "q" + str(index)) for index in list(range(n_qubits))]
-    # for q in qubit_args:
-    #     gate_circ.add_qubit(q)
-
     # start writing to stream
-    stream_out.write("gate " + opstr + " ")
+    buffer.write("gate " + opstr + " ")
     symbols = None
     if params:
-        stream_out.write("(")
+        # need to add parameters to gate definition
+        buffer.write("(")
         symbols = [Symbol("param" + str(index)) for index in range(len(params))]
-        # update circuit
-        # gate_circ.add_gate(optype, symbols, qubit_args)
-        # also update stream_out
         for symbol in symbols[:-1]:
-            stream_out.write(symbol.name + ", ")
-        stream_out.write(symbols[-1].name + ") ")
-
-    # else:
-    #     gate_circ.add_gate(optype, qubit_args)
-
-    # rebase circuit to qasm supported primitive
-
-    gate_circ = _get_gate_circuit(optype, qubit_args, symbols)
-    # add qubits to output
+            buffer.write(symbol.name + ", ")
+        buffer.write(symbols[-1].name + ") ")
+    # add qubits to gate definition
     for qb in qubit_args[:-1]:
-        stream_out.write(str(qb) + ",")
-    stream_out.write(str(qubit_args[-1]) + " {\n")
-    circuit_to_qasm_io(gate_circ, stream_out, header, include_gate_defs)
-    stream_out.write("}\n")
+        buffer.write(str(qb) + ",")
+    buffer.write(str(qubit_args[-1]) + " {\n")
+    # get rebased circuit for constructing qasm
+    gate_circ = _get_gate_circuit(optype, qubit_args, symbols)
+    # write circuit to qasm
+    circuit_to_qasm_io(gate_circ, buffer, header, include_gate_defs)
+    buffer.write("}\n")
 
 
 def hqs_header(header: str) -> bool:
@@ -1255,7 +1243,7 @@ def circuit_to_qasm_io(
                 gate_circ.rename_units(dict(zip(gate_circ.qubits, args)))
                 gate_circ.symbol_substitution(dict(zip(op.gate.args, op.params)))
 
-                circuit_to_qasm_io(gate_circ, stream_out, header, include_gate_defs)
+                circuit_to_qasm_io(gate_circ, buffer, header, include_gate_defs)
                 continue
             else:
                 opstr = op.gate.name
@@ -1290,7 +1278,7 @@ def circuit_to_qasm_io(
             added_gate_definitions.add(opstr)
             if len(added_gate_definitions) != n_added:
                 _write_gate_definition(
-                    stream_out, op.n_qubits, opstr, optype, header, include_gate_defs
+                    buffer, op.n_qubits, opstr, optype, header, include_gate_defs
                 )
         elif optype in _tk_to_qasm_extra_params:
             opstr = _tk_to_qasm_extra_params[optype]
@@ -1298,7 +1286,7 @@ def circuit_to_qasm_io(
             added_gate_definitions.add(opstr)
             if len(added_gate_definitions) != n_added:
                 _write_gate_definition(
-                    stream_out,
+                    buffer,
                     op.n_qubits,
                     opstr,
                     optype,
