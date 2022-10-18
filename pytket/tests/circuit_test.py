@@ -237,7 +237,6 @@ def test_subst_4() -> None:
     c.add_gate(OpType.Rx, a, [0])
     c.symbol_substitution({m: 4})
     angle = c.get_commands()[0].op.params[0]
-    print(angle)
     assert np.isclose(angle, 1.0)
 
 

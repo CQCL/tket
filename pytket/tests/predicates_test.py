@@ -637,7 +637,6 @@ def test_remove_discarded() -> None:
     assert not c.qubit_is_discarded(Qubit(1))
     assert c.qubit_is_discarded(Qubit(2))
     assert RemoveDiscarded().apply(c)
-    print(c.get_commands())
     assert c.n_gates_of_type(OpType.H) == 3
     assert c.n_gates_of_type(OpType.CX) == 1
     assert c.n_gates_of_type(OpType.Measure) == 2

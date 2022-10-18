@@ -711,7 +711,6 @@ def compare_commands_box(
         else:
             commands_equal &= c1 == c2
         if not commands_equal:
-            print(f"Commands not equal\n{c1}\n\n{c2}\n")
             break
     return commands_equal
 
