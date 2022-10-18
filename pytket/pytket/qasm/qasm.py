@@ -826,7 +826,7 @@ class CircuitTransformer(Transformer):
             qubit_args = [
                 Qubit(gate + "q" + str(index), 0) for index in list(range(len(args)))
             ]
-            symbol_list = [
+            symbol_list: List[Symbol] = [
                 Symbol("param" + str(index)) for index in range(len(symbols))
             ]
             comparison_circ = _get_gate_circuit(
@@ -1030,11 +1030,11 @@ def _write_gate_definition(
     header: str,
     include_gate_defs: Set[str],
     params: Optional[List[float]] = None,
-):
+):  # type : ignore
     qubit_args = [Qubit(opstr + "q" + str(index)) for index in list(range(n_qubits))]
     # start writing to stream
     buffer.write("gate " + opstr + " ")
-    symbols = None
+    symbols: Optional[List[Symbol]] = None
     if params:
         # need to add parameters to gate definition
         buffer.write("(")
