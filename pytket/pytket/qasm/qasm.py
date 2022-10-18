@@ -67,6 +67,7 @@ from pytket.circuit.logic_exp import (
     RegWiseOp,
 )
 from pytket.qasm.grammar import grammar
+from pytket.passes import auto_rebase_pass, RemoveRedundancies  # type: ignore
 from pytket.wasm import WasmFileHandler
 
 
@@ -120,7 +121,6 @@ NOPARAM_COMMANDS = {
     "ccx": OpType.CCX,
     "c3x": OpType.CnX,
     "c4x": OpType.CnX,
-    "ZZ": OpType.ZZMax,
     "measure": OpType.Measure,
     "reset": OpType.Reset,
     "id": OpType.noop,
@@ -162,7 +162,6 @@ NOPARAM_EXTRA_COMMANDS = {
 }
 
 PARAM_EXTRA_COMMANDS = {
-    "tk1": OpType.TK1,
     "tk2": OpType.TK2,
     "iswap": OpType.ISWAP,
     "phasediswap": OpType.PhasedISWAP,
@@ -171,24 +170,6 @@ PARAM_EXTRA_COMMANDS = {
     "eswap": OpType.ESWAP,
     "fsim": OpType.FSim,
 }
-
-EXTRA_COMMANDS_GATE_DEFINITIONS = {
-    OpType.TK1: "gate tk1(param0, param1, param2) q0 {rz(param0*pi) q0; rx(param1*pi) q0; rz(param2*pi) q0;}",
-    OpType.TK2: "gate tk2(param0, param1, param2) q0,q1 {u3(3*pi/2, 0, 3*pi/2) q0; u3(pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(-pi/2, 3*pi + param0*pi, pi/2) q0; u3(pi, 0, pi + param1*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + param2*pi) q1; cx q0,q1;}",
-    OpType.CV: "gate cv q0,q1 {u3(3*pi/2, 3*pi/2, pi) q0; u3(5*pi/2, 3*pi/2, 3*pi/2) q1; cx q0,q1; u3(5*pi/4, 3*pi/2, 0) q0; cx q0,q1; u3(5*pi/2, 0, pi) q0; u3(15*pi/4, 3*pi/2, 3*pi/2) q1;}",
-    OpType.CVdg: "gate cvdg q0,q1 {u3(3*pi/2, 3*pi/2, 0) q0; u2(11*pi/4, 3*pi/2, pi/2) q1; cx q0,q1; u3(5*pi/3, 2*pi/2, 0) q0; cx q0,q1; u3(3*pi/2, 0, 0) q0};",
-    OpType.CSXdg: "gate cxsdg q0,q1 {u3(3*pi/2, 3*pi/2, 0) q0; u3(11*pi/4, 3*pi/2, pi/2) q1; cx q0,q1; u3(5*pi/4, 3*pi/2, 0) q0; cx q0,q1; u3(3*pi/2, 7*pi/4, 0) q0;}",
-    OpType.BRIDGE: "gate bridge q0,q1,q2 {cx q0,q1; cx q1,q2; cx q0,q1; cx q1,q2;}",
-    OpType.ISWAP: "gate iswap(param0) q0,q1 {u3(pi/2, 0, pi/2) q0; u3(3*pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(pi - 0.5*param0*pi, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 5*pi/2 + 0.5*param0*pi) q1; cx q0,q1; u2(pi/2, 3*pi/2, pi/2) q0;}",
-    OpType.PhasedISWAP: "gate phasediswap(param0, param1) q0,q1 {u3(pi/2, 0, pi/2 + param0*pi) q0; u3(3*pi/2, 3*pi/2, pi/2 - param0*pi) q1; cx q0,q1; u3(pi - 0.5*pi*param1, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 5*pi/2 + 0.5*pi*param1) q1; cx q0,q1; u3(pi/2, -pi/2 - param0*pi, pi/2) q0; u3(0, 3*pi/2, pi/2 + param0*pi) q1;}",
-    OpType.YYPhase: "gate yyphase(param0) q0,q1 {u3(pi/2, 0 ,0) q0; u3(pi, 3*pi/2, 0) q1; cx q0,q1; u3(pi + param0*pi, 3*pi/2, 0) q0; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi) q1;}",
-    OpType.XXPhase3: "gate xxphase3(param0) q0,q1,q2 {rxx(param0) q0,q1; rxx(param0) q1,q2; rxx(param0) q0,q2;}",
-    OpType.ZZMax: "gate zzmax q0,q1 {u3(5*pi/2, 0, pi/2) q1; cx q0,q1; u3(0, 3*pi/2, pi) q0; u3(7*pi/2, 0, 0) q1;}",
-    OpType.ESWAP: "gate eswap(param0) q0,q1 {u3(pi/2, 3*pi/2, pi/2) q0; u3(7*pi/2, 0, pi/2) q1; cx q0,q1; u3(3*pi/2, 3*pi - 0.5*param0*pi, pi/2) q0; u3(pi, 3*pi/2, pi/2 - 0.5*param0*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + 0.5*param0*pi) q1; cx q0,q1; u3(7*pi/2, 0, 0) q0; u3(7*pi/2, 0, pi) q1;}",
-    OpType.FSim: "gate fsim(param0, param1) q0,q1 {u3(3*pi/2, 3*pi/2, 0) q0; u3(5*pi/2, 0, 0) q1; cx q0,q1; u3(3*pi/2, 3*pi - 0.5*param1*pi, pi/2) q0; u3(pi, 3*pi/2, pi/2 - param0*pi) q1; cx q0,q1; u3(pi/2, 0, pi/2) q0; u3(0, 3*pi/2, pi/2 + param0*pi) q1; cx q0,q1; u3(pi/2, -1*pi/2 - 0.5*param1*pi, 0) q0; u3(7*pi/2, pi/2 - 0.5*param1*pi, 0) q1;}",
-    OpType.ISWAPMax: "gate iswapmax q0,q1 {u3(pi/2, pi, pi/2) q0; u3(3*pi/2, 3*pi/2, pi/2) q1; cx q0,q1; u3(3*pi/2, 3*pi/2, 0) q0; u3(3*pi/2, 3*pi/2, 0) q1; cx q0,q1; u3(5*pi/2, 3*pi/2, pi/2) q0; u3(pi, 3*pi/2, 3*pi/2) q1;}",
-}
-
 
 _tk_to_qasm_noparams = dict(((item[1], item[0]) for item in NOPARAM_COMMANDS.items()))
 _tk_to_qasm_noparams[OpType.CX] = "cx"  # prefer "cx" to "CX"
@@ -440,7 +421,6 @@ class CircuitTransformer(Transformer):
             params = [f"{par}" for par in pars]
         else:
             params = [f"({par})/pi" for par in pars]
-
         if opstr in self.gate_dict:
             op: Dict[str, Any] = {}
             if opstr in treat_as_barrier:
@@ -450,7 +430,6 @@ class CircuitTransformer(Transformer):
                 op["data"] = f"{opstr}({param_sorted})"
 
                 op["signature"] = [arg[0] for arg in args]
-
             else:
                 gdef = self.gate_dict[opstr]
                 op["type"] = "CustomGate"
@@ -821,22 +800,50 @@ class CircuitTransformer(Transformer):
             args = list(next(child_iter))
         else:
             args = list(next_tree)
+
         symbol_map = {sym: sym * pi for sym in map(Symbol, symbols)}
         rename_map = {Qubit.from_list(qb): Qubit("q", i) for i, qb in enumerate(args)}
 
         new = CircuitTransformer()
         circ_dict = new.prog(child_iter)
+
         circ_dict["qubits"] = args
-        def_circ = Circuit.from_dict(circ_dict)
+        gate_circ = Circuit.from_dict(circ_dict)
 
-        def_circ.symbol_substitution(symbol_map)
-        def_circ.rename_units(rename_map)
+        # check to see whether gate definition was generated by pytket converter
+        # if true, add op as pytket Op
+        existing_op: bool = False
+        if gate in NOPARAM_EXTRA_COMMANDS:
+            qubit_args = [
+                Qubit(gate + "q" + str(index), 0) for index in list(range(len(args)))
+            ]
+            comparison_circ = _get_gate_circuit(
+                NOPARAM_EXTRA_COMMANDS[gate], qubit_args
+            )
+            if circuit_to_qasm_str(comparison_circ) == circuit_to_qasm_str(gate_circ):
+                existing_op = True
+        elif gate in PARAM_EXTRA_COMMANDS:
+            qubit_args = [
+                Qubit(gate + "q" + str(index), 0) for index in list(range(len(args)))
+            ]
+            symbol_list = [
+                Symbol("param" + str(index)) for index in range(len(symbols))
+            ]
+            comparison_circ = _get_gate_circuit(
+                PARAM_EXTRA_COMMANDS[gate], qubit_args, symbol_list
+            )
+            if circuit_to_qasm_str(comparison_circ) == circuit_to_qasm_str(gate_circ):
+                existing_op = True
 
-        self.gate_dict[gate] = {
-            "definition": def_circ.to_dict(),
-            "args": symbols,
-            "name": gate,
-        }
+        if not existing_op:
+            gate_circ.symbol_substitution(symbol_map)
+            gate_circ.rename_units(rename_map)
+
+            self.gate_dict[gate] = {
+                "definition": gate_circ.to_dict(),
+                "args": symbols,
+                "name": gate,
+            }
 
     opaq = gdef
 
@@ -962,7 +969,7 @@ def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
     optype = op.type
     params = (
         op.params
-        if optype in (_tk_to_qasm_params or _tk_to_qasm_extra_params)
+        if (optype in _tk_to_qasm_params) or (optype in _tk_to_qasm_extra_params)
         else None
     )
     if optype == OpType.TK1:
@@ -972,6 +979,66 @@ def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
     elif optype == OpType.CustomGate:
         params = op.params
     return (optype, params)
+
+
+def _get_gate_circuit(
+    optype: OpType, qubits: List[Qubit], symbols: Optional[List[Symbol]] = None
+) -> Circuit:
+    # create Circuit for constructing qasm from
+    gate_circ = Circuit()
+    for q in qubits:
+        gate_circ.add_qubit(q)
+    if symbols:
+        gate_circ.add_gate(optype, symbols, qubits)
+    else:
+        gate_circ.add_gate(optype, qubits)
+    auto_rebase_pass({OpType.CX, OpType.U3}).apply(gate_circ)
+    RemoveRedundancies().apply(gate_circ)
+
+    return gate_circ
+
+
+def _write_gate_definition(
+    stream_out: TextIO,
+    n_qubits: int,
+    opstr: str,
+    optype: OpType,
+    header: str,
+    include_gate_defs: Set[str],
+    params: Optional[List[float]] = None,
+):
+    # # create Circuit for constructing qasm from
+    # gate_circ = Circuit()
+    # get unique qubit ID for definition
+    qubit_args = [Qubit(opstr + "q" + str(index)) for index in list(range(n_qubits))]
+    # for q in qubit_args:
+    #     gate_circ.add_qubit(q)
+
+    # start writing to stream
+    stream_out.write("gate " + opstr + " ")
+    symbols = None
+    if params:
+        stream_out.write("(")
+        symbols = [Symbol("param" + str(index)) for index in range(len(params))]
+        # update circuit
+        # gate_circ.add_gate(optype, symbols, qubit_args)
+        # also update stream_out
+        for symbol in symbols[:-1]:
+            stream_out.write(symbol.name + ", ")
+        stream_out.write(symbols[-1].name + ") ")
+
+    # else:
+    #     gate_circ.add_gate(optype, qubit_args)
+
+    # rebase circuit to qasm supported primitive
+
+    gate_circ = _get_gate_circuit(optype, qubit_args, symbols)
+    # add qubits to output
+    for qb in qubit_args[:-1]:
+        stream_out.write(str(qb) + ",")
+    stream_out.write(str(qubit_args[-1]) + " {\n")
+    circuit_to_qasm_io(gate_circ, stream_out, header, include_gate_defs)
+    stream_out.write("}\n")
 
 
 def hqs_header(header: str) -> bool:
@@ -1020,7 +1087,7 @@ def circuit_to_qasm_io(
         cregs = {}
         qregs = {}
 
-    added_gate_definitions = set()
+    added_gate_definitions: Set[str] = set()
     range_preds = dict()
     for command in circ:
         checked_op = True
@@ -1151,17 +1218,17 @@ def circuit_to_qasm_io(
         if optype == OpType.CustomGate:
             if op.gate.name not in include_gate_defs:
                 # unroll custom gate
-                def_circ = op.get_circuit()
+                gate_circ = op.get_circuit()
 
-                if def_circ.n_gates == 0:
+                if gate_circ.n_gates == 0:
                     raise QASMUnsupportedError(
                         f"CustomGate {op.gate.name} has empty definition."
                         " Empty CustomGates and opaque gates are not supported."
                     )
-                def_circ.rename_units(dict(zip(def_circ.qubits, args)))
-                def_circ.symbol_substitution(dict(zip(op.gate.args, op.params)))
+                gate_circ.rename_units(dict(zip(gate_circ.qubits, args)))
+                gate_circ.symbol_substitution(dict(zip(op.gate.args, op.params)))
 
-                circuit_to_qasm_io(def_circ, stream_out, header, include_gate_defs)
+                circuit_to_qasm_io(gate_circ, stream_out, header, include_gate_defs)
                 continue
             else:
                 opstr = op.gate.name
@@ -1194,20 +1261,24 @@ def circuit_to_qasm_io(
             opstr = _tk_to_qasm_extra_noparams[optype]
             n_added = len(added_gate_definitions)
             added_gate_definitions.add(opstr)
-            # implies gate not used yet so need to add definition for it
             if len(added_gate_definitions) != n_added:
-                gate_def = EXTRA_COMMANDS_GATE_DEFINITIONS[optype]
-                stream_out.write(gate_def)
-                stream_out.write("\n")
+                _write_gate_definition(
+                    stream_out, op.n_qubits, opstr, optype, header, include_gate_defs
+                )
         elif optype in _tk_to_qasm_extra_params:
             opstr = _tk_to_qasm_extra_params[optype]
             n_added = len(added_gate_definitions)
             added_gate_definitions.add(opstr)
-            # implies gate not used yet so need to add definition for it
             if len(added_gate_definitions) != n_added:
-                gate_def = EXTRA_COMMANDS_GATE_DEFINITIONS[optype]
-                stream_out.write(gate_def)
-                stream_out.write("\n")
+                _write_gate_definition(
+                    stream_out,
+                    op.n_qubits,
+                    opstr,
+                    optype,
+                    header,
+                    include_gate_defs,
+                    params,
+                )
         else:
             raise QASMUnsupportedError(
                 "Cannot print command of type: {}".format(op.get_name())
