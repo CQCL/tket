@@ -511,6 +511,11 @@ def test_scratch_bits_filtering() -> None:
     assert c.get_c_register(_TEMP_BIT_NAME)
     qstr = circuit_to_qasm_str(c, "hqslib1")
     assert _TEMP_BIT_NAME not in qstr
+    qasm_out = str(curr_file_path / "qasm_test_files/testout6.qasm")
+    circuit_to_qasm(c, qasm_out, "hqslib1")
+    with open(qasm_out, "r") as f:
+        assert _TEMP_BIT_NAME not in f.read()
+
     # test keeping used
     c = Circuit(1)
     a = c.add_c_register("a", 4)
@@ -519,6 +524,10 @@ def test_scratch_bits_filtering() -> None:
     assert c.get_c_register(_TEMP_BIT_NAME)
     qstr = circuit_to_qasm_str(c, "hqslib1")
     assert _TEMP_BIT_NAME in qstr
+    circuit_to_qasm(c, qasm_out, "hqslib1")
+    with open(qasm_out, "r") as f:
+        assert _TEMP_BIT_NAME in f.read()
+
     # test multiple scratch registers
     c = circuit_from_qasm_str(
         f"""
@@ -539,6 +548,11 @@ def test_scratch_bits_filtering() -> None:
     qstr = circuit_to_qasm_str(c, "hqslib1")
     assert _TEMP_BIT_NAME in qstr
     assert f"{_TEMP_BIT_NAME}_1" not in qstr
+    circuit_to_qasm(c, qasm_out, "hqslib1")
+    with open(qasm_out, "r") as f:
+        fstr = f.read()
+        assert _TEMP_BIT_NAME in fstr
+        assert f"{_TEMP_BIT_NAME}_1" not in fstr
 
 
 if __name__ == "__main__":
