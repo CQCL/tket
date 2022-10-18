@@ -46,7 +46,9 @@ class ClassicalExpBoxBase : public Box {
 
 /**
  * Holding box for abstract expressions on Bits
- * Templated by type which holds expression
+ * Templated by type T which holds expression.
+ * T must implement the functions listed in
+ * https://pybind11.readthedocs.io/en/stable/reference.html#_CPPv4I0E10object_api
  */
 
 template <typename T>
