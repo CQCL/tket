@@ -1059,10 +1059,10 @@ def test_renaming() -> None:
     assert circ.rename_units(bmap)
     commands = circ.get_commands()
     assert str(commands[0].op.get_exp()) == "((d[0] & d[1]) | d[2])"
-    assert commands[0].args == [bmap[cmd] for cmd in original_commands[0].args]
+    assert commands[0].args == [bmap[arg] for arg in original_commands[0].args]
     assert str(commands[1].op.get_exp()) == "(d[0] & c[2])"
     assert commands[1].args == [
-        bmap[cmd] if cmd in bmap else cmd for cmd in original_commands[1].args
+        bmap[arg] if arg in bmap else arg for arg in original_commands[1].args
     ]
     assert DecomposeClassicalExp().apply(circ)
 
