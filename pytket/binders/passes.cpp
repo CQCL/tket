@@ -826,6 +826,12 @@ PYBIND11_MODULE(passes, m) {
       "angle pi.\n:return: a pass to convert ZZPhase gates to Rz");
 
   m.def(
+      "CnXPairwiseDecomposition", &CnXPairwiseDecomposition,
+      "Decompose CnX gates to 2-qubit gates and single qubit gates. "
+      "For every two CnX gates, reorder their control qubits to improve "
+      "the chance of gate cancellation");
+
+  m.def(
       "CustomPass", &CustomPass,
       "Generate a custom pass from a user-provided circuit transfomation "
       "function."

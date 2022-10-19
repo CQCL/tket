@@ -160,7 +160,8 @@
             "CXMappingPass",
             "PauliSquash",
             "ContextSimp",
-            "DecomposeTK2"
+            "DecomposeTK2",
+            "CnXPairwiseDecomposition"
           ],
           "description": "The name of the compiler pass. Matches the name of the pytket method used to generate it. List all the passes as enum."
         },

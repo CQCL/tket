@@ -103,4 +103,14 @@ const PassPtr &NormaliseTK2();
  */
 const PassPtr &ZZPhaseToRz();
 
+/**
+ * @brief Decompose CnX gates to 2-qubit gates and single qubit gates.
+ *
+ * For every two CnX gates, reorder their control qubits to improve
+ * the chance of gate cancellation
+ *
+ * @return compilation pass to perform this transformation
+ */
+const PassPtr &CnXPairwiseDecomposition();
+
 }  // namespace tket

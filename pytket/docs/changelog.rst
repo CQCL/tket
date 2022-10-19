@@ -7,6 +7,7 @@ Changelog
 Minor new features:
 
 * New ``OpType::Phase`` 0-qubit gate affecting global phase.
+* New ``CnXPairwiseDecomposition`` pass.
 
 Fixes:
 

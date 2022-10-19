@@ -28,8 +28,8 @@ namespace tket {
 
 using namespace Transforms;
 
-static Circuit multi_controlled_to_2q(
-    const Op_ptr op, const OpType& two_q_type) {
+Circuit multi_controlled_to_2q(
+    const Op_ptr op, const std::optional<OpType>& two_q_type) {
   unsigned n_qubits = op->n_qubits();
   OpType optype = op->get_type();
   Circuit c(n_qubits);
@@ -67,9 +67,11 @@ static Circuit multi_controlled_to_2q(
       throw BadOpType("The operation is not multi-controlled", optype);
   }
 
-  if (two_q_type == OpType::CX) {
+  if (two_q_type == std::nullopt) {
+    return c;
+  } else if (two_q_type.value() == OpType::CX) {
     decompose_multi_qubits_CX().apply(c);
-  } else if (two_q_type == OpType::TK2) {
+  } else if (two_q_type.value() == OpType::TK2) {
     decompose_multi_qubits_TK2().apply(c);
   } else {
     throw BadOpType("The target 2-q gate can only be CX or TK2", optype);
