@@ -113,7 +113,7 @@ void init_library(py::module &m) {
       "position.");
   library_m.def(
       "_CCX_normal_decomp", &CircPool::CCX_normal_decomp,
-      "Equivalent to CCX, using five CX");
+      "Equivalent to CCX, using 6 CX");
   library_m.def(
       "_C3X_normal_decomp", &CircPool::C3X_normal_decomp,
       "Equivalent to CCCX, using 14 CX");
