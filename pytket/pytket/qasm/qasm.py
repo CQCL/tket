@@ -826,11 +826,10 @@ class CircuitTransformer(Transformer):
             qubit_args = [
                 Qubit(gate + "q" + str(index), 0) for index in list(range(len(args)))
             ]
-            symbol_list: List[Symbol] = [
-                Symbol("param" + str(index)) for index in range(len(symbols))
-            ]  # type: ignore
             comparison_circ = _get_gate_circuit(
-                PARAM_EXTRA_COMMANDS[gate], qubit_args, symbol_list
+                PARAM_EXTRA_COMMANDS[gate],
+                qubit_args,
+                [Symbol("param" + str(index)) for index in range(len(symbols))],
             )
             if circuit_to_qasm_str(comparison_circ) == circuit_to_qasm_str(gate_circ):
                 existing_op = True
