@@ -1031,7 +1031,6 @@ def _write_gate_definition(
     include_gate_defs: Set[str],
     params: Optional[List[float]] = None,
 ) -> None:
-    qubit_args = [Qubit(opstr + "q" + str(index)) for index in list(range(n_qubits))]
     # start writing to stream
     buffer.write("gate " + opstr + " ")
     symbols: Optional[List[Symbol]] = None
@@ -1043,6 +1042,7 @@ def _write_gate_definition(
             buffer.write(symbol.name + ", ")
         buffer.write(symbols[-1].name + ") ")
     # add qubits to gate definition
+    qubit_args = [Qubit(opstr + "q" + str(index)) for index in list(range(n_qubits))]
     for qb in qubit_args[:-1]:
         buffer.write(str(qb) + ",")
     buffer.write(str(qubit_args[-1]) + " {\n")
