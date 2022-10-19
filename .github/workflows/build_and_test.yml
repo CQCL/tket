@@ -105,9 +105,6 @@ jobs:
     - name: Set up conan
       shell: bash
       run: ./.github/workflows/conan-setup
-    - name: set option to run full test suite
-      if: github.event_name == 'schedule'
-      run: conan profile update options.tket-tests:full=True tket
     - name: normalize line endings in conanfile and src directory
       if: matrix.os == 'windows-2022'
       # This is necessary to ensure consistent revisions across platforms.
@@ -236,9 +233,6 @@ jobs:
         ./.github/workflows/conan-setup
         export CC=`which conan`
         echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
-    - name: set option to run full test suite
-      if: github.event_name == 'schedule'
-      run: conan profile update options.tket-tests:full=True tket
     - name: Remove tket package from cache
       run: conan remove -f 'tket/*'
     - name: Build tket

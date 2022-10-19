@@ -52,9 +52,6 @@ jobs:
     - name: Set up conan
       shell: bash
       run: ./.github/workflows/conan-setup
-    - name: set option to run full test suite
-      if: github.event_name == 'schedule'
-      run: conan profile update options.tket-tests:full=True tket
     - name: install valgrind
       run: sudo apt install valgrind
     - name: build tket
@@ -70,5 +67,10 @@ jobs:
         conan build recipes/tket-tests --build --build-folder=build/tket-tests
         conan package recipes/tket-tests/ --build-folder=build/tket-tests --package-folder build/tket-tests/package --source-folder=tket/tests
     - name: run tests under valgrind
+      if: github.event_name == 'pull_request'
       working-directory: ./build/tket-tests/package/bin
       run: valgrind --error-exitcode=1 ./test_tket
+    - name: run full tests under valgrind
+      if: github.event_name == 'schedule'
+      working-directory: ./build/tket-tests/package/bin
+      run: valgrind --error-exitcode=1 ./test_tket "[long],~[long]"

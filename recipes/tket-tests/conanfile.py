@@ -26,12 +26,8 @@ class TketTestsConan(ConanFile):
     description = "Unit tests for tket"
     topics = ("quantum", "computation", "compiler")
     settings = "os", "compiler", "build_type", "arch"
-    options = {
-        "with_coverage": [True, False],
-        "full": [True, False],
-        "long": [True, False],
-    }
-    default_options = {"with_coverage": False, "full": False, "long": False}
+    options = {"with_coverage": [True, False]}
+    default_options = {"with_coverage": False}
     generators = "cmake"
     exports_sources = "../../tket/tests/*"
     requires = ("tket/1.0.20@tket/stable", "catch2/3.1.0")
