@@ -458,6 +458,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
           content.at("swap_replacement").get<Circuit>());
     } else if (passname == "DecomposeBridges") {
       pp = DecomposeBridges();
+    } else if (passname == "CnXPairwiseDecomposition") {
+      pp = CnXPairwiseDecomposition();
     } else if (passname == "OptimisePhaseGadgets") {
       pp = gen_optimise_phase_gadgets(
           content.at("cx_config").get<CXConfigType>());

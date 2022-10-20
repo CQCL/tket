@@ -52,7 +52,8 @@ using namespace tket;
   DO(DelayMeasures)                       \
   DO(GlobalisePhasedX)                    \
   DO(NormaliseTK2)                        \
-  DO(SquashRzPhasedX)
+  DO(SquashRzPhasedX)                     \
+  DO(CnXPairwiseDecomposition)
 
 static const std::map<PassPtr, std::string> &pass_name() {
   // Map from PassPtr to readable name
