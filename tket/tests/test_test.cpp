@@ -62,7 +62,7 @@ bool check_circuit(const Circuit& c) {
 }
 
 SCENARIO("TEST PROBLEM") {
-  Architecture arc = SquareGrid(2, 4);
+  Architecture arc = SquareGrid(2, 4, 2);
   Placement::Ptr la_place = std::make_shared<LinePlacement>(arc);
 
   Circuit circ = CircuitsForTesting::get().uccsd;
@@ -70,18 +70,15 @@ SCENARIO("TEST PROBLEM") {
   CompilationUnit copy = cu;
   PassPtr pp = gen_placement_pass(la_place);
   nlohmann::json j_pp = pp;
-  PassPtr loaded = j_pp.get<PassPtr>();
+  std::cout << "Apply one!" << std::endl;
   pp->apply(cu);
+  PassPtr loaded = j_pp.get<PassPtr>();
+  std::cout << "Apply two!" << std::endl;
   loaded->apply(copy);
   REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
   nlohmann::json j_loaded = loaded;
-  std::cout << "JSON: " << j_loaded << std::endl;
   REQUIRE(j_pp == j_loaded);
 }
 
 }  // namespace test_json
 }  // namespace tket
-I'm no necessarily shocked by this result. Frame randomisation is designed to spin out coherent errors to make them stochastic, rather than reduce the errors. As such I would expect the errors in the 11111 and 00000 strings to become comparable but would not necessarily expect the total error in both strings to reduce. Have. I understood that correctly 
-    @Silas Dilkes
-    ? I 've not used frame randomisation on the IBM devices so I can' t
-          say for sure if that 's what' s happening.
