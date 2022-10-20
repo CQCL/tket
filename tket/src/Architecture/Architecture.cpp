@@ -15,6 +15,7 @@
 #include "Architecture/Architecture.hpp"
 
 #include <boost/graph/biconnected_components.hpp>
+#include <tkassert/Assert.hpp>
 #include <unordered_set>
 #include <vector>
 
@@ -120,13 +121,20 @@ std::optional<Node> Architecture::find_worst_node(
   if (bad_nodes.empty()) {
     return std::nullopt;
   }
-
+  auto make_lexicographic = [](std::vector<size_t> distances) {
+    unsigned max = distances.size();
+    std::vector<size_t> out(max + 1, size_t(0));
+    for (const auto& distance : distances) {
+      TKET_ASSERT(distance < max);
+      out[max - distance]++;
+    }
+    return out;
+  };
   std::vector<size_t> worst_distances, temp_distances;
   Node worst_node = *bad_nodes.begin();
-  worst_distances = get_distances(worst_node);
+  worst_distances = make_lexicographic(get_distances(worst_node));
   for (Node temp_node : bad_nodes) {
-    temp_distances = get_distances(temp_node);
-
+    temp_distances = make_lexicographic(get_distances(temp_node));
     int distance_comp =
         tri_lexicographical_comparison(temp_distances, worst_distances);
     if (distance_comp == 1) {
@@ -134,9 +142,9 @@ std::optional<Node> Architecture::find_worst_node(
       worst_distances = temp_distances;
     } else if (distance_comp == -1) {
       std::vector<size_t> temp_distances_full =
-          original_arch.get_distances(temp_node);
+          make_lexicographic(original_arch.get_distances(temp_node));
       std::vector<size_t> worst_distances_full =
-          original_arch.get_distances(worst_node);
+          make_lexicographic(original_arch.get_distances(worst_node));
       if (lexicographical_comparison(
               temp_distances_full, worst_distances_full)) {
         worst_node = temp_node;
