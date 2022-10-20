@@ -22,7 +22,6 @@ LinePlacement::LinePlacement(
     unsigned _maximum_pattern_depth)
     : GraphPlacement(
           _architecture, 0, 0, _maximum_pattern_gates, _maximum_pattern_depth) {
-  std::cout << "Making LinePlacement!" << std::endl;
   architecture_ = _architecture;
 }
 

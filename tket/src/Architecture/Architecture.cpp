@@ -211,10 +211,11 @@ void from_json(const nlohmann::json& j, Architecture::Connection& link) {
 
 void to_json(nlohmann::json& j, const Architecture& ar) {
   // Preserve the internal order of ids since Placement depends on this
-  auto uid_its = ar.nodes();
-  std::vector<Node> nodes{uid_its.begin(), uid_its.end()};
+  Architecture::ConnGraph g = ar.get_directed_connectivity();
+  std::vector<Node> nodes;
+  for (auto v : boost::make_iterator_range(boost::vertices(g)))
+    nodes.push_back(g[v]);
   j["nodes"] = nodes;
-
   nlohmann::json links;
   for (const Architecture::Connection& con : ar.get_all_edges_vec()) {
     nlohmann::json entry;
