@@ -283,6 +283,55 @@ GraphPlacement::get_all_weighted_subgraph_monomorphisms(
   return all_bimaps;
 }
 
+std::map<Qubit, Node> GraphPlacement::convert_bimap(
+    boost::bimap<Qubit, Node>& bimap,
+    const QubitGraph::UndirectedConnGraph& pattern_graph) const {
+  /**
+   * For each assignment, find Qubit on adjacent Node
+   * If a majority of adjacent Qubits don't interacting with
+   * assignment, then remove assignment
+   */
+  std::map<Qubit, Node> out_map;
+  for (const auto& entry : bimap.left) {
+    // Find vertex corresponding to Qubit to use boost method
+    auto vertex_iter_pair = boost::vertices(pattern_graph);
+    auto vertex_iter_begin = vertex_iter_pair.first;
+    while (vertex_iter_begin != vertex_iter_pair.second) {
+      if (pattern_graph[*vertex_iter_begin] == entry.first) break;
+      ++vertex_iter_begin;
+    }
+    TKET_ASSERT(vertex_iter_begin != vertex_iter_pair.second);
+    unsigned entry_vertex = *vertex_iter_begin;
+    unsigned n_pattern_edges = boost::out_degree(entry_vertex, pattern_graph);
+    unsigned n_interacting = 0;
+    for (const Node& node :
+         this->architecture_.get_neighbour_nodes(entry.second)) {
+      auto it = bimap.right.find(node);
+      // Node may be not be assigned to
+      // If it is, check if Qubit are interacting
+      // If not, decrement n_interacting
+      if (it != bimap.right.end()) {
+        // Find vertex corresponding to Qubit to use boost method
+        vertex_iter_begin = vertex_iter_pair.first;
+        while (vertex_iter_begin != vertex_iter_pair.second) {
+          if (pattern_graph[*vertex_iter_begin] == it->second) break;
+          ++vertex_iter_begin;
+        }
+        TKET_ASSERT(vertex_iter_begin != vertex_iter_pair.second);
+        auto [_, exists] =
+            boost::edge(entry_vertex, *vertex_iter_begin, pattern_graph);
+        if (exists) {
+          n_interacting++;
+        }
+      }
+    }
+    if (n_pattern_edges - n_interacting <= n_interacting) {
+      out_map.insert({entry.first, entry.second});
+    }
+  }
+  return out_map;
+}
+
 std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
     const Circuit& circ_, unsigned matches) const {
   std::vector<WeightedEdge> weighted_pattern_edges =
@@ -291,18 +340,11 @@ std::vector<std::map<Qubit, Node>> GraphPlacement::get_all_placement_maps(
       this->get_all_weighted_subgraph_monomorphisms(
           circ_, weighted_pattern_edges, false);
   std::vector<std::map<Qubit, Node>> all_qmaps;
-  unsigned counter = 0;
-  for (auto it = all_bimaps.begin();
-       it != all_bimaps.end() && counter < matches; ++it) {
-    /**
-     * See TKET-2525
-     * TODO: WSM only finds full solutions
-     * We can improve performance by leaving some Qubits
-     * "unassigned" and allow routing
-     * to dynamically assign thme.
-     */
-    all_qmaps.push_back(bimap_to_map(it->left));
-    ++counter;
+  QubitGraph::UndirectedConnGraph pattern_graph =
+      this->construct_pattern_graph(weighted_pattern_edges, circ_.n_qubits())
+          .get_undirected_connectivity();
+  for (unsigned i = 0; i < all_bimaps.size() && i < matches; i++) {
+    all_qmaps.push_back(convert_bimap(all_bimaps[i], pattern_graph));
   }
   return all_qmaps;
 }

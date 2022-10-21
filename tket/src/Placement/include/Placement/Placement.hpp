@@ -210,6 +210,10 @@ class GraphPlacement : public Placement {
       const Circuit& circ_,
       const std::vector<WeightedEdge>& weighted_pattern_edges,
       bool return_best) const;
+
+  std::map<Qubit, Node> convert_bimap(
+      boost::bimap<Qubit, Node>& bimap,
+      const QubitGraph::UndirectedConnGraph& pattern_graph) const;
 };
 
 /** Solves the pure unweighted subgraph monomorphism problem, trying
@@ -289,7 +293,7 @@ class NoiseAwarePlacement : public GraphPlacement {
  private:
   DeviceCharacterisation characterisation_;
 
-  std::vector<std::map<Qubit, Node>> rank_maps(
+  std::vector<boost::bimap<Qubit, Node>> rank_maps(
       const std::vector<boost::bimap<Qubit, Node>>& placement_maps,
       const Circuit& circ_,
       const std::vector<WeightedEdge>& pattern_edges) const;
