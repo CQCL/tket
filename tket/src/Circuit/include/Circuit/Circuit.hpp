@@ -1342,14 +1342,23 @@ class Circuit {
 
   /**
    * this function replaces an implicit wire swap between the two given qubits
-   * with three CX operations
+   * with a SWAP gate or three CX operations
    *
    * @param first qubits to add the wireswap on
    * @param second qubits to add the wireswap on
+   * @param using_cx use three CX gates instead of a SWAP gate
    *
    * O(c)
    */
-  void replace_implicit_wire_swap(const Qubit first, const Qubit second);
+  void replace_implicit_wire_swap(
+      const Qubit first, const Qubit second, const bool using_cx = true);
+
+  /**
+   * replaces all implicit wire swaps with SWAP gates
+   *
+   * O(n_qubits)
+   */
+  void replace_all_implicit_wire_swaps();
 
   // O(E+V+q)
   Circuit dagger() const;
