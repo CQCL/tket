@@ -760,7 +760,7 @@ void init_circuit(py::module &m) {
       .def(
           "replace_implicit_wire_swaps",
           &Circuit::replace_all_implicit_wire_swaps,
-          "Replace all implicit wire swaps with SWAP gates")
+          "Replace all implicit wire swaps with SWAP gates.")
       .def(
           "ops_of_type",
           [](const Circuit &circ, OpType optype) {
