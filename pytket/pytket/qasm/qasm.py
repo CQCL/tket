@@ -830,8 +830,8 @@ class CircuitTransformer(Transformer):
                 PARAM_EXTRA_COMMANDS[gate],
                 qubit_args,
                 [
-                    Symbol("param" + str(index)) for index in range(len(symbols)) # type: ignore
-                ],  
+                    Symbol("param" + str(index)) for index in range(len(symbols))  # type: ignore
+                ],
             )
             if circuit_to_qasm_str(comparison_circ) == circuit_to_qasm_str(gate_circ):
                 existing_op = True
