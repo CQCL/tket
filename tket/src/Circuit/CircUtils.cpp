@@ -616,23 +616,23 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
   if (c.n_bits() != 0 || !c.is_simple()) {
     throw CircuitInvalidity("Only default qubit register allowed");
   }
-  if (c.has_implicit_wireswaps()) {
-    throw CircuitInvalidity("Circuit has implicit wireswaps");
-  }
+
+  Circuit c1(c);
+  // Replace wire swaps with SWAP gates
+  c1.replace_all_implicit_wire_swaps();
 
   // Dispose of the trivial case
   if (n_controls == 0) {
-    return c;
+    return c1;
   }
 
   static const OpTypeSet multiq_gate_set = {
       OpType::CX, OpType::CCX, OpType::CnX, OpType::CRy, OpType::CnRy,
       OpType::CZ, OpType::CnZ, OpType::CY,  OpType::CnY};
 
-  unsigned c_n_qubits = c.n_qubits();
+  unsigned c_n_qubits = c1.n_qubits();
 
   // 1. Rebase to {CX, CCX, CnX, CnRy} and single-qubit gates
-  Circuit c1(c);
   VertexList bin;
   BGL_FORALL_VERTICES(v, c1.dag, DAG) {
     Op_ptr op = c1.get_Op_ptr_from_Vertex(v);
@@ -883,16 +883,16 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
   if (c.n_bits() != 0 || !c.is_simple()) {
     throw CircuitInvalidity("Only default qubit register allowed");
   }
-  if (c.has_implicit_wireswaps()) {
-    throw CircuitInvalidity("Circuit has implicit wireswaps");
-  }
+
+  Circuit c1(c);
+  // Replace wire swaps with SWAP gates
+  c1.replace_all_implicit_wire_swaps();
 
   // Dispose of the trivial case
   if (n_controls == 0) {
-    return c;
+    return c1;
   }
   // 1. Rebase to Cn* gates (n=0 for single qubit gates)
-  Circuit c1(c);
   VertexList bin;
   BGL_FORALL_VERTICES(v, c1.dag, DAG) {
     Op_ptr op = c1.get_Op_ptr_from_Vertex(v);
@@ -923,9 +923,9 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
   std::vector<Command> commands = c1.get_commands();
   std::vector<CnGateBlock> blocks;
 
-  for (const Command &c : commands) {
-    if (c.get_op_ptr()->get_type() != OpType::noop) {
-      blocks.push_back(CnGateBlock(c));
+  for (const Command &cmd : commands) {
+    if (cmd.get_op_ptr()->get_type() != OpType::noop) {
+      blocks.push_back(CnGateBlock(cmd));
     }
   }
 

@@ -889,6 +889,46 @@ SCENARIO("QControlBox", "[boxes]") {
     V(1, 1) = std::exp(i_ * PI * 0.25);
     REQUIRE(U1.isApprox(V));
   }
+
+  GIVEN("controlled CircBox with wire swaps") {
+    Circuit c0(4);
+    Sym s = SymEngine::symbol("a");
+    Expr a = Expr(s);
+    c0.add_op<unsigned>(OpType::TK1, {0.55, 0.22, a}, {0});
+    c0.add_op<unsigned>(OpType::CZ, {0, 1});
+    c0.add_op<unsigned>(OpType::X, {0});
+    c0.add_op<unsigned>(OpType::CX, {1, 3});
+    c0.add_op<unsigned>(OpType::Rx, 0.7, {0});
+    c0.add_op<unsigned>(OpType::SWAP, {0, 1});
+    c0.add_op<unsigned>(OpType::SWAP, {1, 2});
+    c0.replace_SWAPs();
+    REQUIRE(c0.has_implicit_wireswaps());
+    Circuit c0_numerical(c0);
+    symbol_map_t map = {{s, 0.125}};
+    c0_numerical.symbol_substitution(map);
+    const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0_numerical);
+    // Test symbolic decomp
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op, 1);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    c->symbol_substitution(map);
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(32, 32);
+    for (unsigned i = 0; i < 16; i++) {
+      for (unsigned j = 0; j < 16; j++) {
+        V(16 + i, 16 + j) = U0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+    // Test numerical decomp
+    CircBox cbox_numerical(c0_numerical);
+    Op_ptr op2 = std::make_shared<CircBox>(cbox_numerical);
+    QControlBox qcbox_numerical(op2, 1);
+    std::shared_ptr<Circuit> c_numerical = qcbox_numerical.to_circuit();
+    const Eigen::MatrixXcd U2 = tket_sim::get_unitary(*c_numerical);
+    REQUIRE(U2.isApprox(V));
+  }
 }
 
 SCENARIO("Unitary3qBox", "[boxes]") {
