@@ -942,6 +942,22 @@ SCENARIO("QControlBox", "[boxes]") {
     REQUIRE(c->n_gates() == 0);
     REQUIRE(equiv_0(c->get_phase()));
   }
+  GIVEN("controlled gate that is identity up to a phase") {
+    // phase = 1.
+    Op_ptr op = get_op_ptr(OpType::U3, {2., 0.5, -0.5});
+    QControlBox qcbox(op, 1);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    // Check the second qubit is empty
+    Vertex q1_in = c->get_in(Qubit(1));
+    EdgeVec q1_out_es = c->get_all_out_edges(q1_in);
+    REQUIRE(q1_out_es.size() == 1);
+    REQUIRE(c->target(q1_out_es[0]) == c->get_out(Qubit(1)));
+    Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(4, 4);
+    V(2, 2) = std::exp(i_ * PI);
+    V(3, 3) = std::exp(i_ * PI);
+    REQUIRE(U.isApprox(V));
+  }
 }
 
 SCENARIO("Unitary3qBox", "[boxes]") {

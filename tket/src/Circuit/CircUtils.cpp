@@ -923,10 +923,14 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
   std::vector<Command> commands = c1.get_commands();
   std::vector<CnGateBlock> blocks;
 
+  Expr controlled_phase = c1.get_phase();
+
   for (const Command &cmd : commands) {
-    // drop any gates that apply identity to the target qubit
-    if (cmd.get_op_ptr()->commuting_basis(cmd.get_args().size() - 1) !=
-        Pauli::I) {
+    // if the gate is an identity up to a phase, add it as a controlled phase
+    std::optional<double> phase = cmd.get_op_ptr()->is_identity();
+    if (phase != std::nullopt) {
+      controlled_phase += phase.value();
+    } else {
       blocks.push_back(CnGateBlock(cmd));
     }
   }
@@ -1066,9 +1070,9 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
     c2.append_with_map(replacement, unit_map);
   }
 
-  // 4. implement the conditional phase as a CnU1 gate
-  if (!equiv_0(c1.get_phase())) {
-    Circuit cnu1_circ = CnU1(n_controls - 1, c1.get_phase());
+  // 4. implement the controlled phase as a CnU1 gate
+  if (!equiv_0(controlled_phase)) {
+    Circuit cnu1_circ = CnU1(n_controls - 1, controlled_phase);
     c2.append(cnu1_circ);
   }
   return c2;
