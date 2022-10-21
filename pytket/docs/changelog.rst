@@ -13,6 +13,7 @@ Fixes:
 
 * Remove unused ``tk_SCRATCH_BIT`` registers from qasm output.
 * Update the ``LogicExp`` in every ``ClassicalExpBox`` when calling ``Circuit.rename_units``.
+* Fix the json schema for ``LinePlacement``
 
 1.7.3 (October 2022)
 --------------------
