@@ -303,9 +303,11 @@ std::map<Qubit, Node> GraphPlacement::convert_bimap(
     TKET_ASSERT(vertex_iter_begin != vertex_iter_pair.second);
     unsigned entry_vertex = *vertex_iter_begin;
     unsigned n_pattern_edges = boost::out_degree(entry_vertex, pattern_graph);
+    std::set<Node> neighbour_nodes =
+        this->architecture_.get_neighbour_nodes(entry.second);
+    unsigned n_target_edges = neighbour_nodes.size();
     unsigned n_interacting = 0;
-    for (const Node& node :
-         this->architecture_.get_neighbour_nodes(entry.second)) {
+    for (const Node& node : neighbour_nodes) {
       auto it = bimap.right.find(node);
       // Node may be not be assigned to
       // If it is, check if Qubit are interacting
@@ -325,7 +327,8 @@ std::map<Qubit, Node> GraphPlacement::convert_bimap(
         }
       }
     }
-    if (n_pattern_edges - n_interacting <= n_interacting) {
+    if (std::min(n_pattern_edges, n_target_edges) - n_interacting <=
+        n_interacting) {
       out_map.insert({entry.first, entry.second});
     }
   }
