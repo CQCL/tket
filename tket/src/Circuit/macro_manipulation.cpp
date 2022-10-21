@@ -408,7 +408,7 @@ void Circuit::replace_all_implicit_wire_swaps() {
       continue;
     }
     // start traverse a cycle
-    Qubit head = pair.first;
+    const Qubit head = pair.first;
     Qubit current = pair.first;
     Qubit next = pair.second;
     while (true) {
