@@ -382,7 +382,7 @@ void Circuit::replace_SWAPs() {
 }
 
 void Circuit::replace_implicit_wire_swap(
-    const Qubit first, const Qubit second, const bool using_cx) {
+    const Qubit first, const Qubit second, bool using_cx) {
   Vertex last_v;
   if (using_cx) {
     add_op<UnitID>(OpType::CX, {first, second});
@@ -420,11 +420,7 @@ void Circuit::replace_all_implicit_wire_swaps() {
       replace_implicit_wire_swap(current, next, false);
       fixed_qubits.insert(current);
       auto it = perm.find(next);
-      if (it == perm.end()) {
-        throw CircuitInvalidity(
-            "Unknown error in replace_all_implicit_wire_swaps: invalid qubit "
-            "permutation.");
-      }
+      TKET_ASSERT(it != perm.end());
       current = it->first;
       next = it->second;
     }

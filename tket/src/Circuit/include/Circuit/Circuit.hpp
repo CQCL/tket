@@ -1351,7 +1351,7 @@ class Circuit {
    * O(c)
    */
   void replace_implicit_wire_swap(
-      const Qubit first, const Qubit second, const bool using_cx = true);
+      const Qubit first, const Qubit second, bool using_cx = true);
 
   /**
    * replaces all implicit wire swaps with SWAP gates
