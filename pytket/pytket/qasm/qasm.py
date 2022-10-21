@@ -829,10 +829,9 @@ class CircuitTransformer(Transformer):
             comparison_circ = _get_gate_circuit(
                 PARAM_EXTRA_COMMANDS[gate],
                 qubit_args,
-                cast(
-                    List[Symbol],
-                    [Symbol("param" + str(index)) for index in range(len(symbols))],
-                ),
+                [
+                    Symbol("param" + str(index)) for index in range(len(symbols)) # type: ignore
+                ],  
             )
             if circuit_to_qasm_str(comparison_circ) == circuit_to_qasm_str(gate_circ):
                 existing_op = True
