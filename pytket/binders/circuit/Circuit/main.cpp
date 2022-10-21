@@ -755,6 +755,13 @@ void init_circuit(py::module &m) {
           ":return: dictionary mapping input qubit to output qubit on "
           "the same path")
       .def(
+          "replace_SWAPs", &Circuit::replace_SWAPs,
+          "Replace all SWAP gates with implicit wire swaps.")
+      .def(
+          "replace_implicit_wire_swaps",
+          &Circuit::replace_all_implicit_wire_swaps,
+          "Replace all implicit wire swaps with SWAP gates")
+      .def(
           "ops_of_type",
           [](const Circuit &circ, OpType optype) {
             VertexSet vset = circ.get_gates_of_type(optype);
