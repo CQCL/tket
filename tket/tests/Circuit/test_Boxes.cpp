@@ -929,6 +929,19 @@ SCENARIO("QControlBox", "[boxes]") {
     const Eigen::MatrixXcd U2 = tket_sim::get_unitary(*c_numerical);
     REQUIRE(U2.isApprox(V));
   }
+  GIVEN("controlled CircBox with identity gates") {
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::TK1, {0., 0., 0.}, {0});
+    c0.add_op<unsigned>(OpType::Rx, 0., {0});
+    c0.add_op<unsigned>(OpType::CRx, 4., {0, 1});
+    c0.add_op<unsigned>(OpType::noop, {0});
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op, 1);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    REQUIRE(c->n_gates() == 0);
+    REQUIRE(equiv_0(c->get_phase()));
+  }
 }
 
 SCENARIO("Unitary3qBox", "[boxes]") {

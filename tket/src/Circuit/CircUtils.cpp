@@ -924,7 +924,9 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
   std::vector<CnGateBlock> blocks;
 
   for (const Command &cmd : commands) {
-    if (cmd.get_op_ptr()->get_type() != OpType::noop) {
+    // drop any gates that apply identity to the target qubit
+    if (cmd.get_op_ptr()->commuting_basis(cmd.get_args().size() - 1) !=
+        Pauli::I) {
       blocks.push_back(CnGateBlock(cmd));
     }
   }
