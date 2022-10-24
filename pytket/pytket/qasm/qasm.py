@@ -121,6 +121,7 @@ NOPARAM_COMMANDS = {
     "ccx": OpType.CCX,
     "c3x": OpType.CnX,
     "c4x": OpType.CnX,
+    "ZZ": OpType.ZZMax,
     "measure": OpType.Measure,
     "reset": OpType.Reset,
     "id": OpType.noop,
@@ -157,8 +158,8 @@ NOPARAM_EXTRA_COMMANDS = {
     "cvdg": OpType.CVdg,
     "csxdg": OpType.CSXdg,
     "bridge": OpType.BRIDGE,
-    "zzmax": OpType.ZZMax,
     "iswapmax": OpType.ISWAPMax,
+    "zzmax": OpType.ZZMax,
 }
 
 PARAM_EXTRA_COMMANDS = {
@@ -743,7 +744,6 @@ class CircuitTransformer(Transformer):
                 }
 
             elif isinstance(exp, str):
-                # right_reg = cast(BitRegister, exp)
                 width = min(self.c_registers[exp], len(args))
                 yield {
                     "args": [[exp, [i]] for i in range(width)] + args[:width],
@@ -904,6 +904,7 @@ def circuit_from_qasm(
 
 def circuit_from_qasm_str(qasm_str: str) -> Circuit:
     """A method to generate a tket Circuit from a qasm str"""
+    parser.options.transformer._reset_context()  # type: ignore
     return Circuit.from_dict(parser.parse(qasm_str))
 
 
@@ -968,7 +969,6 @@ def _retrieve_registers(
 ) -> Dict[str, TypeReg]:
     if any(len(unit.index) != 1 for unit in units):
         raise NotImplementedError("OPENQASM registers must use a single index")
-
     maxunits = map(
         lambda x: max(x[1]), groupby(units, key=lambda un: un.reg_name)  # type:ignore
     )
@@ -1083,17 +1083,16 @@ def circuit_to_qasm_io(
         raise QASMUnsupportedError(
             "Complex classical gates only supported with hqslib1."
         )
+    include_module_gates = {"measure", "reset", "barrier"}
+    include_module_gates.update(_load_include_module(header, False, True).keys())
     if include_gate_defs is None:
-        include_gate_defs = {"measure", "reset", "barrier"}
-        include_gate_defs.update(_load_include_module(header, False, True).keys())
+        include_gate_defs = include_module_gates
         include_gate_defs.update(NOPARAM_EXTRA_COMMANDS.keys())
         include_gate_defs.update(PARAM_EXTRA_COMMANDS.keys())
-
         buffer.write('OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header))
 
         qregs = _retrieve_registers(circ.qubits, QubitRegister)
         cregs = _retrieve_registers(circ.bits, BitRegister)
-
         for reg in qregs.values():
             buffer.write(f"qreg {reg.name}[{reg.size}];\n")
         for reg in cregs.values():
@@ -1269,9 +1268,15 @@ def circuit_to_qasm_io(
                 opstr = op.data
                 checked_op = False
 
-        elif optype in _tk_to_qasm_noparams:
+        elif (
+            optype in _tk_to_qasm_noparams
+            and _tk_to_qasm_noparams[optype] in include_module_gates
+        ):
             opstr = _tk_to_qasm_noparams[optype]
-        elif optype in _tk_to_qasm_params:
+        elif (
+            optype in _tk_to_qasm_params
+            and _tk_to_qasm_params[optype] in include_module_gates
+        ):
             opstr = _tk_to_qasm_params[optype]
         elif optype in _tk_to_qasm_extra_noparams:
             opstr = _tk_to_qasm_extra_noparams[optype]
@@ -1301,7 +1306,7 @@ def circuit_to_qasm_io(
             )
         if checked_op and opstr not in include_gate_defs:
             raise QASMUnsupportedError(
-                "Gate of type {} is not defined in header {}.inc".format(opstr, header)
+                "Gate of type {} is not supported in conversion.".format(opstr)
             )
         buffer.write(opstr)
         if params is not None:
