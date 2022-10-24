@@ -83,6 +83,8 @@ class PauliGraph {
   const CliffTableau &get_clifford_ref() { return cliff_; }
   unsigned n_vertices() const { return boost::num_vertices(this->graph_); }
 
+  void sanity_check() const;
+
   friend PauliGraph circuit_to_pauli_graph(const Circuit &circ);
   friend Circuit pauli_graph_to_circuit_individually(
       const PauliGraph &pg, CXConfigType cx_config);

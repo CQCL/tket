@@ -14,6 +14,8 @@
 
 #include "PauliGraph.hpp"
 
+#include <tkassert/Assert.hpp>
+
 #include "Gate/Gate.hpp"
 #include "OpType/OpType.hpp"
 #include "Utils/GraphHeaders.hpp"
@@ -320,6 +322,7 @@ PauliGraph::TopSortIterator::TopSortIterator()
       current_vert_(boost::graph_traits<PauliDAG>::null_vertex()) {}
 
 PauliGraph::TopSortIterator::TopSortIterator(const PauliGraph &pg) {
+  pg.sanity_check();
   if (pg.start_line_.empty()) {
     current_vert_ = boost::graph_traits<PauliDAG>::null_vertex();
     return;
@@ -418,6 +421,28 @@ void PauliGraph::to_graphviz(std::ostream &out) const {
   }
 
   out << "}";
+}
+
+void PauliGraph::sanity_check() const {
+  for (TopSortIterator it = begin(); it != end(); ++it) {
+    PauliVert vert = *it;
+
+    PauliVertSet succs;
+    boost::graph_traits<PauliDAG>::adjacency_iterator ai, a_end;
+    boost::tie(ai, a_end) = boost::adjacent_vertices(vert, graph_);
+    for (; ai != a_end; ai++) {
+      TKET_ASSERT(!succs.contains(*ai));
+      succs.insert(*ai);
+    }
+
+    PauliVertSet preds;
+    PauliDAG::inv_adjacency_iterator iai, ia_end;
+    boost::tie(iai, ia_end) = boost::inv_adjacent_vertices(vert, graph_);
+    for (; iai != ia_end; iai++) {
+      TKET_ASSERT(!preds.contains(*iai));
+      preds.insert(*iai);
+    }
+  }
 }
 
 }  // namespace tket

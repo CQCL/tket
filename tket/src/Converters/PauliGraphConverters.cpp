@@ -71,11 +71,13 @@ PauliGraph circuit_to_pauli_graph(const Circuit &circ) {
           "and Paulis",
           od.type());
   }
+  pg.sanity_check();
   return pg;
 }
 
 Circuit pauli_graph_to_circuit_individually(
     const PauliGraph &pg, CXConfigType cx_config) {
+  pg.sanity_check();
   Circuit circ;
   for (const Qubit &qb : pg.cliff_.get_qubits()) {
     circ.add_qubit(qb);
@@ -99,6 +101,7 @@ Circuit pauli_graph_to_circuit_individually(
 
 Circuit pauli_graph_to_circuit_pairwise(
     const PauliGraph &pg, CXConfigType cx_config) {
+  pg.sanity_check();
   Circuit circ;
   for (const Qubit &qb : pg.cliff_.get_qubits()) {
     circ.add_qubit(qb);
@@ -133,6 +136,7 @@ Circuit pauli_graph_to_circuit_pairwise(
 /* Currently follows a greedy set-building method */
 Circuit pauli_graph_to_circuit_sets(
     const PauliGraph &pg, CXConfigType cx_config) {
+  pg.sanity_check();
   Circuit circ;
   const std::set<Qubit> qbs = pg.cliff_.get_qubits();
   Circuit spare_circ;
