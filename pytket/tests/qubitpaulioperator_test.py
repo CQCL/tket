@@ -197,3 +197,10 @@ def test_QubitPauliString_serialization_hypothesis(qps: QubitPauliString) -> Non
     serializable = qps.to_list()
     assert QubitPauliString.from_list(serializable) == qps
     assert json.loads(json.dumps(serializable)) == serializable
+
+
+@given(st.qubitpaulioperators())
+def test_QubitPauliOperator_serialization_hypothesis(ops: QubitPauliOperator) -> None:
+    serializable = ops.to_list()
+    assert QubitPauliOperator.from_list(serializable) == ops
+    assert json.loads(json.dumps(serializable)) == serializable
