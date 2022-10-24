@@ -113,7 +113,6 @@ class PauliGraph {
       const PauliGraph &pg, CXConfigType cx_config);
 
  private:
-
   /**
    * The dependency graph of Pauli gadgets
    *
