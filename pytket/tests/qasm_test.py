@@ -329,6 +329,23 @@ def test_output_error_modes() -> None:
         c = Circuit()
         c.add_qubit(Qubit("q"))
         circuit_to_qasm_str(c)
+
+    # Adds CV as a custom gate
+    c = Circuit(2).CV(0, 1)
+    assert c == circuit_from_qasm_str(circuit_to_qasm_str(c))
+
+    c = Circuit(2)
+    c.add_gate(OpType.ZZMax, [0, 1])
+    # adds a custom gate
+    qasm_str_qelib1 = circuit_to_qasm_str(c, header="qelib1")
+    # adds "ZZ"
+    qasm_str_hqslib1 = circuit_to_qasm_str(c, header="hqslib1")
+    assert len(qasm_str_qelib1) == 354
+    assert len(qasm_str_hqslib1) == 63
+    assert circuit_from_qasm_str(qasm_str_qelib1) == circuit_from_qasm_str(
+        qasm_str_hqslib1
+    )
+
     assert "OPENQASM registers must use a single index" in str(errorinfo.value)
     with pytest.raises(Exception) as errorinfo:
         c = Circuit(2, 2)
