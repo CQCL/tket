@@ -2872,5 +2872,34 @@ SCENARIO("Testing get_linear_edge") {
   REQUIRE(circ.get_linear_edge(quantum_edge) == quantum_edge);
 }
 
+SCENARIO("Test replacing wire swaps") {
+  Circuit circ(7);
+  std::vector<Qubit> qreg = circ.all_qubits();
+  // Add SWAP gates
+  circ.add_op<unsigned>(OpType::SWAP, {0, 1});
+  circ.add_op<unsigned>(OpType::SWAP, {1, 3});
+  circ.add_op<unsigned>(OpType::SWAP, {3, 4});
+  circ.add_op<unsigned>(OpType::SWAP, {2, 5});
+
+  qubit_map_t correct_perm = {{qreg[0], qreg[4]}, {qreg[1], qreg[0]},
+                              {qreg[2], qreg[5]}, {qreg[3], qreg[1]},
+                              {qreg[4], qreg[3]}, {qreg[5], qreg[2]},
+                              {qreg[6], qreg[6]}};
+  const Eigen::MatrixXcd u = tket_sim::get_unitary(circ);
+  // Replace SWAPS
+  circ.replace_SWAPs();
+  REQUIRE(circ.n_gates() == 0);
+  REQUIRE(circ.implicit_qubit_permutation() == correct_perm);
+  const Eigen::MatrixXcd v = tket_sim::get_unitary(circ);
+  REQUIRE(u.isApprox(v, ERR_EPS));
+  // Replace wire swaps
+  // perm in cycle notation (0, 4, 3, 1), (2, 5), (6), hence need 4 swaps
+  circ.replace_all_implicit_wire_swaps();
+  REQUIRE(!circ.has_implicit_wireswaps());
+  REQUIRE(circ.n_gates() == 4);
+  const Eigen::MatrixXcd w = tket_sim::get_unitary(circ);
+  REQUIRE(u.isApprox(w, ERR_EPS));
+}
+
 }  // namespace test_Circ
 }  // namespace tket
