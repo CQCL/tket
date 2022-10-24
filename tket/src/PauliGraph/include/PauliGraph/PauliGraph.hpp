@@ -99,6 +99,9 @@ class PauliGraph {
    */
   std::vector<PauliVert> vertices_in_order() const;
 
+  /**
+   * Perform a simple sanity check on the DAG.
+   */
   void sanity_check() const;
 
   friend PauliGraph circuit_to_pauli_graph(const Circuit &circ);
