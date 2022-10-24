@@ -317,86 +317,6 @@ void PauliGraph::apply_pauli_gadget_at_end(
   if (get_predecessors(new_vert).empty()) start_line_.insert(new_vert);
 }
 
-PauliGraph::TopSortIterator::TopSortIterator()
-    : pg_(nullptr),
-      current_vert_(boost::graph_traits<PauliDAG>::null_vertex()) {}
-
-PauliGraph::TopSortIterator::TopSortIterator(const PauliGraph &pg) {
-  pg.sanity_check();
-  if (pg.start_line_.empty()) {
-    current_vert_ = boost::graph_traits<PauliDAG>::null_vertex();
-    return;
-  }
-  pg_ = &pg;
-  for (const PauliVert &vert : pg.start_line_) {
-    search_set_.insert({pg.graph_[vert].tensor_, vert});
-  }
-  current_vert_ = search_set_.begin()->second;
-  search_set_.erase(search_set_.begin());
-  visited_ = {current_vert_};
-  for (const PauliVert &child : pg_->get_successors(current_vert_)) {
-    search_set_.insert({pg.graph_[child].tensor_, child});
-  }
-}
-
-const PauliVert &PauliGraph::TopSortIterator::operator*() const {
-  return current_vert_;
-}
-
-const PauliVert *PauliGraph::TopSortIterator::operator->() const {
-  return &current_vert_;
-}
-
-bool PauliGraph::TopSortIterator::operator==(
-    const TopSortIterator &other) const {
-  return this->current_vert_ == other.current_vert_;
-}
-
-bool PauliGraph::TopSortIterator::operator!=(
-    const TopSortIterator &other) const {
-  return !(*this == other);
-}
-
-PauliGraph::TopSortIterator PauliGraph::TopSortIterator::operator++(int) {
-  PauliGraph::TopSortIterator it = *this;
-  ++*this;
-  return it;
-}
-
-PauliGraph::TopSortIterator &PauliGraph::TopSortIterator::operator++() {
-  bool found_next = false;
-  while (!found_next && !search_set_.empty()) {
-    current_vert_ = search_set_.begin()->second;
-    search_set_.erase(search_set_.begin());
-
-    // Check that we have visited all parents
-    found_next = true;
-    for (const PauliVert &parent : pg_->get_predecessors(current_vert_)) {
-      if (visited_.find(parent) == visited_.end()) {
-        found_next = false;
-        break;
-      }
-    }
-  }
-  if (found_next) {
-    visited_.insert(current_vert_);
-    for (const PauliVert &child : pg_->get_successors(current_vert_)) {
-      search_set_.insert({pg_->graph_[child].tensor_, child});
-    }
-  } else {
-    *this = TopSortIterator();
-  }
-  return *this;
-}
-
-PauliGraph::TopSortIterator PauliGraph::begin() const {
-  return TopSortIterator(*this);
-}
-
-PauliGraph::TopSortIterator PauliGraph::end() const {
-  return TopSortIterator();
-}
-
 void PauliGraph::to_graphviz_file(const std::string &filename) const {
   std::ofstream dot_file(filename);
   to_graphviz(dot_file);
@@ -423,10 +343,18 @@ void PauliGraph::to_graphviz(std::ostream &out) const {
   out << "}";
 }
 
-void PauliGraph::sanity_check() const {
-  for (TopSortIterator it = begin(); it != end(); ++it) {
-    PauliVert vert = *it;
+std::vector<PauliVert> PauliGraph::vertices_in_order() const {
+  PauliVIndex index = boost::get(boost::vertex_index, graph_);
+  int i = 0;
+  BGL_FORALL_VERTICES(v, graph_, PauliDAG) { boost::put(index, v, i++); }
+  std::vector<PauliVert> vertices;
+  boost::topological_sort(graph_, std::back_inserter(vertices));
+  std::reverse(vertices.begin(), vertices.end());
+  return vertices;
+}
 
+void PauliGraph::sanity_check() const {
+  for (const PauliVert &vert : vertices_in_order()) {
     PauliVertSet succs;
     boost::graph_traits<PauliDAG>::adjacency_iterator ai, a_end;
     boost::tie(ai, a_end) = boost::adjacent_vertices(vert, graph_);
