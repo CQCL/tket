@@ -291,12 +291,13 @@ class CircuitTransformer(Transformer):
 
         return [_TEMP_BIT_NAME, [idx]]
 
-    def _reset_context(self) -> None:
+    def _reset_context(self, reset_wasm: bool = True) -> None:
         self.q_registers = {}
         self.c_registers = {}
         self.gate_dict = {}
         self.include = ""
-        self.wasm = None
+        if reset_wasm:
+            self.wasm = None
 
     def _get_reg(self, name: str) -> Reg:
         return Reg(name)
@@ -904,7 +905,9 @@ def circuit_from_qasm(
 
 def circuit_from_qasm_str(qasm_str: str) -> Circuit:
     """A method to generate a tket Circuit from a qasm str"""
-    parser.options.transformer._reset_context()  # type: ignore
+    cast(CircuitTransformer, parser.options.transformer)._reset_context(
+        reset_wasm=False
+    )
     return Circuit.from_dict(parser.parse(qasm_str))
 
 
