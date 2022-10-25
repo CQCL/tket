@@ -83,8 +83,7 @@ Circuit pauli_graph_to_circuit_individually(
   for (const Bit &b : pg.bits_) {
     circ.add_bit(b);
   }
-  for (PauliGraph::TopSortIterator it = pg.begin(); it != pg.end(); ++it) {
-    PauliVert vert = *it;
+  for (const PauliVert &vert : pg.vertices_in_order()) {
     const QubitPauliTensor &pauli = pg.graph_[vert].tensor_;
     const Expr &angle = pg.graph_[vert].angle_;
     append_single_pauli_gadget(circ, pauli, angle, cx_config);
@@ -106,13 +105,14 @@ Circuit pauli_graph_to_circuit_pairwise(
   for (const Bit &b : pg.bits_) {
     circ.add_bit(b);
   }
-  PauliGraph::TopSortIterator it = pg.begin();
-  while (it != pg.end()) {
+  std::vector<PauliVert> vertices = pg.vertices_in_order();
+  auto it = vertices.begin();
+  while (it != vertices.end()) {
     PauliVert vert0 = *it;
     const QubitPauliTensor &pauli0 = pg.graph_[vert0].tensor_;
     const Expr &angle0 = pg.graph_[vert0].angle_;
     ++it;
-    if (it == pg.end()) {
+    if (it == vertices.end()) {
       append_single_pauli_gadget(circ, pauli0, angle0, cx_config);
     } else {
       PauliVert vert1 = *it;
@@ -143,13 +143,14 @@ Circuit pauli_graph_to_circuit_sets(
   for (const Bit &b : pg.bits_) {
     circ.add_bit(b);
   }
-  PauliGraph::TopSortIterator it = pg.begin();
-  while (it != pg.end()) {
+  std::vector<PauliVert> vertices = pg.vertices_in_order();
+  auto it = vertices.begin();
+  while (it != vertices.end()) {
     const PauliGadgetProperties &pgp = pg.graph_[*it];
     QubitOperator gadget_map;
     gadget_map[pgp.tensor_] = pgp.angle_;
     ++it;
-    while (it != pg.end()) {
+    while (it != vertices.end()) {
       const PauliGadgetProperties &pauli_gadget = pg.graph_[*it];
       QubitOperator::iterator pgs_iter = gadget_map.find(pauli_gadget.tensor_);
       if (pgs_iter != gadget_map.end()) {
@@ -196,8 +197,8 @@ Circuit pauli_graph_to_circuit_sets(
   }
   Circuit cliff_circuit = tableau_to_circuit(pg.cliff_);
   circ.append(cliff_circuit);
-  for (auto it = pg.measures_.begin(); it != pg.measures_.end(); ++it) {
-    circ.add_measure(it->left, it->right);
+  for (auto it1 = pg.measures_.begin(); it1 != pg.measures_.end(); ++it1) {
+    circ.add_measure(it1->left, it1->right);
   }
   return circ;
 }
