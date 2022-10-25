@@ -357,10 +357,10 @@ def test_header_stops_gate_definition() -> None:
     qasm_str_qelib1 = circuit_to_qasm_str(c, header="qelib1")
     # adds "ZZ"
     qasm_str_hqslib1 = circuit_to_qasm_str(c, header="hqslib1")
-    assert qasm_str_qelib1[48:76] == "gate zzmax zzmaxq0,zzmaxq1 {"
-    assert qasm_str_qelib1[335] == "}"
-    assert qasm_str_qelib1[337:353] == "zzmax q[0],q[1];"
-    assert qasm_str_hqslib1[49:62] == "ZZ q[0],q[1];"
+    assert "gate zzmax zzmaxq0,zzmaxq1 {" in qasm_str_qelib1
+    assert "}" in qasm_str_qelib1
+    assert "zzmax q[0],q[1];" in qasm_str_qelib1
+    assert "ZZ q[0],q[1];" in qasm_str_hqslib1
     assert circuit_from_qasm_str(qasm_str_qelib1) == circuit_from_qasm_str(
         qasm_str_hqslib1
     )
