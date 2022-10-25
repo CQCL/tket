@@ -330,22 +330,6 @@ def test_output_error_modes() -> None:
         c.add_qubit(Qubit("q"))
         circuit_to_qasm_str(c)
 
-    # Adds CV as a custom gate
-    c = Circuit(2).CV(0, 1)
-    assert c == circuit_from_qasm_str(circuit_to_qasm_str(c))
-
-    c = Circuit(2)
-    c.add_gate(OpType.ZZMax, [0, 1])
-    # adds a custom gate
-    qasm_str_qelib1 = circuit_to_qasm_str(c, header="qelib1")
-    # adds "ZZ"
-    qasm_str_hqslib1 = circuit_to_qasm_str(c, header="hqslib1")
-    assert len(qasm_str_qelib1) == 354
-    assert len(qasm_str_hqslib1) == 63
-    assert circuit_from_qasm_str(qasm_str_qelib1) == circuit_from_qasm_str(
-        qasm_str_hqslib1
-    )
-
     assert "OPENQASM registers must use a single index" in str(errorinfo.value)
     with pytest.raises(Exception) as errorinfo:
         c = Circuit(2, 2)
@@ -363,6 +347,22 @@ def test_output_error_modes() -> None:
         circuit_to_qasm_str(c)
     assert "OpenQASM conditions must be a single classical register" in str(
         errorinfo.value
+    )
+
+
+def test_header_stops_gate_definition() -> None:
+    c = Circuit(2)
+    c.add_gate(OpType.ZZMax, [0, 1])
+    # adds a custom gate, "zzmax"
+    qasm_str_qelib1 = circuit_to_qasm_str(c, header="qelib1")
+    # adds "ZZ"
+    qasm_str_hqslib1 = circuit_to_qasm_str(c, header="hqslib1")
+    assert qasm_str_qelib1[48:76] == "gate zzmax zzmaxq0,zzmaxq1 {"
+    assert qasm_str_qelib1[335] == "}"
+    assert qasm_str_qelib1[337:353] == "zzmax q[0],q[1];"
+    assert qasm_str_hqslib1[49:62] == "ZZ q[0],q[1];"
+    assert circuit_from_qasm_str(qasm_str_qelib1) == circuit_from_qasm_str(
+        qasm_str_hqslib1
     )
 
 
@@ -628,3 +628,4 @@ if __name__ == "__main__":
     test_barrier_2()
     test_decomposable_extended()
     test_alternate_encoding()
+    test_header_stops_gate_definition()
