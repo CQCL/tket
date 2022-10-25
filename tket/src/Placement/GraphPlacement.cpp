@@ -292,16 +292,18 @@ std::map<Qubit, Node> GraphPlacement::convert_bimap(
    * assignment, then remove assignment
    */
   std::map<Qubit, Node> out_map;
+  // construct a map between pattern graph Qubit and Vertex
+  std::map<Qubit, unsigned> qubit_vertex_map;
+  auto vertex_iter_pair = boost::vertices(pattern_graph);
+  while (vertex_iter_pair.first != vertex_iter_pair.second) {
+    auto vert = *vertex_iter_pair.first;
+    qubit_vertex_map.insert({pattern_graph[vert], vert});
+    ++vertex_iter_pair.first;
+  }
   for (const auto& entry : bimap.left) {
-    // Find vertex corresponding to Qubit to use boost method
-    auto vertex_iter_pair = boost::vertices(pattern_graph);
-    auto vertex_iter_begin = vertex_iter_pair.first;
-    while (vertex_iter_begin != vertex_iter_pair.second) {
-      if (pattern_graph[*vertex_iter_begin] == entry.first) break;
-      ++vertex_iter_begin;
-    }
-    TKET_ASSERT(vertex_iter_begin != vertex_iter_pair.second);
-    unsigned entry_vertex = *vertex_iter_begin;
+    auto qvm_it = qubit_vertex_map.find(entry.first);
+    TKET_ASSERT(qvm_it != qubit_vertex_map.end());
+    auto entry_vertex = qvm_it->second;
     unsigned n_pattern_edges = boost::out_degree(entry_vertex, pattern_graph);
     std::set<Node> neighbour_nodes =
         this->architecture_.get_neighbour_nodes(entry.second);
@@ -313,15 +315,10 @@ std::map<Qubit, Node> GraphPlacement::convert_bimap(
       // If it is, check if Qubit are interacting
       // If not, decrement n_interacting
       if (it != bimap.right.end()) {
-        // Find vertex corresponding to Qubit to use boost method
-        vertex_iter_begin = vertex_iter_pair.first;
-        while (vertex_iter_begin != vertex_iter_pair.second) {
-          if (pattern_graph[*vertex_iter_begin] == it->second) break;
-          ++vertex_iter_begin;
-        }
-        TKET_ASSERT(vertex_iter_begin != vertex_iter_pair.second);
+        auto qvm_it = qubit_vertex_map.find(it->second);
+        TKET_ASSERT(qvm_it != qubit_vertex_map.end());
         auto [_, exists] =
-            boost::edge(entry_vertex, *vertex_iter_begin, pattern_graph);
+            boost::edge(entry_vertex, qvm_it->second, pattern_graph);
         if (exists) {
           n_interacting++;
         }
