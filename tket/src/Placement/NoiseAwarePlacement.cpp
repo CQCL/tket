@@ -94,13 +94,13 @@ double NoiseAwarePlacement::cost_placement(
   return cost;
 }
 
-std::vector<std::map<Qubit, Node>> NoiseAwarePlacement::rank_maps(
+std::vector<boost::bimap<Qubit, Node>> NoiseAwarePlacement::rank_maps(
     const std::vector<boost::bimap<Qubit, Node>>& placement_maps,
     const Circuit& circ_,
     const std::vector<GraphPlacement::WeightedEdge>& pattern_edges) const {
   // each map is costed, sorted and returned
   // only equal best costed maps are returned
-  std::vector<std::map<Qubit, Node>> return_placement_maps;
+  std::vector<boost::bimap<Qubit, Node>> return_placement_maps;
   double best_cost = 0;
   QubitGraph q_graph =
       this->construct_pattern_graph(pattern_edges, circ_.n_qubits());
@@ -108,9 +108,9 @@ std::vector<std::map<Qubit, Node>> NoiseAwarePlacement::rank_maps(
     double cost = this->cost_placement(map, circ_, q_graph);
     if (return_placement_maps.empty() || cost < best_cost) {
       best_cost = cost;
-      return_placement_maps = {bimap_to_map(map.left)};
+      return_placement_maps = {map};
     } else if (cost == best_cost) {
-      return_placement_maps.push_back(bimap_to_map(map.left));
+      return_placement_maps.push_back(map);
     }
   }
   return return_placement_maps;
@@ -123,12 +123,25 @@ std::vector<std::map<Qubit, Node>> NoiseAwarePlacement::get_all_placement_maps(
   std::vector<boost::bimap<Qubit, Node>> placement_maps =
       this->get_all_weighted_subgraph_monomorphisms(
           circ_, weighted_pattern_edges, true);
-  std::vector<std::map<Qubit, Node>> ranked_placement_maps =
+  std::vector<boost::bimap<Qubit, Node>> ranked_placement_maps =
       this->rank_maps(placement_maps, circ_, weighted_pattern_edges);
-  if (ranked_placement_maps.size() > matches) {
-    ranked_placement_maps.resize(matches);
+  std::vector<std::map<Qubit, Node>> all_qmaps;
+  QubitGraph::UndirectedConnGraph pattern_graph =
+      this->construct_pattern_graph(weighted_pattern_edges, circ_.n_qubits())
+          .get_undirected_connectivity();
+  for (unsigned i = 0; i < ranked_placement_maps.size() && i < matches; i++) {
+    all_qmaps.push_back(convert_bimap(ranked_placement_maps[i], pattern_graph));
   }
-  return ranked_placement_maps;
+  return all_qmaps;
+}
+
+DeviceCharacterisation NoiseAwarePlacement::get_characterisation() const {
+  return this->characterisation_;
+}
+
+void NoiseAwarePlacement::set_characterisation(
+    const DeviceCharacterisation& characterisation) {
+  this->characterisation_ = characterisation;
 }
 
 }  // namespace tket

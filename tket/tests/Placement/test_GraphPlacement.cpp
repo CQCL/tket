@@ -152,7 +152,8 @@ SCENARIO("Base GraphPlacement class") {
 
   GIVEN(
       "Nine qubit disconnected CX circuit, 15 qubit Architecture with multiple "
-      "mappings, no exact isomorphism, GraphPlacement::get_placement_map.") {
+      "mappings, no exact isomorphism, GraphPlacement::get_placement_map, one "
+      "unplaced qubit.") {
     /**
      * Architecture graph:
      * 0 -- 1 -- 2 -- 3 -- 4 -- 5
@@ -192,7 +193,7 @@ SCENARIO("Base GraphPlacement class") {
     REQUIRE(placement_map[Qubit(3)] == Node(10));
     REQUIRE(placement_map[Qubit(4)] == Node(15));
     REQUIRE(placement_map[Qubit(5)] == Node(14));
-    REQUIRE(placement_map[Qubit(6)] == Node(4));
+    REQUIRE(placement_map[Qubit(6)] == Node("unplaced", 0));
     REQUIRE(placement_map[Qubit(7)] == Node(16));
     REQUIRE(placement_map[Qubit(8)] == Node(11));
   }

@@ -194,7 +194,6 @@ PassPtr gen_placement_pass(const Placement::Ptr& placement_ptr) {
       changed = line_placement_ptr->place(circ, maps);
     }
     return changed;
-    return placement_ptr->place(circ, maps);
   };
   Transform t = Transform(trans);
   PredicatePtr twoqbpred = std::make_shared<MaxTwoQubitGatesPredicate>();
