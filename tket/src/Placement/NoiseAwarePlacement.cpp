@@ -135,4 +135,13 @@ std::vector<std::map<Qubit, Node>> NoiseAwarePlacement::get_all_placement_maps(
   return all_qmaps;
 }
 
+DeviceCharacterisation NoiseAwarePlacement::get_characterisation() const {
+  return this->characterisation_;
+}
+
+void NoiseAwarePlacement::set_characterisation(
+    const DeviceCharacterisation& characterisation) {
+  this->characterisation_ = characterisation;
+}
+
 }  // namespace tket

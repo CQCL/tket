@@ -279,16 +279,14 @@ class NoiseAwarePlacement : public GraphPlacement {
       const Circuit& circ_, unsigned matches) const override;
 
   /**
-   * @return maximum depth to search to find gates to construct pattern graph
-   * from
+   * @return A DeviceCharacterisation object storing Architecture errors
    */
-  DeviceCharacterisation get_characterisation() const {
-    return this->characterisation_;
-  }
+  DeviceCharacterisation get_characterisation() const;
 
-  void set_characterisation(const DeviceCharacterisation& characterisation) {
-    this->characterisation_ = characterisation;
-  }
+  /**
+   * @param characterisation Error information for Architecture
+   */
+  void set_characterisation(const DeviceCharacterisation& characterisation);
 
  private:
   DeviceCharacterisation characterisation_;
