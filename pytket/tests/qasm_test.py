@@ -185,6 +185,7 @@ def test_custom_gate() -> None:
     fname = str(curr_file_path / "qasm_test_files/test6.qasm")
     c = circuit_from_qasm(fname)
     assert str(c.get_commands()) == "[mygate(alpha,0.2) q[0], q[1];]"
+
     with open(curr_file_path / "qasm_test_files/test6_output.qasm") as f:
         # test custom gates are unrolled
         assert circuit_to_qasm_str(c) == f.read()
@@ -328,17 +329,8 @@ def test_output_error_modes() -> None:
         c = Circuit()
         c.add_qubit(Qubit("q"))
         circuit_to_qasm_str(c)
+
     assert "OPENQASM registers must use a single index" in str(errorinfo.value)
-    with pytest.raises(Exception) as errorinfo:
-        c = Circuit(2)
-        c.CV(0, 1)
-        circuit_to_qasm_str(c)
-    assert "Cannot print command of type: CV" in str(errorinfo.value)
-    with pytest.raises(Exception) as errorinfo:
-        c = Circuit(2)
-        c.add_gate(OpType.ZZMax, [0, 1])
-        circuit_to_qasm_str(c, header="qelib1")
-    assert "Gate of type ZZ is not defined in header qelib1.inc" in str(errorinfo.value)
     with pytest.raises(Exception) as errorinfo:
         c = Circuit(2, 2)
         c.CX(0, 1, condition_bits=[0], condition_value=0)
@@ -355,6 +347,22 @@ def test_output_error_modes() -> None:
         circuit_to_qasm_str(c)
     assert "OpenQASM conditions must be a single classical register" in str(
         errorinfo.value
+    )
+
+
+def test_header_stops_gate_definition() -> None:
+    c = Circuit(2)
+    c.add_gate(OpType.ZZMax, [0, 1])
+    # adds a custom gate, "zzmax"
+    qasm_str_qelib1 = circuit_to_qasm_str(c, header="qelib1")
+    # adds "ZZ"
+    qasm_str_hqslib1 = circuit_to_qasm_str(c, header="hqslib1")
+    assert "gate zzmax zzmaxq0,zzmaxq1 {" in qasm_str_qelib1
+    assert "}" in qasm_str_qelib1
+    assert "zzmax q[0],q[1];" in qasm_str_qelib1
+    assert "ZZ q[0],q[1];" in qasm_str_hqslib1
+    assert circuit_from_qasm_str(qasm_str_qelib1) == circuit_from_qasm_str(
+        qasm_str_hqslib1
     )
 
 
@@ -502,6 +510,40 @@ def test_custom_gate_with_barrier() -> None:
     assert opcmds[0].op.type == OpType.Barrier
 
 
+def test_non_lib_gates() -> None:
+    c = Circuit(3)
+    c.add_gate(OpType.TK2, [0.2, 0.5, 0.7], [0, 1])
+    c.add_gate(OpType.CV, [1, 2])
+    c.add_gate(OpType.CVdg, [0, 1])
+    c.add_gate(OpType.BRIDGE, [0, 1, 2])
+    c.add_gate(OpType.ISWAP, [0.5], [0, 1])
+    c.add_gate(OpType.PhasedISWAP, [0.2, 0.3], [0, 1])
+    c.add_gate(OpType.YYPhase, [0.3], [0, 1])
+    c.add_gate(OpType.XXPhase3, [0.4], [2, 0, 1])
+    c.add_gate(OpType.ZZMax, [0, 1])
+    c.add_gate(OpType.ESWAP, [0.7], [0, 1])
+    c.add_gate(OpType.FSim, [0.3, 0.4], [1, 2])
+    c.add_gate(OpType.ISWAPMax, [1, 2])
+    # add copies
+    c.add_gate(OpType.TK2, [0.3, 0.6, 0.8], [2, 1])
+    c.add_gate(OpType.CV, [1, 0])
+    c.add_gate(OpType.CVdg, [1, 0])
+    c.add_gate(OpType.BRIDGE, [0, 2, 1])
+    c.add_gate(OpType.ISWAP, [0.7], [1, 2])
+    c.add_gate(OpType.PhasedISWAP, [0.1, 0.2], [2, 1])
+    c.add_gate(OpType.YYPhase, [0.4], [1, 2])
+    c.add_gate(OpType.XXPhase3, [0.5], [2, 1, 0])
+    c.add_gate(OpType.ZZMax, [1, 2])
+    c.add_gate(OpType.ESWAP, [0.8], [2, 1])
+    c.add_gate(OpType.FSim, [0.9, 0.2], [0, 2])
+    c.add_gate(OpType.ISWAPMax, [0, 2])
+
+    qs = circuit_to_qasm_str(c)
+    c2 = circuit_from_qasm_str(qs)
+    qs2 = circuit_to_qasm_str(c2)
+    assert qs == qs2
+
+
 def test_scratch_bits_filtering() -> None:
     # test removing unused scratch register
     c = Circuit(1)
@@ -562,14 +604,28 @@ if __name__ == "__main__":
     test_qasm_gate()
     test_qasm_measure()
     test_qasm_roundtrip()
+    test_qasm_str_roundtrip()
     test_qasm_str_roundtrip_oqc()
     test_readout()
     test_symbolic_write()
     test_custom_gate()
+    test_custom_gate_with_barrier()
     test_input_error_modes()
     test_output_error_modes()
     test_builtin_gates()
     test_new_qelib1_aliases()
     test_h1_rzz()
+    test_opaque()
     test_opaque_gates()
+    test_non_lib_gates()
     test_scratch_bits_filtering()
+    test_extended_qasm()
+    test_register_commands()
+    test_conditional_gates()
+    test_hqs_conditional()
+    test_hqs_conditional_params()
+    test_barrier()
+    test_barrier_2()
+    test_decomposable_extended()
+    test_alternate_encoding()
+    test_header_stops_gate_definition()
