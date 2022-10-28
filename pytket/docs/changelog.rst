@@ -18,6 +18,7 @@ Fixes:
 * Fix the json schema for ``LinePlacement``
 * Fix issue with ``QControlBox`` throwing error during decomposition
   if the controlled circuit contains identity gates.
+* Fix issue with ``KAKDecomposition`` raising exception if the circuit contains ``ClassicalExpBox``.
 
 1.7.3 (October 2022)
 --------------------
