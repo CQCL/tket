@@ -1177,6 +1177,19 @@ def test_circuit_with_conditionals() -> None:
     assert c.n_gates_of_type(OpType.Conditional) == 1
 
 
+def test_KAK_with_ClassicalExpBox() -> None:
+    # https://github.com/CQCL/pytket-quantinuum/issues/66
+    circ = Circuit()
+    circ.add_q_register("qubits", 2)
+    a_reg = circ.add_c_register("a", 1)
+    b_reg = circ.add_c_register("b", 1)
+    circ.add_classicalexpbox_bit(a_reg[0] & b_reg[0], [a_reg[0]])
+    kak = Transform.KAKDecomposition(
+        allow_swaps=True, cx_fidelity=1, target_2qb_gate=OpType.TK2
+    )
+    assert not kak.apply(circ)
+
+
 if __name__ == "__main__":
     test_remove_redundancies()
     test_reduce_singles()
@@ -1202,3 +1215,4 @@ if __name__ == "__main__":
     test_CXMappingPass_correctness()
     test_CXMappingPass_terminates()
     test_FullMappingPass()
+    test_KAK_with_ClassicalExpBox()
