@@ -98,6 +98,7 @@ const OpTypeSet& all_classical_types() {
       OpType::CopyBits,           OpType::RangePredicate,
       OpType::ExplicitPredicate,  OpType::ExplicitModifier,
       OpType::MultiBit,           OpType::WASM,
+      OpType::ClassicalExpBox,
   };
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
