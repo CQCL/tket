@@ -19,6 +19,8 @@
 #include <tklog/TketLog.hpp>
 
 #include "Circuit.hpp"
+#include "DAGDefs.hpp"
+#include "OpType/EdgeType.hpp"
 #include "OpType/OpType.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Utils/GraphHeaders.hpp"
@@ -734,6 +736,18 @@ Circuit::SliceIterator::SliceIterator(const Circuit& circ)
   }
   prev_b_frontier_ = cut_.b_frontier;
   cut_ = circ.next_cut(cut_.u_frontier, cut_.b_frontier);
+
+  // Add all vertices that have no Quantum or Classical edges (e.g. Phase) and
+  // no Boolean inputs:
+  VertexSet loners;
+  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+    if (circ.n_in_edges(v) == 0 &&
+        circ.n_out_edges_of_type(v, EdgeType::Quantum) == 0 &&
+        circ.n_out_edges_of_type(v, EdgeType::Classical) == 0) {
+      loners.insert(v);
+    }
+  }
+  cut_.slice->insert(cut_.slice->end(), loners.begin(), loners.end());
 }
 
 Circuit::SliceIterator::SliceIterator(

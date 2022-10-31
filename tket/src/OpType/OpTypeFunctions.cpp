@@ -40,7 +40,8 @@ const OpTypeSet& all_gate_types() {
       OpType::YYPhase,     OpType::ZZPhase,  OpType::CnRy,     OpType::CnX,
       OpType::CnZ,         OpType::CnY,      OpType::BRIDGE,   OpType::Collapse,
       OpType::ESWAP,       OpType::FSim,     OpType::Sycamore, OpType::ISWAPMax,
-      OpType::PhasedISWAP, OpType::XXPhase3, OpType::NPhasedX, OpType::TK2};
+      OpType::PhasedISWAP, OpType::XXPhase3, OpType::NPhasedX, OpType::TK2,
+      OpType::Phase};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -97,6 +98,7 @@ const OpTypeSet& all_classical_types() {
       OpType::CopyBits,           OpType::RangePredicate,
       OpType::ExplicitPredicate,  OpType::ExplicitModifier,
       OpType::MultiBit,           OpType::WASM,
+      OpType::ClassicalExpBox,
   };
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
@@ -221,7 +223,8 @@ bool is_clifford_type(OpType optype) {
       OpType::Sdg,   OpType::V,    OpType::Vdg,      OpType::SX,
       OpType::SXdg,  OpType::H,    OpType::CX,       OpType::CY,
       OpType::CZ,    OpType::SWAP, OpType::BRIDGE,   OpType::noop,
-      OpType::ZZMax, OpType::ECR,  OpType::ISWAPMax, OpType::UnitaryTableauBox};
+      OpType::ZZMax, OpType::ECR,  OpType::ISWAPMax, OpType::UnitaryTableauBox,
+      OpType::Phase};
   return find_in_set(optype, clifford_gates);
 }
 

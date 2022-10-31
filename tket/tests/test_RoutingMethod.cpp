@@ -229,7 +229,7 @@ SCENARIO("Test RoutingMethodCircuit produces correct map") {
     maps->final.insert({u, u});
   }
   Placement pl(arc);
-  qubit_mapping_t partial_map;
+  std::map<Qubit, Node> partial_map;
   partial_map.insert({Qubit(0), Node(0)});
   partial_map.insert({Qubit(1), Node(1)});
   // We leave q[2] unplaced

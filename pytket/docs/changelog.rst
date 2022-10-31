@@ -1,13 +1,27 @@
 Changelog
 =========
 
-x.y.z (unreleased)
+1.8.0 (unreleased)
 ------------------
 
+Minor new features:
+
+* New ``OpType::Phase`` 0-qubit gate affecting global phase.
+* New ``CnXPairwiseDecomposition`` pass.
+* Allow ``QControlBox`` with implicit wire swaps to be decomposed.
+* New ``Circuit`` methods ``replace_SWAPs`` and ``replace_implicit_wire_swaps``.
+
 Fixes:
+
+* Remove unused ``tk_SCRATCH_BIT`` registers from qasm output.
+* Update the ``LogicExp`` in every ``ClassicalExpBox`` when calling ``Circuit.rename_units``.
+* Fix the json schema for ``LinePlacement``
+* Fix issue with ``QControlBox`` throwing error during decomposition
+  if the controlled circuit contains identity gates.
+* Fix issue with ``KAKDecomposition`` raising exception if the circuit contains ``ClassicalExpBox``.
 * 1-qubit squashing handles conditional gates properly
 
-1.7.0 (October 2022)
+1.7.3 (October 2022)
 --------------------
 
 Minor new features:

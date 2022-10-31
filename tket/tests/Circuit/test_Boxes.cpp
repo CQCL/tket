@@ -16,6 +16,7 @@
 #include <catch2/matchers/catch_matchers_string.hpp>
 
 #include "../testutil.hpp"
+#include "Circuit/Boxes.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Converters/PhasePoly.hpp"
@@ -45,6 +46,10 @@ SCENARIO("CircBox requires simple circuits", "[boxes]") {
 
 SCENARIO("Using Boxes", "[boxes]") {
   GIVEN("CircBox manipulation") {
+    // Empty box
+    CircBox cb;
+    Circuit empty;
+    REQUIRE(*(cb.to_circuit()) == empty);
     // Small box
     Circuit u(2);
     u.add_op<unsigned>(OpType::Ry, -0.75, {0});
@@ -65,6 +70,10 @@ SCENARIO("Using Boxes", "[boxes]") {
     c0.add_op<unsigned>(OpType::CX, {1, 2});
     REQUIRE(c0.n_gates() == 5);
     CircBox c0box(c0);
+    // Basic utility methods
+    REQUIRE(c0box.n_qubits() == 3);
+    REQUIRE(c0box.n_boolean() == 0);
+    REQUIRE(c0box.n_classical() == 0);
     // Put them in a bigger circuit
     Circuit d(4, 3);
     d.add_box(c0box, {1, 2, 0});
@@ -149,6 +158,20 @@ SCENARIO("Using Boxes", "[boxes]") {
     // check it's the identity
     REQUIRE((d1m - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
   }
+  GIVEN("Unitary Box Identity constructors") {
+    REQUIRE(Unitary1qBox().to_circuit());
+    REQUIRE(Unitary1qBox().get_unitary() == Unitary1qBox().get_matrix());
+    REQUIRE(
+        Unitary1qBox().dagger()->get_unitary() == Unitary1qBox().get_unitary());
+    REQUIRE(Unitary2qBox().to_circuit());
+    REQUIRE(Unitary2qBox().get_unitary() == Unitary2qBox().get_matrix());
+    REQUIRE(
+        Unitary2qBox().dagger()->get_unitary() == Unitary2qBox().get_unitary());
+    REQUIRE(Unitary3qBox().to_circuit());
+    REQUIRE(Unitary3qBox().get_unitary() == Unitary3qBox().get_matrix());
+    REQUIRE(
+        Unitary3qBox().dagger()->get_unitary() == Unitary3qBox().get_unitary());
+  }
   GIVEN("little-endian representation") {
     Eigen::Matrix4cd m0;
     m0 << 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0;
@@ -161,6 +184,14 @@ SCENARIO("Using Boxes", "[boxes]") {
     REQUIRE((m0 - m1).cwiseAbs().sum() < ERR_EPS);
   }
   GIVEN("ExpBox manipulation") {
+    // empty
+    Circuit empty(2);
+    empty.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
+    empty.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
+    empty.add_op<unsigned>(OpType::TK2, {0, 0, 0}, {0, 1});
+    empty.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {0});
+    empty.add_op<unsigned>(OpType::TK1, {0, 0, 0}, {1});
+    REQUIRE(*(ExpBox().to_circuit()) == empty);
     // random hermitian matrix
     Eigen::Matrix4cd A;
     A << 0., 1., 2., 3., 1., 2., 3. * i_, 4., 2., -3. * i_, 3, 2. - 3. * i_, 3.,
@@ -177,11 +208,21 @@ SCENARIO("Using Boxes", "[boxes]") {
 }
 
 SCENARIO("Pauli gadgets", "[boxes]") {
+  GIVEN("Basis Circuit check") {
+    PauliExpBox pbox({Pauli::X}, 1.0);
+    Circuit comp(1);
+    comp.add_op<unsigned>(OpType::H, {0});
+    comp.add_op<unsigned>(OpType::Rz, 1.0, {0});
+    comp.add_op<unsigned>(OpType::H, {0});
+    REQUIRE(*(pbox.to_circuit()) == comp);
+  }
   GIVEN("X") {
     // ---PauliExpBox([X], t)----Rx(-t)--- should be the identity
     double t = 1.687029013593215;
     Circuit c(1);
-    PauliExpBox pbox({Pauli::X}, t);
+    std::vector<Pauli> pauli_x = {Pauli::X};
+    PauliExpBox pbox(pauli_x, t);
+    REQUIRE(pbox.get_paulis() == pauli_x);
     c.add_box(pbox, uvec{0});
     c.add_op<unsigned>(OpType::Rx, -t, {0});
     Eigen::Matrix2Xcd u = tket_sim::get_unitary(c);
@@ -449,6 +490,8 @@ SCENARIO("QControlBox", "[boxes]") {
   GIVEN("controlled X") {
     Op_ptr op = get_op_ptr(OpType::X);
     QControlBox qcbox(op);
+    REQUIRE(qcbox.get_op() == op);
+    REQUIRE(qcbox.get_n_controls() == 1);
     std::shared_ptr<Circuit> c = qcbox.to_circuit();
     Circuit expected(2);
     expected.add_op<unsigned>(OpType::CX, {0, 1});
@@ -834,6 +877,87 @@ SCENARIO("QControlBox", "[boxes]") {
     }
     REQUIRE(U1.isApprox(V));
   }
+  GIVEN("controlled phase") {
+    Op_ptr op = get_op_ptr(OpType::Phase, 0.25);
+    QControlBox qcbox(op);
+    Circuit c(1);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_box(qcbox, {0});
+    std::shared_ptr<Circuit> c1 = qcbox.to_circuit();
+    Eigen::MatrixXcd U1 = tket_sim::get_unitary(*c1);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(2, 2);
+    V(1, 1) = std::exp(i_ * PI * 0.25);
+    REQUIRE(U1.isApprox(V));
+  }
+
+  GIVEN("controlled CircBox with wire swaps") {
+    Circuit c0(4);
+    Sym s = SymEngine::symbol("a");
+    Expr a = Expr(s);
+    c0.add_op<unsigned>(OpType::TK1, {0.55, 0.22, a}, {0});
+    c0.add_op<unsigned>(OpType::CZ, {0, 1});
+    c0.add_op<unsigned>(OpType::X, {0});
+    c0.add_op<unsigned>(OpType::CX, {1, 3});
+    c0.add_op<unsigned>(OpType::Rx, 0.7, {0});
+    c0.add_op<unsigned>(OpType::SWAP, {0, 1});
+    c0.add_op<unsigned>(OpType::SWAP, {1, 2});
+    c0.replace_SWAPs();
+    REQUIRE(c0.has_implicit_wireswaps());
+    Circuit c0_numerical(c0);
+    symbol_map_t map = {{s, 0.125}};
+    c0_numerical.symbol_substitution(map);
+    const Eigen::MatrixXcd U0 = tket_sim::get_unitary(c0_numerical);
+    // Test symbolic decomp
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op, 1);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    c->symbol_substitution(map);
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(32, 32);
+    for (unsigned i = 0; i < 16; i++) {
+      for (unsigned j = 0; j < 16; j++) {
+        V(16 + i, 16 + j) = U0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+    // Test numerical decomp
+    CircBox cbox_numerical(c0_numerical);
+    Op_ptr op2 = std::make_shared<CircBox>(cbox_numerical);
+    QControlBox qcbox_numerical(op2, 1);
+    std::shared_ptr<Circuit> c_numerical = qcbox_numerical.to_circuit();
+    const Eigen::MatrixXcd U2 = tket_sim::get_unitary(*c_numerical);
+    REQUIRE(U2.isApprox(V));
+  }
+  GIVEN("controlled CircBox with identity gates") {
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::TK1, {0., 0., 0.}, {0});
+    c0.add_op<unsigned>(OpType::Rx, 0., {0});
+    c0.add_op<unsigned>(OpType::CRx, 4., {0, 1});
+    c0.add_op<unsigned>(OpType::noop, {0});
+    CircBox cbox(c0);
+    Op_ptr op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(op, 1);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    REQUIRE(c->n_gates() == 0);
+    REQUIRE(equiv_0(c->get_phase()));
+  }
+  GIVEN("controlled gate that is identity up to a phase") {
+    // phase = 1.
+    Op_ptr op = get_op_ptr(OpType::U3, {2., 0.5, -0.5});
+    QControlBox qcbox(op, 1);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    // Check the second qubit is empty
+    Vertex q1_in = c->get_in(Qubit(1));
+    EdgeVec q1_out_es = c->get_all_out_edges(q1_in);
+    REQUIRE(q1_out_es.size() == 1);
+    REQUIRE(c->target(q1_out_es[0]) == c->get_out(Qubit(1)));
+    Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(4, 4);
+    V(2, 2) = std::exp(i_ * PI);
+    V(3, 3) = std::exp(i_ * PI);
+    REQUIRE(U.isApprox(V));
+  }
 }
 
 SCENARIO("Unitary3qBox", "[boxes]") {
@@ -1032,6 +1156,9 @@ SCENARIO("ToffoliBox", "[boxes]") {
     permutation[{0, 0}] = {1, 1};
     permutation[{1, 1}] = {0, 0};
     ToffoliBox tb(2, permutation);
+
+    std::set<std::vector<std::vector<bool>>> cycle = {{{0, 0}, {1, 1}}};
+    REQUIRE(tb.get_cycles() == cycle);
 
     const auto matrix = tket_sim::get_unitary(*tb.to_circuit());
 

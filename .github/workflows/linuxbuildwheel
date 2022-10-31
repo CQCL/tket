@@ -19,7 +19,7 @@ set -evu
 # Choose a Python to install conan
 export PYBIN=/opt/python/cp39-cp39/bin
 
-${PYBIN}/pip install conan
+${PYBIN}/pip install conan~=1.53
 
 export CONAN_CMD=${PYBIN}/conan
 export CONAN_REVISIONS_ENABLED=1
@@ -29,7 +29,8 @@ cd /tket
 ${CONAN_CMD} profile new tket --detect
 ${CONAN_CMD} profile update options.tklog:shared=True tket
 ${CONAN_CMD} profile update options.tket:shared=True tket
-${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
+${CONAN_CMD} remote clean
+${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
 ${CONAN_CMD} create --profile=tket --test-folder=None recipes/tket tket/stable --build=missing --build=tket
 ${CONAN_CMD} create --profile=tket --test-folder=None recipes/pybind11
 

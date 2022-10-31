@@ -62,6 +62,8 @@ struct MappingFrontier {
 
   std::set<Node> ancilla_nodes_;
 
+  std::set<Node> reassignable_nodes_;
+
   std::shared_ptr<unit_bimaps_t> bimaps_;
 
   MappingFrontier(Circuit& _circuit);

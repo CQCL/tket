@@ -382,15 +382,49 @@ void Circuit::replace_SWAPs() {
 }
 
 void Circuit::replace_implicit_wire_swap(
-    const Qubit first, const Qubit second) {
-  add_op<UnitID>(OpType::CX, {first, second});
-  add_op<UnitID>(OpType::CX, {second, first});
-  Vertex cxvertex = add_op<UnitID>(OpType::CX, {first, second});
-  EdgeVec outs = get_all_out_edges(cxvertex);
+    const Qubit first, const Qubit second, bool using_cx) {
+  Vertex last_v;
+  if (using_cx) {
+    add_op<UnitID>(OpType::CX, {first, second});
+    add_op<UnitID>(OpType::CX, {second, first});
+    last_v = add_op<UnitID>(OpType::CX, {first, second});
+  } else {
+    last_v = add_op<UnitID>(OpType::SWAP, {first, second});
+  }
+  EdgeVec outs = get_all_out_edges(last_v);
   Edge out1 = outs[0];
   dag[out1].ports.first = 1;
   Edge out2 = outs[1];
   dag[out2].ports.first = 0;
+}
+
+void Circuit::replace_all_implicit_wire_swaps() {
+  qubit_map_t perm = implicit_qubit_permutation();
+  std::set<Qubit> fixed_qubits;
+  // iterate permutation cycles and add swap for every adjacent elements
+  for (const std::pair<const Qubit, Qubit>& pair : perm) {
+    if (fixed_qubits.find(pair.first) != fixed_qubits.end()) {
+      // skip if visited
+      continue;
+    }
+    // start traverse a cycle
+    const Qubit head = pair.first;
+    Qubit current = pair.first;
+    Qubit next = pair.second;
+    while (true) {
+      if (next == head) {
+        // break if reaches the end of the cycle
+        fixed_qubits.insert(current);
+        break;
+      }
+      replace_implicit_wire_swap(current, next, false);
+      fixed_qubits.insert(current);
+      auto it = perm.find(next);
+      TKET_ASSERT(it != perm.end());
+      current = it->first;
+      next = it->second;
+    }
+  }
 }
 
 // helper functions for the dagger and transpose
