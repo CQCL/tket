@@ -1105,7 +1105,7 @@ def test_arithmetic_ops() -> None:
     circ.add_classicalexpbox_register(a + b // c, a)
     circ.add_classicalexpbox_register(b << 2, c)
     circ.add_classicalexpbox_register(c >> 2, b)
-    circ.add_classicalexpbox_register(a ** c - b, a)
+    circ.add_classicalexpbox_register(a**c - b, a)
 
     commands = circ.get_commands()
     assert all(com.op.type == OpType.ClassicalExpBox for com in commands)
