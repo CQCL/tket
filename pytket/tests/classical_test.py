@@ -130,6 +130,82 @@ def test_c_ops() -> None:
     assert str(cmds[3]) == "SetBits(110) c0[0], c0[1], c0[2];"
 
 
+def test_add_c_setreg_with_size_gt_32bits() -> None:
+    c = Circuit()
+    b = c.add_c_register("b", 64)
+    c.add_c_setreg(100, b)
+
+    expected_reg = [
+        False,
+        False,
+        True,
+        False,
+        False,
+        True,
+        True,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+        False,
+    ]
+    com = c.get_commands()[0]
+    assert len(com.bits) == 64
+    assert com.op.values == expected_reg
+
+
 def test_wasm() -> None:
     c = Circuit(0, 6)
     c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)])
@@ -1029,7 +1105,7 @@ def test_arithmetic_ops() -> None:
     circ.add_classicalexpbox_register(a + b // c, a)
     circ.add_classicalexpbox_register(b << 2, c)
     circ.add_classicalexpbox_register(c >> 2, b)
-    circ.add_classicalexpbox_register(a**c - b, a)
+    circ.add_classicalexpbox_register(a ** c - b, a)
 
     commands = circ.get_commands()
     assert all(com.op.type == OpType.ClassicalExpBox for com in commands)
