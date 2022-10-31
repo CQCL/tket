@@ -242,10 +242,7 @@ void init_circuit_add_classical_op(
             std::vector<bool> vals(reg.size());
             for (unsigned i = 0; i < reg.size(); i++) {
               args[i] = reg[i];
-	      vals[i] = false;
-	      if (i < _TKET_REG_WIDTH) {
-		  vals[i] = bs[i];
-	      }
+	      vals[i] = (i < _TKET_REG_WIDTH) && bs[i];
             }
 
             std::shared_ptr<SetBitsOp> op = std::make_shared<SetBitsOp>(vals);
