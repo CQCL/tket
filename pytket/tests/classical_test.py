@@ -142,6 +142,13 @@ def test_add_c_setreg_with_size_gt_32bits() -> None:
     assert com.op.values == expected_reg
 
 
+def test_add_c_setreg_raises_runtime_error() -> None:
+    c = Circuit()
+    b = c.add_c_register("b", 2)
+    with pytest.raises(RuntimeError):
+        c.add_c_setreg(100, b)
+
+
 def test_wasm() -> None:
     c = Circuit(0, 6)
     c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)])
