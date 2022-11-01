@@ -237,10 +237,8 @@ void init_circuit_add_classical_op(
           "add_c_setreg",
           [](Circuit &circ, const _tket_uint_t value, const BitRegister &reg,
              const py::kwargs &kwargs) {
-	    unsigned int value_int = value;
-	    unsigned int tket_reg_width = _TKET_REG_WIDTH;
-	    if (value_int >> tket_reg_width != 0) {
-	      throw std::runtime_error("Value " STR(value) " cannot be held on a " STR(_TKET_REG_WIDTH) "-bit register."); 
+	    if (value >> reg.size() != 0) {
+	      throw std::runtime_error("Value " STR(value) " cannot be held on a " STR(reg.size()) "-bit register."); 
 	    }
             auto bs = std::bitset<_TKET_REG_WIDTH>(value);
             std::vector<Bit> args(reg.size());
