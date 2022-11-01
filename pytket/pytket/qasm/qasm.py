@@ -937,8 +937,8 @@ def _filtered_qasm_str(qasm: str) -> str:
     # remove any c registers starting with _TEMP_BIT_NAME
     # that are not being used somewhere else
     lines = qasm.split("\n")
-    def_matcher = re.compile(r"creg ({}[^\]]*)\[".format(_TEMP_BIT_NAME))
-    arg_matcher = re.compile(r"({}[^\]]*)\[".format(_TEMP_BIT_NAME))
+    def_matcher = re.compile(r"creg ({}\_*\d*)\[\d+\]".format(_TEMP_BIT_NAME))
+    arg_matcher = re.compile(r"({}\_*\d*)\[\d+\]".format(_TEMP_BIT_NAME))
     unused_regs = dict()
     for i, line in enumerate(lines):
         if reg := def_matcher.match(line):
