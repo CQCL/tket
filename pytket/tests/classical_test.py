@@ -130,6 +130,25 @@ def test_c_ops() -> None:
     assert str(cmds[3]) == "SetBits(110) c0[0], c0[1], c0[2];"
 
 
+def test_add_c_setreg_with_size_gt_32bits() -> None:
+    c = Circuit()
+    b = c.add_c_register("b", 64)
+    c.add_c_setreg(100, b)
+
+    expected_reg = [False] * 64
+    expected_reg[2] = expected_reg[5] = expected_reg[6] = True
+    com = c.get_commands()[0]
+    assert len(com.bits) == 64
+    assert com.op.values == expected_reg
+
+
+def test_add_c_setreg_raises_runtime_error() -> None:
+    c = Circuit()
+    b = c.add_c_register("b", 2)
+    with pytest.raises(RuntimeError):
+        c.add_c_setreg(100, b)
+
+
 def test_wasm() -> None:
     c = Circuit(0, 6)
     c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)])
