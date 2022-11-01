@@ -1,6 +1,14 @@
 Changelog
 =========
 
+x.y.z (unreleased)
+---------------------
+
+Fixes:
+
+* Incorrect qasm filtering.
+
+
 1.8.0 (November 2022)
 ---------------------
 
