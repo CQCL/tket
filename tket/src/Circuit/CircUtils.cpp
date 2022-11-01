@@ -404,7 +404,11 @@ Circuit with_TK2(Gate_ptr op) {
   std::vector<Expr> params = op->get_params();
   unsigned n = op->n_qubits();
   if (n == 0) {
-    return Circuit();
+    Circuit c(0);
+    if (op->get_type() == OpType::Phase) {
+      c.add_phase(op->get_params()[0]);
+    }
+    return c;
   } else if (n == 1) {
     Circuit c(1);
     c.add_op(op, std::vector<unsigned>{0});
@@ -505,7 +509,11 @@ Circuit with_CX(Gate_ptr op) {
   std::vector<Expr> params = op->get_params();
   unsigned n = op->n_qubits();
   if (n == 0) {
-    return Circuit();
+    Circuit c(0);
+    if (op->get_type() == OpType::Phase) {
+      c.add_phase(op->get_params()[0]);
+    }
+    return c;
   } else if (n == 1) {
     Circuit c(1);
     c.add_op(op, std::vector<unsigned>{0});
@@ -608,23 +616,23 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
   if (c.n_bits() != 0 || !c.is_simple()) {
     throw CircuitInvalidity("Only default qubit register allowed");
   }
-  if (c.has_implicit_wireswaps()) {
-    throw CircuitInvalidity("Circuit has implicit wireswaps");
-  }
+
+  Circuit c1(c);
+  // Replace wire swaps with SWAP gates
+  c1.replace_all_implicit_wire_swaps();
 
   // Dispose of the trivial case
   if (n_controls == 0) {
-    return c;
+    return c1;
   }
 
   static const OpTypeSet multiq_gate_set = {
       OpType::CX, OpType::CCX, OpType::CnX, OpType::CRy, OpType::CnRy,
       OpType::CZ, OpType::CnZ, OpType::CY,  OpType::CnY};
 
-  unsigned c_n_qubits = c.n_qubits();
+  unsigned c_n_qubits = c1.n_qubits();
 
   // 1. Rebase to {CX, CCX, CnX, CnRy} and single-qubit gates
-  Circuit c1(c);
   VertexList bin;
   BGL_FORALL_VERTICES(v, c1.dag, DAG) {
     Op_ptr op = c1.get_Op_ptr_from_Vertex(v);
@@ -875,16 +883,16 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
   if (c.n_bits() != 0 || !c.is_simple()) {
     throw CircuitInvalidity("Only default qubit register allowed");
   }
-  if (c.has_implicit_wireswaps()) {
-    throw CircuitInvalidity("Circuit has implicit wireswaps");
-  }
+
+  Circuit c1(c);
+  // Replace wire swaps with SWAP gates
+  c1.replace_all_implicit_wire_swaps();
 
   // Dispose of the trivial case
   if (n_controls == 0) {
-    return c;
+    return c1;
   }
   // 1. Rebase to Cn* gates (n=0 for single qubit gates)
-  Circuit c1(c);
   VertexList bin;
   BGL_FORALL_VERTICES(v, c1.dag, DAG) {
     Op_ptr op = c1.get_Op_ptr_from_Vertex(v);
@@ -915,9 +923,15 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
   std::vector<Command> commands = c1.get_commands();
   std::vector<CnGateBlock> blocks;
 
-  for (const Command &c : commands) {
-    if (c.get_op_ptr()->get_type() != OpType::noop) {
-      blocks.push_back(CnGateBlock(c));
+  Expr controlled_phase = c1.get_phase();
+
+  for (const Command &cmd : commands) {
+    // if the gate is an identity up to a phase, add it as a controlled phase
+    std::optional<double> phase = cmd.get_op_ptr()->is_identity();
+    if (phase != std::nullopt) {
+      controlled_phase += phase.value();
+    } else {
+      blocks.push_back(CnGateBlock(cmd));
     }
   }
 
@@ -1056,9 +1070,9 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
     c2.append_with_map(replacement, unit_map);
   }
 
-  // 4. implement the conditional phase as a CnU1 gate
-  if (!equiv_0(c1.get_phase())) {
-    Circuit cnu1_circ = CnU1(n_controls - 1, c1.get_phase());
+  // 4. implement the controlled phase as a CnU1 gate
+  if (!equiv_0(controlled_phase)) {
+    Circuit cnu1_circ = CnU1(n_controls - 1, controlled_phase);
     c2.append(cnu1_circ);
   }
   return c2;

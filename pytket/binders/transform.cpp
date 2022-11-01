@@ -419,7 +419,12 @@ PYBIND11_MODULE(transform, m) {
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
           "ZZPhaseToRz", &Transforms::ZZPhase_to_Rz,
-          "Fixes all ZZPhase gate angles to [-1, 1) half turns.");
+          "Fixes all ZZPhase gate angles to [-1, 1) half turns.")
+      .def_static(
+          "CnXPairwiseDecomposition", &Transforms::cnx_pairwise_decomposition,
+          "Decompose CnX gates to 2-qubit gates and single qubit gates. "
+          "For every two CnX gates, reorder their control qubits to improve "
+          "the chance of gate cancellation.");
   m.def(
       "separate_classical", &Transforms::separate_classical,
       "Separate the input circuit into a 'main' circuit and a classical "

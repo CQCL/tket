@@ -16,7 +16,7 @@ jobs:
       libs: ${{ steps.filter.outputs.changes }}
     steps:
     - uses: actions/checkout@v3
-    - uses: dorny/paths-filter@v2.10.2
+    - uses: dorny/paths-filter@v2.11.1
       id: filter
       with:
         base: ${{ github.ref }}
@@ -65,14 +65,16 @@ jobs:
       with:
         python-version: '3.9'
     - name: install conan
-      run: pip install conan
+      run: pip install conan~=1.53
     - name: create profile
       run: conan profile new tket --detect
     - name: set libcxx
       if: matrix.os == 'ubuntu-22.04'
       run: conan profile update settings.compiler.libcxx=libstdc++11 tket
     - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      run: |
+        conan remote clean
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: build ${{ matrix.lib }}
       run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o ${{ matrix.lib }}:shared=${{ matrix.shared }} libs/${{ matrix.lib }} tket/stable --build=missing
     - name: authenticate to repository
@@ -108,11 +110,13 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install conan
-      run: pip install -U conan
+      run: pip install conan~=1.53
     - name: create profile
       run: conan profile new tket --detect --force
     - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
+      run: |
+        conan remote clean
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: build ${{ matrix.lib }}
       run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o ${{ matrix.lib }}:shared=${{ matrix.shared }} libs/${{ matrix.lib }} tket/stable --build=missing
     - name: authenticate to repository

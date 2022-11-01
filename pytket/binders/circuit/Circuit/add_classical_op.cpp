@@ -237,12 +237,15 @@ void init_circuit_add_classical_op(
           "add_c_setreg",
           [](Circuit &circ, const _tket_uint_t value, const BitRegister &reg,
              const py::kwargs &kwargs) {
+	     if (reg.size() < _TKET_REG_WIDTH && value >> reg.size() != 0) {
+	       throw std::runtime_error("Value " + std::to_string(value) + " cannot be held on a " + std::to_string(reg.size()) + "-bit register."); 
+	    }
             auto bs = std::bitset<_TKET_REG_WIDTH>(value);
             std::vector<Bit> args(reg.size());
             std::vector<bool> vals(reg.size());
             for (unsigned i = 0; i < reg.size(); i++) {
               args[i] = reg[i];
-              vals[i] = bs[i];
+	      vals[i] = (i < _TKET_REG_WIDTH) && bs[i];
             }
 
             std::shared_ptr<SetBitsOp> op = std::make_shared<SetBitsOp>(vals);
@@ -250,7 +253,8 @@ void init_circuit_add_classical_op(
           },
           "Set a classical register to an unsigned integer value. The "
           "little-endian bitwise representation of the integer is truncated to "
-          "the register size, up to " STR(_TKET_REG_WIDTH) " bit width.",
+          "the register size, up to " STR(_TKET_REG_WIDTH) " bit width. It is "
+	  "zero-padded if the width of the register is greater than " STR(_TKET_REG_WIDTH) ".",
           py::arg("value"), py::arg("arg"))
       .def(
           "add_c_copybits",

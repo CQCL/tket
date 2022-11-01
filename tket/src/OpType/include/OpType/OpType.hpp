@@ -125,6 +125,12 @@ enum class OpType {
   MultiBit,
 
   /**
+   * \f$ \mathrm{Phase}(\alpha) = \left[ \begin{array}{c} e^{i \pi \alpha}
+   * \end{array} \right] \f$
+   */
+  Phase,
+
+  /**
    * \f$ \left[ \begin{array}{cc} 1 & 0 \\ 0 & -1 \end{array} \right] \f$
    */
   Z,

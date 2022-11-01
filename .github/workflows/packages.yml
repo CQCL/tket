@@ -1,0 +1,91 @@
+name: Packages
+
+# Before pushing to trigger this script, remember to edit the list of packages
+# in `build-external-packages`, if you don't want to rebuild all of them.
+
+on:
+  push:
+    branches:
+      - 'packages-upload-new/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    strategy:
+      matrix:
+        os: ['ubuntu-22.04', 'macos-11', 'macos-12', 'windows-2022']
+    runs-on: ${{ matrix.os }}
+    env:
+      CONAN_REVISIONS_ENABLED: 1
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - name: Select Python 3.10
+      # otherwise turtlebrowser/get-conan@v1.1 fails on macos-12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install conan
+      uses: turtlebrowser/get-conan@v1.1
+      with:
+        version: '1.53.0'
+
+    - name: Set up conan
+      shell: bash
+      run: ./.github/workflows/conan-setup
+
+    - name: authenticate to repository
+      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+
+    - name: Install and upload packages
+      shell: bash
+      run: ./.github/workflows/build-external-packages
+
+  build_macos_arm64:
+    name: Build on MacOS ARM64
+    runs-on: ['self-hosted', 'macOS', 'ARM64']
+    env:
+      CONAN_REVISIONS_ENABLED: 1
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - name: Set up conan
+      shell: bash
+      run: ./.github/workflows/conan-setup
+
+    - name: authenticate to repository
+      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+
+    - name: Install and upload packages
+      shell: bash
+      run: ./.github/workflows/build-external-packages
+
+    - name: unauthenticate
+      run: conan user -c
+
+  build_manylinux:
+    name: Build on manylinux
+    strategy:
+      matrix:
+        manylinux: ['manylinux2014_x86_64', 'manylinux_2_28_x86_64']
+    runs-on: 'ubuntu-22.04'
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - name: Set up container
+      run: |
+        docker create --name linux_build -i -v /:/host quay.io/pypa/${{ matrix.manylinux }}:latest /bin/bash
+        docker cp . linux_build:/tket/
+
+    - name: Install and upload packages
+      run: |
+        docker start linux_build
+        docker exec -e JFROG_ARTIFACTORY_TOKEN_2="${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }}" -e JFROG_ARTIFACTORY_USER_2="${{ secrets.JFROG_ARTIFACTORY_USER_2 }}" linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildpackages"

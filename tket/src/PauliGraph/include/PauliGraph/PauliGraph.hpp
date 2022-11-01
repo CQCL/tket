@@ -34,7 +34,9 @@ struct PauliGadgetProperties {
 struct DependencyEdgeProperties {};
 
 typedef boost::adjacency_list<
-    boost::listS, boost::listS, boost::bidirectionalS, PauliGadgetProperties,
+    boost::listS, boost::listS, boost::bidirectionalS,
+    // indexing needed for algorithms such as topological sort
+    boost::property<boost::vertex_index_t, int, PauliGadgetProperties>,
     DependencyEdgeProperties>
     PauliDAG;
 typedef boost::graph_traits<PauliDAG>::vertex_descriptor PauliVert;
@@ -42,6 +44,11 @@ typedef boost::graph_traits<PauliDAG>::edge_descriptor PauliEdge;
 
 typedef sequence_set_t<PauliVert> PauliVertSet;
 typedef sequence_set_t<PauliEdge> PauliEdgeSet;
+
+typedef boost::adj_list_vertex_property_map<
+    PauliDAG, int, int &, boost::vertex_index_t>
+    PauliVIndex;
+
 typedef std::list<std::pair<OpType, qubit_vector_t>> Conjugations;
 
 class Circuit;
@@ -83,6 +90,20 @@ class PauliGraph {
   const CliffTableau &get_clifford_ref() { return cliff_; }
   unsigned n_vertices() const { return boost::num_vertices(this->graph_); }
 
+  /**
+   * All vertices of the DAG, topologically sorted.
+   *
+   * This method is "morally" const, but it sets the vertex indices in the DAG.
+   *
+   * @return vector of vertices in a topological (causal) order
+   */
+  std::vector<PauliVert> vertices_in_order() const;
+
+  /**
+   * Perform a simple sanity check on the DAG.
+   */
+  void sanity_check() const;
+
   friend PauliGraph circuit_to_pauli_graph(const Circuit &circ);
   friend Circuit pauli_graph_to_circuit_individually(
       const PauliGraph &pg, CXConfigType cx_config);
@@ -92,8 +113,14 @@ class PauliGraph {
       const PauliGraph &pg, CXConfigType cx_config);
 
  private:
-  /** The dependency graph of Pauli gadgets */
-  PauliDAG graph_;
+  /**
+   * The dependency graph of Pauli gadgets
+   *
+   * This is mutated by \ref vertices_in_order which indexes the vertices
+   * without changing the structure.
+   */
+  mutable PauliDAG graph_;
+
   /** The tableau of the Clifford effect of the circuit */
   CliffTableau cliff_;
   /** The record of measurements at the very end of the circuit */
@@ -120,35 +147,6 @@ class PauliGraph {
    */
   void apply_pauli_gadget_at_end(
       const QubitPauliTensor &pauli, const Expr &angle);
-
-  /**
-   * Iterates through the vertices of a PauliGraph in a topological ordering.
-   * When there are multiple commuting vertices that could be emitted, this
-   * selects the one with the lowest lexicographic ordering on the Pauli string.
-   */
-  class TopSortIterator {
-   public:
-    TopSortIterator();
-    explicit TopSortIterator(const PauliGraph &pg);
-
-    const PauliVert &operator*() const;
-    const PauliVert *operator->() const;
-    bool operator==(const TopSortIterator &other) const;
-    bool operator!=(const TopSortIterator &other) const;
-
-    TopSortIterator operator++(int);
-    TopSortIterator &operator++();
-
-   private:
-    const PauliGraph *pg_;
-    PauliVert current_vert_;
-    std::set<std::pair<QubitPauliTensor, PauliVert>>
-        search_set_;  // Use pair to force ordering by string
-    std::unordered_set<PauliVert> visited_;
-  };
-
-  TopSortIterator begin() const;
-  TopSortIterator end() const;
 };
 
 }  // namespace tket

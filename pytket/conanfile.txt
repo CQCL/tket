@@ -1,7 +1,7 @@
 [requires]
-tket/1.0.14@tket/stable
+tket/1.0.26@tket/stable
 tklog/0.1.2@tket/stable
-pybind11/2.10.0
+pybind11/2.10.1
 nlohmann_json/3.11.2
 pybind11_json/0.2.12
 

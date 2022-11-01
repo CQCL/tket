@@ -130,6 +130,25 @@ def test_c_ops() -> None:
     assert str(cmds[3]) == "SetBits(110) c0[0], c0[1], c0[2];"
 
 
+def test_add_c_setreg_with_size_gt_32bits() -> None:
+    c = Circuit()
+    b = c.add_c_register("b", 64)
+    c.add_c_setreg(100, b)
+
+    expected_reg = [False] * 64
+    expected_reg[2] = expected_reg[5] = expected_reg[6] = True
+    com = c.get_commands()[0]
+    assert len(com.bits) == 64
+    assert com.op.values == expected_reg
+
+
+def test_add_c_setreg_raises_runtime_error() -> None:
+    c = Circuit()
+    b = c.add_c_register("b", 2)
+    with pytest.raises(RuntimeError):
+        c.add_c_setreg(100, b)
+
+
 def test_wasm() -> None:
     c = Circuit(0, 6)
     c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)])
@@ -711,7 +730,6 @@ def compare_commands_box(
         else:
             commands_equal &= c1 == c2
         if not commands_equal:
-            print(f"Commands not equal\n{c1}\n\n{c2}\n")
             break
     return commands_equal
 
@@ -1044,3 +1062,37 @@ def test_arithmetic_ops() -> None:
     assert str(commands[1].op.get_exp()) == "(b << 2)"
     assert str(commands[2].op.get_exp()) == "(c >> 2)"
     assert str(commands[3].op.get_exp()) == "((a ** c) - b)"
+
+
+def test_renaming() -> None:
+    circ = Circuit()
+    a = circ.add_c_register("a", 3)
+    b = circ.add_c_register("b", 3)
+    c = circ.add_c_register("c", 3)
+    circ.add_classicalexpbox_bit(a[0] & b[0] | c[0], [a[0]])
+    circ.add_classicalexpbox_bit(a[0] & c[2], [c[0]])
+    d = [Bit("d", index) for index in range(0, 3)]
+    bmap = {a[0]: d[0], b[0]: d[1], c[0]: d[2]}
+    original_commands = circ.get_commands()
+    assert circ.rename_units(bmap)
+    commands = circ.get_commands()
+    assert str(commands[0].op.get_exp()) == "((d[0] & d[1]) | d[2])"
+    assert commands[0].args == [bmap[arg] for arg in original_commands[0].args]
+    assert str(commands[1].op.get_exp()) == "(d[0] & c[2])"
+    assert commands[1].args == [
+        bmap[arg] if arg in bmap else arg for arg in original_commands[1].args
+    ]
+    assert DecomposeClassicalExp().apply(circ)
+
+    # Register-wise renaming should raise error
+    circ = Circuit()
+    a = circ.add_c_register("a", 3)
+    b = circ.add_c_register("b", 3)
+    c = circ.add_c_register("c", 3)
+    circ.add_classicalexpbox_register(a + b // c, a)
+    bmap = {a[0]: d[0]}
+
+    with pytest.raises(ValueError) as e:
+        circ.rename_units(bmap)
+    err_msg = f"Can't rename bits in {a.__repr__()}"
+    assert err_msg in str(e.value)

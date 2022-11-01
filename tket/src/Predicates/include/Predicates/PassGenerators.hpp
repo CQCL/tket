@@ -62,18 +62,18 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps = true);
  */
 PassPtr gen_rename_qubits_pass(const std::map<Qubit, Qubit>& qm);
 
-PassPtr gen_placement_pass(const PlacementPtr& placement_ptr);
+PassPtr gen_placement_pass(const Placement::Ptr& placement_ptr);
 
 PassPtr gen_naive_placement_pass(const Architecture& arc);
 /* This higher order function generates a Routing pass using the
 std::vector<RoutingMethodPtr> object */
 PassPtr gen_full_mapping_pass(
-    const Architecture& arc, const PlacementPtr& placement_ptr,
+    const Architecture& arc, const Placement::Ptr& placement_ptr,
     const std::vector<RoutingMethodPtr>& config);
 PassPtr gen_default_mapping_pass(
     const Architecture& arc, bool delay_measures = true);
 PassPtr gen_cx_mapping_pass(
-    const Architecture& arc, const PlacementPtr& placement_ptr,
+    const Architecture& arc, const Placement::Ptr& placement_ptr,
     const std::vector<RoutingMethodPtr>& config, bool directed_cx,
     bool delay_measures);
 PassPtr gen_routing_pass(
@@ -102,19 +102,50 @@ PassPtr aas_routing_pass(
  * @param lookahead parameter for the recursion depth in the algorithm, the
  * value should be > 0
  * @param cnotsynthtype parameter for the type of cnot synth
+ * @param graph_placement_maximum_matches parameter effecting the number of
+ * matches found during the GraphPlacement substep
+ * @param graph_placement_timeout timeout (ms) for finding subgraph
+ * monomorphisms during the GraphPlacement substep
+ * @param graph_placement_maximum_pattern_gates parameter affecting the size
+ * of the target graph, constructed from a phase polynomial, during
+ * the GraphPlacement substep, by restricting the number of gates in
+ * the phase polynomial used
+ * @param graph_placement_maximum_pattern_depth parameter affecting
+ * the size of the target graph, constructed from a phase polynomial,
+ * during the GraphPlacement substep, by restricting the depth of gates
+ * in the phase polynomial that are added to the target graph
  * @return passpointer to perform architecture aware synthesis
  */
 PassPtr gen_full_mapping_pass_phase_poly(
     const Architecture& arc, const unsigned lookahead = 1,
-    const aas::CNotSynthType cnotsynthtype = aas::CNotSynthType::Rec);
+    const aas::CNotSynthType cnotsynthtype = aas::CNotSynthType::Rec,
+    unsigned graph_placement_maximum_matches = 2000,
+    unsigned graph_placement_timeout = 100,
+    unsigned graph_placement_maximum_pattern_gates = 2000,
+    unsigned graph_placement_maximum_pattern_depth = 2000);
 
 /**
  * pass to place all not yet placed qubits of the circuit to the given
  * architecture for the architecture aware synthesis.
  * @param arc achitecture to place the circuit on
+ * @param _maximum_matches parameter effecting the number of
+ * matches found during the GraphPlacement substep
+ * @param _timeout timeout (ms) for finding subgraph monomorphisms
+ * during the GraphPlacement substep
+ * @param _maximum_pattern_gates parameter effecting the size
+ * of the target graph, constructed from a phase polynomial, during
+ * the GraphPlacement substep, by restricting the number of gates in
+ * the phase polynomial used
+ * @param _maximum_pattern_depth parameter effecting
+ * the size of the target graph, constructed from a phase polynomial,
+ * during the GraphPlacement substep, by restricting the depth of gates
+ * in the phase polynomial that are added to the target graph
  * @return passpointer to perfomr the mapping
  */
-PassPtr gen_placement_pass_phase_poly(const Architecture& arc);
+PassPtr gen_placement_pass_phase_poly(
+    const Architecture& arc, unsigned _maximum_matches = 2000,
+    unsigned _timeout = 100, unsigned _maximum_pattern_gates = 100,
+    unsigned _maximum_pattern_depth = 100);
 
 PassPtr gen_decompose_routing_gates_to_cxs_pass(
     const Architecture& arc = Architecture(), bool directed = false);

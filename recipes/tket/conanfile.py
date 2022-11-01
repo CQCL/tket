@@ -20,7 +20,7 @@ import shutil
 
 class TketConan(ConanFile):
     name = "tket"
-    version = "1.0.14"
+    version = "1.0.26"
     license = "CQC Proprietary"
     homepage = "https://github.com/CQCL/tket"
     url = "https://github.com/conan-io/conan-center-index"
@@ -35,10 +35,10 @@ class TketConan(ConanFile):
     generators = "cmake"
     exports_sources = ["../../tket/src/*", "!*/build/*"]
     requires = (
-        # tk* libraries may come from remote:
+        # libraries installed from remote:
         # https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
         "boost/1.80.0",
-        "symengine/0.9.0@tket/stable",
+        "symengine/0.9.0",
         "eigen/3.4.0",
         "nlohmann_json/3.11.2",
         "tklog/0.1.2@tket/stable",

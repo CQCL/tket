@@ -244,8 +244,10 @@ SCENARIO("Synthesising PauliGraphs") {
     circ.add_op<unsigned>(OpType::Ry, 0.3, {3});
     const Eigen::MatrixXcd circ_unitary = tket_sim::get_unitary(circ);
     PauliGraph pg = circuit_to_pauli_graph(circ);
+    pg.sanity_check();
     WHEN("Synthesising individually") {
       Circuit synth = pauli_graph_to_circuit_individually(pg);
+      pg.sanity_check();
       Eigen::MatrixXcd synth_unitary = tket_sim::get_unitary(synth);
       REQUIRE((synth_unitary - circ_unitary).cwiseAbs().sum() < ERR_EPS);
     }
@@ -291,7 +293,9 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     Circuit test1 = prepend >> circ;
 
     PauliGraph pg = circuit_to_pauli_graph(circ);
+    pg.sanity_check();
     Circuit out = pauli_graph_to_circuit_sets(pg);
+    pg.sanity_check();
     Circuit test2 = prepend >> out;
     REQUIRE(test_statevector_comparison(test1, test2));
   }
@@ -975,6 +979,7 @@ SCENARIO("Measure handling in PauliGraph") {
     circ.add_op<unsigned>(OpType::Measure, {0, 1});
     circ.add_op<unsigned>(OpType::Measure, {1, 0});
     PauliGraph pg = circuit_to_pauli_graph(circ);
+    pg.sanity_check();
     std::map<Qubit, unsigned> correct_readout = {{Qubit(0), 1}, {Qubit(1), 0}};
     WHEN("Synthesise individually") {
       Circuit circ2 = pauli_graph_to_circuit_individually(pg);
@@ -982,6 +987,7 @@ SCENARIO("Measure handling in PauliGraph") {
     }
     WHEN("Synthesise pairwise") {
       Circuit circ2 = pauli_graph_to_circuit_pairwise(pg);
+      pg.sanity_check();
       REQUIRE(circ2.qubit_readout() == correct_readout);
     }
     WHEN("Synthesise in sets") {

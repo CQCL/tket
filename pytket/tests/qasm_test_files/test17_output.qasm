@@ -6,7 +6,6 @@ creg a[2];
 creg b[3];
 creg c[4];
 creg d[1];
-creg tk_SCRATCH_BIT[2];
 c = 2;
 d[0] = (a << 1);
 c = a;

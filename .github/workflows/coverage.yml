@@ -23,7 +23,7 @@ jobs:
       tket: ${{ steps.filter.outputs.tket }}
     steps:
     - uses: actions/checkout@v3
-    - uses: dorny/paths-filter@v2.10.2
+    - uses: dorny/paths-filter@v2.11.1
       id: filter
       with:
         base: ${{ github.ref }}
@@ -42,12 +42,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Get current time
-      uses: srfrnk/current-time@v1.1.0
+      uses: josStorer/get-current-time@v2.0.2
       id: current_time
       with:
         format: YYYYMMDDHHmmss
     - name: Use ccache
-      uses: hendrikmuhs/ccache-action@v1.2.2
+      uses: hendrikmuhs/ccache-action@v1.2.3
       with:
         key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
@@ -55,7 +55,7 @@ jobs:
     - name: Install conan
       id: conan
       run: |
-        pip install conan
+        pip install conan~=1.53
         conan_cmd=/home/runner/.local/bin/conan
         ${conan_cmd} profile new tket --detect
         ${conan_cmd} profile update settings.compiler.libcxx=libstdc++11 tket
@@ -64,7 +64,9 @@ jobs:
         ${conan_cmd} profile update settings.build_type=Debug tket
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
     - name: add remote
-      run: ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      run: |
+        ${CONAN_CMD} remote clean
+        ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Build tket
       run: |
         ${CONAN_CMD} install recipes/tket tket/stable --install-folder=build/tket --profile=tket -o tket:profile_coverage=True

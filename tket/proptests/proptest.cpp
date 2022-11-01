@@ -52,14 +52,18 @@ using namespace tket;
   DO(DelayMeasures)                       \
   DO(GlobalisePhasedX)                    \
   DO(NormaliseTK2)                        \
-  DO(SquashRzPhasedX)
+  DO(SquashRzPhasedX)                     \
+  DO(CnXPairwiseDecomposition)
 
-// Map from PassPtr to readable name
-static const std::map<PassPtr, std::string> passes = {
+static const std::map<PassPtr, std::string> &pass_name() {
+  // Map from PassPtr to readable name
+  static const std::map<PassPtr, std::string> passes = {
 #define NAMEPASS(p) {p(), #p},
-    ALL_PASSES(NAMEPASS)
+      ALL_PASSES(NAMEPASS)
 #undef NAMEPASS
-};
+  };
+  return passes;
+}
 
 static std::vector<unsigned> random_subset(
     const std::vector<unsigned> &v, unsigned k) {
@@ -264,7 +268,7 @@ template <>
 struct Arbitrary<PassPtr> {
   static Gen<PassPtr> arbitrary() {
     return gen::exec([] {
-      auto p = *rc::gen::elementOf(passes);
+      auto p = *rc::gen::elementOf(pass_name());
       return p.first;
     });
   }
@@ -302,7 +306,7 @@ bool check_passes() {
             })) {
           RC_LOG() << "\nCircuit (" << c.n_qubits() << " qubits, "
                    << c.n_gates() << " gates): " << c << std::endl;
-          RC_LOG() << "Pass: " << passes.at(p) << std::endl;
+          RC_LOG() << "Pass: " << pass_name().at(p) << std::endl;
           CompilationUnit cu(c);
           bool applied = (p->apply(cu));
           const Circuit &c1 = cu.get_circ_ref();
