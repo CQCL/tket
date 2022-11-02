@@ -84,9 +84,11 @@ GraphPlacement::default_pattern_weighting(const Circuit& circuit) const {
         }
         gate_counter++;
       }
-      if (n_q_edges > 2) {
+      if (n_q_edges > 2 &&
+          circuit.get_OpType_from_Vertex(vert) != OpType::Barrier) {
         throw std::invalid_argument(
-            "Can only weight for Circuits with maximum two qubit gates.");
+            "Can only weight for Circuits with maximum two qubit quantum "
+            "gates.");
       }
     }
     frontier.next_slicefrontier();

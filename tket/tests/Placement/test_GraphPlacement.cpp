@@ -290,6 +290,19 @@ SCENARIO("Base GraphPlacement class") {
       REQUIRE(pmap[Qubit(4)] == Node(4));
     }
   }
+  GIVEN("A Circuit with a Barrier.") {
+    Circuit circuit(3);
+    std::vector<std::pair<unsigned, unsigned>> edges = {{0, 1}, {1, 2}};
+    Architecture architecture(edges);
+    circuit.add_barrier({Qubit(0), Qubit(1), Qubit(2)});
+    GraphPlacement placement(architecture);
+    std::map<Qubit, Node> placement_map = placement.get_placement_map(circuit);
+    std::map<Qubit, Node> comparison_map = {
+        {Qubit(0), Node("unplaced", 0)},
+        {Qubit(1), Node("unplaced", 1)},
+        {Qubit(2), Node("unplaced", 2)}};
+    REQUIRE(placement_map == comparison_map);
+  }
 }
 
 }  // namespace tket
