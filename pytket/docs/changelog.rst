@@ -1,13 +1,13 @@
 Changelog
 =========
 
-x.y.z (unreleased)
+1.8.1 (November 2022)
 ---------------------
 
 Fixes:
 
 * Incorrect qasm filtering.
-
+* Make graph placement work with multi-qubit barriers.
 
 1.8.0 (November 2022)
 ---------------------
