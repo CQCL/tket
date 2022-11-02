@@ -291,16 +291,22 @@ SCENARIO("Base GraphPlacement class") {
     }
   }
   GIVEN("A Circuit with a Barrier.") {
-    Circuit circuit(3);
+    Circuit circuit(3, 3);
     std::vector<std::pair<unsigned, unsigned>> edges = {{0, 1}, {1, 2}};
     Architecture architecture(edges);
+    circuit.add_op<unsigned>(OpType::H, {1});
+    circuit.add_op<unsigned>(OpType::CX, {1, 2});
+    circuit.add_measure(Qubit(0), Bit(0));
+    circuit.add_measure(Qubit(1), Bit(1));
     circuit.add_barrier({Qubit(0), Qubit(1), Qubit(2)});
+    circuit.add_op<unsigned>(OpType::CX, {1, 0});
+    circuit.add_op<unsigned>(OpType::H, {0});
+    circuit.add_measure(Qubit(2), Bit(2));
+
     GraphPlacement placement(architecture);
     std::map<Qubit, Node> placement_map = placement.get_placement_map(circuit);
     std::map<Qubit, Node> comparison_map = {
-        {Qubit(0), Node("unplaced", 0)},
-        {Qubit(1), Node("unplaced", 1)},
-        {Qubit(2), Node("unplaced", 2)}};
+        {Qubit(0), Node(2)}, {Qubit(1), Node(1)}, {Qubit(2), Node(0)}};
     REQUIRE(placement_map == comparison_map);
   }
 }
