@@ -47,7 +47,7 @@ GraphPlacement::default_pattern_weighting(const Circuit& circuit) const {
        gate_counter < this->maximum_pattern_gates_ && !frontier.slice->empty();
        i++) {
     for (const Vertex& vert : *frontier.slice) {
-      if(circuit.get_OpType_from_Vertex(vert) == OpType::Barrier) continue;
+      if (circuit.get_OpType_from_Vertex(vert) == OpType::Barrier) continue;
       EdgeVec q_out_edges =
           circuit.get_out_edges_of_type(vert, EdgeType::Quantum);
       unsigned n_q_edges = q_out_edges.size();
