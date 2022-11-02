@@ -47,11 +47,11 @@ GraphPlacement::default_pattern_weighting(const Circuit& circuit) const {
        gate_counter < this->maximum_pattern_gates_ && !frontier.slice->empty();
        i++) {
     for (const Vertex& vert : *frontier.slice) {
-      OpType optype = circuit.get_OpType_from_Vertex(vert);
+      if(circuit.get_OpType_from_Vertex(vert) == OpType::Barrier) continue;
       EdgeVec q_out_edges =
           circuit.get_out_edges_of_type(vert, EdgeType::Quantum);
       unsigned n_q_edges = q_out_edges.size();
-      if (n_q_edges == 2 && optype != OpType::Barrier) {
+      if (n_q_edges == 2) {
         UnitID uid_0, uid_1;
         Edge edge_0 = q_out_edges[0];
         Edge edge_1 = q_out_edges[1];
@@ -85,7 +85,7 @@ GraphPlacement::default_pattern_weighting(const Circuit& circuit) const {
         }
         gate_counter++;
       }
-      if (n_q_edges > 2 && optype != OpType::Barrier) {
+      if (n_q_edges > 2) {
         throw std::invalid_argument(
             "Can only weight for Circuits with maximum two qubit quantum "
             "gates.");
