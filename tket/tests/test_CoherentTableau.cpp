@@ -334,12 +334,95 @@ SCENARIO("Error handling in CoherentTableau generation") {
 }
 
 SCENARIO("Synthesis of circuits from CoherentTableaus") {
-  GIVEN("A unitary circuit") {
+  GIVEN("An identity circuit") {
     Circuit circ(3);
-    add_ops_list_one_to_circuit(circ);
-    CliffTableau tab = circuit_to_tableau(circ);
-    Circuit res = tableau_to_circuit(tab);
-    CliffTableau res_tab = circuit_to_tableau(res);
+    CoherentTableau tab = circuit_to_coherent_tableau(circ);
+    Circuit res = coherent_tableau_to_circuit(tab).first;
+    REQUIRE(res == circ);
+  }
+  GIVEN("Just some Pauli gates for phase tests") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::X, {1});
+    circ.add_op<unsigned>(OpType::X, {2});
+    circ.add_op<unsigned>(OpType::Z, {2});
+    circ.add_op<unsigned>(OpType::Z, {3});
+    CoherentTableau tab = circuit_to_coherent_tableau(circ);
+    Circuit res = coherent_tableau_to_circuit(tab).first;
+    REQUIRE(res == circ);
+  }
+  GIVEN("Iterate through single-qubit Cliffords with all entanglements") {
+    for (unsigned i = 0; i < 27; ++i) {
+      Circuit circ(7);
+      circ.add_op<unsigned>(OpType::CX, {0, 1});
+      circ.add_op<unsigned>(OpType::CY, {0, 2});
+      circ.add_op<unsigned>(OpType::CZ, {0, 3});
+      circ.add_op<unsigned>(OpType::H, {0});
+      circ.add_op<unsigned>(OpType::CX, {0, 4});
+      circ.add_op<unsigned>(OpType::CY, {0, 5});
+      circ.add_op<unsigned>(OpType::CZ, {0, 6});
+      circ.add_op<unsigned>(OpType::H, {0});
+      if (i % 3 == 1) circ.add_op<unsigned>(OpType::S, {0});
+      if (i % 3 == 2) circ.add_op<unsigned>(OpType::Sdg, {0});
+      if ((i / 3) % 3 == 1) circ.add_op<unsigned>(OpType::V, {0});
+      if ((i / 3) % 3 == 2) circ.add_op<unsigned>(OpType::Vdg, {0});
+      if ((i / 9) % 3 == 1) circ.add_op<unsigned>(OpType::S, {0});
+      if ((i / 9) % 3 == 2) circ.add_op<unsigned>(OpType::Sdg, {0});
+      CoherentTableau tab = circuit_to_coherent_tableau(circ);
+      Circuit res = coherent_tableau_to_circuit(tab).first;
+      CoherentTableau res_tab = circuit_to_coherent_tableau(res);
+      REQUIRE(res_tab == tab);
+    }
+  }
+  GIVEN("A unitary circuit") {
+    Circuit circ = get_test_circ();
+    CoherentTableau tab = circuit_to_coherent_tableau(circ);
+    Circuit res = coherent_tableau_to_circuit(tab).first;
+    CoherentTableau res_tab = circuit_to_coherent_tableau(res);
+    REQUIRE(res_tab == tab);
+  }
+  GIVEN("A Clifford state") {
+    Circuit circ = get_test_circ();
+    circ.qubit_create_all();
+    CoherentTableau tab = circuit_to_coherent_tableau(circ);
+    Circuit res = coherent_tableau_to_circuit(tab).first;
+    CoherentTableau res_tab = circuit_to_coherent_tableau(res);
+    tab.canonical_column_order();
+    tab.gaussian_form();
+    res_tab.canonical_column_order();
+    res_tab.gaussian_form();
+    REQUIRE(res_tab == tab);
+  }
+  GIVEN("A total diagonalisation circuit") {
+    Circuit circ = get_test_circ();
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Collapse, {i});
+    }
+    CoherentTableau tab = circuit_to_coherent_tableau(circ);
+    Circuit res = coherent_tableau_to_circuit(tab).first;
+    CoherentTableau res_tab = circuit_to_coherent_tableau(res);
+    REQUIRE(res_tab == tab);
+    // TODO:: When only one of X and Z rows are found, we may make it unique for
+    // the chosen column, but for the column in the other segment it may not be
+    // unique. Find a way to take combinations of rows and gates to isolate it
+  }
+  GIVEN("A partial diagonalisation circuit") {
+    Circuit circ = get_test_circ();
+    for (unsigned i = 0; i < circ.n_qubits(); ++i) {
+      circ.add_op<unsigned>(OpType::Collapse, {i});
+    }
+    circ.qubit_discard(Qubit(0));
+    CoherentTableau tab = circuit_to_coherent_tableau(circ);
+    std::pair<Circuit, unit_map_t> res = coherent_tableau_to_circuit(tab);
+    CoherentTableau res_tab = circuit_to_coherent_tableau(res.first);
+    qubit_map_t perm;
+    for (const std::pair<const UnitID, UnitID>& p : res.second) {
+      perm.insert({Qubit(p.second), Qubit(p.first)});
+    }
+    res_tab.rename_qubits(perm, CoherentTableau::TableauSegment::Output);
+    tab.canonical_column_order();
+    tab.gaussian_form();
+    res_tab.canonical_column_order();
+    res_tab.gaussian_form();
     REQUIRE(res_tab == tab);
   }
 }

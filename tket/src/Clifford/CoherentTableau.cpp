@@ -487,7 +487,7 @@ void CoherentTableau::remove_col(unsigned col) {
   --tab_.n_qubits_;
 }
 
-void CoherentTableau::canonical_column_order() {
+void CoherentTableau::canonical_column_order(TableauSegment first) {
   std::set<Qubit> ins;
   std::set<Qubit> outs;
   BOOST_FOREACH (
@@ -499,13 +499,21 @@ void CoherentTableau::canonical_column_order() {
   }
   tableau_col_index_t new_index;
   unsigned i = 0;
-  for (const Qubit& q : ins) {
-    new_index.insert({{q, TableauSegment::Input}, i});
-    ++i;
+  if (first == TableauSegment::Input) {
+    for (const Qubit& q : ins) {
+      new_index.insert({{q, TableauSegment::Input}, i});
+      ++i;
+    }
   }
   for (const Qubit& q : outs) {
     new_index.insert({{q, TableauSegment::Output}, i});
     ++i;
+  }
+  if (first == TableauSegment::Output) {
+    for (const Qubit& q : ins) {
+      new_index.insert({{q, TableauSegment::Input}, i});
+      ++i;
+    }
   }
   unsigned n_rows = get_n_rows();
   MatrixXb xmat = MatrixXb::Zero(n_rows, i);
@@ -521,6 +529,20 @@ void CoherentTableau::canonical_column_order() {
 }
 
 void CoherentTableau::gaussian_form() { tab_.gaussian_form(); }
+
+void CoherentTableau::rename_qubits(
+    const qubit_map_t& qmap, TableauSegment seg) {
+  tableau_col_index_t new_index;
+  BOOST_FOREACH (
+      tableau_col_index_t::left_const_reference entry, col_index_.left) {
+    auto found = qmap.find(entry.first.first);
+    if (entry.first.second == seg && found != qmap.end())
+      new_index.insert({{found->second, seg}, entry.second});
+    else
+      new_index.insert({entry.first, entry.second});
+  }
+  col_index_ = new_index;
+}
 
 CoherentTableau CoherentTableau::compose(
     const CoherentTableau& first, const CoherentTableau& second) {

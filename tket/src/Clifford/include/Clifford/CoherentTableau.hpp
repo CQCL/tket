@@ -182,15 +182,20 @@ class CoherentTableau {
   void remove_row(unsigned row);
 
   /**
-   * Permutes columns into a canonical order: inputs before outputs, subordered
+   * Permutes columns into a canonical order: chosen segment first, subordered
    * in ILO.
    */
-  void canonical_column_order();
+  void canonical_column_order(TableauSegment first = TableauSegment::Input);
 
   /**
    * Reduces the underlying SymplecticTableau to its Gaussian/row-echelon form.
    */
   void gaussian_form();
+
+  /**
+   * Renames qubits.
+   */
+  void rename_qubits(const qubit_map_t& qmap, TableauSegment seg);
 
   /**
    * Combine two tableaux in sequence/parallel.
