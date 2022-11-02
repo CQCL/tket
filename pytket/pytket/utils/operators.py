@@ -221,7 +221,7 @@ class QubitPauliOperator:
             try:
                 coeff = complex_to_list(complex(v))
             except TypeError:
-                assert type(Expr(v)) == Expr
+                assert type(Expr(v)) == Expr  # type: ignore
                 coeff = str(v)
             ret.append(
                 {
@@ -246,7 +246,7 @@ class QubitPauliOperator:
         def get_coeff(obj: Dict[str, Any]) -> CoeffType:
             coeff = obj["coefficient"]
             if type(coeff) is str:
-                return sympify(coeff)
+                return sympify(coeff)  # type: ignore
             else:
                 return cast(complex, list_to_complex(coeff))
 
