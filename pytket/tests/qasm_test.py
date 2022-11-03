@@ -18,7 +18,7 @@ from pathlib import Path
 
 import pytest  # type: ignore
 
-from pytket._tket.circuit import _TEMP_BIT_NAME  # type: ignore
+from pytket._tket.circuit import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE  # type: ignore
 from pytket.circuit import (  # type: ignore
     Circuit,
     OpType,
@@ -595,6 +595,25 @@ def test_scratch_bits_filtering() -> None:
         fstr = f.read()
         assert _TEMP_BIT_NAME in fstr
         assert f"{_TEMP_BIT_NAME}_1" not in fstr
+
+    # test leaving _TEMP_BIT_REG_BASE untouched
+    qasm_str = f"""OPENQASM 2.0;
+    include "hqslib1.inc";
+    qreg q[1];
+    creg a[8];
+    creg b[10];
+    creg d[10];
+    creg {_TEMP_BIT_REG_BASE}_0[32];
+    {_TEMP_BIT_REG_BASE}_0 = (a ^ b);
+    """
+    c = circuit_from_qasm_str(qasm_str)
+    assert c.get_c_register(f"{_TEMP_BIT_REG_BASE}_0")
+    qstr = circuit_to_qasm_str(c, "hqslib1")
+    assert f"creg {_TEMP_BIT_REG_BASE}_0[32]" in qstr
+    circuit_to_qasm(c, qasm_out, "hqslib1")
+    with open(qasm_out, "r") as f:
+        fstr = f.read()
+        assert f"creg {_TEMP_BIT_REG_BASE}_0[32]" in fstr
 
 
 if __name__ == "__main__":
