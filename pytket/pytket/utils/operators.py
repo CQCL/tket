@@ -218,10 +218,15 @@ class QubitPauliOperator:
         """
         ret: List[Dict[str, Any]] = []
         for k, v in self._dict.items():
+            try:
+                coeff = complex_to_list(complex(v))
+            except TypeError:
+                assert type(Expr(v)) == Expr  # type: ignore
+                coeff = str(v)
             ret.append(
                 {
                     "string": k.to_list(),
-                    "coefficient": complex_to_list(v),
+                    "coefficient": coeff,
                 }
             )
         return ret
@@ -238,8 +243,12 @@ class QubitPauliOperator:
         def get_qps(obj: Dict[str, Any]) -> QubitPauliString:
             return QubitPauliString.from_list(obj["string"])
 
-        def get_coeff(obj: Dict[str, Any]) -> complex:
-            return cast(complex, list_to_complex(obj["coefficient"]))
+        def get_coeff(obj: Dict[str, Any]) -> CoeffType:
+            coeff = obj["coefficient"]
+            if type(coeff) is str:
+                return sympify(coeff)  # type: ignore
+            else:
+                return cast(complex, list_to_complex(coeff))
 
         return QubitPauliOperator({get_qps(obj): get_coeff(obj) for obj in pauli_list})
 
