@@ -97,6 +97,7 @@ static bool standard_rebase(
     }
     OpType type = op->get_type();
     if (!is_gate_type(type) || is_projective_type(type) ||
+        (type == OpType::Phase && conditional) ||
         allowed_gates.find(type) != allowed_gates.end())
       continue;
     // need to convert

@@ -1459,8 +1459,7 @@ SCENARIO("Test conditional_circuit method") {
     Circuit cond_circ = circ.conditional_circuit({Bit(0)}, 1);
     Circuit exp_circ(1, 1);
     exp_circ.add_conditional_gate<unsigned>(OpType::Rx, {0.3}, {0}, {0}, 1);
-    exp_circ.add_conditional_gate<unsigned>(OpType::U1, {0.46}, {0}, {0}, 1);
-    exp_circ.add_conditional_gate<unsigned>(OpType::Rz, {-0.46}, {0}, {0}, 1);
+    exp_circ.add_conditional_gate<unsigned>(OpType::Phase, {0.23}, {}, {0}, 1);
     REQUIRE(cond_circ == exp_circ);
   }
   GIVEN("A circuit with a symbolic phase") {
@@ -1473,9 +1472,7 @@ SCENARIO("Test conditional_circuit method") {
     Circuit exp_circ(1, 1);
     exp_circ.add_conditional_gate<unsigned>(OpType::Rx, {0.3}, {0}, {0}, 1);
     exp_circ.add_conditional_gate<unsigned>(
-        OpType::U1, {2 * alpha}, {0}, {0}, 1);
-    exp_circ.add_conditional_gate<unsigned>(
-        OpType::Rz, {-2 * alpha}, {0}, {0}, 1);
+        OpType::Phase, {alpha}, {}, {0}, 1);
     REQUIRE(cond_circ == exp_circ);
   }
 }
