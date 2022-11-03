@@ -1478,18 +1478,6 @@ SCENARIO("Test conditional_circuit method") {
         OpType::Rz, {-2 * alpha}, {0}, {0}, 1);
     REQUIRE(cond_circ == exp_circ);
   }
-  GIVEN("No support for no-qubit circuit") {
-    Circuit circ;
-    circ.add_phase(0.2);
-    REQUIRE_THROWS_AS(circ.conditional_circuit({Bit(0)}, 1), CircuitInvalidity);
-  }
-  GIVEN("No support for no-qubit circuit (symbolic)") {
-    Circuit circ;
-    Sym a = SymEngine::symbol("alpha");
-    Expr alpha(a);
-    circ.add_phase(alpha);
-    REQUIRE_THROWS_AS(circ.conditional_circuit({Bit(0)}, 1), CircuitInvalidity);
-  }
 }
 
 SCENARIO("Test append method") {

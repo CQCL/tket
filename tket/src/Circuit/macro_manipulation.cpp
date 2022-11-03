@@ -663,19 +663,11 @@ Circuit Circuit::conditional_circuit(
   // Add the classically-controlled phase
   // TODO: investigate adding Phase OpType instead (see TKET-2429)
   Expr phase = get_phase();
-  if (!equiv_0(phase) && cond_circ.n_qubits() < 1) {
-    throw CircuitInvalidity(
-        "Cannot add conditional phase to circuit without qubits");
-  }
   if (!equiv_0(phase)) {
     unit_vector_t bits_as_unitid;
     bits_as_unitid.insert(bits_as_unitid.end(), bits.begin(), bits.end());
     cond_circ.add_conditional_gate(
-        OpType::U1, {2 * phase}, {cond_circ.all_qubits()[0]}, bits_as_unitid,
-        value);
-    cond_circ.add_conditional_gate(
-        OpType::Rz, {-2 * phase}, {cond_circ.all_qubits()[0]}, bits_as_unitid,
-        value);
+        OpType::Phase, {phase}, {}, bits_as_unitid, value);
   }
   return cond_circ;
 }
