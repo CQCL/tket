@@ -17,7 +17,7 @@ jobs:
       tket: ${{ steps.filter.outputs.tket }}
     steps:
     - uses: actions/checkout@v3
-    - uses: dorny/paths-filter@v2
+    - uses: dorny/paths-filter@v2.11.1
       id: filter
       with:
         base: ${{ github.ref }}
@@ -32,32 +32,31 @@ jobs:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
-    - name: cache ccache data
-      uses: actions/cache@v3
+    - name: Get current time
+      uses: josStorer/get-current-time@v2.0.2
+      id: current_time
       with:
-        path: ~/.ccache
-        key: ${{ runner.os }}-tket-ccache-${{ steps.current_time.outputs.formattedTime }}
+        format: YYYYMMDDHHmmss
+    - name: Use ccache
+      uses: hendrikmuhs/ccache-action@v1.2.3
+      with:
+        key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
-          ${{ runner.os }}-tket-ccache-
+          ${{ github.job }}-${{ runner.os }}-ccache-
     - name: apt update
       run: sudo apt update
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.1
+      with:
+        version: '1.53.0'
     - name: Set up conan
       shell: bash
       run: ./.github/workflows/conan-setup
     - name: set option to run full test suite
       if: github.event_name == 'schedule'
       run: conan profile update options.tket-tests:full=True tket
-    - name: install tex components
-      run: |
-        sudo apt install texlive texlive-latex-extra latexmk
-        mkdir -p ~/texmf/tex/latex
-        wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
     - name: install valgrind
       run: sudo apt install valgrind
-    - name: install ninja and ccache
-      run: sudo apt-get install ninja-build ccache
     - name: build tket
       run: |
         conan install recipes/tket tket/stable --install-folder=build/tket --profile=tket

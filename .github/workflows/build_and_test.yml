@@ -13,7 +13,7 @@ on:
     - cron: '0 3 * * 6'
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
@@ -29,10 +29,10 @@ jobs:
       tket_package_exists: ${{ steps.tket_package_exists.outputs.tket_package_exists }}
     steps:
     - uses: actions/checkout@v3
-    - uses: actions/setup-python@v3
+    - uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-    - uses: dorny/paths-filter@v2
+    - uses: dorny/paths-filter@v2.11.1
       id: filter
       with:
         base: ${{ github.ref }}
@@ -48,17 +48,18 @@ jobs:
     - name: parse version from conanfile
       id: tket_ver
       run: |
-        pip install conan
+        pip install conan~=1.53
         tket_ver=$(conan inspect --raw version recipes/tket/conanfile.py)
         echo "::set-output name=tket_ver::${tket_ver}"
     - name: See if version exists on remote
       id: test_package_exists
       run: |
+        conan remote clean
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
         tket_package_exists=`conan search -r tket-libs "tket/${{ steps.tket_ver.outputs.tket_ver }}@tket/stable" > /dev/null 2>&1 && echo true || echo false`
         echo "::set-output name=tket_package_exists::${tket_package_exists}"
     - name: Check tket version bump
-      if: github.event_name == 'pull_request' && steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
+      if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop' && steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
       run: exit 1
 
   build_test_tket:
@@ -79,24 +80,16 @@ jobs:
         brew install clang-format@14
         git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
     - name: Get current time
-      uses: srfrnk/current-time@v1.1.0
+      uses: josStorer/get-current-time@v2.0.2
       id: current_time
       with:
         format: YYYYMMDDHHmmss
     - name: Use ccache
-      uses: hendrikmuhs/ccache-action@v1.2.2
+      uses: hendrikmuhs/ccache-action@v1.2.3
       with:
         key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
           ${{ github.job }}-${{ runner.os }}-ccache-
-    - name: Cache conan data
-      if: matrix.os == 'macos-12'
-      uses: actions/cache@v3
-      with:
-        path: ~/.conan
-        key: ${{ github.job }}-${{ runner.os }}-conan-${{ steps.current_time.outputs.formattedTime }}
-        restore-keys: |
-          ${{ github.job }}-${{ runner.os }}-conan-
     - name: apt update
       if: matrix.os == 'ubuntu-22.04'
       run: sudo apt update
@@ -105,8 +98,15 @@ jobs:
       run: |
         sudo apt install -y doxygen graphviz
         cd tket && doxygen
+    - name: Select Python 3.10
+      # otherwise turtlebrowser/get-conan@v1.1 fails on macos-12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.1
+      with:
+        version: '1.53.0'
     - name: Set up conan
       shell: bash
       run: ./.github/workflows/conan-setup
@@ -135,9 +135,11 @@ jobs:
       run: conan install --profile=tket tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable
     - name: check that version is consistent
       if: matrix.os == 'ubuntu-22.04' && github.event_name == 'pull_request'
-      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
+      run: |
+        conan create --profile=tket recipes/pybind11
+        ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Install runtime test requirements
-      if: matrix.os == 'ubuntu-22.04' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true')
+      if: matrix.os == 'ubuntu-22.04' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true') && github.event_name == 'schedule'
       run: |
         sudo apt install texlive texlive-latex-extra latexmk
         mkdir -p ~/texmf/tex/latex
@@ -171,8 +173,15 @@ jobs:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
+    - name: Select Python 3.10
+      # otherwise turtlebrowser/get-conan@v1.1 fails on macos-12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.1
+      with:
+        version: '1.53.0'
     - name: Set up conan
       shell: bash
       run: ./.github/workflows/conan-setup
@@ -184,7 +193,7 @@ jobs:
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
     - name: Set up Python
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.pyver }}
     - name: Build pytket
@@ -196,7 +205,7 @@ jobs:
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-        pytest --ignore=simulator/ --doctest-modules --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
+        pytest --ignore=simulator/ --doctest-modules --hypothesis-seed=1 --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
     - name: Test pytket
       if: matrix.os != 'ubuntu-22.04' || matrix.pyver != '3.8'
       run: |
@@ -229,12 +238,8 @@ jobs:
     if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository
     env:
       CONAN_REVISIONS_ENABLED: 1
-      PYTKET_SKIP_REGISTRATION: "true"
     steps:
     - uses: actions/checkout@v3
-      with:
-        fetch-depth: '0'
-    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up conan
       shell: bash
       run: |
@@ -244,6 +249,8 @@ jobs:
     - name: set option to run full test suite
       if: github.event_name == 'schedule'
       run: conan profile update options.tket-tests:full=True tket
+    - name: Remove tket package from cache
+      run: conan remove -f 'tket/*'
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket

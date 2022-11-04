@@ -6,6 +6,8 @@ on:
   pull_request:
     branches:
       - develop
+env:
+  ALL_LIBS: '["tklog", "tkassert", "tkrng", "tktokenswap", "tkwsm"]'
 jobs:
   changes:
     runs-on: ubuntu-22.04
@@ -16,7 +18,7 @@ jobs:
       libs: ${{ steps.filter.outputs.changes }}
     steps:
     - uses: actions/checkout@v3
-    - uses: dorny/paths-filter@v2
+    - uses: dorny/paths-filter@v2.11.1
       id: filter
       with:
         base: ${{ github.ref }}
@@ -31,32 +33,57 @@ jobs:
             - 'libs/tktokenswap/**'
           tkwsm:
             - 'libs/tkwsm/**'
+          gh_actions:
+            - '.github/workflows/test_libs.yml'
+  set_libs_matrix:
+    name: Set the libs strategy matrix
+    needs: changes
+    runs-on: ubuntu-22.04
+    outputs:
+      libs: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Set LIBS_TO_TEST to all the libraries
+        # Test all libraries if the test_libs.yml file was modified
+        if: ${{ contains(needs.changes.outputs.libs, 'gh_actions') }}
+        run: |
+          echo "LIBS_TO_TEST=${{ toJSON(env.ALL_LIBS) }}" >> $GITHUB_ENV
+      - name: Set LIBS_TO_TEST to the modified libraries only
+        if: ${{ ! contains(needs.changes.outputs.libs, 'gh_actions') }}
+        run: |
+          echo "LIBS_TO_TEST=${{ toJSON(needs.changes.outputs.libs) }}" >> $GITHUB_ENV
+      - name: Set libs matrix
+        id: set-matrix
+        run: |
+          echo "::set-output name=matrix::$LIBS_TO_TEST"
   test_libraries:
     name: test library
-    needs: changes
-    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    needs: set_libs_matrix
+    if: ${{ needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
     strategy:
+      fail-fast: false
       matrix:
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+        lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.9
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9'
     - name: install conan
-      run: pip install conan
+      run: pip install conan~=1.53
     - name: create profile
       run: conan profile new tket --detect
     - name: set libcxx
       if: matrix.os == 'ubuntu-22.04'
       run: conan profile update settings.compiler.libcxx=libstdc++11 tket
     - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      run: |
+        conan remote clean
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: build ${{ matrix.lib }}
       run: conan create --profile=tket libs/${{ matrix.lib }} --build=missing
     - name: build ${{ matrix.lib }} tests
@@ -70,22 +97,25 @@ jobs:
       run: ./test-${{ matrix.lib }}
   macos-m1:
     name: test library (macos-m1)
-    needs: changes
-    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    needs: set_libs_matrix
+    if: ${{ needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     strategy:
+      fail-fast: false
       matrix:
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+        lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: install conan
-      run: pip install -U conan
+      run: pip install conan~=1.53
     - name: create profile
       run: conan profile new tket --detect --force
     - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
+      run: |
+        conan remote clean
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: build ${{ matrix.lib }}
       run: conan create --profile=tket libs/${{ matrix.lib }} --build=missing
     - name: build ${{ matrix.lib }} tests
@@ -99,28 +129,30 @@ jobs:
       run: ./test-${{ matrix.lib }}
   generate_coverage:
     name: Generate coverage report
-    needs: changes
-    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    needs: set_libs_matrix
+    if: ${{ needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
     strategy:
       matrix:
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+        lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     runs-on: 'ubuntu-22.04'
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python 3.9
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9'
     - name: install conan
-      run: pip install conan
+      run: pip install conan~=1.53
     - name: create profile
       run: conan profile new tket --detect
     - name: set libcxx
       run: conan profile update settings.compiler.libcxx=libstdc++11 tket
     - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      run: |
+        conan remote clean
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: set Debug in profile
       run: conan profile update settings.build_type=Debug tket
     - name: build ${{ matrix.lib }}
@@ -143,7 +175,7 @@ jobs:
     - name: build coverage report
       run: |
         mkdir ${{ matrix.lib }}-coverage
-        gcovr --print-summary --html --html-details -r ./libs/${{ matrix.lib }}/src/ --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/${{ matrix.lib }}/ -o ${{ matrix.lib }}-coverage/index.html > ${{ matrix.lib }}-coverage/summary.txt
+        gcovr --print-summary --html --html-details -r ./libs/${{ matrix.lib }}/src/ --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/${{ matrix.lib }}/ -o ${{ matrix.lib }}-coverage/index.html --decisions > ${{ matrix.lib }}-coverage/summary.txt
     - name: upload artefact
       uses: actions/upload-artifact@v3
       with:
@@ -159,11 +191,11 @@ jobs:
         fi
   publish_coverage:
     name: Publish coverage
-    needs: [changes, generate_coverage]
-    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
+    needs: [set_libs_matrix, generate_coverage]
+    if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
     strategy:
       matrix:
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
+        lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     concurrency: gh_pages
     runs-on: ubuntu-22.04
     steps:

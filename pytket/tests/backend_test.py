@@ -440,6 +440,9 @@ def test_shots_with_unmeasured() -> None:
     shots = r.get_shots()
     assert all(shots[i, 0] == 1 for i in range(10))
     assert all(shots[i, 2] == 0 for i in range(10))
+    shots1 = r.get_shots(cbits=[Bit(1), Bit(2), Bit(0)])
+    assert all(shots1[i, 2] == 1 for i in range(10))
+    assert all(shots1[i, 1] == 0 for i in range(10))
 
 
 def test_tket_sim_backend_equivalence_with_circuit_functions() -> None:

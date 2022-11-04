@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <symengine/eval.h>
-
 #include <catch2/catch_test_macros.hpp>
 #include <optional>
 #include <stdexcept>
@@ -32,6 +30,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Utils/Constants.hpp"
+#include "Utils/Expression.hpp"
 
 namespace tket {
 namespace test_Ops {
@@ -183,6 +182,9 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     CHECK(
         nphasedx->transpose()->get_params() ==
         std::vector<SymEngine::Expression>{0.5, 0.5});
+    const Op_ptr phase = (get_op_ptr(OpType::Phase, 0.5));
+    CHECK(phase->get_name() == "Phase(0.5)");
+    REQUIRE(*phase->transpose() == *phase);
   }
 
   GIVEN("Check the transpose at the Box level") {
@@ -499,6 +501,12 @@ SCENARIO("Check some daggers work correctly", "[ops]") {
     const Op_ptr op = get_op_ptr(OpType::ECR);
     const Op_ptr daggered = (op)->dagger();
     REQUIRE(daggered->get_type() == OpType::ECR);
+  }
+  WHEN("Check Phase gets daggered correctly") {
+    const Op_ptr op = get_op_ptr(OpType::Phase, 0.5);
+    const Op_ptr daggered = (op)->dagger();
+    REQUIRE(daggered->get_type() == OpType::Phase);
+    REQUIRE(test_equiv_val(daggered->get_params()[0], -0.5));
   }
 }
 

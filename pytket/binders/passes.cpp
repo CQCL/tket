@@ -55,7 +55,7 @@ Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
 }
 
 static PassPtr gen_cx_mapping_pass_kwargs(
-    const Architecture &arc, const PlacementPtr &placer, py::kwargs kwargs) {
+    const Architecture &arc, const Placement::Ptr &placer, py::kwargs kwargs) {
   std::vector<RoutingMethodPtr> config = {
       std::make_shared<LexiLabellingMethod>(),
       std::make_shared<LexiRouteRoutingMethod>()};
@@ -824,6 +824,12 @@ PYBIND11_MODULE(passes, m) {
       "ZZPhaseToRz", &ZZPhaseToRz,
       "Converts ZZPhase gates with angle pi or -pi to two Rz gates with"
       "angle pi.\n:return: a pass to convert ZZPhase gates to Rz");
+
+  m.def(
+      "CnXPairwiseDecomposition", &CnXPairwiseDecomposition,
+      "Decompose CnX gates to 2-qubit gates and single qubit gates. "
+      "For every two CnX gates, reorder their control qubits to improve "
+      "the chance of gate cancellation");
 
   m.def(
       "CustomPass", &CustomPass,

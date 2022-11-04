@@ -143,6 +143,15 @@ SCENARIO("Simple circuits produce the correct statevectors") {
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(
         tket_sim::get_statevector(circ), tket_sim::get_statevector(circ2)));
   }
+
+  GIVEN("A circuit with 0 qubits and a global phase") {
+    Circuit circ(0);
+    circ.add_op<unsigned>(OpType::Phase, 0.125, {});
+    StateVector sv = tket_sim::get_statevector(circ);
+    REQUIRE(sv.size() == 1);
+    REQUIRE(sv(0).real() == Approx(cos(PI * 0.125)));
+    REQUIRE(sv(0).imag() == Approx(sin(PI * 0.125)));
+  }
 }
 
 SCENARIO("Simulate circuit with unsupported operations") {

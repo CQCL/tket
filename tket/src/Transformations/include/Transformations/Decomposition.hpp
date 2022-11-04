@@ -241,6 +241,14 @@ Transform decomp_controlled_Rys();
 // returns CX and single-qubit gate + any previous gates
 Transform decomp_arbitrary_controlled_gates();
 
+// For every two CnX gates, we try to reorder their control qubits
+// and adjust the direction of their decomposition (i.e. CnX = CnX.dagger)
+// to improve the chance of gate cancellation. This method will not improve
+// the decomposition when the CnX gates are scattered; but it works the best
+// when CnX gates are very close to each other, such as the circuit produced by
+// a ToffoliBox.
+Transform cnx_pairwise_decomposition();
+
 }  // namespace Transforms
 
 }  // namespace tket

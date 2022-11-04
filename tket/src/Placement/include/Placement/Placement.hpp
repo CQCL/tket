@@ -14,393 +14,293 @@
 
 #pragma once
 
-#include <algorithm>
-#include <iostream>
-#include <map>
-#include <memory>
-#include <stdexcept>
-#include <string>
-#include <utility>
-#include <vector>
-
 #include "Architecture/Architecture.hpp"
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Circuit/Circuit.hpp"
-#include "Graphs/Utils.hpp"
-#include "Utils/BiMapHeaders.hpp"
-#include "Utils/GraphHeaders.hpp"
-#include "Utils/Json.hpp"
+#include "Placement/QubitGraph.hpp"
 
 namespace tket {
 
-extern template class graphs::DirectedGraphBase<Qubit>;
-extern template class graphs::DirectedGraph<Qubit>;
-
-struct QubitWeight;
-struct InteractionWeight;
-class Placement;
-
-typedef std::map<Qubit, Node> qubit_mapping_t;
-typedef boost::bimap<Qubit, Node> qubit_bimap_t;
-typedef qubit_bimap_t::left_map::const_iterator l_const_iterator_t;
-typedef qubit_bimap_t::right_map::const_iterator r_const_iterator_t;
-// Adjacent elements in a QubitLine interact in some timesteps such that
-// these qubits do not need to be moved to be executed
-typedef qubit_vector_t QubitLine;
-typedef std::vector<QubitLine>
-    QubitLineList;  // Used in placement of qubits methods
-
-typedef std::shared_ptr<Placement> PlacementPtr;
-
-JSON_DECL(PlacementPtr)
-
-class QubitGraphInvalidity : public std::logic_error {
+class Placement {
  public:
-  explicit QubitGraphInvalidity(const std::string& message)
-      : std::logic_error(message) {}
+  typedef std::shared_ptr<Placement> Ptr;
+
+  explicit Placement(const Architecture& _architecture);
+
+  Placement(){};
+
+  /**
+   * Reassigns some UnitID in circ_ as UnitID in architecture_
+   *
+   * @param circ_ Circuit to be relabelled
+   * @param compilation_map For tracking changes during compilation
+   *
+   * @return true iff circuit or maps are modified
+   */
+  bool place(
+      Circuit& circ_,
+      std::shared_ptr<unit_bimaps_t> compilation_map = nullptr) const;
+
+  /**
+   * Reassigns some UnitID in circ_ as UnitID in architecture_, according to
+   * given map.
+   *
+   * @param circ Circuit to be relabelled
+   * @param map_ relabelling
+   * @param compilation_map For tracking changes during compilation
+   *
+   * @return true iff circuit or maps were modified
+   */
+  static bool place_with_map(
+      Circuit& circ, std::map<Qubit, Node>& map_,
+      std::shared_ptr<unit_bimaps_t> compilation_map = nullptr);
+
+  /**
+   *
+   * For some Circuit, returns a map between Circuit UnitID and
+   * Architecture UnitID that can be used for reassigning UnitID in
+   * Circuit. Map is expected to give best performance for given method.
+   *
+   * @param circ_ Circuit relabelling map is constructed from
+   *
+   * @return Map between Circuit and Architecture UnitID
+   */
+  std::map<Qubit, Node> get_placement_map(const Circuit& circ_) const;
+
+  /**
+   *
+   * For some Circuit, returns maps between Circuit UnitID and
+   * Architecture UnitID that can be used for reassigning UnitID in
+   * Circuit. Maps expected to give similiar performance for given method.
+   * For Placement this naively assigns every Qubit to some Node.
+   *
+   * @param circ_ Circuit relabelling map is constructed from
+   *
+   * @return Map between Circuit and Architecture UnitID
+   */
+  virtual std::vector<std::map<Qubit, Node>> get_all_placement_maps(
+      const Circuit& circ_, unsigned /*matches*/) const;
+
+  /**
+   * Returns a reference to held Architecture.
+   * Used to know Architecture properties to set predicates
+   * during compilation.
+   *
+   * @return Architecture
+   */
+  const Architecture& get_architecture_ref() { return architecture_; }
+
+  virtual ~Placement(){};
+
+  static const std::string& unplaced_reg();
+
+ protected:
+  Architecture architecture_;
 };
 
-class PlacementError : public std::logic_error {
- public:
-  explicit PlacementError(const std::string& message)
-      : std::logic_error(message) {}
-};
+JSON_DECL(Placement::Ptr);
 
-/** Print a map to stdout. */
-template <class MapType>
-void print_map(const MapType& m) {
-  typedef typename MapType::const_iterator const_iterator;
-  for (const_iterator iter = m.begin(), iend = m.end(); iter != iend; ++iter) {
-    std::cout << iter->first << "-->" << iter->second << std::endl;
+class GraphPlacement : public Placement {
+ public:
+  /**
+   * Holds information for constructing a weighted edge in a QubitGraph.
+   * @param node0 UnitID for first node in edge
+   * @param node1 UnitID for second node in edge
+   * @param weight Unsigned giving a weight for implied edge
+   * @param distance Distance between Node on some graph
+   */
+  struct WeightedEdge {
+    UnitID node0;
+    UnitID node1;
+    unsigned weight;
+    unsigned distance;
+  };
+
+  /**
+   * Holds information for slice wise iteration of Circuit
+   * @param _circ Circuit to iterate through
+   */
+  struct Frontier {
+    // set of 2qb vertices which need to be solved for
+    std::shared_ptr<Slice> slice;
+    // Quantum Edges coming in to vertices in slice, indexed by qubit
+    std::shared_ptr<unit_frontier_t> quantum_in_edges;
+    // Quantum Edges leaving vertices in slice, indexed by qubit
+    std::shared_ptr<unit_frontier_t> quantum_out_edges;
+    // Boolean edges coming in to vertices in slice. Guarantees that all edges
+    // into every vertex in slice is represented in next_cut
+    std::shared_ptr<b_frontier_t> boolean_in_edges;
+
+    // reference to circuit that it acts on
+    const Circuit& circ;
+
+    // initialise at front of circuit
+    explicit Frontier(const Circuit& _circ);
+    // move to next slice
+    void next_slicefrontier();
+  };
+
+  explicit GraphPlacement(
+      const Architecture& _architecture, unsigned maximum_matches = 2000,
+      unsigned timeout = 100, unsigned maximum_pattern_gates = 100,
+      unsigned maximum_pattern_depth = 100);
+  /**
+   * For some Circuit, returns maps between Circuit UnitID and
+   * Architecture UnitID that can be used for reassigning UnitID in
+   * Circuit. Maps are constructed by running a Weighted Subgraph Monomorphism
+   * for the given problem and returning up to matches number of
+   * potential solutions, ranked.
+   *
+   * @param circ_ Circuit relabelling map is constructed from
+   * @param matches Maximum number of matches found during WSM.
+   * @return Map between Circuit and Architecture UnitID
+   */
+  std::vector<std::map<Qubit, Node>> get_all_placement_maps(
+      const Circuit& circ_, unsigned matches) const override;
+
+  /**
+   * @return maximum matches found during placement
+   */
+  unsigned get_maximum_matches() const { return this->maximum_matches_; }
+
+  /**
+   * @return maximum time (ms)
+   */
+  unsigned get_timeout() const { return this->timeout_; }
+
+  /**
+   * @return maximum gates to construct pattern graph from
+   */
+  unsigned get_maximum_pattern_gates() const {
+    return this->maximum_pattern_gates_;
   }
-}
 
-// structure of configuration parameters for placement
-struct PlacementConfig {
-  // circuit look ahead limit
-  unsigned depth_limit;
-  // max edges in interaction graph
-  unsigned max_interaction_edges;
-  // max number of matches from monomorphism calculator.
-  unsigned monomorphism_max_matches = 1000;
+  /**
+   * @return maximum depth to search to find gates to construct pattern graph
+   * from
+   */
+  unsigned get_maximum_pattern_depth() const {
+    return this->maximum_pattern_depth_;
+  }
 
-  /*
-  value of num_gates/num_qubits above which to contract architecture before
-  placement for high values of this ratio it is assumed swap count is more
-  critical than initial noise minimisation for which is architecture contraction
-  to most mst highly connected subgraph is critical
-  */
-  unsigned arc_contraction_ratio = 10;
-  // Timeout, corresponds to milliseconds. Default 1 minute.
-  unsigned timeout = 60000;
+ protected:
+  unsigned maximum_matches_;
+  unsigned timeout_;
+  unsigned maximum_pattern_gates_;
+  unsigned maximum_pattern_depth_;
 
-  PlacementConfig(){};
+  mutable std::vector<WeightedEdge> weighted_target_edges;
 
-  PlacementConfig(
-      unsigned _depth_limit, unsigned _max_interaction_edges,
-      unsigned _monomorphism_max_matches = 1000,
-      unsigned _arc_contraction_ratio = 10, unsigned _timeout = 60000);
+  //   we can use a vector as we index by incrementing size
+  mutable std::vector<Architecture::UndirectedConnGraph> extended_target_graphs;
 
-  bool operator==(const PlacementConfig& other) const;
+  const std::vector<WeightedEdge> default_pattern_weighting(
+      const Circuit& circuit) const;
+  const std::vector<WeightedEdge> default_target_weighting(
+      Architecture& passed_architecture) const;
+
+  QubitGraph construct_pattern_graph(
+      const std::vector<WeightedEdge>& edges, unsigned max_out_degree) const;
+
+  Architecture construct_target_graph(
+      const std::vector<WeightedEdge>& edges, unsigned distance) const;
+
+  std::vector<boost::bimap<Qubit, Node>>
+  get_all_weighted_subgraph_monomorphisms(
+      const Circuit& circ_,
+      const std::vector<WeightedEdge>& weighted_pattern_edges,
+      bool return_best) const;
+
+  std::map<Qubit, Node> convert_bimap(
+      boost::bimap<Qubit, Node>& bimap,
+      const QubitGraph::UndirectedConnGraph& pattern_graph) const;
 };
-
-JSON_DECL(PlacementConfig)
-
-// stores and tracks the points of the circuit up to which has been solved
-struct PlacementFrontier {
-  // set of 2qb vertices which need to be solved for
-  std::shared_ptr<Slice> slice;
-  // Quantum Edges coming in to vertices in slice, indexed by qubit
-  std::shared_ptr<unit_frontier_t> quantum_in_edges;
-  // Quantum Edges leaving vertices in slice, indexed by qubit
-  std::shared_ptr<unit_frontier_t> quantum_out_edges;
-  // Boolean edges coming in to vertices in slice. Guarantees that all edges
-  // into every vertex in slice is represented in next_cut
-  std::shared_ptr<b_frontier_t> boolean_in_edges;
-
-  // reference to circuit that it acts on
-  const Circuit& circ;
-
-  // initialise at front of circuit
-  explicit PlacementFrontier(const Circuit& _circ);
-  // move to next slice
-  void next_slicefrontier();
-};
-
-// Class for storing interaction graph.
-// Interacting qubits have an edge between them.
-class QubitGraph : public graphs::DirectedGraph<Qubit> {
- private:
-  using Base = graphs::DirectedGraph<Qubit>;
-
- public:
-  QubitGraph() : Base() {}
-  explicit QubitGraph(const qubit_vector_t& _qubits) : Base(_qubits) {}
-};
-
-/* ACTUALLY PLACEMENT METHODS */
-
-// generate interaction graph of circuit
-QubitGraph generate_interaction_graph(
-    const Circuit& circ, unsigned depth_limit = 10);
-// generate lines of interacting qubits
-QubitLineList qubit_lines(const Circuit& circ);
-// generate mapping of qubit lines to lines on architecture. n_qubits is total
-// number of qubits in circuit
-qubit_mapping_t lines_on_arc(
-    Architecture arc, QubitLineList qb_lines, unsigned n_qubits);
-
-// build interaction graph of circ, max_edges in graph, depth_limit sets how far
-// to look ahead
-QubitGraph monomorph_interaction_graph(
-    const Circuit& circ, const unsigned max_edges, unsigned depth_limit);
-
-/**
- * Search for embeddings of the qubit graph in the architecture graph.
- *
- * @param arc architecture
- * @param q_graph qubit graph
- * @param max_matches maximum number of matches to find
- * @param timeout timeout in milliseconds
- * @return vector of matches found, sorted in canonical order
- */
-std::vector<qubit_bimap_t> monomorphism_edge_break(
-    const Architecture& arc, const QubitGraph& q_graph, unsigned max_matches,
-    unsigned timeout);
 
 /** Solves the pure unweighted subgraph monomorphism problem, trying
  * to embed the pattern graph into the target graph.
  * Note that graph edge weights are IGNORED by this function.
  */
-std::vector<qubit_bimap_t> get_unweighted_subgraph_monomorphisms(
-    const QubitGraph::UndirectedConnGraph& pattern_graph,
-    const Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
-    unsigned timeout_ms);
+std::vector<boost::bimap<Qubit, Node>> get_weighted_subgraph_monomorphisms(
+    QubitGraph::UndirectedConnGraph& pattern_graph,
+    Architecture::UndirectedConnGraph& target_graph, unsigned max_matches,
+    unsigned timeout_ms, bool return_best);
 
-node_set_t best_nodes(Architecture& arc, unsigned n_remove);
-
-class PatternError : public std::logic_error {
+class LinePlacement : public GraphPlacement {
  public:
-  explicit PatternError(const std::string& message)
-      : std::logic_error(message) {}
-};
-
-// Note: the WSM subgraph monomorphism algorithm
-// matches any vertex with any vertex
-// and any edge with any edge, regardless of their bundled properties.
-struct QubitWeight {
-  QubitWeight() : val(0.) {}
-  explicit QubitWeight(const boost::no_property) : val(0.) {}
-  explicit QubitWeight(double d) : val(d) {}
-  double val;
-};
-
-struct InteractionWeight {
-  InteractionWeight() : val(0.) {}
-  explicit InteractionWeight(const boost::no_property) : val(0.) {}
-  explicit InteractionWeight(double d) : val(d) {}
-  template <typename Property>
-  explicit InteractionWeight(Property p)
-      : val(static_cast<double>(p.m_value)) {}
-  double val;
-};
-
-// structure of qubit mapping with associated cost
-struct MapCost {
-  qubit_mapping_t map;
-  double cost;
-  bool operator<(const MapCost& other) const { return this->cost < other.cost; }
-  bool operator>(const MapCost& other) const { return this->cost > other.cost; }
-};
-
-class Placement {
- public:
-  explicit Placement(const Architecture& _arc) : arc_(_arc) {}
-  Placement(){};
-
+  explicit LinePlacement(
+      const Architecture& _architecture, unsigned _maximum_pattern_gates = 100,
+      unsigned _maximum_pattern_depth = 100);
   /**
-   * Modify qubits in place.
+   * For some Circuit, returns maps between Circuit UnitID and
+   * Architecture UnitID that can be used for reassigning UnitID in
+   * Circuit. Maps are constructed by converting qubit interactions
+   * into a sequence of lines and assigning them to a
+   * Hamiltonian path of the target graph.
    *
-   * @return true iff circuit or maps are modified
+   * @param circ_ Circuit relabelling map is constructed from
+   * @return Map between Circuit and Architecture UnitID
    */
-  bool place(
-      Circuit& circ_, std::shared_ptr<unit_bimaps_t> maps = nullptr) const;
-
-  /**
-   * Relabel circuit qubits to device nodes according to given map.
-   *
-   * @return true iff circuit or maps were modified
-   */
-  static bool place_with_map(
-      Circuit& circ, qubit_mapping_t& map_,
-      std::shared_ptr<unit_bimaps_t> maps = nullptr);
-
-  virtual qubit_mapping_t get_placement_map(const Circuit& circ_) const;
-
-  // methods that return maps, for base this returns one empty map
-  virtual std::vector<qubit_mapping_t> get_all_placement_maps(
-      const Circuit& circ_) const;
-
-  static const std::string& unplaced_reg();
-
-  const Architecture& get_architecture_ref() { return arc_; }
-  virtual ~Placement(){};
-
- protected:
-  Architecture arc_;
-};
-
-/**
- * NaivePlacement class provides methods for relabelling any
- * Qubit objects in some Circuit to Node objects in some Architecture
- * given the constraint that only Qubit that are not already labelled
- * as some Node can be relabelled, and only to Architecture Node
- * that are not already in the Circuit.
- */
-class NaivePlacement : public Placement {
- public:
-  /**
-   * @param _arc Architecture object later relabellings are produced for
-   */
-  explicit NaivePlacement(const Architecture& _arc) { arc_ = _arc; }
-  /**
-   * Given some circuit, returns a map between Qubit which defines some
-   * relabelling of some Circuit qubits to Architecture qubits
-   *
-   * @param circ_ Circuit map relabelling is defined for
-   *
-   * @return Map defining relabelling for circuit Qubit objects
-   */
-  qubit_mapping_t get_placement_map(const Circuit& circ_) const override;
-
-  /**
-   * Given some circuit, returns a single map for relabelling
-   * in a vector.
-   *
-   * @param circ_ Circuit map relabelling is defined for
-   *
-   * @return Vector of a single Map defining relabelling for Circuit
-   * Qubit objects.
-   */
-  std::vector<qubit_mapping_t> get_all_placement_maps(
-      const Circuit& circ_) const override;
-};
-
-class LinePlacement : public Placement {
- public:
-  explicit LinePlacement(const Architecture& _arc) { arc_ = _arc; }
-
-  qubit_mapping_t get_placement_map(const Circuit& circ_) const override;
-
-  // methods that return maps, for base this returns one empty map
-  std::vector<qubit_mapping_t> get_all_placement_maps(
-      const Circuit& circ_) const override;
-};
-
-class GraphPlacement : public Placement {
- public:
-  explicit GraphPlacement(const Architecture& _arc) {
-    arc_ = _arc;
-    config_.depth_limit = 5;
-    config_.max_interaction_edges = arc_.n_connections();
-    config_.monomorphism_max_matches = 10000;
-    config_.arc_contraction_ratio = 10;
-  }
-
-  explicit GraphPlacement(
-      const Architecture& _arc, const PlacementConfig& _config)
-      : Placement(_arc), config_(_config) {}
-
-  explicit GraphPlacement(const PlacementConfig& _config) : config_(_config) {}
-
-  PlacementConfig get_config() { return config_; }
-  void set_config(const PlacementConfig& new_config) { config_ = new_config; }
-
-  qubit_mapping_t get_placement_map(const Circuit& circ_) const override;
-  // methods that return maps, for base this returns one empty map
-  std::vector<qubit_mapping_t> get_all_placement_maps(
-      const Circuit& circ_) const override;
+  std::vector<std::map<Qubit, Node>> get_all_placement_maps(
+      const Circuit& circ_, unsigned /*matches*/) const override;
 
  private:
-  PlacementConfig config_;
+  std::vector<qubit_vector_t> interactions_to_lines(const Circuit& circ_) const;
+
+  std::map<Qubit, Node> assign_lines_to_target_graph(
+      std::vector<qubit_vector_t>& line_pattern, unsigned n_qubits) const;
 };
 
-///////////////////////////////
-//   NOISE-AWARE PLACEMENT   //
-///////////////////////////////
-
-// Class for performing noise-aware placement using graph monomorphism
-class Monomorpher {
+class NoiseAwarePlacement : public GraphPlacement {
  public:
-  Monomorpher(
-      const Circuit& _circ, const Architecture& _arc,
-      const DeviceCharacterisation& _characterisation,
-      const PlacementConfig& _config)
-      : circ(_circ),
-        arc(_arc),
-        characterisation(_characterisation),
-        config(_config) {
-    q_graph = monomorph_interaction_graph(
-        circ, config.max_interaction_edges, config.depth_limit);
-  }
-
-  // return best maps, up to max_return in number, unsorted
-  std::vector<MapCost> place(unsigned max_return);
-  // calculate cost of map
-  double map_cost(const qubit_bimap_t& n_map);
-
- private:
-  const Circuit& circ;
-  Architecture arc;
-  DeviceCharacterisation characterisation;
-  PlacementConfig config;
-  QubitGraph q_graph;
-};
-
-class NoiseAwarePlacement : public Placement {
- public:
-  NoiseAwarePlacement(
-      const Architecture& _arc,
-      std::optional<avg_node_errors_t> _node_errors = std::nullopt,
-      std::optional<avg_link_errors_t> _link_errors = std::nullopt,
-      std::optional<avg_readout_errors_t> _readout_errors = std::nullopt) {
-    arc_ = _arc;
-    characterisation_ = {
-        _node_errors ? *_node_errors : avg_node_errors_t(),
-        _link_errors ? *_link_errors : avg_link_errors_t(),
-        _readout_errors ? *_readout_errors : avg_readout_errors_t()};
-    config_.depth_limit = 5;
-    config_.max_interaction_edges = arc_.n_connections();
-    config_.monomorphism_max_matches = 10000;
-    config_.arc_contraction_ratio = 10;
-    config_.timeout = 60000;
-  }
   explicit NoiseAwarePlacement(
-      const Architecture& _arc, const PlacementConfig& _config,
+      const Architecture& _architecture,
       std::optional<avg_node_errors_t> _node_errors = std::nullopt,
       std::optional<avg_link_errors_t> _link_errors = std::nullopt,
-      std::optional<avg_readout_errors_t> _readout_errors = std::nullopt)
-      : Placement(_arc), config_(_config) {
-    characterisation_ = {
-        _node_errors ? *_node_errors : avg_node_errors_t(),
-        _link_errors ? *_link_errors : avg_link_errors_t(),
-        _readout_errors ? *_readout_errors : avg_readout_errors_t()};
-  }
-  explicit NoiseAwarePlacement(const PlacementConfig& _config)
-      : config_(_config) {}
-  PlacementConfig get_config() { return config_; }
-  void set_config(const PlacementConfig& new_config) { config_ = new_config; }
-  qubit_mapping_t get_placement_map(const Circuit& circ_) const override;
-  // methods that return maps, for base this returns one empty map
-  std::vector<qubit_mapping_t> get_all_placement_maps(
-      const Circuit& circ_) const override;
+      std::optional<avg_readout_errors_t> _readout_errors = std::nullopt,
+      unsigned _maximum_matches = 2000, unsigned _timeout = 100,
+      unsigned _maximum_pattern_gates = 100,
+      unsigned _maximum_pattern_depth = 100);
+
+  /**
+   * For some Circuit, returns maps between Circuit UnitID and
+   * Architecture UnitID that can be used for reassigning UnitID in
+   * Circuit. Maps are constructed by running a Weighted Subgraph Monomorphism
+   * for the given problem and returning up to matches number of
+   * potential solutions, ranked. Additionally, the top
+   * x mappings with identical WSM score is costed
+   * depending on passed Device characteristics, effecting
+   * the ranking.
+   *
+   * @param circ_ Circuit relabelling map is constructed from
+   * @param matches Maximum number of matches found during WSM.
+   * @return Map between Circuit and Architecture UnitID
+   */
+  std::vector<std::map<Qubit, Node>> get_all_placement_maps(
+      const Circuit& circ_, unsigned matches) const override;
+
+  /**
+   * @return A DeviceCharacterisation object storing Architecture errors
+   */
+  DeviceCharacterisation get_characterisation() const;
+
+  /**
+   * @param characterisation Error information for Architecture
+   */
+  void set_characterisation(const DeviceCharacterisation& characterisation);
 
  private:
-  friend void to_json(nlohmann::json& j, const PlacementPtr& placement_ptr);
-  friend void from_json(const nlohmann::json& j, PlacementPtr& placement_ptr);
-
-  PlacementConfig config_;
   DeviceCharacterisation characterisation_;
+
+  std::vector<boost::bimap<Qubit, Node>> rank_maps(
+      const std::vector<boost::bimap<Qubit, Node>>& placement_maps,
+      const Circuit& circ_,
+      const std::vector<WeightedEdge>& pattern_edges) const;
+  double cost_placement(
+      const boost::bimap<Qubit, Node>& map, const Circuit& circ_,
+      const QubitGraph& q_graph) const;
 };
+
+void to_json(nlohmann::json& j, const Placement::Ptr& placement_ptr);
+void from_json(const nlohmann::json& j, Placement::Ptr& placement_ptr);
 
 }  // namespace tket

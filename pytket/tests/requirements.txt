@@ -3,6 +3,7 @@
 pytest
 pytest-cov
 pytest-benchmark
+py
 hypothesis
 docker
 jsonschema

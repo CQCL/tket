@@ -49,6 +49,7 @@ from pytket.passes import (  # type: ignore
     PauliSquash,
     auto_rebase_pass,
     ZZPhaseToRz,
+    CnXPairwiseDecomposition,
 )
 from pytket.predicates import (  # type: ignore
     GateSetPredicate,
@@ -203,6 +204,10 @@ def test_custom_combinator_generation() -> None:
 
 
 def test_routing_and_placement_pass() -> None:
+    # Qubit interaction graph:
+    # 1 -- 0 -- 3
+    #  \   |
+    #   `  4 -- 2
     circ = Circuit()
     q = circ.add_q_register("q", 5)
     circ.CX(0, 1)
@@ -214,6 +219,12 @@ def test_routing_and_placement_pass() -> None:
     circ.X(2)
     circ.CX(1, 4)
     circ.CX(0, 4)
+    # Architecture graph:
+    # f2
+    # |
+    # b1 -- b0
+    # |
+    # b2 -- a0 -- f0
     n0 = Node("b", 0)
     n1 = Node("b", 1)
     n2 = Node("b", 2)
@@ -229,24 +240,18 @@ def test_routing_and_placement_pass() -> None:
     assert placement.apply(cu)
     assert routing.apply(cu)
     assert nplacement.apply(cu)
-    expected_map = {q[0]: n1, q[1]: n0, q[2]: n2, q[3]: n5, q[4]: n3}
-    assert cu.initial_map == expected_map
-
-    cu1 = CompilationUnit(circ.copy())
-    assert nplacement.apply(cu1)
     arcnodes = arc.nodes
-    expected_nmap = {
+    expected_map = {
         q[0]: arcnodes[0],
         q[1]: arcnodes[1],
         q[2]: arcnodes[2],
         q[3]: arcnodes[3],
         q[4]: arcnodes[4],
     }
-    assert cu1.initial_map == expected_nmap
+    assert cu.initial_map == expected_map
+
     # check composition works ok
-    seq_pass = SequencePass(
-        [SynthesiseTket(), placement, routing, nplacement, SynthesiseUMD()]
-    )
+    seq_pass = SequencePass([SynthesiseTket(), placement, routing, SynthesiseUMD()])
     cu2 = CompilationUnit(circ.copy())
     assert seq_pass.apply(cu2)
     assert cu2.initial_map == expected_map
@@ -633,7 +638,6 @@ def test_remove_discarded() -> None:
     assert not c.qubit_is_discarded(Qubit(1))
     assert c.qubit_is_discarded(Qubit(2))
     assert RemoveDiscarded().apply(c)
-    print(c.get_commands())
     assert c.n_gates_of_type(OpType.H) == 3
     assert c.n_gates_of_type(OpType.CX) == 1
     assert c.n_gates_of_type(OpType.Measure) == 2
@@ -763,6 +767,15 @@ def test_three_qubit_squash() -> None:
     c.measure_all()
     assert ThreeQubitSquash().apply(c)
     assert c.n_gates_of_type(OpType.CX) <= 18
+
+
+def test_cnx_pairwise_decomp() -> None:
+    c = Circuit(6).add_gate(OpType.CnX, [], [0, 1, 2, 3, 4, 5])
+    c.add_gate(OpType.CnX, [], [1, 2, 3, 4, 5, 0])
+    c.add_gate(OpType.CnX, [], [3, 1, 4, 5, 0, 2])
+    CnXPairwiseDecomposition().apply(c)
+    DecomposeMultiQubitsCX().apply(c)
+    assert c.n_gates_of_type(OpType.CX) < 217
 
 
 def test_rz_phasedX_squash() -> None:

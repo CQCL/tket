@@ -38,7 +38,7 @@ jobs:
 
   build_macos_wheels:
     name: Build macos wheels
-    runs-on: macos-12
+    runs-on: macos-11
     env:
       CONAN_REVISIONS_ENABLED: 1
     steps:
@@ -46,24 +46,14 @@ jobs:
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Get current time
-      uses: srfrnk/current-time@v1.1.0
-      id: current_time
-      with:
-        format: YYYYMMDDHHmmss
-    - name: Cache conan data
-      uses: actions/cache@v3
-      with:
-        path: ~/.conan
-        key: ${{ runner.os }}-tket-conan-${{ steps.current_time.outputs.formattedTime }}
-        restore-keys: |
-          ${{ runner.os }}-tket-conan-
     - name: Set up Python 3.8
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.8'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.1
+      with:
+        version: '1.53.0'
     - name: Set up conan
       shell: bash
       run: ./.github/workflows/conan-setup
@@ -74,13 +64,13 @@ jobs:
     - name: Build wheel (3.8)
       run: .github/workflows/build_macos_wheel
     - name: Set up Python 3.9
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9'
     - name: Build wheel (3.9)
       run: .github/workflows/build_macos_wheel
     - name: Set up Python 3.10
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.10'
     - name: Build wheel (3.10)
@@ -107,6 +97,7 @@ jobs:
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
+        conan remove -f 'tket/*'
         conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
         conan create --profile=tket recipes/pybind11
         .github/workflows/build_macos_m1_wheel
@@ -131,19 +122,21 @@ jobs:
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.1
+      with:
+        version: '1.53.0'
     - name: Set up conan
       shell: bash
       run: ./.github/workflows/conan-setup
+    - name: set CONAN_CMD variable
+      run: |
         $conan_cmd = (gcm conan).Path
         echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
-    - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Build tket
       run: conan create --profile=tket recipes/tket tket/stable
     - name: Install pybind11
       run: conan create --profile=tket recipes/pybind11
     - name: Set up Python 3.8
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.8'
     - name: Build wheel (3.8)
@@ -156,7 +149,7 @@ jobs:
         name: Windows_wheels
         path: wheelhouse/
     - name: Set up Python 3.9
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9'
     - name: Build wheel (3.9)
@@ -169,7 +162,7 @@ jobs:
         name: Windows_wheels
         path: wheelhouse/
     - name: Set up Python 3.10
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.10'
     - name: Build wheel (3.10)
@@ -186,14 +179,12 @@ jobs:
     name: Test linux wheels
     needs: build_Linux_wheels
     runs-on: ubuntu-22.04
-    env:
-      PYTKET_SKIP_REGISTRATION: "true"
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10']
     steps:
       - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+        uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Download wheels
@@ -216,15 +207,14 @@ jobs:
   test_macos_wheels:
     name: Test macos wheels
     needs: build_macos_wheels
-    runs-on: macos-12
-    env:
-      PYTKET_SKIP_REGISTRATION: "true"
     strategy:
       matrix:
+        os: ['macos-11', 'macos-12']
         python-version: ['3.8', '3.9', '3.10']
+    runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Download wheels
@@ -250,7 +240,6 @@ jobs:
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     env:
       PRIVATE_PYPI_PASS: ${{ secrets.PRIVATE_PYPI_PASS }}
-      PYTKET_SKIP_REGISTRATION: "true"
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10']
@@ -282,14 +271,12 @@ jobs:
     name: Test Windows wheels
     needs: build_Windows_wheels
     runs-on: windows-2022
-    env:
-      PYTKET_SKIP_REGISTRATION: "true"
     strategy:
       matrix:
         python-version: ['3.8', '3.9', '3.10']
     steps:
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
     - name: Download wheels
@@ -338,10 +325,8 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
-      with:
-        fetch-depth: '0'
     - name: Set up Python 3.9
-      uses: actions/setup-python@v3
+      uses: actions/setup-python@v4
       with:
         python-version: '3.9'
     - name: Download wheels

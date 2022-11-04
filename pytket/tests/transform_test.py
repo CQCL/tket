@@ -70,6 +70,7 @@ def get_test_circuit() -> Circuit:
     c.CX(1, 0)
     c.CX(2, 1)
     c.CX(3, 2)
+    c.Phase(alpha)
     c.Rx(1.5, 0)
     c.Rx(1.5, 1)
     c.H(2)
@@ -102,6 +103,7 @@ def get_KAK_test_circuit() -> Circuit:
     c.CX(3, 2)
     c.CX(2, 3)
     c.CX(3, 2)
+    c.Phase(1)
     c.CX(0, 2)
     c.CX(2, 0)
     c.CX(0, 2)
@@ -315,6 +317,7 @@ def test_Pauli_gadget_xxphase3() -> None:
     c.CX(2, 1).CX(1, 0)
     c.Rz(0.3, 0)
     c.CX(1, 0).CX(2, 1)
+    c.Phase(0.2)
     c.H(1)
     c.CX(1, 0).CX(3, 2).CX(2, 0)
     c.H(1).H(3)
@@ -479,6 +482,7 @@ def test_optimise_cliffords() -> None:
     c.CZ(3, 1)
     c.CZ(2, 1)
     c.V(2)
+    c.Phase(0.1)
     c.CZ(0, 2)
     c.X(2)
     c.V(1)
@@ -1017,8 +1021,7 @@ def test_CXMappingPass_terminates() -> None:
             [26, 25],
         ]
     )
-    placer = NoiseAwarePlacement(arc)
-    placer.modify_config(timeout=10000)
+    placer = NoiseAwarePlacement(arc, timeout=10000)
     p = CXMappingPass(arc, placer, directed_cx=False, delay_measures=False)
     res = p.apply(c)
     assert res
@@ -1067,6 +1070,10 @@ def test_auto_rebase() -> None:
     with pytest.raises(NoAutoRebase) as cx_err:
         _ = auto_rebase_pass({OpType.CX, OpType.H, OpType.T})
     assert "TK1" in str(cx_err.value)
+
+    with pytest.raises(NoAutoRebase) as err:
+        _ = auto_rebase_pass({OpType.CY, OpType.TK1})
+    assert "No known decomposition" in str(err.value)
 
 
 def test_auto_squash() -> None:
@@ -1170,6 +1177,19 @@ def test_circuit_with_conditionals() -> None:
     assert c.n_gates_of_type(OpType.Conditional) == 1
 
 
+def test_KAK_with_ClassicalExpBox() -> None:
+    # https://github.com/CQCL/pytket-quantinuum/issues/66
+    circ = Circuit()
+    circ.add_q_register("qubits", 2)
+    a_reg = circ.add_c_register("a", 1)
+    b_reg = circ.add_c_register("b", 1)
+    circ.add_classicalexpbox_bit(a_reg[0] & b_reg[0], [a_reg[0]])
+    kak = Transform.KAKDecomposition(
+        allow_swaps=True, cx_fidelity=1, target_2qb_gate=OpType.TK2
+    )
+    assert not kak.apply(circ)
+
+
 if __name__ == "__main__":
     test_remove_redundancies()
     test_reduce_singles()
@@ -1195,3 +1215,4 @@ if __name__ == "__main__":
     test_CXMappingPass_correctness()
     test_CXMappingPass_terminates()
     test_FullMappingPass()
+    test_KAK_with_ClassicalExpBox()

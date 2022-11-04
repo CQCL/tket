@@ -192,6 +192,19 @@ def test_QubitPauliOperator_serialization() -> None:
     assert json.loads(json.dumps(serializable)) == serializable
 
 
+def test_QubitPauliOperator_serialization_symbolic() -> None:
+    # https://github.com/CQCL/tket/issues/614
+    qps = [Qubit(i) for i in range(2)]
+    qpsXY = QubitPauliString(qps, [Pauli.X, Pauli.Y])
+    qpsZI = QubitPauliString(qps, [Pauli.Z, Pauli.I])
+    x = Symbol("x")  # type: ignore
+    op = QubitPauliOperator({qpsXY: 2 * x, qpsZI: 1j})
+
+    serializable = op.to_list()
+    assert QubitPauliOperator.from_list(serializable) == op
+    assert json.loads(json.dumps(serializable)) == serializable
+
+
 @given(st.qubitpaulistrings())
 def test_QubitPauliString_serialization_hypothesis(qps: QubitPauliString) -> None:
     serializable = qps.to_list()

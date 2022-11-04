@@ -1,0 +1,12 @@
+# Cargo.toml
+[package]
+name = "testfile"
+version = "1.0.0"
+authors = ["Melf CQC"]
+edition = "2022"
+
+[dependencies]
+
+# new material
+[lib]
+crate-type = ["cdylib"]

@@ -232,6 +232,9 @@ class DirectedGraphBase : public AbstractGraph<T> {
     return graphs::utils::symmetrise<UndirectedConnGraph>(graph);
   }
 
+  /** Return an unweighted undirected graph with the same connectivity. */
+  ConnGraph get_directed_connectivity() const { return graph; }
+
   /** Get all distances between pairs of nodes. */
   std::vector<std::size_t> get_distances(const T& root) const {
     if (!node_exists(root)) {
