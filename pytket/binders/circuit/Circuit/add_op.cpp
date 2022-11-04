@@ -936,6 +936,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
       .def(
+          "CU1",
           [](Circuit *circ, const Expr &angle, unsigned ctrl, unsigned trgt,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
@@ -1058,6 +1059,30 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "control and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("control"), py::arg("target_0"), py::arg("target_1"))
+      .def(
+          "ISWAP",
+          [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_oneparam<unsigned>(
+                circ, OpType::ISWAP, angle, {qb0, qb1}, kwargs);
+          },
+          "Appends an ISWAP gate with a symbolic angle (specified in "
+          "half-turns) on the wires for the specified qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
+      .def(
+          "PhasedISWAP",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             unsigned qb0, unsigned qb1, const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<unsigned>(
+                circ, OpType::PhasedISWAP, {angle0, angle1}, {qb0, qb1},
+                kwargs);
+          },
+          "Appends a PhasedISWAP gate with symbolic angles (specified in "
+          "half-turns) on the wires for the specified qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("qubit0"),
+          py::arg("qubit1"))
       .def(
           "measure_all",
           [](Circuit *circ) {
@@ -1544,6 +1569,30 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "control and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("control"), py::arg("target_0"), py::arg("target_1"))
+      .def(
+          "ISWAP",
+          [](Circuit *circ, const Expr &angle, const Qubit &qb0,
+             const Qubit &qb1, const py::kwargs &kwargs) {
+            return add_gate_method_oneparam<UnitID>(
+                circ, OpType::ISWAP, angle, {qb0, qb1}, kwargs);
+          },
+          "Appends an ISWAP gate with a symbolic angle (specified in "
+          "half-turns) on the wires for the specified qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
+      .def(
+          "PhasedISWAP",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             const Qubit &qb0, const Qubit &qb1, const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<UnitID>(
+                circ, OpType::PhasedISWAP, {angle0, angle1}, {qb0, qb1},
+                kwargs);
+          },
+          "Appends a PhasedISWAP gate with symbolic angles (specified in "
+          "half-turns) on the wires for the specified qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("qubit0"),
+          py::arg("qubit1"))
       .def(
           "Phase",
           [](Circuit *circ, const Expr &angle, const py::kwargs &kwargs) {
