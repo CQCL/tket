@@ -157,14 +157,17 @@ def test_circuit_gen() -> None:
     c.Measure(3, 3)
     c.Measure(1, 1)
     c.U1(0.25, 1)
+    c.U2(0.25, 0.25, 3)
     c.U3(0.25, 0.25, 0.25, 2)
+    c.TK1(0.3, 0.3, 0.3, 0)
+    c.TK2(0.3, 0.3, 0.3, 0, 1)
 
     assert c.n_qubits == 4
-    assert c._n_vertices() == 33
-    assert c.n_gates == 17
+    assert c._n_vertices() == 36
+    assert c.n_gates == 20
 
     commands = c.get_commands()
-    assert len(commands) == 17
+    assert len(commands) == 20
     assert str(commands[0]) == "X q[0];"
     assert str(commands[2]) == "CX q[2], q[0];"
     assert str(commands[4]) == "CRz(0.5) q[0], q[3];"
@@ -178,8 +181,11 @@ def test_circuit_gen() -> None:
     assert str(commands[12]) == "SX q[3];"
     assert str(commands[13]) == "Measure q[1] --> c[1];"
     assert str(commands[14]) == "Measure q[3] --> c[3];"
-    assert str(commands[15]) == "U3(0.25, 0.25, 0.25) q[2];"
-    assert str(commands[16]) == "U1(0.25) q[1];"
+    assert str(commands[15]) == "TK1(0.3, 0.3, 0.3) q[0];"
+    assert str(commands[16]) == "U3(0.25, 0.25, 0.25) q[2];"
+    assert str(commands[17]) == "U1(0.25) q[1];"
+    assert str(commands[18]) == "U2(0.25, 0.25) q[3];"
+    assert str(commands[19]) == "TK2(0.3, 0.3, 0.3) q[0], q[1];"
 
     assert commands[14].qubits == [Qubit(3)]
     assert commands[14].bits == [Bit(3)]

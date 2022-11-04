@@ -763,6 +763,17 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("qubit"))
       .def(
+          "U2",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             const unsigned &qb, const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<unsigned>(
+                circ, OpType::U2, {angle0, angle1}, {qb}, kwargs);
+          },
+          "Appends a U2 gate with possible symbolic angles "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("qubit"))
+      .def(
           "U3",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
              const Expr &angle2, const unsigned &qb, const py::kwargs &kwargs) {
@@ -774,6 +785,32 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle0"), py::arg("angle2"), py::arg("angle2"),
           py::arg("qubit"))
+      .def(
+          "TK1",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             const Expr &angle2, const unsigned &qb, const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<unsigned>(
+                circ, OpType::TK1, {angle0, angle1, angle2}, {qb}, kwargs);
+          },
+          "Appends a TK1 gate with possible symbolic angles "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle2"), py::arg("angle2"),
+          py::arg("qubit"))
+      .def(
+          "TK2",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             const Expr &angle2, const unsigned &qb0, const unsigned &qb1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<unsigned>(
+                circ, OpType::TK2, {angle0, angle1, angle2}, {qb0, qb1},
+                kwargs);
+          },
+          "Appends a TK2 gate with possible symbolic angles "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle2"), py::arg("angle2"),
+          py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "CX",
           [](Circuit *circ, unsigned ctrl, unsigned trgt,
@@ -1209,6 +1246,17 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "(specified in half-turns)."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("qubit"))
+      .def(
+          "U2",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             const Qubit &qb, const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<UnitID>(
+                circ, OpType::U2, {angle0, angle1}, {qb}, kwargs);
+          },
+          "Appends a U2 gate with possible symbolic angles "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("qubit"))
       .def(
           "U3",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
