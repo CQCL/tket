@@ -1108,6 +1108,19 @@ class Circuit {
    */
   std::list<Command> get_commands_of_type(OpType op_type) const;
 
+  /**
+   * @brief Get the number of gates with the specified number of Qubits.
+   *
+   * Counts vertices, ignoring Input, Output, create, Discard, Reset,
+   * Measure and Barrier.
+   *
+   * @param size Number of quantum edges a vertex has to be counted
+   *
+   * @return Number of vertices with given number of quantum edges in the
+   * circuit
+   */
+  unsigned count_n_qubit_gates(unsigned size) const;
+
   // returns 'slices' of 'parallel' actions in dag as a vector encompassing
   // all vertices
   // O(D qlog^2(q!) alpha log(alpha!))
