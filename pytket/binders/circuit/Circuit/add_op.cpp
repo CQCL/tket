@@ -936,6 +936,32 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
       .def(
+          [](Circuit *circ, const Expr &angle, unsigned ctrl, unsigned trgt,
+             const py::kwargs &kwargs) {
+            return add_gate_method_oneparam<unsigned>(
+                circ, OpType::CU1, angle, {ctrl, trgt}, kwargs);
+          },
+          "Appends a CU1 gate with a symbolic angle (specified in "
+          "half-turns) on the wires for the specified control and "
+          "target qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
+      .def(
+          "CU3",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             const Expr &angle2, unsigned ctrl, unsigned trgt,
+             const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<unsigned>(
+                circ, OpType::CU3, {angle0, angle1, angle2}, {ctrl, trgt},
+                kwargs);
+          },
+          "Appends a CU3 gate with symbolic angles (specified in "
+          "half-turns) on the wires for the specified control and "
+          "target qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
+          py::arg("control_qubit"), py::arg("target_qubit"))
+      .def(
           "ZZPhase",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
              const py::kwargs &kwargs) {
@@ -1393,6 +1419,34 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
+      .def(
+          "CU1",
+          [](Circuit *circ, const Expr &angle, const Qubit &ctrl,
+             const Qubit &trgt, const py::kwargs &kwargs) {
+            return add_gate_method_oneparam<UnitID>(
+                circ, OpType::CU1, angle, {ctrl, trgt}, kwargs);
+          },
+          "Appends a CU1 gate with a symbolic angle (specified in "
+          "half-turns) on the wires for the specified control and "
+          "target qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
+      .def(
+          "CU3",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             const Expr &angle2, const Qubit &ctrl, const Qubit &trgt,
+             const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<UnitID>(
+                circ, OpType::CU3, {angle0, angle1, angle2}, {ctrl, trgt},
+                kwargs);
+          },
+          "Appends a CU3 gate with symbolic angles (specified in "
+          "half-turns) on the wires for the specified control and "
+          "target qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
+          py::arg("control_qubit"), py::arg("target_qubit"))
+
       .def(
           "ZZPhase",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,
