@@ -2775,6 +2775,89 @@ SCENARIO("Named operation groups") {
   }
 }
 
+SCENARIO("Test count_n_qubit_gates") {
+  GIVEN("A Circuit with a range of different sized gates") {
+    Circuit c(10, 1);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::T, {1});
+    c.add_op<unsigned>(OpType::S, {2});
+    c.add_op<unsigned>(OpType::X, {3});
+    c.add_op<unsigned>(OpType::Y, {4});
+    c.add_op<unsigned>(OpType::Z, {5});
+    c.add_op<unsigned>(OpType::S, {6});
+    c.add_op<unsigned>(OpType::Z, {7});
+    c.add_op<unsigned>(OpType::V, {8});
+    c.add_op<unsigned>(OpType::H, {9});
+
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::CZ, {1, 2});
+    c.add_op<unsigned>(OpType::CY, {2, 3});
+    c.add_op<unsigned>(OpType::CX, {3, 4});
+    c.add_op<unsigned>(OpType::CZ, {4, 5});
+    c.add_op<unsigned>(OpType::CY, {5, 6});
+    c.add_op<unsigned>(OpType::ZZMax, {6, 7});
+    c.add_op<unsigned>(OpType::CX, {7, 8});
+    c.add_op<unsigned>(OpType::CZ, {8, 9});
+
+    c.add_op<unsigned>(OpType::CCX, {0, 1, 2});
+    c.add_op<unsigned>(OpType::CCX, {1, 2, 3});
+    c.add_op<unsigned>(OpType::CCX, {2, 3, 4});
+    c.add_op<unsigned>(OpType::CCX, {3, 4, 5});
+    c.add_op<unsigned>(OpType::CCX, {4, 5, 6});
+    c.add_op<unsigned>(OpType::CCX, {5, 6, 7});
+    c.add_op<unsigned>(OpType::CCX, {6, 7, 8});
+    c.add_op<unsigned>(OpType::CCX, {7, 8, 9});
+
+    c.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3});
+    c.add_op<unsigned>(OpType::CnX, {1, 2, 3, 4});
+    c.add_op<unsigned>(OpType::CnX, {2, 3, 4, 5});
+    c.add_op<unsigned>(OpType::CnX, {3, 4, 5, 6});
+    c.add_op<unsigned>(OpType::CnX, {4, 5, 6, 7});
+    c.add_op<unsigned>(OpType::CnX, {5, 6, 7, 8});
+    c.add_op<unsigned>(OpType::CnX, {6, 7, 8, 9});
+
+    c.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4});
+    c.add_op<unsigned>(OpType::CnX, {1, 2, 3, 4, 5});
+    c.add_op<unsigned>(OpType::CnX, {2, 3, 4, 5, 6});
+    c.add_op<unsigned>(OpType::CnX, {3, 4, 5, 6, 7});
+    c.add_op<unsigned>(OpType::CnX, {4, 5, 6, 7, 8});
+    c.add_op<unsigned>(OpType::CnX, {5, 6, 7, 8, 9});
+
+    c.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4, 5});
+    c.add_op<unsigned>(OpType::CnX, {1, 2, 3, 4, 5, 6});
+    c.add_op<unsigned>(OpType::CnX, {2, 3, 4, 5, 6, 7});
+    c.add_op<unsigned>(OpType::CnX, {3, 4, 5, 6, 7, 8});
+    c.add_op<unsigned>(OpType::CnX, {4, 5, 6, 7, 8, 9});
+
+    c.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4, 5, 6});
+    c.add_op<unsigned>(OpType::CnX, {1, 2, 3, 4, 5, 6, 7});
+    c.add_op<unsigned>(OpType::CnX, {2, 3, 4, 5, 6, 7, 8});
+    c.add_op<unsigned>(OpType::CnX, {3, 4, 5, 6, 7, 8, 9});
+
+    c.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4, 5, 6, 7});
+    c.add_op<unsigned>(OpType::CnX, {1, 2, 3, 4, 5, 6, 7, 8});
+    c.add_op<unsigned>(OpType::CnX, {2, 3, 4, 5, 6, 7, 8, 9});
+
+    c.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4, 5, 6, 7, 8});
+    c.add_op<unsigned>(OpType::CnX, {1, 2, 3, 4, 5, 6, 7, 8, 9});
+
+    c.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+    c.add_barrier({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+    c.add_measure(Qubit(0), Bit(0));
+    c.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
+    REQUIRE(c.count_n_qubit_gates(0) == 0);
+    REQUIRE(c.count_n_qubit_gates(1) == 11);
+    REQUIRE(c.count_n_qubit_gates(2) == 9);
+    REQUIRE(c.count_n_qubit_gates(3) == 8);
+    REQUIRE(c.count_n_qubit_gates(4) == 7);
+    REQUIRE(c.count_n_qubit_gates(5) == 6);
+    REQUIRE(c.count_n_qubit_gates(6) == 5);
+    REQUIRE(c.count_n_qubit_gates(7) == 4);
+    REQUIRE(c.count_n_qubit_gates(8) == 3);
+    REQUIRE(c.count_n_qubit_gates(9) == 2);
+    REQUIRE(c.count_n_qubit_gates(10) == 1);
+  }
+}
 SCENARIO("Vertices in order") {
   GIVEN("A circuit with 3 qubits and 6 operations") {
     Circuit c(3);
