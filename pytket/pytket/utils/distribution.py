@@ -1,0 +1,281 @@
+# Copyright 2019-2022 Cambridge Quantum Computing
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+from collections import Counter, defaultdict
+from typing import cast, Any, Callable, DefaultDict, Dict, Set, Union
+import numpy as np
+
+Number = Union[float, complex]
+
+
+class EmpiricalDistribution:
+    """Represents an empirical distribution of values.
+
+    Supports methods for combination, marginalization, expectation value, etc.
+
+    >>> dist1 = EmpiricalDistribution(Counter({(0, 0): 3, (0, 1): 2, (1, 0): 4, (1, 1): 0}))
+    >>> dist2 = EmpiricalDistribution(Counter({(0, 0): 1, (0, 1): 0, (1, 0): 2, (1, 1): 1}))
+    >>> dist1.sample_mean(lambda x : x[0] + 2*x[1])
+    0.8888888888888888
+    >>> dist3 = dist2.condition(lambda x: x[0] == 1)
+    >>> dist3
+    EmpiricalDistribution(Counter({(1, 0): 2, (1, 1): 1}))
+    >>> dist4 = dist1 + dist3
+    >>> dist4
+    EmpiricalDistribution(Counter({(1, 0): 6, (0, 0): 3, (0, 1): 2, (1, 1): 1}))
+    """
+
+    def __init__(self, C: Counter):
+        self._C = Counter({x: c for x, c in C.items() if c > 0})
+
+    def as_counter(self) -> Counter:
+        """Return the distribution as a :py:class:`collections.Counter` object."""
+        return self._C
+
+    @property
+    def total(self) -> int:
+        """Return the total number of observations."""
+        return sum(self._C.values())  # Counter.total() new in 3.10
+
+    @property
+    def support(self) -> Set:
+        """Return the support of the distribution (set of all observations)."""
+        return set(self._C.keys())
+
+    def __eq__(self, other: object) -> bool:
+        """Compare distributions for equality."""
+        if not isinstance(other, EmpiricalDistribution):
+            return NotImplemented
+        return self._C == other._C
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({repr(self._C)})"
+
+    def __getitem__(self, x: Any) -> int:
+        """Get the count associated with an observation."""
+        return self._C[x]
+
+    def __add__(self, other: "EmpiricalDistribution") -> "EmpiricalDistribution":
+        """Combine two distributions."""
+        return EmpiricalDistribution(self._C + other._C)
+
+    def condition(self, criterion: Callable[[Any], bool]) -> "EmpiricalDistribution":
+        """Return a new distribution conditioned on the given criterion.
+
+        :param criterion: A boolean function defined on all possible observations.
+        """
+        return EmpiricalDistribution(
+            Counter({x: c for x, c in self._C.items() if criterion(x)})
+        )
+
+    def map(self, mapping: Callable[[Any], Any]) -> "EmpiricalDistribution":
+        """Return a distribution over a transformed domain.
+
+        The provided function maps elements in the original domain to new elements. If
+        it is not injective, counts are combined.
+
+        :param mapping: A function defined on all possible observations, mapping them
+            to another domain.
+        """
+        C: Counter = Counter()
+        for x, c in self._C.items():
+            C[mapping(x)] += c
+        return EmpiricalDistribution(C)
+
+    def sample_mean(self, f: Callable[[Any], Number]) -> Number:
+        """Compute the sample mean of a functional.
+
+        The provided function maps observations to numerical values.
+
+        :return: Estimate of the mean of the functional based on the observations."""
+        return sum(c * f(x) for x, c in self._C.items()) / self.total
+
+    def sample_variance(self, f: Callable[[Any], Number]) -> Number:
+        """Compute the sample variance of a functional.
+
+        The provided function maps observations to numerical values.
+
+        The sample variance is an unbiased estimate of the variance of the underlying
+        distribution.
+
+        :return: Estimate of the variance of the functional based on the
+            observations."""
+        if self.total < 2:
+            raise RuntimeError(
+                "At least two samples are required in order to compute the sample variance."
+            )
+        fs = [(f(x), c) for x, c in self._C.items()]
+        M0 = self.total
+        M1 = sum(c * v for v, c in fs)
+        M2 = sum(c * v**2 for v, c in fs)
+        return (M2 - M1**2 / M0) / (M0 - 1)
+
+
+class ProbabilityDistribution:
+    """Represents an exact (partial) probability distribution.
+
+    Supports methods for combination, marginalization, expectation value, etc. May be
+    derived from an :py:class:`EmpriricalDistribution`.
+
+    >>> dist1 = ProbabilityDistribution({0: 0.25, 1: 0.5, 2: 0.25})
+    >>> dist2 = ProbabilityDistribution({0: 0.5, 1: 0.5})
+    >>> dist3 = 0.25 * dist1 + 0.75 * dist2
+    >>> dist3
+    ProbabilityDistribution({0: 0.4375, 1: 0.5, 2: 0.0625})
+    >>> dist3.expectation(lambda x : x**2)
+    0.75
+    """
+
+    def __init__(self, P: Dict[Any, float]):
+        """Initialize with a dictionary of probabilities.
+
+        The values must be non-negative and add up to at most 1.
+        """
+        if any(x < 0 for x in P.values()):
+            raise ValueError("Distribution contains negative probabilities")
+        S = sum(P.values())
+        if S > 1 and not np.isclose(S, 1):
+            raise ValueError("Probabilities sum to more than 1")
+        self._P: Dict[Any, float] = {x: p for x, p in P.items() if not np.isclose(p, 0)}
+
+    def normalize(self) -> None:
+        """Normalize the distribution so that the probabilities sum to 1."""
+        f = 1 / sum(self._P.values())
+        for x, p in self._P.items():
+            self._P[x] = f * p
+
+    def as_dict(self) -> Dict[Any, float]:
+        """Return the distribution as a :py:class:`dict` object."""
+        return self._P
+
+    @property
+    def weight(self) -> float:
+        """Return the total weight of the distribution (sum of the probabilities)."""
+        S = sum(self._P.values())
+        if np.isclose(S, 1):
+            return 1.0
+        return S
+
+    @property
+    def support(self) -> Set:
+        """Return the support of the distribution (set of all possible outcomes)."""
+        return set(self._P.keys())
+
+    @property
+    def is_normalized(self) -> bool:
+        """Check whether the probabilities sum to 1."""
+        return cast(bool, np.isclose(sum(self._P.values()), 1))
+
+    def __eq__(self, other: object) -> bool:
+        """Compare distributions for equality when normalized."""
+        if not isinstance(other, ProbabilityDistribution):
+            return NotImplemented
+        keys0 = frozenset(self._P.keys())
+        keys1 = frozenset(other._P.keys())
+        if keys0 != keys1:
+            return False
+        f0 = 1 / self.weight
+        f1 = 1 / other.weight
+        return all(np.isclose(f0 * self._P[x], f1 * other._P[x]) for x in keys0)
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({repr(self._P)})"
+
+    def __getitem__(self, x: Any) -> float:
+        """Get the probability associated with a possible outcome."""
+        return self._P.get(x, 0.0)
+
+    def __add__(self, other: "ProbabilityDistribution") -> "ProbabilityDistribution":
+        """Combine two distributions.
+
+        This simply adds together the (non-normalized) probabilities.
+        """
+        P = defaultdict(float)
+        for x, p in self._P.items():
+            P[x] = p
+        for x, p in other._P.items():
+            P[x] += p
+        return ProbabilityDistribution(P)
+
+    def __mul__(self, s: float) -> "ProbabilityDistribution":
+        """Multiply all probabilities by a (non-negative) scalar."""
+        return ProbabilityDistribution({x: s * p for x, p in self._P.items()})
+
+    __rmul__ = __mul__
+
+    @classmethod
+    def from_empirical_distribution(
+        cls, ed: EmpiricalDistribution
+    ) -> "ProbabilityDistribution":
+        """Estimate a normalized probability distribution from an empirical
+        distribution."""
+        S = ed.total
+        if S == 0:
+            raise ValueError("Empirical distribution has no values")
+        f = 1 / S
+        return cls({x: f * c for x, c in ed.as_counter().items()})
+
+    def condition(self, criterion: Callable[[Any], bool]) -> "ProbabilityDistribution":
+        """Return a new distribution conditioned on the given criterion.
+
+        :param criterion: A boolean function defined on all possible outcomes.
+        """
+        return ProbabilityDistribution(
+            {x: c for x, c in self._P.items() if criterion(x)}
+        )
+
+    def map(self, mapping: Callable[[Any], Any]) -> "ProbabilityDistribution":
+        """Return a distribution over a transformed domain.
+
+        The provided function maps elements in the original domain to new elements. If
+        it is not injective, probabilities are combined.
+
+        :param mapping: A function defined on all possible outcomes, mapping them to
+            another domain.
+        """
+        P: DefaultDict[Any, float] = defaultdict(float)
+        for x, p in self._P.items():
+            P[mapping(x)] += p
+        return ProbabilityDistribution(P)
+
+    def expectation(self, f: Callable[[Any], Number]) -> Number:
+        """Compute the expectation value of a functional.
+
+        The provided function maps possible outcomes to numerical values.
+
+        The distribution must be normalized, otherwise an error is raised.
+
+        :return: Expectation of the functional.
+        """
+        if not self.is_normalized:
+            raise RuntimeError(
+                "Cannot compute expectation of a distribution that is not normalized."
+            )
+        return sum(p * f(x) for x, p in self._P.items())
+
+    def variance(self, f: Callable[[Any], Number]) -> Number:
+        """Compute the variance of a functional.
+
+        The provided function maps possible outcomes to numerical values.
+
+        The distribution must be normalized, otherwise an error is raised.
+
+        :return: Variance of the functional.
+        """
+        if not self.is_normalized:
+            raise RuntimeError(
+                "Cannot compute variance of a distribution that is not normalized."
+            )
+        fs = [(f(x), p) for x, p in self._P.items()]
+        return sum(p * v**2 for v, p in fs) - (sum(p * v for v, p in fs)) ** 2
