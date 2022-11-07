@@ -964,6 +964,21 @@ def test_multi_controlled_gates() -> None:
     assert c.depth() == 3
 
 
+def test_counting_n_qubit_gates() -> None:
+    c = Circuit(5).X(0).H(1).Y(2).Z(3).S(4).CX(0, 1).CX(1, 2).CX(2, 3).CX(3, 4)
+    c.add_gate(OpType.CnX, [0, 1, 2])
+    c.add_gate(OpType.CnX, [0, 1, 2, 3])
+    c.add_gate(OpType.CnX, [0, 1, 2, 3, 4])
+    c.add_barrier([0, 1, 2, 3, 4])
+    assert c.n_1qb_gates() == 5
+    assert c.n_nqb_gates(1) == 5
+    assert c.n_2qb_gates() == 4
+    assert c.n_nqb_gates(2) == 4
+    assert c.n_nqb_gates(3) == 1
+    assert c.n_nqb_gates(4) == 1
+    assert c.n_nqb_gates(5) == 1
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
@@ -976,3 +991,4 @@ if __name__ == "__main__":
     test_clifford_checking()
     test_measuring_registers()
     test_multi_controlled_gates()
+    test_counting_n_qubit_gates()
