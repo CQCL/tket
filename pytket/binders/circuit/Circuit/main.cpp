@@ -482,6 +482,25 @@ void init_circuit(py::module &m) {
           "number of operations matching `type`",
           py::arg("type"))
       .def(
+          "n_1qb_gates",
+          [](const Circuit &circ) { return circ.count_n_qubit_gates(1); },
+          "Returns the number of vertices in the dag with one quantum edge."
+          "Ignores Input, Create, Output, Discard, Reset, Measure and Barrier "
+          "vertices.")
+      .def(
+          "n_2qb_gates",
+          [](const Circuit &circ) { return circ.count_n_qubit_gates(2); },
+          "Returns the number of vertices in the dag with two quantum edges."
+          "Ignores Input, Create, Output, Discard, Reset, Measure and Barrier "
+          "vertices.")
+      .def(
+          "n_nqb_gates", &Circuit::count_n_qubit_gates,
+          "Returns the number of vertices in the dag with given number of  "
+          "quantum edges."
+          "Ignores Input, Create, Output, Discard, Reset, Measure and Barrier "
+          "vertices.",
+          py::arg("size"))
+      .def(
           "depth_by_type", &Circuit::depth_by_type,
           "Returns the number of vertices in the longest path through the "
           "sub-DAG consisting of vertices representing operations of the given "
