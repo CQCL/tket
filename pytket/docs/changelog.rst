@@ -1,6 +1,16 @@
 Changelog
 =========
 
+1.9.0 (unreleased)
+------------------
+
+Minor new features:
+
+* Added shortcuts for adding ``U1``, ``U2``, ``U3``, ``TK1``, ``TK2``, ``CU1``, 
+  ``CU3``, ``ISWAP``, ``PhasedISWAP``, ``ESWAP``, ``PhasedX``, ``FSim``, ``Sycamore``
+  and ``ISWAPMax`` gates to a ``pytket`` ``Circuit``.
+* New ``Circuit`` methods ``n_1qb_gates``, ``n_2qb_gates``, ``n_nqb_gates``.
+
 1.8.1 (November 2022)
 ---------------------
 
