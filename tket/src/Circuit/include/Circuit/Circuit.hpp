@@ -1465,6 +1465,10 @@ class Circuit {
 
   /**
    * Adds a condition to every op in the circuit.
+   *
+   * If the circuit has a global phase, this is expressed by appending a
+   * conditional Phase operation.
+   *
    * Will throw a CircuitInvalidity error if the circuit contains implicit
    * wireswaps (as these cannot be applied conditionally) or writes to the
    * condition bits at any point.
