@@ -1111,7 +1111,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::ISWAP, angle, {qb0, qb1}, kwargs);
           },
-          "Appends an ISWAP gate with a symbolic angle (specified in "
+          "Appends an ISWAP gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
@@ -1676,7 +1676,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::ISWAP, angle, {qb0, qb1}, kwargs);
           },
-          "Appends an ISWAP gate with a symbolic angle (specified in "
+          "Appends an ISWAP gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
