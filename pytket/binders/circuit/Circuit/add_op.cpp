@@ -995,6 +995,29 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
       .def(
+          "FSim",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             unsigned qb0, unsigned qb1, const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<unsigned>(
+                circ, OpType::FSim, {angle0, angle1}, {qb0, qb1}, kwargs);
+          },
+          "Appends an FSim gate with possibly symbolic angles (specified in "
+          "half-turns) on the wires for the specified qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("qubit0"),
+          py::arg("qubit1"))
+      .def(
+          "Sycamore",
+          [](Circuit *circ, unsigned qubit0, unsigned qubit1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_noparams<unsigned>(
+                circ, OpType::Sycamore, {qubit0, qubit1}, kwargs);
+          },
+          "Appends a Sycamore gate on the wires for the specified control "
+          "and target qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("qubit0"), py::arg("qubit1"))
+      .def(
           "XXPhase",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
              const py::kwargs &kwargs) {
@@ -1093,6 +1116,16 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
+      .def(
+          "ISWAPMax",
+          [](Circuit *circ, unsigned qb0, unsigned qb1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_noparams<unsigned>(
+                circ, OpType::ISWAPMax, {qb0, qb1}, kwargs);
+          },
+          "Appends an ISWAPMax gate on the wires for the specified qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "PhasedISWAP",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,
@@ -1528,6 +1561,29 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
       .def(
+          "FSim",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             const Qubit &qb0, const Qubit &qb1, const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<UnitID>(
+                circ, OpType::FSim, {angle0, angle1}, {qb0, qb1}, kwargs);
+          },
+          "Appends an FSim gate with possibly symbolic angles (specified in "
+          "half-turns) on the wires for the specified qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("qubit0"),
+          py::arg("qubit1"))
+      .def(
+          "Sycamore",
+          [](Circuit *circ, const Qubit &qubit0, const Qubit &qubit1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_noparams<UnitID>(
+                circ, OpType::Sycamore, {qubit0, qubit1}, kwargs);
+          },
+          "Appends a Sycamore gate on the wires for the specified control "
+          "and target qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("qubit0"), py::arg("qubit1"))
+      .def(
           "XXPhase",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,
              const Qubit &qb1, const py::kwargs &kwargs) {
@@ -1625,6 +1681,16 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "half-turns) on the wires for the specified qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
+      .def(
+          "ISWAPMax",
+          [](Circuit *circ, const Qubit &qb0, const Qubit &qb1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_noparams<UnitID>(
+                circ, OpType::ISWAPMax, {qb0, qb1}, kwargs);
+          },
+          "Appends an ISWAPMax gate on the wires for the specified qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "PhasedISWAP",
           [](Circuit *circ, const Expr &angle0, const Expr &angle1,

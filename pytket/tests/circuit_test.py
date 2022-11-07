@@ -167,13 +167,16 @@ def test_circuit_gen() -> None:
     c.PhasedISWAP(0.5, 0.6, 2, 3)
     c.PhasedX(0.2, 0.3, 3)
     c.ESWAP(0.9, 3, 0)
+    c.FSim(0.2, 0.4, 0, 1)
+    c.Sycamore(1, 2)
+    c.ISWAPMax(2, 3)
 
     assert c.n_qubits == 4
-    assert c._n_vertices() == 42
-    assert c.n_gates == 26
+    assert c._n_vertices() == 45
+    assert c.n_gates == 29
 
     commands = c.get_commands()
-    assert len(commands) == 26
+    assert len(commands) == 29
     assert str(commands[0]) == "X q[0];"
     assert str(commands[2]) == "CX q[2], q[0];"
     assert str(commands[4]) == "CRz(0.5) q[0], q[3];"
@@ -198,6 +201,9 @@ def test_circuit_gen() -> None:
     assert str(commands[23]) == "PhasedISWAP(0.5, 0.6) q[2], q[3];"
     assert str(commands[24]) == "PhasedX(0.2, 0.3) q[3];"
     assert str(commands[25]) == "ESWAP(0.9) q[3], q[0];"
+    assert str(commands[26]) == "FSim(0.2, 0.4) q[0], q[1];"
+    assert str(commands[27]) == "Sycamore q[1], q[2];"
+    assert str(commands[28]) == "ISWAPMax q[2], q[3];"
 
     assert commands[14].qubits == [Qubit(3)]
     assert commands[14].bits == [Bit(3)]
