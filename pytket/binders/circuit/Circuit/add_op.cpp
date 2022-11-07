@@ -906,7 +906,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::CRz, angle, {ctrl, trgt}, kwargs);
           },
-          "Appends a CRz gate with a symbolic angle (specified in "
+          "Appends a CRz gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
@@ -918,7 +918,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::CRx, angle, {ctrl, trgt}, kwargs);
           },
-          "Appends a CRx gate with a symbolic angle (specified in "
+          "Appends a CRx gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
@@ -930,7 +930,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::CRy, angle, {ctrl, trgt}, kwargs);
           },
-          "Appends a CRy gate with a symbolic angle (specified in "
+          "Appends a CRy gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
@@ -942,7 +942,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::CU1, angle, {ctrl, trgt}, kwargs);
           },
-          "Appends a CU1 gate with a symbolic angle (specified in "
+          "Appends a CU1 gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
@@ -956,7 +956,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
                 circ, OpType::CU3, {angle0, angle1, angle2}, {ctrl, trgt},
                 kwargs);
           },
-          "Appends a CU3 gate with symbolic angles (specified in "
+          "Appends a CU3 gate with possibly symbolic angles (specified in "
           "half-turns) on the wires for the specified control and "
           "target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
@@ -969,7 +969,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::ZZPhase, angle, {qb0, qb1}, kwargs);
           },
-          "Appends a ZZ gate with a symbolic angle (specified in "
+          "Appends a ZZ gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
@@ -984,13 +984,24 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("qubit0"), py::arg("qubit1"))
       .def(
+          "ESWAP",
+          [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_oneparam<unsigned>(
+                circ, OpType::ESWAP, angle, {qb0, qb1}, kwargs);
+          },
+          "Appends an ESWAP gate with a possibly symbolic angle (specified in "
+          "half-turns) on the wires for the specified two qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
+      .def(
           "XXPhase",
           [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::XXPhase, angle, {qb0, qb1}, kwargs);
           },
-          "Appends a XX gate with a symbolic angle (specified in "
+          "Appends a XX gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
@@ -1001,7 +1012,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::YYPhase, angle, {qb0, qb1}, kwargs);
           },
-          "Appends a YY gate with a symbolic angle (specified in "
+          "Appends a YY gate with a possibly symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
@@ -1012,11 +1023,23 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::XXPhase3, angle, {qb0, qb1, qb2}, kwargs);
           },
-          "Appends a 3-qubit XX gate with a symbolic angle (specified in "
+          "Appends a 3-qubit XX gate with a possibly symbolic angle (specified "
+          "in "
           "half-turns) on the wires for the specified three qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"),
           py::arg("qubit2"))
+      .def(
+          "PhasedX",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1, unsigned qb,
+             const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<unsigned>(
+                circ, OpType::PhasedX, {angle0, angle1}, {qb}, kwargs);
+          },
+          "Appends a PhasedX gate with possibly symbolic angles (specified in "
+          "half-turns) on the wires for the specified qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("qubit"))
       .def(
           "CCX",
           [](Circuit *circ, unsigned ctrl1, unsigned ctrl2, unsigned trgt,
@@ -1494,6 +1517,17 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("qubit0"), py::arg("qubit1"))
       .def(
+          "ESWAP",
+          [](Circuit *circ, const Expr &angle, const Qubit &qb0,
+             const Qubit &qb1, const py::kwargs &kwargs) {
+            return add_gate_method_oneparam<UnitID>(
+                circ, OpType::ESWAP, angle, {qb0, qb1}, kwargs);
+          },
+          "Appends an ESWAP gate with a possibly symbolic angle (specified in "
+          "half-turns) on the wires for the specified two qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
+      .def(
           "XXPhase",
           [](Circuit *circ, const Expr &angle, const Qubit &qb0,
              const Qubit &qb1, const py::kwargs &kwargs) {
@@ -1527,6 +1561,17 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"),
           py::arg("qubit2"))
+      .def(
+          "PhasedX",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             const Qubit &qubit, const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<UnitID>(
+                circ, OpType::PhasedX, {angle0, angle1}, {qubit}, kwargs);
+          },
+          "Appends a PhasedX gate with possibly symbolic angles (specified in "
+          "half-turns) on the wires for the specified qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("qubit"))
       .def(
           "CCX",
           [](Circuit *circ, const Qubit &ctrl1, const Qubit &ctrl2,
