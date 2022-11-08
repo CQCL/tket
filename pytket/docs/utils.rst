@@ -15,6 +15,18 @@ pytket.utils
     :special-members: __init__
     :members:
 
+pytket.utils.distribution
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automodule:: pytket.utils.distribution
+
+.. autoclass:: pytket.utils.distribution.EmpiricalDistribution
+    :special-members: __eq__, __getitem__, __add__
+    :members:
+
+.. autoclass:: pytket.utils.distribution.ProbabilityDistribution
+    :special-members: _eq__, __getitem__, __add__, __mul__
+    :members:
+
 pytket.utils.spam
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 .. automodule:: pytket.utils.spam
