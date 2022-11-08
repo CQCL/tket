@@ -1,5 +1,5 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it as below."
+message: "If you wish to cite tket in any academic publications, we generally recommend citing our software overview paper for most cases."
 version: 1.8.1
 url: "https://github.com/CQCL/tket"
 preferred-citation:
