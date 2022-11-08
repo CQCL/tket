@@ -4,6 +4,14 @@ Changelog
 1.9.0 (unreleased)
 ------------------
 
+Fixes:
+
+* Rebase and synthesis passes now respect conditional phase, by adding
+  conditional ``OpType.Phase`` operations to the rebased circuit. Any code that
+  relies on the circuit having gates only in the specified gate set should be
+  updated to handle ``OpType.Phase`` as well when conditional operations are
+  present.
+
 Minor new features:
 
 * Added shortcuts for adding ``U1``, ``U2``, ``U3``, ``TK1``, ``TK2``, ``CU1``, 
