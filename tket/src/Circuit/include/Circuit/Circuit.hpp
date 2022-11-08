@@ -1541,6 +1541,13 @@ class Circuit {
   std::vector<Command> get_commands() const;
 
   /**
+   * All vertices of the DAG.
+   *
+   * @return vector of vertices
+   */
+  std::vector<Vertex> all_vertices() const;
+
+  /**
    * Set the vertex indices in the DAG.
    *
    * Has no effect on circuit semantics, so "morally" const.
