@@ -200,7 +200,7 @@ class TketSimShotBackend(TketSimBackend):
             if n_shots is None:
                 raise ValueError("Parameter n_shots is required for this backend")
             # convert n_shots to a list
-            n_shots_list = [cast(int, n_shots)] * len(circuits)
+            n_shots_list = [n_shots] * len(circuits)
 
         if valid_check:
             self._check_all_circuits(circuits)
