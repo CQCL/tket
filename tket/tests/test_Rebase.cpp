@@ -295,7 +295,8 @@ SCENARIO("Building rebases with rebase_factory") {
     correct.add_op<unsigned>(OpType::TK1, {0, 0, 0.25}, {0});
     correct.add_conditional_gate<unsigned>(
         OpType::TK1, {0.5, 0.5, 0.5}, {1}, {0}, 1);
-    correct.add_phase(0.625);
+    correct.add_conditional_gate<unsigned>(OpType::Phase, {0.5}, {}, {0}, 1);
+    correct.add_phase(0.125);
     REQUIRE(circ == correct);
   }
 }
