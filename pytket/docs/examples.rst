@@ -23,7 +23,7 @@ These are example notebooks that demonstrate key features of the core pytket pac
 
 * `Contextual Optimization <https://nbviewer.org/github/CQCL/pytket/blob/main/examples/contextual_optimization.ipynb>`_ - How to eliminate gates by taking advantage of initial state and classical postprocessing.
 
-* `Comparing Simulators <https://nbviewer.org/github/CQCL/pytket/blob/main/examples/contextual_optimization.ipynb>`_ - An overview of the differences between each of the simulators supported by pytket.
+* `Comparing Simulators <https://nbviewer.org/github/CQCL/pytket/blob/main/examples/comparing_simulators.ipynb>`_ - An overview of the differences between each of the simulators supported by pytket.
 
 * `Mapping Example <https://nbviewer.org/github/CQCL/pytket/blob/main/examples/mapping_example.ipynb>`_ - An introduction to mapping, the process of making logical circuits respect physical quantum computer architecture.
 
