@@ -16,7 +16,7 @@ To install the pytket extension modules add a hyphen and the extension name to t
 
 `` pip install pytket-quantinuum ``
 
-For a list of pytket extensions see this page: https://cqcl.github.io/pytket-extensions/api/index.html.
+For a list of pytket extensions modules see this page: https://cqcl.github.io/pytket-extensions/api/index.html.
 
 ## Documentation and Examples
 

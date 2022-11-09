@@ -3,7 +3,7 @@ Example notebooks
 
 Here you can find notebooks showing features and example usage of pytket.
 
-Below are some links which allow pytket example notebooks to be viewed though `nbviewer <https://nbviewer.org/>`_. The notebook examples repository can also be found on `github <https://github.com/CQCL/pytket/tree/main/examples>`_ or viewed in nb viewer by clicking `here <https://nbviewer.org/github/CQCL/pytket/tree/main/examples/>`_ .
+Below are some links which allow pytket example notebooks to be viewed though `nbviewer <https://nbviewer.org/>`_. The notebook examples repository can also be found on `github <https://github.com/CQCL/pytket/tree/main/examples>`_ or viewed in nbviewer by clicking `here <https://nbviewer.org/github/CQCL/pytket/tree/main/examples/>`_ .
 You can also run all the examples below, and try out all pytket code (including extensions) in your browser using `Binder <https://mybinder.org/v2/gh/CQCL/pytket/main?filepath=examples>`_ .
 
 .. note:: 
