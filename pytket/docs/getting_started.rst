@@ -20,8 +20,8 @@ those using an older version of pytket, keep up to date by installing with the
 
 There are separate packages for managing the interoperability between pytket and
 other quantum software packages which can also be installed via PyPI. For
-details of these, see the
-`pytket-extensions <https://github.com/CQCL/pytket-extensions>`_ repo.
+a list of these extensions, see the
+`extensions documentation <https://cqcl.github.io/pytket-extensions/api/index.html>`_.
 
 
 The quantum circuit is an abstraction of computation using quantum resources,

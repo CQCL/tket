@@ -15,7 +15,7 @@ pytket
    :align: right 
 
 ``pytket`` is a python module for interfacing with tket, a quantum computing toolkit and optimising compiler developed by `Quantinuum`_. We currently support circuits and device architectures from
-`numerous providers <https://github.com/CQCL/pytket-extensions>`_, allowing the
+`numerous providers <https://cqcl.github.io/pytket-extensions/api/index.html>`_, allowing the
 tket tools to be used in conjunction with projects on their platforms.
 
 ``pytket`` is available for Python 3.8, 3.9 and 3.10, on Linux, MacOS and
