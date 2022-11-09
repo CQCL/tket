@@ -137,7 +137,7 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     
     Manual <https://cqcl.github.io/pytket/manual/index.html>
     Extensions <https://cqcl.github.io/pytket-extensions/api/index.html>
-    Example notebooks <https://nbviewer.org/github/CQCL/pytket/tree/main/examples/>
+    examples.rst
 
 .. toctree::
     :caption: API Reference:
