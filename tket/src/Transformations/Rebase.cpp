@@ -59,7 +59,7 @@ static bool standard_rebase(
         tk1_replacement) {
   bool success = false;
   VertexSet bin;
-  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+  for (const Vertex& v : circ.all_vertices()) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     unsigned n_qubits = circ.n_in_edges_of_type(v, EdgeType::Quantum);
     if (n_qubits <= 1) continue;
@@ -86,7 +86,7 @@ static bool standard_rebase(
     const Op_ptr cx_op = get_op_ptr(OpType::CX);
     success = circ.substitute_all(cx_replacement, cx_op) | success;
   }
-  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+  for (const Vertex& v : circ.all_vertices()) {
     if (bin.contains(v)) continue;
     if (circ.n_in_edges_of_type(v, EdgeType::Quantum) > 1) continue;
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
@@ -124,7 +124,7 @@ static bool standard_rebase_via_tk2(
   VertexSet bin;
 
   // 1. Replace all multi-qubit gates outside the target gateset to TK2.
-  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+  for (const Vertex& v : circ.all_vertices()) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
     unsigned n_qubits = circ.n_in_edges_of_type(v, EdgeType::Quantum);
     if (n_qubits <= 1) continue;
@@ -150,7 +150,7 @@ static bool standard_rebase_via_tk2(
 
   // 2. If TK2 is not in the target gateset, decompose TK2 gates.
   if (!allowed_gates.contains(OpType::TK2)) {
-    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+    for (const Vertex& v : circ.all_vertices()) {
       Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
       bool conditional = op->get_type() == OpType::Conditional;
       if (conditional) {
@@ -175,7 +175,7 @@ static bool standard_rebase_via_tk2(
   }
 
   // 3. Replace 0- and 1-qubit gates by converting to TK1 and replacing.
-  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+  for (const Vertex& v : circ.all_vertices()) {
     if (bin.contains(v)) continue;
     if (circ.n_in_edges_of_type(v, EdgeType::Quantum) > 1) continue;
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);

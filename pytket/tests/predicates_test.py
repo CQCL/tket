@@ -796,6 +796,21 @@ def test_rz_phasedX_squash() -> None:
     assert cmds[-2].op.type == OpType.Rz
 
 
+def test_conditional_phase() -> None:
+    # A conditional H cannot be expressed in terms of TK1 because of the global phase.
+    c = Circuit(2, 2)
+    c.H(0)
+    c.Measure(0, 0)
+    c.H(1, condition_bits=[0], condition_value=1)
+    c.Measure(1, 1)
+    target_gateset = {OpType.TK1, OpType.CX}
+    rebase = auto_rebase_pass(target_gateset)
+    rebase.apply(c)
+    cond_cmds = [cmd for cmd in c.get_commands() if cmd.op.type == OpType.Conditional]
+    assert len(cond_cmds) > 0
+    assert any(cond_cmd.op.op.type not in target_gateset for cond_cmd in cond_cmds)
+
+
 if __name__ == "__main__":
     test_predicate_generation()
     test_compilation_unit_generation()
