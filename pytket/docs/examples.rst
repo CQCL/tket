@@ -49,6 +49,10 @@ Application Focussed Examples
 
 * `UCC VQE example <https://nbviewer.org/github/CQCL/pytket/blob/main/examples/ucc_vqe.ipynb>`_ - Exploring features to help code an efficient implementation of the Variational Quantum Eigensolver using the Unitary Coupled Cluster method for electronic structure.
 
+* `Heisenberg VQE exammple (pytket-qujax) <https://nbviewer.org/github/CQCL/pytket/blob/main/examples/pytket-qujax_heisenberg_vqe.ipynb>`_ - Simulating a VQE experiment with jax using the pytket-qujax extension.
+
+* `QAOA Example (pytket-qujax) https://nbviewer.org/github/CQCL/pytket/blob/main/examples/pytket-qujax_qaoa.ipynb`_ - Solving the Ising model with QAOA using the pytket-qujax extension.
+
 * `Entanglement Swapping <https://nbviewer.org/github/CQCL/pytket/blob/main/examples/entanglement_swapping.ipynb>`_ - Using tomography to analyse the effect of noise channels when iterating the Entanglement Swapping protocol.
 
 * `Forest Portability Example <https://nbviewer.org/github/CQCL/pytket/blob/main/examples/Forest_portability_example.ipynb>`_ - Examples illustrating portability between different backends.
