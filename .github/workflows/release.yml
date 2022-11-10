@@ -202,7 +202,7 @@ jobs:
           cd tket/pytket/tests
           pip install -r requirements.txt
       - name: Run tests
-        run: cd tket/pytket/tests && pytest --ignore=simulator/ --doctest-modules
+        run: cd tket/pytket/tests && pytest --ignore=simulator/
 
   test_macos_wheels:
     name: Test macos wheels
@@ -232,7 +232,7 @@ jobs:
       run: |
         cd tket/pytket/tests
         pip install -r requirements.txt
-        pytest --ignore=simulator/ --doctest-modules
+        pytest --ignore=simulator/
 
   test_macos_M1_wheels:
     name: Test macos (M1) wheels
@@ -265,7 +265,7 @@ jobs:
         pyenv shell tket-${{ matrix.python-version }}
         cd pytket/tests
         pip install -r requirements.txt
-        pytest --ignore=simulator/ --doctest-modules
+        pytest --ignore=simulator/
 
   test_Windows_wheels:
     name: Test Windows wheels
@@ -295,7 +295,7 @@ jobs:
         pip install pytest hypothesis
         cd tket/pytket/tests
         pip install -r requirements.txt
-        pytest --ignore=simulator/ --doctest-modules
+        pytest --ignore=simulator/
 
   publish_to_pypi:
     name: Publish to pypi
