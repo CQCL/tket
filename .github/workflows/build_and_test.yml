@@ -200,18 +200,23 @@ jobs:
       run: |
         cd pytket
         pip install -e . -v
+    - name: Run doctests
+      run: |
+        cd pytket
+        pip install pytest
+        pytest --doctest-modules pytket
     - name: Test pytket with coverage
       if: matrix.os == 'ubuntu-22.04' && matrix.pyver == '3.8'
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-        pytest --ignore=simulator/ --doctest-modules --hypothesis-seed=1 --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
+        pytest --ignore=simulator/ --hypothesis-seed=1 --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
     - name: Test pytket
       if: matrix.os != 'ubuntu-22.04' || matrix.pyver != '3.8'
       run: |
         cd pytket/tests
         pip install -r requirements.txt
-        pytest --ignore=simulator/ --doctest-modules
+        pytest --ignore=simulator/
     - name: Test building docs
       if: matrix.os == 'ubuntu-22.04' && matrix.pyver == '3.9' && github.event_name == 'pull_request'
       timeout-minutes: 20
@@ -276,9 +281,11 @@ jobs:
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.8
-        cd pytket/tests
+        cd pytket
+        pytest --doctest-modules pytket
+        cd tests
         pip install -r requirements.txt
-        pytest --ignore=simulator/ --doctest-modules
+        pytest --ignore=simulator/
     - name: Build pytket (3.9)
       if: github.event_name == 'pull_request'
       run: |
@@ -293,9 +300,11 @@ jobs:
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.9
-        cd pytket/tests
+        cd pytket
+        pytest --doctest-modules pytket
+        cd tests
         pip install -r requirements.txt
-        pytest --ignore=simulator/ --doctest-modules
+        pytest --ignore=simulator/
     - name: Build pytket (3.10)
       if: github.event_name == 'schedule'
       run: |
@@ -310,9 +319,11 @@ jobs:
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.10
-        cd pytket/tests
+        cd pytket
+        pytest --doctest-modules pytket
+        cd tests
         pip install -r requirements.txt
-        pytest --ignore=simulator/ --doctest-modules
+        pytest --ignore=simulator/
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
