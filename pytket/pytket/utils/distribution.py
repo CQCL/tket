@@ -24,8 +24,10 @@ class EmpiricalDistribution:
 
     Supports methods for combination, marginalization, expectation value, etc.
 
-    >>> dist1 = EmpiricalDistribution(Counter({(0, 0): 3, (0, 1): 2, (1, 0): 4, (1, 1): 0}))
-    >>> dist2 = EmpiricalDistribution(Counter({(0, 0): 1, (0, 1): 0, (1, 0): 2, (1, 1): 1}))
+    >>> dist1 = EmpiricalDistribution(Counter({(0, 0): 3, (0, 1): 2, (1, 0): 4, (1, 1):
+    ... 0}))
+    >>> dist2 = EmpiricalDistribution(Counter({(0, 0): 1, (0, 1): 0, (1, 0): 2, (1, 1):
+    ... 1}))
     >>> dist1.sample_mean(lambda x : x[0] + 2*x[1])
     0.8888888888888888
     >>> dist3 = dist2.condition(lambda x: x[0] == 1)
@@ -113,7 +115,8 @@ class EmpiricalDistribution:
             observations."""
         if self.total < 2:
             raise RuntimeError(
-                "At least two samples are required in order to compute the sample variance."
+                "At least two samples are required in order to compute the sample "
+                "variance."
             )
         fs = [(f(x), c) for x, c in self._C.items()]
         M0 = self.total
