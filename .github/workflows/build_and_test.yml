@@ -231,9 +231,8 @@ jobs:
         mypy --config-file=mypy.ini --no-incremental -p pytket -p tests
     - name: Upload pytket coverage artefact
       if: matrix.os == 'ubuntu-22.04' && matrix.pyver == '3.8' && (github.event_name == 'pull_request' || github.event_name == 'push')
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-pages-artifact@v1
       with:
-        name: pytket_test_coverage
         path: pytket/tests/htmlcov
 
   macos-m1:
@@ -335,31 +334,18 @@ jobs:
   publish_pytket_coverage:
     name: Publish pytket coverage
     needs: build_test
-    concurrency: gh_pages
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
     runs-on: ubuntu-22.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}/pytket/test-coverage
     steps:
-    - uses: actions/checkout@v3
-      with:
-        ref: gh-pages
-    - name: Download artefact
-      uses: actions/download-artifact@v3
-      with:
-        name: pytket_test_coverage
-        path: htmlcov/
-    - name: Configure git
-      run: |
-        git config --global user.email "tket-bot@cambridgequantum.com"
-        git config --global user.name  "«$GITHUB_WORKFLOW» github action"
-    - name: Remove old report
-      run: git rm -r docs/pytket/test-coverage
-    - name: Add report to repository
-      run: |
-        mv htmlcov docs/pytket/test-coverage
-        git add -f docs/pytket/test-coverage
-        git commit --allow-empty -m "Add generated pytket coverage report."
-    - name: Publish report
-      run: git push origin gh-pages:gh-pages
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v1
 
   check_pytket_coverage:
     name: Check pytket line and branch coverage
@@ -371,7 +357,7 @@ jobs:
     - name: Download artefact
       uses: actions/download-artifact@v3
       with:
-        name: pytket_test_coverage
+        name: github-pages
         path: pytket-test-coverage/
     - name: Compare with latest report from develop
       run: |
