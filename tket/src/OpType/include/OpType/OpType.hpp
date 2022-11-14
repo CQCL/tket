@@ -607,6 +607,11 @@ enum class OpType {
   QControlBox,
 
   /**
+   * See \ref UniformQControlBox
+   */
+  UniformQControlBox,
+
+  /**
    * See \ref ClassicalExpBox
    */
   ClassicalExpBox,

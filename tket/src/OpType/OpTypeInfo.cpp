@@ -122,6 +122,7 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
       {OpType::PhasePolyBox,
        {"PhasePolyBox", "PhasePolyBox", {}, std::nullopt}},
       {OpType::QControlBox, {"QControlBox", "Ctrl", {}, std::nullopt}},
+      {OpType::UniformQControlBox, {"UniformQControlBox", "UniformQControlBox", {}, std::nullopt}},
       {OpType::Conditional, {"Conditional", "If", {}, std::nullopt}},
       {OpType::ProjectorAssertionBox,
        {"ProjectorAssertionBox", "ProjectorAssertionBox", {}, std::nullopt}},
