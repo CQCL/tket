@@ -362,5 +362,6 @@ jobs:
         path: pytket-test-coverage/
     - name: Compare with latest report from develop
       run: |
+        tar xvf pytket-test-coverage/artifact.tar -C pytket-test-coverage
         wget https://cqcl.github.io/tket/pytket/test-coverage/cov.xml -O oldcov.xml
         ./.github/workflows/compare-pytket-coverage oldcov.xml pytket-test-coverage/cov.xml
