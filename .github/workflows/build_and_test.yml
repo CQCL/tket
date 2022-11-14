@@ -339,6 +339,7 @@ jobs:
     runs-on: ubuntu-22.04
     permissions:
       pages: write
+      deployments: write
       id-token: write
     environment:
       name: github-pages
