@@ -345,9 +345,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}/pytket/test-coverage
     steps:
-    - uses: actions/checkout@v3
-      with:
-        ref: gh-pages
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v1
