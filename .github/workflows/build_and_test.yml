@@ -335,7 +335,7 @@ jobs:
   publish_pytket_coverage:
     name: Publish pytket coverage
     needs: check_pytket_coverage
-    if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+    if: github.event_name == 'push'
     runs-on: ubuntu-22.04
     permissions:
       pages: write
