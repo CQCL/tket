@@ -8,6 +8,7 @@ on:
   push:
     branches:
       - develop
+      - test-noghpages
   schedule:
     # 03:00 every Saturday morning
     - cron: '0 3 * * 6'
@@ -67,7 +68,7 @@ jobs:
     needs: check_changes
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+        os: ['ubuntu-22.04']
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
@@ -166,8 +167,8 @@ jobs:
     needs: build_test_tket
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
-        pyver: ['3.8', '3.9', '3.10']
+        os: ['ubuntu-22.04']
+        pyver: ['3.8']
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
@@ -235,105 +236,105 @@ jobs:
       with:
         path: pytket/tests/htmlcov
 
-  macos-m1:
-    name: Build and test (MacOS M1)
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
-    needs: check_changes
-    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository
-    env:
-      CONAN_REVISIONS_ENABLED: 1
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up conan
-      shell: bash
-      run: |
-        ./.github/workflows/conan-setup
-        export CC=`which conan`
-        echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
-    - name: set option to run full test suite
-      if: github.event_name == 'schedule'
-      run: conan profile update options.tket-tests:full=True tket
-    - name: Remove tket package from cache
-      run: conan remove -f 'tket/*'
-    - name: Build tket
-      if: needs.check_changes.outputs.tket_changed == 'true'
-      run: conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
-    - name: Build and run tket tests
-      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
-      run: conan create --profile=tket recipes/tket-tests
-    - name: Build and run tket proptests
-      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_proptests_changed == 'true'
-      run: conan create --profile=tket recipes/tket-proptests
-    - name: Install pybind11
-      run: conan create --profile=tket recipes/pybind11
-    - name: Build pytket (3.8)
-      if: github.event_name == 'push'
-      run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-3.8
-        PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        cd pytket
-        pip uninstall -y pytket
-        pip install -e . -v
-    - name: Test pytket (3.8)
-      if: github.event_name == 'push'
-      run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-3.8
-        cd pytket
-        pytest --doctest-modules pytket
-        cd tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
-    - name: Build pytket (3.9)
-      if: github.event_name == 'pull_request'
-      run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-3.9
-        PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        cd pytket
-        pip uninstall -y pytket
-        pip install -e . -v
-    - name: Test pytket (3.9)
-      if: github.event_name == 'pull_request'
-      run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-3.9
-        cd pytket
-        pytest --doctest-modules pytket
-        cd tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
-    - name: Build pytket (3.10)
-      if: github.event_name == 'schedule'
-      run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-3.10
-        PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        cd pytket
-        pip uninstall -y pytket
-        pip install -e . -v
-    - name: Test pytket (3.10)
-      if: github.event_name == 'schedule'
-      run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-3.10
-        cd pytket
-        pytest --doctest-modules pytket
-        cd tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
-    - name: Upload package
-      if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
-      run: |
-        conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
-        conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --all -r=tket-libs
-        conan user -c
+  # macos-m1:
+  #   name: Build and test (MacOS M1)
+  #   runs-on: ['self-hosted', 'macOS', 'ARM64']
+  #   needs: check_changes
+  #   if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository
+  #   env:
+  #     CONAN_REVISIONS_ENABLED: 1
+  #   steps:
+  #   - uses: actions/checkout@v3
+  #   - name: Set up conan
+  #     shell: bash
+  #     run: |
+  #       ./.github/workflows/conan-setup
+  #       export CC=`which conan`
+  #       echo "CONAN_CMD=${CC}" >> $GITHUB_ENV
+  #   - name: set option to run full test suite
+  #     if: github.event_name == 'schedule'
+  #     run: conan profile update options.tket-tests:full=True tket
+  #   - name: Remove tket package from cache
+  #     run: conan remove -f 'tket/*'
+  #   - name: Build tket
+  #     if: needs.check_changes.outputs.tket_changed == 'true'
+  #     run: conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
+  #   - name: Build and run tket tests
+  #     if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
+  #     run: conan create --profile=tket recipes/tket-tests
+  #   - name: Build and run tket proptests
+  #     if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_proptests_changed == 'true'
+  #     run: conan create --profile=tket recipes/tket-proptests
+  #   - name: Install pybind11
+  #     run: conan create --profile=tket recipes/pybind11
+  #   - name: Build pytket (3.8)
+  #     if: github.event_name == 'push'
+  #     run: |
+  #       eval "$(pyenv init -)"
+  #       pyenv shell tket-3.8
+  #       PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
+  #       cd pytket
+  #       pip uninstall -y pytket
+  #       pip install -e . -v
+  #   - name: Test pytket (3.8)
+  #     if: github.event_name == 'push'
+  #     run: |
+  #       eval "$(pyenv init -)"
+  #       pyenv shell tket-3.8
+  #       cd pytket
+  #       pytest --doctest-modules pytket
+  #       cd tests
+  #       pip install -r requirements.txt
+  #       pytest --ignore=simulator/
+  #   - name: Build pytket (3.9)
+  #     if: github.event_name == 'pull_request'
+  #     run: |
+  #       eval "$(pyenv init -)"
+  #       pyenv shell tket-3.9
+  #       PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
+  #       cd pytket
+  #       pip uninstall -y pytket
+  #       pip install -e . -v
+  #   - name: Test pytket (3.9)
+  #     if: github.event_name == 'pull_request'
+  #     run: |
+  #       eval "$(pyenv init -)"
+  #       pyenv shell tket-3.9
+  #       cd pytket
+  #       pytest --doctest-modules pytket
+  #       cd tests
+  #       pip install -r requirements.txt
+  #       pytest --ignore=simulator/
+  #   - name: Build pytket (3.10)
+  #     if: github.event_name == 'schedule'
+  #     run: |
+  #       eval "$(pyenv init -)"
+  #       pyenv shell tket-3.10
+  #       PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
+  #       cd pytket
+  #       pip uninstall -y pytket
+  #       pip install -e . -v
+  #   - name: Test pytket (3.10)
+  #     if: github.event_name == 'schedule'
+  #     run: |
+  #       eval "$(pyenv init -)"
+  #       pyenv shell tket-3.10
+  #       cd pytket
+  #       pytest --doctest-modules pytket
+  #       cd tests
+  #       pip install -r requirements.txt
+  #       pytest --ignore=simulator/
+  #   - name: Upload package
+  #     if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
+  #     run: |
+  #       conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+  #       conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --all -r=tket-libs
+  #       conan user -c
 
 
   publish_pytket_coverage:
     name: Publish pytket coverage
-    needs: build_test
+    needs: check_pytket_coverage
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
     runs-on: ubuntu-22.04
     permissions:
@@ -350,7 +351,7 @@ jobs:
   check_pytket_coverage:
     name: Check pytket line and branch coverage
     needs: build_test
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'push'
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
