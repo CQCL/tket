@@ -49,7 +49,7 @@ def test_empirical_distribution() -> None:
     ed4 = ed1 + ed2 + ed3
     assert ed4 == EmpiricalDistribution(Counter({"a": 3, "b": 3, "c": 3, "e": 4}))
 
-    ed0 = EmpiricalDistribution(Counter())
+    ed0: EmpiricalDistribution[str] = EmpiricalDistribution(Counter())
     with pytest.raises(ValueError):
         pd6 = ProbabilityDistribution.from_empirical_distribution(ed0)
     pd6 = ProbabilityDistribution.from_empirical_distribution(ed4)
