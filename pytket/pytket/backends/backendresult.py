@@ -542,7 +542,7 @@ class BackendResult:
 
     def get_empirical_distribution(
         self, bits: Optional[Sequence[Bit]] = None
-    ) -> EmpiricalDistribution:
+    ) -> EmpiricalDistribution[Tuple[int, ...]]:
         """Convert to a :py:class:`pytket.utils.distribution.EmpiricalDistribution`
         where the observations are sequences of 0s and 1s.
 
@@ -558,7 +558,7 @@ class BackendResult:
 
     def get_probability_distribution(
         self, qubits: Optional[Sequence[Qubit]] = None
-    ) -> ProbabilityDistribution:
+    ) -> ProbabilityDistribution[Tuple[int, ...]]:
         """Convert to a :py:class:`pytket.utils.distribution.ProbabilityDistribution`
         where the possible outcomes are sequences of 0s and 1s.
 
