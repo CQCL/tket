@@ -156,7 +156,7 @@ class ProbabilityDistribution(Generic[OT]):
         """
         if any(x < 0 for x in P.values()):
             raise ValueError("Distribution contains negative probabilities")
-        S = sum(P.values())
+        S = sum(p for p in P.values() if not np.isclose(p, 0))
         if not np.isclose(S, 1):
             raise ValueError("Probabilities do not sum to 1")
         self._P: Dict[OT, float] = {x: p for x, p in P.items() if not np.isclose(p, 0)}
