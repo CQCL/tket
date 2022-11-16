@@ -13,7 +13,6 @@
 # limitations under the License.
 
 from collections import Counter
-from typing import cast
 from numpy import isclose
 from pytket.utils import (
     ProbabilityDistribution,
@@ -62,18 +61,18 @@ def test_empirical_distribution() -> None:
 
 def test_marginalization() -> None:
     ed = EmpiricalDistribution(Counter({(0, 0): 3, (0, 1): 2, (1, 0): 4, (1, 1): 0}))
-    ed0_ = ed.condition(lambda x: cast(bool, x[0] == 0))
-    ed1_ = ed.condition(lambda x: cast(bool, x[0] == 1))
-    ed_0 = ed.condition(lambda x: cast(bool, x[1] == 0))
-    ed_1 = ed.condition(lambda x: cast(bool, x[1] == 1))
+    ed0_ = ed.condition(lambda x: x[0] == 0)
+    ed1_ = ed.condition(lambda x: x[0] == 1)
+    ed_0 = ed.condition(lambda x: x[1] == 0)
+    ed_1 = ed.condition(lambda x: x[1] == 1)
     assert ed0_.total == 5
     assert ed1_.total == 4
     assert ed_0.total == 7
     assert ed_1.total == 2
 
     pd = ProbabilityDistribution.from_empirical_distribution(ed)
-    pd0 = pd.condition(lambda x: cast(bool, x[0] == x[1]))
-    pd1 = pd.condition(lambda x: cast(bool, x[0] != x[1]))
+    pd0 = pd.condition(lambda x: x[0] == x[1])
+    pd1 = pd.condition(lambda x: x[0] != x[1])
     assert pd0.support == set([(0, 0)])
     assert isclose(pd1[(0, 1)], 1 / 3)
 
