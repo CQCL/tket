@@ -152,7 +152,7 @@ class ProbabilityDistribution(Generic[OT]):
     def __init__(self, P: Dict[OT, float]):
         """Initialize with a dictionary of probabilities.
 
-        The values must be non-negative and add up to at most 1.
+        The values must be non-negative and add up to 1.
         """
         if any(x < 0 for x in P.values()):
             raise ValueError("Distribution contains negative probabilities")
