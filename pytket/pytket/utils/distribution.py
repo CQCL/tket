@@ -15,6 +15,7 @@
 from collections import Counter, defaultdict
 from typing import cast, Any, Callable, DefaultDict, Dict, List, Set, Tuple, Union
 import numpy as np
+from scipy.stats import rv_discrete  # type: ignore
 
 Number = Union[float, complex]
 
@@ -147,6 +148,16 @@ class ProbabilityDistribution:
     def as_dict(self) -> Dict[Any, float]:
         """Return the distribution as a :py:class:`dict` object."""
         return self._P
+
+    def as_rv_discrete(self) -> Tuple[rv_discrete, List]:
+        """Return the distribution as a :py:class:`scipy.stats.rv_discrete` object.
+
+        This method returns an RV over integers {0, 1, ..., k-1} where k is the size of
+        the support, and a list whose i'th member is the item corresponding to the value
+        i of the RV.
+        """
+        X = list(self._P.keys())
+        return (rv_discrete(values=(range(len(X)), [self._P[x] for x in X])), X)
 
     @property
     def support(self) -> Set:

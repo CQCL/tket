@@ -53,6 +53,10 @@ def test_distribution() -> None:
     pd6 = ProbabilityDistribution.from_empirical_distribution(ed4)
     assert isclose(pd6.as_dict()["a"], ed4.as_counter()["a"] / ed4.total)
 
+    rv, X = pd6.as_rv_discrete()
+    for i, x in enumerate(X):
+        assert isclose(pd6[x], rv.pmf(i))
+
 
 def test_marginalization() -> None:
     ed = EmpiricalDistribution(Counter({(0, 0): 3, (0, 1): 2, (1, 0): 4, (1, 1): 0}))
