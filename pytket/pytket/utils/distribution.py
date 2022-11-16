@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from collections import Counter, defaultdict
-from typing import cast, Any, Callable, DefaultDict, Dict, Set, Union
+from typing import cast, Any, Callable, DefaultDict, Dict, List, Set, Tuple, Union
 import numpy as np
 
 Number = Union[float, complex]
@@ -126,18 +126,10 @@ class EmpiricalDistribution:
 
 
 class ProbabilityDistribution:
-    """Represents an exact (partial) probability distribution.
+    """Represents an exact probability distribution.
 
     Supports methods for combination, marginalization, expectation value, etc. May be
     derived from an :py:class:`EmpriricalDistribution`.
-
-    >>> dist1 = ProbabilityDistribution({0: 0.25, 1: 0.5, 2: 0.25})
-    >>> dist2 = ProbabilityDistribution({0: 0.5, 1: 0.5})
-    >>> dist3 = 0.25 * dist1 + 0.75 * dist2
-    >>> dist3
-    ProbabilityDistribution({0: 0.4375, 1: 0.5, 2: 0.0625})
-    >>> dist3.expectation(lambda x : x**2)
-    0.75
     """
 
     def __init__(self, P: Dict[Any, float]):
@@ -148,49 +140,28 @@ class ProbabilityDistribution:
         if any(x < 0 for x in P.values()):
             raise ValueError("Distribution contains negative probabilities")
         S = sum(P.values())
-        if S > 1 and not np.isclose(S, 1):
-            raise ValueError("Probabilities sum to more than 1")
+        if not np.isclose(S, 1):
+            raise ValueError("Probabilities do not sum to 1")
         self._P: Dict[Any, float] = {x: p for x, p in P.items() if not np.isclose(p, 0)}
-
-    def normalize(self) -> None:
-        """Normalize the distribution so that the probabilities sum to 1."""
-        f = 1 / sum(self._P.values())
-        for x, p in self._P.items():
-            self._P[x] = f * p
 
     def as_dict(self) -> Dict[Any, float]:
         """Return the distribution as a :py:class:`dict` object."""
         return self._P
 
     @property
-    def weight(self) -> float:
-        """Return the total weight of the distribution (sum of the probabilities)."""
-        S = sum(self._P.values())
-        if np.isclose(S, 1):
-            return 1.0
-        return S
-
-    @property
     def support(self) -> Set:
         """Return the support of the distribution (set of all possible outcomes)."""
         return set(self._P.keys())
 
-    @property
-    def is_normalized(self) -> bool:
-        """Check whether the probabilities sum to 1."""
-        return cast(bool, np.isclose(sum(self._P.values()), 1))
-
     def __eq__(self, other: object) -> bool:
-        """Compare distributions for equality when normalized."""
+        """Compare distributions for equality."""
         if not isinstance(other, ProbabilityDistribution):
             return NotImplemented
         keys0 = frozenset(self._P.keys())
         keys1 = frozenset(other._P.keys())
         if keys0 != keys1:
             return False
-        f0 = 1 / self.weight
-        f1 = 1 / other.weight
-        return all(np.isclose(f0 * self._P[x], f1 * other._P[x]) for x in keys0)
+        return all(np.isclose(self._P[x], other._P[x]) for x in keys0)
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({repr(self._P)})"
@@ -199,30 +170,11 @@ class ProbabilityDistribution:
         """Get the probability associated with a possible outcome."""
         return self._P.get(x, 0.0)
 
-    def __add__(self, other: "ProbabilityDistribution") -> "ProbabilityDistribution":
-        """Combine two distributions.
-
-        This simply adds together the (non-normalized) probabilities.
-        """
-        P = defaultdict(float)
-        for x, p in self._P.items():
-            P[x] = p
-        for x, p in other._P.items():
-            P[x] += p
-        return ProbabilityDistribution(P)
-
-    def __mul__(self, s: float) -> "ProbabilityDistribution":
-        """Multiply all probabilities by a (non-negative) scalar."""
-        return ProbabilityDistribution({x: s * p for x, p in self._P.items()})
-
-    __rmul__ = __mul__
-
     @classmethod
     def from_empirical_distribution(
         cls, ed: EmpiricalDistribution
     ) -> "ProbabilityDistribution":
-        """Estimate a normalized probability distribution from an empirical
-        distribution."""
+        """Estimate a probability distribution from an empirical distribution."""
         S = ed.total
         if S == 0:
             raise ValueError("Empirical distribution has no values")
@@ -234,8 +186,12 @@ class ProbabilityDistribution:
 
         :param criterion: A boolean function defined on all possible outcomes.
         """
+        S = sum(c for x, c in self._P.items() if criterion(x))
+        if np.isclose(S, 0):
+            raise ValueError("Condition has probability zero")
+        f = 1 / S
         return ProbabilityDistribution(
-            {x: c for x, c in self._P.items() if criterion(x)}
+            {x: f * c for x, c in self._P.items() if criterion(x)}
         )
 
     def map(self, mapping: Callable[[Any], Any]) -> "ProbabilityDistribution":
@@ -257,14 +213,8 @@ class ProbabilityDistribution:
 
         The provided function maps possible outcomes to numerical values.
 
-        The distribution must be normalized, otherwise an error is raised.
-
         :return: Expectation of the functional.
         """
-        if not self.is_normalized:
-            raise RuntimeError(
-                "Cannot compute expectation of a distribution that is not normalized."
-            )
         return sum(p * f(x) for x, p in self._P.items())
 
     def variance(self, f: Callable[[Any], Number]) -> Number:
@@ -272,13 +222,36 @@ class ProbabilityDistribution:
 
         The provided function maps possible outcomes to numerical values.
 
-        The distribution must be normalized, otherwise an error is raised.
-
         :return: Variance of the functional.
         """
-        if not self.is_normalized:
-            raise RuntimeError(
-                "Cannot compute variance of a distribution that is not normalized."
-            )
         fs = [(f(x), p) for x, p in self._P.items()]
         return sum(p * v**2 for v, p in fs) - (sum(p * v for v, p in fs)) ** 2
+
+
+def convex_combination(
+    dists: List[Tuple[ProbabilityDistribution, float]]
+) -> ProbabilityDistribution:
+    """Return a convex combination of probability distributions.
+
+    Each pair in the list comprises a distribution and a weight. The weights must be
+    non-negative and sum to 1.
+
+    >>> dist1 = ProbabilityDistribution({0: 0.25, 1: 0.5, 2: 0.25})
+    >>> dist2 = ProbabilityDistribution({0: 0.5, 1: 0.5})
+    >>> dist3 = convex_combination([(dist1, 0.25), (dist2, 0.75)])
+    >>> dist3
+    ProbabilityDistribution({0: 0.4375, 1: 0.5, 2: 0.0625})
+    >>> dist3.expectation(lambda x : x**2)
+    0.75
+    """
+    P: DefaultDict[Any, float] = defaultdict(float)
+    S = 0.0
+    for pd, a in dists:
+        if a < 0:
+            raise ValueError("Weights must be non-negative.")
+        for x, p in pd._P.items():
+            P[x] += a * p
+        S += a
+    if not np.isclose(S, 1):
+        raise ValueError("Weights must sum to 1.")
+    return ProbabilityDistribution(P)

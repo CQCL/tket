@@ -17,8 +17,6 @@ pytket.utils
 
 pytket.utils.distribution
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. automodule:: pytket.utils.distribution
-
 .. autoclass:: pytket.utils.distribution.EmpiricalDistribution
     :special-members: __eq__, __getitem__, __add__
     :members:
@@ -26,6 +24,9 @@ pytket.utils.distribution
 .. autoclass:: pytket.utils.distribution.ProbabilityDistribution
     :special-members: _eq__, __getitem__, __add__, __mul__
     :members:
+
+.. automodule:: pytket.utils.distribution
+    :members: convex_combination
 
 pytket.utils.spam
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

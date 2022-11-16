@@ -15,7 +15,11 @@
 from collections import Counter
 from typing import cast
 from numpy import isclose
-from pytket.utils import ProbabilityDistribution, EmpiricalDistribution
+from pytket.utils import (
+    ProbabilityDistribution,
+    EmpiricalDistribution,
+    convex_combination,
+)
 import pytest
 
 
@@ -30,17 +34,9 @@ def test_distribution() -> None:
     assert pd == pd1
     with pytest.raises(ValueError):
         pd2 = ProbabilityDistribution({"a": 2 / 3, "b": 4 / 3})
-    pd2 = ProbabilityDistribution({"a": 1 / 6, "b": 1 / 3})
-    assert pd == pd2
-    pd3 = ProbabilityDistribution({"a": 1 / 12, "b": 1 / 6, "c": 1 / 8})
-    pd4 = pd2 + pd3
-    assert pd4 == ProbabilityDistribution({"a": 0.2, "b": 0.4, "c": 0.1})
-    pd2.normalize()  # a:1/3, b:2/3
-    pd3.normalize()  # a:2/9, b:4/9, c:1/3
-    pd4 = (1 / 3) * pd2 + (2 / 3) * pd3
+    pd3 = ProbabilityDistribution({"a": 2 / 9, "b": 4 / 9, "c": 1 / 3})
+    pd4 = convex_combination([(pd, 1 / 3), (pd3, 2 / 3)])
     assert pd4 == ProbabilityDistribution({"a": 7 / 27, "b": 14 / 27, "c": 2 / 9})
-    pd5 = pd3 * (2 / 3) + pd2 * (1 / 3)
-    assert pd4 == pd5
 
     ed1 = EmpiricalDistribution(Counter({"a": 1, "b": 2}))
     ed2 = EmpiricalDistribution(Counter({"b": 1, "c": 3, "d": 0}))
@@ -55,7 +51,6 @@ def test_distribution() -> None:
     with pytest.raises(ValueError):
         pd6 = ProbabilityDistribution.from_empirical_distribution(ed0)
     pd6 = ProbabilityDistribution.from_empirical_distribution(ed4)
-    assert pd6.is_normalized
     assert isclose(pd6.as_dict()["a"], ed4.as_counter()["a"] / ed4.total)
 
 
@@ -73,14 +68,15 @@ def test_marginalization() -> None:
     pd = ProbabilityDistribution.from_empirical_distribution(ed)
     pd0 = pd.condition(lambda x: cast(bool, x[0] == x[1]))
     pd1 = pd.condition(lambda x: cast(bool, x[0] != x[1]))
-    assert isclose(pd0.weight + pd1.weight, 1)
+    assert pd0.support == set([(0, 0)])
+    assert isclose(pd1[(0, 1)], 1 / 3)
 
 
 def test_representation() -> None:
     ed = EmpiricalDistribution(Counter({"a": 1, "b": 3, 7: 0, (1, 1): 3}))
     assert ed == eval(repr(ed))
 
-    pd = ProbabilityDistribution({"a": 1 / 3, "b": 1 / 7, 7: 0, (1, 1): 1 / 2})
+    pd = ProbabilityDistribution({"a": 1 / 7, "b": 2 / 7, 7: 0, (1, 1): 4 / 7})
     assert pd == eval(repr(pd))
 
 
@@ -91,9 +87,9 @@ def test_mapping() -> None:
     assert ed0 == EmpiricalDistribution(Counter({0: 5, 1: 4}))
     assert ed1 == EmpiricalDistribution(Counter({0: 7, 1: 2}))
 
-    pd = ProbabilityDistribution({(0, 0): 0.3, (0, 1): 0.2, (1, 0): 0.4, (1, 1): 0.0})
+    pd = ProbabilityDistribution({(0, 0): 0.3, (0, 1): 0.3, (1, 0): 0.4, (1, 1): 0.0})
     pd0 = pd.map(lambda x: sum(x))
-    assert pd0 == ProbabilityDistribution({0: 0.3, 1: 0.6})
+    assert pd0 == ProbabilityDistribution({0: 0.3, 1: 0.7})
 
 
 def test_expectation_and_variance() -> None:
