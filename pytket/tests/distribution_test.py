@@ -23,7 +23,7 @@ from pytket.utils import (
 import pytest
 
 
-def test_distribution() -> None:
+def test_probability_distribution() -> None:
     pd = ProbabilityDistribution({"a": 1 / 3, "b": 2 / 3})
     with pytest.raises(ValueError):
         pd = ProbabilityDistribution({"a": 1 / 3, "b": 1, "c": -1 / 3})
@@ -38,6 +38,8 @@ def test_distribution() -> None:
     pd4 = convex_combination([(pd, 1 / 3), (pd3, 2 / 3)])
     assert pd4 == ProbabilityDistribution({"a": 7 / 27, "b": 14 / 27, "c": 2 / 9})
 
+
+def test_empirical_distribution() -> None:
     ed1 = EmpiricalDistribution(Counter({"a": 1, "b": 2}))
     ed2 = EmpiricalDistribution(Counter({"b": 1, "c": 3, "d": 0}))
     assert ed2.support == set(["b", "c"])
