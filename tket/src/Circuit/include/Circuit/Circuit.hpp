@@ -979,6 +979,7 @@ class Circuit {
   void add_bit(const Bit &id, bool reject_dups = true);
   register_t add_q_register(std::string reg_name, unsigned size);
   register_t add_c_register(std::string reg_name, unsigned size);
+  void add_wasm_register();
 
   /**
    * Create the given qubit in the zero state at the beginning of the circuit.
@@ -1619,6 +1620,8 @@ class Circuit {
   // currently public (no bueno)
   DAG dag; /** Representation as directed graph */
   boundary_t boundary;
+  bool wasm_added = false;
+  WASMUID wasmwire;
 
  private:
   std::optional<std::string>
@@ -1709,13 +1712,26 @@ template <class ID>
 Vertex Circuit::add_op(
     const Op_ptr &op, const std::vector<ID> &args,
     std::optional<std::string> opgroup) {
+  // debug
+  if (op->get_type() == OpType::WASM) {
+    std::cout << "\n\nrun add_op from unsigned - add wasm\n\n";
+  }
+
   static_assert(std::is_base_of<UnitID, ID>::value);
   op_signature_t sig = op->get_signature();
-  if (sig.size() != args.size()) {
+
+  if (sig.size() != args.size() && op->get_type() != OpType::WASM) {
     throw CircuitInvalidity(
-        std::to_string(args.size()) + " args provided, but " + op->get_name() +
+        std::to_string(args.size()) + "args provided, but " + op->get_name() +
         " requires " + std::to_string(sig.size()));
   }
+
+  if (sig.size() != (args.size() + 1) && op->get_type() == OpType::WASM) {
+    throw CircuitInvalidity(
+        std::to_string(args.size()) + "args provided, but " + op->get_name() +
+        " requires " + std::to_string(sig.size()));
+  }
+
   if (opgroup) {
     auto opgroupsig = opgroupsigs.find(opgroup.value());
     if (opgroupsig != opgroupsigs.end()) {
@@ -1741,6 +1757,19 @@ Vertex Circuit::add_op(
     Vertex out_vert = get_out(arg);
     Edge pred_out_e = get_nth_in_edge(out_vert, 0);
     preds.push_back(pred_out_e);
+  }
+  if (op->get_type() == OpType::WASM) {
+    if (!wasm_added) {
+      add_wasm_register();
+    }
+    if (sig[args.size()] == EdgeType::WASM) {
+      Vertex out_vert = get_out(wasmwire);
+      Edge pred_out_e = get_nth_in_edge(out_vert, 0);
+      preds.push_back(pred_out_e);
+    } else {
+      throw CircuitInvalidity(
+          "The last element of the signature should be wasm for OpType::WASM");
+    }
   }
   rewire(new_v, preds, sig);
   return new_v;

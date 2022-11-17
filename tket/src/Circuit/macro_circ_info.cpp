@@ -647,15 +647,27 @@ SliceVec Circuit::get_reverse_slices() const {
 
 unsigned Circuit::depth() const {
   unsigned count = 0;
+  std::cout << "Try to get depths - 1\n";
   std::function<bool(Op_ptr)> skip_func = [&](Op_ptr op) {
     return (op->get_type() == OpType::Barrier);
   };
+  std::cout << "Try to get depths - 2\n";
   Circuit::SliceIterator slice_iter(*this, skip_func);
+  std::cout << "Try to get depths - 3\n";
   if (!(*slice_iter).empty()) count++;
+  std::cout << "Try to get depths - 4\n";
+  unsigned i = 0;
   while (!slice_iter.finished()) {
+    i++;
+    std::cout << "while loop - ";
+    std::cout << i << std::endl;
     slice_iter.cut_ = this->next_cut(
         slice_iter.cut_.u_frontier, slice_iter.cut_.b_frontier, skip_func);
     if (!(*slice_iter).empty()) count++;
+    if (i > 100) {
+      std::cout << "problem found\n\n";
+      throw CircuitInvalidity("problem");
+    }
   }
   return count;
 }

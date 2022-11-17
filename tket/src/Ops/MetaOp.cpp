@@ -24,6 +24,9 @@ namespace tket {
 
 MetaOp::MetaOp(OpType type, op_signature_t signature, const std::string& _data)
     : Op(type), signature_(signature), data_(_data) {
+  if (type == OpType::WASMInput) {
+    std::cout << "try to create wasm input" << std::endl;
+  }
   if (!is_metaop_type(type)) throw BadOpType(type);
 }
 

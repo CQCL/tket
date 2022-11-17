@@ -107,6 +107,30 @@ SCENARIO("generating circ with wasm") {
 
     REQUIRE(wop_ptr->is_extern());
   }
+  GIVEN("wasmop add circuit") {
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(4, uv, uv_2, wasm_func, wasm_file);
+
+    REQUIRE(wop_ptr->is_extern());
+  }
+  GIVEN("wasmop add circuit II") {
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(4, uv, uv_2, wasm_func, wasm_file);
+
+    REQUIRE(wop_ptr->is_extern());
+  }
+  GIVEN("wasmop add circuit III") {
+    Circuit u(6, 6);
+
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(1, uv_2, uv_3, wasm_func, wasm_file);
+
+    u.add_op<unsigned>(wop_ptr, {0});
+
+    std::cout << "try to get depth\n\n";
+    REQUIRE(u.depth() == 0);
+    std::cout << "try to get depth II\n\n";
+  }
 }
 
 }  // namespace test_Boxes

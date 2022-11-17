@@ -80,11 +80,18 @@ Vertex Circuit::add_op<unsigned>(
     const Op_ptr& gate, const std::vector<unsigned>& args,
     std::optional<std::string> opgroup) {
   op_signature_t sig = gate->get_signature();
-  if (sig.size() != args.size()) {
+  if (sig.size() != args.size() && gate->get_type() != OpType::WASM) {
     throw CircuitInvalidity(
         std::to_string(args.size()) + " args provided, but " +
         gate->get_name() + " requires " + std::to_string(sig.size()));
   }
+
+  if (sig.size() != (args.size() + 1) && gate->get_type() == OpType::WASM) {
+    throw CircuitInvalidity(
+        std::to_string(args.size()) + " args provided, but " +
+        gate->get_name() + " requires " + std::to_string(sig.size()));
+  }
+
   OpType optype = gate->get_type();
   unit_vector_t arg_ids;
   for (unsigned i = 0; i < args.size(); ++i) {
@@ -457,6 +464,18 @@ register_t Circuit::add_c_register(std::string reg_name, unsigned size) {
     ids.insert({i, id});
   }
   return ids;
+}
+
+void Circuit::add_wasm_register() {
+  if (!wasm_added) {
+    Vertex in = add_vertex(OpType::WASMInput);
+    Vertex out = add_vertex(OpType::WASMOutput);
+    add_edge({in, 0}, {out, 0}, EdgeType::WASM);
+    WASMUID wuid = WASMUID();
+    wasmwire = wuid;
+    boundary.insert({wasmwire, in, out});
+    wasm_added = true;
+  }
 }
 
 void Circuit::qubit_create(const Qubit& id) {

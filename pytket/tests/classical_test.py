@@ -152,6 +152,9 @@ def test_add_c_setreg_raises_runtime_error() -> None:
 def test_wasm() -> None:
     c = Circuit(0, 6)
     c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)])
+    print("")
+    print("add second wasm op")
+    print("")
     c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(2)])
     c._add_wasm("funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 3])
     c._add_wasm("funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 4])
@@ -1096,3 +1099,6 @@ def test_renaming() -> None:
         circ.rename_units(bmap)
     err_msg = f"Can't rename bits in {a.__repr__()}"
     assert err_msg in str(e.value)
+
+if __name__ == "__main__":
+    test_wasm()

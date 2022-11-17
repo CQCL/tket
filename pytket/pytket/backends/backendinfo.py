@@ -281,7 +281,7 @@ class BackendInfo:
             args["architecture"] = Architecture.from_dict(args["architecture"])
         else:
             args["architecture"] = FullyConnected.from_dict(args["architecture"])
-        args["gate_set"] = {OpType(op) for op in args["gate_set"]}
+        args["gate_set"] = {OpType(op) for op in args["gate_set"]}        
         args["all_node_gate_errors"] = _deserialize_all_node_gate_errors(
             args["all_node_gate_errors"]
         )

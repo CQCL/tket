@@ -682,12 +682,14 @@ std::pair<Vertex, Edge> Circuit::get_prev_pair(
 
 bool Circuit::detect_initial_Op(const Vertex &vertex) const {
   OpType type = get_OpType_from_Vertex(vertex);
-  return is_initial_q_type(type) || type == OpType::ClInput;
+  return is_initial_q_type(type) || type == OpType::ClInput ||
+         type == OpType::WASMInput;
 }
 
 bool Circuit::detect_final_Op(const Vertex &vertex) const {
   OpType type = get_OpType_from_Vertex(vertex);
-  return is_final_q_type(type) || type == OpType::ClOutput;
+  return is_final_q_type(type) || type == OpType::ClOutput ||
+         type == OpType::WASMOutput;
 }
 
 bool Circuit::detect_boundary_Op(const Vertex &vertex) const {
