@@ -154,12 +154,11 @@ class ProbabilityDistribution(Generic[T0]):
 
         The values must be non-negative and add up to 1.
         """
-        if any(x < 0 for x in P.values()):
+        self._P = {x: p for x, p in P.items() if not np.isclose(p, 0)}
+        if any(x < 0 for x in self._P.values()):
             raise ValueError("Distribution contains negative probabilities")
-        S = sum(p for p in P.values() if not np.isclose(p, 0))
-        if not np.isclose(S, 1):
+        if not np.isclose(sum(self._P.values()), 1):
             raise ValueError("Probabilities do not sum to 1")
-        self._P: Dict[T0, float] = {x: p for x, p in P.items() if not np.isclose(p, 0)}
 
     def as_dict(self) -> Dict[T0, float]:
         """Return the distribution as a :py:class:`dict` object."""
