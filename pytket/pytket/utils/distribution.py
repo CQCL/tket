@@ -30,11 +30,11 @@ import numpy as np
 from scipy.stats import rv_discrete  # type: ignore
 
 Number = Union[float, complex]
-OT = TypeVar("OT")
-NT = TypeVar("NT")
+T0 = TypeVar("T0")
+T1 = TypeVar("T1")
 
 
-class EmpiricalDistribution(Generic[OT]):
+class EmpiricalDistribution(Generic[T0]):
     """Represents an empirical distribution of values.
 
     Supports methods for combination, marginalization, expectation value, etc.
@@ -53,10 +53,10 @@ class EmpiricalDistribution(Generic[OT]):
     EmpiricalDistribution(Counter({(1, 0): 6, (0, 0): 3, (0, 1): 2, (1, 1): 1}))
     """
 
-    def __init__(self, C: Counter[OT]):
-        self._C: Counter[OT] = Counter({x: c for x, c in C.items() if c > 0})
+    def __init__(self, C: Counter[T0]):
+        self._C: Counter[T0] = Counter({x: c for x, c in C.items() if c > 0})
 
-    def as_counter(self) -> Counter[OT]:
+    def as_counter(self) -> Counter[T0]:
         """Return the distribution as a :py:class:`collections.Counter` object."""
         return self._C
 
@@ -79,17 +79,17 @@ class EmpiricalDistribution(Generic[OT]):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({repr(self._C)})"
 
-    def __getitem__(self, x: OT) -> int:
+    def __getitem__(self, x: T0) -> int:
         """Get the count associated with an observation."""
         return self._C[x]
 
     def __add__(
-        self, other: "EmpiricalDistribution[OT]"
-    ) -> "EmpiricalDistribution[OT]":
+        self, other: "EmpiricalDistribution[T0]"
+    ) -> "EmpiricalDistribution[T0]":
         """Combine two distributions."""
         return EmpiricalDistribution(self._C + other._C)
 
-    def condition(self, criterion: Callable[[OT], bool]) -> "EmpiricalDistribution[OT]":
+    def condition(self, criterion: Callable[[T0], bool]) -> "EmpiricalDistribution[T0]":
         """Return a new distribution conditioned on the given criterion.
 
         :param criterion: A boolean function defined on all possible observations.
@@ -98,7 +98,7 @@ class EmpiricalDistribution(Generic[OT]):
             Counter({x: c for x, c in self._C.items() if criterion(x)})
         )
 
-    def map(self, mapping: Callable[[OT], NT]) -> "EmpiricalDistribution[NT]":
+    def map(self, mapping: Callable[[T0], T1]) -> "EmpiricalDistribution[T1]":
         """Return a distribution over a transformed domain.
 
         The provided function maps elements in the original domain to new elements. If
@@ -107,12 +107,12 @@ class EmpiricalDistribution(Generic[OT]):
         :param mapping: A function defined on all possible observations, mapping them
             to another domain.
         """
-        C: Counter[NT] = Counter()
+        C: Counter[T1] = Counter()
         for x, c in self._C.items():
             C[mapping(x)] += c
         return EmpiricalDistribution(C)
 
-    def sample_mean(self, f: Callable[[OT], Number]) -> Number:
+    def sample_mean(self, f: Callable[[T0], Number]) -> Number:
         """Compute the sample mean of a functional.
 
         The provided function maps observations to numerical values.
@@ -120,7 +120,7 @@ class EmpiricalDistribution(Generic[OT]):
         :return: Estimate of the mean of the functional based on the observations."""
         return sum(c * f(x) for x, c in self._C.items()) / self.total
 
-    def sample_variance(self, f: Callable[[OT], Number]) -> Number:
+    def sample_variance(self, f: Callable[[T0], Number]) -> Number:
         """Compute the sample variance of a functional.
 
         The provided function maps observations to numerical values.
@@ -142,14 +142,14 @@ class EmpiricalDistribution(Generic[OT]):
         return (M2 - M1**2 / M0) / (M0 - 1)
 
 
-class ProbabilityDistribution(Generic[OT]):
+class ProbabilityDistribution(Generic[T0]):
     """Represents an exact probability distribution.
 
     Supports methods for combination, marginalization, expectation value, etc. May be
     derived from an :py:class:`EmpriricalDistribution`.
     """
 
-    def __init__(self, P: Dict[OT, float]):
+    def __init__(self, P: Dict[T0, float]):
         """Initialize with a dictionary of probabilities.
 
         The values must be non-negative and add up to 1.
@@ -159,9 +159,9 @@ class ProbabilityDistribution(Generic[OT]):
         S = sum(p for p in P.values() if not np.isclose(p, 0))
         if not np.isclose(S, 1):
             raise ValueError("Probabilities do not sum to 1")
-        self._P: Dict[OT, float] = {x: p for x, p in P.items() if not np.isclose(p, 0)}
+        self._P: Dict[T0, float] = {x: p for x, p in P.items() if not np.isclose(p, 0)}
 
-    def as_dict(self) -> Dict[OT, float]:
+    def as_dict(self) -> Dict[T0, float]:
         """Return the distribution as a :py:class:`dict` object."""
         return self._P
 
@@ -176,7 +176,7 @@ class ProbabilityDistribution(Generic[OT]):
         return (rv_discrete(values=(range(len(X)), [self._P[x] for x in X])), X)
 
     @property
-    def support(self) -> Set[OT]:
+    def support(self) -> Set[T0]:
         """Return the support of the distribution (set of all possible outcomes)."""
         return set(self._P.keys())
 
@@ -193,14 +193,14 @@ class ProbabilityDistribution(Generic[OT]):
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}({repr(self._P)})"
 
-    def __getitem__(self, x: OT) -> float:
+    def __getitem__(self, x: T0) -> float:
         """Get the probability associated with a possible outcome."""
         return self._P.get(x, 0.0)
 
     @classmethod
     def from_empirical_distribution(
-        cls, ed: EmpiricalDistribution[OT]
-    ) -> "ProbabilityDistribution[OT]":
+        cls, ed: EmpiricalDistribution[T0]
+    ) -> "ProbabilityDistribution[T0]":
         """Estimate a probability distribution from an empirical distribution."""
         S = ed.total
         if S == 0:
@@ -209,8 +209,8 @@ class ProbabilityDistribution(Generic[OT]):
         return cls({x: f * c for x, c in ed.as_counter().items()})
 
     def condition(
-        self, criterion: Callable[[OT], bool]
-    ) -> "ProbabilityDistribution[OT]":
+        self, criterion: Callable[[T0], bool]
+    ) -> "ProbabilityDistribution[T0]":
         """Return a new distribution conditioned on the given criterion.
 
         :param criterion: A boolean function defined on all possible outcomes.
@@ -223,7 +223,7 @@ class ProbabilityDistribution(Generic[OT]):
             {x: f * c for x, c in self._P.items() if criterion(x)}
         )
 
-    def map(self, mapping: Callable[[OT], NT]) -> "ProbabilityDistribution[NT]":
+    def map(self, mapping: Callable[[T0], T1]) -> "ProbabilityDistribution[T1]":
         """Return a distribution over a transformed domain.
 
         The provided function maps elements in the original domain to new elements. If
@@ -237,7 +237,7 @@ class ProbabilityDistribution(Generic[OT]):
             P[mapping(x)] += p
         return ProbabilityDistribution(P)
 
-    def expectation(self, f: Callable[[OT], Number]) -> Number:
+    def expectation(self, f: Callable[[T0], Number]) -> Number:
         """Compute the expectation value of a functional.
 
         The provided function maps possible outcomes to numerical values.
@@ -246,7 +246,7 @@ class ProbabilityDistribution(Generic[OT]):
         """
         return sum(p * f(x) for x, p in self._P.items())
 
-    def variance(self, f: Callable[[OT], Number]) -> Number:
+    def variance(self, f: Callable[[T0], Number]) -> Number:
         """Compute the variance of a functional.
 
         The provided function maps possible outcomes to numerical values.
@@ -258,8 +258,8 @@ class ProbabilityDistribution(Generic[OT]):
 
 
 def convex_combination(
-    dists: List[Tuple[ProbabilityDistribution[OT], float]]
-) -> ProbabilityDistribution[OT]:
+    dists: List[Tuple[ProbabilityDistribution[T0], float]]
+) -> ProbabilityDistribution[T0]:
     """Return a convex combination of probability distributions.
 
     Each pair in the list comprises a distribution and a weight. The weights must be
