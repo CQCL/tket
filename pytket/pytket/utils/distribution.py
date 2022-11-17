@@ -66,7 +66,7 @@ class EmpiricalDistribution(Generic[T0]):
         return sum(self._C.values())  # Counter.total() new in 3.10
 
     @property
-    def support(self) -> Set:
+    def support(self) -> Set[T0]:
         """Return the support of the distribution (set of all observations)."""
         return set(self._C.keys())
 
@@ -165,7 +165,7 @@ class ProbabilityDistribution(Generic[T0]):
         """Return the distribution as a :py:class:`dict` object."""
         return self._P
 
-    def as_rv_discrete(self) -> Tuple[rv_discrete, List]:
+    def as_rv_discrete(self) -> Tuple[rv_discrete, List[T0]]:
         """Return the distribution as a :py:class:`scipy.stats.rv_discrete` object.
 
         This method returns an RV over integers {0, 1, ..., k-1} where k is the size of
@@ -273,7 +273,7 @@ def convex_combination(
     >>> dist3.expectation(lambda x : x**2)
     0.75
     """
-    P: DefaultDict[Any, float] = defaultdict(float)
+    P: DefaultDict[T0, float] = defaultdict(float)
     S = 0.0
     for pd, a in dists:
         if a < 0:
