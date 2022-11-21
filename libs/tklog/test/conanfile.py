@@ -27,7 +27,7 @@ class TestTklogConan(ConanFile):
     default_options = {"with_coverage": False}
     generators = "cmake"
     exports_sources = "*"
-    requires = ["tklog/0.1.2", "catch2/3.1.0"]
+    requires = ["tklog/0.1.2", "catch2/3.2.0"]
 
     _cmake = None
 
