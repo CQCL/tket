@@ -592,12 +592,14 @@ def test_phase_return_circ() -> None:
 
 
 @given(st.circuits())
+@settings(deadline=None)
 def test_circuit_to_serializable_json_roundtrip(circuit: Circuit) -> None:
     serializable_form = circuit.to_dict()
     assert json.loads(json.dumps(serializable_form)) == serializable_form
 
 
 @given(st.circuits())
+@settings(deadline=None)
 def test_circuit_pickle_roundtrip(circuit: Circuit) -> None:
     assert pickle.loads(pickle.dumps(circuit)) == circuit
 
