@@ -12,6 +12,12 @@ Fixes:
   updated to handle ``OpType.Phase`` as well when conditional operations are
   present.
 
+API changes:
+
+* The default value of ``optimisation_level`` in ``Backend`` methods that have
+  this parameter (such as ``get_compiled_circuit()``) has been changed from 1 to
+  2.
+
 Minor new features:
 
 * Added shortcuts for adding ``U1``, ``U2``, ``U3``, ``TK1``, ``TK2``, ``CU1``, 

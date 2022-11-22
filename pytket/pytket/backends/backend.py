@@ -144,7 +144,7 @@ class Backend(ABC):
         ...
 
     @abstractmethod
-    def default_compilation_pass(self, optimisation_level: int = 1) -> BasePass:
+    def default_compilation_pass(self, optimisation_level: int = 2) -> BasePass:
         """
         A suggested compilation pass that will will, if possible, produce an equivalent
         circuit suitable for running on this backend.
@@ -161,9 +161,9 @@ class Backend(ABC):
 
             - Level 0 does the minimum required to solves the device constraints,
               without any optimisation.
-            - Level 1 (the default) additionally performs some light optimisations.
-            - Level 2 adds more intensive optimisations that can increase compilation
-              time but should give the best results from execution.
+            - Level 1 additionally performs some light optimisations.
+            - Level 2 (the default) adds more computationally intensive optimisations
+              that should give the best results from execution.
 
         :type optimisation_level: int, optional
         :return: Compilation pass guaranteeing required predicates.
@@ -172,7 +172,7 @@ class Backend(ABC):
         ...
 
     def get_compiled_circuit(
-        self, circuit: Circuit, optimisation_level: int = 1
+        self, circuit: Circuit, optimisation_level: int = 2
     ) -> Circuit:
         """
         Return a single circuit compiled with :py:meth:`default_compilation_pass`. See
@@ -183,7 +183,7 @@ class Backend(ABC):
         return return_circuit
 
     def get_compiled_circuits(
-        self, circuits: Sequence[Circuit], optimisation_level: int = 1
+        self, circuits: Sequence[Circuit], optimisation_level: int = 2
     ) -> List[Circuit]:
         """Compile a sequence of circuits with :py:meth:`default_compilation_pass`
         and return the list of compiled circuits (does not act in place).
@@ -208,7 +208,7 @@ class Backend(ABC):
         :type circuit: Sequence[Circuit]
         :param optimisation_level: The level of optimisation to perform during
             compilation. See :py:meth:`default_compilation_pass` for a description of
-            the different levels (0, 1 or 2). Defaults to 1.
+            the different levels (0, 1 or 2). Defaults to 2.
         :type optimisation_level: int, optional
         :return: Compiled circuits.
         :rtype: List[Circuit]
