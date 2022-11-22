@@ -64,6 +64,7 @@ class CoherentTableau {
    * @param xmat The X component of the rows in the symplectic representation.
    * @param zmat The Z component of the rows in the symplectic representation.
    * @param phase The phases of the rows.
+   * @param n_ins The number of qubits identified as inputs.
    */
   explicit CoherentTableau(
       const MatrixXb& xmat, const MatrixXb& zmat, const VectorXb& phase,
