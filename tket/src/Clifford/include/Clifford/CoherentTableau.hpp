@@ -145,6 +145,7 @@ class CoherentTableau {
    * @param pauli The string of the Pauli gadget
    * @param half_pis The Clifford angle: {0, 1, 2, 3} represents {0, pi/2, pi,
    * -pi/2}
+   * @param seg Whether to apply the Pauli gadget over the inputs or outputs
    */
   void apply_pauli(
       const QubitPauliTensor& pauli, unsigned half_pis,
