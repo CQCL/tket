@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <boost/foreach.hpp>
 #include <stdexcept>
 
 #include "Converters.hpp"
@@ -317,12 +318,11 @@ std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
         }
       }
 
-      // Reduce input string to just Z_in_qb
-      if (row_paulis.first.string.get(in_qb) == Pauli::Y) {
-        // If it is a Y, extract a Vdg gate so the Pauli is exactly Z
-        in_circ.add_op<Qubit>(OpType::Vdg, {in_qb});
-        tab.apply_V(in_qb, CoherentTableau::TableauSegment::Input);
-      }
+      // Reduce input string to just Z_in_qb.
+      // No need to consider different paulis on in_qb: if we had X or Y, this
+      // row would have been identified as x_row instead of Z row, and if
+      // another row was already chosen as x_row then canonical gaussian form
+      // would imply all other rows do not contain X_in_qb or Y_in_qb
       for (const std::pair<const Qubit, Pauli>& qbp :
            row_paulis.first.string.map) {
         if (qbp.first == in_qb) continue;
@@ -475,7 +475,7 @@ std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
     }
     std::pair<Qubit, Pauli> alternate_qb = col_lookup.at(leading_col);
 
-    if (alternate_qb.second == Pauli::X) {
+    if (alternate_qb.second != Pauli::X) {
       // Make the alternate point of contact X so we only need one set of rule
       // for eliminating Paulis
       tab.apply_gate(
@@ -484,7 +484,8 @@ std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
       out_circ_tp.add_op<Qubit>(OpType::H, {alternate_qb.first});
     }
 
-    CoherentTableau::row_tensor_t row_paulis = tab.get_row(r);
+    CoherentTableau::row_tensor_t row_paulis =
+        tab.get_row(tab.get_n_rows() - out_stabs + r);
 
     for (const std::pair<const Qubit, Pauli>& qbp :
          row_paulis.second.string.map) {
@@ -501,17 +502,6 @@ std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
               CoherentTableau::TableauSegment::Output);
           break;
         }
-        case Pauli::Y: {
-          // CY does not have a transpose OpType defined so decompose
-          out_circ_tp.add_op<Qubit>(OpType::S, {qbp.first});
-          out_circ_tp.add_op<Qubit>(
-              OpType::CX, {alternate_qb.first, qbp.first});
-          out_circ_tp.add_op<Qubit>(OpType::Sdg, {qbp.first});
-          tab.apply_gate(
-              OpType::CY, {alternate_qb.first, qbp.first},
-              CoherentTableau::TableauSegment::Output);
-          break;
-        }
         case Pauli::Z: {
           out_circ_tp.add_op<Qubit>(
               OpType::CZ, {alternate_qb.first, qbp.first});
@@ -521,6 +511,9 @@ std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
           break;
         }
         default: {
+          // Don't have to care about Y since any matched qubit has a row that
+          // is reduced to either X or Z and all other rows must commute with
+          // that
           break;
         }
       }
@@ -571,6 +564,15 @@ std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
       tab.tab_.xmat_.bottomRows(out_stabs),
       tab.tab_.zmat_.bottomRows(out_stabs), tab.tab_.phase_.tail(out_stabs));
 
+  // Can't use a template with multiple parameters within a macro since the
+  // comma will register as an argument delimiter for the macro
+  using match_entry = boost::bimap<Qubit, Qubit>::left_const_reference;
+  BOOST_FOREACH (match_entry entry, matched_qubits.left) {
+    tab.discard_qubit(entry.first, CoherentTableau::TableauSegment::Input);
+    tab.discard_qubit(entry.second, CoherentTableau::TableauSegment::Output);
+  }
+  tab.canonical_column_order(CoherentTableau::TableauSegment::Output);
+
   // Only remaining rows must be completely over the outputs. Call
   // diagonalisation methods to diagonalise coherent subspace
   to_diag.clear();
@@ -603,9 +605,9 @@ std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
   // Obtain CX instructions as column operations
   col_ops = gaussian_elimination_col_ops(tab.tab_.zmat_);
   for (const std::pair<unsigned, unsigned>& op : col_ops) {
-    tab.tab_.apply_CX(op.first, op.second);
-    CoherentTableau::col_key_t ctrl = tab.col_index_.right.at(op.first);
-    CoherentTableau::col_key_t trgt = tab.col_index_.right.at(op.second);
+    tab.tab_.apply_CX(op.second, op.first);
+    CoherentTableau::col_key_t ctrl = tab.col_index_.right.at(op.second);
+    CoherentTableau::col_key_t trgt = tab.col_index_.right.at(op.first);
     out_circ_tp.add_op<Qubit>(OpType::CX, {ctrl.first, trgt.first});
   }
 
@@ -628,13 +630,36 @@ std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
   }
 
   // Remaining outputs that aren't zero initialised or matched need to be
-  // initialised in the maximally-mixed state
+  // initialised in the maximally-mixed state.
+  // Also match up unmatched outputs to either unmatched inputs or reusable
+  // output names (ones that are already matched up to other input names),
+  // preferring the qubit of the same name
+  std::list<Qubit> reusable_names;
   for (const Qubit& out_qb : output_qubits) {
-    if (matched_qubits.right.find(out_qb) == matched_qubits.right.end() &&
-        zero_initialised.find(out_qb) == zero_initialised.end()) {
-      out_circ.qubit_create(out_qb);
-      out_circ.add_op<Qubit>(OpType::H, {out_qb});
-      out_circ.add_op<Qubit>(OpType::Collapse, {out_qb});
+    if (matched_qubits.right.find(out_qb) != matched_qubits.right.end() &&
+        matched_qubits.left.find(out_qb) == matched_qubits.left.end())
+      reusable_names.push_back(out_qb);
+  }
+  for (const Qubit& out_qb : output_qubits) {
+    if (matched_qubits.right.find(out_qb) == matched_qubits.right.end()) {
+      if (zero_initialised.find(out_qb) == zero_initialised.end()) {
+        out_circ.qubit_create(out_qb);
+        out_circ.add_op<Qubit>(OpType::H, {out_qb});
+        out_circ.add_op<Qubit>(OpType::Collapse, {out_qb});
+      }
+      if (matched_qubits.left.find(out_qb) == matched_qubits.left.end()) {
+        matched_qubits.insert({out_qb, out_qb});
+        join_permutation.insert({out_qb, out_qb});
+      } else {
+        // Since the matching is a bijection, matched_qubits.left -
+        // matched_qubits.right (set difference) is the same size as
+        // matched_qubits.right - matched_qubits.left, so there will be exactly
+        // the right number of reusable names to pull from here
+        Qubit name = reusable_names.front();
+        reusable_names.pop_front();
+        matched_qubits.insert({name, out_qb});
+        join_permutation.insert({out_qb, name});
+      }
     }
   }
 

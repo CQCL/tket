@@ -120,6 +120,8 @@ std::ostream &operator<<(std::ostream &os, const SymplecticTableau &tab) {
 bool SymplecticTableau::operator==(const SymplecticTableau &other) const {
   bool same = this->n_rows_ == other.n_rows_;
   same &= this->n_qubits_ == other.n_qubits_;
+  // &= does not short-circuit but we need to guard the following checks
+  if (!same) return false;
   same &= this->xmat_ == other.xmat_;
   same &= this->zmat_ == other.zmat_;
   same &= this->phase_ == other.phase_;
@@ -323,11 +325,18 @@ MatrixXb SymplecticTableau::anticommuting_rows() const {
 }
 
 unsigned SymplecticTableau::rank() const {
-  MatrixXb fullmat(n_rows_, 2 * n_qubits_);
-  fullmat << xmat_, zmat_;
-  Eigen::FullPivLU<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> lu(
-      fullmat.cast<double>());
-  return lu.rank();
+  // Create a copy in gaussian form and count the empty rows
+  SymplecticTableau copy(*this);
+  copy.gaussian_form();
+  unsigned empty_rows = 0;
+  for (unsigned i = 0; i < n_rows_; ++i) {
+    if (copy.xmat_.row(n_rows_ - 1 - i).isZero() &&
+        copy.zmat_.row(n_rows_ - 1 - i).isZero())
+      ++empty_rows;
+    else
+      break;
+  }
+  return n_rows_ - empty_rows;
 }
 
 SymplecticTableau SymplecticTableau::conjugate() const {

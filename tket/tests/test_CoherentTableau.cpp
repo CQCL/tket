@@ -84,6 +84,17 @@ SCENARIO("Correct creation of CoherentTableau") {
     REQUIRE(
         tab.get_row(2) == CoherentTableau::row_tensor_t{
                               {}, QubitPauliTensor(Qubit(2), Pauli::Z)});
+    REQUIRE(
+        tab.get_row_product({0, 1}) ==
+        CoherentTableau::row_tensor_t{
+            QubitPauliTensor(Qubit(0), Pauli::Y),
+            QubitPauliTensor(Qubit(0), Pauli::Y, -1.)});
+    THEN("Serialize and deserialize") {
+      nlohmann::json j_tab = tab;
+      CoherentTableau tab2{{}};
+      j_tab.get_to(tab2);
+      REQUIRE(tab == tab2);
+    }
   }
   GIVEN("Applying S gates") {
     CoherentTableau tab(3);
@@ -113,6 +124,7 @@ SCENARIO("Correct creation of CoherentTableau") {
                               {}, QubitPauliTensor(Qubit(2), Pauli::Z)});
     // Applying an S at the input end adds up to a net Z
     tab.apply_S(Qubit(0), CoherentTableau::TableauSegment::Input);
+    tab.canonical_column_order();
     tab.gaussian_form();
     REQUIRE(
         tab.get_row(0) == CoherentTableau::row_tensor_t{
@@ -128,6 +140,20 @@ SCENARIO("Correct creation of CoherentTableau") {
     REQUIRE(
         tab.get_row(3) == CoherentTableau::row_tensor_t{
                               {}, QubitPauliTensor(Qubit(2), Pauli::Z)});
+    THEN("Compare to explicitly generated tableau") {
+      std::list<CoherentTableau::row_tensor_t> rows;
+      rows.push_back(
+          {QubitPauliTensor(Qubit(0), Pauli::X),
+           QubitPauliTensor(Qubit(0), Pauli::X, -1.)});
+      rows.push_back(
+          {QubitPauliTensor(Qubit(0), Pauli::Z),
+           QubitPauliTensor(Qubit(0), Pauli::Z)});
+      rows.push_back({QubitPauliTensor(Qubit(1), Pauli::Z), {}});
+      rows.push_back({{}, QubitPauliTensor(Qubit(2), Pauli::Z)});
+      CoherentTableau tab2(rows);
+      tab2.canonical_column_order();
+      REQUIRE(tab == tab2);
+    }
   }
   GIVEN("Applying V gates") {
     CoherentTableau tab(3);
@@ -312,9 +338,87 @@ SCENARIO("Correct creation of CoherentTableau") {
     correct.gaussian_form();
     REQUIRE(result == correct);
   }
+  GIVEN("Testing more gates") {
+    CoherentTableau tab(3);
+    tab.apply_gate(
+        OpType::Y, {Qubit(0)}, CoherentTableau::TableauSegment::Input);
+    tab.apply_gate(
+        OpType::noop, {Qubit(0)}, CoherentTableau::TableauSegment::Input);
+    tab.apply_gate(
+        OpType::BRIDGE, {Qubit(0), Qubit(1), Qubit(2)},
+        CoherentTableau::TableauSegment::Input);
+    tab.apply_gate(
+        OpType::SWAP, {Qubit(0), Qubit(1)},
+        CoherentTableau::TableauSegment::Input);
+    tab.apply_gate(
+        OpType::Reset, {Qubit(0)}, CoherentTableau::TableauSegment::Input);
+
+    tab.canonical_column_order();
+    tab.gaussian_form();
+    REQUIRE(tab.get_n_rows() == 5);
+    REQUIRE(
+        tab.get_row(0) ==
+        CoherentTableau::row_tensor_t{
+            QubitPauliTensor(Qubit(1), Pauli::X),
+            QubitPauliTensor(
+                {{Qubit(0), Pauli::X}, {Qubit(2), Pauli::X}}, -1.)});
+    REQUIRE(
+        tab.get_row(1) == CoherentTableau::row_tensor_t{
+                              QubitPauliTensor(Qubit(1), Pauli::Z),
+                              QubitPauliTensor(Qubit(0), Pauli::Z, -1.)});
+    REQUIRE(
+        tab.get_row(2) == CoherentTableau::row_tensor_t{
+                              QubitPauliTensor(Qubit(2), Pauli::X),
+                              QubitPauliTensor(Qubit(2), Pauli::X)});
+    REQUIRE(
+        tab.get_row(3) ==
+        CoherentTableau::row_tensor_t{
+            QubitPauliTensor(Qubit(2), Pauli::Z),
+            QubitPauliTensor(
+                {{Qubit(0), Pauli::Z}, {Qubit(2), Pauli::Z}}, -1.)});
+    REQUIRE(
+        tab.get_row(4) == CoherentTableau::row_tensor_t{
+                              {}, QubitPauliTensor(Qubit(1), Pauli::Z)});
+  }
+  GIVEN("Combining post-selections and discarding") {
+    CoherentTableau tab(5);
+    // Post-selecting an initialised qubit succeeds deterministically
+    tab.post_select(Qubit(1), CoherentTableau::TableauSegment::Input);
+    tab.post_select(Qubit(1), CoherentTableau::TableauSegment::Output);
+    // Post-selecting a mixed qubit succeeds probabilistically
+    tab.discard_qubit(Qubit(2), CoherentTableau::TableauSegment::Input);
+    tab.post_select(Qubit(2), CoherentTableau::TableauSegment::Output);
+    // Discarding an initialised qubit
+    tab.discard_qubit(Qubit(3), CoherentTableau::TableauSegment::Input);
+    tab.post_select(Qubit(3), CoherentTableau::TableauSegment::Output);
+    // Discarding a mixed qubit
+    tab.discard_qubit(Qubit(4), CoherentTableau::TableauSegment::Input);
+    tab.discard_qubit(Qubit(4), CoherentTableau::TableauSegment::Output);
+    REQUIRE(tab == CoherentTableau(1));
+    // Test that impossible post-selection fails
+    tab.post_select(Qubit(0), CoherentTableau::TableauSegment::Input);
+    tab.apply_gate(OpType::X, {Qubit(0)});
+    REQUIRE_THROWS(
+        tab.post_select(Qubit(0), CoherentTableau::TableauSegment::Output));
+  }
 }
 
 SCENARIO("Error handling in CoherentTableau generation") {
+  GIVEN("Exceptions in CoherentTableau constructors") {
+    MatrixXb xmat = MatrixXb::Zero(3, 3);
+    VectorXb ph = VectorXb::Zero(3);
+    // Different size components
+    REQUIRE_THROWS_AS(
+        CoherentTableau(xmat, MatrixXb::Zero(2, 3), ph), std::invalid_argument);
+    // Rows not independent
+    MatrixXb zmat(3, 3);
+    zmat << true, true, false, true, false, true, false, true, true;
+    REQUIRE_THROWS_AS(CoherentTableau(xmat, zmat, ph), std::invalid_argument);
+    // Rows don't commute
+    zmat(2, 2) = false;
+    xmat(0, 0) = true;
+    REQUIRE_THROWS_AS(CoherentTableau(xmat, zmat, ph), std::invalid_argument);
+  }
   GIVEN("Add a non-clifford gate at end") {
     CoherentTableau tab(2);
     REQUIRE_THROWS_AS(tab.apply_gate(OpType::T, {Qubit(0)}), BadOpType);
@@ -401,9 +505,6 @@ SCENARIO("Synthesis of circuits from CoherentTableaus") {
     Circuit res = coherent_tableau_to_circuit(tab).first;
     CoherentTableau res_tab = circuit_to_coherent_tableau(res);
     REQUIRE(res_tab == tab);
-    // TODO:: When only one of X and Z rows are found, we may make it unique for
-    // the chosen column, but for the column in the other segment it may not be
-    // unique. Find a way to take combinations of rows and gates to isolate it
   }
   GIVEN("A partial diagonalisation circuit") {
     Circuit circ = get_test_circ();
@@ -411,6 +512,87 @@ SCENARIO("Synthesis of circuits from CoherentTableaus") {
       circ.add_op<unsigned>(OpType::Collapse, {i});
     }
     circ.qubit_discard(Qubit(0));
+    CoherentTableau tab = circuit_to_coherent_tableau(circ);
+    std::pair<Circuit, unit_map_t> res = coherent_tableau_to_circuit(tab);
+    CoherentTableau res_tab = circuit_to_coherent_tableau(res.first);
+    qubit_map_t perm;
+    for (const std::pair<const UnitID, UnitID>& p : res.second) {
+      perm.insert({Qubit(p.second), Qubit(p.first)});
+    }
+    res_tab.rename_qubits(perm, CoherentTableau::TableauSegment::Output);
+    tab.canonical_column_order();
+    tab.gaussian_form();
+    res_tab.canonical_column_order();
+    res_tab.gaussian_form();
+    REQUIRE(res_tab == tab);
+  }
+  GIVEN("Another circuit for extra test coverage in row reductions") {
+    Circuit circ(5);
+    circ.add_op<unsigned>(OpType::V, {0});
+    circ.add_op<unsigned>(OpType::Collapse, {0});
+    circ.add_op<unsigned>(OpType::V, {0});
+    circ.add_op<unsigned>(OpType::CY, {0, 2});
+    circ.add_op<unsigned>(OpType::CZ, {0, 3});
+    circ.add_op<unsigned>(OpType::Collapse, {1});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::CY, {1, 2});
+    circ.add_op<unsigned>(OpType::CZ, {1, 3});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.qubit_discard(Qubit(2));
+    circ.qubit_discard(Qubit(3));
+    circ.add_op<unsigned>(OpType::Collapse, {4});
+    circ.add_op<unsigned>(OpType::H, {4});
+    CoherentTableau tab = circuit_to_coherent_tableau(circ);
+    Circuit res = coherent_tableau_to_circuit(tab).first;
+    CoherentTableau res_tab = circuit_to_coherent_tableau(res);
+    tab.canonical_column_order();
+    tab.gaussian_form();
+    res_tab.canonical_column_order();
+    res_tab.gaussian_form();
+    REQUIRE(res_tab == tab);
+  }
+  GIVEN("An isometry") {
+    Circuit circ(5);
+    circ.qubit_create(Qubit(1));
+    circ.qubit_create(Qubit(2));
+    circ.qubit_create(Qubit(3));
+    circ.add_op<unsigned>(OpType::Collapse, {4});
+    circ.add_op<unsigned>(OpType::CX, {4, 1});
+    circ.add_op<unsigned>(OpType::CX, {4, 2});
+    circ.add_op<unsigned>(OpType::CX, {4, 3});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::V, {2});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    CoherentTableau tab = circuit_to_coherent_tableau(circ);
+    std::pair<Circuit, unit_map_t> res = coherent_tableau_to_circuit(tab);
+    CoherentTableau res_tab = circuit_to_coherent_tableau(res.first);
+    qubit_map_t perm;
+    for (const std::pair<const UnitID, UnitID>& p : res.second) {
+      perm.insert({Qubit(p.second), Qubit(p.first)});
+    }
+    res_tab.rename_qubits(perm, CoherentTableau::TableauSegment::Output);
+    tab.canonical_column_order();
+    tab.gaussian_form();
+    res_tab.canonical_column_order();
+    res_tab.gaussian_form();
+    REQUIRE(res_tab == tab);
+  }
+  GIVEN("Extra coverage for isometries") {
+    Circuit circ(5);
+    circ.qubit_create(Qubit(1));
+    circ.qubit_create(Qubit(2));
+    circ.qubit_create(Qubit(3));
+    circ.add_op<unsigned>(OpType::H, {4});
+    circ.add_op<unsigned>(OpType::Collapse, {4});
+    circ.add_op<unsigned>(OpType::CX, {4, 1});
+    circ.add_op<unsigned>(OpType::CX, {4, 2});
+    circ.add_op<unsigned>(OpType::CX, {4, 3});
+    circ.add_op<unsigned>(OpType::H, {4});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::V, {2});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
     CoherentTableau tab = circuit_to_coherent_tableau(circ);
     std::pair<Circuit, unit_map_t> res = coherent_tableau_to_circuit(tab);
     CoherentTableau res_tab = circuit_to_coherent_tableau(res.first);

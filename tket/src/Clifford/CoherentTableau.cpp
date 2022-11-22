@@ -182,6 +182,8 @@ CoherentTableau::row_tensor_t CoherentTableau::get_row_product(
     result.first = result.first * row_i.first;
     result.second = result.second * row_i.second;
   }
+  result.second.coeff *= result.first.coeff;
+  result.first.coeff = 1.;
   return result;
 }
 
@@ -253,11 +255,19 @@ void CoherentTableau::apply_gate(
       break;
     }
     case OpType::CY: {
-      apply_S(qbs.at(1), seg);
-      apply_S(qbs.at(1), seg);
-      apply_S(qbs.at(1), seg);
-      apply_CX(qbs.at(0), qbs.at(1), seg);
-      apply_S(qbs.at(1), seg);
+      if (seg == TableauSegment::Input) {
+        apply_S(qbs.at(1), seg);
+        apply_CX(qbs.at(0), qbs.at(1), seg);
+        apply_S(qbs.at(1), seg);
+        apply_S(qbs.at(1), seg);
+        apply_S(qbs.at(1), seg);
+      } else {
+        apply_S(qbs.at(1), seg);
+        apply_S(qbs.at(1), seg);
+        apply_S(qbs.at(1), seg);
+        apply_CX(qbs.at(0), qbs.at(1), seg);
+        apply_S(qbs.at(1), seg);
+      }
       break;
     }
     case OpType::CZ: {
