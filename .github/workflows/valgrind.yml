@@ -38,7 +38,7 @@ jobs:
       with:
         format: YYYYMMDDHHmmss
     - name: Use ccache
-      uses: hendrikmuhs/ccache-action@v1.2.3
+      uses: hendrikmuhs/ccache-action@v1.2.5
       with:
         key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
@@ -48,7 +48,7 @@ jobs:
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.1
       with:
-        version: '1.53.0'
+        version: '1.54.0'
     - name: Set up conan
       shell: bash
       run: ./.github/workflows/conan-setup

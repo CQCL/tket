@@ -156,13 +156,27 @@ def test_circuit_gen() -> None:
     c.SXdg(0)
     c.Measure(3, 3)
     c.Measure(1, 1)
+    c.U1(0.25, 1)
+    c.U2(0.25, 0.25, 3)
+    c.U3(0.25, 0.25, 0.25, 2)
+    c.TK1(0.3, 0.3, 0.3, 0)
+    c.TK2(0.3, 0.3, 0.3, 0, 1)
+    c.CU1(0.25, 0, 1)
+    c.CU3(0.25, 0.25, 0.25, 0, 1)
+    c.ISWAP(0.4, 1, 2)
+    c.PhasedISWAP(0.5, 0.6, 2, 3)
+    c.PhasedX(0.2, 0.3, 3)
+    c.ESWAP(0.9, 3, 0)
+    c.FSim(0.2, 0.4, 0, 1)
+    c.Sycamore(1, 2)
+    c.ISWAPMax(2, 3)
 
     assert c.n_qubits == 4
-    assert c._n_vertices() == 31
-    assert c.n_gates == 15
+    assert c._n_vertices() == 45
+    assert c.n_gates == 29
 
     commands = c.get_commands()
-    assert len(commands) == 15
+    assert len(commands) == 29
     assert str(commands[0]) == "X q[0];"
     assert str(commands[2]) == "CX q[2], q[0];"
     assert str(commands[4]) == "CRz(0.5) q[0], q[3];"
@@ -176,6 +190,20 @@ def test_circuit_gen() -> None:
     assert str(commands[12]) == "SX q[3];"
     assert str(commands[13]) == "Measure q[1] --> c[1];"
     assert str(commands[14]) == "Measure q[3] --> c[3];"
+    assert str(commands[15]) == "TK1(0.3, 0.3, 0.3) q[0];"
+    assert str(commands[16]) == "U3(0.25, 0.25, 0.25) q[2];"
+    assert str(commands[17]) == "U1(0.25) q[1];"
+    assert str(commands[18]) == "U2(0.25, 0.25) q[3];"
+    assert str(commands[19]) == "TK2(0.3, 0.3, 0.3) q[0], q[1];"
+    assert str(commands[20]) == "CU1(0.25) q[0], q[1];"
+    assert str(commands[21]) == "CU3(0.25, 0.25, 0.25) q[0], q[1];"
+    assert str(commands[22]) == "ISWAP(0.4) q[1], q[2];"
+    assert str(commands[23]) == "PhasedISWAP(0.5, 0.6) q[2], q[3];"
+    assert str(commands[24]) == "PhasedX(0.2, 0.3) q[3];"
+    assert str(commands[25]) == "ESWAP(0.9) q[3], q[0];"
+    assert str(commands[26]) == "FSim(0.2, 0.4) q[0], q[1];"
+    assert str(commands[27]) == "Sycamore q[1], q[2];"
+    assert str(commands[28]) == "ISWAPMax q[2], q[3];"
 
     assert commands[14].qubits == [Qubit(3)]
     assert commands[14].bits == [Bit(3)]
@@ -564,12 +592,14 @@ def test_phase_return_circ() -> None:
 
 
 @given(st.circuits())
+@settings(deadline=None)
 def test_circuit_to_serializable_json_roundtrip(circuit: Circuit) -> None:
     serializable_form = circuit.to_dict()
     assert json.loads(json.dumps(serializable_form)) == serializable_form
 
 
 @given(st.circuits())
+@settings(deadline=None)
 def test_circuit_pickle_roundtrip(circuit: Circuit) -> None:
     assert pickle.loads(pickle.dumps(circuit)) == circuit
 
@@ -936,6 +966,21 @@ def test_multi_controlled_gates() -> None:
     assert c.depth() == 3
 
 
+def test_counting_n_qubit_gates() -> None:
+    c = Circuit(5).X(0).H(1).Y(2).Z(3).S(4).CX(0, 1).CX(1, 2).CX(2, 3).CX(3, 4)
+    c.add_gate(OpType.CnX, [0, 1, 2])
+    c.add_gate(OpType.CnX, [0, 1, 2, 3])
+    c.add_gate(OpType.CnX, [0, 1, 2, 3, 4])
+    c.add_barrier([0, 1, 2, 3, 4])
+    assert c.n_1qb_gates() == 5
+    assert c.n_nqb_gates(1) == 5
+    assert c.n_2qb_gates() == 4
+    assert c.n_nqb_gates(2) == 4
+    assert c.n_nqb_gates(3) == 1
+    assert c.n_nqb_gates(4) == 1
+    assert c.n_nqb_gates(5) == 1
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
@@ -948,3 +993,4 @@ if __name__ == "__main__":
     test_clifford_checking()
     test_measuring_registers()
     test_multi_controlled_gates()
+    test_counting_n_qubit_gates()

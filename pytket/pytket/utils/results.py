@@ -228,6 +228,14 @@ def permute_qubits_in_statevector(
 ) -> np.ndarray:
     """Rearranges a statevector according to a permutation of the qubit indices.
 
+    >>> # A 3-qubit state:
+    >>> state = np.array([0.0, 0.0625, 0.1875, 0.25, 0.375, 0.4375, 0.5, 0.5625])
+    >>> permutation = [1, 0, 2] # swap qubits 0 and 1
+    >>> # Apply the permutation that swaps indices 2 (="010") and 4 (="100"), and swaps
+    >>> # indices 3 (="011") and 5 (="101"):
+    >>> permute_qubits_in_statevector(state, permutation)
+    array([0.    , 0.0625, 0.375 , 0.4375, 0.1875, 0.25  , 0.5   , 0.5625])
+
     :param state: Original statevector.
     :type state: np.ndarray
     :param permutation: Map from current qubit index (big-endian) to its new position,

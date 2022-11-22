@@ -24,6 +24,7 @@ from pytket.circuit import (  # type: ignore
     OpType,
     fresh_symbol,
     Qubit,
+    Bit,
     reg_eq,
     reg_neq,
     reg_lt,
@@ -614,6 +615,24 @@ def test_scratch_bits_filtering() -> None:
     with open(qasm_out, "r") as f:
         fstr = f.read()
         assert f"creg {_TEMP_BIT_REG_BASE}_0[32]" in fstr
+
+
+def test_qasm_phase() -> None:
+    c = Circuit(1, 1)
+    c.H(0)
+    c.Phase(0.5)
+    c.Phase(0.5, condition_bits=[Bit(0)], condition_value=1)
+    c.add_barrier([0])
+    c.H(0)
+    c.add_phase(0.5)
+    c0 = Circuit(1, 1)
+    c0.H(0)
+    c0.add_barrier([0])
+    c0.H(0)
+    for header in ["qelib1", "hqslib1"]:
+        qstr = circuit_to_qasm_str(c, header)
+        c1 = circuit_from_qasm_str(qstr)
+        assert c1 == c0
 
 
 if __name__ == "__main__":

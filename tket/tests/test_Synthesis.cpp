@@ -380,6 +380,15 @@ SCENARIO(
     const StateVector s1 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
   }
+  GIVEN("A controlled phase") {
+    // https://github.com/CQCL/tket/issues/576
+    Circuit circ(1, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {2.}, {0}, {0}, 1);
+    Transforms::squash_1qb_to_pqp(OpType::Rz, OpType::Ry).apply(circ);
+    Circuit circ1(1, 1);
+    circ1.add_conditional_gate<unsigned>(OpType::Phase, {1.}, {}, {0}, 1);
+    REQUIRE(circ == circ1);
+  }
 }
 
 SCENARIO(

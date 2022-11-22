@@ -329,14 +329,30 @@ def test_backendresult() -> None:
 
     assert np.array_equal(backres_unitary.get_state(), teststate)
 
-    shots_dist = backres_shots.get_distribution()
-    assert len(shots_dist) == 2
-    assert shots_dist[tuple(shots_list[0])] == 0.5
-    assert shots_dist[tuple(shots_list[1])] == 0.5
+    with pytest.deprecated_call():
+        shots_dist0 = backres_shots.get_distribution()
+        assert len(shots_dist0) == 2
+        assert shots_dist0[tuple(shots_list[0])] == 0.5
+        assert shots_dist0[tuple(shots_list[1])] == 0.5
 
-    state_dist = backres_state.get_distribution([qbits[1], qbits[0]])
+        state_dist0 = backres_state.get_distribution([qbits[1], qbits[0]])
+        assert np.isclose(state_dist0[(0, 1)], abs(teststate[2]) ** 2)
+        assert np.isclose(state_dist0[(1, 0)], abs(teststate[1]) ** 2)
+
+    shots_dist = backres_shots.get_empirical_distribution()
+    assert len(shots_dist.support) == 2
+    assert shots_dist[tuple(shots_list[0])] == 1
+    assert shots_dist[tuple(shots_list[1])] == 1
+
+    with pytest.raises(InvalidResultType):
+        backres_shots.get_probability_distribution()
+
+    state_dist = backres_state.get_probability_distribution([qbits[1], qbits[0]])
     assert np.isclose(state_dist[(0, 1)], abs(teststate[2]) ** 2)
     assert np.isclose(state_dist[(1, 0)], abs(teststate[1]) ** 2)
+
+    with pytest.raises(InvalidResultType):
+        backres_state.get_empirical_distribution()
 
 
 def test_backendresult_ppcirc() -> None:

@@ -1,0 +1,24 @@
+cff-version: 1.2.0
+message: "If you wish to cite TKET in any academic publications, we generally recommend citing our software overview paper. For any papers in which TKET is used please also cite the version."
+url: "https://github.com/CQCL/tket"
+preferred-citation:
+  type: article
+  authors:
+  - family-names: "Sivirajah"
+    given-names: "Seyon"
+  - family-names: "Dilkes"
+    given-names: "Silas"
+  - family-names: "Cowtan"
+    given-names: "Alexander"
+  - family-names: "Simmons"
+    given-names: "Will"
+  - family-names: "Edgington"
+    given-names: "Alec"
+  - family-names: "Duncan"
+    given-names: "Ross"
+  doi: "10.1088/2058-9565/ab8e92"
+  journal: "Quantum Science and Technology"
+  month: 11
+  title: "TKET: A Retargetable Compiler for NISQ devices"
+  volume: 6
+  year: 2020

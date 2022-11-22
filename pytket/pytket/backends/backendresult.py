@@ -30,6 +30,7 @@ from typing import (
 )
 import operator
 from functools import reduce
+import warnings
 
 import numpy as np
 
@@ -42,6 +43,7 @@ from pytket.circuit import (  # type: ignore
     _DEBUG_ZERO_REG_PREFIX,
     _DEBUG_ONE_REG_PREFIX,
 )
+from pytket.utils.distribution import EmpiricalDistribution, ProbabilityDistribution
 from pytket.utils.results import (
     probs_from_state,
     get_n_qb_from_statevector,
@@ -514,12 +516,21 @@ class BackendResult:
         returned. Otherwise, if measured results are available the distribution
         is estimated from these results.
 
+        This method is deprecated. Please use :py:meth:`get_empirical_distribution` or
+        :py:meth:`get_probability_distribution` instead.
+
         :param units: Optionally provide the Qubits or Bits
             to marginalise the distribution over, defaults to None
         :type units: Optional[Sequence[UnitID]], optional
         :return: A distribution as a map from bitstring to probability.
         :rtype: Dict[Tuple[int, ...], float]
         """
+        warnings.warn(
+            "The `BackendResult.get_distribution()` method is deprecated: "
+            "please use `get_empirical_distribution()` or "
+            "`get_probability_distribution()` instead.",
+            DeprecationWarning,
+        )
         try:
             state = self.get_state(units)
             return probs_from_state(state)
@@ -528,6 +539,39 @@ class BackendResult:
             total = sum(counts.values())
             dist = {outcome: count / total for outcome, count in counts.items()}
             return dist
+
+    def get_empirical_distribution(
+        self, bits: Optional[Sequence[Bit]] = None
+    ) -> EmpiricalDistribution[Tuple[int, ...]]:
+        """Convert to a :py:class:`pytket.utils.distribution.EmpiricalDistribution`
+        where the observations are sequences of 0s and 1s.
+
+        :param bits: Optionally provide the :py:class:`Bit` s over which to
+            marginalize the distribution.
+        :return: A distribution where the observations are sequences of 0s and 1s.
+        """
+        if not self.contains_measured_results:
+            raise InvalidResultType(
+                "Empirical distribution only available for measured result types."
+            )
+        return EmpiricalDistribution(self.get_counts(bits))
+
+    def get_probability_distribution(
+        self, qubits: Optional[Sequence[Qubit]] = None
+    ) -> ProbabilityDistribution[Tuple[int, ...]]:
+        """Convert to a :py:class:`pytket.utils.distribution.ProbabilityDistribution`
+        where the possible outcomes are sequences of 0s and 1s.
+
+        :param qubits: Optionally provide the :py:class:`Qubit` s over which to
+            marginalize the distribution.
+        :return: A distribution where the possible outcomes are tuples of 0s and 1s.
+        """
+        if not self.contains_state_results:
+            raise InvalidResultType(
+                "Probability distribution only available for statevector result types."
+            )
+        state = self.get_state(qubits)
+        return ProbabilityDistribution(probs_from_state(state))
 
     def get_debug_info(self) -> Dict[str, float]:
         """Calculate the success rate of each assertion averaged across shots.

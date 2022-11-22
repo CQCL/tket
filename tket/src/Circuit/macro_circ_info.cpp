@@ -92,6 +92,30 @@ std::list<Command> Circuit::get_commands_of_type(OpType op_type) const {
   }
   return coms;
 }
+unsigned Circuit::count_n_qubit_gates(unsigned size) const {
+  unsigned counter = 0;
+  if (size == 0) return counter;
+  BGL_FORALL_VERTICES(v, dag, DAG) {
+    if (n_in_edges_of_type(v, EdgeType::Quantum) == size) {
+      const Op_ptr op_ptr = get_Op_ptr_from_Vertex(v);
+      switch (op_ptr->get_type()) {
+        case OpType::Input:
+        case OpType::Create:
+        case OpType::Output:
+        case OpType::Discard:
+        case OpType::Reset:
+        case OpType::Measure:
+        case OpType::Barrier: {
+          break;
+        }
+        default: {
+          counter++;
+        }
+      }
+    }
+  }
+  return counter;
+}
 
 Circuit Circuit::subcircuit(const Subcircuit& sc) const {
   Circuit sub;
