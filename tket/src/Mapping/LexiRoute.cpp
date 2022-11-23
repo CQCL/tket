@@ -154,26 +154,8 @@ void LexiRoute::assign_valid_node(
       this->mapping_frontier_->ancilla_nodes_.end()) {
     // merge_ancilla updates bimaps
     this->mapping_frontier_->merge_ancilla(assignee, replacement);
-    this->mapping_frontier_->ancilla_nodes_.erase(Node(replacement));
     this->labelling_.erase(replacement);
     this->labelling_[assignee] = replacement;
-
-    // update linear boundaries
-    auto assignee_boundary_it =
-        this->mapping_frontier_->linear_boundary->get<TagKey>().find(assignee);
-    auto replacement_boundary_it =
-        this->mapping_frontier_->linear_boundary->get<TagKey>().find(
-            replacement);
-    TKET_ASSERT(
-        replacement_boundary_it !=
-        this->mapping_frontier_->linear_boundary->get<TagKey>().end());
-    TKET_ASSERT(
-        assignee_boundary_it !=
-        this->mapping_frontier_->linear_boundary->get<TagKey>().end());
-    this->mapping_frontier_->linear_boundary->replace(
-        replacement_boundary_it, {replacement, assignee_boundary_it->second});
-    this->mapping_frontier_->linear_boundary->erase(assignee_boundary_it);
-    this->assigned_nodes_.insert(Node(replacement));
   } else {
     // In this case, we the replacement Node is unused and can simply be
     // assigned
