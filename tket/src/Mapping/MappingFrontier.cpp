@@ -574,6 +574,29 @@ bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
     this->add_ancilla(uid_1);
     uid1_in_it = this->linear_boundary->find(uid_1);
   }
+
+  // Get predecessor edges to SWAP insert location
+  VertPort vp0 = uid0_in_it->second;
+  VertPort vp1 = uid1_in_it->second;
+  EdgeVec predecessors = {
+      this->circuit_.get_nth_out_edge(vp0.first, vp0.second),
+      this->circuit_.get_nth_out_edge(vp1.first, vp1.second)};
+
+  /**
+   * If the immediate vertex before the new vertex is the same SWAP, this
+   * implies a rut has been hit
+   * In which case return false, saying that SWAP can't be added
+   * Can safely do this check here after relabelling as
+   * adding/updating ancillas => fresh SWAP
+   */
+  Vertex source0 = this->circuit_.source(predecessors[0]);
+  Vertex source1 = this->circuit_.source(predecessors[1]);
+  if (source0 == source1) {
+    if (this->circuit_.get_OpType_from_Vertex(source0) == OpType::SWAP) {
+      return false;
+    }
+  }
+
   // update held ancillas
   // the location/id of the "ancilla node" changes when a SWAP occurs
   Node n0 = Node(uid_0);
@@ -604,27 +627,6 @@ bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
     this->ancilla_nodes_.insert(n0);
   }
 
-  // Get predecessor edges to SWAP insert location
-  VertPort vp0 = uid0_in_it->second;
-  VertPort vp1 = uid1_in_it->second;
-  EdgeVec predecessors = {
-      this->circuit_.get_nth_out_edge(vp0.first, vp0.second),
-      this->circuit_.get_nth_out_edge(vp1.first, vp1.second)};
-
-  /**
-   * If the immediate vertex before the new vertex is the same SWAP, this
-   * implies a rut has been hit
-   * In which case return false, saying that SWAP can't be added
-   * Can safely do this check here after relabelling as
-   * adding/updating ancillas => fresh SWAP
-   */
-  Vertex source0 = this->circuit_.source(predecessors[0]);
-  Vertex source1 = this->circuit_.source(predecessors[1]);
-  if (source0 == source1) {
-    if (this->circuit_.get_OpType_from_Vertex(source0) == OpType::SWAP) {
-      return false;
-    }
-  }
 
   // add SWAP vertex to circuit_ and rewire into predecessor
   Vertex swap_v = this->circuit_.add_vertex(OpType::SWAP);

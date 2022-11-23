@@ -719,7 +719,7 @@ bool LexiRoute::solve(unsigned lookahead) {
         auto path_it_0 = path.begin() + 1;
         auto path_it_1 = path.begin();
         // adds a SWAP between each pair of adjacent nodes on path
-        while (path_it_0 != path.end()) {
+        while (path_it_0 != path.end() - 1) {
           this->mapping_frontier_->add_swap(*path_it_0, *path_it_1);
           ++path_it_0;
           ++path_it_1;
