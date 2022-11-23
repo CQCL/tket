@@ -1646,11 +1646,13 @@ SCENARIO("Test adding ancilla Node, using as end of path swaps and then merging 
     // adds "placed[3]" as ancilla
     mapping_frontier.add_swap(placed[2], placed[3]);
     // provokes path swap
-    mapping_frontier.add_swap(placed[2], placed[3]);
+    // mapping_frontier.add_swap(placed[2], placed[3]);
 
-    std::cout << mapping_frontier.circuit_ << std::endl;
+    // std::cout << mapping_frontier.circuit_ << std::endl;
+    mapping_frontier.circuit_.to_graphviz_file("/users/silasdilkes/code/leon/pre_merge.dot");
     // merge into unassigned
     mapping_frontier.merge_ancilla(unplaced, placed[3]);
+    mapping_frontier.circuit_.to_graphviz_file("/users/silasdilkes/code/leon/post_merge.dot");
 
     std::cout << "WHY" << std::endl;
     mapping_frontier.circuit_.get_commands();

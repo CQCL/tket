@@ -773,6 +773,7 @@ void MappingFrontier::merge_ancilla(
         back_v_out, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
 
     this->circuit_.boundary.get<TagID>().erase(back);
+    
   };
 
   rewire(ancilla, merge);
