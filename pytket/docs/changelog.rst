@@ -11,6 +11,8 @@ Fixes:
   relies on the circuit having gates only in the specified gate set should be
   updated to handle ``OpType.Phase`` as well when conditional operations are
   present.
+* A bug where the sequence of ``RoutingMethod`` used in ``DefaultMappingPass`` could 
+  add a cycle to the ``Circuit`` DAG has been fixed.
 
 API changes:
 
