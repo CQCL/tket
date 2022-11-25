@@ -37,3 +37,8 @@ from .operators import QubitPauliOperator
 from .outcomearray import OutcomeArray, readout_counts
 from .graph import Graph
 from .symbolic import circuit_to_symbolic_unitary, circuit_apply_symbolic_statevector
+from .distribution import (
+    ProbabilityDistribution,
+    EmpiricalDistribution,
+    convex_combination,
+)

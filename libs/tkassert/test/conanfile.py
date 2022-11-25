@@ -27,7 +27,7 @@ class TestTkassertConan(ConanFile):
     default_options = {"with_coverage": False}
     generators = "cmake"
     exports_sources = "*"
-    requires = ["tkassert/0.1.1", "catch2/3.1.0"]
+    requires = ["tkassert/0.1.1", "catch2/3.2.0"]
 
     _cmake = None
 

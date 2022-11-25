@@ -14,7 +14,7 @@ add a test that demonstrates the fix.
 C++20 features may be used whenever they are supported by all the compilers
 used on the CI (listed in the README).
 
-All C++ code should be formatted with `clang-format` (v13) using the
+All C++ code should be formatted with `clang-format` (v15) using the
 configuration file `.clang-format` in the root directory. This is checked on
 the CI. The script `do-clang-format` will run this over all C++ files in the
 repository and fix them up.

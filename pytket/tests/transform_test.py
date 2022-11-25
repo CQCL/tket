@@ -1168,13 +1168,13 @@ def test_circuit_with_conditionals() -> None:
 
     assert SynthesiseTket().apply(c)
     cmds = c.get_commands()
-    assert len(cmds) <= 6
+    assert len(cmds) <= 7
 
     arch = Architecture([(0, 1), (0, 2), (1, 2)])
     placement = Placement(arch)
     p = CXMappingPass(arch, placement, delay_measures=False)
     p.apply(c)
-    assert c.n_gates_of_type(OpType.Conditional) == 1
+    assert c.n_gates_of_type(OpType.Conditional) <= 2
 
 
 def test_KAK_with_ClassicalExpBox() -> None:

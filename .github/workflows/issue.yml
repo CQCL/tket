@@ -10,13 +10,13 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - name: Login
-      uses: atlassian/gajira-login@v2.0.0
+      uses: atlassian/gajira-login@v3.0.0
       env:
         JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
         JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
         JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
     - name: Create Bug
-      uses: atlassian/gajira-create@v2.0.1
+      uses: atlassian/gajira-create@v3.0.0
       if: contains(github.event.issue.labels.*.name, 'bug')
       with:
         project: TKET
@@ -24,7 +24,7 @@ jobs:
         summary: «${{ github.event.issue.title }}»
         description: ${{ github.event.issue.html_url }}
     - name: Create Task
-      uses: atlassian/gajira-create@v2.0.1
+      uses: atlassian/gajira-create@v3.0.0
       if: "! contains(github.event.issue.labels.*.name, 'bug')"
       with:
         project: TKET

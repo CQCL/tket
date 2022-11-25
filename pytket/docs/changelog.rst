@@ -1,6 +1,36 @@
 Changelog
 =========
 
+1.9.0 (November 2022)
+---------------------
+
+Fixes:
+
+* Rebase and synthesis passes now respect conditional phase, by adding
+  conditional ``OpType.Phase`` operations to the rebased circuit. Any code that
+  relies on the circuit having gates only in the specified gate set should be
+  updated to handle ``OpType.Phase`` as well when conditional operations are
+  present.
+* A bug where the sequence of ``RoutingMethod`` used in ``DefaultMappingPass`` could 
+  add a cycle to the ``Circuit`` DAG has been fixed.
+* Fix support for ECR gate in QASM converters.
+
+API changes:
+
+* The default value of ``optimisation_level`` in ``Backend`` methods that have
+  this parameter (such as ``get_compiled_circuit()``) has been changed from 1 to
+  2.
+
+Minor new features:
+
+* Added shortcuts for adding ``U1``, ``U2``, ``U3``, ``TK1``, ``TK2``, ``CU1``, 
+  ``CU3``, ``ISWAP``, ``PhasedISWAP``, ``ESWAP``, ``PhasedX``, ``FSim``, ``Sycamore``
+  and ``ISWAPMax`` gates to a ``pytket`` ``Circuit``.
+* New ``Circuit`` methods ``n_1qb_gates``, ``n_2qb_gates``, ``n_nqb_gates``.
+* New ``EmpriricalDistribution`` and ``ProbabilityDistribution`` utility classes
+  for manipulating distributions, and methods to extract them from
+  ``BackendResult`` objects.
+
 1.8.1 (November 2022)
 ---------------------
 

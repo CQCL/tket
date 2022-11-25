@@ -160,6 +160,7 @@ NOPARAM_EXTRA_COMMANDS = {
     "bridge": OpType.BRIDGE,
     "iswapmax": OpType.ISWAPMax,
     "zzmax": OpType.ZZMax,
+    "ecr": OpType.ECR,
 }
 
 PARAM_EXTRA_COMMANDS = {
@@ -1149,11 +1150,14 @@ def circuit_to_qasm_io(
                     raise QASMUnsupportedError(
                         "OpenQASM conditions must be a single classical register"
                     )
-
-            buffer.write(f"if({variable}{comparator}{value}) ")
             args = args[op.width :]
             op = op.op
             optype, params = _get_optype_and_params(op)
+            if optype != OpType.Phase:
+                buffer.write(f"if({variable}{comparator}{value}) ")
+        if optype == OpType.Phase:
+            # global phase is ignored in QASM
+            continue
         if optype == OpType.SetBits:
             creg_name = args[0].reg_name
             bits, vals = zip(*sorted(zip(args, op.values)))

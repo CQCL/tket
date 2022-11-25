@@ -1623,5 +1623,45 @@ SCENARIO("Test failing case") {
             std::make_shared<LexiRouteRoutingMethod>()});
   REQUIRE(r_p->apply(cu));
 }
+SCENARIO(
+    "Test adding ancilla Node, using as end of path swaps and then merging "
+    "with unplaced Qubit.") {
+  Node unplaced = Node("unplaced", 0);
+  std::vector<Node> placed = {
+      Node("opposite", 0), Node("opposite", 1), Node("opposite", 2),
+      Node("opposite", 3), Node("opposite", 4)};
+  std::vector<std::pair<Node, Node>> coupling = {
+      {placed[0], placed[1]},
+      {placed[1], placed[2]},
+      {placed[2], placed[3]},
+      {placed[3], placed[4]}};
+  std::shared_ptr<Architecture> architecture =
+      std::make_shared<Architecture>(coupling);
+  Circuit circuit(4);
+  std::vector<Qubit> qubits = {Qubit(0), Qubit(1), Qubit(2), Qubit(3)};
 
+  circuit.add_op<unsigned>(OpType::CX, {3, 1});
+  circuit.add_op<unsigned>(OpType::CX, {2, 0});
+  circuit.add_op<unsigned>(OpType::CX, {2, 1});
+  circuit.add_op<unsigned>(OpType::CX, {3, 0});
+  circuit.add_op<unsigned>(OpType::CX, {3, 2});
+
+  std::map<Qubit, Node> p_map = {
+      {qubits[0], placed[0]},
+      {qubits[1], placed[1]},
+      {qubits[2], placed[2]},
+      {qubits[3], unplaced}};
+  Placement::place_with_map(circuit, p_map);
+
+  MappingFrontier mapping_frontier(circuit);
+  mapping_frontier.advance_frontier_boundary(architecture);
+  // adds "placed[3]" as ancilla
+  REQUIRE(mapping_frontier.add_swap(placed[2], placed[3]));
+  // provokes path swap
+  REQUIRE(!mapping_frontier.add_swap(placed[2], placed[3]));
+  // merge into unassigned
+  mapping_frontier.merge_ancilla(unplaced, placed[2]);
+  mapping_frontier.circuit_.get_commands();
+  REQUIRE(true);
+}
 }  // namespace tket

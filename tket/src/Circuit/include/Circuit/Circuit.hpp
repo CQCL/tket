@@ -1108,6 +1108,19 @@ class Circuit {
    */
   std::list<Command> get_commands_of_type(OpType op_type) const;
 
+  /**
+   * @brief Get the number of gates with the specified number of Qubits.
+   *
+   * Counts vertices, ignoring Input, Output, create, Discard, Reset,
+   * Measure and Barrier.
+   *
+   * @param size Number of quantum edges a vertex has to be counted
+   *
+   * @return Number of vertices with given number of quantum edges in the
+   * circuit
+   */
+  unsigned count_n_qubit_gates(unsigned size) const;
+
   // returns 'slices' of 'parallel' actions in dag as a vector encompassing
   // all vertices
   // O(D qlog^2(q!) alpha log(alpha!))
@@ -1452,6 +1465,10 @@ class Circuit {
 
   /**
    * Adds a condition to every op in the circuit.
+   *
+   * If the circuit has a global phase, this is expressed by appending a
+   * conditional Phase operation.
+   *
    * Will throw a CircuitInvalidity error if the circuit contains implicit
    * wireswaps (as these cannot be applied conditionally) or writes to the
    * condition bits at any point.
@@ -1522,6 +1539,13 @@ class Circuit {
    * of qubits and \f$ D \f$ is the circuit depth.
    */
   std::vector<Command> get_commands() const;
+
+  /**
+   * All vertices of the DAG.
+   *
+   * @return vector of vertices
+   */
+  std::vector<Vertex> all_vertices() const;
 
   /**
    * Set the vertex indices in the DAG.

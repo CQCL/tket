@@ -103,6 +103,12 @@ std::vector<Command> Circuit::get_commands() const {
   return coms;
 }
 
+VertexVec Circuit::all_vertices() const {
+  VertexVec vs;
+  BGL_FORALL_VERTICES(v, dag, DAG) { vs.push_back(v); }
+  return vs;
+}
+
 void Circuit::index_vertices() /*const*/ {
   VIndex index = boost::get(boost::vertex_index, dag);
   int i = 0;

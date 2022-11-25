@@ -90,6 +90,7 @@ bool GateSetPredicate::verify(const Circuit& circ) const {
       const Conditional& cond = static_cast<const Conditional&>(*op);
       type = cond.get_op()->get_type();
     }
+    if (type == OpType::Phase) continue;
     if (!find_in_set(type, allowed_types_)) return false;
   }
   return true;

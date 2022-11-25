@@ -73,7 +73,17 @@ std::map<Qubit, Node> LinePlacement::assign_lines_to_target_graph(
   // Sort lines from longest to shortest
   std::sort(
       line_pattern.begin(), line_pattern.end(),
-      [](qubit_vector_t x, qubit_vector_t y) { return (x.size() > y.size()); });
+      [](qubit_vector_t x, qubit_vector_t y) {
+        size_t xsz = x.size(), ysz = y.size();
+        if (xsz > ysz) {
+          return true;
+        } else if (xsz < ysz) {
+          return false;
+        } else {
+          return std::lexicographical_compare(
+              x.begin(), x.end(), y.begin(), y.end());
+        }
+      });
   // Remove single qubit lines
   while (!line_pattern.empty() && line_pattern.back().size() < 2) {
     n_unused_nodes++;
