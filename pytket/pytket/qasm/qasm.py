@@ -160,6 +160,7 @@ NOPARAM_EXTRA_COMMANDS = {
     "bridge": OpType.BRIDGE,
     "iswapmax": OpType.ISWAPMax,
     "zzmax": OpType.ZZMax,
+    "ecr": OpType.ECR,
 }
 
 PARAM_EXTRA_COMMANDS = {
