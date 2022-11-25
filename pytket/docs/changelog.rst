@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.9.0 (unreleased)
-------------------
+1.9.0 (November 2022)
+---------------------
 
 Fixes:
 
@@ -13,6 +13,7 @@ Fixes:
   present.
 * A bug where the sequence of ``RoutingMethod`` used in ``DefaultMappingPass`` could 
   add a cycle to the ``Circuit`` DAG has been fixed.
+* Fix support for ECR gate in QASM converters.
 
 API changes:
 
