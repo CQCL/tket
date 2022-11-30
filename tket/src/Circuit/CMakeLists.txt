@@ -35,7 +35,8 @@ add_library(tket-${COMP}
     DAGProperties.cpp
     OpJson.cpp
     Conditional.cpp
-    ControlledGates.cpp)
+    ControlledGates.cpp
+    Multiplexor.cpp)
 
 list(APPEND DEPS_${COMP}
     Gate
