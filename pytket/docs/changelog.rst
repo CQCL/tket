@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Minor new features:
+
+* New ``view_browser`` function for opening a browser with circuit render.
+
+
+
 1.9.0 (November 2022)
 ---------------------
 
