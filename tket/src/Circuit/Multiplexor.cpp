@@ -14,6 +14,14 @@
 
 #include "Circuit/Multiplexor.hpp"
 
+#include <complex>
+
+#include "Circuit/Circuit.hpp"
+#include "Gate/GatePtr.hpp"
+#include "Gate/GateUnitaryMatrix.hpp"
+#include "Gate/Rotation.hpp"
+#include "Utils/Constants.hpp"
+
 namespace tket {
 
 static const unsigned MAX_N_CONTROLS = 32;
@@ -124,6 +132,162 @@ static void recursive_demultiplex_rotation(
     circ.add_op<unsigned>(
         OpType::CX, {total_qubits - n_qubits, total_qubits - 1});
   }
+}
+
+/**
+ * @brief Decompose diag(a,b) using eq(3)
+ * Returns the matrices u and v, and the uniformly controlled Z rotation matrix
+ * R defined by the rotation angles a0 and a1 (in half-turns) activated by 0 and
+ * 1 respectively. The matrix D is fixed to by ZZPhase(-0.5)
+ *
+ * @param a 2x2 unitary
+ * @param b 2x2 unitary
+ * @return std::tuple<Eigen::Matrix2cd, Eigen::Matrix2cd, double>
+ */
+static std::tuple<Eigen::Matrix2cd, Eigen::Matrix2cd, double, double>
+constant_demultiplex(const Eigen::Matrix2cd &a, const Eigen::Matrix2cd &b) {
+  Eigen::Matrix2cd X = a * b.adjoint();
+  // decompose X using eq(19)
+  std::vector<double> tk1_params = tk1_angles_from_unitary(X);
+  Eigen::Matrix2cd tk1_su2 = get_matrix_from_tk1_angles(
+      {tk1_params[0], tk1_params[1], tk1_params[2], 0.0});
+  Complex x0 = tk1_su2(0, 0);
+  double phi = tk1_params[3] * PI * 2;
+  // compute r matrix using eq(11) and eq(12)
+  double a0 = -PI / 2 - phi / 2 - std::arg(x0);
+  double a1 = PI / 2 - phi / 2 + std::arg(x0);
+  Complex r0 = std::exp(0.5 * i_ * a0);
+  Complex r1 = std::exp(0.5 * i_ * a1);
+  Eigen::Matrix2cd r = Eigen::Matrix2cd::Zero();
+  r(0, 0) = r0;
+  r(1, 1) = r1;
+  // a0 and a1 defines the R matrix in eq(3). And they are the z rotation angles
+  // activated by 0 and 1 respectively.
+  a0 = a0 / PI;
+  a1 = a1 / PI;
+  Eigen::ComplexEigenSolver<Eigen::Matrix2cd> eigen_solver(r * X * r);
+  Eigen::Matrix2cd u = eigen_solver.eigenvectors();
+  // the eigenvalues are guaranteed to be {i, -i}. We permute u so its
+  // eigenvalues have the order [i, -i].
+  if (std::abs(eigen_solver.eigenvalues()[0] + i_) < EPS) {
+    u.col(0).swap(u.col(1));
+  }
+  Eigen::Matrix2cd d = Eigen::Matrix2cd::Zero();
+  d(0, 0) = std::sqrt(i_);
+  d(1, 1) = std::sqrt(-i_);
+  Eigen::Matrix2cd v = d * u.adjoint() * r.adjoint() * b;
+  return {u, v, a0, a1};
+}
+
+/**
+ * @brief Given the angles for a UCRz gate, return its matrix representation
+ * as a vector of 2x2 matrices
+ *
+ * @param angles
+ * @return std::vector<Eigen::Matrix2cd>
+ */
+static std::vector<Eigen::Matrix2cd> ucrz_angles_to_diagonal(
+    const std::vector<double> &angles) {
+  std::vector<Eigen::Matrix2cd> diag;
+  unsigned mid = (unsigned)(angles.size() / 2);
+  for (unsigned i = 0; i < mid; i++) {
+    Eigen::Matrix2cd u = Eigen::Matrix2cd::Zero();
+    u(0, 0) = std::exp(-0.5 * angles[i] * i_ * PI);
+    u(1, 1) = std::exp(-0.5 * angles[i + mid] * i_ * PI);
+    diag.push_back(u);
+  }
+  for (unsigned i = 0; i < mid; i++) {
+    Eigen::Matrix2cd u = Eigen::Matrix2cd::Zero();
+    u(0, 0) = std::exp(0.5 * angles[i] * i_ * PI);
+    u(1, 1) = std::exp(0.5 * angles[i + mid] * i_ * PI);
+    diag.push_back(u);
+  }
+  return diag;
+}
+/**
+ * @brief Recursively decompose a uniformly controlled U2 gate.
+ *
+ * Generates 2^ctrl_qubits Unitary1qBox, 2^ctrl_qubits CXs and a ladder of
+ * UniformQControlRotationBoxes
+ *
+ * https://arxiv.org/abs/quant-ph/0410066 eq(3)
+ *
+ * @param unitaries list of 2^ctrl_qubits 2x2 unitaries, unitaries[i] is the
+ * unitary activated by bitstring binary(i)
+ * @param total_qubits the total number of qubits in the final output circuit
+ * @param circ circuit to update, won't contain the UniformQControlRotationBoxes
+ * @param ucrzs keep track of the ladder of UniformQControlRotationBoxes.
+ * ucrzs[i] stores the Rz rotations angles (in half-turns) for the
+ * UniformQControlRotationBoxe with i+2 qubits.
+ * @param left_compose 2x2 unitary to be absorbed to left half
+ * @param right_compose 2x2 unitary to be absorbed to right half
+ */
+static void recursive_demultiplex_u2(
+    std::vector<Eigen::Matrix2cd> &unitaries, unsigned total_qubits,
+    Circuit &circ, std::vector<std::vector<double>> &ucrzs,
+    const Eigen::Matrix2cd &left_compose,
+    const Eigen::Matrix2cd &right_compose) {
+  // The following two constant matrices are the bottom SQ unitaries resulted
+  // from decomposing the D gate (i.e. ZZPhase(-0.5)) using CX
+  const static Eigen::Matrix2cd U_MULT =
+      get_matrix_from_tk1_angles({0.5, 0.5, 0.5, 0.0});
+  const static Eigen::Matrix2cd V_MULT =
+      get_matrix_from_tk1_angles({0.5, 0.5, 0, 0.0});
+  unsigned n_unitaries = unitaries.size();
+  unsigned n_qubits = (unsigned)log2(n_unitaries) + 1;
+  unsigned mid = (unsigned)(n_unitaries / 2);
+  // We generalise eq(3) for n controls, demultiplex the multiplexor
+  // by demultiplexing pairs {unitaries[i], unitaries[mid+i]} 0<=i<mid.
+  // I \otimes diag(u) = I \otimes diag(u_list)
+  // I \otimes diag(v) = I \otimes diag(v_list)
+  // D = ZZPhase(-0.5)
+  // R = UCRz(rz_list, [q_{n-1}, q_{1}, q_{2}, ...,  q_{n-2}, q_0])
+  std::vector<Eigen::Matrix2cd> u_list;
+  std::vector<Eigen::Matrix2cd> v_list;
+  std::vector<double> rz_list(n_unitaries);
+
+  // merge previous UCRz gate into the multiplexor
+  std::vector<Eigen::Matrix2cd> ucrz_diag =
+      ucrz_angles_to_diagonal(ucrzs[n_qubits - 2]);
+  for (unsigned i = 0; i < unitaries.size(); i++) {
+    unitaries[i] = unitaries[i] * ucrz_diag[i];
+  }
+  // demultiplex pairs (unitaries[i], unitaries[mid+i])
+  for (unsigned i = 0; i < mid; i++) {
+    auto [u, v, a0, a1] =
+        constant_demultiplex(unitaries[i], unitaries[mid + i]);
+    u_list.push_back(u);
+    v_list.push_back(v);
+    rz_list[i] = a0;
+    rz_list[i + mid] = a1;
+  }
+
+  // update the ucrzs with the 1.5 angle resulted from decomposing ZZPhase(-0.5)
+  std::for_each(rz_list.begin(), rz_list.end(), [](double &f) { f += 1.5; });
+  ucrzs[n_qubits - 2] = rz_list;
+
+  // adding gates to the circuit
+  // add v
+  if (v_list.size() == 1) {
+    Eigen::Matrix2cd v_prime = V_MULT * v_list[0] * left_compose;
+    circ.add_box(Unitary1qBox(v_prime), {total_qubits - 1});
+  } else {
+    recursive_demultiplex_u2(
+        v_list, total_qubits, circ, ucrzs, left_compose, V_MULT);
+  }
+  // add CX
+  circ.add_op<unsigned>(
+      OpType::CX, {total_qubits - n_qubits, total_qubits - 1});
+  circ.add_phase(1.75);
+  // add u
+  if (u_list.size() == 1) {
+    Eigen::Matrix2cd u_prime = right_compose * u_list[0] * U_MULT;
+    circ.add_box(Unitary1qBox(u_prime), {total_qubits - 1});
+  } else {
+    recursive_demultiplex_u2(
+        u_list, total_qubits, circ, ucrzs, U_MULT, right_compose);
+  }
+  return;
 }
 
 static void op_map_validate(const ctrl_op_map_t &op_map) {
@@ -243,7 +407,7 @@ UniformQControlRotationBox::UniformQControlRotationBox(
       n_controls_ = (unsigned)it->first.size();
       axis_ = it->second->get_type();
       if (axis_ != OpType::Rx && axis_ != OpType::Ry && axis_ != OpType::Rz) {
-        throw std::invalid_argument("Ops must be either Rx, Ry, or Rz.");
+        throw BadOpType("Ops must be either Rx, Ry, or Rz.", axis_);
       }
     } else {
       if (it->second->get_type() != axis_) {
@@ -281,11 +445,16 @@ Op_ptr UniformQControlRotationBox::transpose() const {
       op_map_transpose(op_map_));
 }
 
+op_signature_t UniformQControlRotationBox::get_signature() const {
+  op_signature_t qubits(n_controls_ + 1, EdgeType::Quantum);
+  return qubits;
+}
+
 void UniformQControlRotationBox::generate_circuit() const {
   Circuit circ(n_controls_ + 1);
   if (n_controls_ == 0) {
     auto it = op_map_.begin();
-    circ.add_op<unsigned>(axis_, it->second->get_params()[0], {0});
+    circ.add_op<unsigned>(it->second, {0});
     circ_ = std::make_shared<Circuit>(circ);
     return;
   }
@@ -309,6 +478,114 @@ void UniformQControlRotationBox::generate_circuit() const {
       rotations, axis, n_controls_ + 1, circ, std::nullopt);
   if (axis_ == OpType::Rx) {
     circ.add_op<unsigned>(OpType::H, {n_controls_});
+  }
+  circ_ = std::make_shared<Circuit>(circ);
+}
+
+UniformQControlU2Box::UniformQControlU2Box(
+    const ctrl_op_map_t &op_map, bool impl_diag)
+    : Box(OpType::UniformQControlU2Box),
+      op_map_(op_map),
+      impl_diag_(impl_diag) {
+  auto it = op_map.begin();
+  if (it == op_map.end()) {
+    throw std::invalid_argument("No Ops provided.");
+  }
+  n_controls_ = (unsigned)it->first.size();
+  n_targets_ = 1;
+  for (; it != op_map.end(); it++) {
+    OpType optype = it->second->get_type();
+    if (!is_single_qubit_unitary_type(optype) &&
+        optype != OpType::Unitary1qBox) {
+      throw BadOpType(
+          "Ops must be single-qubit unitary gate types or Unitary1qBox.",
+          optype);
+    }
+  }
+  op_map_validate(op_map);
+}
+
+UniformQControlU2Box::UniformQControlU2Box(const UniformQControlU2Box &other)
+    : Box(other),
+      n_controls_(other.n_controls_),
+      n_targets_(other.n_targets_),
+      op_map_(other.op_map_),
+      impl_diag_(other.impl_diag_) {}
+
+Op_ptr UniformQControlU2Box::symbol_substitution(
+    const SymEngine::map_basic_basic &sub_map) const {
+  ctrl_op_map_t new_op_map = op_map_symbol_sub(sub_map, op_map_);
+  return std::make_shared<UniformQControlU2Box>(new_op_map, impl_diag_);
+}
+
+SymSet UniformQControlU2Box::free_symbols() const {
+  return op_map_free_symbols(op_map_);
+}
+
+Op_ptr UniformQControlU2Box::dagger() const {
+  return std::make_shared<UniformQControlU2Box>(
+      op_map_dagger(op_map_), impl_diag_);
+}
+
+Op_ptr UniformQControlU2Box::transpose() const {
+  return std::make_shared<UniformQControlU2Box>(
+      op_map_transpose(op_map_), impl_diag_);
+}
+
+void UniformQControlU2Box::generate_circuit() const {
+  Circuit circ(n_controls_ + 1);
+  if (n_controls_ == 0) {
+    auto it = op_map_.begin();
+    circ.add_op<unsigned>(it->second, {0});
+    circ_ = std::make_shared<Circuit>(circ);
+    return;
+  }
+  std::vector<Eigen::Matrix2cd> unitaries(1 << n_controls_);
+  // convert op_map to a vector of 2^n_controls_ unitaries
+  for (unsigned i = 0; i < (1 << n_controls_); i++) {
+    auto it = op_map_.find(dec_to_bin(i, n_controls_));
+    if (it == op_map_.end()) {
+      unitaries[i] = Eigen::Matrix2cd::Identity();
+    } else {
+      if (it->second->get_type() == OpType::Unitary1qBox) {
+        std::shared_ptr<const Unitary1qBox> u1box =
+            std::dynamic_pointer_cast<const Unitary1qBox>(it->second);
+        unitaries[i] = u1box->get_matrix();
+      } else {
+        if (!it->second->free_symbols().empty()) {
+          throw Unsupported("Can't decompose symbolic UniformQControlU2Box.");
+        }
+        unitaries[i] = GateUnitaryMatrix::get_unitary(*as_gate_ptr(it->second));
+      }
+    }
+  }
+  // initialise the ucrz list
+  std::vector<std::vector<double>> ucrzs(n_controls_);
+  for (unsigned i = 0; i < n_controls_; i++) {
+    ucrzs[i] = std::vector<double>(1 << (i + 1), 0.0);
+  }
+  recursive_demultiplex_u2(
+      unitaries, n_controls_ + 1, circ, ucrzs, Eigen::Matrix2cd::Identity(),
+      Eigen::Matrix2cd::Identity());
+  if (impl_diag_) {
+    // add the final ucrzs
+    for (unsigned i = 0; i < n_controls_; i++) {
+      // ith ucrzs acts on i+2 qubits
+      // get the args for the UCRz gate
+      std::vector<unsigned> args(i + 2);
+      std::iota(std::begin(args), std::end(args), n_controls_ - i - 1);
+      // swap the first and the last args
+      std::swap(args[0], args[i + 1]);
+      // create UniformQControlRotationBox
+      ctrl_op_map_t rz_map;
+      for (unsigned k = 0; k < ucrzs[i].size(); k++) {
+        if (std::abs(ucrzs[i][k]) > EPS) {
+          rz_map.insert(
+              {dec_to_bin(k, i + 1), get_op_ptr(OpType::Rz, ucrzs[i][k])});
+        }
+      }
+      circ.add_box(UniformQControlRotationBox(rz_map), args);
+    }
   }
   circ_ = std::make_shared<Circuit>(circ);
 }

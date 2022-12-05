@@ -117,7 +117,7 @@ class UniformQControlRotationBox : public Box {
   ctrl_op_map_t get_ops() const { return op_map_; }
 
   /**
-   * Equality check between two UniformQControlBox instances
+   * Equality check between two UniformQControlRotationBox instances
    */
   bool is_equal(const Op &op_other) const override {
     const UniformQControlRotationBox &other =
@@ -128,6 +128,8 @@ class UniformQControlRotationBox : public Box {
   Op_ptr dagger() const override;
 
   Op_ptr transpose() const override;
+
+  op_signature_t get_signature() const override;
 
  protected:
   /**
@@ -146,4 +148,62 @@ class UniformQControlRotationBox : public Box {
   OpType axis_;
 };
 
+/**
+ * Uniformly controlled U2 gate
+ */
+class UniformQControlU2Box : public Box {
+ public:
+  /**
+   * @brief Construct from a op_map. Ops must be single-qubit unitary gate types
+   * or Unitary1QBox.
+   *
+   * @param op_map
+   * @param impl_diag whether to implement the final UniformQControlRotationBox,
+   * default to true
+   */
+  explicit UniformQControlU2Box(
+      const ctrl_op_map_t &op_map, bool impl_diag = true);
+  /**
+   * Copy constructor
+   */
+  UniformQControlU2Box(const UniformQControlU2Box &other);
+
+  ~UniformQControlU2Box() override {}
+
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &sub_map) const override;
+
+  SymSet free_symbols() const override;
+
+  ctrl_op_map_t get_ops() const { return op_map_; }
+
+  /**
+   * Equality check between two UniformQControlU2Box instances
+   */
+  bool is_equal(const Op &op_other) const override {
+    const UniformQControlU2Box &other =
+        dynamic_cast<const UniformQControlU2Box &>(op_other);
+    return id_ == other.get_id();
+  }
+
+  Op_ptr dagger() const override;
+
+  Op_ptr transpose() const override;
+
+ protected:
+  /**
+   * @brief Implement uniformly controlled U2 gates (UCU2)
+   * with 2^ctrl_qubits SQ gates, 2^ctrl_qubits CXs, and a
+   * UniformQControlRotationBox at the end
+   *
+   * https://arxiv.org/abs/quant-ph/0410066
+   */
+  void generate_circuit() const override;
+
+ private:
+  unsigned n_controls_;
+  unsigned n_targets_;
+  ctrl_op_map_t op_map_;
+  bool impl_diag_;
+};
 }  // namespace tket
