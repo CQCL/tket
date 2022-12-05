@@ -165,6 +165,7 @@ bool is_box_type(OpType optype) {
       OpType::QControlBox,
       OpType::UniformQControlBox,
       OpType::UniformQControlRotationBox,
+      OpType::UniformQControlU2Box,
       OpType::ClassicalExpBox,
       OpType::ProjectorAssertionBox,
       OpType::StabiliserAssertionBox,

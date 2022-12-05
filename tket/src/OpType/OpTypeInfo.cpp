@@ -129,6 +129,8 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
         "UniformQControlRotationBox",
         {},
         std::nullopt}},
+      {OpType::UniformQControlU2Box,
+       {"UniformQControlU2Box", "UniformQControlU2Box", {}, std::nullopt}},
       {OpType::Conditional, {"Conditional", "If", {}, std::nullopt}},
       {OpType::ProjectorAssertionBox,
        {"ProjectorAssertionBox", "ProjectorAssertionBox", {}, std::nullopt}},

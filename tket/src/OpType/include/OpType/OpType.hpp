@@ -617,6 +617,11 @@ enum class OpType {
   UniformQControlRotationBox,
 
   /**
+   * See \ref UniformQControlU2Box
+   */
+  UniformQControlU2Box,
+
+  /**
    * See \ref ClassicalExpBox
    */
   ClassicalExpBox,
