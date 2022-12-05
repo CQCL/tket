@@ -8,7 +8,10 @@ Minor new features:
 
 * New ``view_browser`` function for opening a browser with circuit render.
 
+Fixes:
 
+* Warn rather than abort when significant rounding errors are detected in
+  TK2-to-CX rebase.
 
 1.9.0 (November 2022)
 ---------------------
