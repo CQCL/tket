@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 
 #include "../testutil.hpp"
@@ -109,57 +110,100 @@ SCENARIO("UniformQControlBox decomposition", "[boxes]") {
     REQUIRE(check_multiplexor(op_map, *c));
   }
 }
-SCENARIO("UniformQControlBox auxiliary methods", "[boxes]") {
-  GIVEN("symbol_substitution") {
-    Sym a = SymTable::fresh_symbol("a");
-    Expr expr_a(a);
-    ctrl_op_map_t op_map = {{{0}, get_op_ptr(OpType::Rz, expr_a)}};
-    ctrl_op_map_t num_op_map = {{{0}, get_op_ptr(OpType::Rz, 1.34)}};
-    UniformQControlBox uqc_box(op_map);
-    SymEngine::map_basic_basic smap;
-    smap[a] = Expr(1.34);
-    const UniformQControlBox new_box = static_cast<const UniformQControlBox &>(
-        *uqc_box.symbol_substitution(smap));
 
-    std::shared_ptr<Circuit> c = new_box.to_circuit();
+SCENARIO("UniformQControlRotationBox decomposition", "[boxes]") {
+  GIVEN("Controlled Rz construction") {
+    ctrl_op_map_t op_map = {
+        {{1, 1}, get_op_ptr(OpType::Rz, 0.3)},
+        {{0, 1}, get_op_ptr(OpType::Rz, 1.4)},
+        {{1, 0}, get_op_ptr(OpType::Rz, 0.7)}};
+    UniformQControlRotationBox uqr_box(op_map);
+    std::shared_ptr<Circuit> c = uqr_box.to_circuit();
     std::vector<Command> cmds = c->get_commands();
-    REQUIRE(cmds.size() == 3);
-    REQUIRE(check_multiplexor(num_op_map, *c));
+    REQUIRE(cmds.size() == 8);
+    for (auto cmd : cmds) {
+      REQUIRE(
+          (cmd.get_op_ptr()->get_type() == OpType::Rz ||
+           cmd.get_op_ptr()->get_type() == OpType::CX));
+    }
+    REQUIRE(check_multiplexor(op_map, *c));
   }
-  GIVEN("free_symbols") {
+  GIVEN("Controlled Ry construction") {
+    ctrl_op_map_t op_map = {
+        {{1, 1, 0, 1}, get_op_ptr(OpType::Ry, 0.3)},
+        {{0, 1, 1, 1}, get_op_ptr(OpType::Ry, 1.4)},
+        {{1, 0, 1, 1}, get_op_ptr(OpType::Ry, 0.7)}};
+    UniformQControlRotationBox uqr_box(op_map);
+    std::shared_ptr<Circuit> c = uqr_box.to_circuit();
+    std::vector<Command> cmds = c->get_commands();
+    REQUIRE(cmds.size() == 32);
+    for (auto cmd : cmds) {
+      REQUIRE(
+          (cmd.get_op_ptr()->get_type() == OpType::Ry ||
+           cmd.get_op_ptr()->get_type() == OpType::CX));
+    }
+    REQUIRE(check_multiplexor(op_map, *c));
+  }
+  GIVEN("Controlled Rx construction") {
+    ctrl_op_map_t op_map = {
+        {{1, 1}, get_op_ptr(OpType::Rx, 0.3)},
+        {{0, 1}, get_op_ptr(OpType::Rx, 1.4)},
+        {{1, 0}, get_op_ptr(OpType::Rx, 0.7)}};
+    UniformQControlRotationBox uqr_box(op_map);
+    std::shared_ptr<Circuit> c = uqr_box.to_circuit();
+    std::vector<Command> cmds = c->get_commands();
+    REQUIRE(cmds.size() == 10);
+    for (auto cmd : cmds) {
+      REQUIRE(
+          (cmd.get_op_ptr()->get_type() == OpType::H ||
+           cmd.get_op_ptr()->get_type() == OpType::Rz ||
+           cmd.get_op_ptr()->get_type() == OpType::CX));
+    }
+    REQUIRE(check_multiplexor(op_map, *c));
+  }
+  GIVEN("UniformQControlRotationBox with one control") {
+    ctrl_op_map_t op_map = {
+        {{1}, get_op_ptr(OpType::Rz, 0.3)}, {{0}, get_op_ptr(OpType::Rz, 1.4)}};
+    UniformQControlRotationBox uqr_box(op_map);
+    std::shared_ptr<Circuit> c = uqr_box.to_circuit();
+    std::vector<Command> cmds = c->get_commands();
+    REQUIRE(cmds.size() == 4);
+    REQUIRE(check_multiplexor(op_map, *c));
+  }
+  GIVEN("UniformQControlRotationBox with zero control") {
+    ctrl_op_map_t op_map = {{{}, get_op_ptr(OpType::Rx, 0.3)}};
+    UniformQControlRotationBox uqr_box(op_map);
+    std::shared_ptr<Circuit> c = uqr_box.to_circuit();
+    std::vector<Command> cmds = c->get_commands();
+    REQUIRE(cmds.size() == 1);
+    REQUIRE(check_multiplexor(op_map, *c));
+  }
+  GIVEN("UniformQControlRotationBox with symbols") {
     Sym a = SymTable::fresh_symbol("a");
-    Sym b = SymTable::fresh_symbol("b");
     Expr expr_a(a);
+    Sym b = SymTable::fresh_symbol("b");
     Expr expr_b(b);
     ctrl_op_map_t op_map = {
-        {{0, 1}, get_op_ptr(OpType::Rz, expr_a)},
-        {{1, 1}, get_op_ptr(OpType::Rz, expr_b)},
-        {{1, 0}, get_op_ptr(OpType::Rz, expr_a)}};
-    UniformQControlBox uqc_box(op_map);
-    const SymSet symbols = uqc_box.free_symbols();
-    REQUIRE(symbols.size() == 2);
-    REQUIRE(symbols.find(a) != symbols.end());
-    REQUIRE(symbols.find(b) != symbols.end());
-  }
-  GIVEN("Dagger & transpose") {
-    ctrl_op_map_t op_map = {
-        {{1, 1}, get_op_ptr(OpType::TK2, std::vector<Expr>{0.3, 1.8, 3.4})},
-        {{0, 1}, get_op_ptr(OpType::CX)},
-        {{1, 0}, get_op_ptr(OpType::TK2, std::vector<Expr>{0.2, 0.4, 0.4})}};
-    UniformQControlBox uqc_box(op_map);
-    // Test dagger
-    const UniformQControlBox dag_box =
-        static_cast<const UniformQControlBox &>(*uqc_box.dagger());
-    std::shared_ptr<Circuit> c = dag_box.to_circuit();
-    REQUIRE(check_multiplexor(op_map, c->dagger()));
-    // Test transpose
-    const UniformQControlBox transpose_box =
-        static_cast<const UniformQControlBox &>(*uqc_box.transpose());
-    std::shared_ptr<Circuit> d = transpose_box.to_circuit();
-    REQUIRE(check_multiplexor(op_map, d->transpose()));
+        {{1, 1, 0}, get_op_ptr(OpType::Ry, expr_a)},
+        {{0, 1, 1}, get_op_ptr(OpType::Ry, 1.4)},
+        {{1, 0, 1}, get_op_ptr(OpType::Ry, expr_b)}};
+    ctrl_op_map_t numerical_map = {
+        {{1, 1, 0}, get_op_ptr(OpType::Ry, 0.3)},
+        {{0, 1, 1}, get_op_ptr(OpType::Ry, 1.4)},
+        {{1, 0, 1}, get_op_ptr(OpType::Ry, 1.8)}};
+    UniformQControlRotationBox uqrsb_box(op_map);
+    std::shared_ptr<Circuit> c_sb = uqrsb_box.to_circuit();
+    std::vector<Command> cmds = c_sb->get_commands();
+    REQUIRE(cmds.size() == 16);
+    SymEngine::map_basic_basic smap;
+    smap[a] = Expr(0.3);
+    smap[b] = Expr(1.8);
+    c_sb->symbol_substitution(smap);
+    REQUIRE(check_multiplexor(numerical_map, *c_sb));
   }
 }
-SCENARIO("UniformQControlBox exception handling", "[boxes]") {
+
+SCENARIO("Exception handling", "[boxes]") {
   GIVEN("Empty op_map") {
     ctrl_op_map_t op_map;
     REQUIRE_THROWS_MATCHES(
@@ -187,6 +231,87 @@ SCENARIO("UniformQControlBox exception handling", "[boxes]") {
         UniformQControlBox(op_map), std::invalid_argument,
         MessageContains("Ops must have the same width"));
   }
+  GIVEN("Mixed rotation axis") {
+    ctrl_op_map_t op_map = {
+        {{1}, get_op_ptr(OpType::Rz, 0.3)}, {{0}, get_op_ptr(OpType::Rx, 1.4)}};
+    REQUIRE_THROWS_MATCHES(
+        UniformQControlRotationBox(op_map), std::invalid_argument,
+        MessageContains("Ops must have the same rotation type"));
+  }
+  GIVEN("Non-rotation type") {
+    ctrl_op_map_t op_map = {{{1}, get_op_ptr(OpType::H)}};
+    REQUIRE_THROWS_MATCHES(
+        UniformQControlRotationBox(op_map), std::invalid_argument,
+        MessageContains("Ops must be either Rx, Ry, or Rz"));
+  }
+}
+
+TEMPLATE_TEST_CASE(
+    "Auxiliary methods", "[boxes]", UniformQControlBox,
+    UniformQControlRotationBox) {
+  GIVEN("symbol_substitution") {
+    Sym a = SymTable::fresh_symbol("a");
+    Expr expr_a(a);
+    ctrl_op_map_t op_map = {{{0}, get_op_ptr(OpType::Rz, expr_a)}};
+    ctrl_op_map_t num_op_map = {{{0}, get_op_ptr(OpType::Rz, 1.34)}};
+    TestType uqc_box(op_map);
+    SymEngine::map_basic_basic smap;
+    smap[a] = Expr(1.34);
+    const TestType new_box =
+        static_cast<const TestType &>(*uqc_box.symbol_substitution(smap));
+
+    std::shared_ptr<Circuit> c = new_box.to_circuit();
+    REQUIRE(check_multiplexor(num_op_map, *c));
+  }
+  GIVEN("free_symbols") {
+    Sym a = SymTable::fresh_symbol("a");
+    Sym b = SymTable::fresh_symbol("b");
+    Expr expr_a(a);
+    Expr expr_b(b);
+    ctrl_op_map_t op_map = {
+        {{0, 1}, get_op_ptr(OpType::Rz, expr_a)},
+        {{1, 1}, get_op_ptr(OpType::Rz, expr_b)},
+        {{1, 0}, get_op_ptr(OpType::Rz, expr_a)}};
+    TestType uqc_box(op_map);
+    const SymSet symbols = uqc_box.free_symbols();
+    REQUIRE(symbols.size() == 2);
+    REQUIRE(symbols.find(a) != symbols.end());
+    REQUIRE(symbols.find(b) != symbols.end());
+  }
+  GIVEN("Rotation Dagger & transpose") {
+    ctrl_op_map_t op_map = {
+        {{0, 1}, get_op_ptr(OpType::Rz, 3.7)},
+        {{1, 1}, get_op_ptr(OpType::Rz, 1)},
+        {{1, 0}, get_op_ptr(OpType::Rz, 2.5)}};
+    TestType uqc_box(op_map);
+    // Test dagger
+    const TestType dag_box = static_cast<const TestType &>(*uqc_box.dagger());
+    std::shared_ptr<Circuit> c = dag_box.to_circuit();
+    REQUIRE(check_multiplexor(op_map, c->dagger()));
+    // Test transpose
+    const TestType transpose_box =
+        static_cast<const TestType &>(*uqc_box.transpose());
+    std::shared_ptr<Circuit> d = transpose_box.to_circuit();
+    REQUIRE(check_multiplexor(op_map, d->transpose()));
+  }
+}
+
+SCENARIO("UniformQControlBox Dagger & transpose", "[boxes]") {
+  ctrl_op_map_t op_map = {
+      {{1, 1}, get_op_ptr(OpType::TK2, std::vector<Expr>{0.3, 1.8, 3.4})},
+      {{0, 1}, get_op_ptr(OpType::CX)},
+      {{1, 0}, get_op_ptr(OpType::TK2, std::vector<Expr>{0.2, 0.4, 0.4})}};
+  UniformQControlBox uqc_box(op_map);
+  // Test dagger
+  const UniformQControlBox dag_box =
+      static_cast<const UniformQControlBox &>(*uqc_box.dagger());
+  std::shared_ptr<Circuit> c = dag_box.to_circuit();
+  REQUIRE(check_multiplexor(op_map, c->dagger()));
+  // Test transpose
+  const UniformQControlBox transpose_box =
+      static_cast<const UniformQControlBox &>(*uqc_box.transpose());
+  std::shared_ptr<Circuit> d = transpose_box.to_circuit();
+  REQUIRE(check_multiplexor(op_map, d->transpose()));
 }
 
 }  // namespace test_Multiplexor
