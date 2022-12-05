@@ -37,7 +37,7 @@ static std::vector<bool> dec_to_bin(unsigned dec, unsigned width) {
 }
 
 static bool check_multiplexor(
-    const UniformQControlBox::op_map_t &op_map, const Circuit &circ) {
+    const ctrl_op_map_t &op_map, const Circuit &circ) {
   // Assume ops in op_map have the same number of q wires and have no c wires.
   // Also assumes op_map is not empty
   auto first_op = op_map.begin();
@@ -76,7 +76,7 @@ SCENARIO("UniformQControlBox decomposition", "[boxes]") {
     c0.add_op<unsigned>(OpType::H, {0});
     CircBox cbox(c0);
     Op_ptr op0 = std::make_shared<CircBox>(cbox);
-    UniformQControlBox::op_map_t op_map = {
+    ctrl_op_map_t op_map = {
         {{1, 1}, op0},
         {{0, 1}, get_op_ptr(OpType::CX)},
         {{1, 0}, get_op_ptr(OpType::TK2, std::vector<Expr>{0.2, 0.4, 0.4})}};
@@ -93,7 +93,7 @@ SCENARIO("UniformQControlBox decomposition", "[boxes]") {
     REQUIRE(check_multiplexor(op_map, *c));
   }
   GIVEN("UniformQControlBox with one control") {
-    UniformQControlBox::op_map_t op_map = {{{1}, get_op_ptr(OpType::H)}};
+    ctrl_op_map_t op_map = {{{1}, get_op_ptr(OpType::H)}};
     UniformQControlBox uqc_box(op_map);
     std::shared_ptr<Circuit> c = uqc_box.to_circuit();
     std::vector<Command> cmds = c->get_commands();
@@ -101,7 +101,7 @@ SCENARIO("UniformQControlBox decomposition", "[boxes]") {
     REQUIRE(check_multiplexor(op_map, *c));
   }
   GIVEN("UniformQControlBox with zero control") {
-    UniformQControlBox::op_map_t op_map = {{{}, get_op_ptr(OpType::H)}};
+    ctrl_op_map_t op_map = {{{}, get_op_ptr(OpType::H)}};
     UniformQControlBox uqc_box(op_map);
     std::shared_ptr<Circuit> c = uqc_box.to_circuit();
     std::vector<Command> cmds = c->get_commands();
@@ -113,10 +113,8 @@ SCENARIO("UniformQControlBox auxiliary methods", "[boxes]") {
   GIVEN("symbol_substitution") {
     Sym a = SymTable::fresh_symbol("a");
     Expr expr_a(a);
-    UniformQControlBox::op_map_t op_map = {
-        {{0}, get_op_ptr(OpType::Rz, expr_a)}};
-    UniformQControlBox::op_map_t num_op_map = {
-        {{0}, get_op_ptr(OpType::Rz, 1.34)}};
+    ctrl_op_map_t op_map = {{{0}, get_op_ptr(OpType::Rz, expr_a)}};
+    ctrl_op_map_t num_op_map = {{{0}, get_op_ptr(OpType::Rz, 1.34)}};
     UniformQControlBox uqc_box(op_map);
     SymEngine::map_basic_basic smap;
     smap[a] = Expr(1.34);
@@ -133,7 +131,7 @@ SCENARIO("UniformQControlBox auxiliary methods", "[boxes]") {
     Sym b = SymTable::fresh_symbol("b");
     Expr expr_a(a);
     Expr expr_b(b);
-    UniformQControlBox::op_map_t op_map = {
+    ctrl_op_map_t op_map = {
         {{0, 1}, get_op_ptr(OpType::Rz, expr_a)},
         {{1, 1}, get_op_ptr(OpType::Rz, expr_b)},
         {{1, 0}, get_op_ptr(OpType::Rz, expr_a)}};
@@ -144,7 +142,7 @@ SCENARIO("UniformQControlBox auxiliary methods", "[boxes]") {
     REQUIRE(symbols.find(b) != symbols.end());
   }
   GIVEN("Dagger & transpose") {
-    UniformQControlBox::op_map_t op_map = {
+    ctrl_op_map_t op_map = {
         {{1, 1}, get_op_ptr(OpType::TK2, std::vector<Expr>{0.3, 1.8, 3.4})},
         {{0, 1}, get_op_ptr(OpType::CX)},
         {{1, 0}, get_op_ptr(OpType::TK2, std::vector<Expr>{0.2, 0.4, 0.4})}};
@@ -163,27 +161,27 @@ SCENARIO("UniformQControlBox auxiliary methods", "[boxes]") {
 }
 SCENARIO("UniformQControlBox exception handling", "[boxes]") {
   GIVEN("Empty op_map") {
-    UniformQControlBox::op_map_t op_map;
+    ctrl_op_map_t op_map;
     REQUIRE_THROWS_MATCHES(
         UniformQControlBox(op_map), std::invalid_argument,
         MessageContains("No Ops provided"));
   }
   GIVEN("Bitstrings are too long") {
     std::vector<bool> bits(33);
-    UniformQControlBox::op_map_t op_map = {{bits, get_op_ptr(OpType::H)}};
+    ctrl_op_map_t op_map = {{bits, get_op_ptr(OpType::H)}};
     REQUIRE_THROWS_MATCHES(
         UniformQControlBox(op_map), std::invalid_argument,
         MessageContains("Bitstrings longer than 32 are not supported"));
   }
   GIVEN("Unmatched bitstrings") {
-    UniformQControlBox::op_map_t op_map = {
+    ctrl_op_map_t op_map = {
         {{0, 1}, get_op_ptr(OpType::H)}, {{1}, get_op_ptr(OpType::X)}};
     REQUIRE_THROWS_MATCHES(
         UniformQControlBox(op_map), std::invalid_argument,
         MessageContains("Bitstrings must have the same width"));
   }
   GIVEN("Unmatched op sizes") {
-    UniformQControlBox::op_map_t op_map = {
+    ctrl_op_map_t op_map = {
         {{0, 1}, get_op_ptr(OpType::H)}, {{1, 0}, get_op_ptr(OpType::CX)}};
     REQUIRE_THROWS_MATCHES(
         UniformQControlBox(op_map), std::invalid_argument,

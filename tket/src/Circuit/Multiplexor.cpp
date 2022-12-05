@@ -27,8 +27,7 @@ static const unsigned MAX_N_CONTROLS = 32;
  * @return Circuit
  */
 static Circuit multiplexor_sequential_decomp(
-    const UniformQControlBox::op_map_t &op_map, unsigned n_controls,
-    unsigned n_targets) {
+    const ctrl_op_map_t &op_map, unsigned n_controls, unsigned n_targets) {
   Circuit c(n_controls + n_targets);
   std::vector<unsigned> qubits(n_controls + n_targets);
   std::iota(std::begin(qubits), std::end(qubits), 0);
@@ -49,15 +48,10 @@ static Circuit multiplexor_sequential_decomp(
   return c;
 }
 
-UniformQControlBox::UniformQControlBox(const op_map_t &op_map)
-    : Box(OpType::UniformQControlBox), op_map_(op_map) {
-  auto it = op_map.begin();
-  if (it == op_map.end()) {
-    throw std::invalid_argument("No Ops provided.");
-  }
-  n_controls_ = 0;
-  n_targets_ = 0;
-  for (; it != op_map.end(); it++) {
+static void op_map_validate(const ctrl_op_map_t &op_map) {
+  unsigned n_controls = 0;
+  unsigned n_targets = 0;
+  for (auto it = op_map.begin(); it != op_map.end(); it++) {
     op_signature_t op_sig = it->second->get_signature();
     if ((unsigned long)std::count(
             op_sig.begin(), op_sig.end(), EdgeType::Quantum) != op_sig.size()) {
@@ -66,22 +60,67 @@ UniformQControlBox::UniformQControlBox(const op_map_t &op_map)
           it->second->get_type());
     }
     if (it == op_map.begin()) {
-      n_controls_ = (unsigned)it->first.size();
-      if (n_controls_ > MAX_N_CONTROLS) {
+      n_controls = (unsigned)it->first.size();
+      if (n_controls > MAX_N_CONTROLS) {
         throw std::invalid_argument(
             "Bitstrings longer than " + std::to_string(MAX_N_CONTROLS) +
             " are not supported.");
       }
-      n_targets_ = (unsigned)op_sig.size();
+      n_targets = (unsigned)op_sig.size();
     } else {
-      if (it->first.size() != n_controls_) {
+      if (it->first.size() != n_controls) {
         throw std::invalid_argument("Bitstrings must have the same width.");
       }
-      if (op_sig.size() != n_targets_) {
+      if (op_sig.size() != n_targets) {
         throw std::invalid_argument("Ops must have the same width.");
       }
     }
   }
+}
+
+static ctrl_op_map_t op_map_symbol_sub(
+    const SymEngine::map_basic_basic &sub_map, const ctrl_op_map_t &op_map) {
+  ctrl_op_map_t new_op_map;
+  for (auto it = op_map.begin(); it != op_map.end(); it++) {
+    new_op_map.insert({it->first, it->second->symbol_substitution(sub_map)});
+  }
+  return new_op_map;
+}
+
+static SymSet op_map_free_symbols(const ctrl_op_map_t &op_map) {
+  SymSet all_symbols;
+  for (auto it = op_map.begin(); it != op_map.end(); it++) {
+    SymSet op_symbols = it->second->free_symbols();
+    all_symbols.insert(op_symbols.begin(), op_symbols.end());
+  }
+  return all_symbols;
+}
+
+static ctrl_op_map_t op_map_dagger(const ctrl_op_map_t &op_map) {
+  ctrl_op_map_t new_op_map;
+  for (auto it = op_map.begin(); it != op_map.end(); it++) {
+    new_op_map.insert({it->first, it->second->dagger()});
+  }
+  return new_op_map;
+}
+
+static ctrl_op_map_t ctrl_op_map_transpose(const ctrl_op_map_t &op_map) {
+  ctrl_op_map_t new_op_map;
+  for (auto it = op_map.begin(); it != op_map.end(); it++) {
+    new_op_map.insert({it->first, it->second->transpose()});
+  }
+  return new_op_map;
+}
+
+UniformQControlBox::UniformQControlBox(const ctrl_op_map_t &op_map)
+    : Box(OpType::UniformQControlBox), op_map_(op_map) {
+  auto it = op_map.begin();
+  if (it == op_map.end()) {
+    throw std::invalid_argument("No Ops provided.");
+  }
+  n_controls_ = (unsigned)it->first.size();
+  n_targets_ = it->second->n_qubits();
+  op_map_validate(op_map);
 }
 
 UniformQControlBox::UniformQControlBox(const UniformQControlBox &other)
@@ -92,10 +131,7 @@ UniformQControlBox::UniformQControlBox(const UniformQControlBox &other)
 
 Op_ptr UniformQControlBox::symbol_substitution(
     const SymEngine::map_basic_basic &sub_map) const {
-  op_map_t new_op_map;
-  for (auto it = op_map_.begin(); it != op_map_.end(); it++) {
-    new_op_map.insert({it->first, it->second->symbol_substitution(sub_map)});
-  }
+  ctrl_op_map_t new_op_map = op_map_symbol_sub(sub_map, op_map_);
   return std::make_shared<UniformQControlBox>(new_op_map);
 }
 
@@ -105,7 +141,13 @@ SymSet UniformQControlBox::free_symbols() const {
     SymSet op_symbols = it->second->free_symbols();
     all_symbols.insert(op_symbols.begin(), op_symbols.end());
   }
-  return all_symbols;
+
+Op_ptr UniformQControlBox::dagger() const {
+  return std::make_shared<UniformQControlBox>(op_map_dagger(op_map_));
+}
+
+Op_ptr UniformQControlBox::transpose() const {
+  return std::make_shared<UniformQControlBox>(ctrl_op_map_transpose(op_map_));
 }
 
 void UniformQControlBox::generate_circuit() const {

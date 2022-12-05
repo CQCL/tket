@@ -14,28 +14,28 @@
 
 #pragma once
 
-#include "Circuit.hpp"
 #include "Boxes.hpp"
+#include "Circuit.hpp"
 
 namespace tket {
 
+/**
+ * @brief Map bitstrings to Ops
+ *
+ *
+ *
+ */
+typedef std::map<std::vector<bool>, Op_ptr> ctrl_op_map_t;
 
 /**
  * Uniformly controlled quantum ops
  */
 class UniformQControlBox : public Box {
  public:
-
-	/**
-	 * @brief Map bitstrings to Ops
-	 * 
-	 */
-  typedef std::map<std::vector<bool>, Op_ptr> op_map_t;
-
   /**
-   * Construct from a given op_map_t.
-	 * 
-   * The op_map_t must meet the following requirements:
+   * Construct from a given ctrl_op_map_t.
+   *
+   * The ctrl_op_map_t must meet the following requirements:
    * 1. all bitstrings have the same length
    * 		and the length should be no bigger than 32
    * 2. all ops have the same number of wires
@@ -43,7 +43,7 @@ class UniformQControlBox : public Box {
    *
    * @param op_map
    */
-  explicit UniformQControlBox(const op_map_t &op_map);
+  explicit UniformQControlBox(const ctrl_op_map_t &op_map);
 
   /**
    * Copy constructor
@@ -57,7 +57,7 @@ class UniformQControlBox : public Box {
 
   SymSet free_symbols() const override;
 
-  op_map_t get_ops() const { return op_map_; }
+  ctrl_op_map_t get_ops() const { return op_map_; }
 
   /**
    * Equality check between two UniformQControlBox instances
@@ -72,13 +72,11 @@ class UniformQControlBox : public Box {
 
   Op_ptr transpose() const override;
 
-
  protected:
-
-	/**
-	 * @brief Implement the multiplexor naively using X gates and QControlBoxes
-	 * 
-	 */
+  /**
+   * @brief Implement the multiplexor naively using X gates and QControlBoxes
+   *
+   */
   void generate_circuit() const override;
   UniformQControlBox()
       : Box(OpType::UniformQControlBox),
@@ -89,7 +87,7 @@ class UniformQControlBox : public Box {
  private:
   unsigned n_controls_;
   unsigned n_targets_;
-  op_map_t op_map_;
+  ctrl_op_map_t op_map_;
 };
 
 
