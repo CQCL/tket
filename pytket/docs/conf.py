@@ -101,7 +101,7 @@ html_theme = "sphinx_book_theme"
 html_theme_options = {
     "repository_url": "https://github.com/CQCL/tket",
     "use_repository_button": True,
-    "use_issue_button": True,
+    "use_issues_button": True,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
