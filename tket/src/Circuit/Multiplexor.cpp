@@ -182,7 +182,7 @@ static ctrl_op_map_t op_map_dagger(const ctrl_op_map_t &op_map) {
   return new_op_map;
 }
 
-static ctrl_op_map_t ctrl_op_map_transpose(const ctrl_op_map_t &op_map) {
+static ctrl_op_map_t op_map_transpose(const ctrl_op_map_t &op_map) {
   ctrl_op_map_t new_op_map;
   for (auto it = op_map.begin(); it != op_map.end(); it++) {
     new_op_map.insert({it->first, it->second->transpose()});
@@ -222,7 +222,7 @@ Op_ptr UniformQControlBox::dagger() const {
 }
 
 Op_ptr UniformQControlBox::transpose() const {
-  return std::make_shared<UniformQControlBox>(ctrl_op_map_transpose(op_map_));
+  return std::make_shared<UniformQControlBox>(op_map_transpose(op_map_));
 }
 
 void UniformQControlBox::generate_circuit() const {
@@ -278,7 +278,7 @@ Op_ptr UniformQControlRotationBox::dagger() const {
 
 Op_ptr UniformQControlRotationBox::transpose() const {
   return std::make_shared<UniformQControlRotationBox>(
-      ctrl_op_map_transpose(op_map_));
+      op_map_transpose(op_map_));
 }
 
 void UniformQControlRotationBox::generate_circuit() const {
