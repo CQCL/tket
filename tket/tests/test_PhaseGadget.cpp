@@ -289,6 +289,12 @@ SCENARIO("Decompose phase gadgets") {
     Circuit circ = pauli_gadget(nZ, 0.2);
     return std::make_pair(circ, phase_gadget(n_qubits, 0.2, config));
   };
+  GIVEN("Trivial gadget on 0 qubits") {
+    auto [circ, decomp] = get_circ_decomposition(0, CXConfigType::Star);
+    auto u1 = tket_sim::get_unitary(circ);
+    auto u2 = tket_sim::get_unitary(decomp);
+    REQUIRE(u1.isApprox(u2));
+  }
   GIVEN("Using Star strategy") {
     CXConfigType config = CXConfigType::Star;
     auto [circ, decomp] = get_circ_decomposition(4, config);
