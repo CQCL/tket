@@ -138,7 +138,7 @@ static void recursive_demultiplex_rotation(
  * @brief Decompose diag(a,b) using eq(3)
  * Returns the matrices u and v, and the uniformly controlled Z rotation matrix
  * R defined by the rotation angles a0 and a1 (in half-turns) activated by 0 and
- * 1 respectively. The matrix D is fixed to by ZZPhase(-0.5)
+ * 1 respectively. The matrix D is fixed to ZZPhase(-0.5)
  *
  * @param a 2x2 unitary
  * @param b 2x2 unitary
@@ -180,8 +180,8 @@ constant_demultiplex(const Eigen::Matrix2cd &a, const Eigen::Matrix2cd &b) {
 }
 
 /**
- * @brief Given the angles for a UCRz gate, return its matrix representation
- * as a vector of 2x2 matrices
+ * @brief Given the angles for a UCRz gate, return its block diagonal matrix
+ * representation as a vector of 2x2 matrices
  *
  * @param angles
  * @return std::vector<Eigen::Matrix2cd>
@@ -208,16 +208,28 @@ static std::vector<Eigen::Matrix2cd> ucrz_angles_to_diagonal(
  * @brief Recursively decompose a uniformly controlled U2 gate.
  *
  * Generates 2^ctrl_qubits Unitary1qBox, 2^ctrl_qubits CXs and a ladder of
- * UniformQControlRotationBoxes
+ * UniformQControlRotationBoxes https://arxiv.org/abs/quant-ph/0410066 eq(3)
  *
- * https://arxiv.org/abs/quant-ph/0410066 eq(3)
+ * During each recursion step, the multiplexor with n qubits defined
+ * using `unitaries` are decomposed into
+ * UCU = R (I tensor U) ZZPhase(-0.5, [0, n-1]) (I tensor V)
+ * R is a UCRz gate, U and V are multiplexors.
+ * Replace ZZPhase with CX and local gates we have
+ * UCU = (R+1.5)(I tensor U TK1(0.5,0.5,0.5)) CX(0,n-1)(I tensor
+ * TK1(0.5,0.5,0)V) and a 1.75 phase. R+1.5 means adding 1.5 to every Rz
+ * rotations.
+ *
+ * At each subsequent step, the R gate can be merged with the multiplexor
+ * on the left.
+ * In the end, we will have a ladder of R gates at the end of the circuit, which
+ * the user can decide whether to implement.
  *
  * @param unitaries list of 2^ctrl_qubits 2x2 unitaries, unitaries[i] is the
  * unitary activated by bitstring binary(i)
  * @param total_qubits the total number of qubits in the final output circuit
  * @param circ circuit to update, won't contain the UniformQControlRotationBoxes
- * @param ucrzs keep track of the ladder of UniformQControlRotationBoxes.
- * ucrzs[i] stores the Rz rotations angles (in half-turns) for the
+ * @param ucrzs keep track of the ladder of UniformQControlRotationBoxes (R
+ * gates). ucrzs[i] stores the Rz rotations angles (in half-turns) for the
  * UniformQControlRotationBoxe with i+2 qubits.
  * @param left_compose 2x2 unitary to be absorbed to left half
  * @param right_compose 2x2 unitary to be absorbed to right half
@@ -238,8 +250,8 @@ static void recursive_demultiplex_u2(
   unsigned mid = (unsigned)(n_unitaries / 2);
   // We generalise eq(3) for n controls, demultiplex the multiplexor
   // by demultiplexing pairs {unitaries[i], unitaries[mid+i]} 0<=i<mid.
-  // I \otimes diag(u) = I \otimes diag(u_list)
-  // I \otimes diag(v) = I \otimes diag(v_list)
+  // i.e. I tensor diag(u) = I tensor diag(u_list)
+  // I tensor diag(v) = I tensor diag(v_list)
   // D = ZZPhase(-0.5)
   // R = UCRz(rz_list, [q_{n-1}, q_{1}, q_{2}, ...,  q_{n-2}, q_0])
   std::vector<Eigen::Matrix2cd> u_list;
@@ -389,6 +401,11 @@ Op_ptr UniformQControlBox::transpose() const {
   return std::make_shared<UniformQControlBox>(op_map_transpose(op_map_));
 }
 
+op_signature_t UniformQControlBox::get_signature() const {
+  op_signature_t qubits(n_controls_ + n_targets_, EdgeType::Quantum);
+  return qubits;
+}
+
 void UniformQControlBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(
       multiplexor_sequential_decomp(op_map_, n_controls_, n_targets_));
@@ -530,6 +547,11 @@ Op_ptr UniformQControlU2Box::dagger() const {
 Op_ptr UniformQControlU2Box::transpose() const {
   return std::make_shared<UniformQControlU2Box>(
       op_map_transpose(op_map_), impl_diag_);
+}
+
+op_signature_t UniformQControlU2Box::get_signature() const {
+  op_signature_t qubits(n_controls_ + 1, EdgeType::Quantum);
+  return qubits;
 }
 
 void UniformQControlU2Box::generate_circuit() const {

@@ -72,6 +72,8 @@ class UniformQControlBox : public Box {
 
   Op_ptr transpose() const override;
 
+  op_signature_t get_signature() const override;
+
  protected:
   /**
    * @brief Implement the multiplexor naively using X gates and QControlBoxes
@@ -189,6 +191,8 @@ class UniformQControlU2Box : public Box {
   Op_ptr dagger() const override;
 
   Op_ptr transpose() const override;
+
+  op_signature_t get_signature() const override;
 
  protected:
   /**
