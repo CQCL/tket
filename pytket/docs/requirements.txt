@@ -1,3 +1,4 @@
 sphinx
 sphinx_autodoc_annotation
 sphinx_rtd_theme
+sphinx_book_theme
