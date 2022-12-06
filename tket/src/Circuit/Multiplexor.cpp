@@ -507,10 +507,10 @@ void UniformQControlRotationBox::generate_circuit() const {
     circ_ = std::make_shared<Circuit>(circ);
     return;
   }
-
-  std::vector<Expr> rotations(1 << n_controls_);
+  unsigned n_rotations = 1 << n_controls_;
+  std::vector<Expr> rotations(n_rotations);
   // convert op_map to a vector of 2^n_controls_ angles
-  for (unsigned i = 0; i < (1 << n_controls_); i++) {
+  for (unsigned i = 0; i < n_rotations; i++) {
     auto it = op_map_.find(dec_to_bin(i, n_controls_));
     if (it == op_map_.end()) {
       rotations[i] = 0;
@@ -610,9 +610,10 @@ void UniformQControlU2Box::generate_circuit() const {
     circ_ = std::make_shared<Circuit>(circ);
     return;
   }
-  std::vector<Eigen::Matrix2cd> unitaries(1 << n_controls_);
+  unsigned n_unitaries = 1 << n_controls_;
+  std::vector<Eigen::Matrix2cd> unitaries(n_unitaries);
   // convert op_map to a vector of 2^n_controls_ unitaries
-  for (unsigned i = 0; i < (1 << n_controls_); i++) {
+  for (unsigned i = 0; i < n_unitaries; i++) {
     auto it = op_map_.find(dec_to_bin(i, n_controls_));
     if (it == op_map_.end()) {
       unitaries[i] = Eigen::Matrix2cd::Identity();
