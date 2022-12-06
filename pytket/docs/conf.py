@@ -122,7 +122,7 @@ html_theme_options = {
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
-html_logo = "Quantinuum_logo.png"
+html_logo = "_static/Quantinuum_logo.png"
 # Output file base name for HTML help builder.
 htmlhelp_basename = "pytketdoc"
 
