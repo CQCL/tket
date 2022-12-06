@@ -367,8 +367,7 @@ void init_boxes(py::module &m) {
       Op>(
       m, "UniformQControlRotationBox",
       "A user-defined uniformly controlled single-axis rotations specified by "
-      "a "
-      "map from bitstrings to :py:class:`Op`s")
+      "a map from bitstrings to :py:class:`Op`s")
       .def(
           py::init<const ctrl_op_map_t &>(),
           "Construct from a map from bitstrings to :py:class:`Op`s."
@@ -398,7 +397,7 @@ void init_boxes(py::module &m) {
             }
             return UniformQControlRotationBox(op_map);
           }),
-          "Construct from a list of angles, and the rotation axis.\n\n"
+          "Construct from a list of angles and the rotation axis.\n\n"
           ":param angles: List of rotation angles in half-turns. angles[i] is "
           "the angle activated by the binary representation of i\n"
           ":param axis: ``OpType.Rx``, ``OpType.Ry`` or ``OpType.Rz``\n",

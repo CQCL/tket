@@ -222,7 +222,7 @@ static std::vector<Eigen::Matrix2cd> ucrz_angles_to_diagonal(
  * rotations.
  *
  * At each subsequent step, the R gate can be merged with the multiplexor
- * on the left.
+ * on the left (in terms of matrix composition).
  * In the end, we will have a ladder of R gates at the end of the circuit, which
  * the user can decide whether to implement.
  *
@@ -251,7 +251,7 @@ static void recursive_demultiplex_u2(
   unsigned n_qubits = (unsigned)log2(n_unitaries) + 1;
   unsigned mid = (unsigned)(n_unitaries / 2);
   // We generalise eq(3) for n controls, demultiplex the multiplexor
-  // by demultiplexing pairs {unitaries[i], unitaries[mid+i]} 0<=i<mid.
+  // by demultiplexing all pairs {unitaries[i], unitaries[mid+i]} 0<=i<mid.
   // i.e. I tensor diag(u) = I tensor diag(u_list)
   // I tensor diag(v) = I tensor diag(v_list)
   // D = ZZPhase(-0.5)
