@@ -4,6 +4,11 @@ Changelog
 Unreleased
 ----------
 
+Major new features:
+
+* New boxes to implement uniformly controlled operations (i.e. multiplexor):
+  ``UniformQControlBox``, ``UniformQControlRotationBox`` and ``UniformQControlU2Box``.
+
 Minor new features:
 
 * New ``view_browser`` function for opening a browser with circuit render.
