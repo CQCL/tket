@@ -21,6 +21,7 @@
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Command.hpp"
+#include "Circuit/Multiplexor.hpp"
 #include "CircuitsForTesting.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/SymTable.hpp"
@@ -32,6 +33,7 @@
 #include "Ops/OpPtr.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
+#include "Simulation/CircuitSimulator.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Transform.hpp"
@@ -334,6 +336,79 @@ SCENARIO("Test Circuit serialization") {
     REQUIRE(qc_b == qcbox);
     REQUIRE(qc_b.get_n_controls() == qcbox.get_n_controls());
     REQUIRE(*qc_b.get_op() == *qc_b.get_op());
+  }
+
+  GIVEN("UniformQControlBox") {
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::H, {0});
+    CircBox cbox(c0);
+    Op_ptr op0 = std::make_shared<CircBox>(cbox);
+    ctrl_op_map_t op_map = {
+        {{1, 1}, op0},
+        {{0, 1}, get_op_ptr(OpType::CX)},
+        {{1, 0}, get_op_ptr(OpType::TK2, std::vector<Expr>{0.2, 0.4, 0.4})}};
+    UniformQControlBox uqc_box(op_map);
+    Circuit c(4);
+    c.add_box(uqc_box, {0, 1, 2, 3});
+    nlohmann::json j_box = c;
+    const Circuit new_c = j_box.get<Circuit>();
+    const auto& qc_b = static_cast<const UniformQControlBox&>(
+        *new_c.get_commands()[0].get_op_ptr());
+    ctrl_op_map_t new_op_map = qc_b.get_op_map();
+    REQUIRE(new_op_map.size() == op_map.size());
+    for (auto it = op_map.begin(); it != op_map.end(); it++) {
+      auto new_it = new_op_map.find(it->first);
+      REQUIRE(new_it != new_op_map.end());
+      REQUIRE(*it->second == *new_it->second);
+    }
+  }
+
+  GIVEN("UniformQControlRotationBox") {
+    ctrl_op_map_t op_map = {
+        {{1, 1, 0, 1, 0, 0}, get_op_ptr(OpType::Ry, 0.3)},
+        {{0, 1, 1, 1, 1, 0}, get_op_ptr(OpType::Ry, 1.4)},
+        {{1, 0, 1, 1, 1, 0}, get_op_ptr(OpType::Ry, 0.7)}};
+    UniformQControlRotationBox uqr_box(op_map);
+    Circuit c(7);
+    c.add_box(uqr_box, {0, 1, 2, 3, 4, 5, 6});
+    nlohmann::json j_box = c;
+    const Circuit new_c = j_box.get<Circuit>();
+    const auto& qc_b = static_cast<const UniformQControlRotationBox&>(
+        *new_c.get_commands()[0].get_op_ptr());
+    ctrl_op_map_t new_op_map = qc_b.get_op_map();
+    REQUIRE(new_op_map.size() == op_map.size());
+    for (auto it = op_map.begin(); it != op_map.end(); it++) {
+      auto new_it = new_op_map.find(it->first);
+      REQUIRE(new_it != new_op_map.end());
+      REQUIRE(*it->second == *new_it->second);
+    }
+  }
+
+  GIVEN("UniformQControlU2Box") {
+    Circuit c0(1);
+    c0.add_op<unsigned>(OpType::TK1, {0.2374, 1.0353, 0.5372}, {0});
+    Eigen::Matrix2cd m = tket_sim::get_unitary(c0);
+    Unitary1qBox mbox(m);
+    Op_ptr mbox_op = std::make_shared<Unitary1qBox>(mbox);
+    ctrl_op_map_t op_map = {
+        {{1, 1}, mbox_op},
+        {{0, 1}, get_op_ptr(OpType::X)},
+        {{1, 0}, get_op_ptr(OpType::TK1, std::vector<Expr>{0.3, 1.8, 3.4})}};
+    UniformQControlU2Box uqcu2_box(op_map, false);
+    Circuit c(3);
+    c.add_box(uqcu2_box, {0, 1, 2});
+    nlohmann::json j_box = c;
+    const Circuit new_c = j_box.get<Circuit>();
+    const auto& qc_b = static_cast<const UniformQControlU2Box&>(
+        *new_c.get_commands()[0].get_op_ptr());
+    ctrl_op_map_t new_op_map = qc_b.get_op_map();
+    REQUIRE(new_op_map.size() == op_map.size());
+    for (auto it = op_map.begin(); it != op_map.end(); it++) {
+      auto new_it = new_op_map.find(it->first);
+      REQUIRE(new_it != new_op_map.end());
+      REQUIRE(*it->second == *new_it->second);
+    }
+    REQUIRE(uqcu2_box.get_impl_diag() == qc_b.get_impl_diag());
   }
 
   GIVEN("PhasePolyBox") {

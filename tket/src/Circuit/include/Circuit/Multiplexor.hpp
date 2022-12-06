@@ -16,6 +16,7 @@
 
 #include "Boxes.hpp"
 #include "Circuit.hpp"
+#include "Utils/Json.hpp"
 
 namespace tket {
 
@@ -73,6 +74,12 @@ class UniformQControlBox : public Box {
   Op_ptr transpose() const override;
 
   op_signature_t get_signature() const override;
+
+  ctrl_op_map_t get_op_map() const { return op_map_; }
+
+  static Op_ptr from_json(const nlohmann::json &j);
+
+  static nlohmann::json to_json(const Op_ptr &op);
 
  protected:
   /**
@@ -132,6 +139,12 @@ class UniformQControlRotationBox : public Box {
   Op_ptr transpose() const override;
 
   op_signature_t get_signature() const override;
+
+  ctrl_op_map_t get_op_map() const { return op_map_; }
+
+  static Op_ptr from_json(const nlohmann::json &j);
+
+  static nlohmann::json to_json(const Op_ptr &op);
 
  protected:
   /**
@@ -193,6 +206,14 @@ class UniformQControlU2Box : public Box {
   Op_ptr transpose() const override;
 
   op_signature_t get_signature() const override;
+
+  ctrl_op_map_t get_op_map() const { return op_map_; }
+
+  bool get_impl_diag() const { return impl_diag_; }
+
+  static Op_ptr from_json(const nlohmann::json &j);
+
+  static nlohmann::json to_json(const Op_ptr &op);
 
  protected:
   /**

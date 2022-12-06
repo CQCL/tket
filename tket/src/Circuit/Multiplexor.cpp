@@ -20,7 +20,9 @@
 #include "Gate/GatePtr.hpp"
 #include "Gate/GateUnitaryMatrix.hpp"
 #include "Gate/Rotation.hpp"
+#include "Ops/OpJsonFactory.hpp"
 #include "Utils/Constants.hpp"
+#include "Utils/Json.hpp"
 
 namespace tket {
 
@@ -406,6 +408,21 @@ op_signature_t UniformQControlBox::get_signature() const {
   return qubits;
 }
 
+nlohmann::json UniformQControlBox::to_json(const Op_ptr &op) {
+  const auto &box = static_cast<const UniformQControlBox &>(*op);
+  nlohmann::json j = core_box_json(box);
+  j["op_map"] = box.get_op_map();
+  return j;
+}
+
+Op_ptr UniformQControlBox::from_json(const nlohmann::json &j) {
+  UniformQControlBox box =
+      UniformQControlBox(j.at("op_map").get<ctrl_op_map_t>());
+  return set_box_id(
+      box,
+      boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
+}
+
 void UniformQControlBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(
       multiplexor_sequential_decomp(op_map_, n_controls_, n_targets_));
@@ -465,6 +482,21 @@ Op_ptr UniformQControlRotationBox::transpose() const {
 op_signature_t UniformQControlRotationBox::get_signature() const {
   op_signature_t qubits(n_controls_ + 1, EdgeType::Quantum);
   return qubits;
+}
+
+nlohmann::json UniformQControlRotationBox::to_json(const Op_ptr &op) {
+  const auto &box = static_cast<const UniformQControlRotationBox &>(*op);
+  nlohmann::json j = core_box_json(box);
+  j["op_map"] = box.get_op_map();
+  return j;
+}
+
+Op_ptr UniformQControlRotationBox::from_json(const nlohmann::json &j) {
+  UniformQControlRotationBox box =
+      UniformQControlRotationBox(j.at("op_map").get<ctrl_op_map_t>());
+  return set_box_id(
+      box,
+      boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
 }
 
 void UniformQControlRotationBox::generate_circuit() const {
@@ -554,6 +586,22 @@ op_signature_t UniformQControlU2Box::get_signature() const {
   return qubits;
 }
 
+nlohmann::json UniformQControlU2Box::to_json(const Op_ptr &op) {
+  const auto &box = static_cast<const UniformQControlU2Box &>(*op);
+  nlohmann::json j = core_box_json(box);
+  j["op_map"] = box.get_op_map();
+  j["impl_diag"] = box.get_impl_diag();
+  return j;
+}
+
+Op_ptr UniformQControlU2Box::from_json(const nlohmann::json &j) {
+  UniformQControlU2Box box = UniformQControlU2Box(
+      j.at("op_map").get<ctrl_op_map_t>(), j.at("impl_diag").get<bool>());
+  return set_box_id(
+      box,
+      boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
+}
+
 void UniformQControlU2Box::generate_circuit() const {
   Circuit circ(n_controls_ + 1);
   if (n_controls_ == 0) {
@@ -611,5 +659,9 @@ void UniformQControlU2Box::generate_circuit() const {
   }
   circ_ = std::make_shared<Circuit>(circ);
 }
+
+REGISTER_OPFACTORY(UniformQControlBox, UniformQControlBox)
+REGISTER_OPFACTORY(UniformQControlRotationBox, UniformQControlRotationBox)
+REGISTER_OPFACTORY(UniformQControlU2Box, UniformQControlU2Box)
 
 }  // namespace tket
