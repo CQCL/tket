@@ -50,7 +50,7 @@ from pytket.predicates import CompilationUnit  # type: ignore
 from pytket.transform import Transform, PauliSynthStrat  # type: ignore
 
 import numpy as np
-from scipy.linalg import block_diag
+from scipy.linalg import block_diag  # type: ignore
 import sympy  # type: ignore
 from sympy import Symbol, pi, sympify, functions  # type: ignore
 from math import sqrt
