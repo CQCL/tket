@@ -23,6 +23,7 @@
 #include "Circuit/Boxes.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/ClassicalExpBox.hpp"
+#include "Circuit/Multiplexor.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/OpPtrFunctions.hpp"
 #include "Ops/Op.hpp"
@@ -601,6 +602,44 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:return: the new :py:class:`Circuit`",
           py::arg("box"), py::arg("qubits"), py::arg("ancilla"),
           py::arg("name") = std::nullopt)
+      .def(
+          "add_uniformqcontrolbox",
+          [](Circuit *circ, const UniformQControlBox &box,
+             const unit_vector_t &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<UniformQControlBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`UniformQControlBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_uniformqcontrolrotationbox",
+          [](Circuit *circ, const UniformQControlRotationBox &box,
+             const unit_vector_t &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<UniformQControlRotationBox>(box), args,
+                kwargs);
+          },
+          "Append a :py:class:`UniformQControlRotationBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_uniformqcontrolu2box",
+          [](Circuit *circ, const UniformQControlU2Box &box,
+             const unit_vector_t &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<UniformQControlU2Box>(box), args,
+                kwargs);
+          },
+          "Append a :py:class:`UniformQControlU2Box` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
       .def(
           "H",
           [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {

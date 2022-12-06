@@ -19,6 +19,7 @@
 #include <pybind11/stl.h>
 
 #include "Circuit/Circuit.hpp"
+#include "Circuit/Multiplexor.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Utils/Json.hpp"
 #include "binder_json.hpp"
@@ -345,5 +346,93 @@ void init_boxes(py::module &m) {
       .def(
           "get_stabilisers", &StabiliserAssertionBox::get_stabilisers,
           ":return: the list of pauli stabilisers");
+  py::class_<UniformQControlBox, std::shared_ptr<UniformQControlBox>, Op>(
+      m, "UniformQControlBox",
+      "A user-defined uniformly controlled operations specified by a "
+      "map from bitstrings to :py:class:`Op`s")
+      .def(
+          py::init<const ctrl_op_map_t &>(),
+          "Construct from a map from bitstrings to :py:class:`Op`s\n\n"
+          ":param op_map: Map from bitstrings to :py:class:`Op`s\n",
+          py::arg("op_map"))
+      .def(
+          "get_circuit",
+          [](UniformQControlBox &box) { return *box.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_op_map", &UniformQControlBox::get_op_map,
+          ":return: the underlying op map");
+  py::class_<
+      UniformQControlRotationBox, std::shared_ptr<UniformQControlRotationBox>,
+      Op>(
+      m, "UniformQControlRotationBox",
+      "A user-defined uniformly controlled single-axis rotations specified by "
+      "a "
+      "map from bitstrings to :py:class:`Op`s")
+      .def(
+          py::init<const ctrl_op_map_t &>(),
+          "Construct from a map from bitstrings to :py:class:`Op`s."
+          "Only supports Rx, Ry, Rz :py:class:`Op`s\n\n"
+          ":param op_map: Map from bitstrings to :py:class:`Op`s\n",
+          py::arg("op_map"))
+      .def(
+          py::init([](const std::vector<double> &angles, const OpType &axis) {
+            if (angles.size() == 0) {
+              throw std::invalid_argument("Angles are empty.");
+            }
+            if (angles.size() & (angles.size() - 1)) {
+              throw std::invalid_argument(
+                  "The size of the angles is not power of 2.");
+            }
+            unsigned bitstring_width = (unsigned)log2(angles.size());
+            ctrl_op_map_t op_map;
+            for (unsigned i = 0; i < angles.size(); i++) {
+              if (std::abs(angles[i]) > EPS) {
+                auto bs = std::bitset<32>(i);
+                std::vector<bool> bits(bitstring_width);
+                for (unsigned i = 0; i < bitstring_width; i++) {
+                  bits[bitstring_width - i - 1] = bs[i];
+                }
+                op_map.insert({bits, get_op_ptr(axis, angles[i])});
+              }
+            }
+            return UniformQControlRotationBox(op_map);
+          }),
+          "Construct from a list of angles, and the rotation axis.\n\n"
+          ":param angles: List of rotation angles in half-turns. angles[i] is "
+          "the angle activated by the binary representation of i\n"
+          ":param axis: ``OpType.Rx``, ``OpType.Ry`` or ``OpType.Rz``\n",
+          py::arg("angles"), py::arg("axis"))
+      .def(
+          "get_circuit",
+          [](UniformQControlRotationBox &box) { return *box.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_op_map", &UniformQControlRotationBox::get_op_map,
+          ":return: the underlying op map");
+  py::class_<UniformQControlU2Box, std::shared_ptr<UniformQControlU2Box>, Op>(
+      m, "UniformQControlU2Box",
+      "A user-defined uniformly controlled U2 operations specified by a "
+      "map from bitstrings to :py:class:`Op`s")
+      .def(
+          py::init<const ctrl_op_map_t &, bool>(),
+          "Construct from a map from bitstrings to :py:class:`Op`s."
+          "Only supports single qubit unitary gate types and "
+          ":py:class:`Unitary1qBox`.\n\n"
+          ":param op_map: Map from bitstrings to :py:class:`Op`s\n"
+          ":param impl_diag: Whether to implement the final diagonal gate, "
+          "default to True.",
+          py::arg("op_map"), py::arg("impl_diag") = true)
+      .def(
+          "get_circuit",
+          [](UniformQControlU2Box &box) { return *box.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_op_map", &UniformQControlU2Box::get_op_map,
+          ":return: the underlying op map")
+      .def(
+          "get_impl_diag", &UniformQControlU2Box::get_impl_diag,
+          ":return: flag indicating whether to implement the final diagonal "
+          "gate.");
 }
 }  // namespace tket

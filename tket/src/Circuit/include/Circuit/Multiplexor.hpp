@@ -23,8 +23,6 @@ namespace tket {
 /**
  * @brief Map bitstrings to Ops
  *
- *
- *
  */
 typedef std::map<std::vector<bool>, Op_ptr> ctrl_op_map_t;
 
