@@ -32,5 +32,13 @@ a:visited,
 .sig-param,
 .std.std-ref,
 a {
-    color: #400ab3;
+    color: #a318a8;
+}
+
+:root {
+    --pst-color-inline-code: 37, 99, 235 !important;
+}
+
+.sig-name {
+    font-size: 1.25rem;
 }
