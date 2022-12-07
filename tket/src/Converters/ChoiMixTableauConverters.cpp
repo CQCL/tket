@@ -36,8 +36,7 @@ ChoiMixTableau circuit_to_cm_tableau(const Circuit& circ) {
   return tab;
 }
 
-std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
-    const ChoiMixTableau& t) {
+std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
   /**
    * THE PLAN:
    * We first identify and solve all post-selections by Gaussian elimination and
@@ -380,8 +379,7 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
             out_circ_tp.add_op<Qubit>(OpType::H, {qbp.first});
             out_circ_tp.add_op<Qubit>(OpType::CX, {qbp.first, *out_qb});
             tab.apply_gate(
-                OpType::H, {qbp.first},
-                ChoiMixTableau::TableauSegment::Output);
+                OpType::H, {qbp.first}, ChoiMixTableau::TableauSegment::Output);
             tab.apply_CX(
                 qbp.first, *out_qb, ChoiMixTableau::TableauSegment::Output);
             break;

@@ -83,8 +83,8 @@ SCENARIO("Correct creation of ChoiMixTableau") {
                               QubitPauliTensor(Qubit(0), Pauli::Z),
                               QubitPauliTensor(Qubit(0), Pauli::Z)});
     REQUIRE(
-        tab.get_row(2) == ChoiMixTableau::row_tensor_t{
-                              {}, QubitPauliTensor(Qubit(2), Pauli::Z)});
+        tab.get_row(2) ==
+        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(2), Pauli::Z)});
     REQUIRE(
         tab.get_row_product({0, 1}) ==
         ChoiMixTableau::row_tensor_t{
@@ -118,11 +118,11 @@ SCENARIO("Correct creation of ChoiMixTableau") {
                               QubitPauliTensor(Qubit(0), Pauli::Z),
                               QubitPauliTensor(Qubit(0), Pauli::Z)});
     REQUIRE(
-        tab.get_row(2) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(1), Pauli::Z), {}});
+        tab.get_row(2) ==
+        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Z), {}});
     REQUIRE(
-        tab.get_row(3) == ChoiMixTableau::row_tensor_t{
-                              {}, QubitPauliTensor(Qubit(2), Pauli::Z)});
+        tab.get_row(3) ==
+        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(2), Pauli::Z)});
     // Applying an S at the input end adds up to a net Z
     tab.apply_S(Qubit(0), ChoiMixTableau::TableauSegment::Input);
     tab.canonical_column_order();
@@ -136,11 +136,11 @@ SCENARIO("Correct creation of ChoiMixTableau") {
                               QubitPauliTensor(Qubit(0), Pauli::Z),
                               QubitPauliTensor(Qubit(0), Pauli::Z)});
     REQUIRE(
-        tab.get_row(2) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(1), Pauli::Z), {}});
+        tab.get_row(2) ==
+        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Z), {}});
     REQUIRE(
-        tab.get_row(3) == ChoiMixTableau::row_tensor_t{
-                              {}, QubitPauliTensor(Qubit(2), Pauli::Z)});
+        tab.get_row(3) ==
+        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(2), Pauli::Z)});
     THEN("Compare to explicitly generated tableau") {
       std::list<ChoiMixTableau::row_tensor_t> rows;
       rows.push_back(
@@ -173,11 +173,11 @@ SCENARIO("Correct creation of ChoiMixTableau") {
                               QubitPauliTensor(Qubit(0), Pauli::Z),
                               QubitPauliTensor(Qubit(0), Pauli::Z)});
     REQUIRE(
-        tab.get_row(2) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(1), Pauli::Y), {}});
+        tab.get_row(2) ==
+        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Y), {}});
     REQUIRE(
-        tab.get_row(3) == ChoiMixTableau::row_tensor_t{
-                              {}, QubitPauliTensor(Qubit(2), Pauli::Y)});
+        tab.get_row(3) ==
+        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(2), Pauli::Y)});
     // Check V on identity
     tab.apply_V(Qubit(0), ChoiMixTableau::TableauSegment::Output);
     REQUIRE(
@@ -189,11 +189,11 @@ SCENARIO("Correct creation of ChoiMixTableau") {
                               QubitPauliTensor(Qubit(0), Pauli::Z),
                               QubitPauliTensor(Qubit(0), Pauli::Y)});
     REQUIRE(
-        tab.get_row(2) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(1), Pauli::Y), {}});
+        tab.get_row(2) ==
+        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Y), {}});
     REQUIRE(
-        tab.get_row(3) == ChoiMixTableau::row_tensor_t{
-                              {}, QubitPauliTensor(Qubit(2), Pauli::Y)});
+        tab.get_row(3) ==
+        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(2), Pauli::Y)});
     // Applying a V at the input end adds up to a net X
     tab.apply_V(Qubit(0), ChoiMixTableau::TableauSegment::Input);
     tab.gaussian_form();
@@ -206,11 +206,11 @@ SCENARIO("Correct creation of ChoiMixTableau") {
                               QubitPauliTensor(Qubit(0), Pauli::Z),
                               QubitPauliTensor(Qubit(0), Pauli::Z, -1.)});
     REQUIRE(
-        tab.get_row(2) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(1), Pauli::Y), {}});
+        tab.get_row(2) ==
+        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Y), {}});
     REQUIRE(
-        tab.get_row(3) == ChoiMixTableau::row_tensor_t{
-                              {}, QubitPauliTensor(Qubit(2), Pauli::Y)});
+        tab.get_row(3) ==
+        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(2), Pauli::Y)});
   }
   GIVEN("Applying CX gates") {
     ChoiMixTableau tab(4);
@@ -243,11 +243,11 @@ SCENARIO("Correct creation of ChoiMixTableau") {
             QubitPauliTensor(Qubit(1), Pauli::Z),
             QubitPauliTensor({{Qubit(0), Pauli::Z}, {Qubit(1), Pauli::Z}})});
     REQUIRE(
-        tab.get_row(4) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(2), Pauli::Z), {}});
+        tab.get_row(4) ==
+        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(2), Pauli::Z), {}});
     REQUIRE(
-        tab.get_row(5) == ChoiMixTableau::row_tensor_t{
-                              {}, QubitPauliTensor(Qubit(3), Pauli::Z)});
+        tab.get_row(5) ==
+        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(3), Pauli::Z)});
     // CX on input cancels back to original
     tab.apply_CX(Qubit(0), Qubit(1), ChoiMixTableau::TableauSegment::Input);
     tab.gaussian_form();
@@ -378,8 +378,8 @@ SCENARIO("Correct creation of ChoiMixTableau") {
             QubitPauliTensor(
                 {{Qubit(0), Pauli::Z}, {Qubit(2), Pauli::Z}}, -1.)});
     REQUIRE(
-        tab.get_row(4) == ChoiMixTableau::row_tensor_t{
-                              {}, QubitPauliTensor(Qubit(1), Pauli::Z)});
+        tab.get_row(4) ==
+        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(1), Pauli::Z)});
   }
   GIVEN("Combining post-selections and discarding") {
     ChoiMixTableau tab(5);
