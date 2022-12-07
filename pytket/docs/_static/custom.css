@@ -32,11 +32,11 @@ a:visited,
 .sig-param,
 .std.std-ref,
 a {
-    color: #a318a8;
+    color: #2563EB;
 }
 
 :root {
-    --pst-color-inline-code: 37, 99, 235 !important;
+    --pst-color-inline-code: 199, 37, 78 !important;
 }
 
 .sig-name {
