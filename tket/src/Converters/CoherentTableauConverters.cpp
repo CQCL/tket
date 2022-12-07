@@ -150,7 +150,7 @@ std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
 
   // Post-select rows
   // TODO Post-selection op is not yet available in tket - replace this once
-  // implemented
+  // implemented; an implementation hint is provided below
   if (post_selected_size != 0)
     throw std::logic_error(
         "Not yet implemented: post-selection required during CoherentTableau "

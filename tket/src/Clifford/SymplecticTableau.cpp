@@ -118,14 +118,11 @@ std::ostream &operator<<(std::ostream &os, const SymplecticTableau &tab) {
 }
 
 bool SymplecticTableau::operator==(const SymplecticTableau &other) const {
-  bool same = this->n_rows_ == other.n_rows_;
-  same &= this->n_qubits_ == other.n_qubits_;
-  // &= does not short-circuit but we need to guard the following checks
-  if (!same) return false;
-  same &= this->xmat_ == other.xmat_;
-  same &= this->zmat_ == other.zmat_;
-  same &= this->phase_ == other.phase_;
-  return same;
+  // Need this to short-circuit before matrix checks as comparing matrices of
+  // different sizes will throw an exception
+  return (this->n_rows_ == other.n_rows_) &&
+         (this->n_qubits_ == other.n_qubits_) && (this->xmat_ == other.xmat_) &&
+         (this->zmat_ == other.zmat_) && (this->phase_ == other.phase_);
 }
 
 void SymplecticTableau::row_mult(unsigned ra, unsigned rw, Complex coeff) {

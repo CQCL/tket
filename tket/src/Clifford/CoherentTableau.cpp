@@ -54,15 +54,19 @@ CoherentTableau::CoherentTableau(
     : tab_({}), col_index_() {
   unsigned n_rows = xmat.rows();
   unsigned n_bounds = xmat.cols();
+  if (n_ins > n_bounds)
+    throw std::invalid_argument(
+        "Number of inputs of a coherent tableau cannot be larger than the "
+        "number of qubits");
   if ((zmat.cols() != n_bounds) || (zmat.rows() != n_rows) ||
       (phase.size() != n_rows))
     throw std::invalid_argument(
-        "Partial tableau requires equally-sized components");
+        "Coherent tableau requires equally-sized components");
   tab_ = SymplecticTableau(xmat, zmat, phase);
   if (tab_.anticommuting_rows() != MatrixXb::Zero(n_rows, n_rows))
-    throw std::invalid_argument("Rows of partial tableau do not commute");
+    throw std::invalid_argument("Rows of coherent tableau do not commute");
   if (tab_.rank() != n_rows)
-    throw std::invalid_argument("Rows of partial tableau are not independent");
+    throw std::invalid_argument("Rows of coherent tableau are not independent");
   for (unsigned i = 0; i < n_ins; ++i) {
     col_index_.insert({{Qubit(i), TableauSegment::Input}, i});
   }
@@ -111,7 +115,14 @@ CoherentTableau::CoherentTableau(const std::list<row_tensor_t>& rows)
       if (qb.second == Pauli::X || qb.second == Pauli::Y) xmat(r, c) = true;
       if (qb.second == Pauli::Z || qb.second == Pauli::Y) zmat(r, c) = true;
     }
-    phase(r) = (row.first.coeff == -1.) ^ (row.second.coeff == -1.);
+    Complex ph = row.first.coeff * row.second.coeff;
+    if (std::abs(ph - 1.) < EPS)
+      phase(r) = false;
+    else if (std::abs(ph + 1.) < EPS)
+      phase(r) = true;
+    else
+      throw std::invalid_argument(
+          "Phase coefficient of a coherent tableau row must be +-1");
     ++r;
   }
   tab_ = SymplecticTableau(xmat, zmat, phase);
@@ -167,7 +178,8 @@ PauliStabiliser CoherentTableau::row_tensor_to_stab(
     else
       ps.push_back(ten.second.string.get(qb.first));
   }
-  return PauliStabiliser(ps, (ten.first.coeff * ten.second.coeff == 1.));
+  return PauliStabiliser(
+      ps, std::abs(ten.first.coeff * ten.second.coeff - 1.) < EPS);
 }
 
 CoherentTableau::row_tensor_t CoherentTableau::get_row(unsigned i) const {
@@ -224,6 +236,7 @@ void CoherentTableau::apply_gate(
       apply_V(qbs.at(0), seg);
       break;
     }
+    case OpType::Phase:
     case OpType::S: {
       apply_S(qbs.at(0), seg);
       break;
@@ -234,10 +247,12 @@ void CoherentTableau::apply_gate(
       apply_S(qbs.at(0), seg);
       break;
     }
+    case OpType::SX:
     case OpType::V: {
       apply_V(qbs.at(0), seg);
       break;
     }
+    case OpType::SXdg:
     case OpType::Vdg: {
       apply_V(qbs.at(0), seg);
       apply_V(qbs.at(0), seg);
@@ -278,6 +293,43 @@ void CoherentTableau::apply_gate(
       apply_S(qbs.at(1), seg);
       apply_V(qbs.at(1), seg);
       apply_S(qbs.at(1), seg);
+      break;
+    }
+    case OpType::ZZMax: {
+      apply_S(qbs.at(0), seg);
+      apply_S(qbs.at(1), seg);
+      apply_S(qbs.at(1), seg);
+      apply_V(qbs.at(1), seg);
+      apply_S(qbs.at(1), seg);
+      apply_CX(qbs.at(0), qbs.at(1), seg);
+      apply_S(qbs.at(1), seg);
+      apply_V(qbs.at(1), seg);
+      apply_S(qbs.at(1), seg);
+      break;
+    }
+    case OpType::ECR: {
+      apply_S(qbs.at(0), seg);
+      apply_S(qbs.at(0), seg);
+      apply_S(qbs.at(0), seg);
+      apply_V(qbs.at(0), seg);
+      apply_V(qbs.at(0), seg);
+      apply_V(qbs.at(1), seg);
+      apply_V(qbs.at(1), seg);
+      apply_V(qbs.at(1), seg);
+      apply_CX(qbs.at(0), qbs.at(1), seg);
+      break;
+    }
+    case OpType::ISWAPMax: {
+      apply_V(qbs.at(0), seg);
+      apply_V(qbs.at(1), seg);
+      apply_CX(qbs.at(0), qbs.at(1), seg);
+      apply_S(qbs.at(0), seg);
+      apply_S(qbs.at(0), seg);
+      apply_S(qbs.at(0), seg);
+      apply_V(qbs.at(1), seg);
+      apply_CX(qbs.at(0), qbs.at(1), seg);
+      apply_V(qbs.at(0), seg);
+      apply_V(qbs.at(1), seg);
       break;
     }
     case OpType::SWAP: {
@@ -340,6 +392,10 @@ void CoherentTableau::apply_gate(
 
 void CoherentTableau::apply_pauli(
     const QubitPauliTensor& pauli, unsigned half_pis, TableauSegment seg) {
+  if (std::abs(pauli.coeff - 1.) > EPS && std::abs(pauli.coeff + 1.) > EPS)
+    throw std::invalid_argument(
+        "In CoherentTableau::apply_pauli, can only rotate about a "
+        "QubitPauliTensor with coeff +-1");
   PauliStabiliser ps;
   if (seg == TableauSegment::Input) {
     QubitPauliTensor tr = pauli;
@@ -465,6 +521,10 @@ void CoherentTableau::collapse_qubit(const Qubit& qb, TableauSegment seg) {
 }
 
 void CoherentTableau::remove_row(unsigned row) {
+  if (row >= get_n_rows())
+    throw std::invalid_argument(
+        "Cannot remove row " + row + " from tableau with " + get_n_rows() +
+        " rows");
   unsigned n_rows = get_n_rows();
   unsigned n_cols = get_n_boundaries();
   if (row < n_rows - 1) {
@@ -479,6 +539,10 @@ void CoherentTableau::remove_row(unsigned row) {
 }
 
 void CoherentTableau::remove_col(unsigned col) {
+  if (col >= get_n_boundaries())
+    throw std::invalid_argument(
+        "Cannot remove column " + col + " from tableau with " +
+        get_n_boundaries() + " columns");
   unsigned n_rows = get_n_rows();
   unsigned n_cols = get_n_boundaries();
   if (col < n_cols - 1) {

@@ -26,22 +26,34 @@ class CoherentTableau {
    * Represents the stabiliser group for a Clifford process with qubit
    * initialisations/post-selections and mixed initialisations/discards.
    *
-   * Full presentation of the data structure and its theory is available via the
-   * internal docs.
+   * Based on the mixed stabiliser tableau representation of Audenaert & Pleino
+   * 2005 (doi:10.1088/1367-2630/7/1/170), commonly used for representing a
+   * stabilizer code in QEC. We make use of the Choi-Jamiolkovski isomorphism to
+   * represent processes with inputs via the mixed tableau of their Choi state.
    *
-   * Rows correspond to the coherent stabilisers of the mixed process.
-   * Generators are not maintained for the decoherent stabilisers, since they
-   * can be derived through commutation with the coherent subgroup.
+   * Rows correspond to generators for the stabilizers of the mixed process,
+   * i.e. Pauli measurements with expectation value 1. We will refer to these as
+   * "coherent stabilizers" or "coherent subgroup". With mixed states, there may
+   * exist additional Pauli operators which leave the state unchanged but do
+   * have expectation value 0, which we will refer to as "decoherent
+   * stabilizers" (i.e. the logical operators of the corresponding stabiliser
+   * code). The extra generators for these are not stored since they can be
+   * derived through commutation with the coherent subgroup. Similarly,
+   * destabilisers (detectable errors) can be derived. A future implementation
+   * may wish to always store the decoherent stabilizers and destabilisers for
+   * faster updates.
    *
-   * Each row is divided into its input segment and output segment. Recall that
-   * a row RxS means SCR^T = C. When mapped to a sparse readable representation,
-   * independent QubitPauliTensor objects are used for each segment, so we no
-   * longer expect their individual phases to be +-1, instead only requiring
-   * this on their product.
+   * Each row is divided into its input segment and output segment. Under the CJ
+   * isomorphism, a row RxS means (in matrix multiplication order) SCR^T = C.
+   * When mapped to a sparse readable representation, independent
+   * QubitPauliTensor objects are used for each segment, so we no longer expect
+   * their individual phases to be +-1, instead only requiring this on their
+   * product.
    *
    * Columns of the tableau are indexed by pair of Qubit id and a tag to
    * distinguish input vs output. Rows are not maintained in any particular
-   * order.
+   * order, though the `gaussian_form()` method will bring it into row-reduced
+   * echelon form.
    */
  public:
   enum class TableauSegment { Input, Output };
@@ -102,12 +114,6 @@ class CoherentTableau {
    * Get the number of boundaries representing outputs from the process.
    */
   unsigned get_n_outputs() const;
-
-  /**
-   * Get the map between columns and labels, identified as a qubit ID and an
-   * indicator for whether it represents an input or output of the process.
-   */
-  // const tableau_col_index_t& get_col_index() const;
 
   /**
    * Read off a row as a Pauli string
