@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CoherentTableau.hpp"
+#include "ChoiMixTableau.hpp"
 
 #include <boost/foreach.hpp>
 
@@ -30,14 +30,14 @@ static SymplecticTableau id_tab(unsigned n) {
   return SymplecticTableau(xmat, zmat, VectorXb::Zero(2 * n));
 }
 
-CoherentTableau::CoherentTableau(unsigned n) : tab_(id_tab(n)), col_index_() {
+ChoiMixTableau::ChoiMixTableau(unsigned n) : tab_(id_tab(n)), col_index_() {
   for (unsigned i = 0; i < n; ++i) {
     col_index_.insert({{Qubit(i), TableauSegment::Input}, i});
     col_index_.insert({{Qubit(i), TableauSegment::Output}, n + i});
   }
 }
 
-CoherentTableau::CoherentTableau(const qubit_vector_t& qbs)
+ChoiMixTableau::ChoiMixTableau(const qubit_vector_t& qbs)
     : tab_(id_tab(qbs.size())), col_index_() {
   unsigned n = qbs.size();
   unsigned i = 0;
@@ -48,7 +48,7 @@ CoherentTableau::CoherentTableau(const qubit_vector_t& qbs)
   }
 }
 
-CoherentTableau::CoherentTableau(
+ChoiMixTableau::ChoiMixTableau(
     const MatrixXb& xmat, const MatrixXb& zmat, const VectorXb& phase,
     unsigned n_ins)
     : tab_({}), col_index_() {
@@ -56,17 +56,17 @@ CoherentTableau::CoherentTableau(
   unsigned n_bounds = xmat.cols();
   if (n_ins > n_bounds)
     throw std::invalid_argument(
-        "Number of inputs of a coherent tableau cannot be larger than the "
+        "Number of inputs of a Choi tableau cannot be larger than the "
         "number of qubits");
   if ((zmat.cols() != n_bounds) || (zmat.rows() != n_rows) ||
       (phase.size() != n_rows))
     throw std::invalid_argument(
-        "Coherent tableau requires equally-sized components");
+        "Choi tableau requires equally-sized components");
   tab_ = SymplecticTableau(xmat, zmat, phase);
   if (tab_.anticommuting_rows() != MatrixXb::Zero(n_rows, n_rows))
-    throw std::invalid_argument("Rows of coherent tableau do not commute");
+    throw std::invalid_argument("Rows of Choi tableau do not commute");
   if (tab_.rank() != n_rows)
-    throw std::invalid_argument("Rows of coherent tableau are not independent");
+    throw std::invalid_argument("Rows of Choi tableau are not independent");
   for (unsigned i = 0; i < n_ins; ++i) {
     col_index_.insert({{Qubit(i), TableauSegment::Input}, i});
   }
@@ -75,7 +75,7 @@ CoherentTableau::CoherentTableau(
   }
 }
 
-CoherentTableau::CoherentTableau(const std::list<row_tensor_t>& rows)
+ChoiMixTableau::ChoiMixTableau(const std::list<row_tensor_t>& rows)
     : tab_({}), col_index_() {
   std::set<Qubit> in_qubits;
   std::set<Qubit> out_qubits;
@@ -122,17 +122,17 @@ CoherentTableau::CoherentTableau(const std::list<row_tensor_t>& rows)
       phase(r) = true;
     else
       throw std::invalid_argument(
-          "Phase coefficient of a coherent tableau row must be +-1");
+          "Phase coefficient of a Choi tableau row must be +-1");
     ++r;
   }
   tab_ = SymplecticTableau(xmat, zmat, phase);
 }
 
-unsigned CoherentTableau::get_n_rows() const { return tab_.get_n_rows(); }
+unsigned ChoiMixTableau::get_n_rows() const { return tab_.get_n_rows(); }
 
-unsigned CoherentTableau::get_n_boundaries() const { return col_index_.size(); }
+unsigned ChoiMixTableau::get_n_boundaries() const { return col_index_.size(); }
 
-unsigned CoherentTableau::get_n_inputs() const {
+unsigned ChoiMixTableau::get_n_inputs() const {
   unsigned n = 0;
   BOOST_FOREACH (
       tableau_col_index_t::left_const_reference entry, col_index_.left) {
@@ -141,7 +141,7 @@ unsigned CoherentTableau::get_n_inputs() const {
   return n;
 }
 
-unsigned CoherentTableau::get_n_outputs() const {
+unsigned ChoiMixTableau::get_n_outputs() const {
   unsigned n = 0;
   BOOST_FOREACH (
       tableau_col_index_t::left_const_reference entry, col_index_.left) {
@@ -150,7 +150,7 @@ unsigned CoherentTableau::get_n_outputs() const {
   return n;
 }
 
-CoherentTableau::row_tensor_t CoherentTableau::stab_to_row_tensor(
+ChoiMixTableau::row_tensor_t ChoiMixTableau::stab_to_row_tensor(
     const PauliStabiliser& stab) const {
   QubitPauliMap in_qpm, out_qpm;
   for (unsigned i = 0; i < stab.string.size(); ++i) {
@@ -168,7 +168,7 @@ CoherentTableau::row_tensor_t CoherentTableau::stab_to_row_tensor(
       QubitPauliTensor(out_qpm, stab.coeff ? 1. : -1.)};
 }
 
-PauliStabiliser CoherentTableau::row_tensor_to_stab(
+PauliStabiliser ChoiMixTableau::row_tensor_to_stab(
     const row_tensor_t& ten) const {
   std::vector<Pauli> ps;
   for (unsigned i = 0; i < col_index_.size(); ++i) {
@@ -182,11 +182,11 @@ PauliStabiliser CoherentTableau::row_tensor_to_stab(
       ps, std::abs(ten.first.coeff * ten.second.coeff - 1.) < EPS);
 }
 
-CoherentTableau::row_tensor_t CoherentTableau::get_row(unsigned i) const {
+ChoiMixTableau::row_tensor_t ChoiMixTableau::get_row(unsigned i) const {
   return stab_to_row_tensor(tab_.get_pauli(i));
 }
 
-CoherentTableau::row_tensor_t CoherentTableau::get_row_product(
+ChoiMixTableau::row_tensor_t ChoiMixTableau::get_row_product(
     const std::vector<unsigned>& rows) const {
   row_tensor_t result = {{}, {}};
   for (unsigned i : rows) {
@@ -199,24 +199,24 @@ CoherentTableau::row_tensor_t CoherentTableau::get_row_product(
   return result;
 }
 
-void CoherentTableau::apply_S(const Qubit& qb, TableauSegment seg) {
+void ChoiMixTableau::apply_S(const Qubit& qb, TableauSegment seg) {
   unsigned col = col_index_.left.at(col_key_t{qb, seg});
   tab_.apply_S(col);
 }
 
-void CoherentTableau::apply_V(const Qubit& qb, TableauSegment seg) {
+void ChoiMixTableau::apply_V(const Qubit& qb, TableauSegment seg) {
   unsigned col = col_index_.left.at(col_key_t{qb, seg});
   tab_.apply_V(col);
 }
 
-void CoherentTableau::apply_CX(
+void ChoiMixTableau::apply_CX(
     const Qubit& control, const Qubit& target, TableauSegment seg) {
   unsigned uc = col_index_.left.at(col_key_t{control, seg});
   unsigned ut = col_index_.left.at(col_key_t{target, seg});
   tab_.apply_CX(uc, ut);
 }
 
-void CoherentTableau::apply_gate(
+void ChoiMixTableau::apply_gate(
     OpType type, const qubit_vector_t& qbs, TableauSegment seg) {
   switch (type) {
     case OpType::Z: {
@@ -382,17 +382,17 @@ void CoherentTableau::apply_gate(
     }
     default: {
       throw BadOpType(
-          "Cannot be applied to a CoherentTableau: not a unitary Clifford gate",
+          "Cannot be applied to a ChoiMixTableau: not a unitary Clifford gate",
           type);
     }
   }
 }
 
-void CoherentTableau::apply_pauli(
+void ChoiMixTableau::apply_pauli(
     const QubitPauliTensor& pauli, unsigned half_pis, TableauSegment seg) {
   if (std::abs(pauli.coeff - 1.) > EPS && std::abs(pauli.coeff + 1.) > EPS)
     throw std::invalid_argument(
-        "In CoherentTableau::apply_pauli, can only rotate about a "
+        "In ChoiMixTableau::apply_pauli, can only rotate about a "
         "QubitPauliTensor with coeff +-1");
   PauliStabiliser ps;
   if (seg == TableauSegment::Input) {
@@ -405,7 +405,7 @@ void CoherentTableau::apply_pauli(
   tab_.apply_pauli_gadget(ps, half_pis);
 }
 
-void CoherentTableau::post_select(const Qubit& qb, TableauSegment seg) {
+void ChoiMixTableau::post_select(const Qubit& qb, TableauSegment seg) {
   tab_.gaussian_form();
   // If +Z or -Z is a stabilizer, it will appear as the only row containing Z
   // after gaussian elimination Check for the deterministic cases
@@ -455,7 +455,7 @@ void CoherentTableau::post_select(const Qubit& qb, TableauSegment seg) {
   remove_col(col);
 }
 
-void CoherentTableau::discard_qubit(const Qubit& qb, TableauSegment seg) {
+void ChoiMixTableau::discard_qubit(const Qubit& qb, TableauSegment seg) {
   unsigned col = col_index_.left.at(col_key_t{qb, seg});
   // Isolate a single row with an X (if one exists)
   std::optional<unsigned> x_row = std::nullopt;
@@ -496,7 +496,7 @@ void CoherentTableau::discard_qubit(const Qubit& qb, TableauSegment seg) {
   remove_col(col);
 }
 
-void CoherentTableau::collapse_qubit(const Qubit& qb, TableauSegment seg) {
+void ChoiMixTableau::collapse_qubit(const Qubit& qb, TableauSegment seg) {
   unsigned col = col_index_.left.at(col_key_t{qb, seg});
   // Isolate a single row with an X (if one exists)
   std::optional<unsigned> x_row = std::nullopt;
@@ -518,7 +518,7 @@ void CoherentTableau::collapse_qubit(const Qubit& qb, TableauSegment seg) {
   }
 }
 
-void CoherentTableau::remove_row(unsigned row) {
+void ChoiMixTableau::remove_row(unsigned row) {
   if (row >= get_n_rows())
     throw std::invalid_argument(
         "Cannot remove row " + std::to_string(row) + " from tableau with " +
@@ -536,7 +536,7 @@ void CoherentTableau::remove_row(unsigned row) {
   --tab_.n_rows_;
 }
 
-void CoherentTableau::remove_col(unsigned col) {
+void ChoiMixTableau::remove_col(unsigned col) {
   if (col >= get_n_boundaries())
     throw std::invalid_argument(
         "Cannot remove column " + std::to_string(col) + " from tableau with " +
@@ -559,7 +559,7 @@ void CoherentTableau::remove_col(unsigned col) {
   --tab_.n_qubits_;
 }
 
-void CoherentTableau::canonical_column_order(TableauSegment first) {
+void ChoiMixTableau::canonical_column_order(TableauSegment first) {
   std::set<Qubit> ins;
   std::set<Qubit> outs;
   BOOST_FOREACH (
@@ -600,9 +600,9 @@ void CoherentTableau::canonical_column_order(TableauSegment first) {
   col_index_ = new_index;
 }
 
-void CoherentTableau::gaussian_form() { tab_.gaussian_form(); }
+void ChoiMixTableau::gaussian_form() { tab_.gaussian_form(); }
 
-void CoherentTableau::rename_qubits(
+void ChoiMixTableau::rename_qubits(
     const qubit_map_t& qmap, TableauSegment seg) {
   tableau_col_index_t new_index;
   BOOST_FOREACH (
@@ -616,8 +616,8 @@ void CoherentTableau::rename_qubits(
   col_index_ = new_index;
 }
 
-CoherentTableau CoherentTableau::compose(
-    const CoherentTableau& first, const CoherentTableau& second) {
+ChoiMixTableau ChoiMixTableau::compose(
+    const ChoiMixTableau& first, const ChoiMixTableau& second) {
   // Merge tableau into a single one with only output qubits with default
   // indexing
   tableau_col_index_t first_qubits_to_names;
@@ -640,7 +640,7 @@ CoherentTableau CoherentTableau::compose(
       MatrixXb::Zero(s_rows, f_cols), second.tab_.zmat_;
   VectorXb fullph(f_rows + s_rows);
   fullph << first.tab_.phase_, second.tab_.phase_;
-  CoherentTableau combined(fullx, fullz, fullph, 0);
+  ChoiMixTableau combined(fullx, fullz, fullph, 0);
   // For each connecting pair of qubits, compose via a Bell post-selection
   for (unsigned i = 0; i < f_cols; ++i) {
     col_key_t ind = first_qubits_to_names.right.at(i);
@@ -674,50 +674,50 @@ CoherentTableau CoherentTableau::compose(
     }
     if (!success)
       throw std::logic_error(
-          "Qubits aliasing after composing two CoherentTableau objects");
+          "Qubits aliasing after composing two ChoiMixTableau objects");
   }
   combined.col_index_ = new_index;
   return combined;
 }
 
-std::ostream& operator<<(std::ostream& os, const CoherentTableau& tab) {
+std::ostream& operator<<(std::ostream& os, const ChoiMixTableau& tab) {
   for (unsigned i = 0; i < tab.get_n_rows(); ++i) {
-    CoherentTableau::row_tensor_t row = tab.get_row(i);
+    ChoiMixTableau::row_tensor_t row = tab.get_row(i);
     os << row.first.to_str() << "\t->\t" << row.second.to_str() << std::endl;
   }
   return os;
 }
 
-bool CoherentTableau::operator==(const CoherentTableau& other) const {
+bool ChoiMixTableau::operator==(const ChoiMixTableau& other) const {
   return (col_index_ == other.col_index_) && (tab_ == other.tab_);
 }
 
-void to_json(nlohmann::json& j, const CoherentTableau::TableauSegment& seg) {
-  j = (seg == CoherentTableau::TableauSegment::Input) ? "In" : "Out";
+void to_json(nlohmann::json& j, const ChoiMixTableau::TableauSegment& seg) {
+  j = (seg == ChoiMixTableau::TableauSegment::Input) ? "In" : "Out";
 }
 
-void from_json(const nlohmann::json& j, CoherentTableau::TableauSegment& seg) {
+void from_json(const nlohmann::json& j, ChoiMixTableau::TableauSegment& seg) {
   const std::string str_seg = j.get<std::string>();
-  seg = (str_seg == "In") ? CoherentTableau::TableauSegment::Input
-                          : CoherentTableau::TableauSegment::Output;
+  seg = (str_seg == "In") ? ChoiMixTableau::TableauSegment::Input
+                          : ChoiMixTableau::TableauSegment::Output;
 }
 
-void to_json(nlohmann::json& j, const CoherentTableau& tab) {
+void to_json(nlohmann::json& j, const ChoiMixTableau& tab) {
   j["tab"] = tab.tab_;
-  std::vector<CoherentTableau::col_key_t> qbs;
+  std::vector<ChoiMixTableau::col_key_t> qbs;
   for (unsigned i = 0; i < tab.get_n_boundaries(); ++i) {
     qbs.push_back(tab.col_index_.right.at(i));
   }
   j["qubits"] = qbs;
 }
 
-void from_json(const nlohmann::json& j, CoherentTableau& tab) {
+void from_json(const nlohmann::json& j, ChoiMixTableau& tab) {
   j.at("tab").get_to(tab.tab_);
-  std::vector<CoherentTableau::col_key_t> qbs =
-      j.at("qubits").get<std::vector<CoherentTableau::col_key_t>>();
+  std::vector<ChoiMixTableau::col_key_t> qbs =
+      j.at("qubits").get<std::vector<ChoiMixTableau::col_key_t>>();
   if (qbs.size() != tab.tab_.get_n_qubits())
     throw std::invalid_argument(
-        "Number of qubits in json CoherentTableau does not match tableau "
+        "Number of qubits in json ChoiMixTableau does not match tableau "
         "size.");
   tab.col_index_.clear();
   for (unsigned i = 0; i < qbs.size(); ++i) {

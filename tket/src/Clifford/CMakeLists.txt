@@ -20,7 +20,7 @@ endif()
 
 add_library(tket-${COMP}
     CliffTableau.cpp
-    CoherentTableau.cpp
+    ChoiMixTableau.cpp
     SymplecticTableau.cpp
     UnitaryTableau.cpp)
 

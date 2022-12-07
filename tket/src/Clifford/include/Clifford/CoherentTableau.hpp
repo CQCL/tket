@@ -21,7 +21,7 @@ namespace tket {
 // Forward declare Circuit for friend converter
 class Circuit;
 
-class CoherentTableau {
+class ChoiMixTableau {
   /**
    * Represents the stabiliser group for a Clifford process with qubit
    * initialisations/post-selections and mixed initialisations/discards.
@@ -64,11 +64,11 @@ class CoherentTableau {
    * Construct the tableau for the identity unitary over n qubits (given default
    * qubit names).
    */
-  explicit CoherentTableau(unsigned n);
+  explicit ChoiMixTableau(unsigned n);
   /**
    * Construct the tableau for the identity unitary over specific qubits.
    */
-  explicit CoherentTableau(const qubit_vector_t& qbs);
+  explicit ChoiMixTableau(const qubit_vector_t& qbs);
   /**
    * Construct a tableau from the underlying binary matrices.
    * Qubits are given default names and mapped such that the first columns are
@@ -78,7 +78,7 @@ class CoherentTableau {
    * @param phase The phases of the rows.
    * @param n_ins The number of qubits identified as inputs.
    */
-  explicit CoherentTableau(
+  explicit ChoiMixTableau(
       const MatrixXb& xmat, const MatrixXb& zmat, const VectorXb& phase,
       unsigned n_ins = 0);
   /**
@@ -86,14 +86,14 @@ class CoherentTableau {
    * Each row is represented as a product of QubitPauliTensors where the first
    * is over the input qubits and the second is over the outputs.
    */
-  explicit CoherentTableau(const std::list<row_tensor_t>& rows);
+  explicit ChoiMixTableau(const std::list<row_tensor_t>& rows);
   /**
    * Other required constructors
    */
-  CoherentTableau(const CoherentTableau& other) = default;
-  CoherentTableau(CoherentTableau&& other) = default;
-  CoherentTableau& operator=(const CoherentTableau& other) = default;
-  CoherentTableau& operator=(CoherentTableau&& other) = default;
+  ChoiMixTableau(const ChoiMixTableau& other) = default;
+  ChoiMixTableau(ChoiMixTableau&& other) = default;
+  ChoiMixTableau& operator=(const ChoiMixTableau& other) = default;
+  ChoiMixTableau& operator=(ChoiMixTableau&& other) = default;
 
   /**
    * Get the number of rows in the tableau
@@ -214,18 +214,18 @@ class CoherentTableau {
    * @param first First circuit in the sequential order
    * @param second Second circuit in the sequential order
    */
-  static CoherentTableau compose(
-      const CoherentTableau& first, const CoherentTableau& second);
+  static ChoiMixTableau compose(
+      const ChoiMixTableau& first, const ChoiMixTableau& second);
 
-  friend CoherentTableau circuit_to_coherent_tableau(const Circuit& circ);
-  friend std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
-      const CoherentTableau& circ);
+  friend ChoiMixTableau circuit_to_cm_tableau(const Circuit& circ);
+  friend std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
+      const ChoiMixTableau& circ);
 
-  friend void to_json(nlohmann::json& j, const CoherentTableau& tab);
-  friend void from_json(const nlohmann::json& j, CoherentTableau& tab);
+  friend void to_json(nlohmann::json& j, const ChoiMixTableau& tab);
+  friend void from_json(const nlohmann::json& j, ChoiMixTableau& tab);
 
-  friend std::ostream& operator<<(std::ostream& os, const CoherentTableau& tab);
-  bool operator==(const CoherentTableau& other) const;
+  friend std::ostream& operator<<(std::ostream& os, const ChoiMixTableau& tab);
+  bool operator==(const ChoiMixTableau& other) const;
 
  private:
   /**
@@ -250,9 +250,9 @@ class CoherentTableau {
   void remove_col(unsigned col);
 };
 
-JSON_DECL(CoherentTableau::TableauSegment)
-JSON_DECL(CoherentTableau)
+JSON_DECL(ChoiMixTableau::TableauSegment)
+JSON_DECL(ChoiMixTableau)
 
-std::ostream& operator<<(std::ostream& os, const CoherentTableau& tab);
+std::ostream& operator<<(std::ostream& os, const ChoiMixTableau& tab);
 
 }  // namespace tket
