@@ -16,6 +16,7 @@
 
 #include <cmath>
 #include <complex>
+#include <sstream>
 #include <vector>
 
 #include "CircPool.hpp"
@@ -29,6 +30,7 @@
 #include "Utils/Expression.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"
+#include "tklog/TketLog.hpp"
 
 namespace tket {
 
@@ -233,9 +235,13 @@ static void replace_TK2_2CX(Circuit &circ) {
     if (circ.get_OpType_from_Vertex(v) != OpType::TK2) continue;
     auto params = circ.get_Op_ptr_from_Vertex(v)->get_params();
     TKET_ASSERT(params.size() == 3);
-    // We need to have a fairly high tolerance in the assertion below, since in
-    // practice rounding errors can accumulate:
-    TKET_ASSERT(equiv_0(params[2], 4, 1e-6));
+    // Rounding errors can accumulate here; warn if so:
+    if (!equiv_0(params[2], 4, 1e-6)) {
+      std::stringstream ss;
+      ss << "Rounding errors in CX decomposition: ZZPhase parameter = "
+         << params[2] << " when it should be 0 (mod 4). Ignoring.";
+      tket_log()->warn(ss.str());
+    }
     Circuit sub = CircPool::approx_TK2_using_2xCX(params[0], params[1]);
     bin.push_back(v);
     circ.substitute(sub, v, Circuit::VertexDeletion::No);

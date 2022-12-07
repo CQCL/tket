@@ -1617,6 +1617,19 @@ SCENARIO("Test substitute_all") {
 
 SCENARIO("Decomposing a multi-qubit operation into CXs") {
   const double sq = 1 / std::sqrt(2.);
+  GIVEN("Trivial (single-qubit) case") {
+    Circuit circ(1);
+    Vertex v = circ.add_op<unsigned>(OpType::X, {0});
+    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    Circuit rep;
+    WHEN("Default circuit replacement") { rep = CX_circ_from_multiq(op); }
+    WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
+
+    const Eigen::MatrixXcd u = tket_sim::get_unitary(rep);
+    Eigen::MatrixXcd correct(2, 2);
+    correct << 0, 1, 1, 0;
+    REQUIRE(u.isApprox(correct));
+  }
   GIVEN("A CZ gate") {
     Circuit circ(2);
     Vertex v = circ.add_op<unsigned>(OpType::CZ, {0, 1});

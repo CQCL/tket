@@ -1,8 +1,20 @@
 Changelog
 =========
 
-1.9.0 (unreleased)
-------------------
+Unreleased
+----------
+
+Minor new features:
+
+* New ``view_browser`` function for opening a browser with circuit render.
+
+Fixes:
+
+* Warn rather than abort when significant rounding errors are detected in
+  TK2-to-CX rebase.
+
+1.9.0 (November 2022)
+---------------------
 
 Fixes:
 
@@ -11,6 +23,9 @@ Fixes:
   relies on the circuit having gates only in the specified gate set should be
   updated to handle ``OpType.Phase`` as well when conditional operations are
   present.
+* A bug where the sequence of ``RoutingMethod`` used in ``DefaultMappingPass`` could 
+  add a cycle to the ``Circuit`` DAG has been fixed.
+* Fix support for ECR gate in QASM converters.
 
 API changes:
 

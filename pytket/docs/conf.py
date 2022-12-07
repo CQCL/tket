@@ -38,9 +38,9 @@ copyright = "2022, Cambridge Quantum Computing Ltd"
 author = "Cambridge Quantum Computing Ltd"
 
 # The short X.Y version
-version = "1.8"
+version = "1.9"
 # The full version, including alpha/beta/rc tags
-release = "1.8.1"
+release = "1.9.0"
 
 
 # -- General configuration ---------------------------------------------------
