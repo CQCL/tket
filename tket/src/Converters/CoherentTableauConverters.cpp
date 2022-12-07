@@ -57,7 +57,7 @@ std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
    * row containing X_in_qb (if one exists). Since it must contain some
    * non-identity component in the output segment, we can pick one of these to
    * be out_qb and apply unitary gates at the input and output to reduce the row
-   * to X_in_qn X_out_qb. We do the same with Z (if a row exists) to necessarily
+   * to X_in_qb X_out_qb. We do the same with Z (if a row exists) to necessarily
    * give Z_in_qb Z_out_qb by commutativity properties, or we pick out_qb here
    * if no X row was found. If we had both an X row and a Z row, we have reduced
    * it to an identity wire just fine. If we have only one of them, e.g. X_in_qb
@@ -149,7 +149,7 @@ std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
   }
 
   // Post-select rows
-  // Post-selection op is not yet available in tket - replace this once
+  // TODO Post-selection op is not yet available in tket - replace this once
   // implemented
   if (post_selected_size != 0)
     throw std::logic_error(
@@ -173,7 +173,7 @@ std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
   tab.canonical_column_order(CoherentTableau::TableauSegment::Input);
   tab.gaussian_form();
 
-  // Iterates through remaining inputs and reduce output portion to a single
+  // Iterate through remaining inputs and reduce output portion to a single
   // qubit
   for (const Qubit& in_qb : input_qubits) {
     // Skip post-selected qubits
@@ -427,7 +427,7 @@ std::pair<Circuit, unit_map_t> coherent_tableau_to_circuit(
     CoherentTableau::row_tensor_t rten =
         tab.get_row(tab.get_n_rows() - 1 - out_stabs);
     if (rten.first.string.map.size() != 0) {
-      // Reached the rows with non-empty inut segment
+      // Reached the rows with non-empty input segment
       break;
     }
     ++out_stabs;

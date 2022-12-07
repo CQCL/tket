@@ -58,7 +58,7 @@ class CoherentTableau {
    */
   explicit CoherentTableau(const qubit_vector_t& qbs);
   /**
-   * Construct a tableau from the underling binary matrices.
+   * Construct a tableau from the underlying binary matrices.
    * Qubits are given default names and mapped such that the first columns are
    * inputs and the last columns are outputs.
    * @param xmat The X component of the rows in the symplectic representation.
@@ -72,7 +72,7 @@ class CoherentTableau {
   /**
    * Construct a tableau directly from its rows.
    * Each row is represented as a product of QubitPauliTensors where the first
-   * is over the input qubits and the second is over the outputs..
+   * is over the input qubits and the second is over the outputs.
    */
   explicit CoherentTableau(const std::list<row_tensor_t>& rows);
   /**
@@ -88,7 +88,7 @@ class CoherentTableau {
    */
   unsigned get_n_rows() const;
   /**
-   * Get the number of total qubits/boundaries of the process.
+   * Get the total number of qubits/boundaries of the process.
    * The number of boundaries is the sum of inputs and outputs.
    * The number of binary columns in the full symplectic representation is
    * 2*n_boundaries+1.
@@ -99,7 +99,7 @@ class CoherentTableau {
    */
   unsigned get_n_inputs() const;
   /**
-   * Get the number of boundaries representing outputs to the process.
+   * Get the number of boundaries representing outputs from the process.
    */
   unsigned get_n_outputs() const;
 
