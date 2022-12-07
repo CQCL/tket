@@ -1177,7 +1177,7 @@ def circuit_to_qasm_io(
             r_name = r_args[0].reg_name
 
             # check if whole register can be set at once
-            if l_args == list(cregs[l_name]) or r_args == list(cregs[r_name]):
+            if l_args == list(cregs[l_name]) and r_args == list(cregs[r_name]):
                 buffer.write(f"{l_name} = {r_name};\n")
             else:
                 for bit_l, bit_r in zip(l_args, r_args):
