@@ -39,7 +39,7 @@ else()
 endif()
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    # Suppress warnings coming from headers in pybind11_json/0.2.12:
+    # Suppress warnings coming from headers in pybind11_json/0.2.13:
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-redundant-move")
 endif()
 
