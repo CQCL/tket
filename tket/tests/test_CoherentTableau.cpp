@@ -15,6 +15,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "Converters/Converters.hpp"
+#include "testutil.hpp"
 
 namespace tket {
 namespace test_CoherentTableau {
@@ -483,6 +484,17 @@ SCENARIO("Synthesis of circuits from CoherentTableaus") {
     Circuit res = coherent_tableau_to_circuit(tab).first;
     CoherentTableau res_tab = circuit_to_coherent_tableau(res);
     REQUIRE(res_tab == tab);
+  }
+  GIVEN("Check unitary equivalence by calculating matrix") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::ZZMax, {0, 1});
+    circ.add_op<unsigned>(OpType::ECR, {2, 3});
+    circ.add_op<unsigned>(OpType::ISWAPMax, {0, 3});
+    circ.add_op<unsigned>(OpType::SX, {1});
+    circ.add_op<unsigned>(OpType::SXdg, {2});
+    CoherentTableau tab = circuit_to_coherent_tableau(circ);
+    Circuit res = coherent_tableau_to_circuit(tab).first;
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("A Clifford state") {
     Circuit circ = get_test_circ();

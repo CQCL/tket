@@ -296,37 +296,35 @@ void CoherentTableau::apply_gate(
       break;
     }
     case OpType::ZZMax: {
-      apply_S(qbs.at(0), seg);
-      apply_S(qbs.at(1), seg);
-      apply_S(qbs.at(1), seg);
-      apply_V(qbs.at(1), seg);
-      apply_S(qbs.at(1), seg);
       apply_CX(qbs.at(0), qbs.at(1), seg);
       apply_S(qbs.at(1), seg);
-      apply_V(qbs.at(1), seg);
-      apply_S(qbs.at(1), seg);
+      apply_CX(qbs.at(0), qbs.at(1), seg);
       break;
     }
     case OpType::ECR: {
-      apply_S(qbs.at(0), seg);
-      apply_S(qbs.at(0), seg);
-      apply_S(qbs.at(0), seg);
-      apply_V(qbs.at(0), seg);
-      apply_V(qbs.at(0), seg);
-      apply_V(qbs.at(1), seg);
-      apply_V(qbs.at(1), seg);
-      apply_V(qbs.at(1), seg);
-      apply_CX(qbs.at(0), qbs.at(1), seg);
+      if (seg == TableauSegment::Input) {
+        apply_V(qbs.at(0), seg);
+        apply_V(qbs.at(0), seg);
+        apply_S(qbs.at(0), seg);
+        apply_V(qbs.at(1), seg);
+        apply_CX(qbs.at(0), qbs.at(1), seg);
+      } else {
+        apply_CX(qbs.at(0), qbs.at(1), seg);
+        apply_S(qbs.at(0), seg);
+        apply_V(qbs.at(0), seg);
+        apply_V(qbs.at(0), seg);
+        apply_V(qbs.at(1), seg);
+      }
       break;
     }
     case OpType::ISWAPMax: {
       apply_V(qbs.at(0), seg);
       apply_V(qbs.at(1), seg);
       apply_CX(qbs.at(0), qbs.at(1), seg);
-      apply_S(qbs.at(0), seg);
-      apply_S(qbs.at(0), seg);
-      apply_S(qbs.at(0), seg);
-      apply_V(qbs.at(1), seg);
+      apply_V(qbs.at(0), seg);
+      apply_S(qbs.at(1), seg);
+      apply_S(qbs.at(1), seg);
+      apply_S(qbs.at(1), seg);
       apply_CX(qbs.at(0), qbs.at(1), seg);
       apply_V(qbs.at(0), seg);
       apply_V(qbs.at(1), seg);
@@ -523,8 +521,8 @@ void CoherentTableau::collapse_qubit(const Qubit& qb, TableauSegment seg) {
 void CoherentTableau::remove_row(unsigned row) {
   if (row >= get_n_rows())
     throw std::invalid_argument(
-        "Cannot remove row " + row + " from tableau with " + get_n_rows() +
-        " rows");
+        "Cannot remove row " + std::to_string(row) + " from tableau with " +
+        std::to_string(get_n_rows()) + " rows");
   unsigned n_rows = get_n_rows();
   unsigned n_cols = get_n_boundaries();
   if (row < n_rows - 1) {
@@ -541,8 +539,8 @@ void CoherentTableau::remove_row(unsigned row) {
 void CoherentTableau::remove_col(unsigned col) {
   if (col >= get_n_boundaries())
     throw std::invalid_argument(
-        "Cannot remove column " + col + " from tableau with " +
-        get_n_boundaries() + " columns");
+        "Cannot remove column " + std::to_string(col) + " from tableau with " +
+        std::to_string(get_n_boundaries()) + " columns");
   unsigned n_rows = get_n_rows();
   unsigned n_cols = get_n_boundaries();
   if (col < n_cols - 1) {
