@@ -637,6 +637,30 @@ def test_qasm_phase() -> None:
         assert c1 == c0
 
 
+def test_CopyBits() -> None:
+    input_qasm = """OPENQASM 2.0;\ninclude "hqslib1.inc";\n\ncreg c0[1];
+creg c1[3];\nc0[0] = c1[1];\n"""
+    c = circuit_from_qasm_str(input_qasm)
+    result_circ_qasm = circuit_to_qasm_str(c, "hqslib1")
+    assert input_qasm == result_circ_qasm
+
+    c = Circuit()
+    creg0 = c.add_c_register("c0", 1)
+    creg1 = c.add_c_register("c1", 2)
+    creg2 = c.add_c_register("c2", 2)
+    # should output bit-wise assignment
+    c.add_c_copybits([creg1[1]], [creg0[0]])
+    # should output register-wise assignment
+    c.add_c_copybits([creg2[0], creg2[1]], [creg1[0], creg1[1]])
+    # should output bit-wise assignment
+    c.add_c_copybits([creg2[0], creg2[1]], [creg1[1], creg1[0]])
+    result_circ_qasm = circuit_to_qasm_str(c, "hqslib1")
+
+    correct_qasm = """OPENQASM 2.0;\ninclude "hqslib1.inc";\n\ncreg c0[1];
+creg c1[2];\ncreg c2[2];\nc0[0] = c1[1];\nc1 = c2;\nc1[1] = c2[0];\nc1[0] = c2[1];\n"""
+    assert result_circ_qasm == correct_qasm
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
