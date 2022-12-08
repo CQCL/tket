@@ -672,7 +672,7 @@ def test_RZZ_read_from() -> None:
     """
     )
     assert "RZZ(0.5*pi) q[0],q[1];" in circuit_to_qasm_str(c, header="hqslib1")
-    assert "gate rzz (param0) rzzq0,rzzq1 {" in circuit_to_qasm_str(c)
+    assert "rzz(0.5*pi) q[0],q[1];" in circuit_to_qasm_str(c)
 
 
 if __name__ == "__main__":
