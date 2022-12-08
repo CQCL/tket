@@ -51,7 +51,7 @@ from pytket.qasm.includes.load_includes import (
     _load_gdict,
 )
 from pytket.transform import Transform  # type: ignore
-from pytket.passes import DecomposeClassicalExp  # type: ignore
+from pytket.passes import DecomposeClassicalExp, DecomposeBoxes  # type: ignore
 
 curr_file_path = Path(__file__).resolve().parent
 
@@ -659,6 +659,21 @@ creg c1[3];\nc0[0] = c1[1];\n"""
     correct_qasm = """OPENQASM 2.0;\ninclude "hqslib1.inc";\n\ncreg c0[1];
 creg c1[2];\ncreg c2[2];\nc0[0] = c1[1];\nc1 = c2;\nc1[1] = c2[0];\nc1[0] = c2[1];\n"""
     assert result_circ_qasm == correct_qasm
+
+
+def test_RZZ_read_from() -> None:
+    c = circuit_from_qasm_str(
+        """
+    OPENQASM 2.0;
+    include "hqslib1.inc";
+
+    qreg q[2];
+    RZZ(0.5*pi) q[0],q[1];
+    """
+    )
+    DecomposeBoxes().apply(c)
+    assert "RZZ(0.5*pi) q[0],q[1];" in circuit_to_qasm_str(c, header="hqslib1")
+    assert "rzz(0.5*pi) q[0],q[1];" in circuit_to_qasm_str(c)
 
 
 if __name__ == "__main__":
