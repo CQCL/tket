@@ -661,6 +661,20 @@ creg c1[2];\ncreg c2[2];\nc0[0] = c1[1];\nc1 = c2;\nc1[1] = c2[0];\nc1[0] = c2[1
     assert result_circ_qasm == correct_qasm
 
 
+def test_RZZ_read_from() -> None:
+    c = circuit_from_qasm_str(
+        """
+    OPENQASM 2.0;
+    include "hqslib1.inc";
+
+    qreg q[2];
+    RZZ(0.5*pi) q[0],q[1];
+    """
+    )
+    assert "RZZ(0.5*pi) q[0],q[1];" in circuit_to_qasm_str(c, header="hqslib1")
+    assert "gate rzz (param0) rzzq0,rzzq1 {" in circuit_to_qasm_str(c)
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
