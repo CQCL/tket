@@ -142,6 +142,7 @@ PARAM_COMMANDS = {
     "ry": OpType.Ry,
     "rz": OpType.Rz,
     "RZZ": OpType.ZZPhase,
+    "rzz": OpType.ZZPhase,
     "Rz": OpType.Rz,
     "U1q": OpType.PhasedX,
     "crz": OpType.CRz,
