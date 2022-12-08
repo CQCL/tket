@@ -51,7 +51,7 @@ from pytket.qasm.includes.load_includes import (
     _load_gdict,
 )
 from pytket.transform import Transform  # type: ignore
-from pytket.passes import DecomposeClassicalExp  # type: ignore
+from pytket.passes import DecomposeClassicalExp, DecomposeBoxes  # type: ignore
 
 curr_file_path = Path(__file__).resolve().parent
 
@@ -671,6 +671,7 @@ def test_RZZ_read_from() -> None:
     RZZ(0.5*pi) q[0],q[1];
     """
     )
+    DecomposeBoxes().apply(c)
     assert "RZZ(0.5*pi) q[0],q[1];" in circuit_to_qasm_str(c, header="hqslib1")
     assert "rzz(0.5*pi) q[0],q[1];" in circuit_to_qasm_str(c)
 
