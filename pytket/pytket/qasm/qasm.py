@@ -141,7 +141,7 @@ PARAM_COMMANDS = {
     "rxx": OpType.XXPhase,
     "ry": OpType.Ry,
     "rz": OpType.Rz,
-    "rzz": OpType.ZZPhase,
+    "RZZ": OpType.ZZPhase,
     "Rz": OpType.Rz,
     "U1q": OpType.PhasedX,
     "crz": OpType.CRz,
@@ -171,6 +171,7 @@ PARAM_EXTRA_COMMANDS = {
     "xxphase3": OpType.XXPhase3,
     "eswap": OpType.ESWAP,
     "fsim": OpType.FSim,
+    "rzz": OpType.ZZPhase,
 }
 
 _tk_to_qasm_noparams = dict(((item[1], item[0]) for item in NOPARAM_COMMANDS.items()))
