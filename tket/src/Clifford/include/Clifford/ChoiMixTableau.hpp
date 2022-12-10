@@ -18,9 +18,6 @@
 
 namespace tket {
 
-// Forward declare Circuit for friend converter
-class Circuit;
-
 class ChoiMixTableau {
   /**
    * Represents the stabiliser group for a Clifford process with qubit
@@ -60,6 +57,17 @@ class ChoiMixTableau {
   typedef std::pair<Qubit, TableauSegment> col_key_t;
   typedef boost::bimap<col_key_t, unsigned> tableau_col_index_t;
   typedef std::pair<QubitPauliTensor, QubitPauliTensor> row_tensor_t;
+
+  /**
+   * The actual binary tableau.
+   */
+  SymplecticTableau tab_;
+
+  /**
+   * Map between column indices and the corresponding qubit ID and type.
+   */
+  tableau_col_index_t col_index_;
+
   /**
    * Construct the tableau for the identity unitary over n qubits (given default
    * qubit names).
@@ -217,27 +225,10 @@ class ChoiMixTableau {
   static ChoiMixTableau compose(
       const ChoiMixTableau& first, const ChoiMixTableau& second);
 
-  friend ChoiMixTableau circuit_to_cm_tableau(const Circuit& circ);
-  friend std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
-      const ChoiMixTableau& circ);
-
-  friend void to_json(nlohmann::json& j, const ChoiMixTableau& tab);
-  friend void from_json(const nlohmann::json& j, ChoiMixTableau& tab);
-
   friend std::ostream& operator<<(std::ostream& os, const ChoiMixTableau& tab);
   bool operator==(const ChoiMixTableau& other) const;
 
  private:
-  /**
-   * The actual binary tableau.
-   */
-  SymplecticTableau tab_;
-
-  /**
-   * Map between column indices and the corresponding qubit ID and type.
-   */
-  tableau_col_index_t col_index_;
-
   row_tensor_t stab_to_row_tensor(const PauliStabiliser& stab) const;
   PauliStabiliser row_tensor_to_stab(const row_tensor_t& ten) const;
 

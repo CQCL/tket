@@ -236,7 +236,6 @@ void ChoiMixTableau::apply_gate(
       apply_V(qbs.at(0), seg);
       break;
     }
-    case OpType::Phase:
     case OpType::S: {
       apply_S(qbs.at(0), seg);
       break;
@@ -340,6 +339,7 @@ void ChoiMixTableau::apply_gate(
       apply_CX(qbs.at(0), qbs.at(2), seg);
       break;
     }
+    case OpType::Phase:
     case OpType::noop: {
       break;
     }

@@ -15,8 +15,8 @@
 #pragma once
 
 #include "Circuit/Circuit.hpp"
-#include "Clifford/CliffTableau.hpp"
 #include "Clifford/ChoiMixTableau.hpp"
+#include "Clifford/CliffTableau.hpp"
 #include "Clifford/UnitaryTableau.hpp"
 #include "PauliGraph/PauliGraph.hpp"
 #include "ZX/ZXDiagram.hpp"
