@@ -12,6 +12,8 @@ Fixes:
 
 * Warn rather than abort when significant rounding errors are detected in
   TK2-to-CX rebase.
+* Fix incorrect QASM output for ``OpType.CopyBits``.
+* Fix incorrect QASM read in ``OpType.ZZPhase``.
 
 1.9.0 (November 2022)
 ---------------------
