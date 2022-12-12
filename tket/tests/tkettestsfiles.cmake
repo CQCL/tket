@@ -55,6 +55,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Circuit/test_ThreeQubitConversion.cpp
     ${TKET_TESTS_DIR}/test_CliffTableau.cpp
     ${TKET_TESTS_DIR}/test_UnitaryTableau.cpp
+    ${TKET_TESTS_DIR}/test_ChoiMixTableau.cpp
     ${TKET_TESTS_DIR}/test_PhasePolynomials.cpp
     ${TKET_TESTS_DIR}/test_PauliGraph.cpp
     ${TKET_TESTS_DIR}/test_Architectures.cpp

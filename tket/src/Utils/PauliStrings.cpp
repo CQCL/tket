@@ -452,6 +452,12 @@ QubitPauliTensor QubitPauliTensor::operator*(
   return result;
 }
 
+void QubitPauliTensor::transpose() {
+  for (const std::pair<const Qubit, Pauli> &pair : string.map) {
+    if (pair.second == Pauli::Y) coeff *= -1.;
+  }
+}
+
 bool QubitPauliTensor::operator==(const QubitPauliTensor &other) const {
   if (this->coeff != other.coeff) return false;
   return (this->string == other.string);
