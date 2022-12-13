@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Fixes:
+
+* Handle 0-qubit operations in connectivity check.
+
 1.9.1 (December 2022)
 ---------------------
 
