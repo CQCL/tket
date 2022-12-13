@@ -4,6 +4,13 @@ Changelog
 Unreleased
 ----------
 
+Fixes:
+
+* Handle 0-qubit operations in connectivity check.
+
+1.9.1 (December 2022)
+---------------------
+
 Minor new features:
 
 * New ``view_browser`` function for opening a browser with circuit render.
