@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.9.1 (December 2022)
+---------------------
 
 Minor new features:
 
