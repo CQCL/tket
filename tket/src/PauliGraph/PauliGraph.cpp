@@ -19,6 +19,7 @@
 #include "Gate/Gate.hpp"
 #include "OpType/OpType.hpp"
 #include "Utils/GraphHeaders.hpp"
+#include "Utils/PauliStrings.hpp"
 
 namespace tket {
 
@@ -157,6 +158,39 @@ void PauliGraph::apply_gate_at_end(
         QubitPauliTensor xpauli = cliff_.get_xpauli(qbs.at(0));
         QubitPauliTensor ypauli = i_ * xpauli * zpauli;
         apply_pauli_gadget_at_end(ypauli, angle);
+      }
+      break;
+    }
+    case OpType::PhasedX: {
+      Expr alpha = gate.get_params().at(0);
+      Expr beta = gate.get_params().at(1);
+      QubitPauliTensor zpauli = cliff_.get_zpauli(qbs.at(0));
+      QubitPauliTensor xpauli = cliff_.get_xpauli(qbs.at(0));
+      std::optional<unsigned> cliff_alpha = equiv_Clifford(alpha);
+      std::optional<unsigned> cliff_beta = equiv_Clifford(beta);
+      // Rz(-b)
+      if (cliff_beta) {
+        for (unsigned i = 0; i < cliff_beta.value(); i++) {
+          cliff_.apply_gate_at_end(OpType::Sdg, qbs);
+        }
+      } else {
+        apply_pauli_gadget_at_end(zpauli, -beta);
+      }
+      // Rx(a)
+      if (cliff_alpha) {
+        for (unsigned i = 0; i < cliff_alpha.value(); i++) {
+          cliff_.apply_gate_at_end(OpType::V, qbs);
+        }
+      } else {
+        apply_pauli_gadget_at_end(xpauli, alpha);
+      }
+      // Rz(b)
+      if (cliff_beta) {
+        for (unsigned i = 0; i < cliff_beta.value(); i++) {
+          cliff_.apply_gate_at_end(OpType::S, qbs);
+        }
+      } else {
+        apply_pauli_gadget_at_end(zpauli, beta);
       }
       break;
     }
