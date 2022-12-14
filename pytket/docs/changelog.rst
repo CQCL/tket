@@ -4,9 +4,15 @@ Changelog
 Unreleased
 ----------
 
+Minor new features:
+
+* Add support for PhasedX gates in Pauli graph synthesis.
+
 Fixes:
 
 * Handle 0-qubit operations in connectivity check.
+* Fix handling of Tdg, CY, ZZMax and Clifford-angle YYPhase gates in Pauli
+  graph synthesis.
 
 1.9.1 (December 2022)
 ---------------------
