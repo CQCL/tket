@@ -265,15 +265,15 @@ void PauliGraph::apply_gate_at_end(
         if (cliff_angle.value() != 0) {
           const Qubit &arg0 = qbs.at(0);
           const Qubit &arg1 = qbs.at(1);
-          cliff_.apply_gate_at_end(OpType::V, {arg0});
-          cliff_.apply_gate_at_end(OpType::V, {arg1});
+          cliff_.apply_gate_at_end(OpType::S, {arg0});
+          cliff_.apply_gate_at_end(OpType::S, {arg1});
           cliff_.apply_gate_at_end(OpType::CX, {arg1, arg0});
           for (unsigned i = 0; i < cliff_angle.value(); i++) {
             cliff_.apply_gate_at_end(OpType::V, {arg1});
           }
           cliff_.apply_gate_at_end(OpType::CX, {arg1, arg0});
-          cliff_.apply_gate_at_end(OpType::Vdg, {arg0});
-          cliff_.apply_gate_at_end(OpType::Vdg, {arg1});
+          cliff_.apply_gate_at_end(OpType::Sdg, {arg0});
+          cliff_.apply_gate_at_end(OpType::Sdg, {arg1});
         }
       } else {
         QubitPauliTensor pauli =
