@@ -205,9 +205,12 @@ void PauliGraph::apply_gate_at_end(
       break;
     }
     case OpType::ZZMax: {
-      cliff_.apply_gate_at_end(OpType::H, {qbs.at(1)});
+      cliff_.apply_gate_at_end(OpType::S, {qbs.at(0)});
+      cliff_.apply_gate_at_end(OpType::Z, {qbs.at(1)});
+      cliff_.apply_gate_at_end(OpType::S, {qbs.at(1)});
+      cliff_.apply_gate_at_end(OpType::V, {qbs.at(1)});
+      cliff_.apply_gate_at_end(OpType::S, {qbs.at(1)});
       cliff_.apply_gate_at_end(OpType::CX, qbs);
-      cliff_.apply_gate_at_end(OpType::Sdg, {qbs.at(0)});
       cliff_.apply_gate_at_end(OpType::S, {qbs.at(1)});
       cliff_.apply_gate_at_end(OpType::V, {qbs.at(1)});
       break;
