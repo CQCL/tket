@@ -201,7 +201,7 @@ void PauliGraph::apply_gate_at_end(
     }
     case OpType::Tdg: {
       QubitPauliTensor pauli = cliff_.get_zpauli(qbs.at(0));
-      apply_pauli_gadget_at_end(pauli, 0.25);
+      apply_pauli_gadget_at_end(pauli, -0.25);
       break;
     }
     case OpType::ZZMax: {
