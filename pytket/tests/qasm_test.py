@@ -676,6 +676,33 @@ def test_RZZ_read_from() -> None:
     assert "rzz(0.5*pi) q[0],q[1];" in circuit_to_qasm_str(c)
 
 
+def test_conditional_expressions() -> None:
+    def cond_circ(bits):
+        c = Circuit(4, 4)
+        c.X(0)
+        c.X(1)
+        c.X(2)
+        c.Measure(0, 0)
+        c.Measure(1, 1)
+        c.Measure(2, 2)
+        c.X(3, condition_bits=bits, condition_value=3)
+        c.Measure(3, 3)
+        return c
+
+    c1 = cond_circ([1])
+    with pytest.raises(QASMUnsupportedError):
+        circuit_to_qasm_str(c1)
+    assert "if(c[1]==3)" in circuit_to_qasm_str(c1, header="hqslib1")
+    c12 = cond_circ([1, 2])
+    with pytest.raises(QASMUnsupportedError):
+        circuit_to_qasm_str(c12)
+    with pytest.raises(QASMUnsupportedError):
+        circuit_to_qasm_str(c12, header="hqslib1")
+    c0123 = cond_circ([0, 1, 2, 3])
+    assert "if(c==3)" in circuit_to_qasm_str(c0123)
+    assert "if(c==3)" in circuit_to_qasm_str(c0123, header="hqslib1")
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
