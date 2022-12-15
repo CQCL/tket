@@ -25,6 +25,7 @@
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
+#include "OpType/OpType.hpp"
 #include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/CompilerPass.hpp"
@@ -701,7 +702,8 @@ PassPtr gen_synthesise_pauli_graph(
                    OpType::Rz,      OpType::Rx,          OpType::Ry,
                    OpType::T,       OpType::Tdg,         OpType::ZZMax,
                    OpType::ZZPhase, OpType::PhaseGadget, OpType::XXPhase,
-                   OpType::YYPhase, OpType::PauliExpBox, OpType::Measure};
+                   OpType::YYPhase, OpType::PauliExpBox, OpType::Measure,
+                   OpType::PhasedX};
   PredicatePtr in_gates = std::make_shared<GateSetPredicate>(ins);
   PredicatePtrMap precons{
       CompilationUnit::make_type_pair(ccontrol_pred),
