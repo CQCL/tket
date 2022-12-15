@@ -15,6 +15,7 @@
 from io import StringIO
 import re
 from pathlib import Path
+from typing import List
 
 import pytest  # type: ignore
 
@@ -677,7 +678,7 @@ def test_RZZ_read_from() -> None:
 
 
 def test_conditional_expressions() -> None:
-    def cond_circ(bits):
+    def cond_circ(bits: List[int]) -> Circuit:
         c = Circuit(4, 4)
         c.X(0)
         c.X(1)
