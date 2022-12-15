@@ -14,7 +14,7 @@ Fixes:
 * Fix handling of Tdg, CY, ZZMax and Clifford-angle YYPhase gates in Pauli
   graph synthesis.
 * Disallow conversion to QASM of operations conditioned on strict subregisters
-  larger than one bit.
+  larger than one bit, or reordered registers.
 
 1.9.1 (December 2022)
 ---------------------
