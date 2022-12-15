@@ -1152,7 +1152,7 @@ def circuit_to_qasm_io(
                     raise QASMUnsupportedError(
                         "OpenQASM conditions must be an entire classical register"
                     )
-                if sorted(bits) != list(cregs[variable]):
+                if bits != list(cregs[variable]):
                     raise QASMUnsupportedError(
                         "OpenQASM conditions must be a single classical register"
                     )

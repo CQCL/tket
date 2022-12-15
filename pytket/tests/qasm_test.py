@@ -701,6 +701,11 @@ def test_conditional_expressions() -> None:
     c0123 = cond_circ([0, 1, 2, 3])
     assert "if(c==3)" in circuit_to_qasm_str(c0123)
     assert "if(c==3)" in circuit_to_qasm_str(c0123, header="hqslib1")
+    c0132 = cond_circ([0, 1, 3, 2])
+    with pytest.raises(QASMUnsupportedError):
+        circuit_to_qasm_str(c0132)
+    with pytest.raises(QASMUnsupportedError):
+        circuit_to_qasm_str(c0132, header="hqslib1")
 
 
 if __name__ == "__main__":
