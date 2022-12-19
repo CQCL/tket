@@ -1142,12 +1142,17 @@ def circuit_to_qasm_io(
                     variable = control_bit
                 else:
                     variable = control_bit.reg_name
+                    if hqs_header(header) and bits != list(cregs[variable]):
+                        raise QASMUnsupportedError(
+                            "hqslib1 QASM conditions must be an entire classical "
+                            "register or a single bit"
+                        )
             if not hqs_header(header):
                 if op.width != cregs[variable].size:
                     raise QASMUnsupportedError(
                         "OpenQASM conditions must be an entire classical register"
                     )
-                if sorted(bits) != list(cregs[variable]):
+                if bits != list(cregs[variable]):
                     raise QASMUnsupportedError(
                         "OpenQASM conditions must be a single classical register"
                     )
