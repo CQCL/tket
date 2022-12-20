@@ -119,6 +119,9 @@ MappingFrontier::MappingFrontier(
   this->linear_boundary = std::make_shared<unit_vertport_frontier_t>();
   this->boolean_boundary = std::make_shared<b_frontier_t>();
 
+  std::cout << "\n\n\nthe one with bimaps??? " << std::endl;
+  this->circuit_.to_graphviz_file(
+      "/Users/silasdilkes/code/tket-public/scratchbit.dot");
   // Set up {UnitID, VertPort} objects for quantum and classical boundaries
   for (const Qubit& qb : this->circuit_.all_qubits()) {
     this->linear_boundary->insert({qb, {this->circuit_.get_in(qb), 0}});
@@ -126,7 +129,20 @@ MappingFrontier::MappingFrontier(
   for (const Bit& bit : this->circuit_.all_bits()) {
     Vertex bit_input = this->circuit_.get_in(bit);
     EdgeVec bool_bundle = this->circuit_.get_nth_b_out_bundle(bit_input, 0);
-    if (bool_bundle.size() != 0) {
+
+    std::cout
+        << "Bundle Info! " << bit.repr() << " " << bool_bundle.size() << " "
+        << this->circuit_.n_out_edges_of_type(bit_input, EdgeType::Boolean)
+        << " "
+        << this->circuit_.n_out_edges_of_type(bit_input, EdgeType::Classical)
+        << " "
+        << this->circuit_.n_out_edges_of_type(bit_input, EdgeType::Quantum)
+        << std::endl;
+    // if(bool_bundle.empty() && !bool_outs.empty()){
+    //   bool_bundle = bool_outs;
+    // }
+    if (!bool_bundle.empty()) {
+      std::cout << "adding to the boolean bounadry! " << std::endl;
       this->boolean_boundary->insert({bit, bool_bundle});
     } else {
       this->linear_boundary->insert({bit, {bit_input, 0}});
@@ -212,7 +228,10 @@ void MappingFrontier::advance_next_2qb_slice(unsigned max_advance) {
     // For each vertex in a slice, if its physically permitted, update
     // linear_boundary with quantum out edges from vertex (i.e.
     // next_cut.u_frontier)
+    std::cout << "New cut. " << std::endl;
     for (const Vertex& vert : *next_cut.slice) {
+      std::cout << this->circuit_.get_OpDesc_from_Vertex(vert).name()
+                << std::endl;
       // Output means we don't want to pass, so just leave
       OpType ot = this->circuit_.get_OpType_from_Vertex(vert);
       if (ot == OpType::Output || ot == OpType::ClOutput) {
@@ -268,67 +287,115 @@ void MappingFrontier::advance_frontier_boundary(
     // linear_boundary with quantum out edges from vertex (i.e.
     // next_cut.u_frontier)
     // update boolean_boundary in line
+    std::cout << "\nNext Cut, afb'." << std::endl;
     for (const Vertex& vert : *next_cut.slice) {
+      std::cout << "\n"
+                << this->circuit_.get_OpDesc_from_Vertex(vert).name()
+                << std::endl;
+
+      /*
+
+
       // for each boolean edge into vertex, collect associated Bit and port
       // number n.b. a single Bit may have multiple "in bundles" to different
       // vertices in the same cut
-      std::map<Bit, port_t> bool_uid_port_set;
-      std::vector<EdgeVec> b_in_bundles = this->circuit_.get_b_in_bundles(vert);
-      for (unsigned i = 0; i < b_in_bundles.size(); i++) {
-        EdgeVec ev = b_in_bundles[i];
-        if (ev.size() > 0) {
-          bool_uid_port_set.insert(
-              {get_bit_from_bool_frontier(this->boolean_boundary, ev), i});
-        }
-      }
+      // std::map<Bit, port_t> bool_uid_port_map =
+      get_in_bool_bundles(this->circuit_, vert, this->boolean_boundary);
 
-      // for each quantum edge into vertex, collect associated Qubit/Node
-      // don't collect port as this->linear_boundary holds this
-      // each UnitID will only have one quantum edge active
-      std::vector<UnitID> l_uids;  // linear unit id
-      std::vector<Node> nodes;     // quantum/node only
+      // // for each boolean edge into vertex, collect associated Bit and port
+      // // number n.b. a single Bit may have multiple "in bundles" to different
+      // // vertices in the same cut
+      // std::map<Bit, port_t> bool_uid_port_map;
+      // std::vector<EdgeVec> b_in_bundles =
+      this->circuit_.get_b_in_bundles(vert);
+      // for (unsigned i = 0; i < b_in_bundles.size(); i++) {
+      //   EdgeVec ev = b_in_bundles[i];
+      //   if (ev.size() > 0) {
+      //     bool_uid_port_map.insert(
+      //         {get_bit_from_bool_frontier(this->boolean_boundary, ev), i});
+      //   }
+      // }
+
+
+
+
+        // std::cout << "Original bool port map: " << std::endl;
+        // for(auto x : bool_uid_port_map){
+        //   std::cout << x.first.repr() << " " << x.second << std::endl;
+        // }
+        // std::cout << "Additional bool port map: " << std::endl;
+        // for(auto x : extra_bool_uid_port_map){
+        //   std::cout << x.first.repr() << " " << x.second << std::endl;
+        // }
+        // std::cout << "Linear uids." << std::endl;
+        // for(auto x : l_uids){
+        //   std::cout << x.repr() << std::endl;
+        // }
+        // std::cout << "N l uids: " << nodes.size() << std::endl;
+      */
+
+      /**
+       * For given Vertex, find the associated Architecture Node
+       * used as this point to run the gate.
+       */
+      std::vector<Node> nodes;  // linear unit id
       for (const Edge& e :
            this->circuit_.get_in_edges_of_type(vert, EdgeType::Quantum)) {
-        UnitID uid = get_unitid_from_unit_frontier(
+        nodes.push_back(Node(get_unitid_from_unit_frontier(
             this->linear_boundary,
-            {this->circuit_.source(e), this->circuit_.get_source_port(e)});
-        l_uids.push_back(uid);
-        nodes.push_back(Node(uid));
+            {this->circuit_.source(e), this->circuit_.get_source_port(e)})));
       }
-
-      // for each classical edge store related UnitID in l_uids
-      // each Bit will only have one classical edge active
-      // n.b. some vertices may introduce new Bit to the boolean_boundary
-      // e.g. A Measurement result may be passed to a conditional as
-      // therefore, all Bit not in the Boolean boundary are also stored
-      // in case the operation does this and the this->boolean_boundary
-      // needs to be updated
-      std::map<Bit, port_t> extra_bool_uid_port_set;
-      for (const Edge& e :
-           this->circuit_.get_in_edges_of_type(vert, EdgeType::Classical)) {
-        // for updating linear boundary
-        port_t port_source = this->circuit_.get_source_port(e);
-        UnitID uid = get_unitid_from_unit_frontier(
-            this->linear_boundary, {this->circuit_.source(e), port_source});
-        l_uids.push_back(uid);
-
-        // for potentially adding new Bit to boolean boundary
-        // port_target makes it possible to track which "out bundle" corresponds
-        // to this Bit
-        port_t port_target = this->circuit_.get_target_port(e);
-        Bit bit = Bit(uid);
-        if (bool_uid_port_set.find(bit) == bool_uid_port_set.end()) {
-          extra_bool_uid_port_set.insert({bit, port_target});
-        }
-      }
-
-      if (nodes.size() == 0 ||
+      /**
+       * Note that if there are no valid vertices in the boundary then
+       * the while loop will terminate.
+       */
+      if (nodes.empty() ||
           this->valid_boundary_operation(
               architecture, this->circuit_.get_Op_ptr_from_Vertex(vert),
               nodes)) {
-        // if no valid operation, boundary not updated and while loop terminates
         boundary_updated = true;
-        // update linear UnitID (Qubits&Quantum edges, Bits&Classical edges)
+
+        // for each classical edge store related UnitID in l_uids
+        // each Bit will only have one classical edge active
+        // n.b. some vertices may introduce new Bit to the boolean_boundary
+        // e.g. A Measurement result may be passed to a conditional as
+        // therefore, all Bit not in the Boolean boundary are also stored
+        // in case the operation does this and the this->boolean_boundary
+        // needs to be updated
+
+        /**
+         * As the vertex corresponds to an operation that is Architecture
+         * permitted we now need to update Boundary information to hold Edges
+         * after this vertex. I.E. we need to update the slice of edges.
+         *
+         * Note that we need to update for Quantum Edges, Classical Edges and
+         * Boolean edges.
+         *
+         * First we update all linear UnitID for the given vertex.
+         * To do this, we first construct a holder for all Bit corresponding to
+         * classical edges in the vertex.
+         *
+         */
+
+        std::vector<Bit> bits;
+        EdgeVec classical_in_edges =
+            this->circuit_.get_in_edges_of_type(vert, EdgeType::Classical);
+        for (const Edge& e : classical_in_edges) {
+          bits.push_back(Bit(get_unitid_from_unit_frontier(
+              this->linear_boundary,
+              {this->circuit_.source(e), this->circuit_.get_source_port(e)})));
+        }
+
+        /**
+         * We now ipdate the boundary for Linear edges.
+         * As Linear, each UnitID has a single related in Edge.
+         * We update the boundary by finding the correspond out Edge for
+         * each in edge (via port numbers) and replacing the information
+         * held in the linear boundary.
+         */
+        std::vector<UnitID> l_uids;
+        l_uids.insert(l_uids.end(), nodes.begin(), nodes.end());
+        l_uids.insert(l_uids.end(), bits.begin(), bits.end());
         for (const UnitID& uid : l_uids) {
           Edge replacement_edge =
               next_cut.u_frontier->get<TagKey>().find(uid)->second;
@@ -338,76 +405,163 @@ void MappingFrontier::advance_frontier_boundary(
               this->linear_boundary->get<TagKey>().find(uid),
               {uid, {source_vertex, source_port}});
         }
-        // update booleans
-        // n.b. its possible a boolean path terminates with an operation
-        // however, the port should be preserved so we can track the correct Bit
+
+        // for (const Edge& e :
+        //     this->circuit_.get_in_edges_of_type(vert, EdgeType::Classical)) {
+        //   // // for updating linear boundary
+        //   // port_t port_source = this->circuit_.get_source_port(e);
+        //   // UnitID uid = get_unitid_from_unit_frontier(
+        //   //     this->linear_boundary, {this->circuit_.source(e),
+        //   port_source});
+        //   // l_uids.push_back(uid);
+
+        //   // for potentially adding new Bit to boolean boundary
+        //   // port_target makes it possible to track which "out bundle"
+        //   corresponds
+        //   // to this Bit
+        //   port_t port_target = this->circuit_.get_target_port(e);
+        //   Bit bit = Bit(uid);
+        //   if (bool_uid_port_map.find(bit) == bool_uid_port_map.end()) {
+        //     extra_bool_uid_port_map.insert({bit, port_target});
+        //   }
+        // }
+
+        /**
+         * We now update the boundary for boolean edge bundles.
+         * A boolean can have multiple related Edges leading to different
+         * vertices.
+         * A boolean path can terminate at a vertex, if this happens, remove Bit
+         * from boundary. Note the port ordering of the edges is preserved so we
+         * can still track the required information. First for each boolean edge
+         * into the vertex, we collect its associated Bit and Port. Another
+         * reminder to stress its importance: A Bit may have multiple "in
+         * bundles" to different vertices in the same cut.
+         *
+         * First, for each "in bundle" of Boolean wire we find a corresponding
+         * Bit.
+         */
         // {Bit, port_t}
-        for (auto it = bool_uid_port_set.begin(); it != bool_uid_port_set.end();
-             ++it) {
-          std::vector<EdgeVec> out_bundles =
-              this->circuit_.get_b_out_bundles(vert);
 
-          port_t port = it->second;
-          TKET_ASSERT(out_bundles.size() > port);  // safe port indexing
-          // However, this Bit may have boolean values in other Vertices in
-          // slice therefore, we remove every edge from the vertex in_bundle for
-          // this port from the boolean_boundary and then insert these new edges
-          std::vector<EdgeVec> in_bundles =
-              this->circuit_.get_b_in_bundles(vert);
+        // std::map<Bit, port_t> boolean_uid_port_map;
+        // for(const EdgeVec& bundle : this->circuit_.get_b_in_bundles(vert)){
+        //   if(!bundle.empty()){
+        //     boolean_uid_port_map.insert({get_bit_from_bool_frontier(this->boolean_boundray,
+        //     bundle)});
+        //   }
+        // }
 
-          TKET_ASSERT(in_bundles.size() > port);  // safe port indexing
+        // for (auto it = bool_uid_port_map.begin(); it !=
+        // bool_uid_port_map.end();
+        //      ++it) {
+
+        std::vector<EdgeVec> in_bundles = this->circuit_.get_b_in_bundles(vert);
+        std::vector<EdgeVec> out_bundles =
+            this->circuit_.get_b_out_bundles(vert);
+        unsigned n_in_bundles = in_bundles.size();
+        unsigned n_out_bundles = out_bundles.size();
+        TKET_ASSERT(n_out_bundles > n_in_bundles);
+
+        for (port_t port = 0; port < n_in_bundles; port++) {
           EdgeVec in_bundle = in_bundles[port];
-          // Bit should be in boolean_boundary
-          Bit bit = it->first;
+          if (in_bundle.empty()) continue;
+          Bit bit =
+              get_bit_from_bool_frontier(this->boolean_boundary, in_bundle);
+          /**
+           * N.B. A Bit can have multiple boolean values, including
+           * potentially for other vertices in the same slice.
+           * We first remove every edge from the Vertex "in bundle" for this
+           * port from the EdgeVec held in the boolean boundary. We then insert
+           * new edges corresponding to any "out bundle" from this Vertex.
+           *
+           */
+          // std::vector<EdgeVec> in_bundles =
+          //     this->circuit_.get_b_in_bundles(vert);
+          // TKET_ASSERT(in_bundles.size() > port);  // safe port indexing
+          // EdgeVec in_bundle = in_bundles[port];
+
+          // Construct a new boolean bundle for the bit
+          // All boolean out edges in bundle must be in it
+          EdgeVec updated_boolean_bundle = out_bundles[port];
           auto jt = this->boolean_boundary->get<TagKey>().find(bit);
           TKET_ASSERT(jt != this->boolean_boundary->get<TagKey>().end());
-          // construct a new EdgeVec object with replaced Edge and persisting
-          // Edge
-
-          EdgeVec new_boolean_edges;
-
+          // additionally, some edges corresponding to the Boolean
+          // might not be in the bundle, so add them back here
           for (const Edge& e : jt->second) {
-            // => edge isn't being replaced
             if (std::find(in_bundle.begin(), in_bundle.end(), e) ==
                 in_bundle.end()) {
-              new_boolean_edges.push_back(e);
+              // => Edge not being replaced so add to bundle
+              updated_boolean_bundle.push_back(e);
             }
-          }
-          // add all new edges from out bundle to the boundary
-          for (const Edge& e : out_bundles[port]) {
-            new_boolean_edges.push_back(e);
           }
 
-          // boolean no longer needed
-          if (new_boolean_edges.size() == 0) {
+          // add all new edges from out bundle to the boundary
+          // Add Edges from "out bundle" to boolean boundary (via
+          // "updated_boolean_bundle") std::vector<EdgeVec> out_bundles =
+          //     this->circuit_.get_b_out_bundles(vert);
+          // TKET_ASSERT(out_bundles.size() > port);  // safe port indexing
+          // EdgeVec out_bundle = out_bundles[port];
+          // updated_boolean_bundle.insert(updated_boolean_bundle.end(),
+          // out_bundle.begin(), out_bundle.end());
+
+          /**
+           * If updated_boolean_bundle is empty, then the data corresponding to
+           * this Bit is now unused.
+           * We can remove this Bit from the boolean boundary.
+           * If not empty, then we need to update the boolean boundary.
+           */
+          if (updated_boolean_bundle.empty()) {
             this->boolean_boundary->erase(jt);
           } else {
-            // replace boolean boundary
-            this->boolean_boundary->replace(jt, {bit, new_boolean_edges});
+            this->boolean_boundary->replace(jt, {bit, updated_boolean_bundle});
           }
         }
-        // Some operations may spawn a Boolean wire not held in boolean_boundary
-        // this checks for any new wires and if true, adds to boolean_boundary
-        // {Bit, port_t}
-        for (auto it = extra_bool_uid_port_set.begin();
-             it != extra_bool_uid_port_set.end(); ++it) {
-          std::vector<EdgeVec> source_out =
-              this->circuit_.get_b_out_bundles(vert);
-          // If source_out has more bundles than port value, then we know
-          // it's been spawned (multiple could be spawned at same vertex)
-          port_t port = it->second;
-          if (source_out.size() > port) {
-            EdgeVec new_boolean_wire = source_out[port];
-            // add new edges to boolean_boundary
-            // note that a boolean cannot be spawned in multiple vertices
-            // as the incoming Bit wire is linear
-            // Measure always create a boolean, even if empty of edges
-            // => check size before adding
-            if (new_boolean_wire.size() > 0) {
-              this->boolean_boundary->insert({it->first, new_boolean_wire});
+
+        /**
+         * Some Vertices correspond to operations that spawn a new Boolean
+         * wire that is not held in the boolean bounday.
+         * We check to see if any new wires are spawned, and if so
+         * we add them to the boolean boundary.
+         */
+        if (n_out_bundles > n_in_bundles) {
+          // N.B. "bits" is a vector of Bit, where the ith Bit corresponds to
+          // the ith "in edge" of the vertex
+          TKET_ASSERT(bits.size() == classical_in_edges.size());
+          for (port_t in_port = 0; in_port < bits.size(); in_port++) {
+            port_t out_port =
+                this->circuit_.get_target_port(classical_in_edges[in_port]);
+            // if out_port has value large then n_in_bundles then it's new and
+            // we can assign it to the boundary
+            TKET_ASSERT(n_out_bundles > out_port);
+            if (out_port >= n_in_bundles) {
+              this->boolean_boundary->insert(
+                  {bits[in_port], out_bundles[out_port]});
             }
           }
         }
+        // // {Bit, port_t}
+        // for (auto it = extra_bool_uid_port_map.begin();
+        //      it != extra_bool_uid_port_map.end(); ++it) {
+        //   /**
+        //    * A single vertex can spawn multiple new Boolean bundles.
+        //    *
+        //   */
+        //   std::vector<EdgeVec> source_out_bundles =
+        //       this->circuit_.get_b_out_bundles(vert);
+        //   // If source_out has more bundles than port value, then we know
+        //   // it's been spawned (multiple could be spawned at same vertex)
+        //   port_t port = it->second;
+        //   if (source_out_bundles.size() > port) {
+        //     EdgeVec new_boolean_wire = source_out_bundles[port];
+        //     // add new edges to boolean_boundary
+        //     // note that a boolean cannot be spawned in multiple vertices
+        //     // as the incoming Bit wire is linear
+        //     // Measure always create a boolean, even if empty of edges
+        //     // => check size before adding
+        //     if (new_boolean_wire.size() > 0) {
+        //       this->boolean_boundary->insert({it->first, new_boolean_wire});
+        //     }
+        //   }
+        // }
       }
     }
   } while (boundary_updated);
