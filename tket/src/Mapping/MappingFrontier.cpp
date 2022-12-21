@@ -263,17 +263,26 @@ void MappingFrontier::advance_frontier_boundary(
     const ArchitecturePtr& architecture) {
   bool boundary_updated = false;
   do {
-    // next_cut.slice vertices in_edges from this->linear_boundary
+    /**
+     * Given a "Circuit slice" defined by a set of Quantum,
+     * Classical and Boolean Edges, we find a "next" set
+     * of causally forward adjacent vertices.
+     */
     boundary_updated = false;
     std::shared_ptr<unit_frontier_t> l_frontier_edges =
         frontier_convert_vertport_to_edge(
             this->circuit_, this->linear_boundary);
     CutFrontier next_cut =
         this->circuit_.next_cut(l_frontier_edges, this->boolean_boundary);
-    // For each vertex in a slice, if its physically permitted, update
-    // linear_boundary with quantum out edges from vertex (i.e.
-    // next_cut.u_frontier)
-    // update boolean_boundary in line
+
+    /**
+     * For each vertex in a slice we check to see if its
+     * Quantum arguments are permitted by the Architecture.
+     *
+     * If true, we update our Circuit Slice by replacing
+     * "in edges" to the Vertex with appropriate "out edges"
+     * from the Vertex.
+     */
     for (const Vertex& vert : *next_cut.slice) {
       /**
        * Iterate through every edge (port ordered) to the Vertex.
@@ -454,6 +463,11 @@ void MappingFrontier::advance_frontier_boundary(
       }
     }
   } while (boundary_updated);
+  /**
+   * This process is repeated until no more vertices are deemed
+   * Architecture appropriate, i.e. either the end of the Circuit
+   * has been reached or we need to add SWAP gates to proceed.
+   */
   return;
 }
 
