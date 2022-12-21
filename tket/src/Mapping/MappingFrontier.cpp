@@ -119,9 +119,6 @@ MappingFrontier::MappingFrontier(
 
   this->linear_boundary = std::make_shared<unit_vertport_frontier_t>();
   this->boolean_boundary = std::make_shared<b_frontier_t>();
-
-  this->circuit_.to_graphviz_file(
-      "/Users/silasdilkes/code/tket-public/scratchbit.dot");
   // Set up {UnitID, VertPort} objects for quantum and classical boundaries
   for (const Qubit& qb : this->circuit_.all_qubits()) {
     this->linear_boundary->insert({qb, {this->circuit_.get_in(qb), 0}});
