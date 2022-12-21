@@ -48,7 +48,7 @@ jobs:
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.1
       with:
-        version: '1.55.0'
+        version: '1.56.0'
     - name: Set up conan
       shell: bash
       run: ./.github/workflows/conan-setup
