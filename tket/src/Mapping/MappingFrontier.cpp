@@ -320,6 +320,7 @@ void MappingFrontier::advance_frontier_boundary(
        * If there are no valid vertices in the boundary then
        * the while loop will terminate.
        */
+
       if (nodes.empty() ||
           this->valid_boundary_operation(
               architecture, this->circuit_.get_Op_ptr_from_Vertex(vert),
@@ -328,10 +329,10 @@ void MappingFrontier::advance_frontier_boundary(
 
         /**
          * "Linear" in edges stored in "in_uids" (Quantum & Classical)
-         * each have a single corresponding out edge.
-         * We first find these and update the "linear boundary"
-         *
+         * each have a single corresponding "out edge".
+         * We first find these and update the "linear boundary".
          */
+
         for (const std::pair<UnitID, EdgeType>& uid : in_uids) {
           switch (uid.second) {
             case EdgeType::Boolean:
@@ -340,12 +341,11 @@ void MappingFrontier::advance_frontier_boundary(
             case EdgeType::Classical: {
               Edge replacement_edge =
                   next_cut.u_frontier->get<TagKey>().find(uid.first)->second;
-              Vertex source_vertex = this->circuit_.source(replacement_edge);
-              port_t source_port =
-                  this->circuit_.get_source_port(replacement_edge);
               this->linear_boundary->replace(
                   this->linear_boundary->get<TagKey>().find(uid.first),
-                  {uid.first, {source_vertex, source_port}});
+                  {uid.first,
+                   {this->circuit_.source(replacement_edge),
+                    this->circuit_.get_source_port(replacement_edge)}});
               break;
             }
             default: {
@@ -357,7 +357,7 @@ void MappingFrontier::advance_frontier_boundary(
         }
 
         /**
-         * Boolean bundles don't respect linearity.
+         * Boolean bundles don't respect linearity in edges, but in bundles.
          * They can terminate or spawn at/from vertices.
          * For an n port vertex, "get_b_in_bundles" and "get_b_out_bundles"
          * will always return an n element vector of bundles. If
@@ -371,7 +371,7 @@ void MappingFrontier::advance_frontier_boundary(
         unsigned n_in_bundles = in_bundles.size();
         unsigned n_out_bundles = out_bundles.size();
 
-        TKET_ASSERT(n_out_bundles >= n_in_bundles);
+        TKET_ASSERT(n_out_bundles == n_in_bundles);
         TKET_ASSERT(n_in_bundles == in_uids.size());
 
         /**
@@ -421,7 +421,8 @@ void MappingFrontier::advance_frontier_boundary(
               auto boolean_it = this->boolean_boundary->get<TagKey>().find(bit);
               TKET_ASSERT(
                   boolean_it != this->boolean_boundary->get<TagKey>().end());
-              // update "out bundle" with other boolean edges attached to other vertices
+              // update "out bundle" with other boolean edges attached to other
+              // vertices
               for (const Edge& edge : boolean_it->second) {
                 if (std::find(in_bundle.begin(), in_bundle.end(), edge) ==
                     in_bundle.end()) {
@@ -429,14 +430,15 @@ void MappingFrontier::advance_frontier_boundary(
                 }
               }
               if (out_bundle.empty()) {
-                // => all edges in boolean bundle in boolean boundary attached to this vertex
+                // => all edges in boolean bundle in boolean boundary attached
+                // to this vertex
                 // => vertex has no edges in output boolean bundle for thos port
                 // => can erase Bit from boolean boundary as its not longer used
                 this->boolean_boundary->erase(boolean_it);
               } else {
                 // => either Vertex has edges in output boolean bundle
-                // => or there are other edges in boolean bundle held in boolean boundary
-                // that are not attached to this vertex
+                // => or there are other edges in boolean bundle held in boolean
+                // boundary that are not attached to this vertex
                 // => update boolean boundary
                 this->boolean_boundary->replace(boolean_it, {bit, out_bundle});
               }
@@ -446,44 +448,6 @@ void MappingFrontier::advance_frontier_boundary(
               throw std::runtime_error(
                   "Input Edge to Vertex encountered during Mapping has "
                   "unsupported Edge type.");
-            }
-          }
-        }
-
-        /**
-         * Some Vertices correspond to operations that spawn a new Boolean
-         * wire that is not held in the boolean bounday.
-         * We check to see if any new wires are spawned, and if so
-         * we add them to the boolean boundary.
-         */
-        if (n_out_bundles > n_in_bundles) {
-          TKET_ASSERT(true);
-          // // N.B. "bits" is a vector of Bit, where the ith Bit corresponds to
-          // // the ith "in edge" of the vertex
-          // TKET_ASSERT(bits.size() == classical_in_edges.size());
-          for (port_t in_port = 0; in_port < in_uids.size(); in_port++) {
-            std::pair<UnitID, EdgeType> uid_et = in_uids[0];
-            switch (uid_et.second) {
-              case EdgeType::Quantum:
-                break;
-              case EdgeType::Classical:
-              case EdgeType::Boolean: {
-                port_t out_port =
-                    this->circuit_.get_target_port(all_in_edges[in_port]);
-                // if out_port has value large then n_in_bundles then it's new
-                // and we can assign it to the boundary
-                TKET_ASSERT(n_out_bundles > out_port);
-                if (out_port >= n_in_bundles) {
-                  this->boolean_boundary->insert(
-                      {Bit(uid_et.first), out_bundles[out_port]});
-                }
-                break;
-              }
-              default: {
-                throw std::runtime_error(
-                    "Input Edge to Vertex encountered during Mapping has "
-                    "unsupported Edge type.");
-              }
             }
           }
         }
