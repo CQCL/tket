@@ -314,9 +314,7 @@ void MappingFrontier::advance_frontier_boundary(
             break;
           }
           default: {
-            throw std::runtime_error(
-                "Input Edge to Vertex encountered during Mapping has "
-                "unsupported Edge type.");
+            TKET_ASSERT(false);
           }
         }
         in_uids.push_back({uid, edge_type});
@@ -355,9 +353,7 @@ void MappingFrontier::advance_frontier_boundary(
               break;
             }
             default: {
-              throw std::runtime_error(
-                  "Input Edge to Vertex encountered during Mapping has "
-                  "unsupported Edge type.");
+              TKET_ASSERT(false);
             }
           }
         }
@@ -451,9 +447,7 @@ void MappingFrontier::advance_frontier_boundary(
               break;
             }
             default: {
-              throw std::runtime_error(
-                  "Input Edge to Vertex encountered during Mapping has "
-                  "unsupported Edge type.");
+              TKET_ASSERT(false);
             }
           }
         }
