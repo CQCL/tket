@@ -44,6 +44,7 @@ try:
 except ModuleNotFoundError:
     have_quimb = False
 
+
 def test_generator_creation() -> None:
     diag = ZXDiagram(1, 0, 0, 0)
     in_v = diag.get_boundary()[0]
@@ -568,7 +569,9 @@ def test_spider_fusion() -> None:
     diag.check_validity()
 
 
-@pytest.mark.skipif(not have_quimb, reason="quimb not installed")(not have_quimb, reason="quimb not installed")
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")(
+    not have_quimb, reason="quimb not installed"
+)
 def test_simplification() -> None:
     # This diagram follows from section A of https://arxiv.org/pdf/1902.03178.pdf
     diag = ZXDiagram(4, 4, 0, 0)
